@@ -5,7 +5,7 @@
  */
 
   uses(
-    'gui.gtk.GTKGladeApplication', 
+    'gui.gtk.GtkGladeDialogWindow', 
     'gui.gtk.util.GTKPixmapLoader', 
     'gui.gtk.util.GTKWidgetUtil', 
     'io.Folder'
@@ -22,26 +22,73 @@
    *
    * @purpose Provide a widget for file dialogs
    */
-  class FileDialog extends GTKGladeApplication {
+  class FileDialog extends GtkGladeDialogWindow {
     var
-      $filename = NULL,
-      $dir,
-      $filter	= '.*';
+      $filename = '',
+      $dir      = '',
+      $filter	= '';
 
     /**
      * Constructor
      *
      * @access  public
      */
-    function __construct($dir= '.') {
+    function __construct($dir= '.', $filter= '.*') {
       $this->dir= $dir;
-      parent::__construct(
-        'filedialog', 
-        dirname(__FILE__).'/filedialog.glade',
-        'filedialog'
-      );
+      $this->filter= $filter;
+      parent::__construct(dirname(__FILE__).'/filedialog.glade', 'filedialog');
     }
-    
+   
+    /**
+     * Set Filename
+     *
+     * @access  public
+     * @param   string filename
+     */
+    function setFilename($filename) {
+      $this->filename= $filename;
+    }
+
+    /**
+     * Get Filename
+     *
+     * @access  public
+     * @return  string
+     */
+    function getFilename() {
+      return $this->filename;
+    }
+
+    /**
+     * Get Dir
+     *
+     * @access  public
+     * @return  string
+     */
+    function getDirectory() {
+      return $this->dir;
+    }
+
+    /**
+     * Set Filter
+     *
+     * @access  public
+     * @param   string filter
+     */
+    function setFilter($filter) {
+      $this->filter= $filter;
+    }
+
+    /**
+     * Get Filter
+     *
+     * @access  public
+     * @return  string
+     */
+    function getFilter() {
+      return $this->filter;
+    }
+ 
     /**
      * (Insert method's description here)
      *
@@ -64,8 +111,10 @@
      * @return  
      */
     function onClose(&$widget) {
-      $this->log($widget->get_name());
-      $this->done();
+      if ('button_ok' != $widget->get_name()) {
+        $this->filename= NULL;
+      }
+      $this->close();
     }
     
     /**
@@ -76,7 +125,7 @@
      * @return  
      */
     function onUpDirClicked(&$widget) {
-      $this->setDir(substr(
+      $this->setDirectory(substr(
         $this->dir, 
         0, 
         strrpos(substr($this->dir, 0, -1), '/')
@@ -93,7 +142,7 @@
      */
     function onHomeClicked(&$widget) {
       $info= posix_getpwuid(posix_getuid());
-      $this->setDir($info['dir']);
+      $this->setDirectory($info['dir']);
     }
 
     /**
@@ -111,8 +160,8 @@
         'TMP'   => getenv('TMP'),
         '_'     => '/'
       ));
-      $this->log($d);
-      $this->setDir($d);
+      $this->cat->debug($d);
+      $this->setDirectory($d);
     }
 
     /**
@@ -123,7 +172,7 @@
      * @return  
      */
     function onRefreshClicked(&$widget) {
-      $this->setDir();
+      $this->setDirectory();
     }
     
     /**
@@ -134,10 +183,10 @@
      * @return  
      */
     function onPNClicked(&$widget) {
-      $this->log($widget->get_name(), $this->history, $this->history_offset);
+      $this->cat->debug($widget->get_name(), $this->history, $this->history_offset);
       $this->history_offset+= ('button_prev' == $widget->get_name()) ? -1 : 1;
-      $this->log($widget->get_name(), $this->history_offset, $this->history[$this->history_offset]);
-      $this->setDir($this->history[$this->history_offset], FALSE);
+      $this->cat->debug($widget->get_name(), $this->history_offset, $this->history[$this->history_offset]);
+      $this->setDirectory($this->history[$this->history_offset], FALSE);
     }
     
     /**
@@ -146,7 +195,6 @@
      * @access  public
      */
     function init() {
-      parent::init();
       $this->window->set_default_size(400, 420);
       
       // File list
@@ -206,10 +254,10 @@
       } if (catch('IOException', $e)) {
         $e->printStackTrace();
       }
-      $this->log(sizeof($this->pixmaps), 'pixmaps loaded');
+      $this->cat->debug(sizeof($this->pixmaps), 'pixmaps loaded');
       
       // Read files
-      $this->setDir();
+      $this->setDirectory();
     }
     
     /**
@@ -220,17 +268,17 @@
      * @return  
      */
     function onEntrySelected(&$widget, $row, $data, $event) {
-      $this->log($widget);
+      $this->cat->debug($widget);
       $ftype= $widget->get_text($row, 1);
       $entry= $widget->get_pixtext($row, 0);
       
       // Check if an item was double clicked
       if ('' == $ftype && isset($event) && GDK_2BUTTON_PRESS == $event->type) {
-        return $this->setDir($this->dir.$entry[0]);
+        return $this->setDirectory($this->dir.$entry[0]);
       }
       
       $this->filename= $entry[0];
-      $this->log($row, 'selected, uri is', $this->filename, 'event', $data, $event);
+      $this->cat->debug($row, 'selected, uri is', $this->filename, 'event', $data, $event->type);
       
       // Update location entry
       $this->location->set_text($entry[0]);
@@ -260,9 +308,9 @@
      * @param   
      * @return  
      */
-    function setDir($dir= NULL, $update_offset= TRUE) {
+    function setDirectory($dir= NULL, $update_offset= TRUE) {
       if (NULL !== $dir) $this->dir= $dir;
-      $this->log('Change dir to', $this->dir);
+      $this->cat->debug('Change dir to', $this->dir);
       
       // Disable Up button if we are at top
       $this->buttons['up']->set_sensitive(strlen($this->dir) > 1);
@@ -328,7 +376,7 @@
           // Get file owner's name
           $owner= posix_getpwuid(fileowner($f->uri.$entry));
           
-          // $this->log($f->uri.$entry, 'dir?', $dir, 'ext', $ext); $this->log($entry, $owner);
+          // $this->cat->debug($f->uri.$entry, 'dir?', $dir, 'ext', $ext); $this->cat->debug($entry, $owner);
           
 		  $this->files->set_pixtext(
             $this->files->append(array(
@@ -363,13 +411,11 @@
      *
      * @access  
      * @param   
-     * @return  
+     * @return  bool
      */
     function show() {
-      $this->init();
-      $this->run();
-      $this->done();
-      return (NULL == $this->filename) ? FALSE : $this->filename;
+      parent::show();
+      return !empty($this->filename);
     }
   }
 ?>
