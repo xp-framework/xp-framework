@@ -127,7 +127,7 @@
       $defaultProduct= getenv('DEF_PROD');
       $defaultLanguage= getenv('DEF_LANG');
       $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s:%s/static?__page=home', 
+        '%s://%s/xml/%s;%s/static?__page=home', 
         $uri['scheme'],
         $uri['host'],          
         $defaultProduct ? $defaultProduct : 'site',
@@ -151,7 +151,7 @@
       $defaultProduct= getenv('DEF_PROD');
       $defaultLanguage= getenv('DEF_LANG');
       $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s:%s;psessionid=%s/static?__page=home', 
+        '%s://%s/xml/%s;%s;psessionid=%s/static?__page=home', 
         $uri['scheme'],
         $uri['host'],          
         $defaultProduct ? $defaultProduct : 'site',
