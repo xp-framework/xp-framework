@@ -14,6 +14,7 @@
    * SET <key>=<value>          Inserts/Updates a key
    * DELE <key>                 Deletes a key
    * KEYS                       Returns all keys
+   * SAVE                       Saves to disk
    * </pre>
    *
    * @access  public
@@ -56,6 +57,17 @@
         chop(urldecode($cmd)).'::'.$return
       ));
       return substr($return, $i+ 1);
+    }
+    
+    /**
+     * Flushes keys to disk on remote storage server
+     *
+     * @access  public
+     * @return  bool Success
+     * @throws  Exception in case of an error
+     */
+    function flush() {
+      return FALSE !== $this->_cmd('SAVE');
     }
     
     /**
