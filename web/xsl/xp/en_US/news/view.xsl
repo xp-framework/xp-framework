@@ -12,7 +12,8 @@
  extension-element-prefixes="func"
 >
   <xsl:include href="../../layout.xsl"/>
-  
+  <xsl:include href="../../news.inc.xsl"/>
+
   <!--
    ! Template for context navigation
    !
@@ -21,7 +22,7 @@
    !-->
   <xsl:template name="context">
   </xsl:template>
-  
+
   <!--
    ! Template for content
    !
@@ -29,18 +30,23 @@
    ! @purpose  Define main content
    !-->
   <xsl:template name="content">
-    <h1>News</h1>
-    <h3>
-      <xsl:value-of select="/formresult/item/caption"/>
-      (<xsl:value-of select="func:datetime(/formresult/item/created_at)"/>, 
-      by <xsl:value-of select="/formresult/item/changedby"/>)
-    </h3>
-    <p>
-      <xsl:apply-templates select="/formresult/item/body"/>
-    </p>
-
-    <br/>
-    <a href="../news">Overview</a> | <a href="{/formresult/item/link}">Details</a>
+    <div class="entry">
+      <h3>
+        <a href="news/view?{/formresult/entry/@id}">
+          <xsl:value-of select="/formresult/entry/title"/>
+        </a>
+      </h3>
+      <p>
+        <xsl:apply-templates select="/formresult/entry/body"/>
+      </p>
+      <p>
+        <xsl:apply-templates select="/formresult/entry/extended"/>
+      </p>
+      <em>
+        Posted by <xsl:value-of select="/formresult/entry/author"/> 
+        at <xsl:value-of select="func:datetime(/formresult/entry/date)"/>
+      </em>
+    </div>
   </xsl:template>
   
 </xsl:stylesheet>
