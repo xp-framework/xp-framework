@@ -31,7 +31,7 @@
      */
     function __construct($filename) {
       $this->_file= $filename;
-      Object::__construct();
+      parent::__construct();
     }
     
     /**
@@ -40,7 +40,7 @@
      * @access  public
      */
     function create() {
-      $fd= new File($this->_file);
+      $fd= &new File($this->_file);
       $fd->open(FILE_MODE_WRITE);
       $fd->close();
     }
@@ -83,7 +83,7 @@
      * @access  public
      */
     function save() {
-      $fd= new File($this->_file);
+      $fd= &new File($this->_file);
       $fd->open(FILE_MODE_WRITE);
       
       // Sektionen durchgehen
@@ -181,6 +181,23 @@
         ? explode('|', $this->_data[$section][$key])
         : $default
       ;
+    }
+
+    /**
+     * Einen Wert als Range zurückgeben. Ranges liegen als min..max vor
+     *
+     * @access  public
+     * @param   string section Name der Sektion
+     * @param   string key Name der Keys
+     * @param   default default NULL Die Rückgabe, falls der Key bzw. die Sektion nicht existiert
+     * @return  mixed Value-Array, bzw. $default
+     */
+    function readRange($section, $key, $default= NULL) {
+      $this->_load();
+      if (!isset($this->_data[$section][$key])) return $default;
+      
+      list($min, $max)= explode('..', $this->_data[$section][$key]);
+      return range($min, $max);
     }
     
     /**
