@@ -102,8 +102,16 @@
      * @param   string publisher default ''
      * @param   string rights default ''
      */
-    function setChannel($title, $link, $description= '', $date= NULL, $language= '',
-                        $creator= '', $publisher= '', $rights= '') {
+    function setChannel(
+      $title, 
+      $link, 
+      $description= '', 
+      $date= NULL, 
+      $language= '',
+      $creator= '', 
+      $publisher= '', 
+      $rights= ''
+    ) {
       if (NULL === $date) $date= &new Date(time());
       
       $this->channel->title= $title;
