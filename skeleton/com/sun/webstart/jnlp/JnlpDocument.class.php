@@ -39,11 +39,10 @@
      * @param   string spec default JNLP_SPEC_1_PLUS
      */
     function __construct($codebase, $href, $spec= JNLP_SPEC_1_PLUS) {
-      $this->root= &new Node('jnlp', NULL, array(
-        'spec'      => $spec,
-        'codebase'  => $codebase,
-        'href'      => $href,
-      ));
+      parent::__construct('jnlp');
+      $this->root->setAttribute('spec', $spec);
+      $this->root->setAttribute('codebase', $codebase);
+      $this->root->setAttribute('href', $href);
       $this->_nodes['information']= &$this->root->addChild(new Node('information'));
       $this->_nodes['security']= &$this->root->addChild(new Node('security'));
       $this->_nodes['resources']= &$this->root->addChild(new Node('resources'));
