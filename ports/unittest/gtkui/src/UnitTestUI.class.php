@@ -55,6 +55,8 @@
       $this->hierarchy= &$this->widget('hierarchy');
       $this->hierarchy->set_row_height(20);
       
+      $this->progress= &$this->widget('progressbar');
+      
       $loader= &new GTKPixmapLoader($this->window->window, dirname(__FILE__));
       $this->pixmaps= $loader->load(array(
         'suite', 
@@ -76,7 +78,17 @@
      * @param   &php.GtkWidget widget
      */
     function onRunClicked(&$widget) {
-      $result= &$this->suite->run();
+      $numTests= $this->suite->numTests();
+      $this->progress->configure(0.0, 0.0, $numTests);
+      $result= &new TestResult();
+      
+      for ($i= 0; $i < $numTests; $i++) {
+        $this->suite->runTest($this->suite->testAt($i), $result);
+        
+        // Update progress bar
+        $this->progress->set_value($i+ 1);
+        $this->processEvents();
+      }
       
       foreach ($result->succeeded as $id => $success) {
         $content= $this->hierarchy->node_get_pixtext($this->node[$id], 0);
