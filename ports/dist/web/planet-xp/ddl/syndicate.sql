@@ -22,6 +22,7 @@ create table feed (
   nextcheck                   datetime null,
   checkinterval               int null,
   bz_id                       int not null default 500,
+  author                      varchar(255) null,
 
   /* data columns */
   title                       varchar(255) not null,
@@ -62,7 +63,8 @@ alter table feeditem add index (published)
 create table progress (
   bz_id                       int primary key,
   description                 varchar(100) not null
-)
+) Type=InnoDB
+
 insert into progress values (500, 'New')
 insert into progress values (10000, 'Initialize')
 insert into progress values (20000, 'Done')
@@ -70,3 +72,10 @@ insert into progress values (21000, 'Broken')
 insert into progress values (30000, 'Locked')
 insert into progress values (30001, 'Delete')
 insert into progress values (40000, 'Deleted')
+
+create table authormapping (
+  feed_id                     int null,
+  author_from                 varchar(255) not null,
+  author_to                   varchar(255) not null
+) Type=InnoDB
+alter table authormapping add constraint foreign key (feed_id) references feed (feed_id)
