@@ -86,7 +86,7 @@
    !
    !-->
   <xsl:template match="/">
-  
+
     <!-- Class header -->
     <xsl:text><![CDATA[<?php
 /* This class is part of the XP framework
@@ -94,7 +94,25 @@
  * $Id]]>&#36;<![CDATA[
  */
 
-  uses('scriptlet.xml.workflow.Wrapper');
+  uses(
+    'scriptlet.xml.workflow.Wrapper',
+]]></xsl:text>
+
+    <!-- Create a unique list of all used classes -->
+    <xsl:variable name="elements" select="//postcheck|//precheck|//caster"/>
+    <xsl:for-each select="$elements">
+      <xsl:sort select="@class"/>
+      <xsl:variable name="pos" select="position()- 1"/>
+
+      <xsl:if test="@class != $elements[$pos]/@class">
+        <xsl:text>    '</xsl:text>
+        <xsl:value-of select="@class"/>
+        <xsl:text>'</xsl:text>
+        <xsl:if test="position() &lt; last()"><xsl:text>,&#10;</xsl:text></xsl:if>
+      </xsl:if>
+    </xsl:for-each>
+    <xsl:text><![CDATA[    
+  );
 
   /**
    * Wrapper for ]]></xsl:text>
