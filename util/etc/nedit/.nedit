@@ -44,6 +44,8 @@ nedit.shellCommands: \
 		php -q\n\
 	Make accessors:Shift+Alt+A::I:\n\
 		php -q $HOME/devel/xp/util/bin/mkaccessor.php\n
+	Wordwrap:::AX:\n\
+		$HOME/bin/wordwrap - 72\n
 nedit.macroCommands: \
 	Complete Word:Alt+D::: {\n\
 		# Tuning parameters\n\
