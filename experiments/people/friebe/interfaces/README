@@ -104,7 +104,8 @@ To be discussed
   defined class named "Interface" whose constructor would die with a
   fatal error.
 
-  The syntax would then change to "class Iterator extends Interface"
+  The syntax would then change to "class Iterator extends Interface".
+  See interface_subclass.patch for an implementation.
 
 * Do we need a different error instead of lang.Error? Should it be 
   something like "CompileError" or "CoreError"? Is the stack trace
