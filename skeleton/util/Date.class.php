@@ -110,6 +110,28 @@
     }
     
     /**
+     * Checks whether this date is before a given date
+     *
+     * @access  public
+     * @param   &util.Date date
+     * @return  bool
+     */
+    function isBefore(&$date) {
+      return $this->getTime() < $date->getTime();
+    }
+
+    /**
+     * Checks whether this date is after a given date
+     *
+     * @access  public
+     * @param   &util.Date date
+     * @return  bool
+     */
+    function isAfter(&$date) {
+      return $this->getTime() > $date->getTime();
+    }
+    
+    /**
      * Retrieve Unix-Timestamp for this date
      *
      * @access  public
@@ -118,7 +140,6 @@
     function getTime() {
       return $this->_utime;
     }
-
 
     /**
      * Get seconds
