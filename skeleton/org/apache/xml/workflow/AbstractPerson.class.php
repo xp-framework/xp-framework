@@ -15,14 +15,6 @@
             $rights = array();
             
         /**
-         * Constructor
-         *
-         * @access  public
-         */
-        function __construct() {
-        }
-
-        /**
          * returns true if the person has the given right
          * @access public
          * @params String rightname
