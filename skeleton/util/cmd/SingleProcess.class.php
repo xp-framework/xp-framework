@@ -13,29 +13,20 @@
    * Usage:
    * <code>
    *   $sp= &new SingleProcess();
-   *   try(); {
-   *     $sp->lock();
-   *   } if (catch('IllegalStateException', $e)) {
-   *     $e->printStackTrace();
-   *     exit();
+   *   if (!$sp->lock()) {
+   *     exit(-1);
    *   }
    *
    *   // [...operation which should only take part once at a time...]
    *
-   *   try(); {
-   *     $sp->unlock();
-   *   } if (catch('IllegalStateException', $e)) {
-   *     $e->printStackTrace();
-   *     exit();
-   *   }
+   *   $sp->unlock();
    * </code>
    *
    * @purpose  Lock process so it can only be run once
    */  
   class SingleProcess extends Object {
     var 
-      $pid          = 0, 
-      $lockfile     = '';
+      $lockfile     = NULL;
 
     /**
      * Constructor
@@ -46,18 +37,7 @@
      */
     function __construct($lockFileName= NULL) {
       if (NULL === $lockFileName) $lockFileName= $_SERVER['argv'][0].'.lck';
-      $this->pid= getmypid();
       $this->lockfile= &new File($lockFileName);
-    }
-    
-    /**
-     * Return a checksum
-     *
-     * @access  private
-     * @return  string
-     */
-    function _checksum($pid) {
-      return md5_file('/proc/'.$pid.'/cmdline');
     }
     
     /**
@@ -65,24 +45,17 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IllegalStateException in case this application is already running
      */
     function lock() {
-      if (FALSE !== ($pid= $this->isRunning())) {
-        return throw(new IllegalStateException('already running under pid '.$pid)); 
-      }
       try(); {
         $this->lockfile->open(FILE_MODE_WRITE);
-        $this->lockfile->write(pack(
-          'i1a32', 
-          $this->pid, 
-          $this->_checksum($this->pid)
-        ));
-        $this->lockfile->close();
+        $this->lockfile->lockExclusive();
       } if (catch('IOException', $e)) {
-        return throw($e);
+        $this->lockfile->close();
+        return FALSE;
       }
-      return 1;
+      
+      return TRUE;
     }
     
     /**
@@ -92,41 +65,12 @@
      * @return  bool Success
      */
     function unlock() {
-      return $this->lockfile->unlink();
-    }
-    
-    /**
-     * Returns whether the application is still running.
-     * 
-     * Warning: This will only work on systems that have the /proc filesystem.
-     * For others: TBD - figure out where to get this information from!
-     *
-     * @access  public
-     * @return  int pid process' id the locked application is running under or
-     *          FALSE to indicate the process is no longer running
-     */
-    function isRunning() {
-      if (!$this->lockfile->exists()) return FALSE;
-      
-      // Read our lockfile
-      try(); {
-        $this->lockfile->open(FILE_MODE_READ);
-        $data= unpack('i1pid/a32checksum', $this->lockfile->read(36));
+      if ($this->lockfile->unlock()) {
         $this->lockfile->close();
-      } if (catch('IOException', $e)) {
-        return throw($e);
+        $this->lockfile->unlink();
+        return TRUE;
       }
       
-      // Is there a process with this pid and does the checksum match us?
-      if (
-        (is_dir('/proc/'.$data['pid'])) &&
-        ($data['checksum'] == $this->_checksum($data['pid']))
-      ) {
-        return $data['pid'];
-      }
-      
-      // Stale lockfile, remove it
-      $this->unlock();
       return FALSE;
     }
   }
