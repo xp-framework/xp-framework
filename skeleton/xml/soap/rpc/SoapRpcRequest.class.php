@@ -27,12 +27,11 @@
       static $m;
       
       if (!isset($m)) {
-        $m= &new SOAPMessage();
+        $m= SOAPMessage::fromString($this->getData());
         list(
           $m->action, 
           $m->method
         )= explode('#', str_replace('"', '', $this->getHeader('SOAPAction')));
-        $m->fromString($this->getData());
       }
       return $m;
     }
