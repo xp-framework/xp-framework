@@ -11,8 +11,8 @@
   define('SYSTEM_RETURN_CMDNOTEXECUTABLE',   126);
   
   /**
-   * Die System-Klasse
-   * Betriebssystem/Umgebungsspezifisches
+   * The System class contains several useful class fields and methods. 
+   * It cannot be instantiated.
    * 
    * @access  static
    */
@@ -195,6 +195,7 @@
      * @return  array lines
      * @throws  lang.SystemException in case the return code is not zero
      * @see     php://exec
+     * @see     xp://lang.Process
      */
     function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
       $cmdLine= escapeshellcmd($cmdLine).' '.$redirect.($background ? ' &' : '');
