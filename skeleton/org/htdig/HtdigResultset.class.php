@@ -36,8 +36,43 @@
      * @param   &mixed metaresult
      */
     function setMetaresult(&$metaresult) {
-      $this->metaresult= array_change_key_case($metaresult, CASE_LOWER);
+      static $mapping= array(
+        'boolean'       => 'boolean',
+        'logicalwords'  => 'logicalWords',
+        'pattern'       => 'pattern',
+        'matches'       => 'matches',
+        'pages'         => 'pages'
+      );
+
+      $this->metaresult= array();
+      foreach ($mapping as $src => $tgt) {
+        if (isset ($metaresult[$src])) {
+          $this->metaresult[$tgt]= $metaresult[$src];
+        }
+      }
     }
+    
+    /**
+     * Returns the number of matches contained in
+     * this resultset.
+     *
+     * @access  public
+     * @return  int matches
+     */
+    function getMatches() {
+      return $this->metaresult['matches'];
+    }
+    
+    /**
+     * Returns the logical words determined for the
+     * search query.
+     *
+     * @access  public
+     * @return  string words
+     */
+    function getLogicalWords() {
+      return $this->metaresult['logicalWords'];
+    }    
 
     /**
      * Get Metaresult
