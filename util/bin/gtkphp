@@ -12,7 +12,7 @@ echo "<?php
   \$p= &new ParamString(explode('', '$*'));
   if ('.class.php' == substr('$1', -10)) {
     \$class= basename(substr('$1', 0, -10));
-    \$app= &new \$class();
+    \$app= &new \$class(\$p);
     \$app->init();
     \$app->run();
     \$app->done();
