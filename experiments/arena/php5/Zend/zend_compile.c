@@ -4153,6 +4153,9 @@ void zend_do_begin_enum_declaration(znode *enum_name TSRMLS_DC)
 		CG(active_class_entry)->doc_comment_len = CG(doc_comment_len);
 		RESET_DOC_COMMENT();
 	}
+	
+	/* Initialize member default value counter */
+	CG(max_enum)= 0;
 }
 
 void zend_do_end_enum_declaration(TSRMLS_D)
@@ -4166,55 +4169,37 @@ void zend_do_end_enum_declaration(TSRMLS_D)
 
 void zend_do_add_enum_member(znode *name, znode *value TSRMLS_DC)
 {
-	zval *property;
-	long last;
-	int count;
-	zval **lastdata;
+	zval *property, **lastdata;
+	HashPosition pos;
 	
 	ALLOC_ZVAL(property);
 	
-	count= zend_hash_num_elements(&CG(active_class_entry)->constants_table);
-
 	if (value) {
 		*property = value->u.constant;
 		
-		/* For user-supplied enumeration values, we have to make sure, no values will be
-		 * supplied twice. To simplify implementing this constraint, check that every value
-		 * added is bigger than the last 
-		 */
-		if (count > 0) {
+		/* Only long and string may be added, so cast if necessary */
+		if (property->type != IS_LONG && property->type != IS_STRING) {
+			convert_to_long(property);
+		}
 		
-			/* Retrieve the value of the last element */
-			if (FAILURE == zend_hash_get_current_data(&CG(active_class_entry)->constants_table, (void **)&lastdata)) {
-				zend_error(E_COMPILE_ERROR, "Could not get constants data");
+		/* Check for duplicates */
+		zend_hash_internal_pointer_reset_ex(&CG(active_class_entry)->constants_table, &pos);
+		while (zend_hash_get_current_data_ex(&CG(active_class_entry)->constants_table, (void **)&lastdata, &pos) == SUCCESS) {
+			if (
+				((*lastdata)->type == IS_LONG && property->type == IS_LONG && Z_LVAL_PP(lastdata) == Z_LVAL_P(property)) ||
+				((*lastdata)->type == IS_STRING && property->type == IS_STRING && 0 == zend_binary_zval_strcmp(property, *lastdata))
+			) {
+				zend_error(E_COMPILE_ERROR, "Reusing already defined value for enumeration member");
 			}
 			
-			if (property->value.lval <= (*lastdata)->value.lval) {
-				zend_error(E_COMPILE_ERROR, "You must add enum values in ascending order");
-			}
+			zend_hash_move_forward_ex(&CG(active_class_entry)->constants_table, &pos);
 		}
 	} else {
 	
-		/* Value wasn't given explicitly, so create one */
-		if (0 == count) {
-		
-			/* Default values start at 1 */
-			last= 0;
-		} else {
-			
-			/* Retrieve the value of the last element */
-			if (FAILURE == zend_hash_get_current_data(&CG(active_class_entry)->constants_table, (void **)&lastdata)) {
-				zend_error(E_COMPILE_ERROR, "Could not get constants data");
-			}
-			
-			last= (*lastdata)->value.lval;
-		}
-		
+		/* Retrieve the value of the last numeric element */
 		INIT_PZVAL(property);
-		ZVAL_LONG(property, ++last);
+		ZVAL_LONG(property, CG(max_enum) + 1);
 	}
-	
-	convert_to_long(property);
 	
 	/* Register the constant in the class */
 	if (zend_hash_add(&CG(active_class_entry)->constants_table, name->u.constant.value.str.val, name->u.constant.value.str.len+1, &property, sizeof(zval *), NULL)==FAILURE) {
@@ -4222,9 +4207,8 @@ void zend_do_add_enum_member(znode *name, znode *value TSRMLS_DC)
 		zend_error(E_COMPILE_ERROR, "Cannot redefine enum constant %s::%s", CG(active_class_entry)->name, name->u.constant.value.str.val);
 	}
 	
-	/* Upon insertion of the first element, the internal pointer is set to that element, already. */
-	/* For following elements, we have to move it ourselves. */
-	if (0 != count) { zend_hash_move_forward(&CG(active_class_entry)->constants_table); }
+	/* Increment max_enum if it was exceeded */
+	if (property->type == IS_LONG && CG(max_enum) < Z_LVAL_P(property)) { CG(max_enum)= Z_LVAL_P(property); }
 	
 	FREE_PNODE(name);
 }

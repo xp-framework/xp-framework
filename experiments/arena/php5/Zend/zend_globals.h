@@ -134,6 +134,8 @@ struct _zend_compiler_globals {
 
 	char *doc_comment;
 	zend_uint doc_comment_len;
+    
+	zend_uint max_enum;
 
 #ifdef ZEND_MULTIBYTE
 	zend_encoding **script_encoding_list;
