@@ -114,8 +114,8 @@
           } else {
             if (is_a($val, 'Hashmap')) {
               $str= '';
-              foreach ($val->_hash as $k=> $v) {
-                $str.= '|'.$k.':'.$v;
+              foreach ($val->keys() as $k) {
+                $str.= '|'.$k.':'.$val->get($v);
               }
               $val= substr($str, 1);
             }
