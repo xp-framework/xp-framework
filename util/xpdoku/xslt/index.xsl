@@ -97,7 +97,7 @@
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
       <tr>
         <th valign="top" align="left">Welcome to XP</th>
-        <td valign="top" align="right" style="color: #666666">(Version 1.0)</td>
+        <td valign="top" align="right" style="color: #666666">(Version 1.1)</td>
 	  </tr>
 	  <tr bgcolor="#cccccc">
         <td colspan="2"><img src="/image/spacer.gif" height="1" border="0"/>
