@@ -36,6 +36,17 @@
     }
     
     /**
+     * Check whether a value exists
+     *
+     * @access  public
+     * @param   string name
+     * @return  bool
+     */
+    function hasValue($name) {
+      return isset($this->values[$name]);
+    }
+    
+    /**
      * Insert status
      *
      * @access  public
