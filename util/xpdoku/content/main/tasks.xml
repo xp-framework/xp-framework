@@ -59,14 +59,14 @@
           <br/>
           Take, for example, this sample command line application:
           <code><![CDATA[  require('lang.base.php');
-  uses('util.cmd.ParamString');
+  xp::sapi('cli');
 
   $p= &new ParamString();
   if (2 != $p->count) {   // Always #options +1: values include script's name (#0)
-    printf("Usage: %s <name>\n", $p->value(0));
+    Console::writeLinef('Usage: %s <name>', $p->value(0));
     exit();
   }
-  printf("Hello %s, how are you?\n", $p->value(1)); ]]></code>
+  Console::writeLinef('Hello %s, how are you?', $p->value(1)); ]]></code>
           Calling this application from the command line as <tt>php -q hello.php</tt> 
           (assuming this script is called hello.php),
           it will simply print out <tt>Usage: hello.php &lt;name&gt;</tt> and exit. If a name
