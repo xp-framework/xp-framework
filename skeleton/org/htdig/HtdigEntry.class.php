@@ -13,18 +13,18 @@
    */
   class HtdigEntry extends Object {
     var
-      $current=   0,
-      $docId=     '',
-      $stars=     0,
-      $score=     0,
-      $url=       '',
-      $title=     '',
-      $excerpt=   '',
-      $metadesc=  '',
-      $modified=  NULL,
-      $size=      0,
-      $hopcount=  0,
-      $percent=   0;
+      $current=          0,
+      $docId=            '',
+      $stars=            0,
+      $score=            0,
+      $url=              '',
+      $title=            '',
+      $excerpt=          '',
+      $metadescription=  '',
+      $modified=         NULL,
+      $size=             0,
+      $hopcount=         0,
+      $percent=          0;
 
     /**
      * Set Current
@@ -74,6 +74,18 @@
      */
     function setStars($stars) {
       $this->stars= $stars;
+    }
+
+    /**
+     * Alias for the setStars function.
+     *
+     * (Needed because htdigs result field name is nstars)
+     *
+     * @access  public
+     * @param   int stars
+     */
+    function setNstars($stars) {
+      $this->setStars($stars);
     }
 
     /**
@@ -167,23 +179,23 @@
     }
 
     /**
-     * Set Metadesc
+     * Set Metadescription
      *
      * @access  public
-     * @param   string metadesc
+     * @param   string metadescription
      */
-    function setMetadesc($metadesc) {
-      $this->metadesc= $metadesc;
+    function setMetadescription($metadesc) {
+      $this->metadescription= $metadesc;
     }
 
     /**
-     * Get Metadesc
+     * Get Metadescription
      *
      * @access  public
      * @return  string
      */
-    function getMetadesc() {
-      return $this->metadesc;
+    function getMetadescription() {
+      return $this->metadescription;
     }
 
     /**
