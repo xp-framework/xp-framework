@@ -28,7 +28,7 @@
     return $uri;    
   }
   
-  function &recurseFolders($uri, $pattern, $base, &$parser) {
+  function &recurseFolders($uri, $pattern, $base, &$parser, &$depTree) {
     // Don't try to parse CVS directories
     if ('CVS' == basename ($uri))
       return NULL;
@@ -64,6 +64,11 @@
           ), 'class');
           
           $subTree->addChild ($subNode);
+          
+          if (!empty ($result['comments']['class']->extends))
+            $depTree[$subNode->attribute['shortName']]= $result['comments']['class']->extends;
+          else
+            $depTree[$subNode->attribute['shortName']]= 'StdClass';
           
         } if (catch('Exception', $e)) {
           $e->printStackTrace();
@@ -114,7 +119,7 @@
           continue;
         }
       } else if (is_dir($folder->uri.$entry) && 'CVS' != $entry) {
-        if ($child= &recurseFolders($folder->uri.$entry, $pattern, $base, $parser)) {
+        if ($child= &recurseFolders($folder->uri.$entry, $pattern, $base, $parser, $depTree)) {
           // Only add children if they contain children itself (are not empty)
           if (isset ($child->children) && count ($child->children))
             $subTree->addChild ($child);
@@ -157,13 +162,17 @@
   $classTree->name= 'packages';
   $classTree->attribute['generated_at']= date ('l, F d, Y');
 
-
+  // Extend-array: Which class inherits from which
+  $depTree= array (
+  );
+  
   foreach ($packages as $type=> $info) {
     $classNodes= &recurseFolders(
       $info['path'], 
       $pattern,
       $info['base'],
-      new ClassParser()
+      new ClassParser(),
+      $depTree
     );
 
     // Node for package
@@ -180,4 +189,79 @@
   $out->writeLine ($classTree->getDeclaration());
   $out->writeLine ($classTree->getSource());
   $out->close();
+  
+  /* All xml files have been written, now
+   * build the inheritance tree
+   */
+  echo "===> Building inheritance tree...\n";
+
+  // Find "unresolved" dependencies, so we won't end up with endless loop
+  foreach ($depTree as $class=> $parent) {
+    if ('StdClass' != $parent && !isset ($depTree[$parent])) {
+      echo sprintf ("- Unresolved dependency: %s extends unknown class %s\n",
+        $class,
+        $parent
+      );
+      unset ($depTree[$class]);
+    }
+  }
+  
+  
+  // Inheritance tree
+  $iTree= array (
+    'StdClass' => array ()
+  );
+  
+  /**
+   * traverse through the result tree, find
+   * the class named $className and return
+   * a reference to it.
+   *
+   * @param &array tree the tree
+   * @param $className the class to search
+   * @return &$class reference to the class entry or false if not found
+   */
+  function &findClass (&$tree, $className) {
+    if (isset ($tree[$className]))
+      return $tree[$className];
+    
+    // Not found? Walk through all nodes  
+    foreach ($tree as $name=> $idx) {
+      if (false !== ($found= &findClass ($tree[$name], $className)))
+        return $found;
+    }
+    
+    return false;
+  }
+  
+  // Populate inheritance tree
+  while (count ($depTree)) {
+    foreach ($depTree as $class=> $parent) {
+      if (false !== ($parentClass= &findClass ($iTree, $parent))) {
+        $parentClass[$class]= array();
+        unset ($depTree[$class]);
+      }
+    }
+  }
+
+  // Save it to file, structure must be /document/main/...
+  $main= new Node();
+  $main->name= 'document';
+  $main->attribute['title']= 'XP::The Classtree';
+  $main->attribute['generated_at']= date ('l, F d, Y');
+
+  $tree= new Node();
+  $tree->fromArray ($iTree, 'main');
+  $main->addChild ($tree);
+  
+  $out= &new File ('xml/inheritanceTree.xml');
+  try(); {
+    $out->open (FILE_MODE_WRITE);
+    $out->writeLine ($main->getDeclaration());
+    $out->writeLine ($main->getSource());
+    $out->close();
+  } if (catch ('IOException', $e)) {
+    $e->printStackTrace();
+  }
+ 
 ?>
