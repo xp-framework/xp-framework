@@ -35,7 +35,7 @@
      * @return  string
      */
     function toString() {
-      return $this->test->getClassName().', result '.(is_a($this->result, 'Object') 
+      return $this->getClassName().', result '.(is_a($this->result, 'Object') 
         ? $this->result->toString() 
         : var_export($this->result, 1)
       );

@@ -140,15 +140,27 @@
       // Details
       $str.= "\n- Succeeded tests details:\n";
       foreach (array_keys($this->succeeded) as $key) {
-        $str.= '  * '.$key."\n    returned: ".$this->succeeded[$key]->toString()."\n";
+        $str.= sprintf(
+          "  * %s\n    returned: %s\n",
+          $this->succeeded[$key]->test->getClassName(),
+          $this->succeeded[$key]->toString()
+        );
       }
       $str.= "\n- Failed tests details:\n";
       foreach (array_keys($this->failed) as $key) {
-        $str.= '  * '.$key."\n    reason: ".$this->failed[$key]->toString()."\n";
+        $str.= sprintf(
+          "  * %s\n    returned: %s\n",
+          $this->failed[$key]->test->getClassName(),
+          $this->failed[$key]->toString()
+        );
       }
       $str.= "\n- Skipped tests details:\n";
       foreach (array_keys($this->skipped) as $key) {
-        $str.= '  * '.$key."\n    reason: ".$this->skipped[$key]->toString()."\n";
+        $str.= sprintf(
+          "  * %s\n    returned: %s\n",
+          $this->skipped[$key]->test->getClassName(),
+          $this->skipped[$key]->toString()
+        );
       }
       
       return $str.$div."\n";

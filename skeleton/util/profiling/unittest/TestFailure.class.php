@@ -35,7 +35,7 @@
      * @return  string
      */
     function toString() {
-      return $this->test->getClassName().', reason '.(is_a($this->reason, 'Object') 
+      return $this->getClassName().', reason '.(is_a($this->reason, 'Object') 
         ? $this->reason->toString() 
         : var_export($this->reason, 1)
       );
