@@ -4,16 +4,14 @@
  * $Id$
  */
  
-  uses(
-    'xml.XML',
-    'xml.XMLParser',
-    'xml.Node'
-  );
+  uses('xml.XML', 'xml.XMLParser', 'xml.Node');
  
   /**
-   * Kapselt einen XML-Baum
+   * The Tree class represents a tree which can be exported
+   * to and imported from an XML document.
    *
-   * @see xml.XMLParser
+   * @see      xp://xml.XMLParser
+   * @purpose  Tree
    */
   class Tree extends XML {
     var 
@@ -66,7 +64,7 @@
      * Construct an XML tree from a string
      *
      * <code>
-     *   $tree= Tree::fromString('<document>...</document>');
+     *   $tree= &Tree::fromString('<document>...</document>');
      * </code>
      *
      * @model   static
@@ -74,15 +72,16 @@
      * @param   string string
      * @param   string c default __CLASS__ class name
      * @return  &xml.Tree
+     * @throws  xml.XMLFormatException in case of a parser error
      */
     function &fromString($string, $c= __CLASS__) {
       $parser= &new XMLParser();
       $tree= &new $c();
       try(); {
-        $parser->callback= &$tree;
-        $result= $parser->parse($string, 1);
-        $parser->__destruct();
-      } if (catch('Exception', $e)) {
+        $parser->setCallback($tree);
+        $parser->parse($string, 1);
+        delete($parser);
+      } if (catch('XMLFormatException', $e)) {
         return throw($e);
       }
       
@@ -93,7 +92,7 @@
      * Construct an XML tree from a file
      *
      * <code>
-     *   $tree= Tree::fromFile(new File('foo.xml');
+     *   $tree= &Tree::fromFile(new File('foo.xml');
      * </code>
      *
      * @model   static
@@ -101,22 +100,24 @@
      * @param   &io.File file
      * @param   string c default __CLASS__ class name
      * @return  &xml.Tree
+     * @throws  xml.XMLFormatException in case of a parser error
+     * @throws  io.IOException in case reading the file fails
      */ 
     function &fromFile(&$file, $c= __CLASS__) {
       $parser= &new XMLParser();
       $tree= &new $c();
       
       try(); {
-        $parser->callback= &$tree;
+        $parser->setCallback($tree);
         $parser->dataSource= $file->uri;
         $file->open(FILE_MODE_READ);
         $string= $file->read($file->size());
         $file->close();
-        
-        // Now, parse it
-        $result= $parser->parse($string);
-        $parser->__destruct();
-      } if (catch('Exception', $e)) {
+        $parser->parse($string);
+        delete($parser);
+      } if (catch('XMLFormatException', $e)) {
+        return throw($e);
+      } if (catch('IOException', $e)) {
         return throw($e);
       }
       
