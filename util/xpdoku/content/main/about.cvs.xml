@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<document title="XP::About::Introduction">
+<document title="XP::About::CVS-Guidelines">
   <main>
     <content>
       <title>CVS-Guidelines</title>
@@ -64,6 +64,8 @@
 |        STABLE                          (revision: 1.12)
 |        Initial                         (revision: 1.1.1.1)
 |        Start                           (branch: 1.1.1)]]></pre>
+
+          Other tags frequently used are <tt>NEEDS_WORK</tt> and <tt>EXPERIMENTAL</tt>.
         </text>
       </para>              
     </content>
