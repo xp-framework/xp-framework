@@ -18,11 +18,11 @@
     switch ($scheme) {
       case 'php':
         $s->setSource("<?php\n".substr($rest, 2)."\n?>");
-        return '<php>'.str_replace(
-          '<br />', 
-          "<br />\n", 
-          substr($s->getHighlight(), 6, -7)
-        ).'</php>';
+        return '<php>'.strtr(substr($s->getHighlight(), 6, -7), array(
+          '<br />'   => "<br />\n", 
+          '&lt;?php' => '',
+          '?&gt;'    => '<br />'
+        )).'</php>';
         break;
     }
     return '<xml/>';
