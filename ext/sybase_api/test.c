@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     sybase_set_messagehandler(env, CS_CLIENTMSG_CB, (CS_VOID *)clientmessage);
     
     sybase_alloc(&link);    
-    if (sybase_connect(env, link, argv[1], argv[2], argv[3]) == SA_SUCCESS) {
+    if (sybase_connect(env, link, argv[1], argv[2], argv[3], NULL) == SA_SUCCESS) {
         sybase_result *result= NULL;
         sybase_resultset *resultset= NULL;
         
@@ -111,7 +111,6 @@ int main(int argc, char **argv)
             );
             sybase_free_result(result);
         }
-        
     } else {
         printf("---> Connect failed!\n");
     }
