@@ -307,6 +307,8 @@
   xp::registry('null', new null());
   xp::registry('errors', array());
   xp::registry('exceptions', array());
+  xp::registry('class.xp', '<xp>');
+  xp::registry('class.null', '<null>');
   set_error_handler('__error');
 
   uses(
