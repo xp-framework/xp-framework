@@ -106,8 +106,7 @@
     function setData(&$data) {    
       parent::setData($data);
       
-      if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_ENTITIES));
-
+      // locktype
       $node= $this->getNode('/lockinfo/locktype');
       switch ($node->children[0]->name) {
         case 'read':
@@ -121,6 +120,7 @@
           break;
       }
 
+      // Lockscope
       $node= $this->getNode('/lockinfo/lockscope');
       switch ($node->children[0]->name) {
         case 'exclusive': // READ-LOCK
@@ -134,30 +134,26 @@
           break;
       }
 
-      // owner
-      if (($node= $this->getNode('/lockinfo/owner/href')) != '') {
-        $owner= utf8_decode(preg_replace('/&#([0-9]+);/me', 
-          'chr("\1")', 
-          strtr(trim($node->children->content), $trans))
-        );
-      }
-
-      // if we dont have a user in the request, take it from the authorization
-      if (empty($owner) && $this->getUser() !== NULL) {
-        $user= $this->getUser();
-        $owner= $user->getUsername();
+      // Owner
+      $owner= $this->getNode('/lockinfo/owner');
+      if (($node= $this->getNode('/lockinfo/owner')) !== NULL) {
+        $owner= $node->getContent();
+      } else {
+        // If we dont have a user in the request, take it from the authorization
+        if ($this->getUser() !== NULL) {
+          $user= $this->getUser();
+          $owner= $user->getUsername();
+        }
       }
       
       // Locktoken
       if (($node= $this->getNode('/lockinfo/token/href')) != '') {
-        $lktoken= utf8_decode(preg_replace('/&#([0-9]+);/me', 
-          'chr("\1")', 
-          strtr(trim($node->children->content), $trans))
-        );
+        $lktoken= $node->getContent();
       } else {
         $lktoken= $this->getHeader('Lock-Token');
       }
-    
+
+      // Depth    
       switch ($this->getHeader('depth')) {
         case 0: $depth= 0x00000000; break;
         case 'infinity': 
