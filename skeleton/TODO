@@ -47,10 +47,11 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
 2) Documentation
 =================
 
+* New website
+
 * Include ports
 
-* Include SAPIs (TBD: figure out how documentation could be 
-  automatically generated)
+* Include SAPIs 
 
 * Bug system (based on bugzilla, Prerequisite: Install 
   MySQL/PHPMyAdmin on php3.de)
@@ -66,8 +67,6 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
 3) Generic
 ==========
 
-* Finally decide on official logo.
-
 * ChangeLog / NEWS generation for display on resources page.
 
 * Write a dependency tracker that will find out all dependencies
@@ -79,6 +78,5 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
 
 * Find out if package/namespace support will be included in 5.0-STABLE
   I guess we could live without as we do right now...
-  Change migration script (and thus unb0rk experiments/skeleton2)
 
 <EOF>
