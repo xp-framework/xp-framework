@@ -29,8 +29,7 @@
   
   <xsl:template match="table">
     <xsl:variable name="primary_key_unique" select="index[@primary= 'true' and @unique= 'true']/key/text()"/>
-    <xsl:text>
-  /**
+    <xsl:text>  /**
    * Class wrapper for table </xsl:text><xsl:value-of select="@name"/><xsl:text>
    *
    * (Auto-generated on </xsl:text><xsl:value-of select="concat(
@@ -38,6 +37,7 @@
 	 ' by ', 
 	 ../@created_by
    )"/><xsl:text>)
+   * @purpose  Datasource accessor
    */
   class </xsl:text>
 	<xsl:call-template name="prettyname">
@@ -92,7 +92,7 @@
 	  </xsl:for-each>
 	  <xsl:text>) {
       $cm= &amp;ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('***', 0))) {
+      if (FALSE === ($db= &amp;$cm->getByHost('***', 0))) {
         return throw(new IllegalAccessException('No connection available'));
       }
 
@@ -192,7 +192,7 @@
      */
     function update() {
       $cm= &amp;ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('***', 0))) {
+      if (FALSE === ($db= &amp;$cm->getByHost('***', 0))) {
         return throw(new IllegalAccessException('No connection available'));
       }
 
@@ -268,7 +268,7 @@
      */
     function insert() {
       $cm= &amp;ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('***', 0))) {
+      if (FALSE === ($db= &amp;$cm->getByHost('***', 0))) {
         return throw(new IllegalAccessException('No connection available'));
       }
 
