@@ -600,7 +600,7 @@ nedit.searchMethod: Literal
 nedit.textRows: 40
 nedit.textCols: 80
 nedit.tabDistance: 4
-nedit.emulateTabs: 4
+nedit.emulateTabs: 2
 nedit.insertTabs: False
 nedit.textFont: -adobe-courier-medium-r-normal--12-120-75-75-m-70-iso8859-1
 nedit.boldHighlightFont: -adobe-courier-bold-r-normal--12-120-75-75-m-70-iso8859-1
