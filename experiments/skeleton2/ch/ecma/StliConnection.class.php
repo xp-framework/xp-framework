@@ -58,7 +58,6 @@
      * @param   int version default STLI_VERSION_2
      */
     public function __construct(Socket $sock, $version= STLI_VERSION_2) {
-      parent::__construct();
       $this->sock= $sock;
       $this->version= $version;
     }
