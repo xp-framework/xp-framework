@@ -17,30 +17,13 @@
    */
   class CSVParser extends Object {
     var
-      $stream;
+      $stream=    NULL,
+      $hasHeader= FALSE,
+      $colDelim=  '|',
+      $escape=    '"',
+      $colName=   NULL,
+      $buffer=    '';
     
-    var
-      $hasHeader,
-      $colDelim= '|',
-      $escape= '"';
-    
-    var
-      $colName;
-      
-    var 
-      $buffer;
-    
-    /**
-     * Creates a CSVParser object
-     *
-     * @access  public
-     * @param   int mode header or headerless mode
-     */    
-    function __construct() {
-      $this->buffer= '';
-      $this->colName= NULL;
-    }
-
     /**
      * Tokenizes a string according to our needs.
      *
@@ -55,6 +38,7 @@
       // empty field (two delimiters in a row). We need this information.
       if (empty ($string))
         return FALSE;
+        
       if (FALSE === ($tpos= strpos ($string, $delim))) {
         $token= $string;
         $string= '';
@@ -93,6 +77,38 @@
      */
     function setColDelimiter($delim) {
       $this->colDelim= $delim{0};
+    }
+    
+    /**
+     * Make an educated guess for the column delimiter. This reads
+     * the next (first?) line from the stream, scans the frequency of
+     * chars and returns the one with the highest occurrence (which
+     * is in a certain range of chars).
+     * Afterwards the stream is rewinded to the former position.
+     *
+     * @access  public
+     * @return  string guesseddelimiter
+     */
+    function guessDelimiter() {
+      $pos= $stream->tell();
+      $line= $this->_getNextRecord();
+      
+      $freq= count_chars ($line, 1);
+      $max= 0; $ret= NULL;
+      foreach ($freq as $chr => $f) {
+        if (
+          $f > $max && 
+          !($chr > 65 && $chr < 90) &&
+          !($chr > 96 && $chr < 123)
+        ) {
+          $ret= chr($chr); $max= $f; 
+        }
+      }
+      
+      // Rewind to former position
+      $stream->seek($pos);
+      
+      return $ret;
     }
 
     /**
