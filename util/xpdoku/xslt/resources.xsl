@@ -32,6 +32,31 @@
     <p style="line-height: 16px">
       <xsl:apply-templates select="introduction"/>
     </p>
+    
+    <b>Current releases:</b>
+    <ul>
+    <xsl:processing-instruction name="php"><![CDATA[
+      $dir= dir(getenv('DOCUMENT_ROOT').'/downloads/');
+      while ($e= $dir->read()) {
+        if ('tar.gz' != substr($e, -6) || 'current' == substr($e, 3, 7)) continue;
+        $releases[]= $e;
+      }
+      rsort($releases);
+      
+      for ($i= 0, $s= min(sizeof($releases), 5); $i < $s; $i++) {
+        echo
+          '<li>',
+          '<a href="/downloads/'.$releases[$i].'">'.$releases[$i].'</a>',
+          ' [ MD5: ',
+          file_get_contents($dir->path.'/'.substr($releases[$i], 0, -6).'md5'),
+          ' ]',
+          '</li>'
+        ;
+      }
+      
+      $dir->close();
+    ]]></xsl:processing-instruction>
+    </ul>
   </xsl:template>
 
   <xsl:template match="introduction//*">
