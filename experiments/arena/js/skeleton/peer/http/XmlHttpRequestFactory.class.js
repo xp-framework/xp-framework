@@ -4,6 +4,11 @@
  * $Id$ 
  */
 
+  /**
+   * Create XmlHttpRequest object on multiple javascript implementations.
+   *
+   * @purpose   Unified handling
+   */
   {
 
     /**
@@ -48,3 +53,4 @@
       return request;
     }
   }
+}
