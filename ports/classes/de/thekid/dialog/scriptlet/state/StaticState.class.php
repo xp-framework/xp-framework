@@ -22,8 +22,18 @@
      * @param   &scriptlet.xml.workflow.Context context
      */
     function process(&$request, &$response, &$context) {
+      $page= (int)$request->getQueryString();
+      $index= $this->getIndexPage($page);
+      
+      // Add paging information
+      $response->addFormResult(new Node('pager', NULL, array(
+        'offset'  => $page,
+        'total'   => $index[0]
+      )));
+      
+      // Add albums from index
       $node= &$response->addFormResult(new Node('albums'));
-      foreach ($this->getIndex() as $name) {
+      foreach ($index[1] as $name) {
         if ($album= &$this->getAlbumFor($name)) {
           $child= &$node->addChild(new Node('album', NULL, array(
             'name'  => $album->getName(),
