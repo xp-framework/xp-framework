@@ -16,11 +16,14 @@ SYBASE_API int sybase_init(sybase_environment **env)
 {   
     sybase_environment *e;
     
-    e= (sybase_environment *) smalloc(sizeof(sybase_environment));    
+    e= (sybase_environment *) smalloc(sizeof(sybase_environment));
+    if (!e) {
+        return SA_FAILURE | SA_EALLOC;
+    }    
 	if (cs_ctx_alloc(CTLIB_VERSION, &e->context) != CS_SUCCEED || 
         ct_init(e->context, CTLIB_VERSION) != CS_SUCCEED) {
         sfree(e);
-		return SA_FAILURE | SA_EALLOC;
+        return SA_FAILURE | SA_EALLOC | SA_ECTLIB;
 	}
     
     *env= e;
