@@ -15,7 +15,7 @@
    * the class name and may contain any of the keywords @purpose, @see,
    * @model and any plain text you wish.
    *
-   * @see xp-doc:README.DOC
+   * @purpose  Comment
    */
   class ClassComment extends Comment {
     var
