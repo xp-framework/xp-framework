@@ -230,7 +230,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat {
+    function setTrace(&$cat) {
       $this->log= &$cat;
     }    
   } implements(__FILE__, 'util.log.Traceable');
