@@ -59,12 +59,16 @@
      * @param   int statusCode
      * @param   string language
      * @param   string message default ''
+     * @param   string filename default ''
      */
-    function __construct($statusCode, $language, $message= '') {
+    function __construct($statusCode, $language, $message= '', $filename= '') {
       $this->statusCode= $statusCode;
       $this->language= $language;
       $this->message= $message;
-      $this->filename= dirname(__FILE__).'/static/'.$this->language.'/error'.$this->statusCode.'.html';
+      $this->filename= (empty($filename) 
+        ? dirname(__FILE__).'/static/'.$this->language.'/error'.$this->statusCode.'.html'
+        : $filename
+      );
       parent::__construct();
     }
     
