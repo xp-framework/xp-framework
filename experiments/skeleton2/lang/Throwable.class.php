@@ -30,14 +30,13 @@
       );
       $this->message= $message;
       
-      $errors= xp::registry('errors');
       foreach (debug_backtrace() as $trace) {
         if (!isset($trace['function']) || in_array($trace['function'], $except)) continue;
 
         // Pop error messages off the copied error stack
-        if (isset($trace['file']) && isset($errors[$trace['file']])) {
-          $messages= $errors[$trace['file']];
-          unset($errors[$trace['file']]);
+        if (isset($trace['file']) && isset(xp::$errors[$trace['file']])) {
+          $messages= xp::$errors[$trace['file']];
+          unset(xp::$errors[$trace['file']]);
         } else {
           $messages= array();
         }
@@ -55,19 +54,19 @@
       }
       
       // Remaining error messages
-      foreach (array_keys($errors) as $key) {
+      foreach (array_keys(xp::$errors) as $key) {
         $class= ('.class.php' == substr($key, -10)
           ? strtolower(substr(basename($key), 0, -10))
           : '<main>'
         );
-        for ($i= 0, $s= sizeof($errors[$key]); $i < $s; $i++) { 
+        for ($i= 0, $s= sizeof(xp::$errors[$key]); $i < $s; $i++) { 
           $this->trace[]= new StackTraceElement(
             $key,
             $class,
             NULL,
-            $errors[$key][$i][2],
+            xp::$errors[$key][$i][2],
             array(),
-            array($errors[$key][$i])
+            array(xp::$errors[$key][$i])
           );
         }
       }

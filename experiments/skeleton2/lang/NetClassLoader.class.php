@@ -182,7 +182,7 @@
         throw(new RuntimeError('Internal error ('.$f->uri.')'));
       }
       
-      xp::registry('class.'.xp::reflect($className), $className);
+      xp::$classes[xp::reflect($className)]= $className;
       return xp::reflect($className);
     }
 
