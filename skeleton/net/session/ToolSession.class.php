@@ -291,7 +291,13 @@
         $tool_id,
         $this->urlencode($key)
       );
-      $return= unserialize(urldecode(trim($this->ss_talk($command))));
+      $return= $this->ss_talk($command);
+      if (!is_string($return)) {
+        LOG::warn($this->getName().'::'.$command.'::'.var_export($return, 1));
+        return NULL;
+      }
+      
+      $return= unserialize(urldecode(trim($return)));
       
       $this->logline_text("var_get $command", $return);
       if(!empty($return)) return $return;
