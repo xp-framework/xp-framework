@@ -4,8 +4,6 @@
  * $Id$
  */
 
-  require_once ('lang.base.php');
-
   uses (
     'ProjectManagerPopupMenu',
     'gui.gtk.GtkGladeApplication',
