@@ -67,7 +67,47 @@
     <p>
       <xsl:copy-of select="/formresult/apidoc/comments/class/text"/>
     </p>
-    
+
+    <!-- Experimental note -->
+    <xsl:if test="/formresult/apidoc/comments/class/experimental != ''">
+      <table width="100%" border="0" cellspacing="0" cellpadding="2" class="intro">
+        <tr>
+          <td width="1%">
+            <img src="/image/tip.gif" width="69" height="52"/>
+          </td>
+          <td>
+            <p>
+              <b>This class has been marked as experimental.</b>
+              Usage is discouraged as long as this tag exists. You may
+              use this class as it is committed for testing or to
+              improve the design. However, the API is probably supposed 
+              to change.                  
+            </p>
+          </td>
+        </tr>
+      </table>
+      <br clear="all"/>
+    </xsl:if>
+
+    <!-- Deprecation note -->
+    <xsl:if test="/formresult/apidoc/comments/class/deprecated != ''">
+      <table width="100%" border="0" cellspacing="0" cellpadding="2" class="intro">
+        <tr>
+          <td width="1%">
+            <img src="/image/tip.gif" width="69" height="52"/>
+          </td>
+          <td>
+            <p>
+              <b>This class has been marked as deprecated.</b>
+              Usage is discouraged though this class remains in the framework
+              for backward compatibility.
+            </p>
+          </td>
+        </tr>
+      </table>
+      <br clear="all"/>
+    </xsl:if>
+
     <!-- References -->
     <xsl:if test="count(/formresult/apidoc/comments/class/references/reference) &gt; 0">
       <b>See also:</b>
@@ -77,7 +117,21 @@
         </xsl:for-each>
       </ul>
     </xsl:if>
-    
+
+    <!-- Extensions -->
+    <xsl:if test="count(/formresult/apidoc/comments/class/extensions/extension) &gt; 0">
+      <b>Requires PHP extensions:</b>
+      <ul>
+        <xsl:for-each select="/formresult/apidoc/comments/class/extensions/extension">
+          <li>
+            <a href="http://php3.de/{.}" target="_blank">
+              <xsl:value-of select="."/>
+              <img hspace="2" src="/image/arrow.gif" width="11" height="11" border="0"/>
+            </a>
+          </li>
+        </xsl:for-each>
+      </ul>
+    </xsl:if>
     
     <!-- Method summary -->
     <h3>
@@ -178,12 +232,6 @@
       </div>
       <hr/>
     </xsl:for-each> 
-    
-    <!-- DEBUG
-    <xmp>
-      <xsl:copy-of select="/formresult/apidoc"/>
-    </xmp>
-    -->
   </xsl:template>
   
 </xsl:stylesheet>
