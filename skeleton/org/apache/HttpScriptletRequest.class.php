@@ -77,6 +77,17 @@
       $name= strtolower($name);
       return isset($this->params[$name]) ? $this->params[$name] : NULL;
     }
+
+    /**
+     * Returns whether the specified request variable is set
+     *
+     * @access  public
+     * @param   string name Parameter name
+     * @return  bool
+     */
+    function hasParam($name) {
+      return isset($this->params[strtolower($name)]);
+    }
     
     /**
      * Sets request's URI
