@@ -45,7 +45,7 @@
       $this->product= getenv('PRODUCT');
       $this->stateName= getenv('STATE');
       $this->language= getenv('LANGUAGE');
-      $this->page= $_REQUEST['__page'];
+      $this->page= isset($_REQUEST['__page']) ? $_REQUEST['__page'] : 'home';
     }
 
     /**
