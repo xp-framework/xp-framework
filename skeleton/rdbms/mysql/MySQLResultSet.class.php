@@ -86,8 +86,15 @@
             break;
             
           case 'int':
+            if ($row[$key] <= LONG_MAX && $row[$key] >= LONG_MIN) {
+              settype($row[$key], 'integer');
+            } else {
+              settype($row[$key], 'double');
+            }
+            break;
+
           case 'bit':
-            settype($row[$key], 'integer'); 
+            settype($row[$key], 'integer');
             break;
             
           case 'real':
