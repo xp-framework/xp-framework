@@ -17,34 +17,98 @@
    * @access  static
    */
   class System extends Object {
+  
+    /**
+     * Private helper method. Tries to locate an environment
+     * variable by name, and, if it fails, tries the given
+     * alternatives in the sequence they are specified
+     *
+     * @access  private
+     * @param   string* args
+     * @return  string environment variable by name
+     */
+    function _env() {
+      foreach (func_get_args() as $a) {
+        if ($e= getenv($a)) return $e;
+      }
+      return $e;
+    }
 
     /**
-     * System-Infos
+     * Retrieve system property. Note: Results of this method are
+     * cached!
+     *
+     * Known property names:
+     * <pre>
+     * php.version       PHP version
+     * php.api           PHP api
+     * os.name           Operating system name
+     * os.tempdir        System-wide temporary directory
+     * host.name         Host name
+     * host.arch         Host architecture
+     * user.home         Current user's home directory
+     * user.name         Current user's name
+     * </pre>
      *
      * @access  public
-     * @return  array Properties
+     * @param   string name
+     * @return  mixed
      */
-    function getInfo() {
-      $prop= array();
+    function getProperty($name) {
+      static $prop= array();
       
-      // PHP-spezifisches
-      $prop['php.version']= PHP_VERSION;
-      $prop['php.api']= PHP_SAPI;
-      $prop['os.name']= PHP_OS;
+      if (!isset($prop[$name])) switch ($name) {
+        case 'php.version': 
+          $prop[$name]= PHP_VERSION; 
+          break;
+          
+        case 'php.api': 
+          $prop[$name]= PHP_SAPI;
+          break;
 
-      // Host
-      $prop['host.name']= (getenv('HOSTNAME')== '') ? getenv('COMPUTERNAME') : getenv('HOSTNAME');
-      $prop['host.arch']= (getenv('HOSTTYPE')== '') ? getenv('PROCESSOR_ARCHITECTURE') : getenv('HOSTTYPE');
+        case 'os.name': 
+          $prop[$name]= PHP_OS; 
+          break;
 
-      // User
-      $prop['user.home']= str_replace('\\', '/', (getenv('HOME')== '') ? getenv('HOMEPATH') : getenv('HOME'));
-      $prop['user.name']= get_current_user();
+        case 'os.tempdir':
+          $prop[$name]= $this->tempDir();
+          break;
+        
+        case 'host.name': 
+          if (extension_loaded('posix')) {
+            $uname= posix_uname();
+            $prop[$name]= $uname['nodename'].'.'.$uname['domainname'];
+          }
+          $prop[$name]= $this->_env('HOSTNAME', 'COMPUTERNAME');
+          break;
+
+        case 'host.arch':
+          if (extension_loaded('posix')) {
+            $uname= posix_uname();
+            $prop[$name]= $uname['machine'];
+          }
+          $prop[$name]= $this->_env('HOSTTYPE', 'PROCESSOR_ARCHITECTURE');
+          break;
+          
+        case 'user.home': 
+          if (extension_loaded('posix')) {
+            $pwuid= posix_getpwuid(posix_getuid());
+            $prop[$name]= $pwuid['dir'];
+            break;
+          }
+          $prop[$name]= str_replace('\\', DIRECTORY_SEPARATOR, $this->_env('HOME', 'HOMEPATH'));
+          break;
+          
+        case 'user.name': 
+          $prop[$name]= get_current_user();
+          break;
+      }
       
-      return $prop;
+      return $prop[$name];
     }
     
     /**
-     * Setzt eine Umgebungsvariable
+     * Sets an environment variable
      *
      * @access  public
      * @param   string name
@@ -68,7 +132,7 @@
     }
     
     /**
-     * Retreive location of temporary directory. This method looks at the 
+     * Retrieve location of temporary directory. This method looks at the 
      * environment variables TEMP and TMP, and, if these cannot be found,
      * uses '/tmp' as location on Un*x systems, c:\ on Windows.
      * 
@@ -90,9 +154,9 @@
     }
 
     /** 
-     * Ein Programm ausführen
+     * Execute an external program
      * 
-     * Zum Exit-Code, aus der Bash-Manpage:
+     * Copied from man bash, some information on the exit code
      * <pre>
      * EXIT STATUS
      * For  the  shell's  purposes,  a command which exits with a
@@ -119,12 +183,12 @@
      * command below.
      * </pre>
      *
-     * @param	string cmdLine  Der auszuführende Befehl
-     * @param   string redirect Ausgabe-Umleitung. Per Default wird STDERR auf STDOUT gemappt.
-     * @param   bool background Im Hintergrund ausführen?
-     * @return  array lines Die einzelnen Zeilen der Rückgabe als Array
-     * @throws  Exception wenn Retcode != 0
-     * @see     http://www.php.net/manual/en/function.exec.php#contrib
+     * @param	string cmdLine the command
+     * @param   string redirect default '2>&1' redirection
+     * @param   bool background
+     * @return  array lines
+     * @throws  lang.SystemException in case the return code is not zero
+     * @see     php://exec
      */
     function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
       $cmdLine= escapeshellcmd($cmdLine).' '.$redirect.($background ? ' &' : '');
