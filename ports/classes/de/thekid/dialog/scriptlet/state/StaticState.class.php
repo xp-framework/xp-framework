@@ -28,12 +28,13 @@
       // Add paging information
       $response->addFormResult(new Node('pager', NULL, array(
         'offset'  => (int)$page,
-        'total'   => $index[0]
+        'total'   => $index['total'],
+        'perpage' => $index['perpage']
       )));
       
       // Add albums from index
       $node= &$response->addFormResult(new Node('albums'));
-      foreach ($index[1] as $name) {
+      foreach ($index['entries'] as $name) {
         if ($album= &$this->getAlbumFor($name)) {
           $child= &$node->addChild(new Node('album', NULL, array(
             'name'  => $album->getName(),
