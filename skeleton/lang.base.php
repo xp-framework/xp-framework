@@ -256,16 +256,24 @@
   //     Defines that the class this is called in implements certain interface(s)
   function implements() {
     $class= strtolower(substr(basename(func_get_arg(0)), 0, -10));
-    $classmethods= get_class_methods($class);
-    $classmethods[]= 'interface';
+    $signature= array_flip(get_class_methods($class));
     
     for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
       $interface= func_get_arg($i);
       uses($interface);
       $name= xp::reflect($interface);
-      $signature= array_merge($classmethods, (array)$name);
-      foreach (get_class_methods($name) as $method) {
-        if (!in_array($method, $signature)) {
+      
+      $methods= array_flip(get_class_methods($name));
+      
+      // Get rid of constructors
+      $c= $name;
+      do {
+        unset($methods[$c]);
+      } while ($c= get_parent_class($c));
+
+      // Check implementation
+      foreach (array_keys($methods) as $method) {
+        if (!isset($signature[$method])) {
           xp::error('Interface method '.$interface.'::'.$method.'() not implemented by class '.$class);
         }
       }
