@@ -82,7 +82,6 @@
       
       $str= '';
       for ($i= 0, $s= sizeof($this->messages); $i < $s; $i++) {
-        var_dump($fmt, $this->messages[$i]);
         $str.= vsprintf($fmt, $this->messages[$i]);
       }
       return $str;
