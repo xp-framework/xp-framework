@@ -59,8 +59,8 @@
       }
       
       // Switch on pager commands
-      $show= ($request->hasParam($this->form.'_pager') 
-        ? $request->getParam($this->form.'_pager') 
+      $show= ($request->hasParam('pager') 
+        ? $request->getParam('pager') 
         : 'first'
       );
       switch ($show) {
