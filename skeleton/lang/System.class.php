@@ -78,7 +78,10 @@
         case 'host.name': 
           if (extension_loaded('posix')) {
             $uname= posix_uname();
-            $prop[$name]= $uname['nodename'].'.'.$uname['domainname'];
+            $prop[$name]= $uname['nodename'].(isset ($uname['domainname'])
+              ? '.'.$uname['domainname']
+              : ''
+            );
           }
           $prop[$name]= System::_env('HOSTNAME', 'COMPUTERNAME');
           break;
