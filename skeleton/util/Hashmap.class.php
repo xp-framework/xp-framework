@@ -93,26 +93,20 @@
      *
      * @access  public
      * @param   int flags default SORT_REGULAR sort flags
-     * @see     util.Hashmap#sort
+     * @see     xp://util.Hashmap#sort
      */
     function rsort($flags= SORT_REGULAR) {
       arsort($this->_hash, $flags);
     }
 
     /**
-     * Sort this hashmap using a user-defined callback function
-     * for comparing these values.
-     *
-     * The parameter function may contain either a globally defined
-     * function, a dynamically created one or the special 
-     * array(&$obj, 'method') notation
+     * Sort this hashmap using a comparator.
      *
      * @access  public
-     * @param   mixed comparator an existing function or method
-     * @see     php://create_function
+     * @param   &util.Comparator comparator an existing function or method
      */
-    function usort($comparator) {
-      ursort($this->_hash, $comparator);
+    function usort(&$comparator) {
+      uasort($this->_hash, array(&$comparator, 'compare'));
     }
     
     /**
