@@ -6,7 +6,8 @@
 
   uses (
     'org.cvshome.CVSInterface',
-    'io.File'
+    'io.File',
+    'io.TempFile'
   );
 
   /**
