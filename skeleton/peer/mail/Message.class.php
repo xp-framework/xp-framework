@@ -595,6 +595,11 @@
      * @return  string headers
      */
     function getHeaderString() {
+      static $priorities = array(
+        MAIL_PRIORITY_LOW    => 'Low',
+        MAIL_PRIORITY_NORMAL => 'Normal',
+        MAIL_PRIORITY_HIGH   => 'High'
+      );
       
       // Default headers
       $h= (
@@ -610,7 +615,7 @@
         HEADER_CONTENTTYPE  => $this->_getContenttypeHeaderString(),
         HEADER_MIMEVER      => $this->mimever,
         HEADER_ENCODING     => $this->encoding,
-        HEADER_PRIORITY     => $this->priority,
+        HEADER_PRIORITY     => $this->priority.' ('.$priorities[$this->priority].')',
         HEADER_DATE         => $this->date->toString()
       )) as $key => $val) {
         if (!empty($val)) $h.= $key.': '.$val."\n";
