@@ -5,8 +5,7 @@
  */
 
   uses(
-    'xml.Tree',
-    'util.Date'   
+    'org.webdav.WebdavScriptletResponse'
   );
 
   /**
@@ -33,10 +32,13 @@
    *
    * @purpose  Represent a WebDavObject as PropPatch-Response
    */
-  class WebdavPropPatchResponse extends Tree {
+  class WebdavPropPatchResponse extends WebdavScriptletResponse {
+    
     var
-      $namespace_map= array();
-      
+      $hrefNode=     NULL,
+      $propstatNode= array(),
+      $propNode=     array();
+    
     /**
      * Constructor
      *
@@ -44,30 +46,23 @@
      * @param   &org.webdav.xml.WebdavPropFindRequest request
      * @param   &org.webdav.xml.WebdavMultistatus response
      */
-    function __construct(&$request, &$response) {
-      parent::__construct();
-
-      if (
-        (!is_a($request, 'WebdavPropPatchRequest')) ||
-        (!is_a($response, 'WebdavMultistatus'))
-      ) {
-        throw(new IllegalArgumentException('Parameters passed of wrong types'));
-      }
-
-      $this->_createRoot($response, $request);
+    function __construct() {
+      $this->setRootNode(new Node(
+        'D:response',
+        NULL,
+        array('xmlns:D' => 'DAV:')
+      ));
+      $this->hrefNode= &$this->addChild(new Node('D:href'));
     }
-
+    
     /**
-     * Create Root
+     * Sets the href attribute for the response
      *
-     * @access  private
-     * @param   &org.webdav.xml.WebdavMultistatus response 
-     * @param   &org.webdav.xml.WebdavPropFindRequest request         
+     * @access public
+     * @param  string href The href
      */
-    function _createRoot(&$response, &$request){
-      $this->namespace_map= array();
-      $xmlNSArray= array();
-      $this->root= &$response->addChild(new Node('D:response', NULL, $xmlNSArray));
+    function setHref($href) {
+      $this->hrefNode->setContent($href);
     }
 
     /**
@@ -79,54 +74,43 @@
      * @param   string namespace default DAV:
      * @return  bool   
      */
-    function _createAnswer($status, $property, $namespace= 'DAV:'){
-      if (!isset($this->statusNode[$status])){
-        $this->statusNode[$status]= &$this->root->addChild(new Node('D:prop'));
-        $this->statusNode[$status]->addChild(new Node('D:status','HTTP/1.1 '.$status));
+    function addProperty($property, $status= HTTP_OK) {
+      if (!isset($this->statusNode[$status])) {
+        $this->propstatNode[$status]= &$this->addChild(new Node('D:propstat'));
+        $this->propNode[$status]= &$this->propstatNode[$status]->addChild(new Node('D:prop'));
       }
-    
-      $this->statusNode[$status]->addChild(new Node(
-        $property,
-        NULL,
-        array('xmlns' => $namespace))
-      );
-      return TRUE;
-    }
+
+      $name= $property->getName();
+      $attr= $property->getAttributes();
+      $nsname= $property->getNamespaceName();
+      $nsprefix= $property->getNamespacePrefix();
+      $stdprop= $nsname == 'DAV:';
+      if ($stdprop) {
+        $name = 'D:'.$name;
+      } else if ($nsname) {
+        $attr['xmlns'.(!empty($nsprefix) ? (':'.$nsprefix) : '')]= $nsname;
+        if (!empty($nsprefix)) $name= $nsprefix.':'.$name;
+      }
+      $this->propNode[$status]->addChild(new Node(
+        $name,
+        $this->encode($property->toString()),
+        $attr
+      ));
       
-    /**
-     * Find status_ok
-     *
-     * @access  public
-     * @param   string property
-     * @param   string namespace, default DAV:
-     * @return  bool true
-     */
-    function status_ok($property, $namespace= 'DAV:'){
-      return $this->_createAnswer(200, $property, $namespace);
-    }
-    
-    /**
-     * Find status_forbidden
-     *
-     * @access  public
-     * @param   string property
-     * @param   string namespace, default DAV:
-     * @return  bool true
-     */
-    function status_forbidden($property, $namespace= 'DAV:'){
-      return $this->_createAnswer(403, $property, $namespace);
+      return TRUE;
     }
 
     /**
-     * Find status_conflict
+     * Process response and add the status codes
      *
-     * @access  public
-     * @param   string property
-     * @param   string namespace, default DAV:
-     * @return  bool true
-     */
-    function status_conflict($property, $namespace= 'DAV:'){
-      return $this->_createAnswer(409, $property, $namespace);
+     * @access public
+     */    
+    function process() {
+      foreach(array_keys($this->propstatNode) as $status) {
+        $this->propstatNode[$status]->addChild(new Node('D:status', 'HTTP/1.0 '.$status));
+      }
+
+      parent::process();
     }
   }
 ?>
