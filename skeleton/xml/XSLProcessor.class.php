@@ -145,7 +145,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  TransformationException
+     * @throws  TransformerException
      */
     function run($buffers= array()) {
       if (NULL != $this->buffer[1]) $buffers['/_xml']= &$this->buffer[1];
