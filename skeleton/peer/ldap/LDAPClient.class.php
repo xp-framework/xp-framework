@@ -20,13 +20,19 @@
    * 
    * Example:
    * <code>
+   *   uses('peer.ldap.LDAPException');
+   *
    *   $l= &new LDAPClient('ldap.hostname.tld');
    *   try(); {
    *     $l->connect();
    *     $l->bind();
    *     $res= &$l->search('o=Organization,c=Country', 
-   *   } if (catch('IOException', $e)) {
-   *     // Handle exceptions
+   *   } if (catch('LDAPException', $e)) {
+   *     $e->printStackTrace();
+   *     exit(-1);
+   *   } if (catch('ConnectException', $e)) {
+   *     $e->printStackTrace();
+   *     exit(-1);
    *   }
    *
    *   // Print results
