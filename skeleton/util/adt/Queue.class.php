@@ -63,7 +63,7 @@
       }
       return array_shift($this->_elements);
     }
-
+    
     /**
      * Peeks at the front of the queue (retrieves the first element 
      * without removing it).
@@ -108,6 +108,21 @@
      */
     function search(&$object) {
       return ($keys= array_keys($this->_elements, $object)) ? $keys[0] : -1;
+    }
+
+    /**
+     * Remove an object from the queue. Returns TRUE in case the element
+     * was deleted, FALSE otherwise.
+     *
+     * @access  public
+     * @return  &lang.Object
+     * @return  bool
+     */
+    function remove(&$object) {
+      if (-1 == ($pos= $this->search($object))) return FALSE;
+      
+      unset($this->_elements[$pos]);
+      return TRUE;
     }
     
     /**
