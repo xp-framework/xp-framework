@@ -5,7 +5,7 @@
  */
 
   /**
-   * Iterator over the keys of a DBA object
+   * Iterator over the keys of a Hashmap object
    *
    * Usage code snippet:
    * <code>
