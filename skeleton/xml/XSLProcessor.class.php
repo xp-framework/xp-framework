@@ -30,19 +30,20 @@
   class XSLProcessor extends XML {
     var 
       $processor    = NULL,
-      $stylesheet   = '',
+      $stylesheet   = array(),
       $buffer       = array(),
       $params       = array(),
       $output       = '';
+
+    var
+      $_base        = '';
 
     /**
      * Constructor
      *
      * @access  public
-     * @params  array params default NULL
      */
-    function __construct($params= NULL) {
-      parent::__construct($params);
+    function __construct() {
       $this->processor= xslt_create();
     }
     
@@ -74,9 +75,8 @@
      * @access  public
      * @param   string dir
      */
-    function setBase($dir, $proto= 'file://') {
-      if ('/' != $dir[strlen($dir)- 1]) $dir.= '/';
-      xslt_set_base($this->processor, $proto.$dir);
+    function setBase($dir) {
+      $this->_base= rtrim($dir, '/').'/';
     }
 
     /**
@@ -86,7 +86,7 @@
      * @param   string file file name
      */
     function setXSLFile($file) {
-      $this->stylesheet= array($file, NULL);
+      $this->stylesheet= array($this->_base.$file, NULL);
     }
     
     /**
@@ -106,7 +106,7 @@
      * @param   string file file name
      */
     function setXMLFile($file) {
-      $this->buffer= array($file, NULL);
+      $this->buffer= array($this->_base.$file, NULL);
     }
     
     /**

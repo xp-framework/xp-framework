@@ -29,22 +29,14 @@
    */
   class DomXSLProcessor extends XML {
     var 
-      $stylesheet   = array(),
-      $document     = NULL,
-      $params       = array(),
-      $output       = '';
+      $document     = NULL;
       
-    var
-      $_base        = '';
-
     /**
      * Constructor
      *
      * @access  public
-     * @params  array params default NULL
      */
-    function __construct($params= NULL) {
-      parent::__construct($params);
+    function __construct() {
       $this->processor= NULL;
     }
     
@@ -70,23 +62,13 @@
     }
 
     /**
-     * Set base directory
-     *
-     * @access  public
-     * @param   string dir
-     */
-    function setBase($dir) {
-      $this->_base= rtrim($dir, '/').'/';
-    }
-
-    /**
      * Set XSL file
      *
      * @access  public
      * @param   string file file name
      */
     function setXSLFile($file) {
-      $this->stylesheet= array(0, $file);
+      $this->stylesheet= array(0, $this->_base.$file);
     }
     
     /**
@@ -106,7 +88,7 @@
      * @param   string file file name
      */
     function setXMLFile($file) {
-      $this->document= &domxml_open_file($file);
+      $this->document= &domxml_open_file($this->_base.$file);
     }
     
     /**
@@ -148,15 +130,6 @@
      * @throws  xml.TransformerException
      */
     function run() {
-    
-      // Hack for missing DomXSL->setBase() functionality - preserve
-      // original directory, change to base directory and change it back
-      // after transformation
-      $cwd= FALSE;
-      if (!empty($this->_base)) {
-        $cwd= getcwd();
-        chdir($this->_base);
-      }
       
       // Get stylesheet
       $proc= FALSE;
@@ -168,7 +141,6 @@
       // Transform this
       $result= FALSE;
       $proc && $result= &$proc->process($this->document, $this->params, FALSE);
-      $cwd && chdir($cwd);
       
       if (!$result) {
         return throw(new TransformerException('Transformation failed'));
