@@ -45,6 +45,7 @@
    * @see      http://developer.netscape.com/docs/manuals/directory/41/ag/
    * @see      http://developer.netscape.com/docs/manuals/dirsdk/jsdk40/contents.htm
    * @see      http://perl-ldap.sourceforge.net/doc/Net/LDAP/
+   * @see      http://ldap.akbkhome.com/
    * @see      rfc://2251
    * @see      rfc://2252
    * @see      rfc://2253
