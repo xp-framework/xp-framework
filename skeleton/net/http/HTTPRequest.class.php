@@ -5,7 +5,7 @@
   
   define('E_HTTP_AUTH_EXCEPTION',       0xF401);
   
-  import('net/Socket');
+  import('net.Socket');
   
   class HTTPRequest extends Socket {
     var 
@@ -13,13 +13,22 @@
       $request,
       $target,
       $response;
-      
+    
+    var
+      $contentType= 'application/x-www-form-urlencoded';
+    
     var
       $authType,
       $authUser,
       $authPassword;
 
     function HTTPRequest($params= NULL) {
+      if (isset($params['url'])) {
+        $p= parse_url($params['url']);
+        $params['host']= $p['host'];
+        $params['port']= $p['port'];
+        $params['target']= $p['path'].@$p['query'];
+      }
       $this->__construct($params);
     }
     
@@ -29,7 +38,17 @@
     }
         
     function _request($vars) {
-      if (!$this->isConnected() and !$this->connect()) return 0;
+      if (!$this->isConnected()) {
+        try(); {
+          $this->connect();
+        } if ($e= catch(E_ANY_EXCEPTION)) {
+          var_dump($e);
+          return throw(
+            E_IO_EXCEPTION,
+            $this->request
+          );
+        }
+      }
       
       if (is_array($vars)) {
         $data= '';
@@ -52,17 +71,23 @@
 
       // Request absenden
       $this->request= sprintf(
-        "%s %s HTTP/1.1\nHost: %s\nContent-Type: application/x-www-form-urlencoded\n%sConnection: close\n",
+        "%s %s HTTP/1.1\r\nHost: %s\r\nContent-Type: %s\r\n%sConnection: close\r\n",
         $this->method,
         $this->target,
         $this->host,
-        ($this->method== HTTP_METHOD_POST ? 'Content-Length: '.strlen($data)."\n" : '')
+        $this->contentType,
+        ($this->method== HTTP_METHOD_POST ? 'Content-Length: '.strlen($data)."\r\n" : '')
       );
+      if (!empty($this->headers)) {
+        foreach ($this->headers as $key=> $val) {
+          $this->request.= $key.': '.$val."\r\n";
+        }
+      }
       
       // Auth?
       if (isset($this->authUser)) {
         $this->request.= sprintf(
-          "Authorization: %s %s\n",
+          "Authorization: %s %s\r\n",
           (isset($this->authType) ? $this->authType : 'Basic'),
           base64_encode($this->authUser.':'.$this->authPassword)
         );
@@ -73,14 +98,16 @@
       //flush();
       
       // Absenden
-      if (!$this->write($this->request."\n".$body)) return throw(
+      $this->request.= "\r\n".$body;
+      if (!$this->write($this->request)) return throw(
         E_IO_EXCEPTION,
-        $this->request."\n".$body
+        $this->request
       );
 
       // Antwort lesen
       $this->response= new StdClass();
       $this->response->body= '';
+      $this->response->TransferEncoding= '';
       $header= TRUE;
       $footer= FALSE;
       while(!$this->eof()) {
