@@ -34,12 +34,12 @@
      */
     function open($mode= STREAM_MODE_READ) {
       switch ($mode) {
-        case STREAM_MODE_READ:
-          $this->flags= STREAM_READ;
+        case STREAM_MODE_READWRITE:
+          $this->flags= STREAM_WRITE;
           // break missing intentionally
           
-        case STREAM_MODE_READWRITE:
-          $this->flags|= STREAM_WRITE;
+        case STREAM_MODE_READ:
+          $this->flags|= STREAM_READ;
           break;
 
         case STREAM_MODE_REWRITE:
