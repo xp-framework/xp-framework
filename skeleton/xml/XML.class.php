@@ -13,7 +13,29 @@
    * @access public
    */
   class XML extends Object {
-    var $_encoding= 'iso-8859-1';
+    var 
+      $_version  = '1.0',
+      $_encoding = 'iso-8859-1';
+    
+    /**
+     * Set encoding
+     *
+     * @access  public
+     * @param   string e encoding
+     */
+    function setEncoding($e) {
+      $this->_encoding= $e;
+    }
+    
+    /**
+     * Retreive encoding
+     *
+     * @access  public
+     * @return  string encoding
+     */
+    function getEncoding() {
+      return $this->_encoding;
+    }
     
     /**
      * Returns XML declaration
@@ -22,7 +44,11 @@
      * @return  string declaration
      */
     function getDeclaration() {
-      return '<?xml version="1.0" encoding="'.$this->_encoding.'" ?>';
+      return sprintf(
+        '<?xml version="%s" encoding="%s"?>',
+        $this->version,
+        $this->getEncoding()
+      );
     }
   }
 ?>
