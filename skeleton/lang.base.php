@@ -10,7 +10,10 @@
     // {{{ public string nameOf(string name)
     //     Returns the fully qualified name
     function nameOf($name) {
-      return xp::registry('class.'.$name);
+      if (!($n= xp::registry('class.'.$name))) {
+        return 'php.'.$name;
+      }
+      return $n;
     }
     // }}}
 
