@@ -14,7 +14,7 @@ echo "<?php
     \$class= basename(substr('$1', 0, -10));
     try(); {
       \$app= &new \$class(\$p); 
-      \$app->init(\$p);
+      \$app->init();
     } if (catch('GuiException', \$e)) {
       \$e->printStackTrace();
       exit(-1);
