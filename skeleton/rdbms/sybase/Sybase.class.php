@@ -23,11 +23,24 @@
      * @throws  rdbms.SQLException
      */
     function connect() {
-      if (!is_resource($this->handle= sybase_connect(
-        $this->dsn->getHost(), 
-        $this->dsn->getUser(), 
-        $this->dsn->getPassword()
-      ))) {
+      if (is_resource($this->handle)) return TRUE;  // Already connected
+      if (FALSE === $this->handle) return FALSE;    // Previously failed connecting
+
+      if ($this->flags & DB_PERSISTENT) {
+        $this->handle= sybase_pconnect(
+          $this->dsn->getHost(), 
+          $this->dsn->getUser(), 
+          $this->dsn->getPassword()
+        );
+      } else {
+        $this->handle= sybase_connect(
+          $this->dsn->getHost(), 
+          $this->dsn->getUser(), 
+          $this->dsn->getPassword()
+        );
+      }
+
+      if (!is_resource($this->handle)) {
         return throw(new SQLException(sprintf(
           'Unable to connect to %s@%s - using password: %s',
           $this->dsn->getUser(),
@@ -36,11 +49,7 @@
         )));
       }
       
-      if ($db= $this->dsn->getDatabase()) {
-        return $this->selectdb($db);
-      } else {
-        return TRUE;
-      }
+      return parent::connect();
     }
     
     /**
@@ -50,7 +59,10 @@
      * @return  bool success
      */
     function close() { 
-      return sybase_close($this->handle);
+      if ($r= sybase_close($this->handle)) {
+        $this->handle= NULL;
+      }
+      return $r;
     }
     
     /**
