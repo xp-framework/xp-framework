@@ -210,9 +210,9 @@
      * @return  bool success
      * @throws  OperationFailedException
      */
-    function &mkcol($colname) {
-      
-      $colname= $this->_normalizePath($this->base.urldecode($colname));
+    function &mkcol($col) {
+
+      $colname= $this->_normalizePath($this->base.urldecode($col));
       if (file_exists($colname)) {
         return throw(new OperationFailedException($colname.' already exists'));
       }
@@ -220,6 +220,10 @@
       try(); {
         $f= &new Folder($colname);
         $f->create(0755);
+        
+        // Create also backup directory
+        $b= &new Folder($this->_normalizePath($this->base.'../versions/'.urldecode($col)));
+        $b->create(0755);        
       } if (catch('IOException', $e)) {
         return throw(new OperationFailedException($colname.' cannot be created ('.$e->message.')'));
       }
@@ -296,14 +300,12 @@
         
         // Re-Add modified container to property
         $prop->value= &$container;
-       
+
         // Save property
-        $this->propStorage->setProperties($filename,
-          $p= array($prop->getNameSpacePrefix().$prop->getName() => $prop)
-        );
-        
+        $this->propStorage->setProperty($filename, $prop);
+       
         // Now, copy the "old" file to versions directory
-        $this->backup($filename, '../versions/'.$newVersion->getVersionName());
+        $this->backup($filename, '../versions/'.dirname($filename).'/'.$newVersion->getVersionName());
       }
       
       try(); {
@@ -552,11 +554,12 @@
      * Start Version-Control of file
      *
      * @access  public
+     * @param   string path
      * @param   &io.File
      * @throws  ElementNotFoundException 
      */
-    function &VersionControl(&$file) {
-      $realpath= $this->base.$file->getFilename();
+    function &VersionControl($path, &$file) {
+      $realpath= $this->base.$path;
 
       if (!file_exists($realpath)) {
         return throw(new ElementNotFoundException($realpath.' not found'));
@@ -568,13 +571,13 @@
       // Create Version object 
       with ($version= &new WebdavFileVersion($file->getFilename())); {
         $version->setVersionNumber('1.0');
-        $version->setHref('../versions/'.$fname.'[1.0].'.$file->getExtension());
+        $version->setHref('../versions/'.dirname($path).'/'.$fname.'[1.0].'.$file->getExtension());
         $version->setVersionName($fname.'[1.0].'.$file->getExtension());
         $version->setContentLength($file->size());
         $version->setLastModified(Date::now());
       }
-      
-      parent::VersionControl($version);
+
+      parent::VersionControl($path, $version);
     }
     
     /**
