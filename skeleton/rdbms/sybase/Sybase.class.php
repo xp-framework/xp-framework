@@ -134,10 +134,10 @@
      * @return  mixed identity value
      */
     function identity() { 
-      if (FALSE === ($r= &$this->query('@@identity as identity'))) {
+      if (FALSE === ($r= &$this->query('select @@identity as i'))) {
         return FALSE;
       }
-      return $r->next('identity');
+      return $r->next('i');
     }
 
     /**
