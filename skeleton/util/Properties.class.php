@@ -21,6 +21,8 @@
    * [section2]
    * key=value
    * </pre>
+   *
+   * @purpose  Wrapper around parse_ini_file
    */
   class Properties extends Object {
     var
@@ -30,7 +32,8 @@
     /**
      * Constructor
      *
-     * @param   string filename Dateiname (.ini-Datei)
+     * @access  public
+     * @param   string filename
      */
     function __construct($filename) {
       $this->_file= $filename;
@@ -38,9 +41,10 @@
     }
     
     /**
-     * Das Property-File anlegen
+     * Create the property file
      *
      * @access  public
+     * @throws  io.IOException if the property file could not be created
      */
     function create() {
       $fd= &new File($this->_file);
@@ -49,30 +53,32 @@
     }
     
     /**
-     * Gibt zurück, ob das Property-File existiert
+     * Returns whether the property file exists
      *
      * @access  public
-     * @return  bool Existiert
+     * @return  bool
      */
     function exists() {
       return file_exists($this->_file);
     }
     
     /**
-     * Properties aus Datei laden, falls nötig
+     * Helper method that loads the data from the file if needed
      *
      * @access  private
-     * @throws  IOException, wenn der Dateiname nicht gefunden werden kann
+     * @param   bool force default FALSE
+     * @throws  io.IOException
      */
     function _load($force= FALSE) {
       if (!$force && NULL != $this->_data) return;
       
-      $this->_data= parse_ini_file($this->_file, 1);
-      if (FALSE === $this->_data) return throw(new IOException($this->_file.' not found'));
+      if (FALSE === ($this->_data= parse_ini_file($this->_file, 1))) {
+        return throw(new IOException('The file "'.$this->_file.'" could not be read'));
+      }
     }
     
     /**
-     * Das Property-File neu einlesen
+     * Reload all data from the file
      *
      * @access  public
      */
@@ -81,9 +87,10 @@
     }
     
     /**
-     * Properties speichern
+     * Save properties to the file
      *
      * @access  public
+     * @throws  io.IOException if the property file could not be written
      */
     function save() {
       $fd= &new File($this->_file);
@@ -120,10 +127,11 @@
     }
 
     /**
-     * Die erste Sektion der Properties holen
+     * Get the first configuration section
      *
+     * @see     xp://util.Properties#getNextSection
      * @access  public
-     * @return  string Sektionsname
+     * @return  string the first section's name
      */
     function getFirstSection() {
       $this->_load();
@@ -132,26 +140,35 @@
     }
     
     /**
-     * Die nächste Sektion der Properties holen
+     * Get the next configuration section
      *
+     * Example:
+     * <code>
+     *   if ($section= $prop->getFirstSection()) do {
+     *     var_dump($section, $prop->readSection($section));
+     *   } while ($section= $prop->getNextSection());
+     * </code>
+     *
+     * @see     xp://util.Properties#getFirstSection
      * @access  public
-     * @return  mixed Sektionsname, bzw. FALSE, wenn keine weiteren existieren
+     * @return  mixed string section or FALSE if this was the last section
      */
     function getNextSection() {
       $this->_load();
       if (!next($this->_data)) return FALSE;
+
       return key($this->_data);
     }
     
     /**
-     * Eine ganze Sektion zurückgeben
+     * Read an entire section into an array
      *
      * @access  public
-     * @param   string name Name der Sektion
-     * @param   default default NULL Die Rückgabe, falls die Sektion nicht existiert
-     * @return  mixed Sektion als assoziativer Array, bzw. $default
+     * @param   string name
+     * @param   default default array() what to return in case the section does not exist
+     * @return  array
      */
-    function readSection($name, $default= NULL) {
+    function readSection($name, $default= array()) {
       $this->_load();
       return isset($this->_data[$name]) 
         ? $this->_data[$name] 
@@ -160,13 +177,13 @@
     }
     
     /**
-     * Einen Wert als String zurückgeben
+     * Read a value as string
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string key Name der Keys
-     * @param   default default '' Die Rückgabe, falls der Key bzw. die Sektion nicht existiert
-     * @return  mixed Value-String, bzw. $default
+     * @param   string section
+     * @param   string key
+     * @param   default default '' what to return in case the section or key does not exist
+     * @return  string
      */ 
     function readString($section, $key, $default= '') {
       $this->_load();
@@ -177,15 +194,15 @@
     }
     
     /**
-     * Einen Wert als Array zurückgeben. Arrays liegen als foo|bar|baz vor
+     * Read a value as array
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string key Name der Keys
-     * @param   default default NULL Die Rückgabe, falls der Key bzw. die Sektion nicht existiert
-     * @return  mixed Value-Array, bzw. $default
+     * @param   string section
+     * @param   string key
+     * @param   default default NULL what to return in case the section or key does not exist
+     * @return  array
      */
-    function readArray($section, $key, $default= NULL) {
+    function readArray($section, $key, $default= array()) {
       $this->_load();
       return isset($this->_data[$section][$key])
         ? explode('|', $this->_data[$section][$key])
@@ -194,13 +211,13 @@
     }
     
     /**
-     * Return a value as hash
+     * Read a value as hash
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string key Name der Keys
-     * @param   default default NULL Die Rückgabe, falls der Key bzw. die Sektion nicht existiert
-     * @return  mixed Value-Hash (util.Hashmap), bzw. $default
+     * @param   string section
+     * @param   string key
+     * @param   default default NULL what to return in case the section or key does not exist
+     * @return  &util.Hashmap
      */
     function &readHash($section, $key, $default= NULL) {
       $this->_load();
@@ -220,15 +237,15 @@
     }
 
     /**
-     * Einen Wert als Range zurückgeben. Ranges liegen als min..max vor
+     * Read a value as range
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string key Name der Keys
-     * @param   default default NULL Die Rückgabe, falls der Key bzw. die Sektion nicht existiert
-     * @return  mixed Value-Array, bzw. $default
+     * @param   string section
+     * @param   string key
+     * @param   default default NULL what to return in case the section or key does not exist
+     * @return  array
      */
-    function readRange($section, $key, $default= NULL) {
+    function readRange($section, $key, $default= array()) {
       $this->_load();
       if (!isset($this->_data[$section][$key])) return $default;
       
@@ -237,13 +254,13 @@
     }
     
     /**
-     * Einen Wert als Integer zurückgeben
+     * Read a value as integer
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string key Name der Keys
-     * @param   default default 0 Die Rückgabe, falls der Key bzw. die Sektion nicht existiert
-     * @return  mixed Value als Integer, bzw. $default
+     * @param   string section
+     * @param   string key
+     * @param   default default 0 what to return in case the section or key does not exist
+     * @return  int
      */ 
     function readInteger($section, $key, $default= 0) {
       $this->_load();
@@ -254,13 +271,13 @@
     }
 
     /**
-     * Einen Wert als Float zurückgeben
+     * Read a value as float
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string key Name der Keys
-     * @param   float default default 0.0 Die Rückgabe, falls der Key bzw. die Sektion nicht existiert
-     * @return  mixed Value als Integer, bzw. $default
+     * @param   string section
+     * @param   string key
+     * @param   float default default 0.0 what to return in case the section or key does not exist
+     * @return  float
      */ 
     function readFloat($section, $key, $default= 0.0) {
       $this->_load();
@@ -271,13 +288,13 @@
     }
 
     /**
-     * Einen Wert als Boolean zurückgeben
+     * Read a value as boolean
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string key Name der Keys
-     * @param   int default default FALSE Die Rückgabe, falls der Key bzw. die Sektion nicht existiert
-     * @return  mixed TRUE, key 'on', 'yes' oder 'true' ist, FALSE sonst, bzw. $default
+     * @param   string section
+     * @param   string key
+     * @param   int default default FALSE what to return in case the section or key does not exist
+     * @return  bool TRUE, when key is 1, 'on', 'yes' or 'true', FALSE otherwise
      */ 
     function readBool($section, $key, $default= FALSE) {
       $this->_load();
@@ -286,11 +303,11 @@
     }
     
     /**
-     * Gibt zurück, ob eine Sektion existiert
+     * Returns whether a section exists
      *
      * @access  public
-     * @param   string name Name der Sektion
-     * @return  bool Existiert
+     * @param   string name
+     * @return  bool
      */
     function hasSection($name) {
       $this->_load();
@@ -298,11 +315,12 @@
     }
 
     /**
-     * Eine Sektion hinzufügen, falls sie nicht existiert
+     * Add a section
      *
      * @access  public
-     * @param   string name Name der Sektion
-     * @return  string Sektionsname
+     * @param   string name
+     * @param   bool overwrite default FALSE whether to overwrite existing sections
+     * @return  string name
      */
     function writeSection($name, $overwrite= FALSE) {
       $this->_load();
@@ -311,54 +329,54 @@
     }
     
     /**
-     * Einen String hinzufügen. Fügt bei Bedarf auch die Sektion ein
+     * Add a string (and the section, if necessary)
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string key Name der Keys
-     * @param   string value Der Wert
+     * @param   string section
+     * @param   string key
+     * @param   string value
      */
     function writeString($section, $key, $value) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
-      $this->_data[$section][$key]= cast($value, 'string');
+      $this->_data[$section][$key]= (string)$value;
     }
     
     /**
-     * Einen Integer hinzufügen. Fügt bei Bedarf auch die Sektion ein
+     * Add a string (and the section, if necessary)
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string key Name der Keys
-     * @param   int value Der Wert
+     * @param   string section
+     * @param   string key
+     * @param   int value
      */
     function writeInteger($section, $key, $value) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
-      $this->_data[$section][$key]= cast($value, 'integer');
+      $this->_data[$section][$key]= (int)$value;
     }
     
     /**
-     * Einen Float hinzufügen. Fügt bei Bedarf auch die Sektion ein
+     * Add a float (and the section, if necessary)
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string key Name der Keys
-     * @param   float value Der Wert
+     * @param   string section
+     * @param   string key
+     * @param   float value
      */
     function writeFloat($section, $key, $value) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
-      $this->_data[$section][$key]= cast($value, 'float');
+      $this->_data[$section][$key]= (float)$value;
     }
 
     /**
-     * Einen Boolean-Werz hinzufügen. Fügt bei Bedarf auch die Sektion ein
+     * Add a boolean (and the section, if necessary)
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string key Name der Keys
-     * @param   bool value Der Wert
+     * @param   string section
+     * @param   string key
+     * @param   bool value
      */
     function writeBool($section, $key, $value) {
       $this->_load();
@@ -367,12 +385,12 @@
     }
     
     /**
-     * Einen Array hinzufügen. Fügt bei Bedarf auch die Sektion ein
+     * Add an array string (and the section, if necessary)
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string key Name der Keys
-     * @param   array value Der Wert
+     * @param   string section
+     * @param   string key
+     * @param   array value
      */
     function writeArray($section, $key, $value) {
       $this->_load();
@@ -381,12 +399,12 @@
     }
 
     /**
-     * Add a hashmap
+     * Add a hashmap (and the section, if necessary)
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string key Name der Keys
-     * @param   array value Der Wert
+     * @param   string section
+     * @param   string key
+     * @param   mixed value either a util.Hashmap or an array
      */
     function writeHash($section, $key, $value) {
       $this->_load();
@@ -399,11 +417,12 @@
     }
     
     /**
-     * Einen Kommentar hinzifügen
+     * Add a comment (and the section, if necessary)
      *
      * @access  public
-     * @param   string section Name der Sektion
-     * @param   string comment Kommentar
+     * @param   string section
+     * @param   string key
+     * @param   string value
      */
     function writeComment($section, $comment) {
       $this->_load();
