@@ -130,7 +130,7 @@
      * @access  magic
      * @see     xp://xml.XMLParser
      */
-    function _pCallStartElement($parser, $name, $attrs) {
+    function onStartElement($parser, $name, $attrs) {
       $this->_cdata= "";
 
       $element= new $this->nodeType(array(
@@ -155,7 +155,7 @@
      * @access  magic
      * @see     xp://xml.XMLParser
      */
-    function _pCallEndElement($parser, $name) {
+    function onEndElement($parser, $name) {
       if ($this->_cnt > 1) {
         $node= &$this->_objs[$this->_cnt];
         $node->content= $this->_cdata;
@@ -172,7 +172,7 @@
      * @access  magic
      * @see     xp://xml.XMLParser
      */
-    function _pCallCData($parser, $cdata) {
+    function onCData($parser, $cdata) {
       $this->_cdata.= $cdata;
     }
 
@@ -182,7 +182,7 @@
      * @access  magic
      * @see     xp://xml.XMLParser
      */
-    function _pCallDefault($parser, $data) {
+    function onDefault($parser, $data) {
     }
   }
 ?>

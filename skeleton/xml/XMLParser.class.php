@@ -67,9 +67,9 @@
       ));
       
       xml_set_object($this->parser, $this->callback);
-      xml_set_element_handler($this->parser, '_pCallStartElement', '_pCallEndElement');
-      xml_set_character_data_handler($this->parser, '_pCallCData');
-      xml_set_default_handler($this->parser, '_pCallDefault');
+      xml_set_element_handler($this->parser, 'onStartElement', 'onEndElement');
+      xml_set_character_data_handler($this->parser, 'onCData');
+      xml_set_default_handler($this->parser, 'onDefault');
 
       if (!xml_parse($this->parser, $data)) {
         $type= xml_get_error_code($this->parser);

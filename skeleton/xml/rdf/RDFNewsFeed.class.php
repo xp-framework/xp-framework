@@ -203,8 +203,8 @@
      * @see     xp://xml.XMLParser
      * @access  public
      */
-    function _pCallStartElement($parser, $name, $attrs) {
-      parent::_pCallStartElement($parser, $name, $attrs);
+    function onStartElement($parser, $name, $attrs) {
+      parent::onStartElement($parser, $name, $attrs);
       
       switch ($this->_pathname()) {
         case '/rss/':
@@ -240,11 +240,11 @@
      * @access  public
      * @throws  lang.FormatException in case an unrecognized element is encountered
      */
-    function _pCallEndElement($parser, $name) {
+    function onEndElement($parser, $name) {
       static $trans;
       
       $path= $this->_pathname();
-      parent::_pCallEndElement($parser, $name);
+      parent::onEndElement($parser, $name);
       if ($this->_cnt <= 0) return;
 
       // &lt; &amp;, &#XX; etc. ersetzen
