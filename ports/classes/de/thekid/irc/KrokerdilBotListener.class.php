@@ -86,8 +86,8 @@
           $line= $f->readLine();
           if (empty($line) || strspn($line, ';#')) continue;
           
-          list($pattern, $delta)= explode(':', $line);
-          $this->recognition[$pattern]= (int)$delta;
+          list($pattern, $channel, $direct)= explode(':', $line);
+          $this->recognition[$pattern]= array((int)$channel, (int)$direct);
         }
         $f->close();
       } if (catch('IOException', $e)) {
@@ -497,7 +497,7 @@
         // by four because this message is directed at me.
         foreach ($this->recognition as $pattern => $delta) {
           if (!preg_match($pattern, $message)) continue;
-          $this->setKarma($nick, $delta == 0 ? rand(1, 5) : $delta, $pattern);
+          $this->setKarma($nick, rand(1, 5) * $delta[1], $pattern);
         }
         return;
       }
@@ -537,7 +537,7 @@
       // Karma recognition
       foreach ($this->recognition as $pattern => $delta) {
         if (!preg_match($pattern, $message)) continue;
-        $this->setKarma($nick, $delta, $pattern);
+        $this->setKarma($nick, $delta[0], $pattern);
       }
     }
 
@@ -645,7 +645,7 @@
       // Karma recognition
       foreach ($this->recognition as $pattern => $delta) {
         if (!preg_match($pattern, $message)) continue;
-        $this->setKarma($nick, $delta, $pattern);
+        $this->setKarma($nick, $delta[0], $pattern);
       }
     }
     
