@@ -30,18 +30,29 @@
   }
    
   function try() {
+    set_error_handler('error');
     $GLOBALS['php_errormessage']=  array();
     $GLOBALS['php_errorline']= array();
     $GLOBALS['php_errorfile']= array();
     $GLOBALS['php_errorcode']= array();
     $GLOBALS['php_exceptions']= array();
   }
+  
+  function is_error() {
+    return empty($GLOBALS['php_errormessage']) ? FALSE : $GLOBALS['php_errormessage'];
+  }
  
-  function is_a(&$object, $name) {
+  if (!function_exists('is_a')) { function is_a(&$object, $name) {
      return (
       (get_class($object) == strtolower($name)) ||
       (is_subclass_of($object, $name))
     );
+  }}
+  
+  function &cast(&$var, $type= NULL) {
+    if (NULL == $var) return NULL;
+    if (NULL != $type) settype($var, $type);
+    return $var;
   }
 
   function catch($name, &$e) {
@@ -86,7 +97,6 @@
     'lang.FormatException',
     'lang.ClassLoader'
   );
-  set_error_handler('error');
   register_shutdown_function('destroy');
   //}}}
 ?>
