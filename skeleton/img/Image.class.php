@@ -101,7 +101,7 @@
      * @return  int width
      */
     function getWidth() {
-      return imagesx($this->handle);
+      return $this->width;
     }
     
     /**
@@ -111,17 +111,17 @@
      * @return  int height
      */
     function getHeight() {
-      return imagesy($this->handle);
+      return $this->height;
     }
     
     /**
      * Returns dimensions of image
      *
      * @access  public
-     * @return  int[] width, height
+     * @return  int[2] width, height
      */
     function getDimensions() {
-      return array(imagesx($this->handle), imagesy($this->handle));
+      return array($this->width, $this->height);
     }
 
     /**
