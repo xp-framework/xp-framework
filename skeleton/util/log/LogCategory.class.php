@@ -167,10 +167,12 @@
      */
     function removeAppender(&$appender, $flag= LOGGER_FLAG_ALL) {
       foreach (array_keys($this->_appenders) as $f) {
-        if (!($f & $flags)) continue;
+        if (!($f & $flag)) continue;
         
-        if (FALSE !== ($idx= array_search($appender, $this->_appenders[$f], TRUE))) {
-          unset($this->_appenders[$f][$idx]);
+        foreach (array_keys($this->_appenders[$f]) as $g) {
+          if ($this->_appenders[$f][$g] === $appender) {
+            unset ($this->_appenders[$f][$g]);
+          }
         }
       }
     }
