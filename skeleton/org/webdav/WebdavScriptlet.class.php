@@ -148,11 +148,11 @@
      */
     function &_request() {
       switch (getenv('REQUEST_METHOD')) {
-        case 'PROPFIND':
+        case WEBDAV_METHOD_PROPFIND:
           return new WebdavPropFindRequest();
-        case 'PROPPATCH':
+        case WEBDAV_METHOD_PROPPATCH:
           return new WebdavPropPatchRequest();
-        case 'LOCK':
+        case WEBDAV_METHOD_LOCK:
           return new WebdavLockRequest();
         default:
           return new WebdavScriptletRequest();
@@ -167,11 +167,11 @@
      */
     function &_response() {
       switch(getenv('REQUEST_METHOD')) {
-        case 'PROPFIND':
+        case WEBDAV_METHOD_PROPFIND:
           return new WebdavMultistatusResponse();
-        case 'LOCK':
+        case WEBDAV_METHOD_LOCK:
           return new WebdavLockResponse();
-        case 'PROPPATCH':
+        case WEBDAV_METHOD_PROPPATCH:
           return new WebdavPropPatchResponse();
         default:
           return new WebdavScriptletResponse();
@@ -588,7 +588,7 @@
       try(); {
         $this->handlingImpl->proppatch(
           $request,
-          $request
+          $response
         );
         
       } if (catch('ElementNotFoundException', $e)) {
@@ -622,7 +622,8 @@
         return throw(new HttpScriptletException($e->message));
       } 
       
-      
+      $rootURL= &$request->getRootURL();
+      $response->setHref($rootURL->getPath().$request->getPath());
       $response->setStatus(HTTP_CREATED);
     }
 
