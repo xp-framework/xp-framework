@@ -9,7 +9,8 @@
     'peer.URL',
     'peer.news.NntpReply',
     'peer.news.Newsgroup',
-    'peer.news.Article'
+    'peer.news.Article',
+    'util.Date'
   );
   
   /**
@@ -202,11 +203,9 @@
       $status= $this->_sendcmd('LIST');
       if (!NntpReply::isPositiveCompletion($status))
         return throw(new IOException('Could not get list of groups'));
-      while ( $line= $this->_readData()) {
-        $buf= explode(' ', $line);
-        $groups[]= $buf[0];
-      }
-      
+
+      while ( $line= $this->_readData()) $groups[]= current(explode(' ', $line));
+
       return $groups;
     }
     
@@ -258,8 +257,7 @@
       if (!NntpReply::isPositiveCompletion($status)) 
         return throw(new IOException('Could not get article'));
 
-      $ident= explode(' ', $this->getResponse());
-      $article= &new Article($ident[0], $ident[1]);
+      $article= &new Article(current(explode(' ', $this->getResponse())));
       
       // retrieve headers
       while ($line= $this->_readData()) {
@@ -279,12 +277,16 @@
      *
      * @access  public
      * @return  array messageId
+     * @throws  IOException in case article list could not be retrieved
      */
     function getArticleList() {
       $status= $this->_sendcmd('LISTGROUP');
       if (!NntpReply::isPositiveCompletion($status)) 
         return throw(new IOException('Could not get article list'));
       
+      while ($line= $this->_readData()) $articles[]= $line;
+      
+      return $articles;
     }
     
     /**
@@ -293,8 +295,18 @@
      * @access  public  
      * @param   &peer.news.Article
      * @return  &peer.news.Article
+     * @throws  IOException in case body could not be retrieved
      */
     function &getBody(&$article) {
+      $status= $this->_sendcmd('BODY', $article->getMessageId());
+      if (!NntpReply::isPositiveCompletion($status)) 
+        return throw(new IOException('Could not get article body'));
+
+      // retrieve body
+      while (FALSE !== ($line= $this->_readData())) $body.= $line."\n";
+      $article->setBody($body);
+
+      return $article;
     }
 
     /**
@@ -303,17 +315,36 @@
      * @access  public  
      * @param   &peer.news.Article
      * @return  &peer.news.Article
+     * @throws  IOException in case headers could not be retrieved
      */
     function &getHeader(&$article) {
+      $status= $this->_sendcmd('HEAD', $article->getMessageId());
+      if (!NntpReply::isPositiveCompletion($status)) 
+        return throw(new IOException('Could not get article headers'));
+
+      // retrieve headers
+      while ($line= $this->_readData()) {
+        $header= explode(': ', $line, 2);
+        $article->setHeader($header[0], $header[1]);
+      }
+      
+      return $article;
     }
     
     /**
-     * Retrieve current Article
+     * Retrieve   Article
      *
      * @access  public
+     * @param   mixed Id eighter a messageId or an articleId default NULL
      * @return  &peer.news.Article
+     * @throws  IOException in case article could not be retrieved
      */
-    function stat() {
+    function &stat($id= NULL) {
+      $status= $this->_sendcmd('STAT', $id);
+      if (!NntpReply::isPositiveCompletion($status)) 
+        return throw(new IOException('Could not get stat article'));
+
+      return new Article(current(explode(' ', $this->getResponse())));
     }    
 
     /**
@@ -321,8 +352,14 @@
      *
      * @access  public
      * @return  &peer.news.Article
+     * @throws  IOException in case article could not be retrieved
      */
-    function next() {
+    function &next() {
+      $status= $this->_sendcmd('NEXT');
+      if (!NntpReply::isPositiveCompletion($status)) 
+        return throw(new IOException('Could not get next article'));
+
+      return new Article(current(explode(' ', $this->getResponse())));
     }
 
     /**
@@ -330,8 +367,33 @@
      *
      * @access  public
      * @return  &peer.news.Article
+     * @throws  IOException in case article could not be retrieved
      */
-    function last() {
+    function &last() {
+      $status= $this->_sendcmd('LAST');
+      if (!NntpReply::isPositiveCompletion($status)) 
+        return throw(new IOException('Could not get last article'));
+
+      return new Article(current(explode(' ', $this->getResponse())));
+    }
+    
+    /**
+     * Get format of xover command
+     *
+     * @access  public
+     * @return  array fields
+     * @throws  IOException in case format could not be retrieved
+     */    
+    function getOverviewFormat() {
+      $status= $this->_sendcmd('LIST OVERVIEW.FMT');
+      if (!NntpReply::isPositiveCompletion($status))
+        return throw(new IOException('Could not get overview'));
+        
+      while ($line= $this->_readData()) {
+        $fields[]= current(explode(':', $line, 2));
+
+      }
+      return $fields;
     }
 
     /**
@@ -341,7 +403,29 @@
      * @param   string range
      * @return  &peer.news.Article
      */
-    function getOverview($range) {
+    function &getOverview($range= NULL) {
+      try(); {
+        $fields= $this->getOverviewFormat();
+      } if (catch('IOException', $e)) {
+        return throw($e);
+      }
+
+      $status= $this->_sendcmd('XOVER', $range);
+      if (!NntpReply::isPositiveCompletion($status))
+        return throw(new IOException('Could not get overview'));
+
+      while ($line= $this->_readData()) {
+        $args= explode("\t", $line, 9);
+        
+        $article= &new Article($args[0]);
+        foreach ($fields as $key => $value) {
+          $article->setHeader($value, $args[++$key]);
+        }
+        
+        $articles[]= &$article;
+      }
+
+      return $articles;
     }
     
     /**
@@ -350,9 +434,21 @@
      *
      * @access  public
      * @param   &utilDate
-     * @return  array &peer.news.Article
+     * @param   string newsgroup
+     * @return  array messageId
      */ 
-    function newNews(&$date) {
+    function newNews(&$date, $newsgroup) {
+      $status= $this->_sendcmd(
+        'NEWNEWS',
+        $newsgroup,
+        $date->format('%y%m%d %H%M%S')
+      );
+      if (!NntpReply::isPositiveCompletion($status))
+        return throw(new IOException('Could not get overview'));
+        
+      while ($line= $this->_readData()) $articles[]= $line;
+      
+      return $articles;
     }
 
     /**
@@ -364,17 +460,19 @@
      * @return  array &peer.news.Newsgroup
      */
     function newGroups(&$date) {
-    
-    }
+      $status= $this->_sendcmd(
+        'NEWGROUPS',
+        $date->format('%y%m%d %H%M%S')
+      );
+      if (!NntpReply::isPositiveCompletion($status))
+        return throw(new IOException('Could not get new groups'));
+        
+      while ($line= $this->_readData()) {
+        $buf= explode(' ', $line);
+        $groups[]= &new Newsgroup($buf[0], $buf[1], $buf[2]);
+      }
 
-    /**
-     * Post an article
-     *
-     * @access  public
-     * @param   &peer.news.Article
-     * @return  bool success
-     */
-    function post(&$article) {
+      return $groups;
     }
   }
 ?>
