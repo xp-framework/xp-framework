@@ -3,6 +3,8 @@
  *
  * $Id$
  */
+
+  uses('lang.Method');
  
   /**
    * Represents classes. Every instance of an XP class has an method
@@ -96,10 +98,29 @@
      * Gets class methods for this class
      *
      * @access  public
-     * @return  string[] methodname
+     * @return  lang.Method[]
      */
     function getMethods() {
-      return get_class_methods($this->_objref);
+      $m= array();
+      foreach (get_class_methods($this->_objref) as $method) {
+        $m[]= &new Method($this->_objref, $method);
+      }
+      return $m;
+    }
+
+    /**
+     * Gets a method by a specified name. Returns NULL if the specified 
+     * method does not exist.
+     *
+     * @access  public
+     * @param   string name
+     * @return  &lang.Method
+     * @see     xp://lang.Method
+     */
+    function &getMethod($name) {
+      if (!$this->hasMethod($name)) return NULL;
+
+      return new Method($this->_objref, $name); 
     }
     
     /**
