@@ -41,7 +41,7 @@
       $l= Logger::getInstance();
       $this->cat= $l->getCategory(get_class($this));
       $this->cat->identifier= get_class($this);
-      if (empty($this->cat->_appenders)) {
+      if (!$this->cat->hasAppenders()) {
         $this->cat->addAppender(new FileAppender('php://stderr'));
       }
       
