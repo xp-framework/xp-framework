@@ -90,7 +90,7 @@
      * @return  string guesseddelimiter
      */
     function guessDelimiter() {
-      $pos= $stream->tell();
+      $pos= $this->stream->tell();
       $line= $this->_getNextRecord();
       
       $freq= count_chars ($line, 1);
@@ -106,7 +106,7 @@
       }
       
       // Rewind to former position
-      $stream->seek($pos);
+      $this->stream->seek($pos);
       
       return $ret;
     }

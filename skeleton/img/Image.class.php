@@ -68,7 +68,7 @@
      * @throws  ImagingException in case the url is not valid or the picture cannot be created
      */
     function fromString($str) {
-      if (FALSE === ($this->_hdl= imagecreatefromstring($url))) {
+      if (FALSE === ($this->_hdl= imagecreatefromstring($str))) {
         return throw(new ImagingException('Cannot create image from specified data ['.strlen($str).' bytes]'));
       }
       return TRUE;
