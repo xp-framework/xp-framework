@@ -380,7 +380,7 @@ nedit.highlightPatterns: C:Default\n\
 		variables:"(::)?[$](\\{[^}]*}|[^a-zA-Z0-9_ /\\t\\n\\.,\\\\[\\\\{\\\\(]|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)?":::Text Arg:phptags:\n\
 		braces and parens:"[\\[\\]{}\\(\\)]":::Identifier::\n\
 		heredoc:"\\<\\<\\<__":"^__"::Text Key1:phptags:\n\
-		classname:"([a-z:]+)?(::)([A-Za-z]+)":::String1:phptags:\n\
+		classname:"([A-Za-z:]+)?(::)([A-Za-z]+)":::String1:phptags:\n\
 		classnameseperator:"\\2":""::Pointer:classname:C\n\
 		constants:"(NULL|FALSE|TRUE)":::Ada Attributes:phptags:\n\
 	}\n\
