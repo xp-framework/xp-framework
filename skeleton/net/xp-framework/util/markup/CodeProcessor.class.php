@@ -52,6 +52,7 @@
         T_NEW                           => 'keyword',
         T_STATIC                        => 'keyword',
         T_CONSTANT_ENCAPSED_STRING      => 'string',
+        T_COMMENT                       => 'comment',
         '{'                             => 'bracket',
         '}'                             => 'bracket',
         '('                             => 'bracket',
