@@ -284,25 +284,28 @@
         return throw(new OperationNotAllowedException($uri.' cannot be written (not a file)'));
       }
       
+      // Open file and write contents
+      $f= &new File($uri);
+      
       // Check if VersionControl is activated
       if (($prop= $this->propStorage->getProperty($filename, 'D:version')) !== NULL) {
         $container= &$prop->value;
         
-        $newVersion= &WebdavVersionUtil::getNextVersion($container->getLatestVersion(), $uri);
+        $newVersion= &WebdavVersionUtil::getNextVersion($container->getLatestVersion(), $f);
         $container->addVersion($newVersion);
         
         // Re-Add modified container to property
         $prop->value= &$container;
        
         // Save property
-        $this->propStorage->setProperty($filename, $prop);
+        $this->propStorage->setProperties($filename,
+          $p= array($prop->getNameSpacePrefix().$prop->getName() => $prop)
+        );
         
         // Now, copy the "old" file to versions directory
         $this->backup($filename, '../versions/'.$newVersion->getVersionName());
       }
-
-      // Open file and write contents
-      $f= &new File($uri);
+      
       try(); {
         $new= !$f->exists();
         $f->open(FILE_MODE_WRITE);
@@ -549,22 +552,25 @@
      * Start Version-Control of file
      *
      * @access  public
-     * @param   string filename
+     * @param   &io.File
      * @throws  ElementNotFoundException 
      */
-    function &VersionControl($filename) {
-      $realpath= $this->base.$filename;
+    function &VersionControl(&$file) {
+      $realpath= $this->base.$file->getFilename();
 
       if (!file_exists($realpath)) {
         return throw(new ElementNotFoundException($realpath.' not found'));
       }
       
+      // Get name of file, without extension
+      $fname= basename($realpath, '.'.$file->getExtension());
+      
       // Create Version object 
-      with ($version= &new WebdavFileVersion($filename)); {
+      with ($version= &new WebdavFileVersion($file->getFilename())); {
         $version->setVersionNumber('1.0');
-        $version->setHref('../versions/'.$filename.'_1.0');
-        $version->setVersionName($filename.'_1.0');
-        $version->setContentLength(sizeof($this->base.filename));
+        $version->setHref('../versions/'.$fname.'[1.0].'.$file->getExtension());
+        $version->setVersionName($fname.'[1.0].'.$file->getExtension());
+        $version->setContentLength($file->size());
         $version->setLastModified(Date::now());
       }
       
