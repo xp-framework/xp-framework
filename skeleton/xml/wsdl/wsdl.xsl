@@ -347,7 +347,9 @@
      * Constructor
      *
      * @access  public
-     * @param   string endpoint
+     * @param   string endpoint default ']]></xsl:text>
+    <xsl:value-of select="wsdl:service/wsdl:port/soap:address/@location"/>
+    <xsl:text><![CDATA['
      */
     function __construct($endpoint= ']]></xsl:text>
     <xsl:value-of select="wsdl:service/wsdl:port/soap:address/@location"/>
