@@ -101,6 +101,19 @@
     }
     
     /**
+     * Check if property is available
+     *
+     * @access  public
+     * @param   string uri  The URI
+     * @param   string name The property's name
+     * @return  bool
+     */
+    function hasProperty($uri, $name) {
+      $properties= $this->getProperties($uri);
+      return in_array($name, $properties);
+    }
+    
+    /**
      * Sets a Lock for a specific URI
      *
      * @access public
