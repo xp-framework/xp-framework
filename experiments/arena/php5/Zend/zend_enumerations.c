@@ -81,36 +81,43 @@ ZEND_METHOD(enumeration, values)
 }
 
 ZEND_METHOD(enumeration, valueOf) {
-	long needle;
-	char *name;
+	long needle, needle_len;
+	char *name, *needle_str;
+	zend_uchar searchtype;
 	uint length;
 	ulong dummy;
 	HashPosition pos;
-	zval **ordinal;
+	zval **data;
 	long enum_pos;
 	
 	if (ZEND_NUM_ARGS() != 1)
 		WRONG_PARAM_COUNT;
 	
-	/* FIXME: Can be string or integer */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &needle) == FAILURE) {
-		zend_error(E_WARNING, "valueOf() expects integer");
-		return;
+	if (zend_parse_parameters_ex(ZEND_PARSE_PARAMS_QUIET, ZEND_NUM_ARGS() TSRMLS_CC, "l", &needle) == SUCCESS) {
+		searchtype= IS_LONG;
+	} else if (zend_parse_parameters_ex(ZEND_PARSE_PARAMS_QUIET, ZEND_NUM_ARGS() TSRMLS_CC, "s", &needle_str, &needle_len) == SUCCESS) {
+		searchtype= IS_STRING;
+	} else {
+		zend_error(E_WARNING, "valueOf() expects either an integer or a string");
+		RETURN_FALSE;
 	}
 	
 	/* Iterate over constants until the searched needle is found */
 	zend_hash_internal_pointer_reset_ex(&EG(scope)->constants_table, &pos);
 	enum_pos= 0;
-	while (zend_hash_get_current_data_ex(&EG(scope)->constants_table, (void **)&ordinal, &pos) == SUCCESS) {
+	while (zend_hash_get_current_data_ex(&EG(scope)->constants_table, (void **)&data, &pos) == SUCCESS) {
 	
 		/* Compare current value with searched one. If they equal, it's the right one, because enums are unique */
-		if ((*ordinal)->value.lval == needle) {
+		if (
+			(searchtype == IS_LONG && Z_TYPE_PP(data) == IS_LONG && Z_LVAL_PP(data) == needle) ||
+			(searchtype == IS_STRING && Z_TYPE_PP(data) == IS_STRING && memcmp(needle_str, Z_STRVAL_PP(data), needle_len) == 0)
+		) {
 			zend_hash_get_current_key_ex(&EG(scope)->constants_table, &name, &length, &dummy, 0, &pos);
 			
 			object_init_ex(return_value, EG(scope));
 			add_property_stringl(return_value, "name", name, length - 1, 1);
 			add_property_long(return_value, "ordinal", enum_pos);
-			add_property_zval(return_value, "value", *ordinal);
+			add_property_zval(return_value, "value", *data);
 			return;
 		}
 		
@@ -240,7 +247,7 @@ ZEND_END_ARG_INFO();
 static zend_function_entry default_enumeration_functions[]= {
 	ZEND_ME(enumeration, __clone, NULL, ZEND_ACC_PRIVATE|ZEND_ACC_FINAL)
 	ZEND_ME(enumeration, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
-	ZEND_ME(enumeration, __call, arginfo_enumeration__call, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
+	ZEND_ME(enumeration, __call, arginfo_enumeration__call, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL) 
 	ZEND_ME(enumeration, size, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
 	ZEND_ME(enumeration, values, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
 	ZEND_ME(enumeration, valueOf, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
