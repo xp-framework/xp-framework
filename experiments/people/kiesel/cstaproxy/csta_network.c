@@ -43,9 +43,9 @@ int create_listening_socket (char *addr, int port) {
 	return hSocket;
 }
 
-int create_proxy_connection(fd_set *master, int hListen) {
+int create_proxy_connection(fd_set *master, connection_context *ctx, int hListen) {
 	struct sockaddr_in remoteaddr;
-	/* proxy_connection *conn; */
+	proxy_connection *conn;
 	int addrlen;
 	int newfd;
 	
@@ -55,19 +55,64 @@ int create_proxy_connection(fd_set *master, int hListen) {
 		return -1;
 	}
 	
-	/* alloc_connection(&conn);
-	conn->hClient= newfd;*/
+	alloc_connection(&conn);
+	conn->hClient= newfd;
+	add_connection(ctx, conn);
 
 	/* Add socket to fdset */
 	FD_SET (newfd, master);
+	
+	_dump_context (ctx);
 	
 	LOG("New client connected");
 	return newfd;
 }
 
-int process_client(fd_set *master, proxy_connection *pc, int hSocket) {
+int _open_server_connection(fd_set *master, proxy_connection *conn) {
+	return 1;
+}
+
+int _process_client_command(fd_set *master, connection_context *ctx, int hSocket, char *buf, int length) {
+	proxy_connection *conn;
+	
+	conn= get_connection_by_socket (ctx, hSocket);
+
+	/* Process shutdown request */
+	if (0 == strncmp(buf, "QUIT", 4)) {
+		/* Close open sockets */
+		if (NULL != conn->hServer) {
+			close (conn->hServer);
+			FD_CLR(conn->hServer, master);
+		}
+		if (NULL != conn->hClient) {
+			close (conn->hClient);
+			FD_CLR(conn->hClient, master);
+		}
+		
+		/* Cleanup */
+		delete_connection(ctx, conn);
+		free_connection(&conn);
+		
+		return -1;	/* Indicate we have closed the sockets */
+	}
+	
+	/* Process authenticate request */
+	if (0 == strncmp (buf, "AUTHENTICATE", 12)) {
+		if (!conn->is_authenticated) {
+			conn->is_authenticated= 1;
+			LOG ("Authenticating client");
+			_open_server_connection (master, conn);
+		}
+		return 1;
+	}
+	
+	return 0;
+}
+
+int process_client(fd_set *master, connection_context *ctx, int hSocket) {
 	char buf[256];
 	int nbytes;
+	proxy_connection *conn;
 	
 	memset (&buf, '\0', sizeof (buf));
 	
@@ -79,10 +124,47 @@ int process_client(fd_set *master, proxy_connection *pc, int hSocket) {
 			ERR ("Error reading from socket");
 		}
 		
+		if (NULL == (conn= get_connection_by_socket (ctx, hSocket))) {
+			ERR ("Unable to find proxy connection in context");
+		} else {
+			delete_connection(ctx, conn);
+			free_connection(&conn);
+		}
+		
+		_dump_context (ctx);
+		
 		close (hSocket);
 		FD_CLR(hSocket, master);
 	} else {
-		printf ("Client sends: [%s]\n", buf);
+	
+		if (NULL == (conn= get_connection_by_socket (ctx, hSocket))) {
+			ERR("Unable to find connection in context!");
+			return 0;
+		}
+
+		/* First stage: process unauthenticated */
+		if (hSocket == conn->hClient) {
+			/* -1 means: connections have been shutdown */
+			if (-1 == _process_client_command(master, ctx, hSocket, buf, nbytes)) {
+				return 1;
+			}
+		}
+		
+		/* Client has sent data, so process */
+		if (hSocket == conn->hClient && conn->is_authenticated && conn->hServer) {
+			/* This is an authenticated client => pass data through */
+			send (conn->hServer, buf, nbytes, 0);
+		}
+		
+		if (hSocket == conn->hClient) {
+			/* Not authenticated! */
+			send (conn->hClient, "-ERR Not authenticated!\n", 24, 0);
+		}
+		
+		if (hSocket == conn->hServer) {
+			/* It's the server, passthrough data */
+			send (conn->hClient, buf, nbytes, 0);
+		}
 	}
 	
 	return 1;
@@ -92,16 +174,14 @@ int select_loop(int hListen) {
 	fd_set	master, read_fs;
 	int fdMax, fdNew, i;
 	int quit;
-	proxy_connection *conn, *pc;
+	connection_context *ctx;
 	
 	/* Add listener to sockets and remember max socket */
 	FD_SET (hListen, &master);
 	fdMax= hListen;
 	
 	/* Initialize array of connections */
-	conn= (proxy_connection *)malloc(10 * sizeof (proxy_connection *));
-	for (i= 0; i < sizeof (conn); i++)
-		init_connection (&conn[i]);
+	alloc_connection_context (&ctx);
 	
 	quit= 0;
 	while (!quit) {
@@ -118,16 +198,13 @@ int select_loop(int hListen) {
 			if (FD_ISSET (i, &read_fs)) {
 				if (i == hListen) {
 					/* New connection coming in */
-					if (-1 != (fdNew= create_proxy_connection(&master, i))) {
+					if (-1 != (fdNew= create_proxy_connection(&master, ctx, i))) {
 						if (fdNew > fdMax) fdMax= fdNew;
 					}
 				} else {
 					/* This is a normal client connection */
 					
-					/* Retrieve the proxy_connection for this socket */
-					pc= (proxy_connection *)get_connection_by_socket (conn, i);
-					
-					process_client(&master, pc, i);
+					process_client(&master, ctx, i);
 				}
 			}
 		}
