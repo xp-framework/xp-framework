@@ -106,11 +106,6 @@
 
       try(); {
         $r= &$test->run();
-      } if (catch('AssertionFailedError', $e)) {
-        $e->setTrace($e->getStackTrace());
-        $result->setFailed($test, $e);
-        $test->tearDown();
-        return FALSE;
       } if (catch('Exception', $e)) {
         $result->setFailed($test, $e);
         $test->tearDown();
