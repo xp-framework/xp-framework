@@ -129,7 +129,9 @@ Details
     import de~schlund~webservices~ServiceLocator as Locator;
     
     $class= 'de~binford6100~Power';
+    $alias= 'MorePower';
     import $class;
+    import $class as $alias;
   ?>
   Name clashes cause a Fatal (Compile-Time) Error.
 
