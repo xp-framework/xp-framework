@@ -5,24 +5,103 @@
  */
   require('lang.base.php');
 
+  // Parser states
+  define('ST_INITIAL',  0);
+  define('ST_TOKEN',    1);
+  define('ST_VALUE',    2);
+  define('ST_KEY',      3);
+  define('ST_ARRAY',    4);
+  
+  $states= array(
+    ST_INITIAL  => 'ST_INITIAL',
+    ST_TOKEN    => 'ST_TOKEN',
+    ST_VALUE    => 'ST_VALUE',
+    ST_KEY      => 'ST_KEY',
+    ST_ARRAY    => 'ST_ARRAY',
+  );
+
+  // {{{ main
+  $DEBUG= TRUE;
   $annotation= (isset($argv[1]) 
     ? $argv[1] 
-    : '[@webmethod, @restricted(role= \'admin\'), @deprecated(\'Use new method X instead\')]'
+    : '[@test, @webmethod(name = \'Hello\'), @restricted(roles= array(\'admin\', \'root\')), @deprecated(\'Use new method X instead\')]'
   );
   var_dump($annotation);
   
-  if (preg_match_all(
-    '/@([a-z_]+)(\((([a-z_]+)( *= *('.
-      '(\'([^\']+)\')|'.
-      '(\"([^\"]+)\")|'.
-      '([^\)]+)'.
-    '))?\)|(\'([^\']+)\')|(\"([^\"]+)\")|([^\)]+)))?/i', 
-    trim($annotation, '[]'),
-    $matches,
-    PREG_SET_ORDER
-  )) {
-    var_dump($matches);
-  } else {
-    var_dump(xp::registry('errors'));
+  $tokens= token_get_all('<?php '.trim($annotation, '[]').' ?>');
+  $state= ST_INITIAL;
+  for ($i= 1, $s= sizeof($tokens)- 1; $i < $s; $i++) {
+  
+    // {{{ DEBUG
+    $DEBUG && printf(
+      '[%-10s (%d)] %s',
+      $states[$state],
+      $state,
+      (is_array($tokens[$i]) 
+        ? token_name($tokens[$i][0]).' :: '.$tokens[$i][1]
+        : 'T_NONE :: '.$tokens[$i]
+      )
+    );
+    // }}}
+    
+    switch ($state.$tokens[$i][0]) {
+      case ST_INITIAL.'@':
+        $state= ST_TOKEN;
+        break;
+      
+      case ST_TOKEN.T_STRING:
+        $name= $tokens[$i][1];
+        $annotations[$name]= NULL;
+        break;
+              
+      case ST_TOKEN.'(':
+        $state= ST_VALUE;
+        break;
+      
+      case ST_TOKEN.',':
+        $state= ST_INITIAL;
+        break;
+      
+      case ST_VALUE.T_STRING:
+        $key= $tokens[$i][1];
+        $annotations[$name]= array($key => NULL);
+        $state= ST_KEY;
+        break;
+        
+      case ST_VALUE.T_CONSTANT_ENCAPSED_STRING:
+        $annotations[$name]= trim($tokens[$i][1], '"\'');
+        break;
+      
+      case ST_KEY.T_ARRAY:
+        $annotations[$name][$key]= array();
+        $state= ST_ARRAY;
+        break;
+      
+      case ST_KEY.T_CONSTANT_ENCAPSED_STRING:
+        $annotations[$name]= trim($tokens[$i][1], '"\'');
+        break;        
+      
+      case ST_KEY.')':
+        $state= ST_TOKEN;
+        break;
+      
+      case ST_ARRAY.T_CONSTANT_ENCAPSED_STRING:
+        $annotations[$name][$key][]= trim($tokens[$i][1], '"\'');
+        break;
+      
+      case ST_ARRAY.')':
+        $state= ST_VALUE;
+        break;
+      
+      case ST_VALUE.')':
+        $state= ST_TOKEN;
+        break;
+
+      default:
+        $DEBUG && print('???');
+    }
+    $DEBUG && print("\n");
   }
+  var_dump($annotations);
+  // }}}
 ?>
