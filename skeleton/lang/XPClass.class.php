@@ -165,6 +165,22 @@
     }
     
     /**
+     * Tests whether this class is a subclass of a specified class.
+     *
+     * @access  public
+     * @param   string name class name
+     * @return  bool
+     */
+    function isSubclassOf($name) {
+      $cmp= xp::reflect($this->name);
+      $name= xp::reflect($name);
+      while ($cmp= get_parent_class($cmp)) {
+        if ($cmp == $name) return TRUE;
+      }
+      return FALSE;
+    }
+    
+    /**
      * Returns the Class object associated with the class with the given string name.
      *
      * @model   static
