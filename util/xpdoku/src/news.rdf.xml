@@ -8,11 +8,17 @@
     <link>http://xp.php3.de/</link>
     <description>XP Newsflash</description>
     <dc:language>en_US</dc:language>
-    <dc:date>2003-02-23T16:23:29</dc:date>
+    <dc:date>2003-02-23T23:22:03</dc:date>
     <dc:creator>XP-Team &lt;xp@php3.de&gt;</dc:creator>
     <dc:publisher>XP-Team &lt;xp@php3.de&gt;</dc:publisher>
     <dc:rights>http://xp.php3.de/copyright.html</dc:rights>
   </channel>
+  <item>
+    <title>New collection: peer.server</title>
+    <link>http://xp.php3.de/apidoc/collections/peer.server.html</link>
+    <description>The classes in peer.server allow you to write standalone TCP/IP servers</description>
+    <dc:date>2003-02-23T23:21:00</dc:date>
+  </item>
   <item>
     <title>New collection: org.imc</title>
     <link>http://xp.php3.de/apidoc/collections/org.imc.html</link>
