@@ -1,2 +1,15 @@
 sadflsd
---------------------
+--------------------3.de.19792  build.php,v             test,v
+Attic                   core                    xp.port.mk,v
+README,v                dist                    
+php3:~ # ll /home/cvs/repositories/xp/ports/#cvs.
+#cvs.lock               #cvs.wfl.php3.de.19792  
+php3:~ # ll /home/cvs/repositories/xp/ports/#cvs.*
+-rw-r--r--  1 friebe  xpusers  0 Jan 15 18:40 /home/cvs/repositories/xp/ports/#c                            vs.wfl.php3.de.19792
+
+/home/cvs/repositories/xp/ports/#cvs.lock:
+php3:~ # rm /home/cvs/repositories/xp/ports/#cvs.*
+rm: /home/cvs/repositories/xp/ports/#cvs.lock: is a directory
+php3:~ # rm -rf /home/cvs/repositories/xp/ports/#cvs.lock/
+php3:~ # cd /tmp/
+.X11-unix       
