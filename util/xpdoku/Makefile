@@ -11,6 +11,7 @@ INHERITANCE=$(XML)/inheritanceTree.xml
 SABCMD=sabcmd 
 SABPHP=php -C -q util/sabcmd.php
 PHP=php -q
+PUBLISH=/tmp/xpdoc.tgz
 
 .PHONY: all clean install xml content
 
@@ -24,6 +25,18 @@ usage:
 	@echo "            install - install generated html in $(TARGET)"
 	@echo "            clean   - remove all generated files (xml/html)"
 	@echo "            all     - calls 'clean makexml gen install' in this order"
+	@echo "            publish - publishes generated content"
+	@echo "                      example: make publish target=user@host"
+
+publish:
+ifeq ($(target),)
+	@echo "*** Please specify a target"
+else
+	cd $(TARGET) ; tar cfz $(PUBLISH) *
+	scp $(PUBLISH) $(target):$(TARGET)
+	ssh $(target) cd $(TARGET) \; tar xfz xpdoc.tgz
+	rm $(PUBLISH)
+endif
 
 $(XML):
 	-mkdir $(XML)
