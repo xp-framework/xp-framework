@@ -149,6 +149,15 @@
         }
         $this->answer($event->stream, 230, 'User '.$user.' logged in');
         $this->sessions[$event->stream->hashCode()]->setAuthenticated(TRUE);
+        
+        // Initialize storage base
+        try(); {
+          $this->storage->setBase($event->stream->hashCode());
+        } if (catch('Exception', $e)) {
+          $this->cat && $this->cat->debug($e->toString());
+          
+          // Fall through
+        }
       }
     }
     
