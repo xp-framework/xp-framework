@@ -38,8 +38,18 @@
      */
     function __construct() {
       $this->document= &new OutputDocument();
-      $this->processor= &new XSLProcessor();
+      $this->processor= &$this->getProcessor();
       parent::__construct();
+    }
+
+    /**
+     * Retrieve the XSL processor
+     *
+     * @access  protected
+     * @return  &xml.XSLProcessor
+     */
+    function &getProcessor() {
+      return new XSLProcessor();
     }
     
     /**
