@@ -204,9 +204,10 @@
     <xsl:param name="content"/>
     <xsl:param name="color">#000000</xsl:param>
     <xsl:param name="icolor">#FFFFFF</xsl:param>
+    <xsl:param name="margin">0</xsl:param>
     
     <table border="0" bgcolor="{$color}" cellspacing="1" cellpadding="0" width="100%">
-      <tr><td><table border="0" bgcolor="{$icolor}" cellspacing="0" cellpadding="0" width="100%">
+      <tr><td><table border="0" bgcolor="{$icolor}" cellspacing="0" cellpadding="{$margin}" width="100%">
         <tr><td><xsl:copy-of select="$content"/></td></tr></table>
       </td></tr>
     </table>
