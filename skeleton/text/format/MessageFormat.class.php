@@ -34,7 +34,7 @@
    *
    * <code>
    *   $mf= &new MessageFormat(
-   *     'The disk "{1}" contains {0,choice,0:no files|1:one file|*:{0,number,0#,#\'} files}.'
+   *     'The disk "{1}" contains {0,choice,0:no files|1:one file|*:{0,number,0#,#`} files}.'
    *   );  
    *   $message= array();
    *   try(); {
