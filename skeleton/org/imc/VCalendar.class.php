@@ -4,9 +4,11 @@
  * $Id$ 
  */
 
-  uses('text.parser.VFormatParser', 'org.imc.VEvent');
+  uses('text.parser.VFormatParser', 'org.imc.VEvent', 'util.Date');
 
-  define('VCAL_ID',         'VCALENDAR');
+  define('VCAL_ID',             'VCALENDAR');
+
+  define('VCAL_METHOD_REQUEST', 'REQUEST');
 
   /**
    * VCalendar
@@ -29,7 +31,10 @@
    * @purpose  Handle vCalendar
    */
   class VCalendar extends Object {
-
+    var
+      $method   = '',
+      $events   = array();
+      
     /**
      * Parser callback
      *
@@ -39,15 +44,89 @@
      * @throws  FormatException
      */
     function addProperty($keys, $value) {
+      static $context= array();
+      static $event;
+      
+      // Cascaded objects      
+      if (0 == strcasecmp('BEGIN', $keys[0])) $context[]= strtolower($value);
+      
+      switch (implode('/', $context)) {
+      
+        // An event
+        case 'vevent':
+          switch ($keys[0]) {
+            case 'BEGIN':
+              $event= new VEvent();
+              break;
+              
+            case 'END':
+              $this->events[]= &$event;
+              break;
+            
+            case 'DTSTAMP':     // DTSTAMP:20030220T101358Z
+              $event->date= &new Date(VFormatParser::decodeDate($value));
+              break;
+              
+            case 'DTSTART':
+              $event->starts= &new Date(VFormatParser::decodeDate($value));
+              break;
+
+            case 'DTEND':
+              $event->ends= &new Date(VFormatParser::decodeDate($value));
+              break;
+            
+            case 'SUMMARY':
+              $event->summary= VFormatParser::decodeString($value);
+              break;
+
+            case 'LOCATION':
+              $event->location= VFormatParser::decodeString($value);
+              break;
+
+            case 'DESCRIPTION':
+              $event->description= VFormatParser::decodeString($value);
+              break;
+              
+            case 'ATTENDEE':
+              $event->attendee[]= $value;
+              break;
+              
+            case 'ORGANIZER':
+              $event->organizer= $value;
+              break;
+          }
+          break;
+
+        // An alarm for an event          
+        case 'vevent/valarm':
+          switch ($keys[0]) {
+            case 'ACTION':
+              $event->alarm['action']= $value;
+              break;
+              
+            case 'DESCRIPTION':
+              $event->alarm['description']= $value;
+              break;
+            
+            case 'TRIGGER':     // TRIGGER;RELATED=START:-PT00H15M00S
+              $event->alarm['trigger']= $value;
+              break;
+         }
+          
+      }
+      
       #ifdef DEBUG
+      echo '/'.implode('/', $context)."@";
       echo $this->getClassName().'::addProperty(';
       var_export($keys);
       echo ', ';
       var_export($value);
-      echo ")\n";
+      echo ")\n\n";
       #endif
+      
+      if (0 == strcasecmp('END', $keys[0])) array_pop($context);
     }
-    
+        
     /**
      * Creata a vCalendar from a stream
      *
