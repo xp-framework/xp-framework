@@ -16,7 +16,7 @@
    *   $c= &new HttpConnection('http://xp.php3.de/');
    *   try(); {
    *     if ($response= &$c->get()) while (FALSE !== ($buf= $response->readData())) {
-   *       echo '|'.addcslashes($buf, "\0..\37!@\177..\377")."|\n";
+   *       var_dump($buf);
    *       flush();
    *     }
    *   } if (catch('Exception', $e)) {
