@@ -85,7 +85,7 @@
           }
 
           if (!$download) {
-            Console::writeLine('OK');
+            Console::writeLine('(cached)');
             break;
           }
           
