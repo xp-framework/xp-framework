@@ -36,28 +36,32 @@
         <link rel="stylesheet" href="/{$area}.css"/>
       </head>
       <body>
-
-        <!-- top navigation -->
-        <table width="100%" border="0" cellspacing="0" cellpadding="2">
-          <tr>
-            <td colspan="6"><img src="/image/logo.png" width="202" height="60"/></td>
-          </tr>
-          <tr>
-            <xsl:for-each select="exsl:node-set($navigation)/nav">
-              <xsl:variable name="class">nav<xsl:if test="@target = $area">active</xsl:if></xsl:variable>
-              <td width="5%" class="{$class}">
-                <a class="{$class}" href="/xml/{$__product}.{$__lang}/{@target}">
-                  <xsl:value-of select="."/>
-                </a>
+        <form name="search" method="GET" action="/xml/{$__product}.{$__lang}/lookup">
+        
+          <!-- top navigation -->
+          <table width="100%" border="0" cellspacing="0" cellpadding="2">
+            <tr>
+              <td colspan="6"><img src="/image/logo.png" width="202" height="60"/></td>
+            </tr>
+            <tr>
+              <xsl:for-each select="exsl:node-set($navigation)/nav">
+                <xsl:variable name="class">nav<xsl:if test="@target = $area">active</xsl:if></xsl:variable>
+                <td width="5%" class="{$class}">
+                  <a class="{$class}" href="/xml/{$__product}.{$__lang}/{@target}">
+                    <xsl:value-of select="."/>
+                  </a>
+                </td>
+              </xsl:for-each>
+              <td class="nav">&#160;</td>
+              <td width="5%" class="nav" align="right">
+                <input class="search" type="text" name="q" size="24"/>
               </td>
-            </xsl:for-each>
-            <td class="nav">&#160;</td>
-            <td width="5%" class="nav" align="right">
-              <input class="search" type="text" name="q" size="24"/>
-            </td>
-          </tr>
-        </table>
-        <br/>
+              <td width="1%" class="nav" align="right">
+                <input type="image" src="/image/submit_search.gif" border="0" width="11" height="11" alt="search"/>
+              </td>
+            </tr>
+          </table>
+        </form>
 
         <!-- main content -->
         <table width="100%" border="0" cellspacing="0" cellpadding="2">
