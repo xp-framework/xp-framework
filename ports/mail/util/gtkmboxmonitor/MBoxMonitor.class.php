@@ -91,9 +91,11 @@
         ':activate'             => array(&$this, 'onMenuItemActivated'),
       ));
       
-      $this->list= &$this->widget('clist_messages');
-      $this->list->set_row_height(18);
-      GTKWidgetUtil::connect($this->list, array(
+      $this->tree= &$this->widget('ctree_messages');
+      $this->tree->set_row_height(18);
+      $this->tree->set_line_style(GTK_CTREE_LINES_NONE);
+      $this->tree->set_expander_style(GTK_CTREE_EXPANDER_TRIANGLE);
+      GTKWidgetUtil::connect($this->tree, array(
         ':click_column'         => array(&$this, 'onListColumnClicked'),
         ':button_press_event'   => array(&$this, 'onListButtonPressed'),
       ));
@@ -115,9 +117,9 @@
      * @param   int[] selection
      */
     function onDeleteMenuItemActivated($selection) {
-      $this->list->freeze();
-      foreach (array_values($this->list->selection) as $idx) {
-        $msg= &$this->list->get_row_data($idx);
+      $this->tree->freeze();
+      foreach (array_values($this->tree->selection) as $idx) {
+        $msg= &$this->tree->node_get_row_data($idx);
         
         try(); {
           $msg->folder->deleteMessage($msg);
@@ -128,8 +130,8 @@
           continue;
         }
         
-        $row= $this->list->get_pixtext($idx, 0);
-        $this->list->set_pixtext(
+        $row= $this->tree->node_get_pixtext($idx, 0);
+        $this->tree->node_set_pixtext(
           $idx, 
           0,
           $row[0],
@@ -138,7 +140,7 @@
           $this->pixmaps['m:mail-deleted']
         );       
       }
-      $this->list->thaw();
+      $this->tree->thaw();
     }
 
     /**
@@ -148,9 +150,9 @@
      * @param   int[] selection
      */
     function onUndeleteMenuItemActivated($selection) {
-      $this->list->freeze();
-      foreach (array_values($this->list->selection) as $idx) {
-        $msg= &$this->list->get_row_data($idx);
+      $this->tree->freeze();
+      foreach (array_values($this->tree->selection) as $idx) {
+        $msg= &$this->tree->node_get_row_data($idx);
         
         try(); {
           $msg->folder->undeleteMessage($msg);
@@ -161,8 +163,8 @@
           continue;
         }
         
-        $row= $this->list->get_pixtext($idx, 0);
-        $this->list->set_pixtext(
+        $row= $this->tree->node_get_pixtext($idx, 0);
+        $this->tree->node_set_pixtext(
           $idx, 
           0,
           $row[0],
@@ -171,7 +173,7 @@
           $this->pixmaps['m:mail-new']
         );       
       }
-      $this->list->thaw();
+      $this->tree->thaw();
     }
     
     /**
@@ -181,9 +183,10 @@
      * @param   &php.GtkWidget item
      */
     function onMenuItemActivated(&$item) {
+      // DEBUG $this->log($item->get_name(), '::', $this->tree->selection);
       return call_user_func(
         array(&$this, sprintf('on%sMenuItemActivated', ucfirst($item->get_name()))),
-        $this->list->selection
+        $this->tree->selection
       );
     }
     
@@ -245,29 +248,40 @@
      * @param   &peer.mail.Message msg
      */
     function addMessage(&$msg) {
-      $idx= $this->list->append(array(
-        NULL,     // Pixmap
-        NULL,     // Attachment
-        NULL,     // Status
-        $msg->from->personal.' <'.$msg->from->localpart.'@'.$msg->from->domain.'>',
-        $msg->getSubject(),
-        $msg->date->toString('Y-m-d H:i:s'),
-        sprintf('%0.2f KB', $msg->size / 1024)
-      ));
+      static $style= NULL;
 
-      // Icon
-      $this->list->set_pixtext(
-        $idx, 
-        0,
-        '+'.$msg->uid,
-        4,
-        $this->pixmaps['p:mail-new'], 
-        $this->pixmaps['m:mail-new']
+      // Set up child row style
+      if (!$style) {
+        $this->log('Setting up style for children elements');
+        $style= $this->tree->style;
+        $style= $style->copy();
+        $style->fg[GTK_STATE_NORMAL]= $style->fg[GTK_STATE_INSENSITIVE];
+      }
+      
+      $node= &$this->tree->insert_node(
+        NULL, 
+        NULL, 
+        array(
+          NULL,     // Pixmap
+          NULL,     // Attachment
+          NULL,     // Status
+          $msg->from->personal.' <'.$msg->from->localpart.'@'.$msg->from->domain.'>',
+          $msg->getSubject(),
+          $msg->date->toString('Y-m-d H:i:s'),
+          sprintf('%0.2f KB', $msg->size / 1024)
+        ),
+        1,
+        $this->pixmaps['p:mail-new'],
+        $this->pixmaps['m:mail-new'],
+        $this->pixmaps['p:mail-new'],
+        $this->pixmaps['m:mail-new'],
+        FALSE,
+        FALSE
       );
 
       // Attachment
-      if (is_a($msg, 'MimeMessage')) $this->list->set_pixtext(
-        $idx, 
+      if (is_a($msg, 'MimeMessage')) $this->tree->node_set_pixtext(
+        $node, 
         1,
         'TRUE',
         4,
@@ -276,8 +290,8 @@
       );
 
       // Priority
-      if (MAIL_PRIORITY_HIGH >= $msg->priority) $this->list->set_pixtext(
-        $idx, 
+      if (MAIL_PRIORITY_HIGH >= $msg->priority) $this->tree->node_set_pixtext(
+        $node, 
         2,
         $msg->priority,
         4,
@@ -286,7 +300,33 @@
       );
       
       // Copy message
-      $this->list->set_row_data($idx, $msg);
+      $this->tree->node_set_row_data($node, $msg);
+      
+      // Add child
+      foreach ($msg->headers as $key => $val) {
+        $child= &$this->tree->insert_node(
+            $node,
+            NULL,
+            array(
+              NULL,     // Pixmap
+              NULL,     // Attachment
+              NULL,     // Status
+              $key,
+              $val,
+              '',
+              ''
+            ),
+            1,
+            NULL,
+            NULL,
+            NULL,
+            NULL,
+            TRUE,
+            FALSE
+        );
+        $this->tree->node_set_selectable($child, FALSE);
+        $this->tree->node_set_row_style($child, $style);
+      }
       
       // Leave the GUI time to repaint
       while(Gtk::events_pending()) Gtk::main_iteration();
@@ -327,8 +367,8 @@
       $r->set_sensitive(FALSE);
       
       // Freeze list
-      $this->list->set_sensitive(FALSE);
-      $this->list->freeze();
+      $this->tree->set_sensitive(FALSE);
+      $this->tree->freeze();
       
       try(); {
         $this->stor->cache->expunge();
@@ -342,7 +382,7 @@
         if ($f= &$this->stor->getFolder('INBOX')) {
           $f->open();
           
-          $this->list->clear();
+          $this->tree->clear();
           while ($msg= &$f->getMessage()) {
             $this->setStatusText('Retreiving message %s', $msg->uid);
             $this->addMessage($msg);
@@ -356,8 +396,8 @@
         $r->set_sensitive(TRUE);
         
         // Unfreeze list
-        $this->list->set_sensitive(TRUE);
-        $this->list->thaw();
+        $this->tree->set_sensitive(TRUE);
+        $this->tree->thaw();
         return;
       }
       
@@ -369,8 +409,8 @@
       $e->set_sensitive(TRUE);
       
       // Unfreeze list
-      $this->list->set_sensitive(TRUE);
-      $this->list->thaw();
+      $this->tree->set_sensitive(TRUE);
+      $this->tree->thaw();
       
       $this->setStatusText('Done');
     }
