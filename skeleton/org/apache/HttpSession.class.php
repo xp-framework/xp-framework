@@ -71,7 +71,7 @@
      *
      * @access  public
      * @param   string id session id
-     * @throws  IllegalStateException when session is invalid
+     * @throws  lang.IllegalStateException when session is invalid
      */
     function initialize($id) {
       if (!empty($id)) {
@@ -130,7 +130,7 @@
      *
      * @access  public
      * @return  int Unix-timestamp
-     * @throws  IllegalStateException when session is invalid
+     * @throws  lang.IllegalStateException when session is invalid
      */
     function getCreationTime() {
       if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
@@ -141,7 +141,7 @@
      * Resets the session and deletes all variables 
      *
      * @access  public
-     * @throws  IllegalStateException when session is invalid
+     * @throws  lang.IllegalStateException when session is invalid
      */
     function reset() {
       if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
@@ -156,7 +156,7 @@
      * @access  public
      * @param   string name
      * @param   mixed& value Any data type
-     * @throws  IllegalStateException when session is invalid
+     * @throws  lang.IllegalStateException when session is invalid
      */
     function putValue($name, &$value) {
       if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
@@ -170,7 +170,7 @@
      * @access  public
      * @param   string name 
      * @return  mixed value
-     * @throws  IllegalStateException when session is invalid
+     * @throws  lang.IllegalStateException when session is invalid
      */
     function &getValue($name) {
       if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
@@ -194,7 +194,7 @@
      *
      * @access  public
      * @return  string[] names
-     * @throws  IllegalStateException when session is invalid
+     * @throws  lang.IllegalStateException when session is invalid
      */
     function &getValueNames() {
       if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
@@ -207,7 +207,7 @@
      * Invalidates a session and deletes all values
      *
      * @access  public
-     * @throws  IllegalStateException when session is invalid
+     * @throws  lang.IllegalStateException when session is invalid
      */
     function invalidate() {
       if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
