@@ -218,7 +218,7 @@
         );
 
       }
-      return $instance;
+      return self::$instance;
     }
   }
 ?>
