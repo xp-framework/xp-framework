@@ -94,6 +94,10 @@
         $realname =~ s/,.*$//g;
       }
     }
+    
+    if ('' eq $realname) {
+      $realname= 'Devnull';
+    }
 
     return $realname;
   }
