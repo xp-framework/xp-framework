@@ -53,6 +53,7 @@
       // Initially schedule sleeping
       $ts= time() + 86400;
       $this->registry['scheduled-sleep']= ($ts - ($ts % 86400));
+      $this->registry['laststore']= time();
 
       // Set up DictClient
       $this->dictc= &new DictClient();
@@ -143,6 +144,8 @@
       } if (catch('IOException', $e)) {
         $this->cat && $this->cat->error($e);
       }
+      
+      $this->registry['laststore']= time();
     }
     
     /**
@@ -399,6 +402,8 @@
             list($channel, $password)= explode(' ', $params);
             if ($this->doPrivileged($connection, $nick, $password)) {
               $connection->part($channel);
+              unset($this->operator[$channel]);
+              unset($this->channels[$channel]);
             }
             break;
           
@@ -1018,6 +1023,12 @@
      * @param   string data
      */
     function onPings(&$connection, $data) {
+    
+      // Automatically store configuration every hour
+      if (time() > $this->registry['laststore'] + 3600) {
+        $this->storeConfiguration();
+      }
+    
       if (
         rand(0, 100) > 95 &&
         isset($this->registry['scheduled-sleep']) &&
