@@ -50,65 +50,72 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      */
     function setup(&$request, &$response) {
-      $status= array();
-      for ($i= 0, $s= sizeof($this->handlers); $i < $s; $i++) {
-        with ($name= $this->handlers[$i]->getName()); {
-          $identifier= 'handler.'.$request->getStateName().'.'.$name;
-          
-          // Set up handler if not in session
-          if (!$request->session->hasValue($identifier)) {
+      with ($h= &$response->addFormResult(new Node('handlers'))); {
+        for ($i= 0, $s= sizeof($this->handlers); $i < $s; $i++) {
+          with ($name= $this->handlers[$i]->getName()); {
+            $identifier= 'handler.'.$request->getStateName().'.'.$name;
+            $handler= &$h->addChild(new Node('handler', NULL, array('name' => $name)));
 
-            // If the handler is already active, this means the page was reloaded
-            if ($this->handlers[$i]->isActive($request)) {
-              $status[$name]= HANDLER_RELOADED;
+            // Set up handler if not in session
+            if (!$request->session->hasValue($identifier)) {
+
+              // If the handler is already active, this means the page was reloaded
+              if ($this->handlers[$i]->isActive($request)) {
+                $handler->setAttribute('status', HANDLER_RELOADED);
+                continue;
+              }
+
+              // Otherwise, we may set up the handler
+              try(); {
+                $this->handlers[$i]->setup($request);
+              } if (catch('Exception', $e)) {
+                return throw($e);
+              }
+
+              // Handler was successfully set up, register to session
+              $handler->setAttribute('status', HANDLER_SETUP);
+              $request->session->putValue($identifier, $this->handlers[$i]->values);
+              $handler->addChild(Node::fromArray($this->handlers[$i]->values, 'values'));
               continue;
             }
 
-            // Otherwise, we may set up the handler
-            $status[$name]= HANDLER_SETUP;
-            $this->handlers[$i]->setup($request);
-            $request->session->putValue($identifier, $this->handlers[$i]);
-            continue;
-          }
+            // Load handler values from session
+            $this->handlers[$i]->values= $request->session->getValue($identifier);
+            $handler->setAttribute('status', HANDLER_INITIALIZED);
+            $handler->addChild(Node::fromArray($this->handlers[$i]->values, 'values'));
 
-          $status[$name]= HANDLER_INITIALIZED;
-          
-          // If the handler is not active, ask the next handler
-          if (!$this->handlers[$i]->isActive($request)) continue;
-          
-          // Check if the handler needs data. In case it does, call the
-          // handleSubmittedData() method
-          if (!$this->handlers[$i]->needsData($request)) continue;
+            // If the handler is not active, ask the next handler
+            if (!$this->handlers[$i]->isActive($request)) continue;
 
-          // Handle the submitted data
-          $handled= $this->handlers[$i]->handleSubmittedData($request);
-          
-          // Check whether errors occured
-          if ($this->handlers[$i]->errorsOccured()) {
-            foreach ($this->handlers[$i]->errors as $error) {
-              $response->addFormError($name, $error[0], $error[1], $error[2]);
+            // Check if the handler needs data. In case it does, call the
+            // handleSubmittedData() method
+            if (!$this->handlers[$i]->needsData($request)) continue;
+
+            // Handle the submitted data
+            $handled= $this->handlers[$i]->handleSubmittedData($request);
+
+            // Check whether errors occured
+            if ($this->handlers[$i]->errorsOccured()) {
+              foreach ($this->handlers[$i]->errors as $error) {
+                $response->addFormError($name, $error[0], $error[1], $error[2]);
+              }
+              $handler->setAttribute('status', HANDLER_ERRORS);
+              continue;
             }
-            $status[$name]= HANDLER_ERRORS;
-            continue;
+
+            // In case handleSubmittedData() returns FALSE (but no errors occured),
+            // the handler is simply telling us it's not finalized yet.
+            if (!$handled) continue;
+
+            // Submitted data was handled successfully, now remove the handler
+            // from the session
+            $request->session->removeValue($identifier);
+
+            // Tell the handler to finalize itself. This may include adding a 
+            // node to the formresult or sending a redirect to another page
+            $this->handlers[$i]->finalize($request, $response);
+            $handler->setAttribute('status', HANDLER_SUCCESS);
           }
-          
-          if (!$handled) continue;
-          
-          // Submitted data was handled successfully, now remove the handler
-          // from the session
-          $request->session->removeValue($identifier);
-          
-          // Tell the handler to finalize itself. This may include adding a 
-          // node to the formresult or sending a redirect to another page
-          $this->handlers[$i]->finalize($request, $response);
-          $status[$name]= HANDLER_SUCCESS;
-        }
-      }
-      
-      // Reflect handler stati into formresult
-      with ($n= &$response->addFormResult(new Node('handlers'))); {
-        foreach ($status as $name => $value) {
-          $n->addChild(new Node('handler', $value, array('name' => $name)));
         }
       }
     }
