@@ -37,7 +37,9 @@
   </xsl:template>
   
   <xsl:template match="apidoc/comments//text/code">
-    <code>&lt;?php<xsl:copy-of select="."/>?&gt;</code>
+    <div class="example">
+      <code>&lt;?php<xsl:copy-of select="."/>?&gt;</code>
+    </div>
   </xsl:template>
 
   <!--
