@@ -3,7 +3,7 @@
  *
  * $Id$
  */
- 
+
   /**
    * Class Object is the root of the class hierarchy. Every class has 
    * Object as a superclass. 
@@ -11,34 +11,7 @@
    * @purpose  Base class for all others
    */
   class Object {
-    var $__id;
-    
-    /**
-     * Constructor wrapper 
-     * 
-     * @access  private
-     */
-    function Object() {
-      $this->__id= microtime();
-      $args= func_get_args();
-      call_user_func_array(
-        array(&$this, '__construct'),
-        $args
-      );
-    }
-
-    /**
-     * Constructor. Supports the array syntax, where an associative
-     * array is passed to the constructor, the keys being the member
-     * variables and the values the member's values.
-     *
-     * @access  public
-     */
-    function __construct($params= NULL) {
-      if (is_array($params)) {
-        foreach ($params as $key=> $val) $this->$key= $val;
-      }
-    }
+    public $__id = NULL;
     
     /**
      * Returns a hashcode for this object
@@ -46,7 +19,8 @@
      * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
+      if (!$this->__id) $this->__id= microtime();
       return $this->__id;
     }
     
@@ -57,7 +31,7 @@
      * @param   &lang.Object cmp
      * @return  bool TRUE if the compared object is equal to this object
      */
-    function equals(&$cmp) {
+    public function equals($cmp) {
       return $this === $cmp;
     }
     
@@ -67,19 +41,10 @@
      * @access  public
      * @return  &lang.Object the clone
      */
-    function &clone() {
-      $clone= $this;
+    public function clone() {
+      $clone= $this->__clone();
       $clone->__id= microtime();
       return $clone;
-    }
-    
-    /**
-     * Destructor
-     *
-     * @access  public
-     */
-    function __destruct() {
-      unset($this);
     }
     
     /** 
@@ -88,7 +53,7 @@
      * 
      * @return  string fully qualified class name
      */
-    function getClassName() {
+    public final function getClassName() {
       return xp::nameOf(get_class($this));
     }
 
@@ -99,7 +64,7 @@
      * @return  &lang.XPClass runtime class
      * @see     xp://lang.XPClass
      */
-    function &getClass() {
+    public final function getClass() {
       return new XPClass($this);
     }
 
@@ -124,8 +89,8 @@
      * @access  public
      * @return  string
      */
-    function toString() {
-      return $this->getClassName().'@'.var_export($this, 1);
+    public function toString() {
+      return self::getClassName().'@'.var_export($this, 1);
     }
   }
 ?>
