@@ -363,6 +363,17 @@
         }
       }
 
+      // Perform locking when this is a SerializedScriptlet
+      try(); {
+        if (is('org.apache.SerializedScriptlet', $this)) {
+          $this->lock();
+        }
+      } if (catch('Exception', $e)) {
+        return throw(new HttpScriptletException(
+          'Semaphore locking failed: '.$e->getMessage()
+        ));
+      }
+
       // Call method handler and response processor
       try(); {
         if (FALSE !== call_user_func_array(
@@ -375,6 +386,15 @@
         return throw(new HttpScriptletException(
           'Request processing failed ['.$this->_method.']: '.$e->getMessage()
         ));
+      }
+      
+      // Remove the semaphore
+      try(); {
+        if (is('org.apache.SerializedScriptlet', $this)) {
+          $this->unlock();
+        }
+      } if (catch('Exception', $e)) {
+        return throw(new HttpScriptletException('Semaphore unlocking failed: '.$e->getMessage()));
       }
 
       // Return it
