@@ -27,7 +27,6 @@
   
   // Tokenize
   printf("===> %s\n", $filename);
-  exit();
   $t= &new PHPTokenizer();
   try(); {
     $t->setTokenString(FileUtil::getContents(new File($filename)));
