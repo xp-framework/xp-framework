@@ -193,8 +193,7 @@
 	          This page was generated on: <xsl:value-of select="./@generated_at"/> |
             </small>
           </xsl:if>
-          <a href="/credits.html" class="menuBlack">credits</a> |
-          <a href="mailto:xp@php3.de" class="menuBlack">feedback</a>
+          <a href="/credits.html" class="menuBlack">credits</a>
           <br/>
         </td>
       </tr>
