@@ -27,12 +27,12 @@
         <caption>Kommentare am Anfang einer Datei</caption>
         <text>
           Der Kommentar am Anfang einer Datei sollte auf jeden Fall den CVS-Tag enthalten, 
-          also mindestens $Id\$; und eine kurze Beschreibung, was hier vorkommt. Als Stil 
+          also mindestens \$Id$; und eine kurze Beschreibung, was hier vorkommt. Als Stil 
           wird der Kommentar in C-Notation vorgeschlagen:
 
           <pre><![CDATA[/* This class is part of the XP framework
  *
- * $Id\$ 
+ * \$Id$ 
  */
  ]]></pre>
 
