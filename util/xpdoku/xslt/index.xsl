@@ -37,7 +37,10 @@
     <xsl:apply-templates select="news"/>
     
     <!-- Links -->
-    <br/><br/>
+    <br/>
+    <p style="line-height: 16px">
+      <b>Further reading:</b>
+    </p>
     <table border="0" width="100%" cellspacing="0" cellpadding="2">
       <xsl:for-each select="links/link">
         <xsl:if test="position() &gt; 1">
@@ -55,20 +58,27 @@
             <img src="/image/anc_overview.gif" height="19" width="22" alt="=&gt;" hspace="2" vspace="2"/>
           </td>
           <td>
-            <a href="{@href}"><b><xsl:value-of select="caption"/></b></a>
+            <a href="{@href}">
+              <xsl:if test="substring-before(@href, '://') = 'http'">
+                <xsl:attribute name="target">_new</xsl:attribute>
+              </xsl:if>
+              <b><xsl:value-of select="caption"/></b>
+            </a>
           </td>
         </tr>
         <tr>
           <td>&#160;</td>
           <td>
-            <xsl:value-of select="description"/>
+            <p style="line-height: 16px">
+              <xsl:apply-templates select="description"/>
+            </p>
           </td>
         </tr>
       </xsl:for-each>
     </table>
   </xsl:template>
   
-  <xsl:template match="introduction//*">
+  <xsl:template match="introduction//*|description//*">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>
