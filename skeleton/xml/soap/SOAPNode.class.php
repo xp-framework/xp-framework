@@ -24,10 +24,12 @@
      * Constructor
      *
      * @access  public
-     * @param   array params default NULL
+     * @param   mixed* args
+     * @see     xp://xml.Node#__construct
      */
-    function __construct($params= NULL) {
-      parent::__construct($params);
+    function __construct() {
+      $args= func_get_args();
+      parent::__construct($args);
       
       $this->_tmap= new StdClass();
       $this->_tmap->export= array(                      
