@@ -62,7 +62,7 @@
       return (
         $this->cookie.'='.
         ($this->value === '' ? 'deleted' : $this->value).
-        ($this->expires !== 0 ? '; expires='.date('D, d-M-Y H:i:s \G\M\T', $this->expires) : '').
+        ($this->expires !== 0 ? '; expires='.gmdate('D, d-M-Y H:i:s \G\M\T', $this->expires) : '').
         ($this->path !== '' ? '; path='.$this->path : '').
         ($this->domain !== '' ? '; domain='.$this->domain : '').
         ($this->secure ? '; secure' : '')
