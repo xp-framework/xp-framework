@@ -68,9 +68,16 @@
   printf("Division (first / second):        %s\n", $div->toString());
   printf("Modulus (first %% second):         %s\n", $mod->toString());
 
-  // Test increment / decrement  
+  // Test increment / decrement (postfix)
   $d1--;
   $d2++;
-  var_dump($d1, $d2);
+  printf("First big decimal (after \$d1--)   %s\n", $d1->toString());
+  printf("Second big decimal (after \$d2++)  %s\n", $d2->toString());
+
+  // Test increment / decrement (prefix)
+  ++$d1;
+  --$d2;
+  printf("First big decimal (after ++\$d1)   %s\n", $d1->toString());
+  printf("Second big decimal (after --\$d2)  %s\n", $d2->toString());
   // }}}
 ?>
