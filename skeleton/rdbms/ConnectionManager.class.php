@@ -1,19 +1,20 @@
 <?php
-  /* Connection-Manager
-   *
-   * $Id$
-   */
-   
-  define('E_POOL_OBJECT_EXCEPTION',     0xFF12);
+/* Diese Klasse ist Teil des XP-Frameworks
+ *
+ * $Id$
+ */
   
+  uses('lang.ElementNotFoundException');
+  
+  /**
+   * ConnectionManager
+   *
+   * @access    static
+   */
   class ConnectionManager extends Object {
-    var $pool;
-    var $_ref= 0;
-    
-    function __construct($params= NULL) {
-      Object::__construct($params);
-      $this->pool= array();
-    }
+    var 
+      $pool= array(),
+      $_ref= 0;
     
     /**
      * Instanz des Connection-Managers zurückgeben
@@ -32,13 +33,18 @@
       return $ConnectionManager__instance;
     }
     
+    /**
+     * Konfigurieren
+     *
+     * @param   util.Properties properties Ein Objekt der Properties-Klasse
+     */
     function configure($properties) {
       $section= $properties->getFirstSection();
       do {
         $defines= $properties->readSection($section);
         try(); {
           uses($defines['reflect']);
-        } if ($e= catch(E_ANY_EXCEPTION)) {
+        } if (catch('Exception', $e)) {
           return throw(
             $e->type, 
             'ConnectionManager::couldn\'t use '.$defines['reflect'].'::'.$e->message
@@ -56,36 +62,53 @@
       } while ($section= $properties->getNextSection());
     }
     
+    /**
+     * Ein Datenbank-Objekt registrieren - über die Aliase kann später einfacher zugegriffen werden
+     *
+     * @param   mixed obj Ein Datenbank-Objekt
+     * @param   string hostAlias default NULL ein Alias für den Hostnamen, ansonsten der Hostname des Datenbank-Objekts
+     * @param   string userAlias default NULL ein Alias für den Usernamen, ansonsten der Username des Datenbank-Objekts
+     */
     function register($obj, $hostAlias= NULL, $userAlias= NULL) {
       $host= (NULL == $hostAlias) ? $obj->host : $hostAlias;
       $user= (NULL == $userAlias) ? $obj->user : $userAlias;
       LOG::info('ConnectionManager::register ['.$user.'@'.$host.']');
-      if (isset($this->pool["$user@$host"])) return throw(
-        E_POOL_OBJECT_EXCEPTION,
-        $host.'/'.$user.'-combination already registered'
-      );
-      $this->pool["$user@$host"]= $obj;
-      return $obj;
+      if (!isset($this->pool["$user@$host"])) {
+        $this->pool["$user@$host"]= $obj;
+        return $obj;
+      }
     }
     
+    /**
+     * Ein Datenbank-Objekt zurückgeben
+     *
+     * @param   string host Der Hostname
+     * @param   string user Der Username
+     * @return  mixed Datenbank-Objekt
+     */
     function &get($host, $user) {
-      if (!isset($this->pool["$user@$host"])) return throw(
-        E_POOL_OBJECT_EXCEPTION,
-        'no connections for '.$user.'@'.$host
-      );
+      if (!isset($this->pool["$user@$host"])) {
+        return throw(new ElementNotFoundException('no connections registered for '.$user.'@'.$host));
+      }
       return $this->pool["$user@$host"];
     }
     
+    /**
+     * Ein oder mehrere Datenbank-Objekt(e) zu einem Hostnamen zurückgeben
+     *
+     * @param   string hostName Der Hostname
+     * @param   int num default -1 Den num'ten Eintrag, -1 = alle
+     * @return  mixed Datenbank-Objekt(e)
+     */
     function &getByHost($hostName, $num= -1) {
       $results= array();
       foreach (array_keys($this->pool) as $id) {
         list ($user, $host)= explode('@', $id);
         if ($hostName == $host) $results[]= &$this->pool[$id];
       }
-      if (sizeof($results)< 1) return throw(
-        E_POOL_OBJECT_EXCEPTION,
-        'no connections for host '.$hostName
-      );
+      if (sizeof($results)< 1) {
+        return throw(new ElementNotFoundException('no connections registered for '.$hostName));
+      }
       return ($num < 0) ? $results : $results[$num];
     }
   }
