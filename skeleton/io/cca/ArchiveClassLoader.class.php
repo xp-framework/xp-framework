@@ -18,7 +18,8 @@
    *   try(); {
    *     $class= &$l->loadClass($argv[1]);
    *   } if (catch('ClassNotFoundException', $e)) {
-   *     die($e->printStackTrace());
+   *     $e->printStackTrace();
+   *     exit(-1);
    *   }
    * 
    *   $obj= &$class->newInstance();
