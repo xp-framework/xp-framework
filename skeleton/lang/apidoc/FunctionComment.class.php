@@ -127,7 +127,12 @@
           break;
 
         case 'return':
-          list($type, $description)= explode(' ', $line, 2);
+          $args= explode(' ', $line, 2);
+          $type= $description= '';
+          switch (sizeof($args)) {
+            case 1: $type= $args[0]; break;
+            case 2: list($type, $description)= $args; break;
+          }
           $descr= &$this->setReturn($type, $description);
           break;
 
@@ -137,9 +142,20 @@
           break;
 
         case 'param':
-          list($type, $name, $description)= explode(' ', $line, 3);
+          $args= explode(' ', $line, 3);
+          $type= $name= $description= '';
+          switch (sizeof($args)) {
+            case 1: $type= $args[0]; break;
+            case 2: list($type, $name)= $args; break;
+            case 3: list($type, $name, $description)= $args; break;
+          }
           if ('default' == substr($description, 0, 7)) {
-            list(, $default, $description)= explode(' ', $description, 3);
+            $args= explode(' ', $description, 3);
+            $default= $description= '';
+            switch (sizeof($args)) {
+              case 2: $default= $args[1]; break;
+              case 3: list(, $default, $description)= $args; break;
+            }
             $descr= &$this->addDefaultParam($type, $name, $default, $description);
             break;
           }
