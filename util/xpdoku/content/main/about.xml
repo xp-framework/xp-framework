@@ -365,8 +365,8 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
             <li><pre>string xp::typeOf(&amp;mixed arg)</pre>
                 Returns fully qualified class name for any object or the simple type's name
                 using <tt>gettype()</tt>.
-                <code><![CDATA[  var_dump(xp::nameOf(new String())); // Outputs "text.String"
-  var_dump(xp::nameOf(NULL));         // Outputs "NULL"]]></code>
+                <code><![CDATA[  var_dump(xp::typeOf(new String())); // Outputs "text.String"
+  var_dump(xp::typeOf(NULL));         // Outputs "NULL"]]></code>
             </li>
             <li><pre>void xp::gc(void)</pre>
                 Runs the garbage collector. Only use in long-running applications and never
