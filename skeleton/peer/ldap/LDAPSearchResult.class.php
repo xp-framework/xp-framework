@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('peer.ldap.LDAPEntry');
+
   /**
    * Wraps ldap search results
    *
@@ -52,7 +54,18 @@
         return throw(new IllegalStateException('Please perform a search first'));
       }
      
-      return isset($this->data[$offset]) ? $this->data[$offset] : FALSE;
+      // No more entries
+      if (!isset($this->data[$offset])) return FALSE;
+      
+      $e= &new LDAPEntry($this->data[$offset]['dn']);
+      foreach (array_keys($this->data[$offset]) as $key) {
+        if ('count' == $key || is_int($key)) continue;
+        
+        $e->attributes[$key]= $this->data[$offset][$key];
+        unset($e->attributes[$key]['count']);
+      }      
+      
+      return $e;
     }
     
     /**
