@@ -50,7 +50,7 @@
       do {
         $defines= $properties->readSection($section);
         try(); {
-          uses($defines['reflect']);
+          $c= ClassLoader::loadClass($defines['reflect']);
         } if (catch('Exception', $e)) {
           return throw(
             $e->type, 
@@ -58,14 +58,8 @@
           );
         }
 
-        $reflect= substr($defines['reflect'], strrpos($defines['reflect'], '.')+ 1);
         unset($defines['reflect']);
-        
-        // In den Pool mit aufnehmen
-        $this->register(
-          new $reflect($defines),
-          $section
-        );
+        $this->register(new $c($defines), $section);
       } while ($section= $properties->getNextSection());
     }
     
@@ -116,7 +110,7 @@
         list ($user, $host)= explode('@', $id);
         if ($hostName == $host) $results[]= &$this->pool[$id];
       }
-      if (sizeof($results)< 1) {
+      if (sizeof($results) < 1) {
         return throw(new ElementNotFoundException('no connections registered for '.$hostName));
       }
       return ($num < 0) ? $results : $results[$num];
