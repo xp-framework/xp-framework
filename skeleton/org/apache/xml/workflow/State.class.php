@@ -28,9 +28,9 @@
     /**
      * Add a handler
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &org.apache.xml.workflow.Handler handler
+     * @return  &org.apache.xml.workflow.Handler handler
      */
     function &addHandler(&$handler) {
       $this->handlers[]= &$handler;
