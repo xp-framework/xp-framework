@@ -107,6 +107,25 @@
       case ST_ARRAY.T_CONSTANT_ENCAPSED_STRING:
         $annotations[$name][$key][]= trim($tokens[$i][1], '"\'');
         break;
+
+      case ST_ARRAY.T_LNUMBER:
+        $annotations[$name][$key][]= (int)$tokens[$i][1];
+        break;
+
+      case ST_ARRAY.T_DNUMBER:
+        $annotations[$name][$key][]= (float)$tokens[$i][1];
+        break;
+      
+      case ST_ARRAY.T_STRING:
+        $map= array('TRUE' => TRUE, 'FALSE' => FALSE, 'NULL' => NULL);
+        $key= strtoupper($tokens[$i][1]);
+        if (!array_key_exists($key, $map)) {
+          print(" *** Parse error ***\n");
+          $annotations= NULL;
+          break 2;
+        }
+        $annotations[$name][$key][]= $map[$key];
+        break;
       
       case ST_ARRAY.')':
         $state= ST_VALUE;
