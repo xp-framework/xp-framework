@@ -56,5 +56,8 @@
   }
   // }}}
   
+  ini_set('html_errors', 0);
+  ini_set('display_errors', 0);
+    
   ob_start(array('sapi·soap·service', 'output'));
 ?>
