@@ -25,9 +25,13 @@ build:
 	@${PHP} ${PORTSDIR}/build.php ${.CURDIR}
 
 dist:	build
-	cd ${.CURDIR}/build/ ; tar cvfz port.tar.gz *
-    
+	@echo "===> Compressing"
+	@cd ${.CURDIR}/build/ ; for i in `ls -1 *.cca` ; do echo "---> $$i" ; gzip $$i ; done
+	@echo "===> Copying"
+	@cp -R ${.CURDIR}/build/* ${PORTSDIR}/dist
+
 clean:
+	@echo "===> Cleaning"
 	-rm -rf ${.CURDIR}/build
 
 req:
