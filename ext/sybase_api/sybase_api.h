@@ -17,30 +17,30 @@
 #define CTLIB_VERSION CS_VERSION_100
 
 typedef struct {
-    CS_CONTEXT      *context;
+	CS_CONTEXT      *context;
 } sybase_environment;
 
 typedef struct {
-    CS_CONNECTION   *connection;
+	CS_CONNECTION   *connection;
 } sybase_link;
 
 typedef struct {
-    CS_COMMAND *cmd;
-    CS_INT type;
-    CS_INT code;
+	CS_COMMAND *cmd;
+	CS_INT type;
+	CS_INT code;
 } sybase_result;
 
 typedef struct {
-    CS_SMALLINT indicator;
-    char *value;
-    int valuelen;
+	CS_SMALLINT indicator;
+	char *value;
+	int valuelen;
 } sybase_column;
 
 typedef struct {
-    int fields;
-    CS_DATAFMT *dataformat;
-    CS_INT *types;
-    sybase_column *columns;
+	int fields;
+	CS_DATAFMT *dataformat;
+	CS_INT *types;
+	sybase_column *columns;
 } sybase_resultset;
 
 SYBASE_API int sybase_init(sybase_environment **env);
