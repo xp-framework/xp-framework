@@ -21,8 +21,8 @@
      *
      * @access  public
      * @param   string mode one of the FILE_MODE_* constants
-     * @throws  FileNotFoundException in case the file is not found
-     * @throws  IOException in case the file cannot be opened (e.g., lacking permissions)
+     * @throws  io.FileNotFoundException in case the file is not found
+     * @throws  io.IOException in case the file cannot be opened (e.g., lacking permissions)
      */
     function open($mode= FILE_MODE_READ, $compression) {
       $this->mode= $mode;
@@ -47,7 +47,7 @@
      * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function readLine($bytes= 4096) {
       return chop($this->gets($bytes));
@@ -58,7 +58,7 @@
      *
      * @access  public
      * @return  char the character read
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function readChar() {
       if (FALSE === ($result= gzgetc($this->_fd))) {
@@ -76,7 +76,7 @@
      * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function gets($bytes= 4096) {
       if (FALSE === ($result= gzgets($this->_fd, $bytes))) {
@@ -91,7 +91,7 @@
      * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function read($bytes= 4096) {
       if (FALSE === ($result= gzread($this->_fd, $bytes))) {
@@ -106,7 +106,7 @@
      * @access  public
      * @param   string string data to write
      * @return  bool success
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function write($string) {
       if (FALSE === ($result= gzwrite($this->_fd, $string))) {
@@ -121,7 +121,7 @@
      * @access  public
      * @param   string string data to write
      * @return  bool success
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function writeLine($string) {
       if (FALSE === ($result= gzputs($this->_fd, $string."\n"))) {
@@ -139,7 +139,7 @@
      * @see     php://feof
      * @access  public
      * @return  bool TRUE when the end of the file is reached
-     * @throws  IOException in case of an error (e.g., the file's not been opened)
+     * @throws  io.IOException in case of an error (e.g., the file's not been opened)
      */
     function eof() {
       $result= gzeof($this->_fd);
@@ -156,7 +156,7 @@
      * This function is identical to a call of $f->seek(0, SEEK_SET)
      *
      * @access  public
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function rewind() {
       if (FALSE === ($result= gzrewind($this->_fd))) {
@@ -172,7 +172,7 @@
      * @param   int position default 0 The new position
      * @param   int mode default SEEK_SET 
      * @see     php://gzseek
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      * @return  bool success
      */
     function seek($position= 0, $mode= SEEK_SET) {
@@ -186,7 +186,7 @@
      * Retrieve file pointer position
      *
      * @access  public
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      * @return  int position
      */
     function tell($position= 0, $mode= SEEK_SET) {
@@ -208,6 +208,5 @@
       unset($this->_fd);
       return $result;
     }
-
   }
 ?>
