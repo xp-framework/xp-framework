@@ -66,7 +66,7 @@
             $args= preg_split('/[\s\t]+/', substr($line, 1), 2);
             $tag= $line= '';
             switch (sizeof($args)) {
-              case 1: $tag= $args[0];
+              case 1: $tag= $args[0]; break;
               case 2: list($tag, $line)= $args; break;
             }
             break;
