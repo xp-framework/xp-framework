@@ -236,6 +236,16 @@
       delete($f);
       return serialize(TRUE);
     }
+
+    /**
+     * Method to be triggered when a client connects
+     *
+     * @access  public
+     * @param   &peer.server.ConnectionEvent event
+     */
+    function connected(&$event) {
+      $this->data[$event->stream->__id]= '';
+    }
     
     /**
      * Method to be triggered when a client has sent data
@@ -244,9 +254,6 @@
      * @param   &peer.server.ConnectionEvent event
      */
     function data(&$event) {
-      if (!isset($this->data[$event->stream->__id])) {
-        $this->data[$event->stream->__id]= '';
-      }
       $this->data[$event->stream->__id].= $event->data;
       if ("\n" != $event->data{strlen($event->data)- 1}) {        // Wait for more data
         return;
@@ -254,6 +261,7 @@
       
       // Scan input string
       $cmd= sscanf($this->data[$event->stream->__id], "%s %s %[^\r]");
+      $this->data[$event->stream->__id]= '';
       try(); {
         if (!method_exists($this, 'handle'.$cmd[0])) {
           throw(new MethodNotImplementedException('Operation not supported', $cmd[0]));
