@@ -11,7 +11,8 @@
     'text.translator.Swabian',
     'peer.Socket',
     'io.File',
-    'io.FileUtil'
+    'io.FileUtil',
+    'util.Date'
   );
 
   define('MODE_AWAKE',      1);
@@ -48,6 +49,10 @@
       $this->reloadConfiguration();
       $this->tstart= time();
       $this->mode= MOOD_AWAKE;
+      
+      // Initially schedule sleeping
+      $ts= time() + 86400;
+      $this->registry['scheduled-sleep']= ($ts - ($ts % 86400));
 
       // Set up DictClient
       $this->dictc= &new DictClient();
@@ -247,7 +252,7 @@
 
       $delta= ('-' == $mode[0] ? -10 : 10);
       $this->setKarma($nick, $delta, '@@mode.'.$mode);
-      $this->sendRandomMessage(
+      if (MODE_AWAKE == $this->mode) $this->sendRandomMessage(
         $connection, 
         $target, 
         $delta < 0 ? 'karma.dislike' : 'karma.like', 
@@ -797,10 +802,17 @@
     function doSleep(&$connection, $time) {
       if ($this->mode == MODE_SLEEP) return;
       
-      $this->cat && $this->cat->debug('Going to sleep for %d seconds', $time);
+      $this->cat && $this->cat->debugf('Going to sleep for %d seconds', $time);
       $this->mode= MODE_SLEEP;
       
+      // Schedule wakeup
       $this->registry['wakeup']= time() + $time;
+      $this->cat && $this->cat->debug('Scheduled wakeup time is', new Date($this->registry['wakeup']));
+      
+      // Reset sleep
+      unset($this->registry['scheduled-sleep']);
+      
+      // Announce change to sleep mode, then change nick
       foreach (array_keys($this->channels) as $channel) {
         $this->sendRandomMessage($connection, $channel, 'sleep', NULL, NULL);
       }
@@ -818,14 +830,21 @@
     function doWakeup(&$connection) {
       if ($this->mode == MODE_AWAKE) return;
       
-      $this->cat && $this->cat->debug('The bot is waking up again. Scheduled wake time was %s',
-        date('H:i:s', $this->registry['wakeup'])
+      $this->cat && $this->cat->debug('The bot is waking up again. Scheduled wake time was',
+        new Date($this->registry['wakeup'])
       );
       $this->mode= MODE_AWAKE;
       
+      // Reset wakup, schedule next sleep
       unset($this->registry['wakeup']);
+      
+      // Schedule next sleeping time
+      $ts= time() + 86400;
+      $this->registry['scheduled-sleep']= $ts - ($ts % 86400);
+      $this->cat && $this->cat->debug('Next scheduled sleep is', new Date($this->registry['scheduled-sleep']));
+      
+      // Restore nick name and announce wakeup in all joined channels
       $connection->setNick($this->registry['nick-awake']);
-
       foreach (array_keys($this->channels) as $channel) {
         $this->sendRandomMessage($connection, $channel, 'wakeup', NULL, NULL);
       }
@@ -929,7 +948,9 @@
         $connection->writeln('NOTICE %s :%s is back!', $channel, $nick);
         $this->channels[$channel]= TRUE;
       } else {
-        $this->sendRandomMessage($connection, $channel, 'join', $nick, NULL);
+        if ($this->mode == MODE_AWAKE) {
+          $this->sendRandomMessage($connection, $channel, 'join', $nick, NULL);
+        }
       }
     }
 
@@ -947,7 +968,8 @@
         $this->channels[$channel]= FALSE;
       }
       
-      $this->sendRandomMessage($connection, $channel, 'leave', $nick, $message);
+      if ($this->mode == MODE_AWAKE)
+        $this->sendRandomMessage($connection, $channel, 'leave', $nick, $message);
     }
 
     /**
@@ -961,6 +983,8 @@
      * @param   string action what actually happened (e.g. "looks around")
      */
     function onAction(&$connection, $nick, $target, $params) {
+      if (MODE_AWAKE != $this->mode) return;
+      
       if (10 == rand(0, 20)) {
         $connection->sendAction($target, 'macht %s nach und %s auch', $nick, $params);
         $this->setKarma($nick, 1, '@@imitate');
@@ -996,11 +1020,12 @@
     function onPings(&$connection, $data) {
       if (
         rand(0, 100) > 95 &&
-        date('H') < 5
+        isset($this->registry['scheduled-sleep']) &&
+        $this->registry['scheduled-sleep'] < time()
       ) {
       
-        // Maximally sleep up to aroung 8 hours per day
-        $this->doSleep($connection, 60 * 5 * rand(0, 100));
+        // Maximally sleep up to from around 1,5 to 8 hours per day
+        $this->doSleep($connection, 60 * 5 * rand(30, 100));
       }
     }
   }
