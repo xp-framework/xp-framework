@@ -26,6 +26,9 @@
      * @throws  Exception in case
      */      
     {
+      var matches= [];
+      var y= 0;
+
       if (matches= str.match(/0?([0-9]+)\.0?([0-9]+)(\.0?([0-9]+))?/)) {
         with (this.date = new Date()) {
           setDate(parseInt(matches[1]));
