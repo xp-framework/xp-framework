@@ -20,7 +20,6 @@
             <li>Objects are passed by handle, not by value.</li>
             <li>Unified constructors and destructors</li>
             <li>Private, public and protected variables and functions</li>
-            <li>Nested classes and namespaces (class rdbms::MySQL)</li>
             <li>Exceptions</li>
             <li>Static class variables</li>
             <li>Abstract classes and methods</li>
