@@ -170,7 +170,12 @@
     function _response($discard= FALSE, $error= TRUE) {
       $lines= array();
       do {
-        if (!($line= $this->_sock->readLine())) return FALSE;
+        try(); {
+          $line= $this->_sock->readLine();
+        } if (catch ('IOException', $e)) {
+          return throw ($e);
+        }
+        
         $this->cat && $this->cat->debug('<<<', $line);
         
         if ('OK' == substr($line, 0, 2)) {
@@ -403,7 +408,7 @@
       $this->_sendcmd('GETSCRIPT "%s"', $name);
       if (!($r= $this->_response())) return $r;
       
-      // Response it something like this:
+      // Response is something like this:
       // 
       // {59} 
       // if size :over 100K { # this is a comment 
