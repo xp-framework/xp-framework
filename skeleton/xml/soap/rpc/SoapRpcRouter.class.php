@@ -76,7 +76,6 @@
     </SOAP-ENV:Fault>
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>');
-      ini_set('default_charset',    XML_ENCODING_DEFAULT);
       ini_set('default_mimetype',   'text/xml');
       parent::__construct();
     }
