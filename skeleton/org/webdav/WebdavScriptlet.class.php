@@ -107,10 +107,7 @@
         WEBDAV_METHOD_COPY       => 'doCopy',
         WEBDAV_METHOD_MOVE       => 'doMove'
       ),
-      $permissions= array(
-        
-      ),
-
+      $permissions  = array(),
       $impl         = array(),
       $handlingImpl = NULL,
       $auth         = NULL,
@@ -123,7 +120,6 @@
      * @param   array impl (associative array of pathmatch => org.webdav.impl.DavImpl)
      */  
     function __construct($impl) {
-      parent::__construct();
 
       // Make sure patterns are always with trailing /
       foreach (array_keys($impl) as $pattern) {
