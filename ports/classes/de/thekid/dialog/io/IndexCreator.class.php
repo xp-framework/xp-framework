@@ -24,7 +24,7 @@
      * Set entriesPerPage
      *
      * @access  public
-     * @param   mixed entriesPerPage
+     * @param   int entriesPerPage
      */
     function setEntriesPerPage($entriesPerPage) {
       $this->entriesPerPage= $entriesPerPage;
@@ -34,7 +34,7 @@
      * Get entriesPerPage
      *
      * @access  public
-     * @return  mixed
+     * @return  int
      */
     function getEntriesPerPage() {
       return $this->entriesPerPage;
