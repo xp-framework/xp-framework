@@ -132,10 +132,7 @@
       
       if ('symbols' eq trim ($_)) {
         $tags= 1;
-        print "There are tags...\n";
       }
-      
-      if ($tags == 1) { print $_; }
       
       if ($tags == 1 && -1 != index ($_, $tagName)) {
         my ($tagInfo, $revision)= split /:/, $_;
