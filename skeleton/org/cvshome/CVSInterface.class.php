@@ -15,7 +15,7 @@
   define ('CVS_UPTODATE', 0x0008);
 
   uses (
-    'org.cvshome.CVSInterfaceException',
+    'org.cvshome.CVSInterfaceException'
   );
   
   class CVSInterface extends Object {
@@ -34,20 +34,15 @@
      * @throws CVSInterfaceException, if cvs fails
      * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC115
      */
-    function _execute($cvsCmd) {
+    function _execute($cvsCmd, $object= '') {
       $cmdLine= sprintf ("%s %s %s %s 2>&1",
         $this->_CVS,
         (NULL !== $this->cvsRoot ? '-d'.$this->cvsRoot : ''),
         $cvsCmd,
-        basename ($this->filename)
+        $object
       );
       
-      // CVS sometimes needs to have the current directory
-      // to be the same, the file is in:
-      $oldDir= getcwd();
-      chdir (dirname ($this->filename));      
       exec ($cmdLine, $output, $returnCode);
-      chdir ($oldDir);
       
       if (0 !== $returnCode && 'diff' != substr ($cvsCmd, 0, 4)) {
         return throw (new CVSInterfaceException ('CVS returned failure'));

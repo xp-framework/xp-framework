@@ -19,7 +19,7 @@
    */
   class CVSFile extends CVSInterface {
     var
-      $filename= NULL;  
+      $filename= NULL;
       
     /**
      * Construct a new CVS Interface object
@@ -38,6 +38,12 @@
       parent::__construct();
     }
     
+    function _execute($cvsCmd) {
+      $olddir= getcwd(); chdir (dirname ($this->filename));
+      return parent::_execute ($cvsCmd, basename ($this->filename));
+      chdir ($olddir);
+    }
+    
     /**
      * Update a file or directory
      *
@@ -46,7 +52,7 @@
      * @return array stats
      * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC152
      */
-    function update($sim= false) {
+    function update($sim= FALSE) {
       $results= $this->_execute (sprintf ('update %s',
         ($sim ? '-nq' : '')
       ));
