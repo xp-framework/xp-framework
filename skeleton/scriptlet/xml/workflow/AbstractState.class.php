@@ -46,7 +46,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
-     */
+     */g
     function setup(&$request, &$response, &$context) {
       $this->cat && $this->cat->debug($this->getClassName().'::setup');
       
@@ -68,8 +68,8 @@
             if (!$request->session->hasValue($this->handlers[$i]->identifier)) {
 
               // If the handler is already active, this means the page was reloaded
-              if ($this->handlers[$i]->isActive($request)) {
-                $this->handlers[$i]->finalize($request, $response);
+              if ($this->handlers[$i]->isActive($request, $context)) {
+                $this->handlers[$i]->finalize($request, $response, $context);
                 $handler->setAttribute('status', HANDLER_RELOADED);
                 continue;
               }
