@@ -34,7 +34,7 @@
     function getStackTrace() {
       $return= sprintf(
         "Exception %s (%s)\n",
-        $this->getName(),
+        $this->getClassName(),
         $this->message
       );
       

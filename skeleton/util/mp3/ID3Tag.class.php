@@ -57,7 +57,6 @@
         ID3_VERSION_2       => 'ID3_VERSION_2'
       );
       
-      $c= &$this->getClass();
       return sprintf(
         "%s {\n".
         "\t[version] %s\n".
@@ -69,7 +68,7 @@
         "\t[comment] %s\n".
         "\t[genre  ] %d {%s}\n".
         "}",
-        $c->getName(),
+        $this->getClassName(),
         $ver[$this->version],
         $this->tag,
         $this->name,

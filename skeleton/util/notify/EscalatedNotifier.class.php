@@ -100,7 +100,7 @@
             'Escalation for '.$message.' ['.$config.']',
             '--Occurance #'.$count.' matched by rule '.$rule."\n\n".
             $details."\n\n*** Stack Trace: ***\n".$stack,
-            'X-Sender: '.$this->getName()
+            'X-Sender: '.$this->getClassName()
           );
           
           // Log notifications

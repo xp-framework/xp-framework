@@ -40,7 +40,7 @@
     function __construct($codebase, $cache= '/tmp') {
       $this->codebase= $codebase;
       $this->cache= $cache;
-      $this->prefix= $this->getName().'-';
+      $this->prefix= $this->getClassName().'-';
       parent::__construct();
     }
     

@@ -11,12 +11,13 @@
   );
   
   /**
-   * A class that wraps PHP's MySQL functions
+   * A class that wraps PHP's PostgreSQL functions
    *
-   * @purpose Database class for MySQL
-   * @see     http://mysql.org/
+   * @purpose Database class for PostgreSQL
+   * @see     http://www.postgresql.org/
+   * @ext     pgsql 
    */
-  class PostgresSQL extends Object {
+  class PostgreSQL extends Object {
     var 
       $handle= NULL,
       $host, 
@@ -41,7 +42,7 @@
      */
     function __construct($params) {
       $l= &Logger::getInstance();
-      $this->cat= $l->getCategory($this->getName());
+      $this->cat= $l->getCategory($this->getClassName());
       parent::__construct($params);
     }
     

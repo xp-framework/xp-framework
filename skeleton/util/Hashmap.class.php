@@ -327,7 +327,7 @@
      * @return  string
      */
     function toString() {
-      return $this->getName()." {\n".substr(var_export($this->_hash, 1), 8, -2)."\n}";
+      return $this->getClassName()." {\n".substr(var_export($this->_hash, 1), 8, -2)."\n}";
     }
   }
 ?>

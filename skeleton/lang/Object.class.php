@@ -89,7 +89,7 @@
      * 
      * Per default, this method returns:
      * <xmp>
-     *   <fully-qualified-class-name>@<serialized-object>
+     *   [fully-qualified-class-name]@[serialized-object]
      * </xmp>
      * 
      * Example:
@@ -101,6 +101,6 @@
      * @return  string
      */
     function toString() {
-      return $this->getName().'@'.serialize($this);
+      return $this->getClassName().'@'.serialize($this);
     }
   }

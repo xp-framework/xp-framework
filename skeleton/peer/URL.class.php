@@ -42,7 +42,6 @@
      * @see     xp://lang.Object#toString
      */
     function toString() {
-      $c= &$this->getClass();
       return sprintf(
         "%s@ {\n".
         "\t[scheme]        %s\n".
@@ -54,7 +53,7 @@
         "\t[query]        %s\n".
         "\t[fragment]    %s\n".
         "}",
-        $c->getName(),
+        $this->getClassName(),
         $this->getScheme(),
         $this->getHost(),
         $this->getPort(),

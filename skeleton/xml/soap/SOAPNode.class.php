@@ -133,8 +133,8 @@
           $type= 'ns'.$ns.':struct';
           
           // Class name
-          if (method_exists($value, 'getName')) {
-            $name= $value->getName();
+          if (method_exists($value, 'getClassName')) {
+            $name= $value->getClassName();
           } else {
             $name= get_class($value);
           }

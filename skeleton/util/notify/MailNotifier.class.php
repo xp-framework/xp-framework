@@ -26,7 +26,7 @@
         $params,
         $message,
         $details."\n\n*** Stack Trace: ***\n".$stack,
-        'X-Sender: '.$this->getName()
+        'X-Sender: '.$this->getClassName()
       );
     }
   }

@@ -41,7 +41,7 @@
      */
     function __construct($params) {
       $l= &Logger::getInstance();
-      $this->cat= $l->getCategory($this->getName());
+      $this->cat= $l->getCategory($this->getClassName());
       parent::__construct($params);
     }
     

@@ -85,7 +85,7 @@
           $params['mail'],
           $params['subject'].' - digest for '.sizeof($data).' exceptions',
           $str,
-          'X-Sender: '.$this->getName()
+          'X-Sender: '.$this->getClassName()
         );
 
         // Unlink storage
