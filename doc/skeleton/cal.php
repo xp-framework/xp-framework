@@ -48,6 +48,7 @@
     
     // Bewegliche Feiertage, von Ostern abhängig
     $easter= Calendar::easter($i);
+    $easter= $easter->_utime;
     $holiday[$easter - CAL_SEC_DAY * 48]=     'Rosenmontag';
     $holiday[$easter - CAL_SEC_DAY * 46]=     'Aschermittwoch';
     $holiday[$easter - CAL_SEC_DAY * 2]=     'Karfreitag';
@@ -60,6 +61,7 @@
     
     // Bewegliche Feiertage, vom ersten Advent abhängig
     $advent= Calendar::advent($i);
+    $advent= $advent->_utime;
     $holiday[$advent]=                     '1. Advent';
     $holiday[$advent + CAL_SEC_DAY * 7]=     '2. Advent';
     $holiday[$advent + CAL_SEC_DAY * 14]=     '3. Advent';
