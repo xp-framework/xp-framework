@@ -69,11 +69,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Adds an entry to the result entries.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &mixed array raw form of result data
      */
     function addResult($result) {
       $res= array();
