@@ -96,6 +96,16 @@
     }
     
     /**
+     * Initialize session
+     *
+     * @access  protected
+     * @param   &scriptlet.HttpScriptletRequest request
+     */
+    function handleSessionInitialization(&$request) {
+      $request->session->initialize($request->getSessionId());
+    }
+
+    /**
      * Handle the case when we find the given session invalid. By default, 
      * we create a new session and therefore gracefully handle this case.
      *
@@ -352,7 +362,7 @@
       if ($this->needsSession($request) || $request->getSessionId()) {
         $request->setSession($this->_session());
         try(); {
-          $request->session->initialize($request->getSessionId());
+          $this->handleSessionInitialization($request);
         } if (catch('Exception', $e)) {
         
           // Check if session initialization errors can be handled gracefully
