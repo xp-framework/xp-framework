@@ -321,10 +321,12 @@ peer.ldap.LDAPEntry@DN(uid=kurt,ou=People,dc=OpenLDAP,dc=Org){
     'rdbms.ConnectionManager',
     'net.xp-framework.db.caffeine.XPNews'
   );
+
+  $p= &new ParamString();
   
   $cm= &ConnectionManager::getInstance();
   $cm->register(DriverManager::getConnection(
-    'sybase://news:*****@php3/CAFFEINE?autoconnect=1'
+    'sybase://'.$p->value(1).'/CAFFEINE?autoconnect=1'
   ), 'caffeine');
   
   $rdf= &new RDFNewsFeed();
@@ -357,7 +359,7 @@ peer.ldap.LDAPEntry@DN(uid=kurt,ou=People,dc=OpenLDAP,dc=Org){
   
   Console::write($rdf->getSource(INDENT_DEFAULT));
 ]]></code>
-          <box caption="Output (abbreviated)"><pre><![CDATA[
+          <box caption="Abbreviated output (called with 'news:****@php3' as argument for credentials)"><pre><![CDATA[
 <rdf:RDF
  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
  xmlns:dc="http://purl.org/dc/elements/1.1/"
