@@ -20,6 +20,11 @@
   /**
    * Comment factory
    *
+   * Usage example:
+   * <code>
+   *   $comment= &CommentFactory::factory(APIDOC_COMMENT_FUNCTION):
+   * </code>
+   *
    * @model static
    */
   class CommentFactory extends Object {
