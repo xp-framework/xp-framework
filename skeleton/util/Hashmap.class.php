@@ -1,8 +1,8 @@
 <?php
-  /* This class is part of the XP framework
-   *
-   * $Id$
-   */
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
    
   /**
    * Hashmap class
@@ -314,6 +314,14 @@
     
     /**
      * Create string representation
+     * 
+     * Example:
+     * <pre>
+     *   util.Hashmap {
+     *     'key'  => 'value',
+     *     'key2' => 'value2',
+     *   } 
+     * </pre>
      *
      * @access  public
      * @return  string
