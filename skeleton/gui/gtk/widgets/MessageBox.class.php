@@ -13,7 +13,7 @@
   define('MB_NO',               0x0008);
   define('MB_RETRY',            0x0010);
   define('MB_IGNORE',           0x0020);
-  define('MB_ABORT',            0x0030);
+  define('MB_ABORT',            0x0040);
   
   // Style: Buttons combined
   define('MB_OKCANCEL',         MB_OK | MB_CANCEL);
@@ -22,22 +22,32 @@
   define('MB_RETRYCANCEL',      MB_RETRY | MB_CANCEL);
   
   // Style: Icons  
-  define('MB_ICONHAND',         0x0040);
-  define('MB_ICONQUESTION',     0x0050);
-  define('MB_ICONEXCLAMATION',  0x0060);
-  define('MB_ICONASTERISK',     0x0070);
+  define('MB_ICONHAND',         0x0080);
+  define('MB_ICONQUESTION',     0x0100);
+  define('MB_ICONEXCLAMATION',  0x0200);
+  define('MB_ICONASTERISK',     0x0300);
   define('MB_ICONMASK',         MB_ICONHAND | MB_ICONQUESTION | MB_ICONEXCLAMATION | MB_ICONASTERISK);
 
   // Style: Icons aliases
   define('MB_ICONINFORMATION',  MB_ICONASTERISK);
   define('MB_ICONERROR',        MB_ICONHAND);
-  define('MB_WARNING',          MB_ICONEXCLAMATION);
+  define('MB_ICONWARNING',      MB_ICONEXCLAMATION);
+  
+  // Style: Default (information icon and OK button)
+  define('MB_DEFAULT',          MB_OK | MB_ICONINFORMATION);
 
   /**
    * Messagebox
    *
+   * Usage:
    * <code>
-   *   MessageBox::display('Hello world');
+   *   $m= &new MessageBox('Hello world', 'Greeting', MB_OK | MB_ICONWARNING);
+   *   $pressed= $m->show();
+   * </code>
+   *
+   * Static usage:
+   * <code>
+   *   $pressed= MessageBox::display('Hello world');
    * </code>
    *
    * @purpose Provide a widget for file dialogs
@@ -55,12 +65,20 @@
      *
      * @access  public
      * @param   string message
+     * @param   string caption default 'Message'
+     * @param   int style default MB_DEFAULT
+     * @param   array buttons default array() user defined buttons
      */
-    function __construct($message, $caption= 'Message', $style= MB_OK, $buttons= array()) {
+    function __construct(
+      $message, 
+      $caption= 'Message', 
+      $style= MB_DEFAULT, 
+      $buttons= array()
+    ) {
       $this->message= $message;
       $this->caption= $caption;
       $this->style= $style;
-      $this->buttons= $buttons;
+      $this->buttons= $buttons; // TBI
       parent::__construct(dirname(__FILE__).'/messagebox.glade', 'messagebox');
     }
 
@@ -70,9 +88,17 @@
      * @model   static
      * @access  public
      * @param   string message
-     * @return  bool
+     * @param   string caption default 'Message'
+     * @param   int style default MB_DEFAULT
+     * @param   array buttons default array() user defined buttons
+     * @return  int
      */
-    function display($message, $caption= 'Message', $style= MB_OK, $buttons= array()) {
+    function display(
+      $message, 
+      $caption= 'Message', 
+      $style= MB_DEFAULT, 
+      $buttons= array()
+    ) {
       $m= &new MessageBox($message, $caption, $style, $buttons);
       return $m->show();
     }
@@ -129,10 +155,12 @@
       
       // Set icon
       $idx= $map[$this->style & MB_ICONMASK];
+      $this->cat->debug($this->style, $this->style & MB_ICONMASK);
       $this->icon->set($this->pixmaps['p:'.$idx], $this->pixmaps['m:'.$idx]);
       
       // Buttons
       foreach (array('OK', 'CANCEL', 'YES', 'NO', 'RETRY', 'IGNORE', 'ABORT') as $name) {
+        $this->cat->debug($this->style, $name, $this->style & constant('MB_'.$name));
         if ($this->style & constant('MB_'.$name)) {
 		  $b= &new GtkButton(ucfirst(strtolower($name)));    // TBD: Get via gettext?
           $b->set_name($name);
@@ -162,11 +190,11 @@
      * Show this messagebpx
      *
      * @access  public
-     * @return  bool
+     * @return  int
      */
     function show() {
       parent::show();
-      return !empty($this->pressed);
+      return $this->pressed;
     }
   }
 ?>
