@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('rdbms.DBConnection', 'rdbms.sybase.SybaseResultSet');
+  uses('rdbms.Connection', 'rdbms.sybase.SybaseResultSet');
 
   /**
    * Connection to Sybase databases using client libraries
