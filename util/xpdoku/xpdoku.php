@@ -7,7 +7,8 @@
     'io.Folder', 
     'lang.apidoc.parser.ClassParser',
     'util.cmd.ParamString',
-    'util.text.PHPSyntaxHighlighter'
+    'util.text.PHPSyntaxHighlighter',
+    'org.cvshome.CVSInterface'
   );
   
   function highlightPHPSource($str) {
@@ -52,6 +53,12 @@
         try(); {
           $parser->setFile(new File($folder->uri.$entry));
           $result= &$parser->parse();
+          
+          if (defined ('USE_CVS')) {
+            $cvs= &new CVSInterface ($folder->uri.$entry);
+            $status= $cvs->getStatus();
+            $result['comments']['file']->cvstags= $status->tags;
+          }
           
           // Add new class to classtree
           $subNode= &new Node();
@@ -141,7 +148,12 @@
     ? '/'.str_replace('/', '\/', $p->value('file')).'/i'
     : '/.*/'
   );
-
+  
+  // This is a global option
+  if ($p->exists ('with-cvs')) {
+    define ('USE_CVS', 1);
+  }
+      
   // Open properties file for generator
   $packages= array ();
   
