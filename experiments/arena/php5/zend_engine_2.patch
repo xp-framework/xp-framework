@@ -4,7 +4,7 @@ RCS file: /repository/ZendEngine2/zend.h,v
 retrieving revision 1.266
 diff -u -r1.266 zend.h
 --- Zend/zend.h	3 Nov 2004 23:05:17 -0000	1.266
-+++ Zend/zend.h	6 Nov 2004 18:44:48 -0000
++++ Zend/zend.h	6 Nov 2004 21:18:28 -0000
 @@ -255,6 +255,8 @@
   */
  typedef struct _zval_struct zval;
@@ -46,7 +46,7 @@ RCS file: /repository/ZendEngine2/zend_API.c,v
 retrieving revision 1.269
 diff -u -r1.269 zend_API.c
 --- Zend/zend_API.c	2 Nov 2004 13:10:37 -0000	1.269
-+++ Zend/zend_API.c	6 Nov 2004 18:44:49 -0000
++++ Zend/zend_API.c	6 Nov 2004 21:18:28 -0000
 @@ -1313,6 +1313,9 @@
  			internal_function->return_reference = ptr->arg_info[0].return_reference;
  		} else {
@@ -63,7 +63,7 @@ RCS file: /repository/ZendEngine2/zend_builtin_functions.c,v
 retrieving revision 1.254
 diff -u -r1.254 zend_builtin_functions.c
 --- Zend/zend_builtin_functions.c	26 Oct 2004 23:25:05 -0000	1.254
-+++ Zend/zend_builtin_functions.c	6 Nov 2004 18:44:50 -0000
++++ Zend/zend_builtin_functions.c	6 Nov 2004 21:18:29 -0000
 @@ -1205,45 +1205,80 @@
  	zend_uint mask = va_arg(args, zend_uint);
  	zend_uint comply = va_arg(args, zend_uint);
@@ -161,7 +161,7 @@ RCS file: /repository/ZendEngine2/zend_compile.c,v
 retrieving revision 1.600
 diff -u -r1.600 zend_compile.c
 --- Zend/zend_compile.c	16 Oct 2004 23:17:58 -0000	1.600
-+++ Zend/zend_compile.c	6 Nov 2004 18:44:51 -0000
++++ Zend/zend_compile.c	6 Nov 2004 21:18:31 -0000
 @@ -116,6 +116,22 @@
  	CG(declarables).ticks.value.lval = 0;
  }
@@ -176,7 +176,7 @@ diff -u -r1.600 zend_compile.c
 +			zend_hash_init(*ht, zend_stack_count(&CG(annotation_stack)), NULL, ZVAL_PTR_DTOR, 0);
 +		}
 +		while (zend_stack_top(&CG(annotation_stack), (void **) &annotation) == SUCCESS) {
-+			zend_hash_add(*ht, annotation->name, annotation->name_length + 1, (void **) &annotation->value, sizeof(zval *), NULL);
++			zend_hash_update(*ht, annotation->name, annotation->name_length + 1, &annotation->value, sizeof(zval *), NULL);
 +			efree(annotation->name);
 +			zend_stack_del_top(&CG(annotation_stack));
 +		}
@@ -205,7 +205,7 @@ diff -u -r1.600 zend_compile.c
  	zend_stack_destroy(&CG(list_stack));
  	zend_hash_destroy(&CG(filenames_table));
  	zend_llist_destroy(&CG(open_files));
-@@ -508,6 +529,55 @@
+@@ -508,6 +529,77 @@
  	}
  }
  
@@ -227,7 +227,7 @@ diff -u -r1.600 zend_compile.c
 +	FREE_PNODE(throws_znode);
 +} 
 +
-+void zend_do_annotation(znode *name, znode *value TSRMLS_DC)
++void zend_do_annotation(znode *name, znode *value, int type TSRMLS_DC)
 +{
 +	zend_annotation annotation;
 +
@@ -239,9 +239,31 @@ diff -u -r1.600 zend_compile.c
 +		*annotation.value = value->u.constant;
 +	} else {
 +		INIT_PZVAL(annotation.value);
-+		annotation.value->type = IS_NULL;
++		if (type == IS_ARRAY) {
++			array_init(annotation.value);
++		} else {
++			annotation.value->type = type;
++		}
 +	}
 +	zend_stack_push(&CG(annotation_stack), (void *) &annotation, sizeof(annotation));
++}
++
++void zend_do_annotation_define(znode *define, znode *value TSRMLS_DC)
++{
++	zend_annotation *annotation;
++	zval *element;
++
++	ALLOC_ZVAL(element);
++	if (value) {
++		*element = value->u.constant;
++	} else {
++		INIT_PZVAL(element);
++		Z_TYPE_P(element)= IS_NULL;
++	}
++
++	zend_stack_top(&CG(annotation_stack), (void **) &annotation);
++	zend_hash_update(Z_ARRVAL_P(annotation->value), define->u.constant.value.str.val, define->u.constant.value.str.len+1, &element, sizeof(zval *), NULL);
++	FREE_PNODE(define);
 +}
 +
 +void zend_do_import(znode *classname, znode *alias TSRMLS_DC)
@@ -261,7 +283,7 @@ diff -u -r1.600 zend_compile.c
  static zend_bool opline_is_fetch_this(zend_op *opline TSRMLS_DC)
  {
  	if ((opline->opcode == ZEND_FETCH_W) && (opline->op1.op_type == IS_CONST)
-@@ -1038,6 +1108,9 @@
+@@ -1038,6 +1130,9 @@
  
  	op_array.line_start = zend_get_compiled_lineno(TSRMLS_C);
  
@@ -271,7 +293,7 @@ diff -u -r1.600 zend_compile.c
  	if (is_method) {
  		char *short_class_name = CG(active_class_entry)->name;
  		int short_class_name_length = CG(active_class_entry)->name_length;
-@@ -1185,7 +1258,6 @@
+@@ -1185,7 +1280,6 @@
  	CG(active_op_array)->line_end = zend_get_compiled_lineno(TSRMLS_C);
  	CG(active_op_array) = function_token->u.op_array;
  
@@ -279,7 +301,7 @@ diff -u -r1.600 zend_compile.c
  	/* Pop the switch and foreach seperators */
  	zend_stack_del_top(&CG(switch_cond_stack));
  	zend_stack_del_top(&CG(foreach_copy_stack));
-@@ -1215,9 +1287,10 @@
+@@ -1215,9 +1309,10 @@
  	cur_arg_info->pass_by_reference = pass_by_reference;
  
  	if (class_type->op_type != IS_UNUSED) {
@@ -291,7 +313,7 @@ diff -u -r1.600 zend_compile.c
  	} else {
  		cur_arg_info->class_name = NULL;
  		cur_arg_info->class_name_len = 0;
-@@ -1347,6 +1420,7 @@
+@@ -1347,6 +1442,7 @@
  				zval_dtor(&class_name->u.constant);
  				break;
  			default:
@@ -299,7 +321,7 @@ diff -u -r1.600 zend_compile.c
  				opline->op2 = *class_name;
  				break;
  		}
-@@ -1854,7 +1928,8 @@
+@@ -1854,7 +1950,8 @@
  		return 1; /* method doesn't exist in child, copy from parent */
  	}
  
@@ -309,7 +331,7 @@ diff -u -r1.600 zend_compile.c
  		&& parent->common.scope != (child->common.prototype ? child->common.prototype->common.scope : child->common.scope)
  		&& child->common.fn_flags & (ZEND_ACC_ABSTRACT|ZEND_ACC_IMPLEMENTED_ABSTRACT)) {
  		zend_error(E_COMPILE_ERROR, "Can't inherit abstract function %s::%s() (previously declared abstract in %s)", 
-@@ -2529,13 +2604,16 @@
+@@ -2529,13 +2626,16 @@
  	zend_op *opline;
  	int doing_inheritance = 0;
  	zend_class_entry *new_class_entry = emalloc(sizeof(zend_class_entry));
@@ -327,7 +349,7 @@ diff -u -r1.600 zend_compile.c
  	if (!(strcmp(lcname, "self") && strcmp(lcname, "parent"))) {
  		efree(lcname);
  		zend_error(E_COMPILE_ERROR, "Cannot use '%s' as class name as it is reserved", class_name->u.constant.value.str.val);
-@@ -2584,6 +2662,9 @@
+@@ -2584,6 +2684,9 @@
  		CG(active_class_entry)->doc_comment_len = CG(doc_comment_len);
  		RESET_DOC_COMMENT();
  	}
@@ -337,7 +359,7 @@ diff -u -r1.600 zend_compile.c
  }
  
  
-@@ -2635,9 +2716,101 @@
+@@ -2635,9 +2738,101 @@
  			do_verify_abstract_class(TSRMLS_C);
  		}
  	}
@@ -439,7 +461,7 @@ diff -u -r1.600 zend_compile.c
  
  void zend_do_implements_interface(znode *interface_znode TSRMLS_DC)
  {
-@@ -3828,6 +4001,14 @@
+@@ -3828,6 +4023,14 @@
  	zend_hash_init_ex(&ce->constants_table, 0, NULL, zval_ptr_dtor_func, persistent_hashes, 0);
  	zend_hash_init_ex(&ce->function_table, 0, NULL, ZEND_FUNCTION_DTOR, persistent_hashes, 0);
  
@@ -460,7 +482,7 @@ RCS file: /repository/ZendEngine2/zend_compile.h,v
 retrieving revision 1.297
 diff -u -r1.297 zend_compile.h
 --- Zend/zend_compile.h	27 Oct 2004 17:58:45 -0000	1.297
-+++ Zend/zend_compile.h	6 Nov 2004 18:44:52 -0000
++++ Zend/zend_compile.h	6 Nov 2004 21:18:31 -0000
 @@ -45,6 +45,23 @@
          CG(doc_comment) = NULL;  \
          CG(doc_comment_len) = 0; \
@@ -524,13 +546,14 @@ diff -u -r1.297 zend_compile.h
  void zend_do_declare_property(znode *var_name, znode *value, zend_uint access_type TSRMLS_DC);
  void zend_do_declare_implicit_property(TSRMLS_D);
  void zend_do_declare_class_constant(znode *var_name, znode *value TSRMLS_DC);
-@@ -486,6 +514,16 @@
+@@ -486,6 +514,17 @@
  
  void zend_do_abstract_method(znode *function_name, znode *modifiers, znode *body TSRMLS_DC);
  
 +void zend_do_throws(znode *throws_znode TSRMLS_DC);
 +
-+void zend_do_annotation(znode *name, znode *value TSRMLS_DC);
++void zend_do_annotation(znode *name, znode *value, int type TSRMLS_DC);
++void zend_do_annotation_define(znode *define, znode *value TSRMLS_DC);
 +
 +void zend_do_import(znode *classname, znode *alias TSRMLS_DC);
 +
@@ -547,7 +570,7 @@ RCS file: /repository/ZendEngine2/zend_exceptions.c,v
 retrieving revision 1.74
 diff -u -r1.74 zend_exceptions.c
 --- Zend/zend_exceptions.c	30 Oct 2004 10:13:27 -0000	1.74
-+++ Zend/zend_exceptions.c	6 Nov 2004 18:44:52 -0000
++++ Zend/zend_exceptions.c	6 Nov 2004 21:18:31 -0000
 @@ -28,6 +28,7 @@
  #include "zend_interfaces.h"
  #include "zend_exceptions.h"
@@ -609,7 +632,7 @@ RCS file: /repository/ZendEngine2/zend_globals.h,v
 retrieving revision 1.140
 diff -u -r1.140 zend_globals.h
 --- Zend/zend_globals.h	3 Nov 2004 23:13:32 -0000	1.140
-+++ Zend/zend_globals.h	6 Nov 2004 18:44:52 -0000
++++ Zend/zend_globals.h	6 Nov 2004 21:18:32 -0000
 @@ -73,8 +73,11 @@
  	zend_stack foreach_copy_stack;
  	zend_stack object_stack;
@@ -628,7 +651,7 @@ RCS file: /repository/ZendEngine2/zend_language_parser.y,v
 retrieving revision 1.151
 diff -u -r1.151 zend_language_parser.y
 --- Zend/zend_language_parser.y	4 Oct 2004 19:54:34 -0000	1.151
-+++ Zend/zend_language_parser.y	6 Nov 2004 18:44:53 -0000
++++ Zend/zend_language_parser.y	6 Nov 2004 21:18:32 -0000
 @@ -111,6 +111,7 @@
  %token T_TRY
  %token T_CATCH
@@ -765,7 +788,7 @@ diff -u -r1.151 zend_language_parser.y
  ;
  
  
-@@ -478,9 +525,53 @@
+@@ -478,9 +525,64 @@
  		variable_modifiers { CG(access_type) = $1.u.constant.value.lval; } class_variable_declaration ';'
  	|	class_constant_declaration ';'
  	|	method_modifiers T_FUNCTION { $2.u.opline_num = CG(zend_lineno); } is_reference T_STRING { zend_do_begin_function_declaration(&$2, &$5, 1, $4.op_type, &$1 TSRMLS_CC); } '(' 
@@ -802,8 +825,19 @@ diff -u -r1.151 zend_language_parser.y
 +;
 +
 +annotation:
-+		'@' T_STRING 						{ zend_do_annotation(&$2, NULL TSRMLS_CC); }
-+	|	'@' T_STRING '(' common_scalar ')'	{ zend_do_annotation(&$2, &$4 TSRMLS_CC); }
++		'@' T_STRING { zend_do_annotation(&$2, NULL, IS_NULL TSRMLS_CC); }
++	|	'@' T_STRING '(' common_scalar ')' { zend_do_annotation(&$2, &$4, IS_CONSTANT TSRMLS_CC); }
++	|	'@' T_STRING '(' { zend_do_annotation(&$2, NULL, IS_ARRAY TSRMLS_CC); } annotation_defines ')'
++;
++
++annotation_defines:
++		annotation_define
++	|	annotation_defines ',' annotation_define
++;
++
++annotation_define:
++		T_STRING { zend_do_annotation_define(&$1, NULL TSRMLS_CC); }
++	|	T_STRING '=' common_scalar  { zend_do_annotation_define(&$1, &$3 TSRMLS_CC); }
 +;
 +
 +operator_token:
@@ -820,7 +854,7 @@ diff -u -r1.151 zend_language_parser.y
  
  method_body:
  		';' /* abstract method */		{ $$.u.constant.value.lval = ZEND_ACC_ABSTRACT; }
-@@ -539,12 +630,17 @@
+@@ -539,12 +641,17 @@
  	|	expr					{ $$ = $1; }
  ;
  
@@ -839,7 +873,7 @@ diff -u -r1.151 zend_language_parser.y
  	|	T_CLONE expr { zend_do_clone(&$$, &$2 TSRMLS_CC); }
  	|	variable T_PLUS_EQUAL expr 	{ zend_check_writable_variable(&$1); zend_do_end_variable_parse(BP_VAR_RW, 0 TSRMLS_CC); zend_do_binary_assign_op(ZEND_ASSIGN_ADD, &$$, &$1, &$3 TSRMLS_CC); }
  	|	variable T_MINUS_EQUAL expr	{ zend_check_writable_variable(&$1); zend_do_end_variable_parse(BP_VAR_RW, 0 TSRMLS_CC); zend_do_binary_assign_op(ZEND_ASSIGN_SUB, &$$, &$1, &$3 TSRMLS_CC); }
-@@ -627,10 +723,12 @@
+@@ -627,10 +734,12 @@
  
  fully_qualified_class_name:
  		T_STRING { zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
@@ -852,7 +886,7 @@ diff -u -r1.151 zend_language_parser.y
  	|	dynamic_class_name_reference	{ zend_do_end_variable_parse(BP_VAR_R, 0 TSRMLS_CC); zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
  ;
  
-@@ -661,8 +759,7 @@
+@@ -661,8 +770,7 @@
  
  
  ctor_arguments:
@@ -868,7 +902,7 @@ RCS file: /repository/ZendEngine2/zend_language_scanner.l,v
 retrieving revision 1.116
 diff -u -r1.116 zend_language_scanner.l
 --- Zend/zend_language_scanner.l	3 Nov 2004 23:13:32 -0000	1.116
-+++ Zend/zend_language_scanner.l	6 Nov 2004 18:44:53 -0000
++++ Zend/zend_language_scanner.l	6 Nov 2004 21:18:33 -0000
 @@ -795,6 +795,10 @@
  	return T_THROW;
  }
@@ -929,7 +963,7 @@ RCS file: /repository/ZendEngine2/zend_object_handlers.c,v
 retrieving revision 1.106
 diff -u -r1.106 zend_object_handlers.c
 --- Zend/zend_object_handlers.c	30 Oct 2004 19:11:37 -0000	1.106
-+++ Zend/zend_object_handlers.c	6 Nov 2004 18:44:54 -0000
++++ Zend/zend_object_handlers.c	6 Nov 2004 21:18:33 -0000
 @@ -606,6 +606,8 @@
  			call_user_call->handler = zend_std_call_user_call;
  			call_user_call->arg_info = NULL;
@@ -945,7 +979,7 @@ RCS file: /repository/ZendEngine2/zend_opcode.c,v
 retrieving revision 1.109
 diff -u -r1.109 zend_opcode.c
 --- Zend/zend_opcode.c	4 Oct 2004 19:54:34 -0000	1.109
-+++ Zend/zend_opcode.c	6 Nov 2004 18:44:54 -0000
++++ Zend/zend_opcode.c	6 Nov 2004 21:18:33 -0000
 @@ -78,6 +78,9 @@
  	op_array->doc_comment = NULL;
  	op_array->doc_comment_len = 0;
@@ -1024,7 +1058,7 @@ RCS file: /repository/ZendEngine2/zend_operators.c,v
 retrieving revision 1.202
 diff -u -r1.202 zend_operators.c
 --- Zend/zend_operators.c	3 Nov 2004 23:13:32 -0000	1.202
-+++ Zend/zend_operators.c	6 Nov 2004 18:44:55 -0000
++++ Zend/zend_operators.c	6 Nov 2004 21:18:34 -0000
 @@ -102,6 +102,55 @@
  	return result;
  }
@@ -1211,7 +1245,7 @@ RCS file: /repository/ZendEngine2/zend_reflection_api.c,v
 retrieving revision 1.138
 diff -u -r1.138 zend_reflection_api.c
 --- Zend/zend_reflection_api.c	3 Nov 2004 21:18:44 -0000	1.138
-+++ Zend/zend_reflection_api.c	6 Nov 2004 18:44:56 -0000
++++ Zend/zend_reflection_api.c	6 Nov 2004 21:18:35 -0000
 @@ -631,7 +631,18 @@
  	if (fptr->type == ZEND_USER_FUNCTION && fptr->op_array.return_reference) {
  		string_printf(str, "&");
@@ -1274,51 +1308,73 @@ diff -u -r1.138 zend_reflection_api.c
  /* {{{ proto public static mixed ReflectionParameter::export(mixed function, mixed parameter [, bool return]) throws ReflectionException
     Exports a reflection object. Returns the output if TRUE is specified for return, printing it otherwise. */
  ZEND_METHOD(reflection_parameter, export)
-@@ -2218,6 +2255,68 @@
+@@ -2218,6 +2255,90 @@
  }
  /* }}} */
  
-+/* {{{ proto public bool ReflectionMethod::hasAnnotation(string name)
++/* {{{ proto public bool ReflectionMethod::hasAnnotation(string name [, string define])
 +   Check whether an annotation by a specified name exists */
 +ZEND_METHOD(reflection_method, hasAnnotation)
 +{
 +	reflection_object *intern;
 +	zend_function *mptr;
-+	char *name; 
-+	int name_len;
++	char *name, *define = NULL; 
++	int name_len, define_len;
 +
 +	METHOD_NOTSTATIC;
-+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
++	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|s", &name, &name_len, &define, &define_len) == FAILURE) {
 +		return;
 +	}
 +	GET_REFLECTION_OBJECT_PTR(mptr);
 +
-+	RETVAL_BOOL(mptr->common.annotations && zend_hash_exists(mptr->common.annotations, name, name_len + 1));
++	if (!(mptr->common.annotations && zend_hash_exists(mptr->common.annotations, name, name_len + 1))) {
++		RETURN_FALSE;
++	}
++
++	if (define) {
++		zval **value;
++
++		zend_hash_find(mptr->common.annotations, name, name_len + 1, (void**) &value);
++		RETVAL_BOOL(Z_TYPE_PP(value) == IS_ARRAY && zend_hash_exists(HASH_OF(*value), define, define_len + 1));
++	} else {
++		RETVAL_BOOL(zend_hash_exists(mptr->common.annotations, name, name_len + 1));
++	}
 +}
 +/* }}} */
 +
-+/* {{{ proto public string ReflectionMethod::getAnnotation(string name) throws ReflectionException
++/* {{{ proto public string ReflectionMethod::getAnnotation(string name [, string define]) throws ReflectionException
 +   Get annotation by a specified name */
 +ZEND_METHOD(reflection_method, getAnnotation)
 +{
 +	reflection_object *intern;
 +	zend_function *mptr;
 +	zval **value;
-+	char *name; 
-+	int name_len;
++	char *name, *define = NULL; 
++	int name_len, define_len;
 +
 +	METHOD_NOTSTATIC;
-+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
++	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|s", &name, &name_len, &define, &define_len) == FAILURE) {
 +		return;
 +	}
 +	GET_REFLECTION_OBJECT_PTR(mptr);
 +
-+	if (mptr->common.annotations && (zend_hash_find(mptr->common.annotations, name, name_len + 1, (void **) &value) == SUCCESS)) {
-+		*return_value = **value;
-+		zval_copy_ctor(return_value);
++	if (!(mptr->common.annotations && (zend_hash_find(mptr->common.annotations, name, name_len + 1, (void **) &value) == SUCCESS))) {
++		zend_throw_exception_ex(reflection_exception_ptr, 0 TSRMLS_CC, "Annotation %s does not exist", name);
 +		return;
 +	}
-+	zend_throw_exception_ex(reflection_exception_ptr, 0 TSRMLS_CC, "Annotation '%s' does not exist", name);
++
++	if (define) {
++		zval **val = NULL;
++		
++		if (!(Z_TYPE_PP(value) == IS_ARRAY && zend_hash_find(HASH_OF(*value), define, define_len + 1, (void **) &val) == SUCCESS)) {
++			zend_throw_exception_ex(reflection_exception_ptr, 0 TSRMLS_CC, "Annotation %s['%s'] does not exist", name, define);
++			return;
++		}
++		*return_value = **val;
++	} else {		
++		*return_value = **value;
++	}
++	zval_copy_ctor(return_value);
 +}
 +/* }}} */
 +
@@ -1343,7 +1399,7 @@ diff -u -r1.138 zend_reflection_api.c
  /* {{{ proto public static mixed ReflectionClass::export(mixed argument [, bool return]) throws ReflectionException
     Exports a reflection object. Returns the output if TRUE is specified for return, printing it otherwise. */
  ZEND_METHOD(reflection_class, export)
-@@ -2965,6 +3064,85 @@
+@@ -2965,6 +3086,107 @@
  }
  /* }}} */
  
@@ -1365,47 +1421,69 @@ diff -u -r1.138 zend_reflection_api.c
 +}
 +/* }}} */
 +
-+/* {{{ proto public bool ReflectionClass::hasAnnotation(string name)
++/* {{{ proto public bool ReflectionClass::hasAnnotation(string name [, string define])
 +   Check whether an annotation by a specified name exists */
 +ZEND_METHOD(reflection_class, hasAnnotation)
 +{
 +	reflection_object *intern;
 +	zend_class_entry *ce;
-+	char *name; 
-+	int name_len;
++	char *name, *define = NULL; 
++	int name_len, define_len;
 +
 +	METHOD_NOTSTATIC;
-+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
++	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|s", &name, &name_len, &define, &define_len) == FAILURE) {
 +		return;
 +	}
 +	GET_REFLECTION_OBJECT_PTR(ce);
 +
-+	RETVAL_BOOL(zend_hash_exists(ce->annotations, name, name_len + 1));
++	if (!zend_hash_exists(ce->annotations, name, name_len + 1)) {
++		RETURN_FALSE;
++	}
++
++	if (define) {
++		zval **value;
++
++		zend_hash_find(ce->annotations, name, name_len + 1, (void**) &value);
++		RETVAL_BOOL(Z_TYPE_PP(value) == IS_ARRAY && zend_hash_exists(HASH_OF(*value), define, define_len + 1));
++	} else {
++		RETURN_TRUE;
++	}
 +}
 +/* }}} */
 +
-+/* {{{ proto public string ReflectionClass::getAnnotation(string name) throws ReflectionException
++/* {{{ proto public string ReflectionClass::getAnnotation(string name [, string define]) throws ReflectionException
 +   Get annotation by a specified name */
 +ZEND_METHOD(reflection_class, getAnnotation)
 +{
 +	reflection_object *intern;
 +	zend_class_entry *ce;
 +	zval **value;
-+	char *name; 
-+	int name_len;
++	char *name, *define = NULL; 
++	int name_len, define_len;
 +
 +	METHOD_NOTSTATIC;
-+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
++	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|s", &name, &name_len, &define, &define_len) == FAILURE) {
 +		return;
 +	}
 +	GET_REFLECTION_OBJECT_PTR(ce);
 +
-+	if (zend_hash_find(ce->annotations, name, name_len + 1, (void **) &value) == SUCCESS) {
-+		*return_value = **value;
-+		zval_copy_ctor(return_value);
++	if (!(zend_hash_find(ce->annotations, name, name_len + 1, (void **) &value) == SUCCESS)) {
++		zend_throw_exception_ex(reflection_exception_ptr, 0 TSRMLS_CC, "Annotation '%s' does not exist", name);
 +		return;
 +	}
-+	zend_throw_exception_ex(reflection_exception_ptr, 0 TSRMLS_CC, "Annotation '%s' does not exist", name);
++
++	if (define) {
++		zval **val = NULL;
++		
++		if (!(Z_TYPE_PP(value) == IS_ARRAY && zend_hash_find(HASH_OF(*value), define, define_len + 1, (void **) &val) == SUCCESS)) {
++			zend_throw_exception_ex(reflection_exception_ptr, 0 TSRMLS_CC, "Annotation %s['%s'] does not exist", name, define);
++			return;
++		}
++		*return_value = **val;
++	} else {		
++		*return_value = **value;
++	}
++	zval_copy_ctor(return_value);
 +}
 +/* }}} */
 +
@@ -1429,7 +1507,7 @@ diff -u -r1.138 zend_reflection_api.c
  /* {{{ proto public ReflectionExtension|NULL ReflectionClass::getExtension()
     Returns NULL or the extension the class belongs to */
  ZEND_METHOD(reflection_class, getExtension)
-@@ -3580,6 +3758,7 @@
+@@ -3580,6 +3802,7 @@
  	ZEND_ME(reflection_function, invokeArgs, NULL, 0)
  	ZEND_ME(reflection_function, returnsReference, NULL, 0)
  	ZEND_ME(reflection_function, getParameters, NULL, 0)
@@ -1437,7 +1515,7 @@ diff -u -r1.138 zend_reflection_api.c
  	ZEND_ME(reflection_function, getNumberOfParameters, NULL, 0)
  	ZEND_ME(reflection_function, getNumberOfRequiredParameters, NULL, 0)
  	{NULL, NULL, NULL}
-@@ -3601,6 +3780,9 @@
+@@ -3601,6 +3824,9 @@
  	ZEND_ME(reflection_method, invoke, NULL, 0)
  	ZEND_ME(reflection_method, invokeArgs, NULL, 0)
  	ZEND_ME(reflection_method, getDeclaringClass, NULL, 0)
@@ -1447,7 +1525,7 @@ diff -u -r1.138 zend_reflection_api.c
  	{NULL, NULL, NULL}
  };
  
-@@ -3636,9 +3818,13 @@
+@@ -3636,9 +3862,13 @@
  	ZEND_ME(reflection_class, getStaticProperties, NULL, 0)
  	ZEND_ME(reflection_class, getDefaultProperties, NULL, 0)
  	ZEND_ME(reflection_class, isIterateable, NULL, 0)
@@ -1467,7 +1545,7 @@ RCS file: /repository/ZendEngine2/zend_vm_def.h,v
 retrieving revision 1.3
 diff -u -r1.3 zend_vm_def.h
 --- Zend/zend_vm_def.h	3 Nov 2004 07:11:49 -0000	1.3
-+++ Zend/zend_vm_def.h	6 Nov 2004 18:44:57 -0000
++++ Zend/zend_vm_def.h	6 Nov 2004 21:18:37 -0000
 @@ -3421,3 +3421,74 @@
  	ZEND_VM_NEXT_OPCODE();
  }
@@ -1549,7 +1627,7 @@ RCS file: /repository/ZendEngine2/zend_vm_execute.h,v
 retrieving revision 1.4
 diff -u -r1.4 zend_vm_execute.h
 --- Zend/zend_vm_execute.h	3 Nov 2004 07:11:49 -0000	1.4
-+++ Zend/zend_vm_execute.h	6 Nov 2004 18:45:04 -0000
++++ Zend/zend_vm_execute.h	6 Nov 2004 21:18:44 -0000
 @@ -483,6 +483,77 @@
  	ZEND_VM_NEXT_OPCODE();
  }
@@ -1752,7 +1830,7 @@ RCS file: /repository/ZendEngine2/zend_vm_opcodes.h,v
 retrieving revision 1.1
 diff -u -r1.1 zend_vm_opcodes.h
 --- Zend/zend_vm_opcodes.h	27 Oct 2004 20:13:59 -0000	1.1
-+++ Zend/zend_vm_opcodes.h	6 Nov 2004 18:45:05 -0000
++++ Zend/zend_vm_opcodes.h	6 Nov 2004 21:18:44 -0000
 @@ -127,3 +127,4 @@
  #define ZEND_ASSIGN_DIM              147
  #define ZEND_ISSET_ISEMPTY_PROP_OBJ  148

@@ -5,7 +5,7 @@
  */
   
   // {{{ class CalculatorService
-  [@webservice('Calculator')]
+  [@webservice(name= 'Calculator')]
   class CalculatorService {
 
     protected function log() {
@@ -38,7 +38,7 @@
   $c= new ReflectionClass('CalculatorService');
   printf(
     "The webservice %s (handled by the class %s) provides the following web methods:\n",
-    $c->getAnnotation('webservice'),
+    $c->getAnnotation('webservice', 'name'),
     $c->getName()
   );
   foreach ($c->getMethods() as $method) {
