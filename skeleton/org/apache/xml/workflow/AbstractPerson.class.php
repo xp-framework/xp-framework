@@ -5,31 +5,28 @@
  */
 
   /**
-   * Abstract Person description to be used in the basic user class
+   * Abstract Person.
    *
+   * To be used in the basic user class
+   *
+   * @purpose  Represent person
    */
-    class AbstractPerson extends Object {
-        var $name= '',
-            $firstname= '',
-            $email= '',
-            $rights = array();
+  class AbstractPerson extends Object {
+    var 
+      $name      = '',
+      $firstname = '',
+      $email     = '',
+      $rights    = array();
             
-        /**
-         * returns true if the person has the given right
-         * @access public
-         * @params String rightname
-         * 
-         * TODO: define necessary params to uniquely specify a given right
-         */
-        function hasRight($rightname) {
-            foreach ($this->rights as $right) {
-                if ($right == $rightname) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
+    /**
+     * Returns true if the person has the given right
+     *
+     * @access  public
+     * @params  string rightname
+     */
+    function hasRight($rightname) {
+      return array_search($rightname, $this->rights, TRUE);
     }
+
+  }
 ?>
