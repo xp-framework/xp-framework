@@ -17,6 +17,18 @@
     }
   }
   
+  class Test {
+  function sort($list) {
+  eval('
+  $list->sort(new Comparator() {
+    public function compare($a, $b) {
+      return strnatcmp($a, $b);
+    }
+  });
+  ');
+  }}
+
+  
   // {{{ main
   $list= new ArrayList();
   $list->elements[]= 1;
@@ -26,12 +38,8 @@
 
   echo 'Before: ', implode(', ', $list->elements), "\n";
   
-  $list->sort(new Comparator() {
-    public function compare($a, $b) {
-      return strnatcmp($a, $b);
-    }
-  });
-  
+  $l= new Test();
+  $l->sort($this);
   echo 'After : ', implode(', ', $list->elements), "\n";
   // }}}
 ?>
