@@ -35,7 +35,7 @@
      */
     function apply($fmt, &$argument) {
       if (!is_scalar($argument)) {
-        return throw(new FormatException('Argument is not scalar'));
+        return throw(new FormatException('Argument with type '.gettype($argument).' is not scalar'));
       }
       return addcslashes($argument, "\0..\37!@\@\177..\377");
     }
