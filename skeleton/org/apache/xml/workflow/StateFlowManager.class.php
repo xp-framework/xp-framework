@@ -4,119 +4,57 @@
  * $Id$ 
  */
 
+  uses('org.apache.xml.workflow.Workflow');
+
   /**
-   * (Insert class' description here)
+   * Stateflow
    *
-   * @ext      extensiom
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://org.apache.xml.workflow.Context
+   * @purpose  Controls state flows
    */
   class StateFlowManager extends Object {
     var
-      $flow     = array(),
-      $offset   = 0;
+      $flows    = array(),
+      $current  = NULL;
       
     /**
      * Called to initialize this stateflow manager
      *
      * @access  public
-     * @param   &lang.ClassLoader classloader
      */
-    function initialize(&$classloader) {
-      $this->classloader= &$classloader;
-      $this->offset= 0;
-    }
-
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function getFirstState() {
-      return $this->getStateByName($this->flow[0]);
-    }
-        
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function getNextState() {
-      return $this->getStateByName($this->flow[min(sizeof($this->flow)- 1, $this->offset+ 1)]);
+    function initialize() {
+      $this->setCurrentFlow(NULL);
     }
     
     /**
-     * (Insert method's description here)
+     * Set current flow. Creates workflow if necessary
      *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function getCurrentState() {
-      return $this->getStateByName($this->flow[$this->offset]);
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function getPreviousState() {
-      return $this->getStateByName($this->flow[max($this->offset - 1, 0)]);
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function setCurrentState(&$state) {
-      return $this->setCurrentStateByName($state->getName());
-    }
-
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function setCurrentStateByName($name) {
-      if (FALSE === ($this->offset= array_search($name, $this->flow))) {
-        $this->flow[]= $name;
-      }
-    }
-    
-    /**
-     * Returns corresponding state
-     *
-     * @access  private
+     * @access  public
      * @param   string name
-     * @return  &org.apache.xml.workflow.State
+     * @return  &org.apache.xml.workflow.Workflow
      */
-    function &getStateByName($name) {
-      if (NULL === $name) return NULL;
+    function &setCurrentFlow($name) {
+      $this->current= $name;
+      if (NULL === $name) return NULL;      // No flow...
       
-      try(); {
-        $class= &$this->classloader->loadClass(ucfirst($name).'State');
-      } if (catch('ClassNotFoundException', $e)) {
-        return throw(new HttpScriptletException($e->message));
-      } if (catch('RunTimeException', $e)) {
-        return throw(new HttpScriptletException($e->message));
+      if (!isset($this->flows[$name])) {
+        $this->flows[$name]= &new Workflow();
       }
-      
-      $state= &new $class();
-      $state->setName($name);
-      
-      return $state;
+      return $this->flows[$name];
+    }
+    
+    /**
+     * Get current flow
+     *
+     * @access  public
+     * @return  &org.apache.xml.workflow.Workflow
+     */
+    function &getCurrentFlow() {
+      if (isset($this->flows[$this->current])) {
+        return $this->flows[$this->current];
+      } else {
+        return NULL;
+      }
     }
   }
 ?>
