@@ -155,7 +155,8 @@
      T_DOLLAR_OPEN_CURLY_BRACES = 378,
      T_CURLY_OPEN = 379,
      T_PAAMAYIM_NEKUDOTAYIM = 380,
-     T_IMPORT = 381
+     T_IMPORT = 381,
+     T_ENUM = 382
    };
 #endif
 #define T_REQUIRE_ONCE 258
@@ -282,6 +283,7 @@
 #define T_CURLY_OPEN 379
 #define T_PAAMAYIM_NEKUDOTAYIM 380
 #define T_IMPORT 381
+#define T_ENUM 382
 
 
 
