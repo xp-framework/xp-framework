@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('rdbms.ConnectionManager', 'rdbms.Criteria');
+  uses('rdbms.ConnectionManager', 'rdbms.Peer', 'rdbms.Criteria');
 
   /**
    * A dataset represents a row of data selected from a database. Dataset 
@@ -78,7 +78,8 @@
    */
   class DataSet extends Object {
     var
-      $_changed     = array();
+      $_changed     = array(),
+      $_peer        = array();
     
     /**
      * Constructor. Supports the array syntax, where an associative
@@ -92,23 +93,18 @@
       if (is_array($params)) {
         foreach (array_keys($params) as $key) $this->$key= &$params[$key];
       }
+      $this->_peer= &$this->getPeer();
     }
 
     /**
-     * Dataset registry
+     * Retrieve associated peer
      *
-     * @model   static
+     * @model   abstract
      * @access  public
-     * @param   string key
-     * @param   mixed val default NULL
-     * @return  mixed
+     * @return  &rdbms.Peer
      */
-    function registry($key, $val= NULL) {
-      static $registry= array();
-      
-      if (NULL === $val) return $registry[$key]; else $registry[$key]= $val;
-    }
-    
+    function getPeer() { }
+
     /**
      * Changes a value by a specified key and returns the previous value.
      *
@@ -118,57 +114,23 @@
      * @return  &mixed previous value
      */
     function &_change($key, &$value) {
-      $this->_changed[$key]= TRUE;
+      $this->_changed[$key]= &$value;
       $previous= &$this->{$key};
       $this->{$key}= &$value;
       return $previous;
     }
     
     /**
-     * Returns the conditional portion of the SQL query (everything after the
-     * WHERE keyword) based on criteria given.
+     * Returns an array of fields that were changed suitable for passing
+     * to Peer::doInsert() and Peer::doUpdate()
      *
-     * @model   static
-     * @access  protected
-     * @param   &rdbms.DBConnection db
-     * @param   &rdbms.Criteria c
-     * @return  string sql
-     * @throws  rdbms.SQLStateException
+     * @access  public
+     * @return  array
      */
-    function criteria(&$db, &$c, $class= NULL) {
-      $types= DataSet::registry(($class ? $class : get_class($this)).'.types');
-      $sql= '';
-      
-      // 1: Process conditions
-      if (!empty($c->conditions)) {
-        $sql.= ' where ';
-        foreach ($c->conditions as $condition) {
-          if (!isset($types[$condition[0]])) {
-            return throw(new SQLStateException('Field "'.$condition[0].'" unknown'));
-          }
-          $sql.= $condition[0].' '.$db->prepare(
-            str_replace('?', $types[$condition[0]], $condition[2]).' and ', 
-            $condition[1]
-          );
-        }
-        $sql= substr($sql, 0, -4);
-      }
-
-      // 2: Process order by
-      if (!empty($c->orderings)) {
-        $sql.= ' order by ';
-        foreach ($c->orderings as $order) {
-          if (!isset($types[$order[0]])) {
-            return throw(new SQLStateException('Field "'.$order[0].'" unknown'));
-          }
-          $sql.= $order[0].' '.$order[1].', ';
-        }
-        $sql= substr($sql, 0, -2);
-      }
-      
-      return $sql;
+    function changes() {
+      return $this->_changed;
     }
-
+    
     /**
      * Creates a string representation of this dataset. In this default
      * implementation, it will look like the following:
@@ -216,77 +178,25 @@
     }
 
     /**
-     * Update this object in the database
+     * Update this object in the database by specified criteria
      *
      * @model   final
      * @access  public
-     * @param   &rdbms.Criteria criteria
-     * @param   string class
-     * @param   int max default 0
-     * @return  rdbms.DataSet[]
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    function doSelect(&$criteria, $class, $max= 0) {
-      $cm= &ConnectionManager::getInstance();  
-      try(); {
-        $db= &$cm->getByHost(DataSet::registry($class.'.connection'), 0);
-        $q= &$db->query(
-          'select '.implode(', ', array_keys(DataSet::registry($class.'.types'))).
-          ' from '.DataSet::registry($class.'.table').
-          DataSet::criteria($db, $criteria, $class)
-        );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-      
-      $r= array();
-      for ($i= 1; $record= $q->next(); $i++) {
-        if ($max && $i > $max) break;
-        $r[]= &new $class($record);
-      }
-      return $r;
-    }
-
-    /**
-     * Inserts this object into the database
-     *
-     * @model   final
-     * @access  public
-     * @param   string identity default NULL the identity field's name
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
-     */
-    function doInsert($identity= NULL) {
-      $cm= &ConnectionManager::getInstance();  
-      try(); {
-        $db= &$cm->getByHost(DataSet::registry(get_class($this).'.connection'), 0);
-
-        // Build the insert command
-        $sql= $db->prepare(
-          'into %c (%c) values (',
-          DataSet::registry(get_class($this).'.table'),
-          array_keys($this->_changed)
-        );
-        $types= DataSet::registry(get_class($this).'.types');
-        foreach (array_keys($this->_changed) as $key) {
-          $sql.= $db->prepare($types[$key], $this->{$key}).', ';
-        }
-        
-        // Send it
-        $affected= $db->insert(substr($sql, 0, -2).')');
-
-        // Fetch identity value if requested. We do not use the _change()
+     */  
+    function doInsert() {
+      if ($id= $this->_peer->doInsert($this->_changed)) {
+      
+        // Set identity value if requested. We do not use the _change()
         // method here since the primary key is not supposed to appear
         // in the list of changed attributes
-        $identity && $this->{$identity}= $db->identity();
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+        $this->{$this->_peer->identity}= $id;
       }
-
       $this->_changed= array();
-      return $affected;
+      return $id;
     }
-
+  
     /**
      * Update this object in the database by specified criteria
      *
@@ -295,56 +205,24 @@
      * @param   &rdbms.Criteria criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
-     */
+     */  
     function doUpdate(&$criteria) {
-      $cm= &ConnectionManager::getInstance();  
-      try(); {
-        $db= &$cm->getByHost(DataSet::registry(get_class($this).'.connection'), 0);
-
-        // Build the update command
-        $sql= $db->prepare(
-          '%c set ',
-          DataSet::registry(get_class($this).'.table')
-        );
-        $types= DataSet::registry(get_class($this).'.types');
-        foreach (array_keys($this->_changed) as $key) {
-          $sql.= $db->prepare('%c = '.$types[$key], $key, $this->{$key}).', ';
-        }
-
-        // Send it
-        $affected= $db->update(substr($sql, 0, -2).DataSet::criteria($db, $criteria));
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
+      $affected= $this->_peer->doUpdate($this->_changed, $criteria);
       $this->_changed= array();
       return $affected;
     }
 
     /**
-     * Update this object in the database by specified criteria
+     * Delete this object from the database by specified criteria
      *
      * @model   final
      * @access  public
      * @param   &rdbms.Criteria criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
-     */
+     */  
     function doDelete(&$criteria) {
-      $cm= &ConnectionManager::getInstance();  
-      try(); {
-        $db= &$cm->getByHost(DataSet::registry(get_class($this).'.connection'), 0);
-
-        // Build the delete command and send it
-        $affected= $db->delete(
-          'from %c %c',
-          DataSet::registry(get_class($this).'.table'),
-          DataSet::criteria($db, $criteria)
-        );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
+      $affected= $this->_peer->doDelete($criteria);
       $this->_changed= array();
       return $affected;
     }
