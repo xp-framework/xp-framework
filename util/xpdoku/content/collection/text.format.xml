@@ -3,7 +3,7 @@
   <para>
     <caption>MessageFormat</caption>
     <text>
-      See <ref type="api:class" link="util.text.format.MessageFormat"/> for an example on how to use these classes.
+      See <ref type="api:class" link="text.format.MessageFormat"/> for an example on how to use these classes.
     </text>
   </para>
 </introduction>
