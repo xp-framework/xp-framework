@@ -98,8 +98,12 @@
         ($mode== FILE_MODE_READ) && 
         (!$this->exists())
       ) return throw(new FileNotFoundException($this->uri));
+      
+      // Öffnen
       $this->_fd= fopen($this->uri, $this->mode);
       if (!$this->_fd) return throw(new IOException('cannot open '.$this->uri.' mode '.$this->mode));
+      
+      return TRUE;
     }
     
     /**
