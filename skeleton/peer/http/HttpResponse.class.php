@@ -153,14 +153,13 @@
      *
      * Example:
      * <pre>
-     * peer.http.HttpResponse {
-     *   HTTP/1.1 300  Multiple Choices
-     *   [Date                ] Sat, 01 Feb 2003 01:27:26 GMT
-     *   [Server              ] Apache/1.3.27 (Unix)
-     *   [Connection          ] close
-     *   [Transfer-Encoding   ] chunked
-     *   [Content-Type        ] text/html; charset=iso-8859-1
-     * }
+     *   peer.http.HttpResponse (HTTP/1.1 300 Multiple Choices) {
+     *     [Date                ] Sat, 01 Feb 2003 01:27:26 GMT
+     *     [Server              ] Apache/1.3.27 (Unix)
+     *     [Connection          ] close
+     *     [Transfer-Encoding   ] chunked
+     *     [Content-Type        ] text/html; charset=iso-8859-1
+     *   }
      * </pre>
      *
      * @access  public
