@@ -18,5 +18,10 @@
   
   echo $a->toString(), "\n";
   var_dump(isset($a[0]));
+  
+  foreach ($a as $key => $val) {
+    printf("%s => %s\n", $key, $val);
+  }
+  
   // }}}
 ?>

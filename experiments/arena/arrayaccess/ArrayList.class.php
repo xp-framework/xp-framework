@@ -9,7 +9,7 @@
    *
    * @purpose  Wrapper
    */
-  class ArrayList extends Object implements ArrayAccess {
+  class ArrayList extends Object implements ArrayAccess, IteratorAggregate {
     protected
       $items= array();
 
@@ -58,6 +58,16 @@
      */
     function offsetUnset($index) {
       unset($this->items[$index]);
+    }
+
+    /**
+     * Returns the iterator for the foreach functionality
+     *
+     * @access  public
+     * @return  Iterator
+     */    
+    function getIterator() {
+      return new ArrayIterator($this->items);
     }
     
     /**
