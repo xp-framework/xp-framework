@@ -2,7 +2,7 @@
 /* Test application
  *
  * Example:
- * php -q util/test.php | sabcmd util/xp.php.xsl
+ * php -q util/test.php sybase://user:pass@host/database/table | sabcmd util/xp.php.xsl
  *
  * $Id$
  */
@@ -17,23 +17,36 @@
     );
 
     if (empty($_SERVER['argv'][1])) {
-      printf("Usage: %s [table_name]\n", basename($_SERVER['argv'][0]));
-      exit();
+        printf(
+            "Usage: %s [dsn]\n".
+	    "       Example: php -q util/test.php sybase://user:pass@host/database/table\n", 
+	    basename($_SERVER['argv'][0])
+	);
+        exit();
     }
+
+    $dsn= parse_url($_SERVER['argv'][1]);
+    list(, $database, $table)= explode('/', $dsn['path'], 3);
 
     // $l= &Logger::getInstance();
     // $cat= &$l->getCategory();
     // $cat->addAppender(new FileAppender('php://stderr'));
 
-    $adapter= &new SybaseDBAdapter(new SPSybase(array(
-        'host'    => 'schlupa',
-        'user'    => 'hotlinetool',
-        'pass'    => 'serverputt'
-    )));
+    $db= new SPSybase(array(
+      'host'    => $dsn['host'],
+      'user'    => $dsn['user'],
+      'pass'    => $dsn['pass']
+    ));
     try(); {
-        $gen= &DBXmlGenerator::createFromTable(
-            DBTable::getByName($adapter, $_SERVER['argv'][1])
-        );
+        $db->connect();
+	$db->select_db($database);
+    } if (catch('Exception', $e)) {
+        $e->printStackTrace();
+	exit;
+    }	
+    
+    try(); {
+        $gen= &DBXmlGenerator::createFromTable(DBTable::getByName(new SybaseDBAdapter($db), $table)); 
     } if (catch('Exception', $e)) {
         $e->printStackTrace();
         exit;
