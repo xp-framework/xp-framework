@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<include_parts xmlns:xsl="http://www.w3.org/1999/XSL/Transform">   
+  <part name="content">
+    <product name="pt">
+      <language name="de_DE">
+        <include href="product" name="binford"/>
+        <p>
+          <b>Willkommen</b>, hier geht's weiter.
+        </p>
+      </language>
+    </product>
+  </part>
+</include_parts>
