@@ -151,6 +151,33 @@
           </td>
         </tr>
       </xsl:if>
+      <xsl:if test="count (./class[@type = 'error']) &gt; 0">
+        <tr>
+          <td width="1%" valign="top"><img src="/image/nav_overview.gif" width="22" height="19"/></td>
+          <td width="50%" valign="top">
+            <b>Errors in <xsl:value-of select="./@prefix"/>:</b><br/><br/>
+          </td>
+        </tr>
+        <tr>
+          <td/>
+          <td>
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+              <xsl:for-each select="class[@type = 'error']">
+                <tr>
+                  <td valign="top" width="1%"><img src="/image/nav_overview3.gif" width="22" height="19"/></td>
+                  <td width="50%">
+                    <xsl:sort select="./@className"/>
+                    <a href="../classes/{./@className}.html"><xsl:value-of select="./@className"/></a><br/>
+                    <tt><xsl:value-of select="./cvsver"/></tt><br/>
+                    <xsl:value-of select="./purpose"/><br/><br/>
+                  </td>
+                </tr>
+              </xsl:for-each>
+            </table>
+            <br/><br/>
+          </td>
+        </tr>
+      </xsl:if>
     </table>
 
   </xsl:template>
