@@ -74,7 +74,10 @@
       static $chunked;
       
       if (!$this->_readhead()) return FALSE;        // Read head if not done before
-      if ($this->stream->eof()) return FALSE;       // EOF, return FALSE to indicate end
+      if ($this->stream->eof()) {                   // EOF, return FALSE to indicate end
+        $this->stream->close();
+        return FALSE;
+      }
       if (!isset($chunked)) {                       // Check for "chunked"
         $chunked= stristr($this->getHeader('Transfer-Encoding'), 'chunked');
       }
