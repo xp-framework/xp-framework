@@ -60,7 +60,7 @@
     <tr>
       <td width="1%" valign="top"><img src="/image/nav_overview.gif"/></td>
       <td width="50%" valign="top">
-        <b><a href="collections/{./@prefix}.html"><xsl:value-of select="./@shortName"/></a></b> <img src="/image/caret-r.gif"/><br/>
+        <b><a href="collections/{./@prefix}.html"><xsl:value-of select="./@shortName"/></a></b> <img src="/image/caret-r.gif" border="0" height="7" width="11" alt="&gt;"/><br/>
         <xsl:for-each select="collection">
           <xsl:sort select="./@shortName"/>
           <a href="collections/{./@prefix}.html"><xsl:value-of select="./@shortName"/></a>
