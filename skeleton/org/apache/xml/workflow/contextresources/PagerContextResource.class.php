@@ -101,7 +101,7 @@
      * @return  int
      */
     function getShowTo() {
-      return max($this->begin + $this->interval, $this->count);
+      return min($this->begin + $this->interval, $this->count);
     }
     
     /**
