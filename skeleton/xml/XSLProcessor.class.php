@@ -1,11 +1,7 @@
 <?php
-/*
+/* This class is part of the XP framework
+ *
  * $Id$
- *
- * Diese Klasse ist Bestandteil des XP-Frameworks
- * (c) 2001 Timm Friebe, Schlund+Partner AG
- *
- * @see http://doku.elite.schlund.de/projekte/xp/skeleton/
  *
  */
 
@@ -15,7 +11,7 @@
    * XSL-Prozessor, aufbauend auf den PHP-XSL-Funktionen (Sablotron)
    * Beispiel:
    * <code>
-   * import('xml.XSLProcessor');
+   * uses('xml.XSLProcessor');
    *
    * $proc= new XSLProcessor();
    * $proc->setXSLFile('test.xsl');

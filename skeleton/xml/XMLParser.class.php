@@ -1,4 +1,10 @@
 <?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ *
+ */
+
   uses('xml.XML');
   
   class XMLParser extends XML {

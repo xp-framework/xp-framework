@@ -1,16 +1,14 @@
 <?php
-/*
+/* This class is part of the XP framework
+ *
  * $Id$
- *
- * Diese Klasse ist Bestandteil des XP-Frameworks
- * (c) 2001 Timm Friebe, Schlund+Partner AG
- *
- * @see http://doku.elite.schlund.de/projekte/xp/skeleton/
  *
  */
 
-  import('xml.XML');
-  import('xml.XSLProcessor');
+  uses(
+    'xml.XML',
+    'xml.XSLProcessor'
+  );
   
   class XPath extends XML {
     var $_proc= NULL;

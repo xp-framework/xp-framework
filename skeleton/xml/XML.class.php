@@ -1,5 +1,5 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
  * $Id$
  */

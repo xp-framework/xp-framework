@@ -1,5 +1,5 @@
 <?php
-  /* Output-Handling
+  /* This class is part of the XP framework
    *
    * $Id$
    */
@@ -9,6 +9,10 @@
     'xml.XSLProcessor'
   );
   
+  /**
+   * @purpose Output-Handling
+   *
+   */
   class OutputDocument extends Tree {
     var 
       $title,
