@@ -164,8 +164,12 @@
      *
      * @access  public
      * @param   int signal default SIGINT
+     * @throws  lang.IllegalThreadStateException
      */
     function stop($signal= SIGINT) {
+      if ($this->_id <= 0) {
+        return throw(new IllegalThreadStateException('Illegal thread id '.$this->_id));
+      }
       posix_kill($this->_id, $signal);
       $this->running= FALSE;
       $this->_id= $this->_pid= -1;
