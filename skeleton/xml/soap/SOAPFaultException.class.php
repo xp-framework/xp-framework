@@ -12,7 +12,7 @@
   class SOAPFaultException extends Exception {
     var 
       $fault= NULL; 
-      
+
     /**
      * Constructor
      *
@@ -22,6 +22,16 @@
     function __construct(&$fault) {
       $this->fault= $fault;
       parent::__construct($this->fault->faultstring);
+    }
+
+    /**
+     * Get Fault
+     *
+     * @access  public
+     * @return  &xml.soap.SOAPFault
+     */
+    function &getFault() {
+      return $this->fault;
     }
     
     /**
