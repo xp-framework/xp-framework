@@ -721,6 +721,18 @@
         $karma= 0;
         $recognized= FALSE;
         
+        // Hifive with someone
+        if (stristr($message, '*hifive*')) {
+          sleep(5);
+          $connection->sendMessage(
+            $target,
+            '%s: *hifive*',
+            $nick
+          );
+          
+          return;
+        }
+        
         // See if we can recognize something here and calculate karma - multiplied
         // by a random value because this message is directed at me.
         foreach ($this->recognition as $pattern => $delta) {
@@ -1088,7 +1100,7 @@
         $this->registry['scheduled-sleep'] < time()
       ) {
       
-        // Maximally sleep up to from around 1,5 to 8 hours per day
+        // Maximally sleep up to from around 2,5 to 8 hours per day
         $this->doSleep($connection, 60 * 5 * rand(30, 100));
       }
     }
