@@ -10,14 +10,10 @@
     <script language="JavaScript" src="skeleton/lang.base.js"></script>
     <script language="JavaScript" src="skeleton/lang/Exception.class.js"></script>
     <script language="JavaScript" src="skeleton/text/parser/DateParser.class.js"></script>
+    <script language="JavaScript" src="skeleton/text/PrintfFormat.class.js"></script>
     <script language="JavaScript" src="skeleton/lang/String.adaptor.js"></script>
     <script language="JavaScript" src="skeleton/util/Date.adaptor.js"></script>
     <script language="JavaScript">
-      
-      function lzero(number) {
-        return number < 10 ? "0" + String(number) : String(number);
-      }
-
       function debugString(str) {
         document.forms.select.debug.value += str + "\n";
       }
@@ -31,7 +27,7 @@
       <a onclick="debugString(new DateParser(document.forms.select.date.value).getDate().add(0, 0, 1).format('%d.%m.%Y'));" href="#">^</a>
       <hr/>
       <a onclick="document.forms.select.debug.value= '';" href="#">clear</a><br/>
-      <textarea name="debug" rows="10" cols="72"></textarea>
+      <textarea name="debug" rows="30" cols="72"></textarea>
     </form>
   </body>
 </html>
