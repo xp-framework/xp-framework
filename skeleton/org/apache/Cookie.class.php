@@ -48,6 +48,7 @@
     function __construct($name, $value= '', $expires= 0, $path= '', $domain= '', $secure= FALSE) {
       parent::__construct();
       $this->name= $name;
+      $this->value= $value;
       $this->expires= $expires;
       $this->path= $path;
       $this->domain= $domain;
