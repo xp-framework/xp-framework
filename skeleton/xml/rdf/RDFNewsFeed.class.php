@@ -302,8 +302,12 @@
           break;
 
         case 'channel/pubdate':         // 14 May 2002
-        case 'channel/dc:date':         // 2002-07-12T15:59
-          $this->channel->date= &new Date(str_replace('T', ' ', $cdata));
+          $this->channel->date= &new Date($cdata);
+          break;
+
+        case 'channel/dc:date':         // 2002-07-12T15:59 or 2003-12-19T12:26:00+01:00
+          sscanf($cdata, '%4d-%2d-%2dT%2d:%2d', $year, $month, $day, $hour, $minute);
+          $this->channel->date= &new Date(mktime($hour, $minute, 0, $month, $day, $year));
           break;
 
         case 'channel/dc:publisher':
@@ -344,9 +348,13 @@
           $this->items[sizeof($this->items)- 1]->link= $cdata;
           break;
           
-        case 'channel/item/date':
-        case 'item/dc:date':         // 2002-07-12T15:59
-          $this->items[sizeof($this->items)- 1]->date= &new Date(str_replace('T', ' ', $cdata));
+        case 'channel/item/date':         // 14 May 2002
+          $this->items[sizeof($this->items)- 1]->date= &new Date($cdata);
+          break;
+
+        case 'item/dc:date':         // 2002-07-12T15:59 or 2003-12-19T12:26:00+01:00
+          sscanf($cdata, '%4d-%2d-%2dT%2d:%2d', $year, $month, $day, $hour, $minute);
+          $this->items[sizeof($this->items)- 1]->date= &new Date(mktime($hour, $minute, 0, $month, $day, $year));
           break;
 
 
