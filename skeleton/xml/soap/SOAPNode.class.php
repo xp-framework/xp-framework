@@ -130,7 +130,7 @@
         } else {
           $child->attribute['xsi:type']= 'xsd:ur-type';
         }
-        $this->_recurseArray($child, $value);
+        $this->_recurse($child, $value);
         return;
       }
       
@@ -157,7 +157,7 @@
       if (is_a($value, 'Object')) {     // XP objects
         $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
         $child->attribute['xsi:type']= 'xp:'.$value->getClassName();
-        $this->_recurseArray($child, get_object_vars($value));
+        $this->_recurse($child, get_object_vars($value));
         return;
       }
       
@@ -165,7 +165,7 @@
         $ns++;
         $child->attribute['xmlns:ns'.$ns]= 'http://xp-framework.net/xmlns/php';
         $child->attribute['xsi:type']= 'ns'.$ns.':'.get_class($value);
-        $this->_recurseArray($child, get_object_vars($value));
+        $this->_recurse($child, get_object_vars($value));
         return;        
       }
       
