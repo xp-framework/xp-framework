@@ -54,6 +54,11 @@
               $node, 
               $method->getAnnotation('xmlmapping', 'class')
             )));
+          } else if ($method->hasAnnotation('xmlmapping', 'type')) {
+            $method->invoke($instance, array(cast(
+              $node->get_content(),
+              $method->getAnnotation('xmlmapping', 'type')
+            )));
           } else {
             $method->invoke($instance, array($node->get_content()));
           }
