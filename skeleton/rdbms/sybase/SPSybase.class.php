@@ -1,5 +1,5 @@
 <?php
-/**
+/* This class is part of the XP framework
  *
  * $Id$
  */
@@ -11,13 +11,11 @@
   );
   
   /**
-   * Ergänzt bz_id-Felder durch bz_description, Datumsangaben durch unix-Timestamp
+   * Sybase connection class
    *
-   * @purpose Datenbank-Klasse für Schlund-Datenbanken
-   * @example sybase.ini
-   * @ext     sybase
-   * @see     http://manuals.sybase.com/
-   * @see     http://curry.schlund.de/datenbank/MIGRAENE.html#bearbeitungszustand
+   * @purpose  Sybase connection
+   * @ext      sybase
+   * @see      http://manuals.sybase.com/
    */
   class SPSybase extends Object {
     var 
@@ -45,6 +43,8 @@
  
     /**
      * Constructor
+     *
+     * @access  public
      */
     function __construct($params) {
       $l= &Logger::getInstance();
