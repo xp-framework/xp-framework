@@ -7,7 +7,7 @@
   uses(
     'xml.soap.transport.SOAPTransport', 
     'xml.soap.SOAPFaultException', 
-    'net.http.HTTPRequest'
+    'peer.http.HttpConnection'
   );
   
   /**
@@ -15,7 +15,7 @@
    *
    * @see xml.soap.SOAPClient
    */
-  class SOAPHTTPTransport extends SOAPTransport {
+  class SoapHttpTransport extends SoapTransport {
     var
       $_conn,
       $_action;
@@ -27,9 +27,7 @@
      * @param   string url Die URL
      */  
     function __construct($url) {
-      $this->_conn= new HTTPRequest(array(
-        'url' => $url
-      ));
+      $this->_conn= &new HttpConnection($url);
       parent::__construct();
     }
     
@@ -50,24 +48,21 @@
      * @param   xml.soap.SOAPMessage message Die zu verschickende Nachricht
      * @throws  IllegalArgumentException, wenn message keine SOAPMessage ist
      */
-    function send(&$message) {
+    function &send(&$message) {
       if (!is_a($message, 'SOAPMessage')) return throw(new IllegalArgumentException(
         'parameter "message" must be a xml.soap.SOAPMessage'
       ));
 
-      // SOAP-Action-Header
-      $this->_conn->headers['SOAPAction']= '"'.$message->action.'#'.$message->method.'"';
-      
-      // Content-Type
-      $this->_conn->contentType= 'text/xml; charset=iso-8859-1';
-      
-      // Action merken
+      // Action
       $this->action= $message->action;
 
-      // Request absenden
+      // Post XML
       return $this->_conn->post(
-        '#'.XML_DECLARATION.
-        $message->getSource(0)
+        new RequestData($message->getSource(0)),
+        array(
+          new Header('SOAPAction', '"'.$message->action.'#'.$message->method.'"'),
+          new Header('Content-Type', 'text/xml; charset='.$message->getEncoding()),
+        )
       );
    }
    
@@ -77,31 +72,32 @@
      * @access  public
      * @return  xml.soap.SOAPMessage Die Antwort
      */
-   function retreive() {
+   function retreive(&$response) {
    
       // Rückgabe auswerten
-      $answer= new SOAPMessage();
+      $answer= &new SOAPMessage();
       
       // Auf das Encoding achten!
-      if (isset($this->_conn->response->ContentType)) {
-        @list($type, $charset)= explode('; charset=', $this->_conn->response->ContentType);
-        if (!empty($charset)) $answer->encoding= $charset;
+      if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
+        @list($type, $charset)= explode('; charset=', $content_type);
+        if (!empty($charset)) $answer->setEncoding($charset);
       }
       
       $answer->action= $this->action;
       try(); {
-        $answer->fromString($this->_conn->response->body);
+        $xml= '';
+        while ($buf= $response->readData()) $xml.= $buf;
+        $answer->fromString($xml);
       } if (catch('Exception', $e)) {
         return throw($e);
       }
       
       // Nach Fault checken
-      if (intval($this->_conn->response->HTTPstatus) != 200) {
+      if (200 != $response->getStatusCode()) {
         if (NULL !== ($fault= $answer->getFault())) {
-          //echo '---SOAPHTTPTransport::retreive$fault'; var_dump($fault);
           return throw(new SOAPFaultException($fault));
         } else {
-          return throw(new Exception($this->response->HTTPmessage));
+          return throw(new Exception('Unexpected return code: '.$response->getStatusCode()));
         }
       }
       

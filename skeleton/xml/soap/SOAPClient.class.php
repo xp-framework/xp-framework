@@ -51,8 +51,8 @@
      * @param   string action Action
      * @param   string method Methode
      */
-    function __construct($transport, $action, $method) {
-      $this->transport= $transport;
+    function __construct(&$transport, $action, $method) {
+      $this->transport= &$transport;
       $this->action= $action;
       $this->method= $method;
       parent::__construct();
@@ -78,11 +78,11 @@
       $this->message->create($this->action, $this->method);
       $this->message->setData($params);
 
-      // Anfrage senden
-      if (FALSE === $this->transport->send($this->message)) return FALSE;
+      // Send
+      if (FALSE === ($response= &$this->transport->send($this->message))) return FALSE;
       
       // Antwort erhalten
-      $this->answer= &$this->transport->retreive();
+      $this->answer= &$this->transport->retreive($response);
       
       // Daten unserialisieren und zurückgeben
       return is_a($this->answer, 'SOAPMessage') ? $this->answer->getData() : FALSE;
