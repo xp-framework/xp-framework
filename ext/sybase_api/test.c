@@ -63,7 +63,6 @@ int main(int argc, char **argv)
     sybase_alloc(&link);
     sybase_hash_init(&properties, 10, 10);
     sybase_hash_addstring(properties, CS_APPNAME, argv[0]);
-    sybase_hash_addstring(properties, CS_HOSTNAME, "FreeBSD");
     sybase_hash_addint(properties, CS_LOGIN_TIMEOUT, 1);
     sybase_hash_addint(properties, CS_TIMEOUT, 1);
 
