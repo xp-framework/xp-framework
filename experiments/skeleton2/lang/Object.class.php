@@ -92,5 +92,16 @@
     public function toString() {
       return self::getClassName().'@'.var_export($this, 1);
     }
+
+    /**
+     * Wrapper for PHP's builtin cast mechanism
+     *
+     * @see     xp://lang.Object#toString
+     * @access  public
+     * @return  string
+     */
+    public final function __toString() {
+      return self::toString();
+    }
   }
 ?>
