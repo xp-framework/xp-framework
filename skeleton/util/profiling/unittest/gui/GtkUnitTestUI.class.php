@@ -275,7 +275,7 @@
       $sectionNode= &$this->hierarchy->insert_node(
         NULL,
         NULL,
-        array($this->dialog->getFileName().'::'.$section, ''),
+        array($config->getFilename().'::'.$section, ''),
         4,
         $this->pixmaps['p:collection'],
         $this->pixmaps['m:collection'],
@@ -306,8 +306,8 @@
         ));
         
         // Insert into hierarchy tree
-        if (!isset($this->node[$test->getClassName()])) {
-          $this->node[$test->getClassName()]= &$this->hierarchy->insert_node(
+        if (!isset($this->node[$section.$test->getClassName()])) {
+          $this->node[$section.$test->getClassName()]= &$this->hierarchy->insert_node(
             $sectionNode,
             NULL,
             array($test->getClassName(), ''),
@@ -321,7 +321,7 @@
           );
         }
         $this->node[$test->hashCode()]= &$this->hierarchy->insert_node(
-          $this->node[$test->getClassName()],
+          $this->node[$section.$test->getClassName()],
           NULL,
           array($test->getName(), ''),
           4,
