@@ -4,13 +4,17 @@
     'xml.Node',
     'io.File', 
     'io.Folder', 
-    'lang.apidoc.parser.ClassParser'
+    'lang.apidoc.parser.ClassParser',
+    'util.cmd.ParamString'
   );
   
-  function recurseFolders($uri, &$parser) {
+  function recurseFolders($uri, $pattern, &$parser) {
     $folder= &new Folder($uri);
     while ($entry= $folder->getEntry()) {
-      if ('.class.php' == substr($entry, -10)) {
+      if (
+        ('.class.php' == substr($entry, -10)) &&
+        (preg_match($pattern, $entry))
+      ) {
         printf("===> Parse %s%s\n", $folder->uri, $entry);
         try(); {
           $parser->setFile(new File($folder->uri.$entry));
@@ -43,11 +47,21 @@
         printf("     >> %d bytes written to %s\n", $out->size(), $out->uri);
         
       } else if (is_dir($folder->uri.$entry)) {
-        recurseFolders($folder->uri.$entry, $parser);
+        recurseFolders($folder->uri.$entry, $pattern, $parser);
       }
     }
     $folder->close();
   }
+  
+  $p= &new ParamString($_SERVER['argv']);
+  $pattern= ($p->exists('file')
+    ? '/'.str_replace('/', '\/', $p->value('file')).'/i'
+    : '/.*/'
+  );
 
-  recurseFolders(SKELETON_PATH, new ClassParser());
+  recurseFolders(
+    SKELETON_PATH, 
+    $pattern,
+    new ClassParser()
+  );
 ?>
