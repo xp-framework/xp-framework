@@ -28,9 +28,10 @@
      * @param   string class
      * @param   string method
      * @param   int line
+     * @param   array args
      * @param   array messages
      */
-    function __construct($file, $class, $method, $line, $args, $messages= array()) {
+    function __construct($file, $class, $method, $line, $args, $messages) {
       $this->file     = $file;  
       $this->class    = $class; 
       $this->method   = $method;
