@@ -24,3 +24,5 @@
 #DEFAULT (echo ""; id; echo %s; date; cat) >> $CVSROOT/CVSROOT/commitlog
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
+
+ALL     (cat > /tmp/loginfo_$USER ; /home/cvs/bin/notify.php xp@php3.de %{Vvs} 1>/dev/null 2>/dev/null &)
