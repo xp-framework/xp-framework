@@ -67,8 +67,10 @@ int main(int argc, char **argv)
         while (1) {
             sql= readline(prompt);
             if (strncmp(sql, "quit", 4) == 0) {
+                free(sql);
                 break;
             }
+            add_history(sql);
             
             printf("---> Executing query '%s':\n", sql);
             if (sybase_query(link, &result, sql) == SA_SUCCESS) {
@@ -135,6 +137,7 @@ int main(int argc, char **argv)
                 );
                 sybase_free_result(result);
             }
+            free(sql);
         }
     } else {
         printf("---> Connect failed!\n");
