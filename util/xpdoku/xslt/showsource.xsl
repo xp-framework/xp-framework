@@ -47,10 +47,31 @@
   
   $file= preg_replace ('/^([\/]+)/', '', str_replace ('..', '', $_REQUEST['f']));
   
-  $p= &new PHPSyntaxHighlighter (
-    new File ($_SERVER['DOCUMENT_ROOT'].'/src/'.$file.'.class.php')
-  );
-  echo $p->getHighlight();
+  try(); {
+    $p= &new PHPSyntaxHighlighter (
+      new File ($_SERVER['DOCUMENT_ROOT'].'/src/'.$file.'.class.php')
+    );
+    $highlight= $p->getHighlight();
+  } if (catch('Exception', $e)) {
+    ]]>
+    </xsl:processing-instruction>
+    <xsl:call-template name="frame">
+      <xsl:with-param name="color" select="'#990000'"/>
+      <xsl:with-param name="content">
+        <br/>
+        <div align="center">
+          <b style="font-Weight: bold; Color: #990000">
+            The file you have requested does not exist.
+          </b>
+        </div>
+        <br/>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:processing-instruction name="php">
+      <![CDATA[
+    $highlight= '';
+  }
+  echo $highlight;
       
       ]]>
     </xsl:processing-instruction>
