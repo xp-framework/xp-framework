@@ -121,7 +121,9 @@
         default:
           $body= substr($query, 1);
           $this->headers['Content-Length']= strlen($body);
-          $this->headers['Content-Type']= 'application/x-www-form-urlencoded';
+          if (empty($this->headers['Content-Type'])) {
+            $this->headers['Content-Type']= 'application/x-www-form-urlencoded';
+          }
           break;
       }
       
