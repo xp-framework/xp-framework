@@ -4,7 +4,8 @@ $Id$
 
 @authors: friebe
 @created: Fri Feb 11 19:35:30 CET 2005
-@status: discussion, ends at Tue Mar 01 11:48:03 CET 2005
+@status: implemented
+@implemented: Tue Mar  1 14:48:58 CET 2005
 @category: webservices
 
 Scope of Change
