@@ -4,12 +4,14 @@
  * $Id$ 
  */
 
+  uses('peer.http.HttpResponse');
+
   /**
-   * (Insert class' description here)
+   * Specialized subclass of HttpResonse for secure connections
    *
-   * @ext      extensiom
-   * @see      reference
-   * @purpose  purpose
+   * @ext      curl
+   * @see      xp://peer.http.HttpResponse
+   * @purpose  Response class for HTTPS
    */
   class HttpsResponse extends HttpResponse {
   
@@ -27,15 +29,17 @@
       $h= explode("\r\n", substr($this->stream[1], 0, $s));
       $this->stream[1]= substr($this->stream[1], $s);
 
-      if (4 != sscanf(
+      if (3 != ($r= sscanf(
         $h[0], 
-        'HTTP/%d.%d %3d %s', 
+        'HTTP/%d.%d %3d', 
         $major, 
         $minor, 
-        $this->statuscode,
-        $this->message
-      )) return throw(new FormatException('"'.$h[0].'" is not a valid HTTP response'));
-      
+        $this->statuscode
+      ))) {
+        return throw(new FormatException('"'.$h[0].'" is not a valid HTTP response ['.$r.']'));
+      }
+
+      $this->message= substr($s, 12);      
       $this->version= $major.'.'.$minor;
       
       // Read rest of headers
