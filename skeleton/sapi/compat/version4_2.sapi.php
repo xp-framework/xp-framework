@@ -13,4 +13,11 @@
     return $r;
   }}
   // }}}
+
+  // {{{ proto array debug_backtrace(void)
+  //     See php://debug_backtrace
+  if (!function_exists('debug_backtrace')) { function debug_backtrace($res) {
+    return array();
+  }}
+  // }}}
 ?>
