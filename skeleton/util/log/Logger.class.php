@@ -12,19 +12,46 @@
   define('LOGGER_FLAG_ALL',     LOGGER_FLAG_INFO | LOGGER_FLAG_WARN | LOGGER_FLAG_ERROR | LOGGER_FLAG_DEBUG);
   
   /**
-   * Kapselt einen Logger
-   * Über die Flgas 
+   * Kapselt einen Logger (SingleTon)
+   * 
+   * Beispielzeilen:
+   * <pre>
+   * [20:45:30 16012 info] ===> Starting work on 2002/05/29/ 
+   * [20:45:30 16012 info] ===> Done, 0 order(s) processed, 0 error(s) occured 
+   * [20:45:30 16012 info] ===> Finish 
+   * </pre>
+   *
+   * Das Format des fixen Teils jeder Log-Zeile kann über:
+   * - den Identifier [eine ID, die im Log Wiedererkennungswert hat, bspw. die PID]
+   * - die Variable "format" (wie soll der fixe Teil formatiert werden)
+   * festgelegt werden.
+   *
+   * Hinweise:
+   * - Der Identifier defaultet auf die PID
+   * - Die Reihenfolge für den Format-String "format" ist wie folgt:
+   *   1) Das Datum
+   *   2) Der Identifier
+   *   3) Der Indicator [info, warn, error oder debug]
+   *   Der Format-String "format" defaultet auf "[%1$s %2$s %3$s]"
+   * - Das Datumsformat "dateformat" defaultet auf "H:i:s", siehe http://php.net/date
+   *
+   * @model singleton
    */
   class Logger extends Object {
     var 
       $_appenders= array(),
       $_indicators= array(
-        LOGGER_FLAG_INFO        => '[info]',
-        LOGGER_FLAG_WARN        => '[warn]',
-        LOGGER_FLAG_ERROR       => '[error]',
-        LOGGER_FLAG_DEBUG       => '[debug]'
+        LOGGER_FLAG_INFO        => 'info',
+        LOGGER_FLAG_WARN        => 'warn',
+        LOGGER_FLAG_ERROR       => 'error',
+        LOGGER_FLAG_DEBUG       => 'debug'
       ),
       $_flags= LOGGER_FLAG_ALL;
+      
+    var
+      $identifier,
+      $dateformat= 'H:i:s',
+      $format=     '[%1$s %2$s %3$s]';
   
     /**
      * Gibt eine Instanz zurück
@@ -37,6 +64,7 @@
   
       if (!isset($LOG__instance)) {
         $LOG__instance= new Logger();
+        $LOG__instance->identifier= getmypid();
       }
       return $LOG__instance;
     }
@@ -61,7 +89,12 @@
       $flag= $args[0];
       if (!($this->_flags & $flag)) return;
       
-      $args[0]= $this->_indicators[$flag];
+      $args[0]= sprintf(
+        $this->format,
+        date($this->dateformat),
+        $this->identifier,
+        $this->_indicators[$flag]
+      );
       foreach ($this->_appenders as $appender) {
         call_user_func_array(
           array(&$appender, 'append'),
@@ -208,7 +241,7 @@
     function mark() {
       $this->callAppenders(
         LOGGER_FLAG_INFO, 
-        '---------------------------------------------------------------------'
+        str_repeat('-', 72)
       );
     }
 
