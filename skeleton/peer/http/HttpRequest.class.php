@@ -159,7 +159,7 @@
         $s->connect();
         $s->write($request);
       } if (catch('Exception', $e)) {
-        throw($e);
+        return throw($e);
       }
       
       return new HttpResponse($s);
