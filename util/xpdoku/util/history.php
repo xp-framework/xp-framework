@@ -18,7 +18,7 @@
   if (!$param->exists(1)) {
     printf(
       "Creates an XML representation from a CVS history file\n".
-      "Usage: %s <history_file> [--since=<date>] [--max=<max>]\n\n",
+      "Usage: %s <history_file> [--since=<date>] [--max=<max>] [--debug]\n\n",
       $param->value(0)
     );
     exit(-1);
@@ -36,10 +36,11 @@
       'argument'
     ));
   } if (catch('Exception', $e)) {
-    $e->printStackTrace();
+    $e->printStackTrace(STDERR);
     exit(-1);
   }
-  
+
+  $debug= $param->exists('debug');
   $cmp= &Date::fromString($param->exists('since') 
     ? $param->value('since') 
     : '1970-01-01'
@@ -50,17 +51,30 @@
     'A' => array()      // Added
   );
   while ($r= $p->getNextRecord()) {
-
+    $debug && fputs(STDERR, "Got record %s\n", var_export($r, 1));
+    
     // Only commits, removes and additions
-    if (!in_array($r->actiondate{0}, array_keys($history))) continue;
+    if (!in_array($r->actiondate{0}, array_keys($history))) {
+      $debug && fputs(STDERR, "Omitting %s (![M|R|A])\n", $r->actiondate{0});
+      continue;
+    }
     
     // Only classes in skeleton/
-    if ('skeleton' != substr($r->special, 0, 8)) continue;
-    if ('.class.php' != substr($r->argument, -10)) continue;
+    if ('skeleton' != substr($r->special, 0, 8)) {
+      $debug && fputs(STDERR, "Omitting %s (!^skeleton)\n", $r->special);
+      continue;
+    }
+    if ('.class.php' != substr($r->argument, -10)) {
+      $debug && fputs(STDERR, "Omitting %s (!.class.php$)\n", $r->argument);
+      continue;
+    }
 
     // Only after date $cmp
     $r->date= &new Date(hexdec(substr($r->actiondate, 1)));
-    if ($r->date->isBefore($cmp)) continue;
+    if ($r->date->isBefore($cmp)) {
+      $debug && fputs(STDERR, "Omitting %s (before %s)\n", $r->date->toString(), $cmp->toString());
+      continue;
+    }
     
     // Fill history
     $history[$r->actiondate{0}][$r->special.$r->argument]= array(
@@ -71,7 +85,7 @@
       'revision' => $r->revs
     );
   }
-  
+
   $t= &new Tree();
   foreach (array_keys($history) as $k) {
     uasort($history[$k], create_function(
@@ -90,6 +104,7 @@
       $n->setAttribute('action', $k);
     }
   }
+
   echo $t->getDeclaration(), "\n", $t->getSource(FALSE);
   // }}}
 ?>
