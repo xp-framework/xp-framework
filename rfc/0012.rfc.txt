@@ -84,6 +84,33 @@ Using the PHP access API with naming lookup:
   var_dump($search->execute('Hello'));
 ?>
 
+Authentication
+~~~~~~~~~~~~~~
+Every remote stub contains a public member "context" which lets you pass
+certain information to the service. If, for instance, authentication is
+required, we call the context's addAuthorization() method and pass it an
+authorization object.
+
+Using the PHP access API without naming lookups:
+<?php
+  $search= &Remote::forName('rmi://127.0.0.1:4444/ISearch');
+  $search->context->addAuthorization(new PasswordAuth('username', 'password'));
+
+  // Now, we can invoke methods on the instance
+  var_dump($search->execute('Hello'));
+?>
+
+Using the PHP access API with naming lookup:
+<?php
+  Naming::setProvider(new RemoteNamingProvider('example.com', 1099));
+
+  $search= &Naming::lookup('website/ISearch');
+  $search->context->addAuthorization(new PasswordAuth('username', 'password'));
+  
+  // Now, we can invoke methods on the instance
+  var_dump($search->execute('Hello'));
+?>
+
 Server side
 ~~~~~~~~~~~
 XXX TBD XXX
@@ -139,5 +166,8 @@ Comments
 --------
 - friebe, Tue Jan  4 11:35:38 CET 2005
   Maybe also look at ICE (http://zeroc.com/)
+
+- friebe, Wed Jan 19 11:44:56 CET 2005
+  First idea on authentication
   
 <EOF>
