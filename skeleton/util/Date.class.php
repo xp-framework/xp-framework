@@ -1,29 +1,31 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
- * 
- * $Id$
+/* This class is part of the XP framework
+ *
+ * $Id$ 
  */
 
   /**
-   * Kapselt Datum und Uhrzeit
-   * 
-   * Felder:
+   * The class Date represents a specific instant in time.
+   *
+   * Public member variables:
    * <pre>
-   * seconds	=> Sekunden
-   * minutes	=> Minuten 
-   * hours	=> Stunden
-   * mday	=> Tag des Monats
-   * wday	=> Tag der Woche (numerisch): 0 = Sonntag, ..., 6 = Samstag
-   * mon	=> Monat
-   * year	=> Jahr
-   * yday	=> Tag des Jahres
-   * weekday	=> Tag der Woche (textuell, lang), bspw. "Friday"
-   * month	=> Monat (textuell, lang), bspw. "January" 
+   * seconds    - Seconds
+   * minutes    - Minutes
+   * hours      - Hours (0 .. 24)
+   * mday       - Day of the month
+   * wday       - Day of the week (0 = Sunday, .. , 6 = Saturday)
+   * mon        - Month
+   * year       - Year
+   * yday       - Day of the year
+   * weekday    - Day of the week name, long, e.g. "Friday"
+   * month      - Month name, long, e.g. "January"
    * </pre>
+   *
+   * @purpose  Represent a date
    */
   class Date extends Object {
     var
-      $_utime;
+      $_utime   = 0;
       
     var
       $seconds,	
@@ -40,42 +42,59 @@
     /**
      * Constructor
      *
-     * @param mixed in Entweder ein Unix-TimeStamp oder ein String
+     * @access  public
+     * @param   mixed in default NULL either a string or a Unix timestamp, defaulting to now
      */
     function __construct($in= NULL) {
-      if (is_string($in)) $this->fromString($in);
-      if (is_int($in)) $this->_utime($in);
+      if (is_string($in)) {
+        $this->_utime(strtotime($in));
+      } elseif (is_int($in)) {
+        $this->_utime($in);
+      } else {
+        $this->_utime(time());
+      }
       parent::__construct();
     }
     
     /**
-     * Erstellt ein Datum aus einem String
+     * Create a date from a string
      *
+     * <pre>
+     *   $d= &Date::fromString('yesterday');
+     *   $d= &Date::fromString('2003-02-01');
+     * </pre>
+     *
+     * @access  public
+     * @model   static
      * @see     http://php.net/strtotime
-     * @param   string str Der Eingabe-String
+     * @param   string str
+     * @return  &util.Date
      */
-    function fromString($str) {
-      $this->_utime(strtotime($str));
+    function &fromString($str) {
+      return new Date(strtotime($str));
     }
     
     /**
-     * Private Helper-Funktion
+     * Private helper function which sets all of the public member variables
      *
      * @access  private
-     * @param   int utime Millisekunden seit 1970
+     * @param   int utime Unix-Timestamp
      */
     function _utime($utime) {
       $a= getdate($this->_utime= $utime);
-      foreach ($a as $key=> $val) if (is_string($key)) $this->$key= $val;
+      foreach ($a as $key=> $val) {
+        if (is_string($key)) $this->$key= $val;
+      }
     }
     
     /**
-     * Vergleichsfunktion
+     * Compare this date to another date
      *
-     * @param   Date date Ein Date-Objekt
-     * @return  int gleich: 0, date vor $this: <0, date nach $this: >0
+     * @access  public
+     * @param   &util.Date date A date object
+     * @return  int equal: 0, date before $this: <0, date after $this: >0
      */
-    function compareTo($date) {
+    function compareTo(&$date) {
       return strcmp(
         (string)$date->_utime, 
         (string)$this->_utime
@@ -83,7 +102,7 @@
     }
     
     /**
-     * Unix-Timestamp
+     * Retreive Unix-Timestamp for this date
      *
      * @access  public
      * @return  int Unix-Timestamp
@@ -93,11 +112,11 @@
     }
     
     /**
-     * String-Repräsentation eines Datums
+     * Create a string representation
      *
      * @see     php://date
-     * @param   string format default 'r' Format-String
-     * @return  string Das formatierte Datum
+     * @param   string format default 'r' format-string
+     * @return  string the formatted date
      */
     function toString($format= 'r') {
       return date($format, $this->_utime);
