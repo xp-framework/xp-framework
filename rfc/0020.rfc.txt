@@ -75,6 +75,12 @@ Related documents
 - Test-Driven Development in .NET
   http://www.codeproject.com/dotnet/tdd_in_dotnet.asp
 
+- Diff against util/ implementing new behaviour in unit test runner
+  http://xp-framework.net/downloads/rfc0020-util.diff  
+
+- Diff against skeleton/ adding metadata to all TestCase classes
+  http://xp-framework.net/downloads/rfc0020-skeleton.diff
+
 Comments
 --------
 n/a
