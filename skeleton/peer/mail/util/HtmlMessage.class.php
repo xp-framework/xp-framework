@@ -71,7 +71,7 @@
     }
     
     /**
-     * Register an image loader for a specified theme
+     * Register an image loader for a specified scheme
      *
      * @access  public
      * @param   string scheme
