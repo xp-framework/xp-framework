@@ -192,7 +192,7 @@ while (@ARGV) {
     s/'[^']+'/''/;
     
     # Check class name
-    if (!$comment && $_ =~ /class ([^\s]+)/) {
+    if (!$comment && $_ =~ /^  class ([^\s]+)/) {
       $class= $1;
 
       # Check classname <-> filename match
