@@ -32,10 +32,6 @@
 #include "zend_compile.h"
 #include "zend_API.h"
 
-zend_class_entry *xp_object_ptr;
-zend_class_entry *xp_throwable_ptr;
-zend_namespace *xp_lang_namespace_ptr;
-
 ZEND_DECLARE_MODULE_GLOBALS(xp)
 
 /* {{{ xp_functions[]
@@ -148,11 +144,16 @@ static zend_class_entry* xp_register_class(char* name, int name_len, char* prett
     return ptr;
 }
 
+#define XN(name, fullname) name, sizeof(name), fullname, sizeof(fullname)
+
 /* {{{ PHP_MINIT_FUNCTION
  */
 PHP_MINIT_FUNCTION(xp)
 {
 	zend_namespace xp_lang_namespace;
+    zend_namespace* np;
+    zend_class_entry* xp_object_ptr;
+    zend_class_entry* xp_throwable_ptr;
 
 	ZEND_INIT_MODULE_GLOBALS(xp, php_xp_init_globals, php_xp_destroy_globals);
 	REGISTER_INI_ENTRIES();
@@ -161,18 +162,15 @@ PHP_MINIT_FUNCTION(xp)
 	fprintf(stderr, "xp>> PHP_MINIT_FUNCTION\n");
 	#endif
 	
-	/* Set error reporting to E_ALL */
-	EG(error_reporting) = E_ALL;
-
-	/* Register lang namespace */
+	/* Register "lang" namespace */
 	INIT_NAMESPACE(xp_lang_namespace, "lang");
-	xp_lang_namespace_ptr= zend_register_internal_namespace(&xp_lang_namespace TSRMLS_C);
+	np= zend_register_internal_namespace(&xp_lang_namespace TSRMLS_C);
 
     /* Register basic classes */
-    xp_object_ptr = xp_register_class("object", sizeof("object"), "lang.Object", sizeof("lang.Object"), xp_object_functions, xp_lang_namespace_ptr, NULL);
-    xp_throwable_ptr = xp_register_class("throwable", sizeof("throwable"), "lang.Throwable", sizeof("lang.Throwable"), xp_throwable_functions, xp_lang_namespace_ptr, xp_object_ptr);
-	xp_register_class("error", sizeof("error"), "lang.Error", sizeof("lang.Error"), NULL, xp_lang_namespace_ptr, xp_throwable_ptr);
-    xp_register_class("exception", sizeof("exception"), "lang.Exception", sizeof("lang.Exception"), NULL, xp_lang_namespace_ptr, xp_throwable_ptr);
+    xp_object_ptr = xp_register_class(XN("object", "lang.Object"), xp_object_functions, np, NULL);
+    xp_throwable_ptr = xp_register_class(XN("throwable", "lang.Throwable"), xp_throwable_functions, np, xp_object_ptr);
+	xp_register_class(XN("error", "lang.Error"), NULL, np, xp_throwable_ptr);
+    xp_register_class(XN("exception", "lang.Exception"), NULL, np, xp_throwable_ptr);
 	
 	return SUCCESS;
 }
@@ -206,6 +204,9 @@ PHP_RINIT_FUNCTION(xp)
 	#ifdef XP_DEBUG
 	fprintf(stderr, "xp>> PHP_RINIT_FUNCTION\n");
 	#endif
+
+	/* Set error reporting to E_ALL */
+	EG(error_reporting) = E_ALL;
 	
 	return SUCCESS;
 }
