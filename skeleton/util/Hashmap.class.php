@@ -311,5 +311,15 @@
     function &values() {
       return array_values($this->_hash);
     }
+    
+    /**
+     * Create string representation
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return $this->getName()." {\n".substr(var_export($this->_hash, 1), 8, -2)."\n}";
+    }
   }
 ?>
