@@ -21,6 +21,12 @@
   
   // TBD: Get from database?
   $news->addItem(
+    'NetClassLoader finalized', 
+    'http://xp.php3.de/apidoc/classes/lang.NetClassLoader.html',
+    'The ability to load classes via HTTP or HTTPS allows, for example, software to update it self.',
+    new Date('2003-02-01 02:57:52')
+  );
+  $news->addItem(
     'CSVParser class added', 
     'http://xp.php3.de/apidoc/classes/util.text.parser.CSVParser.html',
     'CSVParser provides comfortable way to parse csv (comma separated value) - files.',
