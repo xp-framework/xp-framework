@@ -59,14 +59,14 @@
      * @return  &util.Assert
      */
     function &getInstance() {
-      static $__instance;
+      static $instance;
       
-      if (!isset($__instance)) {
-        $__instance= new Assert();
-        assert_options(ASSERT_CALLBACK, array(&$__instance, 'onAssertionFailed'));
+      if (!isset($instance)) {
+        $instance= new Assert();
+        assert_options(ASSERT_CALLBACK, array(&$instance, 'onAssertionFailed'));
         assert_options(ASSERT_WARNING, 0);
       }
-      return $__instance;
+      return $instance;
     }
   
     /**
