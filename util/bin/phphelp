@@ -13,7 +13,7 @@ if [ "" = "$KEYWORD" ] ; then
 fi
 
 if [ "--xp" = "$1" ] ; then
-  galeon -w "http://xp-framework.net/search/?keyword=$KEYWORD" 1>/dev/null 2>/dev/null &
+  galeon -w "http://xp-framework.net/search.php?keyword=$KEYWORD" 1>/dev/null 2>/dev/null &
   exit
 fi
 galeon -w "http://php3.de/manual-lookup.php?pattern=$KEYWORD&lang=en" 1>/dev/null 2>/dev/null &
