@@ -67,8 +67,8 @@
      * @param   string statuscode
      * @return  bool FALSE
      */  
-    function addError($statuscode) {
-      $this->errors[]= $statuscode;
+    function addError($statuscode, $field= '*') {
+      $this->errors[]= array($field, $statuscode);
       return FALSE;
     }
     
