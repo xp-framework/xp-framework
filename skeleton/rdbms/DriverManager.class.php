@@ -9,7 +9,22 @@
   /**
    * Manages database drivers
    *
-   * @purpose  purpose
+   * Usage:
+   * <code>
+   *   uses('rdbms.DriverManager');
+   *
+   *   $conn= &DriverManager::getConnection('sybase://user:pass@server');
+   *   try(); {
+   *     $conn->connect();
+   *     $r= &$conn->query('select @@version as version');
+   *   } if (catch('SQLException', $e)) {
+   *     $e->printStackTrace();
+   *     exit(-1);
+   *   }
+   *   var_dump($r->next('version'));
+   * </code>
+   *
+   * @purpose  Manager
    */
   class DriverManager extends Object {
     var
@@ -40,6 +55,13 @@
   
     /**
      * Register a driver
+     *
+     * Usage:
+     * <code>
+     *   DriverManager::register('mydb', XPClass::forName('my.db.Connection'));
+     *   // [...]
+     *   $conn= &DriverManager::getConnection('mydb://...');
+     * </code>
      *
      * @model   static
      * @access  public
