@@ -218,7 +218,7 @@
       $ret.= $this->_export ('DTEND',       $this->getEnds());
       $ret.= $this->_export ('DESCRIPTION', $this->getDescription());
       $ret.= $this->_export ('SUMMARY',     $this->getSummary());
-      $ret.= $this->_export ('ORGANZISER',  $this->getOrganizer());
+      $ret.= $this->_export ('ORGANZIZER',  $this->getOrganizer());
       
       // Append all attendees
       foreach ($this->getAttendees() as $a) {
