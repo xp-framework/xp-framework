@@ -18,18 +18,21 @@
    */
   class SOAPHTTPTransport extends SOAPTransport {
     var
-      $_conn,
-      $_action;
+      $_conn      = NULL,
+      $_action    = '',
+      $_headers   = array();
       
     /**
      * Constructor
      *
      * @access  public
      * @param   string url
+     * @param   array headers default array()
      */  
-    function __construct($url) {
-      $this->_conn= &new HttpConnection($url);
+    function __construct($url, $headers= array()) {
       parent::__construct();
+      $this->_conn= &new HttpConnection($url);
+      $this->_headers= $headers;
     }
     
     /**
@@ -38,7 +41,7 @@
      * @access  public
      */
     function __destruct() {
-      $this->_conn->__destruct();
+      delete($this->_conn);
       parent::__destruct();
     }
     
@@ -80,7 +83,9 @@
       ));
       $this->_conn->request->setHeader('SOAPAction', '"'.$message->action.'#'.$message->method.'"');
       $this->_conn->request->setHeader('Content-Type', 'text/xml; charset='.$message->getEncoding());
-      
+
+      // Add more headers
+      $this->_conn->request->addHeaders($headers);
       try(); {
         $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
         $res= &$this->_conn->request->send();
