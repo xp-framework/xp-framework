@@ -129,5 +129,27 @@
       return new LDAPSearchResult($this->_hdl, $res);
     }
     
+    /**
+     * Add an entry
+     *
+     * @access  public
+     * @param   peer.ldap.LDAPEntry entry
+     * @return  bool success
+     * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
+     * @throws  IOException when an error occurs during adding the entry
+     */
+    function add(&$entry) {
+      if (!is_a($entry, 'LDAPEntry')) {
+        return throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
+      } 
+      
+      // This function actually returns NULL on failure, not FALSE, as documented
+      if (NULL == ($res= ldap_add($this->_hdl, $entry->getDN(), $entry->getAttributes()))) {
+        return throw(new IOException('Add failed ['.$this->getLastError().']'));
+      }
+      
+      return $res;
+    }
+    
   }
 ?>
