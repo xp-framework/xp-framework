@@ -48,10 +48,10 @@
      * @param   mixed ref a class name, an object or a Reflection_Class object
      */
     public function __construct($ref) {
-      if ($ref instanceof Reflection_Class) {
+      if ($ref instanceof ReflectionClass) {
         $this->_reflection= $ref;
       } else {
-        $this->_reflection= new Reflection_Class($ref);
+        $this->_reflection= new ReflectionClass($ref);
       }
     }
     
