@@ -258,6 +258,22 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
     }
   } implements(__FILE__, 'Iterator');]]></code></li>
           </ul>
+          <br/>
+          Interfaces may extend each other:
+          <ul>
+            <li>Base interface:<code><![CDATA[  class Command extends Interface {
+    function invoke() { }
+  }]]></code></li>
+            <li>Child interface:<code><![CDATA[  class PublishCommand extends Command {
+  }]]></code></li>
+            <li>Implementing class:<code><![CDATA[  class TestCommand extends Object {
+    function invoke() {
+      // ...
+    }
+  } implements(__FILE__, 'PublishCommand');]]></code></li>
+          </ul>
+          In case PublishCommand where to define additional methods, the implementing
+          class would, of course, have to implement those, too.          
           <box caption="Note">
             Failure to implement an interface fully will result in a fatal error.
           </box>
