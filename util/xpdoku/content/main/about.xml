@@ -6,13 +6,13 @@
       <editor>$Id$</editor>
       
       <para>
-        <caption>Was bedeutet "XP"?</caption>
-        <text>"XP" steht für XML-PHP.</text>
+        <caption>What does "XP" mean?</caption>
+        <text>"XP" stands for XML-PHP. XP is far more than that</text>
       </para>
       <para>
-        <caption>Was ist das XP-Framework?</caption>
+        <caption>What is the XP framework?</caption>
         <text>
-          Das XP-Framework:
+          The XP framework:
           <ul>
             <li>ist eine Ansammlung von Sourcecode, der häufig verwendete Konstrukte
                 in einfach zu benutzende Klassen wrapped,
@@ -33,7 +33,7 @@
         </text>
       </para>              
       <para>
-        <caption>Idee:</caption>
+        <caption>Idea</caption>
         <text>
           Die Idee zu einem komplett objekt-orientierten Framework ist nicht neu. So 
           gibt es beispielsweise CPAN in Perl und PEAR in PHP. Diese Implementierung
@@ -228,21 +228,6 @@ Exception info.binford6100.db.Message.MessageException (statement failed)
         </text>
       </para>              
       <para>
-        <caption>Migration zur Zend Engine 2:</caption>
-        <text>
-          Für die Migration zur Zend Engine 2 sind folgende Aktionen notwendig:
-
-          <ul>
-            <li>try(); wird zu try</li>
-            <li>if (catch('Exception', $e)) wird zu catch(Exception $e)</li>
-            <li>return throw([...]) wird zu throw([...])</li>
-          </ul>
-          
-          Zudem muss aus lang.base.php die Eigenimplementation der Funktionen
-          try(), catch() und throw() herausgenommen werden.
-        </text>
-      </para>              
-      <para>
         <caption>Globale Funktionen des Frameworks</caption>
         <text>
           <ul>
@@ -276,10 +261,11 @@ Exception info.binford6100.db.Message.MessageException (statement failed)
       </para>              
     </content>
     <references>
-      <ref link="about.doc">Klassen-Dokumentation</ref>
-      <ref link="about.cvs">CVS-Guidelines</ref>
+      <ref link="about.doc">Writing XPDoc</ref>
+      <ref link="about.future">The future of XP</ref>
+      <ref link="about.cvs">CVS guidelines</ref>
       <ref link="about.install">Installation</ref>
-      <ref link="about.coding">Coding Standards</ref>
+      <ref link="about.coding">Coding standards</ref>
       <ref type="ext" link="http://pear.php.net/">PEAR</ref>
       <ref type="ext" link="http://cpan.org/">CPAN</ref>
     </references>
