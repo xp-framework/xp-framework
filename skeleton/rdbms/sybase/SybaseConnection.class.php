@@ -129,7 +129,7 @@
         }
         
         switch ($tok{0 + $mod}) {
-          case 'd': $r= is_null($arg) ? 'NULL' : intval($arg); break;
+          case 'd': $r= is_null($arg) ? 'NULL' : $arg > MAX_INT ? sprintf('%.0f', $arg) : intval($arg); break;
           case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
           case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
           case 's': $r= is_null($arg) ? 'NULL' : '"'.str_replace('"', '""', $arg).'"'; break;
