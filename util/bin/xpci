@@ -44,7 +44,7 @@ if [ "--class" = "$1" ] ; then
   /**
    * (Insert class' description here)
    *
-   * @ext      extensiom
+   * @ext      extension
    * @see      reference
    * @purpose  purpose
    */
