@@ -165,12 +165,37 @@ __;
         break;
         
       case 'var':
-        $tok[1]= 'public';
+        $variables= array(
+          'protected' => array(),
+          'public'    => array(),
+        );
+        while (';' !== $tok[1]) {
+          if (T_VARIABLE == $tok[0]) {
+            $variable= $tok[1];
+            $v= array();
+            while (',' !== $tok[1] && ';' !== $tok[1]) {
+              $tok= $t->getNextToken();
+              $v[]= $tok[1];
+            }
+            $variables['_' == $variable{1} ? 'protected' : 'public'][$variable]= $v;
+          } else {
+            $tok= $t->getNextToken();
+          }
+        }
+        foreach ($variables as $type => $list) {
+          if (empty($list)) continue;
+          $out[]= $type;
+          foreach ($list as $variable => $initialization) {
+            $out[]= "\n      ".$variable.implode('', $initialization);
+          }
+        }
+        $tok= array(T_NONE, '');
         break;
         
       case 'function':  // function public, function _protected
         while (T_STRING !== $tok[0]) $tok= $t->getNextToken();
-
+        $function= $tok[1];
+        
         // Use @access API-Doc if available, guess otherwise
         switch (@$apidoc['access']) {
           case 'public':
@@ -184,7 +209,7 @@ __;
             break;
 
           default:
-            $out[]= ('_' == $tok[1]{0} && '_' != $tok[1]{1}) ? 'protected' : 'public';
+            $out[]= ('_' == $function{0} && '_' != $function{1}) ? 'protected' : 'public';
         }
         
         // Check static, abstract and final models
@@ -221,13 +246,38 @@ __;
           $tok= $t->getNextToken();
         }
         
-        // Kill method body if this function resides in an interface or is declared abstract
+        // Kill method body if this function resides in an interface or is declared 
+        // abstract. Change getInstance() method to use class statics
         if (('Interface' == $extends) || (@$apidoc['model'] == 'abstract')) { 
           while ('}' !== $tok[1]) {
             $tok= $t->getNextToken();
           }
           $out[]= ';';
           $tok= $t->getNextToken();
+        } elseif ('getInstance' == $function) {
+          $static= NULL;
+          while ('}' !== $tok[1]) {
+            if (!$static && T_STATIC == $tok[0]) {
+              $t->getNextToken();              // Swallow whitespace
+              $tok= $t->getNextToken();        // Static variable name
+              $static= $tok[1];
+              while (';' !== $tok[1]) {
+                $tok= $t->getNextToken();
+              }
+              $t->getNextToken();
+              $tok= $t->getNextToken();
+              var_dump($static);
+            }
+            $out[]= $static ? str_replace($static, 'self::'.$static, $tok[1]) : $tok[1];
+            $tok= $t->getNextToken();
+          }
+          
+          // Now insert instance variable
+          $out= array_merge(
+            array_slice($out, 0, $class+ 3),
+            array('public static '.$static."= NULL;\n    "),
+            array_slice($out, $class+ 3)
+          );
         }
         
         // Reset API-doc
