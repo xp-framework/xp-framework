@@ -125,7 +125,7 @@ Method annotations
 Class annotations
 ~~~~~~~~~~~~~~~~~
 - bool lang.XPClass::hasAnnotations()
-  Allows you to check whether any annotation exists for this method
+  Allows you to check whether any annotation exists for this class
 
 - array lang.XPClass::getAnnotations()
   Returns an associative array of annotation names and their 
