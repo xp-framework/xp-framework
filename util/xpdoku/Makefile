@@ -112,8 +112,8 @@ content:
 	  f=`basename $$i | sed -e 's/\.xml$$//g'` ; \
 	  echo "---> Processing $$f" ; \
 	  $(SABPHP) xslt/content.xsl $$i > $(CONTENT)/$$f.html ; \
-    done
-      
+	done
+
 collections: $(OUTPUT) $(XML)
 	@echo "===> Processing collections"
 	@for k in `$(SABCMD) xslt/helper.xsl $(CTREE) '$$mode=allcollections' | sed -e 's/<.*>//'`; do $(MAKE) -s "collection_$$k" ; done
