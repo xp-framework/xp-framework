@@ -1,0 +1,30 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  /**
+   * OpenSSL utility functions
+   *
+   * @ext      openssl
+   * @purpose  Utiltiy functions
+   */
+  class OpenSslUtil extends Object {
+  
+    /**
+     * Retreive errors
+     *
+     * @model   static
+     * @access  public
+     * @return  string[] error
+     */
+    function getErrors() {
+      $e= array();
+      while($msg= openssl_error_string()) {
+        $e[]= $msg;
+      }
+      return $e;
+    }
+  }
+?>
