@@ -30,12 +30,11 @@
      * Constructor
      *
      * @access  public
-     * @param   array params default NULL
+     * @param   string rootName default 'document'
      */
-    function __construct($params= NULL) {
-      $this->_objs= array();        
-      $this->root= &new Node('document');
-      XML::__construct($params);
+    function __construct($rootName= 'document') {
+      parent::__construct();
+      $this->root= &new Node($rootName);
     }
     
     /**
