@@ -26,9 +26,11 @@
      * @param   string str
      */
     function __construct($str) {
-      $this->parts= parse_url($str);
+      foreach(parse_url($str) as $key => $value) {
+        $this->parts[$key]= urldecode($value);
+      }
+      
       $this->parts['dsn']= $str;
-      parent::__construct();
     }
     
     /**
