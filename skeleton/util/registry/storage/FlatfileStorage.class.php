@@ -20,7 +20,8 @@
    */
   class FlatfileStorage extends RegistryStorage {
     var
-      $_file   = NULL;
+      $_file   = NULL,
+      $_hash   = NULL;
 
     /**
      * Initialize this storage
