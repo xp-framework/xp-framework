@@ -40,7 +40,12 @@ annotations:
   
 - bool ReflectionMethod::hasAnnotation($name)
   Allows you to check if a annotation exists
-  
+
+See also:
+* Annotations in Tiger, Part 1: Add metadata to Java code
+  http://www-106.ibm.com/developerworks/library/j-annotate1/?ca=dnt-535
+
+
 Instance creation expression
 ----------------------------
 A class instance creation expression is used to create new objects that 
