@@ -23,9 +23,9 @@
      * @param   string code
      */
     function __construct($message, $actual, $code) {
+      parent::__construct($message);
       $this->actual= $actual;
       $this->code= $code;
-      parent::__construct($message);
     }
     
     /**
@@ -46,6 +46,21 @@
      */
     function getCode() {
       return $this->code;
+    }
+    
+    /**
+     * Retrieve string representation
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return parent::toString().sprintf(
+        "\n  [code]     %s".
+        "\n  [actual]   %s",
+        $this->code,
+        var_export($this->actual, 1)
+      );
     }
   }
 ?>
