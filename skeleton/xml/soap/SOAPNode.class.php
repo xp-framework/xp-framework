@@ -35,7 +35,6 @@
     function _contentFormat($content) {
       switch (gettype($content)) {
         case 'boolean': return $content ? 'true' : 'false';
-        case 'NULL': $this->attribute['xsi:null']= 'true'; return '';
         case 'string': return htmlspecialchars($content);
       }
       return $content;
@@ -127,11 +126,18 @@
           }
           
           $child->attribute['xmlns:ns'.$ns]= $name;
-        } else if (is_scalar($value) || NULL === $value) {
+        } else if (is_scalar($value)) {
         
           // Skalare Typen
           $type= $child->_typeName($value);
           $content= $child->_contentFormat($value);
+	} else if (NULL === $value) {
+	
+	  // NULL
+	  $type= NULL;
+	  $content= '';
+	  $this->attribute['xsi:null']= 'true';
+	  
         } else {
         
           // Arrays
@@ -155,7 +161,7 @@
         }
 
         // Skalare Datentypen
-        $child->attribute['xsi:type']= $type;
+        if (NULL !== $type) $child->attribute['xsi:type']= $type;
         $child->setContent($content);
       }
     }
