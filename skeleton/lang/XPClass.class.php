@@ -397,7 +397,7 @@
             case T_COMMENT:
               if ('#' == $tokens[$i][1]{0}) {   // Annotation
                 $annotations= eval('return array('.preg_replace(
-                  array('/@([a-z_]+),/', '/@([a-z_]+)\(\'([^\']+)\'\)/', '/@([a-z_]+)\(/', '/([a-z_]+) *= */'),
+                  array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/i', '/@([a-z_]+)\(/i', '/([a-z_]+) *= */i'),
                   array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '\'$1\' => '),
                   trim($tokens[$i][1], "[]# \t\n\r").','
                 ).');');
