@@ -10,7 +10,7 @@ $Id$
 Scope of Change
 ---------------
 The core function cast() is changed to support class hierarchies 
-correctly. Also, cast() should no longer change the passed variable.
+correctly. Also, cast() should no longer changes the passed variable.
 
 Rationale
 ---------
