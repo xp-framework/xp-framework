@@ -17,7 +17,11 @@
    +----------------------------------------------------------------------+
 */
 
+<<<<<<< zend_execute_API.c
 /* $Id$ */
+=======
+/* $Id$ */
+>>>>>>> 1.314
 
 #include <stdio.h>
 #include <signal.h>
@@ -574,6 +578,10 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache TS
 	zval *method_name;
 	zval *params_array;
 	int call_via_handler = 0;
+
+	if (EG(exception)) {
+		return FAILURE; /* we would result in an instable executor otherwise */
+	}
 
 	switch (fci->size) {
 		case sizeof(zend_fcall_info):
