@@ -72,7 +72,6 @@
         $lockprop->setLockToken($lktoken);
         $lockprop->setTimeout($timeout);
         $lockprop->setDepth($depth);
-        $lockprop->setCreationTime(time());
       }
       
       $this->properties= $lockprop;
