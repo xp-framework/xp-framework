@@ -65,8 +65,8 @@
     function getDatabases() {
       $dbs= array();
       try(); {
-        $q= $this->conn->query('select name from master..sysdatabases');
-        while ($record= $this->conn->fetch($q)) {
+        $q= &$this->conn->query('select name from master..sysdatabases');
+        while ($name= $q->next('name')) {
           $dbs[]= $name;
         }
       } if (catch('SQLException', $e)) {
@@ -90,7 +90,7 @@
         // This query is taken in part from sp_help (part of core sps from
         // SQL Server/11.0.3.3 ESD#6/P-FREE/Linux Intel/Linux 2.2.14 
         // i686/1/OPT/Fri Mar 17 15:45:30 CET 2000)
-        $q= $this->conn->query('
+        $q= &$this->conn->query('
           select 
             o.name as table,
             c.name, 
@@ -113,7 +113,7 @@
         );
         $name= NULL;
         $pos= 0;
-        while ($record= $this->conn->fetch($q)) {
+        while ($record= $q->next()) {
           if ($name != $record['table']) {
             $t[]= &new Table($record['table']);
             $pos++;
@@ -147,7 +147,7 @@
       
         // Get the table's attributes
         // This query is taken in part from sp_help (part of core sps)
-        $q= $this->conn->query('
+        $q= &$this->conn->query('
           select 
             c.name, 
             t.name as type, 
@@ -167,7 +167,7 @@
             and t.usertype < 100 
             and t.name not in ("sysname", "nchar", "nvarchar")
         ', $table);
-        while ($record= $this->conn->fetch($q)) {
+        while ($record= $q->next()) {
           $t->addAttribute(new DBTableAttribute(
             $record['name'], 
             $this->map[$record['type']],
@@ -181,7 +181,7 @@
         
         // Get indexes
         // This query is taken in part from sp_helpindex (part of core sps)
-        $q= $this->conn->query('
+        $q= &$this->conn->query('
           create table #indexes (
             keys varchar(200),
             name varchar(28),
@@ -239,7 +239,7 @@
           drop table #indexes
         ', $table);
         $keys= NULL;
-        while ($record= $this->conn->fetch($q)) {
+        while ($record= $q->next()) {
           if ($keys != $record['keys']) {
             $index= &$t->addIndex(new DBIndex(
               $record['name'],
