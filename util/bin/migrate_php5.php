@@ -175,7 +175,20 @@ __;
         while ('{' !== $tok[1]) $tok= $t->getNextToken();
         $out[]= 'try ';
         break;
-        
+      
+      case 'new':       // $handler= &new $reflect();
+        while ('(' !== $tok[1]) {
+          if ('$' == $tok[1]{0}) {
+            array_pop($out);    // whitespace
+            array_pop($out);    // "new" keyword
+            $out[]= 'lang::XPClass::forName('.$tok[1].')->newInstance';
+          } else {
+            $out[]= $tok[1];
+          }
+          $tok= $t->getNextToken();
+        }
+        break;
+       
       case 'throw':     // return throw(new Exception('...'));
         $pop= array();
         while ($e= array_pop($out)) { 
@@ -195,7 +208,7 @@ __;
         while ('{' !== $tok[1]) {
           switch ($tok[0]) {
             case T_CONSTANT_ENCAPSED_STRING:    // Exception name
-              $out[]= substr($tok[1], 1, -1).' ';
+              $out[]= 'lang::'.substr($tok[1], 1, -1).' ';
               break;
               
             case T_VARIABLE:                    // Variable
@@ -220,7 +233,7 @@ __;
       $f->write("uses(\n  ".implode(",\n  ", $uses)."\n);\n\n");
     }
     $f->write('namespace '.$namespace." {\n\n  ");
-    $f->write(trim(chop(implode('', $out))));
+    $f->write(str_replace('= &', '= ', trim(chop(implode('', $out)))));
     $f->write("\n}\n?>");
     $f->close();
   } if (catch('Exception', $e)) {
