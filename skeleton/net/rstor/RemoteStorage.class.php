@@ -21,6 +21,19 @@
   class RemoteStorage extends Socket {
     var
       $_timeout= 1;
+
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   string host Hostname or IP
+     * @param   int port default 6100 Port
+     */
+    function __construct($host, $port= 6100) {
+      $this->host= $host;
+      $this->port= $port;
+      parent::__construct();
+    }      
       
     /**
      * Private Helper-Fucktion
@@ -33,14 +46,14 @@
      */
     function _cmd() {
       $args= func_get_args();
-      $this->write(vsprintf($args[0]."\n", array_slice($args, 1)));
+      $this->write($cmd= vsprintf($args[0]."\n", array_slice($args, 1)));
       $return= chop($this->read(65536));
       
       // +OK text saved.
       // -ERR SET format: key=val
       // -ERR not understood
       if ('+OK' != substr($return, 0, $i= strpos($return, ' '))) return throw(new Exception(
-        $return
+        chop(urldecode($cmd)).'::'.$return
       ));
       return substr($return, $i+ 1);
     }
@@ -66,8 +79,8 @@
      * @throws  Exception in case of an error or if the key doesn't exist
      */
     function readKey($key) {
-      if (FALSE === ($return= $this->_cmd('GET %s', $key))) return FALSE;
-      return unserialize($return);
+      if (FALSE === ($return= $this->_cmd('GET %s', urlencode($key)))) return FALSE;
+      return unserialize(urldecode($return));
     }
     
     /**
@@ -80,7 +93,7 @@
      * @throws  Exception in case of an error
      */
     function writeKey($key, $value) {
-      return FALSE !== $this->_cmd('SET %s=%s', $key, serialize($value));
+      return FALSE !== $this->_cmd('SET %s=%s', urlencode($key), urlencode(serialize($value)));
     }
     
     /**
@@ -92,7 +105,7 @@
      */
     function hasKey($key) {
       try(); {
-        $return= (FALSE !== $this->_cmd('GET %s', $key));
+        $return= (FALSE !== $this->_cmd('GET %s', urlencode($key)));
       } if (catch('Exception', $e)) {
         return FALSE;
       }
@@ -108,7 +121,7 @@
      */
     function getKeys() {
       if (FALSE === ($return= $this->_cmd('KEYS'))) return FALSE;
-      return explode('|', substr($return, 0, -1));
+      return explode('|', urldecode(substr($return, 0, -1)));
     }
   }  
 ?>
