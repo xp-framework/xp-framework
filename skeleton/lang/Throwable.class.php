@@ -44,11 +44,11 @@
           // Not all of these are always set: debug_backtrace() should
           // initialize these - at least - to NULL, IMO => Workaround.
           $this->trace[]= &new StackTraceElement(
-            @$trace['file'],
-            @$trace['class'],
-            @$trace['function'],
-            @$trace['line'],
-            @$trace['args'],
+            isset($trace['file']) ? $trace['file'] : NULL,
+            isset($trace['class']) ? $trace['class'] : NULL,
+            isset($trace['function']) ? $trace['function'] : NULL,
+            isset($trace['line']) ? $trace['line'] : NULL,
+            isset($trace['args']) ? $trace['args'] : NULL,
             $messages
           );
         }
