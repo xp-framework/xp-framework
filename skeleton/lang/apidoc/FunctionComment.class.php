@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('lang.apidoc.Comment');
+  uses('lang.apidoc.Comment', 'lang.apidoc.Reference');
   
   // Function access
   define('APIDOC_FUNCTION_ACCESS_PUBLIC',  'public');
@@ -13,6 +13,7 @@
   /**
    * Class wrapping function comments
    *
+   * @see xp-doc:README.DOC
    */
   class FunctionComment extends Comment {
     var
@@ -30,7 +31,7 @@
      * @return  
      */
     function &addReference($see) {
-      $this->references[]= $see;
+      $this->references[]= &new Reference($see);
       return $this->references[sizeof($this->references)- 1];
     }
     

@@ -4,50 +4,54 @@
  * $Id$
  */
  
-  uses('lang.apidoc.Comment');
+  uses('lang.apidoc.Comment', 'lang.apidoc.Reference');
   
-  // Static classes
+  // Class models: static, generic
   define('APIDOC_CLASS_MODEL_STATIC',  'static');
   define('APIDOC_CLASS_MODEL_GENERIC', 'generic');
   
   /**
-   * Class wrapping function comments
+   * Class wrapping class comments. Class comments are written above
+   * the class name and may contain any of the keywords @purpose, @see,
+   * @model and any plain text you wish.
    *
+   * @see xp-doc:README.DOC
    */
   class ClassComment extends Comment {
     var
       $references   = array(),
       $purpose      = '',
       $examples     = array(),
-      $extends      = NULL;
-      
-    var
-      $model= APIDOC_CLASS_MODEL_GENERIC;
+      $extends      = NULL,
+      $model        = APIDOC_CLASS_MODEL_GENERIC;
       
     /**
-     * (Insert method's description here)
+     * Sets which class this class extends. This information is parsed
+     * from the class declaration, i.e. 
+     * <code>
+     *   class Model extends Object { }
+     * </code>
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string extends classname of parent class
      */
     function setExtends($extends) {
       $this->extends= $extends;
     }
       
     /**
-     * Sets 
+     * Sets class model. This information is parsed from the @purpose
+     * documentation keyword.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string model one of the APIDOC_CLASS_MODEL_* constants
      */
     function setModel($model) {
       $this->model= $model;
     }
 
     /**
-     * (Insert method's description here)
+     * Sets purpose. The purpose
      *
      * @access  
      * @param   
@@ -77,7 +81,7 @@
      * @return  
      */
     function &addReference($see) {
-      $this->references[]= $see;
+      $this->references[]= &new Reference($see);
       return $this->references[sizeof($this->references)- 1];
     }
     
