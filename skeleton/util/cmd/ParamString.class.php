@@ -75,6 +75,7 @@
      * @return  boolean Gesetzt
      */  
     function exists($long, $short= NULL) {
+      if (is_int($long)) return isset($this->list[$long]);
       return ($this->_find($long, $short) !== FALSE);
     }
     
@@ -87,6 +88,8 @@
      * @return  string Parameter-Wert
      */ 
     function value($long, $short= NULL) {
+      if (is_int($long)) return $this->list[$long];
+	  
       $pos= $this->_find($long, $short);
       return ($pos !== FALSE
         ? str_replace("--{$long}=", '', $this->list[$pos])
