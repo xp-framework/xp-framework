@@ -5,8 +5,13 @@
  */
 
   class A {
+    protected static $instance = NULL;
+    
     public static function getInstance() {
-      return new self();
+      if (!self::$instance) {
+        self::$instance= new self();
+      }
+      return self::$instance;
     }
   }
   
