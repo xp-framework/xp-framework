@@ -50,7 +50,7 @@
 #include <errno.h>
 #include "zend.h"
 #include "zend_alloc.h"
-#include "zend_language_parser.h"
+#include <zend_language_parser.h>
 #include "zend_compile.h"
 #include "zend_language_scanner.h"
 #include "zend_highlight.h"
@@ -129,6 +129,7 @@ void startup_scanner(TSRMLS_D)
 	RESET_DOC_COMMENT();
 	SCNG(yy_start_stack_ptr) = 0;
 	SCNG(yy_start_stack_depth) = 0;
+	SCNG(current_buffer) = NULL;
 #ifdef ZEND_MULTIBYTE
 	SCNG(script_org) = NULL;
 	SCNG(script_org_size) = 0;

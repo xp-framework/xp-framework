@@ -623,7 +623,7 @@ static void _function_string(string *str, zend_function *fptr, char* indent TSRM
 			string_printf(str, "protected ");
 			break;
 		default:
-		    string_printf(str, "<visibilty error> ");
+		    string_printf(str, "<visibility error> ");
 		    break;
 	}
 
@@ -1408,7 +1408,7 @@ static int _zval_array_to_c_array(zval **arg, zval ****params TSRMLS_DC) /* {{{ 
 } /* }}} */
 
 /* {{{ proto public mixed ReflectionFunction::invokeArgs(array args)
-   Invokes the function */
+   Invokes the function and pass its arguments as array. */
 ZEND_METHOD(reflection_function, invokeArgs)
 {
 	zval *retval_ptr;
@@ -1944,7 +1944,7 @@ ZEND_METHOD(reflection_method, __toString)
 /* }}} */
 
 /* {{{ proto public mixed ReflectionMethod::invoke(mixed object, mixed* args)
-   Invokes the function. Pass a  */
+   Invokes the method. */
 ZEND_METHOD(reflection_method, invoke)
 {
 	zval *retval_ptr;
@@ -1961,7 +1961,7 @@ ZEND_METHOD(reflection_method, invoke)
 	METHOD_NOTSTATIC;
 
 	if (argc < 1) {
-		zend_error(E_WARNING, "%s expects at least one parameter, none given", get_active_function_name(TSRMLS_C));
+		zend_error(E_WARNING, "Invoke() expects at least one parameter, none given");
 		RETURN_FALSE;
 	}
 	
@@ -1971,11 +1971,11 @@ ZEND_METHOD(reflection_method, invoke)
 		(mptr->common.fn_flags & ZEND_ACC_ABSTRACT)) {
 		if (mptr->common.fn_flags & ZEND_ACC_ABSTRACT) {
 			zend_throw_exception_ex(reflection_exception_ptr, 0 TSRMLS_CC, 
-				"Trying to invoke abstract method %s::%s", 
+				"Trying to invoke abstract method %s::%s()", 
 				mptr->common.scope->name, mptr->common.function_name);
 		} else {
 			zend_throw_exception_ex(reflection_exception_ptr, 0 TSRMLS_CC,
-				"Trying to invoke %s method %s::%s from scope %s", 
+				"Trying to invoke %s method %s::%s() from scope %s", 
 				mptr->common.fn_flags & ZEND_ACC_PROTECTED ? "protected" : "private",
 				mptr->common.scope->name, mptr->common.function_name,
 				Z_OBJCE_P(getThis())->name);
@@ -2047,7 +2047,7 @@ ZEND_METHOD(reflection_method, invoke)
 /* }}} */
 
 /* {{{ proto public mixed ReflectionMethod::invokeArgs(mixed object, array args)
-   Invokes the function. Pass a  */
+   Invokes the function and pass its arguments as array. */
 ZEND_METHOD(reflection_method, invokeArgs)
 {
 	zval *retval_ptr;
@@ -2605,6 +2605,29 @@ ZEND_METHOD(reflection_class, getConstructor)
 }
 /* }}} */
 
+/* {{{ proto public ReflectionMethod ReflectionClass::hasMethod(string name)
+   Returns whether a method by a given name exists */
+ZEND_METHOD(reflection_class, hasMethod)
+{
+	reflection_object *intern;
+	zend_class_entry *ce;
+	char *name, *lc_name; 
+	int name_len, exists;
+
+	METHOD_NOTSTATIC;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
+		return;
+	}
+
+	GET_REFLECTION_OBJECT_PTR(ce);
+	lc_name = zend_str_tolower_dup(name, name_len);
+	exists = zend_hash_exists(&ce->function_table, lc_name, name_len + 1);
+	efree(lc_name);
+
+	RETVAL_BOOL(exists);
+}
+/* }}} */
+
 /* {{{ proto public ReflectionMethod ReflectionClass::getMethod(string name) throws ReflectionException
    Returns the class' method specified by it's name */
 ZEND_METHOD(reflection_class, getMethod)
@@ -2631,29 +2654,6 @@ ZEND_METHOD(reflection_class, getMethod)
 				"Method %s does not exist", name);
 		return;
 	}
-}
-/* }}} */
-
-/* {{{ proto public ReflectionMethod ReflectionClass::hasMethod(string name)
-   Returns whether a method by a given name exists */
-ZEND_METHOD(reflection_class, hasMethod)
-{
-	reflection_object *intern;
-	zend_class_entry *ce;
-	char *name, *lc_name; 
-	int name_len, exists;
-
-	METHOD_NOTSTATIC;
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
-		return;
-	}
-
-	GET_REFLECTION_OBJECT_PTR(ce);
-	lc_name = zend_str_tolower_dup(name, name_len);
-	exists = zend_hash_exists(&ce->function_table, lc_name, name_len + 1);
-	efree(lc_name);
-
-	RETVAL_BOOL(exists);
 }
 /* }}} */
 
@@ -3280,7 +3280,7 @@ ZEND_METHOD(reflection_property, export)
 ZEND_METHOD(reflection_property, __construct)
 {
 	zval *propname, *classname;
-	char *name_str;
+	char *name_str, *class_name, *prop_name;
 	int name_len;
 	zval *object;
 	reflection_object *intern;
@@ -3345,8 +3345,9 @@ ZEND_METHOD(reflection_property, __construct)
 	ZVAL_STRINGL(classname, ce->name, ce->name_length, 1);
 	zend_hash_update(Z_OBJPROP_P(object), "class", sizeof("class"), (void **) &classname, sizeof(zval *), NULL);
 	
+	zend_unmangle_property_name(property_info->name, &class_name, &prop_name);
 	MAKE_STD_ZVAL(propname);
-	ZVAL_STRING(propname, property_info->name, 1);
+	ZVAL_STRING(propname, prop_name, 1);
 	zend_hash_update(Z_OBJPROP_P(object), "name", sizeof("name"), (void **) &propname, sizeof(zval *), NULL);
 
 	reference = (property_reference*) emalloc(sizeof(property_reference));
@@ -3761,7 +3762,7 @@ static int add_extension_class(zend_class_entry **pce, int num_args, va_list arg
 			zend_reflection_class_factory(*pce, zclass TSRMLS_CC);
 			add_assoc_zval_ex(class_array, (*pce)->name, (*pce)->name_length + 1, zclass);
 		} else {
-			add_next_index_stringl(class_array, (*pce)->name, (*pce)->name_length + 1, 1);
+			add_next_index_stringl(class_array, (*pce)->name, (*pce)->name_length, 1);
 		}
 	}
 	return ZEND_HASH_APPLY_KEEP;
@@ -3874,8 +3875,8 @@ static zend_function_entry reflection_class_functions[] = {
 	ZEND_ME(reflection_class, getEndLine, NULL, 0)
 	ZEND_ME(reflection_class, getDocComment, NULL, 0)
 	ZEND_ME(reflection_class, getConstructor, NULL, 0)
-	ZEND_ME(reflection_class, getMethod, NULL, 0)
 	ZEND_ME(reflection_class, hasMethod, NULL, 0)
+	ZEND_ME(reflection_class, getMethod, NULL, 0)
 	ZEND_ME(reflection_class, getMethods, NULL, 0)
 	ZEND_ME(reflection_class, getProperty, NULL, 0)
 	ZEND_ME(reflection_class, getProperties, NULL, 0)
