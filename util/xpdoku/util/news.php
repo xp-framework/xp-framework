@@ -21,6 +21,18 @@
   
   // TBD: Get from database?
   $news->addItem(
+    '[Beta] Telephony API', 
+    'http://xp.php3.de/apidoc/collections/util.telephony.html',
+    'With providing an API to telephony applications, another very interesting feature has been introduced',
+    new Date('2002-12-30 16:32:00')
+  );
+  $news->addItem(
+    'XP goes "multimedia"', 
+    'http://xp.php3.de/apidoc/collections/util.mp3.html',
+    'Initial support for MP3 files was added',
+    new Date('2002-12-30 14:12:00')
+  );
+  $news->addItem(
     'Added class org.cvshome.CVSInterface', 
     'http://xp.php3.de/apidoc/collections/org.cvshome.html',
     'Description: This class is an easy to use interface to the concurrent versioning system executables',
