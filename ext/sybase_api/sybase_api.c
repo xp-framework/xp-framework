@@ -9,6 +9,7 @@
 /**
  * Setup environment
  * 
+ * @access  public
  * @param   sybase_environment **env
  * @return  int
  */
@@ -44,6 +45,8 @@ SYBASE_API int sybase_init(sybase_environment **env)
  *      CS_SERVERMSG *message
  *    )
  *
+ *    Server message callbacks must return CS_SUCCEED.
+ *
  * 2) Client message handler:
  *    =======================
  *    static CS_RETCODE CS_PUBLIC clientmessage(
@@ -51,10 +54,16 @@ SYBASE_API int sybase_init(sybase_environment **env)
  *      CS_CONNECTION *connection, 
  *      CS_CLIENTMSG *message
  *    )
+ *
+ *    If we return CS_FAIL, Client-Library marks the connection
+ *    as dead. This means that it cannot be used anymore.
+ *    If we return CS_SUCCEED, the connection remains alive
+ *    if it was not already dead.
  * </pre>
  *
+ * @access  public
  * @param   sybase_environment *env
- * @param   int type
+ * @param   int type CS_SERVERMSG_CB or CS_CLIENTMSG_CB
  * @param   CS_VOID *handler
  * @return  int
  */
@@ -69,6 +78,7 @@ SYBASE_API int sybase_set_messagehandler(sybase_environment *env, int type, CS_V
 /**
  * Shutdown environment
  * 
+ * @access  public
  * @param   sybase_environment *env
  * @return  int
  */
@@ -86,6 +96,7 @@ SYBASE_API int sybase_shutdown(sybase_environment *env)
 /**
  * Allocate a connection
  * 
+ * @access  public
  * @param   sybase_link **link
  * @return  int
  */
@@ -101,6 +112,7 @@ SYBASE_API int sybase_alloc(sybase_link **link)
 /**
  * Connect to the database
  * 
+ * @access  public
  * @param   sybase_environment *env the environment previously initialized with sybase_init
  * @param   char *host
  * @param   char *user
@@ -133,6 +145,7 @@ SYBASE_API int sybase_connect(sybase_environment *env, sybase_link *link, char *
  * Retrieve connection status. Assumes CS_CONSTAT_DEAD when retrieving the 
  * connection status fails.
  * 
+ * @access  public
  * @param   sybase_link *link
  * @return  CS_INT a bitfield of CS_CONSTAT_CONNECTED and CS_CONSTAT_DEAD
  */
@@ -150,6 +163,7 @@ SYBASE_API CS_INT sybase_connection_status(sybase_link *link)
 /**
  * Check if whe are connected
  * 
+ * @access  public
  * @param   sybase_link *link
  * @return  int
  */
@@ -161,6 +175,7 @@ SYBASE_API int sybase_is_connected(sybase_link *link)
 /**
  * Send a command
  * 
+ * @access  public
  * @param   sybase_link *link
  * @param   sybase_result **result
  * @param   char *query
@@ -187,6 +202,7 @@ SYBASE_API int sybase_query(sybase_link *link, sybase_result **result, char *que
 /**
  * Cancel a command
  * 
+ * @access  public
  * @param   sybase_result *result
  * @param   int mode CS_CANCEL_ALL, CS_CANCEL_ATTN or CS_CANCEL_CURRENT
  * @return  int
@@ -202,6 +218,7 @@ SYBASE_API int sybase_cancel(sybase_result *result, int mode)
 /**
  * Read a result
  * 
+ * @access  public
  * @param   sybase_result **result
  * @return  int
  */
@@ -211,6 +228,14 @@ SYBASE_API int sybase_results(sybase_result **result)
     return ((*result)->code == CS_SUCCEED) ? SA_SUCCESS : SA_FAILURE;
 }
 
+/**
+ * Calculate length of a given datatype for representation as a 
+ * nulltermimated string.
+ * 
+ * @access  private
+ * @param   CS_DATAFMT f
+ * @return  int
+ */
 static inline int _sybase_lengthof(CS_DATAFMT f)
 {
     int len;
@@ -270,6 +295,7 @@ static inline int _sybase_lengthof(CS_DATAFMT f)
 /**
  * Initialize a resultset
  * 
+ * @access  public
  * @param   sybase_result **result
  * @param   sybase_resultset **resultset
  * @return  int
@@ -330,6 +356,7 @@ SYBASE_API int sybase_init_resultset(sybase_result *result, sybase_resultset **r
 /**
  * Free a resultset
  * 
+ * @access  public
  * @param   sybase_resultset *result
  * @return  int
  */
@@ -353,6 +380,7 @@ SYBASE_API int sybase_free_resultset(sybase_resultset *resultset)
 /**
  * Fetch one row
  * 
+ * @access  public
  * @param   sybase_resultset *result
  * @param   sybase_resultset **resultset
  * @return  int
@@ -386,6 +414,7 @@ SYBASE_API int sybase_fetch(sybase_result *result, sybase_resultset **resultset)
 /**
  * Free a result
  * 
+ * @access  public
  * @param   sybase_result *result
  * @return  int
  */
@@ -402,6 +431,7 @@ SYBASE_API int sybase_free_result(sybase_result *result)
 /**
  * Close the connection to the database
  * 
+ * @access  public
  * @param   sybase_link *link
  * @return  int
  */
@@ -429,6 +459,7 @@ SYBASE_API int sybase_close(sybase_link *link)
 /**
  * Free the link
  *
+ * @access  public
  * @param   sybase_link *link
  * @return  int
  */
@@ -444,6 +475,7 @@ SYBASE_API int sybase_free(sybase_link *link)
 /**
  * Return the name of a return type
  *
+ * @access  public
  * @param   CS_INT type
  * @return  char* name or (UNKNOWN) if the type is unknown
  */
@@ -483,6 +515,7 @@ SYBASE_API char *sybase_nameoftype(CS_INT type)
 /**
  * Return the name of a return code
  *
+ * @access  public
  * @param   CS_INT type
  * @return  char* name or (UNKNOWN) if the type is unknown
  */
@@ -510,6 +543,7 @@ SYBASE_API char *sybase_nameofcode(CS_INT code)
 /**
  * Return the name of a data type
  *
+ * @access  public
  * @param   CS_INT type
  * @return  char* name or (UNKNOWN) if the type is unknown
  */
