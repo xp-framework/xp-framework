@@ -75,7 +75,6 @@
      *
      * @access  public
      * @param   mixed arg default NULL
-     * @return  
      */
     function notifyObservers($arg= NULL) {
       if (!$this->hasChanged()) return;
