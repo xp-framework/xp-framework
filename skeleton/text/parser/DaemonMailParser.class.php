@@ -42,6 +42,7 @@
    *   }                                                      
    * </code> 
    *
+   * @see      rfc://1893
    * @purpose  DaemonMail Parser
    */
   class DaemonMailParser extends Object {
@@ -130,6 +131,7 @@
       }
       
       # var_dump('MESSAGE/DELIVERY', $r);
+      $daemonmessage->details= $r;
     }
     
     /**
@@ -143,15 +145,17 @@
      */
     function parse(&$message) {
       static $magic= array(
-        '550'   => DAEMON_GENERIC,
-        '5.5.0' => DAEMON_GENERIC,
-        '4.4.1' => DAEMON_SMTPCONN,
-        'Unknown local part' => DAEMON_LOCALPART,
-        'User unknown' => DAEMON_LOCALPART,
-        'Quota' => DAEMON_QUOTA,
-        'relaying' => DAEMON_RELAYING,
-        'no route to host' => DAEMON_NOROUTE,
-        'Cannot route' => DAEMON_NOROUTE,
+        '550'                    => DAEMON_GENERIC,
+        '5.5.0'                  => DAEMON_GENERIC,
+        '4.4.1'                  => DAEMON_SMTPCONN,
+        'Unknown local part'     => DAEMON_LOCALPART,
+        'User unknown'           => DAEMON_LOCALPART,
+        'unknown user'           => DAEMON_LOCALPART,
+        'Quota'                  => DAEMON_QUOTA,
+        'relaying'               => DAEMON_RELAYING,
+        'no route to host'       => DAEMON_NOROUTE,
+        'Cannot route'           => DAEMON_NOROUTE,
+        'Delay'                  => DAEMON_DELAYED,
       );
       
       if (!is_a($message, 'Message')) {
@@ -166,14 +170,17 @@
       // to an address they shouldn't be.
       if (NULL !== ($irt= $message->getHeader('In-Reply-To'))) {
         trigger_error('Message is in reply to: '.$irt, E_USER_NOTICE);
-        return throw(new FormatException('Message has In-Reply-To header, Mailer Daemons do not set these'));
+        trigger_error('Subject: '.$message->getSubject(), E_USER_NOTICE);
+        return throw(new FormatException('Message has In-Reply-To header, Mailer Daemons do not set these [hint: Lame autoresponders do]'));
       }
       
       // Set up daemon mail object
       $daemonmessage= &new DaemonMessage();
       $daemonmessage->setFrom($message->getFrom());
       $daemonmessage->date= &$message->date;
-      $daemonmessage->headers= &$message->headers;
+      $daemonmessage->headers= $message->headers;
+      $daemonmessage->subject= $message->subject;
+      $daemonmessage->to= &$message->to;
       
       // Is there a header named "X-Failed-Recipients"?
       if (NULL !== ($rcpt= $message->getHeader('X-Failed-Recipients'))) {

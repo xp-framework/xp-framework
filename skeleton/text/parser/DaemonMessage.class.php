@@ -13,9 +13,12 @@
   define('DAEMON_RELAYING',     'relayingdenied');
   define('DAEMON_NOROUTE',      'noroutetohost');
   define('DAEMON_SMTPCONN',     'smtpconnfailure');
+  define('DAEMON_DELAYED',      'delayed');
+  
   /**
+   * DaemonMessage
    *
-   *
+   * @purpose  Mailer daemom message
    */
   class DaemonMessage extends Message {
     var 
