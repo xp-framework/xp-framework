@@ -18,7 +18,10 @@
   $log->configure($pm->getProperties('log'));
   $cat= &$log->getCategory();
 
-  $scriptlet= &new WebsiteScriptlet('../xsl/');
+  $scriptlet= &new WebsiteScriptlet(
+    new ClassLoader('net.xp-framework.scriptlet'), 
+    '../xsl/'
+  );
   try(); {
     $scriptlet->init();
     $response= &$scriptlet->process();
