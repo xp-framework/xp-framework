@@ -232,7 +232,6 @@
      *
      * @access  public
      * @param   string filename
-     * @param   &string data
      * @return  bool success
      * @throws  ElementNotFoundException
      * @throws  OperationFailedException
@@ -293,24 +292,32 @@
         $f->write($data);
         $f->close();
       } if (catch('IOException', $e)) {
-        return throw(new OperationFailedException($filename.' cannot be written to ('.$e->message.')'));
+        return throw(new OperationFailedException($filename.' cannot be written '.$e->toString()));
       }
       
+      $props= array();
+      
       // Set ResourceType
-      $p= &new WebdavProperty(
-        'resourcetype',
-        $resourcetype
-      );
+      with ($p= &new WebdavProperty('resourcetype', $resourcetype)); {
+        $p->setNameSpaceName('DAV:');
+        $p->setNameSpacePrefix('D:');
+        $props[$p->getNameSpacePrefix().$p->getName()]= $p;
+      }
       
-      $p->setNameSpaceName('DAV:');
-      $p->setNameSpacePrefix('D:');
+      // Set the ETag
+      $etag= md5($uri);
+      $etag= sprintf(
+        '%s-%s-%s',
+        substr($etag, 0, 7),
+        substr($etag, 7, 4),
+        substr($etag, 11, 8)
+      );      
       
-      $this->propStorage->setProperties($filename, array(
-        'D:resourcetype'  =>  $p
-        )
-      );  
+      with ($p= &new WebdavProperty('ETag', $etag)); {
+        $props[$p->getNameSpacePrefix().$p->getName()]= $p;
+      }
       
-
+      $this->propStorage->setProperties($filename, $props);  
       return $new;
     }
     
