@@ -396,6 +396,34 @@
             }
             break;
           
+          case '@channels':
+            if ($this->doPrivileged($connection, $nick, $params)) {
+              $chans= '';
+              foreach (array_keys($this->channels) as $c) {
+                $chans.= sprintf('%s%s ', ($this->operator[$c] ? '@' : ''), $c);
+              }
+              
+              $connection->sendMessage($nick, $chans);
+            }
+            break;
+          
+          case '@op':
+          case '@deop':
+            list($channel, $nickname, $password)= explode(' ', $params);
+            if ($this->doPrivileged($connection, $nick, $password)) {
+              if (isset($this->operator[$channel]) && TRUE === $this->operator[$channel]) {
+                $connection->writeln(
+                  'MODE %s %s %s',
+                  $channel,
+                  (strtolower($command) == '@op' ? '+o' : '-o'),
+                  $nickname
+                );
+              } else {
+                $connection->sendMessage($nick, 'Ich bin kein Operator in %s', $channel);
+              }
+            }
+            break;
+          
           case 'karma':
             $this->setKarma($nick, 0);  // Make sure array is initialized
             $connection->sendMessage($target, 'Karma für %s: %d', $nick, $this->karma[$nick]);
@@ -818,10 +846,17 @@
      */
     function onEndOfMOTD(&$connection, $server, $target, $data) {
       if ($this->config->hasSection('autojoin')) {
-        $connection->join(
-          $this->config->readString('autojoin', 'channel'),
-          $this->config->readString('autojoin', 'password', NULL)
-        );
+        $hash= &$this->config->readHash('autojoin', 'channels');
+        foreach ($hash->keys() as $channel) {
+          
+          if (is_numeric($channel)) {
+            $channel= $hash->get($channel);
+            $pass= NULL;
+          } else {
+            $pass= $hash->get($channel);
+          }
+          $connection->join($channel, $pass);
+        }
       }
     }
 
