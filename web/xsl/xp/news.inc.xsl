@@ -19,7 +19,7 @@
    !-->
   <xsl:template match="emoticon">
     <img 
-     src="/image/emoticons/{@id}.gif" 
+     src="/image/icons/{@id}.gif" 
      width="18" 
      height="18" 
      border="0" 
