@@ -27,6 +27,14 @@
      *   var_dump($method->invoke(new Object()));
      * </code>
      *
+     * Example (passing arguments)
+     * <code>
+     *   $class= &XPClass::forName('text.String');
+     *   $method= &$class->getMethod('matches');
+     *
+     *   var_dump($method->invoke(new String('Hello'), array('/^H/')));
+     * </code>
+     *
      * Example (static invokation):
      * <code>
      *   $class= &XPClass::forName('util.log.Logger');
@@ -37,14 +45,13 @@
      *
      * @access  public
      * @param   &lang.Object obj
-     * @param   mixed* args
+     * @param   mixed[] args 
      * @return  &mixed
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      */
-    function &invoke(&$obj) {
+    function &invoke(&$obj, $args) {
       if (is_null($obj)) {
-        $a= func_get_args();
-        return call_user_func_array(array($this->_ref, $this->name), array_slice($a, 1));
+        return call_user_func_array(array($this->_ref, $this->name), $args);
       }
       
       if (!is(xp::nameOf($this->_ref), $obj)) {
@@ -56,7 +63,7 @@
       }
       
       $a= func_get_args();
-      return call_user_func_array(array(&$obj, $this->name), array_slice($a, 1));
+      return call_user_func_array(array(&$obj, $this->name), $args);
     }
   }
 ?>
