@@ -5,7 +5,7 @@
  */
 
   if (!defined('PATH_SEPARATOR')) {
-    define('PATH_SEPARATOR',  'WIN' == substr(PHP_OS, 0, 3) ? ';' : ':');    
+    define('PATH_SEPARATOR',  0 == strncasecmp('WIN', PHP_OS, 3) ? ';' : ':');    
   }
 
   // {{{ proto array sybase_fetch_assoc(resource result)
