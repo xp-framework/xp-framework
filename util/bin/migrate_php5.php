@@ -115,7 +115,10 @@ __;
         $map= array(
           'Exception'   => 'XPException'
         );
-        $out[]= 'class';
+        $out[]= 'class ';
+        $t->getNextToken();             // Swallow whitepsace
+        $class= $t->getNextToken();
+        $out[]= $class[1];
         while ('{' !== $tok[1]) {
           $tok= $t->getNextToken();
           $out[]= $tok[1];
@@ -128,10 +131,12 @@ __;
             $out[]= isset($map[$tok[1]]) ? $map[$tok[1]] : $tok[1];
           }
         }
-        $out[]= "\n";
+        $out[]= "\n    const\n";
+        $const= '';
         foreach ($constants as $name => $tok) {
-          $out[]= '    const '.substr($name, 1, -1).' = '.$tok[1].";\n";
+          $const.= '      '.preg_replace('/^'.$class[1].'_?/i', '', substr($name, 1, -1)).' = '.$tok[1].",\n";
         }
+        $out[]= substr($const, 0, -2).";\n";
         $class= TRUE;
         $tok= array(T_NONE, '');
         break;
@@ -167,7 +172,7 @@ __;
         ) {
           $out[]= 'self::'.$following[1][1].'(';
         } else {
-          $out[]= '$this->'.$following[1][1].$following[2][1];
+          $out[]= '$this'.$following[0][1].$following[1][1].$following[2][1];
         }
         $tok= array(T_NONE, '');
         break;
@@ -232,7 +237,7 @@ __;
     $f->write($header);
     switch (sizeof($uses)) {
       case 0: break;
-      case 1: $f->write('uses('.$uses[0].")\n\n"); break;
+      case 1: $f->write('  uses('.$uses[0].");\n\n"); break;
       default: $f->write("uses(\n  ".implode(",\n  ", $uses)."\n);\n\n");
     }
     // $f->write('namespace '.$namespace." {\n\n");
