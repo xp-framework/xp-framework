@@ -171,7 +171,7 @@
   <tr valign="top" bgcolor="#f0f0f0">
     <td><small>
       <a href="http://schlund.com/"><img src="/image/schlund.gif" border="0" align="left"/></a>      
-	  <a href="/copyright.php">Copyright 2002 Timm Friebe, Schlund+Partner AG</a><br/>
+	  <a href="/copyright.php">Copyright XP-Team, Schlund+Partner AG</a><br/>
       All rights reserved.<br/>
       </small>
     </td>
