@@ -129,7 +129,7 @@
         if ($this->files[$idx]->needsReparsing()) {
           $this->statusbar->push (1, 'Reparsing '.$this->files[$idx]->filename);
           $this->files[$idx]->parse();
-          $this->statusbar->push (1, 'Reparsed '.$this->files[$idx]->filename.' at '.date ('H:i:S'));
+          $this->statusbar->push (1, 'Reparsed '.$this->files[$idx]->filename.' at '.date ('H:i:s'));
           
           $reparse= TRUE;
         }
