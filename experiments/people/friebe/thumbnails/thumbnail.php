@@ -11,8 +11,8 @@
   
   // {{{ main
   $p= &new ParamString();
-  if (!$p->exists(1)) {
-    printf("Usage: %s infile.jpg > thumbnail.jpg\n", $p->value(0));
+  if (4 != $p->count) {
+    printf("Usage: %s infile.jpg X Y > thumbnail.jpg\n", $p->value(0));
     exit(-1);
   }
   
@@ -20,7 +20,7 @@
     $image= &new JpegImage();
     $image->fromFile($p->value(1));
     
-    $thumb= &new JpegImage(33, 42);
+    $thumb= &new JpegImage($p->value(2), $p->value(3));
     $thumb->create(TRUE);
     $thumb->copyFrom(
       $image, 
