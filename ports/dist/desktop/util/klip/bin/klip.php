@@ -14,7 +14,7 @@
   // {{{ main
   $p= &new ParamString();
   if (!$p->exists(1)) {
-    Console::writeLinef('Usage: %s <ini_file>', $p->value(0));
+    Console::writeLinef('Usage: %s <ini_file> [--skin=<skin_name>]', $p->value(0));
     exit(-1);
   }
   
