@@ -69,6 +69,7 @@
      * Extract information from nodesets
      *
      * @access  protected
+     * @throws  lang.FormatException in case extraction fails
      */
     function extract() {
 
@@ -199,7 +200,7 @@
      * @return  string
      */
     function getCodebase() {
-      $this->root->getAttribute('codebase');
+      return $this->root->getAttribute('codebase');
     }
 
     /**
@@ -219,7 +220,7 @@
      * @return  string
      */
     function getSpec() {
-      $this->root->getAttribute('spec');
+      return $this->root->getAttribute('spec');
     }
 
     /**
@@ -239,7 +240,7 @@
      * @return  string
      */
     function getHref() {
-      $this->root->getAttribute('href');
+      return $this->root->getAttribute('href');
     }
     
     /**
