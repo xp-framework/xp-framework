@@ -66,7 +66,7 @@
       value for the customer in the fastest way possible. XP is extreme in the
       sense that it takes 12 well-known software development "best practices"
       to their logical extremes -- turning them all up to "10" (or "11" for
-      Spinal Tap fans). See <a href="#deref?http://www.jera.com/techinfo/xpfaq.html">Kent Beck's introduction to Extreme Programming Explained<img hspace="2" src="image/arrow.gif" width="11" height="11" border="0"/></a>
+      Spinal Tap fans). See <a href="#deref?http://www.jera.com/techinfo/xpfaq.html">Kent Beck's introduction to Extreme Programming Explained<img hspace="2" src="/image/arrow.gif" width="11" height="11" border="0"/></a>
       for more details.
     </p>
 
@@ -74,7 +74,7 @@
       Further reading 02) Head-to-Head: PHP vs. ASP.NET
     </h3>
     <p>
-      A <a href="#deref?http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnaspp/html/phpvsaspnet.asp">comparison of PHP4 to the ASP.NET framework<img hspace="2" src="image/arrow.gif" width="11" height="11" border="0"/></a>.
+      A <a href="#deref?http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnaspp/html/phpvsaspnet.asp">comparison of PHP4 to the ASP.NET framework<img hspace="2" src="/image/arrow.gif" width="11" height="11" border="0"/></a>.
       Although it is definitely true that some features concerning object orientation are not present in PHP4, the
       complaints about a missing class library, consistent naming patterns and the
       missing database abstraction layer are answered here!
@@ -84,7 +84,7 @@
       Further reading 03) Strong Typing vs. Strong Testing
     </h3>
     <p>
-      Bruce Eckel, Author of "Thinking in Java", on <a href="#deref?http://mindview.net/WebLog/log-0025">static vs. dynamic typing<img hspace="2" src="image/arrow.gif" width="11" height="11" border="0"/></a>.
+      Bruce Eckel, Author of "Thinking in Java", on <a href="#deref?http://mindview.net/WebLog/log-0025">static vs. dynamic typing<img hspace="2" src="/image/arrow.gif" width="11" height="11" border="0"/></a>.
       Altough he is using Python in his article, the arguments made could be 
       adapted to PHP, too.<br/>
       <quote>
