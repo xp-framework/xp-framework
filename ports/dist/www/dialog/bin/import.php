@@ -116,6 +116,9 @@ __
       $updateFile->touch($update->date->getTime());
     }
 
+    $album->setTitle($param->value('title', 't', $album->getTitle()));
+    $album->setCreatedAt(new Date($param->value('date', 'D', $album->createdAt->getTime())));
+
     // We will regenerate these from scratch...
     $album->highlights= $album->chapters= array();
   } else {
