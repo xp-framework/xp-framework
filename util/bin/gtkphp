@@ -2,12 +2,15 @@
 
 EXE='php'
 IFS=
+DIR=`pwd`
 
 echo "<?php
   require('lang.base.php');
   uses('util.cmd.ParamString');
   
-  \$p= &new ParamString(explode('', '$*'));
+  \$params= explode('', '$*');
+  \$params[0]= '$DIR/gtkphp';
+  \$p= &new ParamString(\$params);
   try(); {
     if ('.class.php' == substr('$1', -10)) {
       require_once('$1');
