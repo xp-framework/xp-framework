@@ -221,7 +221,43 @@ Reading the header in Java:
   }
 </code>
 
-XXX TBD document body encoding XXX
+The body of a message is encoded depending on the message type.
+
+<pre>
+  Message type    Encoding
+  --------------- --------
+  Initialize      0
+  Request         1
+  Reply           2
+  Ping            3
+  Close           4
+</pre>
+
+* Body encoding for initialize message (#0)
+  <?php
+    $body= pack();      // XXX TBD XXX
+  ?>
+
+* Body encoding for request message (#1)
+  <?php
+    $body= pack();      // XXX TBD XXX
+  ?>
+
+* Body encoding for reply message (#2)
+  <?php
+    $body= pack();      // XXX TBD XXX
+  ?>
+
+* Body encoding for ping message (#3)
+  <?php
+    $body= pack();      // XXX TBD XXX
+  ?>
+
+* Body encoding for close message (#4)
+  <?php
+    $body= pack();      // XXX TBD XXX
+  ?>
+
 
 Dependencies
 ------------
