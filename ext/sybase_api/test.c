@@ -34,6 +34,7 @@ static CS_RETCODE CS_PUBLIC clientmessage(CS_CONTEXT *context, CS_CONNECTION *co
 int main(int argc, char **argv)
 {
     sybase_link *link= NULL;
+    sybase_hash *properties= NULL;
     sybase_environment *env= NULL;
     
     if (argc != 5) {
@@ -45,8 +46,12 @@ int main(int argc, char **argv)
     sybase_set_messagehandler(env, CS_SERVERMSG_CB, (CS_VOID *)servermessage);
     sybase_set_messagehandler(env, CS_CLIENTMSG_CB, (CS_VOID *)clientmessage);
     
-    sybase_alloc(&link);    
-    if (sybase_connect(env, link, argv[1], argv[2], argv[3], NULL) == SA_SUCCESS) {
+    sybase_alloc(&link);
+    sybase_hash_init(&properties, 10, 10);
+    sybase_hash_addstring(properties, CS_APPNAME, argv[0]);
+    sybase_hash_addstring(properties, CS_HOSTNAME, "FreeBSD");
+    
+    if (sybase_connect(env, link, argv[1], argv[2], argv[3], properties) == SA_SUCCESS) {
         sybase_result *result= NULL;
         sybase_resultset *resultset= NULL;
         
@@ -111,12 +116,19 @@ int main(int argc, char **argv)
             );
             sybase_free_result(result);
         }
+        
+        /* Wait for user input. We now have time to look at sp_who
+         * on the server, for example... */
+        printf("+++  Press return to continue\n");
+        getc(stdin);
     } else {
         printf("---> Connect failed!\n");
     }
     
     sybase_close(link);
     sybase_free(link);
+    
+    sybase_hash_free(properties);
     
     sybase_shutdown(env);
     
