@@ -304,19 +304,6 @@
         $props[$p->getNameSpacePrefix().$p->getName()]= $p;
       }
       
-      // Set the ETag
-      $etag= md5($uri);
-      $etag= sprintf(
-        '%s-%s-%s',
-        substr($etag, 0, 7),
-        substr($etag, 7, 4),
-        substr($etag, 11, 8)
-      );      
-      
-      with ($p= &new WebdavProperty('ETag', $etag)); {
-        $props[$p->getNameSpacePrefix().$p->getName()]= $p;
-      }
-      
       $this->propStorage->setProperties($filename, $props);  
       return $new;
     }
@@ -434,7 +421,7 @@
       } if (catch('FileFoundException', $e)) {
         return throw(new ElementNotFoundException($filename.' not found'));
       }
-      
+      $this->c->debug('OBJ', $o->properties);
       return $o;
     }
 
