@@ -117,7 +117,6 @@
             $lockinfo= $lockinfos[$t];
 
             if (empty($lockinfo['type']) or empty($lockinfo['scope'])) continue;
-            if (!$lockinfo['depth']) $lockinfo['depth']= 'infinity';
 
             $ak= &$lkif->addChild(new Node('D:activelock'));
             $l= &$ak->addChild(new Node('D:locktype'));
