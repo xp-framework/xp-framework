@@ -23,6 +23,18 @@
     var
       $_offset,
       $_size;
+      
+    /**
+     * Set tokens
+     *
+     * @access  public
+     * @param   string str a string containing all of the tokens
+     */
+    function setTokenString($str) {
+      $this->tokens= token_get_all($str);
+      $this->_offset= 0;
+      $this->_size= sizeof($tokens);
+    }
     
     /**
      * Set tokens
