@@ -101,7 +101,11 @@
   $r= 'An error has occured.';
 
   if (sizeof ($classHits) == 0) {
-    $r= '<b>Your search for "'.htmlspecialchars ($keyword).'" did not match any classes.</b>';
+    $r= '<b>Your search for "'.htmlspecialchars ($keyword).'" did not match any classes.</b><br/>';
+    $r.= '<ul>
+      <li><a href="http://google.de/search?q='.urlencode($keyword).'">Search Google</a></li>
+      <li><a href="http://php3.de/'.urlencode($keyword).'">Search PHP documentation</a></li>
+    </ul>';
   }
   
   if (sizeof ($classHits) > 1) {
