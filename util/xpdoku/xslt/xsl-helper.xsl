@@ -53,7 +53,7 @@
 <table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
   <tr bgcolor="#9eb6ff">
     <td align="left" rowspan="2">
-       <a href="/"><img src="/image/xp-logo2.gif" border="0" width="120" height="64" ALT="PHP-GTK"  vspace="0" hspace="0"/></a><br/>
+       <a href="/"><img src="/image/xp-logo.gif" border="0" width="120" height="64" ALT="PHP-GTK"  vspace="0" hspace="0"/></a><br/>
     </td>
     <td align="right" valign="top" nowrap="nowrap">
       <font color="#ffffff">
