@@ -29,5 +29,7 @@ SYBASE_API int sybase_set_messagehandler(sybase_environment *env, int type, CS_V
 SYBASE_API int sybase_shutdown(sybase_environment *env);
 SYBASE_API int sybase_alloc(sybase_link **link);
 SYBASE_API int sybase_connect(sybase_environment *env, sybase_link *link, char *host, char *user, char *pass);
+SYBASE_API CS_INT sybase_connection_status(sybase_link *link);
+SYBASE_API int sybase_is_connected(sybase_link *link);
 SYBASE_API int sybase_close(sybase_link *link);
 SYBASE_API int sybase_free(sybase_link *link);
