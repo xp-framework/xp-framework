@@ -138,8 +138,21 @@
      * @return  &lang.XPClass class object
      * @throws  lang.ClassNotFoundException when there is no such class
      */
-    public function forName($name) {
+    public static function forName($name) {
       return new XPClass(ClassLoader::loadClass($name));
+    }
+
+    /**
+     * Returns the Class object associated with the given instance.
+     *
+     * @model   static
+     * @access  public
+     * @param   &lang.Object instance
+     * @return  &lang.XPClass class object
+     * @throws  lang.ClassNotFoundException when there is no such class
+     */
+    public static function forInstance($instance) {
+      return new XPClass($instance);
     }
     
     /**
@@ -149,7 +162,7 @@
      * @access  public
      * @return  &lang.XPClass[] class objects
      */
-    public function getClasses() {
+    public static function getClasses() {
       $ret= array();
       foreach (get_declared_classes() as $name) {
         $ret[]= new XPClass($name);
