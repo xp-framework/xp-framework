@@ -292,7 +292,7 @@
 	<class>GtkFrame</class>
 	<name>frame1</name>
 	<border_width>4</border_width>
-	<height>40</height>
+	<height>60</height>
 	<label>Failure trace</label>
 	<label_xalign>0</label_xalign>
 	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
