@@ -270,6 +270,10 @@
             if ('#' == $params{0}) {    // Allow #<channel>/<nick> so private messages work
               list($target, $params)= explode('/', $params);
             }
+            
+            // Don't insult yourself!
+            if ($connection->user->getNick() == $params) { $params= $nick; }
+            
             $connection->sendMessage(
               $target, 
               '%s ist %s', 
