@@ -44,7 +44,7 @@
       "* Methods:\n%s\n".
       "* Has method 'toString': %s\n\n",
       $class->getName(),
-      !null($parent) ? $parent->getName() : '(n/a)',
+      !nil($parent) ? $parent->getName() : '(n/a)',
       $methods,
       var_export($class->hasMethod('toString'), 1)
     );
@@ -73,9 +73,9 @@
       "* Has method 'toString': %s\n\n".
       "* Instance toString() output: %s\n\n",
       $class->getName(),
-      !null($parent) ? $parent->getName() : '(n/a)',
+      !nil($parent) ? $parent->getName() : '(n/a)',
       $implements ? 'implements '.substr($implements, 2) : '',
-      !null($constructor)
+      !nil($constructor)
         ? $constructor->toString().' declared in '.$constructor->getDeclaringClass()->getName()
         : '(none)'
       ,
