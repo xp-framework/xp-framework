@@ -427,7 +427,7 @@
         return throw(new IllegalArgumentException('Parameters passed of wrong types'));
       }
       
-      $realpath= $this->base.$request->getFilename();
+      $realpath= $this->base.$request->getPath();
       if (!file_exists($realpath)) {
         return throw(new ElementNotFoundException($realpath.' not found'));
       }
