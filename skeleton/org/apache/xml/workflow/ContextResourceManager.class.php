@@ -13,7 +13,29 @@
    */
   class ContextResourceManager extends Object {
     var
-      $crs  = array();
+      $crs      = array(),
+      $hash     = array(),
+      $storage  = NULL;
+
+    /**
+     * Set Storage
+     *
+     * @access  public
+     * @param   &lang.Object storage
+     */
+    function setStorage(&$storage) {
+      $this->storage= &$storage;
+    }
+
+    /**
+     * Get Storage
+     *
+     * @access  public
+     * @return  &lang.Object
+     */
+    function &getStorage() {
+      return $this->storage;
+    }
       
     /**
      * Called to initialize this resource manager
@@ -31,14 +53,31 @@
      * @see     xp://org.apache.xml.workflow.ContextResource
      * @access  public
      * @param   string name
+     * @param   string class
      * @return  &org.apache.xml.workflow.ContextResource
      */
-    function &getContextResource($name) {
-      if (!isset($this->crs[$name])) {
-        $this->crs[$name]= &new ContextResource($name);
+    function &getContextResource($name, $class= 'ContextResource') {
+      if (!isset($this->hash[$name])) {
+        $this->crs[]= &new $class($name);
+        $this->hash[$name]= sizeof($this->crs)- 1;
+      } else if (!isset($this->crs[$this->hash[$name]])) {
+        $this->crs[$this->hash[$name]]= &$this->storage->getValue('contextresource.'.$name);
       }
       
-      return $this->crs[$name];
+      return $this->crs[$this->hash[$name]];
+    }
+    
+    /**
+     * Callback for serialize
+     *
+     * @access  magic
+     * @return  string[]
+     */
+    function __sleep() {
+      foreach (array_keys($this->hash) as $name) {
+        $this->storage->putValue('contextresource.'.$name, $this->crs[$this->hash[$name]]);
+      }
+      return array('hash');
     }
   }
 ?>
