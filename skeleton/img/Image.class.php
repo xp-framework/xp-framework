@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('img.ImagingException');
+  uses('img.ImagingException', 'img.Color');
   
   define('IMG_PALETTE',   0x0000);
   define('IMG_TRUECOLOR', 0x0001);
@@ -360,7 +360,26 @@
      * @return  &img.Color color object
      */
     function &colorAt($x, $y) {
-      return $this->palette[imagecolorat($this->handle, $x, $y)];
+      if (FALSE === ($idx= imagecolorat($this->handle, $x, $y))) return NULL;
+      
+      // See if we have this in our palette
+      if (!isset($this->palette[$idx])) {
+        if (imageistruecolor($this->handler)) {
+          $this->palette[$idx]= &new Color(
+            ($idx >> 16) & 0xFF, 
+            ($idx >> 8) & 0xFF, 
+            $idx & 0xFF
+          );
+        } else {
+          $i= imagecolorsforindex($this->handle, $idx);
+          $this->palette[$idx]= &new Color(
+            $i['red'], 
+            $i['green'], 
+            $i['blue']
+          );
+        }
+      }
+      return $this->palette[$idx];
     }
     
     /**
