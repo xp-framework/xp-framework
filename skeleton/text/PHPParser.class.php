@@ -34,9 +34,6 @@
       $filename=  '',
       $log=       NULL;
     
-    var
-      $_utimeLastChange= 0;
-    
     /**
      * Constructor
      *
@@ -59,51 +56,6 @@
     }    
     
     /**
-     * Returns whether this file needs reparsing
-     *
-     * @access  public
-     * @return  boolean needreparseing
-     */
-    function needsReparsing() {
-      if (NULL === $this->filename) return FALSE;
-      
-      if (FALSE !== ($mtime= filemtime ($this->filename)))
-        return ($mtime > $this->getLastChange());
-      
-      return TRUE;
-    }
-    
-    /**
-     * Get time of last parsing
-     *
-     * @access  public
-     * @return  int utime
-     */
-    function getLastChange() {
-      return $this->_utimeLastChange;
-    }
-
-    /**
-     * Set time of last parsing
-     *
-     * @access  public
-     * @param   int lp Unix-timestamp
-     */
-    function setLastChange($lp) {
-      $this->_utimeLastChange= $lp;
-    }
-    
-    /**
-     * Clears for reparsing
-     *
-     * @access  public
-     */
-    function clear() {
-      $this->functions= $this->classes= $this->uses= $this->requires= $this->sapis= array();
-      $this->setLastChange(0);
-    }     
-
-    /**
      * Parses the file.
      *
      * @access  public
@@ -120,9 +72,6 @@
       $tokens= token_get_all ($php);
       $lineno= 1;
 
-      // Clean up old data
-      $this->clear();
-      
       $currentSpace= array();
       $currentClass= array();
 
@@ -317,7 +266,6 @@
         }
       }
       
-      $this->setLastChange(time());
       return TRUE;
     }
   } implements(__FILE__, 'util.log.Traceable');
