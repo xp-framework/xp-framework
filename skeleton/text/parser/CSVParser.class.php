@@ -72,7 +72,6 @@
      *
      * @access public
      * @param Stream stream
-     * @return  
      */    
     function setInputStream(&$stream) {
       try(); {
