@@ -35,7 +35,7 @@
     }
     
     function fromObject($obj, $name= NULL) {
-      if (NULL == $name) $this->name= get_class($obj);
+      if (NULL == $name) $this->name= get_class($obj); else $this->name= $name;
       $this->_recurseArray($this, get_object_vars($obj));
       return $this;
     }
