@@ -67,21 +67,20 @@
     /**
      * Recurse an array
      *
-     * @access  private
-     * @param   string c class type
+     * @access  protected
      * @param   &xml.Node e element to add array to
      * @param   array a
      */
-    function _recurse($c, &$e, $a) {
+    function _recurse(&$e, $a) {
       foreach (array_keys($a) as $field) {
-        $child= &$e->addChild(new $c(is_numeric($field) 
-          ? preg_replace('=s$=', '', $elem->name) 
+        $child= &$e->addChild(new Node(is_numeric($field) 
+          ? preg_replace('=s$=', '', $e->name) 
           : $field
         ));
         if (is_array($a[$field])) {
-          Node::_recurse($c, $child, $a[$field]);
+          $this->_recurse($c, $child, $a[$field]);
         } else if (is_object($a[$field])) {
-          Node::_recurse($c, $child, get_object_vars($a[$field]));
+          $this->_recurse($c, $child, get_object_vars($a[$field]));
         } else {
           $child->setContent($a[$field]);
         }
@@ -103,9 +102,8 @@
      * @return  &xml.Node
      */
     function fromArray($arr, $name= 'array') {
-      $c= get_class($this);
-      $n= &new $c($name);
-      $n->_recurse($c, $n, $arr);
+      $n= &new Node($name);
+      $n->_recurse($n, $arr);
       return $n;  
     }
     
@@ -125,10 +123,10 @@
      * @return  &xml.Node
      */
     function fromObject($obj, $name= NULL) {
-      $c= get_class($this);
-      $n= &new $c((NULL === $name) ? get_class($obj) : $name);
-      $n->_recurse($c, $n, get_object_vars($obj));
-      return $n;  
+      return Node::fromArray(
+        get_object_vars($obj), 
+        (NULL === $name) ? get_class($obj) : $name
+      );
     }
     
     /**
