@@ -52,7 +52,7 @@
      */  
     function getLastError() {
       $e= xp::registry('errors');
-      return isset($e[__FILE__]) ? $e[__FILE__][sizeof($e[__FILE__]) - 1] : 'unknown error';
+      return isset($e[__FILE__]) ? $e[__FILE__][sizeof($e[__FILE__]) - 1][1] : 'unknown error';
     }
     
     /**
