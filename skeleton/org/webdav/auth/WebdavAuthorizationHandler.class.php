@@ -15,15 +15,15 @@
      * Checks if the user is authorized to do something. 
      *
      * @access  public
-     * @param   class handler
+     * @param   object handler
      * @param   string uri of actual directory
-     * @param   string username
+     * @param   &org.webdav.auth.WebdavUser The WebdavUser object
      * @return  bool
      */
-    function isAuthorized($handler= NULL, $uri, $username) {
+    function isAuthorized($handler= NULL, $uri, &$user) {
       // Always return TRUE if no handler is specified
       if ($handler === NULL) return TRUE;
-      return $handler->hasPermission($uri, $username);
+      return $handler->hasPermission($uri, $user);
     }
   }
 ?>
