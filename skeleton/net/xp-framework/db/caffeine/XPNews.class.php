@@ -8,19 +8,23 @@
   
   /**
    * Class wrapper for table news
-   *
    * (Auto-generated on Sun,  2 Feb 2003 16:04:33 +0100 by thekid)
+   *
+   * Uses rdbms.ConnectionManager which is expected to have at least
+   * one connection registered by name "caffeine".
+   *
+   * @purpose  Datasource accessor
    */
   class XPNews extends Object {
     var
-      $news_id= 0,
-      $caption= '',
-      $link= '',
-      $body= '',
-      $created_at= NULL,
-      $lastchange= NULL,
-      $changedby= '',
-      $bz_id= 0;
+      $news_id      = 0,
+      $caption      = '',
+      $link         = '',
+      $body         = '',
+      $created_at   = NULL,
+      $lastchange   = NULL,
+      $changedby    = '',
+      $bz_id        = 0;
 
     /**
      * Gets an instance of this object by unique index "news_news_i_640032591"
@@ -28,14 +32,12 @@
      * @access  static
      * @param   int news_id
      * @return  &net.xp-framework.db.caffeine.XPNews object
-     * @throws  SQLException in case an error occurs
-     * @throws  IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.SQLException in case an error occurs
+     * @throws  rdbms.ConnectionNotRegisteredException
      */
     function &getByNews_id($news_id) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('caffeine', 0))) {
-        return throw(new IllegalAccessException('No connection available'));
-      }
+      $db= &$cm->getByHost('caffeine', 0);
 
       try(); {
         list($data)= $db->select('
@@ -66,14 +68,12 @@
      * @access  static
      * @param   int bz_id
      * @return  &net.xp-framework.db.caffeine.XPNews[] objects
-     * @throws  SQLException in case an error occurs
-     * @throws  IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.SQLException in case an error occurs
+     * @throws  rdbms.ConnectionNotRegisteredException
      */
     function &getByBz_id($bz_id) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('caffeine', 0))) {
-        return throw(new IllegalAccessException('No connection available'));
-      }
+      $db= &$cm->getByHost('caffeine', 0);
 
       try(); {
         $q= &$db->query('
@@ -110,14 +110,12 @@
      * @access  static
      * @param   int max default -1 maximum number of rows to get)
      * @return  &net.xp-framework.db.caffeine.XPNews[] objects
-     * @throws  SQLException in case an error occurs
-     * @throws  IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.SQLException in case an error occurs
+     * @throws  rdbms.ConnectionNotRegisteredException
      */
     function &getByDateOrdered($max= -1) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('caffeine', 0))) {
-        return throw(new IllegalAccessException('No connection available'));
-      }
+      $db= &$cm->getByHost('caffeine', 0);
 
       try(); {
         if (-1 != $max) $db->query('set rowcount %d', $max);
@@ -315,14 +313,12 @@
      *
      * @access  public
      * @return  int affected rows
-     * @throws  SQLException in case an error occurs
-     * @throws  IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.SQLException in case an error occurs
+     * @throws  rdbms.ConnectionNotRegisteredException
      */
     function update() {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('caffeine', 0))) {
-        return throw(new IllegalAccessException('No connection available'));
-      }
+      $db= &$cm->getByHost('caffeine', 0);
 
       try(); {
         $affected= $db->update('
@@ -358,14 +354,12 @@
      *
      * @access  public
      * @return  int affected rows
-     * @throws  SQLException in case an error occurs
-     * @throws  IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.SQLException in case an error occurs
+     * @throws  rdbms.ConnectionNotRegisteredException
      */
     function insert() {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('caffeine', 0))) {
-        return throw(new IllegalAccessException('No connection available'));
-      }
+      $db= &$cm->getByHost('caffeine', 0);
 
       try(); {
         $affected= $db->insert('
