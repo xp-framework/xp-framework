@@ -304,50 +304,58 @@
       </tr>
       <tr><td></td>
         <td>
-          <table border="0" cellpadding="2" cellspacing="0" width="100%">
+          <table border="0" cellpadding="2" cellspacing="0" width="100%" style="color: #666666">
             <!-- Access information -->
             <tr>
-              <td width="1%" valign="top"><img src="/image/caret-r.gif"/></td>
+              <td width="1%" valign="top"><img src="/image/caret-r.gif" vspace="4" border="0" height="7" width="11" alt="&gt;"/></td>
               <td width="20%" valign="top">
                 Access
               </td>
               <td width="60%" valign="top">
-                <img src="/image/caret-r_{./access}.gif"/> <xsl:value-of select="./access"/>
+                <ul style="list-style-image: url(/image/icn_li_{./access}.gif);">
+                  <li>
+                    <xsl:value-of select="./access"/>
+                  </li>
+                </ul>
               </td>
             </tr>
             
             <!-- Param information -->
             <xsl:if test="count (./params/*) &gt; 0">
               <tr>
-                <td width="1%" valign="top"><img src="/image/caret-r.gif"/></td>
+                <td width="1%" valign="top"><img src="/image/caret-r.gif" vspace="4" border="0" height="7" width="11" alt="&gt;"/></td>
                 <td width="20%" valign="top">
                   Arguments
                 </td>
                 <td width="60%" valign="top">
-                  <xsl:for-each select="./params/*">
-                    <tt><u>
-                    <xsl:value-of select="./type"/><xsl:text> </xsl:text>
-                    <xsl:value-of select="./name"/></u>
-                    <xsl:if test="string-length (./default) &gt; 0">
-                      = <xsl:value-of select="./default"/><xsl:text> </xsl:text>
-                    </xsl:if>
-                    </tt>
-                    <br/>
-                    <xsl:value-of select="./description"/>
-                    <xsl:if test="string-length (./description) != 0"><br/><br/></xsl:if>
-                  </xsl:for-each>
+                  <ul>
+                    <xsl:for-each select="./params/*">
+                      <li>
+                        <tt><u>
+                        <xsl:value-of select="./type"/><xsl:text> </xsl:text>
+                        <xsl:value-of select="./name"/></u>
+                        <xsl:if test="string-length (./default) &gt; 0">
+                          = <xsl:value-of select="./default"/><xsl:text> </xsl:text>
+                        </xsl:if>
+                        </tt>
+                        <br/>
+                        <xsl:value-of select="./description"/>
+                        <xsl:if test="string-length (./description) != 0"><br/><br/></xsl:if>
+                      </li>
+                    </xsl:for-each>
+                  </ul>
                 </td>
               </tr>
             </xsl:if>
             
             <!-- Return information -->
             <tr>
-              <td width="1%" valign="top"><img src="/image/caret-r.gif"/></td>
+              <td width="1%" valign="top"><img src="/image/caret-r.gif" vspace="4" border="0" height="7" width="11" alt="&gt;"/></td>
               <td width="20%" valign="top">
                 Returns
               </td>
               <td width="60%" valign="top">
-                <tt><u>
+                <ul><li><tt><u>
                   <xsl:if test="string-length(./return/type) != 0">
                     <xsl:value-of select="./return/type"/>
                   </xsl:if>
@@ -356,30 +364,54 @@
                   </xsl:if>
                 </u></tt><br/>
                 <xsl:copy-of select="./return/description"/><br/>
+                </li></ul>
               </td>
             </tr>
             
             <!-- Exception information -->
             <xsl:if test="count (./throws/*) &gt; 0">
               <tr>
-                <td width="1%" valign="top"><img src="/image/caret-r.gif"/></td>
+                <td width="1%" valign="top"><img src="/image/caret-r.gif" vspace="4" border="0" height="7" width="11" alt="&gt;"/></td>
                 <td width="20%" valign="top">
                   Exceptions
                 </td>
                 <td width="60%" valign="top">
-
+                  <ul>
+                    <xsl:for-each select="./throws/throw">
+                      <li>
+                        <tt><u>
+                          <xsl:value-of select="exception"/>
+                        </u></tt><xsl:text> </xsl:text>
+                        <br/>
+                        <xsl:value-of select="condition"/>
+                      </li>
+                    </xsl:for-each>
+                  </ul>
                 </td>
               </tr>
             </xsl:if>
             
+            <!-- References -->
+            <xsl:if test="count (./references/reference/link) &gt; 0">
+              <tr>
+                <td width="1%" valign="top"><img src="/image/caret-r.gif" vspace="4" border="0" height="7" width="11" alt="&gt;"/></td>
+                <td width="20%" valign="top">
+                  See also
+                </td>
+                <td width="60%" valign="top">
+                  <ul>
+                    <xsl:for-each select="./references/reference/link">
+                      <li><xsl:apply-templates select="."/></li>
+                    </xsl:for-each>
+                  </ul>
+                </td>
+              </tr>
+            </xsl:if>
+
             <!-- Additional information for this function -->
             <tr>
-              <td width="1%" valign="top"><img src="/image/nav_contrib.gif"/></td>
-              <td colspan="2" valign="top">
-                <xsl:copy-of select="./text"/><br/>
-                <xsl:for-each select="./references/reference/link">
-                  <img src="/image/icn_li.gif"/><xsl:apply-templates/><br/>
-                </xsl:for-each>
+              <td colspan="3" valign="top" style="color: black">
+                <xsl:apply-templates select="./text"/><br/>
               </td>
             </tr>
           </table>
