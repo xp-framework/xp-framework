@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('xml.Tree');
+  uses(
+    'org.webdav.WebdavScriptletRequest',
+    'org.webdav.WebdavProperty'
+  );
 
   /**
    * PropPatch request XML
@@ -25,25 +28,50 @@
    * @purpose  Encapsulate PROPPATCH XML request
    * @see      xp://org.webdav.WebdavScriptlet#doPropPatch
    */
-  class WebdavPropPatchRequest extends Tree {
+  class WebdavPropPatchRequest extends WebdavScriptletRequest {
     var
+      $filename=   '',
       $properties= array(),
       $baseurl=    '';
     
     /**
-     * Constructor
+     * Set data and parse for properties
      *
-     * @access  public
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @throws  Exception to indicate failure
+     * @access public
+     * @param  string data The data
      */
-    function __construct(&$request) {
-      if (FALSE === $this->fromString($request->getData())) {
-        return FALSE;
+    function setData(&$data) {
+      static $trans;
+      parent::setData($data);
+
+      // Select properties which should be set
+      if ($propupdate= $this->getNode('/D:propertyupdate/D:set/D:prop')) {
+        if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_ENTITIES));
+        
+        // Copied from WebdavPropFindRequest::setData()
+        foreach($propupdate->children as $node) {
+          $name= $node->getName();
+          $ns= 'xmlns';
+          $nsprefix= '';
+          if (($p= strpos($name, ':')) !== FALSE) {
+            $ns.= ':'.($nsprefix= substr($name, 0, $p));
+            $name= substr($name, $p+1);
+          }
+          $p= new WebdavProperty(
+            $name,
+            utf8_decode(preg_replace(
+              '/&#([0-9]+);/me', 
+              'chr("\1")', 
+              strtr(trim($node->getContent()), $trans)
+            ))
+          );
+          if ($nsname= $node->getAttribute($ns)) {
+            $p->setNamespaceName($nsname);
+            if ($nsprefix) $p->setNamespacePrefix($nsprefix);
+          }
+          $this->addProperty($p);
+        }
       }
-      $this->filename= $request->uri['path_translated'];
-      $this->setEncoding('utf-8');
-      parent::__construct();
     }
     
     /**
@@ -60,66 +88,20 @@
      * Add a property
      *
      * @access  public
-     * @param   string name
+     * @param   org.webdav.WebdavProperty property The property object
      */
-    function addProperty($name, $value) {
-      $this->properties[$name]= $value;
+    function addProperty($property) {
+      $this->properties[]= $property;
     }
     
     /**
      * Get all properties
      *
      * @access  public
-     * @return  &string[] properties
+     * @return  &org.webdav.WebdavProperty[]
      */
     function &getProperties() {
       return $this->properties;
-    }
-
-    /**
-     * Returns an XPath expression for the current entry
-     *
-     * @access  private
-     * @return  string path, e.g. /rdf:rdf/item/rc:summary/
-     */
-    function _pathname() {
-      $path= '';
-      for ($i= $this->_cnt; $i> 0; $i--) {
-        if (FALSE !== ($p= strpos($name= strtolower($this->_objs[$i]->name), ':'))) {
-          $name= substr($name, $p+ 1);
-        }
-        $path= $name.'/'.$path;
-      }
-      return '/'.$path;
-    }
-  
-    /**
-     * Private callback function
-     *
-     * @access  private
-     * @param   resource parser
-     * @param   string name
-     * @param   array attrs
-     * @throws  FormatException in case of a parse error
-     */
-    function _pCallEndElement($parser, $name) {
-      static $trans;
-      
-      $path= $this->_pathname();
-      parent::_pCallEndElement($parser, $name);
-      if ($this->_cnt <= 0) return;
-
-      // Selective properties
-      if (25 < strlen($path) && '/propertyupdate/set/prop/' == substr($path, 0, 25)) {
-        if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_ENTITIES));
-        
-        $this->addProperty($name, utf8_decode(preg_replace(
-          '/&#([0-9]+);/me', 
-          'chr("\1")', 
-          strtr(trim($this->_objs[$this->_cnt+ 1]->content), $trans)
-        )));
-        return;
-      }
     }
   }
 ?>
