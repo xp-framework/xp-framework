@@ -122,7 +122,7 @@
         } else if (is_scalar($value)) {
         
           // Skalare Typen
-          $type= 'xsd:'.$child->_typeName($value);
+          $type= $child->_typeName($value);
           $content= $child->_contentFormat($value);
         } else {
         
