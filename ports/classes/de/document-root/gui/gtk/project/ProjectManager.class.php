@@ -36,7 +36,12 @@
       $l= &Logger::getInstance();
       $this->log= &$l->getCategory ($this->getClassName());
 
-      $this->prop= &$pm->getProperties('prj');
+      try(); {
+        $this->prop= &$pm->getProperties('prj');
+      } if (catch('IOException', $e)) {
+        // Ignore exception, but take it off the stack
+      }
+      
       $this->base= $base;
       parent::__construct($p, $this->base.'/ui/prj.glade', 'mainwindow');
     }
@@ -240,10 +245,12 @@
       $reparse= FALSE;
       foreach (array_keys ($this->files) as $idx) {
         if ($this->files[$idx]->needsReparsing()) {
-          $this->log && $this->log->info($this->files[$idx]->filename, 'needs reparsing...');
+          $this->log && $this->log->info('Reparsing',$this->files[$idx]->filename);
           $this->statusbar->push (1, 'Reparsing '.$this->files[$idx]->filename);
           $this->files[$idx]->parse();
           $this->statusbar->push (1, 'Reparsed '.$this->files[$idx]->filename.' at '.date ('H:i:s'));
+          
+          // FIXME: If new uses() or require()'s are found, add them to the project as well...
 
           $reparse= TRUE;
         }
