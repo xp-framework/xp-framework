@@ -12,7 +12,8 @@
           a mailinglist to discuss and announce changes and keep track
           of anything regarding our code.<br/>
           For these reasons, we at xp-framework.net offer an unmoderated
-          list for developers.
+          list for developers, a list for CVS commit messages and one bug list
+          where all bug mail out of our Bugzilla are sent to.
         </text>
       </para>
       
@@ -24,7 +25,14 @@
           You will be replied and then need to confirm your subscription
           by answering that mail.<br/>
           If you need help with ezmlm, just send an empty message to
-          xp-help@php3.de.
+          xp-help@php3.de.<br/>
+          <br/>
+          The same method - appending '-subscribe' after the list's name applies
+          to our other lists, as well; these are xp-cvs@php3.de for CVS commits and
+          xp-bugs@php3.de for the bug activity.<br/>
+          Posting to the lists generally require subscription due to SPAM issues.<br/>
+          Archives of the mailinglists currently only exists on the developers 
+          hard disks :).
         </text>
       </para>
       
