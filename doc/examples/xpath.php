@@ -26,7 +26,12 @@ __;
   Console::writeLine('>>> Query: ', $query);
   
   $xpath= &new XPath($xml);
-  $result= $xpath->query($query);
+  try(); {
+    $result= $xpath->query($query);
+  } if (catch('XPathException', $e)) {
+    $e->printStackTrace();
+    exit(-1);
+  }
   
   Console::writeLine('<<< Result: ', xp::stringOf($result));
   // }}}
