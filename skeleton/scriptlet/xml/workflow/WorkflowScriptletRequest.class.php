@@ -38,7 +38,7 @@
       parent::initialize();
       if ($this->stateName) {
         try(); {
-          $class= &$this->classloader->loadClass(ucfirst($this->stateName).'State');
+          $class= &$this->classloader->loadClass('state.'.ucfirst($this->stateName).'State');
         } if (catch('ClassNotFoundException', $e)) {
           $this->state= &xp::null();
           return throw($e);
