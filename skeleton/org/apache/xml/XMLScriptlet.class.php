@@ -36,20 +36,17 @@
    *   sess      the session's id
    * </pre>
    * 
-   * @see xp://org.apache.xml.XMLSriptletRequest
-   * @see xp://org.apache.xml.XMLSriptletResponse
-   * @see xp://org.apache.xml.XMLSriptletResponse#addFormValue
-   * @see xp://org.apache.xml.XMLSriptletResponse#addFormError
-   * @see xp://org.apache.xml.XMLSriptletResponse#addFormResult
+   * @see org.apache.xml.XMLSriptletRequest
+   * @see org.apache.xml.XMLSriptletResponse
+   * @see org.apache.xml.XMLSriptletResponse#addFormValue
+   * @see org.apache.xml.XMLSriptletResponse#addFormError
+   * @see org.apache.xml.XMLSriptletResponse#addFormResult
    */
   class XMLScriptlet extends HttpScriptlet {
     var 
       $document         = NULL,
       $stylesheetBase   = '';
       
-    var
-      $sessionURIFormat =  '%1$s://%2$s%4$s;psessionid=%7$s/%5$s?%6$s%8$s';
-    
     /**
      * Constructor
      *
@@ -130,6 +127,31 @@
         $uri['host'],          
         $defaultProduct ? $defaultProduct : 'site',
         $defaultLanguage ? $defaultLanguage : 'en_US'
+      ));
+      
+      return FALSE; // Indicate no further processing is to be done
+    }
+
+    /**
+     * Creates a session. 
+     *
+     * @access  protected
+     * @return  bool processed
+     * @param   &org.apache.HttpScriptletRequest request 
+     * @param   &org.apache.HttpScriptletResponse response 
+     * @throws  Exception to indicate failure
+     */
+    function doCreateSession(&$request, &$response) {
+      $uri= $request->getURI();
+      $defaultProduct= getenv('DEF_PROD');
+      $defaultLanguage= getenv('DEF_LANG');
+      $response->sendRedirect(sprintf(
+        '%s://%s/xml/%s:%s;psessionid=%s/static', 
+        $uri['scheme'],
+        $uri['host'],          
+        $defaultProduct ? $defaultProduct : 'site',
+        $defaultLanguage ? $defaultLanguage : 'en_US',
+        $request->session->getId()
       ));
       
       return FALSE; // Indicate no further processing is to be done
