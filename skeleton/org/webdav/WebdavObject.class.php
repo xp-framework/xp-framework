@@ -24,8 +24,7 @@
       $contentEncoding  = NULL,
       $impl             = NULL,
       $properties       = array(),
-      $_lockinfo        = array(),      
-      $nameSpaces       = array();
+      $_lockinfo        = array();
       
  
     /**
@@ -329,16 +328,6 @@
     function &getProperties() {
       $this->_calcProperties();
       return $this->properties;
-    }
-    
-    /**
-     * Get Namespaces
-     *
-     * @access  public
-     * @return  array namespaces
-     */
-    function &getNameSpaces() {
-      return $this->nameSpaces;
     }
   } 
 ?>
