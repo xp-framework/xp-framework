@@ -50,7 +50,7 @@
    *   $pressed= MessageBox::display('Hello world');
    * </code>
    *
-   * @purpose Provide a widget for file dialogs
+   * @purpose  Widget
    */
   class MessageBox extends GtkGladeDialogWindow {
     var
