@@ -113,6 +113,11 @@
       
       // Try to use builtin function strtotime()
       if (-1 != ($stamp= strtotime($in))) return $stamp;
+      
+      // European date format (dd.mm.yyyy hh:mm:ss)
+      if ($m= sscanf($in, '%d.%d.%d %d:%d:%d')) {
+        return Date::mktime($m[3], $m[4], $m[5], $m[1], $m[0], $m[2]);
+      }
 
       // "Dec 31 2070 11:59PM"
       if ($m= sscanf($in, '%3s %02d %04d %02d:%02d%[AP]M')) {
