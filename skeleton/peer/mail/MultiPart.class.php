@@ -17,7 +17,7 @@
       $parts     = array(),
       $charset   = '',
       $boundary  = '';
-      
+
     var
       $_ofs      = 0;
       
@@ -53,6 +53,16 @@
       // $this->contenttype= 'multipart/alternative; boundary="'.$this->boundary.'"';
       $this->setContenttype('multipart/alternative');
       $this->charset= '';
+    }
+
+    /**
+     * Get Boundary
+     *
+     * @access  public
+     * @return  string
+     */
+    function getBoundary() {
+      return $this->boundary;
     }
     
     /**
