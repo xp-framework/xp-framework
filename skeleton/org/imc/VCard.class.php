@@ -161,8 +161,8 @@
         case 'N':
           $values= explode(';', $value);
           $this->name= array(
-            'first'      => $values[0],        // First name
-            'last'       => $values[1],        // Last name
+            'first'      => $values[1],        // First name
+            'last'       => $values[0],        // Last name
             'middle'     => $values[2],        // Middle initial
             'title'      => $values[3],        // Title
             'suffix'     => $values[4]         // Suffix
@@ -231,6 +231,21 @@
     }
     
     /**
+     * Private helper function for export
+     *
+     * @access  private
+     * @param   string key
+     * @param   mixed values
+     * @return  string
+     */
+    function _export($key, $values) {
+      $value= is_array($values) ? implode(';', $values) : $values;
+      if (0 == strlen($value)) return '';
+      
+      return $key.':'.$value."\n";
+    }
+    
+    /**
      * Returns the textual representation of this vCard
      *
      * <code>
@@ -246,7 +261,67 @@
      * @return  
      */
     function export() {
+    
+      // Build addresses string
+      $address= '';
+      foreach ($this->address as $k => $v) {
+        $address.= $this->_export('ADR;'.strtoupper($k), array(
+          $v['pobox'],
+          $v['suffix'],
+          $v['street'],
+          $v['city'],
+          $v['province'],
+          $v['zip'],
+          $v['country']
+        ));
+      }
       
+      // Build email addresses string
+      $email= '';
+      foreach ($this->email as $k => $v) {
+        for ($i= 0, $s= sizeof($v); $i < $s; $i++) {
+          $email.= $this->_export(
+            'EMAIL;INTERNET'.(('default' == $k) ? '' : ';'.strtoupper($k)), 
+            $v[$i]
+          );
+        }
+      }
+
+      // Build tel string
+      $phone= '';
+      foreach ($this->phone as $k => $v) {
+        foreach ($v as $type => $num) {
+          $email.= $this->_export(
+            'TEL;'.strtoupper($k).(('default' == $type) ? '' : ';'.strtoupper($type)), 
+            $num
+          );
+        }
+      }
+      
+      return (
+        'BEGIN:'.VCARD_ID."\n".
+        $this->_export('N', array(
+          $this->name['last'],
+          $this->name['first'],
+          $this->name['middle'],
+          $this->name['title'],
+          $this->name['suffix']
+        )).
+        $this->_export('FN', $this->fullname).
+        $this->_export('TITLE', $this->fullname).
+        $this->_export('NICKNAME', $this->nick).
+        $this->_export('ORG', $this->organization).
+        $this->_export('URL', $this->url).
+        $this->_export('BDAY', is_a($this->birthday, 'Date') ? $this->birthday->toString('Y-m-d') : '').
+        $phone.
+        $email.
+        $address.
+        $this->_export('LOGO;'.$this->logo['format'].';ENCODING=BASE64', isset($this->logo['data']) 
+          ? "\n    ".str_replace("\n", "\n    ", chunk_split(base64_encode($this->logo['data'])))
+          : ''
+        ).
+        'END:'.VCARD_ID."\n"
+      );
     }
   
   }
