@@ -240,6 +240,11 @@ while (@ARGV) {
       &error("You may not have a method '$1' in your class '$class' (constructors are called __construct)", ECONSTRUCT);
     }
     
+    # Check whether catch is not surrounded by whitespace
+    if ($_ =~ /if \(( )*catch( )*\(/ && (length($1) || length($2))) {
+      &error("Superfluous whitespace in catch statement", WHITESPACE);
+    }
+    
     # Check indenting
     if (!$string && !$comment && $_ =~ /^(\s*)(.*)$/) {
       if ($2) {
