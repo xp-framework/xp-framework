@@ -99,11 +99,11 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException
+     * @throws  peer.ldap.LDAPException
      */
     function bind($user= NULL, $pass= NULL) {
       if (FALSE === ($res= ldap_bind($this->_hdl, $user, $pass))) {
-        return throw(new IOException('Cannot bind for '.$this->user.' ['.$this->getLastError().']'));
+        return throw(new LDAPException('Cannot bind for "'.$this->user.'"', ldap_error($this->_hdl)));
       }
       
       return $res;
@@ -142,7 +142,7 @@
      * @param   int timelimit default 0 Time limit, 0 means no limit
      * @param   int deref one of LDAP_DEREF_*
      * @return  peer.ldap.LDAPSearchResult search result object
-     * @throws  IOException
+     * @throws  peer.ldap.LDAPException
      * @see     php://ldap_search
      */
     function &search() {
@@ -168,7 +168,7 @@
      * @param   int timelimit default 0 Time limit, 0 means no limit
      * @param   int deref one of LDAP_DEREF_*
      * @return  peer.ldap.LDAPSearchResult search result object
-     * @throws  IOException
+     * @throws  peer.ldap.LDAPException
      * @see     php://ldap_search
      */
     function &searchScope() {
@@ -195,7 +195,7 @@
      * @param   string filter default 'objectClass=*' filter
      * @return  &peer.ldap.LDAPEntry entry
      * @throws  IllegalArgumentException
-     * @throws  IOException
+     * @throws  peer.ldap.LDAPException
      */
     function &read(&$entry, $filter= 'objectClass=*') {
       if (!is_a($entry, 'LDAPEntry')) {
@@ -247,7 +247,7 @@
      * @param   &peer.ldap.LDAPEntry entry
      * @return  bool success
      * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
-     * @throws  IOException when an error occurs during adding the entry
+     * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
     function add(&$entry) {
       if (!is_a($entry, 'LDAPEntry')) {
@@ -276,7 +276,7 @@
      * @param   &peer.ldap.LDAPEntry entry
      * @return  bool success
      * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
-     * @throws  IOException when an error occurs during adding the entry
+     * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
     function modify(&$entry) {
       if (!is_a($entry, 'LDAPEntry')) {
@@ -301,7 +301,7 @@
      * @param   &peer.ldap.LDAPEntry entry
      * @return  bool success
      * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
-     * @throws  IOException when an error occurs during adding the entry
+     * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
     function delete(&$entry) {
       if (!is_a($entry, 'LDAPEntry')) {
