@@ -10,7 +10,7 @@
    * HTTP connection
    *
    * <code>
-   *   $c= &new HttpConnection('http://xp.php3.de/');
+   *   $c= &new HttpConnection('http://xp-framework.net/');
    *   try(); {
    *     $response= &$c->get(
    *       array('a' => 'b'),
