@@ -10,6 +10,12 @@
     'peer.http.HttpConnection'
   );
   
+  // Different modes for SOAP-Action announcement (you can use NULL to obey any SOAPAction header)
+  define('SOAP_ACTION_COMPUTE',       0x0001);
+  define('SOAP_ACTION_HARDCODE',      0x0002);
+  define('SOAP_ACTION_EMPTY',         0x0003);
+  define('SOAP_ACTION_NULL',          0x0004);
+  
   /**
    * HTTP transport. Also handles HTTPS.
    *
@@ -19,9 +25,10 @@
    */
   class SOAPHTTPTransport extends SOAPTransport {
     var
-      $_conn      = NULL,
-      $_action    = '',
-      $_headers   = array();
+      $_conn        = NULL,
+      $_action      = '',
+      $_actiontype  = NULL,
+      $_headers     = array();
       
     /**
      * Constructor
@@ -29,10 +36,12 @@
      * @access  public
      * @param   string url
      * @param   array headers default array()
+     * @param   int actiontype
      */  
-    function __construct($url, $headers= array()) {
+    function __construct($url, $headers= array(), $actiontype= SOAP_ACTION_COMPUTE) {
       $this->_conn= &new HttpConnection($url);
       $this->_headers= $headers;
+      $this->_actiontype= $actiontype;
     }
     
     /**
@@ -81,7 +90,27 @@
         $message->getDeclaration()."\n".
         $message->getSource(0)
       ));
-      $this->_conn->request->setHeader('SOAPAction', '"'.$message->action.'#'.$message->method.'"');
+      
+      switch ($this->_actiontype) {
+        case SOAP_ACTION_COMPUTE:
+          $this->_conn->request->setHeader('SOAPAction', '"'.$message->action.'#'.$message->method.'"');
+          break;
+        
+        case SOAP_ACTION_HARDCODE:
+          $this->_conn->request->setHeader('SOAPAction', '"'.$message->action.'"');
+          break;
+        
+        case SOAP_ACTION_EMPTY:
+          $this->_conn->request->setHeader('SOAPAction', '""');
+          break;
+        
+        case SOAP_ACTION_NULL:
+          $this->_conn->request->setHeader('SOAPAction', '');
+          break;
+        
+        default:
+      }
+      
       $this->_conn->request->setHeader('Content-Type', 'text/xml; charset='.$message->getEncoding());
 
       // Add more headers
