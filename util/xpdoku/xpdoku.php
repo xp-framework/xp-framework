@@ -66,20 +66,18 @@
           }
           
           // Add new class to classtree
-          $subNode= &new Node();
-          $subNode->name= 'class';
-          $subNode->attribute['className']= getXPClassName ($folder->uri.$entry, $base);
-          $subNode->attribute['shortName']= getXPClassName ($entry, $base);
-          $subNode->fromArray (array (
+          $subNode= &Node::fromArray (array (
             'cvsver'  => $result['comments']['file']->cvsver,
             'purpose' => $result['comments']['class']->purpose
           ), 'class');
+          $subNode->attribute['className']= getXPClassName ($folder->uri.$entry, $base);
+          $subNode->attribute['shortName']= getXPClassName ($entry, $base);
           
           $subTree->addChild ($subNode);
           
           // Create a class node
           $idx= &$subNode->attribute['shortName'];
-          $nodes[$idx]= &new Node(array('name' => 'class'));
+          $nodes[$idx]= &new Node('class');
           $nodes[$idx]->attribute['idx']= $subNode->attribute['shortName'];
           $nodes[$idx]->attribute['name']= $subNode->attribute['className'];
           $nodes[$idx]->attribute['parent-idx']= (isset($result['comments']['class']->extends)
@@ -98,12 +96,11 @@
           -10
         ));
         
-        $node= &new Node();
+        $node= &Node::fromArray($result, 'classdoc');
         $node->attribute['filename']= $entry;
         $node->attribute['classname']= $uses;
         $node->attribute['generated_at']= date ('l, F d, Y');  
         $node->attribute['collection']= $subTree->attribute['prefix'];      
-        $node->fromArray($result, 'classdoc');
 
         $cvsId= @$result['comments']['file']->cvsver;
         if (!empty ($cvsId)) {
