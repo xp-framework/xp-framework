@@ -115,11 +115,11 @@
     }
     
     /**
-     * Saves an image to a reader
+     * Saves an image to a writer
      *
      * @model   static
      * @access  public
-     * @param   &img.io.ImageReader
+     * @param   &img.io.ImageWriter
      * @return  &img.Image
      */
     function &saveTo(&$writer) {
