@@ -50,13 +50,13 @@
     }
     
     /**
-     * Set file name
+     * Set file
      *
      * @access  public
-     * @param   string file
+     * @param   &io.File file
      */
-    function setFile($file) {
-      $this->file= $file;
+    function setFile(&$file) {
+      $this->file= &$file;
     }
     
     /**
