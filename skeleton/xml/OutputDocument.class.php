@@ -4,8 +4,10 @@
    * $Id$
    */
    
-  import('xml.Tree');
-  import('xml.XSLProcessor');
+  uses(
+    'xml.Tree',
+    'xml.XSLProcessor'
+  );
   
   class OutputDocument extends Tree {
     var 
@@ -42,13 +44,13 @@
         "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n".
         $this->getSource(FALSE);
 
-      logline_text("buffer", $this->buffer);
+      // logline_text("buffer", $this->buffer);
       $this->processor->setXSLFile($this->stylesheet);
       $this->processor->setXMLBuf(&$this->buffer);
       $this->processor->setParams(&$this->params);
       
       if (!$this->processor->run()) {
-        logline_text("buffer", $this->buffer);
+        // logline_text("buffer", $this->buffer);
         return FALSE;
       }
       
