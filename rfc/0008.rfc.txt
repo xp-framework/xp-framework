@@ -29,28 +29,28 @@ The following changes would be incorporated into the new Engine:
 
 a) Syntax changes and additions
 * A keyword "with"
-* An optional throws clause to methods
++ An optional throws clause to methods
 * A catch-all-exceptions mechanism
-* Packages support
++ Packages support
 * A package access level
 * Enumerations
-* Annotations support
++ Annotations support
 * Finally
 * Keywords would be allowed as class and method names where possible
 * Automated getters and setters
 * Default members
 * A keyword "synchronized"
 * Return type hints (unchecked, may be retrieved via Reflection)
-* Class instance creation expressions
++ Class instance creation expressions
 
 b) New features
-* Operator overloading
++ Operator overloading
 
 c) Removed restrictions
 * No implementation check during inheritance
-* Userland exceptions would no longer be forced to extend from the
++ Userland exceptions would no longer be forced to extend from the
   built-in exceptions
-* An interface would be added to identify an exception. Userland
++ An interface would be added to identify an exception. Userland
   classes would have to implement it
   
 d) Removed cruft
@@ -78,7 +78,7 @@ Details
     }
   ?>
 
-* An optional throws clause to methods:
++ An optional throws clause to methods:
   As in Java, one may add a throws clause to methods that indicates 
   which exceptions are thrown from it.
   <?php
@@ -108,7 +108,7 @@ Details
   This is identical to writing "catch (IException $e)" (see also:
   add an interface instead of built-in exception).
   
-* Packages support
++ Packages support
   A new keyword "package" begins a block of code that puts every 
   contained class, interface or enumeration (see below) into it.
   <?php
@@ -160,7 +160,7 @@ Details
   The sizeof() function applied to an enumeration returns the numbers 
   of elements in an enumeration (for the above example, 4).
   
-* Annotations support:
++ Annotations support:
   Annotations (metadata) may be embedded within the sourcecode using
   the @ sign to prefix them.
   <?php
@@ -245,7 +245,7 @@ Details
   the same code, it would have to wait for the first instance to finish
   before being able to continue.
 
-* Class instance creation expression
++ Class instance creation expression
   A class instance creation expression is used to create new objects that 
   are instances of classes.
   
@@ -291,7 +291,7 @@ Details
   In this case, the class being instantiated is a class implementing
   the Comparator interface.
 
-* Operator overloading
++ Operator overloading
   For details, see 
   http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/operator_overloading
 
@@ -310,7 +310,7 @@ Details
   ?>
   Currently, this would give an E_STRICT warning
   
-* Userland exceptions would no longer be forced to extend from the
++ Userland exceptions would no longer be forced to extend from the
   built-in exception. An interface would be added to identify an exception. 
   Userland classes would have to implement it.
 
