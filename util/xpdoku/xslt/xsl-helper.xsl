@@ -97,7 +97,7 @@
     </tr>
    </table>
   </td>
-  <td bgcolor="#cccccc" background="checkerboard.gif"><img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/></td>
+  <td bgcolor="#cccccc" background="/image/checkerboard.gif"><img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/></td>
   <td>
    <table width="600" cellpadding="10" cellspacing="0">
     <tr>
