@@ -37,8 +37,9 @@
      * </code>
      *
      * @access  public
-     * @param   mixed*
-     * @throws  lang.IllegalArgumentException
+     * @param   string name
+     * @param   string content default NULL
+     * @param   array arguments default array()
      */
     public function __construct($name, $content= NULL, $arguments= array()) {
       $this->name= $name;
@@ -305,15 +306,8 @@
      * @access  public
      * @param   &xml.Node child
      * @return  &xml.Node added child
-     * @throws  lang.IllegalArgumentException
      */
     public function addChild(Node $child) {
-      if (!is_a($child, 'Node')) {
-        throw (new IllegalArgumentException(
-          'Parameter child must be an xml.Node (given: '.xp::typeOf($child).')'
-        ));
-      }
-
       $this->children[]= $child;
       return $child;
     }
