@@ -4,51 +4,72 @@
  * $Id$ 
  */
 
+  uses('peer.ftp.FtpEntry');
+
   /**
    * FTP directory
    *
    * @see      xp://peer.ftp.FtpConnection
    * @purpose  Represent an FTP directory
    */
-  class FtpDir extends Object {
+  class FtpDir extends FtpEntry {
     var
-      $name     = '';
+      $entries  = array();
       
-    var
-      $_hdl     = NULL;
-      
-    /**
-     * Constructor
-     *
-     * @access  public
-     * @param   string name
-     * @param   resource hdl default NULL
-     */
-    function __construct($name, $hdl= NULL) {
-      $this->name= $name;
-      $this->_hdl= $hdl;
-      parent::__construct();
-    }
-    
     /**
      * Get entries (iterative function)
      *
      * @access  public
-     * @return  string entry or FALSE to indicate EOL
+     * @return  &peer.ftp.FtpEntry FALSE to indicate EOL
      */
-    function getEntry() {
-      static $entries;
-      
-      if (!isset($entries)) {
-        $entries= ftp_nlist($this->_hdl, $this->name);
-        $entry= $entries[0];
+    function &getEntry() {
+      if (empty($this->entries)) {
+
+        // Retrive entries, getting rid of directory self-reference "." and
+        // parent directory reference, ".." - these are always reported first
+        // TBD: Check if this assumption is true
+        $this->entries= array_slice(ftp_rawlist($this->_hdl, $this->name), 2);
+        $entry= $this->entries[0];
       } else {
-        if (FALSE === ($entry= next($entries))) {
-          reset($entries);
+        if (FALSE === ($entry= next($this->entries))) {
+          reset($this->entries);
+          return FALSE;
         }
       }
+
+      // Parse entry
+      // drwx---r-t 37 p159995 ftpusers 4096 Apr 4 20:16 .
+      // -rw----r-- 1 p159995 ftpusers 415 May 23 2000 write.html
+      sscanf(
+        $entry, 
+        '%s %d %s %s %d %s %d %[^ ] %s',
+        $permissions,
+        $numlinks,
+        $user,
+        $group,
+        $size,
+        $month,
+        $day,
+        $date,
+        $filename
+      );
       
-      return str_replace('//', '/', $entry);
+      if ('d' == $permissions{0}) {
+        $e= &new FtpDir($filename, $this->_hdl);
+      } else {
+        $e= &new FtpEntry($filename, $this->_hdl);
+      }
+      with ($e); {
+        $e->setPermissions(substr($permissions, 1));
+        $e->setNumlinks($numlinks);
+        $e->setUser($user);
+        $e->setGroup($group);
+        $e->setSize($size);
+        $e->setDate(new Date(strtotime(
+          $month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date))
+        ));
+      }
+      return $e;
     }
   }
 ?>
