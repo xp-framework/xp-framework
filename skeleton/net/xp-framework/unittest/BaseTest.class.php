@@ -41,7 +41,7 @@
       if (!$this->assertClass($e, 'lang.Exception')) return;
       $this->assertEquals($e->message, 'test');
       $o= &$parent->newInstance();
-      if (!$this->assertClass($o, 'lang.Object')) return;
+      if (!$this->assertClass($o, 'lang.Throwable')) return;
     }
   }
 ?>
