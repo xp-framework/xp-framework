@@ -41,7 +41,11 @@
       <table class="highlights" border="0">
         <tr>
           <xsl:for-each select="highlights/highlight">
-            <td><img src="/albums/{../../@name}/thumb.{name}"/></td>
+            <td>
+              <a href="{func:link(concat('image/view?', ../../@name, ',h,0,', position()- 1))}">
+                <img border="0" src="/albums/{../../@name}/thumb.{name}"/>
+              </a>
+            </td>
           </xsl:for-each>
         </tr>
       </table>
