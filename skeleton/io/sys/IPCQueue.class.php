@@ -30,7 +30,6 @@
    *     'io.sys.IPCQueue',
    *     'io.sys.Ftok', 
    *     'lang.Thread'
-   *
    *   );
    *
    *   class senderThread extends Thread {
@@ -92,7 +91,7 @@
    *   $t[0]= &new senderThread(2);
    *   $t[0]->start();
    *   $t[1]= &new receiverThread();
-   *  $t[1]->start();
+   *   $t[1]->start();
    *   var_dump($t[0]->join(), $t[1]->join());
    * </code>
    *
@@ -107,7 +106,7 @@
     /**
      * Constructor
      *
-     * @access  private
+     * @access  public
      * @param   int System V IPC keys default NULL
      */  
     function __construct($key= NULL) {
@@ -115,7 +114,6 @@
       $this->id= msg_get_queue($this->key, IPC_QUEUE_PERM);
       $this->stat= msg_stat_queue($this->id);
     }
-    
     
     /**
      * Put a message into queue
