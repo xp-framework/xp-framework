@@ -15,11 +15,8 @@
    */
   class Reference extends Object {
     var 
-      $link = array();
+      $link          = array();
       
-    var
-      $_validSchemes = array('xp', 'xp-doc', 'php', 'php-gtk', 'http', 'https', 'ftp', 'mailto', 'rfc');
-    
     /**
      * Constructor
      *
@@ -30,6 +27,53 @@
     function __construct($str= NULL) {
       if (NULL !== $str) $this->fromString($str);
       parent::__construct();
+    }
+    
+    /**
+     * Retreive valid schemes
+     *
+     * @model   static
+     * @access  public
+     * @return  string[] valid schemes
+     */
+    function getValidSchemes() {
+      return Reference::_schemes();
+    }
+
+    /**
+     * Register scheme
+     *
+     * @model   static
+     * @access  public
+     * @param   string scheme the scheme to register
+     * @return  string[] new valid schemes (incl. newly registered scheme)
+     */
+    function registerScheme($scheme) {
+      return Reference::_schemes($scheme);
+    }
+    
+    /**
+     * Return or register schemes
+     *
+     * @access  private
+     * @param   string additionalScheme default NULL
+     * @return  string[] schemes
+     */
+    function _schemes($additionalScheme= NULL) {
+      static $__schemes= array(
+        'xp', 
+        'xp-doc', 
+        'php', 
+        'php-gtk', 
+        'http', 
+        'https', 
+        'ftp', 
+        'mailto', 
+        'rfc'
+      );
+      
+      if (NULL !== $additionalScheme) $__schemes[]= $additionalScheme;
+      return $__schemes;
     }
     
     /**
@@ -53,7 +97,7 @@
         $this->link['scheme']= 'xp';
       }
       
-      if (in_array($this->link['scheme'], $this->_validSchemes)) return;
+      if (in_array($this->link['scheme'], Reference::getValidSchemes())) return;
       throw(new FormatException('Scheme '.$this->link['scheme'].' not recognized'));
     }
   }
