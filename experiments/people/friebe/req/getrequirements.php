@@ -18,6 +18,7 @@
         if (!file_exists($fn)) continue;
         return realpath($fn);
       }
+      
       return throw(new ElementNotFoundException('Could not find file "'.$filename.'"'));
     }
     // }}}
@@ -78,32 +79,46 @@
       try(); {
         $parser= &new PHPParser($filename);
         $parser->parse();
-
-        defined('VERBOSE') && Console::writeLine($parser->toString());
-
-        do {
-          // First, go through the requirements
-          foreach ($parser->requires as $required) {
-            if (!($fn= $requirements->add(FullName::forFile($required)))) break 2;
-            Console::writeLine('+ ', $idx, ' requires file ', $required, ' (', $fn, ')');
-          }
-
-          // Second, the SAPIs
-          foreach ($parser->sapis as $sapi) {
-            if (!($fn= $requirements->add(FullName::forSapi($sapi)))) break 2;
-            Console::writeLine('+ ', $idx, ' has SAPI ', $sapi, ' (', $fn, ')');
-          }
-
-          // Then check all of the classes in uses()
-          foreach ($parser->uses as $uses) {
-            if (!($fn= $requirements->add(FullName::forUses($uses)))) break 2;
-            Console::writeLine('+ ', $idx, ' uses class ', $uses, ' (', $fn, ')');
-          }
-
-          break;
-        } while (1);
       } if (catch('Exception', $e)) {
         return throw($e);
+      }
+
+      defined('VERBOSE') && Console::writeLine($parser->toString());
+
+      // First, go through the requirements
+      foreach ($parser->requires as $required) {
+        try(); {
+          $fn= $requirements->add(FullName::forFile($required));
+        } if (catch('ElementNotFoundException', $e)) {
+          if (!defined('IGNORE_NOTFOUND')) return throw($e);
+          $e->printStackTrace();
+          continue;
+        }
+        Console::writeLine('+ ', $idx, ' requires file ', $required, ' (', $fn, ')');
+      }
+
+      // Second, the SAPIs
+      foreach ($parser->sapis as $sapi) {
+        try(); {
+          $fn= $requirements->add(FullName::forSapi($sapi));
+        } if (catch('ElementNotFoundException', $e)) {
+          if (!defined('IGNORE_NOTFOUND')) return throw($e);
+          $e->printStackTrace();
+          continue;
+        }
+        Console::writeLine('+ ', $idx, ' has SAPI ', $sapi, ' (', $fn, ')');
+      }
+
+      // Then check all of the classes in uses()
+      foreach ($parser->uses as $uses) {
+        try(); {
+          $fn= $requirements->add(FullName::forUses($uses));
+        } if (catch('ElementNotFoundException', $e)) {
+          if (!defined('IGNORE_NOTFOUND')) return throw($e);
+          $e->printStackTrace();
+          continue;
+        }
+        Console::writeLine('+ ', $idx, ' uses class ', $uses, ' (', $fn, ')');
       }
 
       return $requirements;
@@ -116,6 +131,7 @@
   // {{{ main
   $param= &new ParamString();
   if ($param->exists('verbose')) define('VERBOSE', 1);
+  if ($param->exists('force')) define('IGNORE_NOTFOUND', 1);
   
   try(); {
     $requirements= &Requirements::forFile($param->value(1));
