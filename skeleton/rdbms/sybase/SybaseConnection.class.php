@@ -322,7 +322,7 @@
      * @return  mixed state
      */
     function transtate($name) { 
-      if (FALSE === ($r= &$this->query('@@transtate as transtate'))) {
+      if (FALSE === ($r= &$this->query('select @@transtate as transtate'))) {
         return FALSE;
       }
       return $r->next('transtate');
