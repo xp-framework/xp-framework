@@ -9,6 +9,8 @@
   /**
    * Throwable
    *
+   * @see      xp://lang.Error
+   * @see      xp://lang.Exception
    * @purpose  Base class
    */
   class Throwable extends Object {
@@ -97,7 +99,7 @@
     /**
      * Print "stacktrace" to standard error
      *
-     * @see     xp://lang.Exception#toString
+     * @see     xp://lang.Throwable#toString
      * @param   resource fd default STDERR
      * @access  public
      */

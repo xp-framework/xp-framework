@@ -9,7 +9,7 @@
    * Each element represents a single stack frame.
    *
    * @see      xp://lang.Throwable#getStackTrace()
-   * @purpose  purpose
+   * @purpose  Represent execution stack frame
    */
   class StackTraceElement extends Object {
     var
