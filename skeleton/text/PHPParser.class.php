@@ -10,9 +10,11 @@
   );
 
   // Modes of operation
-  define('PHPPARSER_MODE_UNDEF',           0x0000);
-  define('PHPPARSER_MODE_GET_FUNC_NAME',   0x0001);
-  define('PHPPARSER_MODE_GET_CLASS_NAME',  0x0002);
+  define('PHPPARSER_MODE_UNDEF',            0x0000);
+  define('PHPPARSER_MODE_GET_FUNC_NAME',    0x0001);
+  define('PHPPARSER_MODE_GET_CLASS_NAME',   0x0002);
+  define('PHPPARSER_MODE_GET_USES',         0x0003);
+  define('PHPPARSER_MODE_GET_REQUIRE',      0x0004);
 
   /**
    * Class to parse PHP files. Parsing tries to extract informations
@@ -25,6 +27,8 @@
       $functions= NULL,
       $classes=   NULL,
       $filename=  NULL,
+      $uses=      NULL,
+      $requires=  NULL,
       $log=       NULL;
     
     var
@@ -37,7 +41,7 @@
      * @param   string filename;
      */
     function __construct($filename) {
-      $this->functions= $this->classes= array();
+      $this->functions= $this->classes= $this->uses= $this->requires= array();
       
       $this->filename= $filename;
       $this->_utimeLastChange= 0;
@@ -230,6 +234,56 @@
                 $mode= PHPPARSER_MODE_UNDEF;
                 break;
             }
+            break;
+        }
+      }
+      
+      // 2nd pass: try to find uses(), require() and include()
+      $brace= 0; $mode= PHPPARSER_MODE_UNDEF;
+      foreach ($tokens as $token) {
+        if (is_string($token)) {
+          switch ($token) {
+            case '(':
+              $brace++;
+              break;
+            case ')':
+              $brace--;
+              break;
+            
+            default:
+              break;
+          }
+
+          if ($brace == 0) $mode= PHPPARSER_MODE_UNDEF;
+          continue;
+        }
+        
+        list ($tokenId, $data)= $token;
+        switch ($tokenId) {
+          case T_STRING:
+            if ('uses' == $data) $mode= PHPPARSER_MODE_GET_USES;
+            break;
+          
+          case T_INCLUDE:
+          case T_INCLUDE_ONCE:
+          case T_REQUIRE:
+          case T_REQUIRE_ONCE:
+            $mode= PHPPARSER_MODE_GET_REQUIRE;
+            break;
+        }
+        
+        switch ($mode) {
+          case PHPPARSER_MODE_GET_USES:
+            var_dump ($tokenId, $data);
+            if (T_CONSTANT_ENCAPSED_STRING == $tokenId) 
+              $this->uses[]= substr ($data, 1, strlen ($data)-2);
+            break;
+          
+          case PHPPARSER_MODE_GET_REQUIRE:
+            if (T_CONSTANT_ENCAPSED_STRING == $tokenId) 
+              $this->requires[]= substr ($data, 1, strlen ($data)-2);
+          
+          default:
             break;
         }
       }
