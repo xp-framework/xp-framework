@@ -184,8 +184,8 @@
               }
               
               try(); {
-                $permission= XPClass::forName($class);
-              } if (catch('Exception', $e)) {
+                $permission= &XPClass::forName($class);
+              } if (catch('ClassNotFoundException', $e)) {
                 $state= PF_ST_EREFLECT;
                 $message= $e->message;
                 break 3;
