@@ -178,6 +178,10 @@
     return $subTree;
   }
   
+  // Set limits appropriate
+  ini_set('memory_limit', 0);
+  ini_set('max_execution_time', 0);
+  
   $p= &new ParamString($_SERVER['argv']);
   $pattern= ($p->exists('file')
     ? '/'.str_replace('/', '\/', $p->value('file')).'/i'
