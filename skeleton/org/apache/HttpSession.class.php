@@ -178,6 +178,17 @@
     }
     
     /**
+     * Checks whether a value by specified name exists
+     *
+     * @access  public
+     * @param   string name 
+     * @return  bool TRUE if the value exists, FALSE otherwiese
+     */
+    function hasValue($name) {
+      return isset($_SESSION[$name]);
+    }
+    
+    /**
      * Removes a value from the session. If no value is found for
      * the specified name, nothing happens
      *
