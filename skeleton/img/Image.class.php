@@ -135,8 +135,7 @@
      * @param   int src_y default 0 y coordinate within the source image
      * @param   int src_w default -1 width of the area to copy, -1 defaults to the source image's width
      * @param   int src_h default -1 height of the area to copy, -1 defaults to the source image's height
-     * @param   int dst_w default -1 width of the area to copy to, -1 defaults to the source image's width
-     * @param   int dst_h default -1 height of the area to copy to, -1 defaults to the source image's height
+     * @return  bool
      */
     function copyFrom(
       &$img, 
@@ -149,33 +148,96 @@
       $dst_w= -1, 
       $dst_h= -1
     ) {
-      if (-1 == $src_w) $src_w= $img->getWidth();
-      if (-1 == $src_h) $src_h= $img->getHeight();
-      if (-1 != $dst_w || -1 != $dst_h) {
-        imagecopyresized(
-          $this->handle, 
-          $img->handle, 
-          $dst_x, 
-          $dst_y, 
-          $src_x, 
-          $src_y, 
-          $dst_w,
-          $dst_h,
-          $src_w, 
-          $src_h
-        );
-      } else {
-        imagecopy(
-          $this->handle, 
-          $img->handle, 
-          $dst_x, 
-          $dst_y, 
-          $src_x, 
-          $src_y, 
-          $src_w, 
-          $src_h
-        );
-      }
+      return imagecopy(
+        $this->handle, 
+        $img->handle, 
+        $dst_x, 
+        $dst_y, 
+        $src_x, 
+        $src_y, 
+        ($src_w < 0) ? $this->width : $src_w,
+        ($src_h < 0) ? $this->height : $src_h
+      );
+    }
+
+    /**
+     * Copies an area from another image into this image, resizing if it necessary
+     *
+     * @access  public
+     * @param   &img.Image img Image object
+     * @param   int dst_x default 0 x coordinate within this image
+     * @param   int dst_y default 0 y coordinate within this image
+     * @param   int src_x default 0 x coordinate within the source image
+     * @param   int src_y default 0 y coordinate within the source image
+     * @param   int dst_w default -1 x coordinate within this image, -1 defaults to this image's width
+     * @param   int dst_h default -1 y coordinate within this image, -1 defaults to this image's height
+     * @param   int src_w default -1 width of the area to copy, -1 defaults to the source image's width
+     * @param   int src_h default -1 height of the area to copy, -1 defaults to the source image's height
+     * @return  bool
+     */
+    function resizeFrom(
+      &$img, 
+      $dst_x= 0, 
+      $dst_y= 0, 
+      $src_x= 0, 
+      $src_y= 0,
+      $dst_w= -1, 
+      $dst_h= -1, 
+      $src_w= -1, 
+      $src_h= -1
+    ) {
+      return imagecopyresized(
+        $this->handle, 
+        $img->handle, 
+        $dst_x, 
+        $dst_y, 
+        $src_x, 
+        $src_y, 
+        ($dst_w < 0) ? $this->width : $dst_w,
+        ($dst_h < 0) ? $this->height : $dst_h,
+        ($src_w < 0) ? $img->width : $src_w,
+        ($src_h < 0) ? $img->height : $src_h
+      );
+    }
+
+    /**
+     * Copies an area from another image into this image, resizing if it necessary
+     *
+     * @access  public
+     * @param   &img.Image img Image object
+     * @param   int dst_x default 0 x coordinate within this image
+     * @param   int dst_y default 0 y coordinate within this image
+     * @param   int src_x default 0 x coordinate within the source image
+     * @param   int src_y default 0 y coordinate within the source image
+     * @param   int dst_w default -1 x coordinate within this image, -1 defaults to this image's width
+     * @param   int dst_h default -1 y coordinate within this image, -1 defaults to this image's height
+     * @param   int src_w default -1 width of the area to copy, -1 defaults to the source image's width
+     * @param   int src_h default -1 height of the area to copy, -1 defaults to the source image's height
+     * @return  bool
+     */
+    function resampleFrom(
+      &$img, 
+      $dst_x= 0, 
+      $dst_y= 0, 
+      $src_x= 0, 
+      $src_y= 0,
+      $dst_w= -1, 
+      $dst_h= -1, 
+      $src_w= -1, 
+      $src_h= -1
+    ) {
+      return imagecopyresampled(
+        $this->handle, 
+        $img->handle, 
+        $dst_x, 
+        $dst_y, 
+        $src_x, 
+        $src_y, 
+        ($dst_w < 0) ? $this->width : $dst_w,
+        ($dst_h < 0) ? $this->height : $dst_h,
+        ($src_w < 0) ? $img->width : $src_w,
+        ($src_h < 0) ? $img->height : $src_h
+      );
     }
     
     /**
@@ -193,6 +255,7 @@
      * @param   int src_y default 0 y coordinate within the source image
      * @param   int src_w default -1 width of the area to copy, -1 defaults to the source image's width
      * @param   int src_h default -1 height of the area to copy, -1 defaults to the source image's height
+     * @return  bool
      */
     function mergeFrom(
       &$img, 
@@ -204,17 +267,15 @@
       $src_w= -1, 
       $src_h= -1
     ) {
-      if (-1 == $src_w) $src_w= $img->getWidth();
-      if (-1 == $src_h) $src_h= $img->getHeight();
-      imagecopymerge(
+      return imagecopymerge(
         $this->handle, 
         $img->handle, 
         $dst_x, 
         $dst_y, 
         $src_x, 
         $src_y, 
-        $src_w, 
-        $src_h, 
+        ($src_w < 0) ? $img->width : $src_w,
+        ($src_h < 0) ? $img->height : $src_h,
         $pct
       );
     }
