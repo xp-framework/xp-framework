@@ -61,7 +61,7 @@
       if (!headers_sent()) {
         header('HTTP/1.1 302 Moved');
         header('Location: '.$target);
-        ob_end_clean();
+        @ob_end_clean();
         $this->_ob= FALSE;
         return TRUE;
       }
