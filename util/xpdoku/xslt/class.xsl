@@ -220,7 +220,7 @@
   </xsl:template>
   
   <xsl:template match="link[child::*[name() = 'scheme']/text() = 'xp']">
-    <a href="/classes/{./host}.html#{./fragment}">
+    <a href="/apidoc/classes/{./host}.html#{./fragment}">
       <xsl:value-of select="./host"/>
       <xsl:if test="string-length (./fragment) != 0">
         #<xsl:value-of select="./fragment"/>
