@@ -56,7 +56,7 @@
         }
 
         if (FALSE !== ($p= strpos($section, '.'))) {
-          $this->register($conn, substr($section, 0, $p), substr($section, $p));
+          $this->register($conn, substr($section, 0, $p), substr($section, $p+ 1));
         } else {
           $this->register($conn, $section);
         }
