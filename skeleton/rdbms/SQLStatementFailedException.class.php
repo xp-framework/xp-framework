@@ -14,7 +14,7 @@
   class SQLStatementFailedException extends SQLException {
     var 
       $sql  = '',
-      $code = 0;
+      $errorcode = 0;
 
     /**
      * Constructor
@@ -22,12 +22,12 @@
      * @access  public
      * @param   string message
      * @param   string sql default NULL the SQL query string sent
-     * @param   int code default -1
+     * @param   int errorcode default -1
      */
-    function __construct($message, $sql= NULL, $code= -1) {
+    function __construct($message, $sql= NULL, $errorcode= -1) {
       parent::__construct($message);
       $this->sql= $sql;
-      $this->code= $code;
+      $this->errorcode= $errorcode;
     }
 
     /**
@@ -41,13 +41,13 @@
     }
 
     /**
-     * Get Code
+     * Get errorcode
      *
      * @access  public
      * @return  int
      */
-    function getCode() {
-      return $this->code;
+    function getErrorcode()() {
+      return $this->errorcode;
     }
     
     /**
@@ -58,11 +58,11 @@
      */
     function toString() {
       $s= sprintf(
-        "Exception %s (Code %s: %s) {\n".
+        "Exception %s (errorcode %s: %s) {\n".
         "  %s\n".
         "}\n",
         $this->getClassName(),
-        $this->code,
+        $this->errorcode,
         $this->message,
         $this->sql
       );

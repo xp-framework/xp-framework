@@ -75,28 +75,28 @@
    */
   class LDAPException extends Exception {
     var
-      $code = 0;
+      $errorcode = 0;
       
     /**
      * Constructor
      *
      * @access  public
      * @param   string message
-     * @param   int code
+     * @param   int errorcode
      */
-    function __construct($message, $code) {
-      $this->code= $code;
+    function __construct($message, $errorcode) {
+      $this->errorcode= $errorcode;
       parent::__construct($message);
     }
 
     /**
-     * Get Code
+     * Get errorcode
      *
      * @access  public
      * @return  int
      */
-    function getCode() {
-      return $this->code;
+    function getErrorCode() {
+      return $this->errorcode;
     }
     
     /**
@@ -107,9 +107,9 @@
      */
     function toString() {
       return parent::toString().sprintf(
-        "  *** LDAP code #%d [%s]\n",
-        $this->code,
-        ldap_err2str($this->code)
+        "  *** LDAP errorcode #%d [%s]\n",
+        $this->errorcode,
+        ldap_err2str($this->errorcode)
       );
     }
   }

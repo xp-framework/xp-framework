@@ -13,42 +13,42 @@
     var
       $actual       = NULL,
       $expect       = NULL,
-      $code         = '';
+      $errorcode    = '';
       
     /**
      * Constructor
      *
      * @access  public
      * @param   string message
-     * @param   string code
+     * @param   string errorcode
      * @param   mixed actual default NULL
      * @param   mixed expect default NULL
      */
-    function __construct($message, $code, $actual= NULL, $expect= NULL) {
+    function __construct($message, $errorcode, $actual= NULL, $expect= NULL) {
       parent::__construct($message);
-      $this->code= $code;
+      $this->errorcode= $errorcode;
       $this->actual= $actual;
       $this->expect= $expect;
     }
     
     /**
-     * Set Code
+     * Set errorcode
      *
      * @access  public
-     * @param   string code
+     * @param   string errorcode
      */
-    function setCode($code) {
-      $this->code= $code;
+    function setErrorCode($errorcode) {
+      $this->errorcode= $errorcode;
     }
 
     /**
-     * Get Code
+     * Get errorcode
      *
      * @access  public
      * @return  string
      */
-    function getCode() {
-      return $this->code;
+    function getErrorCode() {
+      return $this->errorcode;
     }
     
     /**
@@ -60,13 +60,13 @@
     function toString() {
       $s= sprintf(
         "Exception %s (%s) {\n".
-        "    code:   %s\n".
+        "    errorcode:   %s\n".
         "    have:   [%s] %s\n".
         "    expect: [%s] %s\n".
         "  }\n",
         $this->getClassName(),
         $this->message,
-        $this->code,
+        $this->errorcode,
         xp::typeOf($this->actual),
         var_export($this->actual, 1),
         xp::typeOf($this->expect),
