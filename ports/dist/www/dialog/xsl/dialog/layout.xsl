@@ -26,8 +26,38 @@
           <xsl:value-of select="/formresult/config/title"/>
         </title>
         <link rel="stylesheet" href="/{/formresult/config/style}.css"/>
+        <script language="JavaScript"><![CDATA[
+          function handleKey(event) {
+            switch (event.keyCode) {
+              case 37:  // Left arrow
+              case 8:   // Backspace
+                if (
+                  (element= document.getElementById('previous')) &&
+                  (element.href)
+                ) {
+                  document.location.href= element.href;
+                  return false;
+                }
+                break;
+              
+              case 39:  // Right arrow
+              case 32:  // Space
+                if (
+                  (element= document.getElementById('next')) &&
+                  (element.href)
+                ) {
+                  document.location.href= element.href;
+                  return false;
+                }
+                break;
+              
+            }
+            
+            return true;
+          }
+        ]]></script>
       </head>
-      <body>
+      <body onKeyUp="handleKey(event)">
         <center>
           <!-- main content -->
           <table border="0" cellspacing="0" class="main">

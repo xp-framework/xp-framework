@@ -138,7 +138,7 @@ a.pager img {
   border: none;
   padding: 3px;
 }
-a.pager#false {
+a.pagerfalse {
   -moz-opacity: 0.3;
   filter: alpha(opacity=30);
 }

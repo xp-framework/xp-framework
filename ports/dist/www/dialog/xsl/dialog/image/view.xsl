@@ -37,7 +37,7 @@
 
     <br clear="all"/> 
     <center>
-      <a title="Previous image" class="pager" id="{/formresult/selected/@id &gt; 0}">
+      <a title="Previous image" class="pager{/formresult/selected/@id &gt; 0}" id="previous">
         <xsl:if test="/formresult/selected/@id &gt; 0">
           <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
             'image/view?', 
@@ -49,7 +49,7 @@
         </xsl:if>
         <img alt="&#xab;" src="/image/prev.gif" border="0" width="19" height="15"/>
       </a>
-      <a title="Next image" class="pager" id="{/formresult/selected/@last = ''}">
+      <a title="Next image" class="pager{/formresult/selected/@last = ''}" id="next">
         <xsl:if test="/formresult/selected/@last = ''">
           <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
             'image/view?', 
