@@ -21,29 +21,16 @@
    !-->
   <xsl:template name="context">
 
-    <!-- cvs -->
-    <h4 class="context">CVS activity</h4>
-    <ul class="context">
-      <li>
-        <em>2003-12-11 17:08</em>:<br/>
-        <a href="#apidoc/classes/ch/ecma/StliConnection">StliConnection</a> (friebe)
-      </li>
-      <li>
-        <em>2003-12-11 17:08</em>:<br/>
-        <a href="#apidoc/classes/ch/ecma/StliConnection">TelephonyAddress</a> (friebe)
-      </li>
-      <li>
-        <em>2003-09-27 15:30:00</em>:<br/>
-        <a href="#apidoc/classes/com/sun/webstart/JnlpDocument">JnlpDocument</a> (friebe)
-      </li>
-    </ul>
-
     <!-- see also -->
     <h4 class="context">See also</h4>
     <ul class="context">
       <li>
+        <em>(cvsweb)</em>:<br/>
+        <a href="#cvs">CVS history</a>
+      </li>
+      <li>
         <em>(development)</em>:<br/>
-        <a href="#devel/apidoc">API doc howto</a>
+        <a href="#source">Source code</a>
       </li>
     </ul>
 
