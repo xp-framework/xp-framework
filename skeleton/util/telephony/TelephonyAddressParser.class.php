@@ -20,9 +20,9 @@
    */
   class TelephonyAddressParser extends Object {
     var 
-      $defaultCountryCode= '+49',
-      $defaultAreaCode= '0721',
-      $defaultSubscriber= '91374';
+      $defaultCountryCode=  NULL,
+      $defaultAreaCode=     NULL,
+      $defaultSubscriber=   NULL;
 
     var $intDialCodes= array (
       '93'       => 'Afghanistan',               
@@ -101,7 +101,6 @@
       '689'      => 'French Polynesia',         
       '241'      => 'Gabon',                    
       '220'      => 'Gambia',                   
-      '7 & 995'  => 'Georgia',              
       '49'       => 'Germany',                   
       '233'      => 'Ghana',                    
       '350'      => 'Gibraltar',                
@@ -247,12 +246,6 @@
       '263'      => 'Zimbabwe'                  
       );
       
-    var $letters= array (
-      ' ' => 1,
-      'a' => 2,     'b' => 2,
-      'c' => 2
-    );
-
     /**
      * Creates a PhoneNumber object
      *
@@ -320,6 +313,13 @@
      * @throws FormatException, if number is malformed
      */
     function &parseNumber($number) {
+      // Check current state
+      if (NULL === $this->defaultCountryCode ||
+          NULL === $this->defaultAreaCode ||
+          NULL === $this->defaultSubscriber) 
+        return throw (new IllegalStateException ('At least one of the default numbers has not been set. Set them before parsing'));
+
+      // Parsing
       $a= &new TelephonyAddress();
       $a->setType (TEL_ADDRESS_INTERNATIONAL);
       
@@ -331,6 +331,7 @@
         $a->setAreaCode ($this->defaultAreaCode);
         $a->setSubscriber ($this->defaultSubscriber);
         $a->setExt ($number);
+        $a->setType (TEL_ADDRESS_INTERNAL);
         return $a;
       }
         
