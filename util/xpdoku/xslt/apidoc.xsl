@@ -14,6 +14,7 @@
     <br/>
     <ul class="nav">
       <li><a href="inheritance.html">Inheritance Tree</a></li>
+      <li><a href="/content/about.doc.html">Class documentation howto</a></li>
     </ul>
   </xsl:template>
   
