@@ -7,6 +7,8 @@
       <ref type="ext" link="http://www.gnome.org/seegnome.html">See GTK/Gnome in action</ref>
       <ref type="ext" link="http://www.gimp.org/the_gimp_screenshots.html">GIMP screenshots</ref>
       <ref type="ext" link="http://gtk.php.net/resources.php">PHP-GTK: Resources</ref>
+      <ref type="ext" link="http://www.eit.uni-kl.de/litz/lehre/seminar/seminar_ss_01/Meisner/sld012.htm">SOAP</ref>
+      <ref type="ext" link="http://www.fh-wedel.de/~si/seminare/ws00/Ausarbeitung/6.soap/soap01.htm">SOAP</ref>
     </references>
     <content>
       <title>Common Tasks</title>
@@ -109,8 +111,64 @@
       <para>
         <caption>SOAP clients/servers</caption>
         <text>
-          <!-- <ref type="api:class" link="xml.soap.rpc.SoapRpcRouter"/> -->
-          Nullam egestas, dolor a iaculis malesuada, quam erat placerat nisl, non congue urna orci eu est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Praesent mattis. Suspendisse ultricies cursus risus. In nec metus. Nam enim ante, dictum eu, eleifend a, consectetuer condimentum, arcu. Suspendisse lacus mi, placerat id, ornare et, vulputate sit amet, tortor. Morbi ornare dui ut risus. Donec nonummy, sapien in vehicula pulvinar, risus libero vehicula sem, at egestas libero elit a sem. Integer elementum commodo neque. Pellentesque elementum viverra turpis. Cras eu risus. Pellentesque eu purus. Donec eget magna.
+          SOAP ("Simple Object Access Protocol") seems quite abstract in the beginning - with all
+          of the abbreviatons accompanying its <ref type="ext" link="http://www.w3.org/TR/SOAP/">specification</ref>:
+          WSDL, UDDI, XMLSchema, ... once comprehended, it's actually quite simple to understand
+          (though not quite so simple to implement). No need to worry, it's already happened: XP offers a 
+          SOAP client and -server API: One of the goals of the XP framework was to seamlessly integrate 
+          XML and SOAP into easy-to-use APIs. One of the results of this effort is that the
+          creation and utilizations of webservices via SOAP requires only a couple of lines of code.
+          <br/>
+          <br/>
+          
+          Use a script like this to call a SOAP service as a client. It will print out the results
+          from the Method <tt>Action::Method('Paramater')</tt> on <tt>http://endpoint.of/the/soapservice</tt>:
+          <code><![CDATA[  require('lang.base.php');
+  uses(
+    'xml.soap.transport.SOAPHTTPTransport',
+    'xml.soap.SOAPClient'
+  );
+  
+  $s= &new SOAPClient(
+    new SOAPHTTPTransport('http://endpoint.of/the/soapservice'),
+    'Action',
+    'Method'
+  );
+  
+  // Call SOAP service
+  try(); {
+    $return= $s->call('Parameter');
+  } if (catch('Exception', $e)) {
+    $e->printStackTrace();
+    exit;
+  }
+  
+  var_dump($return);]]></code>
+          (See also advanced topics: Utilizing the Google API)<br/>
+          <br/>
+          So, now let's play it the other way aroung: The following snippet shows how to write up a 
+          SOAP service utilizing Apache as webserver:
+          <code><![CDATA[  require('lang.base.php');
+  uses('xml.soap.rpc.SoapRpcRouter');
+  
+  $s= &new SoapRpcRouter(new ClassLoader('info.binford6100.webservices'));
+  try(); {
+    $s->init();
+    $response= &$s->process();
+  } if (catch('HttpScriptletException', $e)) {
+  
+    // Retreive standard "Internal Server Error"-Document
+    // Remember: Faults are already handled by SoapRpcRouter - this
+    // will take care of GET, HEAD or any other request except for POST
+    $response= &$e->getResponse(); 
+  }
+  $response->sendHeaders();
+  $response->sendContent();
+
+  $s->finalize();]]></code>
+          Place this code in the document root of the SOAP endpoint virtualhost (e.g., 
+          <tt>/usr/local/apache/htdocs/index.php</tt>, check out the handler classes to 
+          the correct skeleton path and that's basically it: You're ready to serve.
         </text>
         <advanced>
           <ref link="tasks.soap.google">Utilizing the Google API</ref>
