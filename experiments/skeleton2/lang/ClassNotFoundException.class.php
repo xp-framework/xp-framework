@@ -3,13 +3,13 @@
  *
  * $Id$
  */
- 
+
   /**
    * Kapselt die ClassNotFoundException
    *
    * @see Exception
    */
-  class ClassNotFoundException extends Exception {
+  class ClassNotFoundException extends XPException {
   
   }
 ?>

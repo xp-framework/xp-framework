@@ -3,13 +3,13 @@
  *
  * $Id$
  */
- 
+
   /**
    * Kapselt die FormatException
    *
    * @see   xp://lang.Exception
    */
-  class FormatException extends Exception {
+  class FormatException extends XPException {
   
   }
 ?>

@@ -3,13 +3,13 @@
  *
  * $Id$
  */
- 
+
   /**
    * Kapselt die Illegalstateexception
    *
    * @see Exception
    */
-  class Illegalstateexception extends Exception {
+  class Illegalstateexception extends XPException {
   
   }
 ?>
