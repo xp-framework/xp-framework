@@ -224,5 +224,55 @@
       
       rewinddir ($this->_hdir);
     }
+
+    /**
+     * Retrieve when the folder was created
+     *
+     * @access  public
+     * @return  int The date the file was created as a unix-timestamp
+     * @throws  io.IOException in case of an error
+     */
+    function createdAt() {
+      if (FALSE === ($mtime= filectime($this->uri))) {
+        return throw(new IOException('Cannot get mtime for '.$this->uri));
+      }
+      return $mtime;
+    }
+
+    /**
+     * Retrieve last access time
+     *
+     * Note: 
+     * The atime of a file is supposed to change whenever the data blocks of a file 
+     * are being read. This can be costly performancewise when an application 
+     * regularly accesses a very large number of files or directories. Some Unix 
+     * filesystems can be mounted with atime updates disabled to increase the 
+     * performance of such applications; USENET news spools are a common example. 
+     * On such filesystems this function will be useless. 
+     *
+     * @access  public
+     * @return  int The date the file was last accessed as a unix-timestamp
+     * @throws  io.IOException in case of an error
+     */
+    function lastAccessed() {
+      if (FALSE === ($atime= fileatime($this->uri))) {
+        return throw(new IOException('Cannot get atime for '.$this->uri));
+      }
+      return $atime;
+    }
+    
+    /**
+     * Retrieve last modification time
+     *
+     * @access  public
+     * @return  int The date the file was last modified as a unix-timestamp
+     * @throws  io.IOException in case of an error
+     */
+    function lastModified() {
+      if (FALSE === ($mtime= filemtime($this->uri))) {
+        return throw(new IOException('Cannot get mtime for '.$this->uri));
+      }
+      return $mtime;
+    }
   }
 ?>
