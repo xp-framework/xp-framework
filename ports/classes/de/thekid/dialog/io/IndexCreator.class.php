@@ -6,6 +6,8 @@
 
   uses(
     'io.Folder',
+    'io.File',
+    'io.FileUtil',
     'de.thekid.dialog.io.FilteredFolderIterator'
   );
 
