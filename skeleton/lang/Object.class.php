@@ -36,7 +36,7 @@
      */
     function __construct($params= NULL) {
       if (is_array($params)) {
-        foreach ($params as $key=> $val) $this->$key= $val;
+        foreach (array_keys($params) as $key) $this->$key= &$params[$key];
       }
     }
     
