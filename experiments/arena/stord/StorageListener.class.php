@@ -27,8 +27,8 @@
    *
    * Error messages are returned as following (example):
    * <pre>
-   *   >>> GET nonexistant
-   *   <<< -ERR Cannot get filesize for history.friebe"
+   *   >>> ADD nonexistant N;
+   *   <<< -ERR Cannot get filesize for nonexistant"
    * </pre>
    *
    * All data is serialized using PHP's serialize() functionality
@@ -46,8 +46,11 @@
      * @return  string data
      */
     function handleGet($name) {
+      $f= &new File($name);
+      if (!$f->exists()) return 'N;';
+      
       clearstatcache();
-      return FileUtil::getContents(new File($name));
+      return FileUtil::getContents($f);
     }
 
     /**
