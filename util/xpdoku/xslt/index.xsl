@@ -92,7 +92,7 @@
             echo '<a href="http://xp-framework.net/downloads/'.$f.'">'.$f.'</a><br/>';
             
           ]]></xsl:processing-instruction>
-          <a href="/resources/">More information</a>
+          <a href="/resources/#3">More information</a>
         </td>
       </tr>
     </table>
