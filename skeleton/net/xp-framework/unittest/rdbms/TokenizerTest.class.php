@@ -114,6 +114,7 @@
     function testStringToken() {
       static $expect= array(
         'sybase' => 'select """Hello"", Tom\'s friend said" as strval',
+        'mysql'  => 'select "\"Hello\", Tom\'s friend said" as strval',
         // TBD: Other built-in rdbms engines
       );
       
