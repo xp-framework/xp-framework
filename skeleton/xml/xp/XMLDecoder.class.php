@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('xml.Tree', 'io.File');
+  uses('xml.Tree', 'io.File', 'io.FileUtil');
 
   /**
    * XML Decoder
@@ -85,12 +85,11 @@
       $tree= &new Tree();
       
       try(); {
-        $buf= '';
-        do { 
-          $buf.= $this->file->read();
-        } while (!$this->file->eof());
-        $tree->fromString($buf);
-        $name= ClassLoader::loadClass($tree->root->attribute['class']);
+        do {
+          if (!FileUtil::getContents($this->file)) break;
+          if (!$tree->fromString($buf)) break;
+          $name= ClassLoader::loadClass($tree->root->attribute['class']);
+        } while (0);
       } if (catch('Exception', $e)) {
         return throw($e);
       }
