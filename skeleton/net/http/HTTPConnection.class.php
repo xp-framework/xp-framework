@@ -114,7 +114,7 @@
       
       while (!$this->eof()) {
         $answer= $this->read();
-        //echo("ANSWER |".urlencode($answer).'|HEADER='.($header ? 'TRUE' : 'FALSE').'|FOOTER='.($footer ? 'TRUE' : 'FALSE')."|\n");
+        // echo("ANSWER |".urlencode($answer).'|HEADER='.($header ? 'TRUE' : 'FALSE').'|FOOTER='.($footer ? 'TRUE' : 'FALSE')."|\n");
         
         // Die erste leere Zeile trennt Header und Body
         if (''== trim(chop($answer))) {
@@ -125,8 +125,17 @@
         if (preg_match('|^HTTP/[0-9.]+ ([0-9]+) ?([^\r\n]*)|', $answer, $regs)) {
           $this->response->status= $regs[1];
           $this->response->message= $regs[2];
+          
+          // HTTP/1.1 100 Continue: Read and discard
+          // http://lists.w3.org/Archives/Public/www-talk/1996SepOct/0078.html
+          // http://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html#sec8.2.3
+          if (100 == $regs[1]) do {
+            $answer= $this->read();
+          } while ('' != trim(chop($answer)));
           continue;
         }
+        
+        
         
         // Andere HTTP-Response-Codes
         if (!strstr($answer, ':')) continue;
