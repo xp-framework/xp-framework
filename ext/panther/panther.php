@@ -1,15 +1,17 @@
 <?php
   class Test {
     public $value   = 'Initial';
+    private $used   = 0;
     
-    private function update($arg) {
-      echo 'Test::update('; var_export($arg); echo ")\n";
+    private function update() {
+      echo 'Test::update('; var_export($this->used); echo ")\n";
+      $this->used++;
     }
     
     public function hello() {
       $args= func_get_args();
       echo 'Test::hello('; var_export($args); echo ")\n";
-      $this->update($args[0]);
+      $this->update();
       return sizeof($args);
     }
   }
