@@ -7,20 +7,24 @@
   /**
    * Webdav property object
    *
-   * @ext      extension
-   * @see      reference
    * @purpose  Webdav property
    */
   class WebdavProperty extends Object {
-  
     var
-      $name=  NULL,
-      $value= NULL,
-      $protected= FALSE,
-      $attributes= array(),
-      $nsname= '',
-      $nsprefix= '';
+      $name         = NULL,
+      $value        = NULL,
+      $protected    = FALSE,
+      $attributes   = array(),
+      $nsname       = '',
+      $nsprefix     = '';
 
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   string name
+     * @param   string value default NULL
+     */
     function __construct($name, $value= NULL) {
       $this->name= $name;
       $this->value= $value;
@@ -32,8 +36,8 @@
      * @access  public
      * @param   string name The name
      */
-    function setName(&$name) {
-      $this->name= &$name;
+    function setName($name) {
+      $this->name= $name;
     }
 
     /**
@@ -42,7 +46,7 @@
      * @access  public
      * @return  string
      */
-    function &getName() {
+    function getName() {
       return $this->name;
     }
 
@@ -52,8 +56,8 @@
      * @access  public
      * @param   mixed value The value
      */
-    function setValue(&$value) {
-      $this->value= &$value;
+    function setValue($value) {
+      $this->value= $value;
     }
 
     /**
@@ -62,7 +66,7 @@
      * @access  public
      * @return  mixed
      */
-    function &getValue() {
+    function getValue() {
       return $this->value;
     }
 
@@ -72,7 +76,7 @@
      * @access  public
      * @param   string namespace Namespace
      */
-    function setNamespaceName(&$namespace) {
+    function setNamespaceName($namespace) {
       $this->nsname= $namespace;
     }
 
@@ -82,7 +86,7 @@
      * @access  public
      * @return  string
      */
-    function &getNamespaceName() {
+    function getNamespaceName() {
       return $this->nsname;
     }
     
@@ -139,20 +143,22 @@
     /**
      * Convert value to valid string
      *
+     * @access  public
+     * @return  string
      */
     function toString() {
-      switch(xp::typeOf($this->value)) {
-        case 'boolean':
+      switch (xp::typeOf($this->value)) {
+        case 'boolean': 
           return $this->value ? 'T' : 'F';
+
         case 'util.Date':
           $this->attributes['xmlns:b']= 'urn:uuid:c2f41010-65b3-11d1-a29f-00aa00c14882/';
           $this->attributes['b:dt']= 'dateTime.rfc1123';
           return $this->value->toString('D, j M Y H:m:s \G\M\T');
+
         default:
           return (string)$this->value;
       }
     }
-
-    
   }
 ?>
