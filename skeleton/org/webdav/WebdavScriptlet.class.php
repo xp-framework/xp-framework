@@ -14,6 +14,7 @@
     'org.webdav.xml.WebdavPropFindRequest',
     'org.webdav.xml.WebdavPropPatchRequest',
     'org.webdav.xml.WebdavPropResponse',
+    'org.webdav.xml.WebdavPropPatchResponse',
     'org.webdav.xml.WebdavMultistatusResponse',
     'org.webdav.xml.WebdavLockResponse',
     'org.webdav.auth.WebdavUser'
@@ -171,6 +172,7 @@
         case 'LOCK':
           return new WebdavLockResponse();
         case 'PROPPATCH':
+          return new WebdavPropPatchResponse();
         default:
           return new WebdavScriptletResponse();
       }
@@ -586,7 +588,7 @@
       try(); {
         $this->handlingImpl->proppatch(
           $request,
-          new WebdavMultiStatus()
+          $request
         );
         
       } if (catch('ElementNotFoundException', $e)) {
