@@ -40,14 +40,26 @@
    */
   class DBTableAttribute extends Object {
     var 
-      $name=     '',
-      $type=     -1,
-      $ident=   FALSE,
-      $nullable=   FALSE,
-      $length=   0,
-      $precision= 0,
-      $scale=   0;
+      $name=        '',
+      $type=        -1,
+      $ident=       FALSE,
+      $nullable=    FALSE,
+      $length=      0,
+      $precision=   0,
+      $scale=       0;
       
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   string name
+     * @param   int type
+     * @param   bool identity default FALSE
+     * @param   bool nullable default FALSE
+     * @param   int length default 0
+     * @param   int precision default 0,
+     * @param   int scale default 0
+     */
     function __construct($name, $type, $identity= FALSE, $nullable= FALSE, 
                $length= 0, $precision= 0, $scale= 0) {
       $this->name= $name;
@@ -60,18 +72,43 @@
       parent::__construct();
     }
     
+    /**
+     * Returns whether this attribute is an identity field
+     *
+     * @access  public
+     * @return  bool
+     */
     function isIdentity() {
       return $this->identity;
     } 
     
+    /**
+     * Returns whether this attribute is nullable
+     *
+     * @access  public
+     * @return  bool
+     */
     function isNullable() {
       return $this->nullable;
     }
     
+    /**
+     * Returns this attribute's name
+     *
+     * @access  public
+     * @return  bool
+     */
     function getName() {
       return $this->name;
     }
     
+    /**
+     * Returns a textual representation of the type, e.g. 
+     * DB_ATTRTYPE_VARCHAR
+     *
+     * @access  public
+     * @return  string type
+     */
     function getTypeString() {
       static $map= array(
         'DB_ATTRTYPE_BINARY',   
@@ -103,9 +140,15 @@
         'DB_ATTRTYPE_VARBINARY', 
         'DB_ATTRTYPE_VARCHAR'
       );
-        return $map[$this->type];
+      return $map[$this->type];
     }
     
+    /**
+     * Return this attribute's type name (for XP)
+     *
+     * @access  public
+     * @return  string type or FALSE if unknown
+     */
     function typeName() {
       switch ($this->type) {   
         case DB_ATTRTYPE_BIT:
