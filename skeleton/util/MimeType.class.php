@@ -65,6 +65,7 @@
   define('MIME_IMAGE_X_XWINDOWDUMP',            'image/x-xwindowdump');
   define('MIME_TEXT_HTML',                      'text/html');
   define('MIME_TEXT_PLAIN',                     'text/plain');
+  define('MIME_TEXT_XML',                       'text/xml');
   define('MIME_TEXT_RICHTEXT',                  'text/richtext');
   define('MIME_TEXT_TAB_SEPARATED_VALUES',      'text/tab-separated-values');
   define('MIME_TEXT_X_SETEXT',                  'text/x-setext');
@@ -173,6 +174,12 @@
         '.htm'     => MIME_TEXT_HTML,
         '.asc'     => MIME_TEXT_PLAIN,
         '.txt'     => MIME_TEXT_PLAIN,
+        '.ini'     => MIME_TEXT_PLAIN,
+        '.conf'    => MIME_TEXT_PLAIN,
+        '.xml'     => MIME_TEXT_XML,
+        '.xsl'     => MIME_TEXT_XML,
+        '.rdf'     => MIME_TEXT_XML,
+        '.rss'     => MIME_TEXT_XML,
         '.rtx'     => MIME_TEXT_RICHTEXT,
         '.tsv'     => MIME_TEXT_TAB_SEPARATED_VALUES,
         '.etx'     => MIME_TEXT_X_SETEXT,
@@ -189,7 +196,7 @@
         '.movie'   => MIME_VIDEO_X_SGI_MOVIE,
         '.vrm'     => MIME_X_WORLD_X_VRML,      
         '.vrml'    => MIME_X_WORLD_X_VRML,      
-        '.wrl'     => MIME_X_WORLD_X_VRML,      
+        '.wrl'     => MIME_X_WORLD_X_VRML,
       );
       
       $parts= explode('.', strtolower($name));
