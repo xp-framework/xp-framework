@@ -1,4 +1,8 @@
 <?php
+/* This class is part of the XP framework's experiments
+ *
+ * $Id$
+ */
   require('lang.base.php');
   xp::sapi('cli');
   uses('text.PHPParser', 'lang.ElementNotFoundException');
