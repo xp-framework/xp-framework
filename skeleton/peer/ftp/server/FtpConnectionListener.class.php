@@ -197,6 +197,26 @@
     }
 
     /**
+     * Change to the parent directory
+     *
+     * @access  protected
+     * @param   &peer.server.ConnectionEvent event
+     * @param   string params
+     */
+    function onCdup(&$event, $params) {
+      try(); {
+        $pwd= $this->storage->setBase(
+          $event->stream->hashCode(),
+          dirname($this->storage->getBase($event->stream->hashCode()))
+        );
+      } if (catch('Exception', $e)) {
+        $this->answer($event->stream, 550, $e->getMessage());
+        return;
+      }
+      $this->answer($event->stream, 250, 'CDUP command successful');
+    }
+
+    /**
      * FEAT: This command causes the FTP server to list all new FTP 
      * features that the server supports beyond those described in 
      * RFC 959.
@@ -808,7 +828,7 @@
       // Check if method is implemented and answer with code 550 in case
       // it isn't.
       if (!method_exists($this, $method)) {
-        $this->answer($event->stream, 550, $command.' not understood');
+        $this->answer($event->stream, 500, $command.' not understood');
         return;
       }
       
