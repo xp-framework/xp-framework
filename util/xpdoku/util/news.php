@@ -21,10 +21,18 @@
     'http://xp.php3.de/copyright.html'
   );
   
+  // TBD: Get from database?
   $news->addItem(
     'API Docs released', 
     'http://xp.php3.de/apidoc/',
-    'An initial release of the XP api docs has been created'
+    'An initial release of the XP api docs has been created. There is still some missing functionality but the documentation is already quite usable.',
+    new Date('2002-12-28 19:18:12')
+  );
+  $news->addItem(
+    'Website created', 
+    'http://xp.php3.de/',
+    'The first version of the XP web site is online.',
+    new Date('2002-12-27 13:10:01')
   );
   
   echo $news->getSource(0);
