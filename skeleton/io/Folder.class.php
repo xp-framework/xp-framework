@@ -108,6 +108,42 @@
       umask($umask);
       return TRUE;
     }
+    
+    /**
+     * Delete this folder and all its subentries recursively
+     * Warning: Stops at the first element that can't be deleted!
+     *
+     * @access  public
+     * @return  bool success
+     * @throws  IOException in case one of the entries could'nt be deleted
+     */
+    function unlink($uri= NULL) {
+      if (NULL === $uri) $uri= $this->uri; // We also use this recursively
+      
+      $d= dir($uri);
+      while ($e= $d->read()) {
+        if ('.' == $e || '..' == $e) continue;
+        
+        $fn= $d->path.$e;
+        if (!is_dir($fn)) {
+          $ret= unlink($fn);
+        } else {
+          $ret= $this->unlink($fn.'/');
+        }
+        if (FALSE === $ret) return throw(new IOException(sprintf(
+          'unlink of "%s" failed',
+           $fn
+        )));
+      }
+      $d->close();
+
+      if (FALSE === rmdir($uri)) return throw(new IOException(sprintf(
+        'unlink of "%s" failed',
+         $uri
+      )));
+      
+      return TRUE;
+    }
 
     /**
      * Returns whether this directory exists
