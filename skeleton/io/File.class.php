@@ -517,6 +517,8 @@
       if (FALSE === rename($this->uri, $target)) {
         return throw(new IOException('cannot move file '.$this->uri.' to '.$target));
       }
+      
+      $this->uri= realpath ($target);
       return TRUE;
     }
     
