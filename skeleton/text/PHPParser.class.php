@@ -203,7 +203,7 @@
               case T_STRING:
                 $this->log && $this->log->info ('Function', $data, 'at line', $lineno);
                 
-                // Add new function, if currectClass exists add to that, otherwise to file
+                // Add new function, if currentClass exists add to that, otherwise to file
                 $f= &new StdClass();
                 $f->type= 'function';
                 $f->name= $data;
