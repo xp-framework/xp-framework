@@ -10,7 +10,7 @@
    * @ext      gd
    * @see      xp://img.io.ImageReader
    * @see      xp://img.Image#loadFrom
-   * @purpose  Reader
+   * @purpose  Base class
    */
   class StreamReader extends Object {
     var
@@ -27,6 +27,25 @@
     }
 
     /**
+     * Read an image.
+     *
+     * @access  protected
+     * @return  resource
+     * @throws  img.ImagingException
+     */    
+    function readFromStream() {
+      try(); {
+        $this->stream->open(STREAM_MODE_READ);
+        $buf= $this->stream->read($this->stream->size());
+        $this->stream->close();
+      } if (catch('IOException', $e)) {
+        return throw(new ImagingException($e->getMessage()));
+      }
+
+      return imagecreatefromstring($buf);
+    }
+    
+    /**
      * Retrieve an image resource
      *
      * @access  public
@@ -35,17 +54,14 @@
      */
     function getResource() {
       try(); {
-        $this->stream->open(STREAM_MODE_READ);
-        if (FALSE === ($img= imagecreatefromstring(
-          $this->stream->read($this->stream->size()))
-        )) {
-          throw(new IOException('Cannot read image'));
-        }
-        $this->stream->close();
-      } if (catch('IOException', $e)) {
-        return throw(new ImagingException($e->getMessage()));
+        $handle= $this->readFromStream();
+      } if (catch('ImagingException', $e)) {
+        return throw($e);
       }
-      return $img;
+      if (!is_resource($handle)) {
+        return throw(new ImagingException('Cannot read image'));
+      }
+      return $handle;
     }
     
   } implements(__FILE__, 'img.io.ImageReader');
