@@ -53,8 +53,6 @@
         return throw($e);
       }
       
-      Console::writeLine('Got feed.');
-      
       $feed= &new Feed(
         $feed_id,
         $rdf->channel->title,
@@ -68,10 +66,11 @@
           $feed_id,
           $rdf->items[$idx]->title,
           $rdf->items[$idx]->link,
-          $rdf->items[$idx]->content,
-          $rdf->items[$idx]->author,
-          $rdf->items[$idx]->guid,
-          $rdf->items[$idx]->date
+          @$rdf->items[$idx]->description,
+          @$rdf->items[$idx]->content,
+          @$rdf->items[$idx]->author,
+          @$rdf->items[$idx]->guid,
+          @$rdf->items[$idx]->date
         );
       }
       
