@@ -97,7 +97,7 @@
               $request->session->putValue($identifier, $this->handlers[$i]->values);
               $handler->addChild(Node::fromArray($this->handlers[$i]->values[HVAL_PERSISTENT], 'values'));
               foreach (array_keys($this->handlers[$i]->values[HVAL_FORMPARAM]) as $key) {
-                $response->setFormValue($key, $this->handlers[$i]->values[HVAL_FORMPARAM][$key]);
+                $response->addFormValue($key, $this->handlers[$i]->values[HVAL_FORMPARAM][$key]);
               }
               
               continue;
@@ -108,7 +108,7 @@
             $handler->setAttribute('status', HANDLER_INITIALIZED);
             $handler->addChild(Node::fromArray($this->handlers[$i]->values[HVAL_PERSISTENT], 'values'));
             foreach (array_keys($this->handlers[$i]->values[HVAL_FORMPARAM]) as $key) {
-              $response->setFormValue($key, $this->handlers[$i]->values[HVAL_FORMPARAM][$key]);
+              $response->addFormValue($key, $this->handlers[$i]->values[HVAL_FORMPARAM][$key]);
             }
 
             // If the handler is not active, ask the next handler
