@@ -89,6 +89,7 @@ of subdirectories as following:
   + admin/
   + view/
   + shell/
+  + util/
 
 - devel/         Development
   + ide/
