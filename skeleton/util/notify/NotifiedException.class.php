@@ -55,8 +55,10 @@
         $reflect[$method]= $notifier;
       }
       
-      // Send out Notify when thrown
-      $stack= $this->getStackTrace();
+      // Send out Notify when thrown. We do not know yet if notifies 
+      // will be OK, so simply don't print anything (return value is not
+      // defined yet:-))
+      $stack= $this->getStackTrace('');
       foreach ($this->notify as $method=> $params) {
       
         // Create an instance and call notify()-method
@@ -72,10 +74,10 @@
      * @access  public
      * @return  string Stacktrace
      */
-    function getStackTrace() {
+    function getStackTrace($e= 'failed') {
       $notify= '';
       foreach ($this->notified as $method=> $result) {
-        $notify.= sprintf("      [%-20s] %s\n", $method, ($result ? 'ok' : 'failed'));
+        $notify.= sprintf("      [%-20s] %s\n", $method, ($result ? 'succeeded' : $e));
       }
       
       return (
