@@ -53,7 +53,7 @@
     }
     // }}}
     
-    // {{{ internal mixed sapi(string name)
+    // {{{ public mixed sapi(string name)
     //     Sets an SAPI
     function sapi($name) {
       require_once('sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php');
