@@ -119,8 +119,8 @@
       // Full width display mode
       $this->setDisplayMode('fullwidth');
       
-      // Compression
-      $this->setCompression(TRUE);
+      // Set compression to TRUE if gzcompress() exists
+      $this->setCompression(function_exists('gzcompress'));
     }
 
     /**
@@ -146,13 +146,14 @@
      * @return  float
      */
     function getScaleFactor($unit) {
-      if (!isset($this->_kmap)) $this->_kmap= array(
+      static $map= array(
         FPDF_UNIT_PT    => 1,
-        FPDF_UNIT_MM    => 72 / 25.4,
-        FPDF_UNIT_CM    => 72 / 2.54,
+        FPDF_UNIT_MM    => 2.83464566929,   // 72 / 25.4,
+        FPDF_UNIT_CM    => 28.3464566929,   // 72 / 2.54,
         FPDF_UNIT_INCH  => 72
       );
-      return $this->_kmap[$unit];
+
+      return $map[$unit];
     }
     
     /**
@@ -163,7 +164,7 @@
      * @return  float[2]
      */
     function getPageDimensions($format) {
-      if (!isset($this->_fmap)) $this->_fmap= array(
+      static $map= array(
         FPDF_FORMAT_A3          => array(841.89, 1190.55),
         FPDF_FORMAT_A4          => array(595.28, 841.89),
         FPDF_FORMAT_A5          => array(420.94, 595.28),
@@ -171,7 +172,7 @@
         FPDF_FORMAT_LEGAL       => array(612, 1008)
       );
       
-      return $this->_fmap[$format];
+      return $map[$format];
     }
    
     /**
@@ -217,12 +218,12 @@
      * @access  public
      * @param   int left
      * @param   int top
-     * @param   int right default -1
+     * @param   int right default -1 Default value is the left one. 
      */
     function setMargins($left, $top, $right= -1) {
-      $this->lMargin= $left;
-      $this->tMargin= $top;
-      $this->rMargin= (-1 == $right) ? $left : $right;
+      $this->setLeftMargin($left);
+      $this->setTopMargin($top);
+      $this->setRightMargin((-1 == $right) ? $left : $right);
     }
 
     /**
@@ -314,10 +315,10 @@
      *
      * @access  public
      * @param   bool compress
-     * @throws  lamg.MethodNotImplementedException
+     * @throws  lang.MethodNotImplementedException
      */
     function setCompression($compress) {
-      if ($compress && ! function_exists('gzcompress')) {
+      if ($compress && !function_exists('gzcompress')) {
         return throw(new MethodNotImplementedException('Compression not available'));
       }
       $this->compress= $compress;
@@ -1141,8 +1142,8 @@
     }
 
     /**
-     * Set y position and reset x. Negative values calculate the y position 
-     * relative to the height.
+     * Set y position and reset x. Negative values calculate the y 
+     * position relative to the height.
      *
      * @access  public
      * @param   int y
@@ -1165,13 +1166,14 @@
     }
 
     /**
-     * Retrieve current buffer
+     * Retrieve current buffer. The method first calls close() if 
+     * necessary to terminate the document.
      *
      * @access  public
      * @return  string
      */
     function getBuffer() {
-      if ($this->state < 3) $this->Close();
+      if ($this->state < 3) $this->close();
       return $this->buffer;
     }
 
