@@ -54,8 +54,6 @@
             news_id = %d
         ', $news_id);
       } if (catch('SQLException', $e)) {
-
-        // more error handling TBD here?
         return throw($e);
       }
       
@@ -99,8 +97,6 @@
           $n[]= &new XPNews($data);
         }
       } if (catch('SQLException', $e)) {
-
-        // more error handling TBD here?
         return throw($e);
       }
 
@@ -148,8 +144,6 @@
           $n[]= &new XPNews($data);
         }
       } if (catch('SQLException', $e)) {
-
-        // more error handling TBD here?
         return throw($e);
       }
 
@@ -353,8 +347,6 @@
           $this->news_id
         );
       } if (catch('SQLException', $e)) {
-
-        // more error handling TBD here?
         return throw($e);
       }
 
@@ -399,8 +391,6 @@
         );
         $this->news_id= $db->identity();
       } if (catch('SQLException', $e)) {
-
-        // more error handling TBD here?
         return throw($e);
       }
 
