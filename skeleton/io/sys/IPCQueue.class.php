@@ -153,7 +153,7 @@
       
       // t.b.d. handle message flags and message types
       // see http://de3.php.net/manual/en/function.msg-receive.php
-      if (!msg_receive ($this->id, $desiredType, $msgType, $maxSize, $msg, $serialize, $flags, $err)) {
+      if (!msg_receive($this->id, $desiredType, $msgType, $maxSize, $msg, $serialize, $flags, $err)) {
         return throw(new IOException('Message could not be received. Errorcode '.$err));
       }
       return new IPCMessage($msg, $msgType);
