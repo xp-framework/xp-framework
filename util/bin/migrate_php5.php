@@ -76,7 +76,6 @@ __;
   $class= 0;
   $uses= $constants= $implements= $apidoc= array();
   do {
-    if (T_COMMENT === $tok[0] && '//' == substr($tok[1], 0, 2) && !$class) continue;
     if (T_CLOSE_TAG === $tok[0]) break;
     
     if ((T_COMMENT === $tok[0]) && ('/**' == substr($tok[1], 0, 3))) {
