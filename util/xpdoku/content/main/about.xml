@@ -112,7 +112,7 @@
     $e->printStackTrace();
     exit(-1);
   } 
-  printf("Success: line ist '%s'\n", $str);
+  printf("Success: line is '%s'\n", $str);
   // }}}]]></code>
 
           In line three the class /path/to/skeleton/io/File.class.php is included. It
