@@ -14,7 +14,7 @@
   class HtdigEntry extends Object {
     var
       $current=          0,
-      $docId=            '',
+      $docId=            0,
       $stars=            0,
       $score=            0,
       $url=              '',
@@ -33,7 +33,7 @@
      * @param   int current
      */
     function setCurrent($current) {
-      $this->current= $current;
+      $this->current= (int)$current;
     }
 
     /**
@@ -53,7 +53,7 @@
      * @param   string docId
      */
     function setDocId($docId) {
-      $this->docId= $docId;
+      $this->docId= (int)$docId;
     }
 
     /**
@@ -73,7 +73,7 @@
      * @param   int stars
      */
     function setStars($stars) {
-      $this->stars= $stars;
+      $this->stars= (int)$stars;
     }
 
     /**
@@ -105,7 +105,7 @@
      * @param   int score
      */
     function setScore($score) {
-      $this->score= $score;
+      $this->score= (int)$score;
     }
 
     /**
