@@ -16,13 +16,6 @@
     
     var $nodeType= 'SOAPNode';
 
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */    
     function create($action, $method) {
       $this->action= $action;
       $this->method= $method;
