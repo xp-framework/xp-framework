@@ -26,5 +26,15 @@
       }
       return $e;
     }
+    
+    /**
+     * Get OpenSSL configuration file environment value
+     *
+     * @access  public
+     * @return  string
+     */
+    function getConfiguration() {
+      return getenv('OPENSSL_CONF');
+    }
   }
 ?>
