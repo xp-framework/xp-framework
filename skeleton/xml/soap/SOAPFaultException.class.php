@@ -17,5 +17,20 @@
       $this->fault= $fault;
       parent::__construct($this->fault->faultstring);
     }
+    
+    /**
+     * "Stack Trace" zurückgeben
+     *
+     * @return  string der StackTrace, vorformatiert
+     */
+    function getStackTrace() {
+      return parent::getStackTrace().sprintf(
+        "  [\n    fault.faultcode= '%s'\n    fault.faultstring= '%s'\n    fault.faultactor= '%s'\n    fault.detail= '%s'\n  ]\n",
+        $this->fault->faultcode,
+        $this->fault->faultstring,
+        $this->fault->faultactor,
+        trim(chop($this->fault->detail))
+      );
+    }
   }
 ?>
