@@ -61,6 +61,7 @@
               <xsl:value-of select="translate(dc:date, 'T', ' ')"/>
             </small>
             <br/>
+            <br/>
           </td>
         </tr>
 
