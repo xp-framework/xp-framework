@@ -11,7 +11,7 @@
    * HTTPS now, too.
    *
    * @deprecated
-   * @see         xp://xml.soap.transport.SoapHttpTransport
+   * @see         xp://xml.soap.transport.SOAPHTTPTransport
    */
   class SOAPHTTPSTransport extends SOAPHTTPTransport {
   }
