@@ -160,7 +160,7 @@
           default:
             $c= &$elem->addChild(new Node('item', $this->values[$i]));
         }
-        $c->attribute['id']= $i;
+        $c->setAttribute('id', $i);
       }
     }
   }
