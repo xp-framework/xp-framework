@@ -1,0 +1,30 @@
+PHP5 extensions: README
+========================================================================
+$Id$
+
+Introduction
+------------
+This patch introduces functionality suggested in the XP RFC 0008 (see
+http://cvs.xp-framework.net/horde/chora/co.php/rfc/0008.rfc.txt)
+
+Currently implemented
+---------------------
+* Packages
+  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/packages
+
+* Operator overloading
+  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/operator_overloading
+
+* Throws clause
+  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/exceptions
+
+Making it work
+--------------
+The patch needs to be applied against a current CVS checkout of PHP5.
+Compile, then run the tests. 
+
+Be sure to do a "make clean" before - the zend_globals struct and 
+zend_op_array structs have been changed (and therefore their size) - 
+otherwise you'll experience crashes all over the place.
+
+<EOF>
