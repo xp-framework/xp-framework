@@ -31,8 +31,16 @@ typedef struct {
 } sybase_result;
 
 typedef struct {
+    CS_SMALLINT indicator;
+    char *value;
+    int valuelen;
+} sybase_column;
+
+typedef struct {
     int fields;
     CS_DATAFMT *dataformat;
+    CS_INT *types;
+    sybase_column *columns;
 } sybase_resultset;
 
 SYBASE_API int sybase_init(sybase_environment **env);
@@ -53,3 +61,4 @@ SYBASE_API char *sybase_nameofdatatype(CS_INT datatype);
 SYBASE_API int sybase_free_result(sybase_result *result);
 SYBASE_API int sybase_init_resultset(sybase_result *result, sybase_resultset **resultset);
 SYBASE_API int sybase_free_resultset(sybase_resultset *resultset);
+SYBASE_API int sybase_fetch(sybase_result *result, sybase_resultset **resultset);
