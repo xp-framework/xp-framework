@@ -234,6 +234,24 @@ SYBASE_API int sybase_cancel(sybase_result *result, int mode)
 }
 
 /**
+ * Retrieve rowcount
+ * 
+ * @access  public
+ * @param   sybase_result *result
+ * @return  int the number of affected rows or -1 to indicate failure
+ */
+SYBASE_API int sybase_rowcount(sybase_result *result)
+{
+    CS_INT rowcount;
+
+    if (ct_res_info(result->cmd, CS_ROW_COUNT, &rowcount, CS_UNUSED, NULL) != CS_SUCCEED) {
+        return -1;
+    }
+    return rowcount;
+}
+
+
+/**
  * Read a result
  * 
  * @access  public

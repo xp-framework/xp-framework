@@ -22,6 +22,7 @@ SYBASE_API int sybase_free(sybase_link *link);
 SYBASE_API char *sybase_nameoftype(CS_INT type);
 SYBASE_API char *sybase_nameofcode(CS_INT code);
 SYBASE_API char *sybase_nameofdatatype(CS_INT datatype);
+SYBASE_API int sybase_rowcount(sybase_result *result);
 SYBASE_API int sybase_free_result(sybase_result *result);
 SYBASE_API int sybase_init_resultset(sybase_result *result, sybase_resultset **resultset);
 SYBASE_API int sybase_free_resultset(sybase_resultset *resultset);
