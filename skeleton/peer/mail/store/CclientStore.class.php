@@ -325,8 +325,8 @@
      * Proxy method for MailFolder: Move message to other folder
      *
      * @access  public
-     * @param   &peer.mail.Message msg
      * @param   &peer.mail.MailFolder f
+     * @param   &peer.mail.Message msg
      * @return  bool success
      */
     function moveMessage(&$f, $msg) {
