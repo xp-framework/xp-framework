@@ -4,6 +4,8 @@
  */
 
 #include "sybase_api.h"
+#include "sybase_mm.h"
+#include "sybase_hash.h"
 
 static CS_RETCODE CS_PUBLIC servermessage(CS_CONTEXT *context, CS_CONNECTION *connection, CS_SERVERMSG *message)
 {
@@ -101,10 +103,15 @@ int main(int argc, char **argv)
                         }
                         sybase_free_resultset(resultset);
                         break;
+                        
+                    case CS_CMD_SUCCEED:
+                        printf("---> Affected rows: %d\n", sybase_rowcount(result));
+                        break;
 
                     case CS_CMD_FAIL:
                     case CS_CANCELED:
                         done= 1;
+                        break;
                 }
             }
             printf(
