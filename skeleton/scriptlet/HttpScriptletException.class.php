@@ -47,6 +47,25 @@
     }
     
     /**
+     * Return formatted output of stacktrace
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      $s= sprintf(
+        "Exception %s (%d:%s)\n",
+        $this->getClassName(),
+        $this->response->statusCode,
+        $this->message
+      );
+      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
+        $s.= $this->trace[$i]->toString();
+      }
+      return $s;
+    }
+    
+    /**
      * Create the response object
      *
      * @access  protected
