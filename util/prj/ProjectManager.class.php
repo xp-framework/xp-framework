@@ -49,8 +49,9 @@
       // Init ClassTree
       $this->tree= &$this->widget ('classTree');
       $this->tree->connect ('select_row', array (&$this, 'onTreeSelectRow'));
+      $this->tree->connect ('unselect_row', array (&$this, 'onTreeUnselectRow'));
       $this->tree->connect ('button_press_event', array (&$this, 'onTreeClick'));
-      
+
       // Init Statusbar
       $this->statusbar= &$this->widget ('statusbar');
       
@@ -73,10 +74,18 @@
       $this->_selectedNode= &$node;
     }
     
+    function onTreeUnselectRow(&$widget, $row, &$data, &$event) {
+      if (isset ($this->_selectedRow))
+        unset ($this->_selectedNode);
+    }
+    
     function onTreeClick(&$clist, &$event) {
       // Check for right-click
-      if ($event->button == 3)
+      if (3 == $event->button)
         return $this->onTreeRightClick($click, $event);
+
+      if (1 == $event->button && GDK_2BUTTON_PRESS == $event->type)
+        return $this->onFileOpenCtx();
 
       if (!isset ($this->_selectedNode)) return FALSE;
     }
@@ -149,6 +158,24 @@
       return TRUE;
     }
     
+    function &_addNode(&$parent, $data, &$nodeData, $pixmap= 'sv_session') {
+      $node= &$this->tree->insert_node (
+        $parent,
+        NULL,
+        $data,
+        0,
+        $this->pixmap['p:'.$pixmap],
+        $this->pixmap['m:'.$pixmap],
+        $this->pixmap['p:'.$pixmap],
+        $this->pixmap['m:'.$pixmap],
+        FALSE,
+        FALSE
+      );
+      
+      $this->tree->node_set_row_data($node, $nodeData);
+      return $node;
+    }
+    
     function updateList() {
       $this->tree->freeze();
       $this->tree->clear();
@@ -156,7 +183,7 @@
       $rootNode= &$this->tree->insert_node (
         NULL,
         NULL,
-        array ('global program space', '0', '0'),
+        array ('global program space', '', ''),
         0,
         $this->pixmap['p:sv_session'],
         $this->pixmap['m:sv_session'],
@@ -172,43 +199,30 @@
         foreach (array_keys ($file->classes) as $cIdx) {
           $c= &$file->classes[$cIdx];
 
-          $classNode= &$this->tree->insert_node (
-            $rootNode,
-            NULL,
-            array ($c->name, $c->line, $c->endsAt),
-            0,
-            $this->pixmap['p:sv_class'],
-            $this->pixmap['m:sv_class'],
-            $this->pixmap['p:sv_class'],
-            $this->pixmap['m:sv_class'],
-            FALSE,
-            FALSE
-          );
           $node= &new StdClass();
           $node->file= &$file;
           $node->object= &$c;
-          
-          $this->tree->node_set_row_data ($classNode, $node);
-          
+
+          $classNode= &$this->_addNode (
+            $rootNode,
+            array ($c->name, basename ($file->filename), $c->line),
+            $node,
+            'sv_class'
+          );
+
           foreach (array_keys ($c->functions) as $fIdx) {
             $f= &$c->functions[$fIdx];
-            $funcNode= &$this->tree->insert_node (
-              $classNode,
-              NULL,
-              array ($f->name, $f->line, $f->endsAt),
-              0,
-              $this->pixmap['p:sv_scalar'],
-              $this->pixmap['m:sv_scalar'],
-              $this->pixmap['p:sv_scalar'],
-              $this->pixmap['m:sv_scalar'],
-              FALSE,
-              FALSE
-            );
+
             $node= &new StdClass();
             $node->file= &$file;
             $node->object= &$f;
             
-            $this->tree->node_set_row_data ($funcNode, $node);
+            $funcNode= &$this->_addNode(
+              $classNode,
+              array ($f->name, '', $f->line),
+              $node,
+              'sv_scalar'
+            );
           }
         }
       }
@@ -220,26 +234,19 @@
         foreach (array_keys ($file->functions) as $fIdx) {
           $f= &$file->functions[$fIdx];
 
-          $funcNode= &$this->tree->insert_node (
-            $rootNode,
-            NULL,
-            array ($f->name, $f->line, $f->endsAt),
-            0,
-            $this->pixmap['p:sv_private_scalar'],
-            $this->pixmap['m:sv_private_scalar'],
-            $this->pixmap['p:sv_private_scalar'],
-            $this->pixmap['m:sv_private_scalar'],
-            FALSE,
-            FALSE
-          );
           $node= &new StdClass();
           $node->file= &$file;
           $node->object= &$f;
-
-          $this->tree->node_set_row_data ($funcNode, $node);
+          
+          $funcNode= &$this->_addNode (
+            $rootNode,
+            array ($f->name, basename ($file->filename), $f->line),
+            $node,
+            'sv_private_scalar'
+          );
         }
       }
-      
+
       $this->tree->columns_autosize();
       $this->tree->thaw();
     }
@@ -251,7 +258,7 @@
      * @param   &GtkMenuItem
      * @param   &GdkEvent
      */    
-    function onFileOpenCtx(&$menuItem, &$event) {
+    function onFileOpenCtx() {
       $n= &$this->tree->node_get_row_data ($this->_selectedNode);
 
       $line= 1;
@@ -261,7 +268,7 @@
       $this->log && $this->log->debug ('Starting', $n->file->filename, 'on line', $line);
 
       System::exec (sprintf ('nedit -line %d %s',
-        $line+1,
+        $line,
         $n->file->filename        
       ), '1>/dev/null 2>/dev/null', TRUE);
     }
