@@ -69,7 +69,7 @@
      * @access  private
      * @return  bool success
      * @throws  IllegalStateException when no image is defined
-     * @throws  FormatException when retreiving image information fails
+     * @throws  FormatException when retrieving image information fails
      */
     function _calc() {
       if (FALSE === $this->_info) return FALSE;
@@ -78,14 +78,14 @@
         return FALSE;
       }
       if (FALSE === ($this->_info= getimagesize($this->image))) {
-        throw(new FormatException('Unable to retreive image information for '.$this->image));
+        throw(new FormatException('Unable to retrieve image information for '.$this->image));
         return FALSE;
       }
       return TRUE;
     }
     
     /**
-     * Retreives image's width
+     * Retrieves image's width
      *
      * @access  public
      * @return  int width or FALSE in case of an error
@@ -96,7 +96,7 @@
     }
     
     /**
-     * Retreives image's height
+     * Retrieves image's height
      *
      * @access  public
      * @return  int width or FALSE in case of an error
@@ -107,7 +107,7 @@
     }
     
     /**
-     * Retreives image's dimensions [x, y]
+     * Retrieves image's dimensions [x, y]
      *
      * @access  public
      * @return  int[] width, height or FALSE in case of an error
@@ -118,7 +118,7 @@
     }
     
     /**
-     * Retreives image's type
+     * Retrieves image's type
      *
      * @access  public
      * @return  int type one of the IMAGE_* constants or FALSE in case of an error
@@ -129,7 +129,7 @@
     }
     
     /**
-     * Retreives extended data about the image. These may contain, dependant on
+     * Retrieves extended data about the image. These may contain, dependant on
      * the image type, different fields.
      *
      * @access  public
