@@ -6,26 +6,29 @@
   require('lang.base.php');
   xp::sapi('cli');
   
-  // {{{ proto void implements(string interface) 
-  //     Defines that the class this is called in implements a certain interface  
-  function implements($interface) {
+  // {{{ proto void implements(string interface [, string interface [, ...]]) 
+  //     Defines that the class this is called in implements certain interface(s)
+  function implements() {
     $t= debug_backtrace();
     $class= substr(basename($t[0]['file']), 0, -10);
-    uses($interface);    
     $classmethods= get_class_methods($class);
-    foreach (get_class_methods($interface) as $method) {
-      if (!in_array($method, $classmethods)) {
-        $e= new Error(
-          'Interface  method '.$interface.'::'.$method.'() not implemented by class '.$class
-        );
-        $e->printStackTrace();
-        exit(0x7f);
+
+    foreach (func_get_args() as $interface) {
+      uses($interface);    
+      foreach (get_class_methods($interface) as $method) {
+        if (!in_array($method, $classmethods)) {
+          $e= new Error(
+            'Interface method '.$interface.'::'.$method.'() not implemented by class '.$class
+          );
+          $e->printStackTrace();
+          exit(0x7f);
+        }
       }
+
+      $implements= xp::registry('implements');
+      $implements[strtolower($class)][strtolower($interface)]= 1;
+      xp::registry('implements', $implements);
     }
-    
-    $implements= xp::registry('implements');
-    $implements[strtolower($class)][strtolower($interface)]= 1;
-    xp::registry('implements', $implements);
   }
   // }}}
   
