@@ -65,11 +65,11 @@ sub getEmail {
   my $username= lc(getRealname ($sysname));
 
   $username =~ s/\ /\./g;
-  $username =~ s/<E4>/ae/g;
-  $username =~ s/<F6>/oe/g;
-  $username =~ s/<FC>/ue/g;
-  $username =~ s/<DF>/ss/g;
-  return $username.'@schlund.de';
+  $username =~ s/ä/ae/g;
+  $username =~ s/ö/oe/g;
+  $username =~ s/ü/ue/g;
+  $username =~ s/ß/ss/g;
+  return $username.'@php3.de';
 }
 # }}}
 
@@ -84,7 +84,7 @@ sub error() {
   print $out;
 
   open (SENDMAIL, "| /usr/sbin/sendmail -t");
-  print SENDMAIL "To: friebe\@schlund.de, kiesel\@schlund.de\n";
+  print SENDMAIL "To: friebe\@php3.de, kiesel\@php3.de\n";
   print SENDMAIL "From: \"".getRealname ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
   print SENDMAIL "Reply-To: $to\n";
   print SENDMAIL "Subject: [CVS] commit failure\n";
@@ -112,10 +112,9 @@ sub warning() {
 # }}}
 
 # {{{ main
-$warnings= 0;
-
 while (@ARGV) {
   $FILE= shift @ARGV;
+  $warnings= 0;
   
   if (!-f $FILE || $FILE !~ /\.class\.php$/) { next; }
   
