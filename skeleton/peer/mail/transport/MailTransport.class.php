@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('peer.mail.transport.Transport');
+  uses('peer.mail.transport.Transport', 'text.encode.QuotedPrintable');
  
   /**
    * Mail transport via built-in mail() function
@@ -84,7 +84,7 @@
       
       if (FALSE === mail(
         substr($to, 0, -2),
-        $message->getSubject(),
+        QuotedPrintable::encode($message->getSubject()),
         $message->getBody(),
         $tmp->getHeaderString(),
         $this->parameters
