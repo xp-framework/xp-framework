@@ -52,7 +52,7 @@
     /**
      * Gets weather report by Airport code
      *
-     * @access  public                                                               
+     * @access  public
      * @param   string code Airport code, such as "FRA" for Frankfurt/Main, Germany  
      * @return  object report                                                        
      * @see     http://www.gironet.nl/home/aviator1/iata/iatacode.htm                
