@@ -19,7 +19,7 @@
   class FtpConnectionListener extends ConnectionListener {
     var
       $user             = array('username' => NULL, 'loggedin' => FALSE),
-      $type             = 'A',
+      $type             = TYPE_ASCII,
       $authenticator    = NULL,
       $storage          = NULL,
       $datasock         = NULL;   // For passive mode
@@ -49,11 +49,34 @@
     /**
      * Returns type name depending on the type
      *
+     * The following codes are assigned:
+     * <pre>
+     * A = ASCII (text files)
+     * N = Non-print (files that have no vertical format controls such 
+     *     as carriage returns and line feeds)
+     * T = Telnet format effectors (files that have ASCII or EBCDIC 
+     *     vertical format controls)
+     * E = EBCDIC (files being transferred between systems that use 
+     *     EBCDIC for internal character representation)
+     * C = Carriage Control (ASA) (files that contain ASA [FORTRAN] 
+     *     vertical format controls)
+     * I = Image (binary files)
+     * L = Local byte size (files that need to be transferred using 
+     *     specific non-standard size bytes)
+     * </pre>
+     *
+     * The default representation type is ASCII Non-print. This 
+     * implementation supports ASCII (A) and BINARY (I)
+     *
      * @access  protected
      * @return  string
      */
     function typeName() {
-      return $this->type == TYPE_ASCII ? 'ASCII' : 'BINARY';
+      static $names= array(
+        TYPE_ASCII  => 'ASCII',
+        TYPE_BINARY => 'BINARY'
+      );
+      return $names[$this->type];
     }
     
     /**
