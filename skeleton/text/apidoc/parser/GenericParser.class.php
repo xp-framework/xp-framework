@@ -75,9 +75,9 @@
             array(&$this, $this->prop->readString($section, 'call.func')),
             $this->prop->readArray($section, 'call.params')
           );
-	    }
+        }
       } if (catch('Exception', $e)) {
-	    return throw($e);
+        return throw($e);
       }
       
       $this->configured= TRUE;
@@ -97,10 +97,10 @@
 
         $this->file->open(FILE_MODE_READ);
         $contents= $this->file->read($this->file->size());
-	    $this->file->close();
+        $this->file->close();
       } if (catch('Exception', $e)) {
         $e->printStackTrace();
-	    return throw($e);
+        return throw($e);
       }
 
       $this->tokenizer->setTokens(token_get_all($contents));

@@ -184,7 +184,7 @@
      * command below.
      * </pre>
      *
-     * @param	string cmdLine the command
+     * @param   string cmdLine the command
      * @param   string redirect default '2>&1' redirection
      * @param   bool background
      * @return  array lines
