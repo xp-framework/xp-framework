@@ -44,7 +44,7 @@
     </table>
     <br/>
     
-    <table border="0" width="100%" cellspacing="0" cellpadding="2" bgcolor="#eeeeff" style="border: 1px dotted #3654a5">
+    <table border="0" width="100%" cellspacing="0" cellpadding="2" bgcolor="#f6f6ff" style="border: 1px dotted #3654a5">
       <tr>
         <td width="4%" nowrap="nowrap">
           <img src="/image/nav_toc.gif" height="17" width="17" alt="=&gt;" hspace="2" vspace="2"/>
