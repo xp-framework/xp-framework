@@ -73,49 +73,51 @@
         $href= $resource->getHref();
         $classpath.= ':'.rtrim($folder->getURI(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$href;
         try(); {
-          $download= TRUE;
+          $params= array();
 
           // Create a new file instance
           $jar= &new File($folder->getURI().DIRECTORY_SEPARATOR.$href);
           if ($jar->exists()) {
-            Console::writef('     >> Have %s... ', $jar->getURI());
-            
-            // TBI: Check if remote file is newer
-            $download= FALSE;
+            Console::writef('     >> Have %s... ', basename($jar->getURI()));
+            $params['If-Modified-Since']= date('D, d M Y H:i:s \G\M\T', $jar->lastModified());
           }
 
-          if (!$download) {
-            Console::writeLine('(cached)');
-            break;
-          }
-          
-          // Download it
+          // Issue HTTP request
           $c= &new HttpConnection($j->getCodebase().'/'.$href);
-          Console::writef('     >> Downloading %s... ', $href);
-          $response= &$c->get();
-          Console::writef(
-            'Status %d, Length %d of %s... ', 
-            $response->getStatusCode(), 
-            $response->getHeader('Content-length'), 
-            $response->getHeader('Content-type')
-          );
+          $response= &$c->get(NULL, $params);
+          Console::write('     << ', $response->getStatuscode(), ' "', $response->getMessage(), '": ');
+          
+          // Check response code
+          switch ($response->getStatusCode()) {
+            case 200:
+              Console::writeLine();
+              Console::writef('     >> Downloading %s... ', $href);
 
-          // Check if this file resided in a subdirectory. If so, create this
-          // subdirectory if necessary
-          $f= &new Folder(dirname($jar->getURI()));
-          if (!$f->exists()) $f->create();
+              // Check if this file resided in a subdirectory. If so, create this
+              // subdirectory if necessary
+              $f= &new Folder(dirname($jar->getURI()));
+              if (!$f->exists()) $f->create();
 
-          $jar->open(FILE_MODE_WRITE);
-          while (FALSE !== ($buf= $response->readData(0x2000, $binary= TRUE))) {
-            $jar->write($buf);
+              $jar->open(FILE_MODE_WRITE);
+              while (FALSE !== ($buf= $response->readData(0x2000, $binary= TRUE))) {
+                $jar->write($buf);
+              }
+              $jar->close();
+              Console::writeLine('OK');
+              break;
+              
+            case 304:
+              Console::writeLine('(cached)');
+              break;
+            
+            default:
+              Console::writeLine('FAIL');
           }
-          $jar->close();
         } if (catch('Exception', $e)) {
           Console::writeLine('FAIL');
           $e->printStackTrace();
           exit(-1);
         }
-        Console::writeLine('OK');
         break;
 
       // A property, add it to the Java command line
