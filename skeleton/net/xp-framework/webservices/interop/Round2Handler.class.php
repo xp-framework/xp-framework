@@ -188,7 +188,8 @@
      * @throws  lang.MethodNotImplementedException
      */
     function echoHexBinary($inputHexBinary) {
-      return throw (new MethodNotImplementedException('Not implemented'));
+      $this->_assertType('xml.soap.types.SOAPHexBinary', $inputHexBinary);
+      return $inputHexBinary;
     }
     
     /**
