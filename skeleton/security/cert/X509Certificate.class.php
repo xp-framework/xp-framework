@@ -78,8 +78,8 @@
      * Constructor
      *
      * @access  private
-     * @param   array info
-     * @return  
+     * @param   array _info
+     * @param   resource _res
      */
     function __construct($_info, $_res) {
       $this->_info= $_info;
