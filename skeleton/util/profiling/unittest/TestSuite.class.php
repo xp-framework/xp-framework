@@ -97,8 +97,10 @@
      * @return  bool success
      */
     function runTest(&$test, &$result) {
-      if (NULL !== ($reason= $test->setUp())) {
-        $result->setSkipped($test, $reason);
+      try(); {
+        $test->setUp();
+      } if (catch('PrerequisitesNotMetError', $e)) {
+        $result->setSkipped($test, $e);
         return FALSE;
       }
 

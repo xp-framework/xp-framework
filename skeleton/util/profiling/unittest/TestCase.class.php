@@ -6,6 +6,7 @@
 
   uses(
     'util.profiling.unittest.AssertionFailedError',
+    'util.profiling.unittest.PrerequisitesNotMetError',
     'lang.MethodNotImplementedException'
   );
 
@@ -345,11 +346,13 @@
     }
 
     /**
-     * Set up this test. Overwrite in subclasses.
+     * Set up this test. Overwrite in subclasses. Throw a 
+     * PrerequisitesNotMetError to indicate this case should be
+     * skipped.
      *
      * @model   abstract
      * @access  public
-     * @return  mixed anything except NULL to indicate this test should be skipped
+     * @throws  util.profiling.unittest.PrerequisitesNotMetError
      */
     function setUp() { }
     
