@@ -31,9 +31,9 @@
      * @return  string
      */
     function getStackTrace() {
-      return (
-        parent::getStackTrace().
-        "  SQL [\n".$this->sql."\n  ]\n"
+      return parent::getStackTrace().($this->sql 
+        ? "  SQL [\n".$this->sql."\n  ]\n"
+        : ''
       );
     }
   }
