@@ -16,7 +16,7 @@
   <class>GtkWindow</class>
   <name>main</name>
   <title>Klip</title>
-  <type>GTK_WINDOW_POPUP</type>
+  <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
   <default_width>328</default_width>
