@@ -251,6 +251,17 @@
     }
     
     /**
+     * Returns the query string from its environment variable 
+     * QUERY_STRING, decoding it if necessary.
+     *
+     * @access  public
+     * @return  string
+     */
+    function getQueryString() {
+      return urldecode(getenv('QUERY_STRING'));
+    }
+    
+    /**
      * Retrieve request content type
      *
      * @access  public
