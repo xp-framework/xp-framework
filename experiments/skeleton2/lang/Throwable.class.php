@@ -13,10 +13,12 @@
    * @see      xp://lang.XPException
    * @purpose  Base class
    */
-  class Throwable extends Object {
+  class Throwable extends Exception {
     protected 
-      $message  = '',
-      $trace    = array();
+      $_trace    = array();
+
+    protected 
+      $__id      = NULL;
 
     /**
      * Constructor
@@ -28,9 +30,9 @@
       static $except= array(
         'call_user_func_array', 'call_user_func', 'object', '__call', '__set', '__get'
       );
-      $this->message= $message;
-      
-      foreach (debug_backtrace() as $trace) {
+
+      parent::__construct($message);
+      foreach ($this->getTrace() as $trace) {
         if (!isset($trace['function']) || in_array($trace['function'], $except)) continue;
 
         // Pop error messages off the copied error stack
@@ -43,7 +45,7 @@
 
         // Not all of these are always set: debug_backtrace() should
         // initialize these - at least - to NULL, IMO => Workaround.
-        $this->trace[]= new StackTraceElement(
+        $this->_trace[]= new StackTraceElement(
           isset($trace['file']) ? $trace['file'] : NULL,
           isset($trace['class']) ? $trace['class'] : NULL,
           isset($trace['function']) ? $trace['function'] : NULL,
@@ -60,7 +62,7 @@
           : '<main>'
         );
         for ($i= 0, $s= sizeof(xp::$errors[$key]); $i < $s; $i++) { 
-          $this->trace[]= new StackTraceElement(
+          $this->_trace[]= new StackTraceElement(
             $key,
             $class,
             NULL,
@@ -73,16 +75,6 @@
     }
 
     /**
-     * Get Message
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getMessage() {
-      return $this->message;
-    }
-
-    /**
      * Return an array of stack trace elements
      *
      * @access  public
@@ -90,9 +82,9 @@
      * @see     xp://lang.StackTraceElement
      */
     public function getStackTrace() {
-      return $this->trace;
+      return $this->_trace;
     }
-
+    
     /**
      * Print "stacktrace" to standard error
      *
@@ -126,10 +118,69 @@
         self::getClassName(),
         $this->message
       );
-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
-        $s.= $this->trace[$i]->toString();
+      for ($i= 0, $t= sizeof($this->_trace); $i < $t; $i++) {
+        $s.= $this->_trace[$i]->toString();
       }
       return $s;
+    }
+    
+    /**
+     * Returns a hashcode for this object
+     *
+     * @access  public
+     * @return  string
+     */
+    public function hashCode() {
+      if (!$this->__id) $this->__id= microtime();
+      return $this->__id;
+    }
+    
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     *
+     * @access  public
+     * @param   &lang.Object cmp
+     * @return  bool TRUE if the compared object is equal to this object
+     */
+    public function equals($cmp) {
+      return $this === $cmp;
+    }
+    
+    /** 
+     * Returns the fully qualified class name for this class 
+     * (e.g. "io.File")
+     *
+     * This is a shorthand for the following:
+     * <code>
+     *   $name= $instance->getClass()->getName();
+     * </code>
+     * 
+     * @return  string fully qualified class name
+     */
+    public final function getClassName() {
+      return xp::nameOf(get_class($this));
+    }
+
+    /**
+     * Returns the runtime class of an object.
+     *
+     * @access  public
+     * @return  &lang.XPClass runtime class
+     * @see     xp://lang.XPClass
+     */
+    public final function getClass() {
+      return XPClass::forInstance($this);
+    }
+    
+    /**
+     * Wrapper for PHP's builtin cast mechanism
+     *
+     * @see     xp://lang.Object#toString
+     * @access  public
+     * @return  string
+     */
+    public final function __toString() {
+      return self::toString();
     }
   }
 ?>
