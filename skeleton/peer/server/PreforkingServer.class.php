@@ -133,13 +133,15 @@
         }
         
         // Reset signal handler so it doesn't get copied to child processes
-        pcntl_signal(SIGINT, NULL);
+        pcntl_signal(SIGINT, SIG_DFL);
       }
       
       // Terminate children
       foreach ($children as $pid => $i) {
         $this->cat && $this->cat->infof('Server #%d: Terminating child #%d with pid %d', getmypid(), $i, $pid);
         posix_kill($pid, SIGINT);
+        pcntl_waitpid($pid, $status, WUNTRACED);
+        $this->cat && $this->cat->infof('Server #%d: Exitcode is %d', getmypid(), $status);
       }
 
       // Shut down ourselves
