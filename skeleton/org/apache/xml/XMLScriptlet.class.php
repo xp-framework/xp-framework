@@ -24,7 +24,7 @@
    *
    * All request parameters are imported into the formvalues node to give
    * you access to the request parameters withing your XSL stylesheet (e.g.,
-   * via /document/formresult/formvalues/param[@name= 'query']). You might
+   * via /formresult/formvalues/param[@name= 'query']). You might
    * want to define an xsl:variable containing the formvalues for easier
    * access.
    *
