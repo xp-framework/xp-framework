@@ -28,7 +28,6 @@ Functionality
 The following changes would be incorporated into the new Engine:
 
 a) Syntax changes and additions
-* Alternative array syntax
 * A keyword "with"
 * An optional throws clause to methods
 * A catch-all-exceptions mechanism
@@ -41,7 +40,6 @@ a) Syntax changes and additions
 * Automated getters and setters
 * Default members
 * A keyword "synchronized"
-* A new type "void"
 * Return type hints (unchecked, may be retrieved via Reflection)
 * Class instance creation expressions
 
@@ -72,17 +70,6 @@ f) Configuration
 
 Details
 -------
-* Alternative array syntax:
-  The identifier "array" would be replaced by square brackets in the
-  following manner:
-  <?php
-    $a= [ 1, 2, 3 ];
-    $a= [ 'a' => 'b' ];
-  ?>
-  
-  For details, see
-  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/syntax
-  
 * The keyword "with":
   with introduces a block of code which is auto-populated by a variable
   named "self".
