@@ -40,7 +40,6 @@
 
       // Set up DictClient
       $this->dictc= &new DictClient();
-      $this->dictc->connect('dict.org', 2628);
       
       // Set up quote client
       $this->quote= &new Socket('ausredenkalender.informatik.uni-bremen.de', 17);
@@ -174,24 +173,9 @@
             
           case 'whatis':
             try(); {
-              $status= $this->dictc->getStatus();
-            } if (catch('Exception', $e)) {
-              $e->printStackTrace();
-
-              // We were probably disconnected, so close connection forcibly
-              // (just to be sure) and reconnect
-              try(); {
-                $this->dictc->close();
-                $this->dictc->connect('dict.org', 2628);
-              } if (catch('IOException', $e)) {
-                $e->printStackTrace();
-
-                // Ignore
-              }
-            }
-            
-            try(); {
+              $this->dictc->connect('dict.org', 2628);
               $definitions= $this->dictc->getDefinition($params, '*');
+              $this->dictc->close();
             } if (catch('Exception', $e)) {
               $e->printStackTrace();
               $connection->sendMessage($target, '!%s', $e->getMessage());
@@ -288,7 +272,7 @@
             }
             $connection->sendMessage(
               $target, 
-              '%s ist ein %s', 
+              '%s ist %s', 
               $params, 
               $this->lists['swears'][rand(0, sizeof($this->lists['swears'])- 1)]
             );
