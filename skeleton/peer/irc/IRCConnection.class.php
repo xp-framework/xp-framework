@@ -145,10 +145,10 @@
           $this->cat && $this->cat->debugf('    Server message #%d %s', $code, IRCConstants::nameOf($code));
           
           switch ($code) {
-            case REPLY_MOTDSTART:
-            case REPLY_MOTD:
-            case REPLY_ENDOFMOTD:
-              $this->notify(str_replace('_', '', IRCConstants::nameOf($code)), $server, $target, $data);
+            case IRC_REPLY_MOTDSTART:
+            case IRC_REPLY_MOTD:
+            case IRC_REPLY_ENDOFMOTD:
+              $this->notify(substr(IRCConstants::nameOf($code), 6), $server, $target, $data);
               break;
             
             default:
