@@ -34,7 +34,16 @@
     public function equals(Generic $cmp) {
       return $this === $cmp;
     }
-    
+
+    /**
+     * Destructor
+     *
+     * @access  public
+     */
+    function __destruct() {
+      unset($this);
+    }
+
     /** 
      * Returns the fully qualified class name for this class 
      * (e.g. "io.File")
@@ -97,7 +106,7 @@
      * @return  string
      */
     public function __toString() {
-      return self::toString();
+      return $this->toString();
     }
   }
 ?>
