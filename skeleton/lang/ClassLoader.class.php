@@ -93,10 +93,10 @@
      * @throws  lang.FormatException in case the class cannot be defined
      */
     function &defineClass($class, $bytes) {
-      $qname= $this->classpath.$class;
       $name= xp::reflect($qname);
 
       if (!class_exists($name)) {
+        $qname= $this->classpath.$class;
         if (FALSE === eval($bytes)) {
           return throw(new FormatException('Cannot define class "'.$qname.'"'));
         }
