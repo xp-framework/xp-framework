@@ -150,6 +150,7 @@
             // errors. In this case, we won't even bother to continue processing
             // the data.
             if (!$this->handlers[$i]->errorsOccured()) {
+              $this->cat && $this->cat->debug('Handling submitted data');
               $handled= $this->handlers[$i]->handleSubmittedData($request, $context);
             } else {
               $handled= $this->handlers[$i]->handleErrorCondition($request, $context);
