@@ -6,6 +6,7 @@
 
   uses('xml.Tree');
 
+  // Get all properties
   define('WEBDAV_PROPERTY_ALL',     NULL);
 
   /**
@@ -33,24 +34,40 @@
    *   </propfind>
    * </pre>
    *
+   * @purpose  Encapsulate PROPFIND XML request
+   * @see      xp://org.webdav.WebdavScriptlet#doPropFind
    */
   class WebdavPropFindRequest extends Tree {
     var
-      $properties= array();
+      $properties= array(),
+      $baseurl=    '',
+      $depth=      0;
     
     /**
      * Constructor
      *
      * @access  public
-     * @param   string data
+     * @param   &org.apache.HttpScriptletRequest request
      * @throws  Exception to indicate failure
      */
-    function __construct($data) {
-      if (FALSE === $this->fromString($data)) {
+    function __construct(&$request) {
+      if (FALSE === $this->fromString($request->getData())) {
         return FALSE;
       }
+      $this->baseurl= $request->uri['path'];
+      $this->depth= intval($request->getHeader('depth'));
       $this->setEncoding('utf-8');
       parent::__construct();
+    }
+    
+    /**
+     * Retreive base url of request
+     *
+     * @access  public
+     * @return  string
+     */
+    function getBaseUrl() {
+      return $this->baseurl;
     }
     
     /**
@@ -107,8 +124,10 @@
       }
       
       // Selective properties
-      if (strlen($path) > 15 && '/propfind/prop/' == substr($path, 0, 15)) {
-        $this->addProperty(substr($path, 15, -1));
+      if ('/propfind/' == substr($path, 0, 10)) {
+        if (strlen($path) > 15) {
+          $this->addProperty(substr($path, 15, -1));
+        }
         return;
       }
       
