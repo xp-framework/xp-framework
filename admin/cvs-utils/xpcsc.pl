@@ -9,7 +9,7 @@
 # $Id$
 
 $DEBUG= 0;
-$NOTIFY= ''; #friebe@php3.de, kiesel@php3.de';
+$NOTIFY= 'friebe@php3.de, kiesel@php3.de';
 
 use constant ETAB           => "ETAB";
 use constant EINDENT        => "EINDENT";
@@ -271,7 +271,7 @@ while (@ARGV) {
     }
     
     # Check for incomplete API doc #1
-    if ($comment && $_ =~ /\@(access|param|return|throws)\s+$/) {
+    if ($comment && $_ =~ /\@(access|param|return|throws|see|ext|purpose)\s+$/) {
       &warning("Your inline documentation is incomplete.", WNOHINT);
     }
     
