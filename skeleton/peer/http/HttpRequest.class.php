@@ -10,8 +10,8 @@
   
   uses(
     'peer.Socket',
-    'io.IOException',
-    'peer.URL'
+    'peer.URL',
+    'peer.http.HttpResponse'
    );
   
   /**
@@ -34,10 +34,10 @@
      * Constructor
      *
      * @access  public
-     * @param   &mixed url a string or a peer.URL object
+     * @param   &peer.URL url object
      */
     function __construct(&$url) {
-      if (is_string($url)) $this->url= &new URL($url); else $this->url= &$url;
+      $this->url= &$url;
       parent::__construct();
     }
     
@@ -84,12 +84,13 @@
     }
     
     /**
-     * Send request
+     * Get request string
      *
-     * @access  public
-     * @return  &peer.Socket stream to read response from
+     * @access  
+     * @param   
+     * @return  
      */
-    function &send() {
+    function getRequestString() {
       $query= '';
       foreach ($this->parameters as $k => $v) {
         $query.= '&'.$k.'='.urlencode($v);
@@ -129,15 +130,25 @@
         )."\r\n";
       }
       
+      return $request."\r\n".$body;
+    }
+    
+    /**
+     * Send request
+     *
+     * @access  public
+     * @return  &peer.http.HttpResponse response object
+     */
+    function &send() {
       $s= &new Socket($this->url->getHost(), $this->url->getPort(80));
       try(); {
         $s->connect();
-        $s->write($request."\r\n".$body);
+        $s->write($this->getRequestString());
       } if (catch('Exception', $e)) {
         throw($e);
       }
       
-      return $s;
+      return new HttpResponse($s);
     }
   }
 ?>

@@ -31,7 +31,7 @@
     /**
      * Read head if necessary
      *
-     * @access  private
+     * @access  protected
      * @return  bool success
      */
     function _readhead() {
@@ -76,6 +76,8 @@
       if (!$this->_readhead()) return FALSE;        // Read head if not done before
       if ($this->stream->eof()) {                   // EOF, return FALSE to indicate end
         $this->stream->close();
+        $this->stream->__destruct();
+        unset($this->stream);
         return FALSE;
       }
       if (!isset($chunked)) {                       // Check for "chunked"

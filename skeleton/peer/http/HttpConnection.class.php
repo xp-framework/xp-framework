@@ -4,10 +4,7 @@
  * $Id$
  */
 
-  uses(
-    'peer.http.HttpRequest',
-    'peer.http.HttpResponse'
-   );
+  uses('peer.http.HttpRequestFactory');
   
   /**
    * HTTP connection
@@ -54,7 +51,7 @@
      * @param   mixed url a string or a peer.URL object
      */
     function __construct($url) {
-      $this->request= &new HttpRequest($url);
+      $this->request= &HttpRequestFactory::factory($url);
       parent::__construct();
     }
     
@@ -74,7 +71,7 @@
       $this->request->addHeaders($headers);
       
       try(); {
-        $this->response= &new HttpResponse($this->request->send());
+        $this->response= &$this->request->send();
       } if (catch('Exception', $e)) {
         throw($e);
       }
