@@ -69,6 +69,45 @@
     }
     
     /**
+     * Decode a string
+     *
+     * Example of encoded string:
+     * <pre>
+     * Hi\,\Nwie angekündigt wird das Meeting auf 16:00 Uhr verschobe
+     *  n.\N\NViele Grüsse\NAndrea \N
+     * </pre>
+     *
+     * @model   static
+     * @access  public
+     * @param   string str
+     * @return  string
+     */
+    function decodeString($str) {
+      return strtr(utf8_decode($str), array(
+        '\,'    => ',',
+        '\N'    => "\n"
+      ));
+    }
+    
+    /**
+     * Decodes a date string
+     *
+     * Example of encoded string
+     * <pre>
+     * 20030220T101358Z
+     * </pre>
+     *
+     * @model   static
+     * @access  public
+     * @param   string str
+     * @return  int
+     */
+    function decodeDate($str) {
+      $parts= sscanf($str, '%4d%2d%2dT%2d%2d%2d');
+      return mktime($parts[3], $parts[4], $parts[5], $parts[1], $parts[2], $parts[0]);
+    }
+       
+    /**
      * Parse a stream
      *
      * @access  public 
@@ -145,22 +184,22 @@
       
       // Property params
       if (FALSE !== ($i= strpos($key, ';'))) {
-        $kargs= explode(';', strtolower($key));
+        $kargs= explode(';', strtoupper($key));
       } else {
-        $kargs= array(strtolower($key));
+        $kargs= array(strtoupper($key));
       }
       
       // Charsets and encodings
       for ($i= 0, $m= sizeof($kargs); $i < $m; $i++) switch ($kargs[$i]) {
-        case 'charset=utf-8': 
+        case 'CHARSET=UTF-8': 
           $value= utf8_decode($value); 
           break;
           
-        case 'encoding=base64':
+        case 'ENCODING=BASE64':
           $value= base64_decode($value); 
           break;
 
-        case 'encoding=quoted-printable':
+        case 'ENCODING=QUOTED-PRINTABLE':
           $value= str_replace("\n=", "\n", quoted_printable_decode($value));
           break;
       }
@@ -174,9 +213,14 @@
       }
       
       // DEBUG echo "-----------------------------------------------------------------------------------\n";
-      if (FALSE === call_user_func($func, $kargs, $value)) {
-        trigger_error('Callback:'.(is_array($func) ? get_class($func[0]).'::'.$func[1] : $func), E_USER_NOTICE);
-        return throw(new MethodNotImplementedException('Could not invoke callback for "'.$kargs[0].'"'));
+      try(); {
+        call_user_func($func, $kargs, $value);
+      } if (catch('FormatException', $e)) {
+        trigger_error($e->message, E_USER_NOTICE);
+        return throw(new MethodNotImplementedException(
+          'Errors during invokation of callback for "'.$kargs[0].'"',
+          (is_array($func) ? get_class($func[0]).'::'.$func[1] : $func)
+        ));
       }
       
       return TRUE;
