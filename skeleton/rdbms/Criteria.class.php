@@ -188,7 +188,7 @@
         'select %c from %c%c', 
         array_keys($peer->types),
         $peer->table,
-        $this->toSQL()
+        $this->toSQL($conn, $peer->types)
       );
     }
 
