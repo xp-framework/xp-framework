@@ -281,11 +281,7 @@
 
       // Replace &lt; &amp;, &#XX; etc.
       if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_SPECIALCHARS));
-      $cdata= preg_replace(
-        '/&#([0-9]+);/me', 
-        'chr(\'\1\')', 
-        strtr(trim($this->_objs[$this->_cnt+ 1]->content), $trans)
-      );
+      $cdata= trim($this->_objs[$this->_cnt+ 1]->content);
       
       $name= strtr(substr($path, 0, -1), array(
         '/rdf:rdf/' => '',
@@ -360,15 +356,17 @@
         case 'item/link':
           $this->items[sizeof($this->items)- 1]->link= $cdata;
           break;
-          
-        case 'channel/item/date':         // 14 May 2002
-          $this->items[sizeof($this->items)- 1]->date= &new Date($cdata);
-          break;
         
+        case 'channel/item/date':         // 14 May 2002
         case 'channel/item/pubdate':
           $this->items[sizeof($this->items)- 1]->date= &new Date($cdata);
           break;
         
+        case 'channel/item/dc:date':  
+          sscanf($cdata, '%4d-%2d-%2dT%2d:%2d', $year, $month, $day, $hour, $minute);
+          $this->items[sizeof($this->items)- 1]->date= &new Date(mktime($hour, $minute, 0, $month, $day, $year));
+          break;
+
         case 'channel/item/category':
           $this->items[sizeof($this->items)- 1]->category= $cdata;
           break;
