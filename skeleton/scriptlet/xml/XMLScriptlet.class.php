@@ -128,9 +128,15 @@
       // Get product, language and statename from the environment if 
       // necessary. Their default values are "site" (product), 
       // "en_US" (language) and "static" (statename).
-      $product= $request->getEnvValue('DEF_PROD', 'site');
-      $language= $request->getEnvValue('DEF_LANG', 'en_US');
-      $stateName= $request->getEnvValue('DEF_STATE', 'static');
+      if (!$product= $request->getProduct()) {
+        $product= $request->getEnvValue('DEF_PROD', 'site');
+      }
+      if (!$language= $request->getLanguage()) {
+        $language= $request->getEnvValue('DEF_LANG', 'en_US');
+      }
+      if (!$stateName= $request->getStateName()) {
+        $stateName= $request->getEnvValue('DEF_STATE', 'static');
+      }
       
       // Send redirect
       $response->sendRedirect(sprintf(
