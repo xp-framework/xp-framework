@@ -9,6 +9,7 @@
     'org.apache.xml.workflow.StateFlowManager',
     'org.apache.xml.workflow.ContextFailedException',
     'org.apache.xml.workflow.State',
+    'org.apache.xml.workflow.User',
     'lang.ElementNotFoundException',
     'util.log.Logger',
     'util.log.FileAppender'
@@ -24,19 +25,46 @@
     var
       $crm          = NULL,
       $sfm          = NULL,
-      $cat          = NULL;
+      $cat          = NULL,
+      $user         = NULL;
     
     /**
      * Called to initialize this application context
      *
      * @access  public
      * @param   &lang.ClassLoader classloader
+     * @param   &org.apache.HttpScriptletRequest request 
      */
-    function initialize(&$classloader) {
+    function initialize(&$classloader, &$request) {
       $this->crm= &new ContextResourceManager();
       $this->crm->initialize($classloader);
       $this->sfm= &new StateFlowManager();
       $this->sfm->initialize($classloader);
+      
+      $this->setUser(new User(
+        $request->getEnvValue('REMOTE_ADDR'),
+        $request->getEnvValue('HTTP_USER_AGENT')
+      ));
+    }
+
+    /**
+     * Set User
+     *
+     * @access  public
+     * @param   &org.apache.xml.workflow.User user
+     */
+    function setUser(&$user) {
+      $this->user= &$user;
+    }
+
+    /**
+     * Get User
+     *
+     * @access  public
+     * @return  &org.apache.xml.workflow.User
+     */
+    function &getUser() {
+      return $this->user;
     }
     
     /**
