@@ -109,12 +109,12 @@ weit nach rechts herausrücken:
 
 function vsprintf($string, $uriRequesterObject,
                   $foobarbaz, $longParamNameNumber4) {
-    ...
+  ...
 }
 
 function sehrsehrLangerMethodenName($string, $uriRequesterObject,
 	 $foobarbaz, $longParamNameNumber4) {
-    ...
+  ...
 }
 
 Lange Bedingungen in einem IF-Statement sollten folgendermaßen eingerückt werden:
@@ -838,7 +838,7 @@ Die Sybase-Klasse wird in Zukunft [ZE2] bspw. RDBMS::Sybase heißen, usw.
 Beispiel:
 ---------
 <?php
-/* Diese Klasse ist Bestandteil des XP-Frameworks
+/* This class is part of the XP framework
  * 
  * $Id$
  */
