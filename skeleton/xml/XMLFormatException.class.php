@@ -39,7 +39,7 @@
   class XMLFormatException extends FormatException {
     var
       $type     = 0,
-      $file     = '',
+      $filename     = '',
       $line     = 0,
       $column   = 0;
   
@@ -49,20 +49,20 @@
      * @access  public
      * @param   string message
      * @param   int type default XML_ERROR_SYNTAX
-     * @param   string file default NULL
+     * @param   string filename default NULL
      * @param   int line
      * @param   int column
      */
     function __construct(
       $message, 
       $type = XML_ERROR_SYNTAX,
-      $file = NULL,
+      $filename = NULL,
       $line = 0,
       $column = 0
     ) {
       parent::__construct($message);
       $this->type= $type;
-      $this->file= $file;
+      $this->filename= $filename;
       $this->line= $line;
       $this->column= $column;
     }
@@ -77,7 +77,7 @@
       $s= sprintf(
         "%s@('%s'){\n".
         "  type     %d (%s)\n".
-        "  file     %s\n".
+        "  filename %s\n".
         "  line     %d\n".
         "  column   %d\n".
         "}\n",
@@ -85,7 +85,7 @@
         $this->getMessage(),
         $this->getType(),
         $this->getTypeName(),
-        var_export($this->getFile(), 1),
+        var_export($this->getfilename(), 1),
         $this->getLine(),
         $this->getColumn()
       );
@@ -140,13 +140,13 @@
     }
 
     /**
-     * Get File
+     * Get filename
      *
      * @access  public
      * @return  string
      */
-    function getFile() {
-      return $this->file;
+    function getFilename() {
+      return $this->filename;
     }
 
     /**
