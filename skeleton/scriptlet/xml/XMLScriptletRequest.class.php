@@ -77,6 +77,16 @@
     }
 
     /**
+     * Sets product
+     *
+     * @access  public
+     * @param   string product
+     */
+    function setProduct($product) {
+      $this->product= $product;
+    }
+
+    /**
      * Gets language
      *
      * @access  public
