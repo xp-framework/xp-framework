@@ -32,7 +32,8 @@
     var
       $product      = '',
       $stateName    = '',
-      $language     = '';
+      $language     = '',
+      $page         = '';
 
     /**
      * Initialize this request object
@@ -44,6 +45,27 @@
       $this->product= getenv('PRODUCT');
       $this->stateName= getenv('STATE');
       $this->language= getenv('LANGUAGE');
+      $this->page= $_REQUEST['__page'];
+    }
+
+    /**
+     * Set Page
+     *
+     * @access  public
+     * @param   string page
+     */
+    function setPage($page) {
+      $this->page= $page;
+    }
+
+    /**
+     * Get Page
+     *
+     * @access  public
+     * @return  string
+     */
+    function getPage() {
+      return $this->page;
     }
 
     /**
