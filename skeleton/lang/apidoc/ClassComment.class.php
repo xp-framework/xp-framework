@@ -24,7 +24,8 @@
       $examples     = array(),
       $extends      = NULL,
       $name         = '',
-      $model        = APIDOC_CLASS_MODEL_GENERIC;
+      $model        = APIDOC_CLASS_MODEL_GENERIC,
+      $extension    = NULL;
       
     /**
      * Sets this class's name
@@ -71,7 +72,19 @@
     function setPurpose($purpose) {
       $this->purpose= $purpose;
     }
-
+    
+    /**
+     * Sets ext. Ext defines with PHP-Extensions a class
+     * depends on
+     *
+     * @access public
+     * @param string extension
+     */
+    function setExtension($extension) {
+      $this->extension= $extension;
+    }
+     
+     
     /**
      * (Insert method's description here)
      *
@@ -122,8 +135,10 @@
           $this->setModel($line);
           $descr= NULL;
           break;
-
-
+        
+        case 'ext':
+          $this->setExtension($line);
+          break;
       }
       
       return $descr;
