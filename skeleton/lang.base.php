@@ -80,7 +80,48 @@
       return strtolower(substr($str, (FALSE === $p= strrpos($str, '.')) ? 0 : $p+ 1));
     }
     // }}}
+
+    // {{{ internal void error(string message)
+    //     Throws a fatal error and exits with exitcode 127
+    function error($message) {
+      restore_error_handler();
+      trigger_error($message, E_USER_ERROR);
+      exit(0x7f);
+    }
+  }
+  // }}}
+
+  // {{{ final class null
+  class null {
+
+    // {{{ public object null(void)
+    //     Constructor to avoid magic __call invokation
+    function null() { }
+    // }}}
     
+    // {{{ magic bool __call(string name, mixed[] args, &mixed return)
+    //     Call proxy
+    function __call($name, $args, &$return) {
+      $return= &throw(new NullPointerException('Method.invokation('.$name.')'));
+      return FALSE;
+    }
+    // }}}
+
+    // {{{ magic bool __set(string name, mixed value)
+    //     Set proxy
+    function __set($name, $value) {
+      throw(new NullPointerException('Property.write('.$name.')'));
+      return FALSE;
+    }
+    // }}}
+
+    // {{{ magic bool __get(string name, &mixed value)
+    //     Set proxy
+    function __get($name, &$value) {
+      $value= &throw(new NullPointerException('Property.read('.$name.')'));
+      return FALSE;
+    }
+    // }}}
   }
   // }}}
 
@@ -135,7 +176,7 @@
     
     $return= FALSE;
     foreach (array_keys($exceptions) as $i) {
-      if (is_a($exceptions[$i], $name)) {
+      if (is($name, $exceptions[$i])) {
         $e= $exceptions[$i];       // Intentional copy
         unset($exceptions[$i]);
         $return= TRUE;
@@ -151,13 +192,13 @@
   }
   // }}}
 
-  // {{{ bool throw (lang.Exception e)
+  // {{{ null throw (lang.Exception e)
   //     throws an exception
-  function throw(&$e) {
+  function &throw(&$e) {
     $exceptions= &xp::registry('exceptions');
     $exceptions[]= &$e;
     xp::registry('exceptions', $exceptions);
-    return FALSE;
+    return xp::registry('null');
   }
   // }}}
 
@@ -203,6 +244,44 @@
   }
   // }}}
 
+  // {{{ proto void implements(string interface [, string interface [, ...]]) 
+  //     Defines that the class this is called in implements certain interface(s)
+  function implements() {
+    $class= strtolower(substr(basename(func_get_arg(0)), 0, -10));
+    $classmethods= get_class_methods($class);
+    $classmethods[]= 'interface';
+    
+    for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
+      $interface= func_get_arg($i);
+      uses($interface);
+      $name= xp::reflect($interface);
+      $signature= array_merge($classmethods, $name);
+      foreach (get_class_methods($name) as $method) {
+        if (!in_array($method, $signature)) {
+          xp::error('Interface method '.$interface.'::'.$method.'() not implemented by class '.$class);
+        }
+      }
+
+      $implements= xp::registry('implements');
+      $implements[$class][$name]= 1;
+      xp::registry('implements', $implements);
+    }
+  }
+  // }}}
+  
+  // {{{ proto bool is(string class, &lang.Object object)
+  //     Checks whether a given object is of the class, a subclass or implements an interface
+  function is($class, &$object) {
+    $class= xp::reflect($class);
+    if (is_a($object, $class)) return TRUE;
+    $implements= xp::registry('implements');
+    
+    if ($p= get_class($object)) do {
+      if (isset($implements[$p][$class])) return TRUE;
+    } while ($p= get_parent_class($p));
+  }
+  // }}}
+
   // {{{ initialization
   error_reporting(E_ALL);
   if (!defined('PATH_SEPARATOR')) {
@@ -214,15 +293,19 @@
   ));
   ini_set('include_path', SKELETON_PATH.PATH_SEPARATOR.ini_get('include_path'));
   register_shutdown_function('__destroy');
+  if (extension_loaded('overload')) overload('null');
+  xp::registry('null', new null());
   xp::registry('errors', array());
   xp::registry('exceptions', array());
   set_error_handler('__error');
 
   uses(
     'lang.Object',
+    'lang.Interface',
     'lang.XPClass',
     'lang.Exception',
     'lang.Error',
+    'lang.NullPointerException',
     'lang.IllegalAccessException',
     'lang.IllegalArgumentException',
     'lang.IllegalStateException',
