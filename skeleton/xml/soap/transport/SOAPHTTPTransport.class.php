@@ -99,15 +99,16 @@
         while ($buf= $response->readData()) $xml.= $buf;
         
         $this->cat && $this->cat->debug('<<<', $xml);
-        $answer= &SOAPMessage::fromString($xml);
-        
-        // Check encoding
-        if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
-          @list($type, $charset)= explode('; charset=', $content_type);
-          if (!empty($charset)) $answer->setEncoding($charset);
-        }
+        if ($answer= &SOAPMessage::fromString($xml)) {
 
-        $answer->action= $this->action;
+          // Check encoding
+          if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
+            @list($type, $charset)= explode('; charset=', $content_type);
+            if (!empty($charset)) $answer->setEncoding($charset);
+          }
+
+          $answer->action= $this->action;
+        }
       } if (catch('Exception', $e)) {
         return throw($e);
       }
