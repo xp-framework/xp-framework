@@ -154,6 +154,7 @@
      * @return  mixed identity value
      */
     function identity() { 
+      $this->log && $this->log->debug('Identity is', $this->_oid);
       return $this->_oid;
     }
 

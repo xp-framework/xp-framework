@@ -170,7 +170,9 @@
       if (!($r= &$this->query('select @@identity as i'))) {
         return FALSE;
       }
-      return $r->next('i');
+      $i= $r->next('i');
+      $this->log && $this->log->debug('Identity is', $i);
+      return $i;
     }
 
     /**

@@ -152,7 +152,9 @@
      * @return  mixed identity value
      */
     function identity() { 
-      return mysql_insert_id($this->handle);
+      $i= mysql_insert_id($this->handle);
+      $this->log && $this->log->debug('Identity is', $i);
+      return $i;
     }
 
     /**
