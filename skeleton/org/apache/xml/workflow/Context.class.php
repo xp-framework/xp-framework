@@ -105,7 +105,7 @@
           
           $handled= $has_error= FALSE;
           for ($i= 0, $s= sizeof($state->handlers); $i < $s; $i++) {
-            $cat->info('Calling handler #'.$i, var_export($state->handlers[$i], 1));
+            $cat->info('Calling handler #'.$i, $state->handlers[$i]->getClassName());
 
             // If this handler is satisfied, ask the next handler in the queue
             if (!$state->handlers[$i]->needsData($this)) {
@@ -142,25 +142,14 @@
             $has_error= TRUE;
             break;
           }
-          
-          // Request has been handled successfully, send redirect to myself
-          // Append ?__success=<<submitTrigger>> to indicate handling was successfull -
-          // this parameter has no meaning whatsoever to flow/state/context operation 
-          // but is merely for convenience in XSL.
-          if ($handled && !$has_error) {
-            // $uri= $request->getEnvValue('REQUEST_URI');
-            // $response->sendRedirect($uri.((FALSE !== strpos($uri, '?')) ? '&' : '?').'__success='.$st);
-            $return= FALSE;
-          }
         }
         
-        // Go through all existing context resources and call their "insertStatus"
-        // method
+        // Go through all existing context resources and call their "insertStatus" method
         foreach (array_keys($this->crm->hash) as $name) {
           if (!isset($this->crm->crs[$this->crm->hash[$name]])) continue;
           
           $crs= &$this->crm->crs[$this->crm->hash[$name]];
-          $cat->debug('Calling insertStatus()', $crs, $name);
+          $cat->debug('Calling insertStatus() for', get_class($crs), $name);
           $crs->insertStatus($response->addFormResult(new Node(
             $name, 
             NULL, 
