@@ -12,7 +12,8 @@
    */
   class Exception extends Object {
     var 
-      $message;
+      $message  = '',
+      $trace    = array();
      
     /**
      * Constructor
@@ -22,9 +23,20 @@
      */
     function __construct($message) {
       $this->message= $message;
+      if (function_exists('debug_backtrace')) $this->trace= debug_backtrace();
       parent::__construct();
     }
-    
+   
+    /**
+     * Get Message
+     *
+     * @access  public
+     * @return  string
+     */
+    function getMessage() {
+      return $this->message;
+    }
+ 
     /**
      * Print "stacktrace" to standard output
      *
@@ -48,7 +60,7 @@
       );
       
       // This is ugly...
-      for ($i= 0; $i< sizeof($GLOBALS['php_errorcode']); $i++) {
+      for ($i= 0, $s= sizeof($GLOBALS['php_errorcode']); $i < $s; $i++) {
         $func= '<main>';
         if ($fd= @fopen($GLOBALS['php_errorfile'][$i], 'r')) {
 
@@ -70,6 +82,38 @@
           $GLOBALS['php_errormessage'][$i]
         );
       }
+      
+      // This is for when debug_backtrace exists...
+      for ($i= 0, $s= sizeof($this->trace); $i < $s; $i++) {
+        $t= &$this->trace[$i];
+        if ('call_user_func_array' == @$t['function']) continue;
+
+        $class= '<main>';
+        if (isset($t['class'])) $class= (isset($GLOBALS['php_class_names'][$t['class']]) 
+          ? $GLOBALS['php_class_names'][$t['class']]
+          : $t['class']
+        );
+        $args= array();
+        for ($j= 0, $a= sizeof($t['args']); $j < $a; $j++) {
+          if (is_array($t['args'][$j])) {
+            $args[]= 'array ( ... )';
+          } elseif (is_object($t['args'][$j])) {
+            $args[]= get_class($t['args'][$j]).' { ... }';
+          } else {
+            $args[]= var_export($t['args'][$j], 1);
+          }
+        }
+        
+        $return.= sprintf(
+          "  at %s:%s(%s) [line %d of class %s]\n",
+          $class,
+          isset($t['function']) ? $t['function'] : '<main>',
+          implode(', ', $args),
+          isset($t['line']) ? $t['line'] : __LINE__,
+          basename(isset($t['file']) ? $t['file'] : __FILE__)
+        );
+      }
+      
       return $return;
     }
   }
