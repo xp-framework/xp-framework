@@ -371,7 +371,7 @@ nedit.highlightPatterns: C:Default\n\
 	PHP:1:0{\n\
 		phptags:"<(\\<\\?(php)?|\\?\\>)>":::Plain::\n\
 		doccomment:"/\\*\\*":"\\*/"::Comment:phptags:\n\
-		doccommenttag:"@(access|return|throws|see|model|purpose|deprecated|param)":::Text Key1:doccomment:\n\
+		doccommenttag:"@(access|return|throws|see|model|purpose|deprecated|ext|platform|param)":::Text Key1:doccomment:\n\
 		comment:"/\\*":"\\*/"::Text Arg2:phptags:\n\
 		inlinecomment:"//":"$"::Comment:phptags:\n\
 		double quote strings:"""":""""::String:phptags:\n\
@@ -384,7 +384,7 @@ nedit.highlightPatterns: C:Default\n\
 		variables:"(::)?[$](\\{[^}]*}|[^a-zA-Z0-9_ /\\t\\n\\.,\\\\[\\\\{\\\\(]|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)?":::Text Arg:phptags:\n\
 		braces and parens:"[\\[\\]{}\\(\\)]":::Identifier::\n\
 		heredoc:"\\<\\<\\<__":"^__"::Text Key1:phptags:\n\
-		classname:"([A-Za-z:]+)?(::)([A-Za-z]+)":::String1:phptags:\n\
+		classname:"([A-Za-z_·:]+)?(::)([A-Za-z]+)":::String1:phptags:\n\
 		classnameseperator:"\\2":""::Pointer:classname:C\n\
 		constants:"(NULL|FALSE|TRUE)":::Ada Attributes:phptags:\n\
 	}\n\
@@ -396,6 +396,12 @@ nedit.highlightPatterns: C:Default\n\
 		comment:"^;":"$"::Comment::\n\
 		key:"^[^=]+":::Text Arg::\n\
 		strings:"""":""""::String::D\n\
+    }\n\
+    Unified diff:1:0{\n\
+        deleted_lines:"^\\-(.*)":::Comment::\n\
+        added_lines:"^\\+(.*)":::Subroutine::\n\
+        position:"^@@ (.+) @@":::Text Arg::\n\
+        cvs_header:"^(Index|RCS file|retrieving|diff|=).+":::Text Arg::\n\
 	}
 nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~"\n\
 	C++:.cc .hh .C .H .i .cpp .cs::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~"\n\
@@ -426,7 +432,8 @@ nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~"\n\
 	CSS:css::Auto:None:::".,/\\`'!|@#%^&*()=+{}[]"":;<>?~"\n\
 	Regex:.reg .regex:"\\(\\?[:#=!iInN].+\\)":None:Continuous:::\n\
 	XML:.xml .xsl .dtd:"\\<(?i\\?xml|!doctype)"::None:::"<>/=""'()+*?|"\n\
-	Ini-Files:.ini:::None:::
+	Ini-Files:.ini:::None:::\n\
+    Unified diff:.diff:"Index:":::::
 nedit.styles: 	Plain:black:Plain\n\
 	Comment:gray40:Plain\n\
 	Keyword:darkRed:Bold\n\
