@@ -29,15 +29,17 @@ nedit.shellCommands: \
 	Print:::IDS:\n\
 		lpr %\n\
 	Insert method doc:Alt+D:::\n\
-		$HOME/bin/phpdoc --comment\n\
+		$HOME/bin/xpci --comment\n\
 	Insert class header:Shift+Alt+D:::\n\
-		$HOME/bin/phpdoc --header\n\
+		$HOME/bin/xpci --header\n\
 	Create XP class:Shift+Alt+C:::\n\
-		$HOME/bin/phpdoc --class\n\
+		$HOME/bin/xpci --class\n\
 	Check PHP syntax:Alt+C:C:ADS:\n\
 		php -l\n\
 	PHP contextsensitive help:F1::ID:\n\
 		$HOME/bin/phphelp\n\
+	XP contextsensitive help:Alt+F1::ID:\n\
+		$HOME/bin/phphelp --xp \n\
 	Execute PHP script:F9::AD:\n\
 		php -q\n\
 	Make accessors:Shift+Alt+A::I:\n\
@@ -484,7 +486,7 @@ nedit.searchMethod: Literal
 nedit.textRows: 40
 nedit.textCols: 80
 nedit.tabDistance: 4
-nedit.emulateTabs: 4
+nedit.emulateTabs: 2
 nedit.insertTabs: False
 nedit.textFont: -adobe-courier-medium-r-normal--12-120-75-75-m-70-iso8859-1
 nedit.boldHighlightFont: -adobe-courier-bold-r-normal--12-120-75-75-m-70-iso8859-1
