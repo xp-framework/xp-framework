@@ -26,10 +26,12 @@
      * @access  public
      * @param   &util.cmd.ParamString paramstring
      * @param   string gladefile location of the .glade-file
-     * @param   string mainwin default 'window1' Name des Hauptfensters
+     * @param   string mainwin default 'window1'
      */
     function __construct(&$p, $gladefile, $mainwin= 'window1') {
-      $this->glade= &new GladeXML($gladefile);
+      if (!$this->glade= &new GladeXML($gladefile)) {
+        return throw(new GuiException('Cannot read glade file '.$gladefile));
+      }
       $this->mainwin= $mainwin;
       parent::__construct($p);
     }
