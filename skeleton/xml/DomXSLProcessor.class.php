@@ -130,6 +130,29 @@
     }
 
     /**
+     * Error handler callback
+     *
+     * @access  private
+     * @param   int code
+     * @param   string msg
+     * @param   string file
+     * @param   int line
+     * @see     php://set_error_handler
+     */
+    function _traperror($code, $msg, $file, $line) {
+      if (in_array(strtok($msg, ':'), array(
+        'domxml_xslt_stylesheet()', 
+        'domxml_xslt_stylesheet_file()',
+        'process()',
+      ))) {
+        $this->_errors[]= strtok("\r\n");
+        return;
+      }
+
+      __error($code, $msg, $file, $line);
+    }
+
+    /**
      * Run the XSL transformation
      *
      * @access  public
@@ -138,6 +161,9 @@
      */
     function run() {
       $cwd= FALSE;
+
+      $this->_errors= array();
+      set_error_handler(array(&$this, '_traperror'));
 
       // Get stylesheet
       switch ($this->stylesheet[0]) {
@@ -157,12 +183,19 @@
           $proc= FALSE;
       }
       
-      // Transform this
-      $result= FALSE;
-      $proc && $result= &$proc->process($this->document, $this->params, FALSE);
+      // Start transformation
+      $result= NULL;
+      if ($proc) {
+        $result= &$proc->process($this->document, $this->params, FALSE);
+      }
       $cwd && chdir($cwd);
-      if (!$result || xp::errorAt(__FILE__, __LINE__ - 2)) {
-        return throw(new TransformerException('Transformation failed'));
+      restore_error_handler();
+
+      // Check result
+      if (!$result) {
+        return throw(new TransformerException(
+          "Transformation failed: [\n".implode("\n  ", $this->_errors)."\n]"
+        ));
       }
       
       // Copy output from transformation
