@@ -9,6 +9,7 @@
   define('DB_STORE_RESULT',     0x0001);
   define('DB_BUFFER_RESULTS',   0x0002);
   define('DB_AUTOCONNECT',      0x0004);
+  define('DB_PERSISTENT',       0x0008);
   
   /**
    * Provide an interface from which all other database connection
@@ -30,6 +31,7 @@
      */
     function __construct(&$dsn) { 
       $this->dsn= &$dsn;
+      $this->flags= $dsn->getFlags();
       parent::__construct();
     }
     
@@ -49,7 +51,13 @@
      * @access  public  
      * @return  bool success
      */
-    function connect() { }
+    function connect() { 
+      if ($db= $this->dsn->getDatabase()) {
+        return $this->selectdb($db);
+      }
+      
+      return TRUE;
+    }
     
     /**
      * Disconnect
