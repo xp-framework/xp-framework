@@ -188,6 +188,33 @@
         $daemonmessage->setFailedRecipient(InternetAddress::fromString($rcpt));
       }
       
+      // Check all hosts in received
+      //
+      // Received: from mxintern.kundenserver.de ([212.227.126.204])
+      //         by mail.laudi.de with esmtp (Exim 2.10 #1)
+      //         id 18jfZb-0006cv-00
+      //         for kundenserver@parser.laudi.de; Fri, 14 Feb 2003 14:08:11 +0100
+      // Received: from mail by mxintern.kundenserver.de with spam-scanned (Exim 3.35 #1)
+      //         id 18jfZa-0003Ph-00
+      //         for www@schlund.de; Fri, 14 Feb 2003 14:08:11 +0100
+      // Received: from [194.73.242.6] (helo=wmpmta04-app.mail-store.com)
+      //         by mxintern.kundenserver.de with esmtp (Exim 3.35 #1)
+      //         id 18jfZa-0003Pe-00
+      //         for www@kundenserver.de; Fri, 14 Feb 2003 14:08:10 +0100
+      $t= strtok($message->getHeader('Received'), " \r\n\t([])=");
+      do {
+        if (
+          (0 == strcasecmp('from', $t)) ||
+          (0 == strcasecmp('by', $t)) ||
+          (0 == strcasecmp('helo', $t))
+        ) $host= strtok(" \r\n\t([])="); else continue;
+        
+        // Ignore: "from mail by xxx.yyy.zz"
+        if (0 == strcasecmp('mail', $host)) continue;
+        
+        $daemonmessage->details['Received'][]= $host;
+      } while ($t= strtok(" \r\n\t([])=")); 
+      
       // If this is a multipart message, try and seperate parts:
       // =======================================================
       // [-- Attachment #1 --]
