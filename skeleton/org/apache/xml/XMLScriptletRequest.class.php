@@ -32,6 +32,7 @@
       $defaultPage  = 'home',
       $defaultFrame = 'top',
       $state        = '',
+      $language     = '',
       $page         = '';
 
     /**
@@ -71,7 +72,17 @@
      * @return  string language
      */
     function getLanguage() {
-      return $this->getEnvValue('LANG');
+      return $this->language;
+    }
+
+    /**
+     * Sets Language
+     *
+     * @access  public
+     * @param   string language
+     */
+    function setLanguage($language) {
+      $this->language= $language;
     }
     
     /**
