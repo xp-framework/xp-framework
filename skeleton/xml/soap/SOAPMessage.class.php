@@ -265,12 +265,12 @@
      * @param   mixed detail default NULL
      */    
     function setFault($faultcode, $faultstring, $faultactor= NULL, $detail= NULL) {
-      $this->root->children[0]->children[0]= &SOAPNode::fromObject(new SOAPFault(array(
-        'faultcode'      => $faultcode,
-        'faultstring'    => $faultstring,
-        'faultactor'     => $faultactor,
-        'detail'         => $detail
-      )), 'SOAP-ENV:Fault');
+      $this->root->children[0]->children[0]= &SOAPNode::fromObject(new SOAPFault(
+        $faultcode,
+        $faultstring,
+        $faultactor,
+        $detail
+      ), 'SOAP-ENV:Fault');
       $this->root->children[0]->children[0]->name= 'SOAP-ENV:Fault';
     }
 
@@ -278,7 +278,7 @@
      * Construct a SOAP message from a string
      *
      * <code>
-     *   $msg= SOAPMessage::fromString('<SOAP-ENV:Envelope>...</SOAP-ENV:Envelope>');
+     *   $msg= &SOAPMessage::fromString('<SOAP-ENV:Envelope>...</SOAP-ENV:Envelope>');
      * </code>
      *
      * @model   static
@@ -294,7 +294,7 @@
      * Construct a SOAP message from a file
      *
      * <code>
-     *   $msg= SOAPMessage::fromFile(new File('foo.soap.xml');
+     *   $msg= &SOAPMessage::fromFile(new File('foo.soap.xml');
      * </code>
      *
      * @model   static
@@ -316,12 +316,12 @@
       if (!strstr($this->root->children[0]->children[0]->name, ':Fault')) return NULL;
       
       list($return)= $this->_recurseData($this->root->children[0], FALSE, 'OBJECT', array());
-      return new SOAPFault(array(
-        'faultcode'      => $return['faultcode'],
-        'faultstring'    => $return['faultstring'],
-        'faultactor'     => $return['faultactor'],
-        'detail'         => $return['detail']
-      ));
+      return new SOAPFault(
+        $return['faultcode'],
+        $return['faultstring'],
+        $return['faultactor'],
+        $return['detail']
+      );
     }
     
     /**
@@ -333,7 +333,7 @@
      * @return  &mixed data
      */
     function &getData($context= 'ENUM', $mapping= array()) {
-      foreach ($this->root->attribute as $key => $val) { // Namespace suchen
+      foreach ($this->root->attribute as $key => $val) { // Look for namespaces
         if ($val == $this->action) $this->namespace= substr($key, strlen('xmlns:'));
       }
 
