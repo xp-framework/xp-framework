@@ -269,8 +269,14 @@
     function onSiteChmod(&$event, $params) {
       sscanf($params, '%d %s', $permissions, $uri);
       $this->cat && $this->cat->debug($permissions, $uri);
+
+      if (!($entry= &$this->storage->lookup($params))) {
+        $this->answer($event->stream, 550, $params.': No such file or directory');
+        return;
+      }
       
-      $this->answer($event->stream, 550, 'XXX TBI XXX');
+      $entry->setPermissions($permissions);
+      $this->answer($event->stream, 200, 'SITE CHMOD command successful');
     }
     
     /**

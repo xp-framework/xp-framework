@@ -114,6 +114,18 @@
     }
 
     /**
+     * Sets the permissions of this storage entry expressed in a
+     * unix-permission style integer
+     *
+     * @access  public
+     * @param   int permissions
+     */  
+    function setPermissions($permissions) { 
+      chmod($this->f->getURI(), $permissions);
+      $this->st['mode']= $permissions;
+    }
+
+    /**
      * Retrieves the number of links
      *
      * @access  protected

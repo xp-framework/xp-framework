@@ -88,6 +88,15 @@
     function getPermissions() { }
 
     /**
+     * Sets the permissions of this storage entry expressed in a
+     * unix-permission style integer
+     *
+     * @access  public
+     * @param   int permissions
+     */  
+    function setPermissions($permissions) { }
+
+    /**
      * Retrieves the number of links
      *
      * @access  public

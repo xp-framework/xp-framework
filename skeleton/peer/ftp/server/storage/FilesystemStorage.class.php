@@ -50,7 +50,7 @@
      */
     function setBase($uri) {
       if (!is_dir($path= $this->realname($uri))) {
-        return throw(new IOException($path.' is not a directory'));
+        return throw(new IOException($uri.': not a directory'));
       }
       $this->base= str_replace($this->root, '', $path);
       return $this->base;
