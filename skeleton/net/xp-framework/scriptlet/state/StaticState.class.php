@@ -4,37 +4,59 @@
  * $Id$ 
  */
 
-  uses(
-    'scriptlet.xml.workflow.AbstractState',
-    'net.xp-framework.db.caffeine.XPNews'
-  );
+  uses('net.xp-framework.scriptlet.AbstractNewsListingState');
 
   /**
    * Handles /xml/static
    *
    * @purpose  State
    */
-  class StaticState extends AbstractState {
+  class StaticState extends AbstractNewsListingState {
 
     /**
-     * Process this state.
+     * Retrieve parent category's ID
      *
      * @access  public
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
-     * @param   &scriptlet.xml.XMLScriptletResponse response
+     * @return  int
      */
-    function process(&$request, &$response) {
-    
-      // Retrieve top 5 news from database - TBD: caching
-      try(); {
-        $news= XPNews::getByDateOrdered(5);
-      } if (catch('SQLException', $e)) {
-        $news= array();
-        // Fall through
-      }
-      
-      $n= &$response->addFormResult(new Node('news'));
-      $n->addChild(Node::fromArray($news, 'items'));
+    function getParentCategory() {
+      return 9;
+    }
+
+    /**
+     * Retrieve entries
+     *
+     * @access  protected
+     * @param   &rdbms.DBConnection db
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @return  &rdbms.ResultSet
+     */
+    function &getEntries(&$db, &$request) { 
+      return $db->query('
+        select 
+          entry.id as id,
+          entry.title as title,
+          entry.body as body,
+          entry.author as author,
+          entry.timestamp as timestamp,
+          length(entry.extended) as extended_length,
+          category.categoryid as category_id,
+          category.category_name as category,
+          (select count(*) from serendipity_comments c where c.entry_id = entry.id) as num_comments
+        from
+          serendipity_entries entry,
+          serendipity_entrycat matrix,
+          serendipity_category category
+        where
+          (category.parentid = %1$d or category.categoryid = %1$d)
+          and entry.isdraft = "false"
+          and entry.id = matrix.entryid
+          and matrix.categoryid = category.categoryid
+        order by
+          title asc
+        limit 10',
+        $this->getParentCategory()
+      );
     }
   }
 ?>
