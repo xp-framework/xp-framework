@@ -57,6 +57,34 @@ Example #2: Unit test API
   }
 ?>
 
+Syntax definitions
+~~~~~~~~~~~~~~~~~~
+- All annotations begin with the hash sign ("#") (so that the PHP4 parser 
+  ignores them) and are then enclosed in square brackets ("[" and "]").
+
+- Annotation tag names may be made up of any character from a-z and A-Z 
+  and the underscore ("_").
+
+- Annotation tag names are case-sensitive.
+
+- Simple definition:
+  In the simple annotation only a simple annotation tag exists. Example: 
+  <?php #[@test] ?>
+
+- String value:
+  An annotation may have a string value associated to it. Example:
+  <?php #[@deprecated('Use foo() instead')] ?>
+
+- Hash key/value pairs:
+  An annotation may have a hash map associated to it: Example:
+  <?php #[@fromxml(xpath= '/root/element[position() = 3]/@id')] ?>
+  
+  Hash keys may consist of any character from a-z and A-Z and the 
+  underscore ("_"). Key names are case sensitive.
+
+  Multiple elements in a hash are separated by commas. Example:
+  <?php #[@inject(type= 'dbconnection', name= 'news'))] ?>
+
 Reflection
 ~~~~~~~~~~
 The reflection API offers the following ways to retrieve these
