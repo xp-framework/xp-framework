@@ -59,11 +59,11 @@
 	</xsl:for-each>
 	<xsl:text>;&#10;</xsl:text>
 	
-	<!-- Create a static method for unique indexes -->
-	<xsl:for-each select="index[@unique= 'true']">
+	<!-- Create a static method for indexes -->
+	<xsl:for-each select="index">
 	  <xsl:text>
     /**
-     * Gets an instance of this object by unique index "</xsl:text><xsl:value-of select="@name"/><xsl:text>"
+     * Gets an instance of this object by index "</xsl:text><xsl:value-of select="@name"/><xsl:text>"
      *
      * @access  static</xsl:text>
 	  <xsl:for-each select="key">
@@ -77,6 +77,7 @@
 	  <xsl:call-template name="prettyname">
 		<xsl:with-param name="string" select="../@name"/>
 	  </xsl:call-template>
+      <xsl:if test="not(@unique= 'true')">[]</xsl:if>
 	  <xsl:text> object
      * @throws  SQLException in case an error occurs
      * @throws  IllegalAccessException in case there is no suitable database connection available
@@ -97,7 +98,7 @@
       }
 
       try(); {
-        list($data)= $db->select('
+        $q= $db->query('
           select&#10;</xsl:text>
       <xsl:for-each select="../attribute">
 	    <xsl:text>            </xsl:text>
@@ -130,18 +131,36 @@
 	    <xsl:value-of select="concat('$', text())"/>
 		<xsl:if test="position() != last()">, </xsl:if>
 	  </xsl:for-each>
-	  <xsl:text>);
+	  <xsl:text>);&#10;</xsl:text>
+        <xsl:choose>
+          <xsl:when test="@unique = 'true'">
+            <xsl:text>
+        if ($r= $db-&gt;fetch($q)) $data= &amp;new </xsl:text>
+	  <xsl:call-template name="prettyname">
+		<xsl:with-param name="string" select="../@name"/>
+	  </xsl:call-template>
+      <xsl:text>($r); else $data= NULL;</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>
+        $data= array();
+        while ($r= $db-&gt;fetch($q)) {
+          $data[]= &amp;new </xsl:text>
+	  <xsl:call-template name="prettyname">
+		<xsl:with-param name="string" select="../@name"/>
+	  </xsl:call-template>
+      <xsl:text>($r);
+        }</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      <xsl:text>
       } if (catch('SQLException', $e)) {
 
         // more error handling TBD here?
         return throw($e);
       }
 
-      return empty($data) ? NULL : new </xsl:text>
-	  <xsl:call-template name="prettyname">
-		<xsl:with-param name="string" select="../@name"/>
-	  </xsl:call-template>
-      <xsl:text>($data);
+      return $data;
     }&#10;</xsl:text>
 	</xsl:for-each>
 	
