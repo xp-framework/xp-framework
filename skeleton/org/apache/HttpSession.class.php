@@ -44,10 +44,11 @@
    * Please have a look into "Sessions and security" on PHP's session 
    * documentation page.
    *
-   * @see   php://session
-   * @see   xp://org.apache.HttpScriptlet
-   * @see   http://httpd.apache.org/docs/mod/mod_rewrite.html#RewriteRule
-   * @see   http://www.engelschall.com/pw/apache/rewriteguide/
+   * @see      php://session
+   * @see      xp://org.apache.HttpScriptlet
+   * @see      http://httpd.apache.org/docs/mod/mod_rewrite.html#RewriteRule
+   * @see      http://www.engelschall.com/pw/apache/rewriteguide/
+   * @purpose  Session
    */
   class HttpSession extends Object {
     var 
