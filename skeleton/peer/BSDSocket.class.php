@@ -40,6 +40,13 @@
       return isset($this->_sock) && is_resource($this->_sock);
     }
     
+    /**
+     * Connect
+     *
+     * @access  public
+     * @return  bool success
+     * @throws  IOException
+     */
     function connect() {
       if ($this->isConnected()) return TRUE;
       
@@ -57,6 +64,31 @@
         )));
       }
       return TRUE;
+    }
+    
+    /**
+     * Set socket blocking
+     *
+     * @access  public
+     * @param   bool blocking
+     * @return  bool success
+     * @throws  IOException
+     */
+    function setBlocking($blocking) {
+      if ($blocking) {
+        $ret= socket_set_block($this->_sock);
+      } else {
+        $ret= socket_set_nonblock($this->_sock);
+      }
+      if (FALSE === $ret) {
+        return throw(new IOException(sprintf(
+          'setBlocking (%s) failed: %s',
+          ($blocking ? 'blocking' : 'nonblocking'),
+          $this->getLastError()
+        )));
+      }
+      
+      return TRUE;      
     }
     
     /**
