@@ -14,7 +14,7 @@
    * @purpose  Singleton for shell object
    * @platform Windows
    */
-  class WshShell extends ComObject {
+  class WshShell extends COMObject {
 
     /**
      * Constructor
