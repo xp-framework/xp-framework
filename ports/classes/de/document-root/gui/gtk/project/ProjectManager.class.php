@@ -257,7 +257,7 @@
       if (isset ($this->_selectedNode)) {
         $this->menu->addSeparator();
         $this->menu->addMenuItem('Open', array (&$this, 'onFileOpenCtx'));
-        $this->menu->addMenuItem('cvs diff ...', array(&$this, 'onCvsDiff'));
+        $this->menu->addMenuItem('cvs diff', array(&$this, 'onCvsDiff'));
       }
 
       $this->menu->show(MENU_WANT_LEFTCLICK);
@@ -604,8 +604,11 @@
       $d= &$this->_getRefInfo($n);
       
       $tmpFile= System::tempDir().DIRECTORY_SEPARATOR.md5($d['file']).'.diff';
-      $cmd= sprintf('cvs diff -u %s', $d['file']);
+      $cmd= sprintf('cvs diff -u %s', basename($d['file']));
+
+      $curdir= getcwd(); chdir(dirname($d['file']));
       System::exec($cmd, sprintf('1>%1$s 2>%1$s', $tmpFile));
+      chdir($curdir);
       
       $cmd= $this->prop->readString (
         'editor',
