@@ -88,6 +88,7 @@
           </xsl:choose>
         </xsl:for-each>        
         at <xsl:value-of select="func:datetime(date)"/>
+        (<xsl:value-of select="num_comments"/> comments)
       </em>
     </div>
   </xsl:template>
