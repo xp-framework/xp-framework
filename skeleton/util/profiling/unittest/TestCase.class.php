@@ -88,7 +88,7 @@
       throw(new AssertionFailedError(
         $reason, 
         $actual, 
-        substr($code, 12, strpos($code, '"')- 14)
+        substr($code, 12, strpos($code, ', $error')- 12)
       ));
     }
     
