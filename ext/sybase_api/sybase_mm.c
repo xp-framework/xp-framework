@@ -3,9 +3,6 @@
  * $Id$
  */
 
-#include <sys/types.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include "sybase_mm.h"
 
 inline void* sybase_mm_malloc(size_t size, char *filename, uint line)
