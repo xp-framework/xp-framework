@@ -187,7 +187,7 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
           The code follows strict guidelines:
           <ul>
             <li>the style "Studly Caps"</li>
-            <li>an intending depth of 2 chars</li>
+            <li>an indenting depth of 2 chars</li>
             <li>the burden to not to output any warnings or notices at an error reporting level 
               of E_ALL (most verbose)</li>
           </ul>
