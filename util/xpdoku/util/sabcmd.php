@@ -30,15 +30,15 @@
   
   // {{{ main
   $p= &new ParamString();
-  if (3 != $p->count) {
-    printf("Usage: %s xsl xml\n", basename($p->value(0)));
+  if (4 != $p->count) {
+    printf("Usage: %s xsl xml area\n", basename($p->value(0)));
     exit(-1);
   }
   
   $proc= &new XSLProcessor();
   $proc->setXSLFile($p->value(1));
   $proc->setXMLFile($p->value(2));
-  $proc->setParam('area', 'about');
+  $proc->setParam('area', $p->value(3));
   $proc->setSchemeHandler(array('get_all' => 'schemeHandler'));
   
   try(); {
