@@ -12,20 +12,22 @@
   class MailNotifier extends Object {
   
     /**
-     * (Insert method's description here)
+     * Notify
      *
-     * @access  
-     * @param   
-     * @return  bool Success
+     * @access  public
+     * @param   string messages
+     * @param   string params mailaddress
+     * @param   string detail
+     * @param   string stack
+     * @return  bool success
      */
     function notify($message, $params, $details, $stack) {
-      mail(
+      return mail(
         $params,
         $message,
         $details."\n*** Stack Trace: ***\n".$stack,
         'X-Sender: '.$this->getName()
       );
-      return TRUE;
     }
   }
 ?>
