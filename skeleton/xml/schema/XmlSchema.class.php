@@ -6,6 +6,8 @@
  
   uses('xml.schema.XmlSchemaStructure');
   
+  define('XMLNS_SCHEMA',    'http://www.w3.org/2001/XMLSchema');
+  
   /**
    * XML Schema wrapper
    *
@@ -45,7 +47,40 @@
    */
   class XmlSchema extends Object {
     var
-      $complexTypes = array();
+      $targetNamespace = '',
+      $complexTypes    = array();
+      
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   string targetNamespace
+     */
+    function __construct($targetNamespace) {
+      $this->targetNamespace= $targetNamespace;
+      parent::__construct();
+    }
+
+    /**
+     * Set TargetNamespace
+     *
+     * @access  public
+     * @param   string targetNamespace
+     */
+    function setTargetNamespace($targetNamespace) {
+      $this->targetNamespace= $targetNamespace;
+    }
+
+    /**
+     * Get TargetNamespace
+     *
+     * @access  public
+     * @return  string
+     */
+    function getTargetNamespace() {
+      return $this->targetNamespace;
+    }
+
 
     /**
      * Add a complex type
