@@ -78,14 +78,13 @@
       }
       
       // Check every 60 seconds
-      $this->timer= gtk::timeout_add (1000 * 60, array (&$this, onAutoUpdate));
+      $timeout= $this->prop->readInteger ('main', 'autocheck', 60);
+      $this->timer= gtk::timeout_add (1000 * $timeout, array (&$this, onAutoUpdate));
     }
     
     function onAutoUpdate() {
       // Automatically reload all data
-      $this->statusbar->push (1, 'Reparsing files...');
       $this->reparse();
-      $this->statusbar->push (1, 'Done.');
       return TRUE;
     }
     
@@ -128,7 +127,10 @@
       $reparse= FALSE;
       foreach (array_keys ($this->files) as $idx) {
         if ($this->files[$idx]->needsReparsing()) {
+          $this->statusbar->push (1, 'Reparsing '.$this->files[$idx]->filename);
           $this->files[$idx]->parse();
+          $this->statusbar->push (1, 'Reparsed '.$this->files[$idx]->filename.' at '.date ('H:i:S'));
+          
           $reparse= TRUE;
         }
       }

@@ -2,6 +2,10 @@
 ; This is a sample prj.ini for ProjectManager
 ; This file must be located in $HOME/.prj.ini
 
+; Section main contains settings for the application itself
+[main]
+autocheck=60          ; check every x seconds if file has changed
+
 ; Section editor contains information needed for your editor
 ; The command gets sprintf()ed, first parameter is
 ; %d => line in the file
