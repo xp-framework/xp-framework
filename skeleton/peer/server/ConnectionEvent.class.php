@@ -5,11 +5,10 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Connection event
    *
-   * @ext      extensiom
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.server.Server#service
+   * @purpose  Event
    */
   class ConnectionEvent extends Object {
     var
@@ -18,11 +17,12 @@
       $data     = NULL;
       
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string type
+     * @param   &peer.Socket stream
+     * @param   mixed data default NULL
      */
     function __construct($type, &$stream, $data= NULL) {
       $this->type= $type;
