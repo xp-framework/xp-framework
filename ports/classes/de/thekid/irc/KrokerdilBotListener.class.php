@@ -241,12 +241,13 @@
      */
     function containsSwear($message) {
       for ($i= 0, $s= sizeof($this->lists['swears']); $i < $s; $i++) {
-        $pattern= '/('.preg_quote(str_replace(' ', ')? (', $this->lists['swears'][$i])).')/i';
+        $pattern= '/('.str_replace(' ', ')? (', preg_quote($this->lists['swears'][$i])).')/i';
         if (preg_match($pattern, $message)) {
           $this->cat && $this->cat->debug('"'.$message.'" matched pattern', $pattern);
           return $this->lists['swears'][$i];
         }
       }
+      $this->cat && $this->cat->debug('"'.$message.'": Contains no swear');
       return NULL;
     }
     
