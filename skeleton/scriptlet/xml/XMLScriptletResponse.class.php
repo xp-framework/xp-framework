@@ -254,7 +254,7 @@
       try(); {
         $this->processor->run();
       } if (catch('TransformerException', $e)) {
-        return throw(new HttpScriptletException($e, HTTP_INTERNAL_SERVER_ERROR));
+        return throw(new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR));
       }
       
       $this->content= &$this->processor->output();
