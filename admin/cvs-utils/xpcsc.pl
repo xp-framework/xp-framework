@@ -112,11 +112,11 @@ sub error() {
   my $out= "*** Error: ".$message." at line ".$l." of ".$FILE."\n    ".$_."\n---> [".$code."] ".$LINK{$code}."\n";
   print $out;
   
-  if ($NOTIFY) {
+  if (0 && $NOTIFY) {
     open (SENDMAIL, "| /usr/sbin/sendmail -t");
     print SENDMAIL "To: ".$NOTIFY."\n";
     print SENDMAIL "From: \"".getRealname ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
-    print SENDMAIL "Reply-To: $to\n";
+    print SENDMAIL "Reply-To: ".getEmail ($ENV{'USER'})."\n";
     print SENDMAIL "Subject: [CVS] commit failure\n";
     print SENDMAIL "MIME-Version: 1.0\n";
     print SENDMAIL "Content-type: text/plain; charset=iso-8859-1\n";
@@ -159,6 +159,7 @@ while (@ARGV) {
   $indent= 0;         # Indentation
   $string= 0;         # String
   $class= "";         # Class name
+  $php= 1;            # Within PHP
 
   # Go through the file, line by line
   while (<FILE>) {
@@ -316,13 +317,16 @@ while (@ARGV) {
       &warning("Your inline documentation is incomplete.", WNOHINT);
     }
     
+    # Reset lastFuncIsRef when seeing next function
+    if ($comment && $_ =~ /\@access\s+/) { $lastFuncIsRef= ""; }
+    
     # Check for incomplete API doc #2
     if ($comment && $_ =~ /\(Insert (class'|method's) description here\)/) {
       &warning("You should supply a description for your method", WNOHINT);
     }
     
     # Check for omitted parameter types or their names
-    if ($comment && $_ =~ /\@param\s+([a-zA-Z0-9\.\&]+)?\s?(\w?)/) {
+    if ($comment && $_ =~ /\@param\s+([a-zA-Z0-9\.\&\[\]]+)?\s?(\w?)/) {
       if (!length($1)) { &warning("Your inline documentation misses the type of the parameter", WNOHINT); }
       if (!length($2)) { &warning("Your inline documentation misses the parameter's name", WNOHINT); }
     }
