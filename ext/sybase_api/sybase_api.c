@@ -148,7 +148,7 @@ SYBASE_API int sybase_connect(sybase_environment *env, sybase_link *link, char *
                     ct_con_props(link->connection, CS_SET, e->key, e->value.str.val, CS_NULLTERM, NULL);
                     break;
                 case HASH_INT:
-                    ct_con_props(link->connection, CS_SET, e->key, e->value.lval, CS_UNUSED, NULL);
+                    ct_con_props(link->connection, CS_SET, e->key, &e->value.lval, CS_UNUSED, NULL);
                     break;
             }
         }
