@@ -376,7 +376,7 @@ SYBASE_API int sybase_fetch(sybase_result *result, sybase_resultset **resultset)
 
     /* Set fields to NULL if a NULL value is indicated */
     for (i= 0; i < (*resultset)->fields; i++) {
-        if ((*resultset)->columns[i].indicator == -1) {
+        if ((*resultset)->columns[i].indicator == CS_NULLDATA) {
             (*resultset)->columns[i].value= NULL;
         }
     }
