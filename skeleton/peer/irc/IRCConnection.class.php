@@ -271,8 +271,7 @@
       }
       
       // Be tolerant about channel parameter and rip off leading # if necessary
-      if ('#' == $channel{0}) $channel= substr($channel, 1);
-      return $this->writeln('JOIN #%s %s', $channel, $keyword);
+      return $this->writeln('JOIN #%s %s', ltrim($channel, '#'), $keyword);
     }
     
     /**
