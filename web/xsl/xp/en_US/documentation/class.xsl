@@ -88,7 +88,7 @@
         <xsl:sort select="name()"/>
 
         <tr>
-          <td width="1%" valign="top" nowrap="nowrap"><img width="17" height="17" hspace="2" src="/image/method.gif"/>&#160;</td>
+          <td width="1%" valign="top" nowrap="nowrap"><img width="17" height="17" hspace="4" src="/image/{access}.gif"/></td>
           <td width="99%" valign="top" colspan="2">
             <b>
               <a href="#{name()}">
@@ -112,7 +112,10 @@
       Method detail
     </h3>
     <xsl:for-each select="/formresult/apidoc/comments/function/*">
-      <h4><a name="{name()}"><xsl:value-of select="name()"/></a></h4>
+      <h4>
+        <img align="left" width="17" height="17" hspace="4" src="/image/{access}.gif"/>
+        <a name="{name()}"><xsl:value-of select="name()"/></a>
+      </h4>
       <code>
         <xsl:value-of select="concat(access, ' ', model, ' ')"/>
         <a href="{func:typehref(return/type)}"><xsl:value-of select="return/type"/></a>
