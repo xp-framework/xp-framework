@@ -9,28 +9,24 @@
     'lang.apidoc.CommentFactory'
   );
   
+  /**
+   * Implementation of GenericParser for classes from within
+   * the XP framework
+   *
+   * @see     xp://lang.apidoc.parser.GenericParser
+   * @purpose Parses classes
+   */
   class ClassParser extends GenericParser {
-    var $config= 'class';
-    
     var 
+      $config   = 'class',
       $comments = array(),
       $defines  = array();
     
     /**
-     * Constructor
+     * Parse
      *
      * @access  public
-     */
-    function __construct($filename= NULL) {
-      parent::__construct($filename);
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
+     * @return  array an associative array containing comments and defines
      */
     function parse() {
       $this->comments= array(
@@ -48,22 +44,22 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Callback function for defines
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   string const
+     * @param   string val
      */
     function setDefine($const, $val) {
       $this->defines[substr($const, 1, -1)]= $val;
     }
 
     /**
-     * (Insert method's description here)
+     * Callback function for the "file comment" (this is the comment at
+     * the top of the file)
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   string str the comment's content
      */
     function setFileComment($str) {
       $comment= &CommentFactory::factory(APIDOC_COMMENT_FILE);
@@ -72,11 +68,13 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Callback function for the "class comment" (this is the comment
+     * right above the class declaration)
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   string class the class' name
+     * @param   string extends what this class extends
+     * @param   string str the comment's content
      */
     function setClassComment($class, $extends, $str) {
       $comment= &CommentFactory::factory(APIDOC_COMMENT_CLASS);
@@ -87,11 +85,13 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Callback function for "function comments" (these are the comments
+     * above a function declaration)
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   string function the function's name
+     * @param   string str the comment's content
+     * @param   bool returnsReference default FALSE TRUE when this function returns its value by reference
      */
     function setFunctionComment($function, $str, $returnsReference= FALSE) {
       $comment= &CommentFactory::factory(APIDOC_COMMENT_FUNCTION);
