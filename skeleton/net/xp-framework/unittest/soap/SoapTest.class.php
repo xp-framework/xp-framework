@@ -23,9 +23,9 @@
      */
     function testSerialization() {
       $msg= &new SOAPMessage();
-      $msg->create(__CLASS__, __FUNCTION__);
-      $this->assertEquals($msg->action, __CLASS__);
-      $this->assertEquals($msg->method, __FUNCTION__);
+      $msg->create('Test', 'testSerialization');
+      $this->assertEquals($msg->action, 'Test');
+      $this->assertEquals($msg->method, 'testSerialization');
       $this->assertEquals($msg->root->name, 'SOAP-ENV:Envelope');
       $this->assertNotEmpty($msg->root->attribute);
       $msg->setData(array(
@@ -38,8 +38,8 @@
         'null'      => NULL,
         'array'     => array(2, 3),
         'hash'      => array(
-          'class'     => __CLASS__,
-          'method'    => __FUNCTION__
+          'class'     => 'Test',
+          'method'    => 'testSerialization'
         )
       ));
       
@@ -82,10 +82,10 @@
         $src, '<hash xsi:type="xsd:ur-type">', 'hash'
       );
       $this->assertContains(
-        $src, '<class xsi:type="xsd:string">soaptest</class>', 'hash.inner'
+        $src, '<class xsi:type="xsd:string">Test</class>', 'hash.inner'
       );
       $this->assertContains(
-        $src, '<method xsi:type="xsd:string">testserialization</method>', 'hash.inner'
+        $src, '<method xsi:type="xsd:string">testSerialization</method>', 'hash.inner'
       );
       return $src;
     }
