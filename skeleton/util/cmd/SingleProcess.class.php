@@ -1,68 +1,87 @@
 <?php
-  /* SingleProcess.class.php
-     Es darf immer nur ein Prozess laufen. Macht natürlich nur kommandozeilenbasiert Sinn
-     
-     $Id$
-  */
+/* Diese Klasse ist Teil des XP-Frameworks
+ *
+ * $Id$
+ */
+ 
+  uses('io.File');
 
-  define('PID_FILE_PATH',	'/var/run/php/');
-  
+  /**
+   * Eine SingleTon für Prozesse
+   *
+   */  
   class SingleProcess extends Object {
-    var $pid, $pname, $lockfile, $Debug, $Error;
-    
-    function SingleProcess($params= NULL) {
-      $this->__construct();
-    }
-     
-    function __construct($params= NULL) {
+    var 
+      $pid, 
+      $lockfile;
+
+    /**
+     * Constructor
+     *
+     * @param   string lockfileName default NULL Das Lock-File (defaultet auf <<PROGRAMM_NAME>>.lck)
+     */
+    function __construct($lockFileName= NULL) {
       parent::__construct(); 
-      $this->pname= basename($GLOBALS["argv"][0]);
-      $this->Debug= $this->Error= 0;
+      if (NULL == $lockFileName) $lockFileName= $_SERVER['argv'][0].'.lck';
       $this->pid= getmypid();
-      $this->lockfile= sprintf('%s/%s.lck', PID_FILE_PATH, $this->pname);
+      $this->lockfile= new File($lockFileName);
     }
     
-    function logline_text($key, $val) {
-      if($this->Debug) logline_text("SingleProcess::$key", $val);
-    }
-
-    function raise_error($e_code, $comment) {
-      $this->logline_text("SingleProcess:raise_error", "{errno} $e_code {comment} $comment");
-      $this->Error= $e_code;
-      return 0;
-    }
-
-    function _lock() {
-      $this->logline_text("locking", $this->lockfile);
-      $fd= fopen($this->lockfile, "w");
-      if(!$fd) return $this->raise_error(4, "cannot write to $this->lockfile");
-      fputs($fd, $this->pid);
-      fclose($fd);
+    /**
+     * Lockt den Prozess
+     *
+     * @access  public
+     * @return  bool Success
+     * @throws  IllegalStateException, wenn versucht wird, den Prozess zu locken,
+     *          obwohl er bereist läuft
+     */
+    function lock() {
+      if ($this->lockfile->exists()) {
+        return throw(new IllegalStateException('already running')); 
+      }
+      try(); {
+        $this->lockfile->open(FILE_MODE_WRITE);
+        $this->lockfile->write($this->pid);
+        $this->lockfile->close();
+      } if (catch('IOException', $e)) {
+        return throw($e);
+      }
       return 1;
     }
     
-    function lock() {
-      if($this->is_running()) return $this->raise_error(1, "already running");
-      return $this->_lock();
-    }
-    
+    /**
+     * Unlockt den Prozess
+     *
+     * @access  public
+     * @return  bool Success
+     */
     function unlock() {
-      $this->logline_text("unlocking", $this->lockfile);
-      return unlink($this->lockfile);
+      return $this->lockfile->unLink();
     }
     
-    function is_running() {
-      if(file_exists($this->lockfile)) {
-        list($pid)= file($this->lockfile);
-        
-        if (file_exists('/proc/'.$pid)) {
-          $this->logline_text("is_running", "this process is running under pid $pid");
-          return 1;
-        }
-        
-        return $this->raise_error(4, "stale lockfile, pid $pid doesn't exist");
+    /**
+     * Gibt zurück, ob der Prozess noch läuft. TODO: Funktioniert nur unter UNIXoiden Systemen,
+     * da das /proc/-Filesystem benutzt wird! Unter Windows müsste man nochmal sehen,
+     * wie das funktioniert
+     *
+     * @access  public
+     * @return  int pid Prozess-ID des laufenden Prozesses oder FALSE
+     */
+    function isRunning() {
+      if (!$this->lockfile->exists()) return FALSE;
+      
+      // Schauen wir nach der PID
+      try(); {
+        $this->lockfile->open(FILE_MODE_READ);
+        $pid= $this->lockfile->readLine();
+        $this->lockfile->close();
+      } if (catch('IOException', $e)) {
+        return throw($e);
       }
-      return 0;
+      if (file_exists('/proc/'.$pid)) return $pid;
+      
+      // Wir haben ein "stale lockfile"...
+      return FALSE;
     }
-  } // end::class(SingleProcess)
+  }
 ?>
