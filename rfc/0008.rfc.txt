@@ -148,6 +148,9 @@ Details
   ?>
   Name clashes cause a Fatal Error.
 
+  For details, see 
+  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/packages
+
 * A package access level:
   The package keyword may also be prefixed to a method to declare its
   access level package-wide (in addition to public, private and 
@@ -382,7 +385,8 @@ PHP5
 
 Related documents
 -----------------
-n/a
+* Operator overloading
+  http://msdn.microsoft.com/library/default.asp?url=/library/en-us/csref/html/vcwlkoperatoroverloadingtutorial.asp
 
 Comments
 --------
