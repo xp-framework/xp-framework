@@ -23,6 +23,13 @@
     /**
      * Retrieves the name of a byteorder
      *
+     * Example:
+     * <code>
+     *   uses("io.ByteOrder"); 
+     *
+     *   var_dump(ByteOrder::nameOf(ByteOrder::nativeOrder()));
+     * </code>
+     *
      * @model   static
      * @access  public
      * @param   int order
