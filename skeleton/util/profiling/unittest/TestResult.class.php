@@ -54,6 +54,56 @@
     function setSkipped(&$test, $reason) {
       $this->skipped[$test->getClassName().'::'.$test->getName()]= &new TestSkipped($reason);
     }
+
+    /**
+     * Get number of succeeded tests
+     *
+     * @access  public
+     * @return  int
+     */
+    function successCount() {
+      return sizeof($this->succeeded);
+    }
+    
+    /**
+     * Get number of failed tests
+     *
+     * @access  public
+     * @return  int
+     */
+    function failureCount() {
+      return sizeof($this->failed);
+    }
+
+    /**
+     * Get number of skipped tests
+     *
+     * @access  public
+     * @return  int
+     */
+    function skipCount() {
+      return sizeof($this->skipped);
+    }
+
+    /**
+     * Get number of run tests (excluding skipped)
+     *
+     * @access  public
+     * @return  int
+     */
+    function runCount() {
+      return sizeof($this->succeeded) + sizeof($this->failed);
+    }
+
+    /**
+     * Get number of total tests
+     *
+     * @access  public
+     * @return  int
+     */
+    function count() {
+      return sizeof($this->succeeded)+ sizeof($this->failed)+ sizeof($this->skipped);
+    }
     
     /**
      * Create a nice string representation
@@ -67,10 +117,10 @@
         "Results for test suite run at %s\n".
         "%d tests, %d succeeded, %d failed, %d skipped\n",
         date('r'),
-        sizeof($this->succeeded)+ sizeof($this->failed)+ sizeof($this->skipped),
-        sizeof($this->succeeded),
-        sizeof($this->failed),
-        sizeof($this->skipped)
+        $this->count(),
+        $this->successCount(),
+        $this->failureCount(),
+        $this->skipCount()
       );
       
       // Configuration summary
