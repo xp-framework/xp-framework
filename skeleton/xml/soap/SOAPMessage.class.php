@@ -127,7 +127,7 @@
      * @return  
      */    
     function setFault($faultcode, $faultstring, $faultactor= NULL, $detail= NULL) {
-      $this->root->children[0]->children[0]= new SOAPNode();
+      $this->root->children[0]->children[0]= &new SOAPNode();
       $this->root->children[0]->children[0]->fromObject(new SOAPFault(array(
         'faultcode'      => $faultcode,
         'faultstring'    => $faultstring,
@@ -152,7 +152,7 @@
       return new SOAPFault(array(
         'faultcode'      => $return['faultcode'],
         'faultstring'    => $return['faultstring'],
-        'faultactor'     => $return['faultcode'],
+        'faultactor'     => $return['faultactor'],
         'detail'         => $return['detail']
       ));
     }
