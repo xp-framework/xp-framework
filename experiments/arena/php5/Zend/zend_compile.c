@@ -1848,7 +1848,7 @@ static void do_inherit_parent_constructor(zend_class_entry *ce)
 
 	/* You cannot change create_object */
 	ce->create_object = ce->parent->create_object;
-	
+
 	/* Inherit special functions if needed */
 	if (!ce->get_iterator) {
 		ce->get_iterator = ce->parent->get_iterator;
@@ -1868,12 +1868,19 @@ static void do_inherit_parent_constructor(zend_class_entry *ce)
 	if (!ce->clone) {
 		ce->clone = ce->parent->clone;
 	}
+	if(!ce->serialize) {
+		ce->serialize = ce->parent->serialize;
+	}
+	if(!ce->unserialize) {
+		ce->unserialize = ce->parent->unserialize;
+	}
 	if (!ce->destructor) {
 		ce->destructor   = ce->parent->destructor;
 	}
 	if (ce->constructor) {
 		return;
 	}
+	
 	if (zend_hash_find(&ce->parent->function_table, ZEND_CONSTRUCTOR_FUNC_NAME, sizeof(ZEND_CONSTRUCTOR_FUNC_NAME), (void **)&function)==SUCCESS) {
 		/* inherit parent's constructor */
 		zend_hash_update(&ce->function_table, ZEND_CONSTRUCTOR_FUNC_NAME, sizeof(ZEND_CONSTRUCTOR_FUNC_NAME), function, sizeof(zend_function), NULL);
@@ -3654,7 +3661,7 @@ void zend_do_foreach_fetch(znode *foreach_token, znode *open_brackets_token, zno
 void zend_do_foreach_cont(znode *foreach_token, znode *as_token, znode *value, znode *key TSRMLS_DC)
 {
 	zend_op *opline;
-	znode dummy;
+	znode dummy, value_node;
 	zend_bool assign_by_ref=0;
 
 	opline = &CG(active_op_array)->opcodes[as_token->u.opline_num];
@@ -3683,21 +3690,25 @@ void zend_do_foreach_cont(znode *foreach_token, znode *as_token, znode *value, z
 		opline->extended_value |= ZEND_FE_FETCH_BYREF;
 	}
 
+	value_node = opline->result;
 	if (assign_by_ref) {
 		/* Mark FE_FETCH as IS_VAR as it holds the data directly as a value */
-		zend_do_assign_ref(NULL, value, &opline->result TSRMLS_CC);
+		zend_do_assign_ref(NULL, value, &value_node TSRMLS_CC);
 	} else {
-		zend_do_assign(&dummy, value, &opline->result TSRMLS_CC);
+		zend_do_assign(&dummy, value, &value_node TSRMLS_CC);
 		zend_do_free(&dummy TSRMLS_CC);
 	}
 
 	if (key->op_type != IS_UNUSED) {
+		znode key_node;
+
 		opline = &CG(active_op_array)->opcodes[as_token->u.opline_num+1];
 		opline->result.op_type = IS_TMP_VAR;
 		opline->result.u.EA.type = 0;
 		opline->result.u.opline_num = get_temporary_variable(CG(active_op_array));
+		key_node = opline->result;
 
-		zend_do_assign(&dummy, key, &opline->result TSRMLS_CC);
+		zend_do_assign(&dummy, key, &key_node TSRMLS_CC);
 		zend_do_free(&dummy TSRMLS_CC);
 	}
 
@@ -4073,6 +4084,8 @@ ZEND_API void zend_initialize_class_data(zend_class_entry *ce, zend_bool nullify
 		ce->num_interfaces = 0;
 		ce->interfaces = NULL;
 		ce->module = NULL;
+		ce->serialize = NULL;
+		ce->unserialize = NULL;
 	}
 }
 

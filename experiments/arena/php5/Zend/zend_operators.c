@@ -1001,7 +1001,8 @@ ZEND_API int boolean_not_function(zval *result, zval *op1 TSRMLS_DC)
 	zval op1_copy;
 
 	if (Z_TYPE_P(op1) == IS_OBJECT) {
-		return call_operator_overloading("!", sizeof("!"), result, op1, NULL, 1 TSRMLS_CC);	
+		if (call_operator_overloading("!", sizeof("!"), result, op1, NULL, 0 TSRMLS_CC) == SUCCESS) return SUCCESS;
+		/* Fall through in case of failure */
 	}
 	zendi_convert_to_boolean(op1, op1_copy, result);
 

@@ -6851,9 +6851,7 @@ static int ZEND_POST_INC_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	}
 	if (*var_ptr == EG(error_zval_ptr)) {
 		if (!RETURN_VALUE_UNUSED(&opline->result)) {
-			EX_T(opline->result.u.var).var.ptr_ptr = &EG(uninitialized_zval_ptr);
-			PZVAL_LOCK(*EX_T(opline->result.u.var).var.ptr_ptr);
-			AI_USE_PTR(EX_T(opline->result.u.var).var);
+			EX_T(opline->result.u.var).tmp_var = *EG(uninitialized_zval_ptr);
 		}
 		if (free_op1.var) {zval_ptr_dtor(&free_op1.var);};
 		ZEND_VM_NEXT_OPCODE();
@@ -6891,9 +6889,7 @@ static int ZEND_POST_DEC_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	}
 	if (*var_ptr == EG(error_zval_ptr)) {
 		if (!RETURN_VALUE_UNUSED(&opline->result)) {
-			EX_T(opline->result.u.var).var.ptr_ptr = &EG(uninitialized_zval_ptr);
-			PZVAL_LOCK(*EX_T(opline->result.u.var).var.ptr_ptr);
-			AI_USE_PTR(EX_T(opline->result.u.var).var);
+			EX_T(opline->result.u.var).tmp_var = *EG(uninitialized_zval_ptr);
 		}
 		if (free_op1.var) {zval_ptr_dtor(&free_op1.var);};
 		ZEND_VM_NEXT_OPCODE();
@@ -17688,9 +17684,7 @@ static int ZEND_POST_INC_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	}
 	if (*var_ptr == EG(error_zval_ptr)) {
 		if (!RETURN_VALUE_UNUSED(&opline->result)) {
-			EX_T(opline->result.u.var).var.ptr_ptr = &EG(uninitialized_zval_ptr);
-			PZVAL_LOCK(*EX_T(opline->result.u.var).var.ptr_ptr);
-			AI_USE_PTR(EX_T(opline->result.u.var).var);
+			EX_T(opline->result.u.var).tmp_var = *EG(uninitialized_zval_ptr);
 		}
 		;
 		ZEND_VM_NEXT_OPCODE();
@@ -17728,9 +17722,7 @@ static int ZEND_POST_DEC_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	}
 	if (*var_ptr == EG(error_zval_ptr)) {
 		if (!RETURN_VALUE_UNUSED(&opline->result)) {
-			EX_T(opline->result.u.var).var.ptr_ptr = &EG(uninitialized_zval_ptr);
-			PZVAL_LOCK(*EX_T(opline->result.u.var).var.ptr_ptr);
-			AI_USE_PTR(EX_T(opline->result.u.var).var);
+			EX_T(opline->result.u.var).tmp_var = *EG(uninitialized_zval_ptr);
 		}
 		;
 		ZEND_VM_NEXT_OPCODE();
@@ -28916,9 +28908,7 @@ static int ZEND_POST_INC_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	}
 	if (*var_ptr == EG(error_zval_ptr)) {
 		if (!RETURN_VALUE_UNUSED(&opline->result)) {
-			EX_T(opline->result.u.var).var.ptr_ptr = &EG(uninitialized_zval_ptr);
-			PZVAL_LOCK(*EX_T(opline->result.u.var).var.ptr_ptr);
-			AI_USE_PTR(EX_T(opline->result.u.var).var);
+			EX_T(opline->result.u.var).tmp_var = *EG(uninitialized_zval_ptr);
 		}
 		if (free_op1.var) {zval_ptr_dtor(&free_op1.var);};
 		ZEND_VM_NEXT_OPCODE();
@@ -28956,9 +28946,7 @@ static int ZEND_POST_DEC_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	}
 	if (*var_ptr == EG(error_zval_ptr)) {
 		if (!RETURN_VALUE_UNUSED(&opline->result)) {
-			EX_T(opline->result.u.var).var.ptr_ptr = &EG(uninitialized_zval_ptr);
-			PZVAL_LOCK(*EX_T(opline->result.u.var).var.ptr_ptr);
-			AI_USE_PTR(EX_T(opline->result.u.var).var);
+			EX_T(opline->result.u.var).tmp_var = *EG(uninitialized_zval_ptr);
 		}
 		if (free_op1.var) {zval_ptr_dtor(&free_op1.var);};
 		ZEND_VM_NEXT_OPCODE();

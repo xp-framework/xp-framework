@@ -44,8 +44,7 @@
 # include "zend_config.w32.h"
 # define ZEND_PATHS_SEPARATOR		';'
 #elif defined(NETWARE)
-# include "zend_config.nw.h"
-# include "acconfig.h"
+# include <zend_config.h>
 # define ZEND_PATHS_SEPARATOR		';'
 #elif defined(__riscos__)
 # include <zend_config.h>
@@ -306,6 +305,12 @@ union _zend_function;
 
 #include "zend_iterators.h"
 
+struct _zend_serialize_data;
+struct _zend_unserialize_data;
+
+typedef struct _zend_serialize_data zend_serialize_data;
+typedef struct _zend_unserialize_data zend_unserialize_data;
+
 struct _zend_class_entry {
 	char type;
 	char *name;
@@ -336,6 +341,10 @@ struct _zend_class_entry {
 	zend_object_value (*create_object)(zend_class_entry *class_type TSRMLS_DC);
 	zend_object_iterator *(*get_iterator)(zend_class_entry *ce, zval *object TSRMLS_DC);
 	int (*interface_gets_implemented)(zend_class_entry *iface, zend_class_entry *class_type TSRMLS_DC); /* a class implements this interface */
+
+	/* serializer callbacks */
+	int (*serialize)(zval *object, unsigned char **buffer, zend_uint *buf_len, zend_serialize_data *data TSRMLS_DC);
+	int (*unserialize)(zval **object, const unsigned char *buf, zend_uint buf_len, zend_unserialize_data *data TSRMLS_DC);
 
 	zend_class_entry **interfaces;
 	zend_uint num_interfaces;

@@ -135,6 +135,10 @@ void startup_scanner(TSRMLS_D)
 	SCNG(script_org_size) = 0;
 	SCNG(script_filtered) = NULL;
 	SCNG(script_filtered_size) = 0;
+	SCNG(input_filter) = NULL;
+	SCNG(output_filter) = NULL;
+	SCNG(script_encoding) = NULL;
+	SCNG(internal_encoding) = NULL;
 #endif /* ZEND_MULTIBYTE */
 }
 
@@ -160,6 +164,12 @@ void shutdown_scanner(TSRMLS_D)
 		efree(SCNG(script_filtered));
 		SCNG(script_filtered) = NULL;
 	}
+	SCNG(script_org_size) = 0;
+	SCNG(script_filtered_size) = 0;
+	SCNG(input_filter) = NULL;
+	SCNG(output_filter) = NULL;
+	SCNG(script_encoding) = NULL;
+	SCNG(internal_encoding) = NULL;
 #endif /* ZEND_MULTIBYTE */
 }
 END_EXTERN_C()
@@ -1453,11 +1463,11 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	yymore();
 }
 
-<ST_ONE_LINE_COMMENT>"?"|"%"|">" {
+<ST_ONE_LINE_COMMENT>"?"|"%"|">"|"<" {
 	yymore();
 }
 
-<ST_ONE_LINE_COMMENT>[^\n\r?%>]+ {
+<ST_ONE_LINE_COMMENT>[^\n\r?%><]+ {
 	yymore();
 }
 
@@ -1467,6 +1477,15 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	zendlval->type = IS_STRING;
 	BEGIN(ST_IN_SCRIPTING);
 	CG(zend_lineno)++;
+	return T_COMMENT;
+}
+
+<ST_ONE_LINE_COMMENT>"</script>" {
+	zendlval->value.str.val = yytext; /* no copying - intentional */
+	zendlval->value.str.len = yyleng;
+	zendlval->type = IS_STRING;
+	yyless(yyleng-9);
+	BEGIN(ST_IN_SCRIPTING);
 	return T_COMMENT;
 }
 
@@ -1518,7 +1537,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	yymore();
 }
 
-<ST_IN_SCRIPTING>("?>"|"</script"{WHITESPACE}*">"){NEWLINE}? {
+<ST_IN_SCRIPTING>("?>"|"</script>"){NEWLINE}? {
 	zendlval->value.str.val = yytext; /* no copying - intentional */
 	zendlval->value.str.len = yyleng;
 	zendlval->type = IS_STRING;

@@ -36,6 +36,7 @@ ZEND_API zval* zend_call_method(zval **object_pp, zend_class_entry *obj_ce, zend
 	zend_fcall_info fci;
 	zval z_fname;
 	zval *retval;
+	HashTable *function_table;
 
 	zval **params[2];
 
@@ -62,12 +63,17 @@ ZEND_API zval* zend_call_method(zval **object_pp, zend_class_entry *obj_ce, zend
 
 		fcic.initialized = 1;
 		if (!obj_ce) {
-			obj_ce = Z_OBJCE_PP(object_pp);
+			obj_ce = object_pp ? Z_OBJCE_PP(object_pp) : NULL;
+		}
+		if (obj_ce) {
+			function_table = &obj_ce->function_table;
+		} else {
+			function_table = EG(function_table);
 		}
 		if (!fn_proxy || !*fn_proxy) {
-			if (zend_hash_find(&obj_ce->function_table, function_name, function_name_len+1, (void **) &fcic.function_handler) == FAILURE) {
+			if (zend_hash_find(function_table, function_name, function_name_len+1, (void **) &fcic.function_handler) == FAILURE) {
 				/* error at c-level */
-				zend_error(E_CORE_ERROR, "Couldn't find implementation for method %s::%s", obj_ce->name, function_name);
+				zend_error(E_CORE_ERROR, "Couldn't find implementation for method %s%s%s", obj_ce ? obj_ce->name : "", obj_ce ? "::" : "", function_name);
 			}
 			if (fn_proxy) {
 				*fn_proxy = fcic.function_handler;
@@ -82,9 +88,9 @@ ZEND_API zval* zend_call_method(zval **object_pp, zend_class_entry *obj_ce, zend
 	if (result == FAILURE) {
 		/* error at c-level */
 		if (!obj_ce) {
-			obj_ce = Z_OBJCE_PP(object_pp);
+			obj_ce = object_pp ? Z_OBJCE_PP(object_pp) : NULL;
 		}
-		zend_error(E_CORE_ERROR, "Couldn't execute method %s::%s", obj_ce->name, function_name);
+		zend_error(E_CORE_ERROR, "Couldn't execute method %s%s%s", obj_ce ? obj_ce->name : "", obj_ce ? "::" : "", function_name);
 	}
 	if (!retval_ptr_ptr) {
 		if (retval) {
@@ -316,13 +322,27 @@ static int zend_implement_traversable(zend_class_entry *interface, zend_class_en
 /* {{{ zend_implement_aggregate */
 static int zend_implement_aggregate(zend_class_entry *interface, zend_class_entry *class_type TSRMLS_DC)
 {
+	int i, t = -1;
+
 	if (class_type->get_iterator) {
 		if (class_type->type == ZEND_INTERNAL_CLASS) {
 			/* inheritance ensures the class has necessary userland methods */
 			return SUCCESS;
 		} else if (class_type->get_iterator != zend_user_it_get_new_iterator) {
-			/* c-level get_iterator cannot be changed */
-			return FAILURE;
+			/* c-level get_iterator cannot be changed (exception being only Traversable is implmented) */
+			if (class_type->num_interfaces) {
+				for (i = 0; i < class_type->num_interfaces; i++) {
+					if (class_type->interfaces[i] == zend_ce_iterator) {
+						return FAILURE;
+					}
+					if (class_type->interfaces[i] == zend_ce_traversable) {
+						t = i;
+					}
+				}
+			}
+			if (t == -1) {
+				return FAILURE;
+			}
 		}
 	}
 	class_type->iterator_funcs.zf_new_iterator = NULL;
