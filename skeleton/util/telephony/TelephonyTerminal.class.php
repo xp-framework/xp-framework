@@ -29,8 +29,8 @@
      * @access  public
      * @return  string number
      */
-    function getNumber() {
-      return $this->address->getNumber();
+    function getAttachedNumber() {
+      return $this->address->getExt();
     }
   }
 ?>
