@@ -304,6 +304,20 @@
     }
     
     /**
+     * Sets the file position indicator for fp to the beginning of the file stream. 
+     *
+     * @access  public
+     * @throws  IllegalStateException, wenn keine Datei offen
+     */
+    function rewind() {
+      if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
+      if (!($result= rewind($this->_fd))) {
+        return throw(new IOException('cannot rewind file pointer'));
+      }
+      return TRUE;
+    }
+    
+    /**
      * Filepointer bewegen
      *
      * @param  (int)position default 0 Die Position
