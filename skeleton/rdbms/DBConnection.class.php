@@ -18,6 +18,7 @@
    */
   class DBConnection extends Object {
     var 
+      $handle = NULL,
       $dsn    = NULL,
       $flags  = 0;
       
