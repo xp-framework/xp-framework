@@ -44,14 +44,14 @@
     function toString() {
       return sprintf(
         "%s@ {\n".
-        "\t[scheme]        %s\n".
-        "\t[host]        %s\n".
-        "\t[port]        %d\n".
-        "\t[user]        %s\n".
-        "\t[password]    %s\n".
-        "\t[path]        %s\n".
-        "\t[query]        %s\n".
-        "\t[fragment]    %s\n".
+        "  [scheme]      %s\n".
+        "  [host]        %s\n".
+        "  [port]        %d\n".
+        "  [user]        %s\n".
+        "  [password]    %s\n".
+        "  [path]        %s\n".
+        "  [query]       %s\n".
+        "  [fragment]    %s\n".
         "}",
         $this->getClassName(),
         $this->getScheme(),
