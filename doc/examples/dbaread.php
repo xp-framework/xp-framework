@@ -10,7 +10,7 @@
   // {{{ main
   $p= &new ParamString();
 
-  $dba= &new DBAFile($p->value(1), DBH_DB4);
+  $dba= &new DBAFile($p->value(1), $p->value(2, NULL, DBH_DB4));
   $dba->open(DBO_READ);
   
   // Use the iterator functionality
