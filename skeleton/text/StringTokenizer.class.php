@@ -29,19 +29,26 @@
    * @see php://strtok
    */
   class StringTokenizer extends Object {
-    var $delim, $tok;
+    var 
+      $delimiters   = '',
+      $returnDelims = FALSE;
+    
+    var
+      $_str         = '',
+      $_stack       = array();
     
     /**
      * Constructor
      *
      * @access  public
      * @param   string str
-     * @param   string delim default ' '
+     * @param   string delimiter default ' '
+     * @param   bool returnDelims default FALSE
      */
-    function __construct($str, $delim= ' ') {
-      $this->delim= $delim;
-      $this->tok= strtok($str, $this->delim);
-      parent::__construct();
+    function __construct($str, $delimiters= ' ', $returnDelims= FALSE) {
+      $this->delimiters= $delimiters;
+      $this->returnDelims= $returnDelims;
+      $this->_str= $str;
     }
     
     /**
@@ -51,7 +58,7 @@
      * @return  bool more tokens
      */
     function hasMoreTokens() {
-      return ($this->tok !== FALSE);
+      return strlen($this->_str) > 0;
     }
     
     /**
@@ -60,10 +67,16 @@
      * @access  public
      * @return  string next token
      */
-    function nextToken() {
-      $tok= $this->tok;
-      $this->tok= strtok($this->delim);
-      return $tok;
+    function nextToken($delimiters= NULL) {
+      if (empty($this->_stack)) {
+        $offset= strcspn($this->_str, $delimiters ? $delimiters : $this->delimiters);
+        $this->_stack[]= substr($this->_str, 0, $offset);
+        if ($this->returnDelims && $offset < strlen($this->_str)) {
+          $this->_stack[]= $this->_str{$offset};
+        }
+        $this->_str= substr($this->_str, $offset+ 1);
+      }
+      return array_shift($this->_stack);
     }
   }
 ?>
