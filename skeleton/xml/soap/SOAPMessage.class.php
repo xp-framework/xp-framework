@@ -118,18 +118,18 @@
         $regs[2]= 'Array';
       }
 
-      #ifdef DEBUG
-      # echo "*** {$child->name} [{$names}, {$context}, {$idx}] is {$regs[2]}\n";
-      # echo $child->getSource(0);
-      #endif
+      # DEBUG echo "*** {$child->name} [{$names}, {$context}, {$idx}] is {$regs[2]}\n";
+      # DEBUG echo $child->getSource(0);
 
       switch (strtolower($regs[2])) {
         case 'array':
         case 'vector':
+          # DEBUG echo "+++ Using array/vector deserializer\n";
           $result= $this->_recurseData($child, FALSE, 'ARRAY');
           break;
 
         case 'map':
+          # DEBUG echo "+++ Using map deserializer\n";
           // <old_data xmlns:ns4="http://xml.apache.org/xml-soap" xsi:type="ns4:Map">
           // <item>
           // <key xsi:type="xsd:string">Nachname</key>
@@ -153,6 +153,7 @@
         case 'soapstruct':
         case 'struct':      
         case 'ur-type':
+          # DEBUG echo "+++ Using struct.{$regs[1]} deserializer\n";
           if ($regs[1]== 'xsd') {
             $result= $this->_recurseData($child, TRUE, 'HASHMAP');
             break;
@@ -175,10 +176,12 @@
         default:
           if (!empty($child->children)) {
             if ($regs[1]== 'xsd') {
+              # DEBUG echo "+++ Using hashmap.{$regs[1]} deserializer\n";
               $result= $this->_recurseData($child, TRUE, 'STRUCT');
               break;
             }
 
+            # DEBUG echo "+++ Using object.{$regs[1]} deserializer\n";
             $result= &new stdClass();
             foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
               $result->$key= $val;
@@ -186,6 +189,7 @@
             break;
           }
 
+          # DEBUG echo "+++ Using scalar deserializer\n";
           $result= $child->getContent($this->getEncoding());
       }
 
@@ -219,6 +223,7 @@
           $node->children[$i], 
           $context
         );
+        # DEBUG var_dump($results[$names ? $node->children[$i]->name : $i]);
       }
       return $results;
     }
@@ -275,8 +280,7 @@
         if ($val == $this->action) $this->namespace= substr($key, strlen('xmlns:'));
       }
       
-      $return= $this->_recurseData($this->root->children[0]->children[0], FALSE, $context);
-      return $return;
+      return $this->_recurseData($this->root->children[0]->children[0], FALSE, $context);
     }
   }
 ?>
