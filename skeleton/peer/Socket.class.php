@@ -267,6 +267,16 @@
       
       return $bytesWritten;
     }
+
+    /**
+     * Retrieve socket handle
+     *
+     * @access  public
+     * @return  resource
+     */
+    function getHandle() {
+      return $this->_sock;
+    }
     
     /**
      * Destructor
