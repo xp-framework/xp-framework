@@ -36,13 +36,13 @@
     /**
      * Execute a CVS command
      *
-     * @access  private
+     * @access  protected
      * @param   int cvsCmd Command to execute
      * @return  array output
      * @throws  CVSInterfaceException, if cvs fails
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC115
      */
-    private function _execute($cvsCmd, $object= '') {
+    protected function _execute($cvsCmd, $object= '') {
       $cmdLine= sprintf ("%s %s %s %s",
         $this->_CVS,
         (NULL !== $this->cvsRoot ? '-d'.$this->cvsRoot : ''),
