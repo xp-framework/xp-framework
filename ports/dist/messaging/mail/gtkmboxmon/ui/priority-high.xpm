@@ -1,0 +1,22 @@
+/* XPM */
+static char * priority_high_xpm[] = {
+"16 16 3 1",
+" 	c None",
+".	c #FFFFFF",
+"X	c #A7453E",
+"                ",
+"                ",
+"        .       ",
+"       .X.      ",
+"      .XXX.     ",
+"      .XXX.     ",
+"      .XXX.     ",
+"      .XX.      ",
+"      .XX.      ",
+"      .X.       ",
+"      ..        ",
+"     .XX.       ",
+"     .XX.       ",
+"      ..        ",
+"                ",
+"                "};
