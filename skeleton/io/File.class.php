@@ -45,6 +45,26 @@
       $this->setURI($filename);
       parent::__construct();
     }
+    
+    /**
+     * Returns the URI of the file
+     *
+     * @access public
+     * @return string uri
+     */
+    function getURI() {
+      return $this->uri;
+    }
+    
+    /**
+     * Returns the filename of the file
+     *
+     * @access public
+     * @return string filename
+     */
+    function getFileName() {
+      return basename ($this->filename);
+    }
 
     /**
      * URI setzen. Definiert andere Attribute wie path, filename und extension
