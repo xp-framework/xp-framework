@@ -207,7 +207,7 @@
     ? getenv('SKELETON_PATH')
     : dirname(__FILE__).DIRECTORY_SEPARATOR
   ));
-  ini_set('include_path', SKELETON_PATH.DIRECTORY_SEPARATOR.ini_get('include_path'));
+  ini_set('include_path', SKELETON_PATH.PATH_SEPARATOR.ini_get('include_path'));
   register_shutdown_function(array('xp', 'destroy'));
   xp::registry('errors', array());
   xp::registry('exceptions', array());
