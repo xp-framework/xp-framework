@@ -187,7 +187,7 @@
      *   }
      * </code>
      *
-     * @access  public
+     * @access  protected
      * @return  bool processed
      * @param   &org.apache.HttpScriptletRequest request 
      * @param   &org.apache.HttpScriptletResponse response 
