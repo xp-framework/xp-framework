@@ -168,7 +168,7 @@
     }
 
     /**
-     * Create a RDF from a string
+     * Create a RDF from a file
      *
      * @model   static
      * @access  public
