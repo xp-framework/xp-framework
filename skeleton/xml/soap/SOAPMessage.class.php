@@ -244,14 +244,12 @@
      * @param   mixed detail default NULL
      */    
     function setFault($faultcode, $faultstring, $faultactor= NULL, $detail= NULL) {
-      $this->root->children[0]->children[0]= &new SOAPNode();
-      $this->root->children[0]->children[0]->fromObject(new SOAPFault(array(
+      $this->root->children[0]->children[0]= &SOAPNode::fromObject(new SOAPFault(array(
         'faultcode'      => $faultcode,
         'faultstring'    => $faultstring,
         'faultactor'     => $faultactor,
         'detail'         => $detail
-      )));
-      unset($this->root->children[0]->children[0]->attribute);
+      )), 'SOAP-ENV:Fault');
       $this->root->children[0]->children[0]->name= 'SOAP-ENV:Fault';
     }
 
