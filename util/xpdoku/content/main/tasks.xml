@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document title="XP::Tasks::Overview">
+  <main>
+    <references>
+      <ref link="about">An introduction</ref>
+      <ref type="ext" link="http://php3.de/manual/en/features.commandline.php">Using PHP from the command line</ref>
+    </references>
+    <content>
+      <title>Common Tasks</title>
+      <editor>$Id$</editor>
+      
+      <para>
+        <caption>How to complete common tasks with XP</caption>
+        <text>
+          This section will give an introduction to the basics of common tasks
+          and how to accomplish them using the XP framework.
+        </text>
+      </para>
+      
+      <!-- cmd -->
+      <para>
+        <caption>Command-line tools</caption>
+        <text>
+          This is probably the most simple of all tasks, though not common to a large
+          number of PHP users: PHP runs very well and stable as a command line tool,
+          such as Perl, given even more power in the Release of PHP 4.3.0, where the
+          CLI SAPI was introduced (see <ref type="ext" link="http://php3.de/manual/en/features.commandline.php">
+          Using PHP from the command line</ref> for more information).
+          <br/>
+          As the XP framework's exception classes have no formatted error messages at all,
+          you won't find yourself lost in tons of useless HTML pooring down your shell window if
+          you print out stack traces (<ref type="api:class" link="lang.Exception#printStackTrace"/>) 
+          or an object's string representation (<ref type="api:class" link="lang.Object#toString"/>).
+          <br/>
+          Command line tools differ from websites in various ways:
+          <ul>
+            <li>
+              Usually, no HTML is printed. Text is formatted with linefeeds, tabs or spaces, 
+              special characters or combination of such to draw lines, arrows or underline
+              stuff.
+            </li>
+            <li>
+              Input is read from STDIN, printed to STDOUT or STDERR.
+            </li>
+            <li>
+              Variables (arguments) are passed via command line parameters, such as 
+              <tt>-l</tt>, <tt>--debug</tt> or <tt>--prefix=/usr/local/</tt>.
+            </li>
+          </ul>
+          This sounds like hacking in the first place, but actually, it's more like a religion. 
+          Anyway, that's another story not to be told here, so let's have a start.
+          <br/>
+          <br/>
+          So, let's have a look at a sample command line application (e.g., hello.php):
+          <code><![CDATA[  require('lang.base.php');
+  uses('util.cmd.ParamString');
+
+  $p= &new ParamString();
+  if (2 != $p->count) {   // Always #options +1: values include script's name (#0)
+    printf("Usage: %s <name>\n", $p->value(0));
+    exit();
+  }
+  printf("Hello %s, how are you?\n", $p->value(1)); ]]></code>
+          Calling this application from the command line as <tt>php -q hello.php</tt>,
+          it will simply print out <tt>Usage: hello.php &lt;name&gt;</tt> and exit. If a name
+          is specified, e.g. <tt>php -q hello.php Timm</tt>, you will se <tt>Hello Timm, how
+          are you?</tt> appear on your shell window. Simple enough?
+          <br/>
+          <br/>
+          Now, we'll include support for a help option as seen in most tools (that is, supply
+          a <tt>-?</tt> or <tt>--help</tt> in the parameter list of a command line tool and it
+          will say how you're supposed to use it). Again, this is simple - modify line no. five
+          of the above example to read:
+          <code><![CDATA[  if (2 != $p->count || $p->exists('help', '?')) { ]]></code>
+          As soon as a user calls <tt>php -q hello.php -?</tt> or <tt>php -q hello.php --help</tt>,
+          the tool will now also print out the usage information. Have a look at the 
+          <ref type="api:class" link="util.cmd.ParamString#"/> class for more information.
+          <br/>
+          <br/>
+          There is actually not much more to know about the basics of command line scripts
+          in relation to the XP framework. There are however, some advanced topics
+          on more complex tasks and how they're wrapped into classes and objects.
+        </text>
+        <advanced>
+          <ref link="tasks.cmd.stdio">Using the standard I/O streams</ref>
+          <ref link="tasks.cmd.cron">Cronjobs</ref>
+          <ref link="tasks.cmd.interactive">Interactive tools</ref>
+        </advanced>
+      </para>
+      
+      <!-- web -->
+      <para>
+        <caption>Web sites</caption>
+        <text>
+          <!-- <ref type="api:class" link="org.apache.HttpScriptlet#"/> -->
+          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nulla facilisi. Vivamus condimentum tortor eu dui. Aliquam et ipsum. Quisque sodales, dui eu ultrices mattis, nunc odio vestibulum augue, sed eleifend nulla arcu in velit. Pellentesque dignissim, ipsum in dictum laoreet, elit libero venenatis nunc, at hendrerit erat velit in metus. Nam quam felis, volutpat vitae, rutrum vel, fermentum sodales, tellus. Morbi elit. Pellentesque nibh. Fusce rhoncus adipiscing nibh. Aenean suscipit aliquet urna. Curabitur pulvinar elit non orci vulputate rutrum. Duis porttitor molestie augue. Aliquam wisi ligula, tincidunt nec, eleifend quis, hendrerit a, diam. Vivamus euismod. Maecenas vel ligula. Vestibulum rutrum pede quis est. Fusce feugiat turpis vitae neque.
+        </text>
+        <advanced>
+          <ref link="tasks.web.xml">Using XML/XSL to seperate code from design</ref>
+          <ref link="tasks.web.rdf">RDF news feeds</ref>
+        </advanced>
+      </para>
+
+      <!-- db -->
+      <para>
+        <caption>Databases</caption>
+        <text>
+          <!-- RDBMS classes, ConnectionManager -->
+          Duis nulla eros, tristique sed, tristique sed, consectetuer sed, felis. Vivamus facilisis risus a risus. Cras id turpis non mi viverra gravida. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed consectetuer. Nullam enim. Sed vestibulum. Maecenas tristique gravida elit. Phasellus hendrerit viverra nibh. Etiam massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla vel urna vitae magna mattis vestibulum. Cras elementum. Donec malesuada placerat nulla.          
+        </text>
+        <advanced>
+          <ref link="tasks.db.classgen">Generating classes from tables</ref>
+        </advanced>
+      </para>
+
+      <!-- log -->
+      <para>
+        <caption>Logging</caption>
+        <text>
+          <!-- Logger -->
+          Integer tincidunt enim in mauris. Vivamus aliquam, diam sed aliquet ultrices, mi metus ultricies metus, vel adipiscing dolor libero vel metus. Maecenas ornare tellus ac urna. Nam quis eros at ipsum tristique tincidunt. Sed est dolor, sagittis non, volutpat ac, feugiat non, diam. Sed et massa. Curabitur sed nisl id urna convallis rhoncus. Suspendisse imperdiet. Aliquam ac libero eu velit congue venenatis. Suspendisse eu ante et sem dictum sagittis. Phasellus fermentum.
+        </text>
+      </para>
+      
+      <!-- soap -->
+      <para>
+        <caption>SOAP clients/servers</caption>
+        <text>
+          <!-- <ref type="api:class" link="xml.soap.rpc.SoapRpcRouter#"/> -->
+          Nullam egestas, dolor a iaculis malesuada, quam erat placerat nisl, non congue urna orci eu est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Praesent mattis. Suspendisse ultricies cursus risus. In nec metus. Nam enim ante, dictum eu, eleifend a, consectetuer condimentum, arcu. Suspendisse lacus mi, placerat id, ornare et, vulputate sit amet, tortor. Morbi ornare dui ut risus. Donec nonummy, sapien in vehicula pulvinar, risus libero vehicula sem, at egestas libero elit a sem. Integer elementum commodo neque. Pellentesque elementum viverra turpis. Cras eu risus. Pellentesque eu purus. Donec eget magna.
+        </text>
+        <advanced>
+          <ref link="tasks.soap.google">Utilizing the Google API</ref>
+          <ref link="tasks.soap.wsdl">Generating proxy classes from WSDL</ref>
+        </advanced>
+      </para>
+      
+      <!-- gui -->
+      <para>
+        <caption>GUI applications</caption>
+        <text>
+          <!-- With the power of GTK-PHP -->
+          <!-- <ref type="api:class" link="gui.gtk.GTKApplication#"/> -->
+          Vivamus metus justo, ultrices a, egestas sit amet, mattis at, mi. Nulla ut massa sed est sollicitudin egestas. Proin consequat odio non quam. Ut semper. Suspendisse quam augue, sollicitudin sit amet, vehicula ac, porta et, lacus. Nunc viverra venenatis wisi. In mattis tempor mauris. Sed eleifend magna at orci. Morbi eget ligula. Cras non nulla. Nulla id metus. Aenean vestibulum. Ut hendrerit, quam non fringilla consequat, dui velit imperdiet nibh, quis vulputate felis metus eu massa. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Etiam tortor. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nam quis ipsum. Nullam porta commodo odio. Ut felis risus, rhoncus et, mollis id, faucibus sit amet, leo.
+        </text>
+        <advanced>
+          <ref link="tasks.gui.i18n">Internationalized GUIs</ref>
+          <ref link="tasks.gui.html">Embedding HTML</ref>
+        </advanced>
+      </para>
+      
+      <!-- server -->
+      <para>
+        <caption>Stand-Alone servers</caption>
+        <text>
+          <!-- <ref type="api:class" link="peer.ServerSocket#"/> -->
+          Ut eu leo nec nunc aliquet aliquam. Proin sed sapien. Praesent orci. Integer pharetra laoreet libero. Mauris eu urna. Maecenas interdum tellus varius tellus. Curabitur et enim ut libero interdum fringilla. Aenean gravida. Morbi vel massa. Curabitur commodo vehicula libero. Phasellus posuere lacus vestibulum orci. Aliquam rutrum risus et sapien. Aliquam elementum.
+        </text>
+        <advanced>
+          <ref link="tasks.server.forking">Multiprocess servers</ref>
+        </advanced>
+      </para>
+    </content>
+  </main>
+</document>
