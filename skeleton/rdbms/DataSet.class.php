@@ -137,12 +137,12 @@
      *
      * <pre>
      *   de.thekid.db.News(0.86699200 1086297326)@{
-     *     [newsId              ] 76288
-     *     [categoryId          ] 12
-     *     [caption             ] 'Hello'
-     *     [body                ] NULL
-     *     [author              ] 'Timm'
-     *     [createdAt           ] Thu,  3 Jun 2004 22:26:15 +0200
+     *     [newsId         PK,I] 76288
+     *     [categoryId         ] 12
+     *     [caption            ] 'Hello'
+     *     [body               ] NULL
+     *     [author             ] 'Timm'
+     *     [createdAt          ] Thu,  3 Jun 2004 22:26:15 +0200
      *   }
      * </pre>
      *
@@ -154,24 +154,27 @@
      */
     function toString() {
       
-      // Retrieve object variables and figure out the maximum length 
+      // Retrieve types from peer and figure out the maximum length 
       // of a key which will be used for the key "column". The minimum
       // width of this column is 20 characters.
-      $vars= get_object_vars($this);
-      $max= 20;
-      foreach (array_keys($vars) as $key) {
+      $max= 0xF;
+      foreach (array_keys($this->_peer->types) as $key) {
         $max= max($max, strlen($key));
       }
-      $fmt= '  [%-'.$max.'s] %s';
+      $fmt= '  [%-'.$max.'s %2s%2s] %s';
       
       // Build string representation.
       $s= $this->getClassName().'@('.$this->hashCode()."){\n";
-      foreach (array_keys($vars) as $key) {
-        if ('_' == $key{0}) continue;
-
-        $s.= sprintf($fmt, $key, is_a($this->$key, 'Object') 
-          ? $this->$key->toString()
-          : var_export($this->$key, 1)
+      foreach (array_keys($this->_peer->types) as $key) {
+        $s.= sprintf(
+          $fmt, 
+          $key,
+          (in_array($key, $this->_peer->primary) ? 'PK' : ''), 
+          ($key == $this->_peer->identity ? ',I' : ''),
+          (is_a($this->$key, 'Object') 
+            ? $this->$key->toString()
+            : var_export($this->$key, 1)
+          )
         )."\n";
       }
       return $s.'}';
