@@ -322,6 +322,22 @@
     }
     
     /**
+     * Proxy method for MailFolder: Move message to other folder
+     *
+     * @access  public
+     * @param   &peer.mail.Message msg
+     * @param   &peer.mail.MailFolder f
+     * @return  bool success
+     */
+    function moveMessage(&$f, $msg) {
+      if (FALSE === imap_mail_move($this->_hdl[0], $msg->uid, $f->name)) {
+        return throw (new MessagingException('Can not move mail'));
+      }
+      
+      return TRUE;
+    }
+    
+    /**
      * Proxy method for MailFolder: Get messages in a folder
      *
      * @access  public
