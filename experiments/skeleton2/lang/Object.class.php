@@ -11,7 +11,7 @@
    * @purpose  Base class for all others
    */
   class Object {
-    public $__id = NULL;
+    protected $__id = NULL;
     
     /**
      * Returns a hashcode for this object
