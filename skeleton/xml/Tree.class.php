@@ -61,7 +61,7 @@
     }
 
     /**
-     * Construct an XML tree from a string
+     * Construct an XML tree from a string.
      *
      * <code>
      *   $tree= &Tree::fromString('<document>...</document>');
@@ -89,7 +89,7 @@
     }
     
     /**
-     * Construct an XML tree from a file
+     * Construct an XML tree from a file.
      *
      * <code>
      *   $tree= &Tree::fromFile(new File('foo.xml');
