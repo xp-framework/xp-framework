@@ -33,7 +33,7 @@
   }
   // }}}
   
-  // {{{
+  // {{{ main
   $c= new ReflectionClass('CalculatorService');
   printf("The class %s provides the following web methods:\n", $c->getName());
   foreach ($c->getMethods() as $method) {
@@ -45,4 +45,5 @@
     }
     var_dump($method->getAnnotations());
   }
+  // }}}
 ?>
