@@ -119,9 +119,9 @@
         $return= &$this->callReflectHandler($msg);
         $answer->setData(array($return));
 
-      } if (catch('SOAPServiceFaultException', $e)) {
+      } if (catch('ServiceException', $e)) {
       
-        // Server methods may throw a SOAPServerFaultException to have more
+        // Server methods may throw a ServerFaultException to have more
         // conveniant control over the faultcode which is returned to the client.
         $stacktrace= array();
         foreach ($e->getStackTrace() as $element) {
