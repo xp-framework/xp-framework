@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('rdbms.ConnectionManager');
+  uses('rdbms.ConnectionManager', 'rdbms.Criteria');
 
   /**
    * A dataset represents a row of data selected from a database. Dataset 
@@ -78,7 +78,7 @@
    */
   class DataSet extends Object {
     var
-      $_changed= array();
+      $_changed     = array();
     
     /**
      * Constructor. Supports the array syntax, where an associative
@@ -93,6 +93,21 @@
         foreach (array_keys($params) as $key) $this->$key= &$params[$key];
       }
     }
+
+    /**
+     * Dataset registry
+     *
+     * @model   static
+     * @access  public
+     * @param   string key
+     * @param   mixed val default NULL
+     * @return  mixed
+     */
+    function registry($key, $val= NULL) {
+      static $registry= array();
+      
+      if (NULL === $val) return $registry[$key]; else $registry[$key]= $val;
+    }
     
     /**
      * Changes a value by a specified key and returns the previous value.
@@ -100,13 +115,10 @@
      * @access  protected
      * @param   string key
      * @param   &mixed value
-     * @param   string type
      * @return  &mixed previous value
      */
-    function &_change($key, &$value, $type) {
-      if (!isset($this->_changed[$key])) {
-        $this->_changed[$key]= array($type, &$this->{$key});
-      }
+    function &_change($key, &$value) {
+      $this->_changed[$key]= TRUE;
       $previous= &$this->{$key};
       $this->{$key}= &$value;
       return $previous;
@@ -121,9 +133,10 @@
      * @return  string sql
      */
     function _updated(&$db) {
+      $types= DataSet::registry(get_class($this).'.types');
       $sql= '';
       foreach (array_keys($this->_changed) as $key) {
-        $sql.= $key.$db->prepare('= '.$this->_changed[$key][0], $this->{$key}).', ';
+        $sql.= $key.$db->prepare('= '.$types[$key], $this->{$key}).', ';
       }
       return substr($sql, 0, -2);
     }
@@ -137,11 +150,57 @@
      * @return  string sql
      */
     function _inserted(&$db) {
+      $types= DataSet::registry(get_class($this).'.types');
       $sql= implode(', ', array_keys($this->_changed)).') values (';
       foreach (array_keys($this->_changed) as $key) {
-        $sql.= $db->prepare($this->_changed[$key][0], $this->{$key}).', ';
+        $sql.= $db->prepare($types[$key], $this->{$key}).', ';
       }
       return substr($sql, 0, -2);
+    }
+
+    /**
+     * Returns the conditional portion of the SQL query (everything after the
+     * WHERE keyword) based on criteria given.
+     *
+     * @model   static
+     * @access  protected
+     * @param   &rdbms.DBConnection db
+     * @param   &rdbms.Criteria c
+     * @return  string sql
+     * @throws  rdbms.SQLStateException
+     */
+    function criteria(&$db, &$c, $class= NULL) {
+      $types= DataSet::registry(($class ? $class : get_class($this)).'.types');
+      $sql= '';
+      
+      // 1: Process conditions
+      if (!empty($c->conditions)) {
+        $sql.= ' where ';
+        foreach ($c->conditions as $condition) {
+          if (!isset($types[$condition[0]])) {
+            return throw(new SQLStateException('Field "'.$condition[0].'" unknown'));
+          }
+          $sql.= $condition[0].' '.$db->prepare(
+            str_replace('?', $types[$condition[0]], $condition[2]).' and ', 
+            $condition[1]
+          );
+        }
+        $sql= substr($sql, 0, -4);
+      }
+
+      // 2: Process order by
+      if (!empty($c->orderings)) {
+        $sql.= ' order by ';
+        foreach ($c->orderings as $order) {
+          if (!isset($types[$order[0]])) {
+            return throw(new SQLStateException('Field "'.$order[0].'" unknown'));
+          }
+          $sql.= $order[0].' '.$order[1].', ';
+        }
+        $sql= substr($sql, 0, -2);
+      }
+      
+      return $sql;
     }
 
     /**
@@ -189,9 +248,118 @@
       }
       return $s.'}';
     }
+
+    /**
+     * Update this object in the database
+     *
+     * @model   final
+     * @access  public
+     * @param   &rdbms.Criteria criteria
+     * @param   string class
+     * @param   int max default 0
+     * @return  rdbms.DataSet[]
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    function doSelect(&$criteria, $class, $max= 0) {
+      $cm= &ConnectionManager::getInstance();  
+      try(); {
+        $db= &$cm->getByHost(DataSet::registry($class.'.connection'), 0);
+        $q= &$db->query(
+          'select '.implode(', ', array_keys(DataSet::registry($class.'.types'))).
+          ' from '.DataSet::registry($class.'.table').
+          DataSet::criteria($db, $criteria, $class)
+        );
+      } if (catch('SQLException', $e)) {
+        return throw($e);
+      }
+      
+      $r= array();
+      for ($i= 1; $record= $q->next(); $i++) {
+        if ($max && $i > $max) break;
+        $r[]= &new $class($record);
+      }
+      return $r;
+    }
+
+    /**
+     * Inserts this object into the database
+     *
+     * @model   final
+     * @access  public
+     * @param   string identity default NULL the identity field's name
+     * @return  int number of affected rows
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    function doInsert($identity= NULL) {
+      $cm= &ConnectionManager::getInstance();  
+      try(); {
+        $db= &$cm->getByHost(DataSet::registry(get_class($this).'.connection'), 0);
+        $affected= $db->insert(
+          ' into '.DataSet::registry(get_class($this).'.table').
+          $this->_inserted($db)
+        );
+        $identity && $this->{$identity}= $db->identity();
+      } if (catch('SQLException', $e)) {
+        return throw($e);
+      }
+
+      return $affected;
+    }
+
+    /**
+     * Update this object in the database by specified criteria
+     *
+     * @model   final
+     * @access  public
+     * @param   &rdbms.Criteria criteria
+     * @return  int number of affected rows
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    function doUpdate(&$criteria) {
+      $cm= &ConnectionManager::getInstance();  
+      try(); {
+        $db= &$cm->getByHost(DataSet::registry(get_class($this).'.connection'), 0);
+        $affected= $db->update(
+          DataSet::registry(get_class($this).'.table').
+          ' set '.$this->_updated($db).
+          DataSet::criteria($db, $criteria)
+        );
+      } if (catch('SQLException', $e)) {
+        return throw($e);
+      }
+
+      return $affected;
+    }
+
+    /**
+     * Update this object in the database by specified criteria
+     *
+     * @model   final
+     * @access  public
+     * @param   &rdbms.Criteria criteria
+     * @return  int number of affected rows
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    function doDelete(&$criteria) {
+      $cm= &ConnectionManager::getInstance();  
+      try(); {
+        $db= &$cm->getByHost(DataSet::registry(get_class($this).'.connection'), 0);
+        $affected= $db->delete(
+          ' from '.DataSet::registry(get_class($this).'.table').
+          ' set '.$this->_updated($db).
+          DataSet::criteria($db, $criteria)
+        );
+      } if (catch('SQLException', $e)) {
+        return throw($e);
+      }
+
+      return $affected;
+    }
     
     /**
-     * Insert this dataset (create a new row in the table).
+     * Insert this dataset (create a new row in the table). Does nothing
+     * in this default implementation and may be overridden in subclasses 
+     * where it makes sense.
      *
      * @access  public
      * @return  int affected rows
@@ -200,7 +368,9 @@
     function insert() { }
 
     /**
-     * Update this dataset (change an existing row in the table)
+     * Update this dataset (change an existing row in the table). Does 
+     * nothing in this default implementation and may be overridden in 
+     * subclasses where it makes sense.
      *
      * @access  public
      * @return  int affected rows
@@ -209,7 +379,9 @@
     function update() { }
 
     /**
-     * Delete this dataset (remove the corresponding row from the table).
+     * Delete this dataset (remove the corresponding row from the table). 
+     * Does nothing in this default implementation and may be overridden 
+     * in subclasses where it makes sense.
      *
      * @access  public
      * @return  int affected rows
