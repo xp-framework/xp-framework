@@ -13,9 +13,9 @@
   // Change directory to imitate PHP4.2.3 behaviour
   chdir(getenv('CVSROOT'));
 
-  // Read message from file, die silently if not possible
+  // Read message from file, die if not possible
   if (FALSE === ($fd= @fopen($argv[1], 'r'))) {
-    exit();
+    exit('Internal error: '.$argv[1].' not found');
   } 
   $msg= '';
   while ($buf= fgets($fd, 4096)) {
