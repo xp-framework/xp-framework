@@ -57,7 +57,7 @@
      * Constructor
      *
      * @access  public
-     * @param   io.File file
+     * @param   &io.File file
      */
     function __construct(&$file) {
       $this->file= &$file;
