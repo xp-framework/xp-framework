@@ -28,7 +28,7 @@
       if (isset($params['url'])) {
         $p= parse_url($params['url']);
         $params['host']= $p['host'];
-        $params['port']= $p['port'];
+        $params['port']= isset($p['port']) ? $p['port'] : 80;
         $params['target']= $p['path'].@$p['query'];
       }
       $this->__construct($params);
