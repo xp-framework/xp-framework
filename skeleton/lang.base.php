@@ -101,6 +101,7 @@
   error_reporting(E_ALL);
   uses(
     'lang.Object', 
+    'lang.XPClass',
     'lang.Exception',
     'lang.IllegalAccessException',
     'lang.IllegalArgumentException',
