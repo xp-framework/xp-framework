@@ -103,8 +103,8 @@
      * @param   string st submit trigger name
      * @return  bool
      */
-    function isActive(&$context, $st) {
-      return ($st == $this->form);
+    function isActive(&$context) {
+      return TRUE;
     }
     
     /**
