@@ -85,8 +85,9 @@
      */
     function write(&$entry) {
       if (!is_a($entry, 'LDAPEntry')) {
-        trigger_error('Type: '.gettype($entry).'@'.get_class($entry), E_USER_NOTICE);
-        return throw(new IllegalArgumentException('Parameter entry is expected to be a peer.ldap.LDAPEntry object'));
+        return throw(new IllegalArgumentException(
+          'Parameter entry is expected to be a peer.ldap.LDAPEntry object (given: '.xp::typeOf($entry).')'
+        ));
       }
       $this->stream->write(sprintf("dn: %s\n", $entry->getDN()));
       foreach (array_keys($entry->attributes) as $key) {

@@ -45,16 +45,12 @@
      * @throws  ElementNotFoundException
      */
     function _recurse($path, $root, &$response, $maxdepth) {
-      // DEBUG $l= &Logger::getInstance();
-      // DEBUG $c= &$l->getCategory();
-      
       $realpath= $this->base.$path;
       if (!file_exists($realpath)) {
         return throw(new ElementNotFoundException($path.' not found'));
       }
       
       if (is_dir($realpath)) {
-        // DEBUG $c->debug('DIRECTORY', $path);
         $f= &new Folder($realpath);
         $response->addEntry(new WebdavObject(
           basename($path),
@@ -65,14 +61,12 @@
         ));
         $maxdepth--;
         while ($maxdepth >= 0 && $entry= $f->getEntry()) {
-          // DEBUG $c->debug('RECURSE', $path.$entry);
           $this->_recurse($path.$entry, $root, $response, $maxdepth);
         }
         $f->close();
         return;
       }
       
-      // DEBUG $c->debug('FILE', $realpath);
       $response->addEntry(new WebdavObject(
         basename($path),
         $root.$path,
@@ -279,11 +273,10 @@
      * @throws  ElementNotFoundException
      */
     function &proppatch(&$request) {
-      if (
-        (!is_a($request, 'WebdavPropPatchRequest'))
-      ) {
-        trigger_error('[request.type ] '.get_class($request), E_USER_NOTICE);
-        return throw(new IllegalArgumentException('Parameters passed of wrong types'));
+      if (!is_a($request, 'WebdavPropPatchRequest')) {
+        return throw(new IllegalArgumentException(
+          'Parameter request passed of wrong type ('.xp::typeOf($request).')'
+        ));
       }
       
       $l= &Logger::getInstance();
@@ -325,9 +318,9 @@
         (!is_a($request, 'WebdavPropFindRequest')) ||
         (!is_a($response, 'WebdavMultistatus'))
       ) {
-        trigger_error('[request.type ] '.get_class($request), E_USER_NOTICE);
-        trigger_error('[response.type] '.get_class($response), E_USER_NOTICE);
-        return throw(new IllegalArgumentException('Parameters passed of wrong types'));
+        return throw(new IllegalArgumentException(
+          'Parameters passed of wrong types (request: '.xp::typeOf($request).', response: '.xp::typeOf($response).')'
+        ));
       }
 
       $l= &Logger::getInstance();
