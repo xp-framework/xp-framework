@@ -6,9 +6,14 @@
 
   uses('net.mail.MimePart');
 
+  /**
+   * Represents a multipart/alternative MIME part
+   *
+   */
   class MimeAlternative extends MimePart {
     var
-      $parts;
+      $parts        = array(),
+      $boundary     = '';
       
     /**
      * Constructor

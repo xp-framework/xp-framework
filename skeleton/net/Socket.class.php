@@ -1,11 +1,16 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
  * $Id$
  */
  
   uses('io.IOException');
   
+  /**
+   * Socket class
+   *
+   * @see   php://network
+   */
   class Socket extends Object {
     var
       $host,

@@ -6,6 +6,11 @@
 
    uses ('net.http.HTTPRequest');
    
+   /**
+    * HTTPS requests
+    *
+    * @ext  curl
+    */
    class HTTPSRequest extends HTTPRequest {
       var $url;
       var $offset= 0;
