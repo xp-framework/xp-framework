@@ -88,9 +88,9 @@
       
       foreach (array_keys($this->_appenders) as $appflag) {
         if (!($flag & $appflag)) continue;
-        foreach ($this->_appenders[$appflag] as $appender) {
+        foreach (array_keys($this->_appenders[$appflag]) as $idx) {
           call_user_func_array(
-            array(&$appender, 'append'),
+            array(&$this->_appenders[$appflag][$idx], 'append'),
             $args
           );
         }
@@ -103,9 +103,9 @@
      * @access  private
      */
     function finalize() {
-      foreach ($this->_appenders as $flags=> $appenders) {
-        foreach ($appenders as $appender) {
-          $appender->finalize();
+      foreach ($this->_appenders as $flags => $appenders) {
+        foreach (array_keys($appenders) as $idx) {
+          $appenders[$idx]->finalize();
         }
       }
     }
