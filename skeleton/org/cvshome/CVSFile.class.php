@@ -266,5 +266,25 @@
       
       return $log;
     }
+    
+    /**
+     * Retrieves the data of the file at a specific revision
+     *
+     * @access  public
+     * @param   string revision
+     * @return  string contents
+     */    
+    function getRevision($rev) {
+      $data= $this->_execute (sprintf ('update -p -r %s', $rev));
+      if (!count ($data))
+        return FALSE;
+
+      // Does this version exist?
+      if (preg_match ('/^cvs server: .* is no longer in the repository/', $data[0]))
+        return FALSE;
+      
+      return implode ("\n", $data);
+    }
+    
   }
 ?>
