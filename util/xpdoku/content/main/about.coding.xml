@@ -56,10 +56,8 @@
             <li>Klassen<br/>
                 Klassennamen heißen gleich wie die Klasse (s.u.) und enthalten immer nur 
                 eine Klasse. Das Suffix ist .class.php.
-                <pre>
-                  GenericWizzard.class.php
-                  GUI.class.php
-                </pre>
+                <pre><![CDATA[GenericWizard.class.php
+GUI.class.php]]></pre>
             </li>
             <li>Includes<br/>
                 Includes sind, wenn möglich, *nicht* zu verwenden. Stattdessen möchte man 
@@ -68,11 +66,9 @@
             <li>"Normale" Seiten<br/>
                 Diese haben einen prägnanten Namen zum Zweck, welcher durch den Pfad 
                 natürlich ergänzt wird. Worttrennung erfolgt durch den Unterstrich (_).
-                <pre>
-                  index.php
-                  edit/mail.php
-                  edit/mail_notify.php
-                </pre>
+                <pre><![CDATA[index.php
+edit/mail.php
+edit/mail_notify.php]]></pre>
             </li>
           </ul>
         </text>
@@ -203,8 +199,8 @@ $a= 0;//Vermeiden!]]></code>
           Kommentare am Anfang einer Datei) verwendet.
           
           <code><![CDATA[/*
-           * Das ist ein Block-Kommentar
-           */]]></code>
+ * This is a block comment
+ */]]></code>
         </text>
       </para>
       <para>
@@ -227,10 +223,10 @@ $a= 0;//Vermeiden!]]></code>
           <code><![CDATA[if ($condition) {
    ...
 
-   // // Das hier ist zum Debuggen
-   // $debug= TRUE;
-   // fsockopen("debug-srv", 0x9282);
-   // ...
+  // // Das hier ist zum Debuggen
+  // $debug= TRUE;
+  // fsockopen("debug-srv", 0x9282);
+  // ...
 }]]></code>
 
           Bei einem noch größeren Block seien die /* */ nur beim Entwickeln oder 
