@@ -15,11 +15,14 @@
   
   <xsl:variable name="navigation">
     <nav target="static">Home</nav>
+    <nav target="news">News</nav>
     <nav target="about">About</nav>
     <nav target="documentation">Documentation</nav>
     <nav target="resources">Resources</nav>
     <nav target="devel">Development</nav>
   </xsl:variable>
+  
+  <xsl:variable name="area" select="substring-before(concat($__state, '/'), '/')"/>
 
   <!--
    ! Template that matches on the root node
@@ -30,7 +33,7 @@
     <html>
       <head>
         <title>XP Framework | <xsl:value-of select="$__state"/> | <xsl:value-of select="$__page"/></title>
-        <link rel="stylesheet" href="/{substring-before(concat($__state, '/'), '/')}.css"/>
+        <link rel="stylesheet" href="/{$area}.css"/>
       </head>
       <body>
 
@@ -41,7 +44,7 @@
           </tr>
           <tr>
             <xsl:for-each select="exsl:node-set($navigation)/nav">
-              <xsl:variable name="class">nav<xsl:if test="@target = $__state">active</xsl:if></xsl:variable>
+              <xsl:variable name="class">nav<xsl:if test="@target = $area">active</xsl:if></xsl:variable>
               <td width="5%" class="{$class}">
                 <a class="{$class}" href="/xml/{$__product}.{$__lang}/{@target}">
                   <xsl:value-of select="."/>
