@@ -23,6 +23,7 @@
       $identifier = '',
       $table      = '',
       $connection = '',
+      $sequence   = NULL,
       $identity   = NULL,
       $primary    = array(),
       $types      = array();
@@ -75,6 +76,16 @@
      */
     function setIdentity($identity) {
       $this->identity= $identity;
+    }
+
+    /**
+     * Set Sequence
+     *
+     * @access  public
+     * @param   string sequence
+     */
+    function setSequence($sequence) {
+      $this->sequence= $sequence;
     }
 
     /**
@@ -267,7 +278,7 @@
         if ($db->insert(substr($sql, 0, -2).')')) {
 
           // Fetch identity value if applicable.
-          $this->identity && $id= $db->identity();
+          $this->identity && $id= $db->identity($this->sequence);
         }
       } if (catch('SQLException', $e)) {
         return throw($e);
