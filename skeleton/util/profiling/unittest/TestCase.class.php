@@ -345,7 +345,7 @@
     function &run() {
       if (!method_exists($this, $this->name)) {
         return throw(new MethodNotImplementedException(
-          'Method '.$this->name.' does not exist'
+          'Method does not exist', $this->name
         ));
       }
       return call_user_func(array(&$this, $this->name));
