@@ -86,7 +86,6 @@ hr {
 }
 .content {
   margin-top: 20px;
-  margin-right: 40px;
   padding: 10px;
 }
 
@@ -128,4 +127,13 @@ table.highlights {
 }
 table.highlights img {
   border: 1px solid #f4f4f4;
+}
+
+/* Paging elements */
+a.pager img {
+  padding: 3px;
+}
+a.pager#false {
+  -moz-opacity: 0.3;
+  filter: alpha(opacity=30);
 }
