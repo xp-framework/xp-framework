@@ -26,7 +26,7 @@
   // Load original
   Console::write('===> Loading ', $p->value(1), ': ');
   try(); {
-    $img= &Image::loadFrom(new StreamReader(new File($p->value(1))));
+    $img= &Image::loadFrom(new JpegStreamReader(new File($p->value(1))));
   } if (catch('ImagingException', $e)) {
     $e->printStackTrace();
     exit(-1);
