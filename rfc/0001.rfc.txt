@@ -20,16 +20,16 @@ confusing parameter order.
 Functionality
 -------------
 Definition:
-<code>
+<?php
   bool in (array list, mixed element) 
-</code>
+?>
 
 Example:
-<code>
+<?php
   if (in (array(1, 2, 3), 1)) {
     // ...
   }
-</code>
+?>
 
 Dependencies
 ------------
