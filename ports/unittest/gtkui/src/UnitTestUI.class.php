@@ -49,7 +49,7 @@
       $this->suite= &new TestSuite();
       
       // File Open Dialog
-      $this->dialog= &new FileDialog('/home/thekid/devel/xp/util/tests');
+      $this->dialog= &new FileDialog(SKELETON_PATH.'/../util/tests');
       $this->dialog->setFilter('ini$');
       $this->dialog->setModal(TRUE);
       
