@@ -196,6 +196,23 @@
       }
       return $r;
     }
+
+    /**
+     * Returns a DataSet object for given associative array
+     *
+     * @access  public
+     * @param   array record
+     * @return  &rdbms.DataSet
+     * @throws  lang.IllegalArgumentException
+     */    
+    function &objectFor($record) {
+      if (array_keys($this->types) != array_keys($record)) {
+        return throw(new IllegalArgumentException(
+          'Record not compatible with '.$this->identifier.' class'
+        ));
+      }
+      return new $this->identifier($record);
+    }
     
     /**
      * Returns an iterator for a select statement
