@@ -23,7 +23,6 @@
      * other action having taken place (e.g., maintenance, reload config,
      * ...)
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string data
@@ -35,7 +34,6 @@
      * established. This method is called *after* a connecting was
      * successful.
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string server
@@ -49,7 +47,6 @@
      * dropped; thus making it possible to say goodbye. You cannot do
      * anything to prevent disconnection, though.
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string server
@@ -60,7 +57,6 @@
     /**
      * Callback for server message MOTDSTART (375)
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string server
@@ -72,7 +68,6 @@
     /**
      * Callback for server message MOTD (372)
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string server
@@ -84,7 +79,6 @@
     /**
      * Callback for server message REPLY_ENDOFMOTD (376)
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string server
@@ -96,7 +90,6 @@
     /**
      * Callback for all other server messages
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string server
@@ -116,7 +109,6 @@
      *   $connection->join($channel);
      * </code>
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick sending the invitation
@@ -135,7 +127,6 @@
      *   }
      * </code>
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string channel the channel the user was kicked from
@@ -148,7 +139,6 @@
     /**
      * Callback for quits
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string channel the channel the user quit from
@@ -160,7 +150,6 @@
     /**
      * Callback for nick changes
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string channel
@@ -181,7 +170,6 @@
      *   $connection->sendMessage($nick, 'Welcome!');
      * </code>
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string channel which channel was joined
@@ -192,7 +180,6 @@
     /**
      * Callback for parts
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string channel which channel was part
@@ -204,7 +191,6 @@
     /**
      * Callback for mode changes
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick who initiated the mode change
@@ -227,7 +213,6 @@
      *   }
      * </code>
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick
@@ -239,7 +224,6 @@
     /**
      * Callback for topic changes
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick who changed the topic
@@ -251,7 +235,6 @@
     /**
      * Callback for notices
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick
@@ -269,7 +252,6 @@
      *   $connection->sendAction($target, 'imitates %s and %s, too', $nick, $params);
      * </code>
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick who initiated the action
@@ -281,7 +263,6 @@
     /**
      * Callback for CTCP VERSION
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick nick requesting version
@@ -293,7 +274,6 @@
     /**
      * Callback for CTCP USERINFO
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick nick requesting user information
@@ -305,7 +285,6 @@
     /**
      * Callback for CTCP CLIENTINFO
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick nick requesting client information
@@ -317,7 +296,6 @@
     /**
      * Callback for CTCP PING
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick nick requesting ping
@@ -329,7 +307,6 @@
     /**
      * Callback for CTCP TIME
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick nick requesting time
@@ -341,7 +318,6 @@
     /**
      * Callback for CTCP FINGER
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick nick requesting finger information
