@@ -17,8 +17,13 @@
   
   class ProjectManager extends GtkGladeApplication {
     var
-      $tree=    NULL,
-      $files=   array();
+      $tree=        NULL,
+      $dialog=      NULL,
+      $statusbar=   NULL,
+      $timer=       NULL,
+      $menu=        NULL,
+      $pixmap=      array(),
+      $files=       array();
       
     /**
      * Constructor
@@ -44,6 +49,9 @@
       
       // Init window
       $this->window->set_default_size (600, 400);
+      
+      // Setup filedialog
+      $this->dialog= &new FileDialog();
       
       // Init ClassTree
       $this->tree= &$this->widget ('classTree');

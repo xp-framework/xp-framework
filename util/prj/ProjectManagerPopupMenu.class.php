@@ -14,15 +14,6 @@
       $parent=    NULL;
     
     /**
-     * Constructor
-     *
-     * @access  public
-     */
-    function __construct() {
-      parent::__construct();
-    }
-
-    /**
      * Sets the parent object (needed for callbacks)
      *
      * @access  public
@@ -41,10 +32,13 @@
      * @return  boolean success
      */
     function addFile(&$menuItem, &$event) {
-      $dlg=  &new FileDialog();
-      if ($dlg->show ()) {
-        $phpFile= &new PHPParser ($dlg->getDirectory().$dlg->getFilename());
-        return $this->parent->addFile ($phpFile);
+      if ($this->parent->dialog->show ()) {
+      
+        // OK pressed and file selected
+        return $this->parent->addFile(new PHPParser(
+          $this->parent->dialog->getDirectory().
+          $this->parent->dialog->getFilename()
+        ));
       }
       
       return TRUE;
