@@ -70,6 +70,25 @@
     }
 
     /**
+     * Handler for single shots
+     *
+     * @access  public
+     * @param   &de.thekid.dialog.SingleShot shot
+     * @return  &xml.Node node
+     */
+    #[@handles('de.thekid.dialog.SingleShot')]
+    function &shotNode(&$shot) {
+      $child= &new Node('entry', NULL, array(
+        'name'   => $shot->getName(),
+        'title'  => $shot->getTitle()
+      ));
+      $child->addChild(new Node('description', new PCData($shot->getDescription())));
+      $child->addChild(Node::fromObject($shot->date, 'date'));
+      
+      return $child;
+    }
+
+    /**
      * Process this state.
      *
      * @access  public
