@@ -5,10 +5,11 @@
  */
  
   /**
-   * Stellt hilfreiche Funktionen für Kommadozeilen-Argumente zur Verfügung
-   * Unterstützt kurze und lange Optionen, also -h bzw. --help
+   * This class provides helpful functions for commandline applications
+   * to parse the argument list
+   * It supports short and long options, e.g. -h or --help
    *
-   * @purpose Einfacher Zugriff auf Kommandozeilen-Argumente
+   * @purpose Easy access to commandline arguments
    * @example usage.php
    */
   class ParamString extends Object {
@@ -40,12 +41,12 @@
     }
    
     /**
-     * Private Helper-Funktion, die durch den Param-Array iteriert
+     * Private helper function that iterates through array
      * 
      * @access  private
-     * @param   string long Der Lange Parameter (ohne --)
-     * @param   string short default NULL Der kurze Parameter (ohne -), defaultet auf den ersten Buchstaben des langen Parameters
-     * @return  mixed Position, an der der Wert des Parameters steht, oder, wenn nicht vorhanden, FALSE
+     * @param   string long long parameter (w/o --)
+     * @param   string short default NULL Short parameter (w/o -), defaults to the first char of the long param
+     * @return  mixed position on which the parameter is placed or FALSE if nonexistant
      */ 
     function _find($long, $short= NULL) {
       if (is_null($short)) $short= $long{0};
@@ -65,11 +66,11 @@
     }
    
     /**
-     * Prüft, ob ein Parameter gesetzt ist
+     * Checks whether a parameter is set
      * 
      * @access  public
-     * @param   string long Der Lange Parameter (ohne --)
-     * @param   string short default NULL Der kurze Parameter (ohne -), defaultet auf den ersten Buchstaben des langen Parameters
+     * @param   string long long parameter (w/o --)
+     * @param   string short default NULL Short parameter (w/o -), defaults to the first char of the long param
      * @return  boolean Gesetzt
      */  
     function exists($long, $short= NULL) {
@@ -81,17 +82,22 @@
      * Gibt den Wert eines Parameters zurück
      * 
      * @access  public
-     * @param   string long Der Lange Parameter (ohne --)
-     * @param   string short default NULL Der kurze Parameter (ohne -), defaultet auf den ersten Buchstaben des langen Parameters
-     * @return  string Parameter-Wert
+     * @param   string long long parameter (w/o --)
+     * @param   string short default NULL Short parameter (w/o -), defaults to the first char of the long param
+     * @param   string default default NULL A default value if parameter does not exist
+     * @return  string 
+     * @throws IllegalArgumentException if parameter does not exist and no default value was supplied.
      */ 
-    function value($long, $short= NULL) {
+    function value($long, $short= NULL, $default= NULL) {
       if (is_int($long)) return $this->list[$long];
 	  
       $pos= $this->_find($long, $short);
+      if (FALSE === $pos && NULL === $default)
+        return throw (new IllegalArgumentException ('Parameter --'.$long.' does not exist'));
+        
       return ($pos !== FALSE
         ? str_replace("--{$long}=", '', $this->list[$pos])
-        : FALSE
+        : $default
       );
     }
   }
