@@ -138,7 +138,7 @@
         $this->running= TRUE;
         $this->_id= getmypid();
         $this->_pid= $parent;
-        self::run();
+        $this->run();
         exit();
       }
     }
