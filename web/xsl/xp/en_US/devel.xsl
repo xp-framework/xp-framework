@@ -12,6 +12,7 @@
  extension-element-prefixes="func"
 >
   <xsl:include href="../layout.xsl"/>
+  <xsl:include href="../shortcuts.inc.xsl"/>
   
   <!--
    ! Template for context navigation
@@ -62,20 +63,12 @@
   <xsl:template name="content">
     <h1>development</h1>
 
-    <table width="100%" border="0" cellspacing="0" cellpadding="2" class="intro">
-      <tr>
-        <td width="1%">
-          <img src="/image/tip.gif" width="69" height="52"/>
-        </td>
-        <td>
-          <ul class="intro">
-            <li>Increasing <a href="#tips/performance">performace</a> in common situations</li>
-            <li>Basic <a href="#tips/performance">type security</a> in a dynamically typed language</li>
-            <li>Refactoring code to use <a href="#tips/performance">native methods</a> whenever possible</li>
-          </ul>
-        </td>
-      </tr>
-    </table>
+    <xsl:variable name="shortcuts">
+      <shortcut href="http://bugs.xp-framework.net/" icon="bugs">Bugs</shortcut>
+      <shortcut href="http://xp-framework.net/rfc/" icon="rfcs">RFCs</shortcut>
+    </xsl:variable>
+
+    <xsl:copy-of select="func:shortcuts(exsl:node-set($shortcuts))"/>
 
     <h3>
       Coding standards
