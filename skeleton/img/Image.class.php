@@ -109,6 +109,17 @@
     function &saveTo(&$writer) {
       $writer->setResource($this->handle);
     }
+    
+    /**
+     * Convert an image using a given converter
+     *
+     * @access  public
+     * @param   &img.convert.ImageConverter
+     * @return  bool
+     */
+    function convertTo(&$converter) {
+      return $converter->convert($this);
+    }
 
     /**
      * Returns width of image
@@ -364,7 +375,7 @@
       
       // See if we have this in our palette
       if (!isset($this->palette[$idx])) {
-        if (imageistruecolor($this->handler)) {
+        if (imageistruecolor($this->handle)) {
           $this->palette[$idx]= &new Color(
             ($idx >> 16) & 0xFF, 
             ($idx >> 8) & 0xFF, 
