@@ -145,6 +145,12 @@
         for ($i= 0, $s= sizeof($state->handlers); $i < $s; $i++) {
           $cat->info('Calling handler #'.$i, $state->handlers[$i]->getClassName());
 
+          // If the prerequisites for this handler are'nt met, proceed
+          if (!$this->handlers[$i]->prerequisitesMet($context)) {
+            $cat->warn('Handler\'s prerequisites are not met, proceeding...');
+            continue;
+          }
+
           // If this handler is satisfied, ask the next handler in the queue
           if (!$state->handlers[$i]->needsData($this, $request)) {
             $cat->warn('Handler does not need data, proceeding...');

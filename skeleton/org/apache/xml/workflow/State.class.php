@@ -59,21 +59,14 @@
     }
 
     /**
-     * Return whether this state should be accessible. This is 
-     * TRUE for a situation in which no handlers exist or for
-     * the situation in which at least _one_ handler's prerequisites
-     * are met.
+     * Return whether this state should be accessible.
      *
-     * @see     xp://org.apache.xml.workflow.Handler#prerequisitesMet
      * @access  public
      * @param   &org.apache.xml.workflow.Context context
      * @return  bool
      */
     function isAccessible(&$context) {
-      for ($i= 0, $s= sizeof($this->handlers); $i < $s; $i++) {
-        if ($this->handlers[$i]->prerequisitesMet($context)) return TRUE;
-      }
-      return ($s == 0);
+      return TRUE;
     }
     
     /**
