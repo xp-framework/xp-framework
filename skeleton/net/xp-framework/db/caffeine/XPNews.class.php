@@ -38,6 +38,7 @@
         $peer->setTable('CAFFEINE..news');
         $peer->setConnection('caffeine');
         $peer->setIdentity('news_id');
+        $peer->setPrimary(array('news_id'));
         $peer->setTypes(array(
           'news_id'      => '%d',
           'caption'      => '%s',
@@ -276,39 +277,6 @@
      */
     function setBz_id($bz_id) {
       return $this->_change('bz_id', $bz_id);
-    }
-
-    /**
-     * Update this object in the database
-     *
-     * @access  public
-     * @return  int affected rows
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    function update() {
-      return $this->doUpdate(new Criteria(array('news_id', $this->news_id, EQUAL)));
-    }
-
-    /**
-     * Delete this object from the database
-     *
-     * @access  public
-     * @return  int affected rows
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    function delete() {
-      return $this->doDelete(new Criteria(array('news_id', $this->news_id, EQUAL)));
-    }
-    
-    /**
-     * Write this object to the database
-     *
-     * @access  public
-     * @return  int affected rows
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    function insert() {
-      return $this->doInsert();
     }
   }
 ?>
