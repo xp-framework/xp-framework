@@ -27,6 +27,9 @@ Currently implemented
 * Annotations:
   http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/syntax
 
+* Instance creation expression:
+  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/syntax
+
 Making it work
 --------------
 The patch needs to be applied against a current CVS checkout of PHP5.
