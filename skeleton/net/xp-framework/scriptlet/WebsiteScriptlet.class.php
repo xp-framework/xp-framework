@@ -10,9 +10,9 @@
   );
 
   /**
-   * Website scriptlet for http://xp-framework.net/
+   * Website scriptlet for http://xp-framework.info/
    *
-   * @see      http://xp-framework.net/
+   * @see      http://xp-framework.info/
    * @purpose  Scriptlet
    */
   class WebsiteScriptlet extends AbstractXMLScriptlet {
