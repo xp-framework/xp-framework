@@ -82,5 +82,28 @@
       }
       return new XPClass($name);
     }
+    
+    /**
+     * Define a class with a given name
+     *
+     * @access  public
+     * @param   string class fully qualified class name
+     * @param   string bytes sourcecode of the class
+     * @return  &lang.XPClass
+     * @throws  lang.FormatException in case the class cannot be defined
+     */
+    function &defineClass($class, $bytes) {
+      $qname= $this->classpath.$class;
+      $name= xp::reflect($qname);
+
+      if (!class_exists($name)) {
+        if (FALSE === eval($bytes)) {
+          return throw(new FormatException('Cannot define class "'.$qname.'"'));
+        }
+        xp::registry('class.'.$name, $qname);
+        is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+      }      
+      return new XPClass($name);
+    }
   }
 ?>
