@@ -185,7 +185,7 @@
           if (empty($child->children)) break;
           foreach ($child->children as $item) {
             $key= $item->children[0]->getContent($this->getEncoding());
-            $result[$key]= (empty($item->children[1]->children) 
+            $result[$key]= ((empty($item->children[1]->children) && !isset($item->children[1]->attribute['href']))
               ? $item->children[1]->getContent($this->getEncoding())
               : $this->unmarshall($item->children[1], 'MAP', $mapping)
             );
