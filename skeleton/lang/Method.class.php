@@ -46,7 +46,13 @@
      * @return  &lang.XPClass
      */
     function &getDeclaringClass() {
-      return new XPClass($this->_ref);
+      $c= is_object($this->_ref) ? get_class($this->_ref) : $this->_ref;
+      do {
+        $p= get_parent_class($c);
+        if (!$p || !is_callable(array($p, $this->name))) break;
+      } while ($c= $p);
+
+      return new XPClass($c);
     }
     
     /**
@@ -54,9 +60,10 @@
      * on the specified object with the specified parameters.
      *
      * @access  public
-     * @param   &lang.Object
+     * @param   &lang.Object obj
      * @param   mixed* args
      * @return  &mixed
+     * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      */
     function &invoke(&$obj) {
       if (!is(xp::nameOf($this->_ref), $obj)) {
