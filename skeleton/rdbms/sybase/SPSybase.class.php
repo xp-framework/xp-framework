@@ -1,13 +1,16 @@
 <?php
-/* Datenbank-Klasse für Schlund-Datenbanken (bz_id)
+/**
  *
  * $Id$
  */
   
   /**
-   * SPSybase
    * Ergänzt bz_id-Felder durch bz_description, Datumsangaben durch unix-Timestamp
    *
+   * @purpose Datenbank-Klasse für Schlund-Datenbanken
+   * @example sybase.ini
+   * @see     http://manuals.sybase.com/
+   * @see     http://curry.schlund.de/datenbank/MIGRAENE.html#bearbeitungszustand
    */
   class SPSybase extends Object {
     var 
@@ -26,10 +29,6 @@
     /**
      * Constructor
      */
-    function SPSybase($params= NULL) {
-      $this->__construct($params);
-    }
-    
     function __construct($params) {
       $this->bz_map= array();
       parent::__construct($params);
@@ -42,8 +41,8 @@
      * Debug-Ausgabe
      *
      * @access  private
-     * @param	(string)key
-     * @param   (variant)var
+     * @param	string key
+     * @param   variant var
      */
     function _logline_text($key, $var) {
       if(!$this->Debug || !$GLOBALS["stage_server"]) return 0;
@@ -54,7 +53,7 @@
      * Konnektieren
      *
      * @access  public
-     * @return  (bool)connected
+     * @return  bool connected
      */
     function connect() {
       $this->handle= @sybase_connect($this->host, $this->user, $this->pass);
@@ -66,8 +65,8 @@
      * Datenbank auswählen
      *
      * @access  public
-     * @param   (string)db default NULL Auszuwählende Datenbank (wenn NULL, $this->db)
-     * @return  (bool)result Datenbank ausgewählt?
+     * @param   string db default NULL Auszuwählende Datenbank (wenn NULL, $this->db)
+     * @return  bool result Datenbank ausgewählt?
      */    
     function select_db($db= NULL) {
       if(!is_null($db)) $this->db= $db;
@@ -79,8 +78,8 @@
      * Query-Funktion. Connected, falls nötig
      *
      * @access  public
-     * @param   (string)sql  Der abzusetzende SQL-Query-String
-     * @return  (bool)result Query-Ergebnis
+     * @param   string sql  Der abzusetzende SQL-Query-String
+     * @return  bool result Query-Ergebnis
      */
     function query($sql) {
       // Wenn es keinen Connect gibt, einen herstellen
@@ -97,9 +96,9 @@
      * Data Seek: Offset innerhalb eines Querys definieren
      *
      * @access  public
-     * @param	(resource)query Queryhandle, z.B. aus query()
-     * @param   (int)offset Der Offset, zu dem gesprungen wird
-     * @return  (bool)result Konnte geseekt werden
+     * @param	resource query Queryhandle, z.B. aus query()
+     * @param   int offset Der Offset, zu dem gesprungen wird
+     * @return  bool Konnte geseekt werden?
      */
     function data_seek($query, $offset) {
       $this->_logline_text("seek", "{offset} $offset");
@@ -110,8 +109,8 @@
      * Einen Datensatz holen
      *
      * @access  public
-     * @param	(resource)query Queryhandle, z.B. aus query()
-     * @return  (array)row Der selektierte Datensatz
+     * @param	resource query Queryhandle, z.B. aus query()
+     * @return  array Der selektierte Datensatz
      * @throws  E_SQL
      */
     function &fetch($query) {
@@ -148,8 +147,8 @@
      * Datensätze als assoziativen Array holen
      *
      * @access  public
-     * @param	(string)sql Das SQL
-     * @return  (array)rows Folgende Form (bei Anzahl zurückgegebener Felder):
+     * @param	string sql Das SQL
+     * @return  array rows Folgende Form (bei Anzahl zurückgegebener Felder):
      *          1) field[0].content => field[0].content
      *          2) field[0].content => field[1].content
      *          3) field[0].content => array(field[1].content, field[2].content, ...)
@@ -179,8 +178,8 @@
      * Select-Wrapper
      *
      * @access  public
-     * @param	(string)sql Das SQL (ohne select)
-     * @return  (array)rows Alle Rows
+     * @param	string sql Das SQL (ohne select)
+     * @return  array Alle Rows
      * @throws  E_SQL
      */   
     function &select($sql) {
@@ -202,8 +201,8 @@
      * Update-Wrapper
      *
      * @access  public
-     * @param	(string)sql Das SQL (ohne update)
-     * @return  (bool)result Query-Ergebnis
+     * @param	string sql Das SQL (ohne update)
+     * @return  bool Query-Ergebnis
      */   
     function update($sql) {
       $this->last_affected_rows= -1;
@@ -219,8 +218,8 @@
      * Insert-Wrapper
      *
      * @access  public
-     * @param	(string)sql Das SQL (ohne insert)
-     * @return  (bool)result Query-Ergebnis
+     * @param	string sql Das SQL (ohne insert)
+     * @return  bool result Query-Ergebnis
      */   
     function insert($sql) {
       $this->last_insert_id= $this->last_affected_rows= -1;
@@ -236,8 +235,8 @@
      * Delete-Wrapper
      *
      * @access  public
-     * @param	(string)sql Das SQL (ohne delete)
-     * @return  (bool)result Query-Ergebnis
+     * @param	string sql Das SQL (ohne delete)
+     * @return  bool result Query-Ergebnis
      */   
     function delete($sql) {
       $this->last_affected_rows= -1;
@@ -253,7 +252,7 @@
      * Letzten Auto-Identity-Wert holen
      *
      * @access  public
-     * @return  (int)identity
+     * @return  int Der Wert von select @@IDENTITY
      */   
     function insert_id() {
       $id= $this->query("select @@IDENTITY", $this->handle);
@@ -266,24 +265,49 @@
       return $result;
     }
         
+    /**
+     * Transaktion beginnen
+     *
+     * @access  public
+     * @param   string name default php_transaction Transaktions-Name
+     * @return  int Success
+     */   
     function start_tran($name= "php_transaction") {
       $this->transaction= $name;
       $this->_logline_text("transaction_start", $this->transaction);
       return $this->query("begin transaction $this->transaction", $this->handle);
     }
-    
+ 
+    /**
+     * Transaktion committen
+     *
+     * @access  public
+     * @return  int Success
+     */      
     function commit_tran() {
       $return= $this->query("commit transaction $this->transaction");
       if($return) $this->transaction= 0;
       return $return;
     }
-    
+
+    /**
+     * Transaktion rollback'en
+     *
+     * @access  public
+     * @return  int Success
+     */          
     function rollback_tran() {
       $return= $this->query("rollback transaction $this->transaction");
       if($return) $this->transaction= 0;
       return $return;    
     }
     
+    /**
+     * Letzen Fehler zurückgeben
+     *
+     * @access  public
+     * @return  int Der Wert von @@ERROR
+     */      
     function get_error() {
       $query= $this->query("select @@error", $this->handle);
       if(!$query) {
@@ -295,15 +319,32 @@
       return $this->Error;
     }
     
+    /**
+     * Destructor
+     */
     function __destruct() {
       parent::__destruct();
       //if($this->handle) sybase_close($this->handle);
     } 
     
+    /**
+     * Anzahl der vom letzten Select-Query betroffene Rows zurückgeben
+     *
+     * @access  public
+     * @params  resource query Query-Handle
+     * @return  int Anzahl Rows
+     */      
     function num_rows($query) {
       return sybase_num_rows($query);
     }
     
+    /**
+     * Deutsche Datums/Uhrzeitangabe für Querys aufarbeiten
+     *
+     * @access  public
+     * @param   string localtime Datums-String 14.12.2002, 11:55
+     * @return  string convert(datetime, [...]) für Select
+     */      
     function timefromlocale($localtime) {
       if(!preg_match('/^([0-9]+).([0-9]+).([0-9]+) ?([0-9]+)?:?([0-9]+)?$/', $localtime, $regs)) return 0;
       _logline_text($localtime, $regs);
