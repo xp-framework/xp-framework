@@ -20,16 +20,16 @@ Operators           Overloadability
                     overloaded.
 </pre>
 
+Basic syntax
+------------
+The key to operator overloading is the new keyword "operator". Apart
+from that, the syntax is equal to that of a normal method declaration:
 
-Making it work
---------------
-The patch needs to be applied against a current CVS checkout of PHP5.
-Affected files in the Zend/ subdirectory:
-
-zend_language_parser.y
-zend_language_scanner.l
-zend_operators.c
-
-Compile, then run the tests (bigdecimal.php, complex.php).
+  class Integer {
+    
+    public static operator + (Integer $a, Integer $b) {
+      // ...
+    }
+  }
 
 <EOF>
