@@ -113,8 +113,8 @@
      * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
      * @access  private
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request
+     * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doOptions(&$request, &$response) {
@@ -140,11 +140,11 @@
     /**
      * Handle DELETE
      *
-     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @see     rfc://2518#8.6
      * @access  private
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request
+     * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doDelete(&$request, &$response) {
@@ -170,11 +170,11 @@
     /**
      * Handle GET
      *
-     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @see     rfc://2518#8.4
      * @access  private
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request
+     * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doGet(&$request, &$response) {
@@ -204,11 +204,11 @@
     /**
      * Handle POST
      *
-     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @see     rfc://2518#8.5
      * @access  private
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request
+     * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doPost(&$request, &$response) {
@@ -217,11 +217,11 @@
     /**
      * Handle HEAD
      *
-     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @see     rfc://2518#8.4
      * @access  private
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request
+     * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doHead(&$request, &$response) {
@@ -250,11 +250,11 @@
     /**
      * Handle PUT
      *
-     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @see     rfc://2518#8.7
      * @access  private
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request
+     * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doPut(&$request, &$response) {
@@ -281,13 +281,16 @@
     }
 
     /**
-     * Handle MKCOL
+     * <quote>
+     * The MKCOL method is used to create a new collection. All DAV
+     * compliant resources MUST support the MKCOL method.
+     * </quote>
      *
-     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @see     rfc://2518#8.3
      * @access  private
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request
+     * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doMkCol(&$request, &$response) {
@@ -307,11 +310,11 @@
     /**
      * Handle MOVE
      *
-     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @see     rfc://2518#8.9
      * @access  private
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request
+     * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doMove(&$request, &$response) {
@@ -341,11 +344,11 @@
     /**
      * Handle COPY
      *
-     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @see     rfc://2518#8.8
      * @access  private
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request
+     * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doCopy(&$request, &$response) {
@@ -373,13 +376,22 @@
     }
 
     /**
-     * Handle LOCK
+     * <quote>
+     * A LOCK method invocation creates the lock specified by the lockinfo
+     * XML element on the Request-URI.
+     * [...]
+     * In order to indicate the lock token associated with a newly created
+     * lock, a Lock-Token response header MUST be included in the response
+     * for every successful LOCK request for a new lock.  Note that the
+     * Lock-Token header would not be returned in the response for a
+     * successful refresh LOCK request because a new lock was not created
+     * </quote>
      *
-     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @see     rfc://2518#8.10
      * @access  private
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request
+     * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doLock(&$request, &$response) {
@@ -388,7 +400,7 @@
     /**
      * Handle UNLOCK
      *
-     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @see     rfc://2518#8.11
      * @access  private
      * @return  bool processed
      * @public  request org.apache.HttpScriptletRequest
@@ -408,11 +420,11 @@
      * the entire request with a 400 (Bad Request).
      * </pre>
      *
-     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @see     rfc://2518#8.1
      * @access  private
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request
+     * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doPropFind(&$request, &$response) {
@@ -456,11 +468,11 @@
      * Receives an PROPPATCH request from the <pre>process()</pre> method
      * and handles it.
      *
-     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @see     rfc://2518#8.2
      * @access  private
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request
+     * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doPropPatch(&$request, &$response) {
