@@ -163,9 +163,9 @@
      * and handles it.
      *
      * @access  protected
-     * @return  bool processed
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @return  bool processed
      * @throws  lang.Exception to indicate failure
      */
     function doGet(&$request, &$response) {
