@@ -1,0 +1,58 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  uses('util.ChainedException');
+
+  /**
+   * Indicates a certain fault occurred. Service methods may throw
+   * this exception to indicate a well-known, categorised exceptional
+   * situation has been met.
+   *
+   * The faultcode set within this exception object will be propagated into
+   * the server's fault message's faultcode. This code can be used by clients
+   * to recognize the type of error (other than by looking at the message).
+   *
+   * @see      xp://xml.soap.rpc.SoapRpcRouter#doPost
+   * @purpose  Csutom service exception.
+   */
+  class ServiceException extends ChainedException {
+    var
+      $faultcode;
+
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   mixed faultcode faultcode (can be int or string)
+     * @param   string message
+     * @param   &lang.Throwable cause causing exception
+     */
+    function __construct($faultcode, $message, &$cause) {
+      $this->faultcode= $faultcode;
+      parent::__construct($message, $cause);
+    }
+
+    /**
+     * Set Faultcode
+     *
+     * @access  public
+     * @param   mixed faultcode
+     */
+    function setFaultcode($faultcode) {
+      $this->faultcode= $faultcode;
+    }
+
+    /**
+     * Get Faultcode
+     *
+     * @access  public
+     * @return  mixed
+     */
+    function getFaultcode() {
+      return $this->faultcode;
+    }
+  }
+?>
