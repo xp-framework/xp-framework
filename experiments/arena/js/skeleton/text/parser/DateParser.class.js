@@ -6,6 +6,8 @@
 
   uses('Exception');
 
+  var DATE_FMT_GERMAN = /0?([0-9]+)\.0?([0-9]+)(\.0?([0-9]+))?/;
+
   /**
    * Dateparser
    *
@@ -16,21 +18,33 @@
    *
    * @purpose  Parse dates
    */
-  function DateParser(str) {
+  function DateParser(format) {
 
     /**
      * Constructor
      *
      * @access  public
-     * @param   string str
+     * @param   regex format
      * @throws  Exception in case
      */      
     {
+      this.format= format;
+    }
+
+    /**
+     * Parse a string
+     *
+     * @access  public
+     * @param   string str
+     * @return  Date
+     */      
+    DateParser.prototype.parse= function(str) {
       var matches= [];
       var y= 0;
+      var date= null;
 
-      if (matches= str.match(/0?([0-9]+)\.0?([0-9]+)(\.0?([0-9]+))?/)) {
-        with (this.date = new Date()) {
+      if (matches= str.match(this.format)) {
+        with (date = new Date()) {
           setDate(parseInt(matches[1]));
           setMonth(parseInt(matches[2]) - 1);
           if (4 < matches.length) {
@@ -40,19 +54,10 @@
         }
       }
       
-      if (!this.date) {
+      if (!date) {
         throw new Exception('Could not parse date "' + str + '"');
       }
-    }
-
-    /**
-     * Retrieve parsed date
-     *
-     * @access  public
-     * @return  Date
-     */      
-    DateParser.prototype.getDate= function() {
-      return this.date;
+      return date;
     }
   }
 }
