@@ -117,6 +117,23 @@
     function getBody() {
       return $this->body;
     }
+    
+    
+    /**
+     * Retrieve a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      $s= sprintf("%s %s {\n", $this->getClassName(), $this->getMessageId());
+      foreach ($this->header as $name => $attr) {
+        $s.= sprintf("  [%-26s] %s\n", $name, $attr);
+      }
+      $s.= sprintf("\n  %s\n", str_replace("\n", "\n  ", $this->getBody()));
+
+      return $s."}\n";
+    }
 
   }
 ?>
