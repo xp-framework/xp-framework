@@ -9,7 +9,8 @@
     'com.sun.webstart.jnlp.JnlpInformation',
     'com.sun.webstart.jnlp.JnlpApplicationDesc',
     'com.sun.webstart.jnlp.JnlpJ2seResource',
-    'com.sun.webstart.jnlp.JnlpJarResource'
+    'com.sun.webstart.jnlp.JnlpJarResource',
+    'com.sun.webstart.jnlp.JnlpPropertyResource'
   );
   
   define('JNLP_SPEC_1_PLUS',  '1.0+');
@@ -135,6 +136,13 @@
                 $this->_nodes['resources']->children[$i]->getAttribute('href')
               );
               break;
+            
+            case 'property':
+              $this->resources[]= &new JnlpPropertyResource(
+                $this->_nodes['resources']->children[$i]->getAttribute('name'),
+                $this->_nodes['resources']->children[$i]->getAttribute('value')
+              );
+              break;
 
             default:
               return throw(new FormatException('Unknown identifier "'.$name.'" / Section "resources"'));
@@ -253,9 +261,9 @@
     function &addResource(&$resource) {
       $this->resources[]= &$resource;
       $this->_nodes['resources']->addChild(new Node(
-        $resource->getName(), 
+        $resource->getTagName(), 
         NULL,
-        $resource->getAttributes()
+        $resource->getTagAttributes()
       ));
       return $resource;
     }
