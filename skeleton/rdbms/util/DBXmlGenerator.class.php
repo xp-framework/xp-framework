@@ -31,10 +31,11 @@
      * @model   static
      * @access  public
      * @param   &rdbms.DBTable table
+     * @param   string dbhost
      * @param   string database
      * @return  &rdbms.util.DBXmlGenerator object
      */    
-    function &createFromTable(&$table, $database) {
+    function &createFromTable(&$table, $dbhost, $database) {
       if (!is_a($table, 'DBTable')) {
         return throw(new IllegalArgumentException('Argument table is not a DBTable object'));
       }
@@ -48,7 +49,8 @@
           'name' => 'table'
       )));
       $t->attribute['name']=      $table->name;
-      $t->attribute['database']=  strtolower ($database);
+      $t->attribute['dbhost']=    $dbhost;
+      $t->attribute['database']=  $database;
       
       // Attributes
       if ($attr= &$table->getFirstAttribute()) do {
