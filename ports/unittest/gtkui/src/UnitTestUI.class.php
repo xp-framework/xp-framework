@@ -38,7 +38,7 @@
      * @param   &util.cmd.ParamString p
      */
     function __construct(&$p) {
-      parent::__construct(dirname(__FILE__).'/gtkui.glade', 'mainwindow');
+      parent::__construct($p, dirname(__FILE__).'/gtkui.glade', 'mainwindow');
     }
     
     /**
