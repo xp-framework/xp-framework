@@ -89,7 +89,8 @@
           
         case 'date':
         case 'datetime':    // ISO 8601: http://www.w3.org/TR/xmlschema-2/#ISO8601 http://www.w3.org/TR/xmlschema-2/#dateTime
-          return new Date(str_replace('T', ' ', $ret));
+          sscanf($ret, '%4d-%2d-%2dT%2d:%2d:%2d', $year, $month, $day, $hour, $minute, $second);
+          return new Date(mktime($hour, $minute, $second, $month, $day, $year));
           break;
           
         default:
