@@ -4,25 +4,35 @@
  * $Id$ 
  */
 
-  define('FPDF_VERSION',        1.6);
+  define('FPDF_VERSION',            '2.0');
   
-  define('FPDF_LANDSCAPE',      'L');
-  define('FPDF_PORTRAIT',       'P');
+  define('FPDF_LANDSCAPE',          'L');
+  define('FPDF_PORTRAIT',           'P');
 
-  define('FPDF_UNIT_PT',        'pt');
-  define('FPDF_UNIT_MM',        'mm');
-  define('FPDF_UNIT_CM',        'cm');
-  define('FPDF_UNIT_INCH',      'in');
+  define('FPDF_UNIT_PT',            'pt');
+  define('FPDF_UNIT_MM',            'mm');
+  define('FPDF_UNIT_CM',            'cm');
+  define('FPDF_UNIT_INCH',          'in');
   
-  define('FPDF_FORMAT_A3',      'A3');
-  define('FPDF_FORMAT_A4',      'A4');
-  define('FPDF_FORMAT_A5',      'A5');
-  define('FPDF_FORMAT_LETTER',  'LETTER');
-  define('FPDF_FORMAT_LEGAL',   'LEGAL');
+  define('FPDF_FORMAT_A3',          'A3');
+  define('FPDF_FORMAT_A4',          'A4');
+  define('FPDF_FORMAT_A5',          'A5');
+  define('FPDF_FORMAT_LETTER',      'LETTER');
+  define('FPDF_FORMAT_LEGAL',       'LEGAL');
+  
+  define('FPDF_ZOOM_FULLPAGE',      'fullpage');
+  define('FPDF_ZOOM_FULLWIDTH',     'fullwidth');
+  define('FPDF_ZOOM_REAL',          'real');
+  define('FPDF_ZOOM_DEFAULT',       'default');
 
-  define('FPDF_RECT_DRAW',      0x0001);  
-  define('FPDF_RECT_FILL',      0x0002);
-  define('FPDF_RECT_FILL_DRAW', FPDF_RECT_FILL | FPDF_RECT_DRAW);
+  define('FPDF_LAYOUT_SINGLE',      'single');
+  define('FPDF_LAYOUT_CONTINUOUS',  'continuous');
+  define('FPDF_LAYOUT_TWO',         'two');
+  define('FPDF_LAYOUT_DEFAULT',     'default');
+
+  define('FPDF_RECT_DRAW',          0x0001);  
+  define('FPDF_RECT_FILL',          0x0002);
+  define('FPDF_RECT_FILL_DRAW',     FPDF_RECT_FILL | FPDF_RECT_DRAW);
   
   uses('org.fpdf.FPDFFont', 'lang.IllegalArgumentException');
   
@@ -216,9 +226,9 @@
      * Set left, top and right margins
      *
      * @access  public
-     * @param   int left
-     * @param   int top
-     * @param   int right default -1 Default value is the left one. 
+     * @param   float left
+     * @param   float top
+     * @param   float right default -1 Default value is the left one. 
      */
     function setMargins($left, $top, $right= -1) {
       $this->setLeftMargin($left);
@@ -230,7 +240,7 @@
      * Set left margin
      *
      * @access  public
-     * @param   int margin
+     * @param   float margin
      */
     function setLeftMargin($margin) {
       $this->lMargin= $margin;
@@ -241,7 +251,7 @@
      * Set top margin
      *
      * @access  public
-     * @param   int margin
+     * @param   float margin
      */
     function setTopMargin($margin) {
       $this->tMargin= $margin;
@@ -251,7 +261,7 @@
      * Set right margin
      *
      * @access  public
-     * @param   int margin
+     * @param   float margin
      */
     function setRightMargin($margin) {
       $this->rMargin= $margin;
@@ -274,39 +284,12 @@
      * Set display mode in viewer
      *
      * @access  public
-     * @param   string zoom
-     * @param   string layout default continuous
-     * @throws  lang.IllegalArgumentException
+     * @param   mixed zoom either one of the FPDF_ZOOM_* constants or a number indicating the zooming factor to use.
+     * @param   string layout default FPDF_LAYOUT_CONTINUOUS
      */
-    function setDisplayMode($zoom, $layout= 'continuous') {
-      switch ($zoom) {
-        case 'fullpage':
-        case 'fullwidth':
-        case 'real':
-        case 'default':
-        case NULL:
-          $this->ZoomMode= $zoom;
-          break;
-        
-        case 'zoom':
-          $this->ZoomMode= $layout;
-          return;
-        
-        default:
-          return throw(new IllegalArgumentException('Incorrect zoom display mode: '.$zoom));
-      }
-      
-      switch ($layout) {
-        case 'single':
-        case 'continuous':
-        case 'two':
-        case 'default':
-          $this->LayoutMode=$layout;
-          break;
-        
-        default:
-          return throw(new IllegalArgumentException('Incorrect layout display mode: '.$layout));
-      }
+    function setDisplayMode($zoom, $layout= FPDF_LAYOUT_CONTINUOUS) {
+      $this->ZoomMode= $zoom;
+      $this->LayoutMode= $layout;
     }
 
     /**
