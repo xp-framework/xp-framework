@@ -3,10 +3,12 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
   version="1.0"
 >
-
+  <xsl:output method="xhtml" encoding="iso-8859-1"/>
   <xsl:param name="collection"/>
   <xsl:param name="package" select="''"/>
   <xsl:param name="mode" select="'collection'"/>
+  <xsl:param name="intro" select="''"/>
+  <xsl:include href="text-helper.xsl"/>
 
   <xsl:template name="navigation">
     <!-- Nothing yet -->
@@ -32,6 +34,19 @@
       <tr bgcolor="#cccccc"><td colspan="2"><img src="/image/spacer.gif" height="1" border="0"/></td></tr>
     </table>
     <br/>
+    
+    <xsl:if test="$intro != ''">
+      <xsl:variable name="doc" select="document(concat('../', $intro))/introduction"/>
+      
+      <b><xsl:value-of select="$doc/para/caption"/></b>
+      <br/>
+      <p style="line-height: 16px; text-align: justify">
+        <xsl:apply-templates select="$doc/para/text"/>
+      </p>
+      <xsl:call-template name="divider"/>
+      <br/>
+    </xsl:if>
+    
     <table border="0" cellspacing="0" cellpadding="0" width="100%">
       <xsl:if test="count (./collection) &gt; 0">
         <tr>

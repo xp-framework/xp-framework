@@ -9,6 +9,7 @@
   <xsl:output method="xhtml" encoding="iso-8859-1"/>
   <xsl:param name="mode" select="'index'"/>
   <xsl:include href="xsl-helper.xsl"/>
+  <xsl:include href="text-helper.xsl"/>
 
   <xsl:template name="navigation">
     <b>See also</b>
@@ -18,44 +19,6 @@
         <li><xsl:apply-templates select="."/></li>
       </xsl:for-each>
     </ul>
-  </xsl:template>
-
-  <xsl:template match="ref[@type= 'ext']">
-    <a title="External link to {@link}" href="{@link}" target="_new"><xsl:value-of select="."/></a>
-  </xsl:template>
-
-  <xsl:template match="ref[@type= 'google']">
-    <a href="http://google.de/search?q={@link}" target="_new">Google search: <xsl:value-of select="@link"/></a>
-  </xsl:template>
-
-  <xsl:template match="ref[@type= 'api:class']">
-    <xsl:param name="label" select="."/>
-    <xsl:param name="link">
-      <xsl:choose>
-        <xsl:when test="contains(@link, '#')">
-          <xsl:value-of select="concat(substring-before(@link, '#'), '.html#', substring-after(@link, '#'))"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="concat(@link, '.html')"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:param>
-    <a title="XP API-Doc: Class {@link}" href="/apidoc/classes/{$link}">
-      <xsl:value-of select="$label"/>
-      <xsl:if test="$label = ''"><xsl:value-of select="@link"/></xsl:if>
-    </a>
-  </xsl:template>
-
-  <xsl:template match="ref[@type= 'api:collection']">
-    <xsl:param name="label" select="."/>
-    <a title="XP API-Doc: Collection {@link}" href="/apidoc/collections/{@link}.html">
-      <xsl:value-of select="$label"/>
-      <xsl:if test="$label = ''"><xsl:value-of select="@link"/></xsl:if>
-    </a>
-  </xsl:template>
-  
-  <xsl:template match="ref">
-    <a href="/content/{@link}.html"><xsl:value-of select="."/></a>
   </xsl:template>
   
   <xsl:template match="main">
@@ -129,57 +92,5 @@
     <br/>
   </xsl:template>
 
-  <xsl:template match="advanced">
-    <xsl:call-template name="frame">
-      <xsl:with-param name="margin" select="'4'"/>
-      <xsl:with-param name="icolor" select="'#eaffea'"/>
-      <xsl:with-param name="color" select="'#6a996a'"/>
-      <xsl:with-param name="content">
-        <span style="line-height: 18px">
-          <b>Advanced topics:</b><br/>
-          <xsl:for-each select="ref">
-            <img src="/image/caret-r.gif" height="7" width="11" alt="{position()}" hspace="2" vspace="0"/> <xsl:apply-templates select="."/><br/>
-          </xsl:for-each>
-        </span>
-      </xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
-  
-  <xsl:template match="box">
-    <br/><br/>
-    <xsl:call-template name="frame">
-      <xsl:with-param name="margin" select="'4'"/>
-      <xsl:with-param name="color" select="'#cccccc'"/>
-      <xsl:with-param name="icolor" select="'#f6f6f6'"/>
-      <xsl:with-param name="content">
-        <xsl:if test="@caption">
-          <b><xsl:value-of select="@caption"/></b>
-          <br/>
-        </xsl:if>
-        <xsl:apply-templates/>
-      </xsl:with-param>
-    </xsl:call-template>
-    <br/>
-  </xsl:template>
-  
-  <xsl:template match="code">
-    <br/><br/>
-    <xsl:call-template name="frame">
-      <xsl:with-param name="color" select="'#cccccc'"/>
-      <xsl:with-param name="content">
-        <code>
-          <xsl:apply-templates select="document(concat('php://', .))"/>
-        </code>
-      </xsl:with-param>
-    </xsl:call-template>
-    <br/>
-  </xsl:template>
-
-  <xsl:template match="text//br|text//tt|php//*">
-    <xsl:copy>
-      <xsl:copy-of select="@*"/>
-      <xsl:apply-templates/>
-    </xsl:copy>
-  </xsl:template>
 
 </xsl:stylesheet>
