@@ -88,7 +88,7 @@
     // {{{ internal string reflect(string str)
     //     Retrieve PHP conformant name for fqcn
     function reflect($str) {
-      return strtolower(substr($str, strrpos($str, '.')+ 1));
+      return strtolower(substr($str, (FALSE === $p= strrpos($str, '.')) ? 0 : $p+ 1));
     }
     // }}}
     
