@@ -62,7 +62,7 @@
       } elseif (is_int($perm)) {
         $this->permissions= $perm;
       } else {
-        return throw(new IllegalArgumentException('Expect: string(9) / int, have '.$perm));
+        return throw(new IllegalArgumentException('Expect: string(9) / int, have "'.$perm.'"'));
       }
     }
 
