@@ -96,7 +96,7 @@
         $f->close();
         return;
       }
-      
+      // Its a File
       $f= &new File($realpath);
       $o= &new WebdavObject(
         $root.$path,
@@ -106,11 +106,14 @@
         new Date(filectime($realpath)),
         new Date(filemtime($realpath))
       );
+
       $eProps= $this->propStorage->getProperties(substr($f->uri, strlen($this->base)));
-      
+     
       foreach ($eProps as $key => $property) {
         $o->addProperty($property);
       }
+
+      if (isset($eProps['D:resourcetype'])) $o->setResourceType($eProps['D:resourcetype']->value);
 
       // lock info:
       $lockinfo= $this->getLockInfo(substr($f->uri, strlen($this->base)));
@@ -125,6 +128,7 @@
           $lockinfo->getDepth()
         );
       }
+
       $response->addWebdavObject($o, $request->getProperties());
     }
     
@@ -267,18 +271,22 @@
      * Put a file
      *
      * @access  public
-     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   string filename
+     * @param   mixed data
+     * @param   string resourcetype, default NULL
      * @return  bool new
-     * @throws  ElementNotFoundException
+     * @throws  OperationNotAllowedException
+     * @throws  OperationFailedExcpetion
      */
-    function &put($filename, &$data) {
-      $filename= $this->base.$filename;
-      if (is_dir($filename)) {
-        return throw(new OperationNotAllowedException($filename.' cannot be written (not a file)'));
-      }
+    function &put($filename, &$data, $resourcetype= NULL) {
       
+      $uri= $this->base.$filename;
+      if (is_dir($uri)) {
+        return throw(new OperationNotAllowedException($uri.' cannot be written (not a file)'));
+      }
+
       // Open file and write contents
-      $f= &new File($filename);
+      $f= &new File($uri);
       try(); {
         $new= !$f->exists();
         $f->open(FILE_MODE_WRITE);
@@ -287,6 +295,21 @@
       } if (catch('IOException', $e)) {
         return throw(new OperationFailedException($filename.' cannot be written to ('.$e->message.')'));
       }
+      
+      // Set ResourceType
+      $p= &new WebdavProperty(
+        'resourcetype',
+        $resourcetype
+      );
+      
+      $p->setNameSpaceName('DAV:');
+      $p->setNameSpacePrefix('D:');
+      
+      $this->propStorage->setProperties($filename, array(
+        'D:resourcetype'  =>  $p
+        )
+      );  
+      
 
       return $new;
     }
@@ -485,7 +508,7 @@
       $realpath= $this->base.$request->getPath();
       
       if (!file_exists($realpath)) {
-        return throw(new ElementNotFoundException($realpath.' not found'));
+        $this->put($request->getPath(), $d= NULL, WEBDAV_LOCK_NULL);
       }
       parent::lock($request, $response);
     }
