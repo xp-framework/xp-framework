@@ -7,7 +7,9 @@
   require('lang.base.php');
   uses(
     'util.cmd.ParamString', 
+    'lang.System',
     'io.File',
+    'io.Folder',
     'io.FileUtil',
     'text.PHPTokenizer'
   );
@@ -22,26 +24,25 @@
   $p= &new ParamString();
   if (2 > $p->count || $p->exists('help', '?')) {
     printf(
-      "Usage:   %1\$s <filename> [--debug]\n".
-      "Example: find skeleton/ -name '*.php' -exec php -C %1\$s {} \;\n",
+      "Usage:   %1\$s <filename> [--target=<target_dir>] [--dump]\n".
+      "Example: find skeleton/ -name '*.php' -exec php %1\$s --target=skeleton2/ {} \;\n",
       basename($p->value(0))
     );
-    exit();
+    exit(-2);
   }
-  $DEBUG= $p->exists('debug');
   $filename= realpath($p->value(1));
 
   // Calculate namespace
   preg_match('#skeleton/([a-z/-]+)/([^\.]+)\.class\.php$#', $filename, $matches);
-  $namespace= strtr($matches[1], '/-', ':_');
-    
+  $path= $matches[1];
+
   // Tokenize
   $t= &new PHPTokenizer();
   try(); {
     $t->setTokenString(FileUtil::getContents(new File($filename)));
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
-    exit();
+    exit(-1);
   }
   
   $out= array();
@@ -75,7 +76,6 @@ __;
   $class= 0;
   $uses= $constants= $implements= $apidoc= array();
   do {
-    $DEBUG && printf("%s: %s\n", $t->getTokenName($tok[0]), $tok[1]);
     if (T_COMMENT === $tok[0] && '//' == substr($tok[1], 0, 2) && !$class) continue;
     if (T_CLOSE_TAG === $tok[0]) break;
     
@@ -84,7 +84,6 @@ __;
       foreach (preg_split('/[\r\n]([\s\t]*\* ?)?/', $tok[1]) as $line) {
         if ('@' != $line{0}) continue;
         $args= preg_split('/[\s\t]+/', substr($line, 1), 2);
-        $DEBUG && printf("API-DOC TOKEN %s => %s\n", $args[0], $args[1]);
         $apidoc[$args[0]]= isset($args[1]) ? $args[1] : TRUE;
       }
     }
@@ -305,13 +304,42 @@ __;
   if (!empty($implements)) {
     $ilist= '';
     foreach ($implements as $i) {
-      $ilist.= ', '.substr($i, strrpos($i, '.')+ 1, -1);
+      $name= substr($i, strrpos($i, '.')+ 1, -1);
+      $ilist.= ', '.isset($map[$name]) ? $map[$name] : $name;
     }
     $out[$class]= 'implements '.substr($ilist, 2).' {';
     $uses= array_merge($uses, $implements);
   }
 
-  $f= &new File('php://stdout');
+  // Print target file
+  $target= str_replace('//', '/', sprintf(
+    '%s/%s/%s.class.php',
+    str_replace('~', System::getProperty('user.home'), $p->value('target', 't', '.')),
+    $path, 
+    isset($map[$classname[1]]) ? $map[$classname[1]] : $classname[1]
+  ));
+  printf("===> Target: %s\n", $target);
+  
+  // --dump will show the file's contents rather than saving it
+  if ($p->exists('dump')) {
+    $target= 'php://stdout';
+  } else {
+  
+    // Ensure directory exists
+    $folder= &new Folder(dirname($target));
+    if (!$folder->exists()) {
+      try(); {
+        printf("---> Creating folder %s\n", $folder->getURI());
+        $folder->create();
+      } if (catch('Exception', $e)) {
+        $e->printStackTrace();
+        exit(-1);
+      }
+    }
+  }
+
+  // Finally, write file
+  $f= &new File($target);
   try(); {
     $f->open(FILE_MODE_WRITE);
     $f->write($header);
@@ -320,15 +348,14 @@ __;
       case 1: $f->write('  uses('.$uses[0].");\n\n"); break;
       default: $f->write("  uses(\n    ".implode(",\n    ", $uses)."\n  );\n\n");
     }
-    // $f->write('namespace '.$namespace." {\n\n");
     $f->write('  '.str_replace('= &', '= ', trim(chop(implode('', $out)))));
-    // $f->write("\n}");
     $f->write("\n?>\n");
     $f->close();
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
-    exit();
+    exit(-1);
   }
-  
+
+  printf("===> %d bytes written\n", $f->size());  
   // }}}
 ?>
