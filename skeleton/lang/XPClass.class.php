@@ -11,9 +11,10 @@
    * called getClass() which returns an instance of this class.
    *
    * Warning:
+   *
    * Do not construct this class publicly, instead use either the
    * $o->getClass() syntax or the static method 
-   * $class= &XPClass::forName("fully.qualified.Name")
+   * $class= &XPClass::forName('fully.qualified.Name')
    *
    * To retrieve the fully qualified name of a class, use this:
    * <code>
@@ -33,22 +34,18 @@
     /**
      * Constructor
      *
-     * @access  private
-     * @param   &mixed ref
+     * @access  package
+     * @param   &mixed ref either a class name or an object
      */
     function __construct(&$ref) {
+      parent::__construct();
       $this->_objref= &$ref;
       $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
-      parent::__construct();
     }
     
     /**
      * Retrieves the fully qualified class name for this class.
      * 
-     * Warning: Built-in classes will have a "php." prefixed,
-     * e.g. php.stdClass although there is no such directory "php" 
-     * in the XP framework and no such file "stdClass.class.php" there.
-     *
      * @access  public
      * @return  string name - e.g. "io.File", "rdbms.mysql.MySQL"
      */
@@ -181,21 +178,27 @@
     }
     
     /**
-     * Returns the Class object associated with the class with the given string name.
+     * Returns the XPClass object associated with the class with the given 
+     * string name. Uses the default classloader if none is specified.
      *
      * @model   static
      * @access  public
      * @param   string name - e.g. "io.File", "rdbms.mysql.MySQL"
+     * @param   lang.ClassLoader classloader default NULL
      * @return  &lang.XPClass class object
      * @throws  lang.ClassNotFoundException when there is no such class
      */
-    function &forName($name) {
-      if (!($c= ClassLoader::loadClass($name))) return $c;
-      return new XPClass($c);
+    function &forName($name, $classloader= NULL) {
+      if (NULL === $classloader) {
+        $classloader= &ClassLoader::getDefault();
+      }
+    
+      return $classloader->loadClass($name);
     }
     
     /**
-     * Returns an array containing class objects representing all the public classes
+     * Returns an array containing class objects representing all the 
+     * public classes
      *
      * @model   static
      * @access  public
@@ -204,7 +207,7 @@
     function getClasses() {
       $ret= array();
       foreach (get_declared_classes() as $name) {
-        $ret[]= &new XPClass($name);
+        if (xp::registry('class.'.$name)) $ret[]= &new XPClass($name);
       }
       return $ret;
     }
