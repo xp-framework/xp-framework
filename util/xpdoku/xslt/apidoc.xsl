@@ -10,6 +10,8 @@
   <xsl:include href="xsl-helper.xsl"/>
   
   <xsl:template name="navigation">
+    <b>See also</b>
+    <br/>
     <ul class="nav">
       <li><a href="inheritance.html">Inheritance Tree</a></li>
     </ul>
