@@ -181,7 +181,7 @@
      *
      * @access  public
      * @param   mixed* args
-     * @return  bool success
+     * @return  int number of affected rows
      */
     function update() { }
     
@@ -190,7 +190,7 @@
      *
      * @access  public
      * @param   mixed* args
-     * @return  bool success
+     * @return  int number of affected rows
      */
     function delete() { }
     
