@@ -67,10 +67,10 @@
     }
 
     /**
-     * URI setzen. Definiert andere Attribute wie path, filename und extension
+     * Set this file's URI
      *
      * @access  private
-     * @param   string uri Die URI
+     * @param   string uri
      */
     function setURI($uri) {
     
@@ -84,7 +84,7 @@
       
       $this->uri= realpath($uri);
       
-      // Bug in real_path (wenn Datei nicht existiert, ist die Rückgabe ein leerer String!)
+      // Bug in real_path when file does not exist
       if ('' == $this->uri && $uri != $this->uri) $this->uri= $uri;
       
       $this->path= dirname($uri);
@@ -98,8 +98,8 @@
      *
      * @access  public
      * @param   string mode one of the FILE_MODE_* constants
-     * @throws  FileNotFoundException in case the file is not found
-     * @throws  IOException in case the file cannot be opened (e.g., lacking permissions)
+     * @throws  io.FileNotFoundException in case the file is not found
+     * @throws  io.IOException in case the file cannot be opened (e.g., lacking permissions)
      */
     function open($mode= FILE_MODE_READ) {
       $this->mode= $mode;
@@ -110,7 +110,7 @@
       ) return throw(new FileNotFoundException($this->uri));
       
       $this->_fd= fopen($this->uri, $this->mode);
-      if (!$this->_fd) return throw(new IOException('cannot open '.$this->uri.' mode '.$this->mode));
+      if (!$this->_fd) return throw(new IOException('Cannot open '.$this->uri.' mode '.$this->mode));
       
       return TRUE;
     }
@@ -140,11 +140,11 @@
      *
      * @access  public
      * @return  int size filesize in bytes
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function size() {
       $size= filesize($this->uri);
-      if (FALSE === $size) return throw(new IOException('cannot get filesize for '.$this->uri));
+      if (FALSE === $size) return throw(new IOException('Cannot get filesize for '.$this->uri));
       return $size;
     }
     
@@ -153,11 +153,11 @@
      *
      * @access  public
      * @param   int size default 0 New size in bytes
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function truncate($size= 0) {
       $return= ftruncate($this->_fd, $size);
-      if (FALSE === $return) return throw(new IOException('cannot truncate file '.$this->uri));
+      if (FALSE === $return) return throw(new IOException('Cannot truncate file '.$this->uri));
       return $return;
     }
 
@@ -174,11 +174,11 @@
      *
      * @access  public
      * @return  int The date the file was last accessed as a unix-timestamp
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function lastAccessed() {
       $atime= fileatime($this->uri);
-      if (FALSE === $atime) return throw(new IOException('cannot get atime for '.$this->uri));
+      if (FALSE === $atime) return throw(new IOException('Cannot get atime for '.$this->uri));
       return $atime;
     }
     
@@ -187,11 +187,11 @@
      *
      * @access  public
      * @return  int The date the file was last modified as a unix-timestamp
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function lastModified() {
-      $mtime= fileatime($this->uri);
-      if (FALSE === $mtime) return throw(new IOException('cannot get mtime for '.$this->uri));
+      $mtime= filemtime($this->uri);
+      if (FALSE === $mtime) return throw(new IOException('Cannot get mtime for '.$this->uri));
       return $mtime;
     }
     
@@ -201,12 +201,12 @@
      * @access  public
      * @param   int time default -1 Unix-timestamp
      * @return  bool success
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function touch($time= -1) {
       if (-1 == $time) $time= time();
       if (FALSE === touch($this->uri, $time)) {
-        return throw(new IOException('cannot set mtime for '.$this->uri));
+        return throw(new IOException('Cannot set mtime for '.$this->uri));
       }
       return TRUE;
     }
@@ -216,11 +216,11 @@
      *
      * @access  public
      * @return  int The date the file was created as a unix-timestamp
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function createdAt() {
       if (FALSE === ($mtime= filectime($this->uri))) {
-        return throw(new IOException('cannot get mtime for '.$this->uri));
+        return throw(new IOException('Cannot get mtime for '.$this->uri));
       }
       return $mtime;
     }
@@ -235,7 +235,7 @@
      * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function readLine($bytes= 4096) {
       return chop($this->gets($bytes));
@@ -246,11 +246,11 @@
      *
      * @access  public
      * @return  char the character read
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function readChar() {
       if (FALSE === ($result= fgetc($this->_fd)) && !feof($this->_fd)) {
-        return throw(new IOException('readChar() cannot read 1 byte from '.$this->uri));
+        return throw(new IOException('Cannot read 1 byte from '.$this->uri));
       }
       return $result;
     }
@@ -264,11 +264,11 @@
      * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function gets($bytes= 4096) {
       if (FALSE === ($result= fgets($this->_fd, $bytes)) && !feof($this->_fd)) {
-        return throw(new IOException('gets() cannot read '.$bytes.' bytes from '.$this->uri));
+        return throw(new IOException('Cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
@@ -279,11 +279,11 @@
      * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function read($bytes= 4096) {
       if (FALSE === ($result= fread($this->_fd, $bytes)) && !feof($this->_fd)) {
-        return throw(new IOException('read() cannot read '.$bytes.' bytes from '.$this->uri));
+        return throw(new IOException('Cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
@@ -294,11 +294,11 @@
      * @access  public
      * @param   string string data to write
      * @return  bool success
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function write($string) {
       if (FALSE === ($result= fwrite($this->_fd, $string))) {
-        return throw(new IOException('cannot write '.strlen($string).' bytes to '.$this->uri));
+        return throw(new IOException('Cannot write '.strlen($string).' bytes to '.$this->uri));
       }
       return $result;
     }
@@ -309,11 +309,11 @@
      * @access  public
      * @param   string string data to write
      * @return  bool success
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function writeLine($string) {
       if (FALSE === ($result= fputs($this->_fd, $string."\n"))) {
-        return throw(new IOException('cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
+        return throw(new IOException('Cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
       }
       return $result;
     }
@@ -327,12 +327,12 @@
      * @see     php://feof
      * @access  public
      * @return  bool TRUE when the end of the file is reached
-     * @throws  IOException in case of an error (e.g., the file's not been opened)
+     * @throws  io.IOException in case of an error (e.g., the file's not been opened)
      */
     function eof() {
       $result= feof($this->_fd);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-        return throw(new IOException('cannot determine eof of '.$this->uri));
+        return throw(new IOException('Cannot determine eof of '.$this->uri));
       }
       return $result;
     }
@@ -344,11 +344,11 @@
      * This function is identical to a call of $f->seek(0, SEEK_SET)
      *
      * @access  public
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function rewind() {
       if (FALSE === ($result= rewind($this->_fd))) {
-        return throw(new IOException('cannot rewind file pointer'));
+        return throw(new IOException('Cannot rewind file pointer'));
       }
       return TRUE;
     }
@@ -360,12 +360,12 @@
      * @param   int position default 0 The new position
      * @param   int mode default SEEK_SET 
      * @see     php://fseek
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      * @return  bool success
      */
     function seek($position= 0, $mode= SEEK_SET) {
       if (0 != ($result= fseek($this->_fd, $position, $mode))) {
-        return throw(new IOException('seek error, position '.$position.' in mode '.$mode));
+        return throw(new IOException('Seek error, position '.$position.' in mode '.$mode));
       }
       return TRUE;
     }
@@ -374,12 +374,12 @@
      * Retrieve file pointer position
      *
      * @access  public
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      * @return  int position
      */
     function tell() {
       $result= ftell($this->_fd);
-      if (FALSE === $result) return throw(new IOException('cannot retrieve file pointer\'s position'));
+      if (FALSE === $result) return throw(new IOException('Cannot retrieve file pointer\'s position'));
       return $result;
     }
 
@@ -400,10 +400,10 @@
      * errno condition).
      *
      * @access  private
-     * @param   int Operation
-     * @param   int Block
-     * @throws  IOException in case of an error
-     * @return  boolean success
+     * @param   int op operation (one of the predefined LOCK_* constants)
+     * @param   int block
+     * @throws  io.IOException in case of an error
+     * @return  bool success
      * @see     php://flock
      */
     function _lock($op, $block= NULL) {
@@ -418,7 +418,7 @@
         ) as $o => $s) {
           if ($op & $o) $os.= ' | '.$s;
         }
-        return throw(new IOException('cannot lock file '.$this->uri.' w/ '.substr($os, 3)));
+        return throw(new IOException('Cannot lock file '.$this->uri.' w/ '.substr($os, 3)));
       }
       return $result;
     }
@@ -461,7 +461,7 @@
      */
     function close() {
       if (FALSE === fclose($this->_fd)) {
-        return throw(new IOException('cannot close file '.$this->uri));
+        return throw(new IOException('Cannot close file '.$this->uri));
       }
       
       $this->_fd= NULL;
@@ -476,16 +476,16 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException in case of an error (e.g., lack of permissions)
-     * @throws  IllegalStateException in case the file is still open
+     * @throws  io.IOException in case of an error (e.g., lack of permissions)
+     * @throws  lang.IllegalStateException in case the file is still open
      */
     function unlink() {
       if (is_resource($this->_fd)) {
-        return throw(new IllegalStateException('file still open'));
+        return throw(new IllegalStateException('File still open'));
       }
       
       if (FALSE === unlink($this->uri)) {
-        return throw(new IOException('cannot delete file '.$this->uri));
+        return throw(new IOException('Cannot delete file '.$this->uri));
       }
       return TRUE;
     }
@@ -499,16 +499,16 @@
      * @access  public
      * @param   string target where to move the file to
      * @return  bool success
-     * @throws  IOException in case of an error (e.g., lack of permissions)
-     * @throws  IllegalStateException in case the file is still open
+     * @throws  io.IOException in case of an error (e.g., lack of permissions)
+     * @throws  lang.IllegalStateException in case the file is still open
      */
     function move($target) {
       if (is_resource($this->_fd)) {
-        return throw(new IllegalStateException('file still open'));
+        return throw(new IllegalStateException('File still open'));
       }
       
       if (FALSE === rename($this->uri, $target)) {
-        return throw(new IOException('cannot move file '.$this->uri.' to '.$target));
+        return throw(new IOException('Cannot move file '.$this->uri.' to '.$target));
       }
       
       $this->uri= realpath ($target);
@@ -524,16 +524,16 @@
      * @access  public
      * @param   string target where to copy the file to
      * @return  bool success
-     * @throws  IOException in case of an error (e.g., lack of permissions)
-     * @throws  IllegalStateException in case the file is still open
+     * @throws  io.IOException in case of an error (e.g., lack of permissions)
+     * @throws  lang.IllegalStateException in case the file is still open
      */
     function copy($target) {
       if (is_resource($this->_fd)) {
-        return throw(new IllegalStateException('file still open'));
+        return throw(new IllegalStateException('File still open'));
       }
       
       if (FALSE === copy($this->uri, $target)) {
-        return throw(new IOException('cannot copy file '.$this->uri.' to '.$target));
+        return throw(new IOException('Cannot copy file '.$this->uri.' to '.$target));
       }
       return TRUE;
     }
