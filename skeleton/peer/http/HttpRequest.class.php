@@ -88,7 +88,9 @@
      * @param   array headers
      */
     function addHeaders($headers) {
-      $this->headers= array_merge($this->headers, $headers);
+      foreach($headers as $key=>$header) {
+        $this->headers[is_a($header, 'Header') ? $header->getName() : $key] = $header;
+      }
     }
     
     /**
@@ -129,11 +131,12 @@
       }
       
       $request= sprintf(
-        "%s %s HTTP/%s\r\nHost: %s\r\n",
+        "%s %s HTTP/%s\r\nHost: %s:%d\r\n",
         $this->method,
         $target,
         $this->version,
-        $this->url->getHost()
+        $this->url->getHost(),
+        $this->url->getPort(80)
       );
       
       // Add request headers
