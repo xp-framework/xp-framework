@@ -99,6 +99,24 @@
     }
     
     /**
+     * Creates a string representation
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      $s= $this->getClassName()."@{\n";
+      foreach ($this->conditions as $condition) {
+        $s.= sprintf(
+          "  [%s %s]\n",
+          $condition[0],
+          str_replace('?', xp::stringOf($condition[1]), $condition[2])
+        );
+      }
+      return $s.'}';
+    }
+    
+    /**
      * Export SQL
      *
      * @access  public
