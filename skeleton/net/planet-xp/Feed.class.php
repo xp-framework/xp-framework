@@ -52,6 +52,7 @@
             title= %s,
             link= %s,
             description= %s,
+            lastcheck= %s,
             lastchange= %s,
             changedby= %s
           where feed_id= %d',
@@ -59,35 +60,10 @@
           $this->link,
           $this->description,
           Date::now(),
+          Date::now(),
           __CLASS__,
           $this->feed_id
         );
-        
-        if (0 === $cnt) {
-          $cnt= $db->insert('
-            syndicate.feed (
-              feed_id,
-              title,
-              link,
-              description,
-              lastchange,
-              changedby
-            ) values (
-              %d,
-              %s,
-              %s,
-              %s,
-              %s,
-              %s
-            )',
-            $this->feed_id,
-            $this->title,
-            $this->link,
-            $this->description,
-            Date::now(),
-            __CLASS__
-          );
-        }
       } if (catch('SQLException', $e)) {
         return throw($e);
       }
