@@ -81,7 +81,6 @@
         $cmd= vsprintf($args[0], array_slice($args, 1, -1));
       
         // Write
-        # var_dump('>>>', $cmd);
         if (FALSE === $this->_sock->write($cmd."\n")) return FALSE;
 
         // Expecting data?
@@ -90,14 +89,13 @@
       
       // Read
       if (FALSE === ($buf= substr($this->_sock->read(), 0, -2))) return FALSE;
-      # var_dump('<<<', $buf);
       
       // Got expected data?
       $code= substr($buf, 0, 3);
       if (!in_array($code, $expect)) {
-        trigger_error('Command: '.var_export($cmd, 1), E_USER_NOTICE);
         return throw($e= new FormatException(
-          'Expected '.implode(' or ', $expect).', have '.$code.' ["'.$buf.'"]'
+          'Expected '.implode(' or ', $expect).', have '.$code.' ["'.$buf.'"] '.
+          '- command was '.$cmd
         ));
       }
       
