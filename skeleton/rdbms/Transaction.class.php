@@ -44,7 +44,7 @@
      * @access  public
      */
     function getState() { 
-      return $this->db->transtate($name);
+      return $this->db->transtate($this->name);
     }
     
     /**
@@ -53,7 +53,7 @@
      * @access  public
      */
     function rollback() { 
-      return $this->db->rollback($name);
+      return $this->db->rollback($this->name);
     }
     
     /**
@@ -62,7 +62,7 @@
      * @access  public
      */
     function commit() { 
-      return $this->db->commit($name);
+      return $this->db->commit($this->name);
     }
   }
 ?>
