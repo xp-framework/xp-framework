@@ -125,10 +125,10 @@
      * Apply rules on all tokens
      *
      * @access  public
+     * @param   util.log.LogCategory CAT default NULL a log category to print debug to
      * @return  bool success
      */
-    function applyRules() {
-      $DEBUG= FALSE;
+    function applyRules($CAT= NULL) {
       $data= array();
       
       // Loop throught tokens
@@ -144,7 +144,7 @@
           $s= sizeof($rule['match']);
 	      $f= FALSE;
 
-          $DEBUG && printf("%4d Executing %s, expecting %s\n", $i, $name, $expect);
+          $CAT && $CAT->infof('[%04x:%-18s] Executing %s, expecting %s', $i, $name, $name, $expect);
           if (
             ('{' === $expect{0}) 
           ) {
@@ -152,7 +152,7 @@
             // Matches list of tokens
             $tokens= explode(',', substr($expect, 1, -1));
             if (in_array(token_name($token), $tokens)) {
-              $DEBUG && printf("%4d %s in %s\n", $i, token_name($token), $expect);
+              $CAT && $CAT->infof('[%04x:%-18s] %s in %s', $i, $name, token_name($token), $expect);
               $f= TRUE;
             }
             
@@ -163,7 +163,7 @@
           ) {
 
 	        // Matches text
-	        $DEBUG && printf("%4d %s =~ %s\n", $i, $expect, $cdata);
+	        $CAT && $CAT->infof('[%04x:%-18s] %s =~ %s', $i, $name, $expect, $cdata);
 	        $f= TRUE;
           } else if (
             ('(' === $expect{0} && $p= strpos($expect, ')')) &&
@@ -172,7 +172,7 @@
           ) {
           
 	        // Matches token and cdata
-	        $DEBUG && printf("%4d %s =~ %s, token %s\n", $i, $expect, $cdata, token_name($token));
+	        $CAT && $CAT->infof('[%04x:%-18s] %s =~ %s, token %s', $i, $name, $expect, $cdata, token_name($token));
 	        $f= TRUE;
 	      } else if (
 	        ("!" === $expect{0}) &&
@@ -183,14 +183,14 @@
           ) {
 
 	        // Does not match a token
-	        $DEBUG && printf("%4d %s !== %s\n", $i, token_name($token), $expect);
+	        $CAT && $CAT->infof('[%04x:%-18s] %s !== %s', $i, $name, token_name($token), $expect);
 	        $f= TRUE;
 	      } else if (
 	        (token_name($token) === $expect)
 	      ) {   
 
 	        // Matches a token
-	        $DEBUG && printf("%4d %s === %s\n", $i, token_name($token), $expect);
+	        $CAT && $CAT->infof('[%04x:%-18s] %s === %s', $i, $name, token_name($token), $expect);
 	        $f= TRUE;
 	      }
 
@@ -200,9 +200,10 @@
 	        if ($rule['expect'] == 0) continue;
 
 		    // One or more tokens found before (but this one doesn't match the expectation)
-	        $DEBUG && printf(
-		      "%4d --- have %s '%s' for rule %s, but was expecting %s\n", 
+	        $CAT && $CAT->infof(
+		      '[%04x:%-18s] --- have %s "%s" for rule %s, but was expecting %s', 
 		      $i, 
+              $name,
 		      token_name($token),  
 		      chop($cdata),
 		      $name,
@@ -214,7 +215,7 @@
 	      }
 
 	      // Found n'th token in list...
-  	      $DEBUG && printf("%4d +++ found %s for rule %s [%d/%d]\n", $i, token_name($token), $name, $rule['expect'], $s);
+  	      $CAT && $CAT->infof('[%04x:%-18s] +++ found %s for rule %s [%d/%d]', $i, $name, token_name($token), $name, $rule['expect'], $s);
 	      $rule['expect']++;
 	      $data[$name][$rule['expect']]= $cdata;
 
@@ -222,7 +223,7 @@
 	      if ($rule['expect'] < $s) continue;
 
 	      // Completed
-	      $DEBUG && printf("%4d *** List completed::%s\n", $i, var_export($data[$name], 1));
+	      $CAT && $CAT->infof('[%04x:%-18s] *** List completed::%s', $i, $name, var_export($data[$name], 1));
           
           // Call user function
           $params= array();
