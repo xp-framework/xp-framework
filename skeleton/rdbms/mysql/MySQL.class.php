@@ -103,11 +103,11 @@
           $arg= $args[$i];
         }
         switch ($tok{0}) {
-          case 'd': $r= intval($arg); break;
-          case 'f': $r= floatval($arg); break;
-          case 'c': $r= $arg; break;
-          case 's': $r= '"'.str_replace('"', '\"', $arg).'"'; break;
-          case 'u': $r= '"'.date ('Y-m-d h:i:s', $arg).'"'; break;
+          case 'd': is_null($arg) ? 'NULL' : $r= intval($arg); break;
+          case 'f': is_null($arg) ? 'NULL' : $r= floatval($arg); break;
+          case 'c': is_null($arg) ? 'NULL' : $r= $arg; break;
+          case 's': is_null($arg) ? 'NULL' : $r= '"'.str_replace('"', '\"', $arg).'"'; break;
+          case 'u': is_null($arg) ? 'NULL' : $r= '"'.date ('Y-m-d h:i:s', $arg).'"'; break;
           default: $sql.= '%'.$tok; $i--; continue;
         }
         $sql.= $r.substr($tok, 1);

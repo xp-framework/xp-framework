@@ -106,12 +106,13 @@
         } else {
           $arg= $args[$i];
         }
+        
         switch ($tok{0}) {
-          case 'd': $r= intval($arg); break;
-          case 'f': $r= floatval($arg); break;
-          case 'c': $r= $arg; break;
-          case 's': $r= '"'.str_replace('"', '""', $arg).'"'; break;
-          case 'u': $r= '"'.date ('Y-m-d h:iA', $arg).'"'; break;
+          case 'd': $r= is_null($arg) ? 'NULL' : intval($arg); break;
+          case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
+          case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
+          case 's': $r= is_null($arg) ? 'NULL' : '"'.str_replace('"', '""', $arg).'"'; break;
+          case 'u': $r= is_null($arg) ? 'NULL' : '"'.date ('Y-m-d h:iA', $arg).'"'; break;
           default: $sql.= '%'.$tok; $i--; continue;
         }
         $sql.= $r.substr($tok, 1);
