@@ -27,6 +27,18 @@ usage:
 	@echo "            all     - calls 'clean makexml gen install' in this order"
 	@echo "            publish - publishes generated content"
 	@echo "                      example: make publish target=user@host"
+	@echo "            cvshist - updates CVS history XML file"
+	@echo "                      example: make cvshist from=user@host"
+	@echo ""
+
+cvshist:
+ifeq ($(from),)
+	@echo "*** Please specify from where to retrieve CVS history file"
+else
+	ssh $(from) cat /home/cvs/repositories/xp/CVSROOT/history | $(PHP) ../../admin/cvs-utils/history.php php://stdin > src/cvs_history.xml
+	cvs diff -u src/cvs_history.xml
+	cvs com -m '- Auto-updated from CVS history file' src/cvs_history.xml
+endif
 
 publish:
 ifeq ($(target),)
