@@ -7,18 +7,22 @@
   uses('peer.Header');
 
   /**
+   * HTTP Cookie
+   *
+   * <quote>
    * This class represents a "Cookie", as used for session management with 
    * HTTP and HTTPS protocols. Cookies are used to get user agents (web 
    * browsers etc) to hold small amounts of state associated with a user's 
    * web browsing. Common applications for cookies include storing user 
    * preferences, automating low security user signon facilities, and 
    * helping collect data used for "shopping cart" style applications. 
+   * </quote>
    *
-   * @ext      extensiom
+   * @see      http://jakarta.apache.org/tomcat/tomcat-5.0-doc/servletapi/javax/servlet/http/Cookie.html
    * @see      http://home.netscape.com/newsref/std/cookie_spec.html
    * @see      rfc://2109
    * @see      php://setcookie
-   * @purpose  purpose
+   * @purpose  Cookie header
    */
   class Cookie extends Header {
     var 
