@@ -29,4 +29,12 @@ You may need to specify the directory in which libphp4.a and libphp4.la
 reside, so append "PHPLIBDIR=/path/to/.a_and_.la_files/" to your command
 line.
 
+What software is needed?
+------------------------
+- gcc
+- libtool
+- php (command-line version, CGI will do)
+
+The build process was tested with gcc 2.95.4, libtool 1.4.3 and php 4.2.3
+
 <EOF>
