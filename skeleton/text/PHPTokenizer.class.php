@@ -99,13 +99,13 @@
     }
 
     /**
-     * Private function which always returns an array for a token
+     * Return a token by position
      *
-     * @access  private
+     * @access  public
      * @param   int i offset
      * @return  array tokendata (type, cdata)
      */
-    function _token($i) {
+    function getToken($i) {
       return (is_array($this->tokens[$i])
         ? $this->tokens[$i]
         : array(T_NONE, $this->tokens[$i])
@@ -119,7 +119,7 @@
      * @return  array first token
      */
     function getFirstToken() {
-      return $this->_token($this->_offset= 0);
+      return $this->getToken($this->_offset= 0);
     }
     
     /**
@@ -130,7 +130,7 @@
      */
     function getNextToken() {
       if (++$this->_offset >= $this->_size) return FALSE;
-      return $this->_token($this->_offset);
+      return $this->getToken($this->_offset);
     }
     
     /**
