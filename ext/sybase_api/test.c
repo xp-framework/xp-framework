@@ -7,7 +7,19 @@
 
 static CS_RETCODE CS_PUBLIC servermessage(CS_CONTEXT *context, CS_CONNECTION *connection, CS_SERVERMSG *message)
 {
-    fprintf(stderr, "Server message: %d %s\n", message->msgnumber, message->text);
+    fprintf(
+        stderr, 
+        "***  Server %s message #%d, severity %d at %s line %d state %d status %d\n"
+        "     %s\n",
+        message->svrname,
+        message->msgnumber, 
+        message->severity, 
+        message->proc,
+        message->line,
+        message->state,
+        message->status,
+        message->text
+    );
     return CS_SUCCEED;
 }
 
@@ -82,7 +94,7 @@ int main(int argc, char **argv)
         }
         
     } else {
-        printf("*** Connect failed!\n");
+        printf("---> Connect failed!\n");
     }
     
     sybase_close(link);
