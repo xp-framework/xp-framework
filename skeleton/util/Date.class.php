@@ -83,9 +83,19 @@
     }
     
     /**
+     * Unix-Timestamp
+     *
+     * @access  public
+     * @return  int Unix-Timestamp
+     */
+    function getTime() {
+      return $this->_utime;
+    }
+    
+    /**
      * String-Repräsentation eines Datums
      *
-     * @see     http://php.net/date
+     * @see     php://date
      * @param   string format default 'r' Format-String
      * @return  string Das formatierte Datum
      */
