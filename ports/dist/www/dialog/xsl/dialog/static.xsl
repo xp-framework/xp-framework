@@ -20,7 +20,7 @@
    !-->
   <xsl:template name="pager">
     <center>
-      <a title="Newer entries" class="pager" id="{/formresult/pager/@offset &gt; 0}">
+      <a title="Newer entries" class="pager{/formresult/pager/@offset &gt; 0}" id="previous">
         <xsl:if test="/formresult/pager/@offset &gt; 0">
           <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
             'static?page', 
@@ -29,7 +29,7 @@
         </xsl:if>
         <img alt="&#xab;" src="/image/prev.gif" border="0" width="19" height="15"/>
       </a>
-      <a title="Older entries" class="pager" id="{(/formresult/pager/@offset + 1) * /formresult/pager/@perpage &lt; /formresult/pager/@total}">
+      <a title="Older entries" class="pager{(/formresult/pager/@offset + 1) * /formresult/pager/@perpage &lt; /formresult/pager/@total}" id="next">
         <xsl:if test="(/formresult/pager/@offset + 1) * /formresult/pager/@perpage &lt; /formresult/pager/@total">
           <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
             'static?page', 
