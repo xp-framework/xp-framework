@@ -82,6 +82,7 @@
               ? '.'.$uname['domainname']
               : ''
             );
+            break;
           }
           $prop[$name]= System::_env('HOSTNAME', 'COMPUTERNAME');
           break;
@@ -90,6 +91,7 @@
           if (extension_loaded('posix')) {
             $uname= posix_uname();
             $prop[$name]= $uname['machine'];
+            break;
           }
           $prop[$name]= System::_env('HOSTTYPE', 'PROCESSOR_ARCHITECTURE');
           break;
