@@ -168,6 +168,7 @@ __;
           } while ('extends' != $out[sizeof($out) - 2]);
           unset($out[sizeof($out) - 2]);
         }
+        $class= sizeof($out)- 1;
         
         if (!empty($constants)) {
           $out[]= "\n    const\n";
@@ -177,7 +178,6 @@ __;
           }
           $out[]= substr($const, 0, -2).";\n";
         }
-        $class= sizeof($out)- 1;
         $tok= array(T_NONE, '');
         break;
         
