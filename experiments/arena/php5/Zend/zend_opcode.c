@@ -161,6 +161,7 @@ ZEND_API void destroy_zend_class(zend_class_entry **pce)
 	if (--ce->refcount > 0) {
 		return;
 	}
+
 	switch (ce->type) {
 		case ZEND_USER_CLASS:
 			zend_hash_destroy(&ce->default_properties);
@@ -277,7 +278,10 @@ ZEND_API void destroy_op_array(zend_op_array *op_array TSRMLS_DC)
 		}
 		efree(op_array->arg_info);
 	}
-	if (op_array->num_throws > 0 && op_array->throws) {
+	if (op_array->num_throws) {
+		for (i=0; i<op_array->num_throws; i++) {
+			efree(op_array->throws[i]);
+		}
 		efree(op_array->throws);
 	}
 }

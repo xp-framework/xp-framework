@@ -187,7 +187,7 @@ struct _zend_op_array {
 	zend_arg_info *arg_info;
 	zend_bool pass_rest_by_reference;
 	unsigned char return_reference;
-	zend_class_entry **throws;
+	char **throws;
 	zend_uint num_throws;
 	HashTable *annotations;
 	/* END of common elements */
@@ -244,7 +244,7 @@ typedef struct _zend_internal_function {
 	zend_arg_info *arg_info;
 	zend_bool pass_rest_by_reference;
 	unsigned char return_reference;
-	zend_class_entry **throws;
+	char **throws;
 	zend_uint num_throws;
 	HashTable *annotations;
 	/* END of common elements */
@@ -268,7 +268,7 @@ typedef union _zend_function {
 		zend_arg_info *arg_info;
 		zend_bool pass_rest_by_reference;
 		unsigned char return_reference;
-		zend_class_entry **throws;
+		char **throws;
 		zend_uint num_throws;
 		HashTable *annotations;
 	} common;

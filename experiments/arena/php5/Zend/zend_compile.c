@@ -532,16 +532,11 @@ void zend_do_abstract_method(znode *function_name, znode *modifiers, znode *body
 void zend_do_throws(znode *throws_znode TSRMLS_DC)
 {
 	zend_function *fptr = (zend_function *)CG(active_op_array);
-	zend_class_entry **pce;
 
 	MANGLE_CLASS_NAME(throws_znode);
-	if (zend_lookup_class(throws_znode->u.constant.value.str.val, throws_znode->u.constant.value.str.len, &pce TSRMLS_CC) == FAILURE) {
-		zend_error(E_COMPILE_ERROR, "Undefined class '%s' in throws list of %s::%s()", throws_znode->u.constant.value.str.val, CG(active_class_entry)->name, fptr->common.function_name);
-		/* Bails out */
-	}
 
-	fptr->common.throws = (zend_class_entry **) erealloc(fptr->common.throws, sizeof(zend_class_entry *) * (fptr->common.num_throws + 1));
-	fptr->common.throws[fptr->common.num_throws] = *pce;
+	fptr->common.throws = (char **) erealloc(fptr->common.throws, sizeof(char *) * (fptr->common.num_throws + 1));
+	fptr->common.throws[fptr->common.num_throws] = estrndup(throws_znode->u.constant.value.str.val, throws_znode->u.constant.value.str.len);
 	fptr->common.num_throws++;
 	
 	FREE_PNODE(throws_znode);
@@ -2408,7 +2403,7 @@ void zend_do_early_binding(TSRMLS_D)
 			/* We currently don't early-bind classes that implement interfaces */
 			return;
 		default:
-			zend_error(E_COMPILE_ERROR, "Invalid binding type");
+			zend_error(E_COMPILE_ERROR, "Invalid binding type %d", opline->opcode);
 			return;
 	}
 

@@ -636,9 +636,9 @@ static void _function_string(string *str, zend_function *fptr, char* indent TSRM
  	if (fptr->common.num_throws) {
 		zend_uint i;
 
-		string_printf(str, " throws %s", fptr->common.throws[0]->name);
+		string_printf(str, " throws %s", fptr->common.throws[0]);
 		for (i = 1; i < fptr->common.num_throws; ++i) {
-			string_printf(str, ", %s", fptr->common.throws[i]->name);
+			string_printf(str, ", %s", fptr->common.throws[i]);
 		}
 	}
 	string_write(str, " {\n", sizeof(" {\n") - 1);
@@ -1552,8 +1552,16 @@ ZEND_METHOD(reflection_function, getExceptionTypes)
 
 	   	for (i=0; i < fptr->common.num_throws; i++) {
 			zval *throws;
+			zend_class_entry **pce;
+
+			if (zend_lookup_class(fptr->common.throws[i], strlen(fptr->common.throws[i]), &pce TSRMLS_CC) == FAILURE) {			
+				zend_throw_exception_ex(reflection_exception_ptr, 0 TSRMLS_CC,
+						"Class %s does not exist", fptr->common.throws[i]); 
+				return;
+			}
+
 			ALLOC_ZVAL(throws);
-			zend_reflection_class_factory(fptr->common.throws[i], throws TSRMLS_CC);
+			zend_reflection_class_factory(*pce, throws TSRMLS_CC);
 			add_next_index_zval(return_value, throws);
 		}
 	}
