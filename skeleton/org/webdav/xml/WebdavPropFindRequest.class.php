@@ -57,7 +57,11 @@
       }
       $this->path= $request->uri['path_translated'];
       $this->webroot= $request->uri['path_root'];
-      $this->depth= intval($request->getHeader('depth'));
+      switch ($request->getHeader('depth')) {
+        case 'infinity': $this->depth= 0x7FFFFFFF; break;
+        case 1:          $this->depth= 0x00000001; break;
+        default:         $this->depth= 0x00000000; break;
+      }
       $this->setEncoding('utf-8');
       parent::__construct();
     }
@@ -121,7 +125,10 @@
     function _pathname() {
       $path= '';
       for ($i= $this->_cnt; $i> 0; $i--) {
-        $path= strtolower($this->_objs[$i]->name).'/'.$path;
+        if (FALSE !== ($p= strpos($name= strtolower($this->_objs[$i]->name), ':'))) {
+          $name= substr($name, $p+ 1);
+        }
+        $path= $name.'/'.$path;
       }
       return '/'.$path;
     }
