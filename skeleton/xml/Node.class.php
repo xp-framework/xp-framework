@@ -133,6 +133,26 @@
         (NULL === $name) ? get_class($obj) : $name
       );
     }
+
+    /**
+     * Set Name
+     *
+     * @access  public
+     * @param   string name
+     */
+    function setName($name) {
+      $this->name= $name;
+    }
+
+    /**
+     * Get Name
+     *
+     * @access  public
+     * @return  string
+     */
+    function getName() {
+      return $this->name;
+    }
     
     /**
      * Set content
