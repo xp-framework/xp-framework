@@ -18,6 +18,7 @@
 #include "csta_error.h"
 #include "csta_network.h"
 #include "csta_connection.h"
+#include "csta_filter.h"
 
 /**
  * Creates a new listening socket
@@ -261,8 +262,17 @@ int process_client(fd_set *master, int *fdMax, connection_context *ctx, int hSoc
 
 		/* Client is authenticated and server socket exists */
 		if (hSocket == conn->hClient && conn->is_authenticated && conn->hServer) {
+			char *answer;
 			/* This is an authenticated client => pass data through */
-			LOG("Passthru client data...");
+			LOG("Client -> Server");
+
+			/* Any special actions? */
+			if (0 != csta_filter (conn, buf, &answer)) {
+				send (conn->hClient, answer, strlen (answer), 0);
+				free (answer);
+				
+				return 1;
+			}
 			send (conn->hServer, buf, nbytes, 0);
 			return 1;
 		}
@@ -270,7 +280,7 @@ int process_client(fd_set *master, int *fdMax, connection_context *ctx, int hSoc
 		/* Server sent something => pass it through to the client */
 		if (hSocket == conn->hServer) {
 			/* It's the server, passthrough data */
-			LOG("Passthru server data...");
+			LOG("Server -> Client");
 			send (conn->hClient, buf, nbytes, 0);
 			return 1;
 		}
