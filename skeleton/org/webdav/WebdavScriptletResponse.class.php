@@ -32,6 +32,17 @@
       }
       $this->tree->root= &$node;
     }
+
+    /**
+     * Encode string in the right encoding (currently UTF-8 is used)
+     *
+     * @access public
+     * @param  string string The string which should be encoded
+     * @return string
+     */    
+    function encode($string) {
+      return utf8_encode($string);
+    }
     
     /**
      * Adds a child to the root node of the tree
