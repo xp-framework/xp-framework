@@ -15,6 +15,7 @@
   class SingleShot extends Object {
     var
       $name         = '',
+      $fileName     = '',
       $title        = '',
       $description  = '',
       $date         = NULL,
@@ -38,6 +39,26 @@
      */
     function getName() {
       return $this->name;
+    }
+
+    /**
+     * Set fileName
+     *
+     * @access  public
+     * @param   string fileName
+     */
+    function setFileName($fileName) {
+      $this->fileName= $fileName;
+    }
+
+    /**
+     * Get fileName
+     *
+     * @access  public
+     * @return  string
+     */
+    function getFileName() {
+      return $this->fileName;
     }
 
     /**
