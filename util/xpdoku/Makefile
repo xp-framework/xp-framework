@@ -11,8 +11,18 @@ PHP=php -q
 
 .PHONY: all clean install xml
 
-default: all
+default: usage
 all: clean makexml gen install
+
+usage:
+	@echo "Usage: make <target>"
+	@echo "            makexml - generate the xml-files out of the source"
+	@echo "            gen     - apply xslt on the xml files"
+	@echo "            install - install generated html in $(TARGET)"
+	@echo "            clean   - remove all generated files (xml/html)"
+	@echo "            all     - calls 'clean makexml gen install' in this order"
+
+
 
 $(XML):
 	-mkdir $(XML)
