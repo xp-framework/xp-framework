@@ -112,3 +112,31 @@ code .variable {
 code .bracket {
   color: #a90000;
 }
+
+/* Calendar */
+table.calendar {
+  font: 11px "Verdana"; 
+  border: 1px solid #cedbf7;
+}
+.calendar td {
+  font: 11px "Verdana"; 
+  color: #666666;
+}
+.calendar td.entries {
+  background-color: #ffcf00;
+  color: #444444;
+}
+.calendar td.weekend {
+  background-color: #fff4be;
+}
+.calendar td.header {
+  font-weight: bold;
+  background-color: #cedbf7;
+}
+.calendar th {
+  background-color: #848ebd;
+}
+a.calendar {
+  color: #fefefe;
+  text-decoration: none;
+}
