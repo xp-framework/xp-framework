@@ -15,6 +15,20 @@
    * @purpose  Writer
    */
   class WBmpStreamWriter extends StreamWriter {
+    var
+      $foreground  = 0;
+    
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   &io.Stream stream
+     * @param   int foreground default 0
+     */
+    function __construct(&$stream, $foreground= 0) {
+      parent::__construct($stream);
+      $this->foreground= $foreground;
+    }
 
     /**
      * Output an image
@@ -24,7 +38,7 @@
      * @return  bool
      */    
     function output($handle) {
-      return imagewbmp($handle);
+      return imagewbmp($handle, '', $this->foreground);
     }
   }
 ?>
