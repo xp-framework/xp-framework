@@ -74,9 +74,14 @@
      * @param   mixed arg
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
-     * @throws  IOException
+     * @throws  io.IOException
+     * @throws  lang.IllegalAccessException
      */
     function request($method, $arg, $headers= array()) {
+      if (!$this->request) return throw(new IllegalAccessException(
+        'No request object returned from HttpRequestFactory::factory'
+      ));
+      
       $this->request->setMethod($method);
       $this->request->setParameters($arg);
       $this->request->addHeaders($headers);
@@ -84,7 +89,7 @@
       try(); {
         $this->response= &$this->request->send();
       } if (catch('Exception', $e)) {
-        throw($e);
+        return throw($e);
       }
       
       return $this->response;
