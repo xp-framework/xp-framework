@@ -21,9 +21,6 @@ Currently implemented
 * IException interface
   http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/exceptions
 
-* Alternative array syntax:
-  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/syntax
-
 * Annotations:
   http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/syntax
 
