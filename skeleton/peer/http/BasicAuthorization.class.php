@@ -40,12 +40,12 @@
     }
     
     /**
-     * Get header value
+     * Get header value representation
      *
      * @access  public
      * @return  string value
      */
-    function getValue() {
+    function getValueRepresentation() {
       return $this->value.' '.base64_encode($this->user.':'.$this->pass);
     }
   }

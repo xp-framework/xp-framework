@@ -53,12 +53,12 @@
     }
     
     /**
-     * Get header value
+     * Get header value representation
      *
      * @access  public
      * @return  string value
      */
-    function getValue() {
+    function getValueRepresentation() {
       return (
         $this->cookie.'='.
         ($this->value === '' ? 'deleted' : $this->value).

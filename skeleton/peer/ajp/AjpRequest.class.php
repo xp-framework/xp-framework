@@ -131,7 +131,7 @@
             $name= is_a($v, 'Header') ? $v->getName() : $k;
             $idx= strtolower($name);
             $p.= isset($headermap[$idx]) ? $headermap[$idx] : $this->_encode($name);
-            $p.= $this->_encode(is_a($v, 'Header') ? $v->getValue() : $v);
+            $p.= $this->_encode(is_a($v, 'Header') ? $v->getValueRepresentation() : $v);
           }
           $p.= "\xFF";
           

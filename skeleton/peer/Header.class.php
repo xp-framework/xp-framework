@@ -40,10 +40,21 @@
     /**
      * Get header value
      *
+     * @model   final
      * @access  public
      * @return  string value
      */
     function getValue() {
+      return $this->value;
+    }
+    
+    /**
+     * Get header value representation
+     *
+     * @access  public
+     * @return  string value
+     */
+    function getValueRepresentation() {
       return $this->value;
     }
     
@@ -54,7 +65,7 @@
      * @return  string
      */
     function toString() {
-      return $this->getName().': '.$this->getValue();
+      return $this->getName().': '.$this->getValueRepresentation();
     }
     
     /**
