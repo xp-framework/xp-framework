@@ -85,22 +85,20 @@
     }
 
     /**
-     * Sets purpose. The purpose
+     * Sets purpose.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string purpose
      */
     function setPurpose($purpose) {
       $this->purpose= $purpose;
     }
     
     /**
-     * Sets ext. Ext defines with PHP-Extensions a class
-     * depends on
+     * Sets ext. Ext defines which PHP-Extensions a class depends on
      *
      * @access public
-     * @param string extension
+     * @param  string extension
      */
     function setExtension($extension) {
       if (NULL === $this->extensions)
@@ -109,13 +107,12 @@
       $this->extensions[]= $extension;
     }
      
-     
     /**
-     * (Insert method's description here)
+     * Add an example
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   mixed example
+     * @return  &mixed the example added
      */
     function &addExample($example) {
       $this->examples[]= $example;
@@ -123,11 +120,11 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Add an reference
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string see
+     * @return  &lang.apidoc.Reference
      */
     function &addReference($see) {
       $this->references[]= &new Reference($see);
@@ -137,7 +134,11 @@
     /**
      * Handles tags
      *
-     * @see lang.apidoc.Comment
+     * @access  protected
+     * @param   string tag
+     * @param   string line
+     * @return  &mixed
+     * @see     xp://lang.apidoc.Comment
      */
     function &_handleTag($tag, $line) {
       $descr= &parent::_handleTag($tag, $line); 
