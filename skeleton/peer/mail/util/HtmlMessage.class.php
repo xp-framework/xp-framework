@@ -123,7 +123,7 @@
 
       // Find images references
       preg_match_all(
-        '/<(td|img|input)[^>]+(src|background)=["\']([^"\']+)["\']/i', 
+        '/<(table|tr|td|img|input)[^>]+(src|background)=["\']([^"\']+)["\']/i', 
         $this->html->body, 
         $images
       );
@@ -132,8 +132,16 @@
         $this->html->body, 
         $css
       );
-      
-      $matches= array_merge($images, $css);
+
+      $matches= array();      
+      foreach (array($images, $css) as $data) {
+        foreach($data as $key => $values) {
+          foreach ($values as $value) {
+            $matches[$key][]= $value;
+          }
+        }
+      }
+
       $images= array();
       foreach ($matches[3] as $i => $uri) {
         if (isset($images[$uri])) {
