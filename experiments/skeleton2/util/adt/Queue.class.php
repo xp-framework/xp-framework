@@ -34,7 +34,7 @@
    * @see      xp://util.adt.Stack
    * @see      http://www.faqs.org/docs/javap/c12/ex-12-1-answer.html
    */
-  class Queue extends Object {
+  class Queue extends Generic {
     protected
       $_elements= array();
   
@@ -42,10 +42,10 @@
      * Puts an item into the queue. Returns the element that was added.
      *
      * @access  public
-     * @param   &lang.Object object
-     * @return  &lang.Object object
+     * @param   &lang.Generic object
+     * @return  &lang.Generic object
      */
-    public function put(Object $object) {
+    public function put(Generic $object) {
       $this->_elements[]= $object;
       return $object;
     }
@@ -54,7 +54,7 @@
      * Gets an item from the front of the queue.
      *
      * @access  public
-     * @return  &lang.Object
+     * @return  &lang.Generic
      * @throws  util.NoSuchElementException
      */    
     public function get() {
@@ -71,7 +71,7 @@
      * Returns NULL in case the queue is empty.
      *
      * @access  public
-     * @return  &lang.Object object
+     * @return  &lang.Generic object
      */        
     public function peek() {
       if (!isset($this->_elements[$index])) return NULL; else $this->_elements[0];
@@ -103,10 +103,10 @@
      * Returns -1 if the object is not found.
      *
      * @access  public
-     * @param   &lang.Object object
+     * @param   &lang.Generic object
      * @return  int position
      */
-    public function search(Object $object) {
+    public function search(Generic $object) {
       return ($keys= array_keys($this->_elements, $object)) ? $keys[0] : -1;
     }
     
@@ -115,7 +115,7 @@
      *
      * @access  public
      * @param   int index
-     * @return  &lang.Object
+     * @return  &lang.Generic
      * @throws  lang.IndexOutOfBoundsException
      */
     public function elementAt($index) {
