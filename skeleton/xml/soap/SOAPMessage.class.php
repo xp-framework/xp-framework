@@ -142,7 +142,7 @@
             $n= 'stdClass';
             if (isset($child->attribute['xmlns:xp'])) {
               try(); {
-                $n= ClassLoader::loadClass($child->attribute['xmlns:xp']);
+                $n= ClassLoader::loadClass($regs[2]);
               } if (catch('Exception', $e)) {
                 $n= 'stdClass';
               }
