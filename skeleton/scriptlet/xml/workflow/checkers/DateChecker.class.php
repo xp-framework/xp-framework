@@ -17,15 +17,6 @@
    * @purpose  Checker
    */
   class DateChecker extends Object {
-    var
-      $date  = NULL;
-    
-    /**
-     * Construct
-     *
-     * @access  public
-     */
-    function __construct() { }
 
     /**
      * Check a given value
@@ -37,7 +28,7 @@
     function check($value) { 
       foreach ($value as $v) {
         try(); {
-          $date=  &DateParser::parse($v);
+          DateParser::parse($v);
         } if (catch('FormatException', $e)) {
           return 'invalid';
         }
