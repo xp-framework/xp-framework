@@ -44,7 +44,7 @@
       "* Methods:\n%s\n".
       "* Has method 'toString': %s\n\n",
       $class->getName(),
-      $parent ? $parent->getName() : '(n/a)',
+      !null($parent) ? $parent->getName() : '(n/a)',
       $methods,
       var_export($class->hasMethod('toString'), 1)
     );
