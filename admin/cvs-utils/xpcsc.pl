@@ -3,6 +3,9 @@
 ##
 # Checks XP classes for conformance to coding standards
 #
+# Put into CVSROOT/commitinfo as follows:
+#   ALL /path/to/xpcsc.pl
+#
 # $Id$
 
 use constant ETAB       => "ETAB";
