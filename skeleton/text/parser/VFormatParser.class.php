@@ -172,6 +172,24 @@
       return $r;
     }
     
+    function _parseProperties($str) {
+      $arr= array();
+      $key= $val= ''; $tok= strtok ($str, ";:=");
+      while ($tok) {
+        if (!$key) { $key= $tok; }
+        else if (!$val) { 
+          $val= $tok; 
+          $arr[$key]= $val;
+          
+          $key= $val= '';
+        }
+        
+        $tok= strtok (";:=");
+      }
+      
+      return $arr;
+    }
+    
     /**
      * Parse a key->value pair
      *
@@ -185,7 +203,16 @@
       
       // Property params
       if (FALSE !== ($i= strpos($key, ';'))) {
-        $kargs= explode(';', strtoupper($key));
+        $props= explode(';', $key);
+        $kargs= array (strtoupper (array_shift ($props)));
+
+        $val= new StdClass();
+        $val->_value= $value;
+        foreach ($this->_parseProperties (implode(';', $props)) as $pname=> $pvalue) {
+          $val->{$pname}= $pvalue;
+        }
+        
+        $value= &$val;
       } else {
         $kargs= array(strtoupper($key));
       }
