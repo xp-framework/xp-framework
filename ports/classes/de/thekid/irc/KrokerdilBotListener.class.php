@@ -17,28 +17,191 @@
    * @purpose  IRC Bot
    */
   class KrokerdilBotListener extends IRCConnectionListener {
-  
+    var
+      $config    = NULL,
+      $lists     = array();
+      
     /**
      * Constructor
      *
      * @access  public
+     * @param   &util.Properties config
      */
-    function __construct() {
+    function __construct(&$config) {
       parent::__construct();
+      $this->config= &$config;
+      $this->reloadConfiguration();
+    }
+    
+    /**
+     * Reload Bot configuration
+     *
+     * @access  protected
+     */
+    function reloadConfiguration() {
+      $this->config->reset();
+      $this->lists= array();
       
-      // Load swears
-      $this->swears= array();
-      $f= &new File('schimpfwoerter.txt');
-      try(); {
-        $f->open(FILE_MODE_READ);
-        while (!$f->eof()) {
-          $this->swears[]= $f->readLine();
+      // Set base directory for lists relative to that of the config file's
+      $base= dirname($this->config->getFilename()).DIRECTORY_SEPARATOR;
+      
+      // Read word/message lists
+      foreach ($this->config->readSection('lists') as $identifier => $file) {
+        $this->lists[$identifier]= array();
+        $f= &new File($base.$file);
+        try(); {
+          if ($f->open(FILE_MODE_READ)) while (($line= $f->readLine()) && !$f->eof()) {
+            $this->lists[$identifier][]= $line;
+          }
+          $f->close();
+        } if (catch('IOException', $e)) {
+          $e->printStackTrace();
+          return FALSE;
         }
-      } if (catch('IOException', $e)) {
-        $e->printStackTrace();
       }
     }
     
+    /**
+     * Sends to a target, constructing it from a random element within a specified
+     * list.
+     *
+     * @access  private
+     * @param   &peer.irc.IRCConnection connection
+     * @param   string target
+     * @param   string list list identifier
+     * @param   string nick
+     * @param   string message
+     * @return  bool success
+     */
+    function sendRandomMessage(&$connection, $target, $list, $nick, $message) {
+      $format= $this->lists[$list][rand(0, sizeof($this->lists[$list])- 1)];
+      if (empty($format)) return;
+      
+      if ('/me' == substr($format, 0, 3)) {
+        $r= $connection->sendAction(
+          $target, 
+          substr($format, 4),
+          $nick,
+          $channel,
+          $message
+        );
+      } else {
+        $r= $connection->sendMessage(
+          $target, 
+          $format,
+          $nick,
+          $channel,
+          $message
+        );
+      }
+      return $r;
+    }
+    
+    /**
+     * Callback for private messages
+     *
+     * @access  public
+     * @param   &peer.irc.IRCConnection connection
+     * @param   string nick
+     * @param   string target
+     * @param   string message
+     */
+    function onPrivateMessage(&$connection, $nick, $target, $message) {
+    
+      // Commands
+      if (sscanf($message, "!%s %[^\r]", $command, $params)) {
+        switch (strtolower($command)) {
+          case 'reload':
+            if ($this->config->readString('control', 'password') == $params) {
+              $this->reloadConfiguration();
+              $connection->sendAction($target, 'received SIGHUP and reloads his configuration');
+            }
+            break;
+
+          case 'bite':
+            $connection->sendAction($target, 'beißt %s', $params);
+            break;
+            
+          case 'beep':
+          case 'hup':
+            $connection->sendAction($target, 'hupt (%s)'."\7", $params);
+            break;
+          
+          case 'falsch':
+            $connection->sendMessage(
+              $target, 
+              '%s ist zwar süß, ABER %sFALSCH!', 
+              $params, 
+              IRCColor::forCode(IRC_COLOR_RED)
+            );
+            break;
+          
+          case 'i':
+          case 'idiot':
+            if ('#' == $params{0}) {    // Allow #<channel>/<nick> so private messages work
+              list($target, $params)= explode('/', $params);
+            }
+            $connection->sendMessage(
+              $target, 
+              '%s ist ein %s', 
+              $params, 
+              $this->lists['swears'][rand(0, sizeof($this->lists['swears'])- 1)]
+            );
+            break;
+
+          case 'i+':
+          case 'idiot+':
+            if (in_array($params, $this->lists['swears'])) {
+              $connection->sendAction(
+                $target, 
+                'kannte das Schimpfwort >%s%s%s< schon', 
+                IRCColor::forCode(IRC_COLOR_ORANGE),
+                $params, 
+                IRCColor::forCode(IRC_COLOR_DEFAULT)
+              );
+              break;                          
+            }
+            
+            // Update swears array
+            $this->lists['swears'][]= $params;
+            
+            // Also update the swears file
+            $f= &new File(sprintf(
+              '%s%s%s',
+              dirname($this->config->getFilename()),
+              DIRECTORY_SEPARATOR,
+              $this->config->readString('lists', 'swears')
+            ));
+            try(); {
+              $f->open(FILE_MODE_APPEND);
+              $f->write($params."\n");
+              $f->close();
+            } if (catch('IOException', $e)) {
+              $connection->sendMessage($target, '! '.$e->getMessage());
+              break;
+            }
+            $connection->sendAction($target, 'hat jetzt %d Schimpfwörter', sizeof($this->lists['swears']));
+            break;              
+
+          case 'ascii':
+            $connection->sendMessage($target, 'ASCII #%d = %s', $params, chr($params));
+            break;
+        }
+        return;
+      }
+      
+      // Any other phrase containing my name
+      if (stristr($message, $connection->user->getNick())) {
+        $this->sendRandomMessage($connection, $target, 'talkback', $nick, $message);
+        return;
+      }
+      
+      // Produce random noise
+      if (15 == rand(0, 30)) {
+        $this->sendRandomMessage($connection, $target, 'noise', $nick, $message);
+      }
+    }
+
     /**
      * Callback for server message REPLY_ENDOFMOTD (376)
      *
@@ -49,7 +212,12 @@
      * @param   string data
      */
     function onEndOfMOTD(&$connection, $server, $target, $data) {
-      $connection->join('schlund', 'bofh007');
+      if ($this->config->hasSection('autojoin')) {
+        $connection->join(
+          $this->config->readString('autojoin', 'channel'),
+          $this->config->readString('autojoin', 'password', NULL)
+        );
+      }
     }    
 
     /**
@@ -61,8 +229,10 @@
      * @param   string who who is invited
      * @param   string channel invitation is for
      */
-    function onInvite(&$connection, $nick, $who, $channel) { 
-      $connection->join($channel);
+    function onInvite(&$connection, $nick, $who, $channel) {
+      if ($this->config->readBool('invitations', 'follow', FALSE)) {
+        $connection->join($channel);
+      }
     }
   
     /**
@@ -95,8 +265,7 @@
       if (strcasecmp($nick, $connection->user->getNick()) == 0) {
         $connection->writeln("NOTICE %s :%s is back!", $channel, $nick);
       } else {
-        ### MEHR VERSCHIEDENE MESSAGES UND NICK-"NICKS" EINBAUEN ###
-        $connection->sendMessage($channel, 'Sieh einer an, %s ist auch da', $nick);
+        $this->sendRandomMessage($connection, $channel, 'join', $nick, NULL);
       }
     }
 
@@ -110,80 +279,7 @@
      * @param   string message the part message, if any
      */
     function onParts(&$connection, $channel, $nick, $message) {
-      ### MEHR VERSCHIEDENE MESSAGES UND NICK-"NICKS" EINBAUEN ###
-      $connection->sendAction($channel, 'findet es schade, dass %s uns verlässt; naja, %s ist wohl Grund genug', $nick, $message);
-    }
-    
-    /**
-     * Callback for private messages
-     *
-     * @access  public
-     * @param   &peer.irc.IRCConnection connection
-     * @param   string nick
-     * @param   string target
-     * @param   string message
-     */
-    function onPrivateMessage(&$connection, $nick, $target, $message) { 
-      if (sscanf($message, "!%s %[^\r]", $command, $params)) {
-        switch (strtolower($command)) {
-          case 'bite':
-            $connection->sendAction($target, 'beißt %s', $params);
-            break;
-            
-          case 'beep':
-            $connection->sendAction($target, 'hupt (%s)'."\7", $params);
-            break;
-          
-          case 'falsch':
-            $connection->sendMessage(
-              $target, 
-              '%s ist zwar süß, ABER %sFALSCH!', 
-              $params, 
-              IRCColor::forCode(IRC_COLOR_RED)
-            );
-            break;
-          
-          case 'i':
-          case 'idiot':
-            $connection->sendMessage($target, '%s ist ein %s', $params, $this->swears[rand(0, sizeof($this->swears)- 1)]);
-            break;
-
-          case 'addswear':
-            if (in_array($params, $this->swears)) {
-              $connection->sendAction(
-                $target, 
-                'kannte das Schimpfwort >%s%s%s< schon', 
-                IRCColor::forCode(IRC_COLOR_ORANGE),
-                $params, 
-                IRCColor::forCode(IRC_COLOR_DEFAULT)
-              );
-              break;                          
-            }
-            
-            // Update swears array
-            $this->swears[]= $params;
-            
-            // Also update the swears file
-            $f= &new File('schimpfwoerter.txt');
-            try(); {
-              $f->open(FILE_MODE_APPEND);
-              $f->write($params."\n");
-              $f->close();
-            } if (catch('IOException', $e)) {
-              $connection->sendMessage($target, '! '.$e->getMessage());
-              break;
-            }
-            $connection->sendAction($target, 'hat jetzt %d Schimpfwörter', sizeof($this->swears));
-            break;              
-
-          case 'ascii':
-            $connection->sendMessage($target, 'ASCII #%d = %s', $params, chr($params));
-            break;
-        }
-        return;
-      }
-      
-      // Ignore
+      $this->sendRandomMessage($connection, $channel, 'leave', $nick, $message);
     }
 
     /**
@@ -212,7 +308,7 @@
      * @param   string params additional parameters
      */
     function onVersion(&$connection, $nick, $target, $params) {
-      $connection->writeln("NOTICE %s :\1VERSION Stoopidbot 0.3\1", $nick);
+      $connection->writeln('NOTICE %s :%sVERSION Krokerdil $Revision$%s', $nick, "\1", "\1");
     }
   }
 ?>
