@@ -777,7 +777,7 @@ exit_expr:
 
 
 ctor_arguments:
-		/* empty */
+		/* empty */		{ $$.u.constant.value.lval=0; }
 	|	'(' function_call_parameter_list ')' { $$ = $2; }
 	|	'(' function_call_parameter_list ')' '{' { zend_do_begin_instance_creation(TSRMLS_C); } class_statement_list { zend_do_end_instance_creation(TSRMLS_C); } '}' { $$ = $2; }
 ;
