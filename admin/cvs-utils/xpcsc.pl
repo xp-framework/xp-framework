@@ -53,7 +53,8 @@ use constant WPERFORM       => "WPERFORM";
   "ereg_replace"    => "preg_replace()",
   "eregi_replace"   => "preg_replace() with /i modifier",
   "split"           => "explode()",
-  "join"            => "implode()"
+  "join"            => "implode()",
+  "strtok"          => "text.StringTokenizer"
 );
 
 # {{{ utility functions for mail notify
