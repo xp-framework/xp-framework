@@ -278,7 +278,7 @@
       $args= '';
       for ($arguments= $this->getArguments(), $i= 0, $s= sizeof($arguments); $i < $s; $i++) {
         if ($arguments[$i]->isOptional()) {
-          $args.= ', ['.$arguments[$i]->getType().' $'.$arguments[$i]->getName().']';
+          $args.= ', ['.$arguments[$i]->getType().' $'.$arguments[$i]->getName().'= '.$arguments[$i]->getDefault().']';
         } else {
           $args.= ', '.$arguments[$i]->getType().' $'.$arguments[$i]->getName();
         }
