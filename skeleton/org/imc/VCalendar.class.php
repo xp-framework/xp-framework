@@ -274,7 +274,28 @@
       
       return $cal;
     }
-  
+    
+    /**
+     * Export function helper
+     *
+     * @access  private
+     * @param   string key
+     * @param   mixed value
+     * @return  string exported
+     */    
+    function _export($key, $value) {
+      if (is_a ($value, 'Date')) {
+        // Convert date into string
+        $value= $value->toString ('Ymd').'T'.$value->toString ('His').'Z';
+      }
+
+      // Escape string, encode it to UTF8    
+      return ($key.':'.strtr(utf8_encode ($value), array (
+        ','   => '\,',
+        "\n"  => '\n'
+      ))."\n");
+    }
+    
     /**
      * Returns the textual representation of this vCalendar
      *
@@ -291,8 +312,31 @@
      * @return  
      */
     function export() {
+      // First construct the calendar itself
+      $ret = $this->_export ('BEGIN',     VCAL_ID);
+      $ret.= $this->_export ('CALSCALE',  'GREGORIAN');
+      $ret.= $this->_export ('PRODID',    '-//XP//XP Framework Calendar//EN');
+      $ret.= $this->_export ('VERSION',   $this->getVersion());
+      $ret.= $this->_export ('METHOD',    $this->getMethod());
       
+      // Enter all contained elements
+      foreach (array_keys ($this->events) as $idx) {
+        $ret.= $this->events[$idx]->export();
+      }
+      
+      // Close the calendar
+      $ret.= $this->_export ('END',       'VCALENDAR');
+      return $ret;
     }
-  
+    
+    /**
+     * Returns the VCalendar version of this implementation
+     *
+     * @access  public
+     * @return  string version
+     */
+    function getVersion() {
+      return '2.0';
+    }
   }
 ?>
