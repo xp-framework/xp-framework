@@ -40,6 +40,7 @@
       for ($i= 0; $i < 4; $i++) {
         $this->spot.= dechex(ord($str{$i}));
       }
+      $this->spot= hexdec('0x'.$this->spot);
       parent::__construct();
     }
     
@@ -94,7 +95,7 @@
      */
     function put(&$val, $permissions= 0666) {
       $v= array($val);
-      $h= shm_attach($this->spot, strlen(serialize($v)), $permissions);
+      $h= shm_attach($this->spot, (strlen(serialize($v)) + 44) * 2, $permissions);
       $ret= shm_put_var($h, $this->name, $v);
       shm_detach($h);
       if (FALSE === $ret) {
@@ -115,6 +116,7 @@
       $h= shm_attach($this->spot);
       $ret= shm_remove_var($h, $this->name);
       shm_detach($h);
+      
       if (FALSE === $ret) {
         return throw(new IOException('Could not remove segment '.$this->name));
       }
