@@ -5,8 +5,8 @@
   <name>FileOpenDialog</name>
   <program_name>fileopendialog</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
-  <pixmaps_directory>pixmaps</pixmaps_directory>
+  <source_directory></source_directory>
+  <pixmaps_directory></pixmaps_directory>
   <language>C</language>
   <gnome_support>True</gnome_support>
   <gettext_support>True</gettext_support>

@@ -81,11 +81,14 @@
      * handlers. Per default, invokation takes place directly when
      * the signal is emmitted.
      *
-     * Example [in a GtkGladeApplication]:
+     * Example:
      * <code>
      *   function init() {
      *     $this->connect('select.clicked');
      *     $this->connect('button.clicked', 'onSelectClicked');
+     *     $button= &new GtkButton('Click me:)');
+     *     $button->set_name('click_me');
+     *     $this->connect(array($button, 'clicked'), 'onSelectClicked');
      *   }
      *
      *   function onSelectClicked(&$widget) {
@@ -94,16 +97,20 @@
      * </code>
      *
      * @access  protected
-     * @param   string name
+     * @param   mixed ref
      * @param   string callback default NULL
      * @param   mixed data default NULL
      * @return  int
      * @throws  gui.GuiException in case the signal connecting failed
      */
-    function connect($name, $callback= NULL, $data= NULL) {
-      list($widget, $signal)= explode('.', $name);
-      if (!$w= &$this->widget($widget)) return FALSE;
-      
+    function connect($ref, $callback= NULL, $data= NULL) {
+      if (is_array($ref)) {
+        $w= &$ref[0];
+        $signal= $ref[1];
+      } else {
+        list($widget, $signal)= explode('.', $ref);
+        if (!$w= &$this->widget($widget)) return FALSE;
+      }
       if ('after:' == substr($signal, 0, 6)) {
         $signal= substr($signal, 6);
         $func= 'connect_after';

@@ -12,7 +12,9 @@
    * @purpose  Base class
    */
   class GtkGladeDialogWindow extends GtkGladeApplication {
-    
+    var
+      $initialized  = FALSE;
+      
     /**
      * Creates the main window
      *
@@ -40,11 +42,14 @@
      * @return  bool
      */
     function show() {
-      static $initialized= FALSE;
-      
-      if (!$initialized) {
-        $this->init();
-        $initialized= TRUE;
+      if (!$this->initialized) {
+        try(); {
+          $this->init();
+        } if (catch('GuiException', $e)) {
+          $this->cat->error($e->getStackTrace());
+          return FALSE;
+        }
+        $this->initialized= TRUE;
       }
       $this->run();
       return TRUE;
@@ -56,9 +61,8 @@
      * @access  public
      */
     function close() {
-      $this->cat->debug('close');
       $this->window->hide_all();
-      Gtk::main_quit();
+      if ($this->initialized) Gtk::main_quit();
     }
     
     /**
