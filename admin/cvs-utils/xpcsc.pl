@@ -165,15 +165,15 @@ while (@ARGV) {
         0 && print "### ".length($1)." - ".$indent."= ".(length($1) - $indent)."###\n";
         
         # The difference in indent may be one of -4, -2, 0 or 2, where -4
-        # occurs in switch / case statements, 4 in multi-line strings. Other
+        # occurs in switch / case statements. Other
         # values should not occur; and in *absolutely* no case should the 
         # indentation difference be anything odd.
         $diff= (length($1) - $indent);
         if ($diff % 2) {
-          &error("Your indentation is incorrect (difference to previous line is $diff chars)", WINDENT);
+          &error("Your indentation is incorrect (difference to previous line is $diff chars)", EINDENT);
         }
-        if ($diff != -4 && $diff != -2 && $diff != 0 && $diff != 2 && $diff != 4) {
-          &warning("Your indentation seems to be incorrect (difference to previous line is $diff chars)", EINDENT);
+        if ($diff != -4 && $diff != -2 && $diff != 0 && $diff != 2) {
+          &warning("Your indentation seems to be incorrect (difference to previous line is $diff chars)", WINDENT);
         }
         
         $indent= length($1);
