@@ -1,22 +1,25 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  * 
  * $Id$
  */
 
-  uses('io.IOException', 'io.File');
+  uses('io.IOException', 'io.File', 'util.Hashmap');
   
   /**
-   * Kapselt das Property-File
+   * An interface to property-files (aka "ini-files")
    *
-   * Property-Files sind wie folgt aufgebaut
+   * Property-files syntax is easy.
    * <pre>
-   * [Sektion]
-   * Key=Wert
-   * Key2="Wert"
-   * ; Kommentar
-   * [Sektion2]
-   * Key=Wert2
+   * [section]
+   * key1=value
+   * key2="value"
+   * key3="value|value|value"
+   * key4="a:value|b:value"
+   * ; comment
+   *
+   * [section2]
+   * key=value
    * </pre>
    */
   class Properties extends Object {
@@ -95,6 +98,13 @@
           if (';' == $key{0}) {
             $fd->write(sprintf("\n; %s\n", $val)); 
           } else {
+            if (is_a($val, 'Hashmap')) {
+              $str= '';
+              foreach ($val->_hash as $k=> $v) {
+                $str.= '|'.$k.':'.$v;
+              }
+              $val= substr($str, 1);
+            }
             if (is_array($val)) $val= implode('|', $val);
             if (is_string($val)) $val= '"'.$val.'"';
             $fd->write(sprintf(
@@ -181,6 +191,28 @@
         ? explode('|', $this->_data[$section][$key])
         : $default
       ;
+    }
+    
+    /**
+     * Return a value as hash
+     *
+     * @access  public
+     * @param   string section Name der Sektion
+     * @param   string key Name der Keys
+     * @param   default default NULL Die Rückgabe, falls der Key bzw. die Sektion nicht existiert
+     * @return  mixed Value-Hash (util.Hashmap), bzw. $default
+     */
+    function &readHash($section, $key, $default= NULL) {
+      $this->_load();
+      if (!isset($this->_data[$section][$key])) return $default;
+      
+      $return= array();
+      foreach (explode('|', $this->_data[$section][$key]) as $val) {
+        list($k, $v)= explode(':', $val);
+        $return[$k]= $v;
+      }
+      
+      return new Hashmap($return);
     }
 
     /**
@@ -331,7 +363,7 @@
     }
     
     /**
-     * Einen Boolean-Werz hinzufügen. Fügt bei Bedarf auch die Sektion ein
+     * Einen Array hinzufügen. Fügt bei Bedarf auch die Sektion ein
      *
      * @access  public
      * @param   string section Name der Sektion
@@ -342,6 +374,24 @@
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
       $this->_data[$section][$key]= $value;
+    }
+
+    /**
+     * Add a hashmap
+     *
+     * @access  public
+     * @param   string section Name der Sektion
+     * @param   string key Name der Keys
+     * @param   array value Der Wert
+     */
+    function writeHash($section, $key, $value) {
+      $this->_load();
+      if (!$this->hasSection($section)) $this->_data[$section]= array();
+      if (is_a($value, 'Hashmap')) {
+        $this->_data[$section][$key]= &$value;
+      } else {
+        $this->_data[$section][$key]= &new Hashmap($value);
+      }
     }
     
     /**
