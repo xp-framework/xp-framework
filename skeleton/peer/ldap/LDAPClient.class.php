@@ -4,6 +4,11 @@
  * $Id$
  */
 
+  // Search scopes
+  define('LDAP_SCOPE_BASE',     0x0000);
+  define('LDAP_SCOPE_ONELEVEL', 0x0001);
+  define('LDAP_SCOPE_SUB',      0x0002);
+
   uses(
     'io.IOException',
     'peer.ldap.LDAPSearchResult'
@@ -102,17 +107,27 @@
     }
     
     /**
+     * Checks whether the connection is open
+     *
+     * @access  public
+     * @return  bool true, when we're connected, false otherwise (OK, what else?:))
+     */
+    function isConnected() {
+      return is_resource($this->_hdl);
+    }
+    
+    /**
      * Closes the connection
      *
      * @access  public
      * @return  bool success
      */
     function close() {
-      return ldap_close($this->_hdl);
+      return $this->isConnected() ? ldap_close($this->_hdl) : TRUE;
     }
     
     /**
-     * Perform an LDAP search
+     * Perform an LDAP search with scope LDAP_SCOPE_SUB
      *
      * @access  public
      * @param   string base_dn
@@ -129,9 +144,39 @@
     function &search() {
       $args= func_get_args();
       array_unshift($args, $this->_hdl);
-      
-      $this->results= NULL;
       if (FALSE === ($res= call_user_func_array('ldap_search', $args))) {
+        return throw(new IOException('Search failed ['.$this->getLastError().']'));
+      }
+      
+      return new LDAPSearchResult($this->_hdl, $res);
+    }
+    
+    /**
+     * Perform an LDAP search with a scope
+     *
+     * @access  public
+     * @param   int scope search scope, one of the LDAP_SCOPE_* constants
+     * @param   string base_dn
+     * @param   string filter
+     * @param   array attributes default NULL
+     * @param   int attrsonly default 0,
+     * @param   int sizelimit default 0
+     * @param   int timelimit default 0 Time limit, 0 means no limit
+     * @param   int deref one of LDAP_DEREF_*
+     * @return  peer.ldap.LDAPSearchResult search result object
+     * @throws  IOException
+     * @see     php-doc://ldap_search
+     */
+    function &searchScope() {
+      $args= func_get_args();
+      switch ($args[0]) {
+        case LDAP_SCOPE_BASE: $func= 'ldap_read'; break;
+        case LDAP_SCOPE_ONELEVEL: $func= 'ldap_list'; break;
+        case LDAP_SCOPE_SUB: $func= 'ldap_search'; break;
+        default: return throw(new IllegalArgumentException('Scope '.$args[0].' not supported'));
+      }
+      $args[0]= $this->_hdl;
+      if (FALSE === ($res= call_user_func_array($func, $args))) {
         return throw(new IOException('Search failed ['.$this->getLastError().']'));
       }
       
@@ -143,6 +188,7 @@
      *
      * @access  public
      * @param   &peer.ldap.LDAPEntry entry specifying the dn
+     * @param   string filter default 'objectClass=*' filter
      * @return  &peer.ldap.LDAPEntry entry
      * @throws  IllegalArgumentException
      * @throws  IOException
