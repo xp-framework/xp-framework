@@ -3,9 +3,15 @@
  * 
  * Usage:
  * <pre>
- * - php -q classloader.php io.File
  * - php -q classloader.php io.File default
- * - php -q classloader.php io.File default
+ *   Loads the class io.File with the default Classloader
+ *
+ * - php -q classloader.php Test net 'http://sitten-polizei.de/php/classes/%s.class.php'
+ *   Loads the class Test via HTTP
+ *
+ * - php -q classloader.php Url external /path/to/eclipse-3_0 %s.php
+ *   Loads the class Url from the Eclipse framework (see
+ *   http://www.students.cs.uu.nl/people/voostind/eclipse/)
  * </pre>
  *
  * $Id$
