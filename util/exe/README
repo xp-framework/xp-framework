@@ -91,6 +91,6 @@ creator will issue a warning about this during build time, but, of course,
 no guarantee can be given the target still exists at execution time.
 
 The warning issued during compile time looks like this:
-test2.c:3: warning: #warning "Retreiving http://foo/test2.php results in 404"
+test2.c:3: warning: #warning "Retrieving http://foo/test2.php results in 404"
 
 <EOF>
