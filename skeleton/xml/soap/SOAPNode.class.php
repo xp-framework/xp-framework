@@ -161,6 +161,14 @@
         return;
       }
       
+      if (is_a($value, 'Collection')) { // XP collection
+        $child->attribute['xsi:type']= 'SOAP-ENC:Array';
+        $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
+        $child->attribute['SOAP-ENC:arrayType']= 'xp:'.$value->getElementClassName().'['.$value->size().']';
+        $this->_recurse($child, $value->values());
+        return;
+      }
+      
       if (is_a($value, 'Object')) {     // XP objects
         $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
         $child->attribute['xsi:type']= 'xp:'.$value->getClassName();
