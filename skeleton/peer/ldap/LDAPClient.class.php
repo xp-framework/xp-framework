@@ -10,7 +10,8 @@
   define('LDAP_SCOPE_SUB',      0x0002);
 
   uses(
-    'io.IOException',
+    'peer.ConnectException',
+    'peer.ldap.LDAPException',
     'peer.ldap.LDAPSearchResult'
   );
   
@@ -34,17 +35,18 @@
    *   }
    * </code>
    *
-   * @see php://ldap
-   * @see http://developer.netscape.com/docs/manuals/directory/41/ag/
-   * @see http://developer.netscape.com/docs/manuals/dirsdk/jsdk40/contents.htm
-   * @see http://perl-ldap.sourceforge.net/doc/Net/LDAP/
-   * @see rfc://2251
-   * @see rfc://2252
-   * @see rfc://2253
-   * @see rfc://2254
-   * @see rfc://2255
-   * @see rfc://2256
-   * @ext ldap
+   * @see      php://ldap
+   * @see      http://developer.netscape.com/docs/manuals/directory/41/ag/
+   * @see      http://developer.netscape.com/docs/manuals/dirsdk/jsdk40/contents.htm
+   * @see      http://perl-ldap.sourceforge.net/doc/Net/LDAP/
+   * @see      rfc://2251
+   * @see      rfc://2252
+   * @see      rfc://2253
+   * @see      rfc://2254
+   * @see      rfc://2255
+   * @see      rfc://2256
+   * @ext      ldap
+   * @purpose  LDAP client
    */
   class LDAPClient extends Object {
     var 
@@ -82,10 +84,11 @@
      *
      * @access  public
      * @return  resource LDAP resource handle
+     * @throws  peer.ConnectException
      */
     function connect() {
       if (FALSE === ($this->_hdl= ldap_connect($this->host, $this->port))) {
-        return throw(new IOException('Cannot connect to '.$this->host.':'.$this->port));
+        return throw(new ConnectException('Cannot connect to '.$this->host.':'.$this->port));
       }
       
       return $this->_hdl;
@@ -146,7 +149,7 @@
       $args= func_get_args();
       array_unshift($args, $this->_hdl);
       if (FALSE === ($res= call_user_func_array('ldap_search', $args))) {
-        return throw(new IOException('Search failed ['.$this->getLastError().']'));
+        return throw(new LDAPException('Search failed', ldap_error($this->_hdl)));
       }
       
       return new LDAPSearchResult($this->_hdl, $res);
@@ -178,9 +181,7 @@
       }
       $args[0]= $this->_hdl;
       if (FALSE === ($res= call_user_func_array($func, $args))) {
-        return throw(new IOException(
-          'Search failed ['.$this->getLastError().'] '.gettype($args).' ('.implode(', ', $args).')'
-        ));
+        return throw(new LDAPException('Search failed', ldap_error($this->_hdl)));
       }
       
       return new LDAPSearchResult($this->_hdl, $res);
@@ -203,7 +204,7 @@
       
       $res= ldap_list($this->_hdl, $entry->getDN(), $filter);
       if (0 != ldap_error($this->_hdl)) {
-        return throw(new IOException('Read "'.$entry->getDN().'" failed ['.$this->getLastError().']'));
+        return throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_error($this->_hdl)));
       }
       
       // Nothing found?
@@ -259,7 +260,7 @@
         $entry->getDN(), 
         array_map(array(&$this, '_encode'), $entry->getAttributes())
       ))) {
-        return throw(new IOException('Add for "'.$entry->getDN().'" failed ['.$this->getLastError().']'));
+        return throw(new LDAPException('Add for "'.$entry->getDN().'" failed', ldap_error($this->_hdl)));
       }
       
       return $res;
@@ -287,7 +288,7 @@
         $entry->getDN(), 
         array_map(array(&$this, '_encode'), $entry->getAttributes())
       ))) {
-        return throw(new IOException('Modify for "'.$entry->getDN().'" failed ['.$this->getLastError().']'));
+        return throw(new LDAPException('Modify for "'.$entry->getDN().'" failed', ldap_error($this->_hdl)));
       }
       
       return $res;
@@ -311,7 +312,7 @@
         $this->_hdl, 
         $entry->getDN()
       ))) {
-        return throw(new IOException('Delete for "'.$entry->getDN().'" failed ['.$this->getLastError().']'));
+        return throw(new LDAPException('Delete for "'.$entry->getDN().'" failed', ldap_error($this->_hdl)));
       }
       
       return $res;
