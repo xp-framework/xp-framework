@@ -10,7 +10,7 @@
    * Base class for images
    *
    * @ext gd
-   * @see php-doc://image
+   * @see php://image
    */
   class Image extends Object {
     var 
@@ -339,8 +339,8 @@
      *          border color) or a simple img.Color defining the flood color
      * @param   int x default 0
      * @param   int y default 0
-     * @see     php-doc://imagefill
-     * @see     php-doc://imagefilltoborder
+     * @see     php://imagefill
+     * @see     php://imagefilltoborder
      */
     function fill(&$col, $x= 0, $y= 0) {
       if (is_array($col)) {

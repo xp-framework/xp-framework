@@ -23,7 +23,7 @@
    *   }
    * </code>
    *
-   * @see php-doc://array
+   * @see php://array
    */
   class Hashmap extends Object {
     var $_hash= array();
@@ -97,7 +97,7 @@
      *
      * @access  public
      * @param   mixed comparator an existing function or method
-     * @see     php-doc://create_function
+     * @see     php://create_function
      */
     function usort($comparator) {
       ursort($this->_hash, $comparator);

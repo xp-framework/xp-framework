@@ -13,7 +13,7 @@
    *   echo $p->getHighlight();
    * </code>
    *
-   * @see php-doc://highlight_string
+   * @see php://highlight_string
    */
   class PHPSyntaxHighlighter extends Object {
   

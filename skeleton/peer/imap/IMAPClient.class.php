@@ -28,7 +28,7 @@
    *   }
    *  </code>
    *
-   * @see php-doc://imap
+   * @see php://imap
    * @ext imap
    */   
   class IMAPClient extends Object {

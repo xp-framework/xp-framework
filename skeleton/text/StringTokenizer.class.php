@@ -26,7 +26,7 @@
    *   - example
    * </pre>
    *
-   * @see php-doc://strtok
+   * @see php://strtok
    */
   class StringTokenizer extends Object {
     var $delim, $tok;

@@ -34,7 +34,7 @@
    *   var_dump($i->image, $width, $height);
    * </code>
    *
-   * @see php-doc://getimagesize
+   * @see php://getimagesize
    */
   class ImageGeometry extends Object {
     var

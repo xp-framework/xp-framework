@@ -34,7 +34,7 @@
    *   }
    * </code>
    *
-   * @see php-doc://ldap
+   * @see php://ldap
    * @see http://developer.netscape.com/docs/manuals/directory/41/ag/
    * @see http://developer.netscape.com/docs/manuals/dirsdk/jsdk40/contents.htm
    * @see http://perl-ldap.sourceforge.net/doc/Net/LDAP/
@@ -139,7 +139,7 @@
      * @param   int deref one of LDAP_DEREF_*
      * @return  peer.ldap.LDAPSearchResult search result object
      * @throws  IOException
-     * @see     php-doc://ldap_search
+     * @see     php://ldap_search
      */
     function &search() {
       $args= func_get_args();
@@ -165,7 +165,7 @@
      * @param   int deref one of LDAP_DEREF_*
      * @return  peer.ldap.LDAPSearchResult search result object
      * @throws  IOException
-     * @see     php-doc://ldap_search
+     * @see     php://ldap_search
      */
     function &searchScope() {
       $args= func_get_args();

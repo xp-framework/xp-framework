@@ -44,7 +44,7 @@
    * Please have a look into "Sessions and security" on PHP's session 
    * documentation page.
    *
-   * @see php-doc://session
+   * @see php://session
    * @see org.apache.HttpScriptlet
    * @see apache-doc://RewriteRule
    */

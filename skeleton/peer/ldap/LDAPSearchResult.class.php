@@ -9,7 +9,7 @@
   /**
    * Wraps ldap search results
    *
-   * @see php-doc://ldap_get_entries
+   * @see php://ldap_get_entries
    */
   class LDAPSearchResult extends Object {
     var
