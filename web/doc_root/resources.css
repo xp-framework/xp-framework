@@ -81,3 +81,18 @@ ul.intro {
   list-style-image: url(image/dot.gif);
   line-height: 18px;
 }
+
+/* News specific */
+.entry {
+  border: 1px solid #a9a9a9;
+  border-left: 3px solid #9f7912;
+  padding: 10px;
+  padding-top: 0px;
+  display: block;
+}
+.entry h3 {
+  background: url(/image/icons/entry.png) white;
+  background-position: left center; 
+  background-repeat: no-repeat;
+  padding-left: 20px;
+}
