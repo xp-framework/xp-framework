@@ -465,8 +465,8 @@
               continue;
             }
 
-            // Exim
-            // ====
+            // Exim1
+            // =====
             // This message was created automatically by mail delivery software (Exim).
             // A message that you sent could not be delivered to one or more of its
             // recipients. This is a permanent error. The following address(es) failed:
@@ -474,12 +474,36 @@
             //     SMTP error from remote mailer after RCPT foo.bar@b-w-f.net>:
             //     host mx01.kundenserver.de [212.227.126.152]: 550 Cannot route to foo.bar@b-w-f.net>
             // ------ This is a copy of the message, including all the headers. ------
+            //
+            // Exim2
+            // =====
+            // This message was created automatically by mail delivery software (Exim).
+            //   
+            //   A message that you sent has not yet been delivered to one or more of its
+            //   recipients after more than 48 hours on the queue on togal.kundenserver.de.
+            //   
+            //   The message identifier is:     18ixoL-0003hN-00
+            //   The subject of the message is: =?iso-8859-1?q?Domain=FCbertragung?=
+            //   The date of the message is:    Wed, 12 Feb 2003 15:24:29 +0100
+            //   
+            //   The address to which the message has not yet been delivered is:
+            //   
+            //     foo.bar@wwlms.de
+            //       Delay reason: SMTP error from remote mailer after RCPT TO:<foo.bar@wwlms.de>:
+            //       host mx01.kundenserver.de [212.227.126.211]: 451 Cannot check <foo.bar@wwlms.de> at this time - please try later
+            //   
+            //   No action is required on your part. Delivery attempts will continue for
+            //   some time, and this warning may be repeated at intervals if the message
+            //   remains undelivered. Eventually the mail delivery software will give up,
+            //   and when that happens, the message will be returned to you.
             if ('This message was created automatically by mail delivery software' == substr($t, 0, 64)) {
               $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_EXIM;
               
+              $state= DMP_FINISH;
+              
               // Find indented lines until -- Daemon-Typeears
               do {
-                if ('--' == substr($t, 0, 2)) break;
+                if ('--' == substr($t, 0, 2)) { $state= DMP_ORIGMSG; break; }
                 if ('  ' != substr($t, 0, 2)) continue;
                 
                 // Parse out host/IP
@@ -492,7 +516,6 @@
 
               // Now, work on original message (swallowing one line)
               $t= strtok("\n");
-              $state= DMP_ORIGMSG;
               continue;
             }
 
