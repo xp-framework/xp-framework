@@ -9,58 +9,81 @@
   <xsl:output method="xhtml" encoding="iso-8859-1"/>
   <xsl:param name="mode" select="'index'"/>
   <xsl:include href="xsl-helper.xsl"/>
+  <xsl:include href="rdf-helper.xsl"/>
 
   <xsl:template name="navigation">
     <a href="/">XP</a> stands for <b>X</b>ML <b>P</b>HP.<br/>
     XP is far more than that!
   </xsl:template>
+
+  <xsl:template match="main">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <th valign="top" align="left">Welcome to XP</th>
+        <td valign="top" align="right" style="color: #666666">(Version 0.1)</td>
+	  </tr>
+	  <tr bgcolor="#cccccc">
+        <td colspan="2"><img src="/image/spacer.gif" height="1" border="0"/>
+      </td></tr>
+    </table>
+    
+    <!-- Introduction -->
+    <p style="line-height: 16px">
+      <xsl:apply-templates select="introduction"/>
+    </p>
+    
+    <!-- News -->
+    <xsl:call-template name="divider"/><br/>
+    <xsl:apply-templates select="news"/>
+    
+    <!-- Links -->
+    <br/><xsl:call-template name="divider"/><br/>
+      <table border="0" width="100%" cellspacing="0" cellpadding="2">
+        <xsl:for-each select="links/link">
+        <tr>
+          <td width="4%" nowrap="nowrap">
+            <img src="/image/anc_overview.gif" height="19" width="22" alt="=&gt;" hspace="2" vspace="2"/>
+          </td>
+          <td>
+            <a href="{@href}"><b><xsl:value-of select="."/></b></a>
+          </td>
+        </tr>
+      </xsl:for-each>
+    </table>
+  </xsl:template>
+  
+  <xsl:template match="introduction//*">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates/>
+    </xsl:copy>
+  </xsl:template>
   
   <xsl:template match="main/news">
-    <xsl:variable name="news" select="'../content/news.rdf.xml'"/>
-    <xsl:comment> News generated from <xsl:value-of select="$news"/> </xsl:comment>
-    
     <!-- 
       Default namespace "quirk", see 
       http://web.resource.org/rss/1.0/modules/SRDF/ 
     -->
-    <table border="0" cellspacing="0" cellpadding="0" width="100%">
-      <xsl:for-each select="document($news)/rdf:RDF/rss:item">
+    <table border="0" width="100%" cellspacing="0" cellpadding="2" bgcolor="#ffeadb" style="border: 1px dotted #e0670b">
+      <tr>
+        <td width="4%" nowrap="nowrap">
+          <img src="/image/nav_list2.gif" height="17" width="17" alt="=&gt;" hspace="2" vspace="2"/>
+        </td>
+        <td>
+          <a name="contents"><b style="color: #a33818">
+            Recent news
+          </b></a>
+        </td>
+      </tr>
+      <xsl:for-each select="$news/rdf:RDF/rss:item[position() &lt; 6.1]">
         <tr>
-          <td width="1%" valign="top" nowrap="nowrap">
-            <img src="/image/anc_detail.gif" width="22" height="19" border="0"/>
-            <img src="/image/spacer.gif" hspace="4" width="1" height="1" border="0"/>
+          <td width="4%" nowrap="nowrap">
+            <img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/>
           </td>
-          <td width="99%" valign="top">
-            <b>
-              <a>
-                <xsl:attribute name="href">
-                  <xsl:choose>
-                    <xsl:when test="substring-before(substring-after(rss:link, '//'), '/') = 'xp.php3.de'">
-                      <xsl:value-of select="substring-after(substring-after(rss:link, '//'), '/')"/>
-                    </xsl:when>
-                    <xsl:otherwise>
-                      <xsl:value-of select="rss:link"/>
-                    </xsl:otherwise>
-                  </xsl:choose>
-                </xsl:attribute>
-                <xsl:value-of select="rss:title"/>
-              </a>
-            </b>
-            <br/>
-            <xsl:apply-templates select="rss:description"/>
-            <br/>
-            <small>
-              <xsl:value-of select="translate(dc:date, 'T', ' ')"/>
-            </small>
-            <br/>
+          <td>
+            <b><xsl:value-of select="translate(dc:date, 'T', ' ')"/></b>: <a style="color: #a33818" href="news.html#{position()}"><xsl:value-of select="rss:title"/></a>
           </td>
         </tr>
-
-        <!-- Divider -->
-        <xsl:if test="position() != last()">
-          <xsl:call-template name="embedded-divider"/>
-        </xsl:if>
-
       </xsl:for-each>
     </table>
   </xsl:template>

@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <document title="XP::Home">
   <main>
+    <introduction>
+      XP is a modular framework consisting of a number of useful classes,
+      making it easier to complete everyday tasks.
+      <br/>
+      
+      The classes are written to serve your needs in any situation:
+      <ul>
+        <li>Command-line tools and cronjobs</li>
+        <li>GUI applications with the power of GTK-PHP</li>
+        <li>Web sites using HTML or XML/XSL</li>
+        <li>SOAP clients/servers</li>
+      </ul>
+      
+      XP brings you nearer to the future of PHP: All of the framework will
+      be migrated to PHP5 and the Zend Engine 2 as soon as these are
+      available and stable.
+      
+      <br/><br/>
+      <a href="/content/about.html"><b>Learn more...</b></a>
+    </introduction>
+    <links>
+      <link href="/apidoc/">API-Docs: Overview</link>
+      <link href="/content/about.html">An introduction</link>
+    </links>
     <news/>
   </main>
 </document>

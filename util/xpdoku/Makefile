@@ -54,9 +54,7 @@ gen: index content collections classes
 makexml: $(XML)
 	@$(PHP) xpdoku.php
 
-index: $(OUTPUT) $(XML)
-	@echo "===> Creating news"
-	@-$(PHP) util/news.php > content/news.rdf.xml
+index: $(OUTPUT) $(XML) news
 	@echo "===> Creating index"
 	@$(SABCMD) xslt/index.xsl content/index.xml $(OUTPUT)/index.html 2>/dev/null
 	@echo "===> Creating copyright"
@@ -69,6 +67,11 @@ index: $(OUTPUT) $(XML)
 	@$(SABCMD) xslt/showsource.xsl $(CTREE) $(OUTPUT)/showsource.php 2>/dev/null
 	@echo "===> Creating search page"
 	@$(SABCMD) xslt/search.xsl $(CTREE) $(OUTPUT)/search.php 2>/dev/null
+
+news:
+	@echo "===> Creating news"
+	@-$(PHP) util/news.php > content/news.rdf.xml
+	@$(SABCMD) xslt/news.xsl content/news.xml $(OUTPUT)/news.html 2>/dev/null
 
 content:
 	@echo "===> Creating main content"
