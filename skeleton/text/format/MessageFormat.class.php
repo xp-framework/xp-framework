@@ -9,7 +9,9 @@
     'util.text.format.PrintfFormat',
     'util.text.format.DateFormat',
     'util.text.format.ChoiceFormat',
-    'util.text.format.NumberFormat'
+    'util.text.format.NumberFormat',
+    'util.text.format.ArrayFormat',
+    'util.text.format.HashFormat'
   );
   
   /**
@@ -68,6 +70,8 @@
       $this->setFormatter('date',   DateFormat::getInstance());
       $this->setFormatter('choice', ChoiceFormat::getInstance());
       $this->setFormatter('number', NumberFormat::getInstance());
+      $this->setFormatter('array',  ArrayFormat::getInstance());
+      $this->setFormatter('hash',   HashFormat::getInstance());
 
       parent::__construct($f);
     }
