@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('xml.XPathException');
+
   /**
    * XPath class
    *
@@ -66,9 +68,13 @@
      * @access  public
      * @param   string xpath
      * @return  php.XPathObject
+     * @throws  xml.XPathException if evaluation fails
      */
     function query($xpath) {
-      return xpath_eval($this->context, $xpath);
+      if (FALSE === ($r= &xpath_eval($this->context, $xpath))) {
+        return throw(new XPathException('Cannot evaluate "'.$xpath.'"'));
+      }
+      return $r;
     }
   }
 ?>
