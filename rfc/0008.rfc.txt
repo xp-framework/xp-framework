@@ -38,7 +38,6 @@ a) Syntax changes and additions
 * Finally
 * Keywords would be allowed as class and method names where possible
 * Automated getters and setters
-* Default members
 * A keyword "synchronized"
 * Return type hints (unchecked, may be retrieved via Reflection)
 + Class instance creation expressions
@@ -214,18 +213,6 @@ Details
     $s= new String();
     $s->buffer= 'Hello';   // calls setBuffer() with 'Hello' as argument
     var_dump($s->buffer);  // reads member "buffer"
-  ?>
-
-* Default members:
-  A member of a class may be declared as the default member and would
-  allow for some sort of "operator" overloading:
-  <?php
-    class List {
-      public default $items;
-    }
-    
-    $list= new List();
-    $list[]= 'a';       // Appends 'a' to the member "items"
   ?>
 
 * A keyword "synchronized":
