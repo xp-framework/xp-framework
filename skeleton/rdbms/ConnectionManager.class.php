@@ -138,5 +138,6 @@
       }
       return $results[$num];
     }
-  }
+
+  } implements(__FILE__, 'util.Configurable');
 ?>

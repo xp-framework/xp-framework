@@ -221,5 +221,6 @@
       }
       return $instance;
     }
-  }
+
+  } implements(__FILE__, 'util.Configurable');
 ?>
