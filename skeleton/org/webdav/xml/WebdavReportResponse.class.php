@@ -77,7 +77,7 @@
         $propstat= &$res->addChild(new Node('D:propstat'));
 
         with ($props= &$propstat->addChild(new Node('D:prop'))); {
-          $props->addChild(new Node('D:version-name', $version->getVersionName()));
+          $props->addChild(new Node('D:version-name', $version->getVersionNumber()));
           $props->addChild(new Node('D:creator-displayname', $version->getCreatorName()));
           $props->addChild(new Node('D:getcontentlength', $version->getContentLength()));
           $props->addChild(new Node('D:getlastmodified',  $version->lastmodified->toString()));
