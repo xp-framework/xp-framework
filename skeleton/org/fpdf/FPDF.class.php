@@ -427,7 +427,7 @@
       $this->_out($lw.' w');
 
       // Set font
-      if ($family) $this->SetFont($this->getFontByName($family, $style), $size);
+      if ($family) $this->setFont($this->getFontByName($family, $style), $size);
 
       // Set colors
       $this->DrawColor= $dc;
@@ -462,13 +462,12 @@
 
       // Border case: Black or no green
       if (($r == 0 and $g == 0 and $b == 0) or $g == -1) {
-        return substr($r / 255, 0, 5).$identifiers[0];
+        return substr($r / 255, 0, 5).' '.$identifiers[0];
       }
-      return sprintf(
-        '%s %s %s %s',
-        substr($r / 255, 0, 5),
-        substr($g / 255, 0, 5),
-        substr($b / 255, 0, 5),
+      return (
+        substr($r / 255, 0, 5).' '.
+        substr($g / 255, 0, 5).' '.
+        substr($b / 255, 0, 5).' '.
         $identifiers[1]
       );
     }
