@@ -120,7 +120,16 @@
   </xsl:template>
   
   <xsl:template match="ref">
-    <a href="/content/{@link}.html"><xsl:value-of select="."/></a>
+    <xsl:choose>
+      <xsl:when test="contains(@link, '#')">
+        <a href="/content/{substring-before(@link, '#'}.html#{substring-after(@link, '#')}">
+          <xsl:value-of select="."/>
+        </a>
+      </xsl:when>
+      <xsl:otherwise>
+        <a href="/content/{@link}.html"><xsl:value-of select="."/></a>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
 </xsl:stylesheet>
