@@ -311,7 +311,7 @@
 
     <widget>
       <class>GtkStatusbar</class>
-      <name>statusbar1</name>
+      <name>statusbar</name>
       <child>
 	<padding>0</padding>
 	<expand>False</expand>
