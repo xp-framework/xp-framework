@@ -31,7 +31,6 @@
     public function __construct($width= -1, $height= -1) {
       $this->width= $width;
       $this->height= $height;
-      
     }
     
     /**
@@ -41,7 +40,6 @@
      */
     public function __destruct() {
       if (is_resource($this->_hdl)) imagedestroy($this->_hdl);
-      
     }
     
     /**
