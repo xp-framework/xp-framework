@@ -42,7 +42,7 @@
         </a>
         <xsl:if test="position() &lt; last()"> | </xsl:if>
       </xsl:for-each>
-      <br/><br/>
+      <br/><br/><br/>
     </xsl:for-each>
   </xsl:template>
 
