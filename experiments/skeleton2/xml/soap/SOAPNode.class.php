@@ -118,18 +118,18 @@
     private function _marshall(SOAPNode $child, $value) {
       static $ns= 0;
       
-      if (is_scalar($value)) {          // Scalar
+      if (is_scalar($value)) {              // Scalar
         $child->attribute['xsi:type']= $child->_typeName($value);
         $child->setContent($child->_contentFormat($value));
         return;
       }
       
-      if (is_null($value)) {            // NULL
+      if (is_null($value)) {                // NULL
         $child->attribute['xsi:nil']= 'true';
         return;
       }
       
-      if (is_array($value)) {           // Array
+      if (is_array($value)) {               // Array
         if (is_numeric(key($value))) {
           $child->attribute['xsi:type']= 'SOAP-ENC:Array';
           $child->attribute['SOAP-ENC:arrayType']= 'xsd:anyType['.sizeof($value).']';
@@ -141,17 +141,17 @@
         return;
       }
       
-      if (is_a($value, 'Date')) {       // Date
+      if ($value instanceof Date) {         // Date
         $value= new SOAPDateTime($value->_utime);
         // Fallthrough intended
       }
       
-      if (is_a($value, 'Hashmap')) {    // Hashmap
+      if ($value instanceof Hashmap) {      // Hashmap
         $value= new SOAPHashMap($value->_hash);
         // Fallthrough intended
       }
       
-      if (is_a($value, 'SoapType')) {   // Special SoapTypes
+      if ($value instanceof SoapType) {     // Special SoapTypes
         if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
         self::_marshall($child, $value->toString());
         
@@ -166,7 +166,7 @@
         return;
       }
       
-      if (is_a($value, 'Collection')) { // XP collection
+      if ($value instanceof Collection) {   // XP collection
         $child->attribute['xsi:type']= 'SOAP-ENC:Array';
         $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
         $child->attribute['SOAP-ENC:arrayType']= 'xp:'.$value->getElementClassName().'['.$value->size().']';
@@ -174,14 +174,14 @@
         return;
       }
       
-      if (is_a($value, 'Object')) {     // XP objects
+      if ($value instanceof Generic) {      // XP objects
         $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
         $child->attribute['xsi:type']= 'xp:'.$value->getClassName();
         self::_recurse($child, get_object_vars($value));
         return;
       }
       
-      if (is_object($value)) {          // Any other object, e.g. "stdClass"
+      if (is_object($value)) {              // Any other object, e.g. "stdClass"
         $ns++;
         $child->attribute['xmlns:ns'.$ns]= 'http://xp-framework.net/xmlns/php';
         $child->attribute['xsi:type']= 'ns'.$ns.':'.get_class($value);
