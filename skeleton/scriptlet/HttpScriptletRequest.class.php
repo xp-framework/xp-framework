@@ -163,6 +163,17 @@
     function hasParam($name) {
       return isset($this->params[strtolower(strtr($name, '. ', '__'))]);
     }
+
+    /**
+     * Sets a request parameter
+     *
+     * @access  public
+     * @param   string name Parameter name
+     * @param   mixed value
+     */
+    function setParam($name, $value) {
+      $this->params[$name]= $value;
+    }
     
     /**
      * Sets request's URI
