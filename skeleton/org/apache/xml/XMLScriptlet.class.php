@@ -124,14 +124,24 @@
      */
     function doCreate(&$request, &$response) {
       $uri= $request->getURI();
-      $defaultProduct= getenv('DEF_PROD');
-      $defaultLanguage= getenv('DEF_LANG');
+
+      // Get product and language from the environment if necessary
+      if (!($product= $request->getProduct())) $product= getenv('DEF_PROD');
+      if (!($language= $request->getLanguage())) $language= getenv('DEF_LANG');
+
+      // Get state and page from request
+      $state= $request->getState();
+      $page= $request->getPage();
+      
+      // Send redirect
       $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s;%s/static?__page=home', 
+        '%s://%s/xml/%s;%s/%s?__page=%s', 
         $uri['scheme'],
         $uri['host'],          
-        $defaultProduct ? $defaultProduct : 'site',
-        $defaultLanguage ? $defaultLanguage : 'en_US'
+        $product ? $product : 'site',
+        $language ? $language : 'en_US',
+        $state ? $state : 'static',
+        $page ? $page : 'home'
       ));
       
       return FALSE; // Indicate no further processing is to be done
@@ -144,20 +154,25 @@
      * @return  bool processed
      * @param   &org.apache.HttpScriptletRequest request 
      * @param   &org.apache.HttpScriptletResponse response 
-     * @throws  Exception to indicate failure
      */
     function doCreateSession(&$request, &$response) {
       $uri= $request->getURI();
-      $defaultProduct= getenv('DEF_PROD');
-      $defaultLanguage= getenv('DEF_LANG');
+      
+      // Get product and language from the environment if necessary
+      if (!($product= $request->getProduct())) $product= getenv('DEF_PROD');
+      if (!($language= $request->getLanguage())) $language= getenv('DEF_LANG');
+      
+      // Get state and page from request
       $state= $request->getState();
       $page= $request->getPage();
+      
+      // Send redirect
       $response->sendRedirect(sprintf(
         '%s://%s/xml/%s;%s;psessionid=%s/%s?__page=%s', 
         $uri['scheme'],
         $uri['host'],          
-        $defaultProduct ? $defaultProduct : 'site',
-        $defaultLanguage ? $defaultLanguage : 'en_US',
+        $product ? $product : 'site',
+        $language ? $language : 'en_US',
         $request->session->getId(),
         $state ? $state : 'static',
         $page ? $page : 'home'
@@ -174,7 +189,6 @@
      * @param   &org.apache.scriptlet.XMLScriptletResponse
      */
     function _setStylesheet(&$request, &$response) {
-      // Set XSL stylesheet
       $response->setStylesheet(sprintf(
         '%s%s/%s/%s/%s.xsl',
         $this->stylesheetBase,
