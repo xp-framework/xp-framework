@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.soap.SOAPMessage');
+  uses('xml.soap.SOAPMessage', 'xml.QName');
   
   /**
    * Basic SOAP-Client
@@ -26,7 +26,8 @@
   class SOAPClient extends Object {
     var 
       $transport    = NULL,
-      $action       = '';
+      $action       = '',
+      $mapping      = array();
     
     /**
      * Constructor
@@ -49,6 +50,23 @@
      */
     function setTrace(&$cat) {
       $this->transport->setTrace($cat);
+    }
+    
+    /**
+     * Register mapping for a qname to a class obkect
+     *
+     * @access  public
+     * @param   &xml.QName qname
+     * @param   &lang.XPClass class
+     * @throws  lang.IllegalArgumentException
+     */
+    function registerMapping(&$qname, &$class) {
+      if (!is('XPClass', $class)) {
+        return throw(new IllegalArgumentException(
+          'Argument class is not an XPClass (given: '.xp::typeOf($class).')'
+        ));
+      }
+      $this->mapping[strtolower($qname->toString())]= &$class;
     }
     
     /**
@@ -79,7 +97,7 @@
       // Response
       if (FALSE == ($this->answer= &$this->transport->retrieve($response))) return FALSE;
       
-      $data= $this->answer->getData();
+      $data= $this->answer->getData('ENUM', $this->mapping);
       return sizeof($data) == 1 ? $data[0] : $data;
     }
   } implements(__FILE__, 'util.log.Traceable');
