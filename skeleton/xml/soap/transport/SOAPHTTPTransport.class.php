@@ -45,7 +45,7 @@
     /**
      * Create a string representation
      *
-     * @access  pubic
+     * @access  public
      * @return  string
      */
     function toString() {
