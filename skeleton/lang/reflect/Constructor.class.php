@@ -41,5 +41,15 @@
       
       return eval('return new '.$this->_ref.'('.substr($paramstr, 2).');');
     }
+
+    /**
+     * Retrieve return type
+     *
+     * @access  public
+     * @return  string
+     */
+    function getReturnType() {
+      return xp::nameOf($this->_ref);
+    }
   }
 ?>

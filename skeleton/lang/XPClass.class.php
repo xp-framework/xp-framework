@@ -8,6 +8,13 @@
     'lang.reflect.Method',
     'lang.reflect.Constructor'
   );
+
+  define('MODIFIER_STATIC',       1);
+  define('MODIFIER_ABSTRACT',     2);
+  define('MODIFIER_FINAL',        4);
+  define('MODIFIER_PUBLIC',     256);
+  define('MODIFIER_PROTECTED',  512);
+  define('MODIFIER_PRIVATE',   1024);
  
   /**
    * Represents classes. Every instance of an XP class has an method
