@@ -305,7 +305,7 @@ __;
     $ilist= '';
     foreach ($implements as $i) {
       $name= substr($i, strrpos($i, '.')+ 1, -1);
-      $ilist.= ', '.isset($map[$name]) ? $map[$name] : $name;
+      $ilist.= ', '.(isset($map[$name]) ? $map[$name] : $name);
     }
     $out[$class]= 'implements '.substr($ilist, 2).' {';
     $uses= array_merge($uses, $implements);
