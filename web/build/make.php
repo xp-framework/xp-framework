@@ -105,7 +105,7 @@
         DIRECTORY_SEPARATOR,
         $indicator,
         DIRECTORY_SEPARATOR,
-        str_replace(DIRECTORY_SEPARATOR, '.', str_replace($base, '', $f->getURI())),
+        str_replace(DIRECTORY_SEPARATOR, '.', substr(strstr($f->getURI(), 'skeleton'), 9)),
         $filename
       ));
       Console::writeLine('---> Writing api documentation to ', $stor->getURI());
