@@ -75,7 +75,6 @@
         } else if (is_object($value)) {
           $this->_recurseArray($child, get_object_vars($value));
         } else {
-          if (is_string($value)) $value= htmlspecialchars($value);
           $child->setContent($value);
         }
       }
