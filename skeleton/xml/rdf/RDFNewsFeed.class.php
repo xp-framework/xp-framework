@@ -332,7 +332,7 @@
 
 
         default:
-          return throw(new FormatException('Unrecognized element "'.$name.'"');
+          return throw(new FormatException('Unrecognized element "'.$name.'"'));
       }
     }
   }
