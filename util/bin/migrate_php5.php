@@ -17,7 +17,7 @@
   // Class names that need to be mapped due to built-in classes in PHP5.
   $map= array(
     'Exception'        => 'XPException',
-    'Iterator'         => 'XPIterator'
+    'Iterator'         => 'XPIterator',
     'lang.Exception'   => 'lang.XPException',
     'util.Iterator'    => 'util.XPIterator'
   );
