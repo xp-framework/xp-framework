@@ -55,7 +55,9 @@ RFC #0016
 
 Related documents
 -----------------
-
+- Web Services Metadata for the Java[TM] Platform
+  http://jcp.org/en/jsr/detail?id=181
+  
 Comments
 --------
 - friebe, Fri Feb 11 19:45:50 CET 2005
