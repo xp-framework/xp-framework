@@ -9,9 +9,11 @@
     'rdbms.SQLConnectException',
     'rdbms.SQLStateException',
     'rdbms.SQLStatementFailedException',
+    'rdbms.DBEvent',
     'rdbms.DSN',
     'rdbms.ResultSet',
-    'util.log.Logger'
+    'util.log.Logger',
+    'util.Observable'
   );
   
   define('DB_STORE_RESULT',     0x0001);
@@ -25,7 +27,7 @@
    *
    * @purpose  Base class for database connections
    */
-  class DBConnection extends Object {
+  class DBConnection extends Observable {
     var 
       $handle  = NULL,
       $dsn     = NULL,
@@ -44,9 +46,21 @@
       $this->flags= $dsn->getFlags();
       $this->setTimeout($dsn->getProperty('timeout', 0));   // 0 means no timeout
       
-      if (FALSE !== ($cat= $this->dsn->getValue('log'))) {
-        $l= &Logger::getInstance();
-        $this->setTrace($l->getCategory($cat));
+      // Keep this for BC reasons
+      if (FALSE !== ($cat= $this->dsn->getValue('log'))) { $obs['util.log.LogObserver']= $cat; }
+      
+      // Add observers
+      if (FALSE !== ($obs= &$this->dsn->getValue('observer'))) {
+        foreach (array_keys($obs) as $observer) {
+          try(); {
+            $class= &XPClass::forName($observer);
+            $inst= &call_user_func(array(xp::reflect($class->getName()), 'instanceFor'), $obs[$observer]);
+          } if (catch ('ClassNotFoundException', $e)) {
+            return throw ($e);
+          }
+          
+          $this->addObserver($inst);
+        }
       }
     }
     
@@ -109,6 +123,16 @@
       return TRUE;
     }
     
+    /**
+     * Checks whether changed flag is set
+     *
+     * @access  public
+     * @return  bool
+     */
+    function hasChanged() {
+      return TRUE;
+    }
+
     /**
      * Disconnect
      *
@@ -223,15 +247,5 @@
      * @return  bool success
      */
     function commit($name) { }
-    
-    /**
-     * Set trace for debugging
-     *
-     * @access  public
-     * @param   &util.log.LogCategory cat
-     */
-    function setTrace(&$cat) {
-      $this->log= &$cat;
-    }    
-  } implements(__FILE__, 'util.log.Traceable');
+  }
 ?>

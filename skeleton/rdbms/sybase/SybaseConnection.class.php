@@ -60,6 +60,7 @@
         return throw(new SQLConnectException(trim(sybase_get_last_message()), $this->dsn));
       }
       
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
       return parent::connect();
     }
     
@@ -171,7 +172,7 @@
         return FALSE;
       }
       $i= $r->next('i');
-      $this->log && $this->log->debug('Identity is', $i);
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
       return $i;
     }
 
@@ -247,7 +248,7 @@
       
       $rows= array();
       while ($row= $r->next()) $rows[]= $row;
-      $this->log && $this->log->debugf ('Fetched %d rows', count ($rows));
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, sizeof ($rows)));
       return $rows;
     }
     
@@ -275,7 +276,7 @@
         if (FALSE === $c) return throw(new SQLStateException('Previously failed to connect'));
       }
       
-      $this->log && $this->log->debug($sql);
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
       if ($this->flags & DB_UNBUFFERED) {
         $result= sybase_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
       } else {
@@ -289,6 +290,8 @@
           array_pop(sybase_fetch_row(sybase_query('select @@error', $this->handle)))
         ));
       }
+      
+      $this->_obs && $this->notifyObservers(new DBEvent('queryend', NULL));
 
       return new SybaseResultSet($result);
     }

@@ -40,6 +40,8 @@
           $this->dsn->getPassword()
         );
       }
+      
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
 
       if (!is_resource($this->handle)) {
         return throw(new SQLConnectException(mysql_error(), $this->dsn));
@@ -153,7 +155,7 @@
      */
     function identity() { 
       $i= mysql_insert_id($this->handle);
-      $this->log && $this->log->debug('Identity is', $i);
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
       return $i;
     }
 
@@ -257,13 +259,15 @@
         if (FALSE === $c) return throw(new SQLStateException('Previously failed to connect.'));
       }
       
-      $this->log && $this->log->debug($sql);
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
 
       if ($this->flags & DB_UNBUFFERED) {
         $result= mysql_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
       } else {
         $result= mysql_query($sql, $this->handle);
       }
+      
+      $this->_obs && $this->notifyObservers(new DBEvent('queryend', NULL));
 
       if (FALSE === $result) {
         return throw(new SQLStatementFailedException(

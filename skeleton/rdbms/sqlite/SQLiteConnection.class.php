@@ -96,6 +96,8 @@
       if (!is_resource($this->handle)) {
         return throw(new SQLConnectException($err, $this->dsn));
       }
+      
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
 
       sqlite_create_function($this->handle, 'cast', array(&$this, '_cast'), 2);
       return TRUE;
@@ -201,7 +203,7 @@
      */
     function identity() { 
       $i= sqlite_last_insert_rowid($this->handle);
-      $this->log && $this->log->debug('Identity is', $i);
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
       return $i;
     }
 
@@ -304,13 +306,15 @@
         if (FALSE === $c) return throw(new SQLStateException('Previously failed to connect.'));
       }
       
-      $this->log && $this->log->debug($sql);
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
 
       if ($this->flags & DB_UNBUFFERED) {
         $result= sqlite_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
       } else {
         $result= sqlite_query($sql, $this->handle);
       }
+      
+      $this->_obs && $this->notifyObservers(new DBEvent('queryend', NULL));
 
       if (FALSE === $result) {
         $e= sqlite_last_error($this->handle);

@@ -52,6 +52,8 @@
         return throw(new SQLConnectException(rtrim(pg_last_error()), $this->dsn));
       }
       
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+      
       return TRUE;
     }
     
@@ -154,7 +156,7 @@
      * @return  mixed identity value
      */
     function identity() { 
-      $this->log && $this->log->debug('Identity is', $this->_oid);
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $this->_oid));
       return $this->_oid;
     }
 
@@ -258,7 +260,7 @@
         if (FALSE === $c) return throw(new SQLStateException('Previously failed to connect.'));
       }
       
-      $this->log && $this->log->debug($sql);
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
 
       $result= pg_query($this->handle, $sql);
 
@@ -268,6 +270,8 @@
           $sql
         ));
       }
+      
+      $this->_obs && $this->notifyObservers(new DBEvent('queryend', NULL));
 
       $this->_oid= (1 == pg_result_status($result)
         ? pg_last_oid($result)
