@@ -32,7 +32,7 @@
       if (FALSE !== ($s= &$vfm->getByFilename($filename))) {
         $this->_stream= &$s;
       } else {
-        $this->_stream= &new File;
+        $this->_stream= &new File();
       }
     }
 
@@ -45,7 +45,7 @@
      * @return  boolean 
      */    
     function __get($name, &$value) {
-      if (!isset ($this->_stream->{$name}))
+      if (!isset($this->_stream->{$name}))
         return FALSE;
         
       $value= &$this->_stream->{$name};
@@ -73,7 +73,7 @@
      * @return  boolean
      */    
     function __call($method, $params, &$return) {
-      $return= call_user_func_array (array (&$this->_stream, $method), $params);
+      $return= call_user_func_array(array(&$this->_stream, $method), $params);
       return TRUE;
     }
   } overload('EmbeddedFile');
