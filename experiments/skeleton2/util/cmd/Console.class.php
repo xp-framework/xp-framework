@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.cmd.ConsoleOutputStream');
+
   /**
    * Represents system console
    *
@@ -19,7 +21,21 @@
    * @purpose  I/O functions
    */
   class Console extends Object {
-
+    public static 
+      $out = NULL,
+      $err = NULL;
+      
+    /**
+     * Static initializer
+     *
+     * @model   static
+     * @access  public
+     */
+    public static function __static() {
+      Console::$out= new ConsoleOutputStream(STDOUT);
+      Console::$err= new ConsoleOutputStream(STDOUT);
+    }
+    
     /**
      * Flush output buffer
      *
@@ -85,10 +101,11 @@
      * Read a line from standard input. The line ending (\r and/or \n)
      * is trimmed off the end.
      *
+     * @model   static
      * @access  public
      * @return  string
      */    
-    public function readLine() {
+    public static function readLine() {
       $r= '';
       while ($bytes= fgets(STDIN, 0x20)) {
         $r.= $bytes;
@@ -100,10 +117,11 @@
     /**
      * Read a single character from standard input.
      *
+     * @model   static
      * @access  public
      * @return  string
      */    
-    public function read() {
+    public static function read() {
       return fgetc(STDIN);
     }
   }
