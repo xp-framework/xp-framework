@@ -139,15 +139,17 @@
      * @throws  lang.IllegalArgumentException in case content contains illegal characters
      */
     function setContent($content) {
-    
-      // Scan the given string for illegal characters. If no illegal characters are 
-      // found, strtok returns the unchanged string. Otherwise the string up to the 
-      // illegal character will be returned (or - if the char is the first in the 
-      // string, the string excluding the first char will be returned).
-      if (strlen($content) > ($p= (strlen(strtok(' '.$content, XML_ILLEGAL_CHARS)) - 1))) {
-        return throw (new XMLFormatException(
-          'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
-        ));
+      if (is_scalar($content)) {
+
+        // Scan the given string for illegal characters. If no illegal characters are 
+        // found, strtok returns the unchanged string. Otherwise the string up to the 
+        // illegal character will be returned (or - if the char is the first in the 
+        // string, the string excluding the first char will be returned).
+        if (strlen($content) > ($p= (strlen(strtok(' '.$content, XML_ILLEGAL_CHARS)) - 1))) {
+          return throw (new XMLFormatException(
+            'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
+          ));
+        }
       }
       
       $this->content= $content;
