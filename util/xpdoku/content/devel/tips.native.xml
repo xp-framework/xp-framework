@@ -44,6 +44,31 @@
 ]]></code>
         </text>
       </para>
+      <para>
+        <caption>When not to use certain functions</caption>
+        <text>
+          Sometimes it's adviseable not to use certain builtin functions, either
+          for their poor performance or because of functionality issues:
+          <ul>
+            <li><i>ereg_*</i>: Use their <i>preg_*</i> equivalent, as these are
+              faster and offer more functionality.</li>
+            <li><i>split</i>: Use explode() instead</li>
+            <li><i>join</i>: Use implode() instead</li>
+            <li><i>count</i>: Use sizeof() instead, as sizeof is a keywork in the
+              PHP language which offers slighly faster access to the function.</li>
+            <li><i>strtok</i>: Do not use <i>strtok</i> outside the <i>main</i> program
+              stack: <i>strtok</i> has an internal pointer which remembers the current
+              position in the string. If call to <i>strtok</i> with another string is
+              executed in between, the original position will be forgotten, as there
+              is no stack for this function.<br/>
+              If classes use this method, it cannot be assured, that there is no other
+              "active" <i>strtok</i> instance - and breaks code.<br/>
+              As an alternative the class <i>text.StringTokenizer</i> exists which
+              does the same as this function but allows for mixed calls.
+            </li>
+          </ul>
+        </text>
+      </para>
     </content>
     <references>
       <ref link="../devel/index">Overview</ref>
