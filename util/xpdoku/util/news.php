@@ -21,9 +21,9 @@
   
   // TBD: Get from database?
   $news->addItem(
-    'MessageFormat', 
+    'Added collection util.text.format', 
     'http://xp.php3.de/apidoc/collections/util.text.format.html',
-    'Formatting strings has become even easier',
+    'Formatting strings has become even easier. Have a look at the MessageFormat class for examples',
     new Date('2003-01-04 22:02:00')
   );
   $news->addItem(
