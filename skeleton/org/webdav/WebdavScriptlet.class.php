@@ -145,7 +145,7 @@
      * @return org.webdav.WebdavScriptletRequest
      */
     function _request() {
-      switch(getenv('REQUEST_METHOD')) {
+      switch (getenv('REQUEST_METHOD')) {
         case 'PROPFIND':
           return new WebdavPropFindRequest();
         case 'PROPPATCH':
@@ -597,8 +597,6 @@
         return throw(new HttpScriptletException($e->message));
       }
       $response->setStatus(HTTP_CREATED);
-      
-      // TBD: MultiStatus response
     }
 
 
@@ -684,7 +682,7 @@
         if (0 !== strpos(rtrim($request->uri['path'], '/').'/', $pattern)) continue;
         
         // Set the root URL (e.g. http://wedav.host.com/dav/)
-        $request->setRootURL($rootURL= new URL(sprintf(
+        $request->setRootURL($rootURL= &new URL(sprintf(
           '%s://%s%s',
           $request->uri['scheme'],
           $request->uri['host'],

@@ -84,13 +84,13 @@
     
     function encodePath($path) {
       $parts = explode('/', $path);
-      for ($i = 0; $i < count($parts); $i++) $parts[$i]= rawurlencode($parts[$i]);
+      for ($i = 0; $i < sizeof($parts); $i++) $parts[$i]= rawurlencode($parts[$i]);
       return implode('/', $parts);
     }
     
     function decodePath($path) {
       $parts = explode('/', $path);
-      for ($i = 0; $i < count($parts); $i++) $parts[$i]= rawurldecode($parts[$i]);
+      for ($i = 0; $i < sizeof($parts); $i++) $parts[$i]= rawurldecode($parts[$i]);
       return implode('/', $parts);
     }
 
@@ -140,10 +140,10 @@
       $parts= explode('/', $path);
       array_shift($parts);
       if (array_shift($parts) != $node->getName()) return NULL;
-      foreach($parts as $p) {
+      foreach ($parts as $p) {
         $found= FALSE;
         $name= array_shift($parts);
-        for($i= 0, $s= sizeof($node->children); $i<$s; $i++) {
+        for ($i= 0, $s= sizeof($node->children); $i<$s; $i++) {
           if ($name != $node->children[$i]->getName()) continue;
           
           $node= &$node->children[$i];
