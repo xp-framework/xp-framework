@@ -54,7 +54,7 @@
     $constructor= $class->getConstructor();
 
     // Create a new instance
-    $instance= $class->newInstance();
+    $instance= $class->newInstance(NULL);
   
     Console::writef(
       "Class '%s' (extends %s) %s\n".
