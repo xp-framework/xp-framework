@@ -468,10 +468,11 @@
      */
     function toString() {
       return sprintf(
-        '%s(%dx%d)',
+        "%s(%dx%d) {\n  #colors = %s\n}",
         $this->getClassName(),
         $this->width,
-        $this->height
+        $this->height,
+        imageistruecolor($this->handle) ? '(truecolor)' : imagecolorstotal($this->handle)
       );
     }
   }
