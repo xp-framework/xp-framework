@@ -31,7 +31,6 @@
       assert_options(ASSERT_ACTIVE, 1);
       assert_options(ASSERT_WARNING, 1);
       assert_options(ASSERT_CALLBACK, array('TestCase', '__fail'));
-      parent::__construct();
     }
 
     /**
@@ -135,7 +134,7 @@
      * @return  bool
      */
     function assertFloat($var, $error= 'notfloat') {
-      return assert('$this->test(is_float($var), $error, gettype($var), "float"s)');
+      return assert('$this->test(is_float($var), $error, gettype($var), "float")');
     }
     
     /**
