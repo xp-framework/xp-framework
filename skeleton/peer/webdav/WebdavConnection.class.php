@@ -17,7 +17,6 @@
   /**
    * Webdav connection
    *   
-   * @ext      peer.http.HttpConnection
    * @purpose  Provide a webdav connection
    */
   class WebdavConnection extends HttpConnection {
