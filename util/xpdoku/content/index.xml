@@ -30,6 +30,10 @@
         <caption>An introduction to XP</caption>
         <description>Learn what XP is all about, what it looks and feels like</description>
       </link>
+      <link href="/content/tasks.html">
+        <caption>How to complete common tasks with XP</caption>
+        <description>This section will give an introduction to the basics of common tasks and how to accomplish them using the XP framework.</description>
+      </link>
       <link href="/content/about.install.html">
         <caption>Installation</caption>
         <description>How to install the XP framework</description>
