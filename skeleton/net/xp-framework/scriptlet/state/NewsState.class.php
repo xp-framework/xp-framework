@@ -29,16 +29,21 @@
           entry.body as body,
           entry.author as author,
           entry.timestamp as timestamp,
-          length(entry.extended) as extended_length
+          length(entry.extended) as extended_length,
+          category.categoryid as category_id,
+          category.category_name as category
         from
-          serendipity_entries entry
+          serendipity_entries entry,
+          serendipity_entrycat matrix,
+          serendipity_category category
         where
           isdraft = "false"
+          and entry.id = matrix.entryid
+          and matrix.categoryid = category.categoryid
         order by
           timestamp desc
         limit 20
       ');
     }
-
   }
 ?>
