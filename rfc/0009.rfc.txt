@@ -2,9 +2,10 @@ RFC 0009: Typesafe enumerations
 ========================================================================
 $Id$
 
-@authors: friebe
+@authors: friebe, kiesel
 @created: Thu Oct 28 22:42:01 CEST 2004
-@status: draft
+@status: implemented
+@implemented: Thu Mar 17 22:33:32 CET 2005
 @category: <core>
 
 
@@ -154,12 +155,35 @@ The above example prints out the following:
 
 Implementation notes
 --------------------
+Implementation has been included in the ZendEngine patch contained in this
+CVS repository.
 
-(TBD)
+Enumerations technically are special classes that have the final methods size(),
+valueOf() and valueAt() - as well as the properties name, ordinal and value. Every
+enumeration class derives from class Enumeration (a package for these has yet to
+be defined).
+
+When declaring an enumeration type, one can omit the actual value of some or all
+enumeration members - if omitted, a default value is calculated by taking the maximum
+value seen so far and adding 1 to that value. Each value has to be unique to ensure
+a correct mapping via the valueOf() method.
+
+Allowed values are integers and strings. If other scalars (and only those are
+allowed by the parser) are submitted, they'll be casted to string.
+
+An enumeration member method internally is renamed to 
+"__{enumerationname}{methodname}". Access is being delegated by implementing a __call()
+method in the enumerations class. Thus, by overriding __call() you could change the
+way enumerated methods are accessed.
+
 
 Related documents
 -----------------
 * A Typesafe Enum Facility for the Java[tm] Programming Language
   http://jcp.org/aboutJava/communityprocess/jsr/tiger/enum.html
+  
+* Syntax and functionality demonstration examples can be found in
+  experiments/arena/php5/enum (Note: these differ from the syntax examples given
+  in this rfc; those are not 100% correct in respect to the final implementation).
 
 <EOF>
