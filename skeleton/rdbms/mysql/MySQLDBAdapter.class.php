@@ -103,12 +103,35 @@
           $t->addAttribute(new DBTableAttribute(
             $record['Field'], 
             $this->map[$regs[1]],
-            ('PRI' == $record['Key']),
+            strstr($record['Extra'], 'auto_increment'),
             !empty($record['Null']),
             $regs[3], 
             0, 
             0
           ));
+        }
+        
+        // Get keys
+        // +----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+---------+
+        // | Table    | Non_unique | Key_name      | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Comment |
+        // +----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+---------+
+        // | contract |          0 | PRIMARY       |            1 | contract_id | A         |           6 |     NULL | NULL   |         |
+        // | contract |          0 | contract_id_2 |            1 | contract_id | A         |           6 |     NULL | NULL   |         |
+        // | contract |          1 | contract_id   |            1 | contract_id | A         |           6 |     NULL | NULL   |         |
+        // | contract |          1 | contract_id   |            2 | user_id     | A         |           6 |     NULL | NULL   |         |
+        // +----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+---------+
+        $q= $this->conn->query('show keys from %c', $table);
+        while ($record= $this->conn->fetch($q)) {
+          if ($record['Key_name'] != $key) {
+            $index= &$t->addIndex(new DBIndex(
+              $record['Key_name'],
+              array()
+            ));
+            $key= $record['Key_name'];
+          }
+          $index->unique= ('0' == $record['Non_unique']);
+          $index->primary= ('PRIMARY' == $record['Key_name']);
+          $index->keys[]= $record['Column_name'];
         }
       } if (catch('SQLException', $e)) {
         return throw($e);
