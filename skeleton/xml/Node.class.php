@@ -78,9 +78,9 @@
           : $field
         ));
         if (is_array($a[$field])) {
-          $this->_recurse($c, $child, $a[$field]);
+          $this->_recurse($child, $a[$field]);
         } else if (is_object($a[$field])) {
-          $this->_recurse($c, $child, get_object_vars($a[$field]));
+          $this->_recurse($child, get_object_vars($a[$field]));
         } else {
           $child->setContent($a[$field]);
         }
