@@ -44,4 +44,5 @@
   foreach ($status->tags as $name => $version) {
     Console::writeLinef('- Tag %-30s @ r%s', $name, $version);
   }
+  // }}}
 ?>
