@@ -101,6 +101,14 @@
 #include <stdint.h>
 #endif
 
+#ifndef HAVE_INT32_T
+# if SIZEOF_INT == 4
+typedef int int32_t;
+# elif SIZEOF_LONG == 4
+typedef long int int32_t;
+# endif
+#endif
+
 #ifndef HAVE_UINT32_T
 # if SIZEOF_INT == 4
 typedef unsigned int uint32_t;
@@ -132,10 +140,6 @@ typedef unsigned long int uint32_t;
 #define int32_t __int32
 #define uint32_t unsigned __int32
 #define IEEE_LITTLE_ENDIAN
-#endif
-
-#ifdef HAVE_SYS_BITYPES_H
-#include <sys/bitypes.h>
 #endif
 
 #define Long	int32_t

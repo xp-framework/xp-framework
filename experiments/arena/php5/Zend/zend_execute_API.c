@@ -498,6 +498,7 @@ ZEND_API int zval_update_constant(zval **pp, void *arg TSRMLS_DC)
 				case IS_STRING:
 					zend_symtable_update(p->value.ht, const_value.value.str.val, const_value.value.str.len+1, &new_val, sizeof(zval *), NULL);
 					break;
+				case IS_BOOL:
 				case IS_LONG:
 					zend_hash_index_update(p->value.ht, const_value.value.lval, &new_val, sizeof(zval *), NULL);
 					break;
@@ -672,6 +673,9 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache TS
 
 				fci->function_table = &(*ce)->function_table;
 				calling_scope = *ce;
+			} else {
+				zend_error(E_NOTICE, "Non-callable array passed to zend_call_function()");
+				return FAILURE;
 			}
 
 			if (fci->function_table == NULL) {
@@ -948,15 +952,15 @@ ZEND_API int zend_lookup_class(char *name, int name_length, zend_class_entry ***
 		return FAILURE;
 	}
 
-	if (EG(exception)) {
+	if (EG(exception) && exception) {
 		free_alloca(lc_name);
 		zend_error(E_ERROR, "Function %s(%s) threw an exception of type '%s'", ZEND_AUTOLOAD_FUNC_NAME, name, Z_OBJCE_P(EG(exception))->name);
 		return FAILURE;
 	}
-	EG(exception) = exception;
-
-	/* If an exception is thrown retval_ptr will be NULL but we bailout before we reach this point */
-	zval_ptr_dtor(&retval_ptr);
+	if (!EG(exception)) {
+		EG(exception) = exception;
+		zval_ptr_dtor(&retval_ptr);
+	}
 
 	retval = zend_hash_find(EG(class_table), lc_name, name_length + 1, (void **) ce);
 	free_alloca(lc_name);

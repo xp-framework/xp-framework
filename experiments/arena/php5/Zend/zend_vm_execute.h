@@ -768,7 +768,6 @@ static int ZEND_RECV_INIT_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	zval **param, *assignment_value;
 	zend_uint arg_num = opline->op1.u.constant.value.lval;
 	zend_free_op free_res;
-	zval **var_ptr = get_zval_ptr_ptr(&opline->result, EX(Ts), &free_res, BP_VAR_W);
 
 	if (zend_ptr_stack_get_arg(arg_num, (void **) &param TSRMLS_CC)==FAILURE) {
 		if (opline->op2.u.constant.type == IS_CONSTANT || opline->op2.u.constant.type==IS_CONSTANT_ARRAY) {
@@ -790,8 +789,10 @@ static int ZEND_RECV_INIT_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 			assignment_value = &opline->op2.u.constant;
 		}
 		zend_verify_arg_type((zend_function *) EG(active_op_array), arg_num, assignment_value TSRMLS_CC);
-		zend_receive(var_ptr, assignment_value TSRMLS_CC);
+		zend_assign_to_variable(NULL, &opline->result, NULL, assignment_value, IS_VAR, EX(Ts) TSRMLS_CC);
 	} else {
+		zval **var_ptr = get_zval_ptr_ptr(&opline->result, EX(Ts), &free_res, BP_VAR_W);
+
 		assignment_value = *param;
 		zend_verify_arg_type((zend_function *) EG(active_op_array), arg_num, assignment_value TSRMLS_CC);
 		if (PZVAL_IS_REF(assignment_value)) {
@@ -2070,6 +2071,7 @@ static int ZEND_FE_RESET_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	HashTable *fe_ht;
 	zend_object_iterator *iter = NULL;
 	zend_class_entry *ce = NULL;
+	zend_bool is_empty = 0;
 
 	if (opline->extended_value) {
 		array_ptr_ptr = _get_zval_ptr_ptr_const(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC);
@@ -2131,20 +2133,26 @@ static int ZEND_FE_RESET_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 		if (iter->funcs->rewind) {
 			iter->funcs->rewind(iter TSRMLS_CC);
 		}
+		is_empty = iter->funcs->valid(iter TSRMLS_CC) != SUCCESS;
 	} else if ((fe_ht = HASH_OF(array_ptr)) != NULL) {
-		/* probably redundant */
 		zend_hash_internal_pointer_reset(fe_ht);
+		if (ce) {
+			zend_object *zobj = zend_objects_get_address(array_ptr TSRMLS_CC);
+			while (zend_hash_has_more_elements(fe_ht) == SUCCESS) {
+				char *str_key;
+				uint str_key_len;
+				ulong int_key;
+				if (zend_hash_get_current_key_ex(fe_ht, &str_key, &str_key_len, &int_key, 0, NULL) == HASH_KEY_IS_STRING 
+				&& zend_check_property_access(zobj, str_key TSRMLS_CC) == SUCCESS) {
+					break;
+				}
+				zend_hash_move_forward(fe_ht);
+			}
+		}
+		is_empty = zend_hash_has_more_elements(fe_ht) != SUCCESS;
 	} else {
 		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
-
-		opline++;
-		ZEND_VM_SET_OPCODE(EX(op_array)->opcodes+opline->op2.u.opline_num);
-		if (opline->extended_value) {
-			;
-		} else {
-			;
-		}
-		ZEND_VM_CONTINUE_JMP();
+		is_empty = 1;
 	}
 
 	if (opline->extended_value) {
@@ -2152,7 +2160,12 @@ static int ZEND_FE_RESET_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	} else {
 		;
 	}
-	ZEND_VM_NEXT_OPCODE();
+	if (is_empty) {
+		ZEND_VM_SET_OPCODE(EX(op_array)->opcodes+opline->op2.u.opline_num);
+		ZEND_VM_CONTINUE_JMP();
+	} else {
+		ZEND_VM_NEXT_OPCODE();
+	}
 }
 
 static int ZEND_ISSET_ISEMPTY_VAR_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
@@ -4541,6 +4554,7 @@ static int ZEND_FE_RESET_SPEC_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	HashTable *fe_ht;
 	zend_object_iterator *iter = NULL;
 	zend_class_entry *ce = NULL;
+	zend_bool is_empty = 0;
 
 	if (opline->extended_value) {
 		array_ptr_ptr = _get_zval_ptr_ptr_tmp(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC);
@@ -4602,20 +4616,26 @@ static int ZEND_FE_RESET_SPEC_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 		if (iter->funcs->rewind) {
 			iter->funcs->rewind(iter TSRMLS_CC);
 		}
+		is_empty = iter->funcs->valid(iter TSRMLS_CC) != SUCCESS;
 	} else if ((fe_ht = HASH_OF(array_ptr)) != NULL) {
-		/* probably redundant */
 		zend_hash_internal_pointer_reset(fe_ht);
+		if (ce) {
+			zend_object *zobj = zend_objects_get_address(array_ptr TSRMLS_CC);
+			while (zend_hash_has_more_elements(fe_ht) == SUCCESS) {
+				char *str_key;
+				uint str_key_len;
+				ulong int_key;
+				if (zend_hash_get_current_key_ex(fe_ht, &str_key, &str_key_len, &int_key, 0, NULL) == HASH_KEY_IS_STRING 
+				&& zend_check_property_access(zobj, str_key TSRMLS_CC) == SUCCESS) {
+					break;
+				}
+				zend_hash_move_forward(fe_ht);
+			}
+		}
+		is_empty = zend_hash_has_more_elements(fe_ht) != SUCCESS;
 	} else {
 		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
-
-		opline++;
-		ZEND_VM_SET_OPCODE(EX(op_array)->opcodes+opline->op2.u.opline_num);
-		if (opline->extended_value) {
-			;
-		} else {
-			;
-		}
-		ZEND_VM_CONTINUE_JMP();
+		is_empty = 1;
 	}
 
 	if (opline->extended_value) {
@@ -4623,7 +4643,12 @@ static int ZEND_FE_RESET_SPEC_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	} else {
 		;
 	}
-	ZEND_VM_NEXT_OPCODE();
+	if (is_empty) {
+		ZEND_VM_SET_OPCODE(EX(op_array)->opcodes+opline->op2.u.opline_num);
+		ZEND_VM_CONTINUE_JMP();
+	} else {
+		ZEND_VM_NEXT_OPCODE();
+	}
 }
 
 static int ZEND_JMP_NO_CTOR_SPEC_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
@@ -7674,6 +7699,7 @@ static int ZEND_FE_RESET_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	HashTable *fe_ht;
 	zend_object_iterator *iter = NULL;
 	zend_class_entry *ce = NULL;
+	zend_bool is_empty = 0;
 
 	if (opline->extended_value) {
 		array_ptr_ptr = _get_zval_ptr_ptr_var(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC);
@@ -7735,20 +7761,26 @@ static int ZEND_FE_RESET_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 		if (iter->funcs->rewind) {
 			iter->funcs->rewind(iter TSRMLS_CC);
 		}
+		is_empty = iter->funcs->valid(iter TSRMLS_CC) != SUCCESS;
 	} else if ((fe_ht = HASH_OF(array_ptr)) != NULL) {
-		/* probably redundant */
 		zend_hash_internal_pointer_reset(fe_ht);
+		if (ce) {
+			zend_object *zobj = zend_objects_get_address(array_ptr TSRMLS_CC);
+			while (zend_hash_has_more_elements(fe_ht) == SUCCESS) {
+				char *str_key;
+				uint str_key_len;
+				ulong int_key;
+				if (zend_hash_get_current_key_ex(fe_ht, &str_key, &str_key_len, &int_key, 0, NULL) == HASH_KEY_IS_STRING 
+				&& zend_check_property_access(zobj, str_key TSRMLS_CC) == SUCCESS) {
+					break;
+				}
+				zend_hash_move_forward(fe_ht);
+			}
+		}
+		is_empty = zend_hash_has_more_elements(fe_ht) != SUCCESS;
 	} else {
 		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
-
-		opline++;
-		ZEND_VM_SET_OPCODE(EX(op_array)->opcodes+opline->op2.u.opline_num);
-		if (opline->extended_value) {
-			if (free_op1.var) {zval_ptr_dtor(&free_op1.var);};
-		} else {
-			if (free_op1.var) {zval_ptr_dtor(&free_op1.var);};
-		}
-		ZEND_VM_CONTINUE_JMP();
+		is_empty = 1;
 	}
 
 	if (opline->extended_value) {
@@ -7756,7 +7788,12 @@ static int ZEND_FE_RESET_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	} else {
 		if (free_op1.var) {zval_ptr_dtor(&free_op1.var);};
 	}
-	ZEND_VM_NEXT_OPCODE();
+	if (is_empty) {
+		ZEND_VM_SET_OPCODE(EX(op_array)->opcodes+opline->op2.u.opline_num);
+		ZEND_VM_CONTINUE_JMP();
+	} else {
+		ZEND_VM_NEXT_OPCODE();
+	}
 }
 
 static int ZEND_FE_FETCH_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
@@ -7764,7 +7801,7 @@ static int ZEND_FE_FETCH_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	zend_op *opline = EX(opline);
 	zend_free_op free_op1;
 	zval *array = _get_zval_ptr_var(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC);
-	zval **value, *key;
+	zval **value;
 	char *str_key;
 	uint str_key_len;
 	ulong int_key;
@@ -7826,7 +7863,7 @@ static int ZEND_FE_FETCH_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 				 * In case that ever happens we need an additional flag. */
 				iter->funcs->move_forward(iter TSRMLS_CC);
 			}
-			if (!iter || iter->funcs->valid(iter TSRMLS_CC) == FAILURE) {
+			if (!iter || (iter->index > 1 && iter->funcs->valid(iter TSRMLS_CC) == FAILURE)) {
 				/* reached end of iteration */
 				ZEND_VM_SET_OPCODE(EX(op_array)->opcodes+opline->op2.u.opline_num);
 				ZEND_VM_CONTINUE_JMP();
@@ -7852,29 +7889,17 @@ static int ZEND_FE_FETCH_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	if (opline->extended_value & ZEND_FE_FETCH_BYREF) {
 		SEPARATE_ZVAL_IF_NOT_REF(value);
 		(*value)->is_ref = 1;
+		EX_T(opline->result.u.var).var.ptr_ptr = value;
+		(*value)->refcount++;
+	} else {
+		EX_T(opline->result.u.var).var.ptr_ptr = value;
+		PZVAL_LOCK(*EX_T(opline->result.u.var).var.ptr_ptr);
+		AI_USE_PTR(EX_T(opline->result.u.var).var);
 	}
 
-	if (!use_key) {
-		if (opline->extended_value & ZEND_FE_FETCH_BYREF) {
-			EX_T(opline->result.u.var).var.ptr_ptr = value;
-			(*value)->refcount++;
-		} else {
-			zval *result = &EX_T(opline->result.u.var).tmp_var;
-
-			*result = **value;
-			zval_copy_ctor(result);
-		}
-	} else {
-		zval *result = &EX_T(opline->result.u.var).tmp_var;
-
-		(*value)->refcount++;
-
-		array_init(result);
-
-		zend_hash_index_update(result->value.ht, 0, value, sizeof(zval *), NULL);
-
-		ALLOC_ZVAL(key);
-		INIT_PZVAL(key);
+	if (use_key) {
+		zend_op *op_data = opline+1;
+		zval *key = &EX_T(op_data->result.u.var).tmp_var;
 
 		switch (key_type) {
 			case HASH_KEY_IS_STRING:
@@ -7888,9 +7913,9 @@ static int ZEND_FE_FETCH_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 				break;
 			EMPTY_SWITCH_DEFAULT_CASE()
 		}
-		zend_hash_index_update(result->value.ht, 1, &key, sizeof(zval *), NULL);
 	}
 
+	ZEND_VM_INC_OPCODE();
 	ZEND_VM_NEXT_OPCODE();
 }
 
@@ -18505,6 +18530,7 @@ static int ZEND_FE_RESET_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	HashTable *fe_ht;
 	zend_object_iterator *iter = NULL;
 	zend_class_entry *ce = NULL;
+	zend_bool is_empty = 0;
 
 	if (opline->extended_value) {
 		array_ptr_ptr = _get_zval_ptr_ptr_cv(&opline->op1, EX(Ts), &free_op1, BP_VAR_R TSRMLS_CC);
@@ -18566,20 +18592,26 @@ static int ZEND_FE_RESET_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 		if (iter->funcs->rewind) {
 			iter->funcs->rewind(iter TSRMLS_CC);
 		}
+		is_empty = iter->funcs->valid(iter TSRMLS_CC) != SUCCESS;
 	} else if ((fe_ht = HASH_OF(array_ptr)) != NULL) {
-		/* probably redundant */
 		zend_hash_internal_pointer_reset(fe_ht);
+		if (ce) {
+			zend_object *zobj = zend_objects_get_address(array_ptr TSRMLS_CC);
+			while (zend_hash_has_more_elements(fe_ht) == SUCCESS) {
+				char *str_key;
+				uint str_key_len;
+				ulong int_key;
+				if (zend_hash_get_current_key_ex(fe_ht, &str_key, &str_key_len, &int_key, 0, NULL) == HASH_KEY_IS_STRING 
+				&& zend_check_property_access(zobj, str_key TSRMLS_CC) == SUCCESS) {
+					break;
+				}
+				zend_hash_move_forward(fe_ht);
+			}
+		}
+		is_empty = zend_hash_has_more_elements(fe_ht) != SUCCESS;
 	} else {
 		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
-
-		opline++;
-		ZEND_VM_SET_OPCODE(EX(op_array)->opcodes+opline->op2.u.opline_num);
-		if (opline->extended_value) {
-			;
-		} else {
-			;
-		}
-		ZEND_VM_CONTINUE_JMP();
+		is_empty = 1;
 	}
 
 	if (opline->extended_value) {
@@ -18587,7 +18619,12 @@ static int ZEND_FE_RESET_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	} else {
 		;
 	}
-	ZEND_VM_NEXT_OPCODE();
+	if (is_empty) {
+		ZEND_VM_SET_OPCODE(EX(op_array)->opcodes+opline->op2.u.opline_num);
+		ZEND_VM_CONTINUE_JMP();
+	} else {
+		ZEND_VM_NEXT_OPCODE();
+	}
 }
 
 static int ZEND_JMP_NO_CTOR_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
@@ -30307,7 +30344,6 @@ static int ZEND_RECV_INIT_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	zval **param, *assignment_value;
 	zend_uint arg_num = opline->op1.u.constant.value.lval;
 	zend_free_op free_res;
-	zval **var_ptr = get_zval_ptr_ptr(&opline->result, EX(Ts), &free_res, BP_VAR_W);
 
 	if (zend_ptr_stack_get_arg(arg_num, (void **) &param TSRMLS_CC)==FAILURE) {
 		if (opline->op2.u.constant.type == IS_CONSTANT || opline->op2.u.constant.type==IS_CONSTANT_ARRAY) {
@@ -30329,8 +30365,10 @@ static int ZEND_RECV_INIT_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 			assignment_value = &opline->op2.u.constant;
 		}
 		zend_verify_arg_type((zend_function *) EG(active_op_array), arg_num, assignment_value TSRMLS_CC);
-		zend_receive(var_ptr, assignment_value TSRMLS_CC);
+		zend_assign_to_variable(NULL, &opline->result, NULL, assignment_value, IS_VAR, EX(Ts) TSRMLS_CC);
 	} else {
+		zval **var_ptr = get_zval_ptr_ptr(&opline->result, EX(Ts), &free_res, BP_VAR_W);
+
 		assignment_value = *param;
 		zend_verify_arg_type((zend_function *) EG(active_op_array), arg_num, assignment_value TSRMLS_CC);
 		if (PZVAL_IS_REF(assignment_value)) {
@@ -30938,6 +30976,7 @@ static int ZEND_FE_RESET_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	HashTable *fe_ht;
 	zend_object_iterator *iter = NULL;
 	zend_class_entry *ce = NULL;
+	zend_bool is_empty = 0;
 
 	if (opline->extended_value) {
 		array_ptr_ptr = get_zval_ptr_ptr(&opline->op1, EX(Ts), &free_op1, BP_VAR_R);
@@ -30999,20 +31038,26 @@ static int ZEND_FE_RESET_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 		if (iter->funcs->rewind) {
 			iter->funcs->rewind(iter TSRMLS_CC);
 		}
+		is_empty = iter->funcs->valid(iter TSRMLS_CC) != SUCCESS;
 	} else if ((fe_ht = HASH_OF(array_ptr)) != NULL) {
-		/* probably redundant */
 		zend_hash_internal_pointer_reset(fe_ht);
+		if (ce) {
+			zend_object *zobj = zend_objects_get_address(array_ptr TSRMLS_CC);
+			while (zend_hash_has_more_elements(fe_ht) == SUCCESS) {
+				char *str_key;
+				uint str_key_len;
+				ulong int_key;
+				if (zend_hash_get_current_key_ex(fe_ht, &str_key, &str_key_len, &int_key, 0, NULL) == HASH_KEY_IS_STRING 
+				&& zend_check_property_access(zobj, str_key TSRMLS_CC) == SUCCESS) {
+					break;
+				}
+				zend_hash_move_forward(fe_ht);
+			}
+		}
+		is_empty = zend_hash_has_more_elements(fe_ht) != SUCCESS;
 	} else {
 		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
-
-		opline++;
-		ZEND_VM_SET_OPCODE(EX(op_array)->opcodes+opline->op2.u.opline_num);
-		if (opline->extended_value) {
-			if (free_op1.var) {zval_ptr_dtor(&free_op1.var);};
-		} else {
-			FREE_OP_IF_VAR(free_op1);
-		}
-		ZEND_VM_CONTINUE_JMP();
+		is_empty = 1;
 	}
 
 	if (opline->extended_value) {
@@ -31020,7 +31065,12 @@ static int ZEND_FE_RESET_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	} else {
 		FREE_OP_IF_VAR(free_op1);
 	}
-	ZEND_VM_NEXT_OPCODE();
+	if (is_empty) {
+		ZEND_VM_SET_OPCODE(EX(op_array)->opcodes+opline->op2.u.opline_num);
+		ZEND_VM_CONTINUE_JMP();
+	} else {
+		ZEND_VM_NEXT_OPCODE();
+	}
 }
 
 static int ZEND_FE_FETCH_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
@@ -31028,7 +31078,7 @@ static int ZEND_FE_FETCH_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	zend_op *opline = EX(opline);
 	zend_free_op free_op1;
 	zval *array = get_zval_ptr(&opline->op1, EX(Ts), &free_op1, BP_VAR_R);
-	zval **value, *key;
+	zval **value;
 	char *str_key;
 	uint str_key_len;
 	ulong int_key;
@@ -31090,7 +31140,7 @@ static int ZEND_FE_FETCH_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 				 * In case that ever happens we need an additional flag. */
 				iter->funcs->move_forward(iter TSRMLS_CC);
 			}
-			if (!iter || iter->funcs->valid(iter TSRMLS_CC) == FAILURE) {
+			if (!iter || (iter->index > 1 && iter->funcs->valid(iter TSRMLS_CC) == FAILURE)) {
 				/* reached end of iteration */
 				ZEND_VM_SET_OPCODE(EX(op_array)->opcodes+opline->op2.u.opline_num);
 				ZEND_VM_CONTINUE_JMP();
@@ -31116,29 +31166,17 @@ static int ZEND_FE_FETCH_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	if (opline->extended_value & ZEND_FE_FETCH_BYREF) {
 		SEPARATE_ZVAL_IF_NOT_REF(value);
 		(*value)->is_ref = 1;
+		EX_T(opline->result.u.var).var.ptr_ptr = value;
+		(*value)->refcount++;
+	} else {
+		EX_T(opline->result.u.var).var.ptr_ptr = value;
+		PZVAL_LOCK(*EX_T(opline->result.u.var).var.ptr_ptr);
+		AI_USE_PTR(EX_T(opline->result.u.var).var);
 	}
 
-	if (!use_key) {
-		if (opline->extended_value & ZEND_FE_FETCH_BYREF) {
-			EX_T(opline->result.u.var).var.ptr_ptr = value;
-			(*value)->refcount++;
-		} else {
-			zval *result = &EX_T(opline->result.u.var).tmp_var;
-
-			*result = **value;
-			zval_copy_ctor(result);
-		}
-	} else {
-		zval *result = &EX_T(opline->result.u.var).tmp_var;
-
-		(*value)->refcount++;
-
-		array_init(result);
-
-		zend_hash_index_update(result->value.ht, 0, value, sizeof(zval *), NULL);
-
-		ALLOC_ZVAL(key);
-		INIT_PZVAL(key);
+	if (use_key) {
+		zend_op *op_data = opline+1;
+		zval *key = &EX_T(op_data->result.u.var).tmp_var;
 
 		switch (key_type) {
 			case HASH_KEY_IS_STRING:
@@ -31152,9 +31190,9 @@ static int ZEND_FE_FETCH_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 				break;
 			EMPTY_SWITCH_DEFAULT_CASE()
 		}
-		zend_hash_index_update(result->value.ht, 1, &key, sizeof(zval *), NULL);
 	}
 
+	ZEND_VM_INC_OPCODE();
 	ZEND_VM_NEXT_OPCODE();
 }
 

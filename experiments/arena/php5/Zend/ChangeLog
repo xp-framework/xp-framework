@@ -1,3 +1,189 @@
+2005-02-17  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * zend_API.c:
+      - A little optimization to prevent problems when trying to reimplement an
+        interface inherited from an interfaces that was just implemented......
+
+    * zend_API.c:
+      - No C++ ruleZ here
+
+    * zend_API.c:
+      - Actually we must do this in two steps: 1st resize the table and set all
+        interfaces, 2nd implement the interfaces
+
+    * zend_API.c:
+      - Incrementation is done elsewhere
+
+    * zend_API.c:
+      - Fix windows build (funny MS compiler)
+
+2005-02-17  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * (PHP_5_0)
+      Zend.m4
+      zend_strtod.c:
+      MFH: - Compile fix for systems without int32_t typedef
+
+    * Zend.m4
+      zend_strtod.c:
+      - Compile fix for systems without int32_t typedef
+
+2005-02-13  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * zend_execute_API.c
+      zend_reflection_api.c:
+      - Be more gracious in reflection API
+
+    * zend_language_scanner.l:
+      - Fix doc comment handling
+
+2005-02-12  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * zend_execute_API.c:
+      - Bugfix #30682 (autoconversion from false/true to 0/1 missing in case of
+        static property default value)
+
+2005-02-11  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * zend_compile.c
+      zend_compile.h
+      zend_language_parser.y:
+      - Cleanup foreach handling
+
+2005-02-10  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * zend_strtod.c
+      zend_strtod.c:
+      - Fixed bug #31920 (zend_strtod.c error: conflicting types for 'int8_t')
+
+2005-02-10  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_vm_def.h
+      zend_vm_execute.h
+      zend_vm_opcodes.h
+      tests/bug30407.phpt:
+      Fixed bug #30407 (Strange behaviour of default arguments)
+
+2005-02-07  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_compile.c:
+      Fixed bug introduced with foreach() optimization patch
+
+    * zend_compile.c:
+      Fixed FE_RESET/FE_FETCH bug.
+      Now FE_RESET instruction takes jump-address from itself, not from the
+      following FE_FETCH instruction.
+
+    * zend_compile.c
+      zend_compile.h
+      zend_language_parser.y
+      zend_vm_def.h
+      zend_vm_execute.h
+      zend_vm_opcodes.h:
+      foreash($a as $key => $val) optimization
+      Removed temorary array creation on each iteration.
+
+2005-02-07  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * zend_compile.c
+      zend_compile.h
+      zend_language_parser.y:
+      - Remove part of the cleanup which causes a problem with unnormal code
+        like tests/lang/040.phpt
+
+2005-02-06  Zeev Suraski  <zeev@zend.com>
+
+    * (PHP_5_0)
+      zend_ini_scanner.l:
+      Correct fix for #28803
+
+    * zend_ini_scanner.l:
+      Correct fix for #28804
+
+2005-02-05  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * zend_compile.c
+      zend_compile.h
+      zend_language_parser.y
+      zend_vm_def.h
+      zend_vm_execute.h
+      zend_vm_opcodes.h:
+      - Cleanup foreach statement
+
+2005-02-04  Hartmut Holzgraefe  <hartmut@php-groupies.de>
+
+    * zend_API.c
+      zend_API.h:
+      added some missing zend_[declare|update]_property_...() convenience
+      functions for bool, double and binary safe string data
+
+2005-02-03  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * (PHP_5_0)
+      zend_ini_scanner.l:
+      MFH: Fixed bug #28804 (ini-file section parsing pattern is buggy).
+
+    * zend_ini_scanner.l:
+      - Fixed bug #28804 (ini-file section parsing pattern is buggy).
+
+    * zend_ini_scanner.l
+      zend_ini_scanner.l:
+      ws fix
+
+2005-02-02  Stanislav Malyshev  <stas@zend.com>
+
+    * zend_execute_API.c:
+      Fix #31720    Invalid object callbacks not caught in array_walk() (patch
+      from Antony Dovgal)
+
+    * tests/bug31720.phpt:
+      test for Bug #31720
+
+    * tests/bug31720.phpt
+      tests/bug31720.phpt:
+      
+      file bug31720.phpt was initially added on branch PHP_5_0.
+
+    * (PHP_5_0)
+      zend_execute_API.c:
+      Fix #31720  	Invalid object callbacks not caught in array_walk() (patch
+      from Antony Dovgal)
+
+2005-02-02  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend.h
+      zend.h
+      zend_object_handlers.c
+      zend_object_handlers.c
+      tests/bug31683.phpt:
+      Fixed bugs #29767 and #31683 (__get and __set methods must not modify
+      property name).
+
+    * tests/bug31683.phpt
+      tests/bug31683.phpt:
+      
+      file bug31683.phpt was initially added on branch PHP_5_0.
+
+2005-02-01  Stanislav Malyshev  <stas@zend.com>
+
+    * zend_builtin_functions.c
+      zend_builtin_functions.c:
+      Fix debug_trace with eval (patch from Antony Dovgal)
+
+    * tests/bug_debug_backtrace.phpt:
+      test for eval debug_backtrace bug
+
+    * tests/bug_debug_backtrace.phpt
+      tests/bug_debug_backtrace.phpt:
+      
+      file bug_debug_backtrace.phpt was initially added on branch PHP_5_0.
+
+2005-01-31  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * zend_reflection_api.c:
+      - Add ReclectionClass:hasProperty(), ReflectionClass::hasConstant()
+        to complete api (johannes@php.net)
+
 2005-01-28  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
 
     * zend_execute_API.c:

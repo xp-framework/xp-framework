@@ -1634,7 +1634,9 @@ ZEND_API zend_class_entry *zend_register_internal_class_ex(zend_class_entry *cla
 ZEND_API void zend_class_implements(zend_class_entry *class_entry TSRMLS_DC, int num_interfaces, ...)
 {
 	zend_class_entry *interface_entry;
+	int ce_num = class_entry->num_interfaces, impl_num;
 	va_list interface_list;
+	va_start(interface_list, num_interfaces);
 
 	if (class_entry->type & ZEND_INTERNAL_CLASS) {
 		class_entry->interfaces = realloc(class_entry->interfaces, sizeof(zend_class_entry*) * (class_entry->num_interfaces+num_interfaces));
@@ -1642,11 +1644,13 @@ ZEND_API void zend_class_implements(zend_class_entry *class_entry TSRMLS_DC, int
 		class_entry->interfaces = erealloc(class_entry->interfaces, sizeof(zend_class_entry*) * (class_entry->num_interfaces+num_interfaces));
 	}
 	
-	va_start(interface_list, num_interfaces);
 	while (num_interfaces--) {
 		interface_entry = va_arg(interface_list, zend_class_entry *);
 		class_entry->interfaces[class_entry->num_interfaces++] = interface_entry;
-		zend_do_implement_interface(class_entry, interface_entry TSRMLS_CC);
+	}
+	impl_num = class_entry->num_interfaces;
+	while(ce_num < impl_num) {
+		zend_do_implement_interface(class_entry, class_entry->interfaces[ce_num++] TSRMLS_CC);
 	}
 	va_end(interface_list);
 }
@@ -1973,6 +1977,20 @@ ZEND_API int zend_declare_property_null(zend_class_entry *ce, char *name, int na
 	return zend_declare_property(ce, name, name_length, property, access_type TSRMLS_CC);
 }
 
+ZEND_API int zend_declare_property_bool(zend_class_entry *ce, char *name, int name_length, long value, int access_type TSRMLS_DC)
+{
+	zval *property;
+	
+	if (ce->type & ZEND_INTERNAL_CLASS) {
+		property = malloc(sizeof(zval));
+	} else {
+		ALLOC_ZVAL(property);
+	}
+	INIT_PZVAL(property);
+	ZVAL_BOOL(property, value);
+	return zend_declare_property(ce, name, name_length, property, access_type TSRMLS_CC);
+}
+
 ZEND_API int zend_declare_property_long(zend_class_entry *ce, char *name, int name_length, long value, int access_type TSRMLS_DC)
 {
 	zval *property;
@@ -1987,6 +2005,20 @@ ZEND_API int zend_declare_property_long(zend_class_entry *ce, char *name, int na
 	return zend_declare_property(ce, name, name_length, property, access_type TSRMLS_CC);
 }
 
+ZEND_API int zend_declare_property_double(zend_class_entry *ce, char *name, int name_length, double value, int access_type TSRMLS_DC)
+{
+	zval *property;
+	
+	if (ce->type & ZEND_INTERNAL_CLASS) {
+		property = malloc(sizeof(zval));
+	} else {
+		ALLOC_ZVAL(property);
+	}
+	INIT_PZVAL(property);
+	ZVAL_DOUBLE(property, value);
+	return zend_declare_property(ce, name, name_length, property, access_type TSRMLS_CC);
+}
+
 ZEND_API int zend_declare_property_string(zend_class_entry *ce, char *name, int name_length, char *value, int access_type TSRMLS_DC)
 {
 	zval *property;
@@ -1998,6 +2030,21 @@ ZEND_API int zend_declare_property_string(zend_class_entry *ce, char *name, int 
 	} else {
 		ALLOC_ZVAL(property);
 		ZVAL_STRINGL(property, value, len, 1);
+	}
+	INIT_PZVAL(property);
+	return zend_declare_property(ce, name, name_length, property, access_type TSRMLS_CC);
+}
+
+ZEND_API int zend_declare_property_stringl(zend_class_entry *ce, char *name, int name_length, char *value, int value_len, int access_type TSRMLS_DC)
+{
+	zval *property;
+	
+	if (ce->type & ZEND_INTERNAL_CLASS) {
+		property = malloc(sizeof(zval));
+		ZVAL_STRINGL(property, zend_strndup(value, value_len), value_len, 0);
+	} else {
+		ALLOC_ZVAL(property);
+		ZVAL_STRINGL(property, value, value_len, 1);
 	}
 	INIT_PZVAL(property);
 	return zend_declare_property(ce, name, name_length, property, access_type TSRMLS_CC);
@@ -2030,7 +2077,29 @@ ZEND_API void zend_update_property_null(zend_class_entry *scope, zval *object, c
 	zend_update_property(scope, object, name, name_length, tmp TSRMLS_CC);
 }
 
+ZEND_API void zend_update_property_bool(zend_class_entry *scope, zval *object, char *name, int name_length, long value TSRMLS_DC)
+{
+	zval *tmp;
+	
+	ALLOC_ZVAL(tmp);
+	tmp->is_ref = 0;
+	tmp->refcount = 0;
+	ZVAL_BOOL(tmp, value);
+	zend_update_property(scope, object, name, name_length, tmp TSRMLS_CC);
+}
+
 ZEND_API void zend_update_property_long(zend_class_entry *scope, zval *object, char *name, int name_length, long value TSRMLS_DC)
+{
+	zval *tmp;
+	
+	ALLOC_ZVAL(tmp);
+	tmp->is_ref = 0;
+	tmp->refcount = 0;
+	ZVAL_LONG(tmp, value);
+	zend_update_property(scope, object, name, name_length, tmp TSRMLS_CC);
+}
+
+ZEND_API void zend_update_property_double(zend_class_entry *scope, zval *object, char *name, int name_length, double value TSRMLS_DC)
 {
 	zval *tmp;
 	
@@ -2049,6 +2118,17 @@ ZEND_API void zend_update_property_string(zend_class_entry *scope, zval *object,
 	tmp->is_ref = 0;
 	tmp->refcount = 0;
 	ZVAL_STRING(tmp, value, 1);
+	zend_update_property(scope, object, name, name_length, tmp TSRMLS_CC);
+}
+
+ZEND_API void zend_update_property_stringl(zend_class_entry *scope, zval *object, char *name, int name_length, char *value, int value_len TSRMLS_DC)
+{
+	zval *tmp;
+	
+	ALLOC_ZVAL(tmp);
+	tmp->is_ref = 0;
+	tmp->refcount = 0;
+	ZVAL_STRINGL(tmp, value, value_len, 1);
 	zend_update_property(scope, object, name, name_length, tmp TSRMLS_CC);
 }
 

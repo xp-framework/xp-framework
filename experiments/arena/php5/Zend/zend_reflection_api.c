@@ -1038,15 +1038,19 @@ static void _reflection_export(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *c
 
 	result = zend_call_function(&fci, &fcc TSRMLS_CC);
 	
-	RETURN_ON_EXCEPTION
-
-	if (result == FAILURE) {
-		zval_dtor(&reflector);
-		_DO_THROW("Could not create reflector");
-	}
-
 	if (retval_ptr) {
 		zval_ptr_dtor(&retval_ptr);
+	}
+
+	RETURN_ON_EXCEPTION
+
+	if (EG(exception)) {
+		zval_dtor(&reflector);
+		return;
+	}
+	if (result == FAILURE || EG(exception)) {
+		zval_dtor(&reflector);
+		_DO_THROW("Could not create reflector");
 	}
 
 	/* Call static reflection::export */
@@ -2392,7 +2396,9 @@ static void reflection_class_object_ctor(INTERNAL_FUNCTION_PARAMETERS, int is_ob
 	} else { 
 		convert_to_string_ex(&argument);
 		if (zend_lookup_class(Z_STRVAL_P(argument), Z_STRLEN_P(argument), &ce TSRMLS_CC) == FAILURE) {
-			zend_throw_exception_ex(reflection_exception_ptr, -1 TSRMLS_CC, "Class %s does not exist", Z_STRVAL_P(argument));
+			if (!EG(exception)) {
+				zend_throw_exception_ex(reflection_exception_ptr, -1 TSRMLS_CC, "Class %s does not exist", Z_STRVAL_P(argument));
+			}
 			return;
 		}
 
@@ -2707,6 +2713,29 @@ ZEND_METHOD(reflection_class, getMethods)
 }
 /* }}} */
 
+/* {{{ proto public bool ReflectionClass::hasProperty(string name)
+   Returns wether a property exists or not */
+ZEND_METHOD(reflection_class, hasProperty)
+{
+	reflection_object *intern;
+	zend_class_entry *ce;
+	char *name; 
+	int name_len;
+
+	METHOD_NOTSTATIC;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
+		return;
+	}
+
+	GET_REFLECTION_OBJECT_PTR(ce);
+	if (zend_hash_exists(&ce->properties_info, name, name_len + 1)) {
+		RETURN_TRUE;
+	} else {
+		RETURN_FALSE;
+	}
+}
+/* }}} */
+
 /* {{{ proto public ReflectionProperty ReflectionClass::getProperty(string name) throws ReflectionException
    Returns the class' property specified by it's name */
 ZEND_METHOD(reflection_class, getProperty)
@@ -2774,6 +2803,29 @@ ZEND_METHOD(reflection_class, getProperties)
 
 	array_init(return_value);
 	zend_hash_apply_with_arguments(&ce->properties_info, (apply_func_args_t) _addproperty, 3, &ce, return_value, filter);
+}
+/* }}} */
+
+/* {{{ proto public bool ReflectionClass::hasConstant(string name)
+   Returns wether a constant exists or not */
+ZEND_METHOD(reflection_class, hasConstant)
+{
+	reflection_object *intern;
+	zend_class_entry *ce;
+	char *name;
+	int name_len;
+
+	METHOD_NOTSTATIC;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
+		return;
+	}
+
+	GET_REFLECTION_OBJECT_PTR(ce);
+	if (zend_hash_exists(&ce->constants_table, name, name_len + 1)) {
+		RETURN_TRUE;
+	} else {
+		RETURN_FALSE;
+	}
 }
 /* }}} */
 
@@ -3884,8 +3936,10 @@ static zend_function_entry reflection_class_functions[] = {
 	ZEND_ME(reflection_class, hasMethod, NULL, 0)
 	ZEND_ME(reflection_class, getMethod, NULL, 0)
 	ZEND_ME(reflection_class, getMethods, NULL, 0)
+	ZEND_ME(reflection_class, hasProperty, NULL, 0)
 	ZEND_ME(reflection_class, getProperty, NULL, 0)
 	ZEND_ME(reflection_class, getProperties, NULL, 0)
+	ZEND_ME(reflection_class, hasConstant, NULL, 0)
 	ZEND_ME(reflection_class, getConstants, NULL, 0)
 	ZEND_ME(reflection_class, getConstant, NULL, 0)
 	ZEND_ME(reflection_class, getInterfaces, NULL, 0)
