@@ -24,7 +24,7 @@
   define('FPDF_RECT_FILL',      0x0002);
   define('FPDF_RECT_FILL_DRAW', FPDF_RECT_FILL | FPDF_RECT_DRAW);
   
-  uses('org.fpdf.FPDFFont');
+  uses('org.fpdf.FPDFFont', 'lang.IllegalArgumentException');
   
   /**
    * PDF creator
@@ -1045,15 +1045,17 @@
      * @param   int h default 0
      * @param   string type default ''
      * @param   string link default ''
+     * @throws  lang.IllegalArgumentException
      */
-    function Image($file, $x, $y, $w, $h= 0, $type= '', $link= '') {
+    function putImage($file, $x, $y, $w, $h= 0, $type= '', $link= '') {
       if (!isset($this->images[$file])) {
 
         // First use of image, get info
         if ($type == '') {
-          $pos= strrpos($file, '.');
-          if (!$pos) {
-            return throw(new Exception('Image file has no extension and no type was specified: '.$file));
+          if (FALSE === ($pos= strrpos($file, '.'))) {
+            return throw(new IllegalArgumentException(
+              'Image file has no extension and no type was specified: '.$file
+            ));
           }
           $type= substr($file, $pos+ 1);
         }
@@ -1061,15 +1063,25 @@
         switch (strtolower($type)) {
           case 'jpg': 
           case 'jpeg':
-            $info= $this->_parsejpg($file);
+            try(); {
+              $info= $this->_parsejpg($file);
+            } if (catch('IllegalArgumentException', $e)) {
+              return throw($e);
+            }
             break;
           
           case 'png':
-            $info= $this->_parsepng($file);
+            try(); {
+              $info= $this->_parsepng($file);
+            } if (catch('IllegalArgumentException', $e)) {
+              return throw($e);
+            }
             break;
           
           default:
-            return throw(new Exception('Unsupported image file type: '.$type));
+            return throw(new IllegalArgumentException(
+              'Unsupported image file type: '.$type
+            ));
         }
         
         $info['n']= sizeof($this->images)+ 1;
@@ -1092,7 +1104,7 @@
      * @access  public
      * @param   int h default -1
      */
-    function Ln($h= -1) {
+    function lineFeed($h= -1) {
       $this->x= $this->lMargin;
       $this->y+= ($h < 0) ? $this->lasth : $h;
     }
@@ -1535,16 +1547,20 @@
     /**
      * Extract info from a JPEG file
      *
-     * @access  public
+     * @access  private
      * @param   string file
+     * @throws  lang.IllegalArgumentException in case image is not a JPEG file
      */
     function _parsejpg($file) {
-      $a= getimagesize($file);
-      if (!$a) {
-        return throw(new Exception('Missing or incorrect image file: '.$file));
+      if (FALSE === ($a= getimagesize($file))) {
+        return throw(new IllegalArgumentException(
+          'Missing or incorrect image file: '.$file
+        ));
       }
-      if ($a[2] != 2) {
-        return throw(new Exception('Not a JPEG file: '.$file));
+      if ($a[2] != IMG_JPEG) {
+        return throw(new IllegalArgumentException(
+          'Not a JPEG file: '.$file
+        ));
       }
       
       // Figure out colorspace
@@ -1575,31 +1591,32 @@
     /**
      * Extract info from a PNG file
      *
-     * @access  public
+     * @access  private
      * @param   string file
+     * @throws  lang.IllegalArgumentException in case the file is corrupt
      */
     function _parsepng($file) {
       $f= fopen($file, 'rb');
       if (!$f) {
-        return throw(new Exception('Cannot open image file: '.$file));
+        return throw(new IllegalArgumentException('Cannot open image file: '.$file));
       }
 
       // Check signature
-      if (fread($f,8) != chr(137).'PNG'.chr(13).chr(10).chr(26).chr(10)) {
-        return throw(new Exception('Not a PNG file: '.$file));
+      if (fread($f, 8) != chr(137).'PNG'.chr(13).chr(10).chr(26).chr(10)) {
+        return throw(new IllegalArgumentException('Not a PNG file: '.$file));
       }
 
       // Read header chunk
       fread($f, 4);
       if (fread($f, 4) != 'IHDR') {
-        return throw(new Exception('Incorrect PNG file: '.$file));
+        return throw(new IllegalArgumentException('Incorrect PNG file: '.$file));
       }
       
       $w= $this->_freadint($f);
       $h= $this->_freadint($f);
       $bpc= ord(fread($f, 1));
       if ($bpc > 8) {
-        return throw(new Exception('16-bit depth not supported: '.$file));
+        return throw(new IllegalArgumentException('16-bit depth not supported: '.$file));
       }
 
       // Figure out colorspace      
@@ -1608,17 +1625,17 @@
         case 2: $colspace= 'DeviceRGB'; break;
         case 3: $colspace= 'Indexed'; break;
         default:
-          return throw(new Exception('Alpha channel not supported: '.$file));
+          return throw(new IllegalArgumentException('Alpha channel not supported: '.$file));
       }
       
       if (ord(fread($f, 1)) != 0) {
-        return throw(new Exception('Unknown compression method: '.$file));
+        return throw(new IllegalArgumentException('Unknown compression method: '.$file));
       }
       if (ord(fread($f, 1)) != 0) {
-        return throw(new Exception('Unknown filter method: '.$file));
+        return throw(new IllegalArgumentException('Unknown filter method: '.$file));
       }
       if (ord(fread($f, 1)) != 0) {
-        return throw(new Exception('Interlacing not supported: '.$file));
+        return throw(new IllegalArgumentException('Interlacing not supported: '.$file));
       }
 
       fread($f, 4);
