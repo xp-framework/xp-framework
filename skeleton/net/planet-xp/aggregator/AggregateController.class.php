@@ -54,13 +54,15 @@
         return throw($e);
       }
       
-      // When target has not been modified, TRUE is returned
+      // When target has not been modified, indicate further processing
+      // is not needed.
       if (TRUE === $result)
-        return TRUE;
+        return FALSE;
       
       // Set result into members for later processing
       $this->feed= &$result['feed'];
       $this->feedItems= &$result['feeditems'];
+      return TRUE;
     }
     
     /**
