@@ -24,7 +24,13 @@
       if (!$this->socket->isConnected()) return FALSE;
       
       while (!$this->terminate) {
-        if (!($m= &$this->socket->accept())) continue;
+        try(); {
+          $m= &$this->socket->accept();
+        } if (catch('IOException', $e)) {
+          $this->shutdown();
+          break;
+        }
+        if (!$m) continue;
 
         // Have connection, fork child
         $pid= pcntl_fork();
@@ -32,7 +38,6 @@
           return throw(new RuntimeError('Could not fork'));
         } else if ($pid) {      // Parent
           while (pcntl_waitpid(-1, $status, WNOHANG)) { }
-          $m->close();
         } else {                // Child
           $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
 
@@ -49,9 +54,9 @@
             $this->notify(new ConnectionEvent(EVENT_DATA, $m, $data));
 
           } while (!$m->eof());
-
+          $m->close();
           $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $m));
-          
+
           // Exit out of child
           exit();
         }
