@@ -62,6 +62,9 @@
   define('FPDF_FILL_TRANSPARENT',   0x0000);
   define('FPDF_FILL_PAINTED',       0x0001);
   
+  // Hook events
+  define('PFDF_EVENT_ENDPAGE',      0x0000);
+  
   uses(
     'org.fpdf.FPDFFont', 
     'lang.IllegalArgumentException',
@@ -121,6 +124,9 @@
       $ZoomMode,                      // zoom display mode
       $LayoutMode,                    // layout display mode
       $info               = array();  // Information (creator, author, title, ...)
+    
+    var
+      $_hooks             = array();
 
     /**
      * Constructor
@@ -163,6 +169,21 @@
       
       // Set compression to TRUE if gzcompress() exists
       $this->setCompression(function_exists('gzcompress'));
+    }
+    
+    /**
+     * Add a hook
+     *
+     * @access  public
+     * @param   string event one of the PFDF_EVENT_* constants
+     * @param   &org.fpdf.FPDFHook hook
+     * @return  &org.fpdf.FPDFHook the hook added
+     */
+    function &addHook($event, &$hook) {
+      if (!isset($this->_hooks[$event])) $this->_hooks[$event]= array();
+
+      $this->_hooks[$event][]= &$hook;
+      return $hook;
     }
 
     /**
@@ -1655,6 +1676,9 @@
      * @access  private
      */
     function _endpage() {
+      for ($i= 0, $s= sizeof($this->_hooks[PFDF_EVENT_ENDPAGE]); $i < $s; $i++) {
+        $this->_hooks[PFDF_EVENT_ENDPAGE][$i]->onEndPage($this, $this->page);
+      }
       $this->state= 1;
     }
 
