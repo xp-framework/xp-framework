@@ -49,7 +49,7 @@
     }    
     
     /**
-     * (Insert method's description here)
+     * Shows the popup menu
      *
      * @access  public
      * @param   int button which button to click
