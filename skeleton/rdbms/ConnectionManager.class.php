@@ -4,7 +4,7 @@
  * $Id$ 
  */
   
-  uses('lang.ElementNotFoundException');
+  uses('lang.ElementNotFoundException', 'rdbms.DriverManager');
   
   /**
    * ConnectionManager
@@ -23,10 +23,10 @@
      * @return  &rdbms.ConnectionManager
      */
     function &getInstance() {
-      static $__instance;
+      static $instance= NULL;
       
-      if (!isset($__instance)) $__instance= new ConnectionManager();
-      return $__instance;
+      if (!$instance) $instance= new ConnectionManager();
+      return $instance;
     }
     
     /**
@@ -35,52 +35,54 @@
      * A sample configuration file:
      * <pre>
      * [caffeine]
-     * reflect=rdbms.sybase.SPSybase
-     * host=gurke
-     * user=news
-     * pass=enieffac
-     * db=CAFFEINE
+     * dsn="sybase://news:enieffac@gurke/CAFFEINE?autoconnect=1"
+     *
+     * [caffeine.dbo]
+     * dsn="sybase://timm:binford@gurke/CAFFEINE?autoconnect=1"
      * </pre>
      *
      * @access  public
      * @param   &util.Properties properties
+     * @return  bool
+     * @throws  rdbms.DriverNotSupportedException
      */
     function configure(&$properties) {
       $section= $properties->getFirstSection();
       do {
-        $defines= $properties->readSection($section);
         try(); {
-          $c= ClassLoader::loadClass($defines['reflect']);
-        } if (catch('Exception', $e)) {
-          return throw(
-            $e->type, 
-            'ConnectionManager::couldn\'t use '.$defines['reflect'].'::'.$e->message
-          );
+          $conn= &DriverManager::getConnection($properties->readString($section, 'dsn'));
+        } if (catch('DriverNotSupportedException', $e)) {
+          return throw($e);
         }
 
-        unset($defines['reflect']);
-        if (FALSE !== ($p= strpos($section, '.'))) $section= substr($section, 0, $p);
-        $this->register(new $c($defines), $section);
+        if (FALSE !== ($p= strpos($section, '.'))) {
+          $this->register($conn, substr($section, 0, $p), substr($section, $p));
+        } else {
+          $this->register($conn, $section);
+        }
+        
       } while ($section= $properties->getNextSection());
+
+      return TRUE;
     }
     
     /**
      * Register a connection
      *
-     * @param   &lang.Object obj A connection object
-     * @return  &lang.Object obj The connection object registered
+     * @param   &rdbms.DBConnection conn A connection object
+     * @return  &rdbms.DBConnection The connection object registered
      * @param   string hostAlias default NULL
      * @param   string userAlias default NULL
      */
-    function &register(&$obj, $hostAlias= NULL, $userAlias= NULL) {
-      $host= (NULL == $hostAlias) ? $obj->host : $hostAlias;
-      $user= (NULL == $userAlias) ? $obj->user : $userAlias;
+    function &register(&$conn, $hostAlias= NULL, $userAlias= NULL) {
+      $host= (NULL == $hostAlias) ? $conn->dsn->getHost() : $hostAlias;
+      $user= (NULL == $userAlias) ? $conn->dsn->getUser() : $userAlias;
       
-      if (!isset($this->pool["$user@$host"])) {
-        $this->pool["$user@$host"]= &$obj;
+      if (!isset($this->pool[$user.'@'.$host])) {
+        $this->pool[$user.'@'.$host]= &$conn;
       }
       
-      return $obj;
+      return $conn;
     }
     
     /**
@@ -92,10 +94,10 @@
      * @throws  ElementNotFoundException in case there's no connection under these names
      */
     function &get($host, $user) {
-      if (!isset($this->pool["$user@$host"])) {
+      if (!isset($this->pool[$user.'@'.$host])) {
         return throw(new ElementNotFoundException('no connections registered for '.$user.'@'.$host));
       }
-      return $this->pool["$user@$host"];
+      return $this->pool[$user.'@'.$host];
     }
     
     /**
