@@ -29,9 +29,10 @@
    */
   class XMLScriptletRequest extends HttpScriptletRequest {
     var
-      $defaultPage=     'home',
-      $defaultFrame=    'top';
-      
+      $defaultPage  = 'home',
+      $defaultFrame = 'top',
+      $state        = '';
+
     /**
      * Gets state
      *
@@ -39,7 +40,17 @@
      * @return  string state
      */
     function getState() {
-      return $this->getEnvValue('STATE');
+      return $this->state;
+    }
+
+    /**
+     * Sets state
+     *
+     * @access  public
+     * @param   string state
+     */
+    function setState($state) {
+      $this->state= $state;
     }
     
     /**

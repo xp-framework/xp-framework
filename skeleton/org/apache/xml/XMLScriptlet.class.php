@@ -90,6 +90,7 @@
     function init() {
       parent::init();
       if (FALSE === getenv('PRODUCT')) $this->request->method= 'CREATE';
+      $this->request->state= getenv('STATE');
     }
     
     /**
@@ -179,6 +180,7 @@
     
       // Define special parameters
       $response->setParam('page',    $request->getPage());
+      $response->setParam('state',   $request->getState());
       $response->setParam('frame',   $request->getFrame());
       $response->setParam('lang',    $request->getLanguage());
       $response->setParam('product', $request->getProduct());
