@@ -37,10 +37,10 @@
      * @return  &util.PropertyManager
      */
     function &getInstance() {
-      static $__instance;
+      static $instance;
       
-      if (!isset($__instance)) $__instance= new PropertyManager();
-      return $__instance;
+      if (!isset($instance)) $instance= new PropertyManager();
+      return $instance;
     }
 
     /**
