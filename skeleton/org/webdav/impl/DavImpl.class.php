@@ -10,7 +10,7 @@
     'org.webdav.OperationNotAllowedException',
     'org.webdav.WebdavObject',
     'org.webdav.util.WebdavBool'
-  );
+    );
   
   define('WEBDAV_IMPL_PROPFIND',    0x0001);
   define('WEBDAV_IMPL_PROPPATCH',   0x0002);
@@ -18,21 +18,61 @@
   /**
    * Base class of DAV implementation
    *
-   * @purpose  Provide an abstract base class for DAV implementations
+   * @purpose  Provide an  base class for DAV implementations
    * @see      org.webdav.WebdavScriptlet#__construct
    */ 
   class DavImpl extends Object {
     var
       $capabilities = 0;
-      
+    
     /**
-     * Retrieve implementation's capabilites
+     * Retreive implementation's capabilites
      *
      * @access  public
      * @return  int capabilities
      */
     function getCapabilities() {
       return $this->capabilities;
+    }
+
+    /**
+     * Private helper function
+     * kuerzt einen Pfad
+     *
+     * @access  private
+     * @param   string path
+     * @return  string path
+     */
+
+    function _urlencodePath($path, $davDisplaynameStyle= 0){
+      $p= explode('\/', $this->_normalizePath($path));
+      $ret= '';
+      for ($t= 0; $t<sizeof($p); $t++){
+        if (!empty($p[$t]))
+          $ret.= '/'.rawurlencode($p[$t]);
+      }
+
+      if ($davDisplaynameStyle)
+        return substr($ret,1);  // ohne fuehrendes /
+      return $ret;
+
+      // windows Korrektur: weils alte ME kein echtes urldecode kann
+      $winpath= '';
+      $tok= strtok($ret, '%');
+      $this->c->debug('TOKENIZE ', $tok);
+      while (!empty($tok)) {
+        $asc= hexdec(substr($tok,0,2));
+        if ($asc<60 and $asc>35 or 
+          $asc>65 and $asc< 127 and $asc != 92 )
+          $winpath.=chr($asc).substr($tok,2);
+        else 
+          $winpath.='%'.$tok;
+        $this->c->debug('TOKENIZE ', $tok,"Winpath", $winpath);
+        $tok= strtok('%');
+      }
+      $winpath= substr($winpath,1);
+      $this->c->debug('TOKENIZE Done', $winpath);
+      return $winpath;
     }
 
     /**
