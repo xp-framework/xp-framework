@@ -23,6 +23,7 @@
       $authenticator    = NULL,
       $storage          = NULL,
       $datasock         = array();
+
     /**
      * Constructor
      *
@@ -625,9 +626,52 @@
         $this->answer($event->stream, 450, $params.': ', $e->getMessage());
         return;
       }
-      $this->answer($event->stream, 250, $params.': file deleted');
 
+      $this->answer($event->stream, 250, $params.': file deleted');
     }
+    
+    /**
+     * Rename a file from filename
+     *
+     * @access  protected
+     * @param   &peer.server.ConnectionEvent event
+     * @param   string params
+     */
+    function onRnfr(&$event, $params) {
+      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
+        $this->answer($event->stream, 550, $params.': No such file or directory');
+        return;
+      }
+      $this->cat && $this->cat->debug($entry);
+      
+      $this->sessions[$event->stream->hashCode()]->setTempVar('rnfr', $entry);
+      $this->answer($event->stream, 350, 'File or directory exists, ready for destination name.');
+    }
+    
+    /**
+     * Rename a file into filename
+     *
+     * @access  protected
+     * @param   &peer.server.ConnectionEvent event
+     * @param   string params
+     */
+    function onRnto(&$event, $params) {
+      if (!$entry= &$this->sessions[$event->stream->hashCode()]->getTempVar('rnfr')) {
+        $this->answer($event->stream, 503, 'Bad sequence of commands');
+        return;
+      }
+      
+      try(); {
+        $entry->rename($params);
+        $this->cat->debug($params);
+      } if (catch('IOException', $e)) {
+        $this->answer($event->stream, 550, $params.': ', $e->getMessage());
+      }
+      
+      $this->sessios[$event->stream->hashCode()]->removeTempVar('rnfr');
+      $this->answer($event->stream, 250, 'Rename successful');
+    }
+    
 
     /**
      * Callback for the "TYPE" command
