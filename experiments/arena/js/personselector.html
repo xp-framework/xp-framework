@@ -17,6 +17,8 @@
       );
 
       function search(string) {
+        if (string.length < 1) return null;
+
         for (i= 0; i < persons.length; i++) {
           if (-1 != persons[i].lastname.indexOf(string)) return persons[i];
         }
