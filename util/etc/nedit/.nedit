@@ -356,7 +356,7 @@ nedit.highlightPatterns: C:1:0{\n\
 		xsl-variable:"\\$([a-z_]+)":::Identifier:html dbl quot str:\n\
 	}\n\
 	Perl:2:0{\n\
-		comment:"#":"$|"""::Comment::\n\
+		comment:"#":"$"::Comment::\n\
 		comment2:"/\\*":"\\*/"::Comment::\n\
 		comment3:"//":"$"::Comment::\n\
 		dq here doc:"(\\<\\<(""?))EOF(\\2.*)$":"^EOF>"::Label::\n\
@@ -475,7 +475,7 @@ nedit.highlightPatterns: C:1:0{\n\
 		comment:"^;":"$"::Comment::\n\
 		key:"^[^=]+":::Text Arg::\n\
 		strings:"""":""""::String::D\n\
-    }\n\
+	}\n\
 	Unified diff:1:0{\n\
 		deleted_lines:"^\\-(.*)":::Comment::\n\
 		added_lines:"^\\+(.*)":::Subroutine::\n\
@@ -512,7 +512,7 @@ nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~"\n\
 	Regex:.reg .regex:"\\(\\?[:#=!iInN].+\\)":None:Continuous:::\n\
 	XML:.xml .xsl .dtd:"\\<(?i\\?xml|!doctype)"::None:::"<>/=""'()+*?|"\n\
 	Ini-Files:.ini:::None:::\n\
-    Unified diff:.diff:"Index:":::::
+	Unified diff:.diff:"Index:":::::
 nedit.styles: 	Plain:black:Plain\n\
 	Comment:gray40:Plain\n\
 	Keyword:darkRed:Bold\n\
