@@ -113,8 +113,9 @@ cvs update -r APP_RELEASE -dP
       </para>
     </content>
     <references>
-      <ref link="about.install">Install</ref>
-      <ref link="about.cvs">CVS</ref>
+      <ref link="about">Introduction</ref>
+      <ref link="about.install">Installation</ref>
+      <ref link="about.cvs">CVS guidelines</ref>
     </references>
   </main>
 </document>
