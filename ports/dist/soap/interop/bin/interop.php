@@ -33,6 +33,7 @@
     
     $uri= $prop->readString($service, 'uri');
     $urn= $prop->readString($service, 'urn', 'http://soapinterop.org/');
+    $nsi= $prop->readString($service, 'nsi', NULL);
     $act= $prop->readString($service, 'action', 'SOAP_ACTION_HARDCODE');
     
     // Prepare the result XML tree
@@ -59,7 +60,8 @@
     
     $client= &new Round2BaseClient(
       new SOAPHTTPTransport($uri, array(), constant($act)),
-      $urn
+      $urn,
+      $nsi
     );
     
     $client->setTrace($scat);
