@@ -246,7 +246,7 @@
      * @see     xp://org.apache.HttpScriptlet#doPost
      */
     function doPost(&$req, &$res) {
-      $this->doGet($req, $res);
+      return $this->doGet($req, $res);
     }
   }
 ?>
