@@ -98,7 +98,6 @@ __;
         $parentcall= '';
         $remove= FALSE;
         while (';' !== $tok[1]) {
-          if ('getStackTrace' == $tok[1]) $tok[1]= 'toString';
           $parentcall.= $tok[1];
           $tok= $t->getNextToken();
           if (
@@ -114,8 +113,7 @@ __;
       
       case 'class':        // class StdStream extends Object {
         $map= array(
-          'Object'      => 'lang::Object',
-          'Exception'   => 'lang::Exception'
+          'Exception'   => 'XPException'
         );
         $out[]= 'class';
         while ('{' !== $tok[1]) {
@@ -127,7 +125,7 @@ __;
             $out[]= $tok[1];
             $tok= $t->getNextToken();
             $extends= $tok[1];
-            $out[]= isset($map[$tok[1]]) ? $map[$tok[1]] : $namespace.'::'.$tok[1];
+            $out[]= isset($map[$tok[1]]) ? $map[$tok[1]] : $tok[1];
           }
         }
         $out[]= "\n";
@@ -153,7 +151,6 @@ __;
           ('factory' == $tok[1]) ||
           ('getBy' == substr($tok[1], 0, 5))
         ) $out[]= ' static';
-        if ('getStackTrace' == $tok[1]) $tok[1]= 'toString';
         $out[]= ' function ';
         break;
       
@@ -185,7 +182,7 @@ __;
           if ('$' == $tok[1]{0}) {
             array_pop($out);    // whitespace
             array_pop($out);    // "new" keyword
-            $out[]= 'lang::XPClass::forName('.$tok[1].')->newInstance';
+            $out[]= 'XPClass::forName('.$tok[1].')->newInstance';
           } else {
             $out[]= $tok[1];
           }
@@ -212,7 +209,7 @@ __;
         while ('{' !== $tok[1]) {
           switch ($tok[0]) {
             case T_CONSTANT_ENCAPSED_STRING:    // Exception name
-              $out[]= 'lang::'.substr($tok[1], 1, -1).' ';
+              $out[]= substr($tok[1], 1, -1).' ';
               break;
               
             case T_VARIABLE:                    // Variable
@@ -238,9 +235,10 @@ __;
       case 1: $f->write('uses('.$uses[0].")\n\n"); break;
       default: $f->write("uses(\n  ".implode(",\n  ", $uses)."\n);\n\n");
     }
-    $f->write('namespace '.$namespace." {\n\n  ");
-    $f->write(str_replace('= &', '= ', trim(chop(implode('', $out)))));
-    $f->write("\n}\n?>\n");
+    // $f->write('namespace '.$namespace." {\n\n");
+    $f->write('  '.str_replace('= &', '= ', trim(chop(implode('', $out)))));
+    // $f->write("\n}");
+    $f->write("\n?>\n");
     $f->close();
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
