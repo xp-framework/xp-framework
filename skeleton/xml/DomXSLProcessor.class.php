@@ -55,7 +55,7 @@
      * @param   string dir
      */
     function setBase($dir) {
-      $this->_base= rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+      $this->_base= rtrim(realpath($dir), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
     
     /**
@@ -76,7 +76,7 @@
      * @param   string file file name
      */
     function setXSLFile($file) {
-      $this->stylesheet= array(0, realpath($this->_base.$file));
+      $this->stylesheet= $this->_base.$file;
     }
     
     /**
