@@ -135,13 +135,15 @@
       
       // Send redirect
       $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s.%s/%s?__page=%s', 
+        '%s://%s/xml/%s.%s/%s?__page=%s%s%s', 
         $uri['scheme'],
         $uri['host'],          
         $product ? $product : 'site',
         $language ? $language : 'en_US',
         $state ? $state : 'static',
-        $page ? $page : 'home'
+        $page ? $page : 'home',
+        empty($uri['query']) ? '' : '&'.$uri['query'],
+        empty($uri['fraction']) ? '' : '#'.$uri['fraction']        
       ));
       
       return FALSE; // Indicate no further processing is to be done
@@ -168,14 +170,16 @@
       
       // Send redirect
       $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s.%s.psessionid=%s/%s?__page=%s', 
+        '%s://%s/xml/%s.%s.psessionid=%s/%s?__page=%s%s%s', 
         $uri['scheme'],
         $uri['host'],          
         $product ? $product : 'site',
         $language ? $language : 'en_US',
         $request->session->getId(),
         $state ? $state : 'static',
-        $page ? $page : 'home'
+        $page ? $page : 'home',
+        empty($uri['query']) ? '' : '&'.$uri['query'],
+        empty($uri['fraction']) ? '' : '#'.$uri['fraction']
       ));
       
       return FALSE; // Indicate no further processing is to be done
