@@ -19,12 +19,13 @@
      * @return  bool Success
      */
     function notify($message, $params, $details, $stack) {
-      return mail(
+      mail(
         $params,
         $message,
         $details."\n*** Stack Trace: ***\n".$stack,
         'X-Sender: '.$this->getName()
       );
+      return TRUE;
     }
   }
 ?>
