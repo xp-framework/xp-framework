@@ -63,9 +63,11 @@
         $this->view->end($stream, GTK_HTML_STREAM_OK);
       }
 
-      // Add the GTKHtml widget to the scroll container
-      with ($scroll= &$this->widget('scroll')); {
-        $scroll->add($this->view);
+      // Add the GTKHtml widget to the viewport container and
+      // connect the "external" scrollbar
+      with ($viewport= &$this->widget('viewport'), $scroll= &$this->widget('scroll')); {
+        $viewport->add($this->view);
+        $scroll->set_adjustment($viewport->get_vadjustment());
       }
       
       // Connect refresh button's clicked event
