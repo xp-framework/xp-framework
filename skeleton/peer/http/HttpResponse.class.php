@@ -15,7 +15,8 @@
       $statuscode    = 0,
       $message       = '',
       $version       = '',
-      $headers       = array();
+      $headers       = array(),
+      $chunked       = NULL;
     
     var
       $_headerlookup = array();
@@ -95,8 +96,6 @@
      * @return  string buf or FALSE to indicate EOF
      */
     function readData($size= 8192, $binary= FALSE) {
-      static $chunked;
-      
       if (!$this->_readhead()) return FALSE;        // Read head if not done before
       if ($this->stream->eof()) {                   // EOF, return FALSE to indicate end
         $this->stream->close();
@@ -104,8 +103,8 @@
         unset($this->stream);
         return FALSE;
       }
-      if (!isset($chunked)) {                       // Check for "chunked"
-        $chunked= stristr($this->getHeader('Transfer-Encoding'), 'chunked');
+      if (is_null($this->chunked)) {                       // Check for "chunked"
+        $this->chunked= stristr($this->getHeader('Transfer-Encoding'), 'chunked');
       }
       
       $func= $binary ? 'readBinary' : 'read';
@@ -113,7 +112,7 @@
       
       // Handle chunked
       if (
-        $chunked &&
+        $this->chunked &&
         !$binary && 
         preg_match('/^([0-9a-fA-F]+)(( ;.*)| )?\r\n$/', $buf, $regs)
       ) {
