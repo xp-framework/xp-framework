@@ -151,6 +151,18 @@
     function getPort($default= NULL) {
       return isset($this->_info['port']) ? $this->_info['port'] : $default;
     }
+    
+    /**
+     * Retrieve parameter by a specified name
+     *
+     * @access  public
+     * @param   string name
+     * @param   mixed default default NULL  
+     * @return  int port or default if none is set
+     */
+    function getParam($name, $default= NULL) {
+      return isset($this->_info['params'][$name]) ? $this->_info['params'][$name] : $default;
+    }
 
     /**
      * Retrieve parameters
