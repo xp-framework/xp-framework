@@ -220,8 +220,9 @@
      * @throws  IOException in case of an error
      */
     function createdAt() {
-      $mtime= filectime($this->uri);
-      if (FALSE === $mtime) return throw(new IOException('cannot get mtime for '.$this->uri));
+      if (FALSE === ($mtime= filectime($this->uri))) {
+        return throw(new IOException('cannot get mtime for '.$this->uri));
+      }
       return $mtime;
     }
 
@@ -238,11 +239,7 @@
      * @throws  IOException in case of an error
      */
     function readLine($bytes= 4096) {
-      $result= chop(fgets($this->_fd, $bytes));
-      if (is_error() && $result === FALSE) {
-        return throw(new IOException('readLine() cannot read '.$bytes.' bytes from '.$this->uri));
-      }
-      return $result;
+      return chop($this->gets($bytes));
     }
     
     /**
@@ -253,8 +250,7 @@
      * @throws  IOException in case of an error
      */
     function readChar() {
-      $result= fgetc($this->_fd);
-      if (is_error() && $result === FALSE) {
+      if (FALSE === ($result= fgetc($this->_fd))) {
         return throw(new IOException('readChar() cannot read 1 byte from '.$this->uri));
       }
       return $result;
@@ -272,8 +268,7 @@
      * @throws  IOException in case of an error
      */
     function gets($bytes= 4096) {
-      $result= fgets($this->_fd, $bytes);
-      if (is_error() && $result === FALSE) {
+      if (FALSE === ($result= fgets($this->_fd, $bytes))) {
         return throw(new IOException('gets() cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
@@ -288,8 +283,7 @@
      * @throws  IOException in case of an error
      */
     function read($bytes= 4096) {
-      $result= fread($this->_fd, $bytes);
-      if (is_error() && $result === FALSE) {
+      if (FALSE === ($result= fread($this->_fd, $bytes))) {
         return throw(new IOException('read() cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
@@ -304,9 +298,8 @@
      * @throws  IOException in case of an error
      */
     function write($string) {
-      $result= fwrite($this->_fd, $string);
-      if (is_error() && $result === FALSE) {
-        throw(new IOException('cannot write '.strlen($string).' bytes to '.$this->uri));
+      if (FALSE === ($result= fwrite($this->_fd, $string))) {
+        return throw(new IOException('cannot write '.strlen($string).' bytes to '.$this->uri));
       }
       return $result;
     }
@@ -320,9 +313,8 @@
      * @throws  IOException in case of an error
      */
     function writeLine($string) {
-      $result= fputs($this->_fd, $string."\n");
-      if (is_error() && $result === FALSE) {
-        throw(new IOException('cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
+      if (FALSE === ($result= fputs($this->_fd, $string."\n"))) {
+        return throw(new IOException('cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
       }
       return $result;
     }
@@ -340,8 +332,8 @@
      */
     function eof() {
       $result= feof($this->_fd);
-      if ($result && is_error()) {
-        throw(new IOException('cannot determine eof of '.$this->uri));
+      if (xp::errorAt(__FILE__, __LINE__ - 1)) {
+        return throw(new IOException('cannot determine eof of '.$this->uri));
       }
       return $result;
     }
@@ -356,7 +348,7 @@
      * @throws  IOException in case of an error
      */
     function rewind() {
-      if (!($result= rewind($this->_fd))) {
+      if (FALSE === ($result= rewind($this->_fd))) {
         return throw(new IOException('cannot rewind file pointer'));
       }
       return TRUE;
@@ -373,8 +365,9 @@
      * @return  bool success
      */
     function seek($position= 0, $mode= SEEK_SET) {
-      $result= fseek($this->_fd, $position, $mode);
-      if ($result != 0) return throw(new IOException('seek error, position '.$position.' in mode '.$mode));
+      if (0 != ($result= fseek($this->_fd, $position, $mode))) {
+        return throw(new IOException('seek error, position '.$position.' in mode '.$mode));
+      }
       return TRUE;
     }
     
