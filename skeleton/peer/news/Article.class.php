@@ -11,8 +11,7 @@
    */
   class Article extends Object {
     var
-      $messageId        = 0,
-      $articleId        = '',
+      $articleId        = NULL,
       $header           = array(),
       $body             = '';
 
@@ -20,32 +19,10 @@
      * Constructor
      *
      * @access  private
-     * @param   int messageId
-     * @param   string articleId
+     * @param   int articleId
      */
-    function __construct($messageId, $articleId) {
-      $this->messageId= $messageId;
+    function __construct($articleId) {
       $this->articleId= $articleId;
-    }
-
-    /**
-     * Set MessageId
-     *
-     * @access  public
-     * @param   int messageId
-     */
-    function setMessageId($messageId) {
-      $this->messageId= $messageId;
-    }
-
-    /**
-     * Get MessageId
-     *
-     * @access  public
-     * @return  int
-     */
-    function getMessageId() {
-      return $this->messageId;
     }
 
     /**
