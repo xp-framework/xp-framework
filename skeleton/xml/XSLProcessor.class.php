@@ -2,69 +2,76 @@
 /* This class is part of the XP framework
  *
  * $Id$
- *
  */
 
-  uses('xml.XML');
+  uses('xml.XML', 'xml.TransformerException');
   
   /**
-   * XSL-Prozessor, aufbauend auf den PHP-XSL-Funktionen (Sablotron)
-   * Beispiel:
+   * XSL Processor
+   * 
+   * Usage example [Transform two files]
    * <code>
-   * uses('xml.XSLProcessor');
-   *
-   * $proc= new XSLProcessor();
-   * $proc->setXSLFile('test.xsl');
-   * $proc->setXMLFile('test.xml');
-   * try {
-   *   $proc->run();
-   * } catch($e) {
-   *   var_dump($e);
-   *   exit;
-   * }
-   * echo $proc->output();
+   *   $proc= &new XSLProcessor();
+   *   $proc->setXSLFile('test.xml');
+   *   $proc->setXMLFile('test.xsl');
+   *   
+   *   try(); {
+   *     $proc->run();
+   *   } if (catch('TransformerException', $e)) {
+   *     $e->printStackTrace();
+   *     exit();
+   *   }
    * </code>
    *
-   * @see http://www.gingerall.com
+   * @purpose  Transform XML/XSLT using PHPs builtin XSL functions
+   * @ext      xslt
+   * @see      http://www.gingerall.com - Sablotron
    */
   class XSLProcessor extends XML {
     var 
-      $processor,
-      $stylesheet,
-      $buffer,
-      $params,
-      $output;
+      $processor    = NULL,
+      $stylesheet   = '',
+      $buffer       = array(),
+      $params       = array(),
+      $output       = '';
 
     /**
      * Constructor
+     *
+     * @access  public
+     * @params  array params default NULL
      */
     function __construct($params= NULL) {
-      Object::__construct($params);
+      parent::__construct($params);
       $this->processor= xslt_create();
-      $this->params= array();
     }
     
     /**
-     * Den Error-Handler setzen
+     * Set an error handler
      *
-     * @param   (string)funcName Die Callback-Funktion
+     * @access  public
+     * @param   mixed callback
+     * @see     php://xslt_set_error_handler
      */
     function setErrorHandler($funcName) {
       xslt_set_error_handler($this->processor, $funcName);
     }
 
     /**
-     * Den Scheme-Handler setzen
+     * Set a scheme handler
      *
-     * @param   array defines
+     * @access  public
+     * @param   mixed callback
+     * @see     php://xslt_set_scheme_handlers
      */
     function setSchemeHandler($defines) {
       xslt_set_scheme_handlers($this->processor, $defines);
     }
 
     /**
-     * Das Base-Dir setzen
+     * Set base directory
      *
+     * @access  public
      * @param   string dir
      */
     function setBase($dir, $proto= 'file://') {
@@ -73,84 +80,96 @@
     }
 
     /**
-     * Eine Datei als XSL-Input definieren
+     * Set XSL file
      *
-     * @param   (string)file Dateiname
+     * @access  public
+     * @param   string file file name
      */
     function setXSLFile($file) {
       $this->stylesheet= array($file, NULL);
     }
     
     /**
-     * Einen String als XSL-Input definieren
+     * Set XSL buffer
      *
-     * @param   (string)xsl Das XSL-Dokument als String
+     * @access  public
+     * @param   string xsl the XSL as a string
      */
     function setXSLBuf($xsl) {
       $this->stylesheet= array('arg:/_xsl', $xsl);
     }
 
     /**
-     * Eine Datei als XML-Input definieren
+     * Set XML file
      *
-     * @param   (string)file Dateiname
+     * @access  public
+     * @param   string file file name
      */
     function setXMLFile($file) {
       $this->buffer= array($file, NULL);
     }
     
     /**
-     * Einen String als XML-Input definieren
+     * Set XML buffer
      *
-     * @param   (string)xml Das XML-Dokument als String
+     * @access  public
+     * @param   string xml the XML as a string
      */
     function setXMLBuf($xml) {
       $this->buffer= array('arg:/_xml', $xml);
     }
 
     /**
-     * Alle Parameter auf einmal definieren
+     * Set XSL transformation parameters
      *
-     * @param   (array)params Assoziativer Array aus {paramname} => {paramvalue}
+     * @access  public
+     * @param   array params associative array { param_name => param_value }
      */
     function setParams($params) {
       $this->params= $params;
     }
     
     /**
-     * Einzelnen Parameter definieren
+     * Set XSL transformation parameter
      *
-     * @param   (string)name Name des Parameters
-     * @param   (string)val  Wert des Parameters
+     * @access  public
+     * @param   string name
+     * @param   string value
      */
     function setParam($name, $val) {
       $this->params[$name]= $val;
     }
 
     /**
-     * Die Transformation staren
+     * Run the XSL transformation
      *
-     * @return  (bool)success Ob die Transformation geklappt hat
+     * @access  public
+     * @return  bool success
+     * @throws  TransformationException
      */
     function run($buffers= array()) {
       if (NULL != $this->buffer[1]) $buffers['/_xml']= &$this->buffer[1];
       if (NULL != $this->stylesheet[1]) $buffers['/_xsl']= &$this->stylesheet[1];
       
-      $this->output= xslt_process(
+      if (FALSE === ($this->output= xslt_process(
         $this->processor, 
         $this->buffer[0],
         $this->stylesheet[0],
         NULL,
         $buffers,
         $this->params
-      );
-      return ($this->output !== FALSE);
+      ))) {
+        return throw(new TransformerException('Transformation failed'));
+      }
+      
+      return TRUE;
     }
 
     /**
-     * Den Output der Transformation "abholen"
+     * Retreive the transformation's result
      *
-     * @return   (string)output Das Ergebnis der Transformation
+     * @access  public
+     * @return  string
      */
     function output() {
       return $this->output;
@@ -158,6 +177,8 @@
 
     /**
      * Destructor
+     *
+     * @access  public
      */
     function __destruct() {
       xslt_free($this->processor);
