@@ -94,8 +94,10 @@
       $sql= $args[0];
       if (sizeof($args) <= 1) return $sql;
 
-      $i= 0;    
-      $sql= $tok= strtok($sql, '%');
+      $i= 0;
+      
+      // This fixes strtok for cases where '%' is the first character
+      $sql= $tok= strtok(' '.$sql, '%');
       while (++$i && $tok= strtok('%')) {
       
         // Support %1$s syntax
@@ -132,7 +134,7 @@
         }
         $sql= rtrim($sql, ', ').substr($tok, 1 + $mod);
       }
-      return $sql;
+      return substr($sql, 1);
     }
 
     /**
