@@ -99,15 +99,30 @@
       $i= 0;    
       $sql= $tok= strtok($sql, '%');
       while (++$i && $tok= strtok('%')) {
-        if (is_a($args[$i], 'Date')) {
-          $arg= date('Y-m-d h:iA', $args[$i]->getTime());
-        } elseif (is_a($args[$i], 'Object')) {
-          $arg= $args[$i]->toString();
+      
+        // Support %1$s syntax
+        if (is_numeric($tok{0})) {
+          sscanf($tok, '%d$', $ofs);
+          $mod= strlen($ofs) + 1;
         } else {
-          $arg= $args[$i];
+          $ofs= $i;
+          $mod= 0;
         }
         
-        switch ($tok{0}) {
+        echo "--\n";
+        var_dump($tok, $ofs, $mod, $tok{0 + $mod});
+        echo "--\n";
+        
+        // Type-based conversion
+        if (is_a($args[$ofs], 'Date')) {
+          $arg= date('Y-m-d h:iA', $args[$ofs]->getTime());
+        } elseif (is_a($args[$ofs], 'Object')) {
+          $arg= $args[$ofs]->toString();
+        } else {
+          $arg= $args[$ofs];
+        }
+        
+        switch ($tok{0 + $mod}) {
           case 'd': $r= is_null($arg) ? 'NULL' : intval($arg); break;
           case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
           case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
@@ -115,7 +130,7 @@
           case 'u': $r= is_null($arg) ? 'NULL' : '"'.date ('Y-m-d h:iA', $arg).'"'; break;
           default: $sql.= '%'.$tok; $i--; continue;
         }
-        $sql.= $r.substr($tok, 1);
+        $sql.= $r.substr($tok, 1 + $mod);
       }
       return $sql;
     }
