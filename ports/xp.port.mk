@@ -4,6 +4,9 @@
 
 PHP=        php -q -C
 PORTSDIR!=  echo ${.CURDIR} | sed -E 's(.*/ports)/(.+)$$\1g'
+DISTDIR=    ${PORTSDIR}/dist
+
+.PHONY:	build
 
 all:    usage
 
@@ -18,9 +21,13 @@ usage:
 	@echo "       - Get required files for a collection directory"
 	@echo ""   
 
-dist:
-	@${PHP} ${PORTSDIR}/dist.php ${.CURDIR} 
+build:
+	@${PHP} ${PORTSDIR}/build.php ${.CURDIR}
 
+dist:	build
+	@ls -ll ${.CURDIR}/build/
+	cd ${.CURDIR}/build/ ; tar cvfz port.tar.gz *
+    
 clean:
 	@-rm -rf ${.CURDIR}/build
 
