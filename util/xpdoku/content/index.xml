@@ -21,22 +21,62 @@
       <br/><br/>
       <a href="/content/tasks.html"><b>Learn more...</b></a>
     </introduction>
+    
+    
+    
     <links>
+      <link href="http://mindview.net/WebLog/log-0025">
+        <caption>Strong Typing vs. Strong Testing</caption>
+        <description>
+          Bruce Eckel, Author of "Thinking in Java", on static vs. dynamic typing. 
+          Altough he is using Python in his article, the arguments made could be 
+          adapted to PHP, too.<br/>
+          <quote>
+            This became a puzzle to me: if strong static type checking is so 
+            important, why are people able to build big, complex Python programs 
+            (with much shorter time and effort than the strong static 
+            counterparts) without the disaster that I was so sure would ensue?
+          </quote>
+        </description>
+      </link>
+      <link href="http://www.artima.com/weblogs/viewpost.jsp?thread=4639">
+        <caption>Are Dynamic Languages Going to Replace Static Languages?</caption>
+        <description>
+          <quote>
+            For many years we've been using statically typed languages for 
+            the safety they offer. But now, as we all gradually adopt Test 
+            Driven Development, are we going to find that safety redundant? 
+            Will we therefore decide that the flexibility of dynamically 
+            typed languages is desirable?
+          </quote>
+          <br/>
+          By Robert C. Martin
+        </description>
+      </link>
       <link href="/apidoc/">
         <caption>API-Docs: Overview</caption>
-        <description>Browse the XP classes' API documentation</description>
+        <description>
+          Browse the XP classes' API documentation
+        </description>
       </link>
       <link href="/content/about.html">
         <caption>An introduction to XP</caption>
-        <description>Learn what XP is all about, what it looks and feels like</description>
+        <description>
+          Learn what XP is all about, what it looks and feels like.
+        </description>
       </link>
       <link href="/content/tasks.html">
         <caption>How to complete common tasks with XP</caption>
-        <description>This section will give an introduction to the basics of common tasks and how to accomplish them using the XP framework.</description>
+        <description>
+          This section will give an introduction to the basics of common 
+          tasks and how to accomplish them using the XP framework.
+        </description>
       </link>
       <link href="/content/about.install.html">
         <caption>Installation</caption>
-        <description>How to install the XP framework</description>
+        <description>
+          How to install the XP framework.
+        </description>
       </link>
     </links>
     <news/>
