@@ -9,9 +9,6 @@
     'lang.SystemException'
   );
 
-  // Just to handle some integer overflow (this should be set to the max. interger value)
-  define('MAXINT', 2147483647);
-
   // Bootstring parameters for Punycode
   define('PUNYCODE_BASE',           36);
   define('PUNYCODE_TMIN',            1);
@@ -183,7 +180,7 @@
 
       // Main decoding loop:  Start just after the last delimiter if any
       // basic code points were copied; start at the beginning otherwise.
-      for ($in = $b > 0 ? $b + 1 : 0;  $in < $in_len;  ++$out) {
+      for ($in = $b > 0 ? $b + 1 : 0;  $in < $in_len; ++$out) {
 
         // in is the index of the next character to be consumed, and
         // out is the number of code points in the output array.
@@ -192,7 +189,7 @@
         // which gets added to i.  The overflow checking is easier
         // if we increase i as we go, then subtract off its starting
         // value at the end to obtain delta.
-        for ($oldi = $i, $w = 1, $k = PUNYCODE_BASE;  ; $k += PUNYCODE_BASE) {
+        for ($oldi = $i, $w = 1, $k = PUNYCODE_BASE; ; $k += PUNYCODE_BASE) {
           if ($in >= $in_len) {
             return throw(new IllegalArgumentException('Input is not valid punycode'));
           }
@@ -200,7 +197,7 @@
           if ($digit >= PUNYCODE_BASE) {
             return throw(new IllegalArgumentException('Input is not valid punycode'));
           }
-          if ($digit > (MAXINT - $i) / $w) {
+          if ($digit > (LONG_MAX - $i) / $w) {
             return throw(new SystemException('Integer overflow'));
           }
           $i += $digit * $w;
@@ -208,7 +205,7 @@
             $k <= $bias ? PUNYCODE_TMIN :     // +tmin not needed
             ($k >= $bias + PUNYCODE_TMAX ? PUNYCODE_TMAX : $k - $bias);
           if ($digit < $t) break;
-          if ($w > MAXINT / (PUNYCODE_BASE - $t)) {
+          if ($w > LONG_MAX / (PUNYCODE_BASE - $t)) {
             return throw(new SystemException('Integer overflow'));
           }
           $w *= (PUNYCODE_BASE - $t);
@@ -218,8 +215,7 @@
 
         // i was supposed to wrap around from out+1 to 0,
         // incrementing n each time, so we'll fix that now:
-
-        if ($i / ($out + 1) > MAXINT - $n) {
+        if ($i / ($out + 1) > LONG_MAX - $n) {
           return throw(new SystemException('Integer overflow'));
         }
         $n += (int)($i / ($out + 1));
@@ -287,7 +283,7 @@
         // All non-basic code points < n have been
         // handled already.  Find the next larger one:
 
-        for ($m= MAXINT, $j= 0; $j < $in_len; ++$j) {
+        for ($m= LONG_MAX, $j= 0; $j < $in_len; ++$j) {
           // if (basic(input[j])) continue;
           // (not needed for Punycode)
           if ((ord($input[$j]) >= $n) && (ord($input[$j]) < $m)) $m = ord($input[$j]);
@@ -296,7 +292,7 @@
         // Increase delta enough to advance the decoder's
         // <n,i> state to <m,0>, but guard against overflow:
 
-        if ($m - $n > (MAXINT - $delta) / ($h + 1)) {
+        if ($m - $n > (LONG_MAX - $delta) / ($h + 1)) {
           return throw(new SystemException('Integer overflow'));
         }
         $delta += ($m - $n) * ($h + 1);
