@@ -39,8 +39,8 @@ int main(int argc, char **argv)
     sybase_hash *properties= NULL;
     sybase_environment *env= NULL;
     
-    if (argc != 5) {
-        printf("Usage: %s <host> <username> <password> <sql>\n", argv[0]);
+    if (argc < 5) {
+        printf("Usage: %s <host> <username> <password> <sql> [--wait]\n", argv[0]);
         return 1;
     }
     
@@ -126,8 +126,10 @@ int main(int argc, char **argv)
         
         /* Wait for user input. We now have time to look at sp_who
          * on the server, for example... */
-        printf("+++  Press return to continue\n");
-        getc(stdin);
+        if (argc == 6 && strcmp(argv[5], "--wait") == 0) {
+            printf("+++  Press return to continue\n");
+            getc(stdin);
+        }
     } else {
         printf("---> Connect failed!\n");
     }
