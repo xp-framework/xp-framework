@@ -32,6 +32,16 @@
     function &getSession() {
       return $this->session;
     }
+
+    /**
+     * Returns whether a session exists
+     *
+     * @access  public
+     * @return  bool
+     */
+    function hasSession() {
+      return $this->session != NULL;
+    }
     
     /**
      * Sets session
