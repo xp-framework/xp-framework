@@ -190,12 +190,11 @@
     }
 
     /**
-     * Get a message part
+     * Get a message structure
      *
      * @access  public
      * @param   string uid
-     * @param   string part
-     * @return  int
+     * @return  &object
      */
     function &getMessageStruct($uid) { 
       return $this->store->getMessageStruct($this, $uid);
