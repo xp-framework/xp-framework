@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.server.Server');
+  uses('peer.server.Server', 'lang.RuntimeException');
 
   /**
    * Forking TCP/IP Server
