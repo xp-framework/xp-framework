@@ -16,14 +16,14 @@ h1 {
   font: 42px "Arial narrow";
 }
 h2 { 
-  font: 22px "Georgia"; 
+  font: 19px "Georgia"; 
   padding: 0px;
   margin: 1px;
   color: #932609;
 }
 h3 { 
   font: bold 14px "Georgia";
-  border-bottom: 1px solid #a4b6c5;  
+  margin: 1px;
 }
 h4 { 
   font: bold 14px "Georgia"; 
@@ -46,11 +46,11 @@ hr {
 }
 
 /* Page layout */
-.header {
+tr#header {
   background-color: #fff9e7;
   text-align: left;
   padding-left: 10px;
-  height: 68px;
+  height: 60px;
   background-image: url(/image/bg_head_orange.jpg);
 }
 .gutter {
@@ -85,7 +85,6 @@ hr {
 }
 .content {
   margin-top: 20px;
-  margin-right: 40px;
   padding: 10px;
 }
 
@@ -126,4 +125,20 @@ table.highlights {
 }
 table.highlights img {
   border: 1px solid #d7cbb4;
+}
+table.chapter img {
+  border: 1px solid #f4f4f4;
+}
+td#image img {
+  border: 2px solid #f4f4f4;
+}
+
+/* Paging elements */
+a.pager img {
+  border: none;
+  padding: 3px;
+}
+a.pagerfalse {
+  -moz-opacity: 0.3;
+  filter: alpha(opacity=30);
 }
