@@ -1,5 +1,10 @@
 #!/bin/sh
 
+##
+# Commit notifier
+#
+# $Id$
+
 FILE="/tmp/loginfo_`md5 -q -s "$1"`"
 read MESSAGE
 echo ${MESSAGE} > ${FILE}
