@@ -115,6 +115,8 @@
             if ($this->config->readString('control', 'password') == $params) {
               $this->reloadConfiguration();
               $connection->sendAction($target, 'received SIGHUP and reloads his configuration');
+            } else {
+              $connection->sendMessage($target, 'Nice try, %s, but >%s< is incorrect', $nick, $params);
             }
             break;
 
