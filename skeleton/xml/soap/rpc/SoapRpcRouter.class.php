@@ -135,7 +135,7 @@
     /**
      * Calls the handler that the action reflects to
      *
-     * @access  private
+     * @access  protected
      * @param   &xml.soap.SOAPMessage message object (from request)
      * @return  &mixed result of method call
      * @throws  IllegalArgumentException if there is no such method
