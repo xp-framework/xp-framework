@@ -474,6 +474,12 @@
 
           case 'i+':
           case 'idiot+':
+            if (stristr($params, $connection->user->getNick())) {
+              $connection->sendAction($target, 'wird seinen eigenen Namen nicht als Schimpfwort akzeptieren');
+              $this->setKarma($nick, -2, '@@lamer');
+              return;
+            }
+
             if (in_array($params, $this->lists['swears'])) {
               $connection->sendAction(
                 $target, 
