@@ -163,8 +163,15 @@
   if ($prop->exists ()) {
     $sect= $prop->getFirstSection();
     do {
-      if (!empty ($sect))
-        $packages[$sect]= $prop->readSection($sect);
+      if (empty ($sect)) continue;
+      
+      $packages[$sect]= $prop->readSection($sect);
+      
+      // Register additional schemes
+      foreach ($prop->readArray($sect, 'reference.additionalschemes', array()) as $add) {
+        Reference::registerScheme($add);
+      }
+      
     } while (false !== ($sect= $prop->getNextSection()));
   }
   
