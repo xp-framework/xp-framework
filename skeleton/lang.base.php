@@ -19,7 +19,10 @@
   }
 
   function is_error() {
-    return empty($GLOBALS['php_errormessage']) ? FALSE : $GLOBALS['php_errormessage'];
+    return (empty($GLOBALS['php_errormessage']) 
+      ? FALSE 
+      : implode(', ', $GLOBALS['php_errormessage'])
+    );
   }
   
   if (!extension_loaded('xp')) {
