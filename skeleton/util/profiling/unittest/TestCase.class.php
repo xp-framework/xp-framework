@@ -87,7 +87,7 @@
       list($reason, $actual)= TestCase::store();
       throw(new AssertionFailedError(
         $reason, 
-        $actual, 
+        $actual,
         substr($code, 12, strpos($code, ', $error')- 12)
       ));
     }
