@@ -69,13 +69,24 @@ int main(int argc, char **argv)
                             printf(
                                 "     field #%d: datatype %3d [%-20s] name '%s'\n",
                                 i,
-                                resultset->dataformat[i].datatype,
-                                sybase_nameofdatatype(resultset->dataformat[i].datatype),
+                                resultset->types[i],
+                                sybase_nameofdatatype(resultset->types[i]),
                                 resultset->dataformat[i].name
                             );
                         }
+                        while (sybase_fetch(result, &resultset) == SA_SUCCESS) {
+                            for (i= 0; i < resultset->fields; i++) {
+                                printf(
+                                    "     %-19s: [%d:%d] '%s'\n", 
+                                    resultset->dataformat[i].name, 
+                                    resultset->columns[i].indicator,
+                                    resultset->columns[i].valuelen,
+                                    resultset->columns[i].value
+                                );
+                            }
+                            printf("\n");
+                        }
                         sybase_free_resultset(resultset);
-                        sybase_cancel(result, CS_CANCEL_ALL);
                         break;
 
                     case CS_CMD_FAIL:
