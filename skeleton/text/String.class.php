@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('lang.IndexOutOfBoundsException');
+
   define('CR',      "\r");
   define('LF',      "\n");
   define('CRLF',    "\r\n");
@@ -104,7 +106,21 @@
         : strcasecmp($string->buffer, $this->buffer)
       );
     }
- 
+
+    /**
+     * Returns true if the specified string matches this string.
+     *
+     * @access  public
+     * @param   string str
+     * @return  bool
+     */
+    function equals($str, $cs= TRUE) {
+      return 0 == ($cs 
+        ? strcmp($str, $this->buffer) 
+        : strcasecmp($str, $this->buffer)
+      );
+    }
+     
     /**
      * Compares two strings lexicographically using a "natural order" 
      * algorithm
