@@ -19,9 +19,10 @@
     /**
      * Constructor
      *
-     * @access  private
+     * @access  public
      * @param   string name
-     * @param   string type
+     * @param   string type default 'mixed'
+     * @param   bool optional default FALSE
      */    
     function __construct($name, $type= 'mixed', $optional= FALSE) {
       $this->name= $name;
