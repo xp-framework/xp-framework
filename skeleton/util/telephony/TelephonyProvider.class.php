@@ -155,9 +155,6 @@
         trigger_error('type: '.gettype($address), E_USER_WARNING);
         return throw(new IllegalArgumentException('Address parameter is not a TelephonyAddress'));
       }
-      //if (TEL_ADDRESS_INTERNAL !== $address->getType()) {
-      //  return throw(new IllegalArgumentException('Terminals can only have internal addresses'));
-      //}
       return NULL;
     }
     
