@@ -52,6 +52,7 @@
       where f.feed_id= i.feed_id
         and f.feed_id= sfm.feed_id
         and sfm.syndicate_id= %d
+        and f.bz_id <= 20000
       order by published desc
       limit 0,100',
       $syndicate_id
@@ -87,7 +88,23 @@
       'author'      => $item['author']
     )));
     
-    $child->addChild(new Node('content', new PCData(str_replace('&', '&amp;', $item['content']))));
+    // Check the content for XML conformance, apply strip_tags if not.
+    $parser= &new XMLParser();
+    try(); {
+      $content= str_replace('&', '&amp;', $item['content']);
+      
+      // Parse the content as a full XML document, thus temporarily add
+      // XML declaration and a root node.
+      $parser->parse($doc->getDeclaration()."\n".'<root>'.$content.'</root>');
+    } if (catch('XMLFormatException', $e)) {
+    
+      // Strip any tags and mark state of the article.
+      Console::writeLinef('     Item %d not well-formed: %s', $item['feeditem_id'], $e->getMessage());
+      $content= strip_tags($content);
+      $child->setAttribute('stripped', TRUE);
+    }
+    
+    $child->addChild(new Node('content', new PCData($content)));
     $child->addChild(Node::fromObject($item['published'], 'published'));
     
     // Information about the feed
