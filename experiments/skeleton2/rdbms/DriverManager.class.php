@@ -33,7 +33,14 @@
     protected static $instance= NULL;
     public
       $drivers  = array();
-      
+    
+    /**
+     * Constructor
+     *
+     * @access  private
+     */
+    private function __construct() { }
+    
     /**
      * Gets an instance
      *
