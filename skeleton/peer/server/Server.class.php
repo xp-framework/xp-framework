@@ -66,7 +66,9 @@
      * @access  public
      */
     function shutdown() {
+      $this->server->terminate= TRUE;
       $this->socket->close();
+      $this->server->terminate= FALSE;
     }
     
     /**
