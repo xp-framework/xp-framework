@@ -54,7 +54,7 @@
       $pagercontextresource= &$context->getContextResource($this->form, $this->pager);
       
       // Update pager if necessary
-      if (!$pagercontextresource->hasItems()) {
+      if (!$pagercontextresource->hasItems() || $request->hasParam('update')) {
         $pagercontextresource->update();
       }
       
