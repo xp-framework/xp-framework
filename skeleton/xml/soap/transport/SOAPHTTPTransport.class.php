@@ -43,11 +43,11 @@
     }
 
     /**
-     * Die SOAP-Message absenden
+     * Send the message
      *
      * @access  public
-     * @param   xml.soap.SOAPMessage message Die zu verschickende Nachricht
-     * @throws  IllegalArgumentException, wenn message keine SOAPMessage ist
+     * @param   &xml.soap.SOAPMessage message
+     * @throws  IllegalArgumentException in case the given parameter is not a xml.soap.SOAPMessage
      */
     function &send(&$message) {
       if (!is_a($message, 'SOAPMessage')) return throw(new IllegalArgumentException(
@@ -67,6 +67,7 @@
       $this->_conn->request->setHeader('Content-Type', 'text/xml; charset='.$message->getEncoding());
       
       try(); {
+        $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
         $res= &$this->_conn->request->send();
       } if (catch ('IOException', $e)) {
         return throw ($e);
@@ -76,12 +77,12 @@
    }
    
     /**
-     * Die SOAP-Antwort auswerten
+     * Retreive the answer
      *
      * @access  public
-     * @return  xml.soap.SOAPMessage Die Antwort
+     * @return  &xml.soap.SOAPMessage
      */
-   function retreive(&$response) {
+   function &retreive(&$response) {
    
       // Rückgabe auswerten
       $answer= &new SOAPMessage();
@@ -91,11 +92,14 @@
         @list($type, $charset)= explode('; charset=', $content_type);
         if (!empty($charset)) $answer->setEncoding($charset);
       }
+      $this->cat && $this->cat->debug('<<<', $response);
       
       $answer->action= $this->action;
       try(); {
         $xml= '';
         while ($buf= $response->readData()) $xml.= $buf;
+        
+        $this->cat && $this->cat->debug('<<<', $xml);
         $answer->fromString($xml);
       } if (catch('Exception', $e)) {
         return throw($e);
