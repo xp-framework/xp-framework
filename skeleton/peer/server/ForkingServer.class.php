@@ -31,13 +31,14 @@
           return throw(new RuntimeException('Could not fork'));
         } else if ($pid) {      // Parent
           while (pcntl_waitpid(-1, $status, WNOHANG)) { }
+          $m->close();
         } else {                // Child
           $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
 
           // Loop
           do {
             try(); {
-              if (NULL === ($data= $m->read())) break;
+              if (NULL === ($data= $m->readBinary())) break;
             } if (catch('IOException', $e)) {
               $this->notify(new ConnectionEvent(EVENT_ERROR, $m, $e));
               break;
@@ -50,8 +51,7 @@
 
           $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $m));
           
-          // Close communications and exit out of child
-          $m->close();
+          // Exit out of child
           exit();
         }
       }
