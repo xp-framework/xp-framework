@@ -36,7 +36,7 @@
      * @return  string
      */
     protected function varSource($var) {
-      if ($var instanceof Object || $var instanceof Exception) {
+      if ($var instanceof Generic) {
         return $var->toString();
       }
       return is_string($var) ? $var : var_export($var, 1);
