@@ -136,6 +136,7 @@
   
   // Go through list again, this time finding deleted files and
   // removing them from the file
+  Console::writeLine('===> Cleaning up');
   for ($i= &$list->iterator(); $i->hasNext(); ) {
     $fn= $i->next();
     if (file_exists($fn)) continue;
