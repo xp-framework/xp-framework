@@ -16,15 +16,18 @@
   /**
    * Calendar class
    *
-   * @model   static
+   * @model    static
+   * @purpose  Utility functions for date calculations
    */
   class Calendar extends Object {
 
     /**
-     * Calculates start of DST (daylight savings time)
+     * Calculates start of DST (daylight savings time).
+     *
      * This is the last Sunday of March for Europe, the first Sunday of 
      * April in the U.S.
      *
+     * @model   static
      * @access  public
      * @param   int year default -1 Year, defaults to current year
      * @param   int method default CAL_DST_EU Method to calculate (CAL_DST_EU|CAL_DST_US)
@@ -46,6 +49,7 @@
      * Calculates end of DST (daylight savings time)
      * This is the last Sunday of October
      *
+     * @model   static
      * @access  public
      * @param   int year default -1 Year, defaults to current year
      * @return  &util.Date
@@ -60,19 +64,25 @@
     }
   
     /**
-     * Calculates the amount of workdays between to dates
-     * Workdays are defined as Monday through Friday
+     * Calculates the amount of workdays between to dates. Workdays are 
+     * defined as Monday through Friday.
+     *
+     * This method takes an optional argument, an array of the following
+     * form:
+     *
+     * <code>
+     *   $holidays[gmmktime(...)]= TRUE;
+     * </code>
      *
      * @access  public
-     * @param   mixed start Startdate (either unix-Timestamp or util.Date)
-     * @param   mixed end Enddate (either unix-Timestamp or util.Date)
-     * @param   array holidays default array() Holidays to be included in calculation
-     *          Format for array is: array(Unix-timestamp (create w/ gmmktime()!) => TRUE)
+     * @param   &util.Date start
+     * @param   &util.Date end
+     * @param   array holidays default array() holidays to be included in calculation
      * @return  int number of workdays
      */
-    function workdays($start, $end, $holidays= array()) {
-      $s= is_a($start, 'Date') ? $start->getTime() : $start;
-      $e= is_a($end, 'Date') ? $end->getTime() : $end;
+    function workdays(&$start, &$end, $holidays= array()) {
+      $s= $start->getTime();
+      $e= $end->getTime();
 
       // For holidays, we have to compare to midnight
       // else, don't calculate this
@@ -86,54 +96,103 @@
       
       return $diff+ 1;
     }
+    
+    /**
+     * Return midnight of a given date
+     *
+     * @model   static
+     * @access  public
+     * @param   &util.Date date
+     * @return  &util.Date
+     */
+    function &midnight(&$date) {
+      return new Date(mktime(0, 0, 0, $date->month, $date->mday, $date->year));
+    }
+    
+    /**
+     * Return beginning of month for a given date. E.g., given a date
+     * 2003-06-08, the function will return 2003-06-01 00:00:00.
+     *
+     * @model   static
+     * @access  public
+     * @param   &util.Date date
+     * @return  &util.Date
+     */
+    function &monthBegin(&$date) {
+      return new Date(mktime(0, 0, 0, $date->mon, 1, $date->year));
+    }
+
+    /**
+     * Return end of month for a given date. E.g., given a date
+     * 2003-06-08, the function will return 2003-06-30 23:59:59.
+     *
+     * @model   static
+     * @access  public
+     * @param   &util.Date date
+     * @return  &util.Date
+     */
+    function &monthEnd(&$date) {
+      return new Date(mktime(23, 59, 59, $date->mon+ 1, 0, $date->year));
+    }
+
+    /**
+     * Helper method for Calendar::week
+     *
+     * @model   static
+     * @access  private
+     * @param   int stamp
+     * @param   int year
+     * @return  int
+     */
+    function caldiff($stamp, $year) {
+      $d4= mktime(0, 0, 0, 1, 4, $year);
+      return floor(1.05 + ($stamp- $d4) / CAL_SEC_WEEK+ ((date('w', $d4)+ 6) % 7) / 7);
+    }
   
     /**
      * Returns calendar week for a day
      *
+     * @model   static
      * @access  public
-     * @param   mixed date default -1 Date, defaults to today (either unix-Timestamp or util.Date)
+     * @param   &util.Date date
      * @return  int calendar week
      * @see     http://www.salesianer.de/util/kalwoch.html 
      */
-    function week($date= -1) {
-      function caldiff($date, $year) {
-        $d4= mktime(0, 0, 0, 1, 4, $year);
-        return floor(1.05 + ($date- $d4) / CAL_SEC_WEEK+ ((date('w', $d4)+ 6) % 7) / 7);
-      }
-      
-      // Check for passed arguments
-      $d= (is_a($date, 'Date') 
-        ? $date->getTime()
-        : ($date == -1 ? time() : $date)
-      );
-      
-      $year= date('Y', $d)+ 1;
+    function week(&$date) {
+      $d= $date->getTime();
+      $y= $date->year + 1;
       do {
-        $w= caldiff($d, $year);
-        $year--;
+        $w= Calendar::caldiff($d, $y);
+        $y--;
       } while ($w < 1);
+
       return $w;
     }
     
     /**
      * Get first of advent for given year
      *
+     * @model   static
      * @access  public
-     * @param   int year default -1 Year, defaults to this year
+     * @param   int year default -1 year, defaults to this year
      * @return  &util.Date for date of the first of advent
      * @see     http://www.salesianer.de/util/kalfaq.html
      */
     function advent($year= -1) {
-      if ($year == -1) $year= date('Y');
+      if (-1 == $year) $year= date('Y');
      
       $s= mktime(0, 0, 0, 11, 26, $year);
-      while (0 != date('w', $s)) $s+= CAL_SEC_DAY;
+      while (0 != date('w', $s)) {
+        $s+= CAL_SEC_DAY;
+      }
+      
       return new Date($s);
     }
     
     /**
      * Get easter date for given year
      *
+     * @model   static
      * @access  public
      * @param   int year default -1 Year, defaults to this year
      * @return  &util.Date date for Easter date
@@ -152,6 +211,7 @@
       $l = $i - $j;
       $m = 3 + (int)(($l + 40) / 44);
       $d = $l + 28 - 31 * ((int)($m / 4));
+
       return new Date(mktime(0, 0, 0, $m, $d, $year));
     }
   }
