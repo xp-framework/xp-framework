@@ -14,7 +14,7 @@
    */
   class XML extends Object {
     var 
-      $_version  = '1.0',
+      $version   = '1.0',
       $_encoding = 'iso-8859-1';
     
     /**
