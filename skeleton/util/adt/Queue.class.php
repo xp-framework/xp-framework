@@ -58,7 +58,7 @@
      * @throws  util.NoSuchElementException
      */    
     function &get() {
-      if (0 == sizeof($this->_elements)) {
+      if (empty($this->_elements)) {
         return throw(new NoSuchElementException('Queue is empty'));
       }
       return array_shift($this->_elements);
@@ -74,7 +74,8 @@
      * @return  &lang.Object object
      */        
     function &peek() {
-      if (!isset($this->_elements[$index])) return NULL; else $this->_elements[0];
+      if (empty($this->_elements)) return NULL;
+      return $this->_elements[0];
     }
   
     /**
