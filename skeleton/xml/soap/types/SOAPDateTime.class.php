@@ -26,7 +26,6 @@
      */
     function __construct($arg) {
       $this->value= &new Date($arg);
-      parent::__construct();
     }
     
     /**

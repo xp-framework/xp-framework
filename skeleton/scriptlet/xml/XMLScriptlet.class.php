@@ -58,7 +58,6 @@
      * @param   string base default ''
      */
     function __construct($base= '') {
-      parent::__construct();
       $this->processor= &$this->_processor();
       $this->processor->setBase($base);
     }

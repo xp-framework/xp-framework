@@ -45,7 +45,6 @@
     function __construct($name, $val) {
       $this->name= $name;
       $this->value= $val;
-      parent::__construct();
     }
     
     /**

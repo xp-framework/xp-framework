@@ -31,7 +31,6 @@
      * @param   array headers default array()
      */  
     function __construct($url, $headers= array()) {
-      parent::__construct();
       $this->_conn= &new HttpConnection($url);
       $this->_headers= $headers;
     }

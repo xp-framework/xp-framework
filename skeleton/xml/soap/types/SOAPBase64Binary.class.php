@@ -32,8 +32,6 @@
         $this->string= $string;
         $this->encoded= base64_encode($string);
       }
-
-      parent::__construct();
     }
     
     /**
