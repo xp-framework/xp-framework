@@ -394,6 +394,7 @@ SYBASE_API int sybase_free_result(sybase_result *result)
     if (!result) {
         return SA_FAILURE | SA_EALREADYFREE;
     }
+    ct_cmd_drop(result->cmd);
     sfree(result);
     return SA_SUCCESS;
 }
