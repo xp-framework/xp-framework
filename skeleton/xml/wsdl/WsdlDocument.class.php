@@ -2,7 +2,7 @@
   uses(
     'xml.Tree', 
     'xml.Node',
-    'xml.soap.wsdl.WsdlMessage'
+    'xml.wsdl.WsdlMessage'
   );
   
   define('XMLNS_WSDL',    'http://schemas.xmlsoap.org/wsdl/');
