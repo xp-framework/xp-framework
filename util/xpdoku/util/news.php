@@ -21,6 +21,12 @@
   
   // TBD: Get from database?
   $news->addItem(
+    'MessageFormat', 
+    'http://xp.php3.de/apidoc/collections/util.text.format.html',
+    'Formatting strings has become even easier',
+    new Date('2003-01-04 22:02:00')
+  );
+  $news->addItem(
     '[Beta] Telephony API', 
     'http://xp.php3.de/apidoc/collections/util.telephony.html',
     'With providing an API to telephony applications, another very interesting feature has been introduced',
