@@ -185,7 +185,7 @@
               }
               
               try(); {
-                ClassLoader::loadClass($class);
+                $permission= XPClass::forName($class);
               } if (catch('Exception', $e)) {
                 $state= PF_ST_EREFLECT;
                 $message= $e->message;
@@ -197,7 +197,7 @@
               while ($t= strtok(', ";')) $actions[]= $t;
               
               // Add permission
-              $policy->addPermission(new Permission($name, $actions));
+              $policy->addPermission($permission->newInstance($name, $actions));
               
               break;
           }
