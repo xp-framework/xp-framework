@@ -1,0 +1,53 @@
+Das XP-Framework: Todo-Liste
+======================================================================
+$Id$
+
+
+friebe, Sat Jun 15 22:35:34 CEST 2002
+-------------------------------------
+* Installer etc.
+  Ähnlich bsd:///usr/ports konstruieren
+
+* de.schlund*
+  Eigenes CVS-Modul
+  
+* net.http: 
+  HTTPConnection statt HTTPRequest
+  FTPConnection einführen
+  
+* net.session: 
+  Basis-Session-Klasse definieren
+  Eine via Shared Memory
+  Eine via Serialize in Files
+  
+* de.schlund:
+  Context => State (misleading names)
+  Hannah-Session-Klasse neu
+  PT-Bestellseiten vom util.web.workflow ableiten
+  
+* util.web.workflow:
+  Workflow/State/Handler an Pfix2 anpassen und dokumentieren
+  HTTPRequest einführen, der den Request wrapped (method, data, ...)
+  
+  
+* rdbms:
+  MySQL und PostgreSQL-Klassen
+  Transaktionen über eine Klasse wrappen?
+  
+* util.log:
+  $cat= Logger::getInstance($this->getName()) - obwohl unschön, aber
+  $cat= Logger::getInstance()->getCategory($this->getName())
+  geht noch nicht
+  
+* xml.soap.provider:
+  CGI-Provider einführen
+  Standalone-Variante mit fork() als Experimental markieren
+  
+* lang:
+  Object::getName() => Object::getClassName()
+  
+* gui.gtk:
+  Einige Helper-Funktionen für immer wieder auftretende Konstrukte
+  wie $a= &$this->widget('bla'); $a->connect(...) schreiben.
+  
+<EOF>

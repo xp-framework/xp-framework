@@ -1,0 +1,95 @@
+Das XP-Framework: Klassen-Dokumentation
+======================================================================
+$Id$
+
+Generelles:
+-----------
+Der Dokumentationsstil wurde von JavaDoc übernommen und entsprechend
+angepasst. Eine Klasse muss dokumentiert sein um dem Framework konform
+zu sein.
+
+Beispiel:
+---------
+Dieses Beispiel zeigt die Basics (aus lang/System.class.php):
+
+/**
+ * Setzt eine Umgebungsvariable
+ *
+ * @access  public
+ * @param   string name
+ * @param   mixed var
+ * @return  bool success
+ */
+function putEnv($name, $var) {
+  return putenv($name.'='.$var);
+}
+
+Generische Keywords:
+--------------------
+@see     Ein Verweis
+         Syntax: (<url>|<klasse>|<klasse>#<methode>|<email>|php://<funktion>|rfc://<nummer>)
+         
+         @see    http://schlund.de/
+         @see    io.File
+         @see    io.File#open
+         @see    thekid@thekid.de
+         @see    "Timm Friebe" <thekid@thekid.de>
+         @see    php://fopen
+         @see    rfc://821
+
+Methoden-Keywords:
+------------------
+@access  Definiert die Zugriffsberechtigungen auf eine Methode
+         Erlaubt sind die Werte "public" und "private"
+         
+         @access public
+
+@param   Dokumentiert einen Parameter
+         Syntax: <typ> <name> [default <default>] <beschreibung>
+         
+         @param  string $str default '' Der Übergabe-String
+         @param  int $i Anzahl der zurückzugebenden Ergebnisse
+         @param  lang.Exception $e Eine Exception
+         @param  mixed $var Ein String oder ein Integer
+         
+@return  Dokumentiert den Rückgabewert
+         Syntax: <typ> <beschreibung>
+         
+         @return bool Success
+         @return array Array von Domainnamen
+         
+@throws  Dokumentiert, dass diese Funktion Exceptions wirft.
+         Syntax <typ>[, <bedingung>]
+         
+         @throws IOException
+         @throws IllegalStateException, wenn die Datei nicht offen ist
+
+Klassen-Keywords:     
+-----------------
+@static  Definiert eine statische Klasse.
+
+@doc     Verweis zu einem Beispielskript. Beispielskripte liegen in ~/doc
+         Syntax: (<script_relative_location>|<script_url>)
+
+         @doc    trycatch.php
+         @doc    http://foo.bar/baz.php
+         
+@purpose Verwendungszweck (Kurzbeschreibung)
+         Syntax: <purpose>
+         
+         @purpose Kapselt Operationen auf dem IMAP-Server
+
+
+Template:
+---------
+Dieses Template kann für die Einbindung als Editor-Makro verwendet werden:
+
+ /**
+  * (Insert method's description here)
+  *
+  * @access  
+  * @param   
+  * @return  
+  */
+  
+<EOF>

@@ -1,0 +1,237 @@
+Das XP-Framework: Eine Einführung
+======================================================================
+$Id$
+
+Was bedeutet "XP"?:
+-------------------
+"XP" steht für XML-PHP.
+
+Was ist das XP-Framework?:
+--------------------------
+Das XP-Framework:
+1.) ist eine Ansammlung von Sourcecode, der häufig verwendete Konstrukte
+    in einfach zu benutzende Klassen wrapped,
+    
+2.) enthält eine Implementation eines XML/XSL-Konzeptes [PUSTEFIX], mit dem 
+    es möglich ist, Programmierung und Design komplett voneinander zu trennen,
+    
+3.) ist an die Zend Engine 2 [ZE2] angelehnt und wird diese in Zukunft verwenden.
+    (Eine hohe Priorität beim Entwickeln dieses Frameworks lag auf der 
+    Portierbarkeit dorthin - diese kann über drei Regular Expressions
+    und der Anpassung einer einzigen Datei vollzogen werden) und
+    
+4.) ist für jede Art der Anwendung gemacht: Kommandozeilen-Programme, 
+    Anwendungen mit GUI [GTK-PHP], Webanwendungen mit XML/XSL sowie
+    einfaches HTML.
+    
+Idee:
+-----
+Die Idee zu einem komplett objekt-orientierten Framework ist nicht neu. So 
+gibt es beispielsweise CPAN in Perl und PEAR in PHP. Diese Implementierung
+ist stark an der Java-Struktur angelehnt, in dessen CLASS_PATH sich 
+verschiedene Verzeichnisse befinden ("lang", "io", "net", usw.). Für nicht
+standardisierte Extensions wurde der Domainname als uniques Verzeichnis 
+gewählt: Spezifisches der Schlund+Partner AG landet so in ~/de/schlund/,
+spezifisches von Apache in ~/org/apache/. Die einzelnen Klassen können über 
+das Keyword "import" eingebunden werden, wobei der genaue Pfad im Dateisystem
+nicht bekannt sein muss und das Trennzeichen "." statt "/" oder "\" gewählt
+wurde. Im XP-Framework wird das genau so gehandhabt, mit dem kleinen Unterschied,
+dass anstatt "import" das Keyword "uses" verwendet wird (da "import" in der 
+ZE2 bereits mit einer anderen Bedeutung definiert ist).
+
+Die ursprüngliche Motivation zur Schaffung eines solchen Frameworks war
+die Umstellung des Designs auf hosting.1und1.com (vormals puretec.de).
+Der Code sollte wiederverwendbar, unabhängig und möglichst allzweck-tauglich
+sein (also auch für das Backend, was via Cronjobs gelöst ist). Eine 
+Implementation à la sybase_connect([...]) or die('Keine Datenbank') kam
+absolut nicht in Frage. Fehler dieser Art müssen in der Anwendung abgefangen
+werden können!
+
+Basics:
+-------
+Das XP-Framework bietet als Grundlage folgende Goodies:
+1.) Eine Implementierung von Exceptions für die Zend Engine 1
+    Diese wird in Zukunft obsolet werden, aber trotzdem fast 
+    identisch funktionieren.
+
+2.) Unifizierte Constructoren und Destructoren
+    Auch das ist in ZE2 bereits enthalten und daher nach einem Update
+    auf PHP5 nicht mehr nötig.
+
+3.) Eine Funktion "uses", die weiß, wo die Klassen liegen
+
+Ein PHP-Skript, welches das XP-Framework benutzt, muss mit der folgenden Zeile
+anfangen:
+
+require('lang.base.php');
+
+Die dadurch eingebundene Datei stellt die Framework-Grundlagen bereit. 
+Es empfiehlt sich, den Include-Path in der php.ini anzupassen, damit
+der Pfad nicht angegeben werden muss.
+
+Ein Beispiel:
+-------------
+
+Sehen wir uns einmal folgendes Skript an:
+
+ 1 <?php
+ 2   require('lang.base.php');
+ 3   uses('io.File');
+ 4 
+ 5   $testFile= 'file_does_not_exist.txt';
+ 6   printf("Trying to read %s...\n", $testFile);
+ 7   try(); {
+ 8     $file= new File($testFile);
+ 9     $file->open(FILE_MODE_READ);
+10     $str= $file->readLine();
+11     $file->close();
+12   } if (catch('FileNotFoundException', $e)) {
+13     die($e->printStackTrace());
+14   } if (catch('IOException', $e)) {
+15     die($e->printStackTrace());
+16   } 
+17   printf("Success: line ist '%s'\n", $str);
+18 ?>
+
+In Zeile drei wird die Klasse /path/to/skeleton/io/File.class.php eingebunden.
+Diese wrapped die PHP-Funktionen, die mit Dateien umgehen (fopen, fread, ...)
+und versieht die Funktionen mit verschiedenen Exceptions. Man sieht sehr
+schön, dass der Syntax:
+
+1.) wesentlich einfacher ist, als den genauen Pfad zu kennen,
+2.) die sowieso standardisierte Erweiterung mit anzugeben,
+3.) und unter Windows evtl. noch das Laufwerk mit angeben zu müssen.
+
+Klar geht das auch über include_path, allerdings ist nicht jedem gestattet,
+den Include-Path zu ändern (Massenhosting). Zudem bietet die uses()-Funktion
+die Möglichkeit, mehrere Klassen auf einmal zu includen, bspw.
+
+uses('io.File', 'util.Date');
+
+Danach wird ein Block von Code (Zeile acht bis elf) in einen try/catch-Block 
+eingebunden. Innerhalb dieses Blocks können mehrere verschiedene Fehler auftreten:
+
+1.) Die Datei kann nicht gefunden werden
+2.) Die Datei kann nicht geöffnet werden (ist von einem anderen Prozess 
+    exklusiv gelockt)
+3.) Beim Lesen der Datei tritt ein Fehler auf (sehr unwahrscheinlich,
+    aber durchaus vorstellbar)
+4.) Auch beim Schließen der Datei kann ein Fehler auftreten, was noch
+    unwahrscheinlicher ist, aber auch möglich.
+    
+Schlägt eine der Funktionen fehl, so wirft sie eine typisierte Exception,
+welche über die Funktion catch() abgefangen werden kann. In Zeile zwölf
+testen wir, ob der Fehler eventuell bereits beim Öffnen der Datei auftritt.
+In Zeile vierzehn testen wir auf den unwahrscheinlicheren Fall, dass beim
+Lesen oder Schließen ein Fehler auftritt. 
+
+Eine Beispielausgabe sieht dann für Fall 1 (Datei nicht gefunden) so aus:
+
+Trying to read /tmp/file_does_not_exist.txt:
+Exception io.FileNotFoundException (/tmp/file_does_not_exist.txt)
+
+Existiert hingegen die Datei, kann aber nicht gelesen werden, könnte die 
+Ausgabe folgendermaßen aussehen:
+
+Trying to read /tmp/file_does_not_exist.txt:
+Exception io.IOException (cannot open /tmp/file_does_not_exist.txt mode r)
+  at File.class.php:open (line 101:fopen("/tmp/file_does_not_exist.txt", "r") - Permission denied)
+  at File.class.php:close (line 381:fclose(): supplied argument is not a valid File-Handle resource)
+
+Wie man sehen kann, wird, entgegen dem, was in Java, der ZE2 oder jeder 
+anderen Programmiersprache, die ein Exception-Konzept beinhaltet, der Block
+komplett ausgeführt, "due to the limitations of Zend Engine 1". Ist ein
+wenig unschön, wird sich jedoch mit PHP5 ändern. Auch führen nicht 
+abgefangene Exceptions nicht zur Beendigung des Programms.
+
+Gut sichtbar ist in diesem Beispiel auch die einfache Handhabung des 
+File-Objektes.
+
+Code:
+-----
+Der Code folgt strikten Richtlinien:
+1.) Dem Stil "Studly Caps"
+2.) Eine Einrücktiefe von zwei Zeichen
+3.) Einer Auflage, unter error_reporting(E_ALL) keine Warnungen oder Notices
+    auszugeben.
+    
+Die Coding Standards finden sich in der Datei CODING_STANDARDS.
+
+Dokumentation:
+--------------
+In das XP-Framework ist nicht nur ein hoher Anspruch an die Qualität des 
+Codes, sondern auch an die der Dokumentation geflossen: So sind die 
+Klassen und ihre Methoden im PHPDoc-Stil kommentiert, um automatisiert 
+daraus eine API-Dokumentation erstellen zu können. Ein Beispiel:
+
+/**
+ * String-Repräsentation eines Datums
+ *
+ * @see     php://date
+ * @param   string format default 'r' Format-String
+ * @return  string Das formatierte Datum
+ */
+function toString($format= 'r') {
+  return date($format, $this->_utime);
+}
+
+Die Dokumentations-Standards werden in der Datei CODING_STANDARDS 
+angeschnitten und in README.DOC ausführlich beschrieben.
+
+Objekt-Hierarchie:
+------------------
+Alle Objekte stammen von der Klasse "Object" oder von einer Klasse, die
+diese vererbt, ab. Ausnahme ist natürlich die Klasse "Objekt".
+
+Migration zur Zend Engine 2:
+----------------------------
+Für die Migration zur Zend Engine 2 sind folgende Aktionen notwendig:
+
+1.) try(); wird zu try
+2.) if (catch('Exception', $e)) wird zu catch(Exception $e)
+3.) return throw([...]) wird zu throw([...])
+
+Zudem muss aus lang.base.php die Eigenimplementation der Funktionen
+try(), catch() und throw() herausgenommen werden.
+
+Globale Funktionen des Frameworks:
+----------------------------------
+* string reflect(string s) - Macht aus dem Dateinamen der Klasse den Klassennamen
+  reflect('IOException.class.php') := 'IOException'
+  
+* void uses(string s [, string t, [...]]) - Bindet ein oder mehrere Klassen ein
+  uses('io.File');
+  uses('io.Folder', 'lang.System');
+  
+* void try(void) - Beginnt einen try/catch-Block
+
+* bool catch(string exception, &object e) - Fängt Exceptions ab
+  if (catch('IOException', $e)) die($e->printStackTrace());
+  
+* void throw(object e) - Wirft eine Exception
+  if (!$fd) throw(new IOException('cannot open file'));
+  
+* &mixed cast(&mixed var [, string type= NULL]) - Castet eine Variable "NULL-safe"
+  cast('hello', 'string') := 'hello';
+  cast(NULL, 'string') := NULL
+
+* bool is_error(void) - Gibt PHP-Fehlermeldungen zurück, oder, falls keine existiert, FALSE
+  if ($e= is_error(
+    $a= preg_match('/'.$userInput.'/', $str);
+  )) throw(new FormatException($e));
+
+* void destroy(void) - Garbage Collector
+  PRIVAT
+  
+* error(int errno, string errstr, string errfile, string errline) - Errorhandler
+  PRIVAT
+  
+Siehe auch:
+-----------
+- README.DOC            Klassen-Dokumentation
+- README.CVS            CVS-Guidelines
+- README.COLLECTIONS    Das Framework up-to-date halten und erweitern
+- INSTALL               Installation
+- CODING_STANDARDS      Coding Standards
+- TODO                  Todo-Liste
+<EOF>
