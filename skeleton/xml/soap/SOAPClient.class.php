@@ -53,7 +53,7 @@
     }
     
     /**
-     * Register mapping for a qname to a class obkect
+     * Register mapping for a qname to a class object
      *
      * @access  public
      * @param   &xml.QName qname
