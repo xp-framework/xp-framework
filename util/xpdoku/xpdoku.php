@@ -137,7 +137,7 @@
           ));
           $out->close();
         } if (catch('Exception', $e)) {
-          $e->printStackTrace();
+          $e->printStackTrace(STDERR);
           continue;
         }
       } else if (is_dir($folder->uri.$entry) && 'CVS' != $entry) {
@@ -206,10 +206,10 @@
     );
 
     // Node for package
-    $core= &new Node();
-    $core->name= 'package';
-    $core->attribute['type']= $type;
-    $core->attribute['name']= $info['name'];
+    $core= &new Node('package', NULL, array(
+      'type' => $type,
+      'name' => $info[$name]
+    ));
     $core->addChild ($classNodes);
     $classTree->addChild ($core);
   }
@@ -224,20 +224,21 @@
   printf("===> Building inheritance tree [%d classes]...\n", sizeof($nodes));
 
   // Save it to file, structure must be /document/main/...
-  $main= &new Node(array(
-    'name'      => 'document',
-    'attribute' => array(
-      'title'           => 'XP::The Classtree',
-      'generated_at'    => date ('l, F d, Y')
-    )
+  $main= &new Node('document', NULL, array(
+    'title'           => 'XP::The Classtree',
+    'generated_at'    => date('l, F d, Y')
   ));
-  $nodes[NULL]= &$main->addChild(new Node(array('name' => 'main')));
+  $nodes[NULL]= &$main->addChild(new Node('main'));
   
   foreach (array_keys($nodes) as $class) {
     if (NULL == $class) continue;
     $parent= $nodes[$class]->attribute['parent-idx'];
     
     printf("---> Adding %s to parent %s\n", $class, var_export($parent, 1));
+    if (!is_a($nodes[$parent], 'Node')) {
+      throw(new FormatException('Cannot add '.$class.' to non-existant parent '.$parent));
+      break;
+    }
     $nodes[$class]= &$nodes[$parent]->addChild($nodes[$class]);
     if (NULL !== $parent) {
       $nodes[$class]->attribute['parent']= $nodes[$parent]->attribute['name'];
@@ -251,8 +252,8 @@
     $out->writeLine ($main->getSource());
     $out->close();
   } if (catch ('IOException', $e)) {
-    $e->printStackTrace();
-    exit();
+    $e->printStackTrace(STDERR);
+    exit(-1);
   }
  
   printf("===> Done\n");
