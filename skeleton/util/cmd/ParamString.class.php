@@ -74,7 +74,7 @@
      * @param   string short default NULL Der kurze Parameter (ohne -), defaultet auf den ersten Buchstaben des langen Parameters
      * @return  boolean Gesetzt
      */  
-    function set($long, $short= NULL) {
+    function exists($long, $short= NULL) {
       return ($this->_find($long, $short) !== FALSE);
     }
     
@@ -86,7 +86,7 @@
      * @param   string short default NULL Der kurze Parameter (ohne -), defaultet auf den ersten Buchstaben des langen Parameters
      * @return  string Parameter-Wert
      */ 
-    function val($long, $short= NULL) {
+    function value($long, $short= NULL) {
       $pos= $this->_find($long, $short);
       return ($pos !== FALSE
         ? str_replace("--{$long}=", '', $this->list[$pos])
