@@ -235,22 +235,24 @@
   }
   
   // Populate inheritance tree
-  while (count ($depTree)) {
+  $i= sizeof ($depTree);
+  while ($i) {
     foreach ($depTree as $class=> $parent) {
       if (false !== ($parentClass= &findClass ($iTree, $parent))) {
         $parentClass[$class]= array();
         unset ($depTree[$class]);
+        $i--;
       }
     }
   }
 
   // Save it to file, structure must be /document/main/...
-  $main= new Node();
+  $main= &new Node();
   $main->name= 'document';
   $main->attribute['title']= 'XP::The Classtree';
   $main->attribute['generated_at']= date ('l, F d, Y');
 
-  $tree= new Node();
+  $tree= &new Node();
   $tree->fromArray ($iTree, 'main');
   $main->addChild ($tree);
   
