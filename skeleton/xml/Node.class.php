@@ -262,11 +262,13 @@
      * @access  public
      * @param   &xml.Node child
      * @return  &xml.Node added child
+     * @throws  lang.IllegalArgumentException
      */
     function &addChild(&$child) {
       if (!is_a($child, 'Node')) {
-        trigger_error('Type: '.get_class($child), E_USER_NOTICE);
-        return throw(new IllegalArgumentException('parameter child must be an xml.Node'));
+        return throw(new IllegalArgumentException(
+          'Parameter child must be an xml.Node (given: '.xp::typeOf($child).')'
+        ));
       }
       
       $this->children[]= &$child;
