@@ -280,9 +280,8 @@ function toString($format= 'r') {
     <references>
       <ref link="about.doc">Klassen-Dokumentation</ref>
       <ref link="about.cvs">CVS-Guidelines</ref>
-      <ref link="about.collection">Das Framework up-to-date halten und erweitern</ref>
       <ref link="about.install">Installation</ref>
-      <ref link="about.coding_standards">Coding Standards</ref>
+      <ref link="about.coding">Coding Standards</ref>
     </references>
   </main>
 </document>
