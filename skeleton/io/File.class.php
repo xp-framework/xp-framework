@@ -39,10 +39,15 @@
      * Constructor
      *
      * @access  public
-     * @param   string filename The filename, e.g. /etc/hosts
+     * @param   mixed file either a filename or a resource (as returned from fopen)
      */
-    function __construct($filename) {
-      $this->setURI($filename);
+    function __construct($file) {
+      if (is_resource($filename)) {
+        $this->uri= NULL;
+        $this->_fd= $file;
+      } else {
+        $this->setURI($file);
+      }
       parent::__construct();
     }
     
