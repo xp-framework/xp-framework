@@ -17,6 +17,22 @@
     }
   }
   
+  class NatcaseSorter {
+    public function sort(ArrayList $list, $order) {
+      $list->sort(new Comparator($order) {
+        protected
+          $order = 0;
+
+        public function __construct($order) {
+          $this->order= $order;
+        }
+        public function compare($a, $b) {
+          return $this->order * strnatcmp($a, $b);
+        }
+      });
+    }
+  }
+  
   // {{{ main
   $list= new ArrayList();
   $list->elements[]= 1;
@@ -26,12 +42,10 @@
 
   echo 'Before: ', implode(', ', $list->elements), "\n";
   
-  $list->sort(new Comparator() {
-    public function compare($a, $b) {
-      return strnatcmp($a, $b);
-    }
-  });
-
+  NatcaseSorter::sort($list, -1);
+  echo 'After : ', implode(', ', $list->elements), "\n";
+  
+  NatcaseSorter::sort($list, +1);
   echo 'After : ', implode(', ', $list->elements), "\n";
   // }}}
 ?>
