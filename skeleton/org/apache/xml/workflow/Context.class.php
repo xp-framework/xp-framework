@@ -143,10 +143,11 @@
           // to decide whether it wants to show errors or whether to hide them 
           // (whatever reason that might have)
           $cat->error('Errors occured', $state->handlers[$i]->errors);
-          foreach ($state->handlers[$i]->errors as $statuscode) {
+          foreach ($state->handlers[$i]->errors as $error) {
             $response->addFormError(
               $state->handlers[$i]->getClassName(),
-              $statuscode
+              $error[1],
+              $error[0]
             );
           }
 
