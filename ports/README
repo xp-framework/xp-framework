@@ -131,6 +131,20 @@ files and subdirectories:
 - tools/        Tools, e.g. statistics, configuration creator, ...
 - bin/          Command line scripts for sysutils/cli
 - ui/           User interface files for GTK applications (.glade/.xpm)
-- META-INF/     Meta information (see above)
+- META-INF/     Meta information about a port
+
+In the META-INF/ directory, there is file called port.xml. An example:
+  <?xml version="1.0" ?>
+  <!DOCTYPE collection PUBLIC 
+   "-//XP Framework//Collection DTD 1.0//EN" 
+   "http://xp-framework.net/dtd/port_1_0.dtd"
+  >
+  <port name="thekid" category="www.forum">
+    <version>0.1</version>
+    <summary>The forum at thekid.de</summary>
+    <maintainers>
+      <maintainer id="xp://identity/friebe" role="lead"/>
+    </maintainers>
+  </port>
 
 <EOF>
