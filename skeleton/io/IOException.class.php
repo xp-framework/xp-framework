@@ -9,7 +9,8 @@
    * class is the general class of exceptions produced by failed or 
    * interrupted I/O operations. 
    *
-   * @see Exception
+   * @see      xp://lang.Exception
+   * @purpose  Exception
    */
   class IOException extends Exception {
   
