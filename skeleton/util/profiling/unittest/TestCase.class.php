@@ -5,7 +5,8 @@
  */
 
   uses(
-    'util.profiling.unittest.AssertionFailedError'
+    'util.profiling.unittest.AssertionFailedError',
+    'lang.MethodNotImplementedException'
   );
 
   /**
@@ -309,9 +310,15 @@
      * Run this test case.
      *
      * @access  public
-     * @return  &net.xp-framework.util.TestResult either a TestFailure or a TestSuccess
+     * @return  &mixed return value of test method
+     * @throws  lang.MethodNotImplementedException
      */
     function &run() {
+      if (!method_exists($this, $this->name)) {
+        return throw(new MethodNotImplementedException(
+          'Method '.$this->name.' does not exist'
+        ));
+      }
       return call_user_func(array(&$this, $this->name));
     }
   }
