@@ -10,11 +10,11 @@
    * Throwable
    *
    * @see      xp://lang.Error
-   * @see      xp://lang.Exception
+   * @see      xp://lang.XPException
    * @purpose  Base class
    */
   class Throwable extends Object {
-    var 
+    protected 
       $message  = '',
       $trace    = array();
 
@@ -24,7 +24,7 @@
      * @access  public
      * @param   string message
      */
-    function __construct($message) {
+    public function __construct($message) {
       static $except= array(
         'call_user_func_array', 'call_user_func', 'object', '__call', '__set', '__get'
       );
@@ -44,7 +44,7 @@
 
         // Not all of these are always set: debug_backtrace() should
         // initialize these - at least - to NULL, IMO => Workaround.
-        $this->trace[]= &new StackTraceElement(
+        $this->trace[]= new StackTraceElement(
           isset($trace['file']) ? $trace['file'] : NULL,
           isset($trace['class']) ? $trace['class'] : NULL,
           isset($trace['function']) ? $trace['function'] : NULL,
@@ -61,7 +61,7 @@
           : '<main>'
         );
         for ($i= 0, $s= sizeof($errors[$key]); $i < $s; $i++) { 
-          $this->trace[]= &new StackTraceElement(
+          $this->trace[]= new StackTraceElement(
             $key,
             $class,
             NULL,
@@ -71,8 +71,6 @@
           );
         }
       }
-      
-      parent::__construct();
     }
 
     /**
@@ -81,7 +79,7 @@
      * @access  public
      * @return  string
      */
-    function getMessage() {
+    public function getMessage() {
       return $this->message;
     }
 
@@ -92,7 +90,7 @@
      * @return  lang.StackTraceElement[] array of stack trace elements
      * @see     xp://lang.StackTraceElement
      */
-    function getStackTrace() {
+    public function getStackTrace() {
       return $this->trace;
     }
 
@@ -103,8 +101,8 @@
      * @param   resource fd default STDERR
      * @access  public
      */
-    function printStackTrace($fd= STDERR) {
-      fputs($fd, $this->toString());
+    public function printStackTrace($fd= STDERR) {
+      fputs($fd, self::toString());
     }
  
     /**
@@ -123,10 +121,10 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= sprintf(
         "Exception %s (%s)\n",
-        $this->getClassName(),
+        self::getClassName(),
         $this->message
       );
       for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
