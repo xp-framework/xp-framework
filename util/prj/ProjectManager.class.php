@@ -73,7 +73,8 @@
     }
     
     function onTreeRightClick(&$clist, &$event) {
-      $this->menu= &new ProjectManagerPopupMenu ($this);
+      $this->menu= &new ProjectManagerPopupMenu ();
+      $this->menu->setParent($this);
       $this->menu->addMenuItem ('Add file...', array (&$this->menu, 'addFile'));
       $this->menu->addMenuItem ('Reparse files', array (&$this->menu, 'reparse'));
       
@@ -110,6 +111,7 @@
       
       $parser->parse();
       $this->files[]= &$parser;
+
       $this->statusbar->push (1, 'Added file '.$parser->filename);
       $this->log && $this->log->info ('Added file '.$parser->filename);
       
@@ -133,7 +135,6 @@
           }
         }
       }
-      
       
       $this->updateList();
       return TRUE;
@@ -159,28 +160,11 @@
       foreach (array_keys ($this->files) as $idx) {
         $file= &$this->files[$idx];
         
-        $fileNode= &$this->tree->insert_node (
-          $rootNode,
-          NULL,
-          array (basename ($file->filename), '', ''),
-          0,
-          NULL,
-          NULL,
-          NULL,
-          NULL,
-          FALSE,
-          FALSE
-        );
-        $node= &new StdClass();
-        $node->file= &$f;
-        
-        $this->tree->node_set_row_data ($fileNode, $node);
-        
         foreach (array_keys ($file->classes) as $cIdx) {
           $c= &$file->classes[$cIdx];
 
           $classNode= &$this->tree->insert_node (
-            $fileNode,
+            $rootNode,
             NULL,
             array ($c->name, $c->line, $c->endsAt),
             0,
@@ -232,13 +216,15 @@
      * @return  
      */    
     function onFileOpenCtx(&$menuItem, &$event) {
+      $this->menu->menu->hide();
+      
       $n= &$this->tree->node_get_row_data ($this->_selectedNode);
 
       $line= 0;
       if (isset ($n->object))
         $line= $n->object->line;
 
-      System::exec (sprintf ('nedit -line %d %s',
+      System::exec (sprintf ('n -line %d %s',
         $line,
         $n->file->filename        
       ), '2>&1', TRUE);
