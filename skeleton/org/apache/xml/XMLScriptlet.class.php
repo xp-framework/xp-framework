@@ -44,11 +44,22 @@
    */
   class XMLScriptlet extends HttpScriptlet {
     var 
-      $document,
-      $stylesheetBase;
+      $document         = NULL,
+      $stylesheetBase   = '';
       
     var
-      $sessionURIFormat=    '%1$s://%2$s%4$s;psessionid=%7$s/%5$s?%6$s%8$s';
+      $sessionURIFormat =  '%1$s://%2$s%4$s;psessionid=%7$s/%5$s?%6$s%8$s';
+    
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   string stylesheetBase
+     */
+    function __construct($stylesheetBase) {
+      $this->stylesheetBase= $stylesheetBase;
+      parent::__construct();
+    }
     
     /**
      * Set our own response object
@@ -67,18 +78,59 @@
     function _request() {
       $this->request= &new XMLScriptletRequest();
     }
-      
+    
     /**
-     * Initialize the XMLScriptlet
+     * Initialize. Calls doCreate if necessary (the environment variable
+     * "PRODUCT" is not set - which it will be if the RewriteRule has
+     * taken control).
      *
-     * It is assumed your XSL stylesheets are in ../xsl/product/language/ relative 
-     * to where your document root is.
-     *
-     * @see     org.apache.HttpScriptlet#init
+     * @access  public
      */
     function init() {
       parent::init();
-      $this->stylesheetBase= realpath(getenv('DOCUMENT_ROOT').'/../xsl/').'/';
+      if (FALSE === getenv('PRODUCT')) $this->request->method= 'CREATE';
+    }
+    
+    /**
+     * Handle method
+     *
+     * @access  protected
+     * @param   string method
+     * @return  string method
+     * @see     xp://org.apache.xml.XMLScriptlet#_handleMethod
+     */
+    function _handleMethod($method) {
+      if ('CREATE' == $method) {
+        $this->_method= 'doCreate';
+        return $this->_method;
+      }
+      return parent::_handleMethod($method);
+    }
+    
+    /**
+     * Create - redirects to /xml/$pr:$ll_LL/static if 
+     * necessary, regarding the environment variables DEF_PROD and 
+     * DEF_LANG as values for $pr and $ll_LL. If these aren't set, "site" and
+     * "en_US" are assumed as default values.
+     *
+     * @access  public
+     * @param   &org.apache.xml.XMLScriptletRequest request
+     * @param   &org.apache.xml.XMLScriptletResponse response
+     * @return  bool
+     */
+    function doCreate(&$request, &$response) {
+      $uri= $request->getURI();
+      $defaultProduct= getenv('DEF_PROD');
+      $defaultLanguage= getenv('DEF_LANG');
+      $response->sendRedirect(sprintf(
+        '%s://%s/xml/%s:%s/static', 
+        $uri['scheme'],
+        $uri['host'],          
+        $defaultProduct ? $defaultProduct : 'site',
+        $defaultLanguage ? $defaultLanguage : 'en_US'
+      ));
+      
+      return FALSE; // Indicate no further processing is to be done
     }
     
     /**
