@@ -361,9 +361,10 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
         <caption>Global functions of the framework</caption>
         <text>
           <ul>
-            <li><pre>void uses(string class [, string class [, ...]])</pre>Includes one or more classes
+            <li><pre>void uses(string class [, string class [, ...]])</pre>Requires one or more classes
                 <code><![CDATA[  uses('io.File');
   uses('io.Folder', 'lang.System');]]></code>
+                <i>Note: Failure to load a class will result in a fatal error</i>
             </li>
             <li><pre>void try(void)</pre>Begins a try/catch-block</li>
             <li><pre>bool catch(string exception, &amp;lang.Throwable e)</pre>Catches exceptions</li>
