@@ -24,6 +24,8 @@
   <allow_shrink>False</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
+  <wmclass_name>mboxmonitor</wmclass_name>
+  <wmclass_class>xp</wmclass_class>
 
   <widget>
     <class>GtkVBox</class>
