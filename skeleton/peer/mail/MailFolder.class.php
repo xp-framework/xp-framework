@@ -103,7 +103,7 @@
      */
     function &getMessages() { 
       $args= func_get_args();
-      array_unshift($args, &$this);
+      array_unshift($args, $this);
       return call_user_func_array(array($this->store, 'getMessages'), $args);
     }
 
