@@ -144,8 +144,7 @@
      */
     function negotiate() {
       $this->_sendcmd('Root %s', $this->root);
-      $this->_sendcmd(
-        'Valid-responses %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s M E F MT',
+      $this->_sendcmd('Valid-responses %s M E F MT', implode(' ', array(
         'Valid-requests',
         'New-entry',
         'Updated',
@@ -173,7 +172,7 @@
         'ok',
         'error',
         'Checked-in'
-      );
+      )));
       $this->_sendcmd('valid-requests');
       $this->verbs= $this->_readline(CVSR_EXPECT_LIST, 'Valid-requests');
       return $this->_readline(CVSR_EXPECT_OK);
