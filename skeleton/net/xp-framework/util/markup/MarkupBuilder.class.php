@@ -4,7 +4,12 @@
  * $Id$ 
  */
 
-  uses('text.StringTokenizer');
+  uses(
+    'text.StringTokenizer',
+    'net.xp-framework.util.markup.DefaultProcessor',
+    'net.xp-framework.util.markup.CopyProcessor',
+    'net.xp-framework.util.markup.CodeProcessor'
+  );
 
   /**
    * Markup builder based on regular expressions
@@ -12,35 +17,30 @@
    * @purpose  Plain text to markup converter
    */
   class MarkupBuilder extends Object {
-    var
-      $patterns= array(
-        '#&(?![a-z0-9\#]+;)#',
-        '#(^| )_([^_]+)_([ \.,]|$)#', 
-        '#(^| )\*([^*]+)\*([ \.,]|$)#',
-        '#(^| )/([^/]+)/([ \.,]|$)#',
-        '#(https?://[^\)\s\t\r\n]+)#',
-        '#mailto:([^@]+@[^.]+\.[a-z]{2,8})#',
-        '#bug \#([0-9]+)#i',
-        '#entry \#([0-9]+)#i',
-        '#category \#([0-9]+)#i',
-        '#:\-?\)#',
-        '#:\-?\(#',
-        '#;\-?\)#',
-      ),
-      $replacements= array(
-        '&amp;', 
-        '$1<u>$2</u>$3', 
-        '$1<b>$2</b>$3',
-        '$1<i>$2</i>$3',
-        '<link href="$1"/>',
-        '<mailto recipient="$1"/>',
-        '<bug id="$1"/>',
-        '<blogentry id="$1"/>',
-        '<blogcategory id="$1"/>',
-        '<emoticon id="regular_smile" text="$0"/>',
-        '<emoticon id="sad_smile" text="$0"/>',
-        '<emoticon id="wink_smile" text="$0"/>'
-      );
+    var 
+      $stack= array();
+
+    /**
+     * Push a processor onto stack
+     *
+     * @access  protected
+     * @param   &net.xp-framework.util.markup.MarkupProcessor proc
+     * @return  &net.xp-framework.util.markup.MarkupProcessor
+     */
+    function &pushProcessor(&$proc) {
+      array_unshift($this->stack, $proc);
+      return $proc;
+    }
+    
+    /**
+     * Pop processor off stack
+     *
+     * @access  protected
+     * @return  &net.xp-framework.util.markup.MarkupProcessor
+     */
+    function &popProcessor() {
+      return array_pop($this->stack);
+    }
 
     /**
      * Retrieve markup for specified text
@@ -50,36 +50,47 @@
      * @return  string
      */
     function markupFor($text) {
-      static $nl2br= array("\r" => '', "\n" => '<br/>');
+      static $processors= array();
+      static $state= array(
+        'pre'   => 'copy',
+        'code'  => 'code'
+      );
+
+      if (!$processors) {
+        $processors['default']= &new DefaultProcessor();
+        $processors['copy']= &new CopyProcessor();
+        $processors['code']= &new CodeProcessor();
+      }
+      
+      $processor= &$this->pushProcessor($processors['default']);
 
       $st= &new StringTokenizer($text, '<>', $returnDelims= TRUE);
-      $out= '';
-      $translation= $nl2br;
+      $out= '';      
       while ($st->hasMoreTokens()) {
         if ('<' == ($token= $st->nextToken())) {
           
           // Found beginning of tag
           $tag= $st->nextToken('>');
-          switch (strtolower($tag)) {
-            case 'pre':
-              $translation= array();
-              break;
+          $st->nextToken('>');
 
-            case '/pre':
-              $translation= $nl2br;
-              break;
+          // See if we have a processor state push/pop operation
+          $lookup= strtolower($tag);
+          if (isset($state[$lookup])) {
+            $processor= &$this->pushProcessor($processors[$state[$lookup]]);
+            $out.= $processor->initialize();
+          } elseif (isset($state[ltrim($lookup, '/')])) {
+            $out.= $processor->finalize();
+            $processor= &$this->popProcessor();
+          } else {
+            $out.= '<'.$tag.'>';
           }
 
-          $out.= '<'.$tag;
           continue;
         }
-        $out.= strtr(preg_replace(
-          $this->patterns, 
-          $this->replacements, 
-          $token
-        ), $translation);
+        
+        $out.= $processor->process($token);
       }
-
+      
       return $out;
     }
   }
