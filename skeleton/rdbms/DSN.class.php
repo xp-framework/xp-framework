@@ -7,9 +7,9 @@
   /**
    * DSN
    *
-   * DSN examples:
+   * DSN syntax:
    * <pre>
-   *   type://username:password@host:port/database
+   *   driver://[username[:password]]@host[:port][/database][?flag=value[&flag2=value2]]
    * </pre>
    *
    * @purpose  Unified connect string
