@@ -85,7 +85,7 @@
       $this->_conn->request->setHeader('Content-Type', 'text/xml; charset='.$message->getEncoding());
 
       // Add more headers
-      $this->_conn->request->addHeaders($headers);
+      $this->_conn->request->addHeaders($this->_headers);
       try(); {
         $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
         $res= &$this->_conn->request->send();
