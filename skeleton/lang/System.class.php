@@ -33,11 +33,9 @@
       $prop= array();
       
       // PHP-spezifisches
-      $prop['php.version']= phpversion();
-      $prop['php.api']= php_sapi_name();
-
-      // Betriebssystem
-      $prop['os.name']= (getenv('OSTYPE')== '') ? getenv('OS') : getenv('OSTYPE');
+      $prop['php.version']= PHP_VERSION;
+      $prop['php.api']= PHP_SAPI;
+      $prop['os.name']= PHP_OS;
 
       // Host
       $prop['host.name']= (getenv('HOSTNAME')== '') ? getenv('COMPUTERNAME') : getenv('HOSTNAME');
