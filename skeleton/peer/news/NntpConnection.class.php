@@ -34,7 +34,7 @@
    * </code>
 
    * @see      rfc://977
-   * @purpose  Wrap
+   * @purpose  News protocol implementation
    */
   class NntpConnection extends Object {
     var
@@ -52,7 +52,7 @@
       $this->url= &$url;
       $this->_sock= &new Socket(
         $this->url->getHost(),
-        !$this->url->getPort() ? 119 : $this->url->getPort()
+        $this->url->getPort(119)
       );
     }
 
@@ -82,7 +82,7 @@
       $cmd= implode(' ', $a);
 
       // NNTP/RFC977 only allows command up to 512 (-2) chars.
-      if (!strlen($cmd) > 510) {
+      if (strlen($cmd) > 510) {
         return throw(new ProtocolException('Command too long! Max. 510 chars'));
       }
       
@@ -270,6 +270,13 @@
       
       // retrieve headers
       while ($line= $this->_readData()) {
+        if ("\t" == $line{0} || ' ' == $line{0}) {
+          $article->setHeader(
+            $header[0], 
+            $article->getHeader($header[0])."\n".$line
+          );
+          continue;
+        }
         $header= explode(': ', $line, 2);
         $article->setHeader($header[0], $header[1]);
       }
