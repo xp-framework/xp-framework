@@ -28,7 +28,30 @@
       $num_chunks       = 0,
       $lang             = 0,
       $guid             = '',
-      $ext              = array();
+      $ext              = array(),
+      $chunks           = array();
+      
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function addChunk($chunk) {
+      $this->chunks[]= $chunk;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function getChunk($i) {
+      return $this->chunks[$i];
+    }
 
     /**
      * Set Identifier
