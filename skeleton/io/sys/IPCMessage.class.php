@@ -19,7 +19,8 @@
      * Constructor
      *
      * @access  private
-     * @param   
+     * @param   string message
+     * @param   int messagetype
      */      
     function __construct($message, $type= 1) {
       $this->message= $message;
