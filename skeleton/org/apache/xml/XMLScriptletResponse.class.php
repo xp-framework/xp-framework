@@ -97,21 +97,16 @@
       if (!is_array($val)) $val= array($val);
 
       foreach (array_keys($val) as $k) {
-        $v= &$val[$k];
-        $c= &$this->document->formvalues->addChild(new Node(array(
-          'name'        => 'param',
-          'attribute'   => array(
-            'name'            => $name.(is_int($k) ? '' : "[{$k}]"), 
-            'xsi:type'        => 'xsd:'.gettype($v)
-          )
-        )));
-        if (is_array($v)) {
-          $c->fromArray($v, $c->name);
-        } elseif (is_object($v)) {
-          $c->fromObject($v, $c->name);
+        if (is_array($val[$k])) {
+          $c= &Node::fromArray($val[$k], 'param');
+        } elseif (is_object($val[$k])) {
+          $c= &Node::fromObject($val[$k], 'param');
         } else {
-          $c->setContent($v);
+          $c= &new Node('param', $val[$k]);
         }
+        $c->attribute['name']= $name.(is_int($k) ? '' : "[{$k}]");
+        $c->attribute['xsi:type']= 'xsd:'.gettype($val[$k]);
+        $this->document->formvalues->addChild($c);
       } 
     }
 
@@ -133,22 +128,20 @@
      * @return  bool FALSE
      */
     function addFormError($checker, $type, $field= '*', $info= NULL) {
-      $e= &$this->document->formerrors->addChild(new Node(array(
-        'name'      => 'error',
-        'attribute' => array(
-          'type'        => $type,
-          'field'       => $field,
-          'checker'     => $checker
-        )
-      )));
       if (is_array($info)) {
-        $e->fromArray($info, $e->name);
-      } elseif (is_object($v)) {
-        $e->fromObject($info, $e->name);
-      } elseif (!is_null($info)) {
-        $e->setContent($info);
+        $c= &Node::fromArray($info, 'param');
+      } elseif (is_object($info)) {
+        $c= &Node::fromObject($info, 'param');
+      } else {
+        $c= &new Node('param', $info);
       }
-
+      $c->attribute= array(
+        'type'        => $type,
+        'field'       => $field,
+        'checker'     => $checker
+      );
+      $this->document->formerrors->addChild($c);
+      
       return FALSE;
     }
     
@@ -237,10 +230,11 @@
       );
       
       // Transform XML/XSL
-      if (!$this->processor->run()) {
-        return throw(new FormatException(
-          'xsl transformation of '.$this->stylesheet.' failed'
-        ));
+      try(); {
+        $this->processor->run();
+      } if (catch('TransformerException', $e)) {
+        $e->message.= ' [xsl: '.$this->stylesheet.', xml: '.$this->document->getSource(FALSE).']';
+        return throw($e);
       }
       
       $this->content= &$this->processor->output();
