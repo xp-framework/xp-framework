@@ -217,6 +217,7 @@
       
       $rows= array();
       while ($row= $r->next()) $rows[]= $row;
+      $this->log && $this->log->debugf ('Fetched %d rows', count ($rows));
       return $rows;
     }
     
