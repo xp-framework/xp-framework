@@ -27,4 +27,14 @@
     return array();
   }}
   // }}}
+
+  // {{{ proto array file_get_contents(string filename)
+  //     See php://file_get_contents
+  if (!function_exists('file_get_contents')) { function file_get_contents($filename) {
+    if (!$fd= fopen($filename, 'rb')) return FALSE;
+    $buf= fread($fd, filesize($filename));
+    fclose($fd);
+    return $buf;
+  }}
+  // }}}
 ?>
