@@ -173,7 +173,7 @@
      */
     function &getValue($name) {
       if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
-      return isset($_SESSION[$name]) ? unserialize($_SESSION[$name]) : NULL;
+      if (isset($_SESSION[$name])) return unserialize($_SESSION[$name]); else return NULL;
     }
     
     /**

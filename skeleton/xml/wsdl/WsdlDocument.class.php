@@ -229,7 +229,7 @@
      * @return  &xml.wsdl.WsdlMessage message or NULL if none is found
      */
     function &getMessageByName($name) {
-      return isset($this->messages[$name]) ? $this->messages[$name]['obj'] : NULL;
+      if (isset($this->messages[$name])) return $this->messages[$name]['obj'] else return NULL;
     }
     
     /**

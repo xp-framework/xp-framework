@@ -58,8 +58,8 @@
         // more error handling TBD here?
         return throw($e);
       }
-
-      return empty($data) ? NULL : new XPNews($data);
+      
+      if ($data) return new XPNews($data); else return NULL;
     }
 
     /**

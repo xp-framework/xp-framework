@@ -138,7 +138,7 @@
      * @return  &object element
      */
     function &getElement($name) {
-      return isset($this->elements[$name]) ? $this->elements[$name] : NULL;
+      if (isset($this->elements[$name])) return $this->elements[$name]; else return NULL;
     }
 
     /**

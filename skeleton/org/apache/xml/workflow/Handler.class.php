@@ -46,7 +46,7 @@
      * @return  &org.apache.xml.workflow.Wrapper wrapper, if existant or NULL
      */
     function getWrapper($field) {
-      return isset($this->wrappers[$field]) ? $this->wrappers[$field] : NULL;
+      if (isset($this->wrappers[$field])) return $this->wrappers[$field]; else return NULL;
     }
 
     /**

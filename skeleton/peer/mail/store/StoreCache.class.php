@@ -79,7 +79,7 @@
      * @return  &mixed value or NULL to indicate the value doesn't exist
      */    
     function &get($key) {
-      return isset($this->data[$key]) ? $this->data[$key] : NULL;
+      if (isset($this->data[$key])) return $this->data[$key]; else return NULL;
     }
   
     /**

@@ -62,7 +62,7 @@
      */
     function getHeader($name) {
       $name= strtolower($name);
-      return isset($this->headers[$name]) ? $this->headers[$name] : NULL;
+      if (isset($this->headers[$name])) return $this->headers[$name]; else return NULL;
     }
     
     /**
@@ -75,7 +75,7 @@
      */
     function getParam($name) {
       $name= strtolower($name);
-      return isset($this->params[$name]) ? $this->params[$name] : NULL;
+      if (isset($this->params[$name])) return $this->params[$name]; else return NULL;
     }
 
     /**

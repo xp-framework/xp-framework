@@ -58,10 +58,11 @@
       foreach (array_keys($data) as $key) {
         if ('count' == $key || is_int($key)) continue;
         
-        $e->attributes[$key]= (is_array($data[$key])
-          ? array_map(array(&$e, '_decode'), $data[$key])
-          : $e->_decode($data[$key])
-        );
+        if (is_array($data[$key])) {
+          $e->attributes[$key]= array_map(array(&$e, '_decode'), $data[$key]);
+        } else {
+          $e->attributes[$key]= $e->_decode($data[$key]);
+        }
         unset($e->attributes[$key]['count']);
       }
       

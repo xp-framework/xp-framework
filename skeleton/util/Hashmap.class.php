@@ -258,7 +258,7 @@
      * @return  &mixed value
      */
     function &get($key) {
-      return isset($this->_hash[$key]) ? $this->_hash[$key] : NULL;
+      if (isset($this->_hash[$key])) return $this->_hash[$key]; else return NULL;
     }
 
     /**

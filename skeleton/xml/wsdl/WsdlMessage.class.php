@@ -105,7 +105,7 @@
      * @return  &object part
      */
     function &getPartByName($name) {
-      return isset($this->parts[$name]) ? $this->parts[$name] : NULL;
+      if (isset($this->parts[$name])) return $this->parts[$name]; else return NULL;
     }
   }
 
