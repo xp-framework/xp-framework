@@ -34,8 +34,8 @@
      * @access  publuc
      * @return  string
      */
-    function getStackTrace() {
-      return parent::getStackTrace().($this->sql 
+    function toString() {
+      return parent::toString().($this->sql 
         ? "  Code ".$this->code.", SQL [\n".$this->sql."\n  ]\n"
         : ''
       );
