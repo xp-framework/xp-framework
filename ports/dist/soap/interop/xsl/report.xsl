@@ -25,28 +25,32 @@
     </func:result>
   </func:function>
   
+  <func:function name="func:align-number">
+    <xsl:param name="number"/>
+    <xsl:param name="digits" select="5"/>
+    <func:result><xsl:value-of select="func:ws($digits - string-length($number))"/><xsl:value-of select="$number"/></func:result>
+  </func:function>
+  
   <xsl:template match="/">
-<xsl:text>Service                                  Total  Passed Failed
-=============================================================
+<xsl:text>Service                                   Total Passed Failed  Temp.
+====================================================================
 </xsl:text>
     <xsl:for-each select="clients/client">
       <xsl:variable name="name" select="@name"/>
       <xsl:value-of select="func:indent($name)"/>
-      <xsl:value-of select="format-number(count(method), '###')"/>
-      <xsl:value-of select="func:ws(5)"/>
-      <xsl:value-of select="format-number(count(method[not(@error)]), '###')"/>
-      <xsl:value-of select="func:ws(5)"/>
-      <xsl:value-of select="format-number(count(method[@error= 'permanent']), '###')"/>
+      <xsl:value-of select="func:align-number(count(method))"/><xsl:text> </xsl:text>
+      <xsl:value-of select="func:align-number(count(method[@result= '1']))"/><xsl:text> </xsl:text>
+      <xsl:value-of select="func:align-number(count(method[@result= '0' or @error = 'permanent']))"/><xsl:text> </xsl:text>
+      <xsl:value-of select="func:align-number(count(method[@error= 'temporary']))"/>
 <xsl:text>
 </xsl:text>
     </xsl:for-each>
-<xsl:text>=============================================================
-</xsl:text>Overall<xsl:value-of select="func:ws(32)"/>
-    <xsl:value-of select="format-number(count(clients/client/method), '###')"/>
-    <xsl:value-of select="func:ws(5)"/>
-    <xsl:value-of select="format-number(count(clients/client/method[not(@error)]), '###')"/>
-    <xsl:value-of select="func:ws(5)"/>
-    <xsl:value-of select="format-number(count(clients/client/method[@error = 'permanent']), '###')"/>
+<xsl:text>====================================================================
+</xsl:text>Overall<xsl:value-of select="func:ws(33)"/>
+    <xsl:value-of select="func:align-number(count(clients/client/method))"/><xsl:text> </xsl:text>
+    <xsl:value-of select="func:align-number(count(clients/client/method[@result= '1']))"/><xsl:text> </xsl:text>
+    <xsl:value-of select="func:align-number(count(clients/client/method[@result= '0' or @error = 'permanent']))"/><xsl:text> </xsl:text>
+    <xsl:value-of select="func:align-number(count(clients/client/method[@error= 'temporary']))"/>
 <xsl:text>
 </xsl:text>
   </xsl:template>
