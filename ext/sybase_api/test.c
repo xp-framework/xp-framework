@@ -55,6 +55,7 @@ int main(int argc, char **argv)
                 result->code,
                 sybase_nameofcode(result->code)
             );
+            sybase_free_result(result);
         }
         
     } else {
