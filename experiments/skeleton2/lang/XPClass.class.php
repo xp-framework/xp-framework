@@ -248,7 +248,7 @@
      * @return  &lang.XPClass class object
      * @throws  lang.ClassNotFoundException when there is no such class
      */
-    public static function forName($name, ClassLoader $classloader= NULL) {
+    public static function forName($name, $classloader= NULL) {
       if (NULL === $classloader) {
         $classloader= ClassLoader::getDefault();
       }
