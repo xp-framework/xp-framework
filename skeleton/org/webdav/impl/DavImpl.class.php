@@ -32,14 +32,26 @@
       return $this->capabilities;
     }
 
+    /**
+     * Delete a file
+     *
+     * @access  abstract
+     * @param   string filename
+     * @param   &string data
+     * @return  bool success
+     * @throws  MethodNotImplementedException
+     */
+    function &delete($filename) {
+      return throw(new MethodNotImplementedException($this->getName().'::delete not implemented'));
+    }
 
     /**
      * Put a file
      *
-     * @access  public
+     * @access  abstract
      * @param   string filename
      * @param   &string data
-     * @return  &org.webdav.WebdavObject
+     * @return  bool new
      * @throws  MethodNotImplementedException
      */
     function &put($filename, &$data) {

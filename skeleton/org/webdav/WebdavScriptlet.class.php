@@ -115,6 +115,23 @@
      * @throws  Exception to indicate failure
      */
     function doDelete(&$request, &$response) {
+      try(); {
+        $object= &$this->handlingImpl->delete($request->uri['path_translated']);
+      } if (catch('ElementNotFoundException', $e)) {
+      
+        // Element not found
+        $response->setStatus(HTTP_NOT_FOUND);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      } if (catch('Exception', $e)) {
+      
+        // Not allowd
+        $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      } 
+      
+      $response->setStatus(HTTP_NO_CONTENT);
     }
 
     /**

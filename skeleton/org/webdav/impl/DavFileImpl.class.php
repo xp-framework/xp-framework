@@ -85,6 +85,34 @@
     }
 
     /**
+     * Delete a file
+     *
+     * @access  public
+     * @param   string filename
+     * @param   &string data
+     * @return  bool success
+     * @throws  ElementNotFoundException
+     */
+    function &delete($filename) {
+      if (is_dir($this->base.$filename)) {
+        return throw(new Exception('Deletion of directories not yet implemented'));
+      }
+      
+      $f= &new File($this->base.$filename);
+      if (!$f->exists()) {
+        return throw(new ElementNotFoundException($filename.' not found'));
+      }
+      
+      try(); {
+        $f->unlink();
+      } if (catch('IOException', $e)) {
+        return throw(new Exception($filename.' cannot be deleted ('.$e->message.')'));
+      }
+      
+      return TRUE;
+    }
+
+    /**
      * Put a file
      *
      * @access  public
