@@ -38,15 +38,23 @@ int main(int argc, char **argv)
         
         printf("Connected, executing query...\n");
         if (sybase_query(link, &result, argv[4]) == SA_SUCCESS) {
-            while (i++ < 10 && (sybase_results(&result) == SA_SUCCESS)) {
+            while (i++ < 99 && (sybase_results(&result) == SA_SUCCESS)) {
                 printf(
-                    "result->type %4d [%-20s] result->code %4d [%-20s]\n", 
+                    "[%3d] result->type %4d [%-20s] result->code %4d [%-20s]\n", 
+                    i,
                     result->type,
                     sybase_nameoftype(result->type), 
                     result->code,
                     sybase_nameofcode(result->code)
                 );
             }
+            printf(
+                "[END] result->type %4d [%-20s] result->code %4d [%-20s]\n", 
+                result->type,
+                sybase_nameoftype(result->type), 
+                result->code,
+                sybase_nameofcode(result->code)
+            );
         }
         
     } else {
