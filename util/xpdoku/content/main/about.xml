@@ -39,16 +39,18 @@
           The idea of a completely object-oriented framework is not new. There exist
           some frameworks like CPAN for Perl or PEAR in PHP. This implementation is
           heavily based on the structure of Java, in whose CLASS_PATH exist several
-          directores ("lang", "io", "net", etc.). For non standardised extensions the
+          directores ("lang", "io", "net", etc.). For non-standardized extensions the
           domainname has been chosen as unique directory: classes specific to
           Schlund+Partner AG reside in ~/de/schlund/, classes specific to Apache reside
-          in ~/org/apache/. All the classes can be loaded by using the keyword import,
+          in ~/org/apache/.
+          <br/><br/>
+          All the classes can be loaded by using the keyword import,
           while the exact location of the class in the filesystem has not to be known 
           to the program. The separation char has been chosen '.' instead of '/' or '\'.
           In the XP framework i is handled the same way, by the little difference that
           instead of "import" we use "uses" (import already is a language-keyword in
           ZE2).
-          
+          <br/><br/>
           The original motivation for the creation of such a framework was the change
           of the design on hosting.1und1.com (formely puretec.de). The code should
           be reuseable, independent and where possible multi-purposed (this includes
@@ -87,13 +89,13 @@
       <para>
         <caption>An example:</caption>
         <text>
-          Sehen wir uns einmal folgendes Skript an:
+          Let's have a look at the following script:
 
           <code><![CDATA[  // {{{ main
   require('lang.base.php');
   uses('io.File');
 
-  $file= &new File('file_does_not_exist.txt');
+  $file= &new File('/file_does_not_exist.txt');
   printf("Trying to read %s...\n", $file->filename);
   try(); {
     $file->open(FILE_MODE_READ);
@@ -102,11 +104,13 @@
   } if (catch('FileNotFoundException', $e)) {
   
     // File was not found
-    die($e->printStackTrace());
+    $e->printStackTrace();
+    exit(-1);
   } if (catch('IOException', $e)) {
   
     // Sone other I/O exception occured (e.g. "Permission denied")
-    die($e->printStackTrace());
+    $e->printStackTrace();
+    exit(-1);
   } 
   printf("Success: line ist '%s'\n", $str);
   // }}}]]></code>
@@ -118,9 +122,11 @@
           The syntax of <tt>uses</tt> is much more sexy than using something like 
           <tt>require_once($DOCUMENT_ROOT."/../includes/io/File.class.php")</tt> - 
           
-          a) <tt>uses</tt> knows where the classes are, 
-          b) we have a unified path separator and 
-          c) we can ommit the standardized .class.php at the end.
+          <ul>
+            <li><tt>uses</tt> knows where the classes are, </li>
+            <li>we have a unified path separator and </li>
+            <li>we can ommit the standardized .class.php at the end.</li>
+          </ul>
 
           Sure - this also works with include_path, but it is not allowed to everyone
           to change the include path (mass hosting). Further, the uses()-function allows
@@ -131,11 +137,13 @@
           Afterwards a block of code (line eight to eleven) is included in a try/catch
           block, Within this block, multiple errors could occur:
 
-          1.) The file is not found
-          2.) The file cannot be opened (is exclusively locked by another process)
-          3.) While reading the file, an error occurs (quite unlikely but possible)
-          4.) While closing the file, an error can occur (which is even more unlikely
-              but nevertheless possible).
+          <ul>
+            <li>The file is not found</li>
+            <li>The file cannot be opened (is exclusively locked by another process)</li>
+            <li>While reading the file, an error occurs (quite unlikely but possible)</li>
+            <li>While closing the file, an error can occur (which is even more unlikely
+                but nevertheless possible).</li>
+          </ul>
 
           In case one of the functions fail, it throws a typed exception which we can
           catch with catch(). In line twelve we test whether the error already occured
@@ -145,19 +153,23 @@
           A sample output for case 1 (file not found) looks like this:
 
           <pre><![CDATA[
-Trying to read /tmp/file_does_not_exist.txt:
-Exception io.FileNotFoundException (/tmp/file_does_not_exist.txt)
+Trying to read file_does_not_exist.txt...
+Exception io.FileNotFoundException (/file_does_not_exist.txt)
+  at io.FileNotFoundException::__construct((0x28)'/file_does_not_exist.txt') 
+  [line 87 of StackTraceElement.class.php] 
+  at io.File::open((0x2)'rb') [line 8 of exception.php] 
           ]]></pre>
 
           Does the file exists, but cannot be read, the output could look like this:
 
           <pre><![CDATA[
-Trying to read /tmp/file_does_not_exist.txt:
-Exception io.IOException (cannot open /tmp/file_does_not_exist.txt mode r)
-  at File.class.php:open (line 101:fopen("/tmp/file_does_not_exist.txt", "r") - 
-  Permission denied)
-  at File.class.php:close (line 381:fclose(): supplied argument is not a 
-  valid File-Handle resource)
+Trying to read file_does_not_exist.txt...
+Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
+  at io.IOException::__construct((0x3c)'Cannot open /file_does_not_exist.txt mode rb') 
+  [line 87 of StackTraceElement.class.php] 
+  at io.File::open((0x2)'rb') [line 8 of exception.php] 
+  at io.File::<main>() [line 137 of File.class.php] fopen(/file_does_not_exist.txt): 
+  failed to open stream: Permission denied
           ]]></pre>
 
           As you can see, in opposite to Java, ZE2 or any other programming language
@@ -165,21 +177,8 @@ Exception io.IOException (cannot open /tmp/file_does_not_exist.txt mode r)
           completely "due to limitations of Zend Engine 1". This is somewhat a dirty
           fact which will change with ZE2. Uncaught exceptions lead to the abortion
           of the program.
-
+          <br/><br/>
           This example also shows the ease-of-use of the file object.
-
-          Example:
-          <pre><![CDATA[
-Exception info.binford6100.db.message.MessageException (statement failed)
-  at MessagePart.class.php:create (line 71:Undefined property:  subject)
-  at MessagePart.class.php:create (line 71:Undefined property:  abstract)
-  at SPSybase.class.php:query (line 140:Sybase:  Server message:  part not found. 
-    Specify owner.objectname or use sp_help to check whether the object exists 
-    (sp_help may produce lots of output). (severity 16, procedure N/A)
-  )
-  at MessagePart.class.php:create (line 97:Undefined variable:  data)
-  in MESSAGE_CTX_GLOBAL
-          ]]></pre>
         </text>
       </para>              
       <para>
@@ -230,7 +229,7 @@ Exception info.binford6100.db.message.MessageException (statement failed)
         <caption>Global functions of the framework</caption>
         <text>
           <ul>
-            <li><pre>void uses(string s [, string t, [...]])</pre>Inlcudes one or more classes
+            <li><pre>void uses(string class [, string class [, ...]])</pre>Inlcudes one or more classes
                 <code><![CDATA[  uses('io.File');
   uses('io.Folder', 'lang.System');]]></code>
             </li>
@@ -249,8 +248,14 @@ Exception info.binford6100.db.message.MessageException (statement failed)
     $e && exit(-1);
   }]]></code>
             </li>
+            <li><pre>void implements(__FILE__, string interface [, string interface [, ...]])</pre>
+                Denotes the class in this file implements the specified interface(s).
+                <code><![CDATA[  class ListIterator extends Object {
+    // ...
+  } implements(__FILE__, 'util.Iterator');]]></code>
+            </li>
             <li><pre>bool is(string class, &amp;lang.Object object)</pre>
-                checks whether a given object is of the class, a subclass or implements an interface
+                Checks whether a given object is of the class, a subclass or implements an interface
             </li>
             <li><pre>&amp;mixed cast(&amp;mixed var [, string type= NULL])</pre>Casts a variable "NULL-safe"
                 <code><![CDATA[  cast('hello', 'string') := 'hello';
