@@ -38,6 +38,14 @@
     }
     // }}}
     
+    // {{{ internal mixed sapi(string name)
+    //     Sets an SAPI
+    function sapi($name) {
+      require_once('sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php');
+      xp::registry('sapi', $name);
+    }
+    // }}}
+    
     // {{{ internal mixed registry(mixed args*)
     //     Stores static data
     function &registry() {
