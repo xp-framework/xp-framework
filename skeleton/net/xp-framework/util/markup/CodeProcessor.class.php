@@ -46,21 +46,25 @@
      */    
     function finalize() {
       static $classes= array(
-        T_VARIABLE          => 'variable',
-        T_CLASS             => 'keyword',
-        T_FUNCTION          => 'keyword',
-        T_NEW               => 'keyword',
-        T_STATIC            => 'keyword',
-        '{'                 => 'bracket',
-        '}'                 => 'bracket',
-        '('                 => 'bracket',
-        ')'                 => 'bracket',
+        T_VARIABLE                      => 'variable',
+        T_CLASS                         => 'keyword',
+        T_FUNCTION                      => 'keyword',
+        T_NEW                           => 'keyword',
+        T_STATIC                        => 'keyword',
+        T_CONSTANT_ENCAPSED_STRING      => 'string',
+        '{'                             => 'bracket',
+        '}'                             => 'bracket',
+        '('                             => 'bracket',
+        ')'                             => 'bracket',
       );
-      
+
       $current= 'default';
-      $out= '<code><span>';
+      $out= '';
       foreach (token_get_all('<?php '.str_replace('&#160;', ' ', $this->buffer).'?>') as $token) {
-        $class= isset($classes[$token[0]]) ? $classes[$token[0]] : 'default';
+        $class= (isset($classes[$token[0]]) 
+          ? $classes[$token[0]]
+          : 'default'
+        );
         if ($current != $class) {
           $out.= '</span><span class="'.$class.'">';
           $current= $class;
@@ -68,9 +72,8 @@
 
         $out.= htmlentities(is_array($token) ? $token[1] : $token);
       }
-      $out.= '</span></code>';
       
-      return $out;
+      return '<code><span>'.substr($out, 8, -5).'</span></code>';
     }
   }
 ?>
