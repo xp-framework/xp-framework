@@ -73,7 +73,7 @@
       "* Has method 'toString': %s\n\n".
       "* Instance toString() output: %s\n\n",
       $class->getName(),
-      $parent ? $parent->getName() : '(n/a)',
+      !null($parent) ? $parent->getName() : '(n/a)',
       $implements ? 'implements '.substr($implements, 2) : '',
       !null($constructor)
         ? $constructor->toString().' declared in '.$constructor->getDeclaringClass()->getName()
