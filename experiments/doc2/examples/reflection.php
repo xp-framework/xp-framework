@@ -28,7 +28,7 @@
   // Retrieve class methods
   $methods= '';
   for ($i= 0, $m= $class->getMethods(), $s= sizeof($m); $i < $s; $i++) {
-    $methods.= '  - '.$m[$i]->getName().'() [declared in '.$m[$i]->getDeclaringClass()->getName()."]\n";
+    $methods.= '  - '.$m[$i]->toString().' declared in '.$m[$i]->getDeclaringClass()->getName()."\n";
   }
 
   // Retrieve class fields
@@ -76,7 +76,7 @@
       $parent ? $parent->getName() : '(n/a)',
       $implements ? 'implements '.substr($implements, 2) : '',
       !null($constructor)
-        ? $constructor->getName().'() [declared in '.$constructor->getDeclaringClass()->getName().']'
+        ? $constructor->toString().' declared in '.$constructor->getDeclaringClass()->getName()
         : '(none)'
       ,
       $methods,
