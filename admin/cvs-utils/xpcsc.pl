@@ -88,6 +88,9 @@ sub error() {
   print SENDMAIL "From: \"".getRealname ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
   print SENDMAIL "Reply-To: $to\n";
   print SENDMAIL "Subject: [CVS] commit failure\n";
+  print SENDMAIL "MIME-Version: 1.0\n";
+  print SENDMAIL "Content-type: text/plain; charset=iso-8859-1\n";
+  print SENDMAIL "Content-transfer-encoding: 8bit\n";
   print SENDMAIL "X-CVS: ".$ENV{'CVSROOT'}."\n";
   print SENDMAIL "\n";
   print SENDMAIL $out;
