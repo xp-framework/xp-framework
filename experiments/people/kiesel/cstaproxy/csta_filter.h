@@ -1,1 +1,1 @@
-extern int csta_filter(proxy_connection *, char *);
+extern int csta_filter(proxy_connection *, char *, char**);
