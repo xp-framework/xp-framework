@@ -383,9 +383,10 @@
             break;
           
           case '@join':
-            list($channel, $password)= explode(' ', $params);
+            list($channel, $channelpass, $password)= explode(' ', $params);
+            if (empty($password)) { $password= $channelpass; $channelpass= NULL; }
             if ($this->doPrivileged($connection, $nick, $password)) {
-              $connection->join($channel);
+              $connection->join($channel, $channelpass);
             }
             break;
           
@@ -784,11 +785,14 @@
      * @param   int time time to sleep
      */
     function doSleep(&$connection, $time) {
+      if ($this->mode == MODE_SLEEP) return;
+      
+      $this->cat && $this->cat->debug('Going to sleep for %d seconds', $time);
       $this->mode= MODE_SLEEP;
       
       $this->registry['wakeup']= time() + $time;
       foreach (array_keys($this->channels) as $channel) {
-        $connection->sendAction($channel, 'zieht das Bett euch abgekschlappten Pissnelken vor und geht pennen.');
+        $this->sendRandomMessage($connection, $channel, 'sleep', NULL, NULL);
       }
       
       $this->registry['nick-awake']= $connection->user->getNick();
@@ -802,14 +806,18 @@
      * @param   &peer.irc.IRCConnection connection
      */
     function doWakeup(&$connection) {
+      if ($this->mode == MODE_AWAKE) return;
+      
+      $this->cat && $this->cat->debug('The bot is waking up again. Scheduled wake time was %s',
+        date('H:i:s', $this->registry['wakeup'])
+      );
       $this->mode= MODE_AWAKE;
       
       unset($this->registry['wakeup']);
       $connection->setNick($this->registry['nick-awake']);
 
       foreach (array_keys($this->channels) as $channel) {
-        $connection->sendMessage($channel, '*gähn*');
-        $connection->sendMessage($channel, 'stinkt noch fürchterlich aus dem Mund, hat aber keine Lust Zähne zu putzen.');
+        $this->sendRandomMessage($connection, $channel, 'wakeup', NULL, NULL);
       }
     }
     
@@ -966,6 +974,24 @@
      */
     function onVersion(&$connection, $nick, $target, $params) {
       $connection->writeln('NOTICE %s :%sVERSION Krokerdil $Revision$%s', $nick, "\1", "\1");
+    }
+    
+    /**
+     * Callback for PING
+     *
+     * @access  public
+     * @param   &peer.irc.IRCConnection connection
+     * @param   string data
+     */
+    function onPings(&$connection, $data) {
+      if (
+        rand(0, 100) > 95 &&
+        date('H') < 5
+      ) {
+      
+        // Maximally sleep up to aroung 8 hours per day
+        $this->doSleep($connection, 60 * 5 * rand(0, 100));
+      }
     }
   }
 ?>
