@@ -42,7 +42,7 @@
      * @param   mixed file either a filename or a resource (as returned from fopen)
      */
     function __construct($file) {
-      if (is_resource($filename)) {
+      if (is_resource($file)) {
         $this->uri= NULL;
         $this->_fd= $file;
       } else {
