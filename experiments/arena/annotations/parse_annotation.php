@@ -80,6 +80,25 @@
       case ST_KEY.T_CONSTANT_ENCAPSED_STRING:
         $annotations[$name]= trim($tokens[$i][1], '"\'');
         break;        
+
+      case ST_KEY.T_LNUMBER:
+        $annotations[$name]= (int)$tokens[$i][1];
+        break;
+
+      case ST_KEY.T_DNUMBER:
+        $annotations[$name]= (float)$tokens[$i][1];
+        break;
+      
+      case ST_KEY.T_STRING:
+        $map= array('TRUE' => TRUE, 'FALSE' => FALSE, 'NULL' => NULL);
+        $key= strtoupper($tokens[$i][1]);
+        if (!array_key_exists($key, $map)) {
+          print(" *** Parse error ***\n");
+          $annotations= NULL;
+          break 2;
+        }
+        $annotations[$name]= $map[$key];
+        break;
       
       case ST_KEY.')':
         $state= ST_TOKEN;
@@ -97,8 +116,20 @@
         $state= ST_TOKEN;
         break;
 
+      case ST_ARRAY.',':
+      case ST_ARRAY.'(':
+      case ST_KEY.'=':
+      case ST_ARRAY.T_WHITESPACE:
+      case ST_INITIAL.T_WHITESPACE:
+      case ST_KEY.T_WHITESPACE:
+      case ST_VALUE.T_WHITESPACE:
+      case ST_TOKEN.T_WHITESPACE:
+        break;
+
       default:
-        $DEBUG && print('???');
+        print(" *** Parse error ***\n");
+        $annotations= NULL;
+        break 2;
     }
     $DEBUG && print("\n");
   }
