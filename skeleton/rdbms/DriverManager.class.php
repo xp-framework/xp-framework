@@ -78,6 +78,7 @@
         'sybase'   => 'rdbms.sybase.SybaseConnection',
         'mysql'    => 'rdbms.mysql.MySQLConnection',
         'pgsql'    => 'rdbms.pgsql.PostgreSQLConnection',
+        'sqlite'   => 'rdbms.sqlite.SQLiteConnection',
         // TBI: Oracle, ...
       );
       
