@@ -103,23 +103,41 @@
       ) {
         return NULL;
       }
+
+      // References
+      if (isset($child->attribute['href'])) {
+        foreach (array_keys($this->root->children[0]->children) as $idx) {
+          if (0 != strcasecmp(
+            $this->root->children[0]->children[$idx]->attribute['id'],
+            substr($child->attribute['href'], 1)
+          )) continue;
+ 
+          // Create a copy and pass name to it
+          $c= $this->root->children[0]->children[$idx];
+          $c->name= $child->name;
+          return $this->unmarshall($c, $context);
+          break;
+        }
+      }
       
       // Recognize XP object
-      if (isset($child->attribute['xmlns:xp'])) {
-        try(); {
-          $n= ClassLoader::loadClass(substr($child->attribute['xsi:type'], 3));
-        } if (catch('Exception', $e)) {
+      foreach ($child->attribute as $key => $val) {
+        if ('xmlns' == substr($key, 0, 5) && 'http://xp-framework.net/xmlns/xp' == substr($val, 0, 32)) {
+          try(); {
+            $n= ClassLoader::loadClass(substr($child->attribute['xsi:type'], strlen($key) - 5));
+          } if (catch('Exception', $e)) {
           
-          // Handle this gracefully
-          trigger_error($e->message, E_USER_NOTICE);
-          $n= 'Object';
-        }
-        $result= &new $n();
-        foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
-          $result->$key= $val;
-        }
+            // Handle this gracefully
+            trigger_error($e->message, E_USER_NOTICE);
+            $n= 'Object';
+          }
+          $result= &new $n();
+          foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
+            $result->$key= $val;
+          }
         
-        return $result;          
+          return $result;          
+        }
       }
 
       // Typenabhängig
@@ -197,9 +215,10 @@
 
       // HACK
       if (
-        $context == NULL and 
-        $child->name != 'item' and
-        substr($child->name, 1, 7) != '-gensym'
+        ($context == NULL) &&
+        ($child->name != 'item') &&                    // PHP, XP, ...
+        (substr($child->name, 1, 7) != '-gensym') &&   // Perl
+        (sscanf($child->name, 'arg%d', $num) < 1)      // Axis
       ) {
         $result= &new SOAPNamedItem($child->name, $result);
       }
