@@ -22,30 +22,34 @@ them really work we need to have the time zone available too.
 Functionality
 -------------
 Actually the XML response string looks like this:
-<formresult
-  serial="1108993160"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
->
-  <formvalues>
+<pre>
+  <formresult
+    serial="1108993160"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  >
+    <formvalues>
+      ...
+    </formvalue>
     ...
-  </formvalue>
-  ...
-</formresult>
+  </formresult>
+</pre>
 
 To be able to do some calculations with this @serial we have to add the
 time zone too. Example would look like this:
-<formresult
-  serial="1108993160"
-  tz="3600"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
->
-  <formvalues>
+<pre>
+  <formresult
+    serial="1108993160"
+    tz="3600"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  >
+    <formvalues>
+      ...
+    </formvalue>
     ...
-  </formvalue>
-  ...
-</formresult>
+  </formresult>
+</pre>
 
 The formresult gets a new attribute "tz" which contains the time zone
 specification in seconds (e.g. the value "3600" equivalent to the time
