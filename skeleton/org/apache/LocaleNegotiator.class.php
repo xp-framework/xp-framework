@@ -20,8 +20,14 @@
    *   );
    *   var_dump(
    *     $negotiator, 
-   *     $negotiator->getLocale($supported= array('de_DE', 'en_US')),
-   *     $negotiator->getCharset($supported= array('iso-8859-1'))
+   *     $negotiator->getLocale(
+   *       $supported= array('de_DE', 'en_US'), 
+   *       $default= 'de_DE'
+   *     ),
+   *     $negotiator->getCharset(
+   *       $supported= array('iso-8859-1', 'utf-8'),
+   *       $default= 'iso-8859-1'
+   *     )
    *   );
    * </code>
    * 
@@ -37,7 +43,7 @@
    *       $req->getHeader('Accept-Language'), 
    *       $req->getHeader('Accept-Charset')
    *     );
-   *     $locale= &$negotiator->getLocale($supported= array('de_DE', 'en_US'));
+   *     $locale= &$negotiator->getLocale(array('de_DE', 'en_US'), 'de_DE');
    *
    *     // [... Do whatever needs to be done for this language ...]
    *
