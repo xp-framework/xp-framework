@@ -600,6 +600,54 @@
       // Use builtin?
       if (1971 < $this->year && $this->year < 2038) return strftime($format, $this->_utime);
      
+      $return= '';
+      if ($token= strtok($format, '%')) do {
+        switch ($token{0}) {
+          case 'a': $return.= strftime('%a', 86400 * (3 + $result['wday'])); break;
+          case 'A': $return.= strftime('%A', 86400 * (3 + $result['wday'])); break;
+          case 'b': $return.= strftime('%b', mktime(0, 0, 0, $result['mon'], 2, 1971)); break;
+          case 'B': $return.= strftime('%B', mktime(0, 0, 0, $result['mon'], 2, 1971)); break;
+          case 'c': $return.= '???PREFERRED???'; break;         // FIXME
+          case 'C': $return.= sprintf('%02d', $this->year % 100); break;
+          case 'd': $return.= sprintf('%02d', $this->mday); break;
+          case 'D': $return.= sprintf('%02d/%02d/%02d', $this->mon, $this->mday, $this->year % 100); break;
+          case 'e': $return.= $this->mday; break;
+          case 'g': $return.= '???YEAR_CORR???'; break;        // FIXME
+          case 'G': $return.= '???YEAR_CORR???'; break;        // FIXME
+          case 'h': $return.= strftime('%b', mktime(0, 0, 0, $result['mon'], 2, 1971)); break;
+          case 'H': $return.= sprintf('%02d', $this->hour); break;
+          case 'I': $return.= $return.= sprintf('%02d', $this->hour == 0 ? 12 : $this->hour > 12 ? $this->hour - 12 : $this->hour); break;
+          case 'j': $return.= '???DAY_OF_YEAR???'; break;       // FIXME
+          case 'm': $return.= sprintf('%02d', $this->mon); break;
+          case 'M': $return.= sprintf('%02d', $this->minutes); break;
+          case 'n': $return.= "\n"; break;
+          case 'p': $return.= $this->hour > 12 ? 'pm' : 'am'; break;
+          case 'r': $return.= sprintf(
+              '%02d:%02d:%02d %s',
+              $this->hour == 0 ? 12 : $this->hour > 12 ? $this->hour - 12 : $this->hour,
+              $this->minutes,
+              $this->seconds,
+              $this->hour > 12 ? 'PM' : 'AM'
+            ); 
+            break;
+          case 'R': $return.= sprintf('%02d:%02d', $this->hour, $this->minutes); break;
+          case 'S': $return.= sprintf('%02d', $this->seconds);
+          case 't': $return.= "\t"; break;
+          case 'T': $return.= sprintf('%02d:%02d:%02d', $this->hour, $this->minutes, $this->seconds); break;
+          case 'u': $return.= ($this->wday + 6) % 7; break;
+          case 'U': $return.= '???WEEKNUMBER???'; break;        // FIXME
+          case 'V': $return.= '???WEEKNUMBER???'; break;        // FIXME
+          case 'W': $return.= '???WEEKNUMBER???'; break;        // FIXME
+          case 'w': $return.= $this->wday; break;
+          case 'x': $return.= '???PREFERRED???'; break;         // FIXME
+          case 'X': $return.= '???PREFERRED???'; break;         // FIXME
+          case 'y': $return.= sprintf('%02d', $this->year % 100); break;
+          case 'Y': $return.= sprintf('%04d', $this->year); break;
+          case 'Z': $return.= strftime('%Z'); break;
+          default: $return.= $token{1};
+        }
+        $return.= substr($token, 1);
+      } while ($token= strtok('%'));
       return '';    // FIXME
     }
   }
