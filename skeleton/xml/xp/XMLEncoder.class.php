@@ -69,7 +69,7 @@
             break;
             
           default: 
-            $n->setContent(htmlspecialchars($value[$key]));
+            $n->setContent($value[$key]);
         }
       }
     }

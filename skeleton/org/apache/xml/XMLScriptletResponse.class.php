@@ -110,7 +110,7 @@
         } elseif (is_object($v)) {
           $c->fromObject($v, $c->name);
         } else {
-          $c->setContent(htmlspecialchars($v));
+          $c->setContent($v);
         }
       } 
     }
@@ -146,7 +146,7 @@
       } elseif (is_object($v)) {
         $e->fromObject($info, $e->name);
       } elseif (!is_null($info)) {
-        $e->setContent(htmlspecialchars($info));
+        $e->setContent($info);
       }
 
       return FALSE;

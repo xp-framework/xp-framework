@@ -46,9 +46,8 @@
      * @return  &mixed content, formatted, if necessary
      */
     function &_contentFormat(&$content) {
-      switch (gettype($content)) {
-        case 'boolean': return $content ? 'true' : 'false';
-        case 'string': return htmlspecialchars($content);
+      if (is_bool($content)) {
+        return $content ? 'true' : 'false';
       }
       return $content;
     }
