@@ -23,7 +23,6 @@
      */
     function __construct($dn) {
       $this->dn= array_change_key_case($dn, CASE_UPPER);
-      
     }
   
     /**
@@ -34,7 +33,7 @@
      * /C=DE/ST=Germany/L=Karlsruhe/O=Foo/OU=Bar/CN=Foo, Baz Bar/EMAIL=mail@example.com
      * </pre>
      *
-     * @access  public 
+     * @access  public
      * @return  string
      */
     function getName() {
