@@ -7,7 +7,6 @@
   /**
    * Connection listener
    *
-   * @model    abstract
    * @see      xp://peer.irc.IRCConnection#addListener
    * @purpose  Abstract base class
    */
