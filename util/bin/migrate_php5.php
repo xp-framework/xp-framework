@@ -107,21 +107,6 @@ __;
         $tok= array(T_NONE, '');
         break;
         
-      case 'define':
-        while (T_CONSTANT_ENCAPSED_STRING !== $tok[0]) $tok= $t->getNextToken();
-        $name= $tok[1];
-        do {
-          $tok= $t->getNextToken();
-        } while (T_WHITESPACE === $tok[0] || ',' == $tok[1]);
-        $constants[$name]= '';
-        while (')' !== $tok[1]) {
-          $constants[$name].= $tok[1];
-          $tok= $t->getNextToken();
-        }
-        $tok= $t->getNextToken(); // Swallow ";"
-        $tok= array(T_NONE, '');
-        break;
-      
       case 'parent':        // Object no longer has constructors
         $parentcall= '';
         $remove= FALSE;
@@ -168,15 +153,6 @@ __;
           unset($out[sizeof($out) - 2]);
         }
         $class= sizeof($out)- 1;
-        
-        if (!empty($constants)) {
-          $out[]= "\n    const\n";
-          $const= '';
-          foreach ($constants as $name => $tok) {
-            $const.= '      '.preg_replace('/^'.$classname[1].'_?/i', '', substr($name, 1, -1)).' = '.$tok.",\n";
-          }
-          $out[]= substr($const, 0, -2).";\n";
-        }
         $tok= array(T_NONE, '');
         break;
         
