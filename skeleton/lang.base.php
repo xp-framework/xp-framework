@@ -251,7 +251,7 @@
   }
   // }}}
 
-  // {{{ proto void implements(string interface [, string interface [, ...]]) 
+  // {{{ proto void implements(string file, string interface [, string interface [, ...]]) 
   //     Defines that the class this is called in implements certain interface(s)
   function implements() {
     $class= strtolower(substr(basename(func_get_arg(0)), 0, -10));
