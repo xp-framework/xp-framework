@@ -1,4 +1,9 @@
 <?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
   define('LOG_TYPE_INFO',    'info');
   define('LOG_TYPE_WARN',    'warn');
   define('LOG_TYPE_ERROR',   'error');

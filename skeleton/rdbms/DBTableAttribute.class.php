@@ -1,4 +1,9 @@
 <?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
     define('DB_ATTRTYPE_BINARY',        0x0000);                       
     define('DB_ATTRTYPE_BIT',            0x0001);                           
     define('DB_ATTRTYPE_CHAR',            0x0002);                          

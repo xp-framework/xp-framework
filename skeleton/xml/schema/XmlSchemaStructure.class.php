@@ -1,4 +1,9 @@
 <?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
   define('WSDL_TYPE_COMPLEX',   'complex');
   define('WSDL_TYPE_SIMPLE',    'simple');
   

@@ -1,4 +1,9 @@
 <?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
   define('HTTP_METHOD_GET',     'GET');
   define('HTTP_METHOD_POST',    'POST');
   define('HTTP_METHOD_HEAD',    'HEAD');
