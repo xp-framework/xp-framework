@@ -4,19 +4,15 @@
  * $Id$ 
  */
 
-  uses(
-    'io.dba.DBAFile'
-  );
+  uses('io.dba.DBAFile');
 
   /**
    * WebDav property storage with DBA files
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://org.webdav.propertystorage.PropertyStorageProvider
+   * @purpose  Property storage
    */
   class DBAFilePropertyStorage extends DBAFile {
-  
     var
       $properties= array();
     
@@ -37,7 +33,14 @@
         $this->close();
       }
     }
-    
+
+    /**
+     * Set all properties for specific uri
+     *
+     * @access  public
+     * @param   string uri The URI
+     * @param   org.webdav.WebdavProperty[] properties
+     */
     function setProperties($uri, $properties) {
       $uri= 'PROP:'.$uri;
       $this->open(DBO_WRITE);
@@ -52,9 +55,9 @@
     /**
      * Read all properties for specific uri
      *
-     * @access public
-     * @param  string  uri The URI
-     * @return array[] org.webdav.WebdavProperty
+     * @access  public
+     * @param   string uri The URI
+     * @return  org.webdav.WebdavProperty[]
      */
     function getProperties($uri) {
       if (!isset($this->properties[$uri])) {
@@ -69,11 +72,11 @@
     /**
      * Sets a property for a specific URI
      *
-     * @access public
-     * @param  string uri The URI
-     * @param  org.webdav.WebdavProperty property The WebDav property (use NULL to remove property)
+     * @access  public
+     * @param   string uri The URI
+     * @param   &org.webdav.WebdavProperty property The WebDav property (use NULL to remove property)
      */
-    function setProperty($uri, $property) {
+    function setProperty($uri, &$property) {
       $name= $property->getName();
       $properties= $this->getProperties($uri);
       if ($property !== NULL) {
@@ -87,12 +90,12 @@
     /**
      * Retrieve property for specific URI
      *
-     * @access public
-     * @param  string uri  The URI
-     * @param  string name The property's name
-     * @return org.webdav.WebdavProperty
+     * @access  public
+     * @param   string uri  The URI
+     * @param   string name The property's name
+     * @return  &org.webdav.WebdavProperty
      */
-    function getProperty($uri, $name) {
+    function &getProperty($uri, $name) {
       $properties= $this->getProperties($uri);
       return isset($properties[$name]) ? $properties[$name] : NULL;
     }
