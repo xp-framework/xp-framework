@@ -40,7 +40,7 @@
      */
     function check($value) { 
       foreach ($value as $v) {
-        if (!preg_match($pattern, $v)) return 'nomatch';
+        if (!preg_match($this->pattern, $v)) return 'nomatch';
       }    
     }
   }
