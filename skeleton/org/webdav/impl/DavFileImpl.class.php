@@ -66,7 +66,6 @@
       // It's a directory:
       if (is_dir($realpath)) {
         $f= &new Folder($realpath);
-        // add object as xml
         try(); {
           $o= &new WebdavObject(
             $root.$path,
@@ -86,9 +85,8 @@
           $this->c->debug(get_class($this).'::_recurse', 'Exeption ', $e->message);
         }
         
-        // add entries
+        // Read subdirectories
         $maxdepth--;
-        // Add parentdir if it's a subdir
         if (substr($path, -1) != '/' && !empty($path)) $path.= '/';
         while ($maxdepth >= 0 && $entry= $f->getEntry()) {
           $this->_recurse($request, $response, $path.$entry, $maxdepth);
@@ -96,7 +94,8 @@
         $f->close();
         return;
       }
-      // Its a File
+      
+      // It's a File
       $f= &new File($realpath);
       $o= &new WebdavObject(
         $root.$path,
@@ -107,16 +106,13 @@
         new Date(filemtime($realpath))
       );
 
-      $eProps= $this->propStorage->getProperties(substr($f->uri, strlen($this->base)));
-     
-      foreach ($eProps as $key => $property) {
-        $o->addProperty($property);
-      }
-
+      // Add properties to WebdavObject
+      $eProps= $this->propStorage->getProperties($path);
+      foreach ($eProps as $key => $property) $o->addProperty($property);
       if (isset($eProps['D:resourcetype'])) $o->setResourceType($eProps['D:resourcetype']->value);
 
       // lock info:
-      $lockinfo= $this->getLockInfo(substr($f->uri, strlen($this->base)));
+      $lockinfo= $this->getLockInfo($path);
 
       if (!empty($lockinfo)) {
         $o->addLockInfo(
