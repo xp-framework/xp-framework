@@ -339,7 +339,7 @@
         // Reply to PINGs immediately
         if ('PING :' == substr($r, 0, 6)) {
           $this->writeln('PONG %s', substr($r, 6));
-          $this->notify('ping', substr($r, 6));
+          $this->notify('pings', substr($r, 6));
           continue;
         }
 
