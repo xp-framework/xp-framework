@@ -35,8 +35,8 @@
      * @param   array fields
      */
     function __construct($handle, $fields) {
-      $this->handle=  $handle;
-      $this->fields=  $fields;
+      $this->handle= $handle;
+      $this->fields= $fields;
       parent::__construct();
     }
     
@@ -52,13 +52,16 @@
     function seek($offset) { }
 
     /**
-     * Fetch a row (iterator function)
+     * Iterator function. Returns a rowset if called without parameter,
+     * the fields contents if a field is specified or FALSE to indicate
+     * no more rows are available.
      *
      * @model   abstract
      * @access  public
-     * @return  array rowset or FALSE to indicate all rows have been fetched
+     * @param   string field default NULL
+     * @return  mixed
      */
-    function next() { }
+    function next($field= NULL) { }
     
     /**
      * Close resultset and free result memory
