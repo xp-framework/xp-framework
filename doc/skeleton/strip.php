@@ -36,11 +36,6 @@
         // Strip comments
         break;
         
-      case T_CONSTANT_ENCAPSED_STRING:
-        // Copy "as-is"
-        $str.= $tok[1];
-        break;
-        
       case T_WHITESPACE:
         // Reduce whitespace
         $str.= ' ';
