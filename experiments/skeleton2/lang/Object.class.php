@@ -65,7 +65,7 @@
      * @see     xp://lang.XPClass
      */
     public final function getClass() {
-      return new XPClass($this);
+      return XPClass::forInstance($this);
     }
 
     /**
