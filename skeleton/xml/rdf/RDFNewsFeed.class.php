@@ -252,7 +252,7 @@
       if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_ENTITIES));
       $cdata= preg_replace(
         '/&#([0-9]+);/me', 
-        'chr("\1")', 
+        'chr(\'\1\')', 
         strtr(trim($this->_objs[$this->_cnt+ 1]->content), $trans)
       );
       
