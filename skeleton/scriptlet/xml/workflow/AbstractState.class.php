@@ -4,12 +4,7 @@
  * $Id$ 
  */
 
-  define('HANDLER_SETUP',       'setup');
-  define('HANDLER_FAILED',      'failed');
-  define('HANDLER_INITIALIZED', 'initialized');
-  define('HANDLER_ERRORS',      'errors');
-  define('HANDLER_SUCCESS',     'success');
-  define('HANDLER_RELOADED',    'reloaded');
+  uses('scriptlet.xml.workflow.Handler');
 
   /**
    * Represents a single state
@@ -43,7 +38,7 @@
     function hasHandlers() {
       return !empty($this->handlers);
     }
-         
+    
     /**
      * Set up this state
      *
@@ -100,14 +95,21 @@
               // Handler was successfully set up, register to session
               $handler->setAttribute('status', HANDLER_SETUP);
               $request->session->putValue($identifier, $this->handlers[$i]->values);
-              $handler->addChild(Node::fromArray($this->handlers[$i]->values, 'values'));
+              $handler->addChild(Node::fromArray($this->handlers[$i]->values[HVAL_PERSISTENT], 'values'));
+              foreach (array_keys($this->handlers[$i]->values[HVAL_FORMPARAM]) as $key) {
+                $response->setFormValue($key, $this->handlers[$i]->values[HVAL_FORMPARAM][$key]);
+              }
+              
               continue;
             }
 
             // Load handler values from session
             $this->handlers[$i]->values= $request->session->getValue($identifier);
             $handler->setAttribute('status', HANDLER_INITIALIZED);
-            $handler->addChild(Node::fromArray($this->handlers[$i]->values, 'values'));
+            $handler->addChild(Node::fromArray($this->handlers[$i]->values[HVAL_PERSISTENT], 'values'));
+            foreach (array_keys($this->handlers[$i]->values[HVAL_FORMPARAM]) as $key) {
+              $response->setFormValue($key, $this->handlers[$i]->values[HVAL_FORMPARAM][$key]);
+            }
 
             // If the handler is not active, ask the next handler
             if (!$this->handlers[$i]->isActive($request)) continue;

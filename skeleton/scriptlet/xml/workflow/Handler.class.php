@@ -4,6 +4,18 @@
  * $Id$ 
  */
 
+  // Handler stati
+  define('HANDLER_SETUP',       'setup');
+  define('HANDLER_FAILED',      'failed');
+  define('HANDLER_INITIALIZED', 'initialized');
+  define('HANDLER_ERRORS',      'errors');
+  define('HANDLER_SUCCESS',     'success');
+  define('HANDLER_RELOADED',    'reloaded');
+
+  // Value storages
+  define('HVAL_PERSISTENT',  0x0000);
+  define('HVAL_FORMPARAM',   0x0001);
+
   /**
    * Handler
    *
@@ -13,7 +25,7 @@
   class Handler extends Object {
     var
       $wrapper  = NULL,
-      $values   = array(),
+      $values   = array(HVAL_PERSISTENT => array(), HVAL_FORMPARAM => array()),
       $errors   = array(),
       $name     = '';
 
@@ -39,7 +51,7 @@
         $this->name,
         $this->wrapper ? $this->wrapper->getClassName() : '(null)'
       );
-      foreach (array_keys($this->values) as $key) {
+      foreach (array_keys($this->values[HVAL_PERSISTENT]) as $key) {
         $s.= sprintf("[%-20s] %s\n", $key, xp::typeOf($this->values[$key]));
       }
       return $s.'}';
@@ -83,7 +95,18 @@
      * @param   mixed value
      */
     function setValue($name, $value) {
-      $this->values[$name]= $value;
+      $this->values[HVAL_PERSISTENT][$name]= $value;
+    }
+
+    /**
+     * Set a form value by a specified name
+     *
+     * @access  public
+     * @param   string name
+     * @param   mixed value
+     */
+    function setFormValue($name, $value) {
+      $this->values[HVAL_FORMPARAM][$name]= $value;
     }
     
     /**
@@ -93,7 +116,17 @@
      * @return  array
      */
     function getValues() {
-      return $this->values;
+      return $this->values[HVAL_PERSISTENT];
+    }
+
+    /**
+     * Return all form values
+     *
+     * @access  public
+     * @return  array
+     */
+    function getFormValues() {
+      return $this->values[HVAL_FORMPARAM];
     }
     
     /**
@@ -105,7 +138,25 @@
      * @return  mixed value
      */
     function getValue($name, $default= NULL) {
-      return isset($this->values[$name]) ? $this->values[$name] : $default;
+      return (isset($this->values[HVAL_PERSISTENT][$name]) 
+        ? $this->values[HVAL_PERSISTENT][$name] 
+        : $default
+      );
+    }
+    
+    /**
+     * Retrieve a form value by its name
+     *
+     * @access  public
+     * @param   string name
+     * @param   mixed default default NULL
+     * @return  mixed value
+     */
+    function getFormValue($name, $default= NULL) {
+      return (isset($this->values[HVAL_FORMPARAM][$name]) 
+        ? $this->values[HVAL_FORMPARAM][$name] 
+        : $default
+      );
     }
 
     /**
