@@ -30,7 +30,9 @@
    */
   class Properties extends Object {
     protected
-      $_file    = '',
+      $_file    = '';
+
+    public
       $_data    = NULL;
       
     /**
@@ -47,22 +49,24 @@
     /**
      * Create a property file from an io.File object
      *
+     * @model   static
      * @access  public
      * @param   &io.File file
      * @return  &util.Properties
      */
-    public function fromFile(File $file) {
+    public static function fromFile(File $file) {
       return new Properties($file->getURI());
     }
 
     /**
      * Create a property file from a string
      *
+     * @model   static
      * @access  public
      * @param   string str
      * @return  &util.Properties
      */
-    public function fromString($str) {
+    public static function fromString($str) {
       with ($prop= new Properties(NULL)); {
         $section= NULL;
         $prop->_data= array();
