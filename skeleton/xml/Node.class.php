@@ -159,7 +159,7 @@
      * @return  string XML
      */
     function getSource($indent= TRUE, $inset= '') {
-      $xml= $inset.'<'.$this->name;
+      $xml= ($indent ? $inset : '').'<'.$this->name;
       $content= is_a($this->content, 'PCData') ? $this->content->pcdata : htmlspecialchars($this->content);
       
       // Attribute
@@ -187,11 +187,11 @@
       
       // Go through children
       if (isset($this->children)) {
-        $xml.= "\n";
+        if ($indent) $xml.= "\n";
         foreach (array_keys($this->children) as $key) {
           $xml.= $this->children[$key]->getSource($indent, $inset.'  ');
         }
-        if (!$indent) $xml.= $inset;
+        if ($indent) $xml.= $inset;
       }
       
       return $xml.($indent ? $inset : '').'</'.$this->name.">\n";
