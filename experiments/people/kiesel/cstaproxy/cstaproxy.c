@@ -4,7 +4,7 @@
  */
 
 #include <stdlib.h>
-#include <stdio.h>    	/* for printf */
+#include <stdio.h>		/* for printf */
 #include <stdarg.h>		/* va_* */
 
 /* Socket */
@@ -20,6 +20,14 @@
 #include "csta_error.h"
 #include "csta_network.h"
 
+/**
+ * Performs a regular expression match.
+ *
+ * @access  public
+ * @param   char *haystack
+ * @param	char *needle
+ * @return  bool matches
+ */
 int regex_match (char *haystack, char *needle) {
 	regex_t *rctx;
 	regmatch_t *pmatch[2];
@@ -52,6 +60,14 @@ int regex_match (char *haystack, char *needle) {
 	return TRUE;
 }
 
+/**
+ * The main program
+ *
+ * @access  public
+ * @param   int argc
+ * @param   int argv
+ * @return  int 
+ */
 int main(int argc, char **argv) {
 	int hListen;
 	

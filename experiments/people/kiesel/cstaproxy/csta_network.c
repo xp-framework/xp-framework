@@ -1,3 +1,8 @@
+/* This program is part of the XP framework
+ *
+ * $Id$
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -14,6 +19,14 @@
 #include "csta_network.h"
 #include "csta_connection.h"
 
+/**
+ * Creates a new listening socket
+ *
+ * @access  public
+ * @param   char *addr
+ * @param	int port
+ * @return  int socket
+ */
 int create_listening_socket (char *addr, int port) {
 	int hSocket;
 	struct sockaddr_in my_addr;
@@ -44,6 +57,15 @@ int create_listening_socket (char *addr, int port) {
 	return hSocket;
 }
 
+/**
+ * Creates a proxy_connection if a client wants to connect
+ *
+ * @access  public
+ * @param   fd_set *master
+ * @param	connection_context *ctx
+ * @param	int hListen
+ * @return  int newsocket
+ */
 int create_proxy_connection(fd_set *master, connection_context *ctx, int hListen) {
 	struct sockaddr_in remoteaddr;
 	proxy_connection *conn;
@@ -69,6 +91,15 @@ int create_proxy_connection(fd_set *master, connection_context *ctx, int hListen
 	return newfd;
 }
 
+/**
+ * Opens a server socket and associates it with the client
+ *
+ * @access  public
+ * @param   fd_set *master
+ * @param	int *fdMax
+ * @param	proxy_connection *conn
+ * @return  bool success
+ */
 int _open_server_connection(fd_set *master, int *fdMax, proxy_connection *conn) {
 	/* Open a socket to the server and connect it to the client */
 	int hSocket;
@@ -105,6 +136,17 @@ int _open_server_connection(fd_set *master, int *fdMax, proxy_connection *conn) 
 	return 1;
 }
 
+/**
+ * Shutdown a connection and all associated. Also frees the 
+ * proxy_connection structure and removes it from the 
+ * connection_context.
+ *
+ * @access  private
+ * @param   fd_set master
+ * @param	connection_context *
+ * @param	int hsocket
+ * @return  int success
+ */
 int _shutdown_connections(fd_set *master, connection_context *ctx, int hSocket) {
 	proxy_connection *conn;
 
@@ -131,6 +173,18 @@ int _shutdown_connections(fd_set *master, connection_context *ctx, int hSocket) 
 	return 1;
 }
 
+/**
+ * Process clients command data
+ *
+ * @access  public
+ * @param   fd_set *
+ * @param	int fdMax
+ * @param	connection_context *
+ * @param	int hSocket
+ * @param	char *buf
+ * @param	int length
+ * @return  int processed
+ */
 int _process_client_command(fd_set *master, int *fdMax, connection_context *ctx, int hSocket, char *buf, int length) {
 	proxy_connection *conn;
 	
@@ -154,6 +208,16 @@ int _process_client_command(fd_set *master, int *fdMax, connection_context *ctx,
 	return 0;
 }
 
+/**
+ * Process any client data
+ *
+ * @access  public
+ * @param   fd_set*
+ * @param	int fdMax
+ * @param	connection_context *
+ * @param	int socket
+ * @return  int result
+ */
 int process_client(fd_set *master, int *fdMax, connection_context *ctx, int hSocket) {
 	char buf[256];
 	int nbytes;
@@ -190,6 +254,8 @@ int process_client(fd_set *master, int *fdMax, connection_context *ctx, int hSoc
 			/* Not authenticated! */
 			LOG("Non-authorized request.");
 			send (conn->hClient, "-ERR Not authenticated!\n", 24, 0);
+			send (conn->hClient, " Authenticate by:\n", 18, 0);
+			send (conn->hClient, " AUTHENTICATE <username> <password>\n", 36, 0);
 			return 1;
 		}
 
@@ -213,6 +279,13 @@ int process_client(fd_set *master, int *fdMax, connection_context *ctx, int hSoc
 	return 1;
 }
 
+/**
+ * Main socket loop
+ *
+ * @access  public
+ * @param   int listeningsocket
+ * @return  int
+ */
 int select_loop(int hListen) {
 	fd_set	master, read_fs;
 	int fdMax, fdNew, i;
