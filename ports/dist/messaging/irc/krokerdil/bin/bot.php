@@ -2,7 +2,7 @@
   require('lang.base.php');
   xp::sapi('cli');
   uses(
-    'peer.irc.IRCConnection', 
+    'peer.irc.IRCConnection',
     'util.Properties',
     'util.log.Logger',
     'util.log.FileAppender',
@@ -29,6 +29,10 @@
     ), 
     $config->readString('irc', 'server')
   );
+  
+  // Reset socket timeout to a better value for IRC (this
+  // prevents IOExceptions being thrown over and over again)
+  $c->sock->setTimeout(120);
   
   // Check if debug is wanted and *where* it's wanted
   if ($p->exists('debug')) {
