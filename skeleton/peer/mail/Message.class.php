@@ -445,7 +445,7 @@
       
       $t= strtok($str, "\n\r");
       while ($t) {
-        if ("\t" != $t{0}) list($k, $t)= explode(': ', $t, 2);
+        if ("\t" != $t{0}) list($k, $t)= @explode(': ', $t, 2);
         
         // DEBUG printf("[%-30s] %s\n", ucfirst($k), $t);
         switch (ucfirst($k)) {
