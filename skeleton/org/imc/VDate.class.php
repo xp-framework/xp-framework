@@ -4,6 +4,11 @@
  * $Id$
  */
 
+  /**
+   * VDate
+   *
+   * @purpose  Date wrapper for VCalendar
+   */
   class VDate extends Object {
     var
       $name=      NULL,
@@ -11,32 +16,36 @@
       $timezone=  NULL;
 
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &mixed arg
      */    
-    function __construct() {
-      $args= func_get_args();
-      
-      if (0 == count ($args))
-        return FALSE;
-      
-      if (is_object ($args[0])) {
-        $this->date= &new Date (VFormatParser::decodeDate ($args[0]->_value));
-        $this->timezone= $args[0]->tzid;
-        return TRUE;
+    function __construct(&$arg) {
+      if (is_object($arg)) {
+        $this->date= &new Date (VFormatParser::decodeDate($arg->_value));
+        $this->timezone= $arg->tzid;
+      } else {
+        $this->date= &new Date (VFormatParser::decodeDate($arg));
       }
-      
-      $this->date= &new Date (VFormatParser::decodeDate ($args[0]));
-      return TRUE;
     }
     
+    /**
+     * Create a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
     function toString() {
       return $this->date->toString ('Ymd').'T'.$this->date->toString ('His').'Z';
     }
     
+    /**
+     * Export this VDate
+     *
+     * @access  public
+     * @return  string
+     */
     function export() {
       return ($this->name.
         (NULL !== $this->timezone ? ';TZID='.$this->timezone : '').
