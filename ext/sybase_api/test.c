@@ -120,10 +120,11 @@ int main(int argc, char **argv)
                             printf(HLINE);
                             for (i= 0; i < resultset->fields; i++) {
                                 printf(
-                                    "     field #%d: datatype %3d [%-20s] name '%s'\n",
+                                    "     field #%d: datatype %3d [%-20s] name (%d)'%s'\n",
                                     i,
                                     resultset->types[i],
                                     sybase_nameofdatatype(resultset->types[i]),
+                                    resultset->dataformat[i].namelen,
                                     resultset->dataformat[i].name
                                 );
                             }
