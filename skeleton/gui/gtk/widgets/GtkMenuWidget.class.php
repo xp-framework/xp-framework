@@ -8,6 +8,11 @@
   define('MENU_WANT_LEFTCLICK',     1);
   define('MENU_WANT_RIGHTCLICK',    3);
 
+  /**
+   * Menu
+   *
+   * @purpose  Wrapper for GtkMenu
+   */
   class GtkMenuWidget extends Object {
     var
       $menu   = NULL;
