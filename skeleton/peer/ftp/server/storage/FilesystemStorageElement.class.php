@@ -47,12 +47,13 @@
      * @param   string target
      * @return  bool TRUE to indicate success
      */
-    function rename($target) { 
-      return $this->f->move(
-        rtrim($this->f->getPath(), DIRECTORY_SEPARATOR).
-        DIRECTORY_SEPARATOR.
-        $target
-      );
+    function rename($target) {
+      $path= (DIRECTORY_SEPARATOR == $target{0}
+        ? substr($this->f->getPath(), 0, strrpos($this->f->getPath(), dirname($target)))
+        : $this->f->getPath().DIRECTORY_SEPARATOR
+      ).$target;
+            
+      return $this->f->move($path);
     }
 
     /**
