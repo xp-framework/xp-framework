@@ -78,7 +78,8 @@
           $t= 'integer';
           break;
           
-        case 'float'.
+        case 'float':
+        case 'double':
           $t= 'double';
           break;
           
