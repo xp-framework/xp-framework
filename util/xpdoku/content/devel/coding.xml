@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<document title="XP::About::Introduction">
+<document title="XP::Development::Introduction">
   <main>
     <content>
       <title>Coding standards</title>
       <editor>$Id$</editor>
       
       <para>
-        <caption>Warum Coding Standards?</caption>
+        <caption>Why Coding Standards?</caption>
         <text>
           <quote>
           Code conventions are important to programmers for a number of reasons: 
