@@ -19,12 +19,13 @@
      * Connect
      *
      * @access  public  
+     * @param   bool reconnect default FALSE
      * @return  bool success
      * @throws  rdbms.SQLConnectException
      */
-    function connect() {
+    function connect($reconnect= FALSE)) {
       if (is_resource($this->handle)) return TRUE;  // Already connected
-      if (FALSE === $this->handle) return FALSE;    // Previously failed connecting
+      if (!$reconnect && FALSE === $this->handle) return FALSE;    // Previously failed connecting
 
       if ($this->flags & DB_PERSISTENT) {
         $this->handle= mysql_pconnect(
