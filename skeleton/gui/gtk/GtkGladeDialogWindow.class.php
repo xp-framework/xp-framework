@@ -14,6 +14,17 @@
   class GtkGladeDialogWindow extends GtkGladeApplication {
     var
       $initialized  = FALSE;
+
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   string gladefile
+     * @param   string windowname
+     */
+    function __construct($gladefile, $windowname) {
+      parent::__construct($p= NULL, $gladefile, $windowname);
+    }
       
     /**
      * Creates the main window
