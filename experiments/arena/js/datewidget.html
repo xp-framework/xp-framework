@@ -14,7 +14,7 @@
     <script language="JavaScript" src="skeleton/lang/String.adaptor.js"></script>
     <script language="JavaScript" src="skeleton/util/Date.adaptor.js"></script>
     <script language="JavaScript">
-      function changeDate(object, days) {
+      function changeDate(object, months, days) {
         var date= null;
 
         try {
@@ -22,13 +22,40 @@
         } catch (Exception) {
           date= new Date();
         }
-        object.value= date.add(0, 0, days).format('%d.%m.%Y');
+        object.value= date.add(0, months, days).format('%d.%m.%Y');
         
         document.forms.select.debug.value= date.add(0, 0, days).toString();
       }
+
+      function handleKeyPress(e) {
+        switch (e.keyCode) {
+          case 33:  // Page up
+            changeDate(document.forms.select.date, 1, 0);
+            break;
+
+          case 34:  // Page down
+            changeDate(document.forms.select.date, -1, 0);
+            break;
+
+          case 38:  // Up
+            changeDate(document.forms.select.date, 0, 1);
+            break;
+
+          case 40:  // Down
+            changeDate(document.forms.select.date, 0, -1);
+            break;
+          
+          default:
+            return true;
+        }
+        
+        return false; // Indicate we processed this
+      }
     </script>
   </head>
-  <body onload="changeDate(document.forms.select.date, 0)">
+  <body 
+   onload="changeDate(document.forms.select.date, 0, 0); document.forms.select.date.onkeypress= handleKeyPress"
+  >
     <form name="select">
       <table>
         <tr>
@@ -37,18 +64,18 @@
              type="text" 
              name="date" 
              value="" 
-             onBlur="changeDate(document.forms.select.date, 0)"
+             onBlur="changeDate(document.forms.select.date, 0, 0)"
              size="20"
             />
           </td>
           <td>
             <a 
-             onclick="changeDate(document.forms.select.date, 1)" 
+             onclick="changeDate(document.forms.select.date, 0, 1)" 
              href="#"
             ><img border="0" src="image/date_plus.gif"/></a>
             <br/>
             <a 
-             onclick="changeDate(document.forms.select.date, -1)" 
+             onclick="changeDate(document.forms.select.date, 0, -1)" 
              href="#"
             ><img border="0" src="image/date_minus.gif"/></a>
           </td>
