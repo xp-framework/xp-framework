@@ -5,7 +5,11 @@
  */
 
   uses('xml.soap.SOAPNode');
-  
+
+  /**
+   * Represents a vector as serialized by Apache-SOAP
+   *
+   */  
   class SOAPVector extends Object {
     var $_vector;
     

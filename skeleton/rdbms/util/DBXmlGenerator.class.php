@@ -6,15 +6,33 @@
 
   uses('rdbms.DBTable', 'xml.Tree', 'lang.System');
   
+  /**
+   * Generate an XML representation of a database table
+   *
+   * @see   xp://rdbms.DBTable
+   */
   class DBXmlGenerator extends Object {
     var
       $doc= NULL;
       
+    /**
+     * Constructor
+     *
+     * @access  public
+     */
     function __construct() {
       $this->doc= &new Tree();
       parent::__construct();
     }
-    
+
+    /**
+     * Create XML from a DBTable
+     *
+     * @model   static
+     * @access  public
+     * @param   &rdbms.DBTable table
+     * @return  &rdbms.util.DBXmlGenerator object
+     */    
     function &createFromTable(&$table) {
       if (!is_a($table, 'DBTable')) {
         return throw(new IllegalArgumentException('Argument table is not a DBTable object'));
@@ -61,7 +79,13 @@
       
       return $g;
     }
-    
+
+    /**
+     * Get XML source
+     *
+     * @access  public
+     * @return  string xml representation
+     */    
     function getSource() {
       return $this->doc->getSource(FALSE);
     }

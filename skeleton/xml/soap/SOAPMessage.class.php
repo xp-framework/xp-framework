@@ -1,26 +1,40 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
  * $Id$
  */
 
-  uses('xml.Tree');
-  uses('xml.Node');
-  uses('xml.soap.SOAPNode');
-  uses('xml.soap.SOAPFault');
+  uses(
+    'xml.Tree',
+    'xml.Node',
+    'xml.soap.SOAPNode',
+    'xml.soap.SOAPFault'
+  );
   
+  /**
+   * SOAP Message
+   *
+   * @see   xp://xml.Tree
+   */
   class SOAPMessage extends Tree {
-    var $body;
-    var $namespace= 'ctl';
-    var $encoding= XML_ENCODING_DEFAULT;
-    
-    var $nodeType= 'SOAPNode';
+    var 
+      $body         = '',
+      $namespace    = 'ctl',
+      $encoding     = XML_ENCODING_DEFAULT,
+      $nodeType     = 'SOAPNode';
 
+    /**
+     * Create a message
+     *
+     * @access  public
+     * @param   string action
+     * @param   string method
+     */
     function create($action, $method) {
       $this->action= $action;
       $this->method= $method;
 
-      $this->root= new Node(array(
+      $this->root= &new Node(array(
         'name'          => 'SOAP-ENV:Envelope',
         'attribute'     => array(
           'xmlns:SOAP-ENV'              => 'http://schemas.xmlsoap.org/soap/envelope/', 

@@ -11,14 +11,25 @@
     'xml.soap.types.SOAPNamedItem'
   );
 
+  /**
+   * SOAP Node
+   *
+   * @see   xp://xml.Node
+   */
   class SOAPNode extends Node {
     var $_tmap, $_cmap;
     var $namespace= 'ctl';
     
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   array params default NULL
+     */
     function __construct($params= NULL) {
-      Node::__construct($params);
+      parent::__construct($params);
       
-      $this->_tmap= new StdClass();             // Typnamen-Mapping
+      $this->_tmap= new StdClass();
       $this->_tmap->export= array(                      
         'double'        => 'float',
         'integer'       => 'int'

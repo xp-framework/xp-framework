@@ -6,9 +6,19 @@
 
   uses('xml.soap.SOAPNode');
   
+  /**
+   * Represents a hashmap as serialized by Apache-SOAP
+   *
+   */
   class SOAPHashMap extends Object {
     var $_hash;
     
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   array params
+     */
     function __construct($params) {
       $this->_hash= $params;
       $this->item= &new SOAPNode(array(

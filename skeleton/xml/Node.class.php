@@ -7,16 +7,17 @@
 
   uses('xml.XML');
 
+  /**
+   * Represents a node
+   *
+   * @see   xp://xml.Tree#addChild
+   */
   class Node extends XML {
     var 
       $name,
       $attribute,
       $content;
-    
-    function __construct($params= NULL) {
-      XML::__construct($params);
-    }
-    
+
     function _recurseArray(&$elem, $arr) {
       $nodeType= get_class($this);
       foreach ($arr as $field=> $value) {

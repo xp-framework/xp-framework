@@ -7,6 +7,10 @@
 
   uses('xml.XML');
   
+  /**
+   * XML Parser
+   *
+   */
   class XMLParser extends XML {
     var
       $parser,

@@ -2,7 +2,6 @@
 /* This class is part of the XP framework
  *
  * $Id$
- *
  */
 
   uses(
@@ -10,6 +9,11 @@
     'xml.XSLProcessor'
   );
   
+  /**
+   * XPath class
+   *
+   * @ext   xslt
+   */
   class XPath extends XML {
     var $_proc= NULL;
     

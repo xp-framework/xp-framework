@@ -6,10 +6,22 @@
 
   uses('rdbms.DBAdapter');
   
+  /**
+   * Adapter for sybase
+   *
+   * @see   xp://rdbms.DBAdapter
+   * @see   xp://rdbms.sybase.SPSybase
+   */
   class SybaseDBAdapter extends DBAdapter {
     var
       $map= array();
       
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   &Object conn database connection
+     */
     function __construct(&$conn) {
       $this->map= array(
         'binary'     => DB_ATTRTYPE_BINARY, 
@@ -44,6 +56,12 @@
       parent::__construct($conn);
     }
     
+    /**
+     * Get databases
+     *
+     * @access  public
+     * @return  string[] databases
+     */
     function getDatabases() {
       $dbs= array();
       try(); {
@@ -58,6 +76,13 @@
       return $dbs;
     }
     
+    /**
+     * Get tables by database
+     *
+     * @access  public
+     * @param   string database
+     * @return  rdbms.DBTable[] array of DBTable objects
+     */
     function getTables($database) {
       $t= array();
       try(); {
@@ -109,6 +134,13 @@
       return $t;
     }
     
+    /**
+     * Get table by name
+     *
+     * @access  public
+     * @param   string table
+     * @return  rdbms.DBTable a DBTable object
+     */
     function getTable($table) {
       $t= &new DBTable($table);
       try(); {
