@@ -27,8 +27,9 @@
   /**
    * Makes a flat copy of the given directory
    *
-   * @param string base basedir
-   * @param string dest destdir
+   * @param   string base basedir
+   * @param   string dest destdir
+   * @param   string gBase
    */  
   function recurseCopyFlat($base, $dest, $gBase) {
     $classPrefix= getXPClassName ($base, $gBase);
@@ -73,7 +74,7 @@
     do {
       if (!empty ($sect))
         $packages[$sect]= $prop->readSection($sect);
-    } while (false !== ($sect= $prop->getNextSection()));
+    } while (FALSE !== ($sect= $prop->getNextSection()));
   }
 
   if (!isset ($packages['core'])) {

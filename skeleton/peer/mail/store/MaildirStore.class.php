@@ -323,6 +323,7 @@
         try(); {
           $msg= &$this->_readMessageRaw($filename);
         } if (catch ('IOException', $e)) {
+        
           // Ignore any errors
           continue;
         }

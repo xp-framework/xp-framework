@@ -13,7 +13,7 @@
    * This class handles all neccessary file and directory operations
    * for doing reliable spool operations.
    *
-   * @purpose Reliable spool directory class
+   * @purpose   Reliable spool directory class
    */    
   class SpoolDirectory extends Object {
     var
@@ -28,7 +28,7 @@
     /**
      * Creates a spooldirectory object
      *
-     * @param string root Root of the spool hierarchy
+     * @param   string root Root of the spool hierarchy
      */    
     function __construct($root) {
       $this->root= $root;

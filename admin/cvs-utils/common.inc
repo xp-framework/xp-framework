@@ -12,11 +12,11 @@
   /**
    * Encodes header according to RFC 2045, 6.7
    *
-   * @access public
-   * @param	 string hdr header to encode
-   * @param  string charset default 'iso-8859-1' the charset in which to encode
-   * @return string quoted-printable representation
-   * @see    rfc://2045#6.7
+   * @access  public
+   * @param	  string hdr header to encode
+   * @param   string charset default 'iso-8859-1' the charset in which to encode
+   * @return  string quoted-printable representation
+   * @see     rfc://2045#6.7
    */
   function qp_encode_header($hdr, $charset= 'iso-8859-1') {
     $r= array(' ' => '_');
@@ -30,11 +30,12 @@
    * Retrieve the real name for the given username. The realname must be
    * available through the /etc/passwd-file.
    *
-   * @access public
-   * @param string username
-   * @return string realname;
+   * @access  public
+   * @param   string sysname
+   * @return  string realname;
    */
   function getUsername($sysname) {
+  
     // Try to get realname from password database
     // This source assumes CVS users are local system users and listed in /etc/passwd
     $fd= fopen('/etc/passwd', 'r');
@@ -54,18 +55,17 @@
   }
 
   /**
-   * (Insert method's description here)
+   * Retrieve last tag revision
    *
-   * @access  
-   * @param   
-   * @return  
+   * @access  public
+   * @param   string file
+   * @param   string tagName
+   * @param   string operation
+   * @return  string
    */  
   function getLastTagRevision($file, $tagName, $operation) {
     if ('add' == $operation)
       return 'ADD';
-    
-    //if ('del' == $operation)
-    //  return 'DEL';
     
     // For simplicity we assume the info is in the first 4096 bytes
     $fh= fopen ($file.',v', 'r');

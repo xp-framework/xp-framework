@@ -264,10 +264,10 @@
      * Enables or disables the passive ftp mode. Call this after the inital
      * login.
      *
-     * @access public
-     * @param bool enable enable or disable passive mode
-     * @return bool success
-     * @throws IOException
+     * @access  public
+     * @param   bool enable enable or disable passive mode
+     * @return  bool success
+     * @throws  IOException
      */
     function setPassive($enable= TRUE) {
       if (NULL === $this->_hdl)
