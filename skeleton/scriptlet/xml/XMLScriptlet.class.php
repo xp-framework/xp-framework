@@ -105,7 +105,7 @@
      * @see     xp://scriptlet.xml.XMLScriptlet#_handleMethod
      */
     function handleMethod(&$request) {
-      if (NULL === $request->getEnvValue('PRODUCT')) {
+      if (!$request->getEnvValue('PRODUCT')) {
         return 'doCreate';
       }
 
