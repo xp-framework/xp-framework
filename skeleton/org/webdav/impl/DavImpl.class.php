@@ -8,6 +8,7 @@
     'lang.MethodNotImplementedException',
     'org.webdav.OperationFailedException',
     'org.webdav.OperationNotAllowedException',
+    'org.webdav.version.WebdavVersionsContainer',
     'org.webdav.WebdavObject',
     'org.webdav.util.WebdavBool',
     'org.webdav.util.OpaqueLockTocken'
@@ -267,6 +268,72 @@
       $lock->setLockToken($t->toString());
       $this->propStorage->setLock($lock->getURI(), $lock);
       return $lock;
+    }
+    
+    /**
+     * Start Version-Control of file
+     *
+     * @access  public
+     * @param   string filename
+     * @return  bool
+     * @throws  ElementNotFoundException
+     */
+    function VersionControl(&$version) {
+
+      try(); { 
+        $props= array();
+ 
+        // Set versions as properties
+        with ($p= &new WebdavProperty('version', new WebdavVersionsContainer($version))); {
+          $p->setNameSpaceName('DAV:');
+          $p->setNameSpacePrefix('D:');
+          $props[$p->getNameSpacePrefix().$p->getName()]= $p;
+        }
+ 
+        // Set checked-in property
+        with ($p= &new WebdavProperty('checked-in', '1.0')); {
+          $p->setNameSpaceName('DAV:');
+          $p->setNameSpacePrefix('D:');
+          $props[$p->getNameSpacePrefix().$p->getName()]= $p;
+        }
+
+        $this->propStorage->setProperties($version->getFilename(), $props); 
+         
+        // Copy file to versions collection
+        $this->copy(
+          $version->getFilename(),
+          $version->getHref()
+        );
+        
+      } if (catch('Exception', $e)) {
+        return throw($e);
+      }
+
+      return TRUE;
+    }
+    
+    /**
+     * Report version status
+     *
+     * @access  public
+     * @param   &org.webdav.xml.WebdavLockRequest
+     * @param   &org.webdav.xml.WebdavScriptletResponse
+     * @return  bool success
+     */
+    function &report(&$request, $response) {
+    
+      try(); {
+        $prop= $this->propStorage->getProperty(
+          $request->getPath(),
+          'D:version'
+        );
+        
+      } if (catch('IOException', $e)) {
+        return throw($e);
+      }
+      
+      $response->addWebdavVersionContainer($prop->value);
+      return TRUE;
     }
     
   }

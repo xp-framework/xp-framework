@@ -5,11 +5,13 @@
  */
 
   uses(
+    'util.Date',
     'io.Folder',
     'io.File',
     'util.MimeType',
     'org.webdav.impl.DavImpl',
     'org.webdav.propertystorage.DBAFilePropertyStorage',
+    'org.webdav.version.WebdavFileVersion',
     'lang.ElementNotFoundException',
     'util.log.Logger'
   );
@@ -172,9 +174,11 @@
         return throw(new OperationFailedException($filename.' cannot be copied/moved to '.$destination.' ('.$e->message.')'));
       }
       
-      // Move/copy properties also
+      
       $src= substr($uri, strlen($this->base));
       $dst= substr($destination, strlen($this->base));
+      
+      // Move/copy properties also
       $properties= &$this->propStorage->getProperties($src);
       if (!empty($properties)) {
         if (!$docopy) $this->propStorage->setProperties($src, NULL);
@@ -521,6 +525,49 @@
       } if (catch('Exception', $e)) {
         return throw($e);
       }
+    }
+    
+    /**
+     * Start Version-Control of file
+     *
+     * @access  public
+     * @param   string filename
+     * @throws  ElementNotFoundException 
+     */
+    function &VersionControl($filename) {
+      $realpath= $this->base.$filename;
+
+      if (!file_exists($realpath)) {
+        return throw(new ElementNotFoundException($realpath.' not found'));
+      }
+      
+      // Create Version object 
+      with ($version= &new WebdavFileVersion($filename)); {
+        $version->setVersionNumber('1.0');
+        $version->setHref('../versions/'.$filename.'_1.0');
+        $version->setVersionName($filename.'_1.0');
+        $version->setContentLength(sizeof($this->base.filename));
+        $version->setLastModified(Date::now());
+      }
+      
+      parent::VersionControl($version);
+    }
+    
+    /**
+     * Report version status
+     *
+     * @access  public  
+     * @param   &org.webdav.xml.WebdavPropFindRequest
+     * @param   &org.webdav.xml.WebdavMultistatusResponse
+     * @throws  ElementNotFoundException
+     */
+    function &report(&$request, &$response) {
+      $realpath= $this->base.$request->getPath();
+
+      if (!file_exists($realpath)) {
+        return throw(new ElementNotFoundException($realpath.' not found'));
+      }
+      parent::report($request, $response);
     }
   }
 ?>
