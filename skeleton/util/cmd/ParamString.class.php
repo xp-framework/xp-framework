@@ -132,7 +132,7 @@
         $pos !== FALSE &&
         (!isset($this->list[$pos]) || '-' == $this->list[$pos]{0})
       ) {
-        return TRUE;
+        return $default;
       }
       
       return ($pos !== FALSE
