@@ -228,7 +228,7 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
       <para>
         <caption>Interfaces</caption>
         <text>
-          An introduction to interfaces is given at:
+          An introduction to interfaces is given at:<br/>
           <ref type="ext" link="http://java.sun.com/docs/books/tutorial/java/interpack/interfaces.html"/>
           <br/><br/>
           <quote>
