@@ -23,7 +23,7 @@
     if (!isset($p)) $p= &new PHPSyntaxHighlighter();
     if (!isset($t)) $t= array_flip(get_html_translation_table(HTML_ENTITIES));
     
-    $p->setSource('<?php '.strtr($str, $t).' ?>');
+    $p->setSource('<?php '.strtr(strtr($str, $t), $t).' ?>');
     return $p->getHighlight();
   }
   
