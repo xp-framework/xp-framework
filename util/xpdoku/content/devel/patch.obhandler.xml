@@ -21,6 +21,23 @@
         </text>
       </para>
       <para>
+        <caption>Updates</caption>
+        <text>
+          <ul>
+            <li>
+              <b>Sat Aug 23 16:14:55 CEST 2003</b>:
+              This patch now also features guaranteed destructor calls
+              and fixes numerous occasions of <tt>"Call to a member function
+              of a non-object"</tt> (fatal) errors raised due to the fact
+              that functions throwing exceptions will also return FALSE
+              (<i>a non-object</i>) by making <tt>throw</tt> return a magic
+              object which will throw <ref type="api:class" link="lang.NullPointerException"/>s 
+              in case of method calls to it.
+            </li>
+          </ul>
+        </text>
+      </para>
+      <para>
         <caption>Side Note: Why this is a patch.</caption>
         <text>
           The API for this still needs to be discussed, so, for now, there
