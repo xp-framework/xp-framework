@@ -111,6 +111,7 @@ function putEnv($name, $var) {
     </content>
     <references>
       <ref link="about">Introduction</ref>
+      <ref link="../apidoc/index">XP API-Doc</ref>
       <ref type="ext" link="http://java.sun.com/j2se/javadoc/writingdoccomments/index.html">Java: Writing doc comments</ref>
     </references>
   </main>

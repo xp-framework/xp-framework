@@ -186,12 +186,12 @@ Exception info.binford6100.db.Message.MessageException (statement failed)
         <caption>Code:</caption>
         <text>
           Der Code folgt strikten Richtlinien:
-          1.) Dem Stil "Studly Caps"
-          2.) Eine Einrücktiefe von zwei Zeichen
-          3.) Einer Auflage, unter error_reporting(E_ALL) keine Warnungen oder Notices
-              auszugeben.
-
-          Die Coding Standards finden sich in der Datei CODING_STANDARDS.
+          <ul>
+            <li>Dem Stil "Studly Caps"</li>
+            <li>Eine Einrücktiefe von zwei Zeichen</li>
+            <li>Einer Auflage, unter error_reporting(E_ALL) keine Warnungen oder Notices auszugeben.</li>
+          </ul>
+          Die kompletten Coding Standards finden sich <ref link="about.coding">hier</ref>.
         </text>
       </para>              
       <para>
@@ -282,6 +282,8 @@ function toString($format= 'r') {
       <ref link="about.cvs">CVS-Guidelines</ref>
       <ref link="about.install">Installation</ref>
       <ref link="about.coding">Coding Standards</ref>
+      <ref type="ext" link="http://pear.php.net/">PEAR</ref>
+      <ref type="ext" link="http://cpan.org/">CPAN</ref>
     </references>
   </main>
 </document>
