@@ -396,7 +396,7 @@
         $created= $this->handlingImpl->move(
           $request->getPath(),
           $request->getRelativePath($request->getHeader('Destination')),
-          WebdavBool::fromString($request->getHeader('Overwrite'));
+          WebdavBool::fromString($request->getHeader('Overwrite'))
         );
       } if (catch('OperationFailedException', $e)) {
       
