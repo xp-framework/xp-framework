@@ -67,7 +67,7 @@
      * @param   &org.webdav.xml.WebdavPropFindRequest request
      * @param   &org.webdav.WebdavObject o 
      */
-    function _createRoot(&$response, &$request, &$o){
+    function _createRoot(&$response, &$request, &$o) {
       $this->root= &$response->addChild(new Node('D:response'));
     }
     
@@ -78,7 +78,7 @@
      * @param   &org.webdav.WebdavObject o
      * @param   &org.webdav.xml.WebdavPropFindRequest request     
      */
-    function _applyWebDavObject(&$o, &$request){
+    function _applyWebDavObject(&$o, &$request) {
     
       // Get the property lists
       $reqprops= &$request->getProperties();    // properties requested
@@ -125,9 +125,9 @@
         $lkif= &$found_props->addChild(new Node('D:lockdiscovery'));
         $lockinfos= &$o->getLockInfo();
 
-        if ($lockinfos){
-          for ($t= 0; $t<sizeof($lockinfos); $t++){
-             $lockinfo= $lockinfos[$t];
+        if ($lockinfos) {
+          for ($t= 0; $t<sizeof($lockinfos); $t++) {
+            $lockinfo= $lockinfos[$t];
 
             if (empty($lockinfo['type']) or empty($lockinfo['scope'])) continue;
             if (!$lockinfo['depth']) $lockinfo['depth']= 'infinity';
@@ -141,7 +141,7 @@
             $l->addChild(new Node('D:href', $lockinfo['owner']));
             $l= &$ak->addChild(new Node('D:timeout', $lockinfo['timeout']));
             $l= &$ak->addChild(new Node('D:locktoken'));
-            $l->addChild(new Node('D:href','opaquelocktoken:'.$lockinfo['token']));
+            $l->addChild(new Node('D:href', $lockinfo['token']));
             $l= &$ak->addChild(new Node('D:depth', $lockinfo['depth']));
             $stdprops[]= 'lockdiscovery';
           }
@@ -150,7 +150,7 @@
 
       // properties which we always know
       // get* on collection is not defined!
-      foreach ($reqprops == NULL ? $propsList : $reqprops as $property){
+      foreach ($reqprops == NULL ? $propsList : $reqprops as $property) {
         $name= $property->getName();
         if (in_array($name, $stdprops)) continue;
         if ($found= isset($propsList[$name])) {
