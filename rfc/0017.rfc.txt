@@ -171,4 +171,8 @@ Comments
   use common subclasses for both - the authentication mechanism should
   not be implemented twice (or once and then be copy&pasted).
 
+- friebe, Mon Feb 28 17:53:10 CET 2005
+  In the first step, only @webmethod will be supported - and the API
+  will stay as-is. Too much BC involved at the moment.
+
 <EOF>
