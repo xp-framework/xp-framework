@@ -4,8 +4,8 @@
  * $Id$
  */
  
-  define('T_NONE',			0x0000);    // None of the known tokens, CDATA only
-  define('T_ANY',			0xFFFF);    // Any token
+  define('T_NONE',            0x0000);    // None of the known tokens, CDATA only
+  define('T_ANY',            0xFFFF);    // Any token
  
   /**
    * PHP Tokenizer
@@ -152,13 +152,13 @@
         // Go through all rules and see if one matches
         reset($this->rules);
         $name= key($this->rules);
-	    do {
+        do {
           $CAT && $CAT->debugf('[%04x:%-18s] >>> %s "%s"', $i, $name, $this->getTokenName($token), $cdata);
           
-	      $rule= &$this->rules[$name];
+          $rule= &$this->rules[$name];
           $expect= &$rule['match'][$rule['expect']];
           $s= sizeof($rule['match']);
-	      $f= FALSE;
+          $f= FALSE;
 
           $CAT && $CAT->infof('[%04x:%-18s] Executing %s, expecting %s', $i, $name, $name, $expect);
           if (
@@ -173,81 +173,81 @@
             }
             
           } else if (
-	        ("'" === $expect{0}) &&
-	        (T_NONE === $token) && 
-		    (preg_match('/'.substr($expect, 1, -1).'/', $cdata))
+            ("'" === $expect{0}) &&
+            (T_NONE === $token) && 
+            (preg_match('/'.substr($expect, 1, -1).'/', $cdata))
           ) {
 
-	        // Matches text
-	        $CAT && $CAT->debugf('[%04x:%-18s] %s =~ %s', $i, $name, $expect, $cdata);
-	        $f= TRUE;
+            // Matches text
+            $CAT && $CAT->debugf('[%04x:%-18s] %s =~ %s', $i, $name, $expect, $cdata);
+            $f= TRUE;
           } else if (
             ('(' === $expect{0} && $p= strpos($expect, ')')) &&
             (token_name($token) === substr($expect, 1, $p- 1)) &&
             (preg_match('/'.substr($expect, $p+ 2, -1).'/', $cdata))
           ) {
           
-	        // Matches token and cdata
-	        $CAT && $CAT->debugf('[%04x:%-18s] %s =~ %s, token %s', $i, $name, $expect, $cdata, token_name($token));
-	        $f= TRUE;
-	      } else if (
-	        ("!" === $expect{0}) &&
-		    (
-		      (T_NONE === $token) ||
-		      (token_name($token) !== substr($expect, 1))
-		    )
+            // Matches token and cdata
+            $CAT && $CAT->debugf('[%04x:%-18s] %s =~ %s, token %s', $i, $name, $expect, $cdata, token_name($token));
+            $f= TRUE;
+          } else if (
+            ("!" === $expect{0}) &&
+            (
+              (T_NONE === $token) ||
+              (token_name($token) !== substr($expect, 1))
+            )
           ) {
 
-	        // Does not match a token
-	        $CAT && $CAT->debugf('[%04x:%-18s] %s !== %s', $i, $name, token_name($token), $expect);
-	        $f= TRUE;
-	      } else if (
-	        (token_name($token) === $expect)
-	      ) {   
+            // Does not match a token
+            $CAT && $CAT->debugf('[%04x:%-18s] %s !== %s', $i, $name, token_name($token), $expect);
+            $f= TRUE;
+          } else if (
+            (token_name($token) === $expect)
+          ) {   
 
-	        // Matches a token
-	        $CAT && $CAT->debugf('[%04x:%-18s] %s === %s', $i, $name, token_name($token), $expect);
-	        $f= TRUE;
-	      }
+            // Matches a token
+            $CAT && $CAT->debugf('[%04x:%-18s] %s === %s', $i, $name, token_name($token), $expect);
+            $f= TRUE;
+          }
 
-	      if (!$f) {
+          if (!$f) {
           
-	        // No action taken before
-	        if ($rule['expect'] == 0) {
+            // No action taken before
+            if ($rule['expect'] == 0) {
               if (FALSE === next($this->rules)) break;
               $name= key($this->rules);
               continue;
             }
 
-		    // One or more tokens found before (but this one doesn't match the expectation)
-	        $CAT && $CAT->warnf(
-		      '[%04x:%-18s] --- have %s "%s" for rule %s, but was expecting %s', 
-		      $i, 
+            // One or more tokens found before (but this one doesn't match the expectation)
+            $CAT && $CAT->warnf(
+              '[%04x:%-18s] --- have %s "%s" for rule %s, but was expecting %s', 
+              $i, 
               $name,
-		      token_name($token),  
-		      chop($cdata),
-		      $name,
-		      $expect
-		    );
-		    if ($rule['expect'] < $s) $rule['expect']= 0;
+              token_name($token),  
+              chop($cdata),
+              $name,
+              $expect
+            );
+            if ($rule['expect'] < $s) $rule['expect']= 0;
 
-		    continue;
-	      }
+            continue;
+          }
 
-	      // Found n'th token in list...
-  	      $CAT && $CAT->infof('[%04x:%-18s] +++ found %s for rule %s [%d/%d]', $i, $name, token_name($token), $name, $rule['expect'], $s);
-	      $rule['expect']++;
-	      $data[$name][$rule['expect']]= $cdata;
+          // Found n'th token in list...
+            $CAT && $CAT->infof('[%04x:%-18s] +++ found %s for rule %s [%d/%d]', $i, $name, token_name($token), $name, $rule['expect'], $s);
+          $rule['expect']++;
+          $data[$name][$rule['expect']]= $cdata;
 
           // ...but not last one
-	      if ($rule['expect'] < $s) {
+          if ($rule['expect'] < $s) {
             if (FALSE === next($this->rules)) break;
             $name= key($this->rules);
             continue;
           }
 
-	      // Completed
-	      $CAT && $CAT->infof('[%04x:%-18s] *** List completed::%s', $i, $name, var_export($data[$name], 1));
+          // Completed
+          $CAT && $CAT->infof('[%04x:%-18s] *** List completed::%s', $i, $name, var_export($data[$name], 1));
           
           // Call user function
           $params= array();
@@ -264,12 +264,12 @@
             return FALSE;
           }
 
-	      // Reinit for next "round"
-	      $rule['expect']= 0;
-	      $data[$name]= array();
+          // Reinit for next "round"
+          $rule['expect']= 0;
+          $data[$name]= array();
           if (FALSE === next($this->rules)) break;
           $name= key($this->rules);
-	    } while (1);
+        } while (1);
       } while (++$i && $tok= $this->getNextToken());
       
       return TRUE;

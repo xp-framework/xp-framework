@@ -10,16 +10,16 @@
   define('VCARD_ID',             'VCARD');
 
   // Property params: TEL
-  define('VCARD_TEL_TYPE_FAX',   'FAX');		    
-  define('VCARD_TEL_TYPE_VOICE', 'VOICE');  	    
-  define('VCARD_TEL_LOC_WORK',   'WORK');		    
-  define('VCARD_TEL_LOC_HOME',   'HOME');		    
-  define('VCARD_TEL_LOC_CELL',   'CELL');		    
+  define('VCARD_TEL_TYPE_FAX',   'FAX');
+  define('VCARD_TEL_TYPE_VOICE', 'VOICE');
+  define('VCARD_TEL_LOC_WORK',   'WORK');
+  define('VCARD_TEL_LOC_HOME',   'HOME');
+  define('VCARD_TEL_LOC_CELL',   'CELL');
   
   // Property params: ADR
-  define('VCARD_ADR_HOME',       'HOME');		    
-  define('VCARD_ADR_WORK',       'WORK');	
-  define('VCARD_ADR_POSTAL',     'POSTAL');	    
+  define('VCARD_ADR_HOME',       'HOME');
+  define('VCARD_ADR_WORK',       'WORK');
+  define('VCARD_ADR_POSTAL',     'POSTAL');
   
   // Property params: EMAIL
   define('VCARD_EMAIL_DEFAULT',  'DEFAULT');

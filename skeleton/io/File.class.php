@@ -115,16 +115,16 @@
       
       return TRUE;
     }
-	
+    
     /**
      * Returns whether this file is open
      *
      * @access  public
      * @return  bool TRUE, when the file is open
      */
-	function isOpen() {
-	  return $this->_fd;
-	}
+    function isOpen() {
+      return $this->_fd;
+    }
     
     /**
      * Returns whether this file eixtss

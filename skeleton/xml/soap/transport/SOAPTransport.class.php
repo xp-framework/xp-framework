@@ -30,7 +30,7 @@
      * @access  public
      * @param   &xml.soap.SOAPMessage message
      */
-   function send(&$message) { }
+    function send(&$message) { }
    
     /**
      * Retrieve the answer

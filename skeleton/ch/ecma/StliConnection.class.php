@@ -30,19 +30,19 @@
    * </quote>
    *
    * @purpose  Provide an interface to STLI server
-   * @see	   http://www.ilink.de/home/de/cti/products/TeamCallServer/
-   * @see	   http://www.ecma.ch/ecma1/STAND/ECMA-180.HTM
-   * @see	   http://www.ecma.ch/ecma1/STAND/ECMA-179.HTM
+   * @see       http://www.ilink.de/home/de/cti/products/TeamCallServer/
+   * @see       http://www.ecma.ch/ecma1/STAND/ECMA-180.HTM
+   * @see       http://www.ecma.ch/ecma1/STAND/ECMA-179.HTM
    * @see      http://www.ecma.ch/ecma1/STAND/ECMA-217.HTM
-   * @see	   http://www.ecma.ch/ecma1/STAND/ECMA-218.HTM
-   * @see	   http://www.ecma.ch/ecma1/STAND/ECMA-269.HTM
-   * @see	   http://www.ecma.ch/ecma1/STAND/ECMA-285.HTM
-   * @see	   http://www.ecma.ch/ecma1/STAND/ecma-323.htm
+   * @see       http://www.ecma.ch/ecma1/STAND/ECMA-218.HTM
+   * @see       http://www.ecma.ch/ecma1/STAND/ECMA-269.HTM
+   * @see       http://www.ecma.ch/ecma1/STAND/ECMA-285.HTM
+   * @see       http://www.ecma.ch/ecma1/STAND/ecma-323.htm
    */
   class StliConnection extends TelephonyProvider {
     var
-      $sock	    = NULL,
-      $version	= 0,
+      $sock        = NULL,
+      $version    = 0,
       
       // The prefix is a constant that depends on your telephony system
       $prefix   = array(
@@ -61,8 +61,8 @@
      *   // [...]
      * </code>
      *
-     * @access	public
-     * @param	&peer.Socket sock
+     * @access    public
+     * @param    &peer.Socket sock
      */
     function __construct(&$sock, $parserDefaults, $version= STLI_VERSION_2) {
       $this->sock= &$sock;
@@ -123,21 +123,21 @@
      * Set the protocol version. This can only be done *prior* to connecting to
      * the server!
      *
-     * @access	public
-     * @param	int version
-     * @throws	IllegalStateException in case already having connected
+     * @access    public
+     * @param    int version
+     * @throws    IllegalStateException in case already having connected
      */
     function setVersion($version) { 
       if ($this->sock->isConnected()) return throw(new IllegalStateException(
         'Cannot set version after already having connected'
-      ));	
+      ));    
       $this->version= $version;
     }
 
     /**
      * Private helper function
      *
-     * @access	private
+     * @access    private
      */
     function _sockcmd() {
       $args= func_get_args();
@@ -152,7 +152,7 @@
     /**
      * Private helper function
      *
-     * @access	private
+     * @access  private
      */
     function _expect($expect, $have) {
       if ($expect !== $have) {
@@ -167,8 +167,8 @@
     /**
      * Connect and initiate the communication
      *
-     * @access	public
-     * @return	mixed the return code of the socket's connect method
+     * @access  public
+     * @return  mixed the return code of the socket's connect method
      * @throws  TelephonyException in case a protocol error occurs
      */
     function connect() {
@@ -184,8 +184,8 @@
     /**
      * Close connection and end the communication
      *
-     * @access	public
-     * @return	mixed the return code of the socket's close method
+     * @access  public
+     * @return  mixed the return code of the socket's close method
      * @throws  TelephonyException in case a protocol error occurs
      */
     function close() {

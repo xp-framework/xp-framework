@@ -27,7 +27,7 @@
     var
       $filename = '',
       $dir      = '',
-      $filter	= '',
+      $filter   = '',
       $succes   = FALSE;
 
     /**
@@ -204,7 +204,7 @@
       $this->history_offset= 0;
 
       // Load pixmaps
-	  $this->pixmaps= array();
+      $this->pixmaps= array();
       $if= &new Folder(dirname(__FILE__).'/icons/');
       $loader= &new GTKPixmapLoader($this->window->window, $if->uri);
       try(); {
@@ -360,7 +360,7 @@
             if (!preg_match(':'.$this->filter.':i', $entry)) continue;
             
             $ext= '(n/a)';
-  	        if (FALSE !== ($p= strrpos($entry, '.')) && $p > 0) $ext= substr($entry, $p+ 1);
+              if (FALSE !== ($p= strrpos($entry, '.')) && $p > 0) $ext= substr($entry, $p+ 1);
             
             // Check for "special" files
             if (preg_match('#README|TODO|INSTALL|COPYRIGHT|NEWS#', $entry)) {
@@ -378,7 +378,7 @@
           // !!! TBD: Generic approach, posix_getpwuid may not exist !!!
           $owner= posix_getpwuid(fileowner($f->uri.$entry));
           
-		  $this->files->set_pixtext(
+          $this->files->set_pixtext(
             $this->files->append(array(
               $entry,
               $dir ? '' : $ext,
@@ -387,11 +387,11 @@
               $owner['name'],
               substr(sprintf("%o", fileperms($f->uri.$entry)), 3- $dir)
             )),
-		    0, 
-		    $entry,
-		    4,
-		    $icon,
-	        $mask
+            0, 
+            $entry,
+            4,
+            $icon,
+            $mask
           );
 
         }
