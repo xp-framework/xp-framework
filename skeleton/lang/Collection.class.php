@@ -66,6 +66,26 @@
     }
     
     /**
+     * Returns the element's class name
+     *
+     * @access  public
+     * @return  string
+     */
+    function getElementClassName() {
+      return $this->class;
+    }
+
+    /**
+     * Returns the element's class name
+     *
+     * @access  public
+     * @return  &lang.XPClass
+     */
+    function &getElementClass() {
+      return XPClass::forName($this->class);
+    }
+    
+    /**
      * Tests if this list has no elements.
      *
      * @access  public
@@ -85,7 +105,12 @@
      */
     function &add(&$element) {
       if (!is_a($element, $this->_name)) {
-        return throw(new IllegalArgumentException('Element is not a '.$this->class));
+        return throw(new IllegalArgumentException(sprintf(
+          'Element %d is not a %s (but %s)',
+          $i,
+          $this->class,
+          xp::typeOf($array[$i])
+        )));
       }
       $this->list[]= &$element;
       return $element;
@@ -101,7 +126,12 @@
      */
     function &prepend(&$element) {
       if (!is_a($element, $this->_name)) {
-        return throw(new IllegalArgumentException('Element is not a '.$this->class));
+        return throw(new IllegalArgumentException(sprintf(
+          'Element %d is not a %s (but %s)',
+          $i,
+          $this->class,
+          xp::typeOf($array[$i])
+        )));
       }
       array_unshift($this->list, $element);
       return $element;
@@ -117,7 +147,12 @@
     function addAll($array) {
       for ($i= 0, $s= sizeof($array); $i < $s; $i++) {
         if (!is_a($array[$i], $this->_name)) {
-          return throw(new IllegalArgumentException('Element is not a '.$this->class));
+          return throw(new IllegalArgumentException(sprintf(
+            'Element %d is not a %s (but %s)',
+            $i,
+            $this->class,
+            xp::typeOf($array[$i])
+          )));
         }
         $this->list[]= &$array[$i];
       }
@@ -133,7 +168,12 @@
     function prependAll($array) {
       for ($i= 0, $s= sizeof($array); $i < $s; $i++) {
         if (!is_a($array[$i], $this->_name)) {
-          return throw(new IllegalArgumentException('Element is not a '.$this->class));
+          return throw(new IllegalArgumentException(sprintf(
+            'Element %d is not a %s (but %s)',
+            $i,
+            $this->class,
+            xp::typeOf($array[$i])
+          )));
         }
         array_unshift($this->list, $array[$i]);
       }
