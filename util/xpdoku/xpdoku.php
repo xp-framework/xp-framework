@@ -208,7 +208,7 @@
     // Node for package
     $core= &new Node('package', NULL, array(
       'type' => $type,
-      'name' => $info[$name]
+      'name' => $info['name']
     ));
     $core->addChild ($classNodes);
     $classTree->addChild ($core);
