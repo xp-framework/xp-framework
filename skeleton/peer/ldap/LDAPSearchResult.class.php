@@ -42,6 +42,21 @@
     }
     
     /**
+     * Decode entries (recursively, if needed)
+     *
+     * @access  private
+     * @param   &mixed v
+     * @return  string decoded entry
+     */
+    function _decode(&$v) {
+      if (is_array($v)) for ($i= 0, $m= sizeof($v); $i < $m; $i++) {
+        $v[$i]= $this->_decode($v[$i]);
+        return $v;
+      }
+      return utf8_decode($v);
+    }
+    
+    /**
      * Get a search entry by offset
      *
      * @access  public
@@ -61,7 +76,10 @@
       foreach (array_keys($this->data[$offset]) as $key) {
         if ('count' == $key || is_int($key)) continue;
         
-        $e->attributes[$key]= $this->data[$offset][$key];
+        $e->attributes[$key]= (is_array($this->data[$offset][$key])
+          ? array_map(array(&$this, '_decode'), $this->data[$offset][$key])
+          : $this->_decode($this->data[$offset][$key])
+        );
         unset($e->attributes[$key]['count']);
       }      
       
