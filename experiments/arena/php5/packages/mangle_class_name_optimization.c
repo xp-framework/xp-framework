@@ -1,3 +1,8 @@
+/* This file is part of the XP framework's experiments
+ *
+ * $Id$ 
+ */
+
 #include <string.h>
 #include <stdio.h>
 
