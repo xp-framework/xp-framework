@@ -68,6 +68,7 @@
     function put($key, &$value, $permissions= 0666) {
       if (!isset($this->segments[$key])) {
         $this->segments[$key]= &new ShmSegment($key);
+        $this->_seg->put($this->segments);
       }
       return $this->segments[$key]->put($value, $permissions);
     }
