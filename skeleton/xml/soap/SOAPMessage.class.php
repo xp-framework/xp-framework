@@ -80,21 +80,41 @@
           $regs= array(0, 'xsd', 'string');
         }
 
-	// SOAP-ENC:arrayType="xsd:anyType[4]"
-	if (isset($child->attribute['SOAP-ENC:arrayType'])) {
+        // SOAP-ENC:arrayType="xsd:anyType[4]"
+        if (isset($child->attribute['SOAP-ENC:arrayType'])) {
           $regs[2]= 'Array';
-	}
+        }
         
         // echo "*** {$child->name} [{$names}, {$context}, {$idx}] is {$regs[2]}\n";
         // echo $child->getSource(0);
         
-        switch ($regs[2]) {
-          case 'Array':
-          case 'Vector':
+        switch (strtolower($regs[2])) {
+          case 'array':
+          case 'vector':
             $results[$idx]= $this->_recurseData($child, FALSE, 'ARRAY');
             break;
+            
+          case 'map':
+            // <old_data xmlns:ns4="http://xml.apache.org/xml-soap" xsi:type="ns4:Map">
+            // <item>
+            // <key xsi:type="xsd:string">Nachname</key>
+            // <value xsi:type="xsd:string">Braun</value>
+            // </item>
+            // <item>
+            // <key xsi:type="xsd:string">PLZ</key>
+            // <value xsi:type="xsd:string">76135</value>
+            // </item>
+            // <item>
+            if (!empty($node->children)) foreach ($child->children as $item) {
+              $key= $item->children[0]->getContent($this->encoding);
+              $results[$idx][$key]= (empty($item->children[1]->children) 
+                ? $item->children[1]->getContent($this->encoding)
+                : $this->_recurseData($item->children[1], FALSE, 'MAP')
+              );
+            }
+            break;
    
-          case 'SOAPStruct':
+          case 'soapstruct':
           case 'struct':      
           case 'ur-type':
             if ($regs[1]== 'xsd') {
