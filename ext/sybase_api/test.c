@@ -34,11 +34,15 @@ int main(int argc, char **argv)
     sybase_alloc(&link);    
     if (sybase_connect(env, link, argv[1], argv[2], argv[3]) == SA_SUCCESS) {
         sybase_result *result= NULL;
-        int i = 0;
+        sybase_resultset *resultset= NULL;
         
-        printf("Connected, executing query...\n");
+        printf("===> Connected to %s@%s\n", argv[2], argv[1]);
+        printf("---> Executing query '%s':\n", argv[4]);
         if (sybase_query(link, &result, argv[4]) == SA_SUCCESS) {
-            while (i++ < 99 && (sybase_results(&result) == SA_SUCCESS)) {
+            int done= 0;
+            int i= 0;
+
+            while (!done && (sybase_results(&result) == SA_SUCCESS)) {
                 printf(
                     "[%3d] result->type %4d [%-20s] result->code %4d [%-20s]\n", 
                     i,
@@ -47,6 +51,25 @@ int main(int argc, char **argv)
                     result->code,
                     sybase_nameofcode(result->code)
                 );
+                switch ((int)result->type) {
+                    case CS_ROW_RESULT:
+                        sybase_init_resultset(result, &resultset);
+                        for (i= 0; i < resultset->fields; i++) {
+                            printf(
+                                "     datatype[%d] %3d [%-20s]\n",
+                                i,
+                                resultset->dataformat[i].datatype,
+                                sybase_nameofdatatype(resultset->dataformat[i].datatype)
+                            );
+                        }
+                        sybase_free_resultset(resultset);
+                        break;
+
+                    case CS_CMD_DONE:
+                    case CS_CMD_FAIL:
+                    case CS_CANCELED:
+                        done= 1;
+                }
             }
             printf(
                 "[END] result->type %4d [%-20s] result->code %4d [%-20s]\n", 
@@ -59,12 +82,14 @@ int main(int argc, char **argv)
         }
         
     } else {
-        printf("Connect failed!\n");
+        printf("*** Connect failed!\n");
     }
     
     sybase_close(link);
     sybase_free(link);
     
     sybase_shutdown(env);
+    
+    printf("===> Done\n");
     return 0;
 }
