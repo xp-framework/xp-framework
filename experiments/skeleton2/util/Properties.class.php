@@ -163,15 +163,18 @@
           if (';' == $key{0}) {
             $fd->write(sprintf("\n; %s\n", $val)); 
           } else {
-            if (is_a($val, 'Hashmap')) {
+            if ($val instanceof Hashmap) {
               $str= '';
               foreach ($val->keys() as $k) {
                 $str.= '|'.$k.':'.$val->get($v);
               }
-              $val= substr($str, 1);
+              $val= '"'.substr($str, 1).'"';
+            } elseif (is_array($val)) {
+              $val= '"'.implode('|', $val).'"';
+            } elseif (is_string($val)) {
+              $val= '"'.$val.'"';
             }
-            if (is_array($val)) $val= implode('|', $val);
-            if (is_string($val)) $val= '"'.$val.'"';
+            
             $fd->write(sprintf(
               "%s=%s\n",
               $key,
@@ -467,7 +470,7 @@
     public function writeHash($section, $key, $value) {
       self::_load();
       if (!self::hasSection($section)) $this->_data[$section]= array();
-      if (is_a($value, 'Hashmap')) {
+      if ($value instanceof Hashmap) {
         $this->_data[$section][$key]= $value;
       } else {
         $this->_data[$section][$key]= new Hashmap($value);
