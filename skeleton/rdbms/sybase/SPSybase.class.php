@@ -6,7 +6,8 @@
   
   uses(
     'rdbms.SQLException',
-    'rdbms.sybase.SybaseDate'
+    'util.Date',
+    'util.log.Logger'
   );
   
   /**
@@ -19,25 +20,26 @@
    */
   class SPSybase extends Object {
     var 
-      $handle= 0,
+      $handle= NULL,
       $host, 
       $user, 
       $pass, 
       $db, 
-      $field_map,
-      $last_affected_rows, 
-      $last_num_rows, 
-      $transaction;
-    
+      $field_map= array(),
+      $last_affected_rows= -1, 
+      $last_num_rows= -1,
+      $transaction= 0;
+   
+    // Logger
+    var
+      $log;
+ 
     /**
      * Constructor
      */
     function __construct($params) {
-      $this->bz_map= array();
+      $this->log= &Logger::getInstance();
       parent::__construct($params);
-      $this->transaction= 0;
-      $this->handle= NULL;
-      $this->last_insert_id= $this->last_affected_rows= $this->last_num_rows= -1;
     }
     
     /**
@@ -48,7 +50,7 @@
      * @throws  SQLException, wenn kein Connect zustande kommt
      */
     function connect() {
-      $this->handle= @sybase_connect($this->host, $this->user, $this->pass);
+      $this->handle= sybase_connect($this->host, $this->user, $this->pass);
       if (FALSE === $this->handle) return throw(new SQLException(sprintf(
         'Unable to connect to %s@%s',
         $this->user,
@@ -133,9 +135,19 @@
         if (isset($this->db)) $this->select_db();
       }
       
-      LOG::info('Sybase::'.$sql);
+      $this->log->info('Sybase::'.$sql);
       $result= sybase_query($sql, $this->handle);
-      if (FALSE === $result) throw(new SQLException('Statement failed', $sql));
+      if (FALSE === $result) {
+        return throw(new SQLException('statement failed', $sql));
+      }
+      
+      // Feldtypen herausfinden
+      $i= -1;
+      while (++$i < sybase_num_fields($result)) {
+        $field= sybase_fetch_field($result, $i);
+        $this->fields[$field->name]= $field->type;
+      }
+      
       return $result;
     }
     
@@ -170,18 +182,26 @@
           continue;
         }
         
+        // FALSE ==> NULL
+        if ($val === FALSE) {
+          $row[$key]= NULL;
+          continue;
+        }
+        
         // Field-Mapping
         if (isset($this->field_map[$key])) $row['map_'.$key]= $this->field_map[$key][$val];
-
-        // Datumsangaben automatisch umwandeln, Format: mon dd yyyy hh:mm AM (or PM)
-        // Ist natürlich Pfusch, da ein String genau so aufgebaut sein könnte!
-        if (preg_match(
-          RE_SYBASE_DATE,
-          $val, 
-          $regs
-        )) {
-          $row[$key]= new SybaseDate();
-          $row[$key]->fromRegs($regs);
+                
+        // Datumsangaben automatisch umwandeln
+        switch ($this->fields[$key]) {
+          case 'datetime': 
+            $row[$key]= new Date($val); break;
+            
+          case 'bit':
+          case 'int': 
+            settype($row[$key], 'integer'); break;
+            
+          case 'real': 
+            settype($row[$key], 'double'); break;
         }
       }
       
@@ -295,11 +315,24 @@
      * @return  int Der Wert von select @@IDENTITY
      */   
     function insert_id() {
-      $qrh= $this->query("select @@IDENTITY");
-      if(!$qrh) return 0;
-      list($result)= sybase_fetch_row($qrh, $this->handle);
+      if (FALSE === $qrh= $this->query("select @@IDENTITY")) return FALSE;
+      list($result)= sybase_fetch_row($qrh);
       return $result;
     }
+
+    
+    /**
+     * Letzen Fehler zurückgeben
+     *
+     * @access  public
+     * @return  int Der Wert von @@ERROR
+     */      
+    function get_error() {
+      if (FALSE === $qrh= $this->query("select @@ERROR", $this->handle)) return FALSE;
+      list($result)= sybase_fetch_row($qrh);
+      return $result;
+    }
+    
         
     /**
      * Transaktion beginnen
@@ -336,20 +369,7 @@
       if($return) $this->transaction= 0;
       return $return;    
     }
-    
-    /**
-     * Letzen Fehler zurückgeben
-     *
-     * @access  public
-     * @return  int Der Wert von @@ERROR
-     */      
-    function get_error() {
-      $qrh= $this->query("select @@ERROR", $this->handle);
-      if(!$qrh) return 0;
-      list($result)= sybase_fetch_row($query);
-      return $result;
-    }
-    
+
     /**
      * Destructor
      */
