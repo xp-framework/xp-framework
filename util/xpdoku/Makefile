@@ -106,7 +106,7 @@ clean:
 	-rm -rf output/
 	-rm -rf xml/
         
-gen: index content collections classes
+gen: index content devel collections classes
 	
 makexml: $(XML)
 	@$(PHP) xpdoku.php
@@ -143,8 +143,16 @@ content: $(OUTPUT) $(XML)
 	@echo "===> Creating main content"
 	@for i in `find content/main/ -name '*.xml'` ; do \
 	  f=`basename $$i | sed -e 's/\.xml$$//g'` ; \
-	  echo "---> Processing $$f" ; \
-	  $(SABPHP) xslt/content.xsl $$i > $(CONTENT)/$$f.html ; \
+	  echo "---> Processing $$f [$$i]" ; \
+	  $(SABPHP) xslt/content.xsl $$i about > $(CONTENT)/$$f.html ; \
+	done
+
+devel: $(OUTPUT) $(XML)
+	@echo "===> Creating devel content"
+	@for i in `find content/devel/ -name '*.xml'` ; do \
+	  f=`basename $$i | sed -e 's/\.xml$$//g'` ; \
+	  echo "---> Processing $$f [$$i]" ; \
+	  $(SABPHP) xslt/content.xsl $$i devel > $(OUTPUT)/devel/$$f.html ; \
 	done
 
 collections: $(OUTPUT) $(XML)
