@@ -12,6 +12,7 @@ SABCMD=sabcmd
 SABPHP=php -C -q util/sabcmd.php
 PHP=php -q
 PUBLISH=/tmp/xpdoc.tgz
+CVSROOT=/home/cvs/repositories/xp/
 
 .PHONY: all clean install xml content
 
@@ -33,11 +34,11 @@ usage:
 
 cvshist:
 ifeq ($(from),)
-	@echo "*** Please specify from where to retrieve CVS history file"
+	@echo "*** Please specify from what host to retrieve CVS history file"
 else
-	ssh $(from) cat /home/cvs/repositories/xp/CVSROOT/history | $(PHP) ../../admin/cvs-utils/history.php php://stdin > src/cvs_history.xml
+	ssh $(from) cat $(CVSROOT)/CVSROOT/history | $(PHP) util/history.php php://stdin > src/cvs_history.xml
 	cvs diff -u src/cvs_history.xml
-	cvs com -m '- Auto-updated from CVS history file' src/cvs_history.xml
+	#cvs com -m '- Auto-updated from CVS history file' src/cvs_history.xml
 endif
 
 publish:
