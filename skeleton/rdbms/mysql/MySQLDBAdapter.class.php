@@ -95,7 +95,7 @@
         // +-------------+--------------+------+-----+---------------------+----------------+
         // 8 rows in set (0.00 sec)
         $q= &$this->conn->query('describe %c', $table);
-        while ($record= $q->next())) {
+        while ($record= $q->next()) {
           preg_match('#^([a-z]+)(\(([0-9]+)\))?$#', $record['Type'], $regs);
           // DEBUG var_dump($record, $regs);
           
