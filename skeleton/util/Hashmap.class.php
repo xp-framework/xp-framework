@@ -334,7 +334,7 @@
         return throw(new IllegalArgumentException('Argument is not a util.Hashmap'));
       
       for ($i= &$this->iterator(); $i->hasNext(); ) {
-        $idx= $i->getNext();
+        $idx= $i->next();
         
         if (!$cmp->containsKey($idx) || !($cmp->get($idx) === $this->get($idx)))
           return FALSE;
