@@ -14,7 +14,8 @@
    */  
   class FileAppender extends LogAppender {
     var 
-      $filename = '';
+      $filename = '',
+      $perms    = 600;
     
     /**
      * Constructor
@@ -33,7 +34,14 @@
      * @param   mixed* args variables
      */
     function append() {
+      static $init= TRUE;
       $fd= fopen($this->filename, 'a');
+
+      if ($init) {
+        chmod($this->filename, octdec($this->perms));
+        $init= FALSE;
+      }
+      
       foreach (func_get_args() as $arg) {
         fputs($fd, $this->varSource($arg).' ');
       }
