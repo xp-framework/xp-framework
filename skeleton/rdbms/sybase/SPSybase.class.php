@@ -222,7 +222,7 @@
         // Datumsangaben automatisch umwandeln
         switch ($this->fields[$key]) {
           case 'datetime': 
-            $row[$key]= new Date($val); 
+            $row[$key]= &new Date($val); 
             break;
             
           case 'bit':
@@ -372,8 +372,10 @@
      */   
     function insert_id() {
       if (FALSE === $qrh= $this->query("select @@IDENTITY")) return FALSE;
-      list($result)= sybase_fetch_row($qrh);
-      return $result;
+      if (FALSE === ($result= $this->fetch($qrh))) {
+        return throw(new SQLException('Expecting at least one row, got none'));
+      }
+      return $result[key($result)];
     }
 
     
@@ -385,8 +387,10 @@
      */      
     function get_error() {
       if (FALSE === $qrh= $this->query("select @@ERROR", $this->handle)) return FALSE;
-      list($result)= sybase_fetch_row($qrh);
-      return $result;
+      if (FALSE === ($result= $this->fetch($qrh))) {
+        return throw(new SQLException('Expecting at least one row, got none'));
+      }
+      return $result[key($result)];
     }
     
         
