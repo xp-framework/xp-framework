@@ -29,6 +29,8 @@ static CS_RETCODE CS_PUBLIC clientmessage(CS_CONTEXT *context, CS_CONNECTION *co
     return CS_SUCCEED;
 }
 
+#define HLINE "     ---------------------------------------------------------------------------------\n"
+
 int main(int argc, char **argv)
 {
     sybase_link *link= NULL;
@@ -56,7 +58,7 @@ int main(int argc, char **argv)
 
             while (!done && (sybase_results(&result) == SA_SUCCESS)) {
                 printf(
-                    "     result->type %4d [%-20s] result->code %4d [%-20s]\n", 
+                    "     result->type %4d [%-20s] result->code %4d [%-20s]\n",
                     result->type,
                     sybase_nameoftype(result->type), 
                     result->code,
@@ -65,6 +67,9 @@ int main(int argc, char **argv)
                 switch ((int)result->type) {
                     case CS_ROW_RESULT:
                         sybase_init_resultset(result, &resultset);
+                        
+                        /* Print out field information */
+                        printf(HLINE);
                         for (i= 0; i < resultset->fields; i++) {
                             printf(
                                 "     field #%d: datatype %3d [%-20s] name '%s'\n",
@@ -74,10 +79,13 @@ int main(int argc, char **argv)
                                 resultset->dataformat[i].name
                             );
                         }
+                        printf(HLINE);
+                        
+                        /* Print out field contents */
                         while (sybase_fetch(result, &resultset) == SA_SUCCESS) {
                             for (i= 0; i < resultset->fields; i++) {
                                 printf(
-                                    "     %-19s: [%d:%d] '%s'\n", 
+                                    "     %-32s: [%d:%d] '%s'\n", 
                                     resultset->dataformat[i].name, 
                                     resultset->columns[i].indicator,
                                     resultset->columns[i].valuelen,
