@@ -46,11 +46,8 @@
       self::setTimeout($dsn->getProperty('timeout', 0));   // 0 means no timeout
       
       if (FALSE !== ($cat= $this->dsn->getValue('log'))) {
-        $l= Logger::getInstance();
-        $this->setTrace ($l->getCategory ($cat));
+        $this->setTrace(Logger::getInstance()->getCategory($cat));
       }
-      
-      
     }
 
     /**
