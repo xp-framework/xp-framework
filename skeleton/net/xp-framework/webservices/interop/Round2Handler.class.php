@@ -201,7 +201,7 @@
      * @throws  lang.IllegalArgumentException
      */
     function echoDate($inputDate) {
-      $this->_assertType('util.Date', $inputType);
+      $this->_assertType('util.Date', $inputDate);
       return $inputDate;
     }
     
