@@ -23,6 +23,16 @@
 
           See also <ref type="ext" link="http://www.php.net/manual/en/configuration.php">PHP: Configuration</ref>, 
           Examples 3-1 and 3-2.
+          
+          <br/><br/>
+          For certain parts of the framework to work properly, please set <b>all</b> magic
+          quotes related settings to <b>Off</b>:
+          
+          <pre><![CDATA[
+magic_quotes_gpc = Off
+magic_quotes_runtime = Off
+magic_quotes_sybase = Off
+]]></pre>
         </text>
       </para>
       <para>
