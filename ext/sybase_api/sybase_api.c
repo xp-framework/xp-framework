@@ -163,6 +163,9 @@ SYBASE_API int sybase_is_connected(sybase_link *link)
 SYBASE_API int sybase_query(sybase_link *link, sybase_result **result, char *query)
 {
     *result= (sybase_result*) smalloc(sizeof(sybase_result));
+    if (!*result) {
+       return SA_FAILURE | SA_EALLOC; 
+    }
     if (ct_cmd_alloc(link->connection, &(*result)->cmd) != CS_SUCCEED) {
         return SA_FAILURE | SA_EALLOC;
     }
@@ -202,11 +205,56 @@ SYBASE_API int sybase_results(sybase_result **result)
     return ((*result)->code == CS_SUCCEED) ? SA_SUCCESS : SA_FAILURE;
 }
 
+/**
+ * Initialize a resultset
+ * 
+ * @param   sybase_result **result
+ * @param   sybase_resultset **resultset
+ * @return  int
+ */
+SYBASE_API int sybase_init_resultset(sybase_result *result, sybase_resultset **resultset)
+{
+    int fields, i;
+
+    if (ct_res_info(result->cmd, CS_NUMDATA, &fields, CS_UNUSED, NULL) != CS_SUCCEED) {
+        return SA_FAILURE;
+    }
+
+    *resultset= (sybase_resultset*) smalloc(sizeof(sybase_result));
+    if (!*resultset) {
+       return SA_FAILURE | SA_EALLOC; 
+    }
+    (*resultset)->dataformat = (CS_DATAFMT *) smalloc(sizeof(CS_DATAFMT) * fields);
+    if (!(*resultset)->dataformat) {
+       return SA_FAILURE | SA_EALLOC; 
+    }
+    
+    (*resultset)->fields= fields;
+    for (i= 0; i < fields; i++) {
+        ct_describe(result->cmd, i+1, &(*resultset)->dataformat[i]);
+    }
+    return SA_SUCCESS;
+}
+
+/**
+ * Free a resultset
+ * 
+ * @param   sybase_resultset *result
+ * @return  int
+ */
+SYBASE_API int sybase_free_resultset(sybase_resultset *resultset)
+{
+    if (!resultset) {
+        return SA_FAILURE | SA_EALREADYFREE;
+    }
+    sfree(resultset);
+    return SA_SUCCESS;
+}
 
 /**
  * Free a result
  * 
- * @param   sybase_result **result
+ * @param   sybase_result *result
  * @return  int
  */
 SYBASE_API int sybase_free_result(sybase_result *result)
@@ -316,6 +364,75 @@ SYBASE_API char *sybase_nameofcode(CS_INT code)
             return "CS_END_RESULTS";
         case CS_CANCELED: 
             return "CS_CANCELED";
+        default:
+            return "(UNKNOWN)";
+    }
+    /* This point will never be reached */
+}
+
+/**
+ * Return the name of a data type
+ *
+ * @param   CS_INT type
+ * @return  char* name or (UNKNOWN) if the type is unknown
+ */
+SYBASE_API char *sybase_nameofdatatype(CS_INT datatype)
+{
+    switch ((int)datatype) {
+        case CS_CHAR_TYPE:
+            return "CS_CHAR_TYPE";
+        case CS_INT_TYPE:
+            return "CS_INT_TYPE";
+        case CS_SMALLINT_TYPE:
+            return "CS_SMALLINT_TYPE";
+        case CS_TINYINT_TYPE:
+            return "CS_TINYINT_TYPE";
+        case CS_MONEY_TYPE:
+            return "CS_MONEY_TYPE";
+        case CS_DATETIME_TYPE:
+            return "CS_DATETIME_TYPE";
+        case CS_NUMERIC_TYPE:
+            return "CS_NUMERIC_TYPE";
+        case CS_DECIMAL_TYPE:
+            return "CS_DECIMAL_TYPE";
+        case CS_DATETIME4_TYPE:
+            return "CS_DATETIME4_TYPE";
+        case CS_MONEY4_TYPE:
+            return "CS_MONEY4_TYPE";
+        case CS_IMAGE_TYPE:
+            return "CS_IMAGE_TYPE";
+        case CS_BINARY_TYPE:
+            return "CS_BINARY_TYPE";
+        case CS_BIT_TYPE:
+            return "CS_BIT_TYPE";
+        case CS_REAL_TYPE:
+            return "CS_REAL_TYPE";
+        case CS_FLOAT_TYPE:
+            return "CS_FLOAT_TYPE";
+        case CS_TEXT_TYPE:
+            return "CS_TEXT_TYPE";
+        case CS_VARCHAR_TYPE:
+            return "CS_VARCHAR_TYPE";
+        case CS_VARBINARY_TYPE:
+            return "CS_VARBINARY_TYPE";
+        case CS_LONGCHAR_TYPE:
+            return "CS_LONGCHAR_TYPE";
+        case CS_LONGBINARY_TYPE:
+            return "CS_LONGBINARY_TYPE";
+        case CS_LONG_TYPE:
+            return "CS_LONG_TYPE";
+        case CS_ILLEGAL_TYPE:
+            return "CS_ILLEGAL_TYPE";
+        case CS_SENSITIVITY_TYPE:
+            return "CS_SENSITIVITY_TYPE";
+        case CS_BOUNDARY_TYPE:
+            return "CS_BOUNDARY_TYPE";
+        case CS_VOID_TYPE:
+            return "CS_VOID_TYPE";
+        case CS_USHORT_TYPE:
+            return "CS_USHORT_TYPE";
+        case CS_UNIQUE_TYPE:
+            return "CS_UNIQUE_TYPE";
         default:
             return "(UNKNOWN)";
     }
