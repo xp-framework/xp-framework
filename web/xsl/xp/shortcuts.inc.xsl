@@ -26,7 +26,7 @@
           <xsl:for-each select="exsl:node-set($shortcuts)/shortcut">
             <td align="middle" valign="top">
               <a href="{@href}">
-                <img border="0" src="/image/icons/{@icon}.png"/><br/>
+                <img width="32" height="32" border="0" src="/image/icons/{@icon}.png"/><br/>
                 <xsl:value-of select="."/>
               </a>
             </td>
