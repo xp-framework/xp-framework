@@ -146,13 +146,13 @@
         return throw(new IllegalAccessException('Cannot access non-public method '.$msg->method));
       }
 
-      // Load corresponding class
+      // Create message from request data
       try(); {
         $class= &$this->classloader->loadClass($msg->action.'Handler');
       } if (catch('ClassNotFoundException', $e)) {
         return throw($e);
       }
-      
+
       // Check if method can be handled
       if (!$class->hasMethod($msg->method)) {
         return throw(new IllegalArgumentException(
@@ -160,20 +160,13 @@
         ));
       }
 
-      // Create instance
-      $handler= &$class->newInstance();
-
-      // Call method
-      $return= call_user_func_array(
-        array(&$handler, $msg->method),
-        $msg->getData(NULL)
-      );
-
-      // Clean up
-      delete($handler);
-
-      // Return data
-      return $return;
+      // Create instance and invoke method
+      with ($method= &$class->getMethod($msg->method)); {
+        return $method->invoke(
+          $class->newInstance(),
+          $msg->getData(NULL)
+        );
+      }
     }
 
   }
