@@ -32,7 +32,7 @@
           setMonth(parseInt(matches[2]) - 1);
           if (4 < matches.length) {
             y = parseInt(matches[4]);
-            setYear(y < 100 ? y + 1900 : y);
+            setYear(y < 30 ? y + 2000 : y);
           }
         }
       }
