@@ -49,6 +49,7 @@
   <xsl:for-each select="attribute">
     <xsl:value-of select="concat('      $', @name)"/>
     <xsl:choose>
+      <xsl:when test="@nullable = 'true'">= NULL</xsl:when>
       <xsl:when test="@typename= 'int'">= 0</xsl:when>
       <xsl:when test="@typename= 'string'">= ''</xsl:when>
       <xsl:when test="@typename= 'float'">= 0.0</xsl:when>
@@ -208,20 +209,7 @@
         $db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>', 0);
         $db->update('
           </xsl:text><xsl:value-of select="@database"/>..<xsl:value-of select="@name"/><xsl:text> set&#10;</xsl:text>
-      <xsl:for-each select="attribute[@identity = 'false']">
-    <xsl:text>            </xsl:text>
-    <xsl:value-of select="concat(@name, ' = ')"/>
-    <xsl:choose>
-        <xsl:when test="@typename= 'int'">%d</xsl:when>
-      <xsl:when test="@typename= 'string'">%s</xsl:when>
-      <xsl:when test="@typename= 'float'">%f</xsl:when>
-      <xsl:when test="@typename= 'bool'">%d</xsl:when>
-      <xsl:when test="@typename= 'util.Date'">%s</xsl:when>
-      <xsl:otherwise>= %c</xsl:otherwise>
-      </xsl:choose>
-    <xsl:if test="position() != last()">,&#10;</xsl:if>
-    </xsl:for-each>
-
+      <xsl:text>            %c</xsl:text>
       <xsl:text>
           where
             </xsl:text>
@@ -238,13 +226,8 @@
     
       <xsl:if test="position() != last()"> and </xsl:if>
     </xsl:for-each>
-    <xsl:text>
-          ',&#10;</xsl:text>
-    <xsl:for-each select="attribute[@identity= 'false']">
-      <xsl:text>          </xsl:text>
-      <xsl:value-of select="concat('$this->', @name)"/>
-    <xsl:if test="position() != last()">,&#10;</xsl:if>
-    </xsl:for-each>
+    <xsl:text>',
+          $this->_updated($db)</xsl:text>
     <xsl:if test="count(attribute[@identity= 'true']) &gt; 0">
         <xsl:text>,&#10;</xsl:text>
     </xsl:if>
@@ -279,30 +262,9 @@
         $db->insert('
           </xsl:text>
        <xsl:value-of select="@database"/>..<xsl:value-of select="@name"/><xsl:text> (&#10;</xsl:text>
-        <xsl:for-each select="attribute[@identity = 'false']">
-          <xsl:text>            </xsl:text>
-          <xsl:value-of select="@name"/>
-          <xsl:if test="position() != last()">,&#10;</xsl:if>
-        </xsl:for-each>
-        <xsl:text>&#10;          ) values (&#10;            </xsl:text>
-          <xsl:for-each select="attribute[@identity = 'false']">
-          <xsl:choose>
-            <xsl:when test="@typename= 'int'">%d</xsl:when>
-          <xsl:when test="@typename= 'string'">%s</xsl:when>
-          <xsl:when test="@typename= 'float'">%f</xsl:when>
-          <xsl:when test="@typename= 'bool'">%d</xsl:when>
-          <xsl:when test="@typename= 'util.Date'">%s</xsl:when>
-          <xsl:otherwise>= %c</xsl:otherwise>
-            </xsl:choose>
-
-            <xsl:if test="position() != last()">, </xsl:if>
-        </xsl:for-each>
+        <xsl:text>            %c</xsl:text>
         <xsl:text>&#10;          )',&#10;</xsl:text>
-        <xsl:for-each select="attribute[@identity = 'false']">
-          <xsl:text>          </xsl:text>
-          <xsl:value-of select="concat('$this->', @name)"/>
-          <xsl:if test="position() != last()">,&#10;</xsl:if>
-        </xsl:for-each>
+        <xsl:text>          $this->_inserted($db)</xsl:text>
         <xsl:text>
         );&#10;</xsl:text>
         <xsl:if test="count(attribute[@identity = 'true']) = 1">
