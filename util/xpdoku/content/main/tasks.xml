@@ -156,12 +156,22 @@
           <br/>
           The answer is quite easy: Template engines are always built on top of PHP, trying
           to emulate what PHP is actually really good at: Being a template engine! 
-          Template engines contain proprietary syntactic constructs making web site 
-          data unportable. <!-- TBD: More! -->
+          As if PHP wasn't easy enough, they add complex proprietary syntactic constructs 
+          making web site data unportable. A whole bunch of parsing and tokenizing is done
+          to accomplish loops, if, then, else, case, whatever-constructs which raises
+          the question - if you need reparsing, why not use <tt>eval()</tt>?
           <br/>
           <br/>
-          So, why not use a standard? Why not use XML? Have a look at the advanced
-          topics section for details.
+          It was decided to stick to standards here and use XML together with XSL
+          to keep data portable, taking advantage of the fact that XSL transformer
+          implementations are usually written in C or in C++ for performance reasons,
+          not having to worry about the fact that content editors and designers might
+          need to learn a whole new language. Also, more and more data is decided
+          on being represented in XML: This way, you can include RDF news feeds,
+          Office documents and SOAP replies directly into your website, given the
+          correct templates.
+          <br/>
+          Have a look at the advanced topics section for details.
         </text>
         <advanced>
           <ref link="tasks.web.xml">Using XML/XSL to seperate code from design</ref>
