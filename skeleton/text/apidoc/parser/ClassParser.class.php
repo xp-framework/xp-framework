@@ -81,6 +81,7 @@
     function setClassComment($class, $extends, $str) {
       $comment= &CommentFactory::factory(APIDOC_COMMENT_CLASS);
       $comment->fromString($str);
+      $comment->setClassName($class);
       $comment->setExtends($extends);
       $this->comments[APIDOC_COMMENT_CLASS]= &$comment;
     }
