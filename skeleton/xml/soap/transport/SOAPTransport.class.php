@@ -39,6 +39,5 @@
      * @return  &xml.soap.SOAPMessage
      */
     function &retrieve() { }
- 
- }
+  }
 ?>
