@@ -114,9 +114,26 @@
       ))) {
         return throw(new IOException('Select failed: '.$this->getLastError()));
       }
+      
       return $n > 0;
     }
-    
+
+    /**
+     * Private helper function
+     *
+     * @access  private
+     * @param   int maxLen
+     * @param   int type PHP_BINARY_READ or PHP_NORMAL_READ
+     * @return  string data
+     */
+    function _read($maxLen, $type) {
+      if (FALSE === ($res= socket_read($this->_sock, $maxLen, $type))) {
+        return throw(new IOException('Read failed: '.$this->getLastError()));
+      }
+      
+      return $res;
+    }
+        
     /**
      * Read data from a socket
      *
@@ -126,13 +143,7 @@
      * @throws	IOException
      */
     function read($maxLen= 4096) {
-      $res= socket_read($this->_sock, $maxLen);
-      # DEBUG echo "RECV(".$maxLen.") ".var_export($res, 1)."\n";
-      
-      if (FALSE === $res) {
-        return throw(new IOException('Read failed: '.$this->getLastError()));
-      }
-      return $res;
+      return $this->_read($maxLen, PHP_NORMAL_READ);
     }
     
     /**
@@ -144,7 +155,7 @@
      * @throws	IOException
      */
     function readBinary($maxLen= 4096) {
-      return $this->read($maxLen);
+      return $this->_read($maxLen, PHP_BINARY_READ);
     }
 
     /**
