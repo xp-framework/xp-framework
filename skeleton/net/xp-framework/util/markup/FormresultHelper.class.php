@@ -4,11 +4,7 @@
  * $Id$ 
  */
 
-  uses(
-    'net.xp-framework.util.markup.MarkupBuilder',
-    'util.log.Logger',
-    'xml.parser.XMLParser'
-  );
+  uses('net.xp-framework.util.markup.MarkupBuilder');
 
   /**
    * Helper class that provides an easy way to retrieve an xml.Node
@@ -20,10 +16,7 @@
 
     /**
      * Helper method that returns an xml.Node object for a specified
-     * text. If the given text is well-formed (according to the rules
-     * for valid XML), the node contains the XML in its contents,
-     * otherwise all HTML is stripped (using strip_tags) and then 
-     * escaped.
+     * text.
      *
      * @model   static
      * @access  protected
@@ -32,28 +25,10 @@
      * @return  &xml.Node
      */
     function markupNodeFor($name, $string) {
-      static $parser= NULL, $builder= NULL;
+      static $builder= NULL;
       
-      if (!$parser) $parser= new XMLParser();
       if (!$builder) $builder= new MarkupBuilder();
-
-      // Convert string to XML - TBD: Use more fault-tolerant method
-      $markup= $builder->markupFor($string);
-      try(); {
-        $parser->parse(
-          '<?xml version="1.0" encoding="iso-8859-1"?>'.
-          '<body>'.$markup.'</body>'
-        );
-      } if (catch('XMLFormatException', $e)) {
-        $l= &Logger::getInstance();
-        $cat= &$l->getCategory();
-        $cat->warn($e, 'parsing', '<body>'.$markup.'</body>');
-        return new Node($name, strip_tags($string));
-      }
-
-      // We've successfully parse the XML, it's valid and we may add
-      // it to the formresult "AS IS"
-      return new Node($name, new PCData($markup));
+      return new Node($name, new PCData($builder->markupFor($string)));
     }
   }
 ?>
