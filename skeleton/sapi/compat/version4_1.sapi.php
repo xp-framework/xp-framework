@@ -1,5 +1,5 @@
 <?php
-/* This file provides the CLI sapi for the XP framework
+/* This file provides the PHP 4.1 compatibility sapi for the XP framework
  * 
  * $Id$
  */
