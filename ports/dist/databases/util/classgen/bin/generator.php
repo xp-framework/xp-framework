@@ -7,66 +7,86 @@
  * $Id$
  */
   require('lang.base.php');
+  xp::sapi('cli');
   uses(
     'rdbms.util.DBXmlGenerator', 
     'rdbms.DBTable',
-    'rdbms.sybase.SybaseDBAdapter',
-    'rdbms.mysql.MySQLDBAdapter',
     'rdbms.DSN',
     'rdbms.DriverManager',
     'util.log.Logger',
     'util.log.FileAppender',
     'util.cmd.ParamString'
   );
+  
+  // Scheme => Adapter mapping
+  $adapters= array(
+    'mysql'   => 'rdbms.mysql.MySQLDBAdapter',
+    'sybase'  => 'rdbms.sybase.SybaseDBAdapter',
+    'pgsql'   => 'rdbms.pgsql.PostgreSQLDBAdapter'
+  );
 
+  // {{{ main
   $param= &new ParamString();
-  try(); {
-    $dsnString= $param->value (1);
-  } if (catch ('Exception', $e)) {
-    printf(
-      "Usage: %s [dsn]\n".
-          "       Example: php generator.php sybase://user:pass@host/database/table\n", 
-          basename($_SERVER['argv'][0])
-	);
-    exit();
+  if ($param->count < 3 || $param->exists('help', '?')) {
+    Console::writeLine(<<<__
+Generates O/R XML for a specified database table
+--------------------------------------------------------------------------------
+
+Usage: php generator.php <DSN> <FQCN> [<options>]
+
+  * DSN:
+    scheme://user:password@host/database/table
+
+  * FQCN:
+    Fully qualified class name, e.g. "de.thekid.db.forum.Entry"
+
+  * Options:
+    --connection, -C: Define connection name, defaults to <host> from DSN
+__
+    );
+    exit(1);
   }
 
-  $dsn= parse_url($dsnString);
+  // Parse DSN
+  $dsn= parse_url($param->value(1));
   list(, $database, $table)= explode('/', $dsn['path'], 3);
-
-  $drvManager= &DriverManager::getInstance();
-  $dbo= &$drvManager->getConnection ($dsnString);
-
-  switch ($dsn['scheme']) {
-    case 'sybase':
-      $adapter= &new SybaseDBAdapter($dbo);
-      break;
-      
-    case 'mysql':
-      $adapter= &new MySQLDBAdapter($dbo);
-      break;
-    
-    default:
-      printf("Unsupported scheme '%s'\n", $dsn['scheme']);
-      exit();
+  if (!isset($adapters[$dsn['scheme']])) {
+    Console::writeLine('Unsupported scheme "', $dsn['scheme'], '"');
+    exit(1);
   }
   
-  // HACK
-  $adapter->conn->dsn->parts['path']= NULL;
-  
+  // Get connection
+  $dm= &DriverManager::getInstance();
+  $dbo= &$dm->getConnection(sprintf(
+    '%s://%s:%s@%s/%s?autoconnect=1',
+    $dsn['scheme'],
+    $dsn['user'],
+    $dsn['pass'],
+    $dsn['host'],
+    $database
+  ));
+
+  // Create adapter instance
+  $class= &XPClass::forName($adapters[$dsn['scheme']]);
+  $adapter= &$class->newInstance($dbo);
+
+  // Generate XML
   try(); {
-    $adapter->conn->connect();
-    $adapter->conn->selectdb($database);
+    $gen= &DBXmlGenerator::createFromTable(
+      DBTable::getByName($adapter, $table), 
+      $param->value('connection', 'C', $dsn['host']), 
+      $database
+    ); 
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
     exit;
-  }	
+  }
   
-  try(); {
-    $gen= &DBXmlGenerator::createFromTable(DBTable::getByName($adapter, $table), $dsn['host'], $database); 
-  } if (catch('Exception', $e)) {
-    $e->printStackTrace();
-    exit;
+  $fqcn= $param->value(2);
+  with ($node= &$gen->doc->root->children[0]); {  // Table node
+    $node->setAttribute('dbtype', $dsn['scheme']);
+    $node->setAttribute('class', substr($fqcn, strrpos($fqcn, '.')+ 1));
+    $node->setAttribute('package', substr($fqcn, 0, strrpos($fqcn, '.')));
   }
   echo $gen->getSource();
 ?>

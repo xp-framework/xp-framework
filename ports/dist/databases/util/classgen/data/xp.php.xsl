@@ -5,14 +5,26 @@
   <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
   <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
   
+  <xsl:template name="separator">
+    <xsl:param name="database"/>
+    <xsl:param name="table"/>
+    <xsl:param name="dbtype"/>
+    
+    <xsl:choose>
+      <xsl:when test="$dbtype = 'pgsql'"><xsl:value-of select="$table"/></xsl:when>
+      <xsl:when test="$dbtype = 'mysql'"><xsl:value-of select="concat($database, '.', $table)"/></xsl:when>
+      <xsl:when test="$dbtype = 'sybase'"><xsl:value-of select="concat($database, '..', $table)"/></xsl:when>
+    </xsl:choose>
+  </xsl:template>
+  
   <xsl:template name="prettyname">
     <xsl:param name="string"/>
   
-  <xsl:value-of select="concat(
-    translate(substring($string, 1, 1), $lcletters, $ucletters),
-    translate(substring($string, 2), $ucletters, $lcletters)
-  )"/>
-  </xsl:template>  
+    <xsl:value-of select="concat(
+      translate(substring($string, 1, 1), $lcletters, $ucletters),
+      translate(substring($string, 2), $ucletters, $lcletters)
+    )"/>
+  </xsl:template>
   
   <xsl:template match="/">
     <xsl:text>&lt;?php
@@ -40,11 +52,7 @@
    *
    * @purpose  Datasource accessor
    */
-  class </xsl:text>
-  <xsl:call-template name="prettyname">
-    <xsl:with-param name="string" select="@name"/>
-  </xsl:call-template>
-  <xsl:text> extends DataSet {&#10;    var&#10;</xsl:text>
+  class </xsl:text><xsl:value-of select="@class"/><xsl:text> extends DataSet {&#10;    var&#10;</xsl:text>
   
   <!-- Attributes -->
   <xsl:for-each select="attribute">
@@ -70,10 +78,12 @@
      * @access  public
      */
     function __static() { 
-      with ($peer= &amp;</xsl:text><xsl:call-template name="prettyname">
-    <xsl:with-param name="string" select="@name"/>
-  </xsl:call-template><xsl:text>::getPeer()); {
-        $peer->setTable('</xsl:text><xsl:value-of select="@database"/>..<xsl:value-of select="@name"/><xsl:text>');
+      with ($peer= &amp;</xsl:text><xsl:value-of select="@class"/><xsl:text>::getPeer()); {
+        $peer->setTable('</xsl:text><xsl:call-template name="separator">
+          <xsl:with-param name="database" select="@database"/>
+          <xsl:with-param name="table" select="@name"/>
+          <xsl:with-param name="dbtype" select="@dbtype"/>
+        </xsl:call-template><xsl:text>');
         $peer->setConnection('</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>');</xsl:text>
         <xsl:if test="attribute[@identity= 'true']">
           <xsl:text>&#10;        $peer->setIdentity('</xsl:text><xsl:value-of select="attribute[@identity= 'true']/@name"/><xsl:text>');</xsl:text>
@@ -132,10 +142,7 @@
       <xsl:value-of select="concat(../../attribute[@name= $key]/@typename, ' ', $key)"/>
     </xsl:for-each>
     <xsl:text>
-     * @return  &amp;</xsl:text>
-    <xsl:call-template name="prettyname">
-    <xsl:with-param name="string" select="../@name"/>
-    </xsl:call-template>
+     * @return  &amp;</xsl:text><xsl:value-of select="concat(../@package, '.', ../@class)"/>
       <xsl:if test="not(@unique= 'true')">[]</xsl:if>
     <xsl:text> object
      * @throws  rdbms.SQLException in case an error occurs
@@ -152,11 +159,7 @@
     <xsl:if test="position() != last()">, </xsl:if>
     </xsl:for-each>
     <xsl:text>) {
-      $peer= &amp;</xsl:text>
-      <xsl:call-template name="prettyname">
-      <xsl:with-param name="string" select="../@name"/>
-      </xsl:call-template>      
-      <xsl:text>::getPeer();&#10;</xsl:text>
+      $peer= &amp;</xsl:text><xsl:value-of select="../@class"/><xsl:text>::getPeer();&#10;</xsl:text>
       <xsl:choose>
         <xsl:when test="count(key) = 1">
           <xsl:text>      return </xsl:text>
