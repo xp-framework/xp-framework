@@ -30,7 +30,7 @@ NEdit configuration containing the following goodies:
   F1          - PHP documentation for selection
     
 . XP extensions (see util/bin/xpci)  
-  Alt+H       - insert class file header
+  Shift+Alt+D - insert class file header
   Shift+Alt+C - insert class template
   Alt+D       - insert method documentation
   Alt+F1      - XP api doc for class (from selection)
