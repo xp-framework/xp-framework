@@ -33,13 +33,23 @@
     </p>
     
     <!-- News -->
-    <xsl:call-template name="divider"/><br/>
+    <br/>
     <xsl:apply-templates select="news"/>
     
     <!-- Links -->
-    <br/><xsl:call-template name="divider"/><br/>
-      <table border="0" width="100%" cellspacing="0" cellpadding="2">
-        <xsl:for-each select="links/link">
+    <br/><br/>
+    <table border="0" width="100%" cellspacing="0" cellpadding="2">
+      <xsl:for-each select="links/link">
+        <xsl:if test="position() &gt; 1">
+          <tr>
+            <td>
+              <img src="/image/spacer.gif" width="1" height="1" border="0" hspace="0" vspace="0"/>
+            </td>
+            <td colspan="2" style="border-bottom: 1px dashed #616161">
+              <img src="/image/spacer.gif" width="1" height="1" border="0" hspace="0" vspace="0"/>
+            </td>
+          </tr>
+        </xsl:if>
         <tr>
           <td width="4%" nowrap="nowrap">
             <img src="/image/anc_overview.gif" height="19" width="22" alt="=&gt;" hspace="2" vspace="2"/>
