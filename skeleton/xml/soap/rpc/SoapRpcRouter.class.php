@@ -62,7 +62,7 @@
      * Create a request object.
      *
      * @access  protected
-     * @return  &scriptlet.HttpScriptletRequest
+     * @return  &xml.soap.rpc.SoapRpcRequest
      */
     function &_request() {
       return new SoapRpcRequest();
@@ -73,7 +73,7 @@
      * your own response object
      *
      * @access  protected
-     * @return  &scriptlet.HttpScriptletResponse
+     * @return  &xml.soap.rpc.SoapRpcResponse
      */
     function &_response() {
       return new SoapRpcResponse();
@@ -84,7 +84,9 @@
      * HTTP POST, throw an exception. We could also provide a usage
      * example, but this may be going too far.
      *
-     * @see     scriptlet.HttpScriptlet#doGet
+     * @access  public
+     * @param   &xml.soap.rpc.SoapRpcRequest request
+     * @param   &xml.soap.rpc.SoapRpcResponse response
      */
     function doGet(&$request, &$response) {
       return throw(new IllegalAccessException('GET is not supported'));
@@ -93,7 +95,9 @@
     /**
      * Handle POST requests. The complete POST data consits
      *
-     * @see     scriptlet.HttpScriptlet#doGet
+     * @access  public
+     * @param   &xml.soap.rpc.SoapRpcRequest request
+     * @param   &xml.soap.rpc.SoapRpcResponse response
      */
     function doPost(&$request, &$response) {
       try(); {
@@ -116,6 +120,7 @@
         $answer->setData(array($return));
 
       } if (catch('Exception', $e)) {
+        $stacktrace= array();
         foreach ($e->getStackTrace() as $element) {
           $stacktrace[]= $element->toString();
         }
