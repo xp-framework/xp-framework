@@ -25,8 +25,6 @@
      */
     function __construct(&$file) {
       $this->file= &$file;
-      $this->file->open(FILE_MODE_READ);
-      
     }
     
     /**
@@ -61,7 +59,7 @@
             
           default:
             $c= ($trim
-              ? trim(chop($node->children[$i]->content))
+              ? trim($node->children[$i]->content)
               : $node->children[$i]->content
             );
               
@@ -92,9 +90,9 @@
       } if (catch('Exception', $e)) {
         return throw($e);
       }
-
+      
       foreach ($this->_recurse($tree->root, $trim) as $k => $v) {
-        $result[$name]->$k= $v;
+        $result->$k= $v;
       }      
       return $result;
     }
@@ -104,9 +102,10 @@
      *
      * @access  public
      * @return  bool success
+     * @deprecated
      */
     function close() {
-      return $this->file->close();
+      return TRUE;
     }
   }
 ?>
