@@ -60,7 +60,7 @@
 	<xsl:text>;&#10;</xsl:text>
 	
 	<!-- Create a static method for indexes -->
-	<xsl:for-each select="index">
+	<xsl:for-each select="index[@name != '']">
 	  <xsl:text>
     /**
      * Gets an instance of this object by index "</xsl:text><xsl:value-of select="@name"/><xsl:text>"
