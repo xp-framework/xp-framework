@@ -59,10 +59,10 @@
     /**
      * Create a date from a string
      *
-     * <pre>
+     * <code>
      *   $d= &Date::fromString('yesterday');
      *   $d= &Date::fromString('2003-02-01');
-     * </pre>
+     * </code>
      *
      * @access  public
      * @model   static
