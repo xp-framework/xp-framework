@@ -32,6 +32,11 @@
     
   }
   // }}}
+
+  if (PHP_SAPI != 'cli') {
+    xp::error('[sapi::cli] Cannot be run under '.PHP_SAPI.' SAPI');
+    // Bails out
+  }
   
   ini_set('error_prepend_string', EPREPEND_IDENTIFIER);
   ob_start(array('sapi·cli', 'output'));
