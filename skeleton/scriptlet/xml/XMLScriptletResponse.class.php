@@ -192,6 +192,16 @@
     function setStylesheet($stylesheet, $type= XSLT_FILE) {
       $this->_stylesheet= array($type, $stylesheet);
     }
+
+    /**
+     * Retrieves whether a stylesheet has been set
+     *
+     * @access  public
+     * @param   bool
+     */
+    function hasStylesheet() {
+      return !empty($this->_stylesheet);
+    }
     
     /**
      * Sets an XSL parameter
