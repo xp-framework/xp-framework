@@ -32,6 +32,16 @@
 #include "zend_compile.h"
 #include "zend_API.h"
 
+#define XP_DEBUG            (1<<0L)
+#define XP_LOG              (1<<1L)
+#define XP_INFO             (1<<2L)
+#define XP_WARNING          (1<<3L)
+#define XP_ERROR            (1<<4L)
+#define XP_FATAL            (1<<5L)
+
+#define XP_ERROR_FMT_STR    "[xp $Revision$] %-11s"
+#define XP_ERROR_FMT_LEN    32
+
 ZEND_DECLARE_MODULE_GLOBALS(xp)
 
 /* {{{ xp_functions[]
@@ -39,7 +49,7 @@ ZEND_DECLARE_MODULE_GLOBALS(xp)
  */
 static function_entry xp_functions[] = {
 	PHP_FE(uses,	NULL)
-#ifdef XP_DEBUG
+#ifdef XP_DEBUGGING
     PHP_FE(testnames, NULL)
 #endif
 	{ NULL, NULL, NULL }
@@ -91,8 +101,6 @@ zend_module_entry xp_module_entry = {
 };
 /* }}} */
 
-zend_class_entry xp_object_class_entry;
-
 #ifdef COMPILE_DL_XP
 ZEND_GET_MODULE(xp)
 #endif
@@ -104,13 +112,61 @@ PHP_INI_BEGIN()
 PHP_INI_END()
 /* }}} */
 
+/* {{{ panter_error - error handler */
+static void xp_error(int type, char* msg, ...)
+{	
+    va_list ap;
+    char *txt;
+    int msg_len= strlen(msg);
+    
+    txt= (char*)malloc(XP_ERROR_FMT_LEN + msg_len+ 1);
+    switch (type) {
+        case XP_DEBUG:
+            snprintf(txt, XP_ERROR_FMT_LEN, XP_ERROR_FMT_STR, "Debug");
+            break;
+            
+        case XP_LOG:
+            snprintf(txt, XP_ERROR_FMT_LEN, XP_ERROR_FMT_STR, "Log");
+            break;
+
+        case XP_INFO:
+            snprintf(txt, XP_ERROR_FMT_LEN, XP_ERROR_FMT_STR, "Information");
+            break;
+            
+        case XP_WARNING:
+            snprintf(txt, XP_ERROR_FMT_LEN, XP_ERROR_FMT_STR, "Warning");
+            break;
+            
+        case XP_ERROR:
+            snprintf(txt, XP_ERROR_FMT_LEN, XP_ERROR_FMT_STR, "Error");
+            break;
+            
+        case XP_FATAL:
+            snprintf(txt, XP_ERROR_FMT_LEN, XP_ERROR_FMT_STR, "Fatal");
+            break;
+            
+        default:
+            snprintf(txt, XP_ERROR_FMT_LEN, XP_ERROR_FMT_STR, "(Unknown)");
+            break;
+    }
+    strncat(txt, msg, msg_len);
+    strncat(txt, "\n", 1);
+	va_start(ap, msg);
+	vfprintf(stderr, txt, ap);
+	va_end(ap);
+    
+    free(txt);
+    
+    if (type == XP_FATAL) zend_bailout();
+}
+/* }}} */
+
 /* {{{ php_xp_init_globals
  */
 static void php_xp_init_globals(zend_xp_globals *xp_globals TSRMLS_DC)
 {
-	#ifdef XP_DEBUG
-	fprintf(stderr, "xp>> php_xp_init_globals\n");
-	#endif
+    xp_error(XP_DEBUG, "php_xp_init_globals");
+
 	xp_globals->class_path = NULL;
     zend_hash_init(&xp_globals->names, 10, NULL, ZVAL_PTR_DTOR, 1);
 }
@@ -120,9 +176,10 @@ static void php_xp_init_globals(zend_xp_globals *xp_globals TSRMLS_DC)
  */
 static void php_xp_destroy_globals(zend_xp_globals *xp_globals TSRMLS_DC)
 {
-	#ifdef XP_DEBUG
+	#ifdef XP_DEBUGGING
 	fprintf(stderr, "xp>> php_xp_destroy_globals\n");
 	#endif
+
     zend_hash_destroy(&xp_globals->names);
 }
 /* }}} */
@@ -166,7 +223,7 @@ PHP_MINIT_FUNCTION(xp)
 	ZEND_INIT_MODULE_GLOBALS(xp, php_xp_init_globals, php_xp_destroy_globals);
 	REGISTER_INI_ENTRIES();
 
-	#ifdef XP_DEBUG
+	#ifdef XP_DEBUGGING
 	fprintf(stderr, "xp>> PHP_MINIT_FUNCTION\n");
 	#endif
 	
@@ -188,7 +245,7 @@ PHP_MINIT_FUNCTION(xp)
  */
 PHP_MSHUTDOWN_FUNCTION(xp)
 {
-	#ifdef XP_DEBUG
+	#ifdef XP_DEBUGGING
 	fprintf(stderr, "xp>> PHP_MSHUTDOWN_FUNCTION\n");
 	#endif
 
@@ -209,7 +266,7 @@ PHP_MSHUTDOWN_FUNCTION(xp)
  */
 PHP_RINIT_FUNCTION(xp)
 {
-	#ifdef XP_DEBUG
+	#ifdef XP_DEBUGGING
 	fprintf(stderr, "xp>> PHP_RINIT_FUNCTION\n");
 	#endif
 
@@ -225,7 +282,7 @@ PHP_RINIT_FUNCTION(xp)
  */
 PHP_RSHUTDOWN_FUNCTION(xp)
 {
-	#ifdef XP_DEBUG
+	#ifdef XP_DEBUGGING
 	fprintf(stderr, "xp>> PHP_RSHUTDOWN_FUNCTION\n");
 	#endif
     zend_hash_clean(&XPG(names));
@@ -646,7 +703,7 @@ static int php_xp_uses(char *arg, int arg_len TSRMLS_DC)
     return_value = Z_BVAL(retval);
     zval_dtor(&retval);
 
-	#ifdef XP_DEBUG
+	#ifdef XP_DEBUGGING
 	fprintf(stderr, "xp>> uses(string(%d)'%s') = %d\n", arg_len, arg, return_value);
 	#endif
     
@@ -710,7 +767,7 @@ PHP_FUNCTION(uses)
 }
 /* }}} */
 
-#ifdef XP_DEBUG
+#ifdef XP_DEBUGGING
 static int _print_values(zval **zv, int num_args, va_list args, zend_hash_key *hash_key)
 {
     if (hash_key->nKeyLength == 0) {
