@@ -8,6 +8,15 @@
     'util.cmd.ParamString'
   );
   
+  function highlightPHPSource($str) {
+    // var_dump($str);
+    ob_start();
+    highlight_string("<?php\n".stripslashes($str)."\n?>");
+    $source= ob_get_contents();
+    ob_end_clean();
+    return str_replace('&nbsp;', '&#160;', $source);
+  }
+  
   function recurseFolders($uri, $pattern, &$parser) {
     $folder= &new Folder($uri);
     while ($entry= $folder->getEntry()) {
@@ -38,7 +47,17 @@
         $out= &new File('xml/'.$uses.'.xpdoc.xml');
         try(); {
           $out->open(FILE_MODE_WRITE);
-          $out->write($node->getSource(0));
+          $out->writeLine($node->getDeclaration());
+          $out->writeLine(preg_replace(
+            array(
+              '#&lt;pre&gt;(.*)&lt;/pre&gt;#sU',
+              '#&lt;code&gt;(.*)&lt;/code&gt;#sUe',
+            ), array(
+              '<pre>$1</pre>',
+              'highlightPHPSource(\'$1\')'
+            ),
+            $node->getSource(0)
+          ));
           $out->close();
         } if (catch('Exception', $e)) {
           $e->printStackTrace();
