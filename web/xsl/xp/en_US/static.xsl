@@ -77,11 +77,11 @@
   <xsl:template name="content">
     <h1>use::xp</h1>
 
-    <table cellpadding="10">
+    <table class="shortcuts">
       <tr>
         <xsl:for-each select="exsl:node-set($shortcuts)/shortcut">
           <td align="middle" valign="top">
-            <a href="{@href}" class="nav">
+            <a href="{@href}">
               <img border="0" src="/image/icons/{@icon}.png"/><br/>
               <xsl:value-of select="."/>
             </a>
