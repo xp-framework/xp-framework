@@ -6,6 +6,9 @@
  
   uses('img.ImagingException');
   
+  define('IMG_PALETTE',   0x0000);
+  define('IMG_TRUECOLOR', 0x0001);
+  
   /**
    * Base class for images
    *
@@ -60,14 +63,27 @@
      * @access  public
      * @param   int w width
      * @param   int h height
-     * @param   bool truecolor default FALSE
+     * @param   int type default IMG_PALETTE either IMG_PALETTE or IMG_TRUECOLOR
+     * @throws  img.ImagingException in case the image could not be created
      */
-    function &create($w, $h, $truecolor= FALSE) {
-      if ($truecolor) {
-        return new Image(imagecreatetruecolor($w, $h));
-      } else {
-        return new Image(imagecreate($w, $h));
+    function &create($w, $h, $type= IMG_PALETTE) {
+      switch ($type) {
+        case IMG_PALETTE: 
+          $handle= imagecreate($w, $h);
+          break;
+
+        case IMG_TRUECOLOR:
+          $handle= imagecreatetruecolor($w, $h);
+          break;
+
+        default:
+          return throw(new ImagingException('Unknown type '.$type));
       }
+
+      if (!is_resource($handle)) {
+        return throw(new ImagingException('Could not create image of type '.$type));
+      }
+      return new Image($handle);
     }
 
     /**
