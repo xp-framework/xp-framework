@@ -21,6 +21,18 @@
   
   // TBD: Get from database?
   $news->addItem(
+    'CSVParser class added', 
+    'http://xp.php3.de/apidoc/classes/util.text.parser.CSVParser.html',
+    'CSVParser provides comfortable way to parse csv (comma separated value) - files.',
+    new Date('2003-01-20 13:06:51')
+  );
+  $news->addItem(
+    'MySQL Adapter completed', 
+    'http://xp.php3.de/apidoc/classes/rdbms.mysql.html',
+    'Reverse engineer MySQL - tables, databases, attributes and keys. This functionality allows for automatic creation of database classes from MySQL.',
+    new Date('2003-01-20 12:50:52')
+  );
+  $news->addItem(
     'About XP', 
     'http://xp.php3.de/content/about.html',
     'An introduction to the XP framework, including installation tips, coding standards, a howto on class documentation and CVS guidelines is now available. Enjoy reading!',
