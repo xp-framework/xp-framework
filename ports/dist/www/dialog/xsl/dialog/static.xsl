@@ -16,7 +16,7 @@
   <!--
    ! Template for pager
    !
-   ! @purpose  Links to previos 
+   ! @purpose  Links to previous and next
    !-->
   <xsl:template name="pager">
     <center>
@@ -42,6 +42,68 @@
   </xsl:template>
   
   <!--
+   ! Template for albums
+   !
+   ! @purpose  Specialized entry template
+   !-->
+  <xsl:template match="entry[@type = 'de.thekid.dialog.Album']">
+    <div class="datebox">
+      <h2><xsl:value-of select="created/mday"/></h2> 
+      <xsl:value-of select="substring(created/month, 1, 3)"/>&#160;
+      <xsl:value-of select="created/year"/>
+    </div>
+    <h2>
+      <a href="{func:link(concat('album/view?', @name))}">
+        <xsl:value-of select="@title"/>
+      </a>
+    </h2>
+    <p align="justify">
+      <xsl:copy-of select="description"/>
+      <br clear="all"/>
+    </p>
+
+    <h4>Highlights</h4>
+    <table class="highlights" border="0">
+      <tr>
+        <xsl:for-each select="highlights/highlight">
+          <td>
+            <a href="{func:link(concat('image/view?', ../../@name, ',h,0,', position()- 1))}">
+              <img width="150" height="113" border="0" src="/albums/{../../@name}/thumb.{name}"/>
+            </a>
+          </td>
+        </xsl:for-each>
+      </tr>
+    </table>
+    <p>
+      This album contains <xsl:value-of select="@num_images"/> images in <xsl:value-of select="@num_chapters"/> chapters -
+      <a href="{func:link(concat('album/view?', @name))}">See more</a>
+    </p>
+    <br/><br clear="all"/>
+  </xsl:template>
+  
+  <!--
+   ! Template for updates
+   !
+   ! @purpose  Specialized entry template
+   !-->
+  <xsl:template match="entry[@type = 'de.thekid.dialog.Update']">
+    <div class="datebox">
+      <h2><xsl:value-of select="date/mday"/></h2> 
+      <xsl:value-of select="substring(date/month, 1, 3)"/>&#160;
+      <xsl:value-of select="date/year"/>
+    </div>
+    <h2>
+      Updated: <xsl:value-of select="@title"/>
+    </h2>
+    <p align="justify">
+      <xsl:copy-of select="description"/>
+      - <a href="{func:link(concat('album/view?', @album))}">Go to album</a>
+      <br clear="all"/>
+    </p>
+    <br/><br clear="all"/>
+  </xsl:template>
+
+  <!--
    ! Template for content
    !
    ! @see      ../layout.xsl
@@ -60,39 +122,8 @@
     <br clear="all"/>
     <xsl:call-template name="pager"/>
   
-    <xsl:for-each select="/formresult/albums/album">
-      <div class="datebox">
-        <h2><xsl:value-of select="created/mday"/></h2> 
-        <xsl:value-of select="substring(created/month, 1, 3)"/>&#160;
-        <xsl:value-of select="created/year"/>
-      </div>
-      <h2>
-        <a href="{func:link(concat('album/view?', @name))}">
-          <xsl:value-of select="@title"/>
-        </a>
-      </h2>
-      <p align="justify">
-        <xsl:copy-of select="description"/>
-        <br clear="all"/>
-      </p>
-      
-      <h4>Highlights</h4>
-      <table class="highlights" border="0">
-        <tr>
-          <xsl:for-each select="highlights/highlight">
-            <td>
-              <a href="{func:link(concat('image/view?', ../../@name, ',h,0,', position()- 1))}">
-                <img width="150" height="113" border="0" src="/albums/{../../@name}/thumb.{name}"/>
-              </a>
-            </td>
-          </xsl:for-each>
-        </tr>
-      </table>
-      <p>
-        This album contains <xsl:value-of select="@num_images"/> images in <xsl:value-of select="@num_chapters"/> chapters -
-        <a href="{func:link(concat('album/view?', @name))}">See more</a>
-      </p>
-      <br/><br clear="all"/>
+    <xsl:for-each select="/formresult/entries/entry">
+      <xsl:apply-templates select="."/>
     </xsl:for-each>
     
     <br clear="all"/>
