@@ -1,0 +1,115 @@
+<?php
+/* This class is part of the XP framework
+ * 
+ * $Id$
+ */
+ 
+  define('CAL_SEC_HOUR',    3600);
+  define('CAL_SEC_DAY',        86400);
+  define('CAL_SEC_WEEK',    604800);
+  
+  /**
+   * Calendar class
+   *
+   * @model   static
+   */
+  class Calendar extends Object {
+  
+    /**
+     * Calculates the amount of workdays between to dates
+     * Workdays are defined as Monday through Friday
+     *
+     * @access  public
+     * @param   mixed start Startdate (either unix-Timestamp or util.Date)
+     * @param   mixed end Enddate (either unix-Timestamp or util.Date)
+     * @param   array holidays default array() Holidays to be included in calculation
+     *          Format for array is: array(Unix-timestamp (create w/ gmmktime()!) => TRUE)
+     * @return  int number of workdays
+     */
+    function workdays($start, $end, $holidays= array()) {
+      $s= is_a('Date', $start) ? $start->getTime() : $start;
+      $e= is_a('Date', $end) ? $end->getTime() : $end;
+
+      // For holidays, we have to compare to midnight
+      // else, don't calculate this
+      if (!empty($holidays)) $s-= $s % CAL_SEC_DAY;
+      
+      // Is there a more intelligent way of doing this?
+      $diff= floor(($e - $s) / CAL_SEC_DAY);
+      for ($i= $s; $i <= $e; $i+= CAL_SEC_DAY) {
+        $diff-= ((date('w', $i)+ 6) % 7 > 4 or isset($holidays[$i]));
+      }
+      
+      return $diff+ 1;
+    }
+  
+    /**
+     * Returns calendar week for a day
+     *
+     * @access  public
+     * @param   mixed date default -1 Date, defaults to today (either unix-Timestamp or util.Date)
+     * @return  int calendar week
+     * @see     http://www.salesianer.de/util/kalwoch.html 
+     */
+    function week($date= -1) {
+      function caldiff($date, $year) {
+        $d4= mktime(0, 0, 0, 1, 4, $year);
+        return floor(1.05 + ($date- $d4) / CAL_SEC_WEEK+ ((date('w', $d4)+ 6) % 7) / 7);
+      }
+      
+      // Check for passed arguments
+      $d= (is_a('Date', $date) 
+        ? $date->getTime()
+        : ($date == -1 ? time() : $date)
+      );
+      
+      $year= date('Y', $d)+ 1;
+      do {
+          $w= caldiff($d, $year);
+        $year--;
+      } while ($w < 1);
+      return $w;
+    }
+    
+    /**
+     * Get first of advent for given year
+     *
+     * @access  public
+     * @param   int year default -1 Year, defaults to this year
+     * @return    int Unix-timestamp for date of the first of advent
+     * @see     http://www.salesianer.de/util/kalfaq.html
+     */
+    function advent($year= -1) {
+      if ($year == -1) $year= date('Y');
+     
+      $s= mktime(0, 0, 0, 11, 26, $year);
+      while (0 != date('w', $s)) $s+= CAL_SEC_DAY;
+      return $s;
+    }
+    
+    /**
+     * Get easter date for given year
+     *
+     * @access  public
+     * @param   int year default -1 Year, defaults to this year
+     * @return    int Unix-timestamp for Easter date
+     * @see        http://www.koenigsmuenster.de/rsk/epakte.htm
+     * @see     http://www.salesianer.de/util/kalfaq.html
+     * @see     php://easter-date#user_contrib
+     */
+    function easter($year= -1) {
+      if ($year == -1) $year= date('Y');
+      
+      $g = $year % 19;
+      $c = (int)($year / 100);
+      $h = (int)($c - ($c / 4) - ((8*  $c + 13) / 25) + 19 * $g + 15) % 30;
+      $i = (int)$h - (int)($h / 28) * (1 - (int)($h / 28)* (int)(29 / ($h+ 1)) * ((int)(21 - $g) / 11));
+      $j = ($year + (int)($year / 4) + $i + 2 - $c + (int)($c / 4)) % 7;
+      $l = $i - $j;
+      $m = 3 + (int)(($l + 40) / 44);
+      $d = $l + 28 - 31 * ((int)($m / 4));
+      return mktime(0, 0, 0, $m, $d, $year);
+    }
+  }
+
+?>
