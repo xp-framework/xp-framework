@@ -29,7 +29,7 @@
   
   <xsl:template match="table">
     <xsl:variable name="primary_key_unique" select="index[@primary= 'true' and @unique= 'true']/key/text()"/>
-    <xsl:text>  /**
+    <xsl:text>/**
    * Class wrapper for table </xsl:text><xsl:value-of select="@name"/><xsl:text>
    *
    * (Auto-generated on </xsl:text><xsl:value-of select="concat(
