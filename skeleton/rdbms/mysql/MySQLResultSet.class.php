@@ -62,6 +62,7 @@
       }
       
       foreach (array_keys($row) as $key) {
+        if (NULL === $row[$key] || !isset($this->fields[$key])) continue;
         switch ($this->fields[$key]) {
           case 'datetime':
             $row[$key]= &Date::fromString($row[$key]);
