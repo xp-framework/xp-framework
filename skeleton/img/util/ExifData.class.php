@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Date');
+  uses('util.Date', 'img.ImagingException');
 
   /**
    * Reads the EXIF headers from JPEG or TIFF
@@ -32,6 +32,7 @@
      * @access  public
      * @param   &io.File file
      * @return  &img.util.ExifData
+     * @throws  img.ImagingException in case extracting data fails
      */
     function &fromFile(&$file) {
       if (!($info= exif_read_data($file->getURI()))) {
