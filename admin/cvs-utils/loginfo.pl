@@ -140,17 +140,17 @@ my $body_tag = $tag ? "(Branch: $tag)" : '';
 # build our email
 my $msg = "";
 if($#added_files ne -1) {
-	$msg .= "\nAdded files:                 $body_tag";
+	$msg .= "\nAdded files:\n$body_tag";
 	$msg .= &build_list(@added_files);
 	$body_tag = '';
 }
 if($#removed_files ne -1) {
-	$msg .= "\nRemoved files:               $body_tag";
+	$msg .= "\nRemoved files:\n$body_tag";
 	$msg .= &build_list(@removed_files);
 	$body_tag = '';
 }
 if($#modified_files ne -1) {
-	$msg .= "\nModified files:              $body_tag";
+	$msg .= "\nModified files:\n$body_tag";
 	$msg .= &build_list(@modified_files);
 	$body_tag = '';
 }
