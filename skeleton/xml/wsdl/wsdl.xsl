@@ -89,8 +89,6 @@
       <xsl:otherwise>
         <xsl:variable name="remaining" select="substring-after($string, '&#xA;')"/>
         <xsl:value-of select="concat(
-          $indent,
-          ' * ',
           normalize-space(substring($string, 1, string-length($string) - string-length($remaining))),
           '&#10;'
         )"/>
