@@ -3,6 +3,12 @@ ul {
     list-style-image: url(/image/icn_li.gif);
 }
 
+ul.nav {
+    list-style-type: square;
+    list-style-image: url(/image/box-0.gif);
+    padding-left: 22px;
+}
+
 body, td, th {
 	font-family: arial,helvetica,sans-serif;
 	font-size: 12px;
@@ -103,7 +109,6 @@ a.small {
 	font-size: 11px;
 	color: #FFFFFF;
 }
-
 
 input {
 	font-family: arial,helvetica,sans-serif;
