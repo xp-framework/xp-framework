@@ -83,7 +83,7 @@
      * @return  string errormessage
      */
     function getLastError() {
-      return sprintf('%d: %s', $e= ldap_error($this->_hdl), ldap_err2str($e));
+      return sprintf('%d: %s', $e= ldap_errno($this->_hdl), ldap_err2str($e));
     }
     
     /**
@@ -110,7 +110,7 @@
      */
     function bind($user= NULL, $pass= NULL) {
       if (FALSE === ($res= ldap_bind($this->_hdl, $user, $pass))) {
-        return throw(new LDAPException('Cannot bind for "'.$user.'"', ldap_error($this->_hdl)));
+        return throw(new LDAPException('Cannot bind for "'.$user.'"', ldap_errno($this->_hdl)));
       }
       
       return $res;
@@ -126,7 +126,7 @@
      */
     function setOption($option, $value) {
       if (FALSE === ($res= ldap_set_option ($this->_hdl, $option, $value))) {
-        return throw (new LDAPException ('Cannot set value "'.$option.'"', ldap_error($this->_hdl)));
+        return throw (new LDAPException ('Cannot set value "'.$option.'"', ldap_errno($this->_hdl)));
       }
       
       return $res;
@@ -140,8 +140,8 @@
      * @return  mixed value
      */    
     function getOption($option) {
-      if (FALSE === ($res= ldap_set_option ($this->_hdl, $option, $value))) {
-        return throw (new LDAPException ('Cannot set value "'.$option.'"', ldap_error($this->_hdl)));
+      if (FALSE === ($res= ldap_get_option ($this->_hdl, $option, $value))) {
+        return throw (new LDAPException ('Cannot set value "'.$option.'"', ldap_errno($this->_hdl)));
       }
       
       return $value;
@@ -187,7 +187,7 @@
       $args= func_get_args();
       array_unshift($args, $this->_hdl);
       if (FALSE === ($res= call_user_func_array('ldap_search', $args))) {
-        return throw(new LDAPException('Search failed', ldap_error($this->_hdl)));
+        return throw(new LDAPException('Search failed', ldap_errno($this->_hdl)));
       }
       
       return new LDAPSearchResult($this->_hdl, $res);
@@ -219,7 +219,7 @@
       }
       $args[0]= $this->_hdl;
       if (FALSE === ($res= call_user_func_array($func, $args))) {
-        return throw(new LDAPException('Search failed', ldap_error($this->_hdl)));
+        return throw(new LDAPException('Search failed', ldap_errno($this->_hdl)));
       }
       
       return new LDAPSearchResult($this->_hdl, $res);
@@ -241,8 +241,8 @@
       
       list($filter, $base)= explode(',', $entry->getDN(), 2);
       $res= ldap_list($this->_hdl, $base, $filter, array(), FALSE, 1);
-      if (0 != ldap_error($this->_hdl)) {
-        return throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_error($this->_hdl)));
+      if (0 != ldap_errno($this->_hdl)) {
+        return throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
       }
       
       // Nothing found?
@@ -298,7 +298,7 @@
         $entry->getDN(), 
         array_map(array(&$this, '_encode'), $entry->getAttributes())
       ))) {
-        return throw(new LDAPException('Add for "'.$entry->getDN().'" failed', ldap_error($this->_hdl)));
+        return throw(new LDAPException('Add for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
       }
       
       return $res;
@@ -326,7 +326,7 @@
         $entry->getDN(), 
         array_map(array(&$this, '_encode'), $entry->getAttributes())
       ))) {
-        return throw(new LDAPException('Modify for "'.$entry->getDN().'" failed', ldap_error($this->_hdl)));
+        return throw(new LDAPException('Modify for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
       }
       
       return $res;
@@ -350,7 +350,7 @@
         $this->_hdl, 
         $entry->getDN()
       ))) {
-        return throw(new LDAPException('Delete for "'.$entry->getDN().'" failed', ldap_error($this->_hdl)));
+        return throw(new LDAPException('Delete for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
       }
       
       return $res;
