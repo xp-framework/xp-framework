@@ -63,7 +63,7 @@
       if (is_a($p, 'RequestData')) {
         $this->parameters= &$p;
       } elseif (is_string($p)) {
-        parse_str($p, $p); 
+        parse_str($p, $this->parameters); 
       } else {
         $this->parameters= array_merge($this->url->getParams(), $p);
       }
