@@ -29,7 +29,8 @@
       if ($album= &$this->getAlbumFor($name)) {
         $child= &$response->addFormResult(new Node('album', NULL, array(
           'name'  => $album->getName(),
-          'title' => $album->getTitle()
+          'title' => $album->getTitle(),
+          'page'  => $this->getDisplayPageFor($name)
         )));
 
         $chapter= &$response->addFormResult(Node::fromObject($album->chapterAt($id), 'chapter'));

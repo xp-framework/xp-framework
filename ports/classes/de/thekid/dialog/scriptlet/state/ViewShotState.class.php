@@ -37,6 +37,7 @@
       if ($shot= &$this->getEntryFor($name, 'de.thekid.dialog.SingleShot')) {
         $s= &$response->addFormResult(Node::fromObject($shot, 'selected'));
         $s->setAttribute('mode', $modes[$mode]);
+        $s->setAttribute('page', $this->getDisplayPageFor($name));
       }
     }
   }

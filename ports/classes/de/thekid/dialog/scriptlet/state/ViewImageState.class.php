@@ -22,14 +22,15 @@
      * @param   &scriptlet.xml.workflow.Context context
      */
     function process(&$request, &$response, &$context) {
-      if (4 != sscanf($request->getQueryString(), '%[^,],%1s,%d,%d', $album, $type, $chapter, $id)) {
+      if (4 != sscanf($request->getQueryString(), '%[^,],%1s,%d,%d', $name, $type, $chapter, $id)) {
         return throw(new IllegalAccessException('Malformed query string'));
       }
       
-      if ($album= &$this->getAlbumFor($album)) {
+      if ($album= &$this->getAlbumFor($name)) {
         $child= &$response->addFormResult(new Node('album', NULL, array(
           'name'  => $album->getName(),
-          'title' => $album->getTitle()
+          'title' => $album->getTitle(),
+          'page'  => $this->getDisplayPageFor($name)
         )));
         $child->addChild(new Node('description', new PCData($album->getDescription())));
         $child->addChild(Node::fromObject($album->createdAt, 'created'));

@@ -24,10 +24,11 @@
     function process(&$request, &$response, &$context) {
       $name= $request->getQueryString();
 
-      if ($album= &$this->getAlbumFor($request->getQueryString())) {
+      if ($album= &$this->getAlbumFor($name)) {
         $child= &$response->addFormResult(new Node('album', NULL, array(
           'name'  => $album->getName(),
-          'title' => $album->getTitle()
+          'title' => $album->getTitle(),
+          'page'  => $this->getDisplayPageFor($name)
         )));
         $child->addChild(new Node('description', new PCData($album->getDescription())));
         $child->addChild(Node::fromObject($album->createdAt, 'created'));
