@@ -5,7 +5,8 @@
  */
 
   uses(
-    'scriptlet.xml.workflow.AbstractState'
+    'scriptlet.xml.workflow.AbstractState',
+    'io.Folder'
   );
 
   /**
@@ -27,11 +28,22 @@
       with ($query= $request->getParam('q', $request->getData()), $uri= $request->getURI()); {
         $target= 'search?q='.$query;
         
-        // HACK until build system infrastructure provides a better method
-        if (file_exists('../build/cache/class.php/'.basename($query))) {
-          $target= 'documentation/class?core/'.$query;
-        }
+        // Use cache directory
+        $query= basename($query);
+        $folder= &new Folder('../build/cache/');
+        while ($entry= &$folder->getEntry()) {
+          $fn= $folder->getURI().$entry.DIRECTORY_SEPARATOR;
 
+          if (!is_dir($fn)) continue;
+          if (
+            file_exists($fn.'class'.DIRECTORY_SEPARATOR.$query) ||
+            file_exists($fn.'sapi'.DIRECTORY_SEPARATOR.$query)
+          ) {
+            $target= 'documentation/class?'.$entry.'/'.$query;
+            break;
+          }
+        }
+        
         $response->sendRedirect(sprintf(
           '%s://%s/xml/%s.%s%s/%s', 
           $uri['scheme'],
