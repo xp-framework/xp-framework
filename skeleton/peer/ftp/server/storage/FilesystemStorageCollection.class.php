@@ -13,6 +13,9 @@
    * @purpose  StorageCollection
    */
   class FilesystemStorageCollection extends Object {
+    var
+      $f    = NULL,
+      $name = '';
 
     /**
      * Constructor
@@ -21,6 +24,13 @@
      * @return  string uri
      */
     function __construct($uri) {
+      if ('..' == substr($uri, -2)) {
+        $this->name= '..';
+      } elseif ('.' == substr($uri, -1)) {
+        $this->name= '.';
+      } else {
+        $this->name= basename($uri);
+      }
       $this->f= &new Folder($uri);
       $this->st= stat($this->f->getURI());
       $this->st['pwuid']= posix_getpwuid($this->st['uid']);
@@ -55,7 +65,7 @@
      * @return  string
      */  
     function getName() { 
-      return basename($this->f->getURI());
+      return $this->name;
     }
     
     /**
@@ -150,7 +160,7 @@
         $this->st['grgid']['name'],
         $this->st['size'],
         date('M d H:i', $this->st['mtime']),
-        basename($this->f->getURI())
+        $this->name
       );
     }
 
