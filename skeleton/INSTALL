@@ -14,8 +14,10 @@ Es lohnt sich, in der php.ini folgenden Wert anzupassen:
 
 Man kann nun statt:
 | require('/path/to/where/lang.base.php/resides/lang.base.php');
+
 überall
 | require('lang.base.php');
+
 schreiben und sich beim Portieren viel Ärger sparen.
 
 Siehe http://www.php.net/manual/en/configuration.php, Beispiele 
