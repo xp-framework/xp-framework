@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('xml.XML', 'xml.TransformerException');
+  uses('xml.XML', 'xml.TransformerException', 'io.FileNotFoundException');
   
   /**
    * XSL Processor using DomXML
@@ -74,8 +74,12 @@
      *
      * @access  public
      * @param   string file file name
+     * @throws  io.FileNotFoundException
      */
     function setXSLFile($file) {
+      if (!file_exists($this->_base.$file)) {
+        return throw(new FileNotFoundException($this->_base.$file.' not found'));
+      }
       $this->stylesheet= array(0, $this->_base.$file);
     }
     
