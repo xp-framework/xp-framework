@@ -80,7 +80,7 @@
           <td class="searchbar" align="right" valign="top" colspan="2" nowrap="nowrap">
             <font color="#ffffff">
               <small><u>s</u>earch for</small>
-              <input class="small" type="text" name="keyword" value="&lt;?php echo isset($_REQUEST['keyword']) ?  $_REQUEST['keyword'] : ''; ?&gt;" size="30" accesskey="s"/>
+              <input class="small" type="text" name="keyword" value="" size="30" accesskey="s"/>
               <small>in the</small>
               <select name="show" class="small">
                 <option value="apidoc">api docs</option>
