@@ -15,6 +15,10 @@
  xmlns:xpdoc="http://xp-framework.net/TR/apidoc/"
 >
   <xsl:output method="text" indent="no"/>
+  <xsl:param name="collection" select="'xml.wsdl.gen'"/>
+  <xsl:param name="prefix" select="''"/>
+  <xsl:param name="boundary" select="'d4c3$bd1e091e.e245bfe04'"/>
+
   <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
   <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 
@@ -34,6 +38,23 @@
     <mapping for="xsd:base64Binary">xml.soap.types.SOAPBase64Binary</mapping>
     <mapping for="apachesoap:Map">xml.soap.types.SOAPHashmap</mapping>
   </xsl:variable>
+
+  <!--
+   ! Template that adds a MIME boundary
+   !
+   ! @type   named
+   ! @param  string string
+   !-->
+  <xsl:template name="nextpart">
+    <xsl:param name="filename"/>
+  
+    <xsl:value-of select="concat(
+      '------_=_NextPart_', $boundary, '&#10;',
+      'Content-Type: text/plain; name=&quot;', $collection, '.', $prefix, $filename, '&quot;&#10;',
+      'Content-Transfer-Encoding: 8bit&#10;',
+      '&#10;'
+    )"/>
+  </xsl:template>  
 
   <!--
    ! Template that transforms the first character of a string into lowercase
@@ -82,7 +103,6 @@
         <xsl:value-of select="$name"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>Client</xsl:text>
   </xsl:template>
 
   <!--
@@ -297,22 +317,15 @@
   </xsl:template>
 
   <!--
-   ! Template that matches a schema node
-   !
-   ! @type   match
-   !-->
-  <xsl:template match="xsd:schema">
-    <xsl:apply-templates select="xsd:complexType"/>
-  </xsl:template>
-
-  
-  <!--
    ! Template that matches a complexType node that has a subnode whose
    ! name is "all"
    !
    ! @type   match
    !-->
   <xsl:template match="xsd:complexType[child::*[name() = 'xsd:all']]">
+    <xsl:call-template name="nextpart">
+      <xsl:with-param name="filename" select="@name"/>
+    </xsl:call-template>
     <xsl:text><![CDATA[<?php
 /* This class is part of the XP framework
  *
@@ -324,7 +337,7 @@
    *
    * @purpose  Specialized SOAP type
    */
-  class ]]></xsl:text><xsl:value-of select="@name"/><xsl:text> extends Object {
+  class ]]></xsl:text><xsl:value-of select="concat($prefix, @name)"/><xsl:text> extends Object {
     var</xsl:text>
     <xsl:for-each select="xsd:all/xsd:element">
       $<xsl:value-of select="@name"/>
@@ -453,11 +466,19 @@
    ! @type   match
    !-->
   <xsl:template match="wsdl:definitions">
-    <!-- User-defined types -->
-    <xsl:apply-templates select="wsdl:types/xsd:schema"/>
+    <xsl:variable name="types" select="wsdl:types/xsd:schema/xsd:complexType[child::*[name() = 'xsd:all']]"/>
 
+    <!-- User-defined types -->
+    <xsl:apply-templates select="$types"/>
     
     <!-- The service itself -->
+    <xsl:call-template name="nextpart">
+      <xsl:with-param name="filename">
+        <xsl:call-template name="class">
+          <xsl:with-param name="name" select="wsdl:service/@name"/>
+        </xsl:call-template>
+      </xsl:with-param>
+    </xsl:call-template>
     <xsl:text><![CDATA[<?php
 /* This class is part of the XP framework
  *
@@ -478,9 +499,9 @@
    */  
   class ]]></xsl:text>
     <xsl:call-template name="class">
-      <xsl:with-param name="name" select="wsdl:service/@name"/>
+      <xsl:with-param name="name" select="concat($prefix, wsdl:service/@name)"/>
     </xsl:call-template>
-    <xsl:text><![CDATA[ extends SOAPClient {
+    <xsl:text><![CDATA[Client extends SOAPClient {
     
     /**
      * Constructor
@@ -495,13 +516,30 @@
     <xsl:text><![CDATA[') {
       parent::__construct(
         new SOAPHTTPTransport($endpoint),
-        ']]></xsl:text><xsl:value-of select="@targetNamespace"/><xsl:text><![CDATA['
+        ']]></xsl:text><xsl:value-of select="@targetNamespace"/><xsl:text>'
       );
+</xsl:text>
+    <xsl:for-each select="$types">
+      <xsl:text>
+      $this->registerMapping(
+        new QName('</xsl:text>
+      <xsl:value-of select="../@targetNamespace"/>
+      <xsl:text>', '</xsl:text>
+      <xsl:value-of select="@name"/>
+      <xsl:text>'), 
+        XPClass::forName('</xsl:text>
+      <xsl:value-of select="concat($collection, '.', @name)"/>
+      <xsl:text>')
+      );</xsl:text>
+    </xsl:for-each>
+    <xsl:text>
     }
-]]></xsl:text>
+</xsl:text>
     <xsl:apply-templates select="wsdl:portType"/>
     <xsl:text><![CDATA[  }
 ?>
+
 ]]></xsl:text>
+    <xsl:value-of select="concat('------_=_NextPart_', $boundary, '--&#10;')"/>
   </xsl:template>
 </xsl:stylesheet>
