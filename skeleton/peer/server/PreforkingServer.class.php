@@ -25,10 +25,12 @@
      * @param   string addr
      * @param   int port
      * @param   int count default 10 number of children to fork
+     * @param   int maxrequests default 1000 maxmimum # of requests per child
      */
-    function __construct($addr, $port, $count= 10) {
+    function __construct($addr, $port, $count= 10, $maxrequests= 1000) {
       parent::__construct($addr, $port);
       $this->count= $count;
+      $this->maxrequests= $maxrequests;
     }
     
     /**
@@ -72,7 +74,8 @@
           $children[$pid]= $i;
           $i++;
         } else {                // Child
-          while (1) {
+          $requests= 0;
+          while ($requests < $this->maxrequests) {
             try(); {
               $m= &$this->socket->accept();
             } if (catch('IOException', $e)) {
@@ -99,6 +102,11 @@
 
             $m->close();
             $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $m));
+            $requests++;
+            $this->cat && $this->cat->debug(
+              'Child', getmypid(), 
+              'requests=', $requests, 'max= ', $this->maxrequests
+            );
           }
 
           // Exit out of child
