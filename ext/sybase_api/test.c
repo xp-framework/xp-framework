@@ -22,8 +22,8 @@ int main(int argc, char **argv)
     sybase_link *link= NULL;
     sybase_environment *env= NULL;
     
-    if (argc != 4) {
-        printf("Usage: %s <host> <username> <password>\n", argv[0]);
+    if (argc != 5) {
+        printf("Usage: %s <host> <username> <password> <sql>\n", argv[0]);
         return 1;
     }
     
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
         int i = 0;
         
         printf("Connected, executing query...\n");
-        if (sybase_query(link, &result, "select * from sysdatabases") == SA_SUCCESS) {
+        if (sybase_query(link, &result, argv[4]) == SA_SUCCESS) {
             while (i++ < 10 && (sybase_results(&result) == SA_SUCCESS)) {
                 printf(
                     "result->type %4d [%-20s] result->code %4d [%-20s]\n", 
