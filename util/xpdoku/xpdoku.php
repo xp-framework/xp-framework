@@ -1,4 +1,9 @@
 <?php
+/* This file is part of the XP framework
+ *
+ * $Id$ 
+ */
+
   require('lang.base.php');
   uses(
     'xml.Tree',
