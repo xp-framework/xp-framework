@@ -62,10 +62,10 @@
           <xsl:for-each select="content/para/caption">
             <tr>
               <td width="4%" nowrap="nowrap">
-                <img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/>
+                <img src="/image/caret-r.gif" height="7" width="11" alt="{position()}" hspace="2" vspace="4"/>
               </td>
               <td>
-                Chapter <b><xsl:value-of select="position()"/></b>: <a href="#{position()}"><xsl:value-of select="."/></a>
+                <a href="#{position()}"><xsl:value-of select="."/></a>
               </td>
             </tr>
           </xsl:for-each>
