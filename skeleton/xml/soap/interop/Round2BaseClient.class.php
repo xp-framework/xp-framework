@@ -20,9 +20,9 @@
      *
      * @access  protected
      * @param   string method
-     * @param   mixed
+     * @param   mixed argument
      * @return  boolean
-     * @throws  SOAPFaultException
+     * @throws  xml.soap.SOAPFaultException
      */
     function identity($method, $argument) {
       try(); {
