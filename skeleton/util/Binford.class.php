@@ -1,36 +1,25 @@
 <?php
-/*
+/* This class is part of the XP framework
+ *
  * $Id$
- *
- * Diese Klasse ist Bestandteil des XP-Frameworks
- * (c) 2001 Timm Friebe, Schlund+Partner AG
- *
- * @see http://doku.elite.schlund.de/projekte/xp/skeleton/
- *
  */
 
   /**
-   * Hörrhörr, diese Klasse läuft mit Benzin!
+   * This class has more power
    *
    * @purpose Die Klasse für mehr Power
    * @see     http://www.binford.de/
    */
   class Binford extends Object { 
-    var $poweredBy= 6100;
+    var 
+      $poweredBy= 6100;
     
     /**
-     * Constructor
-     */
-   function __construct($params= NULL) {
-      Object::__construct($params);  
-    }
-    
-    /**
-     * Die Power setzen
+     * Set the power
      *
      * @access  public
-     * @param   int p Power
-     * @throws  IllegalArgumentException, wenn p einen unzulässigen Wert enthält
+     * @param   int p power
+     * @throws  IllegalArgumentException in case the parameter p contains an illegal value
      */
     function setPoweredBy($p) {
       if (!($x= log10($p / 6.1)) || (floor($x) != $x)) {
@@ -40,20 +29,20 @@
     }
    
     /**
-     * Power zurückgeben
+     * Retreive the power
      *
      * @access  public
-     * @return  int Power
+     * @return  int power
      */
     function getPoweredBy() {
       return $this->poweredBy;
     }
     
     /**
-     * Passenden X-Header zurückgeben
+     * Retreive header suited for HTTP/Mail
      *
      * @access  public
-     * @return  string Header
+     * @return  string header
      */
     function getHeader() {
       return 'X-Binford: '.$this->poweredBy.' (more power)';
