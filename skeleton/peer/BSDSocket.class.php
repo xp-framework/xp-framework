@@ -140,7 +140,10 @@
      * @throws	IOException
      */
     function read($maxLen= 4096) {
-      if (FALSE === ($res= socket_read($this->_sock, 4096))) {
+      $res= socket_read($this->_sock, 4096);
+      # DEBUG echo "RECV(".$maxLen.") ".var_export($res, 1)."\n";
+      
+      if (FALSE === $res) {
         return throw(new IOException('Read failed: '.$this->getLastError()));
       }
       return $res;
@@ -155,7 +158,9 @@
      * @throws	IOException
      */
     function write($str) {
-      if (FALSE === ($bytesWritten= socket_write($this->_sock, $str, strlen($str)))) {
+      $bytesWritten= socket_write($this->_sock, $str, strlen($str));
+      # DEBUG echo "SEND(".var_export($str, 1).") ".var_export($bytesWritten, 1)."\n";
+      if (FALSE === $bytesWritten) {
         return throw(new IOException('Write failed: '.$this->getLastError()));
       }
       return $bytesWritten;
