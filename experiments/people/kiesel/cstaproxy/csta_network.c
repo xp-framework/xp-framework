@@ -105,6 +105,32 @@ int _open_server_connection(fd_set *master, int *fdMax, proxy_connection *conn) 
 	return 1;
 }
 
+int _shutdown_connections(fd_set *master, connection_context *ctx, int hSocket) {
+	proxy_connection *conn;
+
+	/* Retrieve the connection context */
+	if (NULL == (conn= get_connection_by_socket (ctx, hSocket))) {
+		ERR ("Unable to find proxy connection in context");
+		return 0;
+	}
+
+	/* Close all associated sockets */
+	if (conn->hServer) {
+		close (conn->hServer);
+		FD_CLR(conn->hServer, master);
+	}
+	if (conn->hClient) {
+		close (conn->hClient);
+		FD_CLR(conn->hClient, master);
+	}
+	
+	/* Now free anything left */
+	delete_connection(ctx, conn);
+	free_connection(&conn);
+	
+	return 1;
+}
+
 int _process_client_command(fd_set *master, int *fdMax, connection_context *ctx, int hSocket, char *buf, int length) {
 	proxy_connection *conn;
 	
@@ -112,21 +138,7 @@ int _process_client_command(fd_set *master, int *fdMax, connection_context *ctx,
 
 	/* Process shutdown request */
 	if (0 == strncmp(buf, "QUIT", 4)) {
-		/* Close open sockets */
-		if (NULL != conn->hServer) {
-			close (conn->hServer);
-			FD_CLR(conn->hServer, master);
-		}
-		if (NULL != conn->hClient) {
-			close (conn->hClient);
-			FD_CLR(conn->hClient, master);
-		}
-		
-		/* Cleanup */
-		delete_connection(ctx, conn);
-		free_connection(&conn);
-		
-		return -1;	/* Indicate we have closed the sockets */
+		return _shutdown_connections (master, ctx, hSocket);
 	}
 	
 	/* Process authenticate request */
@@ -139,7 +151,6 @@ int _process_client_command(fd_set *master, int *fdMax, connection_context *ctx,
 		return 1;
 	}
 	
-	LOG("No client command detected.");
 	return 0;
 }
 
@@ -148,6 +159,7 @@ int process_client(fd_set *master, int *fdMax, connection_context *ctx, int hSoc
 	int nbytes;
 	proxy_connection *conn;
 	
+	/* Clear buffer */
 	memset (&buf, '\0', sizeof (buf));
 	
 	/* Handle data from client */
@@ -158,17 +170,7 @@ int process_client(fd_set *master, int *fdMax, connection_context *ctx, int hSoc
 			ERR ("Error reading from socket");
 		}
 		
-		if (NULL == (conn= get_connection_by_socket (ctx, hSocket))) {
-			ERR ("Unable to find proxy connection in context");
-		} else {
-			delete_connection(ctx, conn);
-			free_connection(&conn);
-		}
-		
-		_dump_context (ctx);
-		
-		close (hSocket);
-		FD_CLR(hSocket, master);
+		return _shutdown_connections (master, ctx, hSocket);
 	} else {
 		if (NULL == (conn= get_connection_by_socket (ctx, hSocket))) {
 			ERR("Unable to find connection in context!");
@@ -177,8 +179,8 @@ int process_client(fd_set *master, int *fdMax, connection_context *ctx, int hSoc
 
 		/* First stage: process unauthenticated */
 		if (hSocket == conn->hClient) {
-			/* -1 means: connections have been shutdown */
-			if (-1 == _process_client_command(master, fdMax, ctx, hSocket, buf, nbytes)) {
+			/* 0 means: nothing has been handled */
+			if (0 != _process_client_command(master, fdMax, ctx, hSocket, buf, nbytes)) {
 				return 1;
 			}
 		}
@@ -191,6 +193,7 @@ int process_client(fd_set *master, int *fdMax, connection_context *ctx, int hSoc
 			return 1;
 		}
 
+		/* Client is authenticated and server socket exists */
 		if (hSocket == conn->hClient && conn->is_authenticated && conn->hServer) {
 			/* This is an authenticated client => pass data through */
 			LOG("Passthru client data...");
@@ -198,6 +201,7 @@ int process_client(fd_set *master, int *fdMax, connection_context *ctx, int hSoc
 			return 1;
 		}
 		
+		/* Server sent something => pass it through to the client */
 		if (hSocket == conn->hServer) {
 			/* It's the server, passthrough data */
 			LOG("Passthru server data...");
