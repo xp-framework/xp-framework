@@ -7,11 +7,11 @@
   uses('xml.XML', 'xml.TransformerException');
   
   /**
-   * XSL Processor
+   * XSL Processor using DomXML
    * 
    * Usage example [Transform two files]
    * <code>
-   *   $proc= &new XSLProcessor();
+   *   $proc= &new DomXSLProcessor();
    *   $proc->setXSLFile('test.xml');
    *   $proc->setXMLFile('test.xsl');
    *   
