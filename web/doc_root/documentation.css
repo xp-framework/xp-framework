@@ -109,3 +109,10 @@ code .string {
 code .comment {
   color: #a9a9a9;
 }
+
+/* Examples */
+div.example {
+  border: 1px solid #cecece;
+  border-left: 3px solid #cecece;
+  padding: 2px;
+}
