@@ -138,7 +138,7 @@
      * @return  &org.webdav.xml.WebdavMultistatus response
      * @throws  lang.MethodNotImplementedException
      */
-    function &propfind(&$request, &$response) { 
+    function &propfind(&$request, &$response) {
       return throw(new MethodNotImplementedException($this->getName().'::propfind not implemented'));
     }
 
@@ -149,9 +149,63 @@
      * @param   &org.webdav.xml.WebdavPropPatcRequest request
      * @throws  lang.MethodNotImplementedException
      */
-    function &proppatch(&$request) { 
+    function &proppatch(&$request) {
       return throw(new MethodNotImplementedException($this->getName().'::proppatch not implemented'));
     }
+    
+    /**
+     * Lock a File
+     *
+     * @access  public
+     * @param   &org.webdav.xml.WebdavLockRequest       request
+     * @param   &org.webdav.xml.WebdavScriptletResponse response
+     * @throws  OperationNotAllowedException
+     * @throws  OperationFailedException
+     */
+    function &lock(&$request, &$response) {
+      preg_match_all('/<[^>]*> \(<([^>]*)>\)/', $request->getHeader('If'), $ifmatches);
+      try();{
+        $lock= $this->setLockInfo($request->getProperties(), $ifmatches[1]);
+      } if (catch('OperationNotAllowedException', $e)) {
+        return throw(new OperationNotAllowedException('Locking not allowed on '.$request->getPath()));
+      } if (catch('Exception', $e)) {
+        return throw(new OperationFailedException('Resource already locked'));
+      }
+
+      $response->addLock($lock);
+    }
+    
+    /**
+     * Unlock a File
+     *
+     * @access  public
+     * @param   &org.webdav.xml.WebdavLockRequest       request
+     * @param   &org.webdav.xml.WebdavScriptletResponse response
+     * @throws  OperationNotAllowedException
+     */
+    function &unlock(&$request, &$response) {
+      try();{
+        
+        // Remove < and > from beginning and end of the header 
+        // e.g. <opaquelocktoken:88516110-6110-1851-bbde-48de5b3f07f4> => opaquelocktoken:88516110-6110-1851-bbde-48de5b3f07f4
+        $reqToken= substr($request->getHeader('Lock-Token'), 1, -1);
+        
+        // return an exception if an unlock is requested on a non-locked file
+        if (($lock= $this->getLockInfo($request->getPath())) == NULL) return throw(new OperationFailedException('No Lock for File: '.$request->getPath()));
+        
+        if ($reqToken != $lock->getLockToken())
+          return throw(new OperationNotAllowedException('Cant unlock '.$request->getPath()));
+       
+      } if  (catch('Exception', $e)) {
+        return throw($e);
+      } 
+      
+      $this->propStorage->setLock($request->getPath(), $tmp= NULL);
+
+      if ($lock->getLockToken()) $response->setHeader('Lock-Token', $request->getHeader('Lock-Token'));
+    }
+
+    
     
     /**
      * Retrieve lock information
@@ -187,20 +241,18 @@
      * @throws  OperationNotAllowedException
      */
     function &setLockInfo(&$lock, $tokens= array()) { 
-      $lockinfo= $this->getLockInfo($lock->getURI());        
+      $lockinfo= $this->getLockInfo($lock->getURI());
 
       // There's already lock
       if ($lockinfo !== NULL) {        
         // We have s/some lock token, so check if we can overwrite the lock
         if (sizeof($tokens)) {
           if (!in_array($lockinfo->getLockToken(), $tokens)) {
-            return throw(new OperationNotAllowedException('Can not refresh lock on '.$uri.' with owner '.$lock->getOwner()));
+            return throw(new OperationNotAllowedException('Can not refresh lock on '.$lock->getURI().' with owner '.$lock->getOwner()));
           }
-        
-        // Create a new lock
         } else {
           if ($lock->getLockToken() != $lockinfo->getLockToken()) {
-            return throw(new OperationNotAllowedException('Can not lock '.$uri.' with owner '.$lock->getOwner()));
+            return throw(new OperationNotAllowedException('LOCK failed - invalid Token given '.$lock->getLockToken()));
           }
         }
       }
