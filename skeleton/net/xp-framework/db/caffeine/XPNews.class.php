@@ -51,7 +51,7 @@
             changedby,
             bz_id
           from
-            news 
+            CAFFEINE..news 
           where
             news_id = %d
         ', $news_id);
@@ -87,7 +87,7 @@
             changedby,
             bz_id
           from
-            news
+            CAFFEINE..news
           where
             bz_id = %d
         ', $bz_id);
@@ -130,7 +130,7 @@
             changedby,
             bz_id
           from
-            news
+            CAFFEINE..news
           where
             bz_id = 500
           order by
@@ -163,9 +163,10 @@
      *
      * @access  public
      * @param   int news_id
+     * @return  int previous value
      */
     function setNews_id($news_id) {
-      $this->news_id= $news_id;
+      return $this->_change('news_id', $news_id, '%d');
     }
       
     /**
@@ -183,9 +184,10 @@
      *
      * @access  public
      * @param   string caption
+     * @return  string previous value
      */
     function setCaption($caption) {
-      $this->caption= $caption;
+      return $this->_change('caption', $caption, '%s');
     }
       
     /**
@@ -203,9 +205,11 @@
      *
      * @access  public
      * @param   string link
+     * @return  string previous value
+     * @return  previous previous value
      */
     function setLink($link) {
-      $this->link= $link;
+      return $this->_change('link', $link, '%s');
     }
       
     /**
@@ -223,18 +227,19 @@
      *
      * @access  public
      * @param   string body
+     * @return  string previous value
      */
     function setBody($body) {
-      $this->body= $body;
+      return $this->_change('body', $body, '%s');
     }
       
     /**
      * Retrieves created_at
      *
      * @access  public
-     * @return  util.Date
+     * @return  &util.Date
      */
-    function getCreated_at() {
+    function &getCreated_at() {
       return $this->created_at;
     }
       
@@ -242,19 +247,20 @@
      * Sets created_at
      *
      * @access  public
-     * @param   util.Date created_at
+     * @param   &util.Date created_at
+     * @return  &util.Date previous value
      */
-    function setCreated_at($created_at) {
-      $this->created_at= $created_at;
+    function &setCreated_at(&$created_at) {
+      return $this->_change('created_at', $created_at, '%s');
     }
       
     /**
      * Retrieves lastchange
      *
      * @access  public
-     * @return  util.Date
+     * @return  &util.Date
      */
-    function getLastchange() {
+    function &getLastchange() {
       return $this->lastchange;
     }
       
@@ -262,10 +268,11 @@
      * Sets lastchange
      *
      * @access  public
-     * @param   util.Date lastchange
+     * @param   &util.Date lastchange
+     * @return  &util.Date previous value
      */
-    function setLastchange($lastchange) {
-      $this->lastchange= $lastchange;
+    function &setLastchange(&$lastchange) {
+      return $this->_change('lastchange', $lastchange, '%s');
     }
       
     /**
@@ -283,9 +290,10 @@
      *
      * @access  public
      * @param   string changedby
+     * @return  string previous value
      */
     function setChangedby($changedby) {
-      $this->changedby= $changedby;
+      return $this->_change('changedby', $changedby, '%s');
     }
       
     /**
@@ -303,9 +311,10 @@
      *
      * @access  public
      * @param   int bz_id
+     * @return  int previous value
      */
     function setBz_id($bz_id) {
-      $this->bz_id= $bz_id;
+      return $this->_change('bz_id', $bz_id, '%d');
     }
       
     /**
@@ -320,25 +329,9 @@
 
       try(); {
         $db= &$cm->getByHost('caffeine', 0);
-        $affected= $db->update('
-          news set
-            caption = %s,
-            link = %s,
-            body = %s,
-            created_at = %s,
-            lastchange = %s,
-            changedby = %s,
-            bz_id = %d
-          where
-            news_id= %d
-          ',
-          $this->caption,
-          $this->link,
-          $this->body,
-          $this->created_at,
-          $this->lastchange,
-          $this->changedby,
-          $this->bz_id,
+        $affected= $db->update(
+          'CAFFEINE..news set %c where news_id= %d',
+          $this->_updated($db),
           $this->news_id
         );
       } if (catch('SQLException', $e)) {
@@ -360,27 +353,7 @@
 
       try(); {
         $db= &$cm->getByHost('caffeine', 0);
-        $affected= $db->insert('
-          news (
-            caption,
-            link,
-            body,
-            created_at,
-            lastchange,
-            changedby,
-            bz_id
-          ) values (
-            %s, %s, %s, %s, %s, %s, %d
-          )',
-          $this->news_id,
-          $this->caption,
-          $this->link,
-          $this->body,
-          $this->created_at,
-          $this->lastchange,
-          $this->changedby,
-          $this->bz_id
-        );
+        $affected= $db->insert('CAFFEINE..news (%c)', $this->_inserted($db));
         $this->news_id= $db->identity();
       } if (catch('SQLException', $e)) {
         return throw($e);
