@@ -234,29 +234,87 @@ The body of a message is encoded depending on the message type.
 </pre>
 
 * Body encoding for initialize message (#0)
+
+  The initialize message is ALWAYS the first message in the client/server
+  communication process. It takes care of initialization and authorization.
+  
+  It contains the context (and with that, the authentication data).
+
   <?php
-    $body= pack();      // XXX TBD XXX
+    $body= pack('a*', $serializedContext);
   ?>
 
 * Body encoding for request message (#1)
+
+  The request message issues a request to invoke a remote method.
+
+  It is contained of the following fields:
+  - Object name
+  - Operation name
+  - Mode
+  - Parameters
+
+  Mode is a bit-field of the following values:
+  <pre>
+    Mode                    Encoding
+    ----------------------- ------------
+    Static                  1
+  </pre>
+
+  In PHP:
   <?php
     $body= pack();      // XXX TBD XXX
   ?>
 
 * Body encoding for reply message (#2)
+
+  This message is the server's reply to a client's request message (see 
+  above).
+
+  <pre>
+    Status                  Encoding
+    ----------------------- ------------
+    Success                 0
+    User Exception          1
+    Object does not exist   2
+    Operation non-existant  3
+    Invokation error        4
+    Protocol error          255
+  </pre>
+
+  In PHP:
   <?php
-    $body= pack();      // XXX TBD XXX
+    $body= pack('ca*', $status, $data);
   ?>
 
 * Body encoding for ping message (#3)
-  <?php
-    $body= pack();      // XXX TBD XXX
-  ?>
+
+  This message may be used to keep the connection to the server alive.
+  A server may choose to terminate a socket after a certain timeout
+  to save resources. The ping message does not contain any body.
 
 * Body encoding for close message (#4)
+
+  This message is to be sent when a peer wants to shut down a connection. 
+  The body is one bytes in size. This byte contains a reason identifier
+  for shutdown.
+  
+  <pre>
+    Reason             Encoding
+    ------------------ ------------
+    Normal shutdown    0
+    Idle timeout       1
+    Server going down  2
+  </pre>
+    
+  In PHP:
   <?php
-    $body= pack();      // XXX TBD XXX
+    $body= pack('c', $reason);
   ?>
+  
+  The descision to close down a connection can not be vetoed by either
+  side. In case the server issues a timeout message, the client may 
+  decide to reconnect on a new connection.
 
 
 Dependencies
