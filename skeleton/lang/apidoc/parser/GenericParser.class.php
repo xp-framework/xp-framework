@@ -68,7 +68,7 @@
      */
     function configure() {
       try(); {
-	    foreach ($this->prop->readArray('global', $this->config) as $section) {
+        foreach ($this->prop->readArray('global', $this->config) as $section) {
           $this->tokenizer->addRule(
             $section, 
             $this->prop->readArray($section, 'match'),
