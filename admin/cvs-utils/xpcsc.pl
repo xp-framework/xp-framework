@@ -28,13 +28,14 @@ use constant WPERFORM       => "WPERFORM";
 
 %LINK = (
   # Errors
-  ETAB        => "http://xp-framework.net/devel/coding.html#5",
-  EINDENT     => "http://xp-framework.net/devel/coding.html#5",
-  ECOMMENT    => "http://xp-framework.net/devel/coding.html#9",
-  ENOHEADER   => "http://xp-framework.net/devel/coding.html#2",
-  ESHORTOPEN  => "http://xp-framework.net/devel/coding.html#3",
-  ECONSTRUCT  => "http://xp-framework.net/devel/coding.html#25",
-  EWHITESPACE => "http://xp-framework.net/devel/coding.html#24",
+  ETAB                => "http://xp-framework.net/devel/coding.html#5",
+  EINDENT             => "http://xp-framework.net/devel/coding.html#5",
+  ECOMMENT            => "http://xp-framework.net/devel/coding.html#9",
+  ENOHEADER           => "http://xp-framework.net/devel/coding.html#2",
+  ESHORTOPEN          => "http://xp-framework.net/devel/coding.html#3",
+  ECONSTRUCT          => "http://xp-framework.net/devel/coding.html#25",
+  EWHITESPACE         => "http://xp-framework.net/devel/coding.html#24",
+  ECALLTIMEREFERENCE  => "http://de3.php.net/manual/en/language.references.pass.php",
 
   # Warnings
   WTBD        => "http://xp-framework.net/devel/coding.html#13",
@@ -202,6 +203,21 @@ while (@ARGV) {
     # Check whitespace before variable
     if (!$comment && !$string && $_ =~ /([,;}])(\$[a-zA-Z0-9_]+)/) {
       &error("Not enough whitespace found before variable '$2' (preceding char: '$1')", EWHITESPACE);
+    }
+    
+    # Check for whitespace after function header
+    if (!$comment && !$string && $_ =~ /\(.*\)(\s*)\{/ && !length($1)) {
+      &error("Not enough whitespace found after function declaration", EWHITESPACE);
+    }
+    
+    # Check for whitespace after comma
+    if (!$comment && !$string && $_ =~ /,(\s*)\S/ && !length($1)) {
+      &error("Not enough whitespace found after comma", EWHITESPACE);
+    }
+    
+    # Check for parameter pass by reference
+    if (!$comment && !$string && $_ =~ /(\-\>|::)[^\(]+\([^\)]*(&\$|, &\$)[^\)]*\)/ && length($2)) {
+      &warning("Possible occurance of call-time pass by reference", ECALLTIMEREFERENCE);
     }
     
     # Check whitespace in assigments / comparisons
