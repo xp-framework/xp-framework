@@ -669,7 +669,7 @@ static int php_xp_uses(char *arg, int arg_len TSRMLS_DC)
     if (FAILURE == zend_eval_string(eval, &retval, desc TSRMLS_CC)) {
         xp_error(XP_ERROR, "zend_eval_string('%s') returns FAILURE", eval);
         efree(eval);
-           efree(desc);
+        efree(desc);
 
         zend_error(E_CORE_ERROR, "XP: Core error");
         /* Bails out */
