@@ -12,8 +12,9 @@
   /**
    * Connection listener
    *
+   * @model    abstract
    * @see      xp://peer.server.Server#notify
-   * @purpose  Listener
+   * @purpose  Abstract base class for listeners
    */
   class ConnectionListener extends Object {
   
