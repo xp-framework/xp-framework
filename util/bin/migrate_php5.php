@@ -285,7 +285,7 @@ __;
           switch ($tok[0]) {
             case T_CONSTANT_ENCAPSED_STRING:    // Exception name
               $name= substr($tok[1], 1, -1);
-              $out[]= substr((isset($map[$name]) ? $map[$name] : $name), 1, -1).' ';
+              $out[]= (isset($map[$name]) ? $map[$name] : $name).' ';
               break;
               
             case T_VARIABLE:                    // Variable
