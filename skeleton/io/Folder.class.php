@@ -28,6 +28,9 @@
       $dirname= '',
       $path= '';
     
+    var
+      $_hdir= FALSE;
+      
     /**
      * Constructor
      *
@@ -54,7 +57,8 @@
      * @return  
      */
     function close() {
-      if ($this->_hdir) $this->_hdir->close();
+      if (FALSE != $this->_hdir) $this->_hdir->close();
+      $this->_hdir= NULL;
     }
 
     /**
@@ -71,10 +75,8 @@
       // Bug in real_path (wenn Datei nicht existiert, ist die Rückgabe ein leerer String!)
       if ('' == $this->uri && $uri!= $this->uri) $this->uri= $uri;
       
-      if (FALSE === ($this->_hdir= dir($this->uri))) return throw(new IOException(sprintf(
-        'not a dir: "%s"',
-        $this->uri
-      )));
+      // "Trailing /" ergänzen
+      if ($this->uri{strlen($this->uri)- 1} != '/') $this->uri.= '/';
       
       $this->path= dirname($uri);
       $this->dirname= basename($uri);
@@ -84,16 +86,16 @@
      * Das Verzeichnis anlegen, rekursiv, wenn es sein muss!
      *
      * @access  public
-     * @param   int permissions default 0600 Berechtigungen
+     * @param   int permissions default 0700 Berechtigungen
      * @return  bool Hat geklappt
      * @throws  IOException, wenn ein Verzeichnis nicht angelegt werden kann
      */
-    function create($permissions= 0600) {
+    function create($permissions= 0700) {
       if (is_dir($this->uri)) return TRUE;
       $i= 0;
       while (FALSE !== ($i= strpos($this->uri, '/', $i))) {
         if (is_dir($d= substr($this->uri, 0, ++$i))) continue;
-        if (!mkdir($d, $permissions)) return throw(new IOException(sprintf(
+        if (FALSE === mkdir($d, $permissions)) return throw(new IOException(sprintf(
           'mkdir("%s", %d) failed',
           $d,
           $permissions
@@ -119,7 +121,16 @@
      * @return  mixed (bool)FALSE, wenn keine Elemente mehr übrig, (string)Verzeichniseintrag (ohne Pfadnamen!) sonst
      */
     function getEntry() {
-      if (!$this->_hdir) return FALSE;
+      if (
+        (FALSE === $this->_hdir) &&
+        (FALSE === ($this->_hdir= dir($this->uri)))
+      ) {
+        return throw(new IOException(sprintf(
+          'not a dir: "%s"',
+          $this->uri
+        )));
+      }
+      
       while ($entry= $this->_hdir->read()) {
         if ($entry != '.' && $entry != '..') return $entry;
       }
