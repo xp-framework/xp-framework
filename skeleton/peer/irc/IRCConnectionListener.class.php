@@ -14,6 +14,23 @@
   class IRCConnectionListener extends Object {
 
     /**
+     * Callback for Pings. Note that the PING has already been answered
+     * when this method is called, so you won't have to send a PONG 
+     * yourself.
+     *
+     * You might want to use this method in IRC-bots to accomplish the
+     * task of deliberately being able to perform an action without any
+     * other action having taken place (e.g., maintenance, reload config,
+     * ...)
+     *
+     * @model   abstract
+     * @access  public
+     * @param   &peer.irc.IRCConnection connection
+     * @param   string data
+     */
+    function onPings(&$connection, $data) { }
+
+    /**
      * Callback for when a connection to the IRC server has been 
      * established. This method is called *after* a connecting was
      * successful.
