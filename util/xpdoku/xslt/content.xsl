@@ -12,8 +12,12 @@
   <xsl:include href="text-helper.xsl"/>
 
   <xsl:template name="navigation">
-    <b>See also</b>
-    <br/>
+    Article: <xsl:value-of select="/document/main/content/title"/>
+    <br/><br/>
+
+    <xsl:call-template name="nav-divider">
+      <xsl:with-param name="caption">See also</xsl:with-param>
+    </xsl:call-template>
     <ul class="nav">
       <xsl:for-each select="/document/main/references/ref">
         <li><xsl:apply-templates select="."/></li>
