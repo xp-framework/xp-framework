@@ -21,6 +21,7 @@
     var 
       $handle  = NULL,
       $dsn     = NULL,
+      $log     = NULL,
       $flags   = 0;
     
     /**
