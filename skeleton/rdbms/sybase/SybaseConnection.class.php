@@ -109,10 +109,6 @@
           $mod= 0;
         }
         
-        echo "--\n";
-        var_dump($tok, $ofs, $mod, $tok{0 + $mod});
-        echo "--\n";
-        
         // Type-based conversion
         if (is_a($args[$ofs], 'Date')) {
           $arg= date('Y-m-d h:iA', $args[$ofs]->getTime());
