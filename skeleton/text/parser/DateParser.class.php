@@ -46,7 +46,7 @@
       } elseif (preg_match('/^([0-9]+)\.([0-9]+)(\.([0-9]+))? ?([0-9]+)?:?([0-9]+)?:?([0-9]+)?/', $s, $matches)) {
       
         // German date format
-        $stamp= mktime(
+        $stamp= Date::mktime(
           isset($matches[5]) ? $matches[5] : 0, 
           isset($matches[6]) ? $matches[6] : 0, 
           isset($matches[7]) ? $matches[7] : 0, 
@@ -57,7 +57,7 @@
       } elseif (preg_match('/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?(Z|([+-]\d{4}))?$/', $s, $matches)) {
       
         // Generalized date format
-        $stamp= mktime(
+        $stamp= Date::mktime(
           $matches[4],
           $matches[5],
           $matches[6],
