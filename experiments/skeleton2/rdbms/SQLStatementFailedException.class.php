@@ -12,9 +12,8 @@
    * @purpose  SQL-Exception
    */
   class SQLStatementFailedException extends SQLException {
-    public
-      $sql  = '',
-      $code = 0;
+    protected
+      $sql  = '';
 
     /**
      * Constructor
@@ -40,16 +39,6 @@
       return $this->sql;
     }
 
-    /**
-     * Get Code
-     *
-     * @access  public
-     * @return  int
-     */
-    public function getCode() {
-      return $this->code;
-    }
-    
     /**
      * Retrieve string representation of the stack trace
      *
