@@ -199,8 +199,7 @@
      * @return  bool success
      */
     function _parse($key, $value) {
-      // DEBUG printf(">>> %s::=%s\n", $key, $value); 
-      
+     
       // Property params
       if (FALSE !== ($i= strpos($key, ';'))) {
         $props= explode(';', $key);
@@ -240,13 +239,11 @@
         $func= $this->handlers[NULL];
       }
       
-      // DEBUG echo "-----------------------------------------------------------------------------------\n";
       try(); {
         call_user_func($func, $kargs, $value);
       } if (catch('FormatException', $e)) {
-        trigger_error($e->message, E_USER_NOTICE);
         return throw(new MethodNotImplementedException(
-          'Errors during invokation of callback for "'.$kargs[0].'"',
+          'Errors during invokation of callback for "'.$kargs[0].'": '.$e->getMessage(),
           (is_array($func) ? get_class($func[0]).'::'.$func[1] : $func)
         ));
       }
