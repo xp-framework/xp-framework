@@ -12,6 +12,7 @@
     'org.webdav.impl.DavImpl',
     'org.webdav.propertystorage.DBAFilePropertyStorage',
     'org.webdav.version.WebdavFileVersion',
+    'org.webdav.version.util.WebdavVersionUtil',
     'lang.ElementNotFoundException',
     'util.log.Logger'
   );
@@ -174,7 +175,6 @@
         return throw(new OperationFailedException($filename.' cannot be copied/moved to '.$destination.' ('.$e->message.')'));
       }
       
-      
       $src= substr($uri, strlen($this->base));
       $dst= substr($destination, strlen($this->base));
       
@@ -283,6 +283,23 @@
       if (is_dir($uri)) {
         return throw(new OperationNotAllowedException($uri.' cannot be written (not a file)'));
       }
+      
+      // Check if VersionControl is activated
+      if (($prop= $this->propStorage->getProperty($filename, 'D:version')) !== NULL) {
+        $container= &$prop->value;
+        
+        $newVersion= &WebdavVersionUtil::getNextVersion($container->getLatestVersion(), $uri);
+        $container->addVersion($newVersion);
+        
+        // Re-Add modified container to property
+        $prop->value= &$container;
+       
+        // Save property
+        $this->propStorage->setProperty($filename, $prop);
+        
+        // Now, copy the "old" file to versions directory
+        $this->backup($filename, '../versions/'.$newVersion->getVersionName());
+      }
 
       // Open file and write contents
       $f= &new File($uri);
@@ -295,16 +312,17 @@
         return throw(new OperationFailedException($filename.' cannot be written '.$e->toString()));
       }
       
-      $props= array();
+      // Set the resourcetype on first put
+      if (($prop= $this->propStorage->getProperty($filename, 'D:resourcetype')) == NULL) {      
       
-      // Set ResourceType
-      with ($p= &new WebdavProperty('resourcetype', $resourcetype)); {
-        $p->setNameSpaceName('DAV:');
-        $p->setNameSpacePrefix('D:');
-        $props[$p->getNameSpacePrefix().$p->getName()]= $p;
+        // Set ResourceType
+        with ($p= &new WebdavProperty('resourcetype', $resourcetype)); {
+          $p->setNameSpaceName('DAV:');
+          $p->setNameSpacePrefix('D:');          
+        }
+        
+        $this->propStorage->setProperty($filename, $p);  
       }
-      
-      $this->propStorage->setProperties($filename, $props);  
       return $new;
     }
     
@@ -568,6 +586,46 @@
         return throw(new ElementNotFoundException($realpath.' not found'));
       }
       parent::report($request, $response);
+    }
+    
+    /**
+     * Move a file
+     *
+     * @access  public
+     * @param   string filename
+     * @param   string destination
+     * @return  bool created
+     * @throws  OperationNotAllowedException
+     * @throws  OperationFailedException
+     */
+    function &backup($filename, $destination) {
+
+      // Securitychecks (../etc/passwd)
+      $uri= $this->_normalizePath($this->base.$filename);
+      $destination= $this->_normalizePath($this->base.$destination);
+
+      // Copy of folders is not allowed (implemented)
+      if (is_dir($uri)) {
+        return throw(new OperationNotAllowedException($uri.' cannot be copied as it is a directory'));
+      }
+      
+      // Create src and dst objects
+      $src= is_dir($uri) ? new Folder($uri) : new File($uri);
+      $dst= is_dir($destination) ? new Folder($destination) : new File($destination);
+
+      // Throw an exception if resource is locked
+      if ($this->getLockInfo($filename) !== NULL) {
+        return throw(new OperationNotAllowedException($src->getURI().' is locked'));
+      }
+      
+      // Copy the file to destination file
+      try(); {
+        $src->copy($dst->getURI());
+      } if (catch('IOException', $e)) {
+        return throw(new OperationFailedException($filename.' cannot be copied/moved to '.$destination.' ('.$e->message.')'));
+      }
+      
+      return !$exists;
     }
   }
 ?>
