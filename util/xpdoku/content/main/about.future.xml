@@ -4,6 +4,7 @@
     <references>
       <ref link="about">Introduction</ref>
       <ref type="ext" link="http://cvs.php.net/co.php/ZendEngine2/ZEND_CHANGES?r=head">Changes in the Zend Engine 2.0</ref>
+      <ref type="ext" link="http://www.phpmag.de/itr/online_artikel/show.php3?id=207&amp;nodeid=62">Generationenwechsel [Zend Engine 2: Leistungsmerkmale, Geschichte und Designmaximen]</ref>
     </references>
     <content>
       <title>The future of XP</title>
@@ -32,7 +33,7 @@
           
           <box caption="Note">
             Only those XP framework classes which cannot be automatically migrated are 
-            checked in to the CVS module <tt>skeleton2</tt>. Don't be surprise to find
+            checked in to the CVS module <tt>skeleton2</tt>. Don't be surprised to find
             only a couple of files there.
           </box>
         </text>
@@ -79,7 +80,7 @@
           The <ref type="api:class" link="lang.Exception#getStackTrace"/> method no longer 
           returns a string. The return type has been replaced by an array of
           StackTraceElements.
-          <br/>
+          <br/><br/>
           Use the <tt>toString</tt> method to retreive a string representation of the
           exception instead.
         </text>
