@@ -101,6 +101,7 @@ hr {
 
 /* Syntax */
 code {
+  font: 12px "Courier New", courier;
   white-space: pre;
 }
 code .keyword {
@@ -126,4 +127,9 @@ div.example {
   border: 1px solid #cecece;
   border-left: 3px solid #cecece;
   padding: 2px;
+}
+div.cvsver {
+  font: 12px "Courier New", courier;
+  border: 1px solid #cecece;
+  padding: 2px;  
 }
