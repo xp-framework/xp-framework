@@ -265,14 +265,14 @@
       // Build addresses string
       $address= '';
       foreach ($this->address as $k => $v) {
-        $address.= $this->_export('ADR;'.strtoupper($k), array(
-          $v['pobox'],
-          $v['suffix'],
-          $v['street'],
-          $v['city'],
-          $v['province'],
-          $v['zip'],
-          $v['country']
+        $address.= $this->_export('ADR;'.strtoupper($k).';CHARSET=UTF-8', array(
+          utf8_encode($v['pobox']),
+          utf8_encode($v['suffix']),
+          utf8_encode($v['street']),
+          utf8_encode($v['city']),
+          utf8_encode($v['province']),
+          utf8_encode($v['zip']),
+          utf8_encode($v['country'])
         ));
       }
       
