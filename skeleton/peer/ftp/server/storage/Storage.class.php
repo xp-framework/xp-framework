@@ -19,38 +19,42 @@
      * Sets base
      *
      * @access  public
+     * @param   int clientId
      * @param   string uri
      * @return  string new base
      */
-    function setBase($uri) { }
+    function setBase($clientId, $uri) { }
     
     /**
      * Retrieves base
      *
      * @access  public
+     * @param   int clientId
      * @return  string
      */
-    function getBase() { }
+    function getBase($clientId) { }
 
     /**
      * Looks up a element. Returns a StorageCollection, a StorageElement 
      * or NULL in case it nothing is found.
      *
      * @access  public
+     * @param   int clientId
      * @param   string uri
      * @return  &peer.ftp.server.storage.StorageEntry
      */
-    function &lookup($uri) { }
+    function &lookup($clientId, $uri) { }
 
     /**
      * Creates a new StorageEntry and return it
      *
      * @access  public
+     * @param   int clientId
      * @param   string uri
      * @param   int type one of the ST_* constants
      * @return  &peer.ftp.server.storage.StorageEntry
      */
-    function &create($uri, $type) { }
+    function &create($clientId, $uri, $type) { }
   
   }
 ?>
