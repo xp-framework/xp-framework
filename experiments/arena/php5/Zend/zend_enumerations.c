@@ -109,6 +109,7 @@ ZEND_METHOD(enumeration, valueOf) {
 		zend_hash_move_forward_ex(&EG(scope)->constants_table, &pos);
 	}
 	
+	zend_error(E_WARNING, "Value %s::%ld not bound", EG(scope)->name, needle);
 	RETURN_FALSE;
 }
 
