@@ -28,7 +28,23 @@
    * @purpose  Parser
    */
   class DateParser extends Object {
-  
+
+    /**
+     * Get "fully qualified" year. For one and two digit years, returns
+     * the current year *plus* the given number.
+     *
+     * @model   static
+     * @access  public
+     * @param   int year
+     * @return  int
+     */
+    function yearFor($year) {
+      if (strlen((int)$year) <= 2) {
+        return (int)floor(date('Y') / 100) * 100 + $year;
+      }
+      return $year;
+    }
+
     /**
      * Parse a date
      *
@@ -52,7 +68,7 @@
           isset($matches[7]) ? $matches[7] : 0, 
           $matches[2], 
           $matches[1], 
-          isset($matches[4]) ? $matches[4] : date('Y')
+          isset($matches[4]) ? DateParser::yearFor($matches[4]) : date('Y')
         );
       } elseif (preg_match('/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?(Z|([+-]\d{4}))?$/', $s, $matches)) {
       
@@ -63,7 +79,7 @@
           $matches[6],
           $matches[2],
           $matches[3],
-          $matches[1]
+          DateParser::yearFor($matches[1])
         );
         
         // If a timezone information has been given, try to convert timestamp into local time
