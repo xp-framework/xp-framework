@@ -21,7 +21,7 @@
     
     var
       $hasHeader,
-      $colDelim= "|",
+      $colDelim= '|',
       $escape= '"';
     
     var
