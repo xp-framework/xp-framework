@@ -46,10 +46,23 @@
       
       if (FALSE !== ($cat= $this->dsn->getValue('log'))) {
         $l= &Logger::getInstance();
-        $this->setTrace ($l->getCategory ($cat));
+        $this->setTrace($l->getCategory($cat));
       }
-      
-      parent::__construct();
+    }
+    
+    /**
+     * Returns a hashcode for this connection
+     *
+     * Example:
+     * <pre>
+     *   sybase-ct link #50
+     * </pre>
+     *
+     * @access  public
+     * @return  string
+     */
+    function hashCode() {
+      return get_resource_type($this->handle).' #'.(int)$this->handle;
     }
 
     /**
