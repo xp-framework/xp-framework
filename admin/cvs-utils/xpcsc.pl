@@ -18,6 +18,9 @@ use constant ENOHEADER      => "ENOHEADER";
 use constant ESHORTOPEN     => "ESHORTOPEN";
 use constant ECONSTRUCT     => "ECONSTRUCT";
 use constant EWHITESPACE    => "EWHITESPACE";
+use constant ECALLTIMEREFERENCE => "ECALLTIMEREFERENCE";
+use constant ELEAKING       => "ELEAKING";
+use constant ECLASSNAME     => "ECLASSNAME";
 
 use constant WTBD           => "WTBD";
 use constant WOUTPUT        => "WOUTPUT";
@@ -37,6 +40,7 @@ use constant WPERFORM       => "WPERFORM";
   EWHITESPACE         => "http://xp-framework.net/devel/coding.html#24",
   ECALLTIMEREFERENCE  => "http://de3.php.net/manual/en/language.references.pass.php",
   ELEAKING            => "n/a",
+  ECLASSNAME          => "n/a",
 
   # Warnings
   WTBD        => "http://xp-framework.net/devel/coding.html#13",
@@ -189,8 +193,13 @@ while (@ARGV) {
     # Check class name
     if (!$comment && $_ =~ /class ([^\s]+)/) {
       $class= $1;
-    }
 
+      # Check classname <-> filename match
+      if (!($FILE =~ /$class\.class\.php$/)) {
+        &error("Class name does not correlate to filename", ECLASSNAME);
+      }
+    }
+    
     # Check for tabs. I HATE TABS!
     if ($_ =~ /\t/) {
       &error("Tab character found", ETAB);
