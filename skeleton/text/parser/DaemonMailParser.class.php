@@ -460,7 +460,7 @@
                 (preg_match($defines[1], $v, $regs))
               ) {
                 # printf("CALLBACK>> %s(%s %s)\n", var_export($defines[2], 1), var_export($v, 1), var_export($regs, 1));
-                call_user_func($defines[2], $daemonmessage, $v, $regs);
+                call_user_func_array($defines[2], array(&$daemonmessage, $v, $regs));
               }
             }
             break;
@@ -534,10 +534,14 @@
               $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_EXIM;
               
               $state= DMP_FINISH;
-              
-              // Find indented lines until -- appears
+
+              // Find indented lines until ----- appears
+              $c= FALSE;
               do {
-                if ('--' == substr($t, 0, 2)) { $state= DMP_ORIGMSG; break; }
+                if ('-----' == substr($t, 0, 5)) $c= TRUE;
+                if ($c && ('' == chop($t))) break;
+                
+                if (strstr($t, 'copy of the message')) $state= DMP_ORIGMSG;
                 if ('  ' != substr($t, 0, 2)) continue;
                 
                 // Parse out host/IP
