@@ -91,6 +91,7 @@
       parent::init();
       if (FALSE === getenv('PRODUCT')) $this->request->method= 'CREATE';
       $this->request->state= getenv('STATE');
+      $this->request->page= $this->request->getParam('__page');
     }
     
     /**
@@ -185,6 +186,7 @@
       $response->setParam('lang',    $request->getLanguage());
       $response->setParam('product', $request->getProduct());
       $response->setParam('sess',    $request->getSessionId());
+      $response->setParam('query',   $request->getEnvValue('QUERY_STRING'));
       
       // Set XSL stylesheet
       $response->setStylesheet(sprintf(
