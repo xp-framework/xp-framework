@@ -18,7 +18,8 @@
         <text>
           Dieses Beispiel zeigt die Basics (aus lang/System.class.php):
           
-          <code><![CDATA[/**
+          <code><![CDATA[
+/**
  * Setzt eine Umgebungsvariable
  *
  * @access  public
