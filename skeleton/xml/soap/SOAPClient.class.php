@@ -1,95 +1,103 @@
 <?php
-  uses(
-    'net.http.HTTPRequest',
-    'xml.soap.SOAPMessage',
-    'xml.soap.SOAPFaultException'
-  );
+/* Diese Klasse ist Teil des XP-Frameworks
+ *
+ * $Id$
+ */
+
+  uses('xml.soap.SOAPMessage');
   
-  class SOAPClient extends HTTPRequest {
+  /**
+   * Basic SOAP-Client
+   *
+   * Diese Klasse kann vererbt werden, um "Proxy-Klassen" zu erstellen.
+   * Durch Hinzufügen von Methoden, die ihrerseits wieder nur _call() aufrufen,
+   * können transparente Wrapper geschaffen werden, die self::method setzen
+   * und evtl. auch bereits den richtigen Datentypen setzen.
+   *
+   * TODO: Diese Wrapper-Klassen könnten über WSDL generiert werden
+   *
+   * Anwendungsbeispiel:
+   * <pre>
+   *   $s= new SOAPClient(
+   *     new SOAPHTTPTransport('<URL>'),
+   *     '<URN>',
+   *     '<METHOD>'
+   *   );
+   *   try(); {
+   *     $return= $s->call(
+   *       <PARAMETERS>
+   *     );
+   *   }
+   *   if (catch('Exception', $e)) {
+   *     $e->printStackTrace();
+   *     exit;
+   *   }
+   *   var_dump($return);
+   * </pre>
+   * 
+   * @example doc://skeleton/soap/google.php
+   */
+  class SOAPClient extends Object {
     var 
-      $call,
-      $answer;
-    
-    var
+      $transport,
       $action,
-      $method= 'ident',
-      $data;
+      $method;
     
-    var
-      $contentType= 'text/xml; charset=iso-8859-1';
-    
-    function _create() {
-      $this->call= new SOAPMessage();
-      $this->call->create($this->action, $this->method);
-      $this->call->setData($this->data);
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   xml.soap.transport.SOAPTransport transport Transport-Objekt
+     * @param   string action Action
+     * @param   string method Methode
+     */
+    function __construct($transport, $action, $method) {
+      $this->transport= $transport;
+      $this->action= $action;
+      $this->method= $method;
+      parent::__construct();
     }
     
+    /**
+     * Methoden-Aufruf
+     *
+     * @access  private
+     * @param   mixed vars Daten
+     * @return  mixed Antwort
+     * @throws  IllegalArgumentException, wenn transport ungültig ist
+     */
+    function _call() {
+      if (!is_a($this->transport, 'SOAPTransport')) return throw(new IllegalArgumentException(
+        'transport must be a xml.soap.transport.SOAPTransport'
+      ));
+      
+      $params= func_get_args();
+    
+      $this->message= new SOAPMessage();
+      $this->message->create($this->action, $this->method);
+      $this->message->setData($params);
+
+      // Anfrage senden
+      if (FALSE === $this->transport->send($this->message)) return FALSE;
+      
+      // Antwort erhalten
+      $this->answer= $this->transport->retreive();
+      
+      // Daten unserialisieren und zurückgeben
+      return is_a($this->answer, 'SOAPMessage') ? $this->answer->getData() : FALSE;
+    }
+    
+    /**
+     * Default-Methodenaufruf
+     *
+     * @access  public
+     * @param   mixed vars Daten
+     * @return  mixed Antwort
+     * @throws  IllegalArgumentException, wenn transport ungültig ist
+     */
     function call() {
-      if (!isset($this->call)) {
-        $this->data= func_get_args();
-        $this->_create();
-      }
-      $this->headers['SOAPAction']= '"'.$this->action.'#'.$this->method.'"';
-      
-      // POST
-      try(); {
-        $return= $this->post('#'.XML_DECLARATION.$this->call->getSource(0));
-      } if (catch('IOException', $e)) {
-        return throw($e->type, $this->request);
-      }
-      
-      // Rückgabe auswerten
-      $this->answer= new SOAPMessage();
-      
-      if (isset($this->response->ContentType)) {
-        @list($type, $charset)= explode('; charset=', $this->response->ContentType);
-        if (!empty($charset)) $this->answer->encoding= $charset;
-      }
-      
-      // DEBUG
-      // var_dump($this->response);
-
-      # IFDEF PROFILING
-      // $start_xml= microtime();
-      # ENDIF
-      
-      $this->answer->action= $this->action;
-      try(); {
-        $this->answer->fromString($this->response->body);
-      } if (catch('Exception', $e)) {
-        return throw($e->type, $this->response);
-      }
-      
-      // Nach Fault checken
-      $this->fault= NULL;
-      if (intval($this->response->HTTPstatus) != 200) {
-        $this->fault= $this->answer->getFault();
-        if (is_a($this->fault, 'SOAPFault')) {
-          return throw(new SOAPFaultException($this->fault));
-        } else {
-          return throw(new Exception($this->response->HTTPmessage));
-        }
-      }
-
-      # IFDEF PROFILING
-      // $start= microtime();
-      # ENDIF
-
-      $data= $this->answer->getData();
-      
-      # IFDEF PROFILING
-      // $stop= microtime();
-      //
-      // function utime($m) {
-      //   list($msec, $sec)= explode(' ', $m);
-      //   return $sec+ $msec;
-      // }
-      //
-      // printf("%0.3f sec\n", (utime($start) - utime($start_xml)));
-      // printf("%0.3f sec\n", (utime($stop) - utime($start)));
-      # ENDIF
-      
-      return $data;
+      $args= func_get_args();
+      return call_user_func_array(array(&$this, '_call'), $args);
     }
   }
   
