@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('de.thekid.dialog.AlbumImage', 'de.thekid.dialog.AlbumChapter');
+  uses('util.Date', 'de.thekid.dialog.AlbumImage', 'de.thekid.dialog.AlbumChapter');
 
   /**
    * Represents a single album.
@@ -216,5 +216,6 @@
         $cs
       );
     }
-  }
+
+  } implements(__FILE__, 'de.thekid.dialog.IEntry');
 ?>

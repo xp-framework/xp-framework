@@ -98,5 +98,6 @@
     function &getDate() {
       return $this->date;
     }
-  }
+
+  } implements(__FILE__, 'de.thekid.dialog.IEntry');
 ?>
