@@ -56,6 +56,7 @@ import java.util.Map;
      * @model   static
      * @access  public
      * @param   ClassDoc classdoc a single class' documentation
+     * @param   PrintStream out the stream the XML is printed to
      * @return  boolean
      */
     public static boolean processClass(ClassDoc classdoc, PrintStream out) {
