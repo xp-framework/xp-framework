@@ -30,7 +30,7 @@
     // {{{ public static string forFile(string filename)
     function forFile($filename) {
       if (strstr($filename, DIRECTORY_SEPARATOR)) {     // Already fully qualified
-        return $filename;
+        return realpath($filename);
       }
       return FullName::searchFor($filename);
     }
@@ -59,19 +59,26 @@
   class Requirements extends Object {
     var
       $file = '',
+      $seen = array(),
       $deps = array();
       
     // {{{ private __construct(string filename)
-    function __construct($filename) {
+    function __construct($filename, $seen= array()) {
       parent::__construct();
-      $this->file= $filename;
+      $this->file= FullName::forFile($filename);
+      $this->seen= $seen;
     }
     // }}}
       
     // {{{ public string add(string fullname)
     function add($fullname) {
+
+      // Check if we've already been here
+      if (isset($this->seen[$fullname])) return;
+      $this->seen[$fullname]= 1;
+      
       try(); {
-        $r= &Requirements::forFile($fullname);
+        $r= &Requirements::forFile($fullname, $this->seen);
       } if (catch('Exception', $e)) {
         return throw($e);
       }
@@ -82,11 +89,11 @@
     }
     // }}}
 
-    // {{{ public static Requirements forFile(string filename) throws Exception   
-    function forFile($filename) {
+    // {{{ public static Requirements forFile(string filename, string[] list) throws Exception   
+    function forFile($filename, $list) {
       if (is('null', $filename)) return;    // NullPointer
 
-      $requirements= &new Requirements($filename);
+      $requirements= &new Requirements($filename, $list);
       $idx= basename($filename);
       try(); {
         $parser= &new PHPParser($filename);
@@ -95,7 +102,7 @@
         return throw($e);
       }
 
-      defined('VERBOSE') && Console::writeLine($parser->toString());
+      defined('DEBUG') && Console::writeLine($parser->toString());
 
       // First, go through the requirements
       foreach ($parser->requires as $required) {
@@ -106,7 +113,7 @@
           $e->printStackTrace();
           continue;
         }
-        Console::writeLine('+ ', $idx, ' requires file ', $required, ' (', $fn, ')');
+        defined('VERBOSE') && Console::writeLine('+ ', $idx, ' requires file ', $required, ' (', $fn, ')');
       }
 
       // Second, the SAPIs
@@ -118,7 +125,7 @@
           $e->printStackTrace();
           continue;
         }
-        Console::writeLine('+ ', $idx, ' has SAPI ', $sapi, ' (', $fn, ')');
+        defined('VERBOSE') && Console::writeLine('+ ', $idx, ' has SAPI ', $sapi, ' (', $fn, ')');
       }
 
       // Then check all of the classes in uses()
@@ -130,9 +137,15 @@
           $e->printStackTrace();
           continue;
         }
-        Console::writeLine('+ ', $idx, ' uses class ', $uses, ' (', $fn, ')');
+        defined('VERBOSE') && Console::writeLine('+ ', $idx, ' uses class ', $uses, ' (', $fn, ')');
       }
 
+      // If file required itself, we have some sort of circular 
+      // dependency - resolve if
+      if (FALSE !== ($pos= array_search($requirements->file, $requirements->deps))) {
+        defined('VERBOSE') && Console::writeLine('! Circular dependency detected for ', $idx, ', resolving');
+        unset($requirements->deps[$pos]);
+      }
       return $requirements;
     }
     // }}}
@@ -143,6 +156,7 @@
   // {{{ main
   $param= &new ParamString();
   if ($param->exists('verbose')) define('VERBOSE', 1);
+  if ($param->exists('debug')) define('DEBUG', 1);
   if ($param->exists('force')) define('IGNORE_NOTFOUND', 1);
   
   try(); {
@@ -152,8 +166,9 @@
     exit(-1);
   }
   
-  Console::writeLine($requirements->toString());
+  defined('DEBUG') && Console::writeLine($requirements->toString());
   
+  Console::writeLine($requirements->file);
   for ($i= 0, $s= sizeof($requirements->deps); $i < $s; $i++) {
     Console::writeLine($requirements->deps[$i]);
   }
