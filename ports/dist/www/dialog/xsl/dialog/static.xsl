@@ -115,7 +115,7 @@
       <xsl:value-of select="date/year"/>
     </div>
     <h2>
-      <xsl:value-of select="@title"/>
+      Featured image: <xsl:value-of select="@title"/>
     </h2>
     <p align="justify">
       <xsl:copy-of select="description"/>
