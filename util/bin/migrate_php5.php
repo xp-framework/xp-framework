@@ -70,8 +70,8 @@ __;
   // Swallow leading whitespace
   while (T_WHITESPACE === $tok[0]) $tok= $t->getNextToken();
   
-  $class= FALSE;
-  $uses= $constants= array();
+  $class= 0;
+  $uses= $constants= $implements= array();
   do {
     $DEBUG && printf("%s: %s\n", $t->getTokenName($tok[0]), $tok[1]);
     if (T_COMMENT === $tok[0] && '//' == substr($tok[1], 0, 2) && !$class) continue;
@@ -81,6 +81,15 @@ __;
       case 'uses':
         while (')' !== $tok[1]) {
           if (T_CONSTANT_ENCAPSED_STRING === $tok[0]) $uses[]= $tok[1];
+          $tok= $t->getNextToken();
+        }
+        $tok= $t->getNextToken(); // Swallow ";"
+        $tok= array(T_NONE, '');
+        break;
+        
+      case 'implements':
+        while (')' !== $tok[1]) {
+          if (T_CONSTANT_ENCAPSED_STRING === $tok[0]) $implements[]= $tok[1];
           $tok= $t->getNextToken();
         }
         $tok= $t->getNextToken(); // Swallow ";"
@@ -152,7 +161,7 @@ __;
           }
           $out[]= substr($const, 0, -2).";\n";
         }
-        $class= TRUE;
+        $class= sizeof($out)- 1;
         $tok= array(T_NONE, '');
         break;
         
@@ -262,6 +271,15 @@ __;
     
     $out[]= str_replace("\r", '', $tok[1]);
   } while ($tok= $t->getNextToken());
+  
+  if (!empty($implements)) {
+    $ilist= '';
+    foreach ($implements as $i) {
+      $ilist.= ', '.substr($i, strrpos($i, '.')+ 1, -1);
+    }
+    $out[$class]= 'implements '.substr($ilist, 2).' {';
+    $uses= array_merge($uses, $implements);
+  }
 
   $f= &new File('php://stdout');
   try(); {
