@@ -17,7 +17,7 @@
    * @purpose Database class for MySQL
    * @see     http://mysql.org/
    */
-  class MySQL extends Object {
+  class SPMySQL extends Object {
     var 
       $handle= NULL,
       $host, 
