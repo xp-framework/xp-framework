@@ -20,6 +20,7 @@
   define('DESCRIPTION_FILE',  'description.txt');
   define('HIGHLIGHTS_FOLDER', 'highlights');
   define('HIGHLIGHTS_MAX',    4);
+  define('ENTRIES_PER_PAGE',  8);
   define('FOLDER_FILTER',     '/\.jpe?g$/i');
   define('DATA_FILTER',       '/\.dat$/');
 
@@ -168,12 +169,18 @@ __
   krsort($entries);
   $cat && $cat->debug($entries);
   
-  // ...for home page: Eight newest entries
-  try(); {
-    FileUtil::setContents(new File(DATA_FOLDER.'index'), serialize(array_slice($entries, 0, 8)));
-  } if (catch('IOException', $e)) {
-    $e->printStackTrace();
-    exit(-1);
+  // ...by pages. The index "page_0" can be used for the home page
+  for ($i= 0, $s= sizeof($entries); $i < $s; $i+= ENTRIES_PER_PAGE) {
+    Console::writeLinef('---> Generating index for album #%d - #%d', $i, $i+ ENTRIES_PER_PAGE);
+    try(); {
+      FileUtil::setContents(
+        new File(DATA_FOLDER.'page_'.($i / ENTRIES_PER_PAGE).'.idx'), 
+        serialize(array($s, array_slice($entries, $i, ENTRIES_PER_PAGE)))
+      );
+    } if (catch('IOException', $e)) {
+      $e->printStackTrace();
+      exit(-1);
+    }
   }
 
   Console::writeLine('===> Finished at ', date('r'));
