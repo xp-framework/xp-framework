@@ -20,6 +20,17 @@
   class SybaseConnection extends DBConnection {
 
     /**
+     * Set Timeout
+     *
+     * @access  public
+     * @param   int timeout
+     */
+    function setTimeout($timeout) {
+      ini_set('sybct.login_timeout', $timeout);
+      parent::setTimeout($timeout);
+    }
+
+    /**
      * Connect
      *
      * @access  public  
