@@ -3,6 +3,8 @@
  *
  * $Id$
  */
+
+  uses('util.HashmapIterator');
    
   /**
    * Hashmap class
@@ -58,6 +60,17 @@
      */
     function &clone() {
       return new Hashmap($this->_hash);
+    }
+    
+    /**
+     * Returns an iterator over the keys of this hashmap
+     *
+     * @access  public
+     * @return  &util.HashmapIterator
+     * @see     xp://util.HashmapIterator
+     */
+    function &iterator() {
+      return new HashmapIterator($this->_hash);
     }
         
     /**
@@ -316,7 +329,7 @@
      * 
      * Example:
      * <pre>
-     *   util.Hashmap {
+     *   util.Hashmap@[2]{
      *     'key'  => 'value',
      *     'key2' => 'value2',
      *   } 
@@ -326,7 +339,11 @@
      * @return  string
      */
     function toString() {
-      return $this->getClassName()." {\n".substr(var_export($this->_hash, 1), 8, -2)."\n}";
+      return (
+        $this->getClassName().'@['.$this->size()."]{\n".
+        substr(var_export($this->_hash, 1), 8, -2).
+        "\n}"
+      );
     }
   }
 ?>
