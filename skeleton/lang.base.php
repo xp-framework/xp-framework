@@ -165,7 +165,9 @@
         $error= &new Error('Cannot include '.$str);
         xp::error($error->toString());
       }
-      xp::registry('class.'.xp::reflect($str), $str);
+      $class= xp::reflect($str);
+      xp::registry('class.'.$class, $str);
+      is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
     }
   }
   // }}}
