@@ -571,6 +571,44 @@ static int ZEND_IMPORT_SPEC_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	ZEND_VM_NEXT_OPCODE();
 }
 
+static int ZEND_INSTANCE_CREATION_SPEC_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+{
+	zend_op *opline = EX(opline);
+	zval *parent_name;
+	zend_free_op free_op2;
+	zend_class_entry *ce;
+
+	parent_name = get_zval_ptr(&opline->op2, EX(Ts), &free_op2, BP_VAR_R);
+
+	ce = zend_fetch_class(opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, ZEND_FETCH_CLASS_DEFAULT TSRMLS_CC);
+
+	/* Check if we've already done this. We can misuse the final flag for this
+	 * because there is no way in userland to make the class final.
+	 */
+	if (ce->ce_flags & ZEND_ACC_FINAL_CLASS) {
+		EX_T(opline->result.u.var).class_entry = ce;
+		ZEND_VM_NEXT_OPCODE();
+	}
+
+	ce->parent = zend_fetch_class(Z_STRVAL_P(parent_name), Z_STRLEN_P(parent_name), ZEND_FETCH_CLASS_DEFAULT TSRMLS_CC);
+
+	if (ce->parent->ce_flags & ZEND_ACC_INTERFACE) {
+		zend_uint num_interfaces = ++ce->num_interfaces;
+
+		ce->interfaces = (zend_class_entry **) erealloc(ce->interfaces, sizeof(zend_class_entry *) * num_interfaces);
+		ce->interfaces[num_interfaces - 1]= ce->parent;
+		zend_do_implement_interface(ce, ce->parent TSRMLS_CC);
+		ce->parent = NULL;
+	} else {
+		zend_do_inheritance(ce, ce->parent TSRMLS_CC);
+	}
+
+	ce->ce_flags |= ZEND_ACC_FINAL_CLASS;
+	EX_T(opline->result.u.var).class_entry = ce;
+
+	FREE_OP(free_op2);
+	ZEND_VM_NEXT_OPCODE();
+}
 static int ZEND_FETCH_CLASS_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -2574,6 +2612,7 @@ static int ZEND_COMPARE_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	;
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_ADD_SPEC_CONST_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -2938,6 +2977,7 @@ static int ZEND_COMPARE_SPEC_CONST_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	zval_dtor(free_op2.var);
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_ADD_SPEC_CONST_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -3302,6 +3342,7 @@ static int ZEND_COMPARE_SPEC_CONST_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	if (free_op2.var) {zval_ptr_dtor(&free_op2.var);};
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int zend_init_add_array_helper_SPEC_CONST_UNUSED(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -3752,6 +3793,7 @@ static int ZEND_COMPARE_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	;
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_BW_NOT_SPEC_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -5147,6 +5189,7 @@ static int ZEND_COMPARE_SPEC_TMP_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	;
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_ADD_SPEC_TMP_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -5603,6 +5646,7 @@ static int ZEND_COMPARE_SPEC_TMP_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	zval_dtor(free_op2.var);
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_ADD_SPEC_TMP_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -6059,6 +6103,7 @@ static int ZEND_COMPARE_SPEC_TMP_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	if (free_op2.var) {zval_ptr_dtor(&free_op2.var);};
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int zend_init_add_array_helper_SPEC_TMP_UNUSED(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -6601,6 +6646,7 @@ static int ZEND_COMPARE_SPEC_TMP_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	;
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_BW_NOT_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -9237,6 +9283,7 @@ static int ZEND_COMPARE_SPEC_VAR_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	;
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_ADD_SPEC_VAR_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -10562,6 +10609,7 @@ static int ZEND_COMPARE_SPEC_VAR_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	zval_dtor(free_op2.var);
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_ADD_SPEC_VAR_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -11908,6 +11956,7 @@ static int ZEND_COMPARE_SPEC_VAR_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	if (free_op2.var) {zval_ptr_dtor(&free_op2.var);};
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_FETCH_DIM_W_SPEC_VAR_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -13384,6 +13433,7 @@ static int ZEND_COMPARE_SPEC_VAR_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	;
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_CLONE_SPEC_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -19903,6 +19953,7 @@ static int ZEND_COMPARE_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	;
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_ADD_SPEC_CV_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -21228,6 +21279,7 @@ static int ZEND_COMPARE_SPEC_CV_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	zval_dtor(free_op2.var);
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_ADD_SPEC_CV_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -22574,6 +22626,7 @@ static int ZEND_COMPARE_SPEC_CV_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	if (free_op2.var) {zval_ptr_dtor(&free_op2.var);};
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_FETCH_DIM_W_SPEC_CV_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
@@ -24050,6 +24103,7 @@ static int ZEND_COMPARE_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	;
 	ZEND_VM_NEXT_OPCODE();
 }
+
 static int ZEND_NULL_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_error_noreturn(E_ERROR, "Invalid opcode %d/%d/%d.", EX(opline)->opcode, EX(opline)->op1.op_type, EX(opline)->op2.op_type);
@@ -27860,6 +27914,31 @@ void zend_init_opcodes_handlers()
   	ZEND_COMPARE_SPEC_CV_VAR_HANDLER,
   	ZEND_NULL_HANDLER,
   	ZEND_COMPARE_SPEC_CV_CV_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
+  	ZEND_INSTANCE_CREATION_SPEC_HANDLER,
   	ZEND_NULL_HANDLER
   };
   zend_opcode_handlers = (opcode_handler_t*)labels;
@@ -31472,6 +31551,45 @@ static int ZEND_COMPARE_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	ZEND_VM_NEXT_OPCODE();
 }
 
+static int ZEND_INSTANCE_CREATION_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+{
+	zend_op *opline = EX(opline);
+	zval *parent_name;
+	zend_free_op free_op2;
+	zend_class_entry *ce;
+
+	parent_name = get_zval_ptr(&opline->op2, EX(Ts), &free_op2, BP_VAR_R);
+
+	ce = zend_fetch_class(opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, ZEND_FETCH_CLASS_DEFAULT TSRMLS_CC);
+
+	/* Check if we've already done this. We can misuse the final flag for this
+	 * because there is no way in userland to make the class final.
+	 */
+	if (ce->ce_flags & ZEND_ACC_FINAL_CLASS) {
+		EX_T(opline->result.u.var).class_entry = ce;
+		ZEND_VM_NEXT_OPCODE();
+	}
+
+	ce->parent = zend_fetch_class(Z_STRVAL_P(parent_name), Z_STRLEN_P(parent_name), ZEND_FETCH_CLASS_DEFAULT TSRMLS_CC);
+
+	if (ce->parent->ce_flags & ZEND_ACC_INTERFACE) {
+		zend_uint num_interfaces = ++ce->num_interfaces;
+
+		ce->interfaces = (zend_class_entry **) erealloc(ce->interfaces, sizeof(zend_class_entry *) * num_interfaces);
+		ce->interfaces[num_interfaces - 1]= ce->parent;
+		zend_do_implement_interface(ce, ce->parent TSRMLS_CC);
+		ce->parent = NULL;
+	} else {
+		zend_do_inheritance(ce, ce->parent TSRMLS_CC);
+	}
+
+	ce->ce_flags |= ZEND_ACC_FINAL_CLASS;
+	EX_T(opline->result.u.var).class_entry = ce;
+
+	FREE_OP(free_op2);
+	ZEND_VM_NEXT_OPCODE();
+}
+
 void zend_vm_use_old_executor()
 {
   static opcode_handler_t labels[512] = {
@@ -31627,6 +31745,7 @@ void zend_vm_use_old_executor()
   	ZEND_HANDLE_EXCEPTION_HANDLER,
   	ZEND_IMPORT_HANDLER,
   	ZEND_COMPARE_HANDLER,
+  	ZEND_INSTANCE_CREATION_HANDLER,
   	ZEND_NULL_HANDLER
   };
   zend_opcode_handlers = (opcode_handler_t*)labels;

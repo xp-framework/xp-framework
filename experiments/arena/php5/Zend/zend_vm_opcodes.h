@@ -129,3 +129,4 @@
 #define ZEND_HANDLE_EXCEPTION        149
 #define ZEND_IMPORT                  150
 #define ZEND_COMPARE                 151
+#define ZEND_INSTANCE_CREATION       152

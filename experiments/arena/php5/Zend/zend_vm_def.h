@@ -3528,3 +3528,42 @@ ZEND_VM_HANDLER(151, ZEND_COMPARE, CONST|TMP|VAR|CV, CONST|TMP|VAR|CV)
 	FREE_OP2();
 	ZEND_VM_NEXT_OPCODE();
 }
+
+ZEND_VM_HANDLER(152, ZEND_INSTANCE_CREATION, ANY, ANY)
+{
+	zend_op *opline = EX(opline);
+	zval *parent_name;
+	zend_free_op free_op2;
+	zend_class_entry *ce;
+
+	parent_name = GET_OP2_ZVAL_PTR(BP_VAR_R);
+
+	ce = zend_fetch_class(opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, ZEND_FETCH_CLASS_DEFAULT TSRMLS_CC);
+
+	/* Check if we've already done this. We can misuse the final flag for this
+	 * because there is no way in userland to make the class final.
+	 */
+	if (ce->ce_flags & ZEND_ACC_FINAL_CLASS) {
+		EX_T(opline->result.u.var).class_entry = ce;
+		ZEND_VM_NEXT_OPCODE();
+	}
+
+	ce->parent = zend_fetch_class(Z_STRVAL_P(parent_name), Z_STRLEN_P(parent_name), ZEND_FETCH_CLASS_DEFAULT TSRMLS_CC);
+
+	if (ce->parent->ce_flags & ZEND_ACC_INTERFACE) {
+		zend_uint num_interfaces = ++ce->num_interfaces;
+
+		ce->interfaces = (zend_class_entry **) erealloc(ce->interfaces, sizeof(zend_class_entry *) * num_interfaces);
+		ce->interfaces[num_interfaces - 1]= ce->parent;
+		zend_do_implement_interface(ce, ce->parent TSRMLS_CC);
+		ce->parent = NULL;
+	} else {
+		zend_do_inheritance(ce, ce->parent TSRMLS_CC);
+	}
+
+	ce->ce_flags |= ZEND_ACC_FINAL_CLASS;
+	EX_T(opline->result.u.var).class_entry = ce;
+
+	FREE_OP2();
+	ZEND_VM_NEXT_OPCODE();
+}

@@ -2794,7 +2794,6 @@ void zend_do_begin_instance_creation(TSRMLS_D)
 {
 	zend_op *opline;
 	zval lambda;
-	zend_class_entry **pce;
 	zend_class_entry *new_class_entry = emalloc(sizeof(zend_class_entry));
 
 	/* Find class declaring opcode */
@@ -2808,29 +2807,22 @@ void zend_do_begin_instance_creation(TSRMLS_D)
 		/* Bails out */
 	}
 
-	if (zend_lookup_class(opline->op2.u.constant.value.str.val, opline->op2.u.constant.value.str.len, &pce TSRMLS_CC) == FAILURE) {
-		zend_error(E_COMPILE_ERROR, "Undefined class '%s' in instance creation", opline->op2.u.constant.value.str.val);
-		/* Bails out */
-	}
-	
 	/* Create lambda name */
 	build_runtime_defined_function_key(&lambda, opline->op2.u.constant.value.str.val, opline->op2.u.constant.value.str.len TSRMLS_CC);
 	new_class_entry->name= Z_STRVAL(lambda);
 	new_class_entry->name[0]= '$';
 	new_class_entry->name_length= Z_STRLEN(lambda);
 
-	/* Overwrite original opcode's class name */
-	efree(opline->op2.u.constant.value.str.val);
-	opline->op2.u.constant.value.str.val = estrndup(new_class_entry->name, new_class_entry->name_length);
-	opline->op2.u.constant.value.str.len = new_class_entry->name_length;
-	
 	/* Declare class */
 	new_class_entry->type = ZEND_USER_CLASS;
 	zend_initialize_class_data(new_class_entry, 1 TSRMLS_CC);
 	new_class_entry->filename = zend_get_compiled_filename(TSRMLS_C);
 	new_class_entry->line_start = zend_get_compiled_lineno(TSRMLS_C);
 	new_class_entry->ce_flags |= ZEND_ACC_FINAL;
-	new_class_entry->parent = *pce;
+
+	/* Modify original opcode */
+	opline->opcode = ZEND_INSTANCE_CREATION;
+	opline->op1.u.constant = lambda;
 
 	/* Add to class table */
 	{
@@ -2849,17 +2841,6 @@ void zend_do_begin_instance_creation(TSRMLS_D)
 void zend_do_end_instance_creation(TSRMLS_D)
 {
 	zend_class_entry **pce = NULL;
-
-	if (CG(active_class_entry)->parent->ce_flags & ZEND_ACC_INTERFACE) {
-		zend_uint num_interfaces = ++CG(active_class_entry)->num_interfaces;
-
-		CG(active_class_entry)->interfaces = (zend_class_entry **) erealloc(CG(active_class_entry)->interfaces, sizeof(zend_class_entry *) * num_interfaces);
-		CG(active_class_entry)->interfaces[num_interfaces - 1]= CG(active_class_entry)->parent;
-		zend_do_implement_interface(CG(active_class_entry), CG(active_class_entry)->parent TSRMLS_CC);
-		CG(active_class_entry)->parent= NULL;
-	} else {
-		zend_do_inheritance(CG(active_class_entry), CG(active_class_entry)->parent TSRMLS_CC);
-	}
 
 	if (zend_stack_top(&CG(class_stack), (void **) &pce) == SUCCESS) {
 		CG(active_class_entry) = *pce;
