@@ -155,7 +155,7 @@
       $this->setAutoPageBreak(TRUE, 2 * $margin);
       
       // Full width display mode
-      $this->setDisplayMode('fullwidth');
+      $this->setDisplayMode(FPDF_ZOOM_FULLWIDTH);
       
       // Set compression to TRUE if gzcompress() exists
       $this->setCompression(function_exists('gzcompress'));
@@ -324,6 +324,11 @@
      * Turns page compression on or off. Throws an exception in case 
      * compression was requested (set to TRUE) but not available.
      *
+     * Compression is possible if PHP is compiled with zlib and the
+     * function gzcompress() is available.
+     *
+     * @ext     zlib
+     * @see     php://gzcompress
      * @access  public
      * @param   bool compress
      * @throws  lang.MethodNotImplementedException
@@ -1523,15 +1528,19 @@
       $this->_out('<</Type /Catalog');
       
       switch ($this->ZoomMode) {
-        case 'fullpage': 
+        case FPDF_ZOOM_DEFAULT:
+          // NOOP
+          break;
+          
+        case FPDF_ZOOM_FULLPAGE: 
           $this->_out('/OpenAction [3 0 R /Fit]'); 
           break;
 
-        case 'fullwidth': 
+        case FPDF_ZOOM_FULLWIDTH: 
           $this->_out('/OpenAction [3 0 R /FitH null]'); 
           break;
 
-        case 'real': 
+        case FPDF_ZOOM_REAL: 
           $this->_out('/OpenAction [3 0 R /XYZ null null 1]'); 
           break;
 
@@ -1540,15 +1549,19 @@
       }
       
       switch ($this->LayoutMode) {
-        case 'single':
+        case FPDF_LAYOUT_DEFAULT:
+          // NOOP
+          break;
+
+        case FPDF_LAYOUT_SINGLE:
           $this->_out('/PageLayout /SinglePage');
           break;
         
-        case 'continuous':
+        case FPDF_LAYOUT_CONTINUOUS:
           $this->_out('/PageLayout /OneColumn');
           break;
         
-        case 'two':
+        case FPDF_LAYOUT_TWO:
           $this->_out('/PageLayout /TwoColumnLeft');
           break;
       }
@@ -1628,7 +1641,7 @@
      * @access  private
      */
     function _endpage() {
-      $this->state=1;
+      $this->state= 1;
     }
 
     /**
