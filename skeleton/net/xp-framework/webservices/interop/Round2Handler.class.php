@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('lang.MethodNotImplementedException');
+
   /**
    * Handles SOAP Interop requests as proposed by
    * Whitemesa.
@@ -154,6 +156,7 @@
      * @return  NULL
      */
     function echoVoid() {
+      
       return NULL;
     }
     
