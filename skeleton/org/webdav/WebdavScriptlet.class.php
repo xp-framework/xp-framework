@@ -10,9 +10,12 @@
     'scriptlet.HttpScriptlet',
     'org.webdav.util.WebdavBool',
     'org.webdav.WebdavScriptletRequest',
+    'org.webdav.WebdavScriptletResponse',
     'org.webdav.xml.WebdavPropFindRequest',
     'org.webdav.xml.WebdavPropPatchRequest',
-    'org.webdav.xml.WebdavMultistatus',
+    'org.webdav.xml.WebdavPropResponse',
+    'org.webdav.xml.WebdavMultistatusResponse',
+    'org.webdav.xml.WebdavLockResponse',
     'org.webdav.auth.WebdavUser'
   );
   
@@ -142,7 +145,7 @@
      * @access private
      * @return org.webdav.WebdavScriptletRequest
      */
-    function _request() {
+    function &_request() {
       switch (getenv('REQUEST_METHOD')) {
         case 'PROPFIND':
           return new WebdavPropFindRequest();
@@ -152,6 +155,24 @@
           return new WebdavLockRequest();
         default:
           return new WebdavScriptletRequest();
+      }
+    }
+    
+    /**
+     * Returns a Webdav response object depending on the REQUEST_METHOD
+     *
+     * @access private
+     * @return org.webdav.WebdavResponse
+     */
+    function &_response() {
+      switch(getenv('REQUEST_METHOD')) {
+        case 'PROPFIND':
+          return new WebdavMultistatusResponse();
+        case 'LOCK':
+          return new WebdavLockResponse();
+        case 'PROPPATCH':
+        default:
+          return new WebdavScriptletResponse();
       }
     }
     
@@ -347,8 +368,8 @@
         $response->setContent($e->toString());
         return FALSE;
       } 
-      
       $response->setStatus(HTTP_CREATED);
+      return TRUE;
     }
     
     /**
@@ -385,8 +406,8 @@
         $response->setContent($e->toString());
         return FALSE;
       }
-      
       $response->setStatus($created ? HTTP_CREATED : HTTP_NO_CONTENT);
+      return TRUE;
     }
 
     /**
@@ -423,8 +444,8 @@
         $response->setContent($e->toString());
         return FALSE;
       }
-      
       $response->setStatus($created ? HTTP_CREATED : HTTP_NO_CONTENT);
+      return TRUE;
     }
 
     /**
@@ -463,10 +484,7 @@
         $response->setContent($e->toString());
         return FALSE; 
       }
-
-      $response->setHeader('Content-Type', 'application/xml; charset="utf-8"');
-      $response->setStatus(HTTP_OK);
-
+      return TRUE;
     }
 
     /**
@@ -502,10 +520,6 @@
         $response->setContent($e->toString());
         return FALSE; 
       }
-      
-      $response->setStatus(HTTP_OK);
-      $response->setContent('');    
-
       return TRUE; 
     }
     
@@ -528,9 +542,9 @@
      */
     function doPropFind(&$request, &$response) {
       try(); {
-        $multistatus= &$this->handlingImpl->propfind(
+        $this->handlingImpl->propfind(
           $request,
-          new WebdavMultistatus()
+          $response
         );
       } if (catch('ElementNotFoundException', $e)) {
       
@@ -554,18 +568,7 @@
         // Other exceptions - throw exception to indicate (complete) failure
         return throw(new HttpScriptletException($e->message));
       }
-      
-      // Send "HTTP/1.1 207 Multi-Status" response header
-      $response->setStatus(WEBDAV_MULTISTATUS);
-      $response->setHeader(
-        'Content-Type', 
-        'text/xml, charset="'.$multistatus->getEncoding().'"'
-      );
-      
-      $response->setContent(
-        $multistatus->getDeclaration()."\n".
-        $multistatus->getSource(0)
-      );
+      return TRUE;
     }
 
     /**
