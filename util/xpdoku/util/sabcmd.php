@@ -38,6 +38,7 @@
   $proc= &new XSLProcessor();
   $proc->setXSLFile($p->value(1));
   $proc->setXMLFile($p->value(2));
+  $proc->setParam('area', 'about');
   $proc->setSchemeHandler(array('get_all' => 'schemeHandler'));
   
   try(); {

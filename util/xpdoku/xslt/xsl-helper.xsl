@@ -3,7 +3,14 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
   version="1.0"
 >
-
+  <xsl:param name="area" select="'home'"/>
+  <xsl:variable name="areas">
+    <area name="home" color="#d3d3d3" logo="logo-home"/>
+    <area name="documentation" color="#9eb6fe" logo="logo"/>
+    <area name="about" color="#add3b0" logo="logo-green"/>
+    <area name="resources" color="#f7c794" logo="logo-orange"/>
+  </xsl:variable>
+  
   <xsl:template match="packages|classdoc|document">
     <xsl:if test="$mode = 'search'">
       <xsl:call-template name="search"/>
@@ -49,55 +56,60 @@
       vlink="#000033"
     >
     <a name="TOP"/>
-    <table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
-      <tr bgcolor="#9eb6ff">
-        <td align="left" rowspan="2">
-           <a href="/"><img src="/image/xp-logo.gif" border="0" width="120" height="64" ALT="PHP-GTK"  vspace="0" hspace="0"/></a><br/>
+    <table border="0" cellspacing="0" cellpadding="0" width="100%">
+      <tr bgcolor="{$areas/area[@name= $area]/@color}">
+        <td align="left" colspan="5">
+           <a href="/">
+             <img border="0" width="120" height="64" vspace="0" hspace="0" src="/image/xp-{$areas/area[@name= $area]/@logo}.gif"/>
+           </a>
         </td>
-        <td align="right" valign="top" nowrap="nowrap">
-          <font color="#ffffff">
-            <b>
-              <xsl:processing-instruction name="php">
-                echo date ('l, F d, Y');
-              </xsl:processing-instruction>
-            </b>
-            <br/>
-          </font>
+      </tr>
+      <tr bgcolor="#000033">
+        <td colspan="5">
+          <img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/>
         </td>
       </tr>
 
-      <tr bgcolor="#9eb6ff">
-        <td align="right" valign="bottom" nowrap="nowrap">
-          <a href="/apidoc/" class="menuBlack">documentation</a> | <a href="/content/about.html" class="menuBlack">about</a> | <a href="/ports/" class="menuBlack">ports</a> | <a href="#" class="menuBlack">resources</a> <br/>
-          <img src="/image/spacer.gif" width="2" height="2" border="0" alt=""/><br/>
-        </td>
-      </tr>
-
-      <tr bgcolor="#000033"><td colspan="2"><img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/></td></tr>
-
-      <tr bgcolor="#3654a5">
+      <tr bgcolor="#666666">
         <form method="GET" action="/search.php">
-          <td class="searchbar" align="right" valign="top" colspan="2" nowrap="nowrap">
-            <font color="#ffffff">
+          <td bgcolor="#fafafa" width="2%" nowrap="nowrap" align="center">
+            <img src="/image/spacer.gif" width="100" height="1" border="0" alt=""/><br/>
+            <b>&#160; <a href="/" class="menuBlack">home</a> &#160;</b>
+          </td>
+          <td bgcolor="#3654a5" width="2%" nowrap="nowrap" align="center">
+            <img src="/image/spacer.gif" width="100" height="1" border="0" alt=""/><br/>
+            <b>&#160; <a href="/apidoc/" class="menuWhite">documentation</a> &#160;</b>
+          </td>
+          <td bgcolor="#62996a" width="2%" nowrap="nowrap" align="center">
+            <img src="/image/spacer.gif" width="100" height="1" border="0" alt=""/><br/>
+            <b>&#160; <a href="/content/about.html" class="menuWhite">about</a>  &#160;</b>
+          </td>
+          <td bgcolor="#d58120" width="2%" nowrap="nowrap" align="center">
+            <img src="/image/spacer.gif" width="100" height="1" border="0" alt=""/><br/>
+            <b>&#160; <a href="/resources/index.html" class="menuWhite">resources</a>  &#160;</b>
+          </td>
+          <td class="searchbar" align="right" valign="top" nowrap="nowrap">
+            <font color="white">
               <small><u>s</u>earch for</small>
               <input class="small" type="text" name="keyword" value="" size="30" accesskey="s"/>
+              <!--
               <small>in the</small>
               <select name="show" class="small">
                 <option value="apidoc">api docs</option>
-                <!--
-                <option value="php-gtk-dev-list">development mailing list</option>
-                <option value="php-gtk-doc-list">documentation mailing list</option>
-                <option value="manual">manual</option>
-                -->
               </select>
+              -->
               <input type="image" src="/image/small_submit_white.gif" border="0" width="11" height="11" ALT="search"  align="bottom"/>
               <br/>
             </font>
           </td>
         </form>
       </tr>
-
-      <tr bgcolor="#000033"><td colspan="2"><img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/></td></tr>
+      
+      <tr bgcolor="#000033">
+        <td colspan="5">
+          <img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/>
+        </td>
+      </tr>
     </table>
     <table cellpadding="0" cellspacing="0">
       <tr valign="top">
@@ -163,8 +175,16 @@
 
     <table border="0" cellspacing="0" cellpadding="0" width="100%">
       <tr bgcolor="#000033"><td><img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/></td></tr>
-      <tr bgcolor="#3654a5">
-        <td align="right" valign="bottom"><a href="/credits.html" class="menuWhite">credits</a> <br/>
+      <tr bgcolor="{$areas/area[@name= $area]/@color}">
+        <td align="right" valign="bottom">
+          <xsl:if test="./@generated_at != ''">
+            <small>
+	          This page was generated on: <xsl:value-of select="./@generated_at"/> |
+            </small>
+          </xsl:if>
+          <a href="/credits.html" class="menuBlack">credits</a> |
+          <a href="mailto:xp@php3.de" class="menuBlack">feedback</a>
+          <br/>
         </td>
       </tr>
       <tr bgcolor="#000033"><td><img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/></td></tr>
@@ -174,17 +194,9 @@
       <tr valign="top" bgcolor="#f0f0f0">
         <td><small>
           <a href="http://schlund.com/"><img title="Hosted by Schlund+Partner" alt="Schlund+Partner logo" src="/image/schlund.gif" width="110" height="20" border="0" align="left"/></a>      
-	      <a href="/copyright.html">Copyright XP-Team</a><br/>
+	      <!--<a href="/copyright.html">-->Copyright 2001-2003 XP-Team<!--</a>--><br/>
           All rights reserved.<br/>
           </small>
-        </td>
-        <td align="right">
-          <xsl:if test="./@generated_at != ''">
-            <small>
-	          This page was generated on: <xsl:value-of select="./@generated_at"/><br/>
-            </small>
-          </xsl:if>
-          <br/>
         </td>
       </tr>
     </table>

@@ -60,6 +60,7 @@ $(OUTPUT):
 	@-mkdir $(OUTPUT)
 	@-mkdir $(OUTPUT)/content
 	@-mkdir $(OUTPUT)/apidoc
+	@-mkdir $(OUTPUT)/resources
 	@-mkdir $(OUTPUT)/apidoc/collections
 	@-mkdir $(OUTPUT)/apidoc/classes
 	@-mkdir $(OUTPUT)/image
@@ -84,19 +85,21 @@ makexml: $(XML)
 
 index: $(OUTPUT) $(XML) news
 	@echo "===> Creating index"
-	@$(SABCMD) xslt/index.xsl content/index.xml $(OUTPUT)/index.html 2>/dev/null
+	@$(SABCMD) xslt/index.xsl content/index.xml $(OUTPUT)/index.html
 	@echo "===> Creating copyright"
-	@$(SABCMD) xslt/content.xsl content/copyright.xml $(OUTPUT)/copyright.html 2>/dev/null
+	@$(SABCMD) xslt/content.xsl content/copyright.xml $(OUTPUT)/copyright.html
 	@echo "===> Creating credits"
-	@$(SABCMD) xslt/content.xsl content/credits.xml $(OUTPUT)/credits.html 2>/dev/null
+	@$(SABCMD) xslt/content.xsl content/credits.xml $(OUTPUT)/credits.html
 	@echo "===> Creating apidoc index"
-	@$(SABCMD) xslt/apidoc.xsl $(CTREE) $(OUTPUT)/apidoc/index.html 2>/dev/null
+	@$(SABCMD) xslt/apidoc.xsl $(CTREE) $(OUTPUT)/apidoc/index.html '$$area=documentation' 2>/dev/null
+	@echo "===> Creating resources index"
+	@$(SABCMD) xslt/resources.xsl content/resources.xml $(OUTPUT)/resources/index.html '$$area=resources'
 	@echo "===> Creating highlighter"
-	@$(SABCMD) xslt/showsource.xsl $(CTREE) $(OUTPUT)/showsource.php 2>/dev/null
+	@$(SABCMD) xslt/showsource.xsl $(CTREE) $(OUTPUT)/showsource.php '$$area=documentation'
 	@echo "===> Creating search page"
-	@$(SABCMD) xslt/search.xsl $(CTREE) $(OUTPUT)/search.php 2>/dev/null
+	@$(SABCMD) xslt/search.xsl $(CTREE) $(OUTPUT)/search.php
 
-news:
+news: $(OUTPUT) $(XML)
 ifneq ($(news),)
 	@echo "===> Creating news from $(news)"
 	cp $(news) content/news.rdf.xml   
@@ -104,9 +107,9 @@ else
 	@echo "===> Creating news"
 	@-$(PHP) util/news.php > content/news.rdf.xml
 endif
-	@$(SABCMD) xslt/news.xsl content/news.xml $(OUTPUT)/news.html 2>/dev/null
+	@$(SABCMD) xslt/news.xsl content/news.xml $(OUTPUT)/news.html
 
-content:
+content: $(OUTPUT) $(XML)
 	@echo "===> Creating main content"
 	@for i in `find content/main/ -name '*.xml'` ; do \
 	  f=`basename $$i | sed -e 's/\.xml$$//g'` ; \
@@ -120,14 +123,14 @@ collections: $(OUTPUT) $(XML)
 
 classes: $(OUTPUT) $(XML)
 	@echo "===> Processing class inheritance"
-	@$(SABCMD) xslt/inheritance.xsl $(INHERITANCE) $(OUTPUT)/apidoc/inheritance.html 2>/dev/null
+	@$(SABCMD) xslt/inheritance.xsl $(INHERITANCE) $(OUTPUT)/apidoc/inheritance.html '$$area=documentation'
 	@echo "===> Processing classes"
-	@for k in `$(SABCMD) xslt/helper.xsl $(CTREE) '$$mode=allclasses' | sed -e 's/<.*>//'`; do $(MAKE) -s class_$$k; done
+	@for k in `$(SABCMD) xslt/helper.xsl $(CTREE) '$$mode=allclasses' '$$area=documentation' | sed -e 's/<.*>//'`; do $(MAKE) -s class_$$k; done
 
 collection_%:
 	@echo "---> Processing collection $*"
-	@$(SABCMD) xslt/collection.xsl $(CTREE) '$$mode=collection' '$$collection=$*' '$$intro='`ls -1 content/collection/$*.xml 2>/dev/null` $(OUTPUT)/apidoc/collections/$*.html 2>/dev/null
+	@$(SABCMD) xslt/collection.xsl $(CTREE) '$$mode=collection' '$$collection=$*' '$$area=documentation' '$$intro='`ls -1 content/collection/$*.xml 2>/dev/null` $(OUTPUT)/apidoc/collections/$*.html 2>/dev/null
 
 class_%:
 	@echo "---> Processing class $*"
-	@$(SABCMD) xslt/class.xsl $(XML)/$*.xpdoc.xml $(OUTPUT)/apidoc/classes/$*.html 2>/dev/null
+	@$(SABCMD) xslt/class.xsl $(XML)/$*.xpdoc.xml $(OUTPUT)/apidoc/classes/$*.html '$$area=documentation' 2>/dev/null
