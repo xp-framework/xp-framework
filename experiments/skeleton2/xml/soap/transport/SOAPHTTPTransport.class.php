@@ -59,10 +59,7 @@
      */
     public function send(SOAPMessage $message) {
     
-      // Sanity checks
-      if (!is_a($message, 'SOAPMessage')) throw (new IllegalArgumentException(
-        'parameter "message" must be a xml.soap.SOAPMessage'
-      ));
+      // Sanity check
       if (!$this->_conn->request) throw (new IllegalArgumentException(
         'Factory method failed'
       ));
