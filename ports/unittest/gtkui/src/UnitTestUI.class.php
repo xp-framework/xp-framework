@@ -48,15 +48,24 @@
     function init() {
       $this->suite= &new TestSuite();
       
+      // File Open Dialog
       $this->dialog= &new FileDialog('/home/thekid/devel/xp/util/tests');
       $this->dialog->setFilter('ini$');
       $this->dialog->setModal(TRUE);
       
+      // Hierarchy tree
       $this->hierarchy= &$this->widget('hierarchy');
       $this->hierarchy->set_row_height(20);
       $this->hierarchy->set_line_style(GTK_CTREE_LINES_DOTTED);
+
+      // Progress bar
       $this->progress= &$this->widget('progressbar');
       
+      // Status bar
+      $this->statusbar= &$this->widget('statusbar');
+      $this->setStatusText('Select test suite configuration');
+      
+      // Pixmaps
       $loader= &new GTKPixmapLoader($this->window->window, dirname(__FILE__));
       $this->pixmaps= $loader->load(array(
         'suite', 
@@ -67,8 +76,26 @@
         'test_succeeded'
       ));
 
+      // Buttons
       $this->connect($this->widget('select'), 'clicked');
       $this->connect($this->widget('run'), 'clicked');
+    }
+
+    /**
+     * Set statusbar text and waits for the GUI to process
+     * whatever events are still pending.
+     *
+     * @access  protected
+     * @param   string fmt
+     * @param   mixed* args
+     */
+    function setStatusText($fmt) {
+      $args= func_get_args();
+      $text= vsprintf($args[0], array_slice($args, 1));
+      $this->statusbar->push(1, $text);
+      
+      // Leave the GUI time to repaint
+      $this->processEvents();
     }
     
     /**
@@ -100,7 +127,8 @@
       $numtests= $this->suite->numTests();
       $this->progress->configure(0.0, 0.0, $numtests);
       $result= &new TestResult();
-      
+
+      $this->setStatusText('Running suite, %d tests', $numtests);
       for ($i= 0; $i < $numtests; $i++) {
         $this->suite->runTest($this->suite->testAt($i), $result);
         
@@ -118,6 +146,8 @@
       foreach ($result->failed as $id => $failed) {
         $this->updateTest($id, 'failed');
       }
+      
+      $this->setStatusText('Ready');
     }
     
     /**
@@ -206,6 +236,7 @@
         }
       } while ($section= $config->getNextSection());
       
+      $this->setStatusText('Configuration added');
       $this->cat->info($this->suite);
     }
   }
