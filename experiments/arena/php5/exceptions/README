@@ -27,4 +27,24 @@ Classes in the throws clause must be declared before the function
 declaration. Referencing previously undeclared classes will result in a
 compile time fatal error.
 
+2) IException interface
+-----------------------
+The builtin base class "Exception" need no longer be extended, it is 
+sufficient to implement the IException interface. This interface is 
+implemented by the built-in exception class. 
+
+It is defined as following:
+
+  interface IException {
+    public function getMessage();
+    public function getFile();
+    public function getLine();
+    public function __toString();
+  }
+
+Checks are performed on whether the exception thrown implements this 
+interface (rather than checking on subclasses of Exception), therefore 
+keeping the status quo of having a language enforcement on what
+one can throw and "being clean".
+
 <EOF>
