@@ -17,7 +17,7 @@
   );
   
   /**
-   * Wrap HTTP/1.0 and HTTP/1.1 requests (user internally by the 
+   * Wrap HTTP/1.0 and HTTP/1.1 requests (used internally by the 
    * HttpConnection class)
    *
    * @see      xp://peer.http.HttpConnection
