@@ -43,6 +43,22 @@
     }
     
     /**
+     * Find a class by the specified name (but do not load it)
+     *
+     * @access  public
+     * @param   string class fully qualified class name io.File
+     * @return  string filename, FALSE if not found
+     */
+    public function findClass($class) {
+      $filename= str_replace('.', DIRECTORY_SEPARATOR, $this->classpath.$class).'.class.php';
+      foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
+        if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
+        return realpath($dir.DIRECTORY_SEPARATOR.$filename);
+      }
+      return FALSE;
+    }
+
+    /**
      * Load the class by the specified name
      *
      * @access  public
