@@ -83,6 +83,12 @@
       </tr>
     </table>
     
+    <p>
+      Originally taken on <xsl:value-of select="func:datetime(/formresult/selected/exifData/dateTime)"/>
+      with <xsl:value-of select="/formresult/selected/exifData/make"/>'s
+      <xsl:value-of select="/formresult/selected/exifData/model"/>.
+    </p>
+    
     <!--
     <xmp>
       <xsl:copy-of select="/formresult/selected"/>
