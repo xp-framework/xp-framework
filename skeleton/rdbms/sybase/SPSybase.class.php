@@ -86,7 +86,7 @@
       if(!$this->handle) {
         $this->_logline_text("connect", $this->user."@".$this->host);
         $connect= $this->connect();
-        $result= $this->select_db($this->db);
+        if (isset($this->db)) $this->select_db($this->db);
         $this->_logline_text('connect.error', $this->Error);
       }
       return sybase_query($sql, $this->handle);
