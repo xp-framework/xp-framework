@@ -4,10 +4,7 @@
  * $Id$
  */
 
-  uses('xml.Tree');
-
-  // Get all properties
-  define('WEBDAV_PROPERTY_ALL',     NULL);
+  uses('org.webdav.WebdavScriptletRequest');
 
   /**
    * PropFind request XML
@@ -37,45 +34,66 @@
    * @purpose  Encapsulate PROPFIND XML request
    * @see      xp://org.webdav.WebdavScriptlet#doPropFind
    */
-  class WebdavPropFindRequest extends Tree {
+  class WebdavPropFindRequest extends WebdavScriptletRequest {
     var
+      $request    = NULL,
       $properties = array(),
       $path       = '',
       $webroot    = '',
       $depth      = 0;
     
     /**
-     * Constructor
+     * Set data and parse for properties
      *
-     * @access  public
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @throws  Exception to indicate failure
+     * @access public
+     * @param  string data The data
      */
-    function __construct(&$request) {
-      if (FALSE === $this->fromString($request->getData())) {
-        return FALSE;
+    function setData(&$data) {
+      parent::setData($data);
+      
+      // Set properties
+      if (
+        !$this->getNode('/propfind/allprop') &&
+        ($propfind= &$this->getNode('/propfind/prop'))
+      ) {
+        foreach($propfind->children as $node) {
+          $name= $node->getName();
+          $ns= 'xmlns';
+          $nsprefix= '';
+          if (($p= strpos($name, ':')) !== FALSE) {
+            $ns.= ':'.($nsprefix= substr($name, 0, $p));
+            $name= substr($name, $p+1);
+          }
+          $p= new WebdavProperty($name);
+          if ($nsname= $node->getAttribute($ns)) {
+            $p->setNamespaceName($nsname);
+            if ($nsprefix) $p->setNamespacePrefix($nsprefix);
+          }
+          $this->addProperty($p);
+        }
       }
-      $this->path= $request->uri['path_translated'];
-      $this->webroot= $request->uri['path_root'];
-      switch ($request->getHeader('depth')) {
-        case 'infinity': $this->depth= 0x7FFFFFFF; break;
-        case 1:          $this->depth= 0x00000001; break;
-        default:         $this->depth= 0x00000000; break;
-      }
-      $this->setEncoding('utf-8');
-      parent::__construct();
+      
+      //$this->path= $request->uri['path_translated'];
+      //$this->webroot= $request->uri['path_root'];
+      //$this->filename= $request->uri['path_translated'];
+      //$this->setEncoding('utf-8');
     }
     
     /**
-     * Retrieve base url of request
+     * Return Depth header field
      *
-     * @access  public
-     * @return  string
+     * @access public
+     * @return string
      */
-    function getPath() {
-      return $this->path;
+    function getDepth() {
+      switch ($this->getHeader('Depth')) {
+        case 'infinity': return 0x7FFFFFFF; break;
+        case 1:          return 0x00000001; break;
+        default:         return 0x00000000; break;
+      }
+      
     }
-
+    
     /**
      * Retrieve base uri of request
      *
@@ -87,80 +105,23 @@
     }
 
     /**
-     * Retrieve depth
-     *
-     * @access  public
-     * @return  int
-     */
-    function getDepth() {
-      return $this->depth;
-    }
-    
-    /**
      * Add a property
      *
      * @access  public
-     * @param   string name
+     * @param   org.webdav.WebdavProperty property The property object
      */
-    function addProperty($name) {
-      $this->properties[]= $name;
+    function addProperty($property) {
+      $this->properties[]= $property;
     }
     
     /**
      * Get all properties
      *
      * @access  public
-     * @return  &string[] properties
+     * @return  &org.webdav.WebdavProperty[]
      */
     function &getProperties() {
       return $this->properties;
-    }
-
-    /**
-     * Returns an XPath expression for the current entry
-     *
-     * @access  private
-     * @return  string path, e.g. /rdf:rdf/item/rc:summary/
-     */
-    function _pathname() {
-      $path= '';
-      for ($i= $this->_cnt; $i> 0; $i--) {
-        if (FALSE !== ($p= strpos($name= strtolower($this->_objs[$i]->name), ':'))) {
-          $name= substr($name, $p+ 1);
-        }
-        $path= $name.'/'.$path;
-      }
-      return '/'.$path;
-    }
-  
-    /**
-     * Private callback function
-     *
-     * @access  private
-     * @param   resource parser
-     * @param   string name
-     * @param   array attrs
-     * @throws  FormatException in case of a parse error
-     */
-    function _pCallStartElement($parser, $name, $attrs) {
-      parent::_pCallStartElement($parser, $name, $attrs);
-      $path= $this->_pathname();
-      
-      // All properties
-      if ('/propfind/allprop/' == $path) {
-        $this->properties= PROPERTY_ALL;
-        return;
-      }
-      
-      // Selective properties
-      if ('/propfind/' == substr($path, 0, 10)) {
-        if (strlen($path) > 15) {
-          $this->addProperty(substr($path, 15, -1));
-        }
-        return;
-      }
-      
-      return throw(new FormatException('Parse error: Path "'.$path.'" not recognized'));
     }
   }
 ?>
