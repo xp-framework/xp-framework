@@ -38,19 +38,18 @@
       $response; 
     
     var 
-      $_method  = NULL;
+      $_method= NULL;
   
     /**
-     * (Insert method's description here)
+     * Constructor
      *
      * @access  
      * @param   
      * @return  
      */  
     function __construct() {
-      $this->request= new HTTPModuleRequest();
-      $this->response= new HTTPModuleResponse();
-      $this->_handleMethod(getenv('REQUEST_METHOD'));
+      $this->request= &new HTTPModuleRequest();
+      $this->response= &new HTTPModuleResponse();
       parent::__construct();
     }
     
@@ -63,7 +62,7 @@
     function _handleMethod($method) {
       switch ($method) {
         case HTTP_METHOD_POST:
-          $this->request->data= $GLOBALS['HTTP_RAW_POST_DATA'];
+          $this->request->data= &$GLOBALS['HTTP_RAW_POST_DATA'];
           $this->request->params= &$_POST;
           $this->_method= 'doPost';
           break;
@@ -94,6 +93,10 @@
     function doPost() {
     }
     
+    function init() {
+    
+    }
+    
     /**
      * Wird am "Seitenende" aufgerufen, nachdem bereits Header und Body 
      * abgeschickt wurden
@@ -107,16 +110,16 @@
      * Wird von außen augerufen und arbeitet die Requests ab
      *
      * @access  public
-     * @return  org.apache.HTTPModuleResponse Die Response
+     * @return  bool Success
      * @throws  org.apache.HTTPModuleException Eine Exception
      */
-    function process() {
-      if (NULL == $this->_method) return throw(new HTTPModuleException(
-        'Method '.$this->request->method.' not implemented'
+    function &process() {
+      $this->_handleMethod(getenv('REQUEST_METHOD'));
+      $return= call_user_func_array(array(&$this, $this->_method), array(
+        &$this->request,
+        &$this->response
       ));
-      
-      call_user_func(array(&$this, $this->_method));
-      return $this->response;    
+      return $this->response;
     }
   }
 ?>
