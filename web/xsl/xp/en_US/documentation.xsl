@@ -59,24 +59,24 @@
     <h1>api documentation</h1>
 
     <table border="0" cellspacing="0" cellpadding="0" width="100%">
-      <xsl:for-each select="/formresult/collection">
+      <xsl:for-each select="document('../../../build/collections.xml')/collections/collection">
         <tr><td colspan="3">
           <h3><xsl:value-of select="@name"/> collection (<xsl:value-of select="count(.//class)"/> classes)</h3>
         </td></tr>
         <tr><td colspan="3"><img width="1" height="8" src="/image/blank.gif"/></td></tr>
         <xsl:for-each select="package">
           <tr>
-            <td width="1%" valign="top" nowrap="nowrap"><img src="/image/package.gif"/>&#160;</td>
+            <td width="1%" valign="top" nowrap="nowrap"><img width="17" height="17" hspace="2" src="/image/package.gif"/>&#160;</td>
             <td width="10%" valign="top" nowrap="nowrap">
               <b>
-                <a href="doc/package/{../@name}/{@name}"><xsl:value-of select="@name"/></a>
+                <a href="documentation/package?{../@name}/{@name}"><xsl:value-of select="@name"/></a>
               </b> (<xsl:value-of select="@packages"/>) 
               <img src="/image/dot.gif" border="0" height="7" width="7" alt="&gt;"/>
               &#160;
             </td>
             <td width="89%" valign="top">
               <xsl:for-each select="package">
-                <a title="{@name}" href="doc/package/{../../@name}/{@name}"><xsl:value-of select="substring-after(@name, '.')"/></a>
+                <a title="{@name}" href="documentation/package?{../../@name}/{@name}"><xsl:value-of select="substring-after(@name, '.')"/></a>
                 <xsl:if test="position() &lt; last()">, </xsl:if>
               </xsl:for-each>
               <br/><br/>
