@@ -256,6 +256,7 @@
   function implements() {
     $class= strtolower(substr(basename(func_get_arg(0)), 0, -10));
     $signature= array_flip(get_class_methods($class));
+    $implements= xp::registry('implements');
     
     for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
       $interface= func_get_arg($i);
@@ -267,7 +268,11 @@
       $c= $name;
       do {
         unset($methods[$c]);
+        $implements[$class][$c]= 1;
       } while ($c= get_parent_class($c));
+
+      // Pop off 'lang.Interface'
+      array_pop($implements[$class]);
 
       // Check implementation
       foreach (array_keys($methods) as $method) {
@@ -275,11 +280,9 @@
           xp::error('Interface method '.$interface.'::'.$method.'() not implemented by class '.$class);
         }
       }
-
-      $implements= xp::registry('implements');
-      $implements[$class][$name]= 1;
-      xp::registry('implements', $implements);
     }
+    
+    xp::registry('implements', $implements);
   }
   // }}}
   
