@@ -49,7 +49,7 @@
      * @see     #addFormError
      */
     function write() {
-      throw(IllegalAccessException('Cannot write directly'));
+      throw(new IllegalAccessException('Cannot write directly'));
     }
     
     /**
@@ -62,7 +62,7 @@
      * @see     #addFormError
      */
     function setContent() {
-      throw(IllegalAccessException('Cannot write directly'));
+      throw(new IllegalAccessException('Cannot write directly'));
     }
     
     /**
@@ -101,7 +101,7 @@
         $c= &$this->document->formvalues->addChild(new Node(array(
           'name'        => 'param',
           'attribute'   => array(
-            'name'            => $key.(is_int($k) ? '' : "[{$k}]"), 
+            'name'            => $k.(is_int($k) ? '' : "[{$k}]"), 
             'xsi:type'        => 'xsd:'.gettype($v)
           )
         )));
@@ -208,6 +208,17 @@
     /**
      * Transorms the OutputDocument's XML and the stylesheet
      *
+     * DOMXML/EXSLT variant LEAKS HUGE CHUNKS OF MEMORY!!!
+     * <code>
+     *   $doc= &domxml_open_mem(
+     *     $this->document->getDeclaration()."\n".
+     *     $this->document->getSource(FALSE)
+     *   );
+     *   $xsl= &domxml_xslt_stylesheet_file($this->stylesheet);
+     *   $result= &$xsl->process($doc, $this->params, FALSE);
+     *   $this->content= &$result->dump_mem();
+     * </code>
+     *
      * @throws  IllegalStateException if no stylesheet is set
      * @throws  FormatException if the transformation fails
      * @see     org.apache.HttpScriptletResponse#process
@@ -217,9 +228,9 @@
       if (empty($this->stylesheet)) {
         return throw(new IllegalStateException('No stylesheet set'));
       }
-      
+
       $this->processor->setXSLFile($this->stylesheet);
-      $this->processor->setParams(&$this->params);
+      $this->processor->setParams($this->params);
       $this->processor->setXMLBuf(
         $this->document->getDeclaration()."\n".
         $this->document->getSource(FALSE)
@@ -232,16 +243,15 @@
         ));
       }
       
-      $this->content= $this->processor->output();
+      $this->content= &$this->processor->output();
+
       return TRUE;
     }
     
     /**
-     * (Insert method's description here)
+     * Destructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function __destruct() {
       $this->document->__destruct();
