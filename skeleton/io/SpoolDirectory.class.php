@@ -43,10 +43,10 @@
      */    
     function open() {
       try(); {
-        $this->_hNew=   &new Folder ($root.'/new/');
-        $this->_hTodo=  &new Folder ($root.'/todo/');
-        $this->_hDone=  &new Folder ($root.'/done/');
-        $this->_hError= &new Folder ($root.'/error/');
+        $this->_hNew=   &new Folder ($this->root.'/new/');
+        $this->_hTodo=  &new Folder ($this->root.'/todo/');
+        $this->_hDone=  &new Folder ($this->root.'/done/');
+        $this->_hError= &new Folder ($$this->root.'/error/');
 
         if (!$this->_hNew->exists())    $this->_hNew->create ();
         if (!$this->_hTodo->exists())   $this->_hTodo->create ();
