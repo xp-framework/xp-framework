@@ -11,7 +11,7 @@ can be overloaded, however.
 <pre>
 Operators           Overloadability
 ------------------- ----------------------------------------------------
-++, --              These unary operators can be overloaded.
+++, --, !           These unary operators can be overloaded.
 
 +, -, *, /, %       These binary operators can be overloaded.
 
