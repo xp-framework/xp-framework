@@ -53,8 +53,8 @@
 
     /**
      * Generate a GUID - a global unique id - for the article. If the feed
-     * itself provided such a GUID, use this, otherwise fallback to calculate
-     * with the MD5 algorithm.
+     * itself provided such a GUID, use this, otherwise fallback to use it's
+     * URL as GUID (which may or may not be safe).
      *
      * @access  public
      * @return  string guid
@@ -85,6 +85,26 @@
      */
     function update() {
       $cm= &ConnectionManager::getInstance();
+      
+      // Check XML conformance of entry
+      try(); {
+        $parser= &new XMLParser();
+        $content= str_replace('&', '&amp;', $this->getContent());
+        
+        // Parse content
+        $parser->parse(
+          "<?xml version=\"1.0\" ?>\n".
+          "<root>".$content."</root>"
+        );
+      } if (catch('XMLFormatException', $e)) {
+        
+        // Content is not well-formed, sanitize
+        $content= strip_tags($content, '<a><br>');
+        // $content= preg_replace('#<br(break=["\']all["\']| )>#', '<br\1/>', $content);
+      }
+      
+      $content= wordwrap($content, 80);
+      
       try(); {
         $db= &$cm->getByHost('syndicate', 0);
         
@@ -103,7 +123,7 @@
           where feed_id= %d
             and guid= %s',
           $this->title,
-          $this->getContent(),
+          $content,
           $this->link,
           $this->author,
           Date::now(),
@@ -138,7 +158,7 @@
             )',
             $this->feed_id,
             $this->title,
-            $this->getContent(),
+            $content,
             $this->link,
             $this->author,
             (NULL !== $this->published ? $this->published : Date::now()),
