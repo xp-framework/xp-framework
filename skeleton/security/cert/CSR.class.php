@@ -9,6 +9,38 @@
   /**
    * Certificate signing requests
    *
+   * Example [Creating a self-signed-certificate]:
+   * <code>
+   *   uses('security.cert.CSR');
+   * 
+   *   try(); {
+   *     if ($keypair= &KeyPair::generate('md5', OPENSSL_KEYTYPE_RSA)) {
+   *       $csr= &new CSR(new Principal(array(
+   *         'C'     => 'DE',
+   *         'ST'    => 'Baden-Württemberg',
+   *         'L'     => 'Karlsruhe',
+   *         'O'     => 'XP',
+   *         'OU'    => 'XP Team',
+   *         'CN'    => 'Timm Friebe',
+   *         'EMAIL' => 'xp@php3.de'
+   *       )), $keypair);
+   *       $cert= $csr->sign($keypair);
+   *     }
+   *   } if (catch('Exception', $e)) {
+   *     $e->printStackTrace();
+   *     exit();
+   *   }
+   *   
+   *   var_dump(
+   *     $keypair,
+   *     $keypair->export('password'),
+   *     $csr,
+   *     $csr->export(),
+   *     $cert,
+   *     $cert->export()
+   *   );
+   * </code>
+   *
    * @ext      openssl
    * @purpose  Represent a CSR
    */
