@@ -32,9 +32,9 @@
      * define the part names and the values might be one of the following:
      *
      * <ul>
-     *   <li>a scalar describing the type
-     *   <li>an array of two values, the first being the type, the second the namespace
-     *   <li>an array of three values, 1st and 2nd as above, the third referencing an element
+     *   <li>a scalar describing the type</li>
+     *   <li>an array of two values, the first being the type, the second the namespace</li>
+     *   <li>an array of three values, 1st and 2nd as above, the third referencing an element</li>
      * </ul>
      *
      * Example:
