@@ -43,8 +43,8 @@ nedit.shellCommands: \
 	Execute PHP script:F9::AD:\n\
 		php -q\n\
 	Make accessors:Shift+Alt+A::I:\n\
-		php -q $HOME/devel/xp/util/bin/mkaccessor.php\n
-	Wordwrap:::AX:\n\
+		php -q $HOME/devel/xp/util/bin/mkaccessor.php\n\
+	Wordwrap:::EX:\n\
 		$HOME/bin/wordwrap - 72\n
 nedit.macroCommands: \
 	Complete Word:Alt+D::: {\n\
