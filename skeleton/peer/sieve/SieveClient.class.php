@@ -42,6 +42,20 @@
    *   $s->close();
    * </code>
    *
+   * Usage example [uploading a script from a local file]:
+   * <code>
+   *   uses('peer.sieve.SieveClient', 'io.File', 'io.FileUtil');
+   *
+   *   $s= &new SieveClient('imap.example.com');
+   *   $s->connect();
+   *   $s->authenticate(SIEVE_SASL_PLAIN, 'user', 'password');
+   *   with ($script= &new SieveScript('myscript')); {
+   *     $script->setCode(FileUtil::getContents(new File('myscript.txt')));
+   *     $s->putScript($script);
+   *   }
+   *   $s->close();
+   * </code>
+   *
    * @see      rfc://3028 Sieve: A Mail Filtering Language
    * @see      rfc://3431 Sieve Extension: Relational Tests
    * @see      rfc://3598 Sieve Email Filtering -- Subaddress Extension
@@ -230,6 +244,14 @@
     
     /**
      * Authenticate
+     *
+     * Supported methods:
+     * <ul>
+     *   <li>PLAIN</li>
+     *   <li>LOGIN</li>
+     *   <li>DIGEST-MD5</li>
+     *   <li>CRAM-MD5</li>
+     * </ul>
      *
      * @access  public
      * @param   string method one of the SIEVE_SASL_* constants
