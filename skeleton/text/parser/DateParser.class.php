@@ -31,7 +31,7 @@
 
     /**
      * Get "fully qualified" year. For one and two digit years, returns
-     * the current year *plus* the given number.
+     * the current century *plus* the given number.
      *
      * @model   static
      * @access  public
