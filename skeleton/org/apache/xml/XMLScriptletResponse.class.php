@@ -101,7 +101,7 @@
         $c= &$this->document->formvalues->addChild(new Node(array(
           'name'        => 'param',
           'attribute'   => array(
-            'name'            => $k.(is_int($k) ? '' : "[{$k}]"), 
+            'name'            => $name.(is_int($k) ? '' : "[{$k}]"), 
             'xsi:type'        => 'xsd:'.gettype($v)
           )
         )));
