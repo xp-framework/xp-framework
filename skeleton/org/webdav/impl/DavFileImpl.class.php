@@ -84,11 +84,7 @@
           foreach ($eProps as $key => $property) {
             $o->addProperty($property);
           }
-          new WebdavPropResponse(
-            $request,
-            $response,
-            $o
-          );
+          $response->addWebdavObject($o, $request->getProperties());
         } if (catch('Exception', $e)) {
           $this->c->debug(get_class($this).'::_recurse', 'Exeption ', $e->message);
         }
@@ -133,12 +129,7 @@
           $lockinfo->getDepth()
         );
       }
-      
-      new WebdavPropResponse(
-        $request,
-        $response,
-        $o
-      );
+      $response->addWebdavObject($o, $request->getProperties());
     }
     
     /**
@@ -425,32 +416,17 @@
      * Patch properties
      *
      * @access  public
-     * @param   &org.webdav.xml.WebdavPropPatchRequest request
+     * @param   &org.webdav.xml.WebdavPropPatchRequest  request
+     * @param   &org.webdav.xml.WebdavPropPatchResponse response
      * @throws  OperationFailedException
      * @throws  ElementNotFoundException
      */
     function &proppatch(&$request, &$response) {
-      if (
-        (!is_a($request, 'WebdavPropPatchRequest')) ||
-        (!is_a($response, 'WebdavMultistatus'))
-      ) {
-        return throw(new IllegalArgumentException('Parameters passed of wrong types'));
-      }
-      
       $realpath= $this->base.$request->getPath();
       if (!file_exists($realpath)) {
         return throw(new ElementNotFoundException($realpath.' not found'));
       }
 
-      if (is_dir($realpath)) 
-        $f= &new Folder($realpath);
-      else
-        $f= &new File($realpath);
-      
-      // load additional properties 
-      $resp= &new WebDavPropPatchResponse($request, $response, $this);
-      $nsmap= array(); //$request->getNamespaces();
-      
       foreach (array(FALSE, TRUE) as $remove) {
         $reqProp= $request->getProperties($remove);
 
@@ -467,10 +443,13 @@
 
             default:
               $eProps= $this->propStorage->getProperties($request->getPath());
-              if ($remove && isset($eProps[$key]))
+              if ($remove && isset($eProps[$key])) {
+                $response->addProperty($eProps[$key]);
                 unset($eProps[$key]);
-              else
+              } else {
+                $response->addProperty($property);
                 $eProps[$key]= $property;
+              }
               try();{
                 $this->propStorage->setProperties($request->getPath(), $eProps);
               } if  (catch('Exception', $e)) {
@@ -479,8 +458,6 @@
           }
         }
       }
-      
-      return $response;
     }
     
     /**
@@ -532,9 +509,6 @@
      * @throws  OperationNotAllowedException
      */
     function &lock(&$request, &$response) {
-      if (!is_a($request, 'WebdavLockRequest')) {
-        return throw(new IllegalArgumentException('Parameters passed of wrong types'));
-      }
       // check file
       $path= $request->getPath();
       $realpath= $this->base.$path;
@@ -549,25 +523,7 @@
       } if (catch('Exception', $e)) {
         return throw(new OperationNotAllowedException(' locking not allowed on '.$path));
       }
-
-
-      // response as lockdiscovery;
-      $resp=
-        '<?xml version="1.0" encoding="utf-8" ?><prop xmlns="DAV:"><lockdiscovery>'. 
-        '<activelock><locktype><'.$lock->getLockType().'/></locktype>'.
-        '<lockscope><'.$lock->getLockScope().'/></lockscope>'.
-        '<depth>'.$lock->getDepth().'</depth>'.
-        '<owner><href>'.$lock->getOwner().'</href></owner>'.
-        '<timeout>Second-'.($lock->getTimeout()).'</timeout>'.
-        '<locktoken><href>'.$lock->getLockToken().'</href></locktoken>'.
-        '</activelock></lockdiscovery></prop>'; 
-        
-      
-      $response->setHeader('Content-length', strlen($resp));
-      // Cadaver needs this Header
-      $response->setHeader('Lock-Token', $lock->getLockToken());
-      $response->setContent($resp);
-      
+      $response->addLock($lock);
     }
 
     /**
@@ -575,14 +531,10 @@
      *
      * @access  public
      * @param   &org.webdav.xml.WebdavPropFindRequest ßrequest
-     * @param   &org.webdav.xml.WebdavMultistatus response
+     * @param   &org.webdav.xml.WebdavMultistatusResponse response
      * @return  &org.webdav.xml.WebdavMultistatus response
      */
     function &propfind(&$request, &$response, $useragent= 0) {
-      if (!is_a($response, 'WebdavMultistatus')) {
-        return throw(new IllegalArgumentException('Parameters passed of wrong types'));
-      }
-
       try(); {
         $this->_recurse(
           $request,
@@ -593,8 +545,6 @@
       } if (catch('Exception', $e)) {
         return throw($e);
       }
-
-      return $response; 
     }
     
     /**
