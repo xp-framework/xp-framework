@@ -57,7 +57,6 @@
       $result= &new TestResult();
       for ($i= 0, $s= sizeof($this->tests); $i < $s; $i++) {
         if (NULL !== ($reason= $this->tests[$i]->setUp())) {
-          
           $result->setSkipped($this->tests[$i], $reason);
           continue;
         }
