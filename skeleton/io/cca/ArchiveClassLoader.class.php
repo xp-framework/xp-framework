@@ -16,13 +16,12 @@
    * <code>
    *   $l= &new ArchiveClassLoader(new Archive(new File('soap.cca')));
    *   try(); {
-   *     $name= $l->loadClass($_SERVER['argv'][1]);
+   *     $class= &$l->loadClass($argv[1]);
    *   } if (catch('ClassNotFoundException', $e)) {
    *     die($e->printStackTrace());
    *   }
    * 
-   *   $obj= &new $name();
-   *   var_dump($obj, $obj->getClassName(), $obj->toString());
+   *   $obj= &$class->newInstance();
    * </code>
    *
    * @purpose  Load classes from an archive
