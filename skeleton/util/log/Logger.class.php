@@ -9,30 +9,73 @@
   define('LOG_DEFINES_DEFAULT', 'default');
   
   /**
-   * Kapselt einen Logger (SingleTon)
+   * A singleton logger
    * 
-   * Beispielzeilen:
+   * Example output:
    * <pre>
-   * [20:45:30 16012 info] ===> Starting work on 2002/05/29/ 
-   * [20:45:30 16012 info] ===> Done, 0 order(s) processed, 0 error(s) occured 
-   * [20:45:30 16012 info] ===> Finish 
+   * [20:45:30 16012 info ] Starting work on 2002/05/29/ 
+   * [20:45:30 16012 info ] Done, 0 order(s) processed, 0 error(s) occured 
+   * [20:45:30 16012 info ] Finish 
    * </pre>
    *
-   * Das Format des fixen Teils jeder Log-Zeile kann über:
-   * - den Identifier [eine ID, die im Log Wiedererkennungswert hat, bspw. die PID]
-   * - die Variable "format" (wie soll der fixe Teil formatiert werden)
-   * festgelegt werden.
+   * The format of the line prefix (noted in square brackets above) can be configured by:
+   * <ul>
+   *   <li>the identifier (an id which has recognizing value, e.g. the PID)</li>
+   *   <li>the variable "format" (a printf-string)</li>
+   * </ul>
    *
-   * Hinweise:
-   * - Der Identifier defaultet auf die PID
-   * - Die Reihenfolge für den Format-String "format" ist wie folgt:
-   *   1) Das Datum
-   *   2) Der Identifier
-   *   3) Der Indicator [info, warn, error oder debug]
-   *   Der Format-String "format" defaultet auf "[%1$s %2$s %3$s]"
-   * - Das Datumsformat "dateformat" defaultet auf "H:i:s", siehe http://php.net/date
+   * Note:
+   * <ul>
+   *   <li>The identifier defaults to the PID of the current process</li>
+   *   <li>
+   *     The argument order for the format parameter is:<br/>
+   *     1) Current date<br/>
+   *     2) Identifier<br/>
+   *     3) Indicator [info, warn, error, debug]<br/>
+   *   </li>
+   *   <li>The format string defaults to "[%1$s %2$s %3$s]"</li>
+   *   <li>The date format defaults to "H:i:s"</li>
+   * </ul>
    *
-   * @model singleton
+   * Example [Setting up a logger]:
+   * <code>
+   *   $l= &Logger::getInstance();
+   *   $cat= &$l->getCategory();
+   *   $cat->addAppender(new FileAppender('php://stderr'));
+   * </code>
+   *
+   * Example [Configuring a logger]:
+   * <code>
+   *   $log= &Logger::getInstance();
+   *   $log->configure(new Properties('etc/log.ini'));
+   * </code>
+   *
+   * Example [Usage somewhere later on]:
+   * <code>
+   *   $l= &Logger::getInstance();
+   *   $cat= &$l->getCategory();
+   * </code>
+   *
+   * Property file sample:
+   * <pre>
+   * [default]
+   * appenders="util.log.FileAppender"
+   * appender.util.log.FileAppender.params="filename"
+   * appender.util.log.FileAppender.param.filename="/var/log/xp/service_%Y-%m-%d.log"
+   * 
+   * [info.binford6100.webservices.EventHandler]
+   * appenders="util.log.FileAppender"
+   * appender.util.log.FileAppender.params="filename"
+   * appender.util.log.FileAppender.param.filename="/var/log/xp/event_%Y-%m-%d.log"
+   * 
+   * [info.binford6100.webservices.SubscriberHandler]
+   * appenders="util.log.FileAppender"
+   * appender.util.log.FileAppender.params="filename"
+   * appender.util.log.FileAppender.param.filename="/var/log/xp/subscribe_%Y-%m-%d.log"
+   * </pre>
+   *
+   * @model    singleton
+   * @purpose  Singleton logger
    */
   class Logger extends Object {
     var 
@@ -46,11 +89,11 @@
       $defaultAppenders;
   
     /**
-     * (Insert method's description here)
+     * Get a category
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string name default LOG_DEFINES_DEFAULT
+     * @return  &util.log.LogCategory
      */ 
     function &getCategory($name= LOG_DEFINES_DEFAULT) {
       if (!isset($this->category[$name])) $name= LOG_DEFINES_DEFAULT;
