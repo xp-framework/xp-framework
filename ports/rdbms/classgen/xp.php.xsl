@@ -94,7 +94,7 @@
     <xsl:text>) {
       $cm= &amp;ConnectionManager::getInstance();  
       if (FALSE === ($db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="../@dbhost"/><xsl:text>', 0))) {
-        return throw(new IllegalAccessException('No connection available'));
+        return throw(new IllegalAccessException('No connection to "</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>" available'));
       }
 
       try(); {
@@ -210,7 +210,7 @@
     function update() {
       $cm= &amp;ConnectionManager::getInstance();  
       if (FALSE === ($db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>', 0))) {
-        return throw(new IllegalAccessException('No connection available'));
+        return throw(new IllegalAccessException('No connection to "</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>" available'));
       }
 
       try(); {
@@ -284,7 +284,7 @@
     function insert() {
       $cm= &amp;ConnectionManager::getInstance();  
       if (FALSE === ($db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>', 0))) {
-        return throw(new IllegalAccessException('No connection available'));
+        return throw(new IllegalAccessException('No connection to "</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>" available'));
       }
 
       try(); {
