@@ -83,12 +83,40 @@
         MimeType::getByFilename($path, 'text/plain')
       ));
     }
+
+    /**
+     * Put a file
+     *
+     * @access  public
+     * @param   string filename
+     * @param   &string data
+     * @return  bool new
+     * @throws  ElementNotFoundException
+     */
+    function &put($filename, &$data) {
+      if (is_dir($this->base.$filename)) {
+        return throw(new Exception($filename.' cannot be written (not a file)'));
+      }
+      
+      // Open file and write contents
+      $f= &new File($this->base.$filename);
+      try(); {
+        $new= !$f->exists();
+        $f->open(FILE_MODE_WRITE);
+        $f->write($data);
+        $f->close();
+      } if (catch('IOException', $e)) {
+        return throw(new Exception($filename.' cannot be written to ('.$e->message.')'));
+      }
+      
+      return $new;
+    }
     
     /**
      * Get a file
      *
      * @access  public
-     * @param   string resourcename
+     * @param   string filename
      * @return  &org.webdav.WebdavObject
      * @throws  ElementNotFoundException
      */

@@ -188,6 +188,20 @@
      * @throws  Exception to indicate failure
      */
     function doPut(&$request, &$response) {
+      try(); {
+        $created= $this->handlingImpl->put(
+          $request->uri['path_translated'],
+          $request->getData()
+        );
+      } if (catch('Exception', $e)) {
+      
+        // Conflict
+        $response->setStatus(HTTP_CONFLICT);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      } 
+      
+      $response->setStatus($new ? HTTP_CREATED : HTTP_NO_CONTENT);
     }
 
     /**

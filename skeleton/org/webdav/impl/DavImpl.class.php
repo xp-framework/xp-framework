@@ -31,14 +31,28 @@
     function getCapabilities() {
       return $this->capabilities;
     }
+
+
+    /**
+     * Put a file
+     *
+     * @access  public
+     * @param   string filename
+     * @param   &string data
+     * @return  &org.webdav.WebdavObject
+     * @throws  MethodNotImplementedException
+     */
+    function &put($filename, &$data) {
+      return throw(new MethodNotImplementedException($this->getName().'::put not implemented'));
+    }
     
     /**
      * Get a file
      *
-     * @access  public
-     * @param   string resourcename
+     * @access  abstract
+     * @param   string filename
      * @return  string &org.webdav.WebdavObject
-     * @throws  ElementNotFoundException
+     * @throws  MethodNotImplementedException
      */
     function &get($filename) {
       return throw(new MethodNotImplementedException($this->getName().'::get not implemented'));
