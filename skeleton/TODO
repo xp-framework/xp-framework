@@ -4,7 +4,7 @@ $Id$
 
 friebe, Tue Jul  9 15:26:02 CEST 2002
 -------------------------------------
-* SOAP
++ SOAP
   Hashmaps können auch so serialisiert sein:
   <hash xmlns:ns2="http://xml.apache.org/xml-soap" xsi:type="ns2:Map">
     <item>
@@ -19,7 +19,7 @@ friebe, Sat Jun 15 22:35:34 CEST 2002
 * Installer etc.
   Ähnlich bsd:///usr/ports konstruieren
 
-* de.schlund*
++ de.schlund*
   Eigenes CVS-Modul
   
 * net.http: 
@@ -34,27 +34,25 @@ friebe, Sat Jun 15 22:35:34 CEST 2002
 * de.schlund:
   Context => State (misleading names)
   Hannah-Session-Klasse neu
-  PT-Bestellseiten vom util.web.workflow ableiten
   
 * util.web.workflow:
   Workflow/State/Handler an Pfix2 anpassen und dokumentieren
   HTTPRequest einführen, der den Request wrapped (method, data, ...)
   
-  
-* rdbms:
++ rdbms:
   MySQL und PostgreSQL-Klassen
   Transaktionen über eine Klasse wrappen?
   
-* util.log:
++ util.log:
   $cat= Logger::getInstance($this->getName()) - obwohl unschön, aber
   $cat= Logger::getInstance()->getCategory($this->getName())
   geht noch nicht
   
-* xml.soap.provider:
+? xml.soap.provider:
   CGI-Provider einführen
   Standalone-Variante mit fork() als Experimental markieren
   
-* lang:
+- lang:
   Object::getName() => Object::getClassName()
   
 * gui.gtk:
