@@ -7,7 +7,7 @@
 XSLTPROC= `which xsltproc`
 PHP= `which php || which php4`
 
-log/%/servicetest.xml:
+log/%/servicetest.xml: etc/services.ini
 	$(PHP) bin/interop.php
 
 log/servicetests.xml: log/XP-SOAP/servicetest.xml
