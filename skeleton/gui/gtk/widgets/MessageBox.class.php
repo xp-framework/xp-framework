@@ -160,15 +160,14 @@
       
       // Buttons
       foreach (array('OK', 'CANCEL', 'YES', 'NO', 'RETRY', 'IGNORE', 'ABORT') as $name) {
-        $this->cat->debug($this->style, $name, $this->style & constant('MB_'.$name));
         if ($this->style & constant('MB_'.$name)) {
-		  $b= &new GtkButton(ucfirst(strtolower($name)));    // TBD: Get via gettext?
+          $b= &new GtkButton(ucfirst(strtolower($name)));    // TBD: Get via gettext?
           $b->set_name($name);
-		  $b->set_flags(GTK_CAN_DEFAULT);
-		  $b->show();
-          
+          $b->set_flags(GTK_CAN_DEFAULT);
+          $b->show();
+
           $this->connect(array($b, 'clicked'), 'onButtonClicked');
-		  $this->actionarea->pack_start($b);
+          $this->actionarea->pack_start($b);
         }
       }
       
