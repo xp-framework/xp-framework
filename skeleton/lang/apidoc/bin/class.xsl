@@ -60,6 +60,18 @@
     </xsl:copy>
   </xsl:template>
   
+  <xsl:template match="reference">
+    <xsl:variable name="link">
+      <xsl:choose>
+        <xsl:when test="scheme = 'xp'">xp/</xsl:when>
+      </xsl:choose>
+    </xsl:variable>
+    
+    <a href="{$link}">
+      <xsl:value-of select="$link"/>
+    </a>
+  </xsl:template>
+  
   <xsl:template match="comments/class">
     <h4>
       <xsl:value-of select="name"/> extends <xsl:value-of select="extends"/>
@@ -72,7 +84,7 @@
         <b>See also</b>
         <ul>
           <xsl:for-each select="references/reference">
-            <li><a href="{.}"><xsl:value-of select="."/></a></li>
+            <li><xsl:apply-templates/></li>
           </xsl:for-each>
         </ul>
       </p>
