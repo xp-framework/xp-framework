@@ -7,12 +7,19 @@
   enum Coin {
     penny(1), nickel(5), dime(10), quarter(25);
 
+    protected static $color= array(
+      self::penny   => 'copper',
+      self::nickel  => 'nickel',
+      self::dime    => 'silver',
+      self::quarter => 'silver'
+    );
+
     public function color() {
-      switch ($this->ordinal) {
-        case self::penny: return 'copper';
-        case self::nickel: return 'nickel';
-        case self::dime: case self::quarter: return 'silver';
-      }
+      return self::$color[$this->ordinal];
+    }
+    
+    public function __toString() {
+      return $this->name.': '.$this->ordinal.'¢ ('.$this->color().')';
     }
   }
 
@@ -20,7 +27,7 @@
   // {{{ main
   echo 'Coin (', Coin::size(), " values):\n";
   foreach (Coin::values() as $coin) {
-    echo '* ', $coin->name, ': ', $coin->ordinal, '¢ (', $coin->color(), ")\n";
+    echo '* ', $coin, "\n";
   }
   // }}}
 ?>
