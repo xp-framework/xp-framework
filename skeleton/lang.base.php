@@ -102,8 +102,9 @@
   uses(
     'lang.Object', 
     'lang.Exception',
-    'lang.IllegalStateException',
+    'lang.IllegalAccessException',
     'lang.IllegalArgumentException',
+    'lang.IllegalStateException',
     'lang.FormatException',
     'lang.ClassLoader'
   );
