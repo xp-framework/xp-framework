@@ -6,10 +6,11 @@
 
   uses(
     'io.sys.Ftok',
-    'io.IOException'
+    'io.IOException',
+    'io.sys.IPCMessage'
   );
   
-  define('IPC_QUEUE_PERM', 0600);
+  define('IPC_QUEUE_PERM',  0666);
   define('IPC_MSG_MAXSIZE', 16384);
   
   /**
@@ -45,7 +46,7 @@
    *     function run() {
    *       while ($this->sent < $this->num) {
    *         Thread::sleep(1000);
-   *         $this->queue->putMessage('Hello World');
+   *         $this->queue->putMessage(new IPCMessage('hello world'));
    *         $this->sent++;     
    *
    *       }
@@ -74,7 +75,7 @@
    *
    *         Console::writeLinef(
    *           "<%s> receiving message:\n -> %s\n",
-   *           $this->name, $message
+   *           $this->name, $message->getMessage()
    *         );
    *         Thread::sleep(1000);
    *       }
@@ -120,12 +121,13 @@
      * Put a message into queue
      *
      * @access  public
-     * @param   string message
-     * @param   int messageType default 1
+     * @param   io.sys.IPCMessage
+     * @param   bool serialize default TRUE
+     * @param   bool blocking default TRUE
      * @throws  io.IOException
      */
-    function putMessage($msg, $msgType= 1) {
-      if (!msg_send($this->id, $msgType, $msg, TRUE, FALSE, $err)) {
+    function putMessage($msg, $serialize= TRUE, $blocking= TRUE) {
+      if (!msg_send($this->id, $msg->getType(), $msg->getMessage(), $serialize, $blocking, $err)) {
         return throw(new IOException('Message could not be send. Errorcode '.$err));
       }
     }
@@ -134,10 +136,14 @@
      * Get a message from queue
      *
      * @access  public
+     * @param   int desired messagetype
+     * @param   int flags
+     * @param   int maxsize default IPC_MSG_MAXSIZE
+     * @param   bool serialize default TRUE
      * @throws  io.IOException
      * @return  string message 
      */    
-    function getMessage() {
+    function getMessage($desiredType= 0, $flags= 0, $maxSize= IPC_MSG_MAXSIZE, $serialize= TRUE) {
     
       // refresh queue
       $this->stat= msg_stat_queue($this->id);
@@ -149,10 +155,10 @@
       
       // t.b.d. handle message flags and message types
       // see http://de3.php.net/manual/en/function.msg-receive.php
-      if (!msg_receive ($this->id, 1, $msgType, IPC_MSG_MAXSIZE, $msg, TRUE, 0, $err)) {
+      if (!msg_receive ($this->id, $desiredType, $msgType, $maxSize, $msg, $serialize, $flags, $err)) {
         return throw(new IOException('Message could not be received. Errorcode '.$err));
       }
-      return $msg;
+      return new IPCMessage($msg, $msgType);
     }
 
 
@@ -282,5 +288,16 @@
       $this->stat= msg_stat_queue($this->id);
       return $this->stat['msg_lrpid'];
     }
+
+    /**
+     * Get IPC message key
+     *
+     * @access  public
+     * @return  int
+     */
+    function getKey() {
+      return $this->key;
+    }
+    
   }
 ?>
