@@ -68,7 +68,7 @@
 
       <tr bgcolor="#9eb6ff">
         <td align="right" valign="bottom" nowrap="nowrap">
-          <a href="#" class="menuBlack">download</a> | <a href="/apidoc/" class="menuBlack">documentation</a> | <a href="/content/about.html" class="menuBlack">about</a> | <a href="/ports/" class="menuBlack">ports</a> | <a href="#" class="menuBlack">changelog</a> | <a href="#" class="menuBlack">resources</a> <br/>
+          <a href="#" class="menuBlack">download</a> | <a href="/apidoc/" class="menuBlack">documentation</a> | <a href="/content/about.html" class="menuBlack">about</a> | <a href="/ports/" class="menuBlack">ports</a> | <a href="#" class="menuBlack">resources</a> <br/>
           <img src="/image/spacer.gif" width="2" height="2" border="0" alt=""/><br/>
         </td>
       </tr>
