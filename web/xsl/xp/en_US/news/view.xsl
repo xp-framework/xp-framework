@@ -30,6 +30,9 @@
    ! @purpose  Define main content
    !-->
   <xsl:template name="content">
+    <h1>
+      <a href="{func:link('news')}">News</a> &#xbb; Entry #<xsl:value-of select="/formresult/entry/@id"/>
+    </h1>
     <div class="entry">
       <h3>
         <a href="news/view?{/formresult/entry/@id}">
