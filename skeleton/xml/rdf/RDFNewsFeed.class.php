@@ -364,6 +364,26 @@
         case 'channel/item/date':         // 14 May 2002
           $this->items[sizeof($this->items)- 1]->date= &new Date($cdata);
           break;
+        
+        case 'channel/item/pubdate':
+          $this->items[sizeof($this->items)- 1]->date= &new Date($cdata);
+          break;
+        
+        case 'channel/item/category':
+          $this->items[sizeof($this->items)- 1]->category= $cdata;
+          break;
+        
+        case 'channel/item/author':
+          $this->items[sizeof($this->items)- 1]->author= $cdata;
+          break;
+        
+        case 'channel/item/content:encoded':
+          $this->items[sizeof($this->items)- 1]->content= $cdata;
+          break;
+        
+        case 'channel/item/guid':
+          $this->items[sizeof($this->items)- 1]->guid= $cdata;
+          break;
 
         case 'item/dc:date':         // 2002-07-12T15:59 or 2003-12-19T12:26:00+01:00
           sscanf($cdata, '%4d-%2d-%2dT%2d:%2d', $year, $month, $day, $hour, $minute);
