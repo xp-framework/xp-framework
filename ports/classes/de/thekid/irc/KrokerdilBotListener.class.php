@@ -21,11 +21,13 @@
    */
   class KrokerdilBotListener extends IRCConnectionListener {
     var
-      $tstart    = 0,
-      $config    = NULL,
-      $lists     = array(),
-      $dictc     = NULL,
-      $quote     = NULL;
+      $tstart       = 0,
+      $config       = NULL,
+      $lists        = array(),
+      $karma        = array(),
+      $recognition  = array(),
+      $dictc        = NULL,
+      $quote        = NULL;
       
     /**
      * Constructor
@@ -45,7 +47,8 @@
       $this->quote= &new Socket('ausredenkalender.informatik.uni-bremen.de', 17);
       
       $l= &Logger::getInstance();
-      $this->dictc->setTrace($l->getCategory());
+      $this->cat= &$l->getCategory();
+      $this->dictc->setTrace($this->cat);
     }
     
     /**
@@ -73,6 +76,19 @@
           $e->printStackTrace();
           return FALSE;
         }
+      }
+      
+      // Read karma recognition phrases
+      $f= &new File($base.$this->config->readString('karma', 'recognition'));
+      try(); {
+        if ($f->open(FILE_MODE_READ)) while (($line= $f->readLine()) && !$f->eof()) {
+          list($pattern, $delta)= explode(':', $line);
+          $this->recognition[$pattern]= $delta;
+        }
+        $f->close();
+      } if (catch('IOException', $e)) {
+        $e->printStackTrace();
+        return FALSE;
       }
     }
     
@@ -113,6 +129,74 @@
     }
     
     /**
+     * Helper method for privileged actions.
+     *
+     * @access  protected
+     * @param   &peer.irc.IRCConnection connection
+     * @param   string nick
+     * @param   string password
+     * @return  bool
+     */
+    function doPrivileged(&$connection, $nick, $password) {
+      if ($this->config->readString('control', 'password') == $password) return TRUE;
+      
+      $connection->sendMessage($nick, 'Nice try, but >%s< is incorrect', $params);
+      return FALSE;
+    }
+    
+    /**
+     * Helper method to set karma for a nick. Also handles karma floods
+     *
+     * @access  protected
+     * @param   string nick
+     * @param   int delta
+     * @param   string reason default NULL
+     */
+    function setKarma($nick, $delta, $reason= NULL) {
+      static $last= array();
+      
+      if (!isset($this->karma[$nick])) {
+        $this->karma[$nick]= 0; // Neutral
+      }
+      
+      if ($reason && isset($last[$nick][$reason]) && (time() - $last[$nick][$reason] <= 2)) {
+        $this->cat && $this->cat->warnf(
+          'Karma flood from %s (last karma for %s set at %s)', 
+          $nick,
+          $reason,
+          date('r', $last[$nick][$reason])
+        );
+        $this->karma[$nick]-= 10;
+      } else {
+        $this->karma[$nick]+= $delta;
+        $last[$nick]= array();
+      }
+
+      $this->cat && $this->cat->debugf(
+        'Changing karma for %s by %d because of %s (total: %d)', 
+        $nick,
+        $delta,
+        $reason,
+        $this->karma[$nick]
+      );
+      $last[$nick][$reason]= time();
+    }
+    
+
+    /**
+     * Callback for nick changes
+     *
+     * @access  public
+     * @param   &peer.irc.IRCConnection connection
+     * @param   string channel
+     * @param   string nick the old nick
+     * @param   string new the new nick
+     */
+    function onNickChanges(&$connection, $channel, $nick, $new) {
+      $this->setKarma($new, $this->karma[$nick]);
+    }
+    
+    /**
      * Callback for private messages
      *
      * @access  public
@@ -122,17 +206,40 @@
      * @param   string message
      */
     function onPrivateMessage(&$connection, $nick, $target, $message) {
-    
+      
       // Commands
       if (sscanf($message, "!%s %[^\r]", $command, $params)) {
         switch (strtolower($command)) {
-          case 'reload':
-            if ($this->config->readString('control', 'password') == $params) {
+          case '@reload':
+            if ($this->doPrivileged($connection, $nick, $params)) {
               $this->reloadConfiguration();
               $connection->sendAction($nick, 'received SIGHUP and reloads his configuration');
-            } else {
-              $connection->sendMessage($nick, 'Nice try, but >%s< is incorrect', $params);
             }
+            break;
+          
+          case '@changenick':
+            list($new_nick, $password)= explode(' ', $params);
+            if ($this->doPrivileged($connection, $nick, $password)) {
+              $connection->writeln('NICK %s', $params);
+            }
+            break;
+          
+          case '@karma':
+            if ($this->doPrivileged($connection, $nick, $params)) {
+              foreach ($this->karma as $name => $value) {
+                $connection->sendMessage(
+                  $nick,
+                  '%s: %d', 
+                  $name,
+                  $value
+                );
+              }
+            }
+            break;
+          
+          case 'karma':
+            $this->setKarma($nick, 0);  // Make sure array is initialized
+            $connection->sendMessage($target, 'Karma für %s: %d', $nick, $this->karma[$nick]);
             break;
           
           case 'uptime':
@@ -149,6 +256,8 @@
               'NOTICE %s :Uptime: %d Tag(e), %d Stunde(n) und %d Minute(n)',
               $target, $days, $hours, $minutes
             );
+
+            $this->setKarma($nick, 1, '@@uptime');
             break;
 
           case 'quote':
@@ -271,12 +380,22 @@
               list($target, $params)= explode('/', $params);
             }
             
-            // Don't insult yourself!
-            if ($connection->user->getNick() == $params) { $params= $nick; }
+            // Don't insult yourself - instead, insult the user:) Check on similar text
+            // so people can't get away with misspelling the name. We might accidentally
+            // also insult users with similar names than ours, but, hey, their fault.
+            similar_text(strtolower($params), strtolower($connection->user->getNick()), $percent);
+            if ($percent >= 75) {
+              $params= $nick;
+              $format= '%s, du bist %s';
+              $this->setKarma($nick, -5, '@@idiot');
+              $connection->sendAction($target, 'beleidigt sich nicht selbst');
+            } else {
+              $format= '%s ist %s';
+            }
             
             $connection->sendMessage(
               $target, 
-              '%s ist %s', 
+              $format, 
               $params, 
               $this->lists['swears'][rand(0, sizeof($this->lists['swears'])- 1)]
             );
@@ -326,12 +445,37 @@
       // Any other phrase containing my name
       if (stristr($message, $connection->user->getNick())) {
         $this->sendRandomMessage($connection, $target, 'talkback', $nick, $message);
+
+        // See if we can recognize something here and calculate karma - multiplied
+        // by four because this message is directed at me.
+        foreach ($this->recognition as $pattern => $delta) {
+          if (!preg_match($pattern, $message)) continue;
+          $this->setKarma($nick, $delta * 4, $pattern);
+        }
         return;
       }
       
       // Produce random noise
-      if (15 == rand(0, 30)) {
-        $this->sendRandomMessage($connection, $target, 'noise', $nick, $message);
+      switch (rand(0, 30)) {
+        case 15: 
+          $this->sendRandomMessage($connection, $target, 'noise', $nick, $message);
+          break;
+        
+        case 16:
+          $this->sendRandomMessage(
+            $connection, 
+            $target, 
+            $this->karma[array_rand($this->karma)] < 0 ? 'karma.dislike' : 'karma.like', 
+            $nick, 
+            $message
+          );
+          break;
+      }
+
+      // Karma recognition
+      foreach ($this->recognition as $pattern => $delta) {
+        if (!preg_match($pattern, $message)) continue;
+        $this->setKarma($nick, $delta, $pattern);
       }
     }
 
@@ -383,6 +527,8 @@
         $connection->join($channel);
         $connection->sendMessage($nick, 'He! "%s" ist KEIN Grund', $reason);
         $connection->sendAction($channel, '%s kickt arme unschuldige Bots, und das wegen so etwas lumpigem wie %s', $nick, $reason);
+
+        $this->setKarma($nick, -10, '@@kick');
       }
     }
   
@@ -428,6 +574,13 @@
     function onAction(&$connection, $nick, $target, $params) {
       if (10 == rand(0, 20)) {
         $connection->sendAction($target, 'macht %s nach und %s auch', $nick, $params);
+        $this->setKarma($nick, 1, '@@imitate');
+      }
+
+      // Karma recognition
+      foreach ($this->recognition as $pattern => $delta) {
+        if (!preg_match($pattern, $message)) continue;
+        $this->setKarma($nick, $delta, $pattern);
       }
     }
     
