@@ -124,7 +124,8 @@
     function invoke() {
       $args= func_get_args();
       $this->method= array_shift($args);
-      return call_user_func_array(array(&$this, '_call'), $args);
+      $res= call_user_func_array(array(&$this, '_call'), $args);
+      return $res ? $res[0] : FALSE;
     }
   }
   
