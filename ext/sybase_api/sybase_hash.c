@@ -3,6 +3,7 @@
  * $Id$
  */
 
+#include <string.h>
 #include "sybase_hash.h"
 #include "sybase_mm.h"
 

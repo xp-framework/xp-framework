@@ -4,6 +4,8 @@
  */
 
 #include "sybase_api.h"
+#include "sybase_mm.h"
+#include "sybase_hash.h"
 #include "sybase_defines.h"
 
 /**
