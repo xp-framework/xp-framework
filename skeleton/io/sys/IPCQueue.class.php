@@ -147,7 +147,7 @@
       $this->stat= msg_stat_queue($this->id);
       
       // is a message in queue ?
-      if (0 == $this->stat['msg_qnum']) {
+      if (0 == $this->stat['msg_qnum'] && ($flags & MSG_IPC_NOWAIT)) {
         return FALSE;
       }
       
