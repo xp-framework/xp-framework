@@ -46,12 +46,21 @@
         return throw($e);
       }
       
+      if (is('xml.soap.Parameter', $argument)) 
+        $cmp= &$argument->value;
+      else 
+        $cmp= &$argument;
+      
       if ($this->_iotrace) {
-        $this->_iotrace->info('Method', $method, 'called with:', $argument);
-        $this->_iotrace->info('Method', $method, 'returned', $result);
+        $this->_iotrace->info('Method', $method, 'called with:', xp::typeOf($cmp), $cmp, var_export($cmp, 1));
+        $this->_iotrace->info('Method', $method, 'returned', xp::typeOf($result), $result, var_export($result, 1));
       }
       
-      return ($result === $argument->value);
+      if (is('lang.Object', $cmp) && is('lang.Object', $result)) {
+        return $cmp->equals($result);
+      }
+      
+      return ($result === $cmp);
     }
   
     /**
@@ -156,6 +165,60 @@
      */
     function echoVoid() {
       return $this->identity('echoVoid', new Parameter('inputVoid', NULL));
+    }
+    
+    /**
+     * echoBase64
+     *
+     * @access  public
+     * @return  boolean match
+     */
+    function echoBase64() {
+      return $this->identity('echoBase64', 
+        new Parameter('inputBase64', new SOAPBase64Binary("\0\1\127")
+      ));
+    }
+    
+    /**
+     * echoHexBinary
+     *
+     * @access  public
+     * @return  boolean match
+     */
+    function echoHexBinary() {
+    
+      // TBI
+      return FALSE;
+    }
+    
+    /**
+     * echoDate
+     *
+     * @access  public
+     * @return  boolean match
+     */
+    function echoDate() {
+      return $this->identity('echoDate', new Parameter('inputDate', Date::now()));
+    }
+    
+    /**
+     * echoDecimal
+     *
+     * @access  public
+     * @return  boolean match
+     */
+    function echoDecimal() {
+      return $this->identity('echoDecimal', new Parameter('inputDecimal', 0.5005));
+    }
+    
+    /**
+     * echoBoolean
+     *
+     * @access  public
+     * @return  boolean match
+     */
+    function echoBoolean() {
+      return $this->identity('echoBoolean', new Parameter('inputBoolean', TRUE));
     }
   }
 ?>
