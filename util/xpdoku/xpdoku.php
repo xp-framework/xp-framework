@@ -255,7 +255,7 @@
     exit(-1);
   }
  
-  $m= memory_get_usage();
+  $m= function_exists('memory_get_usage') ? memory_get_usage() : -1;
   $r= getrusage();
   Console::writef(
     "===> Done\n".
