@@ -54,10 +54,12 @@
               </xsl:for-each>
               <td class="nav">&#160;</td>
               <td width="5%" class="nav" align="right">
-                <input class="search" type="text" name="q" size="24"/>
+                &#160;
+                <!-- <input class="search" type="text" name="q" size="24"/> -->
               </td>
               <td width="1%" class="nav" align="right">
-                <input type="image" src="/image/submit_search.gif" border="0" width="11" height="11" alt="search"/>
+                &#160;
+                <!-- <input type="image" src="/image/submit_search.gif" border="0" width="11" height="11" alt="search"/> -->
               </td>
             </tr>
             <tr>
