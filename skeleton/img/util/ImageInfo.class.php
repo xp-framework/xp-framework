@@ -13,7 +13,7 @@
   class ImageInfo extends Object {
     var
       $width    = 0,
-      $size     = 0,
+      $height   = 0,
       $type     = 0,
       $mime     = '',
       $bits     = NULL,
@@ -90,23 +90,23 @@
     }
 
     /**
-     * Set Size
+     * Set Height
      *
      * @access  public
-     * @param   int size
+     * @param   int height
      */
-    function setSize($size) {
-      $this->size= $size;
+    function setHeight($height) {
+      $this->height= $height;
     }
 
     /**
-     * Get Size
+     * Get Height
      *
      * @access  public
      * @return  int
      */
-    function getSize() {
-      return $this->size;
+    function getHeight() {
+      return $this->height;
     }
 
     /**
