@@ -274,14 +274,14 @@
 
       try(); {
         $db->insert('
-           </xsl:text>
-				<xsl:value-of select="@name"/><xsl:text> (&#10;</xsl:text>
+          </xsl:text>
+			 <xsl:value-of select="@name"/><xsl:text> (&#10;</xsl:text>
 				<xsl:for-each select="attribute[@identity = 'false']">
-				  <xsl:text>             </xsl:text>
+				  <xsl:text>            </xsl:text>
 				  <xsl:value-of select="@name"/>
 				  <xsl:if test="position() != last()">,&#10;</xsl:if>
 				</xsl:for-each>
-				<xsl:text>&#10;           ) values (&#10;             </xsl:text>
+				<xsl:text>&#10;          ) values (&#10;            </xsl:text>
     			<xsl:for-each select="attribute[@identity = 'false']">
 				  <xsl:choose>
 	    			<xsl:when test="@typename= 'int'">%d</xsl:when>
@@ -294,9 +294,9 @@
 
 	    		  <xsl:if test="position() != last()">, </xsl:if>
 				</xsl:for-each>
-				<xsl:text>&#10;           )',&#10;</xsl:text>
+				<xsl:text>&#10;         )',&#10;</xsl:text>
 				<xsl:for-each select="attribute[@identity = 'false']">
-				  <xsl:text>           </xsl:text>
+				  <xsl:text>          </xsl:text>
 				  <xsl:value-of select="concat('$this->', @name)"/>
 				  <xsl:if test="position() != last()">,&#10;</xsl:if>
 				</xsl:for-each>
