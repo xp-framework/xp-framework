@@ -46,13 +46,18 @@
      * @param   mixed in default NULL either a string or a Unix timestamp, defaulting to now
      */
     function __construct($in= NULL) {
-      if (is_string($in)) {
-        $this->_utime(strtotime($in));
+      if (is_string($in) && (-1 !== ($time= strtotime($in)))) {
+        $this->_utime($time);
       } elseif (is_int($in)) {
         $this->_utime($in);
-      } else {
+      } elseif (is_null($in)) {
         $this->_utime(time());
+      } else {
+        throw(new IllegalArgumentException(
+          'Given argument is neither a timestamp nor a well-formed timestring'
+        ));
       }
+      
       parent::__construct();
     }
     
@@ -82,7 +87,7 @@
      * @return  &util.Date
      */
     function &fromString($str) {
-      return new Date(strtotime($str));
+      return new Date($str);
     }
     
     /**
