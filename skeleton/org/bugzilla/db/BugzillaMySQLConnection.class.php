@@ -15,7 +15,10 @@
    */
   class BugzillaMySQLConnection extends MySQLConnection {
     var
-      $shadow   = TRUE;
+      $shadow    = TRUE;
+    
+    var
+      $_affected = -1;
 
     /**
      * Constructor
@@ -24,9 +27,64 @@
      * @param   &rdbms.DSN dsn
      */
     function __construct(&$dsn) { 
-      parent::__construct($dsn); 
+      parent::__construct($dsn);
             
       $this->shadow= $this->dsn->getValue('shadow', FALSE);
+    }
+
+    /**
+     * Execute an insert statement
+     *
+     * @access  public
+     * @param   mixed *args
+     * @return  int number of affected rows
+     * @throws  rdbms.SQLStatementFailedException
+     */
+    function insert() { 
+      $args= func_get_args();
+      $args[0]= 'insert '.$args[0];
+      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+        return FALSE;
+      }
+      
+      return $this->_affected;
+    }
+    
+    
+    /**
+     * Execute an update statement
+     *
+     * @access  public
+     * @param   mixed* args
+     * @return  int number of affected rows
+     * @throws  rdbms.SQLStatementFailedException
+     */
+    function update() {
+      $args= func_get_args();
+      $args[0]= 'update '.$args[0];
+      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+        return FALSE;
+      }
+      
+      return $this->_affected;
+    }
+    
+    /**
+     * Execute an update statement
+     *
+     * @access  public
+     * @param   mixed* args
+     * @return  int number of affected rows
+     * @throws  rdbms.SQLStatementFailedException
+     */
+    function delete() { 
+      $args= func_get_args();
+      $args[0]= 'delete '.$args[0];
+      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+        return FALSE;
+      }
+      
+      return $this->_affected;
     }
 
     /**
@@ -48,7 +106,12 @@
       }
       
       if (TRUE !== $res || !$this->shadow) return $res;
-      
+
+      // Get the affected rows of the query on the bugs db to check for
+      // midway collisions. Otherwise you get the affected rows of the 
+      // shadow db insert    
+      $this->_affected= mysql_affected_rows($this->handle);
+
       // This was an SQL update, insert or delete, or: something that does
       // not return a resultset. Write it into the shadow log
       mysql_query(
