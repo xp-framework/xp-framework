@@ -173,6 +173,27 @@
       </xsl:if>
     </func:result>
   </func:function>
+
+  <!--
+   ! Function that returns a fully qualified link to a specified target
+   !
+   ! @param  string target
+   !-->
+  <func:function name="func:link">
+    <xsl:param name="target"/>
+
+    <func:result>
+      <xsl:value-of select="concat(
+        '/xml/', 
+        $__product, 
+        '.', 
+        $__lang,
+        func:concatif($__sess != '', concat('.psessionid=', $__sess)),
+        '/',
+        $target
+      )"/>
+    </func:result>
+  </func:function>
   
   <!--
    ! Template for links with scheme "xp"
