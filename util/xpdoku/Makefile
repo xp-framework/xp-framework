@@ -74,7 +74,6 @@ else
 	cd $(TARGET) ; tar cfz $(PUBLISH) --exclude=downloads *
 	scp $(PUBLISH) $(target):$(TARGET)
 	ssh $(target) cd $(TARGET) \; tar xfz xpdoc.tgz
-	scp content/news.rdf.xml $(target):$(TARGET)
 	rm $(PUBLISH)
 endif
 
@@ -132,10 +131,10 @@ index: $(OUTPUT) $(XML) news
 news: $(OUTPUT) $(XML)
 ifneq ($(news),)
 	@echo "===> Creating news from $(news)"
-	cp $(news) content/news.rdf.xml   
+	cp $(news) $(OUTPUT)/news.rdf.xml   
 else
 	@echo "===> Creating news"
-	@-$(PHP) util/news.php > content/news.rdf.xml
+	@-$(PHP) util/news.php > $(OUTPUT)/news.rdf.xml
 endif
 	@$(SABCMD) xslt/news.xsl content/news.xml $(OUTPUT)/news.html
 
