@@ -1,5 +1,5 @@
 <?php
-  import('xml.XML');
+  uses('xml.XML');
 
   class Node extends XML {
     var 
@@ -89,7 +89,7 @@
     }
     
     function &addChild($child) {
-      if (!is_object($child)) return throw(E_PARAM_EXCEPTION);
+      if (!is_object($child)) return throw(new IllegalArgumentException('parameter child must be an object'));
       $this->children[]= &$child;
       return $child;
     }

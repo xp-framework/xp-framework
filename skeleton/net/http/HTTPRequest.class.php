@@ -3,9 +3,11 @@
   define('HTTP_METHOD_POST',    'POST');
   define('HTTP_METHOD_HEAD',    'HEAD');
   
-  define('E_HTTP_AUTH_EXCEPTION',       0xF401);
-  
-  import('net.Socket');
+  uses(
+    'net.Socket',
+    'net.http.HTTPAuthException',
+    'io.IOException'
+  );
   
   class HTTPRequest extends Socket {
     var 
@@ -41,12 +43,9 @@
       if (!$this->isConnected()) {
         try(); {
           $this->connect();
-        } if ($e= catch(E_ANY_EXCEPTION)) {
-          var_dump($e);
-          return throw(
-            E_IO_EXCEPTION,
-            $this->request
-          );
+        } if (catch('Exception', $e)) {
+          $e->message= 'HTTPRequest::_request()==>'.$e->message;
+          return throw($e);
         }
       }
       
@@ -99,10 +98,7 @@
       
       // Absenden
       $this->request.= "\r\n".$body;
-      if (!$this->write($this->request)) return throw(
-        E_IO_EXCEPTION,
-        $this->request
-      );
+      if (!$this->write($this->request)) return throw(new IOException($this->request));
 
       // Antwort lesen
       $this->response= new StdClass();
@@ -160,7 +156,7 @@
       $result= 0;
       switch($this->response->HTTPstatus) {
         case 401: 
-          throw(E_HTTP_AUTH_EXCEPTION, $this->response->HTTPmessage);
+          throw(new HTTPAuthException($this->response->HTTPmessage));
           break;
         default:
           $result= 1;

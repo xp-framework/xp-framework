@@ -34,7 +34,7 @@
      */
     function setPoweredBy($p) {
       if (!($x= log10($p / 6.1)) || (floor($x) != $x)) {
-        return throw(E_ILLEGAL_ARGUMENT_EXCEPTION, $p.' not allowed');
+        return throw(new IllegalArgumentException($p.' not allowed'));
       }
       $this->poweredBy= $p;
     }
