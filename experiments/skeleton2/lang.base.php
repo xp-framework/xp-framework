@@ -230,8 +230,8 @@
 
   uses(
     'lang.Object',
-    'lang.XPClass',
     'lang.XPException',
+    'lang.XPClass',
     'lang.Error',
     'lang.NullPointerException',
     'lang.IllegalAccessException',
