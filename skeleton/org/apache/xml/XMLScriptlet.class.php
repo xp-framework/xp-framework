@@ -1,0 +1,127 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+ 
+  uses(
+    'org.apache.HttpScriptlet',
+    'org.apache.xml.XMLScriptletResponse',
+    'org.apache.xml.XMLScriptletRequest'
+  );
+  
+  /**
+   * XML scriptlets are the more advanced version of HttpScriptlets.
+   * XML scriptlets do not implement a direct output to the client. 
+   * Rather, the response object consists of a so-called "OutputDocument"
+   * (resembling an XML DOM-Tree) and an XSL stylesheet.
+   *
+   * The three main nodes, formresult, formvalues and formerrors are 
+   * represented in the <pre>OutputDocument</pre> class by corresponding
+   * member variables. For ease of their manipulation, there are three
+   * method in <pre>XMLSriptletResponse</pre> to add nodes to them. The
+   * XSL stylesheet is applied against this XML.
+   *
+   * All request parameters are imported into the formvalues node to give
+   * you access to the request parameters withing your XSL stylesheet (e.g.,
+   * via /document/formresult/formvalues/param[@name= 'query']). You might
+   * want to define an xsl:variable containing the formvalues for easier
+   * access.
+   *
+   * Farthermore, the following attributes are passed as external parameters:
+   * <pre>
+   *   page      the page displayed
+   *   lang      the language in which this page is displayed
+   *   product   the product (think of it as "theme")
+   *   sess      the session's id
+   * </pre>
+   * 
+   * @see org.apache.xml.XMLSriptletRequest
+   * @see org.apache.xml.XMLSriptletResponse
+   * @see org.apache.xml.XMLSriptletResponse#addFormValue
+   * @see org.apache.xml.XMLSriptletResponse#addFormError
+   * @see org.apache.xml.XMLSriptletResponse#addFormResult
+   */
+  class XMLScriptlet extends HttpScriptlet {
+    var 
+      $document,
+      $stylesheetBase;
+      
+    var
+      $sessionURIFormat=    '%1$s://%2$s%4$s;psessionid=%7$s/%5$s?%6$s%8$s';
+    
+    /**
+     * Set our own response object
+     *
+     * @see     org.apache.HttpScriptlet#_response
+     */
+    function _response() {
+      $this->response= &new XMLScriptletResponse();
+    }
+
+    /**
+     * Set our own request object
+     *
+     * @see     org.apache.HttpScriptlet#_request
+     */
+    function _request() {
+      $this->request= &new XMLScriptletRequest();
+    }
+      
+    /**
+     * Initialize the XMLScriptlet
+     *
+     * It is assumed your XSL stylesheets are in ../xsl/product/language/ relative 
+     * to where your document root is.
+     *
+     * @see     org.apache.HttpScriptlet#init
+     */
+    function init() {
+      parent::init();
+      $this->stylesheetBase= realpath(getenv('DOCUMENT_ROOT').'/../xsl/').'/';
+    }
+    
+    /**
+     * Handle all requests. This method is called from <pre>doPost</pre> since
+     * it really makes no difference - one can still find out via the 
+     * <pre>method</pre> attribute of the request object. 
+     *
+     * Remember:
+     * When overriding this method, please make sure you include all your 
+     * sourcecode _before_ you call <pre>parent::doGet()</pre>
+     *
+     * @see     org.apache.HttpScriptlet#doGet
+     */
+    function doGet(&$request, &$response) {
+    
+      // Define special parameters
+      $response->setParam('page',    $request->getPage());        
+      $response->setParam('lang',    $request->getLanguage());    
+      $response->setParam('product', $request->getProduct());     
+      $response->setParam('sess',    $request->getSessionId());   
+      
+      // Add all request parameters to the formvalue node
+      foreach (array_keys($request->params) as $key) {
+        $response->addFormValue($key, $request->params[$key]);
+      }
+      
+      // Set XSL stylesheet
+      $response->setStylesheet(sprintf(
+        '%s%s/%s/%s.xsl',
+        $this->stylesheetBase,
+        $response->getParam('product'),
+        $response->getParam('lang'),
+        $response->getParam('page')
+      ));
+    }
+    
+    /**
+     * Simply call doGet
+     *
+     * @see     #doGet
+     */
+    function doPost(&$req, &$res) {
+      $this->doGet($req, $res);
+    }
+  }
+?>
