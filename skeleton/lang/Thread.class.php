@@ -140,7 +140,7 @@
      * Join this thread (wait for it to exit).
      *
      * @access  public
-     * @return  
+     * @return  int status
      * @see     php://pcntl_waitpid
      */
     function join() {
