@@ -35,6 +35,8 @@
   define('HEADER_ENCODING',     'Content-Transfer-Encoding');
   define('HEADER_CONTENTTYPE',  'Content-Type');
   define('HEADER_DATE',         'Date');
+  define('HEADER_MIMEVER',      'Mime-Version');
+  
   
   /**
    * This class models an email message.
@@ -80,6 +82,7 @@
       $uid              = 0,
       $flags            = 0,
       $size             = 0,
+      $mimever          = '1.0',
       $date             = NULL;
       
     var
@@ -458,6 +461,10 @@
             if ('' != trim($t)) {
               $this->addRecipient(strtolower($k), InternetAddress::fromString($t));
             }
+            break;
+            
+          case HEADER_MIMEVER:
+            $this->mimever= $t;
             break;
             
           case HEADER_SUBJECT:
