@@ -143,6 +143,12 @@
               );
               break;
 
+            case 'nativelib':
+              $this->resources[]= &new JnlpJarResource(
+                $this->_nodes['resources']->children[$i]->getAttribute('href')
+              );
+              break;              
+
             default:
               return throw(new FormatException('Unknown identifier "'.$name.'" / Section "resources"'));
           }
