@@ -17,6 +17,38 @@
         
   </xsl:template>
 
+  <xsl:template name="listfiles">
+    <xsl:param name="filter"/>
+    <xsl:processing-instruction name="php"><![CDATA[
+      $releases= array();
+      $dir= dir(getenv('DOCUMENT_ROOT').'/downloads/');
+      while ($e= $dir->read()) {
+        if (]]><xsl:value-of select="$filter"/><![CDATA[) continue;
+        $releases[]= $e;
+      }
+      rsort($releases);
+      for ($i= 0, $s= min(sizeof($releases), 5); $i < $s; $i++) {
+        $md5= (file_exists($dir->path.'/'.$releases[$i].'.md5')
+          ? file_get_contents($dir->path.'/'.$releases[$i].'.md5')
+          : 'n/a'
+        );
+        $information= (file_exists($dir->path.'/'.$releases[$i].'.info')
+          ? file_get_contents($dir->path.'/'.$releases[$i].'.info')
+          : ''
+        );
+        printf(
+          '<li><a href="/downloads/%1$s">%1$s</a> - %2$.2f KB [ MD5: %3$s ]</a><br>%4$s</li>',
+          $releases[$i],
+          filesize($dir->path.'/'.$releases[$i]) / 1024,
+          $md5,
+          $information
+        );
+      }
+      
+      $dir->close();
+    ]]></xsl:processing-instruction>
+  </xsl:template>
+
   <xsl:template match="main">
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
       <tr>
@@ -35,26 +67,22 @@
     
     <b>Current releases:</b>
     <ul>
-    <xsl:processing-instruction name="php"><![CDATA[
-      $dir= dir(getenv('DOCUMENT_ROOT').'/downloads/');
-      while ($e= $dir->read()) {
-        if ('tar.gz' != substr($e, -6) || 'current' == substr($e, 3, 7)) continue;
-        $releases[]= $e;
-      }
-      rsort($releases);
-      
-      for ($i= 0, $s= min(sizeof($releases), 5); $i < $s; $i++) {
-        printf(
-          '<li><a href="/downloads/%1$s">%1$s</a> - %2$.2f KB [ MD5: %3$s ]</a></li>',
-          $releases[$i],
-          filesize($dir->path.'/'.$releases[$i]) / 1024,
-          file_get_contents($dir->path.'/'.substr($releases[$i], 0, -6).'md5')
-        );
-      }
-      
-      $dir->close();
-    ]]></xsl:processing-instruction>
+      <xsl:call-template name="listfiles">
+        <xsl:with-param name="filter"><![CDATA[
+          'tar.gz' != substr($e, -6) || 'current' == substr($e, 3, 7)
+        ]]></xsl:with-param>
+      </xsl:call-template>
     </ul>
+
+    <b>Patches:</b>
+    <ul>
+      <xsl:call-template name="listfiles">
+        <xsl:with-param name="filter"><![CDATA[
+          'diff' != substr($e, -4)
+        ]]></xsl:with-param>
+      </xsl:call-template>
+    </ul>
+
   </xsl:template>
 
   <xsl:template match="introduction//*">
