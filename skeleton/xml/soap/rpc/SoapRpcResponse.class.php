@@ -78,7 +78,7 @@
      * @see     scriptlet.HttpScriptletResponse#process
      */
     function process() {
-      if (NULL !== $this->message->getFault()) {
+      if ($this->message && NULL !== $this->message->getFault()) {
         $this->setStatus(HTTP_INTERNAL_SERVER_ERROR);
       }
     }
