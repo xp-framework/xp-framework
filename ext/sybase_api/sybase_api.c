@@ -4,7 +4,6 @@
  */
 
 #include "sybase_api.h"
-#include "sybase_mm.h"
 
 /**
  * Setup environment
@@ -115,22 +114,41 @@ SYBASE_API int sybase_alloc(sybase_link **link)
  * @access  public
  * @param   sybase_environment *env the environment previously initialized with sybase_init
  * @param   char *host
- * @param   char *user
- * @param   char *pass
+ * @param   char *user Username, may be NULL
+ * @param   char *pass Password, may be NULL
+ * @param   sybase_hash *props Connection properties hash, may be NULL
  * @param   sybase_link *link
  * @return  int
  */
-SYBASE_API int sybase_connect(sybase_environment *env, sybase_link *link, char *host, char *user, char *pass)
+SYBASE_API int sybase_connect(sybase_environment *env, sybase_link *link, char *host, char *user, char *pass, sybase_hash *props)
 {
     if (ct_con_alloc(env->context, &link->connection) != CS_SUCCEED) {
         return SA_FAILURE | SA_EALLOC;
     }
 
+    /* Set username and password */
     if (user) {
         ct_con_props(link->connection, CS_SET, CS_USERNAME, user, CS_NULLTERM, NULL);
     }
     if (pass) {
         ct_con_props(link->connection, CS_SET, CS_PASSWORD, pass, CS_NULLTERM, NULL);
+    }
+    
+    /* Set extended connection properties */
+    if (props) {
+        sybase_hash_element *e;
+        int c;
+        
+        for (e= sybase_hash_first(props, &c); sybase_hash_has_more(props, c); e= sybase_hash_next(props, &c)) {
+            switch (e->type) {
+                case HASH_STRING:
+                    ct_con_props(link->connection, CS_SET, e->key, e->value.str.val, CS_NULLTERM, NULL);
+                    break;
+                case HASH_INT:
+                    ct_con_props(link->connection, CS_SET, e->key, e->value.lval, CS_UNUSED, NULL);
+                    break;
+            }
+        }
     }
 
     if (ct_connect(link->connection, host, CS_NULLTERM) != CS_SUCCEED) {
