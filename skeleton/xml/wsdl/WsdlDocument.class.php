@@ -42,6 +42,26 @@
    *     'return'        => array('GoogleSearchResult', 'typens')
    *   )));
    * 
+   *   $s= &new XmlSchema('urn:GoogleSearch');
+   *   $s->addComplexType(new XmlSchemaStructure(
+   *     'GoogleSearchResult', 
+   *     WSDL_TYPE_COMPLEX,
+   *     array(
+   *       'documentFiltering'           => 'boolean',
+   *       'searchComments'              => 'string',
+   *       'estimatedTotalResultsCount'  => 'int',
+   *       'estimateIsExact'             => 'boolean',
+   *       'resultElements'              => array('ResultElementArray', 'typens'),
+   *       'searchQuery'                 => 'string',
+   *       'startIndex'                  => 'int',
+   *       'endIndex'                    => 'int',
+   *       'searchTips'                  => 'string',
+   *       'directoryCategories'         => array('DirectoryCategoryArray', 'typens'),
+   *       'searchTime'                  => 'double'
+   *     )
+   *   ));
+   *   $d->setTypes($s);
+   *
    *   echo $d->getSource(0);
    * </code>
    *
