@@ -16,10 +16,9 @@
   define('JNLP_SPEC_1_PLUS',  '1.0+');
   
   /**
-   * JNLP
+   * JNLP Document
    *
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Represents JNLP XML structure
    */
   class JnlpDocument extends Tree {
     var
