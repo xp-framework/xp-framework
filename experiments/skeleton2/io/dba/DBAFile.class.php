@@ -35,7 +35,7 @@
    * <code>
    *   uses('io.dba.DBAFile');
    *   
-   *   $db= new dbFile('test.gdbm', DBH_GDBM);
+   *   $db= new DBAFile('test.gdbm', DBH_GDBM);
    *   $db->open(DBO_READ);
    *   for ($i= $db->iterator(); $i->hasNext(); ) {
    *     $key= $i->next();
@@ -49,7 +49,7 @@
    * <code>
    *   uses('io.dba.DBAFile');
    *   
-   *   $db= new dbFile('test.cdb', DBH_CDB);
+   *   $db= new DBAFile('test.cdb', DBH_CDB);
    *   $db->open(DBO_CREATE);
    *   $db->store('path', ini_get('include_path'));
    *   $db->save($optimize= TRUE);
@@ -73,11 +73,10 @@
      *
      * @access  public
      * @param   string filename
-     * @param   const handler one of DBH_* handlers
+     * @param   string handler one of DBH_* handler constants
      * @see     php://dba#dba.requirements Handler decriptions
      */
     public function __construct($filename, $handler) {
-      
       $this->filename= $filename;
       $this->handler= $handler;
     }
@@ -195,7 +194,7 @@
      */
     public function store($key, $value) {
       if (!dba_replace($key, $value, $this->_fd)) {
-        throw (new IOException('Could not insert key "'.$key.'"'));
+        throw (new IOException('Could not replace key "'.$key.'"'));
       }
       return TRUE;
     }
@@ -251,7 +250,7 @@
      * @return  bool success
      * @throws  io.IOException in case saving and/or optimizing failed
      */    
-    public function save() {
+    public function save($optimize= FALSE) {
       if ($optimize) if (!dba_optimize($this->_fd)) {
         throw (new IOException('Could not optimize database'));
       }
