@@ -91,14 +91,10 @@
      *
      * @access  public
      * @param   string alias
-     * @param   &text.format.PrintfFormat formatter
-     * @return  &text.format.PrintfFormat formatter
-     * @throws  IllegalArgumentException 
+     * @param   &text.format.IFormat formatter
+     * @return  &text.format.IFormat formatter
      */
-    public function setFormatter($alias, PrintfFormat $formatter) {
-      if (!is_a($formatter, 'IFormat')) {
-        throw (new IllegalArgumentException('Formatter must be a text.format.Format'));
-      }
+    public function setFormatter($alias, IFormat $formatter) {
       $this->formatters[$alias]= $formatter;
       return $this->formatters[$alias];
     }
