@@ -43,6 +43,9 @@
       $request     = NULL,
       $response    = NULL,
       $auth        = NULL;
+    
+    var
+      $_timeout    = 60;
 
     /**
      * Constructor
@@ -64,6 +67,26 @@
      */
     function _createRequest(&$url) {
       $this->request= &HttpRequestFactory::factory($url);
+    }
+
+    /**
+     * Set timeout
+     *
+     * @access  public
+     * @param   mixed imeout
+     */
+    function setTimeout($timeout) {
+      $this->_timeout= $timeout;
+    }
+
+    /**
+     * Get timeout
+     *
+     * @access  public
+     * @return  mixed
+     */
+    function getTimeout() {
+      return $this->_timeout;
     }
     
     /**
@@ -87,7 +110,7 @@
       $this->request->addHeaders($headers);
       
       try(); {
-        $this->response= &$this->request->send();
+        $this->response= &$this->request->send($this->_timeout);
       } if (catch('Exception', $e)) {
         return throw($e);
       }
