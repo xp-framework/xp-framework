@@ -1,70 +1,88 @@
-Das XP-Framework: Todo-Liste
-======================================================================
+XP: TODO
+========================================================================
 $Id$
 
-friebe, Sun Dec 22 22:54:54 CEST 2002
--------------------------------------
-* SOAP 
-  MS Terraserver - http://xmethods.net/ve2/ViewListing.po?serviceid=110755
-  FreeDB - http://xmethods.net/ve2/ViewListing.po?serviceid=27776
-  Dilbert - http://xmethods.net/ve2/ViewListing.po?serviceid=9348
 
-* WebDAV (Scriptlet)
-  http://158.195.16.189/doc/http/api/SK/gnome/dwarf/http/webdav/WebDAVServlet.html
-  http://www.ietf.org/rfc/rfc2518.txt
-  http://ftp.ics.uci.edu/pub/ietf/webdav/protocol/rfc2518.html
+friebe, Sat Sep 27 16:17:53 CEST 2003
+------------------------------------------------------------------------
 
-* Mail / NNTP
-  http://java.sun.com/products/javamail/1.3/docs/javadocs/index.html
-  http://developer.java.sun.com/developer/onlineTraining/JavaMail/contents.html
+1) Framework
+============
 
-* IRC
-  http://www.faqs.org/rfcs/rfc1459.html
-  http://relayirc.sourceforge.net/javadocs/index-all.html
+* Features/Wishlist:
 
-friebe, Tue Jul  9 15:26:02 CEST 2002
--------------------------------------
-+ SOAP
-  Hashmaps können auch so serialisiert sein:
-  <hash xmlns:ns2="http://xml.apache.org/xml-soap" xsi:type="ns2:Map">
-    <item>
-      <key xsi:type="xsd:string">2</key>
-      <value xsi:type="xsd:string">two</value>
-    <item>
-  </hash>
-  http://www-106.ibm.com/developerworks/webservices/library/ws-soapmap1/
+  - DBA classes (php://dba)
   
-friebe, Sat Jun 15 22:35:34 CEST 2002
--------------------------------------
-* Installer etc.
-  Ähnlich bsd:///usr/ports konstruieren
+  - Interface to DomXML, generalize via xml.dom and xml.sax
+  
+  - Interface to DomXSL / EXSL
+  
+  - Java Interface via ext/java (Prerequisite: Compile PHP
+    --with-java successfully)
+    
+  - PostgreSQL/Oracle/... rdbms classes
+  
+  - img.graph additions to draw real statistical data
+  
+  - Generic ACL class
+  
+* Experimental:
 
-* peer: 
-  HTTPConnection statt HTTPRequest
-  FTPConnection einführen
+  - Finish CHM support
   
-* sessions:
-  Basis-Session-Klasse definieren
-  Eine via Shared Memory
-  Eine via Serialize in Files
+  - Finish Excel support
   
-* rdbms:
-  Transaktionen über eine Klasse wrappen?
+  - Finish WSDL support
   
-+ util.log:
-  $cat= Logger::getInstance($this->getName()) - obwohl unschön, aber
-  $cat= Logger::getInstance()->getCategory($this->getName())
-  geht noch nicht
+  - Finish xni
   
-? xml.soap.provider:
-  CGI-Provider einführen
-  Standalone-Variante mit fork() als Experimental markieren
+  - Finish VCard/VCalendar (what's missing there, anyway?)
   
-- lang:
-  Object::getName() => Object::getClassName()
+  - Finish security/Policy
   
-* gui.gtk:
-  Einige Helper-Funktionen für immer wieder auftretende Konstrukte
-  wie $a= &$this->widget('bla'); $a->connect(...) schreiben.
+  - Finish telephony API (use same model with connection 
+    listeners as in peer.irc/peer.server APIs)
   
+  - Come to a consensus about org.apache.xml.workflow. This
+    API is needed but still not fully functional!
+
+2) Documentation
+=================
+
+* Include ports
+
+* Include SAPIs (TBD: figure out how documentation could be 
+  automatically generated)
+
+* Bug system (based on bugzilla, Prerequisite: Install 
+  MySQL/PHPMyAdmin on php3.de)
+
+* Development: xp@php3.de Mailing list archive
+  TBD: Find nice output format, most ml archives are the pure horror
+  to browse through
+
+* Some kind of tutorial/FAQ section
+
+* User annotations (where to put? Sybase? Maintain how?)
+
+3) Generic
+==========
+
+* Finally decide on official logo.
+
+* ChangeLog / NEWS generation for display on resources page.
+
+* Think of a really cool ports system and installer.
+
+* Write a dependency tracker that will find out all dependencies
+  for a given script or class, thus making CVS tagging and 
+  installation easiert.
+
+4) PHP5 / ZE2 / The future
+==========================
+
+* Find out if package/namespace support will be included in 5.0-STABLE
+  I guess we could live without as we do right now...
+  Change migration script (and thus unb0rk experiments/skeleton2)
+
 <EOF>
