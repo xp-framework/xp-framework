@@ -54,8 +54,8 @@
       // Note: don't use builtin strtok, because it does ignore an
       // empty field (two delimiters in a row). We need this information.
       if (empty ($string))
-        return false;
-      if (false === ($tpos= strpos ($string, $delim))) {
+        return FALSE;
+      if (FALSE === ($tpos= strpos ($string, $delim))) {
         $token= $string;
         $string= '';
         return $token;
@@ -102,7 +102,7 @@
      * the calling program (or user).
      *
      * @access public
-     * @return bool hasHeader true, if header is available
+     * @return bool hasHeader TRUE, if header is available
      */
     function hasHeader() {
       return is_array ($this->colName) && count ($this->colName);
@@ -120,7 +120,7 @@
     function getColumnIndex($column) {
       $reverse= array_flip ($this->colName);
       if (!isset ($reverse[$column]))
-        return false;
+        return FALSE;
     
       return $reverse[$column];
     }
@@ -136,7 +136,7 @@
     function &_getNextRecord() {
       try(); {
         if ($this->stream->eof())
-          return false;
+          return FALSE;
 
         $row= $this->stream->readLine();
         while (0 !== substr_count ($row, $this->escape) % 2)
@@ -152,7 +152,7 @@
 
     /**
      * Parse the next cell out of the buffer. If buffer is empty,
-     * this returns false. This function takes care of
+     * this returns FALSE. This function takes care of
      * quotedness of the data, and de-escapes any escaped chars.
      * It also removes the parsed cell from the internal buffer.
      *
@@ -161,7 +161,7 @@
      */
     function _parseColumn() {
       if (empty ($this->buffer))
-        return false;
+        return FALSE;
 
       $tok= $this->_strtok ($this->buffer, $this->colDelim);
 
@@ -179,7 +179,7 @@
       // characters become the escape character itself.
       $tok= trim ($tok);
       $i= 0; $j= 0; $res= '';
-      while (false !== ($i= strpos ($tok, $this->escape, $j))) {
+      while (FALSE !== ($i= strpos ($tok, $this->escape, $j))) {
         if (strlen ($tok) > $i+1 && $tok{$i+1} == $this->escape) $i++;
         $res.= substr ($tok, $j, $i-$j);
         $j= $i+1;
@@ -212,6 +212,23 @@
     }
     
     /**
+     * Retrieves the name of a column if one is available
+     *
+     * @access  public
+     * @param   int number
+     * @return  string name or FALSE if none is available
+     */
+    function getColumnName($nr) {
+      if (!$this->hasHeader())
+        return FALSE;
+      
+      if (!isset ($this->colName[$nr]))
+        return FALSE;
+      
+      return $this->colName[$nr];
+    }    
+    
+    /**
      * Read the next record from the stream. This returns a 
      * StdClass object with the members named as the header
      * record supposes. When no header was available, the
@@ -229,14 +246,14 @@
       }
 
       if (empty ($this->buffer))
-        return false;
+        return FALSE;
         
       $data= array(); $idx= 0;
-      while (false !== ($cell= $this->_parseColumn())) {
-        if ($this->hasHeader())
-          $data[$this->colName[$idx]]= $cell;
+      while (FALSE !== ($cell= $this->_parseColumn())) {
+        if (FALSE !== ($cn= $this->getColumnName($idx)))
+          $data[$cn]= $cell;
         else 
-          $data[]= $cell;
+          $data[$idx]= $cell;
         
         $idx++;
       }
