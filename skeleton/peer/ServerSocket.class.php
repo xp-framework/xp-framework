@@ -118,7 +118,7 @@
      * </quote>
      *
      * @access  public
-     * @param   int backlog default 20
+     * @param   int backlog default 10
      * @return  bool success
      * @throws  peer.SocketException in case of an error
      */
