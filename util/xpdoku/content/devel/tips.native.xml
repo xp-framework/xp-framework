@@ -12,7 +12,7 @@
         </text>
       </para>
       <para>
-        <caption>Example #1</caption>
+        <caption>Example #1: Searching arrays</caption>
         <text>
           Assume we have an array like this:
           <code><![CDATA[  class A {
@@ -33,8 +33,8 @@
   // ...]]></code>
           PHP literally has tons of array functions. Whip up the manual and
           after a few clicks (or a bit of thinking à la "I'm <i>search</i>ing
-          an <i>array</i>") you will find <tt>array_search</tt>
-          <br/>
+          an <i>array</i>") you will find <tt>array_search</tt>.
+          <br/><br/>
           Go ahead, nuke your code and replace it with the following:
           <code><![CDATA[  // ...
   function indexOf($needle) {
