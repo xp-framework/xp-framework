@@ -55,10 +55,11 @@ int main(int argc, char **argv)
                         sybase_init_resultset(result, &resultset);
                         for (i= 0; i < resultset->fields; i++) {
                             printf(
-                                "     datatype[%3d] %3d [%-20s]\n",
+                                "     field #%d: datatype %3d [%-20s] name '%s'\n",
                                 i,
                                 resultset->dataformat[i].datatype,
-                                sybase_nameofdatatype(resultset->dataformat[i].datatype)
+                                sybase_nameofdatatype(resultset->dataformat[i].datatype),
+                                resultset->dataformat[i].name
                             );
                         }
                         sybase_free_resultset(resultset);
