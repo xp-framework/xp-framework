@@ -58,8 +58,8 @@
      */
     function executeSelect(&$conn, &$peer) {
       $this->arguments[0]= preg_replace(
-        '/object\([^\)]*\)/i', 
-        implode(', ', array_keys($peer->types)),
+        '/object\(([^\)]+)\)/i', 
+        '$1.'.implode(', $1.', array_keys($peer->types)),
         $this->arguments[0]
       );
       return $conn->query($conn->_prepare($this->arguments));
