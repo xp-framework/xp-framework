@@ -26,7 +26,7 @@
       '\'$1\' => array(',
       '\'$1\' => ',
     ),
-    trim($annotation, '[]')
+    trim($annotation, '[]').','
   );
   $DEBUG && var_dump($src);
   var_dump(eval('return array('.$src.');'));
