@@ -1,0 +1,38 @@
+XP: NEdit
+======================================================================
+$Id$
+
+Overview
+--------
+This directory contains the following files:
+
+<pre>
+.Xresources.in    Make NEdit look nicer
+.nedit            NEdit configuration
+README            This file
+</pre>
+
+Details: .Xresources.in
+-----------------------
+Add this to your .Xresources file. Use $ xrdb .Xresources to 
+reload .Xresources' contents.
+
+Details: .nedit
+---------------
+NEdit configuration containing the following goodies:
+
+. Modified syntax highlighting scheme for XP, PHP5
+
+. Shortcuts: 
+  Alt+C       - check script syntax
+  F9          - execute script
+  Alt+#       - add bar comment around selection
+  F1          - PHP documentation for selection
+    
+. XP extensions (see util/bin/xpci)  
+  Alt+H       - insert class file header
+  Shift+Alt+C - insert class template
+  Alt+D       - insert method documentation
+  Alt+F1      - XP api doc for class (from selection)
+
+<EOF>
