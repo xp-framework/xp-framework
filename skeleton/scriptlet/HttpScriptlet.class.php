@@ -159,6 +159,9 @@
       switch ($request->method) {
         case HTTP_POST:
           $request->setData($GLOBALS['HTTP_RAW_POST_DATA']);
+          if (!empty($_FILES)) {
+            $request->params= array_merge($request->params, $_FILES);
+          }
           $m= 'doPost';
           break;
           
@@ -322,6 +325,12 @@
       $request= &$this->_request();
       $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
       $request->method= getenv('REQUEST_METHOD');
+      $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
+      $request->setURI(parse_url(
+        ('on' == getenv('HTTPS') ? 'https' : 'http').'://'.
+        getenv('HTTP_HOST').
+        getenv('REQUEST_URI')
+      ));
 
       // Check if this method can be handled. In case it can't, throw a
       // HttpScriptletException with the HTTP status code 501 ("Method not
