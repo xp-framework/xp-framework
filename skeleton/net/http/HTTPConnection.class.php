@@ -34,7 +34,7 @@
         $params= array(
           'host'        => $p['host'],
           'port'        => isset($p['port']) ? $p['port'] : 80,
-          'target'      => $p['path'].@$p['query']
+          'target'      => $p['path'].(isset($p['query']) ? '?'.$p['query'] : '')
         );
       }
       parent::__construct($params);
