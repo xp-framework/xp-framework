@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('img.ImagingException');
+
   /**
    * Converter interface
    *
@@ -18,6 +20,7 @@
      * @access  public
      * @param   &img.Image image
      * @return  bool
+     * @throws  img.ImagingException
      */
     function convert(&$image) { }
   }

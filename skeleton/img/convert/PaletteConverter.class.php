@@ -36,6 +36,7 @@
      * @access  public
      * @param   &img.Image image
      * @return  bool
+     * @throws  img.ImagingException
      */
     function convert(&$image) { 
       if (!imageistruecolor($image->handle)) return FALSE;
