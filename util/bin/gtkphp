@@ -12,8 +12,13 @@ echo "<?php
   \$p= &new ParamString(explode('', '$*'));
   if ('.class.php' == substr('$1', -10)) {
     \$class= basename(substr('$1', 0, -10));
-    \$app= &new \$class(\$p);
-    \$app->init();
+    try(); {
+      \$app= &new \$class(\$p); 
+      \$app->init();
+    } if (catch('GuiException', \$e)) {
+      \$e->printStackTrace();
+      exit(-1);
+    }
     \$app->run();
     \$app->done();
   }
