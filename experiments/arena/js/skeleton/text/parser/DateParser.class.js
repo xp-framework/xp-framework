@@ -25,7 +25,6 @@
      *
      * @access  public
      * @param   regex format
-     * @throws  Exception in case
      */      
     {
       this.format= format;
@@ -37,6 +36,7 @@
      * @access  public
      * @param   string str
      * @return  Date
+     * @throws  Exception in case
      */      
     DateParser.prototype.parse= function(str) {
       var matches= [];
