@@ -98,7 +98,7 @@
      * @param   mixed value
      */
     function setAttribute($key, $value) {
-      $this->attributes[$key]= $value;
+      $this->attributes[$key]= (array)$value;
     }
     
     /**
