@@ -6,7 +6,9 @@
 
   uses(
     'peer.ftp.server.storage.FilesystemStorageCollection',
-    'peer.ftp.server.storage.FilesystemStorageElement'
+    'peer.ftp.server.storage.FilesystemStorageElement',
+    'util.adt.Stack',
+    'text.String'
   );
 
   /**
@@ -17,8 +19,8 @@
    */
   class FilesystemStorage extends Object {
     var
-      $base = array(),
-      $root = '';
+      $base   = array(),
+      $root   = '';
 
     /**
      * Constructor
@@ -38,10 +40,35 @@
      * @return  string
      */
     function realname($clientId, $uri) {
-      return (DIRECTORY_SEPARATOR == $uri{0}
-        ? $this->root.DIRECTORY_SEPARATOR
-        : rtrim($this->root.$this->base[$clientId], DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR
-      ).preg_replace('#^[/\.]+#', '', $uri);
+      $path= (DIRECTORY_SEPARATOR == $uri{0}
+        ? $uri
+        : $this->base[$clientId].DIRECTORY_SEPARATOR.$uri
+      );
+      
+      with (
+        $parts= explode(DIRECTORY_SEPARATOR, $path),
+        $stack= array(),
+        $return= ''
+      ); {
+        foreach ($parts as $part) {
+          switch ($part) {
+            case '.':
+            case '':
+              break;
+
+            case '..':
+              array_shift($stack);
+              break;
+
+            default:
+              array_unshift($stack, $part);
+          }
+        }
+      
+        while ($buf= array_pop($stack)) { $return.= DIRECTORY_SEPARATOR.$buf; }
+      }
+
+      return $this->root.$return;
     }
 
     /**
@@ -56,7 +83,11 @@
       if (!is_dir($path= $this->realname($clientId, $uri))) {
         return throw(new IOException($uri.': not a directory'));
       }
-      $this->base[$clientId]= str_replace($this->root, '', $path);
+      $this->base[$clientId]= DIRECTORY_SEPARATOR.ltrim(
+        str_replace($this->root, '', $path),
+        DIRECTORY_SEPARATOR
+      );
+      
       return $this->base[$clientId];
     }
     
@@ -68,6 +99,7 @@
      * @return  string
      */
     function getBase($clientId) {
+      if (NULL == $this->base[$clientId]) { $this->setBase($clientId); }
       return $this->base[$clientId];
     }
     
