@@ -12,16 +12,16 @@
   class WebdavAuthorizationHandler extends Object {
   
     /**
-     * Checks if the user is authorized to do something
+     * Checks if the user is authorized to do something. Always returns
+     * TRUE in this default implementation.
      *
-     * @access public
-     * @param  org.webdav.WebdavScriptletRequest request The request
-     * @param  org.webdav.auth.WebdavUser        user    The Webdav user
-     * @return bool
+     * @access  public
+     * @param   org.webdav.WebdavScriptletRequest request The request
+     * @param   org.webdav.auth.WebdavUser user The Webdav user
+     * @return  bool
      */
     function isAuthorized(&$request, $user) {
       return TRUE;
     }
-  
   }
 ?>
