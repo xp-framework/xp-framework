@@ -29,13 +29,16 @@
    ! @purpose  Define main content
    !-->
   <xsl:template name="content">
-    <h1><xsl:value-of select="/formresult/item/caption"/></h1>
+    <h1>News</h1>
+    <h3>
+      <xsl:value-of select="/formresult/item/caption"/>
+      (<xsl:value-of select="func:datetime(/formresult/item/created_at)"/>, 
+      by <xsl:value-of select="/formresult/item/changedby"/>)
+    </h3>
     <p>
       <xsl:apply-templates select="/formresult/item/body"/>
     </p>
 
-    <em><xsl:value-of select="func:datetime(/formresult/item/created_at)"/></em>
-    <br/>
     <br/>
     <a href="../news">Overview</a> | <a href="{/formresult/item/link}">Details</a>
   </xsl:template>
