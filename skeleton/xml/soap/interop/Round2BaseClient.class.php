@@ -186,9 +186,9 @@
      * @return  boolean match
      */
     function echoHexBinary() {
-    
-      // TBI
-      return FALSE;
+      return $this->identity('echoHexBinary',
+        new Parameter('inputHexBinary', new SOAPHexBinary("\0\1\127")
+      ));
     }
     
     /**
