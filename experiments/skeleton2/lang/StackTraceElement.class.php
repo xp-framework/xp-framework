@@ -12,7 +12,7 @@
    * @purpose  Represent execution stack frame
    */
   class StackTraceElement extends Object {
-    var
+    public
       $file     = '',
       $class    = '',
       $method   = '',
@@ -31,7 +31,7 @@
      * @param   array args
      * @param   array messages
      */
-    function __construct($file, $class, $method, $line, $args, $messages) {
+    public function __construct($file, $class, $method, $line, $args, $messages) {
       $this->file     = $file;  
       $this->class    = $class; 
       $this->method   = $method;
@@ -46,7 +46,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $args= array();
       if (isset($this->args)) {
         for ($j= 0, $a= sizeof($this->args); $j < $a; $j++) {

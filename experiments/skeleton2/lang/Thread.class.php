@@ -35,9 +35,9 @@
    *     }
    *   }
    *   
-   *   $t[0]= &new TimerThread(5);
+   *   $t[0]= new TimerThread(5);
    *   $t[0]->start();
-   *   $t[1]= &new TimerThread(2);
+   *   $t[1]= new TimerThread(2);
    *   $t[1]->start();
    *   var_dump($t);
    *   for ($i= 0; $i < 3; $i++) {
@@ -52,11 +52,11 @@
    * @purpose  Base class
    */
   class Thread extends Object {
-    var
+    public
       $name     = '',
       $running  = FALSE;
       
-    var
+    private
       $_id      = -1;
       
     /**
@@ -65,9 +65,9 @@
      * @access  public
      * @param   string name
      */
-    function __construct($name= '') {
+    public function __construct($name= '') {
       $this->name= $name;
-      parent::__construct();
+      
     }
     
     /**
@@ -76,7 +76,7 @@
      * @access  public
      * @param   string name
      */
-    function isRunning() {
+    public function isRunning() {
       return $this->running;
     }
     
@@ -86,7 +86,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -96,7 +96,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
     
@@ -108,7 +108,7 @@
      * @access  public
      * @param   int millis
      */
-    function sleep($millis) {
+    public function sleep($millis) {
       usleep($millis * 1000);
     }
 
@@ -119,19 +119,19 @@
      * @throws  lang.IllegalThreadStateException
      * @throws  lang.SystemException
      */
-    function start() {
-      if ($this->isRunning()) {
-        throw(new IllegalThreadStateException('Already running'));
+    public function start() {
+      if (self::isRunning()) {
+        throw (new IllegalThreadStateException('Already running'));
       }
 
       $pid= pcntl_fork();
       if (-1 == $pid) {     // Cannot fork
-        throw(new SystemException('Cannot fork'));
+        throw (new SystemException('Cannot fork'));
       } elseif ($pid) {     // Parent
         $this->running= TRUE;
         $this->_id= $pid;
       } else {              // Child
-        $this->run();
+        self::run();
         exit();
       }
     }
@@ -143,7 +143,7 @@
      * @return  int status
      * @see     php://pcntl_waitpid
      */
-    function join() {
+    public function join() {
       pcntl_waitpid($this->_id, $status, WUNTRACED);
       $this->running= FALSE;
       $this->_id= -1;
@@ -156,6 +156,6 @@
      * @model   abstract
      * @access  public
      */
-    function run() { }
+    public function run() { }
   }
 ?>

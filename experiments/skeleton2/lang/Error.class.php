@@ -3,10 +3,9 @@
  *
  * $Id$
  */
- 
- 
+
   uses('lang.Throwable');
-  
+
   /**
    * An Error is a subclass of Throwable that indicates serious problems 
    * that a reasonable application should not try to catch. Most such 
