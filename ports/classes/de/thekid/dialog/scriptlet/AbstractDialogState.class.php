@@ -25,11 +25,12 @@
      * Returns index
      *
      * @access  protected
+     * @param   int i default 0 page number
      * @return  string[]
      */
-    function getIndex() {
+    function getIndexPage($i= 0) {
       try(); {
-        $index= unserialize(FileUtil::getContents(new File($this->dataLocation.'index')));
+        $index= unserialize(FileUtil::getContents(new File($this->dataLocation.'page_'.$i.'.idx')));
       } if (catch('IOException', $e)) {
         return throw($e);
       }
