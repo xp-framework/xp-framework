@@ -8,7 +8,7 @@
    * Transaction
    *
    * <code>
-   *   $s= &new SybaseConnection('gurke', '', '');
+   *   $s= &new Sybase(new DSN('sybase://user:password@server/databse'));
    *   $tran= &$s->begin(new Transaction('test'));
    *   try(); {
    *     // ... execute SQL statements
