@@ -21,7 +21,8 @@
   
   $methods= '';
   for ($i= 0, $m= $class->getMethods(), $s= sizeof($m); $i < $s; $i++) {
-    $methods.= '  - '.$m[$i]->getName()."()\n";
+    $class= &$m[$i]->getDeclaringClass();
+    $methods.= '  - '.$m[$i]->getName().'() [from '.$class->getName()."]\n";
   }
 
   Console::writef(
