@@ -158,7 +158,7 @@
      * @access  public
      * @param   string name
      * @param   mixed default default NULL  
-     * @return  int port or default if none is set
+     * @return  string url-decoded parameter value or default if none is set
      */
     function getParam($name, $default= NULL) {
       return isset($this->_info['params'][$name]) ? $this->_info['params'][$name] : $default;
