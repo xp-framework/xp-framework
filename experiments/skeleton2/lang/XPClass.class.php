@@ -22,8 +22,8 @@
    * @see lang.Object#getClass()
    */
   class XPClass extends Object {
-    public 
-      $_objref  = NULL,
+    private 
+      $ref      = NULL,
       $name     = '';
       
     /**
@@ -33,9 +33,8 @@
      * @param   &mixed ref
      */
     private function __construct(&$ref) {
-      $this->_objref= $ref;
+      $this->ref= $ref;
       $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
-      
     }
     
     /**
@@ -85,7 +84,7 @@
      * @return  string[] methodname
      */
     public function getMethods() {
-      return get_class_methods($this->_objref);
+      return get_class_methods($this->ref);
     }
     
     /**
@@ -102,7 +101,7 @@
     public function hasMethod($method) {
       return in_array(
         strtolower($method),
-        get_class_methods($this->_objref)
+        get_class_methods($this->ref)
       );
     }
     
@@ -113,9 +112,9 @@
      * @return  string[] member names
      */
     public function getFields() {
-      return (is_object($this->_objref) 
-        ? get_object_vars($this->_objref) 
-        : get_class_vars($this->_objref)
+      return (is_object($this->ref) 
+        ? get_object_vars($this->ref) 
+        : get_class_vars($this->ref)
       );
     }
     
@@ -126,7 +125,7 @@
      * @return  &lang.XPClass class object
      */
     public function getParentclass() {
-      return new XPClass(get_parent_class($this->_objref));
+      return new XPClass(get_parent_class($this->ref));
     }
     
     /**
