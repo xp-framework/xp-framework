@@ -168,5 +168,15 @@
     function destroy() {
       Gtk::main_quit();
     }
+    
+    /**
+     * Process events
+     *
+     * @access  public
+     * @see     http://gtk.php.net/manual/en/gtk.method.events_pending.php
+     */
+    function processEvents() {
+      while (Gtk::events_pending()) Gtk::main_iteration();
+    }
   }
 ?>
