@@ -129,14 +129,12 @@
         )."\r\n";
       }
       
-      var_dump($request);
-      
       $s= &new Socket($this->url->getHost(), $this->url->getPort(80));
       try(); {
         $s->connect();
         $s->write($request."\r\n".$body);
       } if (catch('Exception', $e)) {
-        return throw($e);
+        throw($e);
       }
       
       return $s;
