@@ -53,6 +53,24 @@
         $request->state->requiresAuthentication()
       ));
     }
+    
+    /**
+     * Process workflow. Calls the state's setup() and process() 
+     * methods in this order. May be overwritten by subclasses.
+     *
+     * Return FALSE from this method to indicate no further 
+     * processing is to be done
+     *
+     * @access  protected
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @return  bool
+     */
+    function processWorkflow(&$request, &$response) {
+      $request->state->setup($request, $response);
+      $request->state->process($request, $response);
+      return TRUE;
+    }
 
     /**
      * Receives an HTTP GET request from the <pre>process()</pre> method
@@ -65,8 +83,12 @@
      * @throws  lang.Exception to indicate failure
      */
     function doGet(&$request, &$response) {
-      $request->state->setup($request, $response);
-      $request->state->process($request, $response);
+      if (FALSE === $this->processWorkflow($request, $response)) {
+      
+        // The processWorkflow() method indicates no further processing
+        // is to be done. Pass result "up".
+        return FALSE;
+      }
       return parent::doGet($request, $response);
     }
   }
