@@ -4,6 +4,8 @@
  * $Id$ 
  */
  
+  uses('util.Date');
+ 
   /**
    * Webdav lock object
    *
@@ -18,7 +20,7 @@
       $locktoken=    NULL,
       $uri=          NULL,
       $timeout=      NULL,
-      $time=         NULL,
+      $date=         NULL,
       $depth=        'infinity';
    
    
@@ -30,6 +32,7 @@
      */   
     function __construct($uri) {
       $this->uri= $uri;
+      $this->setCreationDate(new Date(time()));
     }
     
     /**
@@ -176,20 +179,20 @@
      * Set the time of creation
      *
      * @access  public 
-     * @param   int timestamp
+     * @param   &util.Date
      */
-    function setCreationTime($time) {
-      $this->time= $time;
+    function setCreationDate(&$date) {
+      $this->date= &$date;
     }
     
     /**
      * Get the time
      *
      * @access  public
-     * @return  int timestamp
+     * @return  &util.Date
      */
-    function getCreationTime() {
-      return $this->time == NULL ? time() : $this->time;
+    function &getCreationDate() {
+      return $this->date;
     }
   }
 ?>
