@@ -10,6 +10,7 @@
     'io.File',
     'de.thekid.dialog.Album',
     'de.thekid.dialog.Update',
+    'de.thekid.dialog.SingleShot',
     'util.PropertyManager'
   );
 
