@@ -1,0 +1,95 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  uses('rdbms.ResultSet');
+
+  /**
+   * Result set
+   *
+   * @ext      mysql
+   * @purpose  Resultset wrapper
+   */
+  class MySQLResultSet extends ResultSet {
+  
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   resource handle
+     */
+    function __construct($result) {
+      $fields= array();
+      if (is_resource($result)) {
+        for ($i= 0, $num= mysql_num_fields($result); $i < $num; $i++) {
+          $field= mysql_fetch_field($result, $i);
+          $fields[$field->name]= $field->type;
+        }
+      }
+      parent::__construct($result, $fields);
+    }
+
+    /**
+     * Seek
+     *
+     * @access  public
+     * @param   int offset
+     * @return  bool success
+     * @throws  rdbms.SQLException
+     */
+    function seek($offset) { 
+      if (!mysql_data_seek($this->handle, $offset)) {
+        return throw(new SQLException('Cannot seek to offset '.$offset));
+      }
+      return TRUE;
+    }
+    
+    /**
+     * Iterator function. Returns a rowset if called without parameter,
+     * the fields contents if a field is specified or FALSE to indicate
+     * no more rows are available.
+     *
+     * @model   abstract
+     * @access  public
+     * @param   string field default NULL
+     * @return  mixed
+     */
+    function next($field= NULL) {
+      if (FALSE === ($row= mysql_fetch_assoc($this->handle))) {
+        return FALSE;
+      }
+      
+      foreach (array_keys($row) as $key) {
+        switch ($this->fields[$key]) {
+          case 'datetime':
+            $row[$key]= &Date::fromString($row[$key]);
+            break;
+            
+          case 'int':
+          case 'bit':
+            settype($row[$key], 'integer'); 
+            break;
+            
+          case 'real':
+            settype($row[$key], 'double'); 
+            break;
+        }
+      }
+      
+      if ($field) return $row[$field]; else return $row;
+    }
+    
+    /**
+     * Close resultset and free result memory
+     *
+     * @access  public
+     * @return  bool success
+     */
+    function close() { 
+      return mysql_free_result($this->handle);
+    }
+
+  }
+?>
