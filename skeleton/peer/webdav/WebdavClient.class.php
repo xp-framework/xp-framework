@@ -10,9 +10,39 @@
   );
 
   /**
-   * Webdavclient
+   * WebDAV Client.
+   * 
+   * WebDAV stands for "Web-based Distributed Authoring and
+   * Versioning". It is a set of extensions to the HTTP protocol
+   * which allows users to collaboratively edit and manage files
+   * on remote web servers.
    *
-   * @purpose  Provide a client to access an webdav server
+   * <code>
+   *   require('lang.base.php');
+   *   xp::sapi('cli');
+   *   uses(
+   *     'peer.webdav.WebdavClient',
+   *     'peer.URL'
+   *   );
+   *   
+   *   $client= &new WebdavClient(new URL('http://kiesel:password@xp-framework.net/xp/doc'));
+   *   
+   *   try(); {
+   *     $response= &$client->get('class.xslt');
+   *     while ($r= $response->readData()) {
+   *       Console::write($r);
+   *     }
+   *   } if (catch ('Exception', $e)) {
+   *     $e->printStackTrace();
+   *     exit();
+   *   }
+   * </code>
+   *
+   * @see       http://www.webdav.org
+   * @see       rfc://2518
+   * @see       rfc://3253
+   * @see       rfc://3648
+   * @purpose   Provide a client to access an webdav server
    */
   class WebdavClient extends Object {
     var 
@@ -20,18 +50,19 @@
       $path= '';
   
     /**
-     * Constructor
+     * Constructor.
      *
      * @access  public
      * @param   string url or peer.Url
      */
     function __construct($url) {
-      if (!is_a($url, 'URL')) $this->url= &new URL($url);
       parent::__construct();
+      if (!is_a($url, 'URL')) $url= &new URL($url);
+      $this->url= &$url;
     }
     
     /**
-     * Get e Connection
+     * Get a Connection
      *
      * @access  public
      * @param   string name
@@ -61,12 +92,12 @@
      */
     function &read($name= NULL) {    
       try(); {
-        $c= &$this->getConnection($name === NULL ? NULL : $name);
+        $c= &$this->getConnection($name);
         $response= &$c->propfind();
       } if (catch('Exception', $e)) {
         return throw($e);
       }
-    return $response;
+      return $response;
     }
     
     /**
@@ -82,15 +113,15 @@
       if (!$file->isOpen()) $file->open(FILE_MODE_READ);
       
       try(); {
-        $c= &$this->getConnection($name === NULL ? NULL : $name);
+        $c= &$this->getConnection($name);
         $response= &$c->put(
           $file->read($file->size()),
-          new header('Content-Type', $file->getExtension())
+          new Header('Content-Type', $file->getExtension())
         );
       } if (catch('Exception', $e)) {
         return throw($e);
       }
-    return $response;
+      return $response;
     }
     
     /**
@@ -102,12 +133,12 @@
      */
     function &get($name= NULL) {
       try(); {
-        $c= &$this->getConnection($name === NULL ? NULL : $name);
+        $c= &$this->getConnection($name);
         $response= &$c->get();
       } if (catch('Exception', $e)) {
         return throw($e);
       }
-    return $response;
+      return $response;
     }
     
     /**
@@ -121,12 +152,12 @@
     function &proppatch($properties, $name= NULL) {
       
       try(); {
-        $c= &$this->getConnection($name === NULL ? NULL : $name);
+        $c= &$this->getConnection($name);
         $response= &$c->proppatch($properties);
       } if (catch('Exception', $e)) {
         return throw($e);
       }
-    return $response;    
+      return $response;    
     }
 
   
