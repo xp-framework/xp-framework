@@ -21,7 +21,7 @@
    */
   class URL extends Object {
     protected
-      $_info;
+      $_info = array();
       
     /**
      * Constructor
@@ -31,7 +31,6 @@
      */
     public function __construct($str) {
       self::setURL($str);
-      
     }
 
     /**
