@@ -26,7 +26,8 @@
     var
       $outputFolder     = NULL,
       $cat              = NULL,
-      $thumbDimensions  = array(150, 113);
+      $thumbDimensions  = array(150, 113),
+      $fullDimensions   = array(640, 480);
 
     /**
      * Set outputFolder
@@ -46,6 +47,33 @@
      */
     function &getOutputFolder() {
       return $this->outputFolder;
+    }
+    
+    /**
+     * Resample a given image to given dimensions
+     *
+     * @access  protected
+     * @param   &img.Image origin
+     * @param   bool horizontal
+     * @param   int[2] dimensions (0 = X, 1 = Y)
+     * @return  &img.Image
+     */
+    function resampleTo(&$origin, $horizontal, $dimensions) {
+      $aspect= $origin->getWidth() / $origin->getHeight();
+      if ($aspect > 1.0 && !$horizontal) {
+        $this->cat && $this->cat->warn('Image is vertically oriented but its dimensions suggest otherwise');
+        $d= array($dimensions[0], $dimensions[1]);
+      } else {
+        $d= ($horizontal 
+          ? array($dimensions[0], $dimensions[1])
+          : array($dimensions[1], $dimensions[0])
+        );
+      }
+      
+      $this->cat && $this->cat->info('Resampling image to', implode('x', $d));
+      $resized= &Image::create($d[0], $d[1], IMG_TRUECOLOR);
+      $resized->resampleFrom($origin);
+      return $resized;
     }
     
     /**
@@ -80,21 +108,7 @@
      * @return  &img.Image
      */
     function fullImageFor(&$origin, &$exifData) {
-      $dimensions= $exifData->isHorizontal() ? array(640, 480) : array(480, 640);
-      
-      $aspect= $origin->getWidth() / $origin->getHeight();
-      if ($aspect > 1.0 && $exifData->isVertical()) {
-        $this->cat && $this->cat->warn('Image is vertically oriented but its dimensions suggest otherwise');
-        $dimensions= array(640, 480);
-      }
-      
-      $this->cat && $this->cat->debug('Resampling full-view to', implode('x', $dimensions));
-
-      with ($full= &Image::create($dimensions[0], $dimensions[1], IMG_TRUECOLOR)); {
-        $full->resampleFrom($origin);
-      }
-
-      return $full;
+      return $this->resampleTo($origin, $exifData->isHorizontal(), $this->fullDimensions);
     }
     
     /**
