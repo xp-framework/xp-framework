@@ -308,12 +308,13 @@
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->toString());
         return FALSE;
-      } 
-
-      $response->setStatus(HTTP_OK);
+      }
+   
+      $response->setHeader('ETag', $object->properties['getetag']->value);
       $response->setHeader('Content-type',   $object->contentType);
       $response->setHeader('Content-length', $object->contentLength);
-      $response->setHeader('Last-modified',  $object->lastModified->toString('D, j M Y H:m:s \G\M\T'));
+      $response->setHeader('Last-modified',  $object->properties['getlastmodified']->toString());      
+      $response->setStatus(HTTP_OK);
     }
 
     /**
@@ -345,7 +346,7 @@
         $response->setContent($e->toString());
         return FALSE;
       }
-      
+ 
       $response->setStatus($created ? HTTP_CREATED : HTTP_NO_CONTENT);
     }
 
@@ -744,10 +745,10 @@
         // Can not get username/password from Authorization header
         if (!$auth) return 'doAuthorizationRequest';
         $request->setUser(new WebdavUser($auth->getUser(), $auth->getPassword()));
-        
+
         // Check user
         if (!$this->handlingAuth->authorize($request->getUser())) return 'doAuthorizationRequest';
-        
+
         // Check for permissions
         if (!$this->handlingAuth->isAuthorized($request)) {
           return 'doAuthorizationDeny';
