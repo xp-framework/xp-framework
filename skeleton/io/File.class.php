@@ -5,12 +5,12 @@
  */
 
   // Mode constants for open() method
-  define('FILE_MODE_READ',      'r');          // Read
-  define('FILE_MODE_READWRITE', 'r+');         // Read/Write
-  define('FILE_MODE_WRITE',     'w');          // Write
-  define('FILE_MODE_REWRITE',   'w+');         // Read/Write, truncate on open
-  define('FILE_MODE_APPEND',    'a');          // Append (Read-only)
-  define('FILE_MODE_READAPPEND','a+');         // Append (Read/Write)
+  define('FILE_MODE_READ',      'rb');          // Read
+  define('FILE_MODE_READWRITE', 'rb+');         // Read/Write
+  define('FILE_MODE_WRITE',     'wb');          // Write
+  define('FILE_MODE_REWRITE',   'wb+');         // Read/Write, truncate on open
+  define('FILE_MODE_APPEND',    'ab');          // Append (Read-only)
+  define('FILE_MODE_READAPPEND','ab+');         // Append (Read/Write)
   
   uses(
     'io.Stream',
