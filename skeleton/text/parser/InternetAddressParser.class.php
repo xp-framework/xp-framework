@@ -42,7 +42,7 @@
      * Parse string into its InternetAddresses.
      *
      * @access  public
-     * @return  &InternetAddress
+     * @return  &InternetAddress[]
      * @throws  lang.FormatException in case the string is malformed
      */
     function &parse() {
