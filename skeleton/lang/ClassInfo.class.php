@@ -103,6 +103,7 @@
           $c->return->type= 'void';
           $c->params= array();
           $c->see= array();
+          $c->throws= array();
           
           // In der nächsten Zeile kommt die Funktion. Sonst ist es Klassendoku
           // "    function unLock() {"
@@ -142,6 +143,11 @@
                   break;
                 case 'see':
                   $c->see[]= $doc;
+                  break;
+                case 'throws':
+                  $except= new StdClass;
+                  list($except->name, $except->comment)= preg_split('/,? /', $doc, 2);
+                  $c->throws[]= $except;
                   break;
                 default:
                   $c->$indicator= $doc;
