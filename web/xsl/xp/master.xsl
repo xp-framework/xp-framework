@@ -93,7 +93,7 @@
     <xsl:param name="text"/>
     
     <func:result>
-      <xsl:if test="condition">
+      <xsl:if test="$condition">
         <xsl:value-of select="$text"/>
       </xsl:if>
     </func:result>
