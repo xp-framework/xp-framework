@@ -189,33 +189,28 @@ __;
         while (T_STRING !== $tok[0]) $tok= $t->getNextToken();
 
         // Use @access API-Doc if available, guess otherwise
-        switch(@$apidoc['access']) {
+        switch (@$apidoc['access']) {
           case 'public':
           case 'protected':
           case 'private':
             $out[]= $apidoc['access'];
+            break;
+            
+          case 'static':        // Incorrect API doc, it should be @model static
+            $out[]= 'public static';
             break;
 
           default:
             $out[]= ('_' == $tok[1]{0} && '_' != $tok[1]{1}) ? 'protected' : 'public';
         }
         
-        // Check abstract and final models
+        // Check static, abstract and final models
+        if (@$apidoc['model'] == 'static') $out[]= ' static';
         if (@$apidoc['model'] == 'abstract') $out[]= ' abstract';
         if (@$apidoc['model'] == 'final') $out[]= ' final';
         
-        // Check for @model API-doc, guess otherwise
-        if (
-          (@$apidoc['model'] == 'static') ||
-          ('getInstance' == $tok[1]) ||
-          ('fromString' == $tok[1]) ||
-          ('fromFile' == $tok[1]) ||
-          ('factory' == $tok[1]) ||
-          ('getBy' == substr($tok[1], 0, 5))
-        ) $out[]= ' static';
-        $out[]= ' function ';
-        
         // Skip until method body
+        $out[]= ' function ';
         while ('{' !== $tok[1]) {
           $out[]= $tok[1];
           $tok= $t->getNextToken();
