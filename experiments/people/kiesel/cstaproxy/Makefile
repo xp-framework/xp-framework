@@ -4,7 +4,7 @@
 # $Id$
 
 CFLAGS=-ggdb -O -Wall -I. -I/usr/local/include -L/usr/local/lib
-OBJECTS="csta_error.o csta_network.o csta_connection.o auth_sybmetha.o sybase_api/sybase_api.o sybase_api/sybase_mm.o"
+OBJECTS=csta_error.o csta_network.o csta_connection.o auth_sybmetha.o sybase_api/sybase_api.o sybase_api/sybase_mm.o sybase_api/sybase_hash.o
 
 default: cstaproxy
 
