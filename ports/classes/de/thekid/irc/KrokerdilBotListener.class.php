@@ -27,7 +27,8 @@
       $karma        = array(),
       $recognition  = array(),
       $dictc        = NULL,
-      $quote        = NULL;
+      $quote        = NULL,
+      $operator     = FALSE;
       
     /**
      * Constructor
@@ -159,6 +160,8 @@
         $this->karma[$nick]= 0; // Neutral
       }
       
+      if (0 == $delta) return;  // Short-cuircit this
+      
       if ($reason && isset($last[$nick][$reason]) && (time() - $last[$nick][$reason] <= 2)) {
         $this->cat && $this->cat->warnf(
           'Karma flood from %s (last karma for %s set at %s)', 
@@ -182,6 +185,35 @@
       $last[$nick][$reason]= time();
     }
     
+    /**
+     * Callback for mode changes
+     *
+     * @access  public
+     * @param   &peer.irc.IRCConnection connection
+     * @param   string nick who initiated the mode change
+     * @param   string target what the mode setting is for (e.g. +k #channel, +i user)
+     * @param   string mode the mode including a + or - as its first letter
+     * @param   string params additional parameters
+     */
+    function onModeChanges(&$connection, $nick, $target, $mode, $params) { 
+      if (strcasecmp($params, $connection->user->getNick()) != 0) return;
+
+      $delta= ('-' == $mode[0] ? -10 : 10);
+      $this->setKarma($nick, $delta, '@@mode.'.$mode);
+      $this->sendRandomMessage(
+        $connection, 
+        $target, 
+        $delta < 0 ? 'karma.dislike' : 'karma.like', 
+        $nick,
+        $params
+      );
+      
+      // Check to see if we are channel op
+      if (strstr($mode, 'o')) {
+        $this->operator = ('+' == $mode[0]);
+        $this->cat && $this->cat->debug('OP', $this->operator);
+      }
+    }
 
     /**
      * Callback for nick changes
@@ -234,6 +266,18 @@
                   $value
                 );
               }
+            }
+            break;
+         
+          case '@kick':
+            list($channel, $victim, $password)= explode(' ', $params);
+            if ($this->doPrivileged($connection, $nick, $password)) {
+              $connection->writeln(
+                'KICK %s %s :%s', 
+                $channel, 
+                $victim, 
+                sprintf($this->lists['karma.dislike'][rand(0, sizeof($this->lists['karma.dislike'])- 1)], $victim)
+              );
             }
             break;
           
@@ -450,13 +494,28 @@
         // by four because this message is directed at me.
         foreach ($this->recognition as $pattern => $delta) {
           if (!preg_match($pattern, $message)) continue;
-          $this->setKarma($nick, $delta * 4, $pattern);
+          $this->setKarma($nick, ($delta + 1) * 4, $pattern);
         }
         return;
       }
       
-      // Produce random noise
+      // Random actions
       switch (rand(0, 30)) {
+        case 2:
+          if (!$this->operator) break;
+
+          // Kick a random person with a very bad karma
+          $victim= array_rand($this->karma);
+          if ($this->karma[$victim] < -50) {
+            $connection->writeln(
+              'KICK %s %s :%s', 
+              $target, 
+              $victim, 
+              sprintf($this->lists['karma.dislike'][rand(0, sizeof($this->lists['karma.dislike'])- 1)], $victim)
+            );
+          }
+          break;
+          
         case 15: 
           $this->sendRandomMessage($connection, $target, 'noise', $nick, $message);
           break;
@@ -509,6 +568,7 @@
     function onInvite(&$connection, $nick, $who, $channel) {
       if ($this->config->readBool('invitations', 'follow', FALSE)) {
         $connection->join($channel);
+        $this->setKarma($nick, 5, '@@invite');
       }
     }
   
@@ -529,6 +589,8 @@
         $connection->sendAction($channel, '%s kickt arme unschuldige Bots, und das wegen so etwas lumpigem wie %s', $nick, $reason);
 
         $this->setKarma($nick, -10, '@@kick');
+      } else {
+        $this->setKarma($who, -5, '@@kicked');
       }
     }
   
