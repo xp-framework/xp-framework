@@ -27,7 +27,7 @@
       $lang     = '',
       $country  = '',
       $variant  = '';
-      
+
     /**
      * Construct
      *
@@ -76,6 +76,36 @@
      */
     function setDefault(&$locale) {
       setlocale(LC_ALL, $locale->toString());
+    }
+
+    /**
+     * Get Language
+     *
+     * @access  public
+     * @return  string
+     */
+    function getLanguage() {
+      return $this->lang;
+    }
+
+    /**
+     * Get Country
+     *
+     * @access  public
+     * @return  string
+     */
+    function getCountry() {
+      return $this->country;
+    }
+
+    /**
+     * Get Variant
+     *
+     * @access  public
+     * @return  string
+     */
+    function getVariant() {
+      return $this->variant;
     }
     
     /**
