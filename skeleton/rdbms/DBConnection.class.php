@@ -33,6 +33,12 @@
     function __construct(&$dsn) { 
       $this->dsn= &$dsn;
       $this->flags= $dsn->getFlags();
+      
+      if (FALSE !== ($cat= $this->dsn->getValue ('log'))) {
+        $l= &Logger::getInstance();
+        $this->setTrace ($l->getCategory ($cat));
+      }
+      
       parent::__construct();
     }
     
