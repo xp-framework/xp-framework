@@ -48,11 +48,13 @@
     /**
      * Die Adressliste für die Darstellung als Header zurückgeben.
      * Beispiel
+     * <pre>
      * ============================================
-     * To: Timm Friebe <friebe@schlund.de>,
-     *          Alex Kiesel <kiesel@schlund.de>,
-     *          Jens Strobel <strobel@schlund.de>
+     * To: Timm Friebe <friebe@php3.de>,
+     *          Alex Kiesel <alex@php3.de>,
+     *          XP Mailingslist <xp@php3.de>
      * ============================================
+     * </pre>
      * => Weitere Zeilen fangen mit \n\t an
      *
      * @access  public
