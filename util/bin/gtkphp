@@ -1,19 +1,13 @@
 #!/bin/sh
 
-##
-# This file is part of the XP framework
-#
-# gtkphp app.gtk.php
-# 
-# $Id$
-
 EXE='php'
-CNF='-c /usr/local/etc/php.gtk'
 IFS=
 
 echo "<?php
+  var_dump(get_loaded_extensions());
   require('lang.base.php');
   uses('util.cmd.ParamString');
+  
   require('$1');
   
   \$p= &new ParamString(explode('', '$*'));
@@ -24,4 +18,4 @@ echo "<?php
     \$app->run();
     \$app->done();
   }
-?>" | ${EXE} -q -C ${CONF}
+?>" | ${EXE} -q -C -c /usr/local/etc/php.gtk
