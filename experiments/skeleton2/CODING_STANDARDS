@@ -44,12 +44,12 @@ The accessor is a public static function getInstance().
 
 Example:
   namespace rdbms {
-    class ConnectionManager extends lang::Object {
+    class ConnectionManager extends Object {
       private static
         $instance   = NULL;
         
       public static function getInstance() {
-        if (!isset(self::$instance)) self::$instance= new rdbms::ConnectionManager();
+        if (!isset(self::$instance)) self::$instance= new ConnectionManager();
         return self::$instance;
       }
     }
@@ -63,12 +63,12 @@ shall not be public (either private or protected).
 a. The form of a try/catch block
    try {
      // [...Critical code here...]
-   } catch (lang::FormatException $e) {
+   } catch (FormatException $e) {
      // [..Exception handling code here...]
    }
    
 b. Throw  
-   throw new Exception([...Arguments...]);
+   throw new XPException([...Arguments...]);
 
 A discussion on what to catch when can be found at:
 - http://www.javaworld.com/javaworld/javatips/jw-javatip134.html?  
@@ -77,19 +77,6 @@ A discussion on what to catch when can be found at:
 Of course, not all arguments there (especially the compile-time 
 checks) apply to PHP; it's interesting nevertheless.
   
-* Namespaces
-------------
-Namespaces correspond to the directory structure. E.g., a class residing
-in the subdirectory "sys" of the directory "io" would have the namespace
-"io:sys".
-
-* Class and interface names
----------------------------
-Classes using type hints or instanciating classes from within themselves
-will always use fully qualified class names, such as "io:sys:StdStream"
-or "util:ParamString". This rule also applies for classes within the 
-same namespace.
-
 * File names
 ------------
 File names for classes and interfaces are equal and must conform to 
@@ -159,7 +146,7 @@ For discussion on this matter, see:
 - http://www.google.com/search?q=Interfaces+abstract+classes
 
 Abstract classes are to be notated as:
-- abstract class Transformer extends lang::Object { 
+- abstract class Transformer extends Object { 
     // [...]
   }
 
