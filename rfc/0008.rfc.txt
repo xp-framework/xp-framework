@@ -60,7 +60,6 @@ d) Removed cruft
 * Magic quotes would completely disappear
 * register_globals would be nuked
 * Compat mode with Zend Engine 1
-* The # sign is no longer allowed for comments
 
 e) Changes in errorhandling
 * NULL->method() would result in a NullPointer instead of Fatal errors
@@ -177,13 +176,13 @@ Details
   
 * Annotations support:
   Annotations (metadata) may be embedded within the sourcecode using
-  the # sign to prefix them (see also: Removing # as legal comment).
+  the @ sign to prefix them.
   <?php
     class SoapClient {
-      #debug public function setTrace(LogCategory $log) {
+      @debug('level=1') public function setTrace(LogCategory $log) {
       }
 
-      #remote public function invoke($params) throws InvokationException {
+      @remote public function invoke($params) throws InvokationException {
       }
     }
   ?>
@@ -329,10 +328,6 @@ Details
   The compatibility mode is kept for backwards compatibility und
   would be removed. It's not like this new engine would be compatible
   with PHP4 anyway.
-  
-* The # sign is no longer allowed for comments
-  The # sign is used for sourcecode annotations and therefore must
-  not be allowed for one-line comments (sorry, bash and perl dudes)
   
 * NULL->method() would result in a NullPointer instead of Fatal errors
   Calling a member function of a non-object can be safely caught and would
