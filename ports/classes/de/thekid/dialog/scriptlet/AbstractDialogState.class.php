@@ -64,6 +64,7 @@
 
       return $entry;
     }
+
     /**
      * Returns entry for a specified name
      *
