@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document title="XP::Development::Tips::Performance">
+  <main>
+    <content>
+      <title>Performance</title>
+      <editor>$Id$</editor>
+      
+      <para>
+        <caption>What can be done to improve perfomance?</caption>
+        <text>
+          This document suggests a number of tweaks in common situations.
+        </text>
+      </para>
+      <para>
+        <caption>Traversing numeric arrays</caption>
+        <text>
+          Although the <tt>foreach</tt> keyword exists and is a
+          short and sexy form of traversing lists, there is also
+          a downside: the elements are copied, thus resulting in
+          an unneccessary memory overhead.
+          <br/><br/>
+          This is the suggested code template:
+          <code><![CDATA[  for ($i= 0, $s= sizeof($list); $i < $s; $i++) {
+    // ...
+  }
+]]></code>
+          The <tt>sizeof</tt> calculation is moved to the initialization
+          part of the <tt>for</tt> statement to avoid recalculation on 
+          every run. Of course, if your array changes its size during 
+          the loop, you can't do this.
+        </text>
+      </para>
+      <para>
+        <caption>Regular expressions vs. string functions</caption>
+        <text>
+          Rule: Always prefer string functions over regular expressions.
+          <code><![CDATA[  // Don't do this:
+  if (preg_match('/^www/', $str)) { ... }
+  
+  // Instead, use the following:
+  if ('www' == substr($str, 0, 3)) { ... }
+]]></code>
+          Only use regular expressions if there is no other elegant way.
+          <br/><br/>
+          You might also want to have a look at <tt>sscanf</tt> and its
+          possibility of using <b>%[...]</b> and <b>%[^...]</b>.
+        </text>
+      </para>
+      <para>
+        <caption>Finding elements</caption>
+        <text>
+          If you're considering to have some sort of hashtable, consider
+          putting what you're searching for into the key:
+          
+          <code><![CDATA[  // Consider replacing:
+  $a= array(
+    array('domainname' => 'thekid.de', 'owner' => 'Timm Friebe', ...), 
+    array('domainname' => 'binford6100.info', 'owner' => 'Binford Inc.', ...)
+  );
+  
+  // ...with...
+  $a= array(
+    'thekid.de'         => array('owner' => 'Timm Friebe', ...), 
+    'binford6100.info'  => array('owner' => 'Binford Inc.', ...)
+  );]]></code>
+          Hash key lookups are always faster than traversing and comparing.
+        </text>
+      </para>
+    </content>
+  </main>
+</document>
