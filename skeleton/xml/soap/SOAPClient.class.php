@@ -14,28 +14,19 @@
    * können transparente Wrapper geschaffen werden, die self::method setzen
    * und evtl. auch bereits den richtigen Datentypen setzen.
    *
-   * TODO: Diese Wrapper-Klassen könnten über WSDL generiert werden
-   *
-   * Anwendungsbeispiel:
-   * <pre>
-   *   $s= new SOAPClient(
-   *     new SOAPHTTPTransport('<URL>'),
-   *     '<URN>',
-   *     '<METHOD>'
-   *   );
+   * Example:
+   * <code>
+   *   $s= &new SOAPClient(new SOAPHTTPTransport('<URL>'), '<URN>');
    *   try(); {
-   *     $return= $s->call(
-   *       <PARAMETERS>
-   *     );
-   *   }
-   *   if (catch('Exception', $e)) {
+   *     $return= $s->invoke('<METHOD>', <PARAMETERS>);
+   *   } if (catch('Exception', $e)) {
    *     $e->printStackTrace();
-   *     exit;
+   *     exit(-1);
    *   }
    *   var_dump($return);
-   * </pre>
+   * </code>
    * 
-   * @example doc://skeleton/soap/google.php
+   * @purpose  Generic SOAP client base class
    */
   class SOAPClient extends Object {
     var 
@@ -47,11 +38,11 @@
      * Constructor
      *
      * @access  public
-     * @param   xml.soap.transport.SOAPTransport transport Transport-Objekt
+     * @param   &xml.soap.transport.SOAPTransport transport a SOAP transport
      * @param   string action Action
-     * @param   string method Methode
+     * @param   string method default NULL
      */
-    function __construct(&$transport, $action, $method) {
+    function __construct(&$transport, $action, $method= NULL) {
       $this->transport= &$transport;
       $this->action= $action;
       $this->method= $method;
