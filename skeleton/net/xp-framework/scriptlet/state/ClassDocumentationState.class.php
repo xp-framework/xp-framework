@@ -9,9 +9,9 @@
     'net.xp-framework.util.markup.FormresultHelper',
     'io.FileUtil',
     'io.File',
-    'lang.apidoc.FileComment',
-    'lang.apidoc.ClassComment',
-    'lang.apidoc.FunctionComment'
+    'text.apidoc.FileComment',
+    'text.apidoc.ClassComment',
+    'text.apidoc.FunctionComment'
   );
 
   /**
