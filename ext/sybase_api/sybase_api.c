@@ -205,6 +205,62 @@ SYBASE_API int sybase_results(sybase_result **result)
     return ((*result)->code == CS_SUCCEED) ? SA_SUCCESS : SA_FAILURE;
 }
 
+static inline int _sybase_lengthof(CS_DATAFMT f)
+{
+    int len;
+
+    len= f.maxlength;
+    switch (f.datatype) {
+        case CS_BINARY_TYPE:
+        case CS_VARBINARY_TYPE:
+            len*= 2;
+            len++;
+            break;
+
+        case CS_BIT_TYPE:
+        case CS_TINYINT_TYPE:
+            len= 4;
+            break;
+
+        case CS_SMALLINT_TYPE:
+            len= 7;
+            break;
+
+        case CS_INT_TYPE:
+            len= 12;
+            break;
+
+        case CS_REAL_TYPE:
+        case CS_FLOAT_TYPE:
+            len= 24;
+            break;
+
+        case CS_MONEY_TYPE:
+        case CS_MONEY4_TYPE:
+            len= 24;
+            break;
+
+        case CS_DATETIME_TYPE:
+        case CS_DATETIME4_TYPE:
+            len= 30;
+            break;
+
+        case CS_NUMERIC_TYPE:
+        case CS_DECIMAL_TYPE:
+            len= f.precision + 3;
+            break;
+
+        case CS_CHAR_TYPE:
+        case CS_VARCHAR_TYPE:
+        case CS_TEXT_TYPE:
+        case CS_IMAGE_TYPE:
+        default:
+            len++;
+            break;
+    }
+    return len;
+}
+
 /**
  * Initialize a resultset
  * 
@@ -214,8 +270,8 @@ SYBASE_API int sybase_results(sybase_result **result)
  */
 SYBASE_API int sybase_init_resultset(sybase_result *result, sybase_resultset **resultset)
 {
-    int fields, i;
-
+    int fields, i, len;
+    
     if (ct_res_info(result->cmd, CS_NUMDATA, &fields, CS_UNUSED, NULL) != CS_SUCCEED) {
         return SA_FAILURE;
     }
@@ -228,10 +284,39 @@ SYBASE_API int sybase_init_resultset(sybase_result *result, sybase_resultset **r
     if (!(*resultset)->dataformat) {
        return SA_FAILURE | SA_EALLOC; 
     }
+    (*resultset)->columns = (sybase_column *) smalloc(sizeof(sybase_column) * fields);
+    if (!(*resultset)->columns) {
+       return SA_FAILURE | SA_EALLOC; 
+    }
+    (*resultset)->types = (CS_INT *) smalloc(sizeof(CS_INT) * fields);
+    if (!(*resultset)->types) {
+       return SA_FAILURE | SA_EALLOC; 
+    }
     
     (*resultset)->fields= fields;
     for (i= 0; i < fields; i++) {
-        ct_describe(result->cmd, i+1, &(*resultset)->dataformat[i]);
+        ct_describe(result->cmd, i + 1, &(*resultset)->dataformat[i]);
+        
+        /* Calculate length needed for this value to be represented as
+         * a null-terminated string */
+        len= _sybase_lengthof((*resultset)->dataformat[i]);
+        
+        /* Change CS_DATAFMT setting datatype to CS_CHAR_TYPE and format 
+         * to CS_FMT_NULLTERM. Store the original type in types */
+        (*resultset)->types[i]= (*resultset)->dataformat[i].datatype;
+        (*resultset)->dataformat[i].datatype= CS_CHAR_TYPE;
+        (*resultset)->dataformat[i].format = CS_FMT_NULLTERM;
+        (*resultset)->dataformat[i].maxlength = len;
+        
+        (*resultset)->columns[i].value= (char *) smalloc(len);
+        ct_bind(
+            result->cmd, 
+            i + 1, 
+            &(*resultset)->dataformat[i], 
+            (*resultset)->columns[i].value, 
+            &(*resultset)->columns[i].valuelen, 
+            &(*resultset)->columns[i].indicator
+        );
     }
     return SA_SUCCESS;
 }
@@ -244,10 +329,51 @@ SYBASE_API int sybase_init_resultset(sybase_result *result, sybase_resultset **r
  */
 SYBASE_API int sybase_free_resultset(sybase_resultset *resultset)
 {
+    int i;
+
     if (!resultset) {
         return SA_FAILURE | SA_EALREADYFREE;
     }
+    for (i= 0; i < resultset->fields; i++) {
+        sfree(resultset->columns[i].value);
+    }
+    sfree(resultset->dataformat);
+    sfree(resultset->columns);
+    sfree(resultset->types);
     sfree(resultset);
+    return SA_SUCCESS;
+}
+
+/**
+ * Fetch one row
+ * 
+ * @param   sybase_resultset *result
+ * @param   sybase_resultset **resultset
+ * @return  int
+ */
+SYBASE_API int sybase_fetch(sybase_result *result, sybase_resultset **resultset)
+{
+    int code, i;
+    
+    code= ct_fetch(result->cmd, CS_UNUSED, CS_UNUSED, CS_UNUSED, NULL);
+    #if 0
+    fprintf(stderr, "sybase_fetch(): retcode= %d [%s]\n", code, sybase_nameofcode(code));
+    #endif
+    switch (code) {
+        case CS_SUCCEED:
+            break;
+        case CS_END_DATA:
+            return SA_FAILURE;
+        default:
+            return SA_FAILURE | SA_ECTLIB;
+    }
+
+    /* Set fields to NULL if a NULL value is indicated */
+    for (i= 0; i < (*resultset)->fields; i++) {
+        if ((*resultset)->columns[i].indicator == -1) {
+            (*resultset)->columns[i].value= NULL;
+        }
+    }
     return SA_SUCCESS;
 }
 
@@ -358,10 +484,14 @@ SYBASE_API char *sybase_nameofcode(CS_INT code)
     switch ((int)code) {
         case CS_SUCCEED: 
             return "CS_SUCCEED";
-        case CS_FAIL: 
-            return "CS_FAIL";
         case CS_END_RESULTS: 
             return "CS_END_RESULTS";
+        case CS_END_DATA: 
+            return "CS_END_DATA";
+        case CS_FAIL: 
+            return "CS_FAIL";
+        case CS_ROW_FAIL:
+            return "CS_ROW_FAIL";
         case CS_CANCELED: 
             return "CS_CANCELED";
         default:
