@@ -151,7 +151,7 @@
           ',<font color="([^"]+)">,', 
           ',</font>,',
           ',\$[a-z0-9_]+,i',
-          ',(uses|implements|is|try|catch|throw|finally),'
+          ',\b(uses|implements|is|try|catch|throw|finally)\b,'
         ),
         array(
           '&#160;', 
