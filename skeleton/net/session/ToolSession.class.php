@@ -319,7 +319,7 @@
       if(!empty($return)) return $return;
     }
     
-    function var_getGlobal($key) {
+    function var_getGlobal($key, $unserialize= TRUE) {
         $command= sprintf ("var_read %s tmp %s",
             $this->urlencode ($this->ID),
             $this->urlencode ($key)
@@ -330,7 +330,8 @@
           return NULL;
         }
         // LOG::info($this->getName().'::'.$command.'::'.var_export($return, 1));
-        $return= unserialize(urldecode(trim($return)));
+        $return= urldecode(trim($return));
+        if ($unserialize) $return= unserialize($return);
 
         $this->logline_text("var_get $command", $return);
         if(!empty($return)) return $return;
