@@ -4,7 +4,7 @@ RCS file: /repository/ZendEngine2/zend.h,v
 retrieving revision 1.255
 diff -u -r1.255 zend.h
 --- Zend/zend.h	7 Jun 2004 18:57:34 -0000	1.255
-+++ Zend/zend.h	19 Jun 2004 13:58:57 -0000
++++ Zend/zend.h	19 Jun 2004 15:01:40 -0000
 @@ -254,6 +254,7 @@
   */
  typedef struct _zval_struct zval;
@@ -31,7 +31,7 @@ RCS file: /repository/ZendEngine2/zend_compile.c,v
 retrieving revision 1.567
 diff -u -r1.567 zend_compile.c
 --- Zend/zend_compile.c	31 May 2004 21:38:01 -0000	1.567
-+++ Zend/zend_compile.c	19 Jun 2004 13:58:58 -0000
++++ Zend/zend_compile.c	19 Jun 2004 15:01:41 -0000
 @@ -126,6 +126,7 @@
  	zend_stack_init(&CG(object_stack));
  	zend_stack_init(&CG(declare_stack));
@@ -48,7 +48,7 @@ diff -u -r1.567 zend_compile.c
  		cur_arg_info->class_name = class_type->u.constant.value.str.val;
  		cur_arg_info->class_name_len = class_type->u.constant.value.str.len;
  		cur_arg_info->allow_null = 0;
-@@ -1268,10 +1270,12 @@
+@@ -1268,6 +1270,7 @@
  				zval_dtor(&class_name->u.constant);
  				break;
  			default:
@@ -56,12 +56,7 @@ diff -u -r1.567 zend_compile.c
  				opline->op2 = *class_name;
  				break;
  		}
- 	} else {
-+		MANGLE_CLASS_NAME(class_name);
- 		opline->op2 = *class_name;
- 	}
- 	opline->result.u.var = get_temporary_variable(CG(active_op_array));
-@@ -2471,13 +2475,16 @@
+@@ -2471,13 +2474,16 @@
  	zend_op *opline;
  	int doing_inheritance = 0;
  	zend_class_entry *new_class_entry = emalloc(sizeof(zend_class_entry));
@@ -79,7 +74,7 @@ diff -u -r1.567 zend_compile.c
  	if (!(strcmp(lcname, "self") && strcmp(lcname, "parent"))) {
  		efree(lcname);
  		zend_error(E_COMPILE_ERROR, "Cannot use '%s' as class name as it is reserved", class_name->u.constant.value.str.val);
-@@ -2580,6 +2587,27 @@
+@@ -2580,6 +2586,27 @@
  	CG(active_class_entry) = NULL;
  }
  
@@ -113,7 +108,7 @@ RCS file: /repository/ZendEngine2/zend_compile.h,v
 retrieving revision 1.284
 diff -u -r1.284 zend_compile.h
 --- Zend/zend_compile.h	6 Jun 2004 08:37:12 -0000	1.284
-+++ Zend/zend_compile.h	19 Jun 2004 13:58:59 -0000
++++ Zend/zend_compile.h	19 Jun 2004 15:01:42 -0000
 @@ -46,6 +46,24 @@
          CG(doc_comment) = NULL;  \
          CG(doc_comment_len) = 0; \
@@ -154,7 +149,7 @@ RCS file: /repository/ZendEngine2/zend_globals.h,v
 retrieving revision 1.135
 diff -u -r1.135 zend_globals.h
 --- Zend/zend_globals.h	30 Mar 2004 18:36:53 -0000	1.135
-+++ Zend/zend_globals.h	19 Jun 2004 13:58:59 -0000
++++ Zend/zend_globals.h	19 Jun 2004 15:01:42 -0000
 @@ -75,6 +75,7 @@
  	zend_stack declare_stack;
  
@@ -169,7 +164,7 @@ RCS file: /repository/ZendEngine2/zend_language_parser.y,v
 retrieving revision 1.144
 diff -u -r1.144 zend_language_parser.y
 --- Zend/zend_language_parser.y	20 Apr 2004 14:14:55 -0000	1.144
-+++ Zend/zend_language_parser.y	19 Jun 2004 13:58:59 -0000
++++ Zend/zend_language_parser.y	19 Jun 2004 15:01:42 -0000
 @@ -119,9 +119,12 @@
  %token T_ISSET
  %token T_EMPTY
@@ -255,7 +250,7 @@ diff -u -r1.144 zend_language_parser.y
  
  method_body:
  		';' /* abstract method */		{ $$.u.constant.value.lval = ZEND_ACC_ABSTRACT; }
-@@ -627,6 +658,7 @@
+@@ -627,10 +658,12 @@
  
  fully_qualified_class_name:
  		T_STRING { zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
@@ -263,13 +258,18 @@ diff -u -r1.144 zend_language_parser.y
  ;
  
  class_name_reference:
+ 		T_STRING				{ zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
++	|	T_CLASSNAME				{ zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
+ 	|	dynamic_class_name_reference	{ zend_do_end_variable_parse(BP_VAR_R, 0 TSRMLS_CC); zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
+ ;
+ 
 Index: Zend/zend_language_scanner.l
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_language_scanner.l,v
 retrieving revision 1.111
 diff -u -r1.111 zend_language_scanner.l
 --- Zend/zend_language_scanner.l	14 Jun 2004 19:09:42 -0000	1.111
-+++ Zend/zend_language_scanner.l	19 Jun 2004 13:59:01 -0000
++++ Zend/zend_language_scanner.l	19 Jun 2004 15:01:44 -0000
 @@ -889,6 +889,10 @@
  	return T_CLASS;
  }
@@ -311,7 +311,7 @@ RCS file: /repository/ZendEngine2/zend_operators.c,v
 retrieving revision 1.193
 diff -u -r1.193 zend_operators.c
 --- Zend/zend_operators.c	10 May 2004 14:56:21 -0000	1.193
-+++ Zend/zend_operators.c	19 Jun 2004 13:59:02 -0000
++++ Zend/zend_operators.c	19 Jun 2004 15:01:45 -0000
 @@ -101,6 +101,59 @@
  	return result;
  }
