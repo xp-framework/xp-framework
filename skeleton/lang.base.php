@@ -204,6 +204,7 @@
     'lang.Object',
     'lang.XPClass',
     'lang.Exception',
+    'lang.Error',
     'lang.IllegalAccessException',
     'lang.IllegalArgumentException',
     'lang.IllegalStateException',
