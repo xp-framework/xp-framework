@@ -178,7 +178,9 @@
       }
       $args[0]= $this->_hdl;
       if (FALSE === ($res= call_user_func_array($func, $args))) {
-        return throw(new IOException('Search failed ['.$this->getLastError().']'));
+        return throw(new IOException(
+          'Search failed ['.$this->getLastError().'] '.gettype($args).' ('.implode(', ', $args).')'
+        ));
       }
       
       return new LDAPSearchResult($this->_hdl, $res);
