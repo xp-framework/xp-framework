@@ -368,14 +368,6 @@
      * @throws  FormatException
      */
     function addProperty($keys, $value) {
-      #ifdef DEBUG
-      #echo $this->getClassName().'::addProperty(';
-      #var_export($keys);
-      #echo ', ';
-      #var_export($value);
-      #echo ")\n";
-      #endif
-      
       switch ($keys[0]) {
         case 'LOGO':
           $this->logo= array(
