@@ -90,7 +90,7 @@
       
       $str= '';
       for ($i= 0, $s= sizeof($this->messages); $i < $s; $i++) {
-        $str.= vsprintf($fmt, $this->messages[$i]);
+        $str.= rtrim(vsprintf($fmt, $this->messages[$i]))."\n";
       }
       return $str;
     }
