@@ -46,7 +46,7 @@
      * @return  
      */
     function getNextState() {
-      return $this->getStateByName(@$this->flow[$this->offset + 1]);
+      return $this->getStateByName($this->flow[min(sizeof($this->flow)- 1, $this->offset+ 1)]);
     }
     
     /**
@@ -57,7 +57,7 @@
      * @return  
      */
     function getCurrentState() {
-      return $this->getStateByName(@$this->flow[$this->offset]);
+      return $this->getStateByName($this->flow[$this->offset]);
     }
     
     /**
@@ -68,7 +68,7 @@
      * @return  
      */
     function getPreviousState() {
-      return $this->getStateByName(@$this->flow[$this->offset - 1]);
+      return $this->getStateByName($this->flow[max($this->offset - 1, 0)]);
     }
     
     /**
@@ -78,9 +78,20 @@
      * @param   
      * @return  
      */
-    function setCurrentState($state) {
-      if (FALSE === ($this->offset= array_search($state, $this->flow))) {
-        $this->flow[]= $state;
+    function setCurrentState(&$state) {
+      return $this->setCurrentStateByName($state->getName());
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function setCurrentStateByName($name) {
+      if (FALSE === ($this->offset= array_search($name, $this->flow))) {
+        $this->flow[]= $name;
       }
     }
     
