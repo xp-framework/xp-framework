@@ -546,28 +546,5 @@
         return throw($e);
       }
     }
-    
-    /**
-     * Set active URI
-     *
-     * @access  public
-     * @param   string uri
-     * @return  none
-     */
-    function setUri($uri) {
-      $this->uri= $uri;
-    }
-    
-    /**
-     * Get active Uri
-     *
-     * @access  public
-     * @param   none
-     * @return  string uri
-     */
-    function getUri() {
-      return $this->uri;
-    }
-    
   }
 ?>
