@@ -109,7 +109,7 @@
      * @access private
      * @param string data
      */    
-    function _writeColumn($data) {
+    function _writeColumn($data= '') {
       if (!$this->delimWritten) $this->stream->write ($this->colDelim);
       $this->delimWritten= false;
 
@@ -149,10 +149,10 @@
         if (isset ($data[$colName]))
           $this->_writeColumn ($data[$colName]);
         else
-          $this->_writeColumn();
+          $this->_writeColumn('');
       }
       
-      $this->stream->writeLine();
+      $this->stream->writeLine('');
       $this->delimWritten= true;
     }
   
