@@ -33,13 +33,12 @@
   $max= $p->exists('max') ? intval($p->value('max')) : 5;
   $start= $p->exists('start') ? intval($p->value('start')) : 0;
   
-  $s= new SOAPClient(
+  $s= &new SOAPClient(
     new SOAPHTTPTransport('http://api.google.com/search/beta2'),
-    'urn:GoogleSearch',
-    'doGoogleSearch'
+    'urn:GoogleSearch'
   );
   try(); {
-    $return= $s->call(
+    $return= $s->invoke('doGoogleSearch', 
       new SOAPNamedItem('key', GOOGLE_KEY),             // Google-KEY
       new SOAPNamedItem('q', $p->value('query')),       // Suchbegriff
       new SOAPNamedItem('start', $start),               // Start-Index
