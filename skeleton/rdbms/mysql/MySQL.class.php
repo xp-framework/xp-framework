@@ -238,7 +238,11 @@
       }
 
       if (FALSE === $result) {
-        return throw(new SQLException('Statement failed', $sql));
+        return throw(new SQLException(
+          'Statement failed: '.mysql_error($this->handle), 
+          $sql, 
+          mysql_errno($this->handle)
+        ));
       } else {
         return new MySQLResultSet($result);
       }
