@@ -30,14 +30,14 @@
    * </quote>
    *
    * @purpose  Provide an interface to STLI server
-   * @see       http://www.ilink.de/home/de/cti/products/TeamCallServer/
-   * @see       http://www.ecma.ch/ecma1/STAND/ECMA-180.HTM
-   * @see       http://www.ecma.ch/ecma1/STAND/ECMA-179.HTM
+   * @see      http://www.ilink.de/home/de/cti/products/TeamCallServer/
+   * @see      http://www.ecma.ch/ecma1/STAND/ECMA-180.HTM
+   * @see      http://www.ecma.ch/ecma1/STAND/ECMA-179.HTM
    * @see      http://www.ecma.ch/ecma1/STAND/ECMA-217.HTM
-   * @see       http://www.ecma.ch/ecma1/STAND/ECMA-218.HTM
-   * @see       http://www.ecma.ch/ecma1/STAND/ECMA-269.HTM
-   * @see       http://www.ecma.ch/ecma1/STAND/ECMA-285.HTM
-   * @see       http://www.ecma.ch/ecma1/STAND/ecma-323.htm
+   * @see      http://www.ecma.ch/ecma1/STAND/ECMA-218.HTM
+   * @see      http://www.ecma.ch/ecma1/STAND/ECMA-269.HTM
+   * @see      http://www.ecma.ch/ecma1/STAND/ECMA-285.HTM
+   * @see      http://www.ecma.ch/ecma1/STAND/ecma-323.htm
    */
   class StliConnection extends TelephonyProvider {
     var
