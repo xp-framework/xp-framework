@@ -66,7 +66,6 @@
       $this->_conn->request->setHeader('SOAPAction', '"'.$message->action.'#'.$message->method.'"');
       $this->_conn->request->setHeader('Content-Type', 'text/xml; charset='.$message->getEncoding());
       
-      // DEBUG var_dump($this->_conn->request->getRequestString());
       try(); {
         $res= &$this->_conn->request->send();
       } if (catch ('IOException', $e)) {
