@@ -5,7 +5,7 @@
  */
   require('lang.base.php');
   xp::sapi('cli');
-  uses('util.Date');
+  uses('util.Date', 'text.parser.DateParser');
 
   // {{{ main
   $p= &new ParamString();  
@@ -17,7 +17,7 @@
   Console::writeLinef(
     '- Parsed date from "%s": %s',
     $p->value(1),
-    Date::fromString($p->value(1))->toString()
+    DateParser::parse($p->value(1))->toString()
   );
   // }}}
 ?>
