@@ -31,9 +31,10 @@
      * @model   static
      * @access  public
      * @param   &rdbms.DBTable table
+     * @param   string database
      * @return  &rdbms.util.DBXmlGenerator object
      */    
-    function &createFromTable(&$table) {
+    function &createFromTable(&$table, $database) {
       if (!is_a($table, 'DBTable')) {
         return throw(new IllegalArgumentException('Argument table is not a DBTable object'));
       }
@@ -46,7 +47,8 @@
       $t= &$g->doc->root->addChild(new Node(array(
           'name' => 'table'
       )));
-      $t->attribute['name']= $table->name;
+      $t->attribute['name']=      $table->name;
+      $t->attribute['database']=  strtolower ($database);
       
       // Attributes
       if ($attr= &$table->getFirstAttribute()) do {
