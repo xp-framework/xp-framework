@@ -109,10 +109,41 @@
      */
     function bind($user= NULL, $pass= NULL) {
       if (FALSE === ($res= ldap_bind($this->_hdl, $user, $pass))) {
-        return throw(new LDAPException('Cannot bind for "'.$this->user.'"', ldap_error($this->_hdl)));
+        return throw(new LDAPException('Cannot bind for "'.$user.'"', ldap_error($this->_hdl)));
       }
       
       return $res;
+    }
+    
+    /**
+     * Sets an ldap option value
+     *
+     * @access  public
+     * @param   int option
+     * @param   mixed value
+     * @return  boolean success
+     */
+    function setOption($option, $value) {
+      if (FALSE === ($res= ldap_set_option ($this->_hdl, $option, $value))) {
+        return throw (new LDAPException ('Cannot set value "'.$option.'"', ldap_error($this->_hdl)));
+      }
+      
+      return $res;
+    }
+
+    /**
+     * Retrieve ldap option value
+     *
+     * @access  public
+     * @param   int option
+     * @return  mixed value
+     */    
+    function getOption($option) {
+      if (FALSE === ($res= ldap_set_option ($this->_hdl, $option, $value))) {
+        return throw (new LDAPException ('Cannot set value "'.$option.'"', ldap_error($this->_hdl)));
+      }
+      
+      return $value;
     }
     
     /**
