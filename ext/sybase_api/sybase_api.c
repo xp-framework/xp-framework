@@ -642,6 +642,10 @@ SYBASE_API char *sybase_nameofdatatype(CS_INT datatype)
             return "CS_USHORT_TYPE";
         case CS_UNIQUE_TYPE:
             return "CS_UNIQUE_TYPE";
+#if defined CS_UNICHAR_TYPE
+        case CS_UNICHAR_TYPE:
+            return "CS_UNICHAR_TYPE";
+#endif
         default:
             return "(UNKNOWN)";
     }
