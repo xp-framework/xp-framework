@@ -9,7 +9,8 @@
   /**
    * LogAppender which sends log to an email address
    *
-   * @see   xp://util.log.LogAppender
+   * @see      xp://util.log.LogAppender
+   * @purpose  Appender
    */  
   class SmtpAppender extends LogAppender {
     var 
