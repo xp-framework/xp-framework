@@ -6,6 +6,9 @@
 
   uses('peer.server.ConnectionListener', 'peer.ftp.server.FtpSession');
   
+  define('MODE_PASSIVE',  0x0001);
+  define('MODE_ACTIVE',   0x0002);
+  
   /**
    * Implement FTP server functionality
    *
@@ -19,8 +22,7 @@
       $cat              = NULL,
       $authenticator    = NULL,
       $storage          = NULL,
-      $datasock         = array();   // For passive mode
-
+      $datasock         = array();
     /**
      * Constructor
      *
@@ -41,6 +43,41 @@
      */
     function setTrace(&$cat) { 
       $this->cat= &$cat;
+    }
+    
+    /**
+     * Open the datasocket
+     *
+     * @access  protected
+     * @param   &peer.server.ConnectionEvent event
+     * @return  &peer.BSDSocket
+     */
+    function &openDatasock(&$event) {
+      if (is('ServerSocket', $this->datasock[$event->stream->hashCode()])) {
+
+        // Open socket in passive mode
+        $this->cat && $this->cat->debug('+++ Opening passive connection');
+        try(); {
+          $socket= &$this->datasock[$event->stream->hashCode()]->accept();
+        } if (catch('SocketException', $e)) {
+          $this->answer($event->stream, 425, 'Cannot open passive connection '.$e->getMessage());
+          return FALSE;        
+        }
+      } else {
+      
+        // Open socket in active mode
+        $this->cat && $this->cat->debug('+++ Opening active connection');
+        with ($socket= &$this->datasock[$event->stream->hashCode()]); {
+          try(); {
+            $socket->connect();
+          } if (catch('SocketException', $e)) {
+            $this->answer($event->stream, 425, 'Cannot open active connection '.$e->getMessage());
+            return FALSE;        
+          }
+        }
+      }
+      $this->cat && $this->cat->debug($socket);
+      return $socket;
     }
 
     /**
@@ -308,17 +345,17 @@
      * @param   string params
      */
     function onList(&$event, $params) {
+      if (!$socket= &$this->openDatasock($event)) return;
+            
       $params= str_replace('-L', '', $params);
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
-        $m= &$this->datasock[$event->stream->hashCode()]->accept();
-        $m->close();
+        $socket->close();
+        delete($socket);
+        $this->cat && $this->cat->debug($socket, $this->datasock[$event->stream->hashCode()]);
         return;
       }
       
-      // Assume this is a passive connection
-      $m= &$this->datasock[$event->stream->hashCode()]->accept();
-      $this->cat->debug($m);
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for filelist',
         $this->sessions[$event->stream->hashCode()]->typeName()
@@ -344,9 +381,9 @@
           $elements[$i]->getName()
         );
         $this->cat && $this->cat->debug('    ', $buf);
-        $m->write($buf.$this->eol($this->sessions[$event->stream->hashCode()]->getType()));
+        $socket->write($buf.$this->eol($this->sessions[$event->stream->hashCode()]->getType()));
       }
-      $m->close();
+      $socket->close();
       $this->answer($event->stream, 226, 'Transfer complete');
     }
 
@@ -359,16 +396,14 @@
      * @param   string params
      */
     function onNlst(&$event, $params) {
-      $this->cat->debug('nlst');
+      if (!$socket= &$this->openDatasock($event)) return;
+      
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
-        $m= &$this->datasock[$event->stream->hashCode()]->accept();
-        $m->close();
+        $socket->close();
         return;
       }
       
-      // Assume this is a passive connection
-      $m= &$this->datasock[$event->stream->hashCode()]->accept();
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for filelist',
         $this->sessions[$event->stream->hashCode()]->typeName()
@@ -383,12 +418,12 @@
       }
       
       for ($i= 0, $s= sizeof($elements); $i < $s; $i++) {
-        $m->write(
+        $socket->write(
           $elements[$i]->getName().
           $this->eol($this->sessions[$event->stream->hashCode()]->getType())
         );
       }
-      $m->close();
+      $socket->close();
       $this->answer($event->stream, 226, 'Transfer complete');
     }
 
@@ -490,22 +525,20 @@
      * @param   string params
      */
     function onRetr(&$event, $params) {
+      if (!$socket= &$this->openDatasock($event)) return;
+    
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
-        $m= &$this->datasock[$event->stream->hashCode()]->accept();
-        $m->close();
+        $socket->close();
         return;
       }
       $this->cat && $this->cat->debug($entry->toString());
       if (is('StorageCollection', $entry)) {
         $this->answer($event->stream, 550, $params.': is a directory');
-        $m= &$this->datasock[$event->stream->hashCode()]->accept();
-        $m->close();
+        $socket->close();
         return;
       }
       
-      // Assume this is a passive connection
-      $m= &$this->datasock[$event->stream->hashCode()]->accept();
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for %s (%d bytes)',
         $this->sessions[$event->stream->hashCode()]->getType(),
@@ -514,15 +547,15 @@
       ));
       try(); {
         $entry->open(SE_READ);
-        while (!$m->eof() && $buf= $entry->read()) {
-          $m->write($buf);
+        while (!$socket->eof() && $buf= $entry->read()) {
+          $socket->write($buf);
         }
         $entry->close();
       } if (catch('Exception', $e)) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
         return;
       }
-      $m->close();
+      $socket->close();
       $this->answer($event->stream, 226, 'Transfer complete');
     }
 
@@ -534,20 +567,22 @@
      * @param   string params
      */
     function onStor(&$event, $params) {
+      if (!$socket= &$this->openDatasock($event)) return;
+      
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         try(); {
           $entry= &$this->storage->create($event->stream->hashCode(), $params, ST_ELEMENT);
         } if (catch('Exception', $e)) {
           $this->answer($event->stream, 550, $params.': '.$e->getMessage());
+          $socket->close();
           return;
         }
       } else if (is('StorageCollection', $entry)) {
         $this->answer($event->stream, 550, $params.': is a directory');
+        $socket->close();
         return;
       }
       
-      // Assume this is a passive connection
-      $m= &$this->datasock[$event->stream->hashCode()]->accept();
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for %s',
         $this->sessions[$event->stream->hashCode()]->getType(),
@@ -555,7 +590,7 @@
       ));
       try(); {
         $entry->open(SE_WRITE);
-        while (!$m->eof() && $buf= $m->readBinary(32768)) {
+        while (!$socket->eof() && $buf= $socket->readBinary(32768)) {
           $entry->write($buf);
         }
         $entry->close();
@@ -563,7 +598,7 @@
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
         return;
       }
-      $m->close();
+      $socket->close();
       $this->answer($event->stream, 226, 'Transfer complete');
     }
 
@@ -637,13 +672,16 @@
      * @param   string params
      */
     function onPort(&$event, $params) {
+      $this->mode[$event->stream->hashCode()]= MODE_ACTIVE;
       $octets= sscanf($params, '%d,%d,%d,%d,%d,%d');
-      $port= ($octets[5] * 256) + $octets[6];
-      $this->cat && $this->cat->debug('+++ Port is ', $port);
-      $this->answer($event->stream, 200, 'PORT command successful');
+      $host= sprintf('%s.%s.%s.%s', $octets[0], $octets[1], $octets[2], $octets[3]);
+      $port= ($octets[4] * 256) + $octets[5];
 
-      // TBI: What next?
-      var_dump($this->datasock[$event->stream->hashCode()]);
+      $this->cat && $this->cat->debug('+++ Host is ', $host);
+      $this->cat && $this->cat->debug('+++ Port is ', $port);
+
+      $this->datasock[$event->stream->hashCode()]= &new BsdSocket($host, $port);
+      $this->answer($event->stream, 200, 'PORT command successful');      
     }
 
     /**
@@ -671,9 +709,11 @@
      * @param   string params
      */
     function onPasv(&$event, $params) {
+      $this->mode[$event->stream->hashCode()]= MODE_PASSIVE;
+
       if ($this->datasock[$event->stream->hashCode()]) {
         $port= $this->datasock[$event->stream->hashCode()]->port;   // Recycle it!
-      } else {
+      } else {      
         $port= rand(1000, 65536);
         $this->datasock[$event->stream->hashCode()]= &new ServerSocket($this->server->socket->host, $port);
         try(); {
@@ -687,7 +727,6 @@
         }
       }
       $this->cat && $this->cat->debug('Passive mode: Data socket is', $this->datasock[$event->stream->hashCode()]);
-
       $octets= strtr(gethostbyname($this->server->socket->host), '.', ',').','.($port >> 8).','.($port & 0xFF);
       $this->answer($event->stream, 227, 'Entering passive mode ('.$octets.')');
     }
