@@ -96,3 +96,19 @@ ul.intro {
   background-repeat: no-repeat;
   padding-left: 20px;
 }
+
+/* Syntax */
+code {
+  white-space: pre;
+}
+code .keyword {
+  color: #990000;
+  font-weight: bold;
+}
+code .variable {
+  color: #000099;
+  font-weight: bold;
+}
+code .bracket {
+  color: #a90000;
+}
