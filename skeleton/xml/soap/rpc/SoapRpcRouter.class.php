@@ -97,6 +97,12 @@
       try(); {
         // Get message
         $msg= &$request->getMessage();
+        
+        // Figure out encoding if given
+        $type= $request->getHeader('Content-type');
+        if (FALSE !== ($pos= strpos($type, 'charset='))) {
+          $msg->encoding= substr($type, $pos+ 8);
+        }
       
         // Create answer
         $answer= &new SOAPMessage();
