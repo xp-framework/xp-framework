@@ -68,8 +68,7 @@
      */
     function processWorkflow(&$request, &$response) {
       $request->state->setup($request, $response);
-      $request->state->process($request, $response);
-      return TRUE;
+      return $request->state->process($request, $response);
     }
 
     /**
