@@ -277,7 +277,7 @@
      */    
     function getRevision($rev= NULL) {
       $data= $this->_execute (sprintf ('update -p %s', 
-        NULL !== $rev : '-r '.$rev : ''
+        NULL !== $rev ? '-r '.$rev : ''
       ));
       if (!count ($data))
         return FALSE;
