@@ -152,7 +152,7 @@
       }
       
       // Create src and dst objects
-      $src= is_dir($uri)    ? new Folder($uri)    : new File($uri);
+      $src= is_dir($uri) ? new Folder($uri) : new File($uri);
       $dst= is_dir($destination) ? new Folder($destination) : new File($destination);
 
       // Is overwriting permitted?
@@ -172,7 +172,7 @@
         return throw(new OperationFailedException($filename.' cannot be copied/moved to '.$destination.' ('.$e->message.')'));
       }
       
-      // Move/copy properties aso
+      // Move/copy properties also
       $src= substr($uri, strlen($this->base));
       $dst= substr($destination, strlen($this->base));
       $properties= &$this->propStorage->getProperties($src);
@@ -465,35 +465,14 @@
      * @throws  OperationNotAllowedException
      */
     function &unlock(&$request, &$response) {
-      $path= $request->getPath();      
-      $realpath= $this->base.$path;
+      $realpath= $this->base.$request->getPath();
       
       if (!file_exists($realpath)) {
         return throw(new ElementNotFoundException($realpath.' not found'));
       }
-
-      try();{
-        
-        // Remove < and > from beginning and end of the header 
-        // e.g. <opaquelocktoken:88516110-6110-1851-bbde-48de5b3f07f4> => opaquelocktoken:88516110-6110-1851-bbde-48de5b3f07f4
-        $reqToken= substr($request->getHeader('Lock-Token'), 1, -1);
-        
-        // return an exception if an unlock is requested on a non-locked file
-        if (($lock= $this->getLockInfo($path)) == NULL) return throw(new OperationFailedException('No Lock for File: '.$path));
-        
-        if ($reqToken != $lock->getLockToken())
-          return throw(new OperationNotAllowedException('Cant unlock '.$path));
-       
-      
-      } if  (catch('Exception', $e)) {
-        return throw($e, get_class($this).'::Unlock'.' no LCK-store '.$e->message);
-      } 
-      
-      $this->propStorage->setLock($path, $tmp= NULL);
-
-      if ($lock->getLockToken()) $response->setHeader('Lock-Token', $request->getHeader('Lock-Token'));
+      parent::unlock($request, $response);      
     }
-
+     
     /**
      * do locking
      *
@@ -503,21 +482,12 @@
      * @throws  OperationNotAllowedException
      */
     function &lock(&$request, &$response) {
-      // check file
-      $path= $request->getPath();
-      $realpath= $this->base.$path;
+      $realpath= $this->base.$request->getPath();
       
       if (!file_exists($realpath)) {
         return throw(new ElementNotFoundException($realpath.' not found'));
       }
-
-      preg_match_all('/<[^>]*> \(<([^>]*)>\)/', $request->getHeader('If'), $ifmatches);
-      try();{
-        $lock= $this->setLockInfo($request->getProperties(), $ifmatches[1]);
-      } if (catch('Exception', $e)) {
-        return throw(new OperationNotAllowedException(' locking not allowed on '.$path));
-      }
-      $response->addLock($lock);
+      parent::lock($request, $response);
     }
 
     /**
