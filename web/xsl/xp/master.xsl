@@ -21,7 +21,86 @@
   <xsl:param name="__query"/>
 
   <!--
-   ! Function to display a serialized date object
+   ! Function to display a serialized date object (date only)
+   !
+   ! @param  node-set date
+   !-->
+  <func:function name="func:date">
+    <xsl:param name="date"/>
+    
+    <func:result>
+      <xsl:choose>
+        <xsl:when test="not(exsl:node-set($date)/_utime)">
+          <!-- Intentionally empty -->
+        </xsl:when>
+        <xsl:when test="$__lang = 'de_DE' or $__lang = 'en_UK'">
+          <xsl:value-of select="concat(
+            format-number(exsl:node-set($date)/mday, '00'), '.',
+            format-number(exsl:node-set($date)/mon, '00'), '.',
+            exsl:node-set($date)/year
+          )"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="concat(
+            exsl:node-set($date)/year, '-',
+            format-number(exsl:node-set($date)/mon, '00'), '-',
+            format-number(exsl:node-set($date)/mday, '00')
+          )"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </func:result>
+  </func:function>
+
+  <!--
+   ! Function to display a serialized date object (time only)
+   !
+   ! @param  node-set date
+   !-->
+  <func:function name="func:time">
+    <xsl:param name="date"/>
+    
+    <func:result>
+      <xsl:choose>
+        <xsl:when test="not(exsl:node-set($date)/_utime)">
+          <!-- Intentionally empty -->
+        </xsl:when>
+        <xsl:when test="$__lang = 'de_DE' or $__lang = 'en_UK'">
+          <xsl:value-of select="concat(
+            format-number(exsl:node-set($date)/hours, '00'), ':',
+            format-number(exsl:node-set($date)/minutes, '00')
+          )"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:choose>
+            <xsl:when test="exsl:node-set($date)/hours = 0">
+              <xsl:value-of select="concat(
+                '12:',
+                format-number(exsl:node-set($date)/minutes, '00'),
+                ' AM'
+              )"/>
+            </xsl:when>
+            <xsl:when test="exsl:node-set($date)/hours &lt; 13">
+              <xsl:value-of select="concat(
+                format-number(exsl:node-set($date)/hours, '00'), ':',
+                format-number(exsl:node-set($date)/minutes, '00'), 
+                ' AM'
+              )"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="concat(
+                format-number(exsl:node-set($date)/hours - 12, '00'), ':',
+                format-number(exsl:node-set($date)/minutes, '00'),
+                ' PM'
+              )"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:otherwise>
+      </xsl:choose>
+    </func:result>
+  </func:function>
+
+  <!--
+   ! Function to display a serialized date object (date AND time)
    !
    ! @param  node-set date
    !-->
@@ -29,13 +108,9 @@
     <xsl:param name="date"/>
     
     <func:result>
-      <xsl:value-of select="concat(
-        exsl:node-set($date)/year, '-',
-        format-number(exsl:node-set($date)/mon, '00'), '-',
-        format-number(exsl:node-set($date)/mday, '00'), ' ',
-        format-number(exsl:node-set($date)/hours, '00'), ':',
-        format-number(exsl:node-set($date)/minutes, '00')
-      )"/>
+      <xsl:if test="exsl:node-set($date)/_utime">
+        <xsl:value-of select="concat(func:date($date), ' ', func:time($date))"/>
+      </xsl:if>
     </func:result>
   </func:function>
 
