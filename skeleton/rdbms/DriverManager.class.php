@@ -42,15 +42,6 @@
       
       if (!$instance) {
         $instance= new DriverManager();
-
-        if (extension_loaded('sybase_ct')) {
-          $instance->drivers['sybase']= &XPClass::forName('rdbms.sybase.SybaseConnection');
-        }
-        if (extension_loaded('mysql')) {
-          $instance->drivers['mysql']= &XPClass::forName('rdbms.mysql.MySQLConnection');
-        }
-        
-        // TBI: postgres, oracle, ...
       }
       return $instance;
     }
@@ -85,13 +76,25 @@
      * @throws  rdbms.DriverNotSupportedException
      */
     function &getConnection($str) {
+      static $builtin= array(
+        'sybase'    => 'rdbms.sybase.SybaseConnection',
+        'mysql'     => 'rdbms.mysql.MySQLConnection',
+        // TBI: Postgres, Oracle, ...
+      );
+      
       $dsn= &new DSN($str);
       $id= $dsn->getDriver();
       $i= &DriverManager::getInstance();
       
-      // Lookup driver by identifier
+      // Lookup driver by identifier. If it's one
       if (!isset($i->drivers[$id])) {
-        return throw(new DriverNotSupportedException('No driver registered for '.$id));
+        try(); {
+          $i->drivers[$id]= &XPClass::forName($builtin[$id]);
+        } if (catch('ClassNotFoundException', $e)) {
+          return throw(new DriverNotSupportedException(
+            'No driver registered for '.$id.': '.$e->getMessage()
+          ));
+        }
       }
       
       return $i->drivers[$id]->newInstance($dsn);
