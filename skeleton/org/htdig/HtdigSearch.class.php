@@ -10,6 +10,14 @@
     'lang.Process'
   );
 
+  // Defines for sorting methods
+  define('SORT_SCORE',         'score');
+  define('SORT_TIME',          'time');
+  define('SORT_TITLE',         'title');
+  define('SORT_REVSCORE',      'revscore');
+  define('SORT_REVTIME',       'revtime');
+  define('SORT_REVTITLE',      'revtitle');
+
   /**
    * Encapsulates a htdig query. This class needs a working 
    * htdig installation on the executing host.
@@ -35,10 +43,27 @@
    *     exit(1);
    *   }
    *
-   *   Console::writeLine('Search metadata: ', $resultset->getMetaresult());
-   *   foreach ($resultset->getResults() as $entry) {
-   *     Console::writeLine($entry->toString());
-   *   }
+   *   Console::writeLine($result->toString());
+   * </code>
+   *
+   * The aforementioned requirements for the ht://dig setup consist of rules for
+   * the output of htdig:
+   * The header file containing the csv-definition looks like:
+   * <pre>
+   *   LOGICAL_WORDS:$(LOGICAL_WORDS)
+   *   MATCHES:$(MATCHES)
+   *   PAGES:$(PAGES)
+   *   CSV:CURRENT|DOCID|NSTARS|SCORE|URL|TITLE|EXCERPT|METADESCRIPTION|MODIFIED|SIZE|HOPCOUNT|PERCENT          
+   * </pre>
+   *
+   * The used template must use the following template-syntax (one line):
+   * <pre>
+   *   $(CURRENT)|$(DOCID)|$(NSTARS)|$(SCORE)|$&(URL)|$&(TITLE)|$&(EXCERPT)|
+   *   $&(METADESCRIPTION)|$(MODIFIED)|$(SIZE)|$(HOPCOUNT)|$(PERCENT)
+   * </pre>
+   *
+   * Note also that you can set query parameters which may or may not be overwriteable
+   * by a client - this depends on the actual ht://dig - configuration.
    *
    * @see      http://htdig.org
    * @purpose  Wrap htdig query
@@ -48,10 +73,13 @@
       $config=      NULL,    
       $params=      array(), 
       $words=       array(),
-      $excludes=    array();
+      $excludes=    array(),
+      $algorithms=  '',
+      $sort=        SORT_SCORE,
+      $maxresults=  0;
     
     var
-      $delimiter=   '###+++###',
+      $delimiter=   '|',
       $executable=  '';
 
     /**
@@ -160,6 +188,66 @@
     }
 
     /**
+     * Set Algorithm
+     *
+     * @access  public
+     * @param   string algorithm
+     */
+    function setAlgorithms($algorithm) {
+      $this->algorithms= $algorithm;
+    }
+
+    /**
+     * Get Algorithm
+     *
+     * @access  public
+     * @return  string
+     */
+    function getAlgorithms() {
+      return $this->algorithms;
+    }
+
+    /**
+     * Set Sort
+     *
+     * @access  public
+     * @param   mixed sort
+     */
+    function setSort($sort) {
+      $this->sort= $sort;
+    }
+
+    /**
+     * Get Sort
+     *
+     * @access  public
+     * @return  mixed
+     */
+    function getSort() {
+      return $this->sort;
+    }
+
+    /**
+     * Set Maxresults
+     *
+     * @access  public
+     * @param   int maxresults
+     */
+    function setMaxresults($maxresults) {
+      $this->maxresults= $maxresults;
+    }
+
+    /**
+     * Get Maxresults
+     *
+     * @access  public
+     * @return  int
+     */
+    function getMaxresults() {
+      return $this->maxresults;
+    }
+
+    /**
      * Build the query string for the search.
      *
      * @access  protected
@@ -186,7 +274,16 @@
      */
     function _getQuery() {
       $params= $this->getParams();
-      $params['exclude']= $this->getExcludes();
+
+      // If excludes are given, add them to the query
+      if (strlen ($this->getExcludes()))
+        $params['exclude']= implode('|', $this->getExcludes());
+      
+      // Only overwrite algorithms, when they are set  
+      if (strlen ($this->getAlgorithms()))
+        $params['search_algorithm']= $this->getAlgorithms();
+
+      $params['sort']= $this->getSort();
       $params['words']= $this->_getWordString();
       
       $str= '';
@@ -251,10 +348,11 @@
 
       try(); {
       
-        // Parse metadata result
+        // Parse metadata result (search result header)
         while (FALSE !== current($output) && !$hasCsv) {
           $meta= explode(':', trim(current($output)));
 
+          // Check for header-data; the last line of header is the CSV definition
           if ('CSV' != trim($meta[0])) {
             $metaresult[trim(strtolower($meta[0]))]= trim($meta[1]);
           } else {
@@ -268,11 +366,17 @@
         $result->setMetaresult($metaresult);
 
         // Now parse resultset
+        $cnt= 0;
         while (FALSE !== current ($output)) {
         
+          // Don't exceed maxresults
+          if ($cnt > $this->maxresults)
+            break;
+            
           // Do not take empty lines into account
           if (current($output)) {
             $result->addResult(explode($this->delimiter, current($output)));
+            $cnt++;
           }
           next ($output);
         }
