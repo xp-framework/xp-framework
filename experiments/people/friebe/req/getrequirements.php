@@ -64,7 +64,6 @@
       
     // {{{ private __construct(string filename)
     function __construct($filename, $seen= array()) {
-      parent::__construct();
       $this->file= FullName::forFile($filename);
       $this->seen= $seen;
     }
