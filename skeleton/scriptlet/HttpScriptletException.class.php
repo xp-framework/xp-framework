@@ -22,7 +22,8 @@
    */  
   class HttpScriptletException extends Exception {
     var
-      $response = NULL;
+      $response     = NULL,
+      $statusCode   = 0;
       
     /**
      * Constructor
@@ -33,6 +34,7 @@
      */
     function __construct($message, $statusCode= HTTP_INTERNAL_SERVER_ERROR) {
       parent::__construct($message);
+      $this->statusCode= $statusCode;
       $this->_response($statusCode);
     }
     
