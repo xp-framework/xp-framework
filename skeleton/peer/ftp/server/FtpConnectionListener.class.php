@@ -5,7 +5,6 @@
  */
 
   uses('peer.server.ConnectionListener');
-  uses('util.cmd.Console');
   
   define('TYPE_ASCII',  'A');
   define('TYPE_BINARY', 'I');
@@ -13,6 +12,7 @@
   /**
    * Implement FTP server functionality
    *
+   * @see      http://ipswitch.com/Support/WS_FTP-Server/guide/v4/A_FTPref4.html 
    * @see      xp://peer.server.ConnectionListener
    * @purpose  Connection listener
    */
@@ -20,6 +20,7 @@
     var
       $user             = array('username' => NULL, 'loggedin' => FALSE),
       $type             = TYPE_ASCII,
+      $cat              = NULL,
       $authenticator    = NULL,
       $storage          = NULL,
       $datasock         = NULL;   // For passive mode
@@ -34,6 +35,16 @@
     function __construct(&$storage, &$authenticator) {
       $this->storage= &$storage;
       $this->authenticator= &$authenticator;
+    }
+
+    /**
+     * Set a trace for debugging
+     *
+     * @access  public
+     * @param   &util.log.LogCategory cat
+     */
+    function setTrace(&$cat) { 
+      $this->cat= &$cat;
     }
 
     /**
@@ -96,7 +107,7 @@
       } else {
         $answer= sprintf("%d %s\r\n", $code, $text);
       }
-      Console::writeLine('<<< ', addcslashes($answer, "\0..\17"));
+      $this->cat && $this->cat->debug('<<< ', addcslashes($answer, "\0..\17"));
       return $sock->write($answer);
     }
     
@@ -247,6 +258,20 @@
     function onSiteHelp(&$event, $params) {
       return $this->onHelp($event, $params);
     }
+
+    /**
+     * SITE CHMOD
+     *
+     * @access  protected
+     * @param   &peer.server.ConnectionEvent event
+     * @param   string params
+     */
+    function onSiteChmod(&$event, $params) {
+      sscanf($params, '%d %s', $permissions, $uri);
+      $this->cat && $this->cat->debug($permissions, $uri);
+      
+      $this->answer($event->stream, 550, 'XXX TBI XXX');
+    }
     
     /**
      * Callback for the "SYST" command
@@ -344,7 +369,7 @@
           date('M d H:i', $elements[$i]->getModifiedStamp()),
           $elements[$i]->getName()
         );
-        Console::writeLine('    ', $buf);
+        $this->cat && $this->cat->debug('    ', $buf);
         $m->write($buf.$this->eol());
       }
       $this->answer($event->stream, 226, 'Transfer complete');
@@ -487,7 +512,7 @@
         $this->answer($event->stream, 550, $params.': No such file or directory');
         return;
       }
-      Console::writeLine($entry->toString());
+      $this->cat && $this->cat->debug($entry->toString());
       if (is('StorageCollection', $entry)) {
         $this->answer($event->stream, 550, $params.': is a directory');
         return;
@@ -596,7 +621,7 @@
     function onPort(&$event, $params) {
       $octets= sscanf($params, '%d,%d,%d,%d,%d,%d');
       $port= ($octets[5] * 256) + $octets[6];
-      Console::writeLine('+++ Port is ', $port);
+      $this->cat && $this->cat->debug('+++ Port is ', $port);
       $this->answer($event->stream, 200, 'PORT command successful');
 
       // TBI: What next?
@@ -643,7 +668,7 @@
           return;
         }
       }
-      var_dump($this->datasock);
+      $this->cat && $this->cat->debug('Passive mode: Data socket is', $this->datasock);
 
       $octets= strtr('172.17.29.15', '.', ',').','.($port >> 8).','.($port & 0xFF);
       $this->answer($event->stream, 227, 'Entering passive mode ('.$octets.')');
@@ -656,7 +681,7 @@
      * @param   &peer.server.ConnectionEvent event
      */
     function connected(&$event) {
-      Console::writeLinef('===> Client %s connected', $event->stream->host);
+      $this->cat && $this->cat->debugf('===> Client %s connected', $event->stream->host);
       $this->answer($event->stream, 220, 'FTP server ready');
     }
     
@@ -669,7 +694,7 @@
     function data(&$event) {
       static $public= array('onhelp', 'onuser', 'onpass', 'onquit');
 
-      Console::writeLine('>>> ', addcslashes($event->data, "\0..\17"));
+      $this->cat && $this->cat->debug('>>> ', addcslashes($event->data, "\0..\17"));
       sscanf($event->data, "%s %[^\r]", $command, $params);
       $method= 'on'.strtolower($command);
 
@@ -689,7 +714,7 @@
       try(); {
         $this->{$method}($event, $params);
       } if (catch('Exception', $e)) {
-        Console::writeLine('*** ', $e->toString());
+        $this->cat && $this->cat->warn('*** ', $e->toString());
         // Fall through
       }
       xp::gc();
@@ -702,7 +727,8 @@
      * @param   &peer.server.ConnectionEvent event
      */
     function disconnected(&$event) {
-      Console::writeLinef('===> Client %s disconnected', $event->stream->host);
+      $this->cat && $this->cat->debugf('Client %s disconnected', $event->stream->host);
     }
-  }
+
+  } implements(__FILE__, 'util.log.Traceable');
 ?>
