@@ -149,6 +149,20 @@
     }
     
     /**
+     * Begins a transaction
+     *
+     * @access  public
+     * @param   &rdbms.Transaction transaction
+     * @return  &rdbms.Transaction
+     */
+    function &begin(&$transaction) {
+      $cm= &ConnectionManager::getInstance();
+      $db= &$cm->getByHost($this->connection, 0);
+
+      return $db->begin($transaction);
+    }
+    
+    /**
      * Creates a string representation of this object
      *
      * @access  public
