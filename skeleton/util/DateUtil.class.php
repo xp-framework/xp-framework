@@ -111,5 +111,44 @@
       ));
     }
     
+    /**
+     * Adds a positive or negative amount of hours
+     *
+     * @model   static
+     * @access  public
+     * @param   &util.Date
+     * @param   int count
+     * @return  &util.Date
+     */
+    function addHours(&$date, $cnt= 1) {
+      return new Date (mktime (
+        $date->getHours() + $cnt,
+        $date->getMinutes(),
+        $date->getSeconds(),
+        $date->getMonth(),
+        $date->getDay(),
+        $date->getYear()
+      ));
+    }
+    
+    /**
+     * Adds a positive or negative amount of minutes
+     *
+     * @model   static
+     * @access  public
+     * @param   &util.Date
+     * @param   int count
+     * @return  &util.Date
+     */
+    function addMinutes(&$date, $cnt= 1) {
+      return new Date (mktime (
+        $date->getHours(),
+        $date->getMinutes() + $cnt,
+        $date->getSeconds(),
+        $date->getMonth(),
+        $date->getDay(),
+        $date->getYear()
+      ));
+    }
   }
 ?>
