@@ -47,11 +47,19 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve a symbolic reference to the object identified by the
+     * given arguments.
      *
-     * @access  
-     * @param   
-     * @return  
+     * Note that this is not a "real" reference. The references objects are
+     * referenced by sematics, not by a real reference. That is, after reparsing
+     * there are new objects, the old ones destroyed. This reference will then
+     * automatically point to the object replacing the old one.
+     *
+     * @access  protected
+     * @param   string idx
+     * @param   string cidx
+     * @param   string fidx
+     * @return  string reference
      */
     function _getRef($idx, $cidx= NULL, $fidx= NULL) {
       $arr= array();
@@ -67,83 +75,79 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Check whether a given reference has already been created
+     * for the node.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   string reference
+     * @return  bool
      */
     function _nodeExists($ref) {
       return isset ($this->hash[$ref]);
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve the node object associated to the
+     * reference.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   string ref
+     * @return  &GtkCTreeItem
      */
-    function _getNode($ref) {
+    function &_getNode($ref) {
       return $this->hash[$ref];
     }
     
     /**
-     * (Insert method's description here)
+     * Supply application defined information associated
+     * to a given reference.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   string reference
+     * @param   mixed data
      */
     function _setRefInfo($ref, $info) {
       $this->refdata[$ref]= $info;
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve given data for a reference
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   string reference
+     * @return  mixed 
      */
     function _getRefInfo($ref) {
       return $this->refdata[$ref];
-    }    
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function _getObjectByRef($ref) {
-      if (!isset($this->revhash[$ref]))
-        return throw(new IllegalArgumentException('"'.$ref.'" is not a valid reference.'));
-        
-      list($idx, $cidx, $fidx)= $this->revhash[$ref];
-
-      if (isset($fidx) && isset($cidx)) {
-        return $this->files[$idx]->classes[$cidx]->functions[$fidx];
-      } elseif (isset($cidx)) {
-        return $this->files[$idx]->classes[$cidx];
-      } elseif (isset($fidx)) {
-        return $this->files[$idx]->functions[$fidx];
-      } else {
-        return $this->files[$idx];
-      }
     }
     
     /**
-     * (Insert method's description here)
+     * Check whether the object referenced for the given argument
+     * is still known.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   string reference
+     * @return  bool
      */
-    function _getParentRef($ref) {
-      return substr($ref, 0, strrpos($ref, ':'));
-    }    
+    function _existsRefObject($ref) {
+      if (!preg_match('/^f=([^:]+)(:c=([^:]+))?(:fn=([^:$]+))?$/', $ref, $match)) {
+        $this->log->error($ref, 'does not match!');
+        return FALSE;
+      }
+      
+      @list(, $file, , $class, , $func)= $match;
+      if (!empty($class) && !empty($func)) {
+        return isset($this->files[$file]->classes[$class]->functions[$func]);
+      } elseif (!empty($func)) {
+        return isset($this->files[$file]->functions[$func]);
+      } elseif (!empty($class)) {
+        return isset($this->files[$file]->classes[$class]);
+      } else {
+        return isset($this->files[$file]);
+      }
+      
+      return FALSE;
+    }
     
     /**
      * Initializes all windows
@@ -181,7 +185,7 @@
       ));
 
       // Handle commandline arguments
-      for ($i= 1; $i<= $this->param->count; $i++) {
+      for ($i= 1; $i <= $this->param->count; $i++) {
         try(); { 
           $a= $this->param->value ($i); 
         } if (catch ('Exception', $e)) { 
@@ -245,7 +249,7 @@
       $reparse= FALSE;
       foreach (array_keys ($this->files) as $idx) {
         if ($this->files[$idx]->needsReparsing()) {
-          $this->log && $this->log->info('Reparsing',$this->files[$idx]->filename);
+          $this->log && $this->log->info('Reparsing', $this->files[$idx]->filename);
           $this->statusbar->push (1, 'Reparsing '.$this->files[$idx]->filename);
           $this->files[$idx]->parse();
           $this->statusbar->push (1, 'Reparsed '.$this->files[$idx]->filename.' at '.date ('H:i:s'));
@@ -278,7 +282,7 @@
       $parser= &new ParserManager($filename);
       $parser->parse();
 
-      $this->files[]= &$parser;
+      $this->files[$filename]= &$parser;
 
       $this->statusbar->push (1, 'Added file '.$parser->filename);
       $this->log && $this->log->info ('Added file '.$parser->filename);
@@ -423,6 +427,17 @@
         }
       }
       
+      // Remove nodes without reference
+      foreach (array_keys($this->hash) as $ref) {
+        
+        if (!$this->_existsRefObject($ref)) {
+          
+          // Remove node
+          $this->log && $this->log->warn('Removing node for unreferenced ref', $ref);
+          $this->tree->remove_node($this->hash[$ref]);
+          unset($this->hash[$ref]);
+        }
+      }
 
       // $this->tree->columns_autosize();
       $this->tree->thaw();
