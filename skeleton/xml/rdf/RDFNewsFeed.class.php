@@ -228,8 +228,11 @@
     /**
      * Callback for XML parser
      *
-     * @see     xp://xml.XMLParser
      * @access  public
+     * @param   resource parser
+     * @param   string name
+     * @param   string attrs
+     * @see     xp://xml.parser.XMLParser
      */
     function onStartElement($parser, $name, $attrs) {
       parent::onStartElement($parser, $name, $attrs);
@@ -264,8 +267,10 @@
     /**
      * Callback for XML parser
      *
-     * @see     xp://xml.XMLParser
      * @access  public
+     * @param   resource parser
+     * @param   string name
+     * @see     xp://xml.parser.XMLParser
      */
     function onEndElement($parser, $name) {
       static $trans;
@@ -274,7 +279,7 @@
       parent::onEndElement($parser, $name);
       if ($this->_cnt <= 0) return;
 
-      // &lt; &amp;, &#XX; etc. ersetzen
+      // Replace &lt; &amp;, &#XX; etc.
       if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_SPECIALCHARS));
       $cdata= preg_replace(
         '/&#([0-9]+);/me', 
