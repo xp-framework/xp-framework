@@ -19,6 +19,10 @@ em {
 	font-style: italic;
 }
 
+quote {
+    color: #6666cc;
+}
+
 .newsDate {
 	font-size: 85%;
 	font-style: italic;
