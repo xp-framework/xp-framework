@@ -24,7 +24,8 @@
     var
       $functions= NULL,
       $classes=   NULL,
-      $filename=  NULL;
+      $filename=  NULL,
+      $log=       NULL;
     
     var
       $_utimeLastChange= 0;
@@ -34,7 +35,6 @@
      *
      * @access  public
      * @param   string filename;
-     * @return  
      */
     function __construct($filename) {
       $this->functions= $this->classes= array();
