@@ -150,5 +150,25 @@
         $date->getYear()
       ));
     }
+
+    /**
+     * Adds a positive or negative amount of seconds
+     *
+     * @model   static
+     * @access  public
+     * @param   &util.Date
+     * @param   int count
+     * @return  &util.Date
+     */
+    function addSeconds(&$date, $cnt= 1) {
+      return new Date (mktime (
+        $date->getHours(),
+        $date->getMinutes(),
+        $date->getSeconds() + $cnt,
+        $date->getMonth(),
+        $date->getDay(),
+        $date->getYear()
+      ));
+    }
   }
 ?>
