@@ -43,12 +43,12 @@
      * @param   string path The path
      * @return  string
      */
-    function _normalizePath($path){      
-      $p= preg_replace('#//#','/', $path);
-      $p= preg_replace('#/\./#','/', $p);
-      $p= preg_replace('#[^/]+/\.\./#','', $p);
-      $p= preg_replace('#//#','/', $p);
-      $p= preg_replace('#/$#','', $p);
+    function _normalizePath($path) {      
+      $p= preg_replace('#//#', '/', $path);
+      $p= preg_replace('#/\./#', '/', $p);
+      $p= preg_replace('#[^/]+/\.\./#', '', $p);
+      $p= preg_replace('#//#', '/', $p);
+      $p= preg_replace('#/$#', '', $p);
       return $p;
     }
 
@@ -167,8 +167,9 @@
       if ($lock === NULL) return NULL;
 
       // Check if the lock is expired
-      if ($lock->getCreationTime() + $lock->getTimeout() < time()) {
-        $this->propStorage->setLock($uri, NULL);
+      $cdate= $lock->getCreationDate();
+      if ($cdate->_utime + $lock->getTimeout() < time()) {
+        $this->propStorage->removeLock($uri);
         return NULL;
       }
 
@@ -189,9 +190,7 @@
       $lockinfo= $this->getLockInfo($lock->getURI());        
 
       // There's already lock
-      if ($lockinfo !== NULL) {
-        $owner= $lockinfo->getOwner();
-        
+      if ($lockinfo !== NULL) {        
         // We have s/some lock token, so check if we can overwrite the lock
         if (sizeof($tokens)) {
           if (!in_array($lockinfo->getLockToken(), $tokens)) {
@@ -211,14 +210,6 @@
       if (empty($newOwner)) {
         return throw(new OperationNotAllowedException('Can not set lock with empty owner'));
       }
-        
-      // Check timeout
-      if (substr($lock->getTimeout(), 0, 7) == 'Second-') $lock->setTimeout((int)substr($lock->getTimeout(), 7));
-        
-      $timeout= $lock->getTimeout() ? (int)$lock->getTimeout() : 86400;
-
-      // Check depth      
-      if ($lock->getDepth() != 'infinity') $lock->setDepth((int)$lock->getDepth());
       
       // Check token
       if (empty($token)) $t= &new OpaqueLockTocken(UUID::create());
