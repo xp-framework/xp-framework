@@ -363,8 +363,8 @@
         </xsl:choose>
         <td width="80%">
           <b>
-          <xsl:if test="./model"><xsl:value-of select="./model"/><xsl:text> </xsl:text></xsl:if>
           <xsl:value-of select="./access"/><xsl:text> </xsl:text>
+          <xsl:if test="string-length (./model) != 0"><xsl:value-of select="./model"/><xsl:text> </xsl:text></xsl:if>
           <xsl:if test="string-length (./return/type) = 0">void<xsl:text> </xsl:text></xsl:if>
           <xsl:if test="string-length (./return/type) != 0">
             <xsl:value-of select="./return/type"/><xsl:text> </xsl:text>
@@ -396,6 +396,23 @@
                 </ul>
               </td>
             </tr>
+            
+            <!-- Model information -->
+            <xsl:if test="./model/text()">
+              <tr>
+                <td width="1%" valign="top"><img src="/image/caret-r.gif" vspace="4" border="0" height="7" width="11" alt="&gt;"/></td>
+                <td width="20%" valign="top">
+                  Model
+                </td>
+                <td width="60%" valign="top">
+                  <ul style="list-style-image: url(/image/icn_li_public.gif);">
+                    <li>
+                      <xsl:value-of select="./model"/>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </xsl:if>
             
             <!-- Param information -->
             <xsl:if test="count (./params/*) &gt; 0">
