@@ -2634,6 +2634,29 @@ ZEND_METHOD(reflection_class, getMethod)
 }
 /* }}} */
 
+/* {{{ proto public ReflectionMethod ReflectionClass::hasMethod(string name)
+   Returns whether a method by a given name exists */
+ZEND_METHOD(reflection_class, hasMethod)
+{
+	reflection_object *intern;
+	zend_class_entry *ce;
+	char *name, *lc_name; 
+	int name_len, exists;
+
+	METHOD_NOTSTATIC;
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
+		return;
+	}
+
+	GET_REFLECTION_OBJECT_PTR(ce);
+	lc_name = zend_str_tolower_dup(name, name_len);
+	exists = zend_hash_exists(&ce->function_table, lc_name, name_len + 1);
+	efree(lc_name);
+
+	RETVAL_BOOL(exists);
+}
+/* }}} */
+
 /* {{{ _addmethod */
 static int _addmethod(zend_function *mptr, int num_args, va_list args, zend_hash_key *hash_key TSRMLS_DC)
 {
@@ -3852,6 +3875,7 @@ static zend_function_entry reflection_class_functions[] = {
 	ZEND_ME(reflection_class, getDocComment, NULL, 0)
 	ZEND_ME(reflection_class, getConstructor, NULL, 0)
 	ZEND_ME(reflection_class, getMethod, NULL, 0)
+	ZEND_ME(reflection_class, hasMethod, NULL, 0)
 	ZEND_ME(reflection_class, getMethods, NULL, 0)
 	ZEND_ME(reflection_class, getProperty, NULL, 0)
 	ZEND_ME(reflection_class, getProperties, NULL, 0)
