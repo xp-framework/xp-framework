@@ -41,7 +41,7 @@
           various parts of the code. With this method you can quite
           comfortably create snapshots containing newest features and also
           stable, old code (that could have been changed in another branch).
-          We feel that creating snapshots is quite unlikely for a framework,
+          We feel that creating branches is quite unlikely for a framework,
           and thus have decided to do without branching.<br/>
           <br/>
           We follow the simple rules of tagging a specific version at e.g.
@@ -85,10 +85,12 @@ chown cgi:users *
           have agent forwarding turned on for conveniance.<br/>
           Also note, that this approach has one special requirement: as we
           cannot allow everyone to tag our classes, you must have a private
-          cvs repository with regularly is merged from the public XP. At 
-          this moment, we have some ongoing development for automatic
-          merging applications that can do the work for you. This will be
-          annonces on xp.php3.de.
+          cvs repository with regularly is merged from the public XP. 
+          There exists a script which partially automates the process of
+          merging changes in the public repository into a private one. As
+          we do not know of any other existing private repositories, we have
+          not yet released this script - if you need it, please send a mail 
+          to our mailinglist.
         </text>
       </para>
       
@@ -109,6 +111,41 @@ cvs update -r APP_RELEASE -dP
           <br/>
           After the command completes, you have updated every class that has
           been tagged at a new revision.<br/>
+        </text>
+      </para>
+      
+      <para>
+        <caption>Moving the tag to a newer version</caption>
+        <text>
+          Moving the tag to a newer version may not be a simple task. Tags
+          make sure that the correct revisions of files are checked out for
+          a given project. After moving the tag to another revision involved
+          classes may stop working together and subsequent tag movements may
+          be required.<br/>
+          As tags do not contain information about which version of a file
+          works with another version, it is the duty of the programmer to 
+          check if the involved classes still work.<br/>
+          The most simple and sensible way of moving the tags is to move the
+          tags to the HEAD-revision of one or all files. When updateing to HEAD
+          it is most likely that the versions interact correctly. On the other
+          hand HEAD may have introduced (still undetected) bugs, so this is
+          the backdraw. The safest way is to create a stage where you can test
+          all your changes before you install it on your real server.
+        </text>
+      </para>
+      
+      <para>
+        <caption>Reverting changes</caption>
+        <text>
+          Reverting changes should always result in a new revision (that is
+          a new commit). One should <i>never</i> move a tag backwards to an
+          older revision because other developers will always work on the HEAD
+          version of a file, making changes to HEAD and commit these changes.
+          Then, if they have finished the changes, they will tag the new 
+          version of the file and thus, implicitly and not wanted, revert the 
+          previous reversion.<br/>
+          So, if you need to revert a change use the <tt>-j</tt> flag for
+          <tt>cvs update</tt>.
         </text>
       </para>
     </content>
