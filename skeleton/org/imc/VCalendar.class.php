@@ -179,6 +179,8 @@
       static $event;
       static $timezone;
       
+      var_dump ($keys, $value);
+      
       // Cascaded objects      
       if (0 == strcasecmp('BEGIN', $keys[0])) $context[]= strtolower($value);
       

@@ -195,6 +195,14 @@
       if (is_a ($value, 'Date')) {
         // Convert date into string
         $value= $value->toString ('Ymd').'T'.$value->toString ('His').'Z';
+      } else if (is_object ($value)) {
+        foreach (get_object_vars ($value) as $pkey=> $pvalue) {
+          if ('_value' == $pkey) continue;
+          
+          // Append parameters
+          $key.= ';'.strtoupper ($pkey).'='.$pvalue;
+        }
+        $value= $value->_value;
       }
 
       // Escape string, encode it to UTF8    
@@ -218,7 +226,7 @@
       $ret.= $this->_export ('DTEND',       $this->getEnds());
       $ret.= $this->_export ('DESCRIPTION', $this->getDescription());
       $ret.= $this->_export ('SUMMARY',     $this->getSummary());
-      $ret.= $this->_export ('ORGANZIZER',  $this->getOrganizer());
+      $ret.= $this->_export ('ORGANIZER',   $this->getOrganizer());
       
       // Append all attendees
       foreach ($this->getAttendees() as $a) {
