@@ -6,6 +6,7 @@ $Id$
 @created: Wed Nov 24 16:08:41 CET 2004
 @status: implemented 
 @category: rdbms
+@implemented: Mon Dec 27 11:02:35 CET 2004
 
 Scope of Change
 ---------------
