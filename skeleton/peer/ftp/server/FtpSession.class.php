@@ -17,7 +17,8 @@
     var
       $username       = '',
       $authenticated  = FALSE,
-      $type           = TYPE_ASCII;
+      $type           = TYPE_ASCII,
+      $tempVar        = array();
 
     /**
      * Returns type name depending on the type
@@ -100,6 +101,38 @@
      */
     function setType($type) {
       $this->type= $type;
+    }
+
+    /**
+     * Set temporary variable
+     *
+     * @access  public
+     * @param   string name
+     * @param   mixed value
+     */
+    function setTempVar($name, $value) {
+      $this->tempVar[$name]= $value;
+    }
+
+    /**
+     * Get value of a temporary variable
+     *
+     * @access  public
+     * @param   string name
+     * @return  mixed value
+     */    
+    function getTempVar($name) {
+      return $this->tempVar[$name];
+    }
+    
+    /**
+     * Remove a temporary variable
+     *
+     * @access  public
+     * @param   string name
+     */    
+    function removeTempVar($name) {
+      unset($this->tempVar[$name]);
     }
 
     /**
