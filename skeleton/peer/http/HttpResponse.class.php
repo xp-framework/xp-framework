@@ -12,10 +12,13 @@
    */
   class HttpResponse extends Object {
     var
-      $statuscode   = 0,
-      $message      = '',
-      $version      = '',
-      $headers      = array();
+      $statuscode    = 0,
+      $message       = '',
+      $version       = '',
+      $headers       = array();
+    
+    var
+      $_headerlookup = array();
       
     /**
      * Constructor
@@ -127,12 +130,12 @@
      * @return  string value or NULL if this header does not exist
      */
     function getHeader($name) {
-      static $h;
-      
       if (!$this->_readhead()) return FALSE;
-      if (!isset($h)) $h= array_change_key_case($this->headers, CASE_LOWER);
+      if (empty($this->_headerlookup)) {
+        $this->_headerlookup= array_change_key_case($this->headers, CASE_LOWER);
+      }
       $name= strtolower($name);
-      return isset($h[$name]) ? $h[$name] : NULL;
+      return isset($this->_headerlookup[$name]) ? $this->_headerlookup[$name] : NULL;
     }
   
   }
