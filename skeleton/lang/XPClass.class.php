@@ -140,8 +140,8 @@
      * @throws    ClassNotFoundException when there is no such class
      */
     function &forName($name) {
-      if (FALSE === ($name= ClassLoader::loadClass($name))) return NULL;
-      return new XPClass($name);
+      if (!($c= ClassLoader::loadClass($name))) return $c;
+      return new XPClass($c);
     }
     
     /**
