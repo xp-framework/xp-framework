@@ -49,7 +49,7 @@
      * @return  &mixed value
      */
     function &get($key) {
-      return $this->storage->read($key);
+      return $this->storage->get($key);
     }
 
     /**
@@ -62,7 +62,7 @@
      * @return  bool success
      */
     function put($key, &$value, $permissions= 0666) {
-      return $this->storage->write($key, $value, $permissions);
+      return $this->storage->put($key, $value, $permissions);
     }
 
     /**
@@ -73,7 +73,7 @@
      * @return  bool success
      */
     function remove($key) {
-      return $this->storage->delete($key);
+      return $this->storage->remove($key);
     }
 
     /**
@@ -100,11 +100,11 @@
       // Initial setup
       if (is_a($p, 'RegistryStorage')) {
         
-        $__instance[$storage->id]= new Registry();
-        $__instance[$storage->id]->storage= &$p;
-        $__instance[$storage->id]->storage->initialize();
+        $__instance[$p->id]= new Registry();
+        $__instance[$p->id]->storage= &$p;
+        $__instance[$p->id]->storage->initialize();
         
-        return $__instance[$storage->id];
+        return $__instance[$p->id];
       }
       
       trigger_error('Type: '.gettype($p), E_USER_WARNING);
