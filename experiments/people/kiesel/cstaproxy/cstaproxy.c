@@ -10,6 +10,8 @@
 /* Socket */
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 /* Regex */
 #include <regex.h>
@@ -53,7 +55,13 @@ int regex_match (char *haystack, char *needle) {
 int main(int argc, char **argv) {
 	int hListen;
 	
-	hListen= create_listening_socket (MYADDR, MYPORT);
+	/* Create listener and add it to the sockets set */
+	if (-1 == (hListen= create_listening_socket (MYADDR, MYPORT))) {
+		ERR("Could not create listening socket");
+		exit (1);
+	}
+
+	select_loop (hListen);	
 	
 	return 0;
 }
