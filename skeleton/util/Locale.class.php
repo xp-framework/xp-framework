@@ -108,6 +108,16 @@
     function getVariant() {
       return $this->variant;
     }
+
+    /**
+     * Returns a hashcode for this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function hashCode() {
+      return sprintf('%u', crc32($this->lang.$this->country.$this->variant));
+    }
     
     /**
      * Create string representation
