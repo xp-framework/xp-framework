@@ -19,12 +19,12 @@
    *   // Header handling                                     
    *   $p->addHeaderFound(                                    
    *     'X-Message-BackReference',                           
-   *     $f= 'var_dump'                                           
+   *     'var_dump'                                           
    *   );                                                     
    *   $p->addHeaderMatch(                                    
    *     'X-Message-BackReference',                           
    *     '/^foo.bar@kk\.?(test)?([0-9]+)\.([0-9]+)$/',      
-   *     $f= 'var_dump'                                           
+   *     'var_dump'                                           
    *   );                                                     
    *
    *   try(); {                                               
@@ -55,9 +55,9 @@
      *
      * @access  public
      * @param   string element
-     * @param   &function func
+     * @param   function func
      */
-    function addHeaderFound($header, &$func) {
+    function addHeaderFound($header, $func) {
       $this->_hcb[]= array($header, NULL, &$func);
     }
 
@@ -67,9 +67,9 @@
      * @access  public
      * @param   string element
      * @param   string regex
-     * @param   &function func
+     * @param   function func
      */
-    function addHeaderMatch($header, $regex, &$func) {
+    function addHeaderMatch($header, $regex, $func) {
       $this->_hcb[]= array($header, $regex, &$func);
     }
     
@@ -460,7 +460,7 @@
                 (preg_match($defines[1], $v, $regs))
               ) {
                 # printf("CALLBACK>> %s(%s %s)\n", var_export($defines[2], 1), var_export($v, 1), var_export($regs, 1));
-                call_user_func($defines[2], $v, $regs);
+                call_user_func($defines[2], $daemonmessage, $v, $regs);
               }
             }
             break;
