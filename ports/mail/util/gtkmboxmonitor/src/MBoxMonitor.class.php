@@ -399,13 +399,19 @@
       try(); {
         $this->stor->cache->expunge();
         
+        // Check if a mailbox was specified. Else, use "INBOX"
+        if ('' === ($mbox= substr($this->dsn->getPath(), 1))) {
+          $mbox= 'INBOX';
+          $this->log($mbox);
+        }
+        
         if (!$this->stor->isConnected()) {
           $this->setStatusText('Connecting...');
           $this->stor->connect($this->dsn->getURL()); 
         }
         
-        $this->setStatusText('Getting folder contents');
-        if ($f= &$this->stor->getFolder('INBOX')) {
+        $this->setStatusText('Getting folder contents for '.$mbox);
+        if ($f= &$this->stor->getFolder($mbox)) {
           $f->open();
           
           $this->tree->clear();
