@@ -10,6 +10,7 @@ This is the directory layout:
 - classes/      User collections (e.g. de.thekid)
 - dist/         Distributed ports
 - xpi/          The XP installer
+- xpt/          The XP unit test runner
 - xp.ports.mk   Makefile include
 
 Directory "principals"
