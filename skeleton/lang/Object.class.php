@@ -47,18 +47,6 @@
     }
     
     /**
-     * Clones this object
-     *
-     * @access  public
-     * @return  &lang.Object the clone
-     */
-    function &clone() {
-      $clone= $this;
-      $clone->__id= microtime();
-      return $clone;
-    }
-    
-    /**
      * Destructor
      *
      * @access  public
