@@ -39,28 +39,16 @@ friebe, Sat Jun 15 22:35:34 CEST 2002
 * Installer etc.
   Ähnlich bsd:///usr/ports konstruieren
 
-+ de.schlund*
-  Eigenes CVS-Modul
-  
-* net.http: 
+* peer: 
   HTTPConnection statt HTTPRequest
   FTPConnection einführen
   
-* net.session: 
+* sessions:
   Basis-Session-Klasse definieren
   Eine via Shared Memory
   Eine via Serialize in Files
   
-* de.schlund:
-  Context => State (misleading names)
-  Hannah-Session-Klasse neu
-  
-* util.web.workflow:
-  Workflow/State/Handler an Pfix2 anpassen und dokumentieren
-  HTTPRequest einführen, der den Request wrapped (method, data, ...)
-  
-+ rdbms:
-  MySQL und PostgreSQL-Klassen
+* rdbms:
   Transaktionen über eine Klasse wrappen?
   
 + util.log:
