@@ -465,7 +465,7 @@ nedit.highlightPatterns: C:1:0{\n\
 	}\n\
 	Matlab:Default\n\
 	PHP:1:0{\n\
-		phptags:"<(\\<\\?(php)?|\\?\\>)>":::Plain::\n\
+		phptags:"(\\<\\?(php)?|\\?\\>)":::Plain::\n\
 		doccomment:"/\\*\\*":"\\*/"::Comment:phptags:\n\
 		doccommenttag:"@(access|return|throws|see|model|purpose|deprecated|ext|platform|param)":::Text Key1:doccomment:\n\
 		comment:"/\\*":"\\*/"::Text Arg2:phptags:\n\
