@@ -78,9 +78,10 @@
      */
     function setProperty($uri, &$property) {
       $name= $property->getName();
+      $prefix= $property->getNameSpacePrefix();
       $properties= $this->getProperties($uri);
       if ($property !== NULL) {
-        $properties[$name]= $property;
+        $properties[$prefix.$name]= $property;
       } else if (isset($properties[$name])) {
         unset($properties[$name]);
       }
