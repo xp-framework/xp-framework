@@ -1,0 +1,68 @@
+RFC 0017: Webservices access control
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Fri Feb 11 19:35:30 CET 2005
+@status: draft
+@category: xml.soap.rpc
+
+Scope of Change
+---------------
+The webservices APIs (xml.xmprpc and xml.soap.rpc) will have access 
+control built in.
+
+Rationale
+---------
+You can protect *entire* webservices by using your web server's 
+authentication models (e.g. Basic Authorization via .htaccess in Apache)
+but cannot protect selective methods.
+
+Functionality
+-------------
+The functionality will be (in part) implemented by using metadata. This 
+way, a service developer can define access control for critical methods.
+
+Methods that should be restricted are given a "restricted" annotation
+defining which role a user must have to invoke this method.
+
+Example
+~~~~~~~
+<?php
+  class CustomerHandler extends Object {
+  
+    #[@webmethod]
+    function getByCustomerId($customerId) {
+      // ...
+    }
+
+    #[@webmethod, @restricted(role= 'admin')]
+    function sendMessage($customerId, &$message) {
+      // ...
+    }
+  }
+?>
+
+In case restricted methods are tried to be invoked without authentication,
+the web service should answer with HTTP 401 ("Authentication required").
+
+The deployer (which may be in fact the same person) will now have to
+map the "admin" role to the exact users.
+
+Dependencies
+------------
+RFC #0008
+
+Related documents
+-----------------
+
+Comments
+--------
+- friebe, Fri Feb 11 19:45:50 CET 2005
+  How should the account -> role mappings be realized?
+  
+- friebe, Fri Feb 11 19:46:18 CET 2005
+  How do different SOAP client react to HTTP 401? Is there a standard
+  defining how "access denied" should be represented?
+  
+<EOF>
