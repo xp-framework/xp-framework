@@ -44,11 +44,12 @@
      *
      * @access  public
      * @param   mixed in default NULL either a string or a Unix timestamp, defaulting to now
+     * @throws  lang.IllegalArgumentException in case the date is unparseable
      */
     function __construct($in= NULL) {
-      if (is_string($in) && (-1 !== ($time= strtotime($in)))) {
-        $this->_utime($time);
-      } elseif (is_int($in)) {
+      if (is_string($in)) {
+        $this->_utime(Date::_strtotime($in));
+      } elseif (is_int($in) || is_float($in)) {
         $this->_utime($in);
       } elseif (is_null($in)) {
         $this->_utime(time());
@@ -58,6 +59,274 @@
           'Given argument is neither a timestamp nor a well-formed timestring'
         ));
       }
+    }
+    
+    /**
+     * Get local time zones' offset from GMT (Greenwich main time). 
+     * Caches the result.
+     *
+     * @access  protected
+     * @return  int offset in seconds
+     */
+    function _getGMTOffset() {
+      static $o;
+      
+      if (!isset($o)) $o= mktime(0, 0, 0, 1, 2, 1970, 0)- gmmktime(0, 0, 0, 1, 2, 1970, 0);
+      return $o;
+    }
+    
+    /**
+     * Returns whether a year is a leap year
+     *
+     * @model   static
+     * @access  protected
+     * @param   int year
+     * @return  bool TRUE if the given year is a leap year
+     */
+    function _isLeapYear($year) {
+      return $year % 400 == 0 || ($year > 1582 && $year % 100 == 0 ? FALSE : $year % 4 == 0);
+    }
+    
+    /**
+     * Overflow-safe replacement for PHP's strtotime() function.
+     *
+     * @model   static
+     * @access  protected
+     * @param   string in
+     * @return  int
+     */
+    function _strtotime($in) {
+      static $month_names= array(
+        'Jan' => 1,
+        'Feb' => 2,
+        'Mar' => 3,
+        'Apr' => 4,
+        'May' => 5,
+        'Jun' => 6,
+        'Jul' => 7,
+        'Aug' => 8,
+        'Sep' => 9,
+        'Oct' => 10,
+        'Nov' => 11,
+        'Dec' => 12
+      );
+      
+      // Try to use builtin function strtotime()
+      if (-1 != ($stamp= strtotime($in))) return $stamp;
+
+      // "Dec 31 2070 11:59PM"
+      if ($m= sscanf($in, '%3s %02d %04d %02d:%02d%[AP]M')) {
+        ($m[5] == 'A' && $m[3] == 12) && $m[3]= 0;
+        ($m[5] == 'P' && $m[3] == 12) || $m[3]+= 12;
+        return Date::_mktime($m[3], $m[4], 0, $month_names[$m[0]], $m[1], $m[2]);
+      }
+      
+      // FIXME: Support more formats
+      
+      throw(new IllegalArgumentException('Cannot parse "'.$in.'"'));
+    }
+    
+    /**
+     * Overflow-safe replacement for PHP's mktime() function. Uses the builtin
+     * function in case the year is between 1971 and 2037.
+     *
+     * @model   static
+     * @access  protected
+     * @see     php://mktime
+     * @param   int hour default 0
+     * @param   int minute default 0
+     * @param   int second default 0
+     * @param   int month default 0
+     * @param   int day default 0
+     * @param   int year default 0
+     * @param   int is_dst default -1
+     * @return  int stamp
+     */
+    function _mktime($hour= 0, $minute= 0, $second= 0, $month= 0, $day= 0, $year= 0, $is_dst= -1) {
+      static $month_table= array(
+        array(NULL, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
+        array(NULL, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) // Leap years
+      );
+    
+      // Use builtin?
+      if (1971 < $year && $year < 2038) {
+        return mktime($hour, $minute, $second, $month, $day, $year, $is_dst);
+      }
+      
+      $gmt= 0;  // FIXME
+
+      // Check for month overflow and advance into next year
+      if ($month > 12) {
+        $y= floor($month / 12);
+        $year+= $y;
+        $month-= $y * 12;
+      }
+
+      $days= 0;
+      if ($year >= 1970) {
+
+        // Add number of years times number of days per year to days
+        for ($y= 1970; $y < $year; $y++) {
+          $days+= Date::_isLeapYear($y) ? 366 : 365;
+        }
+        
+        // Add number of days per month
+        $days+= array_sum(array_slice($month_table[Date::_isLeapYear($year)], 1, $month- 1));
+        
+        // Add day
+        $days+= $day- 1;
+        
+        // Calculate stamp
+        $stamp= $days * 86400 + $hour * 3600 + $minute * 60 + $second + $gmt;
+      } else {
+      
+        // Add number of years times number of days per year to days
+        for ($y= 1969; $y > $year; $y--) {
+          $days+= Date::_isLeapYear($y) ? 366 : 365;
+        }
+        $leap= Date::_isLeapYear($year);
+        
+        // Add number of days per month
+        $days+= array_sum(array_slice($month_table[$leap], $month, 12));
+        
+        // Subtract day
+        $days+= $month_table[$leap][$month]- $day;
+        
+        // Calculate stamp
+        $stamp= - ($days * 86400 - (86400 - ($hour * 3600 + $minute * 60 + $second)) - $gmt);
+        
+        // Gregorian correction
+        if ($stamp < -12220185600) {
+          $stamp+= 864000; 
+        } else if ($stamp < -12219321600) {
+          $stamp = -12219321600;
+        }
+      } 
+
+      return $stamp;
+    }
+    
+    /**
+     * Overflow-safe replacement for PHP's getdate() function. Uses the
+     * builtin function when 0 <= stamp <= LONG_MAX, the userland 
+     * implementation otherwise.
+     *
+     * @model   static
+     * @access  protected
+     * @see     php://getdate
+     * @param   int stamp
+     * @return  array
+     */
+    function _getdate($stamp, $isGMT= FALSE) {
+      static $month_table= array(
+        array(NULL, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
+        array(NULL, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) // Leap years
+      );
+      
+      // Use builtin?
+      if ($stamp >= 0 && $stamp <= LONG_MAX) return getdate($stamp);
+      
+      $result= array(); 
+      $gc= 0;
+      if ($stamp < 0) {
+
+        // Oct 15, 1582 or earlier
+        if ($stamp < -12219321600) $stamp-= 864000;
+      
+        // Look for year
+        for ($year= 1970; --$year >= 0; ) {
+          $last= $stamp;
+          $leap= Date::_isLeapYear($year);
+          $stamp+= $leap ? 31622400 : 31536000;
+          if ($stamp >= 0) {
+            $result['year']= $year;
+            break;
+          }
+        }
+        $seconds= 31536000 + (86400 * $leap) + $last;
+        $result['leap']= $leap;
+
+        // Look for month
+        $stamp= $last;
+        for ($month= 13; --$month > 0; ) {
+          $last= $stamp;
+          $stamp+= $month_table[$leap][$month] * 86400;
+          if ($stamp >= 0) {
+            $result['mon']= $month;
+            $result['ndays']= $month_table[$leap][$month];
+            break;
+          }
+        }
+
+        // Figure out day
+        $stamp= $last;
+        $result['mday']= $result['ndays']+ ceil(($stamp+ 1) / 86400);
+
+        // Figure out hour
+        $stamp+= ($result['ndays']- $result['mday']+ 1) * 86400;
+        $result['hours']= floor($stamp / 3600);
+        
+        // Gregorian correction value
+        $gc= ($result['year'] < 1582 || ($result['year'] == 1582 && $result['mon'] == 10 && $result['mday'] < 15)) ? 3 : 0;
+      } else {
+
+        // Look for year
+        for ($year= 1970; ; $year++) {
+          $last= $stamp;
+
+          $leap= Date::_isLeapYear($year);
+          if (0 >= ($stamp-= $leap ? 31622400 : 31536000)) {
+            $result['year']= $year;
+            break;
+          }
+        }
+        $seconds= $last;
+        $result['leap']= $leap;
+        
+        // Look for month
+        $stamp= $last;
+        for ($month= 1; $month <= 12; $month++) {
+          $last= $stamp;
+          if (0 >= ($stamp-= $month_table[$leap][$month] * 86400)) {
+            $result['mon']= $month;
+            $result['ndays']= $month_table[$leap][$month];
+            break;
+          }
+        }
+
+        // Figure out day
+        $stamp= $last;
+        $result['mday']= ceil(($stamp+ 1) / 86400);
+        
+        // Figure out hour
+        $stamp-= ($result['mday']- 1) * 86400;
+        $result['hours']= floor($stamp / 3600);
+      }
+      
+      // Figure out minutes and seconds
+      $stamp-= $result['hours'] * 3600;
+      $result['minutes']= floor($stamp / 60);
+      $result['seconds']= $stamp - $result['minutes'] * 60;
+      
+      // Figure out day of year
+      $result['yday']= floor($seconds / 86400);
+      
+      // Figure out day of week
+      if ($month > 2) $month-= 2; else {
+        $year--;
+        $month+= 10;
+      }
+      $d= (
+        floor((13 * $month - 1) / 5) + 
+        $result['mday'] + ($year % 100) +
+        floor(($year % 100) / 4) +
+        floor(($year / 100) / 4) - 2 *
+        floor($year / 100) + 77
+      );
+      $result['wday']= (($d - 7 * floor($d / 7))) + $gc;
+      $result['weekday']= gmdate('l', 86400 * (3 + $result['wday']));
+      $result['month']= gmdate('F', mktime(0, 0, 0, $result['mon'], 2, 1971));
+      return $result;
     }
     
     /**
@@ -107,8 +376,8 @@
      * @param   int utime Unix-Timestamp
      */
     function _utime($utime) {
-      foreach (getdate($this->_utime= $utime) as $key => $val) {
-        if (is_string($key)) $this->$key= $val;
+      foreach ($this->_getdate($this->_utime= $utime) as $key => $val) {
+        $this->{$key}= $val;
       }
     }
     
@@ -244,7 +513,78 @@
      * @return  string the formatted date
      */
     function toString($format= 'r') {
-      return date($format, $this->_utime);
+      static $daynames= array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
+      static $monthnames= array(NULL, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+      static $suffix= array('th', 'st', 'nd', 'rd', 'th');
+
+      // Use builtin?
+      if (1971 < $this->year && $this->year < 2038) return date($format, $this->_utime);
+      
+      $return= '';
+      $gmt= Date::_getGMTOffset();
+      for ($i= 0, $s= strlen($format); $i < $s; $i++) {
+        switch ($format{$i}) {
+          case 'a': $return.= $this->hour > 12 ? 'pm' : 'am'; break;
+          case 'A': $return.= $this->hour > 12 ? 'PM' : 'AM'; break;
+          case 'B': $return.= '???SWATCH???'; break;        // FIXME
+          case 'c': $return.= sprintf(
+              '%04d-%02d-%02dT%02d:%02d:%02d%s%2d:%2d', 
+              $this->year,
+              $this->mon,
+              $this->mday,
+              $this->hour,
+              $this->minutes,
+              $this->seconds,
+              $gmt < 0 ? '+' : '-',
+              abs($gmt) / 36,
+              abs($gmt) / 18
+            );
+            break;
+          case 'd': $return.= sprintf('%02d', $this->mday); break;
+          case 'D': $return.= $daynames[$this->wday]; break;
+          case 'F': $return.= $this->month; break;
+          case 'g': $return.= $this->hour == 0 ? 12 : $this->hour > 12 ? $this->hour - 12 : $this->hour; break;
+          case 'G': $return.= $this->hour; break;
+          case 'h': $return.= sprintf('%02d', $this->hour == 0 ? 12 : $this->hour > 12 ? $this->hour - 12 : $this->hour); break;
+          case 'H': $return.= sprintf('%02d', $this->hour); break;
+          case 'i': $return.= sprintf('%02d', $this->minutes); break;
+          case 'I': $return.= '???IS_DST???'; break;        // FIXME
+          case 'j': $return.= $this->mday; break;
+          case 'l': $return.= $this->weekday; break;
+          case 'L': $return.= (int)$this->leap; break;
+          case 'm': $return.= sprintf('%02d', $this->mon); break;
+          case 'M': $return.= $monthnames[$this->mon]; break;
+          case 'n': $return.= $this->mon; break;
+          case 'O': $return.= sprintf('%s%04d', $gmt < 0 ? '+' : '-', abs($gmt) / 36); break;
+          case 'r': $return.= sprintf(
+              '%3s, %02d %3s %04s %02d:%02d:%02d %s%04d',
+              $daynames[$this->wday],
+              $this->mday,
+              $monthnames[$this->mon],
+              $this->year,
+              $this->hours,
+              $this->minutes,
+              $this->seconds,
+              $gmt < 0 ? '+' : '-',
+              abs($gmt) / 36
+            );
+            break;
+          case 's': $return.= sprintf('%02d', $this->seconds);
+          case 'S': $return.= $suffix[max($this->mday % 10, 4)]; break;
+          case 't': $return.= $this->ndays; break;
+          case 'T': $return.= date('T'); break;
+          case 'U': $return.= $this->_utime; break;
+          case 'w': $return.= $this->wday; break;
+          case 'W': $return.= '???WEEKNUMBER???'; break;        // FIXME
+          case 'Y': $return.= sprintf('%04d', $this->year); break;
+          case 'y': $return.= sprintf('%02d', $this->year % 100); break;
+          case 'z': $return.= $this->yday; break;
+          case 'Z': $return.= $gmt * 86400; break;
+          case '\\': if ($i++ >= $s) break;
+          default: $return.= $format{$i};
+        }
+      }
+      return $return;
     }
 
     /**
@@ -256,7 +596,11 @@
      * @return  string the formatted date
      */
     function format($format= '%c') {
-      return strftime($format, $this->_utime);
+
+      // Use builtin?
+      if (1971 < $this->year && $this->year < 2038) return strftime($format, $this->_utime);
+     
+      return '';    // FIXME
     }
   }
 ?>
