@@ -59,10 +59,11 @@
      * @return  bool success
      */
     function close() { 
-      if ($r= sybase_close($this->handle)) {
+      if ($this->handle && $r= sybase_close($this->handle)) {
         $this->handle= NULL;
+        return $r;
       }
-      return $r;
+      return FALSE;
     }
     
     /**
