@@ -102,6 +102,8 @@
      * Bind
      *
      * @access  public
+     * @param   string user default NULL
+     * @param   string pass default NULL
      * @return  bool success
      * @throws  peer.ldap.LDAPException
      * @throws  peer.ConnectException
