@@ -241,7 +241,7 @@
      * @throws  OperationFailedException
      * @throws  OperationNotAllowedException
      */
-    function &delete($filename) {
+    function &delete($filename) {    
       $uri= $this->_normalizePath($this->base.$filename);
 
       if (strlen($uri) <= strlen($this->base.'/')) {
@@ -259,14 +259,26 @@
       if ($this->getLockInfo($filename) !== NULL) {
         return throw(new OperationNotAllowedException($filename.' is locked'));
       }
-      
+
       try(); {
         $f->unlink();
       } if (catch('IOException', $e)) {
         return throw(new OperationFailedException($filename.' cannot be deleted ('.$e->message.')'));
       }
-      // delete properties
+  
+      // Delete backup versions
+      if ($this->propStorage->hasProperty($filename, 'D:version')) {
+        $prop= $this->propStorage->getProperty($filename, 'D:version');
+        $container= &$prop->value;
+  
+        foreach ($container->getVersions() as $v) {
+          $this->delete($v->getHref());
+        }        
+      }
+        
+      // Delete properties
       $this->propStorage->setProperties($filename, NULL);
+      
       return TRUE;
     }
 
