@@ -13,7 +13,8 @@
   class Handler extends Object {
     var
       $form     = '',
-      $errors   = array();
+      $errors   = array(),
+      $wrappers = array();
     
     /**
      * Constructor
@@ -25,7 +26,40 @@
       $this->form= $form;
       parent::__construct();
     }
-     
+    
+    /**
+     * Set a wrapper for a field
+     *
+     * @access  public
+     * @param   string field
+     * @param   &org.apache.xml.workflow.Wrapper wrapper  
+     */
+    function setWrapper($field, &$wrapper) {
+      $this->wrappers[$field]= &$wrapper;
+    }
+    
+    /**
+     * Get a wrapper for a field
+     *
+     * @access  public
+     * @param   string field
+     * @return  &org.apache.xml.workflow.Wrapper wrapper, if existant or NULL
+     */
+    function getWrapper($field) {
+      return isset($this->wrappers[$field]) ? $this->wrappers[$field] : NULL;
+    }
+
+    /**
+     * Check whether a wrapper exists for a given field
+     *
+     * @access  public
+     * @param   string field
+     * @return  bool
+     */
+    function hasWrapper($field) {
+      return isset($this->wrappers[$field]);
+    }
+    
     /**
      * Add an error
      *
