@@ -64,7 +64,6 @@
      */
     function setBoundary($b) {
       $this->boundary= $b;
-      $this->contenttype= 'multipart/mixed; boundary="'.$this->boundary.'"';
     }
 
     /**
@@ -86,6 +85,9 @@
     function getHeaderString() {
       if (1 == sizeof($this->parts) && $this->parts[0]->isInline()) {
         $this->setContenttype($this->parts[0]->getContenttype());
+        if (is_a($this->parts[0], 'MultiPart'))
+          $this->setBoundary($this->parts[0]->getBoundary());
+
         $this->charset= $this->parts[0]->charset;
       }
       
@@ -218,6 +220,24 @@
       
       $this->_recurseparts($this->parts, $struct->parts);
     }
+    
+    /**
+     * Returns the content-type header. This includes a
+     * boundary information if one is set and a charset
+     * information if one is set.
+     *
+     * @access  private
+     * @return  string header
+     */
+    function _getContenttypeHeaderString() {
+      return $this->contenttype.(empty ($this->boundary)
+        ? ''
+        : '; boundary="'.$this->getBoundary().'"'
+      ).(empty($this->charset) 
+        ? '' 
+        : ";\n\tcharset=\"{$this->charset}\""
+      );
+    }    
 
     /**
      * Get message body.
