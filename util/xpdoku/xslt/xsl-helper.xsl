@@ -101,7 +101,7 @@
     </table>
     <table cellpadding="0" cellspacing="0">
       <tr valign="top">
-        <td bgcolor="#d6e1ff">
+        <td bgcolor="#fafafa">
           <table width="170" cellpadding="4" cellspacing="0">
             <tr valign="top">
 	          <td class="sidebar">
