@@ -18,24 +18,35 @@
   </xsl:template>
 
   <xsl:template match="main">
-    <table border="0" width="100%" cellspacing="0" cellpadding="0">
-      <tr>
-        <th valign="top" align="left">Development</th>
-        <td valign="top" align="right" style="color: #666666">(...)</td>
-	  </tr>
-	  <tr bgcolor="#cccccc">
-        <td colspan="2"><img src="/image/spacer.gif" height="1" border="0"/>
-      </td></tr>
-    </table>
     
     <!-- Introduction -->
-    <p style="line-height: 16px">
-      <xsl:apply-templates select="introduction"/>
-    </p>
-    
+    <xsl:for-each select="teaser">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <th valign="top" align="left">Development: <xsl:value-of select="caption"/></th>
+          <td valign="top" align="right" style="color: #666666"><xsl:value-of select="extra"/></td>
+	    </tr>
+	    <tr bgcolor="#cccccc">
+          <td colspan="2"><img src="/image/spacer.gif" height="1" border="0"/>
+        </td></tr>
+      </table>
+      <p style="line-height: 16px">
+        <xsl:apply-templates select="text"/>
+      </p>
+      <xsl:for-each select="more">
+        <a href="{@href}">
+          <xsl:choose>
+            <xsl:when test="not(./text())">Read more...</xsl:when>
+            <xsl:otherwise><xsl:value-of select="./text()"/></xsl:otherwise>
+          </xsl:choose>
+        </a>
+        <xsl:if test="position() &lt; last()"> | </xsl:if>
+      </xsl:for-each>
+      <br/><br/>
+    </xsl:for-each>
   </xsl:template>
 
-  <xsl:template match="introduction//*">
+  <xsl:template match="text//*">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>
