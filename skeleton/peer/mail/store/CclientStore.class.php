@@ -44,7 +44,7 @@
     function _supports($u, &$attr) {
       return throw(new IllegalArgumentException('Scheme "'.$u['scheme'].'" not recognized'));
     }
-
+    
     /**
      * Connect to store using a DSN
      *
@@ -96,7 +96,37 @@
      * @return  bool success
      */
     function close() { 
-      return @imap_close($this->_hdl[0]);
+      $r= imap_close($this->_hdl[0]);
+      $this->_hdl[0]= NULL;
+      return $r;
+    }
+    
+    /**
+     * Returns whether the connection is open
+     *
+     * @access  public
+     * @return  bool
+     */
+    function isConnected() {
+      return isset($this->_hdl[0]) && is_resource($this->_hdl[0]);
+    }
+
+    /**
+     * Delete all messages marked for deletion
+     *
+     * @access  public
+     * @return  bool success
+     * @throws  MessagingException
+     */    
+    function expunge() {
+      if (FALSE === imap_expunge($this->_hdl[0])) {
+        return throw(new MessagingException(
+          'Expunging deleted messages failed',
+          $this->_errors()
+        ));      
+      }
+      
+      return TRUE;
     }
   
     /**
@@ -231,7 +261,7 @@
         FT_UID | FT_PEEK
       );
     }
-
+    
     /**
      * Proxy method for MailFolder: Get message structure
      *
@@ -247,6 +277,48 @@
         $uid,
         FT_UID | FT_PEEK
       );
+    }
+    
+    /**
+     * Proxy method for MailFolder: Delete a message
+     *
+     * @access  public
+     * @param   &peer.mail.MailFolder f
+     * @param   &peer.mail.Message msg
+     * @return  bool success
+     */
+    function deleteMessage(&$f, &$msg) {
+      if (FALSE === imap_delete($this->_hdl[0], $msg->uid, FT_UID)) {
+        trigger_error('UID: '.$msg->uid, E_USER_NOTICE);
+        return throw(new MessagingException(
+          'Setting flag \Deleted-flag for message failed',
+          $this->_errors()
+        ));
+      }
+      
+      $msg->flags |= MAIL_FLAG_DELETED;
+      return TRUE;
+    }
+
+    /**
+     * Proxy method for MailFolder: Undelete a message
+     *
+     * @access  public
+     * @param   &peer.mail.MailFolder f
+     * @param   &peer.mail.Message msg
+     * @return  bool success
+     */
+    function undeleteMessage(&$f, &$msg) {
+      if (FALSE === imap_undelete($this->_hdl[0], $msg->uid, FT_UID)) {
+        trigger_error('UID: '.$msg->uid, E_USER_NOTICE);
+        return throw(new MessagingException(
+          'Removing \Deleted-flag for message failed',
+          $this->_errors()
+        ));
+      }
+      
+      $msg->flags |= ~MAIL_FLAG_DELETED;
+      return TRUE;
     }
     
     /**

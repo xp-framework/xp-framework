@@ -124,6 +124,28 @@
     }
     
     /**
+     * Delete a message
+     *
+     * @access  public
+     * @param   &peer.mail.Message msg
+     * @return  bool success
+     */
+    function deleteMessage(&$msg) {
+      return $this->store->deleteMessage($this, $msg);
+    }
+
+    /**
+     * Undelete a message
+     *
+     * @access  public
+     * @param   &peer.mail.Message msg
+     * @return  bool success
+     */
+    function undeleteMessage(&$msg) {
+      return $this->store->undeleteMessage($this, $msg);
+    }
+    
+    /**
      * Get next message (iterator)
      *
      * Example:
