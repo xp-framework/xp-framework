@@ -68,6 +68,43 @@
         $entry->addChild(Node::fromObject(new Date($record['timestamp']), 'date'));
         $entry->addChild(FormresultHelper::markupNodeFor('body', $record['body']));
         $entry->addChild(FormresultHelper::markupNodeFor('extended', $record['extended']));
+        
+        // Fetch comments
+        try(); {
+          $q= &$db->query('
+            select 
+              comment.id as id,
+              comment.title as title,
+              comment.author as author,
+              comment.email as email,
+              comment.url as url,
+              comment.body as body,
+              comment.timestamp as timestamp
+            from
+              serendipity_comments comment
+            where
+              entry_id= %d
+            ',
+            $entry->getAttribute('id')
+          );
+        } if (catch('SQLException', $e)) {
+          $cat->error($e);
+          return throw($e);
+        }
+      
+        // Add comments to the entry node
+        $comments= &$entry->addChild(new Node('comments'));
+        while ($record= $q->next()) {
+          with ($comment= &$comments->addChild(new Node('comment'))); {
+            $comment->setAttribute('id', $record['id']);
+            $comment->addChild(new Node('title', $record['title']));
+            $comment->addChild(new Node('author', $record['author']));
+            $comment->addChild(new Node('email', $record['email']));
+            $comment->addChild(new Node('url', $record['url']));
+            $comment->addChild(Node::fromObject(new Date($record['timestamp']), 'date'));
+            $comment->addChild(FormresultHelper::markupNodeFor('body', $record['body']));
+          }
+        }
       }
     }
   }
