@@ -56,7 +56,6 @@
      */
     function __construct($info= '') {
       $this->info= $info;
-      
     }
 
     /**
@@ -67,36 +66,35 @@
      * @param   string* args arguments for sprintf-string fmt
      * @param   mixed expect int for one possible returncode, int[] for multiple or FALSE to indicate not to read any data
      * @return  string buf
+     * @throws  io.IOException
+     * @throws  lang.IllegalStateException in case of not being connected
      */
     function _sockcmd() {
-      static $e;
-      
-      if (NULL === $this->_sock) return;
-      if (isset($e)) return throw($e);
+      if (NULL === $this->_sock) {
+        return throw(new IllegalStateException('Not connected'));
+      }
       
       // Arguments
       $args= func_get_args();
       $expect= (array)$args[sizeof($args)- 1];
       
-      if (FALSE !== $args[0]) {
-        $cmd= vsprintf($args[0], array_slice($args, 1, -1));
-      
-        // Write
-        $this->cat && $this->cat->debug('>>>', $cmd);
-        if (FALSE === $this->_sock->write($cmd."\n")) return FALSE;
+      try(); {
+        if (FALSE !== $args[0]) {
+          $cmd= vsprintf($args[0], array_slice($args, 1, -1));
+          $this->_sock->write($cmd."\n");
+          if (FALSE === $expect[0]) return '';
+        }
 
-        // Expecting data?
-        if (FALSE === $expect[0]) return '';
+        // Read
+        $buf= substr($this->_sock->read(), 0, -2);
+      } if (catch('IOException', $e)) {
+        return throw($e);
       }
-      
-      // Read
-      if (FALSE === ($buf= substr($this->_sock->read(), 0, -2))) return FALSE;
-      $this->cat && $this->cat->debug('<<<', $buf);
       
       // Got expected data?
       $code= substr($buf, 0, 3);
       if (!in_array($code, $expect)) {
-        return throw($e= new FormatException(
+        return throw(new FormatException(
           'Expected '.implode(' or ', $expect).', have '.$code.' ["'.$buf.'"] '.
           '- command was '.$cmd
         ));
@@ -122,7 +120,7 @@
      * @param   string server
      * @param   int port default 2628
      * @return  bool success
-     * @throws  IOException
+     * @throws  io.IOException
      */
     function connect($server, $port= 2628) {
       $this->_sock= &new Socket($server, $port);
@@ -147,7 +145,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException
+     * @throws  io.IOException
      */
     function close() {
       if (NULL === $this->_sock) return;
@@ -158,6 +156,7 @@
         return throw($e);
       }
       
+      $this->_sock= NULL;
       return TRUE;      
     }
   
@@ -190,7 +189,7 @@
      * @param   string word
      * @param   strind db default '*'
      * @return  org.dict.DictDefinitionEntry[]
-     * @throws  IOException
+     * @throws  io.IOException
      */
     function &getDefinition($word, $db= '*') {
       $def= array();
@@ -239,7 +238,7 @@
      * @param   string strategy default DICT_STRATEGY_SUBSTRING one of the DICT_STRATEGY_* constants
      * @param   strind db default '*'
      * @return  string definition
-     * @throws  IOException
+     * @throws  io.IOException
      */
     function getWords($word, $strategy= DICT_STRATEGY_SUBSTRING, $db= '*') {
       // TBD
@@ -266,7 +265,7 @@
      *
      * @access  public
      * @return  mixed
-     * @throws  IOException
+     * @throws  io.IOException
      */
     function getStrategies() {
       // TBD    
@@ -296,7 +295,7 @@
      *
      * @access  public
      * @return  mixed
-     * @throws  IOException
+     * @throws  io.IOException
      */
     function getDatabases() {
       // TBD    
@@ -319,7 +318,7 @@
      *
      * @access  public
      * @return  mixed
-     * @throws  IOException
+     * @throws  io.IOException
      */
     function getDatabaseInfo() {
       // TBD    
@@ -353,7 +352,7 @@
      *
      * @access  public
      * @return  mixed
-     * @throws  IOException
+     * @throws  io.IOException
      */
     function getServer() {
       // TBD    
@@ -372,8 +371,8 @@
      * @throws  io.IOException
      */
     function getStatus() {
-      return $this->_sockcmd('STATUS', 210);
-    }
+      return $this->_sockcmd('STATUS', 210);   
+    }  
 
     /**
      * Set a trace for debugging
