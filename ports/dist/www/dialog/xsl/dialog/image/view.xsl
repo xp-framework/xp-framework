@@ -20,47 +20,46 @@
    ! @purpose  Define main content
    !-->
   <xsl:template name="content">
-    <h2>
+    <h3>
       <a href="{func:link('static')}">Home</a> &#xbb; 
       <a href="{func:link(concat('album/view?', /formresult/album/@name))}">
         <xsl:value-of select="/formresult/album/@title"/>
       </a> &#xbb; 
       <xsl:value-of select="/formresult/selected/name"/>
-    </h2>
+    </h3>
 
     <br clear="all"/> 
+    <center>
+      <a title="Previous image" class="pager" id="{/formresult/selected/@id &gt; 0}">
+        <xsl:if test="/formresult/selected/@id &gt; 0">
+          <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
+            'image/view?', 
+            /formresult/album/@name, ',',
+            /formresult/selected/@type, ',',
+            /formresult/selected/@chapter, ',',
+            /formresult/selected/@id - 1
+          ))"/></xsl:attribute>
+        </xsl:if>
+        <img alt="&#xab;" src="/image/prev.gif" border="0" width="19" height="15"/>
+      </a>
+      <a title="Next image" class="pager" id="{/formresult/selected/@last = ''}">
+        <xsl:if test="/formresult/selected/@last = ''">
+          <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
+            'image/view?', 
+            /formresult/album/@name, ',',
+            /formresult/selected/@type, ',',
+            /formresult/selected/@chapter, ',',
+            /formresult/selected/@id + 1
+          ))"/></xsl:attribute>
+        </xsl:if>
+        <img alt="&#xbb;" src="/image/next.gif" border="0" width="19" height="15"/>
+      </a>
+    </center>
+    
     <table width="100%" border="0">
       <tr>
-        <td align="left" width="40">
-          <a title="Previous image" class="pager" id="{/formresult/selected/@id &gt; 0}">
-            <xsl:if test="/formresult/selected/@id &gt; 0">
-              <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
-                'image/view?', 
-                /formresult/album/@name, ',',
-                /formresult/selected/@type, ',',
-                /formresult/selected/@chapter, ',',
-                /formresult/selected/@id - 1
-              ))"/></xsl:attribute>
-            </xsl:if>
-            <img alt="&#xab;" src="/image/prev.gif" border="0" width="19" height="15"/>
-          </a>
-        </td>
-        <td width="640">
-          <img class="image" src="/albums/{/formresult/album/@name}/{/formresult/selected/name}"/>
-        </td>
-        <td align="right" width="40">
-          <a title="Next image" class="pager" id="{/formresult/selected/@last = ''}">
-            <xsl:if test="/formresult/selected/@last = ''">
-              <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
-                'image/view?', 
-                /formresult/album/@name, ',',
-                /formresult/selected/@type, ',',
-                /formresult/selected/@chapter, ',',
-                /formresult/selected/@id + 1
-              ))"/></xsl:attribute>
-            </xsl:if>
-            <img alt="&#xbb;" src="/image/next.gif" border="0" width="19" height="15"/>
-          </a>
+        <td id="image" align="center">
+          <img src="/albums/{/formresult/album/@name}/{/formresult/selected/name}"/>
         </td>
       </tr>
     </table>
