@@ -29,7 +29,7 @@ Generische Keywords:
 @see     Ein Verweis
          Syntax: (<url>|<klasse>|<klasse>#<methode>|<email>|php://<funktion>|rfc://<nummer>)
          
-         @see    http://schlund.de/
+         @see    http://xp.php3.de/
          @see    xp://io.File
          @see    xp://io.File#open
          @see    mailto:thekid@thekid.de

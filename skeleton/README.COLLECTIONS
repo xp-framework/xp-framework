@@ -24,9 +24,6 @@ in Unterverzeichnissen angelegt werden:
 
 skeleton/<tld>/<domainname>[/<subdomainname>]
 
-Also, Schlund+Partner (http://schlund.de/)-spezifisches gehört demzufolge
-nach skeleton/de/schlund/.
-
 Das entspricht dem Java-Prinzip.
 
 Installation und Upgrade:
@@ -147,8 +144,8 @@ Format hat (am Beispiel am einfachsten zu erkennen):
 
 <collection.ini>
 [collection]
-distname="schlund"
-name="Schlund+Partner Collection"
+distname="binford"
+name="Binford Collection"
 version=1.0
 experimental=no
 
@@ -162,7 +159,7 @@ email.kiesel="kiesel@php3.de"
 site.kiesel="http://alexkiesel.de/"
 
 [distribution]
-site.0="http://xp.schlund.de/collections/"
+site.0="http://binford6100.info/xp/collections/"
 site.1="ftp://anonymous:foo@baz.de/collections/"
 site.2="cvs://pserver/cvs:cvsread@foo.bar/repository?module"
 site.3="cvs://ext/adminphp@cvs/home/cvs/repositories?module"

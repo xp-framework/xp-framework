@@ -159,15 +159,15 @@ File-Objektes.
 
 Beispiel:
 <pre>
-Exception de.schlund.db.togal.TOGALException (statement failed)
-  at TOGALPart.class.php:create (line 71:Undefined property:  subject)
-  at TOGALPart.class.php:create (line 71:Undefined property:  abstract)
+Exception info.binford6100.db.Message.MessageException (statement failed)
+  at MessagePart.class.php:create (line 71:Undefined property:  subject)
+  at MessagePart.class.php:create (line 71:Undefined property:  abstract)
   at SPSybase.class.php:query (line 140:Sybase:  Server message:  part not found. 
     Specify owner.objectname or use sp_help to check whether the object exists 
     (sp_help may produce lots of output). (severity 16, procedure N/A)
   )
-  at TOGALPart.class.php:create (line 97:Undefined variable:  data)
-  in TOGAL_CTX_GLOBAL
+  at MessagePart.class.php:create (line 97:Undefined variable:  data)
+  in MESSAGE_CTX_GLOBAL
 </pre>
 
 Code:
