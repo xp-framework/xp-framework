@@ -170,7 +170,6 @@
       // Create src and dst objects
       $src= is_dir($filename)    ? new Folder($filename)    : new File($filename);
       $dst= is_dir($destination) ? new Folder($destination) : new File($destination);
-      $src_uri= $src->getURI();
 
       // Is overwriting permitted?
       if ($dst->exists() && !$overwrite) {
@@ -185,10 +184,12 @@
       }
       
       // Move/copy properties aso
-      $properties= &$this->propStorage->getProperties($src_uri);
+      $src= substr($filename, strlen($this->base));
+      $dst= substr($destination, strlen($this->base));
+      $properties= &$this->propStorage->getProperties($src);
       if (!empty($properties)){
-        if (!$docopy) $this->propStorage->setProperties($src_uri, NULL);
-        $this->propStorage->setProperties($dst->getURI(), $properties);
+        if (!$docopy) $this->propStorage->setProperties($src, NULL);
+        $this->propStorage->setProperties($dst, $properties);
       }
       return !$exists;
     }
