@@ -42,7 +42,6 @@
 
       try(); {
         list($data)= $db->select('
-          select
             news_id,
             caption,
             link,
