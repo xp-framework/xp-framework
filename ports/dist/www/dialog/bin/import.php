@@ -168,9 +168,9 @@ __
   krsort($entries);
   $cat && $cat->debug($entries);
   
-  // ...for home page: Five newest entries
+  // ...for home page: Eight newest entries
   try(); {
-    FileUtil::setContents(new File(DATA_FOLDER.'index'), serialize(array_slice($entries, 0, 5)));
+    FileUtil::setContents(new File(DATA_FOLDER.'index'), serialize(array_slice($entries, 0, 8)));
   } if (catch('IOException', $e)) {
     $e->printStackTrace();
     exit(-1);
