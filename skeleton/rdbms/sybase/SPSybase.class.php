@@ -115,31 +115,35 @@
      */
     function &fetch($query) {
       $row= sybase_fetch_array($query);
-      if($row) {
-        foreach($row as $key=> $val) {
-          // Zahlen aus dem Array rippen
-          if(is_int($key)) {
-            unset($row[$key]);
-            continue;
-          }
+      if (FALSE === $row) return FALSE;
+      
+      foreach($row as $key=> $val) {
 
-          // Datumsangaben automatisch umwandeln
-          // Default: mon dd yyyy hh:mm AM (or PM)
-          if(preg_match('/^([a-zA-Z]{3})[ ]+([0-9]{1,2})[ ]+([0-9]{2,4})[ ]+([0-9]{1,2}):([0-9]{1,2})([A|P]M)$/', substr($val, 0, 23), $regs)) {
-            $regs[1]= $GLOBALS["Sybase__monthmapping"][$regs[1]];
-            if($regs[6]== "PM" && $regs[4]!= 12) $regs[4]+= 12; // 12 PM => 12:00
-            if($regs[6]== "AM" && $regs[4]== 12) $regs[4]= 0;   // 12 AM => 00:00
-            $format= "%02d.%02d.%04d";
-            if(($regs[4]+ $regs[5])!= 0) $format.= ", %02d:%02d Uhr";
-            $arr["sdate_$key"]= $val;
-            $arr["udate_$key"]= mktime($regs[4], $regs[5], 0, $regs[1], $regs[2], $regs[3]);
-            $arr[$key]= sprintf($format, $regs[2], $regs[1], $regs[3], $regs[4], $regs[5]);
-          }
-          
-          // BZ-IDs durch ihre Beschreibung ergänzen
-          if($key== "bz_id") $row["bz_descr"]= $this->bz_map[$val];
+        // Zahlen aus dem Array rippen
+        if(is_int($key)) {
+          unset($row[$key]);
+          continue;
+        }
+
+        // Datumsangaben automatisch umwandeln
+        // Default: mon dd yyyy hh:mm AM (or PM)
+        if (preg_match('/^([a-zA-Z]{3})[ ]+([0-9]{1,2})[ ]+([0-9]{2,4})[ ]+([0-9]{1,2}):([0-9]{1,2})([A|P]M)$/', substr($val, 0, 23), $regs)) {
+          $regs[1]= $GLOBALS["Sybase__monthmapping"][$regs[1]];
+          if($regs[6]== "PM" && $regs[4]!= 12) $regs[4]+= 12; // 12 PM => 12:00
+          if($regs[6]== "AM" && $regs[4]== 12) $regs[4]= 0;   // 12 AM => 00:00
+          $format= "%02d.%02d.%04d";
+          if(($regs[4]+ $regs[5])!= 0) $format.= ", %02d:%02d Uhr";
+          $row["sdate_$key"]= $val;
+          $row["udate_$key"]= mktime($regs[4], $regs[5], 0, $regs[1], $regs[2], $regs[3]);
+          $row[$key]= sprintf($format, $regs[2], $regs[1], $regs[3], $regs[4], $regs[5]);
+        }
+
+        // BZ-IDs durch ihre Beschreibung ergänzen
+        if($key== "bz_id" && !empty($this->bz_map)) {
+          $row["bz_descr"]= $this->bz_map[$val];
         }
       }
+      
       return $row;
     }
     
@@ -221,16 +225,16 @@
      * @param	string sql Das SQL (ohne insert)
      * @return  bool result Query-Ergebnis
      */   
-    function insert($sql) {
-      $this->last_insert_id= $this->last_affected_rows= -1;
-      $this->_logline_text("insert", "{SQL} $sql");
-      $result= $this->query("insert $sql", $this->handle);
-      if($result) {
-        $this->last_affected_rows= sybase_affected_rows();
-      }
-      return $result;
-    }
-    
+	function insert($sql) {
+	  $this->last_insert_id= $this->last_affected_rows= -1;
+	  $this->_logline_text("insert", "{SQL} $sql");
+	  $result= $this->query("insert $sql", $this->handle);
+	  if($result) {
+		$this->last_affected_rows= sybase_affected_rows();
+	  }
+	  return $result;
+	}
+	
     /**
      * Delete-Wrapper
      *
