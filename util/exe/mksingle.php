@@ -72,12 +72,16 @@
     return $data;
   }
   
+  $cd= getcwd(); chdir (dirname ($p->value (1)));
+  
   $filelist= array ();
   $fileData= fileAddContents ($p->value (1), $filelist);
   
   // Strip off all uses(), require() and include()
   // Note: this is a bit of a hack, possibly includes are removed that are still needed. 
   $fileData= preg_replace ('/^\s+(uses|require|require_once|include|include_once)\s*\([^\)]*\);\s*$/mU', '', $fileData);
+  
+  chdir ($cd);
   
   print $fileData;
 ?>
