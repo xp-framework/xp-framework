@@ -62,7 +62,7 @@
      */
     function doCreateSession(&$request, &$response) {
       $context= &new Context();
-      $context->initialize($request->getSession(), $this->classloader);
+      $context->initialize($this->classloader);
       $request->session->putValue('context', $context);
       
       return parent::doCreateSession($request, $response);

@@ -20,10 +20,9 @@
      * Called to initialize this stateflow manager
      *
      * @access  public
-     * @param   &org.apache.HttpSession session
      * @param   &lang.ClassLoader classloader
      */
-    function initialize(&$session, &$classloader) {
+    function initialize(&$classloader) {
       $this->classloader= &$classloader;
       $this->offset= 0;
     }
