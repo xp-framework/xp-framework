@@ -40,9 +40,9 @@
 
         // Open logfile
         $f= &new File(sprintf('%s/%s.%s',
-          $request->getEnvValue('DOCUMENT_ROOT').'/../log/'.$service,
-          strtolower($method),
-          strtolower($type)
+          $request->getEnvValue('DOCUMENT_ROOT').'/../log/'.basename($service),
+          basename(strtolower($method)),
+          basename(strtolower($type))
         ));
         
         if (!$f->exists()) {
