@@ -177,7 +177,7 @@
      * @param   int type default XSLT_FILE
      */
     function setStylesheet($stylesheet, $type= XSLT_FILE) {
-      $this->stylesheet= array($isfile, $stylesheet);
+      $this->stylesheet= array($type, $stylesheet);
     }
     
     /**
