@@ -1,3 +1,8 @@
+<!--
+ ! Default skin (blue)
+ !
+ ! $Id$
+ !-->
 <xsl:stylesheet
   version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
@@ -25,7 +30,7 @@
       >
       <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
-          <td colspan="2" bgcolor="#7371b4"><img src="chrome://ui/header.gif"/></td>
+          <td colspan="2" bgcolor="#7371b4"><img src="chrome://ui/skins/image/header_default.gif"/></td>
         </tr>
       </table>
       <table width="100%" border="0" cellspacing="0" cellpadding="2">
