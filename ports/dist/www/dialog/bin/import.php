@@ -175,7 +175,11 @@ __
     try(); {
       FileUtil::setContents(
         new File(DATA_FOLDER.'page_'.($i / ENTRIES_PER_PAGE).'.idx'), 
-        serialize(array($s, array_slice($entries, $i, ENTRIES_PER_PAGE)))
+        serialize(array(
+          'total'   => $s, 
+          'perpage' => ENTRIES_PER_PAGE,
+          'entries' => array_slice($entries, $i, ENTRIES_PER_PAGE)
+        ))
       );
     } if (catch('IOException', $e)) {
       $e->printStackTrace();
