@@ -49,7 +49,7 @@
     );
   }}
   
-  if (!function_exists('var_export')) { function var_export(&$data, $return) {
+  if (!function_exists('var_export')) { function var_export(&$data, $return= 0) {
     ob_start();
     var_dump($data);
     $dump= ob_get_contents();
@@ -61,7 +61,34 @@
   
   function &cast(&$var, $type= NULL) {
     if (NULL == $var) return NULL;
-    if (NULL != $type) settype($var, $type);
+    
+    switch ($type) {
+      case NULL: 
+        break;
+        
+      case 'int':
+      case 'float':
+      case 'string':
+      case 'array':
+      case 'object':
+      case 'bool':
+      case 'null':
+        settype($var, $type);
+        break;
+      
+      default:
+        // Cast to an object of "$type"
+        $o= &new $type;
+        if (is_object($var) || is_array($var)) {
+          foreach ($var as $k => $v) {
+            $o->$k= $v;
+          }
+        } else {
+          $o->scalar= $var;
+        }
+        return $o;
+        break;
+    }
     return $var;
   }
 
