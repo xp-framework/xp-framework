@@ -116,9 +116,14 @@
             $this->_errors()
           ));      
         }
-        $this->cache->put(SKEY_FOLDER.$name, new MailFolder($this, $name));
+        
+        $folder= &new MailFolder($this, $name);
+        $this->cache->put(SKEY_FOLDER.$name, $folder);
+      } else {
+        $folder= &$this->cache->get(SKEY_FOLDER.$name);
       }
-      return $this->cache->get(SKEY_FOLDER.$name);
+      
+      return $folder;
     }
 
     /**
