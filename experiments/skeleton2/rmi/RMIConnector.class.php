@@ -10,7 +10,7 @@
    * @see      xp://rmi.RMIObject
    * @purpose  Base class
    */
-  class RMIConnector extends Object {
+  abstract class RMIConnector extends Object {
       
     /**
      * Get a value by its name
