@@ -417,7 +417,7 @@
      *
      * @access  public
      * @param   &peer.mail.MailFolder f
-     * @param   string attr one of "message", "recent" or "unseen"
+     * @param   string attr one of "messages", "recent" or "unseen"
      * @return  int status
      */
     function getMessageCount(&$f, $attr) {
