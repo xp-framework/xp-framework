@@ -17,7 +17,7 @@
    */
   class FilesystemStorage extends Object {
     var
-      $base = DIRECTORY_SEPARATOR,
+      $base = array(),
       $root = '';
 
     /**
@@ -27,7 +27,7 @@
      * @return  string root
      */
     function __construct($root) {
-      $this->root= rtrim($root, DIRECTORY_SEPARATOR).$this->base;
+      $this->root= rtrim($root, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
     
     /**
@@ -37,33 +37,38 @@
      * @param   string uri
      * @return  string
      */
-    function realname($uri) {
-      return $this->root.$this->base.preg_replace('#^[/\.]+#', '', $uri);
+    function realname($clientId, $uri) {
+      return (DIRECTORY_SEPARATOR == $uri{0}
+        ? $this->root
+        : rtrim($this->root.$this->base[$clientId], DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR
+      ).preg_replace('#^[/\.]+#', '', $uri);
     }
 
     /**
      * Sets base
      *
      * @access  public
+     * @param   int clientId
      * @param   string uri
      * @return  string new base
      */
-    function setBase($uri) {
-      if (!is_dir($path= $this->realname($uri))) {
+    function setBase($clientId, $uri) {
+      if (!is_dir($path= $this->realname($clientId, $uri))) {
         return throw(new IOException($uri.': not a directory'));
       }
-      $this->base= str_replace($this->root, '', $path);
-      return $this->base;
+      $this->base[$clientId]= str_replace($this->root, '', $path);
+      return $this->base[$clientId];
     }
     
     /**
      * Retrieves base
      *
      * @access  public
+     * @param   int clientId
      * @return  string
      */
-    function getBase() {
-      return $this->base;
+    function getBase($clientId) {
+      return $this->base[$clientId];
     }
     
     /**
@@ -74,8 +79,8 @@
      * @param   int type one of the ST_* constants
      * @return  &peer.ftp.server.storage.StorageEntry
      */
-    function &create($uri, $type) {
-      $path= $this->realname($uri);
+    function &create($clientId, $uri, $type) {
+      $path= $this->realname($clientId, $uri);
 
       switch ($type) {
         case ST_ELEMENT:
@@ -101,8 +106,8 @@
      * @param   string uri
      * @return  &peer.ftp.server.storage.StorageEntry
      */
-    function &lookup($uri) {
-      if (!file_exists($path= $this->realname($uri))) return NULL;
+    function &lookup($clientId, $uri) {
+      if (!file_exists($path= $this->realname($clientId, $uri))) return NULL;
       
       if (is_dir($path)) {
         return new FilesystemStorageCollection($path);
