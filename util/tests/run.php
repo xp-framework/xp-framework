@@ -4,11 +4,8 @@
  * $Id$ 
  */
   require('lang.base.php');
-  uses(
-    'util.profiling.unittest.TestSuite',
-    'util.cmd.ParamString',
-    'util.Properties'
-  );
+  xp::sapi('cli');
+  uses('util.profiling.unittest.TestSuite', 'util.Properties');
   
   // {{{ main
   $p= &new ParamString();
@@ -22,17 +19,22 @@
   
   $section= $config->getFirstSection();
   do {
-    for ($i= 0, $s= $config->readInteger($section, 'numtests'); $i < $s; $i++) {
-      try(); {
-        $class= &XPClass::forName($config->readString($section, 'test.'.$i.'.class'));
-      } if (catch('ClassNotFoundException', $e)) {
-        echo '*** Error: Test group "'.$section.'", test #'.$i.':: ';
-        $e->printStackTrace();
-        exit(-2);
-      }
+    try(); {
+      $class= &XPClass::forName($config->readString($section, 'class'));
+    } if (catch('ClassNotFoundException', $e)) {
+      Console::write('*** Error: Test group "'.$section.'" ~ ', $e->toString());
+      exit(-2);
+    }
+    
+    for ($methods= $class->getMethods(), $i= 0, $s= sizeof($methods); $i < $s; $i++) {
+      $name= $methods[$i]->getName();
       
-      $name= $config->readString($section, 'test.'.$i.'.name');
-      $arguments= array_merge($name, $config->readArray($section, 'test.'.$i.'.args'));
+      // Ignore non-test and non-public methods
+      if (0 != strncmp('test', $name, 4)) continue;
+      if (!($methods[$i]->getModifiers() & MODIFIER_PUBLIC)) continue;
+      
+      // Add test method
+      $arguments= array_merge($name, $config->readArray($section, 'args'));
       $suite->addTest(call_user_func_array(
         array(&$class, 'newInstance'), 
         $arguments
@@ -40,7 +42,8 @@
     }
   } while ($section= $config->getNextSection());
   
+  // Run test suite
   $result= &$suite->run();
-  echo $result->toString();
+  Console::writeLine($result->toString());
   // }}}
 ?>
