@@ -215,10 +215,10 @@
      *
      * @access  public
      * @param   &peer.ldap.LDAPEntry entry specifying the dn
-     * @return  bool true, if exists
+     * @return  bool TRUE if the entry exists
      */
     function exists(&$entry, $filter= 'objectClass=*') {
-      return (NULL === $this->read($entry, $filter)) ? FALSE : TRUE;
+      return NULL !== $this->read($entry, $filter);
     }
     
     /**
@@ -257,6 +257,58 @@
         array_map(array(&$this, '_encode'), $entry->getAttributes())
       ))) {
         return throw(new IOException('Add for "'.$entry->getDN().'" failed ['.$this->getLastError().']'));
+      }
+      
+      return $res;
+    }
+
+    /**
+     * Modify an entry. 
+     *
+     * Note: Will do a complete update of all fields and can be quite slow
+     * TBD(?): Be more intelligent about what to update?
+     *
+     * @access  public
+     * @param   &peer.ldap.LDAPEntry entry
+     * @return  bool success
+     * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
+     * @throws  IOException when an error occurs during adding the entry
+     */
+    function modify(&$entry) {
+      if (!is_a($entry, 'LDAPEntry')) {
+        return throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
+      } 
+      
+      if (FALSE == ($res= ldap_modify(
+        $this->_hdl, 
+        $entry->getDN(), 
+        array_map(array(&$this, '_encode'), $entry->getAttributes())
+      ))) {
+        return throw(new IOException('Modify for "'.$entry->getDN().'" failed ['.$this->getLastError().']'));
+      }
+      
+      return $res;
+    }
+
+    /**
+     * Delete an entry
+     *
+     * @access  public
+     * @param   &peer.ldap.LDAPEntry entry
+     * @return  bool success
+     * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
+     * @throws  IOException when an error occurs during adding the entry
+     */
+    function delete(&$entry) {
+      if (!is_a($entry, 'LDAPEntry')) {
+        return throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
+      } 
+      
+      if (FALSE == ($res= ldap_delete(
+        $this->_hdl, 
+        $entry->getDN()
+      ))) {
+        return throw(new IOException('Delete for "'.$entry->getDN().'" failed ['.$this->getLastError().']'));
       }
       
       return $res;
