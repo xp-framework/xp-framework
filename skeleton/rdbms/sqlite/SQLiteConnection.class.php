@@ -292,7 +292,7 @@
      * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
-    function query() { 
+    function &query() { 
       $args= func_get_args();
       $sql= $this->_prepare($args);
 
@@ -325,6 +325,11 @@
         ));
       }
 
+      if (TRUE === $result) {
+        $this->_obs && $this->notifyObservers(new DBEvent('queryend', TRUE));
+        return TRUE;
+      }
+      
       $resultset= &new SQLiteResultSet($result);
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 

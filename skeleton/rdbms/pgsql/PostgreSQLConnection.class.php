@@ -272,6 +272,11 @@
         ));
       }
       
+      if (TRUE === $result) {
+        $this->_obs && $this->notifyObservers(new DBEvent('queryend', TRUE));
+        return TRUE;
+      }
+
       $resultset= &new PostgreSQLResultSet($result);
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
