@@ -8,14 +8,18 @@
 #include "sybase_mm.h"
 #include <stdlib.h>
 
-void* sybase_mm_malloc(size_t size, char *filename, uint line)
+inline void* sybase_mm_malloc(size_t size, char *filename, uint line)
 {
+    #ifdef SYBASE_MM_DEBUG
     fprintf(stderr, "Allocating %d bytes at %s:%d\n", size, filename, line);
+    #endif
     return malloc(size);
 }
 
-void sybase_mm_free(void* ptr, char *filename, uint line)
+inline void sybase_mm_free(void* ptr, char *filename, uint line)
 {
+    #ifdef SYBASE_MM_DEBUG
     fprintf(stderr, "Freeing at %s:%d\n", filename, line);
+    #endif
     free(ptr);
 }
