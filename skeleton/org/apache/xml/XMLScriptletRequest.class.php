@@ -29,7 +29,8 @@
    */
   class XMLScriptletRequest extends HttpScriptletRequest {
     var
-      $defaultPage=     'home';
+      $defaultPage=     'home',
+      $defaultFrame=    'top';
       
     /**
      * Gets state
@@ -70,7 +71,7 @@
     function setPage($page) {
       $this->params['__page']= $page;
     }
-    
+
     /**
      * Gets page or default page if none is specified
      *
@@ -80,6 +81,17 @@
     function getPage() {
       if (NULL === ($page= $this->getParam('__page'))) $page= $this->defaultPage;
       return $page;
+    }
+
+    /**
+     * Gets frame or default frame if none is specified
+     *
+     * @access  public
+     * @return  string page
+     */
+    function getFrame() {
+      if (NULL === ($frame= $this->getParam('__frame'))) $frame= $this->defaultFrame;
+      return $frame;
     }
     
     /**

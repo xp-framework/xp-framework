@@ -154,10 +154,11 @@
     function doGet(&$request, &$response) {
     
       // Define special parameters
-      $response->setParam('page',    $request->getPage());        
-      $response->setParam('lang',    $request->getLanguage());    
-      $response->setParam('product', $request->getProduct());     
-      $response->setParam('sess',    $request->getSessionId());   
+      $response->setParam('page',    $request->getPage());
+      $response->setParam('frame',   $request->getFrame());
+      $response->setParam('lang',    $request->getLanguage());
+      $response->setParam('product', $request->getProduct());
+      $response->setParam('sess',    $request->getSessionId());
       
       // Add all request parameters to the formvalue node
       foreach (array_keys($request->params) as $key) {
