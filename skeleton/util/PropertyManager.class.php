@@ -9,6 +9,19 @@
   /**
    * Property-Manager
    * 
+   * Usage:
+   * <code>
+   *   $pm= &PropertyManager::getInstance();
+   *   $pm->configure('etc');
+   *
+   *   // ... later on ...
+   *   $pm= &PropertyManager::getInstance();
+   *   $prop= &$pm->getProperties('database');
+   *  
+   *   // $prop is now a util.Property object with the properties
+   *   // from etc/database.ini
+   * </code>
+   *
    * @purpose  Container
    */
   class PropertyManager extends Object {
@@ -49,7 +62,9 @@
      */
     function &getProperties($name) {
       if (!isset($this->_prop[$this->_path.$name])) {
-        $this->_prop[$this->_path.$name]= &new Properties($this->_path.'/'.$name.'.ini');
+        $this->_prop[$this->_path.$name]= &new Properties(
+          $this->_path.DIRECTORY_SEPARATOR.$name.'.ini'
+        );
       }
       return $this->_prop[$this->_path.$name];
     }
