@@ -49,7 +49,7 @@
     <table border="0" width="100%" cellspacing="0" cellpadding="2">
       <xsl:for-each select="$news/rdf:RDF/rss:item[position() &lt; 6.1]">
         <tr>
-          <td><img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/></td>
+          <td valign="top"><img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/></td>
           <td>
             <a>
               <xsl:attribute name="href">
