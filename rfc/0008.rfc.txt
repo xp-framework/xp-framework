@@ -149,7 +149,7 @@ Details
   Name clashes cause a Fatal Error.
 
   For details, see 
-  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/packages
+  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/packages
 
 * A package access level:
   The package keyword may also be prefixed to a method to declare its
@@ -311,7 +311,7 @@ Details
 
 * Operator overloading
   For details, see 
-  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/operator_overloading
+  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/operator_overloading
 
 * No implementation check during inheritance
   The following would not be checked upon (not even in strict mode):
