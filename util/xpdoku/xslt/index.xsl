@@ -36,8 +36,7 @@
 
   <xsl:template name="navigation">
     
-    <a href="/">XP</a> stands for <b>X</b>ML <b>P</b>HP.<br/>
-    XP is far more than that!
+    <a href="/">XP</a> stands for E<b>X</b>tension Framework for <b>P</b>HP.<br/>
     
     <!-- News -->
     <br/><br/>
