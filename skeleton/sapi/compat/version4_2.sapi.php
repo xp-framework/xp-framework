@@ -4,6 +4,10 @@
  * $Id$
  */
 
+  if (!defined('PATH_SEPARATOR')) {
+    define('PATH_SEPARATOR',  'WIN' == substr(PHP_OS, 0, 3) ? ';' : ':');    
+  }
+
   // {{{ proto array sybase_fetch_assoc(resource result)
   //     See php://sybase_fetch_assoc
   if (!function_exists('sybase_fetch_assoc')) { function sybase_fetch_assoc($res) {
