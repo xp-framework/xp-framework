@@ -3,6 +3,7 @@
   <main>
     <references>
       <ref link="about">An introduction</ref>
+      <ref link="examples">Examples</ref>
       <ref type="ext" link="http://php3.de/manual/en/features.commandline.php">Using PHP from the command line</ref>
       <ref type="ext" link="http://www.gnome.org/seegnome.html">See GTK/Gnome in action</ref>
       <ref type="ext" link="http://www.gimp.org/the_gimp_screenshots.html">GIMP screenshots</ref>

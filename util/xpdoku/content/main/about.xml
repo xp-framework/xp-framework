@@ -387,6 +387,7 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
     </content>
     <references>
       <ref link="tasks">Common Tasks</ref>
+      <ref link="examples">Examples</ref>
       <ref link="about.future">The future of XP</ref>
       <ref link="about.install">Installation</ref>
       <ref type="ext" link="http://pear.php.net/">PEAR</ref>
