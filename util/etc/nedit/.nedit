@@ -366,23 +366,24 @@ nedit.highlightPatterns: C:Default\n\
 	}\n\
 	Matlab:Default\n\
 	PHP:1:0{\n\
-		PHP-Tags:"<(\\<\\?(php)?|\\?\\>)>":::Plain::\n\
-		comment:"/\\*":"\\*/"::Comment:PHP-Tags:\n\
-		inlinecomment:"//":"$"::Comment:PHP-Tags:\n\
-		double quote strings:"""":""""::String:PHP-Tags:\n\
+		phptags:"<(\\<\\?(php)?|\\?\\>)>":::Plain::\n\
+		doccomment:"/\\*\\*":"\\*/"::Comment:phptags:\n\
+		doccommenttag:"@(access|return|throws|see|model|purpose|deprecated|param)":::Text Key1:doccomment:\n\
+		comment:"/\\*":"\\*/"::Text Arg2:phptags:\n\
+		inlinecomment:"//":"$"::Comment:phptags:\n\
+		double quote strings:"""":""""::String:phptags:\n\
 		dq string esc chars:"\\\\(.|\\n)":::String1:double quote strings:\n\
-		single quote strings:"'":"'"::String:PHP-Tags:\n\
+		single quote strings:"'":"'"::String:phptags:\n\
 		sq string esc chars:"\\\\(.|\\n)":::String1:single quote strings:\n\
-		subr header:"function\\s*(\\w*)\\s*(\\([^\\)]*\\))\\s*\\{":::Keyword:PHP-Tags:\n\
-		subr header coloring:"\\1":""::Subroutine:subr header:C\n\
-		subroutine call:"\\w(\\w|::)*>|<\\w(\\w|::)*(?=\\s*\\()":::Subroutine1::D\n\
-		ignore escaped chars:"\\\\[#""'\\$msytq]":::Plain:PHP-Tags:\n\
-		keywords:"<(isset|is_a|instanceof|try|catch|throw|finally|cast|unset|extends|static|uses|import|error_reporting|class|switch|include|logline_text|raise_error|case|default|define|array|var|global|list|c?function|new|if|until|while|elseif|else|eval|for|foreach|continue|exit|die|return|require|not|\\|\\||\\&\\&|and|or|!==?|===?)>":::Keyword:PHP-Tags:\n\
-		class_keywords:"<(public|private|protected|static|abstract|__destruct|__construct|__call|__set|__get|parent|self|main)>":::Text Escape:PHP-Tags:\n\
-		variables:"[$](\\{[^}]*}|[^a-zA-Z0-9_ /\\t\\n\\.,\\\\[\\\\{\\\\(]|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)?":::Text Arg:PHP-Tags:\n\
-		variables in strings:"[$](\\{[^}]*}|[^a-zA-Z0-9_ /\\t\\n\\.,\\\\[\\\\{\\\\(]|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)?":::Identifier1:double quote strings:\n\
+		ignore escaped chars:"\\\\[#""'\\$msytq]":::Plain:phptags:\n\
+		keywords:"<(isset|const|is_a|namespace|interface|implements|instanceof|try|catch|throw|finally|cast|unset|extends|uses|import|error_reporting|class|switch|include|case|default|define|array|var|global|list|c?function|new|if|until|while|elseif|else|eval|for|foreach|continue|exit|die|return|require|not|\\|\\||\\&\\&|and|or|!==?|===?)>":::Keyword:phptags:\n\
+		classkeywords:"<(public|private|protected|static|abstract|final|__destruct|__construct|__call|__set|__get|parent|self|const)>":::Text Escape:phptags:\n\
+		variables:"(::)?[$](\\{[^}]*}|[^a-zA-Z0-9_ /\\t\\n\\.,\\\\[\\\\{\\\\(]|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)?":::Text Arg:phptags:\n\
 		braces and parens:"[\\[\\]{}\\(\\)]":::Identifier::\n\
-		Inline C:"\\<\\<\\<__":"^__"::Text Key1:PHP-Tags:\n\
+		heredoc:"\\<\\<\\<__":"^__"::Text Key1:phptags:\n\
+		classname:"([a-z:]+)?(::)([A-Za-z]+)":::String1:phptags:\n\
+		classnameseperator:"\\2":""::Pointer:classname:C\n\
+		constants:"(NULL|FALSE|TRUE)":::Ada Attributes:phptags:\n\
 	}\n\
 	CSS:Default\n\
 	Regex:Default\n\
