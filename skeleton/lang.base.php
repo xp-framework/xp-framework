@@ -161,7 +161,10 @@
   //     Uses one or more classes
   function uses() {
     foreach (func_get_args() as $str) {
-      require_once(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php');
+      if (FALSE === include_once(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+        $error= &new Error('Cannot include '.$str);
+        xp::error($error->toString());
+      }
       xp::registry('class.'.xp::reflect($str), $str);
     }
   }
