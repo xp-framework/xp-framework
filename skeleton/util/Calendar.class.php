@@ -28,7 +28,7 @@
      * @access  public
      * @param   int year default -1 Year, defaults to current year
      * @param   int method default CAL_DST_EU Method to calculate (CAL_DST_EU|CAL_DST_US)
-     * @return  util.Date
+     * @return  &util.Date
      */
     function &dstBegin($year= -1, $method= CAL_DST_EU) {
       if (-1 == $year) $year= date('Y');
@@ -48,7 +48,7 @@
      *
      * @access  public
      * @param   int year default -1 Year, defaults to current year
-     * @return  util.Date
+     * @return  &util.Date
      */
     function &dstEnd($year= -1) {
       if (-1 == $year) $year= date('Y');
@@ -120,7 +120,7 @@
      *
      * @access  public
      * @param   int year default -1 Year, defaults to this year
-     * @return    int Unix-timestamp for date of the first of advent
+     * @return  &util.Date for date of the first of advent
      * @see     http://www.salesianer.de/util/kalfaq.html
      */
     function advent($year= -1) {
@@ -128,7 +128,7 @@
      
       $s= mktime(0, 0, 0, 11, 26, $year);
       while (0 != date('w', $s)) $s+= CAL_SEC_DAY;
-      return $s;
+      return new Date($s);
     }
     
     /**
@@ -136,8 +136,8 @@
      *
      * @access  public
      * @param   int year default -1 Year, defaults to this year
-     * @return    int Unix-timestamp for Easter date
-     * @see        http://www.koenigsmuenster.de/rsk/epakte.htm
+     * @return  &util.Date date for Easter date
+     * @see     http://www.koenigsmuenster.de/rsk/epakte.htm
      * @see     http://www.salesianer.de/util/kalfaq.html
      * @see     php://easter-date#user_contrib
      */
@@ -152,7 +152,7 @@
       $l = $i - $j;
       $m = 3 + (int)(($l + 40) / 44);
       $d = $l + 28 - 31 * ((int)($m / 4));
-      return mktime(0, 0, 0, $m, $d, $year);
+      return new Date(mktime(0, 0, 0, $m, $d, $year));
     }
   }
 
