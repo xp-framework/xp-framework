@@ -1,0 +1,47 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+ 
+  /**
+   * XML Schema wrapper
+   *
+   * From 
+   * An XML Schema is a set of ·schema components. There are 13 kinds of 
+   * component in all, falling into three groups. The primary components, 
+   * which may (type definitions) or must (element and attribute 
+   * declarations) have names are as follows:
+   * <ul>
+   *   <li>Simple type definitions
+   *   <li>Complex type definitions
+   *   <li>Attribute declarations
+   *   <li>Element declarations
+   * </ul>
+   * The secondary components, which must have names, are as follows:
+   * <ul>
+   *   <li>Attribute group definitions
+   *   <li>Identity-constraint definitions
+   *   <li>Model group definitions
+   *   <li>Notation declarations
+   * </ul>
+   * Finally, the "helper" components provide small parts of other components; 
+   * they are not independent of their context:
+   * <ul>
+   *   <li>Annotations
+   *   <li>Model groups
+   *   <li>Particles
+   *   <li>Wildcards
+   *   <li>Attribute Uses
+   * </ul>
+   *
+   * @see http://www.w3.org/TR/xmlschema-1
+   * @see http://www.w3.org/TR/xmlschema-1/#concepts-data-model
+   */
+  class XmlSchema extends Object {
+    var 
+      $elements=   array(),
+      $attributes= array();
+      
+  }
+?>
