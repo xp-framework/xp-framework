@@ -94,7 +94,9 @@
         }
         
         // Call the getEntries() method (which is overridden by subclasses
-        // and returns the corresponding entries)
+        // and returns the corresponding entries). For perfomance reasons, it
+        // does a join on entries and categories (which have a 1:n 
+        // relationship, so the returned results are not unique)
         $q= &$this->getEntries($db, $request);
       } if (catch('SQLException', $e)) {
         return throw($e);
@@ -102,14 +104,21 @@
       
       $n= &$response->addFormResult(new Node('entries'));
       while ($record= $q->next()) {
-        with ($entry= &$n->addChild(new Node('entry'))); {
-          $entry->setAttribute('id', $record['id']);
-          $entry->addChild(new Node('title', $record['title']));
-          $entry->addChild(new Node('author', $record['author']));
-          $entry->addChild(new Node('extended_length', $record['extended_length']));
-          $entry->addChild(Node::fromObject(new Date($record['timestamp']), 'date'));
-          $entry->addChild(FormresultHelper::markupNodeFor('body', $record['body']));
+        if (!isset($entry[$record['id']])) {
+          $entry[$record['id']]= &$n->addChild(new Node('entry', NULL, array('id' => $record['id'])));
+          $entry[$record['id']]->addChild(new Node('title', $record['title']));
+          $entry[$record['id']]->addChild(new Node('author', $record['author']));
+          $entry[$record['id']]->addChild(new Node('extended_length', $record['extended_length']));
+          $entry[$record['id']]->addChild(Node::fromObject(new Date($record['timestamp']), 'date'));
+          $entry[$record['id']]->addChild(FormresultHelper::markupNodeFor('body', $record['body']));
         }
+        
+        // Add categories
+        $entry[$record['id']]->addChild(new Node(
+          'category', 
+          $record['category'], 
+          array('id' => $record['category_id'])
+        ));
       }
       return TRUE;
     }
