@@ -192,6 +192,26 @@
      * @throws  Exception to indicate failure
      */
     function doHead(&$request, &$response) {
+      try(); {
+        $object= &$this->handlingImpl->get($request->uri['path_translated']);
+      } if (catch('ElementNotFoundException', $e)) {
+      
+        // Element not found
+        $response->setStatus(HTTP_NOT_FOUND);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      } if (catch('Exception', $e)) {
+      
+        // Conflict
+        $response->setStatus(HTTP_CONFLICT);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      } 
+      
+      $response->setStatus(HTTP_OK);
+      $response->setHeader('Content-type',   $object->contentType);
+      $response->setHeader('Content-length', $object->contentLength);
+      $response->setHeader('Last-modified',  $object->lastModified->toString('D, j M Y H:m:s \G\M\T'));
     }
 
     /**
