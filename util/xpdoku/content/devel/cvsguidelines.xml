@@ -70,7 +70,6 @@
     <references>
       <ref link="about">Introduction</ref>
       <ref type="ext" link="http://www.lufmech.rwth-aachen.de/sfb401/software/liebmann/sld001.htm">Was ist CVS?</ref>
-      <ref type="ext" link="http://www.suse.de/de/support/howto/cvs/cvs.html">SuSE: CVS for Dummies</ref>
       <ref type="ext" link="http://www.fido.de/kama/cvsmtp/de/cvs-de_2.html">What is CVS?</ref>
       <ref type="google" link="Was ist CVS?"/>
     </references>
