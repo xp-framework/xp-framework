@@ -17,6 +17,7 @@
     /**
      * Create a new checksum from a string
      *
+     * @model   static
      * @access  public
      * @param   string str
      * @return  &security.checksum.CRC16
@@ -38,6 +39,7 @@
     /**
      * Create a new checksum from a file object
      *
+     * @model   static
      * @access  public
      * @param   &io.File file
      * @return  &security.checksum.CRC16
