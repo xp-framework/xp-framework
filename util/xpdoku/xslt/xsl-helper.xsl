@@ -201,11 +201,17 @@
 
   <xsl:template name="nav-divider">
     <xsl:param name="caption"/>
+    <xsl:param name="link" select="''"/>
     <table border="0" width="100%" cellspacing="0" cellpadding="2">
       <tr>
-        <td bgcolor="#3654a5" style="color: white; border-bottom: 1px solid #9eb6ff">
+        <td bgcolor="#3654a5" style="border-bottom: 1px solid #9eb6ff">
           <b>
-            <xsl:apply-templates select="$caption"/>
+            <a style="color: white">
+              <xsl:if test="$link">
+                <xsl:attribute name="href"><xsl:value-of select="$link"/></xsl:attribute>
+              </xsl:if>
+              <xsl:apply-templates select="$caption"/>
+            </a>
           </b>
         </td>
       </tr>
