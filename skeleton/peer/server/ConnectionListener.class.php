@@ -25,7 +25,9 @@
      * @param   
      * @return  
      */
-    function connected($event) { }
+    function connected($event) {
+      printf(">>> ConnectionListener::connected()\n");
+    }
     
     /**
      * (Insert method's description here)
@@ -35,6 +37,11 @@
      * @return  
      */
     function data($event) { 
+      printf(
+        ">>> ConnectionListener::data(%s) @%d\n", 
+        addcslashes($event->data, "\0..\37!@\177..\377"),
+        getmypid()
+      );
       if ('QUIT' == substr($event->data, 0, 4)) {
         $event->stream->close();
       }
@@ -47,7 +54,9 @@
      * @param   
      * @return  
      */
-    function disconnected($event) { }
+    function disconnected($event) { 
+      printf(">>> ConnectionListener::disconnected() @%d\n", getmypid());
+    }
     
     /**
      * (Insert method's description here)
@@ -56,7 +65,10 @@
      * @param   
      * @return  
      */
-    function error($event) { }
+    function error($event) { 
+      printf(">>> ConnectionListener::error()\n");
+      $event->data->printStackTrace();
+    }
   
   }
 ?>
