@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('peer.mail.Message');
+  uses('peer.mail.Message', 'text.parser.DaemonMessage');
+  
+  define('DMP_SEARCH',   0x0000);
+  define('DMP_ORIGMSG',  0x0001);
+  define('DMP_FINISH',   0xFFFF);
 
   /**
    * Mailer-Daemon failure notification parser
@@ -53,7 +57,7 @@
      * @param   &function func
      */
     function addHeaderFound($header, &$func) {
-      $this->_hcb['found_'.$header]= array(NULL, &$func);
+      $this->_hcb[]= array($header, NULL, &$func);
     }
 
     /**
@@ -65,7 +69,47 @@
      * @param   &function func
      */
     function addHeaderMatch($header, $regex, &$func) {
-      $this->_hcb['match_'.$header]= array($regex, &$func);
+      $this->_hcb[]= array($header, $regex, &$func);
+    }
+    
+    /**
+     * Parses message/delivery-status body parts
+     *
+     * <pre>
+     *   Reporting-MTA: dns; rly-xn01.mx.aol.com                     
+     *   Arrival-Date: Mon, 17 Feb 2003 04:08:12 -0500 (EST)         
+     *                                                               
+     *   Final-Recipient: RFC822; uliruedi@aol.com                   
+     *   Action: failed                                              
+     *   Status: 2.0.0                                               
+     *   Remote-MTA: DNS; air-xn02.mail.aol.com                      
+     *   Diagnostic-Code: SMTP; 250 OK                               
+     *   Last-Attempt-Date: Mon, 17 Feb 2003 04:08:27 -0500 (EST)    
+     * </pre>
+     *
+     * @access  private
+     * @param   string str
+     * @param   &text.parser.DaemonMessage daemonmessage
+     */
+    function _parseDeliveryStatus($str, &$daemonmessage) {
+      $l= strtok(chop($str), "\n");
+      $r= array();
+      do {
+        if ('' == chop($l)) break;
+        
+        list($k, $v)= explode(': ', $l, 2);
+        $r[ucfirst($k)]= $v;
+      } while ($l= strtok("\n"));
+
+      // Final-Recipient: rfc822; info@h2-systems.de
+      if (isset($r['Final-Recipient'])) {
+        list($type, $address)= explode('; ', $r['Final-Recipient']);
+        $daemonmessage->setFailedRecipient(InternetAddress::fromString($address));
+      }
+
+      // Diagnostic-Code: X-Postfix; host mail.epcnet.de[145.253.149.139] said: 554
+      //     Error: too many hops (in reply to end of DATA command)
+      $daemonmessage->setReason($r['Diagnostic-Code']);
     }
     
     /**
@@ -78,16 +122,21 @@
      * @throws  IllegalArgumentException
      */
     function parse(&$message) {
+      static $magic= array(
+        '550'   => DAEMON_GENERIC,
+        '5.5.0' => DAEMON_GENERIC,
+        'Unknown local part' => DAEMON_LOCALPART,
+        'Quota' => DAEMON_QUOTA
+      );
+      
       if (!is_a($message, 'Message')) {
         trigger_error('Type: '.get_class($message), E_USER_NOTICE);
         return throw(new IllegalArgumentException('Parameter message is not peer.mail.Message object'));
       }
       
-      var_dump('FROM', $message->getFrom());
-      var_dump('DATE', $message->date->toString());
-      
       // First, look in the headers
-
+      $state= DMP_SEARCH;
+      
       // "In-Reply-To": These are stupid autoresponders or people replying 
       // to an address they shouldn't be.
       if (NULL !== ($irt= $message->getHeader('In-Reply-To'))) {
@@ -95,9 +144,14 @@
         return throw(new FormatException('Message has In-Reply-To header, Mailer Daemons do not set these'));
       }
       
+      // Set up daemon mail object
+      $daemonmessage= &new DaemonMessage();
+      $daemonmessage->setFrom($message->getFrom());
+      $daemonmessage->date= &$message->date;
+      
       // Is there a header named "X-Failed-Recipients"?
       if (NULL !== ($rcpt= $message->getHeader('X-Failed-Recipients'))) {
-        var_dump('FAILED_RECIPIENT', $rcpt);
+        $daemonmessage->setFailedRecipient(InternetAddress::fromString($rcpt));
       }
       
       // If this is a multipart message, try and seperate parts:
@@ -186,103 +240,196 @@
         $body= NULL;
         while ($part= &$message->getPart()) switch ($part->getContentType()) {
           case 'message/delivery-status':
-            $state= DMP_HEADERS;
-            var_dump('###'.$part->getBody().'###');
+            $this->_parseDeliveryStatus(
+              $part->getBody(),
+              $daemonmessage
+            );
             break;
 
           case 'message/rfc822':
-            var_dump('&&&&&&&&&&&&&&&&&&&&&&&&', $part);
-            $body= $part->getHeaderString();
+            # printf("RFC822  >> %s\n", var_export($part, 1));
+            
+            $state= DMP_ORIGMSG;
+            $body= $part->parts[0]->getHeaderString();
             break;
 
           default:
-            var_dump('==='.$part->getContentType().'===');
+            # var_dump('==='.$part->getContentType().'===');
             // Ignore
         }
       } else {
         $body= $message->getBody();
       }
       
-      if (!($t= strtok($body, "\r\n"))) {
+      if (!($t= strtok($body, "\n"))) {
         trigger_error('Body: '.var_export($body, 1), E_USER_NOTICE);
         return throw(new FormatException('Tokenizing failed'));
       }
       
       // Loop through tokens
       do {
-        # printf(">> %s\n", $t);
-        
-        // Sendmail
-        // ========
-        // ... while talking to mx01.kundenserver.de.:
-        // >>> RCPT To:<avni@bilgin-online.de>
-        // <<< 550 Cannot route to <avni@bilgin-online.de>
-        // 550 5.1.1 Avni Bilgin <avni@bilgin-online.de>... User unknown
-        if ('... while talking to' == substr($t, 0, 20)) {
-          var_dump('SENDMAIL', $message->headers, $t);
-          
-          // Read six lines
-          
-          $state= DMP_HEADERS;
-          continue;
-        }
+        switch ($state) {
+          case DMP_ORIGMSG:
+            # printf("ORIGMSG >> %s\n", $t);
+            if ('' == chop($t)) {
+              $state= DMP_FINISH;
+              break;
+            }   
+            
+            list($k, $v)= explode(': ', chop($t), 2);
+            
+            foreach ($this->_hcb as $defines) {
+              if (0 != strcasecmp($k, $defines[0])) continue;
+              
+              $regs= array();
+              if (
+                (NULL == $defines[1]) ||
+                (preg_match($defines[1], $v, $regs))
+              ) {
+                # printf("CALLBACK>> %s(%s %s)\n", var_export($defines[2], 1), var_export($v, 1), var_export($regs, 1));
+                call_user_func($defines[2], $v, $regs);
+              }
+            }
+            break;
+            
+          case DMP_SEARCH:
+            # printf("SEARCH  >> %s\n", $t);
+            
+            // Sendmail
+            // ========
+            // ... while talking to mx01.kundenserver.de.:
+            // >>> RCPT To:<avni@bilgin-online.de>
+            // <<< 550 Cannot route to <avni@bilgin-online.de>
+            // 550 5.1.1 Avni Bilgin <avni@bilgin-online.de>... User unknown
+            if ('... while talking to' == substr($t, 0, 20)) {
+              # var_dump('SENDMAIL', $message->headers, $t);
 
-        // Exim
-        // ====
-        // This message was created automatically by mail delivery software (Exim).
-        // A message that you sent could not be delivered to one or more of its
-        // recipients. This is a permanent error. The following address(es) failed:
-        //   webmaster@b-w-f.net
-        //     SMTP error from remote mailer after RCPT TO:<webmaster@b-w-f.net>:
-        //     host mx01.kundenserver.de [212.227.126.152]: 550 Cannot route to <webmaster@b-w-f.net>
-        // ------ This is a copy of the message, including all the headers. ------
-        if ('This message was created automatically by mail delivery software' == substr($t, 0, 64)) {
-          var_dump('EXIM', $message->headers, $t);
+              // Read six lines
+              continue;
+            }
+
+            // Exim
+            // ====
+            // This message was created automatically by mail delivery software (Exim).
+            // A message that you sent could not be delivered to one or more of its
+            // recipients. This is a permanent error. The following address(es) failed:
+            //   webmaster@b-w-f.net
+            //     SMTP error from remote mailer after RCPT TO:<webmaster@b-w-f.net>:
+            //     host mx01.kundenserver.de [212.227.126.152]: 550 Cannot route to <webmaster@b-w-f.net>
+            // ------ This is a copy of the message, including all the headers. ------
+            if ('This message was created automatically by mail delivery software' == substr($t, 0, 64)) {
+
+              // Find indented lines until -- appears
+              do {
+                if ('--' == substr($t, 0, 2)) break;
+                if ('  ' != substr($t, 0, 2)) continue;
+
+                $daemonmessage->setReason(trim($daemonmessage->getReason()).' '.trim($t));
+              } while ($t= strtok("\n"));
+
+              // Now, work on original message (swallowing one line)
+              $t= strtok("\n");
+              $state= DMP_ORIGMSG;
+              continue;
+            }
+
+            // T-Online
+            // ========
+            // |------------------------- Failed addresses follow: ---------------------|
+            // <roland.tusche.@t-online.de> ... unknown user / Teilnehmer existiert nicht
+            // |------------------------- Message text follows: ------------------------|
+            if ('|------------------------- Failed addresses follow:' == substr($t, 0, 51)) {
+
+              $daemonmessage->setReason(trim(strtok("\n")));
+              strtok("\n");
+
+              // Now, work on original message
+              $state= DMP_ORIGMSG;
+              continue;
+            }
+
+            // Postfix
+            // =======
+            // Reporting-MTA: dns; cia.schlund.de
+            // Arrival-Date: Sun, 12 May 2002 09:06:07 +0200
+            // 
+            // Final-Recipient: RFC822; avni@bilgin-online.de
+            // Action: failed
+            // Status: 5.1.1
+            // Remote-MTA: DNS; mx01.kundenserver.de
+            // Diagnostic-Code: SMTP; 550 Cannot route to <avni@bilgin-online.de>
+            // Last-Attempt-Date: Sun, 12 May 2002 09:34:05 +0200
+            if ('Reporting-MTA: ' == substr($t, 0, 15)) {
+              $str= '';
+              do {
+                if ('' != chip) continue;
+                
+                $daemonmessage->setReason(trim($daemonmessage->getReason()).' '.trim($t));
+              } while ($t= strtok("\n"));
+              
+              $this->_parseDeliveryStatus($str, $daemonmessage);
+
+              // Now, work on original message
+              $state= DMP_ORIGMSG;              
+              continue;
+            }
+            
+            // QMail
+            // =====
+            // Hi. This is the qmail-send program at mailje.nl.
+            // I'm afraid I wasn't able to deliver your message to the following addresses.
+            // This is a permanent error; I've given up. Sorry it didn't work out.
+            // 
+            // <sniper@airforce.net>:
+            // Sorry, no mailbox here by that name.
+            // 
+            // --- Below this line is a copy of the message.
+            if ('This is the qmail-send program' == substr($t, 4, 30)) {
+              # var_dump('QMAIL', $message->headers, $t);
+              
+              // Find first empty line
+              do { 
+                if ('' == chop($t)) break;
+              } while ($t= strtok("\n"));
+              
+              $daemonmessage->setFailedRecipient(InternetAddress::fromString(substr(chop(strtok("\n")), 0, -1)));
+              
+              // Find line beginning with ---
+              do { 
+                if ('---' == substr($t, 0, 3)) break;
+                $daemonmessage->setReason(trim($daemonmessage->getReason()).' '.trim($t));
+              } while ($t= strtok("\n"));
+              
+              // Now, work on original message
+              $state= DMP_ORIGMSG;
+              continue;
+            }
+            
+            break;
           
-          // Read six lines
+          case DMP_FINISH:
+            break 2;
           
-          $state= DMP_HEADERS;
-          continue;
+          default: 
+            return throw(new FormatException('Unknown state '.var_export($state, 1)));
         }
         
-        // T-Online
-        // ========
-        // |------------------------- Failed addresses follow: ---------------------|
-        // <roland.tusche.@t-online.de> ... unknown user / Teilnehmer existiert nicht
-        // |------------------------- Message text follows: ------------------------|
-        if ('|------------------------- Failed addresses follow:' == substr($t, 0, 51)) {
-          var_dump('T-ONLINE', $message->headers, $t);
-          
-          // Read two lines
-          
-          $state= DMP_HEADERS;
-          continue;
-        }
-        
-        // Postfix
-        // =======
-        // Reporting-MTA: dns; cia.schlund.de
-        // Arrival-Date: Sun, 12 May 2002 09:06:07 +0200
-        // 
-        // Final-Recipient: RFC822; avni@bilgin-online.de
-        // Action: failed
-        // Status: 5.1.1
-        // Remote-MTA: DNS; mx01.kundenserver.de
-        // Diagnostic-Code: SMTP; 550 Cannot route to <avni@bilgin-online.de>
-        // Last-Attempt-Date: Sun, 12 May 2002 09:34:05 +0200
-        if ('Final-Recipient: RFC822; ' == substr($t, 0, 25)) {
-          var_dump('POSTFIX', $message->headers, $t);
-          
-          $state= DMP_HEADERS;
-          continue;
-        }
-        
-      } while ($t= strtok("\r\n"));
+      } while ($t= strtok("\n"));
       
-      if ($state != DMP_HEADERS) {
-        echo "######################################################################################\n";
-        var_dump($message->headers, $message->getBody());
+      if (empty($daemonmessage->reason)) {
+        trigger_error('Headers: '.var_export($message->headers, 1), E_USER_ERROR);
+        trigger_error('Body: '.$message->getBody(), E_USER_ERROR);
+        return throw(new FormatException('Unable to parse message'));
       }
+      
+      // Apply some string magic on the reason
+      # printf("[MAGIC] %s\n", $daemonmessage->reason);
+      foreach ($magic as $k => $v) {
+        # printf("[MAGIC] ? %s: %s\n", $k, var_export((bool)stristr($daemonmessage->reason, $k), 1));
+        if (stristr($daemonmessage->reason, $k)) $daemonmessage->status= $v;
+      }
+      
+      return $daemonmessage;
     }
   }
 ?>
