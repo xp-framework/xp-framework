@@ -31,6 +31,8 @@
       $l= &Logger::getInstance();
       $this->log= &$l->getCategory ($this->getClassName());
       $this->log->addAppender (new FileAppender ('php://stdout'));
+
+      $this->prop= &new Properties (getenv ('HOME').'/.prj.ini');
       
       parent::__construct(dirname(__FILE__).'/prj.glade', 'mainwindow');
     }
@@ -271,17 +273,23 @@
      */    
     function onFileOpenCtx() {
       $n= &$this->tree->node_get_row_data ($this->_selectedNode);
+      $cmd= $this->prop->readString (
+        'editor',
+        'cmdline',
+        'nedit -line %d %s'
+      );
+        
 
       $line= 1;
       if (isset ($n->object))
         $line= $n->object->line;
 
-      $this->log && $this->log->debug ('Starting', $n->file->filename, 'on line', $line);
-
-      System::exec (sprintf ('nedit -line %d %s',
+      $cmdLine= sprintf ($cmd,
         $line,
         $n->file->filename        
-      ), '1>/dev/null 2>/dev/null', TRUE);
+      );
+      
+      System::exec ($cmdLine, '1>/dev/null 2>/dev/null', TRUE);
     }
   }
 
