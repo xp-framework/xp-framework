@@ -22,6 +22,14 @@
   <xsl:template name="content">
     <h3>
       <a href="{func:link('static')}">Home</a> &#xbb; 
+
+      <xsl:if test="/formresult/selected/@page &gt; 0">
+        <a href="{func:link(concat('static?page', /formresult/selected/@page))}">
+          Page #<xsl:value-of select="/formresult/selected/@page"/>
+        </a>
+        &#xbb;
+      </xsl:if>
+
       Featured image: <xsl:value-of select="/formresult/selected/name"/>
     </h3>
 
