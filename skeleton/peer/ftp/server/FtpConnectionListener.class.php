@@ -534,7 +534,7 @@
       ));
       try(); {
         $entry->open(SE_READ);
-        while (!$m->eof() && $buf= $entry->readBinary()) {
+        while (!$m->eof() && $buf= $entry->read()) {
           $m->write($buf);
         }
         $entry->close();
