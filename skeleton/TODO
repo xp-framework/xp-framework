@@ -11,8 +11,6 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
 
 * Features/Wishlist:
 
-  - Interface to DomXML, generalize via xml.dom and xml.sax
-  
   - Java Interface via ext/java (Prerequisite: Compile PHP
     --with-java successfully)
     
@@ -22,7 +20,9 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
   
   - Generic ACL class
   
-  - UDDI (http://uddi.org/)
+  - UDDI (http://uddi.org/) (status: in progress)
+  
+  - Atom (http://www.atomenabled.org/)
   
 * Experimental:
 
@@ -40,6 +40,8 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
   
   - Finish telephony API (use same model with connection 
     listeners as in peer.irc/peer.server APIs)
+    
+  - Finish CVS PServer support
   
 2) Documentation
 =================
@@ -65,10 +67,5 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
 ==========
 
 * ChangeLog / NEWS generation for display on resources page.
-
-4) PHP5 / ZE2 / The future
-==========================
-
-* Migrate examples contained in API doc
 
 <EOF>
