@@ -94,7 +94,7 @@
       
       if (!$this->_sock= fsockopen($this->host, $this->port, $errno, $errstr, $this->timeout)) return (
         throw(new ConnectException(sprintf(
-          'sock::failed connecting to %s:%s within %s seconds [%d: %s]',
+          'Failed connecting to %s:%s within %s seconds [%d: %s]',
           $this->host,
           $this->port,
           $this->timeout,
