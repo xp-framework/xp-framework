@@ -28,5 +28,9 @@
     function getType() {
       return 'dateTime';
     }
+    
+    function getItemName() {
+      return FALSE;
+    }
   }
 ?>

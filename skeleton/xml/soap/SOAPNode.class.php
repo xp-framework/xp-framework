@@ -2,7 +2,8 @@
   uses(
     'xml.Node',
     'xml.soap.types.SOAPBase64Binary',
-    'xml.soap.types.SOAPDateTime'
+    'xml.soap.types.SOAPDateTime',
+    'xml.soap.types.SOAPNamedItem'
   );
 
   class SOAPNode extends Node {
@@ -108,7 +109,14 @@
           (is_object($value)) && 
           ('soap' == substr(get_class($value), 0, 4))
         ) {
+        
+          // Namen
+          if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
+          
+          // Typen
           $child->attribute['xsi:type']= 'xsd:'.$value->getType();
+          
+          // Inhalt
           $child->setContent($value->toString());
           continue;
         }

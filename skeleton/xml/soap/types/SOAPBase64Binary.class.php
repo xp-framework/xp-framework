@@ -51,5 +51,9 @@
     function getType() {
       return 'base64Binary';
     }
+    
+    function getItemName() {
+      return FALSE;
+    }
   }
 ?>
