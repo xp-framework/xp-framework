@@ -15,7 +15,8 @@
     'de.thekid.dialog.Album',
     'de.thekid.dialog.Update',
     'de.thekid.dialog.io.FilteredFolderIterator',
-    'de.thekid.dialog.io.ImageProcessor'
+    'de.thekid.dialog.io.ImageProcessor',
+    'de.thekid.dialog.io.IndexCreator'
   );
   
   define('DESCRIPTION_FILE',  'description.txt');
@@ -23,7 +24,6 @@
   define('HIGHLIGHTS_MAX',    4);
   define('ENTRIES_PER_PAGE',  5);
   define('FOLDER_FILTER',     '/\.jpe?g$/i');
-  define('DATA_FILTER',       '/\.dat$/');
 
   define('DATA_FOLDER',       dirname(__FILE__).'/../data/');
   define('IMAGE_FOLDER',      dirname(__FILE__).'/../doc_root/albums/');
@@ -202,34 +202,10 @@ __
   $serialized->touch($album->createdAt->getTime());
   
   // Regenerate indexes
-  $data= &new Folder(DATA_FOLDER);
-  $entries= array();
-  for ($i= &new FilteredFolderIterator($data, DATA_FILTER); $i->hasNext(); ) {
-    $entry= $i->next();
-    $entries[filemtime($data->getURI().$entry).$entry]= basename($entry, '.dat');
-  }
-  $data->close();
-  krsort($entries);
-  $cat && $cat->debug($entries);
+  $index= &IndexCreator::forFolder(new Folder(DATA_FOLDER));
+  $index->setEntriesPerPage(ENTRIES_PER_PAGE);
+  $index->regenerate();
   
-  // ...by pages. The index "page_0" can be used for the home page
-  for ($i= 0, $s= sizeof($entries); $i < $s; $i+= ENTRIES_PER_PAGE) {
-    Console::writeLinef('---> Generating index for album #%d - #%d', $i, $i+ ENTRIES_PER_PAGE);
-    try(); {
-      FileUtil::setContents(
-        new File(DATA_FOLDER.'page_'.($i / ENTRIES_PER_PAGE).'.idx'), 
-        serialize(array(
-          'total'   => $s, 
-          'perpage' => ENTRIES_PER_PAGE,
-          'entries' => array_slice($entries, $i, ENTRIES_PER_PAGE)
-        ))
-      );
-    } if (catch('IOException', $e)) {
-      $e->printStackTrace();
-      exit(-1);
-    }
-  }
-
   Console::writeLine('===> Finished at ', date('r'));
   // }}}
 ?>
