@@ -18,19 +18,20 @@
     var
       $parts     = array(),
       $mimever   = '1.0',
+      $encoding  = '',
       $boundary  = '';
 
     /**
      * Constructor. Also generates a boundary of the form
      * <pre>
-     * ----=_NextPart_10424693873e22d20b43b490.00112051@foo.bar.baz
+     * ----=_Part_10424693873e22d20b43b490.00112051
      * </pre>
      *
      * @access  public
      */
     function __construct() {
-      $this->setBoundary('----=_NextPart_'.uniqid(time(), TRUE).'@'.getenv('HOSTNAME'));
-      $this->header[HEADER_MIMEVER]= $this->mimever;
+      $this->setBoundary('----=_Part_'.uniqid(time(), TRUE));
+      $this->headers[HEADER_MIMEVER]= $this->mimever;
       parent::__construct();
     }
 
@@ -60,7 +61,7 @@
      */
     function setBoundary($b) {
       $this->boundary= $b;
-      $this->contenttype= "multipart/mixed;\n\tboundary=\"".$this->boundary.'"';
+      $this->contenttype= 'multipart/mixed; boundary="'.$this->boundary.'"';
     }
 
     /**
@@ -82,6 +83,14 @@
     function setBody() {
       // TBD: Split up from string
     }
+    
+    function getHeaderString() {
+      if (1 == sizeof($this->parts) && $this->parts[0]->isInline()) {
+        $this->setContenttype($this->parts[0]->getContenttype());
+        $this->charset= $this->parts[0]->charset;
+      }
+      return parent::getHeaderString();
+    }
 
     /**
      * Get message body.
@@ -96,13 +105,18 @@
       }
       
       $body= "This is a multi-part message in MIME format.\n\n";
-      for ($i= 0, $s= sizeof($this->parts); $i < $s; $i++) {
+      
+      if (1 == ($size= sizeof($this->parts)) && $this->parts[0]->isInline()) {
+        return $body.$this->parts[0]->getBody();
+      }
+      
+      for ($i= 0; $i < $size; $i++) {
         $body.= (
           '--'.$this->boundary."\n".
           $this->parts[$i]->getHeaderString().
           "\n".
           $this->parts[$i]->getBody().
-          "\n"
+          "\n\n"
         );
       }
       

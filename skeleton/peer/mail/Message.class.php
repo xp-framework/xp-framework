@@ -49,7 +49,7 @@
    *   $m->setSubject('Hello world');
    *   $m->setBody('Testmail');
    *
-   *   echo $m->getHeader()."\n".$m->getBody();
+   *   echo $m->getHeaderString()."\n".$m->getBody();
    * </code>
    *
    * @see      rfc://2822

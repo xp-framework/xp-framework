@@ -6,6 +6,7 @@
 
   // Content-Disposition
   define('MIME_DISPOSITION_INLINE',     'inline');
+  define('MIME_DISPOSITION_UNKNOWN',     '');
   define('MIME_DISPOSITION_ATTACHMENT', 'attachment');
 
   // Mime encodings
@@ -21,14 +22,42 @@
    */
   class MimePart extends Object {
     var
-      $contenttype      = 'text/plain',
-      $charset          = 'iso-8859-1',
-      $encoding         = MIME_ENC_8BIT,
-      $disposition      = MIME_DISPOSITION_INLINE,
+      $contenttype      = '',
+      $charset          = '',
+      $encoding         = '',
+      $disposition      = '',
       $name             = '',
       $filename         = '',
       $id               = '',
       $body             = '';
+     
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   string body
+     * @param   string contenttype
+     */ 
+    function __construct(
+      $body= '', 
+      $contenttype= '',
+      $encoding= '',
+      $name= ''
+    ) {
+      $this->body= $body;
+      $this->contenttype= $contenttype;
+      $this->encoding= $encoding;
+      
+      // Some useful defaults here
+      if ('' != ($this->name= $name)) {
+        $this->filename= $this->name;
+        $this->disposition= MIME_DISPOSITION_ATTACHMENT;
+        $this->charset= '';
+      } else {
+        $this->charset= 'iso-8859-1';
+      }
+      parent::__construct();
+    }
 
     /**
      * Returns whether this part is an attachment
@@ -47,7 +76,10 @@
      * @return  bool TRUE if this part is an inline
      */
     function isInline() {
-      return (MIME_DISPOSITION_INLINE == $this->disposition);
+      return (
+        (MIME_DISPOSITION_INLINE == $this->disposition) ||
+        (MIME_DISPOSITION_UNKNOWN == $this->disposition)
+      );
     }
      
     /**
@@ -183,9 +215,9 @@
       // Content-Type: text/plain; charset="iso-8859-1"
       $h= 'Content-Type: '.$this->contenttype;
       if (!empty($this->name)) {
-        $h.= ";\n\t".'name='.$this->name;
-      } else {
-        $h.= ";\n\t".'charset='.$this->charset;
+        $h.= '; name='.$this->name;
+      } else if (!empty($this->charset)) {
+        $h.= '; charset="'.$this->charset.'"';
       }
       $h.= "\n";
       
@@ -199,7 +231,7 @@
       if (!empty($this->disposition)) {
         $h.= 'Content-Disposition: '.$this->disposition.(empty($this->filename) 
           ? ''
-          : ";\n\t".'filename="'.$this->filename.'"'
+          : '; filename="'.$this->filename.'"'
         )."\n";
       }
       return $h;
