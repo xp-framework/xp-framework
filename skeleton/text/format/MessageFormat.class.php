@@ -89,7 +89,7 @@
     /**
      * Set a format handler for a special type
      *
-     * @access  publuc
+     * @access  public
      * @param   string alias
      * @param   &text.format.PrintfFormat formatter
      * @return  &text.format.PrintfFormat formatter
@@ -142,7 +142,7 @@
         $index= $rest= FALSE;
         $c= 0;
         for ($i= $p, $l= strlen($fmt); $i < $l; $i++) {
-          switch($fmt{$i}) {
+          switch ($fmt{$i}) {
             case '{': $c++; break;
             case '}': 
               if (0 >= --$c) {
