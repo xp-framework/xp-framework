@@ -11,17 +11,27 @@
   define('XMLRPC_RESPONSE',   'methodResponse');
 
   /**
-   * (Insert class' description here)
+   * This class represents the message that is exchanged
+   * in the communication between the client and server.
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * In the communication in XML-RPC, a message is being sent
+   * from the client to the server which is a XML document with
+   * a root element <methodCall>. The first child is the <methodName>
+   * tag which contains the name of the method to call.
+   *
+   * The server then returns a XML document with <methodResponse> as the
+   * root element. It can have exactly one child: <params> containing the
+   * called function's return value or <fault> in case some error has
+   * occurred.
+   *
+   * @ext      xml
+   * @see      xp://xml.xmlrpc.XmlRpcClient
+   * @purpose  Represent message
    */
   class XmlRpcMessage extends Tree {
     var
       $type   = '',
       $method = '';
-      
 
     /**
      * Create a XmlRpcMessage object
@@ -51,7 +61,7 @@
      * @param   string string
      * @return  &xml.xmlrpc.XmlRpcMessage
      */
-    function fromString($string) {
+    function &fromString($string) {
       return parent::fromString($string, 'XmlRpcMessage');
     }
     
@@ -59,7 +69,7 @@
      * Set the data for the message.
      *
      * @access  public
-     * @param   &mixed[] arr
+     * @param   &mixed arr
      */
     function setData(&$arr) {
       $params= &$this->root->addChild(new Node('params'));
@@ -73,7 +83,7 @@
      *
      * @access  protected
      * @param   &xml.Node node
-     * @param   &mixed
+     * @param   &mixed data
      */
     function &_marshall(&$node, &$data) {
       $value= &$node->addChild(new Node('value'));
@@ -137,7 +147,7 @@
      * Recursively deserialize data for the given node.
      *
      * @access  protected
-     * @param   &xml.Node
+     * @param   &xml.Node node
      * @return  &mixed
      * @throws  lang.IllegalArgumentException if the data cannot be deserialized
      */
@@ -190,7 +200,8 @@
     }
     
     /**
-     * Set a fault for this message.
+     * Set a fault for this message. This overwrites any previously set
+     * return values.
      *
      * @access  public
      * @param   &xml.xmlrpc.XmlRpcFault fault
@@ -208,11 +219,11 @@
      * Retrieve the fault if there is one.
      *
      * @access  public
-     * @return  &xml.xmlrpc.XmlRpcFault
+     * @return  &xml.xmlrpc.XmlRpcFault or NULL if no fault exists
      */
     function &getFault() {
 
-      // First check whether a fault-node exists
+      // First check whether the fault-node exists
       if (
         !is('xml.Node', $this->root->children[0]) ||
         'fault' != $this->root->children[0]->getName()
