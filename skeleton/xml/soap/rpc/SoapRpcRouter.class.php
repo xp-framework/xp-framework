@@ -18,7 +18,7 @@
    * <code>
    *   uses('xml.soap.rpc.SoapRpcRouter');
    *
-   *   $s= &new SoapRpcRouter('de.schlund.webservices.faq');
+   *   $s= &new SoapRpcRouter(new ClassLoader('de.schlund.webservices.faq'));
    *   try(); {
    *     $s->init();
    *     $response= &$s->process();
@@ -39,13 +39,13 @@
    * Example: Let's say, the SOAP-Action passed in is Ident#echoStruct, and
    * the constructor was given the classpath info.binford6100.webservices,
    * the rpc router would look for a class with the fully qualified name
-   * info.binford6100.webservices.IdentHandler and call it's method echoStruct.
+   * info.binford6100.webservices.Ident and call it's method echoStruct.
    *
    * @see org.apache.HttpScriptlet
    */
   class SoapRpcRouter extends HttpScriptlet {
     var 
-      $handlerClassPath = '';
+      $classloader= NULL;
     
     /**
      * Constructor
@@ -54,8 +54,8 @@
      * @param   string handlerClassPath the class path in its notation xxx.yyy.zzz
      *          to the location where the classes are located
      */
-    function __construct($handlerClassPath) {
-      $this->handlerClassPath= $handlerClassPath;
+    function __construct(&$classloader) {
+      $this->classloader= &$classloader;
       parent::__construct();
     }
   
@@ -95,6 +95,7 @@
      */
     function doPost(&$request, &$response) {
       try(); {
+      
         // Get message
         $msg= &$request->getMessage();
         
@@ -139,7 +140,7 @@
 
       // Create message from request data
       try(); {
-        $reflect= ClassLoader::loadClass($this->handlerClassPath.'.'.$msg->action.'Handler');
+        $reflect= $this->classloader->loadClass($msg->action);
         
         // Check if method can be handled
         if (!in_array(strtolower($msg->method), get_class_methods($reflect))) return throw(new IllegalArgumentException(
