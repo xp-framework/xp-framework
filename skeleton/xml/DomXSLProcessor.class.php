@@ -187,7 +187,6 @@
           break;
 
         case 1:
-          echo '<xmp>', xp::stringOf($this->stylesheet), "\n", getcwd(), "\n", $this->_base, '</xmp>';
           if ($this->_base) {
             $cwd= getcwd();
             chdir($this->_base);
