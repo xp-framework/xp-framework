@@ -118,7 +118,7 @@
       if ($m= sscanf($in, '%3s %02d %04d %02d:%02d%[AP]M')) {
         ($m[5] == 'A' && $m[3] == 12) && $m[3]= 0;
         ($m[5] == 'P' && $m[3] == 12) || $m[3]+= 12;
-        return Date::_mktime($m[3], $m[4], 0, $month_names[$m[0]], $m[1], $m[2]);
+        return Date::mktime($m[3], $m[4], 0, $month_names[$m[0]], $m[1], $m[2]);
       }
       
       // FIXME: Support more formats
@@ -131,7 +131,7 @@
      * function in case the year is between 1971 and 2037.
      *
      * @model   static
-     * @access  protected
+     * @access  public
      * @see     php://mktime
      * @param   int hour default 0
      * @param   int minute default 0
@@ -142,7 +142,7 @@
      * @param   int is_dst default -1
      * @return  int stamp
      */
-    function _mktime($hour= 0, $minute= 0, $second= 0, $month= 0, $day= 0, $year= 0, $is_dst= -1) {
+    function mktime($hour= 0, $minute= 0, $second= 0, $month= 0, $day= 0, $year= 0, $is_dst= -1) {
       static $month_table= array(
         array(NULL, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
         array(NULL, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) // Leap years
