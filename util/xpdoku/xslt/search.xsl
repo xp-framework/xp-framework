@@ -38,61 +38,81 @@
   function relocateClass ($className) {
     relocate ('/classes/'.$className.'.html');
   }
-  
+
+  function found (&$hits, $idx) {
+    $hits[$idx]= isset($hits[$idx]) ? $hits[$idx]++ : 1;
+  }
+    
   $keyword= urldecode ($_REQUEST['keyword']);
-  $keylower= strtolower ($keyword);
-  $keypointless= str_replace ('.', '', strtolower ($keylower));
-  $keysound= soundex ($keypointless);
   
   $classHits= array ();
   
-  // Cycle through array to find matches
-  foreach ($classes as $idx=> $fqClassName) {
-    $className= strtolower (substr ($fqClassName, max (0, strrpos ($fqClassName, '.')+1)));
-    if ($keylower == $className) {
-      // It's a (more or less) direct match
-      $classHits[]= $idx;
-      
-      relocateClass ($fqClassName);
-    }
-    
-    if ($keylower == strtolower ($fqClassName)) {
-      // Exact match
-      $classHits[]= $idx;
-      
-      relocateClass ($fqClassName);
-    }
+  if (!empty($keyword)) {
+  
+    $keylower= strtolower ($keyword);
+    $keypointless= str_replace ('.', '', strtolower ($keylower));
+    $keysound= soundex ($keypointless);
 
-    if ($keysound == soundex ($className)) {
-      // Soundex match
-      $classHits[]= $idx;
-    }
     
-    if ($keysound == soundex (str_replace ('.', '', ($fqClassName)))) {
+
+    // Cycle through array to find matches
+    foreach ($classes as $idx=> $fqClassName) {
+      $className= strtolower (substr ($fqClassName, max (0, strrpos ($fqClassName, '.')+1)));
+      
+      // It's a (more or less) direct match
+      if ($keylower == $className) {
+        found($classHits, $idx);
+        break;
+      }
+
+      // Exact match
+      if ($keylower == strtolower ($fqClassName)) {
+        found($classHits, $idx);
+        break;
+      }
+
+      // Substring match
+      if (strstr(strtolower ($fqClassName), $keylower)) {
+        found($classHits, $idx);
+      }
+
+      // Soundex match
+      if ($keysound == soundex ($className)) {
+        found($classHits, $idx);
+      }
+
       // Soundex match on complete classname
-      $classHits[]= $idx;
+      if ($keysound == soundex (str_replace ('.', '', ($fqClassName)))) {
+        found($classHits, $idx);
+      }
     }
   }
-  
+    
   // One hit => direct jumping
-  if (count ($classHits) == 1) {
-    relocateClass ($classes[$classHits[0]]);
+  if (sizeof ($classHits) == 1) {
+    relocateClass ($classes[key($classHits)]);
     exit;
   }
   
   $r= 'An error has occured.';
 
-  if (count ($classHits) == 0) {
-    $r= '<b>Your search for '.htmlspecialchars ($keyword).' did not match any classes.</b>';
+  if (sizeof ($classHits) == 0) {
+    $r= '<b>Your search for "'.htmlspecialchars ($keyword).'" did not match any classes.</b>';
   }
   
-  if (count ($classHits) > 1) {
-    $r= '<b>Your search for '.htmlspecialchars ($keyword).' did match multiple classes:</b><br/>';
+  if (sizeof ($classHits) > 1) {
+    $r= '<b>Your search for "'.htmlspecialchars ($keyword).'" returned multiple results:</b><br/>';
     $r.= '<ul>';
     
-    foreach ($classHits as $idx) {
-      $r.= '<li><a href="/classes/'.$classes[$idx].'.html">'.$classes[$idx].'</a></li>';
+    asort($classHits);
+    foreach ($classHits as $idx=> $hits) {
+      $r.= sprintf(
+        '<li><a href="/classes/%1$s.html">%1$s</a></li>',
+        $classes[$idx]
+      );
     }
+    
+    $r.= '</ul>';
   }
   
   // Result gets displayed below...
