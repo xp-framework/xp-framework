@@ -53,7 +53,7 @@ Die Sache mit den STABLE-Tags:
 ------------------------------
 Das setzen eines STABLE-Tags definiert, dass dieses Stück prinzipiell auch
 im Real-Betrieb funktioniert. Das ist das Commitment des jeweiligen Autors,
-dass er seine Version hinreichen getestet hat.
+dass er seine Version hinreichend getestet hat.
 Mit cvs status -v werden die Tags einer Datei angezeigt:
 
 [...]
