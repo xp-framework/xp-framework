@@ -37,7 +37,7 @@
       if (!$p->exists(1)) {
         printf(
           "Usage: gtkphp %1\$s protocol://user:password@server\n".
-          "       Supported protocols: pop3, imap\n",
+          "       Supported protocols: pop3, imap, imaps\n",
           $p->value(0)
         );
         exit(-1);
@@ -51,6 +51,7 @@
           break;
           
         case 'imap': 
+        case 'imaps':
           $this->stor= &new ImapStore(); 
           break;
           
