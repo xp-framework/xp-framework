@@ -12,11 +12,15 @@
   define('TRANSFER_ENCODING_CHUNKED', 0x0001);
   
   uses(
-    'net.Socket',
+    'peer.Socket',
     'net.http.HTTPAuthException',
     'io.IOException'
   );
   
+  /**
+   * HTTP connection
+   *
+   */
   class HTTPConnection extends Socket {
     var 
       $method,

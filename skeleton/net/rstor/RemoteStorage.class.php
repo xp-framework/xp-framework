@@ -3,7 +3,7 @@
  *
  * $Id$
  */
-  uses('net.Socket');
+  uses('peer.Socket');
 
   /**
    * Remote Storage client implementation of key/vales pairs

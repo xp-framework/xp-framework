@@ -9,11 +9,15 @@
   define('HTTP_METHOD_HEAD',    'HEAD');
   
   uses(
-    'net.Socket',
+    'peer.Socket',
     'net.http.HTTPAuthException',
     'io.IOException'
   );
   
+  /**
+   * HTTP requests
+   *
+   */
   class HTTPRequest extends Socket {
     var 
       $method,
