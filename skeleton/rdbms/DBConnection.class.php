@@ -170,9 +170,9 @@
      *
      * @access  public
      * @param   mixed* args
-     * @return  resource set
+     * @return  &rdbms.ResultSet
      */
-    function query() { }
+    function &query() { }
     
     /**
      * Begin a transaction
