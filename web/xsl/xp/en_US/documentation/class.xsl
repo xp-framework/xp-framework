@@ -179,17 +179,18 @@
 
       <h4>
         <img align="left" width="17" height="17" hspace="4" src="/image/{@access}.gif"/>
-        <a name="{@name}"><xsl:value-of select="@name"/></a>
+        <a name="{@name}">
+          <xsl:value-of select="concat(@access, ' ', @model, ' ')"/>
+          <a href="{func:typehref(return/type)}"><xsl:value-of select="return/type"/></a>
+          <xsl:text> </xsl:text>
+          <b><xsl:value-of select="@name"/></b>(<xsl:for-each select="params/param">
+            <a href="{func:typehref(type)}"><xsl:value-of select="type"/></a>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="name"/>
+            <xsl:if test="position() != last()">, </xsl:if>
+          </xsl:for-each>)
+        </a>
       </h4>
-      <code>
-        <xsl:value-of select="concat(@access, ' ', @model, ' ')"/>
-        <a href="{func:typehref(return/type)}"><xsl:value-of select="return/type"/></a>
-        <xsl:text> </xsl:text>
-        <b><xsl:value-of select="@name"/></b>(<xsl:for-each select="params/param">
-          <xsl:value-of select="concat(type, ' ', name)"/>
-          <xsl:if test="position() != last()">, </xsl:if>
-        </xsl:for-each>)
-      </code>
       <div style="padding-left: 2em">
         <p>
           <xsl:apply-templates select="text"/>
