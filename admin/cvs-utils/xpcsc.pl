@@ -147,7 +147,7 @@ while (@ARGV) {
       &error("Block comments may not be contained within source, use // instead", ECOMMENT);
     }
 
-    if ($_ =~ /(echo|var_dump|print_r)/) {
+    if ($_ =~ /(.*)(echo|var_dump|print_r)/ && $1 !~ /\*/) {
       &warning("You should not be using direct output statements ($1)", WOUTPUT);
     }
 
