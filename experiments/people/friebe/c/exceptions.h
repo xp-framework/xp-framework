@@ -41,8 +41,7 @@
     }
 
 #define new
-
-#define Exception(x) x
+#define Exception
 
 struct exception {
     char* message;

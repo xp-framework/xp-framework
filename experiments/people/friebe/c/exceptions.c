@@ -13,7 +13,7 @@ int main(int argc, char** argv)
             throw (new Exception(argv[1]));
         }
         printf("Running\n");
-    } catch (e) {
+    } catch (Exception e) {
         printf("Caught exception %s\n", e.message);
         return 1;
     }
