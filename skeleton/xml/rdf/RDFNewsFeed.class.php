@@ -166,6 +166,18 @@
     function &fromString($str) {
       return parent::fromString($str, __CLASS__);
     }
+
+    /**
+     * Create a RDF from a string
+     *
+     * @model   static
+     * @access  public
+     * @param   &io.File file
+     * @return  &xml.rdf.RDFNewsfeed
+     */
+    function &fromFile($file) {
+      return parent::fromFile($file, __CLASS__);
+    }
     
     /**
      * Adds an item
