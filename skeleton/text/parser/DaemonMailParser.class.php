@@ -95,21 +95,41 @@
       $l= strtok(chop($str), "\n");
       $r= array();
       do {
-        if ('' == chop($l)) break;
+        if ('' == chop($l)) continue;
         
-        list($k, $v)= explode(': ', $l, 2);
+        if ("\t" == $l{0}) {
+          $r[ucfirst($k)].= $l;
+          continue;
+        }
+        
+        list($k, $v)= explode(': ', chop($l), 2);
         $r[ucfirst($k)]= $v;
       } while ($l= strtok("\n"));
 
       // Final-Recipient: rfc822; info@h2-systems.de
+      // Final-Recipient: rfc822;webmaster@ihrhaus-massivbau.de
       if (isset($r['Final-Recipient'])) {
-        list($type, $address)= explode('; ', $r['Final-Recipient']);
-        $daemonmessage->setFailedRecipient(InternetAddress::fromString($address));
+        list($type, $address)= explode(';', $r['Final-Recipient']);
+        $daemonmessage->setFailedRecipient(InternetAddress::fromString(trim($address)));
       }
 
+      // Reporting-MTA: dns;mailc0909.dte2k.de
+      // Action: failed
+      // Status: 5.1.1
+      $daemonmessage->setReason($daemonmessage->getReason().sprintf(
+        '%s [%s: %s] > ',
+        @$r['Status'],
+        @$r['Reporting-MTA'],
+        @$r['Action']
+      ));
+
       // Diagnostic-Code: X-Postfix; host mail.epcnet.de[145.253.149.139] said: 554
-      //     Error: too many hops (in reply to end of DATA command)
-      $daemonmessage->setReason($r['Diagnostic-Code']);
+      //     Error: too many hops (in reply to end of DATA command)      
+      if (isset($r['Diagnostic-Code'])) {
+        $daemonmessage->setReason($daemonmessage->getReason().$r['Diagnostic-Code']);
+      }
+      
+      # var_dump('MESSAGE/DELIVERY', $r);
     }
     
     /**
@@ -125,8 +145,13 @@
       static $magic= array(
         '550'   => DAEMON_GENERIC,
         '5.5.0' => DAEMON_GENERIC,
+        '4.4.1' => DAEMON_SMTPCONN,
         'Unknown local part' => DAEMON_LOCALPART,
-        'Quota' => DAEMON_QUOTA
+        'User unknown' => DAEMON_LOCALPART,
+        'Quota' => DAEMON_QUOTA,
+        'relaying' => DAEMON_RELAYING,
+        'no route to host' => DAEMON_NOROUTE,
+        'Cannot route' => DAEMON_NOROUTE,
       );
       
       if (!is_a($message, 'Message')) {
@@ -148,6 +173,7 @@
       $daemonmessage= &new DaemonMessage();
       $daemonmessage->setFrom($message->getFrom());
       $daemonmessage->date= &$message->date;
+      $daemonmessage->headers= &$message->headers;
       
       // Is there a header named "X-Failed-Recipients"?
       if (NULL !== ($rcpt= $message->getHeader('X-Failed-Recipients'))) {
@@ -238,29 +264,97 @@
       // Date: Mon, 17 Feb 2003 10:05:35 +0100
       if (is_a($message, 'MimeMessage')) {
         $body= NULL;
-        while ($part= &$message->getPart()) switch ($part->getContentType()) {
-          case 'message/delivery-status':
-            $this->_parseDeliveryStatus(
-              $part->getBody(),
-              $daemonmessage
-            );
-            break;
+        while ($part= &$message->getPart()) {
+          if (MIME_DISPOSITION_INLINE != $part->getDisposition()) {
+          
+            // Ignore attachments
+            continue;
+          }
+          
+          # printf(">> PART >> %s\n", var_export($part, 1));
+          
+          switch (strtolower($part->getContentType())) {
+            case 'message/delivery-status':
+              # printf("DELIVERY>> %s\n", var_export($part, 1));
+              
+              $this->_parseDeliveryStatus(
+                $part->getBody(),
+                $daemonmessage
+              );
+              
+              # var_dump($daemonmessage);
+              
+              break;
 
-          case 'message/rfc822':
-            # printf("RFC822  >> %s\n", var_export($part, 1));
-            
-            $state= DMP_ORIGMSG;
-            $body= $part->parts[0]->getHeaderString();
-            break;
+            case 'message/rfc822':
+              # printf("RFC822  >> %s\n", var_export($part, 1));
 
-          default:
-            # var_dump('==='.$part->getContentType().'===');
-            // Ignore
+              $state= DMP_ORIGMSG;
+              $body= $part->parts[0]->getHeaderString();
+              break;
+              
+            case 'text/rfc822-headers':
+              # printf("RFC822HD>> %s\n", var_export($part, 1));
+              
+              $state= DMP_ORIGMSG;
+              $body= $part->getBody();
+              break;
+              
+
+            case 'text/plain':
+              // ------=_Part_10455873563e52659c52a535.44444108
+              // Content-Type: text/plain; charset="iso-8859-1"
+              // Content-Transfer-Encoding: US-ASCII
+              // Content-ID: <1>
+              // Content-Disposition: inline
+              // 
+              // This is the Postfix program at host mx5.crosswinds.net.
+              // 
+              // I'm sorry to have to inform you that the message returned
+              // below could not be delivered to one or more destinations.
+              // 
+              // For further assistance, please send mail to <postmaster>
+              // 
+              // If you do so, please include this problem report. You can
+              // delete your own text from the message returned below.
+              // 
+              //                         The Postfix program
+              // 
+              // <andreasreichel@crosswinds.net>: host 127.0.0.1[127.0.0.1] said: 550 5.1.0
+              //     <andreasreichel@crosswinds.net>: User unknown (in reply to end of DATA
+              //     command)
+              $l= strtok($part->getBody(), "\n");
+
+              // Find "The Postfix program"
+              do {
+                if ('The Postfix program' != trim(chop($l))) continue;
+
+                // Swallow one line
+                strtok("\n");
+
+                // Fetch mail address
+                $daemonmessage->setFailedRecipient(InternetAddress::fromString(strtok('<>')));
+
+                // Append until first empty line is found
+                while ($l= strtok("\n")) {
+                  if ('' == chop($l)) break;
+                  $daemonmessage->setReason(trim($daemonmessage->getReason()).' '.trim($l));
+                }
+
+              } while ($l= strtok("\n"));
+              break;
+
+            default:
+              # var_dump('###IGNORE >>'.$part->getContentType().'<< IGNORE###');
+              
+              // Ignore...
+          }
         }
       } else {
         $body= $message->getBody();
       }
       
+      // Begin tokenizing
       if (!($t= strtok($body, "\n"))) {
         trigger_error('Body: '.var_export($body, 1), E_USER_NOTICE);
         return throw(new FormatException('Tokenizing failed'));
@@ -271,12 +365,19 @@
         switch ($state) {
           case DMP_ORIGMSG:
             # printf("ORIGMSG >> %s\n", $t);
-            if ('' == chop($t)) {
+            if (
+              ('' == chop($t)) || 
+              (!strstr($t, ': ') && "\t" != $t{0})
+            ) {
               $state= DMP_FINISH;
               break;
             }   
             
-            list($k, $v)= explode(': ', chop($t), 2);
+            if ("\t" == $t{0}) {
+              $v.= ' '.chop($t);
+            } else {
+              list($k, $v)= explode(': ', chop($t), 2);
+            }
             
             foreach ($this->_hcb as $defines) {
               if (0 != strcasecmp($k, $defines[0])) continue;
@@ -297,11 +398,15 @@
             
             // Sendmail
             // ========
+            //    ----- The following addresses had permanent fatal errors -----
+            // <friwe@aol.com>
+            // 
+            //    ----- Transcript of session follows -----
             // ... while talking to mx01.kundenserver.de.:
             // >>> RCPT To:<avni@bilgin-online.de>
             // <<< 550 Cannot route to <avni@bilgin-online.de>
             // 550 5.1.1 Avni Bilgin <avni@bilgin-online.de>... User unknown
-            if ('... while talking to' == substr($t, 0, 20)) {
+            if ('   ----- The following addresses' == substr($t, 0, 32)) {
               # var_dump('SENDMAIL', $message->headers, $t);
 
               // Read six lines
@@ -361,11 +466,11 @@
             // Last-Attempt-Date: Sun, 12 May 2002 09:34:05 +0200
             if ('Reporting-MTA: ' == substr($t, 0, 15)) {
               $str= '';
+              $c= 0;
               do {
-                if ('' != chip) continue;
-                
-                $daemonmessage->setReason(trim($daemonmessage->getReason()).' '.trim($t));
-              } while ($t= strtok("\n"));
+                if ('' == chop($t)) $c++;
+                $str.= $t."\n";
+              } while ($t= strtok("\n") && $c < 2);
               
               $this->_parseDeliveryStatus($str, $daemonmessage);
 
@@ -418,7 +523,10 @@
       
       if (empty($daemonmessage->reason)) {
         trigger_error('Headers: '.var_export($message->headers, 1), E_USER_ERROR);
-        trigger_error('Body: '.$message->getBody(), E_USER_ERROR);
+        trigger_error('Body: '.(is_a($message, 'MimeMessage') 
+          ? sizeof($message->parts).' parts'
+          : strlen($message->body).' bytes'
+        ), E_USER_ERROR);
         return throw(new FormatException('Unable to parse message'));
       }
       
