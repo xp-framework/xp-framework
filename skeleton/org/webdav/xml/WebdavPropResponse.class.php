@@ -66,6 +66,7 @@
      * @param   &org.webdav.xml.WebdavPropFindRequest request     
      */
     function addWebdavObject(&$o) {
+
       // Get the property lists
       $reqprops= &$request->getProperties();    // properties requested
       $propsList= &$o->getProperties();         // properties available
@@ -83,7 +84,7 @@
 
       // Content type/length via resourceType
       if (NULL !== $o->resourceType) {
-        $rt->addChild(new Node('D:'.(WEBDAV_COLLECTION == $o->resourceType ? 'collection' : $o->resourceType)));
+        $rt->addChild(new Node('D:'.$o->resourceType));
         $stdprops[]= 'resourcetype';
       }
 
@@ -123,8 +124,7 @@
             $l->addChild(new Node('D:'.$lockinfo['type']));
             $l= &$ak->addChild(new Node('D:lockscope'));
             $l->addChild(new Node('D:'.$lockinfo['scope']));
-            $l= &$ak->addChild(new Node('D:owner'));
-            $l->addChild(new Node('D:href', $lockinfo['owner']));
+            $l= &$ak->addChild(new Node('D:owner', $lockinfo['owner']));
             $l= &$ak->addChild(new Node('D:timeout', $lockinfo['timeout']));
             $l= &$ak->addChild(new Node('D:locktoken'));
             $l->addChild(new Node('D:href', $lockinfo['token']));
