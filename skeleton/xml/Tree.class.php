@@ -108,7 +108,7 @@
       $tree= &new $c();
       
       try(); {
-        $parser->callback= &$this;
+        $parser->callback= &$tree;
         $parser->dataSource= $file->uri;
         $file->open(FILE_MODE_READ);
         $string= $file->read($file->size());
