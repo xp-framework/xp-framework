@@ -8,7 +8,7 @@
   //     See php://sybase_fetch_assoc
   if (!function_exists('sybase_fetch_assoc')) { function sybase_fetch_assoc($res) {
     if (is_array($r= sybase_fetch_array($res))) foreach (array_keys($r) as $k) {
-      if (is_int($r[$k])) unset($r[$k]);
+      if (is_int($k)) unset($r[$k]);
     }
     return $r;
   }}
