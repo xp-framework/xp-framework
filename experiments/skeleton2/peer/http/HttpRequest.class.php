@@ -66,7 +66,7 @@
      * @param   mixed p either a string, a PostData object or an associative array
      */
     public function setParameters($p) {
-      if (is_a($p, 'RequestData')) {
+      if ($p instanceof RequestData) {
         $this->parameters= $p;
       } elseif (is_string($p)) {
         parse_str($p, $this->parameters); 
@@ -103,7 +103,7 @@
      * @return  string
      */
     public function getRequestString() {
-      if (is_a($this->parameters, 'RequestData')) {
+      if ($this->parameters instanceof RequestData) {
         $query= "\0".$this->parameters->getData();
       } else {
         $query= '';
@@ -143,10 +143,7 @@
       
       // Add request headers
       foreach ($this->headers as $k => $v) {
-        $request.= (is_a($v, 'Header') 
-          ? $v->toString() 
-          : $k.': '.$v
-        )."\r\n";
+        $request.= ($v instanceof Header ? $v->toString() : $k.': '.$v)."\r\n";
       }
       
       return $request."\r\n".$body;
