@@ -49,6 +49,16 @@
     );
   }}
   
+  if (!function_exists('var_export')) { function var_export(&$data, $return) {
+    ob_start();
+    var_dump($data);
+    $dump= ob_get_contents();
+    ob_end_clean();
+    if ($return) return $dump;
+    
+    echo $dump;
+  }}
+  
   function &cast(&$var, $type= NULL) {
     if (NULL == $var) return NULL;
     if (NULL != $type) settype($var, $type);
