@@ -43,8 +43,8 @@
     function _load() {
       if (NULL != $this->_data) return;
       
-      $this->_data= parse_ini_file($this->filename, 1);
-      if (FALSE === $this->_prop) return throw(new IOException($this->_file.' not found'));
+      $this->_data= parse_ini_file($this->_file, 1);
+      if (FALSE === $this->_data) return throw(new IOException($this->_file.' not found'));
     }
     
     /**
