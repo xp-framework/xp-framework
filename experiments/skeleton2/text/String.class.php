@@ -111,13 +111,13 @@
      * Returns true if the specified string matches this string.
      *
      * @access  public
-     * @param   string str
+     * @param   mixed str
      * @return  bool
      */
     public function equals($str, $cs= TRUE) {
       return 0 == ($cs 
-        ? strcmp($str, $this->buffer) 
-        : strcasecmp($str, $this->buffer)
+        ? strcmp((string)$str, $this->buffer) 
+        : strcasecmp((string)$str, $this->buffer)
       );
     }
      
@@ -201,7 +201,7 @@
     public function contains($substr, $cs= TRUE) {
       return ($cs 
         ? FALSE !== strpos($this->buffer, $substr)
-        : FALSE !== strpos(strtolower($this->buffer), strtolower($substr))
+        : FALSE !== stripos($this->buffer, $substr)
       );
     }
     
@@ -221,7 +221,6 @@
      * @param   string substr
      * @param   bool cs default TRUE whether to check case-sensitively
      * @return  string or FALSE if substr is not found
-     * @see     php://strstr
      */
     public function substrAfter($substr, $cs= TRUE) {
       if (FALSE === ($p= $cs 
@@ -239,7 +238,6 @@
      * @param   string substr
      * @param   bool cs default TRUE whether to check case-sensitively
      * @return  &text.String or NULL if substr is not found
-     * @see     php://strstr
      */
     public function substringAfter($substr, $cs= TRUE) {
       if (FALSE === ($p= $cs 
@@ -265,7 +263,6 @@
      * @param   string substr
      * @param   bool cs default TRUE whether to check case-sensitively
      * @return  string or FALSE if substr is not found
-     * @see     php://strstr
      */
     public function substrBefore($substr, $cs= TRUE) {
       if (FALSE === ($p= $cs 
@@ -283,7 +280,6 @@
      * @param   string substr
      * @param   bool cs default TRUE whether to check case-sensitively
      * @return  &text.String or NULL if substr is not found
-     * @see     php://strstr
      */
     public function substringBefore($substr, $cs= TRUE) {
       if (FALSE === ($p= $cs 
@@ -356,10 +352,16 @@
      * @access  public
      * @param   mixed search
      * @param   mixed replace
+     * @param   bool cs default TRUE whether to check case-sensitively
      * @see     php://str_replace
+     * @return  &text.String
      */
-    public function replace($search, $replace) {
-      $this->buffer= str_replace($search, $replace, $this->buffer);
+    public function replace($search, $replace, $cs= TRUE) {
+      $this->buffer= ($cs
+        ? str_replace($search, $replace, $this->buffer)
+        : str_ireplace($search, $replace, $this->buffer)
+      );
+      return $this;
     }
     
     /**
@@ -368,9 +370,11 @@
      * @access  public
      * @param   array pairs an associative array, where keys are replaced by values
      * @see     php://strtr
+     * @return  &text.String
      */
     public function replacePairs($pairs) {
       $this->buffer= strtr($search, $pairs);
+      return $this;
     }
     
     /**
@@ -380,9 +384,11 @@
      * @access  public
      * @param   int pos
      * @param   int len default 1
+     * @return  &text.String
      */
     public function delete($pos, $len= 1) {
       $this->buffer= substr($this->buffer, 0, $pos).substr($this->buffer, $pos+ 1);
+      return $this;
     }
     
     /**
@@ -391,9 +397,11 @@
      * @access  public
      * @param   înt pos
      * @param   string substring
+     * @return  &text.String
      */
     public function insert($pos, $substring) {
       $this->buffer= substr($this->buffer, 0, $pos).$substring.substr($this->buffer, $pos);
+      return $this;
     }
     
     /**
@@ -401,11 +409,12 @@
      *
      * @access  public
      * @param   string regex
+     * @param   &array matches default NULL
      * @return  bool
      * @see     php://preg_match
      */
-    public function matches($regex) {
-      return preg_match($regex, $this->buffer);
+    public function matches($regex, &$matches= NULL) {
+      return (bool)preg_match($regex, $this->buffer, $matches);
     }
     
     /**
@@ -484,6 +493,7 @@
      * @access  public
      * @param   string charlist default NULL
      * @see     php://trim
+     * @return  &text.String
      */
     public function trim($charlist= NULL) {
       if ($charlist) {
@@ -491,6 +501,7 @@
       } else {
         $this->buffer= trim($this->buffer);
       }
+      return $this;
     }
 
     /**
@@ -500,6 +511,7 @@
      * @param   string charlist default NULL
      * @see     php://ltrim
      * @see     xp://text.String#trim
+     * @return  &text.String
      */
     public function ltrim($charlist= NULL) {
       if ($charlist) {
@@ -507,6 +519,7 @@
       } else {
         $this->buffer= ltrim($this->buffer);
       }
+      return $this;
     }
 
     /**
@@ -516,6 +529,7 @@
      * @param   string charlist default NULL
      * @see     php://ltrim
      * @see     xp://text.String#trim
+     * @return  &text.String
      */
     public function rtrim($charlist= NULL) {
       if ($charlist) {
@@ -523,6 +537,7 @@
       } else {
         $this->buffer= rtrim($this->buffer);
       }
+      return $this;
     }
     
     /**
