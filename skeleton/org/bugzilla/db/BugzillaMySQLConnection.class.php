@@ -55,6 +55,8 @@
         $this->_prepare(array('insert into shadowlog (command) values (%s)', $sql)),
         $this->handle
       );
+      
+      return $res;
     }
   }
 ?>
