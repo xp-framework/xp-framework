@@ -37,6 +37,12 @@
         if (-1 == $pid) {       // Woops?
           return throw(new RuntimeError('Could not fork'));
         } else if ($pid) {      // Parent
+
+          // Close own copy of message socket
+          $m->close();
+          delete($m);
+          
+          // Use waitpid w/ NOHANG to avoid zombies hanging around
           while (pcntl_waitpid(-1, $status, WNOHANG)) { }
         } else {                // Child
           $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
@@ -54,6 +60,7 @@
             $this->notify(new ConnectionEvent(EVENT_DATA, $m, $data));
 
           } while (!$m->eof());
+
           $m->close();
           $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $m));
 
