@@ -402,8 +402,8 @@
         // Check if a mailbox was specified. Else, use "INBOX"
         if ('' === ($mbox= substr($this->dsn->getPath(), 1))) {
           $mbox= 'INBOX';
-          $this->log($mbox);
         }
+        $this->cat->info('Using mailbox', $mbox);
         
         if (!$this->stor->isConnected()) {
           $this->setStatusText('Connecting...');
