@@ -81,7 +81,7 @@
           </b></a>
         </td>
       </tr>
-      <xsl:for-each select="$news/rdf:RDF/rss:item[position() &lt; 6.1]">
+      <xsl:for-each select="$news/rdf:RDF/rss:item[position() &lt; 10]">
         <tr>
           <td width="4%" nowrap="nowrap">
             <img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/>
