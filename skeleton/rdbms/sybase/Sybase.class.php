@@ -212,7 +212,7 @@
       $args= func_get_args();
       $sql= $this->_prepare($args);
 
-      if (!is_resource($this->handle)) {
+      if (($this->flags & DB_AUTOCONNECT) && (!is_resource($this->handle))) {
         if (!$this->connect()) return FALSE;
       }
       
