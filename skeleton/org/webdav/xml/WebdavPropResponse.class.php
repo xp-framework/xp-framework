@@ -153,9 +153,9 @@
           if (!empty($nsprefix)) $name= $nsprefix.':'.$name;
         }
         if ($found) {
-          $n= &$found_props->addChild(new Node($name, utf8_encode($property->toString()), $attr));
+          $n= &$found_props->addChild(new Node($name, $this->encode($property->toString()), $attr));
         } else {
-          $n= &$notfound_props->addChild(new Node($name, utf8_encode($property->toString()), $attr));
+          $n= &$notfound_props->addChild(new Node($name, $this->encode($property->toString()), $attr));
         }
       }
 
