@@ -99,7 +99,7 @@
      *
      * @access  static
      * @param   int bug_id
-     * @return  &Bug object
+     * @return  &org.bugzilla.db.Bug object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByBug_id($bug_id) {
@@ -112,7 +112,7 @@
      *
      * @access  static
      * @param   int assigned_to
-     * @return  &Bug[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByAssigned_to($assigned_to) {
@@ -125,7 +125,7 @@
      *
      * @access  static
      * @param   util.Date creation_ts
-     * @return  &Bug[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByCreation_ts($creation_ts) {
@@ -138,7 +138,7 @@
      *
      * @access  static
      * @param   util.Date delta_ts
-     * @return  &Bug[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByDelta_ts($delta_ts) {
@@ -151,7 +151,7 @@
      *
      * @access  static
      * @param   string bug_severity
-     * @return  &Bug[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByBug_severity($bug_severity) {
@@ -164,7 +164,7 @@
      *
      * @access  static
      * @param   string bug_status
-     * @return  &Bug[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByBug_status($bug_status) {
@@ -177,7 +177,7 @@
      *
      * @access  static
      * @param   string op_sys
-     * @return  &Bug[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByOp_sys($op_sys) {
@@ -190,7 +190,7 @@
      *
      * @access  static
      * @param   string priority
-     * @return  &Bug[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByPriority($priority) {
@@ -203,7 +203,7 @@
      *
      * @access  static
      * @param   string product
-     * @return  &Bug[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByProduct($product) {
@@ -216,7 +216,7 @@
      *
      * @access  static
      * @param   int reporter
-     * @return  &Bug[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByReporter($reporter) {
@@ -229,7 +229,7 @@
      *
      * @access  static
      * @param   string version
-     * @return  &Bug[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByVersion($version) {
@@ -242,7 +242,7 @@
      *
      * @access  static
      * @param   string component
-     * @return  &Bug[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByComponent($component) {
@@ -255,7 +255,7 @@
      *
      * @access  static
      * @param   string resolution
-     * @return  &Bug[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByResolution($resolution) {
@@ -268,7 +268,7 @@
      *
      * @access  static
      * @param   int votes
-     * @return  &Bug[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByVotes($votes) {
