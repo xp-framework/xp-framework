@@ -3,9 +3,30 @@
   <entry action="M">  
     <collection>util</collection>
     <class>Calendar</class>
-    <revision>1.7</revision>
+    <revision>1.8</revision>
     <user>friebe</user>
-    <date>2003-06-09 15:12</date>
+    <date>2003-06-09 22:45</date>
+  </entry>
+  <entry action="M">  
+    <collection>rdbms.sybase</collection>
+    <class>Sybase</class>
+    <revision>1.8</revision>
+    <user>friebe</user>
+    <date>2003-06-09 22:45</date>
+  </entry>
+  <entry action="M">  
+    <collection>gui.gtk.widgets</collection>
+    <class>FileDialog</class>
+    <revision>1.9</revision>
+    <user>friebe</user>
+    <date>2003-06-09 20:47</date>
+  </entry>
+  <entry action="M">  
+    <collection>lang</collection>
+    <class>System</class>
+    <revision>1.9</revision>
+    <user>friebe</user>
+    <date>2003-06-09 20:46</date>
   </entry>
   <entry action="M">  
     <collection>rmi.server</collection>
@@ -519,13 +540,6 @@
     <date>2003-06-05 20:36</date>
   </entry>
   <entry action="M">  
-    <collection>rdbms.sybase</collection>
-    <class>Sybase</class>
-    <revision>1.7</revision>
-    <user>friebe</user>
-    <date>2003-06-05 13:44</date>
-  </entry>
-  <entry action="M">  
     <collection>net.xp-framework.unittest.peer</collection>
     <class>DictTest</class>
     <revision>1.2</revision>
@@ -601,20 +615,6 @@
     <revision>1.4</revision>
     <user>friebe</user>
     <date>2003-06-02 09:12</date>
-  </entry>
-  <entry action="M">  
-    <collection>gui.gtk.widgets</collection>
-    <class>FileDialog</class>
-    <revision>1.8</revision>
-    <user>friebe</user>
-    <date>2003-06-02 08:40</date>
-  </entry>
-  <entry action="M">  
-    <collection>lang</collection>
-    <class>System</class>
-    <revision>1.8</revision>
-    <user>friebe</user>
-    <date>2003-06-02 08:02</date>
   </entry>
   <entry action="M">  
     <collection>gui.gtk</collection>
