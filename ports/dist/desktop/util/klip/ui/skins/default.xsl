@@ -9,6 +9,14 @@
 >
   <xsl:output method="html" encoding="iso-8859-1"/>
 
+  <xsl:template match="item[@read = '1']">
+    <a href="{@link}"><xsl:value-of select="."/></a>
+  </xsl:template>
+
+  <xsl:template match="item[@read = '0']">
+    <b><a href="{@link}"><xsl:value-of select="."/></a></b>
+  </xsl:template>
+
   <xsl:template match="/">
     <xsl:param name="contentsource" select="document(concat(
       'rdf:', 
@@ -50,7 +58,7 @@
                     <img src="chrome://ui/skins/image/arrow.gif"/>
                   </td>
                   <td valign="top">
-                    <a href="{@link}"><xsl:value-of select="."/></a>
+                    <xsl:apply-templates select="."/>
                   </td>
                 </tr>
               </xsl:for-each>
