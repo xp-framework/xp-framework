@@ -29,9 +29,10 @@
         $this->dsn->getPassword()
       ))) {
         return throw(new SQLException(sprintf(
-          'Unable to connect to %s@%s',
+          'Unable to connect to %s@%s - using password: %s',
           $this->dsn->getUser(),
-          $this->dsn->getHost()
+          $this->dsn->getHost(),
+          $this->dsn->getPassword() ? 'yes' : 'no'
         )));
       }
       
