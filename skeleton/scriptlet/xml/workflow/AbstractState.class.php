@@ -46,7 +46,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
-     */g
+     */
     function setup(&$request, &$response, &$context) {
       $this->cat && $this->cat->debug($this->getClassName().'::setup');
       
