@@ -149,6 +149,39 @@
     function getContent() {
       return $this->content;
     }
+
+    /**
+     * Set an attribute
+     *
+     * @access  public
+     * @param   string name
+     * @param   string value
+     */
+    function setAttribute($name, $value) {
+      $this->attribute[$name]= $value;
+    }
+    
+    /**
+     * Retreive an attribute by its name
+     *
+     * @access  public
+     * @param   string name
+     * @return  string
+     */
+    function getAttribute($name) {
+      return $this->attribute[$name];
+    }
+
+    /**
+     * Checks whether a specific attribute is existant
+     *
+     * @access  public
+     * @param   string name
+     * @return  bool
+     */
+    function hasAttribute($name) {
+      return isset($this->attribute[$name]);
+    }
     
     /**
      * Retreive XML representation
