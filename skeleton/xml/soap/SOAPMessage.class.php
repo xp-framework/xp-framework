@@ -123,9 +123,9 @@
             // </item>
             // <item>
             if (!empty($node->children)) foreach ($child->children as $item) {
-              $key= $item->children[0]->getContent($this->encoding);
+              $key= $item->children[0]->getContent($this->getEncoding());
               $results[$idx][$key]= (empty($item->children[1]->children) 
-                ? $item->children[1]->getContent($this->encoding)
+                ? $item->children[1]->getContent($this->getEncoding())
                 : $this->_recurseData($item->children[1], FALSE, 'MAP')
               );
             }
@@ -166,8 +166,8 @@
               }
               break;
             }
-
-            $results[$idx]= $child->getContent($this->encoding);
+            
+            $results[$idx]= $child->getContent($this->getEncoding());
         }
         
         /* HACK */
