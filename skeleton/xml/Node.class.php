@@ -109,7 +109,7 @@
       if (isset($this->attribute) and is_array($this->attribute)) {
         $sep= ($indent || sizeof($this->attribute)< 3) ? '' : "\n{$inset}";
         foreach ($this->attribute as $key=> $val) {
-          $xml.= sprintf('%s %s="%s"', $sep, $key, $val);
+          $xml.= sprintf('%s %s="%s"', $sep, $key, htmlspecialchars($val));
         }
       }
       $xml.= $sep;
@@ -125,10 +125,10 @@
       
       if ($indent) {
         $xml.= ">\n";
-        if (isset($this->content) && $this->content !== '') $xml.= "{$inset}  {$this->content}\n";
+        if (isset($this->content) && $this->content !== '') $xml.= "{$inset}  ".htmlspecialchars($this->content)."\n";
       } else {
         $xml.= '>';
-        if (isset($this->content) && $this->content !== '') $xml.= $this->content;
+        if (isset($this->content) && $this->content !== '') $xml.= htmlspecialchars($this->content);
       }
       
       // Unterelemente, falls vorhanden
