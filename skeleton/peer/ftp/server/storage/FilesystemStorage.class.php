@@ -45,8 +45,7 @@
       
       with (
         $parts= explode(DIRECTORY_SEPARATOR, $path),
-        $stack= array(),
-        $return= ''
+        $stack= array()
       ); {
         foreach ($parts as $part) {
           switch ($part) {
@@ -62,11 +61,9 @@
               array_unshift($stack, $part);
           }
         }
-      
-        while ($buf= array_pop($stack)) { $return.= DIRECTORY_SEPARATOR.$buf; }
       }
-
-      return $this->root.$return;
+      
+      return $this->root.DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, $stack);
     }
 
     /**
