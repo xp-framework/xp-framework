@@ -22,7 +22,7 @@
    */  
   class HttpScriptletException extends Exception {
     var
-      $response;
+      $response = NULL;
       
     /**
      * Constructor
@@ -49,14 +49,15 @@
     /**
      * Create the response object
      *
-     * @access  private
+     * @access  protected
      * @param   int statusCode
      */
     function _response($statusCode) {
       $this->response= &new HttpScriptletResponse();
       $this->response->setStatus($statusCode);
       $this->response->setContent(sprintf(
-        "<h1>Internal Server Error</h1>\n<xmp>\n%s</xmp>\n",
+        "<h1>HTTP/1.1 %d Internal Server Error</h1>\n<xmp>\n%s</xmp>\n",
+        $statusCode,
         $this->toString()
       ));
     }
