@@ -212,7 +212,7 @@
      */
     function &mkcol($col) {
 
-      $colname= $this->_normalizePath($this->base.urldecode($col));
+      $colname= $this->_normalizePath($this->base.$col);
       if (file_exists($colname)) {
         return throw(new OperationFailedException($colname.' already exists'));
       }
@@ -222,7 +222,7 @@
         $f->create(0755);
         
         // Create also backup directory
-        $b= &new Folder($this->_normalizePath($this->base.'../versions/'.urldecode($col)));
+        $b= &new Folder($this->_normalizePath($this->base.'../versions/'.$col));
         $b->create(0755);        
       } if (catch('IOException', $e)) {
         return throw(new OperationFailedException($colname.' cannot be created ('.$e->message.')'));
@@ -357,7 +357,7 @@
       $this->c->debug('FILENAME', $filename);
       $this->c->debug('TOKEN', $token);
 
-      $filename= $this->_normalizePath(urldecode($filename));
+      $filename= $this->_normalizePath($filename);
       
       // check for lock
       $lockinfo= $this->getLockInfo($filename);
@@ -388,7 +388,7 @@
             <td>&nbsp;&nbsp;</td>
             </tr> 
             ',
-            urlencode($entry), $entry, $atime);            
+            rawurlencode($entry), $entry, $atime);            
           } else {            
             $flist[1][$entry].= sprintf('
             <tr>
@@ -398,7 +398,7 @@
             <td>%s Bytes</td>
             </tr> 
             ',
-            urlencode($entry), $entry, $atime,
+            rawurlencode($entry), $entry, $atime,
             filesize($this->base.$filename.'/'.$entry));
           }
         }
