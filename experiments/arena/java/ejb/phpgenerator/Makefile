@@ -12,13 +12,15 @@ all:
 	@echo "Usage: $(MAKE) generate from=<path_to_ejb>"
 
 clean:
+	@echo "===> Cleaning..."
 	rm EjbToXMLDoclet.class *.gen.xml
 
-generate:			EjbToXMLDoclet.class $(TOOLS_JAR)
-	FILE=`$(JAVADOC) -doclet EjbToXMLDoclet -docletpath . -classpath $(TOOLS_JAR) $(from) 2>/dev/null \
+generate:			EjbToXMLDoclet.class
+	@FILE=`$(JAVADOC) -doclet EjbToXMLDoclet -docletpath . -classpath $(TOOLS_JAR) $(from) 2>/dev/null \
 	  | grep ^@@ \
 	  | cut -d= -f2` ; \
-	$(XSLPROC) xp.php.xsl $$FILE
-    
-EjbToXMLDoclet.class:	 EjbToXMLDoclet.java $(TOOLS_JAR)
+	$(XSLPROC) xp.php.xsl $$FILE.gen.xml > $$FILE.class.php ; \
+	echo "===> $$FILE.class.php written"
+
+EjbToXMLDoclet.class:	 EjbToXMLDoclet.java
 	$(JAVAC) -classpath $(TOOLS_JAR) EjbToXMLDoclet.java
