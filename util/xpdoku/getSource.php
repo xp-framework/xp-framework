@@ -16,13 +16,24 @@
     'util.Properties'
   );
   
+  function getXPClassName($uri, $base) {
+    $uri= preg_replace ('/(\/+)/', '/', $uri);
+    $uri= preg_replace ('/^'.str_replace ('/', '\\/', $base).'/', '', $uri);
+    $uri= preg_replace ('/\.class\.php$/', '', $uri);
+    $uri= str_replace ('/', '.', $uri);
+    return $uri;    
+  }
+  
   /**
    * Makes a flat copy of the given directory
    *
    * @param string base basedir
    * @param string dest destdir
    */  
-  function recurseCopyFlat($base, $dest) {
+  function recurseCopyFlat($base, $dest, $gBase) {
+    $classPrefix= getXPClassName ($base, $gBase);
+    $classPrefix= (empty ($classPrefix) ? '' : $classPrefix.'.');
+    
     //echo "---> Folder: $base\n";
     $folder= &new Folder($base);
     while (FALSE !== ($entry= $folder->getEntry())) {
@@ -33,7 +44,8 @@
         echo "---> Copying $entry\n";
         try(); {
           $f= &new File ($base.'/'.$entry);
-          $f->copy ($dest.'/'.$entry);
+          $f->copy ($dest.'/'.$classPrefix.$entry);
+          //exec ('cp '.$base.'/'.$entry.' '.$dest.'/'.$classPrefix.$entry)."\n";
         } if (catch ('IOException', $e)) {
           $e->printStackTrace ();
           continue;
@@ -42,7 +54,7 @@
 
       if (!is_file ($base.'/'.$entry) && 'CVS' != $entry) {
         echo "---> Diving into $base/$entry\n";
-        recurseCopyFlat ($base.'/'.$entry, $dest);
+        recurseCopyFlat ($base.'/'.$entry, $dest, $gBase);
         continue;
       }
     }
@@ -73,7 +85,7 @@
   }
   
   foreach ($packages as $type=> $info) {
-    recurseCopyFlat ($info['path'], $dest);
+    recurseCopyFlat ($info['path'], $dest, $info['base']);
   }
   echo "===> Finished copying files.\n";
 
