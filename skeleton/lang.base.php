@@ -12,8 +12,7 @@
     $result= TRUE;
     foreach (func_get_args() as $str) {
       $result= $result & include_once(
-        SKELETON_PATH.
-        strtr($str, array('.' => '/', '~' => '..', '_' => '.', '%' => '_')).
+        strtr($str, '.', DIRECTORY_SEPARATOR).
         '.class.php'
       );
       $GLOBALS['php_class_names'][reflect($str)]= $str;
@@ -46,23 +45,6 @@
     return empty($GLOBALS['php_errormessage']) ? FALSE : $GLOBALS['php_errormessage'];
   }
  
-  if (!function_exists('is_a')) { function is_a(&$object, $name) {
-     return (
-      (get_class($object) == strtolower($name)) ||
-      (is_subclass_of($object, $name))
-    );
-  }}
-  
-  if (!function_exists('var_export')) { function var_export(&$data, $return= 0) {
-    ob_start();
-    var_dump($data);
-    $dump= ob_get_contents();
-    ob_end_clean();
-    if ($return) return $dump;
-    
-    echo $dump;
-  }}
-  
   function &cast(&$var, $type= NULL) {
     if (NULL == $var) return NULL;
     
@@ -71,7 +53,9 @@
         break;
         
       case 'int':
+      case 'integer':
       case 'float':
+      case 'double':
       case 'string':
       case 'array':
       case 'object':
@@ -127,6 +111,7 @@
     ? getenv('SKELETON_PATH')
     : dirname(__FILE__).'/'
   ));
+  ini_set('include_path', SKELETON_PATH.':'.ini_get('include_path'));
 
   //{{{ main
   error_reporting(E_ALL);
