@@ -216,9 +216,9 @@
      * Set trace for debugging
      *
      * @access  public
-     * @param   &util.log.LogCategory
+     * @param   &util.log.LogCategory log
      */
-    public function setTrace($log) {
+    public function setTrace(LogCategory $log) {
       $this->log= $log;
     }    
   }
