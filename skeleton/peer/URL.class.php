@@ -155,11 +155,21 @@
     /**
      * Retrieve parameters
      *
-     * @access public
-     * @return array params
+     * @access  public
+     * @return  array params
      */
     function getParams() {
       return $this->_info['params'];
+    }
+
+    /**
+     * Retrieve whether parameters exist
+     *
+     * @access  public
+     * @return  bool
+     */
+    function hasParams() {
+      return !empty($this->_info['params']);
     }
     
     /**
