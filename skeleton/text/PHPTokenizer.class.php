@@ -5,7 +5,7 @@
  */
  
   define('T_NONE',            0x0000);    // None of the known tokens, CDATA only
-  define('T_ANY',            0xFFFF);    // Any token
+  define('T_ANY',             0xFFFF);    // Any token
  
   /**
    * PHP Tokenizer
@@ -57,8 +57,8 @@
      */
     function getTokenName($tok) {
       switch ($tok) {
-        case T_NONE: return 'T_NONE';
-        case T_ANY: return 'T_ANY';
+        case T_NONE:  return 'T_NONE';
+        case T_ANY:   return 'T_ANY';
       }
       return token_name($tok);
     }
