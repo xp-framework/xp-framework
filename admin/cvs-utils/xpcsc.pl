@@ -8,16 +8,23 @@
 #
 # $Id$
 
-use constant ETAB       => "ETAB";
-use constant EINDENT    => "EINDENT";
-use constant ECOMMENT   => "ECOMMENT";
-use constant ENOHEADER  => "ENOHEADER";
-use constant ESHORTOPEN => "ESHORTOPEN";
+$DEBUG= 0;
+$NOTIFY= 'friebe@php3.de, kiesel@php3.de';
 
-use constant WTBD       => "WTBD";
-use constant WOUTPUT    => "WOUTPUT";
-use constant WINDENT    => "WINDENT";
-use constant WNOHINT    => "WNOHINT";
+use constant ETAB           => "ETAB";
+use constant EINDENT        => "EINDENT";
+use constant ECOMMENT       => "ECOMMENT";
+use constant ENOHEADER      => "ENOHEADER";
+use constant ESHORTOPEN     => "ESHORTOPEN";
+use constant ECONSTRUCT     => "ECONSTRUCT";
+use constant EWHITESPACE    => "EWHITESPACE";
+
+use constant WTBD           => "WTBD";
+use constant WOUTPUT        => "WOUTPUT";
+use constant WINDENT        => "WINDENT";
+use constant WNOHINT        => "WNOHINT";
+use constant WCOPY          => "WCOPY";  
+use constant WPERFORM       => "WPERFORM";
 
 %LINK = (
   # Errors
@@ -26,12 +33,26 @@ use constant WNOHINT    => "WNOHINT";
   ECOMMENT    => "http://xp-framework.net/devel/coding.html#9",
   ENOHEADER   => "http://xp-framework.net/devel/coding.html#2",
   ESHORTOPEN  => "http://xp-framework.net/devel/coding.html#3",
+  ECONSTRUCT  => "http://xp-framework.net/devel/coding.html#25",
+  EWHITESPACE => "http://xp-framework.net/devel/coding.html#24",
 
   # Warnings
   WTBD        => "http://xp-framework.net/devel/coding.html#13",
   WOUTPUT     => "n/a",
   WNOHINT     => "n/a",
-  WNOHINT     => "http://xp-framework.net/devel/coding.html#5",
+  WINDENT     => "http://xp-framework.net/devel/coding.html#5",
+  WCOPY       => "http://xp-framework.net/devel/tips.performance.html#5",
+  WPERFORM    => "http://xp-framework.net/devel/tips.performance.html",
+);
+
+%BETTER = (
+  "count"           => "sizeof() (or empty() to check for empty arrays)",
+  "ereg"            => "preg_match()",
+  "eregi"           => "preg_match() with /i modifier",
+  "ereg_replace"    => "preg_replace()",
+  "eregi_replace"   => "preg_replace() with /i modifier",
+  "split"           => "explode()",
+  "join"            => "implode()"
 );
 
 # {{{ utility functions for mail notify
@@ -83,19 +104,21 @@ sub error() {
   chomp $_;
   my $out= "*** Error: ".$message." at line ".$l." of ".$FILE."\n    ".$_."\n---> [".$code."] ".$LINK{$code}."\n";
   print $out;
-
-  open (SENDMAIL, "| /usr/sbin/sendmail -t");
-  print SENDMAIL "To: friebe\@php3.de, kiesel\@php3.de\n";
-  print SENDMAIL "From: \"".getRealname ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
-  print SENDMAIL "Reply-To: $to\n";
-  print SENDMAIL "Subject: [CVS] commit failure\n";
-  print SENDMAIL "MIME-Version: 1.0\n";
-  print SENDMAIL "Content-type: text/plain; charset=iso-8859-1\n";
-  print SENDMAIL "Content-transfer-encoding: 8bit\n";
-  print SENDMAIL "X-CVS: ".$ENV{'CVSROOT'}."\n";
-  print SENDMAIL "\n";
-  print SENDMAIL $out;
-  close (SENDMAIL);
+  
+  if ($NOTIFY) {
+    open (SENDMAIL, "| /usr/sbin/sendmail -t");
+    print SENDMAIL "To: ".$NOTIFY."\n";
+    print SENDMAIL "From: \"".getRealname ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
+    print SENDMAIL "Reply-To: $to\n";
+    print SENDMAIL "Subject: [CVS] commit failure\n";
+    print SENDMAIL "MIME-Version: 1.0\n";
+    print SENDMAIL "Content-type: text/plain; charset=iso-8859-1\n";
+    print SENDMAIL "Content-transfer-encoding: 8bit\n";
+    print SENDMAIL "X-CVS: ".$ENV{'CVSROOT'}."\n";
+    print SENDMAIL "\n";
+    print SENDMAIL $out;
+    close (SENDMAIL);
+  }
   
   close FILE;
   exit 32;
@@ -127,7 +150,9 @@ while (@ARGV) {
   $l= 0;              # Line no.
   $comment= 0;        # Whether we are inside a comment
   $indent= 0;         # Indentation
-  
+  $string= 0;         # String
+  $class= "";         # Class name
+
   # Go through the file, line by line
   while (<FILE>) {
     $l++;
@@ -143,31 +168,71 @@ while (@ARGV) {
     if ($_ =~ /(\s*)\/\*\*?/) {
       $comment= 1;
     }
+    
+    # Check whether we have a multi-line string
+    if (!$comment && $_ =~ /(<<<[A-Z]+|['"])(\s*)$/ && $_ !~ /(#|\/\/)/) {
+      $string= 1;
+    }
+    
+    # Check class name
+    if (!$comment && $_ =~ /class ([^\s]+)/) {
+      $class= $1;
+    }
 
+    # Check for tabs. I HATE TABS!
     if ($_ =~ /\t/) {
       &error("Tab character found", ETAB);
     }
 
-    if ($_ =~ /^(\s+)class/ && 2 != length($1)) {
+    # Check class indentation
+    if (!$comment && $_ =~ /^(\s+)class/ && 2 != length($1)) {
       &error("Class declarations must be indented with 2 spaces", EINDENT);
     }
 
-    if ($_ =~ /^(\s+)function/ && 4 != length($1)) {
-      &error("Methods must be indented with 4 spaces", EINDENT);
+    # Check method indentation
+    if (!$comment && $_ =~ /^(\s+)function/ && ($class ? 4 : 2) != length($1)) {
+      &error(($class ? "Methods" : "Functions")." must be indented with ".($class ? 4 : 2)." spaces", EINDENT);
     }
 
-    if ($_ =~ /(.)\/\*[^\*]/ && $l > 2 && $1 ne "'") {
+    # Check for block comments in code
+    if (!$comment && $_ =~ /(.)\/\*[^\*]/ && $l > 2) {
       &error("Block comments may not be contained within source, use // instead", ECOMMENT);
     }
     
+    # Check whitespace before variable
+    if (!$comment && !$string && $_ =~ /([,;}])(\$[a-zA-Z0-9_]+)/) {
+      &error("Not enough whitespace found before variable '$2' (preceding char: '$1')", EWHITESPACE);
+    }
+    
+    # Check whitespace in assigments / comparisons
+    if (!$comment && !$string && $_ =~ /(\$[a-zA-Z0-9_]+)=([^\s]+)/) {
+      &error("Not enough whitespace found after variable '$1' (following: '$2')", EWHITESPACE);
+    }
+    
+    # Check whitespace before and after operators
+    if (!$comment && !$string && $_ =~ /(\s*)(===|==|!==|!=|<=|>=|&&|\|\|)(\s*)/ && length($1.$3) < 2) {
+      &error("Not enough whitespace found in expression '$1$2$3'", EWHITESPACE);
+    }
+    
+    # Check for whitespace after inline comments
+    if (!$comment && !$string && $_ =~ /^(\s*)\/\/[^\s]/) {
+      &error("Not enough whitespace found after inline comment", EWHITESPACE);
+    }
+    
+    # Check if there is a method that has the same name as a class
+    if ($_ =~ /function ([^\s\(]+)/ && "\L$1" eq "\L$class" && $class ne "Object" && $class ne "Interface") {
+      &error("You may not have a method '$1' in your class '$class' (constructors are called __construct)", ECONSTRUCT);
+    }
+    
+    # Check indenting
     if (!$string && !$comment && $_ =~ /^(\s*)(.*)$/) {
       if ($2) {
-        0 && print "### ".length($1)." - ".$indent."= ".(length($1) - $indent)."###\n";
+        $DEBUG && print "### ".length($1)." - ".$indent."= ".(length($1) - $indent)."###\n";
         
         # The difference in indent may be one of -4, -2, 0 or 2, where -4
-        # occurs in switch / case statements. Other
-        # values should not occur; and in *absolutely* no case should the 
-        # indentation difference be anything odd.
+        # occurs in switch / case statements. Other values should not occur; 
+        # and in *absolutely* no case should the indentation difference be 
+        # anything with an odd value
         $diff= (length($1) - $indent);
         if ($diff % 2) {
           &error("Your indentation is incorrect (difference to previous line is $diff chars)", EINDENT);
@@ -177,33 +242,50 @@ while (@ARGV) {
         }
         
         $indent= length($1);
-        
-        # If a line ends with a brace, force indent
-        $indent+= 2 if ($2 =~ /(\{|\()$/);
-        $indent-= 2 if ($2 =~ /(\}|\))$/);
       }
     }
+
+    # Check for unintentional copies
+    if (!$comment && !$string && $_ =~ /\$([a-zA-Z0-9_]+)\s*=\s*[^&]new/ && 'instance' ne $1) {
+      &warning("The new operator (assigned to $1) should always be prefixed with & to avoid unintentional copies", WCOPY);
+    }
     
-    if ($_ =~ /(.*)(echo|var_dump|print_r)/ && !$comment) {
-      &warning("You should not be using direct output statements ($2)", WOUTPUT);
+    # Check for direct output statements
+    if (!$comment && !$string && $_ =~ /\b(echo|var_dump|print_r)/) {
+      &warning("You should not be using direct output statements ($1)", WOUTPUT);
     }
 
-    if ($_ =~ /(TODO|TBI|TBD|FIXME)/) {
+    # Check for bad performers
+    if (!$comment && !$string && $_ =~ /\b(count|eregi?|eregi?_replace|split|join)\([^\)]+\)/ && $_ !~ /function/) {
+      &warning("You should be using $BETTER{$1} instead of $1", WPERFORM);
+    }
+
+    # Check for special tokens indicating this part of the is not yet complete
+    if (!$string && $_ =~ /(TODO|TBI|TBD|FIXME)/) {
       &warning("You have a $1 comment in your sourcecode...", WTBD);
     }
     
-    if ($_ =~ /\@(access|param|return|throws)\s+$/) {
+    # Check for incomplete API doc #1
+    if ($comment && $_ =~ /\@(access|param|return|throws)\s+$/) {
       &warning("Your inline documentation is incomplete.", WNOHINT);
     }
     
-    if ($_ =~ /\(Insert method's description here\)/) {
+    # Check for incomplete API doc #2
+    if ($comment && $_ =~ /\(Insert (class'|method's) description here\)/) {
       &warning("You should supply a description for your method", WNOHINT);
     }
     
-    0 && print "[".$comment."|".$indent."]".$_;
+    $DEBUG && print "[".$class."|".$comment."|".$string."|".$indent."]".$_;
     
+    # Check if a comment ends
     if ($_ =~ /(\s*)\*\//) {
       $comment= 0;
+    }
+    
+    # Check if multi-line string ends
+    if ($string && $_ =~ /^((\s*)['"]|^[A-Z]+$)/) {
+      $string= 0;
+      $indent= length($2);
     }
   }
   close FILE;
