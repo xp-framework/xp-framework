@@ -6,8 +6,7 @@
  
   uses(
     'lang.System',
-    'io.dba.DBAFile', 
-    'util.registry.storage.RegistryStorage'
+    'io.dba.DBAFile'
   );
   
   /**
@@ -16,7 +15,7 @@
    * @purpose  A storage provider that uses the db abstraction layer
    * @see      xp://io.dba.DBAFile
    */
-  class DBAStorage extends RegistryStorage {
+  class DBAStorage extends Object {
     var
       $handler = '';
 
