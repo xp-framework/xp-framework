@@ -10,8 +10,22 @@
     'org.webdav.xml.WebdavPropFindResponse'
   );
   
+  // HTTP methods for distributed authoring
   define('WEBDAV_METHOD_PROPFIND',  'PROPFIND');
   define('WEBDAV_METHOD_PROPPATCH', 'PROPPATCH');
+  define('WEBDAV_METHOD_MKCOL',     'MKCOL');
+  define('WEBDAV_METHOD_LOCK',      'LOCK');
+  define('WEBDAV_METHOD_UNLOCK',    'UNLOCK');
+  define('WEBDAV_METHOD_COPY',      'COPY');
+  define('WEBDAV_METHOD_MOVE',      'MOVE');
+  
+  // Status code extensions to http/1.1 
+  define('WEBDAV_PROCESSING',       102);
+  define('WEBDAV_MULTISTATUS',      207);
+  define('WEBDAV_UNPROCESSABLE',    422);
+  define('WEBDAV_LOCKED',           423);
+  define('WEBDAV_FAILEDDEPENDENCY', 424);
+  define('WEBDAV_INSUFFICIENTSTOR', 507);
   
   /**
    * Webdav
@@ -35,9 +49,10 @@
    *
    * Note: Needs PHP patched to work!
    *
-   * @see      http://sitten-polizei.de/php/webdav.patch
-   * @see      http://www.webdav.org/
-   * @see      http://www.webdav.org/cadaver/
+   * @see      http://sitten-polizei.de/php/webdav.patch Patch against current HEAD
+   * @see      http://www.webdav.org/ WebDAV Resources
+   * @see      http://www.webdav.org/other/faq.html DAV FAQ
+   * @see      http://www.webdav.org/cadaver/ Command-line tool (*nix)
    * @see      rfc://2518 (WebDAV)
    * @see      rfc://2616 (HTTP/1.1)
    * @see      rfc://3253 (DeltaV)
@@ -70,7 +85,7 @@
      * @throws  Exception to indicate failure
      */
     function doOptions(&$request, &$response) {
-      $response->setHeader('MS-Author-Via', 'DAV'); // MS-clients
+      $response->setHeader('MS-Author-Via', 'DAV');         // MS-clients want this
       $response->setHeader('Allow', implode(', ', array(
         HTTP_METHOD_OPTIONS,
         HTTP_METHOD_GET,
@@ -81,9 +96,139 @@
       )));
       $response->setHeader('DAV', '1, 2');
     }
+
+    /**
+     * Handle DELETE
+     *
+     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @access  private
+     * @return  bool processed
+     * @public  request org.apache.HttpScriptletRequest
+     * @access  response org.apache.HttpScriptletResponse
+     * @throws  Exception to indicate failure
+     */
+    function doDelete(&$request, &$response) {
+    }
+
+    /**
+     * Handle GET
+     *
+     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @access  private
+     * @return  bool processed
+     * @public  request org.apache.HttpScriptletRequest
+     * @access  response org.apache.HttpScriptletResponse
+     * @throws  Exception to indicate failure
+     */
+    function doGet(&$request, &$response) {
+    }
+
+    /**
+     * Handle POST
+     *
+     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @access  private
+     * @return  bool processed
+     * @public  request org.apache.HttpScriptletRequest
+     * @access  response org.apache.HttpScriptletResponse
+     * @throws  Exception to indicate failure
+     */
+    function doPost(&$request, &$response) {
+    }
+
+    /**
+     * Handle HEAD
+     *
+     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @access  private
+     * @return  bool processed
+     * @public  request org.apache.HttpScriptletRequest
+     * @access  response org.apache.HttpScriptletResponse
+     * @throws  Exception to indicate failure
+     */
+    function doHead(&$request, &$response) {
+    }
+
+    /**
+     * Handle PUT
+     *
+     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @access  private
+     * @return  bool processed
+     * @public  request org.apache.HttpScriptletRequest
+     * @access  response org.apache.HttpScriptletResponse
+     * @throws  Exception to indicate failure
+     */
+    function doPut(&$request, &$response) {
+    }
+
+    /**
+     * Handle MKCOL
+     *
+     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @access  private
+     * @return  bool processed
+     * @public  request org.apache.HttpScriptletRequest
+     * @access  response org.apache.HttpScriptletResponse
+     * @throws  Exception to indicate failure
+     */
+    function doMkCol(&$request, &$response) {
+    }
+
+    /**
+     * Handle MOVE
+     *
+     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @access  private
+     * @return  bool processed
+     * @public  request org.apache.HttpScriptletRequest
+     * @access  response org.apache.HttpScriptletResponse
+     * @throws  Exception to indicate failure
+     */
+    function doMove(&$request, &$response) {
+    }
+
+    /**
+     * Handle COPY
+     *
+     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @access  private
+     * @return  bool processed
+     * @public  request org.apache.HttpScriptletRequest
+     * @access  response org.apache.HttpScriptletResponse
+     * @throws  Exception to indicate failure
+     */
+    function doCopy(&$request, &$response) {
+    }
+
+    /**
+     * Handle LOCK
+     *
+     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @access  private
+     * @return  bool processed
+     * @public  request org.apache.HttpScriptletRequest
+     * @access  response org.apache.HttpScriptletResponse
+     * @throws  Exception to indicate failure
+     */
+    function doLock(&$request, &$response) {
+    }
+
+    /**
+     * Handle UNLOCK
+     *
+     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @access  private
+     * @return  bool processed
+     * @public  request org.apache.HttpScriptletRequest
+     * @access  response org.apache.HttpScriptletResponse
+     * @throws  Exception to indicate failure
+     */
+    function doUnlock(&$request, &$response) {
+    }
     
     /**
-     * Receives an PROPPATCH request from the <pre>process()</pre> method
+     * Receives an PROPFIND request from the <pre>process()</pre> method
      * and handles it.
      *
      * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
@@ -104,7 +249,7 @@
       }
       
       // Send "HTTP/1.1 207 Multi-Status" response header
-      $response->setStatus(207);
+      $response->setStatus(WEBDAV_MULTISTATUS);
       $response->setHeader('Content-Type', 'text/xml');
       
       $response->setContent($multistatus->getSource(0));
@@ -133,19 +278,39 @@
      * @see     http://www.webdav.org/
      */
     function _handleMethod($method) {
+      static $methods= array(
+        HTTP_METHOD_GET           => 'doGet',
+        HTTP_METHOD_POST          => 'doPost',
+        HTTP_METHOD_HEAD          => 'doHead',
+        HTTP_METHOD_OPTIONS       => 'doOptions',
+        HTTP_METHOD_PUT           => 'doPut',
+        HTTP_METHOD_DELETE        => 'doDelete',
+        WEBDAV_METHOD_PROPFIND    => 'doPropFind',
+        WEBDAV_METHOD_PROPPATCH   => 'doPropPatch',
+        WEBDAV_METHOD_MKCOL       => 'doMkCol',
+        WEBDAV_METHOD_LOCK        => 'doLock',
+        WEBDAV_METHOD_UNLOCK      => 'doUnlock',
+        WEBDAV_METHOD_COPY        => 'doCopy',
+        WEBDAV_METHOD_MOVE        => 'doMove'
+      );
+            
       $l= &Logger::getInstance();
       $c= &$l->getCategory();
       
-      // Read input if we have a 
+      // Read input if we have a Content-length header
       if (
-        (NULL !== ($len= $this->request->getHeader('Content-Length'))) &&
+        (NULL !== ($len= $this->request->getHeader('Content-length'))) &&
         (FALSE !== ($fd= fopen('php://input', 'r')))
       ) {
         $data= fread($fd, $len);
         $c->debug($method, $len, $data);
         fclose($fd);
+        
+        $this->request->setData($data);
+      } else {
+        $this->request->setData(getenv('QUERY_STRING'));
       }
-      
+       
       // Select implementation
       $this->handlingImpl= NULL;
       foreach (array_keys($this->impl) as $pattern) {
@@ -166,32 +331,12 @@
         return throw(new HttpScriptlet('Cannot handle requests to '.$request->uri['path']));
       }
 
-      switch ($method) {
-        case HTTP_METHOD_OPTIONS:
-          $this->request->setData(getenv('QUERY_STRING'));
-          $this->request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
-          $this->_method= 'doOptions';
-          break;
-          
-        case WEBDAV_METHOD_PROPFIND:
-          $this->request->setData($data);
-          $this->request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
-          $this->_method= 'doPropFind';
-          break;
-
-        case WEBDAV_METHOD_PROPPATCH:
-          $this->request->setData($data);
-          $this->request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
-          $this->_method= 'doPropPatch';
-          break;
-          
-        // TBD: COPY MOVE OPTIONS...
-          
-        default:
-          $this->_method= parent::_handleMethod($method);
+      if (isset($methods[$method])) {
+        $this->_method= $methods[$method];
+        return $this->_method;  
       }
       
-      return $this->_method;
+      return throw(new HttpScriptlet('Cannot handle method "'.$method.'"'));
     }
   }
 ?>
