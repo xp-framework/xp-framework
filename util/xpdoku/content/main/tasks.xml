@@ -9,6 +9,7 @@
       <ref type="ext" link="http://gtk.php.net/resources.php">PHP-GTK: Resources</ref>
       <ref type="ext" link="http://www.eit.uni-kl.de/litz/lehre/seminar/seminar_ss_01/Meisner/sld012.htm">SOAP</ref>
       <ref type="ext" link="http://www.fh-wedel.de/~si/seminare/ws00/Ausarbeitung/6.soap/soap01.htm">SOAP</ref>
+      <ref type="ext" link="http://de3.php.net/manual/en/history.php">History of PHP and related projects</ref>
     </references>
     <content>
       <title>Common Tasks</title>
@@ -99,7 +100,68 @@
         <caption>Web sites</caption>
         <text>
           <!-- <ref type="api:class" link="org.apache.HttpScriptlet"/> -->
-          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nulla facilisi. Vivamus condimentum tortor eu dui. Aliquam et ipsum. Quisque sodales, dui eu ultrices mattis, nunc odio vestibulum augue, sed eleifend nulla arcu in velit. Pellentesque dignissim, ipsum in dictum laoreet, elit libero venenatis nunc, at hendrerit erat velit in metus. Nam quam felis, volutpat vitae, rutrum vel, fermentum sodales, tellus. Morbi elit. Pellentesque nibh. Fusce rhoncus adipiscing nibh. Aenean suscipit aliquet urna. Curabitur pulvinar elit non orci vulputate rutrum. Duis porttitor molestie augue. Aliquam wisi ligula, tincidunt nec, eleifend quis, hendrerit a, diam. Vivamus euismod. Maecenas vel ligula. Vestibulum rutrum pede quis est. Fusce feugiat turpis vitae neque.
+          Web sites is what PHP was made for. In his 
+          <ref type="ext" link="http://groups.google.com/groups?selm=3r7pgp%24aa1%40ionews.io.org">announce mail</ref>
+          in June of 1995, Rasmus Lerdorf marketed PHP (then called "Personal Home Page Tools"
+          as the ideal tool to develop guest books and handle form requests.
+          <br/>
+          PHP (now called "PHP Hypertext Preprocessor") has since then become much more than
+          a "set of cgi scripts". Of course, it is still formidable at handling HTTP request, be
+          it as an Apache module or as a CGI. Recently, Yahoo! - being one of the world's busiest
+          sites - <ref type="ext" link="http://news.com.com/2100-1023-963937.html?tag=lh">has decided 
+          to migrate its scripts to PHP</ref>.
+          <br/>
+          <br/>
+          The XP framework introduces an API called "scriptlets". Scriptlets are the counterpart to 
+          Java's Servlets - as one might have guessed from their name. Scriptlets are not a 1:1 
+          implementation of Servlets though one might find a lot of similarities!
+          <br/>
+          Let's have a look at a simple scriptlet:
+          <code><![CDATA[  uses('org.apache.HttpScriplet');
+
+  class HelloScriptlet extends HttpScriplet {
+
+    function doGet(&$request, &$response) {
+      // [... Sample abridged for brevity ...]
+      if (empty($request->getParam('name'))) {
+        $response->write('
+          <form action="'.basename($request->getEnvValue('SCRIPT_URI')).'">
+            Enter your name here: <input type="text" name="name"/>
+            <input type="submit"/>
+          </form>
+        ');
+        return;
+      }
+      $response->write('Hello '.$request->getParam('name'));
+    }
+  } ]]></code>
+          Of course, this seems, not much more elaborate than embedding PHP
+          into HTML. Plus, it's probably more complicated to use all the object-oriented
+          "bloat" at first.
+          <br/>
+          <br/>
+          Of course, writing out HTML (with maybe some variable here or there) is easy,
+          but you will find that after a while of doing so, it turns out this tactic
+          is rather counter-productive. Imagine you want to completely redesign your website:
+          Changing the navigation from a frameset to tables, put some links at top, make
+          each page contain a link to produce a printer-friendly version of itself.
+          <br/>
+          You will inadvertedly find yourself going through tons of sourcecode "knowing"
+          to much about but effectively producing the same HTML over and over and will
+          maybe go from coding HTML to using utility functions (such as a function that
+          will return a table from an array) - and probably end up using one of the
+          numerous template engines available. Wondering why there is no such thing in
+          the XP framework?
+          <br/>
+          <br/>
+          The answer is quite easy: Template engines are always built on top of PHP, trying
+          to emulate what PHP is actually really good at: Being a template engine! 
+          Template engines contain proprietary syntactic constructs making web site 
+          data unportable. <!-- TBD: More! -->
+          <br/>
+          <br/>
+          So, why not use a standard? Why not use XML? Have a look at the advanced
+          topics section for details.
         </text>
         <advanced>
           <ref link="tasks.web.xml">Using XML/XSL to seperate code from design</ref>
