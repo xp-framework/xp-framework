@@ -227,6 +227,12 @@
       </xsl:if>
     </a>
   </xsl:template>
+
+  <xsl:template match="link[child::*[name() = 'scheme']/text() = 'xp-doc']">
+    <a href="/apidoc/{./path}">
+      <xsl:value-of select="./path"/>
+    </a>
+  </xsl:template>
   
   <xsl:template match="link[child::*[name() = 'scheme']/text() = 'mailto']">
     <a href="mailto:{./path}" target="_blank"><xsl:value-of select="./path"/></a>
