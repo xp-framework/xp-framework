@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('security.auth.AuthenticatorException');
+
   /**
    * This interface describes objects that are able to authenticate 
    * username / password combinations.
@@ -19,6 +21,7 @@
      * @param   string user
      * @param   string pass
      * @return  bool
+     * @throws  security.auth.AuthenticatorException
      */
     function authenticate($user, $pass) { }
   }
