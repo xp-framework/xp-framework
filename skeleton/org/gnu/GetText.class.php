@@ -11,23 +11,25 @@
    *   $g= &GetText::bind('greetings', './locale/');
    *   $g->setLanguage('de_DE');
    *   var_dump($g->get('str_hello'));
+   *
+   *   // Override default language
    *   var_dump($g->get('str_hello', 'fr_FR'));
    * </code>
    *
    * The files for this example reside in:
-   * <xmp>
+   * <pre>
    * ./locale/de_DE/LC_MESSAGES/greetings.mo
    * ./locale/de_DE/LC_MESSAGES/greetings.po
    * ./locale/fr_FR/LC_MESSAGES/greetings.mo
    * ./locale/fr_FR/LC_MESSAGES/greetings.po
-   * </xmp>
+   * </pre>
    *
    * The .po-files are the "sourcecode", the .mo-files are generated
    * by calling the command line tool "msgfmt" and specifying the .po-
    * file as parameter.
    * 
    * Example (./locale/de_DE/LC_MESSAGES/greetings.po):
-   * <xmp>
+   * <pre>
    * # German po for test
    * # Copyright (C) 2002
    * # Timm Friebe <thekid@thekid.de>
@@ -46,7 +48,7 @@
    * #: test:1
    * msgid "str_hello"
    * msgstr "Hallo"
-   * </xmp>
+   * </pre>
    *
    * @purpose  Provide an API to GNU gettext
    * @ext      gettext
@@ -93,7 +95,8 @@
     }
     
     /**
-     * Get text
+     * Get text. The id is returned in case there is no string matching
+     * the given id
      *
      * @param   string id
      * @param   string lang default NULL
