@@ -108,9 +108,9 @@
           : $args[$j]
         );
         switch ($tok{0}) {
-          case 'd': $sql.= ($arg == NULL ? 'NULL' : intval($arg)).substr($tok, 1); break;
-          case 's': $sql.= ($arg == NULL ? 'NULL' : '"'.str_replace('"', '""', $arg).'"').substr($tok, 1); break;
-          case 'l': $sql.= ($arg == NULL ? 'NULL' : '"'.str_replace('"', '""', $arg).'%"').substr($tok, 1); break;
+          case 'd': $sql.= ($arg === NULL ? 'NULL' : intval($arg)).substr($tok, 1); break;
+          case 's': $sql.= ($arg === NULL ? 'NULL' : '"'.str_replace('"', '""', $arg).'"').substr($tok, 1); break;
+          case 'l': $sql.= ($arg === NULL ? 'NULL' : '"'.str_replace('"', '""', $arg).'%"').substr($tok, 1); break;
           default: $sql.= '%'.$tok; $j--;
         }
       }
