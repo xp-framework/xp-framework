@@ -558,6 +558,16 @@
             );
             break;
         
+          case 'kap0tt':
+          case 'kaputt':
+            $connection->sendMessage(
+              $target, 
+              '%s ist zwar toll, ABER %sKAP0TT!', 
+              $params, 
+              IRCColor::forCode(IRC_COLOR_YELLOW)
+            );
+            break;
+            
           case 'maul':
             $this->sendRandomMessage($connection, $target, 'shutup', $params, NULL);
             break;
