@@ -39,7 +39,7 @@
    *     exit(-1);
    *   }
    *   
-   *   var_dump($r);
+   *   echo $r->toString();
    * </code>
    *
    * Note: You need a valid license key to run the search. 
