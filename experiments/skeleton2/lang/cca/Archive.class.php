@@ -284,7 +284,7 @@
      * @param   bool TRUE when the archive file is open
      */
     public function isOpen() {
-      return $this->file->isOpen();
+      return $this->file ? $this->file->isOpen() : FALSE;
     }
     
     /**
@@ -294,7 +294,6 @@
      */
     public function __destruct() {
       if (self::isOpen()) self::close();
-      
     }
   }
 ?>
