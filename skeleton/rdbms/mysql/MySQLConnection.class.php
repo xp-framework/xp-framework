@@ -23,7 +23,7 @@
      * @return  bool success
      * @throws  rdbms.SQLConnectException
      */
-    function connect($reconnect= FALSE)) {
+    function connect($reconnect= FALSE) {
       if (is_resource($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && FALSE === $this->handle) return FALSE;    // Previously failed connecting
 
