@@ -225,7 +225,7 @@
     function debugf() {
       $args= func_get_args();
       $this->callAppenders(
-        LOGGER_FLAG_ERROR,
+        LOGGER_FLAG_DEBUG,
         vsprintf($args[0], array_slice($args, 1))
       );
     }
