@@ -9,6 +9,7 @@
     'peer.irc.IRCColor',
     'org.dict.DictClient',
     'text.translator.Swabian',
+    'peer.Socket',
     'io.File'
   );
 
@@ -23,7 +24,8 @@
       $tstart    = 0,
       $config    = NULL,
       $lists     = array(),
-      $dictc     = NULL;
+      $dictc     = NULL,
+      $quote     = NULL;
       
     /**
      * Constructor
@@ -39,6 +41,10 @@
       // Set up DictClient
       $this->dictc= &new DictClient();
       $this->dictc->connect('dict.org', 2628);
+      
+      // Set up quote client
+      $this->quote= &new Socket('ausredenkalender.informatik.uni-bremen.de', 17);
+      
       $l= &Logger::getInstance();
       $this->dictc->setTrace($l->getCategory());
     }
@@ -145,7 +151,27 @@
               $target, $days, $hours, $minutes
             );
             break;
-          
+
+          case 'quote':
+            try(); {
+              $this->quote->connect();
+              do {
+                if (!($buf= $this->quote->readLine())) continue;
+                $connection->sendMessage(
+                  $target, 
+                  '%s%s', 
+                  IRCColor::forCode(IRC_COLOR_YELLOW), 
+                  $buf
+                );
+              } while (!$this->quote->eof());
+              $this->quote->close();
+            } if (catch('IOException', $e)) {
+              $e->printStackTrace();
+              $connection->sendMessage($target, '!%s', $e->getMessage());
+              break;
+            }
+            break;              
+            
           case 'whatis':
             try(); {
               $status= $this->dictc->getStatus();
