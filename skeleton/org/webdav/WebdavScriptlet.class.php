@@ -18,6 +18,7 @@
     'org.webdav.xml.WebdavPropPatchResponse',
     'org.webdav.xml.WebdavMultistatusResponse',
     'org.webdav.xml.WebdavLockResponse',
+    'org.webdav.xml.WebdavReportResponse',
     'org.webdav.auth.WebdavUser'
   );
   
@@ -29,6 +30,9 @@
   define('WEBDAV_METHOD_UNLOCK',    'UNLOCK');
   define('WEBDAV_METHOD_COPY',      'COPY');
   define('WEBDAV_METHOD_MOVE',      'MOVE');
+  define('WEBDAV_METHOD_REPORT',    'REPORT');
+  define('WEBDAV_METHOD_VERSIONCONTROL', 'VERSION-CONTROL');
+  
   
   // Status code extensions to http/1.1 
   define('WEBDAV_PROCESSING',       102);
@@ -113,7 +117,9 @@
         WEBDAV_METHOD_LOCK       => 'doLock',
         WEBDAV_METHOD_UNLOCK     => 'doUnlock',
         WEBDAV_METHOD_COPY       => 'doCopy',
-        WEBDAV_METHOD_MOVE       => 'doMove'
+        WEBDAV_METHOD_MOVE       => 'doMove',        
+        WEBDAV_METHOD_REPORT     => 'doReport',
+        WEBDAV_METHOD_VERSIONCONTROL => 'doVersionControl'
       ),
       $permissions  = array(),
       $impl         = array(),
@@ -142,6 +148,15 @@
         }
         if (isset($impl[$pattern]['perm'])) {
           $this->perm[$path]= &$impl[$pattern]['perm'];
+        }
+        if (isset($impl[$pattern]['backend'])) {
+          $this->backend[$path]= &$impl[$pattern]['backend'];
+        }
+        if (isset($impl[$pattern]['mapping'])) {
+          $this->mapping[$path]= &$impl[$pattern]['mapping'];
+        }
+        if (isset($impl[$pattern]['user'])) {
+          $this->user[$path]= $impl[$pattern]['user'];
         }
       }
     }
@@ -174,16 +189,18 @@
     function &_response() {
       switch (getenv('REQUEST_METHOD')) {
         case WEBDAV_METHOD_PROPFIND:
-          return new WebdavMultistatusResponse();
+          return new WebdavMultistatusResponse($this->map);
         case WEBDAV_METHOD_LOCK:
           return new WebdavLockResponse();
         case WEBDAV_METHOD_PROPPATCH:
           return new WebdavPropPatchResponse();
+        case WEBDAV_METHOD_REPORT:
+          return new WebdavReportResponse();
         default:
           return new WebdavScriptletResponse();
       }
     }
-    
+
     /**
      * Handle OPTIONS
      *
@@ -573,6 +590,7 @@
         // Other exceptions - throw exception to indicate (complete) failure
         return throw(new HttpScriptletException($e->message));
       }
+      
       return TRUE;
     }
 
@@ -628,6 +646,59 @@
       $rootURL= &$request->getRootURL();
       $response->setHref($rootURL->getPath().$request->getPath());
       $response->setStatus(HTTP_CREATED);
+    }
+    
+    /**
+     * Do a Version-Control Request
+     *
+     * @access  public 
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response  
+     */
+    function doVersionControl(&$request, &$response) {
+      try(); {
+        $this->handlingImpl->versionControl($request->getPath());
+      } if (catch('ElementNotFoundException', $e)) {
+      
+        // Element not found
+        $response->setStatus(HTTP_NOT_FOUND);
+        $response->setContent($e->toString());
+        return FALSE;
+      } if (catch('Exception', $e)) {        
+        
+        // Element not found
+        $response->setStatus(HTTP_BAD_REQUEST);
+        $response->setContent($e->toString());
+        return FALSE;
+      } 
+      $response->setStatus(HTTP_OK);
+    }
+    
+    /**
+     * Do a REPORT Request
+     *
+     * @access  public
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response  
+     */
+    function doReport(&$request, &$response) {
+      try(); {
+        $this->handlingImpl->report($request, $response);
+      } if (catch('ElementNotFoundException', $e)) {
+      
+        // Element not found
+        $response->setStatus(HTTP_NOT_FOUND);
+        $response->setContent($e->toString());
+        return FALSE;
+      } if (catch('Exception', $e)) {        
+        
+        // Element not found
+        $response->setStatus(HTTP_BAD_REQUEST);
+        $response->setContent($e->toString());
+        return FALSE;
+      } 
+      $response->setStatus(HTTP_OK);
+    
     }
 
 
@@ -692,7 +763,7 @@
       if (!isset($this->methods[$request->method])) {
         return throw(new HttpScriptletException('Cannot handle method "'.$request->method.'"'));
       }
-      
+
       // Select implementation
       $this->handlingImpl= NULL;
       foreach (array_keys($this->impl) as $pattern) {
@@ -747,7 +818,19 @@
         
         // Can not get username/password from Authorization header
         if (!$auth) return 'doAuthorizationRequest';
-        $request->setUser(new WebdavUser($auth->getUser(), $auth->getPassword()));
+        
+        // Use an own User object if you want to save more than username and password
+        if ($this->user[$rootURL->getPath()]) {          
+          $c= &XPClass::forName($this->user[$pattern]);
+          with ($user= &$c->newInstance()); {
+            $user->setUsername($auth->getUser());
+            $user->setUserPassword($auth->getPassword());            
+          }
+          $request->setUser($user); 
+        } else {
+          // Create a normal WebdavUser object
+          $request->setUser(new WebdavUser($auth->getUser(), $auth->getPassword()));
+        }
 
         // Check user
         if (!$this->handlingAuth->authorize($request->getUser())) return 'doAuthorizationRequest';
@@ -775,7 +858,13 @@
       } else {
         $request->setData(getenv('QUERY_STRING'));
       }
+
+      // Check for mapping
+      if (($mapping =$this->mapping[$rootURL->getPath()]) !== NULL)
+        $this->map= $mapping->init($request, $pattern); 
+ 
       return $this->methods[$request->method];
     }
+ 
   }
 ?>
