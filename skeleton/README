@@ -63,7 +63,9 @@ Das XP-Framework bietet als Grundlage folgende Goodies:
 Ein PHP-Skript, welches das XP-Framework benutzt, muss mit der folgenden Zeile
 anfangen:
 
+<pre>
 require('lang.base.php');
+</pre>
 
 Die dadurch eingebundene Datei stellt die Framework-Grundlagen bereit. 
 Es empfiehlt sich, den Include-Path in der php.ini anzupassen, damit
@@ -74,6 +76,7 @@ Ein Beispiel:
 
 Sehen wir uns einmal folgendes Skript an:
 
+<pre>
  1 <?php
  2   require('lang.base.php');
  3   uses('io.File');
@@ -92,6 +95,7 @@ Sehen wir uns einmal folgendes Skript an:
 16   } 
 17   printf("Success: line ist '%s'\n", $str);
 18 ?>
+</pre>
 
 In Zeile drei wird die Klasse /path/to/skeleton/io/File.class.php eingebunden.
 Diese wrapped die PHP-Funktionen, die mit Dateien umgehen (fopen, fread, ...)
@@ -106,7 +110,9 @@ Klar geht das auch über include_path, allerdings ist nicht jedem gestattet,
 den Include-Path zu ändern (Massenhosting). Zudem bietet die uses()-Funktion
 die Möglichkeit, mehrere Klassen auf einmal zu includen, bspw.
 
+<pre>
 uses('io.File', 'util.Date');
+</pre>
 
 Danach wird ein Block von Code (Zeile acht bis elf) in einen try/catch-Block 
 eingebunden. Innerhalb dieses Blocks können mehrere verschiedene Fehler auftreten:
@@ -127,16 +133,20 @@ Lesen oder Schließen ein Fehler auftritt.
 
 Eine Beispielausgabe sieht dann für Fall 1 (Datei nicht gefunden) so aus:
 
+<pre>
 Trying to read /tmp/file_does_not_exist.txt:
 Exception io.FileNotFoundException (/tmp/file_does_not_exist.txt)
+</pre>
 
 Existiert hingegen die Datei, kann aber nicht gelesen werden, könnte die 
 Ausgabe folgendermaßen aussehen:
 
+<pre>
 Trying to read /tmp/file_does_not_exist.txt:
 Exception io.IOException (cannot open /tmp/file_does_not_exist.txt mode r)
   at File.class.php:open (line 101:fopen("/tmp/file_does_not_exist.txt", "r") - Permission denied)
   at File.class.php:close (line 381:fclose(): supplied argument is not a valid File-Handle resource)
+</pre>
 
 Wie man sehen kann, wird, entgegen dem, was in Java, der ZE2 oder jeder 
 anderen Programmiersprache, die ein Exception-Konzept beinhaltet, der Block
@@ -152,8 +162,10 @@ Beispiel:
 Exception de.schlund.db.togal.TOGALException (statement failed)
   at TOGALPart.class.php:create (line 71:Undefined property:  subject)
   at TOGALPart.class.php:create (line 71:Undefined property:  abstract)
-  at SPSybase.class.php:query (line 140:Sybase:  Server message:  part not found. Specify ow                 ner.objectname or use sp_help to check whether the object exists (sp_help may produce lots o                 f output).
- (severity 16, procedure N/A))
+  at SPSybase.class.php:query (line 140:Sybase:  Server message:  part not found. 
+    Specify owner.objectname or use sp_help to check whether the object exists 
+    (sp_help may produce lots of output). (severity 16, procedure N/A)
+  )
   at TOGALPart.class.php:create (line 97:Undefined variable:  data)
   in TOGAL_CTX_GLOBAL
 </pre>
@@ -175,6 +187,7 @@ Codes, sondern auch an die der Dokumentation geflossen: So sind die
 Klassen und ihre Methoden im PHPDoc-Stil kommentiert, um automatisiert 
 daraus eine API-Dokumentation erstellen zu können. Ein Beispiel:
 
+<pre>
 /**
  * String-Repräsentation eines Datums
  *
@@ -185,6 +198,7 @@ daraus eine API-Dokumentation erstellen zu können. Ein Beispiel:
 function toString($format= 'r') {
   return date($format, $this->_utime);
 }
+</pre>
 
 Die Dokumentations-Standards werden in der Datei CODING_STANDARDS 
 angeschnitten und in README.DOC ausführlich beschrieben.
