@@ -39,8 +39,6 @@
       foreach ($this->_expressions as $key=> $re) {
         $this->$key= trim(chop($this->$key)); 
         $match= preg_match($re, $this->$key);
-        
-        LOG::info($key.'::'.$this->$key.'=~ '.$re.'? '.$match);
         $this->_matches[$key]= $match;
         if (!$match) {
           $this->addError($key, 'match');
