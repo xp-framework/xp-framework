@@ -46,7 +46,7 @@
         $this->_hNew=   &new Folder ($this->root.'/new/');
         $this->_hTodo=  &new Folder ($this->root.'/todo/');
         $this->_hDone=  &new Folder ($this->root.'/done/');
-        $this->_hError= &new Folder ($$this->root.'/error/');
+        $this->_hError= &new Folder ($this->root.'/error/');
 
         if (!$this->_hNew->exists())    $this->_hNew->create ();
         if (!$this->_hTodo->exists())   $this->_hTodo->create ();
@@ -78,7 +78,7 @@
       
       try(); {
         $f= &new File ($this->_hNew->getURI().'/'.$abstract.'.spool');
-        $f->open (FILE_MODE_READ);
+        $f->open (FILE_MODE_WRITE);
       } if (catch ('IOException', $e)) {
         return throw ($e);
       }
