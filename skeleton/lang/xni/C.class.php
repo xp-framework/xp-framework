@@ -78,7 +78,7 @@
       $inline= FALSE;
       $src= array();
       if ($tok= $t->getFirstToken()) do {
-         switch ($tok[0]) {
+        switch ($tok[0]) {
           case T_FUNCTION:
             $f= 'cfunction' == $tok[1];
             break;

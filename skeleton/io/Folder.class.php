@@ -154,7 +154,7 @@
 
       if (FALSE === rmdir($uri)) return throw(new IOException(sprintf(
         'unlink of "%s" failed',
-         $uri
+        $uri
       )));
       
       return TRUE;
