@@ -334,6 +334,17 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
             </li>
             <li><pre>bool is(string class, &amp;lang.Object object)</pre>
                 Checks whether a given object is of the class, a subclass or implements an interface
+                <code><![CDATA[  // TRUE, Object is of class object
+  is('lang.Object', new Object());
+  
+  // TRUE, Exception is a subclass of Throwable
+  is('lang.Throwable', new Exception());
+  
+  // TRUE, ListIterator implements Iterator
+  is('util.Iterator', new ListIterator());
+  
+  // FALSE
+  is('text.String', new Date());]]></code>
             </li>
             <li><pre>&amp;mixed cast(&amp;mixed var [, string type= NULL])</pre>Casts a variable "NULL-safe"
                 <code><![CDATA[  cast('hello', 'string') := 'hello';
