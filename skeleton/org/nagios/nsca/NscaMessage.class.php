@@ -38,6 +38,24 @@
       $this->status= $status;
       $this->information= $information;
     }
+    
+    /**
+     * Retrieve a status' name
+     *
+     * @model   static
+     * @access  public
+     * @param   int status
+     * @return  string name
+     */
+    function nameOfStatus($status) {
+      static $map= array(
+        NSCA_OK      => 'NSCA_OK',     
+        NSCA_WARN    => 'NSCA_WARN',   
+        NSCA_ERROR   => 'NSCA_ERROR',  
+        NSCA_UNKNOWN => 'NSCA_UNKNOWN'
+      );
+      return $map[$status];
+    }
 
     /**
      * Set Host
