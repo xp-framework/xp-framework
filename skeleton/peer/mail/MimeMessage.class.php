@@ -4,9 +4,11 @@
  * $Id$
  */
  
-  uses('peer.mail.Message', 'peer.mail.MimePart');
-  
-  define('HEADER_MIMEVER',      'MIME-Version');
+  uses(
+    'peer.mail.Message', 
+    'peer.mail.MimePart',
+    'peer.mail.MultiPart'
+  );
   
   /**
    * Mail message
@@ -17,9 +19,11 @@
   class MimeMessage extends Message {
     var
       $parts     = array(),
-      $mimever   = '1.0',
       $encoding  = '',
       $boundary  = '';
+      
+    var
+      $_ofs      = 0;
 
     /**
      * Constructor. Also generates a boundary of the form
@@ -29,10 +33,10 @@
      *
      * @access  public
      */
-    function __construct() {
+    function __construct($uid= -1) {
       $this->setBoundary('----=_Part_'.uniqid(time(), TRUE));
       $this->headers[HEADER_MIMEVER]= $this->mimever;
-      parent::__construct();
+      parent::__construct($uid);
     }
 
     /**
@@ -75,21 +79,118 @@
     }
     
     /**
-     * Set message body
+     * Return headers as string
      *
      * @access  public
-     * @param   string body
+     * @return  string headers
      */
-    function setBody() {
-      // TBD: Split up from string
-    }
-    
     function getHeaderString() {
       if (1 == sizeof($this->parts) && $this->parts[0]->isInline()) {
         $this->setContenttype($this->parts[0]->getContenttype());
         $this->charset= $this->parts[0]->charset;
       }
+      
       return parent::getHeaderString();
+    }
+    
+    function _lookupattr($parameters, $val) {
+      if (!is_array($parameters)) return FALSE;
+      
+      for ($i= 0, $s= sizeof($parameters); $i < $s; $i++) {
+        if (0 == strcasecmp($parameters[$i]->attribute, $val)) {
+          return $parameters[$i]->value;
+        }
+      }
+      
+      return FALSE;
+    }
+    
+    function _recurseparts(&$parts, &$p, $id= '') {
+      static $types= array(
+        'text',
+        'multipart',
+        'message',
+        'application',
+        'audio',
+        'image',
+        'video',
+        'unknown'
+      );
+      
+      for ($i= 0, $s= sizeof($p); $i < $s; $i++) {
+        $pid= sprintf('%s%d', $id, $i+ 1);
+        
+        if (empty($p[$i]->parts)) {
+          $part= &new MimePart(
+            NULL,
+            $types[$p[$i]->type].'/'.strtolower($p[$i]->subtype),
+            $this->_lookupattr(@$p[$i]->parameters, 'CHARSET'),
+            $this->_lookupattr(@$p[$i]->dparameters, 'NAME')
+          );
+        } else {
+          $part= &new MultiPart();
+        }
+          
+        $part->setDisposition($p[$i]->ifdisposition 
+          ? MIME_DISPOSITION_ATTACHMENT 
+          : MIME_DISPOSITION_INLINE
+        );
+        $part->id= $pid;
+        //$part->body= $this->folder->getMessagePart($this->uid, $pid);
+        
+        // Recurse through parts
+        if (!empty($p[$i]->parts)) {
+          if ($p[$i]->ifsubtype and 'MIXED' == $p[$i]->subtype) $pid= substr($pid, 0, -2);
+          $this->_recurseparts($part->parts, $p[$i]->parts, $pid.'.');
+        }
+        
+        #ifdef DEBUG
+        # var_dump($p[$i]);
+        # echo '['.$pid.']:: '; var_dump($part);
+        #endif
+        $part->folder= &$this->folder;
+        $parts[]= &$part;
+      }
+    }
+    
+    /**
+     * Get a part
+     *
+     * @access  public
+     * @param   int id default -1
+     * @return  &peer.mail.MimePart part
+     */
+    function &getPart($id= -1) {
+      $this->_parts();
+      
+      // Iterative use
+      if (-1 == $id) $id= $this->_ofs++;
+      
+      // EOL
+      if (!isset($this->parts[$id])) {
+        $this->_ofs= 0;
+        return NULL;
+      }
+      
+      return $this->parts[$id];
+    }
+    
+    /**
+     * Get structure from folder
+     *
+     * @access  private
+     * @return  bool got parts
+     */    
+    function _parts() {
+      if ((NULL === $this->folder) || (!empty($this->parts))) return FALSE;
+      
+      $struct= &$this->folder->getMessageStruct($this->uid);
+      if (!$struct->parts) {
+        var_dump($struct);
+        return FALSE;
+      }
+      
+      $this->_recurseparts($this->parts, $struct->parts);
     }
 
     /**
@@ -100,10 +201,7 @@
      * @return  string
      */
     function getBody() {
-      if (NULL !== $this->folder && NULL === $this->body) {
-        $this->setBody($this->folder->getMessagePart($this->uid, '1'));
-      }
-      
+      $this->_parts();
       $body= "This is a multi-part message in MIME format.\n\n";
       
       if (1 == ($size= sizeof($this->parts)) && $this->parts[0]->isInline()) {
