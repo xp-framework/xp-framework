@@ -71,7 +71,13 @@
         // Switch on the token
         switch (token) {
           case 'f':
-            subst= String(parseFloat(arguments[i]));
+            if (-1 != (p= params.indexOf('.'))) {
+              padwidth= parseInt(params.substring(p + 1, params.length));
+              p= parseInt(params.substring(0, p));
+              subst= String(Math.round(parseFloat(param) * Math.pow(10, p)) / Math.pow(10, p));
+            } else {
+              subst= String(parseFloat(arguments[i]));
+            }
             break;
           
           case 's':
