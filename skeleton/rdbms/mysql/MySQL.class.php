@@ -96,7 +96,7 @@
       $sql= $tok= strtok($sql, '%');
       while (++$i && $tok= strtok('%')) {
         if (is_a($args[$i], 'Date')) {
-          $arg= date('Y-m-d H:i:s', $arg->getTime());
+          $arg= date('Y-m-d H:i:s', $args[$i]->getTime());
         } elseif (is_a($args[$i], 'Object')) {
           $arg= $args[$i]->toString();
         } else {
