@@ -488,7 +488,8 @@
  */
   uses(
     'xml.soap.SOAPClient', 
-    'xml.soap.transport.SOAPHTTPTransport'
+    'xml.soap.transport.SOAPHTTPTransport',
+    'xml.soap.types.SOAPNamedItem'
   );
   
   /**
