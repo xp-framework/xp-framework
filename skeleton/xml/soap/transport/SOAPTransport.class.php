@@ -38,6 +38,6 @@
      * @access  public
      * @return  &xml.soap.SOAPMessage
      */
-    function &retrieve() { }
+    function &retrieve(&$response) { }
   }
 ?>
