@@ -131,7 +131,6 @@
         $daemonmessage->setReason($daemonmessage->getReason().$r['Diagnostic-Code']);
       }
       
-      # var_dump('MESSAGE/DELIVERY', $r);
       $daemonmessage->details= array_merge($daemonmessage->details, $r);
     }
     
@@ -305,31 +304,21 @@
         $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_MULTIPART;
         
         while ($part= &$message->getPart()) {
-          # printf(">> PART >> %s\n", var_export($part, 1));
           
           switch (strtolower($part->getContentType())) {
             case 'message/delivery-status':
-              # printf("DELIVERY>> %s\n", var_export($part, 1));
-              
               $this->_parseDeliveryStatus(
                 $part->getBody(),
                 $daemonmessage
               );
-              
-              # var_dump($daemonmessage);
-              
               break;
 
             case 'message/rfc822':
-              # printf("RFC822  >> %s\n", var_export($part, 1));
-
               $state= DMP_ORIGMSG;
               $body= $part->parts[0]->getHeaderString()."\r\n";
               break;
               
             case 'text/rfc822-headers':
-              # printf("RFC822HD>> %s\n", var_export($part, 1));
-              
               $state= DMP_ORIGMSG;
               $body= $part->getBody();
               break;
@@ -418,8 +407,6 @@
               break;
 
             default:
-              // var_dump('###IGNORE >>'.$part->getContentType().'<< IGNORE###');
-              
               // Ignore...
           }
         }
@@ -437,7 +424,6 @@
       do {
         switch ($state) {
           case DMP_ORIGMSG:
-            # printf("ORIGMSG >> %s\n", $t);
             if (
               ('' == chop($t)) || 
               (!strstr($t, ': ') && "\t" != $t{0})
@@ -460,15 +446,12 @@
                 (NULL == $defines[1]) ||
                 (preg_match($defines[1], $v, $regs))
               ) {
-                # printf("CALLBACK>> %s(%s %s)\n", var_export($defines[2], 1), var_export($v, 1), var_export($regs, 1));
                 call_user_func_array($defines[2], array(&$daemonmessage, $v, $regs));
               }
             }
             break;
             
           case DMP_SEARCH:
-            # printf("SEARCH  >> %s\n", $t);
-            
             // Sendmail
             // ========
             //    ----- The following addresses had permanent fatal errors -----
@@ -481,7 +464,6 @@
             // 550 5.1.1 Avni Bilgin foo.bar@bilgin-online.de>... User unknown
             if ('   ----- The following addresses' == substr($t, 0, 32)) {
               $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_SENDMAIL;
-              # var_dump('SENDMAIL', $message->headers, $t);
               
               // The next line contains the recipient
               $daemonmessage->setFailedRecipient(InternetAddress::fromString(strtok("\n")));
@@ -644,7 +626,6 @@
             // 
             // --- Below this line is a copy of the message.
             if ('This is the qmail-send program' == substr($t, 4, 30)) {
-              # var_dump('QMAIL', $message->headers, $t);
               $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_QMAIL;
               
               // Find first line starting with <
@@ -700,9 +681,7 @@
       }
       
       // Apply some string magic on the reason
-      # printf("[MAGIC] %s\n", $daemonmessage->reason);
       foreach ($magic as $k => $v) {
-        # printf("[MAGIC] ? %s: %s\n", $k, var_export((bool)stristr($daemonmessage->reason, $k), 1));
         if (stristr($daemonmessage->reason, $k)) $daemonmessage->status= $v;
       }
       

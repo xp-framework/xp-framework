@@ -213,7 +213,6 @@
       
       $struct= &$this->folder->getMessageStruct($this->uid);
       if (!$struct->parts) {
-        // var_dump($struct);
         return FALSE;
       }
       
