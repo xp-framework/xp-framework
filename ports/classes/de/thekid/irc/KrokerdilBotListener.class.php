@@ -123,10 +123,12 @@
           
           case 'uptime':
             $r= getrusage();
-            $connection->sendAction($target, '\'s uptime ist %s', strftime(
-              '%d Tag(e), %H Stunde(n), %M Minute(n)',
-              $r['ru_utime.tv_sec']
-            ));
+            list($days, $hours, $minutes)= explode('-', strftime('%d-%H-%M', $r['ru_utime.tv_sec']));
+            $connection->sendAction(
+              $target, 
+              '\'s uptime ist %d Tag(e), %d Stunde(n) und %d Minute(n)',
+             $days- 1, $hours- 1, $minutes
+            );
             break;
           
           case 'say':
