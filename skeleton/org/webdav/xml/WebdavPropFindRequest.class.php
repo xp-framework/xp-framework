@@ -39,9 +39,10 @@
    */
   class WebdavPropFindRequest extends Tree {
     var
-      $properties= array(),
-      $baseurl=    '',
-      $depth=      0;
+      $properties = array(),
+      $path       = '',
+      $webroot    = '',
+      $depth      = 0;
     
     /**
      * Constructor
@@ -54,7 +55,8 @@
       if (FALSE === $this->fromString($request->getData())) {
         return FALSE;
       }
-      $this->baseurl= $request->uri['path'];
+      $this->path= $request->uri['path_translated'];
+      $this->webroot= $request->uri['path_root'];
       $this->depth= intval($request->getHeader('depth'));
       $this->setEncoding('utf-8');
       parent::__construct();
@@ -66,8 +68,28 @@
      * @access  public
      * @return  string
      */
-    function getBaseUrl() {
-      return $this->baseurl;
+    function getPath() {
+      return $this->path;
+    }
+
+    /**
+     * Retreive base uri of request
+     *
+     * @access  public
+     * @return  string
+     */
+    function getWebroot() {
+      return $this->webroot;
+    }
+
+    /**
+     * Retreive depth
+     *
+     * @access  public
+     * @return  int
+     */
+    function getDepth() {
+      return $this->depth;
     }
     
     /**
