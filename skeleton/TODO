@@ -70,8 +70,6 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
 
 * ChangeLog / NEWS generation for display on resources page.
 
-* Think of a really cool ports system and installer.
-
 * Write a dependency tracker that will find out all dependencies
   for a given script or class, thus making CVS tagging and 
   installation easiert.
