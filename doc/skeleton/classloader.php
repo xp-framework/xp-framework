@@ -12,8 +12,6 @@
  * - php -q classloader.php Url external /path/to/eclipse-3_0 %s.php
  *   Loads the class Url from the Eclipse framework (see
  *   http://www.students.cs.uu.nl/people/voostind/eclipse/)
- *
- * - php -q classloader.php Console_Getopt pear /path/to/pear
  * </pre>
  *
  * $Id$
@@ -23,8 +21,7 @@
   uses(
     'util.cmd.ParamString', 
     'lang.ExternalClassLoader', 
-    'lang.NetClassLoader',
-    'lang.PearClassLoader'
+    'lang.NetClassLoader'
   );
   
   // {{{ main
@@ -41,10 +38,6 @@
       
     case 'default':
       $loader= &new ClassLoader();
-      break;
-      
-    case 'pear':
-      $loader= &new PearClassLoader($p->value(3));
       break;
       
     default:
