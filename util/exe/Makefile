@@ -47,8 +47,10 @@ clean:
 	rmdir .libs
  
 exe:    c $(FILE) clean
-	@echo -n "---> Executable"
+	@echo -n "---> Executable: "
 	@ls -al $(FILE)
+	@echo -n "---> Shared libraries for "
+	@ldd $(FILE)    
 	@echo "===> Done"
 
 .endif
