@@ -18,7 +18,7 @@ Instead of using define, use the new keyword "const".
 
 Example:
 Old code: define('FILE_MODE_READ',  'r');
-New code: class File extends io::Stream {
+New code: class File extends Stream {
             const MODE_READ = 'r';
           }
 
@@ -159,6 +159,6 @@ Dereferencing is a nice method to write code such as:
 Be aware of the fact that in case one of the calls in this chain 
 returns a non-object, it will result in a fatal error. Either use
 type hints or a combination of instanceof and 
-lang::IllegalArgumentException if you want to be on the safe side.
+IllegalArgumentException if you want to be on the safe side.
 
 <EOF>
