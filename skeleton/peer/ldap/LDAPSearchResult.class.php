@@ -45,9 +45,9 @@
      * Gets first entry
      *
      * @access  public
-     * @return  mixed entry or FALSE if there is no such entry
+     * @return  &mixed entry or FALSE if there is no such entry
      */
-    function getFirstEntry() {
+    function &getFirstEntry() {
       return $this->getEntry($this->_offset= 0);
     }
     
@@ -56,32 +56,30 @@
      *
      * @access  public
      * @param   int offset
-     * @return  mixed entry or FALSE if none exists by this offset
+     * @return  &mixed entry or FALSE if none exists by this offset
      * @throws  IllegalStateException in case no search has been performed before
      */
-    function getEntry($offset) {     
+    function &getEntry($offset) {
       if (NULL == $this->data) {
         return throw(new IllegalStateException('Please perform a search first'));
       }
-     
-      return (isset($this->data[$offset])
-        ? LDAPEntry::fromData($this->data[$offset])
-        : FALSE
-      );
+      
+      if (!isset($this->data[$offset])) return FALSE;
+      return LDAPEntry::fromData($this->data[$offset]);
     }
     
     /**
      * Gets next entry - ideal for loops such as:
      * <code>
-     *   while ($entry= $l->getNextEntry()) {
+     *   while ($entry= &$l->getNextEntry()) {
      *     // doit
      *   }
      * </code>
      *
      * @access  public
-     * @return  mixed entry or FALSE if there are none more
+     * @return  &mixed entry or FALSE if there are none more
      */
-    function getNextEntry() {
+    function &getNextEntry() {
       return $this->getEntry(++$this->_offset);
     }
 
