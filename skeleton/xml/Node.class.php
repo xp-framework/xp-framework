@@ -78,6 +78,7 @@
      */
     function _recurse(&$e, $a) {
       foreach (array_keys($a) as $field) {
+        if ('_' == $field{0}) continue;
         $child= &$e->addChild(new Node(is_numeric($field) 
           ? preg_replace('=s$=', '', $e->name) 
           : $field
