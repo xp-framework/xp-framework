@@ -1,20 +1,13 @@
 <?php
+  uses('util.Date');
+  
   /**
    * Repräsetiert SOAP-Datum
    *
    * @see     http://www.w3.org/TR/xmlschema-2/#ISO8601 
    * @see     http://www.w3.org/TR/xmlschema-2/#dateTime
    */
-  class SOAPDateTime extends Object {
-    var $utime;
-    
-    /**
-     + Constructor
-     */
-    function __construct($params= NULL) {
-      if (is_int($params)) $params['utime']= $params;
-      Object::__construct($params);
-    }
+  class SOAPDateTime extends Date {
     
     /**
      * Gibt Datum/Uhrzeit ISO-8601 konform als String zurück
@@ -23,7 +16,7 @@
      * @return  string ISO-8601-konformes Datums/Uhrzeitformat
      */
     function toString() {
-      return date('Y-m-d\TH:i:s', $this->utime);
+      return date('Y-m-d\TH:i:s', $this->_utime);
     }
     
     /**
