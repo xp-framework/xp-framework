@@ -28,6 +28,27 @@
       $bz_id        = 0;
 
     /**
+     * Static initializer
+     *
+     * @model   static
+     * @access  public
+     */
+    function __static() {
+      DataSet::registry('xpnews.table', 'CAFFEINE..news');
+      DataSet::registry('xpnews.connection', 'caffeine');
+      DataSet::registry('xpnews.types', array(
+        'news_id'      => '%d',
+        'caption'      => '%s',
+        'link'         => '%s',
+        'body'         => '%s',
+        'created_at'   => '%s',
+        'lastchange'   => '%s',
+        'changedby'    => '%s',
+        'bz_id'        => '%d',
+      ));
+    }
+
+    /**
      * Gets an instance of this object by unique index "news_news_i_640032591"
      *
      * @model   static
@@ -37,29 +58,9 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByNews_id($news_id) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('caffeine', 0);
-        list($data)= $db->select('
-            news_id,
-            caption,
-            link,
-            body,
-            created_at,
-            lastchange,
-            changedby,
-            bz_id
-          from
-            CAFFEINE..news 
-          where
-            news_id = %d
-        ', $news_id);
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-      
-      if ($data) return new XPNews($data); else return NULL;
+      return array_shift(
+        XPNews::doSelect(new Criteria(array('news_id', $news_id, EQUAL)), __CLASS__)
+      );
     }
 
     /**
@@ -72,35 +73,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByBz_id($bz_id) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('caffeine', 0);
-        $q= &$db->query('
-          select
-            news_id,
-            caption,
-            link,
-            body,
-            created_at,
-            lastchange,
-            changedby,
-            bz_id
-          from
-            CAFFEINE..news
-          where
-            bz_id = %d
-        ', $bz_id);
-        
-        $n= array();
-        while ($data= $q->next()) {
-          $n[]= &new XPNews($data);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $n;
+      return XPNews::doSelect(new Criteria(array('bz_id', $news_id, EQUAL)), __CLASS__);
     }
 
     /**
@@ -113,39 +86,13 @@
      * @return  &net.xp-framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByDateOrdered($max= -1) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('caffeine', 0);
-        if (-1 != $max) $db->query('set rowcount %d', $max);
-        $q= &$db->query('
-          select
-            news_id,
-            caption,
-            link,
-            body,
-            created_at,
-            lastchange,
-            changedby,
-            bz_id
-          from
-            CAFFEINE..news
-          where
-            bz_id = 500
-          order by
-            created_at desc
-        ');
-        
-        $n= array();
-        while ($data= $q->next()) {
-          $n[]= &new XPNews($data);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+    function &getByDateOrdered($max) {
+      with ($c= &new Criteria()); {
+        $c->add('bz_id', 500, EQUAL);
+        $c->addOrderBy('created_at', DESCENDING);
       }
-
-      return $n;
+      
+      return XPNews::doSelect($c, __CLASS__, $max);
     }
 
     /**
@@ -166,7 +113,7 @@
      * @return  int previous value
      */
     function setNews_id($news_id) {
-      return $this->_change('news_id', $news_id, '%d');
+      return $this->_change('news_id', $news_id);
     }
       
     /**
@@ -187,7 +134,7 @@
      * @return  string previous value
      */
     function setCaption($caption) {
-      return $this->_change('caption', $caption, '%s');
+      return $this->_change('caption', $caption);
     }
       
     /**
@@ -209,7 +156,7 @@
      * @return  previous previous value
      */
     function setLink($link) {
-      return $this->_change('link', $link, '%s');
+      return $this->_change('link', $link);
     }
       
     /**
@@ -230,7 +177,7 @@
      * @return  string previous value
      */
     function setBody($body) {
-      return $this->_change('body', $body, '%s');
+      return $this->_change('body', $body);
     }
       
     /**
@@ -251,7 +198,7 @@
      * @return  &util.Date previous value
      */
     function &setCreated_at(&$created_at) {
-      return $this->_change('created_at', $created_at, '%s');
+      return $this->_change('created_at', $created_at);
     }
       
     /**
@@ -272,7 +219,7 @@
      * @return  &util.Date previous value
      */
     function &setLastchange(&$lastchange) {
-      return $this->_change('lastchange', $lastchange, '%s');
+      return $this->_change('lastchange', $lastchange);
     }
       
     /**
@@ -293,7 +240,7 @@
      * @return  string previous value
      */
     function setChangedby($changedby) {
-      return $this->_change('changedby', $changedby, '%s');
+      return $this->_change('changedby', $changedby);
     }
       
     /**
@@ -314,9 +261,9 @@
      * @return  int previous value
      */
     function setBz_id($bz_id) {
-      return $this->_change('bz_id', $bz_id, '%d');
+      return $this->_change('bz_id', $bz_id);
     }
-      
+
     /**
      * Update this object in the database
      *
@@ -325,20 +272,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     function update() {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('caffeine', 0);
-        $affected= $db->update(
-          'CAFFEINE..news set %c where news_id= %d',
-          $this->_updated($db),
-          $this->news_id
-        );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $affected;
+      return $this->doUpdate(new Criteria(array('news_id', $this->news_id, EQUAL)));
     }
     
     /**
@@ -349,18 +283,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     function insert() {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('caffeine', 0);
-        $affected= $db->insert('CAFFEINE..news (%c)', $this->_inserted($db));
-        $this->news_id= $db->identity();
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $affected;
+      return $this->doInsert('news_id');
     }
-    
   }
 ?>
