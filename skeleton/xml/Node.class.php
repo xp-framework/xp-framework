@@ -30,6 +30,8 @@
      *   $n= &new Node('document');
      *   $n= &new Node('text', 'Hello World');
      *   $n= &new Node('article', '', array('id' => 42));
+     *
+     *   // This is deprecated
      *   $n= &new Node(array(
      *     'name'    => 'changedby',
      *     'content' => 'me'
@@ -38,7 +40,7 @@
      *
      * @access  public
      * @param   mixed*
-     * @throws  IllegalArgumentException
+     * @throws  lang.IllegalArgumentException
      */
     function __construct() {
       switch (func_num_args()) {
