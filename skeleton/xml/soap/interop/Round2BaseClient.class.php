@@ -35,11 +35,11 @@
      *
      * @access  protected
      * @param   string method
-     * @param   mixed argument
+     * @param   &xml.soap.Paramater argument
      * @return  boolean
      * @throws  xml.soap.SOAPFaultException
      */
-    function identity($method, $argument) {
+    function identity($method, &$argument) {
       try(); {
       
         // Invoke the given function
@@ -54,10 +54,7 @@
         $this->_iotrace->info('Method', $method, 'returned', $result);
       }
       
-      return (is_a($argument, 'Parameter')
-        ? $result === $argument->value
-        : $result === $argument
-      );
+      return ($result === $argument->value);
     }
   
     /**
