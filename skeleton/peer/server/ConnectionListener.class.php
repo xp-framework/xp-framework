@@ -10,64 +10,75 @@
   define('EVENT_DISCONNECTED',  'disconnected');
 
   /**
-   * (Insert class' description here)
+   * Connection listener
    *
-   * @ext      extensiom
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.server.Server#notify
+   * @purpose  Listener
    */
   class ConnectionListener extends Object {
   
     /**
-     * (Insert method's description here)
+     * Method to be triggered when a client connects
      *
-     * @access  
-     * @param   
-     * @return  
+     * Example:
+     * <code>
+     * printf(">>> ConnectionListener::connected() @%d\n", getmypid());
+     * </code>
+     *
+     * @access  public
+     * @param   &peer.server.ConnectionEvent event
      */
-    function connected($event) {
-      printf(">>> ConnectionListener::connected()\n");
+    function connected(&$event) {
     }
     
     /**
-     * (Insert method's description here)
+     * Method to be triggered when a client has sent data
      *
-     * @access  
-     * @param   
-     * @return  
+     * Example:
+     * <code>
+     *   printf(                                                
+     *     ">>> ConnectionListener::data(%s) @%d\n",            
+     *     addcslashes($event->data, "\0..\37!@\177..\377"),    
+     *     getmypid()                                           
+     *   );                                                     
+     *   if ('QUIT' == substr($event->data, 0, 4)) {            
+     *     $event->stream->close();                             
+     *   }                                                      
+     * </code>
+     *
+     * @access  public
+     * @param   &peer.server.ConnectionEvent event
      */
-    function data($event) { 
-      printf(
-        ">>> ConnectionListener::data(%s) @%d\n", 
-        addcslashes($event->data, "\0..\37!@\177..\377"),
-        getmypid()
-      );
-      if ('QUIT' == substr($event->data, 0, 4)) {
-        $event->stream->close();
-      }
+    function data(&$event) { 
     }
     
     /**
-     * (Insert method's description here)
+     * Method to be triggered when a client disconnects
      *
-     * @access  
-     * @param   
-     * @return  
+     * Example:
+     * <code>
+     * printf(">>> ConnectionListener::disconnected() @%d\n", getmypid());
+     * </code>
+     *
+     * @access  public
+     * @param   &peer.server.ConnectionEvent event
      */
-    function disconnected($event) { 
-      printf(">>> ConnectionListener::disconnected() @%d\n", getmypid());
+    function disconnected(&$event) { 
     }
     
     /**
-     * (Insert method's description here)
+     * Method to be triggered when a communication error occurs
      *
-     * @access  
-     * @param   
-     * @return  
+     * Example:
+     * <code>
+     * printf(">>> ConnectionListener::error() @%d\n", getmypid());
+     * $event->data->printStackTrace();
+     * </code>
+     *
+     * @access  public
+     * @param   &peer.server.ConnectionEvent event
      */
-    function error($event) { 
-      printf(">>> ConnectionListener::error()\n");
-      $event->data->printStackTrace();
+    function error(&$event) { 
     }
   
   }
