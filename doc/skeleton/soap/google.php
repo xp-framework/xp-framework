@@ -10,7 +10,11 @@
  */
  
   require('lang.base.php');
-  uses('xml.soap.SOAPClient', 'util.cmd.ParamString');
+  uses(
+    'xml.soap.transport.SOAPHTTPTransport',
+    'xml.soap.SOAPClient', 
+    'util.cmd.ParamString'
+  );
   
   define('GOOGLE_KEY',  'JM8DLMHOghWOwv4CB4y3Qejom6V8o6HE');
   
@@ -26,14 +30,14 @@
     );
     exit;
   }
-  $max= $p->exists('max') ? $p->value('max') : 5;
-  $start= $p->exists('start') ? $p->value('start') : 0;
+  $max= $p->exists('max') ? intval($p->value('max')) : 5;
+  $start= $p->exists('start') ? intval($p->value('start')) : 0;
   
-  $s= new SOAPClient(array(
-    'url'       => 'http://api.google.com/search/beta2',
-    'action'    => 'urn:GoogleSearch',
-    'method'    => 'doGoogleSearch'
-  ));
+  $s= new SOAPClient(
+    new SOAPHTTPTransport('http://api.google.com/search/beta2'),
+    'urn:GoogleSearch',
+    'doGoogleSearch'
+  );
   try(); {
     $return= $s->call(
       new SOAPNamedItem('key', GOOGLE_KEY),             // Google-KEY
@@ -47,16 +51,22 @@
       new SOAPNamedItem('ie', ''),                      // "Input Encoding"
       new SOAPNamedItem('oe', '')                       // "Output Encoding"
     );
+    
+    // Show XML source?
+    if ($p->exists('xml')) {
+      echo '---> SEND: '.(is_a($s->message, 'SOAPMessage') ? 
+        $s->message->getSource(0)
+        : "n/a\n"
+      );
+      echo '---> RECV: '.(is_a($s->answer, 'SOAPMessage') ? 
+        $s->answer->getSource(0) 
+        : "n/a\n"
+      );
+    }
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
+    exit;
   }
   
-  var_export($return);
-  
-  if ($p->exists('xml')) echo (
-    "\nSEND ===>\n".
-    $s->call->getSource(0).
-    "\nRECV <=== \n".
-    (isset($s->answer) ? $s->answer->getSource(0) : 'n/a')
-  );
-?>
+  echo '$return:= '; var_dump($return);
+?> 
