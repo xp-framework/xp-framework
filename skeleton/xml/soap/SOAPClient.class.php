@@ -26,7 +26,6 @@
    *   var_dump($return);
    * </code>
    * 
-   * @ext      overload
    * @purpose  Generic SOAP client base class
    */
   class SOAPClient extends Object {
@@ -85,23 +84,8 @@
       // Response
       if (FALSE === ($this->answer= &$this->transport->retreive($response))) return FALSE;
       
-      $data= &$this->answer->getData();
-      return $data[0];
+      $data= $this->answer->getData();
+      return sizeof($data) == 1 ? $data[0] : $data;
     }
-    
-    /**
-     * Magic interceptor for member method access
-     *
-     * @access  magic
-     * @param   string name
-     * @param   &array args
-     * @param   &mixed return
-     * @return  bool success
-     */
-    function __call($name, &$args, &$return) {
-      array_unshift($args, $name);
-      $return= &call_user_func_array(array($this, 'invoke'), $args);
-      return TRUE;
-    }
-  } overload('SOAPClient');
+  }
 ?>
