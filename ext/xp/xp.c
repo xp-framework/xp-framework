@@ -205,7 +205,7 @@ static void php_xp_destroy_globals(zend_xp_globals *xp_globals TSRMLS_DC)
 }
 /* }}} */
 
-static zend_class_entry* xp_register_class(char* name, int name_len, char* prettyname, int prettyname_len, zend_function_entry* functions, zend_class_entry* parent)
+static zend_class_entry* xp_register_class(char* name, int name_len, char* prettyname, int prettyname_len, zend_function_entry* functions, zend_class_entry* parent TSRMLS_DC)
 {
     zend_class_entry ce;
     zend_class_entry* ptr;
@@ -237,19 +237,21 @@ PHP_MINIT_FUNCTION(xp)
     REGISTER_INI_ENTRIES();
 
     xp_error(XP_DEBUG, "PHP_MINIT_FUNCTION");
-
+    
+    #if 0
     /* Kill the built-in exception class */
 	if (zend_hash_find(CG(class_table), "exception", sizeof("exception"), (void**) &pce) == FAILURE
         ||  zend_hash_del(CG(class_table), "exception", sizeof("exception")) == FAILURE) {
 		return FAILURE;
 	}
     destroy_zend_class(&pce);
-    
+    #endif
+
     /* Register basic classes */
-    xp_object_ptr = xp_register_class(XN("object", "lang.Object"), xp_object_functions, NULL);
-    xp_throwable_ptr = xp_register_class(XN("throwable", "lang.Throwable"), xp_throwable_functions, xp_object_ptr);
-    xp_register_class(XN("error", "lang.Error"), NULL, xp_throwable_ptr);
-    xp_register_class(XN("exception", "lang.Exception"), NULL, xp_throwable_ptr);
+    xp_object_ptr = xp_register_class(XN("object", "lang.Object"), xp_object_functions, NULL TSRMLS_CC);
+    xp_throwable_ptr = xp_register_class(XN("throwable", "lang.Throwable"), xp_throwable_functions, xp_object_ptr TSRMLS_CC);
+    xp_register_class(XN("error", "lang.Error"), NULL, xp_throwable_ptr TSRMLS_CC);
+    xp_register_class(XN("xpexception", "lang.XPException"), NULL, xp_throwable_ptr TSRMLS_CC);
     
     return SUCCESS;
 }
@@ -706,7 +708,7 @@ PHP_FUNCTION(uses)
     int i, success;
 
     args = (zval ***)emalloc(ZEND_NUM_ARGS() * sizeof(zval **));
-    if (zend_get_parameters_array_ex(ZEND_NUM_ARGS() TSRMLS_CC, args) == FAILURE) {
+    if (zend_get_parameters_array_ex(ZEND_NUM_ARGS(), args) == FAILURE) {
         efree(args);
         zend_error(E_WARNING, "XP: Unable to obtain arguments to uses");
         RETURN_FALSE;
