@@ -398,6 +398,8 @@
         )) {
           $response->process();
         }
+      } if (catch('HttpScriptletException', $e)) {
+        return throw($e);
       } if (catch('Exception', $e)) {
         return throw(new HttpScriptletException(
           'Request processing failed ['.$method.']: '.$e->getMessage(),
