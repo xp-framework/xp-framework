@@ -227,6 +227,21 @@
 
       return $this->_execute ($cmd);
     }
+
+    /**
+     * Tags a file in repository. 
+     *
+     * @access  public
+     * @param   string tag
+     * @return  bool success
+     */    
+    function tag($tag) {
+      $result= $this->_execute(sprintf ('tag -F %s',
+        $tag
+      ));
+      
+      return substr($result[0], 0, 1) == 'T';
+    }    
     
     /**
      * Get the log entries from cvs. The output format for those
