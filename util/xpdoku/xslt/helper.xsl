@@ -33,7 +33,7 @@
 <xsl:apply-templates select="//collection/class"/>
     </xsl:if>
     
-    <!-- List classes without $Id$ -->
+    <!-- List classes without Id-CVS-Keyword -->
     <xsl:if test="$mode = 'brokencvs'">
       <xsl:for-each select="//class">
         <xsl:call-template name="brokencvs"/>
