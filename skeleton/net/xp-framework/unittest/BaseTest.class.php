@@ -24,7 +24,7 @@
       $this->assertEquals(error_reporting(), E_ALL, 'errorreporting');
       $this->assertEquals(get_magic_quotes_gpc(), 0, 'magicquotesgpc');
       $this->assertEquals(get_magic_quotes_runtime(), 0, 'magicquotesruntime');
-      $this->assertIn(version_compare(phpversion(), '4.2.0'), array(0, 1), 'phpversion');
+      $this->assertIn(version_compare(phpversion(), '4.3.0'), array(0, 1), 'phpversion');
     }
     
     /**
