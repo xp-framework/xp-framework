@@ -44,6 +44,7 @@ a) Syntax changes and additions
 
 b) New features
 + Operator overloading
++ "self" reflects runtime class
 
 c) Removed restrictions
 * No implementation check during inheritance
@@ -286,6 +287,20 @@ Details
 + Operator overloading
   For details, see 
   http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/operator_overloading
+
++ "self" reflects runtime class
+  This would make the following possible:
+  <?php
+    class A {
+      public static function getInstance() {
+        return new self();
+      }
+    }
+
+    class B extends A {}
+
+    var_dump(B::getInstance());     // object(B)
+  ?>
 
 * No implementation check during inheritance
   The following would not be checked upon (not even in strict mode):
