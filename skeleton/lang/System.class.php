@@ -85,6 +85,8 @@
       } else {
         $dir= (0 == strcasecmp(substr(PHP_OS, 0, 3), 'WIN')) ? 'c:\\' : '/tmp';
       }
+
+      return $dir;
     }
 
     /** 
