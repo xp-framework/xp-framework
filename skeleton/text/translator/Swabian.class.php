@@ -7,6 +7,11 @@
   /**
    * This class translates any word or sentence from de_DE to de_SW.
    *
+   * Example:
+   * <code>
+   *   $translated= Swabian::translate($text);
+   * </code>
+   *
    * @see      http://www.schweikhardt.net/schwob
    * @purpose  Schwobify
    */
@@ -132,5 +137,5 @@
       
       return strtr(preg_replace(array_keys($tr), array_values($tr), $string), $sr);
     }
-  }
+  } implements(__FILE__, 'text.translator.Translator');
 ?>
