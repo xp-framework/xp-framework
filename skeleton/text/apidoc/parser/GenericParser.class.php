@@ -23,11 +23,10 @@
       $configured= FALSE;
     
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string filename default NULL
      */
     function __construct($filename= NULL) {
       $this->tokenizer= &new PHPTokenizer();
@@ -39,11 +38,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Destructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function __destruct() {
       $this->file->__destruct();
@@ -53,22 +50,21 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Set file name
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string file
      */
     function setFile($file) {
       $this->file= $file;
     }
     
     /**
-     * (Insert method's description here)
+     * Configure
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  bool success
+     * @throws  Exception
      */
     function configure() {
       try(); {
@@ -89,11 +85,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Parse
      *
-     * @access  
+     * @access  public
      * @param   util.log.LogCategory CAT default NULL a log category to print debug to
-     * @return  
+     * @return  bool success
      */
     function parse($cat= NULL) {
       try(); {
