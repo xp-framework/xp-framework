@@ -77,7 +77,7 @@ table.intro {
   background-image: url(image/bg_striped.gif);
 }
 ul.intro {
-  font: bold 13px "Tahoma";
+  font: bold 13px "Arial";
   list-style-image: url(image/dot.gif);
   line-height: 18px;
 }
