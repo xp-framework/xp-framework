@@ -117,11 +117,9 @@
           (is_object($value)) && 
           (is_a($value, 'SoapType'))
         ) {       
-          // SOAP-Typen
+          // SOAP-Types
           
-          // Namen
           if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
-          
           if (isset($value->item)) $child= $value->item;
           
           // Inhalt und Typen
