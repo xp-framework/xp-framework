@@ -353,6 +353,10 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
                 <code><![CDATA[  cast('hello', 'string') := 'hello';
   cast(NULL, 'string') := NULL]]></code>
             </li>
+            <li><pre>void delete(&amp;lang.Object object)</pre>Destroys an object and calls its destructor
+                <code><![CDATA[  $object= &new Object();
+  delete($object);]]></code>
+            </li>
           </ul>
         </text>
       </para>              
