@@ -101,7 +101,8 @@
       if (!$this->socket->isConnected()) return FALSE;
       
       while ($m= &$this->socket->accept()) {
-
+        $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
+        
         // Loop
         do {
           try(); {
