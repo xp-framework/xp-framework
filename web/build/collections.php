@@ -12,19 +12,16 @@
     'lang.apidoc.parser.ClassParser'
   );
   
-  // {{{ void recurse(&xml.Tree tree, string base, string uri= '') throws lang.IllegalArgumentException
+  // {{{ void recurse(&xml.Tree tree, string base, string prefix= '', string uri= '') throws lang.IllegalArgumentException
   //     Recurse a folder an build a sub-tree
-  function recurse(&$tree, $base, $uri= '') {
+  function recurse(&$tree, $base, $prefix= '', $uri= '') {
     static $except= array('META-INF', 'CVS');
-    static $parser= NULL;
+    static $include= array('class', 'sapi');
     
     $f= &new Folder($base.DIRECTORY_SEPARATOR.$uri);
     if (!$f->exists()) {
       return throw(new IllegalArgumentException('Folder "'.$f->getURI().'" does not exist'));
     }
-
-    // Set up parser (reference operator & missing intentionally)
-    if (!$parser) $parser= new ClassParser();
 
     // Initialize
     $classes= $packages= 0;
@@ -37,46 +34,32 @@
     // Go through folder entries
     while (FALSE !== ($entry= $f->getEntry())) {
 
-      // Recurse into subdirectories, ignoring well-known directories 
-      // defined in static variable "except"
-      if (is_dir($f->getURI().$entry) && !in_array($entry, $except)) {
+      // Ignore well-known files and directories
+      if (in_array($entry, $except)) continue;
+
+      // Recurse into subdirectories
+      if (is_dir($f->getURI().$entry)) {
         $packages++;
-        recurse($node, $base, str_replace($base, '', $f->getURI().$entry));
+        recurse($node, $base, $prefix, str_replace($base, '', $f->getURI().$entry));
         continue;
       }
 
-      $fqcn= str_replace(
-        DIRECTORY_SEPARATOR,
-        '.',
-        substr(strstr($f->getURI().$entry, 'skeleton'), 9, -10)
-      );
+      // Only take documentable files into account
+      sscanf($entry, '%[^\.].%s', $filename, $indicator);
+      $indicator= substr($indicator, 0, -4);
+      if (!in_array($indicator, $include)) continue;
 
-      if ('.class.php' == substr($entry, -10)) {
+      // Calculate package name
+      $package= ltrim($prefix.str_replace(
+        DIRECTORY_SEPARATOR, 
+        '.', 
+        $uri
+      ), '.');
 
-        // Add class node to package node
-        $node->addChild(new Node('class', NULL, array(
-          'name' => $fqcn
-        )));
-        
-        // Parse class API docs
-        // try(); {
-        //   $parser->setFile(new File($f->getURI().$entry));
-        //   $result= &$parser->parse();
-        // } if (catch('Exception', $e)) {
-        //   $e->printStackTrace();
-        //   continue;
-        // }
-        // var_dump($result);
-        // exit;
-      } elseif ('.sapi.php' == substr($entry, -9)) {
+      $node->addChild(new Node($indicator, NULL, array(
+        'name' => $package.'.'.$filename
+      )));
 
-        // Add sapi node to package node
-        $node->addChild(new Node('sapi', NULL, array(
-          'name' => $fqcn
-        )));        
-      } else {
-        continue;
-      }
       $classes++;
     }
     $f->close();
