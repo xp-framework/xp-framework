@@ -185,6 +185,21 @@
       }
       return $usage;
     }
+
+    /**
+     * Export this certificate
+     *
+     * @access  public
+     * @return  string cert
+     */
+    function export() {
+      if (FALSE === openssl_x509_export($this->_res, $out)) {
+        trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
+        return throw(new Exception('Could not export certificate'));
+      }
+      
+      return $out;
+    }
     
     /**
      * Create a X.509 Certificate from a string
@@ -196,13 +211,14 @@
      */
     function &fromString($str) {
       if (!is_resource($_res= openssl_x509_read($str))) {
-        return throw(new CertificateException('Read: '.implode("\n", OpenSslUtil::getErrors())));
+        trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
+        return throw(new CertificateException('Cannot read certificate'));
+      }
+      if (!is_array($_info= openssl_x509_parse($_res, TRUE))) {
+        trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
+        return throw(new CertificateException('Cannot parse certificate information'));
       }
       
-      // Parse certificate information
-      if (!is_array($_info= openssl_x509_parse($_res, TRUE))) {
-        return throw(new CertificateException('Parse: '.implode("\n", OpenSslUtil::getErrors())));
-      }
       return new X509Certificate($_info, $_res);
     }
   
