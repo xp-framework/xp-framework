@@ -361,6 +361,7 @@
      * @return  peer.sieve.SieveScript[] scripts
      */
     function getScripts() {
+      $r= array();
       foreach ($this->getScriptNames() as $name => $info) {
         with ($s= &$this->getScript($name)); {
           $s->setActive('ACTIVE' == $info);         // Only one at a time
