@@ -1,12 +1,23 @@
 <?php
   error_reporting(E_ALL);
 
+  // @deprecated
   function import($str) {
     return include_once(
       SKELETON_PATH.
       strtr($str, array('.' => '/', '~' => '..', '_' => '.')).
       '.class.php'
     );
+  }
+  
+  function uses() {
+    $result= TRUE;
+    foreach (func_get_args() as $str) $result= $result & include_once(
+      SKELETON_PATH.
+      strtr($str, array('.' => '/', '~' => '..', '_' => '.')).
+      '.class.php'
+    );
+    return $result;
   }
   
   function destroy() {
@@ -23,7 +34,6 @@
     : dirname(__FILE__).'/'
   ));
   
-  import('lang.Object');
-  import('lang.Exception');
+  uses('lang.Object', 'lang.Exception');
   register_shutdown_function('destroy');
 ?>
