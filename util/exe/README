@@ -55,4 +55,34 @@ Parse errors will look like this:
     parse error, unexpected '}'
 *** Internal error
 
+Webstart
+--------
+An even cooler feature is creating a "thin client" application which loads
+PHP applications off the net and then executes them.
+
+No big deal, simply use:
+$ make exe src=test.php MAKEEMBED='php -q webstart.php http://localhost/webstart/'
+to create the executable.
+
+The sourcecode retreived from http://localhost/webstart/test.php will then
+be executed as soon as the application starts. Achtung! The sourcecode shall
+neither start with <?php nor end with ?> - either create a wrapper program
+on your webserver which will strip these or simply do not include them.
+
+Webstart error messages
+-----------------------
+An error message issued from the executable looking like this:
+
+*** Error #2 on line 0 of Unknown
+    Unknown(http://localhost/webstart/test.php): failed to create stream: 
+    HTTP request failed! HTTP/1.1 404 Not Found
+*** Failed to initiate
+
+means the webstart target application could not be found. The webstart
+creator will issue a warning about this during build time, but, of course,
+no guarantee can be given the target still exists at execution time.
+
+The warning issued during compile time looks like this:
+test2.c:3: warning: #warning "Retreiving http://foo/test2.php results in 404"
+
 <EOF>
