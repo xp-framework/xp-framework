@@ -81,6 +81,16 @@
       $this->path= dirname($uri);
       $this->dirname= basename($uri);
     }
+
+    /**
+     * Get URI
+     *
+     * @access public
+     * @return uri of this folder
+     */    
+    function getURI() {
+      return $this->uri;
+    }
     
     /**
      * Das Verzeichnis anlegen, rekursiv, wenn es sein muss!
