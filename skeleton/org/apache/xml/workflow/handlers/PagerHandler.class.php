@@ -16,16 +16,18 @@
    * @purpose  Handler
    */
   class PagerHandler extends Handler {
+    var
+      $pager    = '';
 
     /**
      * Constructor
      *
      * @access  public
      * @param   string form
-     * @param   &org.apache.xml.workflow.contextresources.PagerContextResource pcrs
+     * @param   string pager
      */
-    function __construct($form, &$pcrs) {
-      $this->pager= &$pcrs;
+    function __construct($form, $pager) {
+      $this->pager= $pager;
       parent::__construct($form);
     }
 
@@ -49,10 +51,11 @@
      * @return  bool
      */
     function handleSubmittedData(&$context, &$request) {
-    
+      $pagercontextresource= &$context->getContextResource($this->form, $this->pager);
+      
       // Update pager if necessary
-      if (!$this->pager->hasItems()) {
-        $this->pager->update();
+      if (!$pagercontextresource->hasItems()) {
+        $pagercontextresource->update();
       }
       
       // Switch on pager commands
@@ -62,19 +65,19 @@
       );
       switch ($show) {
         case 'first': 
-          $this->pager->showFirst(); break;
+          $pagercontextresource->showFirst(); break;
 
         case 'last':
-          $this->pager->showLast(); break;
+          $pagercontextresource->showLast(); break;
 
         case 'prev':
-          $this->pager->showPrevious(); break;
+          $pagercontextresource->showPrevious(); break;
 
         case 'next':
-          $this->pager->showNext(); break;
+          $pagercontextresource->showNext(); break;
 
         default: 
-          $this->pager->setShowFrom(intval($show));
+          $pagercontextresource->setShowFrom(intval($show));
       }
       
       return TRUE;
