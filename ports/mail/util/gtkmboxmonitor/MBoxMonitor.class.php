@@ -109,33 +109,18 @@
     }
     
     /**
-     * Callback for _all_ menu items in popup menu
+     * Callback for "delete"
      *
      * @access  protected
-     * @param   &php.GtkWidget item
+     * @param   int[] selection
      */
-    function onMenuItemActivated(&$item) {
-      $this->log('Activated item:', $item->get_name());
-      
-      // Switch on selected menu item
-      switch ($item->get_name()) {
-        case 'delete': $action= '-'; $icon= 'mail-deleted'; break;
-        case 'undelete': $action= '+'; $icon= 'mail-new'; break;
-        default: return;
-      }
-      
-      $this->log('Selected rows', $this->list->selection);
-
-      // Update selected rows
+    function onDeleteMenuItemActivated($selection) {
       $this->list->freeze();
       foreach (array_values($this->list->selection) as $idx) {
         $msg= &$this->list->get_row_data($idx);
         
         try(); {
-          switch ($action) {
-            case '-': $msg->folder->deleteMessage($msg); break;
-            case '+': $msg->folder->undeleteMessage($msg); break;
-          }
+          $msg->folder->deleteMessage($msg);
         } if (catch('Exception', $e)) {
           $this->log($e->getStackTrace());
           
@@ -147,13 +132,59 @@
         $this->list->set_pixtext(
           $idx, 
           0,
-          $action.substr($row[0], 1),
+          $row[0],
           $row[1],
-          $this->pixmaps['p:'.$icon], 
-          $this->pixmaps['m:'.$icon]
-        );
+          $this->pixmaps['p:mail-deleted'], 
+          $this->pixmaps['m:mail-deleted']
+        );       
       }
       $this->list->thaw();
+    }
+
+    /**
+     * Callback for "undelete"
+     *
+     * @access  protected
+     * @param   int[] selection
+     */
+    function onUndeleteMenuItemActivated($selection) {
+      $this->list->freeze();
+      foreach (array_values($this->list->selection) as $idx) {
+        $msg= &$this->list->get_row_data($idx);
+        
+        try(); {
+          $msg->folder->undeleteMessage($msg);
+        } if (catch('Exception', $e)) {
+          $this->log($e->getStackTrace());
+          
+          $this->setStatusText('Error updating message status');
+          continue;
+        }
+        
+        $row= $this->list->get_pixtext($idx, 0);
+        $this->list->set_pixtext(
+          $idx, 
+          0,
+          $row[0],
+          $row[1],
+          $this->pixmaps['p:mail-new'], 
+          $this->pixmaps['m:mail-new']
+        );       
+      }
+      $this->list->thaw();
+    }
+    
+    /**
+     * Callback for _all_ menu items in popup menu
+     *
+     * @access  protected
+     * @param   &php.GtkWidget item
+     */
+    function onMenuItemActivated(&$item) {
+      return call_user_func(
+        array(&$this, sprintf('on%sMenuItemActivated', ucfirst($item->get_name()))),
+        $this->list->selection
+      );
     }
     
     /**
@@ -290,11 +321,15 @@
      * @param   &php.GtkWidget widget
      */
     function onReceiveButtonClicked(&$widget) {
-    
+
       // Set receive button unsensitive
       $r= &$this->widget('button_receive');
       $r->set_sensitive(FALSE);
-
+      
+      // Freeze list
+      $this->list->set_sensitive(FALSE);
+      $this->list->freeze();
+      
       try(); {
         $this->stor->cache->expunge();
         
@@ -319,6 +354,10 @@
         // TBD: Show messagebox
         $this->log($e->getStackTrace());
         $r->set_sensitive(TRUE);
+        
+        // Unfreeze list
+        $this->list->set_sensitive(TRUE);
+        $this->list->thaw();
         return;
       }
       
@@ -328,6 +367,10 @@
       // Set expunge button sensitive
       $e= &$this->widget('button_expunge');
       $e->set_sensitive(TRUE);
+      
+      // Unfreeze list
+      $this->list->set_sensitive(TRUE);
+      $this->list->thaw();
       
       $this->setStatusText('Done');
     }
