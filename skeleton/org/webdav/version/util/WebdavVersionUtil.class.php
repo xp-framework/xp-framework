@@ -18,19 +18,23 @@
      *
      * @access  public
      * @param   &org.webdav.version.Webdav*Version
+     * @param   &io.File
      * @return  &org.webdav.version.Webdav*Version
      */
-    function &getNextVersion(&$actVersion, $fileuri) {
+    function &getNextVersion(&$actVersion, &$file) {
     
       // Load same type of version as before
       $obj= &XPClass::forName(XP::typeOf($actVersion));
+      
+      // Get name of file, without extension    
+      $fname= basename($actVersion->getFilename(), '.'.$file->getExtension());
     
       // Create new version object 
       with ($version= &$obj->newInstance($actVersion->getFilename())); {
         $version->setVersionNumber($actVersion->getVersionNumber()+0.1);
-        $version->setHref('../versions/'.$version->getFilename().'_'.$version->getVersionNumber());
-        $version->setVersionName($version->getFilename().'_'.$version->getVersionNumber());
-        $version->setContentLength(sizeof($fileuri));
+        $version->setHref('../versions/'.$fname.'['.$version->getVersionNumber().'].'.$file->getExtension());
+        $version->setVersionName($fname.'['.$version->getVersionNumber().'].'.$file->getExtension());
+        $version->setContentLength($file->size());
         $version->setLastModified(Date::now());
       }
     
