@@ -51,6 +51,20 @@
       $this->_objref= &$ref;
       $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
     }
+
+    /**
+     * Return whether an object equals this class
+     *
+     * @access  public
+     * @param   &lang.Object cmp
+     * @return  bool
+     */
+    function equals(&$cmp) {
+      return (is_a($cmp, 'XPClass') 
+        ? 0 == strcmp($this->getName(), $cmp->getName())
+        : FALSE
+      );
+    }
     
     /**
      * Retrieves the fully qualified class name for this class.
