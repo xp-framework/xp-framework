@@ -40,6 +40,7 @@
     
     $folder= &new Folder($uri);
     while ($entry= $folder->getEntry()) {
+      // printf("%s ~? %s\n", $entry, $pattern);
       if (
         ('.class.php' == substr($entry, -10)) &&
         (preg_match($pattern, $entry))
