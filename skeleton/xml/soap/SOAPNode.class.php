@@ -72,7 +72,10 @@
           break;
         
         case 'boolean':
-          return $ret == 'false' ? FALSE : TRUE;
+          return (
+            (0 == strncasecmp('true', $ret, 4)) || 
+            (0 == strncasecmp('1', $ret, 1))
+          ) ? TRUE : FALSE;
          
         case 'long':
         case 'int':
