@@ -44,6 +44,7 @@
    *
    * @ext      sqlite
    * @see      http://sqlite.org/
+   * @see      http://pecl.php.net/package/SQLite
    * @purpose  Database connection
    */
   class SQLiteConnection extends DBConnection {
