@@ -372,7 +372,7 @@
         if (!$request->session->isValid()) {
           if (!$this->handleInvalidSession($request, $response)) {
             return throw(new HttpSessionInvalidException(
-              'Session is invalid'
+              'Session is invalid',
               HTTP_BAD_REQUEST
             ));
           }
