@@ -59,7 +59,7 @@
       $this->proc->setXSLFile(sprintf(
         '%s/../ui/skins/%s.xsl',
         dirname($p->value(0)),
-        $p->value('skin', 's', 'default')
+        $p->value('skin', 's', $prop->readString('settings', 'skin', 'default'))
       ));
       $this->proc->setSchemeHandler(array('get_all' => array(&$this, 'onScheme')));
     }
