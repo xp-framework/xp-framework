@@ -21,9 +21,9 @@
      * Constructor
      *
      * @access  public
-     * @param   mixed input a string or a file object
+     * @param   mixed input default NULL a string or a file object
      */
-    function __construct($input) {
+    function __construct($input= NULL) {
       if (is_a($input, 'File')) {
         $this->setFile($input);
       } else {
