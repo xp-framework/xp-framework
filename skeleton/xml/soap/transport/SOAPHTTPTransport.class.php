@@ -13,8 +13,9 @@
   /**
    * HTTP transport. Also handles HTTPS.
    *
-   * @purpose  Transport SOAP messages
-   * @see      xp://xml.soap.SOAPClient
+   * @ext       openssl
+   * @purpose   Transport SOAP messages
+   * @see       xp://xml.soap.SOAPClient
    */
   class SOAPHTTPTransport extends SOAPTransport {
     var
