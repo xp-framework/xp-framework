@@ -193,6 +193,9 @@ Related documents
 * Test script:
   http://xp-framework.net/downloads/cast.phps
 
+* Experiment:
+  http://cvs.xp-framework.net/horde/chora/co.php/experiments/people/friebe/cast/test.php
+
 Comments
 --------
 - friebe, Mon Nov 22 23:47:13 CET 2004
