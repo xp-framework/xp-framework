@@ -9,16 +9,22 @@
   // Identifier
   define('VCARD_ID',             'VCARD');
 
-  // Property params
+  // Property params: TEL
   define('VCARD_TEL_TYPE_FAX',   'FAX');		    
   define('VCARD_TEL_TYPE_VOICE', 'VOICE');  	    
   define('VCARD_TEL_LOC_WORK',   'WORK');		    
   define('VCARD_TEL_LOC_HOME',   'HOME');		    
   define('VCARD_TEL_LOC_CELL',   'CELL');		    
+  
+  // Property params: ADR
   define('VCARD_ADR_HOME',       'HOME');		    
   define('VCARD_ADR_WORK',       'WORK');	
   define('VCARD_ADR_POSTAL',     'POSTAL');	    
-
+  
+  // Property params: EMAIL
+  define('VCARD_EMAIL_DEFAULT',  'DEFAULT');
+  define('VCARD_EMAIL_WORK',     'WORK');
+  
   /**
    * VCard
    *
@@ -96,60 +102,101 @@
      * Set Name
      *
      * @access  public
-     * @param   mixed[] name
+     * @param   string last
+     * @param   string first
+     * @param   string middle default ''
+     * @param   string title default ''
+     * @param   string suffix default ''
      */
-    function setName($name) {
-      $this->name= $name;
+    function setName($last, $first, $middle= '', $title= '', $suffix= '') {
+      $this->name= array(
+        'last'    => $last,
+        'first'   => $first,
+        'middle'  => $middle,
+        'title'   => $title,
+        'suffix'  => $suffix
+      );
     }
-
+    
     /**
-     * Get Name
+     * Get Name. If a portion is specified, only this portion is returned,
+     * else the whole array.
      *
      * @access  public
-     * @return  mixed[]
+     * @param   string portion default '' either last, first, middle, title or initial
+     * @return  mixed
      */
-    function getName() {
-      return $this->name;
+    function getName($portion= '') {
+      return $portion ? $this->name[$portion] : $this->name;
     }
 
     /**
      * Set Address
      *
      * @access  public
-     * @param   mixed[] address
+     * @param   string type one of the VCARD_ADR_* constants
+     * @param   string street
+     * @param   string zip
+     * @param   string city
+     * @param   string province
+     * @param   string country 
+     * @param   string pobox default ''
+     * @param   string suffix default ''
      */
-    function setAddress($address) {
-      $this->address= $address;
+    function setAddress(
+      $type,
+      $street, 
+      $zip, 
+      $city, 
+      $province, 
+      $country, 
+      $pobox= '', 
+      $suffix= ''
+    ) {
+      $this->address[$type]= array(
+        'pobox'      => $pobox,     
+        'suffix'     => $suffix,    
+        'street'     => $street,    
+        'city'       => $city,      
+        'province'   => $province,  
+        'zip'        => $zip,       
+        'country'    => $country    
+      );
     }
 
     /**
-     * Get Address
+     * Get Address. If a portion is specified, only this portion is returned,
+     * else the whole array.
      *
      * @access  public
-     * @return  mixed[]
+     * @param   string type one of the VCARD_ADR_* constants
+     * @param   string portion default '' either street, zip, city, province, country, pobox or suffix
+     * @return  mixed
      */
-    function getAddress() {
-      return $this->address;
+    function getAddress($type, $portion= '') {
+      return $portion ? $this->address[$type][$portion] : $this->address[$type];
     }
 
     /**
-     * Set Email
+     * Add an email
      *
      * @access  public
-     * @param   mixed[] email
+     * @param   string type one of the VCARD_EMAIL_* constants
+     * @param   string email
      */
-    function setEmail($email) {
-      $this->email= $email;
+    function addEmail($type, $email) {
+      $this->email[$type][]= $email;
     }
 
     /**
      * Get Email
      *
      * @access  public
-     * @return  mixed[]
+     * @param   string type one of the VCARD_EMAIL_* constants
+     * @return  string[] emails
      */
-    function getEmail() {
-      return $this->email;
+    function getEmails($type= VCARD_EMAIL_DEFAULT) {
+      return $this->email[$type];
     }
 
     /**
