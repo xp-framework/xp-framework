@@ -34,45 +34,16 @@
      *   $n= new Node('document');
      *   $n= new Node('text', 'Hello World');
      *   $n= new Node('article', '', array('id' => 42));
-     *
-     *   // This is deprecated
-     *   $n= new Node(array(
-     *     'name'    => 'changedby',
-     *     'content' => 'me'
-     *   ));
      * </code>
      *
      * @access  public
      * @param   mixed*
      * @throws  lang.IllegalArgumentException
      */
-    public function __construct() {
-      switch (func_num_args()) {
-        case 0: 
-          parent::__construct();
-          break;
-          
-        case 1:
-          if (is_array($arg= func_get_arg(0))) {
-            parent::__construct($arg);
-            break;
-          }
-          $this->name= $arg;
-          break;
-          
-        case 2:
-          list($this->name, $this->content)= func_get_args();
-          parent::__construct();
-          break;
-          
-        case 3:
-          list($this->name, $this->content, $this->attribute)= func_get_args();
-          parent::__construct();
-          break;
-          
-        default:
-          throw (new IllegalArgumentException('Wrong number of arguments passed'));
-      }
+    public function __construct($name, $content= NULL, $arguments= array()) {
+      $this->name= $name;
+      $this->content= $content;
+      $this->arguments= $arguments;
     }
 
     /**
