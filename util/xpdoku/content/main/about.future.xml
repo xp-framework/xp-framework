@@ -12,27 +12,65 @@
       <para>
         <caption>The Zend Engine 2</caption>
         <text>
+          In the Zend Engine 2 [ZE2], the object model has been largely rewritten. A short overview
+          of the new functionality:
+          
+          <ul>
+            <li>Objects are passed by handle, not by value.</li>
+            <li>Unified constructors and destructors</li>
+            <li>Private, public and protected variables and functions</li>
+            <li>Nested classes and namespaces (class rdbms::MySQL)</li>
+            <li>Exceptions</li>
+            <li>Static class variables</li>
+            <li>Abstract classes and methods</li>
+            <li>Class constants</li>
+          </ul>
+          
+          Although backwards compatibility has been tried to preserve, some changes are 
+          necessary. This document explains what has to be done in order to get source code 
+          written using the XP framework to run with the Zend Engine 2.
+          
+          <box caption="Note">
+            Only those XP framework classes which cannot be automatically migrated are 
+            checked in to the CVS module <tt>skeleton2</tt>. Don't be surprise to find
+            only a couple of files there.
+          </box>
         </text>
       </para>
       <para>
-        <caption>Changes: Exceptions</caption>
+        <caption>Changes: Exceptions (mandatory)</caption>
         <text>
           Exceptions are now built-in:
           <code><![CDATA[  // XP1
+  function operation() {
+    // ...
+    if (!$condition) return throw(new Exception('Error'));
+    // ...
+  }
+  
   try(); {
-    // whatever
+    operation();
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
     exit();
   } 
   
   // XP2
+  function operation() {
+    // ...
+    if (!$condition) throw(new Exception('Error'));
+    // ...
+  }
+  
   try {
-    // whatever
+    operation();
   } catch (Exception $e) {
     $e->printStackTrace();
     exit();
-  } ]]></code>  
+  } ]]></code>
+          In order to make exceptions work, existing sourcecode must be changed - it would
+          otherwise result in parse errors. A little script, <tt>migrate_php5.php</tt>, assists
+          you here.
         </text>
       </para>              
       <para>
@@ -44,8 +82,11 @@
   $cat= &$l->getCategory();
   
   // XP2
-  $cat= Logger::getInstance()->getCategory();]]></code>  
+  $cat= Logger::getInstance()->getCategory();]]></code> 
+          The first notation will still work, though (even with the ampersand signs in it), so
+          it is up to you to decide whether you want to migrate your code or not.
         </text>
+      </para>
     </content>
   </main>
 </document>
