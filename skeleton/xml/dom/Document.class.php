@@ -28,10 +28,10 @@
      * @access  protected
      * @param   &xml.Node starting node
      * @param   string name
-     * @param   int max
+     * @param   int max default -1
      * @return  xml.Node[]
      */
-    function _getElementsByTagName(&$node, $tagname, $max) {
+    function _getElementsByTagName(&$node, $tagname, $max= -1) {
       $r= array();
       foreach (array_keys($node->children) as $key) {
         if ($tagname == $node->children[$key]->getName()) {
