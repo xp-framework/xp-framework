@@ -15,7 +15,7 @@
   <xsl:template name="cvs">
     <xsl:param name="action"/>
     <xsl:for-each select="$cvs/entry[@action = $action]">
-      <xsl:if test="position() &lt; 4">
+      <xsl:if test="position() &lt; 6">
         <tr>
           <td><img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/></td>
           <td>
