@@ -98,6 +98,7 @@ __;
         $parentcall= '';
         $remove= FALSE;
         while (';' !== $tok[1]) {
+          if ('getStackTrace' == $tok[1]) $tok[1]= 'toString';
           $parentcall.= $tok[1];
           $tok= $t->getNextToken();
           if (
@@ -150,6 +151,7 @@ __;
           ('fromString' == $tok[1]) ||
           ('fromFile' == $tok[1])
         ) $out[]= ' static';
+        if ('getStackTrace' == $tok[1]) $tok[1]= 'toString';
         $out[]= ' function ';
         break;
       
