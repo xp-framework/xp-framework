@@ -58,11 +58,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Configure this logger
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &util.Properties prop instance of a Properties object
      */
     function configure(&$prop) {
     
@@ -116,11 +115,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Tells all categories to finalize themselves
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function finalize() {
       foreach (array_keys($this->category) as $name) {
@@ -129,10 +126,10 @@
     }
   
     /**
-     * Gibt eine Instanz zurück
+     * Returns an instance of this class
      *
      * @access  public
-     * @return  Logger Das Logger-Objekt
+     * @return  &util.log.Logger a logger object
      */
     function &getInstance() {
       static $__instance;
@@ -140,7 +137,7 @@
       if (!isset($__instance)) {
         $__instance= new Logger();
         $__instance->defaultIdentifier= getmypid();
-        $__instance->defaultFormat= '[%1$s %2$s %3$s]';
+        $__instance->defaultFormat= '[%1$s %2$s %3$5s]';
         $__instance->defaultDateformat= 'H:i:s';
         $__instance->defaultFlags= LOGGER_FLAG_ALL;
         $__instance->defaultAppenders= array();
