@@ -5,12 +5,11 @@
  */
  
   require('lang.base.php');
-  // xp::sapi('cli');
+  xp::sapi('gui.gtk');
   uses(
     'util.log.Logger',
     'util.PropertyManager',
-    'de.document-root.gui.gtk.project.ProjectManager',
-    'util.cmd.ParamString'
+    'de.document-root.gui.gtk.project.ProjectManager'
    );
 
   /// {{{ main
@@ -22,10 +21,6 @@
 
   $param= &new ParamString();
 
-  $app= &new ProjectManager($param, dirname(__FILE__).'/../');
-  $app->init();
-  $app->run();
-  $app->done();
- 
- /// }}} 
+  run(new ProjectManager($param, dirname(__FILE__).'/../'));
+  /// }}} 
 ?>
