@@ -69,7 +69,7 @@
       );
       
       // Automatically convert '= NULL' to 'is NULL', former is not valid ANSI-SQL
-      if (NULL === $value && isset($nullMapping[$comparison])
+      if (NULL === $value && isset($nullMapping[$comparison]))
         $comparison= $nullMapping[$comparison];
           
       $this->conditions[]= array($key, $value, $comparison);
