@@ -69,7 +69,7 @@
      * Destructor
      */
     public function __destruct() {
-      $this->_proc->__destruct();
+      unset($this->_proc);
     }
   }
 ?>

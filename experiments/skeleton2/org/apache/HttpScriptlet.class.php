@@ -19,8 +19,6 @@
   define('HTTP_METHOD_PUT',     'PUT');
   define('HTTP_METHOD_DELETE',  'DELETE');
   define('HTTP_METHOD_OPTIONS', 'OPTIONS');
- 
-  
   
   /**
    * Scriptlets are the counterpart to Java's Servlets - as one might
@@ -85,7 +83,6 @@
     public function __construct() {
       self::_request();
       self::_response();
-      
     }
 
     /**
@@ -94,9 +91,8 @@
      * @access  public
      */  
     public function __destruct() {
-      $this->request->__destruct();
-      $this->response->__destruct();
-      
+      unset($this->request);
+      unset($this->response);
     }
     
     /**

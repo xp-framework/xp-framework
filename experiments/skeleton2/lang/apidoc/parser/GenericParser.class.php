@@ -34,7 +34,6 @@
       if (NULL !== $filename) {
         self::setFile(new File($filename));
       }
-      
     }
     
     /**
@@ -43,10 +42,9 @@
      * @access  public
      */
     public function __destruct() {
-      $this->file->__destruct();
-      $this->tokenizer->__destruct();
-      $this->prop->__destruct();
-      
+      unset($this->file);
+      unset($this->tokenizer);
+      unset($this->prop);
     }
     
     /**

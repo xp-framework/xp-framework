@@ -23,7 +23,6 @@
     public function __construct() {
       self::setHeader('Server', 'SOAP 1.0#/PHP'.phpversion().'/'.php_uname());
       self::setHeader('Content-type', 'text/xml');
-      parent::__construct();
     }
     
     /**
@@ -90,8 +89,7 @@
      * @access  public
      */
     public function __destruct() {
-      if (is_a($this->message, 'Object')) $this->message->__destruct();
-      parent::__destruct();
+      unset($this->message);
     }
   }
 ?>

@@ -73,7 +73,6 @@
      */
     public function __destruct() {
       self::finish();
-      
     }
     
     /**
@@ -107,8 +106,7 @@
     public function finish() {
       if (!$this->stream) return;
       $this->stream->close();
-      $this->stream->__destruct();
-      $this->stream= NULL;
+      unset($this->stream);
     }
   }
 ?>

@@ -39,7 +39,6 @@
     public function __construct() {
       $this->document= new OutputDocument();
       $this->processor= self::getProcessor();
-      parent::__construct();
     }
 
     /**
@@ -271,9 +270,8 @@
      * @access  public
      */
     public function __destruct() {
-      $this->document->__destruct();
-      $this->processor->__destruct();
-      parent::__destruct();
+      unset($this->document);
+      unset($this->processor);
     }
   }
 ?>

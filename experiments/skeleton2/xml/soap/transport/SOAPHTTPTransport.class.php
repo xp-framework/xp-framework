@@ -37,8 +37,7 @@
      * @access  public
      */
     public function __destruct() {
-      $this->_conn->__destruct();
-      parent::__destruct();
+      unset($this->_conn);
     }
     
     /**
