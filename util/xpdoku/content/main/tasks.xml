@@ -88,11 +88,13 @@
           in relation to the XP framework. There are however, some advanced topics
           on more complex tasks and how they're wrapped into classes and objects.
         </text>
+        <!-- TBD
         <advanced>
           <ref link="tasks.cmd.stdio">Using the standard I/O streams</ref>
           <ref link="tasks.cmd.cron">Cronjobs</ref>
           <ref link="tasks.cmd.interactive">Interactive tools</ref>
         </advanced>
+        -->
       </para>
       
       <!-- web -->
@@ -173,10 +175,12 @@
           <br/>
           Have a look at the advanced topics section for details.
         </text>
+        <!-- TBD
         <advanced>
           <ref link="tasks.web.xml">Using XML/XSL to seperate code from design</ref>
           <ref link="tasks.web.rdf">RDF news feeds</ref>
         </advanced>
+        -->
       </para>
 
       <!-- soap -->
@@ -196,10 +200,7 @@
           Use a script like this to call a SOAP service as a client. It will print out the results
           from the Method <tt>Action::Method('Paramater')</tt> on <tt>http://endpoint.of/the/soapservice</tt>:
           <code><![CDATA[  require('lang.base.php');
-  uses(
-    'xml.soap.transport.SOAPHTTPTransport',
-    'xml.soap.SOAPClient'
-  );
+  xp::sapi('soap.client');
   
   $s= &new SOAPClient(
     new SOAPHTTPTransport('http://endpoint.of/the/soapservice'),
@@ -215,12 +216,12 @@
   }
   
   var_dump($return);]]></code>
-          (See also advanced topics: Utilizing the Google API)<br/>
+          <br/>
           <br/>
           So, now let's play it the other way aroung: The following snippet shows how to write up a 
           SOAP service utilizing Apache as webserver:
           <code><![CDATA[  require('lang.base.php');
-  uses('xml.soap.rpc.SoapRpcRouter');
+  xp::sapi('soap.service');
   
   $s= &new SoapRpcRouter(new ClassLoader('info.binford6100.webservices'));
   try(); {
@@ -231,6 +232,7 @@
     // Retrieve standard "Internal Server Error"-Document
     // Remember: Faults are already handled by SoapRpcRouter - this
     // will take care of GET, HEAD or any other request except for POST
+    // and uncaught exceptions
     $response= &$e->getResponse(); 
   }
   $response->sendHeaders();
@@ -241,10 +243,12 @@
           <tt>/usr/local/apache/htdocs/index.php</tt>, check out the handler classes to 
           the correct skeleton path and that's basically it: You're ready to serve.
         </text>
+        <!-- TBD
         <advanced>
           <ref link="tasks.soap.google">Utilizing the Google API</ref>
           <ref link="tasks.soap.wsdl">Generating proxy classes from WSDL</ref>
         </advanced>
+        -->
       </para>
       
       <!-- gui -->
@@ -266,24 +270,20 @@
           The ease of use of the base class for all GTK applications written
           using the XP framework is probably best demonstrated by this piece of sample
           code:
-          <code><![CDATA[  require('lang.base.php');
-  uses('gui.gtk.GTKApplication');
+          <code><![CDATA[  uses('gui.gtk.GTKApplication');
 
-  $app= &new GTKApplication('Hello World');
-  $app->init();
-  $app->run();
-  $app->done(); ]]></code>
+  class MyApp extends GTKApplication {
+  } ]]></code>
           API Docs: <ref type="api:class" link="gui.gtk.GTKApplication"/><br/>
           <br/>
           The sample shown above has absolutely no functionality so far. It will,
           when executed, show a window which can be resized, moved, maximized,
           minimized and closed, but contains no elements such as buttons, images.
           <box caption="Note:">
-            Always calling init, run, done may seem like overhead. There is
-            a utility script in <tt>util/bin</tt> called <tt>gtkphp</tt> which will
-            automagically take over this part for you. Simply create a class as shown 
-            above, but without the require and without the last four lines. Then call
-            <tt>gtkphp /path/to/your/app/MyApp.class.php</tt> and enjoy.
+            Classes cannot be run by themselves, they would need to be instanciated and
+            initialized. There is a utility script in <tt>util/bin</tt> called <tt>gtkphp</tt> 
+            which will automagically take over this part for you. Simply create a class as shown 
+            above. Then call <tt>gtkphp /path/to/your/app/MyApp.class.php</tt> and enjoy.
           </box>
           In the following examples, it is assumed you either paste the glue text
           above and below your classes or resent to using the gtkphp script.
@@ -298,8 +298,7 @@
       $button->show();
       $button->connect('clicked', array(&$this, 'done'));
       $this->window->add($button);
-    }
-  
+    }  
   }]]></code>
           This application will now have a button labeled OK, which, when pressed,
           will quit the application.
@@ -307,22 +306,25 @@
         <advanced>
           <ref link="tasks.gui.glade">Using Glade to build interfaces</ref>
           <ref link="tasks.gui.widgets">Additional widgets</ref>
+          <!-- TBD
           <ref link="tasks.gui.i18n">Internationalized GUIs</ref>
           <ref link="tasks.gui.html">Embedding HTML</ref>
+          -->
         </advanced>
       </para>
       
       <!-- server -->
+      <!-- TBD
       <para>
         <caption>Stand-Alone servers</caption>
         <text>
-          <!-- <ref type="api:class" link="peer.ServerSocket"/> -->
           Ut eu leo nec nunc aliquet aliquam. Proin sed sapien. Praesent orci. Integer pharetra laoreet libero. Mauris eu urna. Maecenas interdum tellus varius tellus. Curabitur et enim ut libero interdum fringilla. Aenean gravida. Morbi vel massa. Curabitur commodo vehicula libero. Phasellus posuere lacus vestibulum orci. Aliquam rutrum risus et sapien. Aliquam elementum.
         </text>
         <advanced>
           <ref link="tasks.server.forking">Multiprocess servers</ref>
         </advanced>
       </para>
+      -->
     </content>
   </main>
 </document>
