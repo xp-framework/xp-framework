@@ -17,7 +17,7 @@
       $detail       = NULL;
 
     /**
-     * Fill in this fault with data
+     * Constructor
      *
      * @access  public
      * @param   string faultcode
@@ -25,7 +25,7 @@
      * @param   string faultactor default NULL
      * @param   mixed detail default NULL
      */  
-    function create(
+    function __construct(
       $faultcode, 
       $faultstring, 
       $faultactor= NULL, 
