@@ -26,7 +26,7 @@
      * @param   string str
      */
     function __construct($str) {
-      foreach(parse_url($str) as $key => $value) {
+      foreach (parse_url($str) as $key => $value) {
         $this->parts[$key]= urldecode($value);
       }
       
