@@ -9,6 +9,7 @@
     'io.FileUtil',
     'io.File',
     'de.thekid.dialog.Album',
+    'de.thekid.dialog.Update',
     'util.PropertyManager'
   );
 
@@ -37,20 +38,53 @@
       return $index;
     }
     
+    
+    /**
+     * Helper method
+     *
+     * @access  protected
+     * @param   string name
+     * @param   string expect expected type
+     * @return  &de.thekid.dialog.IEntry
+     * @throws  lang.IllegalArgumentException if found entry is not of expected type
+     */
+    function &_getEntryFor($name, $expect) {
+      try(); {
+        $entry= &unserialize(FileUtil::getContents(new File($this->dataLocation.$name.'.dat')));
+      } if (catch('IOException', $e)) {
+        return throw($e);
+      }
+
+      // Check expectancy
+      if (!is($expect, $entry)) return throw(new IllegalArgumentException(sprintf(
+        'Entry of type %s found, %s expected',
+        xp::typeOf($entry),
+        $expect
+      )));
+
+      return $entry;
+    }
+    /**
+     * Returns entry for a specified name
+     *
+     * @access  protected
+     * @param   string name
+     * @return  &de.thekid.dialog.IEntry
+     */
+    function &getEntryFor($name) {
+      return $this->_getEntryFor($name, 'de.thekid.dialog.IEntry');
+    }
+
     /**
      * Returns album for a specified name
      *
      * @access  protected
      * @param   string name
      * @return  &de.thekid.dialog.Album
+     * @throws  lang.IllegalArgumentException if it is not an album
      */
     function &getAlbumFor($name) {
-      try(); {
-        $album= &unserialize(FileUtil::getContents(new File($this->dataLocation.$name.'.dat')));
-      } if (catch('IOException', $e)) {
-        return throw($e);
-      }
-      return $album;
+      return $this->_getEntryFor($name, 'de.thekid.dialog.Album');
     }
     
     /**
