@@ -1,0 +1,27 @@
+#!/bin/sh
+
+##
+# This file is part of the XP framework
+#
+# gtkphp app.gtk.php
+# 
+# $Id$
+
+EXE='php'
+CNF='-c /usr/local/etc/php.gtk'
+IFS=
+
+echo "<?php
+  require('lang.base.php');
+  uses('util.cmd.ParamString');
+  require('$1');
+  
+  \$p= &new ParamString(explode('', '$*'));
+  if ('.class.php' == substr('$1', -10)) {
+    \$class= basename(substr('$1', 0, -10));
+    \$app= &new \$class();
+    \$app->init();
+    \$app->run();
+    \$app->done();
+  }
+?>" | ${EXE} -q -C ${CONF}
