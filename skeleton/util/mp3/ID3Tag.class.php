@@ -97,10 +97,12 @@
       switch ($version) {
         case ID3_VERSION_1:
           $data= unpack('a3tag/a30name/a30artist/a30album/a4year/a30comment/C1genre', $buf);
+          if ('TAG' != $data['tag']) return throw(new FormatException('Tag corrupt'));
           break;
           
         case ID3_VERSION_1_1:
           $data= unpack('a3tag/a30name/a30artist/a30album/a4year/a28comment/x1/C1track/C1genre', $buf);
+          if ('TAG' != $data['tag']) return throw(new FormatException('Tag corrupt'));
           break;
         
         default:
