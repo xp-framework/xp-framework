@@ -7,6 +7,7 @@
   uses(
     'net.xp-framework.scriptlet.WebsiteScriptlet',
     'util.PropertyManager',
+    'rdbms.ConnectionManager',
     'util.log.Logger'
   );
   
@@ -17,6 +18,9 @@
   $log= &Logger::getInstance();
   $log->configure($pm->getProperties('log'));
   $cat= &$log->getCategory();
+
+  $cm= &ConnectionManager::getInstance();
+  $cm->configure($pm->getProperties('database'));
 
   $scriptlet= &new WebsiteScriptlet(
     new ClassLoader('net.xp-framework.scriptlet'), 
