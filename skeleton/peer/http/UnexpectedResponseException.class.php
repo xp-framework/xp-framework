@@ -12,38 +12,38 @@
    */
   class UnexpectedResponseException extends Exception {
     var
-      $code = 0;
+      $statuscode = 0;
 
     /**
      * Constructor
      *
      * @access  public
      * @param   string message
-     * @param   int code
+     * @param   int statuscode
      */
-    function __construct($message, $code= 0) {
+    function __construct($message, $statuscode= 0) {
       parent::__construct($message);
-      $this->code= $code;
+      $this->statuscode= $statuscode;
     }
 
     /**
-     * Set Code
+     * Set statuscode
      *
      * @access  public
-     * @param   int code
+     * @param   int statuscode
      */
-    function setCode($code) {
-      $this->code= $code;
+    function setStatusCode($statuscode) {
+      $this->statuscode= $statuscode;
     }
 
     /**
-     * Get Code
+     * Get statuscode
      *
      * @access  public
      * @return  int
      */
-    function getCode() {
-      return $this->code;
+    function getStatusCode() {
+      return $this->statuscode;
     }
     
     /**
@@ -54,9 +54,9 @@
      */
     function toString() {
       $s= sprintf(
-        "Exception %s (code %d: %s)\n",
+        "Exception %s (statuscode %d: %s)\n",
         $this->getClassName(),
-        $this->code,
+        $this->statuscode,
         $this->message
       );
       for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
