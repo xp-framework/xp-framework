@@ -9,7 +9,7 @@
  *
  */
 
-  import('xml.XML');
+  uses('xml.XML');
   
   /**
    * XSL-Prozessor, aufbauend auf den PHP-XSL-Funktionen (Sablotron)
@@ -31,7 +31,7 @@
    *
    * @see http://www.gingerall.com
    */
-  class XSLProcessor extends Object {
+  class XSLProcessor extends XML {
     var 
       $processor,
       $stylesheet,
