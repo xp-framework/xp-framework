@@ -17,14 +17,56 @@
       $actions  = array();
       
     /**
-     * Constrzctor
+     * Constructor
      *
      * @access  public
      * @param   string name
      */
-    function __construct($name) {
+    function __construct($name, $actions) {
       $this->name= $name;
+      $this->actions= $actions;
       parent::__construct();
-    }  
+    }
+    
+    /**
+     * Get this permission's name
+     *
+     * @access  public
+     * @return  string
+     */
+    function getName() {
+      return $this->name;
+    }
+    
+    /**
+     * Get this permission's actions
+     *
+     * @access  public
+     * @return  string[]
+     */
+    function getActions() {
+      return $this->actions;
+    }
+    
+    /**
+     * Create a string representation
+     * 
+     * Examples:
+     * <pre>
+     * permission io.FilePermission "/foo/bar", "read";
+     * permission io.FilePermission "/baz/example", "read,write";
+     * </pre>
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return sprintf(
+        'permission %s: "%s", "%s";',
+        $this->getClassName(),
+        $this->name,
+        implode(',', $this->actions)
+      );
+    }
   }
 ?>
