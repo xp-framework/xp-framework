@@ -204,14 +204,15 @@
      * return values.
      *
      * @access  public
-     * @param   &xml.xmlrpc.XmlRpcFault fault
+     * @param   int faultcode
+     * @param   string faultstring
      */
-    function setFault(&$fault) {
+    function setFault($faultcode, $faultstring) {
       $this->root->children[0]= &new Node('fault');
       
       $this->_marshall($this->root->children[0], $f= array(
-        'faultCode'   => $fault->getFaultCode(),
-        'faultString' => $fault->getFaultString()
+        'faultCode'   => $faultcode,
+        'faultString' => $faultstring
       ));
     }
     
