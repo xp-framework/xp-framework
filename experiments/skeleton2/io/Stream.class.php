@@ -175,7 +175,7 @@
      * Write a line and append a LF (\n) character
      *
      * @access  public
-     * @param   string string data to write
+     * @param   string string default '' data to write
      * @return  bool success
      * @throws  IOException in case of an error
      */
