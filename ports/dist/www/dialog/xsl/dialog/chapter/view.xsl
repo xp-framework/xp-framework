@@ -84,7 +84,7 @@
     </p>
 
     <center>
-      <a title="Previous image" class="pager" id="{/formresult/chapter/@previous != ''}">
+      <a title="Previous image" class="pager{/formresult/chapter/@previous != ''}" id="previous">
         <xsl:if test="/formresult/chapter/@previous != ''">
           <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
             'chapter/view?', 
@@ -94,7 +94,7 @@
         </xsl:if>
         <img alt="&#xab;" src="/image/prev.gif" border="0" width="19" height="15"/>
       </a>
-      <a title="Next image" class="pager" id="{/formresult/chapter/@next != ''}">
+      <a title="Next image" class="pager{/formresult/chapter/@next != ''}" id="next">
         <xsl:if test="/formresult/chapter/@next != ''">
           <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
             'chapter/view?', 
