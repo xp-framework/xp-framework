@@ -162,8 +162,9 @@
       );
       
       if (!is_a($message, 'Message')) {
-        trigger_error('Type: '.get_class($message), E_USER_NOTICE);
-        return throw(new IllegalArgumentException('Parameter message is not peer.mail.Message object'));
+        return throw(new IllegalArgumentException(
+          'Parameter message is not peer.mail.Message object (given: '.xp::typeOf($message).')'
+        ));
       }
       
       // First, look in the headers

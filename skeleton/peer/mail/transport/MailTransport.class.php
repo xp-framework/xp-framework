@@ -57,9 +57,8 @@
     
       // Sanity check: Is this a message?
       if (!is_a($message, 'Message')) {
-        trigger_error('Type: '.gettype($message).' / Class '.get_class($message));
         return throw(new TransportException(
-          'Can only send messages',
+          'Can only send messages (given: '.xp::typeOf($message).')',
           new IllegalArgumentException('Parameter message is not a Message object')
         ));
       }
@@ -71,9 +70,8 @@
         $to.= $message->to[$i]->toString().', ';
       }
       if (empty($to)) {
-        trigger_error('Type: '.gettype($message->to[0]).' / Class '.get_class($message->to[0]));
         return throw(new TransportException(
-          'No recipients defined',
+          'No recipients defined (recipients[0]: '.xp::typeOf($message->to[0]),
           new IllegalArgumentException('Recipient #0 is not an InternetAddress object')
         ));
       }
