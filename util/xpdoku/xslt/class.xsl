@@ -44,7 +44,7 @@
             <tr>
               <td width="30%" valign="top">Filename:</td>
               <td width="70%"><xsl:value-of select="./@filename"/><br/>
-                <a href="/showsource.php?f={./@classname}">[View source]</a>
+                <a href="/source/{./@classname}">[View source]</a>
               </td>
             </tr>
             <tr>
@@ -140,8 +140,6 @@
     
     <!-- Member-variables -->
     <!-- not yet being parsed -->
-  
-    <!-- Details -->
   </table>  
   
   <xsl:for-each select="./comments/function/*">
