@@ -94,11 +94,12 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Private helper method
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  private
+     * @param   array parameters
+     * @param   string val
+     * @return  mixed value or FALSE if not found
      */
     function _lookupattr($parameters, $val) {
       if (!is_array($parameters)) return FALSE;
@@ -113,11 +114,12 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Private helper method
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  private
+     * @param   &peer.mail.MimePart[] parts
+     * @param   &array p structure parts as retrieved from cclient lib
+     * @param   string id default '' part id
      */
     function _recurseparts(&$parts, &$p, $id= '') {
       static $types= array(
@@ -173,11 +175,6 @@
         } else {
           $part->body= $this->folder->getMessagePart($this->uid, $pid);
         }
-        
-        #ifdef DEBUG
-        # var_dump($p[$i]);
-        # echo '['.$pid.']:: '; var_dump($part);
-        #endif
         
         $part->folder= &$this->folder;
         $parts[]= &$part;
