@@ -318,11 +318,17 @@
   }
   // }}}
 
-  // {{{ proto lang.Object &clone(lang.Object object)
+  // {{{ proto lang.Object &clone(lang.Object object) throws CloneNotSupportedException
   //     Clones an object
   function &clone($object) {
     $object->__id= microtime();
-    is_callable(array(&$object, '__clone')) && call_user_func(array(&$object, '__clone'));
+    if (is_callable(array(&$object, '__clone'))) {
+      try(); {
+        call_user_func(array(&$object, '__clone'));
+      } if (catch('CloneNotSupportedException', $e)) {
+        return throw($e);
+      }
+    }
     return $object;
   }
 
