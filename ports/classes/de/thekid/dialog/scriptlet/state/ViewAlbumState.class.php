@@ -26,9 +26,11 @@
 
       if ($album= &$this->getAlbumFor($name)) {
         $child= &$response->addFormResult(new Node('album', NULL, array(
-          'name'  => $album->getName(),
-          'title' => $album->getTitle(),
-          'page'  => $this->getDisplayPageFor($name)
+          'name'         => $album->getName(),
+          'title'        => $album->getTitle(),
+          'num_images'   => $album->numImages(),
+          'num_chapters' => $album->numChapters(),
+          'page'         => $this->getDisplayPageFor($name)
         )));
         $child->addChild(new Node('description', new PCData($album->getDescription())));
         $child->addChild(Node::fromObject($album->createdAt, 'created'));
