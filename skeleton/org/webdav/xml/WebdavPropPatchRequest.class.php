@@ -44,13 +44,15 @@
       static $trans;
       parent::setData($data);
 
+      // Get the NamespacePrefix
+      $ns= $this->getNamespacePrefix();
+      
       // Select properties which should be set
       foreach (array(
-        FALSE => $this->getNode('/D:propertyupdate/D:set/D:prop'),
-        TRUE  => $this->getNode('/D:propertyupdate/D:remove/D:prop')
+        FALSE => $this->getNode('/'.$ns.':propertyupdate/'.$ns.':set/'.$ns.':prop'),
+        TRUE  => $this->getNode('/'.$ns.':propertyupdate/'.$ns.':remove/'.$ns.':prop')
       ) as $remove => $propupdate) {
         if (!$propupdate) continue;
-        if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_ENTITIES));
         
         // Copied from WebdavPropFindRequest::setData()
         foreach ($propupdate->children as $node) {
@@ -63,11 +65,7 @@
           }
           $p= &new WebdavProperty(
             $name,
-            $this->decode(preg_replace(
-              '/&#([0-9]+);/me', 
-              'chr("\1")', 
-              strtr(trim($node->getContent()), $trans)
-            ))
+            $this->decode($node->getContent())
           );
           if ($nsname= $node->getAttribute($ns)) {
             $p->setNamespaceName($nsname);
