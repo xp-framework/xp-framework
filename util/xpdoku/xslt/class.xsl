@@ -42,8 +42,10 @@
           <b>General file information:</b>
           <table border="0" cellpadding="2" cellspacing="0" width="100%">
             <tr>
-              <td width="30%">Filename:</td>
-              <td width="70%"><xsl:value-of select="./@filename"/></td>
+              <td width="30%" valign="top">Filename:</td>
+              <td width="70%"><xsl:value-of select="./@filename"/><br/>
+                <a href="/showsource.php?f={./@classname}">[View source]</a>
+              </td>
             </tr>
             <tr>
               <td>Generation time:</td>
