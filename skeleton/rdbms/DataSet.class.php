@@ -77,7 +77,9 @@
    * @purpose  Base class
    */
   class DataSet extends Object {
-  
+    var
+      $_changed= array();
+    
     /**
      * Constructor. Supports the array syntax, where an associative
      * array is passed to the constructor, the keys being the member
@@ -92,6 +94,40 @@
       }
     }
     
+    /**
+     * Changes a value by a specified key and returns the previous value.
+     *
+     * @access  protected
+     * @param   string key
+     * @param   &mixed value
+     * @param   string type
+     * @return  &mixed previous value
+     */
+    function &_change($key, &$value, $type) {
+      if (!isset($this->_changed[$key])) {
+        $this->_changed[$key]= array($type, &$this->{$key});
+      }
+      $previous= &$this->{$key};
+      $this->{$key}= &$value;
+      return $previous;
+    }
+    
+    /**
+     * Returns a portion of the SQL query suitable for copying into an 
+     * update statement.
+     *
+     * @access  protected
+     * @param   &rdbms.DBConnection db
+     * @return  string sql
+     */
+    function _updated(&$db) {
+      $sql= '';
+      foreach (array_keys($this->_changed) as $key) {
+        $sql.= $key.$db->prepare('= '.$this->_changed[$key][0], $this->{$key}).', ';
+      }
+      return substr($sql, 0, -2);
+    }
+
     /**
      * Creates a string representation of this dataset. In this default
      * implementation, it will look like the following:
@@ -125,7 +161,7 @@
       // Build string representation.
       $s= $this->getClassName().'@('.$this->hashCode()."){\n";
       foreach (array_keys($vars) as $key) {
-        if ('__id' == $key) continue;
+        if ('_' == $key{0}) continue;
 
         $s.= sprintf($fmt, $key, is_a($this->$key, 'Object') 
           ? $this->$key->toString()
