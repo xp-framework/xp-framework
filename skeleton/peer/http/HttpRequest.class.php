@@ -159,7 +159,6 @@
         $s->connect();
         $s->write($request);
       } if (catch('Exception', $e)) {
-        $e->message.= ' { Request: '.addcslashes($request, "\0..\37!@\177..\377").'}';
         throw($e);
       }
       
