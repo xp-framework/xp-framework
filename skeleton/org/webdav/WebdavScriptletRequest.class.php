@@ -61,6 +61,34 @@
       return $this->rootURL;
     }
     
+    function encodePath($path) {
+      $parts = explode('/', $path);
+      for ($i = 0; $i < count($parts); $i++) $parts[$i]= rawurlencode($parts[$i]);
+      return implode('/', $parts);
+    }
+    
+    function decodePath($path) {
+      $parts = explode('/', $path);
+      for ($i = 0; $i < count($parts); $i++) $parts[$i]= rawurldecode($parts[$i]);
+      return implode('/', $parts);
+    }
+
+    /**
+     * Convert absolute URL to relative path:
+     *   "http://webdav.host.com/fs/dir/file.txt" -> "dir/file.txt"
+     *
+     * @access  public
+     * @param   string url
+     * @return  string
+     */
+    function getRelativePath($url) {
+      $url= &new URL($url);
+      return $this->decodePath(substr(
+        rawurldecode($url->getPath()),
+        strlen($this->rootURL->getPath())
+      ));
+    }
+    
     /**
      * Set request's data and try to parse the request body (if available)
      *
@@ -86,7 +114,7 @@
      * @return xml.Node
      */
     function &getNode($path) {
-      if ($this->tree === NULL) return NULL;
+      if (!$this->tree || $this->tree->root === NULL) return NULL;
       $node= &$this->tree->root;
       $parts= explode('/', $path);
       array_shift($parts);
