@@ -92,7 +92,7 @@
      * @access  public
      */
     function __destruct() {
-      $this->message->__destruct();
+      if (is_a($this->message, 'Object')) $this->message->__destruct();
       parent::__destruct();
     }
   }
