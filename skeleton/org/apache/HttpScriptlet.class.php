@@ -100,7 +100,7 @@
      * Create a request object. Override this method to define
      * your own request object
      *
-     * @access  private
+     * @access  protected
      */
     function _request() {
       $this->request= &new HttpScriptletRequest();
@@ -110,7 +110,7 @@
      * Create a session object. Override this method to define
      * your own session object
      *
-     * @access  private
+     * @access  protected
      */
     function _session() {
       $this->request->setSession(new HttpSession());
@@ -120,7 +120,7 @@
      * Create a response object. Override this method to define
      * your own response object
      *
-     * @access  private
+     * @access  protected
      */
     function _response() {
       $this->response= &new HttpScriptletResponse();
@@ -200,7 +200,7 @@
      * Receives an HTTP POST request from the <pre>process()</pre> method
      * and handles it.
      *
-     * @access  public
+     * @access  protected
      * @return  bool processed
      * @param   &org.apache.HttpScriptletRequest request 
      * @param   &org.apache.HttpScriptletResponse response 
@@ -223,7 +223,7 @@
      * often used for testing hypertext links for validity, accessibility,
      * and recent modification.
      *
-     * @access  public
+     * @access  protected
      * @return  bool processed
      * @param   &org.apache.HttpScriptletRequest request 
      * @param   &org.apache.HttpScriptletResponse response 
@@ -252,7 +252,7 @@
      *   8 fraction        #test
      * </pre>
      *
-     * @access  public
+     * @access  protected
      * @return  bool processed
      * @param   &org.apache.HttpScriptletRequest request 
      * @param   &org.apache.HttpScriptletResponse response 
@@ -312,7 +312,7 @@
      * call the <pre>doCreateSession()</pre> method if necessary.
      *
      * @access  public
-     * @return  org.apache.HttpScriptletResponse the response object
+     * @return  &org.apache.HttpScriptletResponse the response object
      * @throws  org.apache.HttpScriptletException indicating fatal errors
      */
     function &process() {
