@@ -4,7 +4,6 @@
  * $Id$
  */
 
-  require('lang.base.php'); 
   uses('xml.Tree', 'io.File');
  
   /**
@@ -76,11 +75,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Write object
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &Object o
+     * @throws  Exception in case write/format fails
      */
     function writeObject(&$o) {
     
@@ -98,17 +97,14 @@
       
     }
     
+    /**
+     * Close
+     *
+     * @access  public
+     * @return  bool success
+     */    
     function close() {
       $this->file->close();
     }
   }
-  
-  uses('io.File', 'util.Binford');
-  $b= &new File('/home/thekid/timm.jpg');
-  $b->test= array('a', 'b', 'c' => array('c', 'd'));
-  $b->dummy= &new Binford();
-  $d= &new XMLEncoder(new File('php://stdout'));
-  $d->writeObject($b);
-  $d->close();
-  
 ?>

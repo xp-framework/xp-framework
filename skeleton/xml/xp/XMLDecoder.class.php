@@ -1,5 +1,9 @@
 <?php
-  require('lang.base.php'); 
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
   uses('xml.Tree', 'io.File');
 
   /**
@@ -13,6 +17,12 @@
    */
   class XMLDecoder extends Object {
   
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   &io.File file
+     */
     function __construct(&$file) {
      $this->file= &$file;
       $this->file->open(FILE_MODE_READ);
@@ -59,11 +69,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Read object
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  &Object object
+     * @throws  Exception in case read/format fails
      */
     function &readObject() {
       $tree= &new Tree();
@@ -82,14 +92,14 @@
       return cast($this->_recurse($tree->root), $name);
     }
     
+    /**
+     * Close
+     *
+     * @access  public
+     * @return  bool success
+     */
     function close() {
-      $this->file->close();
+      return $this->file->close();
     }
   }
-
-  $d= &new XMLDecoder(new File('php://stdin'));
-  $o= $d->readObject();
-  $d->close();
-  
-  var_dump($o, $o->getClassName(), $o->toString());
 ?>
