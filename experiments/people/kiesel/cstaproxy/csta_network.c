@@ -106,6 +106,7 @@ int _process_client_command(fd_set *master, connection_context *ctx, int hSocket
 		return 1;
 	}
 	
+	LOG("No client command detected.");
 	return 0;
 }
 
@@ -136,7 +137,6 @@ int process_client(fd_set *master, connection_context *ctx, int hSocket) {
 		close (hSocket);
 		FD_CLR(hSocket, master);
 	} else {
-	
 		if (NULL == (conn= get_connection_by_socket (ctx, hSocket))) {
 			ERR("Unable to find connection in context!");
 			return 0;
@@ -151,19 +151,25 @@ int process_client(fd_set *master, connection_context *ctx, int hSocket) {
 		}
 		
 		/* Client has sent data, so process */
+		if (hSocket == conn->hClient && !conn->is_authenticated) {
+			/* Not authenticated! */
+			LOG("Non-authorized request.");
+			send (conn->hClient, "-ERR Not authenticated!\n", 24, 0);
+			return 1;
+		}
+
 		if (hSocket == conn->hClient && conn->is_authenticated && conn->hServer) {
 			/* This is an authenticated client => pass data through */
+			LOG("Passthru client data...");
 			send (conn->hServer, buf, nbytes, 0);
-		}
-		
-		if (hSocket == conn->hClient) {
-			/* Not authenticated! */
-			send (conn->hClient, "-ERR Not authenticated!\n", 24, 0);
+			return 1;
 		}
 		
 		if (hSocket == conn->hServer) {
 			/* It's the server, passthrough data */
+			LOG("Passthru server data...");
 			send (conn->hClient, buf, nbytes, 0);
+			return 1;
 		}
 	}
 	
@@ -203,7 +209,6 @@ int select_loop(int hListen) {
 					}
 				} else {
 					/* This is a normal client connection */
-					
 					process_client(&master, ctx, i);
 				}
 			}
