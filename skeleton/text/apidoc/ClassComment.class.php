@@ -25,7 +25,7 @@
       $extends      = NULL,
       $name         = '',
       $model        = APIDOC_CLASS_MODEL_GENERIC,
-      $extension    = NULL;
+      $extensions   = NULL;
       
     /**
      * Sets this class's name
@@ -81,7 +81,10 @@
      * @param string extension
      */
     function setExtension($extension) {
-      $this->extension= $extension;
+      if (NULL === $this->extensions)
+        $this->extensions= array ();
+        
+      $this->extensions[]= $extension;
     }
      
      
