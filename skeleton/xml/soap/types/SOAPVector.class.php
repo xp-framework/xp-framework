@@ -26,7 +26,7 @@
       $this->_vector= &$params;
       $this->item= &new SOAPNode('vec', NULL, array(
         'xmlns:vec'   => 'http://xml.apache.org/xml-soap',
-        'xsi:type'    => 'vec:Map'
+        'xsi:type'    => 'vec:Vector'
       ));
       parent::__construct();
     }
