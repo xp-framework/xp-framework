@@ -4,7 +4,10 @@
  * $Id$
  */
  
-  uses('peer.mail.Message');
+  uses(
+    'peer.mail.Message',
+    'peer.mail.MimeMessage'
+  );
 
   /**
    * Mail folder
@@ -16,6 +19,9 @@
     var
       $name  = '',
       $store = NULL;
+      
+    var
+      $_ofs  = 0;
     
     /**
      * Constructor
@@ -70,6 +76,7 @@
      * @return  bool success
      */
     function open($readonly= FALSE) { 
+      $this->_ofs= 0;
       return $this->store->openFolder($this, $readonly);
     }
 
@@ -105,6 +112,36 @@
       $args= func_get_args();
       array_unshift($args, $this);
       return call_user_func_array(array($this->store, 'getMessages'), $args);
+    }
+    
+    /**
+     * Rewind this folder (set the iterator offset for getMessage() to 0)
+     *
+     * @access  public
+     */
+    function rewind() {
+      $this->_ofs= 0;
+    }
+    
+    /**
+     * Get next message (iterator)
+     *
+     * Example:
+     * <code>
+     *   $f->open();                           
+     *   while ($msg= &$f->getMessage()) {     
+     *     echo $msg->toString();
+     *   }                                     
+     *   $f->close();                          
+     * </code>
+     *
+     * @access  public
+     * @return  &peer.mail.Message or FALSE to indicate we reached the last mail
+     */
+    function &getMessage() {
+      $this->_ofs++;
+      $ret= &$this->store->getMessages($this, $this->_ofs);
+      return $ret[0];
     }
 
     /**
