@@ -1,6 +1,4 @@
 <?php
-  import('net/NetException');
-  
   class FTPConnect extends Object {
     var
       $host,
@@ -27,17 +25,15 @@
         $this->host,
         $this->port
       );
-      if (!$this->_chdl) return throw(
-        E_NET_CONNECT_EXCEPTION,
+      if (!$this->_chdl) return throw(new IOException(
         "couldn't connect to {$this->host}:{$this->port}"
-      );
+      ));
       return $this->_chdl;
     }
     
     function login() {
       if ($this->_chdl == NULL && !$this->connect()) return 0;
-      if (!ftp_login($this->_chdl, $this->user, $this->pass)) return throw(
-        E_NET_LOGIN_EXCEPTION,
+      if (!ftp_login($this->_chdl, $this->user, $this->pass)) return throw(new IOException(
         "couldn't login to {$this->host} as {$this->user} [using password '{$this->pass}']"
       );
       return 1;
