@@ -10,7 +10,7 @@
    * @see      xp://util.log.LogCategory#addAppender
    * @purpose  Base class
    */
-  class LogAppender extends Object {
+  abstract class LogAppender extends Object {
 
     /**
      * Append data
@@ -36,7 +36,9 @@
      * @return  string
      */
     protected function varSource($var) {
-      if (is_a($var, 'Object')) return $var->toString();
+      if ($var instanceof Object || $var instanceof Exception) {
+        return $var->toString();
+      }
       return is_string($var) ? $var : var_export($var, 1);
     }
   }
