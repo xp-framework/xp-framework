@@ -38,8 +38,7 @@
     if ('CVS' == basename ($uri))
       return NULL;
       
-    $subTree= &new Node();
-    $subTree->name= 'collection';
+    $subTree= &new Node('collection');
     $subTree->attribute['prefix']= getXPClassName ($uri, $base);
     $subTree->attribute['shortName']= getXPClassName (basename ($uri), $base);
     
