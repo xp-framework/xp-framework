@@ -18,7 +18,7 @@
       "       Note: keys and values must be quoted (either with single or double\n".
       "       quotes). The rules for escaping are the same as in PHP.\n".
       "\n".
-      "Example: find rdbms/ -name *.class.php -exec php %1\$s {} migrate.in\n".
+      "Example: find rdbms/ -name *.class.php -exec php %1\$s {} migrate.in \;\n".
       "\n".
       "migrate.in:\n".
       "  '\$db->insert_id();' => '\$db->identity();'\n".
