@@ -207,26 +207,33 @@
    !
    ! @type   named
    ! @param  string for
+   ! @param  string indent default '        '
    !-->
   <xsl:template name="argumentnames">
     <xsl:param name="for"/>
+    <xsl:param name="indent" select="'        '"/>
     
     <xsl:choose>
       <xsl:when test="contains($for, ':')">
         <xsl:for-each select="/wsdl:definitions/wsdl:message[@name = substring-after($for, ':')]/wsdl:part">
+          <xsl:value-of select="$indent"/>
           <xsl:text>new SOAPNamedItem('</xsl:text>
           <xsl:value-of select="@name"/>
           <xsl:text>', $</xsl:text>
           <xsl:value-of select="@name"/>
-          <xsl:text>')</xsl:text>          
-          <xsl:if test="position() &lt; last()"><xsl:text>, </xsl:text></xsl:if>
+          <xsl:text>)</xsl:text>
+          <xsl:if test="position() &lt; last()"><xsl:text>,&#10;</xsl:text></xsl:if>
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
         <xsl:for-each select="/wsdl:definitions/wsdl:message[@name = $for]/wsdl:part">
-          <xsl:text>$</xsl:text>
+          <xsl:value-of select="$indent"/>
+          <xsl:text>new SOAPNamedItem('</xsl:text>
           <xsl:value-of select="@name"/>
-          <xsl:if test="position() &lt; last()"><xsl:text>, </xsl:text></xsl:if>
+          <xsl:text>', $</xsl:text>
+          <xsl:value-of select="@name"/>
+          <xsl:text>)</xsl:text>          
+          <xsl:if test="position() &lt; last()"><xsl:text>,&#10;</xsl:text></xsl:if>
         </xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
@@ -293,15 +300,18 @@
         <xsl:with-param name="for" select="wsdl:input/@message"/>
       </xsl:call-template>
       <xsl:text><![CDATA[) {
-      return $this->invoke(']]></xsl:text>
+      return $this->invoke(
+        ']]></xsl:text>
       <xsl:value-of select="@name"/>
-      <xsl:text>, </xsl:text>
-      <xsl:call-template name="arguments">
+      <xsl:text>',
+</xsl:text>
+      <xsl:call-template name="argumentnames">
         <xsl:with-param name="for" select="wsdl:input/@message"/>
       </xsl:call-template>
-      <xsl:text><![CDATA[);
+      <xsl:text>
+      );
     }
-]]></xsl:text>
+</xsl:text>
     </xsl:for-each>
   </xsl:template>
   
