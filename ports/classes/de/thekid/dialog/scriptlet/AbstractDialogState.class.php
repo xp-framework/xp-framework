@@ -40,6 +40,22 @@
     }
     
     /**
+     * Retrieves which page a given element is on
+     *
+     * @access  public
+     * @param   string name
+     * @return  int
+     */
+    function getDisplayPageFor($name) {
+      try(); {
+        $page= unserialize(FileUtil::getContents(new File($this->dataLocation.$name.'.idx')));
+      } if (catch('IOException', $e)) {
+        return throw($e);
+      }
+      return $page;
+    }
+    
+    /**
      * Helper method
      *
      * @access  protected
