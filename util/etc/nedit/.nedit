@@ -40,7 +40,9 @@ nedit.shellCommands: \
 	PHP contextsensitive help:F1::ID:\n\
 		/home/thekid/bin/phphelp\n\
 	Execute PHP script:F9::AD:\n\
-		php -q\n
+		php -q\n\
+	Make accessors:Shift+Alt+A::I:\n\
+		php -q /home/thekid/devel/xp/util/bin/mkaccessor.php\n
 nedit.macroCommands: \
 	Complete Word:Alt+D::: {\n\
 		# Tuning parameters\n\
