@@ -40,7 +40,10 @@
      */  
     function __construct($url, $headers= array(), $actiontype= SOAP_ACTION_COMPUTE) {
       $this->_conn= &new HttpConnection($url);
-      $this->_headers= $headers;
+      $this->_headers= array_merge(
+        array('User-Agent' => 'XP-Framework SOAP Client (http://xp-framework.net)'),
+        $headers
+      );
       $this->_actiontype= $actiontype;
     }
     
