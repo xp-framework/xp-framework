@@ -1,7 +1,7 @@
 <?php
-/* Diese Klasse ist Bestandteil des XP-Frameworks
+/* This class is part of the XP framework
  *
- * $Id$
+ * $Id$ 
  */
 
   uses('util.log.LogCategory');
