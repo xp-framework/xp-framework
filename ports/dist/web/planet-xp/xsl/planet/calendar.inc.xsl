@@ -55,8 +55,10 @@
                 <xsl:attribute name="class">weekend</xsl:attribute>
               </xsl:when>
             </xsl:choose>
+            
+            <!-- TBI: ByDate-State -->
               
-            <a>
+            <!-- <a>
               <xsl:if test="exsl:node-set($month)/entries[@day = $day]">
                 <xsl:attribute name="href"><xsl:value-of select="concat(
                   'bydate?',
@@ -65,9 +67,10 @@
                   $day
                 )"/></xsl:attribute>
               </xsl:if>
-              
+              -->
               <xsl:value-of select="$day"/>
-            </a>
+              <!--
+            </a>-->
           </td>
           <xsl:copy-of select="func:days($month, $number, $i + 1)"/>
         </xsl:when>
