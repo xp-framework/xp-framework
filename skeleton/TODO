@@ -11,8 +11,6 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
 
 * Features/Wishlist:
 
-  - DBA classes (php://dba)
-  
   - Interface to DomXML, generalize via xml.dom and xml.sax
   
   - Interface to DomXSL / EXSL
