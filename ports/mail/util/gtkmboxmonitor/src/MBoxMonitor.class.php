@@ -5,7 +5,7 @@
  */
 
   uses(
-    'gui.gtk.GTKGladeApplication',
+    'gui.gtk.GtkGladeApplication',
     'gui.gtk.util.GTKWidgetUtil',
     'gui.gtk.util.GTKPixmapLoader',
     'peer.mail.store.Pop3Store',
@@ -60,7 +60,7 @@
           exit(-2);
       }
       
-      parent::__construct('MBoxMonitor', dirname(__FILE__).'/mboxmonitor.glade');
+      parent::__construct(dirname(__FILE__).'/mboxmonitor.glade');
     }
     
     /**
@@ -125,7 +125,7 @@
         try(); {
           $msg->folder->deleteMessage($msg);
         } if (catch('Exception', $e)) {
-          $this->log($e->getStackTrace());
+          $this->cat->error($e->getStackTrace());
           
           $this->setStatusText('Error updating message status');
           continue;
@@ -158,7 +158,7 @@
         try(); {
           $msg->folder->undeleteMessage($msg);
         } if (catch('Exception', $e)) {
-          $this->log($e->getStackTrace());
+          $this->cat->debug($e->getStackTrace());
           
           $this->setStatusText('Error updating message status');
           continue;
@@ -184,7 +184,7 @@
      * @param   &php.GtkWidget item
      */
     function onMenuItemActivated(&$item) {
-      // DEBUG $this->log($item->get_name(), '::', $this->tree->selection);
+      // DEBUG $this->cat->debug($item->get_name(), '::', $this->tree->selection);
       return call_user_func(
         array(&$this, sprintf('on%sMenuItemActivated', ucfirst($item->get_name()))),
         $this->tree->selection
@@ -219,7 +219,7 @@
      * @param   int column
      */
     function onListColumnClicked(&$widget, $column) {
-      $this->log('Column', $column, 'clicked, sorting...');
+      $this->cat->debug('Column', $column, 'clicked, sorting...');
       $widget->set_sort_column($column);
       $widget->sort();
     }
@@ -235,7 +235,7 @@
     function setStatusText($fmt) {
       $args= func_get_args();
       $text= vsprintf($args[0], array_slice($args, 1));
-      // DEBUG $this->log('Status', $text);
+      // DEBUG $this->cat->debug('Status', $text);
       $this->statusbar->push(1, $text);
       
       // Leave the GUI time to repaint
@@ -355,7 +355,7 @@
       }
       
       // Leave the GUI time to repaint
-      while(Gtk::events_pending()) Gtk::main_iteration();
+      $this->processEvents();
     }
     
     
@@ -369,7 +369,7 @@
       try(); {
         $this->stor->expunge();
       } if (catch('Exception', $e)) {
-        $this->log($e->getStackTrace());
+        $this->cat->error($e->getStackTrace());
         $this->setStatusText('Error expunging!');
         return;
       }
@@ -424,7 +424,7 @@
         $this->setStatusText('Error retreiving messages');
         
         // TBD: Show messagebox
-        $this->log($e->getStackTrace());
+        $this->cat->error($e->getStackTrace());
         $r->set_sensitive(TRUE);
         
         // Unfreeze list
@@ -453,10 +453,7 @@
      * @access  public
      */
     function done() {
-      if ($this->_done) return;
-      
       if ($this->stor->isConnected()) {
-        $this->setStatusText('Disconnecting...');
         $this->stor->close();
       }
       parent::done();
