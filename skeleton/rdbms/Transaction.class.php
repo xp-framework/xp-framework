@@ -8,7 +8,7 @@
    * Transaction
    *
    * <code>
-   *   $s= &new Sybase(new DSN('sybase://user:password@server/databse'));
+   *   $s= &new SybaseConnection(new DSN('sybase://user:password@server/database'));
    *   $tran= &$s->begin(new Transaction('test'));
    *   try(); {
    *     // ... execute SQL statements
@@ -35,7 +35,6 @@
      */
     function __construct($name) {
       $this->name= $name;
-      
     }
     
     /**
