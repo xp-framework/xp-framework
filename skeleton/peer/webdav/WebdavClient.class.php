@@ -171,6 +171,24 @@
       }
       return $response;    
     }
+    
+    /**
+     * Do a MkCol Request
+     *
+     * @access  public
+     * @param   string uri, The uri of the new collection
+     * @return  &peer.http.HttpResponse response object
+     * @see     rfc://2518
+     */
+    function mkcol($uri) {        
+      try(); {
+        $c= &$this->getConnection($uri);
+        $response= &$c->mkcol();
+      } if (catch('Exception', $e)) {
+        return throw($e);
+      }
+      return $response;      
+    }
         
     /**
      * Do a Copy Request
