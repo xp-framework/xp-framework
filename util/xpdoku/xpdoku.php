@@ -95,11 +95,10 @@
             $classtype= 'interface';
           } else {
           
-            // Let's see if this is an exception
+            // Let's see if this is an exception or error
             foreach (array(
               'Exception' => 'exception', 
-              'Throwable' => 'exception', 
-              'Error'     => 'exception'
+              'Error'     => 'error'
             ) as $portion => $type) {
               if (strstr($subNode->attribute['shortName'], $portion)) {
                 $classtype= $type;
@@ -166,7 +165,7 @@
           $e->printStackTrace(STDERR);
           continue;
         }
-        Console::writeLinef('OK, type %s', $nodes[$idx]->attribute['type']);
+        Console::writeLinef('OK, type %s', $classtype);
       } else if (is_dir($folder->uri.$entry) && 'CVS' != $entry) {
         if ($child= &recurseFolders($folder->uri.$entry, $pattern, $base, $parser, $nodes)) {
           // Only add children if they contain children itself (are not empty)
