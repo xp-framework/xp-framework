@@ -366,6 +366,9 @@ SYBASE_API int sybase_init_resultset(sybase_result *result, sybase_resultset **r
     (*resultset)->fields= fields;
     for (i= 0; i < fields; i++) {
         ct_describe(result->cmd, i + 1, &(*resultset)->dataformat[i]);
+
+        /* Just to be sure, make name null-terminated */
+        (*resultset)->dataformat[i].name[(*resultset)->dataformat[i].namelen]= '\0';
         
         /* Calculate length needed for this value to be represented as
          * a null-terminated string */
