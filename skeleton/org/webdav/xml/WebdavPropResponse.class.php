@@ -177,7 +177,7 @@
       }
 
       // Build result (href, properties, status, ...)
-      $this->root->addChild(new Node('D:href', $this->encodeURI($o->getHref())));
+      $this->root->addChild(new Node('D:href', $request->encodePath($o->getHref())));
       $found_stat->addChild(new Node('D:status' , 'HTTP/1.1 200 OK'));
       $this->root->addChild($found_stat);
       if (count($notfound_props->children)) {
@@ -188,12 +188,6 @@
       return;
     }
     
-    function encodeURI($uri) {
-      $parts = explode('/', $uri);
-      for ($i = 0; $i < count($parts); $i++) $parts[$i]= rawurlencode($parts[$i]);
-      return implode('/', $parts);
-    }
-
   }
 
 ?>
