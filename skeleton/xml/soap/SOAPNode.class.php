@@ -86,6 +86,9 @@
         case 'datetime':    // ISO 8601: http://www.w3.org/TR/xmlschema-2/#ISO8601 http://www.w3.org/TR/xmlschema-2/#dateTime
           return new Date(str_replace('T', ' ', $ret));
           break;
+          
+        default:
+          $t= 'string';
       }
       
       // Decode if necessary
@@ -93,11 +96,8 @@
         case 'utf-8': $ret= utf8_decode($ret); break;
       }
 
-      // Rip HTML entities
-      $ret= strtr($ret, array_flip(get_html_translation_table(HTML_ENTITIES)));
-
       // Set type
-      if (!@settype($ret, $t)) settype($ret, 'string');         // Default "string"
+      settype($ret, $t);
 
       return $ret; 
     }
