@@ -340,6 +340,39 @@
               
 
             case 'text/plain':
+              // ------_=_NextPart_000_01C2D43F.51E7081E
+              // Content-Type: text/plain;
+              //         charset="iso-8859-1"
+              // 
+              // Your message
+              // 
+              //   To:      Foo Bar
+              //   Subject: Cancellation order on 14.02.2003
+              //   Sent:    Fri, 14 Feb 2003 15:24:24 -0000
+              // 
+              // did not reach the following recipient(s):
+              // 
+              // foo.bar@NTL.com on Fri, 14 Feb 2003 15:39:49 -0000
+              //     The recipient name is not recognized
+              //         The MTS-ID of the original message is: c=us;a= ;p=ntl
+              // corp;l=MAST-DC0-SE080302141539XM8FHXVY
+              //     MSEXCH:IMS:NTL Corp:CableTel Datacentre:MAST-DC0-SE08 0 (000C05A6)
+              // Unknown Recipient
+              if (strstr($part->getBody(), 'MSEXCH')) {
+                $l= strtok($part->getBody(), "\n");
+                
+                // Find the first line with an @ in it
+                $r= FALSE;
+                do {
+                  if (strstr($l, '@')) $r= TRUE;
+                  $r && $daemonmessage->setReason(trim($daemonmessage->getReason()).' '.trim($l));
+                  
+                } while ($l= strtok("\n"));
+                
+                // Done
+                break;
+              }
+
               // ------=_Part_10455873563e52659c52a535.44444108
               // Content-Type: text/plain; charset="iso-8859-1"
               // Content-Transfer-Encoding: US-ASCII
@@ -361,25 +394,31 @@
               // <foo.bar@crosswinds.net>: host 127.0.0.1[127.0.0.1] said: 550 5.1.0
               //     foo.bar@crosswinds.net>: User unknown (in reply to end of DATA
               //     command)
-              $l= strtok($part->getBody(), "\n");
+              if (strstr($part->getBody(), 'Postfix')) {
+                $l= strtok($part->getBody(), "\n");
 
-              // Find "The Postfix program"
-              do {
-                if ('The Postfix program' != trim(chop($l))) continue;
+                // Find "The Postfix program"
+                do {
+                  if ('The Postfix program' != trim(chop($l))) continue;
 
-                // Swallow one line
-                strtok("\n");
+                  // Swallow one line
+                  strtok("\n");
 
-                // Fetch mail address
-                $daemonmessage->setFailedRecipient(InternetAddress::fromString(strtok('<>')));
+                  // Fetch mail address
+                  $daemonmessage->setFailedRecipient(InternetAddress::fromString(strtok('<>')));
 
-                // Daemon-Typeend until first empty line is found
-                while ($l= strtok("\n")) {
-                  if ('' == chop($l)) break;
-                  $daemonmessage->setReason(trim($daemonmessage->getReason()).' '.trim($l));
-                }
+                  // Append until first empty line is found
+                  while ($l= strtok("\n")) {
+                    if ('' == chop($l)) break;
+                    $daemonmessage->setReason(trim($daemonmessage->getReason()).' '.trim($l));
+                  }
 
-              } while ($l= strtok("\n"));
+                } while ($l= strtok("\n"));
+                
+                // Done
+                break;
+              }
+              
               break;
 
             default:
