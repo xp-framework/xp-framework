@@ -175,19 +175,60 @@
     /**
      * Recurse an array
      *
-     * @access  private
-     * @param   &mixed elem
+     * @access  protected
+     * @param   &xml.Node e element to add array to
      * @param   array a
      */
-    function _recurseArray(&$elem, $a) {
-      if (is_array($a)) foreach (array_keys($a) as $key) {
-        if ('_' == $key{0}) continue;     // Ignore "private" members
-        
+    function _recurse(&$e, $a) {
+      foreach (array_keys($a) as $field) {
+        if ('_' == $field{0}) continue;
         $this->_marshall(
-          $elem->addChild(new SOAPNode(is_numeric($key) ? 'item' : $key)),
-          $a[$key]
+          $e->addChild(new SOAPNode(is_numeric($field) ? 'item' : $field)),
+          $a[$field]
         );
       }
+    }
+    
+    /**
+     * Create a node from an array
+     *
+     * Usage example:
+     * <code>
+     *   $n= &Node::fromArray($array, 'elements');
+     * </code>
+     *
+     * @model   static
+     * @access  public
+     * @param   array arr
+     * @param   string name default 'array'
+     * @return  &xml.Node
+     */
+    function fromArray($arr, $name= 'array') {
+      $n= &new SOAPNode($name);
+      $n->_recurse($n, $arr);
+      return $n;  
+    }
+    
+    /**
+     * Create a node from an object. Will use class name as node name
+     * if the optional argument name is omitted.
+     *
+     * Usage example:
+     * <code>
+     *   $n= &Node::fromObject($object);
+     * </code>
+     *
+     * @model   static
+     * @access  public
+     * @param   object obj
+     * @param   string name default NULL
+     * @return  &xml.Node
+     */
+    function fromObject($obj, $name= NULL) {
+      return SOAPNode::fromArray(
+        get_object_vars($obj), 
+        (NULL === $name) ? get_class($obj) : $name
+      );
     }
   }
 ?>
