@@ -56,6 +56,26 @@
      */
     function __construct(&$classloader) {
       $this->classloader= &$classloader;
+      
+      // Modify display of error messages since we cannot catch
+      // parse or fatal errors but still want a fault (and not
+      // "<br /><b>PHP: Fatal Error</b><br />")
+      ini_set('html_errors', 0);
+      ini_set('display_errors', 1);
+      ini_set('error_prepend_string', '<SOAP-ENV:Envelope
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+>
+<SOAP-ENV:Body>
+  <SOAP-ENV:Fault>
+    <faultcode>500</faultcode>
+    <faultstring>Internal error</faultstring>
+    <faultactor>PHP</faultactor>
+    <detail><![CDATA[');
+      ini_set('error_append_string', ']]></detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>');
       parent::__construct();
     }
   
