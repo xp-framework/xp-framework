@@ -21,6 +21,12 @@
   
   // TBD: Get from database?
   $news->addItem(
+    '[Beta] Added collection org.webdav', 
+    'http://xp.php3.de/apidoc/collections/org.webdav.html',
+    'A first version now allows clients to browse a webdav directory',
+    new Date('2003-01-05 07:24:58')
+  );
+  $news->addItem(
     'Added collection util.text.format', 
     'http://xp.php3.de/apidoc/collections/util.text.format.html',
     'Formatting strings has become even easier. Have a look at the MessageFormat class for examples',
