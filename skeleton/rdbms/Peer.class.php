@@ -24,6 +24,7 @@
       $table      = '',
       $connection = '',
       $identity   = NULL,
+      $primary    = array(),
       $types      = array();
     
     /**
@@ -124,6 +125,26 @@
      */
     function setTypes($types) {
       $this->types= $types;
+    }
+
+    /**
+     * Set Primary
+     *
+     * @access  public
+     * @param   mixed[] primary
+     */
+    function setPrimary($primary) {
+      $this->primary= $primary;
+    }
+
+    /**
+     * Get Primary
+     *
+     * @access  public
+     * @return  mixed[]
+     */
+    function getPrimary() {
+      return $this->primary;
     }
 
     /**

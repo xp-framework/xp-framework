@@ -228,26 +228,36 @@
     }
     
     /**
-     * Insert this dataset (create a new row in the table). Does nothing
-     * in this default implementation and may be overridden in subclasses 
-     * where it makes sense.
+     * Insert this dataset (create a new row in the table).
      *
      * @access  public
      * @return  int affected rows
      * @throws  rdbms.SQLException
      */
-    function insert() { }
+    function insert() {
+      return $this->doInsert();
+    }
 
     /**
-     * Update this dataset (change an existing row in the table). Does 
-     * nothing in this default implementation and may be overridden in 
-     * subclasses where it makes sense.
+     * Update this dataset (change an existing row in the table). 
+     * Updates the record by using the primary key(s) as criteria.
      *
      * @access  public
      * @return  int affected rows
      * @throws  rdbms.SQLException
      */
-    function update() { }
+    function update() {
+      if (empty($this->_peer->primary)) {
+        return throw(new SQLStateException('No primary key'));
+      }
+      $criteria= &new Criteria();
+      foreach ($this->_peer->primary as $key) {
+        $criteria->add($key, $this->{$key}, EQUAL);
+      }
+      $affected= $this->_peer->doUpdate($this->_changed, $criteria);
+      $this->_changed= array();
+      return $affected;
+    }
 
     /**
      * Delete this dataset (remove the corresponding row from the table). 
@@ -258,6 +268,17 @@
      * @return  int affected rows
      * @throws  rdbms.SQLException
      */
-    function delete() { }
+    function delete() { 
+      if (empty($this->_peer->primary)) {
+        return throw(new SQLStateException('No primary key'));
+      }
+      $criteria= &new Criteria();
+      foreach ($this->_peer->primary as $key) {
+        $criteria->add($key, $this->{$key}, EQUAL);
+      }
+      $affected= $this->_peer->doDelete($criteria);
+      $this->_changed= array();
+      return $affected;
+    }
   }
 ?>
