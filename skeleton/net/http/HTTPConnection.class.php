@@ -158,9 +158,9 @@
       
       // Fehler auswerten
       $result= 0;
-      switch($this->response->HTTPstatus) {
+      switch($this->response->status) {
         case 401: 
-          throw(new HTTPAuthException($this->response->HTTPmessage));
+          throw(new HTTPAuthException($this->response->message));
           break;
         default:
           $result= 1;
@@ -169,7 +169,7 @@
       return $result;
     }
     
-    function getResponse() {
+    function getResponse($concat= TRUE) {
       if ($this->eof()) {
         $this->close();
         return FALSE;
@@ -186,7 +186,7 @@
         return $this->getResponse();
       }
 
-      $this->response->body.= $answer;
+      if ($concat) $this->response->body.= $answer;
       return $answer;
     }
     
