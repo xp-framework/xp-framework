@@ -77,7 +77,8 @@
      */
     function &fromString($string) {
       $parser= &new XMLParser();
-      $tree= &new Tree();
+      $c= get_class($this);
+      $tree= &new $c();
       try(); {
         $parser->callback= &$tree;
         $result= $parser->parse($string, 1);
@@ -103,7 +104,8 @@
      */ 
     function &fromFile($file) {
       $parser= &new XMLParser();
-      $tree= &new Tree();
+      $c= get_class($this);
+      $tree= &new $c();
       
       try(); {
         $parser->callback= &$this;
