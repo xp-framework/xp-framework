@@ -11,18 +11,16 @@
    * The XML document will look somewhat like this:
    * <xmp>
    *   <?xml version="1.0" encoding="iso-8859-1"?>
-   *   <document>
-   *     <formresult
-   *      serial="1034524928"
-   *      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-   *      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   *     >
-   *       <formvalues>
-   *         <param name="__page" xsi:type="xsd:string">home</param>
-   *       </formvalues>
-   *       <formerrors/>
-   *     </formresult>
-   *   </document>
+   *   <formresult                                                  
+   *    serial="1034524928"                                         
+   *    xmlns:xsd="http://www.w3.org/2001/XMLSchema"                
+   *    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"       
+   *   >                                                            
+   *     <formvalues>                                               
+   *       <param name="__page" xsi:type="xsd:string">home</param>  
+   *     </formvalues>                                              
+   *     <formerrors/>                                              
+   *   </formresult>                                                
    * <xmp>
    *
    * These nodes are defined as following:
