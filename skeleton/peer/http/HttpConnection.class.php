@@ -15,7 +15,10 @@
    * <code>
    *   $c= &new HttpConnection('http://xp.php3.de/');
    *   try(); {
-   *     $response= &$c->get();
+   *     if ($response= &$c->get()) while (FALSE !== ($buf= $response->readData())) {
+   *       echo '|'.addcslashes($buf, "\0..\37!@\177..\377")."|\n";
+   *       flush();
+   *     }
    *   } if (catch('Exception', $e)) {
    *     $e->printStackTrace();
    *     exit();
