@@ -1,0 +1,19 @@
+#!/bin/sh
+
+##
+# This file is part of the XP framework
+#
+# phphelp: Context-sensitive help plugin for NEdit (http://nedit.org/)
+#
+# $Id$
+
+read KEYWORD
+if [ "" = "$KEYWORD" ] ; then
+  exit
+fi
+
+if [ "--xp" = "$1" ] ; then
+  galeon "http://xp-framework.net/search/?keyword=$KEYWORD" 1>/dev/null 2>/dev/null &
+  exit
+fi
+galeon "http://php3.de/manual-lookup.php?pattern=$KEYWORD&lang=en" 1>/dev/null 2>/dev/null &
