@@ -9,6 +9,7 @@
   /**
    * Represents a multipart/alternative MIME part
    *
+   * @deprecated
    */
   class MimeAlternative extends MimePart {
     var

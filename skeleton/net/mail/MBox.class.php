@@ -9,6 +9,7 @@
   /**
    * (Insert method's description here)
    *
+   * @deprecated
    * @access  public
    * @see     http://wp.netscape.com/eng/mozilla/2.0/relnotes/demo/content-length.html
    * @see     http://www.qmail.org/man/man5/mbox.html

@@ -9,6 +9,7 @@
   /**
    * Socket class
    *
+   * @deprecated
    * @see   php://network
    */
   class Socket extends Object {

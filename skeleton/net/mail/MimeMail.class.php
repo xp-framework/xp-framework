@@ -11,6 +11,7 @@
   /**
    * Repräsentiert eine Multipart-MIME-Email
    *
+   * @deprecated
    * @see http://faqs.org/rfcs/rfc1521.html
    */
   class MimeMail extends Mail {

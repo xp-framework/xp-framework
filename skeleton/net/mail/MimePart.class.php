@@ -18,6 +18,7 @@
   /**
    * Repräsentiert einen Teil einer Multipart-MIME-Email
    *
+   * @deprecated
    * @see net.mail.MimeMail
    * @see http://faqs.org/rfcs/rfc1521.html
    */

@@ -26,6 +26,7 @@
   /**
    * Repräsentiert eine "Basic"-Email
    *
+   * @deprecated
    * @see http://www.faqs.org/rfcs/rfc822.html
    */
   class Mail extends Object {
