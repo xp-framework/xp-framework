@@ -176,7 +176,8 @@
         if ('OK' == substr($line, 0, 2)) {
           break;
         } elseif ('NO' == substr($line, 0, 2)) {
-          return $error ? throw(new FormatException(substr($line, 3))) : FALSE;
+          if (!$error) return FALSE;
+          return throw(new FormatException(substr($line, 3)));
         } elseif ('BYE' == substr($line, 0, 3)) {
           return throw(new SocketException(substr($line, 4)));
         } elseif (!$discard) {
