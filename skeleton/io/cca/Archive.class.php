@@ -153,6 +153,35 @@
     }
     
     /**
+     * Get entry (iterative use)
+     * <code>
+     *   $a= &new Archive(new File('port.cca'));
+     *   $a->open(ARCHIVE_READ);
+     *   while ($e= $a->getEntry()) {
+     *     var_dump($e);
+     *   }
+     *   $a->close();
+     * </code>
+     *
+     * @access  public
+     * @return  string id or FALSE to indicate the pointer is at the end of the list
+     */
+    function getEntry() {
+      $key= key($this->_index);
+      next($this->_index);
+      return $key;
+    }
+
+    /**
+     * Rewind archive
+     *
+     * @access  public
+     */
+    function rewind() {
+      reset($this->_index);
+    }
+    
+    /**
      * Extract a file's contents
      *
      * @access  public
