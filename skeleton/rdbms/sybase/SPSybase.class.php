@@ -33,6 +33,10 @@
     // Logger
     var
       $log;
+	  
+	var
+	  $fields	= NULL,
+	  $lengths	= NULL;
  
     /**
      * Constructor
@@ -128,6 +132,8 @@
      */
     function query() {
       $args= func_get_args();
+	  $this->lengths= $this->fields= NULL;
+	  
       $sql= $this->_prepare($args);
 
       // Wenn es keinen Connect gibt, einen herstellen
@@ -144,10 +150,12 @@
       
       // Feldtypen herausfinden
       $i= -1;
+	  $this->lengths= $this->fields= array();
       while (++$i < @sybase_num_fields($result)) {
         $field= sybase_fetch_field($result, $i);
         // $this->log->debug('Sybase::fields', $field);
         $this->fields[$field->name]= $field->type;
+		$this->lengths[$field->name]= $field->max_length;
       }
       // $this->log->debug('Sybase::fields', $this->fields);
       
