@@ -6,6 +6,8 @@
 
   define('IN',              'in (?)');
   define('NOT_IN',          'not in (?)');
+  define('IS',              'is ?');
+  define('IS_NOT',          'is not ?');
   define('LIKE',            'like ?');
   define('EQUAL',           '= ?');
   define('NOT_EQUAL',       '!= ?');
@@ -61,6 +63,15 @@
      * @param   string comparison default EQUAL
      */
     function add($key, $value, $comparison= EQUAL) {
+      static $nullMapping= array(
+        EQUAL     => IS,
+        NOT_EQUAL => IS_NOT
+      );
+      
+      // Automatically convert '= NULL' to 'is NULL', former is not valid ANSI-SQL
+      if (NULL === $value && isset($nullMapping[$comparison])
+        $comparison= $nullMapping[$comparison];
+          
       $this->conditions[]= array($key, $value, $comparison);
     }
 
@@ -135,6 +146,7 @@
           if (!isset($types[$condition[0]])) {
             return throw(new SQLStateException('Field "'.$condition[0].'" unknown'));
           }
+          
           $sql.= $condition[0].' '.$db->prepare(
             str_replace('?', $types[$condition[0]], $condition[2]).' and ', 
             $condition[1]
