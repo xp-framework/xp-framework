@@ -5,16 +5,21 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Indicates a test was successful
    *
-   * @ext      extensiom
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://util.profiling.unittest.TestResult
+   * @purpose  Result wrapper
    */
   class TestSuccess extends Object {
     var
       $result   = NULL;
       
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   &mixed result
+     */
     function __construct(&$result) {
       $this->result= &$result;
       parent::__construct();
