@@ -16,7 +16,8 @@
    */
   class DSN extends Object {
     var 
-      $parts    = array();
+      $parts    = array(),
+      $prop     = array();
       
     /**
      * Constructor
@@ -42,11 +43,25 @@
       $flags= 0;
       parse_str($this->parts['query'], $config);
       foreach ($config as $key => $value) {
-        if ($value && defined ('DB_'.strtoupper ($key))) {
-          $flags= $flags | constant('DB_'.strtoupper($key));
+        if (defined('DB_'.strtoupper ($key))) {
+          if ($value) $flags= $flags | constant('DB_'.strtoupper($key));
+        } else {
+          $this->prop[$key]= $value;
         }
       }
       return $flags;
+    }
+    
+    /**
+     * Get a property by its name
+     *
+     * @access  public
+     * @param   string name
+     * @param   string defaullt default NULL
+     * @return  string property or the default value if the property does not exist
+     */
+    function getProperty($name, $default= NULL) {
+      return isset($this->prop[$name]) ? $this->prop[$name] : $default;
     }
 
     /**
