@@ -119,7 +119,7 @@
           $ns++;
           $type= 'ns'.$ns.':struct';
           $child->attribute['xmlns:ns'.$ns]= get_class($value);
-        } else if (is_scalar($value)) {
+        } else if (is_scalar($value) || NULL === $value) {
         
           // Skalare Typen
           $type= $child->_typeName($value);
