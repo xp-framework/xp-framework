@@ -1,5 +1,5 @@
 <?php
-/* This file provides the SOAP service sapi for the XP framework
+/* This file provides the XMLRPC service sapi for the XP framework
  * 
  * $Id$
  */
