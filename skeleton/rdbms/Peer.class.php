@@ -183,6 +183,58 @@
       }
       return $r;
     }
+
+    /**
+     * Retrieve a number of objects from the database
+     *
+     * @model   final
+     * @access  public
+     * @param   &rdbms.Peer peer
+     * @param   &rdbms.Criteria join
+     * @param   &rdbms.Criteria criteria
+     * @param   int max default 0
+     * @return  rdbms.DataSet[]
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    function doJoin(&$peer, &$join, &$criteria, $max= 0) {
+      $cm= &ConnectionManager::getInstance();  
+      try(); {
+        $db= &$cm->getByHost($this->connection, 0);
+        
+        $columns= $map= array();
+        foreach (array_keys($this->types) as $colunn) {
+          $columns[]= $this->identifier.'.'.$colunn;
+          $map[$colunn]= '%c';
+        }
+        foreach (array_keys($peer->types) as $colunn) {
+          $columns[]= $peer->identifier.'.'.$colunn.' as "'.$peer->identifier.'#'.$colunn.'"';
+        }
+        
+        $where= $criteria->toSQL($db, $this->types);
+        $q= &$db->query(
+          'select %c from %c %c, %c %c%c%c',
+          $columns,
+          $this->table,
+          $this->identifier,
+          $peer->table,
+          $peer->identifier,
+          $join->toSQL($db, $map),
+          $where ? ' and '.substr($where, 7) : ''
+        );
+      } if (catch('SQLException', $e)) {
+        return throw($e);
+      }
+      
+      $r= array();
+      for ($i= 1; $record= $q->next(); $i++) {
+        if ($max && $i > $max) break;
+        
+        $o= &new $this->identifier(array_slice($record, 0, sizeof($this->types)));
+        $o->{$peer->identifier}= &new $peer->identifier(array_slice($record, sizeof($this->types)));
+        $r[]= &$o;
+      }
+      return $r;
+    }
     
     /**
      * Inserts this object into the database

@@ -91,8 +91,9 @@
      * @param   array params default NULL
      */
     function __construct($params= NULL) {
-      if (is_array($params)) {
-        foreach (array_keys($params) as $key) $this->$key= &$params[$key];
+      if (is_array($params)) foreach (array_keys($params) as $key) {
+        $k= substr(strrchr('#'.$key, '#'), 1);
+        $this->{$k}= &$params[$key];
       }
       $this->_peer= &$this->getPeer();
     }
