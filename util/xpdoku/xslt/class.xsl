@@ -89,7 +89,7 @@
             <tr>
               <td valign="top">Additional comments:</td>
               <td valign="top">
-                <xsl:value-of select="./comments/class/text"/>
+                <xsl:apply-templates select="./comments/class/text"/>
               </td>
             </tr>
           </table>

@@ -187,5 +187,24 @@
       </td></tr>
     </table>
   </xsl:template>
-
+  
+  <xsl:template match="xmp|pre|code/span/span|code/span/span/br">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="code">
+    <br/>
+    <xsl:call-template name="frame">
+      <xsl:with-param name="color" select="'#cccccc'"/>
+      <xsl:with-param name="content">
+        <code>
+          <xsl:apply-templates/>
+        </code>
+      </xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+  
 </xsl:stylesheet>
