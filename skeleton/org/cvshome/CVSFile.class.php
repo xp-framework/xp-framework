@@ -184,6 +184,19 @@
       
       return $this->_execute ('remove');
     }
+
+    /**
+     * Adds a file to a repository. Please note, that it is neccessary
+     * that the directory also already exists in CVS, otherwise
+     * an error will be thrown.
+     *
+     * @access public
+     * @param 
+     * @return bool success
+     */    
+    function add() {
+      return $this->_execute ('add');
+    }
     
     /**
      * Compares two versions of this file. Leave both parameters NULL to
