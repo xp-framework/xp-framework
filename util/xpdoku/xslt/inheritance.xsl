@@ -7,6 +7,14 @@
   <xsl:include href="xsl-helper.xsl"/>
   
   <xsl:template match="main">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <th valign="top" align="left">API Doc: Inheritance tree <a href="/apidoc/"><img src="/image/caret-t.gif" border="0"/></a></th>
+	  </tr>
+	  <tr bgcolor="#cccccc"><td><img src="/image/spacer.gif" height="1" border="0"/></td></tr>
+    </table>
+    <br/>
+
     <xsl:apply-templates/>
   </xsl:template>
   
