@@ -13,6 +13,7 @@
   define('FILE_MODE_READAPPEND','a+');         // Append (Read/Write)
   
   uses(
+    'io.Stream',
     'io.IOException',
     'io.FileNotFoundException'
   );
@@ -23,7 +24,7 @@
    * 
    * @purpose  Represent a file
    */
-  class File extends Object {
+  class File extends Stream {
     var 
       $uri=         '', 
       $filename=    '',
