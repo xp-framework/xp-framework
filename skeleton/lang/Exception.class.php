@@ -47,6 +47,20 @@
     }
     
     /**
+     * Return a string representation of this exception
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return sprintf(
+        "Exception %s (%s)\n",
+        $this->getClassName(),
+        $this->message
+      );
+    }
+    
+    /**
      * Return a formatted representation of the "stracktrace"
      *
      * @access  public
