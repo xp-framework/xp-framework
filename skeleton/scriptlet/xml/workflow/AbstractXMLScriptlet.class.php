@@ -39,6 +39,18 @@
     function &_request() {
       return new WorkflowScriptletRequest($this->classloader);
     }
+    
+    /**
+     * Retrieve context class
+     *
+     * @access  protected
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @return  &lang.XPClass
+     * @throws  lang.ClassNotFoundException
+     */
+    function &getContextClass(&$request) {
+      return $this->classloader->loadClass(ucfirst($request->getProduct()).'Context');
+    }
 
     /**
      * Decide whether a session is needed
@@ -55,6 +67,18 @@
     }
     
     /**
+     * Decide whether a context is needed. Returns FALSE in this default
+     * implementation.
+     *
+     * @access  protected
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @return  bool
+     */
+    function wantsContext(&$request) {
+      return FALSE;
+    }
+    
+    /**
      * Process workflow. Calls the state's setup() and process() 
      * methods in this order. May be overwritten by subclasses.
      *
@@ -67,8 +91,66 @@
      * @return  bool
      */
     function processWorkflow(&$request, &$response) {
-      $request->state->setup($request, $response);
-      return $request->state->process($request, $response);
+
+      // Context initialization
+      $context= NULL;
+      if ($this->wantsContext($request) && $request->hasSession()) {
+      
+        // Set up context. The context contains - so to say - the "autoglobals",
+        // in other words, the omnipresent data such as the user
+        try(); {
+          $class= &$this->getContextClass($request);;
+        } if (catch('ClassNotFoundException', $e)) {
+          throw(new HttpScriptletException($e->getMessage()));
+          return FALSE;
+        }
+      
+        // Get context from session. If it is not available there, set up the 
+        // context and store it to the session.
+        if (!($context= &$request->session->getValue($class->getName()))) {
+          $context= &$class->newInstance();
+
+          try(); {
+            $context->setup($request);
+          } if (catch('IllegalStateException', $e)) {
+            throw(new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR));
+            return FALSE;
+          } if (catch('IllegalArgumentException', $e)) {
+            throw(new HttpScriptletException($e->getMessage(), HTTP_NOT_ACCEPTABLE));
+            return FALSE;
+          } if (catch('IllegalAccessException', $e)) {
+            throw(new HttpScriptletException($e->getMessage(), HTTP_FORBIDDEN));
+            return FALSE;
+          }
+          $request->session->putValue($class->getName(), $context);
+        }
+
+        // Run context's process() method.
+        try(); {
+          $context->process($request);
+        } if (catch('IllegalStateException', $e)) {
+          throw(new HttpSessionInvalidException($e->getMessage(), HTTP_BAD_REQUEST));
+          return FALSE;
+        } if (catch('IllegalAccessException', $e)) {
+          throw(new HttpScriptletException($e->getMessage(), HTTP_FORBIDDEN));
+          return FALSE;
+        }
+
+        delete($class);
+      }
+      
+      // Call state's setup() method
+      $request->state->setup($request, $response, $context);
+      
+      // Call state's process() method. In case it returns FALSE, the
+      // context's insertStatus() method will not be called. This, for
+      // example, is useful when process() wants to send a redirect.
+      if (FALSE === ($r= $request->state->process($request, $response, $context))) {
+        return FALSE;
+      }
+      
+      // Tell context to insert form elements
+      $context && $context->insertStatus($response);
     }
 
     /**

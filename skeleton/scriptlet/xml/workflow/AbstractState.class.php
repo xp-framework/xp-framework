@@ -45,8 +45,9 @@
      * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @param   &scriptlet.xml.Context context
      */
-    function setup(&$request, &$response) {
+    function setup(&$request, &$response, &$context) {
       $this->cat && $this->cat->debug($this->getClassName().'::setup');
       
       with ($h= &$response->addFormResult(new Node('handlers'))); {
@@ -179,8 +180,9 @@
      * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @param   &scriptlet.xml.Context context
      */
-    function process(&$request, &$response) {
+    function process(&$request, &$response, &$context) {
     }
     
     /**
