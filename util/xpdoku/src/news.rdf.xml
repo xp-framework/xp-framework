@@ -8,11 +8,17 @@
     <link>http://xp.php3.de/</link>
     <description>XP Newsflash</description>
     <dc:language>en_US</dc:language>
-    <dc:date>2003-06-02T09:15:21</dc:date>
+    <dc:date>2003-06-08T16:49:27</dc:date>
     <dc:creator>XP-Team &lt;xp@php3.de&gt;</dc:creator>
     <dc:publisher>XP-Team &lt;xp@php3.de&gt;</dc:publisher>
     <dc:rights>http://xp.php3.de/copyright.html</dc:rights>
   </channel>
+  <item>  
+    <title>Widgets in action</title>
+    <link>http://xp.php3.de/content/tasks.gui.widgets.html</link>
+    <description>Two additional widgets are now available for use in GTK applications: An extended filedialog, inspired by Windows UI design and much more powerful than the built-in one; and, an easy-to-use Messagebox wrapper. See them in action!</description>
+    <dc:date>2003-06-08T16:44:00</dc:date>
+  </item>
   <item>  
     <title>If it's not tested, it's broken</title>
     <link>http://xp.php3.de/apidoc/collections/util.profiling.unittest.html</link>
