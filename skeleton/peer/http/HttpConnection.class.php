@@ -16,8 +16,8 @@
    *       array('a' => 'b'),
    *       array(
    *         new Header('X-Binford', '6100 (more power)'),
-   *         new Cookie('test', 'foo'),
-   *         new BasicAuthorization('baz', 'bar')
+   *         new BasicAuthorization('baz', 'bar'),
+   *         'Cookie' => 'username=fred; lastvisit=2004-01-10'
    *       )
    *     );
    *     while (FALSE !== ($buf= $response->readData())) {
