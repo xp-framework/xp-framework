@@ -138,7 +138,7 @@
      * @param   int type PHP_BINARY_READ or PHP_NORMAL_READ
      * @return  string data
      */
-    function _read($maxLen, $type) {
+    function _read($maxLen, $type, $chop= FALSE) {
       if (FALSE === ($res= socket_read($this->_sock, $maxLen, $type))) {
         return throw(new SocketException('Read failed: '.$this->getLastError()));
       }
@@ -146,7 +146,7 @@
         $this->_eof= TRUE;
         return NULL;
       } else {
-        return $res;
+        return $chop ? chop($res) : $res;
       }
     }
         
@@ -160,6 +160,18 @@
      */
     function read($maxLen= 4096) {
       return $this->_read($maxLen, PHP_NORMAL_READ);
+    }
+
+    /**
+     * Read data from a socket
+     *
+     * @access  public
+     * @param   int maxLen maximum bytes to read
+     * @return  string data
+     * @throws  peer.SocketException
+     */
+    function readLine($maxLen= 4096) {
+      return $this->_read($maxLen, PHP_NORMAL_READ, TRUE);
     }
     
     /**
