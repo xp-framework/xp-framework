@@ -1,6 +1,6 @@
 <?php
-  require('../../../skeleton/lang.base.php');
-  import('de.schlund.domain.IsFree');
+  require('lang.base.php');
+  uses('de.schlund.domain.IsFree');
   
   $check= new IsFree();
 
@@ -8,8 +8,8 @@
   // sofort geschlossen wird.
   try(); {
     $status= &$check->status();
-  } if ($e= catch(E_ANY_EXCEPTION)) {
-    var_dump($e);
+  } if (catch('Exception', $e)) {
+    $e->printStackTrace();
     exit;
   }
 
@@ -27,8 +27,8 @@
   );
   try(); {
     $results= &$check->query();
-  } if ($e= catch(E_ANY_EXCEPTION)) {
-    var_dump($e);
+  } if (catch('Exception', $e)) {
+    $e->printStackTrace();
     exit;
   }
   
