@@ -1,4 +1,9 @@
 <?php
+/* Diese Klasse ist Teil des XP-Frameworks
+ *
+ * $Id$
+ */
+
   uses(
     'xml.Node',
     'xml.soap.types.SOAPBase64Binary',
@@ -38,7 +43,7 @@
     
     function getContent($encoding= NULL) {
       $ret= $this->content;
-      list($ns, $t)= explode(':', $this->attribute['xsi:type']);
+      @list($ns, $t)= explode(':', @$this->attribute['xsi:type']);
       
       switch ($t) {
         case 'base64':
@@ -113,11 +118,15 @@
           // Namen
           if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
           
-          // Typen
-          $child->attribute['xsi:type']= 'xsd:'.$value->getType();
-          
-          // Inhalt
-          $child->setContent($value->toString());
+          // Inhalt und Typen
+          $content= $value->toString();
+          $type= $value->getType();
+          if (NULL === ($type)) {
+            $type= $child->_typeName($content);
+            $content= $child->_contentFormat($content);
+          }
+          $child->attribute['xsi:type']= 'xsd:'.$type;
+          $child->setContent($content);
           continue;
         }
         

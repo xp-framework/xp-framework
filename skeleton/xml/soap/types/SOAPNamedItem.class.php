@@ -5,13 +5,11 @@
   class SOAPNamedItem extends Object {
     var
       $name= 'item',
-      $type= 'string',
       $val;
       
-    function __construct($name, $val, $type= NULL) {
+    function __construct($name, $val) {
       $this->name= $name;
       $this->val= $val;
-      $this->type= (NULL == $type) ? gettype($val) : $type;
       parent::__construct();
     }
     
@@ -26,7 +24,7 @@
      * @return  string Typ-Namen
      */
     function getType() {
-      return $this->type;
+      return NULL;
     }
     
     function getItemName() {
