@@ -16,7 +16,7 @@
   <xsl:template match="collection">
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
       <tr>
-      <th valign="top" align="left">Collection <xsl:value-of select="./@prefix"/>
+      <th valign="top" align="left">API Doc: Collection <xsl:value-of select="./@prefix"/>
         <xsl:if test="string-length (../@prefix) = 0">
           <a href="../index.html"><img src="/image/caret-t.gif" border="0"/></a>
         </xsl:if>

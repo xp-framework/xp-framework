@@ -69,7 +69,7 @@
 
   <tr bgcolor="#9eb6ff">
     <td align="right" valign="bottom" nowrap="nowrap">
-      <a href="/download.php" class="menuBlack">download</a> | <a href="/docs.php" class="menuBlack">documentation</a> | <a href="/faq.php" class="menuBlack">faq</a> | <a href="/apps/" class="menuBlack">applications</a> | <a href="/changelog.php" class="menuBlack">changelog</a> | <a href="/resources.php" class="menuBlack">resources</a> <br/>
+      <a href="#" class="menuBlack">download</a> | <a href="/apidoc/" class="menuBlack">documentation</a> | <a href="#" class="menuBlack">faq</a> | <a href="/ports/" class="menuBlack">ports</a> | <a href="#" class="menuBlack">changelog</a> | <a href="#" class="menuBlack">resources</a> <br/>
       <img src="/image/spacer.gif" width="2" height="2" border="0" alt=""/><br/>
     </td>
   </tr>
@@ -83,10 +83,12 @@
 <input class="small" type="text" name="keyword" value="&lt;?php echo isset($_REQUEST['keyword']) ?  $_REQUEST['keyword'] : ''; ?&gt;" size="30" accesskey="s"/>
 <small>in the</small>
 <select name="show" class="small">
-<option value="classlist">class list</option>
+<option value="apidoc">api docs</option>
+<!--
 <option value="php-gtk-dev-list">development mailing list</option>
 <option value="php-gtk-doc-list">documentation mailing list</option>
 <option value="manual">manual</option>
+-->
 </select>
 <input type="image" src="/image/small_submit_white.gif" border="0" width="11" height="11" ALT="search"  align="bottom"/> <br/>
      </font></td>
@@ -103,9 +105,7 @@
 	  <td class="sidebar">
 	    <a href="/">XP</a> stands for <b>X</b>ML <b>P</b>HP.<br/>
 		XP is far more than that!
-                
-                
-            <!-- This is the place to call the navigation -->    
+        <!-- This is the place to call the navigation -->    
       </td>
     </tr>
    </table>
@@ -117,7 +117,7 @@
      <td valign="top">
         <!-- This is the "main" window -->
         <xsl:choose>
-          <xsl:when test="$mode = 'index'">
+          <xsl:when test="$mode = 'apidoc-index'">
             <xsl:apply-templates select="package">
               <xsl:sort select="./@type"/>
             </xsl:apply-templates>
@@ -149,7 +149,10 @@
           <xsl:when test="$mode = 'search'">
             <xsl:call-template name="searchresults"/>
           </xsl:when>
-
+          
+          <xsl:otherwise>
+            <xsl:call-template name="main"/>
+          </xsl:otherwise>
         </xsl:choose>
      </td>
     </tr>
@@ -161,7 +164,7 @@
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
   <tr bgcolor="#000033"><td><img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/></td></tr>
   <tr bgcolor="#3654a5">
-    <td align="right" valign="bottom"><a href="/source.php?url=/manual/de/gtk.signals.php" class="menuWhite">show source</a> | <a href="/credits.php" class="menuWhite">credits</a> <br/>
+    <td align="right" valign="bottom"><a href="/credits.html" class="menuWhite">credits</a> <br/>
     </td>
   </tr>
   <tr bgcolor="#000033"><td><img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/></td></tr>
@@ -171,7 +174,7 @@
   <tr valign="top" bgcolor="#f0f0f0">
     <td><small>
       <a href="http://schlund.com/"><img src="/image/schlund.gif" border="0" align="left"/></a>      
-	  <a href="/copyright.php">Copyright XP-Team, Schlund+Partner AG</a><br/>
+	  <a href="/copyright.html">Copyright XP-Team, Schlund+Partner AG</a><br/>
       All rights reserved.<br/>
       </small>
     </td>

@@ -22,16 +22,15 @@ usage:
 	@echo "            clean   - remove all generated files (xml/html)"
 	@echo "            all     - calls 'clean makexml gen install' in this order"
 
-
-
 $(XML):
 	-mkdir $(XML)
 
 $(OUTPUT):
 	@echo "===> Preparing output directory"
 	@-mkdir $(OUTPUT)
-	@-mkdir $(OUTPUT)/collections
-	@-mkdir $(OUTPUT)/classes
+	@-mkdir $(OUTPUT)/apidoc
+	@-mkdir $(OUTPUT)/apidoc/collections
+	@-mkdir $(OUTPUT)/apidoc/classes
 	@-mkdir $(OUTPUT)/image
 	@-mkdir $(OUTPUT)/src
 	@-cp -R src/ $(OUTPUT)
@@ -55,6 +54,8 @@ makexml: $(XML)
 index: $(OUTPUT) $(XML)
 	@echo "===> Creating index"
 	@$(SABCMD) xslt/index.xsl $(CTREE) $(OUTPUT)/index.html 2>/dev/null
+	@echo "===> Creating apidoc index"
+	@$(SABCMD) xslt/apidoc.xsl $(CTREE) $(OUTPUT)/apidoc/index.html 2>/dev/null
 	@echo "===> Creating highlighter"
 	@$(SABCMD) xslt/showsource.xsl $(CTREE) $(OUTPUT)/showsource.php 2>/dev/null
 	@echo "===> Creating search page"
@@ -70,8 +71,8 @@ classes: $(OUTPUT) $(XML)
 
 collection_%:
 	@echo "---> Processing collection $*"
-	@$(SABCMD) xslt/collection.xsl $(CTREE) '$$mode=collection' '$$collection=$*' $(OUTPUT)/collections/$*.html 2>/dev/null
+	@$(SABCMD) xslt/collection.xsl $(CTREE) '$$mode=collection' '$$collection=$*' $(OUTPUT)/apidoc/collections/$*.html 2>/dev/null
 
 class_%:
 	@echo "---> Processing class $*"
-	@$(SABCMD) xslt/class.xsl $(XML)/$*.xpdoc.xml $(OUTPUT)/classes/$*.html 2>/dev/null
+	@$(SABCMD) xslt/class.xsl $(XML)/$*.xpdoc.xml $(OUTPUT)/apidoc/classes/$*.html 2>/dev/null

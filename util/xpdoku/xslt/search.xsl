@@ -36,7 +36,7 @@
   }
   
   function relocateClass ($className) {
-    relocate ('/classes/'.$className.'.html');
+    relocate ('http://'.getenv('HTTP_HOST').'/apidoc/classes/'.$className.'.html');
   }
 
   function found (&$hits, $idx) {
@@ -107,7 +107,7 @@
     asort($classHits);
     foreach ($classHits as $idx=> $hits) {
       $r.= sprintf(
-        '<li><a href="/classes/%1$s.html">%1$s</a></li>',
+        '<li><a href="/apidoc/classes/%1$s.html">%1$s</a></li>',
         $classes[$idx]
       );
     }

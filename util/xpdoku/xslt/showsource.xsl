@@ -15,20 +15,19 @@
   <xsl:template name="showsource">
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
       <tr>
-        <td width="1%" valign="top">
-          <img src="/image/nav_example.gif"/>
-        </td>
         <td width="50%">
-          <xsl:processing-instruction name="php">
-            <![CDATA[
-              $className= strip_tags ($_REQUEST['f']);
-              echo '<b>'.$className.'</b>';
-              
-              // This "return"-path must be fixed when the classpath moves
-              // to the new place
-              echo '<a href="/classes/'.$className.'.html"><img src="/image/caret-t.gif" border="0"></a>';
-            ]]>
-          </xsl:processing-instruction>
+          <b>API Doc: Source of
+            <xsl:processing-instruction name="php">
+              <![CDATA[
+                $className= strip_tags ($_REQUEST['f']);
+                echo $className;
+
+                // This "return"-path must be fixed when the classpath moves
+                // to the new place
+                echo '<a href="/apidoc/classes/'.$className.'.html"><img src="/image/caret-t.gif" border="0"></a>';
+              ]]>
+            </xsl:processing-instruction>
+          </b>
         </td>
       </tr>
     <xsl:call-template name="embedded-divider"/>

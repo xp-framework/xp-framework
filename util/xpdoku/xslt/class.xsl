@@ -18,7 +18,7 @@
     
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
       <tr>
-      <th valign="top" align="left">Class <xsl:value-of select="$classname"/>
+      <th valign="top" align="left">API Doc: Class <xsl:value-of select="$classname"/>
       <a href="../collections/{./@collection}.html"><img src="/image/caret-t.gif" border="0"/></a>
       </th>
       <td valign="top" align="right">
