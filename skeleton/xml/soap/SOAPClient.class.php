@@ -59,6 +59,16 @@
     }
     
     /**
+     * Set trace for debugging
+     *
+     * @access  public
+     * @param   &util.log.LogCategory cat
+     */
+    function setTrace(&$cat) {
+      $this->transport->setTrace($cat);
+    }
+    
+    /**
      * Methoden-Aufruf
      *
      * @access  private
