@@ -26,13 +26,7 @@
     <ul class="context">
       <xsl:for-each select="/formresult/news/items/item">
         <li>
-          <em><xsl:value-of select="concat(
-            created_at/year, '-',
-            format-number(created_at/mon, '00'), '-',
-            format-number(created_at/mday, '00'), ' ',
-            format-number(created_at/hours, '00'), ':',
-            format-number(created_at/minutes, '00')
-          )"/></em>:<br/>
+          <em><xsl:value-of select="func:datetime(created_at)"/></em>:<br/>
           <a href="news/view?{news_id}">
             <xsl:value-of select="caption"/>
           </a>

@@ -34,13 +34,7 @@
       <xsl:apply-templates select="/formresult/item/body"/>
     </p>
 
-    <em><xsl:value-of select="concat(
-      /formresult/item/created_at/year, '-',
-      format-number(/formresult/item/created_at/mon, '00'), '-',
-      format-number(/formresult/item/created_at/mday, '00'), ' ',
-      format-number(/formresult/item/created_at/hours, '00'), ':',
-      format-number(/formresult/item/created_at/minutes, '00')
-    )"/></em><br/>
+    <em><xsl:value-of select="func:datetime(/formresult/item/created_at)"/></em>
   </xsl:template>
   
 </xsl:stylesheet>

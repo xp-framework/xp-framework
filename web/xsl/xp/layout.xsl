@@ -16,8 +16,8 @@
   <xsl:variable name="navigation">
     <nav target="static">Home</nav>
     <nav target="about">About</nav>
-    <nav target="doc">Documentation</nav>
-    <nav target="res">Resources</nav>
+    <nav target="documentation">Documentation</nav>
+    <nav target="resources">Resources</nav>
     <nav target="devel">Development</nav>
   </xsl:variable>
 

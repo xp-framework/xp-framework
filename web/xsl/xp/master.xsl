@@ -21,6 +21,25 @@
   <xsl:param name="__query"/>
 
   <!--
+   ! Function to display a serialized date object
+   !
+   ! @param  node-set date
+   !-->
+  <func:function name="func:datetime">
+    <xsl:param name="date"/>
+    
+    <func:result>
+      <xsl:value-of select="concat(
+        exsl:node-set($date)/year, '-',
+        format-number(exsl:node-set($date)/mon, '00'), '-',
+        format-number(exsl:node-set($date)/mday, '00'), ' ',
+        format-number(exsl:node-set($date)/hours, '00'), ':',
+        format-number(exsl:node-set($date)/minutes, '00')
+      )"/>
+    </func:result>
+  </func:function>
+  
+  <!--
    ! Template that matches on everything and copies it through
    ! one to one.
    !
