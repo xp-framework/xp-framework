@@ -30,17 +30,14 @@
       $this->stream= &$stream;
       parent::__construct();
     }
-    
+
     /**
-     * Read head if necessary
+     * Read status line
      *
-     * @access  protected
+     * @access  private
      * @return  bool success
-     */
-    function _readhead() {
-      if (0 != $this->statuscode) return TRUE;
-      
-      // Read status line
+     */    
+    function _readstatus() {
       $s= chop($this->stream->read());
       if (3 != sscanf(
         $s, 
@@ -51,6 +48,28 @@
       )) return throw(new FormatException('"'.$s.'" is not a valid HTTP response'));
       $this->message= substr($s, 12);
       $this->version= $major.'.'.$minor;
+      
+      return TRUE;
+    }
+    
+    /**
+     * Read head if necessary
+     *
+     * @access  protected
+     * @return  bool success
+     */
+    function _readhead() {
+      if (0 != $this->statuscode) return TRUE;
+      if (!$this->_readstatus()) return FALSE;
+      
+      // HTTP/1.x 100 Continue
+      if (100 == $this->statuscode) {
+        while (!$this->stream->eof()) {
+          if ('' == chop($this->stream->read())) break;
+        }
+        
+        if (!$this->_readstatus()) return FALSE;
+      }
       
       // Read rest of headers
       while (!$this->stream->eof()) {
