@@ -284,6 +284,14 @@
   }
   // }}}
 
+  // {{{ proto void delete(&lang.Object object)
+  //     Destroys an object
+  function delete(&$object) {
+    $object->__destruct();
+    unset($object);
+  }
+  // }}}
+
   // {{{ initialization
   error_reporting(E_ALL);
   if (!defined('PATH_SEPARATOR')) {
