@@ -157,6 +157,18 @@
     }
 
     /**
+     * Get a message part
+     *
+     * @access  public
+     * @param   string uid
+     * @param   string part
+     * @return  int
+     */
+    function &getMessageStruct($uid) { 
+      return $this->store->getMessageStruct($this, $uid);
+    }
+
+    /**
      * Get number of messages in this folder
      *
      * @access  public
