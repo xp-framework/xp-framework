@@ -103,13 +103,10 @@
      *
      * @access  public
      * @param   &util.Date date A date object
-     * @return  int equal: 0, date before $this: <0, date after $this: >0
+     * @return  int equal: 0, date before $this: < 0, date after $this: > 0
      */
     function compareTo(&$date) {
-      return strcmp(
-        (string)$date->_utime, 
-        (string)$this->_utime
-      );
+      return $date->getTime()- $this->getTime();
     }
     
     /**
@@ -125,12 +122,25 @@
     /**
      * Create a string representation
      *
+     * @access  public
      * @see     php://date
      * @param   string format default 'r' format-string
      * @return  string the formatted date
      */
     function toString($format= 'r') {
       return date($format, $this->_utime);
+    }
+
+    /**
+     * Format date
+     *
+     * @access  public
+     * @see     php://strftime
+     * @param   string format default '%c' format-string
+     * @return  string the formatted date
+     */
+    function format($format= '%c') {
+      return strftime($format, $this->_utime);
     }
   }
 ?>
