@@ -54,7 +54,11 @@
     $constructor= $class->getConstructor();
 
     // Create a new instance
-    $instance= $class->newInstance(NULL);
+    try {
+      $instance= $class->newInstance(NULL);
+    } catch (InstantiationException $e) {
+      // Ignore
+    }
   
     Console::writef(
       "Class '%s' (extends %s) %s\n".
@@ -73,10 +77,10 @@
       $methods,
       $fields,
       var_export($class->hasMethod('toString'), 1),
-      $instance->toString()
+      $instance ? $instance->toString() : '(not instantiable)'
     );
   
-    if ($p->exists('invoke')) {
+    if ($instance && $p->exists('invoke')) {
       with ($m= $class->getMethod($p->value('invoke'))); {
         $result= $m->invoke($instance);
         Console::writeLinef(
