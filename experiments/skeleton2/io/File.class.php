@@ -331,11 +331,11 @@
      * Write a line and append a LF (\n) character
      *
      * @access  public
-     * @param   string string data to write
+     * @param   string string default '' data to write
      * @return  bool success
      * @throws  io.IOException in case of an error
      */
-    public function writeLine($string) {
+    public function writeLine($string= '') {
       if (FALSE === ($result= fputs($this->_fd, $string."\n"))) {
         throw (new IOException('Cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
       }
