@@ -26,7 +26,8 @@
       $crm          = NULL,
       $sfm          = NULL,
       $cat          = NULL,
-      $user         = NULL;
+      $user         = NULL,
+      $classloader  = NULL;
     
     /**
      * Called to initialize this application context
@@ -39,7 +40,8 @@
       $this->crm= &new ContextResourceManager();
       $this->crm->initialize($classloader);
       $this->sfm= &new StateFlowManager();
-      $this->sfm->initialize($classloader);
+      $this->sfm->initialize();
+      $this->classloader= &$classloader;
       
       $this->setUser(new User(
         $request->getEnvValue('REMOTE_ADDR'),
@@ -97,6 +99,39 @@
     }
     
     /**
+     * Returns corresponding state. Loads the state class if necessary
+     *
+     * @access  private
+     * @param   string name
+     * @return  &org.apache.xml.workflow.State
+     */
+    function &getStateByName($name) {
+      $l= &Logger::getInstance();
+      $cat= &$l->getCategory($this->getClassName());
+      $cat->debug('getStateByName', $name);
+      
+      // Check to see if we know this state
+      $class= ucfirst($name).'State';
+      if (!class_exists($class)) {
+        $cat->debug($class, 'not existant, loading');
+
+        try(); {
+          $class= &$this->classloader->loadClass($class);
+        } if (catch('ClassNotFoundException', $e)) {
+          return throw(new HttpScriptletException($e->message));
+        } if (catch('RunTimeException', $e)) {
+          return throw(new HttpScriptletException($e->message));
+        }
+      }
+      
+      // Initialize the state
+      $state= &call_user_func(array($class, 'getInstance'), $name);
+      $state->initialize($this);
+      
+      return $state;
+    }
+    
+    /**
      * Handle a single request
      *
      * @access  public
@@ -109,119 +144,87 @@
       
       $l= &Logger::getInstance();
       $cat= &$l->getCategory($this->getClassName());
-      $cat->debug('In handleRequest(request, response)', $this);
       
-      // Load corresponding state
-      $cat->info('Requested state name is', $request->getState(), $request->getPage());
-      $state= &$this->sfm->getStateByName($request->getState());
-      while ($state && !$state->isAccessible($this)) {
-        $cat->debug($state->getName(), 'is not accessible, getting next...');
-        $state= &$this->sfm->getNextState();
-      }
+      $stateName= $request->getState();
+      $cat->debug('In handleRequest(request, response) for', $request->uri, 'state', $stateName);
+      do {
       
-      // No state found
-      if (!$state) {
-        $cat->error(
-          'State/workflow error for request [headers', $request->headers, ']',
-          'stateflow [list', $this->sfm->flow, ']'
-        );
-        return throw(new ContextFailedException(
-          'State/workflow error', 
-          new ElementNotFoundException($request->getState()))
-        );
-      }
-      
-      // Initialize state and set is as current state
-      $state->initialize($this);
-      $this->sfm->setCurrentState($state);
-      $request->setState($state->getName());
-      $cat->info('Current state is', $state->getClassName());
-
-      // Now that we have the correct state:
-      // - call all of its handlers and if this succeeds,
-      // - call its getDocument method
-      $return= TRUE;
-      try(); {
-        if ($st= $state->isSubmitTrigger($request)) {
-          $cat->info('Have submit trigger', $st);
+        if (!($state= &$this->getStateByName($stateName))) {
+          $cat->error(
+            'State', $stateName, 'not found',
+            '[headers', $request->headers, ']'
+          );
+          
+          // The state could not be found. Essentially, this is a 404
+          return throw(new ContextFailedException(
+            'State/workflow error', 
+            new ElementNotFoundException($request->getState()))
+          );
         }
+        
+        if (!$state->isAccessible($this, $request)) {
+          $cat->debug($state->getName(), 'is not accessible, getting next...');
           
-        for ($i= 0, $s= sizeof($state->handlers); $i < $s; $i++) {
-          $cat->info('Calling handler #'.$i, $state->handlers[$i]->getClassName());
-
-          // If the prerequisites for this handler aren't met, proceed
-          if (!$state->handlers[$i]->prerequisitesMet($this)) {
-            $cat->warn('Handler\'s prerequisites are not met, proceeding...');
-            continue;
-          }
-
-          // If this handler is satisfied, ask the next handler in the queue
-          if (!$state->handlers[$i]->needsData($this, $request)) {
-            $cat->warn('Handler does not need data, proceeding...');
-            continue;
-          }
-          
-          // No trigger
-          if (!$st) continue;
-
-          // If this handler is not active, ask the next handler in the queue
-          if (!$state->handlers[$i]->isActive($this, $st)) {
-            $cat->warn('Handler is not active for submit trigger', $st, ', proceeding...');
-            continue;
-          }
-
-          // Handle submitted data
-          if ($state->handlers[$i]->handleSubmittedData($this, $request)) {
-            $cat->info('handleSubmittedData returns TRUE, proceeding...');             
-            continue;
-          }
-
-          // In case of an error, add all existing statuscodes to the output 
-          // document's "formerrors" node. It is the responsibility of the XSL
-          // to decide whether it wants to show errors or whether to hide them 
-          // (whatever reason that might have)
-          $cat->error('Errors occured', $state->handlers[$i]->errors);
-          foreach ($state->handlers[$i]->errors as $error) {
-            $response->addFormError(
-              $state->handlers[$i]->getClassName(),
-              $error[1],
-              $error[0]
+          // If a state is not accessible, we will check to see if
+          // there is a worfklow. If there is such a workflow, then
+          // we will try to get it's next state.
+          if (!($flow= &$this->sfm->getCurrentFlow())) {
+            $cat->error(
+              'State', $stateName, 'not accessible',
+              '[headers', $request->headers, ']'
+            );
+            return throw(new ContextFailedException(
+              'No workflow and state not accessible', 
+              new IllegalAccessException($request->getState()))
             );
           }
-
-          // ...and then break out of the loop immediately
-          break;
-        }
-        
-        // Go through all existing context resources and call their "insertStatus" method
-        foreach (array_keys($this->crm->hash) as $name) {
-          if (!isset($this->crm->crs[$this->crm->hash[$name]])) continue;
+          $cat->debug('Have flow', $flow);
           
-          $crs= &$this->crm->crs[$this->crm->hash[$name]];
-          $cat->debug('Calling insertStatus() for', get_class($crs), $name);
-          $crs->insertStatus($response->addFormResult(new Node(
-            $name, 
-            NULL, 
-            array('contextresource' => $crs->getClassName())
-          )));
+          // If we are at the end of the workflow and this state is not 
+          // accessible, jump to the first state in this workflow. If the
+          // first state in this workflow is the same as the current one,
+          // we have a serious problem and must break out of this loop,
+          // thus preventing recursive calls.
+          if ($stateName == ($next= $flow->getNextState())) {
+            $cat->warn('Final page of workflow not accessible, jumping to first');
+            if ($stateName == ($first= $flow->getFirstState())) {
+              $cat->error(
+                $stateName, 'is only state in flow, stopping to prevent endless loop', 
+                '[headers', $request->headers, ']'
+              );
+              return throw(new ContextFailedException(
+                'Workflow contains only one element', 
+                new IllegalAccessException($request->getState()))
+              );
+            }
+            
+            // Ask first state
+            $cat->debug($stateName, 'Asking first state in workflow', $first);
+            $stateName= $first;
+            continue;
+          }
+          
+          // Ask next state.
+          $cat->debug($stateName, 'Asking next state in workflow', $next);
+          $stateName= $next;
+          continue;
         }
 
-        $cat->info('Calling getDocument()');
+        // Initialize state and set is as current state
+        $request->setState($state->getName());
+        $cat->info('Current state is', $state);
+
+        // Call getDocument() method
+        $cat->info('Calling getDocument()', $state->getClassName());
         $state->getDocument($this, $request, $response);
         
-      } if (catch('Exception', $e)) {
-        $cat->error('Context::handleRequest', $e->getStackTrace());
-
-        // Catch all and every single exception. This is bad coding but we
-        // want to be robust plus this way, we do not use track of the state we were
-        // in when the exception was thrown.
-        return throw(new ContextFailedException('In state "'.$state->getName().'"', $e));
-      }
-      
-      $cat->debug('Stateflow:', $this->sfm->offset, '@', $this->sfm->flow);
+        break;
+      } while(1);
+        
+      // Finally, we're done
+      $cat->debug('Stateflow:', $this->sfm->flows);
       $cat->mark();
-
-      return $return;
+      return TRUE;
     }
     
   }
