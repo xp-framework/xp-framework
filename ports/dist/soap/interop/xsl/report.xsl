@@ -26,7 +26,7 @@
   </func:function>
   
   <xsl:template match="/">
-<xsl:text>Service                                  Total  Failed Passed
+<xsl:text>Service                                  Total  Passed Failed
 =============================================================
 </xsl:text>
     <xsl:for-each select="clients/client">
