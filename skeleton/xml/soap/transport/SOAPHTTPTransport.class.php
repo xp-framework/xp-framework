@@ -67,8 +67,13 @@
       $this->_conn->request->setHeader('Content-Type', 'text/xml; charset='.$message->getEncoding());
       
       // DEBUG var_dump($this->_conn->request->getRequestString());
+      try(); {
+        $res= &$this->_conn->request->send();
+      } if (catch ('IOException', $e)) {
+        return throw ($e);
+      }
       
-      return $this->_conn->request->send();
+      return $res;
    }
    
     /**
