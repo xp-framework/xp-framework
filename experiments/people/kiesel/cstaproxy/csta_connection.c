@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "csta_error.h"
 #include "csta_connection.h"
 
@@ -25,11 +26,26 @@ void init_connection(proxy_connection *conn) {
 	conn->hServer= NULL;
 	conn->is_authenticated= 0;
 	conn->username= NULL;
+	conn->phone= NULL;
 }
 
 void free_connection(proxy_connection **conn) {
 	free (*conn);
 	*conn= NULL;
+}
+
+void pc_set_username(proxy_connection *conn, char *username) {
+	if (NULL == conn->username) {
+		conn->username= (char*)malloc (strlen (username)+1);
+		strncpy (conn->username, username, strlen (username)+1);
+	}
+}
+
+void pc_set_phone(proxy_connection *conn, char *phone) {
+	if (NULL == conn->phone) {
+		conn->phone= (char*)malloc (strlen (phone)+1);
+		strncpy (conn->phone, phone, strlen (phone)+1);
+	}
 }
 
 void alloc_connection_context(connection_context **ctx) {
@@ -38,7 +54,7 @@ void alloc_connection_context(connection_context **ctx) {
 	*ctx= (connection_context *)malloc (sizeof (connection_context));
 	if(!*ctx) {
 		ERR("Could not malloc() enough memory");
-		return 0;
+		return;
 	}
 	
 	/* By default allocate space for 10 connections */

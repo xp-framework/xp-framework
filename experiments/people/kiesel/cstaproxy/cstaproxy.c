@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <stdio.h>		/* for printf */
 #include <stdarg.h>		/* va_* */
+#include <unistd.h>
+#include <signal.h>
 
 /* Socket */
 #include <sys/types.h>
@@ -59,6 +61,16 @@ int regex_match (char *haystack, char *needle) {
 	
 	return TRUE;
 }
+
+void catch_interrupt(int signum) {
+	signal(SIGINT, catch_interrupt);
+	
+	printf ("Catched Ctrl-C");
+	fflush (stdout);
+	
+	exit (0);
+}
+
 
 /**
  * The main program
