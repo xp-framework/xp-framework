@@ -320,7 +320,7 @@
      * Update this object in the database
      *
      * @access  public
-     * @return  boolean success
+     * @return  int affected rows
      * @throws  SQLException in case an error occurs
      * @throws  IllegalAccessException in case there is no suitable database connection available
      */
@@ -331,9 +331,8 @@
       }
 
       try(); {
-        $db->update('
+        $affected= $db->update('
           news set
-            news_id = %d,
             caption = %s,
             link = %s,
             body = %s,
@@ -342,16 +341,16 @@
             changedby = %s,
             bz_id = %d
           where
-            
+            news_id= %d
           ',
-          $this->news_id,
           $this->caption,
           $this->link,
           $this->body,
           $this->created_at,
           $this->lastchange,
           $this->changedby,
-          $this->bz_id
+          $this->bz_id,
+          $this->news_id
         );
       } if (catch('SQLException', $e)) {
 
@@ -359,14 +358,14 @@
         return throw($e);
       }
 
-      return TRUE;
+      return $affected;
     }
     
     /**
      * Write this object to the database
      *
      * @access  public
-     * @return  boolean success
+     * @return  int affected rows
      * @throws  SQLException in case an error occurs
      * @throws  IllegalAccessException in case there is no suitable database connection available
      */
@@ -377,9 +376,8 @@
       }
 
       try(); {
-        $db->insert('
+        $affected= $db->insert('
           news (
-            news_id,
             caption,
             link,
             body,
@@ -388,8 +386,8 @@
             changedby,
             bz_id
           ) values (
-            %d, %s, %s, %s, %s, %s, %s, %d
-         )',
+            %s, %s, %s, %s, %s, %s, %d
+          )',
           $this->news_id,
           $this->caption,
           $this->link,
@@ -399,14 +397,14 @@
           $this->changedby,
           $this->bz_id
         );
-
+        $this->news_id= $db->identity();
       } if (catch('SQLException', $e)) {
 
         // more error handling TBD here?
         return throw($e);
       }
 
-      return TRUE;
+      return $affected;
     }
     
   }
