@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('xml.XML');
+  uses('xml.XML', 'xml.XMLFormatException');
   
   /**
    * XML Parser
@@ -51,36 +51,13 @@
     }
     
     /**
-     * Returns error message
-     *
-     * @access  privtae
-     * @return  string errormessage
-     */
-    function &_error() {
-      $this->error= &new StdClass();
-      $this->error->type= xml_get_error_code($this->parser);
-      $this->error->message= xml_error_string($this->error->type);
-      $this->error->file= $this->dataSource;
-      $this->error->line= xml_get_current_line_number($this->parser);
-      $this->error->column= xml_get_current_column_number($this->parser);
-
-      return sprintf(
-        "XML parser error #%d on line %d offset %d: %s",
-        $this->error->type,
-        $this->error->line,
-        $this->error->column,
-        $this->error->message
-      );    
-    }
-    
-    /**
      * Parse
      *
      * @access  public
      * @param   string data
      * @return  bool
      * @throws  lang.IllegalArgumentException in case there is no valid callback
-     * @throws  lang.FormatException in case the data could not be parsed
+     * @throws  xml.XMLFormatException in case the data could not be parsed
      */
     function parse($data) {
       unset($this->error);
@@ -95,7 +72,14 @@
       xml_set_default_handler($this->parser, '_pCallDefault');
 
       if (!xml_parse($this->parser, $data)) {
-        return throw(new FormatException($this->_error()));
+        $type= xml_get_error_code($this->parser);
+        return throw(new XMLFormatException(
+          xml_error_string($type),
+          $type,
+          $this->dataSource,
+          xml_get_current_line_number($this->parser),
+          xml_get_current_column_number($this->parser)
+        ));
       }
          
       return TRUE;
