@@ -35,14 +35,10 @@
    *     }
    *   }
    * 
-   *   $value= new ObservableValue(3);
+   *   $value= &new ObservableValue(3);
    *   $value->addObserver(new TextObserver());
    *   $value->setValue(5);
    * </code>
-   *
-   * Note: Due to the restrictions of the Zend Engine 1, you can pass any
-   * instance of a class containing a method named "update" to the addObserver()
-   * method. It _is_ checked that such a method exists, though.
    *
    * The update method gets passed the instance of Observable as its first
    * argument and - if existant - the argument passed to notifyObservers as 
@@ -60,12 +56,12 @@
      * Add an observer
      *
      * @access  public
-     * @param   &lang.Object observer
+     * @param   &util.Observer observer a class implementing the util.Observer interface
      * @throws  lang.IllegalArgumentException in case the argument is not an observer
      */
     function addObserver(&$observer) {
-      if (!method_exists($observer, 'update')) {
-        return throw(new IllegalArgumentException('Passed argument is not an observer'));
+      if (!is('util.Observer', $observer)) {
+        return throw(new IllegalArgumentException('Passed argument is not an util.Observer'));
       }
       $this->_obs[]= &$observer;
     }
