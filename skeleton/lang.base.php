@@ -216,6 +216,21 @@
   }
   // }}}
 
+  // {{{ null raise (string classname, string message)
+  //     throws an exception by a given class name
+  function &raise($classname, $message) {
+    try(); {
+      $class= &XPClass::forName($classname);
+    } if (catch('ClassNotFoundException', $e)) {
+      xp::error($e->getMessage());
+    }
+    $exceptions= &xp::registry('exceptions');
+    $exceptions[]= &$class->newInstance($message);
+    xp::registry('exceptions', $exceptions);
+    return xp::registry('null');
+  }
+  // }}}
+
   // {{{ mixed cast (&mixed var, mixed type default NULL)
   //     Casts. If var === NULL, it won't be touched
   function &cast(&$var, $type= NULL) {
