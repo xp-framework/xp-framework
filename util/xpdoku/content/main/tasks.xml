@@ -203,13 +203,12 @@
   
   $s= &new SOAPClient(
     new SOAPHTTPTransport('http://endpoint.of/the/soapservice'),
-    'Action',
-    'Method'
+    'Action'
   );
   
   // Call SOAP service
   try(); {
-    $return= $s->call('Parameter');
+    $return= $s->invoke('Method', 'Parameter');
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
     exit;
