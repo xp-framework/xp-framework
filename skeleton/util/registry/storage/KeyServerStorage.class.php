@@ -55,6 +55,8 @@
       $this->_sock->write($cmd= vsprintf($args[0]."\n", array_slice($args, 1)));
       $return= chop($this->_sock->read(65536));
       
+      // DEBUG var_dump($this->_sock, $cmd, $return);
+      
       // +OK text saved.
       // -ERR SET format: key=val
       // -ERR not understood
@@ -73,7 +75,7 @@
      * @return  bool TRUE when this key exists
      */
     function contains($key) {
-      return FALSE !== $this->_cmd('GET %s', urlencode($this->id.'/'.$key));
+      return FALSE !== $this->_cmd('GET %s/%s', urlencode($this->id), urlencode($key));
     }
 
     /**
@@ -95,7 +97,7 @@
      * @return  &mixed
      */
     function &get($key) {
-      if (FALSE === ($return= $this->_cmd('GET %s', urlencode($this->id.'/'.$key)))) {
+      if (FALSE === ($return= $this->_cmd('GET %s/%s', urlencode($this->id), urlencode($key)))) {
         return throw(new ElementNotFoundException($key.' does not exist'));
       }
       return unserialize(urldecode($return));
@@ -111,8 +113,9 @@
      */
     function put($key, &$value, $permissions= 0666) {
       if (FALSE === $this->_cmd(
-        'SET %s=%s', 
-        urlencode($this->id.'/'.$key), 
+        'SET %s/%s=%s', 
+        urlencode($this->id), 
+        urlencode($key),
         urlencode(serialize($value)))
       ) {
         return throw(new IOException($key.' could not be written'));
@@ -127,7 +130,7 @@
      * @param   string key
      */
     function remove($key) {
-      if (FALSE === $this->_cmd('DELE %s', urlencode($this->id.'/'.$key))) {
+      if (FALSE === $this->_cmd('DELE s/%s', urlencode($this->id), urlencode($key))) {
         return throw(new IOException($key.' could not be deleted'));
       }
       return TRUE;
