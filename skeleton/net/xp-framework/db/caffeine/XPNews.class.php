@@ -78,7 +78,7 @@
       }
 
       try(); {
-        $q= $db->query('
+        $q= &$db->query('
           select
             news_id,
             caption,
@@ -95,7 +95,7 @@
         ', $bz_id);
         
         $n= array();
-        while ($data= $db->fetch($q)) {
+        while ($data= $q->next()) {
           $n[]= &new XPNews($data);
         }
       } if (catch('SQLException', $e)) {
@@ -125,7 +125,7 @@
 
       try(); {
         if (-1 != $max) $db->query('set rowcount %d', $max);
-        $q= $db->query('
+        $q= &$db->query('
           select
             news_id,
             caption,
@@ -144,7 +144,7 @@
         ');
         
         $n= array();
-        while ($data= $db->fetch($q)) {
+        while ($data= $q->next()) {
           $n[]= &new XPNews($data);
         }
       } if (catch('SQLException', $e)) {
