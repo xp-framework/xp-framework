@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
   /**
    * Generates an XML representation of EJB-annotated classes
@@ -59,7 +61,13 @@ import java.util.HashMap;
     public static boolean processClass(ClassDoc classdoc, PrintStream out) {
       HashMap options = parseKeyValuePairsFrom(classdoc.tags("@ejb.bean")[0].text());
       
-      out.println("<interface name=\"" + options.get("name") + "\">");
+      out.print("<interface\n");
+      for (Iterator i= options.entrySet().iterator(); i.hasNext(); ) {
+        Map.Entry e = (Map.Entry) i.next();
+        
+        out.print(" " + e.getKey() + "=\"" + e.getValue() + "\"\n");
+      }
+      out.println(">");
 
       // Go through all the methods
       MethodDoc[] methods = classdoc.methods();
