@@ -25,7 +25,7 @@
       return mail(
         $params,
         $message,
-        $details."\n*** Stack Trace: ***\n".$stack,
+        $details."\n\n*** Stack Trace: ***\n".$stack,
         'X-Sender: '.$this->getName()
       );
     }
