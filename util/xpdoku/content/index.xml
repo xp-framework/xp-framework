@@ -18,10 +18,13 @@
       
       XP brings you nearer to the future of PHP: All of the framework will
       be migrated to PHP5 and the Zend Engine 2 as soon as these are
-      available and stable.
+      available and stable. <a href="/content/tasks.html"><b>Learn more...</b></a>
       
       <br/><br/>
-      <a href="/content/tasks.html"><b>Learn more...</b></a>
+      <b>I want to use the XP framework? What do I have to do?</b><br/><br/>
+      Grab yourself any of the releases at <a href="http://xp-framework.net/resources">http://xp-framework.net/resources</a>
+      or check out a copy of CVS head using anonymous CVS (instructions at the same URL).<br/><br/>
+      Follow the <a href="/content/about.install.html">installation instruction</a> and you're ready to go!
     </introduction>
     
     <links>
