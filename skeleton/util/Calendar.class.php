@@ -36,10 +36,9 @@
     function &dstBegin($year= -1, $method= CAL_DST_EU) {
       if (-1 == $year) $year= date('Y');
       $i= 0;
-      $day= ($method == CAL_DST_US) ? 1 : 0;
       $ofs= ($method == CAL_DST_US) ? 1 : -1;
       do {
-        $w= date('w', $m= mktime(0, 0, $day, 4, $i, $year));
+        $w= date('w', $m= mktime(0, 0, 0, 4, $i, $year));
         $i+= $ofs;
       } while ($w > 0);
       return new Date($m);
@@ -166,7 +165,7 @@
         $y--;
       } while ($w < 1);
 
-      return $w;
+      return (int)$w;
     }
     
     /**
