@@ -19,6 +19,10 @@
   define('FPDF_FORMAT_A5',      'A5');
   define('FPDF_FORMAT_LETTER',  'LETTER');
   define('FPDF_FORMAT_LEGAL',   'LEGAL');
+
+  define('FPDF_RECT_DRAW',      0x0001);  
+  define('FPDF_RECT_FILL',      0x0002);
+  define('FPDF_RECT_FILL_DRAW', FPDF_RECT_FILL | FPDF_RECT_DRAW);
   
   uses('org.fpdf.FPDFFont');
   
@@ -544,7 +548,7 @@
      * @param   int x2
      * @param   int y2
      */
-    function Line($x1, $y1, $x2, $y2) {
+    function drawLine($x1, $y1, $x2, $y2) {
       $this->_out($x1.' -'.$y1.' m '.$x2.' -'.$y2.' l S');
     }
 
@@ -556,16 +560,16 @@
      * @param   int y
      * @param   int w width
      * @param   int h height
-     * @param   string $style default '' one of 'F', 'FD', 'DF' or ''
+     * @param   int style default FPDF_RECT_DEFAULT bitfield of FPDF_RECT_* constants
      */
-    function Rect($x, $y, $w, $h, $style= '') {
-      switch ($style) {
-        case 'F': $op= 'f'; break;
-        case 'FD':
-        case 'DF': $op= 'B'; break;
-        default: $op= 'S';
-      }
-      $this->_out($x.' -'.$y.' '.$w.' -'.$h.' re '.$op);
+    function drawRect($x, $y, $w, $h, $style= FPDF_RECT_DRAW) {
+      static $ops= array(
+        FPDF_RECT_DEFAULT    => 'S',
+        FPDF_RECT_FILL       => 'f',
+        FPDF_RECT_FILL_DRAW  => 'B'
+      );
+      
+      $this->_out($x.' -'.$y.' '.$w.' -'.$h.' re '.$ops[$style]);
     }
 
     /**
@@ -696,14 +700,17 @@
     }
 
     /**
-     * Put a link on the page
+     * Puts a link on a rectangular area of the page. Text or image 
+     * links are generally put via cell(), write() or image(), but 
+     * this method can be useful for instance to define a clickable 
+     * area inside an image.
      *
      * @access  public
      * @param   int x
      * @param   int y
      * @param   int w width
      * @param   int h height
-     * @param   int link
+     * @param   mixed link URL or identifier returned by addLink().
      */
     function Link($x, $y, $w, $h, $link) {
       $this->PageLinks[$this->page][]= array(
@@ -804,11 +811,11 @@
       if ($text != '') {
         switch ($align) {
           case 'R': 
-            $dx= $w- $this->cMargin- $this->GetStringWidth($text);
+            $dx= $w- $this->cMargin- $this->getStringWidth($text);
             break;
           
           case 'C':
-            $dx= ($w- $this->GetStringWidth($text)) / 2;
+            $dx= ($w- $this->getStringWidth($text)) / 2;
             break;
           
           default:
@@ -827,7 +834,7 @@
         if ($link) $this->Link(
           $this->x+ $this->cMargin, 
           $this->y+ .5 * $h- .5 * $this->FontSize, 
-          $this->GetStringWidth($text), 
+          $this->getStringWidth($text), 
           $this->FontSize, 
           $link
         );
@@ -1521,7 +1528,7 @@
     function _dounderline($x, $y, $txt) {
       $up= $this->CurrentFont->up;
       $ut= $this->CurrentFont->ut;
-      $w= $this->GetStringWidth($txt)+ $this->ws* substr_count($txt, ' ');
+      $w= $this->getStringWidth($txt)+ $this->ws * substr_count($txt, ' ');
       return $x.' -'.($y- $up / 1000 * $this->FontSize).' '.$w.' -'.($ut / 1000 * $this->FontSize).' re f';
     }
 
