@@ -15,6 +15,7 @@
   define('CVS_UPTODATE', 0x0008);
 
   uses (
+    'lang.System',
     'org.cvshome.CVSInterfaceException'
   );
   
@@ -35,7 +36,7 @@
      * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC115
      */
     function _execute($cvsCmd, $object= '') {
-      $cmdLine= sprintf ("%s %s %s %s 2>&1",
+      $cmdLine= sprintf ("%s %s %s %s",
         $this->_CVS,
         (NULL !== $this->cvsRoot ? '-d'.$this->cvsRoot : ''),
         $cvsCmd,
@@ -47,12 +48,12 @@
       } if (catch ('SystemException', $e)) {
         // Only return error if command was not "diff"
         if ('diff' != substr ($cvsCmd, 0, 4))
-          return throw (new CVSInterfaceException ('CVS returned failure'));
+          return throw (new CVSInterfaceException ('CVS returned failure ['.$cmdLine.']'));
       }
       
       if (count ($output) && strstr ($output[0], 'Cannot access'))
         return throw (
-          new CVSInterfaceException ('Cannot access CVSROOT!')
+          new CVSInterfaceException ('Cannot access CVSROOT! ['.$cmdLine.']')
         );
 
       return $output;
