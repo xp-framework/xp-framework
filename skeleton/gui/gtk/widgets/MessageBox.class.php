@@ -109,7 +109,7 @@
      * @access  public
      */
     function init() {
-      $this->window->set_default_size(300, 180);
+      $this->window->set_default_size(320, 140);
       
       // Message
       $this->label= &$this->widget('label');
