@@ -13,42 +13,42 @@
     public
       $actual       = NULL,
       $expect       = NULL,
-      $code         = '';
+      $cause         = '';
       
     /**
      * Constructor
      *
      * @access  public
      * @param   string message
-     * @param   string code
+     * @param   string cause
      * @param   mixed actual default NULL
      * @param   mixed expect default NULL
      */
-    public function __construct($message, $code, $actual= NULL, $expect= NULL) {
+    public function __construct($message, $cause, $actual= NULL, $expect= NULL) {
       parent::__construct($message);
-      $this->code= $code;
+      $this->cause= $cause;
       $this->actual= $actual;
       $this->expect= $expect;
     }
     
     /**
-     * Set Code
+     * Set cause
      *
      * @access  public
-     * @param   string code
+     * @param   string cause
      */
-    public function setCode($code) {
-      $this->code= $code;
+    public function setCause($cause) {
+      $this->cause= $cause;
     }
 
     /**
-     * Get Code
+     * Get cause
      *
      * @access  public
      * @return  string
      */
-    public function getCode() {
-      return $this->code;
+    public function getCause() {
+      return $this->cause;
     }
     
     /**
@@ -60,13 +60,13 @@
     public function toString() {
       $s= sprintf(
         "Exception %s (%s) {\n".
-        "    code:   %s\n".
+        "    cause:  %s\n".
         "    have:   [%s] %s\n".
         "    expect: [%s] %s\n".
         "  }\n",
         self::getClassName(),
         $this->message,
-        $this->code,
+        $this->cause,
         xp::typeOf($this->actual),
         var_export($this->actual, 1),
         xp::typeOf($this->expect),
