@@ -63,8 +63,12 @@
       <xsl:for-each select="/formresult/feeds/feed">
         <tr>
           <td valign="top">
+            <xsl:variable name="title">
+              <xsl:if test="string-length(@title) &gt; 35"><xsl:value-of select="concat(substring(@title, 0, 35), '...')"/></xsl:if>
+              <xsl:if test="string-length(@title) &lt;= 35"><xsl:value-of select="@title"/></xsl:if>
+            </xsl:variable>
             <nobr>
-              <a href="/deref/?{@link}"><xsl:value-of select="@title" title="{@author}"/></a>
+              <a href="/deref/?{@link}"><xsl:value-of select="$title" title="{@author}"/></a>
             </nobr>
           </td>
         </tr>
