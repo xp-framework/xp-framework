@@ -87,7 +87,7 @@
      */
     function getByBz_id($bz_id) {
       $peer= &XPNews::getPeer();
-      return $peer->doSelect(new Criteria(array('bz_id', $news_id, EQUAL)));
+      return $peer->doSelect(new Criteria(array('bz_id', $bz_id, EQUAL)));
     }
 
     /**
