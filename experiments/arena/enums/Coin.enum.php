@@ -26,7 +26,7 @@
         case Coin_PENNY:    return 'COPPER';
         case Coin_NICKEL:   return 'NICKEL';
         case Coin_DIME:
-        case Coind_QUARTER: return 'SILVER';
+        case Coin_QUARTER: return 'SILVER';
         default: throw(new IllegalArgumentException('Unknown coin '.$c));
       }
     }
