@@ -47,9 +47,6 @@
    *   $s->finalize();  
    * </code>
    *
-   * Note: Needs PHP patched to work!
-   *
-   * @see      http://sitten-polizei.de/php/webdav.patch Patch against current HEAD
    * @see      http://www.webdav.org/ WebDAV Resources
    * @see      http://www.webdav.org/other/faq.html DAV FAQ
    * @see      http://www.webdav.org/cadaver/ Command-line tool (*nix)
