@@ -11,7 +11,7 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Basic TCP/IP Server
    *
    * <code>
    *   uses('peer.server.Server');
@@ -28,20 +28,20 @@
    *   }
    * </code>
    *
-   * @ext      extensiom
-   * @see      reference
-   * @purpose  purpose
+   * @ext      sockets
+   * @see      xp://peer.ServerSocket
+   * @purpose  TCP/IP Server
    */
   class Server extends Object {
     var
       $socket   = NULL;
       
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string addr
+     * @param   int port
      */
     function __construct($addr, $port) {
       $this->socket= &new ServerSocket($addr, $port);
@@ -49,11 +49,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Initialize the server
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function init() {
       $this->socket->create();
@@ -62,33 +60,31 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Shutdown the server
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function shutdown() {
       $this->socket->close();
     }
     
     /**
-     * (Insert method's description here)
+     * Add a connection listener
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &peer.server.ConnectionListener listener
+     * @return  &peer.server.ConnectionListener the added listener
      */
-    function addListener(&$listener) {
+    function &addListener(&$listener) {
       $this->listeners[]= &$listener;
+      return $listener;
     }
     
     /**
-     * (Insert method's description here)
+     * Notify listeners
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   &peer.server.ConnectionEvent event
      */
     function notify(&$event) {
       for ($i= 0, $s= sizeof($this->listeners); $i < $s; $i++) {
@@ -97,11 +93,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Service
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function service() {
       if (!$this->socket->isConnected()) return FALSE;

@@ -7,20 +7,18 @@
   uses('peer.server.Server');
 
   /**
-   * (Insert class' description here)
+   * Forking TCP/IP Server
    *
    * @ext      pcntl
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.server.Server
+   * @purpose  TCP/IP Server
    */
   class ForkingServer extends Server {
     
     /**
-     * (Insert method's description here)
+     * Service
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function service() {
       if (!$this->socket->isConnected()) return FALSE;
