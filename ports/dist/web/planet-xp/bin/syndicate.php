@@ -35,10 +35,11 @@
         url,
         lastcheck
       from
-        syndicate.feedsettings
-      where nextcheck < now()
+        syndicate.feed
+      where (nextcheck < now()
         or (nextcheck is NULL and checkinterval is NULL)
-        or now() < date_add(lastcheck, interval checkinterval second)
+        or now() < date_add(lastcheck, interval checkinterval second))
+        and bz_id <= 20000
         %c',
       ($param->exists('feed') ? $db->prepare('and feed_id= %d', $param->value('feed')) : '')
     );
