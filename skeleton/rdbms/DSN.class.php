@@ -104,6 +104,17 @@
     }
 
     /**
+     * Retrieve port
+     *
+     * @access  public
+     * @param   mixed default default NULL  
+     * @return  string host or default if none is set
+     */
+    function getPort($default= NULL) {
+      return isset($this->parts['port']) ? $this->parts['port'] : $default;
+    }
+
+    /**
      * Retrieve database
      *
      * @access  public
