@@ -54,8 +54,8 @@
           $f->uri= $this->path.'/'.$filename;
           $stats[]= $f;
         } else {
-          // Remove after debugging
-          var_dump ('Unknown status: '.$state);
+          // We could not identify this status, so ignore this file
+          // TBI: Should we throw an excehption?
         }
       }
       
