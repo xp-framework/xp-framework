@@ -6,7 +6,8 @@
 
   uses(
     'org.apache.xml.XMLScriptlet',
-    'org.apache.xml.workflow.Context'
+    'org.apache.xml.workflow.Context',
+    'org.apache.xml.workflow.AuthContext'
   );
   
   /**
@@ -49,6 +50,13 @@
       parent::__construct($xslbase);
     }
     
+    function &createContext($class) {
+      if (!is_a($class, 'XPClass')) {
+        return new Context(); 
+      }
+      return $class->newInstance();
+    }
+    
     /**
      * Create session and set up context
      *
@@ -75,6 +83,27 @@
      * @return  bool
      */
     function doGet(&$request, &$response) {
+    
+      // Map states such as "auth/welcome" to AuthContext / WelcomeState
+      $cname= '';
+      if (FALSE !== ($p= strpos($request->getState(), '/'))) {
+        $cname= substr($request->getState(), 0, $p);
+        $request->setState(substr($request->getState(), $p+ 1));
+      }
+      
+      // Get context 
+      try(); {
+        if (!($context= &$request->session->getValue($cname.'context'))) {
+          $context= &$this->createContext(XPClass::forName(
+            'org.apache.xml.workflow.'.ucfirst($cname).'Context'          
+          ));
+          $context->initialize($this->classloader, $request);
+          $request->session->putValue($cname.'context', $context);
+        }
+      } if (catch('Exception', $e)) {
+        return throw(new HttpScriptletException('Internal error: '.$e->message));
+      }
+      
       try(); {
         do {
           if (!($context= &$request->session->getValue('context'))) break;
