@@ -5,19 +5,20 @@
     'io.File', 
     'io.Folder', 
     'lang.apidoc.parser.ClassParser',
-    'util.cmd.ParamString'
+    'util.cmd.ParamString',
+    'util.text.PHPSyntaxHighlighter'
   );
   
   function highlightPHPSource($str) {
-    // var_dump($str);
-    ob_start();
-    highlight_string("<?php\n".stripslashes($str)."\n?>");
-    $source= ob_get_contents();
-    ob_end_clean();
-    return str_replace('&nbsp;', '&#160;', $source);
+    static $p;
+    
+    if (!isset($p)) $p= &new PHPSyntaxHighlighter();
+    $p->setSource('<?php '.$str.' ?>');
+    return $p->getHighlight();
   }
   
   function recurseFolders($uri, $pattern, &$parser) {
+    
     $folder= &new Folder($uri);
     while ($entry= $folder->getEntry()) {
       if (
@@ -51,10 +52,12 @@
           $out->writeLine(preg_replace(
             array(
               '#&lt;pre&gt;(.*)&lt;/pre&gt;#sU',
+              '#&lt;xmp&gt;(.*)&lt;/xmp&gt;#sU',
               '#&lt;code&gt;(.*)&lt;/code&gt;#sUe',
             ), array(
               '<pre>$1</pre>',
-              'highlightPHPSource(\'$1\')'
+              '<xmp>$1</xmp>',
+              'highlightPHPSource(stripslashes(\'$1\'))'
             ),
             $node->getSource(0)
           ));
