@@ -1,4 +1,9 @@
 <?php
+/* Diese Klasse ist Teil des XP-Frameworks
+ *
+ * $Id$
+ */
+
   class SOAPFault extends XML {
     var 
       $faultcode, 
