@@ -9,8 +9,9 @@
     'rdbms.SQLConnectException',
     'rdbms.SQLStateException',
     'rdbms.SQLStatementFailedException',
-    'rdbms.DSN', 
-    'rdbms.ResultSet'
+    'rdbms.DSN',
+    'rdbms.ResultSet',
+    'util.log.Logger'
   );
   
   define('DB_STORE_RESULT',     0x0001);
