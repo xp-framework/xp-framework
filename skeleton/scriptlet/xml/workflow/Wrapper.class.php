@@ -59,7 +59,7 @@
     function &checkerInstanceFor($defines) {
       static $class= array();
 
-      if (!$check) return NULL;
+      if (!$defines) return NULL;
 
       $name= array_shift($defines);
       try(); {
@@ -69,7 +69,7 @@
         return NULL;
       }
 
-      return call_user_func_array(array(&$class, 'newInstance'), $defines);
+      return call_user_func_array(array(&$class[$name], 'newInstance'), $defines);
     }
     
     /**
@@ -175,8 +175,8 @@
         // the string "multiple", the array will be preserved. Otherwise, the
         // first element will be copied to the values hash, thus making 
         // accessibility easy.
-        if (0 == strlen($value[0]) {
-          if ($definitions['occurrence'] & OCCURRENCE_OPTIONAL) {
+        if (0 == strlen($value[0])) {
+          if (!($definitions['occurrence'] & OCCURRENCE_OPTIONAL)) {
             $handler->addError('missing', $name);
             continue;
           }
@@ -193,7 +193,7 @@
           // Pre- and postchecks return an error code or NULL if they are content
           if ($definitions['precheck']) {
             if (NULL !== ($code= call_user_func(array(&$definitions['precheck'], 'check'), $value))) {
-              $handler->addError(xp::nameOf($definitions['precheck']).'.'.$code, $name);
+              $handler->addError($definitions['precheck']->getClassName().'.'.$code, $name);
               continue;
             }
           }
@@ -204,7 +204,7 @@
           // for the form error (an exception message, for instance).
           if ($definitions['caster']) {
             if (!is_array($value= call_user_func(array(&$definitions['caster'], 'castValue'), $value))) {
-              $handler->addError(xp::nameOf($definitions['caster']).'.invalidcast', $name, $value);
+              $handler->addError($definitions['caster']->getClassName().'.invalidcast', $name, $value);
               continue;
             }
           }
@@ -213,7 +213,7 @@
           // values.
           if ($definitions['postcheck']) {
             if (NULL !== ($code= call_user_func(array(&$definitions['postcheck'], 'check'), $value))) {
-              $handler->addError(xp::nameOf($definitions['postcheck']).'.'.$code, $name);
+              $handler->addError($definitions['postcheck']->getClassName().'.'.$code, $name);
               continue;
             }
           }
