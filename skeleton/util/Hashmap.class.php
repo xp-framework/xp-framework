@@ -286,7 +286,7 @@
      * Returns size of the hashmap
      *
      * @access  public
-     * @param   int size
+     * @return  int size
      */
     function size() {
       return sizeof(array_keys($this->_hash));
