@@ -289,13 +289,18 @@
     </a>
   </xsl:template>
   
+  <!--
+   ! Template for xp references
+   !
+   ! XML looks like this:
+   ! <link>          
+   !   <scheme>xp</scheme>
+   !   <host>scriptlet.xml.workflow.AbstractState#addHandler</host>
+   !   <description/>
+   ! </link>
+   !-->
   <xsl:template match="link[child::*[name() = 'scheme']/text() = 'xp']">
-    <a href="/apidoc/classes/{./host}.html#{./fragment}">
-      <xsl:value-of select="./host"/>
-      <xsl:if test="string-length (./fragment) != 0">
-        #<xsl:value-of select="./fragment"/>
-      </xsl:if>
-    </a>
+    <a href="/class/{./host}"><xsl:value-of select="./host"/></a>
   </xsl:template>
 
   <xsl:template match="link[child::*[name() = 'scheme']/text() = 'xp-doc']">
