@@ -36,6 +36,13 @@
     include($fromFile);
     $key= isset($fpdf_charwidths) ? key($fpdf_charwidths) : substr(basename($fromFile), 0, -4);
     
+    // Family, Style getrennt durch .
+    if (preg_match('/([a-z]+)([BI])+$/', $key, $regs)) {
+      list(, $family, $style)= $regs;
+    }
+    $p->writeString($key, 'family', isset($family) ? $family : $key);
+    $p->writeString($key, 'style', isset($style) ? $style : '');
+    
     // Font-Name ["Calligrapher-Regular"]
     $p->writeString($key, 'name', isset($name) ? $name : $core_names[$key]);
     
@@ -74,20 +81,20 @@
   }
 
   $core_names= array(    
-    'courier'           => 'Courier',
-    'courierB'          => 'Courier-Bold',
-    'courierI'          => 'Courier-Oblique',
-    'courierBI'         => 'Courier-BoldOblique',
-    'helvetica'         => 'Helvetica',
-    'helveticaB'        => 'Helvetica-Bold',
-    'helveticaI'        => 'Helvetica-Oblique',
-    'helveticaBI'       => 'Helvetica-BoldOblique',
-    'times'             => 'Times-Roman',
-    'timesB'            => 'Times-Bold',
-    'timesI'            => 'Times-Italic',
-    'timesBI'           => 'Times-BoldItalic',
-    'symbol'            => 'Symbol',
-    'zapfdingbats'      => 'ZapfDingbats'
+    'courier'          => 'Courier',
+    'courierB'         => 'Courier-Bold',
+    'courierI'         => 'Courier-Oblique',
+    'courierBI'        => 'Courier-BoldOblique',
+    'helvetica'        => 'Helvetica',
+    'helveticaB'       => 'Helvetica-Bold',
+    'helveticaI'       => 'Helvetica-Oblique',
+    'helveticaBI'      => 'Helvetica-BoldOblique',
+    'times'            => 'Times-Roman',
+    'timesB'           => 'Times-Bold',
+    'timesI'           => 'Times-Italic',
+    'timesBI'          => 'Times-BoldItalic',
+    'symbol'           => 'Symbol',
+    'zapfdingbats'     => 'ZapfDingbats'
   );
 
   // Kommandozeilen-Parameter
