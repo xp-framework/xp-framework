@@ -119,7 +119,7 @@ __;
           $constants[$name].= $tok[1];
           $tok= $t->getNextToken();
         }
-        
+        $tok= $t->getNextToken(); // Swallow ";"
         $tok= array(T_NONE, '');
         break;
       
