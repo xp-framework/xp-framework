@@ -5,15 +5,18 @@
  */
   require('lang.base.php');
 
-  $annotation= isset($argv[1]) ? $argv[1] : '[@webmethod, @restricted(role= \'admin\')]';
+  $annotation= (isset($argv[1]) 
+    ? $argv[1] 
+    : '[@webmethod, @restricted(role= \'admin\'), @deprecated(\'Use new method X instead\')]'
+  );
   var_dump($annotation);
   
   if (preg_match_all(
-    '/@([a-z_]+)(\(([a-z_]+)( *= *'.
+    '/@([a-z_]+)(\((([a-z_]+)( *= *('.
       '(\'([^\']+)\')|'.
       '(\"([^\"]+)\")|'.
       '([^\)]+)'.
-    ')?\))?/i', 
+    '))?\)|(\'([^\']+)\')|(\"([^\"]+)\")|([^\)]+)))?/i', 
     trim($annotation, '[]'),
     $matches,
     PREG_SET_ORDER
