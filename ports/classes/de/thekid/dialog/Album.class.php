@@ -169,6 +169,20 @@
     function numChapters() {
       return sizeof($this->chapters);
     }
+
+    /**
+     * Get number of images (highlights excluded)
+     *
+     * @access  public
+     * @return  int
+     */
+    function numImages() {
+      $r= 0;
+      for ($i= 0, $s= sizeof($this->chapters); $i < $s; $i++) {
+        $r+= $this->chapters[$i]->numImages();
+      }
+      return $r;
+    }
     
     /**
      * Retrieve a string representation
