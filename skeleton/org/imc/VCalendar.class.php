@@ -178,9 +178,7 @@
       static $context= array();
       static $event;
       static $timezone;
-      
-      var_dump ($keys, $value);
-      
+            
       // Cascaded objects      
       if (0 == strcasecmp('BEGIN', $keys[0])) $context[]= strtolower($value);
       
@@ -307,15 +305,6 @@
               break;
           }
       }
-      
-      #ifdef DEBUG
-      #echo '/'.implode('/', $context)."@";
-      #echo $this->getClassName().'::addProperty(';
-      #var_export($keys);
-      #echo ', ';
-      #var_export($value);
-      #echo ")\n\n";
-      #endif
       
       if (0 == strcasecmp('END', $keys[0])) array_pop($context);
     }
