@@ -97,13 +97,14 @@
         return throw($e);
       }
       
-      // Nach Fault checken
+      // Fault?
+      if (NULL !== ($fault= $answer->getFault())) {
+        return throw(new SOAPFaultException($fault));
+      }
+      
+      // HTTP_OK return code?
       if (200 != $response->getStatusCode()) {
-        if (NULL !== ($fault= $answer->getFault())) {
-          return throw(new SOAPFaultException($fault));
-        } else {
-          return throw(new Exception('Unexpected return code: '.$response->getStatusCode()));
-        }
+        return throw(new Exception('Unexpected return code: '.$response->getStatusCode()));
       }
       
       return $answer;
