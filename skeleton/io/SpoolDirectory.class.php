@@ -62,7 +62,7 @@
     /**
      * Creates a new spool entry. The abstract is used to name the
      * file in a way that associates it with its content (e.g. a 
-     * unique id). If the abstract is omitted, a random number
+     * unique id). If the abstract is omitted, a id
      * generator will be used.
      *
      * @access public
@@ -71,7 +71,8 @@
      * @throws IOException if file could not be created
      */    
     function &createSpoolEntry($abstract= NULL) {
-      if (NULL === $abstract) $abstract= microtime();
+      if (NULL === $abstract)
+        $abstract= date ('Y-m-d-H-i-s'.md5 (microtime()));
       
       try(); {
         $f= &new File ($this->_hNew->getURI().'/'.$abstract.'.spool');
