@@ -50,6 +50,23 @@
     }
 
     /**
+     * Retrieve value of a given parameter
+     *
+     * @access  public
+     * @param   string key
+     * @return  string value
+     */    
+    function getValue($key) {
+      if (!isset($this->parts['query'])) return FALSE;
+      
+      parse_str($this->parts['query'], $config);
+      if (isset ($config[$key])) 
+        return $config[$key];
+      
+      return FALSE;
+    }
+
+    /**
      * Retrieve driver
      *
      * @access  public
