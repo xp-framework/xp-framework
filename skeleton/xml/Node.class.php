@@ -16,7 +16,8 @@
     var 
       $name         = '',
       $attribute    = array(),
-      $content      = '';
+      $content      = '',
+      $children     = array();
 
     /**
      * Constructor
