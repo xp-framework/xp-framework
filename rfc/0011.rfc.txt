@@ -1,0 +1,54 @@
+RFC 0011: Changes to Peer/DataSet/Criteria API
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon Nov 22 20:58:08 CET 2004
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+The Peer class' method doJoin(), doSelect() and iteratorFor() would be
+changed to accept types implementing a new interface instead of only 
+Criteria objects. A new class Statement implementing this interface 
+would allow users to build SQL and pass it directly to the API.
+
+Rationale
+---------
+There is currently no way to use the object persistence API with user-
+defined SQL queries.
+
+Functionality
+-------------
+Currently, the following is possible:
+
+<?php
+  $peer= &News::getPeer();
+  $objects= $peer->doSelect(new Criteria(...));
+?>
+
+The new functionality is:
+<?php
+  $peer= &News::getPeer();
+  $objects= $peer->doSelect(new Statement(...));
+?>
+
+Dependencies
+------------
+* rdbms.Statement (class)
+  Represents an SQL statement
+
+* rdbms.XXX ??? XXX
+  Interface that gets implemented both by Statement and Criteria
+
+Related documents
+-----------------
+n/a
+
+Comments
+--------
+- friebe, Wed Nov 24 16:08:41 CET 2004
+  Think of a name for the interface
+  
+<EOF>
