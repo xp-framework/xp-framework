@@ -17,6 +17,7 @@
 
     <xsl:call-template name="nav-divider">
       <xsl:with-param name="caption">See also</xsl:with-param>
+      <xsl:with-param name="colorcode"><xsl:value-of select="$area"/></xsl:with-param>
     </xsl:call-template>
     <ul class="nav">
       <xsl:for-each select="/document/main/references/ref">
