@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.http.Cookie');
+  uses('org.apache.Cookie');
 
   /**
    * Defines the request sent by the client to the server
@@ -55,7 +55,7 @@
     }
 
     /**
-     * Retrieve cookies
+     * Retrieve all cookies
      *
      * @access  public
      * @return  peer.http.Cookie[]
@@ -66,6 +66,25 @@
         $r[]= &new Cookie($name, $_COOKIE[$name]);
       }
       return $r;
+    }
+    
+    /**
+     * Check whether a cookie exists by a specified name
+     *
+     * <code>
+     *   if ($request->hasCookie('username')) {
+     *     with ($c= &$request->getCookie('username')); {
+     *       $response->write('Welcome back, '.$c->getValue());
+     *     }
+     *   }
+     * </code>
+     *
+     * @access  public
+     * @param   string name
+     * @return  bool
+     */
+    function hasCookie($name) {
+      return isset($_COOKIE[$name]);
     }
 
     /**
