@@ -69,14 +69,16 @@
      * @param   string uri the complete path name
      */
     function setURI($uri) {
-    
       $this->uri= realpath($uri);
       
-      // Bug in real_path (wenn Datei nicht existiert, ist die Rückgabe ein leerer String!)
+      // Bug in real_path if file is not existant
       if ('' == $this->uri && $uri!= $this->uri) $this->uri= $uri;
       
-      // "Trailing /" ergänzen
-      if ($this->uri{strlen($this->uri)- 1} != '/') $this->uri.= '/';
+      // Add trailing / (or \, or whatever else DIRECTORY_SEPARATOR is defined t o)
+      // if necessary
+      if (DIRECTORY_SEPARATOR != substr($this->uri, -1 * strlen(DIRECTORY_SEPARATOR))) {
+        $this->uri.= DIRECTORY_SEPARATOR;
+      }
       
       $this->path= dirname($uri);
       $this->dirname= basename($uri);
