@@ -15,7 +15,7 @@
   class ClassProfiler extends Object {
     var
       $timer= array(),
-      $calls= 0;
+      $calls= array();
       
     var
       $_profilee;
@@ -78,9 +78,15 @@
      */    
     function getProfile($method= NULL) {
       if (NULL === $method)
-        return $this->timer;
+        return array (
+          'timer' => $this->timer,
+          'calls' => $this->calls
+        );
       
-      return $this->timer[$method];
+      return array (
+        'timer' => $this->timer[$method],
+        'calls' => $this->calls[$method]
+      );
     }
   }
 
