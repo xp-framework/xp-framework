@@ -28,6 +28,13 @@
           part of the <tt>for</tt> statement to avoid recalculation on 
           every run. Of course, if your array changes its size during 
           the loop, you can't do this.
+          In some situations <tt>foreach</tt> is wished, so one can use the
+          following construct:
+          <code><![CDATA[  foreach (array_keys($objects) as $idx) {
+    $o= &$objects[$idx];
+    $o->doSomething();
+  }
+]]></code>          
         </text>
       </para>
       <para>
