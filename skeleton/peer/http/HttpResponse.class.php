@@ -167,6 +167,16 @@
     function getStatusCode() {
       return $this->_readhead() ? $this->statuscode : FALSE;
     }
+
+    /**
+     * Get HTTP message
+     *
+     * @access  public
+     * @return  string
+     */
+    function getMessage() {
+      return $this->message;
+    }
     
     /**
      * Get response headers as an associative array
