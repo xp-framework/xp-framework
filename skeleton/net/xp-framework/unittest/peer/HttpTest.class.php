@@ -71,7 +71,7 @@
           'b'   => 'c'
         ));
       } if (catch('Exception', $e)) {
-        return $this->fail($e->getClassName(), $e->getStackTrace(), 'HttpConnection::get');
+        return $this->fail($e->getClassName(), $e->getStackTrace(), $method);
       }
       if (!$this->assertSubclass($response, 'peer.http.HttpResponse')) return;
 
