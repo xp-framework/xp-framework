@@ -77,10 +77,10 @@
   <tr bgcolor="#000033"><td colspan="2"><img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/></td></tr>
 
   <tr bgcolor="#3654a5"> <!-- #e0e8fc"> -->
-    <form method="POST" action="/search.php">
+    <form method="GET" action="/search.php">
       <td align="right" valign="top" colspan="2" nowrap="nowrap"><font color="#ffffff">
         <small><u>s</u>earch for</small>
-<input class="small" type="text" name="keyword" value="" size="30" accesskey="s"/>
+<input class="small" type="text" name="keyword" value="&lt;?php echo isset($_REQUEST['keyword']) ?  $_REQUEST['keyword'] : ''; ?&gt;" size="30" accesskey="s"/>
 <small>in the</small>
 <select name="show" class="small">
 <option value="classlist">class list</option>
