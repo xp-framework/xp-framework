@@ -38,7 +38,7 @@
         </text>
       </para>
       <para>
-        <caption>Changes: Exceptions (mandatory)</caption>
+        <caption>Changes: Exception syntax (mandatory)</caption>
         <text>
           Exceptions are now built-in:
           <code><![CDATA[  // XP1
@@ -71,6 +71,17 @@
           In order to make exceptions work, existing sourcecode must be changed - it would
           otherwise result in parse errors. A little script, <tt>migrate_php5.php</tt>, assists
           you here.
+        </text>
+      </para>              
+      <para>
+        <caption>Changes: Exception API</caption>
+        <text>
+          The <ref type="api:class" link="lang.Exception#getStackTrace"/> method no longer 
+          returns a string. The return type has been replaced by an array of
+          StackTraceElements.
+          <br/>
+          Use the <tt>toString</tt> method to retreive a string representation of the
+          exception instead.
         </text>
       </para>              
       <para>
