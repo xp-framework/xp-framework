@@ -67,11 +67,17 @@
      *
      * @access  public
      * @param   string xpath
+     * @param   php.DomNode node default NULL
      * @return  php.XPathObject
      * @throws  xml.XPathException if evaluation fails
      */
-    function query($xpath) {
-      if (FALSE === ($r= &xpath_eval($this->context, $xpath))) {
+    function query($xpath, $node= NULL) {
+      if ($node) {
+        $r= &xpath_eval($this->context, $xpath, $node);
+      } else {
+        $r= &xpath_eval($this->context, $xpath);
+      }
+      if (FALSE === $r) {
         return throw(new XPathException('Cannot evaluate "'.$xpath.'"'));
       }
       return $r;
