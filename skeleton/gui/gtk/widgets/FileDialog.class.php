@@ -14,9 +14,9 @@
   /**
    * File dialog 
    * <code>
-   *   $dlg= &new FileDialog(posix_getcwd());
+   *   $dlg= &new FileDialog();
    *   if ($dlg->show()) {
-   *     printf("File selected: %s%s\n", $dlg->dir, $dlg->filename);
+   *     printf("File selected: %s%s\n", $dlg->getDirectory(), $dlg->getFilename());
    *   }
    * </code>
    *
@@ -26,12 +26,15 @@
     var
       $filename = '',
       $dir      = '',
-      $filter	= '';
+      $filter	= '',
+      $succes   = FALSE;
 
     /**
      * Constructor
      *
      * @access  public
+     * @param   string dir default '.'
+     * @param   string filter default '.*'
      */
     function __construct($dir= '.', $filter= '.*') {
       $this->dir= $dir;
@@ -40,153 +43,110 @@
     }
    
     /**
-     * Set Filename
+     * Callback for OK and cancel buttons
      *
-     * @access  public
-     * @param   string filename
-     */
-    function setFilename($filename) {
-      $this->filename= $filename;
-    }
-
-    /**
-     * Get Filename
-     *
-     * @access  public
-     * @return  string
-     */
-    function getFilename() {
-      return $this->filename;
-    }
-
-    /**
-     * Get Dir
-     *
-     * @access  public
-     * @return  string
-     */
-    function getDirectory() {
-      return $this->dir;
-    }
-
-    /**
-     * Set Filter
-     *
-     * @access  public
-     * @param   string filter
-     */
-    function setFilter($filter) {
-      $this->filter= $filter;
-    }
-
-    /**
-     * Get Filter
-     *
-     * @access  public
-     * @return  string
-     */
-    function getFilter() {
-      return $this->filter;
-    }
- 
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function buttons_connect($b) {
-      foreach ($b as $name=> $callback) {
-        $this->buttons[$name]= &$this->widget('button_'.$name);
-        $this->buttons[$name]->connect_after('clicked', array(&$this, $callback));
-      }
-    }
-    
-    /**
-     * OK, cancel pressed
-     *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   &php.GtkWidget widget
      */
     function onClose(&$widget) {
-      if ('button_ok' != $widget->get_name()) {
-        $this->filename= NULL;
-      }
+      $this->success= ('button_ok' == $widget->get_name());
       $this->close();
     }
     
     /**
-     * (Insert method's description here)
+     * Callback for up button
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   &php.GtkWidget widget
      */
     function onUpDirClicked(&$widget) {
-      $this->setDirectory(substr(
-        $this->dir, 
-        0, 
-        strrpos(substr($this->dir, 0, -1), '/')
-      ).'/');
+      $this->setDirectory(substr($this->dir, 0, strrpos(
+        substr($this->dir, 0, -1), 
+        DIRECTORY_SEPARATOR
+      )).DIRECTORY_SEPARATOR);
     }
 
 
     /**
-     * (Insert method's description here)
+     * Callback for home button
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   &php.GtkWidget widget
      */
     function onHomeClicked(&$widget) {
-      $info= posix_getpwuid(posix_getuid());
-      $this->setDirectory($info['dir']);
+      $this->setDirectory(System::getProperty('user.home'));
     }
 
     /**
-     * (Insert method's description here)
+     * Callback for favorites buttons
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   &php.GtkWidget widget
      */
     function onFavoriteClicked(&$widget) {
-      $i= posix_getpwuid(posix_getuid());
       $d= strtr(substr($widget->get_name(), 11), array(
-        'HOME'  => $i['dir'],
-        'ROOT'  => '/',
-        'TMP'   => getenv('TMP'),
-        '_'     => '/'
+        'HOME'  => System::getProperty('user.home'),
+        'TMP'   => System::getProperty('os.tempdir'),
+        'ROOT'  => DIRECTORY_SEPARATOR,
+        '_'     => DIRECTORY_SEPARATOR
       ));
-      $this->cat->debug($d);
       $this->setDirectory($d);
     }
 
     /**
-     * (Insert method's description here)
+     * Callback for refresh button
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   &php.GtkWidget widget
      */
     function onRefreshClicked(&$widget) {
-      $this->setDirectory();
+      $this->setDirectory($this->dir);
     }
     
     /**
-     * (Insert method's description here)
+     * Callback for history buttons
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   &php.GtkWidget widget
      */
     function onPNClicked(&$widget) {
       $this->cat->debug($widget->get_name(), $this->history, $this->history_offset);
       $this->history_offset+= ('button_prev' == $widget->get_name()) ? -1 : 1;
       $this->cat->debug($widget->get_name(), $this->history_offset, $this->history[$this->history_offset]);
       $this->setDirectory($this->history[$this->history_offset], FALSE);
+    }
+
+    /**
+     * Callback for when a row in the file list is selected
+     *
+     * @access  protected
+     * @param   &php.GtkWidget widget
+     * @param   int row
+     * @param   mixed data
+     * @param   php.GtkEvent event
+     */
+    function onEntrySelected(&$widget, $row, $data, $event) {
+      $filetype= $widget->get_text($row, 1);
+      $entry= $widget->get_pixtext($row, 0);
+      
+      // Check if an item was double clicked
+      if (isset($event) && GDK_2BUTTON_PRESS == $event->type) {
+        if ('' == $filetype) {
+          $this->setDirectory($this->dir.$entry[0]);
+        } else {
+          $this->filename= $entry[0];
+          $this->onClose($this->buttons['ok']);
+        }
+        return;
+      }
+      
+      $this->filename= $entry[0];
+      
+      // Update location entry
+      $this->location->set_text($entry[0]);
+      
+      // Set OK button sensitive if file type is not empty (indicating a directory)
+      $this->buttons['ok']->set_sensitive('' != $filetype);
     }
     
     /**
@@ -200,8 +160,8 @@
       // File list
       $this->files= &$this->widget('clist_files');
       $this->files->set_row_height(26);
-      $this->files->set_sort_column(1); // Type
-      $this->files->connect('select_row', array(&$this, 'onEntrySelected'));
+      $this->files->set_sort_column(1); // Sort by type
+      $this->connect($this->files, 'select_row', 'onEntrySelected');
       
       // Location
       $this->location= &$this->widget('entry_location');
@@ -210,15 +170,21 @@
       $this->combo= &$this->widget('combo_dir');
       
       // Buttons
-      $this->buttons_connect(array(
-        'ok'	    => 'onClose',
+      foreach (array(
+        'ok'        => 'onClose',
         'cancel'    => 'onClose',
-        'up'	    => 'onUpDirClicked',
-        'home'	    => 'onHomeClicked',
-        'refresh'	=> 'onRefreshClicked',
+        'up'        => 'onUpDirClicked',
+        'home'      => 'onHomeClicked',
+        'refresh'   => 'onRefreshClicked',
         'next'      => 'onPNClicked',
-        'prev'      => 'onPNClicked',
-      ));
+        'prev'      => 'onPNClicked'
+      ) as $n => $callback) {
+        $this->buttons[$n]= $this->connect(
+          $this->widget('button_'.$n), 
+          'clicked', 
+          $callback
+        );
+      }
       
       // Favorites
       $this->favorites= &$this->widget('bar_favorites');
@@ -252,43 +218,17 @@
         }
         $if->close();
       } if (catch('IOException', $e)) {
-        $e->printStackTrace();
+        $this->cat->error($e);
+        
+        // Fall through, this is not critical
       }
-      $this->cat->debug(sizeof($this->pixmaps), 'pixmaps loaded');
       
       // Read files
-      $this->setDirectory();
+      $this->setDirectory($this->dir);
     }
     
     /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function onEntrySelected(&$widget, $row, $data, $event) {
-      $this->cat->debug($widget);
-      $ftype= $widget->get_text($row, 1);
-      $entry= $widget->get_pixtext($row, 0);
-      
-      // Check if an item was double clicked
-      if ('' == $ftype && isset($event) && GDK_2BUTTON_PRESS == $event->type) {
-        return $this->setDirectory($this->dir.$entry[0]);
-      }
-      
-      $this->filename= $entry[0];
-      $this->cat->debug($row, 'selected, uri is', $this->filename, 'event', $data, $event->type);
-      
-      // Update location entry
-      $this->location->set_text($entry[0]);
-      
-      // Set OK button sensitive if file type is not empty (indicating a directory)
-      $this->buttons['ok']->set_sensitive('' != $ftype);
-    }
-    
-    /**
-     * Format a size
+     * Format file size into a string
      *
      * @access  private
      * @param   int s size
@@ -300,17 +240,67 @@
       if ($s < 1073741824) return sprintf('%0.2f MB', $s / 1048576);
       return sprintf('%0.2f GB', $s / 1073741824);
     }
+
+    /**
+     * Set Filename
+     *
+     * @access  public
+     * @param   string filename
+     */
+    function setFilename($filename) {
+      $this->filename= $filename;
+    }
+
+    /**
+     * Get Filename
+     *
+     * @access  public
+     * @return  string
+     */
+    function getFilename() {
+      return $this->filename;
+    }
+
+    /**
+     * Set Filter
+     *
+     * @access  public
+     * @param   string filter
+     */
+    function setFilter($filter) {
+      $this->filter= $filter;
+    }
+
+    /**
+     * Get Filter
+     *
+     * @access  public
+     * @return  string
+     */
+    function getFilter() {
+      return $this->filter;
+    }
+
+    /**
+     * Get Dir
+     *
+     * @access  public
+     * @return  string
+     */
+    function getDirectory() {
+      return $this->dir;
+    }
     
     /**
-     * (Insert method's description here)
+     * Set directory to show
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string directory
+     * @param   bool update_offset default TRUE
      */
-    function setDirectory($dir= NULL, $update_offset= TRUE) {
-      if (NULL !== $dir) $this->dir= $dir;
-      $this->cat->debug('Change dir to', $this->dir);
+    function setDirectory($dir, $update_offset= TRUE) {
+      $this->cat->debug('Change dir from ', $this->dir, 'to', $dir);
+      $this->dir= $dir;
       
       // Disable Up button if we are at top
       $this->buttons['up']->set_sensitive(strlen($this->dir) > 1);
@@ -330,9 +320,9 @@
     }
             
     /**
-     * (Insert method's description here)
+     * Read the selected directory's content
      *
-     * @access  public
+     * @access  protected
      */  
     function readFiles() {
       $f= &new Folder($this->dir);
@@ -374,9 +364,8 @@
           }
           
           // Get file owner's name
+          // !!! TBD: Generic approach, posix_getpwuid may not exist !!!
           $owner= posix_getpwuid(fileowner($f->uri.$entry));
-          
-          // $this->cat->debug($f->uri.$entry, 'dir?', $dir, 'ext', $ext); $this->cat->debug($entry, $owner);
           
 		  $this->files->set_pixtext(
             $this->files->append(array(
@@ -407,15 +396,14 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Show this dialog
      *
-     * @access  
-     * @param   
-     * @return  bool
+     * @access  public
+     * @return  bool TRUE in case a file was selected and OK pressed
      */
     function show() {
       parent::show();
-      return !empty($this->filename);
+      return $this->success;
     }
   }
 ?>
