@@ -81,6 +81,9 @@ Related documents
 - http://xp-framework.net/downloads/rfc0013.diff
   Patch implementing this diff. Apply in lang/reflect
 
+- http://sys-con.com/story/?storyid=36844&DE=1
+  Under the Hood: java.lang.reflect.Proxy
+
 Comments
 --------
 - friebe, Tue Jan  4 19:18:12 CET 2005
