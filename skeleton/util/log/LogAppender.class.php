@@ -29,13 +29,7 @@
      * @return string Ein Printout der Variable
      */
     function varSource($var) {
-      if (is_array($var) || is_object($var)) {
-        ob_start();
-        var_dump($var);
-        $var= ob_get_contents();
-        ob_end_clean();
-      }
-      return $var;
+      return is_string($var) ? $var : var_export($var, 1);
     }
   }
 ?>
