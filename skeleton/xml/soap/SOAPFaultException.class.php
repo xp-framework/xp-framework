@@ -25,9 +25,8 @@
      */
     function getStackTrace() {
       return parent::getStackTrace().sprintf(
-        "  [\n    fault.faultcode= '%s'\n    fault.faultstring= '%s'\n    fault.faultactor= '%s'\n    fault.detail= %s\n  ]\n",
+        "  [\n    fault.faultcode= '%s'\n    fault.faultactor= '%s'\n    fault.detail= %s\n  ]\n",
         $this->fault->faultcode,
-        $this->fault->faultstring,
         $this->fault->faultactor,
         var_export($this->fault->detail, 1)
       );
