@@ -374,6 +374,9 @@ Related documents
 * The worries with the built-in PHP5 Exception class 
   http://blog.xp-framework.net/archives/11-.html
 
+* Discussion on php-dev about "Use of 'self' in static function in subclass"
+  http://groups-beta.google.com/group/mailing.www.php-dev/browse_thread/thread/9f3a09348075f401/
+
 Comments
 --------
 
