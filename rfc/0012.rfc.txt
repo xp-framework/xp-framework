@@ -238,7 +238,7 @@ The body of a message is encoded depending on the message type.
   Java method DataInput.readUTF(), see
   http://java.sun.com/j2se/1.4.2/docs/api/java/io/DataInput.html#readUTF()
 
-  On the PHP side, the text.encode.UTF class is used.
+  On the PHP side, the com.sun.UTF class is used.
 
 * Body encoding for initialize message (#0)
 
