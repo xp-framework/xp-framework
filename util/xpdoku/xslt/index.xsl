@@ -12,15 +12,32 @@
   <xsl:template match="package">
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
     <tr>
-    <th valign="top" align="left"><xsl:value-of select="./@name"/></th>
+    <th valign="top" align="left">API Doc: <xsl:value-of select="./@name"/></th>
     <td valign="top" align="right">(<xsl:value-of select="count (collection/collection//class)"/> classes)</td>
 	  </tr>
 	  <tr bgcolor="#cccccc"><td colspan="2"><img src="/image/spacer.gif" height="1" border="0"/></td></tr>
     </table>
+    <br/>
 
     <!-- Begin Classlisting -->
+    <xsl:variable name="mid" select="round(count(collection/collection) div 2)"/>
     <table border="0" cellspacing="0" cellpadding="0" width="100%">
-      <xsl:apply-templates select="collection/collection"/>
+      <tr>
+        <td width="50%" valign="top">
+          <table border="0">
+            <xsl:for-each select="collection/collection[position() &lt;= $mid]">
+              <xsl:apply-templates select="."/>
+            </xsl:for-each>
+          </table>
+        </td>
+        <td width="50%" valign="top">
+          <table border="0" cellspacing="0" cellpadding="0" width="100%">
+            <xsl:for-each select="collection/collection[position() &gt; $mid]">
+              <xsl:apply-templates select="."/>
+            </xsl:for-each> 
+          </table>
+        </td>
+      </tr>
     </table>
   </xsl:template>
   
