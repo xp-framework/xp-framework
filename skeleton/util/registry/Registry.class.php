@@ -95,26 +95,26 @@
      * @throws  IllegalArgumentException
      */
     function &getInstance() {
-      static $__instance = array();
+      static $instance = array();
       
       $p= &func_get_arg(0);
       
       // Subsequent calls
       if (is_string($p)) {
-        if (!isset($__instance[$p])) {
+        if (!isset($instance[$p])) {
           return throw(new IllegalAccessException('Registry "'.$p.'" hasn\'t been setup yet'));
         }
-        return $__instance[$p];
+        return $instance[$p];
       }
       
       // Initial setup
       if (is_a($p, 'RegistryStorage')) {
         
-        $__instance[$p->id]= new Registry();
-        $__instance[$p->id]->storage= &$p;
-        $__instance[$p->id]->storage->initialize();
+        $instance[$p->id]= new Registry();
+        $instance[$p->id]->storage= &$p;
+        $instance[$p->id]->storage->initialize();
         
-        return $__instance[$p->id];
+        return $instance[$p->id];
       }
       
       return throw(new IllegalArgumentException('Argument passed is of wrong type ('.xp::typeOf($p).')'));

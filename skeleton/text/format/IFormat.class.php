@@ -33,10 +33,10 @@
      * @return  &text.format.Format
      */
     function &getInstance($name) {
-      static $__instance= array();
+      static $instance= array();
       
-      if (!isset($__instance[$name])) $__instance[$name]= new $name();
-      return $__instance[$name];
+      if (!isset($instance[$name])) $instance[$name]= new $name();
+      return $instance[$name];
     }
       
     /**
