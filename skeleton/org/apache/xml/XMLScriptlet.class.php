@@ -17,9 +17,9 @@
    * (resembling an XML DOM-Tree) and an XSL stylesheet.
    *
    * The three main nodes, formresult, formvalues and formerrors are 
-   * represented in the <pre>OutputDocument</pre> class by corresponding
+   * represented in the OutputDocument class by corresponding
    * member variables. For ease of their manipulation, there are three
-   * method in <pre>XMLSriptletResponse</pre> to add nodes to them. The
+   * method in XMLSriptletResponse to add nodes to them. The
    * XSL stylesheet is applied against this XML.
    *
    * All request parameters are imported into the formvalues node to give
