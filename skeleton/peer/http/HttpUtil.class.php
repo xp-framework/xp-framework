@@ -81,7 +81,7 @@
               ));
             }
             $redirected++;
-            $connection->request= &new HttpRequest(new URL($loc));
+            $connection->request= &HttpRequestFactory::factory(new URL($loc));
             break;
 
           default:              // Any other code
