@@ -23,9 +23,9 @@
      */
     function append() {
       foreach (func_get_args() as $arg) {
-        $buffer.= $this->varSource($arg).' ';
+        $this->buffer.= $this->varSource($arg).' ';
       }
-      $buffer.= "\n";
+      $this->buffer.= "\n";
     }
     
     /**
