@@ -357,7 +357,7 @@
      * @return  bool success
      */
     function close() {
-      if ($this->socket->isConnected()) return TRUE;
+      if ($this->sock->isConnected()) return TRUE;
       
       $this->notify('disconnect', $this->sock->host, $this->sock->port); 
       
@@ -375,10 +375,7 @@
      * @return  string or FALSE to indicate failure
      */    
     function readln() {
-    
-      // HACK - we should be able to use canRead()...
-      xp::registry('errors', array());
-      xp::registry('exceptions', array());
+      xp::gc();
       try(); {
         $r= $this->sock->readLine(0x2000);
       } if (catch('IOException', $e)) {
