@@ -141,7 +141,7 @@
      * @return  bool success
      */
     function _parse($key, $value) {
-      printf(">>> %s::=%s\n", $key, $value); 
+      // DEBUG printf(">>> %s::=%s\n", $key, $value); 
       
       // Property params
       if (FALSE !== ($i= strpos($key, ';'))) {
@@ -175,11 +175,13 @@
         $func= $this->handlers[NULL];
       }
       
-      echo "-----------------------------------------------------------------------------------\n";
+      // DEBUG echo "-----------------------------------------------------------------------------------\n";
       if (FALSE === call_user_func($func, $kargs, explode(';', $value))) {
         trigger_error('Callback:'.(is_array($func) ? get_class($func[0]).'::'.$func[1] : $func), E_USER_NOTICE);
         return throw(new MethodNotImplementedException('Could not invoke callback for "'.$kargs[0].'"'));
       }
+      
+      return TRUE;
     }
   
     /**
