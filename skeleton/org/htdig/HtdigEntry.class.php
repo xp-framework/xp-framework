@@ -125,7 +125,7 @@
      * @param   string url
      */
     function setUrl($url) {
-      $this->url= $url;
+      $this->url= urldecode($url);
     }
 
     /**
@@ -145,7 +145,7 @@
      * @param   string title
      */
     function setTitle($title) {
-      $this->title= $title;
+      $this->title= urldecode($title);
     }
 
     /**
@@ -165,7 +165,7 @@
      * @param   string excerpt
      */
     function setExcerpt($excerpt) {
-      $this->excerpt= $excerpt;
+      $this->excerpt= urldecode($excerpt);
     }
 
     /**
@@ -185,7 +185,7 @@
      * @param   string metadescription
      */
     function setMetadescription($metadesc) {
-      $this->metadescription= $metadesc;
+      $this->metadescription= urldecode($metadesc);
     }
 
     /**
@@ -211,7 +211,7 @@
       }
       
       try(); {
-        $d= &DateParser::parse($modified);
+        $d= &DateParser::parse(urldecode($modified));
       } if (catch ('FormatException', $e)) {
       
         // Date could not be parsed, so default to now.
