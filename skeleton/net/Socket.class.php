@@ -60,6 +60,17 @@
     function read($size= 4096) {
       return fgets($this->_hSocket, $size);
     }
+
+    /**
+     * Vom Socket lesen
+     *
+     * @access  public
+     * @param   int size default 4096 Anzahl zu lesender Bytes
+     * @return  string Gelesene Daten
+     */
+    function readBinary($size= 4096) {
+      return fread($this->_hSocket, $size);
+    }
     
     /**
      * Testet auf EOF vom Socket
