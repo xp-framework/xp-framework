@@ -11,6 +11,12 @@ static CS_RETCODE CS_PUBLIC servermessage(CS_CONTEXT *context, CS_CONNECTION *co
     return CS_SUCCEED;
 }
 
+static CS_RETCODE CS_PUBLIC clientmessage(CS_CONTEXT *context, CS_CONNECTION *connection, CS_CLIENTMSG *message)
+{
+    fprintf(stderr, "Client message: %d %s\n", message->msgnumber, message->msgstring);
+    return CS_SUCCEED;
+}
+
 int main(int argc, char **argv)
 {
     sybase_link *link= NULL;
@@ -23,6 +29,7 @@ int main(int argc, char **argv)
     
     sybase_init(&env);
     sybase_set_messagehandler(env, CS_SERVERMSG_CB, (CS_VOID *)servermessage);
+    sybase_set_messagehandler(env, CS_CLIENTMSG_CB, (CS_VOID *)clientmessage);
     
     sybase_alloc(&link);    
     if (sybase_connect(env, link, argv[1], argv[2], argv[3]) == SA_SUCCESS) {
