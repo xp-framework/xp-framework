@@ -12,7 +12,9 @@
    * @purpose  Provide an interface
    */
   class Transport extends Object {
-  
+    var
+      $cat    = NULL;
+
     /**
      * Connect to this transport
      *
@@ -64,5 +66,6 @@
       $args= func_get_args();
       call_user_func_array(array($this->cat, 'debug'), $args);
     }
-  }
+
+  } implements(__FILE__, 'util.log.Traceable');
 ?>
