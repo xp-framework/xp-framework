@@ -34,8 +34,8 @@
           array(&amp;$this, 'method') notation for call_user_func[_array]()
           or have problems with "parent" 
           (see <ref type="ext" link="http://bugs.php.net/bug.php?id=12313">PHP Buf #12313</ref>).
-          The latest change incorporates <tt>debug_backtract</tt> to supply even
-          more detailled exception information, though requiring at least
+          The latest change incorporates <tt>debug_backtrace</tt> to supply even
+          more detailled exception information, thus requiring at least
           PHP 4.3.0.
         </text>
       </para>
