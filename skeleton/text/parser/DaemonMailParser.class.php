@@ -541,7 +541,7 @@
               
               $state= DMP_FINISH;
               
-              // Find indented lines until -- Daemon-Typeears
+              // Find indented lines until -- appears
               do {
                 if ('--' == substr($t, 0, 2)) { $state= DMP_ORIGMSG; break; }
                 if ('  ' != substr($t, 0, 2)) continue;
@@ -602,6 +602,35 @@
 
               // Now, work on original message
               $state= DMP_ORIGMSG;              
+              continue;
+            }
+            
+            // Exim
+            // ====
+            // A message that you sent contained one or more recipient addresses that were
+            // incorrectly constructed:
+            // 
+            //   =?iso-8859-1?Q?Herr_Foo?= <1234-986@foo.bar;Bjoern.Foo@foo.bar>: malformed address: ;Bjoern.Foo@foo.bar> may not follow =?iso-8859-1?Q?Herr_Foo?= <1234-986@foo.bar
+            // 
+            // This address has been ignored. There were no other addresses in your
+            // message, and so no attempt at delivery was possible.
+            // 
+            // ------ This is a copy of your message, including all the headers.
+            // ------ No more than 100K characters of the body are included.
+            if ('A message that you sent contained one or more recipient addresses' == substr($t, 0, 65)) {
+              $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_EXIM;
+              
+              // Find first empty line after ----
+              $c= FALSE;
+              do {
+                if ('-----' == substr($t, 0, 5)) $c= TRUE;
+                if ($c && ('' == chop($t))) break;
+                
+                $c || $daemonmessage->setReason(trim($daemonmessage->getReason()).' '.trim($t));
+              } while ($t= strtok("\n"));
+              
+              // Now, work on original message
+              $state= DMP_ORIGMSG;
               continue;
             }
             
