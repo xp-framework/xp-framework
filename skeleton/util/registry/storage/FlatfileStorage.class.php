@@ -28,8 +28,8 @@
      * @access  public
      */
     function initialize() {
-      $this->_file= &new File(System::tempDir().$this->id.'.dat');
-      if ($this->_file->exists()) {
+      $this->_file= &new File(System::tempDir().DIRECTORY_SEPARATOR.$this->id.'.dat');
+      if (!$this->_file->exists()) {
         touch($this->_file->getURI());
         $this->_hash= &new Hashmap();
       } else {
