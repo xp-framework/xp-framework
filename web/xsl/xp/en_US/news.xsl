@@ -33,7 +33,7 @@
 
     <xsl:for-each select="/formresult/news/item">
       <h3>
-        <xsl:value-of select="caption"/>
+        <xsl:value-of select="caption"/> (<xsl:value-of select="func:datetime(created_at)"/>)
       </h3>
       <p>
         <xsl:apply-templates select="excerpt"/>
