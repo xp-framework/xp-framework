@@ -25,10 +25,10 @@
     var 
       $type             = MIME_TYPE_TEXT,       // Mime-Type
       $charset          = 'iso-8859-1',         // Charset
+      $encoding         = '8-bit',              // Encoding, bspw base64
       $disposition,                             // Disposition: inline|attachment
       $name,                                    // Beschreibung
       $filename,                                // Dateiname
-      $encoding,                                // Encoding, bspw base64
       $id,                                      // Content-ID
       $content;                                 // Part-Inhalt
     
