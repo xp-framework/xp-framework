@@ -11,9 +11,6 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
 
 * Features/Wishlist:
 
-  - Java Interface via ext/java (Prerequisite: Compile PHP
-    --with-java successfully)
-    
   - Oracle/... rdbms classes
   
   - img.graph additions to draw real statistical data
@@ -51,9 +48,6 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
 * Include ports (status: in progress)
 
 * Include SAPIs (status: in progress) 
-
-* Bug system (based on bugzilla, Prerequisite: Install 
-  MySQL/PHPMyAdmin on php3.de)
 
 * Development: xp@php3.de Mailing list archive
   TBD: Find nice output format, most ml archives are the pure horror
