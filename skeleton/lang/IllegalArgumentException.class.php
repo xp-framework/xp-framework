@@ -5,11 +5,12 @@
  */
  
   /**
-   * Kapselt die IllegalArgumentException
+   * Thrown to indicate that a method has been passed an illegal or 
+   * inappropriate argument.
    *
-   * @see Exception
+   * @see      xp://lang.Exception
+   * @purpose  Exception
    */
   class IllegalArgumentException extends Exception {
-  
   }
 ?>

@@ -5,11 +5,12 @@
  */
  
   /**
-   * Kapselt die IllegalAccessException
+   * An IllegalAccessException is thrown when an object is accessed 
+   * in a way for which no permissions exist.
    *
-   * @see Exception
+   * @see      xp://lang.Exception
+   * @purpose  Exception
    */
   class IllegalAccessException extends Exception {
-  
   }
 ?>
