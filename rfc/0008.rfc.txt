@@ -33,7 +33,7 @@ a) Syntax changes and additions
 * A catch-all-exceptions mechanism
 + Packages support
 * A package access level
-* Enumerations
++ Enumerations
 + Annotations support
 * Finally
 * Keywords would be allowed as class and method names where possible
@@ -150,7 +150,7 @@ Details
     }
   ?>
 
-* Enumerations:
++ Enumerations:
   A new keyword "enum" is introduced.
   <?php
     enum Suit { CLUBS, DIAMONDS, HEARTS, SPADES }
