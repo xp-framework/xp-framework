@@ -4,44 +4,41 @@
  * $Id$ 
  */
 
-  uses(
-    'scriptlet.xml.workflow.AbstractState',
-    'net.xp-framework.db.caffeine.XPNews'
-  );
+  uses('net.xp-framework.scriptlet.AbstractNewsListingState');
 
   /**
    * Handles /xml/news
    *
    * @purpose  State
    */
-  class NewsState extends AbstractState {
+  class NewsState extends AbstractNewsListingState {
 
     /**
-     * Process this state.
+     * Retrieve entries
      *
-     * @access  public
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
-     * @param   &scriptlet.xml.XMLScriptletResponse response
+     * @access  protected
+     * @param   &rdbms.DBConnection db
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @return  &rdbms.ResultSet
      */
-    function process(&$request, &$response) {
-    
-      // Retrieve news from database - TBD: caching
-      try(); {
-        $news= XPNews::getByDateOrdered();
-      } if (catch('SQLException', $e)) {
-        $news= array();
-        // Fall through
-      }
-      
-      with ($n= &$response->addFormResult(new Node('news'))); {
-        for ($i= 0, $s= sizeof($news); $i < $s; $i++) {
-          $item= &$n->addChild(Node::fromObject($news[$i], 'item'));
-          $item->addChild(new Node(
-            'excerpt', 
-            strtok(wordwrap($news[$i]->getBody(), 200, "\0"), "\0")
-          ));
-        }
-      }
+    function &getEntries(&$db, &$request) { 
+      return $db->query('
+        select 
+          entry.id as id,
+          entry.title as title,
+          entry.body as body,
+          entry.author as author,
+          entry.timestamp as timestamp,
+          length(entry.extended) as extended_length
+        from
+          serendipity_entries entry
+        where
+          isdraft = "false"
+        order by
+          timestamp desc
+        limit 20
+      ');
     }
+
   }
 ?>
