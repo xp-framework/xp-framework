@@ -4,6 +4,12 @@
  * $Id$ 
  */
 
+  /**
+   * Wrap selection code to provide browser independent selection
+   * updating interface
+   *
+   * @purpose   Wrap selection code
+   */
   function SelectionArea() {
 
     var isOpera= navigator.userAgent.indexOf('Opera') > -1;
@@ -25,7 +31,7 @@
      * @param   
      * @return  
      */
-    InputSelection.prototype.setSelectionRange= function(id, start, end) {
+    SelectionArea.prototype.setSelectionRange= function(id, start, end) {
       var element= document.getElementById(id);
 
       // -1 means end of string
