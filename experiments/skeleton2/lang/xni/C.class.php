@@ -82,7 +82,7 @@
       $inline= FALSE;
       $src= array();
       if ($tok= $t->getFirstToken()) do {
-         switch ($tok[0]) {
+        switch ($tok[0]) {
           case T_FUNCTION:
             $f= 'cfunction' == $tok[1];
             break;
@@ -199,7 +199,7 @@ PHP_FUNCTION(%1\$s) {
       &ce->function_table, 
       %1\$s_class_functions[i].fname, 
       strlen(%1\$s_class_functions[i].fname)+ 1, 
-      &public function function, 
+      &function, 
       sizeof(zend_function), 
       NULL
     )) {

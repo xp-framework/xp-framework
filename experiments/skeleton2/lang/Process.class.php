@@ -28,7 +28,7 @@
       $err    = NULL,
       $exitv  = -1;
       
-    private
+    protected
       $_proc  = NULL;
       
     /**
@@ -53,7 +53,6 @@
       // Open process
       if (!is_resource($this->_proc= proc_open($cmd, $spec, $pipes))) {
         throw (new IOException('Could not execute "'.$cmd.'"'));
-        return;
       }
 
       // Assign in, out and err members

@@ -16,7 +16,7 @@
    * @purpose Parse PHP files
    */
   class GenericParser extends Object {
-    public 
+    public
       $file=       NULL,
       $prop=       NULL,
       $config=     'generic',
@@ -55,7 +55,7 @@
      * @access  public
      * @param   &io.File file
      */
-    public function setFile(&$file) {
+    public function setFile(File $file) {
       $this->file= $file;
     }
     

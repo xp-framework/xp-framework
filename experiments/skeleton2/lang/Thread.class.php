@@ -20,14 +20,14 @@
    *       $ticks    = 0,
    *       $timeout  = 0;
    *       
-   *     public function __construct($timeout) {
-   *       parent::__construct('timer.'.$timeout);
+   *     function __construct($timeout) {
    *       $this->timeout= $timeout;
+   *       parent::__construct('timer.'.$timeout);
    *     }
    *       
-   *     public function run() {
+   *     function run() {
    *       while ($this->ticks < $this->timeout) {
-   *         self::sleep(1000);
+   *         Thread::sleep(1000);
    *         $this->ticks++;
    *         printf("<%s> tick\n", $this->name);
    *       }
@@ -48,6 +48,7 @@
    * </code>
    *
    * @ext      pcntl
+   * @ext      posix
    * @platform Unix
    * @purpose  Base class
    */
@@ -56,8 +57,9 @@
       $name     = '',
       $running  = FALSE;
       
-    private
-      $_id      = -1;
+    protected
+      $_id      = -1,
+      $_pid     = -1;
       
     /**
      * Constructor
@@ -74,7 +76,7 @@
      * Returns whether this thread is running
      *
      * @access  public
-     * @param   string name
+     * @return  bool
      */
     public function isRunning() {
       return $this->running;
@@ -108,7 +110,7 @@
      * @access  public
      * @param   int millis
      */
-    public function sleep($millis) {
+    public static function sleep($millis) {
       usleep($millis * 1000);
     }
 
@@ -116,38 +118,87 @@
      * Starts thread execution
      *
      * @access  public
-     * @throws  lang.IllegalThreadStateException
-     * @throws  lang.SystemException
+     * @throws  lang.IllegalThreadStateException if this thread is already running
+     * @throws  lang.SystemException if the thread cannot be started
      */
     public function start() {
       if (self::isRunning()) {
         throw (new IllegalThreadStateException('Already running'));
       }
 
+      $parent= getmypid();
       $pid= pcntl_fork();
       if (-1 == $pid) {     // Cannot fork
         throw (new SystemException('Cannot fork'));
       } elseif ($pid) {     // Parent
         $this->running= TRUE;
         $this->_id= $pid;
+        $this->_pid= $parent;
       } else {              // Child
+        $this->running= TRUE;
+        $this->_id= getmypid();
+        $this->_pid= $parent;
         self::run();
         exit();
       }
     }
     
     /**
-     * Join this thread (wait for it to exit).
+     * Join this thread. The optional parameter wait may be set to FALSE to
+     * return immediately if this thread hasn't terminated yet.
      *
      * @access  public
+     * @param   bool wait default TRUE
      * @return  int status
      * @see     php://pcntl_waitpid
      */
-    public function join() {
-      pcntl_waitpid($this->_id, $status, WUNTRACED);
+    public function join($wait= TRUE) {
+      if (0 == pcntl_waitpid($this->_id, $status, $wait ? WUNTRACED : WNOHANG)) return -1;
       $this->running= FALSE;
-      $this->_id= -1;
+      $this->_id= $this->_pid= -1;
       return $status;
+    }
+    
+    /**
+     * Stop this thread
+     *
+     * @access  public
+     * @param   int signal default SIGINT
+     */
+    public function stop($signal= SIGINT) {
+      posix_kill($this->_id, $signal);
+      $this->running= FALSE;
+      $this->_id= $this->_pid= -1;
+    }
+    
+    /**
+     * Returns thread id or -1 if this thread is not running
+     *
+     * @access  public
+     * @return  int
+     */
+    public function getId() {
+      return $this->_id;
+    }
+    
+    /**
+     * Returns thread's parent id
+     *
+     * @access  public
+     * @return  int
+     */
+    public function getParentId() {
+      return $this->_pid;
+    }
+    
+    /**
+     * Creates a string representation
+     *
+     * @access  public
+     * @return  string
+     */
+    public function toString() {
+      return sprintf('%s[%d]@%s', self::getClassName(), $this->_id, var_export($this, 1));
     }
     
     /**
@@ -156,6 +207,6 @@
      * @model   abstract
      * @access  public
      */
-    public function run() { }
+    public abstract function run();
   }
 ?>

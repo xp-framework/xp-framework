@@ -25,7 +25,7 @@
       $class   = '',
       $list    = array();
       
-    private
+    protected
       $_name   = '';
     
     /**
@@ -34,7 +34,7 @@
      * @access  protected
      * @param   string class
      */
-    public function __construct($class) {
+    protected function __construct($class) {
       
       $this->class= $class;
       $this->_name= xp::reflect($class);
@@ -103,7 +103,7 @@
      * @return  &lang.Object the added element
      * @throws  lang.IllegalArgumentException
      */
-    public function add(&$element) {
+    public function add($element) {
       if (!is_a($element, $this->_name)) {
         throw (new IllegalArgumentException(sprintf(
           'Element %d is not a %s (but %s)',
@@ -124,7 +124,7 @@
      * @return  &lang.Object the prepended element
      * @throws  lang.IllegalArgumentException
      */
-    public function prepend(&$element) {
+    public function prepend($element) {
       if (!is_a($element, $this->_name)) {
         throw (new IllegalArgumentException(sprintf(
           'Element %d is not a %s (but %s)',
@@ -188,7 +188,7 @@
      * @param   &lang.Object
      * @return  &lang.Object the element previously at the specified position.
      */
-    public function set($index, &$element) {
+    public function set($index, $element) {
       $orig= $this->list[$index];
       $this->list[$index]= $element;
       return $orig;
@@ -248,7 +248,7 @@
      * @param   &lang.Object element
      * @return  bool
      */
-    public function contains(&$element) {
+    public function contains(Object $element) {
       return in_array($element, $this->list, TRUE);
     }
     
@@ -259,7 +259,7 @@
      * @param   &lang.Object element
      * @return  int offset where the element was found or FALSE
      */
-    public function indexOf(&$element) {
+    public function indexOf(Object $element) {
       return array_search($element, $this->list, TRUE);
     }
 
@@ -270,7 +270,7 @@
      * @param   &lang.Object element
      * @return  int offset where the element was found or FALSE
      */
-    public function lastIndexOf(&$element) {
+    public function lastIndexOf(Object $element) {
       return array_search($element, array_reverse($this->list), TRUE);
     }
   }

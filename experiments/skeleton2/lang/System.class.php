@@ -6,16 +6,17 @@
 
   uses('lang.SystemException');
 
+  // Known return codes
+  define('SYSTEM_RETURN_CMDNOTFOUND',        127);
+  define('SYSTEM_RETURN_CMDNOTEXECUTABLE',   126);
+  
   /**
    * The System class contains several useful class fields and methods. 
    * It cannot be instantiated.
    * 
-   * @purpose  Wrap system interaction functions
+   * @access  static
    */
-  final class System extends Object {
-    const 
-      RETURN_CMDNOTFOUND      = 127,
-      RETURN_CMDNOTEXECUTABLE = 126;
+  class System extends Object {
   
     /**
      * Private helper method. Tries to locate an environment
@@ -26,7 +27,7 @@
      * @param   string* args
      * @return  string environment variable by name
      */
-    private static function _env() {
+    private function _env() {
       foreach (func_get_args() as $a) {
         if ($e= getenv($a)) return $e;
       }
@@ -128,7 +129,7 @@
      * @param   mixed var
      * @return  bool success
      */
-    public static function putEnv($name, $var) {
+    public function putEnv($name, $var) {
       return putenv($name.'='.$var);
     }
     
@@ -140,7 +141,7 @@
      * @param   string name
      * @return  mixed var
      */
-    public static function getEnv($name) {
+    public function getEnv($name) {
       return getenv($name);
     }
     
@@ -196,8 +197,6 @@
      * command below.
      * </pre>
      *
-     * @access  public
-     * @model   static
      * @param   string cmdLine the command
      * @param   string redirect default '2>&1' redirection
      * @param   bool background
@@ -206,7 +205,7 @@
      * @see     php://exec
      * @see     xp://lang.Process
      */
-    public static function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
+    public function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
       $cmdLine= escapeshellcmd($cmdLine).' '.$redirect.($background ? ' &' : '');
       
       if (!($pd= popen($cmdLine, 'r'))) throw (new SystemException(

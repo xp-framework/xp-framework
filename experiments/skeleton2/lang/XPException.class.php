@@ -3,10 +3,9 @@
  *
  * $Id$
  */
- 
- 
+
   uses('lang.Throwable');
-  
+
   /**
    * Exception
    *

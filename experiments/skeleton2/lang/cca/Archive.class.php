@@ -6,6 +6,11 @@
 
   uses('lang.ElementNotFoundException');
 
+  define('ARCHIVE_READ',             0x0000);
+  define('ARCHIVE_CREATE',           0x0001);
+  define('ARCHIVE_HEADER_SIZE',      0x0100);
+  define('ARCHIVE_INDEX_ENTRY_SIZE', 0x0100);
+
   /**
    * Archives contain a collection of classes.
    *
@@ -47,17 +52,11 @@
    * @see      http://java.sun.com/j2se/1.4/docs/api/java/util/jar/package-summary.html
    */
   class Archive extends Object {
-    const
-      READ = 0x0000,
-      CREATE = 0x0001,
-      HEADER_SIZE = 0x0100,
-      INDEX_ENTRY_SIZE = 0x0100;
-
     public
       $file     = NULL,
       $version  = 1;
     
-    public
+    protected
       $_index  = array();
         
     /**
@@ -66,7 +65,7 @@
      * @access  public
      * @param   &io.File file
      */
-    public function __construct(&$file) {
+    public function __construct(File $file) {
       $this->file= $file;
       
     }
@@ -79,7 +78,7 @@
      * @param   string id the id under which this entry will be located
      * @return  bool success
      */
-    public function add(&$file, $id) {
+    public function add(File $file, $id) {
       try {
         $file->open(FILE_MODE_READ);
         $data= $file->read($file->size());

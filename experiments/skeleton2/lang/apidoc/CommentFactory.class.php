@@ -11,6 +11,12 @@
     'lang.apidoc.FunctionComment'
   );
 
+  // Types of comments this class can factor
+  define('APIDOC_COMMENT_FILE',        'file');
+  define('APIDOC_COMMENT_FUNCTION',    'function');
+  define('APIDOC_COMMENT_CLASS',       'class');
+  
+    
   /**
    * Comment factory
    *
@@ -22,11 +28,6 @@
    * @model static
    */
   class CommentFactory extends Object {
-    const
-      APIDOC_COMMENT_FILE = 'file',
-      APIDOC_COMMENT_FUNCTION = 'function',
-      APIDOC_COMMENT_CLASS = 'class';
-
   
     /**
      * Creates

@@ -7,9 +7,14 @@
   /**
    * Base class for comments
    *
+   * @see      xp://lang.apidoc.FileComment
+   * @see      xp://lang.apidoc.ClassComment
+   * @see      xp://lang.apidoc.FunctionComment
+   * @purpose  Base class
    */
   class Comment extends Object {
-    public $text;
+    public
+      $text;
     
     /**
      * Handles tags - override!
@@ -52,7 +57,7 @@
      */
     public function fromString($str) {
       if ('/*' !== substr($str, 0, 2)) {
-        throw (new FormatException('comment format unrecognized ['.$str.']'));
+        throw (new FormatException('Comment format unrecognized ['.$str.']'));
       }
       
       $tag= '';

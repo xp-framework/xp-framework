@@ -14,7 +14,7 @@
    * @see   xp-doc://README.DOC
    */
   class Reference extends Object {
-    public 
+    public
       $link          = array();
       
     /**

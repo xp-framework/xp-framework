@@ -5,24 +5,24 @@
  */
 
   /**
-   * Kapselt die SystemException, die außer der Fehlermeldung
-   * noch einen Fehler-Code definiert
+   * Encapsulates the SystemException which contains an error-code
+   * and the error message.
    *
-   * @see Exception
+   * @see      xp://lang.XPException
+   * @purpose  Exception
    */
   class SystemException extends XPException {
-    public $code= 0;
     
     /**
      * Constructor
      *
      * @access  public
-     * @param   string message Die Fehlermeldung
-     * @param   int code Der Fehlercode
+     * @param   string message the error message
+     * @param   int code the error code
      */
     public function __construct($message, $code) {
-      $this->code= $code;
       parent::__construct($message);
+      $this->code= $code;
     }
   }
 ?>

@@ -42,7 +42,7 @@
      * @access  public
      * @param   &lang.cca.Archive archive
      */
-    public function __construct(&$archive) {
+    public function __construct(Archive $archive) {
       $this->archive= $archive;
       parent::__construct();
     }

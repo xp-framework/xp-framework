@@ -9,20 +9,22 @@
     'lang.apidoc.Reference'
   );
 
+  // Function access
+  define('APIDOC_FUNCTION_ACCESS_PUBLIC',  'public');
+  define('APIDOC_FUNCTION_ACCESS_PRIVATE', 'private');
+  define('APIDOC_FUNCTION_MODEL_GENERIC',  '');
+  
   /**
    * Class wrapping function comments
    *
    * @see xp-doc:README.DOC
    */
   class FunctionComment extends Comment {
-    const
-      APIDOC_FUNCTION_ACCESS_PUBLIC = 'public',
-      APIDOC_FUNCTION_ACCESS_PRIVATE = 'private';
-
     public
       $references   = array(),
       $return       = NULL,
       $access       = APIDOC_FUNCTION_ACCESS_PUBLIC,
+      $model        = APIDOC_FUNCTION_MODEL_GENERIC,
       $throws       = array(),
       $params       = array();
       
@@ -63,6 +65,26 @@
       return $this->return->description;
     }
     
+    /**
+     * Set Model
+     *
+     * @access  public
+     * @param   mixed model
+     */
+    public function setModel($model) {
+      $this->model= $model;
+    }
+
+    /**
+     * Get Model
+     *
+     * @access  public
+     * @return  mixed
+     */
+    public function getModel() {
+      return $this->model;
+    }
+
     /**
      * Add a throws
      *
@@ -132,6 +154,11 @@
 
         case 'access':
           self::setAccess($line);
+          $descr= NULL;
+          break;
+        
+        case 'model':
+          self::setModel($line);
           $descr= NULL;
           break;
 

@@ -9,6 +9,10 @@
     'lang.apidoc.Reference'
   );
 
+  // Class models: static, generic
+  define('APIDOC_CLASS_MODEL_STATIC',  'static');
+  define('APIDOC_CLASS_MODEL_GENERIC', 'generic');
+  
   /**
    * Class wrapping class comments. Class comments are written above
    * the class name and may contain any of the keywords @purpose, @see,
@@ -17,10 +21,6 @@
    * @purpose  Comment
    */
   class ClassComment extends Comment {
-    const
-      APIDOC_CLASS_MODEL_STATIC = 'static',
-      APIDOC_CLASS_MODEL_GENERIC = 'generic';
-
     public
       $references   = array(),
       $purpose      = '',

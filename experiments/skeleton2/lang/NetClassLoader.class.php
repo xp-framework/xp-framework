@@ -3,14 +3,14 @@
  * 
  * $Id$
  */
- 
+
   uses(
-    'lang.ClassLoader', 
-    'peer.http.HttpConnection', 
+    'lang.ClassLoader',
+    'peer.http.HttpConnection',
     'lang.RuntimeError',
     'io.File'
   );
-  
+
   /** 
    * Loads an XP class via HTTP
    * 
@@ -19,15 +19,15 @@
    *   uses('lang.NetClassLoader', 'util.cmd.ParamString');
    *   
    *   // {{{ main
-   *   $p= &new ParamString();
+   *   $p= new ParamString();
    *   if (2 != $p->count) {
    *     printf("Usage: %s <fully qualified class name>\n", $p->value(0));
    *     exit();
    *   }
    *   
-   *   $e= &new NetClassLoader('http://sitten-polizei.de/php/classes/');
+   *   $cl= new NetClassLoader('http://sitten-polizei.de/php/classes/');
    *   try(); {
-   *     $name= $e->loadClass($p->value(1));
+   *     $class= $cl->loadClass($p->value(1));
    *   } if (catch('ClassNotFoundException', $e)) {
    *   
    *     // Class or dependency not found
@@ -36,7 +36,7 @@
    *   }
    *   
    *   // Create an instance
-   *   $obj= &new $name();
+   *   $obj= $class->newInstance();
    *   var_dump($obj, $obj->getClassName(), $obj->toString());
    * </code>
    *
@@ -44,7 +44,7 @@
    * @see      xp://lang.ClassLoader
    */
   class NetClassLoader extends ClassLoader {
-    var
+    public
       $codebase = '',
       $cache    = '';
     
@@ -55,11 +55,11 @@
      * @param   string codebase
      * @param   string cache default '/tmp' cache directory
      */
-    function __construct($codebase, $cache= '/tmp') {
+    public function __construct($codebase, $cache= '/tmp') {
+      parent::__construct();
       $this->codebase= $codebase;
       $this->cache= $cache;
-      $this->prefix= $this->getClassName().'-';
-      parent::__construct();
+      $this->prefix= self::getClassName().'-';
     }
     
     /**
@@ -68,7 +68,7 @@
      * @access  public
      * @return  bool success
      */
-    function expunge() {
+    public function expunge() {
       if (FALSE === ($d= dir($this->cache))) return FALSE;
       while ($entry= $d->read()) {
         if ($this->prefix != substr($entry, 0, strlen($this->prefix))) continue;
@@ -89,7 +89,7 @@
      * @param   string* class names
      * @return  bool
      */
-    function uses() {
+    public static function uses() {
       $codebase= func_get_arg(0);
       $prefix= func_get_arg(1);
       $cache= func_get_arg(2);
@@ -100,7 +100,7 @@
         // If we can't load the class of the net, try locally
         try {
           NetClassLoader::_load($codebase, $prefix, $cache, $name);
-        } catch(FileNotFoundException $e) {
+        } catch (FileNotFoundException $e) {
           if (!ClassLoader::loadClass($name)) {
             return FALSE;
           }
@@ -121,20 +121,20 @@
      * @param   string className (FQCN)
      * @return  mixed string classname or FALSE if the class is not found
      */
-    function _load($codebase, $prefix, $cache, $className) {
+    protected static function _load($codebase, $prefix, $cache, $className) {
       $uri= $this->codebase.strtr($className, '.', '/').'.class.php';
       $cacheName= $cache.'/'.$prefix.strtr($uri, '/:', '__').'.class.php';
       $headers= array();
       
-      $f= &new File($cacheName);
-      $conn= &new HttpConnection($uri);
+      $f= new File($cacheName);
+      $conn= new HttpConnection($uri);
       if ($f->exists()) {
         $f->open(FILE_MODE_READ);
         $headers['If-Modified-Since']= substr($f->readLine(), 9, -3);
         $f->close();
       }
       
-      $r= &$conn->get(NULL, $headers);
+      $r= $conn->get(NULL, $headers);
       $status= $r->getStatusCode();
 
       switch ($status) {
@@ -166,20 +166,20 @@
         case 404:
           trigger_error($conn->request->getRequestString(), E_USER_NOTICE);
           trigger_error($r->toString(), E_USER_NOTICE);
-          throw(new FileNotFoundException('File '.$conn->request->url->getPath().' not found'));
+          throw (new FileNotFoundException('File '.$conn->request->url->getPath().' not found'));
           break;
 
         default:
           trigger_error($conn->request->getRequestString(), E_USER_NOTICE);
           trigger_error($r->toString(), E_USER_NOTICE);
-          throw(new FormatException('Unexpected HTTP status code '.$status.' ['.$r->message.']'));
+          throw (new FormatException('Unexpected HTTP status code '.$status.' ['.$r->message.']'));
           break;
       }
       
       // Try to include the file. Other classes are also loaded
       // off the net as we execute this (using NetClassLoader::uses())
       if (!include_once($f->uri)) {
-        throw(new RuntimeError('Internal error ('.$f->uri.')'));
+        throw (new RuntimeError('Internal error ('.$f->uri.')'));
       }
       
       xp::$classes[xp::reflect($className)]= $className;
@@ -192,11 +192,11 @@
      * since it's last retreival
      *
      * @access  public
-     * @param   string className fully qualified class name io.File
-     * @return  string class' name for instantiation
-     * @throws  ClassNotFoundException in case the class can not be found
+     * @param   string className fully qualified class name
+     * @return  &lang.XPClass
+     * @throws  lang.ClassNotFoundException in case the class can not be found
      */
-    function loadClass($className) {
+    public function loadClass($className) {
       try {
         $name= NetClassLoader::_load(
           $this->codebase,
@@ -204,8 +204,8 @@
           $this->cache,
           $className
         );
-      } catch(XPException $e) {
-        throw(new ClassNotFoundException(sprintf(
+      } catch (XPException $e) {
+        throw (new ClassNotFoundException(sprintf(
           "class '%s' not found\n  Codebase: %s\n  Cause   : %s {\n    %s\n  }\n",
           $className,
           $this->codebase,
@@ -214,7 +214,7 @@
         )));
       }
       
-      return $name;
+      return new XPClass($name);
     }
   }
 ?>
