@@ -13,6 +13,21 @@
    * @purpose  Perform Round2 base tests
    */
   class Round2BaseClient extends SOAPClient {
+    var
+      $_iotrace=  NULL;
+
+    /**
+     * Sets the trace category for input/output trace.
+     * This trace can be used to track what arguments
+     * a function has been called and what the deserialized
+     * result was.
+     *
+     * @access  public
+     * @param   &util.log.LogCategory
+     */
+    function setInputOutputTrace(&$cat) {
+      $this->_iotrace= &$cat;
+    }
 
     /**
      * Invoke given method with given argument and
@@ -33,7 +48,12 @@
       } if (catch ('SOAPFaultException', $e)) {
         return throw ($e);
       }
-
+      
+      if ($this->_iotrace) {
+        $this->_iotrace->info('Method', $method, 'called with:', $argument);
+        $this->_iotrace->info('Method', $method, 'returned', $result);
+      }
+      
       return ($result === $argument);
     }
   
@@ -61,7 +81,7 @@
     }
     
     /**
-     * echoInteger
+     * echoIntegerArray
      *
      * @access  public
      * @return  boolean match
@@ -71,6 +91,16 @@
     }
     
     /**
+     * echoInteger
+     *
+     * @access  public
+     * @return  boolean match
+     */
+    function echoIntegerArray() {
+      return $this->identity('echoIntegerArray', array(42, 23));
+    }
+
+    /**
      * echoFloat
      *
      * @access  public
@@ -78,6 +108,16 @@
      */
     function echoFloat() {
       return $this->identity('echoFloat', 0.5);
+    }
+    
+    /**
+     * echoFloatArray
+     *
+     * @access  public
+     * @return  boolean match
+     */
+    function echoFloatArray() {
+      return $this->identity('echoFloatArray', array(0.5, 1.5, 45789234.45));
     }
     
     /**
@@ -93,6 +133,31 @@
           'varInt'    => 23,
           'varFloat'  => 25.776
       ));
+    }
+
+    /**
+     * echoStructArray
+     *
+     * @access  public
+     * @return  boolean match
+     */
+    function echoStructArray() {
+      $s= array(
+        'varString' => 'myString',
+        'varInt'    => 23,
+        'varFloat'  => 25.776
+      );
+      return $this->identity('echoStructArray', array($s, $s));
+    }
+    
+    /**
+     * echoVoid
+     *
+     * @access  public
+     * @return  boolean match
+     */
+    function echoVoid() {
+      return $this->identity('echoVoid', NULL);
     }
   }
 ?>
