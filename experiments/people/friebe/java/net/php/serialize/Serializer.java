@@ -5,9 +5,11 @@
 
 package net.php.serialize;
 
-import java.lang.reflect.*;
-import java.util.HashMap;
-import net.php.serialize.UnserializeException;
+  import java.lang.reflect.*;
+  import java.util.HashMap;
+  import java.util.ArrayList;
+  import java.util.Arrays;
+  import net.php.serialize.UnserializeException;
 
   /**
    * Serializer / unserializer for PHP serialized data
@@ -96,6 +98,24 @@ import net.php.serialize.UnserializeException;
     }
     
     /**
+     * Retrieve a list of all class fields of a class (including the ones
+     * declared in super classes).
+     *
+     * @access  protected
+     * @param   Class c
+     * @return  Field[]
+     */
+    protected static Field[] classFields(Class c) {
+      ArrayList list = new ArrayList();
+      
+      do {
+        list.addAll(Arrays.asList(c.getDeclaredFields()));
+      } while ((c= c.getSuperclass()) != null);
+      
+      return (Field[])list.toArray(new Field[0]);
+    }
+    
+    /**
      * Serializes an object
      *
      * @access  public
@@ -109,7 +129,7 @@ import net.php.serialize.UnserializeException;
       
       StringBuffer buffer= new StringBuffer();
       Class c= o.getClass();
-      Field[] fields= c.getFields();
+      Field[] fields= Serializer.classFields(c);
       
       buffer.append("O:");
       buffer.append(c.getName().length());
@@ -131,7 +151,7 @@ import net.php.serialize.UnserializeException;
           fields[i].setAccessible(true);
           Class fieldClass = fields[i].getType();
 
-System.err.println(c.getName() + ": Field #" + i + " '" + fields[i].getName() + " is a '" + fieldClass.getName() + "'");
+System.err.println(c.getName() + ": Field #" + i + " '" + fields[i].toString());
 
           if (fieldClass == int.class) {
             buffer.append(Serializer.serialize(fields[i].getInt(o))); 
