@@ -159,7 +159,7 @@
     function insert() { 
       $args= func_get_args();
       $args[0]= 'insert '.$args[0];
-      if (FALSE === ($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -178,7 +178,7 @@
     function update() {
       $args= func_get_args();
       $args[0]= 'update '.$args[0];
-      if (FALSE === ($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -196,7 +196,7 @@
     function delete() { 
       $args= func_get_args();
       $args[0]= 'delete '.$args[0];
-      if (FALSE === ($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -214,7 +214,7 @@
     function select() { 
       $args= func_get_args();
       $args[0]= 'select '.$args[0];
-      if (FALSE === ($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
         return FALSE;
       }
       
