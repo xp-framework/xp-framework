@@ -64,7 +64,7 @@
 	    <key>GDK_F5</key>
 	    <signal>clicked</signal>
 	  </accelerator>
-	  <label>Retreive</label>
+	  <label>Retrieve</label>
 	  <icon>receive.xpm</icon>
 	</widget>
 

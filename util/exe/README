@@ -72,7 +72,7 @@ No big deal, simply use:
 $ make exe src=test.php MAKEEMBED='php -q webstart.php http://localhost/webstart/'
 to create the executable.
 
-The sourcecode retreived from http://localhost/webstart/test.php will then
+The sourcecode retrieved from http://localhost/webstart/test.php will then
 be executed as soon as the application starts. Attention! The sourcecode shall
 neither start with <?php nor end with ?> - either create a wrapper program
 on your webserver which will strip these or simply do not include them.

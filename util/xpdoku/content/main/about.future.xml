@@ -81,7 +81,7 @@
           returns a string. The return type has been replaced by an array of
           StackTraceElements.
           <br/><br/>
-          Use the <tt>toString</tt> method to retreive a string representation of the
+          Use the <tt>toString</tt> method to retrieve a string representation of the
           exception instead.
         </text>
       </para>              

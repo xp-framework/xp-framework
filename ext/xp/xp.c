@@ -564,7 +564,7 @@ static void _default_exception_get_entry(zval *object, char *name, int name_len,
 }
 
 /* {{{ proto string Throwable::getFile(void)
-       Retreives file in which this exception was thrown */
+       Retrieves file in which this exception was thrown */
 PHP_FUNCTION(throwable_getfile)
 {
     METHOD_NOT_STATIC;
@@ -575,7 +575,7 @@ PHP_FUNCTION(throwable_getfile)
 /* }}} */
 
 /* {{{ proto int Throwable::getLine(void)
-       Retreives line on which this exception was thrown */
+       Retrieves line on which this exception was thrown */
 PHP_FUNCTION(throwable_getline)
 {
     METHOD_NOT_STATIC;
@@ -586,7 +586,7 @@ PHP_FUNCTION(throwable_getline)
 /* }}} */
 
 /* {{{ proto string Throwable::getMessage(void)
-       Retreives exception message */
+       Retrieves exception message */
 PHP_FUNCTION(throwable_getmessage)
 {
     METHOD_NOT_STATIC
@@ -597,7 +597,7 @@ PHP_FUNCTION(throwable_getmessage)
 /* }}} */
 
 /* {{{ proto int Throwable::getCode(void)
-       Retreives exception code */
+       Retrieves exception code */
 PHP_FUNCTION(throwable_getcode)
 {
     METHOD_NOT_STATIC;

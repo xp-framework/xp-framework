@@ -54,7 +54,7 @@ int main(int argc, char **argv)
       fprintf(stderr, "*** Internal error\\n");
     }
   } else {
-    fprintf(stderr, "*** Failed to retreive\\n");
+    fprintf(stderr, "*** Failed to retrieve\\n");
   }
   php_stream_close(stream);
   

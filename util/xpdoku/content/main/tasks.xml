@@ -228,7 +228,7 @@
     $response= &$s->process();
   } if (catch('HttpScriptletException', $e)) {
   
-    // Retreive standard "Internal Server Error"-Document
+    // Retrieve standard "Internal Server Error"-Document
     // Remember: Faults are already handled by SoapRpcRouter - this
     // will take care of GET, HEAD or any other request except for POST
     $response= &$e->getResponse(); 
