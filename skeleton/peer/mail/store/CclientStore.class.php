@@ -269,7 +269,10 @@
         }
 
         for ($i= 0, $s= sizeof($list); $i < $s; $i++) {
-          $m= &new Message($list[$i]->uid);
+          $header= $this->getMessagePart($f, $list[$i]->uid, '0');
+          $class= strstr($header, 'ype: multipart/') ? 'MimeMessage': 'Message';
+          
+          $m= &new $class($list[$i]->uid);
           $m->size= $list[$i]->size;
           $m->folder= &$f;
           $m->body= NULL;   // Indicate this needs to be fetched
@@ -284,7 +287,7 @@
           if ($list[$i]->draft)    $m->flags |= MAIL_FLAG_DRAFT;
 
           // Parse headers
-          $m->setHeaderString($this->getMessagePart($f, $list[$i]->uid, '0'));
+          $m->setHeaderString($header);
           
           // Cache it
           $this->cache->put(SKEY_LIST.SKEY_MESSAGE.$f->name.'.'.$list[$i]->msgno, $m);
