@@ -347,10 +347,10 @@
           $valid= $this->request->session->isValid();
         } if (catch('Exception', $e)) {
           if (!$this->_handleInvalidSession()) {
-            return throw(throw(new HttpSessionInvalidException(
+            return throw(new HttpSessionInvalidException(
              'Session initialize failed: '.$e->message,
              HTTP_BAD_REQUEST
-            )));
+            ));
           }
         }
         
