@@ -37,7 +37,7 @@
      * @return  bool connected
      */
     function isConnected() {
-      return is_resource($this->_sock);
+      return isset($this->_sock) && is_resource($this->_sock);
     }
     
     function connect() {
