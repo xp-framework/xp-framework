@@ -14,7 +14,7 @@
   
   // {{{ main
   $p= &new ParamString();
-  if (2 != $p->count || $p->exists('help', '?')) {
+  if (2 > $p->count || $p->exists('help', '?')) {
     printf(
       "Usage:   %1\$s <filename> [--debug]\n".
       "Example: find skeleton2/ -name '*.php' -exec php -q -C %1\$s {} \;\n",
@@ -23,11 +23,14 @@
     exit();
   }
   $DEBUG= $p->exists('debug');
+  $filename= realpath($p->value(1));
   
-  printf("===> %s...\n", $p->value(1));
+  // Tokenize
+  printf("===> %s\n", $filename);
+  exit();
   $t= &new PHPTokenizer();
   try(); {
-    $t->setTokenString(FileUtil::getContents(new File($p->value(1))));
+    $t->setTokenString(FileUtil::getContents(new File($filename)));
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
     exit();
@@ -37,7 +40,7 @@
   if ($tok= $t->getFirstToken()) do {
     $DEBUG && printf("%s: %s\n", $t->getTokenName($tok[0]), $tok[1]);
     
-    switch (strtolower($tok[1])) {        
+    switch (strtolower($tok[1])) {
       case 'try':       // try(); {
         while ('{' !== $tok[1]) $tok= $t->getNextToken();
         $out[]= 'try ';
@@ -85,7 +88,7 @@
     exit();
   }
   
-  $f= &new File($p->value(1));
+  $f= &new File($filename);
   try(); {
     $f->open(FILE_MODE_WRITE);
     $f->write(implode('', $out));
