@@ -1,6 +1,6 @@
 <?php
-  import('net.http.HTTPRequest');
-  import('xml.soap.SOAPMessage');
+  uses('net.http.HTTPRequest');
+  uses('xml.soap.SOAPMessage');
   
   class SOAPClient extends HTTPRequest {
     var 
@@ -31,7 +31,7 @@
       // POST
       try(); {
         $return= $this->post('#'.XML_DECLARATION.$this->call->getSource(0));
-      } if ($e= catch(E_IO_EXCEPTION)) {
+      } if (catch('IOException', $e)) {
         return throw($e->type, $this->request);
       }
       
@@ -53,7 +53,7 @@
       $this->answer->action= $this->action;
       try(); {
         $this->answer->fromString($this->response->body);
-      } if ($e= catch(E_ANY_EXCEPTION)) {
+      } if (catch('Exception', $e)) {
         return throw($e->type, $this->response);
       }
       
@@ -61,7 +61,7 @@
       $this->fault= NULL;
       if (intval($this->response->HTTPstatus) != 200) {
         $this->fault= $this->answer->getFault();
-        return throw(E_SOAP_FAULT_EXCEPTION, $this->fault->faultstring);
+        return throw(new SoapFaultException($this->fault->faultstring));
       }
 
       # IFDEF PROFILING

@@ -1,5 +1,5 @@
 <?php
-  import('xml.Node');
+  uses('xml.Node');
 
   class WSDLNode extends Node {
     var $_tmap, $_cmap;
@@ -70,7 +70,7 @@
       // echo 'Setting "'.$ret.'" to '.$t."\n";
       try(); {
         settype($ret, $t);
-      } if ($e= catch(E_ANY_EXCEPTION)) {
+      } if (catch('Exception', $e)) {
         settype($ret, 'string');         // Default "string"
       } 
       return $ret;

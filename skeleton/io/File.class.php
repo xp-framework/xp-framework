@@ -217,7 +217,24 @@
     }
 
     /**
-     * Lesen.
+     * Lesen (max $bytes Zeichen oder bis zum Zeilenende)
+     *
+     * @param   (int)bytes default 4096 Anzahl max. zu lesender Bytes
+     * @return  (string)line Gelesene Bytes
+     * @throws  IOException, wenn nicht gelesen werden kann
+     * @throws  IllegalStateException, wenn keine Datei offen
+     */
+    function gets($bytes= 4096) {
+      if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
+      $result= @fgets($this->_fd, $bytes);
+      if ($result === FALSE) {
+        return throw(new IOException('cannot read '.$bytes.' bytes from '.$this->uri));
+      }
+      return $result;
+    }
+
+    /**
+     * Lesen
      *
      * @param   (int)bytes default 4096 Anzahl max. zu lesender Bytes
      * @return  (string)line Gelesene Bytes
@@ -234,7 +251,7 @@
     }
 
     /**
-     * Schreiben.
+     * Schreiben
      *
      * @return  (bool)success
      * @throws  IOException, wenn nicht geschrieben werden kann
@@ -242,7 +259,7 @@
      */
     function write($string) {
       if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
-      $result= @fputs($this->_fd, $string);
+      $result= @fwrite($this->_fd, $string);
       if (!$result) {
         throw(new IOException('cannot write '.strlen($string).' bytes to '.$this->uri));
       }

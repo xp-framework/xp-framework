@@ -1,10 +1,10 @@
 <?php
   define('E_SOAP_FAULT_EXCEPTION', 0x2FFF);
   
-  import('xml.Tree');
-  import('xml.Node');
-  import('xml.soap.WSDLNode');
-  import('xml.soap.SOAPFault');
+  uses('xml.Tree');
+  uses('xml.Node');
+  uses('xml.soap.WSDLNode');
+  uses('xml.soap.SOAPFault');
   
   class SOAPMessage extends Tree {
     var $body;
