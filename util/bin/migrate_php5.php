@@ -84,7 +84,15 @@ __;
       foreach (preg_split('/[\r\n]([\s\t]*\* ?)?/', $tok[1]) as $line) {
         if ('@' != $line{0}) continue;
         $args= preg_split('/[\s\t]+/', substr($line, 1), 2);
-        $apidoc[$args[0]]= isset($args[1]) ? $args[1] : TRUE;
+        switch ($args[0]) {
+          case 'param':
+            list($type, $name)= explode(' ', $args[1]);
+            $apidoc['params'][$name]= $type;
+            break;
+
+          default:
+            $apidoc[$args[0]]= isset($args[1]) ? $args[1] : TRUE;
+        }
       }
     }
     
@@ -184,8 +192,30 @@ __;
         if (@$apidoc['model'] == 'abstract') $out[]= ' abstract';
         if (@$apidoc['model'] == 'final') $out[]= ' final';
         
-        // Skip until method body
         $out[]= ' function ';
+
+        // Skip until parameters begin
+        while ('(' !== $tok[1]) {
+          $out[]= $tok[1];
+          $tok= $t->getNextToken();
+        }
+        
+        // Add type hints if applicable, strip off reference operator
+        while (')' !== $tok[1]) {
+          if ('&' == $tok[1]) {
+            $tok= $t->getNextToken();
+          }
+          if (T_VARIABLE == $tok[0]) {
+            $type= @$apidoc['params'][substr($tok[1], 1)];
+            if ('&' == $type{0}) {
+              $out[]= substr($type, strrpos($type, '.')+ 1).' ';
+            }
+          }
+          $out[]= $tok[1];
+          $tok= $t->getNextToken();
+        }
+
+        // Skip until method body
         while ('{' !== $tok[1]) {
           $out[]= $tok[1];
           $tok= $t->getNextToken();
