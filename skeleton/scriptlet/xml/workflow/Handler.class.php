@@ -199,9 +199,10 @@
      *
      * @access  protected
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   &scriptlet.xml.Context context
      * @return  bool
      */
-    function isActive(&$request) {
+    function isActive(&$request, &$context) {
       return ($request->getParam('__handler') == $this->name);
     }
 
@@ -213,9 +214,10 @@
      *
      * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   &scriptlet.xml.Context context
      * @return  bool
      */
-    function setup(&$request) { 
+    function setup(&$request, &$context) { 
       return TRUE;
     }
 
@@ -224,9 +226,10 @@
      *
      * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   &scriptlet.xml.Context context
      * @return  bool
      */
-    function needsData(&$request) {
+    function needsData(&$request, &$context) {
       return TRUE;
     }  
 
@@ -235,8 +238,9 @@
      *
      * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   &scriptlet.xml.Context context
      */
-    function handleErrorCondition(&$request) {
+    function handleErrorCondition(&$request, &$context) {
       return FALSE;
     }
 
@@ -245,8 +249,9 @@
      *
      * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   &scriptlet.xml.Context context
      */
-    function handleSubmittedData(&$request) {
+    function handleSubmittedData(&$request, &$context) {
       return FALSE;
     }
     
@@ -256,7 +261,8 @@
      * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @param   &scriptlet.xml.Context context
      */
-    function finalize(&$request, &$response) { }
+    function finalize(&$request, &$response, &$context) { }
   }
 ?>

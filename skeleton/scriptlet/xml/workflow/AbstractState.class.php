@@ -73,7 +73,7 @@
             // Set up the handler if necessary
             if ($setup) {
               try(); {
-                $result= $this->handlers[$i]->setup($request);
+                $result= $this->handlers[$i]->setup($request, $context);
               } if (catch('Exception', $e)) {
                 return throw($e);
               }
@@ -125,11 +125,11 @@
             }
 
             // If the handler is not active, ask the next handler
-            if (!$this->handlers[$i]->isActive($request)) continue;
+            if (!$this->handlers[$i]->isActive($request, $context)) continue;
 
             // Check if the handler needs data. In case it does, call the
             // handleSubmittedData() method
-            if (!$this->handlers[$i]->needsData($request)) continue;
+            if (!$this->handlers[$i]->needsData($request, $context)) continue;
             
             // If the handler has a wrapper, tell it to load its values from the
             // request.
@@ -143,9 +143,9 @@
             // errors. In this case, we won't even bother to continue processing
             // the data.
             if (!$this->handlers[$i]->errorsOccured()) {
-              $handled= $this->handlers[$i]->handleSubmittedData($request);
+              $handled= $this->handlers[$i]->handleSubmittedData($request, $context);
             } else {
-              $handled= $this->handlers[$i]->handleErrorCondition($request);
+              $handled= $this->handlers[$i]->handleErrorCondition($request, $context);
             }
 
             // Check whether errors occured
@@ -167,7 +167,7 @@
 
             // Tell the handler to finalize itself. This may include adding a 
             // node to the formresult or sending a redirect to another page
-            $this->handlers[$i]->finalize($request, $response);
+            $this->handlers[$i]->finalize($request, $response, $context);
             $handler->setAttribute('status', HANDLER_SUCCESS);
           }
         }
