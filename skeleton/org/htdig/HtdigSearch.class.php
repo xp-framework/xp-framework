@@ -252,7 +252,7 @@
       try(); {
       
         // Parse metadata result
-        while (FALSE !== current($output) && !$csvdef) {
+        while (FALSE !== current($output) && !$hasCsv) {
           $meta= explode(':', trim(current($output)));
 
           if ('CSV' != trim($meta[0])) {
