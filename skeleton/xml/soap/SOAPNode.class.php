@@ -126,7 +126,7 @@
       if (is_array($value)) {           // Array
         if (is_numeric(key($value))) {
           $child->attribute['xsi:type']= 'SOAP-ENC:Array';
-          $child->attribute['SOAP-ENC:arrayType']= 'xsd:anyType['.sizeof($a[$key]).']';
+          $child->attribute['SOAP-ENC:arrayType']= 'xsd:anyType['.sizeof($value).']';
         } else {
           $child->attribute['xsi:type']= 'xsd:ur-type';
         }
