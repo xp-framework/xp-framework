@@ -4,18 +4,12 @@
  * $Id$
  */
  
-uses('lang.Exception');
-
-namespace lang { 
- 
   /**
-   * ClassNotFoundException
+   * Kapselt die ClassNotFoundException
    *
-   * @purpose  Exception
-   * @see      xp://lang.Exception
+   * @see Exception
    */
-  class ClassNotFoundException extends lang::Exception {
-
+  class ClassNotFoundException extends Exception {
+  
   }
-}
 ?>

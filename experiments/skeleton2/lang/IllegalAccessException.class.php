@@ -4,18 +4,12 @@
  * $Id$
  */
  
-uses('lang.Exception');
-
-namespace lang { 
- 
   /**
-   * IllegalAccessException
+   * Kapselt die IllegalAccessException
    *
-   * @purpose  Exception
-   * @see      xp://lang.Exception
+   * @see Exception
    */
-  class IllegalAccessException extends lang::Exception {
-
+  class IllegalAccessException extends Exception {
+  
   }
-}
 ?>

@@ -4,18 +4,12 @@
  * $Id$
  */
  
-uses('lang.Exception');
-
-namespace lang { 
- 
   /**
-   * FormatException
+   * Kapselt die FormatException
    *
-   * @purpose  Exception
-   * @see      xp://lang.Exception
+   * @see   xp://lang.Exception
    */
-  class FormatException extends lang::Exception {
-
+  class FormatException extends Exception {
+  
   }
-}
 ?>

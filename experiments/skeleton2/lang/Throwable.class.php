@@ -1,86 +1,90 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$
+ * $Id$ 
  */
- 
-uses('lang.StackTraceElement');
 
-namespace lang { 
- 
+  uses('lang.StackTraceElement');
+
   /**
-   * Exception
+   * Throwable
    *
-   * @purpose  Base class for all other exceptions
-   * @see      http://java.sun.com/docs/books/tutorial/essential/exceptions/definition.html
+   * @see      xp://lang.Error
+   * @see      xp://lang.Exception
+   * @purpose  Base class
    */
-  class Throwable extends lang::Object {
-    public 
+  class Throwable extends Object {
+    var 
       $message  = '',
       $trace    = array();
-     
+
     /**
      * Constructor
      *
      * @access  public
      * @param   string message
      */
-    public function __construct($message) {
+    function __construct($message) {
+      static $except= array(
+        'call_user_func_array', 'call_user_func', 'object', '__call', '__set', '__get'
+      );
       $this->message= $message;
+      
+      $errors= xp::registry('errors');
       foreach (debug_backtrace() as $trace) {
-        $this->trace[]= new lang::StackTraceElement(
-          $trace['file'],
-          $trace['class'],
-          $trace['function'],
-          $trace['line'],
-          @xp::registry::$errors[$trace['file']]
+        if (!isset($trace['function']) || in_array($trace['function'], $except)) continue;
+
+        // Pop error messages off the copied error stack
+        if (isset($trace['file']) && isset($errors[$trace['file']])) {
+          $messages= $errors[$trace['file']];
+          unset($errors[$trace['file']]);
+        } else {
+          $messages= array();
+        }
+
+        // Not all of these are always set: debug_backtrace() should
+        // initialize these - at least - to NULL, IMO => Workaround.
+        $this->trace[]= &new StackTraceElement(
+          isset($trace['file']) ? $trace['file'] : NULL,
+          isset($trace['class']) ? $trace['class'] : NULL,
+          isset($trace['function']) ? $trace['function'] : NULL,
+          isset($trace['line']) ? $trace['line'] : NULL,
+          isset($trace['args']) ? $trace['args'] : NULL,
+          $messages
         );
       }
+      
+      // Remaining error messages
+      foreach (array_keys($errors) as $key) {
+        $class= ('.class.php' == substr($key, -10)
+          ? strtolower(substr(basename($key), 0, -10))
+          : '<main>'
+        );
+        for ($i= 0, $s= sizeof($errors[$key]); $i < $s; $i++) { 
+          $this->trace[]= &new StackTraceElement(
+            $key,
+            $class,
+            NULL,
+            $errors[$key][$i][2],
+            array(),
+            array($errors[$key][$i])
+          );
+        }
+      }
+      
+      parent::__construct();
     }
-    
+
     /**
-     * Print "stacktrace" to standard output
-     *
-     * @see     xp://lang.Exception#toString
-     * @access  public
-     */
-    public function printStackTrace() {
-      print self::toString();
-    }
-    
-    /**
-     * Return formatted output of stacktrace
-     *
-     * Example:
-     * <pre>
-     * Exception io.IOException (Could not connect to localFOO:21 within 4 seconds)
-     *   at io.IOException:__construct (from FtpConnection.class.php, line 119)
-     *   at peer.ftp.FtpConnection:connect (from FtpConnection.class.php, line 103:
-     *     ftp_connect() [http://www.php.net/function.ftp-connect]:
-     *     php_network_getaddresses: getaddrinfo failed: No address associated with
-     *     hostname
-     *   )
-     *   at peer.ftp.FtpConnection:connect (from test.php, line 7)
-     *   at test.php:<main> (from test.php, line 5:
-     *     Use of undefined constant FOO - assumed 'FOO'
-     *   )
-     * </pre>
+     * Get Message
      *
      * @access  public
      * @return  string
      */
-    public function toString() {
-      $s= sprintf(
-        "Exception %s (%s)\n",
-        self::getClassName(),
-        $this->message
-      );
-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
-        $s.= $this->trace[$i]->toString();
-      }
-      return $s;
+    function getMessage() {
+      return $this->message;
     }
-    
+
     /**
      * Return an array of stack trace elements
      *
@@ -88,20 +92,47 @@ namespace lang {
      * @return  lang.StackTraceElement[] array of stack trace elements
      * @see     xp://lang.StackTraceElement
      */
-    public function getStackTrace() {
+    function getStackTrace() {
       return $this->trace;
     }
-    
+
     /**
-     * Return the message
+     * Print "stacktrace" to standard error
+     *
+     * @see     xp://lang.Throwable#toString
+     * @param   resource fd default STDERR
+     * @access  public
+     */
+    function printStackTrace($fd= STDERR) {
+      fputs($fd, $this->toString());
+    }
+ 
+    /**
+     * Return formatted output of stacktrace
+     *
+     * Example:
+     * <pre>
+     * Exception lang.ClassNotFoundException (class "" [] not found)
+     *   at lang.ClassNotFoundException::__construct((0x15)'class "" [] not found') \
+     *   [line 79 of StackTraceElement.class.php] 
+     *   at lang.ClassLoader::loadclass(NULL) [line 143 of XPClass.class.php] 
+     *   at lang.XPClass::forname(NULL) [line 6 of base_test.php] \
+     *   Undefined variable:  nam
+     * </pre>
      *
      * @access  public
-     * @return  string message
+     * @return  string
      */
-    public function getMessage() {
-      return $this->message;
+    function toString() {
+      $s= sprintf(
+        "Exception %s (%s)\n",
+        $this->getClassName(),
+        $this->message
+      );
+      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
+        $s.= $this->trace[$i]->toString();
+      }
+      return $s;
     }
-
   }
-}
 ?>
