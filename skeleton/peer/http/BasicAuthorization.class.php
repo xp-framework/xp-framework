@@ -38,6 +38,40 @@
       $this->pass= $pass;
       parent::__construct('Authorization', 'Basic');
     }
+
+    /**
+     * Returns the username
+     *
+     * @access  public
+     * @return  string
+     */    
+    function getUser() {
+      return $this->user;
+    }
+    
+    /**
+     * Returns the password
+     *
+     * @access  public
+     * @return  string
+     */    
+    function getPassword() {
+      return $this->password;
+    }
+    
+    /**
+     * Returns a BasicAuthorization object from header value; returns
+     * FALSE on error.
+     *
+     * @access  public
+     * @param   stirng value The header value
+     * @return  peer.http.BasicAuthorization
+     */    
+    function fromValue($value) {
+      if (!preg_match('/^Basic (.*)$/', $value, $matches)) return FALSE;
+      list($user, $password)= explode(':', base64_decode($matches[1]));
+      return new BasicAuthorization($user, $password);
+    }
     
     /**
      * Get header value representation
