@@ -7,7 +7,7 @@
   /**
    * Assertion exception
    *
-   * @see      xp://util.Assert#exception
+   * @see      xp://util.profiling.Assert#exception
    * @purpose  Indicates an assertion failed
    */
   class AssertException extends Exception {

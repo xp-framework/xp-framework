@@ -8,7 +8,7 @@
    * Format base class
    *
    * @purpose  Provide a base class to all format classes
-   * @see      xp://text.format.MessageFormat#addFormatter
+   * @see      xp://text.format.MessageFormat#setFormatter
    * @model    static
    */
   class IFormat extends Object {
