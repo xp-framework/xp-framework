@@ -1,10 +1,10 @@
 Index: Zend/zend.h
 ===================================================================
 RCS file: /repository/ZendEngine2/zend.h,v
-retrieving revision 1.264
-diff -u -r1.264 zend.h
---- Zend/zend.h	26 Sep 2004 22:19:57 -0000	1.264
-+++ Zend/zend.h	30 Oct 2004 12:57:51 -0000
+retrieving revision 1.265
+diff -u -r1.265 zend.h
+--- Zend/zend.h	30 Oct 2004 22:56:59 -0000	1.265
++++ Zend/zend.h	2 Nov 2004 14:01:05 -0000
 @@ -255,6 +255,8 @@
   */
  typedef struct _zval_struct zval;
@@ -38,7 +38,7 @@ RCS file: /repository/ZendEngine2/zend_API.c,v
 retrieving revision 1.268
 diff -u -r1.268 zend_API.c
 --- Zend/zend_API.c	29 Sep 2004 20:57:07 -0000	1.268
-+++ Zend/zend_API.c	30 Oct 2004 12:57:52 -0000
++++ Zend/zend_API.c	2 Nov 2004 14:01:06 -0000
 @@ -1313,6 +1313,9 @@
  			internal_function->return_reference = ptr->arg_info[0].return_reference;
  		} else {
@@ -55,7 +55,7 @@ RCS file: /repository/ZendEngine2/zend_compile.c,v
 retrieving revision 1.600
 diff -u -r1.600 zend_compile.c
 --- Zend/zend_compile.c	16 Oct 2004 23:17:58 -0000	1.600
-+++ Zend/zend_compile.c	30 Oct 2004 12:57:53 -0000
++++ Zend/zend_compile.c	2 Nov 2004 14:01:08 -0000
 @@ -125,7 +125,10 @@
  	zend_stack_init(&CG(foreach_copy_stack));
  	zend_stack_init(&CG(object_stack));
@@ -315,7 +315,7 @@ RCS file: /repository/ZendEngine2/zend_compile.h,v
 retrieving revision 1.297
 diff -u -r1.297 zend_compile.h
 --- Zend/zend_compile.h	27 Oct 2004 17:58:45 -0000	1.297
-+++ Zend/zend_compile.h	30 Oct 2004 12:57:54 -0000
++++ Zend/zend_compile.h	2 Nov 2004 14:01:09 -0000
 @@ -45,6 +45,23 @@
          CG(doc_comment) = NULL;  \
          CG(doc_comment_len) = 0; \
@@ -402,7 +402,7 @@ RCS file: /repository/ZendEngine2/zend_exceptions.c,v
 retrieving revision 1.74
 diff -u -r1.74 zend_exceptions.c
 --- Zend/zend_exceptions.c	30 Oct 2004 10:13:27 -0000	1.74
-+++ Zend/zend_exceptions.c	30 Oct 2004 12:57:54 -0000
++++ Zend/zend_exceptions.c	2 Nov 2004 14:01:10 -0000
 @@ -28,6 +28,7 @@
  #include "zend_interfaces.h"
  #include "zend_exceptions.h"
@@ -464,7 +464,7 @@ RCS file: /repository/ZendEngine2/zend_globals.h,v
 retrieving revision 1.139
 diff -u -r1.139 zend_globals.h
 --- Zend/zend_globals.h	23 Sep 2004 06:23:36 -0000	1.139
-+++ Zend/zend_globals.h	30 Oct 2004 12:57:54 -0000
++++ Zend/zend_globals.h	2 Nov 2004 14:01:10 -0000
 @@ -73,8 +73,11 @@
  	zend_stack foreach_copy_stack;
  	zend_stack object_stack;
@@ -483,7 +483,7 @@ RCS file: /repository/ZendEngine2/zend_language_parser.y,v
 retrieving revision 1.151
 diff -u -r1.151 zend_language_parser.y
 --- Zend/zend_language_parser.y	4 Oct 2004 19:54:34 -0000	1.151
-+++ Zend/zend_language_parser.y	30 Oct 2004 12:57:55 -0000
++++ Zend/zend_language_parser.y	2 Nov 2004 14:01:11 -0000
 @@ -111,6 +111,7 @@
  %token T_TRY
  %token T_CATCH
@@ -659,15 +659,7 @@ diff -u -r1.151 zend_language_parser.y
  	|	T_CLONE expr { zend_do_clone(&$$, &$2 TSRMLS_CC); }
  	|	variable T_PLUS_EQUAL expr 	{ zend_check_writable_variable(&$1); zend_do_end_variable_parse(BP_VAR_RW, 0 TSRMLS_CC); zend_do_binary_assign_op(ZEND_ASSIGN_ADD, &$$, &$1, &$3 TSRMLS_CC); }
  	|	variable T_MINUS_EQUAL expr	{ zend_check_writable_variable(&$1); zend_do_end_variable_parse(BP_VAR_RW, 0 TSRMLS_CC); zend_do_binary_assign_op(ZEND_ASSIGN_SUB, &$$, &$1, &$3 TSRMLS_CC); }
-@@ -606,6 +688,7 @@
- 	|	'@' { zend_do_begin_silence(&$1 TSRMLS_CC); } expr { zend_do_end_silence(&$1 TSRMLS_CC); $$ = $3; }
- 	|	scalar				{ $$ = $1; }
- 	|	T_ARRAY '(' array_pair_list ')' { $$ = $3; }
-+	|	'[' array_pair_list ']' { $$ = $2; }
- 	|	'`' encaps_list '`'		{ zend_do_shell_exec(&$$, &$2 TSRMLS_CC); }
- 	|	T_PRINT expr  { zend_do_print(&$$, &$2 TSRMLS_CC); }
- ;
-@@ -627,10 +710,12 @@
+@@ -627,10 +709,12 @@
  
  fully_qualified_class_name:
  		T_STRING { zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
@@ -680,7 +672,7 @@ diff -u -r1.151 zend_language_parser.y
  	|	dynamic_class_name_reference	{ zend_do_end_variable_parse(BP_VAR_R, 0 TSRMLS_CC); zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
  ;
  
-@@ -661,8 +746,7 @@
+@@ -661,8 +745,7 @@
  
  
  ctor_arguments:
@@ -690,21 +682,13 @@ diff -u -r1.151 zend_language_parser.y
  ;
  
  
-@@ -684,6 +768,7 @@
- 	|	'+' static_scalar	{ $$ = $2; }
- 	|	'-' static_scalar	{ zval minus_one;  minus_one.type = IS_LONG; minus_one.value.lval = -1;  mul_function(&$2.u.constant, &$2.u.constant, &minus_one TSRMLS_CC);  $$ = $2; } 
- 	|	T_ARRAY '(' static_array_pair_list ')' { $$ = $3; $$.u.constant.type = IS_CONSTANT_ARRAY; }
-+	|	'[' static_array_pair_list ']' { $$ = $2; $$.u.constant.type = IS_CONSTANT_ARRAY; }
- 	|	static_class_constant { $$ = $1; }
- ;
- 
 Index: Zend/zend_language_scanner.l
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_language_scanner.l,v
 retrieving revision 1.115
 diff -u -r1.115 zend_language_scanner.l
 --- Zend/zend_language_scanner.l	2 Aug 2004 16:38:09 -0000	1.115
-+++ Zend/zend_language_scanner.l	30 Oct 2004 12:57:56 -0000
++++ Zend/zend_language_scanner.l	2 Nov 2004 14:01:11 -0000
 @@ -794,6 +794,10 @@
  	return T_THROW;
  }
@@ -762,11 +746,11 @@ diff -u -r1.115 zend_language_scanner.l
 Index: Zend/zend_object_handlers.c
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_object_handlers.c,v
-retrieving revision 1.105
-diff -u -r1.105 zend_object_handlers.c
---- Zend/zend_object_handlers.c	28 Sep 2004 22:55:22 -0000	1.105
-+++ Zend/zend_object_handlers.c	30 Oct 2004 12:57:56 -0000
-@@ -605,6 +605,8 @@
+retrieving revision 1.106
+diff -u -r1.106 zend_object_handlers.c
+--- Zend/zend_object_handlers.c	30 Oct 2004 19:11:37 -0000	1.106
++++ Zend/zend_object_handlers.c	2 Nov 2004 14:01:11 -0000
+@@ -606,6 +606,8 @@
  			call_user_call->handler = zend_std_call_user_call;
  			call_user_call->arg_info = NULL;
  			call_user_call->num_args = 0;
@@ -781,7 +765,7 @@ RCS file: /repository/ZendEngine2/zend_opcode.c,v
 retrieving revision 1.109
 diff -u -r1.109 zend_opcode.c
 --- Zend/zend_opcode.c	4 Oct 2004 19:54:34 -0000	1.109
-+++ Zend/zend_opcode.c	30 Oct 2004 12:57:56 -0000
++++ Zend/zend_opcode.c	2 Nov 2004 14:01:11 -0000
 @@ -78,6 +78,9 @@
  	op_array->doc_comment = NULL;
  	op_array->doc_comment_len = 0;
@@ -828,7 +812,7 @@ RCS file: /repository/ZendEngine2/zend_operators.c,v
 retrieving revision 1.201
 diff -u -r1.201 zend_operators.c
 --- Zend/zend_operators.c	29 Oct 2004 00:55:11 -0000	1.201
-+++ Zend/zend_operators.c	30 Oct 2004 12:57:57 -0000
++++ Zend/zend_operators.c	2 Nov 2004 14:01:11 -0000
 @@ -101,6 +101,55 @@
  	return result;
  }
@@ -1012,10 +996,10 @@ diff -u -r1.201 zend_operators.c
 Index: Zend/zend_reflection_api.c
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_reflection_api.c,v
-retrieving revision 1.133
-diff -u -r1.133 zend_reflection_api.c
---- Zend/zend_reflection_api.c	30 Oct 2004 10:13:27 -0000	1.133
-+++ Zend/zend_reflection_api.c	30 Oct 2004 12:57:58 -0000
+retrieving revision 1.136
+diff -u -r1.136 zend_reflection_api.c
+--- Zend/zend_reflection_api.c	31 Oct 2004 15:30:53 -0000	1.136
++++ Zend/zend_reflection_api.c	2 Nov 2004 14:01:12 -0000
 @@ -631,7 +631,18 @@
  	if (fptr->type == ZEND_USER_FUNCTION && fptr->op_array.return_reference) {
  		string_printf(str, "&");
@@ -1036,7 +1020,7 @@ diff -u -r1.133 zend_reflection_api.c
  	/* The information where a function is declared is only available for user classes */
  	if (fptr->type == ZEND_USER_FUNCTION) {
  		string_printf(str, "%s  @@ %s %d - %d\n", indent, 
-@@ -1432,7 +1443,7 @@
+@@ -1496,7 +1507,7 @@
  }
  /* }}} */
  
@@ -1045,7 +1029,7 @@ diff -u -r1.133 zend_reflection_api.c
     Returns an array of parameter objects for this function */
  ZEND_METHOD(reflection_function, getParameters)
  {
-@@ -1459,6 +1470,32 @@
+@@ -1523,6 +1534,32 @@
  }
  /* }}} */
  
@@ -1078,7 +1062,7 @@ diff -u -r1.133 zend_reflection_api.c
  /* {{{ proto public static mixed ReflectionParameter::export(mixed function, mixed parameter [, bool return]) throws ReflectionException
     Exports a reflection object. Returns the output if TRUE is specified for return, printing it otherwise. */
  ZEND_METHOD(reflection_parameter, export)
-@@ -2050,6 +2087,68 @@
+@@ -2210,6 +2247,68 @@
  }
  /* }}} */
  
@@ -1147,7 +1131,7 @@ diff -u -r1.133 zend_reflection_api.c
  /* {{{ proto public static mixed ReflectionClass::export(mixed argument [, bool return]) throws ReflectionException
     Exports a reflection object. Returns the output if TRUE is specified for return, printing it otherwise. */
  ZEND_METHOD(reflection_class, export)
-@@ -2797,6 +2896,24 @@
+@@ -2957,6 +3056,24 @@
  }
  /* }}} */
  
@@ -1172,17 +1156,17 @@ diff -u -r1.133 zend_reflection_api.c
  /* {{{ proto public ReflectionExtension|NULL ReflectionClass::getExtension()
     Returns NULL or the extension the class belongs to */
  ZEND_METHOD(reflection_class, getExtension)
-@@ -3411,6 +3528,7 @@
- 	ZEND_ME(reflection_function, invoke, NULL, 0)
+@@ -3572,6 +3689,7 @@
+ 	ZEND_ME(reflection_function, invokeArgs, NULL, 0)
  	ZEND_ME(reflection_function, returnsReference, NULL, 0)
  	ZEND_ME(reflection_function, getParameters, NULL, 0)
 +	ZEND_ME(reflection_function, getExceptionTypes, NULL, 0)
  	ZEND_ME(reflection_function, getNumberOfParameters, NULL, 0)
  	ZEND_ME(reflection_function, getNumberOfRequiredParameters, NULL, 0)
  	{NULL, NULL, NULL}
-@@ -3431,6 +3549,9 @@
- 	ZEND_ME(reflection_method, getModifiers, NULL, 0)
+@@ -3593,6 +3711,9 @@
  	ZEND_ME(reflection_method, invoke, NULL, 0)
+ 	ZEND_ME(reflection_method, invokeArgs, NULL, 0)
  	ZEND_ME(reflection_method, getDeclaringClass, NULL, 0)
 +	ZEND_ME(reflection_method, hasAnnotation, NULL, 0)
 +	ZEND_ME(reflection_method, getAnnotation, NULL, 0)
@@ -1190,7 +1174,7 @@ diff -u -r1.133 zend_reflection_api.c
  	{NULL, NULL, NULL}
  };
  
-@@ -3466,6 +3587,7 @@
+@@ -3628,6 +3749,7 @@
  	ZEND_ME(reflection_class, getStaticProperties, NULL, 0)
  	ZEND_ME(reflection_class, getDefaultProperties, NULL, 0)
  	ZEND_ME(reflection_class, isIterateable, NULL, 0)
@@ -1201,10 +1185,10 @@ diff -u -r1.133 zend_reflection_api.c
 Index: Zend/zend_vm_def.h
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_vm_def.h,v
-retrieving revision 1.1
-diff -u -r1.1 zend_vm_def.h
---- Zend/zend_vm_def.h	22 Oct 2004 21:42:14 -0000	1.1
-+++ Zend/zend_vm_def.h	30 Oct 2004 12:58:01 -0000
+retrieving revision 1.2
+diff -u -r1.2 zend_vm_def.h
+--- Zend/zend_vm_def.h	30 Oct 2004 19:11:37 -0000	1.2
++++ Zend/zend_vm_def.h	2 Nov 2004 14:01:13 -0000
 @@ -3421,3 +3421,34 @@
  	ZEND_VM_NEXT_OPCODE();
  }
@@ -1243,10 +1227,10 @@ diff -u -r1.1 zend_vm_def.h
 Index: Zend/zend_vm_execute.h
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_vm_execute.h,v
-retrieving revision 1.2
-diff -u -r1.2 zend_vm_execute.h
---- Zend/zend_vm_execute.h	27 Oct 2004 17:58:45 -0000	1.2
-+++ Zend/zend_vm_execute.h	30 Oct 2004 12:58:07 -0000
+retrieving revision 1.3
+diff -u -r1.3 zend_vm_execute.h
+--- Zend/zend_vm_execute.h	30 Oct 2004 19:11:37 -0000	1.3
++++ Zend/zend_vm_execute.h	2 Nov 2004 14:01:21 -0000
 @@ -483,6 +483,37 @@
  	ZEND_VM_NEXT_OPCODE();
  }
@@ -1369,7 +1353,7 @@ RCS file: /repository/ZendEngine2/zend_vm_opcodes.h,v
 retrieving revision 1.1
 diff -u -r1.1 zend_vm_opcodes.h
 --- Zend/zend_vm_opcodes.h	27 Oct 2004 20:13:59 -0000	1.1
-+++ Zend/zend_vm_opcodes.h	30 Oct 2004 12:58:07 -0000
++++ Zend/zend_vm_opcodes.h	2 Nov 2004 14:01:21 -0000
 @@ -127,3 +127,4 @@
  #define ZEND_ASSIGN_DIM              147
  #define ZEND_ISSET_ISEMPTY_PROP_OBJ  148
