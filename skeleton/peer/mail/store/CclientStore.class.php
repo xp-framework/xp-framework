@@ -231,6 +231,23 @@
         FT_UID | FT_PEEK
       );
     }
+
+    /**
+     * Proxy method for MailFolder: Get message structure
+     *
+     * @access  public
+     * @param   &peer.mail.MailFolder f
+     * @param   string uid
+     * @see     php://imap_fetchstructure
+     * @return  &object
+     */
+    function &getMessageStruct(&$f, $uid) {
+      return imap_fetchstructure(
+        $this->_hdl[0], 
+        $uid,
+        FT_UID | FT_PEEK
+      );
+    }
     
     /**
      * Proxy method for MailFolder: Get messages in a folder
