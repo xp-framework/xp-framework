@@ -174,5 +174,23 @@
       
       return $sql;
     }
-  }
+    
+    /**
+     * Executes an SQL SELECT statement
+     *
+     * @access  package
+     * @param   &rdbms.DBConnection conn
+     * @param   &rdbms.Peer peer
+     * @return  &rdbms.ResultSet
+     */
+    function executeSelect(&$conn, &$peer) {
+      return $conn->query(
+        'select %c from %c%c', 
+        array_keys($peer->types),
+        $peer->table,
+        $this->toSQL()
+      );
+    }
+
+  } implements(__FILE__, 'rdbms.SQLExpression');
 ?>
