@@ -1,0 +1,8 @@
+Array access
+========================================================================
+$Id$
+
+This demonstrates the usage of the ArrayAccess interface (built-in into
+PHP5). Requires PHP5 to run.
+
+<EOF>
