@@ -1,8 +1,11 @@
 #!/bin/sh
 
 ##
-# Commit notifier
+# CVS Commit notifier
 #
+# This shall be called from CVSROOT/loginfo in the following way:
+# ALL     (cat | sh /home/cvs/bin/notify.sh %{Vvs} xp@php3.de)
+# 
 # $Id$
 
 FILE="/tmp/loginfo_`md5 -q -s "$1"`"
