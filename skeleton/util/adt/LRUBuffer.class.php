@@ -7,11 +7,10 @@
   /**
    * LRU (last recently used) buffer.
    *
-   * The last recently used (that is, the oldest) element will
-   * be deleted when calling add(). An element will be refreshed
-   * by calling update().
+   * The last recently used (that is, the longest time unchanged) 
+   * element will be deleted when calling add().
    *
-   * @purpose  Buffer
+   * @purpose  Abstract data type
    */
   class LRUBuffer extends Object {
     var
@@ -42,16 +41,21 @@
     }
     
     /**
-     * Add an element to the buffer and return the element which has
-     * been deleted in exchange. Returns -1 for the case that no 
-     * element has been shifted (which is the case when the buffer's
-     * size has not yet been exceeded)
+     * Add an element to the buffer and return the id of the element 
+     * which has been deleted in exchange. Returns NULL for the case 
+     * that no element has been deleted (which is the case when the 
+     * buffer's size has not yet been exceeded).
+     *
+     * <code>
+     *   $deleted= $buf->add($key);
+     * </code>
      *
      * @access  public
+     * @param   string key
      * @return  int
      */
-    function add() {
-      $this->_buf[]= $this->microtime();
+    function add($id) {
+      $this->_buf[$id]= $this->microtime();
       if (sizeof($this->_buf) > $this->size) {
       
         // Find the position of the smallest value and delete it
@@ -59,17 +63,18 @@
         unset($this->_buf[$p]);
         return $p;
       }
-      return -1;
+
+      return NULL;
     }
     
     /**
-     * Update an entry
+     * Update an element
      *
      * @access  public
-     * @param   int element
+     * @param   string id
      */
-    function update($element) {
-      $this->_buf[$element]= $this->microtime();
+    function update($id) {
+      $this->_buf[$id]= $this->microtime();
     }
     
     /**
