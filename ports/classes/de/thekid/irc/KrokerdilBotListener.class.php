@@ -7,6 +7,7 @@
   uses(
     'peer.irc.IRCConnectionListener', 
     'peer.irc.IRCColor',
+    'org.dict.DictClient',
     'text.translator.Swabian',
     'io.File'
   );
@@ -21,7 +22,8 @@
     var
       $tstart    = 0,
       $config    = NULL,
-      $lists     = array();
+      $lists     = array(),
+      $dictc     = NULL;
       
     /**
      * Constructor
@@ -30,10 +32,15 @@
      * @param   &util.Properties config
      */
     function __construct(&$config) {
-      parent::__construct();
       $this->config= &$config;
       $this->reloadConfiguration();
       $this->tstart= time();
+
+      // Set up DictClient
+      $this->dictc= &new DictClient();
+      $this->dictc->connect('dict.org', 2628);
+      $l= &Logger::getInstance();
+      $this->dictc->setTrace($l->getCategory());
     }
     
     /**
@@ -139,6 +146,60 @@
             );
             break;
           
+          case 'whatis':
+            try(); {
+              $status= $this->dictc->getStatus();
+              $connection->sendMessage($target, '-%s', var_export($status, 1));
+            } if (catch('IOException', $e)) {
+              $e->printStackTrace();
+
+              // We were probably disconnected, so close connection forcibly
+              // (just to be sure) and reconnect
+              try(); {
+                $this->dictc->close();
+                $this->dictc->connect('dict.org', 2628);
+              } if (catch('IOException', $e)) {
+                $e->printStackTrace();
+
+                // Ignore
+              }
+            }
+            
+            try(); {
+              $definitions= $this->dictc->getDefinition($params, '*');
+            } if (catch('Exception', $e)) {
+              $e->printStackTrace();
+              $connection->sendMessage($target, '!%s', $e->getMessage());
+              break;
+            }
+            
+            // Check if we found something
+            if (empty($definitions)) {
+              $connection->sendMessage(
+                $target, 
+                '"%s": No match found', 
+                $params
+              );
+            }
+            
+            // Return definitions
+            for ($i= 0, $s= sizeof($definitions); $i < $s; $i++) {
+              $connection->sendMessage(
+                $target, 
+                '%d: %s', 
+                $i,
+                $definitions[$i]->getDatabase()
+              );
+              foreach (explode("\n", $definitions[$i]->getDefinition()) as $line) {
+                $connection->sendMessage(
+                  $target,
+                  '  %s',
+                  trim($line)
+                );
+              }
+            }
+            break;
+          
           case 'say':
             list($dest, $message)= explode(' ', $params, 2);
             $connection->sendMessage($dest, $message);
@@ -169,6 +230,10 @@
               $params, 
               IRCColor::forCode(IRC_COLOR_RED)
             );
+            break;
+        
+          case 'maul':
+            $this->sendRandomMessage($connection, $target, 'shutup', $params, NULL);
             break;
           
           case 'i':
