@@ -70,7 +70,7 @@
 
       // A JAR file, download it
       case 'com.sun.webstart.jnlp.JnlpJarResource':
-        $href= $resource->getHref();
+        $href= ltrim($resource->getHref(), './');
         $classpath.= ':'.rtrim($folder->getURI(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$href;
         try(); {
           $params= array();
