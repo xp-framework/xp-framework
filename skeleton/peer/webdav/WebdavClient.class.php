@@ -6,7 +6,8 @@
   
   uses(
     'peer.webdav.WebdavConnection',
-    'peer.Header'
+    'peer.Header',
+    'util.MimeType'
   );
 
   /**
@@ -109,14 +110,15 @@
      * @return  &peer.http.HttpResponse response object
      */
     function &put($file, $name= NULL) {    
-      
+
       if (!$file->isOpen()) $file->open(FILE_MODE_READ);
-      
       try(); {
         $c= &$this->getConnection($name);
         $response= &$c->put(
           $file->read($file->size()),
-          new Header('Content-Type', $file->getExtension())
+          array(
+            new Header('Content-Type', MimeType::getByFilename($name))
+          )
         );
       } if (catch('Exception', $e)) {
         return throw($e);
