@@ -146,6 +146,17 @@
     }
     
     /**
+     * Move a message
+     *
+     * @access  public
+     * @param   &peer.mail.Message msg
+     * @return  bool success
+     */
+    function moveMessage(&$msg) {
+      return $this->store->moveMessage($this, $msg);
+    }
+    
+    /**
      * Get next message (iterator)
      *
      * Example:
