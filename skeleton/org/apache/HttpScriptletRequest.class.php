@@ -131,6 +131,16 @@
     function setParams(&$params) {
       $this->params= &$params;
     }
+
+    /**
+     * Gets all request parameters
+     *
+     * @access  public
+     * @return  array params
+     */
+    function getParams() {
+      return $this->params;
+    }
     
     /**
      * Sets request data.
