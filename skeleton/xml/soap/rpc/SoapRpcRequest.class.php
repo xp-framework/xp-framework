@@ -5,7 +5,7 @@
  */
  
   uses(
-    'org.apache.HttpScriptletRequest',
+    'scriptlet.HttpScriptletRequest',
     'xml.soap.SOAPMessage'
   );
   
@@ -13,7 +13,7 @@
    * Wraps SOAP Rpc Router request
    *
    * @see xml.soap.rpc.SoapRpcRouter
-   * @see org.apache.HttpScriptletRequest
+   * @see scriptlet.HttpScriptletRequest
    */
   class SoapRpcRequest extends HttpScriptletRequest {
   

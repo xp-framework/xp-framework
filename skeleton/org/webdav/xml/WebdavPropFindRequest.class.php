@@ -48,7 +48,7 @@
      * Constructor
      *
      * @access  public
-     * @param   &org.apache.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletRequest request
      * @throws  Exception to indicate failure
      */
     function __construct(&$request) {

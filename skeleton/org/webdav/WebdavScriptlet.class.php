@@ -5,7 +5,7 @@
  */
 
   uses(
-    'org.apache.HttpScriptlet',
+    'scriptlet.HttpScriptlet',
     'org.webdav.util.WebdavBool',
     'org.webdav.xml.WebdavPropFindRequest',
     'org.webdav.xml.WebdavPropPatchRequest',
@@ -122,11 +122,11 @@
     /**
      * Handle OPTIONS
      *
-     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @see     xp://scriptlet.scriptlet.HttpScriptlet#doGet
      * @access  private
      * @return  bool processed
-     * @param   &org.apache.HttpScriptletRequest request
-     * @param   &org.apache.HttpScriptletResponse response
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doOptions(&$request, &$response) {  
@@ -157,8 +157,8 @@
      * @see     rfc://2518#8.6
      * @access  private
      * @return  bool processed
-     * @param   &org.apache.HttpScriptletRequest request
-     * @param   &org.apache.HttpScriptletResponse response
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doDelete(&$request, &$response) {
@@ -187,8 +187,8 @@
      * @see     rfc://2518#8.4
      * @access  private
      * @return  bool processed
-     * @param   &org.apache.HttpScriptletRequest request
-     * @param   &org.apache.HttpScriptletResponse response
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doGet(&$request, &$response) {
@@ -236,8 +236,8 @@
      * @see     rfc://2518#8.5
      * @access  private
      * @return  MethodNotImplementedException
-     * @param   &org.apache.HttpScriptletRequest request
-     * @param   &org.apache.HttpScriptletResponse response
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
      * @throws  MethodNotImplementedException
      */
     function doPost(&$request, &$response) {
@@ -251,8 +251,8 @@
      * @see     rfc://2518#8.4
      * @access  private
      * @return  bool processed
-     * @param   &org.apache.HttpScriptletRequest request
-     * @param   &org.apache.HttpScriptletResponse response
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
      */
     function doHead(&$request, &$response) {
       try(); {
@@ -285,8 +285,8 @@
      * @see     rfc://2518#8.7
      * @access  private
      * @return  bool processed
-     * @param   &org.apache.HttpScriptletRequest request
-     * @param   &org.apache.HttpScriptletResponse response
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doPut(&$request, &$response) {
@@ -325,8 +325,8 @@
      * @see     rfc://2518#8.3
      * @access  private
      * @return  bool processed
-     * @param   &org.apache.HttpScriptletRequest request
-     * @param   &org.apache.HttpScriptletResponse response
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doMkCol(&$request, &$response) {
@@ -349,8 +349,8 @@
      * @see     rfc://2518#8.9
      * @access  private
      * @return  bool processed
-     * @param   &org.apache.HttpScriptletRequest request
-     * @param   &org.apache.HttpScriptletResponse response
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doMove(&$request, &$response) {
@@ -389,8 +389,8 @@
      * @see     rfc://2518#8.8
      * @access  private
      * @return  bool processed
-     * @param   &org.apache.HttpScriptletRequest request
-     * @param   &org.apache.HttpScriptletResponse response
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doCopy(&$request, &$response) {
@@ -432,8 +432,8 @@
      * @see     rfc://2518#8.10
      * @access  private
      * @return  bool processed
-     * @param   &org.apache.HttpScriptletRequest request
-     * @param   &org.apache.HttpScriptletResponse response
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doLock(&$request, &$response) {
@@ -465,8 +465,8 @@
      * @see     rfc://2518#8.11
      * @access  private
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @public  request scriptlet.HttpScriptletRequest
+     * @access  response scriptlet.HttpScriptletResponse
      * @throws  Exception to indicate failure
      */
     function doUnlock(&$request, &$response) {
@@ -505,8 +505,8 @@
      * @see     rfc://2518#8.1
      * @access  private
      * @return  bool processed
-     * @param   &org.apache.HttpScriptletRequest request
-     * @param   &org.apache.HttpScriptletResponse response
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doPropFind(&$request, &$response) {  
@@ -564,8 +564,8 @@
      * @see     rfc://2518#8.2
      * @access  private
      * @return  bool processed
-     * @param   &org.apache.HttpScriptletRequest request
-     * @param   &org.apache.HttpScriptletResponse response
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doPropPatch(&$request, &$response) {
@@ -612,8 +612,8 @@
      * @see     rfc://2518#8.2
      * @access  private
      * @return  bool processed
-     * @param   &org.apache.HttpScriptletRequest request
-     * @param   &org.apache.HttpScriptletResponse response
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
     function doNotFound(&$request, &$response) {

@@ -5,13 +5,13 @@
  */
  
   uses(
-    'org.apache.HttpScriptletResponse'
+    'scriptlet.HttpScriptletResponse'
   );
   
   /**
    * Wraps SOAP response
    *
-   * @see org.apache.HttpScriptletResponse  
+   * @see scriptlet.HttpScriptletResponse  
    */
   class SoapRpcResponse extends HttpScriptletResponse {
     var 
@@ -65,7 +65,7 @@
      *
      * @access  public
      * @return  string content
-     * @see     org.apache.HttpScriptletResponse#getContent
+     * @see     scriptlet.HttpScriptletResponse#getContent
      */
     function getContent() {
       return (
@@ -78,7 +78,7 @@
      * Make sure a fault is passed as "500 Internal Server Error"
      *
      * @access  public
-     * @see     org.apache.HttpScriptletResponse#process
+     * @see     scriptlet.HttpScriptletResponse#process
      */
     function process() {
       if (NULL !== $this->message->getFault()) {

@@ -6,7 +6,7 @@
 
   uses(
     'util.semaphore.Semaphore',
-    'org.apache.HttpSession',
+    'scriptlet.HttpSession',
     'util.profiling.Timer'
   );
 
@@ -15,7 +15,7 @@
    * serialize multiple requests on e.g. a webserver cluster.
    * 
    * Attention: while this class generally takes an
-   * org.apache.HttpSession object, it somewhat depends on the internal
+   * scriptlet.HttpSession object, it somewhat depends on the internal
    * behaviour of a session: as it is absolutely necessary for the
    * semaphore to be stored in a central storage at the first 
    * opportunity, some session systems (as the PHP builtin one)
@@ -36,10 +36,10 @@
      * Constructor
      *
      * @access  public
-     * @param   &org.apache.HttpSession
+     * @param   &scriptlet.HttpSession
      */
     function __construct(&$storage, $name= 'semaphore') {
-      if (!is('org.apache.HttpSession', $storage))
+      if (!is('scriptlet.HttpSession', $storage))
         return throw(new IllegalArgumentException('Given argument is not a HttpSession'));
       
       parent::__construct($storage, 'xp-'.$name);

@@ -4,7 +4,7 @@
  * $Id$
  */
   uses(
-    'org.apache.HttpScriptlet',
+    'scriptlet.HttpScriptlet',
     'xml.soap.rpc.SoapRpcRequest',
     'xml.soap.rpc.SoapRpcResponse',
     'xml.soap.SOAPMessage'
@@ -41,7 +41,7 @@
    * the rpc router would look for a class with the fully qualified name
    * info.binford6100.webservices.IdentHandler and call it's method echoStruct.
    *
-   * @see org.apache.HttpScriptlet
+   * @see scriptlet.HttpScriptlet
    */
   class SoapRpcRouter extends HttpScriptlet {
     var
@@ -62,7 +62,7 @@
     /**
      * Set our own response object
      *
-     * @see     org.apache.HttpScriptlet#_response
+     * @see     scriptlet.HttpScriptlet#_response
      */
     function _response() {
       $this->response= &new SoapRpcResponse();
@@ -71,7 +71,7 @@
     /**
      * Set our own request object
      *
-     * @see     org.apache.HttpScriptlet#_request
+     * @see     scriptlet.HttpScriptlet#_request
      */
     function _request() {
       $this->request= &new SoapRpcRequest();
@@ -82,7 +82,7 @@
      * HTTP POST, throw an exception. We could also provide a usage
      * example, but this may be going to far.
      *
-     * @see     org.apache.HttpScriptlet#doGet
+     * @see     scriptlet.HttpScriptlet#doGet
      */
     function doGet(&$request, &$response) {
       return throw(new IllegalAccessException('GET is not supported'));
@@ -91,7 +91,7 @@
     /**
      * Handle POST requests. The complete POST data consits
      *
-     * @see     org.apache.HttpScriptlet#doGet
+     * @see     scriptlet.HttpScriptlet#doGet
      */
     function doPost(&$request, &$response) {
       try(); {
