@@ -160,6 +160,18 @@
     }
     
     /**
+     * Create a RDF from a string
+     *
+     * @model   static
+     * @access  public
+     * @param   string str
+     * @return  &xml.rdf.RDFNewsfeed
+     */
+    function &fromString($str) {
+      return parent::fromString($str, __CLASS__);
+    }
+    
+    /**
      * Adds an item
      *
      * @access  public
@@ -246,7 +258,6 @@
      *
      * @see     xp://xml.XMLParser
      * @access  public
-     * @throws  lang.FormatException in case an unrecognized element is encountered
      */
     function onEndElement($parser, $name) {
       static $trans;
@@ -340,7 +351,7 @@
 
 
         default:
-          return throw(new FormatException('Unrecognized element "'.$name.'"'));
+          // Ignore
       }
     }
   }
