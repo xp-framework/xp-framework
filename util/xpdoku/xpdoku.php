@@ -257,5 +257,16 @@
     exit(-1);
   }
  
-  Console::writef("===> Done\n");
+  $m= memory_get_usage();
+  $r= getrusage();
+  Console::writef(
+    "===> Done\n".
+    "+++  Memory used: %d bytes, %.2f KB, %.4f MB\n".
+    "+++  Time:        %d.%d seconds\n",
+    $m,
+    $m / 1024,
+    $m / 1048576,
+    $r['ru_utime.tv_sec'],
+    $r['ru_utime.tv_usec']
+  );
 ?>
