@@ -61,15 +61,4 @@
       LOG::_appendLog($msg, LOG_TYPE_ERROR);
     }
   }
-  
-  // Kompatibilität!
-  function logline_text($key, $val) {
-    LOG::info($key.'::'.$val);
-  }
-  
-  // Kompatibilität!
-  function raise_error($key, $val) {
-    LOG::error($key.'::'.$val);
-    return 0;
-  }
 ?>
