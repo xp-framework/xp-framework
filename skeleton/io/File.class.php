@@ -99,7 +99,7 @@
     function setURI($uri) {
     
       // PHP-Scheme
-      if ('php://' == substr($uri, 0, 6)) {
+      if (0 == strncmp('php://', $uri, 6)) {
         $this->path= NULL;
         $this->extension= NULL;
         $this->filename= $this->uri= $uri;
@@ -111,10 +111,11 @@
       // Bug in real_path when file does not exist
       if ('' == $this->uri && $uri != $this->uri) $this->uri= $uri;
       
-      $this->path= dirname($uri);
-      $this->filename= basename($uri);
-      $this->extension= NULL;
-      if (preg_match('/\.(.+)$/', $this->filename, $regs)) $this->extension= $regs[1];
+      with ($pathinfo= pathinfo($uri)); {
+        $this->path= $pathinfo['dirname'];
+        $this->filename= $pathinfo['basename'];
+        $this->extension= isset($pathinfo['extension']) ? $pathinfo['extension'] : NULL;
+      }
     }
 
     /**
@@ -128,7 +129,7 @@
     function open($mode= FILE_MODE_READ) {
       $this->mode= $mode;
       if (
-        ('php://' != substr($this->uri, 0, 6)) &&
+        0 != strncmp('php://', $this->uri, 6) &&
         (FILE_MODE_READ == $mode) && 
         (!$this->exists())
       ) return throw(new FileNotFoundException($this->uri));
@@ -143,7 +144,7 @@
      * Returns whether this file is open
      *
      * @access  public
-     * @return  bool TRUE, when the file is open
+     * @return  bool TRUE, if the file is open
      */
     function isOpen() {
       return $this->_fd;
@@ -257,7 +258,7 @@
      * included in the return value), or on EOF (whichever comes first). 
      *
      * @access  public
-     * @param   int bytes default 4096 Max. ammount of bytes to be read
+     * @param   int bytes default 4096 Max. amount of bytes to be read
      * @return  string Data read
      * @throws  io.IOException in case of an error
      */
@@ -286,7 +287,7 @@
      * will be included in its return value
      *
      * @access  public
-     * @param   int bytes default 4096 Max. ammount of bytes to be read
+     * @param   int bytes default 4096 Max. amount of bytes to read
      * @return  string Data read
      * @throws  io.IOException in case of an error
      */
@@ -301,7 +302,7 @@
      * Read (binary-safe)
      *
      * @access  public
-     * @param   int bytes default 4096 Max. ammount of bytes to be read
+     * @param   int bytes default 4096 Max. amount of bytes to read
      * @return  string Data read
      * @throws  io.IOException in case of an error
      */
@@ -368,6 +369,7 @@
      * This function is identical to a call of $f->seek(0, SEEK_SET)
      *
      * @access  public
+     * @return  bool TRUE if rewind suceeded
      * @throws  io.IOException in case of an error
      */
     function rewind() {
@@ -398,8 +400,8 @@
      * Retrieve file pointer position
      *
      * @access  public
-     * @throws  io.IOException in case of an error
      * @return  int position
+     * @throws  io.IOException in case of an error
      */
     function tell() {
       $result= ftell($this->_fd);
@@ -425,53 +427,57 @@
      *
      * @access  private
      * @param   int op operation (one of the predefined LOCK_* constants)
-     * @param   int block
      * @throws  io.IOException in case of an error
      * @return  bool success
      * @see     php://flock
      */
-    function _lock($op, $block= NULL) {
-      $result= flock($this->_fd, $op, $block);
-      if (FALSE === $result) {
+    function _lock($mode) {
+      if (FALSE === flock($this->_fd, $mode)) {
         $os= '';
         foreach (array(
-          LOCK_SH   => 'LOCK_SH', 
-          LOCK_EX   => 'LOCK_EX', 
+          LOCK_NB   => 'LOCK_NB',
           LOCK_UN   => 'LOCK_UN', 
-          LOCK_NB   => 'LOCK_NB'
+          LOCK_EX   => 'LOCK_EX', 
+          LOCK_SH   => 'LOCK_SH' 
         ) as $o => $s) {
-          if ($op & $o) $os.= ' | '.$s;
+          if ($mode >= $o) { 
+            $os.= ' | '.$s;
+            $mode-= $o;
+          }
         }
         return throw(new IOException('Cannot lock file '.$this->uri.' w/ '.substr($os, 3)));
       }
-      return $result;
+      
+      return TRUE;
     }
     
     /**
      * Acquire a shared lock (reader)
      *
      * @access  public
-     * @see     File#_lock
+     * @param   bool block default FALSE
+     * @see     xp://io.File#_lock
      */
-    function lockShared($lock= NULL) {
-      return $this->_lock(LOCK_SH, $lock);
+    function lockShared($block= FALSE) {
+      return $this->_lock(LOCK_SH + ($block ? 0 : LOCK_NB));
     }
     
     /**
      * Acquire an exclusive lock (writer)
      *
      * @access  public
-     * @see     File#_lock
+     * @param   bool block default FALSE
+     * @see     xp://io.File#_lock
      */
-    function lockExclusive($lock= NULL) {
-      return $this->_lock(LOCK_EX, $lock);
+    function lockExclusive($block= FALSE) {
+      return $this->_lock(LOCK_EX + ($block ? 0 : LOCK_NB));
     }
     
     /**
      * Release a lock (shared or exclusive)
      *
      * @access  public
-     * @see     File#_lock
+     * @see     xp://io.File#_lock
      */
     function unLock() {
       return $this->_lock(LOCK_UN);
@@ -482,6 +488,7 @@
      *
      * @access  public
      * @return  bool success
+     * @throws  io.IOException if close fails
      */
     function close() {
       if (FALSE === fclose($this->_fd)) {
