@@ -13,14 +13,14 @@ all:
 
 clean:
 	@echo "===> Cleaning..."
-	rm EjbToXMLDoclet.class *.gen.xml
+	-rm EjbToXMLDoclet.class *.gen.xml *.class.php
 
 generate:			EjbToXMLDoclet.class
 	@FILE=`$(JAVADOC) -doclet EjbToXMLDoclet -docletpath . -classpath $(TOOLS_JAR) $(from) 2>/dev/null \
 	  | grep ^@@ \
 	  | cut -d= -f2` ; \
-	$(XSLPROC) xp.php.xsl $$FILE.gen.xml > $$FILE.class.php ; \
-	echo "===> $$FILE.class.php written"
+	$(XSLPROC) xp.php.xsl $${FILE}.gen.xml > $${FILE}Remote.class.php ; \
+	echo "===> $${FILE}Remote.class.php written"
 
 EjbToXMLDoclet.class:	 EjbToXMLDoclet.java
 	$(JAVAC) -classpath $(TOOLS_JAR) EjbToXMLDoclet.java

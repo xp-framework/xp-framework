@@ -56,12 +56,11 @@ import java.util.Map;
      * @model   static
      * @access  public
      * @param   ClassDoc classdoc a single class' documentation
+     * @param   HashMap options key/value pairs from ejb.bean tag
      * @param   PrintStream out the stream the XML is printed to
      * @return  boolean
      */
-    public static boolean processClass(ClassDoc classdoc, PrintStream out) {
-      HashMap options = parseKeyValuePairsFrom(classdoc.tags("@ejb.bean")[0].text());
-      
+    public static boolean processClass(ClassDoc classdoc, HashMap options, PrintStream out) {
       out.print("<interface\n");
       for (Iterator i= options.entrySet().iterator(); i.hasNext(); ) {
         Map.Entry e = (Map.Entry) i.next();
@@ -130,9 +129,14 @@ import java.util.Map;
      * @return  boolean
      */
     public static boolean start(RootDoc root) throws IOException {
-      String name = root.classes()[0].name();
+      HashMap options = parseKeyValuePairsFrom(root.classes()[0].tags("@ejb.bean")[0].text());
+      String name = (String)options.get("name");
 
       System.out.println("@@=" + name);
-      return processClass(root.classes()[0], new PrintStream(new FileOutputStream(new File(name+ ".gen.xml"))));
+      return processClass(
+        root.classes()[0], 
+        options,
+        new PrintStream(new FileOutputStream(new File(name+ ".gen.xml")))
+      );
     }
   }
