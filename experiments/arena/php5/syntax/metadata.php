@@ -5,6 +5,7 @@
  */
   
   // {{{ class CalculatorService
+  [@webservice('Calculator')]
   class CalculatorService {
 
     protected function log() {
@@ -14,19 +15,19 @@
       }
     }
 
-    @webmethod 
+    [@webmethod]
     public function add($a, $b) {
       $this->log('Adding', $a, 'and', $b);
       return $a + $b;
     }
 
-    @webmethod 
+    [@webmethod]
     public function subtract($a, $b) {
       $this->log('Subtracting', $b, 'from', $a);
       return $a - $b;
     }
     
-    @webmethod,@deprecated('Use subtract() instead') 
+    [@webmethod, @deprecated('Use subtract() instead')]
     public function sub($a, $b) {
       return $this->subtract($a, $b);
     }
@@ -35,7 +36,11 @@
   
   // {{{ main
   $c= new ReflectionClass('CalculatorService');
-  printf("The class %s provides the following web methods:\n", $c->getName());
+  printf(
+    "The webservice %s (handled by the class %s) provides the following web methods:\n",
+    $c->getAnnotation('webservice'),
+    $c->getName()
+  );
   foreach ($c->getMethods() as $method) {
     if (!$method->hasAnnotation('webmethod')) continue;
     

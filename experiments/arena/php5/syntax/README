@@ -24,10 +24,10 @@ Metadata may be associated with methods in the following way:
 
 <pre>
   class RmiClient {
-    @remote public function invoke() {
+    [@remote] public function invoke() {
       // ...
     }
-    @remote,@deprecated('Use invoke() instead') public function call() {
+    [@remote,@deprecated('Use invoke() instead')] public function call() {
       return $this->invoke();
     }
   }
