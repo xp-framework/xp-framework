@@ -48,8 +48,8 @@
      */
     function _execute($cvsCmd) {
       $olddir= getcwd(); 
-      chdir($this->path);
-      $r= parent::_execute ($cvsCmd);
+      chdir(dirname ($this->filename));
+      $r= parent::_execute ($cvsCmd, basename ($this->filename));
       chdir($olddir);
       
       return $r;
