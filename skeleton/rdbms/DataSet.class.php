@@ -129,6 +129,22 @@
     }
 
     /**
+     * Returns a portion of the SQL query suitable for copying into an 
+     * insert statement.
+     *
+     * @access  protected
+     * @param   &rdbms.DBConnection db
+     * @return  string sql
+     */
+    function _inserted(&$db) {
+      $sql= implode(', ', array_keys($this->_changed)).') values (';
+      foreach (array_keys($this->_changed) as $key) {
+        $sql.= $db->prepare($this->_changed[$key][0], $this->{$key}).', ';
+      }
+      return substr($sql, 0, -2);
+    }
+
+    /**
      * Creates a string representation of this dataset. In this default
      * implementation, it will look like the following:
      *
@@ -142,6 +158,9 @@
      *     [createdAt           ] Thu,  3 Jun 2004 22:26:15 +0200
      *   }
      * </pre>
+     *
+     * Note: Keys with a leading "_" will be omitted from the list, they
+     * indicate "protected" members.
      *
      * @access  public
      * @return  string
