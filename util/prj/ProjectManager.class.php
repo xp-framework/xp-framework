@@ -8,6 +8,7 @@
     'ProjectManagerPopupMenu',
     'gui.gtk.GtkGladeApplication',
     'util.log.Logger',
+    'util.log.FileAppender',
     'util.Properties',
     'util.cmd.ParamString',
     'text.PHPParser',
@@ -26,6 +27,10 @@
      */
     function __construct() {
       $p= &new ParamString();
+      
+      $l= &Logger::getInstance();
+      $this->log= &$l->getCategory ($this->getClassName());
+      $this->log->addAppender (new FileAppender ('php://stdout'));
       
       parent::__construct(dirname(__FILE__).'/prj.glade', 'mainwindow');
     }
@@ -97,9 +102,38 @@
       if (!is_a ($parser, 'PHPParser'))
         return FALSE;
       
+      // Try to prevent adding of the same files twice
+      foreach (array_keys ($this->files) as $idx) {
+        if ($this->files[$idx]->filename === $parser->filename)
+          return FALSE;
+      }
+      
       $parser->parse();
       $this->files[]= &$parser;
       $this->statusbar->push (1, 'Added file '.$parser->filename);
+      $this->log && $this->log->info ('Added file '.$parser->filename);
+      
+      // Now pull in all the dependencies
+      foreach ($parser->uses as $u) {
+        foreach (explode (':', ini_get ('include_path')) as $p) {
+          $fn= $p.'/'.str_replace ('.', DIRECTORY_SEPARATOR, $u).'.class.php';
+          if (is_file ($fn)) {
+            $this->addFile (new PHPParser (realpath($fn)));
+            break;
+          }
+        }
+      }
+      
+      foreach ($parser->requires as $r) {
+        foreach (explode (':', ini_get ('include_path')) as $p) {
+          $fn= $p.'/'.$r;
+          if (file_exists ($fn)) {
+            $this->addFile (new PHPParser (realpath($fn)));
+            break;
+          }
+        }
+      }
+      
       
       $this->updateList();
       return TRUE;
