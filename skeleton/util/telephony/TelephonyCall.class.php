@@ -33,7 +33,7 @@
      * @return  string number
      */
     function getOriginNumber() {
-      return $this->origin->getNumber;
+      return $this->origin->toString();
     }
 
     /**
@@ -43,7 +43,7 @@
      * @return  string number
      */
     function getDestinationNumber() {
-      return $this->destination->getNumber;
+      return $this->destination->toString();
     }
   }
 ?>
