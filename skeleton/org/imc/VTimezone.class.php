@@ -12,6 +12,11 @@
   // Identifier
   define('VTZ_ID',       'VTIMEZONE');
   
+  /**
+   * VTimezone
+   *
+   * @purpose  Timezone wrapper for VCalendar
+   */
   class VTimezone extends Object {
     var
       $tzid=      '',
@@ -21,13 +26,12 @@
       $lastmod=   NULL;
 
     /**
-     * Construcotr
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function __construct() {
+      parent::__construct();
       $this->daylight= $this->standard= array (
         'dtstart'       => NULL,    // Mandatory
         'tzoffsetto'    => NULL,    // Mandatory
@@ -108,6 +112,7 @@
      * @return  string exported
      */    
     function _export($key, $value) {
+
       // Never add empty fields
       if (NULL === $value)
         return '';
