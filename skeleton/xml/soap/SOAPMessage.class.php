@@ -132,7 +132,7 @@
             $n= 'Object';
           }
           $result= &new $n();
-          foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
+          foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key => $val) {
             $result->$key= $val;
           }
         
@@ -191,20 +191,20 @@
           }
 
           $result= &new stdClass();
-          foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
+          foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key => $val) {
             $result->$key= $val;
           }
           break;
           
         default:
           if (!empty($child->children)) {
-            if ($regs[1]== 'xsd') {
+            if ('xsd' == $regs[1]) {
               $result= $this->_recurseData($child, TRUE, 'STRUCT');
               break;
             }
 
             $result= &new stdClass();
-            foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
+            foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key => $val) {
               $result->$key= $val;
             }
             break;
@@ -325,7 +325,7 @@
      * @return  &mixed data
      */
     function &getData($context= 'ENUM') {
-      foreach ($this->root->attribute as $key=> $val) { // Namespace suchen
+      foreach ($this->root->attribute as $key => $val) { // Namespace suchen
         if ($val == $this->action) $this->namespace= substr($key, strlen('xmlns:'));
       }
 

@@ -87,7 +87,7 @@
         $o->contentType= 'httpd/unix-directory';
         $o->contentLength= 0;
         $o->executable= FALSE;
-       }
+      }
       
       // Additional properties
       foreach (array_merge_recursive(array(

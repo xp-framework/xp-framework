@@ -263,9 +263,9 @@
           }
           
           // Make that entry
-          list (,$date)= explode (': ', $date, 2);
-          list (,$author)= explode (': ', $author, 2);
-          list (,$state)= explode (': ', $state, 2);
+          list (, $date)= explode (': ', $date, 2);
+          list (, $author)= explode (': ', $author, 2);
+          list (, $state)= explode (': ', $state, 2);
           
           $entry= array(
             'date'      => $date,
