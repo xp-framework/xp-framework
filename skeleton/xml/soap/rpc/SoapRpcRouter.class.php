@@ -56,31 +56,33 @@
      */
     function __construct(&$classloader) {
       $this->classloader= &$classloader;
-      parent::__construct();
     }
 
     /**
-     * Set our own response object
+     * Create a request object.
      *
-     * @see     scriptlet.HttpScriptlet#_response
+     * @access  protected
+     * @return  &scriptlet.HttpScriptletRequest
      */
-    function _response() {
-      $this->response= &new SoapRpcResponse();
+    function &_request() {
+      return new SoapRpcRequest();
     }
 
     /**
-     * Set our own request object
+     * Create a response object. Override this method to define
+     * your own response object
      *
-     * @see     scriptlet.HttpScriptlet#_request
+     * @access  protected
+     * @return  &scriptlet.HttpScriptletResponse
      */
-    function _request() {
-      $this->request= &new SoapRpcRequest();
+    function &_response() {
+      return new SoapRpcResponse();
     }
 
     /**
      * Handle GET requests. Since SOAP over HTTP is defined via
      * HTTP POST, throw an exception. We could also provide a usage
-     * example, but this may be going to far.
+     * example, but this may be going too far.
      *
      * @see     scriptlet.HttpScriptlet#doGet
      */
@@ -168,6 +170,5 @@
         );
       }
     }
-
   }
 ?>
