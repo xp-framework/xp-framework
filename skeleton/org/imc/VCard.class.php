@@ -256,9 +256,8 @@
      *   $f->close();
      * </code>
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string
      */
     function export() {
     
