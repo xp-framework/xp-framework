@@ -13,6 +13,35 @@
   /**
    * Connection to SQLite Databases
    *
+   * Note: SQLite is typeless. Sometimes, though, it makes sense to 
+   * operate with a "real" integer instead of its string representation.
+   * Typelessness is a real pain for dates (which, in other database
+   * APIs, is returned as an util.Date object). 
+   *
+   * Therefore, this class offers a cast function which may be used
+   * whithin the SQL as following:
+   * <pre>
+   *   select 
+   *     cast(id, "int") id, 
+   *     name, 
+   *     cast(percentage, "float") percentage,
+   *     cast(lastchange, "date") lastchange, 
+   *     changedby
+   *   from 
+   *     test
+   * </pre>
+   *
+   * The resultset array will contain the following:
+   * <pre>
+   *   key          type
+   *   ------------ -------------
+   *   id           int
+   *   name         string
+   *   percentage   float
+   *   lastchange   util.Date
+   *   changedby    string
+   * </pre>
+   *
    * @ext      sqlite
    * @see      http://sqlite.org/
    * @purpose  Database connection
@@ -20,25 +49,21 @@
   class SQLiteConnection extends DBConnection {
   
     /**
-     * Callback functions for dates
+     * Callback function to cast data
      *
      * @access  protected
      * @param   mixed s
+     * @param   mixed type
      * @return  mixed
      */
-    protected function _date($s) {
-      return is_null($s) ? NULL : "\2".$s;
-    }
-
-    /**
-     * Callback functions for numerics
-     *
-     * @access  protected
-     * @param   mixed s
-     * @return  mixed
-     */
-    protected function _int($s) {
-      return is_null($s) ? NULL : "\3".$s;
+    protected function _cast($s, $type) {
+      static $identifiers= array(
+        'date'  => "\2",
+        'int'   => "\3",
+        'float' => "\4",
+      );
+      
+      return is_null($s) ? NULL : $identifiers[strtolower($type)].$s;
     }
 
     /**
@@ -71,8 +96,7 @@
         throw (new SQLConnectException($err, $this->dsn));
       }
       
-      sqlite_create_function($this->handle, 'date', array($this, '_date'), 1);
-      sqlite_create_function($this->handle, 'int', array($this, '_int'), 1);
+      sqlite_create_function($this->handle, 'cast', array($this, '_cast'), 2);
       return TRUE;
     }
     

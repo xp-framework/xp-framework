@@ -70,6 +70,10 @@
           case "\3":
             $row[$key]= intval(substr($row[$key], 1));
             break;
+
+          case "\4":
+            $row[$key]= floatval(substr($row[$key], 1));
+            break;
         }
       }
       
