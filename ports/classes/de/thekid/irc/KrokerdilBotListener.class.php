@@ -354,7 +354,7 @@
           case '@changenick':
             list($new_nick, $password)= explode(' ', $params);
             if ($this->doPrivileged($connection, $nick, $password)) {
-              $connection->writeln('NICK %s', $params);
+              $connection->setNick($new_nick);
             }
             break;
           
