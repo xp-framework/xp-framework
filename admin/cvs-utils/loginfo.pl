@@ -221,21 +221,16 @@ sub build_list {
     /^(.*)\/([^\/]+)$/;
     my $dir = $1;
     my $file = $2;
+
     if($dir ne $curdir) {
       $curdir = $dir;
-      $msg .= "\n    /$curdir\t";
-      $curlen = length($curdir) + 5;
+      $msg.= "\n";
     }
-    if(($curlen + length($file)) > 70) {
-      $msg .= "\n     ".sprintf("%-".length($curdir)."s", "")."\t";
-      $curlen = length($curdir) + 5;
-    }
-    $msg .= $file." ";
-    $curlen += length($file) + 1;
+
+    $msg.= $dir."/".$file."\n";
   }
 
   $msg .= "\n";
-
   return $msg;
 }
 
