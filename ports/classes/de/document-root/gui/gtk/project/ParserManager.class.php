@@ -43,8 +43,9 @@
      * @return  bool
      */
     function needsReparsing() {
+      clearstatcache();
       if (FALSE !== ($mtime= filemtime ($this->filename)))
-        return ($mtime > $this->getLastChange());
+        return ($mtime > $this->_utimeLastChange);
       
       return TRUE;
     }
@@ -65,23 +66,35 @@
      * @access  public
      */
     function parse() {
-      $this->history= array(
-        'functions' => $this->functions,
-        'classes'   => $this->classes,
-        'uses'      => $this->uses,
-        'requires'  => $this->requires,
-        'sapis'     => $this->sapis
-      );
-      
       $parser= &new PHPParser($this->filename);
       $parser->parse();
       
-      $this->functions= &$parser->functions;
-      $this->classes=   &$parser->classes;
-      $this->uses=      &$parser->uses;
-      $this->requires=  &$parser->requires;
-      $this->sapis=     &$parser->sapis;
+      $this->requires=  $parser->requires;
+      $this->uses=      $parser->uses;
+      $this->sapis=     $parser->sapis;
       
+      // Use function names as array keys
+      $this->functions= array();
+      foreach (array_keys($parser->functions) as $idx) {
+        $f= &$parser->functions[$idx];
+        $this->functions[$f->name]= &$f;
+      }
+      
+      // Use class- and function-names as array_keys
+      foreach (array_keys($parser->classes) as $idx) {
+        $c= &$parser->classes[$idx];
+        
+        // Intentional copy
+        $this->classes[$c->name]= $c;
+        $this->classes[$c->name]->functions= array();
+        
+        foreach (array_keys($c->functions) as $fidx) {
+          $f= &$c->functions[$fidx];
+          $this->classes[$c->name]->functions[$f->name]= &$f;
+        }
+      }
+      
+      $this->_utimeLastChange= time();
       unset ($parser);
     }
   }
