@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('util.Date');
+  uses(
+    'util.Date',
+    'com.microsoft.format.chm.CHMHeader'
+  );
 
   // Languages  
   define('CHM_LANG_ENGLISH', 	0x0409);
@@ -114,7 +117,7 @@
      * @return  array entries
      */
     function _dir($length, $qref, $format) {
-	  $str= fread($this->stream->_fd, $length- $qref);
+	  $str= $this->stream->read($length- $qref);
 	  $pos= 0;
 	  $max= strlen($str);
 	  do {
@@ -138,7 +141,8 @@
   		    break;
         }
       } while ($pos < $max);
-	  fseek($this->stream->_fd, $qref, SEEK_CUR);
+	  $this->stream->seek($qref, SEEK_CUR);
+      
 	  return $entries;
     }
 
@@ -165,30 +169,11 @@
     /**
      * Retreive CHM header; extracts it if necessary
      *
-     * Return values:
-     * <code>
-     *   $header= array (
-     *     'identifier'   => 'ITSF',
-     *     'version'      => 3,
-     *     'length'       => 96,
-     *     'unknown'      => 1,
-     *     'time'         => -107804170,
-     *     'lang'         => 1031,
-     *     'guid1'        => '{7C01FD10-7BAA-11D0-9E0C-00A0-C922-E6EC}',
-     *     'guid2'        => '{7C01FD11-7BAA-11D0-9E0C-00A0-C922-E6EC}',
-     *     'section'      => array (
-     *       'offset' => 96,
-     *       'length' => 0,
-     *     ),
-     *     'content_offset' => 16588
-     *   );
-     * </code>
-     *
      * @access  public
-     * @return  array header as seen in above example
+     * @return  &com.microsoft.format.chm.CHMHeader
      * @throws  lang.FormatException if the identifier is not correct
      */
-    function getHeader() {
+    function &getHeader() {
       if (!empty($this->header)) return $this->header;
       
       $this->stream->seek(0x00, SEEK_SET);
@@ -198,30 +183,30 @@
         ));
       }
       
-	  $this->header= unpack(
+	  $this->header= &new CHMHeader(unpack(
         'Lversion/Llength/Lunknown/Ltime/Llang', 
 	    $this->stream->read(0x18)
-	  );
-      $this->header['identifier']= $id;
- 	  $this->header['guid1']= $this->_guid(unpack(
+	  ));
+      $this->header->setIdentifier($id);
+ 	  $this->header->setGuid1($this->_guid(unpack(
         'Lguid1/v2guid2/C8guid3',
 	    $this->stream->read(0x10)
-	  ));
-	  $this->header['guid2']= $this->_guid(unpack(
+	  )));
+	  $this->header->setGuid2($this->_guid(unpack(
         'Lguid1/v2guid2/C8guid3',
 	    $this->stream->read(0x10)
-	  ));
+	  )));
 
 	  // Section table
-	  $this->header['section']= unpack(
+	  $this->header->setSection(unpack(
         'Loffset/Llength',
 	    $this->stream->read(0x16)
-	  );
+	  ));
 
 	  // Content_offset
-	  if (3 == $this->header['version']) {
+	  if (3 == $this->header->getVersion()) {
         $this->stream->seek(0x58, SEEK_SET);
-	    list($this->header['content_offset'])= array_values(unpack('L', $this->stream->read(0x20)));
+	    $this->header->setContent_offset(array_shift(array_values(unpack('L', $this->stream->read(0x20)))));
 	  }	
 
 	  return $this->header;    
