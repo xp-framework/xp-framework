@@ -32,7 +32,11 @@
       try(); {
         $tmp= &Image::create($image->getWidth(), $image->getHeight(), IMG_TRUECOLOR);
         $tmp->copyFrom($image);
-        parent::convert($image);
+        imagetruecolortopalette(
+          $image->handle, 
+          $this->dither, 
+          $this->ncolors
+        );
         imagecolormatch($tmp->handle, $image->handle);
         delete($tmp);
       } if (catch('ImagingException', $e)) {
