@@ -1,0 +1,30 @@
+Packages for PHP5: Exception changes
+========================================================================
+$Id$
+
+1) Throws clause
+----------------
+The throws clause may be added to a method or function declaration to 
+indicate what kind of exceptions it throws.
+
+Basic syntax:
+
+  class Socket {
+    public function connect() throws IOException {
+      // ...
+    }
+  }
+  
+Note: The exceptions are not checked, but the types of exceptions may be
+retrieved via the reflection API. Example:
+
+  $method= new ReflectionMethod('Socket', 'connect');
+  foreach ($method->getExceptionTypes() as $ex) {
+    Reflection::export($ex);
+  }
+
+Classes in the throws clause must be declared before the function 
+declaration. Referencing previously undeclared classes will result in a
+compile time fatal error.
+
+<EOF>
