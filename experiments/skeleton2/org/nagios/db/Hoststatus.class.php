@@ -37,22 +37,29 @@
       $process_performance_data= 0;
 
     /**
+     * Constructor
+     *
+     * @access  public
+     * @param   array record default array()
+     */
+    public function __construct($record= array()) {
+      foreach ($record as $key => $val) {
+        $this->{$key}= $val;
+      }
+    }
+
+    /**
      * Gets the service status by hostname
      *
      * @access  public
      * @param   string hostname
      * @return  &Hoststatus[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public function getByHost_name($host_name) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('nagios', 0))) {
-        throw (new IllegalAccessException('No connection to "nagios" available'));
-      }
-
       try {
-        $q= $db->query ('
+        $q= ConnectionManager::getInstance()->getByHost('nagios', 0)->query ('
           select
             host_name,
             host_status,
@@ -99,16 +106,11 @@
      * @param   string hoststatus
      * @return  &Hoststatus[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public function getByHost_status($host_status) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('nagios', 0))) {
-        throw (new IllegalAccessException('No connection to "nagios" available'));
-      }
-
       try {
-        $q= $db->query ('
+        $q= ConnectionManager::getInstance()->getByHost('nagios', 0)->query ('
           select
             host_name,
             host_status,
@@ -154,16 +156,11 @@
      * @access  public
      * @return  &Hoststatus[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public function getByNotUp() {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('nagios', 0))) {
-        throw (new IllegalAccessException('No connection to "nagios" available'));
-      }
-
       try {
-        $q= $db->query ('
+        $q= ConnectionManager::getInstance()->getByHost('nagios', 0)->query ('
           select
             host_name,
             host_status,
@@ -629,18 +626,12 @@
      * @access  public
      * @return  boolean success
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public function update() {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('nagios', 0))) {
-        throw (new IllegalAccessException('No connection to "nagios" available'));
-      }
-
       try {
-        $db->update('
+        ConnectionManager::getInstance()->getByHost('nagios', 0)->update('
           nagios.hoststatus set
-            host_name = %s,
             host_status = %s,
             last_update = %s,
             last_check = %s,
@@ -662,9 +653,8 @@
             failure_prediction_enabled = %d,
             process_performance_data = %d
           where
-            
+            host_name = %s
           ',
-          $this->host_name,
           $this->host_status,
           $this->last_update,
           $this->last_check,
@@ -684,7 +674,8 @@
           $this->percent_state_change,
           $this->scheduled_downtime_depth,
           $this->failure_prediction_enabled,
-          $this->process_performance_data
+          $this->process_performance_data,
+          $this->host_name
         );
       } catch (SQLException $e) {
         throw ($e);
@@ -699,16 +690,11 @@
      * @access  public
      * @return  boolean success
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public function insert() {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('nagios', 0))) {
-        throw (new IllegalAccessException('No connection to "nagios" available'));
-      }
-
       try {
-        $db->insert('
+        ConnectionManager::getInstance()->getByHost('nagios', 0)->insert('
           nagios.hoststatus (
             host_name,
             host_status,

@@ -49,11 +49,8 @@
      * @throws  rdbms.ConnectionNotRegisteredException
      */
     public static function getByNews_id($news_id) {
-      $cm= ConnectionManager::getInstance();  
-      $db= $cm->getByHost('caffeine', 0);
-
       try {
-        list($data)= $db->select('
+        list($data)= ConnectionManager::getInstance()->getByHost('caffeine', 0)->select('
           select
             news_id,
             caption,
@@ -86,11 +83,8 @@
      * @throws  rdbms.ConnectionNotRegisteredException
      */
     public static function getByBz_id($bz_id) {
-      $cm= ConnectionManager::getInstance();  
-      $db= $cm->getByHost('caffeine', 0);
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('caffeine', 0)->query('
           select
             news_id,
             caption,
@@ -129,10 +123,8 @@
      * @throws  rdbms.ConnectionNotRegisteredException
      */
     public static function getByDateOrdered($max= -1) {
-      $cm= ConnectionManager::getInstance();  
-      $db= $cm->getByHost('caffeine', 0);
-
       try {
+        $db= ConnectionManager::getInstance()->getByHost('caffeine', 0);
         if (-1 != $max) $db->query('set rowcount %d', $max);
         $q= $db->query('
           select
@@ -332,11 +324,8 @@
      * @throws  rdbms.ConnectionNotRegisteredException
      */
     public function update() {
-      $cm= ConnectionManager::getInstance();  
-      $db= $cm->getByHost('caffeine', 0);
-
       try {
-        $affected= $db->update('
+        $affected= ConnectionManager::getInstance()->getByHost('caffeine', 0)->update('
           news set
             caption = %s,
             link = %s,
@@ -373,10 +362,8 @@
      * @throws  rdbms.ConnectionNotRegisteredException
      */
     public function insert() {
-      $cm= ConnectionManager::getInstance();  
-      $db= $cm->getByHost('caffeine', 0);
-
       try {
+        $db= ConnectionManager::getInstance()->getByHost('caffeine', 0);
         $affected= $db->insert('
           news (
             caption,

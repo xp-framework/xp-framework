@@ -45,22 +45,29 @@
       $cclist_accessible= 0;
 
     /**
+     * Constructor
+     *
+     * @access  public
+     * @param   array record default array()
+     */
+    public function __construct($record= array()) {
+      foreach ($record as $key => $val) {
+        $this->{$key}= $val;
+      }
+    }
+
+    /**
      * Gets an instance of this object by index "PRIMARY"
      *
      * @access  static
      * @param   int bug_id
      * @return  &Bugs object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByBug_id($bug_id) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -109,16 +116,11 @@
      * @param   int assigned_to
      * @return  &Bugs[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByAssigned_to($assigned_to) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -170,16 +172,11 @@
      * @param   util.Date creation_ts
      * @return  &Bugs[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByCreation_ts(Date $creation_ts) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -231,16 +228,11 @@
      * @param   util.Date delta_ts
      * @return  &Bugs[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByDelta_ts(Date $delta_ts) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -292,16 +284,11 @@
      * @param   string bug_severity
      * @return  &Bugs[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByBug_severity($bug_severity) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -353,16 +340,11 @@
      * @param   string bug_status
      * @return  &Bugs[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByBug_status($bug_status) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -414,16 +396,11 @@
      * @param   string op_sys
      * @return  &Bugs[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByOp_sys($op_sys) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -475,16 +452,11 @@
      * @param   string priority
      * @return  &Bugs[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByPriority($priority) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -536,16 +508,11 @@
      * @param   string product
      * @return  &Bugs[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByProduct($product) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -597,16 +564,11 @@
      * @param   int reporter
      * @return  &Bugs[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByReporter($reporter) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -658,16 +620,11 @@
      * @param   string version
      * @return  &Bugs[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByVersion($version) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -719,16 +676,11 @@
      * @param   string component
      * @return  &Bugs[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByComponent($component) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -780,16 +732,11 @@
      * @param   string resolution
      * @return  &Bugs[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByResolution($resolution) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -841,16 +788,11 @@
      * @param   int votes
      * @return  &Bugs[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public static function getByVotes($votes) {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $q= $db->query('
+        $q= ConnectionManager::getInstance()->getByHost('bugzilla', 0)->query('
           select
             bug_id,
             groupset,
@@ -1425,16 +1367,11 @@
      * @access  public
      * @return  boolean success
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public function update() {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
-        $db->update('
+        ConnectionManager::getInstance()->getByHost('bugzilla', 0)->update('
           bugs..bugs set
             groupset = %d,
             assigned_to = %d,
@@ -1504,15 +1441,11 @@
      * @access  public
      * @return  boolean success
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.ConnectionNotRegisteredException in case there is no suitable database connection available
      */
     public function insert() {
-      $cm= ConnectionManager::getInstance();  
-      if (FALSE === ($db= $cm->getByHost('bugzilla', 0))) {
-        throw (new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try {
+        $db= ConnectionManager::getInstance()->getByHost('bugzilla', 0);
         $db->insert('
           bugs..bugs (
             groupset,
@@ -1577,7 +1510,6 @@
       }
 
       return TRUE;
-    }
-    
+    }    
   }
 ?>
