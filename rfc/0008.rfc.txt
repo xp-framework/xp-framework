@@ -43,6 +43,7 @@ a) Syntax changes and additions
 * A keyword "synchronized"
 * A new type "void"
 * Return type hints (unchecked, may be retrieved via Reflection)
+* Class instance creation expressions
 
 b) New features
 * "self" would be evaluated at runtime
@@ -259,6 +260,52 @@ Details
   the same code, it would have to wait for the first instance to finish
   before being able to continue.
 
+* Class instance creation expression
+  A class instance creation expression is used to create new objects that 
+  are instances of classes.
+  
+  Example 1:
+  <?php
+    abstract class Comparator {
+      abstract public function compare($a, $b);
+    }
+
+    class ArrayList {
+      public function sort(Comparator $c) {
+        usort($this->elements, array($c, 'compare'));
+      }
+    }
+
+    $list->sort(new Comparator() {
+      public function compare($a, $b) {
+        return strnatcmp($a, $b);
+      }
+    });
+  ?>
+  In this case, the class being instantiated is a subclass of the 
+  Comparator class.
+
+  Example 2:
+  <?php
+    interface class Comparator {
+      public function compare($a, $b);
+    }
+
+    class ArrayList {
+      public function sort(Comparator $c) {
+        usort($this->elements, array($c, 'compare'));
+      }
+    }
+
+    $list->sort(new Comparator() {
+      public function compare($a, $b) {
+        return strnatcmp($a, $b);
+      }
+    });
+  ?>
+  In this case, the class being instantiated is a class implementing
+  the Comparator interface.
+
 * "self" would be evaluated at runtime:
   This would make the following possible:
   <?php
@@ -358,6 +405,9 @@ Related documents
 -----------------
 * Operator overloading
   http://msdn.microsoft.com/library/default.asp?url=/library/en-us/csref/html/vcwlkoperatoroverloadingtutorial.asp
+
+* Class instance creation expressions
+  http://java.sun.com/docs/books/jls/second_edition/html/expressions.doc.html#249198
 
 Comments
 --------
