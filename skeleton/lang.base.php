@@ -26,7 +26,11 @@
       if ($line < 0) return !empty($errors[$file]);
       
       // Else, we'll have to search...
-      for ($i= 0, $s= sizeof($errors[$file]); $i < $s; $i++) {
+      if (isset($errors[$file])) for (
+        $i= 0, $s= sizeof($errors[$file]); 
+        $i < $s; 
+        $i++
+      ) {
         if ($line == $errors[$file][$i]['line']) return TRUE;
       }
       
