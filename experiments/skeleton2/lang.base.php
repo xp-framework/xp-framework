@@ -178,7 +178,7 @@
       case 'string':
       case 'bool':
       case 'null':
-        if (is_a($var, 'Object')) $var= $var->toString();
+        if ($var instanceof Object) $var= $var->toString();
         settype($var, $type);
         break;
 
