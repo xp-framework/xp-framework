@@ -47,7 +47,7 @@
           All the classes can be loaded by using the keyword import,
           while the exact location of the class in the filesystem has not to be known 
           to the program. The separation char has been chosen '.' instead of '/' or '\'.
-          In the XP framework i is handled the same way, by the little difference that
+          In the XP framework it is handled the same way, by the little difference that
           instead of "import" we use "uses" (import already is a language-keyword in
           ZE2).
           <br/><br/>
@@ -56,7 +56,7 @@
           be reuseable, independent and where possible multi-purposed (this includes
           the whole backend which is realised in crons). A simple implementation à la
           sybase_connect([...]) or die ('Database not available') was not an option.
-          Errors like that have to be catched and handled by the application.
+          Errors like that have to be caught and handled by the application.
         </text>
       </para>              
       <para>
@@ -76,13 +76,13 @@
             </li>
           </ul>
 
-          A PHP script which utilizes the XP framework, has to start with the following
+          A PHP script using the XP framework will have to start with the following
           line of code:
 
           <code><![CDATA[  require('lang.base.php'); ]]></code>
 
           The file included by this command contains the basics for the framework.
-          Thus it is recommended to change the Include-path in the php.ini, so the
+          It is recommended to change the include path in php.ini, so the
           path need not to be set by every script.
         </text>
       </para>              
@@ -116,7 +116,7 @@
   // }}}]]></code>
 
           In line three the class /path/to/skeleton/io/File.class.php is included. It
-          wraps the PHP-functions, that handle files (fopen, fread, ...) and embeds
+          wraps the PHP-functions that handle files (fopen, fread, ...) and embeds
           exceptions into the functions. 
 
           The syntax of <tt>uses</tt> is much more sexy than using something like 
