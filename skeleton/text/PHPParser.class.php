@@ -274,7 +274,6 @@
         
         switch ($mode) {
           case PHPPARSER_MODE_GET_USES:
-            var_dump ($tokenId, $data);
             if (T_CONSTANT_ENCAPSED_STRING == $tokenId) 
               $this->uses[]= substr ($data, 1, strlen ($data)-2);
             break;
