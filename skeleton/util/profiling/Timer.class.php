@@ -8,7 +8,7 @@
    * The Timer class provides a simple timer
    *
    * <code>
-   *   $p= &new Profiler();
+   *   $p= &new Timer();
    *   $p->start();
    *   // ... code you want profiled
    *   $p->stop();
