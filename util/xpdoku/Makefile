@@ -120,7 +120,7 @@ index: $(OUTPUT) $(XML) news
 	@echo "===> Creating apidoc index"
 	@$(SABCMD) xslt/apidoc.xsl $(CTREE) $(OUTPUT)/apidoc/index.html '$$area=documentation' 2>/dev/null
 	@echo "===> Creating resources index"
-	@$(SABCMD) xslt/resources.xsl content/resources.xml $(OUTPUT)/resources/index.html '$$area=resources'
+	@$(SABCMD) xslt/content.xsl content/resources.xml $(OUTPUT)/resources/index.html '$$area=resources'
 	@echo "===> Creating devel index"
 	@$(SABCMD) xslt/devel.xsl content/devel.xml $(OUTPUT)/devel/index.html '$$area=devel'
 	@echo "===> Creating highlighter"

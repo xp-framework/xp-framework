@@ -74,6 +74,7 @@
         <b><xsl:value-of select="content/para/caption"/></b>
         <br/>
         <xsl:apply-templates select="content/para/text"/>
+        <xsl:apply-templates select="content/para/show-resources"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -92,10 +93,60 @@
     <xsl:call-template name="divider"/>
     <p style="line-height: 16px; text-align: justify">
       <xsl:apply-templates select="text"/>
+      <xsl:apply-templates select="show-resources"/>
     </p>
     <xsl:apply-templates select="advanced"/>
     <br/>
   </xsl:template>
 
+
+  <!-- Extra templates for resources -->
+  <xsl:template name="listfiles">
+    <xsl:param name="filter"/>
+    <xsl:processing-instruction name="php"><![CDATA[
+      $releases= array();
+      $dir= dir(getenv('DOCUMENT_ROOT').'/downloads/');
+      while ($e= $dir->read()) {
+        if (]]><xsl:value-of select="$filter"/><![CDATA[) continue;
+        $releases[]= $e;
+      }
+      rsort($releases);
+      for ($i= 0, $s= min(sizeof($releases), 5); $i < $s; $i++) {
+        $md5= (file_exists($dir->path.'/'.$releases[$i].'.md5')
+          ? file_get_contents($dir->path.'/'.$releases[$i].'.md5')
+          : 'n/a'
+        );
+        $information= (file_exists($dir->path.'/'.$releases[$i].'.info')
+          ? '<ul>'.str_replace("\n* ", "<li>", "\n".file_get_contents($dir->path.'/'.$releases[$i].'.info')).'</ul>'
+          : ''
+        );
+        printf(
+          '<li><a href="/downloads/%1$s">%1$s</a> - %2$.2f KB [ MD5: %3$s ]</a><br>%4$s<br></li>',
+          $releases[$i],
+          filesize($dir->path.'/'.$releases[$i]) / 1024,
+          $md5,
+          $information
+        );
+      }
+      
+      $dir->close();
+    ]]></xsl:processing-instruction>
+  </xsl:template>
+
+  <xsl:template match="show-resources">
+    <ul>
+      <xsl:call-template name="listfiles">
+        <xsl:with-param name="filter"><xsl:value-of select="./@filter"/></xsl:with-param>
+      </xsl:call-template>
+    </ul>
+  </xsl:template>
+
+  <xsl:template match="introduction//*">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates/>
+    </xsl:copy>
+  </xsl:template>
+  
 
 </xsl:stylesheet>

@@ -1,11 +1,46 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <document title="XP::Resources">
   <main>
-    <introduction>
-      This section shall contain the ports (software written in XP),
-      releases and the bug system.
-      <br/><br/>
-      Coming soon...
-    </introduction>
-  </main>
+    <content>
+      <title>XP::resources</title>
+      <editor>$Id$</editor>
+      
+      <para>
+        <caption>Anonymous CVS</caption>
+        <text>
+          We now offer an anonymous cvs access. Check it out with:
+          <pre>cvs -d:pserver:anonymous@php3.de:/home/cvs/repositories/xp co .</pre>
+          (Password is empty).
+        </text>
+      </para>
+
+      <para>
+        <caption>Web based CVS</caption>
+        <text>
+          For conveniance, we have set up a Web based CVS viewer, so you can
+          easily inspect the files.<br/>
+          Point your browser to 
+          <ref type="ext" link="http://cvs.xp.php3.de">http://cvs.xp-framework.net</ref>
+          to see it.
+        </text>
+        <ref>http://cvs.xp.php3.de</ref>
+      </para>
+
+      <!-- Show available releases -->
+      <para>
+        <caption>Releases</caption>
+        <show-resources filter="'tar.gz' != substr($e, -6) || 'current' == substr($e, 3, 7)" />
+      </para>
+      
+      <!-- Show available patches -->
+      <para>
+        <caption>Patches</caption>
+        <show-resources filter="'diff' != substr($e, -4)"/>
+      </para>
+    </content>
+    
+    <references>
+      <ref type="ext" link="http://cvs.xp.php3.de">Web based CVS access</ref>
+    </references>
+  </main>  
 </document>
