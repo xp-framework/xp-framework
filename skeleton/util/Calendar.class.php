@@ -71,8 +71,8 @@
      * @return  int number of workdays
      */
     function workdays($start, $end, $holidays= array()) {
-      $s= is_a('Date', $start) ? $start->getTime() : $start;
-      $e= is_a('Date', $end) ? $end->getTime() : $end;
+      $s= is_a($start, 'Date') ? $start->getTime() : $start;
+      $e= is_a($end, 'Date') ? $end->getTime() : $end;
 
       // For holidays, we have to compare to midnight
       // else, don't calculate this
@@ -102,7 +102,7 @@
       }
       
       // Check for passed arguments
-      $d= (is_a('Date', $date) 
+      $d= (is_a($date, 'Date') 
         ? $date->getTime()
         : ($date == -1 ? time() : $date)
       );
