@@ -194,9 +194,9 @@
   ));
   ini_set('include_path', SKELETON_PATH.':'.ini_get('include_path'));
   register_shutdown_function(array('xp', 'destroy'));
-  set_error_handler(array('xp', 'error'));
   xp::registry('errors', array());
   xp::registry('exceptions', array());
+  set_error_handler(array('xp', 'error'));
 
   uses(
     'lang.Object',
