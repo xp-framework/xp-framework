@@ -109,6 +109,7 @@
           $entry[$record['id']]->addChild(new Node('title', $record['title']));
           $entry[$record['id']]->addChild(new Node('author', $record['author']));
           $entry[$record['id']]->addChild(new Node('extended_length', $record['extended_length']));
+          $entry[$record['id']]->addChild(new Node('num_comments', $record['num_comments']));
           $entry[$record['id']]->addChild(Node::fromObject(new Date($record['timestamp']), 'date'));
           $entry[$record['id']]->addChild(FormresultHelper::markupNodeFor('body', $record['body']));
         }
