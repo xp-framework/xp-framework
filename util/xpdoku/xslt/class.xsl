@@ -363,6 +363,7 @@
         </xsl:choose>
         <td width="80%">
           <b>
+          <xsl:if test="./model"><xsl:value-of select="./model"/><xsl:text> </xsl:text></xsl:if>
           <xsl:value-of select="./access"/><xsl:text> </xsl:text>
           <xsl:if test="string-length (./return/type) = 0">void<xsl:text> </xsl:text></xsl:if>
           <xsl:if test="string-length (./return/type) != 0">
