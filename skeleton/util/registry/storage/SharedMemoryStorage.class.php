@@ -20,11 +20,9 @@
       $_seg     = NULL;
     
     /**
-     * (Insert method's description here)
+     * Initialize this storage
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function initialize() {
       $this->_seg= &new ShmSegment($this->id);
@@ -34,22 +32,22 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Returns whether this storage contains the given key
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string key
+     * @return  bool TRUE when this key exists
      */
     function contains($key) {
       return isset($this->segments[$key]);
     }
     
     /**
-     * (Insert method's description here)
+     * Get a key by it's name
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string key
+     * @return  &mixed
      */
     function &get($key) {
       if (!isset($this->segments[$key])) {
@@ -60,11 +58,12 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Insert/update a key
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public 
+     * @param   string key
+     * @param   &mixed value
+     * @param   int permissions default 0666
      */
     function put($key, &$value, $permissions= 0666) {
       if (!isset($this->segments[$key])) {
@@ -74,11 +73,10 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Remove a key
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string key
      */
     function remove($key) {
       if (!isset($this->segments[$key])) {
