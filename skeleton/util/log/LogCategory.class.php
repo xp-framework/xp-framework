@@ -11,8 +11,20 @@
   define('LOGGER_FLAG_ALL',     LOGGER_FLAG_INFO | LOGGER_FLAG_WARN | LOGGER_FLAG_ERROR | LOGGER_FLAG_DEBUG);
   
   /**
-   * Category base class
+   * The log category is the interface to be used. All logging information
+   * is sent to a log category via one of the info, warn, error, debug 
+   * methods (or their *f variants which use sprintf).
    *
+   * Basic example:
+   * <code>
+   *   $l= &Logger::getInstance();
+   *   $cat= &$l->getCategory();
+   *   $cat->addAppender(new ConsoleAppender());
+   *
+   *   $cat->info('Starting work at', Date::now());
+   * </code>
+   *
+   * @purpose  Base class
    */
   class LogCategory extends Object {
     var 
