@@ -49,8 +49,9 @@
       
       // This is ugly...
       for ($i= 0; $i< sizeof($GLOBALS['php_errorcode']); $i++) {
+        $func= '<main>';
         if ($fd= @fopen($GLOBALS['php_errorfile'][$i], 'r')) {
-          $func= '<main>';
+
           $no= 0;
           while (
             (FALSE !== ($line= @fgets($fd, 4096))) &&
