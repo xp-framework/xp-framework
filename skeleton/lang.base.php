@@ -257,7 +257,7 @@
       $interface= func_get_arg($i);
       uses($interface);
       $name= xp::reflect($interface);
-      $signature= array_merge($classmethods, $name);
+      $signature= array_merge($classmethods, (array)$name);
       foreach (get_class_methods($name) as $method) {
         if (!in_array($method, $signature)) {
           xp::error('Interface method '.$interface.'::'.$method.'() not implemented by class '.$class);
