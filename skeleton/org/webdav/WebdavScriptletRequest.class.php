@@ -20,6 +20,17 @@
       $tree=     NULL;
 
     /**
+     * Decode string in the right encoding (currently UTF-8 is used)
+     *
+     * @access public
+     * @param  string string The string which should be encoded
+     * @return string
+     */    
+    function decode($string) {
+      return utf8_decode($string);
+    }
+    
+    /**
      * Set user
      *
      * @access  public
