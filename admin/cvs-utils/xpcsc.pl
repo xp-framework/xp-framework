@@ -16,7 +16,7 @@ use constant ESHORTOPEN => "ESHORTOPEN";
 
 use constant WTBD       => "WTBD";
 use constant WOUTPUT    => "WOUTPUT";
-
+use constant WINDENT    => "WIUNDENT";
 use constant WNOHINT    => "WNOHINT";
 
 %LINK = (
@@ -31,6 +31,7 @@ use constant WNOHINT    => "WNOHINT";
   WTBD        => "http://xp-framework.net/devel/coding.html#13",
   WOUTPUT     => "n/a",
   WNOHINT     => "n/a",
+  WNOHINT     => "http://xp-framework.net/devel/coding.html#5",
 );
 
 # {{{ utility functions for mail notify
@@ -83,6 +84,9 @@ sub error() {
   my $out= "*** Error: ".$message." at line ".$l." of ".$FILE."\n    ".$_."\n---> [".$code."] ".$LINK{$code}."\n";
   print $out;
 
+  close FILE;
+  exit 32;
+
   open (SENDMAIL, "| /usr/sbin/sendmail -t");
   print SENDMAIL "To: friebe\@php3.de, kiesel\@php3.de\n";
   print SENDMAIL "From: \"".getRealname ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
@@ -122,7 +126,12 @@ while (@ARGV) {
   if (!-f $FILE || $FILE !~ /\.class\.php$/) { next; }
   
   open(FILE, $FILE) || die "Cannot open $FILE";
-  $l= 0;
+  
+  $l= 0;              # Line no.
+  $comment= 0;        # Whether we are inside a comment
+  $indent= 0;         # Indentation
+  
+  # Go through the file, line by line
   while (<FILE>) {
     $l++;
 
@@ -131,6 +140,11 @@ while (@ARGV) {
       if (2 == $l && $_ !~ /^\/\*/) { &error("Second line does not contain XP header", ENOHEADER); }
       if (4 == $l && $_ !~ /\$Id/) { &error("Second line does not contain CVS Id-Tag", ENOHEADER); }
       if ($l < 5) { next; }
+    }
+    
+    # Check whether we have a comment
+    if ($_ =~ /(\s*)\/\*\*?/) {
+      $comment= 1;
     }
 
     if ($_ =~ /\t/) {
@@ -148,8 +162,32 @@ while (@ARGV) {
     if ($_ =~ /(.)\/\*[^\*]/ && $l > 2 && $1 ne "'") {
       &error("Block comments may not be contained within source, use // instead", ECOMMENT);
     }
-
-    if ($_ =~ /(.*)(echo|var_dump|print_r)/ && $1 !~ /\*/) {
+    
+    if (!$string && !$comment && $_ =~ /^(\s*)(.*)$/) {
+      if ($2) {
+        0 && print "### ".length($1)." - ".$indent."= ".(length($1) - $indent)."###\n";
+        
+        # The difference in indent may be one of -4, -2, 0 or 2, where -4
+        # occurs in switch / case statements, 4 in multi-line strings. Other
+        # values should not occur; and in *absolutely* no case should the 
+        # indentation difference be anything odd.
+        $diff= (length($1) - $indent);
+        if ($diff % 2) {
+          &error("Your indentation is incorrect (difference to previous line is $diff chars)", WINDENT);
+        }
+        if ($diff != -4 && $diff != -2 && $diff != 0 && $diff != 2 && $diff != 4) {
+          &warning("Your indentation seems to be incorrect (difference to previous line is $diff chars)", EINDENT);
+        }
+        
+        $indent= length($1);
+        
+        # If a line ends with a brace, force indent
+        $indent+= 2 if ($2 =~ /(\{|\()$/);
+        $indent-= 2 if ($2 =~ /(\}|\))$/);
+      }
+    }
+    
+    if ($_ =~ /(.*)(echo|var_dump|print_r)/ && !$comment) {
       &warning("You should not be using direct output statements ($2)", WOUTPUT);
     }
 
@@ -163,6 +201,12 @@ while (@ARGV) {
     
     if ($_ =~ /\(Insert method's description here\)/) {
       &warning("You should supply a description for your method", WNOHINT);
+    }
+    
+    0 && print "[".$comment."|".$indent."]".$_;
+    
+    if ($_ =~ /(\s*)\*\//) {
+      $comment= 0;
     }
   }
   close FILE;
