@@ -41,6 +41,16 @@
     function contains($key) {
       return isset($this->segments[$key]);
     }
+
+    /**
+     * Get all keys
+     *
+     * @access  public
+     * @return  string[] key
+     */
+    function keys() { 
+      return array_keys($this->segments);
+    }
     
     /**
      * Get a key by it's name

@@ -14,11 +14,11 @@
    * GET <key>                  Gets a key
    * SET <key>=<value>          Inserts/Updates a key
    * DELE <key>                 Deletes a key
+   * KEYS                       Returns all keys
    * </pre>
    *
    * Not implemented:
    * <pre>
-   * KEYS                       Returns all keys
    * SAVE                       Saves to disk
    * </pre>
    *
@@ -74,6 +74,17 @@
      */
     function contains($key) {
       return FALSE !== $this->_cmd('GET %s', urlencode($this->id.'/'.$key));
+    }
+
+    /**
+     * Get all keys
+     *
+     * @access  public
+     * @return  string[] key
+     */
+    function keys() { 
+      if (FALSE === ($ret= $this->_cmd('KEYS'))) return FALSE;
+      return explode('|', $ret);
     }
 
     /**

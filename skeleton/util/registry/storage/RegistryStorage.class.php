@@ -71,5 +71,13 @@
      */
     function remove($key) { }
 
+    /**
+     * Get all keys
+     *
+     * @access  public
+     * @return  string[] key
+     */
+    function keys() { }
+
   }
 ?>

@@ -40,6 +40,16 @@
     function contains($key) {
       return $this->storage->contains($key);
     }
+
+    /**
+     * Return all registered keys
+     *
+     * @access  public
+     * @return  string[] key
+     */
+    function keys() {
+      return $this->storage->keys();
+    }
     
     /**
      * Retreive a value by a given key
