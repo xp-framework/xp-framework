@@ -263,9 +263,10 @@ edit/mail_notify.php]]></pre>
         <text>
           A "FIXME:" or "TODO:" at the beginning of a comment indicates some
           kind of unresolved problem at this place:
-
-          // FIXME: A database error could possibly pop up here.
-          // TODO: Implement improved backchecking
+          <pre><![CDATA[
+  // FIXME: A database error could possibly pop up here.
+  // TODO: Implement improved backchecking
+]]></pre>
 
           <quote>
             Note: The frequency of comments sometimes reflects poor quality of 
@@ -311,7 +312,7 @@ edit/mail_notify.php]]></pre>
       <para>
         <caption>Blocks</caption>
         <text>
-          Blocks are enclosed in { and }. Here applies:
+          Blocks are enclosed in <tt>{</tt> and <tt>}</tt>.
           
           <ul>
             <li>Blocks have to be indented</li>
@@ -324,10 +325,10 @@ edit/mail_notify.php]]></pre>
                 forgetting to add braces leading to breakage of the script as the added
                 code will not execute. There is an exception for statements in conjunction
                 with a return (see below):
-                <code><![CDATA[  $result= $dbo->select('baz from bar where foo= NULL');
+                <code><![CDATA[  $result= $dbo->select('...');
   if (!$result) return FALSE;
 
-  if (FALSE === ($result= $dbo->select('baz from bar where foo= NULL'))) return FALSE;]]></code>
+  if (FALSE === ($result= $dbo->select('...'))) return FALSE;]]></code>
             </li>
           </ul>
         </text>
@@ -377,6 +378,11 @@ edit/mail_notify.php]]></pre>
 
           <code><![CDATA[  for ($init; $condition; $update) {
     doSomething();
+  }
+  
+  for ($i= &$dba->iterator(); $i->hasNext(); ) {
+    $key= $i->next();
+    // ...
   }]]></code>
         </text>
       </para>
