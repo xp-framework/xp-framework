@@ -4,7 +4,10 @@
  * $Id$
  */
  
-  uses('lang.MethodNotImplementedException');
+  uses(
+    'lang.MethodNotImplementedException',
+    'org.webdav.WebdavObject'
+  );
   
   define('WEBDAV_IMPL_PROPFIND',    0x0001);
   define('WEBDAV_IMPL_PROPPATCH',   0x0002);
@@ -30,6 +33,18 @@
     }
     
     /**
+     * Get a file
+     *
+     * @access  public
+     * @param   string resourcename
+     * @return  string &org.webdav.WebdavObject
+     * @throws  ElementNotFoundException
+     */
+    function &get($filename) {
+      return throw(new MethodNotImplementedException($this->getName().'::get not implemented'));
+    }
+
+    /**
      * Find properties
      *
      * @access  abstract
@@ -39,7 +54,7 @@
      * @throws  MethodNotImplementedException
      */
     function &propfind(&$request, &$response) { 
-      return throw(new MethodNotImplementedException($this->getName().'::findProperties not implemented'));
+      return throw(new MethodNotImplementedException($this->getName().'::propfind not implemented'));
     }
   
   }
