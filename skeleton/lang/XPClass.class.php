@@ -490,6 +490,7 @@
      * @return  array
      */
     function detailsForMethod($class, $method) {
+      $method= strtolower($method);
       while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
         if (isset($details[$method])) return $details[$method];
         $class= get_parent_class($class);
