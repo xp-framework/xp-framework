@@ -98,7 +98,7 @@
       do {
         if ('' == chop($l)) continue;
         
-        if ("\t" == $l{0}) {
+        if (("\t" == $l{0}) || (' ' == $l{0})) {
           $r[ucfirst($k)].= $l;
           continue;
         }
