@@ -16,7 +16,7 @@
       $blue     = 0;
       
     var
-      $_hdl     = NULL;
+      $handle     = NULL;
     
     /**
      * Constructor

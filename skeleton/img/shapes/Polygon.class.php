@@ -62,12 +62,12 @@
         $hdl,
         $this->points,
         sizeof($this->points) / 2,
-        $this->col->_hdl
+        $this->col->handle
       ); else return imagepolygon(
         $hdl,
         $this->points,
         sizeof($this->points) / 2,
-        $this->col->_hdl
+        $this->col->handle
       );
     }
   }

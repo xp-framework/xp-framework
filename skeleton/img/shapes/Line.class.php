@@ -57,7 +57,7 @@
         $this->y1,
         $this->x2,
         $this->y2,
-        $this->col->_hdl
+        $this->col->handle
       );
     }
   }

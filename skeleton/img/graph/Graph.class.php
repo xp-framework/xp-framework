@@ -67,7 +67,7 @@
      * @return  mixed the return value of graphObject's draw function
      */
     function draw(&$graphObject) {
-      return $graphObject->draw($this->_hdl, $this->getWidth(), $this->getHeight());
+      return $graphObject->draw($this->handle, $this->getWidth(), $this->getHeight());
     }
   }
 ?>

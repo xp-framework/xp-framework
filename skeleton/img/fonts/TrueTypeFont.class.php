@@ -41,7 +41,7 @@
         $this->angle,
         $x,
         $y,
-        $col->_hdl * ($this->antialiasing ? 1 : -1),
+        $col->handle * ($this->antialiasing ? 1 : -1),
         $this->name,
         $text
       );

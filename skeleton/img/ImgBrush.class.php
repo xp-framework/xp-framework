@@ -15,7 +15,7 @@
       $style    = NULL;
       
     var
-      $_hdl     = IMG_COLOR_STYLEDBRUSHED;
+      $handle     = IMG_COLOR_STYLEDBRUSHED;
     
     /**
      * Constructor

@@ -72,7 +72,7 @@
         $this->h,
         $this->s,
         $this->e,
-        $this->col->_hdl,
+        $this->col->handle,
         $this->fill
       ); else return imagearc(
         $hdl,
@@ -82,7 +82,7 @@
         $this->h,
         $this->s,
         $this->e,
-        $this->col->_hdl
+        $this->col->handle
       );
     }
   }

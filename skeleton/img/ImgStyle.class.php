@@ -15,7 +15,7 @@
       $pixels   = array();
       
     var
-      $_hdl     = IMG_COLOR_STYLED;
+      $handle     = IMG_COLOR_STYLED;
     
     /**
      * Constructor
@@ -26,7 +26,7 @@
     function __construct(&$colors) {
       $this->colors= &$colors;
       for ($i= 0, $s= sizeof($this->colors); $i < $s; $i++) {
-        $this->pixels[]= $this->colors[$i]->_hdl;
+        $this->pixels[]= $this->colors[$i]->handle;
       }
 
       
