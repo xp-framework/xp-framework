@@ -81,6 +81,7 @@
       <xsl:value-of select="$label"/>
       <xsl:if test="$label = ''"><xsl:value-of select="@link"/></xsl:if>
     </a>
+    <img alt="Link" src="/image/ext.gif" height="11" width="11" border="0" vspace="0" hspace="2"/>
   </xsl:template>
 
   <xsl:template match="ref[@type= 'api:collection']">
@@ -89,6 +90,7 @@
       <xsl:value-of select="$label"/>
       <xsl:if test="$label = ''"><xsl:value-of select="@link"/></xsl:if>
     </a>
+    <img alt="Link" src="/image/ext.gif" height="11" width="11" border="0" vspace="0" hspace="2"/>
   </xsl:template>
   
   <xsl:template match="ref">
