@@ -54,9 +54,10 @@
      * @param   array a
      */
     function _recurse(&$e, $a) {
+      $sname= rtrim($e->name, 's');
       foreach (array_keys($a) as $field) {
         $child= &$e->addChild(new Node(is_numeric($field) 
-          ? preg_replace('=s$=', '', $e->name) 
+          ? $sname
           : $field
         ));
         if (is_array($a[$field])) {
