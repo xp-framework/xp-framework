@@ -191,7 +191,9 @@
      */
     function tell($position= 0, $mode= SEEK_SET) {
       $result= gztell($this->_fd);
-      if (is_error() && FALSE === $result) return throw(new IOException('cannot retrieve file pointer\'s position'));
+      if ((FALSE === $result) && xp::errorAt(__FILE__, __LINE__ - 1)) {
+        return throw(new IOException('retrieve file pointer\'s position '.$this->uri));
+      }
       return $result;
     }
 
