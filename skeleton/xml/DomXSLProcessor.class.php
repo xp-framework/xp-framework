@@ -76,7 +76,7 @@
      * @param   string file file name
      */
     function setXSLFile($file) {
-      $this->stylesheet= $this->_base.$file;
+      $this->stylesheet= array(0, $this->_base.$file);
     }
     
     /**
