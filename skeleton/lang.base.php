@@ -262,7 +262,6 @@
       $interface= func_get_arg($i);
       uses($interface);
       $name= xp::reflect($interface);
-      
       $methods= array_flip(get_class_methods($name));
       
       // Get rid of constructors
