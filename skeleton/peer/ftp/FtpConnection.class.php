@@ -234,6 +234,33 @@
     }
     
     /**
+     * Deletes a file.
+     *
+     * @access  public
+     * @param   string filename
+     * @return  bool success
+     */
+    function delete($remote) {
+      return ftp_delete ($this->_hdl, $remote);
+    }    
+
+    /**
+     * Renames a file in this directory.
+     *
+     * @access  public
+     * @param   string source
+     * @param   string target
+     * @return  bool success
+     */
+    function rename($src, $target) {
+      return ftp_rename (
+        $this->_hdl, 
+        $src, 
+        $target
+      );
+    }
+    
+    /**
      * Enables or disables the passive ftp mode. Call this after the inital
      * login.
      *
