@@ -571,7 +571,7 @@
       if (!isset($q)) $q= QuotedPrintable::getCharsToEncode();
       $n= FALSE;
       for ($i= 0, $s= strlen($str); $i < $s; $i++) {
-        if (in_array($str{$i}, $q)) continue;
+        if (!in_array(ord($str{$i}), $q)) continue;
         $n= TRUE;
         break;
       }
@@ -603,7 +603,7 @@
         HEADER_PRIORITY     => $this->priority,
         HEADER_DATE         => $this->date->toString()
       )) as $key => $val) {
-        if (!empty($val)) $h.= $key.': '.$this->_qstr($val)."\n";
+        if (!empty($val)) $h.= $key.': '.$val."\n";
       }
       return $h;
     }
