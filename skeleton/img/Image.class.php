@@ -17,7 +17,10 @@
       $width    = 0,
       $height   = 0,
       $palette  = array();
-      
+    
+    var
+      $_hdl     = NULL;
+    
     /**
      * Constructor
      *
