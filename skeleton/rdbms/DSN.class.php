@@ -48,6 +48,17 @@
       }
       return $flags;
     }
+
+    /**
+     * Retreive driver
+     *
+     * @access  public
+     * @param   mixed default default NULL  
+     * @return  string driver or default if none is set
+     */
+    function getDriver($default= NULL) {
+      return isset($this->parts['scheme']) ? $this->parts['scheme'] : $default;
+    }
     
     /**
      * Retreive host
