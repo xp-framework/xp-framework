@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.Locale');
+
   /**
    * Class to aid website internationalization based on the
    * Accept-Language and Accept-Charset headers.
@@ -12,15 +14,36 @@
    * <code>
    *   uses('org.apache.LocaleNegotiator');
    *
-   *   $l= &new LocaleNegotiator(
+   *   $negotiator= &new LocaleNegotiator(
    *     'de-at, de;q=0.75, en-us;q=0.50, en;q=0.25',
    *     'ISO-8859-1,utf-8;q=0.7,*;q=0.7'
    *   );
    *   var_dump(
-   *     $l, 
-   *     $l->getLocale($supported= array('de_DE', 'en_US')),
-   *     $l->getCharset($supported= array('iso-8859-1'))
+   *     $negotiator, 
+   *     $negotiator->getLocale($supported= array('de_DE', 'en_US')),
+   *     $negotiator->getCharset($supported= array('iso-8859-1'))
    *   );
+   * </code>
+   * 
+   * Within a scriptlet, use the getHeader() method of the request
+   * object to retreive the values of the Accept-Language / Accept-Charset
+   * headers and the setHeader() method of the response object to
+   * indicate language negotation has took place.
+   *
+   * Abbreviated example:
+   * <code>
+   *   function doGet(&$req, &$res) {
+   *     $negotiator= &new LocaleNegotiator(
+   *       $req->getHeader('Accept-Language'), 
+   *       $req->getHeader('Accept-Charset')
+   *     );
+   *     $locale= &$negotiator->getLocale($supported= array('de_DE', 'en_US'));
+   *
+   *     // [... Do whatever needs to be done for this language ...]
+   *
+   *     $res->setHeader('Content-Language', $locale->getLanguage());
+   *     $res->setHeader('Vary', 'Accept-Language');
+   *   }
    * </code>
    *
    * @see      http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
@@ -50,7 +73,7 @@
      * @access  public
      * @param   string[] supported
      * @param   string default default NULL
-     * @return  string locale or default if none matches
+     * @return  &util.Locale
      */
     function getLocale($supported, $default= NULL) {
       $chosen= FALSE;
@@ -60,7 +83,7 @@
           ($chosen= $this->_find($lang, $supported, 2))
         ) break;
       }
-      return $chosen ? $chosen : $default;
+      return new Locale($chosen ? $chosen : $default);
     }
     
     /**
