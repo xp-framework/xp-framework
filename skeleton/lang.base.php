@@ -13,7 +13,7 @@
     foreach (func_get_args() as $str) {
       $result= $result & include_once(
         SKELETON_PATH.
-        strtr($str, array('.' => '/', '~' => '..', '_' => '.')).
+        strtr($str, array('.' => '/', '~' => '..', '_' => '.', '%' => '_')).
         '.class.php'
       );
       $GLOBALS['php_class_names'][reflect($str)]= $str;
@@ -58,7 +58,7 @@
   function catch($name, &$e) {
     restore_error_handler();
     $return= FALSE;
-    for ($i= 0; $i< sizeof($GLOBALS['php_exceptions']); $i++) {
+    foreach (array_keys($GLOBALS['php_exceptions']) as $i) {
       if (is_a($GLOBALS['php_exceptions'][$i], $name)) {
         $e= $GLOBALS['php_exceptions'][$i];
         unset($GLOBALS['php_exceptions'][$i]);
