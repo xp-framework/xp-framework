@@ -18,4 +18,43 @@ Examples:
 
 The new notation may be used in any place array() can be used.
 
+Annotations
+-----------
+Metadata may be associated with methods in the following way:
+
+<pre>
+  class RmiClient {
+    @remote public function invoke() {
+      // ...
+    }
+    @remote,@deprecated('Use invoke() instead') public function call() {
+      return $this->invoke();
+    }
+  }
+</pre>
+
+The reflection API offers the following ways to retrieve these
+annotations:
+
+- array ReflectionMethod::getAnnotations()
+  Returns an associative array of annotation names and their 
+  values.
+  
+  Example (for the above class' method "call"):
+</pre>
+  array(2) {
+    ["deprecated"]=>
+    string(22) "Use invoke() instead"
+    ["remote"]=>
+    NULL
+  }
+</pre>
+
+- mixed ReflectionMethod::getAnnotation($name)
+  Returns the annotation's value specified by name. Throws a 
+  ReflectionException in case the annotation is not found
+  
+- bool ReflectionMethod::hasAnnotation($name)
+  Allows you to check if a annotation exists
+
 <EOF>
