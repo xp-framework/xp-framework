@@ -148,6 +148,8 @@
     function init() {
       parent::init();
       
+      $this->log->info('Initializing...');
+      
       // Init window
       $this->window->set_default_size (600, 400);
       
@@ -180,7 +182,7 @@
         } if (catch ('Exception', $e)) { 
           break; 
         }
-        if ('-' !== $a{0}) $this->_recursiveAddFile (new ParserManager($a));
+        if ('-' !== $a{0}) $this->_recursiveAddFile ($a);
         $this->updateList();
       }
       
@@ -238,10 +240,11 @@
       $reparse= FALSE;
       foreach (array_keys ($this->files) as $idx) {
         if ($this->files[$idx]->needsReparsing()) {
+          $this->log && $this->log->info($this->files[$idx]->filename, 'needs reparsing...');
           $this->statusbar->push (1, 'Reparsing '.$this->files[$idx]->filename);
           $this->files[$idx]->parse();
           $this->statusbar->push (1, 'Reparsed '.$this->files[$idx]->filename.' at '.date ('H:i:s'));
-      
+
           $reparse= TRUE;
         }
       }
@@ -250,15 +253,24 @@
       return TRUE;
     }
     
-    function _recursiveAddFile(&$parser, $recurse= TRUE) {
+    function _recursiveAddFile($filename, $recurse= TRUE) {
     
+      // Only add files...
+      if (!is_file($filename))
+        return FALSE;
+      
+      // Resolve into real filename...
+      $filename= realpath($filename);
+        
       // Try to prevent adding of the same files twice
       foreach (array_keys ($this->files) as $idx) {
-        if ($this->files[$idx]->filename === $parser->filename)
+        if ($this->files[$idx]->filename === $filename)
           return FALSE;
       }
       
+      $parser= &new ParserManager($filename);
       $parser->parse();
+
       $this->files[]= &$parser;
 
       $this->statusbar->push (1, 'Added file '.$parser->filename);
@@ -269,7 +281,7 @@
         foreach (explode (':', ini_get ('include_path')) as $p) {
           $fn= $p.'/'.str_replace ('.', DIRECTORY_SEPARATOR, $u).'.class.php';
           if (is_file ($fn)) {
-            $this->_recursiveAddFile (new ParserManager(realpath($fn)));
+            $this->_recursiveAddFile($fn);
             break;
           }
         }
@@ -279,18 +291,15 @@
         foreach (explode (':', ini_get ('include_path')) as $p) {
           $fn= $p.'/'.$r;
           if (file_exists ($fn)) {
-            $this->_recursiveAddFile (new ParserManager(realpath($fn)));
+            $this->_recursiveAddFile ($fn);
             break;
           }
         }
       }
     }
 
-    function addFile(&$parser) {
-      if (!is_a ($parser, 'ParserManager'))
-        return FALSE;
-        
-      $this->_recursiveAddFile ($parser);
+    function addFile($filename) {
+      $this->_recursiveAddFile ($filename);
       
       $this->updateList();
       return TRUE;
