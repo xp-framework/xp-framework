@@ -23,7 +23,7 @@
    *   );                                                     
    *   $p->addHeaderMatch(                                    
    *     'X-Message-BackReference',                           
-   *     '/^([0-9]+)@@kk\.?(test)?([0-9]+)\.([0-9]+)$/',      
+   *     '/^foo.bar@kk\.?(test)?([0-9]+)\.([0-9]+)$/',      
    *     $f= 'var_dump'                                           
    *   );                                                     
    *
@@ -80,7 +80,7 @@
      *   Reporting-MTA: dns; rly-xn01.mx.aol.com                     
      *   Arrival-Date: Mon, 17 Feb 2003 04:08:12 -0500 (EST)         
      *                                                               
-     *   Final-Recipient: RFC822; uliruedi@aol.com                   
+     *   Final-Recipient: RFC822; foo.bar@aol.com                   
      *   Action: failed                                              
      *   Status: 2.0.0                                               
      *   Remote-MTA: DNS; air-xn02.mail.aol.com                      
@@ -107,8 +107,8 @@
         $r[ucfirst($k)]= $v;
       } while ($l= strtok("\n"));
 
-      // Final-Recipient: rfc822; info@h2-systems.de
-      // Final-Recipient: rfc822;webmaster@ihrhaus-massivbau.de
+      // Final-Recipient: rfc822; foo.bar@h2-systems.de
+      // Final-Recipient: foo.bar@ihrhaus-massivbau.de
       if (isset($r['Final-Recipient'])) {
         list($type, $address)= explode(';', $r['Final-Recipient']);
         $daemonmessage->setFailedRecipient(InternetAddress::fromString(trim($address)));
@@ -194,14 +194,14 @@
       // Received: from mxintern.kundenserver.de ([212.227.126.204])
       //         by mail.laudi.de with esmtp (Exim 2.10 #1)
       //         id 18jfZb-0006cv-00
-      //         for kundenserver@parser.laudi.de; Fri, 14 Feb 2003 14:08:11 +0100
+      //         for foo.bar@parser.laudi.de; Fri, 14 Feb 2003 14:08:11 +0100
       // Received: from mail by mxintern.kundenserver.de with spam-scanned (Exim 3.35 #1)
       //         id 18jfZa-0003Ph-00
-      //         for www@schlund.de; Fri, 14 Feb 2003 14:08:11 +0100
+      //         for foo.bar@schlund.de; Fri, 14 Feb 2003 14:08:11 +0100
       // Received: from [194.73.242.6] (helo=wmpmta04-app.mail-store.com)
       //         by mxintern.kundenserver.de with esmtp (Exim 3.35 #1)
       //         id 18jfZa-0003Pe-00
-      //         for www@kundenserver.de; Fri, 14 Feb 2003 14:08:10 +0100
+      //         for foo.bar@kundenserver.de; Fri, 14 Feb 2003 14:08:10 +0100
       $t= strtok($message->getHeader('Received'), " \r\n\t([])=");
       do {
         if (
@@ -246,13 +246,13 @@
       // 
       // 
       //    ----- The following addresses had permanent fatal errors -----
-      // <uliruedi@aol.com>
+      // foo.bar@aol.com>
       // 
       //    ----- Transcript of session follows -----
       // ... while talking to air-xn02.mail.aol.com.:
-      // >>> RCPT To:<uliruedi@aol.com>
+      // >>> RCPT foo.bar@aol.com>
       // <<< 550 MAILBOX NOT FOUND
-      // 550 <uliruedi@aol.com>... User unknown
+      // 550 <foo.bar@aol.com>... User unknown
       // 
       // [-- Attachment #2 --]
       // [-- Type: message/delivery-status, Encoding: 7bit, Size: 0.3K --]
@@ -261,7 +261,7 @@
       // Reporting-MTA: dns; rly-xn01.mx.aol.com
       // Arrival-Date: Mon, 17 Feb 2003 04:08:12 -0500 (EST)
       // 
-      // Final-Recipient: RFC822; uliruedi@aol.com
+      // Final-Recipient: RFC822; foo.bar@aol.com
       // Action: failed
       // Status: 2.0.0
       // Remote-MTA: DNS; air-xn02.mail.aol.com
@@ -278,20 +278,20 @@
       // Received: from [212.227.126.159] (helo=mxng09.kundenserver.de)
       //         by moutng.kundenserver.de with esmtp (Exim 3.35 #1)
       //         id 18khFz-0000pQ-00
-      //         for UliRuedi@aol.com; Mon, 17 Feb 2003 10:08:11 +0100
+      //         for foo.bar@aol.com; Mon, 17 Feb 2003 10:08:11 +0100
       // Received: from [172.19.1.25] (helo=newsletter.kundenserver.de)
       //         by mxng09.kundenserver.de with esmtp (Exim 3.35 #1)
       //         id 18khFy-0003xv-00
-      //         for UliRuedi@aol.com; Mon, 17 Feb 2003 10:08:10 +0100
+      //         for foo.bar@aol.com; Mon, 17 Feb 2003 10:08:10 +0100
       // Received: from newsletter by newsletter.kundenserver.de with local (Exim 3.35 #1)
       //         id 18khDT-0000YH-00
-      //         for UliRuedi@aol.com; Mon, 17 Feb 2003 10:05:35 +0100
-      // To: Herr Behrhof <UliRuedi@aol.com>
+      //         for foo.bar@aol.com; Mon, 17 Feb 2003 10:05:35 +0100
+      // To: Herr Behrhof foo.bar@aol.com>
       // Subject: Wichtige Neuerung : Einf?hrung des 1&1 Kundenkennwortes f?r das 1&1 Control-Center
-      // From: "1&1 Internet AG" <noreply@1und1.com>
+      // From: "1&1 Internet AG" foo.bar@1und1.com>
       // X-Priority: 3
       // Content-Type: text/plain; charset=iso-8859-1
-      // Message-ID: <NL12074.2946803@newsletter.kundenserver.de>
+      // Message-ID: foo.bar@newsletter.kundenserver.de>
       // X-News-BackReference: 12074.6170236
       // X-Ignore: yes
       // X-Binford: 61000 (more power)
@@ -358,8 +358,8 @@
               // 
               //                         The Postfix program
               // 
-              // <andreasreichel@crosswinds.net>: host 127.0.0.1[127.0.0.1] said: 550 5.1.0
-              //     <andreasreichel@crosswinds.net>: User unknown (in reply to end of DATA
+              // <foo.bar@crosswinds.net>: host 127.0.0.1[127.0.0.1] said: 550 5.1.0
+              //     foo.bar@crosswinds.net>: User unknown (in reply to end of DATA
               //     command)
               $l= strtok($part->getBody(), "\n");
 
@@ -437,13 +437,13 @@
             // Sendmail
             // ========
             //    ----- The following addresses had permanent fatal errors -----
-            // <friwe@aol.com>
+            // foo.bar@aol.com>
             // 
             //    ----- Transcript of session follows -----
             // ... while talking to mx01.kundenserver.de.:
-            // >>> RCPT To:<avni@bilgin-online.de>
-            // <<< 550 Cannot route to <avni@bilgin-online.de>
-            // 550 5.1.1 Avni Bilgin <avni@bilgin-online.de>... User unknown
+            // >>> RCPT <foo.bar@bilgin-online.de>
+            // <<< 550 Cannot route to foo.bar@bilgin-online.de>
+            // 550 5.1.1 Avni Bilgin foo.bar@bilgin-online.de>... User unknown
             if ('   ----- The following addresses' == substr($t, 0, 32)) {
               $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_SENDMAIL;
               # var_dump('SENDMAIL', $message->headers, $t);
@@ -470,9 +470,9 @@
             // This message was created automatically by mail delivery software (Exim).
             // A message that you sent could not be delivered to one or more of its
             // recipients. This is a permanent error. The following address(es) failed:
-            //   webmaster@b-w-f.net
-            //     SMTP error from remote mailer after RCPT TO:<webmaster@b-w-f.net>:
-            //     host mx01.kundenserver.de [212.227.126.152]: 550 Cannot route to <webmaster@b-w-f.net>
+            //   foo.bar@b-w-f.net
+            //     SMTP error from remote mailer after RCPT foo.bar@b-w-f.net>:
+            //     host mx01.kundenserver.de [212.227.126.152]: 550 Cannot route to foo.bar@b-w-f.net>
             // ------ This is a copy of the message, including all the headers. ------
             if ('This message was created automatically by mail delivery software' == substr($t, 0, 64)) {
               $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_EXIM;
@@ -499,7 +499,7 @@
             // T-Online
             // ========
             // |------------------------- Failed addresses follow: ---------------------|
-            // <roland.tusche.@t-online.de> ... unknown user / Teilnehmer existiert nicht
+            // foo.bar@t-online.de> ... unknown user / Teilnehmer existiert nicht
             // |------------------------- Message text follows: ------------------------|
             if ('|------------------------- Failed addresses follow:' == substr($t, 0, 51)) {
               $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_TONLINE;
@@ -519,11 +519,11 @@
             // Reporting-MTA: dns; cia.schlund.de
             // Arrival-Date: Sun, 12 May 2002 09:06:07 +0200
             // 
-            // Final-Recipient: RFC822; avni@bilgin-online.de
+            // Final-Recipient: RFC822; foo.bar@bilgin-online.de
             // Action: failed
             // Status: 5.1.1
             // Remote-MTA: DNS; mx01.kundenserver.de
-            // Diagnostic-Code: SMTP; 550 Cannot route to <avni@bilgin-online.de>
+            // Diagnostic-Code: SMTP; 550 Cannot route to foo.bar@bilgin-online.de>
             // Last-Attempt-Date: Sun, 12 May 2002 09:34:05 +0200
             if ('Reporting-MTA: ' == substr($t, 0, 15)) {
               $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_POSTFIX;
@@ -548,7 +548,7 @@
             // I'm afraid I wasn't able to deliver your message to the following addresses.
             // This is a permanent error; I've given up. Sorry it didn't work out.
             // 
-            // <sniper@airforce.net>:
+            // <foo.bar@airforce.net>:
             // Sorry, no mailbox here by that name.
             // 
             // --- Below this line is a copy of the message.
@@ -571,7 +571,7 @@
               
               // If the reason (trimmed) contains no spaces it's probably something like this:
               // - Mailbox_quota_exceeded_-_Mailbox_voll/
-              // - 212.227.126.159_does_not_like_recipient./Remote_host_said:_550_Cannot_route_to_<broker@alloncd.de>/Giving_up_on_212.227.126.159./
+              // - foo.bar@alloncd.de>/Giving_up_on_212.227.126.159./
               if (!strstr(trim($daemonmessage->reason), ' ')) {
                 $daemonmessage->setReason(str_replace('_', ' ', $daemonmessage->reason));
               }
