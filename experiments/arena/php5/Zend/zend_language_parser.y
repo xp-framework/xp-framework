@@ -391,8 +391,13 @@ interface_list:
 
 unticked_enum_declaration_statement:
 		T_ENUM T_STRING '{' { zend_do_begin_enum_declaration(&$2 TSRMLS_CC); }
-			enum_declaration_list 
+			enum_inner_statement_list 
 		'}' { zend_do_end_enum_declaration(TSRMLS_C); }
+;
+
+enum_inner_statement_list:
+		enum_declaration_list
+	| 	enum_declaration_list ';' class_statement_list
 ;
 
 enum_declaration_list:
