@@ -9,7 +9,7 @@
 # $Id$
 
 $DEBUG= 0;
-$NOTIFY= 'friebe@php3.de, kiesel@php3.de';
+$NOTIFY= ''; #friebe@php3.de, kiesel@php3.de';
 
 use constant ETAB           => "ETAB";
 use constant EINDENT        => "EINDENT";
@@ -217,6 +217,11 @@ while (@ARGV) {
     # Check for whitespace after inline comments
     if (!$comment && !$string && $_ =~ /^(\s*)\/\/[^\s]/) {
       &error("Not enough whitespace found after inline comment", EWHITESPACE);
+    }
+    
+    # Check for whitespace after keywords
+    if ($_ =~ /\b(if|else|elseif|foreach|while|switch)\(/) {
+      &error("Not enough whitespace after keyword $1", EWHITESPACE);
     }
     
     # Check if there is a method that has the same name as a class
