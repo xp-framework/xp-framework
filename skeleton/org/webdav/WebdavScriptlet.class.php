@@ -147,9 +147,6 @@
         if (isset($impl[$pattern]['auth'])) {
           $this->auth[$path]= &$impl[$pattern]['auth'];
         }
-        if (isset($impl[$pattern]['perm'])) {
-          $this->perm[$path]= &$impl[$pattern]['perm'];
-        }
         if (isset($impl[$pattern]['backend'])) {
           $this->backend[$path]= &$impl[$pattern]['backend'];
         }
@@ -841,8 +838,7 @@
 
         // Check for permissions
         if (!$this->handlingAuth->isAuthorized(
-          $this->perm[$rootURL->getPath()],
-          $request->getAbsoluteURI(),
+          $this->handlingImpl->base.$request->getPath(),
           $request->getUser())
         ) {
           return 'doAuthorizationDeny';
