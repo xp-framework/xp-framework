@@ -166,12 +166,9 @@
       preg_match_all('/<[^>]*> \(<([^>]*)>\)/', $request->getHeader('If'), $ifmatches);
       try();{
         $lock= $this->setLockInfo($request->getProperties(), $ifmatches[1]);
-      } if (catch('OperationNotAllowedException', $e)) {
-        return throw(new OperationNotAllowedException('Locking not allowed on '.$request->getPath()));
       } if (catch('Exception', $e)) {
-        return throw(new OperationFailedException('Resource already locked'));
+        return throw($e);
       }
-
       $response->addLock($lock);
     }
     
@@ -200,7 +197,7 @@
         return throw($e);
       } 
       
-      $this->propStorage->setLock($request->getPath(), $tmp= NULL);
+      $this->propStorage->removeLock($request->getPath());
 
       if ($lock->getLockToken()) $response->setHeader('Lock-Token', $request->getHeader('Lock-Token'));
     }
