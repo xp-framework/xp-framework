@@ -249,7 +249,7 @@
      * @throws  IOException in case of an error
      */
     function readChar() {
-      if (FALSE === ($result= fgetc($this->_fd))) {
+      if (FALSE === ($result= fgetc($this->_fd)) && !feof($this->_fd)) {
         return throw(new IOException('readChar() cannot read 1 byte from '.$this->uri));
       }
       return $result;
@@ -267,7 +267,7 @@
      * @throws  IOException in case of an error
      */
     function gets($bytes= 4096) {
-      if (FALSE === ($result= fgets($this->_fd, $bytes))) {
+      if (FALSE === ($result= fgets($this->_fd, $bytes)) && !feof($this->_fd)) {
         return throw(new IOException('gets() cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
@@ -282,7 +282,7 @@
      * @throws  IOException in case of an error
      */
     function read($bytes= 4096) {
-      if (FALSE === ($result= fread($this->_fd, $bytes))) {
+      if (FALSE === ($result= fread($this->_fd, $bytes)) && !feof($this->_fd)) {
         return throw(new IOException('read() cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
