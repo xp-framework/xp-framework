@@ -56,16 +56,44 @@
     function getTzid() {
       return $this->tzid;
     }
-    
+    /**
+     * Sets the Timezone url
+     *
+     * @access  public
+     * @param   &peer.URL url
+     */    
     function setTZUrl(&$url) {
       $this->tzurl= &$url;
     }
-    
+
+    /**
+     * Gets the Timezone url
+     *
+     * @access  public
+     * @return  &peer.URL url
+     */    
     function &getTZUrl() {
       return $this->tzurl;
     }
-      
 
-  
+    /**
+     * Sets the last modification time
+     *
+     * @access  public
+     * @param   &util.Date date
+     */    
+    function setLastMod(&$date) {
+      $this->lastmod= &$date;
+    }
+
+    /**
+     * Gets the last modification time
+     *
+     * @access  public
+     * @return  &util.Date date
+     */    
+    function &getLastMod() {
+      return $this->lastmod;
+    }
   }
 ?>
