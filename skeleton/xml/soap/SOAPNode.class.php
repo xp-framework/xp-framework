@@ -72,7 +72,9 @@
       if (!@settype($ret, $t)) {
         settype($ret, 'string');         // Default "string"
       } 
-      return $ret;
+      
+      // Rip HTML entities
+      return strtr($ret, array_flip(get_html_translation_table(HTML_ENTITIES)));
     }
     
     function _recurseArray(&$elem, $arr) {
