@@ -85,16 +85,24 @@
     function save() {
       $fd= new File($this->_file);
       $fd->open(FILE_MODE_WRITE);
+      
+      // Sektionen durchgehen
       foreach ($this->_data as $section=> $values) {
         $fd->write(sprintf("[%s]\n", $section));
+        
+        // Werte einer Sektion
         foreach ($values as $key=> $val) {
-          if (is_array($val)) $val= implode('|', $val);
-          if (is_string($val)) $val= '"'.$val.'"';
-          $fd->write(sprintf(
-            "%s=%s\n",
-            $key,
-            $val
-          ));
+          if (';' == $key{0}) {
+            $fd->write(sprintf("\n; %s\n", $val)); 
+          } else {
+            if (is_array($val)) $val= implode('|', $val);
+            if (is_string($val)) $val= '"'.$val.'"';
+            $fd->write(sprintf(
+              "%s=%s\n",
+              $key,
+              strval($val)
+            ));
+          }
         }
         $fd->write("\n");
       }
@@ -321,6 +329,12 @@
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
       $this->_data[$section][$key]= $value;
+    }
+    
+    function writeComment($section, $comment) {
+      $this->_load();
+      if (!$this->hasSection($section)) $this->_data[$section]= array();
+      $this->_data[$section][';'.sizeof($this->_data[$section])]= $comment;
     }
   }
 ?>
