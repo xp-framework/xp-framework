@@ -111,7 +111,9 @@
     }
     
     /**
-     * Prepare HTML part
+     * Prepare HTML part. This goes through all the images, loading them
+     * as necessary and rewriting the image tags contained within the
+     * HTML sourcecode to reference the MIME parts created.
      *
      * @access  public
      * @throws  lang.Throwable
@@ -119,6 +121,7 @@
     function prepare() {
       if ($this->_prepared) return;
 
+      // Find images references
       preg_match_all(
         '/<(td|img|input)[^>]+(src|background)=["\']([^"\']+)["\']/i', 
         $this->html->body, 
@@ -131,12 +134,16 @@
       );
       
       $matches= array_merge($images, $css);
-      
+      $images= array();
       foreach ($matches[3] as $i => $uri) {
-        try(); {
-          $cid= $this->loadImage(new URL($uri));
-        } if (catch('Throwable', $e)) {
-          return throw($e);
+        if (isset($images[$uri])) {
+          $cid= $images[$uri];
+        } else {
+          try(); {
+            $cid= $this->loadImage(new URL($uri));
+          } if (catch('Throwable', $e)) {
+            return throw($e);
+          }
         }
         
         $this->html->body= str_replace(
@@ -144,6 +151,7 @@
           str_replace($uri, 'cid:'.$cid, $matches[0][$i]),
           $this->html->body
         );
+        $images[$uri]= $cid;
       }
       $this->_prepared= TRUE;
     }
@@ -153,7 +161,7 @@
      *
      * @access  public
      * @return  string headers
-     * @throws  lang.Throwable
+     * @throws  lang.Throwable if prepare() fails
      */
     function getHeaderString() {
       $this->prepare();        
