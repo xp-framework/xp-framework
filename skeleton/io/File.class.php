@@ -63,7 +63,27 @@
      * @return string filename
      */
     function getFileName() {
-      return basename ($this->filename);
+      return $this->filename;
+    }
+
+    /**
+     * Get Path
+     *
+     * @access  public
+     * @return  string
+     */
+    function getPath() {
+      return $this->path;
+    }
+
+    /**
+     * Get Extension
+     *
+     * @access  public
+     * @return  string
+     */
+    function getExtension() {
+      return $this->extension;
     }
 
     /**
@@ -511,7 +531,7 @@
         return throw(new IOException('Cannot move file '.$this->uri.' to '.$target));
       }
       
-      $this->uri= realpath ($target);
+      $this->setURI($target);
       return TRUE;
     }
     
