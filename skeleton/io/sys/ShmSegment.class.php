@@ -34,31 +34,20 @@
      * @param   string name
      */
     function __construct($name) {
-      $this->setName($name);
-      parent::__construct();
-    }
-    
-    /**
-     * Set name
-     *
-     * @access  public
-     * @param   string str
-     * @return  string
-     */
-    function setName($name) {
       $this->name= $name;
       $str= str_pad($name, 4, 'Z');
       $this->spot= '';
       for ($i= 0; $i < 4; $i++) {
         $this->spot.= dechex(ord($str{$i}));
       }
+      parent::__construct();
     }
     
     /**
      * Private helper function
      *
      * @access  private
-     * @return  mixed data
+     * @return  &mixed data
      */
     function &_get() {
       $h= shm_attach($this->spot);
@@ -85,7 +74,7 @@
      * @access  public
      * @return  &mixed data
      * @throws  IOException in case an error occurs
-      */
+     */
     function &get() {
       if (FALSE === ($data= $this->_get())) {
         return throw(new IOException('Could not read segment '.$this->name));
@@ -100,6 +89,7 @@
      * @access  public
      * @param   &mixed data
      * @param   int permissions default 0666 permissions
+     * @return  bool success
      * @throws  IOException in case an error occurs
      */
     function put(&$val, $permissions= 0666) {
@@ -115,10 +105,10 @@
     }
     
     /**
-     * Get this segment's contents
+     * Remove this segment's contents
      *
      * @access  public
-     * @return  &mixed data
+     * @return  bool success
      * @throws  IOException in case an error occurs
      */
     function &remove() {
