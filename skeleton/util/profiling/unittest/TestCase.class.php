@@ -159,7 +159,7 @@
      * @return  bool
      */
     function assertString($var, $error= 'notstring') {
-      return assert('$this->test(is_string($var, $error, gettype($var), "string"))');
+      return assert('$this->test(is_string($var), $error, gettype($var), "string")');
     }
 
     /**
