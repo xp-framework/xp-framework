@@ -1,11 +1,11 @@
 Index: Zend/zend.h
 ===================================================================
 RCS file: /repository/ZendEngine2/zend.h,v
-retrieving revision 1.261
-diff -u -r1.261 zend.h
---- Zend/zend.h	5 Sep 2004 22:39:58 -0000	1.261
-+++ Zend/zend.h	22 Sep 2004 12:02:02 -0000
-@@ -254,6 +254,7 @@
+retrieving revision 1.264
+diff -u -r1.264 zend.h
+--- Zend/zend.h	26 Sep 2004 22:19:57 -0000	1.264
++++ Zend/zend.h	30 Sep 2004 21:07:37 -0000
+@@ -255,6 +255,7 @@
   */
  typedef struct _zval_struct zval;
  typedef struct _zend_class_entry zend_class_entry;
@@ -13,7 +13,7 @@ diff -u -r1.261 zend.h
  
  typedef struct _zend_object {
  	zend_class_entry *ce;
-@@ -343,6 +344,11 @@
+@@ -344,6 +345,11 @@
  	struct _zend_module_entry *module;
  };
  
@@ -28,11 +28,11 @@ diff -u -r1.261 zend.h
 Index: Zend/zend_API.c
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_API.c,v
-retrieving revision 1.262
-diff -u -r1.262 zend_API.c
---- Zend/zend_API.c	9 Sep 2004 16:51:45 -0000	1.262
-+++ Zend/zend_API.c	22 Sep 2004 12:02:03 -0000
-@@ -1290,6 +1290,8 @@
+retrieving revision 1.268
+diff -u -r1.268 zend_API.c
+--- Zend/zend_API.c	29 Sep 2004 20:57:07 -0000	1.268
++++ Zend/zend_API.c	30 Sep 2004 21:07:38 -0000
+@@ -1313,6 +1313,8 @@
  			internal_function->return_reference = ptr->arg_info[0].return_reference;
  		} else {
  			internal_function->arg_info = NULL;
@@ -44,10 +44,10 @@ diff -u -r1.262 zend_API.c
 Index: Zend/zend_compile.c
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_compile.c,v
-retrieving revision 1.591
-diff -u -r1.591 zend_compile.c
---- Zend/zend_compile.c	16 Sep 2004 00:40:38 -0000	1.591
-+++ Zend/zend_compile.c	22 Sep 2004 12:02:04 -0000
+retrieving revision 1.592
+diff -u -r1.592 zend_compile.c
+--- Zend/zend_compile.c	27 Sep 2004 08:46:12 -0000	1.592
++++ Zend/zend_compile.c	30 Sep 2004 21:07:39 -0000
 @@ -126,6 +126,7 @@
  	zend_stack_init(&CG(object_stack));
  	zend_stack_init(&CG(declare_stack));
@@ -146,10 +146,10 @@ diff -u -r1.591 zend_compile.c
 Index: Zend/zend_compile.h
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_compile.h,v
-retrieving revision 1.292
-diff -u -r1.292 zend_compile.h
---- Zend/zend_compile.h	16 Sep 2004 00:40:38 -0000	1.292
-+++ Zend/zend_compile.h	22 Sep 2004 12:02:05 -0000
+retrieving revision 1.293
+diff -u -r1.293 zend_compile.h
+--- Zend/zend_compile.h	23 Sep 2004 21:43:31 -0000	1.293
++++ Zend/zend_compile.h	30 Sep 2004 21:07:40 -0000
 @@ -45,6 +45,23 @@
          CG(doc_comment) = NULL;  \
          CG(doc_comment_len) = 0; \
@@ -213,10 +213,10 @@ diff -u -r1.292 zend_compile.h
 Index: Zend/zend_globals.h
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_globals.h,v
-retrieving revision 1.137
-diff -u -r1.137 zend_globals.h
---- Zend/zend_globals.h	23 Aug 2004 20:57:40 -0000	1.137
-+++ Zend/zend_globals.h	22 Sep 2004 12:02:06 -0000
+retrieving revision 1.139
+diff -u -r1.139 zend_globals.h
+--- Zend/zend_globals.h	23 Sep 2004 06:23:36 -0000	1.139
++++ Zend/zend_globals.h	30 Sep 2004 21:07:41 -0000
 @@ -75,6 +75,7 @@
  	zend_stack declare_stack;
  
@@ -231,7 +231,7 @@ RCS file: /repository/ZendEngine2/zend_language_parser.y,v
 retrieving revision 1.150
 diff -u -r1.150 zend_language_parser.y
 --- Zend/zend_language_parser.y	16 Sep 2004 05:43:29 -0000	1.150
-+++ Zend/zend_language_parser.y	22 Sep 2004 12:02:07 -0000
++++ Zend/zend_language_parser.y	30 Sep 2004 21:07:41 -0000
 @@ -111,6 +111,7 @@
  %token T_TRY
  %token T_CATCH
@@ -384,7 +384,7 @@ RCS file: /repository/ZendEngine2/zend_language_scanner.l,v
 retrieving revision 1.115
 diff -u -r1.115 zend_language_scanner.l
 --- Zend/zend_language_scanner.l	2 Aug 2004 16:38:09 -0000	1.115
-+++ Zend/zend_language_scanner.l	22 Sep 2004 12:02:08 -0000
++++ Zend/zend_language_scanner.l	30 Sep 2004 21:07:42 -0000
 @@ -794,6 +794,10 @@
  	return T_THROW;
  }
@@ -438,11 +438,11 @@ diff -u -r1.115 zend_language_scanner.l
 Index: Zend/zend_object_handlers.c
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_object_handlers.c,v
-retrieving revision 1.104
-diff -u -r1.104 zend_object_handlers.c
---- Zend/zend_object_handlers.c	22 Jul 2004 11:54:27 -0000	1.104
-+++ Zend/zend_object_handlers.c	22 Sep 2004 12:02:08 -0000
-@@ -684,6 +684,8 @@
+retrieving revision 1.105
+diff -u -r1.105 zend_object_handlers.c
+--- Zend/zend_object_handlers.c	28 Sep 2004 22:55:22 -0000	1.105
++++ Zend/zend_object_handlers.c	30 Sep 2004 21:07:43 -0000
+@@ -605,6 +605,8 @@
  			call_user_call->handler = zend_std_call_user_call;
  			call_user_call->arg_info = NULL;
  			call_user_call->num_args = 0;
@@ -454,11 +454,11 @@ diff -u -r1.104 zend_object_handlers.c
 Index: Zend/zend_opcode.c
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_opcode.c,v
-retrieving revision 1.107
-diff -u -r1.107 zend_opcode.c
---- Zend/zend_opcode.c	9 Sep 2004 16:47:22 -0000	1.107
-+++ Zend/zend_opcode.c	22 Sep 2004 12:02:08 -0000
-@@ -72,6 +72,9 @@
+retrieving revision 1.108
+diff -u -r1.108 zend_opcode.c
+--- Zend/zend_opcode.c	23 Sep 2004 21:43:32 -0000	1.108
++++ Zend/zend_opcode.c	30 Sep 2004 21:07:43 -0000
+@@ -74,6 +74,9 @@
  	op_array->doc_comment = NULL;
  	op_array->doc_comment_len = 0;
  
@@ -468,7 +468,7 @@ diff -u -r1.107 zend_opcode.c
  	op_array->arg_info = NULL;
  	op_array->num_args = 0;
  	op_array->required_num_args = 0;
-@@ -248,6 +251,9 @@
+@@ -250,6 +253,9 @@
  		}
  		efree(op_array->arg_info);
  	}
@@ -481,10 +481,10 @@ diff -u -r1.107 zend_opcode.c
 Index: Zend/zend_operators.c
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_operators.c,v
-retrieving revision 1.196
-diff -u -r1.196 zend_operators.c
---- Zend/zend_operators.c	11 Sep 2004 14:22:35 -0000	1.196
-+++ Zend/zend_operators.c	22 Sep 2004 12:02:08 -0000
+retrieving revision 1.197
+diff -u -r1.197 zend_operators.c
+--- Zend/zend_operators.c	30 Sep 2004 18:36:03 -0000	1.197
++++ Zend/zend_operators.c	30 Sep 2004 21:07:43 -0000
 @@ -101,6 +101,55 @@
  	return result;
  }
@@ -668,11 +668,11 @@ diff -u -r1.196 zend_operators.c
 Index: Zend/zend_reflection_api.c
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_reflection_api.c,v
-retrieving revision 1.125
-diff -u -r1.125 zend_reflection_api.c
---- Zend/zend_reflection_api.c	19 Sep 2004 11:54:08 -0000	1.125
-+++ Zend/zend_reflection_api.c	22 Sep 2004 12:02:09 -0000
-@@ -630,7 +630,18 @@
+retrieving revision 1.131
+diff -u -r1.131 zend_reflection_api.c
+--- Zend/zend_reflection_api.c	28 Sep 2004 19:06:15 -0000	1.131
++++ Zend/zend_reflection_api.c	30 Sep 2004 21:07:44 -0000
+@@ -631,7 +631,18 @@
  	if (fptr->type == ZEND_USER_FUNCTION && fptr->op_array.return_reference) {
  		string_printf(str, "&");
  	}
@@ -692,7 +692,7 @@ diff -u -r1.125 zend_reflection_api.c
  	/* The information where a function is declared is only available for user classes */
  	if (fptr->type == ZEND_USER_FUNCTION) {
  		string_printf(str, "%s  @@ %s %d - %d\n", indent, 
-@@ -1431,7 +1442,7 @@
+@@ -1432,7 +1443,7 @@
  }
  /* }}} */
  
@@ -701,7 +701,7 @@ diff -u -r1.125 zend_reflection_api.c
     Returns an array of parameter objects for this function */
  ZEND_METHOD(reflection_function, getParameters)
  {
-@@ -1458,6 +1469,32 @@
+@@ -1459,6 +1470,32 @@
  }
  /* }}} */
  
@@ -724,7 +724,7 @@ diff -u -r1.125 zend_reflection_api.c
 +	   	for (i=0; i < fptr->common.num_throws; i++) {
 +			zval *throws;
 +			ALLOC_ZVAL(throws);
-+			reflection_class_factory(fptr->common.throws[i], throws TSRMLS_CC);
++			zend_reflection_class_factory(fptr->common.throws[i], throws TSRMLS_CC);
 +			add_next_index_zval(return_value, throws);
 +		}
 +	}
@@ -734,7 +734,7 @@ diff -u -r1.125 zend_reflection_api.c
  /* {{{ proto public static mixed ReflectionParameter::export(mixed function, mixed parameter, [, bool return]) throws ReflectionException
     Exports a reflection object. Returns the output if TRUE is specified for return, printing it otherwise. */
  ZEND_METHOD(reflection_parameter, export)
-@@ -3408,6 +3445,7 @@
+@@ -3411,6 +3448,7 @@
  	ZEND_ME(reflection_function, invoke, NULL, 0)
  	ZEND_ME(reflection_function, returnsReference, NULL, 0)
  	ZEND_ME(reflection_function, getParameters, NULL, 0)
