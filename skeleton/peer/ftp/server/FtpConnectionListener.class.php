@@ -268,10 +268,8 @@
      */
     function onSiteChmod(&$event, $params) {
       sscanf($params, '%d %s', $permissions, $uri);
-      $this->cat && $this->cat->debug($permissions, $uri);
-
-      if (!($entry= &$this->storage->lookup($params))) {
-        $this->answer($event->stream, 550, $params.': No such file or directory');
+      if (!($entry= &$this->storage->lookup($uri))) {
+        $this->answer($event->stream, 550, $uri.': No such file or directory');
         return;
       }
       
