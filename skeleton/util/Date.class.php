@@ -35,7 +35,7 @@
       $wday     = 0,	
       $mon      = 0,	
       $year     = 0,	
-      $yday     = 0,	
+      $yday     = 0,
       $weekday  = '',	
       $month    = '';	
 
@@ -117,6 +117,87 @@
      */
     function getTime() {
       return $this->_utime;
+    }
+
+
+    /**
+     * Get seconds
+     *
+     * @access  public
+     * @return  int
+     */
+    function getSeconds() {
+      return $this->seconds;
+    }
+
+    /**
+     * Get minutes
+     *
+     * @access  public
+     * @return  int
+     */
+    function getMinutes() {
+      return $this->minutes;
+    }
+
+    /**
+     * Get hours
+     *
+     * @access  public
+     * @return  int
+     */
+    function getHours() {
+      return $this->hours;
+    }
+
+    /**
+     * Get day
+     *
+     * @access  public
+     * @return  int
+     */
+    function getDay() {
+      return $this->mday;
+    }
+
+    /**
+     * Get month
+     *
+     * @access  public
+     * @return  int
+     */
+    function getMonth() {
+      return $this->mon;
+    }
+
+    /**
+     * Get year
+     *
+     * @access  public
+     * @return  int
+     */
+    function getYear() {
+      return $this->year;
+    }
+
+    /**
+     * Get day of year
+     *
+     * @access  public
+     * @return  int
+     */
+    function getDayOfYear() {
+      return $this->yday;
+    }
+
+    /**
+     * Get day of week
+     *
+     * @access  public
+     * @return  int
+     */
+    function getDayOfWeek() {
+      return $this->wday;
     }
     
     /**
