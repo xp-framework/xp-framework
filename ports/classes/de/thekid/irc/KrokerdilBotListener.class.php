@@ -94,6 +94,42 @@
         $e->printStackTrace();
         return FALSE;
       }
+      
+      // If no karma is set and the karma storage exists, load it
+      if (0 == sizeof($this->karma)) {
+        try(); {
+          $f= &new File($base.'karma.list');
+          if ($f->exists()) {
+            $karma= unserialize(FileUtil::getContents($f));
+            if ($karma) $this->karma= &$karma;
+          }
+        } if (catch('IOException', $e)) {
+        
+          // Karma loading failed - log, but ignore...
+          $this->cat && $this->cat->error($e);
+        }
+      }
+    }
+    
+    /**
+     * Save current karma configuration to disk.
+     *
+     * @access  public
+     */
+    function storeConfiguration() {
+    
+      // Set base directory for lists relative to that of the config file's
+      $base= dirname($this->config->getFilename()).DIRECTORY_SEPARATOR;
+
+      try(); {
+        $f= &new File($base.'karma.list');
+        $f->open(FILE_MODE_WRITE);
+        
+        $f->write(serialize($this->karma));
+        $f->close();
+      } if (catch('IOException', $e)) {
+        $this->cat && $this->cat->error($e);
+      }
     }
     
     /**
@@ -272,6 +308,19 @@
               $connection->sendAction($nick, 'received SIGHUP and reloads his configuration');
             }
             break;
+          
+          case '@shutdown':
+            if ($this->doPrivileged($connection, $nick, $params)) {
+              $this->storeConfiguration();
+              $connection->writeln(
+                'QUIT %s scheisst auf euch',
+                $connection->user->getNick()
+              );
+              $connection->close();
+              
+              // Needed, because the IRCConnection is used in while(1) ...
+              exit;
+            }
           
           case '@changenick':
             list($new_nick, $password)= explode(' ', $params);
