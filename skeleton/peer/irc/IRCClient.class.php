@@ -44,7 +44,6 @@
       $hostname	= 'localhost';
       
     var
-      $_channel = '',
       $_sock	= NULL,
       $_message = array();
       
@@ -86,17 +85,6 @@
      */
     function getLastMessage() {
       return $this->_message;
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function getChannel() {
-      return $this->_channel;
     }
     
     /**
@@ -230,7 +218,7 @@
      * @access  public
      * @param   string channel channel name
      * @param	string key default NULL key (password)
-     * @return  bool success
+     * @return  array users
      */
     function join($channel, $key= NULL) {
       if (FALSE === ($msg= $this->_cmd('JOIN %s%s', $channel, (NULL == $key) ? '' : ' '.$key))) {
@@ -238,18 +226,69 @@
       }
       
       // Parse response
-      /*
-      if (!(
-        ($msg[0]['type'] == IRC_MSGT_CLIENT) &&
-        ($msg[0]['code'] == 'JOIN') &&
-        ($msg[1]['code'] == IRC_MSGC_NAMES) &&
-        ($msg[2]['code'] == IRC_MSGC_NAMES_END)
-      )) return FALSE;
-      */
+      $users= array();
+      $joined= FALSE;
+      for ($i= 0, $s= sizeof($msg); $i < $s; $i++) {
+        if (
+          ('JOIN' == $msg[$i]['code']) &&
+          ($this->nick == $msg[$i]['nick'])
+        ) $joined= TRUE;
+        
+        switch ((int)$msg[$i]['code']) {
+          case IRC_MSGC_NAMES:
+            // = #idev :timm|home thekid|ho @alex 
+            $users= explode(' ', trim(substr($msg[$i]['data'], strlen($channel)+ 4)));
+            break;
+            
+          case IRC_MSGC_NAMES_END:
+            break 2;
+        }
+      }
       
-      // Set active channel if everything is OK
-      $this->_channel= $channel;
-      return TRUE;
+      // Join failed (key wrong, e.g.)
+      if (!$joined) {
+        return throw(new Exception('JOIN '.$channel.' failed: '.implode("\n", $this->_message)));
+      }
+      
+      return $users;
+    }
+    
+    /**
+     * Gets names of users per channel
+     *
+     * @access  public
+     * @param   mixed channel default '' either a string defining a channel
+     *          or an array defining a list of channels
+     * @return  array first dimension: channels, second: users
+     */
+    function names($channel= '') {
+      if (is_array($channel)) $channel= implode(',', $channel);
+      if (FALSE === ($msg= $this->_cmd(trim(sprintf('NAMES %s', $channel))))) {
+        return FALSE;
+      }
+    
+      $users= array();
+      for ($i= 0, $s= sizeof($msg); $i < $s; $i++) {
+        switch ((int)$msg[$i]['code']) {
+          case IRC_MSGC_NAMES:
+            // = #idev :timm|home thekid|ho @alex 
+            list($channel, $userlist)= explode(' :', trim(substr($msg[$i]['data'], 2)));
+            $users[$channel]= explode(' ', $userlist);
+            break;
+            
+          case IRC_MSGC_NAMES_END:
+            return $users;
+            
+          default:
+            // Woops? What's this
+            return throw(new FormatException(sprintf(
+              'Illegal code %s found in NAMES response',
+              $list[$i]['code']
+            )));
+        }
+      }
+      
+      return FALSE;
     }
     
     /**
@@ -276,10 +315,11 @@
      * </pre>
      *
      * @access  public
+     * @param   string channel The channel to part
      * @return  bool success
      */
-    function part() {
-      if (FALSE === ($msg= $this->_cmd('PART %s', $this->_channel))) {
+    function part($channel) {
+      if (FALSE === ($msg= $this->_cmd('PART %s', $channel))) {
         return FALSE;
       }
       
@@ -289,7 +329,6 @@
         ($msg[0]['code'] == 'PART')
       )) return FALSE;
 
-      $this->_channel= NULL;
       return TRUE;
     }
     
@@ -298,12 +337,11 @@
      *
      * @access  public
      * @param   string message
-     * @param	string recipient default NULL The recipient, defaulting to the current channel
+     * @param	string recipient The recipient, either a nick or a #channel
      * @return  bool success
      */
-    function privmsg($message, $recipient= NULL) {
-      if (NULL == $recipient) $recipient= $this->_channel;
-      if (FALSE === ($msg= $this->_cmd('PRIVMSG %s : %s', $recipient, $message))) {
+    function privmsg($message, $recipient) {
+      if (FALSE === ($msg= $this->_cmd('PRIVMSG %s :%s', $recipient, $message))) {
         return FALSE;
       }
       printf("privmsg(%s, %s):= %s\n", $message, $recipient, var_export($msg, 1));
@@ -338,6 +376,20 @@
       }
     }
     
+    function _quote($str) {
+      $ret= '';
+      for ($i= 0, $s= strlen($str); $i < $s; $i++) {
+        if (ord($str{$i}) > 31) {
+          $ret.= $str{$i};
+        } elseif ("\n" == $str{$i}) {
+          $ret.= "\n";
+        } else {
+          $ret.= sprintf('\x%02X', ord($str{$i}));
+        }
+      }
+      return $ret;
+    }
+    
     /**
      * This is the core function for read/write IO. It also handles the PING :/PONG :
      * mechanism and will punt on ERROR :
@@ -355,7 +407,7 @@
         $cmd= vsprintf($args[0]."\n", array_slice($args, 1));
 
         #IFDEF DEBUG
-        printf(">>> %s", $cmd);
+        #printf(">>> %s", $cmd);
         #ENDIF
 
         // Write command
@@ -375,7 +427,7 @@
         $res= $this->_sock->read(4096);
         
         #IFDEF DEBUG
-        printf("<<< %s\n", var_export(strtr($res, array("\r" => '')), 1));
+        printf("<<< %s\n", $this->_quote($res));
         #ENDIF
         
         // On error or zero length read, break out of this loop
@@ -409,7 +461,11 @@
         }
         
         $data= explode(' ', substr($line, 1), 4);
-        echo "---> DEBUG IN PARSER LOOP::"; var_export($data);
+        
+        #IFDEF DEBUG
+        #echo "---> DEBUG IN PARSER LOOP::"; var_export($data);
+        #ENDIF
+        
         // Server message
         // :irc.oneandone.co.uk 002 thekid :Your host is irc.oneandone.co.uk, running version u2.10.07.0
         if ($data[0] == $this->server) {
@@ -447,7 +503,11 @@
           'data'	=> array($data[2], $data[3])
         );
       }
-      var_export($this->_message);
+      
+      #IFDEF DEBUG
+      #var_export($this->_message);
+      #ENDIF
+      
       return $this->_message;
     }
   }
