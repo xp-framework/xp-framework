@@ -24,7 +24,7 @@
             'c(=5)'            => 'sms'
           ),
           'mail'        => 'thekid@localhost',
-          'sms'         => 'friebe@schlund.de',
+          'sms'         => 'friebe@php3.de',
           'stor'        => '/tmp/notify.escalate'
         )
       ),
