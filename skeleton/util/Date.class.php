@@ -28,16 +28,16 @@
       $_utime   = 0;
       
     var
-      $seconds,	
-      $minutes,	
-      $hours,	
-      $mday,	
-      $wday,	
-      $mon,	
-      $year,	
-      $yday,	
-      $weekday,	
-      $month;	
+      $seconds  = 0,	
+      $minutes  = 0,	
+      $hours    = 0,	
+      $mday     = 0,	
+      $wday     = 0,	
+      $mon      = 0,	
+      $year     = 0,	
+      $yday     = 0,	
+      $weekday  = '',	
+      $month    = '';	
 
     /**
      * Constructor
@@ -54,6 +54,17 @@
         $this->_utime(time());
       }
       parent::__construct();
+    }
+    
+    /**
+     * Static method to get current date/time
+     *
+     * @model   static
+     * @access  public
+     * @return  &util.Date
+     */
+    function &now() {
+      return new Date(NULL);
     }
     
     /**
