@@ -125,7 +125,7 @@
         try(); {
           $msg->folder->deleteMessage($msg);
         } if (catch('Exception', $e)) {
-          $this->cat->error($e->getStackTrace());
+          $this->cat->error($e);
           
           $this->setStatusText('Error updating message status');
           continue;
@@ -158,7 +158,7 @@
         try(); {
           $msg->folder->undeleteMessage($msg);
         } if (catch('Exception', $e)) {
-          $this->cat->debug($e->getStackTrace());
+          $this->cat->debug($e);
           
           $this->setStatusText('Error updating message status');
           continue;
@@ -235,11 +235,10 @@
     function setStatusText($fmt) {
       $args= func_get_args();
       $text= vsprintf($args[0], array_slice($args, 1));
-      // DEBUG $this->cat->debug('Status', $text);
       $this->statusbar->push(1, $text);
       
       // Leave the GUI time to repaint
-      while(Gtk::events_pending()) Gtk::main_iteration();
+      $this->processEvents();
     }
     
     /**
@@ -304,6 +303,11 @@
       
       foreach (array(TO, CC, BCC) as $type) {
         foreach ($msg->getRecipients($type) as $r) {
+          if (!is('InternetAddress', $r)) {
+            $this->cat->warn($type, xp::typeOf($r), $msg);
+            continue;
+          }
+          
           $child= &$this->tree->insert_node(
             $node,
             NULL,
@@ -369,7 +373,7 @@
       try(); {
         $this->stor->expunge();
       } if (catch('Exception', $e)) {
-        $this->cat->error($e->getStackTrace());
+        $this->cat->error($e);
         $this->setStatusText('Error expunging!');
         return;
       }
@@ -416,15 +420,15 @@
           
           $this->tree->clear();
           while ($msg= &$f->getMessage()) {
-            $this->setStatusText('Retreiving message %s', $msg->uid);
+            $this->setStatusText('Retrieving message %s', $msg->uid);
             $this->addMessage($msg);
           }
         }
       } if (catch('Exception', $e)) {
-        $this->setStatusText('Error retreiving messages');
+        $this->setStatusText('Error retrieving messages');
         
         // TBD: Show messagebox
-        $this->cat->error($e->getStackTrace());
+        $this->cat->error($e);
         $r->set_sensitive(TRUE);
         
         // Unfreeze list
