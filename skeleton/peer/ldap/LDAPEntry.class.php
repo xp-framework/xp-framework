@@ -34,8 +34,13 @@
       return $this->dn;
     }
     
-    function addAttribute($key, $value) {
+    function setAttribute($key, $value) {
       $this->attributes[$key]= $value;
+    }
+    
+    function getAttribute($key, $idx= -1) {
+      if (-1 != $idx) return $this->attributes[$key][$idx];
+      return $this->attributes[$key];
     }
     
     function getAttributes() {
