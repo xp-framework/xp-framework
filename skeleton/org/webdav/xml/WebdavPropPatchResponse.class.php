@@ -91,11 +91,7 @@
         $attr['xmlns'.(!empty($nsprefix) ? (':'.$nsprefix) : '')]= $nsname;
         if (!empty($nsprefix)) $name= $nsprefix.':'.$name;
       }
-      $this->propNode[$status]->addChild(new Node(
-        $name,
-        $this->encode($property->toString()),
-        $attr
-      ));
+      $this->propNode[$status]->addChild(new Node($name, NULL, $attr));
       
       return TRUE;
     }
