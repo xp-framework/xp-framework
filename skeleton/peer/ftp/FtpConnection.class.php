@@ -188,11 +188,11 @@
     function put(&$arg, $remote= NULL, $mode= FTP_ASCII) {
       if (is_a($arg, 'File')) {
         $local= $arg->_fd;
-        if (empty($remote)) $remote= basename ($origin->filename);
+        if (empty($remote)) $remote= basename ($arg->getUri());
         $f= 'ftp_fput';
       } else {
         $local= $arg;
-        if (empty($remote)) $remote= basename($origin);
+        if (empty($remote)) $remote= basename($arg);
         $f= 'ftp_put';
       }
       if (FALSE === $f($this->_hdl, $remote, $local, $mode)) {
