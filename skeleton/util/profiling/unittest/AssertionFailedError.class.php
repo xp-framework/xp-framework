@@ -23,7 +23,6 @@
      * @param   string code
      */
     function __construct($message, $actual, $code) {
-      var_dump($a= func_get_args());
       $this->actual= $actual;
       $this->code= $code;
       parent::__construct($message);
