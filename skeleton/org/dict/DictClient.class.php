@@ -42,10 +42,11 @@
    */
   class DictClient extends Object {
     var
-      $info= '';
+      $info  = '',
+      $cat   = NULL;
       
     var
-      $_sock= NULL;
+      $_sock = NULL;
       
     /**
      * Constructor
@@ -81,6 +82,7 @@
         $cmd= vsprintf($args[0], array_slice($args, 1, -1));
       
         // Write
+        $this->cat && $this->cat->debug('>>>', $cmd);
         if (FALSE === $this->_sock->write($cmd."\n")) return FALSE;
 
         // Expecting data?
@@ -89,6 +91,7 @@
       
       // Read
       if (FALSE === ($buf= substr($this->_sock->read(), 0, -2))) return FALSE;
+      $this->cat && $this->cat->debug('<<<', $buf);
       
       // Got expected data?
       $code= substr($buf, 0, 3);
@@ -366,11 +369,21 @@
      *
      * @access  public
      * @return  mixed
-     * @throws  IOException
+     * @throws  io.IOException
      */
     function getStatus() {
-      // TBD    
+      return $this->_sockcmd('STATUS', 210);
     }
-  
-  }
+
+    /**
+     * Set a trace for debugging
+     *
+     * @access  public
+     * @param   &util.log.LogCategory cat
+     */
+    function setTrace(&$cat) {
+      $this->cat= &$cat;
+    }
+
+  } implements(__FILE__, 'util.log.Traceable');
 ?>
