@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <netinet/in.h>
+#include <netdb.h>
 
 
 #include "cstaproxy.h"
@@ -68,11 +69,43 @@ int create_proxy_connection(fd_set *master, connection_context *ctx, int hListen
 	return newfd;
 }
 
-int _open_server_connection(fd_set *master, proxy_connection *conn) {
+int _open_server_connection(fd_set *master, int *fdMax, proxy_connection *conn) {
+	/* Open a socket to the server and connect it to the client */
+	int hSocket;
+	struct hostent *he;
+	struct sockaddr_in srvaddr;
+	
+	if (-1 == (hSocket= socket (AF_INET, SOCK_STREAM, 0))) {
+		ERR("Could not create server socket");
+		return 0;
+	}
+	
+	if (NULL == (he= gethostbyname (SERVER_ADDR))) {
+		ERR("Cannot resolve hostname");
+		return 0;
+	}
+	
+	srvaddr.sin_family= AF_INET;
+	srvaddr.sin_port= htons(SERVER_PORT);
+	srvaddr.sin_addr= *((struct in_addr*)he->h_addr);
+	
+	memset (&(srvaddr.sin_zero), '\0', 8);
+	
+	if (-1 == (connect (hSocket, (struct sockaddr *)&srvaddr, sizeof (struct sockaddr)))) {
+		ERR ("Cannot connect.");
+		return 0;
+	}
+	
+	/* Add to connection and fdset */
+	conn->hServer= hSocket;
+	FD_SET (hSocket, master);
+	if (hSocket > *fdMax) *fdMax= hSocket;
+	
+	LOG("Added server connection");
 	return 1;
 }
 
-int _process_client_command(fd_set *master, connection_context *ctx, int hSocket, char *buf, int length) {
+int _process_client_command(fd_set *master, int *fdMax, connection_context *ctx, int hSocket, char *buf, int length) {
 	proxy_connection *conn;
 	
 	conn= get_connection_by_socket (ctx, hSocket);
@@ -101,7 +134,7 @@ int _process_client_command(fd_set *master, connection_context *ctx, int hSocket
 		if (!conn->is_authenticated) {
 			conn->is_authenticated= 1;
 			LOG ("Authenticating client");
-			_open_server_connection (master, conn);
+			_open_server_connection (master, fdMax, conn);
 		}
 		return 1;
 	}
@@ -110,7 +143,7 @@ int _process_client_command(fd_set *master, connection_context *ctx, int hSocket
 	return 0;
 }
 
-int process_client(fd_set *master, connection_context *ctx, int hSocket) {
+int process_client(fd_set *master, int *fdMax, connection_context *ctx, int hSocket) {
 	char buf[256];
 	int nbytes;
 	proxy_connection *conn;
@@ -145,7 +178,7 @@ int process_client(fd_set *master, connection_context *ctx, int hSocket) {
 		/* First stage: process unauthenticated */
 		if (hSocket == conn->hClient) {
 			/* -1 means: connections have been shutdown */
-			if (-1 == _process_client_command(master, ctx, hSocket, buf, nbytes)) {
+			if (-1 == _process_client_command(master, fdMax, ctx, hSocket, buf, nbytes)) {
 				return 1;
 			}
 		}
@@ -209,7 +242,7 @@ int select_loop(int hListen) {
 					}
 				} else {
 					/* This is a normal client connection */
-					process_client(&master, ctx, i);
+					process_client(&master, &fdMax, ctx, i);
 				}
 			}
 		}
