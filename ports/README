@@ -6,6 +6,8 @@ This is ports root directory
 
 Overview
 --------
-- core		Core ports
-- basic		Basic ports
+- core          Core ports
+- basic         Basic ports
 - xp.port.mk    Makefile-include
+- build.php     Builds CCA archives
+- req.php       Fetches requirements
