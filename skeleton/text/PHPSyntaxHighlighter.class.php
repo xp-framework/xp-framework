@@ -150,13 +150,15 @@
           ',&nbsp;,', 
           ',<font color="([^"]+)">,', 
           ',</font>,',
-          ',\$[a-z0-9_]+,i'
+          ',\$[a-z0-9_]+,i',
+          ',(uses|implements|is|try|catch|throw|finally),'
         ),
         array(
           '&#160;', 
           '<span style="$1">', 
           '</span>',
-          '<span style="'.$this->styles['variable'].'">$0</span>'
+          '<span style="'.$this->styles['variable'].'">$0</span>',
+          '<span style="'.$this->styles['keyword'].'">$1</span>'
         ),
         $s
       );
