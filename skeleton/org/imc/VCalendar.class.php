@@ -6,9 +6,12 @@
 
   uses('text.parser.VFormatParser', 'org.imc.VEvent', 'util.Date');
 
+  // Identifier
   define('VCAL_ID',             'VCALENDAR');
 
+  // Methods
   define('VCAL_METHOD_REQUEST', 'REQUEST');
+  define('VCAL_METHOD_PUBLISH', 'PUBLISH');
 
   /**
    * VCalendar
@@ -22,6 +25,24 @@
    * about events so that you can schedule meetings with anyone who has a vCalendar-
    * aware program.
    * </quote>
+   *
+   * Example [Free/Busy information]
+   * <pre>
+   * BEGIN:VCALENDAR
+   * CALSCALE:GREGORIAN
+   * PRODID:-//Ximian//NONSGML Evolution Calendar//EN
+   * VERSION:2.0
+   * METHOD:PUBLISH
+   * BEGIN:VFREEBUSY
+   * ORGANIZER;CN=3DTimm Friebe:friebe@php3.de
+   * DTSTART:20030223T000000Z
+   * DTEND:20030406T000000Z
+   * FREEBUSY;FBTYPE=3DBUSY:20030223T100000Z/20030223T113000Z
+   * UID:20030223T140522Z-260-0-1-20@friebes.net
+   * DTSTAMP:20030223T140523Z
+   * END:VFREEBUSY
+   * END:VCALENDAR
+   * </pre>
    *
    * @see      rfc://2445
    * @see      rfc://2446
@@ -52,6 +73,15 @@
       
       switch (implode('/', $context)) {
       
+        // The calendar itself
+        case '':
+          switch ($keys[0]) {
+            case 'METHOD':
+              $this->method= $value;
+              break;
+          }
+          break;
+          
         // An event
         case 'vevent':
           switch ($keys[0]) {
