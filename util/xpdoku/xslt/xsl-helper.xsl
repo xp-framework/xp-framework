@@ -220,6 +220,7 @@
   <xsl:template match="frame">
     <xsl:call-template name="frame">
       <xsl:with-param name="content"><xsl:copy-of select="."/></xsl:with-param>
+      <xsl:with-param name="color">#cccccc</xsl:with-param>
     </xsl:call-template>
   </xsl:template>
   
