@@ -36,10 +36,11 @@
      *
      * @access  public
      * @param   string identifier
+     * @param   string server default NULL
      */    
-    function __construct($identifier) {
-      $this->h= &new COM($identifier);
+    function __construct($identifier, $server= NULL) {
       parent::__construct();
+      $this->h= com_load($identifier, $server);
     }
     
     /**
@@ -51,7 +52,7 @@
      * @return  bool success
      */
     function __get($name, &$value) {
-      $value= &$this->h->$name;
+      $value= &com_get($this->h, $name);
       return TRUE;
     }
     
@@ -64,7 +65,7 @@
      * @return  bool success
      */
     function __set($name, &$value) {
-      $this->h->$name= &$value;
+      com_set($this->h, $name, $value);
       return TRUE;
     }
     
@@ -73,12 +74,15 @@
      *
      * @access  magic
      * @param   string name
-     * @param   &array args
+     * @param   array args
      * @param   &mixed return
      * @return  bool success
      */
-    function __call($name, &$args, $return) {
-      $return= &call_user_func_array(array($this->h, $name), $args);
+    function __call($name, $args, $return) {
+      $return= call_user_func_array(
+        'com_invoke', 
+        array_merge(array(&$this->h, $name), $args)
+      );
       return TRUE;
     }
     
@@ -88,6 +92,7 @@
      * @access  public
      */
     function __destruct() {
+      com_release($this->h);
       $this->h= NULL;
       parent::__destruct();
     }
