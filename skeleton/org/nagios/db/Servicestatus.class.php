@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('rdbms.ConnectionManager');
+  uses('rdbms.DataSet');
  
   /**
    * Class wrapper for table servicestatus, database nagios
@@ -12,7 +12,7 @@
    *
    * @purpose  Datasource accessor
    */
-  class Servicestatus extends Object {
+  class Servicestatus extends DataSet {
     var
       $host_name= '',
       $service_description= '',

@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('rdbms.ConnectionManager');
+  uses('rdbms.DataSet');
  
   /**
    * Class wrapper for table hoststatus, database nagios
@@ -12,7 +12,7 @@
    *
    * @purpose  Datasource accessor
    */
-  class Hoststatus extends Object {
+  class Hoststatus extends DataSet {
     var
       $host_name= '',
       $host_status= '',
