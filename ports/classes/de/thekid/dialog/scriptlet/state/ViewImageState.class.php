@@ -71,7 +71,7 @@
             if ($id > 0) {
               $prev= sprintf('i,%d,%d', $chapter, $id- 1);
             } elseif ($chapter > 0) {
-              $prev= sprintf('i,%d,%d', $chapter- 1, $album->chapters[$chapter- 1]->numImages($id)- 1);
+              $prev= sprintf('i,%d,%d', $chapter- 1, $album->chapters[$chapter- 1]->numImages()- 1);
             }
             break;
           }
