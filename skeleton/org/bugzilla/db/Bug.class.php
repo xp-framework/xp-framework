@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('rdbms.ConnectionManager', 'org.bugzilla.BugConstants');
+  uses('rdbms.DataSet', 'org.bugzilla.BugConstants');
  
   /**
    * Class wrapper for table bugs, database bugs
@@ -12,51 +12,47 @@
    *
    * @purpose  Datasource accessor
    */
-  class Bug extends Object {
+  class Bug extends DataSet {
     var
-      $bug_id= 0,
-      $groupset= 0,
-      $assigned_to= 0,
-      $bug_file_loc= '',
-      $bug_severity= '',
-      $bug_status= '',
-      $creation_ts= NULL,
-      $delta_ts= NULL,
-      $short_desc= '',
-      $op_sys= '',
-      $priority= '',
-      $product= '',
-      $rep_platform= '',
-      $reporter= 0,
-      $version= '',
-      $component= '',
-      $resolution= '',
-      $target_milestone= '',
-      $qa_contact= 0,
-      $status_whiteboard= '',
-      $votes= 0,
-      $keywords= '',
-      $lastdiffed= NULL,
-      $everconfirmed= 0,
-      $reporter_accessible= 0,
-      $cclist_accessible= 0;
+      $bug_id               = 0,
+      $groupset             = 0,
+      $assigned_to          = 0,
+      $bug_file_loc         = '',
+      $bug_severity         = '',
+      $bug_status           = '',
+      $creation_ts          = NULL,
+      $delta_ts             = NULL,
+      $short_desc           = '',
+      $op_sys               = '',
+      $priority             = '',
+      $product              = '',
+      $rep_platform         = '',
+      $reporter             = 0,
+      $version              = '',
+      $component            = '',
+      $resolution           = '',
+      $target_milestone     = '',
+      $qa_contact           = 0,
+      $status_whiteboard    = '',
+      $votes                = 0,
+      $keywords             = '',
+      $lastdiffed           = NULL,
+      $everconfirmed        = 0,
+      $reporter_accessible  = 0,
+      $cclist_accessible    = 0;
 
     /**
      * Gets an instance of this object by index "PRIMARY"
      *
      * @access  static
      * @param   int bug_id
-     * @return  &Bugs object
+     * @return  &org.bugzilla.db.Bug object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByBug_id($bug_id) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -89,8 +85,9 @@
             bugs..bugs 
           where
             bug_id = %d
-        ', $bug_id);
-
+          ', 
+          $bug_id
+        );
         if ($q && $r= $q->next()) $data= &new Bug($r); else $data= NULL;
       } if (catch('SQLException', $e)) {
         return throw($e);
@@ -104,17 +101,13 @@
      *
      * @access  static
      * @param   int assigned_to
-     * @return  &Bugs[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByAssigned_to($assigned_to) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -147,7 +140,9 @@
             bugs..bugs 
           where
             assigned_to = %d
-        ', $assigned_to);
+          ', 
+          $assigned_to
+        );
 
         $data= array();
         if ($q) while ($r= $q->next()) {
@@ -165,17 +160,15 @@
      *
      * @access  static
      * @param   util.Date creation_ts
-     * @return  &Bugs[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByCreation_ts($creation_ts) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -208,7 +201,9 @@
             bugs..bugs 
           where
             creation_ts = %s
-        ', $creation_ts);
+          ', 
+          $creation_ts
+        );
 
         $data= array();
         if ($q) while ($r= $q->next()) {
@@ -226,17 +221,15 @@
      *
      * @access  static
      * @param   util.Date delta_ts
-     * @return  &Bugs[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByDelta_ts($delta_ts) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -269,7 +262,9 @@
             bugs..bugs 
           where
             delta_ts = %s
-        ', $delta_ts);
+          ', 
+          $delta_ts
+        );
 
         $data= array();
         if ($q) while ($r= $q->next()) {
@@ -287,17 +282,15 @@
      *
      * @access  static
      * @param   string bug_severity
-     * @return  &Bugs[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByBug_severity($bug_severity) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -330,7 +323,9 @@
             bugs..bugs 
           where
             bug_severity = %s
-        ', $bug_severity);
+          ', 
+          $bug_severity
+        );
 
         $data= array();
         if ($q) while ($r= $q->next()) {
@@ -348,17 +343,15 @@
      *
      * @access  static
      * @param   string bug_status
-     * @return  &Bugs[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByBug_status($bug_status) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -391,7 +384,9 @@
             bugs..bugs 
           where
             bug_status = %s
-        ', $bug_status);
+          ', 
+          $bug_status
+        );
 
         $data= array();
         if ($q) while ($r= $q->next()) {
@@ -409,17 +404,15 @@
      *
      * @access  static
      * @param   string op_sys
-     * @return  &Bugs[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByOp_sys($op_sys) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -452,7 +445,9 @@
             bugs..bugs 
           where
             op_sys = %s
-        ', $op_sys);
+          ', 
+          $op_sys
+        );
 
         $data= array();
         if ($q) while ($r= $q->next()) {
@@ -470,17 +465,15 @@
      *
      * @access  static
      * @param   string priority
-     * @return  &Bugs[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByPriority($priority) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -513,7 +506,9 @@
             bugs..bugs 
           where
             priority = %s
-        ', $priority);
+          ', 
+          $priority
+        );
 
         $data= array();
         if ($q) while ($r= $q->next()) {
@@ -531,17 +526,15 @@
      *
      * @access  static
      * @param   string product
-     * @return  &Bugs[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByProduct($product) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -574,7 +567,9 @@
             bugs..bugs 
           where
             product = %s
-        ', $product);
+          ', 
+          $product
+        );
 
         $data= array();
         if ($q) while ($r= $q->next()) {
@@ -592,17 +587,15 @@
      *
      * @access  static
      * @param   int reporter
-     * @return  &Bugs[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByReporter($reporter) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -635,7 +628,9 @@
             bugs..bugs 
           where
             reporter = %d
-        ', $reporter);
+          ', 
+          $reporter
+        );
 
         $data= array();
         if ($q) while ($r= $q->next()) {
@@ -653,17 +648,15 @@
      *
      * @access  static
      * @param   string version
-     * @return  &Bugs[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByVersion($version) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -696,7 +689,9 @@
             bugs..bugs 
           where
             version = %s
-        ', $version);
+          ', 
+          $version
+        );
 
         $data= array();
         if ($q) while ($r= $q->next()) {
@@ -714,17 +709,15 @@
      *
      * @access  static
      * @param   string component
-     * @return  &Bugs[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByComponent($component) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -757,7 +750,9 @@
             bugs..bugs 
           where
             component = %s
-        ', $component);
+          ', 
+          $component
+        );
 
         $data= array();
         if ($q) while ($r= $q->next()) {
@@ -775,17 +770,15 @@
      *
      * @access  static
      * @param   string resolution
-     * @return  &Bugs[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByResolution($resolution) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -818,7 +811,9 @@
             bugs..bugs 
           where
             resolution = %s
-        ', $resolution);
+          ', 
+          $resolution
+        );
 
         $data= array();
         if ($q) while ($r= $q->next()) {
@@ -836,17 +831,15 @@
      *
      * @access  static
      * @param   int votes
-     * @return  &Bugs[] object
+     * @return  &org.bugzilla.db.Bug[] objects
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByVotes($votes) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $q= &$db->query('
           select
             bug_id,
@@ -879,7 +872,9 @@
             bugs..bugs 
           where
             votes = %d
-        ', $votes);
+          ', 
+          $votes
+        );
 
         $data= array();
         if ($q) while ($r= $q->next()) {
@@ -1426,11 +1421,9 @@
      */
     function update() {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $db->update('
           bugs..bugs set
             groupset = %d,
@@ -1504,12 +1497,9 @@
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function insert() {
-      $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('bugzilla', 0))) {
-        return throw(new IllegalAccessException('No connection to "bugzilla" available'));
-      }
-
+      $cm= &ConnectionManager::getInstance(); 
       try(); {
+        $db= &$cm->getByHost('bugzilla', 0);
         $db->insert('
           bugs..bugs (
             groupset,
@@ -1574,7 +1564,6 @@
       }
 
       return TRUE;
-    }
-    
+    }    
   }
 ?>
