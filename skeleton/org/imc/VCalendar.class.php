@@ -375,11 +375,11 @@
      *   $f->close();
      * </code>
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string
      */
     function export() {
+
       // First construct the calendar itself
       $ret = $this->_export ('BEGIN',     VCAL_ID);
       $ret.= $this->_export ('CALSCALE',  'GREGORIAN');
