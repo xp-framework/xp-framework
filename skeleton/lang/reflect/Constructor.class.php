@@ -14,6 +14,16 @@
    * @purpose  Reflection
    */
   class Constructor extends Routine {
+
+    /**
+     * Constructor
+     *
+     * @access  private
+     * @param   &mixed ref
+     */    
+    function __construct(&$ref) {
+      parent::__construct($ref, '__construct');
+    }
     
     /**
      * Uses the constructor represented by this Constructor object to create 
