@@ -107,7 +107,7 @@ __;
             $remove= TRUE;
           }
         }
-        $out[]= $remove ? '' : $parentcall;
+        $out[]= $remove ? '' : $parentcall.';';
         $tok= array(T_NONE, '');
         break;
       
@@ -240,7 +240,7 @@ __;
     switch (sizeof($uses)) {
       case 0: break;
       case 1: $f->write('  uses('.$uses[0].");\n\n"); break;
-      default: $f->write("uses(\n  ".implode(",\n  ", $uses)."\n);\n\n");
+      default: $f->write("  uses(\n    ".implode(",\n    ", $uses)."\n  );\n\n");
     }
     // $f->write('namespace '.$namespace." {\n\n");
     $f->write('  '.str_replace('= &', '= ', trim(chop(implode('', $out)))));
