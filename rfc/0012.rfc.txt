@@ -243,6 +243,9 @@ The body of a message is encoded depending on the message type.
   <?php
     $body= pack('a*', $serializedContext);
   ?>
+  
+  The body contains a serialized representation of the context, serialized
+  according to the rules of object serialization.
 
 * Body encoding for request message (#1)
 
@@ -259,6 +262,7 @@ The body of a message is encoded depending on the message type.
     Mode                    Encoding
     ----------------------- ------------
     Static                  1
+    One-Way (No Reply)      2
   </pre>
 
   In PHP:
@@ -279,9 +283,29 @@ The body of a message is encoded depending on the message type.
     Object does not exist   2
     Operation non-existant  3
     Invokation error        4
-    Protocol error          255
+    Protocol error          127
   </pre>
 
+  Success:
+  - Result
+  - Out parameters
+
+  User Exception:
+  - Exception class name
+  - Stacktrace
+  
+  Object does not exist:
+  - Object name
+  
+  Operation non-existant
+  - Operation name
+  
+  Invokation error:
+  - Stacktrace
+
+  Protocol error
+  - Detail message
+  
   In PHP:
   <?php
     $body= pack('ca*', $status, $data);
