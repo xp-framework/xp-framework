@@ -105,6 +105,10 @@
       
       return TRUE;
     }
+	
+	function isOpen() {
+	  return $this->_fd;
+	}
     
     /**
      * Existiert Datei?
@@ -310,7 +314,7 @@
      */
     function seek($position= 0, $mode= SEEK_SET) {
       if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
-      $result= fseek($this->_fd, $position);
+      $result= fseek($this->_fd, $position, $mode);
       if ($result != 0) return throw(new IOException('seek error, position '.$position.' in mode '.$mode));
       return TRUE;
     }
@@ -322,7 +326,7 @@
      * @throws  IOException, wenn die Position nicht ermittelt werden kann
      * @return  (int)position
      */
-    function tell($position= 0, $mode= SEEK_SET) {
+    function tell() {
       if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
       $result= ftell($this->_fd);
       if (FALSE === $result) return throw(new IOException('cannot retreive file pointer\'s position'));
@@ -342,7 +346,7 @@
      */
     function _lock($op, $block= NULL) {
       if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
-      $result= flock($this->_fd, $op, $lock);
+      $result= flock($this->_fd, $op, $block);
       if (FALSE === $result) return throw(new IOException('cannot retreive file pointer\'s position'));
       return $result;
     }
@@ -352,8 +356,8 @@
      *
      * @see File#_lock
      */
-    function lockShared($block= NULL) {
-      return $this->_lock(LOCK_SH, $block);
+    function lockShared($lock= NULL) {
+      return $this->_lock(LOCK_SH, $lock);
     }
     
     /**
@@ -361,8 +365,8 @@
      *
      * @see File#_lock
      */
-    function lockExclusive($block= NULL) {
-      return $this->_lock(LOCK_EX, $block);
+    function lockExclusive($lock= NULL) {
+      return $this->_lock(LOCK_EX, $lock);
     }
     
     /**
