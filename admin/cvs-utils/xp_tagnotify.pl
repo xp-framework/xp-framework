@@ -72,3 +72,64 @@
   close (SENDMAIL);
   
   exit (0);
+
+  sub getRealname {
+    my $sysname= shift;
+    open (UDB, "/etc/passwd");
+    my @lines= <UDB>;
+    my $line;
+    close (UDB);
+
+    my $realname= 'Mister Booombastic';
+    foreach $line (@lines) {
+      my ($uname, $pass, $uid, $id, $info, $home, $shell)= split /:/, $line;
+      if ($sysname eq $uname) {
+        $realname= $info;
+        $realname =~ s/,.*$//g;
+      }
+    }
+
+    return $realname;
+  }
+
+  sub getEmail {
+    my $sysname= shift;
+    my $username= lc(getRealname ($sysname));
+
+    $username =~ s/\ /\./g;
+    $username =~ s/ä/ae/g;
+    $username =~ s/ö/oe/g;
+    $username =~ s/ü/ue/g;
+    $username =~ s/ß/ss/g;
+    return $username.'@schlund.de';
+  }
+
+  sub getLastTagRevision {
+    my $file=       shift;
+    my $tagName=    shift;
+    my $operation=  shift;
+    
+    open (FILE, $file);
+    my $tags= 0;
+    while (<FILE>) {
+      if ('symbols;' eq trim ($_)) {
+        close (FILE);
+        return 'N/A';
+      }
+      
+      if ('symbol' eq trim ($_)) {
+        $tags= 1;
+      }
+      
+      if ($tags == 1 && -1 !== index ($_, $tagName)) {
+        my ($tagInfo, $revision)= split /:/, $_;
+        close (FILE);
+        $revision=~ s/;//g;
+        
+        return $revision;
+      }
+    }
+    
+    close (FILE);
+    return 'PFN';
+  }
