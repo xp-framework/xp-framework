@@ -10,6 +10,9 @@
     'xml.XSLProcessor'
   );
   
+  define('XSLT_BUFFER', 0x0000);
+  define('XSLT_FILE',   0x0001);
+  
   /**
    * Wraps XML response
    *
@@ -171,9 +174,10 @@
      *
      * @access  public
      * @param   string stylesheet
+     * @param   int type default XSLT_FILE
      */
-    function setStylesheet($stylesheet) {
-      $this->stylesheet= $stylesheet;
+    function setStylesheet($stylesheet, $type= XSLT_FILE) {
+      $this->stylesheet= array($isfile, $stylesheet);
     }
     
     /**
@@ -212,17 +216,27 @@
      *   $this->content= &$result->dump_mem();
      * </code>
      *
-     * @throws  IllegalStateException if no stylesheet is set
-     * @throws  FormatException if the transformation fails
+     * @throws  lang.IllegalStateException if no stylesheet is set
+     * @throws  xml.TransformerException if the transformation fails
      * @see     org.apache.HttpScriptletResponse#process
      */
     function process() {
       parent::process();
-      if (empty($this->stylesheet)) {
-        return throw(new IllegalStateException('No stylesheet set'));
+      switch ($this->stylesheet[0]) {
+        case XSLT_FILE:
+          $this->processor->setXSLFile($this->stylesheet[1]);
+          break;
+          
+        case XSLT_BUFFER:
+          $this->processor->setXSLBuf($this->stylesheet[1]);
+          break;
+        
+        default:
+          return throw(new IllegalStateException(
+            'Unknown type ('.$this->stylesheet[0].') for stylesheet'
+          ));
       }
-
-      $this->processor->setXSLFile($this->stylesheet);
+      
       $this->processor->setParams($this->params);
       $this->processor->setXMLBuf(
         $this->document->getDeclaration()."\n".
@@ -233,7 +247,6 @@
       try(); {
         $this->processor->run();
       } if (catch('TransformerException', $e)) {
-        $e->message.= ' [xsl: '.$this->stylesheet.', xml: '.$this->document->getSource(FALSE).']';
         return throw($e);
       }
       
