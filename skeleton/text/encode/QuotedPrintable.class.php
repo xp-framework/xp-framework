@@ -19,6 +19,27 @@
   class QuotedPrintable extends Object {
   
     /**
+     * Get ASCII values of characters that need to be encoded
+     *
+     * Note: According to RFC 2045, the "@" need not be escaped
+     * Exim has its problems though if an "@" sign appears in an 
+     * name (even if it's encoded), such as:
+     *
+     * <pre>
+     *   =?iso-8859-1?Q?Timm@Home?= <timm@example.com>
+     * </pre>
+     *
+     * This is why "64" is added to the first array in this function.
+     *
+     * @model   static
+     * @access  public
+     * @return  int[]
+     */
+    function getCharsToEncode() {
+      return array_merge(array(64, 61, 46), range(0, 31), range(127, 255));
+    }
+  
+    /**
      * Encode string
      *
      * @access  abstract
@@ -28,7 +49,7 @@
      */
     function encode($str, $charset= 'iso-8859-1') { 
       $r= array(' ' => '_');
-      foreach (array_merge(array(61, 46), range(0, 31), range(127, 255)) as $i) {
+      foreach (QuotedPrintable::getCharsToEncode() as $i) {
         $r[chr($i)]= '='.strtoupper(dechex($i));
       }
       return sprintf('=?%s?Q?%s?=', $charset, strtr($str, $r));
