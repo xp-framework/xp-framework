@@ -243,12 +243,22 @@
     }
     
     /**
+     * Checks whether this archive is open
+     *
+     * @access  public
+     * @param   bool TRUE when the archive file is open
+     */
+    function isOpen() {
+      return $this->file->isOpen();
+    }
+    
+    /**
      * Destructor
      *
      * @access  public
      */
     function __destruct() {
-      if ($this->file->isOpen()) $this->close();
+      if ($this->isOpen()) $this->close();
       parent::__destruct();
     }
   }
