@@ -1,19 +1,35 @@
 <?php
-  import('xml.XML');
-  import('xml.XMLParser');
-  
+/* Diese Klasse ist Teil des XP-Frameworks
+ *
+ * $Id$
+ */
+ 
+  uses(
+    'xml.XML',
+    'xml.XMLParser',
+    'io.IOException'
+  );
+ 
+  /**
+   * Kapselt einen XML-Baum
+   *
+   * @see xml.XMLParser
+   */
   class Tree extends XML {
-    /*public*/var 
+    var 
       $root,
       $children;
       
-    /*private*/var
+    var
       $_cnt,
       $_cdata,
       $_objs;
     
     var $nodeType= 'node';
-		
+    
+    /**
+     * Constructor
+     */
     function __construct($params= NULL) {
       $this->_objs= array();		
       $this->root= new Node(array(
@@ -22,17 +38,76 @@
       XML::__construct($params);
     }
     
+    /**
+     * Den XML-Source des Baums zurückgeben
+     *
+     * @access  public
+     * @param   bool indent default TRUE Einrückung
+     * @return  string XML-Source
+     */
     function getSource($indent= TRUE) {
       return (isset($this->root)
         ? $this->root->getSource($indent)
         : NULL
       );
     }
-        
+     
+    /**
+     * Ein Objekt dem Root-Element hinzufügen
+     *
+     * @access  public
+     * @param   xml.Node child Das Child-Objekt
+     * @return  xml.Node das hinzugefügte Objekt
+     */   
     function &addChild($child) {
       return $this->root->addChild($child);
     }
 
+    /**
+     * Konstruiert einen Baum aus einem String
+     *
+     * @access  public
+     * @param   string string String, der das XML enthält
+     * @return  bool Parser-Ergebnis
+     */ 
+    function fromString($string) {
+      $parser= new XMLParser();
+      $parser->callback= &$this;
+      $result= $parser->parse($string, 1);
+      $parser->__destruct();
+      return $result;
+    }
+    
+    /**
+     * Konstruiert einen Baum aus einem File
+     *
+     * @access  public
+     * @param   io.File file Datei mit dem XML
+     * @return  bool Parser-Ergebnis
+     * @throws  Exception wenn die Datei nicht gelesen werden kann
+     */ 
+    function fromFile($file) {
+      $parser= new XMLParser();
+      $parser->callback= &$this;
+      $parser->dataSource= $fileName;
+      
+      try(); {
+        $f->open(FILE_MODE_READ);
+        $string= $f->read($f->fileSize());
+        $f->close();
+      } if (catch('Exception', $e)) {
+        return throw($e);
+      }
+      $result= $parser->parse($string);
+      $parser->__destruct();
+      return $result;
+    }
+    
+    /**
+     * Private Callback-Funktion
+     *
+     * @see xml.XMLParser
+     */
     function _pCallStartElement($parser, $name, $attrs) {
       $this->_cdata= "";
 
@@ -52,6 +127,11 @@
       }
     }
    
+    /**
+     * Private Callback-Funktion
+     *
+     * @see xml.XMLParser
+     */
     function _pCallEndElement($parser, $name) {
       if ($this->_cnt > 1) {
         $node= &$this->_objs[$this->_cnt];
@@ -64,35 +144,21 @@
       $this->_cnt--;
     }
 
+    /**
+     * Private Callback-Funktion
+     *
+     * @see xml.XMLParser
+     */
     function _pCallCData($parser, $cdata) {
       $this->_cdata.= $cdata;
     }
-    
+
+    /**
+     * Private Callback-Funktion
+     *
+     * @see xml.XMLParser
+     */
     function _pCallDefault($parser, $data) {
-    }
-       
-    function fromString($string) {
-      $parser= new XMLParser();
-      $parser->callback= &$this;
-      $parser->dataSource= $string;
-      $result= $parser->parse($string, 1);
-      $parser->__destruct();
-      return $result;
-    }
-    
-    function fromFile($fileName) {
-      $parser= new XMLParser();
-      $parser->callback= &$this;
-      $parser->dataSource= $fileName;
-      
-      $fp= @fopen($fileName, 'r');
-      if (!$fp) {
-        return throw(E_IO_EXCEPTION, 'cannot read from '.$fileName);
-      }
-      
-      $parser->parse(fread($fp, filesize($fileName)));
-      fclose($fp);
-      $parser->__destruct();
     }
   }
 ?>
