@@ -31,7 +31,8 @@
     var
       $defaultPage  = 'home',
       $defaultFrame = 'top',
-      $state        = '';
+      $state        = '',
+      $page         = '';
 
     /**
      * Gets state
@@ -80,7 +81,7 @@
      * @param   string page
      */
     function setPage($page) {
-      $this->params['__page']= $page;
+      $this->page= $page;
     }
 
     /**
@@ -90,8 +91,7 @@
      * @return  string page
      */
     function getPage() {
-      if (NULL === ($page= $this->getParam('__page'))) $page= $this->defaultPage;
-      return $page;
+      return empty($this->page) ? $this->defaultPage : $this->page;
     }
 
     /**
