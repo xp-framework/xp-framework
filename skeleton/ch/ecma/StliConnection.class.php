@@ -43,10 +43,13 @@
     var
       $sock	    = NULL,
       $version	= 0,
+      
+      // The prefix is a constant that depends on your telephony system
       $prefix   = array(
-        TEL_ADDRESS_EXTERNAL        => '0',
-        TEL_ADDRESS_INTERNATIONAL   => '0',
-        TEL_ADDRESS_INTERNAL        => ''
+        TEL_CALL_INTERNATIONAL   => '0',
+        TEL_CALL_NATIONAL        => '0',
+        TEL_CALL_CITY            => '0',
+        TEL_CALL_INTERNAL        => ''
       );
 
     /**
@@ -61,9 +64,10 @@
      * @access	public
      * @param	&peer.Socket sock
      */
-    function __construct(&$sock, $version= STLI_VERSION_2) {
+    function __construct(&$sock, $parserDefaults, $version= STLI_VERSION_2) {
       $this->sock= &$sock;
       $this->version= $version;
+      $this->_addressParserDefaults= $parserDefaults;
       parent::__construct();
     }
     
@@ -71,7 +75,7 @@
      * Set dialing prefix
      *
      * @access  public
-     * @param   string type one of the TEL_ADDRESS_* constants
+     * @param   string type one of the TEL_CALL_* constants
      * @param   value the value for the dialing prefix
      */
     function setPrefix($type, $value) {
@@ -82,11 +86,37 @@
      * Retreive dialing prefix
      *
      * @access  public
-     * @param   string type one of the TEL_ADDRESS_* constants
+     * @param   string type one of the TEL_CALL_* constants
      * @return  value the value for the specified dialing prefix type
      */
     function getPrefix($type) {
       return $this->prefix[$type];
+    }
+    
+    /**
+     * Add prefix to phone number where necessary. Also make up
+     * the resulting string to a form that can be given to the
+     * stli server
+     *
+     * @access public
+     * @param &util.telephony.TelephonyAddress callee
+     * @param &util.telephony.TelephonyAddress destination
+     * @return string number
+     */    
+    function applyPrefix(&$callee, &$destination) {
+      $callCategory= $destination->getCallCategory ($callee);
+
+      $this->trace ('Call category: ', $callCategory);
+      $this->trace ('Number base: ', $destination->getNumber ($callCategory));
+
+      $nr= str_replace (
+        '+',
+        '00',
+        $this->getPrefix ($callCategory).$destination->getNumber ($callCategory)
+      );
+      
+      $this->trace ('Calling number: ', $nr);
+      return $nr;
     }
     
     /**
@@ -175,9 +205,7 @@
      * @return  &util.telephony.TelephonyAddress 
      */
     function &getAddress($number) {
-      $a= &parent::getAddress($number); {
-        $a->number= $this->prefix[$a->getType()].$a->number;
-      }
+      $a= &parent::getAddress($number);
       return $a;
     }
     
@@ -189,12 +217,15 @@
      * @param   &util.telephony.TelephonyAddress destination
      * @return  &util.telephony.TelephonyCall a call object
      */
-    function &createCall(&$terminal, &$destination) { 
+    function &createCall(&$terminal, &$destination) {
       if (FALSE === parent::createCall($terminal, $destination)) return FALSE;
+      
       if (FALSE === $this->_expect(
         STLI_MAKECALL_RESPONSE,
-        $this->_sockcmd('MakeCall %s %s', $terminal->getNumber(), $destination->getNumber())
-      )) return FALSE;
+        $this->_sockcmd('MakeCall %s %s', 
+          $terminal->getAttachedNumber(), 
+          $this->applyPrefix ($terminal->address, $destination)
+      ))) return FALSE;
       
       return new TelephonyCall($terminal->address, $destination);
     }
@@ -209,9 +240,8 @@
       if (FALSE === parent::getTerminal($address)) return FALSE;
       if (FALSE === $this->_expect(
         STLI_MON_START_RESPONSE,
-        $this->_sockcmd('MonitorStart %s', $address->getNumber())
+        $this->_sockcmd('MonitorStart %s', $address->getExt())
       )) return FALSE;
-      
       return new TelephonyTerminal($address);
     }
 
@@ -225,7 +255,7 @@
       if (FALSE === parent::releaseTerminal($terminal)) return FALSE;
       if (FALSE === $this->_expect(
         STLI_MON_STOP_RESPONSE,
-        $this->_sockcmd('MonitorStop %s', $terminal->getNumber())
+        $this->_sockcmd('MonitorStop %s', $terminal->getAttachedNumber())
       )) return FALSE;
       
       return TRUE;
