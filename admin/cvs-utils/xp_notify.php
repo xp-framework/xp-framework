@@ -3,7 +3,7 @@
 /* CVS commit notifier
  * This shall be called from CVSROOT/loginfo in the following way:
  * 
- * ALL     (cat > /tmp/loginfo_`md5 -q -s %{Vvs}` ; /home/cvs/bin/xp_notify.php /tmp/loginfo_`md5 -q -s %{Vvs}` your@email.com %{Vvs} 1>/dev/null 2>/dev/null &)
+ * ALL     (cat > /tmp/loginfo_`md5 -q -s %{Vvs}` ; php -q /home/cvs/bin/xp_notify.php /tmp/loginfo_`md5 -q -s %{Vvs}` your@email.com %{Vvs} 1>/dev/null 2>/dev/null &)
  * 
  * $Id$
  */
