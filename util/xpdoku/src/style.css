@@ -1,6 +1,7 @@
 ul {
     list-style-type: square;
     list-style-image: url(/image/icn_li.gif);
+    line-height: 16px;
 }
 
 ul.nav {
