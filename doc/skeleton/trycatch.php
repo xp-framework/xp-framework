@@ -5,19 +5,21 @@
    * $Id$
    */
    
-  require_once('../../skeleton/lang.base.php');
+  require('lang.base.php');
+  uses('io.File');
   
   // Nichtexistente Datei öffnen
   $testFile= '/tmp/file_does_not_exist.txt';
-  echo 'Trying to read '.$testFile.': ';
+  echo 'Trying to read '.$testFile.":\n";
   try(); {
-    $fd= fopen($testFile, 'r');
-    $str= fgets($fd, 1024);
-    fclose($fd);
-  } if ($e= catch(E_ANY_EXCEPTION)) {
-    echo 'failure "'.$e->message.'"';
-  } else {
-    echo 'success "'.$str.'"';
+    $file= new File($testFile);
+    $file->open(FILE_MODE_READ);
+    $str= $file->readLine();
+    $file->close();
+  } if (catch('FileNotFoundException', $e)) {
+    die($e->printStackTrace());
   }
+
+  echo 'success "'.$str.'"';
   echo "\n";
 ?>
