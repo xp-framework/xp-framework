@@ -31,6 +31,25 @@
     }
     
     /**
+     * Retreive flags
+     *
+     * @access  public
+     * @return  int flags
+     */
+    function getFlags() {
+      if (!isset($this->parts['query'])) return 0;
+      
+      $flags= 0;
+      parse_str($this->parts['query'], $config);
+      foreach ($config as $key => $value) {
+        if ($value) {
+          $flags= $flags | constant('DB_'.strtoupper($key));
+        }
+      }
+      return $flags;
+    }
+    
+    /**
      * Retreive host
      *
      * @access  public
