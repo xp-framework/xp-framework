@@ -52,32 +52,6 @@
     }
 
     /**
-     * Encode the parts of a path 
-     *
-     * Example:
-     * <pre>
-     *   "/Test Folder/file.txt" -> "/Text%20File/file.txt"
-     * </pre>
-     *
-     * The optional parameter davDisplaynameStyle indicates that the path 
-     * should be transformed for display.
-     *
-     * @access  private
-     * @param   string path The path
-     * @param   bool davDisplaynameStyle default FALSE
-     * @return  string
-     */
-    function _urlencodePath($path, $davDisplaynameStyle= FALSE){
-      $p= explode('\/', $this->_normalizePath($path));
-      $ret= '';
-      for ($t= 0; $t < sizeof($p); $t++){
-        if (!empty($p[$t])) $ret.= '/'.rawurlencode($p[$t]);
-      }
-
-      return substr($ret, (int)$davDisplaynameStyle);
-    }
-
-    /**
      * Move a file
      *
      * @access  abstract
