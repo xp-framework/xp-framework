@@ -66,19 +66,21 @@ Methoden-Keywords:
 
 Klassen-Keywords:     
 -----------------
-@model  Definiert das Modell (generisch/statis/singleton) einer Klasse.
+@ext        Definiert eine PHP-Extension, die für den Gebrauch der Klasse
+            benötigt wird (es kann mehere @ext geben.)
+@model      Definiert das Modell (generisch/statis/singleton) einer Klasse.
 
-@doc     Verweis zu einem Beispielskript. Beispielskripte liegen in ~/doc
-         Syntax: (<script_relative_location>|<script_url>)
+@doc        Verweis zu einem Beispielskript. Beispielskripte liegen in ~/doc
+            Syntax: (<script_relative_location>|<script_url>)
 
-         @doc    trycatch.php
-         @doc    http://foo.bar/baz.php
+            @doc    trycatch.php
+            @doc    http://foo.bar/baz.php
          
-@purpose Verwendungszweck (Kurzbeschreibung)
-         Syntax: <purpose>
+@purpose    Verwendungszweck (Kurzbeschreibung)
+            Syntax: <purpose>
          
-         @purpose Kapselt Operationen auf dem IMAP-Server
-
+            @purpose Kapselt Operationen auf dem IMAP-Server
+@deprecated Markiert die Klasse als deprecated.
 
 Template:
 ---------
