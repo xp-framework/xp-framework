@@ -95,22 +95,4 @@ The core functionality is provided by the macro MANGLE_CLASS_NAME
 in zend_compile.h; small changes to the lexer/scanner and the
 new compiler global  CG(active_package_entry).
 
-Making it work
---------------
-The patch needs to be applied against a current CVS checkout of PHP5.
-Affected files in the Zend/ subdirectory:
-
-zend.h
-zend_compile.c
-zend_compile.h
-zend_globals.h
-zend_language_parser.y
-zend_language_scanner.l
-zend_operators.c
-
-Compile, then run the tests (exceptions.php, indirect.php). Be sure
-to do a "make clean" before - the zend_globals struct has been changed
-(and therefore its size) - otherwise you'll experience crashes all over
-the place.
-
 <EOF>
