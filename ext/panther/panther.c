@@ -29,8 +29,8 @@
 /* Declare a global mutex */
 pthread_mutex_t panther_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-/* Global variables pool */
-zval* pool;
+/* Global variables registry */
+zval* registry;
 void ***tsrm_ls;
 
 /* Condition on which to shutdown */
@@ -250,92 +250,103 @@ void* _thread(void* sd)
 
                 /* Execute */
                 zend_first_try {
-                    char *eval;
-                    zval retval;
-                    zval *retval_ptr;
-                    zval *data_ptr = NULL;
-                    php_serialize_data_t s_hash;
-                    php_unserialize_data_t u_hash;
-                    const char *p;
-                    smart_str buf = {0};
-
-                    switch (request->method) {
-                        case RMI_SET:
-                            p= request->data;
-                            PHP_VAR_UNSERIALIZE_INIT(u_hash);
-                            ALLOC_ZVAL(data_ptr);
-                            php_var_unserialize(&data_ptr, &p, p + request->data_len, &u_hash TSRMLS_CC);
-                            PHP_VAR_UNSERIALIZE_DESTROY(u_hash);
-                            ZEND_SET_SYMBOL(&EG(symbol_table), "_", data_ptr);
-                            
-                            n= sizeof("$registry['']->= $_") + request->class_len + request->member_len + request->data_len;
-                            eval= (char*) emalloc(n);
-                            strncpy(eval, "$registry['", sizeof("$registry['"));
-                            strncat(eval, request->class, request->class_len);
-                            strncat(eval, "']->", sizeof("']->"));
-                            strncat(eval, request->member, request->member_len);
-                            strncat(eval, "= $_", sizeof("= $_"));
-                            break;
-
-                        case RMI_GET:
-                            n= sizeof("$registry['']->") + request->class_len + request->member_len;
-                            eval= (char*) emalloc(n);
-                            strncpy(eval, "$registry['", sizeof("$registry['"));
-                            strncat(eval, request->class, request->class_len);
-                            strncat(eval, "']->", sizeof("']->"));
-                            strncat(eval, request->member, request->member_len);
-                            break;
-
-                        case RMI_INVOKE:
-                            p= request->data;
-                            PHP_VAR_UNSERIALIZE_INIT(u_hash);
-                            ALLOC_ZVAL(data_ptr);
-                            php_var_unserialize(&data_ptr, &p, p + request->data_len, &u_hash TSRMLS_CC);
-                            PHP_VAR_UNSERIALIZE_DESTROY(u_hash);
-                            ZEND_SET_SYMBOL(&EG(symbol_table), "_", data_ptr);
-
-                            n= sizeof("$registry['']->($_)") + request->class_len + request->member_len;
-                            eval= (char*) emalloc(n);
-                            strncpy(eval, "$registry['", sizeof("$registry['"));
-                            strncat(eval, request->class, request->class_len);
-                            strncat(eval, "']->", sizeof("']->"));
-                            strncat(eval, request->member, request->member_len);
-                            strncat(eval, "($_)", sizeof("($_)"));
-                            break;
-                    }
+                    zval *object = NULL;
                     
-                    panther_error(PANTHER_LOG, "Executing (%d)'%s'\n", strlen(eval), eval);
-                    if (FAILURE == zend_eval_string(eval, &retval, "panther.php" TSRMLS_CC)) {
-                        panther_error(PANTHER_WARNING, "zend_eval_string('%s') returns FAILURE", eval);
-                        efree(eval);
-                        break;
-                    }
-                    retval_ptr= &retval;
-                    zval_copy_ctor(retval_ptr);
-                    
-                    if (retval_ptr) {
-                        php_var_dump(&retval_ptr, 0 TSRMLS_CC);
-                    
-                        PHP_VAR_SERIALIZE_INIT(s_hash);
-                        php_var_serialize(&buf, &retval_ptr, &s_hash TSRMLS_CC);
-                        PHP_VAR_SERIALIZE_DESTROY(s_hash);
-
-                        response->length= buf.len;
+                    if (FAILURE == zend_hash_find(Z_ARRVAL_P(registry), request->class, request->class_len + 1, (void**) &object)) {
+                        panther_error(PANTHER_WARNING, "Could not find class (%d)'%s' in registry\n", request->class_len, request->class);
+                        
+                        response->method= RMI_EXCEPTION;
+                        response->length= sizeof("O:21:\"nosuchobjectexception\":1:{s:7:\"message\";s:  :\"No such object  registered\";};") + request->class_len - 1;
                         response->data= (char*)malloc(response->length + 1);
-                        strlcpy(response->data, buf.c, response->length + 1);
-                        zval_ptr_dtor(&retval_ptr); 
+                        snprintf(response->data, response->length + 1, "O:21:\"nosuchobjectexception\":1:{s:7:\"message\";s:%d:\"No such object %s registered\";};", request->class_len + 26, request->class);
                     } else {
-                        response->length= sizeof("N;") - 1;
-                        response->data= (char*)malloc(response->length + 1);
-                        strlcpy(response->data, "N;", response->length + 1);
+                        char *eval;
+                        zval retval;
+                        zval *retval_ptr;
+                        zval *data_ptr = NULL;
+                        php_serialize_data_t s_hash;
+                        php_unserialize_data_t u_hash;
+                        const char *p;
+                        smart_str buf = {0};
+
+                        switch (request->method) {
+                            case RMI_SET:
+                                p= request->data;
+                                PHP_VAR_UNSERIALIZE_INIT(u_hash);
+                                ALLOC_ZVAL(data_ptr);
+                                php_var_unserialize(&data_ptr, &p, p + request->data_len, &u_hash TSRMLS_CC);
+                                PHP_VAR_UNSERIALIZE_DESTROY(u_hash);
+                                ZEND_SET_SYMBOL(&EG(symbol_table), "_", data_ptr);
+
+                                n= sizeof("$registry['']->= $_") + request->class_len + request->member_len + request->data_len;
+                                eval= (char*) emalloc(n);
+                                strncpy(eval, "$registry['", sizeof("$registry['"));
+                                strncat(eval, request->class, request->class_len);
+                                strncat(eval, "']->", sizeof("']->"));
+                                strncat(eval, request->member, request->member_len);
+                                strncat(eval, "= $_", sizeof("= $_"));
+                                break;
+
+                            case RMI_GET:
+                                n= sizeof("$registry['']->") + request->class_len + request->member_len;
+                                eval= (char*) emalloc(n);
+                                strncpy(eval, "$registry['", sizeof("$registry['"));
+                                strncat(eval, request->class, request->class_len);
+                                strncat(eval, "']->", sizeof("']->"));
+                                strncat(eval, request->member, request->member_len);
+                                break;
+
+                            case RMI_INVOKE:
+                                p= request->data;
+                                PHP_VAR_UNSERIALIZE_INIT(u_hash);
+                                ALLOC_ZVAL(data_ptr);
+                                php_var_unserialize(&data_ptr, &p, p + request->data_len, &u_hash TSRMLS_CC);
+                                PHP_VAR_UNSERIALIZE_DESTROY(u_hash);
+
+                                ZEND_SET_SYMBOL(&EG(symbol_table), "_", data_ptr);
+
+                                n= sizeof("$registry['']->($_)") + request->class_len + request->member_len;
+                                eval= (char*) emalloc(n);
+                                strncpy(eval, "$registry['", sizeof("$registry['"));
+                                strncat(eval, request->class, request->class_len);
+                                strncat(eval, "']->", sizeof("']->"));
+                                strncat(eval, request->member, request->member_len);
+                                strncat(eval, "($_)", sizeof("($_)"));
+                                break;
+                        }
+
+                        panther_error(PANTHER_LOG, "Executing (%d)'%s'\n", strlen(eval), eval);
+                        if (FAILURE == zend_eval_string(eval, &retval, "panther.php" TSRMLS_CC)) {
+                            panther_error(PANTHER_WARNING, "zend_eval_string('%s') returns FAILURE", eval);
+
+                            response->method= RMI_EXCEPTION;
+                            response->length= sizeof("N;") - 1;
+                            response->data= (char*)malloc(response->length + 1);
+                            strlcpy(response->data, "N;", response->length + 1);
+                        } else {
+                            retval_ptr= &retval;
+                            zval_copy_ctor(retval_ptr);
+
+                            if (retval_ptr) {
+                                php_var_dump(&retval_ptr, 0 TSRMLS_CC);
+
+                                PHP_VAR_SERIALIZE_INIT(s_hash);
+                                php_var_serialize(&buf, &retval_ptr, &s_hash TSRMLS_CC);
+                                PHP_VAR_SERIALIZE_DESTROY(s_hash);
+
+                                response->length= buf.len;
+                                response->data= (char*)malloc(response->length + 1);
+                                strlcpy(response->data, buf.c, response->length + 1);
+                                zval_ptr_dtor(&retval_ptr); 
+                            } else {
+                                response->length= sizeof("N;") - 1;
+                                response->data= (char*)malloc(response->length + 1);
+                                strlcpy(response->data, "N;", response->length + 1);
+                            }
+                        }
+                        efree(eval);
                     }
-                    efree(eval);
                     
-                } zend_catch {
-                    response->method= RMI_EXCEPTION;
-                    response->length= sizeof("N;") - 1;
-                    response->data= (char*)malloc(response->length + 1);
-                    strlcpy(response->data, "N;", response->length + 1);
                 } zend_end_try();
                 
                 panther_error(
@@ -430,11 +441,12 @@ int main (int argc, char *argv[])
 
     /* This is where the execution begins */
     panther_error(PANTHER_LOG, "Execute [%d]%s...\n", strlen(fh.filename), fh.filename);
-    if (FAILURE == zend_execute_scripts(ZEND_INCLUDE TSRMLS_CC, &tmp, 1, &fh)) {
-        panther_error(PANTHER_FATAL, "Internal error\n");
+    if (FAILURE == zend_execute_scripts(ZEND_INCLUDE TSRMLS_CC, &registry, 1, &fh)) {
+        panther_error(PANTHER_FATAL, "Internal error: Could not execute init script\n");
+        /* Bails out */
     }
     
-    php_var_dump(&tmp, 0 TSRMLS_CC);
+    php_var_dump(&registry, 0 TSRMLS_CC);
     
     for (t= 0; t < max_threads; t++) {
 
@@ -465,7 +477,7 @@ int main (int argc, char *argv[])
 
     /* Free up memory */
     panther_free("threads", threads);
-    zval_ptr_dtor(&pool);
+    zval_ptr_dtor(&registry);
 
     /* Shutdown PHP module */
     php_module_shutdown(TSRMLS_C);
