@@ -146,12 +146,11 @@
           $cat->info('Have submit trigger', $st);
         }
           
-        $handled= $has_error= FALSE;
         for ($i= 0, $s= sizeof($state->handlers); $i < $s; $i++) {
           $cat->info('Calling handler #'.$i, $state->handlers[$i]->getClassName());
 
-          // If the prerequisites for this handler are'nt met, proceed
-          if (!$state->handlers[$i]->prerequisitesMet($context)) {
+          // If the prerequisites for this handler aren't met, proceed
+          if (!$state->handlers[$i]->prerequisitesMet($this)) {
             $cat->warn('Handler\'s prerequisites are not met, proceeding...');
             continue;
           }
@@ -173,7 +172,6 @@
 
           // Handle submitted data
           if ($state->handlers[$i]->handleSubmittedData($this, $request)) {
-            $handled= TRUE;
             $cat->info('handleSubmittedData returns TRUE, proceeding...');             
             continue;
           }
@@ -191,8 +189,7 @@
             );
           }
 
-          // ...and break out of the loop immediately
-          $has_error= TRUE;
+          // ...and then break out of the loop immediately
           break;
         }
         
