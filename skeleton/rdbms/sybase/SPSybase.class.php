@@ -143,10 +143,12 @@
       
       // Feldtypen herausfinden
       $i= -1;
-      while (++$i < sybase_num_fields($result)) {
+      while (++$i < @sybase_num_fields($result)) {
         $field= sybase_fetch_field($result, $i);
+        // $this->log->debug('Sybase::fields', $field);
         $this->fields[$field->name]= $field->type;
       }
+      // $this->log->debug('Sybase::fields', $this->fields);
       
       return $result;
     }
@@ -183,6 +185,7 @@
         }
         
         // FALSE ==> NULL
+        $this->log->debug($key.' is NULL ?', ($val === FALSE) ? 'yes' : 'no');
         if ($val === FALSE) {
           $row[$key]= NULL;
           continue;
@@ -194,17 +197,26 @@
         // Datumsangaben automatisch umwandeln
         switch ($this->fields[$key]) {
           case 'datetime': 
-            $row[$key]= new Date($val); break;
+            $row[$key]= new Date($val); 
+            break;
             
           case 'bit':
           case 'int': 
-            settype($row[$key], 'integer'); break;
+            settype($row[$key], 'integer'); 
+            break;
             
-          case 'real': 
-            settype($row[$key], 'double'); break;
+          case 'real':
+            if (floor($val) == $val) {
+              // $this->log->debug('numeric', $key, $val);
+              settype($row[$key], 'integer');
+            } else {
+              settype($row[$key], 'double'); 
+            }
+            break;
         }
       }
       
+      // $this->log->debug($row);
       return $row;
     }
     
