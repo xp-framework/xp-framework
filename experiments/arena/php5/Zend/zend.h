@@ -48,10 +48,10 @@
 # include "acconfig.h"
 # define ZEND_PATHS_SEPARATOR		';'
 #elif defined(__riscos__)
-# include "zend_config.h"
+# include <zend_config.h>
 # define ZEND_PATHS_SEPARATOR		';'
 #else
-# include "zend_config.h"
+# include <zend_config.h>
 # define ZEND_PATHS_SEPARATOR		':'
 #endif
 
@@ -118,7 +118,7 @@ const char *zend_mh_bundle_error(void);
 # define ZEND_EXTENSIONS_SUPPORT	1
 #elif defined(HAVE_MACH_O_DYLD_H)
 # define DL_LOAD(libname)			zend_mh_bundle_load(libname)
-# define DL_UNLOAD(handle)			zend_mh_bundle_unload(handle)
+# define DL_UNLOAD			zend_mh_bundle_unload
 # define DL_FETCH_SYMBOL(h,s)		zend_mh_bundle_symbol(h,s)
 # define DL_ERROR					zend_mh_bundle_error
 # define DL_HANDLE					void *
