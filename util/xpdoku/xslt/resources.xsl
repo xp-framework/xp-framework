@@ -33,11 +33,11 @@
           : 'n/a'
         );
         $information= (file_exists($dir->path.'/'.$releases[$i].'.info')
-          ? file_get_contents($dir->path.'/'.$releases[$i].'.info')
+          ? '<ul>'.str_replace("\n* ", "<li>", "\n".file_get_contents($dir->path.'/'.$releases[$i].'.info')).'</ul>'
           : ''
         );
         printf(
-          '<li><a href="/downloads/%1$s">%1$s</a> - %2$.2f KB [ MD5: %3$s ]</a><br>%4$s</li>',
+          '<li><a href="/downloads/%1$s">%1$s</a> - %2$.2f KB [ MD5: %3$s ]</a><br>%4$s<br></li>',
           $releases[$i],
           filesize($dir->path.'/'.$releases[$i]) / 1024,
           $md5,
