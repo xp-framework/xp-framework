@@ -3,6 +3,7 @@
 #
 
 OUTPUT=output
+CONTENT=output/content
 TARGET=/home/httpd/xp.php3.de/doc_root/
 XML=xml
 CTREE=$(XML)/classTree.xpdoc.xml
@@ -10,7 +11,7 @@ INHERITANCE=$(XML)/inheritanceTree.xml
 SABCMD=sabcmd 
 PHP=php -q
 
-.PHONY: all clean install xml
+.PHONY: all clean install xml content
 
 default: usage
 all: clean makexml gen install
@@ -29,6 +30,7 @@ $(XML):
 $(OUTPUT):
 	@echo "===> Preparing output directory"
 	@-mkdir $(OUTPUT)
+	@-mkdir $(OUTPUT)/content
 	@-mkdir $(OUTPUT)/apidoc
 	@-mkdir $(OUTPUT)/apidoc/collections
 	@-mkdir $(OUTPUT)/apidoc/classes
@@ -47,7 +49,7 @@ clean:
 	-rm -rf output/
 	-rm -rf xml/
         
-gen: index collections classes
+gen: index content collections classes
 	
 makexml: $(XML)
 	@$(PHP) xpdoku.php
@@ -56,14 +58,22 @@ index: $(OUTPUT) $(XML)
 	@echo "===> Creating news"
 	@-$(PHP) util/news.php > content/news.rdf.xml
 	@echo "===> Creating index"
-	@$(SABCMD) xslt/index.xsl content/main/index.xml $(OUTPUT)/index.html 2>/dev/null
+	@$(SABCMD) xslt/index.xsl content/index.xml $(OUTPUT)/index.html 2>/dev/null
 	@echo "===> Creating apidoc index"
 	@$(SABCMD) xslt/apidoc.xsl $(CTREE) $(OUTPUT)/apidoc/index.html 2>/dev/null
 	@echo "===> Creating highlighter"
 	@$(SABCMD) xslt/showsource.xsl $(CTREE) $(OUTPUT)/showsource.php 2>/dev/null
 	@echo "===> Creating search page"
 	@$(SABCMD) xslt/search.xsl $(CTREE) $(OUTPUT)/search.php 2>/dev/null
-        
+
+content:
+	@echo "===> Creating main content"
+	@for i in `find content/main/ -name '*.xml'` ; do \
+	  echo "---> Processing $$i" ; \
+	  f=`basename $$i | sed -e 's/\.xml$$//g'` ; \
+	  $(SABCMD) xslt/content.xsl $$i $(CONTENT)/$$f.html 2>/dev/null ; \
+    done
+      
 collections: $(OUTPUT) $(XML)
 	@echo "===> Processing collections"
 	@for k in `$(SABCMD) xslt/helper.xsl $(CTREE) '$$mode=allcollections' | sed -e 's/<.*>//'`; do $(MAKE) -s "collection_$$k" ; done
