@@ -138,7 +138,7 @@
     </content>
     <references>
       <ref link="../devel/index">Overview</ref>
-      <ref type="ext" link="http://www.dclp-faq.de/ch/ch-code.html">dclp-FAQ: Guter Code</ref>
+      <ref type="ext" link="http://www.php-faq.de/ch/ch-code.html">PHP-FAQ: Guter Code</ref>
     </references>
   </main>
 </document>
