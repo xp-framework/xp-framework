@@ -30,9 +30,8 @@
    */
   class SOAPClient extends Object {
     var 
-      $transport,
-      $action,
-      $method;
+      $transport    = NULL,
+      $action       = '';
     
     /**
      * Constructor
@@ -40,12 +39,10 @@
      * @access  public
      * @param   &xml.soap.transport.SOAPTransport transport a SOAP transport
      * @param   string action Action
-     * @param   string method default NULL
      */
-    function __construct(&$transport, $action, $method= NULL) {
+    function __construct(&$transport, $action) {
       $this->transport= &$transport;
       $this->action= $action;
-      $this->method= $method;
       parent::__construct();
     }
     
@@ -60,49 +57,6 @@
     }
     
     /**
-     * Methoden-Aufruf
-     *
-     * @access  private
-     * @param   mixed vars Daten
-     * @return  mixed Antwort
-     * @throws  IllegalArgumentException, wenn transport ungültig ist
-     */
-    function _call() {
-      if (!is_a($this->transport, 'SOAPTransport')) return throw(new IllegalArgumentException(
-        'transport must be a xml.soap.transport.SOAPTransport'
-      ));
-      
-      $params= func_get_args();
-    
-      $this->answer= &new SOAPMessage();
-      $this->message= &new SOAPMessage();
-      $this->message->create($this->action, $this->method);
-      $this->message->setData($params);
-
-      // Send
-      if (FALSE === ($response= &$this->transport->send($this->message))) return FALSE;
-      
-      // Antwort erhalten
-      $this->answer= &$this->transport->retreive($response);
-      
-      // Daten unserialisieren und zurückgeben
-      return is_a($this->answer, 'SOAPMessage') ? $this->answer->getData() : FALSE;
-    }
-    
-    /**
-     * Default-Methodenaufruf
-     *
-     * @access  public
-     * @param   mixed vars Daten
-     * @return  mixed Antwort
-     * @throws  IllegalArgumentException, wenn transport ungültig ist
-     */
-    function call() {
-      $args= func_get_args();
-      return call_user_func_array(array(&$this, '_call'), $args);
-    }
-    
-    /**
      * Invoke method call
      *
      * @access  public
@@ -113,11 +67,39 @@
      * @throws  xml.soap.SOAPFaultException
      */
     function invoke() {
+      if (!is_a($this->transport, 'SOAPTransport')) return throw(new IllegalArgumentException(
+        'transport must be a xml.soap.transport.SOAPTransport'
+      ));
+      
       $args= func_get_args();
-      $this->method= array_shift($args);
-      $res= call_user_func_array(array(&$this, '_call'), $args);
-      return $res ? $res[0] : FALSE;
+      
+      $this->answer= &new SOAPMessage();
+      $this->message= &new SOAPMessage();
+      $this->message->create($this->action, array_shift($args));
+      $this->message->setData($args);
+
+      // Send
+      if (FALSE === ($response= &$this->transport->send($this->message))) return FALSE;
+      
+      // Response
+      if (FALSE === ($this->answer= &$this->transport->retreive($response))) return FALSE;
+      
+      $data= &$this->answer->getData();
+      return $data[0];
     }
-  }
-  
+    
+    /**
+     * Magic interceptor for member method access
+     *
+     * @access  magic
+     * @param   string name
+     * @param   &array args
+     * @param   &mixed return
+     * @return  bool success
+     */
+    function __call($name, &$args, &$return) {
+      $return= &call_user_func_array(array($this, 'invoke'), $args);
+      return TRUE;
+    }
+  } overload('SOAPClient');
 ?>
