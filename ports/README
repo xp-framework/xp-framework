@@ -11,3 +11,8 @@ Overview
 - xp.port.mk    Makefile-include
 - build.php     Builds CCA archives
 - req.php       Fetches requirements
+
+General ussage:
+­--------------
+- cd to a port
+- type "make dist"
