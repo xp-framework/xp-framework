@@ -133,40 +133,53 @@
      *
      * @access  public
      * @return  &xml.soap.SOAPMessage
+     * @throws  io.IOException in case the data cannot be read
+     * @throws  xml.XMLFormatException in case the XML is not well-formed
+     * @throws  lang.IllegalAccessException in case authorization is required
+     * @throws  lang.IllegalStateException in case an unexpected HTTP status code is returned
      */
     function &retrieve(&$response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());
       
-      try(); {
-        $xml= '';
-        while ($buf= $response->readData()) $xml.= $buf;
-        
-        $this->cat && $this->cat->debug('<<<', $xml);
-        if ($answer= &SOAPMessage::fromString($xml)) {
+      switch ($response->getStatusCode()) {
+        case HTTP_OK:
+        case HTTP_INTERNAL_SERVER_ERROR:
+          try(); {
+            $xml= '';
+            while ($buf= $response->readData()) $xml.= $buf;
 
-          // Check encoding
-          if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
-            @list($type, $charset)= explode('; charset=', $content_type);
-            if (!empty($charset)) $answer->setEncoding($charset);
+            $this->cat && $this->cat->debug('<<<', $xml);
+            if ($answer= &SOAPMessage::fromString($xml)) {
+
+              // Check encoding
+              if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
+                @list($type, $charset)= explode('; charset=', $content_type);
+                if (!empty($charset)) $answer->setEncoding($charset);
+              }
+
+              $answer->action= $this->action;
+            }
+          } if (catch('Exception', $e)) {
+            return throw($e);
           }
 
-          $answer->action= $this->action;
-        }
-      } if (catch('Exception', $e)) {
-        return throw($e);
+          // Fault?
+          if (NULL !== ($fault= $answer->getFault())) {
+            return throw(new SOAPFaultException($fault));
+          }
+          
+          return $answer;
+        
+        case HTTP_AUTHORIZATION_REQUIRED:
+          return throw(new IllegalAccessException(
+            'Authorization required: '.$response->getHeader('WWW-Authenticate')
+          ));
+        
+        default:
+          return throw(new IllegalStateException(
+            'Unexpected return code: '.$response->getStatusCode()
+          ));
       }
-      
-      // Fault?
-      if (NULL !== ($fault= $answer->getFault())) {
-        return throw(new SOAPFaultException($fault));
-      }
-      
-      // HTTP_OK return code?
-      if (200 != $response->getStatusCode()) {
-        return throw(new Exception('Unexpected return code: '.$response->getStatusCode()));
-      }
-      
-      return $answer;
     }
   }
 ?>
