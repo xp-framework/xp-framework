@@ -113,7 +113,7 @@ hr {
   background-repeat: no-repeat;
   padding-left: 20px;
 }
-.comment {
+div.comment {
   border: 1px solid #a9a9a9;
   border-left: 3px solid #aaaaaa;
   padding: 10px;
