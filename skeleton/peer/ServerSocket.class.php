@@ -94,7 +94,6 @@
     function bind($reuse= FALSE) {
       if (
         (FALSE === socket_setopt($this->_sock, SOL_SOCKET, SO_REUSEADDR, $reuse)) ||
-        (FALSE === socket_setopt($this->_sock, SOL_SOCKET, SO_REUSEPORT, $reuse)) ||
         (FALSE === socket_bind($this->_sock, $this->host, $this->port))
       ) {
         return throw(new SocketException(sprintf(
