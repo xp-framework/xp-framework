@@ -185,14 +185,46 @@
       $methods= array();
       $i= 0;
       foreach (get_class_methods($this) as $name) {
-        if (0 != strncmp('on', $name, 2)) continue;
+        if (0 != strncmp('on', $name, 2) || strlen($name) > 6) continue;
 
         if ($i++ % 8 == 0) $methods[++$offset]= '';
         $methods[$offset].= str_pad(strtoupper(substr($name, 2)), 8);
       }
       $this->answer($event->stream, 214, 'The following commands are recognized', $methods);
     }
+    
+    /**
+     * SITE: This allows you to enter a command that is specific to the 
+     * current FTP site.
+     *
+     * @access  protected
+     * @param   &peer.server.ConnectionEvent event
+     * @param   string params
+     */
+    function onSite(&$event, $params) {
+      $method= 'onSite'.strtolower(strtok($params, ' '));
 
+      // Check if method is implemented and answer with code 550 in case
+      // it isn't.
+      if (!method_exists($this, $method)) {
+        $this->answer($event->stream, 550, $command.' not understood');
+        return;
+      }
+
+      $this->{$method}($event, substr($params, strlen($method) - 6));
+    }
+    
+    /**
+     * SITE HELP
+     *
+     * @access  protected
+     * @param   &peer.server.ConnectionEvent event
+     * @param   string params
+     */
+    function onSiteHelp(&$event, $params) {
+      return $this->onHelp($event, $params);
+    }
+    
     /**
      * Callback for the "SYST" command
      *
@@ -241,7 +273,7 @@
      */
     function permissionString($permissions) {
       return (
-        ($permission & 0x4000 ? 'd' : '-').
+        ($permissions & 0x4000 ? 'd' : '-').
         $this->_rwx(($permissions >> 6) & 7).
         $this->_rwx(($permissions >> 3) & 7).
         $this->_rwx(($permissions) & 7)
@@ -279,7 +311,7 @@
       }
       
       for ($i= 0, $s= sizeof($elements); $i < $s; $i++) {
-        $m->write(sprintf(
+        $buf= sprintf(
           '%s  %2d %s  %s  %8d %s %s',
           $this->permissionString($elements[$i]->getPermissions()),
           $elements[$i]->numLinks(),
@@ -288,7 +320,9 @@
           $elements[$i]->getSize(),
           date('M d H:i', $elements[$i]->getModifiedStamp()),
           $elements[$i]->getName()
-        ).$this->eol());
+        );
+        Console::writeLine('    ', $buf);
+        $m->write($buf.$this->eol());
       }
       $this->answer($event->stream, 226, 'Transfer complete');
     }
@@ -329,7 +363,8 @@
     }
 
     /**
-     * Callback for the "MDTM" command
+     * MDTM: This command can be used to determine when a file in the 
+     * server was last modified.
      *
      * @access  protected
      * @param   &peer.server.ConnectionEvent event
@@ -342,6 +377,25 @@
       }
       
       $this->answer($event->stream, 213, date('YmdHis', $entry->getModifiedStamp()));
+    }
+
+    /**
+     * SIZE:  This command is used to obtain the transfer size of a file 
+     * from the server: that is, the exact number of octets (8 bit bytes) 
+     * which would be transmitted over the data connection should that 
+     * file be transmitted. 
+     *
+     * @access  protected
+     * @param   &peer.server.ConnectionEvent event
+     * @param   string params
+     */
+    function onSize(&$event, $params) {
+      if (!($entry= &$this->storage->lookup($params))) {
+        $this->answer($event->stream, 550, $params.': No such file or directory');
+        return;
+      }
+      
+      $this->answer($event->stream, 213, $entry->getSize());
     }
 
     /**
@@ -593,7 +647,7 @@
       static $public= array('onhelp', 'onuser', 'onpass', 'onquit');
 
       Console::writeLine('>>> ', addcslashes($event->data, "\0..\17"));
-      $r= sscanf($event->data, "%s %[^\r]", $command, $params);
+      sscanf($event->data, "%s %[^\r]", $command, $params);
       $method= 'on'.strtolower($command);
 
       // Check if method is implemented and answer with code 550 in case
