@@ -76,7 +76,13 @@
         </xsl:if>
       </p>
       <em>
-        Posted by <xsl:value-of select="author"/> 
+        Posted by <xsl:value-of select="author"/> in 
+        <xsl:for-each select="category">
+          <a href="news/bycategory?{@id}">
+            <xsl:value-of select="."/>
+          </a>
+          <xsl:if test="position() != last()">, </xsl:if>
+        </xsl:for-each>        
         at <xsl:value-of select="func:datetime(date)"/>
       </em>
     </div>
