@@ -135,7 +135,16 @@
               $results[$idx]= $this->_recurseData($child, TRUE, 'HASHMAP');
               break;
             }
-            $results[$idx]= &new stdClass();
+            
+            $n= 'stdClass';
+            if (isset($child->attribute['xmlns:xp'])) {
+              try(); {
+                $n= ClassLoader::loadClass($child->attribute['xmlns:xp']);
+              } if (catch('Exception', $e)) {
+                $n= 'stdClass';
+              }
+            }
+            $results[$idx]= &new $n();
             foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
               $results[$idx]->$key= $val;
             }
@@ -147,6 +156,7 @@
                 $results[$idx]= $this->_recurseData($child, TRUE, 'STRUCT');
                 break;
               }
+              
               $results[$idx]= &new stdClass();
               foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
                 $results[$idx]->$key= $val;

@@ -135,22 +135,24 @@
           // Class name
           if (method_exists($value, 'getClassName')) {
             $name= $value->getClassName();
+            $namespace= 'xp';
           } else {
             $name= get_class($value);
+            $namespace= 'ns'.$ns;
           }
           
-          $child->attribute['xmlns:ns'.$ns]= $name;
+          $child->attribute['xmlns:'.$namespace]= $name;
         } else if (is_scalar($value)) {
         
           // Skalare Typen
           $type= $child->_typeName($value);
           $content= $child->_contentFormat($value);
-	} else if (NULL === $value) {
-	
-	  // NULL
-	  $type= NULL;
-	  $content= '';
-	  $child->attribute['xsi:nil']= 'true';
+	    } else if (NULL === $value) {
+
+	      // NULL
+	      $type= NULL;
+	      $content= '';
+	      $child->attribute['xsi:nil']= 'true';
 	  
         } else {
         
