@@ -435,6 +435,8 @@
       </xsl:call-template>
       <xsl:text><![CDATA[
      * @throws  xml.soap.SOAPFaultException in case a fault occurs
+     * @throws  io.IOException in case an I/O error occurs
+     * @throws  xml.FormatException in case not-well-formed XML is returned
      */
     function ]]></xsl:text>
       <xsl:call-template name="lcfirst">
