@@ -23,7 +23,8 @@
       $access       = APIDOC_FUNCTION_ACCESS_PUBLIC,
       $model        = APIDOC_FUNCTION_MODEL_GENERIC,
       $throws       = array(),
-      $params       = array();
+      $params       = array(),
+      $annotations  = array();
       
     /**
      * Adds a reference
@@ -135,6 +136,30 @@
       $this->params[]= &$p;
       return $this->params[sizeof($this->params)- 1];
     }
+    
+    /**
+     * Sets the annotation string.
+     *
+     * @access  public
+     * @param   string string
+     */
+    function setAnnotations($string) {
+      $this->annotations= eval('return array('.preg_replace(
+        array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/i', '/@([a-z_]+)\(/i', '/([a-z_]+) *= */i'),
+        array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '\'$1\' => '),
+        trim($string, "[]# \t\n\r").','
+      ).');');
+    }    
+    
+    /**
+     * Retrieve function annotations.
+     *
+     * @access  public
+     * @return  &mixed[] annotations
+     */
+    function getAnnotations() {
+      return $this->annotations;
+    }
 
     /**
      * Handles tags
@@ -198,6 +223,10 @@
             break;
           }
           $descr= &$this->addParam($type, $name, $description);
+          break;
+        
+        case 'annotation':
+          $this->setAnnotations($line);
           break;
       }
       
