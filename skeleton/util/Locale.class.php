@@ -39,41 +39,23 @@
      * @param   string lang 2-letter abbreviation of language
      * @param   string country 2-letter abbreviation of country
      * @param   string variant default ''
-     * @throws  lang.IllegalArgumentException in case the locale is not available
      */
     function __construct() {
       switch (func_num_args()) {
         case 1: 
+          $this->_str= func_get_arg(0);
           sscanf(func_get_arg(0), '%2s_%2s%s', $this->lang, $this->country, $this->variant);
           break;
           
         case 2:
           list($this->lang, $this->country)= func_get_args();
+          $this->_str= $this->lang.'_'.$this->country;
           break;
           
         case 3:
           list($this->lang, $this->country, $this->variant)= func_get_args();
+          $this->_str= $this->lang.'_'.$this->country.'@'.$this->variant;
           break;
-      }
-      
-      // Try to set the locale using different variations. If all fail, 
-      // throw an IllegalArgumentException.
-      $current= setlocale(LC_ALL, NULL);
-      $this->_str= setlocale(LC_ALL, array(
-        $this->lang.'_'.$this->country.$this->variant,
-        $this->lang.'_'.$this->country,
-        $this->lang,
-        $this->lang.'_'.$this->country.'.'.$this->variant,
-        $this->lang.'_'.$this->country.'@'.$this->variant
-      ));
-      setlocale(LC_ALL, $current);
-      if (FALSE === $this->_str) {
-        return throw(new IllegalArgumentException(sprintf(
-          'Locale [lang=%s,country=%s,variant=%s] not available',
-          $this->lang, 
-          $this->country, 
-          ltrim($this->variant, '.@')
-        )));
       }
     }
     
@@ -97,9 +79,17 @@
      * @model   static
      * @access  public
      * @param   &util.Locale locale
+     * @throws  lang.IllegalArgumentException in case the locale is not available
      */
     function setDefault(&$locale) {
-      setlocale(LC_ALL, $locale->toString());
+      if (FALSE === setlocale(LC_ALL, $locale->toString())) {
+        return throw(new IllegalArgumentException(sprintf(
+          'Locale [lang=%s,country=%s,variant=%s] not available',
+          $this->lang, 
+          $this->country, 
+          ltrim($this->variant, '.@')
+        )));
+      }
     }
 
     /**
