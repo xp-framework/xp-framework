@@ -4,9 +4,7 @@
  * $Id$
  */
    
-  uses(
-    'util.text.SyntaxCheck'
-  );
+  uses('text.SyntaxCheck');
   
   /**
    * Regular expression matcher base class, will need to be extended, e.g.:

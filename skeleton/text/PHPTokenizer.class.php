@@ -82,7 +82,7 @@
      * 5th token, counting from 1) as its first parameter, the comment as its second
      * and boolean FALSE as its third parameter
      *
-     * @see     util.text.PHPTokenizer#applyRules
+     * @see     xp://text.PHPTokenizer#applyRules
      * @access  public
      * @param   string name rule name
      * @param   array match list of tokens to match

@@ -11,7 +11,7 @@
    *
    * @purpose  Provide a Format wrapper for binary strings
    * @see      php://addcslashes
-   * @see      xp://util.text.format.IFormat
+   * @see      xp://text.format.IFormat
    */
   class BinaryFormat extends IFormat {
 
@@ -19,7 +19,7 @@
      * Get an instance
      *
      * @access  public
-     * @return  &util.text.format.BinaryFormat
+     * @return  &text.format.BinaryFormat
      */
     function &getInstance() {
       return parent::getInstance('BinaryFormat');

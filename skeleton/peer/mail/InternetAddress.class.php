@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('util.text.encode.QuotedPrintable', 'util.text.encode.Base64');
+  uses('text.encode.QuotedPrintable', 'text.encode.Base64');
  
   /**
    * Internet address

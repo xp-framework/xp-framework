@@ -8,7 +8,7 @@
    * Format base class
    *
    * @purpose  Provide a base class to all format classes
-   * @see      xp://util.text.format.MessageFormat#addFormatter
+   * @see      xp://text.format.MessageFormat#addFormatter
    * @model    static
    */
   class IFormat extends Object {
@@ -49,7 +49,7 @@
      * @throws  IllegalAccessException
      */
     function apply($fmt, &$argument) { 
-      return throw(new IllegalAccessException('Calling apply method of base class util.text.format.Format'));
+      return throw(new IllegalAccessException('Calling apply method of base class text.format.Format'));
     }
     
     /**

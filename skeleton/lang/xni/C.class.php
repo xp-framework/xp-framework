@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.text.PHPTokenizer', 'io.FileUtil', 'io.File');
+  uses('text.PHPTokenizer', 'io.FileUtil', 'io.File');
 
   /**
    * Allow to write PHP-API like C source code into classes

@@ -13,7 +13,7 @@
    * It handles escaping of special characters and thus creates
    * csv-files, that can be used to be exchanged with other OSes
    * 
-   * @see xp://util.text.parser.CSVParser
+   * @see xp://text.parser.CSVParser
    * @purpose Small and simple CSV Generator
    */ 
   class CSVGenerator extends Object {

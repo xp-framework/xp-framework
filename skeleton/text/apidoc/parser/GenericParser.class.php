@@ -7,7 +7,7 @@
   uses(
     'io.File', 
     'util.Properties', 
-    'util.text.PHPTokenizer'
+    'text.PHPTokenizer'
   );
 
   /**

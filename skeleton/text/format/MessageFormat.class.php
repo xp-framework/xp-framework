@@ -5,13 +5,13 @@
  */
 
   uses(
-    'util.text.format.IFormat',
-    'util.text.format.PrintfFormat',
-    'util.text.format.DateFormat',
-    'util.text.format.ChoiceFormat',
-    'util.text.format.NumberFormat',
-    'util.text.format.ArrayFormat',
-    'util.text.format.HashFormat'
+    'text.format.IFormat',
+    'text.format.PrintfFormat',
+    'text.format.DateFormat',
+    'text.format.ChoiceFormat',
+    'text.format.NumberFormat',
+    'text.format.ArrayFormat',
+    'text.format.HashFormat'
   );
   
   /**
@@ -91,13 +91,13 @@
      *
      * @access  publuc
      * @param   string alias
-     * @param   &util.text.format.PrintfFormat formatter
-     * @return  &util.text.format.PrintfFormat formatter
+     * @param   &text.format.PrintfFormat formatter
+     * @return  &text.format.PrintfFormat formatter
      * @throws  IllegalArgumentException 
      */
     function &setFormatter($alias, &$formatter) {
       if (!is_a($formatter, 'IFormat')) {
-        return throw(new IllegalArgumentException('Formatter must be a util.text.format.Format'));
+        return throw(new IllegalArgumentException('Formatter must be a text.format.Format'));
       }
       $this->formatters[$alias]= &$formatter;
       return $this->formatters[$alias];

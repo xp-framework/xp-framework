@@ -12,7 +12,7 @@
     'io.Folder', 
     'lang.apidoc.parser.ClassParser',
     'util.cmd.ParamString',
-    'util.text.PHPSyntaxHighlighter',
+    'text.PHPSyntaxHighlighter',
     'org.cvshome.CVSInterface'
   );
   

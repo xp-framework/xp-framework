@@ -10,7 +10,7 @@
    * Choice formatter
    *
    * @purpose  Provide a Format wrapper for values depending on choices
-   * @see      xp://util.text.format.IFormat
+   * @see      xp://text.format.IFormat
    */
   class ChoiceFormat extends IFormat {
   
@@ -18,7 +18,7 @@
      * Get an instance
      *
      * @access  public
-     * @return  &util.text.format.ChoiceFormat
+     * @return  &text.format.ChoiceFormat
      */
     function &getInstance() {
       return parent::getInstance('ChoiceFormat');
