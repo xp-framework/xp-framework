@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Wed Nov 24 16:08:41 CET 2004
-@status: draft
+@status: implemented 
 @category: rdbms
 
 Scope of Change
@@ -75,5 +75,8 @@ Comments
 - kiesel, Fri Nov 26 15:39:15 CET 2004
   Should the statement be allowed to contain the select-clause? The selected
   columns are already defined through the peer, so this seems unneccessary.
+
+- friebe, Mon Dec 27 12:02:00 CET 2004
+  Initial implementation committed
 
 <EOF>
