@@ -497,6 +497,11 @@ if (FALSE === ($dbh= sybase_connect([...])) throw(new SQLException(
                   Hinweis: Nach einerm Funktionsaufruf und den Klammern kommt kein Leerzeichen. 
                   Das hilft, Keywords und Funktionsaufrufe voneinander zu unterscheiden
                 </li>
+                <li>
+                  Nach den Kommentarzeichen eines einzeiligen (Inline-)Kommentars
+                  <code><![CDATA[  // good
+  //bad]]></code>
+                </li>
                 <li>Nach einem Komma in einer Liste von Argumenten.</li>
                 <li>
                   Eine Array-Key-Value-Zuweisung wird durch ein Leerzeichen vor dem => und 
