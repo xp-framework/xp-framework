@@ -150,12 +150,14 @@
           <li>You can specify the complete class-path and class-name (this is
             known as the fully qualified classname (fqcn)).
           </li>
-          <li>The search takes advantage of the <tt>soundex</tt>-functions in
-            PHP, so you can do prefix-searching (as the function only looks at
-            the first few letters of your input) and even make a mistake
-            entering your search.<br/>
-            E.g. search will find <tt>rdbms.sybase.SPSybase</tt> if you type in
-            <tt>spsübase</tt>.
+          <li>Your search string must be a substring of a class or equal the classes name
+            to get that class included in search results.
+            After direct matching, the search tries to phonetically match classnames and
+            search string.
+          </li>
+          <li>
+            If there is only one result, it will be directly called. If search results in
+            an empty resultset, links to google and the php-manual will be generated.
           </li>
         </ul>
       </xsl:with-param>
