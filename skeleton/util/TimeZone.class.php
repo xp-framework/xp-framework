@@ -81,6 +81,7 @@
         'IDLE'=> '-1200',             // International Date Line West
         
         // Summer time
+        'BST' => '+0100',             // British Summer Time
         'CEST'=> '+0200',             // Central European Summer Time
         'MEST'=> '+0200',             // Middle European Summer Time
         'MESZ'=> '+0200',             // Middle European Summer Time
