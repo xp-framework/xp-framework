@@ -78,7 +78,6 @@
       parent::init();
       $button= &$this->widget('button1');
       $button->connect('clicked', array(&$this, 'done'));
-      $this->window->add($button);
     }
   
   }]]></code>
