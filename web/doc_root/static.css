@@ -83,20 +83,22 @@ ul.context {
 table.footer {
   border-top: 1px solid #a4b6c5;
 }
-table.intro {
-  border: 1px solid #6a8dbd;
-  background-image: url(image/bg_striped.gif);
-}
-ul.intro {
-  font: bold 13px "Arial";
-  list-style-image: url(image/dot.gif);
-  line-height: 18px;
-}
 hr {
   border: 0;
   background-color: #6c599b;
   color: #6c599b;
   height: 1px;
+}
+
+/* Shortcuts */
+table.shortcuts {
+  margin-bottom: 10px;
+}
+table.shortcuts td {
+  padding-left: 8px;
+  padding-right: 24px;
+  font: bold 11px "Tahoma", "Verdana", "Arial", sans-serif;
+  letter-spacing: 1px;
 }
 
 /* Syntax */
