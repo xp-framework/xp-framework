@@ -147,6 +147,17 @@ abgefangene Exceptions nicht zur Beendigung des Programms.
 Gut sichtbar ist in diesem Beispiel auch die einfache Handhabung des 
 File-Objektes.
 
+Beispiel:
+<pre>
+Exception de.schlund.db.togal.TOGALException (statement failed)
+  at TOGALPart.class.php:create (line 71:Undefined property:  subject)
+  at TOGALPart.class.php:create (line 71:Undefined property:  abstract)
+  at SPSybase.class.php:query (line 140:Sybase:  Server message:  part not found. Specify ow                 ner.objectname or use sp_help to check whether the object exists (sp_help may produce lots o                 f output).
+ (severity 16, procedure N/A))
+  at TOGALPart.class.php:create (line 97:Undefined variable:  data)
+  in TOGAL_CTX_GLOBAL
+</pre>
+
 Code:
 -----
 Der Code folgt strikten Richtlinien:
@@ -181,7 +192,7 @@ angeschnitten und in README.DOC ausführlich beschrieben.
 Objekt-Hierarchie:
 ------------------
 Alle Objekte stammen von der Klasse "Object" oder von einer Klasse, die
-diese vererbt, ab. Ausnahme ist natürlich die Klasse "Objekt".
+diese vererbt, ab. Ausnahme ist natürlich die Klasse "Object".
 
 Migration zur Zend Engine 2:
 ----------------------------
