@@ -23,6 +23,19 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
     function process(&$request, &$response) {
+      if (2 != sscanf($request->getData(), '%[^/]/%s', $collection, $package)) {
+        $response->addFormError('illegalaccess');
+        return;
+      }
+      
+      // Add "breadcrumb" navigation to formresult
+      with ($n= &$response->addFormResult(new Node('breadcrumb'))); {
+        $n->addChild(new Node('current', NULL, array(
+          'collection' => $collection,
+          'package'    => $package
+        )));
+        $n->addChild(Node::fromArray(explode('.', $package), 'path'));
+      }
     }
   }
 ?>
