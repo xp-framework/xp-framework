@@ -57,6 +57,22 @@
     }
     
     /**
+     * Clone method
+     *
+     * @access  public
+     */    
+    function __clone() {
+      if (!is_resource($handle= (imageistruecolor($this->handle) 
+        ? imagecreatetruecolor($this->width, $this->height)
+        : imagecreate($this->width, $this->height)
+      ))) {
+        return throw(new ImagingException('Could not clone the image'));
+      }
+      imagecopy($handle, $this->handle, 0, 0, 0, 0, $this->width, $this->height);
+      $this->handle= $handle;
+    }
+    
+    /**
      * Creates a new blank image in memory
      *
      * @model   static
