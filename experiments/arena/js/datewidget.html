@@ -7,17 +7,11 @@
 <html>
   <head>
     <title>Javascript Experiment: Date "widget"</title>
-    <script language="JavaScript">
-      function uses() {
-        for (i= 0; i < arguments.length; i++) {
-          if (typeof this[arguments[i]] == "undefined") {
-            throw new Exception("This class requires "+ arguments[i]);
-          }
-        }
-      }
-    </script>
-    <script language="JavaScript" src="Exception.class.js"></script>
-    <script language="JavaScript" src="DateParser.class.js"></script>
+    <script language="JavaScript" src="skeleton/lang.base.js"></script>
+    <script language="JavaScript" src="skeleton/lang/Exception.class.js"></script>
+    <script language="JavaScript" src="skeleton/text/parser/DateParser.class.js"></script>
+    <script language="JavaScript" src="skeleton/lang/String.adaptor.js"></script>
+    <script language="JavaScript" src="skeleton/util/Date.adaptor.js"></script>
     <script language="JavaScript">
       
       function lzero(number) {
@@ -26,47 +20,6 @@
 
       function debugString(str) {
         document.forms.select.debug.value += str + "\n";
-      }
-      
-      /**
-       * Add 
-       *
-       * @access  public
-       * @param   int years
-       * @param   int months
-       * @param   int days
-       * @return  Date
-       */      
-      Date.prototype.add= function (years, months, days) {
-        d= this;
-        if (years) d.setYear(this.getYear() + years);
-        if (months) d.setMonth(this.getMonth() + months);
-        if (days) d.setDate(this.getDate() + days);
-        return d;
-      }
-      
-      /**
-       * Format a date
-       *
-       * @access  public
-       * @param   string str the format string
-       * @return  string the formatted date
-       * @see     php://strftime
-       */      
-      Date.prototype.format= function (str) {
-        var ret= '';
-        while (-1 != (pos= str.indexOf('%'))) {
-          // debugString('Found token % at position ' + pos + ' of "' + str +'"');
-          ret+= str.substring(0, pos);
-          switch (str.charAt(pos + 1)) {
-            case "d": ret+= lzero(this.getDate()); break;
-            case "m": ret+= lzero(this.getMonth()); break;
-            case "Y": ret+= String(this.getFullYear()); break;
-            // TBI: Rest
-          }
-          str= str.substring(pos + 2, str.length);
-        }
-        return ret + str;
       }
     </script>
   </head>
