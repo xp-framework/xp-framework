@@ -82,9 +82,12 @@
       // Read karma recognition phrases
       $f= &new File($base.$this->config->readString('karma', 'recognition'));
       try(); {
-        if ($f->open(FILE_MODE_READ)) while (($line= $f->readLine()) && !$f->eof()) {
+        if ($f->open(FILE_MODE_READ)) while (!$f->eof()) {
+          $line= $f->readLine();
+          if (empty($line) || strspn($line, ';#')) continue;
+          
           list($pattern, $delta)= explode(':', $line);
-          $this->recognition[$pattern]= $delta;
+          $this->recognition[$pattern]= (int)$delta;
         }
         $f->close();
       } if (catch('IOException', $e)) {
@@ -494,7 +497,7 @@
         // by four because this message is directed at me.
         foreach ($this->recognition as $pattern => $delta) {
           if (!preg_match($pattern, $message)) continue;
-          $this->setKarma($nick, ($delta + 1) * 4, $pattern);
+          $this->setKarma($nick, $delta == 0 ? rand(1, 5) : $delta, $pattern);
         }
         return;
       }
