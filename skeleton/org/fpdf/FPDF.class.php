@@ -62,7 +62,11 @@
   define('FPDF_FILL_TRANSPARENT',   0x0000);
   define('FPDF_FILL_PAINTED',       0x0001);
   
-  uses('org.fpdf.FPDFFont', 'lang.IllegalArgumentException');
+  uses(
+    'org.fpdf.FPDFFont', 
+    'lang.IllegalArgumentException',
+    'lang.MethodNotImplementedException'
+  );
   
   /**
    * PDF creator
@@ -911,7 +915,7 @@
         );
         
         // A link?
-        if ($link) $this->Link(
+        if ($link) $this->putLink(
           $this->x+ $this->cMargin, 
           $this->y+ .5 * $h- .5 * $this->FontSize, 
           $this->getStringWidth($text), 
@@ -1212,7 +1216,7 @@
       if (!$h) $h= round($w * $info['h'] / $info['w'], 2);
 
       $this->_out('q '.$w.' 0 0 '.$h.' '.$x.' -'.($y+ $h).' cm /I'.$info['n'].' Do Q');
-      if ($link) $this->Link($x, $y, $w, $h, $link);
+      if ($link) $this->putLink($x, $y, $w, $h, $link);
     }
 
     /**
@@ -1807,7 +1811,7 @@
       } while ($n);
 
       if ($colspace == 'Indexed' and empty($pal)) {
-        return throw(new Exception('Missing palette in '.$file));
+        return throw(new IllegalArgumentException('Missing palette in '.$file));
       }
       
       fclose($f);
