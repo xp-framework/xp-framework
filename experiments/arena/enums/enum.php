@@ -33,19 +33,20 @@
       if (T_STRING == $tokens[$i][0] && 'enum' == $tokens[$i][1]) {
         $name= $tokens[$i+ 2][1];
         $i+= 2;
-        $e= 'class '.$name.' {'."\n".' var $__values= array(';
+        $e= '  class '.$name.' {'."\n".'    var $__values= array(';
         while ($i < $s && '{' != $tokens[$i]) {
           $line+= substr_count($tokens[$i][1], "\n");
           $i++;
         }
         $i++;
-        while ($i < $s && ';' != $tokens[$i]) {
+        while ($i < $s && '}' != $tokens[$i]) {
           switch ($tokens[$i][0]) {
             case T_WHITESPACE: 
             case ',':
               break;
-              
-            case '}':
+            
+            case ';':
+              $i++;
               break 2;
               
             case T_STRING:
@@ -72,18 +73,16 @@
           $i++;
         }
         $e.= ");\n";
-        $e.= 'function '.$name.'() { $a= func_get_args(); call_user_func_array(array(&$this, \'__construct\'), $a); }';
-        $e.= 'function values() { $v= get_class_vars(\''.$name.'\'); return $v[\'__values\']; }';
-        $i++;
+        $e.= '    function '.$name.'() { $a= func_get_args(); call_user_func_array(array(&$this, \'__construct\'), $a); }'."\n";
+        $e.= '    function values() { $v= get_class_vars(\''.$name.'\'); return $v[\'__values\']; }'."\n";
       }
       
       if (NULL === $name) continue;
       $e.= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i];
     }
     
-    $e= substr($e, 0, strrpos($e, '}')).'} return TRUE;';
-    // DEBUG var_dump($e);
-    return eval($e);
+    if (!eval($e."\nreturn TRUE;")) die($e);
+    return TRUE;
   }
   // }}}
 ?>
