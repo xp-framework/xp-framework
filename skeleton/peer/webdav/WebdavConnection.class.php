@@ -43,7 +43,7 @@
      * @return  &peer.http.HttpResponse response object
      */
     function proppatch($arg= NULL, $headers= array()) {
-      return $this->request(WEBDAV_METHOD_PROPPATCH, $arg, $headers);
+      return $this->request(WEBDAV_METHOD_PROPPATCH, new RequestData($arg), $headers);
     } 
     
     /**
