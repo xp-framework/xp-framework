@@ -15,15 +15,26 @@
    * <code>
    *   $c= &new HttpConnection('http://xp.php3.de/');
    *   try(); {
-   *     if ($response= &$c->get()) while (FALSE !== ($buf= $response->readData())) {
+   *     $response= &$c->get(
+   *       array('a' => 'b'),
+   *       array(
+   *         new Header('X-Binford', '6100 (more power)'),
+   *         new Cookie('test', 'foo'),
+   *         new BasicAuthorization('baz', 'bar')
+   *       )
+   *     );
+   *     while (FALSE !== ($buf= $response->readData())) {
    *       var_dump($buf);
    *       flush();
    *     }
+   *   } if (catch('IOException', $e)) {
+   *     $e->printStackTrace();
+   *     exit();
    *   } if (catch('Exception', $e)) {
    *     $e->printStackTrace();
    *     exit();
    *   }
-   *
+   *   
    *   var_dump($response);
    * </code>
    *
@@ -65,7 +76,7 @@
       try(); {
         $this->response= &new HttpResponse($this->request->send());
       } if (catch('Exception', $e)) {
-        return throw($e);
+        throw($e);
       }
       
       return $this->response;
