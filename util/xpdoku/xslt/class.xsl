@@ -22,8 +22,8 @@
     
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
       <tr>
-      <th valign="top" align="left">API Doc: Class <xsl:value-of select="$classname"/>
-      <a href="../collections/{./@collection}.html"><img src="/image/caret-t.gif" border="0"/></a>
+        <th valign="top" align="left">API Doc: Class <xsl:value-of select="$classname"/>
+        <a href="../collections/{./@collection}.html"><img src="/image/caret-t.gif" border="0"/></a>
       </th>
       <td valign="top" align="right">
         <xsl:if test="string-length (./@version) != 0">
@@ -58,6 +58,10 @@
             <tr>
               <td>Generation time:</td>
               <td><xsl:value-of select="./@generated_at"/></td>
+            </tr>
+            <tr>
+              <td>Class type:</td>
+              <td><xsl:value-of select="./@type"/></td>
             </tr>
             <tr>
               <td>Fully qualified name:</td>
