@@ -261,6 +261,7 @@ Exception info.binford6100.db.Message.MessageException (statement failed)
       </para>              
     </content>
     <references>
+      <ref link="tasks">Common Tasks</ref>
       <ref link="about.doc">Writing XPDoc</ref>
       <ref link="about.future">The future of XP</ref>
       <ref link="about.cvs">CVS guidelines</ref>
