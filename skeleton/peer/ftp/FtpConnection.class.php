@@ -154,9 +154,16 @@
      * @access  public
      * @param   string dir default NULL directory name, defaults to working directory
      * @return  &peer.ftp.FtpDir
+     * @throws  peer.SocketException
      */
     function &getDir($dir= NULL) {
-      return new FtpDir((NULL === $dir ? ftp_pwd($this->_hdl) : $dir), $this->_hdl);
+      if (NULL === $dir) {
+        if (FALSE === ($dir= ftp_pwd($this->_hdl))) {
+          return throw(new SocketException('Cannot retrieve current directory'));
+        }
+      }
+        
+      return new FtpDir($dir, $this->_hdl);
     }
     
     /**
@@ -164,10 +171,14 @@
      *
      * @access  public
      * @param   &peer.ftp.FtpDir f
+     * @throws  peer.SocketException
      * @return  bool success
      */
     function setDir(&$f) {
-      return ftp_chdir($this->_hdl, $f->name);
+      if (FALSE === ftp_chdir($this->_hdl, $f->name)) {
+        return throw(new SocketException('Cannot change directory to '.$f->name));
+      }
+      return TRUE;
     }
 
     /**
