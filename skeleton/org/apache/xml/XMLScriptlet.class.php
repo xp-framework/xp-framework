@@ -135,7 +135,7 @@
       
       // Send redirect
       $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s;%s/%s?__page=%s', 
+        '%s://%s/xml/%s.%s/%s?__page=%s', 
         $uri['scheme'],
         $uri['host'],          
         $product ? $product : 'site',
@@ -168,7 +168,7 @@
       
       // Send redirect
       $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s;%s;psessionid=%s/%s?__page=%s', 
+        '%s://%s/xml/%s.%s.psessionid=%s/%s?__page=%s', 
         $uri['scheme'],
         $uri['host'],          
         $product ? $product : 'site',
