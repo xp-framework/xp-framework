@@ -1,0 +1,383 @@
+RFC 0008: Extensions to PHP5 core
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Mar 14 16:30:51 CET 2004
+@status: draft
+@category: language
+
+Scope of Change
+---------------
+The PHP5 core would be changed in numerous ways. This would include new
+syntax, less restrictions and more features, realized via patches to the
+Engine and other sourcecode.
+
+Rationale
+---------
+PHP5 has decent OO support but is somewhat restricive in some areas and
+misses some nice features. The PHP development team has strong feelings 
+on some of the suggested changes (partially due to BC reasons, partially
+due to personal views on what is "right" and what is "wrong", partially
+because the "PHP is not Java / C# / Perl / Delphi / ..." syndrome or 
+"because this makes PHP too complex"), thus preventing them from being 
+realized.
+
+Functionality
+-------------
+The following changes would be incorporated into the new Engine:
+
+a) Syntax changes and additions
+* Alternative array syntax
+* A keyword "with"
+* An optional throws clause to methods
+* A catch-all-exceptions mechanism
+* Packages support
+* A package access level
+* Enumerations
+* Annotations support
+* Finally
+* Hints for primitives
+* Keywords would be allowed as class and method names where possible
+* Automated getters and setters
+* Default members
+* A keyword "synchronized"
+* A new type "callable" (instead of array(class_or_object, method))
+
+b) New features
+* "self" would be evaluated at runtime
+* Class static initializer
+
+c) Removed restrictions
+* No implementation check during inheritance
+* Userland exceptions would no longer be forced to extend from the
+  built-in exceptions
+* An interface would be added to identify an exception. Userland
+  classes would have to implement it
+  
+d) Namespaces for built-in classes
+* The built-in exception class would be moved to a dedicated namespace
+* spl and iterators api would be moved to a dedicated namespace (they
+  take up some really good names)
+* The directory class would be moved to a dedicated namespace
+
+e) Removed cruft
+* Magic quotes would completely disappear
+* register_globals would be nuked
+* Compat mode with Zend Engine 1
+* The # sign is no longer allowed for comments
+
+f) Changes in errorhandling
+* NULL->method() would result in a NullPointer instead of Fatal errors
+* Passing an incorrect argument to a type-hinted parameter would result
+  in an IllegalArgument
+
+g) Configuration
+* Safe mode (and alike) would be replaced by a permission manager
+
+Details
+-------
+* Alternative array syntax:
+  The identifier "array" would be replaced by square brackets in the
+  following manner:
+  <?php
+    $a= [ 1, 2, 3 ];
+    $a= [ 'a' => 'b' ];
+  ?>
+  
+* The keyword "with":
+  with introduces a block of code which is auto-populated by a variable
+  named "self".
+  <?php
+    with ($tree->addNode(new Node('child'))) {
+      $self->setAttribute('id', 10);
+      $self->setAttribute('name', $name);
+    }
+  ?>
+
+* An optional throws clause to methods:
+  As in Java, one may add a throws clause to methods that indicates 
+  which exceptions are thrown from it.
+  <?php
+    public function connect() throws IOException, ConnectException {
+      // ...
+    }
+  ?>
+  This clause is, of course, optional and no checks are inferred from
+  it (e.g., the caller of this method is not required to catch these
+  exceptions). The reflection API provides a way to retrieve these
+  exceptions.
+  
+* A catch-all-exceptions mechanism:
+  Catch-all is realized by ommitting the exception type from the 
+  catch clause. 
+  <?php
+    try {
+      // ...
+    } catch ($e) {
+      // ...
+    }
+  ?>
+  
+  This is identical to writing "catch (php~Throwable $e)" (see also:
+  add an interface instead of built-in exception and packages support).
+  
+* Packages support
+  A new keyword "package" begins a block of code that puts every 
+  contained class, interface, enumeration (see below) or function into 
+  it.
+  <?php
+    package lang {
+      class String { }
+      function typeOf() { }
+    }
+  ?>
+  The package-class-separator is the tilde character (~). Thus, the
+  String class can be addressed by its fully qualified name, 
+  "lang~String", and to call the typeOf function, one must use
+  "lang~typeOf()" (the fully qualified name is the only way to 
+  address packaged elements in a generic way).
+  
+  An additional function called "import" creates short aliases for 
+  these long names and may be used with wildcards.
+  <?php
+    import lang~String, lang~typeOf, io~*;
+  ?>
+  Name clashes cause a Fatal Error.
+
+* A package access level:
+  The package keyword may also be prefixed to a method to declare its
+  access level package-wide (in addition to public, private and 
+  protected).
+  <?php
+    package io {
+      class File {
+        package function handle() { }
+      }
+    }
+  ?>
+
+* Enumerations:
+  A new keyword "enum" is introduced.
+  <?php
+    enum Suit { CLUBS, DIAMONDS, HEARTS, SPADES }
+  ?>
+
+  Enumerations have a static function "values()" that returns the
+  values as an array.
+  <?php
+    foreach (Suit::values() as $value) { }
+  ?>
+
+  The sizeof() function applied to an enumeration returns the numbers 
+  of elements in an enumeration (for the above example, 4).
+  
+* Annotations support:
+  Annotations (metadata) may be embedded within the sourcecode using
+  the # sign to prefix them (see also: Removing # as legal comment).
+  <?php
+    class SoapClient {
+      #debug public function setTrace(LogCategory $log) {
+      }
+
+      #remote public function invoke($params) throws InvokationException {
+      }
+    }
+  ?>
+  
+  The Reflection API offers a way to retrieve these annotations.
+  
+* Finally:
+  A new keyword finally is introduced which is called regardless of 
+  whether an exceptions is raised or not.
+  <?php
+    try {
+      // ...
+    } catch (IOException $e) {
+      // ...
+    } finally {
+      $file->close();
+    }
+  ?>
+
+* Hints for primitives
+  Primitive types (string, float, integer, bool, NULL, resource, array)
+  may also be type-hinted:
+  <?php
+    function add(int $i) { }
+  ?>
+  Failure to pass in the correct type would result in an IllegalArgument
+  exception being thrown (see also: Error handling changes).
+
+* Keywords would be allowed as class and method names where possible
+  The keywords class, array, list and so on would be allowed as class
+  an method names (where unambiguous):
+  <?php
+    class List { }
+  ?>
+  
+* Automated getters and setters:
+  A new form of declaring getters and setters for variables would be
+  introduced:
+  <?php
+    class String {
+      public $buffer get $buffer set setBuffer;
+    }
+
+    $s= new String();
+    $s->buffer= 'Hello';   // calls setBuffer() with 'Hello' as argument
+    var_dump($s->buffer);  // reads member "buffer"
+  ?>
+
+* Default members:
+  A member of a class may be declared as the default member and would
+  allow for some sort of "operator" overloading:
+  <?php
+    class List {
+      public default $items;
+    }
+    
+    $list= new List();
+    $list[]= 'a';       // Appends 'a' to the member "items"
+  ?>
+
+* A keyword "synchronized":
+  The keyword "synchronized" would protect a block from being executed
+  more than once from simultaneously running threads or even instances.
+  <?php
+    synchronized {
+      // ...  
+    }
+  ?>
+  
+  The synchronized directive takes an optional model as argument (compare
+  to "declare(ticks=1)"). Using the model "flock", one could prevent, for
+  example, a cron job from running twice at the same time.
+  <?php
+    synchronized(model=flock) {
+      // ...  
+    }
+  ?>
+  
+  When a synchronized block is hit and another instance tries to execute
+  the same code, it would have to wait for the first instance to finish
+  before being able to continue.
+
+* A new type "callable" (instead of array(class_or_object, method))
+  To ease readability, a new callable type would be introduced.
+  <?php
+    set_error_handler(<xp::error>);
+    set_error_handler(<$xp::error>);
+  ?>
+
+* "self" would be evaluated at runtime:
+  This would make the following possible:
+  <?php
+    class A { 
+      protected static $instance;
+
+      public static function instance() { 
+        return self::$instance; 
+      }
+      
+      __static {
+        self::$instance= new self();
+      }
+    }
+    
+    class B extends A { }
+    
+    var_dump(B::instance()); // object(b)
+  ?>
+
+* Class static initializer
+  Class contained in the static initializer block of a class would lead 
+  to execution of this code at the time the class was first loaded.
+  <?php
+    class Console {
+      public static $err = NULL;
+      
+      __static {
+        self::$err= new OutputStream(STDERR);
+      }
+    }
+  ?>
+  
+* No implementation check during inheritance
+  The following would not be checked upon (not even in strict mode):
+  <?php
+    class Window {
+      function show(Point $point) { }
+    }
+    
+    class MyWindow extends Window {
+      function show() { 
+        parent::show(new Point(100, 200));
+      }
+    }
+  ?>
+  Currently, this would give an E_STRICT warning
+  
+* Userland exceptions would no longer be forced to extend from the
+  built-in exceptions
+  The built-in exception class would be moved to a dedicated 
+  namespace and could be used it this was wanted (see below).
+  
+* An interface would be added to identify an exception. Userland
+  classes would have to implement it
+  Userland exceptions would, though, have to implement the 
+  php~Throwable interface.
+  
+* Namespaces for built-in classes
+  All built-in classes would be moved to a package called "php"
+  so no naming clashes with userland classes exist. They may be
+  imported via "import php~*" to regain the old behaviour.
+
+* Magic quotes would completely disappear
+  Magic quotes are a big nuisance and don't protect you from 
+  anything. The magic quotes on request variables as well as the
+  magic quotes that are applied at runtime would no longer exist.
+
+* register_globals would be nuked
+  The only way to access HTTP request data is via the $_*-
+  superglobals or via the php://input stream.
+  
+* Compat mode with Zend Engine 1
+  The compatibility mode is kept for backwards compatibility und
+  would be removed. It's not like this new engine would be compatible
+  with PHP4 anyway.
+  
+* The # sign is no longer allowed for comments
+  The # sign is used for sourcecode annotations and therefore must
+  not be allowed for one-line comments (sorry, bash and perl dudes)
+  
+* NULL->method() would result in a NullPointer instead of Fatal errors
+  Calling a member function of a non-object can be safely caught and would
+  therefore cause a php~NullPointerException to be raised instead of a 
+  fatal error
+
+* Passing an incorrect argument to a type-hinted parameter would result
+  in an IllegalArgument
+  <?php
+    function add(int $a, int $b) { }
+    
+    add(1, '2');    // php~IllegalArgumentException is thrown.
+  ?>
+
+* Safe mode (and alike) would be replaced by a permission manager
+  The permission manager would offer a much more open API for systems
+  administrators to control exactly what a user is able to do and
+  what not.
+  
+Dependencies
+------------
+PHP5
+
+Related documents
+-----------------
+n/a
+
+Comments
+--------
+
+<EOF>
