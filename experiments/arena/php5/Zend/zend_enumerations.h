@@ -18,8 +18,8 @@
 
 /* $Id$ */
 
-#ifndef ZEND_EXCEPTIONS_H
-#define ZEND_EXCEPTIONS_H
+#ifndef ZEND_ENUMERATIONS_H
+#define ZEND_ENUMERATIONS_H
 
 BEGIN_EXTERN_C()
 
