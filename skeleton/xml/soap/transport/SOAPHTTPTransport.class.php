@@ -143,7 +143,7 @@
       try(); {
         $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
         $res= &$this->_conn->request->send($this->_conn->getTimeout());
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
       
@@ -165,7 +165,7 @@
       
       try(); {
         $code= $response->getStatusCode();
-      } if (catch ('SocketException', $e)) {
+      } if (catch('SocketException', $e)) {
         return throw($e);
       }
       

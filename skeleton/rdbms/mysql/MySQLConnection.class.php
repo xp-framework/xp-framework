@@ -253,7 +253,7 @@
         try(); {
           $c= $this->connect();
         }
-        if (catch ('SQLException', $e)) {
+        if (catch('SQLException', $e)) {
           return throw ($e);
         }
         
@@ -286,6 +286,41 @@
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
       return $resultset;
+    }
+
+    /**
+     * Begin a transaction
+     *
+     * @access  public
+     * @param   &rdbms.Transaction transaction
+     * @return  &rdbms.Transaction
+     */
+    function &begin(&$transaction) {
+      if (!$this->query('begin')) return FALSE;
+      $transaction->db= &$this;
+      return $transaction;
+    }
+    
+    /**
+     * Rollback a transaction
+     *
+     * @access  public
+     * @param   string name
+     * @return  bool success
+     */
+    function rollback($name) { 
+      return $this->query('rollback');
+    }
+    
+    /**
+     * Commit a transaction
+     *
+     * @access  public
+     * @param   string name
+     * @return  bool success
+     */
+    function commit($name) { 
+      return $this->query('commit');
     }
   }
 ?>

@@ -58,7 +58,7 @@
           ($sim ? '-nq' : ''),
           ($recursive ? '' : '-l')
         ));
-      } if (catch ('CVSInterfaceException', $e)) {
+      } if (catch('CVSInterfaceException', $e)) {
         return throw ($e);
       }
       

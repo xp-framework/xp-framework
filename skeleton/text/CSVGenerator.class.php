@@ -51,7 +51,7 @@
       try(); {
         if (!$stream->isOpen()) $stream->open (STREAM_MODE_WRITE);
         $this->stream= &$stream;
-      } if (catch ('Exception', $e)) {
+      } if (catch('Exception', $e)) {
         return throw ($e);
       }
       return true;

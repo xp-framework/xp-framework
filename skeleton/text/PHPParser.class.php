@@ -65,7 +65,7 @@
     function parse() {
       try(); {
         $php= FileUtil::getContents (new File ($this->filename));
-      } if (catch ('Exception', $e)) {
+      } if (catch('Exception', $e)) {
         return throw ($e);
       }
       

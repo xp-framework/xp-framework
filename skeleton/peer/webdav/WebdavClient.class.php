@@ -30,7 +30,7 @@
    *     while ($r= $response->readData()) {
    *       Console::write($r);
    *     }
-   *   } if (catch ('Exception', $e)) {
+   *   } if (catch('Exception', $e)) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }

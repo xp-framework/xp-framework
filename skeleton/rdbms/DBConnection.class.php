@@ -56,7 +56,7 @@
         try(); {
           $class= &XPClass::forName($observer);
           $inst= &call_user_func(array(xp::reflect($class->getName()), 'instanceFor'), $obs[$observer]);
-        } if (catch ('ClassNotFoundException', $e)) {
+        } if (catch('ClassNotFoundException', $e)) {
           return throw ($e);
         }
 

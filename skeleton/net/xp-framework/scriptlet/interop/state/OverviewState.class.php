@@ -38,7 +38,7 @@
           $response->addFormError($this->getClassName(), 'not-available', 'servicetests');
           return;
         }
-      } if (catch ('XMLFormatException', $e)) {
+      } if (catch('XMLFormatException', $e)) {
         $response->addFormError($this->getClassName(),'not-well-formed', 'servicetests');
         return;
       }

@@ -35,10 +35,10 @@
    *     $search->setExecutable('/usr/local/bin/htdig');
    *     $search->setWords(array('foo', '-bar'));
    *     $resultset= &$search->invoke();
-   *   } if (catch ('IOException', $e)) {
+   *   } if (catch('IOException', $e)) {
    *     $e->printStackTrace();
    *     exit(1);
-   *   } if (catch ('IllegalArgumentException', $e)) {
+   *   } if (catch('IllegalArgumentException', $e)) {
    *     $e->printStackTrace();
    *     exit(1);
    *   }
@@ -369,7 +369,7 @@
         // Read standard output
         $output= array();
         while (!$p->out->eof()) { $output[]= $p->out->readLine(); }
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
       
@@ -411,7 +411,7 @@
           }
           next ($output);
         }
-      } if (catch ('IllegalArgumentException', $e)) {
+      } if (catch('IllegalArgumentException', $e)) {
         return throw ($e);
       }
 

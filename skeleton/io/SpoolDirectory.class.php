@@ -52,7 +52,7 @@
         if (!$this->_hTodo->exists())   $this->_hTodo->create ();
         if (!$this->_hDone->exists())   $this->_hDone->create ();
         if (!$this->_hError->exists())  $this->_hError->create ();                  
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
       
@@ -79,7 +79,7 @@
       try(); {
         $f= &new File ($this->_hNew->getURI().DIRECTORY_SEPARATOR.$abstract.'.spool');
         $f->open (FILE_MODE_WRITE);
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
       
@@ -98,7 +98,7 @@
       try(); {
         $f->close();
         $f->move ($this->_hTodo->getURI().DIRECTORY_SEPARATOR.$f->getFileName());
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
       
@@ -118,7 +118,7 @@
           $f= &new File ($this->_hTodo->getURI().DIRECTORY_SEPARATOR.$entry);
           $f->open (FILE_MODE_READWRITE);
         }
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
       
@@ -137,7 +137,7 @@
       try(); {
         $f->close();
         $f->move ($this->_hDone->getURI().DIRECTORY_SEPARATOR.$f->getFileName());
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
       
@@ -156,7 +156,7 @@
       try(); {
         $f->close();
         $f->move ($this->_hError->getURI().DIRECTORY_SEPARATOR.$f->getFileName());
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
       

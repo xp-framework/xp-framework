@@ -127,7 +127,7 @@
       try(); {
         $this->cat && $this->cat->debug('>>>', $c->request->getRequestString());
         $response= &$c->request->send();
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
 

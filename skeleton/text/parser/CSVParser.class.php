@@ -60,7 +60,7 @@
     function setInputStream(&$stream) {
       try(); {
         if (!$stream->isOpen ()) $stream->open ();
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
       $this->stream= &$stream;
@@ -159,7 +159,7 @@
           $row.= "\n".$this->stream->readLine();
       
         $this->buffer= $row;
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
       
@@ -257,7 +257,7 @@
     function getNextRecord() {
       try(); {
         $this->_getNextRecord();
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
 

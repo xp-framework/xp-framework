@@ -51,7 +51,7 @@
         }
         
         $contents= &new CData(FileUtil::getContents($f));
-      } if (catch ('XMLFormatException', $e)) {
+      } if (catch('XMLFormatException', $e)) {
         $response->addFormError($this->getClassName(),'not-well-formed', 'details');
         return;
       }

@@ -99,7 +99,7 @@
     function &getStatus() {
       try(); {
         $output= $this->_execute ('status -v');
-      } if (catch ('CVSInterfaceException', $e)) {
+      } if (catch('CVSInterfaceException', $e)) {
         return throw($e);
       }
       
@@ -163,7 +163,7 @@
         $f->open (FILE_MODE_WRITE);
         $f->writeLine ($comment);
         $f->close();
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw($e);
       }
 
@@ -186,7 +186,7 @@
       $f= &new File ($this->filename);
       try(); {
         $f->move ($this->filename.'.cvsremove');
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw($e);
       }
       

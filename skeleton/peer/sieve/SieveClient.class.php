@@ -172,7 +172,7 @@
       do {
         try(); {
           $line= $this->_sock->readLine();
-        } if (catch ('IOException', $e)) {
+        } if (catch('IOException', $e)) {
           return throw ($e);
         }
         

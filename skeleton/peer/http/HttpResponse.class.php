@@ -41,7 +41,7 @@
     function _readstatus() {
       try(); {
         $str= $this->stream->read();
-      } if (catch ('SocketException', $e)) {
+      } if (catch('SocketException', $e)) {
         return throw($e);
       }
       

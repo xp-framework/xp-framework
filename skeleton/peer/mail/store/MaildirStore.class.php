@@ -51,7 +51,7 @@
       try(); {
         $this->_folder= &new Folder ($folder);
         $this->_folder->open();
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         $this->_folder= NULL;
         return $e;
       }
@@ -155,7 +155,7 @@
       try(); {
         $nf= &new Folder ($this->_root.DIRECTORY_SEPARATOR.$f->name);
         $nf->open();
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
       
@@ -208,7 +208,7 @@
           if ($attr & $this->_getMailFlags ($e)) $cnt++;
         }
         $f->close();
-      } if (catch ('Exception', $e)) {
+      } if (catch('Exception', $e)) {
         return throw ($e);
       }
       
@@ -276,7 +276,7 @@
         $f->open ();
         $d= $f->read ($f->size());
         $f->close();
-      } if (catch ('IOException', $e)) {
+      } if (catch('IOException', $e)) {
         return throw ($e);
       }
     
@@ -322,7 +322,7 @@
         
         try(); {
           $msg= &$this->_readMessageRaw($filename);
-        } if (catch ('IOException', $e)) {
+        } if (catch('IOException', $e)) {
         
           // Ignore any errors
           continue;

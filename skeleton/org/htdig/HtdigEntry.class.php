@@ -212,7 +212,7 @@
       
       try(); {
         $d= &DateParser::parse(urldecode($modified));
-      } if (catch ('FormatException', $e)) {
+      } if (catch('FormatException', $e)) {
       
         // Date could not be parsed, so default to now.
         $this->modified= &Date::now();

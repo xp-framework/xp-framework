@@ -77,7 +77,7 @@
               $date= &$lc->convertDate(new Date($stamp), $tz);
               $stamp= $date->getTime();
             }
-          } if (catch ('IllegalArgumentException', $e)) {
+          } if (catch('IllegalArgumentException', $e)) {
           
             // Ignore, do not modify timestamp...
           }

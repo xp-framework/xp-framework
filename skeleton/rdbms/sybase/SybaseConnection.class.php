@@ -270,7 +270,7 @@
         if (!($this->flags & DB_AUTOCONNECT)) return throw(new SQLStateException('Not connected'));
         try(); {
           $c= $this->connect();
-        } if (catch ('SQLException', $e)) {
+        } if (catch('SQLException', $e)) {
           return throw ($e);
         }
         

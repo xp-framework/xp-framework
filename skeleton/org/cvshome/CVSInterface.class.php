@@ -50,7 +50,7 @@
       
       try(); {
         $output= System::exec ($cmdLine, '2>&1', FALSE);
-      } if (catch ('SystemException', $e)) {
+      } if (catch('SystemException', $e)) {
       
         // Only return error if command was not "diff"
         if ('diff' != substr ($cvsCmd, 0, 4))
