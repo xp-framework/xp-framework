@@ -10,11 +10,11 @@
   );
 
   /**
-   * Handles /xml/news
+   * Handles /xml/news/view
    *
    * @purpose  State
    */
-  class NewsviewState extends AbstractState {
+  class ViewNewsState extends AbstractState {
 
     /**
      * Process this state.
