@@ -62,6 +62,7 @@
    * appenders="util.log.FileAppender"
    * appender.util.log.FileAppender.params="filename"
    * appender.util.log.FileAppender.param.filename="/var/log/xp/service_%Y-%m-%d.log"
+   * appender.util.log.FileAppender.flags="LOGGER_FLAG_ERROR|LOGGER_FLAG_WARN"
    * 
    * [info.binford6100.webservices.EventHandler]
    * appenders="util.log.FileAppender"
