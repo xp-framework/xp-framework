@@ -17,13 +17,13 @@
       $offset   = 0;
       
     /**
-     * (Insert method's description here)
+     * Called to initialize this stateflow manager
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &org.apache.HttpSession session
+     * @param   &lang.ClassLoader classloader
      */
-    function initialize(&$classloader) {
+    function initialize(&$session, &$classloader) {
       $this->classloader= &$classloader;
       $this->offset= 0;
     }

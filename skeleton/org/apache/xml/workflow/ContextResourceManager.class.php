@@ -19,8 +19,10 @@
      * Called to initialize this resource manager
      *
      * @access  public
+     * @param   &org.apache.HttpSession session
+     * @param   &lang.ClassLoader classloader
      */
-    function initialize() {
+    function initialize(&$session, &$classloader) {
     }
     
     /**

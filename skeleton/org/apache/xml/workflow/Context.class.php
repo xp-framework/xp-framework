@@ -30,13 +30,14 @@
      * Called to initialize this application context
      *
      * @access  public
+     * @param   &org.apache.HttpSession session
      * @param   &lang.ClassLoader classloader
      */
-    function initialize(&$classloader) {
+    function initialize(&$session, &$classloader) {
       $this->crm= &new ContextResourceManager();
-      $this->crm->initialize();
+      $this->crm->initialize($session, $classloader);
       $this->sfm= &new StateFlowManager();
-      $this->sfm->initialize($classloader);
+      $this->sfm->initialize($session, $classloader);
     }
     
     /**
