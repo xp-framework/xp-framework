@@ -13,8 +13,6 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
 
   - Interface to DomXML, generalize via xml.dom and xml.sax
   
-  - Interface to DomXSL / EXSL
-  
   - Java Interface via ext/java (Prerequisite: Compile PHP
     --with-java successfully)
     
@@ -23,6 +21,8 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
   - img.graph additions to draw real statistical data
   
   - Generic ACL class
+  
+  - UDDI (http://uddi.org/)
   
 * Experimental:
 
@@ -68,8 +68,6 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
 
 4) PHP5 / ZE2 / The future
 ==========================
-
-* Finish reflection API (TBD: Modifiers, Function Arguments)
 
 * Migrate examples contained in API doc
 
