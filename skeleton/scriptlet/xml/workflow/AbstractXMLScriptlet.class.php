@@ -159,23 +159,21 @@
     }
 
     /**
-     * Receives an HTTP GET request from the <pre>process()</pre> method
-     * and handles it.
+     * Process request
      *
-     * @access  protected
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @access  protected
+     * @param   &scriptlet.xml.XMLScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
-     * @return  bool processed
-     * @throws  lang.Exception to indicate failure
      */
-    function doGet(&$request, &$response) {
+    function processRequest(&$request, &$response) {
       if (FALSE === $this->processWorkflow($request, $response)) {
       
         // The processWorkflow() method indicates no further processing
         // is to be done. Pass result "up".
         return FALSE;
       }
-      return parent::doGet($request, $response);
+
+      return parent::processRequest($request, $response);
     }
   }
 ?>
