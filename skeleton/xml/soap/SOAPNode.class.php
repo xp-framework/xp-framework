@@ -118,7 +118,15 @@
           $content= get_object_vars($value);
           $ns++;
           $type= 'ns'.$ns.':struct';
-          $child->attribute['xmlns:ns'.$ns]= get_class($value);
+          
+          // Class name
+          if (method_exists($value, 'getName')) {
+            $name= $value->getName();
+          } else {
+            $name= get_class($value);
+          }
+          
+          $child->attribute['xmlns:ns'.$ns]= $name;
         } else if (is_scalar($value) || NULL === $value) {
         
           // Skalare Typen
