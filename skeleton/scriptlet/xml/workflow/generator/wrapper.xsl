@@ -82,6 +82,32 @@
   </xsl:template> 
 
   <!--
+   ! Template for creating API doc comments
+   !
+   ! @type   named
+   ! @param  string comment
+   ! @param  string indent default '  '
+   !-->
+  <xsl:template name="comment">
+    <xsl:param name="content"/>
+    <xsl:param name="indent" select="'  '"/>
+ 
+    <xsl:value-of select="concat($indent, ' * ')"/>
+    <xsl:variable name="remaining" select="substring-after($content, '&#xA;')"/>
+    <xsl:value-of select="concat(normalize-space(
+      substring($content, 
+      1, 
+      string-length($content) - string-length($remaining))
+    ), '&#10;')"/>
+    <xsl:if test="$remaining != ''">  
+      <xsl:call-template name="comment">
+        <xsl:with-param name="content" select="$remaining"/>
+        <xsl:with-param name="indent" select="$indent"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+
+  <!--
    ! Template for root node
    !
    !-->
@@ -119,8 +145,11 @@
     <xsl:call-template name="classname">
       <xsl:with-param name="string" select="/interface/handler/@class"/>
     </xsl:call-template>
-    <xsl:text><![CDATA[
-   *
+    <xsl:text>&#10;</xsl:text>
+    <xsl:call-template name="comment">
+      <xsl:with-param name="content" select="/interface/comment()"/>
+    </xsl:call-template>
+    <xsl:text><![CDATA[   * 
    * @see      xp://]]></xsl:text><xsl:value-of select="/interface/handler/@class"/><xsl:text><![CDATA[
    * @purpose  Wrapper
    */
