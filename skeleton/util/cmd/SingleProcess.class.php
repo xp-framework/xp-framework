@@ -15,7 +15,7 @@
    *   $sp= &new SingleProcess();
    *   try(); {
    *     $sp->lock();
-   *   } if (catch('Exception', $e)) {
+   *   } if (catch('IllegalStateException', $e)) {
    *     $e->printStackTrace();
    *     exit();
    *   }
@@ -24,7 +24,7 @@
    *
    *   try(); {
    *     $sp->unlock();
-   *   } if (catch('Exception', $e)) {
+   *   } if (catch('IllegalStateException', $e)) {
    *     $e->printStackTrace();
    *     exit();
    *   }
