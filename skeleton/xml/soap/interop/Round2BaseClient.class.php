@@ -54,7 +54,10 @@
         $this->_iotrace->info('Method', $method, 'returned', $result);
       }
       
-      return ($result === $argument);
+      return (is_a($argument, 'Parameter')
+        ? $result === $argument->value
+        : $result === $argument
+      );
     }
   
     /**
@@ -64,7 +67,7 @@
      * @return  boolean match
      */
     function echoString() {
-      return $this->identity('echoString', 'Hello World!');
+      return $this->identity('echoString', new Parameter('inputString', 'Hello World!'));
     }
     
     /**
@@ -76,18 +79,8 @@
     function echoStringArray() {
       return $this->identity(
         'echoStringArray',
-        array('Hello Earth!', 'Hello Mars!')
+        new Parameter('inputStringArray', array('Hello Earth!', 'Hello Mars!'))
       );
-    }
-    
-    /**
-     * echoIntegerArray
-     *
-     * @access  public
-     * @return  boolean match
-     */
-    function echoInteger() {
-      return $this->identity('echoInteger', 42);
     }
     
     /**
@@ -96,8 +89,18 @@
      * @access  public
      * @return  boolean match
      */
+    function echoInteger() {
+      return $this->identity('echoInteger', new Parameter('inputInteger', 42));
+    }
+    
+    /**
+     * echoIntegerArray
+     *
+     * @access  public
+     * @return  boolean match
+     */
     function echoIntegerArray() {
-      return $this->identity('echoIntegerArray', array(42, 23));
+      return $this->identity('echoIntegerArray', new Parameter('inputIntegerArray', array(42, 23)));
     }
 
     /**
@@ -107,7 +110,7 @@
      * @return  boolean match
      */
     function echoFloat() {
-      return $this->identity('echoFloat', 0.5);
+      return $this->identity('echoFloat', new Parameter('inputFloat', 0.5));
     }
     
     /**
@@ -117,7 +120,7 @@
      * @return  boolean match
      */
     function echoFloatArray() {
-      return $this->identity('echoFloatArray', array(0.5, 1.5, 45789234.45));
+      return $this->identity('echoFloatArray', new Parameter('inputFloatArray', array(0.5, 1.5, 45789234.45)));
     }
     
     /**
@@ -128,10 +131,11 @@
      */
     function echoStruct() {
       return $this->identity(
-        'echoStruct', array(
+        'echoStruct', new Parameter('inputStruct', array(
           'varString' => 'myString',
           'varInt'    => 23,
           'varFloat'  => 25.776
+        )
       ));
     }
 
@@ -147,7 +151,7 @@
         'varInt'    => 23,
         'varFloat'  => 25.776
       );
-      return $this->identity('echoStructArray', array($s, $s));
+      return $this->identity('echoStructArray', new Parameter('inputStructArray', array($s, $s)));
     }
     
     /**
@@ -157,7 +161,7 @@
      * @return  boolean match
      */
     function echoVoid() {
-      return $this->identity('echoVoid', NULL);
+      return $this->identity('echoVoid', new Parameter('inputVoid', NULL));
     }
   }
 ?>
