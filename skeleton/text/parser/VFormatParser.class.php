@@ -145,26 +145,24 @@
       
       // Property params
       if (FALSE !== ($i= strpos($key, ';'))) {
-        $kargs= explode(';', strtoupper($key));
-        $key= substr($key, 0, $i);
+        $kargs= explode(';', strtolower($key));
       } else {
-        $kargs= array(strtoupper($key));
+        $kargs= array(strtolower($key));
       }
       
       // Charsets and encodings
-      for ($i= 0, $m= sizeof($kargs); $i< $m; $i++) switch ($kargs[$i]) {
-        case 'CHARSET=UTF-8': 
+      for ($i= 0, $m= sizeof($kargs); $i < $m; $i++) switch ($kargs[$i]) {
+        case 'charset=utf-8': 
           $value= utf8_decode($value); 
           break;
-
-        case 'QUOTED-PRINTABLE':
-          if ('=' == $value{strlen($value)- 1}) {
-            $line= substr($line, 0, -1);
-            return TRUE;
-          }
-          $value= quoted_printable_decode($value);
+          
+        case 'encoding=base64':
+          $value= base64_decode($value); 
           break;
 
+        case 'encoding=quoted-printable':
+          $value= str_replace("\n=", "\n", quoted_printable_decode($value));
+          break;
       }
       
       // Call handler
