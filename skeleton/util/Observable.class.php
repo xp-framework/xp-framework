@@ -8,7 +8,23 @@
    * Observable - base class for Model/View/Controller architecture.
    *
    * A basic implementation might look like this:
+   *
+   * TextObserver class:
    * <code>
+   *   class TextObserver extends Object {
+   *
+   *     function update(&$obs, $arg= NULL) {
+   *       echo __CLASS__, ' was notified of update in value, is now ';
+   *       var_dump($obs->getValue());
+   *     }
+   *
+   *   } implements(__FILE__, 'util.Observer');
+   * </code>
+   *
+   * ObservableValue class:
+   * <code>
+   *   uses('util.Observable');
+   *
    *   class ObservableValue extends Observable {
    *     var
    *       $n    = 0;
@@ -27,14 +43,12 @@
    *       return $this->n;
    *     }
    *   }
+   * </code>
    *
-   *   class TextObserver extends Object {
-   *     function update(&$obs, $arg= NULL) {
-   *       echo __CLASS__, ' was notified of update in value, is now ';
-   *       var_dump($obs->getValue());
-   *     }
-   *   }
-   * 
+   * Main program:
+   * <code>
+   *   uses('de.thekid.util.TextObserver', 'de.thekid.util.ObservableValue');
+   *
    *   $value= &new ObservableValue(3);
    *   $value->addObserver(new TextObserver());
    *   $value->setValue(5);
