@@ -63,7 +63,7 @@ ifeq ($(from),)
 	@echo "*** Please specify from what host to retrieve CVS history file"
 else
 	ssh $(from) cat $(CVSROOT)/CVSROOT/history | $(PHP) util/history.php php://stdin > src/cvs_history.xml
-	-cvs diff -u src/cvs_history.xml
+	-(cvs diff -u src/cvs_history.xml || true)
 	#cvs com -m '- Auto-updated from CVS history file' src/cvs_history.xml
 endif
 
