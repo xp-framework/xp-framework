@@ -5,9 +5,9 @@
  */
 
   /**
-   * Dateparser
+   * Exception
    *
-   * @purpose  Parse dates
+   * @purpose  Base class
    */
   function Exception(message) {
 
