@@ -62,4 +62,10 @@ Mit cvs status -v werden die Tags einer Datei angezeigt:
 |        Initial                         (revision: 1.1.1.1)
 |        Start                           (branch: 1.1.1)
 
+Other CVS Tags used:
+--------------------
+The following will also be used:
+- NEEDS_WORK
+- EXPERIMENTAL
+
 <EOF>
