@@ -4,96 +4,107 @@
  * $Id$
  */
  
-  uses('rdbms.DataSet', 'org.bugzilla.BugConstants');
+  uses('rdbms.DataSet');
  
   /**
    * Class wrapper for table bugs, database bugs
-   * (Auto-generated on Wed, 12 Nov 2003 14:18:29 +0100 by thekid)
+   * (Auto-generated on Mon, 18 Oct 2004 10:19:31 +0200 by thekid)
    *
    * @purpose  Datasource accessor
    */
   class Bug extends DataSet {
     var
-      $bug_id               = 0,
-      $groupset             = 0,
-      $assigned_to          = 0,
-      $bug_file_loc         = '',
-      $bug_severity         = '',
-      $bug_status           = '',
-      $creation_ts          = NULL,
-      $delta_ts             = NULL,
-      $short_desc           = '',
-      $op_sys               = '',
-      $priority             = '',
-      $product              = '',
-      $rep_platform         = '',
-      $reporter             = 0,
-      $version              = '',
-      $component            = '',
-      $resolution           = '',
-      $target_milestone     = '',
-      $qa_contact           = 0,
-      $status_whiteboard    = '',
-      $votes                = 0,
-      $keywords             = '',
-      $lastdiffed           = NULL,
-      $everconfirmed        = 0,
-      $reporter_accessible  = 0,
-      $cclist_accessible    = 0;
+      $bug_id              = 0,
+      $groupset            = 0,
+      $assigned_to         = 0,
+      $bug_file_loc        = NULL,
+      $bug_severity        = '',
+      $bug_status          = '',
+      $creation_ts         = NULL,
+      $delta_ts            = NULL,
+      $short_desc          = NULL,
+      $op_sys              = '',
+      $priority            = '',
+      $product             = '',
+      $rep_platform        = NULL,
+      $reporter            = 0,
+      $version             = '',
+      $component           = '',
+      $resolution          = '',
+      $target_milestone    = '',
+      $qa_contact          = 0,
+      $status_whiteboard   = '',
+      $votes               = 0,
+      $keywords            = '',
+      $lastdiffed          = NULL,
+      $everconfirmed       = 0,
+      $reporter_accessible = 0,
+      $cclist_accessible   = 0;
 
+    /**
+     * Static initializer
+     *
+     * @model   static
+     * @access  public
+     */
+    function __static() { 
+      with ($peer= &Bug::getPeer()); {
+        $peer->setTable('bugs.bugs');
+        $peer->setConnection('bugzilla');
+        $peer->setIdentity('bug_id');
+        $peer->setPrimary(array('bug_id'));
+        $peer->setTypes(array(
+          'bug_id'              => '%d',
+          'groupset'            => '%d',
+          'assigned_to'         => '%d',
+          'bug_file_loc'        => '%s',
+          'bug_severity'        => '%s',
+          'bug_status'          => '%s',
+          'creation_ts'         => '%s',
+          'delta_ts'            => '%s',
+          'short_desc'          => '%s',
+          'op_sys'              => '%s',
+          'priority'            => '%s',
+          'product'             => '%s',
+          'rep_platform'        => '%s',
+          'reporter'            => '%d',
+          'version'             => '%s',
+          'component'           => '%s',
+          'resolution'          => '%s',
+          'target_milestone'    => '%s',
+          'qa_contact'          => '%d',
+          'status_whiteboard'   => '%s',
+          'votes'               => '%d',
+          'keywords'            => '%s',
+          'lastdiffed'          => '%s',
+          'everconfirmed'       => '%d',
+          'reporter_accessible' => '%d',
+          'cclist_accessible'   => '%d'
+        ));
+      }
+    }  
+  
+    /**
+     * Retrieve associated peer
+     *
+     * @access  public
+     * @return  &rdbms.Peer
+     */
+    function &getPeer() {
+      return Peer::forName(__CLASS__);
+    }
+  
     /**
      * Gets an instance of this object by index "PRIMARY"
      *
      * @access  static
      * @param   int bug_id
-     * @return  &org.bugzilla.db.Bug object
+     * @return  &Bug object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByBug_id($bug_id) {
-      $cm= &ConnectionManager::getInstance();  
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            bug_id = %d
-          ', 
-          $bug_id
-        );
-        if ($q && $r= $q->next()) $data= &new Bug($r); else $data= NULL;
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return array_shift($peer->doSelect(new Criteria(array('bug_id', $bug_id, EQUAL))));
     }
 
     /**
@@ -101,58 +112,12 @@
      *
      * @access  static
      * @param   int assigned_to
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByAssigned_to($assigned_to) {
-      $cm= &ConnectionManager::getInstance();  
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            assigned_to = %d
-          ', 
-          $assigned_to
-        );
-
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('assigned_to', $assigned_to, EQUAL)));
     }
 
     /**
@@ -160,60 +125,12 @@
      *
      * @access  static
      * @param   util.Date creation_ts
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByCreation_ts($creation_ts) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            creation_ts = %s
-          ', 
-          $creation_ts
-        );
-
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('creation_ts', $creation_ts, EQUAL)));
     }
 
     /**
@@ -221,60 +138,12 @@
      *
      * @access  static
      * @param   util.Date delta_ts
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByDelta_ts($delta_ts) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            delta_ts = %s
-          ', 
-          $delta_ts
-        );
-
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('delta_ts', $delta_ts, EQUAL)));
     }
 
     /**
@@ -282,60 +151,12 @@
      *
      * @access  static
      * @param   string bug_severity
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByBug_severity($bug_severity) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            bug_severity = %s
-          ', 
-          $bug_severity
-        );
-
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('bug_severity', $bug_severity, EQUAL)));
     }
 
     /**
@@ -343,60 +164,12 @@
      *
      * @access  static
      * @param   string bug_status
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByBug_status($bug_status) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            bug_status = %s
-          ', 
-          $bug_status
-        );
-
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('bug_status', $bug_status, EQUAL)));
     }
 
     /**
@@ -404,60 +177,12 @@
      *
      * @access  static
      * @param   string op_sys
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByOp_sys($op_sys) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            op_sys = %s
-          ', 
-          $op_sys
-        );
-
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('op_sys', $op_sys, EQUAL)));
     }
 
     /**
@@ -465,60 +190,12 @@
      *
      * @access  static
      * @param   string priority
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByPriority($priority) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            priority = %s
-          ', 
-          $priority
-        );
-
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('priority', $priority, EQUAL)));
     }
 
     /**
@@ -526,60 +203,12 @@
      *
      * @access  static
      * @param   string product
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByProduct($product) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            product = %s
-          ', 
-          $product
-        );
-
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('product', $product, EQUAL)));
     }
 
     /**
@@ -587,60 +216,12 @@
      *
      * @access  static
      * @param   int reporter
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByReporter($reporter) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            reporter = %d
-          ', 
-          $reporter
-        );
-
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('reporter', $reporter, EQUAL)));
     }
 
     /**
@@ -648,60 +229,12 @@
      *
      * @access  static
      * @param   string version
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByVersion($version) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            version = %s
-          ', 
-          $version
-        );
-
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('version', $version, EQUAL)));
     }
 
     /**
@@ -709,60 +242,12 @@
      *
      * @access  static
      * @param   string component
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByComponent($component) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            component = %s
-          ', 
-          $component
-        );
-
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('component', $component, EQUAL)));
     }
 
     /**
@@ -770,60 +255,12 @@
      *
      * @access  static
      * @param   string resolution
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByResolution($resolution) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            resolution = %s
-          ', 
-          $resolution
-        );
-
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('resolution', $resolution, EQUAL)));
     }
 
     /**
@@ -831,60 +268,12 @@
      *
      * @access  static
      * @param   int votes
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &getByVotes($votes) {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $q= &$db->query('
-          select
-            bug_id,
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          from
-            bugs.bugs 
-          where
-            votes = %d
-          ', 
-          $votes
-        );
-
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
-        }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return $data;
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('votes', $votes, EQUAL)));
     }
 
     /**
@@ -902,12 +291,12 @@
      *
      * @access  public
      * @param   int bug_id
-     * @return  int previous value
+     * @return  int the previous value
      */
     function setBug_id($bug_id) {
-      return $this->_change('bug_id', $bug_id, '%d');
+      return $this->_change('bug_id', $bug_id);
     }
-      
+
     /**
      * Retrieves groupset
      *
@@ -923,12 +312,12 @@
      *
      * @access  public
      * @param   int groupset
-     * @return  int previous value
+     * @return  int the previous value
      */
     function setGroupset($groupset) {
-      return $this->_change('groupset', $groupset, '%d');
+      return $this->_change('groupset', $groupset);
     }
-      
+
     /**
      * Retrieves assigned_to
      *
@@ -944,12 +333,12 @@
      *
      * @access  public
      * @param   int assigned_to
-     * @return  int previous value
+     * @return  int the previous value
      */
     function setAssigned_to($assigned_to) {
-      return $this->_change('assigned_to', $assigned_to, '%d');
+      return $this->_change('assigned_to', $assigned_to);
     }
-      
+
     /**
      * Retrieves bug_file_loc
      *
@@ -965,12 +354,12 @@
      *
      * @access  public
      * @param   string bug_file_loc
-     * @return  string previous value
+     * @return  string the previous value
      */
     function setBug_file_loc($bug_file_loc) {
-      return $this->_change('bug_file_loc', $bug_file_loc, '%s');
+      return $this->_change('bug_file_loc', $bug_file_loc);
     }
-      
+
     /**
      * Retrieves bug_severity
      *
@@ -985,13 +374,13 @@
      * Sets bug_severity
      *
      * @access  public
-     * @param   string bug_severity one of the BUG_SEVERITY_* constants
-     * @see     xp://org.bugzilla.BugConstants
+     * @param   string bug_severity
+     * @return  string the previous value
      */
     function setBug_severity($bug_severity) {
-      $this->bug_severity= $bug_severity;
+      return $this->_change('bug_severity', $bug_severity);
     }
-      
+
     /**
      * Retrieves bug_status
      *
@@ -1006,13 +395,13 @@
      * Sets bug_status
      *
      * @access  public
-     * @param   string bug_status one of the BUG_STATUS_* constants
-     * @see     xp://org.bugzilla.BugConstants
+     * @param   string bug_status
+     * @return  string the previous value
      */
     function setBug_status($bug_status) {
-      $this->bug_status= $bug_status;
+      return $this->_change('bug_status', $bug_status);
     }
-      
+
     /**
      * Retrieves creation_ts
      *
@@ -1028,12 +417,12 @@
      *
      * @access  public
      * @param   util.Date creation_ts
-     * @return  util.Date previous value
+     * @return  util.Date the previous value
      */
     function setCreation_ts($creation_ts) {
-      return $this->_change('creation_ts', $creation_ts, '%s');
+      return $this->_change('creation_ts', $creation_ts);
     }
-      
+
     /**
      * Retrieves delta_ts
      *
@@ -1049,12 +438,12 @@
      *
      * @access  public
      * @param   util.Date delta_ts
-     * @return  util.Date previous value
+     * @return  util.Date the previous value
      */
     function setDelta_ts($delta_ts) {
-      return $this->_change('delta_ts', $delta_ts, '%s');
+      return $this->_change('delta_ts', $delta_ts);
     }
-      
+
     /**
      * Retrieves short_desc
      *
@@ -1070,12 +459,12 @@
      *
      * @access  public
      * @param   string short_desc
-     * @return  string previous value
+     * @return  string the previous value
      */
     function setShort_desc($short_desc) {
-      return $this->_change('short_desc', $short_desc, '%s');
+      return $this->_change('short_desc', $short_desc);
     }
-      
+
     /**
      * Retrieves op_sys
      *
@@ -1091,12 +480,12 @@
      *
      * @access  public
      * @param   string op_sys
-     * @return  string previous value
+     * @return  string the previous value
      */
     function setOp_sys($op_sys) {
-      return $this->_change('op_sys', $op_sys, '%s');
+      return $this->_change('op_sys', $op_sys);
     }
-      
+
     /**
      * Retrieves priority
      *
@@ -1111,13 +500,13 @@
      * Sets priority
      *
      * @access  public
-     * @param   string priority one of the BUG_PRIORITY_* constants
-     * @see     xp://org.bugzilla.BugConstants
+     * @param   string priority
+     * @return  string the previous value
      */
     function setPriority($priority) {
-      $this->priority= $priority;
+      return $this->_change('priority', $priority);
     }
-      
+
     /**
      * Retrieves product
      *
@@ -1133,12 +522,12 @@
      *
      * @access  public
      * @param   string product
-     * @return  string previous value
+     * @return  string the previous value
      */
     function setProduct($product) {
-      return $this->_change('product', $product, '%s');
+      return $this->_change('product', $product);
     }
-      
+
     /**
      * Retrieves rep_platform
      *
@@ -1154,12 +543,12 @@
      *
      * @access  public
      * @param   string rep_platform
-     * @return  string previous value
+     * @return  string the previous value
      */
     function setRep_platform($rep_platform) {
-      return $this->_change('rep_platform', $rep_platform, '%s');
+      return $this->_change('rep_platform', $rep_platform);
     }
-      
+
     /**
      * Retrieves reporter
      *
@@ -1175,12 +564,12 @@
      *
      * @access  public
      * @param   int reporter
-     * @return  int previous value
+     * @return  int the previous value
      */
     function setReporter($reporter) {
-      return $this->_change('reporter', $reporter, '%d');
+      return $this->_change('reporter', $reporter);
     }
-      
+
     /**
      * Retrieves version
      *
@@ -1196,12 +585,12 @@
      *
      * @access  public
      * @param   string version
-     * @return  string previous value
+     * @return  string the previous value
      */
     function setVersion($version) {
-      return $this->_change('version', $version, '%s');
+      return $this->_change('version', $version);
     }
-      
+
     /**
      * Retrieves component
      *
@@ -1217,12 +606,12 @@
      *
      * @access  public
      * @param   string component
-     * @return  string previous value
+     * @return  string the previous value
      */
     function setComponent($component) {
-      return $this->_change('component', $component, '%s');
+      return $this->_change('component', $component);
     }
-      
+
     /**
      * Retrieves resolution
      *
@@ -1237,13 +626,13 @@
      * Sets resolution
      *
      * @access  public
-     * @param   string resolution one of the BUG_RESOLUTION_* constants
-     * @see     xp://org.bugzilla.BugConstants
+     * @param   string resolution
+     * @return  string the previous value
      */
     function setResolution($resolution) {
-      $this->resolution= $resolution;
+      return $this->_change('resolution', $resolution);
     }
-      
+
     /**
      * Retrieves target_milestone
      *
@@ -1259,12 +648,12 @@
      *
      * @access  public
      * @param   string target_milestone
-     * @return  string previous value
+     * @return  string the previous value
      */
     function setTarget_milestone($target_milestone) {
-      return $this->_change('target_milestone', $target_milestone, '%s');
+      return $this->_change('target_milestone', $target_milestone);
     }
-      
+
     /**
      * Retrieves qa_contact
      *
@@ -1280,12 +669,12 @@
      *
      * @access  public
      * @param   int qa_contact
-     * @return  int previous value
+     * @return  int the previous value
      */
     function setQa_contact($qa_contact) {
-      return $this->_change('qa_contact', $qa_contact, '%d');
+      return $this->_change('qa_contact', $qa_contact);
     }
-      
+
     /**
      * Retrieves status_whiteboard
      *
@@ -1301,12 +690,12 @@
      *
      * @access  public
      * @param   string status_whiteboard
-     * @return  string previous value
+     * @return  string the previous value
      */
     function setStatus_whiteboard($status_whiteboard) {
-      return $this->_change('status_whiteboard', $status_whiteboard, '%s');
+      return $this->_change('status_whiteboard', $status_whiteboard);
     }
-      
+
     /**
      * Retrieves votes
      *
@@ -1322,12 +711,12 @@
      *
      * @access  public
      * @param   int votes
-     * @return  int previous value
+     * @return  int the previous value
      */
     function setVotes($votes) {
-      return $this->_change('votes', $votes, '%d');
+      return $this->_change('votes', $votes);
     }
-      
+
     /**
      * Retrieves keywords
      *
@@ -1343,12 +732,12 @@
      *
      * @access  public
      * @param   string keywords
-     * @return  string previous value
+     * @return  string the previous value
      */
     function setKeywords($keywords) {
-      return $this->_change('keywords', $keywords, '%s');
+      return $this->_change('keywords', $keywords);
     }
-      
+
     /**
      * Retrieves lastdiffed
      *
@@ -1364,12 +753,12 @@
      *
      * @access  public
      * @param   util.Date lastdiffed
-     * @return  util.Date previous value
+     * @return  util.Date the previous value
      */
     function setLastdiffed($lastdiffed) {
-      return $this->_change('lastdiffed', $lastdiffed, '%s');
+      return $this->_change('lastdiffed', $lastdiffed);
     }
-      
+
     /**
      * Retrieves everconfirmed
      *
@@ -1385,12 +774,12 @@
      *
      * @access  public
      * @param   int everconfirmed
-     * @return  int previous value
+     * @return  int the previous value
      */
     function setEverconfirmed($everconfirmed) {
-      return $this->_change('everconfirmed', $everconfirmed, '%d');
+      return $this->_change('everconfirmed', $everconfirmed);
     }
-      
+
     /**
      * Retrieves reporter_accessible
      *
@@ -1406,12 +795,12 @@
      *
      * @access  public
      * @param   int reporter_accessible
-     * @return  int previous value
+     * @return  int the previous value
      */
     function setReporter_accessible($reporter_accessible) {
-      return $this->_change('reporter_accessible', $reporter_accessible, '%d');
+      return $this->_change('reporter_accessible', $reporter_accessible);
     }
-      
+
     /**
      * Retrieves cclist_accessible
      *
@@ -1427,58 +816,10 @@
      *
      * @access  public
      * @param   int cclist_accessible
-     * @return  int previous value
+     * @return  int the previous value
      */
     function setCclist_accessible($cclist_accessible) {
-      return $this->_change('cclist_accessible', $cclist_accessible, '%d');
+      return $this->_change('cclist_accessible', $cclist_accessible);
     }
-      
-    /**
-     * Update this object in the database
-     *
-     * @access  public
-     * @return  boolean success
-     * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
-     */
-    function update() {
-      $cm= &ConnectionManager::getInstance();  
-
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $db->update(
-          'bugs.bugs set %c where bug_id = %d',
-          $this->_updated($db),
-          $this->bug_id
-        );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return TRUE;
-    }
-    
-    /**
-     * Write this object to the database
-     *
-     * @access  public
-     * @return  boolean success
-     * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
-     */
-    function insert() {
-      $cm= &ConnectionManager::getInstance(); 
-      try(); {
-        $db= &$cm->getByHost('bugzilla', 0);
-        $db->insert('bugs.bugs (%c)', $this->_inserted($db));
-
-        // Fetch identity
-        $this->bug_id= $db->identity();
-      } if (catch('SQLException', $e)) {
-        return throw($e);
-      }
-
-      return TRUE;
-    }    
   }
 ?>
