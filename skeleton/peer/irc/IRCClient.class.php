@@ -7,9 +7,9 @@
  uses('peer.BSDSocket');
 
  // Message Types
- define('IRC_MSGT_SERVER',	   0x0000);
- define('IRC_MSGT_CLIENT',	   0x0001);
- define('IRC_MSGT_USER', 	   0x0002);
+ define('IRC_MSGT_SERVER',     0x0000);   
+ define('IRC_MSGT_CLIENT',     0x0001);   
+ define('IRC_MSGT_USER',       0x0002);   
  
  // MOTD (Message Of The Day)
  define('IRC_MSGC_MOTD_BEGIN', 375);
@@ -22,7 +22,7 @@
  define('IRC_MSGC_LIST_END',   323);
  
  // Join replies
- define('IRC_MSGC_NAMES',	   353);
+ define('IRC_MSGC_NAMES',      353);
  define('IRC_MSGC_NAMES_END',  366);
  
  /**
@@ -39,7 +39,7 @@
       $realname;
       
     var
-      $port		= 6667,
+      $port	= 6667,
       $server	= 'localhost',
       $hostname	= 'localhost';
       
@@ -250,6 +250,21 @@
       // Set active channel if everything is OK
       $this->_channel= $channel;
       return TRUE;
+    }
+    
+    /**
+     * Mark as away or back again
+     *
+     * @access  public
+     * @param   mixed reason (reason for mark away, FALSE for mark back again)
+     * @return  bool success
+     */
+    function markAway($reason) {
+      if (FALSE === ($msg= $this->_cmd('AWAY%s', (FALSE === $reason ? '' : ' '.$reason)))) {
+        return FALSE;
+      }
+      
+      return $msg;
     }
     
     /**
