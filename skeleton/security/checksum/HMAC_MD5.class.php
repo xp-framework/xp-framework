@@ -15,10 +15,10 @@
   class HMAC_MD5 extends Checksum {
   
     /**
-     * Calculate HMAC_MD5 for given 
+     * Calculate HMAC_MD5 for given string (and key, if specified)
      *
      * @model   static
-     * @access  protected
+     * @access  public
      * @param   string str
      * @param   string key default NULL
      * @return  string
@@ -31,8 +31,8 @@
         $key= pack('H*', md5($key));
       }
 
-      $ip= $key ^ str_repeat("\x36", 0x40) ;
-      $op= $key ^ str_repeat("\x5c", 0x40) ;
+      $ip= $key ^ str_repeat("\x36", 0x40);
+      $op= $key ^ str_repeat("\x5c", 0x40);
       
       return HMAC_MD5::hash($op.pack('H*', md5($ip.$str)));
     }
