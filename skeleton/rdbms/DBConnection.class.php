@@ -47,20 +47,21 @@
       $this->setTimeout($dsn->getProperty('timeout', 0));   // 0 means no timeout
       
       // Keep this for BC reasons
-      if (FALSE !== ($cat= $this->dsn->getValue('log'))) { $obs['util.log.LogObserver']= $cat; }
+      $obs= $this->dsn->getValue('observer', array());
+      if (NULL !== ($cat= $this->dsn->getValue('log'))) { 
+        $obs['util.log.LogObserver']= $cat; 
+      }
       
       // Add observers
-      if (FALSE !== ($obs= &$this->dsn->getValue('observer'))) {
-        foreach (array_keys($obs) as $observer) {
-          try(); {
-            $class= &XPClass::forName($observer);
-            $inst= &call_user_func(array(xp::reflect($class->getName()), 'instanceFor'), $obs[$observer]);
-          } if (catch ('ClassNotFoundException', $e)) {
-            return throw ($e);
-          }
-          
-          $this->addObserver($inst);
+      foreach (array_keys($obs) as $observer) {
+        try(); {
+          $class= &XPClass::forName($observer);
+          $inst= &call_user_func(array(xp::reflect($class->getName()), 'instanceFor'), $obs[$observer]);
+        } if (catch ('ClassNotFoundException', $e)) {
+          return throw ($e);
         }
+
+        $this->addObserver($inst);
       }
     }
     
