@@ -32,9 +32,27 @@
     <xsl:if test="$mode = 'allclasses'">
 <xsl:apply-templates select="//collection/class"/>
     </xsl:if>
+    
+    <!-- List classes without $Id$ -->
+    <xsl:if test="$mode = 'brokencvs'">
+      <xsl:for-each select="//class">
+        <xsl:call-template name="brokencvs"/>
+      </xsl:for-each>
+    </xsl:if>
+
+    <!-- List all classes without purpose -->
+    <xsl:if test="$mode = 'missingpurpose'">
+      <xsl:for-each select="//class">
+        <xsl:call-template name="missingpurpose"/>
+      </xsl:for-each>
+    </xsl:if>
 
   </xsl:template>
   
+  
+  
+  
+  <!-- Helper templates -->
   <xsl:template match="package">
 <xsl:value-of select="./@type"/>
 <xsl:text>
@@ -52,5 +70,22 @@
 <xsl:text>
 </xsl:text>
   </xsl:template>
+  
+  <xsl:template name="brokencvs">
+    <xsl:if test="string-length (./cvsver) = 0">
+<xsl:value-of select="./@className"/>
+<xsl:text>
+</xsl:text>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="missingpurpose">
+    <xsl:if test="string-length (./purpose) = 0">
+<xsl:value-of select="./@className"/>
+<xsl:text>
+</xsl:text>
+    </xsl:if>
+  </xsl:template>
+  
   
 </xsl:stylesheet>
