@@ -5,11 +5,11 @@
  */
  
   /**
-   * Kapselt die Illegalstateexception
+   * Encapsulates IllegalStateException
    *
    * @see Exception
    */
-  class Illegalstateexception extends Exception {
+  class IllegalStateException extends Exception {
   
   }
 ?>
