@@ -300,7 +300,7 @@
         $this->propStorage->setProperties($version->getFilename(), $props); 
          
         // Copy file to versions collection
-        $this->copy(
+        $this->backup(
           $version->getFilename(),
           $version->getHref()
         );
