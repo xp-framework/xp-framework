@@ -30,7 +30,6 @@
      * @param   string value
      */
     function __construct($name, $value) {
-      parent::__construct();
       $this->name= $name;
       $this->value= $value;
     }

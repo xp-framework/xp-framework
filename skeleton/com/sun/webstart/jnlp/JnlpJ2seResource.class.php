@@ -28,7 +28,6 @@
      * @param   string version
      */
     function __construct($version) {
-      parent::__construct();
       $this->version= $version;
     }
 
