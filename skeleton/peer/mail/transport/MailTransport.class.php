@@ -9,10 +9,12 @@
   /**
    * Mail transport via built-in mail() function
    *
+   * Example:
    * <code>
    *   // [...build messages array...]
    *   $t= &new MailTransport();
-   *   $t->connect();
+   *   $t->connect();       // use $t->connect('-odq'); for queuing
+   *
    *   for ($i= 0, $size= sizeof($message); $i < $size; $i++) {
    *     $t->send($message);
    *   }
@@ -85,7 +87,10 @@
       if (FALSE === mail(
         substr($to, 0, -2),
         QuotedPrintable::encode($message->getSubject()),
-        $message->getBody(),
+        strtr($message->getBody(), array(
+          "\r\n" => "\n",
+          "\r"   => "\n"
+        )),
         $tmp->getHeaderString(),
         $this->parameters
       )) {
