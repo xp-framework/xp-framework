@@ -1306,7 +1306,7 @@
     function _enddoc() {
       $nb= $this->page;
 
-      if ($this->DefOrientation == 'P') {
+      if ($this->DefOrientation == FPDF_PORTRAIT) {
         $wPt= $this->fwPt;
         $hPt= $this->fhPt;
       } else {
@@ -1365,16 +1365,19 @@
       foreach ($this->FontFiles as $file => $info) {
         $this->_newobj();
         $this->FontFiles[$file]['n']= $this->n;
-        if (defined('FPDF_FONTPATH')) $file= FPDF_FONTPATH.$file;
-        $size= filesize($file);
-        if (!$size) return throw(new Exception('Font file not found'));
         
+        // Sanity check
+        if (!file_exists($file)) {
+          return throw(new IOException('Font file "'.$file.'" not found'));
+        }
+        
+        $size= filesize($file);
         $this->_out('<</Length '.$size);
         if (substr($file,-2) == '.z') $this->_out('/Filter /FlateDecode');
         $this->_out('/Length1 '.$info['originalsize']);
         $this->_out('>>');
         $this->_out('stream');
-        $f= fopen($file,'rb');
+        $f= fopen($file, 'rb');
         $this->_out(fread($f, $size));
         fclose($f);
         $this->_out('endstream');
@@ -1600,7 +1603,7 @@
 
       // Change orientation
       if ($orientation != $this->CurOrientation) {
-        if ($orientation == 'P') {
+        if ($orientation == FPDF_PORTRAIT) {
           $this->wPt= $this->fwPt;
           $this->hPt= $this->fhPt;
           $this->w= $this->fw;
