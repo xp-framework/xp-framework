@@ -209,10 +209,15 @@
      * Set up this handler. Called when this handler has not yet been
      * registered to the session
      *
+     * Return TRUE to indicate success, FALSE to signal failure.
+     *
      * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @return  bool
      */
-    function setup(&$request) { }
+    function setup(&$request) { 
+      return TRUE;
+    }
 
     /**
      * Retrieve whether this handler needs data 
