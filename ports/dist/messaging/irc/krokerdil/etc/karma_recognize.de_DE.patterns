@@ -1,0 +1,14 @@
+/super|toll|gut|cool/i:1
+/dank/i:5
+/bedank/i:5
+/stimm.+zu/i:2
+/(gib|gebe).+Recht/i:1
+/schlecht/i:-1
+/hass[et]/i:-2
+/verachte/i:-5
+/beleidig/i:-1
+/(der|die) Beste/i:1
+/(idiot|arsch|fick|schei(ss|ß)|blöd|wix)/:-1
+/mag|lieb/:1
+/K\*p/:-1
+/Kap/:1
