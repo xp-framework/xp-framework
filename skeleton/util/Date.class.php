@@ -648,7 +648,8 @@
         }
         $return.= substr($token, 1);
       } while ($token= strtok('%'));
-      return '';    // FIXME
+
+      return $return;
     }
   }
 ?>
