@@ -15,12 +15,6 @@
   <xsl:include href="../news.inc.xsl"/>
   <xsl:include href="../shortcuts.inc.xsl"/>
   
-  <xsl:variable name="shortcuts">
-    <shortcut href="about/topic?introduction" icon="introduction">Introduction</shortcut>
-    <shortcut href="resources" icon="download">Download</shortcut>
-    <shortcut href="about/examples" icon="examples">Examples</shortcut>
-  </xsl:variable>
-  
   <!--
    ! Template for context navigation
    !
@@ -78,6 +72,11 @@
   <xsl:template name="content">
     <h1>use::xp</h1>
 
+    <xsl:variable name="shortcuts">
+      <shortcut href="about/topic?introduction" icon="introduction">Introduction</shortcut>
+      <shortcut href="about/examples" icon="examples">Examples</shortcut>
+      <shortcut href="resources" icon="download">Download</shortcut>
+    </xsl:variable>
     <xsl:copy-of select="func:shortcuts(exsl:node-set($shortcuts))"/>
     
     <xsl:for-each select="/formresult/entries/entry">
