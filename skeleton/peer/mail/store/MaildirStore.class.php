@@ -276,8 +276,9 @@
         $f->open ();
         $d= $f->read ($f->size());
         $f->close();
-      } if (catch ('IOException', $e))
+      } if (catch ('IOException', $e)) {
         return throw ($e);
+      }
     
       if (FALSE === ($hdrEnd= strpos ($d, "\n\r\n\r")))
         $hdrEnd= 0;
