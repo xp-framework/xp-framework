@@ -140,9 +140,15 @@
      * @param   &xml.Node elem
      */
     function insertStatus(&$elem) {
-      if (!$this->hasItems()) $this->update();
+      $to=   $this->getShowTo();
+      $from= $this->getShowFrom();
+      $elem->addChild(Node::fromArray(array(
+        'count' => $this->count,
+        'from'  => $from,
+        'to'    => $to
+      ), 'pager'));
       
-      for ($i= $this->getShowFrom(), $to= $this->getShowTo(); $i < $to; $i++) {
+      for ($i= $from; $i < $to; $i++) {
         switch (gettype($this->values[$i])) {
           case 'object':
             $c= &$elem->addChild(Node::fromObject($this->values[$i], 'item')); break;
