@@ -31,6 +31,7 @@
       $this->Error= $this->changed= 0;
       $this->ID= ($this->isNew)? 0: getenv('SESS');
       parent::__construct($params);
+      $this->logline_text("params", $params);
       
       // Anlegen, falls neue Session
       // Ansonsten auslesen
@@ -59,7 +60,7 @@
      */
     function logline_text($key, $val) {
       if(!$this->Debug) return 0;
-      LOG::info("ToolSession::$key => $val");
+      LOG::info($this->getName().'::'.$key.'= '.var_export($val, 1));
     }
     
     /**
