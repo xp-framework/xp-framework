@@ -1,18 +1,13 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
- * $Id$
+ * $Id$ 
  */
 
   uses('xml.soap.SOAPMessage');
   
   /**
    * Basic SOAP-Client
-   *
-   * Diese Klasse kann vererbt werden, um "Proxy-Klassen" zu erstellen.
-   * Durch Hinzufügen von Methoden, die ihrerseits wieder nur _call() aufrufen,
-   * können transparente Wrapper geschaffen werden, die self::method setzen
-   * und evtl. auch bereits den richtigen Datentypen setzen.
    *
    * Example:
    * <code>

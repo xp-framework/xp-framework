@@ -1,7 +1,7 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
- * $Id$
+ * $Id$ 
  */
 
   uses('util.Properties');
@@ -9,8 +9,7 @@
   /**
    * Property-Manager
    * 
-   * @purpose Verwaltet Property-Files
-   * @access  static
+   * @purpose  Container
    */
   class PropertyManager extends Object {
     var 
@@ -18,35 +17,35 @@
       $_prop    = array();
     
     /**
-     * Instanz des Property-Managers zurückgeben
+     * Retreive this property manager's instance
      * 
-     * @see SingleTon#getInstance
+     * @model   static
+     * @access  public
+     * @return  &util.PropertyManager
      */
     function &getInstance() {
-      static $PropertyManager__instance;
+      static $__instance;
       
-      if (!isset($PropertyManager__instance)) {
-        $PropertyManager__instance= new PropertyManager();
-      }
-      return $PropertyManager__instance;
+      if (!isset($__instance)) $__instance= new PropertyManager();
+      return $__instance;
     }
 
     /**
-     * Konfigurieren
+     * Configure this property manager
      *
      * @access  public
-     * @param   string path Suchpfad zu den Property-Files
+     * @param   string path search path to the property files
      */
     function configure($path) {
       $this->_path= $path;
     }
     
     /**
-     * Properties zurückgeben
+     * Return properties by name
      *
      * @access  public
-     * @param   string name Property-File-Name
-     * @return  util.Properties
+     * @param   string name
+     * @return  &util.Properties
      */
     function &getProperties($name) {
       if (!isset($this->_prop[$this->_path.$name])) {

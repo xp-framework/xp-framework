@@ -1,18 +1,20 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
- * $Id$
+ * $Id$ 
  */
 
   /**
-   * FPDF-Font-Klasse (Anpassung an XP-Framework)
+   * PDF font
    *
-   * @see http://fpdf.org/
+   * @see      xp://org.fpdf.FPDF
+   * @purpose  Represent a font
    */
   class FPDFFont extends Object {
     var 
       $name     = NULL,
       $index    = 0;
+
     var
       $family,
       $style,
@@ -28,36 +30,51 @@
       $originalsize;
       
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string name
      */
     function __construct($name) {
       $this->name= $name;
       parent::__construct();
     }
     
+    /**
+     * Check whether this font is underlined
+     *
+     * @access  public
+     * @return  bool
+     */
     function isUnderline() {
       return (FALSE !== strpos($this->style, 'U'));
     }
     
+    /**
+     * Check whether this font is bold
+     *
+     * @access  public
+     * @return  bool
+     */
     function isBold() {
       return (FALSE !== strpos($this->style, 'B'));
     }
 
+    /**
+     * Check whether this font is italic
+     *
+     * @access  public
+     * @return  bool
+     */
     function isItalic() {
       return (FALSE !== strpos($this->style, 'I'));
     }
     
-    
     /**
-     * (Insert method's description here)
+     * Load this font's properties from a .ini-file
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &util.Properties p
      */
     function configure(&$p) {
       if (NULL == $this->name) return throw(new IllegalStateException('no name defined'));
@@ -79,11 +96,11 @@
     }
       
     /**
-     * Die Breite eines Zeichens zurückgeben
+     * Return the width of a specified character
      *
      * @access  public
-     * @param   char c Zeichen
-     * @return  int Breite
+     * @param   char c
+     * @return  int
      */
     function getCharWidth($c) {
       return $this->charwidths[ord($c)];

@@ -1,9 +1,14 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
- * 
- * $Id$
+/* This class is part of the XP framework
+ *
+ * $Id$ 
  */
 
+  /**
+   * Indicates a SOAP fault occured
+   *
+   * @purpose  Exception
+   */
   class SOAPFaultException extends Exception {
     var 
       $fault= NULL; 
@@ -11,7 +16,8 @@
     /**
      * Constructor
      *
-     * @param   xml.soap.SOAPFault fault Ein Objekt des Typen SOAPFault
+     * @access  public
+     * @param   &xml.soap.SOAPFault fault
      */
     function __construct(&$fault) {
       $this->fault= $fault;
@@ -19,9 +25,10 @@
     }
     
     /**
-     * "Stack Trace" zurückgeben
+     * Return a string representation of this exception
      *
-     * @return  string der StackTrace, vorformatiert
+     * @access  public
+     * @return  string
      */
     function getStackTrace() {
       return parent::getStackTrace().sprintf(
