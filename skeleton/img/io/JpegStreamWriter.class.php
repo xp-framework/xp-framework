@@ -10,6 +10,7 @@
    * Writes JPEG to a stream
    *
    * @ext      gd
+   * @see      php://imagejpeg
    * @see      xp://img.io.StreamWriter
    * @purpose  Writer
    */
