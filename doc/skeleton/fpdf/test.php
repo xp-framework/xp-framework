@@ -36,18 +36,18 @@
     $pdf->Cell(0, 6, $in->uri, 1, 1, 'L', 1);
     $pdf->Ln(4);
 
-    $pdf->setFont($pdf->getFontByName('Helvetica'));
+    $pdf->setFont($pdf->getFontByName('Helvetica'), 11);
     // Datei zeilenweise durchgehen und als Block hinzufügen
     while (!$in->eof()) {
       $line= $in->gets();
       
       // Alles zwischen <pre> und </pre> in Courier markieren
       if ('<pre>' == substr($line, 0, 5)) {
-        $pdf->setFont($pdf->getFontByName('Courier'));
+        $pdf->setFont($pdf->getFontByName('Courier'), 10);
         continue;
       }
       if ('</pre>' == substr($line, 0, 6)) {
-        $pdf->setFont($pdf->getFontByName('Helvetica'));
+        $pdf->setFont($pdf->getFontByName('Helvetica'), 11);
         continue;
       }
 
@@ -61,7 +61,7 @@
   }
   
   //var_dump($pdf);
-  $out= new File('test.pdf');
+  $out= new File($in->filename.'.pdf');
   try(); {
     $out->open(FILE_MODE_WRITE);
     $out->write($pdf->getBuffer());
@@ -71,5 +71,5 @@
     exit;
   }
   
-  printf("===> %d bytes written to test.pdf\n", $out->size());
+  printf("===> %d bytes written to %s\n", $out->size(), $out->uri);
 ?>
