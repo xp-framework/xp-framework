@@ -101,7 +101,7 @@
       
       // Read configuration
       $pm= &PropertyManager::getInstance();
-      with ($prop= &$pm->getProperties('web')); {
+      with ($prop= &$pm->getProperties($request->getProduct())); {
         $this->dataLocation= $prop->readString(
           'data',
           'location',
