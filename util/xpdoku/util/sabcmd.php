@@ -32,7 +32,7 @@
   $p= &new ParamString();
   if (3 != $p->count) {
     printf("Usage: %s xsl xml\n", basename($p->value(0)));
-    exit();
+    exit(-1);
   }
   
   $proc= &new XSLProcessor();
@@ -44,7 +44,7 @@
     $proc->run();
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
-    exit();
+    exit(-2);
   }
   
   echo $proc->output();
