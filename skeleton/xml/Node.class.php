@@ -190,14 +190,16 @@
     }
     
     /**
-     * Retrieve an attribute by its name
+     * Retrieve an attribute by its name. Returns the default value if the
+     * attribute is non-existant
      *
      * @access  public
      * @param   string name
+     * @param   mixed default default NULL
      * @return  string
      */
-    function getAttribute($name) {
-      return $this->attribute[$name];
+    function getAttribute($name, $default= NULL) {
+      return isset($this->attribute[$name]) ? $this->attribute[$name] : $default;
     }
 
     /**
