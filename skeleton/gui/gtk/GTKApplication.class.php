@@ -24,7 +24,8 @@
      */
     function __construct($name) {
       $this->name= $name;
-      $this->_log= new Logger();
+      $l= &Logger::getInstance();
+      $this->_log= $l->getCategory($this->name);
       $this->_log->identifier= $name;
       $this->_log->addAppender(new FileAppender('php://stderr'));
       parent::__construct();
