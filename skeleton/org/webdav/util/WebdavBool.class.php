@@ -29,6 +29,7 @@
           
         case 'f':
         case 'F': 
+        case NULL:
           return FALSE;
           
         default:  

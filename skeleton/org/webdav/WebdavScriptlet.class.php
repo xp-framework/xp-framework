@@ -396,11 +396,7 @@
         $created= $this->handlingImpl->move(
           $request->getPath(),
           $request->getRelativePath($request->getHeader('Destination')),
-          WebdavBool::fromString(
-            $request->getHeader('Overwrite') === NULL ?
-            'f' :
-            $request->getHeader('Overwrite')
-          )
+          WebdavBool::fromString($request->getHeader('Overwrite'));
         );
       } if (catch('OperationFailedException', $e)) {
       
@@ -540,7 +536,6 @@
      * All XML used in either requests or responses MUST be, at minimum, well 
      * formed.  If a server receives ill-formed XML in a request it MUST reject 
      * the entire request with a 400 (Bad Request).
-
      * </pre>
      *
      * @see     rfc://2518#8.1
