@@ -66,7 +66,7 @@
         $n= &$t->addChild(new Node('index', NULL, array(
           'name'    => trim($index->getName()),
           'unique'  => $index->isUnique() ? 'true' : 'false',
-          'primary' => $index->isUnique() ? 'true' : 'false',
+          'primary' => $index->isPrimaryKey() ? 'true' : 'false',
         )));
         foreach ($index->getKeys() as $key) {
           $n->addChild(new Node('key', $key));
