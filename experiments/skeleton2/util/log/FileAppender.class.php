@@ -24,7 +24,6 @@
      */
     public function __construct($filename= 'php://stderr') {
       $this->filename= $filename;
-      parent::__construct();
     }
     
     /**
