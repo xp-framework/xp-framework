@@ -5,7 +5,7 @@
  *
  */
 
-  uses('xml.XML', 'xml.PCData');
+  uses('xml.XML', 'xml.PCData', 'xml.CData');
 
   /**
    * Represents a node
@@ -186,7 +186,7 @@
     /**
      * Retrieve XML representation
      *
-     * Setting indent to FALSE yields this result:
+     * Setting indent to 0 yields this result:
      * <pre>
      *   <item>  
      *     <title>Website created</title>
@@ -196,7 +196,7 @@
      *   </item>
      * </pre>
      *
-     * Setting indent to TRUE yields this result:
+     * Setting indent to 1 yields this result:
      * <pre>
      *   <item>
      *     <title>
@@ -212,48 +212,72 @@
      *   </item>
      * </pre>
      *
+     * Setting indent to 2 yields this result (wrapped for readability,
+     * returned XML is on one line):
+     * <pre>
+     *   <item><title>Website created</title><link></link><description>The 
+     *   first version of the XP web site is online</description><dc:date>
+     *   2002-12-27T13:10:00</dc:date></item>
+     * </pre>
+     *
      * @access  public
-     * @param   bool indent defaulf TRUE
+     * @param   int indent default 1
      * @param   string inset default ''
      * @return  string XML
      */
-    function getSource($indent= TRUE, $inset= '') {
+    function getSource($indent= 1, $inset= '') {
       $xml= $inset.'<'.$this->name;
-      $content= is_a($this->content, 'PCData') ? $this->content->pcdata : htmlspecialchars($this->content);
-      
-      // Attribute
-      $sep= '';
-      if (!empty($this->attribute)) {
-        $sep= (sizeof($this->attribute) < 3) ? '' : "\n".$inset;
-        foreach (array_keys($this->attribute) as $key) {
-          $xml.= $sep.' '.$key.'="'.htmlspecialchars($this->attribute[$key]).'"';
-        }
-      }
-      $xml.= $sep;
-      
-      // No indent => strip whitespace
-      if (!$indent) $content= trim(chop($content));
-      
-      // No content and no children => close tag
-      if (0 == strlen($content)) {
-        if (empty($this->children)) {
-          return $xml."/>\n";
-        }
-        $xml.= '>';
+      if (is_a($this->content, 'PCData')) {
+        $content= $this->content->pcdata;
+      } elseif (is_a($this->content, 'CData')) {
+        $content= '<![CDATA['.str_replace(']]>', ']]&gt;', $this->content->cdata).']]>';
       } else {
-        $xml.= '>'.($indent ? "\n  ".$inset : '').$content;
+        $content= htmlspecialchars($this->content);
       }
-      
-      // Go through children
-      if (!empty($this->children)) {
-        $xml.= ($indent ? '' : $inset)."\n";
-        foreach (array_keys($this->children) as $key) {
-          $xml.= $this->children[$key]->getSource($indent, $inset.'  ');
-        }
-        $xml= ($indent ? substr($xml, 0, -1) : $xml).$inset;
+
+      switch ($indent) {
+        case 0:
+        case 1:
+          if (!empty($this->attribute)) {
+            $sep= (sizeof($this->attribute) < 3) ? '' : "\n".$inset;
+            foreach (array_keys($this->attribute) as $key) {
+              $xml.= $sep.' '.$key.'="'.htmlspecialchars($this->attribute[$key]).'"';
+            }
+            $xml.= $sep;
+          }
+
+          // No content and no children => close tag
+          if (0 == strlen($content)) {
+            if (empty($this->children)) {
+              return $xml."/>\n";
+            }
+            $xml.= '>';
+          } else {
+            $xml.= '>'.($indent ? "\n  ".$inset.$content : trim($content));
+          }
+
+          if (!empty($this->children)) {
+            $xml.= ($indent ? '' : $inset)."\n";
+            foreach (array_keys($this->children) as $key) {
+              $xml.= $this->children[$key]->getSource($indent, $inset.'  ');
+            }
+            $xml= ($indent ? substr($xml, 0, -1) : $xml).$inset;
+          }
+          return $xml.($indent ? "\n".$inset : '').'</'.$this->name.">\n";
+          
+        case 2:
+          foreach (array_keys($this->attribute) as $key) {
+            $xml.= ' '.$key.'="'.htmlspecialchars($this->attribute[$key]).'"';
+          }
+          $xml.= '>'.trim($content);
+          
+          if (!empty($this->children)) {
+            foreach (array_keys($this->children) as $key) {
+              $xml.= $this->children[$key]->getSource($indent, $inset);
+            }
+          }
+          return $xml.'</'.$this->name.'>';
       }
-      
-      return $xml.($indent ? "\n".$inset : '').'</'.$this->name.">\n";
     }
     
     /**
