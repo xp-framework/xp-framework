@@ -119,5 +119,45 @@
       if ($entry= &HtdigEntry::fromArray($res))
         $this->results[]= &$entry;
     }
+    
+    /**
+     * Returns the string representation of this object.
+     *
+     * @access  public
+     * @return  string 
+     */
+    function toString() {
+      
+      // Retrieve object variables and figure out the maximum length 
+      // of a key which will be used for the key "column". The minimum
+      // width of this column is 20 characters.
+      $vars= get_object_vars($this);
+      $max= 20;
+      foreach (array_keys($vars) as $key) {
+        $max= max($max, strlen($key));
+      }
+      $fmt= '  [%-'.$max.'s] %s';
+      
+      // Build string representation.
+      $s= $this->getClassName().'@('.$this->hashCode()."){\n";
+      foreach (array_keys($vars) as $key) {
+        if ('__id' == $key) continue;
+        
+        if ('results' == $key) {
+          foreach (array_keys($this->results) as $idx) {
+            $s.= '===> Result #'.$idx.":\n";
+            $s.= $this->results[$idx]->toString()."\n";
+          }
+          
+          continue;
+        }
+
+        $s.= sprintf($fmt, $key, is_a($this->$key, 'Object') 
+          ? $this->$key->toString()
+          : var_export($this->$key, 1)
+        )."\n";
+      }
+      return $s.'}';
+    }
   }
 ?>
