@@ -17,8 +17,6 @@
   define('FILE_MODE_REWRITE',   'wb+');         // Read/Write, truncate on open
   define('FILE_MODE_APPEND',    'ab');          // Append (Read-only)
   define('FILE_MODE_READAPPEND','ab+');         // Append (Read/Write)
-  
-  
     
   /**
    * Instances of the file class serve as an opaque handle to the underlying machine-
@@ -50,7 +48,6 @@
       } else {
         self::setURI($file);
       }
-      parent::__construct();
     }
     
     /**
