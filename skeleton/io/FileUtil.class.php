@@ -47,7 +47,7 @@
      * @throws  io.IOException
      */
     function setContents(&$file, $data) {
-      $file->open(FILE_MODE_READ);
+      $file->open(FILE_MODE_WRITE);
       $file->write($data);
       $file->close();
       return $file->size();
