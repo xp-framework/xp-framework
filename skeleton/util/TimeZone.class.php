@@ -23,22 +23,20 @@
       $tz=      '';
 
     /**
-     * (Insert method's description here)
+     * Gets the name of the timezone
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string name
      */
     function getName() {
       return $this->tz;
     }
 
     /**
-     * (Insert method's description here)
+     * Retrieves the offset of the timezone
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string offset
      */    
     function getOffset() {
       return $this->offset;
