@@ -4,68 +4,71 @@
  * $Id$
  */
 
-  uses(
-    'xml.XML',
-    'xml.XSLProcessor'
-  );
-  
   /**
    * XPath class
    *
-   * @ext   xslt
+   * <code>
+   *   uses('xml.XPath');
+   * 
+   *   $xml= <<<__
+   * <dialog id="file.open">
+   *   <caption>Open a file</caption>
+   *   <buttons>
+   *     <button name="ok"/>
+   *     <button name="cancel"/>
+   *   </buttons>
+   * </dialog>
+   * __;
+   *   
+   *   $xpath= &new XPath($xml);
+   *   var_dump($xpath->query('/dialog/buttons/button/@name'));
+   * </code>
+   *
+   * @ext      domxml
+   * @purpose  Provide XPath functionality
    */
-  class XPath extends XML {
-    var $_proc= NULL;
+  class XPath extends Object {
     
-    function __construct($params= NULL) {
-      XML::__construct();
-      $this->_proc= new XSLProcessor();
-    }
-    
-    function _exprXSL($expression) {
-      return (
-        '<?xml version="1.0" encoding="iso-8859-1"?>'.
-        '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"> '.
-        '  <xsl:output method="xml" encoding="iso-8859-1" omit-xml-declaration="yes" indent="no"/>'.
-        '  <xsl:template match="xsl:buf">'.
-        '    <xsl:apply-templates select="document(\'arg:/_doc\')'.$expression.'"/>'.
-        '  </xsl:template>'.
-        '  <xsl:template match="@*">'.
-        '    <xsl:value-of select="."/>'.
-        '  </xsl:template>'.
-        '  <xsl:template match="*">'.
-        '    <xsl:copy>'.
-        '      <xsl:copy-of select="@*"/>'.
-        '      <xsl:apply-templates/>'.
-        '    </xsl:copy>'.
-        '  </xsl:template>'.
-        '</xsl:stylesheet>'
-      );
-    }
-    
-    function setContext($xml) {
-      $this->context= $xml;
-    }
-    
-    function setContextFile($filename) {
-      $this->context= implode('', file($filename));
-    }
-    
-    function evaluate($expression) {
-      $this->_proc->setXMLBuf('<xsl:buf xmlns:xsl="http://www.w3.org/1999/XSL/Transform"/>');
-      $this->_proc->setXSLBuf($this->_exprXSL($expression));
-      
-      return $this->_proc->run(array(
-        '/_doc' => $this->context
-      )) ? $this->_proc->output() : FALSE;
+    /**
+     * Constructor. Accepts  the following types as argument:
+     * <ul>
+     *   <li>A string containing the XML</li>
+     *   <li>A DomDocument object (as returned by domxml_open_mem, e.g.)</li>
+     *   <li>An xml.Tree object</li>
+     * </ul>
+     *
+     * @access  public
+     * @param   mixed arg
+     * @throws  lang.IllegalArgumentException
+     */
+    function __construct($arg) {
+      switch (xp::typeOf($arg)) {
+        case 'string':
+          $this->context= &xpath_new_context(domxml_open_mem($arg));
+          break;
+        
+        case 'php.domdocument':
+          $this->context= &xpath_new_context($arg);
+          break;
+        
+        case 'xml.Tree':
+          $this->context= &xpath_new_context(domxml_open_mem($arg->getSource()));
+          break;
+        
+        default:
+          throw(new IllegalArgumentException('Unsupported parameter type '.xp::typeOf($arg)));
+      }
     }
     
     /**
-     * Destructor
+     * Execute xpath query and return results
+     *
+     * @access  public
+     * @param   string xpath
+     * @return  php.XPathObject
      */
-    function __destruct() {
-      $this->_proc->__destruct();
-      XML::__destruct();
+    function query($xpath) {
+      return xpath_eval($this->context, $xpath);
     }
   }
 ?>
