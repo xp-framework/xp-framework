@@ -27,7 +27,7 @@
      * @return  string root
      */
     function __construct($root) {
-      $this->root= rtrim($root, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+      $this->root= rtrim($root, DIRECTORY_SEPARATOR);
     }
     
     /**
@@ -39,7 +39,7 @@
      */
     function realname($clientId, $uri) {
       return (DIRECTORY_SEPARATOR == $uri{0}
-        ? $this->root
+        ? $this->root.DIRECTORY_SEPARATOR
         : rtrim($this->root.$this->base[$clientId], DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR
       ).preg_replace('#^[/\.]+#', '', $uri);
     }
@@ -52,7 +52,7 @@
      * @param   string uri
      * @return  string new base
      */
-    function setBase($clientId, $uri) {
+    function setBase($clientId, $uri= NULL) {
       if (!is_dir($path= $this->realname($clientId, $uri))) {
         return throw(new IOException($uri.': not a directory'));
       }
