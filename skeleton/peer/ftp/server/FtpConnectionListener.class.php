@@ -172,7 +172,7 @@
      * @param   string params
      */
     function onPwd(&$event, $params) {
-      $this->answer($event->stream, 200, '"'.$this->storage->getBase().'" is current directory');
+      $this->answer($event->stream, 257, '"'.$this->storage->getBase().'" is current directory');
     }
 
     /**
@@ -665,7 +665,7 @@
         $port= $this->datasock->port;   // Recycle it!
       } else {
         $port= rand(1000, 65536);
-        $this->datasock= &new ServerSocket('ftp.banane.i.schlund.de', $port);
+        $this->datasock= &new ServerSocket($this->server->socket->host, $port);
         try(); {
           $this->datasock->create();
           $this->datasock->bind();
@@ -678,7 +678,7 @@
       }
       $this->cat && $this->cat->debug('Passive mode: Data socket is', $this->datasock);
 
-      $octets= strtr('172.17.29.15', '.', ',').','.($port >> 8).','.($port & 0xFF);
+      $octets= strtr(gethostbyname($this->server->socket->host), '.', ',').','.($port >> 8).','.($port & 0xFF);
       $this->answer($event->stream, 227, 'Entering passive mode ('.$octets.')');
     }
     
