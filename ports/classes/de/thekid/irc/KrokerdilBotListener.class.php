@@ -10,8 +10,12 @@
     'org.dict.DictClient',
     'text.translator.Swabian',
     'peer.Socket',
-    'io.File'
+    'io.File',
+    'io.FileUtil'
   );
+
+  define('MODE_AWAKE',      1);
+  define('MODE_SLEEP',      2);
 
   /**
    * Krokerdil Bot
@@ -22,13 +26,16 @@
   class KrokerdilBotListener extends IRCConnectionListener {
     var
       $tstart       = 0,
+      $registry     = array(),
       $config       = NULL,
       $lists        = array(),
       $karma        = array(),
       $recognition  = array(),
       $dictc        = NULL,
       $quote        = NULL,
-      $operator     = FALSE;
+      $operator     = array(),
+      $channels     = array(),
+      $mode         = 0;
       
     /**
      * Constructor
@@ -40,6 +47,7 @@
       $this->config= &$config;
       $this->reloadConfiguration();
       $this->tstart= time();
+      $this->mode= MOOD_AWAKE;
 
       // Set up DictClient
       $this->dictc= &new DictClient();
@@ -249,7 +257,12 @@
       
       // Check to see if we are channel op
       if (strstr($mode, 'o')) {
-        $this->operator = ('+' == $mode[0]);
+        if ('+' == $mode{0}) {
+          $this->operator[$target]= TRUE;
+        } else {
+          $this->operator[$target]= FALSE;
+        }
+        
         $this->cat && $this->cat->debug('OP', $this->operator);
       }
     }
@@ -287,9 +300,9 @@
       $this->cat && $this->cat->debug('"'.$message.'": Contains no swear');
       return NULL;
     }
-    
+
     /**
-     * Callback for private messages
+     * Callback for private messages (for default mood).
      *
      * @access  public
      * @param   &peer.irc.IRCConnection connection
@@ -297,8 +310,8 @@
      * @param   string target
      * @param   string message
      */
-    function onPrivateMessage(&$connection, $nick, $target, $message) {
-      
+    function handlePrivateMessageDefault(&$connection, $nick, $target, $message) {
+
       // Commands
       if (sscanf($message, "!%s %[^\r]", $command, $params)) {
         switch (strtolower($command)) {
@@ -318,9 +331,17 @@
               );
               $connection->close();
               
-              // Needed, because the IRCConnection is used in while(1) ...
+              // Needed, because the IRCConnection is used in while (1) ...
               exit;
             }
+            break;
+          
+          case '@sleep':
+            list($duration, $password)= explode(' ', $params);
+            if ($this->doPrivileged($connection, $nick, $password)) {
+              $this->doSleep($connection, $duration);
+            }
+            break;
           
           case '@changenick':
             list($new_nick, $password)= explode(' ', $params);
@@ -358,6 +379,20 @@
                 $victim, 
                 sprintf($this->lists['karma.dislike'][rand(0, sizeof($this->lists['karma.dislike'])- 1)], $victim)
               );
+            }
+            break;
+          
+          case '@join':
+            list($channel, $password)= explode(' ', $params);
+            if ($this->doPrivileged($connection, $nick, $password)) {
+              $connection->join($channel);
+            }
+            break;
+          
+          case '@part':
+            list($channel, $password)= explode(' ', $params);
+            if ($this->doPrivileged($connection, $nick, $password)) {
+              $connection->part($channel);
             }
             break;
           
@@ -621,7 +656,7 @@
       // Random actions
       switch (rand(0, 30)) {
         case 2:
-          if (!$this->operator) break;
+          if (!$this->operator[$target]) break;
 
           // Kick a random person with a very bad karma
           $victim= array_rand($this->karma);
@@ -662,6 +697,115 @@
         $this->setKarma($nick, $delta[0], $pattern);
       }
     }
+    
+    /**
+     * Callback for private messages in Sleeping mood
+     *
+     * @access  public
+     * @param   &peer.irc.IRCConnection connection
+     * @param   string nick
+     * @param   string target
+     * @param   string message
+     */
+    function handlePrivateMessageSleeping(&$connection, $nick, $target, $message) {
+    
+      // Auto-Wakeup after the specified period of time
+      if (time() > $this->registry['wakeup']) {
+        $this->doWakeup($connection);
+        return;
+      }
+
+      // Commands
+      if (sscanf($message, "!%s %[^\r]", $command, $params)) {
+        switch (strtolower($command)) {
+          case '@wakeup':
+            if ($this->doPrivileged($connection, $nick, $params)) {
+              $this->doWakeup($connection);
+            }
+            break;
+        }
+      }
+
+      // Any other phrase containing my name
+      if (stristr($message, $connection->user->getNick())) {
+      
+        // Talking with me while sleeping is regarded as disturbing, so 
+        // add negative karma for that person.
+        $this->setKarma($nick, rand(-5, 0), '@@sleeping');
+        
+        if (rand(0, 100) > 90) {
+          if (rand(0, 100) % 2) {
+            $connection->sendMessage(
+              $target, 
+              '%s ist %s', 
+              $nick,
+              $this->lists['swears'][rand(0, sizeof($this->lists['swears'])- 1)]
+            );
+          } else {
+            $connection->sendMessage($target, 'Siehst du nicht, dass ich schlafe, %s?!', $nick);
+          }
+        }
+      }
+    }
+        
+    /**
+     * Perform falling asleep.
+     *
+     * @access  public
+     * @param   &peer.irc.IRCConnection connection
+     * @param   int time time to sleep
+     */
+    function doSleep(&$connection, $time) {
+      $this->mode= MODE_SLEEP;
+      
+      $this->registry['wakeup']= time() + $time;
+      foreach (array_keys($this->channels) as $channel) {
+        $connection->sendAction($channel, 'zieht das Bett euch abgekschlappten Pissnelken vor und geht pennen.');
+      }
+      
+      $this->registry['nick-awake']= $connection->user->getNick();
+      $connection->setNick($connection->user->getNick().'|zZz');
+    }
+
+    /**
+     * Perform wakeup.
+     *
+     * @access  public
+     * @param   &peer.irc.IRCConnection connection
+     */
+    function doWakeup(&$connection) {
+      $this->mode= MODE_AWAKE;
+      
+      unset($this->registry['wakeup']);
+      $connection->setNick($this->registry['nick-awake']);
+
+      foreach (array_keys($this->channels) as $channel) {
+        $connection->sendMessage($channel, '*gähn*');
+        $connection->sendMessage($channel, 'stinkt noch fürchterlich aus dem Mund, hat aber keine Lust Zähne zu putzen.');
+      }
+    }
+    
+    /**
+     * Callback for private messages
+     *
+     * @access  public
+     * @param   &peer.irc.IRCConnection connection
+     * @param   string nick
+     * @param   string target
+     * @param   string message
+     */
+    function onPrivateMessage(&$connection, $nick, $target, $message) {
+      switch ($this->mode) {
+        case MODE_AWAKE:
+        default:
+          $this->handlePrivateMessageDefault($connection, $nick, $target, $message);
+          break;
+
+        case MODE_SLEEP:
+          $this->handlePrivateMessageSleeping($connection, $nick, $target, $message);
+          break;
+      }
+    }
 
     /**
      * Callback for server message REPLY_ENDOFMOTD (376)
@@ -679,7 +823,7 @@
           $this->config->readString('autojoin', 'password', NULL)
         );
       }
-    }    
+    }
 
     /**
      * Callback for invitations
@@ -730,6 +874,7 @@
     function onJoins(&$connection, $channel, $nick) {
       if (strcasecmp($nick, $connection->user->getNick()) == 0) {
         $connection->writeln('NOTICE %s :%s is back!', $channel, $nick);
+        $this->channels[$channel]= TRUE;
       } else {
         $this->sendRandomMessage($connection, $channel, 'join', $nick, NULL);
       }
@@ -745,6 +890,10 @@
      * @param   string message the part message, if any
      */
     function onParts(&$connection, $channel, $nick, $message) {
+      if (strcasecmp($nick, $connection->user->getNick()) == 0) {
+        $this->channels[$channel]= FALSE;
+      }
+      
       $this->sendRandomMessage($connection, $channel, 'leave', $nick, $message);
     }
 
