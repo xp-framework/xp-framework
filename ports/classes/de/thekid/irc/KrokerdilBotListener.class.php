@@ -309,8 +309,7 @@
 
           case 'quote':
             try(); {
-              $this->quote->connect();
-              do {
+              if ($this->quote->connect()) do {
                 if (!($buf= $this->quote->readLine())) continue;
                 $connection->sendMessage(
                   $target, 
@@ -329,8 +328,9 @@
             
           case 'whatis':
             try(); {
-              $this->dictc->connect('dict.org', 2628);
-              $definitions= $this->dictc->getDefinition($params, '*');
+              if ($this->dictc->connect('dict.org', 2628)) {
+                $definitions= $this->dictc->getDefinition($params, '*');
+              }
               $this->dictc->close();
             } if (catch('Exception', $e)) {
               $e->printStackTrace();
