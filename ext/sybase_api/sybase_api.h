@@ -44,3 +44,4 @@ SYBASE_API int sybase_close(sybase_link *link);
 SYBASE_API int sybase_free(sybase_link *link);
 SYBASE_API char *sybase_nameoftype(CS_INT type);
 SYBASE_API char *sybase_nameofcode(CS_INT code);
+SYBASE_API int sybase_free_result(sybase_result *result);
