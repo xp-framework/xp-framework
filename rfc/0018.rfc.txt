@@ -69,4 +69,9 @@ Comments
   I guess we can just implement this way by adding a new attribute
   containing the time zone specification in seconds.
 
+- kiesel, Mon Feb 21 22:31:42 CET 2005
+  By this, we would finally declare @serial as the timestamp at the
+  time of execution of the script. This was used like that before but
+  never reliably defined.
+
 <EOF>
