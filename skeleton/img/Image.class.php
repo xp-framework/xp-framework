@@ -15,7 +15,7 @@
    * Usage example: Creating an empty image:
    * <code>
    *   $palette_image= &Image::create(640, 480);
-   *   $truecolor_image= &Image::create(640, 480, TRUE);
+   *   $truecolor_image= &Image::create(640, 480, IMG_TRUECOLOR);
    * </code>
    *
    * Usage example: Loading an image from a file:
