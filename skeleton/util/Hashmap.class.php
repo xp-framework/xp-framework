@@ -150,14 +150,14 @@
      *
      * @access  public
      * @return  bool all keys/values have been flipped
+     * @throws  lang.FormatException in case this hash contains non-scalar values
      */
     function flip() {
-      try(); {
-        $this->_hash= array_flip($this->_hash);
-        if (is_error()) throw(new FormatException('hash contains values which are not scalar'));
-      } if (catch('FormatException', $e)) {
-        return FALSE;
+      $h= &array_flip($this->_hash);
+      if (xp::errorAt(__FILE__, __LINE__ - 1)) {
+        return throw(new FormatException('hash contains values which are not scalar'));
       }
+      $this->_hash= &$h;
       return TRUE;
     }
     
