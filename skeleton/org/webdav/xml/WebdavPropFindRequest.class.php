@@ -72,11 +72,6 @@
           $this->addProperty($p);
         }
       }
-      
-      //$this->path= $request->uri['path_translated'];
-      //$this->webroot= $request->uri['path_root'];
-      //$this->filename= $request->uri['path_translated'];
-      //$this->setEncoding('utf-8');
     }
     
     /**
