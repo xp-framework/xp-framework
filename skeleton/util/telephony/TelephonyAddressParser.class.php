@@ -254,7 +254,7 @@
      * @param   array defaults array with default values (may be omitted)
      */      
     function __construct($params= NULL) {
-      return parent::__construct($params);
+      parent::__construct($params);
     }
 
     /**
