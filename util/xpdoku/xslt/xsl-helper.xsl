@@ -48,7 +48,7 @@
      <meta name="description" content="XP is an object-oriented PHP framework"/>
      <meta name="keywords" content="PHP,PHP5,OOP,ZE2,object-oriented,framework,class collection"/>
      <meta name="author" content="The XP team"/>
-     <meta name="copyright" content="2002-2003"/>
+     <meta name="copyright" content="2002-2004"/>
     </head>
 
     <body
@@ -205,7 +205,7 @@
       <tr valign="top" bgcolor="#f0f0f0">
         <td><small>
           <a href="http://schlund.com/"><img title="Hosted by Schlund+Partner" alt="Schlund+Partner logo" src="/image/schlund.gif" width="110" height="20" border="0" align="left"/></a>      
-	      <!--<a href="/copyright.html">-->Copyright 2001-2003 XP-Team<!--</a>--><br/>
+	      <!--<a href="/copyright.html">-->Copyright 2001-2004 XP-Team<!--</a>--><br/>
           All rights reserved.<br/>
           </small>
         </td>
