@@ -37,8 +37,10 @@
       foreach ($index['entries'] as $name) {
         if ($album= &$this->getAlbumFor($name)) {
           $child= &$node->addChild(new Node('album', NULL, array(
-            'name'  => $album->getName(),
-            'title' => $album->getTitle()
+            'name'          => $album->getName(),
+            'title'         => $album->getTitle(),
+            'num_images'    => $album->numImages(),
+            'num_chapters'  => $album->numChapters()
           )));
           $child->addChild(new Node('description', new PCData($album->getDescription())));
           $child->addChild(Node::fromObject($album->createdAt, 'created'));
