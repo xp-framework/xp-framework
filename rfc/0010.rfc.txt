@@ -1,0 +1,193 @@
+RFC 0010: Core functionality cast()
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon Nov 22 20:58:08 CET 2004
+@status: draft
+@category: language
+
+Scope of Change
+---------------
+The core function cast() is changed to support class hierarchies 
+correctly. Also, cast() should no longer change the passed variable.
+
+Rationale
+---------
+The current model allows users to cast between arbitrary types.
+
+Functionality
+-------------
+Prototype:
+<?php
+  mixed lval = cast(mixed argument, string type)
+?>
+
+The type of the given argument "argument" is calculated at runtime using 
+the core function xp::typeOf().
+
+Null
+~~~~
+If the passed argument is NULL, the return value will be NULL, in any
+case.
+
+Primitive types
+~~~~~~~~~~~~~~~
+* Target type: string
+  - For all other primitive types, the builtin string-cast is used. 
+    <?php
+      cast(1, 'string')     := '1'
+      cast(1.0, 'string')   := '1'
+      cast(TRUE, 'string')  := '1'
+    ?>
+
+  - For any instance of a class extending lang.Object, its toString() 
+    method is called (with no arguments):
+    <?php
+      cast(new Date(), 'string') := 'Mon, 22 Nov 2004 21:41:40 +0100'
+    ?>
+
+  - For arrays, a lang.InvalidCastException will be thrown.
+
+* Target type: integer
+  - For all other primitive types, the builtin int-cast is used.
+    <?php
+      cast('10', 'int')     := 10
+      cast(2.7, 'int')      := 2
+      cast(TRUE, 'int')     := 1
+    ?>
+
+  - For arrays or any instance of a class extending lang.Object, a 
+    lang.InvalidCastException will be thrown.
+   
+* Target type: float
+  - For all other primitive types, the builtin float-cast is used.
+    <?php
+      cast('10', 'float')   := 10.0
+      cast(2, 'float')      := 2.0
+      cast(TRUE, 'float')   := 1.0
+    ?>
+
+  - For arrays or any instance of a class extending lang.Object, a 
+    lang.InvalidCastException will be thrown.
+
+* Target type: boolean
+  - For all other primitive types, the builtin bool-cast is used.
+    <?php
+      cast(1, 'boolean')    := TRUE
+      cast(1.0, 'boolean')  := TRUE
+      cast('', 'boolean')   := FALSE
+    ?>
+
+  - For arrays or any instance of a class extending lang.Object, a 
+    lang.InvalidCastException will be thrown.
+
+Arrays
+~~~~~~
+* Primitives -> Arrays
+  - For all primitive types, an array with one element containing
+    the original value will be created.
+    <?php
+      cast('Hello', 'array')    := array(1) { [0] => 'Hello' }
+      cast(1.2, 'array')        := array(1) { [0] => 1.2 }
+      cast(89, 'array')         := array(1) { [0] => 89 }
+      cast(TRUE, 'array')       := array(1) { [0] => TRUE }
+    ?>
+
+* Objects -> Arrays
+  - For any subclass of lang.Collection, an array of its contained
+    elements is returned.
+    <?php
+      $collection= &Collection::forClass('util.Date');
+      $collection->add(Date::now());
+      cast($collection, 'array') := array( [0] => class util.Date {} )
+    ?>
+  
+  - For any other object, the built-in array-cast is used. It returns
+    the object's members as keys and the their values as values
+    <?php
+      cast(new Object(), 'array') := array( ['__id'] => '0.34539500 1101157421')
+    ?>
+
+* Arrays -> Primitives
+  - Arrays may not be casted to primitives (also noted above).
+    An attempt to do so will throw a lang.InvalidCastException.
+    <?php
+      cast(array(), 'int') // *** InvalidCastException ***
+    ?>
+
+* Arrays -> Objects
+  - The keys of an array are taken as member variables of the created 
+    object and their values are copied. Note that the object's 
+    constructor will *not* be invoked.
+    <?php
+      cast(array('_utime' => 1101158157), 'Date') := class util.Date {}
+    ?>
+
+Objects
+~~~~~~~
+Instances of classes also can be cast into instances of other classes, 
+with one restriction: The source and destination classes must be related 
+by inheritance; one class must be a subclass of the other.
+
+The following
+
+<?php
+  class Figure extends Object { }
+  class Rectangle extends Figure { }
+  class Circle extends Figure { }
+?>
+
+Upcast operations (also called widening conversions) convert a subclass 
+reference to an ancestor class reference.
+
+<?php
+  cast(new Figure(), 'Circle')  := class Circle {}
+?>
+
+Downcast operations (also called narrowing conversions) convert an 
+ancestor class reference to a subclass reference.
+
+<?php
+  cast(new Circle(), 'Figure')  := class Figure {}
+?>
+
+If the referenced object is not an instance of either the target type 
+for the cast or a subclass of that type, the attempted cast is not 
+permitted and will throw a lang.ClassCastException.
+
+<?php
+  cast(new Circle(), 'Rectangle')  // *** ClassCastException ***
+?>
+
+If the destination class does not exist, a lang.ClassNotFoundException
+will be thrown.
+
+<?php
+  cast(new Rectangle(), 'FooBar') // *** ClassNotFoundException ***
+?>
+
+The fully qualified class name may be used in the type declaration.
+
+<?php
+  cast(new Figure(), 'de.thekid.shapes.3DFigure')
+?>
+
+Dependencies
+------------
+Two new classes:
+* lang.ClassCastException
+  Thrown to indicate hierarchy errors (see above for example)
+
+* lang.InvalidCastException
+  Thrown to indicate invalid cast (e.g., an array to a primitive)
+
+Related documents
+-----------------
+* PHP Manual: Type Juggling
+  http://de3.php.net/manual/en/language.types.type-juggling.php
+
+Comments
+--------
+
+<EOF>
