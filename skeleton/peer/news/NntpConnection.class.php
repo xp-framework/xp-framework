@@ -16,6 +16,23 @@
   /**
    * NNTP Connection
    *
+   * Usage [retrieve newsgroup listing]:
+   * <code>
+   *   $c= &new NntpConnection('nntp://news.xp-framework.net');
+   *   try(); {
+   *     $c->connect();
+   *     $groups= &$c->getGroups();
+   *     $c->close();
+   *   } if (catch('IOException', $e)) {
+   *     $e->printStackTrace();
+   *     exit();
+   *   }
+   *   
+   *   foreach ($groups as $group) {
+   *     var_dump($group->getName());
+   *   }
+   * </code>
+
    * @see      rfc://977
    * @purpose  Wrap
    */
