@@ -46,8 +46,6 @@ nedit.shellCommands: \
 		php -q $HOME/devel/xp/util/bin/mkaccessor.php\n\
 	Check XP Coding standards:Alt+V::ADS:\n\
 		$HOME/bin/xpcsc.pl %\n
-	Wordwrap:::EX:\n\
-		$HOME/bin/wordwrap - 72\n
 nedit.macroCommands: \
 	Complete Word:Alt+D::: {\n\
 		# Tuning parameters\n\
@@ -496,7 +494,7 @@ nedit.highlightPatterns: C:1:0{\n\
 	Unified diff:1:0{\n\
 		deleted_lines:"^\\-(.*)":::Comment::\n\
 		added_lines:"^\\+(.*)":::Subroutine::\n\
-		position:"^@@ (.+) @@":::Text Arg::\n\
+		position:"^@@ (.+) @@":::Identifier::\n\
 		cvs_header:"^(Index|RCS file|retrieving|diff|=).+":::Text Arg::\n\
 	}\n\
 	ChangeLog:1:0{\n\
