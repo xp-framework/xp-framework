@@ -20,13 +20,13 @@ Code conventions are important to programmers for a number of reasons:
 Kommentare am Anfang einer Datei:
 ---------------------------------
 Der Kommentar am Anfang einer Datei sollte auf jeden Fall den CVS-Tag enthalten, 
-also mindestens $Id$; und eine kurze Beschreibung, was hier vorkommt. Als Stil 
+also mindestens $Id\$; und eine kurze Beschreibung, was hier vorkommt. Als Stil 
 wird der Kommentar in C-Notation vorgeschlagen:
 
 /* 
  * Kurze Beschreibung
  *
- * $Id$
+ * $Id\$
  */
 
 Dieser Kommentar wird ohne Einrückung direkt hinter das erste <?php geschrieben 
