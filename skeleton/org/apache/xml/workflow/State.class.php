@@ -20,6 +20,7 @@
     /**
      * Initialize this state
      *
+     * @model   abstract
      * @access  public
      * @param   &org.apache.xml.workflow.Context context
      */  
