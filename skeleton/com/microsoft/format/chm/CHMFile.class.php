@@ -84,7 +84,7 @@
     }
 
     /**
-     * Retreive a substring and set the pointer to after the 
+     * Retrieve a substring and set the pointer to after the 
      * substring's length,
      *
      * @access  private
@@ -175,7 +175,7 @@
     }
     
     /**
-     * Retreive CHM header; extracts it if necessary
+     * Retrieve CHM header; extracts it if necessary
      *
      * @access  public
      * @return  &com.microsoft.format.chm.CHMHeader
@@ -229,7 +229,7 @@
     }
     
     /**
-     * Retreive CHM directory; extracts it if necessary
+     * Retrieve CHM directory; extracts it if necessary
      *
      * @access  public
      * @return  &com.microsoft.format.chm.CHMDirectory

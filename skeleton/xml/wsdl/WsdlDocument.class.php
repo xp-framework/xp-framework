@@ -222,7 +222,7 @@
     }
     
     /**
-     * Retreive a message by name
+     * Retrieve a message by name
      *
      * @access  public
      * @param   string name

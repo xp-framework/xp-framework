@@ -157,7 +157,7 @@
     }
 
     /**
-     * Retreives news_id
+     * Retrieves news_id
      *
      * @access  public
      * @return  int
@@ -177,7 +177,7 @@
     }
       
     /**
-     * Retreives caption
+     * Retrieves caption
      *
      * @access  public
      * @return  string
@@ -197,7 +197,7 @@
     }
       
     /**
-     * Retreives link
+     * Retrieves link
      *
      * @access  public
      * @return  string
@@ -217,7 +217,7 @@
     }
       
     /**
-     * Retreives body
+     * Retrieves body
      *
      * @access  public
      * @return  string
@@ -237,7 +237,7 @@
     }
       
     /**
-     * Retreives created_at
+     * Retrieves created_at
      *
      * @access  public
      * @return  util.Date
@@ -257,7 +257,7 @@
     }
       
     /**
-     * Retreives lastchange
+     * Retrieves lastchange
      *
      * @access  public
      * @return  util.Date
@@ -277,7 +277,7 @@
     }
       
     /**
-     * Retreives changedby
+     * Retrieves changedby
      *
      * @access  public
      * @return  string
@@ -297,7 +297,7 @@
     }
       
     /**
-     * Retreives bz_id
+     * Retrieves bz_id
      *
      * @access  public
      * @return  int

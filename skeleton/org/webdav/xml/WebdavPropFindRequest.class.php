@@ -67,7 +67,7 @@
     }
     
     /**
-     * Retreive base url of request
+     * Retrieve base url of request
      *
      * @access  public
      * @return  string
@@ -77,7 +77,7 @@
     }
 
     /**
-     * Retreive base uri of request
+     * Retrieve base uri of request
      *
      * @access  public
      * @return  string
@@ -87,7 +87,7 @@
     }
 
     /**
-     * Retreive depth
+     * Retrieve depth
      *
      * @access  public
      * @return  int

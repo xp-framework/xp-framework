@@ -188,7 +188,7 @@
     }
     
     /**
-     * Retreives an XSL parameter by its name
+     * Retrieves an XSL parameter by its name
      *
      * @access  public
      * @param   string name

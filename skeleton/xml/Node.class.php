@@ -162,7 +162,7 @@
     }
     
     /**
-     * Retreive an attribute by its name
+     * Retrieve an attribute by its name
      *
      * @access  public
      * @param   string name
@@ -184,7 +184,7 @@
     }
     
     /**
-     * Retreive XML representation
+     * Retrieve XML representation
      *
      * Setting indent to FALSE yields this result:
      * <pre>

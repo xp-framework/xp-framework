@@ -105,7 +105,7 @@
     function close() { }
     
     /**
-     * Retreive an address
+     * Retrieve an address
      *
      * @access  public  
      * @param   string number

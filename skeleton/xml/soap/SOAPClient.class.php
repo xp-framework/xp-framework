@@ -77,7 +77,7 @@
       if (FALSE === ($response= &$this->transport->send($this->message))) return FALSE;
       
       // Response
-      if (FALSE === ($this->answer= &$this->transport->retreive($response))) return FALSE;
+      if (FALSE === ($this->answer= &$this->transport->retrieve($response))) return FALSE;
       
       $data= $this->answer->getData();
       return sizeof($data) == 1 ? $data[0] : $data;

@@ -125,7 +125,7 @@
     }
     
     /**
-     * Retreives the time when this session was created, as Unix-
+     * Retrieves the time when this session was created, as Unix-
      * timestamp
      *
      * @access  public
@@ -164,7 +164,7 @@
     }
     
     /**
-     * Retreives a value previously registered with the specified name
+     * Retrieves a value previously registered with the specified name
      * or NULL in case this name does not exist
      *
      * @access  public

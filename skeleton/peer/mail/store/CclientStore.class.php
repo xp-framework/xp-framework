@@ -166,7 +166,7 @@
     function &getFolders() {
       if (NULL === ($f= &$this->cache->get(SKEY_LIST.SKEY_FOLDER))) {
       
-        // Retreive list and cache it
+        // Retrieve list and cache it
         if (0 == ($s= sizeof($list= &imap_getmailboxes($this->_hdl[0], $this->_hdl[1], '*')))) {
           return throw(new MessagingException(
             'Retreiving folder list failed',

@@ -21,7 +21,7 @@
       $session=         NULL;
       
     /**
-     * Retreives the session or NULL if none exists
+     * Retrieves the session or NULL if none exists
      *
      * @access  public
      * @return  lang.Object session object
@@ -101,7 +101,7 @@
     }
     
     /**
-     * Retreives the requests absolute URI as an uri (which consists
+     * Retrieves the requests absolute URI as an uri (which consists
      * of one or more of the following attributes: scheme, host, port,
      * user, pass, path, query and fragment).
      *
@@ -113,7 +113,7 @@
     }
     
     /**
-     * Retreives session id from request parameters
+     * Retrieves session id from request parameters
      *
      * @access  public
      * @return  string session's id

@@ -13,7 +13,7 @@
   class FileUtil extends Object {
   
     /**
-     * Retreive file contents as a string
+     * Retrieve file contents as a string
      *
      * <code>
      *   $str= FileUtil::getContents(new File('/etc/passwd'));

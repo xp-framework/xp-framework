@@ -128,7 +128,7 @@
     }
     
     /**
-     * Retreive identity
+     * Retrieve identity
      *
      * @access  public
      * @return  mixed identity value

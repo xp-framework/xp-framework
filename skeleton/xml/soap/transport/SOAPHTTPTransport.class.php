@@ -82,12 +82,12 @@
    }
    
     /**
-     * Retreive the answer
+     * Retrieve the answer
      *
      * @access  public
      * @return  &xml.soap.SOAPMessage
      */
-   function &retreive(&$response) {
+   function &retrieve(&$response) {
       $answer= &new SOAPMessage();
       
       // Check encoding

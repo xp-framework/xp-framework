@@ -52,7 +52,7 @@
     }
     
     /**
-     * Retreive a value by a given key
+     * Retrieve a value by a given key
      *
      * @access  public
      * @param   string key

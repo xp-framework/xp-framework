@@ -28,7 +28,7 @@
     }
     
     /**
-     * Retreive encoding
+     * Retrieve encoding
      *
      * @access  public
      * @return  string encoding

@@ -23,7 +23,7 @@
       $float    = 0.0;
       
     /**
-     * Retreive current microtime
+     * Retrieve current microtime
      *
      * @access  public
      * @return  float microtime
@@ -52,7 +52,7 @@
     }
     
     /**
-     * Retreive elapsed time
+     * Retrieve elapsed time
      *
      * @access  public
      * @return  float seconds elapsed

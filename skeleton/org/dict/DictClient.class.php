@@ -302,7 +302,7 @@
     }
     
     /**
-     * Retreive information
+     * Retrieve information
      *
      * Example of C/S communication:
      * <pre>
@@ -359,7 +359,7 @@
     }
     
     /**
-     * Retreive status
+     * Retrieve status
      * Example of C/S communication:
      * <pre>
      * >>> STATUS

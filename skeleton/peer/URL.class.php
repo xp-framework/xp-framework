@@ -66,7 +66,7 @@
     }
 
     /**
-     * Retreive scheme
+     * Retrieve scheme
      *
      * @access  public
      * @param   mixed default default NULL  
@@ -77,7 +77,7 @@
     }
 
     /**
-     * Retreive host
+     * Retrieve host
      *
      * @access  public
      * @param   mixed default default NULL  
@@ -88,7 +88,7 @@
     }
 
     /**
-     * Retreive path
+     * Retrieve path
      *
      * @access  public
      * @param   mixed default default NULL  
@@ -99,7 +99,7 @@
     }
 
     /**
-     * Retreive user
+     * Retrieve user
      *
      * @access  public
      * @param   mixed default default NULL  
@@ -110,7 +110,7 @@
     }
 
     /**
-     * Retreive password
+     * Retrieve password
      *
      * @access  public
      * @param   mixed default default NULL  
@@ -121,7 +121,7 @@
     }
 
     /**
-     * Retreive query
+     * Retrieve query
      *
      * @access  public
      * @param   mixed default default NULL  
@@ -132,7 +132,7 @@
     }
 
     /**
-     * Retreive fragment
+     * Retrieve fragment
      *
      * @access  public
      * @param   mixed default default NULL  
@@ -143,7 +143,7 @@
     }
 
     /**
-     * Retreive port
+     * Retrieve port
      *
      * @access  public
      * @param   mixed default default NULL  
@@ -154,7 +154,7 @@
     }
 
     /**
-     * Retreive parameters
+     * Retrieve parameters
      *
      * @access public
      * @return array params

@@ -18,7 +18,7 @@
   class SoapRpcRequest extends HttpScriptletRequest {
   
     /**
-     * Retreive SOAP message from request
+     * Retrieve SOAP message from request
      *
      * @access  public
      * @return  &xml.soap.SOAPMessage message object

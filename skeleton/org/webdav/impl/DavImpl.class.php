@@ -26,7 +26,7 @@
       $capabilities = 0;
       
     /**
-     * Retreive implementation's capabilites
+     * Retrieve implementation's capabilites
      *
      * @access  public
      * @return  int capabilities

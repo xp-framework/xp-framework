@@ -23,7 +23,7 @@
    *     $s->init();
    *     $response= &$s->process();
    *   } if (catch('HttpScriptletException', $e)) {
-   *     // Retreive standard "Internal Server Error"-Document
+   *     // Retrieve standard "Internal Server Error"-Document
    *     $response= &$e->getResponse(); 
    *   }
    *   $response->sendHeaders();

@@ -33,12 +33,12 @@
    function send(&$message) { }
    
     /**
-     * Retreive the answer
+     * Retrieve the answer
      *
      * @access  public
      * @return  &xml.soap.SOAPMessage
      */
-   function &retreive() { }
+   function &retrieve() { }
  
  }
 ?>

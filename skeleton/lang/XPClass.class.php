@@ -13,7 +13,7 @@
    * $o->getClass() syntax or the static method 
    * $class= &XPClass::forName("fully.qualified.Name")
    *
-   * To retreive the fully qualified name of a class, use this:
+   * To retrieve the fully qualified name of a class, use this:
    * <code>
    *   $o= &new File();
    *   $c= &$o->getClass();
@@ -45,7 +45,7 @@
     }
     
     /**
-     * Retreives the fully qualified class name for this class.
+     * Retrieves the fully qualified class name for this class.
      * 
      * Warning: Built-in classes will have a "php." prefixed,
      * e.g. php.stdClass although there is no such directory "php" 
@@ -114,7 +114,7 @@
     }
     
     /**
-     * Retreive a list of all declared member variables
+     * Retrieve a list of all declared member variables
      *
      * @access  public
      * @return  string[] member names
@@ -127,7 +127,7 @@
     }
     
     /**
-     * Retreive the parent class's class object
+     * Retrieve the parent class's class object
      *
      * @access  public
      * @return  &lang.XPClass class object

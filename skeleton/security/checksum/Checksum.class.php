@@ -65,7 +65,7 @@
     function &fromFile(&$file) { }
     
     /**
-     * Retreive the checksum's value
+     * Retrieve the checksum's value
      *
      * @access  public
      * @return  mixed value

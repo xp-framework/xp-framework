@@ -33,7 +33,7 @@
     }
     
     /**
-     * Retreives the style array as used for the second argument
+     * Retrieves the style array as used for the second argument
      * int imagesetstyle()
      *
      * @access  public

@@ -250,8 +250,7 @@
     }
 
     /**
-     * Retreive a value by its key. Returns NULL if there is no such
-     * key
+     * Retrieve a value by its key. Returns NULL if there is no such key
      *
      * @access  public
      * @param   scalar key

@@ -32,7 +32,7 @@
    * </code>
    * 
    * Within a scriptlet, use the getHeader() method of the request
-   * object to retreive the values of the Accept-Language / Accept-Charset
+   * object to retrieve the values of the Accept-Language / Accept-Charset
    * headers and the setHeader() method of the response object to
    * indicate language negotation has took place.
    *
@@ -74,7 +74,7 @@
     }
     
     /**
-     * Retreive locale
+     * Retrieve locale
      *
      * @access  public
      * @param   string[] supported
@@ -93,7 +93,7 @@
     }
     
     /**
-     * Retreive charset
+     * Retrieve charset
      *
      * @access  public
      * @param   string[] supported

@@ -154,7 +154,7 @@
 
         $part->id= $pid;
         
-        // We can retreive the body here since the message has been read anyway
+        // We can retrieve the body here since the message has been read anyway
         if (!empty($p[$i]->parts)) {
           if ($p[$i]->ifsubtype) switch ($p[$i]->subtype) {
             case 'MIXED': 

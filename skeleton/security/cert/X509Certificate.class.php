@@ -143,7 +143,7 @@
     }
     
     /**
-     * Retreive certificate's version
+     * Retrieve certificate's version
      *
      * @access  public
      * @return  int version
@@ -153,7 +153,7 @@
     }
 
     /**
-     * Retreive certificate's serial number
+     * Retrieve certificate's serial number
      *
      * @access  public
      * @return  int serial number

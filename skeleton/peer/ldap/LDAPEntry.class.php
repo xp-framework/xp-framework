@@ -80,7 +80,7 @@
     }
     
     /**
-     * Retreive this entries' DN (distinct name)
+     * Retrieve this entries' DN (distinct name)
      *
      * @access  public
      * @return  string DN
@@ -101,7 +101,7 @@
     }
     
     /**
-     * Retreive an attribute - an offset may be supplied to define
+     * Retrieve an attribute - an offset may be supplied to define
      * the values offset within the attribute. If -1 (the default)
      * is supplied, an array of attribute values is returned.
      *
@@ -120,7 +120,7 @@
     }
     
     /**
-     * Retreive all attributes
+     * Retrieve all attributes
      *
      * @access  public
      * @return  array

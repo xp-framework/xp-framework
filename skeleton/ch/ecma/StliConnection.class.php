@@ -83,7 +83,7 @@
     }
     
     /**
-     * Retreive dialing prefix
+     * Retrieve dialing prefix
      *
      * @access  public
      * @param   string type one of the TEL_CALL_* constants
@@ -198,7 +198,7 @@
     }
     
     /**
-     * Retreive an address
+     * Retrieve an address
      *
      * @access  public  
      * @param   string number

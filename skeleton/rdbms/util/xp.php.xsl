@@ -168,7 +168,7 @@
     <xsl:for-each select="attribute">
       <xsl:text>
     /**
-     * Retreives </xsl:text><xsl:value-of select="@name"/><xsl:text>
+     * Retrieves </xsl:text><xsl:value-of select="@name"/><xsl:text>
      *
      * @access  public
      * @return  </xsl:text><xsl:value-of select="@typename"/><xsl:text>

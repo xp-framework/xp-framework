@@ -100,7 +100,7 @@
     }
     
     /**
-     * Retreive stack trace as a string
+     * Retrieve stack trace as a string
      *
      * @access  public
      * @return  string

@@ -34,7 +34,7 @@
     }
     
     /**
-     * Retreive response
+     * Retrieve response
      *
      * @access  public
      * @return  org.apache.HttpScriptletResponse response object

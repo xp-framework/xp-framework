@@ -31,7 +31,7 @@
     }
     
     /**
-     * Retreive flags
+     * Retrieve flags
      *
      * @access  public
      * @return  int flags
@@ -50,7 +50,7 @@
     }
 
     /**
-     * Retreive driver
+     * Retrieve driver
      *
      * @access  public
      * @param   mixed default default NULL  
@@ -61,7 +61,7 @@
     }
     
     /**
-     * Retreive host
+     * Retrieve host
      *
      * @access  public
      * @param   mixed default default NULL  
@@ -72,7 +72,7 @@
     }
 
     /**
-     * Retreive database
+     * Retrieve database
      *
      * @access  public
      * @param   mixed default default NULL  
@@ -83,7 +83,7 @@
     }
 
     /**
-     * Retreive user
+     * Retrieve user
      *
      * @access  public
      * @param   mixed default default NULL  
@@ -94,7 +94,7 @@
     }
 
     /**
-     * Retreive password
+     * Retrieve password
      *
      * @access  public
      * @param   mixed default default NULL  

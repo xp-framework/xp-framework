@@ -24,7 +24,7 @@
     }
     
     /**
-     * Retreive the terminal's phone number
+     * Retrieve the terminal's phone number
      *
      * @access  public
      * @return  string number

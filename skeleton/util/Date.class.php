@@ -102,7 +102,7 @@
     }
     
     /**
-     * Retreive Unix-Timestamp for this date
+     * Retrieve Unix-Timestamp for this date
      *
      * @access  public
      * @return  int Unix-Timestamp

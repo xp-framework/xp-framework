@@ -39,7 +39,7 @@
     }
     
     /**
-     * Retreive transaction state
+     * Retrieve transaction state
      *
      * @access  public
      */

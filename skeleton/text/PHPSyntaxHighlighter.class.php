@@ -133,7 +133,7 @@
     }
     
     /**
-     * Retreive highlighted code. Will be XML-conform since &nbsp;
+     * Retrieve highlighted code. Will be XML-conform since &nbsp;
      * is replaced by &#160;. The deprecated <font>-Tag is replaced
      * by 
      *

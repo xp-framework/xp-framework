@@ -13,7 +13,7 @@
   class OpenSslUtil extends Object {
   
     /**
-     * Retreive errors
+     * Retrieve errors
      *
      * @model   static
      * @access  public

@@ -155,7 +155,7 @@
      */
     function tell($position= 0, $mode= SEEK_SET) {
       $result= gztell($this->_fd);
-      if (is_error() && FALSE === $result) return throw(new IOException('cannot retreive file pointer\'s position'));
+      if (is_error() && FALSE === $result) return throw(new IOException('cannot retrieve file pointer\'s position'));
       return $result;
     }
 

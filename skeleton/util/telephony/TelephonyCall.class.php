@@ -27,7 +27,7 @@
     }
     
     /**
-     * Retreive the origin's phone number
+     * Retrieve the origin's phone number
      *
      * @access  public
      * @return  string number
@@ -37,7 +37,7 @@
     }
 
     /**
-     * Retreive the destination's phone number
+     * Retrieve the destination's phone number
      *
      * @access  public
      * @return  string number

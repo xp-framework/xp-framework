@@ -328,7 +328,7 @@
     
     /**
      * Get message body. If this message is contained in a folder and the body
-     * has'nt been fetched yet, it'll be retreived from the storage underlying
+     * has'nt been fetched yet, it'll be retrieved from the storage underlying
      * the folder.
      *
      * @access  public

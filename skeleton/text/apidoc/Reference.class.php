@@ -30,7 +30,7 @@
     }
     
     /**
-     * Retreive valid schemes
+     * Retrieve valid schemes
      *
      * @model   static
      * @access  public

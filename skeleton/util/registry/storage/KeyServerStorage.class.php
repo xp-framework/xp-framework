@@ -43,7 +43,7 @@
       
     /**
      * Private Helper-Fucktion
-     * Sends a command and retreives the answer
+     * Sends a command and retrieves the answer
      *
      * @access  private
      * @param   mixed* vars Arguments to sprintf

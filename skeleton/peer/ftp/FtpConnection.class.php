@@ -9,7 +9,7 @@
   /**
    * FTP connection
    *
-   * Usage [retreive directory listing]:
+   * Usage [retrieve directory listing]:
    * <code>
    *   $c= &new FtpConnection('ftp://user:pass@example.com');
    *   try(); {

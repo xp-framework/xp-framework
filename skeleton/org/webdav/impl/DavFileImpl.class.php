@@ -245,7 +245,7 @@
      */
     function &get($filename) {
       if (is_dir($this->base.$filename)) {
-        return throw(new OperationNotAllowedException($filename.' cannot be retreived using GET'));
+        return throw(new OperationNotAllowedException($filename.' cannot be retrieved using GET'));
       }
       
       // Open file and read contents

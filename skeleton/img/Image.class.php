@@ -82,7 +82,7 @@
      */
     function fromFile($url) {
       if (FALSE === ($i= getimagesize($url))) {
-        return throw(new FormatException('Unable to retreive image information for '.$this->image));
+        return throw(new FormatException('Unable to retrieve image information for '.$this->image));
       }
       switch ($i[2]) {
         case 1: return $this->fromGif($url);
@@ -380,7 +380,7 @@
     }
     
     /**
-     * Retreive the color which is defined as transparent
+     * Retrieve the color which is defined as transparent
      *
      * @access  public
      * @return  &img.Color color
@@ -414,7 +414,7 @@
     }
     
     /**
-     * Retreive image data as a string
+     * Retrieve image data as a string
      *
      * @access  public
      * @return  string image date
@@ -432,7 +432,7 @@
     }
   
     /**
-     * Retreive image data as a file
+     * Retrieve image data as a file
      *
      * @access  public
      * @return  io.File file object

@@ -73,7 +73,7 @@
     }
     
     /**
-     * Retreive contents of errordocument
+     * Retrieve contents of errordocument
      *
      * @access  public
      * @return  string content

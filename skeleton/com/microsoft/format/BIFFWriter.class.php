@@ -64,7 +64,7 @@
     }
     
     /**
-     * Retreive version
+     * Retrieve version
      *
      * @access  public
      * @return  int version

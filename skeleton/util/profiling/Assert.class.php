@@ -87,7 +87,7 @@
     }
     
     /**
-     * Retreive the exception thrown by the assertion
+     * Retrieve the exception thrown by the assertion
      *
      * @access  public
      * @return  &util.AssertException

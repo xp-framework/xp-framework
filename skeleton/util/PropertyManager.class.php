@@ -17,7 +17,7 @@
       $_prop    = array();
     
     /**
-     * Retreive this property manager's instance
+     * Retrieve this property manager's instance
      * 
      * @model   static
      * @access  public

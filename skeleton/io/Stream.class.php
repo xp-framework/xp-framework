@@ -73,7 +73,7 @@
     }
     
     /**
-     * Retreive the stream's size in bytes
+     * Retrieve the stream's size in bytes
      *
      * @access  public
      * @return  int size streamsize in bytes
@@ -229,7 +229,7 @@
     }
     
     /**
-     * Retreive stream pointer position
+     * Retrieve stream pointer position
      *
      * @access  public
      * @throws  IOException in case of an error

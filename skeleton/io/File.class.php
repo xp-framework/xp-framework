@@ -137,7 +137,7 @@
     }
     
     /**
-     * Retreive the file's size in bytes
+     * Retrieve the file's size in bytes
      *
      * @access  public
      * @return  int size filesize in bytes
@@ -163,7 +163,7 @@
     }
 
     /**
-     * Retreive last access time
+     * Retrieve last access time
      *
      * Note: 
      * The atime of a file is supposed to change whenever the data blocks of a file 
@@ -184,7 +184,7 @@
     }
     
     /**
-     * Retreive last modification time
+     * Retrieve last modification time
      *
      * @access  public
      * @return  int The date the file was last modified as a unix-timestamp
@@ -213,7 +213,7 @@
     }
 
     /**
-     * Retreive when the file was created
+     * Retrieve when the file was created
      *
      * @access  public
      * @return  int The date the file was created as a unix-timestamp
@@ -379,7 +379,7 @@
     }
     
     /**
-     * Retreive file pointer position
+     * Retrieve file pointer position
      *
      * @access  public
      * @throws  IOException in case of an error
@@ -387,7 +387,7 @@
      */
     function tell() {
       $result= ftell($this->_fd);
-      if (FALSE === $result) return throw(new IOException('cannot retreive file pointer\'s position'));
+      if (FALSE === $result) return throw(new IOException('cannot retrieve file pointer\'s position'));
       return $result;
     }
 

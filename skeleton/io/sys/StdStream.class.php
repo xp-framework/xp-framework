@@ -20,7 +20,7 @@
   class StdStream extends Object {
   
     /**
-     * Retreive a file object
+     * Retrieve a file object
      *
      * <code>
      *   $stdout= &StdStream::get(STDOUT);

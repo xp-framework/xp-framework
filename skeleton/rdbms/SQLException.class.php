@@ -29,7 +29,7 @@
     }
     
     /**
-     * Retreive string representation of the stack trace
+     * Retrieve string representation of the stack trace
      *
      * @access  publuc
      * @return  string

@@ -35,7 +35,7 @@
     }
     
     /**
-     * Retreive the phone number in nice human readable form.
+     * Retrieve the phone number in nice human readable form.
      *
      * @access  public
      * @param int callCategory for which "view" do we need the number
@@ -95,7 +95,7 @@
     }
     
     /**
-     * Retreive the type
+     * Retrieve the type
      *
      * @access  public
      * @return  string type one of the TEL_ADDRESS_* constants

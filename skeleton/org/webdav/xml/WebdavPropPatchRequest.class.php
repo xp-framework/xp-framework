@@ -47,7 +47,7 @@
     }
     
     /**
-     * Retreive base url of request
+     * Retrieve base url of request
      *
      * @access  public
      * @return  string

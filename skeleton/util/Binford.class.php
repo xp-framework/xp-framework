@@ -31,7 +31,7 @@
     }
    
     /**
-     * Retreive the power
+     * Retrieve the power
      *
      * @access  public
      * @return  int power
@@ -41,7 +41,7 @@
     }
     
     /**
-     * Retreive header suited for HTTP/Mail
+     * Retrieve header suited for HTTP/Mail
      *
      * Example:
      * <pre>
