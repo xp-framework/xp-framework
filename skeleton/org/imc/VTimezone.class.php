@@ -10,7 +10,7 @@
   );
   
   // Identifier
-  define ('VTZ_ID',       'VTIMEZONE');
+  define('VTZ_ID',       'VTIMEZONE');
   
   class VTimezone extends Object {
     var

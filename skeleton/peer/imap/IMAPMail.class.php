@@ -4,12 +4,12 @@
  * $Id$
  */
 
-  define ('IMAP_RECENT',  0x0001);
-  define ('IMAP_UNSEEN',  0x0002);
-  define ('IMAP_ANWERED', 0x0004);
-  define ('IMAP_DELETED', 0x0008);
-  define ('IMAP_DRAFT',   0x0016);
-  define ('IMAP_FLAGGED', 0x0032);
+  define('IMAP_RECENT',  0x0001);
+  define('IMAP_UNSEEN',  0x0002);
+  define('IMAP_ANWERED', 0x0004);
+  define('IMAP_DELETED', 0x0008);
+  define('IMAP_DRAFT',   0x0016);
+  define('IMAP_FLAGGED', 0x0032);
 
   uses ('peer.imap.IMAPClient');
 
