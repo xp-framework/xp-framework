@@ -4,11 +4,8 @@
  * $Id$
  */
 
-  define('HTTP_GET',     'GET');
-  define('HTTP_POST',    'POST');
-  define('HTTP_HEAD',    'HEAD');
-  
   uses(
+    'peer.http.HttpConstants',
     'peer.Socket',
     'peer.URL',
     'peer.http.HttpResponse',
@@ -28,7 +25,7 @@
     var
       $url        = NULL,
       $method     = HTTP_GET,
-      $version    = '1.1',
+      $version    = HTTP_VERSION_1_1,
       $headers    = array(
         'Connection' => 'close'
       ),

@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('scriptlet.Cookie');
+  uses('scriptlet.Cookie', 'peer.http.HttpConstants');
 
   /**
    * Defines the request sent by the client to the server
@@ -20,7 +20,7 @@
       $headers=         array(),
       $params=          array(),
       $data=            '',
-      $method=          HTTP_METHOD_GET,
+      $method=          HTTP_GET,
       $session=         NULL;
     
     /**

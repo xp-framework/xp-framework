@@ -4,15 +4,8 @@
  * $Id$
  */
 
-  // HTTP methods
-  define('HTTP_METHOD_GET',     'GET');
-  define('HTTP_METHOD_POST',    'POST');
-  define('HTTP_METHOD_HEAD',    'HEAD');
-  define('HTTP_METHOD_PUT',     'PUT');
-  define('HTTP_METHOD_DELETE',  'DELETE');
-  define('HTTP_METHOD_OPTIONS', 'OPTIONS');
- 
   uses(
+    'peer.http.HttpConstants',
     'scriptlet.HttpScriptletRequest',
     'scriptlet.HttpScriptletResponse',
     'scriptlet.HttpScriptletException',
@@ -164,17 +157,17 @@
      */
     function handleMethod(&$request) {
       switch ($request->method) {
-        case HTTP_METHOD_POST:
+        case HTTP_POST:
           $request->setData($GLOBALS['HTTP_RAW_POST_DATA']);
           $m= 'doPost';
           break;
           
-        case HTTP_METHOD_GET:
+        case HTTP_GET:
           $request->setData(getenv('QUERY_STRING'));
           $m= 'doGet';
           break;
           
-        case HTTP_METHOD_HEAD:
+        case HTTP_HEAD:
           $request->setData(getenv('QUERY_STRING'));
           $m= 'doHead';
           break;        
