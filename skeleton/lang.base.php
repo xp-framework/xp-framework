@@ -25,7 +25,7 @@
     // }}}
 
     // {{{ public void gc()
-    //     Returns the garbage collector
+    //     Runs the garbage collector
     function gc() {
       xp::registry('errors', array());
       xp::registry('exceptions', array());
