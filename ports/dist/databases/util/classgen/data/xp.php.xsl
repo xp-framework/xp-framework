@@ -21,7 +21,7 @@
  * $Id$
  */
  
-  uses('rdbms.ConnectionManager');
+  uses('rdbms.DataSet');
  </xsl:text>
       <xsl:apply-templates/>
   <xsl:text>?></xsl:text>
@@ -43,7 +43,7 @@
   <xsl:call-template name="prettyname">
     <xsl:with-param name="string" select="@name"/>
   </xsl:call-template>
-  <xsl:text> extends Object {&#10;    var&#10;</xsl:text>
+  <xsl:text> extends DataSet {&#10;    var&#10;</xsl:text>
   
   <!-- Attributes -->
   <xsl:for-each select="attribute">
@@ -80,7 +80,6 @@
       <xsl:if test="not(@unique= 'true')">[]</xsl:if>
     <xsl:text> object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &amp;getBy</xsl:text>
     <xsl:call-template name="prettyname">
@@ -93,11 +92,8 @@
     </xsl:for-each>
     <xsl:text>) {
       $cm= &amp;ConnectionManager::getInstance();  
-      if (FALSE === ($db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="../@dbhost"/><xsl:text>', 0))) {
-        return throw(new IllegalAccessException('No connection to "</xsl:text><xsl:value-of select="../@dbhost"/><xsl:text>" available'));
-      }
-
       try(); {
+        $db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="../@dbhost"/><xsl:text>', 0);
         $q= &amp;$db->query('
           select&#10;</xsl:text>
       <xsl:for-each select="../attribute">
@@ -205,15 +201,11 @@
      * @access  public
      * @return  boolean success
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function update() {
       $cm= &amp;ConnectionManager::getInstance();  
-      if (FALSE === ($db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>', 0))) {
-        return throw(new IllegalAccessException('No connection to "</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>" available'));
-      }
-
       try(); {
+        $db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="../@dbhost"/><xsl:text>', 0);
         $db->update('
           </xsl:text><xsl:value-of select="@database"/>..<xsl:value-of select="@name"/><xsl:text> set&#10;</xsl:text>
       <xsl:for-each select="attribute[@identity = 'false']">
@@ -279,15 +271,11 @@
      * @access  public
      * @return  boolean success
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function insert() {
       $cm= &amp;ConnectionManager::getInstance();  
-      if (FALSE === ($db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>', 0))) {
-        return throw(new IllegalAccessException('No connection to "</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>" available'));
-      }
-
       try(); {
+        $db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="../@dbhost"/><xsl:text>', 0);
         $db->insert('
           </xsl:text>
        <xsl:value-of select="@database"/>..<xsl:value-of select="@name"/><xsl:text> (&#10;</xsl:text>
