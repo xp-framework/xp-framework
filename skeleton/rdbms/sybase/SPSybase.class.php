@@ -13,6 +13,7 @@
   /**
    * Sybase connection class
    *
+   * @deprecated
    * @purpose  Sybase connection
    * @ext      sybase
    * @see      http://manuals.sybase.com/
