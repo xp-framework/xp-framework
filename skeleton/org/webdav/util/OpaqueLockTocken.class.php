@@ -62,7 +62,7 @@
         return throw(new FormatException($str.' is not a valid opaquelocktoken string'));
       }
       
-      return new LockTocken($uuid);
+      return new OpaqueLockTocken($uuid);
     }
        
     /**
