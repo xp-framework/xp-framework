@@ -77,7 +77,7 @@
      *
      * @access  public
      * @model   static
-     * @see     http://php.net/strtotime
+     * @see     php://strtotime
      * @param   string str
      * @return  &util.Date
      */
