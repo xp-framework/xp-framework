@@ -171,8 +171,8 @@
 
         case 'ADR':
           switch ($keys[1]) {
-            case VCARD_ADR_HOME: $loc= 'home'; break;
-            case VCARD_ADR_WORK: $loc= 'work'; break;
+            case VCARD_ADR_HOME:   $loc= 'home'; break;
+            case VCARD_ADR_WORK:   $loc= 'work'; break;
             case VCARD_ADR_POSTAL: $loc= 'postal'; break;
             default: 
               return throw(new FormatException($keys[1].' is not a recognized address type'));
@@ -193,7 +193,7 @@
           
         default:
           // Discard
-      }      
+      }
     }
     
     /**
