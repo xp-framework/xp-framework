@@ -111,14 +111,14 @@
      * Returns true if the specified string matches this string.
      *
      * @access  public
-     * @param   mixed str
+     * @param   &lang.Generic cmp
      * @return  bool
      */
-    public function equals($str, $cs= TRUE) {
-      return 0 == ($cs 
-        ? strcmp((string)$str, $this->buffer) 
-        : strcasecmp((string)$str, $this->buffer)
-      );
+    public function equals(Generic $cmp) {
+      if ($cmp instanceof String) {
+        return (0 == strcmp($cmp->getBuffer(), $this->buffer));
+      }
+      return parent::equals($cmp);
     }
      
     /**
