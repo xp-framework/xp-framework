@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document title="XP::About::Installation">
+  <main>
+    <content>
+      <title>Installation</title>
+      <editor>$Id$</editor>
+      
+      <para>
+        <caption>php.ini-Anpassungen</caption>
+        <text>
+          Es lohnt sich, in der php.ini folgenden Wert anzupassen:
+
+          <ul>
+            <li>Unix: <pre>include_path = ".:/path/to/where/lang.base.php/resides"</pre></li>
+            <li>Windows: <pre>include_path = ".;c:\path\to\where\lang.base.php\resides"</pre></li>
+          </ul>
+
+          Man kann nun statt:
+          <code><![CDATA[require('/path/to/where/lang.base.php/resides/lang.base.php');]]></code>
+          überall
+          <code><![CDATA[require('lang.base.php');]]></code>
+          schreiben und sich beim Portieren viel Ärger sparen.
+
+          Siehe <ref type="ext" link="http://www.php.net/manual/en/configuration.php">PHP: Configuration</ref>, 
+          Beispiele 3-1 und 3-2.
+        </text>
+      </para>
+      <para>
+        <caption>Mindestanforderungen</caption>
+        <text>
+          PHP sollte in einer aktuellen Version vorliegen, alles > 4.1 
+          funktioniert. Ältere PHP-Versionen unterstützen beispielsweise
+          die $_*-Variablen nicht, kennen die array(&amp;$this, 'method')-
+          Notation für call_user_func[_array]() nicht oder haben Probleme
+          mit "parent" (siehe <ref type="ext" link="http://bugs.php.net/bug.php?id=12313">PHP Buf #12313</ref>).
+        </text>
+      </para>
+      <para>
+        <caption>Benötigte Dateien</caption>
+        <text>
+          Um ein laufendes XP-Framework zu haben, werden folgende Dateien 
+          in folgenden Verzeichnissen benötigt:
+
+          Im Basisverzeichnis (bspw. /usr/local/lib/skeleton/):
+          <ul>
+            <li>lang.base.php</li>
+          </ul>
+
+          In the directory "lang" (e.g. /usr/local/lib/skeleton/lang):
+          <ul>
+            <li>Object.class.php</li>
+            <li>Exception.class.php</li>
+            <li>XPClass.class.php</li>
+            <li>Exception.class.php</li>
+            <li>IllegalAccessException.class.php</li>
+            <li>IllegalArgumentException.class.php</li>
+            <li>IllegalStateException.class.php</li>
+            <li>FormatException.class.php</li>
+            <li>ClassLoader.class.php</li>
+          </ul>
+        </text>
+      </para>
+    </content>
+    <references>
+      <ref link="about">Introduction</ref>
+    </references>
+  </main>
+</document>
