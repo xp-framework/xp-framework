@@ -198,6 +198,19 @@
       <tr bgcolor="#cccccc"><td colspan="1"><img src="/image/spacer.gif" height="1" border="0"/></td></tr>
     </table>
   </xsl:template>
+
+  <xsl:template name="nav-divider">
+    <xsl:param name="caption"/>
+    <table border="0" width="100%" cellspacing="0" cellpadding="2">
+      <tr>
+        <td bgcolor="#3654a5" style="color: white; border-bottom: 1px solid #9eb6ff">
+          <b>
+            <xsl:apply-templates select="$caption"/>
+          </b>
+        </td>
+      </tr>
+    </table>
+  </xsl:template>
   
   <xsl:template name="embedded-divider">
     <tr bgcolor="#cccccc"><td colspan="2"><img src="/image/spacer.gif" height="1" border="0"/></td></tr>
