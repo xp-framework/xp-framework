@@ -62,7 +62,7 @@
         }
         
         try(); {
-          $this->tests[$i]->run();
+          $r= &$this->tests[$i]->run();
         } if (catch('Exception', $e)) {
           $e->message= $e->getStackTrace();
           $result->setFailed($this->tests[$i], $e);
@@ -70,7 +70,7 @@
           continue;
         }
 
-        $result->setSucceeded($this->tests[$i], $e);
+        $result->setSucceeded($this->tests[$i], $r);
         $this->tests[$i]->tearDown();
       }
 
