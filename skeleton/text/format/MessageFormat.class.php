@@ -34,7 +34,7 @@
    *
    * <code>
    *   $mf= &new MessageFormat(
-   *     'The disk "{1}" contains {0,choice,0:no files|1:one file|*:{0,printf,%d} files}.'
+   *     'The disk "{1}" contains {0,choice,0:no files|1:one file|*:{0,number,0#,#\'} files}.'
    *   );  
    *   $message= array();
    *   try(); {
@@ -120,12 +120,14 @@
      */
     function apply($fmt, &$argument) {
       static $instance;
+      static $level= 0;
       
       if (FALSE === ($p= strpos($fmt, '{'))) return $fmt;
       if (!isset($instance)) {
         $instance= &MessageFormat::getInstance();
       }
       if (!is_array($argument)) $argument= array($argument);
+      $level++;
       
       // Loop while {'s can be found
       $result= '';
@@ -141,13 +143,14 @@
           // DEBUG printf("     >> %d %s [bracket_count %d]\n", $i, $fmt{$i}, $c);
           switch($fmt{$i}) {
             case '{': $c++; break;
-            case '}': if (0 >= --$c) {
-              // DEBUG printf("     >> @@ %d - %d @@\n", $p, $i);
-              $index= substr($fmt, $p+ 1, $i- $p- 1);
-              $fmt= substr($fmt, $i+ 1);
-              break 2; 
-            }
-            break;
+            case '}': 
+              if (0 >= --$c) {
+                // DEBUG printf("     >> @@ %d - %d @@\n", $p, $i);
+                $index= substr($fmt, $p+ 1, $i- $p- 1);
+                $fmt= substr($fmt, $i+ 1);
+                break 2; 
+              }
+              break;
           }
         }
         // DEBUG printf("---> %s\n", $index);
@@ -156,7 +159,12 @@
         
         // No closing bracket found
         if (FALSE === $index) {
-          return throw(new FormatException('Parse error: closing curly bracket not found'));
+          trigger_error(sprintf(
+            'Opening bracket found at position %d of "%s"',
+            $p,
+            $fmt
+          ), E_USER_NOTICE);
+          return throw(new FormatException('Parse error [level '.$level.']: closing curly bracket not found'));
         }
         
         // Syntax: {2} = paste argument, {2,printf,%s} use formatter
@@ -189,6 +197,14 @@
         if (FALSE === ($format= $this->formatters[$type]->apply($param, $argument[$index]))) {
           return FALSE;
         }
+        
+        // DEBUG 
+        // printf(
+        //   "%s::apply('%s', %s)\n", 
+        //   $this->formatters[$type]->getClassName(), 
+        //   $param, 
+        //   $argument[$index]
+        // );
         
         // Look to see if a formatstring was returned
         if (FALSE !== strpos($format, '{')) {
