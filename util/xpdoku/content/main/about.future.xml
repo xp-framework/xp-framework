@@ -33,8 +33,9 @@
           
           <box caption="Note">
             Only those XP framework classes which cannot be automatically migrated are 
-            checked in to the CVS module <tt>skeleton2</tt>. Don't be surprised to find
-            only a couple of files there.
+            checked in to the the CVS module <tt>experiments</tt>' subdirectory 
+            <tt>skeleton2</tt>. Don't be surprised to find only a couple of files 
+            there.
           </box>
         </text>
       </para>
@@ -72,17 +73,6 @@
           In order to make exceptions work, existing sourcecode must be changed - it would
           otherwise result in parse errors. A little script, <tt>migrate_php5.php</tt>, assists
           you here.
-        </text>
-      </para>              
-      <para>
-        <caption>Changes: Exception API</caption>
-        <text>
-          The <ref type="api:class" link="lang.Exception#getStackTrace"/> method no longer 
-          returns a string. The return type has been replaced by an array of
-          StackTraceElements.
-          <br/><br/>
-          Use the <tt>toString</tt> method to retrieve a string representation of the
-          exception instead.
         </text>
       </para>              
       <para>
