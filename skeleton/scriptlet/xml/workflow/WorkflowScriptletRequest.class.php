@@ -37,7 +37,7 @@
     function initialize() {
       parent::initialize();
       if ($this->stateName) {
-        $name= ucfirst(str_replace('/', '', $this->stateName));
+        $name= implode('', array_map('ucfirst', array_reverse(explode('/', $this->stateName))));
         try(); {
           $class= &$this->classloader->loadClass('state.'.$name.'State');
         } if (catch('ClassNotFoundException', $e)) {
