@@ -40,8 +40,8 @@
    *   $c->setTrace($cat);
    *   try(); {
    *     $c->connect();
-   *     $term= &$c->getTerminal($c->getAddress('int:'.$p->value(2)));
-   *     $call= &$c->createCall($term, $c->getAddress('ext:'.$p->value(3)));
+   *     $term= &$c->getTerminal($c->getAddress($p->value(2)));
+   *     $call= &$c->createCall($term, $c->getAddress($p->value(3)));
    *     $c->releaseTerminal($term);
    *     $c->close();
    *   } if (catch('Exception', $e)) {
@@ -133,7 +133,7 @@
      * @param   &util.telephony.TelephonyAddress address
      * @return  &util.telephony.TelephonyTerminal
      */
-    function &getTerminal(&$address) { } 
+    function &getTerminal(&$address) { }
     
     /**
      * Release terminal
