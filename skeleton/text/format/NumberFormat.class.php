@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.text.format.IFormat');
+  uses('text.format.IFormat');
   
   /**
    * Printf formatter
@@ -12,7 +12,7 @@
    * @purpose  Provide a Format wrapper for numbers
    * @see      php://number_format
    * @see      php://localeconv
-   * @see      xp://util.text.format.IFormat
+   * @see      xp://text.format.IFormat
    */
   class NumberFormat extends IFormat {
 
@@ -20,7 +20,7 @@
      * Get an instance
      *
      * @access  public
-     * @return  &util.text.format.NumberFormat
+     * @return  &text.format.NumberFormat
      */
     function &getInstance() {
       return parent::getInstance('NumberFormat');

@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.text.format.IFormat');
+  uses('text.format.IFormat');
   
   /**
    * Binary data formatter

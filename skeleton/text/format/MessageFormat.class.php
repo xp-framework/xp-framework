@@ -80,7 +80,7 @@
      * Get an instance
      *
      * @access  public
-     * @return  &util.text.format.MessageFormat
+     * @return  &text.format.MessageFormat
      */
     function &getInstance() {
       return parent::getInstance('MessageFormat');

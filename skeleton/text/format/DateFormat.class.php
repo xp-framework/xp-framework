@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('util.text.format.IFormat');
+  uses('text.format.IFormat');
   
   /**
    * Date formatter
    *
    * @purpose  Provide a Format wrapper for date/time
    * @see      php://strftime
-   * @see      xp://util.text.format.IFormat
+   * @see      xp://text.format.IFormat
    */
   class DateFormat extends IFormat {
   
@@ -19,7 +19,7 @@
      * Get an instance
      *
      * @access  public
-     * @return  &util.text.format.DateFormat
+     * @return  &text.format.DateFormat
      */
     function &getInstance() {
       return parent::getInstance('DateFormat');

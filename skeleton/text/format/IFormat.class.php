@@ -30,7 +30,7 @@
      * Get an instance
      *
      * @access  public
-     * @return  &util.text.format.Format
+     * @return  &text.format.Format
      */
     function &getInstance($name) {
       static $__instance= array();

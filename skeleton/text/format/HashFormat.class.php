@@ -4,13 +4,13 @@
  * $Id$
  */
 
-  uses('util.text.format.IFormat');
+  uses('text.format.IFormat');
   
   /**
    * Hash formatter
    *
    * @purpose  Provide a Format wrapper for Hashs
-   * @see      xp://util.text.format.IFormat
+   * @see      xp://text.format.IFormat
    */
   class HashFormat extends IFormat {
 
@@ -18,7 +18,7 @@
      * Get an instance
      *
      * @access  public
-     * @return  &util.text.format.HashFormat
+     * @return  &text.format.HashFormat
      */
     function &getInstance() {
       return parent::getInstance('HashFormat');

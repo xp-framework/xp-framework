@@ -4,13 +4,13 @@
  * $Id$
  */
 
-  uses('util.text.format.IFormat');
+  uses('text.format.IFormat');
   
   /**
    * Array formatter
    *
    * @purpose  Provide a Format wrapper for arrays
-   * @see      xp://util.text.format.IFormat
+   * @see      xp://text.format.IFormat
    */
   class ArrayFormat extends IFormat {
 
@@ -18,7 +18,7 @@
      * Get an instance
      *
      * @access  public
-     * @return  &util.text.format.ArrayFormat
+     * @return  &text.format.ArrayFormat
      */
     function &getInstance() {
       return parent::getInstance('ArrayFormat');

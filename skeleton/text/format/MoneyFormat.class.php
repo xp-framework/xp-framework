@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('util.text.format.IFormat');
+  uses('text.format.IFormat');
   
   /**
    * Money formatter
    *
    * @purpose  Provide a Format wrapper for money_format
    * @see      php://money_format
-   * @see      xp://util.text.format.IFormat
+   * @see      xp://text.format.IFormat
    */
   class MoneyFormat extends IFormat {
 
@@ -19,7 +19,7 @@
      * Get an instance
      *
      * @access  public
-     * @return  &util.text.format.MoneyFormat
+     * @return  &text.format.MoneyFormat
      */
     function &getInstance() {
       return parent::getInstance('MoneyFormat');
