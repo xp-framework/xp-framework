@@ -32,35 +32,34 @@
    */
   class DomXSLProcessor extends XML {
     public
+      $processor    = NULL,
       $stylesheet   = array(),
       $document     = NULL,
       $params       = array(),
       $output       = '';
-      
+
     protected
       $_base        = '';
-
+      
     /**
      * Constructor
      *
      * @access  public
-     * @params  array params default NULL
      */
-    public function __construct($params= NULL) {
-      parent::__construct($params);
+    public function __construct() {
       $this->processor= NULL;
     }
-    
+
     /**
-     * Set an error handler
+     * Set base directory
      *
      * @access  public
-     * @param   mixed callback
+     * @param   string dir
      */
-    public function setErrorHandler($funcName) {
-      // Not implemented in DOM
+    public function setBase($dir) {
+      $this->_base= rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
-
+    
     /**
      * Set a scheme handler
      *
@@ -73,23 +72,13 @@
     }
 
     /**
-     * Set base directory
-     *
-     * @access  public
-     * @param   string dir
-     */
-    public function setBase($dir) {
-      $this->_base= rtrim($dir, '/').'/';
-    }
-
-    /**
      * Set XSL file
      *
      * @access  public
      * @param   string file file name
      */
     public function setXSLFile($file) {
-      $this->stylesheet= array(0, $file);
+      $this->stylesheet= array(0, $this->_base.$file);
     }
     
     /**
@@ -109,7 +98,7 @@
      * @param   string file file name
      */
     public function setXMLFile($file) {
-      $this->document= domxml_open_file($file);
+      $this->document= DomDocument::load($this->_base.$file);
     }
     
     /**
@@ -119,7 +108,7 @@
      * @param   string xml the XML as a string
      */
     public function setXMLBuf($xml) {
-      $this->document= domxml_open_mem($xml);
+      $this->document= DomDocument::loadXML($xml);
     }
 
     /**
@@ -151,34 +140,39 @@
      * @throws  xml.TransformerException
      */
     public function run() {
-    
-      // Hack for missing DomXSL->setBase() functionality - preserve
-      // original directory, change to base directory and change it back
-      // after transformation
       $cwd= FALSE;
-      if (!empty($this->_base)) {
-        $cwd= getcwd();
-        chdir($this->_base);
-      }
-      
+
       // Get stylesheet
-      $proc= FALSE;
+      $proc= new XSLTProcessor();
+      foreach ($this->params as $key => $val) {
+        $proc->setParameter(NULL, $key, $val);
+      }
       switch ($this->stylesheet[0]) {
-        case 0: $proc= domxml_xslt_stylesheet_file($this->stylesheet[1]); break;
-        case 1: $proc= domxml_xslt_stylesheet($this->stylesheet[1]);
+        case 0:
+          $proc->importStyleSheet(DomDocument::load($this->stylesheet[1]));
+          break;
+
+        case 1:
+          if ($this->_base) {
+            $cwd= getcwd();
+            chdir($this->_base);
+          }
+          $proc->importStyleSheet(DomDocument::loadXML($this->stylesheet[1]));
+          break;
+
+        default:
+          $proc= xp::$null;
       }
       
       // Transform this
-      $result= FALSE;
-      $proc && $result= $proc->process($this->document, $this->params, FALSE);
-      $cwd && chdir($cwd);
-      
-      if (!$result) {
+      $this->output= $proc->transformToXML($this->document);
+
+      delete($proc);
+      if (!$this->output) {
+        echo '<xmp>'; var_dump(xp::$errors);
         throw (new TransformerException('Transformation failed'));
       }
       
-      // Copy output from transformation
-      $this->output= $proc->result_dump_mem($result);
       return TRUE;
     }
 
@@ -198,9 +192,6 @@
      * @access  public
      */
     public function __destruct() {
-      if ($this->document) { with ($n= $this->document->document_element); {
-        $n && $n->unlink_node($n);
-      }}
       $this->document= NULL;
       parent::__destruct();
     }
