@@ -21,11 +21,15 @@
   </xsl:template>
 
   <xsl:template match="ref[@type= 'ext']">
-    <a href="{@link}" target="_new"><xsl:value-of select="."/></a>
+    <a title="External link to {@link}" href="{@link}" target="_new"><xsl:value-of select="."/></a>
   </xsl:template>
 
   <xsl:template match="ref[@type= 'google']">
     <a href="http://google.de/search?q={@link}" target="_new">Google search: <xsl:value-of select="@link"/></a>
+  </xsl:template>
+
+  <xsl:template match="ref[@type= 'api:class']">
+    <a title="XP API-Doc: {@link}" href="/apidoc/classes/{substring-before(@link, '#')}.html#{substring-after(@link, '#')}"><xsl:value-of select="@link"/></a>
   </xsl:template>
   
   <xsl:template match="ref">
@@ -83,7 +87,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
+
   <xsl:template match="main/content/para">
     <table border="0" width="100%" cellspacing="0" cellpadding="2">
       <tr>
@@ -99,8 +103,26 @@
     <p style="line-height: 16px; text-align: justify">
       <xsl:apply-templates select="text"/>
     </p>
+    <xsl:apply-templates select="advanced"/>
+    <br/>
   </xsl:template>
 
+  <xsl:template match="advanced">
+    <xsl:call-template name="frame">
+      <xsl:with-param name="margin" select="'4'"/>
+      <xsl:with-param name="icolor" select="'#eaffea'"/>
+      <xsl:with-param name="color" select="'#6a996a'"/>
+      <xsl:with-param name="content">
+        <span style="line-height: 18px">
+          <b>Advanced topics:</b><br/>
+          <xsl:for-each select="ref">
+            <img src="/image/caret-r.gif" height="7" width="11" alt="{position()}" hspace="2" vspace="0"/> <xsl:apply-templates select="."/><br/>
+          </xsl:for-each>
+        </span>
+      </xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+  
   <xsl:template match="code">
     <br/><br/>
     <xsl:call-template name="frame">
@@ -114,7 +136,7 @@
     <br/>
   </xsl:template>
 
-  <xsl:template match="php//*">
+  <xsl:template match="text//br|text//tt|php//*">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>
