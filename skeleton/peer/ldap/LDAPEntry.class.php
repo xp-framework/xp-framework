@@ -55,6 +55,7 @@
     function &fromData(&$data) {
       $e= &new LDAPEntry($data['dn']);
       
+      unset($data['dn']);
       foreach (array_keys($data) as $key) {
         if ('count' == $key || is_int($key)) continue;
         
@@ -127,6 +128,20 @@
      */
     function getAttributes() {
       return $this->attributes;
+    }
+    
+    /**
+     * Retrieve a string representation of this object
+     *
+     * @access  public
+     * @return  strig
+     */
+    function toString() {
+      $s= sprintf("%s@DN(%s){\n", $this->getClassName(), $this->getDN());
+      foreach ($this->attributes as $name => $attr) {
+        $s.= sprintf("  [%-20s] %s\n", $name, implode(', ', $attr));
+      }
+      return $s."}\n";
     }
   }
 ?>
