@@ -175,8 +175,7 @@
           case 'whatis':
             try(); {
               $status= $this->dictc->getStatus();
-              $connection->sendMessage($target, '-%s', var_export($status, 1));
-            } if (catch('IOException', $e)) {
+            } if (catch('Exception', $e)) {
               $e->printStackTrace();
 
               // We were probably disconnected, so close connection forcibly
