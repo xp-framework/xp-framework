@@ -23,8 +23,19 @@
       $purpose      = '',
       $examples     = array(),
       $extends      = NULL,
+      $name         = '',
       $model        = APIDOC_CLASS_MODEL_GENERIC;
       
+    /**
+     * Sets this class's name
+     *
+     * @access  public
+     * @param   string name
+     */
+    function setClassName($name) {
+      $this->name= $name;
+    }
+
     /**
      * Sets which class this class extends. This information is parsed
      * from the class declaration, i.e. 
