@@ -29,7 +29,6 @@
    *   }
    * </code> 
    *
-   * @see      reference
    * @purpose  Parser
    */
   class VFormatParser extends Object {
