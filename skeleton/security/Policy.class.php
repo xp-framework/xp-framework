@@ -62,7 +62,7 @@
      *     exit();
      *   }
      *
-     *   var_dump($policy);
+     *   echo $policy->toString();
      * </code>
      *
      * @see     http://java.sun.com/j2se/1.4.1/docs/guide/security/PolicyFiles.html
