@@ -22,8 +22,18 @@
       <a href="/content/about.html"><b>Learn more...</b></a>
     </introduction>
     <links>
-      <link href="/apidoc/">API-Docs: Overview</link>
-      <link href="/content/about.html">An introduction</link>
+      <link href="/apidoc/">
+        <caption>API-Docs: Overview</caption>
+        <description>Browse the XP classes' API documentation</description>
+      </link>
+      <link href="/content/about.html">
+        <caption>An introduction to XP</caption>
+        <description>Learn what XP is all about, what it looks and feels like</description>
+      </link>
+      <link href="/content/about.install.html">
+        <caption>Installation</caption>
+        <description>How to install the XP framework</description>
+      </link>
     </links>
     <news/>
   </main>

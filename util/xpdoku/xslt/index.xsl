@@ -45,7 +45,13 @@
             <img src="/image/anc_overview.gif" height="19" width="22" alt="=&gt;" hspace="2" vspace="2"/>
           </td>
           <td>
-            <a href="{@href}"><b><xsl:value-of select="."/></b></a>
+            <a href="{@href}"><b><xsl:value-of select="caption"/></b></a>
+          </td>
+        </tr>
+        <tr>
+          <td>&#160;</td>
+          <td>
+            <xsl:value-of select="description"/>
           </td>
         </tr>
       </xsl:for-each>
