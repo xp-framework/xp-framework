@@ -4,7 +4,7 @@ RCS file: /repository/ZendEngine2/zend.h,v
 retrieving revision 1.266
 diff -u -r1.266 zend.h
 --- Zend/zend.h	3 Nov 2004 23:05:17 -0000	1.266
-+++ Zend/zend.h	7 Nov 2004 15:07:59 -0000
++++ Zend/zend.h	7 Nov 2004 15:35:47 -0000
 @@ -255,6 +255,8 @@
   */
  typedef struct _zval_struct zval;
@@ -46,7 +46,7 @@ RCS file: /repository/ZendEngine2/zend_API.c,v
 retrieving revision 1.269
 diff -u -r1.269 zend_API.c
 --- Zend/zend_API.c	2 Nov 2004 13:10:37 -0000	1.269
-+++ Zend/zend_API.c	7 Nov 2004 15:08:00 -0000
++++ Zend/zend_API.c	7 Nov 2004 15:35:48 -0000
 @@ -1313,6 +1313,9 @@
  			internal_function->return_reference = ptr->arg_info[0].return_reference;
  		} else {
@@ -63,7 +63,7 @@ RCS file: /repository/ZendEngine2/zend_builtin_functions.c,v
 retrieving revision 1.254
 diff -u -r1.254 zend_builtin_functions.c
 --- Zend/zend_builtin_functions.c	26 Oct 2004 23:25:05 -0000	1.254
-+++ Zend/zend_builtin_functions.c	7 Nov 2004 15:08:01 -0000
++++ Zend/zend_builtin_functions.c	7 Nov 2004 15:35:48 -0000
 @@ -1205,45 +1205,80 @@
  	zend_uint mask = va_arg(args, zend_uint);
  	zend_uint comply = va_arg(args, zend_uint);
@@ -161,7 +161,7 @@ RCS file: /repository/ZendEngine2/zend_compile.c,v
 retrieving revision 1.600
 diff -u -r1.600 zend_compile.c
 --- Zend/zend_compile.c	16 Oct 2004 23:17:58 -0000	1.600
-+++ Zend/zend_compile.c	7 Nov 2004 15:08:04 -0000
++++ Zend/zend_compile.c	7 Nov 2004 15:35:50 -0000
 @@ -116,6 +116,22 @@
  	CG(declarables).ticks.value.lval = 0;
  }
@@ -491,7 +491,7 @@ RCS file: /repository/ZendEngine2/zend_compile.h,v
 retrieving revision 1.297
 diff -u -r1.297 zend_compile.h
 --- Zend/zend_compile.h	27 Oct 2004 17:58:45 -0000	1.297
-+++ Zend/zend_compile.h	7 Nov 2004 15:08:04 -0000
++++ Zend/zend_compile.h	7 Nov 2004 15:35:51 -0000
 @@ -45,6 +45,23 @@
          CG(doc_comment) = NULL;  \
          CG(doc_comment_len) = 0; \
@@ -579,7 +579,7 @@ RCS file: /repository/ZendEngine2/zend_exceptions.c,v
 retrieving revision 1.74
 diff -u -r1.74 zend_exceptions.c
 --- Zend/zend_exceptions.c	30 Oct 2004 10:13:27 -0000	1.74
-+++ Zend/zend_exceptions.c	7 Nov 2004 15:08:05 -0000
++++ Zend/zend_exceptions.c	7 Nov 2004 15:35:51 -0000
 @@ -28,6 +28,7 @@
  #include "zend_interfaces.h"
  #include "zend_exceptions.h"
@@ -641,7 +641,7 @@ RCS file: /repository/ZendEngine2/zend_globals.h,v
 retrieving revision 1.140
 diff -u -r1.140 zend_globals.h
 --- Zend/zend_globals.h	3 Nov 2004 23:13:32 -0000	1.140
-+++ Zend/zend_globals.h	7 Nov 2004 15:08:05 -0000
++++ Zend/zend_globals.h	7 Nov 2004 15:35:51 -0000
 @@ -73,8 +73,11 @@
  	zend_stack foreach_copy_stack;
  	zend_stack object_stack;
@@ -660,7 +660,16 @@ RCS file: /repository/ZendEngine2/zend_language_parser.y,v
 retrieving revision 1.151
 diff -u -r1.151 zend_language_parser.y
 --- Zend/zend_language_parser.y	4 Oct 2004 19:54:34 -0000	1.151
-+++ Zend/zend_language_parser.y	7 Nov 2004 15:08:05 -0000
++++ Zend/zend_language_parser.y	7 Nov 2004 15:35:52 -0000
+@@ -63,7 +63,7 @@
+ %left '^'
+ %left '&'
+ %nonassoc T_IS_EQUAL T_IS_NOT_EQUAL T_IS_IDENTICAL T_IS_NOT_IDENTICAL
+-%nonassoc '<' T_IS_SMALLER_OR_EQUAL '>' T_IS_GREATER_OR_EQUAL
++%nonassoc '<' T_IS_SMALLER_OR_EQUAL '>' T_IS_GREATER_OR_EQUAL T_COMPARE_ARROW
+ %left T_SL T_SR
+ %left '+' '-' '.'
+ %left '*' '/' '%'
 @@ -111,6 +111,7 @@
  %token T_TRY
  %token T_CATCH
@@ -882,7 +891,15 @@ diff -u -r1.151 zend_language_parser.y
  	|	T_CLONE expr { zend_do_clone(&$$, &$2 TSRMLS_CC); }
  	|	variable T_PLUS_EQUAL expr 	{ zend_check_writable_variable(&$1); zend_do_end_variable_parse(BP_VAR_RW, 0 TSRMLS_CC); zend_do_binary_assign_op(ZEND_ASSIGN_ADD, &$$, &$1, &$3 TSRMLS_CC); }
  	|	variable T_MINUS_EQUAL expr	{ zend_check_writable_variable(&$1); zend_do_end_variable_parse(BP_VAR_RW, 0 TSRMLS_CC); zend_do_binary_assign_op(ZEND_ASSIGN_SUB, &$$, &$1, &$3 TSRMLS_CC); }
-@@ -627,10 +734,12 @@
+@@ -589,6 +696,7 @@
+ 	|	expr T_IS_SMALLER_OR_EQUAL expr { zend_do_binary_op(ZEND_IS_SMALLER_OR_EQUAL, &$$, &$1, &$3 TSRMLS_CC); }
+ 	|	expr '>' expr 					{ zend_do_binary_op(ZEND_IS_SMALLER, &$$, &$3, &$1 TSRMLS_CC); }
+ 	|	expr T_IS_GREATER_OR_EQUAL expr { zend_do_binary_op(ZEND_IS_SMALLER_OR_EQUAL, &$$, &$3, &$1 TSRMLS_CC); }
++	|	expr T_COMPARE_ARROW expr { zend_do_binary_op(ZEND_COMPARE, &$$, &$3, &$1 TSRMLS_CC); }
+ 	|	expr T_INSTANCEOF class_name_reference { zend_do_instanceof(&$$, &$1, &$3, 0 TSRMLS_CC); }
+ 	|	'(' expr ')' 	{ $$ = $2; }
+ 	|	expr '?' { zend_do_begin_qm_op(&$1, &$2 TSRMLS_CC); }
+@@ -627,10 +735,12 @@
  
  fully_qualified_class_name:
  		T_STRING { zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
@@ -895,7 +912,7 @@ diff -u -r1.151 zend_language_parser.y
  	|	dynamic_class_name_reference	{ zend_do_end_variable_parse(BP_VAR_R, 0 TSRMLS_CC); zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
  ;
  
-@@ -661,8 +770,7 @@
+@@ -661,8 +771,7 @@
  
  
  ctor_arguments:
@@ -911,7 +928,7 @@ RCS file: /repository/ZendEngine2/zend_language_scanner.l,v
 retrieving revision 1.116
 diff -u -r1.116 zend_language_scanner.l
 --- Zend/zend_language_scanner.l	3 Nov 2004 23:13:32 -0000	1.116
-+++ Zend/zend_language_scanner.l	7 Nov 2004 15:08:05 -0000
++++ Zend/zend_language_scanner.l	7 Nov 2004 15:35:52 -0000
 @@ -795,6 +795,10 @@
  	return T_THROW;
  }
@@ -953,7 +970,18 @@ diff -u -r1.116 zend_language_scanner.l
  <ST_IN_SCRIPTING,ST_DOUBLE_QUOTES,ST_BACKQUOTE,ST_HEREDOC>"->" {
  	yy_push_state(ST_LOOKING_FOR_PROPERTY TSRMLS_CC);
  	return T_OBJECT_OPERATOR;
-@@ -1396,6 +1416,12 @@
+@@ -1072,6 +1092,10 @@
+ 	return T_IS_GREATER_OR_EQUAL;
+ }
+ 
++<ST_IN_SCRIPTING>"<=>" {
++	return T_COMPARE_ARROW;
++}
++
+ <ST_IN_SCRIPTING>"+=" {
+ 	return T_PLUS_EQUAL;
+ }
+@@ -1396,6 +1420,12 @@
  	return T_STRING;
  }
  
@@ -972,7 +1000,7 @@ RCS file: /repository/ZendEngine2/zend_object_handlers.c,v
 retrieving revision 1.106
 diff -u -r1.106 zend_object_handlers.c
 --- Zend/zend_object_handlers.c	30 Oct 2004 19:11:37 -0000	1.106
-+++ Zend/zend_object_handlers.c	7 Nov 2004 15:08:05 -0000
++++ Zend/zend_object_handlers.c	7 Nov 2004 15:35:53 -0000
 @@ -606,6 +606,8 @@
  			call_user_call->handler = zend_std_call_user_call;
  			call_user_call->arg_info = NULL;
@@ -988,7 +1016,7 @@ RCS file: /repository/ZendEngine2/zend_opcode.c,v
 retrieving revision 1.109
 diff -u -r1.109 zend_opcode.c
 --- Zend/zend_opcode.c	4 Oct 2004 19:54:34 -0000	1.109
-+++ Zend/zend_opcode.c	7 Nov 2004 15:08:05 -0000
++++ Zend/zend_opcode.c	7 Nov 2004 15:35:53 -0000
 @@ -78,6 +78,9 @@
  	op_array->doc_comment = NULL;
  	op_array->doc_comment_len = 0;
@@ -1067,7 +1095,7 @@ RCS file: /repository/ZendEngine2/zend_operators.c,v
 retrieving revision 1.202
 diff -u -r1.202 zend_operators.c
 --- Zend/zend_operators.c	3 Nov 2004 23:13:32 -0000	1.202
-+++ Zend/zend_operators.c	7 Nov 2004 15:08:06 -0000
++++ Zend/zend_operators.c	7 Nov 2004 15:35:53 -0000
 @@ -102,6 +102,55 @@
  	return result;
  }
@@ -1254,7 +1282,7 @@ RCS file: /repository/ZendEngine2/zend_reflection_api.c,v
 retrieving revision 1.138
 diff -u -r1.138 zend_reflection_api.c
 --- Zend/zend_reflection_api.c	3 Nov 2004 21:18:44 -0000	1.138
-+++ Zend/zend_reflection_api.c	7 Nov 2004 15:08:07 -0000
++++ Zend/zend_reflection_api.c	7 Nov 2004 15:35:55 -0000
 @@ -631,7 +631,18 @@
  	if (fptr->type == ZEND_USER_FUNCTION && fptr->op_array.return_reference) {
  		string_printf(str, "&");
@@ -1554,8 +1582,8 @@ RCS file: /repository/ZendEngine2/zend_vm_def.h,v
 retrieving revision 1.3
 diff -u -r1.3 zend_vm_def.h
 --- Zend/zend_vm_def.h	3 Nov 2004 07:11:49 -0000	1.3
-+++ Zend/zend_vm_def.h	7 Nov 2004 15:08:08 -0000
-@@ -3421,3 +3421,74 @@
++++ Zend/zend_vm_def.h	7 Nov 2004 15:35:56 -0000
+@@ -3421,3 +3421,87 @@
  	ZEND_VM_NEXT_OPCODE();
  }
  
@@ -1630,14 +1658,27 @@ diff -u -r1.3 zend_vm_def.h
 +	efree(alias_name);
 +	ZEND_VM_NEXT_OPCODE();
 +}
++
++ZEND_VM_HANDLER(151, ZEND_COMPARE, CONST|TMP|VAR|CV, CONST|TMP|VAR|CV)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		GET_OP1_ZVAL_PTR(BP_VAR_R),
++		GET_OP2_ZVAL_PTR(BP_VAR_R) TSRMLS_CC);
++	FREE_OP1();
++	FREE_OP2();
++	ZEND_VM_NEXT_OPCODE();
++}
 Index: Zend/zend_vm_execute.h
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_vm_execute.h,v
 retrieving revision 1.4
 diff -u -r1.4 zend_vm_execute.h
 --- Zend/zend_vm_execute.h	3 Nov 2004 07:11:49 -0000	1.4
-+++ Zend/zend_vm_execute.h	7 Nov 2004 15:08:15 -0000
-@@ -483,6 +483,77 @@
++++ Zend/zend_vm_execute.h	7 Nov 2004 15:36:03 -0000
+@@ -483,6 +483,78 @@
  	ZEND_VM_NEXT_OPCODE();
  }
  
@@ -1712,10 +1753,315 @@ diff -u -r1.4 zend_vm_execute.h
 +	efree(alias_name);
 +	ZEND_VM_NEXT_OPCODE();
 +}
++
  static int ZEND_FETCH_CLASS_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -27471,6 +27542,31 @@
+@@ -2472,6 +2544,18 @@
+ 	return zend_init_add_array_helper_SPEC_CONST_CONST(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_const(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC),
++		_get_zval_ptr_const(&opline->op2, EX(Ts), &free_op2 TSRMLS_CC) TSRMLS_CC);
++	;
++	;
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_ADD_SPEC_CONST_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -2824,6 +2908,18 @@
+ 	return zend_init_add_array_helper_SPEC_CONST_TMP(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_CONST_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_const(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC),
++		_get_zval_ptr_tmp(&opline->op2, EX(Ts), &free_op2 TSRMLS_CC) TSRMLS_CC);
++	;
++	zval_dtor(free_op2.var);
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_ADD_SPEC_CONST_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -3176,6 +3272,18 @@
+ 	return zend_init_add_array_helper_SPEC_CONST_VAR(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_CONST_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_const(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC),
++		_get_zval_ptr_var(&opline->op2, EX(Ts), &free_op2 TSRMLS_CC) TSRMLS_CC);
++	;
++	if (free_op2.var) {zval_ptr_dtor(&free_op2.var);};
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int zend_init_add_array_helper_SPEC_CONST_UNUSED(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -3614,6 +3722,18 @@
+ 	return zend_init_add_array_helper_SPEC_CONST_CV(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_const(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC),
++		_get_zval_ptr_cv(&opline->op2, EX(Ts), &free_op2, BP_VAR_R TSRMLS_CC) TSRMLS_CC);
++	;
++	;
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_BW_NOT_SPEC_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -4995,6 +5115,18 @@
+ 	return zend_init_add_array_helper_SPEC_TMP_CONST(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_TMP_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_tmp(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC),
++		_get_zval_ptr_const(&opline->op2, EX(Ts), &free_op2 TSRMLS_CC) TSRMLS_CC);
++	zval_dtor(free_op1.var);
++	;
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_ADD_SPEC_TMP_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -5439,6 +5571,18 @@
+ 	return zend_init_add_array_helper_SPEC_TMP_TMP(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_TMP_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_tmp(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC),
++		_get_zval_ptr_tmp(&opline->op2, EX(Ts), &free_op2 TSRMLS_CC) TSRMLS_CC);
++	zval_dtor(free_op1.var);
++	zval_dtor(free_op2.var);
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_ADD_SPEC_TMP_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -5883,6 +6027,18 @@
+ 	return zend_init_add_array_helper_SPEC_TMP_VAR(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_TMP_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_tmp(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC),
++		_get_zval_ptr_var(&opline->op2, EX(Ts), &free_op2 TSRMLS_CC) TSRMLS_CC);
++	zval_dtor(free_op1.var);
++	if (free_op2.var) {zval_ptr_dtor(&free_op2.var);};
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int zend_init_add_array_helper_SPEC_TMP_UNUSED(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -6413,6 +6569,18 @@
+ 	return zend_init_add_array_helper_SPEC_TMP_CV(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_TMP_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_tmp(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC),
++		_get_zval_ptr_cv(&opline->op2, EX(Ts), &free_op2, BP_VAR_R TSRMLS_CC) TSRMLS_CC);
++	zval_dtor(free_op1.var);
++	;
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_BW_NOT_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -9030,6 +9198,18 @@
+ 	return zend_isset_isempty_dim_prop_obj_handler_SPEC_VAR_CONST(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_VAR_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_var(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC),
++		_get_zval_ptr_const(&opline->op2, EX(Ts), &free_op2 TSRMLS_CC) TSRMLS_CC);
++	if (free_op1.var) {zval_ptr_dtor(&free_op1.var);};
++	;
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_ADD_SPEC_VAR_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -10338,6 +10518,18 @@
+ 	return zend_isset_isempty_dim_prop_obj_handler_SPEC_VAR_TMP(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_VAR_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_var(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC),
++		_get_zval_ptr_tmp(&opline->op2, EX(Ts), &free_op2 TSRMLS_CC) TSRMLS_CC);
++	if (free_op1.var) {zval_ptr_dtor(&free_op1.var);};
++	zval_dtor(free_op2.var);
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_ADD_SPEC_VAR_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -11667,6 +11859,18 @@
+ 	return zend_isset_isempty_dim_prop_obj_handler_SPEC_VAR_VAR(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_VAR_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_var(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC),
++		_get_zval_ptr_var(&opline->op2, EX(Ts), &free_op2 TSRMLS_CC) TSRMLS_CC);
++	if (free_op1.var) {zval_ptr_dtor(&free_op1.var);};
++	if (free_op2.var) {zval_ptr_dtor(&free_op2.var);};
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_FETCH_DIM_W_SPEC_VAR_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -13129,6 +13333,18 @@
+ 	return zend_isset_isempty_dim_prop_obj_handler_SPEC_VAR_CV(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_VAR_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_var(&opline->op1, EX(Ts), &free_op1 TSRMLS_CC),
++		_get_zval_ptr_cv(&opline->op2, EX(Ts), &free_op2, BP_VAR_R TSRMLS_CC) TSRMLS_CC);
++	if (free_op1.var) {zval_ptr_dtor(&free_op1.var);};
++	;
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_CLONE_SPEC_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -19612,6 +19828,18 @@
+ 	return zend_isset_isempty_dim_prop_obj_handler_SPEC_CV_CONST(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_cv(&opline->op1, EX(Ts), &free_op1, BP_VAR_R TSRMLS_CC),
++		_get_zval_ptr_const(&opline->op2, EX(Ts), &free_op2 TSRMLS_CC) TSRMLS_CC);
++	;
++	;
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_ADD_SPEC_CV_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -20920,6 +21148,18 @@
+ 	return zend_isset_isempty_dim_prop_obj_handler_SPEC_CV_TMP(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_CV_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_cv(&opline->op1, EX(Ts), &free_op1, BP_VAR_R TSRMLS_CC),
++		_get_zval_ptr_tmp(&opline->op2, EX(Ts), &free_op2 TSRMLS_CC) TSRMLS_CC);
++	;
++	zval_dtor(free_op2.var);
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_ADD_SPEC_CV_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -22249,6 +22489,18 @@
+ 	return zend_isset_isempty_dim_prop_obj_handler_SPEC_CV_VAR(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_CV_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_cv(&opline->op1, EX(Ts), &free_op1, BP_VAR_R TSRMLS_CC),
++		_get_zval_ptr_var(&opline->op2, EX(Ts), &free_op2 TSRMLS_CC) TSRMLS_CC);
++	;
++	if (free_op2.var) {zval_ptr_dtor(&free_op2.var);};
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_FETCH_DIM_W_SPEC_CV_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_op *opline = EX(opline);
+@@ -23711,6 +23963,18 @@
+ 	return zend_isset_isempty_dim_prop_obj_handler_SPEC_CV_CV(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
+ }
+ 
++static int ZEND_COMPARE_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		_get_zval_ptr_cv(&opline->op1, EX(Ts), &free_op1, BP_VAR_R TSRMLS_CC),
++		_get_zval_ptr_cv(&opline->op2, EX(Ts), &free_op2, BP_VAR_R TSRMLS_CC) TSRMLS_CC);
++	;
++	;
++	ZEND_VM_NEXT_OPCODE();
++}
+ static int ZEND_NULL_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+ {
+ 	zend_error_noreturn(E_ERROR, "Invalid opcode %d/%d/%d.", EX(opline)->opcode, EX(opline)->op1.op_type, EX(opline)->op2.op_type);
+@@ -27471,6 +27735,56 @@
    	ZEND_HANDLE_EXCEPTION_SPEC_HANDLER,
    	ZEND_HANDLE_EXCEPTION_SPEC_HANDLER,
    	ZEND_HANDLE_EXCEPTION_SPEC_HANDLER,
@@ -1744,10 +2090,35 @@ diff -u -r1.4 zend_vm_execute.h
 +  	ZEND_IMPORT_SPEC_HANDLER,
 +  	ZEND_IMPORT_SPEC_HANDLER,
 +  	ZEND_IMPORT_SPEC_HANDLER,
++  	ZEND_COMPARE_SPEC_CONST_CONST_HANDLER,
++  	ZEND_COMPARE_SPEC_CONST_TMP_HANDLER,
++  	ZEND_COMPARE_SPEC_CONST_VAR_HANDLER,
++  	ZEND_NULL_HANDLER,
++  	ZEND_COMPARE_SPEC_CONST_CV_HANDLER,
++  	ZEND_COMPARE_SPEC_TMP_CONST_HANDLER,
++  	ZEND_COMPARE_SPEC_TMP_TMP_HANDLER,
++  	ZEND_COMPARE_SPEC_TMP_VAR_HANDLER,
++  	ZEND_NULL_HANDLER,
++  	ZEND_COMPARE_SPEC_TMP_CV_HANDLER,
++  	ZEND_COMPARE_SPEC_VAR_CONST_HANDLER,
++  	ZEND_COMPARE_SPEC_VAR_TMP_HANDLER,
++  	ZEND_COMPARE_SPEC_VAR_VAR_HANDLER,
++  	ZEND_NULL_HANDLER,
++  	ZEND_COMPARE_SPEC_VAR_CV_HANDLER,
++  	ZEND_NULL_HANDLER,
++  	ZEND_NULL_HANDLER,
++  	ZEND_NULL_HANDLER,
++  	ZEND_NULL_HANDLER,
++  	ZEND_NULL_HANDLER,
++  	ZEND_COMPARE_SPEC_CV_CONST_HANDLER,
++  	ZEND_COMPARE_SPEC_CV_TMP_HANDLER,
++  	ZEND_COMPARE_SPEC_CV_VAR_HANDLER,
++  	ZEND_NULL_HANDLER,
++  	ZEND_COMPARE_SPEC_CV_CV_HANDLER,
    	ZEND_NULL_HANDLER
    };
    zend_opcode_handlers = (opcode_handler_t*)labels;
-@@ -30975,6 +31071,77 @@
+@@ -30975,6 +31289,90 @@
  	ZEND_VM_NEXT_OPCODE();
  }
  
@@ -1822,14 +2193,28 @@ diff -u -r1.4 zend_vm_execute.h
 +	efree(alias_name);
 +	ZEND_VM_NEXT_OPCODE();
 +}
++
++static int ZEND_COMPARE_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
++{
++	zend_op *opline = EX(opline);
++	zend_free_op free_op1, free_op2;
++
++	compare_function(&EX_T(opline->result.u.var).tmp_var,
++		get_zval_ptr(&opline->op1, EX(Ts), &free_op1, BP_VAR_R),
++		get_zval_ptr(&opline->op2, EX(Ts), &free_op2, BP_VAR_R) TSRMLS_CC);
++	FREE_OP(free_op1);
++	FREE_OP(free_op2);
++	ZEND_VM_NEXT_OPCODE();
++}
  
  void zend_vm_use_old_executor()
  {
-@@ -31129,6 +31296,7 @@
+@@ -31129,6 +31527,8 @@
    	ZEND_ASSIGN_DIM_HANDLER,
    	ZEND_ISSET_ISEMPTY_PROP_OBJ_HANDLER,
    	ZEND_HANDLE_EXCEPTION_HANDLER,
 +  	ZEND_IMPORT_HANDLER,
++  	ZEND_COMPARE_HANDLER,
    	ZEND_NULL_HANDLER
    };
    zend_opcode_handlers = (opcode_handler_t*)labels;
@@ -1839,9 +2224,10 @@ RCS file: /repository/ZendEngine2/zend_vm_opcodes.h,v
 retrieving revision 1.1
 diff -u -r1.1 zend_vm_opcodes.h
 --- Zend/zend_vm_opcodes.h	27 Oct 2004 20:13:59 -0000	1.1
-+++ Zend/zend_vm_opcodes.h	7 Nov 2004 15:08:16 -0000
-@@ -127,3 +127,4 @@
++++ Zend/zend_vm_opcodes.h	7 Nov 2004 15:36:03 -0000
+@@ -127,3 +127,5 @@
  #define ZEND_ASSIGN_DIM              147
  #define ZEND_ISSET_ISEMPTY_PROP_OBJ  148
  #define ZEND_HANDLE_EXCEPTION        149
 +#define ZEND_IMPORT                  150
++#define ZEND_COMPARE                 151

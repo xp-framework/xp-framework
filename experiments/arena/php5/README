@@ -44,7 +44,18 @@ Currently implemented
 
     // Will also print out "NULL"
     $client->setTrace(NULL);
-  ?>  
+  ?>
+
+* Comparison operator
+  The new comparison operator "<=>" returns 0 if the expressions on both 
+  sides are equal, 1 if the left side is smaller and -1 if the right hand
+  side is smaller.
+
+  1 <=> 1  // 0
+  0 <=> 1  // 1
+  1 <=> 0  // -1
+  
+  This is particularily useful for callbacks to any of the *sort() functions.
 
 Making it work
 --------------
