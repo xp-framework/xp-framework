@@ -70,21 +70,70 @@
     }
     
     /**
+     * Private Helper-Funktion, ermöglicht solcherlei Aufrufe
+     *
+     * <pre>
+     * $qrh= $dbo->query('
+     *   select 
+     *     domain_id 
+     *   from 
+     *     domain 
+     *   where 
+     *     domainname = %s 
+     *     and adminc= %d
+     *     and ext_vertragpos= %s
+     *   ', 
+     *   'thekid.de', 
+     *   2828822,
+     *   NULL
+     * );
+     * </pre>
+     *
+     * => Um das Quoten von Strings muss sich nicht mehr gekümmert werden!
+     * => NULL wird automatisch zu NULL (bei String-Feldern)
+     *
+     * @access  private
+     * @param   array args Die Argumente
+     */
+    function _prepare($args) {
+      $sql= $args[0];
+      if (sizeof($args)<= 1) return $sql;
+      $j= 0;    
+      $sql= $tok= strtok($sql, '%');
+      while (++$j && $tok= strtok('%')) {
+        $arg= (is_object($args[$j]) && method_exists($args[$j], 'toString') 
+          ? $args[$j]->toString()
+          : $args[$j]
+        );
+        switch ($tok{0}) {
+          case 'd': $sql.= ($arg == NULL ? 'NULL' : intval($arg)).substr($tok, 1); break;
+          case 's': $sql.= ($arg == NULL ? 'NULL' : '"'.str_replace('"', '""', $arg).'"').substr($tok, 1); break;
+          case 'l': $sql.= ($arg == NULL ? 'NULL' : '"'.str_replace('"', '""', $arg).'%"').substr($tok, 1); break;
+          default: $sql.= '%'.$tok; $j--;
+        }
+      }
+      return $sql;
+    }
+    
+    /**
      * Query-Funktion. Connected, falls nötig
      *
      * @access  public
-     * @param   string sql  Der abzusetzende SQL-Query-String
+     * @param   string sql Der abzusetzende SQL-Query-String
      * @return  bool result Query-Ergebnis
      * @throws  SQLException, wenn der Query schiefgeht
      */
-    function query($sql) {
-    
+    function query() {
+      $args= func_get_args();
+      $sql= $this->_prepare($args);
+
       // Wenn es keinen Connect gibt, einen herstellen
       if(!$this->handle) {
         $connect= $this->connect();
         if (isset($this->db)) $this->select_db();
       }
       
+      LOG::info('Sybase::'.$sql);
       $result= sybase_query($sql, $this->handle);
       if (FALSE === $result) throw(new SQLException('Statement failed', $sql));
       return $result;
@@ -99,7 +148,6 @@
      * @return  bool Konnte geseekt werden?
      */
     function data_seek($query, $offset) {
-      // $this->_logline_text("seek", "{offset} $offset");
       return sybase_data_seek($query, $offset);
     }
     
@@ -150,8 +198,9 @@
      *          2) field[0].content => field[1].content
      *          3) field[0].content => array(field[1].content, field[2].content, ...)
      */   
-    function &select_ref($sql) {
-      $query= $this->query("select $sql", $this->handle);
+    function &select_ref() {
+      $args= func_get_args();
+      $query= $this->query('select '.preg_replace('/^[\s\t\r\n]*select/i', '', $this->_prepare($args)));
       if($query) {
         $result_set= array();
         while($data= sybase_fetch_row($query)) {
@@ -175,8 +224,9 @@
      * @param	string sql Das SQL (ohne select)
      * @return  array Alle Rows
      */   
-    function &select($sql) {
-      $query= $this->query('select '.preg_replace('/^[\s\t\r\n]*select/i', '', $sql));
+    function &select() {
+      $args= func_get_args();
+      $query= $this->query('select '.preg_replace('/^[\s\t\r\n]*select/i', '', $this->_prepare($args)));
       if($query) {
         $result_set= array();
         while($result_set[]= $this->fetch($query)) {};
@@ -194,9 +244,10 @@
      * @param	string sql Das SQL (ohne update)
      * @return  bool Query-Ergebnis
      */   
-    function update($sql) {
+    function update() {
+      $args= func_get_args();
       $this->last_affected_rows= -1;
-      $result= $this->query('update '.preg_replace('/^[\s\t\r\n]*update/i', '', $sql));
+      $result= $this->query('update '.preg_replace('/^[\s\t\r\n]*update/i', '', $this->_prepare($args)));
       if($result) {
         $this->last_affected_rows= sybase_affected_rows();
       }
@@ -210,9 +261,10 @@
      * @param	string sql Das SQL (ohne insert)
      * @return  bool result Query-Ergebnis
      */   
-    function insert($sql) {
+    function insert() {
+      $args= func_get_args();
       $this->last_insert_id= $this->last_affected_rows= -1;
-      $result= $this->query('insert '.preg_replace('/^[\s\t\r\n]*insert/i', '', $sql));
+      $result= $this->query('insert '.preg_replace('/^[\s\t\r\n]*insert/i', '', $this->_prepare($args)));
       if($result) {
         $this->last_affected_rows= sybase_affected_rows();
       }
@@ -226,9 +278,10 @@
      * @param	string sql Das SQL (ohne delete)
      * @return  bool result Query-Ergebnis
      */   
-    function delete($sql) {
+    function delete() {
+      $args= func_get_args();
       $this->last_affected_rows= -1;
-      $result= $this->query('delete '.preg_replace('/^[\s\t\r\n]*delete/i', '', $sql));
+      $result= $this->query('delete '.preg_replace('/^[\s\t\r\n]*delete/i', '', $this->_prepare($args)));
       if($result) {
         $this->last_affected_rows= sybase_affected_rows();
       }
@@ -291,7 +344,7 @@
      * @return  int Der Wert von @@ERROR
      */      
     function get_error() {
-      $qrh= $this->query("select @@error", $this->handle);
+      $qrh= $this->query("select @@ERROR", $this->handle);
       if(!$qrh) return 0;
       list($result)= sybase_fetch_row($query);
       return $result;
@@ -316,6 +369,11 @@
       return sybase_num_rows($query);
     }
     
+    /**
+     * Gibt den Handle (resource id #x) der Funktion sybase_connect() zurück
+     *
+     * @return  resource Datenbankhandle
+     */
     function getHandle() {
       return $this->handle;
     }
