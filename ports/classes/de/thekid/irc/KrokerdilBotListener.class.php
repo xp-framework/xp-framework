@@ -176,7 +176,7 @@
         'Changing karma for %s by %d because of %s (total: %d)', 
         $nick,
         $delta,
-        $reason,
+        $reason ? $reason : '(null)',
         $this->karma[$nick]
       );
       $last[$nick][$reason]= time();
@@ -188,11 +188,11 @@
      *
      * @access  public
      * @param   &peer.irc.IRCConnection connection
-     * @param   string channel
      * @param   string nick the old nick
      * @param   string new the new nick
      */
-    function onNickChanges(&$connection, $channel, $nick, $new) {
+    function onNickChanges(&$connection, $nick, $new) {
+      $this->cat && $this->cat->debug('Copying karma from', $nick, 'to', $new);
       $this->setKarma($new, $this->karma[$nick]);
     }
     
