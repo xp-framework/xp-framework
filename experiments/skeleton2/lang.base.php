@@ -15,6 +15,7 @@
     // {{{ public string nameOf(string name)
     //     Returns the fully qualified name
     function nameOf($name) {
+      $name= strtolower($name);
       if (!isset(xp::$classes[$name])) {
         return 'php.'.$name;
       }
