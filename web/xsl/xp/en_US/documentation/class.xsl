@@ -175,9 +175,11 @@
       Method detail
     </h3>
     <xsl:for-each select="/formresult/apidoc/comments/method">
+      <xsl:sort select="@name"/>
+
       <h4>
         <img align="left" width="17" height="17" hspace="4" src="/image/{@access}.gif"/>
-        <a name="{name()}"><xsl:value-of select="name()"/></a>
+        <a name="{@name}"><xsl:value-of select="@name"/></a>
       </h4>
       <code>
         <xsl:value-of select="concat(@access, ' ', @model, ' ')"/>
