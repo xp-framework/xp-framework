@@ -178,9 +178,13 @@
           All rights reserved.<br/>
           </small>
         </td>
-        <td align="right"><small>
-	      This page was generated on: <xsl:value-of select="./@generated_at"/><br/>
-          </small><br/>
+        <td align="right">
+          <xsl:if test="./@generated_at != ''">
+            <small>
+	          This page was generated on: <xsl:value-of select="./@generated_at"/><br/>
+            </small>
+          </xsl:if>
+          <br/>
         </td>
       </tr>
     </table>
