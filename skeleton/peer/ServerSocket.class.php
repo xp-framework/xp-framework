@@ -15,7 +15,7 @@
    *     $s->create();
    *     $s->bind();
    *     $s->listen();
-   *   } if (catch('IOException', $e)) {
+   *   } if (catch('SocketException', $e)) {
    *     $e->printStackTrace();
    *     $s->close();
    *     exit();
@@ -71,11 +71,11 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException in case of an error
+     * @throws  peer.SocketException in case of an error
      */
     function create() {
       if (!is_resource($this->_sock= socket_create($this->domain, $this->type, $this->protocol))) {
-        return throw(new IOException(sprintf(
+        return throw(new SocketException(sprintf(
           'Creating socket failed',
           $this->getLastError()
         )));
@@ -89,7 +89,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException in case of an error
+     * @throws  peer.SocketException in case of an error
      */
     function bind($reuse= FALSE) {
       if (
@@ -97,7 +97,7 @@
         (FALSE === socket_setopt($this->_sock, SOL_SOCKET, SO_REUSEPORT, $reuse)) ||
         (FALSE === socket_bind($this->_sock, $this->host, $this->port))
       ) {
-        return throw(new IOException(sprintf(
+        return throw(new SocketException(sprintf(
           'Binding socket to '.$this->host.':'.$this->port.' failed',
           $this->getLastError()
         )));
@@ -120,11 +120,11 @@
      * @access  public
      * @param   int backlog default 20
      * @return  bool success
-     * @throws  IOException in case of an error
+     * @throws  peer.SocketException in case of an error
      */
     function listen($backlog= 10) {
       if (FALSE === socket_listen($this->_sock, $backlog)) {
-        return throw(new IOException(sprintf(
+        return throw(new SocketException(sprintf(
           'Listening on socket failed',
           $this->getLastError()
         )));
@@ -148,11 +148,11 @@
      *
      * @access  public
      * @return  &mixed a peer.BSDSocket object or FALSE
-     * @throws  IOException in case of an error
+     * @throws  peer.SocketException in case of an error
      */
     function &accept() {
       if (0 > ($msgsock= socket_accept($this->_sock))) {
-        return throw(new IOException(sprintf(
+        return throw(new SocketException(sprintf(
           'Accept failed',
           $this->getLastError()
         )));
@@ -161,7 +161,7 @@
       
       // Get peer
       if (FALSE === socket_getpeername($msgsock, $host, $port)) {
-        return throw(new IOException(sprintf(
+        return throw(new SocketException(sprintf(
           'Cannot get peer',
           $this->getLastError()
         )));      
