@@ -13,6 +13,10 @@
   );
   
   // {{{ main
+  $map= array(
+    'Exception'   => 'XPException'
+  );
+
   $p= &new ParamString();
   if (2 > $p->count || $p->exists('help', '?')) {
     printf(
@@ -112,9 +116,6 @@ __;
         break;
       
       case 'class':        // class StdStream extends Object {
-        $map= array(
-          'Exception'   => 'XPException'
-        );
         $out[]= 'class ';
         $t->getNextToken();             // Swallow whitepsace
         $classname= $t->getNextToken();
@@ -216,7 +217,8 @@ __;
         while ('{' !== $tok[1]) {
           switch ($tok[0]) {
             case T_CONSTANT_ENCAPSED_STRING:    // Exception name
-              $out[]= substr($tok[1], 1, -1).' ';
+              $name= substr($tok[1], 1, -1);
+              $out[]= substr((isset($map[$name]) ? $map[$name] : $name), 1, -1).' ';
               break;
               
             case T_VARIABLE:                    // Variable
