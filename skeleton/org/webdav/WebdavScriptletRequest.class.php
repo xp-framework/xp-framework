@@ -69,7 +69,7 @@
      * @return  string
      */
     function getPath() {
-      return $this->path;
+      return rtrim($this->path, "/");
     }
 
     /**
