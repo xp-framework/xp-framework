@@ -151,7 +151,7 @@
         $ret.= $this->_export ('BEGIN', strtoupper ($type));
         
         // Export all attributes
-        foreach ($this->{$type} as $key=> $value) {
+        foreach ($this->{$type} as $key => $value) {
           if ($value) { $ret.= $this->_export (strtoupper ($key), $value); }
         }
         
