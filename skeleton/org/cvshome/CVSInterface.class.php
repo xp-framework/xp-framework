@@ -19,6 +19,11 @@
     'org.cvshome.CVSInterfaceException'
   );
   
+  /**
+   * Wraps CVS commands
+   *
+   * @purpose  Base class
+   */
   class CVSInterface extends Object {
     var
       $cvsRoot= NULL;
