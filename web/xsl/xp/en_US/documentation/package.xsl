@@ -84,7 +84,9 @@
             </td>
             <td width="89%" valign="top">
               <xsl:for-each select="package">
-                <a title="{@name}" href="package?{$current/@collection}/{@name}"><xsl:value-of select="substring-after(@name, '.')"/></a>
+                <a title="{@name}" href="package?{$current/@collection}/{@name}">
+                  <xsl:value-of select="substring(@name, string-length(../@name)+ 2, string-length(@name))"/>
+                </a>
                 <xsl:if test="position() &lt; last()">, </xsl:if>
               </xsl:for-each>
               <br/><br/>
