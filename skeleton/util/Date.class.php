@@ -524,15 +524,15 @@
       $gmt= Date::_getGMTOffset();
       for ($i= 0, $s= strlen($format); $i < $s; $i++) {
         switch ($format{$i}) {
-          case 'a': $return.= $this->hour > 12 ? 'pm' : 'am'; break;
-          case 'A': $return.= $this->hour > 12 ? 'PM' : 'AM'; break;
+          case 'a': $return.= $this->hours > 12 ? 'pm' : 'am'; break;
+          case 'A': $return.= $this->hours > 12 ? 'PM' : 'AM'; break;
           case 'B': $return.= '???SWATCH???'; break;        // FIXME
           case 'c': $return.= sprintf(
               '%04d-%02d-%02dT%02d:%02d:%02d%s%2d:%2d', 
               $this->year,
               $this->mon,
               $this->mday,
-              $this->hour,
+              $this->hours,
               $this->minutes,
               $this->seconds,
               $gmt < 0 ? '+' : '-',
@@ -543,10 +543,10 @@
           case 'd': $return.= sprintf('%02d', $this->mday); break;
           case 'D': $return.= $daynames[$this->wday]; break;
           case 'F': $return.= $this->month; break;
-          case 'g': $return.= $this->hour == 0 ? 12 : $this->hour > 12 ? $this->hour - 12 : $this->hour; break;
-          case 'G': $return.= $this->hour; break;
-          case 'h': $return.= sprintf('%02d', $this->hour == 0 ? 12 : $this->hour > 12 ? $this->hour - 12 : $this->hour); break;
-          case 'H': $return.= sprintf('%02d', $this->hour); break;
+          case 'g': $return.= $this->hours == 0 ? 12 : ($this->hours > 12 ? $this->hours - 12 : $this->hours); break;
+          case 'G': $return.= $this->hours; break;
+          case 'h': $return.= sprintf('%02d', $this->hours == 0 ? 12 : ($this->hours > 12 ? $this->hours - 12 : $this->hours)); break;
+          case 'H': $return.= sprintf('%02d', $this->hours); break;
           case 'i': $return.= sprintf('%02d', $this->minutes); break;
           case 'I': $return.= '???IS_DST???'; break;        // FIXME
           case 'j': $return.= $this->mday; break;
@@ -615,25 +615,25 @@
           case 'g': $return.= '???YEAR_CORR???'; break;        // FIXME
           case 'G': $return.= '???YEAR_CORR???'; break;        // FIXME
           case 'h': $return.= strftime('%b', mktime(0, 0, 0, $result['mon'], 2, 1971)); break;
-          case 'H': $return.= sprintf('%02d', $this->hour); break;
-          case 'I': $return.= $return.= sprintf('%02d', $this->hour == 0 ? 12 : $this->hour > 12 ? $this->hour - 12 : $this->hour); break;
+          case 'H': $return.= sprintf('%02d', $this->hours); break;
+          case 'I': $return.= $return.= sprintf('%02d', $this->hours == 0 ? 12 : ($this->hours > 12 ? $this->hours - 12 : $this->hours)); break;
           case 'j': $return.= '???DAY_OF_YEAR???'; break;       // FIXME
           case 'm': $return.= sprintf('%02d', $this->mon); break;
           case 'M': $return.= sprintf('%02d', $this->minutes); break;
           case 'n': $return.= "\n"; break;
-          case 'p': $return.= $this->hour > 12 ? 'pm' : 'am'; break;
+          case 'p': $return.= $this->hours > 12 ? 'pm' : 'am'; break;
           case 'r': $return.= sprintf(
               '%02d:%02d:%02d %s',
-              $this->hour == 0 ? 12 : $this->hour > 12 ? $this->hour - 12 : $this->hour,
+              $this->hours == 0 ? 12 : ($this->hours > 12 ? $this->hours - 12 : $this->hours),
               $this->minutes,
               $this->seconds,
-              $this->hour > 12 ? 'PM' : 'AM'
+              $this->hours > 12 ? 'PM' : 'AM'
             ); 
             break;
-          case 'R': $return.= sprintf('%02d:%02d', $this->hour, $this->minutes); break;
+          case 'R': $return.= sprintf('%02d:%02d', $this->hours, $this->minutes); break;
           case 'S': $return.= sprintf('%02d', $this->seconds);
           case 't': $return.= "\t"; break;
-          case 'T': $return.= sprintf('%02d:%02d:%02d', $this->hour, $this->minutes, $this->seconds); break;
+          case 'T': $return.= sprintf('%02d:%02d:%02d', $this->hours, $this->minutes, $this->seconds); break;
           case 'u': $return.= ($this->wday + 6) % 7; break;
           case 'U': $return.= '???WEEKNUMBER???'; break;        // FIXME
           case 'V': $return.= '???WEEKNUMBER???'; break;        // FIXME
