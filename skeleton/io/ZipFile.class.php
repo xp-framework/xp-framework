@@ -17,11 +17,12 @@
   class ZipFile extends File {
   
     /**
-     * Datei öffnen
+     * Open the file
      *
-     * @param   string mode Öffnen-Modus
-     * @param   string compression Kompressions-Level
-     * @throws  FileNotFoundException, wenn Datei nicht gefunden wurde
+     * @access  public
+     * @param   string mode one of the FILE_MODE_* constants
+     * @throws  FileNotFoundException in case the file is not found
+     * @throws  IOException in case the file cannot be opened (e.g., lacking permissions)
      */
     function open($mode= FILE_MODE_READ, $compression) {
       $this->mode= $mode;
@@ -31,126 +32,161 @@
         (!$this->exists())
       ) return throw(new FileNotFoundException($this->uri));
       
-      // Öffnen
       $this->_fd= gzopen($this->uri, $this->mode.$compression);
       if (!$this->_fd) return throw(new IOException('cannot open '.$this->uri.' mode '.$this->mode));
       return TRUE;
     }
     
     /**
-     * Zeile auslesen. \r oder \n werden abgeschnitten
+     * Read one line and chop off trailing CR and LF characters
      *
-     * @param   int bytes default 4096 Anzahl max. zu lesender Bytes
-     * @return  string line Gelesene Bytes
-     * @throws  IOException, wenn nicht gelesen werden kann
+     * Returns a string of up to length - 1 bytes read from the file. 
+     * Reading ends when length - 1 bytes have been read, on a newline (which is 
+     * included in the return value), or on EOF (whichever comes first). 
+     *
+     * @access  public
+     * @param   int bytes default 4096 Max. ammount of bytes to be read
+     * @return  string Data read
+     * @throws  IOException in case of an error
      */
     function readLine($bytes= 4096) {
-      $result= chop(gzgets($this->_fd, $bytes));
-      if (is_error() && $result === FALSE) {
-        return throw(new IOException('readLine() cannot read '.$bytes.' bytes from '.$this->uri));
-      }
-      return $result;
+      return chop($this->gets($bytes));
     }
     
     /**
-     * Zeichen auslesen
+     * Read one char
      *
-     * @return  char result Gelesenes Zeichen
-     * @throws  IOException, wenn nicht gelesen werden kann
+     * @access  public
+     * @return  char the character read
+     * @throws  IOException in case of an error
      */
     function readChar() {
-      $result= gzgetc($this->_fd);
-      if (is_error() && $result === FALSE) {
+      if (FALSE === ($result= gzgetc($this->_fd))) {
         return throw(new IOException('readChar() cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
 
     /**
-     * Lesen (max $bytes Zeichen oder bis zum Zeilenende)
+     * Read a line
      *
-     * @param   int bytes default 4096 Anzahl max. zu lesender Bytes
-     * @return  string line Gelesene Bytes
-     * @throws  IOException, wenn nicht gelesen werden kann
+     * This function is identical to readLine except that trailing CR and LF characters
+     * will be included in its return value
+     *
+     * @access  public
+     * @param   int bytes default 4096 Max. ammount of bytes to be read
+     * @return  string Data read
+     * @throws  IOException in case of an error
      */
     function gets($bytes= 4096) {
-      $result= gzgets($this->_fd, $bytes);
-      if (is_error() && $result === FALSE) {
+      if (FALSE === ($result= gzgets($this->_fd, $bytes))) {
         return throw(new IOException('gets() cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
 
     /**
-     * Lesen
+     * Read (binary-safe)
      *
-     * @param   int bytes default 4096 Anzahl max. zu lesender Bytes
-     * @return  string line Gelesene Bytes
-     * @throws  IOException, wenn nicht gelesen werden kann
+     * @access  public
+     * @param   int bytes default 4096 Max. ammount of bytes to be read
+     * @return  string Data read
+     * @throws  IOException in case of an error
      */
     function read($bytes= 4096) {
-      $result= gzread($this->_fd, $bytes);
-      if (is_error() && $result === FALSE) {
+      if (FALSE === ($result= gzread($this->_fd, $bytes))) {
         return throw(new IOException('read() cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
 
     /**
-     * Schreiben
+     * Write
      *
+     * @access  public
+     * @param   string string data to write
      * @return  bool success
-     * @throws  IOException, wenn nicht geschrieben werden kann
+     * @throws  IOException in case of an error
      */
     function write($string) {
-      $result= gzwrite($this->_fd, $string);
-      if (is_error() && $result === FALSE) {
+      if (FALSE === ($result= gzwrite($this->_fd, $string))) {
         throw(new IOException('cannot write '.strlen($string).' bytes to '.$this->uri));
       }
       return $result;
     }
 
     /**
-     * Schreiben. \n wird ergänzt
+     * Write a line and append a LF (\n) character
      *
+     * @access  public
+     * @param   string string data to write
      * @return  bool success
-     * @throws  IOException, wenn nicht geschrieben werden kann
+     * @throws  IOException in case of an error
      */
     function writeLine($string) {
-      $result= gzputs($this->_fd, $string."\n");
-      if (is_error() && $result === FALSE) {
+      if (FALSE === ($result= gzputs($this->_fd, $string."\n"))) {
         throw(new IOException('cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
       }
       return $result;
     }
     
     /**
-     * Check auf <<EOF>>
+     * Returns whether the file pointer is at the end of the file
      *
-     * @return   bool isEof
+     * Hint:
+     * Use isOpen() to check if the file is open
+     *
+     * @see     php://feof
+     * @access  public
+     * @return  bool TRUE when the end of the file is reached
+     * @throws  IOException in case of an error (e.g., the file's not been opened)
      */
     function eof() {
-      return gzeof($this->_fd);
+      $result= gzeof($this->_fd);
+      if (xp::errorAt(__FILE__, __LINE__ - 1)) {
+        return throw(new IOException('cannot determine eof of '.$this->uri));
+      }
+      return $result;
     }
-    
+
     /**
-     * Filepointer bewegen
+     * Sets the file position indicator for fp to the beginning of the 
+     * file stream. 
+     * 
+     * This function is identical to a call of $f->seek(0, SEEK_SET)
      *
-     * @param   int position default 0 Die Position
-     * @param   int mode default SEEK_SET @see http://php.net/fseek
-     * @throws  IOException, wenn der Pointer nicht an die Position gesetzt werden konnte
-     * @return  bool success
+     * @access  public
+     * @throws  IOException in case of an error
      */
-    function seek($position= 0, $mode= SEEK_SET) {
-      $result= gzseek($this->_fd, $position);
-      if (is_error() && FALSE === $result) return throw(new IOException('seek error, position '.$position.' in mode '.$mode));
+    function rewind() {
+      if (FALSE === ($result= gzrewind($this->_fd))) {
+        return throw(new IOException('cannot rewind file pointer'));
+      }
       return TRUE;
     }
     
     /**
-     * Filepointerposition ermitteln
+     * Move file pointer to a new position
      *
-     * @throws  IOException, wenn die Position nicht ermittelt werden kann
+     * @access  public
+     * @param   int position default 0 The new position
+     * @param   int mode default SEEK_SET 
+     * @see     php://gzseek
+     * @throws  IOException in case of an error
+     * @return  bool success
+     */
+    function seek($position= 0, $mode= SEEK_SET) {
+      if (0 != ($result= gzseek($this->_fd, $position, $mode))) {
+        return throw(new IOException('seek error, position '.$position.' in mode '.$mode));
+      }
+      return TRUE;
+    }
+    
+    /**
+     * Retrieve file pointer position
+     *
+     * @access  public
+     * @throws  IOException in case of an error
      * @return  int position
      */
     function tell($position= 0, $mode= SEEK_SET) {
@@ -160,9 +196,10 @@
     }
 
     /**
-     * Datei schließen
+     * Close this file
      *
-     * @return   bool success
+     * @access  public
+     * @return  bool success
      */
     function close() {
       $result= gzclose($this->_fd);
