@@ -137,7 +137,7 @@
         return throw($e);
       }
 
-      return new </xsl:text>
+      return empty($data) ? NULL : new </xsl:text>
 	  <xsl:call-template name="prettyname">
 		<xsl:with-param name="string" select="../@name"/>
 	  </xsl:call-template>
