@@ -13,7 +13,7 @@
    * @access public
    */
   class XML extends Object {
-    var $encoding= 'iso-8859-1';
+    var $_encoding= 'iso-8859-1';
     
     /**
      * Returns XML declaration
@@ -22,7 +22,7 @@
      * @return  string declaration
      */
     function getDeclaration() {
-      return '<?xml version="1.0" encoding="'.$this->encoding.'" ?>';
+      return '<?xml version="1.0" encoding="'.$this->_encoding.'" ?>';
     }
   }
 ?>
