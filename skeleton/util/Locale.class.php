@@ -28,19 +28,23 @@
       $lang     = '',
       $country  = '',
       $variant  = '';
+    
+    var
+      $_str     = '';
 
     /**
-     * Construct
+     * Constructor
      *
      * @access  public
      * @param   string lang 2-letter abbreviation of language
      * @param   string country 2-letter abbreviation of country
      * @param   string variant default ''
+     * @throws  lang.IllegalArgumentException in case the locale is not available
      */
     function __construct() {
       switch (func_num_args()) {
         case 1: 
-          sscanf(func_get_arg(0), '%2s_%2s@%s', $this->lang, $this->country, $this->variant);
+          sscanf(func_get_arg(0), '%2s_%2s%s', $this->lang, $this->country, $this->variant);
           break;
           
         case 2:
@@ -52,6 +56,25 @@
           break;
       }
       
+      // Try to set the locale using different variations. If all fail, 
+      // throw an IllegalArgumentException.
+      $current= setlocale(LC_ALL, NULL);
+      $this->_str= setlocale(LC_ALL, array(
+        $this->lang.'_'.$this->country.$this->variant,
+        $this->lang.'_'.$this->country,
+        $this->lang,
+        $this->lang.'_'.$this->country.'.'.$this->variant,
+        $this->lang.'_'.$this->country.'@'.$this->variant
+      ));
+      setlocale(LC_ALL, $current);
+      if (FALSE === $this->_str) {
+        return throw(new IllegalArgumentException(sprintf(
+          'Locale [lang=%s,country=%s,variant=%s] not available',
+          $this->lang, 
+          $this->country, 
+          ltrim($this->variant, '.@')
+        )));
+      }
     }
     
     /**
@@ -62,7 +85,7 @@
      * @return  &util.Locale
      */
     function &getDefault() {
-      return new Locale(('C' == ($locale= setlocale(LC_ALL, 0)) 
+      return new Locale(('C' == ($locale= setlocale(LC_ALL, NULL)) 
         ? 'en_US'
         : $locale
       ));
@@ -116,7 +139,7 @@
      * @return  string
      */
     function hashCode() {
-      return sprintf('%u', crc32($this->lang.$this->country.$this->variant));
+      return sprintf('%u', crc32($this->_str));
     }
     
     /**
@@ -127,16 +150,14 @@
      * de_DE
      * en_US
      * de_DE@euro
+     * de_DE.ISO8859-1
      * </pre>
      *
      * @access  public
      * @return  string
      */
     function toString() {
-      return sprintf('%s_%s', $this->lang, $this->country).(empty($this->variant) 
-        ? '' 
-        : '@'.$this->variant
-      );
+      return $this->_str;
     }
   }
 ?>
