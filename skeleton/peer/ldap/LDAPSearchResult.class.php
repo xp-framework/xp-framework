@@ -17,7 +17,7 @@
       $size= 0;
       
     var
-      $_offset= 0;
+      $_offset= -1;
   
     /**
      * Constructor
@@ -82,7 +82,7 @@
      * @return  mixed entry or FALSE if there are none more
      */
     function getNextEntry() {
-      return $this->getEntry($this->_offset++);
+      return $this->getEntry(++$this->_offset);
     }
 
   }
