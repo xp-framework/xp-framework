@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('rdbms.SQLException');
+  uses('rdbms.SQLException', 'rdbms.DSN', 'rdbms.ResultSet');
   
   define('DB_STORE_RESULT',     0x0001);
   define('DB_BUFFER_RESULTS',   0x0002);
@@ -18,10 +18,10 @@
    */
   class DBConnection extends Object {
     var 
-      $handle = NULL,
-      $dsn    = NULL,
-      $flags  = 0;
-      
+      $handle  = NULL,
+      $dsn     = NULL,
+      $flags   = 0;
+    
     /**
      * Constructor
      *
@@ -67,16 +67,6 @@
      * @return  bool success
      */
     function selectdb($db) { }
-    
-    /**
-     * Seek
-     *
-     * @access  public
-     * @param   resource set
-     * @param   int offset
-     * @return  bool success
-     */
-    function seek($set, $offset) { }
 
     /**
      * Prepare an SQL statement
@@ -103,22 +93,6 @@
      * @return  mixed identity value
      */
     function identity() { }
-    
-    /**
-     * Retreive affected rows
-     *
-     * @access  public
-     * @return  int
-     */
-    function affected() { }
-    
-    /**
-     * Retreive number of rows returned from last query
-     *
-     * @access  public
-     * @return  int
-     */
-    function numrows() { }
     
     /**
      * Execute an update statement
@@ -157,25 +131,13 @@
     function query() { }
     
     /**
-     * Fetch a row (iterator function)
-     *
-     * @access  public
-     * @param   resource set
-     * @return  array rowset
-     */
-    function row($set) { }
-    
-    /**
      * Begin a transaction
      *
      * @access  public
      * @param   &rdbms.DBTransaction transaction
      * @return  &rdbms.DBTransaction
      */
-    function &begin(&$transaction) {
-      $transaction->db= &$this;
-      return $transaction;
-    }
+    function &begin(&$transaction) { }
     
     /**
      * Retreive transaction state
