@@ -94,7 +94,7 @@
       foreach ($this->parameters as $k => $v) {
         $query.= '&'.$k.'='.urlencode($v);
       }
-      $target= $this->url->getPath();
+      $target= $this->url->getPath('/');
       
       // Which HTTP method? GET and HEAD use query string, POST etc. use
       // body for passing parameters
@@ -109,7 +109,7 @@
         default:
           $body= substr($query, 1);
           $this->headers['Content-Length']= strlen($body);
-          $this->headers['Content-Type']= 'application/x-www-urlencoded';
+          $this->headers['Content-Type']= 'application/x-www-form-urlencoded';
           break;
       }
       
