@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document title="XP::Credits">
+  <main>
+    <content>
+      <title>Credits</title>
+      <editor>$Id$</editor>
+      
+      <para>
+        <caption>Core</caption>
+        <text>
+          Timm Friebe, Alex Kiesel
+        </text>
+      </para>
+    </content>
+  </main>
+</document>
