@@ -38,14 +38,14 @@
      * @access  public
      * @param   string cookie cookie name
      * @param   string value default ''
-     * @param   int expire default 0 the UNIX timestamp on which this cookie expires, default: now
+     * @param   int expires default 0 the UNIX timestamp on which this cookie expires de
      * @param   string path default ''
      * @param   string domain default ''
      * @param   bool secure default FALSE
      */
-    function __construct($cookie, $value= '', $expire= 0, $path= '', $domain= '', $secure= FALSE) {
+    function __construct($cookie, $value= '', $expires= 0, $path= '', $domain= '', $secure= FALSE) {
       $this->cookie= $cookie;
-      $this->expire= $expire;
+      $this->expires= $expires;
       $this->path= $path;
       $this->domain= $domain;
       $this->secure= $secure;
@@ -62,7 +62,7 @@
       return (
         $this->cookie.'='.
         ($this->value === '' ? 'deleted' : $this->value).
-        '; expires='.date('D, d-M-Y H:i:s \G\M\T', 0 == $this->expires ? time() : $this->expires).
+        ($this->expires !== 0 ? '; expires='.date('D, d-M-Y H:i:s \G\M\T', $this->expires) : '').
         ($this->path !== '' ? '; path='.$this->path : '').
         ($this->domain !== '' ? '; domain='.$this->domain : '').
         ($this->secure ? '; secure' : '')
