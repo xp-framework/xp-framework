@@ -31,12 +31,12 @@
     <xsl:variable name="primary_key_unique" select="index[@primary= 'true' and @unique= 'true']/key/text()"/>
     <xsl:text>/**
    * Class wrapper for table </xsl:text><xsl:value-of select="@name"/>, database <xsl:value-of select="./@database"/><xsl:text>
-   *
    * (Auto-generated on </xsl:text><xsl:value-of select="concat(
      ../@created_at, 
    ' by ', 
    ../@created_by
    )"/><xsl:text>)
+   *
    * @purpose  Datasource accessor
    */
   class </xsl:text>
@@ -50,11 +50,11 @@
     <xsl:value-of select="concat('      $', @name)"/>
     <xsl:choose>
       <xsl:when test="@typename= 'int'">= 0</xsl:when>
-    <xsl:when test="@typename= 'string'">= ''</xsl:when>
-    <xsl:when test="@typename= 'float'">= 0.0</xsl:when>
-    <xsl:when test="@typename= 'bool'">= FALSE</xsl:when>
-    <xsl:when test="@typename= 'util.Date'">= NULL</xsl:when>
-      </xsl:choose>
+      <xsl:when test="@typename= 'string'">= ''</xsl:when>
+      <xsl:when test="@typename= 'float'">= 0.0</xsl:when>
+      <xsl:when test="@typename= 'bool'">= FALSE</xsl:when>
+      <xsl:when test="@typename= 'util.Date'">= NULL</xsl:when>
+    </xsl:choose>
     <xsl:if test="position() != last()">,&#10;</xsl:if>
   </xsl:for-each>
   <xsl:text>;&#10;</xsl:text>
@@ -79,8 +79,8 @@
     </xsl:call-template>
       <xsl:if test="not(@unique= 'true')">[]</xsl:if>
     <xsl:text> object
-     * @throws  SQLException in case an error occurs
-     * @throws  IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.SQLException in case an error occurs
+     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function &amp;getBy</xsl:text>
     <xsl:call-template name="prettyname">
@@ -98,7 +98,7 @@
       }
 
       try(); {
-        $q= $db->query('
+        $q= &amp;$db->query('
           select&#10;</xsl:text>
       <xsl:for-each select="../attribute">
       <xsl:text>            </xsl:text>
@@ -135,7 +135,7 @@
         <xsl:choose>
           <xsl:when test="@unique = 'true'">
             <xsl:text>
-        if ($r= $q-&gt;next()) $data= &amp;new </xsl:text>
+        if ($q &amp;&amp; $r= $q-&gt;next()) $data= &amp;new </xsl:text>
     <xsl:call-template name="prettyname">
     <xsl:with-param name="string" select="../@name"/>
     </xsl:call-template>
@@ -144,7 +144,7 @@
           <xsl:otherwise>
             <xsl:text>
         $data= array();
-        while ($r= $q-&gt;next($q)) {
+        if ($q) while ($r= $q-&gt;next($q)) {
           $data[]= &amp;new </xsl:text>
     <xsl:call-template name="prettyname">
     <xsl:with-param name="string" select="../@name"/>
@@ -155,8 +155,6 @@
         </xsl:choose>
       <xsl:text>
       } if (catch('SQLException', $e)) {
-
-        // more error handling TBD here?
         return throw($e);
       }
 
@@ -206,8 +204,8 @@
      *
      * @access  public
      * @return  boolean success
-     * @throws  SQLException in case an error occurs
-     * @throws  IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.SQLException in case an error occurs
+     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function update() {
       $cm= &amp;ConnectionManager::getInstance();  
@@ -266,8 +264,6 @@
       <xsl:text>
         );
       } if (catch('SQLException', $e)) {
-
-        // more error handling TBD here?
         return throw($e);
       }
 
@@ -282,8 +278,8 @@
      *
      * @access  public
      * @return  boolean success
-     * @throws  SQLException in case an error occurs
-     * @throws  IllegalAccessException in case there is no suitable database connection available
+     * @throws  rdbms.SQLException in case an error occurs
+     * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     function insert() {
       $cm= &amp;ConnectionManager::getInstance();  
@@ -330,8 +326,6 @@
         </xsl:if>
         <xsl:text>
       } if (catch('SQLException', $e)) {
-
-        // more error handling TBD here?
         return throw($e);
       }
 
