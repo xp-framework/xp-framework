@@ -108,7 +108,13 @@
             $handler->setAttribute('status', HANDLER_INITIALIZED);
             $handler->addChild(Node::fromArray($this->handlers[$i]->values[HVAL_PERSISTENT], 'values'));
             foreach (array_keys($this->handlers[$i]->values[HVAL_FORMPARAM]) as $key) {
-              $response->addFormValue($key, $this->handlers[$i]->values[HVAL_FORMPARAM][$key]);
+            
+              // Skip parameters which were set via setFormValue() and which were
+              // posted via request to avoid duplicate parameters. We do not need
+              // to use $response->addFormValue() because this is done in
+              // XMLScriptlet::processRequest() called in XMLScriptlet::doGet().
+              if (isset($request->params[$key])) continue;
+              $request->params[$key]= $this->handlers[$i]->values[HVAL_FORMPARAM][$key];
             }
 
             // If the handler is not active, ask the next handler
