@@ -44,5 +44,6 @@
     function insertStatus(&$elem) {
       $elem->addChild(Node::fromArray($this->values, 'values'));
     }
+    
   }
 ?>
