@@ -9,7 +9,7 @@ $Id$
 
 Scope of Change
 ---------------
-The webservices APIs (xml.xmprpc and xml.soap.rpc) will have access 
+The webservices APIs (xml.xmlrpc and xml.soap.rpc) will have access 
 control built in.
 
 Rationale
@@ -51,7 +51,7 @@ map the "admin" role to the exact users.
 
 Dependencies
 ------------
-RFC #0008
+RFC #0016
 
 Related documents
 -----------------
