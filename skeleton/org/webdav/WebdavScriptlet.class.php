@@ -6,7 +6,10 @@
 
   uses(
     'org.apache.HttpScriptlet',
-    'org.webdav.xml.WebdavPropFindRequest'
+    'org.webdav.xml.WebdavPropFindRequest',
+    'org.webdav.xml.WebdavPropFindResponse',
+    'io.Folder',
+    'util.MimeType'
   );
   
   define('WEBDAV_METHOD_PROPFIND',  'PROPFIND');
@@ -59,6 +62,69 @@
     }
     
     /**
+     * Find properties
+     *
+     * @access  public
+     * @param   &org.webdav.xml.WebdavPropFindRequest request
+     * @param   &org.webdav.xml.WebdavPropFindResponse response
+     * @return  &org.webdav.xml.WebdavPropFindResponse response
+     */
+    function &findProperties(&$request, &$response) {
+      if (
+        (!is_a($request, 'WebdavPropFindRequest')) ||
+        (!is_a($response, 'WebdavPropFindResponse'))
+      ) {
+        trigger_error('[request.type ] '.get_class($request), E_USER_NOTICE);
+        trigger_error('[response.type] '.get_class($response), E_USER_NOTICE);
+        return throw(new IllegalArgumentException('Parameters passed of wrong types'));
+      }
+
+      $l= &Logger::getInstance();
+      $c= &$l->getCategory();
+      $c->debug('Properties requested', $request->getProperties());
+      
+      $depth= 0;
+      $f= &new Folder($this->path);
+      try(); {
+        $response->addEntry(
+          $f->uri,
+          $request->getBaseUrl().$f->pathname,
+          new Date(filectime($f->uri)),
+          new Date(filemtime($f->uri)),
+          WEBDAV_COLLECTION
+        );
+        $depth++;
+        
+        // Recurse through folder
+        while ($depth <= $request->depth && $entry= $f->getEntry()) {
+          if (is_dir($f->uri.$entry)) {
+            $restype= WEBDAV_COLLECTION;
+            $size= $mime= NULL;
+          } else {
+            $restype= NULL;
+            $size= filesize($f->uri.$entry);
+            $mime= MimeType::getByFilename($entry);
+          }
+          $response->addEntry(
+            $entry,
+            $request->getBaseUrl().$entry,
+            new Date(filectime($f->uri.$entry)),
+            new Date(filemtime($f->uri.$entry)),
+            $restype,
+            $size,
+            $mime
+          );
+        }
+        
+        $f->close();
+      } if (catch('Exception', $e)) {
+        return throw($e);
+      }
+      
+      return $response;
+    }
+    
+    /**
      * Receives an PROPPATCH request from the <pre>process()</pre> method
      * and handles it.
      *
@@ -71,24 +137,19 @@
      */
     function doPropFind(&$request, &$response) {
       try(); {
-        $p= &new WebdavPropFindRequest($request->getData());
-        $prop= $p->getProperties();
+        $multistatus= &$this->findProperties(
+          new WebdavPropFindRequest($request),
+          new WebdavPropFindResponse()
+        );
       } if (catch('Exception', $e)) {
         return throw(new HttpScriptletException($e->message));
-      }
-
-      $l= &Logger::getInstance();
-      $c= &$l->getCategory();
-      $c->debug('Properties requested', $prop);
-      
-      // Check which properties were requested
-      if (WEBDAV_PROPERTY_ALL == $prop) {
-        
       }
       
       // Send "HTTP/1.1 207 Multi-Status" response header
       $response->setStatus(207);
       $response->setHeader('Content-Type', 'text/xml');
+      
+      $response->setContent($multistatus->getSource(0));
     }
 
     /**
