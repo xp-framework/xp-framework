@@ -15,7 +15,7 @@ PUBLISH=/tmp/xpdoc.tgz
 CVSROOT=/home/cvs/repositories/xp/
 XPROOT=/usr/local/lib/xp/
 
-.PHONY: all clean install xml content
+.PHONY: all clean install xml content $(TARGET)
 
 default: usage
 all: clean makexml gen install
@@ -90,11 +90,12 @@ $(OUTPUT):
 	@-cp -R src/ $(OUTPUT)
 	@-$(PHP) -C util/getSource.php --dest=$(OUTPUT)/src
 
-install:
+install: $(TARGET)
 	cp -R $(OUTPUT)/* $(TARGET)
                 
 $(TARGET):
-	@-mkdir $(TARGET)
+	@if [ ! -d $(TARGET) ] ; then mkdir $(TARGET) ; fi
+	@if [ ! -d $(TARGET)/downloads ] ; then mkdir $(TARGET)/downloads ; fi
 
 clean:
 	-rm -rf output/
