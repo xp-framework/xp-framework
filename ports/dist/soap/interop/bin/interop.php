@@ -33,6 +33,7 @@
     
     $uri= $prop->readString($service, 'uri');
     $urn= $prop->readString($service, 'urn');
+    $act= $prop->readString($service, 'action', 'SOAP_ACTION_HARDCODE');
     
     // Prepare the result XML tree
     $tree= &new Tree('client');
@@ -57,7 +58,7 @@
     }
     
     $client= &new Round2BaseClient(
-      new SOAPHTTPTransport($uri, array()),
+      new SOAPHTTPTransport($uri, array(), constant($act)),
       $urn
     );
     
