@@ -43,7 +43,7 @@
           }
           $name= xp::typeOf($var);
           for (
-            $r= new ReflectionClass($var),
+            $r= new Reflection_Class($var),
             $props= $r->getProperties(),
             $size= sizeof($props),
             $s.= 'O:'.strlen($name).':"'.$name.'":'.$size.':{',
