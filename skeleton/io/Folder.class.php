@@ -81,7 +81,7 @@
       $this->path= dirname($uri);
       $this->dirname= basename($uri);
     }
-
+    
     /**
      * Get URI
      *
@@ -130,7 +130,10 @@
     function unlink($uri= NULL) {
       if (NULL === $uri) $uri= $this->uri; // We also use this recursively
       
-      $d= dir($uri);
+      if (FALSE === ($d= dir($uri))) {
+        return throw(new IOException('Directory '.$uri.' does not exist'));
+      }
+      
       while ($e= $d->read()) {
         if ('.' == $e || '..' == $e) continue;
         
@@ -209,7 +212,7 @@
       }
       return FALSE;
     }
-    
+   
     /**
      * Rewinds the directory to the beginning.
      *
@@ -221,5 +224,6 @@
       
       rewinddir ($this->_hdir);
     }
+
   }
 ?>
