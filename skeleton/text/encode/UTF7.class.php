@@ -13,7 +13,6 @@
    * </code>
    *
    * @ext      imap
-   * @model    static
    * @see      rfc://2060
    * @see      rfc://1642
    * @purpose  UTF encoder / decoder
@@ -23,7 +22,8 @@
     /**
      * Encode string
      *
-     * @access  abstract
+     * @model   static
+     * @access  public
      * @param   string str
      * @return  string
      */
@@ -32,9 +32,10 @@
     }
     
     /**
-     * Decode utf8 encoded data
+     * Decode utf7 encoded data
      *
-     * @access  abstract
+     * @model   static
+     * @access  public
      * @param   string str
      * @return  string
      */

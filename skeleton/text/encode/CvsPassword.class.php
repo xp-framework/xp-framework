@@ -15,6 +15,7 @@
     /**
      * Encode a given string
      *
+     * @model   static
      * @access  public
      * @param   string str
      * @return  string
@@ -48,6 +49,7 @@
     /**
      * Decode a given string
      *
+     * @model   static
      * @access  public
      * @param   string str
      * @return  string

@@ -19,7 +19,6 @@
    *   );
    * </code>
    *
-   * @model    static
    * @see      http://foldoc.hld.c64.org/foldoc.cgi?uuencode
    * @see      http://www.opengroup.org/onlinepubs/007908799/xcu/uuencode.html 
    * @purpose  UUEncode encoder / decoder

@@ -12,7 +12,6 @@
    *   $str= Base64::decode($b);
    * </code>
    *
-   * @model    static
    * @see      rfc://2045#6.8
    * @purpose  Base 64 encoder/decoder
    */
@@ -21,7 +20,8 @@
     /**
      * Encode string
      *
-     * @access  abstract
+     * @model   static
+     * @access  public
      * @param   string str
      * @return  string
      */
@@ -32,7 +32,8 @@
     /**
      * Decode base64 encoded data
      *
-     * @access  abstract
+     * @model   static
+     * @access  public
      * @param   string str
      * @return  string
      */

@@ -42,7 +42,8 @@
     /**
      * Encode string
      *
-     * @access  abstract
+     * @model   static
+     * @access  public
      * @param   string str
      * @param   string charset default 'iso-8859-1'
      * @return  string
@@ -58,7 +59,8 @@
     /**
      * Decode QuotedPrintable encoded data
      *
-     * @access  abstract
+     * @model   static
+     * @access  public
      * @param   string str
      * @return  string
      */
