@@ -4,8 +4,6 @@
  * $Id$
  */
  
-  define('WEBDAV_COLLECTION',   'collection');
-
   uses(
     'xml.Tree',
     'util.Date'
@@ -39,9 +37,6 @@
 
 
   class WebdavPropResponse extends Tree {
-    var
-      $namespace_map= array();
-      
       
     /**
      * Constructor
@@ -59,7 +54,6 @@
 
       $this->_createRoot(&$response,&$request,&$wdav);
       $this->_applyWebDavObject(&$wdav,&$request);
-        
     }
 
     /**
@@ -71,23 +65,7 @@
      * @param   &org.webdav.WebdavObject    
      */
     function _createRoot(&$response,&$request, &$o){
-    
-      $this->namespace_map= array();
-
-      //  create namespaces from request and webdavobject and map them
-      $nslist= array_merge($o->getNamespaces(), $request->namespaces);
-
-      $xmlNSArray= array();
-      if (!empty($nslist)){
-        $cnt= 0;
-        foreach ($nslist as $namesp => $dummy){
-          $this->namespace_map[$namesp]= sprintf('i%d', $cnt);
-          $xmlNSArray[sprintf('xmlns:%s', $this->namespace_map[$namesp])]= $namesp;
-          $cnt++;
-        }
-      } 
-
-      $this->root= &$response->addChild(new Node('D:response', NULL, $xmlNSArray));
+      $this->root= &$response->addChild(new Node('D:response'));
     }
     
     /**
@@ -99,55 +77,32 @@
      */
     function _applyWebDavObject(&$o, &$request){
     
-      $props_done= array();                     // properties handled
+      // Get the property lists
       $reqprops= &$request->getProperties();    // properties requested
       $propsList= &$o->getProperties();         // properties available
       
-      // split url
-      $this->root->addChild(new Node('D:href', $o->href));        
+      // Create the result nodes (for found and not found properties)
+      $found_stat= &new Node('D:propstat');
+      $found_props= &$found_stat->addChild(new Node('D:prop'));
+      $notfound_stat= &new Node('D:propstat');
+      $notfound_props= &$notfound_stat->addChild(new Node('D:prop'));
       
-      // Propertiesdefines
-      $stat= &$this->root->addChild(new Node('D:propstat'));
-      $props= &$stat->addChild(new Node('D:prop'));
-
-      // properties which we always know
-      // get* on collection is not defined!
-
-      foreach ($propsList as $propname => $propdef){
-
-        if (!empty($reqprops) && empty($reqprops[$propname])) continue;
-  
-        $ns= !empty($this->namespace_map[$propdef[WEBDAV_OBJECT_PROP_NS]]) ?
-          $this->namespace_map[$propdef[WEBDAV_OBJECT_PROP_NS]]:
-          'D';
-        $props->addChild(new Node(
-          $ns.':'.$propname,
-          &$propdef[WEBDAV_OBJECT_PROP_VAL],
-          &$propdef[WEBDAV_OBJECT_PROP_XMLEXT]
-          ));
-          
-        $props_done[$propname]= 1;
-      }
-
+      $stdprops= array();
+      
       // Always add the Resource type
-      $rt= &$props->addChild(new Node('D:resourcetype'));
+      $rt= &$found_props->addChild(new Node('D:resourcetype'));
       // Content type/length via resourceType
-      if (WEBDAV_COLLECTION == $o->resourceType) {
-        $rt->addChild(new Node('D:collection'));
-      } else {
-        if (NULL !== $o->resourceType) {
-          $rt->addChild(new Node('D:'.$o->resourceType));
-        } 
+      if (NULL !== $o->resourceType) {
+        $rt->addChild(new Node('D:'.(WEBDAV_COLLECTION == $o->resourceType ? 'collection' : $o->resourceType)));
+        $stdprops[]= 'resourcetype';
       }
-      $props_done['resourcetype']=1;
 
       // lockingpops, wenn POPERTY_ALL
       if (
         WEBDAV_COLLECTION != $o->resourceType and  
-        (empty($reqprops) or 
-        !empty($reqprops['supportedlock']))
+        (empty($reqprops) or !empty($reqprops['supportedlock']))
       ){
-        $lock= &$props->addChild(new Node('D:supportedlock'));
+        $lock= &$found_props->addChild(new Node('D:supportedlock'));
         $l1= &$lock->addChild(new Node('D:lockentry'));
         $l2= &$l1->addChild(new Node('D:lockscope'));
         $l2->addChild(new Node('D:exclusive'));
@@ -158,20 +113,19 @@
         $l2->addChild(new Node('D:shared'));
         $l2= &$l1->addChild(new Node('D:locktype'));
         $l2->addChild(new Node('D:write'));
-        $props_done['supportedlock']= 1;      
+        $stdprops[]= 'supportedlock';
       }
 
       // lock discovery
       if (
-        (empty($reqprops) or 
-        !empty($reqprops['lockdiscovery']))
+        (empty($reqprops) or !empty($reqprops['lockdiscovery']))
       ) {
-        $lkif= &$props->addChild(new Node('D:lockdiscovery'));
+        $lkif= &$found_props->addChild(new Node('D:lockdiscovery'));
         $lockinfos= &$o->getLockInfo();
 
         if ($lockinfos){
           for ($t= 0; $t<sizeof($lockinfos); $t++){
-            $lockinfo= $lockinfos[$t];
+             $lockinfo= $lockinfos[$t];
 
             if (
               empty($lockinfo['type']) or 
@@ -192,34 +146,52 @@
             $l= &$ak->addChild(new Node('D:locktoken'));
             $l->addChild(new Node('D:href','opaquelocktoken:'.$lockinfo['token']));
             $l= &$ak->addChild(new Node('D:depth', $lockinfo['depth']));
+            $stdprops[]= 'lockdiscovery';
           }
         }
-        $props_done['lockdiscovery']= 1;
       }      
 
-      $stat->addChild(new Node('D:status' , 'HTTP/1.1 200 OK'));
-
-      $has_notfoundprops= 0;
-      $stat= &new Node('D:propstat');
-      $props= &$stat->addChild(new Node('D:prop'));
-
-      foreach ($reqprops as $propname => $dummy ){
-        if (!isset($props_done[$propname])){
-          $ns= !empty($this->namespace_map[$propdef[WEBDAV_OBJECT_PROP_NS]]) ?
-          $this->namespace_map[$propdef[WEBDAV_OBJECT_PROP_NS]]:
-          'D';
-
-          $props->addChild(new Node($ns.':'.$propname));
-          $has_notfoundprops= 1;
-          $props_done[$propname]= 1;
+      // properties which we always know
+      // get* on collection is not defined!
+      foreach ($reqprops == NULL ? $propsList : $reqprops as $property){
+        $name= $property->getName();
+        if (in_array($name, $stdprops)) continue;
+        if ($found= isset($propsList[$name])) {
+          $property= $propsList[$name];
+        }
+        $attr= $property->getAttributes();
+        $nsname= $property->getNamespaceName();
+        $nsprefix= $property->getNamespacePrefix();
+        $stdprop= $nsname == 'DAV:';
+        if ($stdprop) {
+          $name = 'D:'.$name;
+        } else if ($nsname) {
+          $attr['xmlns'.(!empty($nsprefix) ? (':'.$nsprefix) : '')]= $nsname;
+          if (!empty($nsprefix)) $name= $nsprefix.':'.$name;
+        }
+        if ($found) {
+          $n= $found_props->addChild(new Node($name, $property->toString(), $attr));
+        } else {
+          $n= $notfound_props->addChild(new Node($name, $property->toString(), $attr));
         }
       }
-      if ($has_notfoundprops){
-        $stat->addChild(new Node('D:status' , 'HTTP/1.1 404 Not Found'));
-        $this->root->addChild($stat);
-      }      
+
+      // Build result (href, properties, status, ...)
+      $this->root->addChild(new Node('D:href', $this->encodeURI($o->getHref())));
+      $found_stat->addChild(new Node('D:status' , 'HTTP/1.1 200 OK'));
+      $this->root->addChild($found_stat);
+      if (count($notfound_props->children)) {
+        $notfound_stat->addChild(new Node('D:status' , 'HTTP/1.1 404 Not Found'));
+        $this->root->addChild($notfound_stat);
+      }
+
+      return;
+    }
     
-    return;
+    function encodeURI($uri) {
+      $parts = explode('/', $uri);
+      for ($i = 0; $i < count($parts); $i++) $parts[$i]= rawurlencode($parts[$i]);
+      return implode('/', $parts);
     }
 
   }
