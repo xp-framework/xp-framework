@@ -293,7 +293,7 @@
 
         for ($i= 0, $s= sizeof($list); $i < $s; $i++) {
           $header= $this->getMessagePart($f, $list[$i]->uid, '0');
-          $class= strstr($header, 'ype: multipart/') ? 'MimeMessage': 'Message';
+          $class= stristr($header, 'Content-Type: multipart/') ? 'MimeMessage': 'Message';
           
           $m= &new $class($list[$i]->uid);
           $m->size= $list[$i]->size;
