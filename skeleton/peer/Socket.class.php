@@ -22,7 +22,8 @@
       $timeout  = 2;
       
     var
-      $_sock    = NULL;
+      $_sock    = NULL,
+      $_prefix  = '';
     
     /**
      * Constructor
@@ -71,7 +72,13 @@
     function connect() {
       if ($this->isConnected()) return 1;
       
-      if (!$this->_sock= fsockopen($this->host, $this->port, $errno, $errstr, $this->timeout)) {
+      if (!$this->_sock= fsockopen(
+        $this->_prefix.$this->host, 
+        $this->port, 
+        $errno, 
+        $errstr, 
+        $this->timeout
+      )) {
         return throw(new ConnectException(sprintf(
           'Failed connecting to %s:%s within %s seconds [%d: %s]',
           $this->host,
