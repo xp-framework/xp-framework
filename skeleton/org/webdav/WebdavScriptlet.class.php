@@ -136,19 +136,6 @@
     }
 
     /**
-     * Private helper function
-     *
-     * @access  private
-     * @param   string url
-     * @return  string
-     */
-    function _relativeTarget($url) {
-      $url= &new URL($url);
-      $root= $this->request->getRootURI();
-      return substr(rawurldecode($url->getPath()), strlen($root->getPath()));
-    }
-
-    /**
      * Handle OPTIONS
      *
      * @see     xp://scriptlet.scriptlet.HttpScriptlet#doGet
@@ -206,7 +193,7 @@
      */
     function doGet(&$request, &$response) {
       try(); {
-        $object= &$this->handlingImpl->get($request->uri['path_translated']);
+        $object= &$this->handlingImpl->get($request->getPath());
       } if (catch('ElementNotFoundException', $e)) {
 
         // Element not found
@@ -263,7 +250,7 @@
      */
     function doHead(&$request, &$response) {
       try(); {
-        $object= &$this->handlingImpl->get($request->uri['path_translated']);
+        $object= &$this->handlingImpl->get($request->getPath());
       } if (catch('ElementNotFoundException', $e)) {
       
         // Element not found
@@ -271,7 +258,7 @@
         $response->setContent($e->toString());
         return FALSE;
       } if (catch('Exception', $e)) {
-      
+
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->toString());
@@ -358,7 +345,7 @@
       try(); {
         $created= $this->handlingImpl->move(
           $request->getPath(),
-          $this->_relativeTarget($request->getHeader('Destination')),
+          $request->getRelativePath($request->getHeader('Destination')),
           WebdavBool::fromString($request->getHeader('Overwrite'))
         );
       } if (catch('OperationFailedException', $e)) {
@@ -391,8 +378,8 @@
     function doCopy(&$request, &$response) {
       try(); {
         $created= $this->handlingImpl->copy(
-          $request->uri['path_translated'],
-          $this->_relativeTarget($request->getHeader('Destination')),
+          $request->getPath(),
+          $request->getRelativePath($request->getHeader('Destination')),
           WebdavBool::fromString($request->getHeader('Overwrite'))
         );
       } if (catch('OperationFailedException', $e)) {
@@ -653,10 +640,10 @@
         )));
         
         // Set request path (e.g. /directory/file)
-        $request->setPath(substr(
+        $request->setPath($request->decodePath(substr(
           $request->uri['path'], 
           strlen($pattern)
-        ));
+        )));
         
         $this->handlingImpl= &$this->impl[$pattern];
         break;
