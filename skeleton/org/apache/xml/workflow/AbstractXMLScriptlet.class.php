@@ -34,10 +34,7 @@
    */
   class AbstractXMLScriptlet extends XMLScriptlet {
     var
-      $needsSession = TRUE;
-      
-    var 
-      $cat          = NULL,
+      $needsSession = TRUE,
       $classloader  = NULL;
     
     /**
