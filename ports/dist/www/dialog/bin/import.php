@@ -42,6 +42,7 @@ Options:
   --title, -t     Set album title (default: origin directory name)
   --date, -D      Set album date (default: origin directory's creation date)
   --update, -u    Set text for update (default: do not create update)
+  --newdate, -N   Set date of update (default: now)
 __
     );
     exit(1);
@@ -102,7 +103,7 @@ __
       $update= &new Update();
       $update->setAlbumName($name);
       $update->setTitle($album->getTitle());
-      $update->setDate(new Date($param->value('date', 'D', time())));
+      $update->setDate(new Date($param->value('newdate', 'N', time())));
       $update->setDescription($param->value('update', 'u'));
 
       $updateFile= &new File(DATA_FOLDER.$name.'-update_'.date('Ymd').'.dat');
