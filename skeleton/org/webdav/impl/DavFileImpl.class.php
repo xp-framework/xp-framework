@@ -128,7 +128,7 @@
           $lockinfo->getLockType(),
           $lockinfo->getLockScope(),
           $lockinfo->getOwner(),
-          'Second-'.($lockinfo->getTimeout()-time()),
+          'Second-'.($lockinfo->getTimeout()),
           $lockinfo->getLockToken(),
           $lockinfo->getDepth()
         );
@@ -548,7 +548,7 @@
         '<lockscope><'.$lock->getLockScope().'/></lockscope>'.
         '<depth>'.$lock->getDepth().'</depth>'.
         '<owner><href>'.$lock->getOwner().'</href></owner>'.
-        '<timeout>Second-'.($lock->getTimeout()-time()).'</timeout>'.
+        '<timeout>Second-'.($lock->getTimeout()).'</timeout>'.
         '<locktoken><href>'.$lock->getLockToken().'</href></locktoken>'.
         '</activelock></lockdiscovery></prop>'; 
         
