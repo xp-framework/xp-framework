@@ -11,35 +11,63 @@
   );
 
   /**
-   * Encapsulates a htdig query.
+   * Encapsulates a htdig query. This class needs a working 
+   * htdig installation on the executing host.
+   *
+   * Special requirements need to be posed upon the configuration
+   * which are supposed to work with this class: it must use a 
+   * configuration that does not create HTML output but instead
+   * produces some sort of CSV output. The delimiter must match
+   * the one set in this class.
+   *
+   * <code>
+   *   try(); {
+   *     $search= &new HtdigSearch();
+   *     $search->setConfig('/path/to/htdig-configuration');
+   *     $search->setExecutable('/usr/local/bin/htdig');
+   *     $search->setWords(array('foo', '-bar'));
+   *     $resultset= &$search->invoke();
+   *   } if (catch ('IOException', $e)) {
+   *     $e->printStackTrace();
+   *     exit(1);
+   *   } if (catch ('IllegalArgumentException', $e)) {
+   *     $e->printStackTrace();
+   *     exit(1);
+   *   }
+   *
+   *   Console::writeLine('Search metadata: ', $resultset->getMetaresult());
+   *   foreach ($resultset->getResults() as $entry) {
+   *     Console::writeLine($entry->toString());
+   *   }
    *
    * @see      http://htdig.org
    * @purpose  Wrap htdig query
    */
   class HtdigSearch extends Object {
     var
-      $delimiter= '###\+\+\+###',
-      $config=    NULL,    
-      $params=    array(), 
-      $words=     array(); 
+      $delimiter=   '###\+\+\+###',
+      $config=      NULL,    
+      $params=      array(), 
+      $words=       array(),
+      $executable=  '';
 
     /**
      * Set Config
      *
      * @access  public
-     * @param   &lang.Object config
+     * @param   string config
      */
-    function setConfig(&$config) {
-      $this->config= &$config;
+    function setConfig($config) {
+      $this->config= $config;
     }
 
     /**
      * Get Config
      *
      * @access  public
-     * @return  &lang.Object
+     * @return  string
      */
-    function &getConfig() {
+    function getConfig() {
       return $this->config;
     }
 
@@ -107,13 +135,53 @@
     function getWords() {
       return $this->words;
     }
+    
+    /**
+     * Build the query string for the search.
+     *
+     * @access  public
+     * @return  string query
+     */
+    function getWordString() {
+      $str= '';
+      foreach ($words as $w) { 
+        if ($w{0} != '-') {
+          $str.= ' AND '.$w;
+        } else {
+          $str.= ' AND NOT '.substr($w, 1);
+        }
+      }
+      
+      return substr ($str, 4);
+    }
+
+    /**
+     * Set Executable
+     *
+     * @access  public
+     * @param   string executable
+     */
+    function setExecutable($executable) {
+      $this->executable= $executable;
+    }
+
+    /**
+     * Get Executable
+     *
+     * @access  public
+     * @return  string
+     */
+    function getExecutable() {
+      return $this->executable;
+    }
 
     /**
      * Invoke the search.
      *
      * @access  public
      * @return  &org.htdig.HtdigResultset
-     * @throws  IOException in case the invocation of htdig failed
+     * @throws  lang.IOException in case the invocation of htdig failed
+     * @throws  lang.IllegalArgumentException in case search entry was invalid
      */
     function &invoke() {
       try(); {
@@ -166,6 +234,5 @@
 
       return $result;
     }
-    
   }
 ?>
