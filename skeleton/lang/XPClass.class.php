@@ -68,8 +68,8 @@
      * </code>
      *
      * @access  public
-     * @return  &Object 
-     * @throws    ClassNotFoundException when there is no such class
+     * @return  &lang.Object 
+     * @throws  lang.ClassNotFoundException when there is no such class
      */
     function &newInstance() {
       $paramstr= '';
