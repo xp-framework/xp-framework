@@ -210,12 +210,19 @@
   <xsl:template match="reference">
     <tr>
       <td width="1%" valign="top"><img src="/image/nav_see.gif"/></td>
-      <td width="50%"><xsl:apply-templates select="link"/><br/><br/></td>
+      <td width="50%">
+        <xsl:apply-templates select="link"/>
+        <xsl:if test="link/description">
+          <xsl:text> - </xsl:text>
+          <xsl:value-of select="link/description"/>
+        </xsl:if>
+        <br/><br/>
+      </td>
     </tr>
   </xsl:template>
   
   <xsl:template name="cut-string">
-    <xsl:param name="max_len" select="'130'"/>
+    <xsl:param name="max_len" select="'60'"/>
     <xsl:param name="string"/>
   
     <xsl:choose>
@@ -270,7 +277,7 @@
   
   <xsl:template match="link[child::*[name() = 'scheme']/text() = 'rfc']">
     <a href="http://www.faqs.org/rfcs/rfc{./host}.html#{./fragment}" target="_blank">
-      rfc <xsl:value-of select="./host"/>
+      RFC <xsl:value-of select="./host"/>
       <xsl:if test="string-length (./fragment) != 0">
         Section <xsl:value-of select="./fragment"/>
       </xsl:if>
