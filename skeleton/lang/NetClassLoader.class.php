@@ -16,13 +16,26 @@
    * 
    * Usage:
    * <code>
-   *   $e= &new NetClassLoader('http://sitten-polizei.de/php/classes/%s.class.php');
-   *   try(); {
-   *     $name= $e->loadClass($_SERVER['argv'][1]);
-   *   } if (catch('ClassNotFoundException', $e)) {
-   *     die($e->printStackTrace());
+   *   uses('lang.NetClassLoader', 'util.cmd.ParamString');
+   *   
+   *   // {{{ main
+   *   $p= &new ParamString();
+   *   if (2 != $p->count) {
+   *     printf("Usage: %s <fully qualified class name>\n", $p->value(0));
+   *     exit();
    *   }
-   * 
+   *   
+   *   $e= &new NetClassLoader('http://sitten-polizei.de/php/classes/');
+   *   try(); {
+   *     $name= $e->loadClass($p->value(1));
+   *   } if (catch('ClassNotFoundException', $e)) {
+   *   
+   *     // Class or dependency not found
+   *     $e->printStackTrace();
+   *     exit();
+   *   }
+   *   
+   *   // Create an instance
    *   $obj= &new $name();
    *   var_dump($obj, $obj->getClassName(), $obj->toString());
    * </code>
@@ -165,8 +178,9 @@
           break;
 
         case 404:
-          // Not found
-          return throw(new FileNotFoundException($r->message));
+          trigger_error($conn->request->getRequestString(), E_USER_NOTICE);
+          trigger_error($r->toString(), E_USER_NOTICE);
+          return throw(new FileNotFoundException('File '.$conn->request->url->getPath().' not found'));
           break;
 
         default:
