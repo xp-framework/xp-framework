@@ -122,7 +122,7 @@
      */
     function size() {
       if (!isset($this->uri)) return throw(new IllegalStateException('no uri defined'));
-      $size= @filesize($this->uri);
+      $size= filesize($this->uri);
       if (FALSE === $size) return throw(new IOException('cannot get filesize for '.$this->uri));
       return $size;
     }
@@ -378,9 +378,45 @@
      */
     function close() {
       if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
-      $result= @fclose($this->_fd);
+      $result= fclose($this->_fd);
       unset($this->_fd);
       return $result;
+    }
+    
+    /**
+     * Datei löschen
+     *
+     * @access  public
+     * @return  int Return-Code der Funktion "unlink"
+     * @throws  IllegalStateException, wenn die Datei noch offen ist
+     */
+    function unlink() {
+      if (isset($this->_fd)) return throw(new IllegalStateException('file still open'));
+      return unlink($this->uri);
+    }
+    
+    /**
+     * Datei verschieben
+     *
+     * @access  public
+     * @return  int Return-Code der Funktion "rename"
+     * @throws  IllegalStateException, wenn die Datei noch offen ist
+     */
+    function move($target) {
+      if (isset($this->_fd)) return throw(new IllegalStateException('file still open'));
+      return rename($this->uri, $target);
+    }
+    
+    /**
+     * Datei kopieren
+     *
+     * @access  public
+     * @return  int Return-Code der Funktion "rename"
+     * @throws  IllegalStateException, wenn die Datei noch offen ist
+     */
+    function copy($target) {
+      if (isset($this->_fd)) return throw(new IllegalStateException('file still open'));
+      return copy($this->uri, $target);
     }
   }
 ?>
