@@ -4,7 +4,7 @@ RCS file: /repository/ZendEngine2/zend.h,v
 retrieving revision 1.264
 diff -u -r1.264 zend.h
 --- Zend/zend.h	26 Sep 2004 22:19:57 -0000	1.264
-+++ Zend/zend.h	30 Sep 2004 21:07:37 -0000
++++ Zend/zend.h	30 Sep 2004 22:57:15 -0000
 @@ -255,6 +255,7 @@
   */
  typedef struct _zval_struct zval;
@@ -31,7 +31,7 @@ RCS file: /repository/ZendEngine2/zend_API.c,v
 retrieving revision 1.268
 diff -u -r1.268 zend_API.c
 --- Zend/zend_API.c	29 Sep 2004 20:57:07 -0000	1.268
-+++ Zend/zend_API.c	30 Sep 2004 21:07:38 -0000
++++ Zend/zend_API.c	30 Sep 2004 22:57:15 -0000
 @@ -1313,6 +1313,8 @@
  			internal_function->return_reference = ptr->arg_info[0].return_reference;
  		} else {
@@ -47,7 +47,7 @@ RCS file: /repository/ZendEngine2/zend_compile.c,v
 retrieving revision 1.592
 diff -u -r1.592 zend_compile.c
 --- Zend/zend_compile.c	27 Sep 2004 08:46:12 -0000	1.592
-+++ Zend/zend_compile.c	30 Sep 2004 21:07:39 -0000
++++ Zend/zend_compile.c	30 Sep 2004 22:57:17 -0000
 @@ -126,6 +126,7 @@
  	zend_stack_init(&CG(object_stack));
  	zend_stack_init(&CG(declare_stack));
@@ -56,7 +56,7 @@ diff -u -r1.592 zend_compile.c
  	zend_llist_init(&CG(list_llist), sizeof(list_llist_element), NULL, 0);
  	zend_llist_init(&CG(dimension_llist), sizeof(int), NULL, 0);
  	zend_stack_init(&CG(list_stack));
-@@ -435,6 +436,24 @@
+@@ -435,6 +436,38 @@
  	}
  }
  
@@ -78,10 +78,24 @@ diff -u -r1.592 zend_compile.c
 +	FREE_PNODE(throws_znode);
 +} 
 +
++void zend_do_import(znode *classname, znode *alias TSRMLS_DC)
++{
++	zend_op *opline = get_next_op(CG(active_op_array) TSRMLS_CC);
++
++	opline->opcode = ZEND_IMPORT;
++	opline->op1 = *classname;
++	if (!alias) {
++		SET_UNUSED(opline->op2);
++	} else {
++		opline->op2 = *alias;
++	}
++	opline->result.u.EA.type |= EXT_TYPE_UNUSED;
++} 
++
  static zend_bool opline_is_fetch_this(zend_op *opline TSRMLS_DC)
  {
  	if ((opline->opcode == ZEND_FETCH_W) && (opline->op1.op_type == IS_CONST)
-@@ -1149,6 +1168,7 @@
+@@ -1149,6 +1182,7 @@
  	cur_arg_info->pass_by_reference = pass_by_reference;
  
  	if (class_type->op_type != IS_UNUSED) {
@@ -89,7 +103,7 @@ diff -u -r1.592 zend_compile.c
  		cur_arg_info->class_name = class_type->u.constant.value.str.val;
  		cur_arg_info->class_name_len = class_type->u.constant.value.str.len;
  		cur_arg_info->allow_null = 0;
-@@ -1281,6 +1301,7 @@
+@@ -1281,6 +1315,7 @@
  				zval_dtor(&class_name->u.constant);
  				break;
  			default:
@@ -97,7 +111,7 @@ diff -u -r1.592 zend_compile.c
  				opline->op2 = *class_name;
  				break;
  		}
-@@ -2442,13 +2463,16 @@
+@@ -2442,13 +2477,16 @@
  	zend_op *opline;
  	int doing_inheritance = 0;
  	zend_class_entry *new_class_entry = emalloc(sizeof(zend_class_entry));
@@ -115,7 +129,7 @@ diff -u -r1.592 zend_compile.c
  	if (!(strcmp(lcname, "self") && strcmp(lcname, "parent"))) {
  		efree(lcname);
  		zend_error(E_COMPILE_ERROR, "Cannot use '%s' as class name as it is reserved", class_name->u.constant.value.str.val);
-@@ -2551,6 +2575,27 @@
+@@ -2551,6 +2589,27 @@
  	CG(active_class_entry) = NULL;
  }
  
@@ -149,7 +163,7 @@ RCS file: /repository/ZendEngine2/zend_compile.h,v
 retrieving revision 1.293
 diff -u -r1.293 zend_compile.h
 --- Zend/zend_compile.h	23 Sep 2004 21:43:31 -0000	1.293
-+++ Zend/zend_compile.h	30 Sep 2004 21:07:40 -0000
++++ Zend/zend_compile.h	30 Sep 2004 22:57:19 -0000
 @@ -45,6 +45,23 @@
          CG(doc_comment) = NULL;  \
          CG(doc_comment_len) = 0; \
@@ -210,13 +224,22 @@ diff -u -r1.293 zend_compile.h
  void zend_do_declare_property(znode *var_name, znode *value, zend_uint access_type TSRMLS_DC);
  void zend_do_declare_implicit_property(TSRMLS_D);
  void zend_do_declare_class_constant(znode *var_name, znode *value TSRMLS_DC);
+@@ -713,6 +738,8 @@
+ 
+ #define ZEND_HANDLE_EXCEPTION		149
+ 
++#define ZEND_IMPORT					150
++
+ /* end of block */
+ /* END: OPCODES */
+ 
 Index: Zend/zend_globals.h
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_globals.h,v
 retrieving revision 1.139
 diff -u -r1.139 zend_globals.h
 --- Zend/zend_globals.h	23 Sep 2004 06:23:36 -0000	1.139
-+++ Zend/zend_globals.h	30 Sep 2004 21:07:41 -0000
++++ Zend/zend_globals.h	30 Sep 2004 22:57:19 -0000
 @@ -75,6 +75,7 @@
  	zend_stack declare_stack;
  
@@ -231,7 +254,7 @@ RCS file: /repository/ZendEngine2/zend_language_parser.y,v
 retrieving revision 1.150
 diff -u -r1.150 zend_language_parser.y
 --- Zend/zend_language_parser.y	16 Sep 2004 05:43:29 -0000	1.150
-+++ Zend/zend_language_parser.y	30 Sep 2004 21:07:41 -0000
++++ Zend/zend_language_parser.y	30 Sep 2004 22:57:20 -0000
 @@ -111,6 +111,7 @@
  %token T_TRY
  %token T_CATCH
@@ -254,7 +277,15 @@ diff -u -r1.150 zend_language_parser.y
  %token T_OBJECT_OPERATOR
  %token T_DOUBLE_ARROW
  %token T_LIST
-@@ -159,6 +164,7 @@
+@@ -142,6 +147,7 @@
+ %token T_DOLLAR_OPEN_CURLY_BRACES
+ %token T_CURLY_OPEN
+ %token T_PAAMAYIM_NEKUDOTAYIM
++%token T_IMPORT
+ 
+ %% /* Rules */
+ 
+@@ -159,6 +165,7 @@
  		statement
  	|	function_declaration_statement	{ zend_do_early_binding(TSRMLS_C); }
  	|	class_declaration_statement		{ zend_do_early_binding(TSRMLS_C); }
@@ -262,7 +293,7 @@ diff -u -r1.150 zend_language_parser.y
  ;
  
  
-@@ -172,6 +178,7 @@
+@@ -172,6 +179,7 @@
  		statement
  	|	function_declaration_statement
  	|	class_declaration_statement
@@ -270,7 +301,26 @@ diff -u -r1.150 zend_language_parser.y
  ;
  
  
-@@ -262,6 +269,14 @@
+@@ -220,8 +228,18 @@
+ 		'{' inner_statement_list '}' { zend_do_end_catch(&$1 TSRMLS_CC); }
+ 		additional_catches { zend_do_mark_last_catch(&$7, &$18 TSRMLS_CC); }
+ 	|	T_THROW expr ';' { zend_do_throw(&$2 TSRMLS_CC); }
++	|	T_IMPORT import_list ';'
+ ;
+ 
++import_list:
++		import_list ',' import
++	|	import
++;
++
++import:
++		T_CLASSNAME	{ zend_do_import(&$1, NULL TSRMLS_CC); }
++	|	T_CLASSNAME	T_AS T_STRING { zend_do_import(&$1, &$3 TSRMLS_CC); }
++;
+ 
+ additional_catches:
+ 		non_empty_additional_catches { $$ = $1; }
+@@ -262,6 +280,14 @@
  		unticked_class_declaration_statement	{ zend_do_ticks(TSRMLS_C); }
  ;
  
@@ -285,7 +335,7 @@ diff -u -r1.150 zend_language_parser.y
  
  is_reference:
  		/* empty */	{ $$.op_type = ZEND_RETURN_VAL; }
-@@ -289,6 +304,16 @@
+@@ -289,6 +315,16 @@
  			'}' { zend_do_end_class_declaration(&$1, &$2 TSRMLS_CC); }
  ;
  
@@ -302,7 +352,7 @@ diff -u -r1.150 zend_language_parser.y
  
  class_entry_type:
  		T_CLASS			{  $$.u.constant.value.lval = 0; }
-@@ -428,6 +453,7 @@
+@@ -428,6 +464,7 @@
  optional_class_type:
  		/* empty */		{ $$.op_type = IS_UNUSED; }
  	|	T_STRING		{ $$ = $1; }
@@ -310,7 +360,7 @@ diff -u -r1.150 zend_language_parser.y
  ;
  
  
-@@ -478,9 +504,37 @@
+@@ -478,9 +515,37 @@
  		variable_modifiers { CG(access_type) = $1.u.constant.value.lval; } class_variable_declaration ';'
  	|	class_constant_declaration ';'
  	|	method_modifiers T_FUNCTION { $2.u.opline_num = CG(zend_lineno); } is_reference T_STRING { zend_do_begin_function_declaration(&$2, &$5, 1, $4.op_type, &$1 TSRMLS_CC); } '(' 
@@ -318,8 +368,8 @@ diff -u -r1.150 zend_language_parser.y
 +			parameter_list ')' throws method_body { zend_do_abstract_method(&$5, &$1, &$11 TSRMLS_CC); zend_do_end_function_declaration(&$2 TSRMLS_CC); }
 +	|	method_modifiers T_OPERATOR { $2.u.opline_num = CG(zend_lineno); } is_reference operator_token { zend_do_begin_function_declaration(&$2, &$5, 1, $4.op_type, &$1 TSRMLS_CC); } '(' 
 +			parameter_list ')' throws method_body { zend_do_abstract_method(&$5, &$1, &$11 TSRMLS_CC); zend_do_end_function_declaration(&$2 TSRMLS_CC); }
-+;
-+
+ ;
+ 
 +throws:
 +		/* empty */
 +	|	T_THROWS throws_list
@@ -333,8 +383,8 @@ diff -u -r1.150 zend_language_parser.y
 +throws_class_name:
 +		T_STRING { $$ = $1; }
 +	|	T_CLASSNAME { $$ = $1; }
- ;
- 
++;
++
 +operator_token:
 +		'+'								{ $$.u.constant.value.str.val = estrndup("+", sizeof("+")- 1); $$.u.constant.value.str.len = sizeof("+")- 1; }
 +	|	'-'								{ $$.u.constant.value.str.val = estrndup("-", sizeof("-")- 1); $$.u.constant.value.str.len = sizeof("-")- 1; }
@@ -349,7 +399,7 @@ diff -u -r1.150 zend_language_parser.y
  
  method_body:
  		';' /* abstract method */		{ $$.u.constant.value.lval = ZEND_ACC_ABSTRACT; }
-@@ -606,6 +660,7 @@
+@@ -606,6 +671,7 @@
  	|	'@' { zend_do_begin_silence(&$1 TSRMLS_CC); } expr { zend_do_end_silence(&$1 TSRMLS_CC); $$ = $3; }
  	|	scalar				{ $$ = $1; }
  	|	T_ARRAY '(' array_pair_list ')' { $$ = $3; }
@@ -357,7 +407,7 @@ diff -u -r1.150 zend_language_parser.y
  	|	'`' encaps_list '`'		{ zend_do_shell_exec(&$$, &$2 TSRMLS_CC); }
  	|	T_PRINT expr  { zend_do_print(&$$, &$2 TSRMLS_CC); }
  ;
-@@ -627,10 +682,12 @@
+@@ -627,10 +693,12 @@
  
  fully_qualified_class_name:
  		T_STRING { zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
@@ -370,7 +420,7 @@ diff -u -r1.150 zend_language_parser.y
  	|	dynamic_class_name_reference	{ zend_do_end_variable_parse(BP_VAR_R, 0 TSRMLS_CC); zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
  ;
  
-@@ -684,6 +741,7 @@
+@@ -684,6 +752,7 @@
  	|	'+' static_scalar	{ $$ = $2; }
  	|	'-' static_scalar	{ zval minus_one;  minus_one.type = IS_LONG; minus_one.value.lval = -1;  mul_function(&$2.u.constant, &$2.u.constant, &minus_one TSRMLS_CC);  $$ = $2; } 
  	|	T_ARRAY '(' static_array_pair_list ')' { $$ = $3; $$.u.constant.type = IS_CONSTANT_ARRAY; }
@@ -384,7 +434,7 @@ RCS file: /repository/ZendEngine2/zend_language_scanner.l,v
 retrieving revision 1.115
 diff -u -r1.115 zend_language_scanner.l
 --- Zend/zend_language_scanner.l	2 Aug 2004 16:38:09 -0000	1.115
-+++ Zend/zend_language_scanner.l	30 Sep 2004 21:07:42 -0000
++++ Zend/zend_language_scanner.l	30 Sep 2004 22:57:20 -0000
 @@ -794,6 +794,10 @@
  	return T_THROW;
  }
@@ -407,10 +457,14 @@ diff -u -r1.115 zend_language_scanner.l
  <ST_IN_SCRIPTING>"interface" {
  	return T_INTERFACE;
  }
-@@ -902,6 +910,14 @@
+@@ -902,6 +910,18 @@
  	return T_IMPLEMENTS;
  }
  
++<ST_IN_SCRIPTING>"import" {
++	return T_IMPORT;
++}
++
 +<ST_IN_SCRIPTING>"operator" {
 +	return T_OPERATOR;
 +}
@@ -422,7 +476,7 @@ diff -u -r1.115 zend_language_scanner.l
  <ST_IN_SCRIPTING,ST_DOUBLE_QUOTES,ST_BACKQUOTE,ST_HEREDOC>"->" {
  	yy_push_state(ST_LOOKING_FOR_PROPERTY TSRMLS_CC);
  	return T_OBJECT_OPERATOR;
-@@ -1395,6 +1411,12 @@
+@@ -1395,6 +1415,12 @@
  	return T_STRING;
  }
  
@@ -441,7 +495,7 @@ RCS file: /repository/ZendEngine2/zend_object_handlers.c,v
 retrieving revision 1.105
 diff -u -r1.105 zend_object_handlers.c
 --- Zend/zend_object_handlers.c	28 Sep 2004 22:55:22 -0000	1.105
-+++ Zend/zend_object_handlers.c	30 Sep 2004 21:07:43 -0000
++++ Zend/zend_object_handlers.c	30 Sep 2004 22:57:21 -0000
 @@ -605,6 +605,8 @@
  			call_user_call->handler = zend_std_call_user_call;
  			call_user_call->arg_info = NULL;
@@ -457,7 +511,7 @@ RCS file: /repository/ZendEngine2/zend_opcode.c,v
 retrieving revision 1.108
 diff -u -r1.108 zend_opcode.c
 --- Zend/zend_opcode.c	23 Sep 2004 21:43:32 -0000	1.108
-+++ Zend/zend_opcode.c	30 Sep 2004 21:07:43 -0000
++++ Zend/zend_opcode.c	30 Sep 2004 22:57:21 -0000
 @@ -74,6 +74,9 @@
  	op_array->doc_comment = NULL;
  	op_array->doc_comment_len = 0;
@@ -484,7 +538,7 @@ RCS file: /repository/ZendEngine2/zend_operators.c,v
 retrieving revision 1.197
 diff -u -r1.197 zend_operators.c
 --- Zend/zend_operators.c	30 Sep 2004 18:36:03 -0000	1.197
-+++ Zend/zend_operators.c	30 Sep 2004 21:07:43 -0000
++++ Zend/zend_operators.c	30 Sep 2004 22:57:21 -0000
 @@ -101,6 +101,55 @@
  	return result;
  }
@@ -671,7 +725,7 @@ RCS file: /repository/ZendEngine2/zend_reflection_api.c,v
 retrieving revision 1.131
 diff -u -r1.131 zend_reflection_api.c
 --- Zend/zend_reflection_api.c	28 Sep 2004 19:06:15 -0000	1.131
-+++ Zend/zend_reflection_api.c	30 Sep 2004 21:07:44 -0000
++++ Zend/zend_reflection_api.c	30 Sep 2004 22:57:21 -0000
 @@ -631,7 +631,18 @@
  	if (fptr->type == ZEND_USER_FUNCTION && fptr->op_array.return_reference) {
  		string_printf(str, "&");
@@ -742,3 +796,57 @@ diff -u -r1.131 zend_reflection_api.c
  	ZEND_ME(reflection_function, getNumberOfParameters, NULL, 0)
  	ZEND_ME(reflection_function, getNumberOfRequiredParameters, NULL, 0)
  	{NULL, NULL, NULL}
+Index: Zend/zend_vm_handlers.h
+===================================================================
+RCS file: /repository/ZendEngine2/zend_vm_handlers.h,v
+retrieving revision 1.2
+diff -u -r1.2 zend_vm_handlers.h
+--- Zend/zend_vm_handlers.h	22 Sep 2004 08:45:21 -0000	1.2
++++ Zend/zend_vm_handlers.h	30 Sep 2004 22:57:23 -0000
+@@ -183,6 +183,7 @@
+ 	ZEND_VM_LABEL(ZEND_ASSIGN_DIM),              /* 147 */ \
+ 	ZEND_VM_LABEL(ZEND_ISSET_ISEMPTY_PROP_OBJ),  /* 148 */ \
+ 	ZEND_VM_LABEL(ZEND_HANDLE_EXCEPTION),        /* 149 */ \
++	ZEND_VM_LABEL(ZEND_IMPORT),			         /* 150 */ \
+ 	ZEND_VM_NULL_LABEL
+ 
+ /* opcode handlers and helpers */
+@@ -3973,3 +3974,38 @@
+ 	ZEND_VM_NEXT_OPCODE();
+ }
+ #endif
++
++#define ZEND_IMPORT_SPEC() OPDEF(ZEND_IMPORT, M_ANY, M_ANY)
++#if HAVE_OP(ZEND_IMPORT)
++ZEND_VM_HANDLER(ZEND_IMPORT)
++{
++	zend_class_entry **pce;
++	char *alias_name;
++	int alias_len;
++	zend_op *opline = EX(opline);
++
++	if (zend_lookup_class(opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, &pce TSRMLS_CC) == FAILURE) {
++		zend_error(E_COMPILE_ERROR, "Undefined class '%s' in import list", opline->op1.u.constant.value.str.val);
++		/* Bails out */
++	}
++	
++	/* Calculate the short name from the long one if no alias is supplied */
++	if (OP2_TYPE == IS_UNUSED) {
++		char *tmp = strrchr(opline->op1.u.constant.value.str.val, '~');
++
++		alias_len = strlen(tmp)- 1;		
++		alias_name = zend_str_tolower_dup(tmp+ 1, alias_len);
++	} else {
++		alias_name = zend_str_tolower_dup(opline->op2.u.constant.value.str.val, opline->op2.u.constant.value.str.len);
++		alias_len = opline->op2.u.constant.value.str.len;
++	}
++
++	if (zend_hash_add(CG(class_table), alias_name, alias_len+ 1, pce, sizeof(zend_class_entry *), NULL)==FAILURE) {
++		zend_error(E_COMPILE_ERROR, "Cannot redeclare class %s", alias_name);
++		/* Bails out */
++	}
++	
++	efree(alias_name);
++	ZEND_VM_NEXT_OPCODE();
++}
++#endif
