@@ -41,6 +41,7 @@ Im Basisverzeichnis (bspw. /usr/local/lib/skeleton/):
 
 Im Verzeichnis "lang":
 * Object.class.php
+* XPClass.class.php
 * Exception.class.php
 * IllegalStateException.class.php
 * IllegalArgumentException.class.php
