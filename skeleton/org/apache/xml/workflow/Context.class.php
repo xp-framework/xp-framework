@@ -30,14 +30,13 @@
      * Called to initialize this application context
      *
      * @access  public
-     * @param   &org.apache.HttpSession session
      * @param   &lang.ClassLoader classloader
      */
-    function initialize(&$session, &$classloader) {
+    function initialize(&$classloader) {
       $this->crm= &new ContextResourceManager();
-      $this->crm->initialize($session, $classloader);
+      $this->crm->initialize($classloader);
       $this->sfm= &new StateFlowManager();
-      $this->sfm->initialize($session, $classloader);
+      $this->sfm->initialize($classloader);
     }
     
     /**
@@ -58,8 +57,8 @@
      * @return  &org.apache.xml.workflow.ContextResource
      * @see     xp://org.apache.xml.workflow.ContextResourceManager#getContextResource
      */
-    function &getContextResource($name) {
-      return $this->crm->getContextResource($name);
+    function &getContextResource($name, $class= 'ContextResource') {
+      return $this->crm->getContextResource($name, $class);
     }
     
     /**
@@ -71,6 +70,8 @@
      * @return  bool
      */
     function handleRequest(&$request, &$response) {
+      $this->crm->setStorage($request->getSession());
+      
       $l= &Logger::getInstance();
       $cat= &$l->getCategory($this->getClassName());
       
@@ -155,15 +156,17 @@
         
         // Go through all existing context resources and call their "insertStatus"
         // method
-        foreach (array_keys($this->crm->crs) as $name) {
-          $response->addFormResult(Node::fromArray($this->crm->crs[$name]->values, $name));
+        foreach (array_keys($this->crm->hash) as $name) {
+          if (!isset($this->crm->crs[$this->crm->hash[$name]])) continue;
+          $this->crm->crs[$this->crm->hash[$name]]->insertStatus($response->addFormResult(new Node($name)));
         }
 
         $cat->info('Calling getDocument()', $this);
         $state->getDocument($this, $request, $response);
         
       } if (catch('Exception', $e)) {
-      
+        $cat->error('Context::handleRequest', $e->getStackTrace());
+
         // Catch all and every single exception. This is bad coding but we
         // want to be robust plus this way, we do not use track of the state we were
         // in when the exception was thrown.
