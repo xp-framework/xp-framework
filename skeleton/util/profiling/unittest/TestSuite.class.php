@@ -49,6 +49,38 @@
     }
     
     /**
+     * Run a single test
+     *
+     * @access  public
+     * @param   &util.profiling.unittest.TestCase test
+     * @param   &util.profiling.unittest.TestResult
+     * @return  bool success
+     */
+    function runTest(&$test, &$result) {
+      if (NULL !== ($reason= $test->setUp())) {
+        $result->setSkipped($test, $reason);
+        return FALSE;
+      }
+
+      try(); {
+        $r= &$test->run();
+      } if (catch('AssertionFailedError', $e)) {
+        $e->setTrace($e->getStackTrace());
+        $result->setFailed($test, $e);
+        $test->tearDown();
+        return FALSE;
+      } if (catch('Exception', $e)) {
+        $result->setFailed($test, $e);
+        $test->tearDown();
+        return FALSE;
+      }
+
+      $result->setSucceeded($test, $r);
+      $test->tearDown();
+      return TRUE;
+    }
+    
+    /**
      * Run this test suite
      *
      * @access  public
@@ -57,26 +89,7 @@
     function &run() {
       $result= &new TestResult();
       for ($i= 0, $s= sizeof($this->tests); $i < $s; $i++) {
-        if (NULL !== ($reason= $this->tests[$i]->setUp())) {
-          $result->setSkipped($this->tests[$i], $reason);
-          continue;
-        }
-        
-        try(); {
-          $r= &$this->tests[$i]->run();
-        } if (catch('AssertionFailedError', $e)) {
-          $e->setTrace($e->getStackTrace());
-          $result->setFailed($this->tests[$i], $e);
-          $this->tests[$i]->tearDown();
-          continue;
-        } if (catch('Exception', $e)) {
-          $result->setFailed($this->tests[$i], $e);
-          $this->tests[$i]->tearDown();
-          continue;
-        }
-
-        $result->setSucceeded($this->tests[$i], $r);
-        $this->tests[$i]->tearDown();
+        $this->runTest($this->tests[$i], $result);
       }
 
       return $result;
