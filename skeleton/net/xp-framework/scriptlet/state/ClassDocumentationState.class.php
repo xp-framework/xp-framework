@@ -6,6 +6,7 @@
 
   uses(
     'scriptlet.xml.workflow.AbstractState',
+    'net.xp-framework.util.markup.FormresultHelper',
     'io.FileUtil',
     'io.File',
     'lang.apidoc.FileComment',
@@ -60,7 +61,63 @@
         return;
       }
 
-      $response->addFormResult(Node::fromArray($apidoc, 'apidoc'));
+      echo '<xmp>'; var_dump($apidoc); echo '</xmp>';
+      
+      // Add to formresult
+      with (
+        $n= &$response->addFormResult(new Node('apidoc')),
+        $comments= &$n->addChild(new Node('comments'))
+      ); {
+      
+        // File comments
+        $comments->addChild(new Node(
+          'file', 
+          $apidoc['comments']['file']->text, 
+          array('cvs' => $apidoc['comments']['file']->cvsver)
+        ));
+        
+        // Class comments
+        $class= &$comments->addChild(new Node('class', NULL, array(
+          'name'            => $apidoc['comments']['class']->name,
+          'extends'         => $apidoc['comments']['class']->extends,
+          'model'           => $apidoc['comments']['class']->model,
+          'deprecated'      => $apidoc['comments']['class']->deprecated,
+          'experimental'    => $apidoc['comments']['class']->experimental
+        )));
+        $class->addChild(new Node('purpose', $apidoc['comments']['class']->purpose));
+        $class->addChild(Node::fromArray(
+          $apidoc['comments']['class']->references, 
+          'references'
+        ));
+        $class->addChild(Node::fromArray(
+          $apidoc['comments']['class']->extensions, 
+          'extensions'
+        ));
+        $class->addChild(FormresultHelper::markupNodeFor(
+          'text', 
+          $apidoc['comments']['class']->text
+        ));
+        
+        // Method comments
+        foreach ($apidoc['comments']['function'] as $name => $comment) {
+          $method= &$comments->addChild(new Node('method', NULL, array(
+            'name'            => $name,
+            'access'          => $comment->access,
+            'model'           => $comment->model
+          )));
+          $method->addChild(Node::fromObject($comment->return, 'return'));
+          $method->addChild(Node::fromArray($comment->params, 'params'));
+          $method->addChild(Node::fromArray($comment->throws, 'throws'));
+          $method->addChild(Node::fromArray(
+            $comment, 
+            'references'
+          ));
+          $method->addChild(FormresultHelper::markupNodeFor(
+            'text', 
+            $comment->text
+          ));
+        }
+      }
     }
   }
 ?>
