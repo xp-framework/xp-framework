@@ -85,7 +85,8 @@
     function decodeString($str) {
       return strtr(utf8_decode($str), array(
         '\,'    => ',',
-        '\N'    => "\n"
+        '\N'    => "\n",
+        '\n'    => "\n"
       ));
     }
     
