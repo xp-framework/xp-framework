@@ -149,7 +149,9 @@
      * @throws  IOException in case of an error
      */
     function read($bytes= 4096) {
-      return substr($this->buffer, $this->offset+= $bytes, $bytes);
+      $data= substr($this->buffer, $this->offset, $bytes);
+      $this->offset+= $bytes;
+      return $data;
     }
 
     /**
