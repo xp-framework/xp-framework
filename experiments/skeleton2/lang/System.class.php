@@ -14,20 +14,31 @@
    * The System class contains several useful class fields and methods. 
    * It cannot be instantiated.
    * 
-   * @access  static
+   * @model    final
+   * @purpose  Interaction at low-level with the underlying system
    */
-  class System extends Object {
-  
+  final class System extends Object {
+    
+    /**
+     * Constructor, declared private so this class cannot be 
+     * instantiated.
+     *
+     * @model   final
+     * @access  private
+     */
+    private function __construct() { }
+    
     /**
      * Private helper method. Tries to locate an environment
      * variable by name, and, if it fails, tries the given
      * alternatives in the sequence they are specified
      *
+     * @model   static
      * @access  private
      * @param   string* args
      * @return  string environment variable by name
      */
-    private function _env() {
+    private static function _env() {
       foreach (func_get_args() as $a) {
         if ($e= getenv($a)) return $e;
       }
@@ -124,12 +135,13 @@
     /**
      * Sets an environment variable
      *
+     * @model   static
      * @access  public
      * @param   string name
      * @param   mixed var
      * @return  bool success
      */
-    public function putEnv($name, $var) {
+    public static function putEnv($name, $var) {
       return putenv($name.'='.$var);
     }
     
@@ -137,11 +149,12 @@
      * Returns the contents of an environment variable, or in case it does
      * not exist, FALSE.
      *
+     * @model   static
      * @access  public
      * @param   string name
      * @return  mixed var
      */
-    public function getEnv($name) {
+    public static function getEnv($name) {
       return getenv($name);
     }
     
@@ -150,8 +163,9 @@
      * environment variables TEMP and TMP, and, if these cannot be found,
      * uses '/tmp' as location on Un*x systems, c:\ on Windows.
      * 
-     * @see     php://tempnam
      * @model   static
+     * @access  public
+     * @see     php://tempnam
      * @access  public
      * @return  string
      */
@@ -197,6 +211,8 @@
      * command below.
      * </pre>
      *
+     * @model   static
+     * @access  public
      * @param   string cmdLine the command
      * @param   string redirect default '2>&1' redirection
      * @param   bool background
@@ -205,7 +221,7 @@
      * @see     php://exec
      * @see     xp://lang.Process
      */
-    public function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
+    public static function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
       $cmdLine= escapeshellcmd($cmdLine).' '.$redirect.($background ? ' &' : '');
       
       if (!($pd= popen($cmdLine, 'r'))) throw (new SystemException(
