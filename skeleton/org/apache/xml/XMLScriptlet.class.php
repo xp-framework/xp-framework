@@ -91,7 +91,7 @@
       parent::init();
       if (FALSE === getenv('PRODUCT')) $this->request->method= 'CREATE';
       $this->request->state= getenv('STATE');
-      $this->request->language= getenv('LANG');
+      $this->request->language= getenv('LANGUAGE');
       $this->request->page= $this->request->getParam('__page');
     }
     
