@@ -205,19 +205,19 @@
      * Sets message size
      *
      * @access  public
-     * @param   mixed arg
+     * @param   int size
      */
     function setSize($size) {
-      return $this->size;
+      $this->size= $size;
     }
     
     /**
      * Retrieve message size
      *
      * @access  public
-     * @return  string
+     * @return  int
      */
-    function &getSize() {
+    function getSize() {
       return $this->size;
     }
 
@@ -225,10 +225,10 @@
      * Sets message-id
      *
      * @access  public
-     * @param   mixed arg
+     * @param   string message_id
      */
     function setMessageId($message_id) {
-      return $this->message_id;
+      $this->message_id= $message_id;
     }
     
     /**
@@ -237,7 +237,7 @@
      * @access  public
      * @return  string
      */
-    function &getMessageId() {
+    function getMessageId() {
       return $this->message_id;
     }
     
