@@ -29,10 +29,10 @@
       if (matches= str.match(/0?([0-9]+)\.0?([0-9]+)(\.0?([0-9]+))?/)) {
         with (this.date = new Date()) {
           setDate(parseInt(matches[1]));
-          setMonth(parseInt(matches[2]));
+          setMonth(parseInt(matches[2]) - 1);
           if (4 < matches.length) {
             y = parseInt(matches[4]);
-            setYear(y < 2000 ? y + 2000 : y);
+            setYear(y < 100 ? y + 1900 : y);
           }
         }
       }

@@ -58,7 +58,7 @@
         ret+= str.substring(0, pos);
         switch (str.charAt(pos + 1)) {
           case 'd': ret+= lzero.format(this.getDate()); break;
-          case 'm': ret+= lzero.format(this.getMonth()); break;
+          case 'm': ret+= lzero.format(this.getMonth() + 1); break;
           case 'Y': ret+= this.getFullYear(); break;
           // TBI: Rest
         }
