@@ -13,10 +13,7 @@
   );
   
   // {{{ main
-  $p= new ParamString();
-  
-  // Set up logger
-  if ($p->exists('debug')) {
+  if (create(new ParamString())->exists('debug')) {
     Logger::getInstance()->getCategory()->addAppender(new ColoredConsoleAppender());
   }
 
