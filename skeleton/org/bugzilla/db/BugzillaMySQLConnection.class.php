@@ -18,7 +18,8 @@
       $shadow    = TRUE;
     
     var
-      $_affected = -1;
+      $_affected = -1,
+      $_insert_id= -1;
 
     /**
      * Constructor
@@ -31,6 +32,16 @@
             
       $this->shadow= $this->dsn->getValue('shadow', FALSE);
     }
+    
+    /**
+     * Retrieve identity
+     *
+     * @access  public
+     * @return  mixed identity value
+     */
+    function identity() {
+      return $this->_insert_id;
+    }      
 
     /**
      * Execute an insert statement
@@ -47,7 +58,7 @@
         return FALSE;
       }
       
-      return $this->_affected;
+      return $this->_insert_id;
     }
     
     
@@ -107,10 +118,11 @@
       
       if (TRUE !== $res || !$this->shadow) return $res;
 
-      // Get the affected rows of the query on the bugs db to check for
-      // midway collisions. Otherwise you get the affected rows of the 
+      // Get the affected rows / insert_id of the query on the bugs db to check for
+      // midway collisions. Otherwise you get the affected rows / insert_id of the 
       // shadow db insert    
       $this->_affected= mysql_affected_rows($this->handle);
+      $this->_insert_id= mysql_insert_id($this->handle);
 
       // This was an SQL update, insert or delete, or: something that does
       // not return a resultset. Write it into the shadow log
