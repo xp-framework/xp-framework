@@ -86,6 +86,24 @@
     }
     
     /**
+     * Do a Head Request to check if file exists
+     *
+     * @access  public  
+     * @param   string uri, filename or directory
+     * @return  &peer.http.HttpResponse response object
+     * @see     rfc://2518
+     */
+    function exists($uri) {    
+      try(); {
+        $c= &$this->getConnection($uri);
+        $response= &$c->head();
+      } if (catch('Exception', $e)) {
+        return throw($e);
+      }
+      return $response;  
+    }
+    
+    /**
      * Do a Propfind on Webdav server
      *
      * @access  public
@@ -306,6 +324,42 @@
       try(); {
         $c= &$this->getConnection($uri);
         $response= &$c->delete();
+      } if (catch('Exception', $e)) {
+        return throw($e);
+      }
+      return $response;  
+    }
+    
+    /**
+     * Activate VersionControl on a file
+     *
+     * @access  public  
+     * @param   string uri, filename or directory
+     * @return  &peer.http.HttpResponse response object
+     * @see     rfc://2518
+     */
+    function version($uri) {    
+      try(); {
+        $c= &$this->getConnection($uri);
+        $response= &$c->version();
+      } if (catch('Exception', $e)) {
+        return throw($e);
+      }
+      return $response;  
+    }
+    
+    /**
+     * Do a Report Request
+     *
+     * @access  public  
+     * @param   string uri, filename or directory
+     * @return  &peer.http.HttpResponse response object
+     * @see     rfc://2518
+     */
+    function report($uri) {    
+      try(); {
+        $c= &$this->getConnection($uri);
+        $response= &$c->report();
       } if (catch('Exception', $e)) {
         return throw($e);
       }
