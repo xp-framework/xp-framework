@@ -7,15 +7,12 @@
   uses(
     'io.Folder',
     'io.File',
-    'io.dba.DBAFile',
     'util.MimeType',
     'org.webdav.xml.WebdavPropResponse',
     'org.webdav.xml.WebdavLockRequest',
     'org.webdav.xml.WebdavPropPatchResponse',
-    'org.webdav.WebdavLock',
     'org.webdav.impl.DavImpl',
     'org.webdav.propertystorage.DBAFilePropertyStorage',
-    'org.webdav.util.OpaqueLockTocken',
     'lang.ElementNotFoundException',
     'util.log.Logger'
   );
@@ -510,9 +507,7 @@
         return throw($e, get_class($this).'::Unlock'.' no LCK-store '.$e->message);
       } 
       
-      $this->propStorage->open(DBO_WRITE);
-      $this->propStorage->setLock($path, NULL);
-      $this->propStorage->close();
+      $this->propStorage->setLockInfo($path, $tmp= NULL);
 
       if ($lock->getLockToken()) $response->setHeader('Lock-Token', $request->getHeader('Lock-Token'));
     }
@@ -612,84 +607,6 @@
      */
     function getUri() {
       return $this->uri;
-    }
-    
-    /**
-     * Retrieve lock information
-     *
-     * @access  public
-     * @param   string uri  The URI
-     * @return  array[]
-     */
-    function &getLockInfo($uri) {
-      $key= 'LOCK:'.$uri;
-      $this->propStorage->open(DBO_READ);
-      $lock= $this->propStorage->lookup($key) ? unserialize($this->propStorage->fetch($key)) : NULL;
-      $this->propStorage->close();
-
-      if (empty($lock)) return NULL;
-
-
-      if ($lock->getCreationTime() + $lock->getTimeout() < time()) {  // lock expired
-        $this->propStorage->open(DBO_WRITE);
-        $this->propStorage->setLock($uri, NULL);
-        $this->propStorage->close();
-        return new WebdavLock(NULL);
-      }
-
-      return $lock;
-    }
-    
-    /**
-     * Set lock for URI
-     *
-     * @access  public
-     * @param   &org.webdav.WebdavLock
-     * @return  &org.webdav.WebdavLock
-     * @throws  OperationNotAllowedException
-     */
-    function &setLockInfo(&$lock, $tokens= array()) { 
-      
-      $lockinfo= $this->getLockInfo($lock->getURI());        
-
-      if ($lockinfo !== NULL) {
-        $owner= $lockinfo->getOwner();
-        if (!empty($tokens)) {
-          // refresh of lock
-          if (!in_array($lockinfo->getLockToken(), $tokens)) {
-            return throw(new OperationNotAllowedException('Cant refresh lock '.$uri.' for '.$lock->getOwner()));
-          }
-        } else {
-          // new lock
-          if ($lock->getLockToken() != $lockinfo->getLockToken()) {
-            return throw(new OperationNotAllowedException('Can not lock '.$uri.' for '.$lock->getOwner()));
-          }
-        }
-      }
-      
-      $newOwner= $lock->getOwner();      
-      // We can't set a lock where owner is empty
-      if (empty($newOwner)) {
-        return throw(new OperationNotAllowedException('Can not set lock with empty owner'));
-      }
-        
-      // Check timeout
-      if (substr($lock->getTimeout(), 0, 7) == 'Second-') $lock->setTimeout((int)substr($lock->getTimeout(), 7));
-        
-      $timeout= $lock->getTimeout() ? (int)$lock->getTimeout() : 86400;
-
-      // Check depth      
-      if ($lock->getDepth() != 'infinity') $lock->setDepth((int)$lock->getDepth());
-      
-      // Check token
-      if (empty($token)) { $t= &new OpaqueLockTocken(UUID::create()); }
-
-      // Set lock
-      $lock->setLockToken($t->toString());
-      $this->propStorage->open(DBO_WRITE);
-      $this->propStorage->setLock($lock->getURI(), $lock);
-      $this->propStorage->close();
-      return $lock;
     }
     
   }
