@@ -86,11 +86,11 @@
         )));
         $class->addChild(new Node('purpose', $apidoc['comments']['class']->purpose));
         $class->addChild(Node::fromArray(
-          $apidoc['comments']['class']->references, 
+          (array)$apidoc['comments']['class']->references, 
           'references'
         ));
         $class->addChild(Node::fromArray(
-          $apidoc['comments']['class']->extensions, 
+          (array)$apidoc['comments']['class']->extensions, 
           'extensions'
         ));
         $class->addChild(FormresultHelper::markupNodeFor(
@@ -106,12 +106,9 @@
             'model'           => $comment->model
           )));
           $method->addChild(Node::fromObject($comment->return, 'return'));
-          $method->addChild(Node::fromArray($comment->params, 'params'));
-          $method->addChild(Node::fromArray($comment->throws, 'throws'));
-          $method->addChild(Node::fromArray(
-            $comment, 
-            'references'
-          ));
+          $method->addChild(Node::fromArray((array)$comment->params, 'params'));
+          $method->addChild(Node::fromArray((array)$comment->throws, 'throws'));
+          $method->addChild(Node::fromArray((array)$comment->references, 'references'));
           $method->addChild(FormresultHelper::markupNodeFor(
             'text', 
             $comment->text
