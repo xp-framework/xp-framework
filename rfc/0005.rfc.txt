@@ -4,8 +4,9 @@ $Id$
 
 @authors: friebe
 @created: Sun Nov 16 19:51:54 CET 2003
-@status: draft
+@status: implemented
 @category: language
+@implemented: Tue Jan  4 18:28:12 CET 2005
 
 Scope of Change
 ---------------
