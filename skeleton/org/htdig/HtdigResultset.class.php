@@ -19,7 +19,8 @@
       $_csvdef=     NULL;
 
     /**
-     * Set Csvdef.
+     * Set Csvdef. This is the mapping of the no. of the retrieved
+     * column to its name, just like a csv-file header.
      *
      * @access  public
      * @param   &array _cvsdef
@@ -35,7 +36,7 @@
      * @param   &mixed metaresult
      */
     function setMetaresult(&$metaresult) {
-      $this->metaresult= &$metaresult;
+      $this->metaresult= array_change_key_case($metaresult, CASE_LOWER);
     }
 
     /**
