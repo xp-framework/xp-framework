@@ -128,7 +128,7 @@
     }
     
     /**
-     * Retreive identity
+     * Retrieve identity
      *
      * @access  public
      * @return  mixed identity value
@@ -260,7 +260,7 @@
     }
     
     /**
-     * Retreive transaction state
+     * Retrieve transaction state
      *
      * @access  public
      * @param   string name
