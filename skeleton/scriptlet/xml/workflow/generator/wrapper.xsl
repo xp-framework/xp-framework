@@ -121,8 +121,7 @@
  */
 
   uses(
-    'scriptlet.xml.workflow.Wrapper',
-]]></xsl:text>
+    'scriptlet.xml.workflow.Wrapper']]></xsl:text>
 
     <!-- Create a unique list of all used classes -->
     <xsl:variable name="elements" select="//postcheck|//precheck|//caster"/>
@@ -131,10 +130,10 @@
       <xsl:variable name="pos" select="position()- 1"/>
 
       <xsl:if test="@class != $elements[$pos]/@class">
+        <xsl:text>,&#10;</xsl:text>        
         <xsl:text>    '</xsl:text>
         <xsl:value-of select="@class"/>
         <xsl:text>'</xsl:text>
-        <xsl:if test="position() &lt; last()"><xsl:text>,&#10;</xsl:text></xsl:if>
       </xsl:if>
     </xsl:for-each>
     <xsl:text><![CDATA[    
