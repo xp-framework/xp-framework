@@ -23,6 +23,18 @@
       $tz=      '';
 
     /**
+     * Constructor.
+     *
+     * @access  public
+     * @param   string offset
+     * @param   string timezone name default ''
+     */
+    function __construct($offset, $tz= '') {
+      $this->offset= $offset;
+      $this->tz= $tz;
+    }
+
+    /**
      * Gets the name of the timezone
      *
      * @access  public
@@ -62,6 +74,7 @@
         'CET' => '+0100',             // Central European Time
         
         // Greenwich
+        'Z'   => '+0000',             // Zulu time
         'GMT' => '+0000',             // Greenwich mean Time
         'UT'  => '+0000',             // Universal
         'UTC' => '+0000',             // Universal Co-ordinated
@@ -119,11 +132,7 @@
         ));
       }
       
-      $tz= &new TimeZone(array (
-        'tz'      => $abbrev,
-        'offset'  => $offset
-      ));
-      
+      $tz= &new TimeZone($offset, $abbrev);
       return $tz;
     }
     
