@@ -66,7 +66,7 @@
     <br/>
   </xsl:template>
 
-  <xsl:template match="text//br|text//tt|php//*">
+  <xsl:template match="text//br|text//tt|text//b|text//i|php//*">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>
