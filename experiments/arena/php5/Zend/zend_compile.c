@@ -4161,7 +4161,7 @@ void zend_do_end_enum_declaration(TSRMLS_D)
     do_inherit_parent_constructor(base_enumeration_ce);
     CG(active_class_entry)->line_end = zend_get_compiled_lineno(TSRMLS_C);
 	
-	zend_do_inheritance(CG(active_class_entry), base_enumeration_ce);
+	zend_do_inheritance(CG(active_class_entry), base_enumeration_ce TSRMLS_CC);
 	CG(active_class_entry)= NULL;
 }
 
