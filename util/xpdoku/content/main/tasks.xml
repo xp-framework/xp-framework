@@ -312,6 +312,16 @@
           -->
         </advanced>
       </para>
+
+      <!-- misc -->
+      <para>
+        <caption>Miscellaneous</caption>
+        <text>
+          <ul>
+            <li>The RDBMS access api is explained <ref type="tasks.rdbms">here</ref>.</li>
+          </ul>
+        </text>
+      </para>
       
       <!-- server -->
       <!-- TBD
