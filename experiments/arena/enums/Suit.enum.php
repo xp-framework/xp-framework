@@ -4,6 +4,11 @@
  * $Id$
  */
 
+  /**
+   * Enumeration of card games suit
+   *
+   * @purpose  Enumeration
+   */
   enum Suit {
     CLUBS, DIAMONDS, HEARTS, SPADES
   }
