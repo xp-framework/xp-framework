@@ -137,7 +137,13 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function &put(&$file, $uri= NULL) {    
+    function &put(&$file, $uri= NULL) {  
+      // If no uri or filename is specified, take the original filename  
+      if ($uri === NULL) $uri= $file->getFilename();
+            
+      // Encode uri to handle files/directories containing spaces
+      $uri= rawurlencode($uri);    
+      
       if (!$file->isOpen()) $file->open(FILE_MODE_READ);
       try(); {
         $c= &$this->getConnection($uri);
