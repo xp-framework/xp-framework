@@ -9,6 +9,7 @@
   /**
    * Excel COM API
    *
+   * @see      http://msdn.microsoft.com/library/officedev/off2000/xltocobjectmodelapplication.htm
    * @ext      com
    */
   class Excel extends COMObject {
