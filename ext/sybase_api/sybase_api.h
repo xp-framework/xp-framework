@@ -30,6 +30,11 @@ typedef struct {
     CS_INT code;
 } sybase_result;
 
+typedef struct {
+    int fields;
+    CS_DATAFMT *dataformat;
+} sybase_resultset;
+
 SYBASE_API int sybase_init(sybase_environment **env);
 SYBASE_API int sybase_set_messagehandler(sybase_environment *env, int type, CS_VOID *handler);
 SYBASE_API int sybase_shutdown(sybase_environment *env);
@@ -44,4 +49,7 @@ SYBASE_API int sybase_close(sybase_link *link);
 SYBASE_API int sybase_free(sybase_link *link);
 SYBASE_API char *sybase_nameoftype(CS_INT type);
 SYBASE_API char *sybase_nameofcode(CS_INT code);
+SYBASE_API char *sybase_nameofdatatype(CS_INT datatype);
 SYBASE_API int sybase_free_result(sybase_result *result);
+SYBASE_API int sybase_init_resultset(sybase_result *result, sybase_resultset **resultset);
+SYBASE_API int sybase_free_resultset(sybase_resultset *resultset);
