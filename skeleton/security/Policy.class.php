@@ -114,7 +114,7 @@
 
                   // grant {           
                   // grant signedBy "Duke" {
-                  // grant signedBy "sysadmin", codeBase "file:/home/sysadmin/*" {
+                  // grant signedBy "sysadmin", codeBase "file:/home/sysadmin/" {
                   if ('rant' == substr($line, 1, 4)) {
                     $state= PF_ST_GRANT;
                     $end= FALSE;
