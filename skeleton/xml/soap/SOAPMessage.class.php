@@ -207,7 +207,6 @@
 
             // Check for mapping
             $qname= strtolower($child->attribute['xmlns:'.$regs[1]].'/'.$regs[2]);
-            fwrite(STDERR, $qname."\n".var_export($mapping, 1)."\n");
             if (isset($mapping[$qname])) {
               $result= &$mapping[$qname]->newInstance();
             } else {
