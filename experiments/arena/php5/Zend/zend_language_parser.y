@@ -617,7 +617,7 @@ annotation_defines:
 
 annotation_define:
 		T_STRING { zend_do_annotation_define(&$1, NULL TSRMLS_CC); }
-	|	T_STRING '=' common_scalar  { zend_do_annotation_define(&$1, &$3 TSRMLS_CC); }
+	|	T_STRING '=' static_scalar  { zend_do_annotation_define(&$1, &$3 TSRMLS_CC); }
 ;
 
 operator_token:

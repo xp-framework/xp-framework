@@ -70,6 +70,14 @@ zend_class_entry *reflection_extension_ptr;
 	}                                                                                                       \
 	target = intern->ptr;                                                                                   \
 
+#define UPDATE_ANNOTATION_CONSTANT(value, resolve_scope)                                                    \
+	if (Z_TYPE_PP(value) == IS_CONSTANT_ARRAY || Z_TYPE_PP(value) == IS_CONSTANT) {                         \
+		zend_class_entry *tmpscope = EG(scope);                                                             \
+		EG(scope) = resolve_scope;                                                                          \
+		zval_update_constant(value, (void *) 1 TSRMLS_CC);                                                  \
+		EG(scope) = tmpscope;                                                                               \
+	}
+
 /* {{{ Smart string functions */
 typedef struct _string {
 	char *string;
@@ -246,6 +254,21 @@ static zval * reflection_instanciate(zend_class_entry *pce, zval *object TSRMLS_
 	object->refcount = 1;
 	object->is_ref = 1;
 	return object;
+}
+
+static int _update_constant_recursive(zval **pp, void *arg TSRMLS_DC)
+{
+	switch (Z_TYPE_PP(pp)) {
+		case IS_CONSTANT_ARRAY:
+		case IS_CONSTANT:
+			zval_update_constant(pp, arg TSRMLS_CC);
+			break;
+
+		case IS_ARRAY:
+			zend_hash_apply_with_argument(Z_ARRVAL_PP(pp), (apply_func_arg_t) _update_constant_recursive, (void *) 1 TSRMLS_CC);
+			break;
+	}
+	return 0;
 }
 
 static void _const_string(string *str, char *name, zval *value, char *indent TSRMLS_DC);
@@ -2320,13 +2343,15 @@ ZEND_METHOD(reflection_method, getAnnotation)
 
 	if (define) {
 		zval **val = NULL;
-		
+
 		if (!(Z_TYPE_PP(value) == IS_ARRAY && zend_hash_find(HASH_OF(*value), define, define_len + 1, (void **) &val) == SUCCESS)) {
 			zend_throw_exception_ex(reflection_exception_ptr, 0 TSRMLS_CC, "Annotation %s['%s'] does not exist", name, define);
 			return;
 		}
+		UPDATE_ANNOTATION_CONSTANT(val, mptr->common.scope);
 		*return_value = **val;
 	} else {		
+		UPDATE_ANNOTATION_CONSTANT(value, mptr->common.scope);
 		*return_value = **value;
 	}
 	zval_copy_ctor(return_value);
@@ -2346,6 +2371,12 @@ ZEND_METHOD(reflection_method, getAnnotations)
 
 	array_init(return_value);
 	if (mptr->common.annotations) {
+		zend_class_entry *scope = EG(scope);
+
+		EG(scope) = mptr->common.scope;
+		zend_hash_apply_with_argument(mptr->common.annotations, (apply_func_arg_t) _update_constant_recursive, (void *) 1 TSRMLS_CC);
+		EG(scope) = scope;
+
 		zend_hash_copy(Z_ARRVAL_P(return_value), mptr->common.annotations, (copy_ctor_func_t) zval_add_ref, (void *) &tmp_copy, sizeof(zval *));
 	}
 }
@@ -3311,10 +3342,13 @@ ZEND_METHOD(reflection_class, getAnnotation)
 			zend_throw_exception_ex(reflection_exception_ptr, 0 TSRMLS_CC, "Annotation %s['%s'] does not exist", name, define);
 			return;
 		}
+		UPDATE_ANNOTATION_CONSTANT(val, ce);
 		*return_value = **val;
 	} else {		
+		UPDATE_ANNOTATION_CONSTANT(value, ce);
 		*return_value = **value;
 	}
+
 	zval_copy_ctor(return_value);
 }
 /* }}} */
@@ -3331,7 +3365,15 @@ ZEND_METHOD(reflection_class, getAnnotations)
 	GET_REFLECTION_OBJECT_PTR(ce);
 
 	array_init(return_value);
-	zend_hash_copy(Z_ARRVAL_P(return_value), ce->annotations, (copy_ctor_func_t) zval_add_ref, (void *) &tmp_copy, sizeof(zval *));
+	if (ce->annotations) {
+		zend_class_entry *scope = EG(scope);
+
+		EG(scope) = ce;
+		zend_hash_apply_with_argument(ce->annotations, (apply_func_arg_t) _update_constant_recursive, (void *) 1 TSRMLS_CC);
+		EG(scope) = scope;
+
+		zend_hash_copy(Z_ARRVAL_P(return_value), ce->annotations, (copy_ctor_func_t) zval_add_ref, (void *) &tmp_copy, sizeof(zval *));
+	}
 }
 /* }}} */
 
