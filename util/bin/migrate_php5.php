@@ -119,6 +119,7 @@ __;
         $out[]= 'class ';
         $t->getNextToken();             // Swallow whitepsace
         $classname= $t->getNextToken();
+        $extends= NULL;
         $out[]= $classname[1];
         while ('{' !== $tok[1]) {
           $tok= $t->getNextToken();
@@ -132,6 +133,17 @@ __;
             $out[]= isset($map[$tok[1]]) ? $map[$tok[1]] : $tok[1];
           }
         }
+        
+        if ('Interface' == $extends) {
+          $out[sizeof($out) - 8]= 'interface ';
+          
+          // Remove "extends Interface"
+          do {
+            unset($out[sizeof($out) - 2]);
+          } while ('extends' != $out[sizeof($out) - 2]);
+          unset($out[sizeof($out) - 2]);
+        }
+        
         if (!empty($constants)) {
           $out[]= "\n    const\n";
           $const= '';
@@ -160,6 +172,22 @@ __;
           ('getBy' == substr($tok[1], 0, 5))
         ) $out[]= ' static';
         $out[]= ' function ';
+        
+        // Skip until method body
+        while ('{' !== $tok[1]) {
+          $out[]= $tok[1];
+          $tok= $t->getNextToken();
+        }
+        
+        // Kill method body if this function resides in an interface
+        if ('Interface' == $extends) { 
+          while ('}' !== $tok[1]) {
+            $tok= $t->getNextToken();
+          }
+          $out[]= ';';
+          $tok= $t->getNextToken();
+        }
+        
         break;
       
       case '$this':     // $this->setURI();
