@@ -57,7 +57,7 @@
      */
     function addPart(&$part) {
       if (!is_a($part, 'MimePart')) {
-        trigger_error('Given type: '.get_class($part), E_USER_NOTICE);
+        trigger_error('Given type: '.gettype($part).'@'.get_class($part), E_USER_NOTICE);
         return throw(new IllegalArgumentException(
           'Parameter part is not a peer.mail.MimePart'
         ));
