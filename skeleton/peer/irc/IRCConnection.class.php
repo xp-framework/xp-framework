@@ -60,7 +60,6 @@
      * @param   int port default 6667
      */
     function __construct(&$user, $server, $port= 6667) {
-      
       $this->user= &$user;
       $this->sock= &new Socket($server, $port);
     }
