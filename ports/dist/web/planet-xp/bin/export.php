@@ -44,11 +44,15 @@
         f.feed_id,
         f.title as feedtitle,
         f.link as feedlink,
-        f.description
+        f.description,
+        f.author as feedauthor,
+        a.author_to as author_translated
       from
-        syndicate.feeditem i,
         syndicate.feed f,
-        syndicate.syndicate_feed_matrix sfm
+        syndicate.syndicate_feed_matrix sfm,
+        syndicate.feeditem i left outer join syndicate.authormapping a
+          on i.feed_id= a.feed_id
+          and i.author= a.author_from
       where f.feed_id= i.feed_id
         and f.feed_id= sfm.feed_id
         and sfm.syndicate_id= %d
@@ -85,7 +89,12 @@
       'feeditem_id' => $item['feeditem_id'],
       'title'       => $item['title'],
       'link'        => $item['link'],
-      'author'      => $item['author']
+      'author'      => (!empty($item['author_translated']) 
+        ? $item['author_translated'] 
+        : (!empty($item['feedauthor']) 
+          ? $item['feedauthor'] 
+          : $item['author']
+       ))
     )));
     
     // Check the content for XML conformance, apply strip_tags if not.
@@ -98,13 +107,13 @@
       $parser->parse($doc->getDeclaration()."\n".'<root>'.$content.'</root>');
     } if (catch('XMLFormatException', $e)) {
     
-      // Strip any tags and mark state of the article.
+      // Strip tags and mark state of the article.
       Console::writeLinef('     Item %d not well-formed: %s', $item['feeditem_id'], $e->getMessage());
-      $content= strip_tags($content);
+      $content= strip_tags($content, '<a><br>');
       $child->setAttribute('stripped', TRUE);
     }
     
-    $child->addChild(new Node('content', new PCData($content)));
+    $child->addChild(new Node('content', new PCData(wordwrap($content, 80))));
     $child->addChild(Node::fromObject($item['published'], 'published'));
     
     // Information about the feed
