@@ -12,7 +12,7 @@
    * @see
    * @purpose  Wrap
    */
-  class MailStore extends MailStore {
+  class MboxStore extends MailStore {
   
   }
 ?>
