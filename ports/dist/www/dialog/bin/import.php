@@ -162,7 +162,7 @@ __
   $entries= array();
   for ($i= &new FilteredFolderIterator($data, DATA_FILTER); $i->hasNext(); ) {
     $entry= $i->next();
-    $entries[filemtime($data->getURI().$entry).$entry]= $entry;
+    $entries[filemtime($data->getURI().$entry).$entry]= basename($entry, '.dat');
   }
   $data->close();
   krsort($entries);
