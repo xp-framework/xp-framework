@@ -59,6 +59,10 @@ index: $(OUTPUT) $(XML)
 	@-$(PHP) util/news.php > content/news.rdf.xml
 	@echo "===> Creating index"
 	@$(SABCMD) xslt/index.xsl content/index.xml $(OUTPUT)/index.html 2>/dev/null
+	@echo "===> Creating copyright"
+	@$(SABCMD) xslt/content.xsl content/copyright.xml $(OUTPUT)/copyright.html 2>/dev/null
+	@echo "===> Creating credits"
+	@$(SABCMD) xslt/content.xsl content/credits.xml $(OUTPUT)/credits.html 2>/dev/null
 	@echo "===> Creating apidoc index"
 	@$(SABCMD) xslt/apidoc.xsl $(CTREE) $(OUTPUT)/apidoc/index.html 2>/dev/null
 	@echo "===> Creating highlighter"
