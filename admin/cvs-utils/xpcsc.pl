@@ -16,7 +16,7 @@ use constant ESHORTOPEN => "ESHORTOPEN";
 
 use constant WTBD       => "WTBD";
 use constant WOUTPUT    => "WOUTPUT";
-use constant WINDENT    => "WIUNDENT";
+use constant WINDENT    => "WINDENT";
 use constant WNOHINT    => "WNOHINT";
 
 %LINK = (
@@ -83,9 +83,6 @@ sub error() {
   chomp $_;
   my $out= "*** Error: ".$message." at line ".$l." of ".$FILE."\n    ".$_."\n---> [".$code."] ".$LINK{$code}."\n";
   print $out;
-
-  close FILE;
-  exit 32;
 
   open (SENDMAIL, "| /usr/sbin/sendmail -t");
   print SENDMAIL "To: friebe\@php3.de, kiesel\@php3.de\n";
