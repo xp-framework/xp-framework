@@ -181,7 +181,10 @@
      * @access  public
      */
     function __destruct() {
-      xslt_free($this->processor);
+      if ($this->processor) {
+        xslt_free($this->processor);
+        $this->processor= NULL;
+      }
       parent::__destruct();
     }
   }
