@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+  Javascript Experiment: A person selection widget
+  
+  $Id$
+-->
+<html>
+  <head>
+    <title>Javascript Experiment: Person selection "widget"</title>
+    <script language="JavaScript" src="skeleton/lang.base.js"></script>
+    <script language="JavaScript">
+      var persons= new Array(
+        { id : 1549, lastname : 'Friebe', firstname : 'Timm' },
+        { id : 6100, lastname : 'Kiesel', firstname : 'Alex' }
+      );
+
+      function search(string) {
+        for (i= 0; i < persons.length; i++) {
+          if (-1 != persons[i].lastname.indexOf(string)) return persons[i];
+        }
+        return null;
+      }
+      
+      function handleKeyPress(object, e) {
+        switch (e.keyCode) {
+          case 9:   // Tab
+            with (document.forms.select) {
+              if (null != (p= search(person.value))) {
+                person.value= p.lastname + ', '+ p.firstname;
+                debug.value= p.id;
+              } else {
+                debug.value= '(not found)';
+              }
+            }
+            break;
+          
+          default:
+            return true;
+        }
+        
+        return false; // Indicate we processed this
+      }
+    </script>
+  </head>
+  <body>
+    <form name="select">
+      <table>
+        <tr>
+          <td width="10%">
+            <input 
+             type="text" 
+             name="person" 
+             value="" 
+             onKeyPress="return handleKeyPress(this, event)"
+             size="20"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td><input type="text" name="debug" readonly="yes" size="50"/></td>
+        </tr>
+      </table>
+    </form>
+  </body>
+</html>
