@@ -123,7 +123,12 @@
      * @return  bool success
      */
     function close() {
-      return $this->isConnected() ? ldap_close($this->_hdl) : TRUE;
+      if (!$this->isConnected()) return TRUE;
+      
+      $ret= TRUE;
+      $ret= $ret & ldap_unbind($this->_hdl);
+      $ret= $ret & ldap_close($this->_hdl);
+      return $ret;
     }
     
     /**
