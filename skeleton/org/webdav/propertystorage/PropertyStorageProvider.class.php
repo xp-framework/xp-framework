@@ -55,7 +55,7 @@
      * @param   string uri The URI
      * @param   &org.webdav.WebdavLock The WebDav Lock (use NULL to remove property)
      */
-    function setProperty($uri, &$property) { }
+    function setLock($uri, &$property) { }
     
   }
 ?>
