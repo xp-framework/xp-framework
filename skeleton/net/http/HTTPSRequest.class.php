@@ -9,6 +9,7 @@
    /**
     * HTTPS requests
     *
+    * @deprecated
     * @ext  curl
     */
    class HTTPSRequest extends HTTPRequest {

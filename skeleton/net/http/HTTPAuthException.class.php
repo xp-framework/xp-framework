@@ -8,6 +8,7 @@
    * Kapselt die HttpAuthException
    *
    * @see Exception
+   * @deprecated
    */
   class HttpAuthException extends Exception {
   

@@ -17,6 +17,7 @@
   /**
    * HTTP requests
    *
+   * @deprecated
    */
   class HTTPRequest extends Socket {
     var 

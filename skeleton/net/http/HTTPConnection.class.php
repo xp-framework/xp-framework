@@ -20,6 +20,7 @@
   /**
    * HTTP connection
    *
+   * @deprecated
    */
   class HTTPConnection extends Socket {
     var 
