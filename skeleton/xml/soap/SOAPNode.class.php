@@ -57,7 +57,8 @@
      * Get content in iso-8859-1 encoding (the default).
      *
      * @access  public
-     * @param   string encoding default NULL
+     * @param   string encoding
+     * @param   &mixed namespaces
      * @return  &mixed data
      */
     function &getContent($encoding, &$namespaces) {
