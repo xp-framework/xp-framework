@@ -32,11 +32,11 @@
     <a href="/content/{@link}.html"><xsl:value-of select="."/></a>
   </xsl:template>
   
-  <xsl:template match="main/content">
+  <xsl:template match="main">
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
       <tr>
-        <th valign="top" align="left"><xsl:value-of select="title"/></th>
-        <td valign="top" align="right">(<xsl:value-of select="editor"/>)</td>
+        <th valign="top" align="left"><xsl:value-of select="content/title"/></th>
+        <td valign="top" align="right">(<xsl:value-of select="content/editor"/>)</td>
 	  </tr>
 	  <tr bgcolor="#cccccc">
         <td colspan="2"><img src="/image/spacer.gif" height="1" border="0"/>
@@ -44,17 +44,49 @@
     </table>
     <br/>
     
-    <xsl:apply-templates select="para"/>
+    <table border="0" width="100%" cellspacing="0" cellpadding="2" bgcolor="#eeeeff" style="border: 1px dotted #3654a5">
+      <tr>
+        <td width="4%" nowrap="nowrap">
+          <img src="/image/nav_toc.gif" height="17" width="17" alt="=&gt;" hspace="2" vspace="2"/>
+        </td>
+        <td>
+          <a name="contents"><b style="color: #000066">
+            Table of Contents
+          </b></a>
+        </td>
+      </tr>
+      <xsl:for-each select="content/para/caption">
+        <tr>
+          <td width="4%" nowrap="nowrap">
+            <img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/>
+          </td>
+          <td>
+            Chapter <b><xsl:value-of select="position()"/></b>: <a href="#{position()}"><xsl:value-of select="."/></a>
+          </td>
+        </tr>
+      </xsl:for-each>
+    </table>
+    <br/>
+    <br/>
+    
+    <xsl:apply-templates select="content/para"/>
   </xsl:template>
   
   <xsl:template match="main/content/para">
-    <b><xsl:value-of select="caption"/></b><br/>
+    <table border="0" width="100%" cellspacing="0" cellpadding="2">
+      <tr>
+        <td>
+          <a name="{position()}"><b><xsl:value-of select="caption"/></b></a>
+        </td>
+        <td width="4%" nowrap="nowrap" align="right">
+          <a href="#top"><img alt="^" title="Top" border="0" src="/image/nav_top.gif" height="17" width="17" hspace="0" vspace="0"/></a>
+        </td>
+      </tr>
+    </table>
     <xsl:call-template name="divider"/>
-    <br/>
-    
-    <xsl:apply-templates select="text"/>
-    
-    <br/><br/>
+    <p style="line-height: 16px; text-align: justify">
+      <xsl:apply-templates select="text"/>
+    </p>
   </xsl:template>
 
   <xsl:template match="code">
