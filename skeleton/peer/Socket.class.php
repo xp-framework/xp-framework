@@ -22,7 +22,8 @@
       
     var
       $_sock    = NULL,
-      $_prefix  = '';
+      $_prefix  = '',
+      $_timeout = 60;
     
     /**
      * Constructor
@@ -93,6 +94,8 @@
           $errstr
         )));
       }
+      
+      socket_set_timeout($this->_sock, $this->_timeout);
       return 1;
     }
 
@@ -106,6 +109,26 @@
       $res= fclose($this->_sock);
       $this->_sock= NULL;
       return $res;
+    }
+
+    /**
+     * Set _timeout
+     *
+     * @access  public
+     * @param   mixed _timeout
+     */
+    function setTimeout($timeout) {
+      $this->_timeout= $timeout;
+    }
+
+    /**
+     * Get _timeout
+     *
+     * @access  public
+     * @return  mixed
+     */
+    function getTimeout() {
+      return $this->_timeout;
     }
 
     /**
@@ -149,7 +172,7 @@
         return throw(new SocketException('Get status failed: '.$this->getLastError()));
       }
 
-      if (FALSE === socket_set_timeout($this->_sock, 60)) {
+      if (FALSE === socket_set_timeout($this->_sock, $this->_timeout)) {
         return throw(new SocketException('Select failed: '.$this->getLastError()));
       }
 
