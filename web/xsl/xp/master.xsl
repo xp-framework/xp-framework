@@ -71,10 +71,11 @@
     <xsl:variable name="diff" select="(ceiling(/formresult/@serial div 86400) - ceiling(exsl:node-set($date)/_utime div 86400))"/>
     
     <func:result>
+      <!-- DEBUG (<xsl:value-of select="$diff"/>) -->
       <xsl:choose>
-        <xsl:when test="$diff &lt;= 2">Today</xsl:when>
-        <xsl:when test="$diff &lt;= 3">Yesterday</xsl:when>
-        <xsl:when test="$diff &lt;= 7"><xsl:value-of select="$date/wday"/></xsl:when>
+        <xsl:when test="$diff &lt;= 1">Today</xsl:when>
+        <xsl:when test="$diff &lt;= 2">Yesterday</xsl:when>
+        <xsl:when test="$diff &lt;= 7"><xsl:value-of select="$date/weekday"/></xsl:when>
         <xsl:when test="$diff &lt;= 14">Last <xsl:value-of select="$date/weekday"/></xsl:when>
         <xsl:otherwise><xsl:value-of select="func:date(exsl:node-set($date))"/></xsl:otherwise>
       </xsl:choose>
