@@ -4,7 +4,12 @@
  * $Id$ 
  */
 
-  uses('text.parser.VFormatParser', 'org.imc.VEvent', 'util.Date');
+  uses(
+    'text.parser.VFormatParser', 
+    'org.imc.VEvent', 
+    'org.imc.VTimezone',
+    'util.Date'
+  );
 
   // Identifier
   define('VCAL_ID',             'VCALENDAR');
@@ -151,6 +156,7 @@
     function addProperty($keys, $value) {
       static $context= array();
       static $event;
+      static $timezone;
       
       // Cascaded objects      
       if (0 == strcasecmp('BEGIN', $keys[0])) $context[]= strtolower($value);
@@ -225,8 +231,58 @@
             case 'TRIGGER':     // TRIGGER;RELATED=START:-PT00H15M00S
               $event->alarm['trigger']= $value;
               break;
-         }
+          }
+        
+        // A timezone
+        case 'vtimezone':
+          switch ($keys[0]) {
+            case 'BEGIN':
+              $timezone= new VTimezone();
+              break;
+            
+            case 'END':
+              $this->timezone= &$timezone;
+              break;
+              
+            case 'TZID':
+              $timezone->setTzid($value);
+              break;
+            
+            case 'LAST-MOD':
+              $timezone->setLastMod(new Date(VFormatParser::decodeDate($value)));
+              break;
+            
+            case 'TZURL':
+              $timezone->setTZUrl(new URL ($value));
+              break;
+          }
+        
+        case 'vtimezone/daylight':
+        case 'vtimezone/standard':
+          $type= $context[count($context)-1];
           
+          switch ($keys[0]) {
+            case 'BEGIN':
+            case 'END':
+              break;
+            
+            case 'DTSTART':
+              $timezone->{$type}['dtstart']= &new Date(VFormatParser::decodeDate($value));
+              break;
+            
+            case 'TZOFFSETTO':
+              $timezone->{$type}['tzoffsetto']= $value;
+              break;
+            
+            case 'TZOFFSETFROM':
+              $timezone->{$type}['tzoffsetfrom']= $value;
+              break;
+            
+            // TODO: Check those fields
+            default:
+              $timezone->{$type}[$keys[0]]= $value;
+              break;
+          }
       }
       
       #ifdef DEBUG
