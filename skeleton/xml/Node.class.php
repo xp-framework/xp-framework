@@ -33,13 +33,15 @@
      * </code>
      *
      * @access  public
-     * @param   mixed*
+     * @param   string name
+     * @param   string content default NULL
+     * @param   array attribute default array() attributes
      * @throws  lang.IllegalArgumentException
      */
-    function __construct($name, $content= NULL, $arguments= array()) {
+    function __construct($name, $content= NULL, $attribute= array()) {
       $this->name= $name;
       $this->content= $content;
-      $this->arguments= $arguments;
+      $this->attribute= $attribute;
     }
 
     /**
