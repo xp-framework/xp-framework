@@ -33,7 +33,6 @@
       $this->log->addAppender (new FileAppender ('php://stdout'));
 
       $this->prop= &new Properties (getenv ('HOME').'/.prj.ini');
-      
       parent::__construct(dirname(__FILE__).'/prj.glade', 'mainwindow');
     }
 
@@ -42,8 +41,8 @@
      *
      * @access  public
      */    
-    function init() {
-      parent::init();
+    function init($p) {
+      parent::init($p);
       
       // Init window
       $this->window->set_default_size (600, 400);
@@ -53,6 +52,7 @@
       $this->tree->connect ('select_row', array (&$this, 'onTreeSelectRow'));
       $this->tree->connect ('unselect_row', array (&$this, 'onTreeUnselectRow'));
       $this->tree->connect ('button_press_event', array (&$this, 'onTreeClick'));
+      $this->tree->set_line_style (GTK_CTREE_LINES_DOTTED);
 
       // Init Statusbar
       $this->statusbar= &$this->widget ('statusbar');
@@ -65,10 +65,28 @@
         'sv_session',
         'sv_private_scalar'
       ));
+
+      // Handle commandline arguments
+      for ($i= 1; $i<= $this->param->count; $i++) {
+        try(); { 
+          $a= $this->param->value ($i); 
+        } if (catch ('Exception', $e)) { 
+          break; 
+        }
+        if ('-' !== $a{0}) $this->_recursiveAddFile (new PHPParser ($a));
+        $this->updateList();
+      }
+      
+      // Check every 60 seconds
+      $this->timer= gtk::timeout_add (1000 * 60, array (&$this, onAutoUpdate));
     }
     
-    function onAutoUpdate(&$widget) {
+    function onAutoUpdate() {
       // Automatically reload all data
+      $this->statusbar->push (1, 'Reparsing files...');
+      $this->reparse();
+      $this->statusbar->push (1, 'Done.');
+      return TRUE;
     }
     
     function onTreeSelectRow(&$widget, $row, &$data, &$event) {
