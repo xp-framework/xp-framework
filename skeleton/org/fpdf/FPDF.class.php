@@ -802,12 +802,12 @@
      * @param   int fill default FPDF_FILL_TRANSPARENT one of the FPDF_FILL_* constants
      * @param   mixed link default '' URL or identifier returned by addLink().
      */
-    function cell(
+    function writeCell(
       $w, 
       $h= 0, 
       $text= '', 
       $border= FPDF_BORDER_NONE, 
-      $ln= FPDF_ALIGN_LEFT, 
+      $ln= FPDF_POS_RIGHT, 
       $align= FPDF_ALIGN_LEFT, 
       $fill= FPDF_FILL_TRANSPARENT, 
       $link= ''
@@ -898,20 +898,33 @@
     }
 
     /**
-     * Output text with automatic or explicit line breaks
+     * This method allows printing text with line breaks. They can be 
+     * automatic (as soon as the text reaches the right border of the 
+     * cell) or explicit (via the \n character). As many cells as 
+     * necessary are output, one below the other.
+     *
+     * Text can be aligned, centered or justified. The cell block can be 
+     * framed and the background painted.
      *
      * @access  public
      * @param   int w
-     * @param   int h
+     * @param   int h default 5
      * @param   string txt
-     * @param   int border default 0
-     * @param   string align default 'J'
-     * @param   int fill default 0
+     * @param   int border default FPDF_BORDER_NONE one of the FPDF_BORDER_* constants
+     * @param   int align default FPDF_ALIGN_LEFT one of the FPDF_ALIGN_* constants
+     * @param   int fill default FPDF_FILL_TRANSPARENT one of the FPDF_FILL_* constants
      */
-    function multiCell($w, $h, $txt, $border= 0, $align= 'J', $fill= 0) {
+    function writeCells(
+      $w, 
+      $h= 5, 
+      $txt, 
+      $border= FPDF_BORDER_NONE, 
+      $align= FPDF_ALIGN_JUSTIFY, 
+      $fill= FPDF_FILL_TRANSPARENT
+    ) {
       if (!$w) $w= $this->w- $this->rMargin- $this->x;
       $wmax= ($w- 2 * $this->cMargin) * 1000 / $this->FontSize;
-      $s= str_replace("\r",'', $txt);
+      $s= str_replace("\r", '', $txt);
       $nb= strlen($s);
       if ($nb > 0 and $s{$nb- 1} == "\n") $nb--;
 
@@ -938,7 +951,7 @@
             $this->ws= 0;
             $this->_out('0 Tw');
           }
-          $this->Cell($w, $h,substr($s, $j, $i- $j), $b, 2, $align, $fill);
+          $this->writeCell($w, $h,substr($s, $j, $i- $j), $b, 2, $align, $fill);
           $i++;
           $sep= -1;
           $j= $i;
@@ -962,13 +975,13 @@
               $this->ws= 0;
               $this->_out('0 Tw');
             }
-            $this->Cell($w, $h,substr($s, $j, $i- $j), $b, 2, $align, $fill);
+            $this->writeCell($w, $h,substr($s, $j, $i- $j), $b, 2, $align, $fill);
           } else {
             if ($align == 'J') {
               $this->ws= ($ns > 1) ? round(($wmax- $ls) / 1000 * $this->FontSize / ($ns- 1), 3) : 0;
               $this->_out($this->ws.' Tw');
             }
-            $this->Cell($w, $h,substr($s, $j, $sep- $j), $b, 2, $align, $fill);
+            $this->writeCell($w, $h,substr($s, $j, $sep- $j), $b, 2, $align, $fill);
             $i= $sep+ 1;
           }
           $sep= -1;
@@ -987,8 +1000,8 @@
         $this->ws= 0;
         $this->_out('0 Tw');
       }
-      if ($border and is_int(strpos($border,'B'))) $b.='B';
-      $this->Cell($w, $h,substr($s, $j, $i), $b, 2, $align, $fill);
+      if ($border and is_int(strpos($border, 'B'))) $b.= 'B';
+      $this->writeCell($w, $h,substr($s, $j, $i), $b, 2, $align, $fill);
       $this->x= $this->lMargin;
     }
 
@@ -1007,7 +1020,7 @@
      * @param   string txt String to print.
      * @param   mixed link default '' URL or identifier returned by addLink().
      */
-    function write($h, $text, $link= '') {
+    function writeText($h, $text, $link= '') {
       $w= $this->w- $this->rMargin- $this->x;
       $wmax= ($w- 2 * $this->cMargin) * 1000 / $this->FontSize;
       $s= str_replace("\r", '', $text);
@@ -1017,7 +1030,7 @@
       $nl= 1;
       while ($i < $nb) {
         if ("\n" == $s{$i}) {           // Explicit line break
-          $this->Cell($w, $h,substr($s, $j, $i- $j), 0, 2, '', 0, $link);
+          $this->writeCell($w, $h,substr($s, $j, $i- $j), 0, 2, '', 0, $link);
           $i++;
           $sep= -1;
           $j= $i;
@@ -1052,9 +1065,9 @@
             }
             
             if ($i == $j) $i++;
-            $this->Cell($w, $h, substr($s, $j, $i- $j), 0, 2, '', 0, $link);
+            $this->writeCell($w, $h, substr($s, $j, $i- $j), 0, 2, '', 0, $link);
           } else {
-            $this->Cell($w, $h, substr($s, $j, $sep- $j), 0, 2, '', 0, $link);
+            $this->writeCell($w, $h, substr($s, $j, $sep- $j), 0, 2, '', 0, $link);
             $i= $sep+ 1;
           }
           $sep= -1;
@@ -1074,7 +1087,7 @@
       // Last chunk
       if ($i != $j) {
         $w= round($l / 1000 * $this->FontSize, 2);
-        $this->Cell($w, $h, substr($s, $j, $i), 0, 0, '', 0, $link);
+        $this->writeCell($w, $h, substr($s, $j, $i), 0, 0, '', 0, $link);
       }
     }
 
