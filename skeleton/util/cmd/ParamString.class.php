@@ -37,10 +37,11 @@
      */  
     function setParams($params) {
       $this->list= $params;
+      $this->list[-1]= $_ENV['_'];
       $this->count= sizeof($params);
       $this->string= implode(' ', $params);
     }
-   
+    
     /**
      * Private helper function that iterates through the parameter array
      * 
@@ -87,7 +88,7 @@
      * <code>
      *   $p= &new ParamString();
      *   if ($p->exists('help', '?')) {
-     *     printf("Usage: php %s --force-check [--pattern=<pattern>\n", $p->value(0));
+     *     printf("Usage: %s %s --force-check [--pattern=<pattern>]\n", $p->value(-1), $p->value(0));
      *     exit(-2);
      *   }
      * 
