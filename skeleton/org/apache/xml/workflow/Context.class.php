@@ -106,18 +106,18 @@
           $handled= $has_error= FALSE;
           for ($i= 0, $s= sizeof($state->handlers); $i < $s; $i++) {
             $cat->info('Calling handler #'.$i, var_export($state->handlers[$i], 1));
-            
-            // If this handler is not active, ask the next handler in the queue
-            if (!$state->handlers[$i]->isActive($this, $st)) {
-              $cat->warn('Handler is not active for submit trigger', $st, ', proceeding...');
-              continue;
-            }
 
             // If this handler is satisfied, ask the next handler in the queue
             if (!$state->handlers[$i]->needsData($this)) {
               $cat->warn('Handler does not need data, proceeding...');
               continue;
             }  
+            
+            // If this handler is not active, ask the next handler in the queue
+            if (!$state->handlers[$i]->isActive($this, $st)) {
+              $cat->warn('Handler is not active for submit trigger', $st, ', proceeding...');
+              continue;
+            }
 
             // Handle submitted data
             if ($state->handlers[$i]->handleSubmittedData($this, $request)) {
@@ -158,10 +158,12 @@
         // method
         foreach (array_keys($this->crm->hash) as $name) {
           if (!isset($this->crm->crs[$this->crm->hash[$name]])) continue;
+          
+          $cat->debug('Calling insertStatus()', $name);
           $this->crm->crs[$this->crm->hash[$name]]->insertStatus($response->addFormResult(new Node($name)));
         }
 
-        $cat->info('Calling getDocument()', $this);
+        $cat->info('Calling getDocument()');
         $state->getDocument($this, $request, $response);
         
       } if (catch('Exception', $e)) {
