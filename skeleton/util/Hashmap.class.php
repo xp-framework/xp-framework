@@ -323,6 +323,29 @@
     }
     
     /**
+     * Compares two hashmaps and returns TRUE when equal.
+     *
+     * @access  public
+     * @param   &util.Hashmap hashmap to compare with
+     * @return  boolean isequal
+     */
+    function isEqual(&$cmp) {
+      if (!is('util.Hashmap', $cmp))
+        return throw(new IllegalArgumentException('Argument is not a util.Hashmap'));
+      
+      for ($i= &$this->iterator(); $i->hasNext(); ) {
+        $idx= $i->getNext();
+        
+        if (!$cmp->containsKey($idx) || !($cmp->get($idx) === $this->get($idx)))
+          return FALSE;
+      }
+      
+      // All elements contained in this hashmap contain the same values,
+      // now if both have the same number of entries, both have the same contents.
+      return ($this->size() == $cmp->size());
+    }
+    
+    /**
      * Create string representation
      * 
      * Example:
