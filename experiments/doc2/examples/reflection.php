@@ -75,7 +75,7 @@
       $class->getName(),
       $parent ? $parent->getName() : '(n/a)',
       $implements ? 'implements '.substr($implements, 2) : '',
-      $constructor 
+      !null($constructor)
         ? $constructor->getName().'() [declared in '.$constructor->getDeclaringClass()->getName().']'
         : '(none)'
       ,
