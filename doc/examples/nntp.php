@@ -8,10 +8,13 @@
   uses('peer.news.NntpConnection');
   
   // {{{ main
-  $c= &new NntpConnection(new URL('nntp://news.php.net'));
+  $p= &new ParamString();
+  list($server, $newsgroup)= explode('/', $p->value(1, NULL, 'news.php.net/php.version4'));
+  
+  $c= &new NntpConnection(new URL('nntp://'.$server));
   try(); {
     $c->connect();
-    $c->setGroup('php.version4');
+    $c->setGroup($newsgroup);
 
     $articles= array($c->getArticle());
     
