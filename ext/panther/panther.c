@@ -315,7 +315,7 @@ void* _thread(void* sd)
                                 break;
 
                             default:
-                                eval= (char*) malloc(0);    /* Shut up, GCC */
+                                eval= (char*) emalloc(0);    /* Shut up, GCC */
                         }
 
                         panther_error(PANTHER_LOG, "Executing (%d)'%s'\n", strlen(eval), eval);
@@ -473,14 +473,13 @@ int main (int argc, char *argv[])
         panther_error(PANTHER_LOG, "Completed join with thread %d status= %x\n", t, status);
     }
 
-    php_request_shutdown((void *) 0);
-    ts_free_id(0);
-
     /* Free up memory */
     panther_free("threads", threads);
     zval_ptr_dtor(&registry);
 
     /* Shutdown PHP module */
+    php_request_shutdown((void *) 0);
+    ts_free_id(0);
     php_module_shutdown(TSRMLS_C);
     tsrm_shutdown();
     
