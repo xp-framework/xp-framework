@@ -73,11 +73,11 @@
      * @model   static
      * @access  public
      * @param   string string
+     * @param   string c default __CLASS__ class name
      * @return  &xml.Tree
      */
-    function &fromString($string) {
+    function &fromString($string, $c= __CLASS__) {
       $parser= &new XMLParser();
-      $c= get_class($this);
       $tree= &new $c();
       try(); {
         $parser->callback= &$tree;
@@ -100,11 +100,11 @@
      * @model   static
      * @access  public
      * @param   &io.File file
+     * @param   string c default __CLASS__ class name
      * @return  &xml.Tree
      */ 
-    function &fromFile($file) {
+    function &fromFile(&$file, $c= __CLASS__) {
       $parser= &new XMLParser();
-      $c= get_class($this);
       $tree= &new $c();
       
       try(); {
