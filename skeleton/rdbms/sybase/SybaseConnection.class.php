@@ -291,9 +291,10 @@
         ));
       }
       
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', NULL));
+      $resultset= &new SybaseResultSet($result);
+      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
-      return new SybaseResultSet($result);
+      return $resultset;
     }
     
     /**

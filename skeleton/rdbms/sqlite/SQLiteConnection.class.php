@@ -314,8 +314,6 @@
         $result= sqlite_query($sql, $this->handle);
       }
       
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', NULL));
-
       if (FALSE === $result) {
         $e= sqlite_last_error($this->handle);
         return throw(new SQLStatementFailedException(
@@ -324,7 +322,11 @@
           $e
         ));
       }
-      return new SQLiteResultSet($result);
+
+      $resultset= &new SQLiteResultSet($result);
+      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
+
+      return $resultset;
     }
 
     /**

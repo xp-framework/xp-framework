@@ -271,14 +271,15 @@
         ));
       }
       
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', NULL));
+      $resultset= &new PostgreSQLResultSet($result);
+      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
       $this->_oid= (1 == pg_result_status($result)
         ? pg_last_oid($result)
         : NULL
       );
 
-      return new PostgreSQLResultSet($result);
+      return $resultset;
     }
     
     /**

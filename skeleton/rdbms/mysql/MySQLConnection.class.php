@@ -267,8 +267,6 @@
         $result= mysql_query($sql, $this->handle);
       }
       
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', NULL));
-
       if (FALSE === $result) {
         return throw(new SQLStatementFailedException(
           'Statement failed: '.mysql_error($this->handle), 
@@ -276,7 +274,11 @@
           mysql_errno($this->handle)
         ));
       }
-      return new MySQLResultSet($result);
+
+      $resultset= &new MySQLResultSet($result);
+      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
+
+      return $resultset;
     }
   }
 ?>
