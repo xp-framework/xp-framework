@@ -60,7 +60,7 @@
           exit(-2);
       }
       
-      parent::__construct(dirname(__FILE__).'/mboxmonitor.glade');
+      parent::__construct($p, dirname(__FILE__).'/mboxmonitor.glade');
     }
     
     /**
