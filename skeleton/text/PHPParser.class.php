@@ -155,6 +155,7 @@
         switch ($mode) {
           case PHPPARSER_MODE_UNDEF:
             switch ($tokenId) {
+              case T_CONSTANT_ENCAPSED_STRING:
               case T_CLOSE_TAG:
               case T_OPEN_TAG:
               case T_START_HEREDOC:
