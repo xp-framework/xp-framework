@@ -468,6 +468,7 @@
    ! @type   match
    !-->
   <xsl:template match="wsdl:definitions">
+    <!-- TBI: complexType/xsd:complexContent, complexType/sequence -->
     <xsl:variable name="types" select="wsdl:types/xsd:schema/xsd:complexType[child::*[name() = 'xsd:all']]"/>
 
     <!-- User-defined types -->
