@@ -16,13 +16,14 @@
    */
   class JpegStreamWriter extends StreamWriter {
     var
-      $quality  = 75;
+      $quality  = 0;
     
     /**
      * Constructor
      *
      * @access  public
      * @param   &io.Stream stream
+     * @param   int quality default 75
      */
     function __construct(&$stream, $quality= 75) {
       parent::__construct($stream);
