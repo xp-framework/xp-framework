@@ -142,3 +142,11 @@ a.pagerfalse {
   -moz-opacity: 0.3;
   filter: alpha(opacity=30);
 }
+
+/* Single shot */
+img.singleshot {
+  border: 2px solid #f4f4f4;
+}
+img.singleshot_thumb {
+  border: 1px solid #f4f4f4;
+}
