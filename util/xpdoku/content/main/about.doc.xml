@@ -6,21 +6,21 @@
       <editor>$Id$</editor>
       
       <para>
-        <caption>Generelles</caption>
+        <caption>General</caption>
         <text>
-          Der Dokumentationsstil wurde von JavaDoc übernommen und entsprechend
-          angepasst. Eine Klasse muss dokumentiert sein um dem Framework konform
-          zu sein.
+          The style of documentation has been taken from JavaDoc and adopted where
+          needed. A class has to be documented to be conform to the coding standards
+          of the XP framework.
         </text>
       </para>
       <para>
         <caption>Example</caption>
         <text>
-          Dieses Beispiel zeigt die Basics (aus lang/System.class.php):
+          This example shows the basics (from lang/System.class.php):
           
           <code><![CDATA[
 /**
- * Setzt eine Umgebungsvariable
+ * Sets an environment variable
  *
  * @access  public
  * @param   string name
@@ -33,13 +33,13 @@ function putEnv($name, $var) {
         </text>
       </para>              
       <para>
-        <caption>Generische Keywords</caption>
+        <caption>Generic keywords</caption>
         <text>
           <pre><![CDATA[
-@see     Ein Verweis
-         Syntax: (<url>|<klasse>|<klasse>#<methode>|<email>|php://<funktion>|rfc://<nummer>)
+@see     A link
+         Syntax: (<url>|<class>|<class>#<method>|<email>|php://<function>|rfc://<number>)
          
-         @see    http://xp.php3.de/
+         @see    http://xp-framework.net/
          @see    xp://io.File
          @see    xp://io.File#open
          @see    mailto:thekid@thekid.de
@@ -48,51 +48,51 @@ function putEnv($name, $var) {
          @see    rfc://821]]></pre></text>
       </para>              
       <para>
-        <caption>Methoden-Keywords</caption>
+        <caption>Method keywords</caption>
         <text>
-          <pre><![CDATA[@access  Definiert die Zugriffsberechtigungen auf eine Methode
-         Erlaubt sind die Werte "public" und "private"
+          <pre><![CDATA[@access  Defines the access priviliges for a method
+         Allowed values are "public" and "private". 
          
          @access public
 
-@param   Dokumentiert einen Parameter
-         Syntax: <typ> <name> [default <default>] <beschreibung>
+@param   Documents a parameter
+         Syntax: <typ> <name> [default <default>] <description>
          
-         @param  string $str default '' Der Übergabe-String
-         @param  int $i Anzahl der zurückzugebenden Ergebnisse
-         @param  lang.Exception $e Eine Exception
-         @param  mixed $var Ein String oder ein Integer
+         @param  string $str default '' The given string
+         @param  int $i Number of results to return
+         @param  lang.Exception $e An exception
+         @param  mixed $var A string or an integer
          
-@return  Dokumentiert den Rückgabewert
-         Syntax: <typ> <beschreibung>
+@return  Documents the return value
+         Syntax: <typ> <description>
          
          @return bool Success
-         @return array Array von Domainnamen
+         @return array Array of domainnames
          
-@throws  Dokumentiert, dass diese Funktion Exceptions wirft.
-         Syntax <typ>[, <bedingung>]
+@throws  Documents that this method throws an exception.
+         Syntax <typ>[, <condition>]
          
          @throws IOException
-         @throws IllegalStateException, wenn die Datei nicht offen ist
+         @throws IllegalStateException, if file is not open.
 ]]></pre></text>
       </para>              
       <para>
-        <caption>Klassen-Keywords</caption>
+        <caption>Class keywords</caption>
         <text>
-          <pre><![CDATA[@ext          Definiert eine PHP-Extension, die für den Gebrauch der Klasse
-              benötigt wird (es kann mehere @ext geben.)
-@model        Definiert das Modell (generisch/statis/singleton) einer Klasse.
+          <pre><![CDATA[@ext          Defines a PHP-extension that is needed when utilizing this class.
+              (There can be more than one @ext.)
+@model        Defines the model (generic/static/singleton) of a class
 
-@doc          Verweis zu einem Beispielskript. Beispielskripte liegen in ~/doc
+@doc          Link to an example script. Example scripts reside in ~/doc
               Syntax: (<script_relative_location>|<script_url>)
 
               @doc    trycatch.php
               @doc    http://foo.bar/baz.php
          
-@purpose      Verwendungszweck (Kurzbeschreibung)
+@purpose      Purpose of use (short description)
               Syntax: <purpose>
          
-              @purpose Kapselt Operationen auf dem IMAP-Server
+              @purpose Encapsulates operations of an IMAP-server.
 
 @deprecated   Indicates this class is deprecated. Usage is discouraged, though
               it remains in the framework for backwardds compatibility.
