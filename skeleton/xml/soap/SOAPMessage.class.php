@@ -67,8 +67,9 @@
      * @access  public
      * @param   string action
      * @param   string method
+     * @param   string targetNamespace default NULL
      */
-    function create($action, $method) {
+    function create($action, $method, $targetNamespace= NULL) {
       $this->action= $action;
       $this->method= $method;
 
@@ -79,7 +80,7 @@
         'xmlns:SOAP-ENC'              => XMLNS_SOAPENC,
         'xmlns:si'                    => XMLNS_SOAPINTEROP,
         'SOAP-ENV:encodingStyle'      => XMLNS_SOAPENC,
-        'xmlns:'.$this->namespace     => $this->action   
+        'xmlns:'.$this->namespace     => (NULL !== $targetNamespace ? $targetNamespace : $this->action)
       ));
       $this->root->addChild(new Node('SOAP-ENV:Body'));
       $this->root->children[0]->addChild(new Node($this->namespace.':'.$this->method));
@@ -182,6 +183,16 @@
 
       switch (strtolower($regs[2])) {
         case 'array':
+          
+          // Check for specific type information (e.g.: SOAP-ENC:arrayType="xsd:int[4]")
+          list($ns, $typeSpec)= explode(':', $child->attribute[$this->namespaces[XMLNS_SOAPENC].':arrayType']);
+          if (2 == sscanf($typeSpec, '%[^[][%d]', $childType, $length) && 'anyType' != $childType) {
+            for ($i= 0; $i < $length; ++$i) {
+              $child->children[$i]->setAttribute($this->namespaces[XMLNS_XSI].':type', $ns.':'.$childType);
+            }
+          }
+          
+          // Break missing intentionally
         case 'vector':
           $result= $this->_recurseData($child, FALSE, 'ARRAY', $mapping);
           break;
