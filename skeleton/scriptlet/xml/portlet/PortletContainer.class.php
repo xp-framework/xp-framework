@@ -7,11 +7,9 @@
   uses('scriptlet.xml.portlet.Portlet');
 
   /**
-   * (Insert class' description here)
+   * PortletContainer
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Container class
    */
   class PortletContainer extends Object {
     var
@@ -21,16 +19,22 @@
      * Add Portlets
      *
      * @access  public
-     * @param   mixed[] portlets
+     * @param   string classname
+     * @param   string layout
+     * @return  &xml.portlet.Portlet
      */
-    function addPortlet($name, $classname) {
+    function &addPortlet($classname, $layout= NULL) {
       try(); {
         $class= &XPClass::forName($classname);
       } if (catch('ClassNotFoundException', $e)) {
         return throw($e);
       }
-
-      $this->portlets[]= &$class->newInstance($name);
+      
+      with ($portlet= &$class->newInstance()); {
+        $portlet->setLayout($layout);
+        $this->portlets[]= &$portlet;
+      }      
+      return $portlet;
     }
 
     /**
@@ -50,7 +54,8 @@
 
       for ($i= 0, $s= sizeof($this->portlets); $i < $s; $i++) {
         $portlet= &$node->addChild(new Node('portlet', NULL, array(
-          'name'  => $this->portlets[$i]->getName()
+          'class'   => $this->portlets[$i]->getClassName(),
+          'layout' =>  $this->portlets[$i]->getLayout()
         )));
         
         try(); {
