@@ -106,7 +106,7 @@
      * @return  &util.Date
      */
     function &midnight(&$date) {
-      return new Date(mktime(0, 0, 0, $date->month, $date->mday, $date->year));
+      return new Date(mktime(0, 0, 0, $date->mon, $date->mday, $date->year));
     }
     
     /**
