@@ -26,7 +26,7 @@
    * @purpose  Type wrapper
    */
   class String extends Object {
-    public
+    protected
       $buffer   = '';
 
     /**
@@ -36,7 +36,6 @@
      * @param   string initial default ''
      */
     public function __construct($initial= '') {
-      
       $this->buffer= $initial;
     }
     
@@ -244,7 +243,7 @@
       if (FALSE === ($s= ($cs 
         ? strstr($this->buffer, $substr)
         : stristr($this->buffer, $substr)
-      ))) return NULL;
+      ))) return xp::$null;
 
       return new String($s);
     }
@@ -284,7 +283,7 @@
      * @return  &text.String a new string
      */
     public function concat($string) {
-      return new String($this->buffer.(is_a($string, 'String')
+      return new String($this->buffer.($string instanceof String
         ? $string->buffer
         : $string
       ));
@@ -305,7 +304,7 @@
      * @return  &text.String
      */
     public function append($string) {
-      $this->buffer.= (is_a($string, 'String')
+      $this->buffer.= ($string instanceof String
         ? $string->buffer
         : $string
       );
