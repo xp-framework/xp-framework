@@ -205,9 +205,9 @@
         $props= explode(';', $key);
         $kargs= array (strtoupper (array_shift ($props)));
 
-        $val= new StdClass();
+        $val= &new stdClass();
         $val->_value= $value;
-        foreach ($this->_parseProperties (implode(';', $props)) as $pname=> $pvalue) {
+        foreach ($this->_parseProperties (implode(';', $props)) as $pname => $pvalue) {
           $val->{$pname}= $pvalue;
         }
         
