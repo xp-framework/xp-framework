@@ -15,28 +15,28 @@
 #define try                                                     \
     {                                                           \
         jmp_buf *exception__prev, exception__env;               \
-        exception__prev = the_exception_context->penv;          \
-        the_exception_context->penv = &exception__env;          \
+        exception__prev = _exception_context->penv;             \
+        _exception_context->penv = &exception__env;             \
         if (setjmp(exception__env) == 0) {                      \
             if (&exception__prev)
 
 #define exception__catch(action)                                \
             else { }                                            \
-            the_exception_context->caught = 0;                  \
+            _exception_context->caught = 0;                     \
         } else {                                                \
-            the_exception_context->caught = 1;                  \
+            _exception_context->caught = 1;                     \
         }                                                       \
-        the_exception_context->penv = exception__prev;          \
+        _exception_context->penv = exception__prev;             \
     }                                                           \
-    if (!the_exception_context->caught || action) { }           \
+    if (!_exception_context->caught || action) { }              \
     else
 
-#define catch(e) exception__catch(((e) = the_exception_context->v.etmp, 0))
+#define catch(e) exception__catch(((e) = _exception_context->v.etmp, 0))
 
 #define throw(msg)                                              \
-    for (;; longjmp(*the_exception_context->penv, 1)) {         \
+    for (;; longjmp(*_exception_context->penv, 1)) {            \
         e.message= msg;                                         \
-        the_exception_context->v.etmp= e;                       \
+        _exception_context->v.etmp= e;                          \
     }
 
 #define new
@@ -46,7 +46,7 @@ struct exception {
     char* message;
 };
 
-struct exception_context the_exception_context[1];
+struct exception_context _exception_context[1];
 struct exception e;
 
 define_exception_type(struct exception);
