@@ -54,7 +54,8 @@
    *   }
    * </code>
    *
-   * @see img.Image
+   * @see      xp://img.Image
+   * @purpose  Base class for all graphs
    */
   class Graph extends Image {
   
