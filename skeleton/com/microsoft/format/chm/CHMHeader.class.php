@@ -12,6 +12,7 @@
    *
    * @see      xp://com.microsoft.format.chm.CHMFile#getHeader
    * @purpose  CHM file class
+   * @experimental
    */
   class CHMHeader extends Object {
     var

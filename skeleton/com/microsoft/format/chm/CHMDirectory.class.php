@@ -12,6 +12,7 @@
    *
    * @see      xp://com.microsoft.format.chm.CHMFile#getDirectory
    * @purpose  CHM file class
+   * @experimental
    */
   class CHMDirectory extends Object {
     var

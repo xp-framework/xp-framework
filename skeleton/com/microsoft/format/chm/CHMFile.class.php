@@ -49,6 +49,7 @@
    *
    * @see      http://www.speakeasy.org/~russotto/chm/chmformat.html
    * @purpose  CHM
+   * @experimental
    */
   class CHMFile extends Object {
     var
