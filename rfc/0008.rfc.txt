@@ -353,6 +353,9 @@ Related documents
 * Class instance creation expressions
   http://java.sun.com/docs/books/jls/second_edition/html/expressions.doc.html#249198
 
+* The worries with the built-in PHP5 Exception class 
+  http://blog.xp-framework.net/archives/11-.html
+
 Comments
 --------
 
