@@ -34,6 +34,8 @@ nedit.shellCommands: \
 		$HOME/bin/xpci --header\n\
 	Create XP class:Shift+Alt+C:::\n\
 		$HOME/bin/xpci --class\n\
+        Create XP cli script:Shift+Alt+F:::\n\
+                $HOME/bin/xpci --cmdfile\n\
 	Check file syntax:Alt+C:C:DS:\n\
 		$HOME/bin/neditlint.sh %\n\
 	PHP contextsensitive help:F1::ID:\n\
