@@ -59,7 +59,7 @@
   class Requirements extends Object {
     var
       $file = '',
-      $files= array();
+      $deps = array();
       
     // {{{ private __construct(string filename)
     function __construct($filename) {
@@ -76,8 +76,8 @@
         return throw($e);
       }
 
-      $this->files[]= $fullname;
-      $this->files= array_unique(array_merge($this->files, $r->files));
+      $this->deps[]= $fullname;
+      $this->deps= array_unique(array_merge($this->deps, $r->deps));
       return $fullname;
     }
     // }}}
