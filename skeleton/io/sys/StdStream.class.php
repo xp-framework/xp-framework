@@ -36,8 +36,7 @@
       static $f= array();
       
       if (!isset($f[$handle])) {
-        $f[$handle]= &new File(NULL);
-        $f[$handle]->_fd= $handle;
+        $f[$handle]= &new File($handle);
       }
       return $f[$handle];
     }
