@@ -46,9 +46,9 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
 
 * New website (status: in progress)
 
-* Include ports
+* Include ports (status: in progress)
 
-* Include SAPIs 
+* Include SAPIs (status: in progress) 
 
 * Bug system (based on bugzilla, Prerequisite: Install 
   MySQL/PHPMyAdmin on php3.de)
