@@ -133,7 +133,7 @@
    !
    !-->  
   <xsl:template match="reference/link[child::*[name() = 'scheme']/text() = 'php']">
-    <a href="http://php3.de/{host}" target="_blank"><xsl:value-of select="host"/></a>
+    <a href="http://php3.de/{host}" target="_blank">PHP Manual: <xsl:value-of select="host"/></a>
   </xsl:template>
 
   <!--
