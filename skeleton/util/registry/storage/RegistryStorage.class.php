@@ -31,6 +31,7 @@
     /**
      * Initialize this storage
      *
+     * @model   abstract
      * @access  public
      */
     function initialize() { }
@@ -38,6 +39,7 @@
     /**
      * Returns whether this storage contains the given key
      *
+     * @model   abstract
      * @access  public
      * @param   string key
      * @return  bool TRUE when this key exists
@@ -47,6 +49,7 @@
     /**
      * Get a key by it's name
      *
+     * @model   abstract
      * @access  public
      * @param   string key
      * @return  &mixed
@@ -56,6 +59,7 @@
     /**
      * Insert/update a key
      *
+     * @model   abstract
      * @access  public 
      * @param   string key
      * @param   &mixed value
@@ -66,14 +70,24 @@
     /**
      * Remove a key
      *
+     * @model   abstract
      * @access  public
      * @param   string key
      */
     function remove($key) { }
 
     /**
+     * Remove all keys
+     *
+     * @model   abstract
+     * @access  public
+     */
+    function free() { }
+
+    /**
      * Get all keys
      *
+     * @model   abstract
      * @access  public
      * @return  string[] key
      */

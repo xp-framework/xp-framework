@@ -135,5 +135,16 @@
       }
       return TRUE;
     }
+    
+    /**
+     * Remove all keys
+     *
+     * @access  public
+     */
+    function free() { 
+      foreach ($this->keys() as $key) {
+        $this->remove($key);
+      }
+    }
   }  
 ?>

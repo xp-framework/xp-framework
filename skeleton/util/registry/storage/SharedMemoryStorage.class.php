@@ -100,5 +100,14 @@
       $this->_seg->put($this->segments);
     }
   
+    /**
+     * Remove all keys
+     *
+     * @access  public
+     */
+    function free() { 
+      $this->segments= array();
+      $this->_seg->put($this->segments);
+    }
   }
 ?>
