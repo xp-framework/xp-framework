@@ -38,7 +38,7 @@
         $lookup= trim(strtolower($v));
         if (!isset($map[$lookup])) return NULL; // An error occured
         
-        $return[$k]= $map[$lookup]
+        $return[$k]= $map[$lookup];
       }
 
       return $return;
