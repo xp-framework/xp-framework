@@ -137,6 +137,8 @@
         $this->processEvents();
       }
       
+      $this->cat->debug($result);
+      
       foreach ($result->succeeded as $id => $success) {
         $this->updateTest($id, 'succeeded');
       }
