@@ -280,22 +280,36 @@
      * and returns a new string containing the result.
      *
      * @access  public
-     * @param   &text.String
+     * @param   mixed string
      * @return  &text.String a new string
      */
     public function concat($string) {
-      return new String($this->buffer.$string->buffer);
+      return new String($this->buffer.(is_a($string, 'String')
+        ? $string->buffer
+        : $string
+      ));
     }
     
     /**
      * Concatenates the specified string to the end of this string,
-     * changing this string.
+     * changing this string. Returns this string so the following
+     * will be possible:
+     *
+     * <code>
+     *   $s= new String('Hello');
+     *   $s->append(' ')->append('World');
+     * </code>
      *
      * @access  public
-     * @param   &text.String
+     * @param   mixed string
+     * @return  &text.String
      */
     public function append($string) {
-      $this->buffer.= $string->buffer;
+      $this->buffer.= (is_a($string, 'String')
+        ? $string->buffer
+        : $string
+      );
+      return $this;
     }
     
     /**
