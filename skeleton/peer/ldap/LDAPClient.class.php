@@ -139,6 +139,21 @@
     }
     
     /**
+     * Encode entries (recursively, if needed)
+     *
+     * @access  private
+     * @param   &mixed v
+     * @return  string encoded entry
+     */
+    function _encode(&$v) {
+      if (is_array($v)) for ($i= 0, $m= sizeof($v); $i < $m; $i++) {
+        $v[$i]= $this->_encode($v[$i]);
+        return $v;
+      }
+      return utf8_encode($v);
+    }
+    
+    /**
      * Add an entry
      *
      * @access  public
@@ -152,8 +167,12 @@
         return throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       } 
       
-      // This function actually returns NULL on failure, not FALSE, as documented
-      if (NULL == ($res= ldap_add($this->_hdl, $entry->getDN(), $entry->getAttributes()))) {
+      // This actually returns NULL on failure, not FALSE, as documented
+      if (NULL == ($res= ldap_add(
+        $this->_hdl, 
+        $entry->getDN(), 
+        array_map(array(&$this, '_encode'), $entry->getAttributes())
+      ))) {
         return throw(new IOException('Add failed ['.$this->getLastError().']'));
       }
       
