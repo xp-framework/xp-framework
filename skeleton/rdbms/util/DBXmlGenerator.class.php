@@ -40,9 +40,8 @@
       
       $g= &new DBXmlGenerator();
       
-      $prop= System::getInfo();
       $g->doc->root->attribute['created_at']= date('r');
-      $g->doc->root->attribute['created_by']= $prop['user.name'];
+      $g->doc->root->attribute['created_by']= System::getProperty('user.name');
       
       $t= &$g->doc->root->addChild(new Node(array(
           'name' => 'table'
