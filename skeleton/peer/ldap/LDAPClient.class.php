@@ -85,16 +85,6 @@
     }
     
     /**
-     * Gets last error message
-     *
-     * @access  public
-     * @return  string errormessage
-     */
-    function getLastError() {
-      return sprintf('%d: %s', $e= ldap_errno($this->_hdl), ldap_err2str($e));
-    }
-    
-    /**
      * Connect to the LDAP server
      *
      * @access  public
@@ -149,7 +139,7 @@
      */    
     function getOption($option) {
       if (FALSE === ($res= ldap_get_option ($this->_hdl, $option, $value))) {
-        return throw (new LDAPException ('Cannot set value "'.$option.'"', ldap_errno($this->_hdl)));
+        return throw (new LDAPException ('Cannot get value "'.$option.'"', ldap_errno($this->_hdl)));
       }
       
       return $value;
