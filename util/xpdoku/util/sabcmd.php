@@ -17,7 +17,7 @@
 
     switch ($scheme) {
       case 'php':
-        $s->setSource(substr($rest, 2));
+        $s->setSource("<?php\n".substr($rest, 2)."\n?>");
         return '<php>'.str_replace(
           '<br />', 
           "<br />\n", 

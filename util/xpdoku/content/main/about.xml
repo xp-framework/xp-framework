@@ -89,7 +89,7 @@
         <text>
           Sehen wir uns einmal folgendes Skript an:
 
-          <code><![CDATA[ 1 <?php
+          <code><![CDATA[ 1   // {{{ main
  2   require('lang.base.php');
  3   uses('io.File');
  4 
@@ -106,7 +106,7 @@
 15     die($e->printStackTrace());
 16   } 
 17   printf("Success: line ist '%s'\n", $str);
-18 ?>]]></code>
+18   // }}}]]></code>
 
           In Zeile drei wird die Klasse /path/to/skeleton/io/File.class.php eingebunden.
           Diese wrapped die PHP-Funktionen, die mit Dateien umgehen (fopen, fread, ...)

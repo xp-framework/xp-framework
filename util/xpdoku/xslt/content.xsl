@@ -106,10 +106,19 @@
     <xsl:call-template name="frame">
       <xsl:with-param name="color" select="'#cccccc'"/>
       <xsl:with-param name="content">
-        <code><pre style="display: block"><xsl:apply-templates/></pre></code>
+        <code>
+          <xsl:apply-templates select="document(concat('php://', .))"/>
+        </code>
       </xsl:with-param>
     </xsl:call-template>
     <br/>
+  </xsl:template>
+
+  <xsl:template match="php//*">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates/>
+    </xsl:copy>
   </xsl:template>
 
 </xsl:stylesheet>

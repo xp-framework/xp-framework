@@ -9,6 +9,7 @@ XML=xml
 CTREE=$(XML)/classTree.xpdoc.xml
 INHERITANCE=$(XML)/inheritanceTree.xml
 SABCMD=sabcmd 
+SABPHP=php -C -q util/sabcmd.php
 PHP=php -q
 
 .PHONY: all clean install xml content
@@ -78,7 +79,7 @@ content:
 	@for i in `find content/main/ -name '*.xml'` ; do \
 	  f=`basename $$i | sed -e 's/\.xml$$//g'` ; \
 	  echo "---> Processing $$f" ; \
-	  $(SABCMD) xslt/content.xsl $$i $(CONTENT)/$$f.html ; \
+	  $(SABPHP) xslt/content.xsl $$i > $(CONTENT)/$$f.html ; \
     done
       
 collections: $(OUTPUT) $(XML)
