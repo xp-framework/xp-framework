@@ -3,18 +3,16 @@
  *
  * $Id$ 
  */
-
   require('lang.base.php');
+  xp::sapi('cli');
   uses(
     'xml.Tree',
     'xml.Node',
     'io.File', 
     'io.Folder', 
     'lang.apidoc.parser.ClassParser',
-    'util.cmd.ParamString',
     'text.PHPSyntaxHighlighter',
-    'org.cvshome.CVSFile',
-    'util.cmd.Console'
+    'org.cvshome.CVSFile'
   );
   
   function highlightPHPSource($str) {
