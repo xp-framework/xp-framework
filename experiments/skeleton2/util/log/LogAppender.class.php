@@ -22,12 +22,11 @@
     public abstract function append();
  
     /**
-     * Finalize this appender. This method is called
+     * Finalize this appender. This method is called at shutdown
      *
-     * @model   abstract
      * @access  public
      */   
-    public abstract function finalize();
+    public function finalize() { }
     
     /**
      * Retrieve a readable representation of a variable
