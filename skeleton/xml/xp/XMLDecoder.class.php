@@ -82,12 +82,10 @@
      * @throws  Exception in case read/format fails
      */
     function &readObject($trim= FALSE) {
-      $tree= &new Tree();
-      
       try(); {
         do {
           if (!($buf= FileUtil::getContents($this->file))) break;
-          if (!($tree->fromString($buf))) break;
+          if (!($tree= &Tree::fromString($buf))) break;
           $name= ClassLoader::loadClass($tree->root->attribute['class']);
         } while (0);
       } if (catch('Exception', $e)) {
