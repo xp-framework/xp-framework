@@ -84,6 +84,11 @@
               // have been deleted by the backend or another concurrent request).
               if (!$result) {
                 $handler->setAttribute('status', HANDLER_FAILED);
+
+                // Add handler errors to formresult.
+                foreach ($this->handlers[$i]->errors as $error) {
+                  $response->addFormError($name, $error[0], $error[1], $error[2]);
+                }
                 continue;
               }
 
