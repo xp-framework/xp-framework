@@ -8,6 +8,10 @@
       $this->used++;
     }
     
+    public function getUsageCount() {
+      return $this->used;
+    }
+    
     public function hello() {
       $args= func_get_args();
       echo 'Test::hello('; var_export($args); echo ")\n";
