@@ -187,7 +187,15 @@ Related documents
 * PHP Manual: Type Juggling
   http://de3.php.net/manual/en/language.types.type-juggling.php
 
+* Patch implementing this RFC
+  http://xp-framework.net/downloads/rfc0010.diff
+  
+* Test script:
+  http://xp-framework.net/downloads/cast.phps
+
 Comments
 --------
+- friebe, Mon Nov 22 23:47:13 CET 2004
+  Implementation and test scripts created
 
 <EOF>
