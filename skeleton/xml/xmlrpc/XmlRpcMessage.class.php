@@ -79,14 +79,34 @@
     }
     
     /**
-     * Recursivly serialize data to the given node
+     * Recursivly serialize data to the given node.
+     *
+     * Scalar values are natively supported by the protocol, so we just encode
+     * them as the spec tells us. As arrays and structs / hashes are the same
+     * in PHP, and structs are the more powerful construct, we're always encoding 
+     * arrays as structs.
+     * 
+     * XP objects are encoded as structs, having their FQDN stored in the member
+     * __xp_class.
      *
      * @access  protected
      * @param   &xml.Node node
-     * @param   &mixed data
+     * @param   mixed data
+     * @throws  lang.IllegalArgumentException in case the data could not be serialized.
      */
-    function &_marshall(&$node, &$data) {
+    function &_marshall(&$node, $data) {
       $value= &$node->addChild(new Node('value'));
+      
+      if (is_a($data, 'Object')) {
+        if (is('util.Date', $data)) {
+          return $value->addChild(new Node('dateTime.iso8601', $data->toString('Ymd\TH:i:s')));
+        }
+        
+        // Provide a standard-way to serialize Object-derived classes
+        $cname= xp::typeOf($data);
+        $data= (array)$data;
+        $data['__xp_class']= $cname;
+      }
       
       switch (xp::typeOf($data)) {
         case 'integer':
@@ -113,8 +133,11 @@
           break;
         
         case 'string':
-        default:
           return $value->addChild(new Node('string', $data));
+          break;
+        
+        default:
+          return throw(new IllegalArgumentException('Cannot serialize data of type "'.xp::typeOf($data).'"'));
           break;
       }
     }
@@ -126,7 +149,6 @@
      * @return  &mixed
      */
     function &getData() {
-      
       $ret= array();
       foreach (array_keys($this->root->children) as $idx) {
         if ('params' != $this->root->children[$idx]->getName())
@@ -150,6 +172,7 @@
      * @param   &xml.Node node
      * @return  &mixed
      * @throws  lang.IllegalArgumentException if the data cannot be deserialized
+     * @throws  lang.ClassNotFoundException in case a XP object's class could not be loaded
      */
     function &_unmarshall(&$node) {
       if (!is('xml.Node', $node->children[0]))
@@ -165,6 +188,23 @@
             $ret[$data['name']->getContent()]= &$this->_unmarshall($data['value']);
             unset($data);
           }
+          
+          // Check whether this is a XP object
+          if (isset($ret['__xp_class'])) {
+            $cname= $ret['__xp_class'];
+            
+            // Load the class definition
+            try(); {
+              XPClass::forName($cname);
+            } if (catch('ClassNotFoundException', $e)) {
+              return throw($e);
+            }
+            
+            // Cast the object to the class
+            unset($ret['__xp_class']);
+            $ret= &cast($ret, xp::reflect($cname));
+          }
+          
           return $ret;
           break;
           
@@ -191,6 +231,10 @@
         
         case 'string':
           return (string)$node->children[0]->getContent();
+          break;
+        
+        case 'dateTime.iso8601':
+          return Date::fromString($node->children[0]->getContent());
           break;
           
         default:
