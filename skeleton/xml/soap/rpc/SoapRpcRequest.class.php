@@ -27,7 +27,7 @@
       static $m;
       
       if (!isset($m)) {
-        $m= SOAPMessage::fromString($this->getData());
+        $m= &SOAPMessage::fromString($this->getData());
         list(
           $m->action, 
           $m->method
