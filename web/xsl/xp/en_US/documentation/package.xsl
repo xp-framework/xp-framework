@@ -57,20 +57,21 @@
    !-->
   <xsl:template name="content">
     <xsl:variable name="current" select="/formresult/breadcrumb/current"/>
-    
-    <h1>
-      <a href="../documentation">api documentation</a> (<xsl:value-of select="$current/@collection"/>)
+
+    <h3>
+      <a href="{func:link(concat('documentation#', $current/@collection))}"><xsl:value-of select="$current/@collection"/> api documentation</a>
       <xsl:for-each select="/formresult/breadcrumb/path">
-        :: <a href="package?{$current/@collection}/{@qualified}"><xsl:value-of select="."/></a>
+        &#xbb; <a href="package?{$current/@collection}/{@qualified}"><xsl:value-of select="."/></a>
       </xsl:for-each>
+    </h3>
+
+    <!-- Header -->
+    <h1>
+      package <xsl:value-of select="$current/@package"/> 
     </h1>
     
     <table border="0" cellspacing="0" cellpadding="0" width="100%">
       <xsl:for-each select="document('../../../../build/collections.xml')/collections/collection[@name = $current/@collection]//package[@name = $current/@package]">
-        <tr><td colspan="3">
-          <h3><xsl:value-of select="@name"/> package (<xsl:value-of select="@classes"/> classes)</h3>
-        </td></tr>
-        <tr><td colspan="3"><img width="1" height="8" src="/image/blank.gif"/></td></tr>
         <xsl:for-each select="package">
           <tr>
             <td width="1%" valign="top" nowrap="nowrap"><img width="17" height="17" hspace="2" src="/image/package.gif"/>&#160;</td>

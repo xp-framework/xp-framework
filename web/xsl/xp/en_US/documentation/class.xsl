@@ -50,26 +50,29 @@
    !-->
   <xsl:template name="content">
     <xsl:variable name="current" select="/formresult/breadcrumb/current"/>
-    
-    <h1>
-      <a href="{func:link('documentation')}">api documentation</a> (<xsl:value-of select="$current/@collection"/>)
+
+    <h3>
+      <a href="{func:link(concat('documentation#', $current/@collection))}"><xsl:value-of select="$current/@collection"/> api documentation</a>
       <xsl:for-each select="/formresult/breadcrumb/path">
-        :: <a href="package?{$current/@collection}/{@qualified}"><xsl:value-of select="."/></a>
+        &#xbb; <a href="package?{$current/@collection}/{@qualified}"><xsl:value-of select="."/></a>
       </xsl:for-each>
-      :: <xsl:value-of select="$current/@class"/>
-    </h1>
+      &#xbb; 
+      <a href="class?{$current/@collection}/{$current/@package}.{$current/@class}">
+        <xsl:value-of select="$current/@class"/>
+      </a>
+    </h3>
         
     <!-- Header -->
-    <h3>
+    <h1>
       <xsl:value-of select="/formresult/apidoc/comments/class/@model"/> 
       class <xsl:value-of select="/formresult/apidoc/comments/class/@name"/> 
       <xsl:if test="/formresult/apidoc/comments/class/@extends != ''">
         extends <xsl:value-of select="/formresult/apidoc/comments/class/@extends"/> 
       </xsl:if>
-    </h3>
-    <small>
+    </h1>
+    <div class="cvsver">
       <xsl:value-of select="/formresult/apidoc/comments/file/@cvs"/>
-    </small>
+    </div>
     <h4>
       Purpose: <xsl:value-of select="/formresult/apidoc/comments/class/purpose"/>
     </h4>
