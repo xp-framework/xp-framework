@@ -136,32 +136,15 @@
       if (NULL != $this->buffer[1]) $buffers['/_xml']= &$this->buffer[1];
       if (NULL != $this->stylesheet[1]) $buffers['/_xsl']= &$this->stylesheet[1];
       
-      // 4.1.1 API?
-      if (!function_exists('xslt_fetch_result')) {
-        //var_dump($buffers);
-        $this->output= xslt_process(
-          $this->processor, 
-          $this->buffer[0],
-          $this->stylesheet[0],
-          NULL,
-          $buffers,
-          $this->params
-        );
-        return ($this->output !== FALSE);
-      }
-
-      // 4.0.6 API
-      $result= xslt_run(
-        $this->processor,
-	$this->stylesheet[0],
-	$this->buffer[0],
-	'arg:/_out',
-        $this->params,
-	$buffers
+      $this->output= xslt_process(
+        $this->processor, 
+        $this->buffer[0],
+        $this->stylesheet[0],
+        NULL,
+        $buffers,
+        $this->params
       );
-      $this->output= xslt_fetch_result($this->processor, '/_out');
-      
-      return $result; // ($this->output !== FALSE);
+      return ($this->output !== FALSE);
     }
 
     /**
@@ -178,7 +161,7 @@
      */
     function __destruct() {
       xslt_free($this->processor);
-      Object::__destruct();
+      parent::__destruct();
     }
   }
 ?>
