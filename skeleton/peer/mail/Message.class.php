@@ -289,7 +289,7 @@
     }
 
     /**
-     * Get recipients
+     * Get from
      *
      * @access  public
      * @return  &peer.mail.InternetAddress[] adr addresses to add
