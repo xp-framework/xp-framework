@@ -92,6 +92,12 @@ ul.intro {
   list-style-image: url(image/dot.gif);
   line-height: 18px;
 }
+hr {
+  border: 0;
+  background-color: #6c599b;
+  color: #6c599b;
+  height: 1px;
+}
 
 /* News specific */
 .entry {
@@ -106,4 +112,39 @@ ul.intro {
   background-position: left center; 
   background-repeat: no-repeat;
   padding-left: 20px;
+}
+
+/* Syntax */
+code {
+  font: 12px "Courier New", courier;
+  white-space: pre;
+}
+code .keyword {
+  color: #990000;
+  font-weight: bold;
+}
+code .variable {
+  color: #000099;
+  font-weight: bold;
+}
+code .bracket {
+  color: #a90000;
+}
+code .string {
+  color: #0000a9;
+}
+code .comment {
+  color: #a9a9a9;
+}
+
+/* Examples */
+div.example {
+  border: 1px solid #cecece;
+  border-left: 3px solid #cecece;
+  padding: 2px;
+}
+div.cvsver {
+  font: 12px "Courier New", courier;
+  border: 1px solid #cecece;
+  padding: 2px;  
 }
