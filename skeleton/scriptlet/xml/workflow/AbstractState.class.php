@@ -58,7 +58,7 @@
               $request->getStateName(),
               $this->handlers[$i]->identifierFor($request, $context)
             );
-            $handler= &$h->addChild(new Node('handler', NULL, array(
+            $node= &$h->addChild(new Node('handler', NULL, array(
               'id'   => $this->handlers[$i]->identifier,
               'name' => $name
             )));
@@ -70,7 +70,7 @@
               // If the handler is already active, this means the page was reloaded
               if ($this->handlers[$i]->isActive($request, $context)) {
                 $this->handlers[$i]->finalize($request, $response, $context);
-                $handler->setAttribute('status', HANDLER_RELOADED);
+                $node->setAttribute('status', HANDLER_RELOADED);
                 continue;
               }
               
@@ -91,7 +91,7 @@
               // it is passed, and fail in case it doesn't exist (the article may
               // have been deleted by the backend or another concurrent request).
               if (!$result) {
-                $handler->setAttribute('status', HANDLER_FAILED);
+                $node->setAttribute('status', HANDLER_FAILED);
 
                 // Add handler errors to formresult.
                 foreach ($this->handlers[$i]->errors as $error) {
@@ -107,9 +107,9 @@
               }
 
               // Handler was successfully set up, register to session
-              $handler->setAttribute('status', HANDLER_SETUP);
+              $node->setAttribute('status', HANDLER_SETUP);
               $request->session->putValue($this->handlers[$i]->identifier, $this->handlers[$i]->values);
-              $handler->addChild(Node::fromArray($this->handlers[$i]->values[HVAL_PERSISTENT], 'values'));
+              $node->addChild(Node::fromArray($this->handlers[$i]->values[HVAL_PERSISTENT], 'values'));
               foreach (array_keys($this->handlers[$i]->values[HVAL_FORMPARAM]) as $key) {
                 $response->addFormValue($key, $this->handlers[$i]->values[HVAL_FORMPARAM][$key]);
               }
@@ -119,8 +119,8 @@
 
             // Load handler values from session
             $this->handlers[$i]->values= $request->session->getValue($this->handlers[$i]->identifier);
-            $handler->setAttribute('status', HANDLER_INITIALIZED);
-            $handler->addChild(Node::fromArray($this->handlers[$i]->values[HVAL_PERSISTENT], 'values'));
+            $node->setAttribute('status', HANDLER_INITIALIZED);
+            $node->addChild(Node::fromArray($this->handlers[$i]->values[HVAL_PERSISTENT], 'values'));
             foreach (array_keys($this->handlers[$i]->values[HVAL_FORMPARAM]) as $key) {
             
               // Skip parameters which were set via setFormValue() and which were
@@ -161,7 +161,7 @@
               foreach ($this->handlers[$i]->errors as $error) {
                 $response->addFormError($name, $error[0], $error[1], $error[2]);
               }
-              $handler->setAttribute('status', HANDLER_ERRORS);
+              $node->setAttribute('status', HANDLER_ERRORS);
               continue;
             }
 
@@ -176,7 +176,7 @@
             // Tell the handler to finalize itself. This may include adding a 
             // node to the formresult or sending a redirect to another page
             $this->handlers[$i]->finalize($request, $response, $context);
-            $handler->setAttribute('status', HANDLER_SUCCESS);
+            $node->setAttribute('status', HANDLER_SUCCESS);
           }
         }
       }
