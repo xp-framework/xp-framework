@@ -131,7 +131,8 @@
 
             case 'jar':     // A jar
               $this->resources[]= &new JnlpJarResource(
-                $this->_nodes['resources']->children[$i]->getAttribute('href')
+                $this->_nodes['resources']->children[$i]->getAttribute('href'),
+                $this->_nodes['resources']->children[$i]->getAttribute('version')
               );
               break;
             
@@ -144,7 +145,8 @@
 
             case 'nativelib':
               $this->resources[]= &new JnlpJarResource(
-                $this->_nodes['resources']->children[$i]->getAttribute('href')
+                $this->_nodes['resources']->children[$i]->getAttribute('href'),
+                $this->_nodes['resources']->children[$i]->getAttribute('version')
               );
               break;              
 

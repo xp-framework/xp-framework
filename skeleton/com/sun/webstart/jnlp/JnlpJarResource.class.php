@@ -9,9 +9,14 @@
   /**
    * JNLP resource that points to a JAR (Java Archive) file
    *
-   * XML representation
+   * XML representation:
    * <pre>
    *   <jar href="lib/jbosssx-client.jar"/>
+   * </pre>
+   *
+   * XML representation with version:
+   * <pre>
+   *   <jar href="./lib/util.jar" version="7.2.1.1.Build.12"/>
    * </pre>
    *
    * @see      xp://com.sun.webstart.JnlpResource
@@ -19,16 +24,19 @@
    */
   class JnlpJarResource extends JnlpResource {
     var
-      $href   = '';
+      $href     = '',
+      $version  = '';
 
     /**
      * Constructor
      *
      * @access  public
      * @param   string href
+     * @param   string version
      */
-    function __construct($href) {
+    function __construct($href, $version) {
       $this->href= $href;
+      $this->version= $version;
     }
 
     /**
@@ -50,6 +58,36 @@
     function getHref() {
       return $this->href;
     }
+    
+    /**
+     * Get JAR location
+     *
+     * @access  public
+     * @return  string
+     */
+    function getLocation() {
+      return $this->href.($this->version ? '?version-id='.$this->version : '');
+    }
+
+    /**
+     * Set Version
+     *
+     * @access  public
+     * @param   string version
+     */
+    function setVersion($version) {
+      $this->version= $version;
+    }
+
+    /**
+     * Get Version
+     *
+     * @access  public
+     * @return  string
+     */
+    function getVersion() {
+      return $this->version;
+    }
 
     /**
      * Get name
@@ -68,8 +106,10 @@
      * @return  array
      */
     function getTagAttributes() { 
-      return array('href' => $this->href);
+      return array_merge(
+        array('href' => $this->href), 
+        $this->version ? array('version' => $this->version) : array()
+      );
     }
-  
   }
 ?>
