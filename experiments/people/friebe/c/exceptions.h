@@ -47,7 +47,7 @@ struct exception {
     char* message;
 };
 
-define_exception_type(struct exception);
-
 struct exception_context the_exception_context[1];
 struct exception e;
+
+define_exception_type(struct exception);
