@@ -159,8 +159,13 @@
         foreach (array_keys($this->crm->hash) as $name) {
           if (!isset($this->crm->crs[$this->crm->hash[$name]])) continue;
           
-          $cat->debug('Calling insertStatus()', $name);
-          $this->crm->crs[$this->crm->hash[$name]]->insertStatus($response->addFormResult(new Node($name)));
+          $crs= &$this->crm->crs[$this->crm->hash[$name]];
+          $cat->debug('Calling insertStatus()', $crs, $name);
+          $crs->insertStatus($response->addFormResult(new Node(
+            $name, 
+            NULL, 
+            array('contextresource' => $crs->getClassName())
+          )));
         }
 
         $cat->info('Calling getDocument()');
@@ -175,6 +180,7 @@
         return throw(new ContextFailedException('In state "'.$state->getName().'"', $e));
       }
       
+      $cat->mark();
       return $return;
     }
     
