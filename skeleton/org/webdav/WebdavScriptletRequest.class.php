@@ -14,10 +14,31 @@
   class WebdavScriptletRequest extends HttpScriptletRequest {
   
     var
+      $user=     NULL,
       $path=     NULL,
       $rootURI=  NULL,
       $tree=     NULL;
-  
+
+    /**
+     * Set user
+     *
+     * @access  public
+     * @param   string user
+     */
+    function setUser(&$user) {
+      $this->user= &$user;
+    }
+
+    /**
+     * Get user
+     *
+     * @access  public
+     * @return  string
+     */
+    function &getUser() {
+      return $this->user;
+    }
+
     /**
      * Set the path
      * 
