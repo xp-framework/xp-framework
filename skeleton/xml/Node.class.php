@@ -18,6 +18,52 @@
       $attribute,
       $content;
 
+    /**
+     * Constructor
+     *
+     * <code>
+     *   $n= &new Node('document');
+     *   $n= &new Node('text', 'Hello World');
+     *   $n= &new Node('article', '', array('id' => 42));
+     *   $n= &new Node(array(
+     *     'name'    => 'changedby',
+     *     'content' => 'me'
+     *   ));
+     * </code>
+     *
+     * @access  public
+     * @param   mixed*
+     * @throws  IllegalArgumentException
+     */
+    function __construct() {
+      switch (func_num_args()) {
+        case 0: 
+          parent::__construct();
+          break;
+          
+        case 1:
+          if (is_array($arg= func_get_arg(0))) {
+            parent::__construct($arg);
+            break;
+          }
+          $this->name= $arg;
+          break;
+          
+        case 2:
+          list($this->name, $this->content)= func_get_args();
+          parent::__construct();
+          break;
+          
+        case 3:
+          list($this->name, $this->content, $this->attribute)= func_get_args();
+          parent::__construct();
+          break;
+          
+        default:
+          return throw(new IllegalArgumentException('Wrong number of arguments passed'));
+      }
+    }
+
     function _recurseArray(&$elem, $arr) {
       $nodeType= get_class($this);
       foreach ($arr as $field=> $value) {
