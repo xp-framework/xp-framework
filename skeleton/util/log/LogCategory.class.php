@@ -119,6 +119,16 @@
         }
       }
     }
+
+    /**
+     * Retrieves whether this log category has appenders
+     *
+     * @access  public
+     * @return  bool
+     */
+    function hasAppenders() {
+      return !empty($this->_appenders);
+    }
     
     /**
      * Finalize
