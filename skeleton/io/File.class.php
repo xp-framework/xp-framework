@@ -478,7 +478,7 @@
         return throw(new IllegalStateException('file still open'));
       }
       
-      if (FALSE === unlink($this->_fd)) {
+      if (FALSE === unlink($this->uri)) {
         return throw(new IOException('cannot delete file '.$this->uri));
       }
       return TRUE;
