@@ -387,7 +387,7 @@
             
       // Remove all -options
       if ($parts= sscanf($params, '-%s %s')) {
-        $this->cat->debug('+++ Removed options:', $parts[0]);
+        $this->cat && $this->cat->debug('+++ Removed options:', $parts[0]);
         $params= $parts[1];
       }
       
