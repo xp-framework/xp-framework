@@ -38,5 +38,14 @@
     function getBuffer() {
       return $this->buffer;
     }
+    
+    /**
+     * Clears the buffers content.
+     *
+     * @access  public
+     */
+    function clear() {
+      $this->buffer= '';
+    }    
   }
 ?>
