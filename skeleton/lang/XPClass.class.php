@@ -48,7 +48,6 @@
      * @param   &mixed ref either a class name or an object
      */
     function __construct(&$ref) {
-      
       $this->_objref= &$ref;
       $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
     }
@@ -169,14 +168,28 @@
     }
     
     /**
-     * Retrieves this class' constructor
+     * Retrieve if a constructor exists
+     *
+     * @access  public
+     * @return  bool
+     */
+    function hasConstructor() {
+      return in_array('__construct', get_class_methods($this->_objref));
+    }
+    
+    /**
+     * Retrieves this class' constructor. Returns NULL if no constructor
+     * exists.
      *
      * @access  public
      * @return  &lang.reflect.Constructor
      * @see     xp://lang.reflect.Constructor
      */
     function &getConstructor() {
-      return new Constructor($this->_objref, '__construct'); 
+      if ($this->hasConstructor()) {
+        return new Constructor($this->_objref); 
+      }
+      return NULL;
     }
     
     /**
