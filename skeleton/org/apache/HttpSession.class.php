@@ -197,7 +197,9 @@
      */
     function removeValue($name) {
       if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
-      if (isset($_SESSION[$name])) unset($_SESSION[$name]);
+      if (isset($_SESSION[$name])) {
+        $_SESSION[$name]= NULL;
+      }
     }
     
     /**
