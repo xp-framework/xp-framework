@@ -12,19 +12,15 @@
   );
   
   // {{{ main
-  $c= &new NntpConnection(new URL('nntp://elite.schlund.de'));
-  
+  $c= &new NntpConnection(new URL('nntp://news.php.net'));
   try(); {
     $c->connect();
-    $articleIds= $c->newNews(
-      DateUtil::addDays(Date::now(), -7),
-      'puretec.spass'
-    );
-    $c->setGroup('puretec.spass');
- 
-    $articles= array();   
-    foreach($articleIds as $articleId) {
-      $articles[]= &$c->getArticle($articleId);
+    $c->setGroup('php.version4');
+    
+    $articles= array($c->getArticle());
+    
+    for ($i= 0; $i<9; $i++) {
+      $articles[]= $c->getNextArticle();
     }
   } if (catch('IOException', $e)) {
     $e->printStacktrace();
