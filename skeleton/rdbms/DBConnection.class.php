@@ -228,10 +228,10 @@
      * Set trace for debugging
      *
      * @access  public
-     * @param   &util.log.LogCategory
+     * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$log) {
-      $this->log= &$log;
+    function setTrace(&$cat {
+      $this->log= &$cat;
     }    
   } implements(__FILE__, 'util.log.Traceable');
 ?>
