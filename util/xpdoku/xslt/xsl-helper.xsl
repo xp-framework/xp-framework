@@ -9,6 +9,7 @@
     <area name="documentation" color="#9eb6fe" logo="logo"/>
     <area name="about" color="#add3b0" logo="logo-green"/>
     <area name="resources" color="#f7c794" logo="logo-orange"/>
+    <area name="devel" color="#ffde41" logo="logo-yellow"/>
   </xsl:variable>
   
   <xsl:template match="packages|classdoc|document">
@@ -58,14 +59,14 @@
     <a name="TOP"/>
     <table border="0" cellspacing="0" cellpadding="0" width="100%">
       <tr bgcolor="{$areas/area[@name= $area]/@color}">
-        <td align="left" colspan="5">
+        <td align="left" colspan="6">
            <a href="/">
              <img border="0" width="120" height="64" vspace="0" hspace="0" src="/image/xp-{$areas/area[@name= $area]/@logo}.gif"/>
            </a>
         </td>
       </tr>
       <tr bgcolor="#000033">
-        <td colspan="5">
+        <td colspan="6">
           <img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/>
         </td>
       </tr>
@@ -88,6 +89,10 @@
             <img src="/image/spacer.gif" width="100" height="1" border="0" alt=""/><br/>
             <b>&#160; <a href="/resources/index.html" class="menuWhite">resources</a>  &#160;</b>
           </td>
+          <td bgcolor="#ffde41" width="2%" nowrap="nowrap" align="center">
+            <img src="/image/spacer.gif" width="100" height="1" border="0" alt=""/><br/>
+            <b>&#160; <a href="/devel/index.html" class="menuBlack">development</a>  &#160;</b>
+          </td>
           <td class="searchbar" align="right" valign="top" nowrap="nowrap">
             <font color="white">
               <small><u>s</u>earch for</small>
@@ -106,7 +111,7 @@
       </tr>
       
       <tr bgcolor="#000033">
-        <td colspan="5">
+        <td colspan="6">
           <img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/>
         </td>
       </tr>

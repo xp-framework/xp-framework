@@ -87,6 +87,7 @@ $(OUTPUT):
 	@-mkdir $(OUTPUT)/content
 	@-mkdir $(OUTPUT)/apidoc
 	@-mkdir $(OUTPUT)/resources
+	@-mkdir $(OUTPUT)/devel
 	@-mkdir $(OUTPUT)/apidoc/collections
 	@-mkdir $(OUTPUT)/apidoc/classes
 	@-mkdir $(OUTPUT)/image
@@ -121,6 +122,8 @@ index: $(OUTPUT) $(XML) news
 	@$(SABCMD) xslt/apidoc.xsl $(CTREE) $(OUTPUT)/apidoc/index.html '$$area=documentation' 2>/dev/null
 	@echo "===> Creating resources index"
 	@$(SABCMD) xslt/resources.xsl content/resources.xml $(OUTPUT)/resources/index.html '$$area=resources'
+	@echo "===> Creating devel index"
+	@$(SABCMD) xslt/devel.xsl content/devel.xml $(OUTPUT)/devel/index.html '$$area=devel'
 	@echo "===> Creating highlighter"
 	@$(SABCMD) xslt/showsource.xsl $(CTREE) $(OUTPUT)/showsource.php '$$area=documentation'
 	@echo "===> Creating search page"
