@@ -97,6 +97,16 @@
     }
 
     /**
+     * Get base
+     *
+     * @access  public
+     * @return  string
+     */
+    function getBase() {
+      return $this->_base;
+    }
+
+    /**
      * Set XSL file
      *
      * @access  public

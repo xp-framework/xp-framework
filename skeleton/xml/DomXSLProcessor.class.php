@@ -57,6 +57,16 @@
     function setBase($dir) {
       $this->_base= rtrim(realpath($dir), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
+
+    /**
+     * Get base
+     *
+     * @access  public
+     * @return  string
+     */
+    function getBase() {
+      return $this->_base;
+    }
     
     /**
      * Set a scheme handler
@@ -177,6 +187,7 @@
           break;
 
         case 1:
+          echo '<xmp>', xp::stringOf($this->stylesheet), "\n", getcwd(), "\n", $this->_base, '</xmp>';
           if ($this->_base) {
             $cwd= getcwd();
             chdir($this->_base);
