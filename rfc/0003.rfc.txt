@@ -1,0 +1,107 @@
+RFC 0003: Core functionality cast()
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Nov 16 19:06:40 CET 2003
+@status: draft
+@category: language
+
+Scope of Change
+---------------
+Have a cast function which casts objects. Allowed cast directions
+are up and down in the class hierarchy, not sideways.
+
+Rationale
+---------
+PHP does not have a built-in casting mechanism for objects. Casting
+is usually considered a necessary feature of type safe languages
+only, but can be useful in some situations.
+
+Functionality
+-------------
+Casting can be only performed to a super- or a subclass. Given this
+hierarchy
+
+<pre>
+  + Object
+  |
+   -- + ParentElement
+  |   |
+  |    -- ChildElement
+  |
+   -- Foo
+</pre>
+
+casting would be available from ChildElement to ParentElement vice 
+versa, from ParentElement to Object vice versa, from Foo to Object
+vice versa but *not* from ParentElement or ChildElement to Foo nor
+from Foo to ParentElement or ChildElement.
+
+Implementation:
+<code>
+  // Helper function
+  function is_parent($o, $type) {
+    $c= get_class($o);
+    do {
+      if (!$type= get_parent_class($type)) return FALSE;
+    } while ($c != $type);
+    return TRUE;
+  }
+  
+  function cast(&$o, $type) {
+    if (
+      !is_a($o, $type) &&
+      !is_parent($o, $type)
+    ) throw new ClassCastException(
+      get_class($o).' cannot be casted to a '.$type
+    );
+    
+    $c= get_class($o);
+    $o= unserialize('O:'.strlen($type).':"'.$type.'"'.substr(
+      serialize($o),
+      2 + strlen(strlen($c)) + 2 + strlen($c) + 1
+    ));
+    return $o;
+  }
+</code>
+
+Example:
+<code>
+  class ParentElement extends Object { 
+    public $id= 0;
+  }
+
+  class ChildElement extends ParentElement { 
+    public $bar= 0;
+  }
+
+  class Foo extends Object { }
+
+  // Works
+  $c= new ChildElement();
+  var_dump($c, cast($c, 'ParentElement'));
+
+  // Works
+  $p= new ParentElement();
+  var_dump($p, cast($p, 'ChildElement'));
+  
+  // Throws a lang.ClassCastException
+  $c= new ChildElement();
+  var_dump($c, cast($c, 'Foo'));
+</code>
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+none.
+
+Comments
+--------
+- friebe, Sun Nov 16 19:25:03 CET 2003
+  Find good example for a situation in which this is useful.
+
+<EOF>
