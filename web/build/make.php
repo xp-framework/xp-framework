@@ -59,19 +59,20 @@
     // Go through folder entries
     while (FALSE !== ($entry= $f->getEntry())) {
       $fn= $f->getURI().$entry;
+      
+      // Ignore well-known files and directories
+      if (in_array($entry, $except)) continue;
 
-      // Recurse into subdirectories, ignoring well-known directories 
-      // defined in static variable "except"
-      if (is_dir($fn) && !in_array($entry, $except)) {
+      // Recurse into subdirectories
+      if (is_dir($fn)) {
         recurse($list, $name, $base, $prefix, str_replace($base, '', $fn));
         continue;
       }
 
       // Only take documentable files into account
-      if (
-        (2 != sscanf($entry, '%[^\.].%[^\.].php', $filename, $indicator)) || 
-        (!in_array($indicator, $include))
-      ) continue;
+      sscanf($entry, '%[^\.].%s', $filename, $indicator);
+      $indicator= substr($indicator, 0, -4);
+      if (!in_array($indicator, $include)) continue;
 
       // Check if a file needs updating
       $mtime= filemtime($fn);
@@ -121,7 +122,7 @@
       // Check if output directory exists. Create, if not
       if (!isset($output[$stor->getPath()])) {
         $path= &new Folder($stor->getPath());
-        $path->exists() || $path->create();
+        $path->exists() || $path->create(0755);
         $output[$stor->getPath()]= &$path;
         Console::writeLine('---> Created output directory ', $path->getURI());
       }
