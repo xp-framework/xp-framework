@@ -33,5 +33,6 @@
   }
   // }}}
   
+  ini_set('error_prepend_string', EPREPEND_IDENTIFIER);
   ob_start(array('sapi·cli', 'output'));
 ?>
