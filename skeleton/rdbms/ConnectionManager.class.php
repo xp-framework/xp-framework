@@ -59,6 +59,7 @@
         }
 
         unset($defines['reflect']);
+        if (FALSE !== ($p= strpos($section, '.'))) $section= substr($section, 0, $p);
         $this->register(new $c($defines), $section);
       } while ($section= $properties->getNextSection());
     }
