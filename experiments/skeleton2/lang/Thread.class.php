@@ -52,7 +52,7 @@
    * @platform Unix
    * @purpose  Base class
    */
-  class Thread extends Object {
+  abstract class Thread extends Object {
     public
       $name     = '',
       $running  = FALSE;
