@@ -27,10 +27,14 @@
   // Get rid of REDIRECT_* variables and copy them to the "global" namespace
   foreach (array('_ENV', '_SERVER') as $var) {
     foreach ($GLOBALS[$var] as $k => $v) {
-      if ('REDIRECT_' != substr($k, 0, 9)) continue;
-      $GLOBALS[$var][substr($k, 9)]= $v;
+      $key= $k;
+      while ('REDIRECT_' == substr($key, 0, 9)) {
+        $key= substr($key, 9);
+      }
+      if ($key == $k) continue;
+      $GLOBALS[$var][$key]= $v;
       unset($GLOBALS[$var][$k]);
-      putenv(substr($k, 9).'='.$v);
+      putenv($key.'='.$v);
     }
   }
 ?>
