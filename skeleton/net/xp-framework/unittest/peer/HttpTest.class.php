@@ -64,7 +64,7 @@
      * @param   bool expectingData
      * @return  array data
      */
-    function _test($method, $expectingData) {
+    function _testRequest($method, $expectingData) {
       try(); {
         $response= &$this->conn->request($method, array(
           'a'   => 'b',
@@ -105,7 +105,7 @@
      * @access  public
      */
     function testGet() {
-      return $this->_test(HTTP_GET, TRUE);
+      return $this->_testRequest(HTTP_GET, TRUE);
     }
 
     /**
@@ -114,7 +114,7 @@
      * @access  public
      */
     function testPost() {
-      return $this->_test(HTTP_POST, TRUE);
+      return $this->_testRequest(HTTP_POST, TRUE);
     }
 
     /**
@@ -123,7 +123,7 @@
      * @access  public
      */
     function testHead() {
-      return $this->_test(HTTP_HEAD, FALSE);
+      return $this->_testRequest(HTTP_HEAD, FALSE);
     }
   }
 ?>
