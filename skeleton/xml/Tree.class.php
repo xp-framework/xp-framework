@@ -11,6 +11,8 @@
       $_cnt,
       $_cdata,
       $_objs;
+    
+    var $nodeType= 'node';
 		
     function __construct($params= NULL) {
       $this->_objs= array();		
@@ -31,13 +33,14 @@
       return $this->root->addChild($child);
     }
 
-    function _pCallStartElement($attr) {
+    function _pCallStartElement($parser, $name, $attrs) {
       $this->_cdata= "";
 
-      $element= new Node();  
-      $element->name= $attr['name'];
-      $element->attribute= $attr['attrs'];
-      $element->content= '';
+      $element= new $this->nodeType(array(
+        'name'          => $name,
+        'attribute'     => $attrs,
+        'content'       => ''
+      ));  
 
       if (!isset($this->_cnt)) {
         $this->root= &$element;
@@ -49,29 +52,30 @@
       }
     }
    
-    function _pCallEndElement($attr) {
-      if ($this->_cnt> 1) {
+    function _pCallEndElement($parser, $name) {
+      if ($this->_cnt > 1) {
         $node= &$this->_objs[$this->_cnt];
         $node->content= $this->_cdata;
-        $parent= &$this->_objs[$this->_cnt-1];
+        $parent= &$this->_objs[$this->_cnt- 1];
         $parent->addChild($node);
+        //var_dump('adding '.$node->name.' ['.$this->_cnt.'] to '.$parent->name.' ['.($this->_cnt- 1).']');
         $this->_cdata= "";
       }
       $this->_cnt--;
     }
 
-    function _pCallCData($attr) {
-      $this->_cdata.= trim(chop($attr['cdata']));
+    function _pCallCData($parser, $cdata) {
+      $this->_cdata.= $cdata;
     }
     
-    function _pCallDefault($attr) {
+    function _pCallDefault($parser, $data) {
     }
        
     function fromString($string) {
       $parser= new XMLParser();
       $parser->callback= &$this;
       $parser->dataSource= $string;
-      $result= $parser->parse($string);
+      $result= $parser->parse($string, 1);
       $parser->__destruct();
       return $result;
     }
@@ -80,12 +84,13 @@
       $parser= new XMLParser();
       $parser->callback= &$this;
       $parser->dataSource= $fileName;
-      $fp= @fopen($fileName, 'r');
-      if (!$fp) return throw(E_IO_EXCEPTION, 'cannot read from '.$fileName);
       
-      while ($data= fread($fp, 4096)) {
-        if (!$parser->parse($data, feof($fp))) break;
+      $fp= @fopen($fileName, 'r');
+      if (!$fp) {
+        return throw(E_IO_EXCEPTION, 'cannot read from '.$fileName);
       }
+      
+      $parser->parse(fread($fp, filesize($fileName)));
       fclose($fp);
       $parser->__destruct();
     }
