@@ -66,18 +66,6 @@
     }
 
     /**
-     * Helper method to create thumbnail from origin image.
-     *
-     * @access  protected
-     * @param   &img.Image origin
-     * @param   &img.util.ExifData exifData
-     * @return  &img.Image
-     */
-    function thumbImageFor(&$origin, &$exifData) {
-      return $this->resampleToFixedCut($origin, $this->thumbDimensions);
-    }
-    
-    /**
      * Helper method to create grayscale from origin image.
      *
      * @access  protected
@@ -86,9 +74,23 @@
      * @return  &img.Image
      */
     function grayScaleThumbImageFor(&$origin, &$exifData) {
-      $thumb= &$this->resampleToFixedCut($origin, $this->thumbDimensions);
-      $thumb->convertTo($this->converter['grayscale']);
-      return $thumb;
+      $resized= &$this->resampleToFixedCut($origin, $this->thumbDimensions);
+      $resized->convertTo($this->converter['grayscale']);
+      return $resized;
+    }
+
+    /**
+     * Helper method to create grayscale from origin image.
+     *
+     * @access  protected
+     * @param   &img.Image origin
+     * @param   &img.util.ExifData exifData
+     * @return  &img.Image
+     */
+    function grayScaleFullImageFor(&$origin, &$exifData) {
+      $resized= &$this->resampleTo($origin, $exifData->isHorizontal(), $this->fullDimensions);
+      $resized->convertTo($this->converter['grayscale']);
+      return $resized;
     }
 
     /**
@@ -101,8 +103,10 @@
     function targetsFor(&$in) {
       return array(
         new ProcessorTarget('detailImageFor', 'detail.'.$in->getFilename()),
-        new ProcessorTarget('thumbImageFor', 'thumb.'.$in->getFilename()),
-        new ProcessorTarget('grayScaleThumbImageFor', 'gray.'.$in->getFilename())
+        new ProcessorTarget('fullImageFor', 'color.'.$in->getFilename()),
+        new ProcessorTarget('grayScaleFullImageFor', 'gray.'.$in->getFilename()),
+        new ProcessorTarget('thumbImageFor', 'thumb.color.'.$in->getFilename()),
+        new ProcessorTarget('grayScaleThumbImageFor', 'thumb.gray.'.$in->getFilename())
       );
     }
   }
