@@ -120,31 +120,30 @@ Details
     }
   ?>
   
-  This is identical to writing "catch (php~Throwable $e)" (see also:
-  add an interface instead of built-in exception and packages support).
+  This is identical to writing "catch (IException $e)" (see also:
+  add an interface instead of built-in exception).
   
 * Packages support
   A new keyword "package" begins a block of code that puts every 
-  contained class, interface, enumeration (see below) or function into 
-  it.
+  contained class, interface or enumeration (see below) into it.
   <?php
     package lang {
-      class String { }
-      function typeOf() { }
+      class Object { }
+      class String extends Object { }
     }
   ?>
   The package-class-separator is the tilde character (~). Thus, the
   String class can be addressed by its fully qualified name, 
-  "lang~String", and to call the typeOf function, one must use
-  "lang~typeOf()" (the fully qualified name is the only way to 
+  "lang~String" (the fully qualified name is the only way to 
   address packaged elements in a generic way).
   
   An additional function called "import" creates short aliases for 
-  these long names and may be used with wildcards.
+  these long names.
   <?php
-    import lang~String, lang~typeOf, io~*;
+    import lang~String, lang~Object;
+    import de~schlund~webservices~ServiceLocator as Locator;
   ?>
-  Name clashes cause a Fatal Error.
+  Name clashes cause a Fatal (Compile-Time) Error.
 
   For details, see 
   http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/packages
