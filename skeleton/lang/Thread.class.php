@@ -48,6 +48,7 @@
    * </code>
    *
    * @ext      pcntl
+   * @ext      posix
    * @platform Unix
    * @purpose  Base class
    */
@@ -137,17 +138,51 @@
     }
     
     /**
-     * Join this thread (wait for it to exit).
+     * Join this thread. The optional parameter wait may be set to FALSE to
+     * return immediately if this thread hasn't terminated yet.
      *
      * @access  public
+     * @param   bool wait default TRUE
      * @return  int status
      * @see     php://pcntl_waitpid
      */
-    function join() {
-      pcntl_waitpid($this->_id, $status, WUNTRACED);
+    function join($wait= TRUE) {
+      if (0 == pcntl_waitpid($this->_id, $status, $wait ? WUNTRACED : WNOHANG)) return -1;
       $this->running= FALSE;
       $this->_id= -1;
       return $status;
+    }
+    
+    /**
+     * Stop this thread
+     *
+     * @access  public
+     * @param   int signal default SIGINT
+     */
+    function stop($signal= SIGINT) {
+      posix_kill($this->_id, $signal);
+      $this->running= FALSE;
+      $this->_id= -1;
+    }
+    
+    /**
+     * Returns thread id or -1 if this thread is not running
+     *
+     * @access  public
+     * @return  int
+     */
+    function getId() {
+      return $this->_id;
+    }
+    
+    /**
+     * Creates a string representation
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return sprintf('%s{%d}@%s', $this->getClassName(), $this->_id, var_export($this, 1));
     }
     
     /**
