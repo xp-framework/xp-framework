@@ -43,7 +43,8 @@
       
       $this->setUser(new User(
         $request->getEnvValue('REMOTE_ADDR'),
-        $request->getEnvValue('HTTP_USER_AGENT')
+        $request->getEnvValue('HTTP_USER_AGENT'),
+        $request->getLanguage()
       ));
     }
 
