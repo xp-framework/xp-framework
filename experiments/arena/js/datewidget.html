@@ -27,22 +27,22 @@
         document.forms.select.debug.value= date.add(0, months, days).toString();
       }
 
-      function handleKeyPress(e) {
+      function handleKeyPress(object, e) {
         switch (e.keyCode) {
           case 33:  // Page up
-            changeDate(document.forms.select.date, 1, 0);
+            changeDate(object, 1, 0);
             break;
 
           case 34:  // Page down
-            changeDate(document.forms.select.date, -1, 0);
+            changeDate(object, -1, 0);
             break;
 
           case 38:  // Up
-            changeDate(document.forms.select.date, 0, 1);
+            changeDate(object, 0, 1);
             break;
 
           case 40:  // Down
-            changeDate(document.forms.select.date, 0, -1);
+            changeDate(object, 0, -1);
             break;
           
           default:
@@ -53,9 +53,7 @@
       }
     </script>
   </head>
-  <body 
-   onload="changeDate(document.forms.select.date, 0, 0); document.forms.select.date.onkeypress= handleKeyPress"
-  >
+  <body onload="changeDate(document.forms.select.date, 0, 0)">
     <form name="select">
       <table>
         <tr>
@@ -64,7 +62,8 @@
              type="text" 
              name="date" 
              value="" 
-             onBlur="changeDate(document.forms.select.date, 0, 0)"
+             onBlur="changeDate(this, 0, 0)"
+             onKeyPress="return handleKeyPress(this, event)"
              size="20"
             />
           </td>
