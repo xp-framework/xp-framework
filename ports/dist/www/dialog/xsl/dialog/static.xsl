@@ -20,6 +20,11 @@
    ! @purpose  Define main content
    !-->
   <xsl:template name="content">
+    <h3>
+      <a href="{func:link('static')}">Home</a>
+      <!-- TBD: Pager -->
+    </h3>
+    <br clear="all"/>
   
     <xsl:for-each select="/formresult/albums/album">
       <div class="datebox">
