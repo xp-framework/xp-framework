@@ -44,7 +44,7 @@
      * Returns a hashcode for this object
      *
      * @access  public
-     * @return  
+     * @return  string
      */
     function hashCode() {
       return $this->__id;
