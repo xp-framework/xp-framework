@@ -9,6 +9,8 @@
    *
    * Example:
    * <code>
+   *   uses('text.translator.Swabian');
+   *
    *   $translated= Swabian::translate($text);
    * </code>
    *
