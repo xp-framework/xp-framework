@@ -94,6 +94,32 @@
         </tr>
         <xsl:call-template name="embedded-divider"/>
       </xsl:if>
+      <xsl:if test="string-length (./comments/class/experimental) &gt; 0">
+        <tr>
+          <td valign="top" colspan="2">
+            <xsl:call-template name="frame">
+              <xsl:with-param name="color" select="'#990000'"/>
+              <xsl:with-param name="content">
+                <br/>
+                <div align="center">
+                  <b style="font-weight: bold; Color: #990000">
+                    This class has been marked as experimental.
+                  </b>
+                  <br/>
+                  <br/>
+                  Usage is discouraged as long as this tag exists. You may
+                  use this class as it is committed for testing or to
+                  improve the design. However, the API is probably supposed 
+                  to change.                  
+                </div>
+                <br/>
+              </xsl:with-param>
+            </xsl:call-template>
+            <br/>
+          </td>
+        </tr>
+        <xsl:call-template name="embedded-divider"/>
+
 
       <!-- Class purpose -->
       <tr>
