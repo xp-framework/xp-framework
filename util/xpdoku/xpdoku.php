@@ -10,7 +10,7 @@
     'xml.Node',
     'io.File', 
     'io.Folder', 
-    'lang.apidoc.parser.ClassParser',
+    'text.apidoc.parser.ClassParser',
     'text.PHPSyntaxHighlighter',
     'org.cvshome.CVSFile'
   );
