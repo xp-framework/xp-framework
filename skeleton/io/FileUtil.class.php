@@ -23,14 +23,34 @@
      * @access  public
      * @param   &io.File file
      * @return  string file contents
-     * @throws  IOException
-     * @throws  FileNotFoundException
+     * @throws  io.IOException
+     * @throws  io.FileNotFoundException
      */
     function getContents(&$file) {
       $file->open(FILE_MODE_READ);
       $data= $file->read($file->size());
       $file->close();
       return $data;
+    }
+    
+    /**
+     * Set file contents
+     *
+     * <code>
+     *   $bytes_written= FileUtil::setContents(new File('myfile'), 'Hello world');
+     * </code>
+     *
+     * @model   static
+     * @access  public
+     * @param   &io.File file
+     * @return  int filesize
+     * @throws  io.IOException
+     */
+    function setContents(&$file, $data) {
+      $file->open(FILE_MODE_READ);
+      $file->write($data);
+      $file->close();
+      return $file->size();
     }
   }
 ?>
