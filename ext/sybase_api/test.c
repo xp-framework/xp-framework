@@ -32,7 +32,17 @@ static CS_RETCODE CS_PUBLIC servermessage(CS_CONTEXT *context, CS_CONNECTION *co
 
 static CS_RETCODE CS_PUBLIC clientmessage(CS_CONTEXT *context, CS_CONNECTION *connection, CS_CLIENTMSG *message)
 {
-    fprintf(stderr, "Client message: %d %s\n", message->msgnumber, message->msgstring);
+    fprintf(stderr, 
+      "***  Client message #%d, severity %d osnumber %d (%s) state >%s< status %d\n"
+      "     %s\n", 
+      message->msgnumber, 
+      message->severity,
+      message->osnumber,
+      message->osstring,
+      message->sqlstate,
+      message->status,
+      message->msgstring
+    );
     return CS_SUCCEED;
 }
 
