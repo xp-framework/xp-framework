@@ -30,13 +30,20 @@
     }
     
     function &_error() {
-      $this->error= new StdClass();
+      $this->error= &new StdClass();
       $this->error->type= xml_get_error_code($this->parser);
       $this->error->message= xml_error_string($this->error->type);
       $this->error->file= $this->dataSource;
       $this->error->line= xml_get_current_line_number($this->parser);
       $this->error->column= xml_get_current_column_number($this->parser);
-      return $this->error;
+
+      return sprintf(
+        "XML parser error #%d on line %d offset %d: %s",
+	$this->error->type,
+	$this->error->line,
+	$this->error->column,
+	$this->error->message
+      );	
     }
     
     function parse($data) {
@@ -51,7 +58,9 @@
       xml_set_character_data_handler($this->parser, '_pCallCData');
       xml_set_default_handler($this->parser, '_pCallDefault');
 
-      if (!xml_parse($this->parser, $data)) return throw(new FormatException($this->_error()));
+      if (!xml_parse($this->parser, $data)) {
+        return throw(new FormatException($this->_error()));
+      }  	
       return 1;
     }
     
