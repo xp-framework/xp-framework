@@ -108,14 +108,12 @@
   // {{{ void try (void)
   //     Begins a try ... catch block
   function try() {
-    set_error_handler(array('xp', 'error'));
   }
   // }}}
 
   // {{{ bool catch (string name, &lang.Exception e)
   //     Ends a try ... catch block
   function catch($name, &$e) {
-    restore_error_handler();
     $exceptions= &xp::registry('exceptions');
     
     $return= FALSE;
@@ -196,7 +194,7 @@
   ));
   ini_set('include_path', SKELETON_PATH.':'.ini_get('include_path'));
   register_shutdown_function(array('xp', 'destroy'));
-  
+  set_error_handler(array('xp', 'error'));
   xp::registry('errors', array());
   xp::registry('exceptions', array());
 
