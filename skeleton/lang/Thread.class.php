@@ -58,7 +58,8 @@
       $running  = FALSE;
       
     var
-      $_id      = -1;
+      $_id      = -1,
+      $_pid     = -1;
       
     /**
      * Constructor
@@ -125,15 +126,18 @@
         return throw(new IllegalThreadStateException('Already running'));
       }
 
+      $parent= getmypid();
       $pid= pcntl_fork();
       if (-1 == $pid) {     // Cannot fork
         return throw(new SystemException('Cannot fork'));
       } elseif ($pid) {     // Parent
         $this->running= TRUE;
         $this->_id= $pid;
+        $this->_pid= $parent;
       } else {              // Child
         $this->running= TRUE;
         $this->_id= getmypid();
+        $this->_pid= $parent;
         $this->run();
         exit();
       }
@@ -151,7 +155,7 @@
     function join($wait= TRUE) {
       if (0 == pcntl_waitpid($this->_id, $status, $wait ? WUNTRACED : WNOHANG)) return -1;
       $this->running= FALSE;
-      $this->_id= -1;
+      $this->_id= $this->_pid= -1;
       return $status;
     }
     
@@ -164,7 +168,7 @@
     function stop($signal= SIGINT) {
       posix_kill($this->_id, $signal);
       $this->running= FALSE;
-      $this->_id= -1;
+      $this->_id= $this->_pid= -1;
     }
     
     /**
@@ -175,6 +179,16 @@
      */
     function getId() {
       return $this->_id;
+    }
+    
+    /**
+     * Returns thread's parent id
+     *
+     * @access  public
+     * @return  int
+     */
+    function getParentId() {
+      return $this->_pid;
     }
     
     /**
