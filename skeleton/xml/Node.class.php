@@ -144,8 +144,10 @@
       // found, strtok returns the unchanged string. Otherwise the string up to the 
       // illegal character will be returned (or - if the char is the first in the 
       // string, the string excluding the first char will be returned).
-      if (strlen($content) > strlen($p= strtok(' '.$content, XML_ILLEGAL_CHARS) - 1)) {
-        return throw (new XMLFormatException('Content contains illegal character at position '.strlen($p)));
+      if (strlen($content) > ($p= (strlen(strtok(' '.$content, XML_ILLEGAL_CHARS)) - 1))) {
+        return throw (new XMLFormatException(
+          'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
+        ));
       }
       
       $this->content= $content;
