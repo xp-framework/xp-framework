@@ -4,7 +4,12 @@
  * $Id$ 
  */
 
-  uses('peer.Socket', 'peer.sieve.SieveScript');
+  uses(
+    'peer.Socket', 
+    'peer.sieve.SieveScript', 
+    'security.checksum.HMAC_MD5',
+    'security.sasl.DigestChallenge'
+  );
 
   // Authentication methods
   define('SIEVE_SASL_PLAIN',       'PLAIN');
@@ -14,14 +19,14 @@
   define('SIEVE_SASL_CRAM_MD5',    'CRAM-MD5');
 
   // Modules
-  define('SIEVE_MOD_FILEINTO',     'fileinto');
-  define('SIEVE_MOD_REJECT',       'reject');
-  define('SIEVE_MOD_ENVELOPE',     'envelope');
-  define('SIEVE_MOD_VACATION',     'vacation');
-  define('SIEVE_MOD_IMAPFLAGS',    'imapflags');
-  define('SIEVE_MOD_NOTIFY',       'notify');
-  define('SIEVE_MOD_SUBADDRESS',   'subaddress');
-  define('SIEVE_MOD_REGEX',        'regex');
+  define('SIEVE_MOD_FILEINTO',     'FILEINTO');
+  define('SIEVE_MOD_REJECT',       'REJECT');
+  define('SIEVE_MOD_ENVELOPE',     'ENVELOPE');
+  define('SIEVE_MOD_VACATION',     'VACATION');
+  define('SIEVE_MOD_IMAPFLAGS',    'IMAPFLAGS');
+  define('SIEVE_MOD_NOTIFY',       'NOTIFY');
+  define('SIEVE_MOD_SUBADDRESS',   'SUBADDRESS');
+  define('SIEVE_MOD_REGEX',        'REGEX');
 
   /**
    * Sieve is a mail filtering language
@@ -100,7 +105,11 @@
 
             case 'SASL':
             case 'SIEVE':
-              $this->_sinfo[$key]= explode(' ', $value);
+              $this->_sinfo[$key]= explode(' ', strtoupper($value));
+              break;
+            
+            case 'STARTTLS':
+              $this->_sinfo[$key]= TRUE;
               break;
 
             default:
@@ -135,13 +144,14 @@
      * Wrapper that reads the response from the remote host, returning
      * it into an array if not specified otherwise.
      *
-     * Stops reading at one of the terminals "OK" or "NO".
+     * Stops reading at one of the terminals "OK", "NO" or "BYE".
      *
      * @access  protected  
      * @param   bool discard default FALSE
      * @param   bool error default TRUE
      * @return  string[]
      * @throws  lang.FormatException in case "NO" occurs
+     * @throws  peer.SocketException in case "BYE" occurs
      */
     function _response($discard= FALSE, $error= TRUE) {
       $lines= array();
@@ -153,6 +163,8 @@
           break;
         } elseif ('NO' == substr($line, 0, 2)) {
           return $error ? throw(new FormatException(substr($line, 3))) : FALSE;
+        } elseif ('BYE' == substr($line, 0, 3)) {
+          return throw(new SocketException(substr($line, 4)));
         } elseif (!$discard) {
           $lines[]= $line;
         }
@@ -252,6 +264,80 @@
           $this->_sendcmd('{%d+}', strlen($pe));
           $this->_sendcmd($pe);
           break;
+
+        case SIEVE_SASL_DIGEST_MD5:
+          $this->_sendcmd('AUTHENTICATE "DIGEST-MD5"');
+          
+          // Read server challenge. Example (decoded):
+          // 
+          // realm="example.com",nonce="GMybUaOM4lpMlJbeRwxOLzTalYDwLAxv/sLf8de4DPA=",
+          // qop="auth,auth-int,auth-conf",cipher="rc4-40,rc4-56,rc4",charset=utf-8,
+          // algorithm=md5-sess
+          //
+          // See also xp://security.sasl.DigestChallenge
+          $len= $this->_sock->readLine(0x400);
+          $str= base64_decode($this->_sock->readLine());
+          $this->cat && $this->cat->debug('Challenge (length '.$len.'):', $str);
+          try(); {
+            $challenge= &DigestChallenge::fromString($str);
+          } if (catch('FormatException', $e)) {
+            return throw($e);
+          }
+          $this->cat && $this->cat->debug($challenge);
+          
+          // Check for presence of quality of protection "auth"
+          $qop= DC_QOP_AUTH;
+          if (!$challenge->hasQop($qop)) {
+            return throw(new FormatException('Challenge does not contains DC_QOP_AUTH'));
+          }
+
+          // Build the response
+          $cnonce= base64_encode(bin2hex(HMAC_MD5::hash(microtime())));
+          $ncount= '00000001';
+          $digest_uri= 'sieve/'.$this->_sock->host;
+          $a1= bin2hex(HMAC_MD5::hash(sprintf(
+            '%s:%s:%s:%s',
+            HMAC_MD5::hash(utf8_encode($user).':'.utf8_encode($challenge->getRealm()).':'.utf8_encode($pass)),
+            $challenge->getNonce(),
+            $cnonce,
+            utf8_encode($auth)
+          )));
+          $a2= bin2hex(HMAC_MD5::hash(sprintf(
+            'AUTHENTICATE:%s',
+            $digest_uri
+          )));
+          $response= bin2hex(HMAC_MD5::hash(sprintf(
+            '%s:%s:%s:%s:%s:%s',
+            $a1,
+            $challenge->getNonce(),
+            $ncount,
+            $cnonce,
+            $qop,
+            $a2
+          )));
+          
+          // Send it
+          $cmd= sprintf(
+            'charset=utf-8,username="%s",realm="%s",nonce="%s",nc=%s,'.
+            'cnonce="%s",digest-uri="%s",response=%s,qop=%s,authzid="%s"',
+            utf8_encode($user),
+            utf8_encode($challenge->getRealm()),
+            $challenge->getNonce(),
+            $ncount,
+            $cnonce,
+            $digest_uri,
+            $response,
+            $qop,
+            utf8_encode($auth)
+          );
+          $this->cat && $this->cat->debug('Sending challenge response', $cmd);
+          $this->_sendcmd('"%s"', base64_encode($cmd));
+
+          // Finally, read the response auth
+          $len= $this->_sock->readLine();
+          $str= base64_decode($this->_sock->readLine());
+          $this->cat && $this->cat->debug('Response auth (length '.$len.'):', $str);
+          return TRUE;
         
         default:
           return throw(new IllegalArgumentException('Authentication method '.$method.' not implemented'));
@@ -353,6 +439,19 @@
     
     /**
      * Set a specific script as the active one on the server
+     *
+     * A user may have multiple Sieve scripts on the server, yet only one
+     * script may be used for filtering of incoming messages. This is the
+     * active script. Users may have zero or one active scripts and MUST
+     * use the SETACTIVE command described below for changing the active
+     * script or disabling Sieve processing. For example, a user may have
+     * an everyday script they normally use and a special script they use
+     * when they go on vacation. Users can change which script is being
+     * used without having to download and upload a script stored somewhere
+     * else.
+     *
+     * If the script name is the empty string (i.e. "") then any active 
+     * script is disabled.
      *
      * @access  public
      * @param   string name
