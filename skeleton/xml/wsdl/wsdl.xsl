@@ -180,7 +180,6 @@
    !
    ! @type   named
    ! @param  string for
-   ! @param  string indent default '    '
    !-->
   <xsl:template name="arguments">
     <xsl:param name="for"/>
@@ -190,6 +189,36 @@
         <xsl:for-each select="/wsdl:definitions/wsdl:message[@name = substring-after($for, ':')]/wsdl:part">
           <xsl:text>$</xsl:text>
           <xsl:value-of select="@name"/>
+          <xsl:if test="position() &lt; last()"><xsl:text>, </xsl:text></xsl:if>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:for-each select="/wsdl:definitions/wsdl:message[@name = $for]/wsdl:part">
+          <xsl:text>$</xsl:text>
+          <xsl:value-of select="@name"/>
+          <xsl:if test="position() &lt; last()"><xsl:text>, </xsl:text></xsl:if>
+        </xsl:for-each>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <!--
+   ! Template for input value messages
+   !
+   ! @type   named
+   ! @param  string for
+   !-->
+  <xsl:template name="argumentnames">
+    <xsl:param name="for"/>
+    
+    <xsl:choose>
+      <xsl:when test="contains($for, ':')">
+        <xsl:for-each select="/wsdl:definitions/wsdl:message[@name = substring-after($for, ':')]/wsdl:part">
+          <xsl:text>new SOAPNamedItem('</xsl:text>
+          <xsl:value-of select="@name"/>
+          <xsl:text>', $</xsl:text>
+          <xsl:value-of select="@name"/>
+          <xsl:text>')</xsl:text>          
           <xsl:if test="position() &lt; last()"><xsl:text>, </xsl:text></xsl:if>
         </xsl:for-each>
       </xsl:when>
