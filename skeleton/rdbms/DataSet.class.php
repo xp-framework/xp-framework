@@ -80,7 +80,7 @@
   class DataSet extends Object {
     var
       $_changed     = array(),
-      $_peer        = array();
+      $_peer        = NULL;
     
     /**
      * Constructor. Supports the array syntax, where an associative
@@ -95,6 +95,27 @@
         $k= substr(strrchr('#'.$key, '#'), 1);
         $this->{$k}= &$params[$key];
       }
+      $this->_peer= &$this->getPeer();
+    }
+    
+    /**
+     * Sleep function
+     *
+     * @access  magic
+     * @return  string[] names of member to serialize
+     */
+    function __sleep() {
+      $a= get_class_vars(get_class($this));
+      unset($a['_peer']);
+      return array_keys($a);
+    }
+    
+    /**
+     * Wakeup function
+     *
+     * @access  magic
+     */
+    function __wakeup() {
       $this->_peer= &$this->getPeer();
     }
 
