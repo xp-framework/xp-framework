@@ -188,7 +188,7 @@
       try(); {
         $pwd= $this->storage->setBase($params);
       } if (catch('Exception', $e)) {
-        $this->answer($event->stream, 550, $e->getMessage());
+        $this->answer($event->stream, 450, $e->getMessage());
         return;
       }
       $this->answer($event->stream, 200, '"'.$pwd.'" is new working directory');
