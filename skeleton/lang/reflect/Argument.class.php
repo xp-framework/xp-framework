@@ -14,7 +14,8 @@
     var
       $name     = '',
       $type     = '',
-      $optional = FALSE;
+      $optional = FALSE,
+      $default  = NULL;
 
     /**
      * Constructor
@@ -23,11 +24,13 @@
      * @param   string name
      * @param   string type default 'mixed'
      * @param   bool optional default FALSE
+     * @param   string default default NULL
      */    
-    function __construct($name, $type= 'mixed', $optional= FALSE) {
+    function __construct($name, $type= 'mixed', $optional= FALSE, $default= NULL) {
       $this->name= $name;
       $this->type= $type;
       $this->optional= $optional;
+      $this->default= $default;
     }
 
     /**
@@ -50,7 +53,6 @@
       return $this->type;
     }
 
-
     /**
      * Retrieve whether this argument is optional
      *
@@ -59,6 +61,17 @@
      */
     function isOptional() {
       return $this->optional;
+    }
+
+    /**
+     * Get default value as a string ("NULL" for NULL). Returns FALSE if
+     * no default value is set.
+     *
+     * @access  public
+     * @return  string
+     */
+    function getDefault() {
+      return $this->optional ? $this->default : FALSE;
     }
   }
 ?>

@@ -89,7 +89,7 @@
                   ))
                 );
                 preg_match_all(
-                  '/@([a-z]+)\s*([^\r\n ]+) ?([^\r\n ]+)? ?([^\r\n ]+)?/', 
+                  '/@([a-z]+)\s*([^\r\n ]+) ?([^\r\n ]+)? ?([^\r\n]+)?/', 
                   $comment, 
                   $matches, 
                   PREG_SET_ORDER
@@ -105,7 +105,8 @@
                       $apidoc[$class][$m][1][]= &new Argument(
                         $match[3],
                         $match[2],
-                        'default' == @$match[4]
+                        isset($match[4]),
+                        isset($match[4]) ? substr($match[4], 8) : NULL
                       );
                       break;
 
