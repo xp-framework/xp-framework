@@ -57,5 +57,14 @@
      */
     function setLock($uri, &$property) { }
     
+    /**
+     * Retrieve lock for specific URI
+     *
+     * @access  public
+     * @param   string uri  The URI
+     * @return  &org.webdav.WebdavLock
+     */
+    function &getLock($uri) { }
+    
   }
 ?>
