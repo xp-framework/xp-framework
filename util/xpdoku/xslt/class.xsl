@@ -66,6 +66,31 @@
       </tr>
       <xsl:call-template name="embedded-divider"/>
 
+      <xsl:if test="string-length (./comments/class/deprecated) &gt; 0">
+        <tr>
+          <td valign="top" colspan="2">
+            <xsl:call-template name="frame">
+              <xsl:with-param name="color" select="'#990000'"/>
+              <xsl:with-param name="content">
+                <br/>
+                <div align="center">
+                  <b style="font-Weight: bold; Color: #990000">
+                    This class has been marked as deprecated.
+                  </b>
+                  <br/>
+                  <br/>
+                  Usage is discouraged though this class remains in the framework
+                  for backward compatibility.
+                </div>
+                <br/>
+              </xsl:with-param>
+            </xsl:call-template>
+            <br/>
+          </td>
+        </tr>
+        <xsl:call-template name="embedded-divider"/>
+      </xsl:if>
+
       <!-- Class purpose -->
       <tr>
         <td width="1%" valign="top"><img src="/image/anc_detail.gif"/></td>
@@ -83,6 +108,26 @@
                 </code>
               </td>
             </tr>
+            <xsl:if test="string-length (./comments/class/extensions/*) != 0">
+              <tr>
+                <td valign="top">Requires PHP Extension:</td>
+                <td valign="top">
+                  <xsl:for-each select="./comments/class/extensions/*">
+                    <xsl:variable name="tmpnode">
+                      <link>
+                        <scheme>php</scheme>
+                        <host><xsl:value-of select="."/></host>
+                      </link>
+                    </xsl:variable>
+                    <xsl:apply-templates select="$tmpnode"/>
+                    <xsl:if test="position() &lt; count (../*)">
+                      ,
+                    </xsl:if>
+                  </xsl:for-each>
+                </td>
+                
+              </tr>
+            </xsl:if>
             <tr>
               <td valign="top">Purpose:</td>
               <td valign="top">
