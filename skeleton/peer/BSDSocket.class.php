@@ -9,16 +9,18 @@
   /**
    * BSDSocket implementation
    *
-   * @see	php://sockets
+   * @purpose  Provide an interface to the BSD sockets                    
+   * @see      php://sockets                                              
+   * @see      http://www.developerweb.net/sock-faq/ The UNIX Socket FAQ  
+   * @ext      sockets                                                    
    */
   class BSDSocket extends Socket {
   
     /**
      * Get last error
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string error
      */  
     function getLastError() {
       return sprintf('%d: %s', $e= socket_last_error($this->_sock), socket_strerror($e));
