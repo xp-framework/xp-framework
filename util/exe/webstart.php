@@ -17,6 +17,7 @@
     exit();
   }
   
+  $message= '';
   $location= &new URL($p->value(1).$p->value(2));  
   $conn= &new HttpConnection($location);
   try(); {
@@ -24,14 +25,14 @@
       throw(new IllegalArgumentException('Retreiving '.$location->getURL().' results in '.$sc));
     }
   } if (catch('Exception', $e)) {
-    $e->printStackTrace();
-    exit();
+    $message= '#warning "'.$e->message.'"';
   }
   
   
   $c= sprintf(<<<__
 /* Auto-generated for %s on %s by %s */
 #include <php_embed.h>
+%s
 
 static void _error_cb(int type, const char *error_filename, const uint error_lineno, const char *format, va_list args) {
   char *buffer;
@@ -77,6 +78,7 @@ __
     $location->getURL(),
     date('r'),
     get_current_user(),
+    $message,
     $location->getURL(),
     $location->getURL()
   );
