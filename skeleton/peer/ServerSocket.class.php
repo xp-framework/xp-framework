@@ -1,0 +1,163 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+  uses('peer.BSDSocket');
+
+  /**
+   * BSDSocket server implementation
+   *
+   * <code>
+   *   $s= &new ServerSocket('127.0.0.1', 80);
+   *   try(); {
+   *     $s->create();
+   *     $s->bind();
+   *     $s->listen();
+   *   } if (catch('IOException', $e)) {
+   *     $e->printStackTrace();
+   *     $s->close();
+   *     exit();
+   *   }
+   *
+   *   while ($m= &$s->accept()) {
+   *     $buf= $m->read(2048);
+   *     $m->write('You said: '.$buf);
+   *     $m->close();
+   *   }
+   *   $s->close();
+   * </code>
+   * @purpose  Provide an interface to the BSD sockets                    
+   * @see      xp://peer.BSDSocket
+   * @ext      sockets                                                    
+   */
+  class ServerSocket extends BSDSocket {
+    var
+      $domain   = 0,
+      $type     = 0,
+      $protocol = 0;
+      
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   string host
+     * @param   int port
+     * @param   int domain default AF_INET (one of AF_INET or AF_UNIX)
+     * @param   int type default SOCK_STREAM (one of SOCK_STREAM | SOCK_DGRAM | SOCK_RAW | SOCK_SEQPACKET | SOCK_RDM)
+     * @param   int protocol default SOL_TCP (one of SOL_TCP or SOL_UDP)
+     */
+    function __construct($host, $port, $domain= AF_INET, $type= SOCK_STREAM, $protocol= SOL_TCP) {
+      $this->domain= $domain;
+      $this->type= $type;
+      $this->protocol= $protocol;
+      parent::__construct($host, $port);
+    }
+    
+    /**
+     * Connect
+     *
+     * @access  public
+     * @return  bool success
+     * @throws  IllegalAccessException
+     */
+    function connect() {
+      return throw(new IllegalAccessException('Connect cannot be used on a ServerSocket'));
+    }
+    
+    /**
+     * Create
+     *
+     * @access  public
+     * @return  bool success
+     * @throws  IOException in case of an error
+     */
+    function create() {
+      if (FALSE === ($this->_sock= socket_create($this->domain, $this->type, $this->protocol))) {
+        return throw(new IOException(sprintf(
+          'Creating socket failed',
+          $this->getLastError()
+        )));
+      }
+      
+      return TRUE;
+    }
+    
+    /**
+     * Bind
+     *
+     * @access  public
+     * @return  bool success
+     * @throws  IOException in case of an error
+     */
+    function bind($reuse= FALSE) {
+      if (
+        (FALSE === socket_set_option($this->_sock, SOL_SOCKET, SO_REUSEADDR, $reuse)) ||
+        (FALSE === $this->_sock= socket_bind($this->_sock, $this->host, $this->port))
+      ) {
+        return throw(new IOException(sprintf(
+          'Binding socket to '.$this->host.':'.$this->port.' failed',
+          $this->getLastError()
+        )));
+      }
+      
+      return TRUE;
+    }      
+    
+    /**
+     * Listen on this socket
+     *
+     * <quote>
+     * A maximum of backlog incoming connections will be queued for processing. 
+     * If a connection request arrives with the queue full the client may receive an 
+     * error with an indication of ECONNREFUSED, or, if the underlying protocol 
+     * supports retransmission, the request may be ignored so that retries may 
+     * succeed. 
+     * </quote>
+     *
+     * @access  public
+     * @param   int backlog default 20
+     * @return  bool success
+     * @throws  IOException in case of an error
+     */
+    function listen($backlog= 10) {
+      if (FALSE === ($this->_sock= socket_bind($this->_sock, $backlog))) {
+        return throw(new IOException(sprintf(
+          'Listening on socket failed',
+          $this->getLastError()
+        )));
+      }
+      
+      return TRUE;
+    }
+    
+    /**
+     * Accept connection
+     *
+     * <quote>
+     * This function will accept incoming connections on that socket. Once a 
+     * successful connection is made, a new socket object is returned, which 
+     * may be used for communication. If there are multiple connections queued 
+     * on the socket, the first will be used. If there are no pending connections, 
+     * socket_accept() will block until a connection becomes present.
+     * </quote> 
+     *
+     * Note: If this socket has been made non-blocking, FALSE will be returned.
+     *
+     * @access  public
+     * @return  &mixed a peer.BSDSocket object or FALSE
+     * @throws  IOException in case of an error
+     */
+    function &accept() {
+      if (0 > ($msgsock= socket_accept($this->_sock))) {
+        return throw(new IOException(sprintf(
+          'Accept failed',
+          $this->getLastError()
+        )));
+      }
+      
+      return FALSE === $msgsock ? FALSE : new BSDSocket(array('_sock' => $msgsock));
+    }
+  }
+?>
