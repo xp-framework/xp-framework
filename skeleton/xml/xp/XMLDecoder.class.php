@@ -86,8 +86,8 @@
       
       try(); {
         do {
-          if (!FileUtil::getContents($this->file)) break;
-          if (!$tree->fromString($buf)) break;
+          if (!($buf= FileUtil::getContents($this->file))) break;
+          if (!($tree->fromString($buf))) break;
           $name= ClassLoader::loadClass($tree->root->attribute['class']);
         } while (0);
       } if (catch('Exception', $e)) {
