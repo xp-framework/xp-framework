@@ -55,7 +55,11 @@
      * @return  bool TRUE to indicate success
      */
     function rename($target) { 
-      return $this->f->move($target);
+      return $this->f->move(
+        dirname($this->f->getURI()).
+        DIRECTORY_SEPARATOR.
+        $target
+      );
     }
 
     /**
