@@ -43,12 +43,15 @@
      * Set boundary and updates Content-Type header. Note: A boundary is generated 
      * upon instanciation, so this is usually not needed!
      *
+     * Also sets the charset to an empty string.
+     *
      * @access  public
      * @param   string b the new boundary
      */
     function setBoundary($b) {
       $this->boundary= $b;
       $this->contenttype= 'multipart/alternative; boundary="'.$this->boundary.'"';
+      $this->charset= '';
     }
 
     /**
