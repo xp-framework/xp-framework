@@ -331,6 +331,13 @@
       $this->_data[$section][$key]= $value;
     }
     
+    /**
+     * Einen Kommentar hinzifügen
+     *
+     * @access  public
+     * @param   string section Name der Sektion
+     * @param   string comment Kommentar
+     */
     function writeComment($section, $comment) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
