@@ -80,7 +80,7 @@
           implement this interface, ensuring that <tt>toString</tt>, <tt>getClass</tt>, 
           <tt>getClassName</tt>, <tt>hashCode</tt> and <tt>equals</tt> exist.
           <br/>
-          See also <ref type="ext" link="http://cvs.xp-framework.net/horde/chora/co.php/experiments/skeleton2/lang/Throwable.class.php?r=1.5">this CVS log message</a> 
+          See also <ref type="ext" link="http://cvs.xp-framework.net/horde/chora/co.php/experiments/skeleton2/lang/Throwable.class.php?r=1.5">this CVS log message</ref> 
           describing the mess. It also points to the archived messages concerning the discussion 
           about this on the PHP developer's mailing list.
         </text>
