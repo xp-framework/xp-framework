@@ -16,6 +16,7 @@
     'org.apache.HttpScriptletRequest',
     'org.apache.HttpScriptletResponse',
     'org.apache.HttpScriptletException',
+    'org.apache.HttpSessionInvalidException',
     'org.apache.HttpSession'
   );
   
@@ -330,7 +331,7 @@
           $this->request->session->initialize($this->request->getSessionId());
           $valid= $this->request->session->isValid();
         } if (catch('Exception', $e)) {
-          return throw(new HttpScriptletException(
+          return throw(new HttpSessionInvalidException(
             'Session initialize failed: '.$e->message,
             HTTP_BAD_REQUEST
           ));
