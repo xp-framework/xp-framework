@@ -101,7 +101,7 @@
      * @return  string
      */
     function toString() {
-      return $this->getClassName().'@'.serialize($this);
+      return $this->getClassName().'@'.var_export($this, 1);
     }
   }
 ?>
