@@ -42,12 +42,16 @@ ifeq ($(at),)
 	cvs update -dP 
 	cd .. 
 	tar cvfz $(TARGET)downloads/xp-`date +%Y-%m-%d`.tar.gz --exclude=CVS xp
+	cd $(TARGET)downloads/
+	ln -s xp-`date +%Y-%m-%d`.tar.gz xp-current.tar.gz
 else
 	ssh $(at) \
 	  cd $(XPROOT) \; \
 	  cvs update -dP \; \
 	  cd .. \; \
-	  tar cvfz $(TARGET)downloads/xp-`date +%Y-%m-%d`.tar.gz --exclude=CVS xp
+	  tar cvfz $(TARGET)downloads/xp-`date +%Y-%m-%d`.tar.gz --exclude=CVS xp \; \
+	  cd $(TARGET)downloads/ \; \
+	  ln -s xp-`date +%Y-%m-%d`.tar.gz xp-current.tar.gz
 endif
 
 cvshist:
