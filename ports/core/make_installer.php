@@ -6,6 +6,7 @@
   require('lang.base.php');
   uses(
     'io.File',
+    'io.Folder',
     'util.cmd.ParamString'
   );
 
@@ -15,19 +16,24 @@
   printf("===> Init <installer> in %s\n", $base);
   
   // Open CCA
-  $file= &new File($base.'port.cca');
-  try(); {
-    $file->open(FILE_MODE_READ);
-  } if (catch('Exception', $e)) {
-    printf("*** Error: Cannot open port.cca (%s)\n", $e->getStackTrace());
-    exit();
-  }
+  $d= &new Folder($base);
+  while ($e= $d->getEntry()) {
+    if ('.cca' != substr($e, -4)) continue;
+    
+    printf("---> Processing %s\n", $e);
+    $file= &new File($d->uri.$e);
+    try(); {
+      $file->open(FILE_MODE_READ);
+    } if (catch('Exception', $e)) {
+      printf("*** Error: Cannot open CCA (%s)\n", $e->getStackTrace());
+      continue;
+    }
 
-  // Create SFX
-  $sfx= &new File($base.'installer.php');
-  try(); {
-    $sfx->open(FILE_MODE_WRITE);
-    $sfx->write('<?php
+    // Create SFX
+    $sfx= &new File($d->uri.'install_'.substr($e, 0, -4).'.php');
+    try(); {
+      $sfx->open(FILE_MODE_WRITE);
+      $sfx->write('<?php
   if (!isset($_SERVER["argv"][1])) {
     exit(sprintf("Usage: %s <install_dir>\n", $_SERVER["argv"][0]));
   }
@@ -62,18 +68,17 @@
 /*
 __DATA__
 ');
-    $sfx->write($file->read($file->size()));
-    $sfx->write('*/
-?>');
-    
-    $sfx->close();
-  } if (catch('Exception', $e)) {
-    printf("*** Error: SFX creation failed (%s)\n", $e->getStackTrace());
-    @$file->unlink();
-    $sfx->unlink();
-    exit;
-  }
+      $sfx->write($file->read($file->size()));
+      $sfx->write('*/ ?>');
 
+      $sfx->close();
+    } if (catch('Exception', $e)) {
+      printf("*** Error: SFX creation failed (%s)\n", $e->getStackTrace());
+      @$file->unlink();
+      $sfx->unlink();
+      continue;
+    }
+  }
   printf("===> Finished <installer>\n");
   // }}}
 ?>
