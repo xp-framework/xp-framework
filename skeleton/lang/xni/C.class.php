@@ -38,6 +38,7 @@
    * </code>
    *
    * @purpose  Provide inline C functionality
+   * @experimental
    */
   class C extends Object {
   

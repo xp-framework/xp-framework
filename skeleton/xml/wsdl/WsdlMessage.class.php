@@ -19,6 +19,7 @@
    *
    * @see http://www.w3.org/TR/wsdl#_messages
    * @see xml.soap.wsdl.WsdlDocument#addMessage
+   * @experimental
    */
   class WsdlMessage extends Object {
     var 

@@ -66,6 +66,7 @@
    * </code>
    *
    * @purpose  WSDL
+   * @experimental
    */
   class WsdlDocument extends Tree {
     var 

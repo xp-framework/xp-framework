@@ -9,6 +9,7 @@
    *
    * @see      xp://peer.server.Server#service
    * @purpose  Event
+   * @experimental
    */
   class ConnectionEvent extends Object {
     var

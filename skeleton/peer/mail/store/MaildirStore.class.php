@@ -16,6 +16,7 @@
    * @see http://cr.yp.to/proto/maildir.html
    * @see http://www.courier-mta.org/maildir.html
    * @purpose Incarnation of abstract class MailStore for Maildir
+   * @experimental
    */
   class MaildirStore extends MailStore {
     var 

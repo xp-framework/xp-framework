@@ -31,6 +31,7 @@
    * @ext      sockets
    * @see      xp://peer.ServerSocket
    * @purpose  TCP/IP Server
+   * @experimental
    */
   class Server extends Object {
     var

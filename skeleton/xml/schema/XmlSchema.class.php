@@ -44,6 +44,7 @@
    * @see      http://www.w3.org/TR/xmlschema-1
    * @see      http://www.w3.org/TR/xmlschema-1/#concepts-data-model
    * @purpose  XMLSchema
+   * @experimental
    */
   class XmlSchema extends Object {
     var

@@ -27,6 +27,7 @@
    *
    * @see http://www.w3.org/TR/xmlschema-1/#Simple_Type_Definition
    * @see http://www.w3.org/TR/xmlschema-1/#Complex_Type_Definition
+   * @experimental
    */
   class XmlSchemaStructure extends Object {
     var 
