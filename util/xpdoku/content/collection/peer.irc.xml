@@ -13,7 +13,7 @@
       
       <box caption="Note:">
         An example bot can be found at 
-        <a href="http://sitten-polizei.de/krokerdil">http://sitten-polizei.de/krokerdil</a>
+        <ref type="ext" link="http://sitten-polizei.de/krokerdil"/>
       </box>
     </text>
   </para>
