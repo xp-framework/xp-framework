@@ -107,10 +107,43 @@
      * Retrieves resultElements
      *
      * @access  public
-     * @return  mixed (typens:ResultElementArray) 
+     * @return  com.google.soap.search.ResultElement[]
      */
     function getResultElements() {
       return $this->resultElements;
+    }
+
+    /**
+     * Retrieves number of resultElements
+     *
+     * @access  public
+     * @return  int
+     */
+    function numResultElements() {
+      return sizeof($this->resultElements);
+    }
+
+    /**
+     * Retrieves whether there is at least one result element
+     *
+     * @access  public
+     * @return  bool
+     */
+    function hasResultElements() {
+      return !empty($this->resultElements);
+    }
+
+    /**
+     * Retrieves resultElement at a given position. Returns NULL if the
+     * position specified is out of range.
+     *
+     * @access  public
+     * @param   int pos
+     * @return  &com.google.soap.search.ResultElement
+     */
+    function &getResultElement($pos) {
+      if (!isset($this->resultElements[$pos])) return NULL;
+      return $this->resultElements[$pos];
     }
 
     /**
@@ -207,17 +240,50 @@
      * Retrieves directoryCategories
      *
      * @access  public
-     * @return  mixed (typens:DirectoryCategoryArray) 
+     * @return  com.google.soap.search.DirectoryCategory[]
      */
     function getDirectoryCategories() {
       return $this->directoryCategories;
     }
 
     /**
+     * Retrieves number of directoryCategories
+     *
+     * @access  public
+     * @return  int
+     */
+    function numDirectoryCategories() {
+      return sizeof($this->directoryCategories);
+    }
+
+    /**
+     * Retrieves whether there is at least one directory category
+     *
+     * @access  public
+     * @return  bool
+     */
+    function hasDirectoryCategories() {
+      return !empty($this->directoryCategories);
+    }
+
+    /**
+     * Retrieves directoryCategoriy at a given position. Returns NULL if the
+     * position specified is out of range.
+     *
+     * @access  public
+     * @param   int pos
+     * @return  &com.google.soap.search.DirectoryCategory
+     */
+    function &getDirectoryCategory($pos) {
+      if (!isset($this->directoryCategories[$pos])) return NULL;
+      return $this->directoryCategories[$pos];
+    }
+
+    /**
      * Sets directoryCategories
      *
      * @access  public
-     * @param   mixed (typens:DirectoryCategoryArray) directoryCategories
+     * @param   com.google.soap.search.DirectoryCategory[] directoryCategories
      */
     function setDirectoryCategories($directoryCategories) {
       $this->directoryCategories= $directoryCategories;
@@ -241,6 +307,40 @@
      */
     function setSearchTime($searchTime) {
       $this->searchTime= $searchTime;
+    }
+    
+    /**
+     * Create string representation
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return sprintf(
+        "%s(%d-%d/%s%.0f){\n".
+        "  [searchQuery        ] %s\n".
+        "  [searchTime         ] %.f seconds\n".
+        "  [searchComments     ] %s\n".
+        "  [searchTips         ] %s\n".
+        "  [documentFiltering  ] %s\n".
+        "  [directoryCategories] (%d)%s\n".
+        "  [resultElements     ] (%d)%s\n".
+        "}",
+        $this->getClassName(),
+        $this->startIndex,
+        $this->endIndex,
+        $this->estimatIsExact ? '' : '~',
+        $this->estimatedTotalResultsCount,
+        $this->searchQuery,
+        $this->searchTime,
+        $this->searchComments,
+        $this->searchTips,
+        var_export($this->documentFiltering, 1),
+        $this->numDirectoryCategories(),
+        $this->hasDirectoryCategories() ? var_export($this->directoryCategories, 1) : '',
+        $this->numResultElements(),
+        $this->hasResultElements() ? var_export($this->resultElements, 1) : ''
+      );
     }
   }
 ?>
