@@ -94,6 +94,7 @@
       }
       
       $this->clearChanged();
+      unset($arg);
     }
     
     /**
@@ -122,6 +123,6 @@
      */
     function hasChanged() {
       return $this->_changed;
-    }    
+    }
   }
 ?>
