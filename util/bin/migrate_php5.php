@@ -101,7 +101,8 @@ __;
       case 'uses':
         while (')' !== $tok[1]) {
           if (T_CONSTANT_ENCAPSED_STRING === $tok[0]) {
-            $uses[]= (isset($map[$tok[1]]) ? $map[$tok[1]] : $tok[1]);
+            $name= trim($tok[1], '"\'');
+            $uses[]= "'".(isset($map[$name]) ? $map[$name] : $name)."'";
           }
           $tok= $t->getNextToken();
         }
@@ -111,7 +112,10 @@ __;
 
       case 'implements':
         while (')' !== $tok[1]) {
-          if (T_CONSTANT_ENCAPSED_STRING === $tok[0]) $implements[]= $tok[1];
+          if (T_CONSTANT_ENCAPSED_STRING === $tok[0]) {
+            $name= trim($tok[1], '"\'');
+            $implements[]= "'".(isset($map[$name]) ? $map[$name] : $name)."'";
+          }
           $tok= $t->getNextToken();
         }
         $tok= $t->getNextToken(); // Swallow ";"
