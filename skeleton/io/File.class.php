@@ -98,7 +98,7 @@
         ($mode== FILE_MODE_READ) && 
         (!$this->exists())
       ) return throw(new FileNotFoundException($this->uri));
-      $this->_fd= @fopen($this->uri, $this->mode);
+      $this->_fd= fopen($this->uri, $this->mode);
       if (!$this->_fd) return throw(new IOException('cannot open '.$this->uri.' mode '.$this->mode));
     }
     
@@ -136,7 +136,7 @@
      */
     function truncate($size= 0) {
       if (!isset($this->_fd)) return throw(new IllegalStateException('no file open'));
-      $return= @ftruncate($this->_fd, $size);
+      $return= ftruncate($this->_fd, $size);
       if (FALSE === $return) return throw(new IOException('cannot truncate file '.$this->uri));
       return $return;
     }
@@ -193,9 +193,9 @@
      */
     function readLine($bytes= 4096) {
       if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
-      $result= chop(@fgets($this->_fd, $bytes));
-      if ($result === FALSE) {
-        return throw(new IOException('cannot read '.$bytes.' bytes from '.$this->uri));
+      $result= chop(fgets($this->_fd, $bytes));
+      if (is_error() && $result === FALSE) {
+        return throw(new IOException('readLine() cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
@@ -209,9 +209,9 @@
      */
     function readChar() {
       if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
-      $result= @fgetc($this->_fd);
-      if (!$result) {
-        return throw(new IOException('cannot read '.$bytes.' bytes from '.$this->uri));
+      $result= fgetc($this->_fd);
+      if (is_error() && $result === FALSE) {
+        return throw(new IOException('readChar() cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
@@ -226,9 +226,9 @@
      */
     function gets($bytes= 4096) {
       if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
-      $result= @fgets($this->_fd, $bytes);
-      if ($result === FALSE) {
-        return throw(new IOException('cannot read '.$bytes.' bytes from '.$this->uri));
+      $result= fgets($this->_fd, $bytes);
+      if (is_error() && $result === FALSE) {
+        return throw(new IOException('gets() cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
@@ -243,9 +243,9 @@
      */
     function read($bytes= 4096) {
       if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
-      $result= @fread($this->_fd, $bytes);
-      if ($result === FALSE) {
-        return throw(new IOException('cannot read '.$bytes.' bytes from '.$this->uri));
+      $result= fread($this->_fd, $bytes);
+      if (is_error() && $result === FALSE) {
+        return throw(new IOException('read() cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
@@ -259,8 +259,8 @@
      */
     function write($string) {
       if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
-      $result= @fwrite($this->_fd, $string);
-      if (!$result) {
+      $result= fwrite($this->_fd, $string);
+      if (is_error() && $result === FALSE) {
         throw(new IOException('cannot write '.strlen($string).' bytes to '.$this->uri));
       }
       return $result;
@@ -275,8 +275,8 @@
      */
     function writeLine($string) {
       if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
-      $result= @fputs($this->_fd, $string."\n");
-      if (!$result) {
+      $result= fputs($this->_fd, $string."\n");
+      if (is_error() && $result === FALSE) {
         throw(new IOException('cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
       }
       return $result;
