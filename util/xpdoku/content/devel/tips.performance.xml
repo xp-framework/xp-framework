@@ -33,8 +33,27 @@
           <code><![CDATA[  foreach (array_keys($objects) as $idx) {
     $o= &$objects[$idx];
     $o->doSomething();
+    
+    // Alternatively, without the need for a temporary variable
+    $objects[$idx]->doSomething();
   }
 ]]></code>          
+        </text>
+      </para>
+      <para>
+        <caption>Trimming trailing set of characters off a string</caption>
+        <text>
+          Often, it can be necessary to get rid of extraneous characters at the
+          end of a string. In particular, when concatenating directories and
+          filenames, where the directory's name may or may not contain a trailing
+          slash, and <tt>//</tt> should not appear (though it will work), the 
+          following tip may come in handy:
+          <code><![CDATA[  // Don't do this:
+  while (substr($str, -1) == '/') $str= substr($str, 0, -1);
+  
+  // Instead, use the following:
+  $str= rtrim($str, '/');
+]]></code>
         </text>
       </para>
       <para>
