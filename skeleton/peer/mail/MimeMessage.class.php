@@ -18,63 +18,63 @@
    * one may use a construct as follows:
    *
    * <code>
-   * uses (
-   *   'peer.mail.MultiPart',
-   *   'peer.mail.MimeMessage',
-   *   'peer.mail.InternetAddress',
-   *   'io.FileUtil',
-   *   'io.File',
-   *   'util.MimeType'
-   * );
+   *   uses (
+   *     'peer.mail.MultiPart',
+   *     'peer.mail.MimeMessage',
+   *     'peer.mail.InternetAddress',
+   *     'io.FileUtil',
+   *     'io.File',
+   *     'util.MimeType'
+   *   );
    * 
-   * $message= &new MimeMessage();
-   * $message->setFrom(new InternetAddress('alex.kiesel@xp-framework.net'));
-   * $message->addRecipient(TO, new InternetAddress('timm.friebe@xp-framework.net'));
+   *   $message= &new MimeMessage();
+   *   $message->setFrom(new InternetAddress('alex.kiesel@xp-framework.net'));
+   *   $message->addRecipient(TO, new InternetAddress('timm.friebe@xp-framework.net'));
    * 
-   * $message->setSubject('HTML Mail');
+   *   $message->setSubject('HTML Mail');
    * 
-   * // MultiPart containing the text/plain and text/html parts
-   * $mime= &new MultiPart();
+   *   // MultiPart containing the text/plain and text/html parts
+   *   $mime= &new MultiPart();
    * 
-   * // Create the image
-   * $imageUrl= 'attention.gif';
-   * $image= &new MimePart();
-   * $image->setDisposition(MIME_DISPOSITION_INLINE);
-   * $image->setEncoding(MIME_ENC_BASE64);
-   * $image->setFilename(NULL);
-   * $image->setName(NULL);
-   * $image->setBody(
-   *   chunk_split(base64_encode(FileUtil::getContents(new File($imageUrl)))), 
-   *   TRUE);
-   * $image->setContentType(MimeType::getByFilename($imageUrl));
-   * $image->charset= '';
-   * $image->generateContentId();
+   *   // Create the image
+   *   $imageUrl= 'attention.gif';
+   *   $image= &new MimePart();
+   *   $image->setDisposition(MIME_DISPOSITION_INLINE);
+   *   $image->setEncoding(MIME_ENC_BASE64);
+   *   $image->setFilename(NULL);
+   *   $image->setName(NULL);
+   *   $image->setBody(
+   *     chunk_split(base64_encode(FileUtil::getContents(new File($imageUrl)))), 
+   *     TRUE);
+   *   $image->setContentType(MimeType::getByFilename($imageUrl));
+   *   $image->charset= '';
+   *   $image->generateContentId();
    * 
-   * // Create text/plain part
-   * $text= &new MimePart(
-   *   'Your mail client is not able to display html messages.', 
-   *   'text/plain'
-   * );
-   * $text->setDisposition(MIME_DISPOSITION_INLINE);
+   *   // Create text/plain part
+   *   $text= &new MimePart(
+   *     'Your mail client is not able to display html messages.', 
+   *     'text/plain'
+   *   );
+   *   $text->setDisposition(MIME_DISPOSITION_INLINE);
    * 
-   * // Create text/html part (images must be referred to by their content-id)
-   * $html= &new MimePart(sprintf (
-   *     '<html><body><h1>You see html.</h1><img src="%s" border="0"/></body></html>', 
-   *     'cid:'.$image->getContentId()
-   *   ),
-   *   'text/html'
-   * );
-   * $html->setDisposition(MIME_DISPOSITION_INLINE);
+   *   // Create text/html part (images must be referred to by their content-id)
+   *   $html= &new MimePart(sprintf (
+   *       '<html><body><h1>You see html.</h1><img src="%s" border="0"/></body></html>',
+   *       'cid:'.$image->getContentId()
+   *     ),
+   *     'text/html'
+   *   );
+   *   $html->setDisposition(MIME_DISPOSITION_INLINE);
    * 
-   * // Add to the multipart
-   * $mime->addPart($text);
-   * $mime->addPart($html);
+   *   // Add to the multipart
+   *   $mime->addPart($text);
+   *   $mime->addPart($html);
    * 
-   * $message->addPart($mime);
-   * $message->addPart($image);
+   *   $message->addPart($mime);
+   *   $message->addPart($image);
    * 
-   * // This is very important to not see the image as an attachment
-   * $message->setContentType('multipart/related; type="multipart/alternative"');
+   *   // This is very important to not see the image as an attachment
+   *   $message->setContentType('multipart/related; type="multipart/alternative"');
    * </code>
    *
    * @purpose  MimeMessage class
