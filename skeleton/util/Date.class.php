@@ -53,6 +53,7 @@
       } elseif (is_null($in)) {
         $this->_utime(time());
       } else {
+        $this->_utime(time());
         throw(new IllegalArgumentException(
           'Given argument is neither a timestamp nor a well-formed timestring'
         ));
