@@ -36,14 +36,30 @@
     }
 
     /**
-     * Private helper function
-     * kuerzt einen Pfad
+     * Make some magic with the path
      *
      * @access  private
-     * @param   string path
-     * @return  string path
+     * @param   string path The path
+     * @return  string
      */
+    function _normalizePath($path){      
+      $p= preg_replace('#//#','/', $path);
+      $p= preg_replace('#/\./#','/', $p);
+      $p= preg_replace('#[^/]+/\.\./#','', $p);
+      $p= preg_replace('#//#','/', $p);
+      $p= preg_replace('#/$#','', $p);
+      return $p;
+      
+    }
 
+    /**
+     * Encode the parts of a path (e.g. "/Test Folder/file.txt" -> "/Text%20File/file.txt")
+     *
+     * @access  private
+     * @param   string path                The path
+     * @param   bool   davDisplaynameStyle Flag which indicates that the path should be transformed for display
+     * @return  string
+     */
     function _urlencodePath($path, $davDisplaynameStyle= 0){
       $p= explode('\/', $this->_normalizePath($path));
       $ret= '';
