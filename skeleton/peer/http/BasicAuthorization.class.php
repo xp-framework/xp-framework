@@ -56,7 +56,7 @@
      * @return  string
      */    
     function getPassword() {
-      return $this->password;
+      return $this->pass;
     }
     
     /**
