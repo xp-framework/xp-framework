@@ -17,35 +17,35 @@
    * @see   xp://xml.Node
    */
   class SOAPNode extends Node {
-    var $_tmap, $_cmap;
-    var $namespace= 'ctl';
+    var 
+      $namespace= 'ctl';
     
     /**
-     * Constructor
+     * Get type name by content
      *
-     * @access  public
-     * @param   mixed* args
-     * @see     xp://xml.Node#__construct
+     * @access  private
+     * @param   &mixed content
+     * @return  string typename, e.g. "xsd:string"
      */
-    function __construct() {
-      $args= func_get_args();
-      parent::__construct($args);
-      
-      $this->_tmap= new StdClass();
-      $this->_tmap->export= array(                      
+    function _typeName(&$content) {
+      static $tmap= array(      // Mapping PHP-typename => SOAP-typename
         'double'        => 'float',
         'integer'       => 'int'
       );
-      $this->_tmap->import= array_flip($this->_tmap->export);
-    }
-    
-    function _typeName($content) {
+      
       $t= gettype($content);
-      if (isset($this->_tmap->export[$t])) $t= $this->_tmap->export[$t];
+      if (isset($tmap[$t])) $t= $tmap[$t];
       return 'xsd:'.$t;
     }
     
-    function _contentFormat($content) {
+    /**
+     * Format content
+     *
+     * @access  private
+     * @param   &mixed content
+     * @return  &mixed content, formatted, if necessary
+     */
+    function &_contentFormat(&$content) {
       switch (gettype($content)) {
         case 'boolean': return $content ? 'true' : 'false';
         case 'string': return htmlspecialchars($content);
@@ -61,6 +61,11 @@
      * @return  &mixed data
      */
     function &getContent($encoding= NULL) {
+      static $tmap= array(      // Mapping SOAP-typename => PHP-typename
+        'float'     => 'double',
+        'int'       => 'integer'
+      );
+
       $ret= $this->content;
       @list($ns, $t)= explode(':', @$this->attribute['xsi:type']);
       
@@ -82,9 +87,9 @@
           return new Date(str_replace('T', ' ', $ret));
           break;
       }        
-      if (isset($this->_tmap->import[$t])) $t= $this->_tmap->import[$t];
+      if (isset($tmap[$t])) $t= $tmap[$t];
 
-      // TODO: Andere Encodings?
+      // Decode if necessary
       switch (strtolower($encoding)) {
         case 'utf-8': $ret= utf8_decode($ret); break;
       }
@@ -98,6 +103,13 @@
       return $ret; 
     }
     
+    /**
+     * Recurse an array
+     *
+     * @access  private
+     * @param   &mixed elemt
+     * @param   array arr
+     */
     function _recurseArray(&$elem, $arr) {
       static $ns;
 
