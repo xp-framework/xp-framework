@@ -1,0 +1,117 @@
+RFC 0016: Metadata for PHP4
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Thu Feb 10 22:15:02 CET 2005
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+Annotations (metadata) may be embedded within the sourcecode using
+the @ sign to prefix them.
+
+Rationale
+---------
+This feature will be useful to mark test methods in the Unit Test API
+(instead of relying on the "test" prefix), the webservices APIs (XML-RPC 
+and SOAP) for marking methods as remotely callable as well as the new
+and yet unimplemented application server (using annotations there 
+instead of implementing marker interfaces such as "SessionBean" or
+"EntityBean" - see also the EJB 3.0 specs).
+
+Functionality
+-------------
+The syntax will be almost the same as in the patched PHP (see related
+documents below for definitions) but will make use of the "#" sign (so
+that effectively, the annotations are comments.
+
+Example #1: Webservices API
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  #[@webservice(name= 'Customer')]
+  class CustomerHandler extends Object {
+  
+    #[@webmethod]
+    function getByCustomerId($customerId) {
+      // ...
+    }
+
+    #[@webmethod, @restricted(role= 'admin')]
+    function sendMessage($customerId, &$message) {
+      // ...
+    }
+  }
+?>
+
+Example #2: Unit test API
+~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  class ParserTest extends TestCase {
+  
+    #[@test]
+    function tokenOrder() {
+      // ...
+    }
+  }
+?>
+
+Reflection
+~~~~~~~~~~
+The reflection API offers the following ways to retrieve these
+annotations:
+
+- array lang.reflect.Method::getAnnotations()
+  Returns an associative array of annotation names and their 
+  values.
+  
+  Example (for CustomerHandler::sendMessage):
+</pre>
+  array(2) {
+    ["webmethod"]=>
+    NULL
+    ["remote"]=>
+    array(1) {
+      ["role"]=>
+      string(5) "admin"
+    }
+  }
+</pre>
+
+- mixed lang.reflect.Method::getAnnotation($name [, $key])
+  Returns the annotation's value specified by name. Throws a 
+  lang.ElementNotFoundException in case the annotation is not found
+  
+- bool lang.reflect.Method::hasAnnotation($name [, $key])
+  Allows you to check if a annotation exists
+
+Dependencies
+------------
+The APIdoc parser and the reflection API will need to be changed to
+recognize these comments.
+
+Related documents
+-----------------
+- RFC #0008: Patches to the Zend Engine
+  http://xp-framework.net/rfc/0008.rfc.html
+
+- PHP5 patch
+  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5
+  
+- The patch showcase: Mapping Objects to XML Files using Annotations
+  http://xp-framework.info/xml/xp.en_US/news/view?10
+
+- Example script using annotations
+  http://xp-framework.net/downloads/metadata_xml.phps
+
+- Annotations in Tiger, Part 1: Add metadata to Java code
+  http://www-106.ibm.com/developerworks/library/j-annotate1/?ca=dnt-535
+
+Comments
+--------
+- friebe, Thu Feb 10 22:34:14 CET 2005
+  The reflection API will need to tokenize the class file in order to
+  read the annotations. This is slow but already done there.
+
+<EOF>
