@@ -15,7 +15,9 @@
    * @ext      sockets                                                    
    */
   class BSDSocket extends Socket {
-  
+    var
+      $_eof = FALSE;
+      
     /**
      * Get last error
      *
@@ -117,6 +119,16 @@
       
       return $n > 0;
     }
+    
+    /**
+     * Returns whether eof has been reached
+     *
+     * @access  public
+     * @return  bool
+     */
+    function eof() {
+      return $this->_eof;
+    }
 
     /**
      * Private helper function
@@ -130,8 +142,12 @@
       if (FALSE === ($res= socket_read($this->_sock, $maxLen, $type))) {
         return throw(new SocketException('Read failed: '.$this->getLastError()));
       }
-      
-      return $res;
+      if ('' === $res) {
+        $this->_eof= TRUE;
+        return NULL;
+      } else {
+        return $res;
+      }
     }
         
     /**
