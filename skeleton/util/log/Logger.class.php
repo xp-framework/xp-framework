@@ -79,7 +79,7 @@
    */
   class Logger extends Object {
     var 
-      $category= array();
+      $category     = array();
     
     var
       $defaultIdentifier,
@@ -88,6 +88,9 @@
       $defaultFlags,
       $defaultAppenders;
   
+    var
+      $_finalized   = FALSE;
+
     /**
      * Get a category
      *
@@ -163,9 +166,20 @@
      * @access  public
      */
     function finalize() {
-      foreach (array_keys($this->category) as $name) {
+      if (!$this->_finalized) foreach (array_keys($this->category) as $name) {
         $this->category[$name]->finalize();
       }
+      $this->_finalized= TRUE;
+    }
+    
+    /**
+     * Destructor. Makes sure Logger::finalize() is called.
+     *
+     * @access  public
+     */
+    function __destruct() {
+      $this->finalize();
+      parent::__destruct();
     }
   
     /**
