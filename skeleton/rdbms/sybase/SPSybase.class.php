@@ -294,6 +294,26 @@
     }
     
     /**
+     * Execute-Wrapper
+     *
+     * @access  public
+     * @param	string sql Das SQL (ohne exec)
+     * @return  array Alle Rows
+     */   
+    function &execute() {
+      $args= func_get_args();
+      $query= $this->query('exec '.preg_replace('/^[\s\t\r\n]*exec(ute)?/i', '', $this->prepare($args)));
+      if($query) {
+        $result_set= array();
+        while($result_set[]= $this->fetch($query)) {};
+        unset($result_set[sizeof($result_set)- 1]);
+        $this->last_num_rows= sybase_num_rows($query);
+        return $result_set;
+      }
+      return $query;
+    }
+
+    /**
      * Update-Wrapper
      *
      * @access  public
