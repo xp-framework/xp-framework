@@ -52,7 +52,20 @@
     /**
      * Create a policy from a file
      *
-     * @see      http://java.sun.com/j2se/1.4.1/docs/guide/security/PolicyFiles.html
+     * <code>
+     *   uses('security.Policy', 'io.File');
+     *
+     *   try(); {
+     *     $policy= &Policy::fromFile(new File('my.policy'));
+     *   } if (catch('PolicyException', $e)) {
+     *     $e->printStackTrace();
+     *     exit();
+     *   }
+     *
+     *   var_dump($policy);
+     * </code>
+     *
+     * @see     http://java.sun.com/j2se/1.4.1/docs/guide/security/PolicyFiles.html
      * @model   static
      * @access  public
      * @param   &io.Stream stream
