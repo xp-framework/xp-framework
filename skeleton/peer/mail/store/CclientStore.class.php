@@ -330,7 +330,7 @@
      * @return  bool success
      */
     function moveMessage(&$f, $msg) {
-      if (FALSE === imap_mail_move($this->_hdl[0], $msg->uid, $f->name)) {
+      if (FALSE === imap_mail_move($this->_hdl[0], $msg->uid, $f->name, CP_UID)) {
         return throw (new MessagingException('Can not move mail'));
       }
       
