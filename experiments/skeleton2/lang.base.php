@@ -144,19 +144,15 @@
   }
   // }}}
 
-  // {{{ bool uses (string* args)
+  // {{{ void uses (string* args)
   //     Uses one or more classes
   function uses() {
-    $result= TRUE;
     foreach (func_get_args() as $str) {
-      if ($i= include_once(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
-        $class= xp::reflect($str);
-        xp::$classes[$class]= $str;
-        is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
-      }
-      $result= $result & $i;
+      require_once(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php');
+      $class= xp::reflect($str);
+      xp::$classes[$class]= $str;
+      is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
     }
-    return $result;
   }
   // }}}
 
