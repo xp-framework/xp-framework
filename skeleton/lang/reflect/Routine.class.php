@@ -105,7 +105,7 @@
                       $apidoc[$class][$m][1][]= &new Argument(
                         $match[3],
                         $match[2],
-                        'default' == $match[4]
+                        'default' == @$match[4]
                       );
                       break;
 
