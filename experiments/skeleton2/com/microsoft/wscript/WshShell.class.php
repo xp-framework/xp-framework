@@ -15,14 +15,14 @@
    * @platform Windows
    */
   class WshShell extends COMObject {
-
     protected static $instance= NULL;
+
     /**
      * Constructor
      *
-     * @access  private
+     * @access  public
      */    
-    private function __construct() {
+    public function __construct() {
       parent::__construct('WScript.Shell');
     }
     

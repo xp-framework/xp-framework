@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   /**
@@ -39,7 +39,6 @@
      * @param   string server default NULL
      */    
     public function __construct($identifier, $server= NULL) {
-      
       $this->h= com_load($identifier, $server);
     }
     
@@ -89,7 +88,6 @@
     public function __destruct() {
       com_release($this->h);
       $this->h= NULL;
-      
     }
   }
 ?>
