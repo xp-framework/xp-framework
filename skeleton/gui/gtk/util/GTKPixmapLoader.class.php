@@ -79,8 +79,8 @@
         $container['p:'.$name],
         $container['m:'.$name]
       )= Gdk::pixmap_create_from_xpm(
-        &$this->windowRef, 
-        &$this->transparentColor,
+        $this->windowRef, 
+        $this->transparentColor,
         $this->baseDir.DIRECTORY_SEPARATOR.$name.'.xpm'
       );
     }
