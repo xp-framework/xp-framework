@@ -20,7 +20,7 @@
    *         'Cookie' => 'username=fred; lastvisit=2004-01-10'
    *       )
    *     );
-   *     while (FALSE !== ($buf= $response->readData())) {
+   *     while (!($buf= $response->readData())) {
    *       var_dump($buf);
    *       flush();
    *     }
