@@ -431,6 +431,10 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
                 <code><![CDATA[  var_dump(xp::typeOf(new String())); // Outputs "text.String"
   var_dump(xp::typeOf(NULL));         // Outputs "NULL"]]></code>
             </li>
+            <li><pre>string xp::stringOf(&amp;mixed arg)</pre>
+                Returns a string representation of the given argument. Calls <tt>toString()</tt>
+                for anything that extends <tt>lang.Object</tt>, <tt>var_export()</tt> otherwise.
+            </li>
             <li><pre>void xp::gc(void)</pre>
                 Runs the garbage collector. Only use in long-running applications and never
                 inside of a try / catch block.
