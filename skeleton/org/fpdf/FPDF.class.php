@@ -9,30 +9,58 @@
   define('FPDF_LANDSCAPE',          'L');
   define('FPDF_PORTRAIT',           'P');
 
+  // Unit constants
   define('FPDF_UNIT_PT',            'pt');
   define('FPDF_UNIT_MM',            'mm');
   define('FPDF_UNIT_CM',            'cm');
   define('FPDF_UNIT_INCH',          'in');
   
+  // Format constants
   define('FPDF_FORMAT_A3',          'A3');
   define('FPDF_FORMAT_A4',          'A4');
   define('FPDF_FORMAT_A5',          'A5');
   define('FPDF_FORMAT_LETTER',      'LETTER');
   define('FPDF_FORMAT_LEGAL',       'LEGAL');
   
+  // Zoom constants
   define('FPDF_ZOOM_FULLPAGE',      'fullpage');
   define('FPDF_ZOOM_FULLWIDTH',     'fullwidth');
   define('FPDF_ZOOM_REAL',          'real');
   define('FPDF_ZOOM_DEFAULT',       'default');
 
+  // Layout constants
   define('FPDF_LAYOUT_SINGLE',      'single');
   define('FPDF_LAYOUT_CONTINUOUS',  'continuous');
   define('FPDF_LAYOUT_TWO',         'two');
   define('FPDF_LAYOUT_DEFAULT',     'default');
 
+  // Border flags (bitfield)  
+  define('FPDF_BORDER_NONE',        0x0000);
+  define('FPDF_BORDER_FRAME',       0x0001);
+  define('FPDF_BORDER_LEFT',        0x0002);
+  define('FPDF_BORDER_RIGHT',       0x0004);
+  define('FPDF_BORDER_TOP',         0x0008);
+  define('FPDF_BORDER_BOTTOM',      0x0010);
+  
+  // Alignment flags, mutually exclusive
+  define('FPDF_ALIGN_LEFT',         0x0000);
+  define('FPDF_ALIGN_RIGHT',        0x0001);
+  define('FPDF_ALIGN_CENTER',       0x0002);
+  define('FPDF_ALIGN_JUSTIFY',      0x0003);
+
+  // Positioning flags, mutually exclusive  
+  define('FPDF_POS_RIGHT',          0x0000);
+  define('FPDF_POS_NEXT_LINE',      0x0001);
+  define('FPDF_POS_BELOW',          0x0002);
+
+  // Rectangle flags (bitfield)
   define('FPDF_RECT_DRAW',          0x0001);  
   define('FPDF_RECT_FILL',          0x0002);
   define('FPDF_RECT_FILL_DRAW',     FPDF_RECT_FILL | FPDF_RECT_DRAW);
+
+  // Filling flags, mutually exclusive    
+  define('FPDF_FILL_TRANSPARENT',   0x0000);
+  define('FPDF_FILL_PAINTED',       0x0001);
   
   uses('org.fpdf.FPDFFont', 'lang.IllegalArgumentException');
   
@@ -428,7 +456,7 @@
      * @access  public
      * @return  int
      */
-    function getPageNo() {
+    function pageNumber() {
       return $this->page;
     }
 
@@ -696,7 +724,7 @@
      * @param   int h height
      * @param   mixed link URL or identifier returned by addLink().
      */
-    function Link($x, $y, $w, $h, $link) {
+    function putLink($x, $y, $w, $h, $link) {
       $this->PageLinks[$this->page][]= array(
         $x * $this->k, 
         $this->hPt- $y * $this->k, 
@@ -707,21 +735,38 @@
     }
 
     /**
-     * Output a string
+     * Renders text
+     *
+     * @access  private
+     * @param   int x Abscissa of the origin.
+     * @param   int y Ordinate of the origin.
+     * @param   string text
+     * @return  string
+     */
+    function _rendertext($x, $y, $text) {
+      $text= $this->_escape($text);
+      $s= 'BT '.$x.' -'.$y.' Td ('.$text.') Tj ET';
+      if ($this->underline and $text != '') {
+        $s.= ' '.$this->_dounderline($x, $y, $text);
+      }
+      if ($this->ColorFlag) $s= 'q '.$this->TextColor.' '.$s.' Q';
+      return $s;
+    }
+
+    /**
+     * Prints a character string. The origin is on the left of the first 
+     * charcter, on the baseline. This method allows to place a string 
+     * precisely on the page, but it is usually easier to use cell(), 
+     * MultiCell() or Write() which are the standard methods to print 
+     * text.
      *
      * @access  public
-     * @param   int x
-     * @param   int y
+     * @param   int x Abscissa of the origin.
+     * @param   int y Ordinate of the origin.
      * @param   string text
      */
-    function Text($x, $y, $text) {
-      $text= $this->_escape($text);
-      
-      $s= 'BT '.$x.' -'.$y.' Td ('.$text.') Tj ET';
-      if ($this->underline and $text != '') $s.= ' '.$this->_dounderline($x, $y, $text);
-      if ($this->ColorFlag) $s= 'q '.$this->TextColor.' '.$s.' Q';
-
-      $this->_out($s);
+    function putText($x, $y, $text) {
+      $this->_out($this->_rendertext($s));
     }
 
     /**
@@ -735,19 +780,38 @@
     }
 
     /**
-     * Output a cell
+     * Prints a cell (rectangular area) with optional borders, background 
+     * color and character string. The upper-left corner of the cell 
+     * corresponds to the current position. The text can be aligned or 
+     * centered. After the call, the current position moves to the right 
+     * or to the next line. It is possible to put a link on the text.
+     *
+     * If automatic page breaking is enabled and the cell goes beyond the 
+     * limit, a page break is done before outputting.
+     *
+     * The parameter ln indicates where the current position should go 
+     * after the call.
      *
      * @access  public
-     * @param   int w
-     * @param   int h default 0
-     * @param   string text default ''
-     * @param   mixed border default FALSE
-     * @param   int ln default  0
-     * @param   string align default ''
-     * @param   string fill default FALSE
-     * @param   string link default ''
+     * @param   float w Cell width. If 0, the cell extends up to the right margin.
+     * @param   float h default 0 Cell height. Default value: 0.
+     * @param   string text default '' String to print.
+     * @param   int border default FPDF_BORDER_NONE one of the FPDF_BORDER_* constants
+     * @param   int ln default FPDF_POS_RIGHT one of the FPDF_POS_* constants
+     * @param   int align default FPDF_ALIGN_LEFT one of the FPDF_ALIGN_* constants
+     * @param   int fill default FPDF_FILL_TRANSPARENT one of the FPDF_FILL_* constants
+     * @param   mixed link default '' URL or identifier returned by addLink().
      */
-    function Cell($w, $h= 0, $text= '', $border= FALSE, $ln= 0, $align= '', $fill= FALSE, $link= '') {
+    function cell(
+      $w, 
+      $h= 0, 
+      $text= '', 
+      $border= FPDF_BORDER_NONE, 
+      $ln= FPDF_ALIGN_LEFT, 
+      $align= FPDF_ALIGN_LEFT, 
+      $fill= FPDF_FILL_TRANSPARENT, 
+      $link= ''
+    ) {
     
       // Check if we need to add a page break
       if ($this->y + $h > $this->PageBreakTrigger and $this->AutoPageBreak) {
@@ -770,49 +834,46 @@
 
       // Fill / border
       $s= '';
-      if ($fill || $border) {
+      if ($fill || $border == FPDF_BORDER_FRAME) {
         $s.= $this->x.' -'.$this->y.' '.$w.' -'.$h.' re ';
-        $s.= $fill ? ($border ? 'B ' : 'f ') : 'S ';
+        $s.= $fill ? ($border == FPDF_BORDER_FRAME ? 'B ' : 'f ') : 'S ';
       }
       
-      // Border given a string containg L, T, R and/or B
-      if (is_string($border)) {
-        if (is_int(strpos($border, 'L'))) {     // Left border
-          $s.= $this->x.' -'.$this->y.' m '.$this->x.' -'.($this->y+ $h).' l S ';
-        }
-        if (is_int(strpos($border, 'T'))) {     // Top border
-          $s.= $this->x.' -'.$this->y.' m '.($this->x+ $w).' -'.$this->y.' l S ';
-        }
-        if (is_int(strpos($border, 'R'))) {     // Right border
-          $s.= ($this->x+ $w).' -'.$this->y.' m '.($this->x+ $w).' -'.($this->y+ $h).' l S ';
-        }
-        if (is_int(strpos($border, 'B'))) {     // Bottom border
-          $s.= $this->x.' -'.($this->y+ $h).' m '.($this->x+ $w).' -'.($this->y+ $h).' l S ';
-        }
+      // Specific border sides given
+      if ($border & FPDF_BORDER_LEFT) {
+        $s.= $this->x.' -'.$this->y.' m '.$this->x.' -'.($this->y+ $h).' l S ';
+      }
+      if ($border & FPDF_BORDER_TOP) {
+        $s.= $this->x.' -'.$this->y.' m '.($this->x+ $w).' -'.$this->y.' l S ';
+      }
+      if ($border & FPDF_BORDER_RIGHT) {
+        $s.= ($this->x+ $w).' -'.$this->y.' m '.($this->x+ $w).' -'.($this->y+ $h).' l S ';
+      }
+      if ($border & FPDF_BORDER_BOTTOM) {
+        $s.= $this->x.' -'.($this->y+ $h).' m '.($this->x+ $w).' -'.($this->y+ $h).' l S ';
       }
       
       // Text
       if ($text != '') {
         switch ($align) {
-          case 'R': 
+          case FPDF_ALIGN_RIGHT: 
             $dx= $w- $this->cMargin- $this->getStringWidth($text);
             break;
           
-          case 'C':
+          case FPDF_ALIGN_CENTER:
             $dx= ($w- $this->getStringWidth($text)) / 2;
             break;
           
+          case FPDF_ALIGN_LEFT:
           default:
             $dx= $this->cMargin;
         }
 
-        $text= $this->_escape($text);
-        if ($this->ColorFlag) $s.='q '.$this->TextColor.' ';
-        $s.= 'BT '.($this->x+ $dx).' -'.($this->y+ .5 * $h+ .3* $this->FontSize).' Td ('.$text.') Tj ET';
-        if ($this->underline) {
-          $s.=' '.$this->_dounderline($this->x+ $dx, $this->y+ .5 * $h+ .3 * $this->FontSize, $text);
-        }
-        if ($this->ColorFlag) $s.=' Q';
+        $s.= $this->_rendertext(
+          $this->x+ $dx, 
+          $this->y+ .5 * $h+ .3* $this->FontSize, 
+          $text
+        );
         
         // A link?
         if ($link) $this->Link(
@@ -828,12 +889,11 @@
       // Store last cell height
       $this->lasth= $h;
       
-      // Go to next line
-      if ($ln > 0) {
-        $this->y+= $h;
-        if ($ln == 1) $this->x= $this->lMargin;
-      } else {
-        $this->x+= $w;
+      // Set position
+      switch ($ln) {
+        case FPDF_POS_RIGHT: $this->x+= $w; break;
+        case FPDF_POS_NEXT_LINE: $this->x= $this->lMargin; // break missing intentionally
+        case FPDF_POS_BELOW: $this->y+= $h;
       }
     }
 
@@ -848,7 +908,7 @@
      * @param   string align default 'J'
      * @param   int fill default 0
      */
-    function MultiCell($w, $h, $txt, $border= 0, $align= 'J', $fill= 0) {
+    function multiCell($w, $h, $txt, $border= 0, $align= 'J', $fill= 0) {
       if (!$w) $w= $this->w- $this->rMargin- $this->x;
       $wmax= ($w- 2 * $this->cMargin) * 1000 / $this->FontSize;
       $s= str_replace("\r",'', $txt);
