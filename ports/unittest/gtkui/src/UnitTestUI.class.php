@@ -97,7 +97,10 @@
       $this->connect($this->widget('clear'), 'clicked');
       
       if ($this->param->exists(1)) {
-        $this->addConfiguration($this->param->value(1));
+        $this->addConfiguration(
+          $this->param->value(1),
+          $this->param->value(2, NULL, NULL)
+        );
       }
     }
     
@@ -254,13 +257,88 @@
     }
     
     /**
+     * Adds tests from a section
+     *
+     * @access  private
+     * @param   &util.Properties config
+     * @param   string section
+     */
+    function addTestsFromSection(&$config, $section) {
+      if (-1 == ($numtests= $config->readInteger($section, 'numtests', -1))) {
+        MessageBox::display('Section '.$section.': key "numtests" missing', 'Error', MB_OK | MB_ICONERROR);
+        return FALSE;
+      }
+      $this->cat->debug('Processing section', $section);
+      $sectionNode= &$this->hierarchy->insert_node(
+        NULL,
+        NULL,
+        array($this->dialog->getFileName().'::'.$section, $numtests.' test(s)'),
+        4,
+        $this->pixmaps['p:collection'],
+        $this->pixmaps['m:collection'],
+        $this->pixmaps['p:collection'],
+        $this->pixmaps['m:collection'],
+        FALSE,
+        TRUE
+      );
+
+      for ($i= 0; $i < $numtests; $i++) {
+        try(); {
+          $class= &XPClass::forName($config->readString($section, 'test.'.$i.'.class'));
+        } if (catch('ClassNotFoundException', $e)) {
+          $this->cat->error('Test group "'.$section.'", test #'.$i.':: ', $e->getStackTrace());
+          MessageBox::display($e->getMessage(), 'Error', MB_OK | MB_ICONERROR);
+
+          // Fall through, other tests might still be loaded
+          continue;
+        }
+
+        // Create a new instance
+        $name= $config->readString($section, 'test.'.$i.'.name');
+        $args= array_merge($name, $config->readArray($section, 'test.'.$i.'.args', array()));
+        $test= &call_user_func_array(array(&$class, 'newInstance'), $args);
+
+        // Insert into hierarchy tree
+        if (!isset($this->node[$test->getClassName()])) {
+          $this->node[$test->getClassName()]= &$this->hierarchy->insert_node(
+            $sectionNode,
+            NULL,
+            array($test->getClassName(), ''),
+            4,
+            $this->pixmaps['p:suite'],
+            $this->pixmaps['m:suite'],
+            $this->pixmaps['p:suite'],
+            $this->pixmaps['m:suite'],
+            FALSE,
+            TRUE
+          );
+        }
+        $this->node[$test->hashCode()]= &$this->hierarchy->insert_node(
+          $this->node[$test->getClassName()],
+          NULL,
+          array($test->getName(), ''),
+          4,
+          $this->pixmaps['p:test'],
+          $this->pixmaps['m:test'],
+          $this->pixmaps['p:test'],
+          $this->pixmaps['m:test'],
+          TRUE,
+          TRUE
+        );
+
+        $this->suite->addTest($test);
+      }
+    }
+    
+    /**
      * Add a configuration
      *
      * @access  protected
      * @param   string uri
+     * @param   string section default NULL
      * @return  bool
      */
-    function addConfiguration($uri) {
+    function addConfiguration($uri, $section= NULL) {
       if (isset($this->loaded[$uri])) {
         MessageBox::display('Cannot load the same test config twice!', 'Error', MB_OK | MB_ICONWARNING);
         return FALSE;
@@ -268,73 +346,14 @@
       $this->loaded[$uri]= TRUE;
 
       $config= &new Properties($uri);
-      $section= $config->getFirstSection();
-      do {
-        if (-1 == ($numtests= $config->readInteger($section, 'numtests', -1))) {
-          MessageBox::display('Section '.$section.': key "numtests" missing', 'Error', MB_OK | MB_ICONERROR);
-          return FALSE;
-        }
-        $this->cat->debug('Processing section', $section);
-        $sectionNode= &$this->hierarchy->insert_node(
-          NULL,
-          NULL,
-          array($this->dialog->getFileName().'::'.$section, $numtests.' test(s)'),
-          4,
-          $this->pixmaps['p:collection'],
-          $this->pixmaps['m:collection'],
-          $this->pixmaps['p:collection'],
-          $this->pixmaps['m:collection'],
-          FALSE,
-          TRUE
-        );
-
-        for ($i= 0; $i < $numtests; $i++) {
-          try(); {
-            $class= &XPClass::forName($config->readString($section, 'test.'.$i.'.class'));
-          } if (catch('ClassNotFoundException', $e)) {
-            $this->cat->error('Test group "'.$section.'", test #'.$i.':: ', $e->getStackTrace());
-            MessageBox::display($e->getMessage(), 'Error', MB_OK | MB_ICONERROR);
-            
-            // Fall through, other tests might still be loaded
-            continue;
-          }
-
-          // Create a new instance
-          $name= $config->readString($section, 'test.'.$i.'.name');
-          $args= array_merge($name, $config->readArray($section, 'test.'.$i.'.args', array()));
-          $test= &call_user_func_array(array(&$class, 'newInstance'), $args);
-          
-          // Insert into hierarchy tree
-          if (!isset($this->node[$test->getClassName()])) {
-            $this->node[$test->getClassName()]= &$this->hierarchy->insert_node(
-              $sectionNode,
-              NULL,
-              array($test->getClassName(), ''),
-              4,
-              $this->pixmaps['p:suite'],
-              $this->pixmaps['m:suite'],
-              $this->pixmaps['p:suite'],
-              $this->pixmaps['m:suite'],
-              FALSE,
-              TRUE
-            );
-          }
-          $this->node[$test->hashCode()]= &$this->hierarchy->insert_node(
-            $this->node[$test->getClassName()],
-            NULL,
-            array($test->getName(), ''),
-            4,
-            $this->pixmaps['p:test'],
-            $this->pixmaps['m:test'],
-            $this->pixmaps['p:test'],
-            $this->pixmaps['m:test'],
-            TRUE,
-            TRUE
-          );
-          
-          $this->suite->addTest($test);
-        }
-      } while ($section= $config->getNextSection());
+      if ($section) {
+        $this->addTestsFromSection($config, $section);
+      } else {
+        $section= $config->getFirstSection();
+        do {
+          $this->addTestsFromSection($config, $section);
+        } while ($section= $config->getNextSection());
+      }
       
       $this->setStatusText('Configuration '.basename($uri).' added');
       $this->cat->info($this->suite);
