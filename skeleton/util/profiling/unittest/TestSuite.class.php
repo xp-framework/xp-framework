@@ -64,7 +64,7 @@
         try(); {
           $r= &$this->tests[$i]->run();
         } if (catch('Exception', $e)) {
-          $e->message= $e->getStackTrace();
+          $e->setTrace($e->getStackTrace());
           $result->setFailed($this->tests[$i], $e);
           $this->tests[$i]->tearDown();
           continue;
