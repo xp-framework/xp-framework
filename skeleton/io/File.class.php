@@ -248,6 +248,22 @@
       }
       return $result;
     }
+
+    /**
+     * Schreiben. \n wird ergänzt
+     *
+     * @return  (bool)success
+     * @throws  IOException, wenn nicht geschrieben werden kann
+     * @throws  IllegalStateException, wenn keine Datei offen
+     */
+    function writeLine($string) {
+      if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
+      $result= @fputs($this->_fd, $string."\n");
+      if (!$result) {
+        throw(new IOException('cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
+      }
+      return $result;
+    }
     
     /**
      * Check auf <<EOF>>
