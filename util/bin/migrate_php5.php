@@ -33,7 +33,7 @@
   $filename= realpath($p->value(1));
 
   // Calculate namespace
-  preg_match('#skeleton/([a-z/-]+)/([^\.]+)\.class\.php$#', $filename, $matches);
+  preg_match('#skeleton/([a-z0-9/-]+)/([^\.]+)\.class\.php$#', $filename, $matches);
   $path= $matches[1];
 
   // Tokenize
