@@ -19,10 +19,18 @@
   if ($dlg->show()) {           // OK pressed
     printf("File selected: %s%s\n", $dlg->dir, $dlg->filename);
   } ]]></code>
-          <br/>          
-          <image src="gui.gtk.widgets.filedialog_home.png"/>
+          Check out these to screenshots to see what this dialog
+          window looks like:
+          <br/><br/>          
+          <image alt="Screenshot #1: Showing home directory" src="gui.gtk.widgets.filedialog_home.png"/>
           <br/>
-          <image src="gui.gtk.widgets.filedialog_open.png"/>
+          <image alt="Screenshot #2: Selected a file" src="gui.gtk.widgets.filedialog_open.png"/>
+        </text>
+      </para>
+      <para>
+        <caption>DirectorySelect</caption>
+        <text>
+          <!-- TBD -->
         </text>
       </para>
     </content>
