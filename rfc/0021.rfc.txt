@@ -37,7 +37,8 @@ Dependencies
 
 Related documents
 -----------------
-n/a
+- http://xp-framework.net/downloads/rfc0021.diff
+  Patch against skeleton/ implementing this functionality
 
 Comments
 --------
