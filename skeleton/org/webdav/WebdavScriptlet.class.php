@@ -46,6 +46,7 @@
   define ('WEBDAV_CLIENT_DAVFS',   0x8000);
   
   define('WEBDAV_COLLECTION',   'collection');
+  define('WEBDAV_LOCK_NULL',    'lock-null');
   
   /**
    * <quote>
@@ -167,7 +168,7 @@
      * @return org.webdav.WebdavResponse
      */
     function &_response() {
-      switch(getenv('REQUEST_METHOD')) {
+      switch (getenv('REQUEST_METHOD')) {
         case WEBDAV_METHOD_PROPFIND:
           return new WebdavMultistatusResponse();
         case WEBDAV_METHOD_LOCK:
@@ -308,7 +309,7 @@
         $response->setContent($e->toString());
         return FALSE;
       } 
-      
+
       $response->setStatus(HTTP_OK);
       $response->setHeader('Content-type',   $object->contentType);
       $response->setHeader('Content-length', $object->contentLength);
@@ -478,12 +479,12 @@
         );
       } if (catch('ElementNotFoundException', $e)) {
 
-        $response->setStatus(HTTP_NOT_FOUND);
+        $response->setStatus(HTTP_PRECONDITION_FAILED);
         $response->setContent($e->toString());        
         return FALSE; 
       } if (catch('Exception', $e)) {
 
-        $response->setStatus(WEBDAV_PRECONDFAILED);
+        $response->setStatus(HTTP_LOCKED);
         $response->setContent($e->toString());
         return FALSE; 
       }
@@ -766,7 +767,6 @@
       } else {
         $request->setData(getenv('QUERY_STRING'));
       }
-      
       return $this->methods[$request->method];
     }
   }
