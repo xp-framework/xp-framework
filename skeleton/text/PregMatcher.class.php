@@ -1,8 +1,8 @@
 <?php
-  /* Diese Klasse ist Teil des XP-Frameworks
-   *
-   * $Id$
-   */
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
    
   uses(
     'util.text.SyntaxCheck'

@@ -1,8 +1,8 @@
 <?php
-  /* Syntaxcheck-Basis-Klasse
-   *
-   * $Id$
-   */
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
 
   /**
    * Base syntax checker class
