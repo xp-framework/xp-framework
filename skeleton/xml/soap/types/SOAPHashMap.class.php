@@ -36,6 +36,16 @@
     }
     
     /**
+     * Return a string representation for use in SOAP
+     *
+     * @access  public
+     * @return  mixed
+     */
+    function toString() {
+      return '';
+    }
+    
+    /**
      * Returns this type's name
      *
      * @access  public
