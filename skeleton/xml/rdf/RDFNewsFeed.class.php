@@ -238,6 +238,7 @@
      *
      * @see     xp://xml.XMLParser
      * @access  public
+     * @throws  lang.FormatException in case an unrecognized element is encountered
      */
     function _pCallEndElement($parser, $name) {
       static $trans;
@@ -254,7 +255,6 @@
         strtr(trim($this->_objs[$this->_cnt+ 1]->content), $trans)
       );
       
-      // Welches Element?
       $name= strtr(substr($path, 0, -1), array(
         '/rdf:rdf/' => '',
         '/rss/'     => ''
@@ -332,7 +332,7 @@
 
 
         default:
-          // echo '???::'.$name."::\n";
+          return throw(new FormatException('Unrecognized element "'.$name.'"');
       }
     }
   }
