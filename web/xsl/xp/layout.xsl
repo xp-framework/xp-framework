@@ -81,7 +81,7 @@
         <br/>
         <table width="100%" border="0" cellspacing="0" cellpadding="2" class="footer">
           <tr>
-            <td><small>(c) 2001-2004 the XP team</small></td>
+            <td><small>&#169; 2001-2004 the XP team</small></td>
             <td align="right"><small>
               <a href="#credits">credits</a> |
               <a href="#feedback">feedback</a>
