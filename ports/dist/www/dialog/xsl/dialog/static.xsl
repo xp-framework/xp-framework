@@ -88,7 +88,10 @@
           </xsl:for-each>
         </tr>
       </table>
-      <p><a href="{func:link(concat('album/view?', @name))}">See more</a></p>
+      <p>
+        This album contains <xsl:value-of select="@num_images"/> images in <xsl:value-of select="@num_chapters"/> chapters -
+        <a href="{func:link(concat('album/view?', @name))}">See more</a>
+      </p>
       <br/><br clear="all"/>
     </xsl:for-each>
     
