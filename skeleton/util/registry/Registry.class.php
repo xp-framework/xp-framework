@@ -9,13 +9,10 @@
    *
    * Usage: Setup
    * <code>
-   * $r= &Registry::getInstance();
-   * $r->setStorage(new SharedMemoryStorage());
-   * </code>
+   * $r= &Registry::getInstance(new SharedMemoryStorage('global'));
    *
-   * Usage: Registering a value
-   * <code>
-   * $r= &Registry::getInstance();
+   * // Somewhere later on
+   * $r= &Registry::getInstance('global');
    * if (!$r->contains('config')) {
    *   $config= &new Properties('foo.ini');
    *   $config->reset();
@@ -25,22 +22,8 @@
    */ 
   class Registry extends Object {
     var
-      $storage= NULL;
+      $storage = NULL;
 
-    /**
-     * Set the storage
-     *
-     * @access  public
-     * @param   &util.registry.RegistryStorage
-     * @throws  IllegalArgumentException
-     */  
-    function setStorage(&$storage) {
-      if (!is_a($storage, 'RegistryStorage')) {
-        return throw(new IllegalArgumentException('Argument storage is not a RegistryStorage object'));
-      }
-      $this->storage= &$storage;
-    }
-    
     /**
      * (Insert method's description here)
      *
@@ -89,15 +72,35 @@
      * Get an instance
      * 
      * @access  static
+     * @param   mixed a string or a util.registry.RegistryStorage object
      * @return  &util.Registry registry object
+     * @throws  IllegalArgumentException
      */
     function &getInstance() {
-      static $__instance;
+      static $__instance = array();
       
-      if (!isset($__instance)) {
-        $__instance= new Registry();
+      $p= &func_get_arg(0);
+      
+      // Subsequent calls
+      if (is_string($p)) {
+        if (!isset($__instance[$p])) {
+          return throw(new IllegalAccessException('Registry "'.$p.'" hasn\'t been setup yet'));
+        }
+        return $__instance[$p];
       }
-      return $__instance;
+      
+      // Initial setup
+      if (is_a($p, 'RegistryStorage')) {
+        
+        $__instance[$storage->id]= new Registry();
+        $__instance[$storage->id]->storage= &$p;
+        $__instance[$storage->id]->storage->initialize();
+        
+        return $__instance[$storage->id];
+      }
+      
+      trigger_error('Type: '.gettype($p), E_USER_WARNING);
+      return throw(new IllegalArgumentException('Argument passed is of wrong type'));
     }
   }
 ?>
