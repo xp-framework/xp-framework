@@ -121,6 +121,8 @@
           case 'c': $sql.= ($arg === NULL ? 'NULL' : $arg).substr($tok, 1); break;
           case 's': $sql.= ($arg === NULL ? 'NULL' : '"'.str_replace('"', '""', $arg).'"').substr($tok, 1); break;
           case 'l': $sql.= ($arg === NULL ? 'NULL' : '"'.str_replace('"', '""', $arg).'%"').substr($tok, 1); break;
+          case 'u': $sql.= ($arg === NULL ? 'NULL' : '"'.date ('Y-m-d h:iA', $arg).'"').substr($tok, 1); break;
+          case 'f': $sql.= ($arg === NULL ? 'NULL' : floatval ($arg)).substr($tok, 1); break;
           default: $sql.= '%'.$tok; $j--;
         }
       }
