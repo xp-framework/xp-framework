@@ -15,9 +15,18 @@
   
   // {{{ main
   $param= &new ParamString();
+  if (!$param->exists(1)) {
+    printf(
+      "Creates an XML representation from a CVS history file\n".
+      "Usage: %s <history_file> [--since=<date>] [--max=<max>]\n\n",
+      $param->value(0)
+    );
+    exit(-1);
+  }
+  
   $p= &new CSVParser();
   try(); {
-    $p->setInputStream(new File('history'));
+    $p->setInputStream(new File($param->value(1)));
     $p->setHeaderRecord(array(
       'actiondate', 
       'user', 
@@ -31,7 +40,10 @@
     exit(-1);
   }
   
-  $cmp= &Date::fromString($param->exists(1) ? $param->value(1) : '1970-01-01');
+  $cmp= &Date::fromString($param->exists('since') 
+    ? $param->value('since') 
+    : '1970-01-01'
+  );
   $history= array(
     'M' => array(),     // Committed
     'R' => array(),     // Removed
