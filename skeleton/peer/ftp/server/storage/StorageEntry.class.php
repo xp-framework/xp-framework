@@ -86,22 +86,14 @@
      * @return  int
      */  
     function getPermissions() { }
-    
+
     /**
-     * Retrieve long string representation of this entry. This 
-     * representation is used for the LIST command's output and should
-     * look like the one you see when using ls -al:
-     *
-     * Example:
-     * <pre>
-     *   -rw-r--r--   1 thekid  thekid       738 Jun 24 14:21 stat.diff
-     *   drwxr-xr-x   2 thekid  thekid       512 May 21 11:23 sync
-     * </pre>
+     * Retrieves the number of links
      *
      * @access  public
-     * @return  string
-     */
-    function longRepresentation() { }
+     * @return  int
+     */  
+    function numLinks() { }
     
   }
 ?>

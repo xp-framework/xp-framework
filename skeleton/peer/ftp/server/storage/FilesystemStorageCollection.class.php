@@ -121,49 +121,15 @@
     }
 
     /**
-     * Helper method
-     *
-     * @access  protected
-     * @param   int bits
-     * @return  string
-     */
-    function _rwx($bits) {
-      return (
-        (($bits & 4) ? 'r' : '-').
-        (($bits & 2) ? 'w' : '-').
-        (($bits & 1) ? 'x' : '-')
-      );
-    }
-    
-    /**
-     * Retrieve long string representation of this entry. This 
-     * representation is used for the LIST command's output and should
-     * look like the one you see when using ls -al:
-     *
-     * Example:
-     * <pre>
-     *   -rw-r--r--   1 thekid  thekid       738 Jun 24 14:21 stat.diff
-     *   drwxr-xr-x   2 thekid  thekid       512 May 21 11:23 sync
-     * </pre>
+     * Retrieves the number of links
      *
      * @access  public
      * @return  string
      */
-    function longRepresentation() { 
-      return sprintf(
-        'd%s%s%s  %2d %s  %s  %8d %s %s',
-        $this->_rwx(($this->st['mode'] >> 6) & 7),
-        $this->_rwx(($this->st['mode'] >> 3) & 7),
-        $this->_rwx(($this->st['mode']) & 7),
-        $this->st['nlink'],
-        $this->st['pwuid']['name'],
-        $this->st['grgid']['name'],
-        $this->st['size'],
-        date('M d H:i', $this->st['mtime']),
-        $this->name
-      );
+    function numLinks() {
+      return $this->st['nlink'];
     }
-
+    
     /**
      * Retrieves a list of elements
      *
@@ -171,7 +137,6 @@
      * @return  &peer.ftp.server.storage.StorageEntry[]
      */
     function elements() { 
-      $this->f->rewind();
       $r= array();
       $r[]= &new FilesystemStorageCollection($this->f->getURI().'.');
       $r[]= &new FilesystemStorageCollection($this->f->getURI().'..');
@@ -183,6 +148,7 @@
           $r[]= &new FilesystemStorageElement($path);
         }
       }
+      $this->f->rewind();
       return $r;
     }
   

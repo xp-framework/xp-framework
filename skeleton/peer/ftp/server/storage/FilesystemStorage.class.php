@@ -38,7 +38,7 @@
      * @return  string
      */
     function realname($uri) {
-      return realpath($this->root.$this->base.preg_replace('#^[/\.]+#', '', $uri));
+      return $this->root.$this->base.preg_replace('#^[/\.]+#', '', $uri);
     }
 
     /**

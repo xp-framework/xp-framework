@@ -6,6 +6,9 @@
 
   uses('peer.server.ConnectionListener');
   uses('util.cmd.Console');
+  
+  define('TYPE_ASCII',  'A');
+  define('TYPE_BINARY', 'I');
 
   /**
    * Implement FTP server functionality
@@ -16,6 +19,7 @@
   class FtpConnectionListener extends ConnectionListener {
     var
       $user             = array('username' => NULL, 'loggedin' => FALSE),
+      $type             = 'A',
       $authenticator    = NULL,
       $storage          = NULL,
       $datasock         = NULL;   // For passive mode
@@ -32,6 +36,26 @@
       $this->authenticator= &$authenticator;
     }
 
+    /**
+     * Returns end of line identifier depending on the type
+     *
+     * @access  protected
+     * @return  string
+     */
+    function eol() {
+      return $this->type == TYPE_ASCII ? "\r\n" : "\n";
+    }
+    
+    /**
+     * Returns type name depending on the type
+     *
+     * @access  protected
+     * @return  string
+     */
+    function typeName() {
+      return $this->type == TYPE_ASCII ? 'ASCII' : 'BINARY';
+    }
+    
     /**
      * Write an answer message to the socket
      *
@@ -192,6 +216,37 @@
     function onNoop(&$event, $params) {
       $this->answer($event->stream, 200, 'OK');
     }
+
+    /**
+     * Helper method
+     *
+     * @access  protected
+     * @param   int bits
+     * @return  string
+     */
+    function _rwx($bits) {
+      return (
+        (($bits & 4) ? 'r' : '-').
+        (($bits & 2) ? 'w' : '-').
+        (($bits & 1) ? 'x' : '-')
+      );
+    }
+    
+    /**
+     * Create a string representation from integer permissions
+     *
+     * @access  protected
+     * @param   int permissions
+     * @return  string
+     */
+    function permissionString($permissions) {
+      return (
+        ($permission & 0x4000 ? 'd' : '-').
+        $this->_rwx(($permissions >> 6) & 7).
+        $this->_rwx(($permissions >> 3) & 7).
+        $this->_rwx(($permissions) & 7)
+      );
+    }
     
     /**
      * LIST: This command causes a list of file names and file details 
@@ -202,6 +257,7 @@
      * @param   string params
      */
     function onList(&$event, $params) {
+      $params= str_replace('-L', '', $params);
       if (!($entry= &$this->storage->lookup($params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         return;
@@ -209,16 +265,30 @@
       
       // Assume this is a passive connection
       $m= &$this->datasock->accept();
-      $this->answer($event->stream, 150, 'Opening ASCII mode data connection for filelist');
+      $this->answer($event->stream, 150, sprintf(
+        'Opening %s mode data connection for filelist',
+        $this->typeName()
+      ));
       
       // If a collection was specified, list its elements, otherwise,
       // list the single element
       if (is('StorageCollection', $entry)) {
-        foreach ($entry->elements() as $element) {
-          $m->write($element->longRepresentation()."\r\n");
-        }
+        $elements= $entry->elements();
       } else {
-        $m->write($entry->longRepresentation()."\r\n");
+        $elements= array($entry);
+      }
+      
+      for ($i= 0, $s= sizeof($elements); $i < $s; $i++) {
+        $m->write(sprintf(
+          '%s  %2d %s  %s  %8d %s %s',
+          $this->permissionString($elements[$i]->getPermissions()),
+          $elements[$i]->numLinks(),
+          $elements[$i]->getOwner(),
+          $elements[$i]->getGroup(),
+          $elements[$i]->getSize(),
+          date('M d H:i', $elements[$i]->getModifiedStamp()),
+          $elements[$i]->getName()
+        ).$this->eol());
       }
       $this->answer($event->stream, 226, 'Transfer complete');
     }
@@ -239,16 +309,21 @@
       
       // Assume this is a passive connection
       $m= &$this->datasock->accept();
-      $this->answer($event->stream, 150, 'Opening ASCII mode data connection for filelist');
+      $this->answer($event->stream, 150, sprintf(
+        'Opening %s mode data connection for filelist',
+        $this->typeName()
+      ));
       
       // If a collection was specified, list its elements, otherwise,
       // list the single element
       if (is('StorageCollection', $entry)) {
-        foreach ($entry->elements() as $element) {
-          $m->write($element->getName()."\r\n");
-        }
+        $elements= $entry->elements();
       } else {
-        $m->write($entry->getName()."\r\n");
+        $elements= array($entry);
+      }
+      
+      for ($i= 0, $s= sizeof($elements); $i < $s; $i++) {
+        $m->write($elements[$i]->getName().$this->eol());
       }
       $this->answer($event->stream, 226, 'Transfer complete');
     }
@@ -344,7 +419,8 @@
       // Assume this is a passive connection
       $m= &$this->datasock->accept();
       $this->answer($event->stream, 150, sprintf(
-        'Opening BINARY mode data connection for %s (%d bytes)',
+        'Opening %s mode data connection for %s (%d bytes)',
+        $this->typeName(),
         $entry->getName(),
         $entry->getSize()
       ));
@@ -384,11 +460,12 @@
       // Assume this is a passive connection
       $m= &$this->datasock->accept();
       $this->answer($event->stream, 150, sprintf(
-        'Opening BINARY mode data connection for %s',
+        'Opening %s mode data connection for %s',
+        $this->typeName(),
         $entry->getName()
       ));
       try(); {
-        $entry->open(STOR_WRITE);
+        $entry->open(SE_WRITE);
         while ($buf= $m->read()) {
           $entry->write($buf);
         }
@@ -408,10 +485,16 @@
      * @param   string params
      */
     function onType(&$event, $params) {
-    
-      // TBD: Actually do something with type
-      $this->answer($event->stream, 200, 'Type set to '.$params);
-      
+      switch ($params) {
+        case TYPE_ASCII:
+        case TYPE_BINARY:
+          $this->type= $params;
+          $this->answer($event->stream, 200, 'Type set to '.$params);
+          break;
+          
+        default:
+          $this->answer($event->stream, 550, 'Unknown type "'.$params.'"');
+      }
     }
 
     /**
@@ -526,7 +609,13 @@
         return;
       }
       
-      $this->{$method}($event, $params);
+      try(); {
+        $this->{$method}($event, $params);
+      } if (catch('Exception', $e)) {
+        Console::writeLine('*** ', $e->toString());
+        // Fall through
+      }
+      xp::gc();
     }
     
     /**
