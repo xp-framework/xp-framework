@@ -47,7 +47,7 @@
         <xsl:for-each select="/formresult/album/highlights/highlight">
           <td>
             <a href="{func:link(concat('image/view?', ../../@name, ',h,0,', position()- 1))}">
-              <img border="0" src="/albums/{../../@name}/thumb.{name}"/>
+              <img width="150" height="113" border="0" src="/albums/{../../@name}/thumb.{name}"/>
             </a>
           </td>
         </xsl:for-each>
@@ -65,12 +65,14 @@
         <h2><xsl:value-of select="position()"/></h2> 
       </div>
       <h2>
-        <xsl:value-of select="concat(
-          exsl:node-set($oldest)/exifData/dateTime/weekday, ', ',
-          exsl:node-set($oldest)/exifData/dateTime/mday, ' ',
-          exsl:node-set($oldest)/exifData/dateTime/month, ' ',
-          exsl:node-set($oldest)/exifData/dateTime/hours, ':00'
-        )"/>
+        <a href="{func:link(concat('chapter/view?', ../../@name, ',', $chapter))}">
+          <xsl:value-of select="concat(
+            exsl:node-set($oldest)/exifData/dateTime/weekday, ', ',
+            exsl:node-set($oldest)/exifData/dateTime/mday, ' ',
+            exsl:node-set($oldest)/exifData/dateTime/month, ' ',
+            exsl:node-set($oldest)/exifData/dateTime/hours, ':00'
+          )"/>
+        </a>
       </h2>
       <p>
         This chapter contains
@@ -85,7 +87,7 @@
           <xsl:for-each select="images/image[position() &lt; 5]">
             <td>
               <a href="{func:link(concat('image/view?', ../../../../@name, ',i,', $chapter, ',', position()- 1))}">
-                <img border="0" src="/albums/{../../../../@name}/thumb.{name}"/>
+                <img width="150" height="113" border="0" src="/albums/{../../../../@name}/thumb.{name}"/>
               </a>
             </td>
           </xsl:for-each>
