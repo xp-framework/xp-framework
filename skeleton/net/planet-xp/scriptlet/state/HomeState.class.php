@@ -36,6 +36,7 @@
         // Ignore
       }
       
+      $response->addFormResult(new Node('offset', $request->getParam('offset', 0)));
       $response->addFormResult(new Node('syndicates', new PCData($entries)));
       $response->addFormResult(new Node('syndication', new PCData($feeds)));
     }
