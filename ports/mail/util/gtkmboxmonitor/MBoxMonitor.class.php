@@ -446,9 +446,13 @@
      * @access  public
      */
     function done() {
-      if (!parent::done()) return;
-      $this->setStatusText('Disconnecting...');
-      $this->stor->close();
+      if ($this->_done) return;
+      
+      if ($this->stor->isConnected()) {
+        $this->setStatusText('Disconnecting...');
+        $this->stor->close();
+      }
+      parent::done();
     }
   }
 ?>
