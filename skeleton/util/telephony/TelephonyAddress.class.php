@@ -4,10 +4,6 @@
  * $Id$
  */
  
-  define('TEL_ADDRESS_EXTERNAL',         'ext');
-  define('TEL_ADDRESS_INTERNAL',         'int');
-  define('TEL_ADDRESS_INTERNATIONAL',    'itl');
-
   define('TEL_CALL_INTERNATIONAL',      0x0000);
   define('TEL_CALL_NATIONAL',           0x0004);
   define('TEL_CALL_CITY',               0x0006);
@@ -39,16 +35,16 @@
     }
     
     /**
-     * Retreive the phone number
+     * Retreive the phone number in nice human readable form.
      *
      * @access  public
      * @param int callCategory for which "view" do we need the number
      * @return string number
      */
-    function getNumber($category= TEL_CALL_INTERNATIONAL) {
+    function toString($category= TEL_CALL_INTERNATIONAL) {
       $display= array (
         TEL_CALL_INTERNATIONAL => '%s %s %s%s',
-        TEL_CALL_NATIONAL      => '%2$s %3$s%4$s',
+        TEL_CALL_NATIONAL      => '0%2$s %3$s%4$s',
         TEL_CALL_CITY          => '%3$s%4$s',
         TEL_CALL_INTERNAL      => '%4$s'
       );
@@ -57,6 +53,33 @@
         $this->getCountryCode(),
         $this->areaCode,
         $this->getSubscriber().(strlen ($this->getExt()) ? '-' : ''),
+        $this->getExt()
+      );
+    }
+    
+    /**
+     * Get a rather technically based view for the address. That is
+     * do not print any separators like space or minus.
+     *
+     * This form is not good to be parsed again, but to be given
+     * to an real phone system.
+     *
+     * @access public
+     * @param int callCategory
+     * @return string number
+     */    
+    function getNumber($category= TEL_CALL_INTERNATIONAL) {
+      $display= array (
+        TEL_CALL_INTERNATIONAL => '%s%s%s%s',
+        TEL_CALL_NATIONAL      => '0%2$s%3$s%4$s',
+        TEL_CALL_CITY          => '%3$s%4$s',
+        TEL_CALL_INTERNAL      => '%4$s'
+      );
+      
+      return sprintf ($display[$category],
+        $this->getCountryCode(),
+        $this->areaCode,
+        $this->getSubscriber(),
         $this->getExt()
       );
     }
@@ -185,7 +208,7 @@
     }
     
     /**
-     * Returns the category for a call of $this number to the remove number
+     * Returns the category for a call of $this number to the remote number
      *
      * @access public
      * @param &TelephonyAddress remoteAddress
