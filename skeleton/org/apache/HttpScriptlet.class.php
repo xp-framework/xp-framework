@@ -135,7 +135,7 @@
      * so that the request object gets set up correctly before any
      * of your source is executed
      *
-     * @access  private
+     * @access  protected
      * @return  string class method (one of doGet, doPost, doHead)
      * @param   string method Request-Method
      * @see     rfc://2616
@@ -187,10 +187,10 @@
      *   }
      * </code>
      *
-     * @access  private
+     * @access  public
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request 
+     * @param   &org.apache.HttpScriptletResponse response 
      * @throws  Exception to indicate failure
      */
     function doGet(&$request, &$response) {
@@ -200,11 +200,10 @@
      * Receives an HTTP POST request from the <pre>process()</pre> method
      * and handles it.
      *
-     * @see     #doGet
-     * @access  private
+     * @access  public
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request 
+     * @param   &org.apache.HttpScriptletResponse response 
      * @throws  Exception to indicate failure
      */
     function doPost(&$request, &$response) {
@@ -224,11 +223,10 @@
      * often used for testing hypertext links for validity, accessibility,
      * and recent modification.
      *
-     * @see     #doGet
-     * @access  private
+     * @access  public
      * @return  bool processed
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @param   &org.apache.HttpScriptletRequest request 
+     * @param   &org.apache.HttpScriptletResponse response 
      * @throws  Exception to indicate failure
      */
     function doHead(&$request, &$response) {
@@ -254,10 +252,11 @@
      *   8 fraction        #test
      * </pre>
      *
-     * @see     #doGet
-     * @access  private
-     * @public  request org.apache.HttpScriptletRequest
-     * @access  response org.apache.HttpScriptletResponse
+     * @access  public
+     * @return  bool processed
+     * @param   &org.apache.HttpScriptletRequest request 
+     * @param   &org.apache.HttpScriptletResponse response 
+     * @throws  Exception to indicate failure
      */
     function doCreateSession(&$request, &$response) {
       $uri= $request->getURI();
@@ -277,16 +276,24 @@
     
     /**
      * Initialize the scriptlet. This method is called before any 
-     * method processing is done, so there is no request and/or
-     * response data. In this method, you can set up "global" 
-     * requirements such as a configuration manager.
+     * method processing is done.
+     *
+     * In this method, you can set up "global" requirements such as a 
+     * configuration manager.
      *
      * @access  public
      */
     function init() {
-      if ($this->needsSession) {
-        $this->_session();
-      }
+      $this->request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
+      $this->request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
+      $this->request->method= getenv('REQUEST_METHOD');
+      $this->request->setURI(parse_url(
+        ('on' == getenv('HTTPS') ? 'https' : 'http').'://'.
+        getenv('HTTP_HOST').
+        getenv('REQUEST_URI')
+      ));
+      
+      if ($this->needsSession) $this->_session();
     }
     
     /**
@@ -309,15 +316,6 @@
      * @throws  org.apache.HttpScriptletException indicating fatal errors
      */
     function &process() {
-      $this->request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
-      $this->request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
-      $this->request->method= getenv('REQUEST_METHOD');
-      $this->request->setURI(parse_url(
-        ('on' == getenv('HTTPS') ? 'https' : 'http').'://'.
-        getenv('HTTP_HOST').
-        getenv('REQUEST_URI')
-      ));
-
       if (FALSE === $this->_handleMethod($this->request->method)) {
         return throw(new HttpScriptletException(sprintf(
           'HTTP method "%s" not supported - request was: %s',
