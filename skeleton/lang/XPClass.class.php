@@ -24,9 +24,9 @@
    */
   class XPClass extends Object {
     var 
-	  $_objref= NULL,
-	  $name= '';
-	  
+      $_objref= NULL,
+      $name= '';
+      
     /**
      * Constructor
      *
@@ -34,22 +34,22 @@
      * @param   &mixed ref
      */
     function __construct(&$ref) {
-	  $this->_objref= &$ref;
-	  $idx= is_object($ref) ? get_class($ref) : $ref;
-	  if (!isset($GLOBALS['php_class_names'][$idx])) {
-	    $this->name= 'php.'.$idx;
-	  } else {
-	    $this->name= $GLOBALS['php_class_names'][$idx];
-	  }
-	  parent::__construct();
-	}
-	
+      $this->_objref= &$ref;
+      $idx= is_object($ref) ? get_class($ref) : $ref;
+      if (!isset($GLOBALS['php_class_names'][$idx])) {
+        $this->name= 'php.'.$idx;
+      } else {
+        $this->name= $GLOBALS['php_class_names'][$idx];
+      }
+      parent::__construct();
+    }
+    
     /**
      * Retreives the fully qualified class name for this class.
-	 * 
-	 * Warning: Built-in classes will have a "php." prefixed,
-	 * e.g. php.stdClass although there is no such directory "php" 
-	 * in the XP framework and no such file "stdClass.class.php" there.
+     * 
+     * Warning: Built-in classes will have a "php." prefixed,
+     * e.g. php.stdClass although there is no such directory "php" 
+     * in the XP framework and no such file "stdClass.class.php" there.
      *
      * @access  public
      * @return  string name - e.g. "io.File", "rdbms.mysql.MySQL"
@@ -57,109 +57,110 @@
     function getName() {
       return $this->name;
     }
-	
+    
     /**
      * Creates a new instance of the class represented by this Class object.
-	 * The class is instantiated as if by a new expression with an empty argument list.
-	 *
-	 * Example:
-	 * <code>
-	 *   try(); {
-	 *     $c= &XPClass::forName($name) &&
-	 *     $o= &$c->newInstance();
-	 *   } if (catch('ClassNotFoundException', $e)) {
-	 *     // handle it!
-	 *   }
-	 * </code>
+     * The class is instantiated as if by a new expression with an empty argument list.
+     *
+     * Example:
+     * <code>
+     *   try(); {
+     *     $c= &XPClass::forName($name) &&
+     *     $o= &$c->newInstance();
+     *   } if (catch('ClassNotFoundException', $e)) {
+     *     // handle it!
+     *   }
+     * </code>
      *
      * @access  public
      * @return  &Object 
-	 * @throws	ClassNotFoundException when there is no such class
+     * @throws    ClassNotFoundException when there is no such class
      */
-	function &newInstance() {
+    function &newInstance() {
       $paramstr= '';
+      $args= func_get_args();
       for ($i= 0, $m= func_num_args(); $i < $m; $i++) {
-        $paramstr.= ', func_get_arg('.$i.')';
+        $paramstr.= ', $args['.$i.']';
       }
       
       return eval('return new '.reflect($this->name).'('.substr($paramstr, 2).');');
-	}
-	
+    }
+    
     /**
      * Gets class methods for this class
      *
      * @access  public
      * @return  string[] methodname
      */
-	function getMethods() {
+    function getMethods() {
       return get_class_methods($this->_objref);
-	}
-	
+    }
+    
     /**
      * Checks whether this class has a method named "$method" or not.
-	 * Since in PHP, methods are case-insensitive, calling
-	 * hasMethod('toString') will provide the same result as 
-	 * hasMethod('tostring')
+     * Since in PHP, methods are case-insensitive, calling
+     * hasMethod('toString') will provide the same result as 
+     * hasMethod('tostring')
      *
      * @access  public
      * @param   string method the method's name
      * @return  bool TRUE if method exists
      */
-	function hasMethod($method) {
-	  return in_array(
-		strtolower($method),
-		get_class_methods($this->_objref)
+    function hasMethod($method) {
+      return in_array(
+        strtolower($method),
+        get_class_methods($this->_objref)
       );
-	}
-	
+    }
+    
     /**
      * Retreive a list of all declared member variables
      *
      * @access  public
      * @return  string[] member names
      */
-	function getFields() {
-	  return (is_object($this->_objref) 
-	    ? get_object_vars($this->_objref) 
-		: get_class_vars($this->_objref)
+    function getFields() {
+      return (is_object($this->_objref) 
+        ? get_object_vars($this->_objref) 
+        : get_class_vars($this->_objref)
       );
-	}
-	
+    }
+    
     /**
      * Retreive the parent class's class object
      *
      * @access  public
      * @return  &lang.XPClass class object
      */
-	function &getParentclass() {
-	  return new XPClass(get_parent_class($this->_objref));
-	}
-	
+    function &getParentclass() {
+      return new XPClass(get_parent_class($this->_objref));
+    }
+    
     /**
      * Returns the Class object associated with the class with the given string name.
      *
      * @access  static
      * @param   string name - e.g. "io.File", "rdbms.mysql.MySQL"
      * @return  &lang.XPClass class object
-	 * @throws	ClassNotFoundException when there is no such class
+     * @throws    ClassNotFoundException when there is no such class
      */
-	function &forName($name) {
-	  if (FALSE === ($name= ClassLoader::loadClass($name))) return NULL;
-	  return new XPClass($name);
-	}
-	
+    function &forName($name) {
+      if (FALSE === ($name= ClassLoader::loadClass($name))) return NULL;
+      return new XPClass($name);
+    }
+    
     /**
      * Returns an array containing class objects representing all the public classes
      *
      * @access  public
      * @return  &lang.XPClass[] class objects
      */
-	function getClasses() {
-	  $ret= array();
-	  foreach (get_declared_classes() as $name) {
-	    $ret[]= &new XPClass($name);
-	  }
-	  return $ret;
-	}
+    function getClasses() {
+      $ret= array();
+      foreach (get_declared_classes() as $name) {
+        $ret[]= &new XPClass($name);
+      }
+      return $ret;
+    }
   }
 ?>
