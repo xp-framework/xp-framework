@@ -199,9 +199,9 @@
           // <item>
           if (empty($child->children)) break;
           foreach ($child->children as $item) {
-            $key= $item->children[0]->getContent($this->getEncoding());
+            $key= $item->children[0]->getContent($this->getEncoding(), $this->namespaces);
             $result[$key]= ((empty($item->children[1]->children) && !isset($item->children[1]->attribute['href']))
-              ? $item->children[1]->getContent($this->getEncoding())
+              ? $item->children[1]->getContent($this->getEncoding(), $this->namespaces)
               : $this->unmarshall($item->children[1], 'MAP', $mapping)
             );
           }
@@ -242,7 +242,7 @@
             break;
           }
 
-          $result= $child->getContent($this->getEncoding());
+          $result= $child->getContent($this->getEncoding(), $this->namespaces);
       }
 
       return $result;

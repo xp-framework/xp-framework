@@ -59,9 +59,9 @@
      * @param   string encoding default NULL
      * @return  &mixed data
      */
-    function &getContent($encoding= NULL) {
+    function &getContent($encoding, &$namespaces) {
       $ret= $this->content;
-      @list($ns, $t)= explode(':', @$this->attribute['xsi:type']);
+      @list($ns, $t)= explode(':', @$this->attribute[$namespaces[XMLNS_XSI].':type']);
       
       switch (strtolower($t)) {
         case 'base64':
@@ -81,6 +81,7 @@
           $t= 'integer';
           break;
           
+        case 'decimal':  
         case 'float':
         case 'double':
           $t= 'double';
