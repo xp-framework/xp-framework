@@ -450,16 +450,29 @@
         // DEBUG printf("[%-30s] %s\n", ucfirst($k), $t);
         switch (ucfirst($k)) {
           case HEADER_FROM:
-            if ('' != trim($t)) {
-              $this->setFrom(InternetAddress::fromString($t));
+            try(); {
+              if ('' != trim($t)) {
+                $this->setFrom(InternetAddress::fromString($t));
+              }
+            } if (catch('FormatException', $e)) {
+              $this->setFrom(new InternetAddress(array(NULL, NULL), $t));
+                            
+              // Fall through
             }
             break;
             
           case HEADER_TO:
           case HEADER_CC:
           case HEADER_BCC:
-            if ('' != trim($t)) {
-              $this->addRecipient(strtolower($k), InternetAddress::fromString($t));
+            try(); {
+              $k= strtolower($k);
+              if ('' != trim($t)) {
+                $this->addRecipient($k, InternetAddress::fromString($t));
+              }
+            } if (catch('FormatException', $e)) {
+              $this->addRecipient($k, new InternetAddress(array(NULL, NULL), $t));
+              
+              // Fall through
             }
             break;
             
