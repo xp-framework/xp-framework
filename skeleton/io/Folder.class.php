@@ -13,7 +13,7 @@
    * <code>
    *   try(); {
    *     $d= new Folder('/etc/');
-   *     while ($entry= $d->getEntry()) {
+   *     while (FALSE !== ($entry= $d->getEntry())) {
    *       printf("%s/%s\n", $d->uri, $entry);
    *     }
    *     $d->close();
