@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document title="XP::About::Future">
+  <main>
+    <references>
+      <ref link="about">Introduction</ref>
+      <ref type="ext" link="http://cvs.php.net/co.php/ZendEngine2/ZEND_CHANGES?r=head">Changes in the Zend Engine 2.0</ref>
+    </references>
+    <content>
+      <title>The future of XP</title>
+      <editor>$Id$</editor>
+      
+      <para>
+        <caption>The Zend Engine 2</caption>
+        <text>
+        </text>
+      </para>
+      <para>
+        <caption>Changes: Exceptions</caption>
+        <text>
+          Exceptions are now built-in:
+          <code><![CDATA[  // XP1
+  try(); {
+    // whatever
+  } if (catch('Exception', $e)) {
+    $e->printStackTrace();
+    exit();
+  } 
+  
+  // XP2
+  try {
+    // whatever
+  } catch (Exception $e) {
+    $e->printStackTrace();
+    exit();
+  } ]]></code>  
+        </text>
+      </para>              
+      <para>
+        <caption>Changes: Dereferencing</caption>
+        <text>
+          Dereferencing allows nicer syntax like this:
+          <code><![CDATA[  // XP1
+  $l= &Logger::getInstance();
+  $cat= &$l->getCategory();
+  
+  // XP2
+  $cat= Logger::getInstance()->getCategory();]]></code>  
+        </text>
+    </content>
+  </main>
+</document>
