@@ -69,9 +69,9 @@ index: $(OUTPUT) $(XML)
 content:
 	@echo "===> Creating main content"
 	@for i in `find content/main/ -name '*.xml'` ; do \
-	  echo "---> Processing $$i" ; \
 	  f=`basename $$i | sed -e 's/\.xml$$//g'` ; \
-	  $(SABCMD) xslt/content.xsl $$i $(CONTENT)/$$f.html 2>/dev/null ; \
+	  echo "---> Processing $$f" ; \
+	  $(SABCMD) xslt/content.xsl $$i $(CONTENT)/$$f.html ; \
     done
       
 collections: $(OUTPUT) $(XML)
