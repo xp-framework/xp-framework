@@ -25,7 +25,7 @@
   if (2 > $p->count || $p->exists('help', '?')) {
     printf(
       "Usage:   %1\$s <filename> [--target=<target_dir>] [--dump]\n".
-      "Example: for i in `find ~/devel/xp/skeleton/ -type f -name '*.class.php' | grep -v /lang/` ; do php migrate_php5.php $i --target=~/devel/xp/experiments/skeleton2/; done\n",
+      "Example: for i in `find ~/devel/xp/skeleton/ -type f -name '*.class.php' | grep -v /lang/` ; do php migrate_php5.php \$i --target=~/devel/xp/experiments/skeleton2/; done\n",
       basename($p->value(0))
     );
     exit(-2);
@@ -172,8 +172,15 @@ __;
           if (T_VARIABLE == $tok[0]) {
             $variable= $tok[1];
             $v= array();
-            while (',' !== $tok[1] && ';' !== $tok[1]) {
+            $l= 0;
+            while ($l > -1) {
               $tok= $t->getNextToken();
+              switch ($tok[1]) {
+                case '(': $l++; break;
+                case ')': $l--; break;
+                case ',': 
+                case ';': if (0 == $l) break 2;
+              }
               $v[]= $tok[1];
             }
             $variables['_' == $variable{1} ? 'protected' : 'public'][$variable]= $v;
@@ -185,9 +192,12 @@ __;
           if (empty($list)) continue;
           $out[]= $type;
           foreach ($list as $variable => $initialization) {
-            $out[]= "\n      ".$variable.implode('', $initialization);
+            $out[]= "\n      ".$variable.implode('', $initialization).',';
           }
+          $out[]= rtrim(array_pop($out), ',;').';';
+          $out[]= "\n    ";
         }
+        array_pop($out);            // Get rid of trailing whitespace
         $tok= array(T_NONE, '');
         break;
         
@@ -231,8 +241,9 @@ __;
           }
           if (T_VARIABLE == $tok[0]) {
             $type= @$apidoc['params'][substr($tok[1], 1)];
-            if ('&' == $type{0}) {
-              $out[]= substr($type, strrpos($type, '.')+ 1).' ';
+            if ((FALSE !== strpos($type, '.')) && (FALSE === strpos($type, '['))) {
+              $typename= ltrim(substr($type, strrpos($type, '.')+ 1), '&');
+              $out[]= (isset($map[$typename]) ? $map[$typename] : $typename).' ';
             }
           }
           $out[]= $tok[1];
@@ -251,6 +262,7 @@ __;
           while ('}' !== $tok[1]) {
             $tok= $t->getNextToken();
           }
+          array_pop($out);  // Kill whitespace after closing ")"
           $out[]= ';';
           $tok= $t->getNextToken();
         } elseif ('getInstance' == $function) {
@@ -265,18 +277,19 @@ __;
               }
               $t->getNextToken();
               $tok= $t->getNextToken();
-              var_dump($static);
             }
             $out[]= $static ? str_replace($static, 'self::'.$static, $tok[1]) : $tok[1];
             $tok= $t->getNextToken();
           }
           
           // Now insert instance variable
-          $out= array_merge(
-            array_slice($out, 0, $class+ 3),
-            array('public static '.$static."= NULL;\n    "),
-            array_slice($out, $class+ 3)
-          );
+          if ($static) {
+            $out= array_merge(
+              array_slice($out, 0, $class+ 3),
+              array('protected static '.$static."= NULL;\n    "),
+              array_slice($out, $class+ 3)
+            );
+          }
         }
         
         // Reset API-doc
