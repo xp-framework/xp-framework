@@ -17,6 +17,13 @@
     }
     // }}}
 
+    // {{{ public string typeOf(&mixed arg)
+    //     Returns the fully qualified type name
+    function typeOf(&$arg) {
+      return is_object($arg) ? xp::nameOf(get_class($arg)) : gettype($arg);
+    }
+    // }}}
+
     // {{{ public bool errorAt(string file [, int line)
     //     Returns whether an error occured at the specified position
     function errorAt($file, $line= -1) {
