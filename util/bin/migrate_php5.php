@@ -96,7 +96,6 @@ __;
         }
       }
     }
-    
     switch (strtolower($tok[1])) {
       case 'uses':
         while (')' !== $tok[1]) {
@@ -341,7 +340,9 @@ __;
         break;
         
       case 'catch':     // if (catch('Exception', $e)) {
-        while (0 != strcasecmp(array_pop($out), 'if')) { }
+        while ($token= strtolower(array_pop($out))) {
+          if ('elseif' == $token || 'if' == $token) break;
+        }
         $out[]= 'catch (';
         while ('{' !== $tok[1]) {
           switch ($tok[0]) {
