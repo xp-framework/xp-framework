@@ -4,7 +4,7 @@ RCS file: /repository/ZendEngine2/zend.h,v
 retrieving revision 1.266
 diff -u -r1.266 zend.h
 --- Zend/zend.h	3 Nov 2004 23:05:17 -0000	1.266
-+++ Zend/zend.h	7 Nov 2004 02:17:56 -0000
++++ Zend/zend.h	7 Nov 2004 15:07:59 -0000
 @@ -255,6 +255,8 @@
   */
  typedef struct _zval_struct zval;
@@ -46,7 +46,7 @@ RCS file: /repository/ZendEngine2/zend_API.c,v
 retrieving revision 1.269
 diff -u -r1.269 zend_API.c
 --- Zend/zend_API.c	2 Nov 2004 13:10:37 -0000	1.269
-+++ Zend/zend_API.c	7 Nov 2004 02:17:56 -0000
++++ Zend/zend_API.c	7 Nov 2004 15:08:00 -0000
 @@ -1313,6 +1313,9 @@
  			internal_function->return_reference = ptr->arg_info[0].return_reference;
  		} else {
@@ -63,7 +63,7 @@ RCS file: /repository/ZendEngine2/zend_builtin_functions.c,v
 retrieving revision 1.254
 diff -u -r1.254 zend_builtin_functions.c
 --- Zend/zend_builtin_functions.c	26 Oct 2004 23:25:05 -0000	1.254
-+++ Zend/zend_builtin_functions.c	7 Nov 2004 02:17:57 -0000
++++ Zend/zend_builtin_functions.c	7 Nov 2004 15:08:01 -0000
 @@ -1205,45 +1205,80 @@
  	zend_uint mask = va_arg(args, zend_uint);
  	zend_uint comply = va_arg(args, zend_uint);
@@ -161,7 +161,7 @@ RCS file: /repository/ZendEngine2/zend_compile.c,v
 retrieving revision 1.600
 diff -u -r1.600 zend_compile.c
 --- Zend/zend_compile.c	16 Oct 2004 23:17:58 -0000	1.600
-+++ Zend/zend_compile.c	7 Nov 2004 02:17:59 -0000
++++ Zend/zend_compile.c	7 Nov 2004 15:08:04 -0000
 @@ -116,6 +116,22 @@
  	CG(declarables).ticks.value.lval = 0;
  }
@@ -491,7 +491,7 @@ RCS file: /repository/ZendEngine2/zend_compile.h,v
 retrieving revision 1.297
 diff -u -r1.297 zend_compile.h
 --- Zend/zend_compile.h	27 Oct 2004 17:58:45 -0000	1.297
-+++ Zend/zend_compile.h	7 Nov 2004 02:17:59 -0000
++++ Zend/zend_compile.h	7 Nov 2004 15:08:04 -0000
 @@ -45,6 +45,23 @@
          CG(doc_comment) = NULL;  \
          CG(doc_comment_len) = 0; \
@@ -579,7 +579,7 @@ RCS file: /repository/ZendEngine2/zend_exceptions.c,v
 retrieving revision 1.74
 diff -u -r1.74 zend_exceptions.c
 --- Zend/zend_exceptions.c	30 Oct 2004 10:13:27 -0000	1.74
-+++ Zend/zend_exceptions.c	7 Nov 2004 02:18:00 -0000
++++ Zend/zend_exceptions.c	7 Nov 2004 15:08:05 -0000
 @@ -28,6 +28,7 @@
  #include "zend_interfaces.h"
  #include "zend_exceptions.h"
@@ -641,7 +641,7 @@ RCS file: /repository/ZendEngine2/zend_globals.h,v
 retrieving revision 1.140
 diff -u -r1.140 zend_globals.h
 --- Zend/zend_globals.h	3 Nov 2004 23:13:32 -0000	1.140
-+++ Zend/zend_globals.h	7 Nov 2004 02:18:00 -0000
++++ Zend/zend_globals.h	7 Nov 2004 15:08:05 -0000
 @@ -73,8 +73,11 @@
  	zend_stack foreach_copy_stack;
  	zend_stack object_stack;
@@ -660,7 +660,7 @@ RCS file: /repository/ZendEngine2/zend_language_parser.y,v
 retrieving revision 1.151
 diff -u -r1.151 zend_language_parser.y
 --- Zend/zend_language_parser.y	4 Oct 2004 19:54:34 -0000	1.151
-+++ Zend/zend_language_parser.y	7 Nov 2004 02:18:00 -0000
++++ Zend/zend_language_parser.y	7 Nov 2004 15:08:05 -0000
 @@ -111,6 +111,7 @@
  %token T_TRY
  %token T_CATCH
@@ -737,7 +737,7 @@ diff -u -r1.151 zend_language_parser.y
 +;
 +
 +package_inner_statement:
-+		class_declaration_statement
++		class_declaration_statement { zend_do_early_binding(TSRMLS_C); }
 +;
 +
 +package_declaration_statement:
@@ -911,7 +911,7 @@ RCS file: /repository/ZendEngine2/zend_language_scanner.l,v
 retrieving revision 1.116
 diff -u -r1.116 zend_language_scanner.l
 --- Zend/zend_language_scanner.l	3 Nov 2004 23:13:32 -0000	1.116
-+++ Zend/zend_language_scanner.l	7 Nov 2004 02:18:01 -0000
++++ Zend/zend_language_scanner.l	7 Nov 2004 15:08:05 -0000
 @@ -795,6 +795,10 @@
  	return T_THROW;
  }
@@ -972,7 +972,7 @@ RCS file: /repository/ZendEngine2/zend_object_handlers.c,v
 retrieving revision 1.106
 diff -u -r1.106 zend_object_handlers.c
 --- Zend/zend_object_handlers.c	30 Oct 2004 19:11:37 -0000	1.106
-+++ Zend/zend_object_handlers.c	7 Nov 2004 02:18:01 -0000
++++ Zend/zend_object_handlers.c	7 Nov 2004 15:08:05 -0000
 @@ -606,6 +606,8 @@
  			call_user_call->handler = zend_std_call_user_call;
  			call_user_call->arg_info = NULL;
@@ -988,7 +988,7 @@ RCS file: /repository/ZendEngine2/zend_opcode.c,v
 retrieving revision 1.109
 diff -u -r1.109 zend_opcode.c
 --- Zend/zend_opcode.c	4 Oct 2004 19:54:34 -0000	1.109
-+++ Zend/zend_opcode.c	7 Nov 2004 02:18:02 -0000
++++ Zend/zend_opcode.c	7 Nov 2004 15:08:05 -0000
 @@ -78,6 +78,9 @@
  	op_array->doc_comment = NULL;
  	op_array->doc_comment_len = 0;
@@ -1067,7 +1067,7 @@ RCS file: /repository/ZendEngine2/zend_operators.c,v
 retrieving revision 1.202
 diff -u -r1.202 zend_operators.c
 --- Zend/zend_operators.c	3 Nov 2004 23:13:32 -0000	1.202
-+++ Zend/zend_operators.c	7 Nov 2004 02:18:02 -0000
++++ Zend/zend_operators.c	7 Nov 2004 15:08:06 -0000
 @@ -102,6 +102,55 @@
  	return result;
  }
@@ -1254,7 +1254,7 @@ RCS file: /repository/ZendEngine2/zend_reflection_api.c,v
 retrieving revision 1.138
 diff -u -r1.138 zend_reflection_api.c
 --- Zend/zend_reflection_api.c	3 Nov 2004 21:18:44 -0000	1.138
-+++ Zend/zend_reflection_api.c	7 Nov 2004 02:18:04 -0000
++++ Zend/zend_reflection_api.c	7 Nov 2004 15:08:07 -0000
 @@ -631,7 +631,18 @@
  	if (fptr->type == ZEND_USER_FUNCTION && fptr->op_array.return_reference) {
  		string_printf(str, "&");
@@ -1554,7 +1554,7 @@ RCS file: /repository/ZendEngine2/zend_vm_def.h,v
 retrieving revision 1.3
 diff -u -r1.3 zend_vm_def.h
 --- Zend/zend_vm_def.h	3 Nov 2004 07:11:49 -0000	1.3
-+++ Zend/zend_vm_def.h	7 Nov 2004 02:18:05 -0000
++++ Zend/zend_vm_def.h	7 Nov 2004 15:08:08 -0000
 @@ -3421,3 +3421,74 @@
  	ZEND_VM_NEXT_OPCODE();
  }
@@ -1636,7 +1636,7 @@ RCS file: /repository/ZendEngine2/zend_vm_execute.h,v
 retrieving revision 1.4
 diff -u -r1.4 zend_vm_execute.h
 --- Zend/zend_vm_execute.h	3 Nov 2004 07:11:49 -0000	1.4
-+++ Zend/zend_vm_execute.h	7 Nov 2004 02:18:12 -0000
++++ Zend/zend_vm_execute.h	7 Nov 2004 15:08:15 -0000
 @@ -483,6 +483,77 @@
  	ZEND_VM_NEXT_OPCODE();
  }
@@ -1839,7 +1839,7 @@ RCS file: /repository/ZendEngine2/zend_vm_opcodes.h,v
 retrieving revision 1.1
 diff -u -r1.1 zend_vm_opcodes.h
 --- Zend/zend_vm_opcodes.h	27 Oct 2004 20:13:59 -0000	1.1
-+++ Zend/zend_vm_opcodes.h	7 Nov 2004 02:18:12 -0000
++++ Zend/zend_vm_opcodes.h	7 Nov 2004 15:08:16 -0000
 @@ -127,3 +127,4 @@
  #define ZEND_ASSIGN_DIM              147
  #define ZEND_ISSET_ISEMPTY_PROP_OBJ  148
