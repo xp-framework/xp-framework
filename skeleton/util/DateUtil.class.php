@@ -46,7 +46,7 @@
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
-        $date->getMonth()+1,
+        $date->getMonth() + 1,
         0,
         $date->getYear()
       ));
@@ -80,15 +80,28 @@
      * @param   int count
      * @return  &util.Date
      */
-    function addMonths(&$date, $cnt= 1) {
+    function addMonths(&$date, $count= 1) {
       return new Date (mktime (
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
-        $date->getMonth() + $cnt,
+        $date->getMonth() + $count,
         $date->getDay(),
         $date->getYear()
       ));
+    }
+
+    /**
+     * Adds a positive or negative amount of weeks
+     *
+     * @model   static
+     * @access  public
+     * @param   &util.Date
+     * @param   int count
+     * @return  &util.Date
+     */
+    function addWeeks(&$date, $count= 1) {
+      return new Date($date->getTime() + $count * 604800);
     }
     
     /**
@@ -100,15 +113,8 @@
      * @param   int count
      * @return  &util.Date
      */
-    function addDays(&$date, $cnt= 1) {
-      return new Date (mktime (
-        $date->getHours(),
-        $date->getMinutes(),
-        $date->getSeconds(),
-        $date->getMonth(),
-        $date->getDay() + $cnt,
-        $date->getYear()
-      ));
+    function addDays(&$date, $count= 1) {
+      return new Date($date->getTime() + $count * 86400);
     }
     
     /**
@@ -120,15 +126,8 @@
      * @param   int count
      * @return  &util.Date
      */
-    function addHours(&$date, $cnt= 1) {
-      return new Date (mktime (
-        $date->getHours() + $cnt,
-        $date->getMinutes(),
-        $date->getSeconds(),
-        $date->getMonth(),
-        $date->getDay(),
-        $date->getYear()
-      ));
+    function addHours(&$date, $count= 1) {
+      return new Date($date->getTime() + $count * 3600);
     }
     
     /**
@@ -140,15 +139,8 @@
      * @param   int count
      * @return  &util.Date
      */
-    function addMinutes(&$date, $cnt= 1) {
-      return new Date (mktime (
-        $date->getHours(),
-        $date->getMinutes() + $cnt,
-        $date->getSeconds(),
-        $date->getMonth(),
-        $date->getDay(),
-        $date->getYear()
-      ));
+    function addMinutes(&$date, $count= 1) {
+      return new Date($date->getTime() + $count * 60);
     }
 
     /**
@@ -160,15 +152,8 @@
      * @param   int count
      * @return  &util.Date
      */
-    function addSeconds(&$date, $cnt= 1) {
-      return new Date (mktime (
-        $date->getHours(),
-        $date->getMinutes(),
-        $date->getSeconds() + $cnt,
-        $date->getMonth(),
-        $date->getDay(),
-        $date->getYear()
-      ));
+    function addSeconds(&$date, $count= 1) {
+      return new Date($date->getTime() + $count);
     }
   }
 ?>
