@@ -105,7 +105,17 @@
      * @param   string value header value
      */
     function setHeader($name, $value) {
-      $this->headers[$name]= $value;
+      $this->headers[]= $name.': '.$value;
+    }
+    
+    /**
+     * Set a cookie
+     *
+     * @access  public
+     * @param   &peer.http.Cookie cookie
+     */
+    function setCookie(&$cookie) {
+      $this->headers[]= 'Set-Cookie: '.$cookie->getValueRepresentation();
     }
     
     /**
@@ -152,11 +162,8 @@
         default:
           header(sprintf('HTTP/%s %d', $this->version, $this->statusCode));
       } 
-      foreach (array_keys($this->headers) as $key) {
-        header($key.': '.strtr(
-          $this->headers[$key], 
-          array("\r" => '', "\n" => "\n\t")
-        ));
+      foreach ($this->headers as $header) {
+        header(strtr($header, array("\r" => '', "\n" => "\n\t")));
       }
     }
 
