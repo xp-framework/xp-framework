@@ -40,7 +40,7 @@
       return new Money($m1->amount - $m2->amountIn($m1->currency), $m1->currency);
     }
     
-    public static operator compare (Money $m1, Money $m2) {
+    public static operator __compare (Money $m1, Money $m2) {
       return strcmp(
         sprintf('%.4f', $m1->amountIn($m2->currency)),
         sprintf('%.4f', $m2->amount)

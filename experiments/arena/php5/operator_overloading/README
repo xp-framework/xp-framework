@@ -58,7 +58,7 @@ Abbreviated example:
 <pre>
   class Integer {
     
-    public static operator compare (Integer $a, Integer $b) {
+    public static operator __compare (Integer $a, Integer $b) {
       if ($a->value < $b->value) return -1;
       if ($a->value == $b->value) return 0;
       if ($a->value > $b->value) return 1;
