@@ -71,4 +71,8 @@ http://php3.de/ldap_search
 
 Comments
 --------
-n/a
+- friebe, Thu Feb 24 21:08:10 CET 2005
+  LDAPClient::search() already exists and would need to be able to
+  distinguish if an LDAPQuery object or its current first parameter,
+  string base_dn. Maybe it would be a good idea to name the new
+  function searchBy()?
