@@ -139,7 +139,7 @@
             case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
             case 's': $r= is_null($arg) ? 'NULL' : '"'.str_replace('"', '""', $arg).'"'; break;
             case 'u': $r= is_null($arg) ? 'NULL' : '"'.date ('Y-m-d h:iA', $arg).'"'; break;
-            default: $sql.= '%'.$tok; $i--; continue;
+            default: $r= '%'; $mod= -1; $i--; continue;
           }
           $sql.= $r.', ';
         }

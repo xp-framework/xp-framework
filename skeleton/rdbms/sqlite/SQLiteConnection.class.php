@@ -172,7 +172,7 @@
             case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
             case 's': $r= is_null($arg) ? 'NULL' : "'".sqlite_escape_string($arg)."'"; break;
             case 'u': $r= is_null($arg) ? 'NULL' : '"'.date ('Y-m-d H:i:s', $arg).'"'; break;
-            default: $sql.= '%'.$tok; $i--; continue;
+            default: $r= '%'; $mod= -1; $i--; continue;
           }
           $sql.= $r.', ';
         }
