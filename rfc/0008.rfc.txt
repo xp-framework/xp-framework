@@ -56,24 +56,18 @@ c) Removed restrictions
 * An interface would be added to identify an exception. Userland
   classes would have to implement it
   
-d) Namespaces for built-in classes
-* The built-in exception class would be moved to a dedicated namespace
-* spl and iterators api would be moved to a dedicated namespace (they
-  take up some really good names)
-* The directory class would be moved to a dedicated namespace
-
-e) Removed cruft
+d) Removed cruft
 * Magic quotes would completely disappear
 * register_globals would be nuked
 * Compat mode with Zend Engine 1
 * The # sign is no longer allowed for comments
 
-f) Changes in errorhandling
+e) Changes in errorhandling
 * NULL->method() would result in a NullPointer instead of Fatal errors
 * Passing an incorrect argument to a type-hinted parameter would result
   in an IllegalArgument
 
-g) Configuration
+f) Configuration
 * Safe mode (and alike) would be replaced by a permission manager
 
 Details
@@ -317,20 +311,12 @@ Details
   Currently, this would give an E_STRICT warning
   
 * Userland exceptions would no longer be forced to extend from the
-  built-in exceptions
-  The built-in exception class would be moved to a dedicated 
-  namespace and could be used it this was wanted (see below).
-  
-* An interface would be added to identify an exception. Userland
-  classes would have to implement it
-  Userland exceptions would, though, have to implement the 
-  php~Throwable interface.
-  
-* Namespaces for built-in classes
-  All built-in classes would be moved to a package called "php"
-  so no naming clashes with userland classes exist. They may be
-  imported via "import php~*" to regain the old behaviour.
+  built-in exception. An interface would be added to identify an exception. 
+  Userland classes would have to implement it.
 
+  For details, see
+  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/exceptions
+  
 * Magic quotes would completely disappear
   Magic quotes are a big nuisance and don't protect you from 
   anything. The magic quotes on request variables as well as the
