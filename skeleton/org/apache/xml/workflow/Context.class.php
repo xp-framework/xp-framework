@@ -92,7 +92,7 @@
       
       // Initialize state and set is as current state
       $state->initialize($this);
-      $this->sfm->setCurrentState($state);
+      $this->sfm->setCurrentState($state->getName());
       $cat->info('Current state is', $state->getClassName());
 
       // Now that we have the correct state:
