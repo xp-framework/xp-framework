@@ -60,8 +60,8 @@
             $identifier= 'handler.'.$request->getStateName().'.'.$name;
             $handler= &$h->addChild(new Node('handler', NULL, array('name' => $name)));
             $this->cat && $this->cat->debug('Processing handler #'.$i, $this->handlers[$i]);
-
-            // Set up handler if not in session
+            
+            $setup= FALSE;
             if (!$request->session->hasValue($identifier)) {
 
               // If the handler is already active, this means the page was reloaded
@@ -69,10 +69,14 @@
                 $handler->setAttribute('status', HANDLER_RELOADED);
                 continue;
               }
+              
+              $setup= TRUE;
+            }
 
-              // Otherwise, we may set up the handler
+            // Set up the handler if necessary
+            if ($setup) {
               try(); {
-                $setup= $this->handlers[$i]->setup($request);
+                $result= $this->handlers[$i]->setup($request);
               } if (catch('Exception', $e)) {
                 return throw($e);
               }
@@ -82,7 +86,7 @@
               // handler for an article might want to backcheck the article id
               // it is passed, and fail in case it doesn't exist (the article may
               // have been deleted by the backend or another concurrent request).
-              if (!$setup) {
+              if (!$result) {
                 $handler->setAttribute('status', HANDLER_FAILED);
                 continue;
               }
@@ -124,6 +128,8 @@
             // the data.
             if (!$this->handlers[$i]->errorsOccured()) {
               $handled= $this->handlers[$i]->handleSubmittedData($request);
+            } else {
+              $handled= $this->handlers[$i]->handleErrorCondition($request);
             }
 
             // Check whether errors occured
