@@ -324,7 +324,7 @@
           '--'.$this->boundary."\n".
           $this->parts[$i]->getHeaderString().
           "\n".
-          $this->parts[$i]->getBody().
+          rtrim($this->parts[$i]->getBody(), "\n").
           "\n\n"
         );
       }
