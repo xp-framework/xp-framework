@@ -84,7 +84,7 @@
           }
 
           // Issue HTTP request
-          $c= &new HttpConnection($j->getCodebase().'/'.$href);
+          $c= &new HttpConnection($j->getCodebase().'/'.$resource->getLocation());
           $response= &$c->get(NULL, $params);
           Console::write('     << ', $response->getStatuscode(), ' "', $response->getMessage(), '": ');
           
@@ -111,6 +111,10 @@
               Console::writeLine('(cached)');
               break;
             
+            case 404:
+              Console::writeLinef('FAIL %s... ', $j->getCodebase().'/'.$resource->getLocation());
+              break;
+
             default:
               Console::writeLine('FAIL');
           }
