@@ -27,7 +27,19 @@
           </td>
           <td width="99%" valign="top">
             <b>
-              <a href="{rss:link}"><xsl:value-of select="rss:title"/></a>
+              <a>
+                <xsl:attribute name="href">
+                  <xsl:choose>
+                    <xsl:when test="substring-before(substring-after(rss:link, '//'), '/') = 'xp.php3.de'">
+                      <xsl:value-of select="substring-after(substring-after(rss:link, '//'), '/')"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:value-of select="rss:link"/>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </xsl:attribute>
+                <xsl:value-of select="rss:title"/>
+              </a>
             </b>
             <br/>
             <xsl:apply-templates select="rss:description"/>
