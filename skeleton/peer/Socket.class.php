@@ -68,7 +68,8 @@
      * @return  string error
      */  
     function getLastError() {
-      return is_error();
+      $e= xp::registry('errors');
+      return $e[__FILE__][sizeof($e[__FILE__])];
     }
     
     /**
