@@ -23,7 +23,7 @@
      * @param   int long
      */  
     function __construct($long) {
-      $this->long= number_format($long, 0, NULL, NULL);
+      $this->long= number_format($long, 0, FALSE, FALSE);
     }
     
     /**
