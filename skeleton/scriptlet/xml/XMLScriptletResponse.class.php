@@ -31,6 +31,7 @@
       $params       = array();
     
     var
+      $_processed   = TRUE,
       $_stylesheet  = array();
     
     /**
@@ -43,25 +44,43 @@
       $this->processor= &$processor;
       $this->document= &new OutputDocument();
     }
+    
+    /**
+     * Set whether this document needs to be processed
+     *
+     * @access  public
+     * @param   bool processed
+     */
+    function setProcessed($processed) {
+      $this->_processed= $processed;
+    }
 
     /**
      * Overwritten method from parent class
      *
      * @access  public
-     * @throws  lang.IllegalAccessException
+     * @param   string s string to add to the content
+     * @throws  lang.IllegalAccessException in case processing is requested
      */
-    function write() {
-      throw(new IllegalAccessException('Cannot write directly'));
+    function write($s) {
+      if ($this->_processed) {
+        return throw(new IllegalAccessException('Cannot write directly'));
+      }
+      parent::write($s);
     }
-    
+
     /**
      * Overwritten method from parent class
      *
      * @access  public
+     * @param   string content Content
      * @throws  lang.IllegalAccessException
      */
-    function setContent() {
-      throw(new IllegalAccessException('Cannot write directly'));
+    function setContent($content) {
+      if ($this->_processed) {
+        return throw(new IllegalAccessException('Cannot write directly'));
+      }
+      parent::setContent($content);
     }
     
     /**
@@ -204,7 +223,8 @@
      * @see     xp://scriptlet.HttpScriptletResponse#process
      */
     function process() {
-      parent::process();
+      if (!$this->_processed) return FALSE;
+
       switch ($this->_stylesheet[0]) {
         case XSLT_FILE:
           $this->processor->setXSLFile($this->_stylesheet[1]);
