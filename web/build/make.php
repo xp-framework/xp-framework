@@ -63,7 +63,7 @@
       // Recurse into subdirectories, ignoring well-known directories 
       // defined in static variable "except"
       if (is_dir($fn) && !in_array($entry, $except)) {
-        recurse($list, $base, str_replace($base, '', $f->getURI().$entry));
+        recurse($list, $base, str_replace($base, '', $fn));
         continue;
       }
 
@@ -78,6 +78,7 @@
       while (1) {
         if (!$list->containsKey($fn)) {
           Console::writeLine('---> Updating added ', $fn);
+          $result= array();
           break;
         }
 
@@ -92,14 +93,27 @@
 
       // Invoke parser
       try(); {
-        $result= parse($fn, $indicator);
+        $apidoc= parse($fn, $indicator);
       } if (catch('FormatException', $e)) {
         $e->printStackTrace();
         continue;
       }
+      
+      // Store parsed information
+      $stor= &new File(sprintf(
+        'cache%s%s%s%s%s',
+        DIRECTORY_SEPARATOR,
+        $indicator,
+        DIRECTORY_SEPARATOR,
+        str_replace(DIRECTORY_SEPARATOR, '.', str_replace($base, '', $f->getURI())),
+        $filename
+      ));
+      Console::writeLine('---> Writing api documentation to ', $stor->getURI());
+      FileUtil::setContents($stor, serialize($apidoc));
+      delete($stor);
 
-      // Store parsed data in list
-      $result['mtime']= $mtime;        
+      // Store modification timestamp in list
+      $result['mtime']= $mtime;
       $list->put($fn, $result);
     }
     $f->close();
@@ -114,7 +128,7 @@
   }
   
   // Retrieve stored list
-  $stor= &new File('.make.cache');
+  $stor= &new File('cache'.DIRECTORY_SEPARATOR.'lookup.db');
   if ($stor->exists()) {
     Console::writeLinef('---> Retrieving stored parser information');
     $list= unserialize(FileUtil::getContents($stor));
