@@ -82,7 +82,7 @@
           // Create method
           $bytes.= (
             'function '.$methods[$i]->getName().'('.$signature.') { '.
-            'return $this->_h->invoke($this, \''.$methods[$i]->getName().'\', array('.$args.')); '.
+            'return $this->_h->invoke($this, \''.$methods[$i]->getName(TRUE).'\', array('.$args.')); '.
             '}'
           );
         }
