@@ -58,7 +58,13 @@
      * @see     xp://org.apache.xml.workflow.ContextResourceManager#getContextResource
      */
     function &getContextResource($name, $class= 'ContextResource') {
-      return $this->crm->getContextResource($name, $class);
+      $cr= &$this->crm->getContextResource($name, $class);
+
+      $l= &Logger::getInstance();
+      $cat= &$l->getCategory($this->getClassName());
+      $cat->debug('getContextResource', $name, $class, '>>>', $cr->getClassName());
+
+      return $cr;
     }
     
     /**
@@ -94,7 +100,6 @@
       // Initialize state and set is as current state
       $state->initialize($this);
       $this->sfm->setCurrentState($state);
-      
       $request->setState($state->getName());
       $cat->info('Current state is', $state->getClassName());
 
@@ -112,7 +117,7 @@
           $cat->info('Calling handler #'.$i, $state->handlers[$i]->getClassName());
 
           // If this handler is satisfied, ask the next handler in the queue
-          if (!$state->handlers[$i]->needsData($this)) {
+          if (!$state->handlers[$i]->needsData($this, $request)) {
             $cat->warn('Handler does not need data, proceeding...');
             continue;
           }
