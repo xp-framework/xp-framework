@@ -45,11 +45,13 @@
       $return= '';
       do {
         $length= array_pop(unpack('nbytes', substr($str, 0, 2)));
-        $return= utf8_decode(substr($str, 2, $length));
+        $return.= substr($str, 2, $length);
+
+        if ($length < 0xFFFF) break;      // Last slice
         $str= substr($str, 2+ $length);
       } while (strlen($str) > 0);
       
-      return $return;
+      return utf8_decode($return);
     }
   }
 ?>
