@@ -81,15 +81,17 @@
      *
      * @access  public
      * @param   &peer.mail.MimePart part
+     * @return  &peer.mail.MimePart the part added
      * @throws  IllegalArgumentException if part argument is not a peer.mail.MimePart
      */
-    function addPart(&$part) {
+    function &addPart(&$part) {
       if (!is_a($part, 'MimePart')) {
         return throw(new IllegalArgumentException(
           'Parameter part is not a peer.mail.MimePart (given: '.xp::typeOf($part).')'
         ));
       }
       $this->parts[]= &$part;
+      return $part;
     }
 
     /**
