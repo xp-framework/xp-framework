@@ -17,5 +17,18 @@
     var 
       $sql,
       $code;
+      
+    /**
+     * Constructor
+     *
+     * @param   string message Die Exception-Message
+     * @param   string sql default '' Das zuletzt abgesandte SQL
+     * @param   int code default 0 Der Fehlercode
+     */
+    function __construct($message, $sql= '', $code= 0) {
+      parent::__construct($message);
+      $this->sql= $sql;
+      $this->code= $code;
+    }
   }
 ?>
