@@ -11,21 +11,19 @@
    *
    * Example usage:
    * <code>
+   *   uses('util.Hashmap');
+   *
    *   $h= &new Hashmap();
    *   $h->put('color', 'red');
    *   $h->put('count', 5);
    *   if ($h->containsKey('color')) {
-   *     printf(
-   *       "Hashmap contains key 'color' with value '%s'", 
-   *       $h->get('color')
-   *     );
+   *     echo 'color => '; var_dump($h->get('color'));
    *   }
-   *   if ($h->containsValue(5)) {
-   *     printf("Hashmap contains the value 5");
-   *   }
+   *   var_dump($h->containsValue($c= 5));
    * </code>
    *
-   * @see php://array
+   * @see      php://array
+   * @purpose  Associative array wrapper class
    */
   class Hashmap extends Object {
     var $_hash= array();
