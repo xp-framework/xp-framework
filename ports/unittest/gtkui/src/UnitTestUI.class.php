@@ -95,6 +95,10 @@
       $this->connect($this->widget('select'), 'clicked');
       $this->connect($this->widget('run'), 'clicked');
       $this->connect($this->widget('clear'), 'clicked');
+      
+      if ($this->param->exists(1)) {
+        $this->addConfiguration($this->param->value(1));
+      }
     }
     
     /**
