@@ -210,11 +210,6 @@ while (@ARGV) {
       &error("Not enough whitespace found after function declaration", EWHITESPACE);
     }
     
-    # Check for whitespace after comma
-    if (!$comment && !$string && $_ =~ /,(\s*)\S/ && !length($1)) {
-      &error("Not enough whitespace found after comma", EWHITESPACE);
-    }
-    
     # Check for parameter pass by reference
     if (!$comment && !$string && $_ =~ /(\-\>|::)[^\(]+\([^\)]*(&\$|, &\$)[^\)]*\)/ && length($2)) {
       &warning("Possible occurance of call-time pass by reference", ECALLTIMEREFERENCE);
