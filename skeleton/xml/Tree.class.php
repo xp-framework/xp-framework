@@ -133,7 +133,7 @@
     function onStartElement($parser, $name, $attrs) {
       $this->_cdata= "";
 
-      $element= new $this->nodeType(array(
+      $element= &new $this->nodeType(array(
         'name'          => $name,
         'attribute'     => $attrs,
         'content'       => ''
