@@ -206,7 +206,7 @@
 
             // :krokerdil!thekid@xxx.de NICK :schnutepanzerdil
             case 'nick':
-              $this->notify('nickChanges', $target, $nick, $data);
+              $this->notify('nickChanges', $nick, substr($target, 1));
               break;
             
             // :krokerdil!thekid@xxx.de INVITE KrokerdilBot :#test
