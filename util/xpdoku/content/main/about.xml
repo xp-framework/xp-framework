@@ -213,8 +213,7 @@ function toString($format= 'r') {
   return date($format, $this->_utime);
 }]]></code>
 
-          Die Dokumentations-Standards werden in der Datei CODING_STANDARDS 
-          angeschnitten und in README.DOC ausführlich beschrieben.
+          Die Dokumentations-Standards werden <ref link="about.coding">hier</ref> ausführlich beschrieben.
         </text>
       </para>              
       <para>
@@ -244,35 +243,30 @@ function toString($format= 'r') {
         <text>
           <ul>
             <li>string reflect(string s) - Macht aus dem Dateinamen der Klasse den Klassennamen
-                reflect('IOException.class.php') := 'IOException'
+                <code><![CDATA[reflect('IOException.class.php') := 'IOException']]></code>
             </li>
             <li>void uses(string s [, string t, [...]]) - Bindet ein oder mehrere Klassen ein
-                uses('io.File');
-                uses('io.Folder', 'lang.System');
+                <code><![CDATA[uses('io.File');
+uses('io.Folder', 'lang.System');]]></code>
             </li>
-            <li>void try(void) - Beginnt einen try/catch-Block
-            </li>
+            <li>void try(void) - Beginnt einen try/catch-Block</li>
             <li>bool catch(string exception, &amp;object e) - Fängt Exceptions ab
-                if (catch('IOException', $e)) die($e-&gt;printStackTrace());
+                <code><![CDATA[if (catch('IOException', $e)) die($e->getStackTrace());]]></code>
             </li>
             <li>void throw(object e) - Wirft eine Exception
-                if (!$fd) throw(new IOException('cannot open file'));
+                <code><![CDATA[if (!$fd) throw(new IOException('cannot open file'));]]></code>
             </li>
             <li>&amp;mixed cast(&amp;mixed var [, string type= NULL]) - Castet eine Variable "NULL-safe"
-                cast('hello', 'string') := 'hello';
-                cast(NULL, 'string') := NULL
+                <code><![CDATA[cast('hello', 'string') := 'hello';
+cast(NULL, 'string') := NULL]]></code>
             </li>
             <li>bool is_error(void) - Gibt PHP-Fehlermeldungen zurück, oder, falls keine existiert, FALSE
-                if ($e= is_error(
-                  $a= preg_match('/'.$userInput.'/', $str);
-                )) throw(new FormatException($e));
+                <code><![CDATA[if ($e= is_error(
+  $a= preg_match('/'.$userInput.'/', $str);
+)) return throw(new FormatException($e));]]></code>
             </li>
-            <li>void destroy(void) - Garbage Collector
-                PRIVAT
-            </li>
-            <li>error(int errno, string errstr, string errfile, string errline) - Errorhandler
-                PRIVAT
-            </li>
+            <li>void destroy(void) - Garbage Collector</li>
+            <li>error(int errno, string errstr, string errfile, string errline) - Errorhandler</li>
           </ul>
         </text>
       </para>              
