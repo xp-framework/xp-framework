@@ -62,14 +62,8 @@
      * @access  public
      * @param   &xml.QName qname
      * @param   &lang.XPClass class
-     * @throws  lang.IllegalArgumentException
      */
     public function registerMapping(QName $qname, XPClass $class) {
-      if (!is('XPClass', $class)) {
-        throw (new IllegalArgumentException(
-          'Argument class is not an XPClass (given: '.xp::typeOf($class).')'
-        ));
-      }
       $this->mapping[strtolower($qname->toString())]= $class;
     }
     
@@ -84,9 +78,11 @@
      * @throws  xml.soap.SOAPFaultException
      */
     public function invoke() {
-      if (!is_a($this->transport, 'SOAPTransport')) throw (new IllegalArgumentException(
-        'transport must be a xml.soap.transport.SOAPTransport'
-      ));
+      if (!($this->transport instanceof SOAPTransport)) {
+        throw (new IllegalArgumentException(
+          'Transport must be a xml.soap.transport.SOAPTransport'
+        ));
+      }
       
       $args= func_get_args();
       
