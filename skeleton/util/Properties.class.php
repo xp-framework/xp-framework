@@ -246,11 +246,7 @@
     function readBool($section, $key, $default= FALSE) {
       $this->_load();
       if (!isset($this->_data[$section][$key])) return $default;
-      return (
-        (0 == strcasecmp('on', $this->_data[$section][$key])) ||
-        (0 == strcasecmp('yes', $this->_data[$section][$key])) ||
-        (0 == strcasecmp('true', $this->_data[$section][$key]))
-      );
+      return ('1' === $this->_data[$section][$key]);
     }
     
     /**
