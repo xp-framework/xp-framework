@@ -11,6 +11,9 @@ XSLPROC=xsltproc
 all:
 	@echo "Usage: $(MAKE) generate from=<path_to_ejb>"
 
+clean:
+	rm EjbToXMLDoclet.class *.gen.xml
+
 generate:			EjbToXMLDoclet.class $(TOOLS_JAR)
 	FILE=`$(JAVADOC) -doclet EjbToXMLDoclet -docletpath . -classpath $(TOOLS_JAR) $(from) 2>/dev/null \
 	  | grep ^@@ \
