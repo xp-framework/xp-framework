@@ -92,6 +92,12 @@ ul.intro {
   list-style-image: url(image/dot.gif);
   line-height: 18px;
 }
+hr {
+  border: 0;
+  background-color: #6c599b;
+  color: #6c599b;
+  height: 1px;
+}
 
 /* News specific */
 .entry {
@@ -120,6 +126,7 @@ ul.intro {
 
 /* Syntax */
 code {
+  font: 12px "Courier New", courier;
   white-space: pre;
 }
 code .keyword {
@@ -166,4 +173,16 @@ table.calendar {
 a.calendar {
   color: #fefefe;
   text-decoration: none;
+}
+
+/* Examples */
+div.example {
+  border: 1px solid #cecece;
+  border-left: 3px solid #cecece;
+  padding: 2px;
+}
+div.cvsver {
+  font: 12px "Courier New", courier;
+  border: 1px solid #cecece;
+  padding: 2px;  
 }
