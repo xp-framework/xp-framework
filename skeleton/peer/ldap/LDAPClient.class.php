@@ -154,11 +154,13 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Read an entry
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &peer.ldap.LDAPEntry entry specifying the dn
+     * @return  &peer.ldap.LDAPEntry entry
+     * @throws  IllegalArgumentException
+     * @throws  IOException
      */
     function &read(&$entry, $filter= 'objectClass=*') {
       if (!is_a($entry, 'LDAPEntry')) {
@@ -178,11 +180,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Check if an entry exists
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &peer.ldap.LDAPEntry entry specifying the dn
+     * @return  bool true, if exists
      */
     function exists(&$entry, $filter= 'objectClass=*') {
       return (NULL === $this->read($entry, $filter)) ? FALSE : TRUE;
@@ -192,7 +194,7 @@
      * Add an entry
      *
      * @access  public
-     * @param   peer.ldap.LDAPEntry entry
+     * @param   &peer.ldap.LDAPEntry entry
      * @return  bool success
      * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
      * @throws  IOException when an error occurs during adding the entry
