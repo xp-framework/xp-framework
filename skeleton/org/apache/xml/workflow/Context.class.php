@@ -217,13 +217,12 @@
         $state->getDocument($this, $request, $response);
         
         break;
-      } while(1);
+      } while (1);
         
       // Finally, we're done
       $cat->debug('Stateflow:', $this->sfm->flows);
       $cat->mark();
       return TRUE;
-    }
-    
+    }    
   }
 ?>
