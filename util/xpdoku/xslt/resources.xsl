@@ -65,6 +65,12 @@
       <xsl:apply-templates select="introduction"/>
     </p>
     
+    <b>Anonymous CVS:</b>
+    <pre>
+  cvs -d:pserver:anonymous@php3.de:/home/cvs/repositories/xp co .
+  (Password is empty)
+    </pre>
+    
     <b>Current releases:</b>
     <ul>
       <xsl:call-template name="listfiles">
