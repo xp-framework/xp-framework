@@ -7,9 +7,31 @@
   uses('io.File', 'io.FileUtil');
 
   /**
-   * The storage daemon 
+   * The storage daemon is a TCP/IP server that allows you to store
+   * and retrieve data.
    *
-   * 
+   * Socket syntax (>>> is request, <<< is response, ### a comment):
+   * <pre>
+   *   ### Add an entry
+   *   >>> ADD user a:2:{i:0;i:9;i:1;i:2;s:9:"thekid.de";}
+   *   <<< +OK b:1;
+   *
+   *   ### Clear storage
+   *   >>> CLEAR user
+   *   <<< +OK b:1;
+   *
+   *   ### Get stored data
+   *   >>> GET user
+   *   <<< +OK a:1:{i:0;a:2:{i:0;i:9;i:1;i:2;s:9:"thekid.de";}}
+   * </pre>
+   *
+   * Error messages are returned as following (example):
+   * <pre>
+   *   >>> GET nonexistant
+   *   <<< -ERR Cannot get filesize for history.friebe"
+   * </pre>
+   *
+   * All data is serialized using PHP's serialize() functionality
    *
    * @see      xp://peer.server.ConnectionListener
    * @purpose  Connection Listener for the storage daemon
