@@ -5,7 +5,7 @@
  *
  */
 
-  uses('xml.XML');
+  uses('xml.XML', 'xml.PCData');
 
   /**
    * Represents a node
@@ -14,9 +14,9 @@
    */
   class Node extends XML {
     var 
-      $name,
-      $attribute,
-      $content;
+      $name         = '',
+      $attribute    = array(),
+      $content      = '';
 
     /**
      * Constructor
@@ -143,38 +143,37 @@
      */
     function getSource($indent= TRUE, $inset= '') {
       $xml= $inset.'<'.$this->name;
+      $content= is_a($this->content, 'PCData') ? $this->content->pcdata : htmlspecialchars($this->content);
       
       // Attribute
       $sep= '';
       if (isset($this->attribute) and is_array($this->attribute)) {
-        $sep= ($indent || sizeof($this->attribute)< 3) ? '' : "\n{$inset}";
-        foreach ($this->attribute as $key=> $val) {
-          $xml.= sprintf('%s %s="%s"', $sep, $key, htmlspecialchars($val));
+        $sep= ($indent || sizeof($this->attribute) < 3) ? '' : "\n".$inset;
+        foreach (array_keys($this->attribute) as $key) {
+          $xml.= $sep.' '.$key.'="'.htmlspecialchars($this->attribute[$key]).'"';
         }
       }
       $xml.= $sep;
       
-      // Kein Content (oder leer?) *UND* keine weiteren Elemente? => Tag zumachen!
-      if (!$indent && isset($this->content)) $this->content= trim(chop($this->content));
+      // No indent => strip whitespace
+      if (!$indent) $content= trim(chop($content));
+      
+      // No content and no children => close tag
       if (
-        (!isset($this->content) || @$this->content === '') &&
+        (0 == strlen($content)) &&
         (!isset($this->children))
       ) {
         return $xml."/>\n";
       }
       
-      if ($indent) {
-        $xml.= ">\n";
-        if (isset($this->content) && $this->content !== '') $xml.= "{$inset}  ".htmlspecialchars($this->content)."\n";
-      } else {
-        $xml.= '>';
-        if (isset($this->content) && $this->content !== '') $xml.= htmlspecialchars($this->content);
-      }
+      $xml.= '>'.($indent ? "\n  ".$inset : '').$content;
       
-      // Unterelemente, falls vorhanden
+      // Go through children
       if (isset($this->children)) {
-        if (!$indent) $xml.= "\n";
-        foreach ($this->children as $idx=> $child) $xml.= $this->children[$idx]->getSource($indent, $inset.'  ');
+        $xml.= "\n";
+        foreach (array_keys($this->children) as $key) {
+          $xml.= $this->children[$key]->getSource($indent, $inset.'  ');
+        }
         if (!$indent) $xml.= $inset;
       }
       
