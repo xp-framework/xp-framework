@@ -24,7 +24,6 @@
      * @see     php://openlog for valid facility values
      */
     function __construct($identifier= NULL, $facility= LOG_USER) {
-      parent::__construct();
       openlog(
         $identifier ? $identifier : basename($_SERVER['PHP_SELF']), 
         LOG_ODELAY | LOG_PID, 

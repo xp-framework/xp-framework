@@ -42,7 +42,6 @@
       $cdebug   = '00;34',
       $cdefault = '07;37'
     ) {
-      parent::__construct();
       $this->cerror     = $cerror; 
       $this->cwarn      = $cwarn;
       $this->cinfo      = $cinfo;
