@@ -102,7 +102,7 @@
 
         $cvsId= @$result['comments']['file']->cvsver;
         if (!empty ($cvsId)) {
-          list (,,$version,$date,$time,$user)= explode (' ', $cvsId);
+          @list (,,$version,$date,$time,$user)= explode (' ', $cvsId);
           $node->attribute['version']= $version;
           $node->attribute['checkinUser']= $user;
           $node->attribute['checkinDate']= $date;
@@ -117,10 +117,12 @@
             array(
               '#&lt;pre&gt;(.*)&lt;/pre&gt;#sU',
               '#&lt;xmp&gt;(.*)&lt;/xmp&gt;#sU',
+              '#&lt;quote&gt;(.*)&lt;/quote&gt;#sU',
               '#&lt;code&gt;(.*)&lt;/code&gt;#sUe',
             ), array(
               '<pre>$1</pre>',
               '<xmp>$1</xmp>',
+              '<quote>$1</quote>',
               'highlightPHPSource(stripslashes(\'$1\'))'
             ),
             $node->getSource(0)
