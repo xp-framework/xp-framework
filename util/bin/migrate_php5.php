@@ -16,8 +16,10 @@
 
   // Class names that need to be mapped due to built-in classes in PHP5.
   $map= array(
-    'Exception'   => 'XPException',
-    'Iterator'    => 'XPIterator'
+    'Exception'        => 'XPException',
+    'Iterator'         => 'XPIterator'
+    'lang.Exception'   => 'lang.XPException',
+    'util.Iterator'    => 'util.XPIterator'
   );
   
   // {{{ main
@@ -98,7 +100,9 @@ __;
     switch (strtolower($tok[1])) {
       case 'uses':
         while (')' !== $tok[1]) {
-          if (T_CONSTANT_ENCAPSED_STRING === $tok[0]) $uses[]= $tok[1];
+          if (T_CONSTANT_ENCAPSED_STRING === $tok[0]) {
+            $uses[]= (isset($map[$tok[1]]) ? $map[$tok[1]] : $tok[1]);
+          }
           $tok= $t->getNextToken();
         }
         $tok= $t->getNextToken(); // Swallow ";"
@@ -209,8 +213,11 @@ __;
         switch (@$apidoc['access']) {
           case 'public':
           case 'protected':
-          case 'private':
             $out[]= $apidoc['access'];
+            break;
+
+          case 'private':       // Make this protected, private is often misused
+            $out[]= 'protected';
             break;
             
           case 'static':        // Incorrect API doc, it should be @model static
@@ -296,24 +303,6 @@ __;
         $apidoc= array();
         break;
       
-      case '$this':     // $this->setURI();
-        $following= array();
-        for ($i= 0; $i < 3; $i++) {
-          $following[]= $t->getNextToken();
-        }
-        
-        if (
-          (T_OBJECT_OPERATOR === $following[0][0]) &&
-          (T_STRING === $following[1][0]) &&
-          ('(' === $following[2][1])
-        ) {
-          $out[]= 'self::'.$following[1][1].'(';
-        } else {
-          $out[]= '$this'.$following[0][1].$following[1][1].$following[2][1];
-        }
-        $tok= array(T_NONE, '');
-        break;
-       
       case 'try':       // try(); {
         while ('{' !== $tok[1]) $tok= $t->getNextToken();
         $out[]= 'try ';
