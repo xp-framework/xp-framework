@@ -4,6 +4,11 @@
  * $Id$
  */
   
+  uses(
+    'rdbms.SQLException',
+    'rdbms.sybase.SybaseDate'
+  );
+  
   /**
    * Ergänzt bz_id-Felder durch bz_description, Datumsangaben durch unix-Timestamp
    *
@@ -15,13 +20,11 @@
   class SPSybase extends Object {
     var 
       $handle= 0,
-      $Error= 0,
-      $Debug= 0;
-      
-    var
-      $host, $user, $pass, $db, $bz_map;
-      
-    var 
+      $host, 
+      $user, 
+      $pass, 
+      $db, 
+      $field_map,
       $last_affected_rows, 
       $last_num_rows, 
       $transaction;
@@ -38,26 +41,19 @@
     }
     
     /**
-     * Debug-Ausgabe
-     *
-     * @access  private
-     * @param	string key
-     * @param   variant var
-     */
-    function _logline_text($key, $var) {
-      if(!$this->Debug || !$GLOBALS["stage_server"]) return 0;
-      logline_text(get_class($this)."::$key", $var);
-    }
-    
-    /**
      * Konnektieren
      *
      * @access  public
-     * @return  bool connected
+     * @return  resource Datenbank-Handle
+     * @throws  SQLException, wenn kein Connect zustande kommt
      */
     function connect() {
       $this->handle= @sybase_connect($this->host, $this->user, $this->pass);
-      $this->Error= $this->handle? 0: 1;
+      if (FALSE === $this->handle) return throw(new SQLException(sprintf(
+        'Unable to connect to %s@%s',
+        $this->user,
+        $this->host
+      )));
       return $this->handle;
     }
 
@@ -70,7 +66,6 @@
      */    
     function select_db($db= NULL) {
       if(!is_null($db)) $this->db= $db;
-      $this->_logline_text("select_db", "{db} $this->db");
       return @sybase_select_db($this->db, $this->handle);
     }
     
@@ -80,16 +75,19 @@
      * @access  public
      * @param   string sql  Der abzusetzende SQL-Query-String
      * @return  bool result Query-Ergebnis
+     * @throws  SQLException, wenn der Query schiefgeht
      */
     function query($sql) {
+    
       // Wenn es keinen Connect gibt, einen herstellen
       if(!$this->handle) {
-        $this->_logline_text("connect", $this->user."@".$this->host);
         $connect= $this->connect();
-        if (isset($this->db)) $this->select_db($this->db);
-        $this->_logline_text('connect.error', $this->Error);
+        if (isset($this->db)) $this->select_db();
       }
-      return sybase_query($sql, $this->handle);
+      
+      $result= sybase_query($sql, $this->handle);
+      if (FALSE === $result) throw(new SQLException('Statement failed', $sql));
+      return $result;
     }
     
     /**
@@ -101,7 +99,7 @@
      * @return  bool Konnte geseekt werden?
      */
     function data_seek($query, $offset) {
-      $this->_logline_text("seek", "{offset} $offset");
+      // $this->_logline_text("seek", "{offset} $offset");
       return sybase_data_seek($query, $offset);
     }
     
@@ -111,7 +109,6 @@
      * @access  public
      * @param	resource query Queryhandle, z.B. aus query()
      * @return  array Der selektierte Datensatz
-     * @throws  E_SQL
      */
     function &fetch($query) {
       $row= sybase_fetch_array($query);
@@ -124,23 +121,19 @@
           unset($row[$key]);
           continue;
         }
+        
+        // Field-Mapping
+        if (isset($this->field_map[$key])) $row['map_'.$key]= $this->field_map[$key][$val];
 
-        // Datumsangaben automatisch umwandeln
-        // Default: mon dd yyyy hh:mm AM (or PM)
-        if (preg_match('/^([a-zA-Z]{3})[ ]+([0-9]{1,2})[ ]+([0-9]{2,4})[ ]+([0-9]{1,2}):([0-9]{1,2})([A|P]M)$/', substr($val, 0, 23), $regs)) {
-          $regs[1]= $GLOBALS["Sybase__monthmapping"][$regs[1]];
-          if($regs[6]== "PM" && $regs[4]!= 12) $regs[4]+= 12; // 12 PM => 12:00
-          if($regs[6]== "AM" && $regs[4]== 12) $regs[4]= 0;   // 12 AM => 00:00
-          $format= "%02d.%02d.%04d";
-          if(($regs[4]+ $regs[5])!= 0) $format.= ", %02d:%02d Uhr";
-          $row["sdate_$key"]= $val;
-          $row["udate_$key"]= mktime($regs[4], $regs[5], 0, $regs[1], $regs[2], $regs[3]);
-          $row[$key]= sprintf($format, $regs[2], $regs[1], $regs[3], $regs[4], $regs[5]);
-        }
-
-        // BZ-IDs durch ihre Beschreibung ergänzen
-        if($key== "bz_id" && !empty($this->bz_map)) {
-          $row["bz_descr"]= $this->bz_map[$val];
+        // Datumsangaben automatisch umwandeln, Format: mon dd yyyy hh:mm AM (or PM)
+        // Ist natürlich Pfusch, da ein String genau so aufgebaut sein könnte!
+        if (preg_match(
+          RE_SYBASE_DATE,
+          $val, 
+          $regs
+        )) {
+          $row[$key]= new SybaseDate();
+          $row[$key]->fromRegs($regs);
         }
       }
       
@@ -156,10 +149,8 @@
      *          1) field[0].content => field[0].content
      *          2) field[0].content => field[1].content
      *          3) field[0].content => array(field[1].content, field[2].content, ...)
-     * @throws  E_SQL
      */   
     function &select_ref($sql) {
-      $this->_logline_text("select_ref", "{SQL} $sql");
       $query= $this->query("select $sql", $this->handle);
       if($query) {
         $result_set= array();
@@ -170,7 +161,6 @@
             default: $result_set[$data[0]]= array_slice($data, 1);
           }
         }
-        $this->_logline_text("result_set", $result_set);
         $this->last_num_rows= sybase_num_rows($query);
         return $result_set;
       }
@@ -184,17 +174,13 @@
      * @access  public
      * @param	string sql Das SQL (ohne select)
      * @return  array Alle Rows
-     * @throws  E_SQL
      */   
     function &select($sql) {
-//	 	preg_replace( "/^[sS][eE][lL][eE][cC][tT] ", "", $sql );
-      $this->_logline_text("select", "{SQL} $sql");
-      $query= $this->query("select $sql", $this->handle);
+      $query= $this->query('select '.preg_replace('/^[\s\t\r\n]*select/i', '', $sql));
       if($query) {
         $result_set= array();
         while($result_set[]= $this->fetch($query)) {};
         unset($result_set[sizeof($result_set)- 1]);
-        $this->_logline_text("result_set", $result_set);
         $this->last_num_rows= sybase_num_rows($query);
         return $result_set;
       }
@@ -210,8 +196,7 @@
      */   
     function update($sql) {
       $this->last_affected_rows= -1;
-      $this->_logline_text("update", "{SQL} $sql");
-      $result= $this->query("update $sql", $this->handle);
+      $result= $this->query('update '.preg_replace('/^[\s\t\r\n]*update/i', '', $sql));
       if($result) {
         $this->last_affected_rows= sybase_affected_rows();
       }
@@ -225,15 +210,14 @@
      * @param	string sql Das SQL (ohne insert)
      * @return  bool result Query-Ergebnis
      */   
-	function insert($sql) {
-	  $this->last_insert_id= $this->last_affected_rows= -1;
-	  $this->_logline_text("insert", "{SQL} $sql");
-	  $result= $this->query("insert $sql", $this->handle);
-	  if($result) {
-		$this->last_affected_rows= sybase_affected_rows();
-	  }
-	  return $result;
-	}
+    function insert($sql) {
+      $this->last_insert_id= $this->last_affected_rows= -1;
+      $result= $this->query('insert '.preg_replace('/^[\s\t\r\n]*insert/i', '', $sql));
+      if($result) {
+        $this->last_affected_rows= sybase_affected_rows();
+      }
+      return $result;
+    }
 	
     /**
      * Delete-Wrapper
@@ -244,8 +228,7 @@
      */   
     function delete($sql) {
       $this->last_affected_rows= -1;
-      $this->_logline_text("delete", "{SQL} $sql");
-      $result= $this->query("delete $sql", $this->handle);
+      $result= $this->query('delete '.preg_replace('/^[\s\t\r\n]*delete/i', '', $sql));
       if($result) {
         $this->last_affected_rows= sybase_affected_rows();
       }
@@ -259,13 +242,9 @@
      * @return  int Der Wert von select @@IDENTITY
      */   
     function insert_id() {
-      $id= $this->query("select @@IDENTITY", $this->handle);
-      if(!$id) {
-        $this->_logline_text("insert_id", "{result} ERR");
-        return 0;
-      }
-      list($result)= sybase_fetch_row($id);
-      $this->_logline_text("insert_id", "{result} $result");
+      $qrh= $this->query("select @@IDENTITY");
+      if(!$qrh) return 0;
+      list($result)= sybase_fetch_row($qrh, $this->handle);
       return $result;
     }
         
@@ -278,7 +257,6 @@
      */   
     function start_tran($name= "php_transaction") {
       $this->transaction= $name;
-      $this->_logline_text("transaction_start", $this->transaction);
       return $this->query("begin transaction $this->transaction", $this->handle);
     }
  
@@ -313,14 +291,10 @@
      * @return  int Der Wert von @@ERROR
      */      
     function get_error() {
-      $query= $this->query("select @@error", $this->handle);
-      if(!$query) {
-        $this->_logline_text("get_error", "{result} ERR");
-        return 0;
-      }
-      list($this->Error)= sybase_fetch_row($query);
-      $this->_logline_text("get_error", "{result} $this->Error");
-      return $this->Error;
+      $qrh= $this->query("select @@error", $this->handle);
+      if(!$qrh) return 0;
+      list($result)= sybase_fetch_row($query);
+      return $result;
     }
     
     /**
@@ -342,47 +316,9 @@
       return sybase_num_rows($query);
     }
     
-    /**
-     * Deutsche Datums/Uhrzeitangabe für Querys aufarbeiten
-     *
-     * @access  public
-     * @param   string localtime Datums-String 14.12.2002, 11:55
-     * @return  string convert(datetime, [...]) für Select
-     */      
-    function timefromlocale($localtime) {
-      if(!preg_match('/^([0-9]+).([0-9]+).([0-9]+) ?([0-9]+)?:?([0-9]+)?$/', $localtime, $regs)) return 0;
-      _logline_text($localtime, $regs);
-      
-      // Stunden und Minuten könnten evtl. fehlen
-      if(!isset($regs[4])) $regs[4]= 0;
-      if(!isset($regs[5])) $regs[5]= 0;
-      $time= mktime($regs[4], $regs[5], 0, $regs[2], $regs[1], $regs[3]);
-      return "convert(datetime, '".date("M d Y h:i A", $time)."', 100)";
+    function getHandle() {
+      return $this->handle;
     }
-	 
-	 function getHandle() {
-	 	return $this->handle;
-	 }
+    
   } //end::class(Database)
-  
-  // Sybase-Datum in deutsches Datumsformat umwandeln
-  $GLOBALS["Sybase__monthmapping"]= array(
-    "Jan" => 1,
-    "Feb" => 2,
-    "Mar" => 3,
-    "Mrz" => 3,
-    "Apr" => 4,
-    "May" => 5,
-    "Mai" => 5,
-    "Jun" => 6,
-    "Jul" => 7,
-    "Aug" => 8,
-    "Sep" => 9,
-    "Oct" => 10,
-    "Okt" => 10,
-    "Nov" => 11,
-    "Dec" => 12,
-    "Dez" => 12
-  );
-  
 ?>
