@@ -64,10 +64,7 @@
      * @return  string buf
      */
     function _sockcmd() {
-      static $e;
-      
       if (NULL === $this->_sock) return;
-      if (isset($e)) return throw($e);
       
       // Arguments
       $args= func_get_args();
@@ -91,8 +88,7 @@
       // Got expected data?
       $code= substr($buf, 0, 3);
       if (!in_array($code, $expect)) {
-        trigger_error('Command: '.var_export($cmd, 1), E_USER_NOTICE);
-        return throw($e= new FormatException(
+        return throw(new FormatException(
           'Expected '.implode(' or ', $expect).', have '.$code.' ["'.$buf.'"]'
         ));
       }
@@ -269,6 +265,7 @@
      * @access  public
      * @param   &peer.mail.Message message the Message object to send
      * @throws  TransportException to indicate an error occured
+     * @return  bool TRUE in case of success
      */
     function send(&$message) {
       try(); {
@@ -276,37 +273,36 @@
           'MAIL FROM: %s', 
           $message->from->localpart.'@'.$message->from->domain, 
           250
-        ); 
-        
-        // List all recipients
+        );
+
+        // List all recipients, hide BCC
         foreach(array(TO, CC, BCC) as $type) while ($r= &$message->getRecipient($type)) {
           $this->_sockcmd(
             'RCPT TO: %s', 
             $r->localpart.'@'.$r->domain, 
             array(250, 251)
-          ); 
+          );
         }
-        
-        // Hide BCC
         $message->bcc= array();
-        
-        $this->_sockcmd('DATA', 354);
-        
-        // Write headers
-        $this->_sockcmd($message->getHeaderString(), FALSE);
-        
-        // Write mail contents
-        $this->_sockcmd(preg_replace('/([\r\n]+)\.([\r\n]+)/', '$1..$2', $message->getBody()), FALSE);
-        
-        // Send a dot on a line by itself
-        $this->_sockcmd('.', 250);
-        
+
+        if ($this->_sockcmd('DATA', 354)) {
+
+          // Write headers
+          $this->_sockcmd('%s', $message->getHeaderString(), FALSE);
+
+          // Write mail contents. Make sure lines containing a dot by itself are
+          // properly escaped.
+          $this->_sockcmd('%s', preg_replace(
+            '/\.([\r\n])/', 
+            '..$1', 
+            $message->getBody()
+          ), FALSE);
+        }
       } if (catch('Exception', $e)) {
-        return throw(new TransportException('Send message failed', $e));
+        return throw(new TransportException('Sending message failed', $e));
       }
       
-      return TRUE;        
+      return (bool)$this->_sockcmd('.', 250);
     }
-  
   }
 ?>
