@@ -51,7 +51,11 @@
   foreach ($feeds as $feed) {
     try(); {
       Console::writeLinef('===> Aggregating feed [%d] from %s', $feed['feed_id'], $feed['url']);
-      $controller= &new AggregateController($feed['feed_id'], $feed['url'], $feed['lastcheck']);
+      $controller= &new AggregateController(
+        $feed['feed_id'], 
+        $feed['url'], 
+        $param->exists('full-sync', 'fs') ? NULL : $feed['lastcheck']
+      );
       $controller->fetch();
     } if (catch('Exception', $e)) {
       $e->printStackTrace();
