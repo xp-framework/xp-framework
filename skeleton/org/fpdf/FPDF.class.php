@@ -780,7 +780,7 @@
       $text= $this->_escape($text);
       $s= 'BT '.$x.' -'.$y.' Td ('.$text.') Tj ET';
       if ($this->underline and $text != '') {
-        $s.= ' '.$this->_dounderline($x, $y, $text);
+        $s.= ' '.$this->_renderunderline($x, $y, $text);
       }
       if ($this->ColorFlag) $s= 'q '.$this->TextColor.' '.$s.' Q';
       return $s;
@@ -1545,7 +1545,7 @@
           break;
 
         default:
-          $this->_out('/OpenAction [3 0 R /XYZ null null '.($this->ZoomMode/100).']');
+          $this->_out('/OpenAction [3 0 R /XYZ null null '.($this->ZoomMode / 100).']');
       }
       
       switch ($this->LayoutMode) {
@@ -1664,7 +1664,7 @@
      * @param   string txt
      * @return  string
      */
-    function _dounderline($x, $y, $txt) {
+    function _renderunderline($x, $y, $txt) {
       $up= $this->CurrentFont->up;
       $ut= $this->CurrentFont->ut;
       $w= $this->getStringWidth($txt)+ $this->ws * substr_count($txt, ' ');
