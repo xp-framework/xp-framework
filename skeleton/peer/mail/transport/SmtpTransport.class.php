@@ -204,13 +204,16 @@
       $this->port= isset($u['port']) ? $u['port'] : 25;
       
       // Extra attributes
-      parse_str($u['query'], $attr);
-      
+      if (isset($u['query'])) {
+        parse_str($u['query'], $attr);
+        $this->auth= isset($attr['auth']) ? $attr['auth'] : SMTP_AUTH_PLAIN;
+      }
+
       // User & password
-      if (!isset($u['user'])) return TRUE;
-      $this->user= $u['user'];
-      $this->pass= $u['pass'];
-      $this->auth= isset($attr['auth']) ? $attr['auth'] : SMTP_AUTH_PLAIN;
+      if (isset($u['user'])) {
+        $this->user= $u['user'];
+        $this->pass= $u['pass'];
+      }
     }
     
     /**
