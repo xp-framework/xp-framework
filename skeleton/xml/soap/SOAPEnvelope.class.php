@@ -1,6 +1,8 @@
 <?php
-  import('xml/Tree');
-  import('xml/Node');
+  uses(
+    'xml.Tree',
+    'xml.Node'
+  );
     
   class SOAPEnvelope extends Tree {
     var 
