@@ -8,11 +8,11 @@ XMLLINT=`which xmllint`
 EXTENSION=`echo ${1##*.}`
 
 case $EXTENSION in
-  php)
+  php | inc | php3 | php4)
     $PHP -l $1
     ;;
   
-  pl)
+  pl | pm)
     $PERL -w -c $1
     ;;
 
