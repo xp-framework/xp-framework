@@ -8,6 +8,9 @@
 #include "sybase_hash.h"
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <signal.h>
+
+static sybase_result *current_result;
 
 static CS_RETCODE CS_PUBLIC servermessage(CS_CONTEXT *context, CS_CONNECTION *connection, CS_SERVERMSG *message)
 {
@@ -33,6 +36,13 @@ static CS_RETCODE CS_PUBLIC clientmessage(CS_CONTEXT *context, CS_CONNECTION *co
     return CS_SUCCEED;
 }
 
+static void signal_cancel(int signum)
+{
+	printf("***  Cancelling...\n");
+	fflush(stdout);
+    sybase_cancel(current_result, CS_CANCEL_ALL);
+}
+
 #define HLINE "     ---------------------------------------------------------------------------------\n"
 
 int main(int argc, char **argv)
@@ -54,7 +64,9 @@ int main(int argc, char **argv)
     sybase_hash_init(&properties, 10, 10);
     sybase_hash_addstring(properties, CS_APPNAME, argv[0]);
     sybase_hash_addstring(properties, CS_HOSTNAME, "FreeBSD");
-    
+    sybase_hash_addint(properties, CS_LOGIN_TIMEOUT, 1);
+    sybase_hash_addint(properties, CS_TIMEOUT, 1);
+
     if (sybase_connect(env, link, argv[1], argv[2], argv[3], properties) == SA_SUCCESS) {
         sybase_result *result= NULL;
         sybase_resultset *resultset= NULL;
@@ -76,6 +88,10 @@ int main(int argc, char **argv)
             if (sybase_query(link, &result, sql) == SA_SUCCESS) {
                 int done= 0;
                 int i= 0;
+
+                /* Set up signal handler */
+                current_result= result;
+                signal(SIGINT, signal_cancel);
 
                 while (!done && (sybase_results(&result) == SA_SUCCESS)) {
                     printf(
@@ -114,6 +130,10 @@ int main(int argc, char **argv)
                                     );
                                 }
                                 printf("\n");
+                                
+                                #ifdef SIMULATE_WORK
+                                sleep(2);
+                                #endif
                             }
                             sybase_free_resultset(resultset);
                             break;
@@ -136,7 +156,10 @@ int main(int argc, char **argv)
                     sybase_nameofcode(result->code)
                 );
                 sybase_free_result(result);
+                
+                signal(SIGINT, NULL);
             }
+            current_result= NULL;
             free(sql);
         }
     } else {
