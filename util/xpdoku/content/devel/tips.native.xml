@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document title="XP::Development::Tips::Native methods">
+  <main>
+    <content>
+      <title>Native methods</title>
+      <editor>$Id$</editor>
+      
+      <para>
+        <caption>Always prefer built-in functions</caption>
+        <text>
+          The reason for this is simple: <b>They're faster.</b>
+        </text>
+      </para>
+      <para>
+        <caption>Example #1</caption>
+        <text>
+          Assume we have an array like this:
+          <code><![CDATA[  class A {
+    var $haystack= array('Hello', 'World');
+  }
+]]></code>
+          ...and would like to introduce a method which finds out at which 
+          position the element <tt>World</tt> is contained.
+          <br/>
+          What is completely wrong is:
+          <code><![CDATA[  // ...
+  function indexOf($needle) {
+    foreach ($this->haystack as $key => $val) {
+      if ($val == $needle) return $key;
+    }
+    return FALSE;
+  }
+  // ...]]></code>
+          PHP literally has tons of array functions. Whip up the manual and
+          after a few clicks (or a bit of thinking à la "I'm <i>search</i>ing
+          an <i>array</i>") you will find <tt>array_search</tt>
+          <br/>
+          Go ahead, nuke your code and replace it with the following:
+          <code><![CDATA[  // ...
+  function indexOf($needle) {
+    return array_search($needle, $this->haystack);
+  }
+  // ...
+]]></code>
+        </text>
+      </para>
+    </content>
+    <!--
+    <references>
+      <ref link="about">Introduction</ref>
+    </references>
+    -->
+  </main>
+</document>
