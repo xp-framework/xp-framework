@@ -25,7 +25,7 @@
   if (2 > $p->count || $p->exists('help', '?')) {
     printf(
       "Usage:   %1\$s <filename> [--target=<target_dir>] [--dump]\n".
-      "Example: find skeleton/ -name '*.php' -exec php %1\$s --target=skeleton2/ {} \;\n",
+      "Example: for i in `find ~/devel/xp/skeleton/ -type f -name '*.class.php' | grep -v /lang/` ; do php migrate_php5.php $i --target=~/devel/xp/experiments/skeleton2/; done\n",
       basename($p->value(0))
     );
     exit(-2);
