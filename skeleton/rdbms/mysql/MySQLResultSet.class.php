@@ -67,7 +67,7 @@
         if (NULL === $row[$key] || !isset($this->fields[$key])) continue;
         switch ($this->fields[$key]) {
           case 'timestamp':
-            if(strlen($row[$key]) == 14) {
+            if (strlen($row[$key]) == 14) {
               $time= sscanf ((string)$row[$key], '%04s%02s%02s%02s%02s%02s');
               $row[$key]= &new Date(mktime(
                 $time[3],
