@@ -11,7 +11,7 @@
    *
    * @purpose  Provide a Format wrapper for sprintf
    * @see      php://sprintf
-   * @see      xp://util.text.format.Format
+   * @see      xp://util.text.format.IFormat
    */
   class PrintfFormat extends IFormat {
 
@@ -19,7 +19,7 @@
      * Get an instance
      *
      * @access  public
-     * @return  &util.text.format.MessageFormat
+     * @return  &util.text.format.PrintfFormat
      */
     function &getInstance() {
       return parent::getInstance('PrintfFormat');

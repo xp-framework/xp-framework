@@ -11,7 +11,7 @@
    *
    * @purpose  Provide a Format wrapper for date/time
    * @see      php://strftime
-   * @see      xp://util.text.format.Format
+   * @see      xp://util.text.format.IFormat
    */
   class DateFormat extends IFormat {
   
@@ -19,7 +19,7 @@
      * Get an instance
      *
      * @access  public
-     * @return  &util.text.format.MessageFormat
+     * @return  &util.text.format.DateFormat
      */
     function &getInstance() {
       return parent::getInstance('DateFormat');

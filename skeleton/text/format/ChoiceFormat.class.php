@@ -9,8 +9,8 @@
   /**
    * Choice formatter
    *
-   * @purpose  Provide a Format wrapper for sprintf
-   * @see      xp://util.text.format.Format
+   * @purpose  Provide a Format wrapper for values depending on choices
+   * @see      xp://util.text.format.IFormat
    */
   class ChoiceFormat extends IFormat {
   
@@ -18,7 +18,7 @@
      * Get an instance
      *
      * @access  public
-     * @return  &util.text.format.MessageFormat
+     * @return  &util.text.format.ChoiceFormat
      */
     function &getInstance() {
       return parent::getInstance('ChoiceFormat');
