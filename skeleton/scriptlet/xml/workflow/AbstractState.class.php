@@ -61,6 +61,7 @@
 
               // If the handler is already active, this means the page was reloaded
               if ($this->handlers[$i]->isActive($request)) {
+                $this->handlers[$i]->finalize($request, $response);
                 $handler->setAttribute('status', HANDLER_RELOADED);
                 continue;
               }
