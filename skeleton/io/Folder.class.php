@@ -134,7 +134,7 @@
         return throw(new IOException('Directory '.$uri.' does not exist'));
       }
       
-      while ($e= $d->read()) {
+      while (FALSE !== ($e= $d->read())) {
         if ('.' == $e || '..' == $e) continue;
         
         $fn= $d->path.$e;
@@ -207,7 +207,7 @@
         )));
       }
       
-      while ($entry= $this->_hdir->read()) {
+      while (FALSE !== ($entry= $this->_hdir->read())) {
         if ($entry != '.' && $entry != '..') return $entry;
       }
       return FALSE;
