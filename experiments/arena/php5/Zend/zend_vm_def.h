@@ -1639,8 +1639,12 @@ ZEND_VM_HANDLER(113, ZEND_INIT_STATIC_METHOD_CALL, ANY, CONST|TMP|VAR|UNUSED|CV)
 		EX(fbc) = ce->constructor;
 	}
 
-	EX(calling_scope) = EX(fbc)->common.scope;
+#if DEBUG_ZEND>=2
+	fprintf(stderr, "Setting calling_scope for %s to %s (old: %s)\n", EX(fbc)->common.function_name, ce->name, EX(fbc)->common.scope->name);
+#endif
 
+	EX(calling_scope) = ce;
+    
 	if (EX(fbc)->common.fn_flags & ZEND_ACC_STATIC) {
 		EX(object) = NULL;
 	} else {

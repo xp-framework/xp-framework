@@ -680,8 +680,12 @@ static int ZEND_INIT_STATIC_METHOD_CALL_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_A
 		EX(fbc) = ce->constructor;
 	}
 
-	EX(calling_scope) = EX(fbc)->common.scope;
+#if DEBUG_ZEND>=2
+	fprintf(stderr, "Setting calling_scope for %s to %s (old: %s)\n", EX(fbc)->common.function_name, ce->name, EX(fbc)->common.scope->name);
+#endif
 
+	EX(calling_scope) = ce;
+    
 	if (EX(fbc)->common.fn_flags & ZEND_ACC_STATIC) {
 		EX(object) = NULL;
 	} else {
@@ -877,8 +881,12 @@ static int ZEND_INIT_STATIC_METHOD_CALL_SPEC_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARG
 		EX(fbc) = ce->constructor;
 	}
 
-	EX(calling_scope) = EX(fbc)->common.scope;
+#if DEBUG_ZEND>=2
+	fprintf(stderr, "Setting calling_scope for %s to %s (old: %s)\n", EX(fbc)->common.function_name, ce->name, EX(fbc)->common.scope->name);
+#endif
 
+	EX(calling_scope) = ce;
+    
 	if (EX(fbc)->common.fn_flags & ZEND_ACC_STATIC) {
 		EX(object) = NULL;
 	} else {
@@ -1032,8 +1040,12 @@ static int ZEND_INIT_STATIC_METHOD_CALL_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARG
 		EX(fbc) = ce->constructor;
 	}
 
-	EX(calling_scope) = EX(fbc)->common.scope;
+#if DEBUG_ZEND>=2
+	fprintf(stderr, "Setting calling_scope for %s to %s (old: %s)\n", EX(fbc)->common.function_name, ce->name, EX(fbc)->common.scope->name);
+#endif
 
+	EX(calling_scope) = ce;
+    
 	if (EX(fbc)->common.fn_flags & ZEND_ACC_STATIC) {
 		EX(object) = NULL;
 	} else {
@@ -1187,8 +1199,12 @@ static int ZEND_INIT_STATIC_METHOD_CALL_SPEC_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_
 		EX(fbc) = ce->constructor;
 	}
 
-	EX(calling_scope) = EX(fbc)->common.scope;
+#if DEBUG_ZEND>=2
+	fprintf(stderr, "Setting calling_scope for %s to %s (old: %s)\n", EX(fbc)->common.function_name, ce->name, EX(fbc)->common.scope->name);
+#endif
 
+	EX(calling_scope) = ce;
+    
 	if (EX(fbc)->common.fn_flags & ZEND_ACC_STATIC) {
 		EX(object) = NULL;
 	} else {
@@ -1271,8 +1287,12 @@ static int ZEND_INIT_STATIC_METHOD_CALL_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS
 		EX(fbc) = ce->constructor;
 	}
 
-	EX(calling_scope) = EX(fbc)->common.scope;
+#if DEBUG_ZEND>=2
+	fprintf(stderr, "Setting calling_scope for %s to %s (old: %s)\n", EX(fbc)->common.function_name, ce->name, EX(fbc)->common.scope->name);
+#endif
 
+	EX(calling_scope) = ce;
+    
 	if (EX(fbc)->common.fn_flags & ZEND_ACC_STATIC) {
 		EX(object) = NULL;
 	} else {
@@ -29661,8 +29681,12 @@ static int ZEND_INIT_STATIC_METHOD_CALL_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 		EX(fbc) = ce->constructor;
 	}
 
-	EX(calling_scope) = EX(fbc)->common.scope;
+#if DEBUG_ZEND>=2
+	fprintf(stderr, "Setting calling_scope for %s to %s (old: %s)\n", EX(fbc)->common.function_name, ce->name, EX(fbc)->common.scope->name);
+#endif
 
+	EX(calling_scope) = ce;
+    
 	if (EX(fbc)->common.fn_flags & ZEND_ACC_STATIC) {
 		EX(object) = NULL;
 	} else {
