@@ -34,7 +34,7 @@ $(OUTPUT):
 	@-mkdir $(OUTPUT)/image
 	@-mkdir $(OUTPUT)/src
 	@-cp -R src/ $(OUTPUT)
-	@-$(PHP) uril/getSource.php --dest=$(OUTPUT)/src
+	@-$(PHP) util/getSource.php --dest=$(OUTPUT)/src
 
 install:
 	cp -R $(OUTPUT)/* $(TARGET)
@@ -52,8 +52,10 @@ makexml: $(XML)
 	@$(PHP) xpdoku.php
 
 index: $(OUTPUT) $(XML)
+	@echo "===> Creating news"
+	@-$(PHP) util/news.php > content/news.rdf.xml
 	@echo "===> Creating index"
-	@$(SABCMD) xslt/index.xsl $(CTREE) $(OUTPUT)/index.html 2>/dev/null
+	@$(SABCMD) xslt/index.xsl content/main/index.xml $(OUTPUT)/index.html 2>/dev/null
 	@echo "===> Creating apidoc index"
 	@$(SABCMD) xslt/apidoc.xsl $(CTREE) $(OUTPUT)/apidoc/index.html 2>/dev/null
 	@echo "===> Creating highlighter"
