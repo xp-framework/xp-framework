@@ -611,6 +611,45 @@ void zend_do_import(znode *classname, znode *alias TSRMLS_DC)
 	opline->result.u.EA.type |= EXT_TYPE_UNUSED;
 } 
 
+void zend_import_class(zend_class_entry *ce, char *alias_name, int alias_len TSRMLS_DC)
+{
+	zend_class_entry **pce = NULL;
+
+	/* FIXME: Forbid importing internal classes until we know what causes the 
+	 * segfault in shutdown.
+	 */
+	if (ce->type == ZEND_INTERNAL_CLASS) {
+		efree(alias_name);
+		zend_error(E_COMPILE_ERROR, "Cannot import internal class %s", ce->name);
+	}
+    
+	/* Check if we previously imported this class. If so, ignore */
+	if (zend_hash_find(CG(class_table), alias_name, alias_len+ 1, (void **) &pce) == SUCCESS) {
+		if (*pce == ce) {
+			efree(alias_name);
+			return;
+		}
+		if ((*pce)->type == ZEND_USER_CLASS) {
+			efree(alias_name);
+			zend_error(E_COMPILE_ERROR, "Cannot import class %s as class %s (declared in %s on line %d)", ce->name, (*pce)->name, (*pce)->filename, (*pce)->line_start);
+		} else {
+			efree(alias_name);
+			zend_error(E_COMPILE_ERROR, "Cannot import class %s as class %s (internally declared)", ce->name, (*pce)->name);
+		}
+		/* Bails out */
+	}
+
+	ce->refcount++;
+	if (zend_hash_add(CG(class_table), alias_name, alias_len+ 1, &ce, sizeof(zend_class_entry *), NULL) == FAILURE) {
+		ce->refcount--;
+		efree(alias_name);
+		zend_error(E_CORE_ERROR, "Cannot add class %s to the class table\n", ce->name);
+		/* Bails out */
+	}
+
+	efree(alias_name);
+}
+
 static zend_bool opline_is_fetch_this(zend_op *opline TSRMLS_DC)
 {
 	if ((opline->opcode == ZEND_FETCH_W) && (opline->op1.op_type == IS_CONST)

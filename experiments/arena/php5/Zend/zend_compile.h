@@ -520,9 +520,9 @@ void zend_do_annotation(znode *name, znode *value, int type TSRMLS_DC);
 void zend_do_annotation_define(znode *define, znode *value TSRMLS_DC);
 
 void zend_do_import(znode *classname, znode *alias TSRMLS_DC);
+void zend_import_class(zend_class_entry *ce, char *alias_name, int alias_len TSRMLS_DC);
 
 void zend_do_begin_instance_creation(TSRMLS_D);
-
 void zend_do_end_instance_creation(TSRMLS_D);
 
 ZEND_API void function_add_ref(zend_function *function);

@@ -489,7 +489,6 @@ static int ZEND_IMPORT_SPEC_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	int alias_len;
 	zend_op *opline = EX(opline);
 	zend_class_entry *ce = EX_T(opline->op1.u.var).class_entry;
-	zend_class_entry **pce = NULL;
 
 	switch (opline->op2.op_type) {
 		/* This is the case for:
@@ -568,32 +567,7 @@ static int ZEND_IMPORT_SPEC_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 		}
 	}
 
-#if 0 || TIMM_0
-	fprintf(stderr, "Import %s (%d) => %s\n", ce->name, ce->type, alias_name);
-#endif
-
-	/* Check if we previously imported this class. If so, ignore */
-	if (zend_hash_find(CG(class_table), alias_name, alias_len+ 1, (void **) &pce) == SUCCESS) {
-		if (*pce == ce) {
-			goto done;
-		}
-		if ((*pce)->type == ZEND_USER_CLASS) {
-			zend_error(E_COMPILE_ERROR, "Cannot import class %s as class %s (declared in %s on line %d)", ce->name, (*pce)->name, (*pce)->filename, (*pce)->line_start);
-		} else {
-			zend_error(E_COMPILE_ERROR, "Cannot import class %s as class %s (internally declared)", ce->name, (*pce)->name);
-		}
-		/* Bails out */
-	}
-
-	ce->refcount++;
-	if (zend_hash_add(CG(class_table), alias_name, alias_len+ 1, &ce, sizeof(zend_class_entry *), NULL) == FAILURE) {
-		ce->refcount--;
-		zend_error(E_CORE_ERROR, "Cannot add class %s to the class table\n", ce->name);
-		/* Bails out */
-	}
-
-done:	
-	efree(alias_name);
+	zend_import_class(ce, alias_name, alias_len TSRMLS_CC);
 	ZEND_VM_NEXT_OPCODE();
 }
 
@@ -31403,7 +31377,6 @@ static int ZEND_IMPORT_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 	int alias_len;
 	zend_op *opline = EX(opline);
 	zend_class_entry *ce = EX_T(opline->op1.u.var).class_entry;
-	zend_class_entry **pce = NULL;
 
 	switch (opline->op2.op_type) {
 		/* This is the case for:
@@ -31482,32 +31455,7 @@ static int ZEND_IMPORT_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 		}
 	}
 
-#if 0 || TIMM_0
-	fprintf(stderr, "Import %s (%d) => %s\n", ce->name, ce->type, alias_name);
-#endif
-
-	/* Check if we previously imported this class. If so, ignore */
-	if (zend_hash_find(CG(class_table), alias_name, alias_len+ 1, (void **) &pce) == SUCCESS) {
-		if (*pce == ce) {
-			goto done;
-		}
-		if ((*pce)->type == ZEND_USER_CLASS) {
-			zend_error(E_COMPILE_ERROR, "Cannot import class %s as class %s (declared in %s on line %d)", ce->name, (*pce)->name, (*pce)->filename, (*pce)->line_start);
-		} else {
-			zend_error(E_COMPILE_ERROR, "Cannot import class %s as class %s (internally declared)", ce->name, (*pce)->name);
-		}
-		/* Bails out */
-	}
-
-	ce->refcount++;
-	if (zend_hash_add(CG(class_table), alias_name, alias_len+ 1, &ce, sizeof(zend_class_entry *), NULL) == FAILURE) {
-		ce->refcount--;
-		zend_error(E_CORE_ERROR, "Cannot add class %s to the class table\n", ce->name);
-		/* Bails out */
-	}
-
-done:	
-	efree(alias_name);
+	zend_import_class(ce, alias_name, alias_len TSRMLS_CC);
 	ZEND_VM_NEXT_OPCODE();
 }
 
