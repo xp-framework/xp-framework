@@ -307,7 +307,7 @@
   }
   // }}}
 
-  // {{{ proto lang.Object clone(lang.Object object)
+  // {{{ proto lang.Object &clone(lang.Object object)
   //     Clones an object
   function &clone($object) {
     $object->__id= microtime();
