@@ -202,7 +202,7 @@
         (!feof($pd)) && 
         (FALSE !== ($line= fgets($pd, 4096)))
       ) {
-        $buf[]= $line;
+        $buf[]= trim($line);
       }
       $retCode= (pclose($pd) >> 8) & 0xFF;
       
