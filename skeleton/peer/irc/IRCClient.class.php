@@ -68,13 +68,16 @@
     }
     
     /**
-     * Connect to the IRC server
+     * Connect to the IRC server and set socket to blocking
      *
      * @access  public
      * @return  bool success
      */
     function connect() {
-      return $this->_sock->connect();
+      return (
+        $this->_sock->connect() &&
+        $this->_sock->setBlocking(TRUE)
+      );
     }
     
     /**
