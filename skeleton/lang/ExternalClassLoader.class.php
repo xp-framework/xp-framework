@@ -52,10 +52,6 @@
      * @throws  ClassNotFoundException in case the class can not be found
      */
     function loadClass($className, $codebase= '', $format= '%s.class.php') {
-      if (ClassLoader::isBuiltin($className)) {
-        return ClassLoader::loadClass($className);
-      }
-      
       if (isset($this)) {
         $p= ini_get('include_path');
         $codebase= $this->codebase;
