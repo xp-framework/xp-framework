@@ -50,8 +50,7 @@
       $t->attribute['name']= $table->name;
       
       // Attributes
-      $attr= &$table->getFirstAttribute();
-      do {
+      if ($attr= &$table->getFirstAttribute()) do {
         $n= &$t->addChild(new Node(array(
           'name'  => 'attribute'
         )));
@@ -63,8 +62,7 @@
       } while ($attr= &$table->getNextAttribute());
 
       // Attributes
-      $index= &$table->getFirstIndex();
-      do {
+      if ($index= &$table->getFirstIndex()) do {
         $n= &$t->addChild(new Node(array(
           'name'  => 'index'
         )));
