@@ -112,7 +112,7 @@
         $answer->setFault(
           HTTP_INTERNAL_SERVER_ERROR,
           $e->message,
-          $request->getEnvValue('REQUEST_URI'),
+          $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
           $e->getStackTrace()
         );
       }
