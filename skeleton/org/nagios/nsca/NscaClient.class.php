@@ -10,7 +10,8 @@
     'org.nagios.nsca.NscaMessage',
     'lang.MethodNotImplementedException'
   );
-  
+
+  define('NSCA_VERSION_2',  2);  
   define('NSCA_VERSION_3',  3);
   
   // Encryption methods
