@@ -236,7 +236,10 @@
       } elseif (is_a($this->content, 'CData')) {
         $content= '<![CDATA['.str_replace(']]>', ']]&gt;', $this->content->cdata).']]>';
       } else {
-        $content= htmlspecialchars($this->content);
+        if (is_float ($this->content)) 
+          $content= number_format($this->content, 0, NULL, NULL);
+        else
+          $content= htmlspecialchars($this->content);
       }
 
       switch ($indent) {
@@ -298,7 +301,7 @@
           'Parameter child must be an xml.Node (given: '.xp::typeOf($child).')'
         ));
       }
-      
+
       $this->children[]= &$child;
       return $child;
     }
