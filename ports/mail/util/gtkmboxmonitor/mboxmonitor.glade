@@ -15,6 +15,7 @@
 <widget>
   <class>GtkWindow</class>
   <name>window1</name>
+  <width>600</width>
   <height>300</height>
   <title>Mailbox Monitor</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
@@ -39,7 +40,7 @@
       <child>
 	<padding>0</padding>
 	<expand>False</expand>
-	<fill>False</fill>
+	<fill>True</fill>
       </child>
 
       <widget>
@@ -93,19 +94,19 @@
       </child>
 
       <widget>
-	<class>GtkCList</class>
-	<name>clist_messages</name>
+	<class>GtkCTree</class>
+	<name>ctree_messages</name>
 	<can_focus>True</can_focus>
 	<columns>7</columns>
-	<column_widths>16,17,18,127,132,141,49</column_widths>
+	<column_widths>35,20,18,124,165,104,53</column_widths>
 	<selection_mode>GTK_SELECTION_MULTIPLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label1</name>
+	  <child_name>CTree:title</child_name>
+	  <name>label7</name>
 	  <label></label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
@@ -117,8 +118,8 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label2</name>
+	  <child_name>CTree:title</child_name>
+	  <name>label8</name>
 	  <label></label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
@@ -130,8 +131,8 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label3</name>
+	  <child_name>CTree:title</child_name>
+	  <name>label9</name>
 	  <label></label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
@@ -143,8 +144,8 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label4</name>
+	  <child_name>CTree:title</child_name>
+	  <name>label10</name>
 	  <label>From</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
@@ -156,8 +157,8 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label5</name>
+	  <child_name>CTree:title</child_name>
+	  <name>label11</name>
 	  <label>Subject</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
@@ -169,8 +170,8 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label6</name>
+	  <child_name>CTree:title</child_name>
+	  <name>label12</name>
 	  <label>Date</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
@@ -182,8 +183,8 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label7</name>
+	  <child_name>CTree:title</child_name>
+	  <name>label13</name>
 	  <label>Size</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
