@@ -19,8 +19,14 @@
    *   $a= &new Archive(new File('soap.cca'));
    *   try(); {
    *     $a->open(ARCHIVE_CREATE);
-   *     $a->add(new File(SKELETON_PATH.'xml/soap/SOAPMessage.class.php'), 'xml.soap.SOAPMessage');
-   *     $a->add(new File(SKELETON_PATH.'xml/soap/SOAPClient.class.php'), 'xml.soap.SOAPClient');
+   *     $a->add(
+   *       new File(SKELETON_PATH.'xml/soap/SOAPMessage.class.php'), 
+   *       'xml.soap.SOAPMessage'
+   *     );
+   *     $a->add(
+   *       new File(SKELETON_PATH.'xml/soap/SOAPClient.class.php'),
+   *       'xml.soap.SOAPClient'
+   *     );
    *     $a->create();
    *   } if (catch('Exception', $e)) {
    *     $e->printStackTrace();
