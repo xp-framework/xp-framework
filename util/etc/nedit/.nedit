@@ -242,6 +242,21 @@ nedit.macroCommands: \
 		new()\n\
 		focus_window("last")\n\
 		replace_range(0, 0, prototypes staticPrototypes)\n\
+	}\n\
+	Tabs - use real, size 4:::: {\n\
+		set_tab_dist("4")\n\
+		set_em_tab_dist("0")\n\
+		set_use_tabs("1")\n\
+	}\n\
+	Tabs - use real, size 8:::: {\n\
+		set_tab_dist("8")\n\
+		set_em_tab_dist("0")\n\
+		set_use_tabs("1")\n\
+	}\n\
+	Tabs - emulate, size 4, spacing 2:::: {\n\
+		set_tab_dist("4")\n\
+		set_em_tab_dist("2")\n\
+		set_use_tabs("0")\n\
 	}\n
 nedit.bgMenuCommands: \
 	Undo:::: {\n\
