@@ -245,25 +245,25 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Open the file at the specified line in your editor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &GtkMenuItem
+     * @param   &GdkEvent
      */    
     function onFileOpenCtx(&$menuItem, &$event) {
-      $this->menu->menu->hide();
-      
       $n= &$this->tree->node_get_row_data ($this->_selectedNode);
 
-      $line= 0;
+      $line= 1;
       if (isset ($n->object))
         $line= $n->object->line;
 
-      System::exec (sprintf ('n -line %d %s',
-        $line,
+      $this->log && $this->log->debug ('Starting', $n->file->filename, 'on line', $line);
+
+      System::exec (sprintf ('nedit -line %d %s',
+        $line+1,
         $n->file->filename        
-      ), '2>&1', TRUE);
+      ), '1>/dev/null 2>/dev/null', TRUE);
     }
   }
 
