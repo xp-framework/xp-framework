@@ -25,6 +25,18 @@
       $lastchange   = NULL,
       $changedby    = '',
       $bz_id        = 0;
+      
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   array record default array()
+     */
+    public function __construct($record= array()) {
+      foreach ($record as $key => $val) {
+        $this->{$key}= $val;
+      }
+    }
 
     /**
      * Gets an instance of this object by unique index "news_news_i_640032591"
