@@ -29,7 +29,6 @@
      * @throws  io.FileNotFoundException, if filename is not a file
      */
     public function __construct($filename) {
-      parent::__construct();
       $this->filename= realpath($filename);
       
       if (!file_exists ($this->filename) || !is_file ($this->filename)) {
