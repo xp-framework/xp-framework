@@ -41,7 +41,7 @@
      * @param   &util.Date
      * @return  &util.Date
      */
-    function &getEndOfMonth(&$date) {
+    function &getLastOfMonth(&$date) {
       return new Date (mktime (
         $date->getHours(),
         $date->getMinutes(),
@@ -80,7 +80,7 @@
      * @param   int count
      * @return  &util.Date
      */
-    function addMonths(&$date, $cnt) {
+    function addMonths(&$date, $cnt= 1) {
       return new Date (mktime (
         $date->getHours(),
         $date->getMinutes(),
@@ -100,7 +100,7 @@
      * @param   int count
      * @return  &util.Date
      */
-    function addMonths(&$date, $cnt) {
+    function addDays(&$date, $cnt= 1) {
       return new Date (mktime (
         $date->getHours(),
         $date->getMinutes(),
