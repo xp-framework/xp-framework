@@ -13,6 +13,7 @@ SABPHP=php -C -q util/sabcmd.php
 PHP=php -q
 PUBLISH=/tmp/xpdoc.tgz
 CVSROOT=/home/cvs/repositories/xp/
+XPROOT=/usr/local/lib/xp/
 
 .PHONY: all clean install xml content
 
@@ -31,15 +32,19 @@ usage:
 	@echo "            cvshist - updates CVS history XML file"
 	@echo "                      example: make cvshist from=user@host"
 	@echo "            release - makes release tarball"
+	@echo "                      example: make release"
 	@echo "                      example: make release at=user@host"
 	@echo ""
 
 release:
 ifeq ($(at),)
-	@echo "*** Please specify from what host to retrieve CVS history file"
+	cd $(XPROOT)
+	cvs update -dP 
+	cd .. 
+	tar cvfz $(TARGET)downloads/xp-`date +%Y-%m-%d`.tar.gz --exclude=CVS xp
 else
 	ssh $(at) \
-	  cd /usr/local/lib/xp \; \
+	  cd $(XPROOT) \; \
 	  cvs update -dP \; \
 	  cd .. \; \
 	  tar cvfz $(TARGET)downloads/xp-`date +%Y-%m-%d`.tar.gz --exclude=CVS xp
