@@ -78,11 +78,11 @@
      * @param   &php.GtkWidget widget
      */
     function onRunClicked(&$widget) {
-      $numTests= $this->suite->numTests();
-      $this->progress->configure(0.0, 0.0, $numTests);
+      $numtests= $this->suite->numTests();
+      $this->progress->configure(0.0, 0.0, $numtests);
       $result= &new TestResult();
       
-      for ($i= 0; $i < $numTests; $i++) {
+      for ($i= 0; $i < $numtests; $i++) {
         $this->suite->runTest($this->suite->testAt($i), $result);
         
         // Update progress bar
