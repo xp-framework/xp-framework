@@ -5,6 +5,7 @@
  */
 
   uses(
+    'io.File',
     'peer.URL',
     'peer.http.BasicAuthorization',
     'scriptlet.HttpScriptlet',
@@ -657,7 +658,10 @@
      */
     function doVersionControl(&$request, &$response) {
       try(); {
-        $this->handlingImpl->versionControl($request->getPath());
+        $this->handlingImpl->versionControl(
+          $request->getPath(),
+          new File($this->handlingImpl->base.$request->getPath())
+        );
       } if (catch('ElementNotFoundException', $e)) {
       
         // Element not found
