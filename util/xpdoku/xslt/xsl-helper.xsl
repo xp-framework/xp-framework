@@ -79,8 +79,8 @@
   <tr bgcolor="#3654a5"> <!-- #e0e8fc"> -->
     <form method="POST" action="/search.php">
       <td align="right" valign="top" colspan="2" nowrap="nowrap"><font color="#ffffff">
-        <small>search for</small>
-<input class="small" type="text" name="keyword" value="" size="30"/>
+        <small><u>s</u>earch for</small>
+<input class="small" type="text" name="keyword" value="" size="30" accesskey="s"/>
 <small>in the</small>
 <select name="show" class="small">
 <option value="classlist">class list</option>
