@@ -4,6 +4,7 @@
  * $Id$ 
  */
   require('lang.base.php');
+  xp::sapi('scriptlet.production');
   uses(
     'net.xp-framework.scriptlet.WebsiteScriptlet',
     'util.PropertyManager',
@@ -22,29 +23,9 @@
   $cm= &ConnectionManager::getInstance();
   $cm->configure($pm->getProperties('database'));
 
-  $scriptlet= &new WebsiteScriptlet(
+  scriptlet::run(new WebsiteScriptlet(
     new ClassLoader('net.xp-framework.scriptlet'), 
     '../xsl/'
-  );
-  try(); {
-    $scriptlet->init();
-    $response= &$scriptlet->process();
-  } if (catch('HttpScriptletException', $e)) {
-    $response= &$e->getResponse();
-  
-    // Retrieve ErrorDocument
-    $response->setContent(str_replace(
-      '<xp:value-of select="reason"/>',
-      $e->toString(),
-      file_get_contents('error'.$response->statusCode.'.html')
-    ));
-  }
-  
-  // Send output
-  $response->sendHeaders();
-  $response->sendContent();
-  flush();
-  
-  $scriptlet->finalize();
+  ));
   // }}}  
 ?>
