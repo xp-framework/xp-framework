@@ -51,7 +51,6 @@
      * the fields contents if a field is specified or FALSE to indicate
      * no more rows are available.
      *
-     * @model   abstract
      * @access  public
      * @param   string field default NULL
      * @return  mixed
