@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Iterator');
+  uses('util.XPIterator');
 
   /**
    * Iterator over the keys of a DBA object
