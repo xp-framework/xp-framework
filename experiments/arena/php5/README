@@ -26,11 +26,30 @@ Currently implemented
 
 * Instance creation expression:
   http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/syntax
+  
+* Allowing NULL for type-hinted parameters. Example:
+  <?php
+    class Client {
+      public function setTrace(LogCategory $cat= NULL) {
+        echo xp::typeOf($cat), "\n";
+      }
+    }
+    $client= new Client();
+
+    // Will print out "util.log.LogCategory"
+    $client->setTrace(Logger::getInstance()->getCategory());
+
+    // Will print out "NULL"
+    $client->setTrace(NULL);
+
+    // Will also print out "NULL"
+    $client->setTrace(NULL);
+  ?>  
 
 Making it work
 --------------
-The patch needs to be applied against a current CVS checkout of PHP5.
-Compile, then run the tests. 
+The patch needs to be applied against a current CVS checkout of PHP5. Go to
+the Zend directory, run "php zend_vm_gen.php", compile, then run the tests. 
 
 Be sure to do a "make clean" before - the zend_globals struct and 
 zend_op_array structs have been changed (and therefore their size) - 
