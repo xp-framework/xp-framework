@@ -4,7 +4,10 @@
  * $Id$
  */
   
-  uses('lang.ElementNotFoundException');
+  uses(
+    'lang.ElementNotFoundException',
+    'util.LOG'
+  );
   
   /**
    * ConnectionManager
