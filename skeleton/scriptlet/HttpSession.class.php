@@ -52,8 +52,8 @@
    */
   class HttpSession extends Object {
     var 
-      $id,
-      $isNew=   FALSE;
+      $id    = '',
+      $isNew = FALSE;
       
     /**
      * Constructor
@@ -61,7 +61,6 @@
      * @access  public
      */
     function __construct() {
-      
       ini_set('session.use_cookies', 0);
       session_name('psessionid');
     }
@@ -79,7 +78,7 @@
         session_id($this->id);
         session_start();
         
-        if (FALSE === $this->getCreationTime()) return FALSE;
+        if (!$this->getCreationTime()) return FALSE;
         
         // OK
         return TRUE;
@@ -165,16 +164,17 @@
     
     /**
      * Retrieves a value previously registered with the specified name
-     * or NULL in case this name does not exist
+     * or the default value in case this name does not exist
      *
      * @access  public
-     * @param   string name 
+     * @param   string name
+     * @param   mixed default default NULL 
      * @return  mixed value
      * @throws  lang.IllegalStateException when session is invalid
      */
-    function &getValue($name) {
+    function &getValue($name, $default= NULL) {
       if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
-      if (isset($_SESSION[$name])) return unserialize($_SESSION[$name]); else return NULL;
+      if (isset($_SESSION[$name])) return unserialize($_SESSION[$name]); else return $default;
     }
     
     /**
