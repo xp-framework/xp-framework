@@ -12,7 +12,8 @@
   class AssertionFailedError extends Exception {
     var
       $actual   = NULL,
-      $code     = '';
+      $code     = '',
+      $trace    = '';
       
     /**
      * Constructor
@@ -26,6 +27,46 @@
       $this->actual= $actual;
       $this->code= $code;
       parent::__construct($message);
+    }
+    
+    /**
+     * Set Code
+     *
+     * @access  public
+     * @param   string code
+     */
+    function setCode($code) {
+      $this->code= $code;
+    }
+
+    /**
+     * Get Code
+     *
+     * @access  public
+     * @return  string
+     */
+    function getCode() {
+      return $this->code;
+    }
+
+    /**
+     * Set Trace
+     *
+     * @access  public
+     * @param   string trace
+     */
+    function setTrace($trace) {
+      $this->trace= $trace;
+    }
+
+    /**
+     * Get Trace
+     *
+     * @access  public
+     * @return  string
+     */
+    function getTrace() {
+      return $this->trace;
     }
   }
 ?>
