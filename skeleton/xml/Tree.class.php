@@ -4,13 +4,13 @@
  * $Id$
  */
  
-  uses('xml.XML', 'xml.XMLParser', 'xml.Node');
+  uses('xml.XML', 'xml.parser.XMLParser', 'xml.Node');
  
   /**
    * The Tree class represents a tree which can be exported
    * to and imported from an XML document.
    *
-   * @see      xp://xml.XMLParser
+   * @see      xp://xml.parser.XMLParser
    * @purpose  Tree
    */
   class Tree extends XML {
@@ -188,5 +188,6 @@
      */
     function onDefault($parser, $data) {
     }
-  }
+
+  } implements(__FILE__, 'xml.parser.ParserCallback');
 ?>
