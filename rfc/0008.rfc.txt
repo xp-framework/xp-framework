@@ -87,6 +87,9 @@ Details
     $a= [ 'a' => 'b' ];
   ?>
   
+  For details, see
+  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/syntax
+  
 * The keyword "with":
   with introduces a block of code which is auto-populated by a variable
   named "self".
