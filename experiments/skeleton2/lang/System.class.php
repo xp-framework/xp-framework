@@ -5,18 +5,17 @@
  */
 
   uses('lang.SystemException');
-  
-  // Known return codes
-  define('SYSTEM_RETURN_CMDNOTFOUND',        127);
-  define('SYSTEM_RETURN_CMDNOTEXECUTABLE',   126);
-  
+
   /**
    * The System class contains several useful class fields and methods. 
    * It cannot be instantiated.
    * 
-   * @access  static
+   * @purpose  Wrap system interaction functions
    */
-  class System extends Object {
+  final class System extends Object {
+    const 
+      RETURN_CMDNOTFOUND      = 127,
+      RETURN_CMDNOTEXECUTABLE = 126;
   
     /**
      * Private helper method. Tries to locate an environment
@@ -27,7 +26,7 @@
      * @param   string* args
      * @return  string environment variable by name
      */
-    function _env() {
+    private static function _env() {
       foreach (func_get_args() as $a) {
         if ($e= getenv($a)) return $e;
       }
@@ -57,7 +56,7 @@
      * @param   string name
      * @return  mixed
      */
-    function getProperty($name) {
+    public static function getProperty($name) {
       static $prop= array();
       
       if (!isset($prop[$name])) switch ($name) {
@@ -129,7 +128,7 @@
      * @param   mixed var
      * @return  bool success
      */
-    function putEnv($name, $var) {
+    public static function putEnv($name, $var) {
       return putenv($name.'='.$var);
     }
     
@@ -141,7 +140,7 @@
      * @param   string name
      * @return  mixed var
      */
-    function getEnv($name) {
+    public static function getEnv($name) {
       return getenv($name);
     }
     
@@ -155,7 +154,7 @@
      * @access  public
      * @return  string
      */
-    function tempDir() {
+    public static function tempDir() {
       if (getenv('TEMP')) {
         $dir= getenv('TEMP');
       } elseif (getenv('TMP')) {
@@ -197,6 +196,8 @@
      * command below.
      * </pre>
      *
+     * @access  public
+     * @model   static
      * @param   string cmdLine the command
      * @param   string redirect default '2>&1' redirection
      * @param   bool background
@@ -205,10 +206,10 @@
      * @see     php://exec
      * @see     xp://lang.Process
      */
-    function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
+    public static function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
       $cmdLine= escapeshellcmd($cmdLine).' '.$redirect.($background ? ' &' : '');
       
-      if (!($pd= popen($cmdLine, 'r'))) throw(new SystemException(
+      if (!($pd= popen($cmdLine, 'r'))) throw (new SystemException(
         'cannot execute "'.$cmdLine.'"'
       ));
       $buf= array();
@@ -220,11 +221,11 @@
       }
       $retCode= (pclose($pd) >> 8) & 0xFF;
       
-      if ($retCode != 0) throw(new SystemException(
+      if ($retCode != 0) throw (new SystemException(
         'System.exec('.$cmdLine.') err #'.$retCode.' ['.implode('', $buf).']',
         $retCode
       ));
       return $buf;
     }
-  }  
+  }
 ?>
