@@ -3,8 +3,7 @@
  *
  * $Id$
  */
- 
- 
+
   uses(
     'io.Folder',
     'io.File',
@@ -15,36 +14,36 @@
     'org.webdav.xml.WebdavPropPatchResponse',
     'org.webdav.impl.DavImpl',
     'org.webdav.propertystorage.DBAFilePropertyStorage',
-    'lang.ElementNotFoundException'
+    'lang.ElementNotFoundException',
+    'util.log.Logger'
   );
-
 
   /**
    * Base class of DAV implementation
    *
+   * @see      xp://org.webdav.impl.DavImpl
+   * @purpose  Dav Implementation
    */ 
   class DavFileImpl extends DavImpl {
     var
       $base=              '',
       $dataDirectory=     '/data/',
       $propStorage=       NULL;
-      
     
     /**
      * Constructor
      *
      * @access  public
+     * @param   string base
      */
     function __construct($base) {
-      parent::__construct();
-
       $this->base= $base.$this->dataDirectory;
       $this->capabilities= (
         WEBDAV_IMPL_PROPFIND | 
         WEBDAV_IMPL_PROPPATCH
       );
       
-      $this->propStorage= new DBAFilePropertyStorage($this->base.'../Webdav.props');
+      $this->propStorage= &new DBAFilePropertyStorage($this->base.'../Webdav.props');
       
       $l= &Logger::getInstance();
       $this->c= &$l->getCategory();
@@ -132,7 +131,7 @@
           'Second-'.($lockinfo['timeend']-time()),
           $lockinfo['token'],
           $lockinfo['depth']
-          );
+        );
       }
       
       new WebdavPropResponse(
@@ -399,7 +398,7 @@
         $contentType,
         new Date($f->createdAt()),
         new Date($f->lastModified())
-        );
+      );
         
       try(); {
         $f->open(FILE_MODE_READ);
@@ -484,8 +483,7 @@
      * @throws  OperationNotAllowedException
      */
     function &unlock(&$request, &$response) {
-      
-      $path =urldecode($request->uri['path_translated']);
+      $path= urldecode($request->uri['path_translated']);
       $locktoken= $request->getHeader('lock-token');
       $uri= $this->base.$path;
       if (!file_exists($uri)) {
@@ -497,9 +495,8 @@
       } if  (catch('Exception', $e)) {
         return throw($e, get_class($this).'::Unlock'.' no LCK-store '.$e->message);
       }
-      if ($locktoken)
-        $response->setHeader('Lock-Token', $locktoken);
-      return;
+
+      if ($locktoken) $response->setHeader('Lock-Token', $locktoken);
     }
 
     /**
@@ -566,9 +563,7 @@
      * @return  &org.webdav.xml.WebdavMultistatus response
      */
     function &propfind(&$request, &$response, $useragent= 0) {
-      if (
-        (!is_a($response, 'WebdavMultistatus'))
-      ) {
+      if (!is_a($response, 'WebdavMultistatus')) {
         return throw(new IllegalArgumentException('Parameters passed of wrong types'));
       }
 
@@ -579,7 +574,6 @@
           $request->getPath(),
           $request->getDepth()
         );
-          
       } if (catch('Exception', $e)) {
         return throw($e);
       }
@@ -713,6 +707,5 @@
       $this->propStorage->close();
       return 'opaquelocktoken:'.$lock['token'];
     }
-    
   }
 ?>
