@@ -90,7 +90,7 @@
      */ 
     function value($long, $short= NULL, $default= NULL) {
       if (is_int($long)) return $this->list[$long];
-	  
+  
       $pos= $this->_find($long, $short);
       if (FALSE === $pos && NULL === $default)
         return throw (new IllegalArgumentException ('Parameter --'.$long.' does not exist'));

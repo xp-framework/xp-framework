@@ -86,17 +86,17 @@
    */
   class VCard extends Object {
     var
-      $name            	= array(),
-      $address        	= array(),
-      $email        	= array(),
-      $phone        	= array(),
-      $organization    	= array(),
+      $name             = array(),
+      $address          = array(),
+      $email            = array(),
+      $phone            = array(),
+      $organization     = array(),
       $logo             = array(),
       $birthday         = NULL,
-      $fullname        	= '',
-      $title        	= '',
-      $url            	= '',
-      $nick            	= '';
+      $fullname         = '',
+      $title            = '',
+      $url              = '',
+      $nick             = '';
 
     /**
      * Set Name

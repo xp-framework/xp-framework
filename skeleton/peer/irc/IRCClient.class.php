@@ -29,8 +29,9 @@
   * IRC (Internet Relay Chat) client implementation w/o the need for
   * any external libraries
   *
-  * @see 	http://www.faqs.org/rfcs/rfc1459.html
-  * @see 	http://www.irchelp.org/irchelp/rfc/rfc2812.txt
+  * @see      http://www.faqs.org/rfcs/rfc1459.html
+  * @see      http://www.irchelp.org/irchelp/rfc/rfc2812.txt
+  * @purpose  IRC connection
   */
   class IRCClient extends Object {
     var 
@@ -39,12 +40,12 @@
       $realname;
       
     var
-      $port	= 6667,
-      $server	= 'localhost',
-      $hostname	= 'localhost';
+      $port     = 6667,
+      $server   = 'localhost',
+      $hostname = 'localhost';
       
     var
-      $_sock	= NULL,
+      $_sock    = NULL,
       $_message = array();
       
     /**
@@ -62,8 +63,8 @@
 
       // Create a socket object
       $this->_sock= &new BSDSocket(array(
-        'host'	=> $this->server,
-        'port'	=> $this->port
+        'host'  => $this->server,
+        'port'  => $this->port
       ));
     }
     
@@ -220,7 +221,7 @@
      *
      * @access  public
      * @param   string channel channel name
-     * @param	string key default NULL key (password)
+     * @param   string key default NULL key (password)
      * @return  array users
      */
     function join($channel, $key= NULL) {
@@ -340,7 +341,7 @@
      *
      * @access  public
      * @param   string message
-     * @param	string recipient The recipient, either a nick or a #channel
+     * @param   string recipient The recipient, either a nick or a #channel
      * @return  bool success
      */
     function privmsg($message, $recipient) {
@@ -399,9 +400,9 @@
      *
      * @access  public
      * @param   string formatstring If NULL, nothing will be sent
-     * @param	string* formatargs
+     * @param   string* formatargs
      * @return  string data
-     * @throws	Exception
+     * @throws  Exception
      */
     function _cmd() {
       $args= func_get_args();
@@ -473,7 +474,7 @@
         // :irc.oneandone.co.uk 002 thekid :Your host is irc.oneandone.co.uk, running version u2.10.07.0
         if ($data[0] == $this->server) {
           $this->_message[]= array(
-            'type'	 => IRC_MSGT_SERVER,
+            'type'   => IRC_MSGT_SERVER,
             'server' => $data[0],
             'code'   => $data[1],
             'nick'   => $data[2],
@@ -499,11 +500,11 @@
         // ':dpunkt!baz@billard.foo.bar PRIVMSG #support :hi
         list($nick, $user)= explode('!', $data[0]);
         $this->_message[]= array(
-          'type'	=> IRC_MSGT_USER,
+          'type'    => IRC_MSGT_USER,
           'user'    => $user,
           'code'    => $data[1],
           'nick'    => $nick,
-          'data'	=> array($data[2], $data[3])
+          'data'    => array($data[2], $data[3])
         );
       }
       

@@ -11,7 +11,8 @@
 
   define ('TAP_MIN_SUBSCRIBER_NUMBER', 4);
 
-  /* This class parses an telephone number. Its main purpose
+  /**
+   * This class parses an telephone number. Its main purpose
    * is to bring phone numbers into a normalized form.
    *
    * @purpose Parse any string into a TelephonyAddress object

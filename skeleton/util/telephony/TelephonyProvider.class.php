@@ -93,14 +93,14 @@
     /**
      * Connect and initiate the communication
      *
-     * @access	public
+     * @access  public
      */
     function connect() { }
 
     /**
      * Close connection and end the communication
      *
-     * @access	public
+     * @access  public
      */
     function close() { }
     

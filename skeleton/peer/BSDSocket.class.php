@@ -108,9 +108,9 @@
       }
       
       if (FALSE === ($n= socket_select(
-        $r= array(&$this->_sock), 			// Read
-        $w= NULL, 							// Write
-        $e= NULL, 							// Except
+        $r= array(&$this->_sock),             // Read
+        $w= NULL,                             // Write
+        $e= NULL,                             // Except
         $tv_sec,
         $tv_usec
       ))) {
@@ -168,7 +168,7 @@
      * @access  public
      * @param   int maxLen maximum bytes to read
      * @return  string data
-     * @throws	peer.SocketException
+     * @throws  peer.SocketException
      */
     function readBinary($maxLen= 4096) {
       return $this->_read($maxLen, PHP_BINARY_READ);
@@ -180,7 +180,7 @@
      * @access  public
      * @param   string str
      * @return  int bytes written
-     * @throws	peer.SocketException
+     * @throws  peer.SocketException
      */
     function write($str) {
       $bytesWritten= socket_write($this->_sock, $str, strlen($str));

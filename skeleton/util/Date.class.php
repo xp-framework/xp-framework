@@ -28,16 +28,16 @@
       $_utime   = 0;
       
     var
-      $seconds  = 0,	
-      $minutes  = 0,	
-      $hours    = 0,	
-      $mday     = 0,	
-      $wday     = 0,	
-      $mon      = 0,	
-      $year     = 0,	
+      $seconds  = 0,
+      $minutes  = 0,
+      $hours    = 0,
+      $mday     = 0,
+      $wday     = 0,
+      $mon      = 0,
+      $year     = 0,
       $yday     = 0,
-      $weekday  = '',	
-      $month    = '';	
+      $weekday  = '',
+      $month    = '';
 
     /**
      * Constructor

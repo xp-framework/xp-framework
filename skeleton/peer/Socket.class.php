@@ -166,7 +166,7 @@
      * @access  public
      * @param   int maxLen maximum bytes to read
      * @return  string data
-     * @throws	peer.SocketException
+     * @throws  peer.SocketException
      */
     function read($maxLen= 4096) {
       if (FALSE === ($r= fgets($this->_sock, $maxLen))) {
@@ -187,7 +187,7 @@
      * @access  public
      * @param   int maxLen maximum bytes to read
      * @return  string data
-     * @throws	peer.SocketException
+     * @throws  peer.SocketException
      */
     function readBinary($maxLen= 4096) {
       if (FALSE === ($r= fread($this->_sock, $maxLen))) {
@@ -213,7 +213,7 @@
      * @access  public
      * @param   string str
      * @return  int bytes written
-     * @throws	peer.SocketException in case of an error
+     * @throws  peer.SocketException in case of an error
      */
     function write($str) {
       if (FALSE === ($bytesWritten= fputs($this->_sock, $str, $len= strlen($str)))) {
