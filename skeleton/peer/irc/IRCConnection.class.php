@@ -275,6 +275,23 @@
     }
     
     /**
+     * Leave a channel
+     *
+     * @access  public
+     * @param   string channel without leading #
+     * @return  bool success TRUE in case the command could be sent
+     * @throws  lang.IllegalStateException in case the socket is not connected
+     */
+    function part($channel) {
+      if (!$this->sock->isConnected()) {
+        return throw(new IllegalStateException('Not connected'));
+      }
+      
+      // Be tolerant about channel parameter and rip off leading # if necessary
+      return $this->writeln('PART #%s', ltrim($channel, '#'));
+    }
+
+    /**
      * Wrapper around writeln() that sends a PRIVMSG
      *
      * @access  public
