@@ -67,13 +67,15 @@
       // TODO: Andere Encodings?
       if ($encoding == 'utf-8') $ret= utf8_decode($ret);
 
-      // echo 'Setting "'.$ret.'" to '.$t."\n";
-      if (!@settype($ret, $t)) {
-        settype($ret, 'string');         // Default "string"
-      } 
-      
+      // echo '    Setting "'.$ret.'" to '.$t."\n";
+
       // Rip HTML entities
-      return strtr($ret, array_flip(get_html_translation_table(HTML_ENTITIES)));
+      $ret= strtr($ret, array_flip(get_html_translation_table(HTML_ENTITIES)));
+
+      // Set type
+      if (!@settype($ret, $t)) settype($ret, 'string');         // Default "string"
+
+      return $ret; 
     }
     
     function _recurseArray(&$elem, $arr) {
