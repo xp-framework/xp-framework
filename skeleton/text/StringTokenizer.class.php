@@ -65,5 +65,5 @@
       $this->tok= strtok($this->delim);
       return $tok;
     }
- }
+  }
 ?>

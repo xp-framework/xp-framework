@@ -60,8 +60,15 @@
      * @param   int precision default 0,
      * @param   int scale default 0
      */
-    function __construct($name, $type, $identity= FALSE, $nullable= FALSE, 
-               $length= 0, $precision= 0, $scale= 0) {
+    function __construct(
+      $name, 
+      $type, 
+      $identity= FALSE, 
+      $nullable= FALSE, 
+      $length= 0, 
+      $precision= 0, 
+      $scale= 0
+    ) {
       $this->name= $name;
       $this->type= $type;
       $this->identity= $identity;

@@ -84,7 +84,7 @@
       
       // Was it unparsable?
       if (!isset($mail)) return throw(
-         new FormatException('String "'.$str.'" could not be parsed')
+        new FormatException('String "'.$str.'" could not be parsed')
       );
       
       return new InternetAddress($mail, $personal);

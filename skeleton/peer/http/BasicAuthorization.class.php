@@ -47,6 +47,6 @@
      */
     function getValue() {
       return $this->value.' '.base64_encode($this->user.':'.$this->pass);
-     }
+    }
   }
 ?>
