@@ -61,6 +61,17 @@
     }
     
     /**
+     * Indicates whether the date to compare equals this date.
+     *
+     * @access  public
+     * @param   &util.Date cmp
+     * @return  bool TRUE if dates are equal
+     */
+    function equals(&$cmp) {
+      return is('util.Date', $cmp) && ($this->getTime() === $cmp->getTime());
+    }    
+    
+    /**
      * Static method to get current date/time
      *
      * @model   static

@@ -53,5 +53,16 @@
     function getType() {
       return 'xsd:base64Binary';
     }
+    
+    /**
+     * Indicates whether the compared binary equals this one.
+     *
+     * @access  public
+     * @param   &xml.soap.types.SOAPBase64Binary cmp
+     * @return  bool TRUE if both binaries are equal
+     */
+    function equals(&$cmp) {
+      return is('xml.soap.types.SOAPBase64Binary', $cmp) && (0 === strcmp($this->string, $cmp->string));
+    }    
   }
 ?>
