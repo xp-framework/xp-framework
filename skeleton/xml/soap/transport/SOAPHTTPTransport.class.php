@@ -15,7 +15,7 @@
    *
    * @see xml.soap.SOAPClient
    */
-  class SoapHttpTransport extends SoapTransport {
+  class SOAPHTTPTransport extends SOAPTransport {
     var
       $_conn,
       $_action;
