@@ -15,7 +15,14 @@
      <xsl:when test="$mode = 'collection'">
        XP::<xsl:value-of select="./@prefix"/>
      </xsl:when>
-     <xsl:otherwise>XP:Documentation</xsl:otherwise>
+     <xsl:when test="$mode = 'showsource'">
+       <xsl:processing-instruction name="php">
+         <![CDATA[
+           echo 'XP:: Source of '.strip_tags ($_REQUEST['f']);
+         ]]>
+       </xsl:processing-instruction>
+     </xsl:when>
+     <xsl:otherwise>XP::Documentation</xsl:otherwise>
    </xsl:choose>
  </title>
  <link rel="stylesheet" href="/style.css" />

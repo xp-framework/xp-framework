@@ -13,6 +13,23 @@
   <xsl:include href="xsl-helper.xsl"/>
 
   <xsl:template name="showsource">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+        <td width="1%" valign="top">
+          <img src="/image/nav_example.gif"/>
+        </td>
+        <td width="50%">
+          <xsl:processing-instruction name="php">
+            <![CDATA[
+              $className= strip_tags ($_REQUEST['f']);
+              echo '<b>'.$className.'</b>';
+              echo '<a href="/classes/'.$className.'.html"><img src="/image/caret-t.gif" border="0"></a>';
+            ]]>
+          </xsl:processing-instruction>
+        </td>
+      </tr>
+    <xsl:call-template name="embedded-divider"/>
+    </table>
     <xsl:processing-instruction name="php">
       <![CDATA[
 /* This class is part of the XP framework
