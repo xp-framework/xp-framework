@@ -123,6 +123,16 @@
     function setVersion($version) {
       $this->tokens['version']= $version;
     }
+    
+    /**
+     * Suppress report mail when successful
+     *
+     * @access  public
+     * @param   bool suppress
+     */
+    function setNoReport($b= TRUE) {
+      $this->tokens['nomail']= ($b ? 'yes' : 'no');
+    }    
 
     /**
      * Get message body. If this message is contained in a folder and the body
