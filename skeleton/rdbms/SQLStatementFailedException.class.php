@@ -53,7 +53,7 @@
     /**
      * Retrieve string representation of the stack trace
      *
-     * @access  publuc
+     * @access  public
      * @return  string
      */
     function toString() {

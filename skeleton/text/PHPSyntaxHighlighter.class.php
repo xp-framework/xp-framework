@@ -112,7 +112,7 @@
      * Sets sourcecode string to higlight. Will require the leading
      * <?php and an ?> at the end.
      *
-     * @access  publuc
+     * @access  public
      * @param   string source 
      */
     function setSource($source) {
