@@ -33,9 +33,8 @@
    *
    * This is PHP code implementing Punycode (RFC 3492).
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @ext      iconv
+   * @purpose  Punycode encoding/decoding
    */
   class PunyCode extends Object {
 
@@ -71,15 +70,14 @@
      * @see rfc://3492#6.1
      */
     function _adapt($delta, $numpoints, $firsttime) {
-      $delta = $firsttime ? $delta / PUNYCODE_DAMP : $delta >> 1;
+      $delta = $firsttime ? (int)($delta / PUNYCODE_DAMP) : $delta >> 1;
       // delta >> 1 is a faster way of doing delta / 2
-      $delta += $delta / $numpoints;
+      $delta += (int)($delta / $numpoints);
 
-      for($k= 0; $delta > ((PUNYCODE_BASE - PUNYCODE_TMIN) * PUNYCODE_TMAX) / 2;  $k += $base) {
-        $delta /= PUNYCODE_BASE - PUNYCODE_TMIN;
+      for($k= 0; $delta > ((PUNYCODE_BASE - PUNYCODE_TMIN) * PUNYCODE_TMAX) / 2;  $k += PUNYCODE_BASE) {
+        $delta = (int)($delta / (PUNYCODE_BASE - PUNYCODE_TMIN));
       }
-
-      return $k + (PUNYCODE_BASE - PUNYCODE_TMIN + 1) * $delta / ($delta + PUNYCODE_SKEW);
+      return (int)($k + (PUNYCODE_BASE - PUNYCODE_TMIN + 1) * $delta / ($delta + PUNYCODE_SKEW));
     }
 
     /**
@@ -122,7 +120,7 @@
      * @see rfc://3492#5
      */
     function _encode_basic($bcp, $flag) {
-      $bcp= ord($bcp);
+      $bcp= $bcp;
       $bcp -= ($bcp - 97 < 26) << 5;
       return $bcp + ((!$flag && ($bcp - 65 < 26)) << 5);
     }
@@ -179,7 +177,7 @@
         if (ord($input[$j]) >= 0x80) {
           return throw(new IllegalArgumentException('Input is not valid punycode'));
         }
-        $output[$out++] = $input[$j];
+        $output[$out++] = ord($input[$j]);
       }
 
       // Main decoding loop:  Start just after the last delimiter if any
@@ -227,13 +225,22 @@
 
         // Insert n at position i of the output:
         if ($flags !== NULL) {
-          array_splice($flags, $i, 0, $this->_flagged($input[$in - 1]));
+          for($x= ($out - $i) - 1; $x >= 0; $x--) $flags[$x+$i+1] = $flags[$x+$i];
+          $flags[$i]= $this->_flagged($input[$in-1]);
         }
 
-        array_splice($output, $i, 0, chr($n));
+        for($x= ($out - $i) - 1; $x >= 0; $x--) $output[$x+$i+1] = $output[$x+$i];
+        $output[$i]= $n;
         $i++;
       }
-      $result= implode('', $output);
+      // Transform it to UCS-4 string
+      $result= '';
+      foreach($output as $v) {
+        $result.= chr(($v >> 24) & 255);
+        $result.= chr(($v >> 16) & 255);
+        $result.= chr(($v >>  8) & 255);
+        $result.= chr($v         & 255);
+      }
       return TRUE;
     }
 
@@ -260,7 +267,7 @@
       for($j= 0; $j < $in_len; ++$j) {
         if (ord($input[$j]) < 0x80) {
           $output[$out++] =
-            chr(isset($flags[$j]) ? $this->_encode_basic($input[$j], $flags[$j]) : $input[$j]);
+            chr(isset($flags[$j]) ? $this->_encode_basic(ord($input[$j]), $flags[$j]) : $input[$j]);
         }
       }
 
@@ -335,7 +342,7 @@
      * @return  bool
      * @throws  Exception from _decode()
      */
-    function decodeString($str) {
+    function decodeString($str, $charset= 'ISO-8859-1') {
       try(); {
         $out= '';
         $flags= array();
@@ -343,6 +350,11 @@
         $p->decode($str, $out, $flags);
       } if (catch('Exception', $e)) {
         return throw($e);
+      }
+      if ($charset != 'UCS-4') {
+        if (($out= iconv('UCS-4', $charset, $out)) === FALSE) {
+          return throw(new Exception('Can not convert string to requested encoding('.$charset.')'));
+        }
       }
       return $out;
     }
