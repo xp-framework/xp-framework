@@ -1,18 +1,235 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <document>
   <entry action="M">  
+    <collection>xml.soap.rpc</collection>
+    <class>SoapRpcRouter</class>
+    <revision>1.17</revision>
+    <user>friebe</user>
+    <date>2003-09-22 11:46</date>
+  </entry>
+  <entry action="M">  
+    <collection>rdbms</collection>
+    <class>DBConnection</class>
+    <revision>1.12</revision>
+    <user>friebe</user>
+    <date>2003-09-21 21:49</date>
+  </entry>
+  <entry action="M">  
+    <collection>net.xp-framework.db.caffeine</collection>
+    <class>XPNews</class>
+    <revision>1.7</revision>
+    <user>friebe</user>
+    <date>2003-09-21 20:19</date>
+  </entry>
+  <entry action="M">  
+    <collection>xml.soap</collection>
+    <class>SOAPNode</class>
+    <revision>1.35</revision>
+    <user>friebe</user>
+    <date>2003-09-21 20:11</date>
+  </entry>
+  <entry action="M">  
+    <collection>lang</collection>
+    <class>XPClass</class>
+    <revision>1.8</revision>
+    <user>friebe</user>
+    <date>2003-09-21 19:56</date>
+  </entry>
+  <entry action="M">  
+    <collection>lang</collection>
+    <class>Error</class>
+    <revision>1.2</revision>
+    <user>friebe</user>
+    <date>2003-09-21 19:53</date>
+  </entry>
+  <entry action="M">  
+    <collection>peer.server</collection>
+    <class>ForkingServer</class>
+    <revision>1.7</revision>
+    <user>friebe</user>
+    <date>2003-09-21 19:51</date>
+  </entry>
+  <entry action="M">  
+    <collection>lang</collection>
+    <class>NetClassLoader</class>
+    <revision>1.9</revision>
+    <user>friebe</user>
+    <date>2003-09-21 19:51</date>
+  </entry>
+  <entry action="M">  
+    <collection>org.apache.xml.workflow</collection>
+    <class>Context</class>
+    <revision>1.22</revision>
+    <user>friebe</user>
+    <date>2003-09-21 19:50</date>
+  </entry>
+  <entry action="M">  
+    <collection>com.microsoft.wscript</collection>
+    <class>WshShell</class>
+    <revision>1.2</revision>
+    <user>friebe</user>
+    <date>2003-09-21 16:42</date>
+  </entry>
+  <entry action="M">  
+    <collection>text</collection>
+    <class>PHPSyntaxHighlighter</class>
+    <revision>1.6</revision>
+    <user>friebe</user>
+    <date>2003-09-21 16:42</date>
+  </entry>
+  <entry action="M">  
+    <collection>util</collection>
+    <class>Observable</class>
+    <revision>1.4</revision>
+    <user>friebe</user>
+    <date>2003-09-21 16:22</date>
+  </entry>
+  <entry action="M">  
+    <collection>lang.apidoc.parser</collection>
+    <class>GenericParser</class>
+    <revision>1.8</revision>
+    <user>friebe</user>
+    <date>2003-09-21 16:16</date>
+  </entry>
+  <entry action="M">  
+    <collection>peer.irc</collection>
+    <class>IRCConnection</class>
+    <revision>1.4</revision>
+    <user>friebe</user>
+    <date>2003-09-21 16:13</date>
+  </entry>
+  <entry action="M">  
+    <collection>xml.soap</collection>
+    <class>SOAPClient</class>
+    <revision>1.18</revision>
+    <user>friebe</user>
+    <date>2003-09-21 16:09</date>
+  </entry>
+  <entry action="M">  
+    <collection>text.translator</collection>
+    <class>Swabian</class>
+    <revision>1.2</revision>
+    <user>friebe</user>
+    <date>2003-09-21 14:41</date>
+  </entry>
+  <entry action="M">  
+    <collection>com.microsoft.com</collection>
+    <class>COMObject</class>
+    <revision>1.4</revision>
+    <user>friebe</user>
+    <date>2003-09-21 14:03</date>
+  </entry>
+  <entry action="M">  
+    <collection>text.parser</collection>
+    <class>CSVParser</class>
+    <revision>1.8</revision>
+    <user>alex</user>
+    <date>2003-09-21 11:25</date>
+  </entry>
+  <entry action="M">  
+    <collection>org.cvshome</collection>
+    <class>CVSInterface</class>
+    <revision>1.8</revision>
+    <user>friebe</user>
+    <date>2003-09-19 12:46</date>
+  </entry>
+  <entry action="M">  
+    <collection>util.profiling.unittest</collection>
+    <class>TestSkipped</class>
+    <revision>1.5</revision>
+    <user>friebe</user>
+    <date>2003-09-17 18:23</date>
+  </entry>
+  <entry action="M">  
+    <collection>util.profiling.unittest</collection>
+    <class>TestResult</class>
+    <revision>1.6</revision>
+    <user>friebe</user>
+    <date>2003-09-17 18:23</date>
+  </entry>
+  <entry action="M">  
+    <collection>util.profiling.unittest</collection>
+    <class>TestSuccess</class>
+    <revision>1.5</revision>
+    <user>friebe</user>
+    <date>2003-09-17 18:23</date>
+  </entry>
+  <entry action="M">  
+    <collection>util.profiling.unittest</collection>
+    <class>TestFailure</class>
+    <revision>1.5</revision>
+    <user>friebe</user>
+    <date>2003-09-17 18:23</date>
+  </entry>
+  <entry action="M">  
+    <collection>util</collection>
+    <class>TimeZone</class>
+    <revision>1.3</revision>
+    <user>alex</user>
+    <date>2003-09-17 14:22</date>
+  </entry>
+  <entry action="M">  
+    <collection>security.cert</collection>
+    <class>X509Certificate</class>
+    <revision>1.5</revision>
+    <user>friebe</user>
+    <date>2003-09-17 13:11</date>
+  </entry>
+  <entry action="M">  
+    <collection>security.cert</collection>
+    <class>CertificateException</class>
+    <revision>1.2</revision>
+    <user>friebe</user>
+    <date>2003-09-17 13:10</date>
+  </entry>
+  <entry action="M">  
+    <collection>lang</collection>
+    <class>Throwable</class>
+    <revision>1.8</revision>
+    <user>friebe</user>
+    <date>2003-09-17 13:03</date>
+  </entry>
+  <entry action="M">  
+    <collection>lang</collection>
+    <class>StackTraceElement</class>
+    <revision>1.7</revision>
+    <user>friebe</user>
+    <date>2003-09-16 21:50</date>
+  </entry>
+  <entry action="M">  
+    <collection>org.cvshome</collection>
+    <class>CVSFile</class>
+    <revision>1.11</revision>
+    <user>friebe</user>
+    <date>2003-09-15 17:06</date>
+  </entry>
+  <entry action="M">  
+    <collection>rdbms.mysql</collection>
+    <class>MySQLDBAdapter</class>
+    <revision>1.6</revision>
+    <user>friebe</user>
+    <date>2003-09-15 14:59</date>
+  </entry>
+  <entry action="M">  
+    <collection>rdbms.sybase</collection>
+    <class>SybaseDBAdapter</class>
+    <revision>1.6</revision>
+    <user>friebe</user>
+    <date>2003-09-15 14:58</date>
+  </entry>
+  <entry action="M">  
+    <collection>org.apache</collection>
+    <class>HttpSession</class>
+    <revision>1.9</revision>
+    <user>friebe</user>
+    <date>2003-09-15 14:55</date>
+  </entry>
+  <entry action="M">  
     <collection>xml.rdf</collection>
     <class>RDFNewsFeed</class>
     <revision>1.7</revision>
     <user>friebe</user>
     <date>2003-09-14 20:04</date>
-  </entry>
-  <entry action="M">  
-    <collection>org.cvshome</collection>
-    <class>CVSFile</class>
-    <revision>1.10</revision>
-    <user>friebe</user>
-    <date>2003-09-14 20:03</date>
   </entry>
   <entry action="M">  
     <collection>xml</collection>
@@ -43,13 +260,6 @@
     <date>2003-09-14 19:22</date>
   </entry>
   <entry action="M">  
-    <collection>text.parser</collection>
-    <class>CSVParser</class>
-    <revision>1.7</revision>
-    <user>friebe</user>
-    <date>2003-09-14 19:19</date>
-  </entry>
-  <entry action="M">  
     <collection>rmi</collection>
     <class>RMIServerException</class>
     <revision>1.2</revision>
@@ -62,20 +272,6 @@
     <revision>1.3</revision>
     <user>friebe</user>
     <date>2003-09-14 19:17</date>
-  </entry>
-  <entry action="M">  
-    <collection>security.cert</collection>
-    <class>X509Certificate</class>
-    <revision>1.4</revision>
-    <user>friebe</user>
-    <date>2003-09-14 19:17</date>
-  </entry>
-  <entry action="M">  
-    <collection>util</collection>
-    <class>Observable</class>
-    <revision>1.3</revision>
-    <user>friebe</user>
-    <date>2003-09-14 19:14</date>
   </entry>
   <entry action="M">  
     <collection>peer.mail.transport</collection>
@@ -141,13 +337,6 @@
     <date>2003-09-14 18:47</date>
   </entry>
   <entry action="M">  
-    <collection>net.xp-framework.db.caffeine</collection>
-    <class>XPNews</class>
-    <revision>1.6</revision>
-    <user>friebe</user>
-    <date>2003-09-14 18:46</date>
-  </entry>
-  <entry action="M">  
     <collection>lang</collection>
     <class>Thread</class>
     <revision>1.2</revision>
@@ -204,13 +393,6 @@
     <date>2003-09-14 18:30</date>
   </entry>
   <entry action="M">  
-    <collection>rdbms.mysql</collection>
-    <class>MySQLDBAdapter</class>
-    <revision>1.5</revision>
-    <user>friebe</user>
-    <date>2003-09-14 18:29</date>
-  </entry>
-  <entry action="M">  
     <collection>security</collection>
     <class>Policy</class>
     <revision>1.6</revision>
@@ -237,13 +419,6 @@
     <revision>1.8</revision>
     <user>friebe</user>
     <date>2003-09-14 18:26</date>
-  </entry>
-  <entry action="M">  
-    <collection>lang</collection>
-    <class>NetClassLoader</class>
-    <revision>1.8</revision>
-    <user>friebe</user>
-    <date>2003-09-14 18:24</date>
   </entry>
   <entry action="M">  
     <collection>gui.gtk.util</collection>
@@ -442,34 +617,6 @@
     <date>2003-09-08 12:34</date>
   </entry>
   <entry action="M">  
-    <collection>util.profiling.unittest</collection>
-    <class>TestSuccess</class>
-    <revision>1.4</revision>
-    <user>friebe</user>
-    <date>2003-09-08 11:07</date>
-  </entry>
-  <entry action="M">  
-    <collection>util.profiling.unittest</collection>
-    <class>TestFailure</class>
-    <revision>1.4</revision>
-    <user>friebe</user>
-    <date>2003-09-08 11:07</date>
-  </entry>
-  <entry action="M">  
-    <collection>util.profiling.unittest</collection>
-    <class>TestSkipped</class>
-    <revision>1.4</revision>
-    <user>friebe</user>
-    <date>2003-09-08 11:07</date>
-  </entry>
-  <entry action="M">  
-    <collection>util.profiling.unittest</collection>
-    <class>TestResult</class>
-    <revision>1.5</revision>
-    <user>friebe</user>
-    <date>2003-09-08 11:07</date>
-  </entry>
-  <entry action="M">  
     <collection>rdbms.mysql</collection>
     <class>MySQLConnection</class>
     <revision>1.4</revision>
@@ -482,13 +629,6 @@
     <revision>1.11</revision>
     <user>friebe</user>
     <date>2003-09-08 10:06</date>
-  </entry>
-  <entry action="M">  
-    <collection>peer.irc</collection>
-    <class>IRCConnection</class>
-    <revision>1.3</revision>
-    <user>friebe</user>
-    <date>2003-09-08 09:18</date>
   </entry>
   <entry action="M">  
     <collection>peer.irc</collection>
@@ -512,22 +652,15 @@
     <date>2003-09-05 14:41</date>
   </entry>
   <entry action="M">  
-    <collection>xml.soap.rpc</collection>
-    <class>SoapRpcRouter</class>
-    <revision>1.16</revision>
-    <user>friebe</user>
-    <date>2003-09-03 13:40</date>
-  </entry>
-  <entry action="M">  
     <collection>peer</collection>
-    <class>SocketException</class>
+    <class>ConnectException</class>
     <revision>1.2</revision>
     <user>friebe</user>
     <date>2003-09-02 00:18</date>
   </entry>
   <entry action="M">  
     <collection>peer</collection>
-    <class>ConnectException</class>
+    <class>SocketException</class>
     <revision>1.2</revision>
     <user>friebe</user>
     <date>2003-09-02 00:18</date>
@@ -652,27 +785,6 @@
     <date>2003-08-24 11:09</date>
   </entry>
   <entry action="M">  
-    <collection>lang</collection>
-    <class>Throwable</class>
-    <revision>1.6</revision>
-    <user>friebe</user>
-    <date>2003-08-23 19:05</date>
-  </entry>
-  <entry action="M">  
-    <collection>lang</collection>
-    <class>XPClass</class>
-    <revision>1.7</revision>
-    <user>friebe</user>
-    <date>2003-08-23 16:39</date>
-  </entry>
-  <entry action="M">  
-    <collection>xml.soap</collection>
-    <class>SOAPNode</class>
-    <revision>1.34</revision>
-    <user>friebe</user>
-    <date>2003-08-22 10:55</date>
-  </entry>
-  <entry action="M">  
     <collection>peer.ldap</collection>
     <class>LDAPClient</class>
     <revision>1.24</revision>
@@ -692,13 +804,6 @@
     <revision>1.2</revision>
     <user>friebe</user>
     <date>2003-08-14 23:00</date>
-  </entry>
-  <entry action="M">  
-    <collection>rdbms</collection>
-    <class>DBConnection</class>
-    <revision>1.11</revision>
-    <user>friebe</user>
-    <date>2003-08-14 17:49</date>
   </entry>
   <entry action="M">  
     <collection>rdbms</collection>
@@ -786,13 +891,6 @@
   </entry>
   <entry action="M">  
     <collection>util.notify</collection>
-    <class>DigestNotifier</class>
-    <revision>1.3</revision>
-    <user>friebe</user>
-    <date>2003-07-25 00:16</date>
-  </entry>
-  <entry action="M">  
-    <collection>util.notify</collection>
     <class>EscalatedNotifier</class>
     <revision>1.3</revision>
     <user>friebe</user>
@@ -802,6 +900,13 @@
     <collection>util.notify</collection>
     <class>MailNotifier</class>
     <revision>1.6</revision>
+    <user>friebe</user>
+    <date>2003-07-25 00:16</date>
+  </entry>
+  <entry action="M">  
+    <collection>util.notify</collection>
+    <class>DigestNotifier</class>
+    <revision>1.3</revision>
     <user>friebe</user>
     <date>2003-07-25 00:16</date>
   </entry>
@@ -823,13 +928,6 @@
     <collection>org.apache.xml.workflow</collection>
     <class>AbstractXMLScriptlet</class>
     <revision>1.9</revision>
-    <user>friebe</user>
-    <date>2003-07-22 14:14</date>
-  </entry>
-  <entry action="M">  
-    <collection>org.apache.xml.workflow</collection>
-    <class>Context</class>
-    <revision>1.21</revision>
     <user>friebe</user>
     <date>2003-07-22 14:14</date>
   </entry>
@@ -890,25 +988,11 @@
     <date>2003-07-15 14:57</date>
   </entry>
   <entry action="M">  
-    <collection>org.cvshome</collection>
-    <class>CVSInterface</class>
-    <revision>1.7</revision>
-    <user>alex</user>
-    <date>2003-07-15 11:37</date>
-  </entry>
-  <entry action="M">  
     <collection>lang.apidoc</collection>
     <class>FunctionComment</class>
     <revision>1.5</revision>
     <user>friebe</user>
     <date>2003-07-14 18:44</date>
-  </entry>
-  <entry action="M">  
-    <collection>lang</collection>
-    <class>StackTraceElement</class>
-    <revision>1.6</revision>
-    <user>friebe</user>
-    <date>2003-07-13 12:56</date>
   </entry>
   <entry action="M">  
     <collection>util</collection>
@@ -995,9 +1079,9 @@
     <date>2003-06-23 23:07</date>
   </entry>
   <entry action="M">  
-    <collection>org.webdav</collection>
-    <class>WebdavScriptlet</class>
-    <revision>1.20</revision>
+    <collection>peer.ldap</collection>
+    <class>LDAPException</class>
+    <revision>1.5</revision>
     <user>friebe</user>
     <date>2003-06-23 23:07</date>
   </entry>
@@ -1009,6 +1093,13 @@
     <date>2003-06-23 23:07</date>
   </entry>
   <entry action="M">  
+    <collection>org.webdav</collection>
+    <class>WebdavScriptlet</class>
+    <revision>1.20</revision>
+    <user>friebe</user>
+    <date>2003-06-23 23:07</date>
+  </entry>
+  <entry action="M">  
     <collection>org.apache.xml.workflow</collection>
     <class>ContextFailedException</class>
     <revision>1.2</revision>
@@ -1016,22 +1107,15 @@
     <date>2003-06-23 23:07</date>
   </entry>
   <entry action="M">  
-    <collection>peer.ldap</collection>
-    <class>LDAPException</class>
-    <revision>1.5</revision>
+    <collection>lang</collection>
+    <class>MethodNotImplementedException</class>
+    <revision>1.4</revision>
     <user>friebe</user>
     <date>2003-06-23 23:07</date>
   </entry>
   <entry action="M">  
     <collection>org.apache</collection>
     <class>ErrorDocument</class>
-    <revision>1.4</revision>
-    <user>friebe</user>
-    <date>2003-06-23 23:07</date>
-  </entry>
-  <entry action="M">  
-    <collection>lang</collection>
-    <class>MethodNotImplementedException</class>
     <revision>1.4</revision>
     <user>friebe</user>
     <date>2003-06-23 23:07</date>
@@ -1108,14 +1192,14 @@
   </entry>
   <entry action="M">  
     <collection>com.microsoft.format.excel</collection>
-    <class>Workbook</class>
+    <class>Worksheet</class>
     <revision>1.2</revision>
     <user>friebe</user>
     <date>2003-06-22 22:57</date>
   </entry>
   <entry action="M">  
     <collection>com.microsoft.format.excel</collection>
-    <class>Worksheet</class>
+    <class>Workbook</class>
     <revision>1.2</revision>
     <user>friebe</user>
     <date>2003-06-22 22:57</date>
@@ -1177,13 +1261,6 @@
     <date>2003-06-17 22:24</date>
   </entry>
   <entry action="M">  
-    <collection>peer.server</collection>
-    <class>ForkingServer</class>
-    <revision>1.6</revision>
-    <user>friebe</user>
-    <date>2003-06-16 23:53</date>
-  </entry>
-  <entry action="M">  
     <collection>org.apache.xml.workflow</collection>
     <class>User</class>
     <revision>1.2</revision>
@@ -1206,8 +1283,8 @@
   </entry>
   <entry action="M">  
     <collection>xml.schema</collection>
-    <class>XmlSchemaStructure</class>
-    <revision>1.6</revision>
+    <class>XmlSchema</class>
+    <revision>1.5</revision>
     <user>alex</user>
     <date>2003-06-15 15:57</date>
   </entry>
@@ -1220,8 +1297,8 @@
   </entry>
   <entry action="M">  
     <collection>xml.schema</collection>
-    <class>XmlSchema</class>
-    <revision>1.5</revision>
+    <class>XmlSchemaStructure</class>
+    <revision>1.6</revision>
     <user>alex</user>
     <date>2003-06-15 15:57</date>
   </entry>
@@ -1234,14 +1311,14 @@
   </entry>
   <entry action="M">  
     <collection>peer.server</collection>
-    <class>Server</class>
+    <class>ConnectionListener</class>
     <revision>1.6</revision>
     <user>alex</user>
     <date>2003-06-15 15:57</date>
   </entry>
   <entry action="M">  
     <collection>peer.server</collection>
-    <class>ConnectionListener</class>
+    <class>Server</class>
     <revision>1.6</revision>
     <user>alex</user>
     <date>2003-06-15 15:57</date>
@@ -1324,13 +1401,6 @@
     <date>2003-06-13 14:12</date>
   </entry>
   <entry action="M">  
-    <collection>com.microsoft.com</collection>
-    <class>Word</class>
-    <revision>1.2</revision>
-    <user>friebe</user>
-    <date>2003-06-13 14:12</date>
-  </entry>
-  <entry action="M">  
     <collection>gui.gtk.widgets</collection>
     <class>FileDialog</class>
     <revision>1.10</revision>
@@ -1338,11 +1408,11 @@
     <date>2003-06-13 14:12</date>
   </entry>
   <entry action="M">  
-    <collection>lang.apidoc.parser</collection>
-    <class>GenericParser</class>
-    <revision>1.7</revision>
+    <collection>com.microsoft.com</collection>
+    <class>Word</class>
+    <revision>1.2</revision>
     <user>friebe</user>
-    <date>2003-06-13 13:48</date>
+    <date>2003-06-13 14:12</date>
   </entry>
   <entry action="M">  
     <collection>org.apache.xml.workflow</collection>
@@ -1378,13 +1448,6 @@
     <revision>1.5</revision>
     <user>friebe</user>
     <date>2003-06-08 16:02</date>
-  </entry>
-  <entry action="M">  
-    <collection>xml.soap</collection>
-    <class>SOAPClient</class>
-    <revision>1.17</revision>
-    <user>friebe</user>
-    <date>2003-06-06 00:51</date>
   </entry>
   <entry action="M">  
     <collection>xml</collection>
@@ -1432,13 +1495,6 @@
     <collection>util.registry</collection>
     <class>Registry</class>
     <revision>1.8</revision>
-    <user>friebe</user>
-    <date>2003-06-06 00:49</date>
-  </entry>
-  <entry action="M">  
-    <collection>text</collection>
-    <class>PHPSyntaxHighlighter</class>
-    <revision>1.4</revision>
     <user>friebe</user>
     <date>2003-06-06 00:49</date>
   </entry>
@@ -1502,13 +1558,6 @@
     <collection>org.apache.xml</collection>
     <class>XMLScriptletResponse</class>
     <revision>1.7</revision>
-    <user>friebe</user>
-    <date>2003-06-06 00:43</date>
-  </entry>
-  <entry action="M">  
-    <collection>org.apache</collection>
-    <class>HttpSession</class>
-    <revision>1.8</revision>
     <user>friebe</user>
     <date>2003-06-06 00:43</date>
   </entry>
@@ -1595,13 +1644,6 @@
     <revision>1.3</revision>
     <user>olli</user>
     <date>2003-05-30 12:07</date>
-  </entry>
-  <entry action="M">  
-    <collection>rdbms.sybase</collection>
-    <class>SybaseDBAdapter</class>
-    <revision>1.5</revision>
-    <user>friebe</user>
-    <date>2003-05-27 09:43</date>
   </entry>
   <entry action="M">  
     <collection>rdbms</collection>
@@ -1731,13 +1773,6 @@
   </entry>
   <entry action="M">  
     <collection>com.microsoft.com</collection>
-    <class>COMObject</class>
-    <revision>1.3</revision>
-    <user>friebe</user>
-    <date>2003-04-09 01:36</date>
-  </entry>
-  <entry action="M">  
-    <collection>com.microsoft.com</collection>
     <class>Excel</class>
     <revision>1.2</revision>
     <user>friebe</user>
@@ -1801,14 +1836,14 @@
   </entry>
   <entry action="M">  
     <collection>text.format</collection>
-    <class>ChoiceFormat</class>
+    <class>BinaryFormat</class>
     <revision>1.4</revision>
     <user>friebe</user>
     <date>2003-02-17 13:43</date>
   </entry>
   <entry action="M">  
     <collection>text.format</collection>
-    <class>BinaryFormat</class>
+    <class>ChoiceFormat</class>
     <revision>1.4</revision>
     <user>friebe</user>
     <date>2003-02-17 13:43</date>
@@ -1836,55 +1871,6 @@
   </entry>
   <entry action="M">  
     <collection>util.text.format</collection>
-    <class>NumberFormat</class>
-    <revision>1.3</revision>
-    <user>friebe</user>
-    <date>2003-02-17 13:33</date>
-  </entry>
-  <entry action="M">  
-    <collection>util.text.format</collection>
-    <class>BinaryFormat</class>
-    <revision>1.3</revision>
-    <user>friebe</user>
-    <date>2003-02-17 13:33</date>
-  </entry>
-  <entry action="M">  
-    <collection>util.text.format</collection>
-    <class>IFormat</class>
-    <revision>1.2</revision>
-    <user>friebe</user>
-    <date>2003-02-17 13:33</date>
-  </entry>
-  <entry action="M">  
-    <collection>util.text.format</collection>
-    <class>MoneyFormat</class>
-    <revision>1.2</revision>
-    <user>friebe</user>
-    <date>2003-02-17 13:33</date>
-  </entry>
-  <entry action="M">  
-    <collection>util.text.format</collection>
-    <class>HashFormat</class>
-    <revision>1.2</revision>
-    <user>friebe</user>
-    <date>2003-02-17 13:33</date>
-  </entry>
-  <entry action="M">  
-    <collection>util.text.format</collection>
-    <class>ChoiceFormat</class>
-    <revision>1.3</revision>
-    <user>friebe</user>
-    <date>2003-02-17 13:33</date>
-  </entry>
-  <entry action="M">  
-    <collection>util.text.format</collection>
-    <class>MessageFormat</class>
-    <revision>1.6</revision>
-    <user>friebe</user>
-    <date>2003-02-17 13:33</date>
-  </entry>
-  <entry action="M">  
-    <collection>util.text.format</collection>
     <class>ArrayFormat</class>
     <revision>1.2</revision>
     <user>friebe</user>
@@ -1899,8 +1885,57 @@
   </entry>
   <entry action="M">  
     <collection>util.text.format</collection>
+    <class>MessageFormat</class>
+    <revision>1.6</revision>
+    <user>friebe</user>
+    <date>2003-02-17 13:33</date>
+  </entry>
+  <entry action="M">  
+    <collection>util.text.format</collection>
+    <class>NumberFormat</class>
+    <revision>1.3</revision>
+    <user>friebe</user>
+    <date>2003-02-17 13:33</date>
+  </entry>
+  <entry action="M">  
+    <collection>util.text.format</collection>
+    <class>HashFormat</class>
+    <revision>1.2</revision>
+    <user>friebe</user>
+    <date>2003-02-17 13:33</date>
+  </entry>
+  <entry action="M">  
+    <collection>util.text.format</collection>
+    <class>BinaryFormat</class>
+    <revision>1.3</revision>
+    <user>friebe</user>
+    <date>2003-02-17 13:33</date>
+  </entry>
+  <entry action="M">  
+    <collection>util.text.format</collection>
+    <class>MoneyFormat</class>
+    <revision>1.2</revision>
+    <user>friebe</user>
+    <date>2003-02-17 13:33</date>
+  </entry>
+  <entry action="M">  
+    <collection>util.text.format</collection>
+    <class>ChoiceFormat</class>
+    <revision>1.3</revision>
+    <user>friebe</user>
+    <date>2003-02-17 13:33</date>
+  </entry>
+  <entry action="M">  
+    <collection>util.text.format</collection>
     <class>DateFormat</class>
     <revision>1.3</revision>
+    <user>friebe</user>
+    <date>2003-02-17 13:33</date>
+  </entry>
+  <entry action="M">  
+    <collection>util.text.format</collection>
+    <class>IFormat</class>
+    <revision>1.2</revision>
     <user>friebe</user>
     <date>2003-02-17 13:33</date>
   </entry>
@@ -1955,15 +1990,15 @@
   </entry>
   <entry action="M">  
     <collection>peer.mail.store</collection>
-    <class>ImapStore</class>
-    <revision>1.2</revision>
+    <class>Pop3Store</class>
+    <revision>1.3</revision>
     <user>friebe</user>
     <date>2003-02-04 10:15</date>
   </entry>
   <entry action="M">  
     <collection>peer.mail.store</collection>
-    <class>Pop3Store</class>
-    <revision>1.3</revision>
+    <class>ImapStore</class>
+    <revision>1.2</revision>
     <user>friebe</user>
     <date>2003-02-04 10:15</date>
   </entry>
@@ -2053,13 +2088,6 @@
   </entry>
   <entry action="M">  
     <collection>net.mail</collection>
-    <class>MimeMail</class>
-    <revision>1.3</revision>
-    <user>friebe</user>
-    <date>2003-01-19 18:42</date>
-  </entry>
-  <entry action="M">  
-    <collection>net.mail</collection>
     <class>MimeAlternative</class>
     <revision>1.3</revision>
     <user>friebe</user>
@@ -2074,6 +2102,13 @@
   </entry>
   <entry action="M">  
     <collection>net.mail</collection>
+    <class>MimeMail</class>
+    <revision>1.3</revision>
+    <user>friebe</user>
+    <date>2003-01-19 18:42</date>
+  </entry>
+  <entry action="M">  
+    <collection>net.mail</collection>
     <class>MimePart</class>
     <revision>1.3</revision>
     <user>friebe</user>
@@ -2081,8 +2116,8 @@
   </entry>
   <entry action="M">  
     <collection>net.http</collection>
-    <class>HTTPSRequest</class>
-    <revision>1.5</revision>
+    <class>HTTPAuthException</class>
+    <revision>1.2</revision>
     <user>friebe</user>
     <date>2003-01-19 18:33</date>
   </entry>
@@ -2095,15 +2130,15 @@
   </entry>
   <entry action="M">  
     <collection>net.http</collection>
-    <class>HTTPConnection</class>
-    <revision>1.8</revision>
+    <class>HTTPSRequest</class>
+    <revision>1.5</revision>
     <user>friebe</user>
     <date>2003-01-19 18:33</date>
   </entry>
   <entry action="M">  
     <collection>net.http</collection>
-    <class>HTTPAuthException</class>
-    <revision>1.2</revision>
+    <class>HTTPConnection</class>
+    <revision>1.8</revision>
     <user>friebe</user>
     <date>2003-01-19 18:33</date>
   </entry>
@@ -2143,15 +2178,15 @@
     <date>2003-01-06 18:47</date>
   </entry>
   <entry action="M">  
-    <collection>org.webdav.xml</collection>
-    <class>WebdavMultistatus</class>
+    <collection>org.webdav</collection>
+    <class>WebdavObject</class>
     <revision>1.3</revision>
     <user>friebe</user>
     <date>2003-01-06 15:23</date>
   </entry>
   <entry action="M">  
-    <collection>org.webdav</collection>
-    <class>WebdavObject</class>
+    <collection>org.webdav.xml</collection>
+    <class>WebdavMultistatus</class>
     <revision>1.3</revision>
     <user>friebe</user>
     <date>2003-01-06 15:23</date>
@@ -2248,6 +2283,27 @@
     <date>2002-12-30 16:24</date>
   </entry>
   <entry action="M">  
+    <collection>img</collection>
+    <class>Color</class>
+    <revision>1.2</revision>
+    <user>alex</user>
+    <date>2002-12-29 19:14</date>
+  </entry>
+  <entry action="M">  
+    <collection>img.shapes</collection>
+    <class>Arc3D</class>
+    <revision>1.3</revision>
+    <user>alex</user>
+    <date>2002-12-29 19:14</date>
+  </entry>
+  <entry action="M">  
+    <collection>img</collection>
+    <class>ImgBrush</class>
+    <revision>1.2</revision>
+    <user>alex</user>
+    <date>2002-12-29 19:14</date>
+  </entry>
+  <entry action="M">  
     <collection>img.shapes</collection>
     <class>Line</class>
     <revision>1.2</revision>
@@ -2269,8 +2325,22 @@
     <date>2002-12-29 19:14</date>
   </entry>
   <entry action="M">  
+    <collection>img</collection>
+    <class>GifImage</class>
+    <revision>1.2</revision>
+    <user>alex</user>
+    <date>2002-12-29 19:14</date>
+  </entry>
+  <entry action="M">  
     <collection>img.shapes</collection>
     <class>Text</class>
+    <revision>1.2</revision>
+    <user>alex</user>
+    <date>2002-12-29 19:14</date>
+  </entry>
+  <entry action="M">  
+    <collection>img.shapes</collection>
+    <class>Rectangle</class>
     <revision>1.2</revision>
     <user>alex</user>
     <date>2002-12-29 19:14</date>
@@ -2284,28 +2354,7 @@
   </entry>
   <entry action="M">  
     <collection>img.shapes</collection>
-    <class>Arc3D</class>
-    <revision>1.3</revision>
-    <user>alex</user>
-    <date>2002-12-29 19:14</date>
-  </entry>
-  <entry action="M">  
-    <collection>img.shapes</collection>
-    <class>Rectangle</class>
-    <revision>1.2</revision>
-    <user>alex</user>
-    <date>2002-12-29 19:14</date>
-  </entry>
-  <entry action="M">  
-    <collection>img.shapes</collection>
     <class>Arc</class>
-    <revision>1.2</revision>
-    <user>alex</user>
-    <date>2002-12-29 19:14</date>
-  </entry>
-  <entry action="M">  
-    <collection>img</collection>
-    <class>GifImage</class>
     <revision>1.2</revision>
     <user>alex</user>
     <date>2002-12-29 19:14</date>
@@ -2320,20 +2369,6 @@
   <entry action="M">  
     <collection>img</collection>
     <class>ImagingException</class>
-    <revision>1.2</revision>
-    <user>alex</user>
-    <date>2002-12-29 19:14</date>
-  </entry>
-  <entry action="M">  
-    <collection>img</collection>
-    <class>Color</class>
-    <revision>1.2</revision>
-    <user>alex</user>
-    <date>2002-12-29 19:14</date>
-  </entry>
-  <entry action="M">  
-    <collection>img</collection>
-    <class>ImgBrush</class>
     <revision>1.2</revision>
     <user>alex</user>
     <date>2002-12-29 19:14</date>
@@ -2402,16 +2437,16 @@
     <date>2002-12-27 18:57</date>
   </entry>
   <entry action="M">  
-    <collection>util</collection>
-    <class>LOG</class>
-    <revision>1.4</revision>
+    <collection>xml</collection>
+    <class>OutputDocument</class>
+    <revision>1.6</revision>
     <user>alex</user>
     <date>2002-12-27 18:53</date>
   </entry>
   <entry action="M">  
-    <collection>xml</collection>
-    <class>OutputDocument</class>
-    <revision>1.6</revision>
+    <collection>util</collection>
+    <class>LOG</class>
+    <revision>1.4</revision>
     <user>alex</user>
     <date>2002-12-27 18:53</date>
   </entry>
@@ -2459,13 +2494,6 @@
   </entry>
   <entry action="M">  
     <collection>lang</collection>
-    <class>IllegalArgumentException</class>
-    <revision>1.2</revision>
-    <user>friebe</user>
-    <date>2002-12-22 16:36</date>
-  </entry>
-  <entry action="M">  
-    <collection>lang</collection>
     <class>ElementNotFoundException</class>
     <revision>1.2</revision>
     <user>friebe</user>
@@ -2487,6 +2515,13 @@
   </entry>
   <entry action="M">  
     <collection>lang</collection>
+    <class>IllegalArgumentException</class>
+    <revision>1.2</revision>
+    <user>friebe</user>
+    <date>2002-12-22 16:36</date>
+  </entry>
+  <entry action="M">  
+    <collection>lang</collection>
     <class>ExternalClassLoader</class>
     <revision>1.4</revision>
     <user>friebe</user>
@@ -2498,6 +2533,13 @@
     <revision>1.4</revision>
     <user>friebe</user>
     <date>2002-12-22 02:39</date>
+  </entry>
+  <entry action="R">  
+    <collection>lang</collection>
+    <class>RuntimeException</class>
+    <revision>1.2</revision>
+    <user>friebe</user>
+    <date>2003-09-21 19:51</date>
   </entry>
   <entry action="R">  
     <collection>rdbms.postqresql</collection>
@@ -2529,8 +2571,8 @@
   </entry>
   <entry action="R">  
     <collection>util.notify</collection>
-    <class>MailNotifier</class>
-    <revision>1.7</revision>
+    <class>DigestNotifier</class>
+    <revision>1.4</revision>
     <user>friebe</user>
     <date>2003-09-13 14:04</date>
   </entry>
@@ -2543,8 +2585,8 @@
   </entry>
   <entry action="R">  
     <collection>util.notify</collection>
-    <class>DigestNotifier</class>
-    <revision>1.4</revision>
+    <class>MailNotifier</class>
+    <revision>1.7</revision>
     <user>friebe</user>
     <date>2003-09-13 14:04</date>
   </entry>
@@ -2745,6 +2787,69 @@
     <date>2002-12-22 16:35</date>
   </entry>
   <entry action="A">  
+    <collection>lang</collection>
+    <class>RuntimeError</class>
+    <revision>1.1</revision>
+    <user>friebe</user>
+    <date>2003-09-21 19:51</date>
+  </entry>
+  <entry action="A">  
+    <collection>util</collection>
+    <class>Observer</class>
+    <revision>1.1</revision>
+    <user>friebe</user>
+    <date>2003-09-21 16:21</date>
+  </entry>
+  <entry action="A">  
+    <collection>util.log</collection>
+    <class>Traceable</class>
+    <revision>1.1</revision>
+    <user>friebe</user>
+    <date>2003-09-21 16:09</date>
+  </entry>
+  <entry action="A">  
+    <collection>lang</collection>
+    <class>Interface</class>
+    <revision>1.1</revision>
+    <user>friebe</user>
+    <date>2003-09-21 16:08</date>
+  </entry>
+  <entry action="A">  
+    <collection>com.microsoft.wscript</collection>
+    <class>WshShell</class>
+    <revision>1.1</revision>
+    <user>friebe</user>
+    <date>2003-09-21 13:58</date>
+  </entry>
+  <entry action="A">  
+    <collection>com.microsoft</collection>
+    <class>RegistryKey</class>
+    <revision>1.1</revision>
+    <user>friebe</user>
+    <date>2003-09-21 13:58</date>
+  </entry>
+  <entry action="A">  
+    <collection>com.microsoft</collection>
+    <class>RegistryException</class>
+    <revision>1.1</revision>
+    <user>friebe</user>
+    <date>2003-09-21 13:58</date>
+  </entry>
+  <entry action="A">  
+    <collection>text.translator</collection>
+    <class>Swabian</class>
+    <revision>1.1</revision>
+    <user>alex</user>
+    <date>2003-09-21 11:16</date>
+  </entry>
+  <entry action="A">  
+    <collection>util</collection>
+    <class>TimeZone</class>
+    <revision>1.1</revision>
+    <user>alex</user>
+    <date>2003-09-16 18:50</date>
+  </entry>
+  <entry action="A">  
     <collection>xml</collection>
     <class>XMLFormatException</class>
     <revision>1.1</revision>
@@ -2788,14 +2893,14 @@
   </entry>
   <entry action="A">  
     <collection>org.nagios.nsca</collection>
-    <class>NscaMessage</class>
+    <class>NscaClient</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-09-10 16:19</date>
   </entry>
   <entry action="A">  
     <collection>org.nagios.nsca</collection>
-    <class>NscaClient</class>
+    <class>NscaMessage</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-09-10 16:19</date>
@@ -2806,6 +2911,13 @@
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-09-10 12:52</date>
+  </entry>
+  <entry action="A">  
+    <collection>peer.irc</collection>
+    <class>IRCColor</class>
+    <revision>1.1</revision>
+    <user>friebe</user>
+    <date>2003-09-07 17:42</date>
   </entry>
   <entry action="A">  
     <collection>peer.irc</collection>
@@ -2823,13 +2935,6 @@
   </entry>
   <entry action="A">  
     <collection>peer.irc</collection>
-    <class>IRCConstants</class>
-    <revision>1.1</revision>
-    <user>friebe</user>
-    <date>2003-09-07 17:42</date>
-  </entry>
-  <entry action="A">  
-    <collection>peer.irc</collection>
     <class>IRCUser</class>
     <revision>1.1</revision>
     <user>friebe</user>
@@ -2837,7 +2942,7 @@
   </entry>
   <entry action="A">  
     <collection>peer.irc</collection>
-    <class>IRCColor</class>
+    <class>IRCConstants</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-09-07 17:42</date>
@@ -2872,14 +2977,14 @@
   </entry>
   <entry action="A">  
     <collection>org.apache.xml.generator</collection>
-    <class>DependencyFactory</class>
+    <class>DependencyStorage</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-08-14 22:56</date>
   </entry>
   <entry action="A">  
     <collection>org.apache.xml.generator</collection>
-    <class>Dependency</class>
+    <class>DependencyFactory</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-08-14 22:56</date>
@@ -2893,14 +2998,14 @@
   </entry>
   <entry action="A">  
     <collection>org.apache.xml.generator</collection>
-    <class>DependencyStorage</class>
+    <class>Dependency</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-08-14 22:56</date>
   </entry>
   <entry action="A">  
     <collection>org.apache.xml.generator</collection>
-    <class>ImageDependency</class>
+    <class>IncludeDependency</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-08-14 22:56</date>
@@ -2914,7 +3019,7 @@
   </entry>
   <entry action="A">  
     <collection>org.apache.xml.generator</collection>
-    <class>IncludeDependency</class>
+    <class>ImageDependency</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-08-14 22:56</date>
@@ -2976,15 +3081,15 @@
     <date>2003-07-15 14:45</date>
   </entry>
   <entry action="A">  
-    <collection>rdbms.sybase</collection>
-    <class>SybaseConnection</class>
+    <collection>rdbms.mysql</collection>
+    <class>MySQLConnection</class>
     <revision>1.1</revision>
     <user>alex</user>
     <date>2003-07-10 12:24</date>
   </entry>
   <entry action="A">  
-    <collection>rdbms.mysql</collection>
-    <class>MySQLConnection</class>
+    <collection>rdbms.sybase</collection>
+    <class>SybaseConnection</class>
     <revision>1.1</revision>
     <user>alex</user>
     <date>2003-07-10 12:24</date>
@@ -3012,14 +3117,14 @@
   </entry>
   <entry action="A">  
     <collection>lang</collection>
-    <class>Error</class>
+    <class>StackTraceElement</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-06-23 00:46</date>
   </entry>
   <entry action="A">  
     <collection>lang</collection>
-    <class>StackTraceElement</class>
+    <class>Error</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-06-23 00:46</date>
@@ -3222,13 +3327,6 @@
   </entry>
   <entry action="A">  
     <collection>util.profiling.unittest</collection>
-    <class>TestSuite</class>
-    <revision>1.1</revision>
-    <user>friebe</user>
-    <date>2003-05-29 22:20</date>
-  </entry>
-  <entry action="A">  
-    <collection>util.profiling.unittest</collection>
     <class>TestSuccess</class>
     <revision>1.1</revision>
     <user>friebe</user>
@@ -3237,6 +3335,13 @@
   <entry action="A">  
     <collection>util.profiling.unittest</collection>
     <class>TestSkipped</class>
+    <revision>1.1</revision>
+    <user>friebe</user>
+    <date>2003-05-29 22:20</date>
+  </entry>
+  <entry action="A">  
+    <collection>util.profiling.unittest</collection>
+    <class>TestSuite</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-05-29 22:20</date>
@@ -3257,14 +3362,14 @@
   </entry>
   <entry action="A">  
     <collection>rdbms</collection>
-    <class>DriverManager</class>
+    <class>DriverNotSupportedException</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-05-25 20:06</date>
   </entry>
   <entry action="A">  
     <collection>rdbms</collection>
-    <class>DriverNotSupportedException</class>
+    <class>DriverManager</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-05-25 20:06</date>
@@ -3299,7 +3404,7 @@
   </entry>
   <entry action="A">  
     <collection>rmi</collection>
-    <class>RMIServerException</class>
+    <class>RMIUnmarshalException</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-05-25 03:17</date>
@@ -3313,21 +3418,7 @@
   </entry>
   <entry action="A">  
     <collection>rmi</collection>
-    <class>RMIException</class>
-    <revision>1.1</revision>
-    <user>friebe</user>
-    <date>2003-05-25 03:17</date>
-  </entry>
-  <entry action="A">  
-    <collection>rmi</collection>
     <class>RMIConnector</class>
-    <revision>1.1</revision>
-    <user>friebe</user>
-    <date>2003-05-25 03:17</date>
-  </entry>
-  <entry action="A">  
-    <collection>rmi</collection>
-    <class>RMIUnmarshalException</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-05-25 03:17</date>
@@ -3335,6 +3426,20 @@
   <entry action="A">  
     <collection>rmi.server</collection>
     <class>NoSuchObjectException</class>
+    <revision>1.1</revision>
+    <user>friebe</user>
+    <date>2003-05-25 03:17</date>
+  </entry>
+  <entry action="A">  
+    <collection>rmi</collection>
+    <class>RMIException</class>
+    <revision>1.1</revision>
+    <user>friebe</user>
+    <date>2003-05-25 03:17</date>
+  </entry>
+  <entry action="A">  
+    <collection>rmi</collection>
+    <class>RMIServerException</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-05-25 03:17</date>
@@ -3348,14 +3453,14 @@
   </entry>
   <entry action="A">  
     <collection>rmi.server</collection>
-    <class>RMIRegistry</class>
+    <class>RMIServer</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-05-25 03:17</date>
   </entry>
   <entry action="A">  
     <collection>rmi.server</collection>
-    <class>RMIServer</class>
+    <class>RMIRegistry</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-05-25 03:17</date>
@@ -3495,14 +3600,14 @@
   </entry>
   <entry action="A">  
     <collection>org.apache.xml.workflow</collection>
-    <class>StateFlowManager</class>
+    <class>Handler</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-04-20 20:12</date>
   </entry>
   <entry action="A">  
     <collection>org.apache.xml.workflow</collection>
-    <class>Handler</class>
+    <class>StateFlowManager</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-04-20 20:12</date>
@@ -3523,13 +3628,6 @@
   </entry>
   <entry action="A">  
     <collection>org.apache.xml.workflow</collection>
-    <class>AbstractXMLScriptlet</class>
-    <revision>1.1</revision>
-    <user>friebe</user>
-    <date>2003-04-20 17:04</date>
-  </entry>
-  <entry action="A">  
-    <collection>org.apache.xml.workflow</collection>
     <class>ContextResource</class>
     <revision>1.1</revision>
     <user>friebe</user>
@@ -3537,7 +3635,7 @@
   </entry>
   <entry action="A">  
     <collection>org.apache.xml.workflow</collection>
-    <class>State</class>
+    <class>AbstractXMLScriptlet</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-04-20 17:04</date>
@@ -3550,15 +3648,22 @@
     <date>2003-04-20 17:04</date>
   </entry>
   <entry action="A">  
+    <collection>org.apache.xml.workflow</collection>
+    <class>State</class>
+    <revision>1.1</revision>
+    <user>friebe</user>
+    <date>2003-04-20 17:04</date>
+  </entry>
+  <entry action="A">  
     <collection>.lang</collection>
-    <class>ClassNotFoundException</class>
+    <class>ClassLoader</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-04-19 02:44</date>
   </entry>
   <entry action="A">  
     <collection>.lang</collection>
-    <class>ClassLoader</class>
+    <class>ClassNotFoundException</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-04-19 02:44</date>
@@ -3684,7 +3789,7 @@
   </entry>
   <entry action="A">  
     <collection>peer.server</collection>
-    <class>ConnectionEvent</class>
+    <class>Server</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-02-23 20:00</date>
@@ -3698,21 +3803,21 @@
   </entry>
   <entry action="A">  
     <collection>peer.server</collection>
-    <class>Server</class>
+    <class>ConnectionEvent</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-02-23 20:00</date>
   </entry>
   <entry action="A">  
     <collection>org.imc</collection>
-    <class>VEvent</class>
+    <class>VCard</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-02-22 16:00</date>
   </entry>
   <entry action="A">  
     <collection>org.imc</collection>
-    <class>VCard</class>
+    <class>VEvent</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-02-22 16:00</date>
@@ -3782,14 +3887,14 @@
   </entry>
   <entry action="A">  
     <collection>img.graph</collection>
-    <class>Graph</class>
+    <class>PieChart</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-02-10 23:54</date>
   </entry>
   <entry action="A">  
     <collection>img.graph</collection>
-    <class>PieChart</class>
+    <class>Graph</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-02-10 23:54</date>
@@ -3873,14 +3978,14 @@
   </entry>
   <entry action="A">  
     <collection>security.cert</collection>
-    <class>X509Certificate</class>
+    <class>CertificateException</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-02-01 13:56</date>
   </entry>
   <entry action="A">  
     <collection>security.cert</collection>
-    <class>CertificateException</class>
+    <class>X509Certificate</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-02-01 13:56</date>
@@ -3992,14 +4097,14 @@
   </entry>
   <entry action="A">  
     <collection>peer.http</collection>
-    <class>HttpResponse</class>
+    <class>HttpConnection</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-01-19 18:14</date>
   </entry>
   <entry action="A">  
     <collection>peer.http</collection>
-    <class>HttpConnection</class>
+    <class>HttpResponse</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-01-19 18:14</date>
@@ -4132,7 +4237,7 @@
   </entry>
   <entry action="A">  
     <collection>peer.mail.transport</collection>
-    <class>SmtpTransport</class>
+    <class>Transport</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-01-14 17:07</date>
@@ -4153,14 +4258,7 @@
   </entry>
   <entry action="A">  
     <collection>peer.mail.transport</collection>
-    <class>Transport</class>
-    <revision>1.1</revision>
-    <user>friebe</user>
-    <date>2003-01-14 17:07</date>
-  </entry>
-  <entry action="A">  
-    <collection>peer.mail</collection>
-    <class>MessagingException</class>
+    <class>SmtpTransport</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-01-14 17:07</date>
@@ -4188,7 +4286,7 @@
   </entry>
   <entry action="A">  
     <collection>peer.mail</collection>
-    <class>MultiPart</class>
+    <class>MessagingException</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-01-14 17:07</date>
@@ -4196,6 +4294,13 @@
   <entry action="A">  
     <collection>peer.mail</collection>
     <class>MimePart</class>
+    <revision>1.1</revision>
+    <user>friebe</user>
+    <date>2003-01-14 17:07</date>
+  </entry>
+  <entry action="A">  
+    <collection>peer.mail</collection>
+    <class>MultiPart</class>
     <revision>1.1</revision>
     <user>friebe</user>
     <date>2003-01-14 17:07</date>
