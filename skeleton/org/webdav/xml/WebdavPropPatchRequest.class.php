@@ -63,7 +63,7 @@
           }
           $p= &new WebdavProperty(
             $name,
-            utf8_decode(preg_replace(
+            $this->decode(preg_replace(
               '/&#([0-9]+);/me', 
               'chr("\1")', 
               strtr(trim($node->getContent()), $trans)
