@@ -18,6 +18,8 @@
    *      'stor'        => '/tmp/notify.digest'
    *    )
    * </pre>
+   *
+   * @deprecated
    */
   class DigestNotifier extends Object {
   

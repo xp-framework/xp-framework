@@ -28,6 +28,8 @@
    * when the error stops occuring). This notifier will need a cronjob or 
    * other code to clean up the "stor" file (or else counting will continue 
    * forever) since - of course - it is only called when things go wrong:-)
+   *
+   * @deprecated
    */
   class EscalatedNotifier extends Object {
   

@@ -22,6 +22,7 @@
    * User defined handlers for notify methods such as SMS, Log, OnScreen-Popup, 
    * Digest, Escalation, ... may be defined as util.notify.<<METHOD_NAME>>Notifier
    * 
+   * @deprecated
    * @see Exception
    */
   class NotifiedException extends Exception {

@@ -8,6 +8,7 @@
    * (Insert method's description here)
    *
    * @return  
+   * @deprecated
    */
   class MailNotifier extends Object {
   
