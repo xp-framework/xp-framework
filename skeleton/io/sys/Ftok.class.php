@@ -7,7 +7,7 @@
   /**
    * Ftok
    *
-   * <quoote>
+   * <quote>
    * DESCRIPTION
    * The ftok() function returns a key based on path and id that is usable in 
    * subsequent calls to msgget(), semget() and shmget(). The path argument 
@@ -25,12 +25,19 @@
    * 
    * @ext      sem
    * @model    static
-   * @purpose  Provide a static class for getting System V IPC key 
+   * @purpose  Provide a static class for getting System V IPC keys
    */
   class Ftok extends Object {
     
     /**
      * Convert a pathname and a project identifier to a System V IPC key 
+     *
+     * Sample:
+     * <code>
+     *   $key= Ftok::get();
+     *   $anotherKey= Ftok::get(2);
+     *   $yetAnotherKey= Ftok::get(1, $_SERVER['PHP_SELF']);
+     * </code>
      *
      * @model   static
      * @param   int id default 1
