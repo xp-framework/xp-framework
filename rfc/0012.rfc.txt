@@ -176,8 +176,50 @@ Interaction
 
 RMI Protocol
 ~~~~~~~~~~~~
-XXX TBD XXX
+Each protocol message has a header. It consists of the following elements:
 
+* A magic number, constructed from the crc32 checksum of the string "xrmi" 
+  (0x3c872747 or 1015490375), packed into 4 bytes using pack("N", $magic).
+  "N" stands for 'unsigned long (always 32 bit, big endian byte order)'.
+
+* The protocol major version, as one byte
+
+* The protocol minor version, as one byte
+
+* The message type, as one byte
+
+* If the data is compressed, as one byte (TRUE or FALSE)
+
+* The data length packed into 4 bytes using pack("N", $length)
+
+Encoding the header in PHP:
+<?php
+  $header= pack(
+    'NccccN', 
+    1015490375, 
+    $versionMajor,
+    $versionMinor,
+    $messageType,
+    $compressed,
+    $dataLength
+  );
+?>
+
+Reading the header in Java:
+<code>
+  java.io.DataInputStream stream = new java.io.DataInputStream(inputStream);
+
+  Header h = new Header(); {
+    h.magicNumber = stream.readInt();
+    h.versionMajor = stream.readByte();
+    h.versionMinor = stream.readByte();
+    h.messageType = stream.readByte();
+    h.compressed = stream.readBoolean();
+    h.dataLength = stream.readInt();
+  }
+</code>
+
+XXX TBD document body encoding XXX
 
 Dependencies
 ------------
