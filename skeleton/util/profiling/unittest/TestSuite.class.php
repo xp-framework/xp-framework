@@ -29,6 +29,7 @@
    *   echo $result->toString();
    * </code>
    *
+   * @see      http://junit.sourceforge.net/doc/testinfected/testing.htm
    * @purpose  Testcase container
    */
   class TestSuite extends Object {
