@@ -9,6 +9,19 @@ friebe, Sun Dec 22 22:54:54 CEST 2002
   FreeDB - http://xmethods.net/ve2/ViewListing.po?serviceid=27776
   Dilbert - http://xmethods.net/ve2/ViewListing.po?serviceid=9348
 
+* WebDAV (Scriptlet)
+  http://158.195.16.189/doc/http/api/SK/gnome/dwarf/http/webdav/WebDAVServlet.html
+  http://www.ietf.org/rfc/rfc2518.txt
+  http://ftp.ics.uci.edu/pub/ietf/webdav/protocol/rfc2518.html
+
+* Mail / NNTP
+  http://java.sun.com/products/javamail/1.3/docs/javadocs/index.html
+  http://developer.java.sun.com/developer/onlineTraining/JavaMail/contents.html
+
+* IRC
+  http://www.faqs.org/rfcs/rfc1459.html
+  http://relayirc.sourceforge.net/javadocs/index-all.html
+
 friebe, Tue Jul  9 15:26:02 CEST 2002
 -------------------------------------
 + SOAP
