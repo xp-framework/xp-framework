@@ -19,7 +19,92 @@ application server in the same way than to that.
 
 Functionality
 -------------
-(TBD)
+The functionality tries to be similar to what we know from Java. 
+
+Client side
+~~~~~~~~~~~
+A simple Java client there looks like this (abbreviated example):
+<code>
+  Properties env = new Properties();
+  env.setProperty(Context.PROVIDER_URL, "jnp://example.com:1099");
+
+  InitialContext ctx= new InitialContext(env);
+
+  try {
+    Object ref= ctx.lookup("website/Search");
+    search= (SearchRemoteHome) PortableRemoteObject.narrow(
+      ref, 
+      SearchRemoteHome.class
+    );
+  } finally {
+    initialContext.close();
+  }
+  
+  instance = search.create();
+  
+  // Now, we can invoke methods on the instance
+</code>
+
+In PHP, we usually do not have long-running applications (a web page is 
+requested, the script is compiled, then executed, then shut down). 
+Therefore, the naming lookup should be made optional for performance
+reasons.
+
+Using the PHP access API without naming lookups:
+<?php
+  $search= &Remote::forName('rmi://127.0.0.1:4444/ISearch');
+
+  // Now, we can invoke methods on the instance
+  var_dump($search->execute('Hello'));
+?>
+
+Using the PHP access API with naming lookup:
+<?php
+  Naming::setProvider(new RemoteNamingProvider('example.com', 1099));
+
+  $search= &Naming::lookup('website/ISearch');
+
+  // Now, we can invoke methods on the instance
+  var_dump($search->execute('Hello'));
+?>
+
+Server side
+~~~~~~~~~~~
+XXX TBD XXX
+
+
+Interaction
+~~~~~~~~~~~
+1) Optionally: The client issues a naming lookup and retrieves the fully
+   qualified URI to the remote object (as seen above: 
+   rmi://127.0.0.1:4444/ISearch). This remote specification includes:
+   
+   * The protocol (here: rmi)
+   * The host name (here: 127.0.0.1 a.k.a. localhost)
+   * The port (here: 4444)
+   * The interface name (here: ISearch)
+
+   The remote spec is passed to the Remote class which constructs a
+   proxy instance. If you'd like to hardcode all this information, you
+   may use the Remote class directly (first example) - you'll need to
+   live with all the downsides of that, then, but will also save 
+   yourself the naming lookup.
+
+2) The client loads the protocol class and passes it the fully qualified
+   URL (as peer.URL object).
+
+3) The client initiates the communication with the server.
+
+4) The client calls a method on the server and reads the results.
+
+5) Repeat 4 if needed
+
+6) The client disconnects. No need to say goodbye.
+
+RMI Protocol
+~~~~~~~~~~~~
+XXX TBD XXX
+
 
 Dependencies
 ------------
