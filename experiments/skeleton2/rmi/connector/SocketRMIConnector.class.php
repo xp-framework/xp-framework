@@ -31,7 +31,6 @@
      */
     public function __construct(Socket $socket) {
       $this->socket= $socket;
-      parent::__construct();
     }
     
     /**
@@ -113,37 +112,40 @@
     /**
      * Get a value by its name
      *
-     * @model   abstract
      * @access  public
      * @param   &rmi.RMIObject object
      * @param   string name
      * @return  &mixed value
      * @throws  rmi.RMIException to indicate failure
      */
-    public abstract function getValue(RMIObject $object, $name);
+    public function getValue(RMIObject $object, $name) {  
+      return $this->comm('G', $object->getClassName().':'.$name.':');
+    }
     
     /**
      * Set a value by its name
      *
-     * @model   abstract
      * @access  public
      * @param   &rmi.RMIObject object
      * @param   string name
      * @param   &mixed value
      */
-    public abstract function setValue(RMIObject $object, $name, $value);
+    public function setValue(RMIObject $object, $name, $value) {
+      $this->comm('S', $object->getClassName().':'.$name.':'.serialize($value));
+    }
     
     /**
      * Invoke a method
      *
-     * @model   abstract
      * @access  public
      * @param   &rmi.RMIObject object
      * @param   string name
      * @param   &array args
      * @return  &mixed value
      */
-    public abstract function invokeMethod(RMIObject $object, $name, $args);
+    public function invokeMethod(RMIObject $object, $name, $args) {
+      return $this->comm('I', $object->getClassName().':'.$name.':'.serialize($args));
+    }
     
     /**
      * Destructor
@@ -151,8 +153,7 @@
      * @access  public
      */
     public function __destruct() {
-      $this->socket->__destruct();
-      parent::__destruct();
+      unset($this->socket);
     }
   }
 ?>
