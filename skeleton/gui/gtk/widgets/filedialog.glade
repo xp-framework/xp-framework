@@ -475,6 +475,11 @@
 	      <class>GtkButton</class>
 	      <child_name>Toolbar:button</child_name>
 	      <name>button_cancel</name>
+	      <accelerator>
+		<modifiers>0</modifiers>
+		<key>GDK_Escape</key>
+		<signal>clicked</signal>
+	      </accelerator>
 	      <label>Cancel</label>
 	      <icon>cancel.xpm</icon>
 	    </widget>
@@ -484,6 +489,11 @@
 	      <child_name>Toolbar:button</child_name>
 	      <name>button_ok</name>
 	      <sensitive>False</sensitive>
+	      <accelerator>
+		<modifiers>0</modifiers>
+		<key>GDK_Return</key>
+		<signal>clicked</signal>
+	      </accelerator>
 	      <label>Open</label>
 	      <icon>ok.xpm</icon>
 	      <child>
