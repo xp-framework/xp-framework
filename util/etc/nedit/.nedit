@@ -48,6 +48,8 @@ nedit.shellCommands: \
 		php -q $HOME/bin/mkaccessor.php\n\
 	Check XP Coding standards:Alt+V::ADS:\n\
 		$HOME/bin/xpcsc.pl %\n\
+  CVS Diff:Shift+Alt+V:C:DS:\n\
+    php -q $HOME/bin/cvsdiff.php %\n\    
 	Open XP class:Shift+Ctrl+O::ID:\n\
 		/bin/sh -c 'nedit `php $HOME/bin/findclass.php` 1>/dev/null 2>/dev/null &'\n
 nedit.macroCommands: \
