@@ -146,6 +146,27 @@
     }
 
     /**
+     * Move this directory
+     *
+     * Warning: Open directories cannot be moved. Use the close() method to
+     * close the directory first
+     *
+     * @access  public
+     * @return  bool success
+     * @throws  IOException in case of an error (e.g., lack of permissions)
+     * @throws  IllegalStateException in case the directory is still open
+     */
+    function move($target) {
+      if (is_resource($this->_hdir)) {
+        return throw(new IllegalStateException('directory still open'));
+      }
+      if (FALSE === rename($this->uri, $target)) {
+        return throw(new IOException('cannot move directory '.$this->uri.' to '.$target));
+      }
+      return TRUE;
+    }
+
+    /**
      * Returns whether this directory exists
      *
      * @access  public
