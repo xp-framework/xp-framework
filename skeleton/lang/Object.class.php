@@ -11,8 +11,12 @@
     /**
      * Constructor-Wrapper bis PHP5
      */
-    function Object($params= NULL) {
-      $this->__construct($params);
+    function Object() {
+      $args= func_get_args();
+      call_user_func_array(
+        array(&$this, '__construct'),
+        $args
+      );
     }
 
     /**
