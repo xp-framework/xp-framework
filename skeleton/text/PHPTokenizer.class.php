@@ -33,7 +33,7 @@
     function setTokenString($str) {
       $this->tokens= token_get_all($str);
       $this->_offset= 0;
-      $this->_size= sizeof($tokens);
+      $this->_size= sizeof($this->tokens);
     }
     
     /**
