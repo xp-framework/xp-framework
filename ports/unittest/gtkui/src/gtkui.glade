@@ -2,13 +2,13 @@
 <GTK-Interface>
 
 <project>
-  <name>Project1</name>
-  <program_name>project1</program_name>
+  <name>UnitTestUI</name>
+  <program_name>UnitTestUI.class.php</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
-  <pixmaps_directory>pixmaps</pixmaps_directory>
+  <source_directory></source_directory>
+  <pixmaps_directory></pixmaps_directory>
   <language>C</language>
-  <gnome_support>True</gnome_support>
+  <gnome_support>False</gnome_support>
   <gettext_support>True</gettext_support>
 </project>
 
@@ -78,10 +78,6 @@
 	  <child>
 	    <new_group>True</new_group>
 	  </child>
-	</widget>
-
-	<widget>
-	  <class>Placeholder</class>
 	</widget>
       </widget>
     </widget>
