@@ -7,6 +7,7 @@
   uses(
     'xml.Node',
     'xml.soap.types.SOAPBase64Binary',
+    'xml.soap.types.SOAPHexBinary',
     'xml.soap.types.SOAPDateTime',
     'xml.soap.types.SOAPHashMap'
   );
@@ -68,6 +69,10 @@
         case 'base64binary':
           
           return new SOAPBase64Binary($ret, $encoded= TRUE);
+          break;
+        
+        case 'hexbinary':
+          return new SOAPHexBinary($ret, $encoded= TRUE);
           break;
         
         case 'boolean':
