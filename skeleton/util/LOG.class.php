@@ -4,6 +4,12 @@
   define('LOG_TYPE_ERROR',   'error');
   define('LOG_TYPE_MARK',    '---------------------------------------------------------------------');
 
+  /**
+   * LOG-Klasse
+   *
+   * @access static
+   * @deprecated (use util.log.Logger)
+   */
   class LOG extends Object { 
   
     function LOG($filename) {
