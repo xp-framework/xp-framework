@@ -1467,11 +1467,11 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	yymore();
 }
 
-<ST_ONE_LINE_COMMENT>"?"|"%"|">"|"<" {
+<ST_ONE_LINE_COMMENT>"?"|"%"|">" {
 	yymore();
 }
 
-<ST_ONE_LINE_COMMENT>[^\n\r?%><]+ {
+<ST_ONE_LINE_COMMENT>[^\n\r?%>]+ {
 	yymore();
 }
 
@@ -1481,15 +1481,6 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	zendlval->type = IS_STRING;
 	BEGIN(ST_IN_SCRIPTING);
 	CG(zend_lineno)++;
-	return T_COMMENT;
-}
-
-<ST_ONE_LINE_COMMENT>"</script>" {
-	zendlval->value.str.val = yytext; /* no copying - intentional */
-	zendlval->value.str.len = yyleng;
-	zendlval->type = IS_STRING;
-	yyless(yyleng-9);
-	BEGIN(ST_IN_SCRIPTING);
 	return T_COMMENT;
 }
 
@@ -1541,7 +1532,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	yymore();
 }
 
-<ST_IN_SCRIPTING>("?>"|"</script>"){NEWLINE}? {
+<ST_IN_SCRIPTING>("?>"|"</script"{WHITESPACE}*">"){NEWLINE}? {
 	zendlval->value.str.val = yytext; /* no copying - intentional */
 	zendlval->value.str.len = yyleng;
 	zendlval->type = IS_STRING;

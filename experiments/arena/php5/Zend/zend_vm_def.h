@@ -1500,7 +1500,7 @@ ZEND_VM_HANDLER(109, ZEND_FETCH_CLASS, ANY, CONST|TMP|VAR|UNUSED|CV)
 
 
 	if (OP2_TYPE == IS_UNUSED) {
-		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, 0, opline->extended_value TSRMLS_CC);
+		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, ZEND_FETCH_CLASS_AUTO, opline->extended_value TSRMLS_CC);
 		ZEND_VM_NEXT_OPCODE();
 	}
 
@@ -3258,6 +3258,9 @@ ZEND_VM_HANDLER(79, ZEND_EXIT, CONST|TMP|VAR|UNUSED|CV, ANY)
 {
 	zend_op *opline = EX(opline);
 
+	if (EG(exception)) {
+		ZEND_VM_RETURN();
+	}
 	if (OP1_TYPE != IS_UNUSED) {
 		zval *ptr;
 		zend_free_op free_op1;

@@ -69,7 +69,7 @@ static void build_runtime_defined_function_key(zval *result, char *name, int nam
 	uint char_pos_len;
 	char *filename;
 
-	char_pos_len = zend_sprintf(char_pos_buf, "%x", (unsigned int) LANG_SCNG(_yy_last_accepting_cpos));
+	char_pos_len = zend_sprintf(char_pos_buf, "%p", LANG_SCNG(_yy_last_accepting_cpos));
 	if (CG(active_op_array)->filename) {
 		filename = CG(active_op_array)->filename;
 	} else {
@@ -2128,12 +2128,6 @@ static zend_bool do_inherit_property_access_check(HashTable *target_ht, zend_pro
 				zend_hash_del(&ce->default_properties, prot_name, prot_name_length+1);
 			}
 			pefree(prot_name, ce->type & ZEND_INTERNAL_CLASS);
-		} else if (!(child_info->flags & ZEND_ACC_PRIVATE) && (child_info->flags & ZEND_ACC_STATIC)) {
-			char *prop_name, *tmp;
-
-			zend_unmangle_property_name(child_info->name, &tmp, &prop_name);
-			zend_error(E_COMPILE_ERROR, "Cannot redeclare property static %s %s::$%s in class %s", 
-				zend_visibility_string(child_info->flags), parent_ce->name, prop_name, ce->name);
 		}
 		return 0;	/* Don't copy from parent */
 	} else {
@@ -4088,6 +4082,8 @@ ZEND_API void zend_initialize_class_data(zend_class_entry *ce, zend_bool nullify
 		ce->module = NULL;
 		ce->serialize = NULL;
 		ce->unserialize = NULL;
+		ce->serialize_func = NULL;
+		ce->unserialize_func = NULL;
 	}
 }
 
@@ -4242,7 +4238,7 @@ void zend_do_begin_enum_function_declaration(znode *enum_token, znode *function_
 	/* Change method name from $name to "__$name$enum". E.g.
 	 * 
 	 * enum Op {
-	 *   plus { function evaluate($x, $y) { return $x + $y; } }
+	 *    plus { function evaluate($x, $y) { return $x + $y; } }
 	 * }
 	 * 
 	 * will result in a class Op with a method __evaluateplus()

@@ -637,7 +637,7 @@ static int ZEND_FETCH_CLASS_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 
 
 	if (IS_CONST == IS_UNUSED) {
-		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, 0, opline->extended_value TSRMLS_CC);
+		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, ZEND_FETCH_CLASS_AUTO, opline->extended_value TSRMLS_CC);
 		ZEND_VM_NEXT_OPCODE();
 	}
 
@@ -839,7 +839,7 @@ static int ZEND_FETCH_CLASS_SPEC_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 
 
 	if (IS_TMP_VAR == IS_UNUSED) {
-		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, 0, opline->extended_value TSRMLS_CC);
+		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, ZEND_FETCH_CLASS_AUTO, opline->extended_value TSRMLS_CC);
 		ZEND_VM_NEXT_OPCODE();
 	}
 
@@ -998,7 +998,7 @@ static int ZEND_FETCH_CLASS_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 
 
 	if (IS_VAR == IS_UNUSED) {
-		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, 0, opline->extended_value TSRMLS_CC);
+		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, ZEND_FETCH_CLASS_AUTO, opline->extended_value TSRMLS_CC);
 		ZEND_VM_NEXT_OPCODE();
 	}
 
@@ -1157,7 +1157,7 @@ static int ZEND_FETCH_CLASS_SPEC_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 
 
 	if (IS_UNUSED == IS_UNUSED) {
-		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, 0, opline->extended_value TSRMLS_CC);
+		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, ZEND_FETCH_CLASS_AUTO, opline->extended_value TSRMLS_CC);
 		ZEND_VM_NEXT_OPCODE();
 	}
 
@@ -1245,7 +1245,7 @@ static int ZEND_FETCH_CLASS_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 
 
 	if (IS_CV == IS_UNUSED) {
-		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, 0, opline->extended_value TSRMLS_CC);
+		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, ZEND_FETCH_CLASS_AUTO, opline->extended_value TSRMLS_CC);
 		ZEND_VM_NEXT_OPCODE();
 	}
 
@@ -2227,6 +2227,9 @@ static int ZEND_EXIT_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
 
+	if (EG(exception)) {
+		ZEND_VM_RETURN();
+	}
 	if (IS_CONST != IS_UNUSED) {
 		zval *ptr;
 		zend_free_op free_op1;
@@ -4738,6 +4741,9 @@ static int ZEND_EXIT_SPEC_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
 
+	if (EG(exception)) {
+		ZEND_VM_RETURN();
+	}
 	if (IS_TMP_VAR != IS_UNUSED) {
 		zval *ptr;
 		zend_free_op free_op1;
@@ -8002,6 +8008,9 @@ static int ZEND_EXIT_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
 
+	if (EG(exception)) {
+		ZEND_VM_RETURN();
+	}
 	if (IS_VAR != IS_UNUSED) {
 		zval *ptr;
 		zend_free_op free_op1;
@@ -13593,6 +13602,9 @@ static int ZEND_EXIT_SPEC_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
 
+	if (EG(exception)) {
+		ZEND_VM_RETURN();
+	}
 	if (IS_UNUSED != IS_UNUSED) {
 		zval *ptr;
 		zend_free_op free_op1;
@@ -18706,6 +18718,9 @@ static int ZEND_EXIT_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
 
+	if (EG(exception)) {
+		ZEND_VM_RETURN();
+	}
 	if (IS_CV != IS_UNUSED) {
 		zval *ptr;
 		zend_free_op free_op1;
@@ -29635,7 +29650,7 @@ static int ZEND_FETCH_CLASS_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 
 
 	if (opline->op2.op_type == IS_UNUSED) {
-		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, 0, opline->extended_value TSRMLS_CC);
+		EX_T(opline->result.u.var).class_entry = zend_fetch_class(NULL, ZEND_FETCH_CLASS_AUTO, opline->extended_value TSRMLS_CC);
 		ZEND_VM_NEXT_OPCODE();
 	}
 
@@ -31393,6 +31408,9 @@ static int ZEND_EXIT_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	zend_op *opline = EX(opline);
 
+	if (EG(exception)) {
+		ZEND_VM_RETURN();
+	}
 	if (opline->op1.op_type != IS_UNUSED) {
 		zval *ptr;
 		zend_free_op free_op1;
