@@ -24,6 +24,17 @@
    *   var_dump($uuid->toString());
    * </code>
    *
+   * Example [get a UUID from a string]:
+   * <code>
+   *   try(); {
+   *     $uuid= &UUID::fromString($uuidstr);
+   *   } if (catch('FormatException', $e)) {
+   *     $e->printStackTrace();
+   *     exit();
+   *   }
+   *   var_dump($uuid->toString());
+   * </code>
+   *
    * @purpose  Generate UUIDs
    * @see      http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-00.txt
    */
