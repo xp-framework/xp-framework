@@ -60,7 +60,6 @@
      * @param   int port default 6667
      */
     public function __construct(IRCUser $user, $server, $port= 6667) {
-      
       $this->user= $user;
       $this->sock= new Socket($server, $port);
     }
