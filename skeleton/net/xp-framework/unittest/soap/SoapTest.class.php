@@ -79,7 +79,7 @@
         $src, '<item xsi:type="xsd:int">3</item>', 'array.inner'
       );
       $this->assertContains(
-        $src, '<hash xsi:type="xsd:ur-type">', 'hash'
+        $src, '<hash xsi:type="xsd:struct">', 'hash'
       );
       $this->assertContains(
         $src, '<class xsi:type="xsd:string">Test</class>', 'hash.inner'
