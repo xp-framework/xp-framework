@@ -30,7 +30,7 @@
    *   }
    * </code>
    *
-   * @purpose  Abstract data type
+   * @purpose  LIFO
    * @see      xp://util.adt.Queue
    * @see      http://www.faqs.org/docs/javap/c12/ex-12-1-answer.html
    * @see      http://java.sun.com/j2se/1.4.2/docs/api/java/util/Stack.html 
