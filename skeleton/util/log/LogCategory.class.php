@@ -1,16 +1,19 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
  * $Id$
  */
 
-          // Logger-Flags, die Definieren, was geloggt wird
   define('LOGGER_FLAG_INFO',    0x0001);
   define('LOGGER_FLAG_WARN',    0x0002);
   define('LOGGER_FLAG_ERROR',   0x0004);
   define('LOGGER_FLAG_DEBUG',   0x0008);
   define('LOGGER_FLAG_ALL',     LOGGER_FLAG_INFO | LOGGER_FLAG_WARN | LOGGER_FLAG_ERROR | LOGGER_FLAG_DEBUG);
   
+  /**
+   * Category base class
+   *
+   */
   class LogCategory extends Object {
     var 
       $_appenders= array(),
@@ -28,11 +31,13 @@
       $format;
 
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string identifier
+     * @param   string format 
+     * @param   string dateformat
+     * @param   int flags
      */
     function __construct($identifier, $format, $dateformat, $flags= LOGGER_FLAG_ALL) {
       $this->identifier= $identifier;
