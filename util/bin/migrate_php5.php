@@ -75,7 +75,7 @@ __;
   // Swallow leading whitespace
   while (T_WHITESPACE === $tok[0]) $tok= $t->getNextToken();
   
-  $class= 0;
+  $class= 0; $abstract= 0;
   $uses= $constants= $implements= $apidoc= array();
   do {
     if (T_CLOSE_TAG === $tok[0]) break;
@@ -137,6 +137,7 @@ __;
       
       case 'class':        // class StdStream extends Object {
         $out[]= 'class ';
+        $class_decl= sizeof($out)- 1;
         $t->getNextToken();             // Swallow whitepsace
         $classname= $t->getNextToken();
         $extends= NULL;
@@ -232,6 +233,7 @@ __;
         if (@$apidoc['model'] == 'static') $out[]= ' static';
         if (@$apidoc['model'] == 'abstract') $out[]= ' abstract';
         if (@$apidoc['model'] == 'final') $out[]= ' final';
+        if (@$apidoc['model'] == 'abstract') $abstract++;
         
         $out[]= ' function ';
 
@@ -265,7 +267,7 @@ __;
         
         // Kill method body if this function resides in an interface or is declared 
         // abstract. Change getInstance() method to use class statics
-        if (('Interface' == $extends) || (@$apidoc['model'] == 'abstract')) { 
+        if (('Interface' == $extends) || (@$apidoc['model'] == 'abstract')) {
           while ('}' !== $tok[1]) {
             $tok= $t->getNextToken();
           }
@@ -358,6 +360,13 @@ __;
     $out[]= str_replace("\r", '', $tok[1]);
   } while ($tok= $t->getNextToken());
   
+  // Make class abstract if it contains more than one abstract method
+  if ($abstract) {
+    printf("---> Making class abstract, it contains %d abstract methods\n", $abstract);
+    $out[$class_decl]= 'abstract class ';
+  }
+  
+  // Add implements clause
   if (!empty($implements)) {
     $ilist= '';
     foreach ($implements as $i) {
