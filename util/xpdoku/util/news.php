@@ -21,13 +21,13 @@
   $rdf= &new RDFNewsFeed();
   $rdf->setChannel(
     'XP News', 
-    'http://xp.php3.de/',
+    'http://xp-framework.net/',
     'XP Newsflash',
     NULL,
     'en_US',
     'XP-Team <xp@php3.de>',
     'XP-Team <xp@php3.de>',
-    'http://xp.php3.de/copyright.html'
+    'http://xp-framework.net/copyright.html'
   );
   
   // Get news from database
