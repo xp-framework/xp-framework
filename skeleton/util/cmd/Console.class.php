@@ -86,9 +86,11 @@
      * is trimmed off the end.
      *
      * @access  public
+     * @param   string prompt = NULL
      * @return  string
      */    
-    function readLine() {
+    function readLine($prompt= NULL) {
+      $prompt && Console::write($prompt.' ');
       $r= '';
       while ($bytes= fgets(STDIN, 0x20)) {
         $r.= $bytes;
@@ -101,9 +103,11 @@
      * Read a single character from standard input.
      *
      * @access  public
+     * @param   string prompt = NULL
      * @return  string
      */    
     function read() {
+      $prompt && Console::write($prompt.' ');
       return fgetc(STDIN);
     }
   }
