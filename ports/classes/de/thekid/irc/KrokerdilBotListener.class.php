@@ -121,6 +121,16 @@
             }
             break;
           
+          case 'say':
+            list($dest, $message)= explode(' ', $params, 2);
+            $connection->sendMessage($dest, $message);
+            break;
+
+          case 'do':
+            list($dest, $action)= explode(' ', $params, 2);
+            $connection->sendAction($dest, $action);
+            break;
+          
           case 'schwob':
             $connection->sendMessage($target, Swabian::translate($params));
             break;
