@@ -56,7 +56,7 @@
     function _recurse(&$e, $a) {
       $sname= rtrim($e->name, 's');
       foreach (array_keys($a) as $field) {
-        $child= &$e->addChild(new Node(is_numeric($field) 
+        $child= &$e->addChild(new Node(is_numeric($field) || '' == $field
           ? $sname
           : $field
         ));
