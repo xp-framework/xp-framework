@@ -28,7 +28,7 @@
    *   $i->toFile(new File('out.png'));
    * </code>
    *
-   * @see img.Image
+   * @see xp://img.Image
    */
   class Polygon extends Object {
     var

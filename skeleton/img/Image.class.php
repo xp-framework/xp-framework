@@ -222,7 +222,7 @@
      * The two images will be merged according to pct which can range from 0 to 100. When pct = 0, 
      * no action is taken, when 100 this function behaves identically to copy()
      *
-     * @see     img.Image#copyFrom
+     * @see     xp://img.Image#copyFrom
      * @access  public
      * @param   &img.Image img Image object
      * @param   int pct default 50 percentage of merge
@@ -272,7 +272,7 @@
     /**
      * Sets a style
      *
-     * @see     img.ImgStyle
+     * @see     xp://img.ImgStyle
      * @access  public
      * @param   &img.ImgStyle style
      * @return  &img.ImgStyle the new style object
@@ -289,7 +289,7 @@
     /**
      * Sets a brush
      *
-     * @see     img.ImgBrush
+     * @see     xp://img.ImgBrush
      * @access  public
      * @param   &img.ImgBrush brush
      * @return  &img.ImgBrush the new style object
@@ -404,7 +404,7 @@
      * Private function which produces the image. Overwrite this in
      * extended classes
      *
-     * @see     img.JpegImage
+     * @see     xp://img.JpegImage
      * @access  private
      * @param   string filename default '' filename to save to or '' for memory
      * @return  bool success

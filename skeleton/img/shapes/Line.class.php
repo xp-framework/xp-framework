@@ -15,7 +15,7 @@
    *   $i->toFile(new File('out.png'));
    * </code>
    *
-   * @see img.Image
+   * @see xp://img.Image
    */
   class Line extends Object {
     var

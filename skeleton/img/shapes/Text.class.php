@@ -7,7 +7,7 @@
   /**
    * Shape class representing a text
    *
-   * @see img.Image
+   * @see xp://img.Image
    */
   class Text extends Object {
     var

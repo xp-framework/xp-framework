@@ -9,14 +9,14 @@
   /**
    * Class wrapper for GIF images
    *
-   * @see img.Image
+   * @see xp://img.Image
    */
   class GifImage extends Image {
     
     /**
      * Private function which produces the image
      *
-     * @see     img.Image#_out
+     * @see xp://img.Image#_out
      */
     function _out($filename= '') {
       return imagegif($this->_hdl, $filename);

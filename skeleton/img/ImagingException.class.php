@@ -7,7 +7,7 @@
   /**
    * Wraps the ImagingException
    *
-   * @see Exception
+   * @see xp://lang.Exception
    */
   class ImagingException extends Exception {
   

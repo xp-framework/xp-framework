@@ -7,7 +7,7 @@
   /**
    * Color class
    *
-   * @see img.Image
+   * @see xp://img.Image
    */
   class Color extends Object {
     var

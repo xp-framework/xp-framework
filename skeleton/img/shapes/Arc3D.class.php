@@ -18,7 +18,7 @@
    *   $i->toFile(new File('out.png'));
    * </code>
    *
-   * @see img.Image
+   * @see xp://img.Image
    */
   class Arc3D extends Arc {
     var

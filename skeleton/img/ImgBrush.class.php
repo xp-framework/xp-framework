@@ -7,7 +7,7 @@
   /**
    * Brush class
    *
-   * @see img.Image#setBrush
+   * @see xp://img.Image#setBrush
    */
   class ImgBrush extends Object {
     var

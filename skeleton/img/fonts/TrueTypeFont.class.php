@@ -7,7 +7,7 @@
   /**
    * True type font
    *
-   * @see img.shapes.Text
+   * @see xp://img.shapes.Text
    */
   class TrueTypeFont extends Object {
     var
