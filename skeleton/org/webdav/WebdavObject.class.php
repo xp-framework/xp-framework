@@ -77,7 +77,7 @@
      * @return  string href
      */
     function getHref() {
-    return $this->href;
+      return $this->href;
     }
     
     /**
@@ -214,7 +214,8 @@
         substr($etag,7,4),
         substr($etag,11,8)
       );
-      foreach(array(
+      foreach (array(
+
         // Default
         'creationdate'     => array('value' => $this->creationDate, 'ns' => 'DAV:'),
         'getlastmodified'  => array('value' => $this->modifiedDate, 'ns' => 'DAV:'),
@@ -246,7 +247,6 @@
         $this->addProperty($p);
       }
     }
-
     
     /**
      * Set data
@@ -300,13 +300,14 @@
      * @param   string depth
      */
     function &addLockInfo($locktype, $lockscope, $owner, $timeout, $token, $depth) {
-      $this->_lockinfo[]=array(
+      $this->_lockinfo[]= array(
         'owner'   => $owner,
         'type'    => $locktype,
         'scope'   => $lockscope,
         'timeout' => $timeout,
         'token'   => $token,
-        'depth'   => $depth );
+        'depth'   => $depth
+      );
     }
 
     /**
@@ -339,6 +340,5 @@
     function &getNameSpaces() {
       return $this->nameSpaces;
     }
-
   } 
 ?>
