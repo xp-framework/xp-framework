@@ -14,6 +14,10 @@
   ));
   ini_set('include_path', SKELETON_PATH.':'.ini_get('include_path'));
 
+  function clear_error() {
+    unset($GLOBALS['php_errormessage']);
+  }
+
   function is_error() {
     return empty($GLOBALS['php_errormessage']) ? FALSE : $GLOBALS['php_errormessage'];
   }
