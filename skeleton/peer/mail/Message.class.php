@@ -530,7 +530,7 @@
       if (!function_exists('qstr')) { function qstr($str) {
         static $q;
         
-        if (!isset($q)) $q= array_merge(array(61, 46), range(0, 31), range(127, 255));
+        if (!isset($q)) $q= QuotedPrintable::getCharsToEncode();
         $n= FALSE;
         for ($i= 0, $s= strlen($str); $i < $s; $i++) {
           if (in_array($str{$i}, $q)) continue;
