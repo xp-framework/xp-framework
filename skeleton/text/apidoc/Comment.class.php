@@ -45,11 +45,11 @@
     }
   
     /**
-     * (Insert method's description here)
+     * Create a comment from a string
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string str
+     * @return  &lang.apidoc.Comment a comment object
      */
     function fromString($str) {
       if ('/*' !== substr($str, 0, 2)) {
@@ -64,7 +64,12 @@
             continue 2;
             
           case '@':
-            list($tag, $line)= preg_split('/[\s\t]+/', substr($line, 1), 2);
+            $args= preg_split('/[\s\t]+/', substr($line, 1), 2);
+            $tag= $line= '';
+            switch (sizeof($args)) {
+              case 1: $tag= $args[0];
+              case 2: list($tag, $line)= $args; break;
+            }
             break;
             
           case "\t":
