@@ -7,6 +7,13 @@
   if (!defined('PATH_SEPARATOR')) {
     define('PATH_SEPARATOR',  0 == strncasecmp('WIN', PHP_OS, 3) ? ';' : ':');    
   }
+  
+  if (!defined('STDOUT')) {
+    define('STDOUT', fopen('php://stdout', 'wb'));
+    define('STDERR', fopen('php://stderr', 'wb'));
+    define('STDIN',  fopen('php://stdin',  'rb'));
+  }
+
 
   // {{{ proto array sybase_fetch_assoc(resource result)
   //     See php://sybase_fetch_assoc
@@ -20,7 +27,7 @@
 
   // {{{ proto array debug_backtrace(void)
   //     See php://debug_backtrace
-  if (!function_exists('debug_backtrace')) { function debug_backtrace($res) {
+  if (!function_exists('debug_backtrace')) { function debug_backtrace() {
     return array();
   }}
   // }}}
