@@ -17,12 +17,12 @@
       $_str= NULL;
 
     /**
-     * Constructor.
+     * Parse string into its InternetAddresses.
      *
      * <code>
-     *   $p= &new InternetAddressParser('"Kiesel, Alex" <alex.kiesel@example.com>, Christian Lang <christian.lang@example.com>');
+     *   $p= &new InternetAddressParser();
      *   try(); {
-     *     $addr= $p->parse();
+     *     $addr= $p->parse('"Kiesel, Alex" <alex.kiesel@example.com>, Christian Lang <christian.lang@example.com>');
      *   } if (catch('FormatException', $e)) {
      *     $e->printStackTrace();
      *   }
@@ -32,22 +32,12 @@
      * </code>
      *
      * @access  public
-     * @param   string str
-     */  
-    function __construct($str) {
-      $this->_str= $str;
-    }
-    
-    /**
-     * Parse string into its InternetAddresses.
-     *
-     * @access  public
      * @return  &InternetAddress[]
      * @throws  lang.FormatException in case the string is malformed
      */
-    function &parse() {
+    function &parse($str) {
       $result= array();
-      $st= &new StringTokenizer($this->_str, ',');
+      $st= &new StringTokenizer($str, ',');
       
       $st->hasMoreTokens() && $tok= $st->nextToken();
       while ($tok) {
