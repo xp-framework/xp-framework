@@ -128,7 +128,7 @@
           }
           $sql.= $r.', ';
         }
-        $sql= substr($sql, 0, -2).substr($tok, 1 + $mod);
+        $sql= rtrim($sql, ', ').substr($tok, 1 + $mod);
       }
       return $sql;
     }
