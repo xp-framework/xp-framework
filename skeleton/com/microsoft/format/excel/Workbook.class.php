@@ -10,6 +10,7 @@
    * Excel workbook. A workbook consists of one ore more
    * work sheets
    *
+   * @experimental
    * @see      xp://com.microsoft.format.Worksheet
    * @purpose  Represent Excel object
    */

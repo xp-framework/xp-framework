@@ -7,6 +7,7 @@
   /**
    * Excel worksheet
    *
+   * @experimental
    * @purpose  Represent Excel object
    */
   class Worksheet extends Object {
