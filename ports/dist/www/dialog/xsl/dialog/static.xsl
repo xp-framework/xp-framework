@@ -50,7 +50,7 @@
         </tr>
       </table>
       <p><a href="{func:link(concat('album/view?', @name))}">See more</a></p>
-      <hr/>
+      <br/><br clear="all"/>
     </xsl:for-each>
     
     <br clear="all"/> 
