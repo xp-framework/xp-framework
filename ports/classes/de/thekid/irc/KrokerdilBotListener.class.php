@@ -517,13 +517,6 @@
       if (stristr($message, $connection->user->getNick())) {
         $karma= 0;
         
-        // Check our bad words list
-        if ($this->containsSwear($message)) {
-          $this->setKarma($nick, rand(-5, -1), $this->lists['swears'][$i], '@@swear');
-          $karma= -1;
-          return;
-        }
-
         // See if we can recognize something here and calculate karma - multiplied
         // by a random value because this message is directed at me.
         foreach ($this->recognition as $pattern => $delta) {
@@ -531,9 +524,16 @@
           $this->setKarma($nick, rand(1, 5) * $delta[1], $pattern);
           $karma= $delta[1];
         }
+
+        // Check our bad words list
+        if (!$karma && $this->containsSwear($message)) {
+          $this->setKarma($nick, rand(-5, -1), '@@swear');
+          $karma= -1;
+          return;
+        }
         
         // Don't know what to do with this, say something random
-        if ($karma == 0) {
+        if (!$karma) {
           $this->sendRandomMessage($connection, $target, 'talkback', $nick, $message);
           return;      
         }
