@@ -5,64 +5,72 @@
  */
 
   /**
-   * Registry
+   * Registry is basically a key/value-storage system. This class actually
+   * acts as a proxy to the storage providers.
    *
-   * Usage: Setup
+   * Usage (Setup):
    * <code>
-   * $r= &Registry::getInstance(new SharedMemoryStorage('global'));
-   *
-   * // Somewhere later on
-   * $r= &Registry::getInstance('global');
-   * if (!$r->contains('config')) {
-   *   $config= &new Properties('foo.ini');
-   *   $config->reset();
-   *   $r->put('config', $config, 0600);
-   * }
+   *   $r= &Registry::getInstance(new SharedMemoryStorage('HKEY_GLOBAL'));
    * </code>
+   *
+   * Usage (somewhere later on):
+   * <code>
+   *   $r= &Registry::getInstance('HKEY_GLOBAL');
+   *   if (!$r->contains('config')) {
+   *     $config= &new Properties('foo.ini');
+   *     $config->reset();
+   *     $r->put('config', $config, 0600);
+   *   }
+   * </code>
+   *
+   * @purpose  Provide a mechanism to register any type of variable
+   * @see      util.registry.RegistryStorage
    */ 
   class Registry extends Object {
     var
       $storage = NULL;
 
     /**
-     * (Insert method's description here)
+     * Return whether a given key exists
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string key
+     * @return  bool TRUE when the key exists
      */
     function contains($key) {
       return $this->storage->contains($key);
     }
     
     /**
-     * (Insert method's description here)
+     * Retreive a value by a given key
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string key
+     * @return  &mixed value
      */
     function &get($key) {
       return $this->storage->read($key);
     }
 
     /**
-     * (Insert method's description here)
+     * Insert or update a key/value-pair
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string key
+     * @param   &mixed value
+     * @param   int permissions default 0666
+     * @return  bool success
      */
     function put($key, &$value, $permissions= 0666) {
       return $this->storage->write($key, $value, $permissions);
     }
 
     /**
-     * (Insert method's description here)
+     * Remove a value by a given key
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string key
+     * @return  bool success
      */
     function remove($key) {
       return $this->storage->delete($key);
