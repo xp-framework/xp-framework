@@ -9,11 +9,6 @@
     'org.apache.xml.workflow.Context'
   );
   
-  uses(
-    'util.log.Logger',
-    'util.log.FileAppender'
-  );
-  
   /**
    * (Insert class' description here)
    *
@@ -46,32 +41,26 @@
       $classloader  = NULL;
     
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @param   
+     * @access  public
+     * @param   &lang.ClassLoader classloader
+     * @param   string xslbase
      */
     function __construct(&$classloader, $xslbase) {
-      $l= &Logger::getInstance();
-      $this->cat= &$l->getCategory($this->getClassName());
-      $this->cat->addAppender(new FileAppender('/tmp/scriptlet.log'));
-      
       $this->classloader= &$classloader;
       parent::__construct($xslbase);
     }
     
     /**
-     * (Insert method's description here)
+     * Create session and set up context
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   &org.apache.HttpScriptletRequest request 
+     * @param   &org.apache.HttpScriptletResponse response 
+     * @return  bool
      */
     function doCreateSession(&$request, &$response) {
-      $this->cat->info('------ in doCreateSession(', $request, $request->getSession(), ')');
-      
-      // Set up context
       $context= &new Context();
       $context->initialize($this->classloader);
       $request->session->putValue('context', $context);
@@ -90,23 +79,17 @@
      */
     function doGet(&$request, &$response) {
       try(); {
-        $context= &$request->session->getValue('context');
+        do {
+          if (!($context= &$request->session->getValue('context'))) break;
+          $context->handleRequest($request, $response);
+          $request->session->putValue('context', $context);
+        } while (0);
+      } if (catch('ContextFailedException', $e)) {
+        return throw(new HttpScriptletException('Could not execute request: '.$e->message));
       } if (catch('Exception', $e)) {
-        $this->cat->error('Could not find context', $e->getStackTrace());
-        return throw(new HttpScriptletException($e->message));
+        return throw(new HttpScriptletException('Internal error: '.$e->message));
       }
-      
-      $this->cat->info('------ in doGet(', $request->getSessionId(), $context, ')');
-      
-      try(); {
-        $context->handleRequest($request, $response);
-      } if (catch('HttpScriptletException', $e)) {
-        $this->cat->error('Could not handle request', $e->getStackTrace());
-        return throw($e);
-      }
-      
-      $request->session->putValue('context', $context);
- 
+
       return parent::doGet($request, $response);
     }
   }
