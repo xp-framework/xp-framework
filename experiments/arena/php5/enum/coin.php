@@ -15,11 +15,11 @@
     );
 
     public function color() {
-      return self::$color[$this->ordinal];
+      return self::$color[$this->value];
     }
     
     public function __toString() {
-      return $this->name.': '.$this->ordinal.'¢ ('.$this->color().')';
+      return $this->name.': '.$this->value.'¢ ('.$this->color().')';
     }
   }
 

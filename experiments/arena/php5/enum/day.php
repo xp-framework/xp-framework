@@ -8,7 +8,7 @@
     Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday;
 
     private static function isWorkDay(Day $day) {
-      return $day->ordinal < self::Saturday;
+      return $day->value < self::Saturday;
     }
     
     public static function workDays() {
@@ -16,7 +16,7 @@
     }
 
     private static function isWeekend(Day $day) {
-      return $day->ordinal > self::Friday;
+      return $day->value > self::Friday;
     }
 
     public static function weekend() {
