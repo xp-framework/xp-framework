@@ -170,7 +170,7 @@
       while (++$i < @sybase_num_fields($result)) {
         $field= sybase_fetch_field($result, $i);
         $this->fields[$field->name]= $field->type;
-	$this->lengths[$field->name]= $field->max_length;
+	    $this->lengths[$field->name]= $field->max_length;
       }
       
       return $result;
@@ -197,7 +197,10 @@
      */
     function &fetch($query) {
       $row= sybase_fetch_array($query);
-      if (FALSE === $row) return FALSE;
+      if (FALSE === $row) {
+        $this->log->debugf('Fetched %d row(s)', sybase_num_rows($query));
+        return FALSE;
+      }
       
       foreach($row as $key=> $val) {
 
@@ -208,7 +211,6 @@
         }
         
         // FALSE ==> NULL
-        $this->log->debug($key.' is NULL ?', ($val === FALSE) ? 'yes' : 'no');
         if ($val === FALSE || $val === NULL) {
           $row[$key]= NULL;
           continue;
