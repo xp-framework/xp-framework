@@ -182,7 +182,7 @@
      *
      * @model   final
      * @access  public
-     * @return  int number of affected rows
+     * @return  mixed identity value if applicable, else NULL
      * @throws  rdbms.SQLException in case an error occurs
      */  
     function doInsert() {
@@ -231,7 +231,7 @@
      * Insert this dataset (create a new row in the table).
      *
      * @access  public
-     * @return  int affected rows
+     * @return  mixed identity value if applicable, else NULL
      * @throws  rdbms.SQLException
      */
     function insert() {
