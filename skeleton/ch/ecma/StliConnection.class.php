@@ -171,14 +171,33 @@
      *
      * @access  public
      * @param   &util.telephony.TelephonyAddress address
+     * @return  &util.telephony.TelephonyTerminal
      */
     function &getTerminal(&$address) {
-      if (FALSE === $this->_expect(
-        STLI_MON_START_RESPONSE,
-        $this->_sockcmd('MonitorStart %s', $address->getNumber())
-      )) return NULL;
-
       return new TelephonyTerminal($address);
+    }
+
+    /**
+     * Observe a terminal
+     *
+     * @access  public
+     * @param   &util.telephony.TelephonyTerminal terminal
+     * @param   bool status TRUE to start observing, FALSE top stop
+     * @return  bool success
+     */
+    function observeTerminal(&$terminal, $status) {
+      if ($status) {
+        $success= $this->_expect(
+          STLI_MON_START_RESPONSE,
+          $this->_sockcmd('MonitorStart %s', $terminal->getAttachedNumber())
+        );      
+      } else {
+        $success= $this->_expect(
+          STLI_MON_STOP_RESPONSE,
+          $this->_sockcmd('MonitorStop %s', $terminal->getAttachedNumber())
+        );
+      }
+      return $success;
     }
 
     /**
@@ -186,13 +205,9 @@
      *
      * @access  public
      * @param   &util.telephony.TelephonyTerminal terminal
+     * @return  bool success
      */
-    function releaseTerminal($terminal) {
-      if (FALSE === $this->_expect(
-        STLI_MON_STOP_RESPONSE,
-        $this->_sockcmd('MonitorStop %s', $terminal->getAttachedNumber())
-      )) return NULL;
-      
+    function releaseTerminal(&$terminal) {
       return TRUE;
     }
   }
