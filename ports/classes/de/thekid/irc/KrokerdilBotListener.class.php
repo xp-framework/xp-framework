@@ -232,6 +232,23 @@
     }
     
     /**
+     * Checks whether a given message contains a swear and returns it if 
+     * found, NULL otherwise.
+     *
+     * @access  protected
+     * @param   string message
+     * @return  string swear
+     */
+    function containsSwear($message) {
+      for ($i= 0, $s= sizeof($this->lists['swears']); $i < $s; $i++) {
+        if (preg_match('/('.preg_quote(str_replace(' ', ')? ('.$this->lists['swears'][$i])).')/i', $message)) {
+          return $this->lists['swears'][$i];
+        }
+      }
+      return NULL;
+    }
+    
+    /**
      * Callback for private messages
      *
      * @access  public
@@ -271,7 +288,14 @@
               }
             }
             break;
-         
+          
+          case '@setkarma':
+            list($who, $value, $password)= explode(' ', $params);
+            if ($this->doPrivileged($connection, $nick, $password)) {
+              $this->setKarma($who, (int)$value);
+            }
+            break;
+                     
           case '@kick':
             list($channel, $victim, $password)= explode(' ', $params);
             if ($this->doPrivileged($connection, $nick, $password)) {
@@ -491,14 +515,37 @@
       
       // Any other phrase containing my name
       if (stristr($message, $connection->user->getNick())) {
-        $this->sendRandomMessage($connection, $target, 'talkback', $nick, $message);
+        $karma= 0;
+        
+        // Check our bad words list
+        if ($this->containsSwear($message)) {
+          $this->setKarma($nick, rand(-5, -1), $this->lists['swears'][$i], '@@swear');
+          $karma= -1;
+          return;
+        }
 
         // See if we can recognize something here and calculate karma - multiplied
-        // by four because this message is directed at me.
+        // by a random value because this message is directed at me.
         foreach ($this->recognition as $pattern => $delta) {
           if (!preg_match($pattern, $message)) continue;
           $this->setKarma($nick, rand(1, 5) * $delta[1], $pattern);
+          $karma= $delta[1];
         }
+        
+        // Don't know what to do with this, say something random
+        if ($karma == 0) {
+          $this->sendRandomMessage($connection, $target, 'talkback', $nick, $message);
+          return;      
+        }
+
+        // Send a karma-based message
+        $this->sendRandomMessage(
+          $connection, 
+          $target, 
+          $karma < 0 ? 'karma.dislike' : 'karma.like', 
+          $nick, 
+          $message
+        );
         return;
       }
       
@@ -518,11 +565,17 @@
             );
           }
           break;
-          
-        case 15: 
+
+        case 10:
+          if ($swear= $this->containsSwear($message)) {
+            $this->setKarma($nick, -1, $pattern, $swear);
+          }
+          break;
+                
+        case 15:
           $this->sendRandomMessage($connection, $target, 'noise', $nick, $message);
           break;
-        
+
         case 16:
           $this->sendRandomMessage(
             $connection, 
