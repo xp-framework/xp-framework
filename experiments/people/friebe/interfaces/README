@@ -2,6 +2,8 @@ Interfaces
 ========================================================================
 $Id$
 
+*** NOTE: This experiment has been integrated into the language core ***
+
 What's this?
 ------------
 A case study to find out whether interfaces¹ can be implemented in PHP4 
