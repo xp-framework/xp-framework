@@ -37,9 +37,9 @@
       if (!$this->assertClass($class, 'lang.XPClass')) return;
       $parent= &$class->getParentClass();
       if (!$this->assertClass($parent, 'lang.XPClass')) return;
-      $e= &$class->newInstance(__CLASS__);
+      $e= &$class->newInstance('test');
       if (!$this->assertClass($e, 'lang.Exception')) return;
-      $this->assertEquals($e->message, __CLASS__);
+      $this->assertEquals($e->message, 'test');
       $o= &$parent->newInstance();
       if (!$this->assertClass($o, 'lang.Object')) return;
     }
