@@ -107,7 +107,8 @@
       
         // Get context from session. If it is not available there, set up the 
         // context and store it to the session.
-        if (!($context= &$request->session->getValue($class->getName()))) {
+        $cidx= $class->getName();
+        if (!($context= &$request->session->getValue($cidx))) {
           $context= &$class->newInstance();
 
           try(); {
@@ -122,7 +123,7 @@
             throw(new HttpScriptletException($e->getMessage(), HTTP_FORBIDDEN));
             return FALSE;
           }
-          $request->session->putValue($class->getName(), $context);
+          $request->session->putValue($cidx, $context);
         }
 
         // Run context's process() method.
@@ -149,8 +150,12 @@
         return FALSE;
       }
       
-      // Tell context to insert form elements
-      $context && $context->insertStatus($response);
+      // If there is no context, we're finished
+      if (!$context) return;
+
+      // Tell context to insert form elements. Then store it, if necessary
+      $context->insertStatus($response);
+      $context->getChanged() && $request->session->putValue($cidx, $context);
     }
 
     /**

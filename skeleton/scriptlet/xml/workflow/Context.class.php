@@ -10,7 +10,29 @@
    * @purpose  Context
    */
   class Context extends Object {
+    var
+      $_changed  = FALSE;
 
+    /**
+     * Set changed flag
+     *
+     * @access  public
+     * @param   bool changed default TRUE
+     */
+    function setChanged($changed= TRUE) {
+      $this->_changed= $changed;
+    }
+
+    /**
+     * Get changed flag
+     *
+     * @access  public
+     * @return  bool
+     */
+    function getChanged() {
+      return $this->_changed;
+    }
+    
     /**
      * Setup context. 
      *
