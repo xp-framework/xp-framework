@@ -17,6 +17,14 @@ to it. This way, no external library is needed except for those
 dynamically linked to libphp4.a. This behaviour may be changed by
 configure-options of PHPs configure.
 
+Overview
+--------
+Makefile            - Make file
+README              - This file
+errorcb.h           - Error callback function
+php2cembed.php      - Creates C sourcecode from a local PHP file
+webstart.php        - Create webstart app for URL
+
 How do I create libphp4.a?
 --------------------------
 Call PHPs configure with --disable-cli --enable-embed=yes --enable-static
