@@ -125,8 +125,8 @@
         
         // Type-based conversion
         if (is_a($args[$ofs], 'Date')) {
-          $tok{$mod}= 'u';
-          $a= array($args[$ofs]->getTime());
+          $tok{$mod}= 's';
+          $a= array($args[$ofs]->toString('Y-m-d h:iA'));
         } elseif (is_a($args[$ofs], 'Object')) {
           $a= array($args[$ofs]->toString());
         } elseif (is_array($args[$ofs])) {
@@ -141,7 +141,7 @@
             case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
             case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
             case 's': $r= is_null($arg) ? 'NULL' : '"'.str_replace('"', '""', $arg).'"'; break;
-            case 'u': $r= is_null($arg) ? 'NULL' : '"'.date ('Y-m-d h:iA', $arg).'"'; break;
+            case 'u': $r= is_null($arg) ? 'NULL' : '"'.date('Y-m-d h:iA', $arg).'"'; break;
             default: $r= '%'; $mod= -1; $i--; continue;
           }
           $sql.= $r.', ';

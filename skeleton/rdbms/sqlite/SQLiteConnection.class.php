@@ -159,8 +159,8 @@
 
         // Type-based conversion
         if (is_a('Date', $args[$ofs])) {
-          $tok{$mod}= 'u';
-          $a= array($args[$ofs]->getTime());
+          $tok{$mod}= 's';
+          $a= array($args[$ofs]->toString('Y-m-d H:i:s'));
         } elseif (is_a('Object', $args[$ofs])) {
           $a= array($args[$ofs]->toString());
         } elseif (is_array($args[$ofs])) {
@@ -175,7 +175,7 @@
             case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
             case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
             case 's': $r= is_null($arg) ? 'NULL' : "'".sqlite_escape_string($arg)."'"; break;
-            case 'u': $r= is_null($arg) ? 'NULL' : '"'.date ('Y-m-d H:i:s', $arg).'"'; break;
+            case 'u': $r= is_null($arg) ? 'NULL' : '"'.date('Y-m-d H:i:s', $arg).'"'; break;
             default: $r= '%'; $mod= -1; $i--; continue;
           }
           $sql.= $r.', ';
