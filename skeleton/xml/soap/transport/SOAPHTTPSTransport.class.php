@@ -1,32 +1,18 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
- * $Id$
+ * $Id$ 
  */
 
-  uses(
-    'xml.soap.transport.SOAPHTTPTransport',
-    'net.http.HTTPSRequest'
-  );
+  uses('xml.soap.transport.SOAPHTTPTransport');
   
   /**
-   * Kapselt den Transport von SOAP-Nachrichten über HTTP
+   * Dummy class for BC reasons - SoapHttpTransport can handle
+   * HTTPS now, too.
    *
-   * @see xml.soap.SOAPClient
+   * @deprecated
+   * @see         xp://xml.soap.transport.SoapHttpTransport
    */
   class SOAPHTTPSTransport extends SOAPHTTPTransport {
-
-    /**
-     * Constructor
-     *
-     * @access  public
-     * @param   string url Die URL
-     */  
-    function __construct($url) {
-      parent::__construct($url);
-      $this->_conn= new HTTPSRequest(array(
-        'url' => $url
-      ));
-    }
- }
+  }
 ?>

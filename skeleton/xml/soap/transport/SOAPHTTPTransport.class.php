@@ -11,9 +11,10 @@
   );
   
   /**
-   * Kapselt den Transport von SOAP-Nachrichten über HTTP
+   * HTTP transport. Also handles HTTPS.
    *
-   * @see xml.soap.SOAPClient
+   * @purpose  Transport SOAP messages
+   * @see      xp://xml.soap.SOAPClient
    */
   class SOAPHTTPTransport extends SOAPTransport {
     var
@@ -24,7 +25,7 @@
      * Constructor
      *
      * @access  public
-     * @param   string url Die URL
+     * @param   string url
      */  
     function __construct($url) {
       $this->_conn= &new HttpConnection($url);
