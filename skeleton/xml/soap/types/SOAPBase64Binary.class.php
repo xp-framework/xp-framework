@@ -26,12 +26,13 @@
      */
     function __construct($string, $encoded= FALSE) {
       if ($encoded) {
-        $this->string= base64_decode($str);
-        $this->encoded= $str;
+        $this->string= base64_decode($string);
+        $this->encoded= $string;
       } else {
-        $this->string= $str;
-        $this->encoded= base64_encode($str);
+        $this->string= $string;
+        $this->encoded= base64_encode($string);
       }
+
       parent::__construct();
     }
     
