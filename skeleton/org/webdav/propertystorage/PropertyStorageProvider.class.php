@@ -47,5 +47,15 @@
      * @return  &org.webdav.WebdavProperty
      */
     function &getProperty($uri, $name) { }
+    
+    /**
+     * Sets a lock for a specific URI
+     *
+     * @access  public
+     * @param   string uri The URI
+     * @param   &org.webdav.WebdavLock The WebDav Lock (use NULL to remove property)
+     */
+    function setProperty($uri, &$property) { }
+    
   }
 ?>
