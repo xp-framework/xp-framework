@@ -85,7 +85,7 @@
     /**
      * Connect
      *
-     * @access  public  
+     * @access  public
      * @return  bool success
      */
     function connect() { 
