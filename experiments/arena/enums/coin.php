@@ -3,6 +3,7 @@
  *
  * $Id$
  */
+  require('lang.base.php');
   require('enum.php');
   enum('Coin');
   
@@ -11,4 +12,7 @@
   
   // Accessing a single value
   echo 'Coin_PENNY= '; var_dump(Coin_PENNY);
+  
+  // Calling a function
+  echo 'Coin::colorOf(Coin_DIME)= '; var_dump(Coin::colorOf(Coin_DIME));
 ?>

@@ -3,6 +3,7 @@
  *
  * $Id$
  */
+  require('lang.base.php');
   require('enum.php');
   enum('Suit');
   
