@@ -64,7 +64,8 @@
     /**
      * Set our own response object
      *
-     * @see     org.apache.HttpScriptlet#_response
+     * @access  protected
+     * @see     xp://org.apache.HttpScriptlet#_response
      */
     function _response() {
       $this->response= &new XMLScriptletResponse();
@@ -73,7 +74,8 @@
     /**
      * Set our own request object
      *
-     * @see     org.apache.HttpScriptlet#_request
+     * @access  protected
+     * @see     xp://org.apache.HttpScriptlet#_request
      */
     function _request() {
       $this->request= &new XMLScriptletRequest();
@@ -113,7 +115,7 @@
      * DEF_LANG as values for $pr and $ll_LL. If these aren't set, "site" and
      * "en_US" are assumed as default values.
      *
-     * @access  public
+     * @access  protected
      * @param   &org.apache.xml.XMLScriptletRequest request
      * @param   &org.apache.xml.XMLScriptletResponse response
      * @return  bool
@@ -142,7 +144,12 @@
      * When overriding this method, please make sure you include all your 
      * sourcecode _before_ you call <pre>parent::doGet()</pre>
      *
-     * @see     org.apache.HttpScriptlet#doGet
+     * @access  protected
+     * @return  bool processed
+     * @param   &org.apache.HttpScriptletRequest request 
+     * @param   &org.apache.HttpScriptletResponse response 
+     * @throws  Exception to indicate failure
+     * @see     xp://org.apache.HttpScriptlet#doGet
      */
     function doGet(&$request, &$response) {
     
@@ -170,7 +177,12 @@
     /**
      * Simply call doGet
      *
-     * @see     #doGet
+     * @access  protected
+     * @return  bool processed
+     * @param   &org.apache.HttpScriptletRequest request 
+     * @param   &org.apache.HttpScriptletResponse response 
+     * @throws  Exception to indicate failure
+     * @see     xp://org.apache.HttpScriptlet#doPost
      */
     function doPost(&$req, &$res) {
       $this->doGet($req, $res);
