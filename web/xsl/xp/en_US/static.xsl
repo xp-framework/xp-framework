@@ -82,7 +82,7 @@
     <xsl:for-each select="/formresult/entries/entry">
       <h3>
         <a href="news/view?{@id}">
-          <xsl:value-of select="substring-after(title, ': ')"/>
+          <xsl:value-of select="title"/>
         </a>
       </h3>
       <p>
