@@ -21,8 +21,11 @@
   <xsl:template match="/">
     <html>
       <head>
-        <title><xsl:value-of select="$__state"/> - Dialog</title>
-        <link rel="stylesheet" href="/darkblue.css"/>
+        <title>
+          <xsl:value-of select="$__state"/> - 
+          <xsl:value-of select="/formresult/config/title"/>
+        </title>
+        <link rel="stylesheet" href="/{/formresult/config/style}.css"/>
       </head>
       <body>
         <center>
@@ -30,7 +33,7 @@
           <table border="0" cellspacing="0" class="main">
             <tr>
               <th colspan="4" class="header">
-                <h1>Dialog</h1>
+                <h1><xsl:value-of select="/formresult/config/title"/></h1>
               </th>
             </tr>
             <tr>
@@ -55,7 +58,7 @@
           <!-- footer -->
           <table border="0" cellspacing="0" cellpadding="2" class="footer">
             <tr>
-              <td><small>&#169; 2005</small></td>
+              <td><small>&#169; <xsl:value-of select="/formresult/config/copyright"/></small></td>
               <td align="right">
                 <a href="http://xp-framework.net/">
                   <img border="0" src="/image/powered_by_xp.png" width="80" height="15" alt="XP powered"/>
