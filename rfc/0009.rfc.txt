@@ -1,0 +1,42 @@
+RFC 0009: Enumerations
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Thu Oct 28 22:42:01 CEST 2004
+@status: draft
+@category: language
+
+
+Scope of Change
+---------------
+A new keyword enum is introduced.
+
+Rationale
+---------
+Replace classes like the util.MimeType class that consist of defines 
+and utility functions only.
+
+Functionality
+-------------
+
+Declaration goes as follows:
+<?php
+  enum Suit { CLUBS, DIAMONDS, HEARTS, SPADES }
+?>
+
+Enumerations have a static function "values()" that returns the values 
+as an array.
+<?php
+  foreach (Suit::values() as $value) { }
+?>
+
+The sizeof() function applied to an enumeration returns the numbers of 
+elements in an enumeration (for the above example, 4).
+
+Related documents
+-----------------
+* A Typesafe Enum Facility for the Java[tm] Programming Language
+  http://jcp.org/aboutJava/communityprocess/jsr/tiger/enum.html
+
+<EOF>
