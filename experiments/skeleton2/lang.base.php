@@ -136,11 +136,12 @@
   function uses() {
     $result= TRUE;
     foreach (func_get_args() as $str) {
-      $result= $result & include_once(
-        strtr($str, '.', DIRECTORY_SEPARATOR).
-        '.class.php'
-      );
-      xp::$classes[xp::reflect($str)]= $str;
+      if ($i= include_once(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+        $class= xp::reflect($str);
+        xp::$classes[$class]= $str;
+        is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
+      }
+      $result= $result & $i;
     }
     return $result;
   }
