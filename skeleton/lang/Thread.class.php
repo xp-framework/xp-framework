@@ -74,7 +74,7 @@
      * Returns whether this thread is running
      *
      * @access  public
-     * @param   string name
+     * @return  bool
      */
     function isRunning() {
       return $this->running;
@@ -116,8 +116,8 @@
      * Starts thread execution
      *
      * @access  public
-     * @throws  lang.IllegalThreadStateException
-     * @throws  lang.SystemException
+     * @throws  lang.IllegalThreadStateException if this thread is already running
+     * @throws  lang.SystemException if the thread cannot be started
      */
     function start() {
       if ($this->isRunning()) {
