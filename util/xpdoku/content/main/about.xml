@@ -266,7 +266,7 @@ Exception info.binford6100.db.Message.MessageException (statement failed)
       <ref link="about.cvs">CVS guidelines</ref>
       <ref link="about.install">Installation</ref>
       <ref link="about.coding">Coding standards</ref>
-      <rel link="about.mailinglist">Developers Mailinglist</ref>
+      <ref link="about.mailinglist">Developers Mailinglist</ref>
       <ref type="ext" link="http://pear.php.net/">PEAR</ref>
       <ref type="ext" link="http://cpan.org/">CPAN</ref>
     </references>
