@@ -104,3 +104,4 @@
       return $this->getClassName().'@'.serialize($this);
     }
   }
+?>
