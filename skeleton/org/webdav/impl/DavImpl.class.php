@@ -278,7 +278,7 @@
      * @return  bool
      * @throws  ElementNotFoundException
      */
-    function VersionControl(&$version) {
+    function VersionControl($path, &$version) {
 
       try(); { 
         $props= array();
@@ -297,11 +297,11 @@
           $props[$p->getNameSpacePrefix().$p->getName()]= $p;
         }
 
-        $this->propStorage->setProperties($version->getFilename(), $props); 
+        $this->propStorage->setProperties($path, $props); 
          
         // Copy file to versions collection
         $this->backup(
-          $version->getFilename(),
+          $path,
           $version->getHref()
         );
         
