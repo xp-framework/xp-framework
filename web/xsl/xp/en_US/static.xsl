@@ -14,6 +14,12 @@
   <xsl:include href="../layout.xsl"/>
   <xsl:include href="../news.inc.xsl"/>
   
+  <xsl:variable name="shortcuts">
+    <shortcut href="about/topic?introduction" icon="introduction">Introduction</shortcut>
+    <shortcut href="resources" icon="download">Download</shortcut>
+    <shortcut href="about/examples" icon="examples">Examples</shortcut>
+  </xsl:variable>
+  
   <!--
    ! Template for context navigation
    !
@@ -71,24 +77,19 @@
   <xsl:template name="content">
     <h1>use::xp</h1>
 
-    <table width="100%" border="0" cellspacing="0" cellpadding="2" class="intro">
+    <table cellpadding="10">
       <tr>
-        <td>
-          <img src="/image/create.gif" width="295" height="100"/>
-        </td>
-        <td>
-          <ul class="intro">
-            <li>Command-line tools and cronjobs</li>
-            <li>GUI applications with the power of GTK-PHP</li>
-            <li>Web sites using HTML or XML/XSL</li>
-            <li>SOAP clients/servers</li>
-            <li>Cron jobs</li>
-            <li>Daemons (TCP/IP client/server architecture)</li>
-          </ul>
-        </td>
+        <xsl:for-each select="exsl:node-set($shortcuts)/shortcut">
+          <td align="middle" valign="top">
+            <a href="{@href}" class="nav">
+              <img border="0" src="/image/icons/{@icon}.png"/><br/>
+              <xsl:value-of select="."/>
+            </a>
+          </td>
+        </xsl:for-each>
       </tr>
     </table>
-
+    
     <xsl:for-each select="/formresult/entries/entry">
       <h3>
         <a href="news/view?{@id}">
