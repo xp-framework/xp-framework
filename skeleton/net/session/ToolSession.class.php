@@ -296,7 +296,7 @@
         LOG::warn($this->getName().'::'.$command.'::'.var_export($return, 1));
         return NULL;
       }
-      
+      LOG::info($this->getName().'::'.$command.'::'.var_export($return, 1));
       $return= unserialize(urldecode(trim($return)));
       
       $this->logline_text("var_get $command", $return);
