@@ -76,7 +76,7 @@
           $results[$idx]= NULL;
           continue;
         }
-        
+       
         // Typenabhängig
         if (!isset($child->attribute['xsi:type']) || !preg_match(
           '#^([^:]+):([^\[]+)(\[[0-9+]\])?$#', 
@@ -86,9 +86,14 @@
           // Zum Beispiel SOAP-ENV:Fault
           $regs= array(0, 'xsd', 'string');
         }
+
+	// SOAP-ENC:arrayType="xsd:anyType[4]"
+	if (isset($child->attribute['SOAP-ENC:arrayType'])) {
+          $regs[2]= 'Array';
+	}
         
-        // DEBUG echo "*** {$child->name} [{$names}, {$context}, {$idx}] is {$regs[2]}\n";
-        // DEBUG echo $child->getSource(0);
+        // echo "*** {$child->name} [{$names}, {$context}, {$idx}] is {$regs[2]}\n";
+        // echo $child->getSource(0);
         
         switch ($regs[2]) {
           case 'Array':
