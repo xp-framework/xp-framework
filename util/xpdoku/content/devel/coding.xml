@@ -835,6 +835,28 @@ $tree= new Tree();]]></code>
           Die Sybase-Klasse wird in Zukunft [ZE2] bspw. RDBMS::Sybase heiﬂen, usw.
         </text>
       </para>
+      <para>
+        <caption>Including classes and files</caption>
+        <text>
+          Please do not use variable names in uses(), require() or include() - directives.
+          It should not be neccessary to do something like
+          
+          <code><![CDATA[require ($DOCUMENT_ROOT.'/../include/start.inc');]]></code>
+          
+          Instead always try to resolve a path expression as above into the 
+          PHP4-language constants <tt>__FILE__</tt>. Above example could be rewritten
+          like:
+          
+          <code><![CDATA[require (dirname (__FILE__).'/../include/start.inc');]]></code>
+          
+          This helps some helper scripts (e.g. those in util/exe) to find dependent files.<br/>
+          
+          Btw: classes should never rely on having a file being accessible on a certain path.
+          When you need to read settings from an ini-file, the ini-files should be opened
+          by the application and given as an object to the class via e.g. a <tt>configure()</tt>
+          method.
+        </text>
+      </para>
     </content>
     <references>
       <ref link="about">Introduction</ref>
