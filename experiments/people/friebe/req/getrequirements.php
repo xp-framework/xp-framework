@@ -70,7 +70,7 @@
     }
     // }}}
 
-    // {{{ public static Requirements forFile(string filename)    
+    // {{{ public static Requirements forFile(string filename) throws Exception   
     function forFile($filename) {
       if (is('null', $filename)) return;    // NullPointer
 
