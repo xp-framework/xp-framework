@@ -124,6 +124,35 @@ SYBASE_API int sybase_connect(sybase_environment *env, sybase_link *link, char *
 }
 
 /**
+ * Retrieve connection status. Assumes CS_CONSTAT_DEAD when retrieving the 
+ * connection status fails.
+ * 
+ * @param   sybase_link *link
+ * @return  CS_INT a bitfield of CS_CONSTAT_CONNECTED and CS_CONSTAT_DEAD
+ */
+SYBASE_API CS_INT sybase_connection_status(sybase_link *link)
+{
+    CS_INT status;
+    
+    if (ct_con_props(link->connection, CS_GET, CS_CON_STATUS, &status, CS_UNUSED, NULL) != CS_SUCCEED) {
+        status = CS_CONSTAT_DEAD;
+    }
+    
+    return status;
+}
+
+/**
+ * Check if whe are connected
+ * 
+ * @param   sybase_link *link
+ * @return  int
+ */
+SYBASE_API int sybase_is_connected(sybase_link *link)
+{
+    return (sybase_connection_status(link) & CS_CONSTAT_CONNECTED) ? SA_SUCCESS : SA_FAILURE;
+}
+
+/**
  * Close the connection to the database
  * 
  * @param   sybase_link *link
@@ -131,12 +160,23 @@ SYBASE_API int sybase_connect(sybase_environment *env, sybase_link *link, char *
  */
 SYBASE_API int sybase_close(sybase_link *link)
 {
+    CS_INT status;
+
     if (!link) {
         return SA_FAILURE | SA_ENULLPOINTER;
     }
-    ct_close(link->connection, CS_UNUSED);
-    ct_con_drop(link->connection);
-    return SA_SUCCESS;
+    
+    /* Only close connection if we are actually connected. 
+     * Don't take any chances: Use CS_FORCE_CLOSE for dead connections! 
+     */
+    status= sybase_connection_status(link);
+    if (status & CS_CONSTAT_CONNECTED) {
+        ct_close(link->connection, (status & CS_CONSTAT_DEAD) ? CS_FORCE_CLOSE : CS_UNUSED);
+        ct_con_drop(link->connection);
+        return SA_SUCCESS;
+    }
+    
+    return SA_FAILURE;
 }
 
 /**
