@@ -146,7 +146,7 @@
       $cat= &$l->getCategory($this->getClassName());
       
       $stateName= $request->getState();
-      $cat->debug('In handleRequest(request, response) for', $request->uri, 'state', $stateName);
+      $cat->debug('In '.$this->getClassName().'.handleRequest(request, response) for', $request->uri, 'state', $stateName);
       do {
       
         if (!($state= &$this->getStateByName($stateName))) {
