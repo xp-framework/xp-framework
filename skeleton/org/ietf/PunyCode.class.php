@@ -74,7 +74,7 @@
       // delta >> 1 is a faster way of doing delta / 2
       $delta += (int)($delta / $numpoints);
 
-      for($k= 0; $delta > ((PUNYCODE_BASE - PUNYCODE_TMIN) * PUNYCODE_TMAX) / 2;  $k += PUNYCODE_BASE) {
+      for ($k= 0; $delta > ((PUNYCODE_BASE - PUNYCODE_TMIN) * PUNYCODE_TMAX) / 2;  $k += PUNYCODE_BASE) {
         $delta = (int)($delta / (PUNYCODE_BASE - PUNYCODE_TMIN));
       }
       return (int)($k + (PUNYCODE_BASE - PUNYCODE_TMIN + 1) * $delta / ($delta + PUNYCODE_SKEW));
@@ -92,8 +92,9 @@
      * @see rfc://3492#5
      */
     function _decode_digit($cp) {
-      return  $cp - 48 < 10 ? $cp - 22 :  ($cp - 65 < 26 ? $cp - 65 :
-              $cp - 97 < 26 ? $cp - 97 :  PUNYCODE_BASE);
+      return
+        $cp - 48 < 10 ? $cp - 22 :  ($cp - 65 < 26 ? $cp - 65 :
+        $cp - 97 < 26 ? $cp - 97 :  PUNYCODE_BASE);
     }
 
     /**
@@ -159,7 +160,7 @@
       $result= NULL;
 
       // Check for ASCII characters
-      for($b= 0; $b<$in_len; $b++) {
+      for ($b= 0; $b<$in_len; $b++) {
         if (strpos($this->getASCII(), $input[$b]) === FALSE) {
           return throw(new IllegalArgumentException('Input is not valid punycode'));
         }
@@ -168,11 +169,11 @@
       // Handle the basic code points:  Let b be the number of input code
       // points before the last delimiter, or 0 if there is none, then
       // copy the first b code points to the output.
-      for($b= $j= 0; $j < $in_len; ++$j) {
+      for ($b= $j= 0; $j < $in_len; ++$j) {
         if (PUNYCODE_DELIMITER == ord($input[$j])) $b = $j;
       }
 
-      for($j= 0; $j < $b; ++$j) {
+      for ($j= 0; $j < $b; ++$j) {
         if ($flags !== NULL) $flags[$out] = $this->_flagged($input[$j]);
         if (ord($input[$j]) >= 0x80) {
           return throw(new IllegalArgumentException('Input is not valid punycode'));
@@ -203,8 +204,9 @@
             return throw(new SystemException('Integer overflow'));
           }
           $i += $digit * $w;
-          $t = $k <= $bias ? PUNYCODE_TMIN :     // +tmin not needed
-               ($k >= $bias + PUNYCODE_TMAX ? PUNYCODE_TMAX : $k - $bias);
+          $t =
+            $k <= $bias ? PUNYCODE_TMIN :     // +tmin not needed
+            ($k >= $bias + PUNYCODE_TMAX ? PUNYCODE_TMAX : $k - $bias);
           if ($digit < $t) break;
           if ($w > MAXINT / (PUNYCODE_BASE - $t)) {
             return throw(new SystemException('Integer overflow'));
@@ -225,17 +227,17 @@
 
         // Insert n at position i of the output:
         if ($flags !== NULL) {
-          for($x= ($out - $i) - 1; $x >= 0; $x--) $flags[$x+$i+1] = $flags[$x+$i];
+          for ($x= ($out - $i) - 1; $x >= 0; $x--) $flags[$x+$i+1] = $flags[$x+$i];
           $flags[$i]= $this->_flagged($input[$in-1]);
         }
 
-        for($x= ($out - $i) - 1; $x >= 0; $x--) $output[$x+$i+1] = $output[$x+$i];
+        for ($x= ($out - $i) - 1; $x >= 0; $x--) $output[$x+$i+1] = $output[$x+$i];
         $output[$i]= $n;
         $i++;
       }
       // Transform it to UCS-4 string
       $result= '';
-      foreach($output as $v) {
+      foreach ($output as $v) {
         $result.= chr(($v >> 24) & 255);
         $result.= chr(($v >> 16) & 255);
         $result.= chr(($v >>  8) & 255);
@@ -264,7 +266,7 @@
       $result= NULL;
 
       // Handle the basic code points:
-      for($j= 0; $j < $in_len; ++$j) {
+      for ($j= 0; $j < $in_len; ++$j) {
         if (ord($input[$j]) < 0x80) {
           $output[$out++] =
             chr(isset($flags[$j]) ? $this->_encode_basic(ord($input[$j]), $flags[$j]) : $input[$j]);
@@ -285,7 +287,7 @@
         // All non-basic code points < n have been
         // handled already.  Find the next larger one:
 
-        for($m= MAXINT, $j= 0; $j < $in_len; ++$j) {
+        for ($m= MAXINT, $j= 0; $j < $in_len; ++$j) {
           // if (basic(input[j])) continue;
           // (not needed for Punycode)
           if ((ord($input[$j]) >= $n) && (ord($input[$j]) < $m)) $m = ord($input[$j]);
@@ -300,7 +302,7 @@
         $delta += ($m - $n) * ($h + 1);
         $n = $m;
 
-        for($j= 0; $j < $in_len; ++$j) {
+        for ($j= 0; $j < $in_len; ++$j) {
           // Punycode does not need to check whether input[j] is basic:
           if (ord($input[$j]) < $n) {
             if (++$delta == 0) {
@@ -311,9 +313,10 @@
           if (ord($input[$j]) == $n) {
             // Represent delta as a generalized variable-length integer:
 
-            for($q= $delta, $k= PUNYCODE_BASE;  ; $k += PUNYCODE_BASE) {
-              $t = $k <= $bias ? PUNYCODE_TMIN :     // +tmin not needed
-                   ($k >= $bias + PUNYCODE_TMAX ? PUNYCODE_TMAX : $k - $bias);
+            for ($q= $delta, $k= PUNYCODE_BASE;  ; $k += PUNYCODE_BASE) {
+              $t =
+                $k <= $bias ? PUNYCODE_TMIN :     // +tmin not needed
+                ($k >= $bias + PUNYCODE_TMAX ? PUNYCODE_TMAX : $k - $bias);
               if ($q < $t) break;
               $output[$out++] = chr($this->_encode_digit($t + ($q - $t) % (PUNYCODE_BASE - $t), 0));
               $q = (int)($q - $t) / (PUNYCODE_BASE - $t);
@@ -346,7 +349,7 @@
       try(); {
         $out= '';
         $flags= array();
-        $p= new PunyCode();
+        $p= &new PunyCode();
         $p->decode($str, $out, $flags);
       } if (catch('Exception', $e)) {
         return throw($e);
@@ -371,8 +374,8 @@
       try(); {
         $out= '';
         $flags= array();
-        for($i= 0, $c= strlen($str); $i<$c; $i++) $flags[] = FALSE;
-        $p= new PunyCode();
+        for ($i= 0, $c= strlen($str); $i<$c; $i++) $flags[] = FALSE;
+        $p= &new PunyCode();
         $p->encode($str, $out, $flags);
       } if (catch('Exception', $e)) {
         return throw($e);
