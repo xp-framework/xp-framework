@@ -43,6 +43,8 @@ a) Syntax changes and additions
 * Default members
 * A keyword "synchronized"
 * A new type "callable" (instead of array(class_or_object, method))
+* A new type "void"
+* Return type hints (unchecked, may be retrieved via Reflection)
 
 b) New features
 * "self" would be evaluated at runtime
