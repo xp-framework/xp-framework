@@ -207,6 +207,12 @@
   }
   // }}}
 
+  // {{{ proto void with(expr)
+  //     Syntactic sugar. Intentionally empty
+  function with() {
+  }
+  // }}}
+
   // {{{ initialization
   error_reporting(E_ALL);
   if (!defined('PATH_SEPARATOR')) {
