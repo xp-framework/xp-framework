@@ -139,21 +139,6 @@
     }
     
     /**
-     * Encode entries (recursively, if needed)
-     *
-     * @access  private
-     * @param   &mixed v
-     * @return  string encoded entry
-     */
-    function _encode(&$v) {
-      if (is_array($v)) for ($i= 0, $m= sizeof($v); $i < $m; $i++) {
-        $v[$i]= $this->_encode($v[$i]);
-        return $v;
-      }
-      return utf8_encode($v);
-    }
-    
-    /**
      * Read an entry
      *
      * @access  public
@@ -188,6 +173,21 @@
      */
     function exists(&$entry, $filter= 'objectClass=*') {
       return (NULL === $this->read($entry, $filter)) ? FALSE : TRUE;
+    }
+    
+    /**
+     * Encode entries (recursively, if needed)
+     *
+     * @access  private
+     * @param   &mixed v
+     * @return  string encoded entry
+     */
+    function _encode(&$v) {
+      if (is_array($v)) {
+        foreach (array_keys($v) as $i) $v[$i]= $this->_encode($v[$i]);
+        return $v;
+      }
+      return utf8_encode($v);
     }
     
     /**
