@@ -18,6 +18,9 @@
       $charset   = '',
       $boundary  = '';
       
+    var
+      $_ofs      = 0;
+      
     /**
      * Constructor. Also generates a boundary of the form
      * <pre>
@@ -64,6 +67,29 @@
       }
       $this->parts[]= &$part;
     }
+
+    /**
+     * Get a part
+     *
+     * @access  public
+     * @param   int id default -1
+     * @return  &peer.mail.MimePart part
+     */
+    function &getPart($id= -1) {
+      $this->_parts();
+      
+      // Iterative use
+      if (-1 == $id) $id= $this->_ofs++;
+      
+      // EOL
+      if (!isset($this->parts[$id])) {
+        $this->_ofs= 0;
+        return NULL;
+      }
+      
+      return $this->parts[$id];
+    }
+    
 
     /**
      * Get message body.
