@@ -349,8 +349,6 @@
       $this->files->clear();
       try(); {
         while ($entry= $f->getEntry()) {
-          if (!preg_match(':'.$this->filter.':i', $entry)) continue;
-          
           $icon= $mask= NULL;
           if ($dir= is_dir($f->uri.$entry)) {
           
@@ -358,6 +356,8 @@
             $icon= $this->pixmaps['p:folder'];
             $mask= $this->pixmaps['m:folder'];
           } else {
+            if (!preg_match(':'.$this->filter.':i', $entry)) continue;
+            
             $ext= '(n/a)';
   	        if (FALSE !== ($p= strrpos($entry, '.')) && $p > 0) $ext= substr($entry, $p+ 1);
             
