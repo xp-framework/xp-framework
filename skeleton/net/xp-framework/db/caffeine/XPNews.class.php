@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('rdbms.ConnectionManager');
+  uses('rdbms.DataSet');
   
   /**
    * Class wrapper for table news
@@ -13,9 +13,10 @@
    * Uses rdbms.ConnectionManager which is expected to have at least
    * one connection registered by name "caffeine".
    *
+   * @see      xp://rdbms.DataSet
    * @purpose  Datasource accessor
    */
-  class XPNews extends Object {
+  class XPNews extends DataSet {
     var
       $news_id      = 0,
       $caption      = '',
@@ -34,13 +35,12 @@
      * @param   int news_id
      * @return  &net.xp-framework.db.caffeine.XPNews object
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  rdbms.ConnectionNotRegisteredException
      */
     function &getByNews_id($news_id) {
       $cm= &ConnectionManager::getInstance();  
-      $db= &$cm->getByHost('caffeine', 0);
 
       try(); {
+        $db= &$cm->getByHost('caffeine', 0);
         list($data)= $db->select('
             news_id,
             caption,
@@ -70,13 +70,12 @@
      * @param   int bz_id
      * @return  &net.xp-framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  rdbms.ConnectionNotRegisteredException
      */
     function &getByBz_id($bz_id) {
       $cm= &ConnectionManager::getInstance();  
-      $db= &$cm->getByHost('caffeine', 0);
 
       try(); {
+        $db= &$cm->getByHost('caffeine', 0);
         $q= &$db->query('
           select
             news_id,
@@ -113,13 +112,12 @@
      * @param   int max default -1 maximum number of rows to get)
      * @return  &net.xp-framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  rdbms.ConnectionNotRegisteredException
      */
     function &getByDateOrdered($max= -1) {
       $cm= &ConnectionManager::getInstance();  
-      $db= &$cm->getByHost('caffeine', 0);
 
       try(); {
+        $db= &$cm->getByHost('caffeine', 0);
         if (-1 != $max) $db->query('set rowcount %d', $max);
         $q= &$db->query('
           select
@@ -316,13 +314,12 @@
      * @access  public
      * @return  int affected rows
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  rdbms.ConnectionNotRegisteredException
      */
     function update() {
       $cm= &ConnectionManager::getInstance();  
-      $db= &$cm->getByHost('caffeine', 0);
 
       try(); {
+        $db= &$cm->getByHost('caffeine', 0);
         $affected= $db->update('
           news set
             caption = %s,
@@ -357,13 +354,12 @@
      * @access  public
      * @return  int affected rows
      * @throws  rdbms.SQLException in case an error occurs
-     * @throws  rdbms.ConnectionNotRegisteredException
      */
     function insert() {
       $cm= &ConnectionManager::getInstance();  
-      $db= &$cm->getByHost('caffeine', 0);
 
       try(); {
+        $db= &$cm->getByHost('caffeine', 0);
         $affected= $db->insert('
           news (
             caption,
