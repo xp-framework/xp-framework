@@ -63,6 +63,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testPercentToken() {
       $this->assertEquals(
         $this->conn->prepare('select * from test where name like "%%.de"', 1),
@@ -75,6 +76,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testUnknownToken() {
       $this->assertEquals(
         $this->conn->prepare('select * from test where name like "%X"', 1),
@@ -87,6 +89,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testIntegerToken() {
       $this->assertEquals(
         $this->conn->prepare('select %d as intval', 1),
@@ -99,6 +102,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testFloatToken() {
       $this->assertEquals(
         $this->conn->prepare('select %f as floatval', 6.1),
@@ -111,6 +115,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testStringToken() {
       static $expect= array(
         'sybase' => 'select """Hello"", Tom\'s friend said" as strval',
@@ -129,6 +134,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testIntegerArrayToken() {
       $this->assertEquals(
         $this->conn->prepare('select * from news where news_id in (%d)', array()),
@@ -145,6 +151,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testLeadingToken() {
       $this->assertEquals(
         $this->conn->prepare('%c', 'select 1'),

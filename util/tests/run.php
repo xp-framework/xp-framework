@@ -30,8 +30,15 @@
       $name= $methods[$i]->getName();
       
       // Ignore non-test and non-public methods
-      if (0 != strncmp('test', $name, 4)) continue;
-      if (!($methods[$i]->getModifiers() & MODIFIER_PUBLIC)) continue;
+      if (!$methods[$i]->hasAnnotation('test')) continue;
+      if ($methods[$i]->hasAnnotation('ignore')) {
+        Console::writeLinef(
+          '*** Ignoring %s (%s)', 
+          $name,
+          $methods[$i]->getAnnotation('ignore')
+        );
+        continue;
+      }
       
       // Add test method
       $arguments= array_merge($name, $config->readArray($section, 'args'));

@@ -38,6 +38,7 @@
      * @see     xp://util.Date
      * @access  public
      */
+    #[@test]
     function testDate() {
       $this->assertEquals($this->nowDate->getTime(), $this->nowTime);
       $this->assertEquals($this->nowDate->toString('r'), date('r', $this->nowTime));
@@ -65,6 +66,7 @@
      * @see     xp://util.Calendar
      * @access  public
      */
+    #[@test]
     function testCalendarBasic() {
       $this->assertDateEquals(Calendar::midnight($this->refDate), '1977-12-14 00:00:00', 'midnight');
       $this->assertDateEquals(Calendar::monthBegin($this->refDate), '1977-12-01 00:00:00', 'monthbegin');
@@ -78,6 +80,7 @@
      * @see     xp://util.Calendar
      * @access  public
      */
+    #[@test]
     function testCalendarEaster() {
       $easter= &Calendar::easter(2003);
       $this->assertDateEquals($easter, '2003-04-20 00:00:00', 'easter');
@@ -90,6 +93,7 @@
      * @see     xp://util.Calendar
      * @access  public
      */
+    #[@test]
     function testCalendarAdvent() {
       $advent= &Calendar::advent(2003);
       $this->assertDateEquals($advent, '2003-11-30 00:00:00', 'advent');
@@ -102,6 +106,7 @@
      * @see     xp://util.Calendar
      * @access  public
      */
+    #[@test]
     function testCalendarDSTBegin() {
       $begin= &Calendar::dstBegin(2003);
       $this->assertDateEquals($begin, '2003-03-30 00:00:00', 'dstbegin');
@@ -114,6 +119,7 @@
      * @see     xp://util.Calendar
      * @access  public
      */
+    #[@test]
     function testCalendarDSTEnd() {
       $end= &Calendar::dstEnd(2003);
       $this->assertDateEquals($end, '2003-10-26 00:00:00', 'dstend');

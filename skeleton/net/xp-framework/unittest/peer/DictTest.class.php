@@ -66,6 +66,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testDefinition() {
       $definition= $this->dc->getDefinition('XP', '*');
       return $definition;

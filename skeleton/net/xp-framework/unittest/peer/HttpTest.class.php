@@ -104,6 +104,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testGet() {
       return $this->_testRequest(HTTP_GET, TRUE);
     }
@@ -113,6 +114,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testPost() {
       return $this->_testRequest(HTTP_POST, TRUE);
     }
@@ -122,6 +124,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testHead() {
       return $this->_testRequest(HTTP_HEAD, FALSE);
     }

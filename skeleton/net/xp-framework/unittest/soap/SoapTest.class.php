@@ -21,6 +21,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testSerialization() {
       $msg= &new SOAPMessage();
       $msg->create('Test', 'testSerialization');

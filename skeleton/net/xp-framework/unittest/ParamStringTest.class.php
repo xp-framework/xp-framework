@@ -22,6 +22,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testShortFlag() {
       $p= &new ParamString(array('-k'));
 
@@ -36,6 +37,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testShortValue() {
       $p= &new ParamString(array('-d', 'sql'));
 
@@ -50,6 +52,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testLongFlag() {
       $p= &new ParamString(array('--verbose'));
 
@@ -64,6 +67,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testLongValue() {
       $p= &new ParamString(array('--level=3'));
 

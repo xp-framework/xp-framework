@@ -59,6 +59,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testSearch() {
       $res= &$this->lc->search(
         'ou=People,dc=OpenLDAP,dc=Org', 

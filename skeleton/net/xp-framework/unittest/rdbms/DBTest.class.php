@@ -63,6 +63,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testConnect() {
       $result= $this->conn->connect();
       $this->assertTrue($result);
@@ -73,6 +74,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testSelect() {
       $r= &$this->conn->query('select %s as version', '$Revision$');
       if ($this->assertSubclass($r, 'rdbms.ResultSet')) {

@@ -20,6 +20,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testPrerequisites() {
       $this->assertEquals(error_reporting(), E_ALL, 'errorreporting');
       $this->assertEquals(get_magic_quotes_gpc(), 0, 'magicquotesgpc');
@@ -32,6 +33,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testReflection() {
       $class= &XPClass::forName('lang.Exception');
       if (!$this->assertClass($class, 'lang.XPClass')) return;
