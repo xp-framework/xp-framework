@@ -88,7 +88,7 @@
      * @param   array headers
      */
     function addHeaders($headers) {
-      foreach($headers as $key=>$header) {
+      foreach ($headers as $key => $header) {
         $this->headers[is_a($header, 'Header') ? $header->getName() : $key] = $header;
       }
     }

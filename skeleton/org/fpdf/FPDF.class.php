@@ -1357,7 +1357,7 @@
       $filter= ($this->compress) ? '/Filter /FlateDecode ' : '';
       
       // Go through all pages, outputting them one at a time
-      for($n= 1; $n <= $nb; $n++) {
+      for ($n= 1; $n <= $nb; $n++) {
         $this->_newobj();
         $this->_out('<</Type /Page');
         $this->_out('/Parent 1 0 R');
