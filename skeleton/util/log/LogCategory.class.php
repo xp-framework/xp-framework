@@ -44,11 +44,13 @@
       $this->format= $format;
       $this->dateformat= $dateformat;
       $this->flags= $flags;
+      $this->_appenders= array();
       parent::__construct();
     }
 
     /**
-     * Setzt die Flags (was geloggt werden soll)
+     * Sets the flags (what should be logged). Note that you also
+     * need to add an appender for a category you want to log.
      *
      * @access  public
      * @param   int flags Bitfeld mit den Flags (LOGGER_FLAG_*)
@@ -68,7 +70,7 @@
     }
     
     /**
-     * Private Helper-Funktion
+     * Private helper function
      *
      * @access private
      */
@@ -83,43 +85,51 @@
         $this->identifier,
         $this->_indicators[$flag]
       );
-      foreach ($this->_appenders as $appender) {
-        call_user_func_array(
-          array(&$appender, 'append'),
-          $args
-        );
+      
+      foreach (array_keys($this->_appenders) as $appflag) {
+        if (!($flag & $appflag)) continue;
+        foreach ($this->_appenders[$appflag] as $appender) {
+          call_user_func_array(
+            array(&$appender, 'append'),
+            $args
+          );
+        }
       }
     }
     
     /**
-     * (Insert method's description here)
+     * Finalize
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  private
      */
     function finalize() {
-      foreach ($this->_appenders as $appender) {
-        $appender->finalize();
+      foreach ($this->_appenders as $flags=> $appenders) {
+        foreach ($appenders as $appender) {
+          $appender->finalize();
+        }
       }
     }
     
     /**
-     * Fügt einen Appender hinzu
+     * Adds an appender for the given log categories. Use
+     * logical OR to combine the log types or use 
+     * LOGGER_FLAG_ALL (default) to log all types.
      *
      * @access  public
-     * @param   Appender appender Das Appender-Objekt
+     * @param   Appender appender The appender object
+     * @param   int flag default LOGGER_FLAG_ALL
+     * @return  Appender
      */
-    function &addAppender(&$appender) {
-      $this->_appenders[]= &$appender;
+    function &addAppender(&$appender, $flag= LOGGER_FLAG_ALL) {
+      $this->_appenders[$flag][]= &$appender;
       return $appender;
     }
 
     /**
-     * Hängt einen Info-String an
+     * Appends a log of type info
      *
      * @access  public
-     * @param   mixed args Beliebige Variablen
+     * @param   mixed args 
      */
     function info() {
       $args= func_get_args();
@@ -131,11 +141,11 @@
     }
 
     /**
-     * Hängt einen Info-String an
+     * Appends a log of type info in printf-style
      *
      * @access  public
-     * @param   string format Format-String (siehe sprintf() und Konsorten)
-     * @param   mixed args Beliebige Variablen
+     * @param   string format 
+     * @param   mixed args 
      */
     function infof() {
       $args= func_get_args();
@@ -146,7 +156,7 @@
     }
 
     /**
-     * Hängt einen Warn-String an
+     * Appends a log of type warn
      *
      * @access  public
      * @param   mixed args Beliebige Variablen
@@ -161,11 +171,11 @@
     }
 
     /**
-     * Hängt einen Warn-String an
+     * Appends a log of type info in printf-style
      *
      * @access  public
-     * @param   string format Format-String (siehe sprintf() und Konsorten)
-     * @param   mixed args Beliebige Variablen
+     * @param   string format 
+     * @param   mixed args 
      */
     function warnf() {
       $args= func_get_args();
@@ -176,10 +186,10 @@
     }
 
     /**
-     * Hängt einen Fehler-String an
+     * Appends a log of type error
      *
      * @access  public
-     * @param   mixed args Beliebige Variablen
+     * @param   mixed args 
      */
     function error() {
       $args= func_get_args();
@@ -191,11 +201,11 @@
     }
 
     /**
-     * Hängt einen Fehler-String an
+     * Appends a log of type info in printf-style
      *
      * @access  public
-     * @param   string format Format-String (siehe sprintf() und Konsorten)
-     * @param   mixed args Beliebige Variablen
+     * @param   string format 
+     * @param   mixed args 
      */
     function errorf() {
       $args= func_get_args();
@@ -206,10 +216,10 @@
     }
 
     /**
-     * Hängt einen Debug-String an
+     * Appends a log of type debug
      *
      * @access  public
-     * @param   mixed args Beliebige Variablen
+     * @param   mixed args 
      */
     function debug() {
       $args= func_get_args();
@@ -221,11 +231,11 @@
     }
  
      /**
-     * Hängt einen Debug-String an
+     * Appends a log of type info in printf-style
      *
      * @access  public
-     * @param   string format Format-String (siehe sprintf() und Konsorten)
-     * @param   mixed args Beliebige Variablen
+     * @param   string format format string
+     * @param   mixed args 
      */
     function debugf() {
       $args= func_get_args();
@@ -236,7 +246,7 @@
     }
    
     /**
-     * Hängt einen Trenner an
+     * Appends a spearator
      *
      * @access  public
      */
