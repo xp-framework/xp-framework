@@ -13,7 +13,8 @@
     'lang.apidoc.parser.ClassParser',
     'util.cmd.ParamString',
     'text.PHPSyntaxHighlighter',
-    'org.cvshome.CVSFile'
+    'org.cvshome.CVSFile',
+    'util.cmd.Console'
   );
   
   function highlightPHPSource($str) {
@@ -49,12 +50,12 @@
     
     $folder= &new Folder($uri);
     while ($entry= $folder->getEntry()) {
-      // printf("%s ~? %s\n", $entry, $pattern);
+      // Console::writef("%s ~? %s\n", $entry, $pattern);
       if (
         ('.class.php' == substr($entry, -10)) &&
         (preg_match($pattern, $entry))
       ) {
-        printf("===> Parse %s\n", getXPClassName ($folder->uri.$entry, $base));
+        Console::writef("===> Parse %s\n", getXPClassName ($folder->uri.$entry, $base));
         try(); {
           $parser->setFile(new File($folder->uri.$entry));
           $result= &$parser->parse();
@@ -221,7 +222,7 @@
   $out->close();
   
   // All xml files have been written, now build the inheritance tree
-  printf("===> Building inheritance tree [%d classes]...\n", sizeof($nodes));
+  Console::writef("===> Building inheritance tree [%d classes]...\n", sizeof($nodes));
 
   // Save it to file, structure must be /document/main/...
   $main= &new Node('document', NULL, array(
@@ -234,7 +235,7 @@
     if (NULL == $class) continue;
     $parent= $nodes[$class]->attribute['parent-idx'];
     
-    printf("---> Adding %s to parent %s\n", $class, var_export($parent, 1));
+    Console::writef("---> Adding %s to parent %s\n", $class, var_export($parent, 1));
     if (!is_a($nodes[$parent], 'Node')) {
       throw(new FormatException('Cannot add '.$class.' to non-existant parent '.$parent));
       break;
@@ -256,5 +257,5 @@
     exit(-1);
   }
  
-  printf("===> Done\n");
+  Console::writef("===> Done\n");
 ?>
