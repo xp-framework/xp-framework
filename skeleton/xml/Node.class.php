@@ -20,7 +20,7 @@
     var 
       $name         = '',
       $attribute    = array(),
-      $content      = '',
+      $content      = NULL,
       $children     = array();
 
     /**
