@@ -12,6 +12,7 @@
    */
   class Handler extends Object {
     var
+      $values   = array(),
       $errors   = array(),
       $name     = '';
 
@@ -22,6 +23,39 @@
      */
     function __construct() {
       $this->name= strtolower(get_class($this));
+    }
+    
+    /**
+     * Set a value by a specified name
+     *
+     * @access  public
+     * @param   string name
+     * @param   mixed value
+     */
+    function setValue($name, $value) {
+      $this->values[$name]= $value;
+    }
+    
+    /**
+     * Return all values
+     *
+     * @access  public
+     * @return  array
+     */
+    function getValues() {
+      return $this->values;
+    }
+    
+    /**
+     * Retrieve a value by its name
+     *
+     * @access  public
+     * @param   string name
+     * @param   mixed default default NULL
+     * @return  mixed value
+     */
+    function getValue($name, $default= NULL) {
+      return isset($this->values[$name]) ? $this->values[$name] : $default;
     }
 
     /**
@@ -70,7 +104,6 @@
       return ($request->getParam('__handler') == $this->name);
     }
 
-
     /**
      * Set up this handler. Called when this handler has not yet been
      * registered to the session
@@ -108,8 +141,6 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      */
-    function finalize(&$request, &$response) {
-    }  
-
+    function finalize(&$request, &$response) { }
   }
 ?>
