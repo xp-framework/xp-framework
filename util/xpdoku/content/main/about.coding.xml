@@ -520,7 +520,7 @@ while ( ($a > 0) && ($b < 1) ) ... // Unnötig]]></code>
                 <li>Alle Operatoren aus (++ -- etc.) haben kein vorangestelltes Leerzeichen</li>
                 <li>Der String-Concatenation-Operator (.) hat zu keiner Seite ein Leerzeichen</li>
                 <li>In einem for-Statement werden die einzelnen Ausdrücke durch Leerzeichen getrennt.
-                  <code><![CDATA[for($init; $condition; $update)...]]></code>
+                  <code><![CDATA[for ($init; $condition; $update)...]]></code>
                 </li>
                 <li>
                   Type-Casting hat kein Leerzeichen zur rechten Seite hin, sondern liegt direkt 
@@ -723,7 +723,7 @@ return ($condition != NULL);]]></code>
   class Foo {
     var $x= NULL;
   }
-?&gt; ]]></code>
+?>]]></code>
         </text>
       </para>
       <para>
@@ -780,8 +780,8 @@ error_reporting($e);]]></code>
           zusätzliche Einrückung von zwei Zeichen zu empfehlen).
 
           <code><![CDATA[$result= $dbo->query('select * from foo, bar '.
-                'where baz= 2 '.
-                'and foo.i= bar.i ');]]></code>
+                     'where baz= 2 '.
+                     'and foo.i= bar.i ');]]></code>
 
           halte ich dagegen für unlesbar und schlecht wiederverwendbar. Zudem ist es 
           anfällig, wenn man hinten noch Leerzeichen vergisst (=> Syntax Error von DBMS).
