@@ -65,7 +65,7 @@
           </xsl:if>
         </td>
         <td align="right">
-          <xsl:if test="(/formresult/pager/@offset + 1) * 8 &lt; /formresult/pager/@total">
+          <xsl:if test="(/formresult/pager/@offset + 1) * /formresult/pager/@perpage &lt; /formresult/pager/@total">
             <a href="{func:link(concat(
               'static?page', 
               /formresult/pager/@offset + 1
