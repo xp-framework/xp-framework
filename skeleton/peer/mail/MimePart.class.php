@@ -29,7 +29,8 @@
       $name             = '',
       $filename         = '',
       $id               = '',
-      $body             = '';
+      $body             = '',
+      $folder           = NULL;
      
     /**
      * Constructor
@@ -200,6 +201,9 @@
      * @return  string
      */
     function getBody() {
+      if (NULL !== $this->folder && empty($this->body)) {
+        $this->body= $this->folder->getMessagePart($this->id);
+      }
       return $this->body;
     }
     
