@@ -75,6 +75,9 @@
             <td width="2%">&#160;</td>
             <td width="15%" valign="top" nowrap="nowrap">
               <xsl:call-template name="context"/>
+              <br/>
+              <img src="/image/blank.gif" width="180" height="1"/>
+              <br/>
             </td>
           </tr>
         </table>
