@@ -92,6 +92,8 @@
         $this->assertArray($data['headers'], 'requestheaders.missing');
         $this->assertEquals($data['method'], $method, 'requestmethod');
         $this->assertArray($data['request'], 'querymissing');
+        $this->assertEquals($data['request']['a'], 'b', 'query.datamissing');
+        $this->assertEquals($data['request']['b'], 'c', 'query.datamissing');
       }
       
       return array($response->getHeaders(), $data);
