@@ -131,4 +131,60 @@ PHP: new SOAPBase64Binary('Test')
 XML: <item xsi:type="xsd:base64Binary">VGVzdA==</item>
 </pre>
 
+SOAP-Client:
+------------
+Ein SOAP-Client lässt sich in wenigen Zeilen Sourcecode realisieren:
+<pre>
+<?php
+  require('lang.base.php');
+  uses('xml.soap.SOAPClient', 'xml.soap.SOAPHTTPTransport');
+
+  // [... $target, $action und $method definieren ...]
+
+  $soap= new SOAPClient(
+    new SOAPHTTPTransport($target),
+    $action,
+    $method
+  );
+  try(); {
+    $return= $soap->call($param1, $param2, [...]);
+  } if (catch('SOAPFaultException', $e)) {
+    die("===> Fault ".$e->getStackTrace());
+  } if (catch('Exception', $e)) {
+    die("===> Error ".$e->getStackTrace());
+  }
+  
+  var_dump($result);
+?>
+<pre>
+
+SOAP-Service:
+-------------
+Ein SOAP-Service auf Apache/mod_php-Basis kann man wie folgt aufbauen:
+
+1. In das Verzeichnis, dass im Client als SOAP-Endpunkt angegeben werden
+   soll, die folgende Datei index.php legen:
+<pre>
+   <?php
+     require('lang.base.php');
+     uses('xml.soap.rpc.SOAPModuleRouter');
+
+     $rpc= new SOAPModuleRouter('reflect.to.handlers.in');
+     $rpc->init();
+     $rpc->process(); {
+       $rpc->response->sendHeaders();
+       $rpc->response->sendContent();
+     }
+     $rpc->finalize();
+   ?>
+</pre>
+
+2. Die Angabe reflect.to.handlers.in durch einen gültigen ClassPath
+   ersetzen, also beispielsweise de.schlund.webservices.1und1.hosting
+   
+3. In diesem Verzeichnis eine Klasse anlegen. Die Klasse heißt
+   <<ACTION>>Handler, wobei "Action" die im Client angebene SOAPAction
+   ist. Also, wenn der Client den SOAPAction-Header Spooler#start
+   aufruft, so wird das auf SpoolerHandler::start gemappt.
+
 <EOF>
