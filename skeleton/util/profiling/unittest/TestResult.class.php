@@ -152,7 +152,7 @@
         $str.= sprintf(
           "  * %s::%s\n    returned: %s\n",
           $this->failed[$key]->test->getClassName(),
-          $this->succeeded[$key]->test->getName(),
+          $this->failed[$key]->test->getName(),
           $this->failed[$key]->toString()
         );
       }
@@ -161,7 +161,7 @@
         $str.= sprintf(
           "  * %s::%s\n    returned: %s\n",
           $this->skipped[$key]->test->getClassName(),
-          $this->succeeded[$key]->test->getName(),
+          $this->skipped[$key]->test->getName(),
           $this->skipped[$key]->toString()
         );
       }
