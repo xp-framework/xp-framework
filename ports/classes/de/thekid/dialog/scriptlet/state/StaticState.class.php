@@ -12,6 +12,62 @@
    * @purpose  State
    */
   class StaticState extends AbstractDialogState {
+    var
+      $nodeHandlers = array();
+  
+    /**
+     * Constructor
+     *
+     * @access  public
+     */
+    function __construct() {
+      for ($c= &$this->getClass(), $m= $c->getMethods(), $i= 0, $s= sizeof($m); $i < $s; $i++) {
+        $m[$i]->hasAnnotation('handles') && (
+          $this->nodeHandlers[$m[$i]->getAnnotation('handles')]= &$m[$i]
+        );
+      }
+    }
+    
+    /**
+     * Handler for albums
+     *
+     * @access  public
+     * @param   &de.thekid.dialog.Album album
+     * @return  &xml.Node node
+     */
+    #[@handles('de.thekid.dialog.Album')]
+    function &albumNode(&$album) {
+      $child= &new Node('entry', NULL, array(
+        'name'          => $album->getName(),
+        'title'         => $album->getTitle(),
+        'num_images'    => $album->numImages(),
+        'num_chapters'  => $album->numChapters()
+      ));
+      $child->addChild(new Node('description', new PCData($album->getDescription())));
+      $child->addChild(Node::fromObject($album->createdAt, 'created'));
+      $child->addChild(Node::fromArray($album->highlights, 'highlights'));
+      
+      return $child;
+    }
+
+    /**
+     * Handler for updates
+     *
+     * @access  public
+     * @param   &de.thekid.dialog.Update update
+     * @return  &xml.Node node
+     */
+    #[@handles('de.thekid.dialog.Update')]
+    function &updateNode(&$update) {
+      $child= &new Node('entry', NULL, array(
+        'album'         => $update->getAlbumName(),
+        'title'         => $update->getTitle()
+      ));
+      $child->addChild(new Node('description', new PCData($update->getDescription())));
+      $child->addChild(Node::fromObject($update->date, 'date'));
+      
+      return $child;
+    }
 
     /**
      * Process this state.
@@ -32,20 +88,16 @@
         'perpage' => $index['perpage']
       )));
       
-      // Add albums from index
-      $node= &$response->addFormResult(new Node('albums'));
+      // Add entries from index
+      $node= &$response->addFormResult(new Node('entries'));
       foreach ($index['entries'] as $name) {
-        if ($album= &$this->getAlbumFor($name)) {
-          $child= &$node->addChild(new Node('album', NULL, array(
-            'name'          => $album->getName(),
-            'title'         => $album->getTitle(),
-            'num_images'    => $album->numImages(),
-            'num_chapters'  => $album->numChapters()
-          )));
-          $child->addChild(new Node('description', new PCData($album->getDescription())));
-          $child->addChild(Node::fromObject($album->createdAt, 'created'));
-          $child->addChild(Node::fromArray($album->highlights, 'highlights'));
+        $entry= &$this->getEntryFor($name);
+        if (!isset($this->nodeHandlers[$entry->getClassName()])) {
+          return throw(new FormatException('Index contains unknown element "'.$entry->getClassName().'"'));
         }
+
+        $child= &$node->addChild($this->nodeHandlers[$entry->getClassName()]->invoke($i= NULL, array($entry)));
+        $child->setAttribute('type', $entry->getClassName());
       }
     }
   }
