@@ -105,6 +105,8 @@
         return throw($e);
       }
       
+      $request->session->putValue('context', $context);
+ 
       return parent::doGet($request, $response);
     }
   }
