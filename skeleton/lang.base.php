@@ -145,7 +145,6 @@
   }
   // }}}
 
-
   // {{{ internal void __destroy(void)
   //     Shutdown function
   function __destroy() {
@@ -161,11 +160,11 @@
   //     Uses one or more classes
   function uses() {
     foreach (func_get_args() as $str) {
-      if (FALSE === include_once(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+      if (class_exists($class= xp::reflect($str))) continue;
+      if (FALSE === include(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
         $error= &new Error('Cannot include '.$str);
         xp::error($error->toString());
       }
-      $class= xp::reflect($str);
       xp::registry('class.'.$class, $str);
       is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
     }
