@@ -91,6 +91,226 @@
       $title        	= '',
       $url            	= '',
       $nick            	= '';
+
+    /**
+     * Set Name
+     *
+     * @access  public
+     * @param   mixed[] name
+     */
+    function setName($name) {
+      $this->name= $name;
+    }
+
+    /**
+     * Get Name
+     *
+     * @access  public
+     * @return  mixed[]
+     */
+    function getName() {
+      return $this->name;
+    }
+
+    /**
+     * Set Address
+     *
+     * @access  public
+     * @param   mixed[] address
+     */
+    function setAddress($address) {
+      $this->address= $address;
+    }
+
+    /**
+     * Get Address
+     *
+     * @access  public
+     * @return  mixed[]
+     */
+    function getAddress() {
+      return $this->address;
+    }
+
+    /**
+     * Set Email
+     *
+     * @access  public
+     * @param   mixed[] email
+     */
+    function setEmail($email) {
+      $this->email= $email;
+    }
+
+    /**
+     * Get Email
+     *
+     * @access  public
+     * @return  mixed[]
+     */
+    function getEmail() {
+      return $this->email;
+    }
+
+    /**
+     * Set Phone
+     *
+     * @access  public
+     * @param   mixed[] phone
+     */
+    function setPhone($phone) {
+      $this->phone= $phone;
+    }
+
+    /**
+     * Get Phone
+     *
+     * @access  public
+     * @return  mixed[]
+     */
+    function getPhone() {
+      return $this->phone;
+    }
+
+    /**
+     * Set Organization
+     *
+     * @access  public
+     * @param   mixed[] organization
+     */
+    function setOrganization($organization) {
+      $this->organization= $organization;
+    }
+
+    /**
+     * Get Organization
+     *
+     * @access  public
+     * @return  mixed[]
+     */
+    function getOrganization() {
+      return $this->organization;
+    }
+
+    /**
+     * Set Logo
+     *
+     * @access  public
+     * @param   mixed[] logo
+     */
+    function setLogo($logo) {
+      $this->logo= $logo;
+    }
+
+    /**
+     * Get Logo
+     *
+     * @access  public
+     * @return  mixed[]
+     */
+    function getLogo() {
+      return $this->logo;
+    }
+
+    /**
+     * Set Birthday
+     *
+     * @access  public
+     * @param   &util.Date birthday
+     */
+    function setBirthday(&$birthday) {
+      $this->birthday= &$birthday;
+    }
+
+    /**
+     * Get Birthday
+     *
+     * @access  public
+     * @return  &util.Date
+     */
+    function &getBirthday() {
+      return $this->birthday;
+    }
+
+    /**
+     * Set Fullname
+     *
+     * @access  public
+     * @param   string fullname
+     */
+    function setFullname($fullname) {
+      $this->fullname= $fullname;
+    }
+
+    /**
+     * Get Fullname
+     *
+     * @access  public
+     * @return  string
+     */
+    function getFullname() {
+      return $this->fullname;
+    }
+
+    /**
+     * Set Title
+     *
+     * @access  public
+     * @param   string title
+     */
+    function setTitle($title) {
+      $this->title= $title;
+    }
+
+    /**
+     * Get Title
+     *
+     * @access  public
+     * @return  string
+     */
+    function getTitle() {
+      return $this->title;
+    }
+
+    /**
+     * Set Url
+     *
+     * @access  public
+     * @param   string url
+     */
+    function setUrl($url) {
+      $this->url= $url;
+    }
+
+    /**
+     * Get Url
+     *
+     * @access  public
+     * @return  string
+     */
+    function getUrl() {
+      return $this->url;
+    }
+
+    /**
+     * Set Nick
+     *
+     * @access  public
+     * @param   string nick
+     */
+    function setNick($nick) {
+      $this->nick= $nick;
+    }
+
+    /**
+     * Get Nick
+     *
+     * @access  public
+     * @return  string
+     */
+    function getNick() {
+      return $this->nick;
+    }
       
     /**
      * Parser callback
@@ -208,7 +428,7 @@
      *   }
      *   
      *   var_dump($vcard);
-      * </code>
+     * </code>
      *
      * @model   static
      * @access  public
