@@ -28,7 +28,8 @@
       $progress         = NULL,
       $dialog           = NULL,
       $node             = array(),
-      $suite            = NULL;
+      $suite            = NULL,
+      $loaded           = array();
       
     /**
      * Constructor
@@ -57,6 +58,17 @@
       $this->hierarchy= &$this->widget('hierarchy');
       $this->hierarchy->set_row_height(20);
       $this->hierarchy->set_line_style(GTK_CTREE_LINES_DOTTED);
+      $this->connect($this->hierarchy, 'tree_select_row', 'onSelectTest');
+      
+      // Labels
+      $this->labels= array();
+      foreach (array('total', 'succeeded', 'failed', 'skipped') as $name) {
+        $this->labels[$name]= &$this->widget('label_'.$name);
+      }
+
+      // Trace
+      $this->trace= &$this->widget('trace');
+      $this->trace->set_row_height(20);
 
       // Progress bar
       $this->progress= &$this->widget('progressbar');
@@ -79,8 +91,9 @@
       // Buttons
       $this->connect($this->widget('select'), 'clicked');
       $this->connect($this->widget('run'), 'clicked');
+      $this->connect($this->widget('clear'), 'clicked');
     }
-
+    
     /**
      * Set statusbar text and waits for the GUI to process
      * whatever events are still pending.
@@ -104,8 +117,9 @@
      * @access  protected
      * @param   string id
      * @param   string result
+     * @param   &mixed data
      */
-    function updateTest($id, $result) {
+    function updateTest($id, $result, &$data) {
       $content= $this->hierarchy->node_get_pixtext($this->node[$id], 0);
       $this->hierarchy->node_set_pixtext(
         $this->node[$id], 
@@ -115,6 +129,43 @@
         $this->pixmaps['p:test_'.$result],
         $this->pixmaps['m:test_'.$result]
       );
+      $this->hierarchy->node_set_row_data($this->node[$id], $data);
+    }
+
+    /**
+     * Callback for when a row is selected in the hierarchy ctree
+     *
+     * @access  protected
+     * @param   &php.GtkWidget widget the ctree
+     * @param   &php.GtkNode node the selected node
+     */
+    function onSelectTest(&$widget, &$node) {
+    
+      // Only make test nodes selectable
+      if (!$node->is_leaf) return;
+      
+      // Get data
+      $data= &$widget->node_get_row_data($node);
+      $this->cat->debug('onSelectTest', $data);
+      if (empty($data)) return;
+      
+      // Update trace
+      $this->trace->clear();
+      $this->cat->debug($this->trace);
+    }
+
+    /**
+     * Callback
+     *
+     * @access  protected
+     * @param   &php.GtkWidget widget
+     */
+    function onClearClicked(&$widget) {
+      $this->hierarchy->clear();
+      $this->node= array();
+      $this->loaded= array();
+      $this->suite->clearTests();
+      $this->setStatusText('Tests cleared');
     }
     
     /**
@@ -136,49 +187,47 @@
         $this->progress->set_value($i+ 1);
         $this->processEvents();
       }
-      
+      $this->labels['total']->set_text('Total: '.$result->count());
       $this->cat->debug($result);
       
+      $this->labels['succeeded']->set_text('Succeeded: '.$result->successCount());
       foreach ($result->succeeded as $id => $success) {
-        $this->updateTest($id, 'succeeded');
+        $this->updateTest($id, 'succeeded', $success->result);
       }
+      $this->labels['skipped']->set_text('Skipped: '.$result->skipCount());
       foreach ($result->skipped as $id => $skipped) {
-        $this->updateTest($id, 'skipped');
+        $this->updateTest($id, 'skipped', $skipped, $skipped->reason);
       }
+      $this->labels['failed']->set_text('Failed: '.$result->failureCount());
       foreach ($result->failed as $id => $failed) {
-        $this->updateTest($id, 'failed');
+        $this->updateTest($id, 'failed', $failed->reason);
       }
       
       $this->setStatusText('Ready');
     }
     
     /**
-     * Callback
+     * Add a configuration
      *
      * @access  protected
-     * @param   &php.GtkWidget widget
+     * @param   string uri
+     * @return  bool
      */
-    function onSelectClicked(&$widget) {
-      static $loaded= array();
-
-      do {
-        if (!$this->dialog->show()) return;
-        
-        $idx= md5($this->dialog->getDirectory().$this->dialog->getFileName());
-        if (!isset($loaded[$idx])) break;
-
+    function addConfiguration($uri) {
+      if (isset($this->loaded[$uri])) {
         MessageBox::display('Cannot load the same test config twice!', 'Error', MB_OK | MB_ICONWARNING);
-      } while (1);
-      $loaded[$idx]= TRUE;
-      
-      $config= &new Properties($this->dialog->getDirectory().$this->dialog->getFileName());
+        return FALSE;
+      }
+      $this->loaded[$uri]= TRUE;
+
+      $config= &new Properties($uri);
       $section= $config->getFirstSection();
       do {
         if (-1 == ($numtests= $config->readInteger($section, 'numtests', -1))) {
           MessageBox::display('Section '.$section.': key "numtests" missing', 'Error', MB_OK | MB_ICONERROR);
-          return;
+          return FALSE;
         }
-        
+        $this->cat->debug('Processing section', $section);
         $sectionNode= &$this->hierarchy->insert_node(
           NULL,
           NULL,
@@ -198,7 +247,9 @@
           } if (catch('ClassNotFoundException', $e)) {
             $this->cat->error('Test group "'.$section.'", test #'.$i.':: ', $e->getStackTrace());
             MessageBox::display($e->getMessage(), 'Error', MB_OK | MB_ICONERROR);
-            return;
+            
+            // Fall through, other tests might still be loaded
+            continue;
           }
 
           // Create a new instance
@@ -238,8 +289,24 @@
         }
       } while ($section= $config->getNextSection());
       
-      $this->setStatusText('Configuration added');
+      $this->setStatusText('Configuration '.basename($uri).' added');
       $this->cat->info($this->suite);
+      
+      return TRUE;
+    }
+    
+    /**
+     * Callback
+     *
+     * @access  protected
+     * @param   &php.GtkWidget widget
+     */
+    function onSelectClicked(&$widget) {
+      do {
+      
+        // If anything else than "OK" is pressed in the dialog, break
+        if (MB_OK != $this->dialog->show()) break;
+      } while (!$this->addConfiguration($this->dialog->getDirectory().$this->dialog->getFileName()));
     }
   }
 ?>
