@@ -244,7 +244,7 @@
     function &delete($filename) {    
       $uri= $this->_normalizePath($this->base.$filename);
 
-      if (strlen($uri) <= strlen($this->base.'/')) {
+      if (strlen($uri) <= strlen($this->base)) {
         return throw(new OperationNotAllowedException($uri.' root-dir can not be deleted'));
       }
       
