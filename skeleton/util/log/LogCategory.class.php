@@ -157,6 +157,23 @@
       $this->_appenders[$flag][]= &$appender;
       return $appender;
     }
+    
+    /**
+     * Remove the specified appender from the given log categories. For usage
+     * of log category flags, see addAppender().
+     * 
+     * @access  public
+     * @param   &util.log.LogAppender
+     */
+    function removeAppender(&$appender, $flag= LOGGER_FLAG_ALL) {
+      foreach (array_keys($this->_appenders) as $f) {
+        if (!($f & $flags)) continue;
+        
+        if (FALSE !== ($idx= array_search($appender, $this->_appenders[$f], TRUE))) {
+          unset($this->_appenders[$f][$idx]);
+        }
+      }
+    }
 
     /**
      * Appends a log of type info. Accepts any number of arguments of
