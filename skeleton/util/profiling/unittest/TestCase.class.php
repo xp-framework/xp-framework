@@ -271,6 +271,19 @@
     function assertMatches($var, $pattern, $error= 'nomatches') {
       return assert('$this->test(preg_match($var, $pattern), $error, array($var, $pattern))');
     }
+
+    /**
+     * Assert that a string contains a substring
+     *
+     * @access  public
+     * @param   mixed var
+     * @param   string needle
+     * @param   string error default 'notcontained'
+     * @return  bool
+     */
+    function assertContains($var, $needle, $error= 'notcontained') {
+      return assert('$this->test(strstr($var, $needle), $error, array($var, $needle))');
+    }
     
     /**
      * Assert that a given object is of a specified class
