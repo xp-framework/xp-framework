@@ -36,7 +36,7 @@ Example:
   
     // ...
     
-  } implements('io.Serializable');
+  } implements(__FILE__, 'io.Serializable');
   
   $d= &new Date();
   
