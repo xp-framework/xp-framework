@@ -93,6 +93,13 @@
       return parent::getHeaderString();
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
     function _lookupattr($parameters, $val) {
       if (!is_array($parameters)) return FALSE;
       
@@ -105,6 +112,13 @@
       return FALSE;
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
     function _recurseparts(&$parts, &$p, $id= '') {
       static $types= array(
         'text',
@@ -123,31 +137,45 @@
         if (empty($p[$i]->parts)) {
           $part= &new MimePart(
             NULL,
-            $types[$p[$i]->type].'/'.strtolower($p[$i]->subtype),
+            NULL,
             $this->_lookupattr(@$p[$i]->parameters, 'CHARSET'),
             $this->_lookupattr(@$p[$i]->dparameters, 'NAME')
           );
         } else {
           $part= &new MultiPart();
         }
-          
+        $part->setContentType($types[$p[$i]->type].'/'.strtolower($p[$i]->subtype));
         $part->setDisposition($p[$i]->ifdisposition 
           ? MIME_DISPOSITION_ATTACHMENT 
           : MIME_DISPOSITION_INLINE
         );
         $part->id= $pid;
-        //$part->body= $this->folder->getMessagePart($this->uid, $pid);
         
-        // Recurse through parts
+        // We can retreive the body here since the message has been read anyway
         if (!empty($p[$i]->parts)) {
-          if ($p[$i]->ifsubtype and 'MIXED' == $p[$i]->subtype) $pid= substr($pid, 0, -2);
+          if ($p[$i]->ifsubtype) switch ($p[$i]->subtype) {
+            case 'MIXED': 
+              $pid= substr($pid, 0, -2); 
+              break;
+              
+            default: // Nothing
+          }
+
+          // Recurse through parts
           $this->_recurseparts($part->parts, $p[$i]->parts, $pid.'.');
+          
+          // Multipart -> part.0 are the headers
+          $part->parts[0]->setHeaderString($this->folder->getMessagePart($this->uid, $pid.'.0'));
+
+        } else {
+          $part->body= $this->folder->getMessagePart($this->uid, $pid);
         }
         
         #ifdef DEBUG
         # var_dump($p[$i]);
         # echo '['.$pid.']:: '; var_dump($part);
         #endif
+        
         $part->folder= &$this->folder;
         $parts[]= &$part;
       }
@@ -186,7 +214,7 @@
       
       $struct= &$this->folder->getMessageStruct($this->uid);
       if (!$struct->parts) {
-        var_dump($struct);
+        // var_dump($struct);
         return FALSE;
       }
       

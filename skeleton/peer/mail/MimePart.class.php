@@ -30,7 +30,7 @@
       $filename         = '',
       $id               = '',
       $body             = '',
-      $folder           = NULL;
+      $headers          = array();
      
     /**
      * Constructor
@@ -201,10 +201,31 @@
      * @return  string
      */
     function getBody() {
-      if (NULL !== $this->folder && empty($this->body)) {
-        $this->body= $this->folder->getMessagePart($this->id);
-      }
       return $this->body;
+    }
+  
+    /**
+     * Set headers from string
+     *
+     * @access  public
+     * @param   string str
+     */
+    function setHeaderString($str) {
+      $t= strtok($str, "\n\r");
+      while ($t) {
+        if ("\t" != $t{0}) list($k, $t)= explode(': ', $t, 2);
+        switch (ucfirst($k)) {
+          case HEADER_CONTENTTYPE:
+          case HEADER_ENCODING:
+          case 'Content-Disposition':
+            // Ignore, these are alreay set
+            break;
+          
+          default:
+            $this->headers[$k]= (isset($this->headers[$k]) ? $this->headers[$k]."\n\t" : '').$t;
+        }
+        $t= strtok("\n\r");
+      }
     }
     
     /**
@@ -238,6 +259,11 @@
           : '; filename="'.$this->filename.'"'
         )."\n";
       }
+      
+      foreach ($this->headers as $k => $v) {
+        $h.= $k.': '.$v."\n";
+      }
+
       return $h;
     }
   }
