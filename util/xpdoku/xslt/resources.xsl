@@ -44,14 +44,12 @@
       rsort($releases);
       
       for ($i= 0, $s= min(sizeof($releases), 5); $i < $s; $i++) {
-        echo
-          '<li>',
-          '<a href="/downloads/'.$releases[$i].'">'.$releases[$i].'</a>',
-          ' [ MD5: ',
-          file_get_contents($dir->path.'/'.substr($releases[$i], 0, -6).'md5'),
-          ' ]',
-          '</li>'
-        ;
+        printf(
+          '<li><a href="/downloads/%1$s">%1$s</a> - %2$.2f KB [ MD5: %3$s ]</a></li>',
+          $releases[$i],
+          filesize($dir->path.'/'.$releases[$i]) / 1024,
+          file_get_contents($dir->path.'/'.substr($releases[$i], 0, -6).'md5')
+        );
       }
       
       $dir->close();
