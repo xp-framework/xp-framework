@@ -8,14 +8,22 @@
   <xsl:param name="collection" select="''"/>
   
   <xsl:include href="xsl-helper.xsl"/>
-
+  
+  <xsl:template name="navigation">
+    <ul class="nav">
+      <li><a href="inheritance.html">Inheritance Tree</a></li>
+    </ul>
+  </xsl:template>
+  
   <xsl:template match="package">
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
-    <tr>
-    <th valign="top" align="left">API Doc: <xsl:value-of select="./@name"/></th>
-    <td valign="top" align="right">(<xsl:value-of select="count (collection/collection//class)"/> classes)</td>
+      <tr>
+        <th valign="top" align="left">API Doc: <xsl:value-of select="./@name"/></th>
+        <td valign="top" align="right">(<xsl:value-of select="count (collection/collection//class)"/> classes)</td>
 	  </tr>
-	  <tr bgcolor="#cccccc"><td colspan="2"><img src="/image/spacer.gif" height="1" border="0"/></td></tr>
+	  <tr bgcolor="#cccccc">
+        <td colspan="2"><img src="/image/spacer.gif" height="1" border="0"/>
+      </td></tr>
     </table>
     <br/>
 
