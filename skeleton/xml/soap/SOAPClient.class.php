@@ -1,6 +1,9 @@
 <?php
-  uses('net.http.HTTPRequest');
-  uses('xml.soap.SOAPMessage');
+  uses(
+    'net.http.HTTPRequest',
+    'xml.soap.SOAPMessage',
+    'xml.soap.SOAPFaultException'
+  );
   
   class SOAPClient extends HTTPRequest {
     var 
@@ -61,7 +64,11 @@
       $this->fault= NULL;
       if (intval($this->response->HTTPstatus) != 200) {
         $this->fault= $this->answer->getFault();
-        return throw(new SoapFaultException($this->fault->faultstring));
+        if (is_a($this->fault, 'SOAPFault')) {
+          return throw(new SOAPFaultException($this->fault));
+        } else {
+          return throw(new Exception($this->response->HTTPmessage));
+        }
       }
 
       # IFDEF PROFILING
