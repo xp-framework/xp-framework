@@ -28,7 +28,9 @@
     if (empty($uri)) {
       $node= &$tree;
     } else {
-      $node= &new Node('package', NULL, array('name' => str_replace(DIRECTORY_SEPARATOR, '.', $uri)));
+      $node= &new Node('package', NULL, array(
+        'name' => ltrim($prefix.str_replace(DIRECTORY_SEPARATOR, '.', $uri), '.')
+      ));
     }
 
     // Go through folder entries
