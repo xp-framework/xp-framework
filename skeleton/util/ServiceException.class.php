@@ -28,9 +28,9 @@
      * @access  public
      * @param   mixed faultcode faultcode (can be int or string)
      * @param   string message
-     * @param   &lang.Throwable cause causing exception
+     * @param   lang.Throwable default NULL cause causing exception
      */
-    function __construct($faultcode, $message, &$cause) {
+    function __construct($faultcode, $message, $cause= NULL) {
       $this->faultcode= $faultcode;
       parent::__construct($message, $cause);
     }
@@ -53,6 +53,19 @@
      */
     function getFaultcode() {
       return $this->faultcode;
+    }
+    
+    /**
+     * Retrieve stacktrace from cause if set or from self otherwise.
+     *
+     * @access  public
+     * @return  lang.StackTraceElement[] array of stack trace elements
+     * @see     xp://lang.StackTraceElement
+     */
+    function getStackTrace() {
+      if (NULL !== $this->cause) return $this->cause->getStackTrace();
+      
+      return parent::getStackTrace();
     }
   }
 ?>
