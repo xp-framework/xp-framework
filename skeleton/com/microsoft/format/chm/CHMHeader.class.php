@@ -4,6 +4,13 @@
  * $Id$ 
  */
 
+  // Languages  
+  define('CHM_LANG_ENGLISH', 	    0x0409);
+  define('CHM_LANG_GERMAN', 	    0x0407);
+  
+  // Header identifier
+  define('CHM_HEADER_IDENTIFIER',   'ITSF');
+
   /**
    * CHM header
    *
@@ -12,7 +19,7 @@
    */
   class CHMHeader extends Object {
     var
-      $identifier       = '',
+      $identifier       = CHM_HEADER_IDENTIFIER,
       $version          = 0,
       $length           = 0,
       $unknown          = 0,
