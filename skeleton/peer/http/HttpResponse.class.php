@@ -83,6 +83,9 @@
         list($k, $v)= explode(': ', $l, 2);
         $this->headers[$k]= $v;
       }
+
+      // Check for chunked transfer encoding
+      $this->chunked= (bool)stristr($this->getHeader('Transfer-Encoding'), 'chunked');
       
       return TRUE;
     }
@@ -99,27 +102,51 @@
       if (!$this->_readhead()) return FALSE;        // Read head if not done before
       if ($this->stream->eof()) {                   // EOF, return FALSE to indicate end
         $this->stream->close();
-        $this->stream->__destruct();
-        unset($this->stream);
+        delete($this->stream);
         return FALSE;
       }
-      if (is_null($this->chunked)) {                       // Check for "chunked"
-        $this->chunked= stristr($this->getHeader('Transfer-Encoding'), 'chunked');
+      
+      if (!$this->chunked) {
+        $func= $binary ? 'readBinary' : 'read';
+        if (!($buf= $this->stream->$func($size))) return FALSE;
+
+        return $buf;
       }
-      
-      $func= $binary ? 'readBinary' : 'read';
-      if (FALSE === ($buf= $this->stream->$func($size))) return FALSE;
-      
-      // Handle chunked
-      if (
-        $this->chunked &&
-        !$binary && 
-        preg_match('/^([0-9a-fA-F]+)(( ;.*)| )?\r\n$/', $buf, $regs)
-      ) {
-        return $this->readData($size, $binary);
+
+      // Handle chunked transfer encoding. In chunked transfer encoding,
+      // a hexadecimal number followed by optional text is on a line by
+      // itself. The line is terminated by \r\n. The hexadecimal number
+      // indicates the size of the chunk. The first chunk indicator comes 
+      // immediately after the headers. Note: We assume that a chunked 
+      // indicator line will never be longer than 1024 bytes. We ignore
+      // any chunk extensions. We ignore the size and boolean parameters
+      // to this method completely to ensure functionality. For more 
+      // details, see RFC 2616, section 3.6.1
+      if (!($buf= $this->stream->read(1024))) return FALSE;
+      if (!(sscanf($buf, "%x%s\r\n", $chunksize, $extension))) {
+        throw(new IOException(sprintf(
+          'Chunked transfer encoding: Indicator line "%s" invalid', 
+          addcslashes($buf, "\0..\17")
+        )));
+        return FALSE;
       }
-      
-      return $buf;
+
+      // A chunk of size 0 means we're at the end of the document. We 
+      // ignore any trailers.
+      if (0 == $chunksize) return FALSE;
+
+      // A chunk is terminated by \r\n, so add 2 to the chunksize. We will
+      // trim these characters off later.
+      $chunksize+= 2;
+
+      // Read up until end of chunk
+      $buf= '';
+      do {
+        if (!($data= $this->stream->readBinary($chunksize- strlen($buf)))) return FALSE;
+        $buf.= $data;
+      } while (strlen($buf) < $chunksize);
+
+      return rtrim($buf, "\r\n");
     }
     
     /**
