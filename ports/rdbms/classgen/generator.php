@@ -63,7 +63,7 @@
   }	
   
   try(); {
-    $gen= &DBXmlGenerator::createFromTable(DBTable::getByName($adapter, $table), $database); 
+    $gen= &DBXmlGenerator::createFromTable(DBTable::getByName($adapter, $table), $dsn['host'], $database); 
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
     exit;
