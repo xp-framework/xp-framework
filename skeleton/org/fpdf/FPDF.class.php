@@ -1,22 +1,19 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
- * $Id$
+ * $Id$ 
  */
 
   define('FPDF_VERSION',        1.5);
   
-  // Ausrichtung
   define('FPDF_LANDSCAPE',      'L');
   define('FPDF_PORTRAIT',       'P');
-  
-  // Einheiten
+
   define('FPDF_UNIT_PT',        'pt');
   define('FPDF_UNIT_MM',        'mm');
   define('FPDF_UNIT_CM',        'cm');
   define('FPDF_UNIT_INCH',      'in');
   
-  // Formate
   define('FPDF_FORMAT_A3',      'A3');
   define('FPDF_FORMAT_A4',      'A4');
   define('FPDF_FORMAT_A5',      'A5');
@@ -26,9 +23,10 @@
   uses('org.fpdf.FPDFFont');
   
   /**
-   * FPDF-Klasse (Anpassung an XP-Framework)
+   * PDF creator
    *
-   * @see http://fpdf.org/
+   * @purpose  Create PDFs
+   * @see      http://fpdf.org/
    */
   class FPDF extends Object {
     var 
