@@ -13,6 +13,7 @@
   define('DAEMON_RELAYING',     'relayingdenied');
   define('DAEMON_NOROUTE',      'noroutetohost');
   define('DAEMON_SMTPCONN',     'smtpconnfailure');
+  define('DAEMON_UNROUTEABLE',  'unrouteable');
   define('DAEMON_DELAYED',      'delayed');
   
   define('DAEMON_TYPE_POSTFIX',  'inline/postfix');
