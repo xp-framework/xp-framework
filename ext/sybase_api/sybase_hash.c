@@ -4,6 +4,7 @@
  */
 
 #include "sybase_hash.h"
+#include "sybase_mm.h"
 
 /**
  * Initialize a hash

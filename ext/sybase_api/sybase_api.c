@@ -4,6 +4,7 @@
  */
 
 #include "sybase_api.h"
+#include "sybase_defines.h"
 
 /**
  * Setup environment
