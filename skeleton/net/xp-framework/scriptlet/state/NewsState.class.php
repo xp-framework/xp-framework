@@ -31,7 +31,8 @@
           entry.timestamp as timestamp,
           length(entry.extended) as extended_length,
           category.categoryid as category_id,
-          category.category_name as category
+          category.category_name as category,
+          (select count(*) from serendipity_comments c where c.entry_id = entry.id) as num_comments
         from
           serendipity_entries entry,
           serendipity_entrycat matrix,
