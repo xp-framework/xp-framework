@@ -395,14 +395,26 @@
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
           switch ($tokens[$i][0]) {
             case T_COMMENT:
-              if ('#' == $tokens[$i][1]{0}) {   // Annotation
+              // Apidoc comment
+              if (strncmp('/**', $tokens[$i][1], 3) == 0) {
+                $comment= $tokens[$i][1];
+                break;
+              }
+
+              // Annotations
+              if (strncmp('#[@', $tokens[$i][1], 3) == 0) {
+                $annotations[0]= substr($tokens[$i][1], 2);
+              } elseif (strncmp('#', $tokens[$i][1], 1) == 0) {
+                $annotations[0].= substr($tokens[$i][1], 1);
+              }
+
+              // End of annotations
+              if (']' == substr(rtrim($tokens[$i][1]), -1)) {
                 $annotations= eval('return array('.preg_replace(
                   array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/i', '/@([a-z_]+)\(/i', '/([a-z_]+) *= */i'),
                   array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '\'$1\' => '),
-                  trim($tokens[$i][1], "[]# \t\n\r").','
+                  trim($annotations[0], "[]# \t\n\r").','
                 ).');');
-              } else {                    // Blatant assumption this is an details comment
-                $comment= $tokens[$i][1];
               }
               break;
 
