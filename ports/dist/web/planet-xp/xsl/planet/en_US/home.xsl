@@ -12,7 +12,9 @@
  extension-element-prefixes="func"
 >
   <xsl:include href="../layout.xsl"/>
-  
+  <xsl:include href="../calendar.inc.xsl"/>
+  <xsl:include href="../entry.inc.xsl"/>
+    
   <!--
    ! Template for context navigation
    !
@@ -20,7 +22,7 @@
    ! @purpose  Context navigation
    !-->
   <xsl:template name="context">
-
+  
     <!-- Other Planet-Sites -->
     <h4 class="context">Planetarium</h4>
     <ul class="context">
@@ -55,10 +57,6 @@
     </ul>
   </xsl:template>
   
-  <xsl:template match="a">
-    <a href="/deref/?{@href}"><xsl:apply-templates select="./*|text()"/></a>
-  </xsl:template>
-
   <!--
    ! Template for content
    !
@@ -66,34 +64,35 @@
    ! @purpose  Define main content
    !-->
   <xsl:template name="content">
-    <xsl:variable name="offset" select="0"/>
-
-    <h1>Latest entries from #<xsl:value-of select="$offset + 1"/> to #<xsl:value-of select="$offset + 9"/></h1>
-
-    <!-- 
-    <xsl:variable name="shortcuts">
-      <shortcut href="about/topic?introduction" icon="introduction">Introduction</shortcut>
-      <shortcut href="about/examples" icon="examples">Examples</shortcut>
-      <shortcut href="resources" icon="download">Download</shortcut>
-    </xsl:variable>
-    <xsl:copy-of select="func:shortcuts(exsl:node-set($shortcuts))"/>
-    -->
+    <xsl:variable name="offset" select="/formresult/offset"/>
+    <xsl:variable name="items" select="/formresult/syndicates/syndicate/item"/>
+  
+    <!-- Headline -->
+    <h2>Latest entries from #<xsl:value-of select="$offset + 1"/> to #<xsl:value-of select="$offset + 9"/></h2>
     
-    <xsl:for-each select="/formresult/syndicates/syndicate/item">
-      <xsl:if test="position() &gt;= $offset and position() &lt;= 10">
-        <div class="entry entryclass-{feed/@feed_id}">
-          <h3>
-            <a href="/deref/?{feed/@link}">
-              <xsl:value-of select="./@author"/>: <xsl:value-of select="./@title"/>
-            </a>
-          </h3>
-          <p>
-            <xsl:apply-templates select="content"/>
-          </p>
-        </div>
-        <br clear="all"/>
+    <xsl:for-each select="exsl:node-set($items)">
+      <xsl:if test="position() &gt;= $offset and position() &lt; $offset + 10">
+      
+        <!-- Display date when this is the first item or its date differs from the previous item -->
+        <xsl:variable name="pos" select="position()"/>
+        <xsl:if test="position() = $offset or ($items[$pos - 1]/published/year != published/year or $items[$pos - 1]/published/yday != published/yday)">
+          <h2 class="date" align="right"><xsl:value-of select="func:smartdate(published)"/></h2>
+        </xsl:if>
+        
+        <xsl:call-template name="display-entry">
+          <xsl:with-param name="entry" select="$items[$pos]"/>
+        </xsl:call-template>
+        
       </xsl:if>
     </xsl:for-each>
+    
+    <xsl:if test="$offset &gt;= 10">
+      <a href="{$__state}?offset={$offset - 10}">Previous 10</a>
+    </xsl:if>
+    |
+    <xsl:if test="($offset + 10) &lt; count(/formresult/syndicates/syndicate/item)">
+      <a href="{$__state}?offset={$offset + 10}">Next 10</a>
+    </xsl:if>
   </xsl:template>
   
 </xsl:stylesheet>
