@@ -24,6 +24,16 @@
     }
     
     /**
+     * Changes this dialog's modal state
+     *
+     * @access  public
+     * @param   bool modal
+     */
+    function setModal($modal) {
+      $this->window->set_modal($modal);
+    }
+    
+    /**
      * Show this dialog window
      *
      * @access  public
