@@ -15,6 +15,6 @@
   import de~thekid~blog~util~MarkupBuilder as Builder;
 
   // {{{ main
-  var_dump(new FormresultHelper(), new Builder);
+  var_dump(new FormresultHelper(), new Builder());
   // }}}
 ?>
