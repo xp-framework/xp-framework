@@ -33,9 +33,9 @@
   // Get news from database
   try(); {
     $news= &XPNews::getByDateOrdered();
-  } if (catch('SQLException', $e)) {
+  } if (catch('Exception', $e)) {
     $e->printStackTrace();
-    exit();
+    exit(-1);
   }
   
   for ($i= 0, $s= sizeof($news); $i < $s; $i++) {
