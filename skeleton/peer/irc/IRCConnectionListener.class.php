@@ -151,11 +151,10 @@
      *
      * @access  public
      * @param   &peer.irc.IRCConnection connection
-     * @param   string channel
      * @param   string nick the old nick
      * @param   string new the new nick
      */
-    function onNickChanges(&$connection, $channel, $nick, $new) { }
+    function onNickChanges(&$connection, $nick, $new) { }
 
     /**
      * Callback for joins
