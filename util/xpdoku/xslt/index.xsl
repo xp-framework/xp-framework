@@ -14,20 +14,12 @@
    
   <xsl:template name="cvs">
     <xsl:param name="action"/>
-    <xsl:param name="symbol">
-      <symbol for="A">+</symbol>
-      <symbol for="R">-</symbol>
-      <symbol for="M">~</symbol>
-    </xsl:param>
     <xsl:for-each select="$cvs/entry[@action = $action]">
       <xsl:if test="position() &lt; 4">
         <tr>
-          <td><xsl:apply-templates select="$symbol/symbol[@for= $action]"/></td>
+          <td><img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/></td>
           <td>
-            <a title="{collection}.{class}" href="#">
-              <xsl:if test="$action != 'R'">
-                <xsl:attribute name="href">/apidoc/classes/<xsl:value-of select="concat(collection, '.', class)"/>.html</xsl:attribute>
-              </xsl:if>
+            <a title="{collection}.{class}" href="/apidoc/classes/{collection}.{class}.html">
               <xsl:value-of select="class"/>
             </a>
           </td>
@@ -47,6 +39,43 @@
     <a href="/">XP</a> stands for <b>X</b>ML <b>P</b>HP.<br/>
     XP is far more than that!
     
+    <!-- News -->
+    <br/><br/>
+    <xsl:call-template name="nav-divider">
+      <xsl:with-param name="caption">News</xsl:with-param>
+      <xsl:with-param name="link">news.html</xsl:with-param>
+    </xsl:call-template>
+    
+    <table border="0" width="100%" cellspacing="0" cellpadding="2">
+      <xsl:for-each select="$news/rdf:RDF/rss:item[position() &lt; 6.1]">
+        <tr>
+          <td><img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/></td>
+          <td>
+            <a>
+              <xsl:attribute name="href">
+                <xsl:choose>
+                  <xsl:when test="substring-before(substring-after(rss:link, '//'), '/') = 'xp.php3.de'">
+                    <xsl:value-of select="substring-after(substring-after(rss:link, '//'), '/')"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="rss:link"/>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:attribute>
+              <xsl:value-of select="rss:title"/>
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td/>
+          <td>
+            <small><xsl:value-of select="translate(dc:date, 'T', ' ')"/></small>
+          </td>
+        </tr>
+      </xsl:for-each>
+    </table>
+    
+    <!-- CVS activity -->
     <br/><br/>
     <xsl:call-template name="nav-divider">
       <xsl:with-param name="caption">CVS activity</xsl:with-param>
@@ -60,11 +89,8 @@
         <td colspan="2"><b>Added classes</b></td>
       </tr>
       <xsl:call-template name="cvs"><xsl:with-param name="action" select="'A'"/></xsl:call-template>
-      <tr>
-        <td colspan="2"><b>Removed classes</b></td>
-      </tr>
-      <xsl:call-template name="cvs"><xsl:with-param name="action" select="'R'"/></xsl:call-template>
     </table>
+    
   </xsl:template>
 
   <xsl:template match="main">
@@ -83,15 +109,16 @@
       <xsl:apply-templates select="introduction"/>
     </p>
     
-    <!-- News -->
-    <br/>
-    <xsl:apply-templates select="news"/>
-    
     <!-- Links -->
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <th valign="top" align="left">Further reading:</th>
+	  </tr>
+	  <tr bgcolor="#cccccc">
+        <td colspan="2"><img src="/image/spacer.gif" height="1" border="0"/>
+      </td></tr>
+    </table>
     <br/>
-    <p style="line-height: 16px">
-      <b>Further reading:</b>
-    </p>
     <table border="0" width="100%" cellspacing="0" cellpadding="2">
       <xsl:for-each select="links/link">
         <xsl:if test="position() &gt; 1">
@@ -136,63 +163,4 @@
     </xsl:copy>
   </xsl:template>
   
-  <xsl:template match="main/news">
-    <!-- 
-      Default namespace "quirk", see 
-      http://web.resource.org/rss/1.0/modules/SRDF/ 
-    -->
-    <table border="0" width="100%" cellspacing="0" cellpadding="2" bgcolor="#ffeadb" style="border: 1px dotted #e0670b">
-      <tr>
-        <td width="4%" nowrap="nowrap">
-          <img src="/image/nav_list2.gif" height="17" width="17" alt="=&gt;" hspace="2" vspace="2"/>
-        </td>
-        <td colspan="2">
-          <b style="color: #a33818">Recent news</b>
-        </td>
-      </tr>
-      <xsl:for-each select="$news/rdf:RDF/rss:item[position() &lt; 6.1]">
-        <tr>
-          <td>
-            <img src="/image/spacer.gif" width="1" height="1" border="0" hspace="0" vspace="0"/>
-          </td>
-          <td colspan="2" style="border-bottom: 1px dashed #e0670b">
-            <img src="/image/spacer.gif" width="1" height="1" border="0" hspace="0" vspace="0"/>
-          </td>
-        </tr>
-        <tr>
-          <td width="4%" nowrap="nowrap">
-            <img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/>
-          </td>
-          <td>
-            <b>
-              <a style="color: #a33818">
-                <xsl:attribute name="href">
-                  <xsl:choose>
-                    <xsl:when test="substring-before(substring-after(rss:link, '//'), '/') = 'xp.php3.de'">
-                      <xsl:value-of select="substring-after(substring-after(rss:link, '//'), '/')"/>
-                    </xsl:when>
-                    <xsl:otherwise>
-                      <xsl:value-of select="rss:link"/>
-                    </xsl:otherwise>
-                  </xsl:choose>
-                </xsl:attribute>
-                <xsl:value-of select="rss:title"/>
-              </a>
-            </b>
-          </td>
-          <td align="right">
-            <b><xsl:value-of select="translate(dc:date, 'T', ' ')"/></b>
-          </td>
-        </tr>
-        <tr>
-          <td>&#160;</td>
-          <td colspan="2">
-            <xsl:value-of select="substring(rss:description, 0, 128)"/>...
-            <a style="color: #a33818; text-decoration: none" href="news.html#{position()}">[more]</a>
-          </td>
-        </tr>
-      </xsl:for-each>
-    </table>
-  </xsl:template>
-
 </xsl:stylesheet>
