@@ -4,7 +4,7 @@ RCS file: /repository/ZendEngine2/zend.h,v
 retrieving revision 1.261
 diff -u -r1.261 zend.h
 --- Zend/zend.h	5 Sep 2004 22:39:58 -0000	1.261
-+++ Zend/zend.h	22 Sep 2004 11:40:00 -0000
++++ Zend/zend.h	22 Sep 2004 12:02:02 -0000
 @@ -254,6 +254,7 @@
   */
  typedef struct _zval_struct zval;
@@ -31,7 +31,7 @@ RCS file: /repository/ZendEngine2/zend_API.c,v
 retrieving revision 1.262
 diff -u -r1.262 zend_API.c
 --- Zend/zend_API.c	9 Sep 2004 16:51:45 -0000	1.262
-+++ Zend/zend_API.c	22 Sep 2004 11:40:00 -0000
++++ Zend/zend_API.c	22 Sep 2004 12:02:03 -0000
 @@ -1290,6 +1290,8 @@
  			internal_function->return_reference = ptr->arg_info[0].return_reference;
  		} else {
@@ -47,7 +47,7 @@ RCS file: /repository/ZendEngine2/zend_compile.c,v
 retrieving revision 1.591
 diff -u -r1.591 zend_compile.c
 --- Zend/zend_compile.c	16 Sep 2004 00:40:38 -0000	1.591
-+++ Zend/zend_compile.c	22 Sep 2004 11:40:02 -0000
++++ Zend/zend_compile.c	22 Sep 2004 12:02:04 -0000
 @@ -126,6 +126,7 @@
  	zend_stack_init(&CG(object_stack));
  	zend_stack_init(&CG(declare_stack));
@@ -149,33 +149,32 @@ RCS file: /repository/ZendEngine2/zend_compile.h,v
 retrieving revision 1.292
 diff -u -r1.292 zend_compile.h
 --- Zend/zend_compile.h	16 Sep 2004 00:40:38 -0000	1.292
-+++ Zend/zend_compile.h	22 Sep 2004 11:40:02 -0000
-@@ -45,6 +45,24 @@
++++ Zend/zend_compile.h	22 Sep 2004 12:02:05 -0000
+@@ -45,6 +45,23 @@
          CG(doc_comment) = NULL;  \
          CG(doc_comment_len) = 0; \
      }
 +#define MANGLE_MAIN_LEN sizeof("main~") - 1
 +#define MANGLE_CLASS_NAME(class_name) \
-+   if (strncmp(class_name->u.constant.value.str.val, "main~", MANGLE_MAIN_LEN) == 0) { \
-+	   class_name->u.constant.value.str.len -= MANGLE_MAIN_LEN; \
-+	   strncpy(class_name->u.constant.value.str.val, class_name->u.constant.value.str.val + MANGLE_MAIN_LEN, class_name->u.constant.value.str.len); \
-+	   class_name->u.constant.value.str.val[class_name->u.constant.value.str.len]= 0; \
-+   } else { \
-+	   if (CG(active_package_entry) && !strchr(class_name->u.constant.value.str.val, '~')) { \
-+		   int len= CG(active_package_entry)->name_length + 1 + class_name->u.constant.value.str.len; \
-+		   char *tmp= estrndup(class_name->u.constant.value.str.val, class_name->u.constant.value.str.len); \
-+		   class_name->u.constant.value.str.val= (char*) erealloc(class_name->u.constant.value.str.val, len + 1); \
-+		   strncpy(class_name->u.constant.value.str.val, CG(active_package_entry)->name, CG(active_package_entry)->name_length + 1); \
-+		   strncat(class_name->u.constant.value.str.val, "~", sizeof("~")); \
-+		   strncat(class_name->u.constant.value.str.val, tmp, class_name->u.constant.value.str.len); \
-+		   class_name->u.constant.value.str.len= len; \
-+		   efree(tmp); \
-+	   } \
-+   }
++	if (memcmp(class_name->u.constant.value.str.val, "main~", MANGLE_MAIN_LEN) == 0) { \
++		class_name->u.constant.value.str.len -= MANGLE_MAIN_LEN; \
++		memcpy(class_name->u.constant.value.str.val, class_name->u.constant.value.str.val + MANGLE_MAIN_LEN, class_name->u.constant.value.str.len); \
++		class_name->u.constant.value.str.val[class_name->u.constant.value.str.len] = 0; \
++	} else if (CG(active_package_entry) && !memchr(class_name->u.constant.value.str.val, '~', class_name->u.constant.value.str.len)) { \
++		int len= CG(active_package_entry)->name_length + 1 + class_name->u.constant.value.str.len; \
++		char *tmp= estrndup(class_name->u.constant.value.str.val, class_name->u.constant.value.str.len); \
++		class_name->u.constant.value.str.val= (char*) erealloc(class_name->u.constant.value.str.val, len + 1); \
++		memcpy(class_name->u.constant.value.str.val, CG(active_package_entry)->name, CG(active_package_entry)->name_length); \
++		memcpy(class_name->u.constant.value.str.val+ CG(active_package_entry)->name_length, "~", sizeof("~")); \
++		memcpy(class_name->u.constant.value.str.val+ CG(active_package_entry)->name_length+ 1, tmp, class_name->u.constant.value.str.len); \
++		class_name->u.constant.value.str.val[len]= 0; \
++		class_name->u.constant.value.str.len= len; \
++		efree(tmp); \
++	}
  
  typedef struct _zend_op_array zend_op_array;
  typedef struct _zend_op zend_op;
-@@ -164,6 +182,8 @@
+@@ -164,6 +181,8 @@
  	zend_arg_info *arg_info;
  	zend_bool pass_rest_by_reference;
  	unsigned char return_reference;
@@ -184,7 +183,7 @@ diff -u -r1.292 zend_compile.h
  	/* END of common elements */
  
  	zend_uint *refcount;
-@@ -215,6 +235,8 @@
+@@ -215,6 +234,8 @@
  	zend_arg_info *arg_info;
  	zend_bool pass_rest_by_reference;
  	unsigned char return_reference;
@@ -193,7 +192,7 @@ diff -u -r1.292 zend_compile.h
  	/* END of common elements */
  
  	void (*handler)(INTERNAL_FUNCTION_PARAMETERS);
-@@ -236,6 +258,8 @@
+@@ -236,6 +257,8 @@
  		zend_arg_info *arg_info;
  		zend_bool pass_rest_by_reference;
  		unsigned char return_reference;
@@ -202,7 +201,7 @@ diff -u -r1.292 zend_compile.h
  	} common;
  	
  	zend_op_array op_array;
-@@ -412,6 +436,8 @@
+@@ -412,6 +435,8 @@
  
  void zend_do_begin_class_declaration(znode *class_token, znode *class_name, znode *parent_class_name TSRMLS_DC);
  void zend_do_end_class_declaration(znode *class_token, znode *parent_token TSRMLS_DC);
@@ -217,7 +216,7 @@ RCS file: /repository/ZendEngine2/zend_globals.h,v
 retrieving revision 1.137
 diff -u -r1.137 zend_globals.h
 --- Zend/zend_globals.h	23 Aug 2004 20:57:40 -0000	1.137
-+++ Zend/zend_globals.h	22 Sep 2004 11:40:04 -0000
++++ Zend/zend_globals.h	22 Sep 2004 12:02:06 -0000
 @@ -75,6 +75,7 @@
  	zend_stack declare_stack;
  
@@ -232,7 +231,7 @@ RCS file: /repository/ZendEngine2/zend_language_parser.y,v
 retrieving revision 1.150
 diff -u -r1.150 zend_language_parser.y
 --- Zend/zend_language_parser.y	16 Sep 2004 05:43:29 -0000	1.150
-+++ Zend/zend_language_parser.y	22 Sep 2004 11:40:04 -0000
++++ Zend/zend_language_parser.y	22 Sep 2004 12:02:07 -0000
 @@ -111,6 +111,7 @@
  %token T_TRY
  %token T_CATCH
@@ -385,7 +384,7 @@ RCS file: /repository/ZendEngine2/zend_language_scanner.l,v
 retrieving revision 1.115
 diff -u -r1.115 zend_language_scanner.l
 --- Zend/zend_language_scanner.l	2 Aug 2004 16:38:09 -0000	1.115
-+++ Zend/zend_language_scanner.l	22 Sep 2004 11:40:05 -0000
++++ Zend/zend_language_scanner.l	22 Sep 2004 12:02:08 -0000
 @@ -794,6 +794,10 @@
  	return T_THROW;
  }
@@ -442,7 +441,7 @@ RCS file: /repository/ZendEngine2/zend_object_handlers.c,v
 retrieving revision 1.104
 diff -u -r1.104 zend_object_handlers.c
 --- Zend/zend_object_handlers.c	22 Jul 2004 11:54:27 -0000	1.104
-+++ Zend/zend_object_handlers.c	22 Sep 2004 11:40:06 -0000
++++ Zend/zend_object_handlers.c	22 Sep 2004 12:02:08 -0000
 @@ -684,6 +684,8 @@
  			call_user_call->handler = zend_std_call_user_call;
  			call_user_call->arg_info = NULL;
@@ -458,7 +457,7 @@ RCS file: /repository/ZendEngine2/zend_opcode.c,v
 retrieving revision 1.107
 diff -u -r1.107 zend_opcode.c
 --- Zend/zend_opcode.c	9 Sep 2004 16:47:22 -0000	1.107
-+++ Zend/zend_opcode.c	22 Sep 2004 11:40:06 -0000
++++ Zend/zend_opcode.c	22 Sep 2004 12:02:08 -0000
 @@ -72,6 +72,9 @@
  	op_array->doc_comment = NULL;
  	op_array->doc_comment_len = 0;
@@ -485,7 +484,7 @@ RCS file: /repository/ZendEngine2/zend_operators.c,v
 retrieving revision 1.196
 diff -u -r1.196 zend_operators.c
 --- Zend/zend_operators.c	11 Sep 2004 14:22:35 -0000	1.196
-+++ Zend/zend_operators.c	22 Sep 2004 11:40:06 -0000
++++ Zend/zend_operators.c	22 Sep 2004 12:02:08 -0000
 @@ -101,6 +101,55 @@
  	return result;
  }
@@ -672,7 +671,7 @@ RCS file: /repository/ZendEngine2/zend_reflection_api.c,v
 retrieving revision 1.125
 diff -u -r1.125 zend_reflection_api.c
 --- Zend/zend_reflection_api.c	19 Sep 2004 11:54:08 -0000	1.125
-+++ Zend/zend_reflection_api.c	22 Sep 2004 11:40:06 -0000
++++ Zend/zend_reflection_api.c	22 Sep 2004 12:02:09 -0000
 @@ -630,7 +630,18 @@
  	if (fptr->type == ZEND_USER_FUNCTION && fptr->op_array.return_reference) {
  		string_printf(str, "&");
