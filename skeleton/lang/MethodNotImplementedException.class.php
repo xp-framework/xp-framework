@@ -11,7 +11,9 @@
      * implemented.
      */
     class MethodNotImplementedException extends Exception {
-    
+        var
+            $method= '';
+            
         /**
          * Constructor
          *
@@ -21,7 +23,7 @@
          * @see     lang.Exception#construct
          */
         function __construct($message, $method) {
-            $this->method= $message;
+            $this->method= $method;
             parent::__construct($message);
         }
         
