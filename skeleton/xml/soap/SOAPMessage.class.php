@@ -56,11 +56,14 @@
      * @param   array arr Array aller zu übergebender Daten
      */
     function setData($arr) {
-      $node= new SOAPNode();
+      $node= &new SOAPNode();
       $node->namespace= $this->namespace;
       $node->fromArray($arr, 'item');
-      if (!empty($node->children)) foreach ($node->children as $i=> $child) {
-        $this->root->children[0]->children[0]->addChild($child);
+      if (empty($node->children)) return;
+      
+      // Copy all of node's children to root element
+      foreach (array_keys($node->children) as $i) {
+        $this->root->children[0]->children[0]->addChild($node->children[$i]);
       }
     }
 
