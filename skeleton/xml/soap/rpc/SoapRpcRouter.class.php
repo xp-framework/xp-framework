@@ -11,7 +11,37 @@
   );
   
   /**
+   * Serves as a working base for SOAP request passed to a CGI
+   * executed in an Apache environment.
    *
+   * Example:
+   * <code>
+   *   uses('xml.soap.rpc.SoapRpcRouter');
+   *
+   *   $s= &new SoapRpcRouter('de.schlund.webservices.faq');
+   *   try(); {
+   *     $s->init();
+   *     $response= &$s->process();
+   *   } if (catch('HttpScriptletException', $e)) {
+   *     // Retreive standard "Internal Server Error"-Document
+   *     $response= &$e->getResponse(); 
+   *   }
+   *   $response->sendHeaders();
+   *   $response->sendContent();
+   *  
+   *   $s->finalize();
+   * </code>
+   *
+   * Pass the classpath to the handlers to the constructor of this class
+   * to where your handlers are. Handlers are the classes that do the
+   * work for the requested SOAP-Action.
+   *
+   * Example: Let's say, the SOAP-Action passed in is Ident#echoStruct, and
+   * the constructor was given the classpath info.binford6100.webservices,
+   * the rpc router would look for a class with the fully qualified name
+   * info.binford6100.webservices.IdentHandler and call it's method echoStruct.
+   *
+   * @see org.apache.HttpScriptlet
    */
   class SoapRpcRouter extends HttpScriptlet {
     var 
@@ -92,11 +122,12 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Calls the handler that the action reflects to
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  private
+     * @param   &xml.soap.SOAPMessage message object (from request)
+     * @return  &mixed result of method call
+     * @throws  IllegalArgumentException if there is no such method
      */
     function &callReflectHandler(&$msg) {
 
