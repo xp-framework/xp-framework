@@ -137,6 +137,13 @@
   }
   // }}}
 
+  // {{{ internal void __autoload(string class)
+  //     Autoload function
+  function __autoload($class) {
+    uses('lang.'.$class);
+  }
+  // }}}
+
   // {{{ bool uses (string* args)
   //     Uses one or more classes
   function uses() {
