@@ -290,7 +290,7 @@
 	<widget>
 	  <class>GtkScrolledWindow</class>
 	  <name>scrolledwindow2</name>
-	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	  <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
 	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -300,7 +300,7 @@
 	    <name>trace</name>
 	    <can_focus>True</can_focus>
 	    <columns>1</columns>
-	    <column_widths>5</column_widths>
+	    <column_widths>404</column_widths>
 	    <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	    <show_titles>False</show_titles>
 	    <shadow_type>GTK_SHADOW_IN</shadow_type>
