@@ -633,7 +633,7 @@
      * @return  &text.String string
      */
     public static function valueOf($arg) {
-      if (is_a($arg, 'Object')) {
+      if ($args instanceof Generic) {
         return new String($arg->toString());
       } elseif (is_array($arg)) {
         return new String(implode('', $arg));
