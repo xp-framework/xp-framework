@@ -15,20 +15,29 @@
    */
   class SQLException extends Exception {
     var 
-      $sql,
-      $code;
+      $sql;
       
     /**
      * Constructor
      *
      * @param   string message Die Exception-Message
      * @param   string sql default '' Das zuletzt abgesandte SQL
-     * @param   int code default 0 Der Fehlercode
      */
-    function __construct($message, $sql= '', $code= 0) {
+    function __construct($message, $sql= '') {
       parent::__construct($message);
       $this->sql= $sql;
-      $this->code= $code;
+    }
+    
+    /**
+     * "Stack Trace" zurückgeben
+     *
+     * @return  string der StackTrace, vorformatiert
+     */
+    function getStackTrace() {
+      return (
+        parent::getStackTrace().
+        "  SQL [\n".$this->sql."\n  ]\n"
+      );
     }
   }
 ?>
