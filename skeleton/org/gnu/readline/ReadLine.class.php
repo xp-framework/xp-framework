@@ -175,14 +175,10 @@
     }
   }
   
-  // {{{ proto string[] __complete(string string, int offset, int length)
-  //     Kludge due to the fact that readline_completion_function does not 
-  //     accept array(&$obj, $method) syntax
   cfunction __complete($string, $offset, $length) {
     return call_user_func(
       array(ReadLine::registry('completer'), 'complete'), 
       $string, $offset, $length
     );
   }
-  // }}}
 ?>
