@@ -5,6 +5,8 @@
 #include "csta_error.h"
 #include "csta_connection.h"
 #include "auth_sybmetha.h"
+#include "sybase_api/sybase_mm.h"
+#include "sybase_api/sybase_hash.h"
 #include "sybase_api/sybase_api.h"
 
 static CS_RETCODE CS_PUBLIC servermessage(CS_CONTEXT *context, CS_CONNECTION *connection, CS_SERVERMSG *message)
@@ -36,15 +38,21 @@ int authenticate(proxy_connection *conn, char *username, char *password) {
 	sybase_environment *env= NULL;
 	sybase_result *result= NULL;
 	sybase_resultset *resultset= NULL;
+	sybase_hash *properties= NULL;
 	int done= 0, count= 0, i= 0;
 	char *query= NULL, *phone= NULL, *realuser= NULL;
 	
 	sybase_init (&env);
-    sybase_set_messagehandler(env, CS_SERVERMSG_CB, (CS_VOID *)servermessage);
-    sybase_set_messagehandler(env, CS_CLIENTMSG_CB, (CS_VOID *)clientmessage);
+	sybase_set_messagehandler(env, CS_SERVERMSG_CB, (CS_VOID *)servermessage);
+	sybase_set_messagehandler(env, CS_CLIENTMSG_CB, (CS_VOID *)clientmessage);
 	
 	sybase_alloc (&link);
-	if (SA_SUCCESS != sybase_connect (env, link, METHA_SERVER, METHA_USERNAME, METHA_PASSWD)) {
+	
+	sybase_hash_init(&properties, 10, 10);
+	sybase_hash_addstring(properties, CS_APPNAME, "cstaproxy");
+	sybase_hash_addstring(properties, CS_HOSTNAME, "FreeBSD");
+	
+	if (SA_SUCCESS != sybase_connect (env, link, METHA_SERVER, METHA_USERNAME, METHA_PASSWD, properties)) {
 		ERR("Connection to sybase failed!");
 		
 		sybase_close (link);
