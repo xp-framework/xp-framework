@@ -110,6 +110,23 @@
     }
     
     /**
+     * Checks whether a certain column exists in the csv.
+     * If not existColumn return FALSE, otherwise the index
+     * of the column.
+     *
+     * @access public
+     * @param string columnname
+     * @return int columnindex
+     */    
+    function getColumnIndex($column) {
+      $reverse= array_flip ($this->colName);
+      if (!isset ($reverse[$column]))
+        return false;
+    
+      return $reverse[$column];
+    }
+    
+    /**
      * Reads as many lines as necessary from the stream until there is 
      * exactly one record in the buffer.
      * This function affects the member buffer.
