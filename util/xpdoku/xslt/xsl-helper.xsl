@@ -5,6 +5,9 @@
 >
 
   <xsl:template match="packages|classdoc">
+<xsl:if test="$mode = 'search'">
+  <xsl:call-template name="search"/>
+</xsl:if>
 <html>
 <head>
  <title>
@@ -21,6 +24,9 @@
            echo 'XP:: Source of '.strip_tags ($_REQUEST['f']);
          ]]>
        </xsl:processing-instruction>
+     </xsl:when>
+     <xsl:when test="$mode = 'search'">
+       XP::Searchresults
      </xsl:when>
      <xsl:otherwise>XP::Documentation</xsl:otherwise>
    </xsl:choose>
@@ -74,10 +80,10 @@
     <form method="POST" action="/search.php">
       <td align="right" valign="top" colspan="2" nowrap="nowrap"><font color="#ffffff">
         <small>search for</small>
-<input class="small" type="text" name="pattern" value="" size="30"/>
+<input class="small" type="text" name="keyword" value="" size="30"/>
 <small>in the</small>
 <select name="show" class="small">
-<option value="php-gtk-general-list">general mailing list</option>
+<option value="classlist">class list</option>
 <option value="php-gtk-dev-list">development mailing list</option>
 <option value="php-gtk-doc-list">documentation mailing list</option>
 <option value="manual">manual</option>
@@ -138,6 +144,10 @@
           
           <xsl:when test="$mode = 'showsource'">
             <xsl:call-template name="showsource"/>
+          </xsl:when>
+          
+          <xsl:when test="$mode = 'search'">
+            <xsl:call-template name="searchresults"/>
           </xsl:when>
 
         </xsl:choose>

@@ -53,8 +53,12 @@ makexml: $(XML)
 	@$(PHP) xpdoku.php
 
 index: $(OUTPUT) $(XML)
+	@echo "===> Creating index"
 	@$(SABCMD) xslt/index.xsl $(CTREE) $(OUTPUT)/index.html 2>/dev/null
+	@echo "===> Creating highlighter"
 	@$(SABCMD) xslt/showsource.xsl $(CTREE) $(OUTPUT)/showsource.php 2>/dev/null
+	@echo "===> Creating search page"
+	@$(SABCMD) xslt/search.xsl $(CTREE) $(OUTPUT)/search.php 2>/dev/null
         
 collections: $(OUTPUT) $(XML)
 	@echo "===> Processing collections"
