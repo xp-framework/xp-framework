@@ -6,9 +6,6 @@
 
   uses('org.webdav.util.WebdavBool');
 
-  // Ressource types
-  define('WEBDAV_COLLECTION',   'collection');
-
   /**
    * Webdav Object
    *
@@ -209,9 +206,9 @@
       $etag= md5($this->href);
       $etag= sprintf(
         '%s-%s-%s',
-        substr($etag,0,7),
-        substr($etag,7,4),
-        substr($etag,11,8)
+        substr($etag, 0, 7),
+        substr($etag, 7, 4),
+        substr($etag, 11, 8)
       );
       foreach (array(
 
@@ -222,7 +219,6 @@
         'getcontenttype'   => array('value' => $this->contentType, 'ns' => 'DAV:'),
         
         // Microsoft
-        'iscollection'     => array('value' => WEBDAV_COLLECTION == $this->resourceType, 'ns' => 'DAV:'),
         'isfolder'         => array('value' => WEBDAV_COLLECTION == $this->resourceType, 'ns' => 'DAV:'),
         
         // DAV-FS
@@ -238,7 +234,7 @@
         // etag generation (aka Entity Tags)
         'getetag'          => array('value' => WEBDAV_COLLECTION != $this->resourceType ? $etag : NULL, 'ns' => 'DAV:')
         
-      ) as $name=>$propDef) {
+      ) as $name => $propDef) {
         if ($propDef['value'] === NULL) continue;
         $p= &new WebdavProperty($name, $propDef['value']);
         $p->setNamespaceName($propDef['ns']);
@@ -283,7 +279,7 @@
      * @access  public
      * @return  array lockinfo
      */
-    function &getLockInfo(){
+    function &getLockInfo() {
       return $this->_lockinfo;
     }
     
