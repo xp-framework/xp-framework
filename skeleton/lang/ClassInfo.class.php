@@ -75,7 +75,7 @@
         // CVS-Versions-Info suchen
         // $Id$
         if (preg_match(
-          '#\$Id: [a-zA-Z]+\.class\.php,v ([0-9\.]) ([0-9/\.]+ [0-9/:]+) ([a-z]+) Exp#', 
+          '#\$Id: [a-zA-Z]+\.class\.php,v ([0-9\.]+) ([0-9/\.]+ [0-9/:]+) ([a-z]+) Exp#', 
           $line, 
           $regs
         )) {
