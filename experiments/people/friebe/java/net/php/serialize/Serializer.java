@@ -9,6 +9,7 @@ package net.php.serialize;
   import java.util.HashMap;
   import java.util.ArrayList;
   import java.util.Arrays;
+  import java.util.Date;
   import net.php.serialize.UnserializeException;
 
   /**
@@ -40,6 +41,18 @@ package net.php.serialize;
      */
     public static String serialize(String s) {
       return "s:" + s.length() + ":\"" + s + "\";";
+    }
+
+    /**
+     * Serializes a date object
+     *
+     * @access  public
+     * @param   Date d
+     * @return  String the serialized representation
+     */
+    public static String serialize(Date d) {
+System.err.println(d.toString() + ".getTime() = " + d.getTime());
+      return "O:4:\"Date\":1:{s:6:\"_utime\";i:" + (d.getTime() / 1000) + ";}";
     }
 
     /**
@@ -165,6 +178,8 @@ System.err.println(c.getName() + ": Field #" + i + " '" + fields[i].toString());
             buffer.append(Serializer.serialize(fields[i].getDouble(o)));
           } else if (fieldClass == String.class) {
             buffer.append(Serializer.serialize((String)fields[i].get(o)));
+          } else if (fieldClass == Date.class) {
+            buffer.append(Serializer.serialize((Date)fields[i].get(o)));
           } else {
             buffer.append(Serializer.serialize(fields[i].get(o)));
           }
