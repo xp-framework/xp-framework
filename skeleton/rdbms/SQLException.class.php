@@ -1,37 +1,34 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
- * 
- * $Id$
+/* This class is part of the XP framework
+ *
+ * $Id$ 
  */
  
   /**
-   * Kapselt SQL-Exceptions
+   * SQL-Exceptions
    * 
-   * Besonderes:
-   * - in e->sql findet sich - falls vorhanden - der Query-String, in e->code der SQL-Returncode
-   * - SQL-Returncode ist bspw. bei einer Sybase 1205 für Deadlock
-   *
-   * @see Exception
+   * @purpose  Exception
    */
   class SQLException extends Exception {
     var 
-      $sql;
-      
+      $sql  = '';
+
     /**
      * Constructor
      *
-     * @param   string message Die Exception-Message
-     * @param   string sql default '' Das zuletzt abgesandte SQL
+     * @param   string message
+     * @param   string sql default NULL the SQL query string sent
      */
-    function __construct($message, $sql= '') {
+    function __construct($message, $sql= NULL) {
       parent::__construct($message);
       $this->sql= $sql;
     }
     
     /**
-     * "Stack Trace" zurückgeben
+     * Retreive string representation of the stack trace
      *
-     * @return  string der StackTrace, vorformatiert
+     * @access  publuc
+     * @return  string
      */
     function getStackTrace() {
       return (

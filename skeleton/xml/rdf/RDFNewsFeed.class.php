@@ -1,19 +1,18 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
- * $Id$
+ * $Id$ 
  */
  
   uses('xml.Tree', 'util.Date');
   
-  // Verschiedene Typen
   define('RDF_NEWS_RDF',        0x0000);
   define('RDF_NEWS_RSS',        0x0001);
  
   /**
-   * Kapselt RDF- und RSS-Newsfeeds
+   * RDF- and RSS- newsfeeds
    *
-   * Diese sehen bspw. so aus:
+   * Examples of XML source
    * <xmp>
    * <rdf:RDF
    *  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -91,17 +90,17 @@
     }
     
     /**
-     * Setzt den Channel
+     * Sets the channel element
      *
      * @access  public
-     * @param   string title Titel
-     * @param   string link Link
-     * @param   string description default '' Beschreibung
-     * @param   string util.Date default NULL Datum, default auf jetzt
-     * @param   string language default '' Sprache, bspw. en_US oder de_DE
-     * @param   string creator default '' Creator
-     * @param   string publisher default '' Publisher
-     * @param   string rights default '' Copyright
+     * @param   string title
+     * @param   string link
+     * @param   string description default ''
+     * @param   string util.Date default NULL date defaulting to the current time
+     * @param   string language default '' e.g. en_US, de_DE, fr_FR, ...
+     * @param   string creator default ''
+     * @param   string publisher default ''
+     * @param   string rights default ''
      */
     function setChannel($title, $link, $description= '', $date= NULL, $language= '',
                         $creator= '', $publisher= '', $rights= '') {
@@ -131,12 +130,12 @@
     }
     
     /**
-     * Setzt das Image
+     * Set the channel image
      *
      * @access  public
-     * @param   string title Titel
-     * @param   string url Bild-URL
-     * @param   string link default '' Link
+     * @param   string title
+     * @param   string url
+     * @param   string link default ''
      */
     function setImage($title, $url, $link= '') {
       $this->image->title= $title;
@@ -153,14 +152,14 @@
     }
     
     /**
-     * Fügt ein Element hinzu
+     * Adds an item
      *
      * @access  public
-     * @param   string title Titel
-     * @param   string link Link
-     * @param   string description default '' Beschreibung
-     * @param   string util.Date default NULL Datum, default auf jetzt
-     * @return  object Das hinzugefügte Element
+     * @param   string title
+     * @param   string link
+     * @param   string description default ''
+     * @param   string util.Date default NULL date defaulting to current date/time
+     * @return  object the added item
      */
     function &addItem($title, $link, $description= '', $date= NULL) {
       if (NULL === $date) {
@@ -185,10 +184,10 @@
     }
 
     /**
-     * Gibt einen XPath-Ausdruck zurück
+     * Private helper
      *
      * @access  private
-     * @return  string Pfadname, /rdf:rdf/item/rc:summary/
+     * @return  string path, e.g. /rdf:rdf/item/rc:summary/
      */
     function _pathname() {
       $path= '';
@@ -199,9 +198,10 @@
     }
 
     /**
-     * Private Callback-Funktion
+     * Callback for XML parser
      *
-     * @access private
+     * @see     xp://xml.XMLParser
+     * @access  public
      */
     function _pCallStartElement($parser, $name, $attrs) {
       parent::_pCallStartElement($parser, $name, $attrs);
@@ -234,9 +234,10 @@
     }          
 
     /**
-     * Private Callback-Funktion
+     * Callback for XML parser
      *
-     * @access private
+     * @see     xp://xml.XMLParser
+     * @access  public
      */
     function _pCallEndElement($parser, $name) {
       static $trans;
