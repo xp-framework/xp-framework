@@ -140,7 +140,7 @@
     function doPrivileged(&$connection, $nick, $password) {
       if ($this->config->readString('control', 'password') == $password) return TRUE;
       
-      $connection->sendMessage($nick, 'Nice try, but >%s< is incorrect', $params);
+      $connection->sendMessage($nick, 'Nice try, but >%s< is incorrect', $password);
       return FALSE;
     }
     
