@@ -36,7 +36,7 @@
      * @param   &xml.Node node
      * @return  array result
      */
-    function _recurse(&$node) {
+    function _recurse(&$node, $trim) {
       $result= array();
       for ($i= 0, $s= sizeof($node->children); $i < $s; $i++) {
         $type= &$node->children[$i]->attribute['type'];
@@ -44,7 +44,7 @@
         
         switch ($type) {
           case 'array':
-            $result[$name]= $this->_recurse($node->children[$i]);
+            $result[$name]= $this->_recurse($node->children[$i], $trim);
             break;
             
           case 'object':
@@ -54,13 +54,18 @@
               $class= 'stdClass';
             }
             $result[$name]= &cast(
-              $this->_recurse($node->children[$i]),
+              $this->_recurse($node->children[$i], $trim),
               $class
             );
             break;
             
           default:
-            $result[$name]= cast($node->children[$i]->content, $type);
+            $c= ($trim
+              ? trim(chop($node->children[$i]->content))
+              : $node->children[$i]->content
+            );
+              
+            $result[$name]= cast($c, $type);
             break;
         }
       }
@@ -72,10 +77,11 @@
      * Read object
      *
      * @access  public
-     * @return  &Object object
+     * @param   bool trim default FALSE whether to trim whitespace
+     * @return  &lang.Object object
      * @throws  Exception in case read/format fails
      */
-    function &readObject() {
+    function &readObject($trim= FALSE) {
       $tree= &new Tree();
       
       try(); {
@@ -89,7 +95,7 @@
         return throw($e);
       }
       
-      return cast($this->_recurse($tree->root), $name);
+      return cast($this->_recurse($tree->root, $trim), $name);
     }
     
     /**
