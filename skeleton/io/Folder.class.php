@@ -87,20 +87,25 @@
      *
      * @access  public
      * @param   int permissions default 0700 Berechtigungen
-     * @return  bool Hat geklappt
+     * @return  bool Hat geklappt (oder war bereits vorhanden)
      * @throws  IOException, wenn ein Verzeichnis nicht angelegt werden kann
      */
     function create($permissions= 0700) {
       if (is_dir($this->uri)) return TRUE;
       $i= 0;
+      $umask= umask(000);
       while (FALSE !== ($i= strpos($this->uri, '/', $i))) {
         if (is_dir($d= substr($this->uri, 0, ++$i))) continue;
-        if (FALSE === mkdir($d, $permissions)) return throw(new IOException(sprintf(
-          'mkdir("%s", %d) failed',
-          $d,
-          $permissions
-        )));
+        if (FALSE === mkdir($d, $permissions)) {
+          umask($umask);
+          return throw(new IOException(sprintf(
+            'mkdir("%s", %d) failed',
+            $d,
+            $permissions
+          )));
+        }
       }
+      umask($umask);
       return TRUE;
     }
 
