@@ -1,0 +1,27 @@
+/* $Id$
+ *
+ * File hierarchy for the webserver
+ *
+ */
+ 
+doc_root
+  ^
+  |---- classes
+  |        ^
+  |        |--- xml.soap.rpc.SoapRpcRequest.html
+  |        |--- ...
+  |
+  |---- collections
+  |        ^
+  |        |--- net.http.html
+  |        |--- ...
+  |
+  |---- index.html
+  |---- style.css
+  |
+  |---- images
+           ^
+           |--- nav_*.gif
+           |--- ...
+  
+index.html contains an overview for all included packages

@@ -1,0 +1,125 @@
+body, td, th {
+	font-family: arial,helvetica,sans-serif;
+	font-size: 12px;
+}
+
+em {
+	font-weight: bold;
+	font-style: italic;
+}
+
+.newsDate {
+	font-size: 85%;
+	font-style: italic;
+	color: #6666cc;
+}
+
+A.menuWhite {
+	font-family: arial,helvetica,sans-serif;
+	font-size: 10px;
+	color: #ffffff;
+}
+A.menuBlack {
+	font-family: arial,helvetica,sans-serif;
+	font-size: 75%;
+	color: #000000;
+}
+
+.sidebar {
+	font-size: 10px;
+}
+
+pre,code {
+	font-family: "andale mono", "monotype.com", "courier new", monospace;
+	font-size: 11px;
+}
+
+tt {
+	font-family: "andale mono", "monotype.com", "courier new", monospace;
+	font-size: 10px;
+}
+
+pre.code {
+	background-color: #f0f0f0;
+}
+
+h1 {
+	font-family: arial,helvetica,sans-serif;
+	font-size: 140%;
+	font-weight: bold;
+	color: #000066;
+}
+
+h2 {
+	font-family: arial,helvetica,sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #000066;
+}
+
+dt,h3 {
+	font-family: arial,helvetica,sans-serif;
+	font-size: 110%;
+	font-weight: bold;
+	color: #000066;
+}
+
+h4 {
+	font-family: arial,helvetica,sans-serif;
+	font-size: 90%;
+	font-weight: bold;
+	color: #000066;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+blockquote {
+	margin-left: 12px;
+}
+
+small {
+	font-family: arial,helvetica,sans-serif;
+	font-size: 10px;
+}
+
+a.small {
+	font-family: arial,helvetica,sans-serif;
+	font-size: 10px;
+	text-decoration: none;
+}
+
+.tableTitle {
+	font-family: arial,helvetica,sans-serif;
+	font-weight: bold;
+}
+
+.tableExtras {
+	font-family: arial,helvetica,sans-serif;
+	font-size: 11px;
+	color: #FFFFFF;
+}
+
+
+input {
+	font-family: arial,helvetica,sans-serif;
+}
+
+textarea {
+	font-family: "andale mono", "monotype.com", "courier new", monospace;
+}
+
+input.small, select.small {
+	font-family: arial,helvetica,sans-serif;
+	font-size: 10px;
+}
+
+textarea.small {
+	font-family: "andale mono", "monotype.com", "courier new", monospace;
+	font-size: 10px;
+}
+
+.programlisting {
+	display: block;
+	width: 100%;
+	background-color: #E0E0E0
+}
