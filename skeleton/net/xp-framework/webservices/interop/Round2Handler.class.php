@@ -50,6 +50,7 @@
      * @param   string 
      * @return  string
      */
+    #[@webmethod]
     function echoString($inputString) {
       $this->_assertType('string', $inputString);
       return $inputString;
@@ -63,6 +64,7 @@
      * @return  string[]
      * @throws  lang.IllegalArgumentException
      */
+    #[@webmethod]
     function echoStringArray($inputStringArray) {
       $this->_assertType('array', $inputStringArray);
       $this->_assertSubtype('string', $inputStringArray);
@@ -76,6 +78,7 @@
      * @param   int
      * @return  int
      */
+    #[@webmethod]
     function echoInteger($inputInteger) {
       $this->_assertType('integer', $inputInteger);
       return $inputInteger;
@@ -89,6 +92,7 @@
      * @return  int[]
      * @throws  lang.IllegalArgumentException
      */
+    #[@webmethod]
     function echoIntegerArray($inputIntegerArray) {
       $this->_assertType('array', $inputIntegerArray);
       $this->_assertSubtype('integer', $inputIntegerArray);
@@ -102,6 +106,7 @@
      * @param   float
      * @return  float
      */
+    #[@webmethod]
     function echoFloat($inputFloat) {
       $this->_assertType('double', $inputFloat);
       return $inputFloat;
@@ -115,6 +120,7 @@
      * @return  float[]
      * @throws  lang.IllegalArgumentException
      */
+    #[@webmethod]
     function echoFloatArray($inputFloatArray) {
       $this->_assertType('array', $inputFloatArray);
       $this->_assertSubtype('double', $inputFloatArray);
@@ -129,6 +135,7 @@
      * @return  mixed[]
      * @throws  lang.IllegalArgumentException
      */
+    #[@webmethod]
     function echoStruct($inputStruct) {
       $this->_assertType('array',   $inputStruct);
       $this->_assertType('string',  $inputStruct['varString']);
@@ -145,6 +152,7 @@
      * @return  mixed[]
      * @throws  lang.MethodNotImplementedException
      */
+    #[@webmethod]
     function echoStructArray($inputStructArray) {
       $this->_assertType('array', $inputStructArray);
       foreach ($inputStructArray as $singleStruct) {
@@ -161,8 +169,8 @@
      * @access  public
      * @return  NULL
      */
+    #[@webmethod]
     function echoVoid() {
-      
       return NULL;
     }
     
@@ -174,6 +182,7 @@
      * @return  string
      * @throws  lang.MethodNotImplementedException
      */
+    #[@webmethod]
     function echoBase64($inputBase64) {
       $this->_assertType('xml.soap.types.SOAPBase64Binary', $inputBase64);
       return $inputBase64;
@@ -187,6 +196,7 @@
      * @return  string
      * @throws  lang.MethodNotImplementedException
      */
+    #[@webmethod]
     function echoHexBinary($inputHexBinary) {
       $this->_assertType('xml.soap.types.SOAPHexBinary', $inputHexBinary);
       return $inputHexBinary;
@@ -200,6 +210,7 @@
      * @return  &util.Date
      * @throws  lang.IllegalArgumentException
      */
+    #[@webmethod]
     function echoDate($inputDate) {
       $this->_assertType('util.Date', $inputDate);
       return $inputDate;
@@ -212,6 +223,7 @@
      * @param   float
      * @return  float
      */
+    #[@webmethod]
     function echoDecimal($inputDecimal) {
       $this->_assertType('double', $inputDecimal);
       return $inputDecimal;
@@ -224,6 +236,7 @@
      * @param   boolean
      * @return  boolean
      */
+    #[@webmethod]
     function echoBoolean($inputBoolean) {
       $this->_assertType('boolean', $inputBoolean);
       return (bool)$inputBoolean;
