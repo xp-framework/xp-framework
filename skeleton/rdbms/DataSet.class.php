@@ -283,7 +283,7 @@
         return throw($e);
       }
 
-      $this->_changes= array();
+      $this->_changed= array();
       return $affected;
     }
 
@@ -317,7 +317,7 @@
         return throw($e);
       }
 
-      $this->_changes= array();
+      $this->_changed= array();
       return $affected;
     }
 
@@ -345,6 +345,7 @@
         return throw($e);
       }
 
+      $this->_changed= array();
       return $affected;
     }
     
