@@ -662,7 +662,7 @@ static int php_xp_uses(char *arg, int arg_len TSRMLS_DC)
 
         MAKE_STD_ZVAL(xpname);
         ZVAL_STRINGL(xpname, arg, arg_len, 1);
-        zend_hash_update(&XPG(names), fullname, arg_len+ 1, &xpname, sizeof(zval *), NULL);
+        zend_hash_update(&XPG(names), fullname, arg_len+ 2, &xpname, sizeof(zval *), NULL);
         
         efree(name);
         efree(fullname);
