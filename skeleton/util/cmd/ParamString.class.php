@@ -1,5 +1,5 @@
 <?php
-/**
+/* This class is part of the XP framework
  *
  * $Id$
  */
@@ -19,14 +19,12 @@
     /**
      * Constructor
      * 
-     * @param mixed params default NULL Entweder Default-Aufruf mit Memberübergabe oder das $GLOBALS['argv']
+     * @access  public
+     * @param   array list default NULL the argv array. If omitted, $_SERVER['argv'] is used
      */
-    function __construct($params= NULL) {
-      if (is_array($params) && is_numeric(key($params))) {
-        $this->setParams($params);
-        $params= NULL;
-      }
-      Object::__construct($params);
+    function __construct($list= NULL) {
+      $this->setParams(NULL === $list ? $_SERVER['argv'] : $list);
+      parent::__construct();
     }
     
     /**
