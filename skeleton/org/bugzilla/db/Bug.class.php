@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('rdbms.ConnectionManager');
+  uses('rdbms.ConnectionManager', 'org.bugzilla.BugConstants');
  
   /**
    * Class wrapper for table bugs, database bugs
@@ -986,7 +986,8 @@
      * Sets bug_severity
      *
      * @access  public
-     * @param   string bug_severity
+     * @param   string bug_severity one of the BUG_SEVERITY_* constants
+     * @see     xp://org.bugzilla.BugConstants
      */
     function setBug_severity($bug_severity) {
       $this->bug_severity= $bug_severity;
@@ -1006,7 +1007,8 @@
      * Sets bug_status
      *
      * @access  public
-     * @param   string bug_status
+     * @param   string bug_status one of the BUG_STATUS_* constants
+     * @see     xp://org.bugzilla.BugConstants
      */
     function setBug_status($bug_status) {
       $this->bug_status= $bug_status;
@@ -1106,7 +1108,8 @@
      * Sets priority
      *
      * @access  public
-     * @param   string priority
+     * @param   string priority one of the BUG_PRIORITY_* constants
+     * @see     xp://org.bugzilla.BugConstants
      */
     function setPriority($priority) {
       $this->priority= $priority;
@@ -1226,7 +1229,8 @@
      * Sets resolution
      *
      * @access  public
-     * @param   string resolution
+     * @param   string resolution one of the BUG_RESOLUTION_* constants
+     * @see     xp://org.bugzilla.BugConstants
      */
     function setResolution($resolution) {
       $this->resolution= $resolution;
