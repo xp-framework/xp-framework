@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('rdbms.DBConnection', 'rdbms.mysql.MySQLResultSet');
+  uses(
+    'rdbms.DBConnection', 
+    'rdbms.mysql.MySQLResultSet',
+    'rdbms.Transaction'
+  );
 
   /**
    * Connection to MySQL Databases
