@@ -130,5 +130,17 @@
     function post($arg= NULL, $headers= array()) {
       return $this->request(HTTP_POST, $arg, $headers);
     }
+    
+    /**
+     * Perform a Put request
+     *
+     * @access  public
+     * @param   string arg default NULL
+     * @param   array headers default array()
+     * @return  &peer.http.HttpResponse response object
+     */
+    function put($arg= NULL, $headers= array()) {
+      return $this->request(HTTP_PUT, new RequestData($arg), $headers);
+    }
   }
 ?>
