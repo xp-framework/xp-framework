@@ -25,7 +25,8 @@
    *   $suite->addTest(new SybaseTest('testConnect', $dsn));
    *   $suite->addTest(new SybaseTest('testSelect', $dsn));
    *   
-   *   var_dump($suite->run());
+   *   $result= &$suite->run();
+   *   echo $result->toString();
    * </code>
    *
    * @purpose  purpose
