@@ -49,6 +49,37 @@
     }
     
     /**
+     * Returns number of tests in this suite
+     *
+     * @access  public
+     * @return  int
+     */
+    function numTests() {
+      return sizeof($this->tests);
+    }
+    
+    /**
+     * Returns test at a given position
+     *
+     * Example for numTests and testAt:
+     * <code>
+     *   // [... set up suite ...]
+     *
+     *   $result= &new TestResult();
+     *   for ($i= 0, $s= $suite->numTests(); $i < $s; $i++) {
+     *     $suite->runTest($suite->testAt($i), $result);
+     *   }
+     * </code>
+     *
+     * @access  public
+     * @param   int pos
+     * @return  &util.profiling.unittest.TestCase or NULL if none was found
+     */
+    function &testAt($pos) {
+      if (isset($this->tests[$pos])) return $this->tests[$pos]; else return NULL;
+    }
+    
+    /**
      * Run a single test
      *
      * @access  public
