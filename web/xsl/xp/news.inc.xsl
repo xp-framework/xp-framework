@@ -46,7 +46,7 @@
    ! @purpose  Text markup
    !-->  
   <xsl:template match="blogentry">
-    <a title="Link to entry {@id}" href="{func:link(concat('entry?', @id))}">
+    <a title="Link to entry {@id}" href="{func:link(concat('news/view?', @id))}">
       <xsl:text>entry #</xsl:text><xsl:value-of select="@id"/>
     </a>
   </xsl:template>
@@ -57,7 +57,7 @@
    ! @purpose  Text markup
    !-->  
   <xsl:template match="blogcategory">
-    <a title="Link to category {@id}" href="{func:link(concat('category?', @id))}">
+    <a title="Link to category {@id}" href="{func:link(concat('news/bycategory?', @id))}">
       <xsl:text>category #</xsl:text><xsl:value-of select="@id"/>
     </a>
   </xsl:template>
