@@ -293,8 +293,8 @@
           // Write mail contents. Make sure lines containing a dot by itself are
           // properly escaped.
           $this->_sockcmd('%s', preg_replace(
-            '/\.([\r\n])/', 
-            '..$1', 
+            '/(^|[\r\n])([\.]+)([\r\n]|$)/', 
+            '$1.$2$3', 
             $message->getBody()
           ), FALSE);
         }
