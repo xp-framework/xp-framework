@@ -41,7 +41,7 @@
         // Find the token
         offset= 1;
         while (
-          (-1 == fmtstring.charAt(pos + offset).indexOf('bdfscxX')) &&
+          (-1 == fmtstring.charAt(pos + offset).indexOf('oubdfscxX')) &&
           (offset < fmtstring.length)
         ) offset++;
         token= fmtstring.charAt(pos + offset - 1);
@@ -70,10 +70,6 @@
         
         // Switch on the token
         switch (token) {
-          case 'd':
-            subst= String(parseInt(arguments[i]));
-            break;
-
           case 'f':
             subst= String(parseFloat(arguments[i]));
             break;
@@ -86,6 +82,34 @@
             subst= String(arguments[i]).charAt(0);
             break;
           
+          case 'u':
+            subst= String(Math.abs(parseInt(arguments[i])));
+            break;
+
+          case 'd':
+            subst= String(parseInt(arguments[i]));
+            break;
+          
+          case 'b':
+            subst= parseInt(arguments[i]).toString(2).toLowerCase();
+            break;
+
+          case 'o':
+            subst= parseInt(arguments[i]).toString(8).toLowerCase();
+            break;
+          
+          case 'x':
+            subst= parseInt(arguments[i]).toString(16).toLowerCase();
+            break;
+
+          case 'X':
+            subst= parseInt(arguments[i]).toString(16).toUpperCase();
+            break;
+          
+          case '%':
+            subst= '%';
+            break;
+
           default:
             throw new Exception('Invalid token "' + token +'"');
         }
