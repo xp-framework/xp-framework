@@ -49,7 +49,7 @@
      * @return  string Typ-Namen
      */
     function getType() {
-      return 'base64Binary';
+      return 'xsd:base64Binary';
     }
     
     function getItemName() {

@@ -26,7 +26,7 @@
      * @return  string Typ-Namen
      */
     function getType() {
-      return 'dateTime';
+      return 'xsd:dateTime';
     }
     
     function getItemName() {
