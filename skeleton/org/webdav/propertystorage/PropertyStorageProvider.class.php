@@ -66,5 +66,14 @@
      */
     function &getLock($uri) { }
     
+    /**
+     * Removes a lock for specific URI
+     *
+     * @access  public
+     * @param   string uri  The URI
+     * @return  &org.webdav.WebdavLock
+     */
+    function removeLock($uri) { }
+    
   }
 ?>
