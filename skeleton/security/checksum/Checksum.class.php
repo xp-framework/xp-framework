@@ -50,7 +50,9 @@
      * Create a new checksum from a string. Override this
      * method in child classes!
      *
-     * @access  abstract
+     * @model   abstract
+     * @model   static
+     * @access  public
      * @param   string str
      */
     function &fromString($str) { }
@@ -59,7 +61,9 @@
      * Create a new checksum from a file object. Override this
      * method in child classes!
      *
-     * @access  abstract
+     * @model   abstract
+     * @model   static
+     * @access  public
      * @param   &io.File file
      */
     function &fromFile(&$file) { }
