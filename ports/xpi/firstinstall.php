@@ -1,12 +1,12 @@
 <?php
-/* This file is part of the XP framework
+/* This class is part of the XP framework
  *
  * $Id$ 
  */
+
   require('lang.base.php');
   xp::sapi('cli');
   uses('util.Properties', 'lang.Process');
-  
   
   // {{{ main
   $p= &new ParamString();
@@ -14,13 +14,13 @@
     Console::writeLinef(<<<__
 Install script
 
-Usage: php %s installer.conf [-f files|--files=files] [-v|--verbose] [-?|--help] [-F|--force]
+Usage: php %s installer.conf [-f files|--files=files] [-v|--verbose] [-?|--help]
 
 Example installer.conf:
 
 [target]
 user="cgi"
-hosts="host1|host2|production[1..5]"
+hosts="host1|host2"
 base="/home/httpd/"
 
 [release]
@@ -32,7 +32,7 @@ __
   
   // Check whether to be verbose
   $VERBOSE= $p->exists('verbose');
-  Console::writeLine('===> Installing for configuration ', $p->value(1), $VERBOSE ? ' (+v)' : '');
+  Console::writeLine('===> Creating environment for configuration ', $p->value(1), $VERBOSE ? ' (+v)' : '');
   
   // Read configuration
   try(); {
@@ -44,7 +44,7 @@ __
   }
   
   $VERBOSE && Console::writeLine('---> Configured as follows: ', $conf->toString());
-  
+
   // Release modalities:
   $rel= $conf->readString('release', 'name');
   if ($rc= $conf->readString('release', 'candidate', NULL)) {
@@ -60,29 +60,41 @@ __
     $rel_tag= strtoupper($rel).'_RELEASE';
     $rel_dir= 'xp.'.strtolower($rel).'-release';
   }
-  
-  $ssh= str_replace('//', '/', sprintf(<<<__
-ssh -A %s@%%1\$s 'cd %s/%s/ &&
-  if ( [ -e .xpinstall.block ] && exit %6\$d ) ; then
-    echo "-%%1\$s:"; cat .xpinstall.block
+
+  // Command to prepare checkout directory
+  $ssh1= str_replace('//', '/', sprintf(<<<__
+ssh -A %s@%%s 'cd %3\$s ;
+  if [ -d %4\$s ]; then
+    echo "----> Project already installed."
+    exit 1
   else
-    if [ -e .xpinstall.inf ] ; then 
-      cat .xpinstall.inf | sed -e 's/^/!/g' ;
-    fi ;
-    echo "+%%1\$s:"`pwd`"$ " ;
-    cvs update -dP -r %s '%s' 2>&1;
+    mkdir %4\$s
+    chown %2\$s %4\$s
   fi
+  '
+__
+    ,
+    $conf->readString('target', 'masteruser', 'root'),
+    $conf->readString('target', 'user', 'cgi'),
+    $conf->readString('target', 'base', '/usr/local/lib/'),
+    $rel_dir,
+    $rel_tag
+  ));
+
+  // Command to actually checkout things...
+  $ssh2= str_replace('//', '/', sprintf(<<<__
+ssh -A %s@%%s 'cd %s/ &&
+  cvs -d:pserver:%s@php3.de:/home/cvs/repositories/xp co -d %s -r %s . 2>&1
   '
 __
     ,
     $conf->readString('target', 'user', 'cgi'),
     $conf->readString('target', 'base', '/usr/local/lib/'),
+    $conf->readString('target', 'cvsuser', 'anonymous'),
     $rel_dir,
-    $rel_tag,
-    $p->value('files', 'f', ''),
-    $p->exists('force', 'F') ? 0xFF : 0x00
+    $rel_tag
   ));
-
+  
   // Read host list
   $hosts= array();
   foreach ($conf->readArray('target', 'hosts') as $host) {
@@ -94,55 +106,57 @@ __
       $hosts[]= $host;
     }
   }
-
-  // Create a thread for each remote host
-  for ($offset= 0; $offset < sizeof($hosts); $offset++) {
-    $host= $hosts[$offset];
-    
-    Console::writeLine('===> Installing for '.$host);
+  
+  foreach ($hosts as $host) {
+    Console::writeLine('===> Installing for ', $host, ' tag ', $rel_tag);
+    $cmd= sprintf ($ssh1, $host);
+    $VERBOSE && Console::writeLine('---> Executing ', $cmd);
     try(); {
-      $p= &new Process(sprintf($ssh, $host));
+      $p= &new Process($cmd);
+      $p->close();
     } if (catch('IOException', $e)) {
       $e->printStackTrace(STDERR);
+      exit(-1);
+    }
+
+    // Non-zero return value indicates failure, so continue with next server...
+    if (0 != $p->exitValue()) {
+      Console::writeLine('*** Project already installed at ', $host);
       continue;
     }
-
+    
+    $cmd= sprintf ($ssh2, $host);
+    $VERBOSE && Console::writeLine('---> Executing ', $cmd);
+    try(); {
+      $p= &new Process($cmd);
+    } if (catch('IOException', $e)) {
+      $e->printStackTrace(STDERR);
+      exit(-1);
+    }
+    
     $return= $p->out->readLine();
     switch ($return{0}) {
-      case '-': 
-        Console::writeLine($host, ']  ***  Failed for ', substr($return, 1));
+      case '-':
+        Console::writeLine('*** Failed for ', substr($return, 1));
         break;
-
-      case '!':
-        Console::writeLine($host, '] +++  Please note: ', substr($return, 1));
-        while ('!' == $return{0}) {
-          $return= $p->out->readLine();
-          Console::writeLine($host, '     >> ', substr($return, 1));
-        }
-        Console::writeLine($host, '] ---> Success for ', substr($return, 1));
-        break;
-
+      
       case '+':
-        Console::writeLine($host, '] ---> Success for ', substr($return, 1));
+        Console::writeLine('---> Success for ', substr($return, 1));
         break;
     }
+    
     while ((FALSE !== ($l= $p->out->readLine())) && !$p->out->eof()) {
-
-      // Hack to beautify script output
-      if (preg_match ('/^cvs server: ([^ ]+) is no longer in the repository$/', $l, $m)) {
-        $l= 'D '.$m[1];
-      }
-
-      if (!$this->verbose && ('cvs server: ' == substr($l, 0, 12))) continue;
-      Console::writeLine($host, ']      >> ', $l);
+      if (!$VERBOSE && ('cvs server: ' == substr($l, 0, 12))) continue;
+      Console::writeLine('     >> ', $l);
     }
-
+    
     // Read errors
     while ((FALSE !== ($e= $p->err->readLine())) && !$p->err->eof()) {
-      Console::writeLine($host, ']      !! ', $e);
+      Console::writeLine('     !! ', $e);
     }
     $p->close();
   }
+  
   Console::writeLine('===> Done (session ended at ', date('r'), ')');
   // }}}
 ?>
