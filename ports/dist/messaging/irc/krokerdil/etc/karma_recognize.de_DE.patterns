@@ -8,7 +8,7 @@
 /verachte/i:-5
 /beleidig/i:-1
 /(der|die) Beste/i:1
-/(idiot|arsch|fick|schei(ss|ß)|blöd|wix)/:-1
-/mag|lieb/:1
+/(idiot|arsch|fick|schei(ss|ß)|blöd|wix)/i:-1
+/mag|lieb/i:1
 /K\*p/:-1
 /Kap/:1
