@@ -180,6 +180,7 @@
                 '"%s": No match found', 
                 $params
               );
+              break;
             }
             
             // Make definitions available via www
