@@ -10,7 +10,7 @@
    * An instance of this object is passed to the do* methods by
    * the <pre>process</pre> method.
    *
-   * @see org.apache.HttpScriptlet
+   * @see   xp://org.apache.HttpScriptlet
    */  
   class HttpScriptletRequest extends Object {
     var
@@ -81,7 +81,7 @@
      *
      * @access  public
      * @param   uri URI a uri parsed by parse_url()
-     * @see     php-doc://parse_url
+     * @see     php://parse_url
      */
     function setURI($uri) {
       $this->uri= $uri;
@@ -124,7 +124,7 @@
      *
      * @access  public
      * @param   &string data
-     * @see     org.apache.HttpScriptlet#_handleMethod
+     * @see     xp://org.apache.HttpScriptlet#_handleMethod
      */
     function setData(&$data) {
       $this->data= &$data;

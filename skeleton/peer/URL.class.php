@@ -17,7 +17,7 @@
    *   echo $u->toString();
    * </code>
    *
-   * @see    php-doc://parse_url
+   * @see    php://parse_url
    */
   class URL extends Object {
     var
@@ -39,7 +39,7 @@
      *
      * @access  public
      * @return  string
-     * @see        lang.Object#toString
+     * @see     xp://lang.Object#toString
      */
     function toString() {
       $c= &$this->getClass();

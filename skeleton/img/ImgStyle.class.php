@@ -7,7 +7,7 @@
   /**
    * Style class
    *
-   * @see img.Image#setStyle
+   * @see   xp://img.Image#setStyle
    */
   class ImgStyle extends Object {
     var
@@ -38,7 +38,7 @@
      *
      * @access  public
      * @return  int[] array of color indices
-     * @see     php-doc://imagesetstyle
+     * @see     php://imagesetstyle
      */
     function getPixels() {
       return $this->pixels;

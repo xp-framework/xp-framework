@@ -7,7 +7,7 @@
   /**
    * Kapselt die FormatException
    *
-   * @see Exception
+   * @see   xp://lang.Exception
    */
   class FormatException extends Exception {
   

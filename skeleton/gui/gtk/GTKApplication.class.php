@@ -17,7 +17,7 @@
    *   $app->done();
    * </code>
    *
-   * @see   php-gtk-doc://GtkWindow
+   * @see   php-gtk://GtkWindow
    * @see   http://gtk.org/
    */
   class GtkApplication extends Object {

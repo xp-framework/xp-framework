@@ -11,18 +11,19 @@
    *   protocol://foo.bar/path/to/document.extension?query#fragment
    * </pre>
    *
-   * @see xp-doc:README.DOC
+   * @see   xp-doc://README.DOC
    */
   class Reference extends Object {
     var 
-      $link;
+      $link         = array(),
+      $validSchemes = array('xp', 'xp-doc', 'php', 'php-gtk', 'http', 'https', 'ftp', 'mailto', 'rfc');
     
     /**
      * Constructor
      *
      * @access  public
      * @param   string str default NULL The string to parse from
-     * @see     #fromString
+     * @see     xp://lang.apidoc.Reference#fromString
      */
     function __construct($str= NULL) {
       if (NULL !== $str) $this->fromString($str);
@@ -34,14 +35,18 @@
      *
      * @access  public
      * @param   string str The string to parse from
+     * @throws  FormatException in case the scheme is'nt recognized
      */
     function fromString($str) {
       $this->link= parse_url($str);
       
       // Links without scheme are internal
-      if (!isset($this->link['scheme'])) {
+      if (empty($this->link['scheme'])) {
         $this->link['scheme']= 'xp';
       }
+      
+      if (in_array($this->link['scheme'], $this->validSchemes)) return;
+      throw(new FormatException('Scheme '.$this->link['scheme'].' not recognized'));
     }
   }
 ?>

@@ -319,7 +319,7 @@
      * Hint:
      * Use isOpen() to check if the file is open
      *
-     * @see     php-doc://feof
+     * @see     php://feof
      * @access  public
      * @return  bool TRUE when the end of the file is reached
      * @throws  IOException in case of an error (e.g., the file's not been opened)
@@ -354,7 +354,7 @@
      * @access  public
      * @param   int position default 0 The new position
      * @param   int mode default SEEK_SET 
-     * @see     php-doc://fseek
+     * @see     php://fseek
      * @throws  IOException in case of an error
      * @return  bool success
      */
@@ -398,7 +398,7 @@
      * @param   int Block
      * @throws  IOException in case of an error
      * @return  boolean success
-     * @see     php-doc://flock
+     * @see     php://flock
      */
     function _lock($op, $block= NULL) {
       $result= flock($this->_fd, $op, $block);

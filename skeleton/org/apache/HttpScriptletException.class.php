@@ -15,7 +15,7 @@
    * - HTTP method is not supported (e.g., DELETE)
    * - Request processing fails with an Exception
    *
-   * @see org.apache.HttpScriptlet#process
+   * @see   xp://org.apache.HttpScriptlet#process
    */  
   class HttpScriptletException extends Exception {
     var

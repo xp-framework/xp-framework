@@ -63,8 +63,6 @@
    * 
    *   $s->finalize();
    * </code>
-   *
-   * @see xp-doc://scriptlets
    */
   class HttpScriptlet extends Object {
     var

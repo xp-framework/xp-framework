@@ -12,7 +12,7 @@
    * Class wrapper around PHPs tokenizer extension
    * 
    * @ext   tokenize
-   * @see   php-src://ext/tokenize
+   * @see   php://tokenizer
    * @see   lang.apidoc.parser.GenericParser
    */ 
   class PHPTokenizer extends Object {
