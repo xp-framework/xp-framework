@@ -15,6 +15,13 @@
   define('MODIFIER_PUBLIC',     256);
   define('MODIFIER_PROTECTED',  512);
   define('MODIFIER_PRIVATE',   1024);
+  
+  define('DETAIL_MODIFIERS',      0);
+  define('DETAIL_ARGUMENTS',      1);
+  define('DETAIL_RETURNS',        2);
+  define('DETAIL_THROWS',         3);
+  define('DETAIL_COMMENT',        4);
+  define('DETAIL_ANNOTATIONS',    5);
  
   /**
    * Represents classes. Every instance of an XP class has an method
@@ -292,6 +299,202 @@
         $r[]= &new XPClass($iface);
       }
       return $r;
+    }
+
+    /**
+     * Check whether an annotation exists
+     *
+     * @access  public
+     * @param   string name
+     * @param   string key default NULL
+     * @return  bool
+     */
+    function hasAnnotation($name, $key= NULL) {
+      $details= XPClass::detailsForClass($this->name);
+
+      return $details && ($key 
+        ? array_key_exists($key, @$details['class'][DETAIL_ANNOTATIONS][$name]) 
+        : array_key_exists($name, @$details['class'][DETAIL_ANNOTATIONS])
+      );
+    }
+
+    /**
+     * Retrieve annotation by name
+     *
+     * @access  public
+     * @param   string name
+     * @param   string key default NULL
+     * @return  mixed
+     * @throws  lang.ElementNotFoundException
+     */
+    function getAnnotation($name, $key= NULL) {
+      $details= XPClass::detailsForClass($this->name);
+
+      if (!$details || !($key 
+        ? array_key_exists($key, @$details['class'][DETAIL_ANNOTATIONS][$name]) 
+        : array_key_exists($name, @$details['class'][DETAIL_ANNOTATIONS])
+      )) return raise(
+        'lang.ElementNotFoundException', 
+        'Annotation "'.$name.($key ? '.'.$key : '').'" does not exist'
+      );
+
+      return ($key 
+        ? $details['class'][DETAIL_ANNOTATIONS][$name][$key] 
+        : $details['class'][DETAIL_ANNOTATIONS][$name]
+      );
+    }
+
+    /**
+     * Retrieve whether a method has annotations
+     *
+     * @access  public
+     * @return  bool
+     */
+    function hasAnnotations() {
+      $details= XPClass::detailsForClass($this->name);
+      return $details ? !empty($details['class'][DETAIL_ANNOTATIONS]) : FALSE;
+    }
+
+    /**
+     * Retrieve all of a method's annotations
+     *
+     * @access  public
+     * @return  array annotations
+     */
+    function getAnnotations() {
+      $details= XPClass::detailsForClass($this->name);
+      return $details ? $details['class'][DETAIL_ANNOTATIONS] : array();
+    }
+    
+    /**
+     * Retrieve details for a specified class. Note: Results from this 
+     * method are cached!
+     *
+     * @model   static
+     * @access  public
+     * @param   string class fully qualified class name
+     * @return  array or NULL to indicate no details are available
+     */
+    function detailsForClass($class) {
+      static $details= array();
+
+      if (!$class) return NULL;        // Border case
+      if (isset($details[$class])) return $details[$class];
+
+      $details[$class]= array();
+      $name= strtr($class, '.', DIRECTORY_SEPARATOR);
+      $l= strlen($name);
+
+      foreach (get_included_files() as $file) {
+        if ($name != substr($file, -10- $l, -10)) continue;
+
+        // Found the class, now get API documentation
+        $annotations= array();
+        $comment= NULL;          
+        $tokens= token_get_all(file_get_contents($file));
+        for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
+          switch ($tokens[$i][0]) {
+            case T_COMMENT:
+              if ('#' == $tokens[$i][1]{0}) {   // Annotation
+                $annotations= eval('return array('.preg_replace(
+                  array('/@([a-z_]+),/', '/@([a-z_]+)\(\'([^\']+)\'\)/', '/@([a-z_]+)\(/', '/([a-z_]+) *= */'),
+                  array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '\'$1\' => '),
+                  trim($tokens[$i][1], "[]# \t\n\r").','
+                ).');');
+              } else {                    // Blatant assumption this is an details comment
+                $comment= $tokens[$i][1];
+              }
+              break;
+
+            case T_CLASS:
+              $details[$class]['class']= array(
+                DETAIL_COMMENT      => $comment,
+                DETAIL_ANNOTATIONS  => $annotations
+              );
+              $annotations= array();
+              $comment= NULL;
+              break;                
+
+            case T_FUNCTION:
+              while (T_STRING !== $tokens[$i][0]) $i++;
+              $m= strtolower($tokens[$i][1]);
+              $details[$class][$m]= array(
+                DETAIL_MODIFIERS    => 0,
+                DETAIL_ARGUMENTS    => array(),
+                DETAIL_RETURNS      => 'void',
+                DETAIL_THROWS       => array(),
+                DETAIL_COMMENT      => preg_replace('/\n     \* ?/', "\n", "\n".substr(
+                  $comment, 
+                  4,                              // "/**\n"
+                  strpos($comment, '* @')- 2      // position of first details token
+                )),
+                DETAIL_ANNOTATIONS  => $annotations
+              );
+              $matches= NULL;
+              preg_match_all(
+                '/@([a-z]+)\s*([^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/', 
+                $comment, 
+                $matches, 
+                PREG_SET_ORDER
+              );
+              $annotations= array();
+              $comment= NULL;
+              foreach ($matches as $match) {
+                switch ($match[1]) {
+                  case 'access':
+                  case 'model':
+                    $details[$class][$m][DETAIL_MODIFIERS] |= constant('MODIFIER_'.strtoupper($match[2]));
+                    break;
+
+                  case 'param':
+                    $details[$class][$m][DETAIL_ARGUMENTS][]= &new Argument(
+                      isset($match[3]) ? $match[3] : 'param',
+                      $match[2],
+                      isset($match[4]),
+                      isset($match[4]) ? $match[5] : NULL
+                    );
+                    break;
+
+                  case 'return':
+                    $details[$class][$m][DETAIL_RETURNS]= $match[2];
+                    break;
+
+                  case 'throws': 
+                    $details[$class][$m][DETAIL_THROWS][]= $match[2];
+                    break;
+                }
+              }
+              break;
+
+            default:
+              // Empty
+          }
+        }
+
+        // Break out of search loop
+        break;
+      }
+      
+      // Return details for specified class
+      return $details[$class]; 
+    }
+
+    /**
+     * Retrieve details for a specified class and methid. Note: Results 
+     * from this method are cached!
+     *
+     * @model   static
+     * @access  public
+     * @param   string class unqualified class name
+     * @param   string method
+     * @return  array
+     */
+    function detailsForMethod($class, $method) {
+      while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
+        if (isset($details[$method])) return $details[$method];
+        $class= get_parent_class($class);
+      }
+      return NULL;
     }
     
     /**

@@ -48,106 +48,14 @@
     }
     
     /**
-     * Retrieve API docs for a specified class. Note: Results from this 
-     * method are cached!
-     *
-     * @access  protected
-     * @param   string class
-     * @return  array
-     */
-    function _apidoc($class) {
-      static $apidoc= array();
-      
-      if (!$class) return FALSE;        // Border case
-      if (!isset($apidoc[$class])) {
-        $apidoc[$class]= array();
-        $name= strtr(xp::nameOf($class), '.', DIRECTORY_SEPARATOR);
-        $l= strlen($name);
-        foreach (get_included_files() as $file) {
-          if ($name != substr($file, -10- $l, -10)) continue;
-          
-          // Found the class, now get API documentation
-          $tokens= token_get_all(file_get_contents($file));
-          for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
-            switch ($tokens[$i][0]) {
-              case T_COMMENT: 
-                $comment= $tokens[$i][1];
-                break;
-
-              case T_FUNCTION:
-                while (T_STRING !== $tokens[$i][0]) $i++;
-                $m= strtolower($tokens[$i][1]);
-                $apidoc[$class][$m]= array(
-                  0 => 0,           // access
-                  1 => array(),     // arguments
-                  2 => 'void',      // return
-                  3 => array(),     // throws
-                  4 => preg_replace('/\n     \* ?/', "\n", "\n".substr(
-                    $comment, 
-                    4,                              // "/**\n"
-                    strpos($comment, '* @')- 2      // position of first apidoc token
-                  ))
-                );
-                preg_match_all(
-                  '/@([a-z]+)\s*([^\r\n ]+) ?([^\r\n ]+)? ?([^\r\n]+)?/', 
-                  $comment, 
-                  $matches, 
-                  PREG_SET_ORDER
-                );
-                foreach ($matches as $match) {
-                  switch ($match[1]) {
-                    case 'access':
-                    case 'model':
-                      $apidoc[$class][$m][0] |= constant('MODIFIER_'.strtoupper($match[2]));
-                      break;
-
-                    case 'param': 
-                      $apidoc[$class][$m][1][]= &new Argument(
-                        $match[3],
-                        $match[2],
-                        isset($match[4]),
-                        isset($match[4]) ? substr($match[4], 8) : NULL
-                      );
-                      break;
-
-                    case 'return':
-                      $apidoc[$class][$m][2]= $match[2];
-                      break;
-
-                    case 'throws': 
-                      $apidoc[$class][$m][3][]= $match[2];
-                      break;
-                  }
-                }
-                break;
-
-              default:
-                // Empty
-            }
-          }
-          
-          // Break out of search loop
-          break;
-        }
-      }
-      
-      // Return API doc for specified class
-      return $apidoc[$class];
-    }
-
-    /**
      * Retrieve this method's modifiers
      *
      * @access  public
      * @return  int
      */    
     function getModifiers() {
-      $c= $this->_ref;
-      while ($apidoc= $this->_apidoc($c)) {
-        if (isset($apidoc[$this->name])) return $apidoc[$this->name][0];
-        $c= get_parent_class($c);
-      }
-      return 0;    
+      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
+      return $details[DETAIL_MODIFIERS];
     }
 
     /**
@@ -178,12 +86,8 @@
      * @return  lang.reflect.Argument[]
      */
     function getArguments() {
-      $c= $this->_ref;
-      while ($apidoc= $this->_apidoc($c)) {
-        if (isset($apidoc[$this->name])) return $apidoc[$this->name][1];
-        $c= get_parent_class($c);
-      }
-      return array();      
+      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
+      return $details[DETAIL_ARGUMENTS];
     }
 
     /**
@@ -193,12 +97,8 @@
      * @return  string
      */
     function getReturnType() {
-      $c= $this->_ref;
-      while ($apidoc= $this->_apidoc($c)) {
-        if (isset($apidoc[$this->name])) return $apidoc[$this->name][2];
-        $c= get_parent_class($c);
-      }
-      return NULL;
+      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
+      return $details[DETAIL_RETURNS];
     }
     
     /**
@@ -208,12 +108,8 @@
      * @return  string[]
      */
     function getExceptionNames() {
-      $c= $this->_ref;
-      while ($apidoc= $this->_apidoc($c)) {
-        if (isset($apidoc[$this->name])) return $apidoc[$this->name][3];
-        $c= get_parent_class($c);
-      }
-      return array();      
+      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
+      return $details[DETAIL_THROWS];
     }
 
     /**
@@ -238,10 +134,10 @@
      * @return  &lang.XPClass
      */
     function &getDeclaringClass() {
-      $c= $this->_ref;
-      while ($apidoc= $this->_apidoc($c)) {
-        if (isset($apidoc[$this->name])) return new XPClass($c);
-        $c= get_parent_class($c);
+      $class= $this->_ref;
+      while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
+        if (isset($details[$this->name])) return new XPClass($class);
+        $class= get_parent_class($class);
       }
       return xp::null();
     }
@@ -254,12 +150,73 @@
      * @return  string
      */
     function getComment() {
-      $c= $this->_ref;
-      while ($apidoc= $this->_apidoc($c)) {
-        if (isset($apidoc[$this->name])) return $apidoc[$this->name][4];
-        $c= get_parent_class($c);
-      }
-      return NULL;  
+      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
+      return $details[DETAIL_COMMENT];
+    }
+    
+    /**
+     * Check whether an annotation exists
+     *
+     * @access  public
+     * @param   string name
+     * @param   string key default NULL
+     * @return  bool
+     */
+    function hasAnnotation($name, $key= NULL) {
+      $details= XPClass::detailsForMethod($this->_ref, $this->name);
+
+      return $details && ($key 
+        ? array_key_exists($key, @$details[DETAIL_ANNOTATIONS][$name][$key]) 
+        : array_key_exists($name, @$details[DETAIL_ANNOTATIONS][$name])
+      );
+    }
+
+    /**
+     * Retrieve annotation by name
+     *
+     * @access  public
+     * @param   string name
+     * @param   string key default NULL
+     * @return  mixed
+     * @throws  lang.ElementNotFoundException
+     */
+    function getAnnotation($name, $key= NULL) {
+      $details= XPClass::detailsForMethod($this->_ref, $this->name);
+
+      if (!$details || !($key 
+        ? array_key_exists($key, @$details[DETAIL_ANNOTATIONS][$name][$key]) 
+        : array_key_exists($name, @$details[DETAIL_ANNOTATIONS][$name])
+      )) return raise(
+        'lang.ElementNotFoundException', 
+        'Annotation "'.$name.($key ? '.'.$key : '').'" does not exist'
+      );
+
+      return ($key 
+        ? $details[DETAIL_ANNOTATIONS][$name][$key] 
+        : $details[DETAIL_ANNOTATIONS][$name]
+      );
+    }
+
+    /**
+     * Retrieve whether a method has annotations
+     *
+     * @access  public
+     * @return  bool
+     */
+    function hasAnnotations() {
+      $details= XPClass::detailsForMethod($this->_ref, $this->name);
+      return $details ? !empty($details[DETAIL_ANNOTATIONS]) : FALSE;
+    }
+
+    /**
+     * Retrieve all of a method's annotations
+     *
+     * @access  public
+     * @return  array annotations
+     */
+    function getAnnotations() {
+      $details= XPClass::detailsForMethod($this->_ref, $this->name);
+      return $details ? $details[DETAIL_ANNOTATIONS] : array();
     }
     
     /**
