@@ -29,6 +29,7 @@
       <more href="/devel/mailinglist.html">Mailinglist</more>
       <more href="/devel/tips.native.html">Tip: Native methods</more>
       <more href="/devel/tips.typesecurity.html">Tip: Type security</more>
+      <more href="/devel/tips.performance.html">Tip: Performance</more>
     </teaser>
     <teaser>
       <caption>Part 3: Release guidelines</caption>
