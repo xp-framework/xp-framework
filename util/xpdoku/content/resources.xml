@@ -20,10 +20,10 @@
           For conveniance, we have set up a Web based CVS viewer, so you can
           easily inspect the files.<br/>
           Point your browser to 
-          <ref type="ext" link="http://cvs.xp.php3.de">http://cvs.xp-framework.net</ref>
+          <ref type="ext" link="http://cvs.xp-framework.net/">http://cvs.xp-framework.net</ref>
           to see it.
         </text>
-        <ref>http://cvs.xp.php3.de</ref>
+        <ref>http://cvs.xp-framework.net/</ref>
       </para>
 
       <!-- Show available releases -->
@@ -40,7 +40,7 @@
     </content>
     
     <references>
-      <ref type="ext" link="http://cvs.xp.php3.de">Web based CVS access</ref>
+      <ref type="ext" link="http://cvs.xp-framework.net/">Web based CVS access</ref>
     </references>
   </main>  
 </document>
