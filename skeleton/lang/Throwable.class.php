@@ -73,6 +73,9 @@
           );
         }
       }
+      
+      // Reset errors
+      xp::registry('errors', array());
 
       parent::__construct();
     }
