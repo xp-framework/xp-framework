@@ -66,16 +66,17 @@
   # Append signature
   $msg.= "-- \n".$realname."\n";
   
-  # open (SENDMAIL, "| /usr/sbin/sendmail -t");
-  print STDOUT "To: $to\n";
-  print STDOUT "From: \"".getRealname ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
-  print STDOUT "Reply-To: $to\n";
-  print STDOUT "Subject: [CVS]    tag: $localPath\n";
-  print STDOUT "X-CVS: ".$ENV{'CVSROOT'}."\n";
-  print STDOUT "\n";
-  print STDOUT $msg;
-  #close (SENDMAIL);
+  open (SENDMAIL, "| /usr/sbin/sendmail -t");
+  print SENDMAIL "To: $to\n";
+  print SENDMAIL "From: \"".getRealname ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
+  print SENDMAIL "Reply-To: $to\n";
+  print SENDMAIL "Subject: [CVS]    tag: $localPath\n";
+  print SENDMAIL "X-CVS: ".$ENV{'CVSROOT'}."\n";
+  print SENDMAIL "\n";
+  print SENDMAIL $msg;
+  close (SENDMAIL);
   
+  # Show success
   exit (0);
 
   sub getRealname {
