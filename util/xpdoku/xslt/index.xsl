@@ -91,8 +91,8 @@
             $f= readlink($d.'xp-current.tar.gz');
             echo '<a href="http://xp-framework.net/downloads/'.$f.'">'.$f.'</a><br/>';
             
-            if (file_exists($d.$f.'.info')) readfile($d.$f.'.info');
           ]]></xsl:processing-instruction>
+          <a href="/resources/">More information</a>
         </td>
       </tr>
     </table>
