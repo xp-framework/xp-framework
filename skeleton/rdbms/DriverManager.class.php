@@ -44,10 +44,10 @@
         $instance= new DriverManager();
 
         if (extension_loaded('sybase_ct')) {
-          $instance->drivers['sybase']= &XPClass::forName('rdbms.sybase.Sybase');
+          $instance->drivers['sybase']= &XPClass::forName('rdbms.sybase.SybaseConnection');
         }
         if (extension_loaded('mysql')) {
-          $instance->drivers['mysql']= &XPClass::forName('rdbms.mysql.MySQL');
+          $instance->drivers['mysql']= &XPClass::forName('rdbms.mysql.MySQLConnection');
         }
         
         // TBI: postgres, oracle, ...
