@@ -4,6 +4,11 @@
  * $Id$
  */
 
+  uses(
+    'io.IOException',
+    'peer.ldap.LDAPSearchResult'
+  );
+  
   /**
    * LDAP client
    * 
@@ -13,7 +18,7 @@
    *   try(); {
    *     $l->connect();
    *     $l->bind();
-   *     $l->search('o=Organization,c=Country', 
+   *     $res= &$l->search('o=Organization,c=Country', 
    *   } if (catch('IOException', $e)) {
    *     // Handle exceptions
    *   }
@@ -94,6 +99,16 @@
     }
     
     /**
+     * Closes the connection
+     *
+     * @access  public
+     * @return  bool success
+     */
+    function close() {
+      return ldap_close($this->_hdl);
+    }
+    
+    /**
      * Perform an LDAP search
      *
      * @access  public
@@ -104,11 +119,11 @@
      * @param   int sizelimit default 0
      * @param   int timelimit default 0 Time limit, 0 means no limit
      * @param   int deref one of LDAP_DEREF_*
-     * @return  int number of found objects
+     * @return  peer.ldap.LDAPSearchResult search result object
      * @throws  IOException
-     * @see     php-doc://ldap-search
+     * @see     php-doc://ldap_search
      */
-    function search() {
+    function &search() {
       $args= func_get_args();
       array_unshift($args, $this->_hdl);
       
@@ -117,40 +132,8 @@
         return throw(new IOException('Search failed ['.$this->getLastError().']'));
       }
       
-      $this->results= ldap_get_entries($this->_hdl, $res);
-      return $this->results['count'];
+      return new LDAPSearchResult($this->_hdl, $res);
     }
     
-    /**
-     * Get a search entry by offset
-     *
-     * @access  public
-     * @param   int offset
-     * @return  mixed entry or FALSE if none exists by this offset
-     */
-    function getEntry($offset) {     
-      if (NULL == $this->results) {
-        return throw(new IllegalArgumentException('Please perform a search first'));
-      }
-     
-      return isset($this->results[$offset]) ? $this->results[$offset] : FALSE;
-    }
-    
-    /**
-     * Gets next entry - ideal for loops such as:
-     * <code>
-     *   while ($entry= $l->getNextEntry()) {
-     *     // doit
-     *   }
-     * </code>
-     *
-     * @access  public
-     * @return  mixed entry or FALSE if there are none more
-     */
-    function getNextEntry() {
-      static $offset= 0;
-      
-      return $this->getEntry($offset++);
-    }
   }
 ?>
