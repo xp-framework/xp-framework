@@ -76,7 +76,7 @@
      * @param   string dir
      */
     function setBase($dir) {
-      $this->_base= rtrim($dir, '/').'/';
+      $this->_base= rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
 
     /**
