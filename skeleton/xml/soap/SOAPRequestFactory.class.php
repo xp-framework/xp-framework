@@ -7,11 +7,13 @@
   class SOAPRequestFactory {
     var $type;
     
-    function SOAPRequestFactory($type, $params= NULL) {
-      $this->type= $type;
-      $type= "SOAP{$this->type}Request";
-      import('xml/soap/'.$type);
-      $this= new $type($params);
+    function SOAPRequestFactory($params= NULL) {
+      if (isset($params['type'])) {
+        $this->type= $type;
+        $type= "SOAP{$this->type}Request";
+        import('xml/soap/'.$type);
+        $this= new $type($params);
+      }
     }
   }
 ?>
