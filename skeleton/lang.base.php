@@ -11,7 +11,7 @@
     //     Returns the fully qualified name
     function nameOf($name) {
       if (!($n= xp::registry('class.'.$name))) {
-        return 'php.'.$name;
+        return $name ? 'php.'.$name : NULL;
       }
       return $n;
     }
