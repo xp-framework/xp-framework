@@ -1,4 +1,4 @@
-RFC 0017: Webservices access control
+RFC 0017: Webservices metadata
 ========================================================================
 $Id$
 
@@ -9,36 +9,62 @@ $Id$
 
 Scope of Change
 ---------------
-The webservices APIs (xml.xmlrpc and xml.soap.rpc) will have access 
-control built in.
+The webservices APIs (xml.xmlrpc and xml.soap.rpc) will make use of the
+new metadata facility described in RFC #0016.
 
 Rationale
 ---------
+With annotations, the following will be possible:
+
+* Declare methods as invocable by means of the client (public modifier
+  is not sufficient).
+
+* Add details about service name, binding type, targetNamespace and 
+  others to enable easy WSDL generation.
+  
+* Add access control based on methods, not on the entire webservice.
+
+Functionality
+-------------
+The webservice tag marks a class as being a web service. The webmethod
+tags identify those methods that are exposed externally as web service
+operations.
+<?php
+  #[@webservice]
+  class HelloWorldHandler extends Object {
+  
+    #[@webmethod]
+    function helloWorld($customerId) {
+      return 'Hello World!';
+    }
+  }
+?>
+
+Access control
+~~~~~~~~~~~~~~
 You can protect *entire* webservices by using your web server's 
 authentication models (e.g. Basic Authorization via .htaccess in Apache)
 but cannot protect selective methods.
 
-Functionality
--------------
 The functionality will be (in part) implemented by using metadata. This 
 way, a service developer can define access control for critical methods.
 
 Methods that should be restricted are given a "restricted" annotation
 defining which role a user must have to invoke this method.
 
-Example
-~~~~~~~
+Example:
 <?php
+  #[@webservice]
   class CustomerHandler extends Object {
   
     #[@webmethod]
     function getByCustomerId($customerId) {
-      // ...
+      // This method is unrestricted
     }
 
     #[@webmethod, @restricted(role= 'admin')]
     function sendMessage($customerId, &$message) {
-      // ...
+      // This method is restricted to users with "admin" role
     }
   }
 ?>
@@ -49,6 +75,68 @@ the web service should answer with HTTP 401 ("Authentication required").
 The deployer (which may be in fact the same person) will now have to
 map the "admin" role to the exact users.
 
+WSDL mapping annotations
+~~~~~~~~~~~~~~~~~~~~~~~~
+Note: This section only applies to SOAP RPCs, not to XMLRPC.
+
+Example:
+<?php
+  #[@webservice(name = 'Stocks', targetNamespace = 'http://xp-framework.net/wsdl')]
+  class StockserviceHandler extends Object {
+  
+    /**
+     * Get last trade value
+     *
+     * @access  public
+     * @param   string symbol
+     * @return  float
+     */
+    #[@webmethod(name = 'GetLastTradeValue')]
+    function getLastTradeValue($symbol) {
+      // ...
+    }
+  }
+?>
+
+- The webservice name is mapped to the wsdl:portType and defaults to
+  the simple name of the class stripped of the word "Handler".
+
+- The webmethod name is mapped to the wsdl:operation name and defaults
+  to the method's name. The SOAPAction is generated from the class name 
+  and method name to allow easy reflection.
+
+Resulting WSDL:
+<pre>
+  <definitions
+   targetNamespace="http://xp-framework.net/wsdl"
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://schemas.xmlsoap.org/wsdl/"
+  >
+    <message name="GetLastTradeValueRequest">
+      <part name="symbol" type="xsd:string"/>
+    </message> 
+
+    <message name="GetLastTradeValueResponse">
+      <part name="result" type="xsd:double"/>
+    </message> 
+    
+    <portType name="Stocks">
+      <operation name="GetLastTradeValue">
+        <input message="GetLastTradeValueRequest"/>
+        <output message="GetLastTradeValueResponse"/>
+      </operation>
+    </portType>
+    
+    <binding name="Stocks">
+      <operation name="GetLastTradeValue">
+        <soap:operation soapAction="Stockservice#getLastTradeValue"/>
+      </operation>
+    </binding>
+  </definitions>
+</pre>
+
 Dependencies
 ------------
 RFC #0016
@@ -57,7 +145,10 @@ Related documents
 -----------------
 - Web Services Metadata for the Java[TM] Platform
   http://jcp.org/en/jsr/detail?id=181
-  
+
+- WSDL example: Google search
+  http://api.google.com/GoogleSearch.wsdl
+
 Comments
 --------
 - friebe, Fri Feb 11 19:45:50 CET 2005
