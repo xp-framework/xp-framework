@@ -35,6 +35,7 @@ Usage:
 Options:
   --debug, -d     Turns on debugging (default: off)
   --title, -t     Set shot title (default: origin file name)
+  --desc, -E      Set description in case description file does not exist
   --date, -D      Set album date (default: origin directory's creation date)
 __
     );
@@ -80,13 +81,16 @@ __
   }
   
   with ($shot= &new SingleShot()); {
-    $shot->setName($origin->getFilename());
+    $shot->setName($name);
+    $shot->setFileName($origin->getFilename());
     $shot->setTitle($param->value('title', 't', $origin->filename));
     $shot->setDate(new Date($param->value('date', 'D', $origin->createdAt())));
 
     // Read the introductory text from [filename].txt if existant
     if (is_file($df= $filename.DESCRIPTION_EXT)) {
       $shot->setDescription(file_get_contents($df));
+    } else {
+      $shot->setDescription($param->value('desc', 'E', ''));
     }
 
     try(); {
