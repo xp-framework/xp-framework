@@ -11,10 +11,10 @@
   define('DB_AUTOCONNECT',      0x0004);
   
   /**
-   * Base class for database connections
+   * Provide an interface from which all other database connection
+   * classes extend.
    *
-   * @purpose  Provide an interface from which all other database connection
-   *           classes extend
+   * @purpose  Base class for database connections
    */
   class DBConnection extends Object {
     var 
