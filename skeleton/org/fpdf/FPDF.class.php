@@ -972,7 +972,7 @@
             $this->ws= 0;
             $this->_out('0 Tw');
           }
-          $this->writeCell($w, $h,substr($s, $j, $i- $j), $b, 2, $align, $fill);
+          $this->writeCell($w, $h,substr($s, $j, $i- $j), $b, FPDF_POS_BELOW, $align, $fill);
           $i++;
           $sep= -1;
           $j= $i;
@@ -1051,7 +1051,16 @@
       $nl= 1;
       while ($i < $nb) {
         if ("\n" == $s{$i}) {           // Explicit line break
-          $this->writeCell($w, $h,substr($s, $j, $i- $j), 0, 2, '', 0, $link);
+          $this->writeCell(
+            $w, 
+            $h,
+            substr($s, $j, $i- $j), 
+            FPDF_BORDER_NONE, 
+            FPDF_POS_BELOW, 
+            FPDF_ALIGN_LEFT, 
+            FPDF_FILL_TRANSPARENT, 
+            $link
+          );
           $i++;
           $sep= -1;
           $j= $i;
@@ -1086,9 +1095,25 @@
             }
             
             if ($i == $j) $i++;
-            $this->writeCell($w, $h, substr($s, $j, $i- $j), 0, 2, '', 0, $link);
+            $this->writeCell(
+              $w, $h, 
+              substr($s, $j, $i- $j), 
+              FPDF_BORDER_NONE, 
+              FPDF_POS_BELOW, 
+              FPDF_ALIGN_LEFT, 
+              FPDF_FILL_TRANSPARENT, 
+              $link
+            );
           } else {
-            $this->writeCell($w, $h, substr($s, $j, $sep- $j), 0, 2, '', 0, $link);
+            $this->writeCell(
+              $w, $h, 
+              substr($s, $j, $sep- $j), 
+              FPDF_BORDER_NONE, 
+              FPDF_POS_BELOW, 
+              FPDF_ALIGN_LEFT, 
+              FPDF_FILL_TRANSPARENT, 
+              $link
+            );
             $i= $sep+ 1;
           }
           $sep= -1;
@@ -1108,7 +1133,16 @@
       // Last chunk
       if ($i != $j) {
         $w= round($l / 1000 * $this->FontSize, 2);
-        $this->writeCell($w, $h, substr($s, $j, $i), 0, 0, '', 0, $link);
+        $this->writeCell(
+          $w, 
+          $h, 
+          substr($s, $j, $i), 
+          FPDF_BORDER_NONE, 
+          FPDF_POS_RIGHT, 
+          FPDF_ALIGN_LEFT, 
+          FPDF_FILL_TRANSPARENT, 
+          $link
+        );
       }
     }
 
