@@ -32,7 +32,7 @@
    * <code>
    *   uses('io.dba.DBAFile');
    *   
-   *   $db= &new dbFile('test.gdbm', DBH_GDBM);
+   *   $db= &new DBAFile('test.gdbm', DBH_GDBM);
    *   $db->open(DBO_READ);
    *   for ($i= &$db->iterator(); $i->hasNext(); ) {
    *     $key= $i->next();
@@ -46,7 +46,7 @@
    * <code>
    *   uses('io.dba.DBAFile');
    *   
-   *   $db= &new dbFile('test.cdb', DBH_CDB);
+   *   $db= &new DBAFile('test.cdb', DBH_CDB);
    *   $db->open(DBO_CREATE);
    *   $db->store('path', ini_get('include_path'));
    *   $db->save($optimize= TRUE);
