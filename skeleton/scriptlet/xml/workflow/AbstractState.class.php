@@ -19,7 +19,8 @@
    */
   class AbstractState extends Object {
     var
-      $handlers= array();
+      $cat      = NULL,
+      $handlers = array();
     
     /**
      * Add a handler
@@ -51,11 +52,14 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      */
     function setup(&$request, &$response) {
+      $this->cat && $this->cat->debug($this->getClassName().'::setup');
+      
       with ($h= &$response->addFormResult(new Node('handlers'))); {
         for ($i= 0, $s= sizeof($this->handlers); $i < $s; $i++) {
           with ($name= $this->handlers[$i]->getName()); {
             $identifier= 'handler.'.$request->getStateName().'.'.$name;
             $handler= &$h->addChild(new Node('handler', NULL, array('name' => $name)));
+            $this->cat && $this->cat->debug('Processing handler #'.$i, $this->handlers[$i]);
 
             // Set up handler if not in session
             if (!$request->session->hasValue($identifier)) {
@@ -72,7 +76,7 @@
               } if (catch('Exception', $e)) {
                 return throw($e);
               }
-              
+
               // In case setup() returns FALSE, it indicates the form can not be 
               // displayed due to a prerequisite problem. For example, an editor
               // handler for an article might want to backcheck the article id
@@ -81,6 +85,12 @@
               if (!$setup) {
                 $handler->setAttribute('status', HANDLER_FAILED);
                 continue;
+              }
+
+              // In case a wrapper is defined, call its setup() method. This 
+              // method is not allowed to fail.
+              if ($this->handlers[$i]->hasWrapper()) {
+                $this->handlers[$i]->wrapper->setup($request, $this->handlers[$i]);
               }
 
               // Handler was successfully set up, register to session
@@ -101,9 +111,20 @@
             // Check if the handler needs data. In case it does, call the
             // handleSubmittedData() method
             if (!$this->handlers[$i]->needsData($request)) continue;
+            
+            // If the handler has a wrapper, tell it to load its values from the
+            // request.
+            if ($this->handlers[$i]->hasWrapper()) {
+              $this->handlers[$i]->wrapper->load($request, $this->handlers[$i]);
+            }
 
-            // Handle the submitted data
-            $handled= $this->handlers[$i]->handleSubmittedData($request);
+            // Handle the submitted data. The method errorsOccured() may return
+            // true in case a wrapper was set and its load() method produced 
+            // errors. In this case, we won't even bother to continue processing
+            // the data.
+            if (!$this->handlers[$i]->errorsOccured()) {
+              $handled= $this->handlers[$i]->handleSubmittedData($request);
+            }
 
             // Check whether errors occured
             if ($this->handlers[$i]->errorsOccured()) {
@@ -132,7 +153,7 @@
     }
      
     /**
-     * Process this state
+     * Process this state. Does nothing in this default implementation.
      *
      * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
@@ -142,7 +163,8 @@
     }
     
     /**
-     * Retrieve whether authentication is needed
+     * Retrieve whether authentication is needed. Returns FALSE in this 
+     * default implementation.
      *
      * @access  public
      * @return  bool
@@ -150,5 +172,17 @@
     function requiresAuthentication() {
       return FALSE;
     }
-  }
+
+    /**
+     * Set a trace for debugging
+     *
+     * @access  public
+     * @param   &util.log.LogCategory cat
+     * @see     xp://util.log.Traceable
+     */
+    function setTrace(&$cat) { 
+      $this->cat= &$cat;
+    }
+
+  } implements(__FILE__, 'util.log.Traceable');
 ?>

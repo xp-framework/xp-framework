@@ -12,6 +12,7 @@
    */
   class Handler extends Object {
     var
+      $wrapper  = NULL,
       $values   = array(),
       $errors   = array(),
       $name     = '';
@@ -23,6 +24,55 @@
      */
     function __construct() {
       $this->name= strtolower(get_class($this));
+    }
+    
+    /**
+     * Creates a string representation of this handler
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      $s= sprintf(
+        "%s(%s,wrapper=%s)@{\n",
+        $this->getClassName(),
+        $this->name,
+        $this->wrapper ? $this->wrapper->getClassName() : '(null)'
+      );
+      foreach (array_keys($this->values) as $key) {
+        $s.= sprintf("[%-20s] %s\n", $key, xp::typeOf($this->values[$key]));
+      }
+      return $s.'}';
+    }
+
+    /**
+     * Set Wrapper
+     *
+     * @access  public
+     * @param   &scriptlet.xml.workflow.Wrapper wrapper
+     */
+    function setWrapper(&$wrapper) {
+      $this->wrapper= &$wrapper;
+    }
+
+    /**
+     * Get Wrapper
+     *
+     * @access  public
+     * @return  &scriptlet.xml.workflow.Wrapper
+     */
+    function &getWrapper() {
+      return $this->wrapper;
+    }
+
+    /**
+     * Check whether a wrapper is present
+     *
+     * @access  public
+     * @return  bool
+     */
+    function hasWrapper() {
+      return NULL != $this->wrapper;
     }
     
     /**
