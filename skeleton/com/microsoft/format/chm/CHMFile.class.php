@@ -53,10 +53,12 @@
   class CHMFile extends Object {
     var
       $stream           = NULL,
-      $header           = NULL;
+      $header           = NULL,
+      $directory        = NULL;
       
     var
-      $_headeroffset    = 0;
+      $_headeroffset    = 0,
+      $_diroffset       = 0;
     
     /**
      * Constructor
@@ -235,6 +237,10 @@
      */ 
     function &getDirectory() {
       $this->getHeader();       // We need this so the file pointer position is correct
+      if (!empty($this->directory)) {
+        $this->stream->seek($this->_diroffset, SEEK_SET);
+        return $this->directory;
+      }
 
       if (CHM_DIRECTORY_IDENTIFIER !== ($id= $this->stream->read(4))) {
         return throw(new FormatException(
@@ -242,19 +248,61 @@
         ));
       }
       
+      // Create directory object
       $directory= &new CHMDirectory(unpack(
         'a4identifier/Lversion/Llength/Lunknown/Lchunk_size/Ldensity/Ldepth/Lrootindex_chunk/Lfirst_pmgl/Llast_pmgl/Lunknown/Lnum_chunks/Llang',
         $id.$this->stream->read(0x30)
       ));
-      $directory->guid= $this->_guid(unpack(
+      
+      // Always {5D02926A-212E-11D0-9DF9-00A0-C922-E6EC}
+      $directory->setGuid($this->_guid(unpack(
         'Lguid1/v2guid2/C8guid3',
         $this->stream->read(0x10)
-      ));
-      $directory->ext= unpack(
+      )));
+      
+      // Don't know what this is, read it anyway
+      $directory->setExt(unpack(
         'Llength/L3unknown',
         $this->stream->read(0x10)
-      );
+      ));
       
+      // Read chunks
+      $listing= TRUE;
+      for ($i= 0; $i < $directory->getNum_chunks(); $i++) {
+        $chunk= array();
+        if ($listing) {    // Listing chunks
+          $chunk['type']= CHM_CHUNK_LISTING;
+          $chunk['listing']= unpack(
+            'a4identifier/Lquickref_length/Lunused/Lchunk_prev/Lchunk_next',
+            $this->stream->read(0x14)
+          );
+          $chunk['n']= 1 + (1 << $directory->getDensity());
+          $chunk['entries']= $this->_dir(
+            $directory->getChunk_size()- 0x14, 
+            $chunk['listing']['quickref_length'],
+            CHM_CHUNK_LISTING
+          );
+
+          // Next chunk is index chunk
+          if (-1 == $chunk['listing']['chunk_next']) $listing= FALSE;
+        } else {
+          $chunk['type']= CHM_CHUNK_INDEX;
+
+          $chunk['index']= unpack(
+            'a4identifier/Llength',
+            $this->stream->read(0x8)
+          );
+
+          $chunk['entries']= $this->_dir(
+            $directory->getChunk_size()- 0x8, 
+            $chunk['index']['length'],
+            CHM_CHUNK_INDEX
+          );
+        }
+        $directory->addChunk($chunk);
+      }
+      
+      $this->_diroffset= $this->stream->tell();
       return $directory;
     }
   }
