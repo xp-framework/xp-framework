@@ -38,10 +38,10 @@
    */
   class XMLFormatException extends FormatException {
     var
-      $type     = 0,
-      $filename     = '',
-      $line     = 0,
-      $column   = 0;
+      $type        = 0,
+      $filename    = '',
+      $linenumber  = 0,
+      $column      = 0;
   
     /**
      * Constructor
@@ -50,20 +50,20 @@
      * @param   string message
      * @param   int type default XML_ERROR_SYNTAX
      * @param   string filename default NULL
-     * @param   int line
+     * @param   int linenumber
      * @param   int column
      */
     function __construct(
       $message, 
       $type = XML_ERROR_SYNTAX,
       $filename = NULL,
-      $line = 0,
+      $linenumber = 0,
       $column = 0
     ) {
       parent::__construct($message);
       $this->type= $type;
       $this->filename= $filename;
-      $this->line= $line;
+      $this->linenumber= $linenumber;
       $this->column= $column;
     }
     
@@ -76,17 +76,17 @@
     function toString() {      
       $s= sprintf(
         "%s@('%s'){\n".
-        "  type     %d (%s)\n".
-        "  filename %s\n".
-        "  line     %d\n".
-        "  column   %d\n".
+        "  type       %d (%s)\n".
+        "  filename   %s\n".
+        "  linenumber %d\n".
+        "  column     %d\n".
         "}\n",
         $this->getClassName(),
         $this->getMessage(),
         $this->getType(),
         $this->getTypeName(),
         var_export($this->getfilename(), 1),
-        $this->getLine(),
+        $this->getlinenumber(),
         $this->getColumn()
       );
       for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
@@ -150,13 +150,13 @@
     }
 
     /**
-     * Get Line
+     * Get line number
      *
      * @access  public
      * @return  int
      */
-    function getLine() {
-      return $this->line;
+    function getLineNumber() {
+      return $this->linenumber;
     }
 
     /**
