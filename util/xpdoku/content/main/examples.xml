@@ -4,6 +4,7 @@
     <references>
       <ref link="about">An introduction</ref>
       <ref link="tasks">Common Tasks</ref>
+      <ref type="ext" link="http://cvs.xp-framework.net/horde/chora/cvs.php/doc/examples">All examples</ref>
     </references>
     <content>
       <title>Examples</title>
@@ -34,6 +35,7 @@
           </box>        
         </text>
         <advanced>
+          <ref type="cvs" link="doc/examples/filereader.php"/>
           <ref type="api:class" link="io.File"/>
           <ref type="api:class" link="io.FileUtil"/>
         </advanced>
@@ -106,6 +108,7 @@
           </box>        
         </text>
         <advanced>
+          <ref type="cvs" link="doc/examples/listfolder.php"/>
           <ref type="api:class" link="io.Folder"/>
         </advanced>
       </para>
@@ -175,6 +178,7 @@ Class 'util.Binford'
           </box>
         </text>
         <advanced>
+          <ref type="cvs" link="doc/examples/reflection.php"/>
           <ref type="api:class" link="lang.XPClass"/>
           <ref type="ext" link="http://sitten-polizei.de/php/reflection_api">PHP5 reflection API</ref>
         </advanced>
@@ -235,6 +239,7 @@ File lang.base.php (local: 1.35, repository: 1.35) is up-to-date [8]
           </box>
         </text>
         <advanced>
+          <ref type="cvs" link="doc/examples/cvsstatus.php"/>
           <ref type="ext" link="http://cvshome.org/">CVS homepage</ref>
         </advanced>
       </para>
@@ -302,6 +307,7 @@ peer.ldap.LDAPEntry@DN(uid=kurt,ou=People,dc=OpenLDAP,dc=Org){
           </box>
         </text>
         <advanced>
+          <ref type="cvs" link="doc/examples/ldapsearch.php"/>
           <ref type="ext" link="http://www.web2ldap.de/">WWW gateway to LDAP server</ref>
         </advanced>
       </para>
@@ -386,6 +392,7 @@ peer.ldap.LDAPEntry@DN(uid=kurt,ou=People,dc=OpenLDAP,dc=Org){
           </box>
         </text>
         <advanced>
+          <ref type="cvs" link="doc/examples/createrdf.php"/>
           <ref type="api:collection" link="rdbms"/>
           <ref type="ext" link="http://xp-framework.net/news.rdf.xml"/>
         </advanced>
