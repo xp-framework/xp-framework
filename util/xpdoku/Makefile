@@ -6,6 +6,7 @@ OUTPUT=output
 TARGET=/home/httpd/xp.php3.de/doc_root/
 XML=xml
 CTREE=$(XML)/classTree.xpdoc.xml
+INHERITANCE=$(XML)/inheritanceTree.xml
 SABCMD=sabcmd 
 PHP=php -q
 
@@ -68,6 +69,8 @@ collections: $(OUTPUT) $(XML)
 	@for k in `$(SABCMD) xslt/helper.xsl $(CTREE) '$$mode=allcollections' | sed -e 's/<.*>//'`; do $(MAKE) -s "collection_$$k" ; done
 
 classes: $(OUTPUT) $(XML)
+	@echo "===> Processing class inheritance"
+	@$(SABCMD) xslt/inheritance.xsl $(INHERITANCE) $(OUTPUT)/apidoc/inheritance.html 2>/dev/null
 	@echo "===> Processing classes"
 	@for k in `$(SABCMD) xslt/helper.xsl $(CTREE) '$$mode=allclasses' | sed -e 's/<.*>//'`; do $(MAKE) -s class_$$k; done
 
