@@ -174,7 +174,7 @@
       }
       
       // DEBUG echo "-----------------------------------------------------------------------------------\n";
-      if (FALSE === call_user_func($func, $kargs, explode(';', $value))) {
+      if (FALSE === call_user_func($func, $kargs, $value)) {
         trigger_error('Callback:'.(is_array($func) ? get_class($func[0]).'::'.$func[1] : $func), E_USER_NOTICE);
         return throw(new MethodNotImplementedException('Could not invoke callback for "'.$kargs[0].'"'));
       }
