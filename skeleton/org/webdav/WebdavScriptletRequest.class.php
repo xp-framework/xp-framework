@@ -83,24 +83,6 @@
     }
     
     /**
-     * Encode the parts of a path 
-     *
-     * Example:
-     * <pre>
-     *   "/Test Folder/file.txt" -> "/Test%20Folder/file.txt"
-     * </pre>
-     *
-     * @access  private
-     * @param   string path The path
-     * @return  string
-     */
-    function encodePath($path) {
-      $parts = explode('/', $path);
-      for ($i = 0; $i < sizeof($parts); $i++) $parts[$i]= rawurlencode($parts[$i]);
-      return implode('/', $parts);
-    }
-    
-    /**
      * Decode the parts of a path 
      *
      * Example:
@@ -111,6 +93,7 @@
      * @access  private
      * @param   string path The path
      * @return  string
+     * @see org.webdav.WebdavScriptletResponse#encodePath
      */
     function decodePath($path) {
       $parts = explode('/', $path);
