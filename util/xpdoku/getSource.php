@@ -71,7 +71,7 @@
   if ($prop->exists ()) {
     $sect= $prop->getFirstSection();
     do {
-      if (is_array ($sect))
+      if (!empty ($sect))
         $packages[$sect]= $prop->readSection($sect);
     } while (false !== ($sect= $prop->getNextSection()));
   }
