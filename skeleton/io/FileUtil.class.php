@@ -43,6 +43,7 @@
      * @model   static
      * @access  public
      * @param   &io.File file
+     * @param   string data
      * @return  int filesize
      * @throws  io.IOException
      */
