@@ -409,6 +409,10 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
                 <code><![CDATA[  $object= &new Object();
   delete($object);]]></code>
             </li>
+            <li><pre>proto lang.Object &amp;clone(lang.Object object)</pre>Clones an object
+                <code><![CDATA[  $a= &new Object();
+  $b= &clone($a);]]></code>
+            </li>
           </ul>
         </text>
       </para>              
