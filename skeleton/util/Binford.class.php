@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('peer.Header');
+  
   /**
    * This class has more power
    *
@@ -41,11 +43,16 @@
     /**
      * Retreive header suited for HTTP/Mail
      *
+     * Example:
+     * <pre>
+     *   X-Binford: 6100 (more power)
+     * </pre>
+     *
      * @access  public
-     * @return  string header
+     * @return  &peer.Header
      */
     function getHeader() {
-      return 'X-Binford: '.$this->poweredBy.' (more power)';
+      return new Header('X-Binford', $this->poweredBy.' (more power)');
     }
   }
 ?>
