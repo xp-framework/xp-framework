@@ -36,7 +36,7 @@
       
       // Construct multipart and set content type accordingly
       with ($multi= &$this->addPart(new MultiPart())); {
-        $this->text= &$multi->addPart(new MimePart('This is a HTML message', 'text/plain'));
+        $this->text= &$multi->addPart(new MimePart('', 'text/plain'));
         $this->text->setDisposition(MIME_DISPOSITION_INLINE);
         $this->html= &$multi->addPart(new MimePart('', 'text/html'));
         $this->html->setDisposition(MIME_DISPOSITION_INLINE);
