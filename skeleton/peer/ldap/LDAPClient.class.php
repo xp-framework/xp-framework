@@ -198,25 +198,25 @@
      *
      * @access  public
      * @param   &peer.ldap.LDAPEntry entry specifying the dn
-     * @param   string filter default 'objectClass=*' filter
      * @return  &peer.ldap.LDAPEntry entry
      * @throws  IllegalArgumentException
      * @throws  peer.ldap.LDAPException
      */
-    function &read(&$entry, $filter= 'objectClass=*') {
+    function &read(&$entry) {
       if (!is_a($entry, 'LDAPEntry')) {
         return throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       }
       
-      $res= ldap_list($this->_hdl, $entry->getDN(), $filter);
+      list($filter, $base)= explode(',', $entry->getDN(), 2);
+      $res= ldap_list($this->_hdl, $base, $filter, array(), FALSE, 1);
       if (0 != ldap_error($this->_hdl)) {
         return throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_error($this->_hdl)));
       }
       
       // Nothing found?
-      if (FALSE === $res) return NULL;
-      
       $result= ldap_get_entries($this->_hdl, $res);
+      if (!is_resource($res) || 0 == $result['count']) return NULL;
+
       return LDAPEntry::fromData($result[0]);
     }
     
