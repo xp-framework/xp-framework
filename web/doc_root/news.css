@@ -4,30 +4,46 @@
  */
 
 td, p, ul { 
-  font: 13px "Tahoma"; 
+  font: 12px "Tahoma", "Verdana", "Arial", sans-serif; 
   line-height: 18px;
 }
 h1 { 
-  font: bold 19px "Georgia"; 
+  font: 20px "Lucida Grande", "Verdana", "Arial", sans-serif;
+  color: #666666;
+  letter-spacing: 4px;
 }
 h2 { 
-  font: bold 17px "Georgia"; 
+  font: 18px "Lucida Grande", "Verdana", "Arial", sans-serif;
+  color: #666666;
+  letter-spacing: 2px;
+}
+h2.date {
+  font: bold 16px "Georgia", serif;
+  letter-spacing: 0px;
+  margin: 2px;
 }
 h3 { 
-  font: bold 14px "Georgia";
+  font: bold 13px "Lucida Grande", "Verdana", "Arial", sans-serif;
+  color: #666666;
+  letter-spacing: 1px;
   border-bottom: 1px solid #a4b6c5;  
 }
 h4 { 
-  font: bold 14px "Georgia"; 
+  font: bold 13px "Lucida Grande", "Verdana", "Arial", sans-serif;
+}
+h4.context { 
+  font: bold 13px "Lucida Grande", "Verdana", "Arial", sans-serif;
+  text-align: right; 
+  border-bottom: 1px solid #666666; 
 }
 em { 
-  font: 13px "Georgia"; 
+  font: 13px "Georgia", serif;; 
 }
 a { 
   color: #1c375c; 
 }
 small {
-  font: 13px "Georgia"; 
+  font: 13px "Georgia", serif;; 
 }
 quote {
   color: #245598;
@@ -35,7 +51,7 @@ quote {
 ul {
   list-style-type: square;
   list-style-image: url(image/li.gif);
-  line-height: 16px;
+  line-height: 18px;
 }
 td.navactive { 
   padding-left: 8px; 
@@ -60,11 +76,6 @@ a.nav {
 input.search { 
   height: 18px; 
   border: 1px solid #000099; 
-}
-h4.context { 
-  font: bold 14px "Georgia"; 
-  text-align: right; 
-  border-bottom: 1px solid #666666; 
 }
 ul.context {
   padding-left: 22px;
