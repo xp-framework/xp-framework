@@ -141,10 +141,10 @@ __;
         $tok[1]= 'public';
         break;
         
-      case 'function':  // function public, function _private
+      case 'function':  // function public, function _protected
         while (T_STRING !== $tok[0]) $tok= $t->getNextToken();
         // var_dump($tok);
-        $out[]= ('_' == $tok[1]{0} && '_' == $tok[1]{1}) ? 'private' : 'public';
+        $out[]= ('_' == $tok[1]{0} && '_' != $tok[1]{1}) ? 'protected' : 'public';
         if (
           ('getInstance' == $tok[1]) ||
           ('fromString' == $tok[1]) ||
