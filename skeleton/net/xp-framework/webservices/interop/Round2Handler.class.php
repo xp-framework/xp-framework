@@ -12,6 +12,34 @@
    * @purpose  SOAP Interop server
    */
   class Round2Handler extends Object {
+
+    /**
+     * Checks the type of given object.
+     *
+     * @access  private
+     * @param   string type
+     * @param   &mixed
+     * @throws  lang.IllegalArgumentException
+     */
+    function _assertType($type, &$object) {
+      if ($type != xp::typeOf($object))
+        return throw (new IllegalArgumentException('Object not of expected type '.$type.', but '.xp::typeOf($object).' with value '.$object));
+    }
+    
+    /**
+     * Checks all entries in an array for correct type
+     *
+     * @access  private
+     * @param   string type
+     * @param   &array
+     * @
+     */
+    function _assertSubtype($type, &$array) {
+      foreach (array_keys($array) as $key) {
+        if ($type != xp::typeOf($array[$key]))
+          return throw (new IllegalArgumentException('Object (in array) not of expected type '.$type.', but '.xp::typeOf($array[$key]).' with value '.$array[$key]));
+      }
+    }
   
     /**
      * Echoes a given string.
@@ -21,7 +49,8 @@
      * @return  string
      */
     function echoString($inputString) {
-      return (string)$inputString;
+      $this->_assertType('string', $inputString);
+      return $inputString;
     }
     
     /**
@@ -33,10 +62,8 @@
      * @throws  lang.IllegalArgumentException
      */
     function echoStringArray($inputStringArray) {
-      if (!$this->_isTypeOf('string',is_array($inputStringArray)) {
-        return throw (new IllegalArgumentException('Parameter must be an array ('.xp::typeOf($inputStringArray).' given)');
-      }
-      
+      $this->_assertType('array', $inputStringArray);
+      $this->_assertSubtype('string', $inputStringArray);
       return $inputStringArray;
     }
     
@@ -48,7 +75,8 @@
      * @return  int
      */
     function echoInteger($inputInteger) {
-      return (int)$inputInteger;
+      $this->_assertType('integer', $inputInteger);
+      return $inputInteger;
     }
     
     /**
@@ -60,10 +88,8 @@
      * @throws  lang.IllegalArgumentException
      */
     function echoIntegerArray($inputIntegerArray) {
-      if (!is_array($inputStringArray)) {
-        return throw (new IllegalArgumentException('Parameter must be an array ('.xp::typeOf($inputStringArray).' given)');
-      }
-      
+      $this->_assertType('array', $inputIntegerArray);
+      $this->_assertSubtype('integer', $inputIntegerArray);
       return $inputIntegerArray;
     }
     
@@ -75,7 +101,8 @@
      * @return  float
      */
     function echoFloat($inputFloat) {
-      return (float)$inputFloat;
+      $this->_assertType('float', $inputFloat);
+      return $inputFloat;
     }
     
     /**
@@ -87,10 +114,8 @@
      * @throws  lang.IllegalArgumentException
      */
     function echoFloatArray($inputFloatArray) {
-      if (!is_array($inputStringArray)) {
-        return throw (new IllegalArgumentException('Parameter must be an array ('.xp::typeOf($inputStringArray).' given)');
-      }
-      
+      $this->_assertType('array', $inputFloatArray);
+      $this->_assertSubtype('float', $inputFloatArray);
       return $inputFloatArray;
     }
     
@@ -103,15 +128,10 @@
      * @throws  lang.IllegalArgumentException
      */
     function echoStruct($inputStruct) {
-      if (
-        !is_array($inputStruct) ||
-        !isset($inputStruct['varString']) ||
-        !isset($inputStruct['varInt']) ||
-        !isset($inputStruct['varFloat'])
-      ) {
-        return throw (new IllegalArgumentException('Parameter is not the struct from specification!'));
-      }
-      
+      $this->_assertType('array',   $inputStruct);
+      $this->_assertType('string',  $inputStruct['varString']);
+      $this->_assertType('integer', $inputStruct['varInt']);
+      $this->_assertType('float',   $inputStruct['varFloat']);
       return $inputStruct;
     }
     
@@ -170,10 +190,7 @@
      * @throws  lang.IllegalArgumentException
      */
     function echoDate($inputDate) {
-      if (!is('util.Date', $inputDate)) {
-        return throw (new IllegalArgumentException('Given parameter is not a date!'));
-      }
-      
+      $this->_assertType('util.Date', $inputType);
       return $inputDate;
     }
     
@@ -185,6 +202,7 @@
      * @return  float
      */
     function echoDecimal($inputDecimal) {
+      $this->_assertType('float', $inputDecimal);
       return $inputDecimal;
     }
     
@@ -196,6 +214,7 @@
      * @return  boolean
      */
     function echoBoolean($inputBoolean) {
+      $this->_assertType('boolean', $inputBoolean);
       return (bool)$inputBoolean;
     }
   }
