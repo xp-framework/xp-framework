@@ -85,7 +85,7 @@
      * @param   string target an absolute URI
      */
     function sendRedirect($location) {
-      $this->statusCode= HTTP_MOVED_TEMPORARILY;
+      $this->statusCode= HTTP_FOUND;
       $this->setHeader('Location', $location);
     }
     

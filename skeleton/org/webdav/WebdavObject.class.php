@@ -35,7 +35,7 @@
      * @param   string resourceType
      * @param   string contentLength default 0
      * @param   string contentType default NULL
-     * @param   int status default HTTP_STATUS_OK
+     * @param   int status default HTTP_OK
      * @param   array properties default array()
      */
     function __construct(
