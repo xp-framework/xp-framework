@@ -205,7 +205,7 @@
      *   }
      * </code>
      *
-     * @access  protected
+     * @access  protected
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
@@ -218,7 +218,7 @@
      * Receives an HTTP POST request from the <pre>process()</pre> method
      * and handles it.
      *
-     * @access  protected
+     * @access  protected
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
@@ -241,7 +241,7 @@
      * often used for testing hypertext links for validity, accessibility,
      * and recent modification.
      *
-     * @access  protected
+     * @access  protected
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
@@ -270,7 +270,7 @@
      *   8 fraction        #test
      * </pre>
      *
-     * @access  protected
+     * @access  protected
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 

@@ -171,7 +171,7 @@
     /**
      * Creates a session. 
      *
-     * @access  protected
+     * @access  protected
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
