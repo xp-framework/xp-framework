@@ -43,8 +43,8 @@ $(FILE).o: $(FILE).c
 
 clean:
 	@echo "---> Cleaning for $(FILE)"
-	rm -f $(FILE).o $(FILE).c
-	rmdir .libs
+	-rm -f $(FILE).o $(FILE).c
+	-rmdir .libs
  
 exe:    c $(FILE) clean
 	@echo -n "---> Executable: "
