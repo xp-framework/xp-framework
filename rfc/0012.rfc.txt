@@ -380,4 +380,8 @@ Comments
   We should have a base context class and could then derive the
   AuthorizedContext from it.
 
+- friebe, Mon Mar 14 11:26:01 CET 2005
+  The "compressed" field is reserved for future use. At the moment, it will
+  always contain 0.
+
 <EOF>
