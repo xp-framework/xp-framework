@@ -114,16 +114,17 @@
       // Try to use builtin function strtotime()
       if (-1 != ($stamp= strtotime($in))) return $stamp;
       
-      // European date format (dd.mm.yyyy hh:mm:ss)
-      if ($m= sscanf($in, '%d.%d.%d %d:%d:%d')) {
-        return Date::mktime($m[3], $m[4], $m[5], $m[1], $m[0], $m[2]);
+      // European date format (dd.mm.yyyy hh:mm:ss). At least two values
+      // need to be found
+      if (2 < sscanf($in, '%d.%d.%d %d:%d:%d', $d, $m, $y, $h, $i, $s)) {
+        return Date::mktime($h, $i, $s, $m, $d, $y);
       }
 
       // "Dec 31 2070 11:59PM"
-      if ($m= sscanf($in, '%3s %02d %04d %02d:%02d%[AP]M')) {
-        ($m[5] == 'A' && $m[3] == 12) && $m[3]= 0;
-        ($m[5] == 'P' && $m[3] == 12) || $m[3]+= 12;
-        return Date::mktime($m[3], $m[4], 0, $month_names[$m[0]], $m[1], $m[2]);
+      if (2 < sscanf($in, '%3s %02d %04d %02d:%02d%[AP]M', $n, $d, $y, $h, $i, $m)) {
+        ($m == 'A' && $h == 12) && $h= 0;
+        ($m == 'P' && $h == 12) || $h+= 12;
+        return Date::mktime($h, $i, 0, $month_names[$n], $d, $y);
       }
       
       // FIXME: Support more formats
