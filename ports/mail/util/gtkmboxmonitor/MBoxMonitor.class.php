@@ -234,7 +234,7 @@
     function setStatusText($fmt) {
       $args= func_get_args();
       $text= vsprintf($args[0], array_slice($args, 1));
-      $this->log('Status', $text);
+      // DEBUG $this->log('Status', $text);
       $this->statusbar->push(1, $text);
       
       // Leave the GUI time to repaint
@@ -252,7 +252,6 @@
 
       // Set up child row style
       if (!$style) {
-        $this->log('Setting up style for children elements');
         $style= $this->tree->style;
         $style= $style->copy();
         $style->fg[GTK_STATE_NORMAL]= $style->fg[GTK_STATE_INSENSITIVE];
@@ -267,7 +266,7 @@
           NULL,     // Status
           $msg->from->personal.' <'.$msg->from->localpart.'@'.$msg->from->domain.'>',
           $msg->getSubject(),
-          $msg->date->toString('Y-m-d H:i:s'),
+          $msg->date->toString('Y/m/d H:i'),
           sprintf('%0.2f KB', $msg->size / 1024)
         ),
         1,
@@ -302,17 +301,17 @@
       // Copy message
       $this->tree->node_set_row_data($node, $msg);
       
-      // Add child
-      foreach ($msg->headers as $key => $val) {
-        $child= &$this->tree->insert_node(
+      foreach (array(TO, CC, BCC) as $type) {
+        foreach ($msg->getRecipients($type) as $r) {
+          $child= &$this->tree->insert_node(
             $node,
             NULL,
             array(
               NULL,     // Pixmap
               NULL,     // Attachment
               NULL,     // Status
-              $key,
-              $val,
+              ucfirst($type),
+              $r->personal.' <'.$r->localpart.'@'.$r->domain.'>',
               '',
               ''
             ),
@@ -323,6 +322,32 @@
             NULL,
             TRUE,
             FALSE
+          );
+          $this->tree->node_set_selectable($child, FALSE);
+        }
+      }
+      
+      // Add headers
+      foreach ($msg->headers as $key => $val) {
+        $child= &$this->tree->insert_node(
+          $node,
+          NULL,
+          array(
+            NULL,     // Pixmap
+            NULL,     // Attachment
+            NULL,     // Status
+            $key,
+            $val,
+            '',
+            ''
+          ),
+          1,
+          NULL,
+          NULL,
+          NULL,
+          NULL,
+          TRUE,
+          FALSE
         );
         $this->tree->node_set_selectable($child, FALSE);
         $this->tree->node_set_row_style($child, $style);
