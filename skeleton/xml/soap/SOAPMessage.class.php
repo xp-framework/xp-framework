@@ -16,6 +16,7 @@
   define('XMLNS_SOAPINTEROP',   'http://soapinterop.org/xsd');
   define('XMLNS_XSD',           'http://www.w3.org/2001/XMLSchema');
   define('XMLNS_XSI',           'http://www.w3.org/2001/XMLSchema-instance');
+  define('XMLNS_XP',            'http://xp-framework.net/xmlns/xp');
   
   /**
    * A SOAP Message consists of an envelope containing a body, and optionally,
@@ -138,19 +139,18 @@
       // Update namespaces list
       $xpns= NULL;
       foreach ($child->attribute as $key => $val) {
-        if ('xmlns' != substr($key, 0, 5)) continue;
-        
-        $this->namespaces[substr($key, 6)]= $val;
-        
-        // Recognize XP object
-        if ('http://xp-framework.net/xmlns/xp' == substr($val, 0, 32)) {
-          $xpns= substr($child->attribute['xsi:type'], strlen($key) - 5);
+        if (0 != strncmp('xmlns:', $key, 6)) continue;
+        $this->namespaces[$val]= substr($key, 6);
+
+        // Recognize XP objects
+        if (0 == strncmp(XMLNS_XP, $val, 32)) {
+          $xpns= substr($child->attribute[$this->namespaces[XMLNS_XSI].':type'], strlen($key) - 5);
         }
       }
       
       if ($xpns) {
         try(); {
-          $class= &XPClass::forName(substr($child->attribute['xsi:type'], strlen($key) - 5));
+          $class= &XPClass::forName($xpns);
         } if (catch('ClassNotFoundException', $e)) {
 
           // Handle this gracefully
