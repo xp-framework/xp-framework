@@ -112,7 +112,7 @@
      * @return  mixed attribute
      */
     function getAttribute($key, $idx= -1) {
-      return ((0 < $idx) 
+      return (($idx >= 0)
         ? isset($this->attributes[$key][$idx]) ? $this->attributes[$key][$idx]  : NULL 
         : isset($this->attributes[$key]) ? $this->attributes[$key] : NULL
       );
