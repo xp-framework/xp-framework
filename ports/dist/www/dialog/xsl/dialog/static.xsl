@@ -104,6 +104,42 @@
   </xsl:template>
 
   <!--
+   ! Template for updates
+   !
+   ! @purpose  Specialized entry template
+   !-->
+  <xsl:template match="entry[@type = 'de.thekid.dialog.SingleShot']">
+    <div class="datebox">
+      <h2><xsl:value-of select="date/mday"/></h2> 
+      <xsl:value-of select="substring(date/month, 1, 3)"/>&#160;
+      <xsl:value-of select="date/year"/>
+    </div>
+    <h2>
+      <xsl:value-of select="@title"/>
+    </h2>
+    <p align="justify">
+      <xsl:copy-of select="description"/>
+      <br clear="all"/>
+    </p>
+    <table border="0">
+      <tr>
+        <td rowspan="2">
+          <img class="singleshot" border="0" src="/shots/detail.{@name}" width="459" height="230"/>
+        </td>
+        <td valign="top">
+          <img class="singleshot_thumb" border="0" src="/shots/thumb.{@name}" width="150" height="113"/>
+        </td>
+      </tr>
+      <tr>
+        <td valign="bottom">
+          <img class="singleshot_thumb" border="0" src="/shots/gray.{@name}" width="150" height="113"/>
+        </td>
+      </tr>
+    </table>
+    <br/><br clear="all"/>
+  </xsl:template>
+
+  <!--
    ! Template for content
    !
    ! @see      ../layout.xsl
