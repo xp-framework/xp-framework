@@ -46,20 +46,18 @@ hr {
 }
 
 /* Page layout */
-.header {
+tr#header {
   background-color: #233f57;
   text-align: left;
   padding-left: 10px;
-  height: 68px;
+  height: 60px;
   background-image: url(/image/bg_head_darkblue.jpg);
 }
 .gutter {
   height: 60px;
   border: 1px solid #2e2e2f;
   border-right: none;
-  background-color: #e9e8f1;
 }
-
 #gutter1.gutter {
   background-color: #3e6b9c;
   background: url(/image/clouds.png) no-repeat;

@@ -31,19 +31,14 @@
         <center>
           <!-- main content -->
           <table border="0" cellspacing="0" class="main">
-            <tr>
-              <th colspan="4" class="header">
-                <h1><xsl:value-of select="/formresult/config/title"/></h1>
-              </th>
-            </tr>
-            <tr>
+            <tr id="header">
               <td width="60" class="gutter" id="gutter1">&#160;</td>
               <td width="60" class="gutter" id="gutter2">&#160;</td>
               <td width="60" class="gutter" id="gutter3">&#160;</td>
               <td width="530" class="gutter" valign="bottom" align="right">
-                <a class="nav" id="active" href="#">Home</a>
-                <a class="nav" href="#">More</a>
-                <a class="nav" href="#">Archives</a>&#160;
+                <a class="nav" id="active" href="{func:link('static')}">
+                  <xsl:value-of select="/formresult/config/title"/>: Home
+                </a>
               </td>
             </tr>
             <tr>
