@@ -35,7 +35,7 @@
 ZEND_DECLARE_MODULE_GLOBALS(xp)
 
 /* {{{ xp_functions[]
- *
+ *     Global functions
  */
 static function_entry xp_functions[] = {
 	PHP_FE(uses,	NULL)
@@ -46,13 +46,20 @@ static function_entry xp_functions[] = {
 };
 /* }}} */
 
+/* {{{ xp_object_functions[]
+ *     Class methods for class lang::Object
+ */
 static function_entry xp_object_functions[] = {
 	PHP_FE(equals, NULL)
 	PHP_FE(tostring, NULL)
 	PHP_FE(getclassname, NULL)
 	{NULL, NULL, NULL}
 };
+/* }}} */
 
+/* {{{ xp_throwable_functions[]
+ *     Class methods for class lang::Throwable
+ */
 static function_entry xp_throwable_functions[] = {
 	PHP_NAMED_FE(__construct,   PHP_FN(throwable___construct),      NULL)
 	PHP_NAMED_FE(tostring,      PHP_FN(throwable_tostring),         NULL)
@@ -62,6 +69,7 @@ static function_entry xp_throwable_functions[] = {
 	PHP_NAMED_FE(getline,       PHP_FN(throwable_getline),          NULL)
 	{NULL, NULL, NULL}
 };
+/* }}} */
 
 /* {{{ xp_module_entry
  */
