@@ -88,22 +88,23 @@
      * @return  &xml.soap.SOAPMessage
      */
     function &retrieve(&$response) {
-      $answer= &new SOAPMessage();
-      
-      // Check encoding
-      if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
-        @list($type, $charset)= explode('; charset=', $content_type);
-        if (!empty($charset)) $answer->setEncoding($charset);
-      }
+
       $this->cat && $this->cat->debug('<<<', $response);
       
-      $answer->action= $this->action;
       try(); {
         $xml= '';
         while ($buf= $response->readData()) $xml.= $buf;
         
         $this->cat && $this->cat->debug('<<<', $xml);
-        $answer->fromString($xml);
+        $answer= &SOAPMessage::fromString($xml);
+        
+        // Check encoding
+        if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
+          @list($type, $charset)= explode('; charset=', $content_type);
+          if (!empty($charset)) $answer->setEncoding($charset);
+        }
+
+        $answer->action= $this->action;
       } if (catch('Exception', $e)) {
         return throw($e);
       }
