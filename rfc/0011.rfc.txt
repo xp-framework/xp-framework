@@ -3,7 +3,7 @@ RFC 0011: Changes to Peer/DataSet/Criteria API
 $Id$
 
 @authors: friebe
-@created: Mon Nov 22 20:58:08 CET 2004
+@created: Wed Nov 24 16:08:41 CET 2004
 @status: draft
 @category: rdbms
 
@@ -22,16 +22,33 @@ defined SQL queries.
 Functionality
 -------------
 Currently, the following is possible:
-
 <?php
-  $peer= &News::getPeer();
-  $objects= $peer->doSelect(new Criteria(...));
+  with ($peer= &News::getPeer()); {
+    $criteria= &new Criteria(array('news_id', 10, LESS_THAN));
+
+    // Use doSelect()
+    $objects= $peer->doSelect($criteria);
+    
+    // Use iteratorFor()
+    for ($iterator= &$peer->iteratorFor($criteria); $iterator->hasNext(); ) {
+      $object= &$iterator->next();
+    }
+  }
 ?>
 
-The new functionality is:
+The added functionality provides the following equivalents:
 <?php
-  $peer= &News::getPeer();
-  $objects= $peer->doSelect(new Statement(...));
+  with ($peer= &News::getPeer()); {
+    $statement= &new Statement('select * from news where news_id < 10');
+
+    // Use doSelect()
+    $objects= $peer->doSelect($statement);
+
+    // Use iteratorFor()
+    for ($iterator= &$peer->iteratorFor($statement); $iterator->hasNext(); ) {
+      $object= &$iterator->next();
+    }
+  }
 ?>
 
 Dependencies
@@ -39,7 +56,7 @@ Dependencies
 * rdbms.Statement (class)
   Represents an SQL statement
 
-* rdbms.XXX ??? XXX
+* rdbms.Expression (interface)
   Interface that gets implemented both by Statement and Criteria
 
 Related documents
@@ -50,5 +67,8 @@ Comments
 --------
 - friebe, Wed Nov 24 16:08:41 CET 2004
   Think of a name for the interface
+  
+- friebe, Thu Nov 25 09:29:49 CET 2004
+  Is "Expression" a good word for the interface?
   
 <EOF>
