@@ -12,8 +12,8 @@
    * Usage example [Transform two files]
    * <code>
    *   $proc= &new XSLProcessor();
-   *   $proc->setXSLFile('test.xml');
-   *   $proc->setXMLFile('test.xsl');
+   *   $proc->setXSLFile('test.xsl');
+   *   $proc->setXMLFile('test.xml');
    *   
    *   try(); {
    *     $proc->run();
@@ -21,6 +21,8 @@
    *     $e->printStackTrace();
    *     exit();
    *   }
+   *
+   *   var_dump($proc->output());
    * </code>
    *
    * @purpose  Transform XML/XSLT using PHPs builtin XSL functions

@@ -12,8 +12,8 @@
    * Usage example [Transform two files]
    * <code>
    *   $proc= &new DomXSLProcessor();
-   *   $proc->setXSLFile('test.xml');
-   *   $proc->setXMLFile('test.xsl');
+   *   $proc->setXSLFile('test.xsl');
+   *   $proc->setXMLFile('test.xml');
    *   
    *   try(); {
    *     $proc->run();
@@ -21,11 +21,12 @@
    *     $e->printStackTrace();
    *     exit();
    *   }
+   *
+   *   var_dump($proc->output());
    * </code>
    *
-   * @purpose  Transform XML/XSLT using PHPs builtin XSL functions
+   * @purpose  Transform XML/XSLT using PHPs domXSL functions
    * @ext      dom
-   * @see      http://www.gingerall.com - Sablotron
    */
   class DomXSLProcessor extends XML {
     var 
