@@ -63,7 +63,8 @@
     /**
      * Returns the network byte order.
      *
-     * @access  static
+     * @model   static
+     * @access  public
      * @return  int network byte order
      * @see     http://www.hyperdictionary.com/computing/network+byte+order
      */
