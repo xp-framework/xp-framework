@@ -192,7 +192,7 @@
      */
     function update() {
       $cm= &amp;ConnectionManager::getInstance();  
-      if (NULL === ($db= $cm->getByHost('***', 0))) {
+      if (FALSE === ($db= $cm->getByHost('***', 0))) {
         return throw(new IllegalAccessException('No connection available'));
       }
 
@@ -268,7 +268,7 @@
      */
     function insert() {
       $cm= &amp;ConnectionManager::getInstance();  
-      if (NULL === ($db= $cm->getByHost('***', 0))) {
+      if (FALSE === ($db= $cm->getByHost('***', 0))) {
         return throw(new IllegalAccessException('No connection available'));
       }
 
