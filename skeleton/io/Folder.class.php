@@ -1,5 +1,5 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  * 
  * $Id$
  */
@@ -7,10 +7,10 @@
   uses('io.IOException');
     
   /**
-   * Verzeichnis als Objekt
-   * Kapselt Verzeichnis-Operationen und versieht sie mit schönen Exceptions
+   * Represents a Folder
    *
-   * <xmp>
+   * Usage:
+   * <code>
    *   try(); {
    *     $d= new Folder('/etc/');
    *     while ($entry= $d->getEntry()) {
@@ -20,7 +20,7 @@
    *   } if (catch('IOException', $e)) {
    *     $e->printStackTrace();
    *   }
-   * </xmp>
+   * </code>
    */
   class Folder extends Object {
     var 
@@ -34,7 +34,8 @@
     /**
      * Constructor
      *
-     * @param  string dirname Verzeichnisname
+     * @access  public
+     * @param   string dirname the directory's name
      */
     function __construct($dirname= NULL) {
       if (NULL != $dirname) $this->setURI($dirname);
@@ -43,6 +44,8 @@
     
     /**
      * Destructor
+     *
+     * @access  public
      */
     function __destruct() {
       $this->close();
@@ -50,11 +53,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Close directory
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function close() {
       if (FALSE != $this->_hdir) $this->_hdir->close();
@@ -62,11 +63,10 @@
     }
 
     /**
-     * URI setzen. Definiert andere Attribute wie path & filename
+     * Set URI
      *
-     * @access  public
-     * @param   string uri Die URI
-     * @throws  IOException, wenn uri kein Verzeichnis ist
+     * @access  private
+     * @param   string uri the complete path name
      */
     function setURI($uri) {
     
@@ -110,20 +110,21 @@
     }
 
     /**
-     * Check, ob das Verzeichnis existiert
+     * Returns whether this directory exists
      *
      * @access  public
-     * @return  bool Ob das Verzeichnis existiert
+     * @return  bool TRUE in case the directory exists
      */
     function exists() {
       return is_dir($this->uri);
     }
     
     /**
-     * Das Verzeichnis auslesen, die Einträge . und .. weglassen
+     * Read through the contents of the directory, ommitting the entries "." and ".."
      *
      * @access  public
-     * @return  mixed (bool)FALSE, wenn keine Elemente mehr übrig, (string)Verzeichniseintrag (ohne Pfadnamen!) sonst
+     * @return  string entry directory entry (w/o path!), FALSE, if no more entries are left
+     * @throws  IOException in case an error occurs
      */
     function getEntry() {
       if (
@@ -131,7 +132,7 @@
         (FALSE === ($this->_hdir= dir($this->uri)))
       ) {
         return throw(new IOException(sprintf(
-          'not a dir: "%s"',
+          'Cannot open directory "%s"',
           $this->uri
         )));
       }
