@@ -34,7 +34,10 @@
           'collection' => $collection,
           'package'    => $package
         )));
-        $n->addChild(Node::fromArray(explode('.', $package), 'path'));
+        $path= ''; $t= strtok($package, '.'); do {
+          $path.= $t.'.';
+          $n->addChild(new Node('path', $t, array('qualified' => substr($path, 0, -1))));
+        } while ($t= strtok('.'));
       }
     }
   }
