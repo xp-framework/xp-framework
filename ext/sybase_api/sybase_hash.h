@@ -3,31 +3,17 @@
  * $Id$
  */
 
-#include "sybase_api.h"
+#ifndef _SYBASE_HASH_H
+#define _SYBASE_HASH_H
 
-typedef struct {
-    int key;
-    CS_INT type;
-    union {
-        struct {
-            char* val;
-            int len;
-        } str;
-        int lval;
-    } value;
-} sybase_hash_element;
-
-typedef struct {
-    int count;
-    int grow;
-    int allocated;
-    sybase_hash_element *elements;
-} sybase_hash;
-
-typedef void (*sybase_hash_apply_func_t)(sybase_hash_element *e);
+#include "sybase_defines.h"
 
 SYBASE_API int sybase_hash_init(sybase_hash **hash, int initial, int grow);
 SYBASE_API int sybase_hash_addstring(sybase_hash *hash, int key, char *value);
 SYBASE_API int sybase_hash_addint(sybase_hash *hash, int key, int value);
 SYBASE_API int sybase_hash_free(sybase_hash *hash);
+SYBASE_API sybase_hash_element *sybase_hash_first(sybase_hash *h, int *c);
+SYBASE_API int sybase_hash_has_more(sybase_hash *h, int c);
+SYBASE_API sybase_hash_element *sybase_hash_next(sybase_hash *h, int *c);
 SYBASE_API int sybase_hash_apply(sybase_hash *hash, sybase_hash_apply_func_t func);
+#endif
