@@ -149,6 +149,9 @@ Related documents
 - WSDL example: Google search
   http://api.google.com/GoogleSearch.wsdl
 
+- @webmethod implementation
+  http://xp-framework.net/downloads/rpc.diff
+
 Comments
 --------
 - friebe, Fri Feb 11 19:45:50 CET 2005
