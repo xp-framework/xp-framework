@@ -1,0 +1,77 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+  uses('util.log.LogAppender');
+
+  /**
+   * LogAppender which sends log to an email address
+   *
+   * @see   xp://util.log.LogAppender
+   */  
+  class SmtpAppender extends LogAppender {
+    var 
+      $email    = '',
+      $prefix   = '',
+      $sync     = TRUE;
+      
+    var
+      $_data    = array();
+    
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   string email the email address to send log entries to
+     * @param   string prefix
+     * @param   bool sync default TRUE
+     */
+    function __construct($email, $prefix= '', $sync= TRUE) {
+      $this->email= $email;
+      $this->sync= $sync;
+      parent::__construct();
+    }
+    
+    /**
+     * Sends log data to the specified email address
+     *
+     * @access public
+     * @param  mixed args variables
+     */
+    function append() {
+      $body= '';
+      for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
+        $body.= sprintf("[%08x] %s\n", $i, $this->varSource(func_get_arg($i)));
+      }
+
+      if ($this->sync) { 
+        mail($this->email, $this->prefix.func_get_arg(0), $body);
+      } else {
+        $this->_data[]= array(func_get_arg(0), $body);
+      }
+    }
+    
+    /**
+     * Finalize this appender - is called when the logger shuts down
+     * at the end of the request.
+     *
+     * @access public 
+     */
+    function finalize() {
+      if ($this->sync) return;
+      
+      $body= '';
+      for ($i= 1, $s= sizeof($this->_data); $i < $s; $i++) {
+        $body.= (
+          str_pad($this->_data[$i][0], 72, '-', STR_PAD_BOTH).
+          "\n".
+          $this->_data[$i][1]
+        );
+      }
+
+      mail($this->email, $this->prefix.$this->_data[0][0].' [+'.$s.']', $body);
+    }
+  }
+?>
