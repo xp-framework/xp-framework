@@ -175,6 +175,16 @@
     }  
 
     /**
+     * Handle error condition
+     *
+     * @access  public
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     */
+    function handleErrorCondition(&$request) {
+      return FALSE;
+    }
+
+    /**
      * Handle submitted data
      *
      * @access  public
