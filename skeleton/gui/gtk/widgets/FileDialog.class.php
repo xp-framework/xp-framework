@@ -228,6 +228,16 @@
     }
     
     /**
+     * Run this dialog
+     *
+     * @access  public
+     */
+    function run() {
+      $this->success= FALSE;
+      parent::run();
+    }
+    
+    /**
      * Format file size into a string
      *
      * @access  private
