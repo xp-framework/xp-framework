@@ -136,7 +136,7 @@
 	  // NULL
 	  $type= NULL;
 	  $content= '';
-	  $this->attribute['xsi:null']= 'true';
+	  $child->attribute['xsi:null']= 'true';
 	  
         } else {
         
