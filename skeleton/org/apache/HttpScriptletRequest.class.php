@@ -123,7 +123,7 @@
      * @return  string Parameter value
      */
     function getParam($name, $default= NULL) {
-      $name= strtolower($name);
+      $name= strtolower(strtr($name, '. ', '__'));
       if (isset($this->params[$name])) return $this->params[$name]; else return $default;
     }
 
@@ -135,7 +135,7 @@
      * @return  bool
      */
     function hasParam($name) {
-      return isset($this->params[strtolower($name)]);
+      return isset($this->params[strtolower(strtr($name, '. ', '__'))]);
     }
     
     /**
