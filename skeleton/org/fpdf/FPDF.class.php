@@ -74,11 +74,7 @@
       $PageBreakTrigger,              // threshold used to trigger page breaks
       $ZoomMode,                      // zoom display mode
       $LayoutMode,                    // layout display mode
-      $title,                         // title
-      $subject,                       // subject
-      $author,                        // author
-      $keywords,                      // keywords
-      $creator;                       // creator
+      $info               = array();  // Information (creator, author, title, ...)
 
     /**
      * Constructor
@@ -330,7 +326,7 @@
      * @param   string 
      */
     function setTitle($title) {
-      $this->title= $title;
+      $this->info['title']= $title;
     }
 
     /**
@@ -340,7 +336,7 @@
      * @param   string 
      */
     function setSubject($subject) {
-      $this->subject= $subject;
+      $this->info['subject']= $subject;
     }
 
     /**
@@ -350,31 +346,39 @@
      * @param   string 
      */
     function setAuthor($author) {
-      $this->author= $author;
+      $this->info['author']= $author;
     }
 
     /**
-     * Sets Keywords of document
+     * Associates keywords with the document, generally in the following form:
+     * <pre>
+     *   'keyword1 keyword2 ...'
+     * </pre>
      *
      * @access  public
      * @param   string 
      */
     function setKeywords($keywords) {
-      $this->keywords= $keywords;
+      $this->info['keywords']= $keywords;
     }
 
     /**
-     * Sets Creator of document
+     * Defines the creator of the document. This is typically the name 
+     * of the application that generates the PDF.
      *
      * @access  public
      * @param   string creator
      */
     function setCreator($creator) {
-      $this->creator= $creator;
+      $this->info['creator']= $creator;
     }
 
     /**
-     * Begin document
+     * This method begins the generation of the PDF document. It is not 
+     * necessary to call it explicitly because AddPage() does it 
+     * automatically.
+     *
+     * Note: no page is created by this method.
      *
      * @access  public
      */
@@ -383,35 +387,29 @@
     }
 
     /**
-     * Terminate document
+     * Terminates the PDF document. It is not necessary to call this 
+     * method explicitly because getBuffer() does it automatically.
+     *
+     * If the document contains no page, addPage() is called to prevent 
+     * from getting an invalid document.
      *
      * @access  public
      */
     function close() {
       if (0 == $this->page) $this->addPage();
-
-      // Close page
       $this->_endpage();
-
-      // Close document
       $this->_enddoc();
     }
 
     /**
-     * Start a new page
+     * Start a new page with an optional orientation, which, if 
+     * omitted, defaults to orientation given to constructor
      *
      * @access  public
-     * @param   string orientation default ''
+     * @param   string orientation default NULL
      */
-    function addPage($orientation= '') {
+    function addPage($orientation= NULL) {
       $family= $this->FontFamily;
-      $style= $this->FontStyle.($this->underline ? 'U' : '');
-      $size= $this->FontSizePt;
-      $lw= $this->LineWidth;
-      $dc= $this->DrawColor;
-      $fc= $this->FillColor;
-      $tc= $this->TextColor;
-      $cf= $this->ColorFlag;
       
       // Finalize previous page if needed
       if ($this->page > 0) $this->_endpage();
@@ -423,19 +421,17 @@
       $this->_out('2 J');
 
       // Set line width
-      $this->LineWidth= $lw;
-      $this->_out($lw.' w');
+      $this->_out($this->LineWidth.' w');
 
       // Set font
-      if ($family) $this->setFont($this->getFontByName($family, $style), $size);
+      if ($family) {
+        $style= $this->FontStyle.($this->underline ? 'U' : '');
+        $this->setFont($this->getFontByName($family, $style), $this->FontSizePt);
+      }
 
       // Set colors
-      $this->DrawColor= $dc;
-      if ($dc != '0 G') $this->_out($dc);
-      $this->FillColor= $fc;
-      if ($fc != '0 g') $this->_out($fc);
-      $this->TextColor= $tc;
-      $this->ColorFlag= $cf;
+      if ($this->DrawColor != '0 G') $this->_out($this->DrawColor);
+      if ($this->FillColor != '0 g') $this->_out($this->FillColor);
     }
 
     /**
@@ -618,6 +614,7 @@
      *
      * @access  public
      * @param   &org.pdf.FPDFFont font
+     * @param   float size default 0 Font size in points. 
      * @throws  lang.IllegalArgumentException
      * @return  bool TRUE if the font was changed
      */
@@ -641,7 +638,7 @@
       $this->FontStyle= $font->style;
       $this->FontSizePt= $size;
       $this->FontSize= round($size / $this->k, 2);
-      $this->CurrentFont= $font;
+      $this->CurrentFont= &$font;
       
       if ($this->page > 0) $this->_out('BT /F'.$this->CurrentFont->index.' '.$this->FontSize.' Tf ET');
       return TRUE;
@@ -664,7 +661,9 @@
     }
 
     /**
-     * Create a new internal link
+     * Creates a new internal link and returns its identifier. An internal 
+     * link is a clickable area which directs to another place within the 
+     * document. 
      *
      * @access  public
      * @return  int
@@ -685,9 +684,9 @@
      * </code>
      *
      * @access  public
-     * @param   int link
-     * @param   int y default 0
-     * @param   int page default -1
+     * @param   int link The link identifier returned by addLink().
+     * @param   float y default 0 Ordinate of target position; -1 indicates the current position. The default value is 0 (top of page).
+     * @param   int page default -1 Number of target page; -1 indicates the current page. This is the default value.
      */
     function setLink($link, $y= 0, $page= -1) {
       if ($y == -1) $y= $this->y;
@@ -945,15 +944,22 @@
     /**
      * Output text in flowing mode
      *
+     * This method prints text from the current position. When the right 
+     * margin is reached (or the \n character is met) a line break 
+     * occurs and text continues from the left margin. Upon method 
+     * exit, the current position is left just at the end of the text.
+     *
+     * It is possible to put a link on the text.
+     *
      * @access  public
-     * @param   int h
-     * @param   string txt
-     * @param   string link default ''
+     * @param   float h Line height.
+     * @param   string txt String to print.
+     * @param   mixed link default '' URL or identifier returned by addLink().
      */
-    function Write($h, $txt, $link= '') {
+    function write($h, $text, $link= '') {
       $w= $this->w- $this->rMargin- $this->x;
       $wmax= ($w- 2 * $this->cMargin) * 1000 / $this->FontSize;
-      $s= str_replace("\r", '', $txt);
+      $s= str_replace("\r", '', $text);
       $nb= strlen($s);
       $sep= -1;
       $i= $j= $l= 0;
@@ -995,9 +1001,9 @@
             }
             
             if ($i == $j) $i++;
-            $this->Cell($w, $h,substr($s, $j, $i- $j), 0, 2, '', 0, $link);
+            $this->Cell($w, $h, substr($s, $j, $i- $j), 0, 2, '', 0, $link);
           } else {
-            $this->Cell($w, $h,substr($s, $j, $sep- $j), 0, 2, '', 0, $link);
+            $this->Cell($w, $h, substr($s, $j, $sep- $j), 0, 2, '', 0, $link);
             $i= $sep+ 1;
           }
           $sep= -1;
@@ -1371,11 +1377,11 @@
       // Info
       $this->_newobj();
       $this->_out('<</Producer (FPDF '.FPDF_VERSION.')');
-      if (!empty($this->title)) $this->_out('/Title ('.$this->_escape($this->title).')');
-      if (!empty($this->subject)) $this->_out('/Subject ('.$this->_escape($this->subject).')');
-      if (!empty($this->author)) $this->_out('/Author ('.$this->_escape($this->author).')');
-      if (!empty($this->keywords)) $this->_out('/Keywords ('.$this->_escape($this->keywords).')');
-      if (!empty($this->creator)) $this->_out('/Creator ('.$this->_escape($this->creator).')');
+      if (!empty($this->info['title'])) $this->_out('/Title ('.$this->_escape($this->info['title']).')');
+      if (!empty($this->info['subject'])) $this->_out('/Subject ('.$this->_escape($this->info['subject']).')');
+      if (!empty($this->info['author'])) $this->_out('/Author ('.$this->_escape($this->info['author']).')');
+      if (!empty($this->info['keywords'])) $this->_out('/Keywords ('.$this->_escape($this->info['keywords']).')');
+      if (!empty($this->info['creator'])) $this->_out('/Creator ('.$this->_escape($this->info['creator']).')');
       $this->_out('/CreationDate (D:'.date('YmdHis').')>>');
       $this->_out('endobj');
  
