@@ -48,12 +48,10 @@
      *
      * @access  magic
      * @param   string name
-     * @param   &mixed value
      * @return  bool success
      */
-    public function __get($name, $value) {
-      $value= com_get($this->h, $name);
-      return TRUE;
+    public function __get($name) {
+      return com_get($this->h, $name);
     }
     
     /**
@@ -61,12 +59,11 @@
      *
      * @access  magic
      * @param   string name
-     * @param   &mixed value
+     * @param   mixed value
      * @return  bool success
      */
     public function __set($name, $value) {
-      com_set($this->h, $name, $value);
-      return TRUE;
+      return com_set($this->h, $name, $value);
     }
     
     /**
@@ -75,15 +72,13 @@
      * @access  magic
      * @param   string name
      * @param   array args
-     * @param   &mixed return
      * @return  bool success
      */
-    public function __call($name, $args, $return) {
-      $return= call_user_func_array(
+    public function __call($name, $args) {
+      return call_user_func_array(
         'com_invoke', 
         array_merge(array(&$this->h, $name), $args)
       );
-      return TRUE;
     }
     
     /**
@@ -96,5 +91,5 @@
       $this->h= NULL;
       
     }
-  } overload('COMObject');
+  }
 ?>
