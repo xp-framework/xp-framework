@@ -33,7 +33,22 @@ int main(int argc, char **argv)
     
     sybase_alloc(&link);    
     if (sybase_connect(env, link, argv[1], argv[2], argv[3]) == SA_SUCCESS) {
-        printf("Connected:)\n");
+        sybase_result *result= NULL;
+        int i = 0;
+        
+        printf("Connected, executing query...\n");
+        if (sybase_query(link, &result, "select * from sysdatabases") == SA_SUCCESS) {
+            while (i++ < 10 && (sybase_results(&result) == SA_SUCCESS)) {
+                printf(
+                    "result->type %4d [%-20s] result->code %4d [%-20s]\n", 
+                    result->type,
+                    sybase_nameoftype(result->type), 
+                    result->code,
+                    sybase_nameofcode(result->code)
+                );
+            }
+        }
+        
     } else {
         printf("Connect failed!\n");
     }
