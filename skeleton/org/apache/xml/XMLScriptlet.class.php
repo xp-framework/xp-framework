@@ -36,11 +36,11 @@
    *   sess      the session's id
    * </pre>
    * 
-   * @see org.apache.xml.XMLSriptletRequest
-   * @see org.apache.xml.XMLSriptletResponse
-   * @see org.apache.xml.XMLSriptletResponse#addFormValue
-   * @see org.apache.xml.XMLSriptletResponse#addFormError
-   * @see org.apache.xml.XMLSriptletResponse#addFormResult
+   * @see xp://org.apache.xml.XMLSriptletRequest
+   * @see xp://org.apache.xml.XMLSriptletResponse
+   * @see xp://org.apache.xml.XMLSriptletResponse#addFormValue
+   * @see xp://org.apache.xml.XMLSriptletResponse#addFormError
+   * @see xp://org.apache.xml.XMLSriptletResponse#addFormResult
    */
   class XMLScriptlet extends HttpScriptlet {
     var 
