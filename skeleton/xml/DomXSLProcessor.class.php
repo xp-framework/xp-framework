@@ -195,8 +195,10 @@
      * @access  public
      */
     function __destruct() {
-      unset($this->document);
-      unset($this->stylesheet);
+      if ($this->document) { with ($n= &$this->document->document_element); {
+        $n->unlink_node($n);
+      }}
+      $this->document= NULL;
       parent::__destruct();
     }
   }
