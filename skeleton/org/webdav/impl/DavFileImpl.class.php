@@ -8,9 +8,6 @@
     'io.Folder',
     'io.File',
     'util.MimeType',
-    'org.webdav.xml.WebdavPropResponse',
-    'org.webdav.xml.WebdavLockRequest',
-    'org.webdav.xml.WebdavPropPatchResponse',
     'org.webdav.impl.DavImpl',
     'org.webdav.propertystorage.DBAFilePropertyStorage',
     'lang.ElementNotFoundException',
@@ -92,8 +89,7 @@
         // add entries
         $maxdepth--;
         // Add parentdir if it's a subdir
-        if (substr($path, -1) != '/' && !empty($path))
-          $path.= '/';
+        if (substr($path, -1) != '/' && !empty($path)) $path.= '/';
         while ($maxdepth >= 0 && $entry= $f->getEntry()) {
           $this->_recurse($request, $response, $path.$entry, $maxdepth);
         }
