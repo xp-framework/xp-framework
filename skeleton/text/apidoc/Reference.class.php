@@ -15,8 +15,10 @@
    */
   class Reference extends Object {
     var 
-      $link         = array(),
-      $validSchemes = array('xp', 'xp-doc', 'php', 'php-gtk', 'http', 'https', 'ftp', 'mailto', 'rfc');
+      $link = array();
+      
+    var
+      $_validSchemes = array('xp', 'xp-doc', 'php', 'php-gtk', 'http', 'https', 'ftp', 'mailto', 'rfc');
     
     /**
      * Constructor
@@ -45,7 +47,7 @@
         $this->link['scheme']= 'xp';
       }
       
-      if (in_array($this->link['scheme'], $this->validSchemes)) return;
+      if (in_array($this->link['scheme'], $this->_validSchemes)) return;
       throw(new FormatException('Scheme '.$this->link['scheme'].' not recognized'));
     }
   }
