@@ -505,6 +505,7 @@
      * close the file first
      *
      * @access  public
+     * @param   string target where to move the file to
      * @return  bool success
      * @throws  IOException in case of an error (e.g., lack of permissions)
      * @throws  IllegalStateException in case the file is still open
@@ -529,6 +530,7 @@
      * close the file first
      *
      * @access  public
+     * @param   string target where to copy the file to
      * @return  bool success
      * @throws  IOException in case of an error (e.g., lack of permissions)
      * @throws  IllegalStateException in case the file is still open
