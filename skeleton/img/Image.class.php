@@ -431,7 +431,8 @@
      * @return  &img.Color color
      */
     function &getTransparency() {
-      return $this->palette[imagecolortransparent($this->handle)];
+      if (-1 == ($t= imagecolortransparent($this->handle))) return NULL;
+      return $this->palette[$t];
     }
     
     /**
