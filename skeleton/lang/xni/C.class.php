@@ -46,10 +46,11 @@
      *
      * @access  public
      * @param   string f filename
+     * @param   string[] includes default array
      * @param   quiet default FALSE
      * @return  bool success
      */
-    function __class($f, $quiet= FALSE) {
+    function __class($f, $includes= array(), $quiet= FALSE) {
       $c= basename($f);
       $c= substr($c, 0, strpos($c, '.'));
       $module= strtolower($c);
@@ -119,6 +120,9 @@
           str_replace("\n    ", "\n", substr($s, 4))
         );
       }
+      
+      // Includes
+      if (!empty($includes)) array_unshift($includes, NULL);
 
       // Write .c sourcecode
       $out= &new File($module.'.c');
@@ -130,6 +134,8 @@
 #endif
 #include "php.h"
 #include "php_ini.h"
+
+%7\$s
 
 PHP_FUNCTION(%1\$s);
 
@@ -201,7 +207,7 @@ PHP_FUNCTION(%1\$s) {
 
 %5\$s
 __
-, $module, $c, $fd, $fe, chop($fs), sizeof($src)));
+, $module, $c, $fd, $fe, chop($fs), sizeof($src), implode("\n#include", $includes)));
         $out->close();
       } if (catch('Exception', $e)) {
         $quiet || $e->printStackTrace();
