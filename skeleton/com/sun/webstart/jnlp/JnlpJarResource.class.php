@@ -58,7 +58,7 @@
      * @access  public
      * @return  string
      */
-    function getName() { 
+    function getTagName() { 
       return 'jar';
     }
 
@@ -68,7 +68,7 @@
      * @access  public
      * @return  array
      */
-    function getAttributes() { 
+    function getTagAttributes() { 
       return array('href' => $this->href);
     }
   
