@@ -78,14 +78,14 @@
       );
       
       // Connect
-      if (FALSE === ($conn= imap_open($mbx, $u['user'], $u['pass'], $flags))) {
+      if (FALSE === ($conn= imap_open($mbx, @$u['user'], @$u['pass'], $flags))) {
         return throw(new MessagingException(
           'Connect to "'.$u['user'].'@'.$mbx.'" failed',
           $this->_errors()
         ));
       }
       
-      $this->_hdl= array($conn, $u['host']);
+      $this->_hdl= array($conn, $mbx);
       return TRUE;
     }
     
@@ -96,7 +96,7 @@
      * @return  bool success
      */
     function close() { 
-      return imap_close($this->_hdl[0]);
+      return @imap_close($this->_hdl[0]);
     }
   
     /**
@@ -109,7 +109,7 @@
      */
     function &getFolder($name) { 
       if (!$this->cache->has(SKEY_FOLDER.$name)) {
-        if (FALSE === imap_list($this->_hdl[0], '{'.$this->_hdl[1].'}', $name)) {
+        if (FALSE === imap_list($this->_hdl[0], $this->_hdl[1], $name)) {
           trigger_error('Folder: '.$name, E_USER_NOTICE);
           return throw(new MessagingException(
             'Retreiving folder failed',
@@ -132,7 +132,7 @@
       if (NULL === ($f= &$this->cache->get(SKEY_LIST.SKEY_FOLDER))) {
       
         // Retreive list and cache it
-        if (0 == ($s= sizeof($list= &imap_getmailboxes($this->_hdl[0], '{'.$this->_hdl[1].'}', '*')))) {
+        if (0 == ($s= sizeof($list= &imap_getmailboxes($this->_hdl[0], $this->_hdl[1], '*')))) {
           return throw(new MessagingException(
             'Retreiving folder list failed',
             $this->_errors()
@@ -141,7 +141,7 @@
         
         // Create MailFolder objects
         $f= array();
-        $l= strlen('{'.$this->_hdl[1].'}');
+        $l= strlen($this->_hdl[1]);
         for ($i= 0; $i < $s; $i++) {
           $f[]= &new MailFolder(
             $this,
@@ -182,7 +182,7 @@
       // Try to reopen
       if (FALSE === imap_reopen(
         $this->_hdl[0], 
-        '{'.$this->_hdl[1].'}'.$f->name, 
+        $this->_hdl[1].$f->name, 
         $readonly ? OP_READONLY : 0
       )) {
         trigger_error('Folder: '.$name, E_USER_NOTICE);
@@ -309,7 +309,7 @@
       if (NULL === ($info= $this->cache->get(SKEY_INFO.SKEY_FOLDER.$f->name))) {
         if (FALSE === ($info= imap_status(
           $this->_hdl[0], 
-          '{'.$this->_hdl[1].'}'.$f->name, 
+          $this->_hdl[1].$f->name, 
           SA_MESSAGES | SA_RECENT | SA_UNSEEN
         ))) {
           trigger_error('Folder: '.$f->name, E_USER_NOTICE);
