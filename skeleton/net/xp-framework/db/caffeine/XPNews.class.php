@@ -82,11 +82,11 @@
      *
      * @model   static
      * @access  public
-     * @param   int max default -1 maximum number of rows to get)
+     * @param   int max default 0 maximum number of rows to get)
      * @return  &net.xp-framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByDateOrdered($max) {
+    function &getByDateOrdered($max= 0) {
       with ($c= &new Criteria()); {
         $c->add('bz_id', 500, EQUAL);
         $c->addOrderBy('created_at', DESCENDING);
