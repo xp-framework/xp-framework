@@ -50,7 +50,7 @@ static void signal_cancel(int signum)
 {
     printf("***  Cancelling...\n");
     fflush(stdout);
-    sybase_cancel(current_result, CS_CANCEL_ALL);
+    sybase_cancel(current_result, CS_CANCEL_ATTN);
     printf("     Cancelled.\n");
     fflush(stdout);
 }
