@@ -8,7 +8,7 @@
   define("SESS_KEY",	1);
 
   class ToolSession extends Object {
-    var $ID, $Error, $Debug;
+    var $ID, $Error, $Debug= 0;
     var $tool_id, $changed;
     
     // Hannah-spezifisches
@@ -19,13 +19,10 @@
     var $ss_status;
     var $ss_socket;
 
-    // Constructor    
-    function ToolSession($params= NULL) {
-      $this->__construct($params);
-    }
-    
+    /**
+     * Constructor
+     */
     function __construct($params= NULL) {
-      $this->Debug= 0;
       $this->isNew= ((getenv("SESS")== "")? 1: 0);
       $this->Error= $this->changed= 0;
       $this->ID= ($this->isNew)? 0: getenv('SESS');
@@ -39,7 +36,7 @@
         $this->remote= $this->sess_server;
       } else {
         $this->logline_text("session", "use $this->ID");
-	     $this->remote= sprintf(
+	$this->remote= sprintf(
           "%d.%d.%d.%d",
           hexdec(substr($this->ID, 0, 2)),
 	  hexdec(substr($this->ID, 2, 2)),
@@ -51,7 +48,7 @@
     
     function logline_text($key, $val) {
       if(!$this->Debug) return 0;
-      logline_text("ToolSession::$key", $val);
+      LOG::info("ToolSession::$key => $val");
     }
     
     function urlencode($val) {
@@ -184,7 +181,7 @@
     
     function ss_connect($remote, $port) {
       $this->logline_text('connect ', $remote.':'.$port);
-      $socket= fsockopen($remote, $port, &$err, &$errstr, 2);   // 2 Sekunden Timeout
+      $socket= fsockopen($remote, $port, $err, $errstr, 2);   // 2 Sekunden Timeout
       if(!$socket) {
         $this->ss_status= "-NOCONN";
       } else {
