@@ -551,7 +551,10 @@
       // Additional headers
       foreach (array_merge($this->headers, array(
         HEADER_SUBJECT      => qstr($this->subject),
-        HEADER_CONTENTTYPE  => $this->contenttype.(empty($this->charset) ? '' : ";\n\tcharset= {$this->charset}"),
+        HEADER_CONTENTTYPE  => $this->contenttype.(empty($this->charset) 
+          ? '' 
+          : ";\n\tcharset=\"{$this->charset}\""
+        ),
         HEADER_ENCODING     => $this->encoding,
         HEADER_PRIORITY     => $this->priority,
         HEADER_DATE         => $this->date->toString()
