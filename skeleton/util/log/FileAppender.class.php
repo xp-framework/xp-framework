@@ -1,6 +1,16 @@
 <?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
   uses('util.log.LogAppender');
-  
+
+  /**
+   * LogAppender which appends data to a file
+   *
+   * @see   util.log.LogAppender
+   */  
   class FileAppender extends LogAppender {
     var 
       $filename;

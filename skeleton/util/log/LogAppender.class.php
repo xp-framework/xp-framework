@@ -1,4 +1,13 @@
 <?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+  /**
+   * Abstract base class for appenders
+   *
+   */
   class LogAppender extends Object {
 
     /**
