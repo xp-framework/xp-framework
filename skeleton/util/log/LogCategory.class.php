@@ -13,7 +13,8 @@
   /**
    * The log category is the interface to be used. All logging information
    * is sent to a log category via one of the info, warn, error, debug 
-   * methods (or their *f variants which use sprintf).
+   * methods which accept any number of arguments of any type (or 
+   * their *f variants which use sprintf).
    *
    * Basic example:
    * <code>
@@ -21,7 +22,17 @@
    *   $cat= &$l->getCategory();
    *   $cat->addAppender(new ConsoleAppender());
    *
+   *   // ...
    *   $cat->info('Starting work at', Date::now());
+   *
+   *   // ...
+   *   $cat->debugf('Processing %d rows took %.3f seconds', $rows, $delta);
+   *
+   *   try(); {
+   *     // ...
+   *   } if (catch('SocketException', $e)) {
+   *     $cat->warn('Caught', $e);
+   *   }
    * </code>
    *
    * @purpose  Base class
@@ -84,7 +95,7 @@
     /**
      * Private helper function
      *
-     * @access private
+     * @access  private
      */
     function callAppenders() {
       $args= func_get_args();
@@ -112,7 +123,7 @@
     /**
      * Finalize
      *
-     * @access  private
+     * @access  public
      */
     function finalize() {
       foreach ($this->_appenders as $flags => $appenders) {
@@ -123,14 +134,14 @@
     }
     
     /**
-     * Adds an appender for the given log categories. Use
-     * logical OR to combine the log types or use 
-     * LOGGER_FLAG_ALL (default) to log all types.
+     * Adds an appender for the given log categories. Use logical OR to 
+     * combine the log types or use LOGGER_FLAG_ALL (default) to log all 
+     * types.
      *
      * @access  public
-     * @param   Appender appender The appender object
+     * @param   &util.log.LogAppender appender The appender object
      * @param   int flag default LOGGER_FLAG_ALL
-     * @return  Appender
+     * @return  &util.log.LogAppender the appender added
      */
     function &addAppender(&$appender, $flag= LOGGER_FLAG_ALL) {
       $this->_appenders[$flag][]= &$appender;
@@ -138,10 +149,23 @@
     }
 
     /**
-     * Appends a log of type info
+     * Appends a log of type info. Accepts any number of arguments of
+     * any type. 
+     *
+     * The common rule (though up to each appender on how to realize it)
+     * for serialization of an argument is:
+     *
+     * <ul>
+     *   <li>For XP objects, the toString() method will be called
+     *       to retrieve its representation</li>
+     *   <li>Strings are printed directly</li>
+     *   <li>Any other type is serialized using var_export()</li>
+     * </ul>
+     *
+     * Note: This also applies to warn(), error() and debug().
      *
      * @access  public
-     * @param   mixed args 
+     * @param   mixed* args
      */
     function info() {
       $args= func_get_args();
@@ -153,11 +177,16 @@
     }
 
     /**
-     * Appends a log of type info in printf-style
+     * Appends a log of type info in sprintf-style. The first argument
+     * to this method is the format string, containing sprintf-tokens,
+     * the rest of the arguments are used as argument to sprintf. 
      *
+     * Note: This also applies to warnf(), errorf() and debugf().
+     *
+     * @see     php://sprintf
      * @access  public
      * @param   string format 
-     * @param   mixed args 
+     * @param   mixed* args
      */
     function infof() {
       $args= func_get_args();
@@ -171,7 +200,7 @@
      * Appends a log of type warn
      *
      * @access  public
-     * @param   mixed args Beliebige Variablen
+     * @param   mixed* args
      */
     function warn() {
       $args= func_get_args();
@@ -187,7 +216,7 @@
      *
      * @access  public
      * @param   string format 
-     * @param   mixed args 
+     * @param   mixed* args
      */
     function warnf() {
       $args= func_get_args();
@@ -201,7 +230,7 @@
      * Appends a log of type error
      *
      * @access  public
-     * @param   mixed args 
+     * @param   mixed* args
      */
     function error() {
       $args= func_get_args();
@@ -217,7 +246,7 @@
      *
      * @access  public
      * @param   string format 
-     * @param   mixed args 
+     * @param   mixed* args
      */
     function errorf() {
       $args= func_get_args();
@@ -231,7 +260,7 @@
      * Appends a log of type debug
      *
      * @access  public
-     * @param   mixed args 
+     * @param   mixed* args
      */
     function debug() {
       $args= func_get_args();
@@ -242,12 +271,12 @@
       );
     }
  
-     /**
+    /**
      * Appends a log of type info in printf-style
      *
      * @access  public
      * @param   string format format string
-     * @param   mixed args 
+     * @param   mixed* args
      */
     function debugf() {
       $args= func_get_args();
@@ -258,7 +287,7 @@
     }
    
     /**
-     * Appends a spearator
+     * Appends a separator (a "line" consisting of 72 dashes)
      *
      * @access  public
      */
