@@ -54,8 +54,7 @@
     function __construct() {
       parent::__construct(
         new SOAPHTTPTransport('http://services.xmethods.net:80/perl/soaplite.cgi'),
-        'urn:xmethodsBabelFish',
-        'BabelFish'
+        'urn:xmethodsBabelFish'
       );
     }
     
@@ -69,7 +68,8 @@
      * @return  string Translated text
      */
     function &translate($sourcedata, $src_lang, $target_lang) {
-      $translated= $this->call(
+      $translated= $this->invoke(
+        'BabelFish',
         new SOAPNamedItem('translationmode', sprintf('%s_%s', $src_lang, $target_lang)),
         new SOAPNamedItem('sourcedata', $sourcedata)
       );

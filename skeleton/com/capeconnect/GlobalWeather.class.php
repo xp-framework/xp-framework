@@ -45,8 +45,7 @@
     function __construct() {
       parent::__construct(
         new SOAPHTTPTransport('http://live.capescience.com/ccx/GlobalWeather'),
-        'capeconnect:GlobalWeather:GlobalWeather',
-        'getWeatherReport'
+        'capeconnect:GlobalWeather:GlobalWeather'
       );
     }
 
@@ -60,10 +59,7 @@
      * @see     http://www.wajb.freeserve.co.uk/codes.htm                            
      */
     function &getWeatherReport($code) {
-      if (FALSE === ($report= $this->call(new SOAPNamedItem('code', $code)))) {
-        return FALSE;
-      }
-      return $report[0];
+      return $this->invoke('getWeatherReport', new SOAPNamedItem('code', $code));
     }
   }
 ?>
