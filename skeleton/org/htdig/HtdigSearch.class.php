@@ -51,7 +51,7 @@
       $excludes=    array();
     
     var
-      $delimiter=   '###\+\+\+###',
+      $delimiter=   '###+++###',
       $executable=  '';
 
     /**
@@ -167,7 +167,7 @@
      */
     function _getWordString() {
       $str= '';
-      foreach ($words as $w) { 
+      foreach ($this->getWords() as $w) { 
         if ($w{0} != '-') {
           $str.= ' AND '.$w;
         } else {
@@ -175,7 +175,7 @@
         }
       }
       
-      return escapeshellarg(substr ($str, 4));
+      return substr ($str, 5);
     }
     
     /**
@@ -189,11 +189,13 @@
       $params['exclude']= $this->getExcludes();
       $params['words']= $this->_getWordString();
       
+      $str= '';
       foreach (array_keys($params) as $key) {
-        $params[$key]= urlencode($params[$key]);
+        if (strlen($str)) $str.= '&';
+        $str.= $key.'='.urlencode($params[$key]);
       }
       
-      return implode('&', $params);
+      return $str;
     }
 
     /**
@@ -225,20 +227,20 @@
      * @throws  lang.IllegalArgumentException in case search entry was invalid
      */
     function &invoke() {
-      try(); {
-        $p= &new Process(sprintf('%s -v %s %s',
-          $this->getExecutable(),
-          strlen($this->getConfiguration()) ? '-c '.$this->getConfiguration() : '',
-          "'".$this->_getQuery()."'"
-        ));
+      $log= &Logger::getInstance();
+      $cat= &$log->getCategory();
 
-        // Read all errors
-        $errs= array();
-        while ($l= $p->err->readLine()) { $errs[]= $l; }
+      try(); {
+        $cmdline= sprintf('%s -v %s %s',
+          $this->getExecutable(),
+          strlen($this->getConfig()) ? '-c '.$this->getConfig() : '',
+          "'".$this->_getQuery()."' 2>&1"
+        );
+        $p= &new Process($cmdline);
 
         // Read standard output
         $output= array();
-        while ($l= $p->out->readLine()) { $output[]= $l; }
+        while (!$p->out->eof()) { $output[]= $p->out->readLine(); }
       } if (catch ('IOException', $e)) {
         return throw ($e);
       }
@@ -246,18 +248,17 @@
       $result= &new HtdigResultset();
       $metaresult= array();
       $csvdef= NULL;
-      
+
       try(); {
       
         // Parse metadata result
-        while (current($output) && !$csvdef) {
+        while (FALSE !== current($output) && !$csvdef) {
           $meta= explode(':', trim(current($output)));
 
-          if ('CVS' != trim($meta[0])) {
+          if ('CSV' != trim($meta[0])) {
             $metaresult[trim(strtolower($meta[0]))]= trim($meta[1]);
           } else {
-            $csvdef= explode($this->delimiter, current($output));
-            $result->setCsv($csvdef);
+            $result->setCsvdef(explode($this->delimiter, substr(current($output), 4)));
           }
 
           next($output);
@@ -268,6 +269,7 @@
         // Now parse resultset
         while (current ($output)) {
           $result->addResult(explode($this->delimiter, current($output)));
+          next ($output);
         }
       } if (catch ('IllegalArgumentException', $e)) {
         return throw ($e);
