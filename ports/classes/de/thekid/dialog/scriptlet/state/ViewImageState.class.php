@@ -27,29 +27,60 @@
       }
       
       if ($album= &$this->getAlbumFor($name)) {
+
+        // Add formresult information about the album
         $child= &$response->addFormResult(new Node('album', NULL, array(
           'name'  => $album->getName(),
           'title' => $album->getTitle(),
           'page'  => $this->getDisplayPageFor($name)
         )));
-        $child->addChild(new Node('description', new PCData($album->getDescription())));
-        $child->addChild(Node::fromObject($album->createdAt, 'created'));
         
+        // Add formresult information depending on type of selected item
+        //
+        // Add an attribute indicating the next item (if existant):
+        // - For highlights, the navigation goes from the first one of
+        //   them to the last, ending there.
+        // - For images contained in chapters, wrap around to the first
+        //   image of the next chapter (if existant)
+        //
+        // Add an attribute indicating the previous item (if existant)
+        // - For highlights, the navigation goes from the first one of
+        //   them to the last, ending there.
+        // - For images contained in chapters, wrap around to the last
+        //   image of the previous chapter (if existant)
+        $next= $prev= NULL;
         switch ($type) {
-          case 'h':
+          case 'h': {
             $selected= &$response->addFormResult(Node::fromObject($album->highlightAt($id), 'selected'));
-            $selected->setAttribute('last', $id >= $album->numHighlights()- 1);
+            if ($id < $album->numHighlights() - 1) {
+              $next= sprintf('h,0,%d', $id+ 1);
+            }
+            if ($id > 0) {
+              $prev= sprintf('h,0,%d', $id- 1);
+            }
             break;
+          }
 
-          case 'i':
+          case 'i': {
             $selected= &$response->addFormResult(Node::fromObject($album->chapters[$chapter]->imageAt($id), 'selected'));
-            $selected->setAttribute('last', $id >= $album->chapters[$chapter]->numImages()- 1);
+            if ($id < $album->chapters[$chapter]->numImages() - 1) {
+              $next= sprintf('i,%d,%d', $chapter, $id+ 1);
+            } elseif ($chapter < $album->numChapters() - 1) {
+              $next= sprintf('i,%d,0', $chapter+ 1);
+            }
+            if ($id > 0) {
+              $prev= sprintf('i,%d,%d', $chapter, $id- 1);
+            } elseif ($chapter > 0) {
+              $prev= sprintf('i,%d,%d', $chapter- 1, $album->chapters[$chapter- 1]->numImages($id)- 1);
+            }
             break;
+          }
         }
 
-        $selected->setAttribute('id', $id);
         $selected->setAttribute('type', $type);
         $selected->setAttribute('chapter', $chapter);
+        $next && $selected->setAttribute('next', $name.','.$next);
+        $prev && $selected->setAttribute('prev', $name.','.$prev);
       }
     }
   }
