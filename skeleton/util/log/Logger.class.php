@@ -110,7 +110,8 @@
      * @param   &util.Properties prop instance of a Properties object
      */
     function configure(&$prop) {
-    
+      $class= array();
+      
       // Read default properties
       $this->defaultIdentifier= $prop->readString(LOG_DEFINES_DEFAULT, 'identifier', $this->defaultIdentifier);
       $this->defaultFormat= $prop->readString(LOG_DEFINES_DEFAULT, 'format', $this->defaultFormat);
@@ -136,12 +137,14 @@
           $param_section= LOG_DEFINES_DEFAULT;
         }
         
-        // Go through all of the appenders
+        // Go through all of the appenders, loading classes as necessary
         foreach ($appenders as $appender) {
-          try(); {
-            $reflect= ClassLoader::loadClass($appender);
-          } if (catch('Exception', $e)) {
-            return throw($e);
+          if (!isset($class[$appender])) {
+            try(); {
+              $class[$appender]= &XPClass::forName($appender);
+            } if (catch('ClassNotFoundException', $e)) {
+              return throw($e);
+            }
           }
           
           // Read flags string, evaluate it
@@ -151,7 +154,7 @@
             foreach ($arrflags as $f) { if (defined ($f)) $flags |= constant ($f); }
           }
           
-          $a= &$this->category[$section]->addAppender(new $reflect(), $flags);
+          $a= &$this->category[$section]->addAppender($class[$appender]->newInstance(), $flags);
           $params= $prop->readArray($param_section, 'appender.'.$appender.'.params', array());
           
           // Params
