@@ -20,6 +20,8 @@
       $model        = '',
       $flash        = 0,
       $orientation  = 0,
+      $fileName     = '',
+      $fileSize     = 0,
       $mimeType     = '',
       $dateTime     = NULL;
 
@@ -31,7 +33,7 @@
      * @param   &io.File file
      * @return  &img.util.ExifData
      */
-    function fromFile(&$file) {
+    function &fromFile(&$file) {
       if (!($info= exif_read_data($file->getURI()))) {
         return throw(new ImagingException(
           'Cannot get EXIF information from '.$file->getURI()
@@ -45,6 +47,8 @@
         $e->setModel($info['Model']);
         $e->setFlash($info['Flash']);
         $e->setOrientation($info['Orientation']);
+        $e->setFileName($info['FileName']);
+        $e->setFileSize($info['FileSize']);
         $e->setMimeType($info['MimeType']);
         $t= sscanf($info['DateTime'], '%4d:%2d:%2d %2d:%2d:%2d');
         $e->setDateTime(new Date(mktime($t[3], $t[4], $t[5], $t[1], $t[2], $t[0])));
@@ -170,6 +174,46 @@
      */
     function getOrientation() {
       return $this->orientation;
+    }
+
+    /**
+     * Set FileName
+     *
+     * @access  public
+     * @param   string fileName
+     */
+    function setFileName($fileName) {
+      $this->fileName= $fileName;
+    }
+
+    /**
+     * Get FileName
+     *
+     * @access  public
+     * @return  string
+     */
+    function getFileName() {
+      return $this->fileName;
+    }
+
+    /**
+     * Set FileSize
+     *
+     * @access  public
+     * @param   int fileSize
+     */
+    function setFileSize($fileSize) {
+      $this->fileSize= $fileSize;
+    }
+
+    /**
+     * Get FileSize
+     *
+     * @access  public
+     * @return  int
+     */
+    function getFileSize() {
+      return $this->fileSize;
     }
 
     /**
@@ -309,6 +353,7 @@
     function toString() {
       return sprintf(
         "%s(%d x %d %s)@{\n".
+        "  [file         ] %s (%d bytes)\n".
         "  [make         ] %s\n".
         "  [model        ] %s\n".
         "  [flash        ] %d (%s)\n".
@@ -319,6 +364,8 @@
         $this->width,
         $this->height,
         $this->mimeType,
+        $this->fileName,
+        $this->fileSize,
         $this->make,
         $this->model,
         $this->flash, 
