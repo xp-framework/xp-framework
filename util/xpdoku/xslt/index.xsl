@@ -75,19 +75,49 @@
         <td width="4%" nowrap="nowrap">
           <img src="/image/nav_list2.gif" height="17" width="17" alt="=&gt;" hspace="2" vspace="2"/>
         </td>
-        <td>
-          <a name="contents"><b style="color: #a33818">
-            Recent news
-          </b></a>
+        <td colspan="2">
+          <b style="color: #a33818">Recent news</b>
         </td>
       </tr>
-      <xsl:for-each select="$news/rdf:RDF/rss:item[position() &lt; 10]">
+      <xsl:for-each select="$news/rdf:RDF/rss:item[position() &lt; 6.1]">
+        <tr>
+          <td>
+            <img src="/image/spacer.gif" width="1" height="1" border="0" hspace="0" vspace="0"/>
+          </td>
+          <td colspan="2" style="border-bottom: 1px dashed #e0670b">
+            <img src="/image/spacer.gif" width="1" height="1" border="0" hspace="0" vspace="0"/>
+          </td>
+        </tr>
         <tr>
           <td width="4%" nowrap="nowrap">
             <img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/>
           </td>
           <td>
-            <b><xsl:value-of select="translate(dc:date, 'T', ' ')"/></b>: <a style="color: #a33818" href="news.html#{position()}"><xsl:value-of select="rss:title"/></a>
+            <b>
+              <a style="color: #a33818">
+                <xsl:attribute name="href">
+                  <xsl:choose>
+                    <xsl:when test="substring-before(substring-after(rss:link, '//'), '/') = 'xp.php3.de'">
+                      <xsl:value-of select="substring-after(substring-after(rss:link, '//'), '/')"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:value-of select="rss:link"/>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </xsl:attribute>
+                <xsl:value-of select="rss:title"/>
+              </a>
+            </b>
+          </td>
+          <td align="right">
+            <b><xsl:value-of select="translate(dc:date, 'T', ' ')"/></b>
+          </td>
+        </tr>
+        <tr>
+          <td>&#160;</td>
+          <td colspan="2">
+            <xsl:value-of select="substring(rss:description, 0, 128)"/>...
+            <a style="color: #a33818; text-decoration: none" href="news.html#{position()}">[more]</a>
           </td>
         </tr>
       </xsl:for-each>
