@@ -73,6 +73,8 @@
     function &createSpoolEntry($abstract= NULL) {
       if (NULL === $abstract)
         $abstract= date ('Y-m-d-H-i-s'.md5 (microtime()));
+      else
+        $abstract= date ('Y-m-d-H-i-s').'_'.$abstract;
       
       try(); {
         $f= &new File ($this->_hNew->getURI().'/'.$abstract.'.spool');
