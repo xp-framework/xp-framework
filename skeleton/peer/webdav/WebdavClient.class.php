@@ -16,10 +16,6 @@
    * @purpose  Provide a client to access an webdav server
    */
   class WebdavClient extends Object {
-    var
-      $username=  NULL,
-      $passwd=    NULL,
-      $dir=       NULL;
   
     /**
      * Constructor
@@ -29,54 +25,10 @@
      * @param   string directory default webdav
      * @param   int port default port 81
      */
-    function __construct($host= 'localhost', $dir= 'webdav', $port= 80) {
-      $this->host= $host;
-      $this->dir=  $dir;
-      $this->port= $port;
+    function __construct($url) {
+      $this->c= new WebdavConnection($url);
       parent::__construct();
     }
-    
-    /**
-     * Set Username
-     *
-     * @access  public 
-     * @param   string username
-     */
-    function setUsername($username) {
-      $this->username= $username;
-    }
-    
-    /**
-     * Set Password
-     *
-     * @access  public
-     * @param   string passwd
-     */
-    function setPassword($passwd) {
-      $this->passwd= $passwd;
-    }
-    
-    /**
-     * Set directory which you want to enter
-     *
-     * @access  public
-     * @param   string directory
-     */
-    function setDirectory($dir) {
-      $this->dir= $dir;
-    }
-    
-    /**
-     * Connect to the webdav server
-     *
-     * @access  private
-     * @return  bool
-     */
-    function _connect() {
-      $this->c= &new WebdavConnection($this->host.$this->dir);      
-    return TRUE;
-    }
-    
     
     /**
      * Do a Propfind on Webdav server
@@ -85,28 +37,12 @@
      * @return  &peer.http.HttpResponse response object
      */
     function read() {    
-      if (!$this->c) $this->_connect();
-      
       try(); {
-        $response= &$this->c->propfind(
-          NULL,
-          array(
-            new BasicAuthorization(
-              $this->username,
-              $this->passwd
-            )
-          )
-        );
-        
-      } if (catch('IOException', $e)) {
-        $e->printStackTrace();
-        exit();
+        $response= &$this->c->propfind();
       } if (catch('Exception', $e)) {
-        $e->printStackTrace();
-        exit();
+        return throw($e);
       }
-      
-    return $response;
+      return $response;
     }
     
     /**
@@ -116,28 +52,12 @@
      * @return  &peer.http.HttpResponse response object
      */
     function put() {
-      if (!$this->c) $this->_connect();
-      
       try(); {
-        $response= &$this->c->put(
-          NULL,
-          array(            
-            new BasicAuthorization(
-              $this->username,
-              $this->passwd
-            )
-          )
-        );
-      
-      } if (catch('IOException', $e)) {
-        $e->printStackTrace();
-        exit();
+        $response= &$this->c->put();
       } if (catch('Exception', $e)) {
-        $e->printStackTrace();
-        exit();
+        return throw($e);
       }
-        
-    return $response;
+      return $response;
     }
     
     /**
@@ -147,28 +67,12 @@
      * @return  &peer.http.HttpResponse response object
      */
     function get() {
-      if (!$this->c) $this->_connect();
-      
       try(); {
-        $response= &$this->c->put(
-          NULL,
-          array(            
-            new BasicAuthorization(
-              $this->username,
-              $this->passwd
-            )
-          )
-        );
-        
-      } if (catch('IOException', $e)) {
-        $e->printStackTrace();
-        exit();
+        $response= &$this->c->put();
       } if (catch('Exception', $e)) {
-        $e->printStackTrace();
-        exit();
+        return throw($e);
       }
-         
-    return $response;
+      return $response;
     }
 
   
