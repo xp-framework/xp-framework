@@ -150,13 +150,13 @@
         return $result;          
       }
 
-      // Typenabhängig
+      // Type dependant
       if (!isset($child->attribute['xsi:type']) || !preg_match(
         '#^([^:]+):([^\[]+)(\[[0-9+]\])?$#', 
         $child->attribute['xsi:type'],
         $regs
       )) {
-        // Zum Beispiel SOAP-ENV:Fault
+        // E.g.: SOAP-ENV:Fault
         $regs= array(0, 'xsd', 'string');
       }
 
@@ -323,10 +323,10 @@
       
       list($return)= $this->_recurseData($this->root->children[0], FALSE, 'OBJECT', array());
       return new SOAPFault(
-        $return['faultcode'],
-        $return['faultstring'],
-        $return['faultactor'],
-        $return['detail']
+        isset($return['faultcode'])   ? $return['faultcode']    : '',
+        isset($return['faultstring']) ? $return['faultstring']  : '',
+        isset($return['faultactor'])  ? $return['faultactor']   : '',
+        isset($return['detail'])      ? $return['detail']       : ''
       );
     }
     
