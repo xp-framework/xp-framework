@@ -6,9 +6,7 @@
 
   uses(
     'peer.ftp.server.storage.FilesystemStorageCollection',
-    'peer.ftp.server.storage.FilesystemStorageElement',
-    'util.adt.Stack',
-    'text.String'
+    'peer.ftp.server.storage.FilesystemStorageElement'
   );
 
   /**
