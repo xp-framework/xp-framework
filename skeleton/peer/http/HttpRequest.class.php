@@ -11,7 +11,9 @@
   uses(
     'peer.Socket',
     'peer.URL',
-    'peer.http.HttpResponse'
+    'peer.http.HttpResponse',
+    'peer.http.RequestData',
+    'peer.Header'
    );
   
   /**
@@ -55,11 +57,16 @@
      * Set request parameters
      *
      * @access  public
-     * @param   mixed p either a string or an associative array
+     * @param   mixed p either a string, a PostData object or an associative array
      */
     function setParameters($p) {
-      if (is_string($p)) parse_str($p, $p); 
-      $this->parameters= array_merge($this->url->getParams(), $p);
+      if (is_a($p, 'RequestData')) {
+        $this->parameters= &$p;
+      } elseif (is_string($p)) {
+        parse_str($p, $p); 
+      } else {
+        $this->parameters= array_merge($this->url->getParams(), $p);
+      }
     }
     
     /**
@@ -91,9 +98,13 @@
      * @return  
      */
     function getRequestString() {
-      $query= '';
-      foreach ($this->parameters as $k => $v) {
-        $query.= '&'.$k.'='.urlencode($v);
+      if (is_a($this->parameters, 'RequestData')) {
+        $query= "\0".$this->parameters->getData();
+      } else {
+        $query= '';
+        foreach ($this->parameters as $k => $v) {
+          $query.= '&'.$k.'='.urlencode($v);
+        }
       }
       $target= $this->url->getPath('/');
       
@@ -141,10 +152,12 @@
      */
     function &send() {
       $s= &new Socket($this->url->getHost(), $this->url->getPort(80));
+      $request= $this->getRequestString();
       try(); {
         $s->connect();
-        $s->write($this->getRequestString());
+        $s->write($request);
       } if (catch('Exception', $e)) {
+        $e->message.= ' { Request: '.$request.'}';
         throw($e);
       }
       
