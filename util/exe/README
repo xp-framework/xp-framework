@@ -37,4 +37,22 @@ What software is needed?
 
 The build process was tested with gcc 2.95.4, libtool 1.4.3 and php 4.2.3
 
+Misc: The error handler
+-----------------------
+The builtin error handler dumps messages to stderr in this kind of
+fashion:
+
+*** Error #2 on line 2 of test
+    fopen(http://localhost/notfound) [http://www.php.net/function.fopen]: 
+    failed to create stream: HTTP request failed! HTTP/1.1 404 Not Found
+*** Error #2 on line 4 of test
+    fgets(): supplied argument is not a valid stream resource
+*** Error #2 on line 7 of test
+    fclose(): supplied argument is not a valid stream resource
+
+Parse errors will look like this:
+*** Error #4 on line 6 of test
+    parse error, unexpected '}'
+*** Internal error
+
 <EOF>
