@@ -95,6 +95,25 @@
         }
       }
       
+      // ...by album name, for album -> page lookup
+      foreach (array_keys($entries) as $i => $key) {
+        $page= intval(floor($i / $this->entriesPerPage));
+        $this->cat && $this->cat->debugf(
+          '---> Album %s is on page %d',
+          $entries[$key],
+          $page
+        );
+        
+        try(); {
+          FileUtil::setContents(
+            new File($this->folder->getURI().$entries[$key].'.idx'), 
+            serialize($page)
+          );
+        } if (catch('IOException', $e)) {
+          return throw($e);
+        }
+      }
+      
       return TRUE;
     }
  
@@ -110,5 +129,3 @@
 
   } implements(__FILE__, 'util.log.Traceable');
 ?>
-
-
