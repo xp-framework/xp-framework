@@ -241,7 +241,9 @@
      */
     function containsSwear($message) {
       for ($i= 0, $s= sizeof($this->lists['swears']); $i < $s; $i++) {
-        if (preg_match('/('.preg_quote(str_replace(' ', ')? ('.$this->lists['swears'][$i])).')/i', $message)) {
+        $pattern= '/('.preg_quote(str_replace(' ', ')? (', $this->lists['swears'][$i])).')/i';
+        if (preg_match($pattern, $message)) {
+          $this->cat && $this->cat->debug('"'.$message.'" matched pattern', $pattern);
           return $this->lists['swears'][$i];
         }
       }
@@ -522,24 +524,27 @@
       // Any other phrase containing my name
       if (stristr($message, $connection->user->getNick())) {
         $karma= 0;
+        $recognized= FALSE;
         
         // See if we can recognize something here and calculate karma - multiplied
         // by a random value because this message is directed at me.
         foreach ($this->recognition as $pattern => $delta) {
           if (!preg_match($pattern, $message)) continue;
-          $this->setKarma($nick, rand(1, 5) * $delta[1], $pattern);
-          $karma= $delta[1];
+          $karma= rand(1, 5) * $delta[1];
+          $recognized= TRUE;
+          $this->setKarma($nick, $karma, $pattern);
         }
 
         // Check our bad words list
-        if (!$karma && $this->containsSwear($message)) {
-          $this->setKarma($nick, rand(-5, -1), '@@swear');
-          $karma= -1;
-          return;
+        if (!$recognized && ($swear= $this->containsSwear($message))) {
+          $this->cat && $this->cat->debug($nick, 'said', $swear, 'to me, no good');
+          $karma= rand(-5, -1);
+          $recognized= TRUE;
+          $this->setKarma($nick, $karma, '@@swear');
         }
         
         // Don't know what to do with this, say something random
-        if (!$karma) {
+        if (!$recognized) {
           $this->sendRandomMessage($connection, $target, 'talkback', $nick, $message);
           return;      
         }
