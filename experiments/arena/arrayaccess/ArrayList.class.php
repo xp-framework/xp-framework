@@ -60,7 +60,6 @@
       unset($this->items[$index]);
     }
     
-    
     /**
      * Creates a string representation of this object
      *
