@@ -90,6 +90,8 @@ Reflection
 The reflection API offers the following ways to retrieve these
 annotations:
 
+Method annotations
+~~~~~~~~~~~~~~~~~~
 - bool lang.reflect.Method::hasAnnotations()
   Allows you to check whether any annotation exists for this method
 
@@ -113,8 +115,24 @@ annotations:
 - mixed lang.reflect.Method::getAnnotation($name [, $key])
   Returns the annotation's value specified by name. Throws a 
   lang.ElementNotFoundException in case the annotation is not found
-  
+
 - bool lang.reflect.Method::hasAnnotation($name [, $key])
+  Allows you to check if a annotation exists
+
+Class annotations
+~~~~~~~~~~~~~~~~~
+- bool lang.XPClass::hasAnnotations()
+  Allows you to check whether any annotation exists for this method
+
+- array lang.XPClass::getAnnotations()
+  Returns an associative array of annotation names and their 
+  values.
+
+- mixed lang.XPClass::getAnnotation($name [, $key])
+  Returns the annotation's value specified by name. Throws a 
+  lang.ElementNotFoundException in case the annotation is not found
+  
+- bool lang.XPClass::hasAnnotation($name [, $key])
   Allows you to check if a annotation exists
 
 Dependencies
