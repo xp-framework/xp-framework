@@ -1,12 +1,7 @@
 <?php
-/*
+/* This class is part of the XP framework
+ *
  * $Id$
- *
- * Diese Klasse ist Bestandteil des XP-Frameworks
- * (c) 2001 Timm Friebe, Schlund+Partner AG
- *
- * @see http://doku.elite.schlund.de/projekte/xp/skeleton/
- *
  */
 
   // Bitmasken für den Dateitypen
