@@ -108,6 +108,11 @@
       $this->actionarea= $this->window->action_area;
     }
     
+    /**
+     * Run this
+     *
+     * @access  public
+     */
     function run() {
       static $map= array(
         MB_ICONHAND         => 'error',
