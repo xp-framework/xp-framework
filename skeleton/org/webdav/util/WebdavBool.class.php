@@ -15,7 +15,8 @@
     /**
      * Return boolean from string
      *
-     * @access  private
+     * @model   static
+     * @access  public
      * @param   string s
      * @return  bool
      * @throws  IllegalArgumentException
@@ -38,6 +39,7 @@
     /**
      * Return string from boolean
      *
+     * @model   static
      * @access  public
      * @param   bool bool
      * @return  string
