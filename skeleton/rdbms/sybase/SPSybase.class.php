@@ -30,19 +30,24 @@
       $last_num_rows= -1,
       $transaction= 0;
    
+    // Do buffered queries? Default: TRUE
+    var
+      $_buffering= TRUE;
+   
     // Logger
     var
       $log;
 	  
-	var
-	  $fields	= NULL,
-	  $lengths	= NULL;
+    var
+      $fields	= NULL,
+      $lengths	= NULL;
  
     /**
      * Constructor
      */
     function __construct($params) {
-      $this->log= &Logger::getInstance();
+      $l= &Logger::getInstance();
+      $this->log= &$l->getCategory($this->getName());
       parent::__construct($params);
     }
     
@@ -101,7 +106,7 @@
      * @access  private
      * @param   array args Die Argumente
      */
-    function _prepare($args) {
+    function prepare($args) {
       $sql= $args[0];
       if (sizeof($args)<= 1) return $sql;
       $j= 0;    
@@ -122,6 +127,10 @@
       return $sql;
     }
     
+    function setBuffering($b) {
+      $this->_buffering= $b;
+    }
+    
     /**
      * Query-Funktion. Connected, falls nötig
      *
@@ -132,9 +141,9 @@
      */
     function query() {
       $args= func_get_args();
-	  $this->lengths= $this->fields= NULL;
+      $this->lengths= $this->fields= NULL;
 	  
-      $sql= $this->_prepare($args);
+      $sql= $this->prepare($args);
 
       // Wenn es keinen Connect gibt, einen herstellen
       if(!$this->handle) {
@@ -143,21 +152,23 @@
       }
       
       $this->log->info('Sybase::'.$sql);
-      $result= sybase_query($sql, $this->handle);
+      if ($this->_buffering) {
+        $result= sybase_query($sql, $this->handle);
+      } else {
+        $result= sybase_unbuffered_query($sql, $this->handle, SYBASE_USE_RESULT);
+      }
       if (FALSE === $result) {
         return throw(new SQLException('statement failed', $sql));
       }
       
       // Feldtypen herausfinden
       $i= -1;
-	  $this->lengths= $this->fields= array();
+      $this->lengths= $this->fields= array();
       while (++$i < @sybase_num_fields($result)) {
         $field= sybase_fetch_field($result, $i);
-        // $this->log->debug('Sybase::fields', $field);
         $this->fields[$field->name]= $field->type;
-		$this->lengths[$field->name]= $field->max_length;
+	$this->lengths[$field->name]= $field->max_length;
       }
-      // $this->log->debug('Sybase::fields', $this->fields);
       
       return $result;
     }
@@ -195,7 +206,7 @@
         
         // FALSE ==> NULL
         $this->log->debug($key.' is NULL ?', ($val === FALSE) ? 'yes' : 'no');
-        if ($val === FALSE) {
+        if ($val === FALSE || $val === NULL) {
           $row[$key]= NULL;
           continue;
         }
@@ -215,11 +226,10 @@
             break;
             
           case 'real':
-            if (floor($val) == $val) {
-              // $this->log->debug('numeric', $key, $val);
-              settype($row[$key], 'integer');
-            } else {
+            if (is_string($val) && strstr($val, '.')) {
               settype($row[$key], 'double'); 
+            } else {
+              settype($row[$key], 'integer');
             }
             break;
         }
@@ -241,7 +251,7 @@
      */   
     function &select_ref() {
       $args= func_get_args();
-      $query= $this->query('select '.preg_replace('/^[\s\t\r\n]*select/i', '', $this->_prepare($args)));
+      $query= $this->query('select '.preg_replace('/^[\s\t\r\n]*select/i', '', $this->prepare($args)));
       if($query) {
         $result_set= array();
         while($data= sybase_fetch_row($query)) {
@@ -267,7 +277,7 @@
      */   
     function &select() {
       $args= func_get_args();
-      $query= $this->query('select '.preg_replace('/^[\s\t\r\n]*select/i', '', $this->_prepare($args)));
+      $query= $this->query('select '.preg_replace('/^[\s\t\r\n]*select/i', '', $this->prepare($args)));
       if($query) {
         $result_set= array();
         while($result_set[]= $this->fetch($query)) {};
@@ -288,7 +298,7 @@
     function update() {
       $args= func_get_args();
       $this->last_affected_rows= -1;
-      $result= $this->query('update '.preg_replace('/^[\s\t\r\n]*update/i', '', $this->_prepare($args)));
+      $result= $this->query('update '.preg_replace('/^[\s\t\r\n]*update/i', '', $this->prepare($args)));
       if($result) {
         $this->last_affected_rows= sybase_affected_rows();
       }
@@ -305,7 +315,7 @@
     function insert() {
       $args= func_get_args();
       $this->last_insert_id= $this->last_affected_rows= -1;
-      $result= $this->query('insert '.preg_replace('/^[\s\t\r\n]*insert/i', '', $this->_prepare($args)));
+      $result= $this->query('insert '.preg_replace('/^[\s\t\r\n]*insert/i', '', $this->prepare($args)));
       if($result) {
         $this->last_affected_rows= sybase_affected_rows();
       }
@@ -322,7 +332,7 @@
     function delete() {
       $args= func_get_args();
       $this->last_affected_rows= -1;
-      $result= $this->query('delete '.preg_replace('/^[\s\t\r\n]*delete/i', '', $this->_prepare($args)));
+      $result= $this->query('delete '.preg_replace('/^[\s\t\r\n]*delete/i', '', $this->prepare($args)));
       if($result) {
         $this->last_affected_rows= sybase_affected_rows();
       }
