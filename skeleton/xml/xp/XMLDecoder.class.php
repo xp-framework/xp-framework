@@ -49,14 +49,14 @@
             
           case 'object':
             try(); {
-              $class= ClassLoader::loadClass($node->children[$i]->attribute['class']);
-            } if (catch('Exception', $e)) {
-              $class= 'stdClass';
+              $class= &XPClass::forName($node->children[$i]->attribute['class']);
+            } if (catch('ClassNotFoundException', $e)) {
+              return throw($e);
             }
-            $result[$name]= &cast(
-              $this->_recurse($node->children[$i], $trim),
-              $class
-            );
+            $result[$name]= &$class->newInstance();
+            foreach ($this->_recurse($node->children[$i], $trim) as $k => $v) {
+              $result[$name]->$k= $v;
+            }
             break;
             
           default:
@@ -86,13 +86,17 @@
         do {
           if (!($buf= FileUtil::getContents($this->file))) break;
           if (!($tree= &Tree::fromString($buf))) break;
-          $name= ClassLoader::loadClass($tree->root->attribute['class']);
+          if (!($class= &XPClass::forName($tree->root->attribute['class']))) break;
+          $result= &$class->newInstance();
         } while (0);
       } if (catch('Exception', $e)) {
         return throw($e);
       }
-      
-      return cast($this->_recurse($tree->root, $trim), $name);
+
+      foreach ($this->_recurse($tree->root, $trim) as $k => $v) {
+        $result[$name]->$k= $v;
+      }      
+      return $result;
     }
     
     /**

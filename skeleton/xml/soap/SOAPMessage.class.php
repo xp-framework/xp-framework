@@ -126,14 +126,14 @@
       foreach ($child->attribute as $key => $val) {
         if ('xmlns' == substr($key, 0, 5) && 'http://xp-framework.net/xmlns/xp' == substr($val, 0, 32)) {
           try(); {
-            $n= ClassLoader::loadClass(substr($child->attribute['xsi:type'], strlen($key) - 5));
-          } if (catch('Exception', $e)) {
+            $class= &XPClass::forName(substr($child->attribute['xsi:type'], strlen($key) - 5));
+          } if (catch('ClassNotFoundException', $e)) {
           
             // Handle this gracefully
-            trigger_error($e->message, E_USER_NOTICE);
-            $n= 'Object';
+            $class= &XPClass::forName('lang.Object');
           }
-          $result= &new $n();
+
+          $result= &$class->newInstance();
           foreach ($this->_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
             $result->$key= $val;
           }

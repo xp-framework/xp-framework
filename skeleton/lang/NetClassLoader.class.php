@@ -25,9 +25,9 @@
    *     exit();
    *   }
    *   
-   *   $e= &new NetClassLoader('http://sitten-polizei.de/php/classes/');
+   *   $cl= &new NetClassLoader('http://sitten-polizei.de/php/classes/');
    *   try(); {
-   *     $name= $e->loadClass($p->value(1));
+   *     $class= &$cl->loadClass($p->value(1));
    *   } if (catch('ClassNotFoundException', $e)) {
    *   
    *     // Class or dependency not found
@@ -36,7 +36,7 @@
    *   }
    *   
    *   // Create an instance
-   *   $obj= &new $name();
+   *   $obj= &$class->newInstance();
    *   var_dump($obj, $obj->getClassName(), $obj->toString());
    * </code>
    *
@@ -192,11 +192,11 @@
      * since it's last retreival
      *
      * @access  public
-     * @param   string className fully qualified class name io.File
-     * @return  string class' name for instantiation
-     * @throws  ClassNotFoundException in case the class can not be found
+     * @param   string className fully qualified class name
+     * @return  &lang.XPClass
+     * @throws  lang.ClassNotFoundException in case the class can not be found
      */
-    function loadClass($className) {
+    function &loadClass($className) {
       try(); {
         $name= NetClassLoader::_load(
           $this->codebase,
@@ -214,7 +214,7 @@
         )));
       }
       
-      return $name;
+      return new XPClass($name);
     }
   }
 ?>
