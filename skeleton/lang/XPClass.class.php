@@ -24,8 +24,8 @@
    */
   class XPClass extends Object {
     var 
-      $_objref= NULL,
-      $name= '';
+      $_objref  = NULL,
+      $name     = '';
       
     /**
      * Constructor
@@ -35,12 +35,7 @@
      */
     function __construct(&$ref) {
       $this->_objref= &$ref;
-      $idx= is_object($ref) ? get_class($ref) : $ref;
-      if (!isset($GLOBALS['php_class_names'][$idx])) {
-        $this->name= 'php.'.$idx;
-      } else {
-        $this->name= $GLOBALS['php_class_names'][$idx];
-      }
+      $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
       parent::__construct();
     }
     
@@ -83,7 +78,7 @@
         $paramstr.= ', $args['.$i.']';
       }
       
-      return eval('return new '.reflect($this->name).'('.substr($paramstr, 2).');');
+      return eval('return new '.xp::reflect($this->name).'('.substr($paramstr, 2).');');
     }
     
     /**

@@ -71,9 +71,9 @@
      */
     function loadClass($className) {
       if (!ClassLoader::isBuiltin($className)) {
-        $path= isset($this) ? @$this->classpath : '';
-        uses($path.$className);
-        $phpName= reflect($path.$className);
+        $str= (isset($this) ? @$this->classpath : '').$className;
+        uses($str);
+        $phpName= xp::reflect($str);
       } else {
         $phpName= substr($className, 4);
       }

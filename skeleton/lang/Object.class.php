@@ -51,23 +51,10 @@
      * Returns the fully qualified class name for this class 
      * (e.g. "io.File")
      * 
-     * <pre>Warning: Deprecated! Use getClassName() instead</pre>
-     *
-     * @return  string fully qualified class name
-     * @see     xp://lang.Object#getClassName
-     */
-    function getName() {
-      return $GLOBALS['php_class_names'][get_class($this)];
-    }
-
-    /** 
-     * Returns the fully qualified class name for this class 
-     * (e.g. "io.File")
-     * 
      * @return  string fully qualified class name
      */
     function getClassName() {
-      return $GLOBALS['php_class_names'][get_class($this)];
+      return xp::nameOf(get_class($this));
     }
 
     /**
