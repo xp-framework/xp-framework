@@ -21,7 +21,7 @@
      * Set Storage
      *
      * @access  public
-     * @param   &lang.Object storage
+     * @param   &org.apache.HttpSession storage
      */
     function setStorage(&$storage) {
       $this->storage= &$storage;
@@ -31,7 +31,7 @@
      * Get Storage
      *
      * @access  public
-     * @return  &lang.Object
+     * @return  &org.apache.HttpSession
      */
     function &getStorage() {
       return $this->storage;
@@ -41,10 +41,9 @@
      * Called to initialize this resource manager
      *
      * @access  public
-     * @param   &org.apache.HttpSession session
      * @param   &lang.ClassLoader classloader
      */
-    function initialize(&$session, &$classloader) {
+    function initialize(&$classloader) {
     }
     
     /**
