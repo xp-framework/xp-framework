@@ -7,7 +7,8 @@
   uses(
     'lang.reflect.Field',
     'lang.reflect.Method',
-    'lang.reflect.Constructor'
+    'lang.reflect.Constructor',
+    'lang.InstantiationException'
   );
 
   /**
@@ -81,9 +82,13 @@
      *
      * @access  public
      * @param   mixed* args
-     * @return  &lang.Object 
+     * @return  &lang.Object
+     * @throws  lang.InstantiationException
      */
     public function newInstance() {
+      if (!$this->_reflection->isInstantiable()) {
+        throw (new InstantiationException($this->getName().' is not instantiable'));
+      }
       $args= func_get_args();
       return call_user_func_array(array(&$this->_reflection, 'newInstance'), $args);
     }
