@@ -23,6 +23,7 @@
    * @see      http://www.microsoft.com/Com/resources/comdocs.asp COM specification
    * @see      http://www.developmentor.com/dbox/yacl.htm Yet Another COM Library (YACL) 
    * @ext      com
+   * @ext      overload
    * @purpose  Base class
    * @platform Windows
    */

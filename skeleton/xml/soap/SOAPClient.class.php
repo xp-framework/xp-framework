@@ -26,6 +26,7 @@
    *   var_dump($return);
    * </code>
    * 
+   * @ext      overload
    * @purpose  Generic SOAP client base class
    */
   class SOAPClient extends Object {
