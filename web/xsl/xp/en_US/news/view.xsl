@@ -49,6 +49,22 @@
         Posted by <xsl:value-of select="/formresult/entry/author"/> 
         at <xsl:value-of select="func:datetime(/formresult/entry/date)"/>
       </em>
+      
+      <xsl:if test="count(/formresult/entry/comments/comment) &gt; 0">
+        <h4>Comments</h4>
+        <xsl:for-each select="/formresult/entry/comments/comment">
+          <div class="comment">
+            <p>
+              <xsl:apply-templates select="body"/>
+            </p>
+            <small>
+              By <xsl:value-of select="author"/>
+              on <xsl:value-of select="func:datetime(date)"/> 
+            </small>
+          </div>
+          <br clear="all"/>
+        </xsl:for-each>
+      </xsl:if>
     </div>
   </xsl:template>
   
