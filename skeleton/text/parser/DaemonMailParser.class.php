@@ -218,7 +218,7 @@
       } while ($t= strtok(" \r\n\t([])=")); 
       
       // If this is a multipart message, try and seperate parts:
-      // =======================================================
+      //
       // [-- Attachment #1 --]
       // [-- Type: text/plain, Encoding: 7bit, Size: 1.0K --]
       // 
@@ -453,7 +453,7 @@
             
           case DMP_SEARCH:
             // Sendmail
-            // ========
+            //
             //    ----- The following addresses had permanent fatal errors -----
             // foo.bar@aol.com>
             // 
@@ -483,7 +483,7 @@
             }
 
             // Exim1
-            // =====
+            // 
             // This message was created automatically by mail delivery software (Exim).
             // A message that you sent could not be delivered to one or more of its
             // recipients. This is a permanent error. The following address(es) failed:
@@ -493,7 +493,7 @@
             // ------ This is a copy of the message, including all the headers. ------
             //
             // Exim2
-            // =====
+            // 
             // This message was created automatically by mail delivery software (Exim).
             //   
             //   A message that you sent has not yet been delivered to one or more of its
@@ -541,7 +541,7 @@
             }
 
             // T-Online
-            // ========
+            // 
             // |------------------------- Failed addresses follow: ---------------------|
             // foo.bar@t-online.de> ... unknown user / Teilnehmer existiert nicht
             // |------------------------- Message text follows: ------------------------|
@@ -559,7 +559,7 @@
             }
 
             // Postfix
-            // =======
+            // 
             // Reporting-MTA: dns; cia.schlund.de
             // Arrival-Date: Sun, 12 May 2002 09:06:07 +0200
             // 
@@ -587,7 +587,7 @@
             }
             
             // Exim
-            // ====
+            // 
             // A message that you sent contained one or more recipient addresses that were
             // incorrectly constructed:
             // 
@@ -616,7 +616,7 @@
             }
             
             // QMail
-            // =====
+            // 
             // Hi. This is the qmail-send program at mailje.nl.
             // I'm afraid I wasn't able to deliver your message to the following addresses.
             // This is a permanent error; I've given up. Sorry it didn't work out.
