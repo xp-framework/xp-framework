@@ -31,7 +31,7 @@
       foreach (array_merge(array(61, 46), range(0, 31), range(127, 255)) as $i) {
         $r[chr($i)]= '='.strtoupper(dechex($i));
       }
-      return sprintf('=?%s?Q?%s?=', $charset, strtr($hdr, $r));
+      return sprintf('=?%s?Q?%s?=', $charset, strtr($str, $r));
     }
     
     /**
