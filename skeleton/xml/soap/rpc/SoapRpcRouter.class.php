@@ -119,6 +119,22 @@
         $return= &$this->callReflectHandler($msg);
         $answer->setData(array($return));
 
+      } if (catch('SOAPServiceFaultException', $e)) {
+      
+        // Server methods may throw a SOAPServerFaultException to have more
+        // conveniant control over the faultcode which is returned to the client.
+        $stacktrace= array();
+        foreach ($e->getStackTrace() as $element) {
+          $stacktrace[]= $element->toString();
+        }
+        
+        $answer->setFault(
+          $e->getFaultcode(),
+          $e->getMessage(),
+          $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
+          $stacktrace
+        );
+
       } if (catch('Exception', $e)) {
         $stacktrace= array();
         foreach ($e->getStackTrace() as $element) {
