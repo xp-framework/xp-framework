@@ -74,17 +74,6 @@
     }
     // }}}
     
-    // {{{ internal void error(int code, string msg, string file, int line)
-    //     Error callback
-    function error($code, $msg, $file, $line) {
-      if (0 == error_reporting()) return;
-      
-      $errors= &xp::registry('errors');
-      $errors[$file][]= array($code, $msg, $line);
-      xp::registry('errors', $errors);
-    }
-    // }}}
-    
     // {{{ internal string reflect(string str)
     //     Retrieve PHP conformant name for fqcn
     function reflect($str) {
@@ -92,16 +81,29 @@
     }
     // }}}
     
-    // {{{ internal void destroy(void)
-    //     Shutdown function
-    function destroy() {
-      foreach (array_keys($GLOBALS) as $k) {
-        if (is_a($GLOBALS[$k], 'Object')) {
-          $GLOBALS[$k]->__destruct();
-        }
+  }
+  // }}}
+
+  // {{{ internal void __error(int code, string msg, string file, int line)
+  //     Error callback
+  function __error($code, $msg, $file, $line) {
+    if (0 == error_reporting()) return;
+
+    $errors= &xp::registry('errors');
+    $errors[$file][]= array($code, $msg, $line);
+    xp::registry('errors', $errors);
+  }
+  // }}}
+
+
+  // {{{ internal void __destroy(void)
+  //     Shutdown function
+  function __destroy() {
+    foreach (array_keys($GLOBALS) as $k) {
+      if (is_a($GLOBALS[$k], 'Object')) {
+        $GLOBALS[$k]->__destruct();
       }
     }
-    // }}}
   }
   // }}}
 
@@ -203,15 +205,18 @@
 
   // {{{ initialization
   error_reporting(E_ALL);
+  if (!defined('PATH_SEPARATOR')) {
+    define('PATH_SEPARATOR',  0 == strncasecmp('WIN', PHP_OS, 3) ? ';' : ':');    
+  }
   define('SKELETON_PATH', (getenv('SKELETON_PATH')
     ? getenv('SKELETON_PATH')
     : dirname(__FILE__).DIRECTORY_SEPARATOR
   ));
   ini_set('include_path', SKELETON_PATH.PATH_SEPARATOR.ini_get('include_path'));
-  register_shutdown_function(array('xp', 'destroy'));
+  register_shutdown_function('__destroy');
   xp::registry('errors', array());
   xp::registry('exceptions', array());
-  set_error_handler(array('xp', 'error'));
+  set_error_handler('__error');
 
   uses(
     'lang.Object',
