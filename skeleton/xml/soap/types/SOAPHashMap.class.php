@@ -12,7 +12,7 @@
    * @see      xp://xml.soap.types.SoapType
    * @purpose  HashMap type
    */
-  class SOAPHashMap extends Object {
+  class SOAPHashMap extends SoapType {
 
     /**
      * Constructor

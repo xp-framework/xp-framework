@@ -30,7 +30,7 @@
    * @see      xp://xml.soap.types.SoapType
    * @purpose  DateTime type
    */
-  class SOAPNamedItem extends Object {
+  class SOAPNamedItem extends SoapType {
     var
       $name  = 'item',
       $value = NULL;

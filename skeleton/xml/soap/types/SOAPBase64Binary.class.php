@@ -12,7 +12,7 @@
    * @see      xp://xml.soap.SOAPNode
    * @purpose  Transport base64 encoded data
    */
-  class SOAPBase64Binary extends Object {
+  class SOAPBase64Binary extends SoapType {
     var
       $string,
       $encoded;
