@@ -15,8 +15,21 @@
   /**
    * This class represents an ID3 tag
    *
+   * Usage:
+   * <code>
+   *   // [...]
+   *   $mp3= &new MP3File(new File($file));
+   *   try(); {
+   *     $id3= &$mp3->getID3Tag();
+   *   } if (catch('Exception', $e)) {
+   *     $e->printStackTrace();
+   *     exit();
+   *   }
+   *   echo $id3->toString();
+   * </code>
+   *
    * @purpose  ID3 Tag object
-   * @see      
+   * @see      http://www.id3.org/id3v1.html
    */
   class ID3Tag extends Object {
     var 
@@ -79,32 +92,30 @@
      * @return  &util.mp3.ID3Tag a tag
      */
     function &fromString(&$buf, $version) {
-      $tag= NULL;
+      $tag= &new ID3Tag();
       
       switch ($version) {
         case ID3_VERSION_1:
-          $tag= &new ID3Tag();
-          if ("\0" == $buf{125} && "\0" != $buf{126}) {
-            $data= unpack('a3tag/a30name/a30artist/a30album/a4year/a28comment/x1/C1track/C1genre', $buf);
-            $tag->version= ID3_VERSION_1_1;
-          } else {
-            $data= unpack('a3tag/a30name/a30artist/a30album/a4year/a28comment/C1genre', $buf);
-            $tag->version= ID3_VERSION_1;
-          }
+          $data= unpack('a3tag/a30name/a30artist/a30album/a4year/a30comment/C1genre', $buf);
+          break;
           
-          $tag->tag= $data['tag'];
-          $tag->name= $data['name'];
-          $tag->artist= $data['artist'];
-          $tag->album= $data['album'];
-          $tag->year= $data['year'];
-          $tag->comment= $data['comment'];
-          $tag->genre= &new ID3Genre($data['genre']);
+        case ID3_VERSION_1_1:
+          $data= unpack('a3tag/a30name/a30artist/a30album/a4year/a28comment/x1/C1track/C1genre', $buf);
           break;
         
         default:
           return throw(new IllegalArgumentException('Version '.$version.' not supported'));
       }
-      
+
+      // Copy information
+      $tag->version=    $version;
+      $tag->tag=        $data['tag'];
+      $tag->name=       $data['name'];
+      $tag->artist=     $data['artist'];
+      $tag->album=      $data['album'];
+      $tag->year=       (int)$data['year'];
+      $tag->comment=    $data['comment'];
+      $tag->genre=      &new ID3Genre((int)$data['genre']);
       return $tag;
     }
   }
