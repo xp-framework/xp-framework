@@ -167,19 +167,39 @@
     </tr>
   </xsl:template>
   
-  <xsl:template match="link">
-    <xsl:choose>
-      <xsl:when test="./scheme = 'http'">
-        <a href="{./scheme}://{./host}{./path}#{./fragment}" target="_blank">
-        <xsl:value-of select="./scheme"/>://<xsl:value-of select="./host"/><xsl:value-of select="./path"/>#<xsl:value-of select="./fragment"/>
-        </a>
-      </xsl:when>
-
-      <xsl:otherwise>
-        <a href="http://xp.php3.de/ref/?_host={./host}&amp;_path={./path}&amp;_fragment={./fragment}"><xsl:value-of select="./scheme"/>://
-        <xsl:value-of select="./host"/><xsl:value-of select="./path"/><xsl:value-of select="./fragment"/></a>
-      </xsl:otherwise>
-    </xsl:choose>
+  <xsl:template match="link[child::*[name() = 'scheme']/text() = 'http']">
+    <a href="{./scheme}://{./host}{./path}#{./fragment}" target="_blank">
+      <xsl:value-of select="./scheme"/>://<xsl:value-of select="./host"/><xsl:value-of select="./path"/>
+      <xsl:if test="string-length (./fragment) != 0">
+        #<xsl:value-of select="./fragment"/>
+      </xsl:if>
+    </a>
+  </xsl:template>
+  
+  <xsl:template match="link[child::*[name() = 'scheme']/text() = 'xp']">
+    <a href="/classes/{./host}.html#{./fragment}">
+      <xsl:value-of select="./host"/>
+      <xsl:if test="string-length (./fragment) != 0">
+        #<xsl:value-of select="./fragment"/>
+      </xsl:if>
+    </a>
+  </xsl:template>
+  
+  <xsl:template match="link[child::*[name() = 'scheme']/text() = 'mailto']">
+    <a href="mailto:{./path}" target="_blank"><xsl:value-of select="./path"/></a>
+  </xsl:template>  
+  
+  <xsl:template match="link[child::*[name() = 'scheme']/text() = 'php']">
+    <a href="http://php3.de/{./host}" target="_blank"><xsl:value-of select="./host"/></a>
+  </xsl:template>
+  
+  <xsl:template match="link[child::*[name() = 'scheme']/text() = 'rfc']">
+    <a href="http://www.faqs.org/rfcs/rfc{./host}.html#{./fragment}" target="_blank">
+      rfc <xsl:value-of select="./host"/>
+      <xsl:if test="string-length (./fragment) != 0">
+        Section <xsl:value-of select="./fragment"/>
+      </xsl:if>
+    </a>
   </xsl:template>
   
   <xsl:template match="defines">
