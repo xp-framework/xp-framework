@@ -27,7 +27,7 @@
       
       // Add paging information
       $response->addFormResult(new Node('pager', NULL, array(
-        'offset'  => $page,
+        'offset'  => (int)$page,
         'total'   => $index[0]
       )));
       
