@@ -27,10 +27,10 @@
       ));
       foreach ($params as $key => $value) {
         $item= &$this->item->addChild(new SOAPNode('item'));
-        $item->addChild(new SOAPNode('key', $key, array(
+        $item->addChild(new SOAPNode('key', htmlspecialchars($key), array(
           'xsi:type'  => 'xsd:string'
         )));
-        $item->addChild(new SOAPNode('value', $value, array(
+        $item->addChild(new SOAPNode('value', htmlspecialchars($value), array(
           'xsi:type'  => 'xsd:string'
         )));
       }
