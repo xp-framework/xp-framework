@@ -37,10 +37,9 @@
      * Gets text
      *
      * @access  public
-     * @param   
-     * @return  
+     * @return  strung
      */
-    function getText($text) {
+    function getText() {
       return $this->text;
     }
   
