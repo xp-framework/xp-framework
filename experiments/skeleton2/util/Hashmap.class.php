@@ -174,13 +174,13 @@
      * @access  public
      * @param   &mixed map an array or another Hashmap
      * @param   bool recursive default FALSE Merge hashmaps recursively
-     * @throws  IllegalArgumentException in case the parameter is neither an array nor a Hashmap
+     * @throws  lang.IllegalArgumentException in case the parameter is neither an array nor a Hashmap
      */
     public function merge($map, $recursive= FALSE) {
-      if (is_a($map, 'Hashmap')) {
-        $h= $map->_hash;
-      } elseif (is_array($map)) {
+      if (is_array($map)) {
         $h= $map;
+      } elseif ($map instanceof Hashmap) {
+        $h= $map->hash();
       } else {
         throw (new IllegalArgumentException('map is neither an array nor a Hashmap'));
       }
@@ -311,19 +311,26 @@
     }
     
     /**
+     * Wrapper method
+     *
+     * @access  package
+     * @return  array
+     */
+    public function hash() {
+      return $this->_hash;
+    }
+    
+    /**
      * Compares two hashmaps and returns TRUE when equal.
      *
      * @access  public
-     * @param   &util.Hashmap hashmap to compare with
+     * @param   &lang.Generic cmp
      * @return  boolean isequal
-     * @throws  lang.IllegalArgumentException in case cmp is not a Hashmap
      */
-    public function isEqual($cmp) {
-      if (!is('util.Hashmap', $cmp)) {
-        throw (new IllegalArgumentException('Argument is not a util.Hashmap'));
-      }
-        
-      return ($this->_hash === $cmp->_hash);
+    public function equals(Generic $cmp) {
+      if (!$cmp instanceof Hashmap) return FALSE;
+
+      return ($this->_hash === $cmp->hash());
     }
     
     /**
