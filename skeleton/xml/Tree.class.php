@@ -7,8 +7,7 @@
   uses(
     'xml.XML',
     'xml.XMLParser',
-    'xml.Node',
-    'io.IOException'
+    'xml.Node'
   );
  
   /**
@@ -33,6 +32,7 @@
      */
     function __construct($params= NULL) {
       $this->_objs= array();		
+      
       $this->root= new Node(array(
         'name'  => 'document'
       ));
@@ -48,7 +48,7 @@
      */
     function getSource($indent= TRUE) {
       return (isset($this->root)
-        ? $this->getDeclaration()."\n".$this->root->getSource($indent)
+        ? $this->root->getSource($indent)
         : NULL
       );
     }
