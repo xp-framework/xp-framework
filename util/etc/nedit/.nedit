@@ -45,7 +45,9 @@ nedit.shellCommands: \
 	Make accessors:Shift+Alt+A::I:\n\
 		php -q $HOME/devel/xp/util/bin/mkaccessor.php\n\
 	Check XP Coding standards:Alt+V::ADS:\n\
-		$HOME/bin/xpcsc.pl %\n
+		$HOME/bin/xpcsc.pl %\n\
+	Open XP class:Shift+Ctrl+O::ID:\n\
+		/bin/sh -c 'nedit `php $HOME/bin/findclass.php` 1>/dev/null 2>/dev/null &'\n
 nedit.macroCommands: \
 	Complete Word:Alt+D::: {\n\
 		# Tuning parameters\n\
