@@ -68,10 +68,11 @@
       $ret= $this->content;
       @list($ns, $t)= explode(':', @$this->attribute['xsi:type']);
       
-      switch ($t) {
+      switch (strtolower($t)) {
         case 'base64':
-        case 'base64Binary':
-          return new SOAPBase64Binary(base64_decode($ret));
+        case 'base64binary':
+          
+          return new SOAPBase64Binary($ret, $encoded= TRUE);
           break;
         
         case 'boolean':
@@ -82,10 +83,11 @@
           break;
           
         case 'date':
-        case 'dateTime':    // ISO 8601: http://www.w3.org/TR/xmlschema-2/#ISO8601 http://www.w3.org/TR/xmlschema-2/#dateTime
+        case 'datetime':    // ISO 8601: http://www.w3.org/TR/xmlschema-2/#ISO8601 http://www.w3.org/TR/xmlschema-2/#dateTime
           return new Date(str_replace('T', ' ', $ret));
           break;
-      }        
+      }
+      
       if (isset($tmap[$t])) $t= $tmap[$t];
 
       // Decode if necessary
