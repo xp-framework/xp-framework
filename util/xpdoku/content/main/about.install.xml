@@ -6,42 +6,43 @@
       <editor>$Id$</editor>
       
       <para>
-        <caption>php.ini-Anpassungen</caption>
+        <caption>php.ini requirements</caption>
         <text>
-          Es lohnt sich, in der php.ini folgenden Wert anzupassen:
+          It's worth changing the following values in php.ini:
 
           <ul>
             <li>Unix: <pre>include_path = ".:/path/to/where/lang.base.php/resides"</pre></li>
             <li>Windows: <pre>include_path = ".;c:\path\to\where\lang.base.php\resides"</pre></li>
           </ul>
 
-          Man kann nun statt:
+          Instead of:
           <code><![CDATA[require('/path/to/where/lang.base.php/resides/lang.base.php');]]></code>
-          überall
+          you can write
           <code><![CDATA[require('lang.base.php');]]></code>
-          schreiben und sich beim Portieren viel Ärger sparen.
+          and be calm when porting your code to another machine.
 
-          Siehe <ref type="ext" link="http://www.php.net/manual/en/configuration.php">PHP: Configuration</ref>, 
-          Beispiele 3-1 und 3-2.
+          See also <ref type="ext" link="http://www.php.net/manual/en/configuration.php">PHP: Configuration</ref>, 
+          Examples 3-1 and 3-2.
         </text>
       </para>
       <para>
-        <caption>Mindestanforderungen</caption>
+        <caption>Minimum requirements</caption>
         <text>
-          PHP sollte in einer aktuellen Version vorliegen, alles > 4.1 
-          funktioniert. Ältere PHP-Versionen unterstützen beispielsweise
-          die $_*-Variablen nicht, kennen die array(&amp;$this, 'method')-
-          Notation für call_user_func[_array]() nicht oder haben Probleme
-          mit "parent" (siehe <ref type="ext" link="http://bugs.php.net/bug.php?id=12313">PHP Buf #12313</ref>).
+          PHP should be available in an up-to-date version, anything above
+          version 4.1 should work. Older versions do not support e.g.
+          the new superglobal variables $_*, do now know the 
+          array(&amp;$this, 'method') notation for call_user_func[_array]()
+          or have problems with "parent" 
+          (see <ref type="ext" link="http://bugs.php.net/bug.php?id=12313">PHP Buf #12313</ref>).
         </text>
       </para>
       <para>
-        <caption>Benötigte Dateien</caption>
+        <caption>Needed files</caption>
         <text>
-          Um ein laufendes XP-Framework zu haben, werden folgende Dateien 
-          in folgenden Verzeichnissen benötigt:
+          To get a working XP framework, the following files in the following
+          directories are required:
 
-          Im Basisverzeichnis (bspw. /usr/local/lib/skeleton/):
+          In the base directory (eg. /usr/local/lib/skeleton/):
           <ul>
             <li>lang.base.php</li>
           </ul>
@@ -58,6 +59,8 @@
             <li>FormatException.class.php</li>
             <li>ClassLoader.class.php</li>
           </ul>
+          
+          (As a rough rule: you need all the files directly in skeleton/lang, and lang.base.php).
         </text>
       </para>
     </content>
