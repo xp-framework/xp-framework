@@ -129,7 +129,7 @@
       <xsl:sort select="@class"/>
       <xsl:variable name="pos" select="position()- 1"/>
 
-      <xsl:if test="@class != $elements[$pos]/@class">
+      <xsl:if test="$pos = 0 or @class != $elements[$pos]/@class">
         <xsl:text>,&#10;</xsl:text>        
         <xsl:text>    '</xsl:text>
         <xsl:value-of select="@class"/>
