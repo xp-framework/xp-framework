@@ -14,7 +14,7 @@
   
     // {{{ public string nameOf(string name)
     //     Returns the fully qualified name
-    function nameOf($name) {
+    public static function nameOf($name) {
       $name= strtolower($name);
       if (!isset(xp::$classes[$name])) {
         return 'php.'.$name;
@@ -25,21 +25,21 @@
 
     // {{{ public string typeOf(&mixed arg)
     //     Returns the fully qualified type name
-    function typeOf(&$arg) {
+    public static function typeOf(&$arg) {
       return is_object($arg) ? xp::nameOf(get_class($arg)) : gettype($arg);
     }
     // }}}
 
     // {{{ public void gc()
     //     Runs the garbage collector
-    function gc() {
+    public static function gc() {
       xp::$errors= array();
     }
     // }}}
 
     // {{{ public bool errorAt(string file [, int line)
     //     Returns whether an error occured at the specified position
-    function errorAt($file, $line= -1) {
+    public static function errorAt($file, $line= -1) {
 
       // If no line is requested, this is O(n)
       if ($line < 0) return !empty(xp::$errors[$file]);
@@ -59,7 +59,7 @@
     
     // {{{ public mixed sapi(string* sapis)
     //     Sets an SAPI
-    function sapi() {
+    public static function sapi() {
       foreach ($a= func_get_args() as $name) {
         require_once('sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php');
       }
@@ -69,14 +69,14 @@
     
     // {{{ internal string reflect(string str)
     //     Retrieve PHP conformant name for fqcn
-    function reflect($str) {
+    public static function reflect($str) {
       return strtolower(substr($str, (FALSE === $p= strrpos($str, '.')) ? 0 : $p+ 1));
     }
     // }}}
 
     // {{{ internal void error(string message)
     //     Throws a fatal error and exits with exitcode 127
-    function error($message) {
+    public static function error($message) {
       restore_error_handler();
       trigger_error($message, E_USER_ERROR);
       exit(0x7f);
@@ -89,26 +89,26 @@
 
     // {{{ public object null(void)
     //     Constructor to avoid magic __call invokation
-    function null() { }
+    public function null() { }
     // }}}
     
     // {{{ magic mixed __call(string name, mixed[] args)
     //     Call proxy
-    function __call($name, $args) {
+    public function __call($name, $args) {
       throw(new NullPointerException('Method.invokation('.$name.')'));
     }
     // }}}
 
     // {{{ magic void __set(string name, mixed value)
     //     Set proxy
-    function __set($name, $value) {
+    public function __set($name, $value) {
       throw(new NullPointerException('Property.write('.$name.')'));
     }
     // }}}
 
     // {{{ magic mixed __get(string name)
     //     Set proxy
-    function __get($name) {
+    public function __get($name) {
       throw(new NullPointerException('Property.read('.$name.')'));
     }
     // }}}
