@@ -73,17 +73,19 @@
      * Register a connection
      *
      * @param   &lang.Object obj A connection object
+     * @return  &lang.Object obj The connection object registered
      * @param   string hostAlias default NULL
      * @param   string userAlias default NULL
      */
-    function register(&$obj, $hostAlias= NULL, $userAlias= NULL) {
+    function &register(&$obj, $hostAlias= NULL, $userAlias= NULL) {
       $host= (NULL == $hostAlias) ? $obj->host : $hostAlias;
       $user= (NULL == $userAlias) ? $obj->user : $userAlias;
       
       if (!isset($this->pool["$user@$host"])) {
-        $this->pool["$user@$host"]= $obj;
-        return $obj;
+        $this->pool["$user@$host"]= &$obj;
       }
+      
+      return $obj;
     }
     
     /**
