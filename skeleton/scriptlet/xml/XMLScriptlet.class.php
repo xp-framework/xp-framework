@@ -212,7 +212,7 @@
       $response->setParam('lang',    $request->getLanguage());
       $response->setParam('product', $request->getProduct());
       $response->setParam('sess',    $request->getSessionId());
-      $response->setParam('query',   $request->getEnvValue('QUERY_STRING'));
+      $response->setParam('query',   $request->getQueryString());
       
       // Set XSL stylesheet
       $this->_setStylesheet($request, $response);
