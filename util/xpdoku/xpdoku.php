@@ -143,17 +143,21 @@
             array(
               '#&lt;pre&gt;(.*)&lt;/pre&gt;#sU',
               '#&lt;xmp&gt;(.*)&lt;/xmp&gt;#sU',
+              '#&lt;tt&gt;(.*)&lt;/tt&gt;#sU',
               '#&lt;quote&gt;(.*)&lt;/quote&gt;#sU',
               '#&lt;code&gt;(.*)&lt;/code&gt;#sUe',
               '#&lt;ul&gt;(.*)&lt;/ul&gt;#sU',
+              '#&lt;ol&gt;(.*)&lt;/ol&gt;#sU',
               '#&lt;(/?li ?)&gt;#sU',
               '#&lt;(br ?/?)&gt;#sU'
             ), array(
               '<pre>$1</pre>',
               '<pre>$1</pre>',
+              '<tt>$1</tt>',
               '<quote>$1</quote>',
               'highlightPHPSource(stripslashes(\'$1\'))',
               '<ul>$1</ul>',
+              '<ol>$1</ol>',
               '<$1>',
               '<br/>'
             ),
