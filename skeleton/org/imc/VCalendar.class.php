@@ -395,6 +395,9 @@
       $ret.= $this->_export ('PRODID',    '-//XP//XP Framework Calendar//EN');
       $ret.= $this->_export ('VERSION',   $this->getVersion());
       $ret.= $this->_export ('METHOD',    $this->getMethod());
+
+      // Export timezone
+      $ret.= $this->timezone->export ();
       
       // Enter all contained elements
       foreach (array_keys ($this->events) as $idx) {
