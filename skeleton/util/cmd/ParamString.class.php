@@ -89,7 +89,12 @@
      * @throws IllegalArgumentException if parameter does not exist and no default value was supplied.
      */ 
     function value($long, $short= NULL, $default= NULL) {
-      if (is_int($long)) return $this->list[$long];
+      if (is_int($long)) {
+        if (NULL === $default)
+          return throw (new IllegalArgumentException ('Parameter #'.$long.' does not exist'));        
+
+        return $this->list[$long];
+      }        
   
       $pos= $this->_find($long, $short);
       if (FALSE === $pos && NULL === $default)
