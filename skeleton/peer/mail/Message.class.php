@@ -209,6 +209,16 @@
     function setDate(&$arg) {
       if (is_a($arg, 'Date')) $this->date= &$arg; else $this->date= &new Date($arg);
     }
+    
+    /**
+     * Retrieve message date
+     *
+     * @access  public
+     * @return  &util.Date
+     */
+    function &getDate() {
+      return $this->date;
+    }
   
     /**
      * Add recipient
