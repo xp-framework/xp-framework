@@ -42,7 +42,7 @@
      * @return  string
      */
     function decode($str) { 
-      return quoted_printable_decode($str);
+      return strtr(quoted_printable_decode($str), '_', ' ');
     }
   }
 ?>
