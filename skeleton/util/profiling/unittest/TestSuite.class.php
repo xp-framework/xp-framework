@@ -64,8 +64,12 @@
         
         try(); {
           $r= &$this->tests[$i]->run();
-        } if (catch('Exception', $e)) {
+        } if (catch('AssertionFailedError', $e)) {
           $e->setTrace($e->getStackTrace());
+          $result->setFailed($this->tests[$i], $e);
+          $this->tests[$i]->tearDown();
+          continue;
+        } if (catch('Exception', $e)) {
           $result->setFailed($this->tests[$i], $e);
           $this->tests[$i]->tearDown();
           continue;
