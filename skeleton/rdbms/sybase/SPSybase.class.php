@@ -37,10 +37,10 @@
     // Logger
     var
       $log;
-	  
+    
     var
-      $fields	= NULL,
-      $lengths	= NULL;
+      $fields   = NULL,
+      $lengths  = NULL;
  
     /**
      * Constructor
@@ -146,7 +146,7 @@
     function query() {
       $args= func_get_args();
       $this->lengths= $this->fields= NULL;
-	  
+    
       $sql= $this->prepare($args);
 
       // Wenn es keinen Connect gibt, einen herstellen
@@ -171,7 +171,7 @@
       while (++$i < @sybase_num_fields($result)) {
         $field= sybase_fetch_field($result, $i);
         $this->fields[$field->name]= $field->type;
-	    $this->lengths[$field->name]= $field->max_length;
+        $this->lengths[$field->name]= $field->max_length;
       }
       
       return $result;
@@ -181,7 +181,7 @@
      * Data Seek: Offset innerhalb eines Querys definieren
      *
      * @access  public
-     * @param	resource query Queryhandle, z.B. aus query()
+     * @param   resource query Queryhandle, z.B. aus query()
      * @param   int offset Der Offset, zu dem gesprungen wird
      * @return  bool Konnte geseekt werden?
      */
@@ -193,7 +193,7 @@
      * Einen Datensatz holen
      *
      * @access  public
-     * @param	resource query Queryhandle, z.B. aus query()
+     * @param   resource query Queryhandle, z.B. aus query()
      * @return  array Der selektierte Datensatz
      */
     function &fetch($query) {
@@ -249,7 +249,7 @@
      * Datensätze als assoziativen Array holen
      *
      * @access  public
-     * @param	string sql Das SQL
+     * @param   string sql Das SQL
      * @return  array rows Folgende Form (bei Anzahl zurückgegebener Felder):
      *          1) field[0].content => field[0].content
      *          2) field[0].content => field[1].content
@@ -272,13 +272,13 @@
       }
       return $query;
     }
-	 
+   
 
     /**
      * Select-Wrapper
      *
      * @access  public
-     * @param	string sql Das SQL (ohne select)
+     * @param   string sql Das SQL (ohne select)
      * @return  array Alle Rows
      */   
     function &select() {
@@ -298,7 +298,7 @@
      * Execute-Wrapper
      *
      * @access  public
-     * @param	string sql Das SQL (ohne exec)
+     * @param   string sql Das SQL (ohne exec)
      * @return  array Alle Rows
      */   
     function &execute() {
@@ -318,7 +318,7 @@
      * Update-Wrapper
      *
      * @access  public
-     * @param	string sql Das SQL (ohne update)
+     * @param   string sql Das SQL (ohne update)
      * @return  bool Query-Ergebnis
      */   
     function update() {
@@ -335,7 +335,7 @@
      * Insert-Wrapper
      *
      * @access  public
-     * @param	string sql Das SQL (ohne insert)
+     * @param   string sql Das SQL (ohne insert)
      * @return  bool result Query-Ergebnis
      */   
     function insert() {
@@ -347,12 +347,12 @@
       }
       return $result;
     }
-	
+  
     /**
      * Delete-Wrapper
      *
      * @access  public
-     * @param	string sql Das SQL (ohne delete)
+     * @param   string sql Das SQL (ohne delete)
      * @return  bool result Query-Ergebnis
      */   
     function delete() {
