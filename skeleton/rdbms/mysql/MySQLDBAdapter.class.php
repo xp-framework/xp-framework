@@ -103,7 +103,7 @@
         // 8 rows in set (0.00 sec)
         $q= &$this->conn->query('describe %c', $table);
         while ($record= $q->next()) {
-          preg_match('#^([a-z]+)(\(([0-9]+)\))?$#', $record['Type'], $regs);
+          preg_match('#^([a-z]+)(\(([0-9]+)\))?#', $record['Type'], $regs);
           
           $t->addAttribute(new DBTableAttribute(
             $record['Field'], 
