@@ -54,7 +54,7 @@
       $this->response->statusCode= $statusCode;
       $this->response->setContent(sprintf(
         "<h1>Internal Server Error</h1>\n<xmp>\n%s</xmp>\n",
-        $this->getStackTrace()
+        $this->toString()
       ));
     }
   }

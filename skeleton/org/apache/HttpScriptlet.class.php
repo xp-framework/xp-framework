@@ -355,7 +355,7 @@
         }
       } if (catch('Exception', $e)) {
         return throw(new HttpScriptletException(
-          'Request processing failed ['.$this->_method.']: '.$e->getStackTrace()
+          'Request processing failed ['.$this->_method.']: '.$e->getMessage()
         ));
       }
 
