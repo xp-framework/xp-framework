@@ -57,7 +57,7 @@
     } elseif ('NONE' == $old_ver) {
 
       // If old version is "NONE", this means the file has been added
-      $msg.= sprintf("Index: %s/%s\n--- (add)\n+++ %s\n", $dir, $file, $new_ver);	
+      $msg.= sprintf("Index: %s/%s\n--- (add)\n+++ %s <%s/%s/%s>\n", $dir, $file, $new_ver, $cvsurl['checkout'], $dir, $file);	
     } else {
 
       // Execute diff between the two versions
