@@ -43,7 +43,7 @@ nedit.shellCommands: \
 	Execute PHP script:F9::AD:\n\
 		php -q\n\
 	Make accessors:Shift+Alt+A::I:\n\
-		php -q $HOME/devel/xp/util/bin/mkaccessor.php\n\
+		php -q $HOME/bin/mkaccessor.php\n\
 	Check XP Coding standards:Alt+V::ADS:\n\
 		$HOME/bin/xpcsc.pl %\n\
 	Open XP class:Shift+Ctrl+O::ID:\n\
