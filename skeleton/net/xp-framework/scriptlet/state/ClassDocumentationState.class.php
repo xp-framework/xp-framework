@@ -55,11 +55,12 @@
       }
       
       // Read cached api docs
-      $stor= &new File('../build/cache/class.php/'.$fqcn);
+      $stor= &new File('../build/cache/'.$collection.'/class/'.$fqcn);
       try(); {
         $apidoc= unserialize(FileUtil::getContents($stor));
       } if (catch('IOException', $e)) {
         $response->addFormError('corrupt', $e->getMessage());
+        return throw($e);
         return;
       }
 
