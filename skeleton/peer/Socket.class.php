@@ -123,7 +123,7 @@
      * @access  public
      * @param   bool blocking
      * @return  bool success TRUE to indicate the call succeeded
-     * @throws  SocketException
+     * @throws  peer.SocketException
      * @see     php://socket_set_blocking
      */
     function setBlocking($blockMode) {
@@ -140,7 +140,7 @@
      * @access  public
      * @param   float timeout default NULL Timeout value in seconds (e.g. 0.5)
      * @return  bool there is data that can be read
-     * @throws  SocketException in case of failure
+     * @throws  peer.SocketException in case of failure
      */
     function canRead($timeout= NULL) {
       if (NULL === $timeout) {
@@ -199,7 +199,7 @@
     }
     
     /**
-     * Testet auf EOF vom Socket
+     * Checks if EOF was reached
      *
      * @access  public
      * @return  bool EOF erhalten
