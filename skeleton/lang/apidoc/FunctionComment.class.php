@@ -26,9 +26,9 @@
     /**
      * Adds a reference
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string see
+     * @return  &lang.apidoc.Reference added reference
      */
     function &addReference($see) {
       $this->references[]= &new Reference($see);
@@ -36,22 +36,22 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Set access
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string access
      */
     function setAccess($access) {
       $this->access= $access;
     }
     
     /**
-     * (Insert method's description here)
+     * Set return value
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string type
+     * @param   string description
+     * @return  string description
      */
     function &setReturn($type, $description) {
       $this->return= &new stdClass();
@@ -61,11 +61,12 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Add a throws
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string exception
+     * @param   string condition
+     * @return  &stdClass added exception
      */
     function &addThrows($exception, $condition) {
       $t= &new stdClass();
@@ -76,11 +77,14 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Add a default parameter
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string type
+     * @param   string name
+     * @param   string default
+     * @param   string descriptions
+     * @return  &stdClass added parameter
      */
     function &addDefaultParam($type, $name, $default, $description) {
       $p= &new stdClass();
@@ -93,11 +97,13 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Add a parameter
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string type
+     * @param   string name
+     * @param   string descriptions
+     * @return  &stdClass added parameter
      */
     function addParam($type, $name, $description) {
       $p= &new stdClass();
