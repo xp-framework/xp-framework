@@ -57,6 +57,9 @@ $warnings= 0;
 
 while (@ARGV) {
   $FILE= shift @ARGV;
+  
+  if ($FILE !~ /\.class\.php$/) { next; }
+  
   open(FILE, $FILE) || die "Cannot open $FILE";
   $l= 0;
   while (<FILE>) {
