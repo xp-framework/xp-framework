@@ -42,14 +42,12 @@
      * @param   int maxdepth
      */
     function _recurse($path, $root, &$response, $maxdepth) {
-      $l= &Logger::getInstance();
-      $c= &$l->getCategory();
+      // DEBUG $l= &Logger::getInstance();
+      // DEBUG $c= &$l->getCategory();
       
       $realpath= $this->base.$path;
-
       if (is_dir($realpath)) {
-        $c->debug('DIRECTORY', $path);
-        
+        // DEBUG $c->debug('DIRECTORY', $path);
         $f= &new Folder($realpath);
         $response->addEntry(
           basename($path),
@@ -60,15 +58,14 @@
         );
         $maxdepth--;
         while ($maxdepth >= 0 && $entry= $f->getEntry()) {
-          $c->debug('RECURSE', $path.$entry);
-          
+          // DEBUG $c->debug('RECURSE', $path.$entry);
           $this->_recurse($path.$entry, $root, $response, $maxdepth);
         }
         $f->close();
         return;
       }
       
-      $c->debug('FILE', $realpath);
+      // DEBUG $c->debug('FILE', $realpath);
       $response->addEntry(
         basename($path),
         $root.$path,
@@ -98,9 +95,9 @@
         return throw(new IllegalArgumentException('Parameters passed of wrong types'));
       }
 
-      $l= &Logger::getInstance();
-      $c= &$l->getCategory();
-      $c->debug('Properties requested', $request->getProperties());
+      // DEBUG $l= &Logger::getInstance();
+      // DEBUG $c= &$l->getCategory();
+      // DEBUG $c->debug('Properties requested', $request->getProperties());
  
       try(); {
         $this->_recurse(
