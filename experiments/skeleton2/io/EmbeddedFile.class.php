@@ -28,8 +28,7 @@
      * @return  mixed
      */
     public function __construct($filename) {
-      $vfm= VirtualFileManager::getInstance();
-      if (FALSE !== ($s= $vfm->getByFilename($filename))) {
+      if (FALSE !== ($s= VirtualFileManager::getInstance()->getByFilename($filename))) {
         $this->_stream= $s;
       } else {
         $this->_stream= new File;

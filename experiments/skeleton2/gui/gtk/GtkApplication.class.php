@@ -38,8 +38,7 @@
     public function __construct(ParamString $p) {
 
       // Set up logger
-      $l= Logger::getInstance();
-      $this->cat= $l->getCategory(get_class($this));
+      $this->cat= Logger::getInstance()->getCategory(get_class($this));
       $this->cat->identifier= get_class($this);
       if (!$this->cat->hasAppenders()) {
         $this->cat->addAppender(new FileAppender('php://stderr'));
