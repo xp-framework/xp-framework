@@ -33,6 +33,7 @@
      * Constructor
      *
      * @access  public
+     * @param   &util.ParamString p
      */
     function __construct(&$p) {
 
