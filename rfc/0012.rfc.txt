@@ -197,7 +197,7 @@ Each protocol message has a header. It consists of the following elements:
 Encoding the header in PHP:
 <?php
   $header= pack(
-    'NccccN', 
+    'Nc4N', 
     1015490375, 
     $versionMajor,
     $versionMinor,
@@ -237,16 +237,8 @@ The body of a message is encoded depending on the message type.
   The utf() function creates a string that can be read using the 
   Java method DataInput.readUTF(), see
   http://java.sun.com/j2se/1.4.2/docs/api/java/io/DataInput.html#readUTF()
-  
-  A PHP implementation of this function could be as follows:
-  <?php
-    function utf($string) {
 
-      // TBD: Split into blocks if string length exceeds 16 bit.
-      $utf= utf8_encode($string);
-      return pack('na*', strlen($utf), $utf);
-    }
-  ?>
+  On the PHP side, the text.encode.UTF class is used.
 
 * Body encoding for initialize message (#0)
 
