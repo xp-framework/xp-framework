@@ -224,10 +224,11 @@
      * @see     php://strstr
      */
     public function substrAfter($substr, $cs= TRUE) {
-      return ($cs 
-        ? strstr($this->buffer, $substr)
-        : stristr($this->buffer, $substr)
-      );
+      if (FALSE === ($p= $cs 
+        ? strpos($this->buffer, $substr)
+        : stripos($this->buffer, $substr)
+      )) return FALSE;
+      return substr($this->buffer, $p+ 1);
     }
 
     /**
@@ -241,12 +242,55 @@
      * @see     php://strstr
      */
     public function substringAfter($substr, $cs= TRUE) {
-      if (FALSE === ($s= ($cs 
-        ? strstr($this->buffer, $substr)
-        : stristr($this->buffer, $substr)
-      ))) return xp::$null;
+      if (FALSE === ($p= $cs 
+        ? strpos($this->buffer, $substr)
+        : stripos($this->buffer, $substr)
+      )) return xp::$null;
+      return new String(substr($this->buffer, $p+ 1));
+    }
 
-      return new String($s);
+    /**
+     * Find first occurrence of a string. Returns part of haystack string 
+     * from the beginning until first occurrence of needle 
+     *
+     * Example:
+     * <code>
+     *   $s= new String('xp@php3.de');
+     *   if ($portion= $s->substrBefore('@')) {
+     *     echo $portion;   // xp
+     *   }
+     * </code>
+     *
+     * @access  public
+     * @param   string substr
+     * @param   bool cs default TRUE whether to check case-sensitively
+     * @return  string or FALSE if substr is not found
+     * @see     php://strstr
+     */
+    public function substrBefore($substr, $cs= TRUE) {
+      if (FALSE === ($p= $cs 
+        ? strpos($this->buffer, $substr)
+        : stripos($this->buffer, $substr)
+      )) return FALSE;
+      return substr($this->buffer, 0, $p);
+    }
+
+    /**
+     * Find first occurrence of a string. Returns part of haystack string 
+     * from the beginning until first occurrence of needle 
+     *
+     * @access  public
+     * @param   string substr
+     * @param   bool cs default TRUE whether to check case-sensitively
+     * @return  &text.String or NULL if substr is not found
+     * @see     php://strstr
+     */
+    public function substringBefore($substr, $cs= TRUE) {
+      if (FALSE === ($p= $cs 
+        ? strpos($this->buffer, $substr)
+        : stripos($this->buffer, $substr)
+      )) return xp::$null;
+      return new String(substr($this->buffer, 0, $p));
     }
     
     /**
@@ -284,10 +328,7 @@
      * @return  &text.String a new string
      */
     public function concat($string) {
-      return new String($this->buffer.($string instanceof String
-        ? $string->buffer
-        : $string
-      ));
+      return new String($this->buffer.(string)$string);
     }
     
     /**
@@ -305,10 +346,7 @@
      * @return  &text.String
      */
     public function append($string) {
-      $this->buffer.= ($string instanceof String
-        ? $string->buffer
-        : $string
-      );
+      $this->buffer.= (string)$string;
       return $this;
     }
     
