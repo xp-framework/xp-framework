@@ -7,7 +7,7 @@
   require('lang.base.php');
   uses(
     'util.cmd.ParamString',
-    'util.text.PHPSyntaxHighlighter',
+    'text.PHPSyntaxHighlighter',
     'xml.XSLProcessor'
   );
   
