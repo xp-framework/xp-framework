@@ -80,6 +80,12 @@
             // Set up the handler if necessary
             if ($setup) {
               try(); {
+                // In case a wrapper is defined, call its setup() method. This 
+                // method is not allowed to fail.
+                if ($this->handlers[$i]->hasWrapper()) {
+                  $this->handlers[$i]->wrapper->setup($request, $this->handlers[$i]);
+                }
+
                 $result= $this->handlers[$i]->setup($request, $context);
               } if (catch('Exception', $e)) {
                 return throw($e);
@@ -98,12 +104,6 @@
                   $response->addFormError($name, $error[0], $error[1], $error[2]);
                 }
                 continue;
-              }
-
-              // In case a wrapper is defined, call its setup() method. This 
-              // method is not allowed to fail.
-              if ($this->handlers[$i]->hasWrapper()) {
-                $this->handlers[$i]->wrapper->setup($request, $this->handlers[$i]);
               }
 
               // Handler was successfully set up, register to session
