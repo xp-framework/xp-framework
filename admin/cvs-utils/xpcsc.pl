@@ -220,7 +220,7 @@ while (@ARGV) {
     }
     
     # Check for whitespace after keywords
-    if ($_ =~ /\b(if|else|elseif|foreach|while|switch)\(/) {
+    if ($_ =~ /\b(if|else|elseif|foreach|while|switch|for)\(/) {
       &error("Not enough whitespace after keyword $1", EWHITESPACE);
     }
     
