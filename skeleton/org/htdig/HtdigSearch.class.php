@@ -370,7 +370,7 @@
         while (FALSE !== current ($output)) {
         
           // Don't exceed maxresults
-          if ($cnt > $this->maxresults)
+          if ($this->maxresults && $cnt > $this->maxresults)
             break;
             
           // Do not take empty lines into account
