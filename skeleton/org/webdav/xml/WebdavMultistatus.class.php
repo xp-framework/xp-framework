@@ -4,9 +4,8 @@
  * $Id$
  */
 
-  uses('xml.Tree', 'util.Date');
+  uses('xml.Tree', 'util.Date');  
   
-  define('WEBDAV_COLLECTION',   'collection');
 
   /**
    * PropFind response XML
