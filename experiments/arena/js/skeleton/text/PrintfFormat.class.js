@@ -31,7 +31,7 @@
      * @return  string
      */
     PrintfFormat.prototype.format = function() {
-      var i= 0, c= 0, pos= 0, padwidth= 0, padwhere= 0, p= 0;
+      var i= 0, c= 0, pos= 0, padwidth= 0, padwhere= 0, p= 0, prec= 0;
       var output= '', padchar= '', subst= '';
       var fmtstring= this.fmtstring;  // Create a temporary copy
 
@@ -71,12 +71,21 @@
         // Switch on the token
         switch (token) {
           case 'f':
+            subst= String(parseFloat(arguments[i]));
+            
             if (-1 != (p= params.indexOf('.'))) {
-              padwidth= parseInt(params.substring(p + 1, params.length));
-              p= parseInt(params.substring(0, p));
-              subst= String(Math.round(parseFloat(param) * Math.pow(10, p)) / Math.pow(10, p));
-            } else {
-              subst= String(parseFloat(arguments[i]));
+              prec= parseInt(params.substring(p + 1, params.length));
+              padwidth= parseInt(params.substring(0, p));
+              
+              if (-1 == (p= subst.indexOf('.'))) {
+                subst+= '.0';
+                p= subst.length - 2;
+              }
+              
+              subst= subst.substring(0, p).pad(padwidth, padchar, 0) + (prec 
+                ? '.' + subst.substring(p + 1, subst.length).pad(prec, '0', 1)
+                : ''
+              );
             }
             break;
           
