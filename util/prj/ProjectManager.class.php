@@ -41,8 +41,8 @@
      *
      * @access  public
      */    
-    function init($p) {
-      parent::init($p);
+    function init() {
+      parent::init();
       
       // Init window
       $this->window->set_default_size (600, 400);
@@ -79,7 +79,7 @@
       
       // Check every 60 seconds
       $timeout= $this->prop->readInteger ('main', 'autocheck', 60);
-      $this->timer= gtk::timeout_add (1000 * $timeout, array (&$this, onAutoUpdate));
+      $this->timer= gtk::timeout_add (1000 * $timeout, array (&$this, 'onAutoUpdate'));
     }
     
     function onAutoUpdate() {
