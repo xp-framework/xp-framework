@@ -124,6 +124,12 @@
   }
   // }}}
 
+  // {{{ public bool null(mixed arg)
+  //     Checks whether a given argument is NULL or object(null)
+  function null($arg) {
+    return (is_object($arg) && 'null' == get_class($arg)) || is_null($arg);
+  }
+  // }}}
 
   // {{{ internal void __destroy(void)
   //     Shutdown function
