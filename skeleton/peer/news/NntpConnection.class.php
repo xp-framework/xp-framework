@@ -421,7 +421,7 @@
         $date->format('%y%m%d %H%M%S')
       );
       if (!NntpReply::isPositiveCompletion($status))
-        return throw(new IOException('Could not get overview'));
+        return throw(new IOException('Could not get new articles'));
         
       while ($line= $this->_readData()) $articles[]= $line;
       
