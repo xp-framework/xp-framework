@@ -13,12 +13,12 @@
         <text>
           The FileDialog widget provides a nicer, more functional
           and very powerful widget to browse for files.
-          <code><![CDATA[  uses('gui.gtk.widgets.FileDialog');
-
-  $dlg= &new FileDialog(posix_getcwd());
-  if ($dlg->show()) {           // OK pressed
-    printf("File selected: %s%s\n", $dlg->dir, $dlg->filename);
-  } ]]></code>
+          <code><![CDATA[  // ...
+  $dlg= &new FileDialog();
+  if (MB_OK == $dlg->show()) {           // OK pressed
+    printf("File selected: %s%s\n", $dlg->getDirectory(), $dlg->getFileName());
+  }
+  // ... ]]></code>
           Check out these to screenshots to see what this dialog
           window looks like:
           <br/><br/>          
@@ -28,9 +28,20 @@
         </text>
       </para>
       <para>
-        <caption>DirectorySelect</caption>
+        <caption>MessageBox</caption>
         <text>
-          <!-- TBD -->
+          The MessageBox class provides an easy-to-use interface for showing messages.
+          
+          <code><![CDATA[  // ...
+  MessageBox::display(
+    'Cannot load the same test config twice!', 
+    'Error', 
+    MB_OK | MB_ICONWARNING
+  );
+  // ... ]]></code>
+          The above example produces the following window:
+          <br/><br/>          
+          <image alt="Screenshot #1" src="gui.gtk.widgets.messagebox_warning.png"/>
         </text>
       </para>
     </content>
