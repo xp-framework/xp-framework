@@ -24,10 +24,10 @@
       <tr>
       <th valign="top" align="left">API Doc: Collection <xsl:value-of select="./@prefix"/>
         <xsl:if test="string-length (../@prefix) = 0">
-          <a href="../index.html"><img src="/image/caret-t.gif" border="0"/></a>
+          <a href="../index.html"><img src="/image/caret-t.gif" border="0" width="11" height="7"/></a>
         </xsl:if>
         <xsl:if test="string-length (../@prefix) &gt; 0">
-          <a href="{../@prefix}.html"><img src="/image/caret-t.gif" border="0"/></a>
+          <a href="{../@prefix}.html"><img src="/image/caret-t.gif" border="0" width="11" height="7"/></a>
         </xsl:if>
       </th>
       <td valign="top" align="right">(<xsl:value-of select="count (.//class)"/> classes)</td></tr>
@@ -50,7 +50,7 @@
     <table border="0" cellspacing="0" cellpadding="0" width="100%">
       <xsl:if test="count (./collection) &gt; 0">
         <tr>
-          <td width="1%" valign="top"><img src="/image/nav_overview.gif"/></td>
+          <td width="1%" valign="top"><img src="/image/nav_overview.gif" width="22" height="19"/></td>
           <td width="50%" valign="top">
             <b>Collections below <xsl:value-of select="./@prefix"/>:</b>
           </td>
@@ -61,9 +61,9 @@
             <table border="0" cellspacing="0" cellpadding="0" width="100%">
               <xsl:for-each select="collection">
                 <xsl:sort select="./@shortName"/>
-                <tr><td width="1%" valign="top"><img src="/image/nav_overview2.gif"/></td>
+                <tr><td width="1%" valign="top"><img src="/image/nav_overview2.gif" width="22" height="19"/></td>
                 <td width="50%"><b><a href="{./@prefix}.html"><xsl:value-of select="./@shortName"/></a></b> 
-                <img src="/image/caret-r.gif"/><br/><br/>
+                <img src="/image/caret-r.gif" width="11" height="7"/><br/><br/>
                 </td></tr>
               </xsl:for-each>
             </table>
@@ -72,7 +72,7 @@
       </xsl:if>
       <xsl:if test="count (./class) &gt; 0">
         <tr>
-          <td width="1%" valign="top"><img src="/image/nav_overview.gif"/></td>
+          <td width="1%" valign="top"><img src="/image/nav_overview.gif" width="22" height="19"/></td>
           <td width="50%" valign="top">
             <b>Classes in <xsl:value-of select="./@prefix"/>:</b><br/><br/>
           </td>
@@ -83,7 +83,7 @@
             <table border="0" cellpadding="0" cellspacing="0" width="100%">
               <xsl:for-each select="class">
                 <tr>
-                  <td valign="top" width="1%"><img src="/image/nav_overview3.gif"/></td>
+                  <td valign="top" width="1%"><img src="/image/nav_overview3.gif" width="22" height="19"/></td>
                   <td width="50%">
                     <xsl:sort select="./@className"/>
                     <a href="../classes/{./@className}.html"><xsl:value-of select="./@className"/></a><br/>
