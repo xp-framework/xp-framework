@@ -73,7 +73,7 @@
      * @param   const handler one of DBH_* handlers
      * @see     php://dba#dba.requirements Handler decriptions
      */
-    function __construct($filename, const $handler) {
+    function __construct($filename, $handler) {
       parent::__construct();
       $this->filename= $filename;
       $this->handler= $handler;

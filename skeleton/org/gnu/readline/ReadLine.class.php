@@ -109,7 +109,7 @@
      * @param   const name e.g. RL_LIBRARY_VERSION
      * @return  string
      */
-    function getVar(const $name) {
+    function getVar($name) {
       return readline_info($name);
     }
 
