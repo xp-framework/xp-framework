@@ -111,6 +111,9 @@ Details
   exceptions). The reflection API provides a way to retrieve these
   exceptions.
   
+  For details, see
+  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/exceptions
+  
 * A catch-all-exceptions mechanism:
   Catch-all is realized by ommitting the exception type from the 
   catch clause. 
