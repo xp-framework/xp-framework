@@ -6,7 +6,6 @@
   require('lang.base.php');
   uses(
     'img.JpegImage',
-    'io.File',
     'util.cmd.ParamString'
   );
   
