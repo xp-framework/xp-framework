@@ -4,67 +4,52 @@
  * $Id$
  */
 
-  uses('Exception');
-
   /**
    * String adaptor
    *
    * @purpose  Add functionality to the built-in String class
    */
   {
-  
+
     /**
-     * Formats a string
+     * Pads a string
      *
      * @access  public
-     * @param   string str the format string
-     * @param   mixed* args
+     * @param   int width
+     * @param   string char default ' '
+     * @param   int where default 0 where to pad (0 = left, 1 = right, 2= both)
      * @return  string
      */
-    String.prototype.format = function() {
-      var ret= '';
+    String.prototype.pad = function() {
+      var c= 0;
+      var width= arguments[0];
+      var character= (arguments.length > 1) ? arguments[1] : ' ';
+      var where= (arguments.length > 2) ? arguments[2] : 0;
       var str= String(this);
-      var i= 0;
+      
+      if (!width) return str;   // Border case
+      
+      switch (where) {
+        case 0:                 // left
+          for (c= 0; c < width - str.length; c++) {
+            str= character + str;
+          }
+          break;
 
-      while (-1 != (pos= str.indexOf('%'))) {
-        ret+= str.substring(0, pos);
-        i++;
-        token= str.charAt(pos + 1);
-        
-        if ('0' == str.charAt(pos + 1)) {
-          pad= '0';
-        }
-        
-        switch (token) {
-          case 'd': 
-            subst= String(parseInt(arguments[i]));
-            break;
+        case 1:                 // right
+          for (c= 0; c < width - str.length; c++) {
+            str+= character;
+          }
+          break;
 
-          case 'f':
-            subst= String(parseFloat(arguments[i]));
-            break;
-          
-          case 's':
-            subst= String(arguments[i]);
-            break;
-            
-          case 'c':
-            subst= String(arguments[i]).charAt(0);
-            break;
-          
-          default:
-            throw new Exception('Invalid token "' + token +'"');
-        }
-        
-        for (c= 0; c < subst.length; c++) {
-          subst = pad + subst;
-        }
-        
-        str= str.substring(pos + 2, str.length);
+        case 2:
+          for (c= 0; c < width - str.length; c++) {
+            if (c & 1) str+= character; else str= character + str;
+          }
+          break;
       }
-
-      return ret + str;
+      
+      return str;
     }
-
   }
 }
