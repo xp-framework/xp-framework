@@ -53,6 +53,16 @@
     }
     
     /**
+     * Gets flags
+     *
+     * @access  public
+     * @return  int flags
+     */
+    function getFlags() {
+      return $this->flags;
+    }
+    
+    /**
      * Private Helper-Funktion
      *
      * @access private
