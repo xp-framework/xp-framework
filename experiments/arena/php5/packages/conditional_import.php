@@ -12,7 +12,7 @@
   // }}}
 
   // {{{ main
-  foreach (array('lang~Object', 'lang~Exception') as $class) {
+  foreach (get_declared_classes('lang') as $class) {
     if (class_exists(substr($class, strrpos($class, '~')+ 1))) {
       printf("Not importing class %s to avoid name clash\n", $class);
     } else {
