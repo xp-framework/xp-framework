@@ -78,8 +78,10 @@
      * @param   
      * @return  
      */
-    function setCurrentState(&$state) {
-      $this->offset= array_search($state->getName(), $this->flow);
+    function setCurrentState($state) {
+      if (FALSE === ($this->offset= array_search($state, $this->flow))) {
+        $this->flow[]= $state;
+      }
     }
     
     /**
