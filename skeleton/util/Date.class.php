@@ -42,10 +42,10 @@
      *
      * @param mixed in Entweder ein Unix-TimeStamp oder ein String
      */
-    function __construct($in) {
+    function __construct($in= NULL) {
       if (is_string($in)) $this->fromString($in);
       if (is_int($in)) $this->_utime($in);
-      Object::__construct();
+      parent::__construct();
     }
     
     /**
