@@ -32,7 +32,8 @@
     function _supports($u, &$attr) {
       switch (strtolower($u['scheme'])) {
         case 'mbox': 
-          $attr['mbx']= getcwd().'/'.$u['host'].(isset($u['path']) ? '/'.$u['path'] : '');
+          $attr['mbx']= '/'.$u['host'].$u['path'];
+          $attr['open']= TRUE;
           break;
           
         default: 

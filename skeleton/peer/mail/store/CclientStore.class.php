@@ -64,11 +64,12 @@
       if (isset($u['query'])) parse_str($u['query'], $attr);
       
       
-      // Read-only?
-      if (!empty($attr['read-only'])) $flags |= OP_READONLY;
-      
       // DSN supported?
       if (FALSE === $this->_supports($u, $attr)) return FALSE;
+
+      // Read-only?
+      if (!empty($attr['open'])) $flags ^= OP_HALFOPEN;
+      if (!empty($attr['read-only'])) $flags |= OP_READONLY;
       
       $mbx= isset($attr['mbx']) ? $attr['mbx'] : sprintf(
         '{%s:%d/%s}',
