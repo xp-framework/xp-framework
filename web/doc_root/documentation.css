@@ -87,3 +87,25 @@ hr {
   color: #6c599b;
   height: 1px;
 }
+
+/* Syntax */
+code {
+  white-space: pre;
+}
+code .keyword {
+  color: #990000;
+  font-weight: bold;
+}
+code .variable {
+  color: #000099;
+  font-weight: bold;
+}
+code .bracket {
+  color: #a90000;
+}
+code .string {
+  color: #0000a9;
+}
+code .comment {
+  color: #a9a9a9;
+}
