@@ -32,7 +32,7 @@ Generische Keywords:
          @see    http://schlund.de/
          @see    xp://io.File
          @see    xp://io.File#open
-         @see    mail://thekid@thekid.de
+         @see    mailto:thekid@thekid.de
          @see    php://fopen
          @see    php-gtk://blubb
          @see    rfc://821
