@@ -48,7 +48,7 @@
           serendipity_entrycat matrix,
           serendipity_category category
         where
-          category.parentid = %d
+          (category.parentid = %1$d or category.categoryid = %1$d)
           and entry.isdraft = "false"
           and entry.id = matrix.entryid
           and matrix.categoryid = category.categoryid
