@@ -54,5 +54,54 @@
     function setSkipped(&$test, $reason) {
       $this->skipped[$test->getClassName().'::'.$test->getName()]= &new TestSkipped($reason);
     }
+    
+    /**
+     * Create a nice string representation
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      $div= str_repeat('=', 72);
+      $str= sprintf(
+        "Results for test suite run at %s\n".
+        "%d tests, %d succeeded, %d failed, %d skipped\n",
+        date('r'),
+        sizeof($this->succeeded)+ sizeof($this->failed)+ sizeof($this->skipped),
+        sizeof($this->succeeded),
+        sizeof($this->failed),
+        sizeof($this->skipped)
+      );
+      
+      // Configuration summary
+      $str.= $div."\n".sprintf(
+        "Operating system:  %s\n".
+        "PHP Version:       %s\n".
+        "Zend Version:      %s\n".
+        "SAPI:              %s\n".
+        "Loaded extensions: %s\n",
+        PHP_OS,
+        phpversion(),
+        zend_version(),
+        php_sapi_name(),
+        wordwrap(implode(', ', get_loaded_extensions()), 52, "\n                   ")
+      ).$div;
+      
+      // Details
+      $str.= "\n- Succeeded tests details:\n";
+      foreach (array_keys($this->succeeded) as $key) {
+        $str.= '  * '.$key."\n    returned: ".$this->succeeded[$key]->toString()."\n";
+      }
+      $str.= "\n- Failed tests details:\n";
+      foreach (array_keys($this->failed) as $key) {
+        $str.= '  * '.$key."\n    reason: ".$this->failed[$key]->toString()."\n";
+      }
+      $str.= "\n- Skipped tests details:\n";
+      foreach (array_keys($this->skipped) as $key) {
+        $str.= '  * '.$key."\n    reason: ".$this->skipped[$key]->toString()."\n";
+      }
+      
+      return $str.$div."\n";
+    }
   }
 ?>
