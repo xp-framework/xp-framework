@@ -105,17 +105,14 @@
      *
      * @access public
      * @param  string uri The URI
-     * @param  org.webdav.WebdavLock The WebDav lock (use NULL to remove lock)
+     * @param  org.webdav.WebdavLock The WebDav lock
      */
     function setLock($uri, &$lock) {
       $uri= 'LOCK:'.$uri;
       $this->open(DBO_WRITE);
-      if ($lock === NULL) {
-        if ($this->lookup($uri)) $this->delete($uri);
-      } else {
-        $this->store($uri, serialize($lock));
-      }
+      $ret= $this->store($uri, serialize($lock));
       $this->close();
+      return $ret;
     }
     
     /**
@@ -131,6 +128,20 @@
       $lock= $this->lookup($uri) ? unserialize($this->fetch($uri)) : NULL;
       $this->close();
       return $lock;
+    }
+    
+    /**
+     * Deletes a Lock for a specific URI
+     *
+     * @access public
+     * @param  string uri The URI
+     */
+    function removeLock($uri) {
+      $uri= 'LOCK:'.$uri;
+      $this->open(DBO_WRITE);
+      if ($this->lookup($uri)) $ret= $this->delete($uri);
+      $this->close();
+      return $ret;
     }
   
   } implements(__FILE__, 'org.webdav.propertystorage.PropertyStorageProvider');
