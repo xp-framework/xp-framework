@@ -139,10 +139,10 @@
      *
      * @access	public
      * @return	mixed the return code of the socket's connect method
-     * @throws  FormatExcpetion in case a protocol error occurs
+     * @throws  TelephonyException in case a protocol error occurs
      */
     function connect() {
-      $ret= $this->sock->connect();
+      if (FALSE === ($ret= $this->sock->connect())) return FALSE;
       
       // Send initialization string and check response
       return $this->_expect(
@@ -156,7 +156,7 @@
      *
      * @access	public
      * @return	mixed the return code of the socket's close method
-     * @throws  FormatExcpetion in case a protocol error occurs
+     * @throws  TelephonyException in case a protocol error occurs
      */
     function close() {
       if (FALSE === $this->_expect(
