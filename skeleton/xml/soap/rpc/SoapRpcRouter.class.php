@@ -39,7 +39,7 @@
    * Example: Let's say, the SOAP-Action passed in is Ident#echoStruct, and
    * the constructor was given the classpath info.binford6100.webservices,
    * the rpc router would look for a class with the fully qualified name
-   * info.binford6100.webservices.Ident and call it's method echoStruct.
+   * info.binford6100.webservices.IdentHandler and call it's method echoStruct.
    *
    * @see org.apache.HttpScriptlet
    */
@@ -140,7 +140,7 @@
 
       // Create message from request data
       try(); {
-        $reflect= $this->classloader->loadClass($msg->action);
+        $reflect= $this->classloader->loadClass($msg->action.'Handler');
         
         // Check if method can be handled
         if (!in_array(strtolower($msg->method), get_class_methods($reflect))) return throw(new IllegalArgumentException(
