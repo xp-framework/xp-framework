@@ -5,10 +5,10 @@
  */
 
   /**
-   * (Insert class,
+   * CHM header
    *
-   * @see      xp://,
-   * @purpose  purpose
+   * @see      xp://com.microsoft.format.chm.CHMFile
+   * @purpose  CHM file class
    */
   class CHMHeader extends Object {
     var
@@ -202,7 +202,5 @@
     function getContent_offset() {
       return $this->content_offset;
     }
-
-    
   }
 ?>
