@@ -507,7 +507,7 @@
         return throw($e, get_class($this).'::Unlock'.' no LCK-store '.$e->message);
       } 
       
-      $this->propStorage->setLockInfo($path, $tmp= NULL);
+      $this->propStorage->setLock($path, $tmp= NULL);
 
       if ($lock->getLockToken()) $response->setHeader('Lock-Token', $request->getHeader('Lock-Token'));
     }
