@@ -71,6 +71,11 @@
      */
     function init() {
       parent::init();
+      
+      // Try to remove all decorations
+      with ($w= $this->window->window); {
+        method_exists($w, 'set_decorations') && $w->set_decorations(0);
+      }
 
       // Set up GtkHTML
       $this->view= &new GtkHtml();
