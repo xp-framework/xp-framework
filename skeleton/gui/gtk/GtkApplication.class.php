@@ -137,13 +137,11 @@
     /**
      * Initializes the application
      *
+     * @model   abstract
      * @access  public
-     * @param   ParamString
      */
-    function init($p= NULL) { 
-      $this->param= &$p;
-    }
-    
+    function init() { }
+
     /**
      * Is called after the application comes down. Include cleanup
      * code in here.
