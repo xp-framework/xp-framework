@@ -80,12 +80,11 @@
     /**
      * Closes currently open mailstore.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  bool
      */
     function close() {
-      $this->_folder->close();
+      return $this->_folder->close();
     }
     
     /**
