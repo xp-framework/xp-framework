@@ -93,5 +93,8 @@
     return 'PFN';
   }
 
-
+  // Web based CVS
+  $cvsurl= array(
+    'checkout'      => 'http://cvs.xp-framework.net/horde/chora/co.php'
+  );
 ?>
