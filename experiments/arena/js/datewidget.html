@@ -14,20 +14,36 @@
     <script language="JavaScript" src="skeleton/lang/String.adaptor.js"></script>
     <script language="JavaScript" src="skeleton/util/Date.adaptor.js"></script>
     <script language="JavaScript">
-      function debugString(str) {
-        document.forms.select.debug.value += str + "\n";
+      function changeDate(object, days) {
+        var date= null;
+
+        try {
+          date= new DateParser(document.forms.select.date.value).getDate();
+        } catch (Exception) {
+          date= new Date();
+        }
+        object.value= date.add(0, 0, days).format('%d.%m.%Y');
       }
     </script>
   </head>
-  <body>
+  <body onload="changeDate(document.forms.select.date, 0)">
     <form name="select">
-      <input type="text" name="date" value="19.07."/>
-      <a onclick="debugString(new DateParser(document.forms.select.date.value).getDate().format('%d.%m.%Y'));" href="#">=</a>
-      <a onclick="debugString(new DateParser(document.forms.select.date.value).getDate().add(0, 0, -1).format('%d.%m.%Y'));" href="#">v</a>
-      <a onclick="debugString(new DateParser(document.forms.select.date.value).getDate().add(0, 0, 1).format('%d.%m.%Y'));" href="#">^</a>
-      <hr/>
-      <a onclick="document.forms.select.debug.value= '';" href="#">clear</a><br/>
-      <textarea name="debug" rows="30" cols="72"></textarea>
+      <table>
+        <tr>
+          <td><input type="text" name="date" value=""/></td>
+          <td>
+            <a 
+              onclick="changeDate(document.forms.select.date, 1)" 
+              href="#"
+            ><img border="0" src="image/date_plus.gif"/></a>
+            <br/>
+            <a 
+              onclick="changeDate(document.forms.select.date, -1)" 
+              href="#"
+            ><img border="0" src="image/date_minus.gif"/></a>
+          </td>
+        </tr>
+      </table>
     </form>
   </body>
 </html>
