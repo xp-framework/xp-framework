@@ -41,7 +41,7 @@
           <!-- top navigation -->
           <table width="100%" border="0" cellspacing="0" cellpadding="2">
             <tr>
-              <td colspan="6"><img src="/image/logo.png" width="202" height="60"/></td>
+              <td colspan="9"><img src="/image/logo.png" width="202" height="60"/></td>
             </tr>
             <tr>
               <xsl:for-each select="exsl:node-set($navigation)/nav">
@@ -59,6 +59,9 @@
               <td width="1%" class="nav" align="right">
                 <input type="image" src="/image/submit_search.gif" border="0" width="11" height="11" alt="search"/>
               </td>
+            </tr>
+            <tr>
+              <td class="navactive" colspan="9"/>
             </tr>
           </table>
         </form>
