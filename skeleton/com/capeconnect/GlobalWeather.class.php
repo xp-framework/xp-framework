@@ -59,7 +59,7 @@
      * @see     http://www.wajb.freeserve.co.uk/codes.htm                            
      */
     function &getWeatherReport($code) {
-      return $this->invoke('getWeatherReport', new SOAPNamedItem('code', $code));
+      return $this->invoke('getWeatherReport', new Parameter('code', $code));
     }
   }
 ?>

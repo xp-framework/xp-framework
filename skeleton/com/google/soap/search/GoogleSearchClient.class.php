@@ -5,8 +5,7 @@
  */
   uses(
     'xml.soap.SOAPClient', 
-    'xml.soap.transport.SOAPHTTPTransport',
-    'xml.soap.types.SOAPNamedItem'
+    'xml.soap.transport.SOAPHTTPTransport'
   );
   
   /**
@@ -91,8 +90,8 @@
     function doGetCachedPage($key, $url) {
       return $this->invoke(
         'doGetCachedPage',
-        new SOAPNamedItem('key', $key),
-        new SOAPNamedItem('url', $url)
+        new Parameter('key', $key),
+        new Parameter('url', $url)
       );
     }
 
@@ -110,8 +109,8 @@
     function doSpellingSuggestion($key, $phrase) {
       return $this->invoke(
         'doSpellingSuggestion',
-        new SOAPNamedItem('key', $key),
-        new SOAPNamedItem('phrase', $phrase)
+        new Parameter('key', $key),
+        new Parameter('phrase', $phrase)
       );
     }
 
@@ -138,16 +137,16 @@
     function &doGoogleSearch($key, $q, $start, $maxResults, $filter, $restrict, $safeSearch, $lr, $ie, $oe) {
       return $this->invoke(
         'doGoogleSearch',
-        new SOAPNamedItem('key', $key),
-        new SOAPNamedItem('q', $q),
-        new SOAPNamedItem('start', $start),
-        new SOAPNamedItem('maxResults', $maxResults),
-        new SOAPNamedItem('filter', $filter),
-        new SOAPNamedItem('restrict', $restrict),
-        new SOAPNamedItem('safeSearch', $safeSearch),
-        new SOAPNamedItem('lr', $lr),
-        new SOAPNamedItem('ie', $ie),
-        new SOAPNamedItem('oe', $oe)
+        new Parameter('key', $key),
+        new Parameter('q', $q),
+        new Parameter('start', $start),
+        new Parameter('maxResults', $maxResults),
+        new Parameter('filter', $filter),
+        new Parameter('restrict', $restrict),
+        new Parameter('safeSearch', $safeSearch),
+        new Parameter('lr', $lr),
+        new Parameter('ie', $ie),
+        new Parameter('oe', $oe)
       );
     }
   }
