@@ -7,15 +7,16 @@
   /**
    * This class provides helpful functions for commandline applications
    * to parse the argument list
+   *
    * It supports short and long options, e.g. -h or --help
    *
-   * @purpose Easy access to commandline arguments
-   * @example usage.php
+   * @purpose  Easy access to commandline arguments
    */
   class ParamString extends Object {
-    var $list= array();
-    var $count= 0;
-    var $string= '';
+    var 
+      $list     = array(),
+      $count    = 0,
+      $string   = '';
     
     /**
      * Constructor
@@ -29,19 +30,19 @@
     }
     
     /**
-     * Setzt die Parameter
+     * Set the parameter string
      * 
      * @access  public
-     * @param   array params Der Parameter-Array
+     * @param   array params
      */  
     function setParams($params) {
-      $this->list   = $params;
-      $this->count  = sizeof($params);
-      $this->string = implode(' ', $params);
+      $this->list= $params;
+      $this->count= sizeof($params);
+      $this->string= implode(' ', $params);
     }
    
     /**
-     * Private helper function that iterates through array
+     * Private helper function that iterates through the parameter array
      * 
      * @access  private
      * @param   string long long parameter (w/o --)
@@ -52,13 +53,13 @@
       if (is_null($short)) $short= $long{0};
       for ($i= 0; $i< sizeof($this->list); $i++) {
       
-        // Kurze Schreibweise -f datei (der Wert ist der nächste Key)
+        // Short notation (e.g. -f value)
         if ($this->list[$i] == '-'.$short) return $i+ 1;
         
-        // Lange Schreibweise --help (kein Wert)
+        // Long notation (e.g. --help, without a value)
         if ($this->list[$i] == '--'.$long) return $i;
         
-        // Lange Schreibweise --file=datei (der Wert ist im gleichen Key)
+        // Long notation (e.g. --file=*.txt)
         if (substr($this->list[$i], 0, strlen($long)+ 3) == '--'.$long.'=') return $i;
       }
       
@@ -68,10 +69,11 @@
     /**
      * Checks whether a parameter is set
      * 
+     * @see     xp://util.Properties#value
      * @access  public
      * @param   string long long parameter (w/o --)
      * @param   string short default NULL Short parameter (w/o -), defaults to the first char of the long param
-     * @return  boolean Gesetzt
+     * @return  boolean
      */  
     function exists($long, $short= NULL) {
       if (is_int($long)) return isset($this->list[$long]);
@@ -79,14 +81,28 @@
     }
     
     /**
-     * Gibt den Wert eines Parameters zurück
+     * Retrieve the value of a given parameter
+     *
+     * Examples:
+     * <code>
+     *   $p= &new ParamString();
+     *   if ($p->exists('help', '?')) {
+     *     printf("Usage: php %s --force-check [--pattern=<pattern>\n", $p->value(0));
+     *     exit(-2);
+     *   }
+     * 
+     *   $force= $p->exists('force-check', 'f');
+     *   $pattern= $p->value('pattern', 'p', '.*');
+     * 
+     *   // ...
+     * </code>
      * 
      * @access  public
      * @param   string long long parameter (w/o --)
      * @param   string short default NULL Short parameter (w/o -), defaults to the first char of the long param
      * @param   string default default NULL A default value if parameter does not exist
      * @return  string 
-     * @throws IllegalArgumentException if parameter does not exist and no default value was supplied.
+     * @throws  lang.IllegalArgumentException if parameter does not exist and no default value was supplied.
      */ 
     function value($long, $short= NULL, $default= NULL) {
       if (is_int($long)) {
