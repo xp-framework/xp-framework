@@ -114,11 +114,11 @@
         }
 
         switch ($tok{0 + $mod}) {
-          case 'd': is_null($arg) ? 'NULL' : $r= intval($arg); break;
-          case 'f': is_null($arg) ? 'NULL' : $r= floatval($arg); break;
-          case 'c': is_null($arg) ? 'NULL' : $r= $arg; break;
-          case 's': is_null($arg) ? 'NULL' : $r= '"'.str_replace('"', '\"', $arg).'"'; break;
-          case 'u': is_null($arg) ? 'NULL' : $r= '"'.date ('Y-m-d h:i:s', $arg).'"'; break;
+          case 'd': $r= is_null($arg) ? 'NULL' : $arg > MAX_INT ? sprintf('%.0f', $arg) : intval($arg); break;
+          case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
+          case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
+          case 's': $r= is_null($arg) ? 'NULL' : '"'.str_replace('"', '\"', $arg).'"'; break;
+          case 'u': $r= is_null($arg) ? 'NULL' : '"'.date ('Y-m-d h:i:s', $arg).'"'; break;
           default: $sql.= '%'.$tok; $i--; continue;
         }
         $sql.= $r.substr($tok, 1 + $mod);
