@@ -812,15 +812,6 @@ echo $arr['helptext_domain_name'];	// Hier ist der Parser glücklich]]></code>
         </text>
       </para>
       <para>
-        <caption>JavaScript hat mit der Funktionalität nichts verloren</caption>
-        <text>
-          Eine Seite muss auch immer ohne funktionieren. Nicht aus sicherheitstechnischen 
-          Gründen oder weil es nicht genügend Browser gibt, die es unterstützen, aber auf 
-          JavaScript ist kein Verlass. Es findet auch keine clientseitige Validierung der 
-          Eingabefelder statt; das ist ohne Dikussion.
-        </text>
-      </para>
-      <para>
         <caption>Klassen</caption>
         <text>
           Jede Klasse vererbt entweder die Klasse "Object" oder eine Klasse, die Object
