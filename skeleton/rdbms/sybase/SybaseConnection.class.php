@@ -121,22 +121,28 @@
         
         // Type-based conversion
         if (is_a($args[$ofs], 'Date')) {
-          $arg= date('Y-m-d h:iA', $args[$ofs]->getTime());
+          $tok{$mod}= 'u';
+          $a= array($args[$ofs]->getTime());
         } elseif (is_a($args[$ofs], 'Object')) {
-          $arg= $args[$ofs]->toString();
+          $a= array($args[$ofs]->toString());
+        } elseif (is_array($args[$ofs])) {
+          $a= $args[$ofs];
         } else {
-          $arg= $args[$ofs];
+          $a= array($args[$ofs]);
         }
         
-        switch ($tok{0 + $mod}) {
-          case 'd': $r= is_null($arg) ? 'NULL' : sprintf('%.0f', $arg); break;
-          case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
-          case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
-          case 's': $r= is_null($arg) ? 'NULL' : '"'.str_replace('"', '""', $arg).'"'; break;
-          case 'u': $r= is_null($arg) ? 'NULL' : '"'.date ('Y-m-d h:iA', $arg).'"'; break;
-          default: $sql.= '%'.$tok; $i--; continue;
+        foreach ($a as $arg) {
+          switch ($tok{$mod}) {
+            case 'd': $r= is_null($arg) ? 'NULL' : sprintf('%.0f', $arg); break;
+            case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
+            case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
+            case 's': $r= is_null($arg) ? 'NULL' : '"'.str_replace('"', '""', $arg).'"'; break;
+            case 'u': $r= is_null($arg) ? 'NULL' : '"'.date ('Y-m-d h:iA', $arg).'"'; break;
+            default: $sql.= '%'.$tok; $i--; continue;
+          }
+          $sql.= $r.', ';
         }
-        $sql.= $r.substr($tok, 1 + $mod);
+        $sql= substr($sql, 0, -2).substr($tok, 1 + $mod);
       }
       return $sql;
     }
