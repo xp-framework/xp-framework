@@ -50,7 +50,7 @@
     }
     
     /**
-     * Resample a given image to given dimensions
+     * Resample a given image to given dimensions.
      *
      * @access  protected
      * @param   &img.Image origin
@@ -75,7 +75,33 @@
       $resized->resampleFrom($origin);
       return $resized;
     }
-    
+ 
+    /**
+     * Resample a given image to given dimensions. Will always fit the 
+     * image into the given dimensions, adding a border with the specified
+     * color if necessary.
+     *
+     * @access  protected
+     * @param   &img.Image origin
+     * @param   int[2] dimensions (0 = X, 1 = Y)
+     * @param   &img.Color color
+     * @return  &img.Image
+     */
+    function resampleToFixed(&$origin, $dimensions, &$color) {
+      $this->cat && $this->cat->debug('Resampling image to fixed', implode('x', $dimensions));
+      
+      with ($resized= &Image::create($dimensions[0], $dimensions[1], IMG_TRUECOLOR)); {
+        $factor= $origin->getHeight() / $resized->getHeight();
+        $border= intval(($resized->getWidth() - $origin->getWidth() / $factor) / 2);
+        if ($border > 0) {
+          $resized->fill($resized->allocate($color));
+        }
+        $resized->resampleFrom($origin, $border, 0, 0, 0, $resized->getWidth() - $border - $border);
+      }
+
+      return $resized;
+    }
+   
     /**
      * Helper method to create thumbnail from origin image.
      *
@@ -85,18 +111,7 @@
      * @return  &img.Image
      */
     function thumbImageFor(&$origin, &$exifData) {
-      $this->cat && $this->cat->debug('Resampling thumb-view to', implode('x', $this->thumbDimensions));
-      
-      with ($thumb= &Image::create($this->thumbDimensions[0], $this->thumbDimensions[1], IMG_TRUECOLOR)); {
-        $factor= $origin->getHeight() / $thumb->getHeight();
-        $border= intval(($thumb->getWidth() - $origin->getWidth() / $factor) / 2);
-        if ($border > 0) {
-          $thumb->fill($thumb->allocate(new Color('#ffffff')));
-        }
-        $thumb->resampleFrom($origin, $border, 0, 0, 0, $thumb->getWidth() - $border - $border);
-      }
-
-      return $thumb;
+      return $this->resampleToFixed($origin, $this->thumbDimensions, new Color('#ffffff'));
     }
 
     /**
