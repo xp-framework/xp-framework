@@ -79,7 +79,7 @@
      * @return  &img.Image
      */
     function fullImageFor(&$origin, &$exifData) {
-      $dimensions= $exifData->isHorizontal() ? array(800, 600) : array(600, 800);
+      $dimensions= $exifData->isHorizontal() ? array(640, 480) : array(480, 640);
       $this->cat && $this->cat->debug('Resampling full-view to', implode('x', $dimensions));
 
       with ($full= &Image::create($dimensions[0], $dimensions[1], IMG_TRUECOLOR)); {
@@ -130,7 +130,7 @@
           // overview pages..
           $thumb= &$this->thumbImageFor($origin, $image->exifData);
 
-          // ... and one at 800 x 600 or 600 x 800 (depending on the image 
+          // ... and one at 640 x 480 or 480 x 640 (depending on the image 
           // orientation) for the close-up view.
           $full= &$this->fullImageFor($origin, $image->exifData);
 
