@@ -26,8 +26,8 @@
    */
   class Properties extends Object {
     var
-      $_file,
-      $_data= NULL;
+      $_file    = '',
+      $_data    = NULL;
       
     /**
      * Constructor
@@ -38,6 +38,16 @@
     function __construct($filename) {
       $this->_file= $filename;
       parent::__construct();
+    }
+    
+    /**
+     * Retrieves the file name containing the properties
+     *
+     * @access  public
+     * @return  string
+     */
+    function getFilename() {
+      return $this->_file;
     }
     
     /**
@@ -71,7 +81,6 @@
      */
     function _load($force= FALSE) {
       if (!$force && NULL != $this->_data) return;
-      
       if (FALSE === ($this->_data= parse_ini_file($this->_file, 1))) {
         return throw(new IOException('The file "'.$this->_file.'" could not be read'));
       }
