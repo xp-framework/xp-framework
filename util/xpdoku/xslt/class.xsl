@@ -215,8 +215,11 @@
   </xsl:template>
   
   <xsl:template match="link[child::*[name() = 'scheme']/text() = 'http']">
-    <a href="{./scheme}://{./host}{./path}#{./fragment}" target="_blank">
+    <a href="{./scheme}://{./host}{./path}?{./query}#{./fragment}" target="_blank">
       <xsl:value-of select="./scheme"/>://<xsl:value-of select="./host"/><xsl:value-of select="./path"/>
+      <xsl:if test="string-length (./query) != 0">
+        ?<xsl:value-of select="./query"/>
+      </xsl:if>
       <xsl:if test="string-length (./fragment) != 0">
         #<xsl:value-of select="./fragment"/>
       </xsl:if>
