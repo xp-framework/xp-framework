@@ -58,10 +58,14 @@ of a single member.
 
 Using the valueOf() method:
 <?php
+  function nameOf($member) {
+    return $member->name;
+  }
+
   enum Day { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday }
 
   foreach (range(Monday, Friday) as $day) {
-    echo $day, ': ', cast(Day::valueOf($day), 'string'), "\n";
+    echo $day, ': ', nameOf(Day::valueOf($day)), "\n";
   }
 ?>
 
@@ -91,7 +95,10 @@ Using the value:
 
     var $value= 0;
 
-    function __construct($value) { $this->value= $value; }
+    function __construct($name, $value= NULL) { 
+      parent::__construct($name); 
+      $this->value= $value; 
+    }
 
     function value() { return $this->value; }
   }
