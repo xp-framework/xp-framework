@@ -46,7 +46,7 @@
         $i < $s; 
         $i++
       ) {
-        if ($line == $errors[$file][$i]['line']) return TRUE;
+        if ($line == $errors[$file][$i][2]) return TRUE;
       }
       
       return FALSE;
