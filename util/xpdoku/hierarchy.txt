@@ -16,7 +16,13 @@ doc_root
   |        |--- net.http.html
   |        |--- ...
   |
+  |---- src
+  |       ^
+  |       |--- xml.soap.types.SOAPBase64Binary.class.php
+  |       |--- ...
+  |
   |---- index.html
+  |---- showsource.php
   |---- style.css
   |
   |---- images
@@ -24,4 +30,8 @@ doc_root
            |--- nav_*.gif
            |--- ...
   
-index.html contains an overview for all included packages
+* index.html contains an overview for all included packages
+* showsource.php is source-highlighter
+
+All files (incl. .html) are parsed through the PHP-Processor,
+so we can nicely show actual time (at upper right corner).
