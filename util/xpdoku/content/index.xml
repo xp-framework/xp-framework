@@ -23,6 +23,20 @@
     </introduction>
     
     <links>
+     <link href="http://www.jera.com/techinfo/xpfaq.html">
+       <caption>Extreme Programming</caption>
+       <description>
+         <quote>
+           Extreme Programming (or XP) is a set of values, principles and practices
+           for rapidly developing high-quality software that provides the highest
+           value for the customer in the fastest way possible. XP is extreme in the
+           sense that it takes 12 well-known software development "best practices"
+           to their logical extremes -- turning them all up to "10" (or "11" for
+           Spinal Tap fans). See Kent Beck's introduction to Extreme Programming
+           Explained for more details.
+        </quote>
+        </description>
+      </link>
       <link href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnaspp/html/phpvsaspnet.asp">
         <caption>Head-to-Head: PHP vs. ASP.NET</caption>
         <description>
