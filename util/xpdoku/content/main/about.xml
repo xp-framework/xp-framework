@@ -258,6 +258,9 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
     }
   } implements(__FILE__, 'Iterator');]]></code></li>
           </ul>
+          <box caption="Note">
+            Failure to implement an interface fully will result in a fatal error.
+          </box>
         </text>
       </para>
       <para>
