@@ -6,6 +6,5 @@
 # $Id$
 
 FILE="/tmp/loginfo_`md5 -q -s "$1"`"
-read MESSAGE
-echo ${MESSAGE} > ${FILE}
+cat > ${FILE}
 php -q `dirname $0`/xp_notify.php ${FILE} $2 "$1" 1>/tmp/cvs_notify.log 2>/tmp/cvs_notify.err &
