@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  require_once ('lang.base.php');
+
   uses (
     'ProjectManagerPopupMenu',
     'gui.gtk.GtkGladeApplication',
@@ -53,6 +55,15 @@
       
       // Init Statusbar
       $this->statusbar= &$this->widget ('statusbar');
+      
+      // Load pixmaps
+      $l= &new GtkPixmapLoader ($this->window->window, dirname (__FILE__).'/xpm/');
+      $this->pixmap= &$l->load (array (
+        'sv_class',
+        'sv_scalar', 
+        'sv_session',
+        'sv_private_scalar'
+      ));
     }
     
     function onAutoUpdate(&$widget) {
@@ -149,10 +160,10 @@
         NULL,
         array ('global program space', '0', '0'),
         0,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
+        $this->pixmap['p:sv_session'],
+        $this->pixmap['m:sv_session'],
+        $this->pixmap['p:sv_session'],
+        $this->pixmap['m:sv_session'],
         FALSE,
         TRUE
       );
@@ -168,10 +179,10 @@
             NULL,
             array ($c->name, $c->line, $c->endsAt),
             0,
-            NULL,
-            NULL,
-            NULL,
-            NULL,
+            $this->pixmap['p:sv_class'],
+            $this->pixmap['m:sv_class'],
+            $this->pixmap['p:sv_class'],
+            $this->pixmap['m:sv_class'],
             FALSE,
             FALSE
           );
@@ -188,10 +199,10 @@
               NULL,
               array ($f->name, $f->line, $f->endsAt),
               0,
-              NULL,
-              NULL,
-              NULL,
-              NULL,
+              $this->pixmap['p:sv_scalar'],
+              $this->pixmap['m:sv_scalar'],
+              $this->pixmap['p:sv_scalar'],
+              $this->pixmap['m:sv_scalar'],
               FALSE,
               FALSE
             );
@@ -201,6 +212,33 @@
             
             $this->tree->node_set_row_data ($funcNode, $node);
           }
+        }
+      }
+      
+      // Now add global functions
+      foreach (array_keys ($this->files) as $idx) {
+        $file= &$this->files[$idx];
+        
+        foreach (array_keys ($file->functions) as $fIdx) {
+          $f= &$file->functions[$fIdx];
+
+          $funcNode= &$this->tree->insert_node (
+            $rootNode,
+            NULL,
+            array ($f->name, $f->line, $f->endsAt),
+            0,
+            $this->pixmap['p:sv_private_scalar'],
+            $this->pixmap['m:sv_private_scalar'],
+            $this->pixmap['p:sv_private_scalar'],
+            $this->pixmap['m:sv_private_scalar'],
+            FALSE,
+            FALSE
+          );
+          $node= &new StdClass();
+          $node->file= &$file;
+          $node->object= &$f;
+
+          $this->tree->node_set_row_data ($funcNode, $node);
         }
       }
       
