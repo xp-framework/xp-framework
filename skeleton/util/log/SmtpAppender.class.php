@@ -48,9 +48,11 @@
       }
 
       if ($this->sync) { 
-        mail($this->email, $this->prefix.func_get_arg(0), $body);
+        $arg= func_get_arg(0);
+        mail($this->email, $this->prefix.$arg, $body);
       } else {
-        $this->_data[]= array(func_get_arg(0), $body);
+        $arg= func_get_arg(0);
+        $this->_data[]= array($arg, $body);
       }
     }
     
