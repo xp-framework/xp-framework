@@ -56,25 +56,25 @@
       }
       
       // Switch on pager commands
-      if ($show= $request->getParam('__pager')) {
-        switch ($show) {
-          case 'first': 
-            $this->pager->showFirst(); break;
-           
-          case 'last':
-            $this->pager->showLast(); break;
+      $show= ($request->hasParam($this->form.'_pager') 
+        ? $request->getParam($this->form.'_pager') 
+        : 'first'
+      );
+      switch ($show) {
+        case 'first': 
+          $this->pager->showFirst(); break;
 
-          case 'prev':
-            $this->pager->showPrevious(); break;
-            
-          case 'next':
-            $this->pager->showNext(); break;
-            
-          default: 
-            $this->pager->setShowFrom(intval($show));
-        }
-      } else {
-        $this->pager->showFirst();
+        case 'last':
+          $this->pager->showLast(); break;
+
+        case 'prev':
+          $this->pager->showPrevious(); break;
+
+        case 'next':
+          $this->pager->showNext(); break;
+
+        default: 
+          $this->pager->setShowFrom(intval($show));
       }
       
       return TRUE;
