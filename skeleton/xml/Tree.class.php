@@ -161,7 +161,6 @@
         $node->content= $this->_cdata;
         $parent= &$this->_objs[$this->_cnt- 1];
         $parent->addChild($node);
-        //var_dump('adding '.$node->name.' ['.$this->_cnt.'] to '.$parent->name.' ['.($this->_cnt- 1).']');
         $this->_cdata= "";
       }
       $this->_cnt--;
