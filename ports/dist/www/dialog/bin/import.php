@@ -20,7 +20,7 @@
   define('DESCRIPTION_FILE',  'description.txt');
   define('HIGHLIGHTS_FOLDER', 'highlights');
   define('HIGHLIGHTS_MAX',    4);
-  define('ENTRIES_PER_PAGE',  8);
+  define('ENTRIES_PER_PAGE',  5);
   define('FOLDER_FILTER',     '/\.jpe?g$/i');
   define('DATA_FILTER',       '/\.dat$/');
 
@@ -32,13 +32,14 @@
   if (!$param->exists(1) || $param->exists('help', '?')) {
     Console::writeLine(<<<__
 Imports a directory of images into an album
-------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 Usage:
   php import.php <<directory>> [<<options>>]
 
 Options:
   --debug, -d     Turns on debugging (default: off)
   --title, -t     Set album title (default: origin directory name)
+  --date, -D      Set album date (default: origin directory's creation date)
 __
     );
     exit(1);
@@ -85,7 +86,7 @@ __
   with ($album= &new Album()); {
     $album->setName($name);
     $album->setTitle($param->value('title', 't', $origin->dirname));
-    $album->setCreatedAt(new Date($origin->createdAt()));
+    $album->setCreatedAt(new Date($param->value('date', 'D', $origin->createdAt())));
 
     // Read the introductory text from description.txt if existant
     if (is_file($df= $origin->getURI().DESCRIPTION_FILE)) {
