@@ -26,7 +26,8 @@
       $name         = '',
       $model        = APIDOC_CLASS_MODEL_GENERIC,
       $extensions   = NULL,
-      $deprecated   = NULL;
+      $deprecated   = FALSE,
+      $experimental = FALSE;
       
     /**
      * Sets this class's name
@@ -58,8 +59,18 @@
      * @access  public
      * @param   boolean true if class is deprecated
      */
-    function setDeprecation($deprecated= true) {
-      $this->deprecated= 'deprecated';
+    function setDeprecation($deprecated) {
+      $this->deprecated= $deprecated;
+    }
+
+    /**
+     * Sets if this class is experimental
+     *
+     * @access  public
+     * @param   boolean true if class is experimental
+     */
+    function setExperimental($experimental) {
+      $this->experimental= $experimental;
     }
       
     /**
@@ -155,7 +166,11 @@
           break;
         
         case 'deprecated':
-          $this->setDeprecation();
+          $this->setDeprecation(TRUE);
+          break;
+
+        case 'experimental':
+          $this->setExperimental(TRUE);
           break;
       }
       
