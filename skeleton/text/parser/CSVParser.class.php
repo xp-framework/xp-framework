@@ -55,8 +55,13 @@
        */
       if (empty ($string))
         return false;
+      if (false === ($tpos= strpos ($string, $delim))) {
+        $token= $string;
+        $string= '';
+        return $token;
+      }
       
-      $token= substr ($string, 0, strpos ($string, $delim));
+      $token= substr ($string, 0, $tpos);
       $string= substr ($string, strlen ($token)+1);
       return $token;
     }
@@ -170,7 +175,7 @@
       if (empty ($res))
         return $tok;
       
-      return $res;
+      return $res; 
     }
     
     /**
