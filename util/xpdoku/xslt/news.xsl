@@ -74,7 +74,7 @@
               <a name="{position()}">
                 <xsl:attribute name="href">
                   <xsl:choose>
-                    <xsl:when test="substring-before(substring-after(rss:link, '//'), '/') = 'xp.php3.de'">
+                    <xsl:when test="substring-before(substring-after(rss:link, '//'), '/') = 'xp-framework.net'">
                       <xsl:value-of select="substring-after(substring-after(rss:link, '//'), '/')"/>
                     </xsl:when>
                     <xsl:otherwise>
