@@ -40,8 +40,9 @@
      * @param   &lang.cca.Archive archive
      */
     function __construct(&$archive) {
-      $this->archive= &$archive;
       parent::__construct();
+      $this->archive= &$archive;
+      $this->archive->open(ARCHIVE_READ);
     }
     
     /**
@@ -55,35 +56,36 @@
     }
     
     /**
-     * Load a class from the CCA
+     * Load the class by the specified name
      *
      * @access  public
-     * @param   string className fully qualified class name io.File
-     * @return  string class' name for instantiation
-     * @throws  ClassNotFoundException in case the class can not be found
+     * @param   string class fully qualified class name io.File
+     * @return  &lang.XPClass
+     * @throws  lang.ClassNotFoundException in case the class can not be found
      */
-    function loadClass($className) {
-      try(); {
-        if (!$this->archive->isOpen()) {
-          $this->archive->open(ARCHIVE_READ);
+    function &loadClass($class) {
+      $name= xp::reflect($class);
+
+      if (!class_exists($name)) {
+        try(); {
+          $data= &$this->archive->extract($class);
+        } if (catch('Exception', $e)) {
+          return throw(new ClassNotFoundException(sprintf(
+            'Class "%s" not found: %s',
+            $className,
+            $e->getMessage()
+          )));
         }
-        $data= &$this->archive->extract($className);
-      } if (catch('Exception', $e)) {
-        return throw(new ClassNotFoundException(sprintf(
-          'class "%s" not found: %s',
-          $className,
-          $e->message
-        )));
+
+        if (FALSE === eval('?>'.$data)) {
+          return throw(new FormatException('Cannot define class "'.$class.'"'));
+        }
+
+        xp::registry('class.'.$name, $class);
+        is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
-      
-      // This is damn ugly and will also be fatal on parse errors
-      // include_once doesn't do this... but else, $data would have
-      // to be written to disk first, which is also quite stupid.
-      eval('?>'.$data);
-      
-      $parts= array_reverse(explode('.', $className));
-      $GLOBALS['php_class_names'][strtolower($parts[0])]= $className;
-      return $parts[0];
+
+      return new XPClass($name);
     }
   }
 ?>
