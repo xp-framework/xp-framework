@@ -21,6 +21,12 @@
   
   // TBD: Get from database?
   $news->addItem(
+    'About XP', 
+    'http://xp.php3.de/content/about.html',
+    'An introduction to the XP framework, including installation tips, coding standards, a howto on class documentation and CVS guidelines is now available. Enjoy reading!',
+    new Date('2003-01-18 21:00:43')
+  );
+  $news->addItem(
     '[Beta] Added collection org.webdav', 
     'http://xp.php3.de/apidoc/collections/org.webdav.html',
     'A first version now allows clients to browse a webdav directory',
