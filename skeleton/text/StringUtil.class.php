@@ -34,6 +34,7 @@
      * resulting string is copied to the parameter "string" and also 
      * returned as result.
      *
+     * @model   static
      * @access  public
      * @param   &string string
      * @param   înt pos
@@ -43,6 +44,35 @@
     function insert(&$string, $pos, $char) {
       $string= substr($string, 0, $pos).$char.substr($string, $pos);
       return $string;
-    } 
+    }
+    
+    /**
+     * Split a string into an array of blocks of equal length. Throws an
+     * exception in a situation in which a length of less than or equal zero
+     * was supplied.
+     *
+     * @model   static
+     * @access  public
+     * @param   string string
+     * @param   int length
+     * @return  array parts
+     * @throws  lang.IllegalArgumentException
+     */
+    function blocksplit($string, $length) {
+
+      // Catch bordercase in which this would result in and endless loop
+      if ($length <= 0) {
+        trigger_error('Supplied length: '.var_export($length, 1));
+        return throw(new IllegalArgumentException('Paramater length must be greater than zero'));
+      }
+
+      $r= array();
+      do {
+        $r[]= substr($string, 0, $length);
+        $string= substr($string, $length);
+      } while (strlen($string) > 0);
+
+      return $r;
+    }
   }
 ?>
