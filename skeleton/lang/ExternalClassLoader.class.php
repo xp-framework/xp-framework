@@ -25,34 +25,55 @@
    */
   class ExternalClassLoader extends ClassLoader {
     var
-      $codebase= '';
+      $codebase= '',
+      $format=   '';
     
     /**
      * Constructor
      * 
      * @access  public
-     * @param   string codebase
+     * @param   string codebase the codebase (path)
+     * @param   string format default '%s.class.php' (format for filename from classname)
      */
-    function __construct($codebase) {
+    function __construct($codebase, $format= '%s.class.php') {
       $this->codebase= $codebase;
+      $this->format= $format;
       parent::__construct();
     }
     
     /**
      * Load
      *
-     * @access  static
+     * @access  public, static
      * @param   string className fully qualified class name io.File
+     * @param   string codebase the codebase (path)
+     * @param   string format default '%s.class.php' (format for filename from classname)
      * @return  string class' name for instantiation
      * @throws  ClassNotFoundException in case the class can not be found
      */
-    function loadClass($className) {
-      $p= ini_get('include_path');
-      ini_set('include_path', $this->codebase.':'.$p);
-      $result= parent::loadClass($className);
-      ini_set('include_path', $p);
+    function loadClass($className, $codebase= '', $format= '%s.class.php') {
+      if (ClassLoader::isBuiltin($className)) {
+        return ClassLoader::loadClass($className);
+      }
       
-      return $result;
+      if (isset($this)) {
+        $p= ini_get('include_path');
+        $codebase= $this->codebase;
+        $format= $this->format;
+        ini_set('include_path', $codebase.':'.$p);
+      }
+      $result= include_once(sprintf($format, $className));
+      if (isset($p)) ini_set('include_path', $p);
+      
+      if (FALSE === $result) return throw(new ClassNotFoundException(sprintf(
+        'class "%s" [codebase %s, format %s] not found',
+        $className,
+        $codebase,
+        $format
+      )));
+      
+      $GLOBALS['php_class_names'][strtolower($className)]= 'php.external.'.ucfirst($className);
+      return $className;
     }
   }
 ?>
