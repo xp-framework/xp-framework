@@ -7,6 +7,7 @@
   uses(
     'lang.cca.Archive', 
     'io.File',
+    'io.FileUtil',
     'io.Folder',
     'util.Properties',
     'util.cmd.ParamString',
@@ -64,7 +65,7 @@
         }
         
         // Strip
-        $t->setTokens(token_get_all(implode('', file($origin))));
+        $t->setTokenString(FileUtil::getContents(new File($origin)));
         $tok= $t->getFirstToken();
         $f= &new File($build->uri.basename($origin));
         $f->open(FILE_MODE_WRITE);
@@ -76,17 +77,18 @@
 
             case T_WHITESPACE:
               // Reduce whitespace
-              $f->write(' ');
+              $out= ' ';
               break;
 
             case T_OPEN_TAG:
               // Reduce whitespace after open tag
-              $f->write('<?php');
+              $out= '<?php';
               break;
 
             default:
-              $f->write($tok[1]);
+              $out= $tok[1];
           }
+          $f->write($out);
         } while ($tok= $t->getNextToken());
         $f->close();
 
