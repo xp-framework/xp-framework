@@ -119,7 +119,8 @@
       $impl         = array(),
       $handlingImpl = NULL,
       $auth         = NULL,
-      $handlingAuth = NULL;
+      $handlingAuth = NULL,
+      $perm         = NULL;
       
     /**
      * Constructor
@@ -138,6 +139,9 @@
           $this->impl[$path]= &$impl[$pattern];
         if (isset($impl[$pattern]['auth'])) {
           $this->auth[$path]= &$impl[$pattern]['auth'];
+        }
+        if (isset($impl[$pattern]['perm'])) {
+          $this->perm[$path]= &$impl[$pattern]['perm'];
         }
       }
     }
@@ -536,6 +540,7 @@
      * All XML used in either requests or responses MUST be, at minimum, well 
      * formed.  If a server receives ill-formed XML in a request it MUST reject 
      * the entire request with a 400 (Bad Request).
+
      * </pre>
      *
      * @see     rfc://2518#8.1
@@ -713,6 +718,9 @@
         )));
         
         $this->handlingImpl= &$this->impl[$pattern];
+        
+        // Set absolute Uri
+        $request->setAbsoluteURI($this->handlingImpl->base.$request->getPath());
         break;
       }
       
@@ -736,7 +744,7 @@
         default:
           $this->useragent= WEBDAV_CLIENT_UNKNOWN;
       }
-      
+
       // Check for authorization handler
       if (isset($this->auth[$rootURL->getPath()])) {
         $this->handlingAuth= &$this->auth[$rootURL->getPath()];
@@ -750,7 +758,11 @@
         if (!$this->handlingAuth->authorize($request->getUser())) return 'doAuthorizationRequest';
 
         // Check for permissions
-        if (!$this->handlingAuth->isAuthorized($request)) {
+        if (!$this->handlingAuth->isAuthorized(
+          $this->perm[$rootURL->getPath()],
+          $request->getAbsoluteURI(),
+          $request->getUser())
+        ) {
           return 'doAuthorizationDeny';
         }
       }
