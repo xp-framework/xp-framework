@@ -93,12 +93,12 @@
       $nick            	= '';
       
     /**
-     * (Insert method's description here)
+     * Parser callback
      *
-     * @access  protected
+     * @access  public
      * @param   array keys
      * @param   mixed value
-     * @return  
+     * @throws  FormatException
      */
     function addProperty($keys, $value) {
       #ifdef DEBUG
