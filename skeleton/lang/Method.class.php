@@ -4,8 +4,6 @@
  * $Id$ 
  */
 
-  uses('lang.XPClass');
-
   /**
    * Represents a class method
    *
