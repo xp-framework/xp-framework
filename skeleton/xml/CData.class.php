@@ -34,7 +34,6 @@
      */
     function __construct($cdata) {
       $this->cdata= $cdata;
-      
     }
   }
 ?>
