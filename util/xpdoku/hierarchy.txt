@@ -4,7 +4,7 @@
  *
  */
  
-doc_root
+doc_root(./api)
   ^
   |---- classes
   |        ^
@@ -21,17 +21,70 @@ doc_root
   |       |--- xml.soap.types.SOAPBase64Binary.class.php
   |       |--- ...
   |
+  |---- images
+  |        ^
+  |        |--- nav_*.gif
+  |        |--- ...
+  |
+  |---- source (virtual directory, see below)
+  |---- search (virtual directory, see below)
+  |
   |---- index.html
   |---- showsource.php
   |---- style.css
-  |
-  |---- images
-           ^
-           |--- nav_*.gif
-           |--- ...
+
   
 * index.html contains an overview for all included packages
 * showsource.php is source-highlighter
 
 All files (incl. .html) are parsed through the PHP-Processor,
 so we can nicely show actual time (at upper right corner).
+
+* source is not a real directory on the server but is being
+  created by a apache-rewriterule:
+  ,---
+  | RewriteEngine On
+  | RewriteCond %{REQUEST_URI} ^/source/.*$
+  | RewriteRule ^/source/(.*)$ /showsource.php?f=$1
+  `---
+* search is being created the same way as source
+  it is a rewrite to /search.php
+  search.php is an intelligent search script that is able to
+  do "approximate class searching":
+  /search.php?keyword=spsybase redirect to classes/rdbms.sybase.SPSybase.html
+  
+  
+Here is a sample (actually a real) httpd.conf-VirtualHost section for xp:
+<VirtualHost xp.php3.de>
+        SSLEngine       off
+        ServerName      xp.php3.de
+        ServerAdmin     xp@php3.de
+        DocumentRoot    /home/httpd/xp.php3.de/doc_root/
+
+        ErrorDocument   404 /error/index.php
+        ErrorDocument   401 /error/index.php
+        ErrorDocument   403 /error/index.phP
+
+        ErrorLog      /var/log/httpd/xp.php3.de/error_log
+        CustomLog     /var/log/httpd/xp.php3.de/access_log combined
+
+        DirectoryIndex  index.php index.php3 index.html
+
+        # Enable php-parsing of .html-files
+        AddType application/x-httpd-php .html
+
+        RewriteEngine On
+
+        # Nice "show-source-path"
+        RewriteCond %{REQUEST_URI} ^/source/.*$
+        RewriteRule ^/source/(.*)$ /showsource.php?f=$1
+
+        # Nice "search-path"
+        RewriteCond %{REQUEST_URI} ^/search/.*$
+        RewriteRule ^/search/(.+)$ /search.php?keyword=$1
+
+        <Directory "/home/httpd/xp.php3.de/doc_root/">
+                Options +Indexes
+                AllowOverride All
+        </Directory>
+</VirtualHost>
