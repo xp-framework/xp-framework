@@ -218,12 +218,13 @@
 
   <xsl:template name="nav-divider">
     <xsl:param name="caption"/>
+    <xsl:param name="colorcode" select="'home'"/>
     <xsl:param name="link" select="''"/>
     <table border="0" width="100%" cellspacing="0" cellpadding="2">
       <tr>
-        <td bgcolor="#3654a5" style="border-bottom: 1px solid #9eb6ff">
+        <td bgcolor="{$areas/area[@name= $colorcode]/@color}" style="border-bottom: 1px solid #666666">
           <b>
-            <a style="color: white">
+            <a>
               <xsl:if test="$link">
                 <xsl:attribute name="href"><xsl:value-of select="$link"/></xsl:attribute>
               </xsl:if>
