@@ -32,5 +32,25 @@
     function __construct($faultcode, $message) {
       parent::__construct('Fault #'.$faultcode.'; '.$message);
     }
+
+    /**
+     * Set Faultcode
+     *
+     * @access  public
+     * @param   int faultcode
+     */
+    function setFaultcode($faultcode) {
+      $this->faultcode= $faultcode;
+    }
+
+    /**
+     * Get Faultcode
+     *
+     * @access  public
+     * @return  int
+     */
+    function getFaultcode() {
+      return $this->faultcode;
+    }
   }
 ?>
