@@ -15,13 +15,12 @@
      * Checks if the user is authorized to do something. 
      *
      * @access  public
-     * @param   object handler
-     * @param   string uri of actual directory
-     * @param   &org.webdav.auth.WebdavUser The WebdavUser object
+     * @param   string uri                       The requested path 
+     * @param   &org.webdav.auth.WebdavUser user The WebdavUser object
+     * @param   &org.webdav.xml.Webdav*Request   The Request
      * @return  bool
      */
-    function isAuthorized($uri, &$user) {
-      // Always return TRUE in default implementation
+    function isAuthorized($path, &$user, &$request) {
       return TRUE;
     }
   }
