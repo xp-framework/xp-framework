@@ -50,7 +50,7 @@
           and f.bz_id <= 20000
         order by published desc
         limit %d,%d',
-        1,
+        $this->getSyndicate_id($request->getProduct()),
         $request->getParam('offset', 0),
         10
       );

@@ -51,16 +51,20 @@
         // Fill in all days for which an entry exists
         $q= &$db->query('
           select 
-            dayofmonth(feeditem.published) as day, 
+            dayofmonth(fi.published) as day, 
             count(*) as numentries
           from 
-            syndicate.feeditem 
+            syndicate.feeditem fi,
+            syndicate.syndicate_feed_matrix sfm
           where 
-            year(feeditem.published) = %d 
-            and month(feeditem.published) = %d 
+            year(fi.published) = %d 
+            and month(fi.published) = %d 
+            and fi.feed_id= sfm.feed_id
+            and sfm.syndicate_id= %d
           group by day',
           $contextDate->getYear(),
-          $contextDate->getMonth()
+          $contextDate->getMonth(),
+          $this->getSyndicate_id($request->getProduct())
         );
         while ($record= $q->next()) {
           $month->addChild(new Node('entries', $record['numentries'], array(
@@ -114,7 +118,7 @@
           where f.feed_id= sfm.feed_id
             and sfm.syndicate_id= %d
             and bz_id <= 20000',
-          1
+          $this->getSyndicate_id($request->getProduct())
         );
         
         $c= &$response->addFormResult(new Node('feeds'));
@@ -130,5 +134,24 @@
       }
       
       return TRUE;
+    }
+
+    /**
+     * Return the syndicate_id for the given product.
+     *
+     * @access  public
+     * @param   string product
+     * @return  int id
+     */
+    function getSyndicate_id($product) {
+      static $id= NULL;
+      
+      if (NULL !== $id) return $id;
+      
+      $pm= &PropertyManager::getInstance();
+      $prop= &$pm->getProperties('products');
+      
+      $id= $prop->readString($product, 'syndicate');
+      return $id;
     }
   }
