@@ -56,14 +56,14 @@
         $feed['url'], 
         $param->exists('full-sync', 'fs') ? NULL : $feed['lastcheck']
       );
-      $controller->fetch();
+      $res= $controller->fetch();
     } if (catch('Exception', $e)) {
       $e->printStackTrace();
       continue;
     }
     
     try(); {
-      $controller->update();
+      $res && $controller->update();
     } if (catch('SQLException', $e)) {
       $e->printStackTrace();
       exit(-1);
