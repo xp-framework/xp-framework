@@ -48,7 +48,7 @@
         : NULL
       );
     }
-     
+    
     /**
      * Add a child to this tree
      *
@@ -134,14 +134,9 @@
      * @see     xp://xml.XMLParser
      */
     function onStartElement($parser, $name, $attrs) {
-      $this->_cdata= "";
+      $this->_cdata= '';
 
-      $element= &new $this->nodeType(array(
-        'name'          => $name,
-        'attribute'     => $attrs,
-        'content'       => ''
-      ));  
-
+      $element= &new $this->nodeType($name, NULL, $attrs);
       if (!isset($this->_cnt)) {
         $this->root= &$element;
         $this->_objs[1]= &$element;
@@ -166,7 +161,7 @@
         $node->content= $this->_cdata;
         $parent= &$this->_objs[$this->_cnt- 1];
         $parent->addChild($node);
-        $this->_cdata= "";
+        $this->_cdata= '';
       }
       $this->_cnt--;
     }
