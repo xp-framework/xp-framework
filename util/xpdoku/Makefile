@@ -35,6 +35,7 @@ else
 	cd $(TARGET) ; tar cfz $(PUBLISH) *
 	scp $(PUBLISH) $(target):$(TARGET)
 	ssh $(target) cd $(TARGET) \; tar xfz xpdoc.tgz
+	scp content/news.rdf.xml $(target):$(TARGET)
 	rm $(PUBLISH)
 endif
 
