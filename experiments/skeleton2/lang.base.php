@@ -84,12 +84,12 @@
   }
   // }}}
 
-  // {{{ final class null
-  final class null {
+  // {{{ final class nil
+  final class nil {
 
-    // {{{ public object null(void)
+    // {{{ public object __construct(void)
     //     Constructor to avoid magic __call invokation
-    public function null() { }
+    public function __construct() { }
     // }}}
     
     // {{{ magic mixed __call(string name, mixed[] args)
@@ -124,9 +124,9 @@
   }
   // }}}
 
-  // {{{ public bool null(mixed arg)
+  // {{{ public bool nil(mixed arg)
   //     Checks whether a given argument is NULL or object(null)
-  function null($arg) {
+  function nil($arg) {
     return (is_object($arg) && 'null' == get_class($arg)) || is_null($arg);
   }
   // }}}
@@ -241,7 +241,9 @@
   define('LONG_MIN', -LONG_MAX - 1);
   ini_set('include_path', SKELETON_PATH.PATH_SEPARATOR.ini_get('include_path'));
   register_shutdown_function('__destroy');
-  xp::$null= new null();
+  xp::$null= new nil();
+  xp::$classes['class.xp']= '<xp>';
+  xp::$classes['class.nil']= '<null>';
   set_error_handler('__error');
 
   uses(
