@@ -67,6 +67,17 @@
     }
     
     /**
+     * Retrieves all registered connections as an array of DBConnection
+     * objects.
+     *
+     * @access  public
+     * @return  rdbms.DBConnection[]
+     */
+    function getConnections() {
+      return array_values($this->pool);
+    }
+    
+    /**
      * Register a connection
      *
      * @param   &rdbms.DBConnection conn A connection object
