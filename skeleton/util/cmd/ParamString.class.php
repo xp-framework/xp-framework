@@ -110,14 +110,33 @@
           return throw (new IllegalArgumentException ('Parameter #'.$long.' does not exist'));        
 
         return isset($this->list[$long]) ? $this->list[$long] : $default;
-      }        
+      }
   
       $pos= $this->_find($long, $short);
       if (FALSE === $pos && NULL === $default)
         return throw (new IllegalArgumentException ('Parameter --'.$long.' does not exist'));
-        
+      
+      // Default usage (eg.: '--with-foo=bar')
+      if (
+        $pos !== FALSE && 
+        isset($this->list[$pos]) && 
+        strncmp('--'.$long, $this->list[$pos], strlen($long) + 2) == 0
+      ) {
+        return str_replace("--{$long}=", '', $this->list[$pos]);
+      }
+      
+      // Usage in short (eg.: '-v' or '-f /foo/bar')
+      // If the found element is a new parameter, the searched one is used as
+      // flag, so just return TRUE, otherwise return the value.
+      if (
+        $pos !== FALSE &&
+        (!isset($this->list[$pos]) || '-' == $this->list[$pos]{0})
+      ) {
+        return TRUE;
+      }
+      
       return ($pos !== FALSE
-        ? str_replace("--{$long}=", '', $this->list[$pos])
+        ? $this->list[$pos]
         : $default
       );
     }
