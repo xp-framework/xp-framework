@@ -166,7 +166,7 @@
         $lkscope,
         $lktoken,
         $this->getPath(),
-        $this->getHeader('timeout'),
+        sscanf('Second-%d', $this->getHeader('timeout')),
         $depth
       );
     }
