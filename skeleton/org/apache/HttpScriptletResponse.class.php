@@ -91,6 +91,20 @@
     }
     
     /**
+     * Sends a WWW-Authenticate header and sets the HTTP status code 401
+     * (unauthorized). Uses Basic Authentication.
+     *
+     * @see     http://httpd.apache.org/docs/howto/auth.html
+     * @see     rfc://2617
+     * @access  public
+     * @param   string realm default 'Restricted area'
+     */
+    function sendBasicAuthenticate($realm= 'Restricted area') {
+      $this->statusCode= HTTP_AUTHORIZATION_REQUIRED;
+      $this->setHeader('WWW-Authenticate', 'Basic realm="'.$realm.'"');
+    }
+    
+    /**
      * Adds a response header. If this header is already set, it will
      * be overwritten. Multiple headers *are* allowed but quite useless
      * for most applications.
