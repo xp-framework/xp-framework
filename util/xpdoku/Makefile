@@ -112,7 +112,7 @@ classes: $(OUTPUT) $(XML)
 
 collection_%:
 	@echo "---> Processing collection $*"
-	@$(SABCMD) xslt/collection.xsl $(CTREE) '$$mode=collection' '$$collection=$*' $(OUTPUT)/apidoc/collections/$*.html 2>/dev/null
+	@$(SABCMD) xslt/collection.xsl $(CTREE) '$$mode=collection' '$$collection=$*' '$$intro='`ls -1 content/collection/$*.xml 2>/dev/null` $(OUTPUT)/apidoc/collections/$*.html 2>/dev/null
 
 class_%:
 	@echo "---> Processing class $*"
