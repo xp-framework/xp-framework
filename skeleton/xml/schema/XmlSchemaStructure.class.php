@@ -48,6 +48,46 @@
       $this->type= $type;
       parent::__construct();
     }
+
+   /**
+     * Set Type
+     *
+     * @access  public
+     * @param   string type
+     */
+    function setType($type) {
+      $this->type= $type;
+    }
+
+    /**
+     * Get Type
+     *
+     * @access  public
+     * @return  string
+     */
+    function getType() {
+      return $this->type;
+    }
+
+    /**
+     * Set Name
+     *
+     * @access  public
+     * @param   string name
+     */
+    function setName($name) {
+      $this->name= $name;
+    }
+
+    /**
+     * Get Name
+     *
+     * @access  public
+     * @return  string
+     */
+    function getName() {
+      return $this->name;
+    }
     
     /**
      * Returns whether this structure is a complex type
