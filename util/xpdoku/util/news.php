@@ -48,7 +48,7 @@
   }
   
   // Dump
-  echo $rdf->getSource();
+  echo $rdf->getSource($indent= FALSE);
   exit(0);
   // }}}
 ?>
