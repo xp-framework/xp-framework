@@ -30,11 +30,9 @@
      * Open the stream
      *
      * @access  public
-     * @param   string mode one of the STREAM_MODE_* constants
-     * @throws  streamNotFoundException in case the stream is not found
-     * @throws  IOException in case the stream cannot be opened (e.g., lacking permissions)
+     * @param   string mode default STREAM_MODE_READ one of the STREAM_MODE_* constants
      */
-    function open($mode) {
+    function open($mode= STREAM_MODE_READ) {
       switch ($mode) {
         case STREAM_MODE_READ:
           $this->flags= STREAM_READ;
@@ -63,16 +61,16 @@
           
       }
     }
-	
+    
     /**
      * Returns whether this stream is open
      *
      * @access  public
      * @return  bool TRUE, when the stream is open
      */
-	function isOpen() {
-	  return $this->flags != 0;
-	}
+    function isOpen() {
+      return $this->flags != 0;
+    }
     
     /**
      * Retreive the stream's size in bytes
