@@ -24,10 +24,10 @@
      * Add a handler
      *
      * @access  public
-     * @param   
-     * @return  
+     * @param   &scriptlet.xml.workflow.Handler handler
+     * @return  &scriptlet.xml.workflow.Handler the added handler
      */
-    function addHandler(&$handler) {
+    function &addHandler(&$handler) {
       $this->handlers[]= &$handler;
       return $handler;
     }
