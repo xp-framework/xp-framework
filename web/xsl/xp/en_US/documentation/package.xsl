@@ -56,12 +56,17 @@
    ! @purpose  Define main content
    !-->
   <xsl:template name="content">
-    <xsl:param name="collection" select="substring-before($__query, '/')"/>
-
-    <h1>api documentation: <xsl:value-of select="$__query"/></h1>
-   
+    <xsl:variable name="current" select="/formresult/breadcrumb/current"/>
+    
+    <h1>
+      <a href="../documentation">api documentation</a>
+      <xsl:for-each select="/formresult/breadcrumb/path/path">
+        :: <a href="package?{$current/@collection}/{.}"><xsl:value-of select="."/></a>
+      </xsl:for-each>
+    </h1>
+    
     <table border="0" cellspacing="0" cellpadding="0" width="100%">
-      <xsl:for-each select="document('../../../../build/collections.xml')/collections/collection[@name = $collection]//package[@name = substring-after($__query, '/')]">
+      <xsl:for-each select="document('../../../../build/collections.xml')/collections/collection[@name = $current/@collection]//package[@name = $current/@package]">
         <tr><td colspan="3">
           <h3><xsl:value-of select="@name"/> package (<xsl:value-of select="@classes"/> classes)</h3>
         </td></tr>
@@ -71,14 +76,14 @@
             <td width="1%" valign="top" nowrap="nowrap"><img width="17" height="17" hspace="2" src="/image/package.gif"/>&#160;</td>
             <td width="10%" valign="top" nowrap="nowrap">
               <b>
-                <a href="package?{$collection}/{@name}"><xsl:value-of select="@name"/></a>
+                <a href="package?{$current/@collection}/{@name}"><xsl:value-of select="@name"/></a>
               </b> (<xsl:value-of select="@packages"/>) 
               <img src="/image/dot.gif" border="0" height="7" width="7" alt="&gt;"/>
               &#160;
             </td>
             <td width="89%" valign="top">
               <xsl:for-each select="package">
-                <a title="{@name}" href="package?{$collection}/{@name}"><xsl:value-of select="substring-after(@name, '.')"/></a>
+                <a title="{@name}" href="package?{$current/@collection}/{@name}"><xsl:value-of select="substring-after(@name, '.')"/></a>
                 <xsl:if test="position() &lt; last()">, </xsl:if>
               </xsl:for-each>
               <br/><br/>
@@ -90,7 +95,7 @@
             <td width="1%" valign="top" nowrap="nowrap"><img width="17" height="17" hspace="2" src="/image/class.gif"/>&#160;</td>
             <td width="99%" valign="top" nowrap="nowrap" colspan="2">
               <b>
-                <a href="class?{$collection}/{@name}"><xsl:value-of select="@name"/></a>
+                <a href="class?{$current/@collection}/{@name}"><xsl:value-of select="@name"/></a>
               </b>
               <br/><br/>
             </td>
@@ -101,7 +106,7 @@
             <td width="1%" valign="top" nowrap="nowrap"><img width="17" height="17" hspace="2" src="/image/class.gif"/>&#160;</td>
             <td width="99%" valign="top" nowrap="nowrap" colspan="2">
               <b>
-                <a href="sapi?{$collection}/{@name}"><xsl:value-of select="@name"/></a>
+                <a href="sapi?{$current/@collection}/{@name}"><xsl:value-of select="@name"/></a>
               </b>
               <br/><br/>
             </td>
