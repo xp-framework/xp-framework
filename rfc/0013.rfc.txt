@@ -83,7 +83,10 @@ Related documents
 
 - http://sys-con.com/story/?storyid=36844&DE=1
   Under the Hood: java.lang.reflect.Proxy
-
+  
+- http://www.javaspecialists.co.za/archive/Issue005.html
+  Dynamic Proxies - Short Tutorial
+  
 Comments
 --------
 - friebe, Tue Jan  4 19:18:12 CET 2005
