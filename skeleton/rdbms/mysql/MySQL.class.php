@@ -232,6 +232,8 @@
         if (!$this->connect()) return FALSE;
       }
       
+      $this->log && $this->log->debug ($sql);
+
       if ($this->flags & DB_BUFFER_RESULTS) {
         $result= mysql_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
       } else {

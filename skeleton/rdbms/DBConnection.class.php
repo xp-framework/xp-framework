@@ -173,5 +173,15 @@
      * @return  bool success
      */
     function commit($name) { }
+    
+    /**
+     * Set trace for debugging
+     *
+     * @access  public
+     * @param   util.log.LogCategory
+     */
+    function setTrace(&$log) {
+      $this->log= &$log;
+    }    
   }
 ?>
