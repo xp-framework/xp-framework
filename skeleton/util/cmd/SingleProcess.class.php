@@ -81,6 +81,7 @@
       if (file_exists('/proc/'.$pid)) return $pid;
       
       // Wir haben ein "stale lockfile"...
+      $this->unLock();
       return FALSE;
     }
   }
