@@ -18,8 +18,7 @@
   class Socket extends Object {
     var
       $host     = '',
-      $port     = 0,
-      $timeout  = 2;
+      $port     = 0;
       
     var
       $_sock    = NULL,
@@ -70,10 +69,12 @@
      * Connect
      *
      * @access  public
+     * @param   float timeout default 2.0
+     * @see     php://fsockopen
      * @return  bool success
      * @throws  peer.ConnectException
      */
-    function connect() {
+    function connect($timeout= 2.0) {
       if ($this->isConnected()) return 1;
       
       if (!$this->_sock= fsockopen(
@@ -81,13 +82,13 @@
         $this->port, 
         $errno, 
         $errstr, 
-        $this->timeout
+        $timeout
       )) {
         return throw(new ConnectException(sprintf(
           'Failed connecting to %s:%s within %s seconds [%d: %s]',
           $this->host,
           $this->port,
-          $this->timeout,
+          $timeout,
           $errno,
           $errstr
         )));
