@@ -5,7 +5,7 @@ $Id$
 @authors: friebe
 @created: Thu Oct 28 22:42:01 CEST 2004
 @status: draft
-@category: language
+@category: <core>
 
 
 Scope of Change
