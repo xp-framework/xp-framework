@@ -73,11 +73,21 @@ __;
   while (T_WHITESPACE === $tok[0]) $tok= $t->getNextToken();
   
   $class= 0;
-  $uses= $constants= $implements= array();
+  $uses= $constants= $implements= $apidoc= array();
   do {
     $DEBUG && printf("%s: %s\n", $t->getTokenName($tok[0]), $tok[1]);
     if (T_COMMENT === $tok[0] && '//' == substr($tok[1], 0, 2) && !$class) continue;
     if (T_CLOSE_TAG === $tok[0]) break;
+    
+    if ((T_COMMENT === $tok[0]) && ('/**' == substr($tok[1], 0, 3))) {
+      $apidoc= array();
+      foreach (preg_split('/[\r\n]([\s\t]*\* ?)?/', $tok[1]) as $line) {
+        if ('@' != $line{0}) continue;
+        $args= preg_split('/[\s\t]+/', substr($line, 1), 2);
+        $DEBUG && printf("API-DOC TOKEN %s => %s\n", $args[0], $args[1]);
+        $apidoc[$args[0]]= isset($args[1]) ? $args[1] : TRUE;
+      }
+    }
     
     switch (strtolower($tok[1])) {
       case 'uses':
@@ -104,8 +114,12 @@ __;
         do {
           $tok= $t->getNextToken();
         } while (T_WHITESPACE === $tok[0] || ',' == $tok[1]);
-        $constants[$name]= $tok;
-        while (';' !== $tok[1]) $tok= $t->getNextToken();
+        $constants[$name]= '';
+        while (')' !== $tok[1]) {
+          $constants[$name].= $tok[1];
+          $tok= $t->getNextToken();
+        }
+        
         $tok= array(T_NONE, '');
         break;
       
@@ -159,7 +173,7 @@ __;
           $out[]= "\n    const\n";
           $const= '';
           foreach ($constants as $name => $tok) {
-            $const.= '      '.preg_replace('/^'.$classname[1].'_?/i', '', substr($name, 1, -1)).' = '.$tok[1].",\n";
+            $const.= '      '.preg_replace('/^'.$classname[1].'_?/i', '', substr($name, 1, -1)).' = '.$tok.",\n";
           }
           $out[]= substr($const, 0, -2).";\n";
         }
@@ -173,9 +187,26 @@ __;
         
       case 'function':  // function public, function _protected
         while (T_STRING !== $tok[0]) $tok= $t->getNextToken();
-        // var_dump($tok);
-        $out[]= ('_' == $tok[1]{0} && '_' != $tok[1]{1}) ? 'protected' : 'public';
+
+        // Use @access API-Doc if available, guess otherwise
+        switch(@$apidoc['access']) {
+          case 'public':
+          case 'protected':
+          case 'private':
+            $out[]= $apidoc['access'];
+            break;
+
+          default:
+            $out[]= ('_' == $tok[1]{0} && '_' != $tok[1]{1}) ? 'protected' : 'public';
+        }
+        
+        // Check abstract and final models
+        if (@$apidoc['model'] == 'abstract') $out[]= ' abstract';
+        if (@$apidoc['model'] == 'final') $out[]= ' final';
+        
+        // Check for @model API-doc, guess otherwise
         if (
+          (@$apidoc['model'] == 'static') ||
           ('getInstance' == $tok[1]) ||
           ('fromString' == $tok[1]) ||
           ('fromFile' == $tok[1]) ||
@@ -190,8 +221,8 @@ __;
           $tok= $t->getNextToken();
         }
         
-        // Kill method body if this function resides in an interface
-        if ('Interface' == $extends) { 
+        // Kill method body if this function resides in an interface or is declared abstract
+        if (('Interface' == $extends) || (@$apidoc['model'] == 'abstract')) { 
           while ('}' !== $tok[1]) {
             $tok= $t->getNextToken();
           }
@@ -199,6 +230,8 @@ __;
           $tok= $t->getNextToken();
         }
         
+        // Reset API-doc
+        $apidoc= array();
         break;
       
       case '$this':     // $this->setURI();
