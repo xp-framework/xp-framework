@@ -88,4 +88,27 @@ A userland equivalent of this would be:
   }'));
 </pre>
 
+"self" reflects runtime class
+-----------------------------
+self can be used like $this for static classes and accomplishes the parent
+keyword.
+
+Example:
+<pre>
+  class A {
+    protected static $instance = NULL;
+    
+    public static function getInstance() {
+      if (!self::$instance) {
+        self::$instance= new self();
+      }
+      return self::$instance;
+    }
+  }
+</pre>
+
+What's new is that if a class extends A and its getInstance() method is 
+invoked, the corresponding class is returned (and not an instance of A, 
+as is currently).
+
 <EOF>
