@@ -1,0 +1,120 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+  uses('rdbms.DBAdapter');
+  
+  /**
+   * Adapter for sybase
+   *
+   * @see   xp://rdbms.DBAdapter
+   * @see   xp://rdbms.sybase.SPSybase
+   */
+  class MySQLDBAdapter extends DBAdapter {
+
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   &Object conn database connection
+     */
+    function __construct(&$conn) {
+      $this->map= array(
+        'varchar'   => DB_ATTRTYPE_VARCHAR,
+        'int'       => DB_ATTRTYPE_INT
+      );
+      parent::__construct($conn);
+    }
+    
+    /**
+     * Get databases
+     *
+     * @access  public
+     * @return  string[] databases
+     */
+    function getDatabases() {
+      $dbs= array();
+      try(); {
+        $q= $this->conn->query('show databases');
+        while ($record= $this->conn->fetch($q)) {
+          $dbs[]= $name;
+        }
+      } if (catch('SQLException', $e)) {
+        return throw($e);
+      }
+      
+      return $dbs;
+    }
+    
+    /**
+     * Get tables by database
+     *
+     * @access  public
+     * @param   string database
+     * @return  rdbms.DBTable[] array of DBTable objects
+     */
+    function getTables($database) {
+      $t= array();
+      try(); {
+        $q= $this->conn->query('show tables');
+        while ($record= $this->conn->fetch($q)) {
+          var_dump($record);
+          $t[]= &new Table($record['table']);
+        }
+      } if (catch('SQLException', $e)) {
+        return throw($e);
+      }
+      
+      return $t;
+    }
+    
+    /**
+     * Get table by name
+     *
+     * @access  public
+     * @param   string table
+     * @return  rdbms.DBTable a DBTable object
+     */
+    function getTable($table) {
+      $t= &new DBTable($table);
+      try(); {
+      
+        // Get the table's attributes
+        // +-------------+--------------+------+-----+---------------------+----------------+
+        // | Field       | Type         | Null | Key | Default             | Extra          |
+        // +-------------+--------------+------+-----+---------------------+----------------+
+        // | contract_id | int(8)       |      | PRI | NULL                | auto_increment |
+        // | user_id     | int(8)       |      |     | 0                   |                |
+        // | mandant_id  | int(4)       |      |     | 0                   |                |
+        // | description | varchar(255) |      |     |                     |                |
+        // | comment     | varchar(255) |      |     |                     |                |
+        // | bz_id       | int(6)       |      |     | 0                   |                |
+        // | lastchange  | datetime     |      |     | 0000-00-00 00:00:00 |                |
+        // | changedby   | varchar(16)  |      |     |                     |                |
+        // +-------------+--------------+------+-----+---------------------+----------------+
+        // 8 rows in set (0.00 sec)
+        $q= $this->conn->query('describe %c', $table);
+        while ($record= $this->conn->fetch($q)) {
+          preg_match('#^([a-z]+)(\(([0-9]+)\))?$#', $record['Type'], $regs);
+          // DEBUG var_dump($record, $regs);
+          
+          $t->addAttribute(new DBTableAttribute(
+            $record['Field'], 
+            $this->map[$regs[1]],
+            ('PRI' == $record['Key']),
+            !empty($record['Null']),
+            $regs[3], 
+            0, 
+            0
+          ));
+        }
+      } if (catch('SQLException', $e)) {
+        return throw($e);
+      }
+      
+      return $t;
+    }
+  }
+?>
