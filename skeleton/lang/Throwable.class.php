@@ -25,7 +25,9 @@
      * @param   string message
      */
     function __construct($message) {
-      static $except= array('call_user_func_array', 'call_user_func', 'object');
+      static $except= array(
+        'call_user_func_array', 'call_user_func', 'object', '__call', '__set', '__get'
+      );
       $this->message= $message;
       
       $errors= xp::registry('errors');
