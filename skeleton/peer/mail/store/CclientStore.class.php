@@ -256,6 +256,7 @@
       $messages= array();
       
       // Check cache
+      $seq= '';
       foreach ($msgnums as $msgnum) {
         if (NULL === ($msg= &$this->cache->get(SKEY_LIST.SKEY_MESSAGE.$f->name.'.'.$msgnum))) {
           $seq.= ','.$msgnum;
