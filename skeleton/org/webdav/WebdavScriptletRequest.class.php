@@ -82,12 +82,36 @@
       return $this->rootURL;
     }
     
+    /**
+     * Encode the parts of a path 
+     *
+     * Example:
+     * <pre>
+     *   "/Test Folder/file.txt" -> "/Test%20Folder/file.txt"
+     * </pre>
+     *
+     * @access  private
+     * @param   string path The path
+     * @return  string
+     */
     function encodePath($path) {
       $parts = explode('/', $path);
       for ($i = 0; $i < sizeof($parts); $i++) $parts[$i]= rawurlencode($parts[$i]);
       return implode('/', $parts);
     }
     
+    /**
+     * Decode the parts of a path 
+     *
+     * Example:
+     * <pre>
+     *   "/Test%20Folder/file.txt" -> "/Test Folder/file.txt"
+     * </pre>
+     *
+     * @access  private
+     * @param   string path The path
+     * @return  string
+     */
     function decodePath($path) {
       $parts = explode('/', $path);
       for ($i = 0; $i < sizeof($parts); $i++) $parts[$i]= rawurldecode($parts[$i]);
