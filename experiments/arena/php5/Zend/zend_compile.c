@@ -26,6 +26,7 @@
 #include "zend_llist.h"
 #include "zend_API.h"
 #include "zend_fast_cache.h"
+#include "zend_enumerations.h"
 
 #ifdef ZEND_MULTIBYTE
 #include "zend_multibyte.h"
@@ -1477,7 +1478,7 @@ void zend_do_fetch_class(znode *result, znode *class_name TSRMLS_DC)
 	CG(catch_begin) = fetch_class_op_number;
 	if (class_name->op_type == IS_CONST) {
 		int fetch_type;
-
+		
 		fetch_type = zend_get_class_fetch_type(class_name->u.constant.value.str.val, class_name->u.constant.value.str.len);
 		switch (fetch_type) {
 			case ZEND_FETCH_CLASS_SELF:
@@ -1496,6 +1497,7 @@ void zend_do_fetch_class(znode *result, znode *class_name TSRMLS_DC)
 	}
 	opline->result.u.var = get_temporary_variable(CG(active_op_array));
 	opline->result.op_type = IS_CONST; /* FIXME: Hack so that INIT_FCALL_BY_NAME still knows this is a class */
+
 	*result = opline->result;
 }
 
@@ -1526,7 +1528,7 @@ void zend_do_begin_class_member_function_call(znode *class_name, znode *method_n
 	opline->opcode = ZEND_INIT_STATIC_METHOD_CALL;
 	opline->op1 = *class_name;
 	opline->op2 = *method_name;
-
+	
 	if (opline->op2.op_type == IS_CONST) {
 		if ((sizeof(ZEND_CONSTRUCTOR_FUNC_NAME)-1) == Z_STRLEN(opline->op2.u.constant) &&
 		    memcmp(Z_STRVAL(opline->op2.u.constant), ZEND_CONSTRUCTOR_FUNC_NAME, sizeof(ZEND_CONSTRUCTOR_FUNC_NAME)-1) == 0) {
@@ -4101,6 +4103,131 @@ int zend_get_class_fetch_type(char *class_name, uint class_name_len)
 	} else {
 		return ZEND_FETCH_CLASS_DEFAULT;
 	}
+}
+
+void zend_do_begin_enum_declaration(znode *enum_name TSRMLS_DC)
+{
+	zend_op *opline;
+	zend_class_entry *new_class_entry = emalloc(sizeof(zend_class_entry));
+	char *lcname = zend_str_tolower_dup(enum_name->u.constant.value.str.val, enum_name->u.constant.value.str.len);
+
+	if (CG(active_class_entry)) {
+		zend_error(E_COMPILE_ERROR, "Class declarations may not be nested");
+		return;
+	}
+
+	if (!(strcmp(lcname, "self") && strcmp(lcname, "parent"))) {
+		efree(lcname);
+		zend_error(E_COMPILE_ERROR, "Cannot use '%s' as enum name as it is reserved", enum_name->u.constant.value.str.val);
+	}
+
+	new_class_entry->type = ZEND_USER_CLASS;
+	new_class_entry->name = enum_name->u.constant.value.str.val;
+	new_class_entry->name_length = enum_name->u.constant.value.str.len;
+
+	zend_initialize_class_data(new_class_entry, 1 TSRMLS_CC);
+	new_class_entry->filename = zend_get_compiled_filename(TSRMLS_C);
+	new_class_entry->line_start = zend_get_compiled_lineno(TSRMLS_C);
+	new_class_entry->ce_flags |= 0;
+
+	opline = get_next_op(CG(active_op_array) TSRMLS_CC);
+	opline->op1.op_type = IS_CONST;
+	build_runtime_defined_function_key(&opline->op1.u.constant, lcname, new_class_entry->name_length TSRMLS_CC);
+	
+	opline->op2.op_type = IS_CONST;
+	opline->op2.u.constant.type = IS_STRING;
+	opline->op2.u.constant.refcount = 1;
+	
+	opline->opcode = ZEND_DECLARE_CLASS;
+	opline->op2.u.constant.value.str.val = lcname;
+	opline->op2.u.constant.value.str.len = new_class_entry->name_length;
+	
+	zend_hash_update(CG(class_table), opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, &new_class_entry, sizeof(zend_class_entry *), NULL);
+	CG(active_class_entry) = new_class_entry;
+
+	opline->result.u.var = get_temporary_variable(CG(active_op_array));
+	opline->result.op_type = IS_CONST;
+	CG(implementing_class) = opline->result;
+
+	if (CG(doc_comment)) {
+		CG(active_class_entry)->doc_comment = estrndup(CG(doc_comment), CG(doc_comment_len));
+		CG(active_class_entry)->doc_comment_len = CG(doc_comment_len);
+		RESET_DOC_COMMENT();
+	}
+}
+
+void zend_do_end_enum_declaration(TSRMLS_D)
+{
+    do_inherit_parent_constructor(base_enumeration_ce);
+    CG(active_class_entry)->line_end = zend_get_compiled_lineno(TSRMLS_C);
+	
+	zend_do_inheritance(CG(active_class_entry), base_enumeration_ce);
+	CG(active_class_entry)= NULL;
+}
+
+void zend_do_add_enum_member(znode *name, znode *value TSRMLS_DC)
+{
+	zval *property;
+	long last;
+	int count;
+	zval **lastdata;
+	
+	ALLOC_ZVAL(property);
+	
+	count= zend_hash_num_elements(&CG(active_class_entry)->constants_table);
+
+	if (value) {
+		*property = value->u.constant;
+		
+		/* For user-supplied enumeration values, we have to make sure, no values will be
+		 * supplied twice. To simplify implementing this constraint, check that every value
+		 * added is bigger than the last 
+		 */
+		if (count > 0) {
+		
+			/* Retrieve the value of the last element */
+			if (FAILURE == zend_hash_get_current_data(&CG(active_class_entry)->constants_table, (void **)&lastdata)) {
+				zend_error(E_COMPILE_ERROR, "Could not get constants data");
+			}
+			
+			if (property->value.lval <= (*lastdata)->value.lval) {
+				zend_error(E_COMPILE_ERROR, "You must add enum values in ascending order");
+			}
+		}
+	} else {
+	
+		/* Value wasn't given explicitly, so create one */
+		if (0 == count) {
+		
+			/* Default values start at 1 */
+			last= 0;
+		} else {
+			
+			/* Retrieve the value of the last element */
+			if (FAILURE == zend_hash_get_current_data(&CG(active_class_entry)->constants_table, (void **)&lastdata)) {
+				zend_error(E_COMPILE_ERROR, "Could not get constants data");
+			}
+			
+			last= (*lastdata)->value.lval;
+		}
+		
+		INIT_PZVAL(property);
+		ZVAL_LONG(property, ++last);
+	}
+	
+	convert_to_long(property);
+	
+	/* Register the constant in the class */
+	if (zend_hash_add(&CG(active_class_entry)->constants_table, name->u.constant.value.str.val, name->u.constant.value.str.len+1, &property, sizeof(zval *), NULL)==FAILURE) {
+		FREE_ZVAL(property);
+		zend_error(E_COMPILE_ERROR, "Cannot redefine enum constant %s::%s", CG(active_class_entry)->name, name->u.constant.value.str.val);
+	}
+	
+	/* Upon insertion of the first element, the internal pointer is set to that element, already. */
+	/* For following elements, we have to move it ourselves. */
+	if (0 != count) { zend_hash_move_forward(&CG(active_class_entry)->constants_table); }
+	
+	FREE_PNODE(name);
 }
 
 ZEND_API char* zend_get_compiled_variable_name(zend_op_array *op_array, zend_uint var, int* name_len)

@@ -458,6 +458,11 @@ void zend_do_declare_property(znode *var_name, znode *value, zend_uint access_ty
 void zend_do_declare_implicit_property(TSRMLS_D);
 void zend_do_declare_class_constant(znode *var_name, znode *value TSRMLS_DC);
 
+void zend_do_begin_enum_declaration(znode *enum_name TSRMLS_DC);
+void zend_do_end_enum_declaration(TSRMLS_D);
+void zend_do_add_enum_member(znode *name, znode *value TSRMLS_DC);
+
+
 void zend_do_fetch_property(znode *result, znode *object, znode *property TSRMLS_DC);
 
 

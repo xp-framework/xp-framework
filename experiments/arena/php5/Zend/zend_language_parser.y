@@ -148,6 +148,7 @@
 %token T_CURLY_OPEN
 %token T_PAAMAYIM_NEKUDOTAYIM
 %token T_IMPORT
+%token T_ENUM
 
 %% /* Rules */
 
@@ -166,6 +167,7 @@ top_statement:
 	|	function_declaration_statement	{ zend_do_early_binding(TSRMLS_C); }
 	|	class_declaration_statement		{ zend_do_early_binding(TSRMLS_C); }
 	|	package_declaration_statement
+	|	enum_declaration_statement
 ;
 
 
@@ -263,6 +265,9 @@ additional_catch:
 	T_CATCH '(' fully_qualified_class_name { $$.u.opline_num = get_next_op_number(CG(active_op_array)); } T_VARIABLE ')' { zend_do_begin_catch(&$1, &$3, &$5, 0 TSRMLS_CC); } '{' inner_statement_list '}' { zend_do_end_catch(&$1 TSRMLS_CC); }
 ;
 
+enum_declaration_statement:
+		unticked_enum_declaration_statement		{ zend_do_ticks(TSRMLS_C); }
+;
 
 unset_variables:
 		unset_variable
@@ -381,6 +386,22 @@ implements_list:
 interface_list:
 		fully_qualified_class_name			{ zend_do_implements_interface(&$1 TSRMLS_CC); }
 	|	interface_list ',' fully_qualified_class_name { zend_do_implements_interface(&$3 TSRMLS_CC); }
+;
+
+unticked_enum_declaration_statement:
+		T_ENUM T_STRING '{' { zend_do_begin_enum_declaration(&$2 TSRMLS_CC); }
+			enum_declaration_list 
+		'}' { zend_do_end_enum_declaration(TSRMLS_C); }
+;
+
+enum_declaration_list:
+		enum_declaration_list ',' enum_declaration_list_member
+	|	enum_declaration_list_member
+;
+
+enum_declaration_list_member:
+		T_STRING						{ zend_do_add_enum_member(&$1, NULL TSRMLS_CC); }
+	|	T_STRING '(' static_scalar ')'	{ zend_do_add_enum_member(&$1, &$3 TSRMLS_CC);  }
 ;
 
 foreach_optional_arg:
@@ -783,7 +804,7 @@ exit_expr:
 
 
 ctor_arguments:
-		/* empty */		{ $$.u.constant.value.lval=0; }
+		/* empty */
 	|	'(' function_call_parameter_list ')' { $$ = $2; }
 	|	'(' function_call_parameter_list ')' '{' { zend_do_begin_instance_creation(TSRMLS_C); } class_statement_list { zend_do_end_instance_creation(TSRMLS_C); } '}' { $$ = $2; }
 ;

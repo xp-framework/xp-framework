@@ -1183,6 +1183,10 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	return T_SR;
 }
 
+<ST_IN_SCRIPTING>"enum" {
+	return T_ENUM;
+}
+
 <ST_IN_SCRIPTING>{TOKENS} {
 	return yytext[0];
 }
