@@ -41,7 +41,6 @@ a) Syntax changes and additions
 * Automated getters and setters
 * Default members
 * A keyword "synchronized"
-* A new type "callable" (instead of array(class_or_object, method))
 * A new type "void"
 * Return type hints (unchecked, may be retrieved via Reflection)
 
@@ -264,13 +263,6 @@ Details
   When a synchronized block is hit and another instance tries to execute
   the same code, it would have to wait for the first instance to finish
   before being able to continue.
-
-* A new type "callable" (instead of array(class_or_object, method))
-  To ease readability, a new callable type would be introduced.
-  <?php
-    set_error_handler(<xp::error>);
-    set_error_handler(<$xp::error>);
-  ?>
 
 * "self" would be evaluated at runtime:
   This would make the following possible:
