@@ -326,7 +326,7 @@
      */
     function assertSubclass(&$var, $name, $error= 'notsubclass') {
       if ($r= $this->assertObject($var, $error)) {
-        $c= array_search($name, $GLOBALS['php_class_names']);
+        $c= substr($name, strrpos($name, '.')+ 1);
         $r= assert('$this->test(is_a($var, $c), $error, $name)');
       }
       return $r;
