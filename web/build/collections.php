@@ -87,12 +87,12 @@
 
     // Process a single collection
     $base= realpath($prop->readString($sect, 'base')).DIRECTORY_SEPARATOR;
-    // Console::writeLinef('---> Processing collection %s based in %s', $sect, $base);
+    $prefix= rtrim($prop->readString($sect, 'prefix'), '.').'.';
     
     recurse($tree->addChild(new Node('collection', NULL, array(
       'name' => $sect,
       'base' => $base
-    ))), $base);
+    ))), $base, $prefix);
 
   } while ($sect= $prop->getNextSection());
   
