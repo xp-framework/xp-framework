@@ -44,6 +44,50 @@
    * END:VCALENDAR
    * </pre>
    *
+   * Example [Simple calendar entry]
+   * <pre>
+   * BEGIN:VCALENDAR
+   * CALSCALE:GREGORIAN
+   * PRODID:-//Ximian//NONSGML Evolution Calendar//EN
+   * VERSION:2.0
+   * METHOD:PUBLISH
+   * BEGIN:VTIMEZONE
+   * TZID:/softwarestudio.org/Olson_20011030_5/Europe/Berlin
+   * X-LIC-LOCATION:Europe/Berlin
+   * BEGIN:DAYLIGHT
+   * TZOFFSETFROM:+0100
+   * TZOFFSETTO:+0200
+   * TZNAME:CEST
+   * DTSTART:19700329T020000
+   * RRULE:FREQ=YEARLY;INTERVAL=1;BYDAY=-1SU;BYMONTH=3
+   * END:DAYLIGHT
+   * BEGIN:STANDARD
+   * TZOFFSETFROM:+0200
+   * TZOFFSETTO:+0100
+   * TZNAME:CET
+   * DTSTART:19701025T030000
+   * RRULE:FREQ=YEARLY;INTERVAL=1;BYDAY=-1SU;BYMONTH=10
+   * END:STANDARD
+   * END:VTIMEZONE
+   * BEGIN:VEVENT
+   * UID:20030223T140445Z-260-0-1-14@friebes.net
+   * DTSTAMP:20030223T140544Z
+   * DTSTART;TZID=/softwarestudio.org/Olson_20011030_5/Europe/Berlin:
+   *  20030223T110000
+   * DTEND;TZID=/softwarestudio.org/Olson_20011030_5/Europe/Berlin:
+   *  20030223T123000
+   * TRANSP:OPAQUE
+   * SEQUENCE:2
+   * SUMMARY:Test
+   * LOCATION:Home
+   * DESCRIPTION:Wop\,\n\nw??p.\,\n\nwiorsss
+   * CLASS:PUBLIC
+   * LAST-MODIFIED:20030223T140504Z
+   * ORGANIZER;CN=Timm Friebe:MAILTO:friebe@php3.de
+   * END:VEVENT
+   * END:VCALENDAR
+   * </pre>
+   *
    * @see      rfc://2445
    * @see      rfc://2446
    * @see      rfc://2447
@@ -146,12 +190,12 @@
       }
       
       #ifdef DEBUG
-      echo '/'.implode('/', $context)."@";
-      echo $this->getClassName().'::addProperty(';
-      var_export($keys);
-      echo ', ';
-      var_export($value);
-      echo ")\n\n";
+      #echo '/'.implode('/', $context)."@";
+      #echo $this->getClassName().'::addProperty(';
+      #var_export($keys);
+      #echo ', ';
+      #var_export($value);
+      #echo ")\n\n";
       #endif
       
       if (0 == strcasecmp('END', $keys[0])) array_pop($context);
