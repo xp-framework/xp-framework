@@ -58,11 +58,12 @@
      *
      * @access  public
      * @param   string name Header
+     * @param   mixed default default NULL the default value if header is non-existant
      * @return  string Header value
      */
-    function getHeader($name) {
+    function getHeader($name, $default= NULL) {
       $name= strtolower($name);
-      if (isset($this->headers[$name])) return $this->headers[$name]; else return NULL;
+      if (isset($this->headers[$name])) return $this->headers[$name]; else return $default;
     }
     
     /**
@@ -71,11 +72,12 @@
      *
      * @access  public
      * @param   string name Parameter name
+     * @param   mixed default default NULL the default value if parameter is non-existant
      * @return  string Parameter value
      */
-    function getParam($name) {
+    function getParam($name, $default= NULL) {
       $name= strtolower($name);
-      if (isset($this->params[$name])) return $this->params[$name]; else return NULL;
+      if (isset($this->params[$name])) return $this->params[$name]; else return $default;
     }
 
     /**
