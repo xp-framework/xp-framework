@@ -139,5 +139,17 @@
         'select * from news where news_id in (1, 2, 3)'
       );
     }
+    
+    /**
+     * Test leading token
+     *
+     * @access  public
+     */
+    function testLeadingToken() {
+      $this->assertEquals(
+        $this->conn->prepare('%c', 'select 1'),
+        'select 1'
+      );
+    } 
   }
 ?>
