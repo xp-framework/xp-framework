@@ -138,9 +138,13 @@
      * @access  protected
      * @param   &xml.soap.SOAPMessage message object (from request)
      * @return  &mixed result of method call
-     * @throws  IllegalArgumentException if there is no such method
+     * @throws  lang.IllegalArgumentException if there is no such method
+     * @throws  lang.IllegalAccessException for non-public methods
      */
     function &callReflectHandler(&$msg) {
+      if ('_' == $msg->method{0}) {
+        return throw(new IllegalAccessException('Cannot access non-public method '.$msg->method));
+      }
 
       // Create message from request data
       try(); {
