@@ -87,10 +87,10 @@
      * (Insert method's description here)
      *
      * @access  
-     * @param   
+     * @param   util.log.LogCategory CAT default NULL a log category to print debug to
      * @return  
      */
-    function parse() {
+    function parse($cat= NULL) {
       try(); {
         if (!$this->configured) $this->configure();
 
@@ -103,7 +103,7 @@
       }
 
       $this->tokenizer->setTokens(token_get_all($contents));
-      return $this->tokenizer->applyRules();
+      return $this->tokenizer->applyRules($cat);
     }
   }
 ?>

@@ -26,9 +26,10 @@
      * Parse
      *
      * @access  public
+     * @param   util.log.LogCategory CAT default NULL a log category to print debug to
      * @return  array an associative array containing comments and defines
      */
-    function parse() {
+    function parse($cat= NULL) {
       $this->comments= array(
         APIDOC_COMMENT_FILE     => array(),
         APIDOC_COMMENT_CLASS    => array(),
@@ -36,7 +37,7 @@
       );
       $this->defines= array();
       
-      if (FALSE === parent::parse()) return FALSE;
+      if (FALSE === parent::parse($cat)) return FALSE;
       return array(
         'comments' => $this->comments,
         'defines'  => $this->defines
