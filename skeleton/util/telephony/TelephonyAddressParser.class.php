@@ -317,7 +317,7 @@
      * @access public
      * @param string phonenumber
      * @return &TelephonyAddress obj
-     * @throws MalformedPhoneNumberException, if number is malformed
+     * @throws FormatException, if number is malformed
      */
     function &parseNumber($number) {
       $a= &new TelephonyAddress();
@@ -371,7 +371,7 @@
       
       $number= preg_replace ('/[^\d]/', '', $number);
       if (strlen ($number) < 3)
-        return throw (new IllegalArgumentException ('No parseable phone number'));
+        return throw (new FormatException ('No parseable phone number'));
     
       $a->setSubscriber ($number);
       return $a;
