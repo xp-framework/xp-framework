@@ -41,12 +41,9 @@
      */
     function identity($method, &$argument) {
       try(); {
-      
-        // Invoke the given function
         $result= &$this->invoke($method, $argument);
-        
-      } if (catch ('SOAPFaultException', $e)) {
-        return throw ($e);
+      } if (catch('SOAPFaultException', $e)) {
+        return throw($e);
       }
       
       if ($this->_iotrace) {
