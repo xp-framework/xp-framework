@@ -15,8 +15,8 @@
    *   $news= $peer->doSelect(new Criteria(array('news_id', 100, LESS_THAN)));
    * </code>
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://rdms.DataSet
+   * @purpose  Part of DataSet model
    */
   class Peer extends Object {
     var
