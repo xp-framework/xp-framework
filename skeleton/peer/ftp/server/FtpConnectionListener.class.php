@@ -67,9 +67,9 @@
      */
     function answer(&$sock, $code, $text, $lines= NULL) {
       if (is_array($lines)) {
-        $answer= $code.'-'.$text.":\n  ".implode("\n  ", $lines)."\n".$code." End\n";
+        $answer= $code.'-'.$text.":\r\n  ".implode("\n  ", $lines)."\r\n".$code." End\r\n";
       } else {
-        $answer= sprintf("%d %s\n", $code, $text);
+        $answer= sprintf("%d %s\r\n", $code, $text);
       }
       $this->cat && $this->cat->debug('<<< ', addcslashes($answer, "\0..\17"));
       return $sock->write($answer);
@@ -231,11 +231,14 @@
      * @param   string params
      */
     function onSiteChmod(&$event, $params) {
-      sscanf($params, '%d %s %s %s', $permissions, $uri);
+      list($permissions, $uri)= explode(' ', trim($params), 2);
+      $this->cat->warn($permissions);
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $uri))) {
         $this->answer($event->stream, 550, $uri.': No such file or directory');
         return;
       }
+      
+      $this->cat->debug($entry);
       
       $entry->setPermissions($permissions);
       $this->answer($event->stream, 200, 'SITE CHMOD command successful');
@@ -496,6 +499,8 @@
       $this->cat && $this->cat->debug($entry->toString());
       if (is('StorageCollection', $entry)) {
         $this->answer($event->stream, 550, $params.': is a directory');
+        $m= &$this->datasock[$event->stream->hashCode()]->accept();
+        $m->close();
         return;
       }
       
@@ -550,7 +555,7 @@
       ));
       try(); {
         $entry->open(SE_WRITE);
-        while (!$m->eof() && $buf= $m->readBinary()) {
+        while (!$m->eof() && $buf= $m->readBinary(32768)) {
           $entry->write($buf);
         }
         $entry->close();
@@ -560,6 +565,33 @@
       }
       $m->close();
       $this->answer($event->stream, 226, 'Transfer complete');
+    }
+
+    /**
+     * Callback for the "DELE" command
+     *
+     * @access  protected
+     * @param   &peer.server.ConnectionEvent event
+     * @param   string params
+     */
+    function onDele(&$event, $params) {
+      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
+        $this->answer($event->stream, 550, $params.': No such file or directory');
+        return;
+      }
+      if (is('StorageCollection', $entry)) {
+        $this->answer($event->stream, 550, $params.': is a directory');
+        return;
+      }
+      
+      try(); {
+        $entry->delete();
+      } if (catch('IOException', $e)) {
+        $this->answer($event->stream, 450, $params.': ', $e->getMessage());
+        return;
+      }
+      $this->answer($event->stream, 250, $params.': file deleted');
+
     }
 
     /**
