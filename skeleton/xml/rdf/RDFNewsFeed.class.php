@@ -75,15 +75,11 @@
      * @access public
      */
     function __construct() {
-      parent::__construct();
-      $this->root= &new Node(array(
-        'name'          => 'rdf:RDF',
-        'attribute'     => array(
-          'xmlns:rdf'   => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-          'xmlns:dc'    => 'http://purl.org/dc/elements/1.1/',
-          'xmlns'       => 'http://my.netscape.com/rdf/simple/0.9/'
-        )
-      ));
+      parent::__construct('rdf:RDF');
+      $this->root->setAttribute('xmlns:rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+      $this->root->setAttribute('xmlns:dc',  'http://purl.org/dc/elements/1.1/');
+      $this->root->setAttribute('xmlns',     'http://my.netscape.com/rdf/simple/0.9/');
+
       $this->channel= &new stdClass();
       $this->image= &new stdClass();
       $this->items= array();
