@@ -371,19 +371,6 @@
     }
     
     /**
-     * Private function which produces the image. Overwrite this in
-     * extended classes
-     *
-     * @see     xp://img.JpegImage
-     * @access  private
-     * @param   string filename default '' filename to save to or '' for memory
-     * @return  bool success
-     */
-    function _out($filename= '') {
-      return imagegd($this->_hdl, $filename);
-    }
-
-    /**
      * Returns a hashcode for this connection
      *
      * Example:
