@@ -173,7 +173,8 @@
     }
       
     /**
-     * Create a string representation
+     * Create a string representation - returns 'ID_GENRE_UNKNOWN' when 
+     * genre id is unknown
      *
      * @access  public
      * @return  string
@@ -328,8 +329,8 @@
         ID3_GENRE_ANIME                   => 'ID_GENRE_ANIME',
         ID3_GENRE_JPOP                    => 'ID_GENRE_JPOP',
         ID3_GENRE_SYNTHPOP                => 'ID_GENRE_SYNTHPOP'
-      );    
-      return $genre[$this->id];
+      );
+      return isset($genre[$this->id]) ? $genre[$this->id] : 'ID_GENRE_UNKNOWN';
     }
   
   }
