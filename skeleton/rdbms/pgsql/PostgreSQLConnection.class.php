@@ -19,8 +19,6 @@
    * @purpose  Database connection
    */
   class PostgreSQLConnection extends DBConnection {
-    var
-      $_oid = NULL;
 
     /**
      * Connect
@@ -157,9 +155,11 @@
      * @access  public
      * @return  mixed identity value
      */
-    function identity() { 
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $this->_oid));
-      return $this->_oid;
+    function identity($field) {
+      $q= &$this->query('select currval(%s) as id', $field);
+      $id= $q ? $q->next('id') : NULL;
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $id));
+      return $id;
     }
 
     /**
@@ -179,7 +179,6 @@
 
       return pg_affected_rows($r->handle);
     }
-    
     
     /**
      * Execute an update statement
@@ -275,11 +274,6 @@
       
       $resultset= &new PostgreSQLResultSet($result);
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
-
-      $this->_oid= (1 == pg_result_status($result)
-        ? pg_last_oid($result)
-        : NULL
-      );
 
       return $resultset;
     }
