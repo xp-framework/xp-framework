@@ -47,7 +47,7 @@
      * @return  string user or default if none is set
      */
     function getUser($default= NULL) {
-      return isset($this->pass['user']) ? $this->pass['user'] : $default;
+      return isset($this->parts['user']) ? $this->parts['user'] : $default;
     }
 
     /**
@@ -58,7 +58,7 @@
      * @return  string password or default if none is set
      */
     function getPassword($default= NULL) {
-      return isset($this->pass['password']) ? $this->pass['password'] : $default;
+      return isset($this->parts['pass']) ? $this->parts['pass'] : $default;
     }
 
   }
