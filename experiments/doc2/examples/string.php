@@ -14,18 +14,18 @@
   // Appending it
   Console::writeLine(
     '- Appending " " and "World" using dereferencing: ',
-    (string)$s->append(' ')->append('World')
+    $s->append(' ')->append('World')->getBuffer()
   );
 
   // Substrings
   Console::writeLinef(
     '- Substring before " ": "%s", after: "%s"',
-    (string)$s->substringBefore(' '),
-    (string)$s->substringAfter(' ')
+    $s->substringBefore(' ')->getBuffer(),
+    $s->substringAfter(' ')->getBuffer()
   );
   Console::writeLinef(
     '- Substring 0 .. {indexOf(" ")}: "%s"',
-    (string)$s->substring(0, $s->indexOf(' '))
+    $s->substring(0, $s->indexOf(' '))->getBuffer()
   );
   
   // Regular expressions
@@ -42,10 +42,10 @@
   );
   
   // Replacing
-  $s->replace('World', (string)String::valueOf(System::getProperty('user.name'))->toLowerCase());
+  $s->replace('World', String::valueOf(System::getProperty('user.name'))->toLowerCase()->getBuffer());
   Console::writeLine(
     '- Replaced "World" with system username, result: ',
-    (string)$s
+    $s->getBuffer()
   );
   // }}}
 ?>
