@@ -382,6 +382,21 @@
     function _out($filename= '') {
       return imagegd($this->_hdl, $filename);
     }
+
+    /**
+     * Returns a hashcode for this connection
+     *
+     * Example:
+     * <pre>
+     *   gd #38
+     * </pre>
+     *
+     * @access  public
+     * @return  string
+     */
+    function hashCode() {
+      return get_resource_type($this->_hdl).' #'.(int)$this->_hdl;
+    }
     
     /**
      * Retrieve string representation
@@ -390,7 +405,12 @@
      * @return  string
      */
     function toString() {
-      return $this->getClassName().'('.$this->width.'x'.$this->height.')';
+      return sprintf(
+        '%s(%dx%d)',
+        $this->getClassName(),
+        $this->width,
+        $this->height
+      );
     }
   }
 ?>
