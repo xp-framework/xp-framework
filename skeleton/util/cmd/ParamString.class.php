@@ -93,7 +93,7 @@
         if (NULL === $default && !isset($this->list[$long]))
           return throw (new IllegalArgumentException ('Parameter #'.$long.' does not exist'));        
 
-        return $this->list[$long];
+        return isset($this->list[$long]) ? $this->list[$long] : $default;
       }        
   
       $pos= $this->_find($long, $short);
