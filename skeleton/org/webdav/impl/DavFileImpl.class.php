@@ -83,7 +83,7 @@
           );
 
           $eProps= $this->propStorage->getProperties(substr($f->uri, strlen($this->base)));
-          foreach ($eProps as $key => $property){
+          foreach ($eProps as $key => $property) {
             $o->addProperty($property);
           }
           new WebdavPropResponse(
@@ -92,13 +92,13 @@
             $o
           );
         } if (catch('Exception', $e)) {
-          $this->c->debug(get_class($this).'::_recurse','Exeption ', $e->message);
+          $this->c->debug(get_class($this).'::_recurse', 'Exeption ', $e->message);
         }
         
         // add entries
         $maxdepth--;
         // Add parentdir if it's a subdir
-        if (substr($path,-1) != '/' && !empty($path))
+        if (substr($path, -1) != '/' && !empty($path))
           $path.= '/';
         while ($maxdepth >= 0 && $entry= $f->getEntry()) {
           $this->_recurse($request, $response, $path.$entry, $maxdepth);
@@ -124,7 +124,7 @@
 
       // lock info:
       $lockinfo= $this->getLockInfo($f->uri);
-      if (!empty($lockinfo)){
+      if (!empty($lockinfo)) {
         $o->addLockInfo(
           $lockinfo['type'],
           $lockinfo['scope'],
@@ -135,8 +135,6 @@
           );
       }
       
-      //$f->close();
-
       new WebdavPropResponse(
         $request,
         $response,
@@ -187,7 +185,7 @@
       $src= substr($filename, strlen($this->base));
       $dst= substr($destination, strlen($this->base));
       $properties= &$this->propStorage->getProperties($src);
-      if (!empty($properties)){
+      if (!empty($properties)) {
         if (!$docopy) $this->propStorage->setProperties($src, NULL);
         $this->propStorage->setProperties($dst, $properties);
       }
@@ -246,13 +244,13 @@
      * @throws  OperationNotAllowedException
      */
     function &delete($filename) {
-      $filename= $this->_normalizePath($this->base.urldecode($filename));
+      $uri= $this->_normalizePath($this->base.$filename);
 
-      if (strlen($filename) <= strlen($this->base.'/')) {
-        return throw(new OperationNotAllowedException($filename.' root-dir can not be deleted'));
+      if (strlen($uri) <= strlen($this->base.'/')) {
+        return throw(new OperationNotAllowedException($uri.' root-dir can not be deleted'));
       }
       
-      $f= is_dir($filename) ? new Folder($filename): new File($filename);
+      $f= is_dir($uri) ? new Folder($uri): new File($uri);
           
       // If the specified argument doesn't exist, throw an exception
       if (!$f->exists()) {
@@ -265,7 +263,7 @@
         return throw(new OperationFailedException($filename.' cannot be deleted ('.$e->message.')'));
       }
       // delete properties
-      $this->propStorage->setProperties($f->uri, NULL);
+      $this->propStorage->setProperties($filename, NULL);
       return TRUE;
     }
 
@@ -323,7 +321,7 @@
       return throw(new IllegalArgumentException($filename.' is locked exclusive'));
       
       if (is_dir($this->base.$filename)) {
-        $this->c->debug(get_class($this),'::GET Dir', $filename);
+        $this->c->debug(get_class($this), '::GET Dir', $filename);
 
         $f= &new Folder($this->base.$filename);
         if (!$f->exists()) {
@@ -332,7 +330,7 @@
 
         while ($maxdepth >= 0 && $entry= $f->getEntry()) {
           $isdir= is_dir($this->base.$filename.'/'.$entry);
-          $atime= date('H:i:s  d.m.y',fileatime($this->base.$filename.'/'.$entry));
+          $atime= date('H:i:s  d.m.y', fileatime($this->base.$filename.'/'.$entry));
           if ($isdir) {
             $flist[0][$entry].= sprintf('
             <tr>
@@ -375,8 +373,8 @@
         return $o;        
       }
      
-      $this->c->debug(get_class($this),'::GET filename', $filename);
-      $this->c->debug(get_class($this),'::GET base', $this->base);
+      $this->c->debug(get_class($this), '::GET filename', $filename);
+      $this->c->debug(get_class($this), '::GET base', $this->base);
 
       // Open file and read contents
       // contentype
@@ -392,7 +390,7 @@
       if (!empty($eProps['getcontenttype']))
         $contentType= $eProps['getcontenttype'][0];
       if (empty($contentType))
-        $contentType= MimeType::getByFilename($f->uri,'text/plain');
+        $contentType= MimeType::getByFilename($f->uri, 'text/plain');
 
       $o= &new WebdavObject(
         $f->uri,
@@ -443,36 +441,33 @@
       // load additional properties 
       $resp= &new WebDavPropPatchResponse($request, $response, $this);
       $nsmap= array(); //$request->getNamespaces();
-      $reqProp= $request->getProperties();
+      
+      foreach (array(FALSE, TRUE) as $remove) {
+        $reqProp= $request->getProperties($remove);
 
-      // Iterate over properties
-      foreach ($reqProp as $property) {
-        switch ($property->getName()) {
-          case 'getetag': // write-proteced
-          case 'iscollection':
-          case 'isfolder':
-          case 'getcontentlength':
-            $resp->status_forbidden('executable', $ns);
-            break;
+        // Iterate over properties
+        foreach ($reqProp as $property) {
+          switch ($key= $property->getName()) {
+            case 'getetag': // write-proteced
+            case 'iscollection':
+            case 'isfolder':
+            case 'getcontentlength':
+            case 'executable':
+              return throw(new OperationNotAllowedException($key.' is a standard property'));
+              break;
 
-          case 'executable':
-            $resp->status_forbidden('executable', $ns);
-            break;
-          default:
-            // TOBEDONE is it a stdprop ? then set forbidden
-            // else it an extrapop
-
-            $eProps= $this->propStorage->getProperties($request->getPath());
-            if ($val['action'] == WEBDAV_PROPPATCH_REMOVE && isset($eProps[$key]))
-              unset($eProps[$key]);
-            else
-              $eProps[$key]= $property;
-            try();{
-              $this->propStorage->setProperties($request->getPath(), $eProps);
-            } if  (catch('Exception', $e)) {
-              return throw($e);
-            }
-            $resp->status_ok($key, $ns);
+            default:
+              $eProps= $this->propStorage->getProperties($request->getPath());
+              if ($remove && isset($eProps[$key]))
+                unset($eProps[$key]);
+              else
+                $eProps[$key]= $property;
+              try();{
+                $this->propStorage->setProperties($request->getPath(), $eProps);
+              } if  (catch('Exception', $e)) {
+                return throw($e);
+              }
+          }
         }
       }
       
@@ -500,7 +495,7 @@
       try();{
         $locktoken= $this->unlock($uri, $locktoken);
       } if  (catch('Exception', $e)) {
-        return throw($e,get_class($this).'::Unlock'.' no LCK-store '.$e->message);
+        return throw($e, get_class($this).'::Unlock'.' no LCK-store '.$e->message);
       }
       if ($locktoken)
         $response->setHeader('Lock-Token', $locktoken);
@@ -543,7 +538,7 @@
           );
 
         $lockinfo= &$this->getLockInfo($uri);
-      } if (catch('Exception', $e)){
+      } if (catch('Exception', $e)) {
         return throw(new OperationNotAllowedException(' locking not allowed by '.$lockinfo['owner'].' on '.$uri.'('.$uri['filename'].')'));
       }
       
@@ -572,7 +567,6 @@
      */
     function &propfind(&$request, &$response, $useragent= 0) {
       if (
-        //(!is_a($request, 'WebdavPropFindRequest')) ||
         (!is_a($response, 'WebdavMultistatus'))
       ) {
         return throw(new IllegalArgumentException('Parameters passed of wrong types'));
@@ -622,7 +616,7 @@
      * @param   string uri  The URI
      * @return  array[]
      */
-    function &getLockInfo($uri){
+    function &getLockInfo($uri) {
       $key= 'LOCK:'.$uri;
       $this->propStorage->open(DBO_READ);
       $lock= $this->propStorage->lookup($key) ? unserialize($this->propStorage->fetch($key)) : NULL;
@@ -656,7 +650,7 @@
     function setLockInfo($uri, $owner, $type= 'write', $scope= 'exclusive', $timeout= 86400, $token= NULL, $depth= 0) {
       $key= 'LOCK:'.$uri;
       $lock= $this->getLockInfo($uri);
-      $token= preg_replace('/\(|\)|<|>|/|opaquelocktoken:','', $token);
+      $token= preg_replace('/\(|\)|<|>|/|opaquelocktoken:', '', $token);
       
       if (
         // There's already a lock
@@ -672,7 +666,7 @@
       }
       
       // Check timeout
-      if (substr($timeout,0,7) == 'Second-') $timeout= (int)substr($timeout,7);
+      if (substr($timeout, 0, 7) == 'Second-') $timeout= (int)substr($timeout, 7);
       $timeout= $timeout ? (int)$timeout : 86400;
 
       // Check depth      
