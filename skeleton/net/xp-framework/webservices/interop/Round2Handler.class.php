@@ -133,7 +133,7 @@
       $this->_assertType('array',   $inputStruct);
       $this->_assertType('string',  $inputStruct['varString']);
       $this->_assertType('integer', $inputStruct['varInt']);
-      $this->_assertType('double',   $inputStruct['varFloat']);
+      $this->_assertType('double',  $inputStruct['varFloat']);
       return $inputStruct;
     }
     
@@ -146,7 +146,13 @@
      * @throws  lang.MethodNotImplementedException
      */
     function echoStructArray($inputStructArray) {
-      return throw (new MethodNotImplementedException('Not implemented'));
+      $this->_assertType('array', $inputStructArray);
+      foreach ($inputStructArray as $singleStruct) {
+        $this->_assertType('string',  $singleStruct['varString']);
+        $this->_assertType('integer', $singleStruct['varInt']);
+        $this->_assertType('double',  $singleStruct['varFloat']);
+      }
+      return $inputStructArray;
     }
     
     /**
