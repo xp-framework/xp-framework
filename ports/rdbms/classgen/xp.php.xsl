@@ -94,7 +94,7 @@
     <xsl:text>) {
       $cm= &amp;ConnectionManager::getInstance();  
       if (FALSE === ($db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="../@dbhost"/><xsl:text>', 0))) {
-        return throw(new IllegalAccessException('No connection to "</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>" available'));
+        return throw(new IllegalAccessException('No connection to "</xsl:text><xsl:value-of select="../@dbhost"/><xsl:text>" available'));
       }
 
       try(); {
