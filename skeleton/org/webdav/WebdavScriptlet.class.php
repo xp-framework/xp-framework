@@ -7,9 +7,7 @@
   uses(
     'org.apache.HttpScriptlet',
     'org.webdav.xml.WebdavPropFindRequest',
-    'org.webdav.xml.WebdavPropFindResponse',
-    'io.Folder',
-    'util.MimeType'
+    'org.webdav.xml.WebdavPropFindResponse'
   );
   
   define('WEBDAV_METHOD_PROPFIND',  'PROPFIND');
@@ -19,7 +17,9 @@
    * Webdav
    * 
    * <code>
-   *   $s= &new WebdavScriptlet('/path/you/want/to/provide/via/dav');
+   *   $s= &new WebdavScriptlet(array(
+   *    '/webdav/' => new DavFileImpl('/path/to/files/you/want/do/provide/')
+   *   ));
    *   try(); {
    *     $s->init();
    *     $response= &$s->process();
@@ -38,20 +38,24 @@
    * @see      http://sitten-polizei.de/php/webdav.patch
    * @see      http://www.webdav.org/
    * @see      http://www.webdav.org/cadaver/
+   * @see      rfc://rfc2518 (WebDAV)
+   * @see      rfc://rfc2616 (HTTP/1.1)
+   * @see      rfc://rfc3253 (DeltaV)
    * @purpose  Provide the base for Webdav Services
    */
   class WebdavScriptlet extends HttpScriptlet {
     var
-      $path = '';
+      $impl         = array(),
+      $handlingImpl = NULL;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   string path default './'
+     * @param   array impl (associative array of pathmatch => org.webdav.impl.DavImpl)
      */  
-    function __construct($path= './') {
-      $this->path= $path;
+    function __construct($impl) {
+      $this->impl= $impl;
       parent::__construct();
     }
 
@@ -66,7 +70,7 @@
      * @throws  Exception to indicate failure
      */
     function doOptions(&$request, &$response) {
-      $response->setHeader('MS-Author-Via', 'DAV');
+      $response->setHeader('MS-Author-Via', 'DAV'); // MS-clients
       $response->setHeader('Allow', implode(', ', array(
         HTTP_METHOD_OPTIONS,
         HTTP_METHOD_GET,
@@ -76,69 +80,6 @@
         WEBDAV_METHOD_PROPPATCH
       )));
       $response->setHeader('DAV', '1, 2');
-    }
-    
-    /**
-     * Find properties
-     *
-     * @access  public
-     * @param   &org.webdav.xml.WebdavPropFindRequest request
-     * @param   &org.webdav.xml.WebdavPropFindResponse response
-     * @return  &org.webdav.xml.WebdavPropFindResponse response
-     */
-    function &findProperties(&$request, &$response) {
-      if (
-        (!is_a($request, 'WebdavPropFindRequest')) ||
-        (!is_a($response, 'WebdavPropFindResponse'))
-      ) {
-        trigger_error('[request.type ] '.get_class($request), E_USER_NOTICE);
-        trigger_error('[response.type] '.get_class($response), E_USER_NOTICE);
-        return throw(new IllegalArgumentException('Parameters passed of wrong types'));
-      }
-
-      $l= &Logger::getInstance();
-      $c= &$l->getCategory();
-      $c->debug('Properties requested', $request->getProperties());
-      
-      $depth= 0;
-      $f= &new Folder($this->path);
-      try(); {
-        $response->addEntry(
-          $f->uri,
-          $request->getBaseUrl().$f->pathname,
-          new Date(filectime($f->uri)),
-          new Date(filemtime($f->uri)),
-          WEBDAV_COLLECTION
-        );
-        $depth++;
-        
-        // Recurse through folder
-        while ($depth <= $request->depth && $entry= $f->getEntry()) {
-          if (is_dir($f->uri.$entry)) {
-            $restype= WEBDAV_COLLECTION;
-            $size= $mime= NULL;
-          } else {
-            $restype= NULL;
-            $size= filesize($f->uri.$entry);
-            $mime= MimeType::getByFilename($entry);
-          }
-          $response->addEntry(
-            $entry,
-            $request->getBaseUrl().$entry,
-            new Date(filectime($f->uri.$entry)),
-            new Date(filemtime($f->uri.$entry)),
-            $restype,
-            $size,
-            $mime
-          );
-        }
-        
-        $f->close();
-      } if (catch('Exception', $e)) {
-        return throw($e);
-      }
-      
-      return $response;
     }
     
     /**
@@ -154,7 +95,7 @@
      */
     function doPropFind(&$request, &$response) {
       try(); {
-        $multistatus= &$this->findProperties(
+        $multistatus= &$this->handlingImpl->propfind(
           new WebdavPropFindRequest($request),
           new WebdavPropFindResponse()
         );
@@ -172,18 +113,6 @@
     /**
      * Receives an PROPPATCH request from the <pre>process()</pre> method
      * and handles it.
-     *
-     * PROPPATCH xml
-     * <pre>
-     *   <?xml version="1.0" encoding="utf-8" ?>
-     *   <D:propertyupdate xmlns:D="DAV:">
-     *     <D:set>
-     *       <D:prop>
-     *         <key xmlns="http://webdav.org/cadaver/custom-properties/">value</key>
-     *       </D:prop>
-     *     </D:set>
-     *   </D:propertyupdate>
-     * </pre>
      *
      * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
      * @access  private
@@ -215,6 +144,26 @@
         $data= fread($fd, $len);
         $c->debug($method, $len, $data);
         fclose($fd);
+      }
+      
+      // Select implementation
+      $this->handlingImpl= NULL;
+      foreach (array_keys($this->impl) as $pattern) {
+        if (0 !== strpos($this->request->uri['path'], $pattern)) continue;
+        
+        $this->request->uri['path_root']= $pattern;
+        $this->request->uri['path_translated']= (string)substr(
+          $this->request->uri['path'], 
+          strlen($pattern)
+        );
+        $this->handlingImpl= &$this->impl[$pattern];
+        break;
+      }
+      
+      // Implementation not found
+      if (NULL === $this->handlingImpl) {
+        trigger_error('No pattern match ['.implode(', ', array_keys($this->impl)).']', E_USER_NOTICE);
+        return throw(new HttpScriptlet('Cannot handle requests to '.$request->uri['path']));
       }
 
       switch ($method) {
