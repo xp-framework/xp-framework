@@ -25,11 +25,10 @@ build:
 	@${PHP} ${PORTSDIR}/build.php ${.CURDIR}
 
 dist:	build
-	@ls -ll ${.CURDIR}/build/
 	cd ${.CURDIR}/build/ ; tar cvfz port.tar.gz *
     
 clean:
-	@-rm -rf ${.CURDIR}/build
+	-rm -rf ${.CURDIR}/build
 
 req:
 	find ${DIR} -name '*.class.php' | ${PHP} ${PORTSDIR}/req.php
