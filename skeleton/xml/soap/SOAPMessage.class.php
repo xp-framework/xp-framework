@@ -40,6 +40,7 @@
     var 
       $body         = '',
       $namespace    = 'ctl',
+      $namespaces   = array(),
       $encoding     = XML_ENCODING_DEFAULT,
       $nodeType     = 'SOAPNode',
       $action       = '',
@@ -119,24 +120,34 @@
         }
       }
       
-      // Recognize XP object
+      // Update namespaces list
+      $xpns= NULL;
       foreach ($child->attribute as $key => $val) {
-        if ('xmlns' == substr($key, 0, 5) && 'http://xp-framework.net/xmlns/xp' == substr($val, 0, 32)) {
-          try(); {
-            $class= &XPClass::forName(substr($child->attribute['xsi:type'], strlen($key) - 5));
-          } if (catch('ClassNotFoundException', $e)) {
-          
-            // Handle this gracefully
-            $class= &XPClass::forName('lang.Object');
-          }
-
-          $result= &$class->newInstance();
-          foreach ($this->_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
-            $result->$key= $val;
-          }
+        if ('xmlns' != substr($key, 0, 5)) continue;
         
-          return $result;          
+        $this->namespaces[substr($key, 6)]= $val;
+        
+        // Recognize XP object
+        if ('http://xp-framework.net/xmlns/xp' == substr($val, 0, 32)) {
+          $xpns= substr($child->attribute['xsi:type'], strlen($key) - 5);
         }
+      }
+      
+      if ($xpns) {
+        try(); {
+          $class= &XPClass::forName(substr($child->attribute['xsi:type'], strlen($key) - 5));
+        } if (catch('ClassNotFoundException', $e)) {
+
+          // Handle this gracefully
+          $class= &XPClass::forName('lang.Object');
+        }
+
+        $result= &$class->newInstance();
+        foreach ($this->_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
+          $result->$key= $val;
+        }
+
+        return $result;          
       }
 
       // Typenabhängig
@@ -189,7 +200,7 @@
             break;
           }
 
-          $result= &new stdClass();
+          $result= &new Object();
           foreach ($this->_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
             $result->$key= $val;
           }
@@ -203,11 +214,12 @@
             }
 
             // Check for mapping
-            $qname= strtolower($child->attribute['xmlns:'.$regs[1]].'/'.$regs[2]);
+            $qname= strtolower($this->namespaces[$regs[1]].'/'.$regs[2]);
             if (isset($mapping[$qname])) {
               $result= &$mapping[$qname]->newInstance();
             } else {
-              $result= &new stdClass();
+              $result= &new Object();
+              $result->qname= $qname;
             }
             foreach ($this->_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
               $result->$key= $val;
@@ -243,6 +255,10 @@
      */    
     function &_recurseData(&$node, $names= FALSE, $context= NULL, $mapping) {
       if (empty($node->children)) return array();
+
+      foreach ($node->attribute as $key => $val) {
+        if ('xmlns' == substr($key, 0, 5)) $this->namespaces[substr($key, 6)]= $val;
+      }
       
       $results= array();
       for ($i= 0, $s= sizeof($node->children); $i < $s; $i++) {
