@@ -9,8 +9,8 @@
   /**
    * Mail store
    *
-   * @see
-   * @purpose  Wrap
+   * @see      xp://peer.mail.store.CclientStore
+   * @purpose  Storage
    */
   class MboxStore extends CclientStore {
 
