@@ -75,7 +75,7 @@
       $locktoken= &$activelock->addChild(new Node('D:locktoken'));
       $locktoken->addChild(new Node('D:href', $lock->getLockToken()));
 
-      $this->setHeader('Lock-Token', '<'.$this->lock->getLockToken().'>');
+      $this->setHeader('Lock-Token', '<'.$lock->getLockToken().'>');
     }
   }
 ?>
