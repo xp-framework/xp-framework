@@ -118,9 +118,10 @@
       // Action: failed
       // Status: 5.1.1
       $daemonmessage->setReason($daemonmessage->getReason().sprintf(
-        '%s [%s: %s] > ',
+        '%s [%s > %s: %s] ',
         @$r['Status'],
         @$r['Reporting-MTA'],
+        @$r['Remote-MTA'],
         @$r['Action']
       ));
 
@@ -271,6 +272,8 @@
       // Date: Mon, 17 Feb 2003 10:05:35 +0100
       if (is_a($message, 'MimeMessage')) {
         $body= NULL;
+        $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_MULTIPART;
+        
         while ($part= &$message->getPart()) {
           if (MIME_DISPOSITION_INLINE != $part->getDisposition()) {
           
@@ -297,7 +300,7 @@
               # printf("RFC822  >> %s\n", var_export($part, 1));
 
               $state= DMP_ORIGMSG;
-              $body= $part->parts[0]->getHeaderString();
+              $body= $part->parts[0]->getHeaderString()."\r\n";
               break;
               
             case 'text/rfc822-headers':
@@ -342,7 +345,7 @@
                 // Fetch mail address
                 $daemonmessage->setFailedRecipient(InternetAddress::fromString(strtok('<>')));
 
-                // Append until first empty line is found
+                // Daemon-Typeend until first empty line is found
                 while ($l= strtok("\n")) {
                   if ('' == chop($l)) break;
                   $daemonmessage->setReason(trim($daemonmessage->getReason()).' '.trim($l));
@@ -414,9 +417,23 @@
             // <<< 550 Cannot route to <avni@bilgin-online.de>
             // 550 5.1.1 Avni Bilgin <avni@bilgin-online.de>... User unknown
             if ('   ----- The following addresses' == substr($t, 0, 32)) {
+              $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_SENDMAIL;
               # var_dump('SENDMAIL', $message->headers, $t);
-
-              // Read six lines
+              
+              // The next line contains the recipient
+              $daemonmessage->setFailedRecipient(InternetAddress::fromString(strtok("\n")));
+              
+              // Swallow one line
+              strtok("\n");
+              
+              // Read until next empty line
+              do {
+                if ('' == chop($t)) break;
+                $daemonmessage->setReason(trim($daemonmessage->getReason()).' '.trim($t));
+                
+              } while ($t= strtok("\n"));
+  
+              $state= DMP_ORIGMSG;            
               continue;
             }
 
@@ -430,11 +447,17 @@
             //     host mx01.kundenserver.de [212.227.126.152]: 550 Cannot route to <webmaster@b-w-f.net>
             // ------ This is a copy of the message, including all the headers. ------
             if ('This message was created automatically by mail delivery software' == substr($t, 0, 64)) {
-
-              // Find indented lines until -- appears
+              $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_EXIM;
+              
+              // Find indented lines until -- Daemon-Typeears
               do {
                 if ('--' == substr($t, 0, 2)) break;
                 if ('  ' != substr($t, 0, 2)) continue;
+                
+                // Parse out host/IP
+                if (preg_match('#host ([^ ]+) \[([^ ]+)\]:#', $t, $regs)) {
+                  $daemonmessage->details['Reporting-MTA']= 'dns; '.$regs[1];
+                }
 
                 $daemonmessage->setReason(trim($daemonmessage->getReason()).' '.trim($t));
               } while ($t= strtok("\n"));
@@ -451,7 +474,8 @@
             // <roland.tusche.@t-online.de> ... unknown user / Teilnehmer existiert nicht
             // |------------------------- Message text follows: ------------------------|
             if ('|------------------------- Failed addresses follow:' == substr($t, 0, 51)) {
-
+              $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_TONLINE;
+              
               $daemonmessage->setReason(trim(strtok("\n")));
               strtok("\n");
 
@@ -472,6 +496,8 @@
             // Diagnostic-Code: SMTP; 550 Cannot route to <avni@bilgin-online.de>
             // Last-Attempt-Date: Sun, 12 May 2002 09:34:05 +0200
             if ('Reporting-MTA: ' == substr($t, 0, 15)) {
+              $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_POSTFIX;
+              
               $str= '';
               $c= 0;
               do {
@@ -498,6 +524,7 @@
             // --- Below this line is a copy of the message.
             if ('This is the qmail-send program' == substr($t, 4, 30)) {
               # var_dump('QMAIL', $message->headers, $t);
+              $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_QMAIL;
               
               // Find first empty line
               do { 
@@ -528,13 +555,20 @@
         
       } while ($t= strtok("\n"));
       
-      if (empty($daemonmessage->reason)) {
+      // No reason found?
+      if (DMP_FINISH != $state) {
         trigger_error('Headers: '.var_export($message->headers, 1), E_USER_ERROR);
         trigger_error('Body: '.(is_a($message, 'MimeMessage') 
           ? sizeof($message->parts).' parts'
           : strlen($message->body).' bytes'
         ), E_USER_ERROR);
-        return throw(new FormatException('Unable to parse message'));
+        
+        $states= array(
+          DMP_SEARCH    => 'DMP_SEARCH',
+          DMP_ORIGMSG   => 'DMP_ORIGMSG',
+          DMP_FINISH    => 'DMP_FINISH'
+        );
+        return throw(new FormatException('Unable to parse message, state "'.$states[$state].'"'));
       }
       
       // Apply some string magic on the reason
