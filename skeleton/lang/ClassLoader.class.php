@@ -71,7 +71,7 @@
      */
     function loadClass($className) {
       if (!ClassLoader::isBuiltin($className)) {
-        $path= isset($this) ? '' : $this->classpath;
+        $path= isset($this) ? $this->classpath : '';
         uses($path.$className);
         $phpName= reflect($path.$className);
       } else {
