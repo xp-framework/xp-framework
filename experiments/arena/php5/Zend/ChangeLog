@@ -1,3 +1,32 @@
+2005-03-16  Wez Furlong  <wez.php@thebrainroom.net>
+
+    * (PHP_5_0)
+      zend_API.c:
+      MFH: don't call rshutdown twice for dl()'d modules.
+
+    * zend_API.c:
+      don't call rshutdown twice for dl()'d modules.
+      Spotted by Andrei.
+
+2005-03-15  Wez Furlong  <wez.php@thebrainroom.net>
+
+    * zend.c
+      zend_API.c
+      zend_modules.h:
+      fix shutdown so that dl()'d modules are unloaded after all the dtors have
+      been called.
+
+2005-03-14  Zeev Suraski  <zeev@zend.com>
+
+    * zend_ini.c:
+      Clarify logic
+
+2005-03-14  Stanislav Malyshev  <stas@zend.com>
+
+    * zend_builtin_functions.c
+      zend_builtin_functions.c:
+      ws
+
 2005-03-13  Stanislav Malyshev  <stas@zend.com>
 
     * zend_stream.c
