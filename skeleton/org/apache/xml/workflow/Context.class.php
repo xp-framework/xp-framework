@@ -94,7 +94,7 @@
       $state->initialize($this);
       $this->sfm->setCurrentState($state);
       $cat->info('Current state is', $state->getClassName());
-      
+
       // Now that we have the correct state:
       // - call all of its handlers and if this succeeds,
       // - call its getDocument method
@@ -102,46 +102,49 @@
       try(); {
         if ($st= $state->isSubmitTrigger($request)) {
           $cat->info('Have submit trigger', $st);
+        }
           
-          $handled= $has_error= FALSE;
-          for ($i= 0, $s= sizeof($state->handlers); $i < $s; $i++) {
-            $cat->info('Calling handler #'.$i, $state->handlers[$i]->getClassName());
+        $handled= $has_error= FALSE;
+        for ($i= 0, $s= sizeof($state->handlers); $i < $s; $i++) {
+          $cat->info('Calling handler #'.$i, $state->handlers[$i]->getClassName());
 
-            // If this handler is satisfied, ask the next handler in the queue
-            if (!$state->handlers[$i]->needsData($this)) {
-              $cat->warn('Handler does not need data, proceeding...');
-              continue;
-            }  
-            
-            // If this handler is not active, ask the next handler in the queue
-            if (!$state->handlers[$i]->isActive($this, $st)) {
-              $cat->warn('Handler is not active for submit trigger', $st, ', proceeding...');
-              continue;
-            }
-
-            // Handle submitted data
-            if ($state->handlers[$i]->handleSubmittedData($this, $request)) {
-              $handled= TRUE;
-              $cat->info('handleSubmittedData returns TRUE, proceeding...');             
-              continue;
-            }
-
-            // In case of an error, add all existing statuscodes to the output 
-            // document's "formerrors" node. It is the responsibility of the XSL
-            // to decide whether it wants to show errors or whether to hide them 
-            // (whatever reason that might have)
-            $cat->error('Errors occured', $state->handlers[$i]->errors);
-            foreach ($state->handlers[$i]->errors as $statuscode) {
-              $response->addFormError(
-                $state->handlers[$i]->getClassName(),
-                $statuscode
-              );
-            }
-
-            // ...and break out of the loop immediately
-            $has_error= TRUE;
-            break;
+          // If this handler is satisfied, ask the next handler in the queue
+          if (!$state->handlers[$i]->needsData($this)) {
+            $cat->warn('Handler does not need data, proceeding...');
+            continue;
           }
+          
+          // No trigger
+          if (!$st) continue;
+
+          // If this handler is not active, ask the next handler in the queue
+          if (!$state->handlers[$i]->isActive($this, $st)) {
+            $cat->warn('Handler is not active for submit trigger', $st, ', proceeding...');
+            continue;
+          }
+
+          // Handle submitted data
+          if ($state->handlers[$i]->handleSubmittedData($this, $request)) {
+            $handled= TRUE;
+            $cat->info('handleSubmittedData returns TRUE, proceeding...');             
+            continue;
+          }
+
+          // In case of an error, add all existing statuscodes to the output 
+          // document's "formerrors" node. It is the responsibility of the XSL
+          // to decide whether it wants to show errors or whether to hide them 
+          // (whatever reason that might have)
+          $cat->error('Errors occured', $state->handlers[$i]->errors);
+          foreach ($state->handlers[$i]->errors as $statuscode) {
+            $response->addFormError(
+              $state->handlers[$i]->getClassName(),
+              $statuscode
+            );
+          }
+
+          // ...and break out of the loop immediately
+          $has_error= TRUE;
+          break;
         }
         
         // Go through all existing context resources and call their "insertStatus" method
