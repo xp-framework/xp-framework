@@ -60,6 +60,7 @@
      * @param   &org.webdav.WebdavProperty[] reqprops The requested properties
      */
     function addWebdavObject(&$object, &$reqprops) {
+
       // Get the property lists
       $propsList= &$object->getProperties();         // properties available
       

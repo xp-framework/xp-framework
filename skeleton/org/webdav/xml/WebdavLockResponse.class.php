@@ -9,31 +9,28 @@
   );
 
   /**
-   * PropFind response XML
+   * LOCK Response
    *
-   * PROPFIND response XML
    * <pre>
-   *   <?xml version="1.0" encoding="utf-8"?>
-   *   <D:multistatus xmlns:D="DAV:">
-   *     <D:response xmlns:i0="DAV:" xmlns:lp0="DAV:" xmlns:lp1="http://apache.org/dav/props/" xmlns:i1="http://apache.org/dav/props/">
-   *       <D:href>/webdav-test/</D:href>
-   *       <D:propstat>
-   *         <D:prop>
-   *           <lp0:getlastmodified xmlns:b="urn:uuid:c2f41010-65b3-11d1-a29f-00aa00c14882/" b:dt="dateTime.rfc1123">Sun, 05 Jan 2003 05:40:56 GMT</lp0:getlastmodified>
-   *           <D:resourcetype><D:collection/></D:resourcetype>
-   *         </D:prop>
-   *         <D:status>HTTP/1.1 200 OK</D:status>
-   *       </D:propstat>
-   *       <D:propstat>
-   *         <D:prop>
-   *           <i0:getcontentlength/>
-   *           <i0:displayname/>
-   *           <i1:executable/>
-   *         </D:prop>
-   *         <D:status>HTTP/1.1 404 Not Found</D:status>
-   *       </D:propstat>
-   *       </D:response>
-   *   </D:multistatus>
+   *  <?xml version="1.0" encoding="UTF-8"?>
+   *  <D:prop xmlns:D="DAV:">
+   *    <D:lockdiscovery>  
+   *      <D:activelock>    
+   *        <D:locktype>      
+   *          <D:write/>
+   *        </D:locktype>
+   *        <D:lockscope>      
+   *          <D:exclusive/>
+   *        </D:lockscope>
+   *        <D:depth>0</D:depth>
+   *        <D:owner>clang</D:owner>
+   *        <D:timeout>Second-604800</D:timeout>
+   *        <D:locktoken>      
+   *          <D:href>opaquelocktoken:36844e80-4e80-1684-bc3d-48de5b3f07f4</D:href>
+   *        </D:locktoken>
+   *      </D:activelock>
+   *    </D:lockdiscovery>
+   *  </D:prop>
    * </pre>
    */
   class WebdavLockResponse extends WebdavScriptletResponse {
