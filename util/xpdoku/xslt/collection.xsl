@@ -70,7 +70,7 @@
           </td>
         </tr>
       </xsl:if>
-      <xsl:if test="count (./class) &gt; 0">
+      <xsl:if test="count (./class[@type = 'default']) &gt; 0">
         <tr>
           <td width="1%" valign="top"><img src="/image/nav_overview.gif" width="22" height="19"/></td>
           <td width="50%" valign="top">
@@ -81,7 +81,61 @@
           <td/>
           <td>
             <table border="0" cellpadding="0" cellspacing="0" width="100%">
-              <xsl:for-each select="class">
+              <xsl:for-each select="class[@type = 'default']">
+                <tr>
+                  <td valign="top" width="1%"><img src="/image/nav_overview3.gif" width="22" height="19"/></td>
+                  <td width="50%">
+                    <xsl:sort select="./@className"/>
+                    <a href="../classes/{./@className}.html"><xsl:value-of select="./@className"/></a><br/>
+                    <tt><xsl:value-of select="./cvsver"/></tt><br/>
+                    <xsl:value-of select="./purpose"/><br/><br/>
+                  </td>
+                </tr>
+              </xsl:for-each>
+            </table>
+            <br/><br/>
+          </td>
+        </tr>
+      </xsl:if>
+      <xsl:if test="count (./class[@type = 'interface']) &gt; 0">
+        <tr>
+          <td width="1%" valign="top"><img src="/image/nav_overview.gif" width="22" height="19"/></td>
+          <td width="50%" valign="top">
+            <b>Interfaces in <xsl:value-of select="./@prefix"/>:</b><br/><br/>
+          </td>
+        </tr>
+        <tr>
+          <td/>
+          <td>
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+              <xsl:for-each select="class[@type = 'interface']">
+                <tr>
+                  <td valign="top" width="1%"><img src="/image/nav_overview3.gif" width="22" height="19"/></td>
+                  <td width="50%">
+                    <xsl:sort select="./@className"/>
+                    <a href="../classes/{./@className}.html"><xsl:value-of select="./@className"/></a><br/>
+                    <tt><xsl:value-of select="./cvsver"/></tt><br/>
+                    <xsl:value-of select="./purpose"/><br/><br/>
+                  </td>
+                </tr>
+              </xsl:for-each>
+            </table>
+            <br/><br/>
+          </td>
+        </tr>
+      </xsl:if>
+      <xsl:if test="count (./class[@type = 'exception']) &gt; 0">
+        <tr>
+          <td width="1%" valign="top"><img src="/image/nav_overview.gif" width="22" height="19"/></td>
+          <td width="50%" valign="top">
+            <b>Exceptions in <xsl:value-of select="./@prefix"/>:</b><br/><br/>
+          </td>
+        </tr>
+        <tr>
+          <td/>
+          <td>
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+              <xsl:for-each select="class[@type = 'exception']">
                 <tr>
                   <td valign="top" width="1%"><img src="/image/nav_overview3.gif" width="22" height="19"/></td>
                   <td width="50%">
