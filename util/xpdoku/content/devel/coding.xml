@@ -116,24 +116,14 @@ $r= sprintf(
   $anchor
 );]]></code>
 
-          If expressions with braces occur, embraced expressions should not be distributed
-          over several lines:
-          <code><![CDATA[$r= $variable0 * ($variable1 + $variable2 - $variable3)
-    + 4 * $variable4; // VORZUZIEHEN
-
-$r= $variable0 * ($variable1 + $variable2 - 
-		      $variable3) + 4 * $variable4; // WENN MÖGLICH, NICHT]]></code>
-
-          In function declarations wrapped parameters have to be indented to the same
-          indentation level as the opening parameter brace. An exception exists for those
-          functions where parameters would be placed too far right.
-          <code><![CDATA[function vsprintf($string, $uriRequesterObject,
-                  $foobarbaz, $longParamNameNumber4) {
-  ...
-}
-
-function reallyReallyLongFunctionNameWithParameters($string, $uriRequesterObject,
-	 $foobarbaz, $longParamNameNumber4) {
+          In function declarations wrapped parameters should be indented as in the
+          above sprintf example:
+          <code><![CDATA[function reallyReallyLongFunctionNameWithParameters(
+  $string, 
+  $uriRequesterObject,
+  $foobarbaz, 
+  $longParamNameNumber4
+) {
   ...
 }]]></code>
           (Note that you should resist to use overly long function names).
@@ -154,26 +144,27 @@ function reallyReallyLongFunctionNameWithParameters($string, $uriRequesterObject
 $list= array();
 
 $list= array(
-  'Hallo',
-  'Welt'
+  'Hello',
+  'World'
 );
 
-$fasel= array(
-  'Bla',
-  'Fasel' => array(
-    'Cool',
-    'Oder?'
+$hash= array(
+  'Bla' => 0,
+  'Foo' => array(
+    'Bar',
+    'Baz'
   ),
-  'Über-Framework'
+  'XP'  => 'Über-Framework'
 );]]></code>
 
-          Ternery expressions adhere to the following writing guidelines:
+          Ternary expressions adhere to the following writing guidelines:
           <code><![CDATA[
 $alpha= ($booleanExpression) ? $beta : $gamma;
 
-$alpha= ($booleanExpression) 
-        ? $beta 
-        : $gamma;]]></code>
+$alpha= ($reallyReallyLongbooleanExpression
+  ? $beta 
+  : $gamma
+);]]></code>
         </text>
       </para>
       <para>
@@ -198,7 +189,7 @@ $alpha= ($booleanExpression)
           The line above a comment has to be an empty line. Left and right side of a 
           comment sign a space should be placed:
           
-          <code><![CDATA[// Correct
+          <code><![CDATA[  // Correct
 $a= 0; // Correct as well, but just good and not "better"! :)
 $a= 0;     // Better
 
@@ -210,12 +201,11 @@ $a= 0;//Avoid this!]]></code>
         <caption>Block comments</caption>
         <text>
           Block comments may be used only to describe files (comments at the top
-          of a file):
-          
-          <code><![CDATA[/*
- * This is a block comment
- */]]></code>
+          of a file).
         </text>
+        <advanced>
+          <ref link="coding#2">Comments at the beginning of a file</ref>
+        </advanced>
       </para>
       <para>
         <caption>Single line comments</caption>
@@ -235,7 +225,7 @@ $a= 0;//Avoid this!]]></code>
           <code><![CDATA[if ($condition) {
    ...
 
-  // // This is for debugging
+  // DEBUG
   // $debug= TRUE;
   // fsockopen("debug-srv", 0x9282);
   // ...
@@ -258,9 +248,9 @@ $a= 0;//Avoid this!]]></code>
 }
 
 if ($condition) {
-  $alpha= FALSE;				// Reason
+  $alpha= FALSE;                             // Reason
 } else {
-  $alpha= substr($beta, 0, strlen($gamma));	// Why's that?
+  $alpha= substr($beta, 0, strlen($gamma));  // Why's that?
 }]]></code>
         </text>
       </para>
@@ -315,9 +305,9 @@ if ($condition) {
         <text>
           One line should only contain one statement:
           <code><![CDATA[
-$a++;			// Correct
-$b++;			// Correct
-$a--; $b--;		// Bad]]></code>
+$a++;           // Correct
+$b++;           // Correct
+$a--; $b--;     // Bad]]></code>
         </text>
       </para>
       <para>
@@ -337,7 +327,7 @@ $a--; $b--;		// Bad]]></code>
                 code will not execute. There is an exception for statements in conjunction
                 with a return (see below):
                 <code><![CDATA[$result= $dbo->select('baz from bar where foo= NULL');
-if(!$result) return FALSE;
+if (!$result) return FALSE;
 
 if (FALSE === ($result= $dbo->select('baz from bar where foo= NULL'))) return FALSE;]]></code>
             </li>
@@ -363,23 +353,23 @@ return (isset($size)
         <text>
           if-else classes of statements should have the following form:
           
-          <code><![CDATA[if ($condition) {
-  imageSize(...);
-}
+          <code><![CDATA[  if ($condition) {
+    imageSize(...);
+  }
 
-if ($condition) {
-  imageSize(...);
-} else {
-  imageCreate(...);
-}
+  if ($condition) {
+    imageSize(...);
+  } else {
+    imageCreate(...);
+  }
 
-if ($condition) {
-  imageSize(...);
-} elseif ($condition2) {
-  imageCreate(...);
-} else {
-  imageDispose(...);
-}]]></code>
+  if ($condition) {
+    imageSize(...);
+  } elseif ($condition2) {
+    imageCreate(...);
+  } else {
+    imageDispose(...);
+  }]]></code>
         </text>
       </para>
       <para>
@@ -387,9 +377,9 @@ if ($condition) {
         <text>
           A for-statement should have the following form:
 
-          <code><![CDATA[for ($init; $condition; $update) {
-  doSomething();
-}]]></code>
+          <code><![CDATA[  for ($init; $condition; $update) {
+    doSomething();
+  }]]></code>
         </text>
       </para>
       <para>
@@ -397,13 +387,13 @@ if ($condition) {
         <text>
           A while statement should have the following form:
           
-          <code><![CDATA[while ($condition) {
-  doSomething();
-}
+          <code><![CDATA[  while ($condition) {
+    doSomething();
+  }
 
-do {
-  doSomething();
-} while ($condition);]]></code>
+  do {
+    doSomething();
+  } while ($condition);]]></code>
         </text>
       </para>
       <para>
@@ -411,29 +401,33 @@ do {
         <text>
           A switch-statement should have the following form:
           
-          <code><![CDATA[switch ($condition) {
-  case ENC_ISO_8859_1:
-    $output= 'bla';
-    $needsParsing= FALSE;
+          <code><![CDATA[  switch ($condition) {
+    case ENC_ISO_8859_1:
+      $output= 'bla';
+      $needsParsing= FALSE;
 
-  case ENC_ISO_8859_2:
-    $output= 'foo';
-    break;
+    case ENC_ISO_8859_2:
+      $output= 'foo';
+      break;
 
-  default:
-    statement();
-    break;
-}]]></code>
+    default:
+      statement();
+      break;
+  }]]></code>
 
           After the first case we suggest to add a comment to make
-          clear no break is missing accidently:
+          clear no break is missing accidentally:
 
-          <code><![CDATA[case ENC_ISO_8859_1:
-    $output= 'bla';
-    $needsParsing= FALSE;
+          <code><![CDATA[  switch ($condition) {
+    case ENC_ISO_8859_1:
+      $output= 'bla';
+      $needsParsing= FALSE;
 
-    // break missing intentionally
-  case ENC_ISO_8859_2:
+      // break missing intentionally
+      case ENC_ISO_8859_2:
+        // ...
+        break;
+  }
 ]]></code>
         </text>
       </para>
@@ -442,43 +436,45 @@ do {
         <text>
           A try/catch  block should have the following form:
           
-          <code><![CDATA[// Zend Engine 1:
-try(); {
-  doSomethinWhichMightRaiseAnException();
-} if (catch('WhatEverException', $e)) {
-  handleException();
-} if (catch('Exception', $e)) {
-  handleException();
-}
+          <code><![CDATA[  // Zend Engine 1:
+  try(); {
+    doSomethinWhichMightRaiseAnException();
+  } if (catch('WhatEverException', $e)) {
+    handleException();
+  } if (catch('Exception', $e)) {
+    handleException();
+  }
 
-// Zend Engine 2
-try {
-  doSomethinWhichMightRaiseAnException();
-} catch(WhatEverException $e)) {
-  handleException();
-} catch(Exception $e)) {
-  handleException();
-}]]></code>
+  // Zend Engine 2
+  try {
+    doSomethinWhichMightRaiseAnException();
+  } catch (WhatEverException $e) {
+    handleException();
+  } catch (Exception $e) {
+    handleException();
+  }]]></code>
         </text>
       </para>
       <para>
         <caption>throw</caption>
         <text>
-          Throw always throws objects derived from the base class "Exception". (Note
+          Throw always throws objects derived from the base class "Throwable". (Note
           that this is true only for the PHP4-version of the XP framework. This will
           most probably change in PHP5).
           
-          <code><![CDATA[
-// Zend Engine 1
-if (FALSE === ($dbh= sybase_connect([...])) return throw(new SQLException(
-  'unable to connect'
-));
+          <code><![CDATA[  // Zend Engine 1
+  if (FALSE === ($dbh= sybase_connect([...])) return throw(new SQLException(
+    'Unable to connect'
+  ));
 
-// Zend Engine 2
-if (FALSE === ($dbh= sybase_connect([...])) throw(new SQLException(
-  'unable to connect'
-));]]></code>
+  // Zend Engine 2
+  if (FALSE === ($dbh= sybase_connect([...])) throw new SQLException(
+    'Unable to connect'
+  );]]></code>
         </text>
+        <advanced>
+          <ref type="api:class" link="lang.Throwable"/>
+        </advanced>
       </para>
       <para>
         <caption>Whitespace</caption>
@@ -506,9 +502,9 @@ if (FALSE === ($dbh= sybase_connect([...])) throw(new SQLException(
                 <li>
                   A keyword (if, else, while, for, ...), followed by a brace should be 
                   separated by a whitespace.
-                  <code><![CDATA[while (TRUE) {
-  ...
-}]]></code>
+                  <code><![CDATA[  while (TRUE) {
+    ...
+  }]]></code>
 
                   Note: after a function call and their braces no whitespace shall be
                   used. This helps distinguishing keywords and function calls from
@@ -527,13 +523,13 @@ if (FALSE === ($dbh= sybase_connect([...])) throw(new SQLException(
                 <li>
                   The class instance and the class method or the class attribute have to
                   be separated by ->, but never by any whitespace inbetween.
-                  <code><![CDATA[$this->foo	// OK
-$this -> bar	// Unneccessary]]></code>
+                  <code><![CDATA[  $this->foo	    // OK
+  $this -> bar    // Unneccessary]]></code>
                 </li>
                 <li>
                   Round braces may not be separated by whitespace
-                  <code><![CDATA[while (($a > 0) && ($b < 1)) ...	 // Correct
-while ( ($a > 0) && ($b < 1) ) ... // Unneccessary]]></code>
+                  <code><![CDATA[  while (($a > 0) && ($b < 1)) ...   // Correct
+  while ( ($a > 0) && ($b < 1) ) ... // Unneccessary]]></code>
                 </li>
                 <li>
                   All operations of (+ - * / % &amp; | ~ &amp;&amp; &lt; &gt; &lt;= &gt;= != == || etc.) should
@@ -542,12 +538,12 @@ while ( ($a > 0) && ($b < 1) ) ... // Unneccessary]]></code>
                 <li>All operators in (++ -- etc.) do not have any preceding whitespace.</li>
                 <li>The string concatenation operator (.) is not preceded nor followed by any whitespace.</li>
                 <li>In a for-statement single expressions should be separated by whitespace.
-                  <code><![CDATA[for ($init; $condition; $update)...]]></code>
+                  <code><![CDATA[  for ($init; $condition; $update)...]]></code>
                 </li>
                 <li>
                   Type-casting has no whitespace to the right side, but is directly connected
                   to the casted variable.
-                  <code><![CDATA[myMethod((int)$a, (array)$this);]]></code>
+                  <code><![CDATA[  myMethod((int)$a, (array)$that);]]></code>
                 </li>
               </ul>
             </li>
@@ -563,44 +559,46 @@ while ( ($a > 0) && ($b < 1) ) ... // Unneccessary]]></code>
               Class names begin with an uppercase letter. Each following word again begins in
               uppercase ("Studly Caps"). Class names should be as short as possible while
               remaining significant for what the class does. For Databasenames or abbreviations
-              (GUI, HTML) uppercase letters should be used.
+              (GUI, HTML) uppercase letters may be used.
 
-              <code><![CDATA[class TOGAL;
-class MyTemplate;
-class Raster;
-class GenericGUI;]]></code>
+              <code><![CDATA[  class TOGAL { }
+  class MyTemplate { }
+  class Raster { }
+  class GenericGUI { }]]></code>
             </li>
             <li>
               Classes' constructors.<br/>
-              A classes' constructor has to be named __construct(). It has to call it's parent
-              classes constructor when being overwritten. (parent::__construct()).
+              A classes' constructor has to be named <tt>__construct().</tt> 
+              Calling the parent's constructor when being overwritten is written
+              as follows: <tt>parent::__construct()</tt>.
             </li>
             <li>
               Classes' destructors<br/>
-              A classes' destructor is called __destruct() and does not take any parameter. It
-              muss call the base classes' destructor when being overwritten. (parent::__destruct()).
+              A classes' destructor is called <tt>__destruct()</tt> and does not take 
+              any parameter. Calling the parent's destructor is written as follows:
+              <tt>parent::__destruct()</tt>.
             </li>
             <li>
               Methods<br/>
               Methods (functions) should be verbs, with the first letter in lowercase. Every
               following word begins in uppercase.
 
-              <code><![CDATA[function run();
-function runBackground();
-function getMessage();
-function makeInstallation();]]></code>
+              <code><![CDATA[  function run();
+  function runBackground();
+  function getMessage();
+  function makeInstallation();]]></code>
             </li>
             <li>
               Private/Public<br/>
               Private methods within a class begin with an underline.
               (Note: this is a convention only, as PHP4 does not support private functions).
 
-              <code><![CDATA[function _myPrivateMethod();]]></code>
+              <code><![CDATA[  function _myPrivateMethod();]]></code>
             </li>
             <li>
               Variables<br/>
               Variable names should be short and expressive and tell what they're there for.
-              Prevent using variable names like $foo, $bar, $baz, $ficken and variable names
+              Prevent using variable names like $foo, $bar, $baz, $fuck and variable names
               with less than two chars. Exception: temporary one-way-variables like i,j,k,m,n
               (for integers) and c,d,e (for chars) for e.g. a counting variable. Names in
               variables should be divided by either mixed loer-/uppercase letters or by
@@ -608,16 +606,16 @@ function makeInstallation();]]></code>
               two underlines (which is a convention for "external, unsafe" variables
               (relevant for security).
 
-              <code><![CDATA[$myWidth;
-$i;
-$message_id;
-$__page;]]></code>
+              <code><![CDATA[  $myWidth;
+  $i;
+  $message_id;
+  $__page;]]></code>
             </li>
             <li>
               Constants<br/>
               Constants are written in uppercase letters only.
-              <code><![CDATA[define('TA_NOTFOUND',   0x0001);
-define('TA_OKAY',       0x0002);]]></code>
+              <code><![CDATA[  define('TA_NOTFOUND',   0x0001);
+  define('TA_OKAY',       0x0002);]]></code>
 
               If possible only define integers and preferably with an hexadecimal
               notation. Multiple defines keep their right part at the same indentation
@@ -640,14 +638,14 @@ define('TA_OKAY',       0x0002);]]></code>
         <text>
           <ul>
             <li>
-              "and and or replace braces"_
-              <code><![CDATA[if ($stage and $this->debug)
-if (($i < 0) || ($a > $c))]]></code>
+              "<tt>and</tt> and <tt>or</tt> replace braces"_
+              <code><![CDATA[  if ($stage and $this->debug)
+  if (($i < 0) || ($a > $c))]]></code>
             </li>
             <li>
               A negation does not need an extra brace:
-              <code><![CDATA[if (!(is_null($foo)))         // Unneccessary
-   if (!is_null($foo))           // Better]]></code>
+              <code><![CDATA[  if (!(is_null($foo)))    // Unneccessary
+  if (!is_null($foo))      // Better]]></code>
             </li>
             <li>Braces should be written close to each other an contain not whitespace
               (see above).
@@ -655,8 +653,8 @@ if (($i < 0) || ($a > $c))]]></code>
             <li>
               Language constructs like require, include, require_once and include_once
               contain braces as well:
-              <code><![CDATA[require_once("Project.class.php");
-include("stop.inc");]]></code>
+              <code><![CDATA[  require('lang.base.php');
+  include_once('stop.inc');]]></code>
             </li>
           </ul>
         </text>
@@ -670,39 +668,52 @@ include("stop.inc");]]></code>
           incorrect just by looking at it).
           For arrays, their keys and values should be equally indented.
 
-          <code><![CDATA[$a= 'hello';
-if ($a == 'hello') ...
+          <code><![CDATA[  $a= 'hello';
+  if ($a == 'hello') ...
 
-// Even better, to prevent typos as well. On line one the compiler would
-// already bail out.
-if ('http://' = substr($uri, 0, 7)) ...
-if ('http://' == substr($uri, 0, 7)) ...
+  // Even better, to prevent typos as well. On line one the compiler would
+  // already bail out.
+  if ('http://' = substr($uri, 0, 7)) ...   // Won't compile!
+  if ('http://' == substr($uri, 0, 7)) ...
 
-$array= array(
-  IT_STRING     => '<input type="text" value="%s"/>',
-  IT_TEXTAREA   => '<textarea>%s</textarea>'
-);]]></code>
+  $array= array(
+    IT_STRING     => '<input type="text" value="%s"/>',
+    IT_TEXTAREA   => '<textarea>%s</textarea>'
+  );]]></code>
 
           Reference operators are directly connected with the object they're
           referencing.
-          <code><![CDATA[
-function &getDomains() {
-  return $this->domains;
-}
-...
-$domains= &$auftrag->domains();
+          <code><![CDATA[  // Declaring a method returns by reference 
+  class UserManager extends Object {
+    function &getInstance() {
+      // ...
+    }
+  }
 
-$a= &$b;
+  // Assigning a variable to a method call's return value
+  $instance= &UserManager::getInstance();
 
-function selectByName(&$dbo) ...]]></code>
+  // Assigning variables by references
+  $a= &$b;
+  
+  // Creating an instance of a class
+  $object= &new Object();
+
+  // Declaring a parameter is passed by reference
+  function selectByName(&$dbo) {
+    // ...
+  }]]></code>
         </text>
-      </para>
+        <advanced>
+          <ref type="ext" link="http://de3.php.net/manual/en/language.references.php">PHP Manual: References Explained</ref>
+        </advanced>
+      </para>      
       <para>
         <caption>Return</caption>
         <text>
           Return immediately leave a function, thus instead of:
           <code><![CDATA[function foo($file) {
-  if ($fd= fopen($file, "r")) {
+  if ($fd= fopen($file, 'r')) {
       ...
   } else {
     return 0;
@@ -710,31 +721,31 @@ function selectByName(&$dbo) ...]]></code>
 }]]></code>
 
           write:
-          <code><![CDATA[function foo($file) {
-  if (!$fd= fopen($file, "r")) return 0;
-  ...
-}]]></code>
+          <code><![CDATA[  function foo($file) {
+    if (!$fd= fopen($file, 'r')) return 0;
+    ...
+  }]]></code>
 
           Continue is a similar case:
-          <code><![CDATA[while ($entry= $dir->read()) {
-  if('.' == $entry or '..' == $entry) continue;
-  ...
-}]]></code>
+          <code><![CDATA[  while ($entry= $dir->read()) {
+    if('.' == $entry or '..' == $entry) continue;
+    ...
+  }]]></code>
 
           The ternary operator is, as far as possible, to be preferred to an if-else
           construct:
-          <code><![CDATA[// Aufwändig und unnötig
-if ($condition == NULL) {
-  return FALSE;
-} else {
-  return TRUE;
-}
+          <code><![CDATA[  // Unnecessary
+  if ($condition == NULL) {
+    return FALSE;
+  } else {
+    return TRUE;
+  }
 
-// Besser
-return ($condition == NULL) ? FALSE : TRUE;
+  // Better
+  return ($condition == NULL) ? FALSE : TRUE;
 
-// Noch besser
-return ($condition != NULL);]]></code>
+  // Event better
+  return ($condition != NULL);]]></code>
 
           Note that you cannot use references when working with the ternary operator in
           PHP4.
@@ -767,13 +778,13 @@ return ($condition != NULL);]]></code>
               stack traces, you cannot prevent those ignorable warnings to be pushed
               upon the error stack.
 
-              <code><![CDATA[// Readable and clear what it does
-$dbh= @sybase_connect(...);
+              <code><![CDATA[  // Readable and clear what it does
+  $dbh= @sybase_connect(...);
 
-// The be prevented and not neccessary
-$e= error_reporting(0);
-$dbh= sybase_connect(...);
-error_reporting($e);]]></code>
+  // To be prevented and not neccessary
+  $e= error_reporting(0);
+  $dbh= sybase_connect(...);
+  error_reporting($e);]]></code>
             </li>
             <li>
               Checks
@@ -797,19 +808,20 @@ error_reporting($e);]]></code>
         <text>
           Especially for SQL, it is great that line breaks and whitespaces are ignores.
 
-          <code><![CDATA[$result= $dbo->query('
-  select * from foo, bar
-  where baz= 2
-  and foo.i= bar.i
-');]]></code>
+          <code><![CDATA[  $result= $dbo->query('
+    select * from foo, bar
+    where baz= 2
+    and foo.i= bar.i
+  ');]]></code>
 
           is easy to extend for example, easy to replace by anything else and just easy
           to copy'n'paste into an sql shell window (nonetheless, an additional indentation
           of two columns is being recommended).
 
-          <code><![CDATA[$result= $dbo->query('select * from foo, bar '.
-                     'where baz= 2 '.
-                     'and foo.i= bar.i ');]]></code>
+          <code><![CDATA[  // Don't do this
+  $result= $dbo->query('select * from foo, bar '.
+                       'where baz= 2 '.
+                       'and foo.i= bar.i ');]]></code>
 
           The preceding piece of code is absolutely unreadable and difficult to
           reuse. And it is error prune when one forgets an whitespace at the end
@@ -837,8 +849,8 @@ error_reporting($e);]]></code>
         <caption>Array-Indices</caption>
         <text>
           They are always to be enclosed in qutes.
-          <code><![CDATA[echo $arr[helptext_domain_name];	// "undefined constant, assuming string"
-echo $arr['helptext_domain_name'];	// This makes the parser happy]]></code>
+          <code><![CDATA[  echo $arr[helptext_domain_name];    // "undefined constant, assuming string"
+  echo $arr['helptext_domain_name'];  // This makes the parser happy]]></code>
         </text>
       </para>
       <para>
@@ -866,13 +878,13 @@ echo $arr['helptext_domain_name'];	// This makes the parser happy]]></code>
           Please do not use variable names in uses(), require() or include() - directives.
           It should not be neccessary to do something like
           
-          <code><![CDATA[require ($DOCUMENT_ROOT.'/../include/start.inc');]]></code>
+          <code><![CDATA[  require($DOCUMENT_ROOT.'/../include/start.inc');]]></code>
           
           Instead always try to resolve a path expression as above into the 
           PHP4-language constants <tt>__FILE__</tt>. Above example could be rewritten
           like:
           
-          <code><![CDATA[require (dirname (__FILE__).'/../include/start.inc');]]></code>
+          <code><![CDATA[  require(dirname(__FILE__).'/../include/start.inc');]]></code>
           
           This helps some helper scripts (e.g. those in util/exe) to find dependent files.<br/>
           
