@@ -66,8 +66,14 @@
      * @access  public
      */
     function parse() {
-      $parser= &new PHPParser($this->filename);
-      $parser->parse();
+      
+      // Try to parse file
+      try(); {
+        $parser= &new PHPParser($this->filename);
+        $parser->parse();
+      } if (catch('IOException', $e)) {
+        return throw($e);
+      }
       
       $this->requires=  $parser->requires;
       $this->uses=      $parser->uses;
