@@ -12,9 +12,12 @@
   
   function highlightPHPSource($str) {
     static $p;
+    static $t;
     
     if (!isset($p)) $p= &new PHPSyntaxHighlighter();
-    $p->setSource('<?php '.$str.' ?>');
+    if (!isset($t)) $t= array_flip(get_html_translation_table(HTML_ENTITIES));
+    
+    $p->setSource('<?php '.strtr($str, $t).' ?>');
     return $p->getHighlight();
   }
   
