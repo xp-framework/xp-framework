@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('rdbms.ResultIterator');
+
   /**
    * Peer
    *
@@ -193,6 +195,31 @@
         $r[]= &new $this->identifier($record);
       }
       return $r;
+    }
+    
+    /**
+     * Returns an iterator for a select statement
+     *
+     * @access  public
+     * @param   &rdbms.Criteria criteria
+     * @return  &rdbms.ResultIterator
+     * @see     xp://rdbms.ResultIterator
+     */
+    function &iteratorFor(&$criteria) {
+      $cm= &ConnectionManager::getInstance();  
+      try(); {
+        $db= &$cm->getByHost($this->connection, 0);
+        $q= &$db->query(
+          'select %c from %c%c',
+          array_keys($this->types),
+          $this->table,
+          $criteria->toSQL($db, $this->types)
+        );
+      } if (catch('SQLException', $e)) {
+        return throw($e);
+      }
+      
+      return new ResultIterator($q, $this->identifier);
     }
 
     /**
