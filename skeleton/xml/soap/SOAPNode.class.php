@@ -8,7 +8,8 @@
     'xml.Node',
     'xml.soap.types.SOAPBase64Binary',
     'xml.soap.types.SOAPDateTime',
-    'xml.soap.types.SOAPNamedItem'
+    'xml.soap.types.SOAPNamedItem',
+    'xml.soap.types.SOAPHashMap'
   );
 
   /**
@@ -137,6 +138,11 @@
       
       if (is_a($value, 'Date')) {       // Date
         $value= &new SOAPDateTime($value->_utime);
+        // Fallthrough intended
+      }
+      
+      if (is_a($value, 'Hashmap')) {    // Hashmap
+        $value= &new SOAPHashMap($value->_hash);
         // Fallthrough intended
       }
       
