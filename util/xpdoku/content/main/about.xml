@@ -226,7 +226,7 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
             <li>the burden to not to output any warnings or notices at an error reporting level 
               of E_ALL (most verbose)</li>
           </ul>
-          You can find the complete coding standards <ref link="../devel/coding">here</ref>.
+          You can find the complete coding standards <ref type="devel" link="coding">here</ref>.
         </text>
       </para>              
       <para>
@@ -249,7 +249,7 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
     return date($format, $this->_utime);
   }]]></code>
 
-          You can find a detailled description of the <ref link="../devel/documentation">documentation guidelines here</ref>.
+          You can find a detailled description of the <ref type="devel" link="documentation">documentation guidelines here</ref>.
         </text>
       </para>              
       <para>

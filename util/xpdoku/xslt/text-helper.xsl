@@ -118,6 +118,19 @@
     </a>
     <img alt="Link" src="/image/ext.gif" height="11" width="11" border="0" vspace="0" hspace="2"/>
   </xsl:template>
+
+  <xsl:template match="ref[@type = 'devel']">
+    <xsl:choose>
+      <xsl:when test="contains(@link, '#')">
+        <a href="/devel/{substring-before(@link, '#')}.html#{substring-after(@link, '#')}">
+          <xsl:value-of select="."/>
+        </a>
+      </xsl:when>
+      <xsl:otherwise>
+        <a href="/devel/{@link}.html"><xsl:value-of select="."/></a>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
   
   <xsl:template match="ref">
     <xsl:choose>

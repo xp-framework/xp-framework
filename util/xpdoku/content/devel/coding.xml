@@ -203,7 +203,7 @@ edit/mail_notify.php]]></pre>
           of a file).
         </text>
         <advanced>
-          <ref link="coding#2">Comments at the beginning of a file</ref>
+          <ref type="devel" link="coding#2">Comments at the beginning of a file</ref>
         </advanced>
       </para>
       <para>
