@@ -58,9 +58,17 @@
   // {{{ public class Requirements
   class Requirements extends Object {
     var
+      $file = '',
       $files= array();
       
-    // {{{ public string add(string filename)
+    // {{{ private __construct(string filename)
+    function __construct($filename) {
+      parent::__construct();
+      $this->file= $filename;
+    }
+    // }}}
+      
+    // {{{ public string add(string fullname)
     function add($fullname) {
       try(); {
         $r= &Requirements::forFile($fullname);
@@ -78,7 +86,7 @@
     function forFile($filename) {
       if (is('null', $filename)) return;    // NullPointer
 
-      $requirements= &new Requirements();
+      $requirements= &new Requirements($filename);
       $idx= basename($filename);
       try(); {
         $parser= &new PHPParser($filename);
