@@ -157,13 +157,13 @@
     function setOrientation($orientation) {
       switch ($orientation) {
         case FPDF_PORTRAIT:
-      $this->wPt= $this->fwPt;
-      $this->hPt= $this->fhPt;
+          $this->wPt= $this->fwPt;
+          $this->hPt= $this->fhPt;
           break;
           
         case FPDF_LANDSCAPE:
-      $this->wPt= $this->fhPt;
-      $this->hPt= $this->fwPt;
+          $this->wPt= $this->fhPt;
+          $this->hPt= $this->fwPt;
           break;
       }
       $this->w= round($this->wPt / $this->k, 2);
@@ -213,8 +213,6 @@
       
       // Compression
       $this->setCompression(true);
-      
-      
     }
 
     function setMargins($left,$top,$right=-1)
