@@ -73,8 +73,8 @@
     <func:result>
       <!-- DEBUG (<xsl:value-of select="$diff"/>) -->
       <xsl:choose>
-        <xsl:when test="$diff &lt;= 1">Today</xsl:when>
-        <xsl:when test="$diff &lt;= 2">Yesterday</xsl:when>
+        <xsl:when test="$diff = 0">Today</xsl:when>
+        <xsl:when test="$diff = 1">Yesterday</xsl:when>
         <xsl:when test="$diff &lt;= 7"><xsl:value-of select="$date/weekday"/></xsl:when>
         <xsl:when test="$diff &lt;= 14">Last <xsl:value-of select="$date/weekday"/></xsl:when>
         <xsl:otherwise><xsl:value-of select="func:date(exsl:node-set($date))"/></xsl:otherwise>
