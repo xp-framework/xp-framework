@@ -48,7 +48,7 @@
         $l= &Logger::getInstance();
         $cat= &$l->getCategory();
         $cat->warn($e, 'parsing', '<body>'.$markup.'</body>');
-        return new Node('body', strip_tags($string));
+        return new Node($name, strip_tags($string));
       }
 
       // We've successfully parse the XML, it's valid and we may add
