@@ -22,7 +22,7 @@
      * @access  public
      */
     function setUp() {
-      if (!extension_loaded('openssl')) return FALSE;
+      if (!extension_loaded('openssl')) return 'openssl.notsupported';
     }
     
     /**
