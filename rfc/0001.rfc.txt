@@ -1,0 +1,51 @@
+RFC 0001: Core functionality in()
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Nov 16 18:45:43 CET 2003
+@status: draft
+@category: language
+
+Scope of Change
+---------------
+Introduce core functionality in() which searches for elements in a 
+collection.
+
+Rationale
+---------
+The PHP functions array_search and in_array have ugly names and a 
+confusing parameter order.
+
+Functionality
+-------------
+Definition:
+<code>
+  bool in (array list, mixed element) 
+</code>
+
+Example:
+<code>
+  if (in (array(1, 2, 3), 1)) {
+    // ...
+  }
+</code>
+
+Dependencies
+------------
+None.
+
+Related documents
+-----------------
+n/a
+
+Comments
+--------
+- friebe, Sun Nov 16 18:58:48 CET 2003
+  Extend in to work with an object passed as first parameter and 
+  call its contains() method
+  
+- friebe, Sun Nov 16 18:58:57 CET 2003
+  Make in() work on strings
+
+<EOF>
