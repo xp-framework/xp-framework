@@ -4,11 +4,21 @@
  * $Id$
  */
 
-  require('lang.base.php');
-  uses('gui.gtk.GTKGladeApplication', 'io.Folder');
+  uses(
+    'gui.gtk.GTKGladeApplication', 
+    'gui.gtk.util.GTKPixmapLoader', 
+    'gui.gtk.util.GTKWidgetUtil', 
+    'io.Folder'
+  );
 
   /**
-   * File dialog
+   * File dialog 
+   * <code>
+   *   $dlg= &new FileDialog(posix_getcwd());
+   *   if ($dlg->show()) {
+   *     printf("File selected: %s%s\n", $dlg->dir, $dlg->filename);
+   *   }
+   * </code>
    *
    * @purpose Provide a widget for file dialogs
    */
@@ -25,7 +35,6 @@
      */
     function __construct($dir= '.') {
       $this->dir= $dir;
-      //$this->rcFile= dirname(__FILE__).'/filedialog.gtkrc';
       parent::__construct(
         'filedialog', 
         dirname(__FILE__).'/filedialog.glade',
@@ -56,6 +65,7 @@
      */
     function onClose(&$widget) {
       $this->log($widget->get_name());
+      $this->done();
     }
     
     /**
@@ -85,6 +95,36 @@
       $info= posix_getpwuid(posix_getuid());
       $this->setDir($info['dir']);
     }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function onFavoriteClicked(&$widget) {
+      $i= posix_getpwuid(posix_getuid());
+      $d= strtr(substr($widget->get_name(), 11), array(
+        'HOME'  => $i['dir'],
+        'ROOT'  => '/',
+        'TMP'   => getenv('TMP'),
+        '_'     => '/'
+      ));
+      $this->log($d);
+      $this->setDir($d);
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function onRefreshClicked(&$widget) {
+      $this->setDir();
+    }
     
     /**
      * (Insert method's description here)
@@ -101,7 +141,7 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Initialize application
      *
      * @access  public
      */
@@ -123,12 +163,13 @@
       
       // Buttons
       $this->buttons_connect(array(
-        'ok'	 => 'onClose',
-        'cancel' => 'onClose',
-        'up'	 => 'onUpDirClicked',
-        'home'	 => 'onHomeClicked',
-        'next'   => 'onPNClicked',
-        'prev'   => 'onPNClicked',
+        'ok'	    => 'onClose',
+        'cancel'    => 'onClose',
+        'up'	    => 'onUpDirClicked',
+        'home'	    => 'onHomeClicked',
+        'refresh'	=> 'onRefreshClicked',
+        'next'      => 'onPNClicked',
+        'prev'      => 'onPNClicked',
       ));
       
       // Favorites
@@ -139,6 +180,10 @@
       $style->base[GTK_STATE_NORMAL]= $style->mid[GTK_STATE_NORMAL];
       $view->set_style($style);
       
+      GTKWidgetUtil::connectChildren($this->widget('bar_favorites'), array(
+        ':clicked' => array(&$this, 'onFavoriteClicked')
+      ));
+      
       // History
       $this->history= array();
       $this->history_offset= 0;
@@ -146,17 +191,15 @@
       // Load pixmaps
 	  $this->pixmaps= array();
       $if= &new Folder(dirname(__FILE__).'/icons/');
+      $loader= &new GTKPixmapLoader($this->window->window, $if->uri);
       try(); {
         while ($entry= $if->getEntry()) {
           if ('.xpm' != substr($entry, -4)) continue;
           $entry= substr($entry, 0, -4);
-          list(
-            $this->pixmaps['p:'.$entry],
-            $this->pixmaps['m:'.$entry]
-          )= Gdk::pixmap_create_from_xpm(
-            $this->window->window, 
-            new GdkColor(0, 0, 0), 
-            $if->uri.$entry.'.xpm'
+          
+          $this->pixmaps= array_merge(
+            $this->pixmaps, 
+            $loader->load($entry)
           );
         }
         $if->close();
@@ -328,10 +371,5 @@
       $this->done();
       return (NULL == $this->filename) ? FALSE : $this->filename;
     }
-  }
-  
-  $dlg= &new FileDialog(posix_getcwd());
-  if ($dlg->show()) {
-    printf("File selected: %s%s\n", $dlg->dir, $dlg->filename);
   }
 ?>

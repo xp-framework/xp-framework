@@ -83,7 +83,7 @@
       <widget>
 	<class>GtkButton</class>
 	<child_name>Toolbar:button</child_name>
-	<name>button10</name>
+	<name>button_refresh</name>
 	<label>Refresh</label>
 	<icon>refresh.xpm</icon>
       </widget>
@@ -92,6 +92,7 @@
 	<class>GtkButton</class>
 	<child_name>Toolbar:button</child_name>
 	<name>button16</name>
+	<sensitive>False</sensitive>
 	<label>Show</label>
 	<icon>pref.xpm</icon>
 	<child>
@@ -161,7 +162,7 @@
 	  <widget>
 	    <class>GtkButton</class>
 	    <child_name>Toolbar:button</child_name>
-	    <name>button17</name>
+	    <name>button_fav_HOME</name>
 	    <width>72</width>
 	    <height>68</height>
 	    <label>Home</label>
@@ -171,7 +172,7 @@
 	  <widget>
 	    <class>GtkButton</class>
 	    <child_name>Toolbar:button</child_name>
-	    <name>button18</name>
+	    <name>button_fav_ROOT</name>
 	    <label>Root</label>
 	    <icon>folder.xpm</icon>
 	    <child>
@@ -182,7 +183,7 @@
 	  <widget>
 	    <class>GtkButton</class>
 	    <child_name>Toolbar:button</child_name>
-	    <name>button19</name>
+	    <name>button_fav_TMP</name>
 	    <label>Temporary</label>
 	    <icon>folder.xpm</icon>
 	    <child>
