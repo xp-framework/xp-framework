@@ -7,11 +7,11 @@
   uses('peer.http.HttpRequest', 'peer.http.HttpsResponse');
 
   /**
-   * (Insert class' description here)
+   * Wrap HTTPS requests (user internally by the HttpConnection class)
    *
    * @ext      curl
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.http.HttpConnection
+   * @purpose  HTTP request
    */
   class HttpsRequest extends HttpRequest {
   

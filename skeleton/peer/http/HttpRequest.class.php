@@ -17,10 +17,12 @@
   );
   
   /**
-   * HTTP request
+   * Wrap HTTP/1.0 and HTTP/1.1 requests (user internally by the 
+   * HttpConnection class)
    *
+   * @see      xp://peer.http.HttpConnection
    * @see      rfc://2616
-   * @purpose  Wrap
+   * @purpose  HTTP request
    */
   class HttpRequest extends Object {
     var
