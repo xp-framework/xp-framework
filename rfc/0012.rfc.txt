@@ -233,6 +233,21 @@ The body of a message is encoded depending on the message type.
   Close           4
 </pre>
 
+* Strings in the message body
+  The utf() function creates a string that can be read using the 
+  Java method DataInput.readUTF(), see
+  http://java.sun.com/j2se/1.4.2/docs/api/java/io/DataInput.html#readUTF()
+  
+  A PHP implementation of this function could be as follows:
+  <?php
+    function utf($string) {
+
+      // TBD: Split into blocks if string length exceeds 16 bit.
+      $utf= utf8_encode($string);
+      return pack('na*', strlen($utf), $utf);
+    }
+  ?>
+
 * Body encoding for initialize message (#0)
 
   The initialize message is ALWAYS the first message in the client/server
@@ -241,7 +256,7 @@ The body of a message is encoded depending on the message type.
   It contains the context (and with that, the authentication data).
 
   <?php
-    $body= pack('a*', $serializedContext);
+    $body= utf($serializedContext);
   ?>
   
   The body contains a serialized representation of the context, serialized
@@ -267,9 +282,14 @@ The body of a message is encoded depending on the message type.
 
   In PHP:
   <?php
-    $body= pack();      // XXX TBD XXX
+    $body= (
+      pack('c', $mode).
+      utf($objectName).
+      utf($operationName).
+      utf($serializedParameters)
+    );
   ?>
-
+  
 * Body encoding for reply message (#2)
 
   This message is the server's reply to a client's request message (see 
