@@ -34,7 +34,7 @@
       $this->fill= $fill;
       $this->shadow= $shadow;
       $this->perspective= $perspective;
-      parent::__construct();
+      
     }
     
     /**

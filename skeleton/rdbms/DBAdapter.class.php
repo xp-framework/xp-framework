@@ -23,7 +23,7 @@
      */
     function __construct(&$conn) {
       $this->conn= &$conn;
-      parent::__construct();
+      
     }
 
     /**

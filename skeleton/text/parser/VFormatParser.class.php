@@ -44,7 +44,7 @@
      */
     function __construct($identifier) {
       $this->identifier= $identifier;
-      parent::__construct();
+      
     }
     
     /**

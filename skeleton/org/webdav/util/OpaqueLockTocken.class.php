@@ -41,7 +41,7 @@
      */
     function __construct(&$uuid) {
       $this->uuid= &$uuid;
-      parent::__construct();
+      
     }
     
     /**

@@ -65,7 +65,7 @@
      */
     function __construct($dsn) {
       $this->_dsn($dsn);
-      parent::__construct();
+      
     }
     
     /**

@@ -55,7 +55,7 @@
      */
     function __construct($info= '') {
       $this->info= $info;
-      parent::__construct();
+      
     }
 
     /**

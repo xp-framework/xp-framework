@@ -22,7 +22,7 @@
      */
     function __construct() {
       $this->doc= &new Tree();
-      parent::__construct();
+      
     }
 
     /**

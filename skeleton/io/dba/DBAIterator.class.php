@@ -34,7 +34,7 @@
      * @see     xp://io.dba.DBAFile#iterator
      */
     function __construct($fd) {
-      parent::__construct();
+      
       $this->_fd= $fd;
     }
   

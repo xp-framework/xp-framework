@@ -31,7 +31,7 @@
      * @access  public
      */
     function __construct() {
-      parent::__construct();
+      
       $this->daylight= $this->standard= array (
         'dtstart'       => NULL,    // Mandatory
         'tzoffsetto'    => NULL,    // Mandatory

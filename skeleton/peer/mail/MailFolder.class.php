@@ -33,7 +33,7 @@
     function __construct(&$store, $name= '') {
       $this->name= $name;
       $this->store= &$store;
-      parent::__construct();
+      
     }
   
     /**

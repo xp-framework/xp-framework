@@ -214,7 +214,7 @@
       // Compression
       $this->setCompression(true);
       
-      parent::__construct();
+      
     }
 
     function setMargins($left,$top,$right=-1)

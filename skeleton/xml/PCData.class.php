@@ -38,7 +38,7 @@
      */
     function __construct($pcdata) {
       $this->pcdata= $pcdata;
-      parent::__construct();
+      
     }
   }
 ?>

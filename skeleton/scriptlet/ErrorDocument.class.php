@@ -69,7 +69,7 @@
         ? dirname(__FILE__).'/static/'.$this->language.'/error'.$this->statusCode.'.html'
         : $filename
       );
-      parent::__construct();
+      
     }
     
     /**

@@ -46,7 +46,7 @@
         2 => array('pipe', 'w')   // stderr
       );
       
-      parent::__construct();
+      
       
       // Build command line
       $a= func_get_args();

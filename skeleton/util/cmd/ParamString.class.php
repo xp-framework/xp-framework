@@ -26,7 +26,6 @@
      */
     function __construct($list= NULL) {
       $this->setParams(NULL === $list ? $_SERVER['argv'] : $list);
-      parent::__construct();
     }
     
     /**

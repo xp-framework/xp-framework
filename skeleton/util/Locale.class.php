@@ -51,7 +51,7 @@
           list($this->lang, $this->country, $this->variant)= func_get_args();
           break;
       }
-      parent::__construct();
+      
     }
     
     /**

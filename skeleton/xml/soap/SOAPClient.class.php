@@ -39,7 +39,7 @@
     function __construct(&$transport, $action) {
       $this->transport= &$transport;
       $this->action= $action;
-      parent::__construct();
+      
     }
     
     /**

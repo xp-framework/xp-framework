@@ -76,7 +76,7 @@
       $this->length= $length;
       $this->precision= $precision;
       $this->scale= $scale;
-      parent::__construct();
+      
     }
     
     /**

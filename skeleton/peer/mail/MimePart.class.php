@@ -59,7 +59,7 @@
       } else {
         $this->charset= 'iso-8859-1';
       }
-      parent::__construct();
+      
     }
 
     /**

@@ -37,7 +37,7 @@
       $this->setStyle('default', 'color: black');
       $this->setStyle('html',    'color: lightgray');
       $this->setStyle('variable','color: darkblue; font-weight: bold');
-      parent::__construct();
+      
     }
     
     /**

@@ -25,7 +25,7 @@
     function __construct(&$test, &$result) {
       $this->test= &$test;
       $this->result= &$result;
-      parent::__construct();
+      
     }
     
     /**

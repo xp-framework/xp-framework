@@ -61,7 +61,7 @@
       $this->devmajor= trim($data['devmajor']);
       $this->devminor= trim($data['devminor']);
       $this->offset= $offset;
-      parent::__construct();
+      
     }
     
     function getFileTypeString() {

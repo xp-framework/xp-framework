@@ -32,7 +32,7 @@
       $this->text= $text;
       $this->x= $x;
       $this->y= $y;
-      parent::__construct();
+      
     }
     
     /**

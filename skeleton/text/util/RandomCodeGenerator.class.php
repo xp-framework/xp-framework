@@ -25,7 +25,7 @@
      */
     function __construct($length= 16) {
       $this->length= $length;
-      parent::__construct();
+      
     }
     
     /**

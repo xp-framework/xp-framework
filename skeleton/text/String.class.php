@@ -36,7 +36,7 @@
      * @param   string initial default ''
      */
     function __construct($initial= '') {
-      parent::__construct();
+      
       $this->buffer= $initial;
     }
     

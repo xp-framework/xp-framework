@@ -46,7 +46,7 @@
      */
     function __construct($addr, $port) {
       $this->socket= &new ServerSocket($addr, $port);
-      parent::__construct();
+      
     }
     
     /**

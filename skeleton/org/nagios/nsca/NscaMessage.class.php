@@ -32,7 +32,7 @@
      * @param   string information
      */ 
     function __construct($host, $service, $status, $information) {
-      parent::__construct();
+      
       $this->host= $host;
       $this->service= $service;
       $this->status= $status;

@@ -33,7 +33,7 @@
         : explode('@', $mail)
       );
       $this->personal= $personal;
-      parent::__construct();
+      
     }
     
     /**

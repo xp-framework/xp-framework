@@ -23,7 +23,7 @@
     function __construct(&$origin, &$destination) {
       $this->origin= &$origin;
       $this->destination= &$destination;
-      parent::__construct();
+      
     }
     
     /**

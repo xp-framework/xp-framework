@@ -35,7 +35,7 @@
      * @param   string class
      */
     function __construct($class) {
-      parent::__construct();
+      
       $this->class= $class;
       $this->_name= xp::reflect($class);
     }

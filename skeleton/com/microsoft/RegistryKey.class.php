@@ -69,7 +69,7 @@
      * @param   string name e.g. HKEY_CURRENT_USER\Environment\TMP
      */    
     function __construct($name) {
-      parent::__construct();
+      
       $this->name= $name;
       $this->_sh= &WshShell::getInstance();
     }

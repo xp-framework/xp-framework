@@ -48,7 +48,7 @@
      * @param   &mixed ref either a class name or an object
      */
     function __construct(&$ref) {
-      parent::__construct();
+      
       $this->_objref= &$ref;
       $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
     }

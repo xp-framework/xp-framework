@@ -27,7 +27,7 @@
      * @param   string hostname default 'localhost'
      */
     function __construct($nick, $realname= NULL, $username= NULL, $hostname= 'localhost') {
-      parent::__construct();
+      
       $this->nick= $nick;
       $this->realname= $realname ? $realname : $nick;
       $this->username= $username ? $username : get_current_user();

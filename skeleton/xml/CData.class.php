@@ -34,7 +34,7 @@
      */
     function __construct($cdata) {
       $this->cdata= $cdata;
-      parent::__construct();
+      
     }
   }
 ?>

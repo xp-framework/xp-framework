@@ -54,7 +54,7 @@
       $this->s= $s;
       $this->e= $e;
       $this->fill= $fill;
-      parent::__construct();
+      
     }
     
     /**

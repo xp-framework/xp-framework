@@ -41,7 +41,7 @@
         $this->spot.= dechex(ord($str{$i}));
       }
       $this->spot= hexdec('0x'.$this->spot);
-      parent::__construct();
+      
     }
     
     /**

@@ -31,7 +31,7 @@
     function __construct($width= -1, $height= -1) {
       $this->width= $width;
       $this->height= $height;
-      parent::__construct();
+      
     }
     
     /**

@@ -70,7 +70,7 @@
      */  
     function __construct(&$stream) {
       $this->stream= &$stream;
-      parent::__construct();
+      
     }
 
     /**

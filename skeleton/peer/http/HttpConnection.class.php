@@ -53,7 +53,7 @@
     function __construct($url) {
       if (!is_a($url, 'URL')) $url= &new URL($url);
       $this->_createRequest($url);
-      parent::__construct();
+      
     }
     
     /**

@@ -43,7 +43,7 @@
       $this->x2= $x2;
       $this->y2= $y2;
       $this->fill= $fill;
-      parent::__construct();
+      
     }
     
     /**

@@ -63,7 +63,7 @@
         'commonName'                => $principal->getCommonName(),
         'emailAddress'              => $principal->getEmailAddress()
       ), $keypair->_res);
-      parent::__construct();
+      
     }
     
     /**

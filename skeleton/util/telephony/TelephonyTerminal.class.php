@@ -19,7 +19,7 @@
      * @param   &util.telephony.TelephonyAddress address
      */
     function __construct(&$address) {
-      parent::__construct();
+      
       $this->address= &$address;
     }
     

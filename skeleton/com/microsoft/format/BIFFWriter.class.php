@@ -50,7 +50,7 @@
       } else {
         throw(new FormatException('Cannot determine byte order'));
       }
-      parent::__construct();
+      
     }
     
     /**

@@ -22,7 +22,7 @@
      */
     function __construct($buf) {
       $this->data= $buf;
-      parent::__construct();
+      
     }
     
     /**

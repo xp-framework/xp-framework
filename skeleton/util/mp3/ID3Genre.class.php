@@ -169,7 +169,7 @@
      */
     function __construct($id) {
       $this->id= $id;
-      parent::__construct();
+      
     }
       
     /**

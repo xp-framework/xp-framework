@@ -61,7 +61,7 @@
      * @access  public
      */
     function __construct() {
-      parent::__construct();
+      
       ini_set('session.use_cookies', 0);
       session_name('psessionid');
     }

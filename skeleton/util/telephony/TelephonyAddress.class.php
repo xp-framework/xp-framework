@@ -20,7 +20,7 @@
      * @param   string number
      */
     function __construct($number) {
-      parent::__construct();
+      
       $this->number= $number;
     }
     

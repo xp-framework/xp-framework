@@ -39,7 +39,7 @@
      */
     function __construct($dirname= NULL) {
       if (NULL != $dirname) $this->setURI($dirname);
-      parent::__construct();
+      
     }
     
     /**

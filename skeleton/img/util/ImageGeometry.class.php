@@ -49,7 +49,7 @@
      */
     function __construct($image= NULL) {
       if (NULL !== $image) $this->setImage($image);
-      parent::__construct();
+      
     }
     
     /**

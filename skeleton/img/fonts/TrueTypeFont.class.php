@@ -25,7 +25,7 @@
       $this->name= $name;
       $this->size= $size;
       $this->angle= $angle;
-      parent::__construct();
+      
     }
     
     /**

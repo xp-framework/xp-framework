@@ -44,7 +44,7 @@
      * @param   string filename The filename to parse
      */
     function __construct($filename) {
-      parent::__construct();
+      
       $this->filename= $filename;
     }
     

@@ -23,7 +23,7 @@
      */
     function __construct($dn) {
       $this->dn= array_change_key_case($dn, CASE_UPPER);
-      parent::__construct();
+      
     }
   
     /**

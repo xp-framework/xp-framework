@@ -33,7 +33,7 @@
      * @see     xp://util.Hashmap#iterator
      */
     function __construct(&$hash) {
-      parent::__construct();
+      
       $this->_hash= &$hash;
       reset($this->_hash);
     }

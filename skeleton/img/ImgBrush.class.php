@@ -27,7 +27,7 @@
     function __construct(&$i, &$s) {
       $this->image= &$i;
       $this->style= &$s;
-      parent::__construct();
+      
     }
   }
 ?>

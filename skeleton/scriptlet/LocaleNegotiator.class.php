@@ -70,7 +70,7 @@
     function __construct($languages, $charsets) {
       $this->languages= $this->_parse($languages);
       $this->charsets= $this->_parse($charsets);
-      parent::__construct();
+      
     }
     
     /**

@@ -36,7 +36,7 @@
           $this->blue
         )= $a;
       }
-      parent::__construct();
+      
     }
     
     /**

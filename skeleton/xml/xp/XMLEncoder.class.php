@@ -36,7 +36,7 @@
     function __construct(&$file) {
       $this->file= &$file;
       $this->file->open(FILE_MODE_WRITE);
-      parent::__construct();
+      
     }
     
     /**

@@ -67,7 +67,7 @@
      */
     function __construct(&$file) {
       $this->file= &$file;
-      parent::__construct();
+      
     }
     
     /**

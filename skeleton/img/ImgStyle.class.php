@@ -29,7 +29,7 @@
         $this->pixels[]= $this->colors[$i]->_hdl;
       }
 
-      parent::__construct();
+      
     }
     
     /**

@@ -25,7 +25,7 @@
     function __construct($dn= NULL, $attrs= array()) {
       $this->dn= $dn;
       $this->attributes= $attrs;
-      parent::__construct();
+      
     }
 
     /**

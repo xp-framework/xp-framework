@@ -37,7 +37,7 @@
      */
     function __construct($map= NULL) {
       if (is_array($map)) $this->_hash= $map;
-      parent::__construct();
+      
     }
     
     /**

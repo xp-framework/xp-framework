@@ -72,7 +72,7 @@
         }
       }
       
-      parent::__construct();
+      
     }
 
     /**

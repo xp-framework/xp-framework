@@ -68,7 +68,7 @@
       $this->dateformat= $dateformat;
       $this->flags= $flags;
       $this->_appenders= array();
-      parent::__construct();
+      
     }
 
     /**

@@ -57,7 +57,7 @@
 
       $this->param= &$p;
 
-      parent::__construct();
+      
     }
     
     /**

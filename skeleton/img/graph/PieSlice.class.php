@@ -29,7 +29,7 @@
       } else {
         $this->colors= &$colors;
       }
-      parent::__construct();
+      
     } 
   }
 ?>

@@ -48,7 +48,7 @@
       $this->col= &$col;
       $this->points= $points;
       $this->fill= $fill;
-      parent::__construct();
+      
     }
     
     /**

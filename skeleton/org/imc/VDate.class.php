@@ -22,7 +22,7 @@
      * @param   &mixed arg
      */    
     function __construct(&$arg) {
-      parent::__construct();
+      
       if (is_object($arg)) {
         $this->date= &new Date (VFormatParser::decodeDate($arg->_value));
         $this->timezone= $arg->tzid;

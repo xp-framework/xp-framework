@@ -25,7 +25,7 @@
     function __construct($name, $actions) {
       $this->name= $name;
       $this->actions= $actions;
-      parent::__construct();
+      
     }
     
     /**

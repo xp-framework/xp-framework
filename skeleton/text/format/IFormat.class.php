@@ -23,7 +23,7 @@
      */
     function __construct($f= NULL) {
       $this->formatString= $f;
-      parent::__construct();
+      
     }
 
     /**

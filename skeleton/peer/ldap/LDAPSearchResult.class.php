@@ -28,7 +28,7 @@
     function __construct(&$hdl, $res) {
       $this->data= ldap_get_entries($hdl, $res);
       $this->size= $this->data['count'];
-      parent::__construct();
+      
     }
     
     /**

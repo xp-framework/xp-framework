@@ -29,7 +29,7 @@
       $this->type= $type;
       $this->stream= &$stream;
       $this->data= $data;
-      parent::__construct();
+      
     }
   }
 ?>

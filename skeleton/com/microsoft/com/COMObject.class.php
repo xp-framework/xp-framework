@@ -39,7 +39,7 @@
      * @param   string server default NULL
      */    
     function __construct($identifier, $server= NULL) {
-      parent::__construct();
+      
       $this->h= com_load($identifier, $server);
     }
     

@@ -21,7 +21,7 @@
      * @param   string locale
      */ 
     function __construct($locale) {
-      parent::__construct();
+      
       $this->locale= $locale;
     }
     

@@ -76,7 +76,7 @@
       $version= NSCA_VERSION_3, 
       $cryptmethod= NSCA_CRYPT_XOR
     ) {
-      parent::__construct();
+      
       $this->sock= &new Socket($host, $port);
       $this->version= $version;
       $this->cryptmethod= $cryptmethod;

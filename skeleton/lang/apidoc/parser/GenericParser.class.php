@@ -34,7 +34,7 @@
       if (NULL !== $filename) {
         $this->setFile(new File($filename));
       }
-      parent::__construct();
+      
     }
     
     /**

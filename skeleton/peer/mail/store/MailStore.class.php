@@ -58,7 +58,7 @@
       } else {
         $this->cache= &$cache;
       }
-      parent::__construct();
+      
     }
       
     /**

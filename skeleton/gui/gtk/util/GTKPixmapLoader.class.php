@@ -34,7 +34,7 @@
       $this->setWindowRef($window);
       $this->setBase($baseDir);
       $this->setTransparentColor(new GdkColor(0, 0, 0));
-      parent::__construct();
+      
     }
     
     /**

@@ -26,7 +26,7 @@
      */
     function __construct($str= NULL) {
       if (NULL !== $str) $this->fromString($str);
-      parent::__construct();
+      
     }
     
     /**

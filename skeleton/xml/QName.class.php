@@ -22,7 +22,7 @@
      * @param   string localpart
      */
     function __construct($namespace, $localpart) {
-      parent::__construct();
+      
       $this->namespace= $namespace;
       $this->localpart= $localpart;
     }

@@ -48,7 +48,6 @@
       if (NULL === $lockFileName) $lockFileName= $_SERVER['argv'][0].'.lck';
       $this->pid= getmypid();
       $this->lockfile= &new File($lockFileName);
-      parent::__construct(); 
     }
     
     /**
