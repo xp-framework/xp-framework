@@ -40,19 +40,18 @@
      */    
     function _readstatus() {
       $s= chop($this->stream->read());
-      if (3 != ($r= sscanf(
+      if (3 > ($r= sscanf(
         $s, 
-        'HTTP/%d.%d %3d', 
+        "HTTP/%d.%d %3d %[^\r]",
         $major, 
         $minor, 
-        $this->statuscode
+        $this->statuscode,
+        $this->message
       ))) {
         return throw(new FormatException('"'.$s.'" is not a valid HTTP response ['.$r.']'));
       }
       
-      $this->message= substr($s, 12);
       $this->version= $major.'.'.$minor;
-      
       return TRUE;
     }
     
@@ -175,7 +174,7 @@
         $h.= sprintf("  [%-20s] %s\n", $k, $v);
       }
       return sprintf(
-        "%s {\n  HTTP/%s %3d %s\n%s}",
+        "%s (HTTP/%s %3d %s) {\n%s}",
         $this->getClassName(),
         $this->version,
         $this->statuscode,
