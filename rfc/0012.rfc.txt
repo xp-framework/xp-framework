@@ -1,0 +1,41 @@
+RFC 0012: RMI
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Jan  4 11:31:11 CET 2005
+@status: draft
+@category: rmi
+
+Scope of Change
+---------------
+The RMI collection will be completely overhauled.
+
+Rationale
+---------
+We want to be able to create an API that is more similar to the one used
+in Java RMI. This way, we can create a XP -> EJB bridge and talk to our
+application server in the same way than to that.
+
+Functionality
+-------------
+(TBD)
+
+Dependencies
+------------
+BC break in rmi or new package.
+
+Related documents
+-----------------
+- http://www.javacoffeebreak.com/articles/javarmi/javarmi.html
+  Introduction to Java RMI
+
+- http://java.sun.com/developer/onlineTraining/rmi/RMI.html
+  jGuru: Remote Method Invocation (RMI)
+  
+Comments
+--------
+- friebe, Tue Jan  4 11:35:38 CET 2005
+  Maybe also look at ICE (http://zeroc.com/)
+  
+<EOF>
