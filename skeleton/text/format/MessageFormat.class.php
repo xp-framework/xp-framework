@@ -8,7 +8,8 @@
     'util.text.format.IFormat',
     'util.text.format.PrintfFormat',
     'util.text.format.DateFormat',
-    'util.text.format.ChoiceFormat'
+    'util.text.format.ChoiceFormat',
+    'util.text.format.NumberFormat'
   );
   
   /**
@@ -66,6 +67,7 @@
       $this->setFormatter('printf', PrintfFormat::getInstance());
       $this->setFormatter('date',   DateFormat::getInstance());
       $this->setFormatter('choice', ChoiceFormat::getInstance());
+      $this->setFormatter('number', NumberFormat::getInstance());
 
       parent::__construct($f);
     }
