@@ -135,15 +135,15 @@ Array-Deklarationen sind bis auf den leeren Array immer umzubrechen:
 $list= array();
 
 $list= array(
-  "Hallo",
-  "Welt"
+  'Hallo',
+  'Welt'
 );
 
 $fasel= array(
-  "Bla",
-  "Fasel" => array(
-    "Cool",
-    "Oder?"
+  'Bla',
+  'Fasel' => array(
+    'Cool',
+    'Oder?'
   )
 );
 
