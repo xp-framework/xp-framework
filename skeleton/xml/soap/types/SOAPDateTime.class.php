@@ -4,38 +4,49 @@
  * $Id$
  */
 
-  uses('util.Date');
+  uses('util.Date', 'xml.soap.types.SoapType');
   
   /**
-   * Repräsetiert SOAP-Datum
+   * SOAP DateTime
    *
-   * @see     http://www.w3.org/TR/xmlschema-2/#ISO8601 
-   * @see     http://www.w3.org/TR/xmlschema-2/#dateTime
+   * @see      xp://xml.soap.types.SoapType
+   * @see      http://www.w3.org/TR/xmlschema-2/#ISO8601 
+   * @see      http://www.w3.org/TR/xmlschema-2/#dateTime
+   * @purpose  DateTime type
    */
-  class SOAPDateTime extends Date {
-    
+  class SOAPDateTime extends SoapType {
+    var
+      $value= NULL;
+      
     /**
-     * Gibt Datum/Uhrzeit ISO-8601 konform als String zurück
+     * Constructor
      *
      * @access  public
-     * @return  string ISO-8601-konformes Datums/Uhrzeitformat
+     * @param   mixed arg
      */
-    function toString() {
-      return date('Y-m-d\TH:i:s', $this->_utime);
+    function __construct($arg) {
+      $this->value= &new Date($arg);
+      parent::__construct();
     }
     
     /**
-     * Typ-Name
+     * Return a string representation for use in SOAP
      *
      * @access  public
-     * @return  string Typ-Namen
+     * @return  string ISO 8601 conform date (1977-12-14T11:55:0)
+     */
+    function toString() {
+      return $this->value->toString('Y-m-d\TH:i:s');
+    }
+    
+    /**
+     * Returns this type's name
+     *
+     * @access  public
+     * @return  string
      */
     function getType() {
       return 'xsd:dateTime';
-    }
-    
-    function getItemName() {
-      return FALSE;
     }
   }
 ?>

@@ -4,15 +4,16 @@
  * $Id$
  */
 
-  uses('xml.soap.SOAPNode');
+  uses('xml.soap.SOAPNode', 'xml.soap.types.SoapType');
   
   /**
-   * Represents a hashmap as serialized by Apache-SOAP
+   * Hashmap type as serialized and recogned by Apache SOAP.
    *
+   * @see      xp://xml.soap.types.SoapType
+   * @purpose  HashMap type
    */
   class SOAPHashMap extends Object {
-    var $_hash;
-    
+
     /**
      * Constructor
      *
@@ -20,44 +21,30 @@
      * @param   array params
      */
     function __construct($params) {
-      $this->_hash= $params;
-      $this->item= &new SOAPNode(array(
-        'name'          => 'hash',
-        'attribute'     => array(
-          'xmlns:hash'  => 'http://xml.apache.org/xml-soap',
-          'xsi:type'    => 'hash:Map'
-        )
+      $this->item= &new SOAPNode('hash', NULL, array(
+        'xmlns:hash'  => 'http://xml.apache.org/xml-soap',
+        'xsi:type'    => 'hash:Map'
       ));
-      foreach ($this->_hash as $key=> $value) {
-        $item= &$this->item->addChild(new SOAPNode(array('name' => 'item')));
-        $item->addChild(new SOAPNode(array(
-          'name'        => 'key',
-          'attribute'   => array(
-            'xsi:type'  => 'xsd:string'
-          ),
-          'content'     => $key
+      foreach ($params as $key => $value) {
+        $item= &$this->item->addChild(new SOAPNode('item'));
+        $item->addChild(new SOAPNode('key', $key, array(
+          'xsi:type'  => 'xsd:string'
         )));
-        $item->addChild(new SOAPNode(array(
-          'name'        => 'value',
-          'attribute'   => array(
-            'xsi:type'  => 'xsd:string'
-          ),
-          'content'     => $value
+        $item->addChild(new SOAPNode('value', $value, array(
+          'xsi:type'  => 'xsd:string'
         )));
       }
       parent::__construct();
     }
     
-    function toString() {
-      return '';
-    }
-    
+    /**
+     * Returns this type's name
+     *
+     * @access  public
+     * @return  string
+     */
     function getType() {
       return 'hash:Map';
-    }
-    
-    function getItemName() {
-      return FALSE;
     }
   }
 ?>

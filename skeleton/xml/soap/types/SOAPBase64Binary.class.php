@@ -4,9 +4,13 @@
  * $Id$
  */
 
+  uses('xml.soap.types.SoapType');
+
   /**
-   * Repräsetiert SOAP-Base64-encodeten String
+   * SOAP Base64 binary
    *
+   * @see      xp://xml.soap.SOAPNode
+   * @purpose  Transport base64 encoded data
    */
   class SOAPBase64Binary extends Object {
     var
@@ -14,51 +18,41 @@
       $encoded;
     
     /**
-     + Constructor
-     */
-    function __construct($string, $is_encoded= FALSE) {
-      $this->fromString($string, $is_encoded);
-      parent::__construct();
-    }
-    
-    /**
-     * Gibt den String-Wert zurück
+     * Constructor
      *
      * @access  public
-     * @return  string Base64-encodeter String
+     * @param   string string
+     * @param   bool encoded default FALSE
      */
-    function toString() {
-      return $this->encoded;
-    }
-    
-    /**
-     * Setzt den String
-     *
-     * @access  public
-     * @param   string str Der String
-     */
-    function fromString($str, $is_encoded= FALSE) {
-      if ($is_encoded) {
+    function __construct($string, $encoded= FALSE) {
+      if ($encoded) {
         $this->string= base64_decode($str);
         $this->encoded= $str;
       } else {
         $this->string= $str;
         $this->encoded= base64_encode($str);
       }
+      parent::__construct();
     }
     
     /**
-     * Typ-Name
+     * Return a string representation for use in SOAP
      *
      * @access  public
-     * @return  string Typ-Namen
+     * @return  string 
+     */
+    function toString() {
+      return $this->encoded;
+    }
+    
+    /**
+     * Returns this type's name
+     *
+     * @access  public
+     * @return  string
      */
     function getType() {
       return 'xsd:base64Binary';
-    }
-    
-    function getItemName() {
-      return FALSE;
     }
   }
 ?>
