@@ -84,18 +84,17 @@ Using the PHP access API with naming lookup:
   var_dump($search->execute('Hello'));
 ?>
 
-Authentication
-~~~~~~~~~~~~~~
-Every remote stub contains a public member "context" which lets you pass
-certain information to the service. If, for instance, authentication is
-required, we call the context's addAuthorization() method and pass it an
-authorization object.
+Context
+~~~~~~~
+A context lets you define certain attributes that will be passed 
+alongside with invokations. Basically, a context is a Hashmap of
+keys and values. The context can be accessed by the server 
+components.
 
 Using the PHP access API without naming lookups:
 <?php
   $context= &new RemoteContext();
-  $context->addAuthorization(new PasswordAuth('username', 'password'));
-
+  $context->put('write policy', 'immediate');
   $search= &Remote::forName('rmi://127.0.0.1:4444/ISearch', $context);
 
   // Now, we can invoke methods on the instance
@@ -107,8 +106,34 @@ Using the PHP access API with naming lookup:
   Naming::setProvider(new RemoteNamingProvider('example.com', 1099));
 
   $context= &new RemoteContext();
-  $context->addAuthorization(new PasswordAuth('username', 'password'));
+  $context->put('write policy', 'immediate');
+  $search= &Naming::lookup('website/ISearch', $context);
+  
+  // Now, we can invoke methods on the instance
+  var_dump($search->execute('Hello'));
+?>
 
+Think of context like environment variables.
+
+Authentication
+~~~~~~~~~~~~~~
+If authentication is required, we use the AuthorizedContext class 
+instead of the base class.
+
+Using the PHP access API without naming lookups:
+<?php
+  $context= &new AuthorizedContext(new PasswordAuth('username', 'password'));
+  $search= &Remote::forName('rmi://127.0.0.1:4444/ISearch', $context);
+
+  // Now, we can invoke methods on the instance
+  var_dump($search->execute('Hello'));
+?>
+
+Using the PHP access API with naming lookup:
+<?php
+  Naming::setProvider(new RemoteNamingProvider('example.com', 1099));
+
+  $context= &new AuthorizedContext(new PasswordAuth('username', 'password'));
   $search= &Naming::lookup('website/ISearch', $context);
   
   // Now, we can invoke methods on the instance
@@ -176,5 +201,9 @@ Comments
 
 - friebe, Wed Jan 19 12:51:36 CET 2005
   Second idea on authentication
-  
+
+- friebe, Wed Jan 19 13:05:23 CET 2005
+  We should have a base context class and could then derive the
+  AuthorizedContext from it.
+
 <EOF>
