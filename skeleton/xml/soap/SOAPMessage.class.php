@@ -266,7 +266,7 @@
      * @return  &xml.Tree
      */
     function &fromString($string) {
-      return parent::fromString($string, __CLASS__);
+      return parent::fromString($string, 'SOAPMessage');
     }
 
     /**
@@ -282,7 +282,7 @@
      * @return  &xml.Tree
      */ 
     function &fromFile(&$file) {
-      return parent::fromFile($file, __CLASS__);
+      return parent::fromFile($file, 'SOAPMessage');
     }
 
     /**
