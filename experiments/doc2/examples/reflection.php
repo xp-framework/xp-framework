@@ -8,6 +8,11 @@
 
   // {{{ main
   $p= new ParamString();
+  if (!ClassLoader::getDefault()->findClass($p->value(1))) {
+    Console::$err->writeLinef('Class "%s" could not be found', $p->value(1));
+    exit();    
+  }
+  
   try {
     $class= XPClass::forName($p->value(1));
   } catch (ClassNotFoundException $e) {
