@@ -23,7 +23,6 @@
      * @param   int long
      */  
     public function __construct($long) {
-      parent::__construct();
       $this->long= number_format($long, 0, NULL, NULL);
     }
     

@@ -33,7 +33,6 @@
         $this->item->_recurse($item, array('key' => $key));
         $this->item->_recurse($item, array('value' => $value));
       }
-      parent::__construct();
     }
     
     /**

@@ -31,7 +31,6 @@
         'xmlns:vec'   => 'http://xml.apache.org/xml-soap',
         'xsi:type'    => 'vec:Vector'
       ));
-      parent::__construct();
     }
     
     /**
