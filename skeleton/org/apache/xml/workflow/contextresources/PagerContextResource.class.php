@@ -53,7 +53,7 @@
      * @access  public
      */
     function showLast() {
-      $this->begin= max($this->count - $this->interval, $this->begin + $this->interval);
+      $this->begin= $this->count - ($this->count % $this->interval);
     }
 
     /**
@@ -62,7 +62,10 @@
      * @access  public
      */
     function showNext() {
-      $this->begin= max($this->begin + $this->interval, $this->count - $this->interval);
+      $this->begin= min(
+        $this->begin + $this->interval, 
+        $this->count - ($this->count % $this->interval)
+      );
     }
 
     /**
