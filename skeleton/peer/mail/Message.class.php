@@ -528,6 +528,20 @@
     }
     
     /**
+     * Returns the header representation of the content-type. This includes
+     * adding a charset information if one is set.
+     *
+     * @access  private
+     * @return  string header
+     */
+    function _getContenttypeHeaderString() {
+      return $this->contenttype.(empty($this->charset) 
+        ? '' 
+        : ";\n\tcharset=\"{$this->charset}\""
+      );
+    }
+    
+    /**
      * Return headers as string
      *
      * @access  public
@@ -570,10 +584,7 @@
       // Additional headers
       foreach (array_merge($this->headers, array(
         HEADER_SUBJECT      => qstr(@$this->subject),
-        HEADER_CONTENTTYPE  => $this->contenttype.(empty($this->charset) 
-          ? '' 
-          : ";\n\tcharset=\"{$this->charset}\""
-        ),
+        HEADER_CONTENTTYPE  => $this->_getContenttypeHeaderString(),
         HEADER_MIMEVER      => $this->mimever,
         HEADER_ENCODING     => $this->encoding,
         HEADER_PRIORITY     => $this->priority,
