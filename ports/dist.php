@@ -92,6 +92,9 @@
         // Add
         printf("     >> Adding %s [%d bytes] as %s\n", $f->filename, $f->size(), $idx);
         $a->add($f, $idx);
+        
+        // Delete temporary workfile
+        $f->unlink();
       }
       
       // Write archive to disk
