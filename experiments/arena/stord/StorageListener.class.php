@@ -39,15 +39,6 @@
   class StorageListener extends ConnectionListener {
   
     /**
-     * Method to be triggered when a client connects
-     *
-     * @access  public
-     * @param   &peer.server.ConnectionEvent event
-     */
-    function connected(&$event) {
-    }
-    
-    /**
      * Handle method "GET"
      *
      * @access  protected
@@ -146,23 +137,5 @@
       $event->stream->write($response."\r\n");
       unset($response, $return);
     }
-    
-    /**
-     * Method to be triggered when a client disconnects
-     *
-     * @access  public
-     * @param   &peer.server.ConnectionEvent event
-     */
-    function disconnected(&$event) {
-    }
-    
-    /**
-     * Method to be triggered when a communication error occurs
-     *
-     * @access  public
-     * @param   &peer.server.ConnectionEvent event
-     */
-    function error(&$event) {
-    }  
   }
 ?>
