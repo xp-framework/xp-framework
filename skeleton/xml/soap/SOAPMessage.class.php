@@ -256,6 +256,38 @@
     }
 
     /**
+     * Construct a SOAP message from a string
+     *
+     * <code>
+     *   $msg= SOAPMessage::fromString('<SOAP-ENV:Envelope>...</SOAP-ENV:Envelope>');
+     * </code>
+     *
+     * @model   static
+     * @access  public
+     * @param   string string
+     * @return  &xml.Tree
+     */
+    function &fromString($string) {
+      return parent::fromString($string, __CLASS__);
+    }
+
+    /**
+     * Construct a SOAP message from a file
+     *
+     * <code>
+     *   $msg= SOAPMessage::fromFile(new File('foo.soap.xml');
+     * </code>
+     *
+     * @model   static
+     * @access  public
+     * @param   &io.File file
+     * @return  &xml.Tree
+     */ 
+    function &fromFile(&$file) {
+      return parent::fromFile($file, __CLASS__);
+    }
+
+    /**
      * Get fault
      *
      * @access  public
@@ -285,7 +317,7 @@
       foreach ($this->root->attribute as $key=> $val) { // Namespace suchen
         if ($val == $this->action) $this->namespace= substr($key, strlen('xmlns:'));
       }
-      
+
       $return= $this->_recurseData($this->root->children[0]->children[0], FALSE, $context);
       return $return;
     }
