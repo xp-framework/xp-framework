@@ -51,17 +51,6 @@
     }
 
     /**
-     * Returns a shallow copy of this hashmap. Values are *not*
-     * cloned
-     *
-     * @access  public
-     * @return  util.Hashmap copy 
-     */
-    function &clone() {
-      return new Hashmap($this->_hash);
-    }
-    
-    /**
      * Returns an iterator over the keys of this hashmap
      *
      * @access  public
