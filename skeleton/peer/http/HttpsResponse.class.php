@@ -59,13 +59,15 @@
      */
     function readData($size= 8192, $binary= FALSE) {
       if (!$this->_readhead()) return FALSE;            // Read head if not done before
-      if (0 == strlen($this->stream[1])) return FALSE;  // EOF
+      if (!isset($this->stream) || 0 == strlen($this->stream[1])) return FALSE;  // EOF
       
       $str= substr($this->stream[1], 0, $size);
+      $size= strlen($str);
       if (!$binary) {
         if (FALSE === ($n= strpos($str, "\n"))) $n= $size;
         if (FALSE === ($r= strpos($str, "\r"))) $r= $size;
-        $size= min($size, $n, $r)+ ("\n" == $str{$r+ 1});
+        $size= min($size, $n, $r);
+        if ($r < $size) $size+= ("\n" == $str{$r+ 1});
         $str= substr($str, 0, $size+ 1);
       }
       
