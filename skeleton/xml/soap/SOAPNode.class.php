@@ -103,100 +103,91 @@
     }
     
     /**
+     * Marshaller
+     *
+     * @access  private
+     * @param   &xml.soap.SOAPNode child
+     * @param   mixed value
+     */
+    function _marshall(&$child, $value) {
+      static $ns= 0;
+      
+      if (is_scalar($value)) {          // Scalar
+        $child->attribute['xsi:type']= $child->_typeName($value);
+        $child->setContent($child->_contentFormat($value));
+        return;
+      }
+      
+      if (is_null($value)) {            // NULL
+        $child->attribute['xsi:nil']= 'true';
+        return;
+      }
+      
+      if (is_array($value)) {           // Array
+        if (is_numeric(key($value))) {
+          $child->attribute['xsi:type']= 'SOAP-ENC:Array';
+          $child->attribute['SOAP-ENC:arrayType']= 'xsd:anyType['.sizeof($a[$key]).']';
+        } else {
+          $child->attribute['xsi:type']= 'xsd:ur-type';
+        }
+        $this->_recurseArray($child, $value);
+        return;
+      }
+      
+      if (is_a($value, 'Date')) {       // Date
+        $value= &new SOAPDateTime($value->_utime);
+        // Fallthrough intended
+      }
+      
+      if (is_a($value, 'SoapType')) {   // Special SoapTypes
+        if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
+        $this->_marshall($child, $value->toString());
+        
+        // Specified type
+        if (NULL !== ($t= $value->getType())) $child->attribute['xsi:type']= $t;
+        
+        // A node
+        if (isset($value->item)) {
+          $child->attribute= $value->item->attribute;
+          $child->children= &array_merge($child->children, $value->item->children);
+        }
+        return;
+      }
+      
+      if (is_a($value, 'Object')) {     // XP objects
+        $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
+        $child->attribute['xsi:type']= 'xp:'.$value->getClassName();
+        $this->_recurseArray($child, get_object_vars($value));
+        return;
+      }
+      
+      if (is_object($value)) {          // Any other object, e.g. "stdClass"
+        $ns++;
+        $child->attribute['xmlns:ns'.$ns]= 'http://xp-framework.net/xmlns/php';
+        $child->attribute['xsi:type']= 'ns'.$ns.':'.get_class($value);
+        $this->_recurseArray($child, get_object_vars($value));
+        return;        
+      }
+      
+      // Any other type is simply ignored
+    }
+    
+    /**
      * Recurse an array
      *
      * @access  private
      * @param   &mixed elem
-     * @param   array arr
+     * @param   array a
      */
-    function _recurseArray(&$elem, $arr) {
-      static $ns;
-
-      $nodeType= get_class($this);
-      if (!is_array($arr)) return;
-      foreach ($arr as $field => $value) {      
-        if ('_' == $field{0}) continue;     // Ignore "private" members
+    function _recurseArray(&$elem, $a) {
+      if (is_array($a)) foreach (array_keys($a) as $key) {
+        if ('_' == $key{0}) continue;     // Ignore "private" members
         
-        $child= &$elem->addChild(new $nodeType(array(
-          'name'        => (is_numeric($field) ? preg_replace('=s$=', '', $elem->name) : $field)
-        )));
-        unset($type);
-       
-        if (is_a($value, 'Date')) $value= &new SOAPDateTime($value->_utime);
-        
-        if (
-          (is_object($value)) && 
-          (is_a($value, 'SoapType'))
-        ) {       
-          // SOAP-Types
-          
-          if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
-          if (isset($value->item)) $child= $value->item;
-          
-          // Inhalt und Typen
-          $content= $value->toString();
-          $type= $value->getType();
-          if (NULL === $type) {
-            $type= $child->_typeName($content);
-            $content= $child->_contentFormat($content);
-          }
-        } else if (is_object($value)) {
-        
-          // Objekte
-          $content= get_object_vars($value);
-          
-          // Class name
-          if (method_exists($value, 'getClassName')) {
-            $name= $value->getClassName();
-            $namespace= 'xp';
-            $type= 'xp:struct';
-          } else {
-            $name= get_class($value);
-            $ns++;
-            $type= 'ns'.$ns.':struct';
-            $namespace= 'ns'.$ns;
-          }
-          
-          $child->attribute['xmlns:'.$namespace]= $name;
-        } else if (is_scalar($value)) {
-        
-          // Skalare Typen
-          $type= $child->_typeName($value);
-          $content= $child->_contentFormat($value);
-        } else if (NULL === $value) {
-
-          // NULL
-          $type= NULL;
-          $content= '';
-          $child->attribute['xsi:nil']= 'true';
-
-        } else {
-        
-          // Arrays
-          $content= &$value;
-        }
-
-        // Arrays
-        if (is_array($content)) {
-          $this->_recurseArray($child, $content);
-          if (isset($type)) {
-            $child->attribute['xsi:type']= $type;
-          } else {
-            if (is_numeric(key($value))) {
-              $child->attribute['xsi:type']= 'SOAP-ENC:Array';
-              $child->attribute['SOAP-ENC:arrayType']= 'xsd:anyType['.sizeof($value).']';
-            } else {
-              $child->attribute['xsi:type']= 'xsd:ur-type';
-            }
-          }
-          continue;
-        }
-
-        // Skalare Datentypen
-        if (NULL !== $type) $child->attribute['xsi:type']= $type;
-        $child->setContent($content);
+        $this->_marshall(
+          $elem->addChild(new SOAPNode(is_numeric($key) ? 'item' : $key)),
+          $a[$key]
+        );
       }
     }
-
   }
 ?>
