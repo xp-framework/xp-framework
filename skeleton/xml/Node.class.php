@@ -248,7 +248,7 @@
           break;
 
         case 'xml.CData':
-          $content= '<![CDATA['.str_replace(']]>', ']]&gt;', $this->content->cdata).']]>';
+          $content= '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $this->content->cdata).']]>';
           break;
 
         case 'string': 
