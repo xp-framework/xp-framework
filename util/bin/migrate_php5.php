@@ -11,12 +11,14 @@
     'io.FileUtil',
     'text.PHPTokenizer'
   );
+
+  // Class names that need to be mapped due to built-in classes in PHP5.
+  $map= array(
+    'Exception'   => 'XPException',
+    'Iterator'    => 'XPIterator'
+  );
   
   // {{{ main
-  $map= array(
-    'Exception'   => 'XPException'
-  );
-
   $p= &new ParamString();
   if (2 > $p->count || $p->exists('help', '?')) {
     printf(
