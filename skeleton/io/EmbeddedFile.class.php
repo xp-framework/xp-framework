@@ -76,6 +76,5 @@
       $return= call_user_func_array (array (&$this->_stream, $method), $params);
       return TRUE;
     }
-  }
-
+  } overload('EmbeddedFile');
 ?>
