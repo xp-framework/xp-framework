@@ -26,18 +26,48 @@
       static $except= array('call_user_func_array', 'call_user_func', 'object');
       $this->message= $message;
       
-      $errors= &xp::registry('errors');
-      foreach (debug_backtrace() as $trace) {
-        if (!isset($trace['function']) || in_array($trace['function'], $except)) continue;
+      $errors= xp::registry('errors');
+      if (function_exists('debug_backtrace')) {
+        foreach (debug_backtrace() as $trace) {
+          if (!isset($trace['function']) || in_array($trace['function'], $except)) continue;
 
-        $this->trace[]= &new StackTraceElement(
-          $trace['file'],
-          $trace['class'],
-          $trace['function'],
-          $trace['line'],
-          $trace['args'],
-          $errors[$trace['file']]
+          // Pop error messages off the copied error stack
+          if (isset($trace['file']) && isset($errors[$trace['file']])) {
+            $messages= $errors[$trace['file']];
+            unset($errors[$trace['file']]);
+          } else {
+            $messages= array();
+          }
+
+          // Not all of these are always set: debug_backtrace() should
+          // initialize these - at least - to NULL, IMO => Workaround.
+          $this->trace[]= &new StackTraceElement(
+            @$trace['file'],
+            @$trace['class'],
+            @$trace['function'],
+            @$trace['line'],
+            @$trace['args'],
+            $messages
+          );
+        }
+      }
+      
+      // Remaining error messages
+      foreach (array_keys($errors) as $key) {
+        $class= ('.class.php' == substr($key, -10)
+          ? strtolower(substr(basename($key), 0, -10))
+          : '<main>'
         );
+        for ($i= 0, $s= sizeof($errors[$key]); $i < $s; $i++) { 
+          $this->trace[]= &new StackTraceElement(
+            $key,
+            $class,
+            NULL,
+            $errors[$key][$i][2],
+            array(),
+            array($errors[$key][$i])
+          );
+        }
       }
 
       parent::__construct();
