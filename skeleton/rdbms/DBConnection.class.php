@@ -31,7 +31,6 @@
     var 
       $handle  = NULL,
       $dsn     = NULL,
-      $log     = NULL,
       $timeout = 0,
       $flags   = 0;
     
