@@ -121,7 +121,7 @@
       // A property, add it to the Java command line
       case 'com.sun.webstart.jnlp.JnlpPropertyResource':
         Console::writeLine('     >> Have property ', $resource->getName(), '=', $resource->getValue());
-        $properties.= ' -D'.$resource->getName().'='.$resource->getValue();
+        $properties.= ' -D'.$resource->getName().'=\''.$resource->getValue().'\'';
         break;
       
       // Ignore anything else
