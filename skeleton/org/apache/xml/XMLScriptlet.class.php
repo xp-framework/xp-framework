@@ -31,6 +31,7 @@
    * Farthermore, the following attributes are passed as external parameters:
    * <pre>
    *   page      the page displayed
+   *   frame     the frame displayed
    *   lang      the language in which this page is displayed
    *   product   the product (think of it as "theme")
    *   sess      the session's id
@@ -189,10 +190,11 @@
       
       // Set XSL stylesheet
       $response->setStylesheet(sprintf(
-        '%s%s/%s/%s.xsl',
+        '%s%s/%s/%s/%s.xsl',
         $this->stylesheetBase,
         $response->getParam('product'),
         $response->getParam('lang'),
+        $request->getState(),
         $response->getParam('page')
       ));
     }
