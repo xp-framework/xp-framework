@@ -48,6 +48,28 @@
     }
     
     /**
+     * Set the timeout for the request.
+     * Note: this is the read-timeout.
+     *
+     * @access  public
+     * @param   int timeout
+     */
+    function setTimeout($timeout) {
+      $this->_conn->setTimeout($timeout);
+    }
+    
+    /**
+     * Retrieve the current timeout setting.
+     * Note: this is the read-timeout.
+     *
+     * @access  public
+     * @return  int
+     */
+    function getTimeout() {
+      return $this->_conn->getTimeout();
+    }
+
+    /**
      * Destructor
      *
      * @access  public
@@ -120,7 +142,7 @@
       $this->_conn->request->addHeaders($this->_headers);
       try(); {
         $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
-        $res= &$this->_conn->request->send();
+        $res= &$this->_conn->request->send($this->_conn->getTimeout());
       } if (catch ('IOException', $e)) {
         return throw ($e);
       }
