@@ -9,8 +9,8 @@
         <caption>Idea / Core</caption>
         <text>
           <ul>
-            <li>Timm Friebe, <ref type="ext" href="http://thekid.de/">Homepage</ref></li>
-            <li>Alex Kiesel, <ref type="ext" href="http://document-root.de/">Homepage</ref></li>
+            <li>Timm Friebe, <ref type="ext" link="http://thekid.de/?ref=xp">Homepage</ref></li>
+            <li>Alex Kiesel, <ref type="ext" link="http://document-root.de/">Homepage</ref></li>
           </ul>
         </text>
       </para>
@@ -28,8 +28,8 @@
         <caption>Documentation system</caption>
         <text>
           <ul>
-            <li>Alex Kiesel, <ref type="ext" href="http://document-root.de/">Homepage</ref></li>
-            <li>Timm Friebe, <ref type="ext" href="http://thekid.de/">Homepage</ref></li>
+            <li>Alex Kiesel, <ref type="ext" link="http://document-root.de/">Homepage</ref></li>
+            <li>Timm Friebe, <ref type="ext" link="http://thekid.de/?ref=xp">Homepage</ref></li>
           </ul>
         </text>
       </para>
@@ -37,7 +37,7 @@
         <caption>Website design</caption>
         <text>
           <ul>
-            <li>Timm Friebe, <ref type="ext" href="http://thekid.de/">Homepage</ref></li>
+            <li>Timm Friebe, <ref type="ext" link="http://thekid.de/?ref=xp">Homepage</ref></li>
           </ul>
         </text>
       </para>
