@@ -117,7 +117,7 @@
      * @see     xp://lang.reflect.Method
      */
     public function getMethod($name) {
-      if (!($m= $this->_reflection->getMethod($name))) return NULL;
+      if (!($m= $this->_reflection->getMethod($name))) return xp::$null;
       return new Method($m); 
     }
     
@@ -144,7 +144,7 @@
      * @see     xp://lang.reflect.Constructor
      */
     public function getConstructor() {
-      if (!($c= $this->_reflection->getConstructor())) return NULL;
+      if (!($c= $this->_reflection->getConstructor())) return xp::$null;
       return new Constructor($c); 
     }
     
@@ -170,7 +170,7 @@
      * @return  &lang.XPClass class object
      */
     public function getParentclass() {
-      if (!($p= $this->_reflection->getParentClass())) return NULL;
+      if (!($p= $this->_reflection->getParentClass())) return xp::$null;
       return new XPClass($p);
     }
     
