@@ -101,12 +101,13 @@
       if (!$this->socket->isConnected()) return FALSE;
       
       while ($m= &$this->socket->accept()) {
+        $m->setBlocking(TRUE);
         $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
         
         // Loop
         do {
           try(); {
-            if (NULL === ($data= $m->read())) break;
+            if (NULL === ($data= $m->readBinary())) break;
           } if (catch('IOException', $e)) {
             $this->notify(new ConnectionEvent(EVENT_ERROR, $m, $e));
             break;
