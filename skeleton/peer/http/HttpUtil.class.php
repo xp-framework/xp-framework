@@ -67,8 +67,8 @@
             return $content;
 
           case 301:             // 301 Moved permanently or
-          case 302:             // 302 Moved temparily - redirect
-            if (!$loc= $response->getHeader('Location')) {
+          case 302:             // 302 Moved temporarily - redirect
+            if (!($loc= $response->getHeader('Location'))) {
               return throw(new UnexpectedResponseException(
                 'Redirect status '.$sc.', but no location header in '.$response->toString(),
                 $sc
