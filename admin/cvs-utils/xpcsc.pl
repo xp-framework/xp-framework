@@ -36,6 +36,7 @@ use constant WPERFORM       => "WPERFORM";
   ECONSTRUCT          => "http://xp-framework.net/devel/coding.html#25",
   EWHITESPACE         => "http://xp-framework.net/devel/coding.html#24",
   ECALLTIMEREFERENCE  => "http://de3.php.net/manual/en/language.references.pass.php",
+  ELEAKING            => "n/a",
 
   # Warnings
   WTBD        => "http://xp-framework.net/devel/coding.html#13",
@@ -166,6 +167,9 @@ while (@ARGV) {
       if ($l < 5) { next; }
     }
     
+    # Check for output after PHP mode
+    if (0 == $php) { &error("Lines after closing PHP tags", ELEAKING); }
+    
     # Check whether we have a comment
     if ($_ =~ /(\s*)\/\*\*?/) {
       $comment= 1;
@@ -192,6 +196,11 @@ while (@ARGV) {
       &error("Tab character found", ETAB);
     }
 
+    # Check for PHP mode end
+    if (!$comment && $_ =~ /^\?\>/) {
+      $php= 0;
+    }
+    
     # Check class indentation
     if (!$comment && $_ =~ /^(\s+)class/ && 2 != length($1)) {
       &error("Class declarations must be indented with 2 spaces", EINDENT);
