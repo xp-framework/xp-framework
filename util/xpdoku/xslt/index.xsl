@@ -75,6 +75,27 @@
       </xsl:for-each>
     </table>
     
+    <!-- Releases -->
+    <br/><br/>
+    <xsl:call-template name="nav-divider">
+      <xsl:with-param name="caption">Current release</xsl:with-param>
+      <xsl:with-param name="link">/resources</xsl:with-param>
+      <xsl:with-param name="colorcode">resources</xsl:with-param>
+    </xsl:call-template>
+    <table border="0" width="100%" cellspacing="0" cellpadding="2">
+      <tr>
+        <td valign="top"><img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/></td>
+        <td>
+          <xsl:processing-instruction name="php"><![CDATA[
+            $f= readlink(getenv('DOCUMENT_ROOT').'/downloads/xp-current.tar.gz');
+            echo '<a href="http://xp-framework.net/downloads/'.basename($f).'">'.basename($f).'</a><br/>';
+            
+            if (file_exists($f.'.info')) readfile($f.'.info');
+          ]]></xsl:processing-instruction>
+        </td>
+      </tr>
+    </table>
+    
     <!-- CVS activity -->
     <br/><br/>
     <xsl:call-template name="nav-divider">
