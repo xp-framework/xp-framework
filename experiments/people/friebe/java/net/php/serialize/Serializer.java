@@ -51,7 +51,6 @@ package net.php.serialize;
      * @return  String the serialized representation
      */
     public static String serialize(Date d) {
-System.err.println(d.toString() + ".getTime() = " + d.getTime());
       return "O:4:\"Date\":1:{s:6:\"_utime\";i:" + (d.getTime() / 1000) + ";}";
     }
 
