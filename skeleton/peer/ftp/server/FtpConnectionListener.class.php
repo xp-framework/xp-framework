@@ -136,7 +136,7 @@
      * @param   string params
      */
     function onPwd(&$event, $params) {
-      $this->answer($event->stream, 257, '"'.$this->storage->getBase().'" is current directory');
+      $this->answer($event->stream, 257, '"'.$this->storage->getBase($event->stream->hashCode()).'" is current directory');
     }
 
     /**
@@ -150,7 +150,7 @@
      */
     function onCwd(&$event, $params) {
       try(); {
-        $pwd= $this->storage->setBase($params);
+        $pwd= $this->storage->setBase($event->stream->hashCode(), $params);
       } if (catch('Exception', $e)) {
         $this->answer($event->stream, 450, $e->getMessage());
         return;
@@ -205,7 +205,7 @@
       // Check if method is implemented and answer with code 550 in case
       // it isn't.
       if (!method_exists($this, $method)) {
-        $this->answer($event->stream, 550, $command.' not understood');
+        $this->answer($event->stream, 500, $command.' not understood');
         return;
       }
 
@@ -231,8 +231,8 @@
      * @param   string params
      */
     function onSiteChmod(&$event, $params) {
-      sscanf($params, '%d %s', $permissions, $uri);
-      if (!($entry= &$this->storage->lookup($uri))) {
+      sscanf($params, '%d %s %s %s', $permissions, $uri);
+      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $uri))) {
         $this->answer($event->stream, 550, $uri.': No such file or directory');
         return;
       }
@@ -240,7 +240,7 @@
       $entry->setPermissions($permissions);
       $this->answer($event->stream, 200, 'SITE CHMOD command successful');
     }
-    
+   
     /**
      * Callback for the "SYST" command
      *
@@ -306,13 +306,16 @@
      */
     function onList(&$event, $params) {
       $params= str_replace('-L', '', $params);
-      if (!($entry= &$this->storage->lookup($params))) {
+      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
+        $m= &$this->datasock[$event->stream->hashCode()]->accept();
+        $m->close();
         return;
       }
       
       // Assume this is a passive connection
       $m= &$this->datasock[$event->stream->hashCode()]->accept();
+      $this->cat->debug($m);
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for filelist',
         $this->sessions[$event->stream->hashCode()]->typeName()
@@ -353,8 +356,11 @@
      * @param   string params
      */
     function onNlst(&$event, $params) {
-      if (!($entry= &$this->storage->lookup($params))) {
+      $this->cat->debug('nlst');
+      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
+        $m= &$this->datasock[$event->stream->hashCode()]->accept();
+        $m->close();
         return;
       }
       
@@ -392,7 +398,7 @@
      * @param   string params
      */
     function onMdtm(&$event, $params) {
-      if (!($entry= &$this->storage->lookup($params))) {
+      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         return;
       }
@@ -411,7 +417,7 @@
      * @param   string params
      */
     function onSize(&$event, $params) {
-      if (!($entry= &$this->storage->lookup($params))) {
+      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         return;
       }
@@ -430,14 +436,14 @@
      * @param   string params
      */
     function onMkd(&$event, $params) {
-      if ($this->storage->lookup($params)) {
+      if ($this->storage->lookup($event->stream->hashCode(), $params)) {
         $this->answer($event->stream, 550, $params.': already exists');
         return;
       }
       
       // Create the element
       try(); {
-        $this->storage->create($params, ST_COLLECTION);
+        $this->storage->create($event->stream->hashCode(), $params, ST_COLLECTION);
       } if (catch('Exception', $e)) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
         return;
@@ -456,7 +462,7 @@
      * @param   string params
      */
     function onRmd(&$event, $params) {
-      if (!($element= &$this->storage->lookup($params))) {
+      if (!($element= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': no such file or directory');
         return;
       }
@@ -481,8 +487,10 @@
      * @param   string params
      */
     function onRetr(&$event, $params) {
-      if (!($entry= &$this->storage->lookup($params))) {
+      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
+        $m= &$this->datasock[$event->stream->hashCode()]->accept();
+        $m->close();
         return;
       }
       $this->cat && $this->cat->debug($entry->toString());
@@ -521,9 +529,9 @@
      * @param   string params
      */
     function onStor(&$event, $params) {
-      if (!($entry= &$this->storage->lookup($params))) {
+      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         try(); {
-          $entry= &$this->storage->create($params, ST_ELEMENT);
+          $entry= &$this->storage->create($event->stream->hashCode(), $params, ST_ELEMENT);
         } if (catch('Exception', $e)) {
           $this->answer($event->stream, 550, $params.': '.$e->getMessage());
           return;
@@ -674,7 +682,7 @@
      */
     function data(&$event) {
       static $public= array('onhelp', 'onuser', 'onpass', 'onquit');
-
+      
       $this->cat && $this->cat->debug('>>> ', addcslashes($event->data, "\0..\17"));
       sscanf($event->data, "%s %[^\r]", $command, $params);
       $method= 'on'.strtolower($command);
