@@ -1,47 +1,51 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
- * $Id$
+ * $Id$ 
  */
   
-  uses(
-    'lang.ElementNotFoundException',
-    'util.LOG'
-  );
+  uses('lang.ElementNotFoundException');
   
   /**
    * ConnectionManager
    *
-   * @access    static
+   * @purpose  Hold connections to databases
    */
   class ConnectionManager extends Object {
     var 
-      $pool= array(),
-      $_ref= 0;
+      $pool= array();
     
     /**
-     * Instanz des Connection-Managers zurückgeben
+     * Return the ConnectionManager's instance
      * 
-     * @see SingleTon#getInstance
+     * @model   static
+     * @access  public
+     * @return  &rdbms.ConnectionManager
      */
     function &getInstance() {
-      static $ConnectionManager__instance;
+      static $__instance;
       
-      if (!isset($ConnectionManager__instance)) {
-        LOG::info("ConnectionManager::Creating new...");
-        $ConnectionManager__instance= new ConnectionManager();
-      }
-      $ConnectionManager__instance->_ref++;
-      LOG::info('ConnectionManager::ref= '.$ConnectionManager__instance->_ref);
-      return $ConnectionManager__instance;
+      if (!isset($__instance)) $__instance= new ConnectionManager();
+      return $__instance;
     }
     
     /**
-     * Konfigurieren
+     * Configure this ConnectionManager
      *
-     * @param   util.Properties properties Ein Objekt der Properties-Klasse
+     * A sample configuration file:
+     * <pre>
+     * [caffeine]
+     * reflect=rdbms.sybase.SPSybase
+     * host=gurke
+     * user=news
+     * pass=enieffac
+     * db=CAFFEINE
+     * </pre>
+     *
+     * @access  public
+     * @param   &util.Properties properties
      */
-    function configure($properties) {
+    function configure(&$properties) {
       $section= $properties->getFirstSection();
       do {
         $defines= $properties->readSection($section);
@@ -66,16 +70,16 @@
     }
     
     /**
-     * Ein Datenbank-Objekt registrieren - über die Aliase kann später einfacher zugegriffen werden
+     * Register a connection
      *
-     * @param   mixed obj Ein Datenbank-Objekt
-     * @param   string hostAlias default NULL ein Alias für den Hostnamen, ansonsten der Hostname des Datenbank-Objekts
-     * @param   string userAlias default NULL ein Alias für den Usernamen, ansonsten der Username des Datenbank-Objekts
+     * @param   &lang.Object obj A connection object
+     * @param   string hostAlias default NULL
+     * @param   string userAlias default NULL
      */
-    function register($obj, $hostAlias= NULL, $userAlias= NULL) {
+    function register(&$obj, $hostAlias= NULL, $userAlias= NULL) {
       $host= (NULL == $hostAlias) ? $obj->host : $hostAlias;
       $user= (NULL == $userAlias) ? $obj->user : $userAlias;
-      LOG::info('ConnectionManager::register ['.$user.'@'.$host.']');
+      
       if (!isset($this->pool["$user@$host"])) {
         $this->pool["$user@$host"]= $obj;
         return $obj;
@@ -83,11 +87,12 @@
     }
     
     /**
-     * Ein Datenbank-Objekt zurückgeben
+     * Return a database connection object by host and user
      *
-     * @param   string host Der Hostname
-     * @param   string user Der Username
-     * @return  mixed Datenbank-Objekt
+     * @param   string host
+     * @param   string user
+     * @return  &lang.Object
+     * @throws  ElementNotFoundException in case there's no connection under these names
      */
     function &get($host, $user) {
       if (!isset($this->pool["$user@$host"])) {
@@ -97,11 +102,11 @@
     }
     
     /**
-     * Ein oder mehrere Datenbank-Objekt(e) zu einem Hostnamen zurückgeben
+     * Return one or more connections by host
      *
-     * @param   string hostName Der Hostname
-     * @param   int num default -1 Den num'ten Eintrag, -1 = alle
-     * @return  mixed Datenbank-Objekt(e)
+     * @param   string hostName
+     * @param   int num default -1 offset, -1 for all
+     * @return  &lang.Object
      */
     function &getByHost($hostName, $num= -1) {
       $results= array();
