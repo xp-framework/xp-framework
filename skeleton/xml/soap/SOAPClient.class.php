@@ -25,9 +25,10 @@
    */
   class SOAPClient extends Object {
     var 
-      $transport    = NULL,
-      $action       = '',
-      $mapping      = array();
+      $transport          = NULL,
+      $action             = '',
+      $targetNamespace    = NULL,
+      $mapping            = array();
     
     /**
      * Constructor
@@ -35,13 +36,24 @@
      * @access  public
      * @param   &xml.soap.transport.SOAPTransport transport a SOAP transport
      * @param   string action Action
+     * @param   string targetNamespace default NULL
      */
-    function __construct(&$transport, $action) {
+    function __construct(&$transport, $action, $targetNamespace= NULL) {
       $this->transport= &$transport;
       $this->action= $action;
-      
+      $this->targetNamespace= $namespace;
     }
-    
+
+    /**
+     * Set TargetNamespace
+     *
+     * @access  public
+     * @param   string targetNamespace
+     */
+    function setTargetNamespace($targetNamespace= NULL) {
+      $this->targetNamespace= $targetNamespace;
+    }
+
     /**
      * Set trace for debugging
      *
@@ -88,7 +100,7 @@
       
       $this->answer= &new SOAPMessage();
       $this->message= &new SOAPMessage();
-      $this->message->create($this->action, array_shift($args));
+      $this->message->create($this->action, array_shift($args), $this->targetNamespace);
       $this->message->setData($args);
 
       // Send
