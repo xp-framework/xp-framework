@@ -140,11 +140,70 @@
       <para>
         <caption>GUI applications</caption>
         <text>
-          <!-- With the power of GTK-PHP -->
-          <!-- <ref type="api:class" link="gui.gtk.GTKApplication#"/> -->
-          Vivamus metus justo, ultrices a, egestas sit amet, mattis at, mi. Nulla ut massa sed est sollicitudin egestas. Proin consequat odio non quam. Ut semper. Suspendisse quam augue, sollicitudin sit amet, vehicula ac, porta et, lacus. Nunc viverra venenatis wisi. In mattis tempor mauris. Sed eleifend magna at orci. Morbi eget ligula. Cras non nulla. Nulla id metus. Aenean vestibulum. Ut hendrerit, quam non fringilla consequat, dui velit imperdiet nibh, quis vulputate felis metus eu massa. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Etiam tortor. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nam quis ipsum. Nullam porta commodo odio. Ut felis risus, rhoncus et, mollis id, faucibus sit amet, leo.
+          <ref type="ext" link="http://gtk.org/">GTK</ref> stands for "Gimp Tool Kit" and 
+          was originally developed to serve as a widget set for this open source 
+          graphics program. GTK is available for Unix systems as well as for Windows, 
+          Mac OS X and even BeOS.
+          <ul>
+            <li><ref type="ext" link="http://www.gnome.org/seegnome.html">See GTK/Gnome in action</ref></li>
+            <li><ref type="ext" link="http://www.gimp.org/the_gimp_screenshots.html">GIMP screenshots</ref></li>
+            <li><ref type="ext" link="http://gtk.themes.org/">GTK+ Themes</ref></li>
+          </ul>
+          GTK has language bindings for a number of different programming languages,
+          including, as of May 2001, PHP (see the <ref type="ext" link="http://gtk.php.net/">
+          GTK-PHP website</ref> for details). In PHP, every widget is represented by a
+          wrapper class, so coding is already object-oriented. The XP framework adds
+          a number of utility classes to make it even easier to create GUI applications.
+          <br/>
+          <br/>
+          The ease of use of the base class for all GTK applications written
+          using the XP framework is probably best demonstrated by this piece of sample
+          code:
+          <code><![CDATA[  require('lang.base.php');
+  uses('gui.gtk.GTKApplication');
+
+  $app= &new GTKApplication('Hello World');
+  $app->init();
+  $app->run();
+  $app->done(); ]]></code>
+          API Docs: <ref type="api:class" link="gui.gtk.GTKApplication#"/><br/>
+          <br/>
+          The sample shown above has absolutely no functionality so far. It will,
+          when executed, show a window which can be resized, moved, maximized,
+          minimized and closed, but contains no elements such as buttons, images.
+          <br/>
+          Extending GTKApplication is the way to add functionality to your application.
+          <code><![CDATA[  require('lang.base.php');
+  uses('gui.gtk.GTKApplication');
+  
+  class MyApp extends GTKApplication {
+  
+    function init() {
+      parent::init();
+      $button= &new GTKButton('OK');
+      $button->show();
+      $button->connect('clicked', array(&$this, 'done'));
+      $this->window->add($button);
+    }
+  
+  }
+
+  $app= &new MyApp('Hello World');
+  $app->init();
+  $app->run();
+  $app->done(); ]]></code>
+          This application will now have a button labeled OK, which, when pressed,
+          will quit the application.
+          <br/>
+          <br/>
+          Hint: Always calling init, run, done may seem like overhead. There is
+          a utility script in <tt>util/bin</tt> called <tt>gtkphp</tt> which will
+          automagically take over this part for you. Simply create a class as shown 
+          above, but without the require and without the last four lines. Then call
+          <tt>gtkphp /path/to/your/app/MyApp.class.php</tt> and enjoy.
         </text>
         <advanced>
+          <ref link="tasks.gui.glade">Using Glade to build interfaces</ref>
           <ref link="tasks.gui.i18n">Internationalized GUIs</ref>
           <ref link="tasks.gui.html">Embedding HTML</ref>
         </advanced>
