@@ -7,10 +7,10 @@
   uses('rdbms.DBAdapter');
   
   /**
-   * Adapter for sybase
+   * Adapter for MySQL
    *
    * @see   xp://rdbms.DBAdapter
-   * @see   xp://rdbms.sybase.SPSybase
+   * @see   xp://rdbms.mysql.MySQLConnection
    */
   class MySQLDBAdapter extends DBAdapter {
 
