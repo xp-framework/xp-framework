@@ -208,9 +208,9 @@
   }
   // }}}
 
-  // {{{ proto void delete(lang.Object object)
+  // {{{ proto void delete(&lang.Object object)
   //     Destroys an object
-  function delete($object) {
+  function delete(&$object) {
     $object= NULL;
   }
   // }}}
