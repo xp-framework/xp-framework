@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.Tree');
+  uses('xml.Tree', 'text.parser.DateParser');
 
   /**
    * Class representing wddx messages. It can handle serialization and
@@ -35,7 +35,7 @@
      * @return  &xml.wddx.WddxMessage
      */
     function &fromString($string) {
-      parent::fromString($string, 'WddxMessage');
+      return parent::fromString($string, 'WddxMessage');
     }    
     
     /**
@@ -44,9 +44,9 @@
      * @access  public
      * @param   string comment
      */
-    function setComment($comment) {
+    function create($comment= NULL) {
       $h= &$this->root->addChild(new Node('header'));
-      $h->addChild(new Node('comment', $comment));
+      if ($comment) $h->addChild(new Node('comment', $comment));
     }
     
     /**
@@ -70,7 +70,7 @@
      * @param   &mixed data
      * @throws  lang.IllegalArgumentException if passed data could not be serialized
      */
-    function _marshallData(&$node, &$data) {
+    function _marshall(&$node, &$data) {
     
       switch (xp::typeOf($data)) {
         case 'NULL':
@@ -95,14 +95,16 @@
         case 'array':
           $s= &$node->addChild(new Node('struct'));
           foreach (array_keys($data) as $idx) {
-            $this->_marshallData($s->addChild(new Node('var', NULL, array(
+            $this->_marshall($s->addChild(new Node('var', NULL, array(
               'name'  => $idx
             ))), $data[$idx]);
           }
           break;
         
         case 'util.Date':
-          $node->addChild(new Node('dateTime', $data->toString('c')));
+          
+          // FIXME
+          $node->addChild(new Node('dateTime', $data->toString('r')));
           break;
         
         case 'lang.Collection':
@@ -135,7 +137,7 @@
         // Process params node
         foreach (array_keys($this->root->children[$idx]->children) as $params) {
           try(); {
-            $ret[]= &$this->_unmarshall($this->root->children[$idx]->children[$params]->children[0]);
+            $ret[]= &$this->_unmarshall($this->root->children[$idx]->children[$params]);
           } if (catch('Exception', $e)) {
             return throw($e);
           }
