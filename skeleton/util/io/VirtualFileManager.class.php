@@ -62,7 +62,7 @@
      */
     function &getFile($path) {
       if (isset ($this->fileMap[$path]))
-        return $this->fileMap]$path];
+        return $this->fileMap[$path];
     }
   }
 ?>
