@@ -62,7 +62,13 @@
         if (is_array($a[$field])) {
           $this->_recurse($child, $a[$field]);
         } else if (is_object($a[$field])) {
-          $this->_recurse($child, get_object_vars($a[$field]));
+          if (!method_exists($a[$field], '__sleep')) {
+            $vars= get_object_vars($a[$field]);
+          } else {
+            $vars= array();
+            foreach ($a[$field]->__sleep() as $var) $vars[$var]= $a[$field]->{$var};
+          }
+          $this->_recurse($child, $vars);
         } else {
           $child->setContent($a[$field]);
         }
@@ -105,8 +111,14 @@
      * @return  &xml.Node
      */
     function &fromObject($obj, $name= NULL) {
+      if (!method_exists($obj, '__sleep')) {
+        $vars= get_object_vars($obj);
+      } else {
+        $vars= array();
+        foreach ($obj->__sleep() as $var) $vars[$var]= $obj->{$var};
+      }
       return Node::fromArray(
-        get_object_vars($obj), 
+        $vars, 
         (NULL === $name) ? get_class($obj) : $name
       );
     }
