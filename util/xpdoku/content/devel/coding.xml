@@ -267,6 +267,12 @@ edit/mail_notify.php]]></pre>
   // FIXME: A database error could possibly pop up here.
   // TODO: Implement improved backchecking
 ]]></pre>
+          Furthermore, the following special words may be used:
+          <pre><![CDATA[
+  // HACK (fix this later)
+  // TBD (to be discussed)
+  // TBI (to be implemented)
+]]></pre>
 
           <quote>
             Note: The frequency of comments sometimes reflects poor quality of 
