@@ -119,6 +119,7 @@
             // If the handler has a wrapper, tell it to load its values from the
             // request.
             if ($this->handlers[$i]->hasWrapper()) {
+              $this->cat && $this->cat->debug($this->handlers[$i]->wrapper->getClassName().'::load');
               $this->handlers[$i]->wrapper->load($request, $this->handlers[$i]);
             }
 
