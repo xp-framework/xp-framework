@@ -46,10 +46,12 @@
           'package'    => $package,
           'class'      => $classname
         )));
-        $path= ''; $t= strtok($package, '.'); do {
-          $path.= $t.'.';
-          $n->addChild(new Node('path', $t, array('qualified' => substr($path, 0, -1))));
-        } while ($t= strtok('.'));
+
+        $path= '';         
+        foreach (explode('.', $package) as $token) {
+          $path.= $token.'.';
+          $n->addChild(new Node('path', $token, array('qualified' => substr($path, 0, -1))));
+        }
       }
       
       // Read cached api docs
