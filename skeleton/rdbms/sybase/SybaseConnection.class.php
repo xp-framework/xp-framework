@@ -17,7 +17,7 @@
    * @ext      sybase_ct
    * @purpose  Database connection
    */
-  class Sybase extends DBConnection {
+  class SybaseConnection extends DBConnection {
 
     /**
      * Connect

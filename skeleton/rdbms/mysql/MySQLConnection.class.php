@@ -13,7 +13,7 @@
    * @ext      mysql
    * @purpose  Database connection
    */
-  class MySQL extends DBConnection {
+  class MySQLConnection extends DBConnection {
 
     /**
      * Connect
