@@ -273,12 +273,42 @@
      * Patch properties
      *
      * @access  public
-     * @param   &org.webdav.xml.WebdavPropFindRequest request
-     * @param   &org.webdav.xml.WebdavPropFindResponse response
-     * @return  &org.webdav.xml.WebdavPropFindResponse response
+     * @param   &org.webdav.xml.WebdavPropPatcRequest request
+     * @throws  OperationFailedException
+     * @throws  ElementNotFoundException
      */
-    function &proppatch(&$request, &$response) {
+    function &proppatch(&$request) {
+      if (
+        (!is_a($request, 'WebdavPropPatchRequest'))
+      ) {
+        trigger_error('[request.type ] '.get_class($request), E_USER_NOTICE);
+        return throw(new IllegalArgumentException('Parameters passed of wrong types'));
+      }
       
+      $l= &Logger::getInstance();
+      $c= &$l->getCategory();
+      $c->debug('Properties to update for', $request->getFilename(), 'are', $request->getProperties());
+      
+      $realpath= $this->base.$request->getFilename();
+      if (!file_exists($realpath)) {
+        return throw(new ElementNotFoundException($realpath.' not found'));
+      }
+      
+      // Iterate over properties
+      foreach ($request->getProperties() as $key => $val) {
+        switch ($key) {
+          case 'executable':
+            if (FALSE === chmod($realpath, WebdavBool::fromString($val) ? 0700 : 0600)) {
+              return throw(new OperationFailedException('Cannot change executable flag of '.$realpath));
+            }
+            break;
+            
+          default:
+            // return throw(new OperationFailedException('Cannot change executable flag of '.$realpath));
+        }
+      }
+      
+      return TRUE;
     }
     
     /**
@@ -286,13 +316,13 @@
      *
      * @access  public
      * @param   &org.webdav.xml.WebdavPropFindRequest request
-     * @param   &org.webdav.xml.WebdavPropFindResponse response
-     * @return  &org.webdav.xml.WebdavPropFindResponse response
+     * @param   &org.webdav.xml.WebdavMultistatus response
+     * @return  &org.webdav.xml.WebdavMultistatus response
      */
     function &propfind(&$request, &$response) {
       if (
         (!is_a($request, 'WebdavPropFindRequest')) ||
-        (!is_a($response, 'WebdavPropFindResponse'))
+        (!is_a($response, 'WebdavMultistatus'))
       ) {
         trigger_error('[request.type ] '.get_class($request), E_USER_NOTICE);
         trigger_error('[response.type] '.get_class($response), E_USER_NOTICE);

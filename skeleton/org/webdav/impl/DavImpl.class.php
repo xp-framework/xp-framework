@@ -8,7 +8,8 @@
     'lang.MethodNotImplementedException',
     'org.webdav.OperationFailedException',
     'org.webdav.OperationNotAllowedException',
-    'org.webdav.WebdavObject'
+    'org.webdav.WebdavObject',
+    'org.webdav.util.WebdavBool'
   );
   
   define('WEBDAV_IMPL_PROPFIND',    0x0001);
@@ -116,12 +117,23 @@
      *
      * @access  abstract
      * @param   &org.webdav.xml.WebdavPropFindRequest request
-     * @param   &org.webdav.xml.WebdavPropFindResponse response
-     * @return  &org.webdav.xml.WebdavPropFindResponse response
+     * @param   &org.webdav.xml.WebdavMultistatus response
+     * @return  &org.webdav.xml.WebdavMultistatus response
      * @throws  MethodNotImplementedException
      */
     function &propfind(&$request, &$response) { 
       return throw(new MethodNotImplementedException($this->getName().'::propfind not implemented'));
+    }
+
+    /**
+     * Patch properties
+     *
+     * @access  abstract
+     * @param   &org.webdav.xml.WebdavPropPatcRequest request
+     * @throws  MethodNotImplementedException
+     */
+    function &proppatch(&$request) { 
+      return throw(new MethodNotImplementedException($this->getName().'::proppatch not implemented'));
     }
   
   }

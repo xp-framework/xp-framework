@@ -6,8 +6,10 @@
 
   uses(
     'org.apache.HttpScriptlet',
+    'org.webdav.util.WebdavBool',
     'org.webdav.xml.WebdavPropFindRequest',
-    'org.webdav.xml.WebdavPropFindResponse'
+    'org.webdav.xml.WebdavPropPatchRequest',
+    'org.webdav.xml.WebdavMultistatus'
   );
   
   // HTTP methods for distributed authoring
@@ -93,22 +95,6 @@
       parent::__construct();
     }
 
-    /**
-     * Private helper function
-     *
-     * @access  private
-     * @param   string s
-     * @return  bool
-     * @throws  IllegalArgumentException
-     */
-    function _bool($s) {
-      switch ($s) {
-        case 'T': return TRUE;
-        case 'F': return FALSE;
-        default:  return throw(new IllegalArgumentException('Value '.$s.' not recognized'));
-      }
-    }
-    
     /**
      * Private helper function
      *
@@ -333,7 +319,7 @@
         $created= $this->handlingImpl->copy(
           $request->uri['path_translated'],
           $this->_relativeTarget($request->getHeader('Destination')),
-          $this->_bool($request->getHeader('Overwrite'))
+          WebdavBool::fromString($request->getHeader('Overwrite'))
         );
       } if (catch('OperationFailedException', $e)) {
       
@@ -367,7 +353,7 @@
         $created= $this->handlingImpl->copy(
           $request->uri['path_translated'],
           $this->_relativeTarget($request->getHeader('Destination')),
-          $this->_bool($request->getHeader('Overwrite'))
+          WebdavBool::fromString($request->getHeader('Overwrite'))
         );
       } if (catch('OperationFailedException', $e)) {
       
@@ -433,7 +419,7 @@
       try(); {
         $multistatus= &$this->handlingImpl->propfind(
           new WebdavPropFindRequest($request),
-          new WebdavPropFindResponse()
+          new WebdavMultistatus()
         );
       } if (catch('ElementNotFoundException', $e)) {
       
@@ -472,6 +458,41 @@
      * @throws  Exception to indicate failure
      */
     function doPropPatch(&$request, &$response) {
+      try(); {
+        $this->handlingImpl->proppatch(
+          new WebdavPropPatchRequest($request)
+        );
+      } if (catch('ElementNotFoundException', $e)) {
+      
+        // Element not found
+        $response->setStatus(HTTP_NOT_FOUND);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      } if (catch('FormatException', $e)) {
+      
+        // XML parse errors
+        $response->setStatus(HTTP_BAD_REQUEST);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      } if (catch('OperationFailedException', $e)) {
+      
+        // Element not found
+        $response->setStatus(HTTP_CONFLICT);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      } if (catch('Exception', $e)) {
+      
+        // Other exceptions - throw exception to indicate (complete) failure
+        return throw(new HttpScriptletException($e->message));
+      }
+      
+      // Send "HTTP/1.1 207 Multi-Status" response header
+      /*
+      $response->setStatus(WEBDAV_MULTISTATUS);
+      $response->setHeader('Content-Type', 'text/xml');
+      
+      $response->setContent($multistatus->getSource(0));
+      */
     }
   
     /**
