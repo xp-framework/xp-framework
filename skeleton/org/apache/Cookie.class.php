@@ -105,7 +105,9 @@
     }
 
     /**
-     * Get Secure
+     * Get Secure. Note: This value is not available for cookies retrieved
+     * from HttpScriptletRequest, as the browser does not submit this in
+     * subsequent requests.
      *
      * @access  public
      * @return  bool
@@ -125,7 +127,9 @@
     }
 
     /**
-     * Get Domain
+     * Get Domain. Note: This value is not available for cookies retrieved
+     * from HttpScriptletRequest, as the browser does not submit this in
+     * subsequent requests.
      *
      * @access  public
      * @return  string
@@ -145,7 +149,9 @@
     }
 
     /**
-     * Get Path
+     * Get Path. Note: This value is not available for cookies retrieved
+     * from HttpScriptletRequest, as the browser does not submit this in
+     * subsequent requests.
      *
      * @access  public
      * @return  string
@@ -165,7 +171,9 @@
     }
 
     /**
-     * Get Expires
+     * Get Expires. Note: This value is not available for cookies retrieved
+     * from HttpScriptletRequest, as the browser does not submit this in
+     * subsequent requests.
      *
      * @access  public
      * @return  int
