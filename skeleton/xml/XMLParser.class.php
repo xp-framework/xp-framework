@@ -1,4 +1,6 @@
 <?php
+  uses('xml.XML');
+  
   class XMLParser extends XML {
     var
       $parser,
@@ -40,20 +42,16 @@
     function parse($data) {
       unset($this->error);
       if (NULL == $this->parser) $this->_create();
-      if (!isset($this->callback) || !is_object($this->callback)) return throw(
-        E_PARAM_EXCEPTION,
+      if (!isset($this->callback) || !is_object($this->callback)) return throw(new IllegalArgumentException(
         $this->callback.' is not an object'
-      );
+      ));
       
       xml_set_object($this->parser, $this->callback);
       xml_set_element_handler($this->parser, '_pCallStartElement', '_pCallEndElement');
       xml_set_character_data_handler($this->parser, '_pCallCData');
       xml_set_default_handler($this->parser, '_pCallDefault');
 
-      if (!xml_parse($this->parser, $data)) return throw(
-        E_FORMAT_EXCEPTION,
-        $this->_error()
-      );
+      if (!xml_parse($this->parser, $data)) return throw(new FormatException($this->_error()));
       return 1;
     }
     
