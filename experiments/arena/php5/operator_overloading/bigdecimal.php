@@ -17,8 +17,16 @@
       return new BigDecimal(bcadd($d1->value, $d2->value));
     }
 
+    public static operator ++ (BigDecimal $d1) {
+      return new BigDecimal(bcadd($d1->value, 1));
+    }
+
     public static operator - (BigDecimal $d1, BigDecimal $d2) {
       return new BigDecimal(bcsub($d1->value, $d2->value));
+    }
+
+    public static operator -- (BigDecimal $d1) {
+      return new BigDecimal(bcsub($d1->value, 1));
     }
 
     public static operator * (BigDecimal $d1, BigDecimal $d2) {
@@ -51,7 +59,7 @@
   $div= $d1 / $d2;
   $mod= $d1 % $d2;
 
-  // Test addition and subtraction
+  // Test addition, subtraction, multiplication, division and modulus
   printf("First big decimal:                %s\n", $d1->toString());
   printf("Second big decimal:               %s\n", $d2->toString());
   printf("Addition (first + second):        %s\n", $add->toString());
@@ -59,5 +67,10 @@
   printf("Multiplication (first * second):  %s\n", $mul->toString());
   printf("Division (first / second):        %s\n", $div->toString());
   printf("Modulus (first %% second):         %s\n", $mod->toString());
+
+  // Test increment / decrement  
+  $d1--;
+  $d2++;
+  var_dump($d1, $d2);
   // }}}
 ?>
