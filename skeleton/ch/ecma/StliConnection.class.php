@@ -4,8 +4,14 @@
  * $Id$
  */
 
+  uses('util.telephony.TelephonyProvider');
+
+  // Response codes
   define('STLI_INIT_RESPONSE',  'error_ind SUCCESS STLI Version "%d"');
   define('STLI_BYE_RESPONSE',   'error_ind SUCCESS BYE');
+  
+  // Supported protocol versions
+  define('STLI_VERSION_2',      2);
 
   /**
    * STLI Client
@@ -29,13 +35,11 @@
    * @see	   http://www.ecma.ch/ecma1/STAND/ECMA-269.HTM
    * @see	   http://www.ecma.ch/ecma1/STAND/ECMA-285.HTM
    * @see	   http://www.ecma.ch/ecma1/STAND/ecma-323.htm
-   * @see      http://java.sun.com/products/jtapi/jtapi-1.3/html/javax/telephony/package-summary.html#FEATURES
    */
-  class StliConnection extends Object {
+  class StliConnection extends TelephonyProvider {
     var
       $sock	    = NULL,
-      $cat      = NULL,
-      $version	= 2;
+      $version	= 0;
 
     /**
      * Constructor. 
@@ -49,27 +53,12 @@
      * @access	public
      * @param	&peer.Socket sock
      */
-    function __construct(&$sock) {
+    function __construct(&$sock, $version= STLI_VERSION_2) {
       $this->sock= &$sock;
+      $this->version= $version;
       parent::__construct();
     }
     
-    /**
-     * Set a LogCategory for tracing communication
-     *
-     * @access  public
-     * @param   &util.log.LogCategory cat a LogCategory object to which communication
-     *          information will be passed to or NULL to stop tracing
-     * @throws  IllegalArgumentException in case a of a type mismatch
-     */
-    function &setTrace(&$cat) {
-      if (NULL !== $cat && !is_a($cat, 'LogCategory')) {
-        return throw(new IllegalArgumentException('Argument passed is not a LogCategory'));
-      }
-      
-      $this->cat= &$cat;
-    }
-
     /**
      * Set the protocol version. This can only be done *prior* to connecting to
      * the server!
@@ -92,11 +81,11 @@
      */
     function _sockcmd() {
       $args= func_get_args();
-      $write= vsprintf($args[0], array_slice($args, 1))."\n";
-      $this->cat && $this->cat->info('>>>', $write);
-      $this->sock->write($write);
+      $write= vsprintf($args[0], array_slice($args, 1));
+      $this->trace('>>>', $write);
+      $this->sock->write($write."\n");
       $read= chop($this->sock->read());
-      $this->cat && $this->cat->info('<<<', $read);
+      $this->trace('<<<', $read);
       return $read;
     }
 
