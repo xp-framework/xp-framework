@@ -13,7 +13,7 @@
     <xsl:param name="string" select="''"/>
     
     <xsl:choose>
-      <xsl:when test="contains($string, '[NEW]')">
+      <xsl:when test="contains($string, '[NEW]') or contains($string, '[REOPENED]')">
         <b><font color="#990000"><xsl:value-of select="$string"/></font></b>
       </xsl:when>
       <xsl:otherwise>
