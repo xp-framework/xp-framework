@@ -5,6 +5,7 @@
  */
 
   define('HANDLER_SETUP',       'setup');
+  define('HANDLER_FAILED',      'failed');
   define('HANDLER_INITIALIZED', 'initialized');
   define('HANDLER_ERRORS',      'errors');
   define('HANDLER_SUCCESS',     'success');
@@ -67,9 +68,19 @@
 
               // Otherwise, we may set up the handler
               try(); {
-                $this->handlers[$i]->setup($request);
+                $setup= $this->handlers[$i]->setup($request);
               } if (catch('Exception', $e)) {
                 return throw($e);
+              }
+              
+              // In case setup() returns FALSE, it indicates the form can not be 
+              // displayed due to a prerequisite problem. For example, an editor
+              // handler for an article might want to backcheck the article id
+              // it is passed, and fail in case it doesn't exist (the article may
+              // have been deleted by the backend or another concurrent request).
+              if (!$setup) {
+                $handler->setAttribute('status', HANDLER_FAILED);
+                continue;
               }
 
               // Handler was successfully set up, register to session
