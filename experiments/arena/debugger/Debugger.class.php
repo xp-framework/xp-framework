@@ -88,7 +88,7 @@
           isset($t[$i]['line']) ? $t[$i]['line'] : 0
         ), 140)."\x1b[0m\n");
       }
-      fread(STDIN, 1);
+      fputs(STDERR, '[Press any key to continue]'); fread(STDIN, 1);
     }
   }
 ?>
