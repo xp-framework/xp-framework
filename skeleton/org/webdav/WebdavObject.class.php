@@ -97,7 +97,7 @@
      * @param   string resourcetype
      */
     function setResourceType($restype) {
-      $this->resourcetype= $restype;
+      $this->resourceType= $restype;
     }
     
     /**
@@ -107,7 +107,7 @@
      * @return  string Resourcetype
      */
     function getResourceType() {
-      return $this->resourcetype;
+      return $this->resourceType;
     }
     
     
@@ -118,7 +118,7 @@
      * @param   string contentlength
      */
     function setContentLength($contentlength) {
-      $this->contentlength= $contentlength;
+      $this->contentLength= $contentlength;
     }
     
     /**
@@ -128,7 +128,7 @@
      * @return  string contentlength
      */
     function getContentLength() {
-      return $this->contentlength;
+      return $this->contentLength;
     }
     
     /**
@@ -138,7 +138,7 @@
      * @param   string type
      */
     function setContentType($type) {
-      $this->contenttype= $type;
+      $this->contentType= $type;
     }
     
     /**
@@ -148,7 +148,7 @@
      * @return  string contenttype
      */
     function getContentType() {
-      return $this->contenttype;
+      return $this->contentType;
     }
     
     /**
@@ -158,7 +158,7 @@
      * @param   &util.Date date
      */
     function setCreationDate($date) {
-      $this->creationdate= &$data;
+      $this->creationDate= &$data;
     }
     
     /**
@@ -168,7 +168,7 @@
      * @return  &util.Date date
      */
     function getCreationDate() {
-      return $this->creationdate;
+      return $this->creationDate;
     }
     
     /**
@@ -178,7 +178,7 @@
      * @param   &util.Date date
      */
     function setModifiedDate($date) {
-      $this->modifieddate= &$date;
+      $this->modifiedDate= &$date;
     }
     
     /**
@@ -188,7 +188,7 @@
      * @return  &util.Date date
      */
     function getModifiedDate() {
-      return $this->modifieddate;
+      return $this->modifiedDate;
     }
     
     /**
@@ -344,6 +344,7 @@
         case WEBDAV_XMLTYPE_DATE:
           $this->properties[$propname]= array($value->toString('Y-m-d\TH:i:s\Z'), $defaultnamespace);                                             
           break;
+        
         case WEBDAV_XMLTYPE_DATE_RFC:
           $this->properties[$propname]= array(
             $value->toString('D, j M Y H:m:s \G\M\T'), 'DAV:',
