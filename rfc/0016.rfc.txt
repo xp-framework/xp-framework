@@ -85,6 +85,9 @@ Syntax definitions
   Multiple elements in a hash are separated by commas. Example:
   <?php #[@inject(type= 'dbconnection', name= 'news'))] ?>
 
+  Values may have an array associated with them:
+  <?php #[@restricted(roles = array('admin', 'root'))] ?>
+
 Reflection
 ~~~~~~~~~~
 The reflection API offers the following ways to retrieve these
@@ -157,7 +160,7 @@ Related documents
 - Annotations in Tiger, Part 1: Add metadata to Java code
   http://www-106.ibm.com/developerworks/library/j-annotate1/?ca=dnt-535
 
-- Initial implementation
+- Patch that adds this functionality
   http://xp-framework.net/downloads/rfc0016.diff
 
 Comments
