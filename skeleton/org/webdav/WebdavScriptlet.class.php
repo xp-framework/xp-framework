@@ -28,8 +28,30 @@
   define('WEBDAV_INSUFFICIENTSTOR', 507);
   
   /**
-   * Webdav
+   * <quote>
+   * WebDAV is an extension to the HTTP/1.1 protocol that
+   * allows clients to perform remote web content authoring operations.
+   * This extension provides a coherent set of methods, headers, request
+   * entity body formats, and response entity body formats that provide
+   * operations for:
    * 
+   * Properties: The ability to create, remove, and query information
+   * about Web pages, such as their authors, creation dates, etc. Also,
+   * the ability to link pages of any media type to related pages.
+   * 
+   * Collections: The ability to create sets of documents and to retrieve
+   * a hierarchical membership listing (like a directory listing in a file
+   * system).
+   * 
+   * Locking: The ability to keep more than one person from working on a
+   * document at the same time. This prevents the "lost update problem,"
+   * in which modifications are lost as first one author then another
+   * writes changes without merging the other author's changes.
+   * 
+   * Namespace Operations: The ability to instruct the server to copy and
+   * move Web resources.
+   * </quote>
+   *
    * <code>
    *   $s= &new WebdavScriptlet(array(
    *    '/webdav/' => new DavFileImpl('/path/to/files/you/want/do/provide/')
