@@ -99,6 +99,46 @@
     var
       $method   = '',
       $events   = array();
+
+    /**
+     * Set Method
+     *
+     * @access  public
+     * @param   string method
+     */
+    function setMethod($method) {
+      $this->method= $method;
+    }
+
+    /**
+     * Get Method
+     *
+     * @access  public
+     * @return  string
+     */
+    function getMethod() {
+      return $this->method;
+    }
+
+    /**
+     * Add Event
+     *
+     * @access  public
+     * @param   org.imc.VEvent event
+     */
+    function addEvent(&$event) {
+      $this->events[]= &$event;
+    }
+
+    /**
+     * Get Events
+     *
+     * @access  public
+     * @return  org.imc.VEvent[]
+     */
+    function &getEvents() {
+      return $this->events;
+    }
       
     /**
      * Parser callback
