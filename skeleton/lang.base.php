@@ -169,8 +169,7 @@
     foreach (func_get_args() as $str) {
       if (class_exists($class= xp::reflect($str))) continue;
       if (FALSE === include(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
-        $error= &new Error('Cannot include '.$str);
-        xp::error($error->toString());
+        xp::error(xp::stringOf(new Error('Cannot include '.$str)));
       }
       xp::registry('class.'.$class, $str);
       is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
@@ -361,10 +360,10 @@
 
   uses(
     'lang.Object',
+    'lang.Error',
+    'lang.Exception',
     'lang.Interface',
     'lang.XPClass',
-    'lang.Exception',
-    'lang.Error',
     'lang.NullPointerException',
     'lang.IllegalAccessException',
     'lang.IllegalArgumentException',
