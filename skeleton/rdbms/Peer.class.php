@@ -48,16 +48,6 @@
     }
 
     /**
-     * Get Identifier
-     *
-     * @access  public
-     * @return  string
-     */
-    function getIdentifier() {
-      return $this->identifier;
-    }
-
-    /**
      * Set Table
      *
      * @access  public
@@ -65,16 +55,6 @@
      */
     function setTable($table) {
       $this->table= $table;
-    }
-
-    /**
-     * Get Table
-     *
-     * @access  public
-     * @return  string
-     */
-    function getTable() {
-      return $this->table;
     }
 
     /**
@@ -88,16 +68,6 @@
     }
 
     /**
-     * Get Connection
-     *
-     * @access  public
-     * @return  string
-     */
-    function getConnection() {
-      return $this->connection;
-    }
-
-    /**
      * Set Identity
      *
      * @access  public
@@ -105,16 +75,6 @@
      */
     function setIdentity($identity) {
       $this->identity= $identity;
-    }
-
-    /**
-     * Get Identity
-     *
-     * @access  public
-     * @return  string
-     */
-    function getIdentity() {
-      return $this->identity;
     }
 
     /**
@@ -135,26 +95,6 @@
      */
     function setPrimary($primary) {
       $this->primary= $primary;
-    }
-
-    /**
-     * Get Primary
-     *
-     * @access  public
-     * @return  mixed[]
-     */
-    function getPrimary() {
-      return $this->primary;
-    }
-
-    /**
-     * Get Types
-     *
-     * @access  public
-     * @return  mixed[]
-     */
-    function getTypes() {
-      return $this->types;
     }
 
     /**
