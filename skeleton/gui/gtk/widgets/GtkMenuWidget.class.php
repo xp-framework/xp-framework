@@ -29,7 +29,7 @@
      * @param   string callback
      * @return  &GtkMenuItem
      */    
-    function &addMenuItem($string, &$callback) {
+    function &addMenuItem($string, $callback) {
       $item= &new GtkMenuItem ($string);
       $this->menu->append ($item);
       $item->connect ('button_press_event', $callback);
