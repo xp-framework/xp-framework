@@ -24,6 +24,14 @@
     }
     // }}}
 
+    // {{{ public void gc()
+    //     Returns the garbage collector
+    function gc() {
+      xp::registry('errors', array());
+      xp::registry('exceptions', array());
+    }
+    // }}}
+
     // {{{ public bool errorAt(string file [, int line)
     //     Returns whether an error occured at the specified position
     function errorAt($file, $line= -1) {
