@@ -23,7 +23,7 @@
      * result was.
      *
      * @access  public
-     * @param   &util.log.LogCategory
+     * @param   &util.log.LogCategory cat
      */
     function setInputOutputTrace(&$cat) {
       $this->_iotrace= &$cat;
@@ -35,7 +35,7 @@
      *
      * @access  protected
      * @param   string method
-     * @param   &xml.soap.Paramater argument
+     * @param   &xml.soap.Parameter argument
      * @return  boolean
      * @throws  xml.soap.SOAPFaultException
      */
