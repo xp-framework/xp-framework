@@ -51,6 +51,29 @@
     }
     
     /**
+     * Checks whether to objects are equal
+     *
+     * @access  public
+     * @param   &lang.Object cmp
+     * @return  bool TRUE if the compared object is equal to this object
+     */
+    function equals(&$cmp) {
+      return $this === $cmp;
+    }
+    
+    /**
+     * Clones this object
+     *
+     * @access  public
+     * @return  &lang.Object the clone
+     */
+    function clone() {
+      $clone= $this;
+      $clone->__id= microtime();
+      return $clone;
+    }
+    
+    /**
      * Destructor
      *
      * @access  public
