@@ -3,7 +3,7 @@
 /* CVS commit notifier
  * This shall be called from CVSROOT/loginfo in the following way:
  * 
- * ALL     (cat > /tmp/loginfo_$USER ; /home/cvs/bin/notify.php your@email.com %{Vvs} 1>/dev/null 2>/dev/null &)
+ * ALL     (FILE=`md5 -q -s %{Vvs}` ; cat > /tmp/loginfo_$FILE ; /home/cvs/bin/notify.php $FILE your@email.com %{Vvs} 1>/dev/null 2>/dev/null &)
  * 
  * $Id$
  */
@@ -13,8 +13,8 @@
   // Change directory to imitate PHP4.2.3 behaviour
   chdir(getenv('CVSROOT'));
 
-  // Read message from stdin, die silently if not possible
-  if (FALSE === ($fd= @fopen('/tmp/loginfo_'.getenv('USER'), 'r'))) {
+  // Read message from file, die silently if not possible
+  if (FALSE === ($fd= @fopen($argv[1], 'r'))) {
     exit();
   } 
   $msg= '';
@@ -22,16 +22,16 @@
     $msg.= $buf;
   }
   fclose($fd);
-  unlink('/tmp/loginfo_'.getenv('USER'));
+  unlink($argv[1]);
 
   // Append boundary
   $msg.= "\n";
 
-  // Argument #1 is the mail address no notify
-  $to= $argv[1];
+  // Argument #2 is the mail address no notify
+  $to= $argv[2];
   
-  // Argument #2 contains the directory, the committed files and their versions
-  $args= explode(' ', $argv[2]);
+  // Argument #3 contains the directory, the committed files and their versions
+  $args= explode(' ', $argv[3]);
   
   // First element is directory relative to CVSROOT environment variable
   // Commits in multiple directories are scheduled as two or more commits, actually
