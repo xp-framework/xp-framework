@@ -161,6 +161,46 @@
     function getParams() {
       return $this->_info['params'];
     }
+    
+    /**
+     * Add a parameter
+     *
+     * @access  public
+     * @param   string key
+     * @param   string value
+     */
+    function addParam($key, $value) {
+      $this->_info['query'].= sprintf(
+        '%s%s=%s',
+        ('' == $this->_info['query']) ? '' : '&',
+        urlencode($key),
+        urlencode($value)
+      );
+      parse_str($this->_info['query'], $this->_info['params']); 
+      unset($this->_info['url']);   // Indicate recalculation is needed
+    }
+
+    /**
+     * Add parameters from an associative array. The key is taken as
+     * parameter name and the value as parameter value.
+     *
+     * @access  public
+     * @param   array hash
+     */
+    function addParams($hash) {
+      if ('' != $this->_info['query']) $this->_info['query'].= '&';
+      
+      foreach (array_keys($hash) as $key) {
+        $this->_info['query'].= sprintf(
+          '%s=%s&',
+          urlencode($key),
+          urlencode($hash[$key])
+        );
+      }
+      $this->_info['query']= substr($this->_info['query'], 0, -1);
+      parse_str($this->_info['query'], $this->_info['params']); 
+      unset($this->_info['url']);   // Indicate recalculation is needed
+    }
 
     /**
      * Retrieve whether parameters exist
@@ -179,6 +219,19 @@
      * @return  string
      */
     function getURL() {
+      if (!isset($this->_info['url'])) {
+        $this->_info['url']= $this->_info['scheme'].'://';
+        if (isset($this->_info['user'])) $this->_info['url'].= sprintf(
+          '%s%s%s@',
+          $this->_info['user'],
+          (isset($this->_info['pass']) ? ':' : ''),
+          $this->_info['pass']
+        );
+        $this->_info['url'].= $this->_info['host'];
+        isset($this->_info['path']) && $this->_info['url'].= $this->_info['path'];
+        isset($this->_info['query']) && $this->_info['url'].= '?'.$this->_info['query'];
+        isset($this->_info['fragment']) && $this->_info['url'].= '#'.$this->_info['fragment'];
+      }
       return $this->_info['url'];
     }
     
