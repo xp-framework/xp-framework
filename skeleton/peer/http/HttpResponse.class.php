@@ -39,13 +39,16 @@
      */    
     function _readstatus() {
       $s= chop($this->stream->read());
-      if (3 != sscanf(
+      if (3 != ($r= sscanf(
         $s, 
         'HTTP/%d.%d %3d', 
         $major, 
         $minor, 
         $this->statuscode
-      )) return throw(new FormatException('"'.$s.'" is not a valid HTTP response'));
+      ))) {
+        return throw(new FormatException('"'.$s.'" is not a valid HTTP response ['.$r.']'));
+      }
+      
       $this->message= substr($s, 12);
       $this->version= $major.'.'.$minor;
       
