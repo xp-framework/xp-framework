@@ -25,7 +25,7 @@
      *
      * Example:
      * <code>
-     *   uses("io.ByteOrder"); 
+     *   uses('io.ByteOrder'); 
      *
      *   var_dump(ByteOrder::nameOf(ByteOrder::nativeOrder()));
      * </code>
