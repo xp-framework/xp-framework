@@ -156,21 +156,26 @@
     function &move($filename, $destination, $overwrite, $docopy= 0) {
 
       // Securitychecks (../etc/passwd)
-      $filename= $this->_normalizePath($this->base.$filename);
+      $uri= $this->_normalizePath($this->base.$filename);
       $destination= $this->_normalizePath($this->base.$destination);
 
       // Copy of folders is not allowed (implemented)
-      if ($docopy && is_dir($filename)) {
-        return throw(new OperationNotAllowedException($filename.' cannot be copied as it is a directory'));
+      if ($docopy && is_dir($uri)) {
+        return throw(new OperationNotAllowedException($uri.' cannot be copied as it is a directory'));
       }
       
       // Create src and dst objects
-      $src= is_dir($filename)    ? new Folder($filename)    : new File($filename);
+      $src= is_dir($uri)    ? new Folder($uri)    : new File($uri);
       $dst= is_dir($destination) ? new Folder($destination) : new File($destination);
 
       // Is overwriting permitted?
       if ($dst->exists() && !$overwrite) {
-        return throw(new OperationNotAllowedException($destination.' may not be overwritten by '.$filename));
+        return throw(new OperationNotAllowedException($destination.' may not be overwritten by '.$uri));
+      }
+
+      // Throw an exception if resource is locked
+      if ($this->getLockInfo($filename) !== NULL) {
+        return throw(new OperationNotAllowedException($src->getURI().' is locked'));
       }
       
       // Copy/move the file to destination file/folder
@@ -181,7 +186,7 @@
       }
       
       // Move/copy properties aso
-      $src= substr($filename, strlen($this->base));
+      $src= substr($uri, strlen($this->base));
       $dst= substr($destination, strlen($this->base));
       $properties= &$this->propStorage->getProperties($src);
       if (!empty($properties)) {
@@ -254,6 +259,11 @@
       // If the specified argument doesn't exist, throw an exception
       if (!$f->exists()) {
         return throw(new ElementNotFoundException($filename.' not found'));
+      }
+
+      // Throw an exception if resource is locked
+      if ($this->getLockInfo($filename) !== NULL) {
+        return throw(new OperationNotAllowedException($filename.' is locked'));
       }
       
       try(); {
