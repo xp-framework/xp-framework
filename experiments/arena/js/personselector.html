@@ -31,6 +31,7 @@
       function handleKeyPress(object, e) {
         switch (e.keyCode) {
           case 9:   // Tab
+          case 32:  // Space
             with (document.forms.select) {
               p= search(person.value);
               switch (p.length) {
