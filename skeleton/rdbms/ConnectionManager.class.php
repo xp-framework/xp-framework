@@ -4,7 +4,7 @@
  * $Id$ 
  */
   
-  uses('lang.ElementNotFoundException', 'rdbms.DriverManager');
+  uses('rdbms.ConnectionNotRegisteredException', 'rdbms.DriverManager');
   
   /**
    * ConnectionManager
@@ -90,12 +90,14 @@
      *
      * @param   string host
      * @param   string user
-     * @return  &lang.Object
-     * @throws  ElementNotFoundException in case there's no connection under these names
+     * @return  &rdbms.DBConnection
+     * @throws  rdbms.ConnectionNotRegisteredException in case there's no connection for these names
      */
     function &get($host, $user) {
       if (!isset($this->pool[$user.'@'.$host])) {
-        return throw(new ElementNotFoundException('no connections registered for '.$user.'@'.$host));
+        return throw(new ConnectionNotRegisteredException(
+          'No connections registered for '.$user.'@'.$host
+        ));
       }
       return $this->pool[$user.'@'.$host];
     }
@@ -105,7 +107,8 @@
      *
      * @param   string hostName
      * @param   int num default -1 offset, -1 for all
-     * @return  &lang.Object
+     * @return  &rdbms.DBConnection
+     * @throws  rdbms.ConnectionNotRegisteredException in case there's no connection for these names
      */
     function &getByHost($hostName, $num= -1) {
       $results= array();
@@ -114,7 +117,9 @@
         if ($hostName == $host) $results[]= &$this->pool[$id];
       }
       if (sizeof($results) < 1) {
-        return throw(new ElementNotFoundException('no connections registered for '.$hostName));
+        return throw(new ConnectionNotRegisteredException(
+          'No connections registered for '.$hostName
+        ));
       }
       
       if ($num < 0) {
