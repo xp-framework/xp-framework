@@ -7,6 +7,7 @@
 <xsl:stylesheet
  version="1.0"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
@@ -35,7 +36,7 @@
   </xsl:variable>
 
   <!--
-   ! Template for class name.
+   ! Template that transforms the first character of a string into lowercase
    !
    ! @type   named
    ! @param  string string
@@ -45,6 +46,21 @@
   
     <xsl:value-of select="concat(
       translate(substring($string, 1, 1), $ucletters, $lcletters),
+      substring($string, 2)
+    )"/>
+  </xsl:template>  
+
+  <!--
+   ! Template that transforms the first character of a string into uppercase
+   !
+   ! @type   named
+   ! @param  string string
+   !-->
+  <xsl:template name="ucfirst">
+    <xsl:param name="string"/>
+  
+    <xsl:value-of select="concat(
+      translate(substring($string, 1, 1), $lcletters, $ucletters),
       substring($string, 2)
     )"/>
   </xsl:template>  
@@ -174,6 +190,28 @@
   </xsl:template>
 
   <!--
+   ! Template for argument documentation
+   !
+   ! @type   named
+   ! @param  string type
+   !-->
+  <xsl:template name="xpdoc:argument">
+    <xsl:param name="type"/>
+
+    <xsl:choose>
+      <xsl:when test="$typemap/mapping[@for = $type]">
+        <xsl:value-of select="$typemap/mapping[@for = $type]"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>mixed (</xsl:text>
+        <xsl:value-of select="$type"/>
+        <xsl:text>)</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text> </xsl:text>
+  </xsl:template>
+
+  <!--
    ! Template for input value messages
    !
    ! @type   named
@@ -259,6 +297,102 @@
   </xsl:template>
 
   <!--
+   ! Template that matches a schema node
+   !
+   ! @type   match
+   !-->
+  <xsl:template match="xsd:schema">
+    <xsl:apply-templates select="xsd:complexType"/>
+  </xsl:template>
+
+  
+  <!--
+   ! Template that matches a complexType node that has a subnode whose
+   ! name is "all"
+   !
+   ! @type   match
+   !-->
+  <xsl:template match="xsd:complexType[child::*[name() = 'xsd:all']]">
+    <xsl:text><![CDATA[<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  /**
+   * Type wrapper
+   *
+   * @purpose  Specialized SOAP type
+   */
+  class ]]></xsl:text><xsl:value-of select="@name"/><xsl:text> extends Object {
+    var</xsl:text>
+    <xsl:for-each select="xsd:all/xsd:element">
+      $<xsl:value-of select="@name"/>
+      <xsl:if test="position() &lt; last()">,</xsl:if>
+    </xsl:for-each>
+    <xsl:text>;&#10;</xsl:text>
+    
+    <xsl:for-each select="xsd:all/xsd:element">
+
+      <!-- Getter -->
+      <xsl:text><![CDATA[
+    /**
+     * Retrieves ]]></xsl:text><xsl:value-of select="@name"/><xsl:text><![CDATA[
+     *
+     * @access  public
+     * @return  ]]></xsl:text>
+      <xsl:call-template name="xpdoc:argument">
+        <xsl:with-param name="type" select="@type"/>
+      </xsl:call-template>
+      <xsl:text>
+     */
+    function get</xsl:text>
+      <xsl:call-template name="ucfirst">
+        <xsl:with-param name="string" select="@name"/>
+      </xsl:call-template>
+      <xsl:text>() {
+      return $this-></xsl:text><xsl:value-of select="@name"/><xsl:text>;
+    }
+</xsl:text>
+      
+      <!-- Setter -->
+      <xsl:text><![CDATA[
+    /**
+     * Sets ]]></xsl:text><xsl:value-of select="@name"/><xsl:text><![CDATA[
+     *
+     * @access  public
+     * @param   ]]></xsl:text>
+      <xsl:call-template name="xpdoc:argument">
+        <xsl:with-param name="type" select="@type"/>
+      </xsl:call-template>
+      <xsl:value-of select="@name"/>
+      <xsl:text>
+     */
+    function set</xsl:text>
+      <xsl:call-template name="ucfirst">
+        <xsl:with-param name="string" select="@name"/>
+      </xsl:call-template>
+      <xsl:text>($</xsl:text><xsl:value-of select="@name"/><xsl:text>) {
+      $this-></xsl:text><xsl:value-of select="@name"/>
+      <xsl:text>= $</xsl:text>
+      <xsl:value-of select="@name"/><xsl:text>;
+    }
+</xsl:text>
+    </xsl:for-each>
+    
+    <xsl:text><![CDATA[  }
+?>
+]]></xsl:text>
+  </xsl:template>
+
+  <!--
+   ! Template that matches a complexType node
+   !
+   ! @type   match
+   !-->
+  <xsl:template match="xsd:complexType"/>
+
+  <!--
    ! Template to match on root node
    !
    ! @type   match
@@ -319,6 +453,11 @@
    ! @type   match
    !-->
   <xsl:template match="wsdl:definitions">
+    <!-- User-defined types -->
+    <xsl:apply-templates select="wsdl:types/xsd:schema"/>
+
+    
+    <!-- The service itself -->
     <xsl:text><![CDATA[<?php
 /* This class is part of the XP framework
  *
