@@ -140,8 +140,19 @@
       return $xml.($indent ? $inset : '').'</'.$this->name.">\n";
     }
     
-    function &addChild($child) {
-      if (!is_object($child)) return throw(new IllegalArgumentException('parameter child must be an object'));
+    /**
+     * Add a child node
+     *
+     * @access  public
+     * @param   &xml.Node child
+     * @return  &xml.Node added child
+     */
+    function &addChild(&$child) {
+      if (!is_a($child, 'Node')) {
+        trigger_error('Type: '.get_class($child), E_USER_NOTICE);
+        return throw(new IllegalArgumentException('parameter child must be an xml.Node'));
+      }
+      
       $this->children[]= &$child;
       return $child;
     }
