@@ -51,7 +51,7 @@
     }
     
     /**
-     * Checks whether to objects are equal
+     * Indicates whether some other object is "equal to" this one.
      *
      * @access  public
      * @param   &lang.Object cmp
