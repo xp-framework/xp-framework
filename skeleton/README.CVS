@@ -28,8 +28,8 @@ Folgendes Format hat sich als lesbar erwiesen:
 |----------------------------
 |revision 1.9
 |date: 2002/02/26 18:09:48;  author: friebe;  state: Exp;  lines: +22 -25
-|-Makefile unified
-|-:ext:... added
+|- Makefile unified
+|- :ext:... added
 |----------------------------
 
 Für jede Änderung wird also ein - am Anfang der Zeile geschrieben. Weitere 
@@ -38,15 +38,15 @@ Beispiele:
 |----------------------------
 |revision 1.8
 |date: 2002/02/21 14:05:02;  author: friebe;  state: Exp;  lines: +2 -2
-|-Optional Filename uebergeben
+|- Add an optional argument "filename"
 |----------------------------
 
 |----------------------------
 |revision 1.3
 |date: 2002/02/21 13:28:46;  author: friebe;  state: Exp;  lines: +10 -9
-|-Auf CVS-install umgestellt
-| Wir haben auf der Kiste also ein CVS checkout und können zur Not auch
-| direkt dort arbeiten und committen, falls nötig.
+|- Auf CVS-install umgestellt
+|  Wir haben auf der Kiste also ein CVS checkout und können zur Not auch
+|  direkt dort arbeiten und committen, falls nötig.
 |----------------------------
 
 Die Sache mit den STABLE-Tags:
