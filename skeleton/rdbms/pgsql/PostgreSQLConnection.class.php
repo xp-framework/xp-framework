@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('rdbms.DBConnection', 'rdbms.pgsql.PostgreSQLResultSet');
+  uses(
+    'rdbms.DBConnection', 
+    'rdbms.Transaction',
+    'rdbms.pgsql.PostgreSQLResultSet'
+  );
 
   /**
    * Connection to PostgreSQL Databases
@@ -270,6 +274,54 @@
       );
 
       return new PostgreSQLResultSet($result);
+    }
+    
+    /**
+     * Begin a transaction
+     *
+     * @access  public
+     * @param   &rdbms.Transaction transaction
+     * @return  &rdbms.Transaction
+     */
+    function &begin(&$transaction) {
+      if (FALSE === $this->query('begin transaction')) {
+        return FALSE;
+      }
+      $transaction->db= &$this;
+      return $transaction;
+    }
+    
+    /**
+     * Retrieve transaction state
+     *
+     * @access  public
+     * @param   string name
+     * @return  mixed state
+     */
+    function transtate($name) { 
+      return -1;
+    }
+    
+    /**
+     * Rollback a transaction
+     *
+     * @access  public
+     * @param   string name
+     * @return  bool success
+     */
+    function rollback($name) { 
+      return $this->query('rollback transaction');
+    }
+    
+    /**
+     * Commit a transaction
+     *
+     * @access  public
+     * @param   string name
+     * @return  bool success
+     */
+    function commit($name) { 
+      return $this->query('commit transaction');
     }
   }
 ?>
