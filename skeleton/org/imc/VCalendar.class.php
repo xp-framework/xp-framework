@@ -280,7 +280,7 @@
         
         case 'vtimezone/daylight':
         case 'vtimezone/standard':
-          $type= $context[count($context)-1];
+          $type= $context[sizeof($context)-1];
           
           switch ($keys[0]) {
             case 'BEGIN':
