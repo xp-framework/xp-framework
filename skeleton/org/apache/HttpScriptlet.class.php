@@ -328,9 +328,10 @@
       if ($this->needsSession) {
         try(); {
           $this->request->session->initialize($this->request->getSessionId());
+          $valid= $this->request->session->isValid();
         } if (catch('Exception', $e)) {
           return throw(new HttpScriptletException(
-            'Session initialize failed: '.$e->getStackTrace(),
+            'Session initialize failed: '.$e->message,
             HTTP_BAD_REQUEST
           ));
         }
@@ -338,7 +339,7 @@
         // Do we need a new session?
         if (
           ($this->request->session->isNew()) ||
-          (!$this->request->session->isValid())
+          (!$valid)
         ) {
           $this->_method= 'doCreateSession';
         }
