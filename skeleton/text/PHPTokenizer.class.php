@@ -13,7 +13,7 @@
    * 
    * @ext   tokenize
    * @see   php://tokenizer
-   * @see   lang.apidoc.parser.GenericParser
+   * @see   xp://lang.apidoc.parser.GenericParser
    */ 
   class PHPTokenizer extends Object {
     var 
