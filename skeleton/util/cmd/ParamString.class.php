@@ -1,4 +1,16 @@
 <?php
+/**
+ *
+ * $Id$
+ */
+ 
+  /**
+   * Stellt hilfreiche Funktionen für Kommadozeilen-Argumente zur Verfügung
+   * Unterstützt kurze und lange Optionen, also -h bzw. --help
+   *
+   * @purpose Einfacher Zugriff auf Kommandozeilen-Argumente
+   * @example usage.php
+   */
   class ParamString extends Object {
     var $list= array();
     var $count= 0;
