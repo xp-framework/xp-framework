@@ -13,26 +13,26 @@
    * which may (type definitions) or must (element and attribute 
    * declarations) have names are as follows:
    * <ul>
-   *   <li>Simple type definitions
-   *   <li>Complex type definitions
-   *   <li>Attribute declarations
-   *   <li>Element declarations
+   *   <li>Simple type definitions</li>
+   *   <li>Complex type definitions</li>
+   *   <li>Attribute declarations</li>
+   *   <li>Element declarations</li>
    * </ul>
    * The secondary components, which must have names, are as follows:
    * <ul>
-   *   <li>Attribute group definitions
-   *   <li>Identity-constraint definitions
-   *   <li>Model group definitions
-   *   <li>Notation declarations
+   *   <li>Attribute group definitions</li>
+   *   <li>Identity-constraint definitions</li>
+   *   <li>Model group definitions</li>
+   *   <li>Notation declarations</li>
    * </ul>
    * Finally, the "helper" components provide small parts of other components; 
    * they are not independent of their context:
    * <ul>
-   *   <li>Annotations
-   *   <li>Model groups
-   *   <li>Particles
-   *   <li>Wildcards
-   *   <li>Attribute Uses
+   *   <li>Annotations</li>
+   *   <li>Model groups</li>
+   *   <li>Particles</li>
+   *   <li>Wildcards</li>
+   *   <li>Attribute Uses</li>
    * </ul>
    *
    * @see http://www.w3.org/TR/xmlschema-1
