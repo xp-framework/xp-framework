@@ -30,7 +30,20 @@ usage:
 	@echo "                      example: make publish target=user@host"
 	@echo "            cvshist - updates CVS history XML file"
 	@echo "                      example: make cvshist from=user@host"
+	@echo "            release - makes release tarball"
+	@echo "                      example: make release at=user@host"
 	@echo ""
+
+release:
+ifeq ($(at),)
+	@echo "*** Please specify from what host to retrieve CVS history file"
+else
+	ssh $(at) \
+	  cd /usr/local/lib/xp \; \
+	  cvs update -dP \; \
+	  cd .. \; \
+	  tar cvfz $(TARGET)downloads/xp-`date +%Y-%m-%d`.tar.gz --exclude=CVS xp
+endif
 
 cvshist:
 ifeq ($(from),)
