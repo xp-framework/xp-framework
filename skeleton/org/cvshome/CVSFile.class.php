@@ -211,7 +211,7 @@
      * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC129
      */
     function diff($r1= NULL, $r2= NULL) {
-      $cmd= sprintf ('diff %s %s',
+      $cmd= sprintf ('diff -B -b %s %s',
         (NULL !== $r1 ? '-r'.$r1 : ''),
         (NULL !== $r2 ? '-r'.$r2 : '')
       );
