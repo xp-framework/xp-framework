@@ -36,11 +36,11 @@
 
   // Border flags (bitfield)  
   define('FPDF_BORDER_NONE',        0x0000);
-  define('FPDF_BORDER_FRAME',       0x0001);
-  define('FPDF_BORDER_LEFT',        0x0002);
-  define('FPDF_BORDER_RIGHT',       0x0004);
-  define('FPDF_BORDER_TOP',         0x0008);
-  define('FPDF_BORDER_BOTTOM',      0x0010);
+  define('FPDF_BORDER_LEFT',        0x0001);
+  define('FPDF_BORDER_RIGHT',       0x0002);
+  define('FPDF_BORDER_TOP',         0x0004);
+  define('FPDF_BORDER_BOTTOM',      0x0008);
+  define('FPDF_BORDER_FRAME',       FPDF_BORDER_LEFT | FPDF_BORDER_RIGHT | FPDF_BORDER_TOP | FPDF_BORDER_BOTTOM);
   
   // Alignment flags, mutually exclusive
   define('FPDF_ALIGN_LEFT',         0x0000);
@@ -552,6 +552,20 @@
     }
 
     /**
+     * Renders a line
+     *
+     * @access  private
+     * @param   int x1
+     * @param   int y1
+     * @param   int x2
+     * @param   int y2
+     * @return  string
+     */
+    function _renderline($x1, $y1, $x2, $y2) {
+      return $x1.' -'.$y1.' m '.$x2.' -'.$y2.' l S';
+    }
+
+    /**
      * Draw a line
      *
      * @access  public
@@ -561,7 +575,27 @@
      * @param   int y2
      */
     function drawLine($x1, $y1, $x2, $y2) {
-      $this->_out($x1.' -'.$y1.' m '.$x2.' -'.$y2.' l S');
+      $this->_out($this->_renderline($x1, $y1, $x2, $y2));
+    }
+
+    /**
+     * Renders a rectangle
+     *
+     * @access  private
+     * @param   int x
+     * @param   int y
+     * @param   int w width
+     * @param   int h height
+     * @param   int style bitfield of FPDF_RECT_* constants
+     * @return  string
+     */
+    function _renderrect($x, $y, $w, $h, $style) {
+      static $ops= array(
+        FPDF_RECT_DRAW       => 'S',
+        FPDF_RECT_FILL       => 'f',
+        FPDF_RECT_FILL_DRAW  => 'B'
+      );
+      return $x.' -'.$y.' '.$w.' -'.$h.' re '.$ops[$style];
     }
 
     /**
@@ -572,16 +606,10 @@
      * @param   int y
      * @param   int w width
      * @param   int h height
-     * @param   int style default FPDF_RECT_DEFAULT bitfield of FPDF_RECT_* constants
+     * @param   int style default FPDF_RECT_DRAW bitfield of FPDF_RECT_* constants
      */
     function drawRect($x, $y, $w, $h, $style= FPDF_RECT_DRAW) {
-      static $ops= array(
-        FPDF_RECT_DEFAULT    => 'S',
-        FPDF_RECT_FILL       => 'f',
-        FPDF_RECT_FILL_DRAW  => 'B'
-      );
-      
-      $this->_out($x.' -'.$y.' '.$w.' -'.$h.' re '.$ops[$style]);
+      $this->_out($this->_renderrect($x, $y, $w, $h, $style));
     }
 
     /**
@@ -834,23 +862,25 @@
 
       // Fill / border
       $s= '';
-      if ($fill || $border == FPDF_BORDER_FRAME) {
-        $s.= $this->x.' -'.$this->y.' '.$w.' -'.$h.' re ';
-        $s.= $fill ? ($border == FPDF_BORDER_FRAME ? 'B ' : 'f ') : 'S ';
+      if ($fill || $border & FPDF_BORDER_FRAME) {
+        $s.= $this->_renderrect($this->x, $this->y, $w, $h);
+        $s.= $fill ? ($border & FPDF_BORDER_FRAME ? 'B ' : 'f ') : 'S ';
       }
-      
-      // Specific border sides given
-      if ($border & FPDF_BORDER_LEFT) {
-        $s.= $this->x.' -'.$this->y.' m '.$this->x.' -'.($this->y+ $h).' l S ';
-      }
-      if ($border & FPDF_BORDER_TOP) {
-        $s.= $this->x.' -'.$this->y.' m '.($this->x+ $w).' -'.$this->y.' l S ';
-      }
-      if ($border & FPDF_BORDER_RIGHT) {
-        $s.= ($this->x+ $w).' -'.$this->y.' m '.($this->x+ $w).' -'.($this->y+ $h).' l S ';
-      }
-      if ($border & FPDF_BORDER_BOTTOM) {
-        $s.= $this->x.' -'.($this->y+ $h).' m '.($this->x+ $w).' -'.($this->y+ $h).' l S ';
+
+      // Specific border sides given      
+      if (!($border & FPDF_BORDER_FRAME)) {
+        if ($border & FPDF_BORDER_LEFT) {
+          $s.= $this->_renderline($this->x, $this->y, $this->x, $this->y+ $h);
+        }
+        if ($border & FPDF_BORDER_TOP) {
+          $s.= $this->_renderline($this->x, $this->y, $this->x+ $w, $this->y);
+        }
+        if ($border & FPDF_BORDER_RIGHT) {
+          $s.= $this->_renderline($this->x+ $w, $this->y, $this->x+ $w, $this->y+ $h);
+        }
+        if ($border & FPDF_BORDER_BOTTOM) {
+          $s.= $this->_renderline($this->x, $this->y+ $h, $this->x+ $w, $this->y+ $h);
+        }
       }
       
       // Text
@@ -928,19 +958,10 @@
       $nb= strlen($s);
       if ($nb > 0 and $s{$nb- 1} == "\n") $nb--;
 
-      $b= 0;
-      if ($border) {
-        if ($border == 1) {
-          $border= 'LTRB';
-          $b= 'LRT';
-          $b2= 'LR';
-        } else {
-          $b2= '';
-          if (is_int(strpos($border,'L'))) $b2.='L';
-          if (is_int(strpos($border,'R'))) $b2.='R';
-          $b= is_int(strpos($border,'T')) ? $b2.'T' : $b2;
-        }
-      }
+      $b2= FPDF_BORDER_NONE;
+      if ($border & FPDF_BORDER_LEFT) $b2 |= FPDF_BORDER_LEFT;
+      if ($border & FPDF_BORDER_RIGHT) $b2 |= FPDF_BORDER_RIGHT;
+      $b= ($border & FPDF_BORDER_TOP) ? $b2 | FPDF_BORDER_TOP : $b2;
       
       $sep= -1;
       $i= $j= $l= $ns= 0;
@@ -975,13 +996,13 @@
               $this->ws= 0;
               $this->_out('0 Tw');
             }
-            $this->writeCell($w, $h,substr($s, $j, $i- $j), $b, 2, $align, $fill);
+            $this->writeCell($w, $h,substr($s, $j, $i- $j), $b, FPDF_POS_BELOW, $align, $fill);
           } else {
             if ($align == 'J') {
               $this->ws= ($ns > 1) ? round(($wmax- $ls) / 1000 * $this->FontSize / ($ns- 1), 3) : 0;
               $this->_out($this->ws.' Tw');
             }
-            $this->writeCell($w, $h,substr($s, $j, $sep- $j), $b, 2, $align, $fill);
+            $this->writeCell($w, $h,substr($s, $j, $sep- $j), $b, FPDF_POS_BELOW, $align, $fill);
             $i= $sep+ 1;
           }
           $sep= -1;
@@ -1000,8 +1021,8 @@
         $this->ws= 0;
         $this->_out('0 Tw');
       }
-      if ($border and is_int(strpos($border, 'B'))) $b.= 'B';
-      $this->writeCell($w, $h,substr($s, $j, $i), $b, 2, $align, $fill);
+      if ($border & FPDF_BORDER_BOTTOM) $b |= FPDF_BORDER_BOTTOM;
+      $this->writeCell($w, $h,substr($s, $j, $i), $b, FPDF_POS_BELOW, $align, $fill);
       $this->x= $this->lMargin;
     }
 
