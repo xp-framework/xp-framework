@@ -102,7 +102,6 @@
      * @return  bool TRUE if method exists
      */
 	function hasMethod($method) {
-	  var_dump(get_class_methods($this->_objref), $method);
 	  return in_array(
 		strtolower($method),
 		get_class_methods($this->_objref)
