@@ -89,12 +89,12 @@
     function fromFile($file) {
       $parser= new XMLParser();
       $parser->callback= &$this;
-      $parser->dataSource= $fileName;
+      $parser->dataSource= $file->uri;
       
       try(); {
-        $f->open(FILE_MODE_READ);
-        $string= $f->read($f->fileSize());
-        $f->close();
+        $file->open(FILE_MODE_READ);
+        $string= $file->read($file->size());
+        $file->close();
       } if (catch('Exception', $e)) {
         return throw($e);
       }
