@@ -105,10 +105,17 @@
      * @access  public
      * @return  bool success
      * @throws  peer.ldap.LDAPException
+     * @throws  peer.ConnectException
      */
     function bind($user= NULL, $pass= NULL) {
       if (FALSE === ($res= ldap_bind($this->_hdl, $user, $pass))) {
-        return throw(new LDAPException('Cannot bind for "'.$user.'"', ldap_errno($this->_hdl)));
+        switch ($error= ldap_errno($this->_hdl)) {
+          case LDAP_SERVER_DOWN:
+            return throw(new ConnectException('Cannot connect to '.$this->host.':'.$this->port));
+          
+          default:
+            return throw(new LDAPException('Cannot bind for "'.$user.'"', $error));
+        }
       }
       
       return $res;
