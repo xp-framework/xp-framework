@@ -59,7 +59,6 @@
       } else {
         $this->charset= 'iso-8859-1';
       }
-      
     }
 
     /**

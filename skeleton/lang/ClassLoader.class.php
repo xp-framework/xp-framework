@@ -26,7 +26,6 @@
      * @param   string path default '' classpath
      */
     function __construct($path= '') {
-      
       if (!empty($path)) $this->classpath= $path.'.';
     }
     
