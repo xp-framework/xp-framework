@@ -92,8 +92,7 @@
      * @param   int utime Unix-Timestamp
      */
     function _utime($utime) {
-      $a= getdate($this->_utime= $utime);
-      foreach ($a as $key=> $val) {
+      foreach (getdate($this->_utime= $utime) as $key => $val) {
         if (is_string($key)) $this->$key= $val;
       }
     }
