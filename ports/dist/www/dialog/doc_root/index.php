@@ -17,6 +17,6 @@
   scriptlet::run(new WebsiteScriptlet(
     new ClassLoader('de.thekid.dialog.scriptlet'), 
     '../xsl/'
-  ), SF_DEBUG_XML);
+  ));
   // }}}  
 ?>
