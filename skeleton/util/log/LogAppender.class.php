@@ -7,35 +7,34 @@
   /**
    * Abstract base class for appenders
    *
+   * @see      xp://util.log.LogCategory#addAppender
+   * @purpose  Base class
    */
   class LogAppender extends Object {
 
     /**
-     * Fügt die Daten an eine Textdatei an
+     * Append data
      *
-     * @access public
-     * @param  mixed args Variablen
+     * @model   abstract
+     * @access  public
+     * @param   mixed* args
      */ 
-    function append() {
-    }
+    function append() { }
  
     /**
-     * (Insert method's description here)
+     * Finalize this appender. This method is called
      *
-     * @access  
-     * @param   
-     * @return  
+     * @model   abstract
+     * @access  public
      */   
-    function finalize() {
-    
-    }
+    function finalize() { }
     
     /**
-     * Gibt eine Variable schön lesbar zurück
+     * Retrieve a readable representation of a variable
      *
-     * @access public
-     * @param  mixed var Variable jeglichen Types
-     * @return string Ein Printout der Variable
+     * @access  protected
+     * @param   mixed var
+     * @return  string
      */
     function varSource($var) {
       if (is_a($var, 'Object')) return $var->toString();
