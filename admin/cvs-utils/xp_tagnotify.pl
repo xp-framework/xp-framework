@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-  use strict;
+  #use strict;
   use POSIX;
 
   my %operationVerb= (
@@ -9,20 +9,21 @@
     'del' => 'deleted'
   );
   
-  my $me= shift $_;
-  my $to= shift $_;
-  my $tagName= shift $_;
-  my $operation= shift $_;
-  my $repository= shift $_;
-  my $localPath= $repository;
-  $localPath=~ s/$cvsroot\///g;
+  my $me=         shift @_;
+  my $to=         shift @_;
+  my $tagName=    shift @_;
+  my $operation=  shift @_;
+  my $repository= shift @_;
+  my $localPath=  $repository;
+  my $cvsroot=    $ENV{'CVSROOT'};
+  $localPath=~    s/$cvsroot\///g;
   
   my @fileInfo; my $filename;
-  while ($filename= shift $_) {
+  while ($filename= shift @_) {
     my %file;
     $file{'filename'}= $filename;
-    $file{'revision'}= shift $_;
-    $file{'oldrevision'}= getLastTagRevision ($repository.'/',$filename, $tagName, $opertaion);
+    $file{'revision'}= shift @_;
+    $file{'oldrevision'}= getLastTagRevision ($repository.'/',$filename, $tagName, $operation);
     push @fileInfo, [$file];
   }
   
@@ -63,9 +64,9 @@
   open (SENDMAIL, "/usr/sbin/sendmail -t |");
   
   print SENDMAIL "To: $to\n";
-  print SENDMAIL "From: $fromEmail\n",
+  print SENDMAIL "From: \"".getRealName ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
   print SENDMAIL "Reply-To: $to\n";
-  print SENDMAIL "Subject: [CVS]    tag: '.$localPath."\n";
+  print SENDMAIL "Subject: [CVS]    tag: $localPath\n";
   print SENDMAIL "X-CVS: ".$ENV{'CVSROOT'}."\n";
   print SENDMAIL "\n";
   print SENDMAIL $msg;
@@ -121,7 +122,7 @@
         $tags= 1;
       }
       
-      if ($tags == 1 && -1 !== index ($_, $tagName)) {
+      if ($tags == 1 && -1 != index ($_, $tagName)) {
         my ($tagInfo, $revision)= split /:/, $_;
         close (FILE);
         $revision=~ s/;//g;
