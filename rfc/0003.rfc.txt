@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Nov 16 19:06:40 CET 2003
-@status: working
+@status: obsoleted (by RFC #0010)
 @category: language
 
 Scope of Change
