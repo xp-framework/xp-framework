@@ -273,7 +273,7 @@
       <xsl:when test="contains($for, ':')">
         <xsl:for-each select="/wsdl:definitions/wsdl:message[@name = substring-after($for, ':')]/wsdl:part">
           <xsl:value-of select="$indent"/>
-          <xsl:text>new SOAPNamedItem('</xsl:text>
+          <xsl:text>new Parameter('</xsl:text>
           <xsl:value-of select="@name"/>
           <xsl:text>', $</xsl:text>
           <xsl:value-of select="@name"/>
@@ -284,7 +284,7 @@
       <xsl:otherwise>
         <xsl:for-each select="/wsdl:definitions/wsdl:message[@name = $for]/wsdl:part">
           <xsl:value-of select="$indent"/>
-          <xsl:text>new SOAPNamedItem('</xsl:text>
+          <xsl:text>new Parameter('</xsl:text>
           <xsl:value-of select="@name"/>
           <xsl:text>', $</xsl:text>
           <xsl:value-of select="@name"/>
@@ -489,8 +489,7 @@
  */
   uses(
     'xml.soap.SOAPClient', 
-    'xml.soap.transport.SOAPHTTPTransport',
-    'xml.soap.types.SOAPNamedItem'
+    'xml.soap.transport.SOAPHTTPTransport'
   );
   
   /**
