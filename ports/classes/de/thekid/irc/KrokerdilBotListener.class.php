@@ -124,11 +124,18 @@
             break;
           
           case 'uptime':
-            list($days, $hours, $minutes)= explode('-', strftime('%d-%H-%M', time() - $this->tstart));
-            $connection->sendAction(
-              $target, 
-              '\'s uptime ist %d Tag(e), %d Stunde(n) und %d Minute(n)',
-             $days, $hours, $minutes
+            $delta= time() - $this->tstart;
+            
+            // Break it up into days, hours and minutes
+            $days= $delta / 86400;
+            $delta-= (int)$days * 86400;
+            $hours= $delta / 3600;
+            $delta-= (int)$hours * 3600;
+            $minutes= $delta / 60;
+            
+            $connection->writeln(
+              'NOTICE %s :Uptime: %d Tag(e), %d Stunde(n) und %d Minute(n)',
+              $target, $days, $hours, $minutes
             );
             break;
           
@@ -291,7 +298,7 @@
      */
     function onJoins(&$connection, $channel, $nick) {
       if (strcasecmp($nick, $connection->user->getNick()) == 0) {
-        $connection->writeln("NOTICE %s :%s is back!", $channel, $nick);
+        $connection->writeln('NOTICE %s :%s is back!', $channel, $nick);
       } else {
         $this->sendRandomMessage($connection, $channel, 'join', $nick, NULL);
       }
