@@ -6,6 +6,7 @@
 
   uses(
     'de.thekid.dialog.AlbumImage',
+    'de.thekid.dialog.io.ProcessorTarget',
     'io.File',
     'io.Folder',
     'img.util.ExifData',
@@ -95,6 +96,20 @@
 
       return $full;
     }
+    
+    /**
+     * Retrieve a list of targets to be transformed
+     *
+     * @access  protected
+     * @param   &io.File in
+     * @return  de.thekid.dialog.io.ProcessorTarget[]
+     */
+    function targetsFor(&$in) {
+      return array(
+        new ProcessorTarget('thumbImageFor', 'thumb.'.$in->getFilename()),
+        new ProcessorTarget('fullImageFor', $in->getFilename())
+      );
+    }
           
     /**
      * Returns an album image for a given filename
@@ -117,46 +132,49 @@
           return throw($e);
         }
 
-        $thumbFile= &new File($this->outputFolder->getURI().'thumb.'.$in->getFilename());
-        $fullFile= &new File($this->outputFolder->getURI().$in->getFilename());
-        
-        if ($thumbFile->exists() && $fullFile->exists()) {
-          $this->cat && $this->cat->debug('Image has been processed before, skipping...');
-        } else {
-
-          // Load origin image
-          $this->cat && $this->cat->debug('Loading', $filename);        
+        // Go over targets
+        $origin= NULL;
+        foreach ($this->targetsFor($in) as $target) {
+          $destination= &new File($this->outputFolder->getURI().$target->getDestination());
+          if ($destination->exists()) {
+            $this->cat && $this->cat->debugf(
+              'Target method %s has been processed before, skipping...',
+              $target->getMethod()
+            );
+            continue;
+          }
+          
+          // If we haven't done so before, load origin image
+          if (!isset($origin)) {
+            $this->cat && $this->cat->debug('Loading', $filename);        
+            try(); {
+              $origin= &Image::loadFrom(new StreamReader($in));
+            } if (catch('ImagingException', $e)) {
+              $this->cat && $this->cat->error($e);
+              return throw($e);
+            }
+          }
+          
+          // Transform
+          $transformed= &$this->{$target->getMethod()}($origin, $image->exifData);
+          
+          // Save
+          $this->cat && $this->cat->debug('Saving to', $destination->getURI());
           try(); {
-            $origin= &Image::loadFrom(new StreamReader($in));
+            $transformed->saveTo(new JpegStreamWriter($destination));
           } if (catch('ImagingException', $e)) {
             $this->cat && $this->cat->error($e);
+            delete($transformed);
+            delete($origin);
             return throw($e);
           }
 
-          // Create two resampled versions, one at small dimensions for the
-          // overview pages..
-          $thumb= &$this->thumbImageFor($origin, $image->exifData);
-
-          // ... and one at 640 x 480 or 480 x 640 (depending on the image 
-          // orientation) for the close-up view.
-          $full= &$this->fullImageFor($origin, $image->exifData);
-
-          // Write both version to the output directory
-          $this->cat && $this->cat->debug('Saving to', $this->outputFolder->getURI());
-          try(); {
-            $thumb->saveTo(new JpegStreamWriter($thumbFile));
-            $full->saveTo(new JpegStreamWriter($fullFile));
-          } if (catch('ImagingException', $e)) {
-            $this->cat && $this->cat->error($e);
-          } finally(); {
-            delete($origin);
-            delete($thumb);
-            delete($full);
-            if ($e) return throw($e);
-          }
+          delete($transformed);
         }
+        
+        // Clean up
+        delete($origin);
       }
-
       return $image;
     }
     
