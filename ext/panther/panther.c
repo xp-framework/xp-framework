@@ -287,13 +287,20 @@ void* _thread(void* sd)
                             break;
 
                         case RMI_INVOKE:
-                            n= sizeof("$registry['']->()") + request->class_len + request->member_len;
+                            p= request->data;
+                            PHP_VAR_UNSERIALIZE_INIT(u_hash);
+                            ALLOC_ZVAL(data_ptr);
+                            php_var_unserialize(&data_ptr, &p, p + request->data_len, &u_hash TSRMLS_CC);
+                            PHP_VAR_UNSERIALIZE_DESTROY(u_hash);
+                            ZEND_SET_SYMBOL(&EG(symbol_table), "_", data_ptr);
+
+                            n= sizeof("$registry['']->($_)") + request->class_len + request->member_len;
                             eval= (char*) emalloc(n);
                             strncpy(eval, "$registry['", sizeof("$registry['"));
                             strncat(eval, request->class, request->class_len);
                             strncat(eval, "']->", sizeof("']->"));
                             strncat(eval, request->member, request->member_len);
-                            strncat(eval, "()", sizeof("()"));
+                            strncat(eval, "($_)", sizeof("($_)"));
                             break;
                     }
                     
