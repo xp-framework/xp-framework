@@ -24,10 +24,11 @@
   Console::writeLine('===> Downloading webstart URL ', $p->value(1));
   try(); {
     $c= &new HttpConnection($p->value(1));
-    $response= &$c->get();
-    $document= '';
-    while (FALSE !== ($buf= $response->readData())) {
-      $document.= preg_replace('/&(?!(amp;))/', '&amp;', $buf);
+    if ($response= &$c->get()) {
+      $document= '';
+      while (FALSE !== ($buf= $response->readData())) {
+        $document.= preg_replace('/&(?!(amp;))/', '&amp;', $buf);
+      }
     }
     delete($c);
   } if (catch('Exception', $e)) {
