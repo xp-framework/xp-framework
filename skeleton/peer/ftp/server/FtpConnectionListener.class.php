@@ -549,14 +549,15 @@
       try(); {
         $entry->open(SE_READ);
         while (!$socket->eof() && $buf= $entry->read()) {
-          $socket->write($buf);
+          if (!$socket->write($buf)) break;
         }
         $entry->close();
       } if (catch('Exception', $e)) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
-        return;
+      } finally(); {
+        $socket->close();
+        if ($e) return;
       }
-      $socket->close();
       $this->answer($event->stream, 226, 'Transfer complete');
     }
 
@@ -597,9 +598,10 @@
         $entry->close();
       } if (catch('Exception', $e)) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
-        return;
+      } finally(); {
+        $socket->close();
+        if ($e) return;
       }
-      $socket->close();
       $this->answer($event->stream, 226, 'Transfer complete');
     }
 
@@ -664,11 +666,12 @@
       try(); {
         $entry->rename($params);
         $this->cat->debug($params);
-      } if (catch('IOException', $e)) {
-        $this->answer($event->stream, 550, $params.': ', $e->getMessage());
+      } if (catch('Exception', $e)) {
+        $this->answer($event->stream, 550, $params.': '. $e->getMessage());
+        return;
       }
       
-      $this->sessios[$event->stream->hashCode()]->removeTempVar('rnfr');
+      $this->sessions[$event->stream->hashCode()]->removeTempVar('rnfr');
       $this->answer($event->stream, 250, 'Rename successful');
     }
     
