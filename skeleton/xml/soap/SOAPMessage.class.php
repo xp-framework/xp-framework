@@ -41,7 +41,9 @@
       $body         = '',
       $namespace    = 'ctl',
       $encoding     = XML_ENCODING_DEFAULT,
-      $nodeType     = 'SOAPNode';
+      $nodeType     = 'SOAPNode',
+      $action       = '',
+      $method       = '';
 
     /**
      * Create a message
