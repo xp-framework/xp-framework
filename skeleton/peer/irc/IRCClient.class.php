@@ -187,7 +187,7 @@
             break 2;
             
           case IRC_MSGC_LIST:
-            // #schlund 3 :Schlund
+            // #channel 3 :Channel
             list($channel, $users, $name)= explode(' ', $list[$i]['data'], 3);
             $channels[$channel]= array(
               'users' => (int)$users,
@@ -496,7 +496,7 @@
         }
         
         // Message from other clients
-        // ':dpunkt!dragicevic@billard.schlund.de PRIVMSG #support :hi
+        // ':dpunkt!baz@billard.foo.bar PRIVMSG #support :hi
         list($nick, $user)= explode('!', $data[0]);
         $this->_message[]= array(
           'type'	=> IRC_MSGT_USER,

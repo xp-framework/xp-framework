@@ -12,8 +12,8 @@
    * Example
    * <code>
    *   $imap= &new IMAPClient (array (
-   *     'host' => 'imap.schlund.de',
-   *     'user' => 'iaspool',
+   *     'host' => 'imap.foo.bar',
+   *     'user' => 'baz',
    *     'pass' => '**censored**'
    *   ));
    *   $imap->init();

@@ -18,7 +18,7 @@
    * <code>
    *   uses('xml.soap.rpc.SoapRpcRouter');
    *
-   *   $s= &new SoapRpcRouter(new ClassLoader('de.schlund.webservices.faq'));
+   *   $s= &new SoapRpcRouter(new ClassLoader('info.binford6100.webservices'));
    *   try(); {
    *     $s->init();
    *     $response= &$s->process();
