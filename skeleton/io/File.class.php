@@ -22,10 +22,11 @@
   define('STDOUT',              'php://stdout');
   define('STDERR',              'php://stderr');
   
-  define('E_ILLEGALSTATEEXCEPTION',     0xF120);
-  define('E_FILENOTFOUNDEXCEPTION',     0xF121);
-  define('E_IOEXCEPTION',               0xF122);
-  
+  uses(
+    'io.IOException',
+    'io.FileNotFoundException'
+  );
+    
   /**
    * File als Objekt
    * Kapselt die Dateioperation, fasst sie in einer Klasse zusammen und versieht
@@ -90,15 +91,15 @@
      * @throws  FileNotFoundException, wenn Datei nicht gefunden wurde
      */
     function open($mode= FILE_MODE_READ) {
-      if (empty($this->uri)) return throw(E_ILLEGALSTATEEXCEPTION, 'no uri defined');
+      if (empty($this->uri)) return throw(new IllegalStateException('no uri defined'));
       $this->mode= $mode;
       if (
         ('php://' != substr($this->uri, 0, 6)) &&
         ($mode== FILE_MODE_READ) && 
         (!$this->exists())
-      ) return throw(E_FILENOTFOUNDEXCEPTION, $this->uri);
+      ) return throw(new FileNotFoundException($this->uri));
       $this->_fd= @fopen($this->uri, $this->mode);
-      if (!$this->_fd) return throw(E_IOEXCEPTION, 'cannot open '.$this->uri.' mode '.$this->mode);
+      if (!$this->_fd) return throw(new IOException('cannot open '.$this->uri.' mode '.$this->mode));
     }
     
     /**
@@ -108,7 +109,7 @@
      * @throws  IllegalStateException, wenn keine URI angegeben ist
      */
     function exists() {
-      if (!isset($this->uri)) return throw(E_ILLEGALSTATEEXCEPTION, 'no uri defined');
+      if (!isset($this->uri)) return throw(new IllegalStateException('no uri defined'));
       return file_exists($this->uri);
     }
     
@@ -120,9 +121,9 @@
      * @throws  IOException, wenn Dateigröße nicht ermittelt werden kann
      */
     function size() {
-      if (!isset($this->uri)) return throw(E_ILLEGALSTATEEXCEPTION, 'no uri defined');
+      if (!isset($this->uri)) return throw(new IllegalStateException('no uri defined'));
       $size= @filesize($this->uri);
-      if (FALSE === $size) return throw(E_IOEXCEPTION, 'cannot get filesize for '.$this->uri);
+      if (FALSE === $size) return throw(new IOException('cannot get filesize for '.$this->uri));
       return $size;
     }
     
@@ -134,9 +135,9 @@
      * @throws  IOException, wenn Dateigröße nicht ermittelt werden kann
      */
     function truncate($size= 0) {
-      if (!isset($this->_fd)) return throw(E_ILLEGALSTATEEXCEPTION, 'no file open');
+      if (!isset($this->_fd)) return throw(new IllegalStateException('no file open'));
       $return= @ftruncate($this->_fd, $size);
-      if (FALSE === $return) return throw(E_IOEXCEPTION, 'cannot truncate file '.$this->uri);
+      if (FALSE === $return) return throw(new IOException('cannot truncate file '.$this->uri));
       return $return;
     }
 
@@ -148,9 +149,9 @@
      * @throws  IOException, wenn das Datum nicht ermittelt werden kann
      */
     function lastAccessed() {
-      if (!isset($this->uri)) return throw(E_ILLEGALSTATEEXCEPTION, 'no uri defined');
+      if (!isset($this->uri)) return throw(new IllegalStateException('no uri defined'));
       $atime= fileatime($this->uri);
-      if (FALSE === $atime) return throw(E_IOEXCEPTION, 'cannot get atime for '.$this->uri);
+      if (FALSE === $atime) return throw(new IOException('cannot get atime for '.$this->uri));
       return $atime;
     }
     
@@ -162,9 +163,9 @@
      * @throws  IOException, wenn das Datum nicht ermittelt werden kann
      */
     function lastModified() {
-      if (!isset($this->uri)) return throw(E_ILLEGALSTATEEXCEPTION, 'no uri defined');
+      if (!isset($this->uri)) return throw(new IllegalStateException('no uri defined'));
       $mtime= fileatime($this->uri);
-      if (FALSE === $mtime) return throw(E_IOEXCEPTION, 'cannot get mtime for '.$this->uri);
+      if (FALSE === $mtime) return throw(new IOException('cannot get mtime for '.$this->uri));
       return $mtime;
     }
 
@@ -176,9 +177,9 @@
      * @throws  IOException, wenn das Datum nicht ermittelt werden kann
      */
     function createdAt() {
-      if (!isset($this->uri)) return throw(E_ILLEGALSTATEEXCEPTION, 'no uri defined');
+      if (!isset($this->uri)) return throw(new IllegalStateException('no uri defined'));
       $mtime= filectime($this->uri);
-      if (FALSE === $mtime) return throw(E_IOEXCEPTION, 'cannot get mtime for '.$this->uri);
+      if (FALSE === $mtime) return throw(new IOException('cannot get mtime for '.$this->uri));
       return $mtime;
     }
 
@@ -191,10 +192,10 @@
      * @throws  IllegalStateException, wenn keine Datei offen
      */
     function readLine($bytes= 4096) {
-      if (!isset($this->_fd)) return throw(E_ILLEGALSTATEEXCEPTION, 'file not open');
+      if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
       $result= chop(@fgets($this->_fd, $bytes));
       if ($result === FALSE) {
-        return throw(E_IOEXCEPTION, 'cannot read '.$bytes.' bytes from '.$this->uri);
+        return throw(new IOException('cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
@@ -207,10 +208,10 @@
      * @throws  IllegalStateException, wenn keine Datei offen
      */
     function readChar() {
-      if (!isset($this->_fd)) return throw(E_ILLEGALSTATEEXCEPTION, 'file not open');
+      if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
       $result= @fgetc($this->_fd);
       if (!$result) {
-        return throw(E_IOEXCEPTION, 'cannot read '.$bytes.' bytes from '.$this->uri);
+        return throw(new IOException('cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
@@ -224,10 +225,10 @@
      * @throws  IllegalStateException, wenn keine Datei offen
      */
     function read($bytes= 4096) {
-      if (!isset($this->_fd)) return throw(E_ILLEGALSTATEEXCEPTION, 'file not open');
+      if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
       $result= @fread($this->_fd, $bytes);
       if ($result === FALSE) {
-        return throw(E_IOEXCEPTION, 'cannot read '.$bytes.' bytes from '.$this->uri);
+        return throw(new IOException('cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
@@ -240,7 +241,7 @@
      * @throws  IllegalStateException, wenn keine Datei offen
      */
     function write($string) {
-      if (!isset($this->_fd)) return throw(E_ILLEGALSTATEEXCEPTION, 'file not open');
+      if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
       $result= @fputs($this->_fd, $string);
       if (!$result) {
         throw(new IOException('cannot write '.strlen($string).' bytes to '.$this->uri));
@@ -256,7 +257,7 @@
      */
     function eof() {
       if (!isset($this->_fd)) {
-        return throw(E_ILLEGALSTATEEXCEPTION, 'file not open');
+        return throw(new IllegalStateException('file not open'));
       }
       return feof($this->_fd);
     }
@@ -271,9 +272,9 @@
      * @return (bool)success
      */
     function seek($position= 0, $mode= SEEK_SET) {
-      if (!isset($this->_fd)) return throw(E_ILLEGALSTATEEXCEPTION, 'file not open');
+      if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
       $result= fseek($this->_fd, $position);
-      if ($result != 0) return throw(E_IOEXCEPTION, 'seek error, position '.$position.' in mode '.$mode);
+      if ($result != 0) return throw(new IOException('seek error, position '.$position.' in mode '.$mode));
       return TRUE;
     }
     
@@ -285,9 +286,9 @@
      * @return  (int)position
      */
     function tell($position= 0, $mode= SEEK_SET) {
-      if (!isset($this->_fd)) return throw(E_ILLEGALSTATEEXCEPTION, 'file not open');
+      if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
       $result= ftell($this->_fd);
-      if (FALSE === $result) return throw(E_IOEXCEPTION, 'cannot retreive file pointer\'s position');
+      if (FALSE === $result) return throw(new IOException('cannot retreive file pointer\'s position'));
       return $result;
     }
 
@@ -303,9 +304,9 @@
      * @see     http://php.net/flock
      */
     function _lock($op, $block= NULL) {
-      if (!isset($this->_fd)) return throw(E_ILLEGALSTATEEXCEPTION, 'file not open');
+      if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
       $result= flock($this->_fd, $op, $lock);
-      if (FALSE === $result) return throw(E_IOEXCEPTION, 'cannot retreive file pointer\'s position');
+      if (FALSE === $result) return throw(new IOException('cannot retreive file pointer\'s position'));
       return $result;
     }
     
@@ -343,7 +344,7 @@
      * @return  (bool)success
      */
     function close() {
-      if (!isset($this->_fd)) return throw(E_ILLEGALSTATEEXCEPTION, 'file not open');
+      if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
       $result= @fclose($this->_fd);
       unset($this->_fd);
       return $result;
