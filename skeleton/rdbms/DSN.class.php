@@ -9,8 +9,10 @@
    *
    * DSN examples:
    * <pre>
-   *   type://username:password@host:port/database/table
+   *   type://username:password@host:port/database
    * </pre>
+   *
+   * @purpose  Unified connect string
    */
   class DSN extends Object {
     var 
@@ -37,6 +39,17 @@
      */
     function getHost($default= NULL) {
       return isset($this->parts['host']) ? $this->parts['host'] : $default;
+    }
+
+    /**
+     * Retreive database
+     *
+     * @access  public
+     * @param   mixed default default NULL  
+     * @return  string databse or default if none is set
+     */
+    function getDatabase($default= NULL) {
+      return isset($this->parts['path']) ? substr($this->parts['path'], 1) : $default;
     }
 
     /**
