@@ -77,9 +77,8 @@
      * @param   array arr
      */
     function setData($arr) {
-      $node= &new SOAPNode();
+      $node= &SOAPNode::fromArray($arr, 'item');
       $node->namespace= $this->namespace;
-      $node->fromArray($arr, 'item');
       if (empty($node->children)) return;
       
       // Copy all of node's children to root element

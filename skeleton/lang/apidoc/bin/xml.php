@@ -40,10 +40,9 @@
           -10
         ));
         
-        $node= &new Node();
+        $node= &Node::fromArray($result, 'classdoc');
         $node->attribute['filename']= $entry;
         $node->attribute['classname']= $uses;
-        $node->fromArray($result, 'classdoc');
         
         $out= &new File('xml/'.$uses.'.xpdoc.xml');
         try(); {

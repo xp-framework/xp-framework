@@ -116,8 +116,7 @@
       $this->channel->publisher= $publisher;
       $this->channel->copyright= $rights;
       
-      $node= &new Node();
-      $node->fromArray(array(
+      $node= &Node::fromArray(array(
         'title'         => $title,
         'link'          => $link,
         'description'   => $description,
@@ -144,8 +143,7 @@
       $this->image->url= $url;
       $this->image->title= $title;
 
-      $node= &new Node();
-      $node->fromArray(array(
+      $node= &Node::fromArray(array(
         'title'         => $title,
         'url'           => $url,
         'link'          => $link
@@ -174,8 +172,7 @@
       $item->link= $link;
       $item->description= $description;
       
-      $node= &new Node();
-      $node->fromArray(array(
+      $node= &Node::fromArray(array(
         'title'         => $title,
         'link'          => $link,
         'description'   => $description,
