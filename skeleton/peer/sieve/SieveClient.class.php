@@ -7,6 +7,7 @@
   uses(
     'peer.Socket', 
     'peer.sieve.SieveScript', 
+    'security.checksum.HMAC_MD5',
     'security.sasl.DigestChallenge'
   );
 
@@ -296,7 +297,29 @@
           $str= base64_decode($this->_sock->readLine());
           $this->cat && $this->cat->debug('Response auth (length '.$len.'):', $str);
           return TRUE;
-        
+
+        case SIEVE_SASL_CRAM_MD5:
+          $this->_sendcmd('AUTHENTICATE "CRAM-MD5"');
+          
+          // Read server challenge. Example (decoded):
+          // 
+          // <2687127488.3645700@example.com>
+          //
+          // See also rfc://2195
+          $len= $this->_sock->readLine(0x400);
+          $challenge= base64_decode($this->_sock->readLine());
+          $this->cat && $this->cat->debug('Challenge (length '.$len.'):', $challenge);
+          
+          // Build response and send it
+          $response= sprintf(
+            '%s %s',
+            $user,
+            bin2hex(HMAC_MD5::hash($challenge, $pass))
+          );
+          $this->cat && $this->cat->debug('Sending challenge response', $response);
+          $this->_sendcmd('"%s"', base64_encode($response));
+          break;
+
         default:
           return throw(new IllegalArgumentException('Authentication method '.$method.' not implemented'));
       }
