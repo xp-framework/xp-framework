@@ -10,7 +10,7 @@
    *
    * @purpose  Base class for all others
    */
-  class Object {
+  class Object implements Generic {
     protected $__id = NULL;
     
     /**
@@ -28,10 +28,10 @@
      * Indicates whether some other object is "equal to" this one.
      *
      * @access  public
-     * @param   &lang.Object cmp
+     * @param   &lang.Generic cmp
      * @return  bool TRUE if the compared object is equal to this object
      */
-    public function equals($cmp) {
+    public function equals(Generic $cmp) {
       return $this === $cmp;
     }
     
