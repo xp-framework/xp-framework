@@ -209,5 +209,17 @@
       }
       return FALSE;
     }
+    
+    /**
+     * Rewinds the directory to the beginning.
+     *
+     * @access public
+     */
+    function rewind() {
+      if (FALSE === $this->_hdir)
+        return throw (new IOException ('Cannot rewind non-open folder.'));
+      
+      rewinddir ($this->_hdir);
+    }
   }
 ?>
