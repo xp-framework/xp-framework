@@ -902,9 +902,10 @@
      *
      * @access  public
      * @param   int bug_id
+     * @return  int previous value
      */
     function setBug_id($bug_id) {
-      $this->bug_id= $bug_id;
+      return $this->_change('bug_id', $bug_id, '%d');
     }
       
     /**
@@ -922,9 +923,10 @@
      *
      * @access  public
      * @param   int groupset
+     * @return  int previous value
      */
     function setGroupset($groupset) {
-      $this->groupset= $groupset;
+      return $this->_change('groupset', $groupset, '%d');
     }
       
     /**
@@ -942,9 +944,10 @@
      *
      * @access  public
      * @param   int assigned_to
+     * @return  int previous value
      */
     function setAssigned_to($assigned_to) {
-      $this->assigned_to= $assigned_to;
+      return $this->_change('assigned_to', $assigned_to, '%d');
     }
       
     /**
@@ -962,9 +965,10 @@
      *
      * @access  public
      * @param   string bug_file_loc
+     * @return  string previous value
      */
     function setBug_file_loc($bug_file_loc) {
-      $this->bug_file_loc= $bug_file_loc;
+      return $this->_change('bug_file_loc', $bug_file_loc, '%s');
     }
       
     /**
@@ -1024,9 +1028,10 @@
      *
      * @access  public
      * @param   util.Date creation_ts
+     * @return  util.Date previous value
      */
     function setCreation_ts($creation_ts) {
-      $this->creation_ts= $creation_ts;
+      return $this->_change('creation_ts', $creation_ts, '%s');
     }
       
     /**
@@ -1044,9 +1049,10 @@
      *
      * @access  public
      * @param   util.Date delta_ts
+     * @return  util.Date previous value
      */
     function setDelta_ts($delta_ts) {
-      $this->delta_ts= $delta_ts;
+      return $this->_change('delta_ts', $delta_ts, '%s');
     }
       
     /**
@@ -1064,9 +1070,10 @@
      *
      * @access  public
      * @param   string short_desc
+     * @return  string previous value
      */
     function setShort_desc($short_desc) {
-      $this->short_desc= $short_desc;
+      return $this->_change('short_desc', $short_desc, '%s');
     }
       
     /**
@@ -1084,9 +1091,10 @@
      *
      * @access  public
      * @param   string op_sys
+     * @return  string previous value
      */
     function setOp_sys($op_sys) {
-      $this->op_sys= $op_sys;
+      return $this->_change('op_sys', $op_sys, '%s');
     }
       
     /**
@@ -1125,9 +1133,10 @@
      *
      * @access  public
      * @param   string product
+     * @return  string previous value
      */
     function setProduct($product) {
-      $this->product= $product;
+      return $this->_change('product', $product, '%s');
     }
       
     /**
@@ -1145,9 +1154,10 @@
      *
      * @access  public
      * @param   string rep_platform
+     * @return  string previous value
      */
     function setRep_platform($rep_platform) {
-      $this->rep_platform= $rep_platform;
+      return $this->_change('rep_platform', $rep_platform, '%s');
     }
       
     /**
@@ -1165,9 +1175,10 @@
      *
      * @access  public
      * @param   int reporter
+     * @return  int previous value
      */
     function setReporter($reporter) {
-      $this->reporter= $reporter;
+      return $this->_change('reporter', $reporter, '%d');
     }
       
     /**
@@ -1185,9 +1196,10 @@
      *
      * @access  public
      * @param   string version
+     * @return  string previous value
      */
     function setVersion($version) {
-      $this->version= $version;
+      return $this->_change('version', $version, '%s');
     }
       
     /**
@@ -1205,9 +1217,10 @@
      *
      * @access  public
      * @param   string component
+     * @return  string previous value
      */
     function setComponent($component) {
-      $this->component= $component;
+      return $this->_change('component', $component, '%s');
     }
       
     /**
@@ -1246,9 +1259,10 @@
      *
      * @access  public
      * @param   string target_milestone
+     * @return  string previous value
      */
     function setTarget_milestone($target_milestone) {
-      $this->target_milestone= $target_milestone;
+      return $this->_change('target_milestone', $target_milestone, '%s');
     }
       
     /**
@@ -1266,9 +1280,10 @@
      *
      * @access  public
      * @param   int qa_contact
+     * @return  int previous value
      */
     function setQa_contact($qa_contact) {
-      $this->qa_contact= $qa_contact;
+      return $this->_change('qa_contact', $qa_contact, '%d');
     }
       
     /**
@@ -1286,9 +1301,10 @@
      *
      * @access  public
      * @param   string status_whiteboard
+     * @return  string previous value
      */
     function setStatus_whiteboard($status_whiteboard) {
-      $this->status_whiteboard= $status_whiteboard;
+      return $this->_change('status_whiteboard', $status_whiteboard, '%s');
     }
       
     /**
@@ -1306,9 +1322,10 @@
      *
      * @access  public
      * @param   int votes
+     * @return  int previous value
      */
     function setVotes($votes) {
-      $this->votes= $votes;
+      return $this->_change('votes', $votes, '%d');
     }
       
     /**
@@ -1326,9 +1343,10 @@
      *
      * @access  public
      * @param   string keywords
+     * @return  string previous value
      */
     function setKeywords($keywords) {
-      $this->keywords= $keywords;
+      return $this->_change('keywords', $keywords, '%s');
     }
       
     /**
@@ -1346,9 +1364,10 @@
      *
      * @access  public
      * @param   util.Date lastdiffed
+     * @return  util.Date previous value
      */
     function setLastdiffed($lastdiffed) {
-      $this->lastdiffed= $lastdiffed;
+      return $this->_change('lastdiffed', $lastdiffed, '%s');
     }
       
     /**
@@ -1366,9 +1385,10 @@
      *
      * @access  public
      * @param   int everconfirmed
+     * @return  int previous value
      */
     function setEverconfirmed($everconfirmed) {
-      $this->everconfirmed= $everconfirmed;
+      return $this->_change('everconfirmed', $everconfirmed, '%d');
     }
       
     /**
@@ -1386,9 +1406,10 @@
      *
      * @access  public
      * @param   int reporter_accessible
+     * @return  int previous value
      */
     function setReporter_accessible($reporter_accessible) {
-      $this->reporter_accessible= $reporter_accessible;
+      return $this->_change('reporter_accessible', $reporter_accessible, '%d');
     }
       
     /**
@@ -1406,9 +1427,10 @@
      *
      * @access  public
      * @param   int cclist_accessible
+     * @return  int previous value
      */
     function setCclist_accessible($cclist_accessible) {
-      $this->cclist_accessible= $cclist_accessible;
+      return $this->_change('cclist_accessible', $cclist_accessible, '%d');
     }
       
     /**
@@ -1424,61 +1446,9 @@
 
       try(); {
         $db= &$cm->getByHost('bugzilla', 0);
-        $db->update('
-          bugs..bugs set
-            groupset = %d,
-            assigned_to = %d,
-            bug_file_loc = %s,
-            bug_severity = %s,
-            bug_status = %s,
-            creation_ts = %s,
-            delta_ts = %s,
-            short_desc = %s,
-            op_sys = %s,
-            priority = %s,
-            product = %s,
-            rep_platform = %s,
-            reporter = %d,
-            version = %s,
-            component = %s,
-            resolution = %s,
-            target_milestone = %s,
-            qa_contact = %d,
-            status_whiteboard = %s,
-            votes = %d,
-            keywords = %s,
-            lastdiffed = %s,
-            everconfirmed = %d,
-            reporter_accessible = %d,
-            cclist_accessible = %d
-          where
-            bug_id = %d
-          ',
-          $this->groupset,
-          $this->assigned_to,
-          $this->bug_file_loc,
-          $this->bug_severity,
-          $this->bug_status,
-          $this->creation_ts,
-          $this->delta_ts,
-          $this->short_desc,
-          $this->op_sys,
-          $this->priority,
-          $this->product,
-          $this->rep_platform,
-          $this->reporter,
-          $this->version,
-          $this->component,
-          $this->resolution,
-          $this->target_milestone,
-          $this->qa_contact,
-          $this->status_whiteboard,
-          $this->votes,
-          $this->keywords,
-          $this->lastdiffed,
-          $this->everconfirmed,
-          $this->reporter_accessible,
-          $this->cclist_accessible,
+        $db->update(
+          'bugs..bugs set %c where bug_id = %d',
+          $this->_updated($db),
           $this->bug_id
         );
       } if (catch('SQLException', $e)) {
@@ -1500,62 +1470,7 @@
       $cm= &ConnectionManager::getInstance(); 
       try(); {
         $db= &$cm->getByHost('bugzilla', 0);
-        $db->insert('
-          bugs..bugs (
-            groupset,
-            assigned_to,
-            bug_file_loc,
-            bug_severity,
-            bug_status,
-            creation_ts,
-            delta_ts,
-            short_desc,
-            op_sys,
-            priority,
-            product,
-            rep_platform,
-            reporter,
-            version,
-            component,
-            resolution,
-            target_milestone,
-            qa_contact,
-            status_whiteboard,
-            votes,
-            keywords,
-            lastdiffed,
-            everconfirmed,
-            reporter_accessible,
-            cclist_accessible
-          ) values (
-            %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %d, %s, %s, %s, %s, %d, %s, %d, %s, %s, %d, %d, %d
-          )',
-          $this->groupset,
-          $this->assigned_to,
-          $this->bug_file_loc,
-          $this->bug_severity,
-          $this->bug_status,
-          $this->creation_ts,
-          $this->delta_ts,
-          $this->short_desc,
-          $this->op_sys,
-          $this->priority,
-          $this->product,
-          $this->rep_platform,
-          $this->reporter,
-          $this->version,
-          $this->component,
-          $this->resolution,
-          $this->target_milestone,
-          $this->qa_contact,
-          $this->status_whiteboard,
-          $this->votes,
-          $this->keywords,
-          $this->lastdiffed,
-          $this->everconfirmed,
-          $this->reporter_accessible,
-          $this->cclist_accessible
-        );
+        $db->insert('bugs..bugs (%c)', $this->_inserted($db));
 
         // Fetch identity
         $this->bug_id= $db->identity();

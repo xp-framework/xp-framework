@@ -47,11 +47,8 @@
      */
     function &getByHost_name($host_name) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('nagios', 0))) {
-        return throw(new IllegalAccessException('No connection to "nagios" available'));
-      }
-
       try(); {
+        $db= &$cm->getByHost('nagios', 0);
         $q= &$db->query ('
           select
             host_name,
@@ -103,11 +100,8 @@
      */
     function &getByHost_status($host_status) {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('nagios', 0))) {
-        return throw(new IllegalAccessException('No connection to "nagios" available'));
-      }
-
       try(); {
+        $db= &$cm->getByHost('nagios', 0);
         $q= &$db->query ('
           select
             host_name,
@@ -158,11 +152,8 @@
      */
     function &getByNotUp() {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('nagios', 0))) {
-        return throw(new IllegalAccessException('No connection to "nagios" available'));
-      }
-
       try(); {
+        $db= &$cm->getByHost('nagios', 0);
         $q= &$db->query ('
           select
             host_name,
@@ -218,9 +209,10 @@
      *
      * @access  public
      * @param   string host_name
+     * @return  string previous value
      */
     function setHost_name($host_name) {
-      $this->host_name= $host_name;
+      return $this->_change('host_name', $host_name, '%s');
     }
       
     /**
@@ -238,9 +230,10 @@
      *
      * @access  public
      * @param   string host_status
+     * @return  string previous value
      */
     function setHost_status($host_status) {
-      $this->host_status= $host_status;
+      return $this->_change('host_status', $host_status, '%s');
     }
       
     /**
@@ -258,9 +251,10 @@
      *
      * @access  public
      * @param   util.Date last_update
+     * @return  util.Date previous value
      */
     function setLast_update($last_update) {
-      $this->last_update= $last_update;
+      return $this->_change('last_update', $last_update, '%s');
     }
       
     /**
@@ -278,9 +272,10 @@
      *
      * @access  public
      * @param   util.Date last_check
+     * @return  util.Date previous value
      */
     function setLast_check($last_check) {
-      $this->last_check= $last_check;
+      return $this->_change('last_check', $last_check, '%s');
     }
       
     /**
@@ -298,9 +293,10 @@
      *
      * @access  public
      * @param   util.Date last_state_change
+     * @return  util.Date previous value
      */
     function setLast_state_change($last_state_change) {
-      $this->last_state_change= $last_state_change;
+      return $this->_change('last_state_change', $last_state_change, '%s');
     }
       
     /**
@@ -318,9 +314,10 @@
      *
      * @access  public
      * @param   int problem_acknowledged
+     * @return  int previous value
      */
     function setProblem_acknowledged($problem_acknowledged) {
-      $this->problem_acknowledged= $problem_acknowledged;
+      return $this->_change('problem_acknowledged', $problem_acknowledged, '%d');
     }
       
     /**
@@ -338,9 +335,10 @@
      *
      * @access  public
      * @param   int time_up
+     * @return  int previous value
      */
     function setTime_up($time_up) {
-      $this->time_up= $time_up;
+      return $this->_change('time_up', $time_up, '%d');
     }
       
     /**
@@ -358,9 +356,10 @@
      *
      * @access  public
      * @param   int time_down
+     * @return  int previous value
      */
     function setTime_down($time_down) {
-      $this->time_down= $time_down;
+      return $this->_change('time_down', $time_down, '%d');
     }
       
     /**
@@ -378,9 +377,10 @@
      *
      * @access  public
      * @param   int time_unreachable
+     * @return  int previous value
      */
     function setTime_unreachable($time_unreachable) {
-      $this->time_unreachable= $time_unreachable;
+      return $this->_change('time_unreachable', $time_unreachable, '%d');
     }
       
     /**
@@ -398,9 +398,10 @@
      *
      * @access  public
      * @param   util.Date last_notification
+     * @return  util.Date previous value
      */
     function setLast_notification($last_notification) {
-      $this->last_notification= $last_notification;
+      return $this->_change('last_notification', $last_notification, '%s');
     }
       
     /**
@@ -418,9 +419,10 @@
      *
      * @access  public
      * @param   int current_notification
+     * @return  int previous value
      */
     function setCurrent_notification($current_notification) {
-      $this->current_notification= $current_notification;
+      return $this->_change('current_notification', $current_notification, '%d');
     }
       
     /**
@@ -438,9 +440,10 @@
      *
      * @access  public
      * @param   int notifications_enabled
+     * @return  int previous value
      */
     function setNotifications_enabled($notifications_enabled) {
-      $this->notifications_enabled= $notifications_enabled;
+      return $this->_change('notifications_enabled', $notifications_enabled, '%d');
     }
       
     /**
@@ -458,9 +461,10 @@
      *
      * @access  public
      * @param   int event_handler_enabled
+     * @return  int previous value
      */
     function setEvent_handler_enabled($event_handler_enabled) {
-      $this->event_handler_enabled= $event_handler_enabled;
+      return $this->_change('event_handler_enabled', $event_handler_enabled, '%d');
     }
       
     /**
@@ -478,9 +482,10 @@
      *
      * @access  public
      * @param   int checks_enabled
+     * @return  int previous value
      */
     function setChecks_enabled($checks_enabled) {
-      $this->checks_enabled= $checks_enabled;
+      return $this->_change('checks_enabled', $checks_enabled, '%d');
     }
       
     /**
@@ -498,9 +503,10 @@
      *
      * @access  public
      * @param   string plugin_output
+     * @return  string previous value
      */
     function setPlugin_output($plugin_output) {
-      $this->plugin_output= $plugin_output;
+      return $this->_change('plugin_output', $plugin_output, '%s');
     }
       
     /**
@@ -518,9 +524,10 @@
      *
      * @access  public
      * @param   int flap_detection_enabled
+     * @return  int previous value
      */
     function setFlap_detection_enabled($flap_detection_enabled) {
-      $this->flap_detection_enabled= $flap_detection_enabled;
+      return $this->_change('flap_detection_enabled', $flap_detection_enabled, '%d');
     }
       
     /**
@@ -538,9 +545,10 @@
      *
      * @access  public
      * @param   int is_flapping
+     * @return  int previous value
      */
     function setIs_flapping($is_flapping) {
-      $this->is_flapping= $is_flapping;
+      return $this->_change('is_flapping', $is_flapping, '%d');
     }
       
     /**
@@ -558,9 +566,10 @@
      *
      * @access  public
      * @param   string percent_state_change
+     * @return  string previous value
      */
     function setPercent_state_change($percent_state_change) {
-      $this->percent_state_change= $percent_state_change;
+      return $this->_change('percent_state_change', $percent_state_change, '%s');
     }
       
     /**
@@ -578,9 +587,10 @@
      *
      * @access  public
      * @param   int scheduled_downtime_depth
+     * @return  int previous value
      */
     function setScheduled_downtime_depth($scheduled_downtime_depth) {
-      $this->scheduled_downtime_depth= $scheduled_downtime_depth;
+      return $this->_change('scheduled_downtime_depth', $scheduled_downtime_depth, '%d');
     }
       
     /**
@@ -598,9 +608,10 @@
      *
      * @access  public
      * @param   int failure_prediction_enabled
+     * @return  int previous value
      */
     function setFailure_prediction_enabled($failure_prediction_enabled) {
-      $this->failure_prediction_enabled= $failure_prediction_enabled;
+      return $this->_change('failure_prediction_enabled', $failure_prediction_enabled, '%d');
     }
       
     /**
@@ -618,9 +629,10 @@
      *
      * @access  public
      * @param   int process_performance_data
+     * @return  int previous value
      */
     function setProcess_performance_data($process_performance_data) {
-      $this->process_performance_data= $process_performance_data;
+      return $this->_change('process_performance_data', $process_performance_data, '%d');
     }
       
     /**
@@ -633,57 +645,11 @@
      */
     function update() {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('nagios', 0))) {
-        return throw(new IllegalAccessException('No connection to "nagios" available'));
-      }
-
       try(); {
-        $db->update('
-          nagios.hoststatus set
-            host_name = %s,
-            host_status = %s,
-            last_update = %s,
-            last_check = %s,
-            last_state_change = %s,
-            problem_acknowledged = %d,
-            time_up = %d,
-            time_down = %d,
-            time_unreachable = %d,
-            last_notification = %s,
-            current_notification = %d,
-            notifications_enabled = %d,
-            event_handler_enabled = %d,
-            checks_enabled = %d,
-            plugin_output = %s,
-            flap_detection_enabled = %d,
-            is_flapping = %d,
-            percent_state_change = %s,
-            scheduled_downtime_depth = %d,
-            failure_prediction_enabled = %d,
-            process_performance_data = %d
-          where
-            
-          ',
-          $this->host_name,
-          $this->host_status,
-          $this->last_update,
-          $this->last_check,
-          $this->last_state_change,
-          $this->problem_acknowledged,
-          $this->time_up,
-          $this->time_down,
-          $this->time_unreachable,
-          $this->last_notification,
-          $this->current_notification,
-          $this->notifications_enabled,
-          $this->event_handler_enabled,
-          $this->checks_enabled,
-          $this->plugin_output,
-          $this->flap_detection_enabled,
-          $this->is_flapping,
-          $this->percent_state_change,
-          $this->scheduled_downtime_depth,
-          $this->failure_prediction_enabled,
+        $db= &$cm->getByHost('nagios', 0);
+        $db->update(
+          'nagios.hoststatus set %c where ',
+          $this->_updated($db),
           $this->process_performance_data
         );
       } if (catch('SQLException', $e)) {
@@ -703,59 +669,9 @@
      */
     function insert() {
       $cm= &ConnectionManager::getInstance();  
-      if (FALSE === ($db= &$cm->getByHost('nagios', 0))) {
-        return throw(new IllegalAccessException('No connection to "nagios" available'));
-      }
-
       try(); {
-        $db->insert('
-          nagios.hoststatus (
-            host_name,
-            host_status,
-            last_update,
-            last_check,
-            last_state_change,
-            problem_acknowledged,
-            time_up,
-            time_down,
-            time_unreachable,
-            last_notification,
-            current_notification,
-            notifications_enabled,
-            event_handler_enabled,
-            checks_enabled,
-            plugin_output,
-            flap_detection_enabled,
-            is_flapping,
-            percent_state_change,
-            scheduled_downtime_depth,
-            failure_prediction_enabled,
-            process_performance_data
-          ) values (
-            %s, %s, %s, %s, %s, %d, %d, %d, %d, %s, %d, %d, %d, %d, %s, %d, %d, %s, %d, %d, %d
-          )',
-          $this->host_name,
-          $this->host_status,
-          $this->last_update,
-          $this->last_check,
-          $this->last_state_change,
-          $this->problem_acknowledged,
-          $this->time_up,
-          $this->time_down,
-          $this->time_unreachable,
-          $this->last_notification,
-          $this->current_notification,
-          $this->notifications_enabled,
-          $this->event_handler_enabled,
-          $this->checks_enabled,
-          $this->plugin_output,
-          $this->flap_detection_enabled,
-          $this->is_flapping,
-          $this->percent_state_change,
-          $this->scheduled_downtime_depth,
-          $this->failure_prediction_enabled,
-          $this->process_performance_data
-        );
+        $db= &$cm->getByHost('nagios', 0);
+        $db->insert('nagios.hoststatus (%c)', $this->_inserted($db));
 
       } if (catch('SQLException', $e)) {
         return throw($e);
