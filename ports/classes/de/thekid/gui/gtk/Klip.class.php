@@ -259,7 +259,7 @@
         $this->proc->run();
       } if (catch('TransformerException', $e)) {
         $this->cat->error($e);
-        $this->cat->debug($klipsrc);
+        $this->cat->debug($this->proc);
         return;
       }
       
