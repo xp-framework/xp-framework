@@ -66,12 +66,10 @@
    */
   class HttpScriptlet extends Object {
     var
-      $request,
-      $response; 
-      
-    var
-      $needsSession=        FALSE,
-      $sessionURIFormat=    '%1$s://%2$s%3$s/%6$s?%s&psessionid=%7$s';
+      $request          = NULL,
+      $response         = NULL,
+      $needsSession     = FALSE,
+      $sessionURIFormat = '%1$s://%2$s%3$s/%6$s?%s&psessionid=%7$s';
     
     var 
       $_method= NULL;
@@ -143,30 +141,19 @@
      * @see     rfc://2616
      */
     function _handleMethod($method) {
-      $this->request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
-      $this->request->method= $method;
-      $this->request->setURI(parse_url(
-        ('on' == getenv('HTTPS') ? 'https' : 'http').'://'.
-        getenv('HTTP_HOST').
-        getenv('REQUEST_URI')
-      ));
-      
       switch ($method) {
         case HTTP_METHOD_POST:
           $this->request->setData($GLOBALS['HTTP_RAW_POST_DATA']);
-          $this->request->setParams(array_change_key_case($_POST, CASE_LOWER));
           $this->_method= 'doPost';
           break;
           
         case HTTP_METHOD_GET:
           $this->request->setData(getenv('QUERY_STRING'));
-          $this->request->setParams(array_change_key_case($_GET, CASE_LOWER));
           $this->_method= 'doGet';
           break;
           
         case HTTP_METHOD_HEAD:
           $this->request->setData(getenv('QUERY_STRING'));
-          $this->request->setParams(array_change_key_case($_GET, CASE_LOWER));
           $this->_method= 'doHead';
           break;        
           
@@ -322,7 +309,16 @@
      * @throws  org.apache.HttpScriptletException indicating fatal errors
      */
     function &process() {
-      if (FALSE === $this->_handleMethod(getenv('REQUEST_METHOD'))) {
+      $this->request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
+      $this->request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
+      $this->request->method= getenv('REQUEST_METHOD');
+      $this->request->setURI(parse_url(
+        ('on' == getenv('HTTPS') ? 'https' : 'http').'://'.
+        getenv('HTTP_HOST').
+        getenv('REQUEST_URI')
+      ));
+
+      if (FALSE === $this->_handleMethod($this->request->method)) {
         return throw(new HttpScriptletException(sprintf(
           'HTTP method "%s" not supported - request was: %s',
           $this->request->method,
