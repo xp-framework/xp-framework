@@ -201,16 +201,18 @@
       try(); {
         $db= &$cm->getByHost($this->connection, 0);
         
-        $columns= $map= array();
+        $columns= $map= $qualified= array();
         foreach (array_keys($this->types) as $colunn) {
           $columns[]= $this->identifier.'.'.$colunn;
           $map[$colunn]= '%c';
+          $qualified[$this->identifier.'.'.$colunn]= $this->types[$colunn];
         }
         foreach (array_keys($peer->types) as $colunn) {
           $columns[]= $peer->identifier.'.'.$colunn.' as "'.$peer->identifier.'#'.$colunn.'"';
+          $qualified[$peer->identifier.'.'.$colunn]= $peer->types[$colunn];
         }
         
-        $where= $criteria->toSQL($db, $this->types);
+        $where= $criteria->toSQL($db, array_merge($this->types, $peer->types, $qualified));
         $q= &$db->query(
           'select %c from %c %c, %c %c%c%c',
           $columns,
