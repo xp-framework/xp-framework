@@ -33,27 +33,29 @@
       $this->root->children[0]->addChild(new Node(array('name' => $this->namespace.':'.$this->method)));
     }
     
+    /**
+     * Setzt die Daten
+     *
+     * @param   array arr Array aller zu übergebender Daten
+     */
     function setData($arr) {
-      $node= new WSDLNode(array(
-        'namespace'     => $this->namespace
-      ));
+      $node= new WSDLNode();
+      $node->namespace= $this->namespace;
       $node->fromArray($arr, 'item');
-      /*
-      $node->attribute= array(
-        'xsi:type'              => 'SOAP-ENC:Array',
-        'SOAP-ENC:arrayType'    => 'xsd:ur-type['.sizeof($arr).']'
-      );
-      */
-      $this->root->children[0]->children[0]->addChild($node->children[0]);
+      if (!empty($node->children)) foreach ($node->children as $i=> $child) {
+        $this->root->children[0]->children[0]->addChild($child);
+      }
     }
     
     function _recurseData(&$node, $names= FALSE) {
-
       $results= array();
       foreach ($node->children as $child) {
         $idx= $names ? $child->name : sizeof($results);
         
-        if (isset($child->attribute['xsi:nil'])) {
+        if (
+          isset($child->attribute['xsi:null']) or       // Java
+          isset($child->attribute['xsi:nil'])           // SOAP::Lite
+        ) {
           $results[$idx]= NULL;
           continue;
         }
@@ -73,13 +75,14 @@
           case 'Array':
             $results[$idx]= $this->_recurseData($child);
             break;
-          
-          case 'ur-type':
-            $results[$idx]= $this->_recurseData($child, TRUE);
-            break;
-
+   
           case 'SOAPStruct':
-          case 'struct':
+          case 'struct':      
+          case 'ur-type':
+            if ($regs[1]== 'xsd') {
+              $results[$idx]= $this->_recurseData($child, TRUE);
+              break;
+            }
             $results[$idx]= new StdClass();
             $ret= $this->_recurseData($child, TRUE);
             foreach ($ret as $key=> $val) {
@@ -88,6 +91,10 @@
             break;
             
           default:
+            if (!empty($child->children)) {
+              $results[$idx]= $this->_recurseData($child, TRUE);
+              break;
+            }
             $results[$idx]= $child->getContent($this->encoding);
 
         }
@@ -118,22 +125,11 @@
     }
     
     function getData() {
-          
-      // Namespace suchen
-      foreach ($this->root->attribute as $key=> $val) {
+      foreach ($this->root->attribute as $key=> $val) { // Namespace suchen
         if ($val == $this->action) $this->namespace= substr($key, strlen('xmlns:'));
       }
-      
-      // Rekursiv durchgehen
       $return= $this->_recurseData($this->root->children[0]->children[0]);
-      
-      // Fehler?
-      if (empty($return)) {
-        return throw(E_SOAP_FAULT_EXCEPTION, $return);
-      }
-      
-      // Nur das nullte Element ist interessant
-      return $return[0];
+      return $return;
     }
   }
 ?>
