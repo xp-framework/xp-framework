@@ -17,7 +17,7 @@
    *   $news= $peer->doSelect(new Criteria(array('news_id', 100, LESS_THAN)));
    * </code>
    *
-   * @see      xp://rdms.DataSet
+   * @see      xp://rdbms.DataSet
    * @purpose  Part of DataSet model
    */
   class Peer extends Object {
@@ -192,13 +192,7 @@
     function doSelect(&$criteria, $max= 0) {
       $cm= &ConnectionManager::getInstance();  
       try(); {
-        $db= &$cm->getByHost($this->connection, 0);
-        $q= &$db->query(
-          'select %c from %c%c',
-          array_keys($this->types),
-          $this->table,
-          $criteria->toSQL($db, $this->types)
-        );
+        $q= &$criteria->executeSelect($cm->getByHost($this->connection, 0), $this);
       } if (catch('SQLException', $e)) {
         return throw($e);
       }
@@ -239,13 +233,7 @@
     function &iteratorFor(&$criteria) {
       $cm= &ConnectionManager::getInstance();  
       try(); {
-        $db= &$cm->getByHost($this->connection, 0);
-        $q= &$db->query(
-          'select %c from %c%c',
-          array_keys($this->types),
-          $this->table,
-          $criteria->toSQL($db, $this->types)
-        );
+        $q= &$criteria->executeSelect($cm->getByHost($this->connection, 0), $this);
       } if (catch('SQLException', $e)) {
         return throw($e);
       }
