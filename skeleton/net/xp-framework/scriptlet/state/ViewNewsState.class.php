@@ -62,9 +62,6 @@
         $entry->setAttribute('id', $record['id']);
         $entry->addChild(new Node('title', $record['title']));
         $entry->addChild(new Node('author', $record['author']));
-        $entry->addChild(new Node('category', $record['category'], array(
-          'id' => $record['category_id']
-        )));
         $entry->addChild(Node::fromObject(new Date($record['timestamp']), 'date'));
         $entry->addChild(FormresultHelper::markupNodeFor('body', $record['body']));
         $entry->addChild(FormresultHelper::markupNodeFor('extended', $record['extended']));
