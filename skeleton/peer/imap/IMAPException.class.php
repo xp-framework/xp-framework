@@ -4,6 +4,13 @@
  * $Id$
  */
 
+  /**
+   * @purpose       Exception class for IMAP exceptions
+   *
+   * @ext           imap
+   * @deprecated
+   *
+   */
   class IMAPException extends Exception {
   
   }

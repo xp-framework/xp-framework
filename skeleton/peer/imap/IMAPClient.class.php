@@ -28,8 +28,8 @@
    *   }
    *  </code>
    *
-   * @see php://imap
    * @ext imap
+   * @deprecated
    */   
   class IMAPClient extends Object {
     var

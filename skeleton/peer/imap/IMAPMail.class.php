@@ -13,6 +13,12 @@
 
   uses ('peer.imap.IMAPClient');
 
+  /**
+   * @purpose Represents an imap mail
+   * 
+   * @ext           imap
+   * @deprecated
+   */
   class IMAPMail extends Object {
     var
       $header,

@@ -9,6 +9,13 @@
     'peer.imap.IMAPException'
   );
   
+  /**
+   * @purpose   represents an IMAP folder
+   *
+   * @ext       imap
+   * @deprecated
+   *
+   */
   class IMAPFolder extends Object {
     var
       $folderName,
