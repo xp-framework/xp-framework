@@ -259,7 +259,71 @@ nedit.bgMenuCommands: \
 	}\n
 nedit.highlightPatterns: C:Default\n\
 	C++:Default\n\
-	Java:Default\n\
+	Java:3:0{\n\
+		README:"Java highlighting patterns for NEdit 5.1. Version 1.5 Author/maintainer: Joachim Lous - jlous at users.sourceforge.net":::Flag::D\n\
+		doccomment:"/\\*\\*":"\\*/"::Text Comment::\n\
+		doccomment tag:"@\\l*":::Text Key1:doccomment:\n\
+		comment:"/\\*":"\\*/"::Comment::\n\
+		cplus comment:"//":"$"::Comment::\n\
+		string:"""":"""":"\\n":String::\n\
+		string escape:"(?:\\\\u[\\dA-Faf]{4}|\\\\[0-7]{1,3}|\\\\[btnfr'""\\\\])":::String1:string:\n\
+		single quoted:"'":"'":"\\n":String::\n\
+		single quoted escape:"(?:\\\\u[\\dA-Faf]{4}|\\\\[0-7]{1,3}|\\\\[btnfr'""\\\\])(?=')":::String1:single quoted:\n\
+		single quoted char:".(?=')":::String:single quoted:\n\
+		single quoted error:".":::Flag:single quoted:\n\
+		hex const:"<(?i0[X][\\dA-F]+)>":::Numeric Const::\n\
+		long const:"<(?i[\\d]+L)>":::Numeric Const::\n\
+		decimal const:"<(?i\\d+(?:\\.\\d*)?(?:E[+-]?[\\d]+)?[FD]?|\\.\\d+(?:E[+-]?[\\d]+)?[FD]?)>":::Numeric Const::\n\
+		include:"<(?:import|package)>":";":"\\n":Preprocessor::\n\
+		classdef:"<(?:class|interface)>\\s*\\n?\\s*([\\l_]\\w*)":::Keyword::\n\
+		classdef name:"\\1":""::Storage Type:classdef:C\n\
+		extends:"<(?:extends)>":"(?=(?:<implements>|[{;]))"::Keyword::\n\
+		extends argument:"<[\\l_][\\w\\.]*(?=\\s*(?:/\\*.*\\*/)?(?://.*)?\\n?\\s*(?:[,;{]|<implements>))":::Storage Type:extends:\n\
+		extends comma:",":::Keyword:extends:\n\
+		extends comment:"/\\*":"\\*/"::Comment:extends:\n\
+		extends cpluscomment:"//":"$"::Comment:extends:\n\
+		extends error:".":::Flag:extends:\n\
+		impl_throw:"<(?:implements|throws)>":"(?=[{;])"::Keyword::\n\
+		impl_throw argument:"<[\\l_][\\w\\.]*(?=\\s*(?:/\\*.*\\*/)?(?://.*)?\\n?\\s*[,;{])":::Storage Type:impl_throw:\n\
+		impl_throw comma:",":::Keyword:impl_throw:\n\
+		impl_throw comment:"/\\*":"\\*/"::Comment:impl_throw:\n\
+		impl_throw cpluscomment:"//":"$"::Comment:impl_throw:\n\
+		impl_throw error:".":::Flag:impl_throw:\n\
+		case:"<case>":":"::Keyword::\n\
+		case single quoted:"'\\\\?[^']'":::Character Const:case:\n\
+		case numeric const:"<(?i0[X][\\dA-F]+|\\d+(:?\\.\\d*)?(?:E[+-]?[\\d]+)?F?|\\.\\d+(?:E[+-]?[\\d]+)?F?|[\\d]+L)>":::Numeric Const:case:\n\
+		case cast:"\\(\\s*([\\l_][\\w.]*)\\s*\\)":::Keyword:case:\n\
+		case cast type:"\\1":""::Storage Type:case cast:C\n\
+		case variable:"[\\l_][\\w.]*":::Identifier1:case:\n\
+		case signs:"[-+*/<>^&|%()]":::Keyword:case:\n\
+		case error:".":::Flag:case:\n\
+		label:"([;{}:])":"[\\l_]\\w*\\s*:":"[^\\s\\n]":Label::\n\
+		label qualifier:"\\1":""::Keyword:label:C\n\
+		labelref:"<(?:break|continue)>\\s*\\n?\\s*([\\l_]\\w*)?(?=\\s*\\n?\\s*;)":::Keyword::\n\
+		labelref name:"\\1":""::Label:labelref:C\n\
+		instanceof:"<instanceof>\\s*\\n?\\s*([\\l_][\\w.]*)":::Keyword::\n\
+		instanceof class:"\\1":""::Storage Type:instanceof:C\n\
+		newarray:"new\\s*[\\n\\s]\\s*([\\l_][\\w\\.]*)\\s*\\n?\\s*(?=\\[)":::Keyword::\n\
+		newarray type:"\\1":""::Storage Type:newarray:C\n\
+		constructor def:"<(abstract|final|native|private|protected|public|static|synchronized)\\s*[\\n|\\s]\\s*[\\l_]\\w*\\s*\\n?\\s*(?=\\()":::Subroutine::\n\
+		constructor def modifier:"\\1":""::Keyword:constructor def:C\n\
+		keyword - modifiers:"<(?:abstract|final|native|private|protected|public|static|transient|synchronized|volatile)>":::Text Arg1::\n\
+		keyword - control flow:"<(?:catch|do|else|finally|for|if|return|switch|throw|try|while)>":::Keyword::\n\
+		keyword - calc value:"<(?:new|super|this)>":::Keyword::\n\
+		keyword - literal value:"<(?:false|null|true)>":::Numeric Const::\n\
+		function def:"<([\\l_][\\w\\.]*)>((?:\\s*\\[\\s*\\])*)\\s*[\\n|\\s]\\s*<[\\l_]\\w*>\\s*\\n?\\s*(?=\\()":::Plain::\n\
+		function def type:"\\1":""::Storage Type:function def:C\n\
+		function def type brackets:"\\2":""::Keyword:function def:C\n\
+		function call:"<[\\l_]\\w*>\\s*\\n?\\s*(?=\\()":::Plain::\n\
+		cast:"[^\\w\\s]\\s*\\n?\\s*\\(\\s*([\\l_][\\w\\.]*)\\s*\\)":::Keyword::\n\
+		cast type:"\\1":""::Storage Type:cast:C\n\
+		declaration:"<[\\l_][\\w\\.]*>((:?\\s*\\[\\s*\\]\\s*)*)(?=\\s*\\n?\\s*(?!instanceof)[\\l_]\\w*)":::Storage Type::\n\
+		declaration brackets:"\\1":""::Keyword:declaration:C\n\
+		variable:"<[\\l_]\\w*>":::Identifier1::D\n\
+		braces and parens:"[(){}[\\]]":::Keyword::D\n\
+		signs:"[-+*/%=,.;:<>!|&^?]":::Keyword::D\n\
+		error:".":::Flag::D\n\
+	}\n\
 	JavaScript:Default\n\
 	Ada:Default\n\
 	Fortran:Default\n\
@@ -397,11 +461,11 @@ nedit.highlightPatterns: C:Default\n\
 		key:"^[^=]+":::Text Arg::\n\
 		strings:"""":""""::String::D\n\
     }\n\
-    Unified diff:1:0{\n\
-        deleted_lines:"^\\-(.*)":::Comment::\n\
-        added_lines:"^\\+(.*)":::Subroutine::\n\
-        position:"^@@ (.+) @@":::Text Arg::\n\
-        cvs_header:"^(Index|RCS file|retrieving|diff|=).+":::Text Arg::\n\
+	Unified diff:1:0{\n\
+		deleted_lines:"^\\-(.*)":::Comment::\n\
+		added_lines:"^\\+(.*)":::Subroutine::\n\
+		position:"^@@ (.+) @@":::Text Arg::\n\
+		cvs_header:"^(Index|RCS file|retrieving|diff|=).+":::Text Arg::\n\
 	}
 nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~"\n\
 	C++:.cc .hh .C .H .i .cpp .cs::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~"\n\
@@ -417,7 +481,7 @@ nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~"\n\
 	Awk:.awk::::::\n\
 	Sh Ksh Bash:.sh .bash .ksh .profile .bashrc .bash_logout .bash_login .bash_profile:"^[ \\t]*#[ \\t]*![ \\t]*/.*bin/(sh|ksh|bash)":::::\n\
 	Csh:.csh .cshrc .login .logout:"^[ \\t]*#[ \\t]*![ \\t]*/bin/csh":::::\n\
-	Makefile:Makefile makefile::::::\n\
+	Makefile:Makefile makefile .mk::::::\n\
 	SGML HTML:.sgml .sgm .html .htm .xslt .xsl .xml::::::\n\
 	LaTeX:.tex .sty .cls .dtx .ins::::::\n\
 	PostScript:.ps .PS .eps .EPS .epsf .epsi::::::\n\
