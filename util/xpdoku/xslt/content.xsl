@@ -36,7 +36,7 @@
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
       <tr>
         <th valign="top" align="left"><xsl:value-of select="content/title"/></th>
-        <td valign="top" align="right">(<xsl:value-of select="content/editor"/>)</td>
+        <td valign="top" align="right" style="color: #666666">(<xsl:value-of select="content/editor"/>)</td>
 	  </tr>
 	  <tr bgcolor="#cccccc">
         <td colspan="2"><img src="/image/spacer.gif" height="1" border="0"/>
