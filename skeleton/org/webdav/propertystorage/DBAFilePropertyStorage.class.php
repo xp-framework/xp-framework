@@ -110,7 +110,7 @@
      */
     function hasProperty($uri, $name) {
       $properties= $this->getProperties($uri);
-      return in_array($name, $properties);
+      return isset($properties[$name]);
     }
     
     /**
