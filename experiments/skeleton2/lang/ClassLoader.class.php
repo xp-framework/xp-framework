@@ -50,6 +50,8 @@
      * @return  string filename, FALSE if not found
      */
     public function findClass($class) {
+      if (!$class) return FALSE;    // Border case
+
       $filename= str_replace('.', DIRECTORY_SEPARATOR, $this->classpath.$class).'.class.php';
       foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
         if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
