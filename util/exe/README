@@ -1,0 +1,32 @@
+Creating executables from PHP sourcecode
+======================================================================
+$Id$
+
+How is this accomplished?
+-------------------------
+We simply use SAPI/embed which was actually written for embedding PHP 
+sourcecode in programs written in C.
+See http://www.zend.com/lists/php-dev/200209/msg01063.html for details
+
+The generator, php2cembed.php, creates C sourcecode from a PHP script,
+adds an errorhandler and dumps the contents to stdout. To see what
+is done, simply use php -q php2cembed.php /path/to/your/script.php
+
+This C sourcecode is then compiled and libphp4.a is statically linked
+to it. This way, no external library is needed except for those 
+dynamically linked to libphp4.a. This behaviour may be changed by
+configure-options of PHPs configure.
+
+How do I create libphp4.a?
+--------------------------
+Call PHPs configure with --disable-cli --enable-embed=yes --enable-static
+to create libphp4.a and libphp4.la
+
+What to do from here?
+---------------------
+Open your favorite shell and type "make exe src=/path/to/your/script.php".
+You may need to specify the directory in which libphp4.a and libphp4.la
+reside, so append "PHPLIBDIR=/path/to/.a_and_.la_files/" to your command
+line.
+
+<EOF>
