@@ -1,0 +1,844 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document title="XP::About::Introduction">
+  <main>
+    <content>
+      <title>Coding standards</title>
+      <editor>$Id$</editor>
+      
+      <para>
+        <caption>Warum Coding Standards?</caption>
+        <text>
+          <quote>
+          Code conventions are important to programmers for a number of reasons: 
+
+          * 80% of the lifetime cost of a piece of software goes to maintenance. 
+          * Hardly any software is maintained for its whole life by the original author. 
+          * Code conventions improve the readability of the software, allowing engineers to 
+            understand new code more quickly and thoroughly. 
+          * If you ship your source code as a product, you need to make sure it is as well 
+            packaged and clean as any other product you create. 
+          * For the conventions to work, every person writing software must conform to the 
+            code conventions. Everyone. 
+          </quote>
+        </text>
+      </para>
+      <para>
+        <caption>Kommentare am Anfang einer Datei</caption>
+        <text>
+          Der Kommentar am Anfang einer Datei sollte auf jeden Fall den CVS-Tag enthalten, 
+          also mindestens $Id\$; und eine kurze Beschreibung, was hier vorkommt. Als Stil 
+          wird der Kommentar in C-Notation vorgeschlagen:
+
+          <pre><![CDATA[/* This class is part of the XP framework
+ *
+ * $Id\$ 
+ */
+ ]]></pre>
+
+          Dieser Kommentar wird ohne Einrückung direkt hinter das erste &lt;?php geschrieben 
+          und erhält genau die obige Form. Die Kurzbeschreibung bleibt bei genau einer Zeile, 
+          das CVS-Tag ist vor dem ersten add / commit als $Id\$ und nur so zu schreiben.
+        </text>
+      </para>
+      <para>
+        <caption>&lt;?php und ?&gt;</caption>
+        <text>
+          Es wird diese und keine andere Form (z.B. &lt;% %&gt; oder &lt;? ?&gt;) verwendet, &lt;?php ... ?&gt;
+          ist XML-konform und daher "zukunftssicher". &lt;? gibt ein "Not well-formed"-Fehler 
+          aus.
+        </text>
+      </para>
+      <para>
+        <caption>Dateinamen</caption>
+        <text>
+          Die Dateinamen sehen wie folgt aus:
+          <ul>
+            <li>Klassen<br/>
+                Klassennamen heißen gleich wie die Klasse (s.u.) und enthalten immer nur 
+                eine Klasse. Das Suffix ist .class.php.
+                <pre><![CDATA[GenericWizard.class.php
+GUI.class.php]]></pre>
+            </li>
+            <li>Includes<br/>
+                Includes sind, wenn möglich, *nicht* zu verwenden. Stattdessen möchte man 
+                über Property-Files oder eine Klasse nachdenken.
+            </li>
+            <li>"Normale" Seiten<br/>
+                Diese haben einen prägnanten Namen zum Zweck, welcher durch den Pfad 
+                natürlich ergänzt wird. Worttrennung erfolgt durch den Unterstrich (_).
+                <pre><![CDATA[index.php
+edit/mail.php
+edit/mail_notify.php]]></pre>
+            </li>
+          </ul>
+        </text>
+      </para>
+      <para>
+        <caption>Einrückung</caption>
+        <text>
+          Die Einrückung sollte innerhalb einer Datei einheitlich sein, wobei die Einrückung 
+          mit zwei Leerzeichen festgelegt wird.
+        </text>
+      </para>
+      <para>
+        <caption>Zeilenlänge</caption>
+        <text>
+          Zeilen mit mehr als 80 Zeichen sind zu vermeiden. Beispiele für Dokumentationen 
+          sollten sogar nur 70 Zeichen verwenden (Versand per E-Mail).
+        </text>
+      </para>
+      <para>
+        <caption>Zeilen umbrechen</caption>
+        <text>
+          Wenn ein Ausdruck nicht in eine Zeile passt, sollte sie wie folgt umgebrochen werden:
+          <ul>
+            <li>Nach einem Komma</li>
+            <li>Vor einem Operator</li>
+            <li>Die umgebrochenen Zeilen sind einzurücken</li>
+          </ul>
+          Also, als Beispiel:
+          <code><![CDATA[$r= sprintf('<a href="http://%s:%d/%s/%s.bar" target="%s">%s</a>',
+  $host, $port, $path, $file, $target, $anchor
+);
+
+$r= sprintf(
+  '<a href="http://%s:%d/%s/%s.bar" target="%s">%s</a>',
+  $host, 
+  $port, 
+  $path,
+  $file,
+  $target,
+  $anchor
+);]]></code>
+
+          Wenn Klammerausdrücke vorkommen, sollten die geklammerten Ausdrücke in einer Zeile 
+          stehen bleiben:
+          <code><![CDATA[$r= $variable0 * ($variable1 + $variable2 - $variable3)
+    + 4 * $variable4; // VORZUZIEHEN
+
+$r= $variable0 * ($variable1 + $variable2 - 
+		      $variable3) + 4 * $variable4; // WENN MÖGLICH, NICHT]]></code>
+
+          Bei Funktionsdeklarationen stehen evtl. umzubrechende Parameter auf der gleichen 
+          Höhe wie die anfangende Klammer, es sei denn, dadurch würden die Parameter sehr 
+          weit nach rechts herausrücken:
+          <code><![CDATA[function vsprintf($string, $uriRequesterObject,
+                  $foobarbaz, $longParamNameNumber4) {
+  ...
+}
+
+function sehrsehrLangerMethodenName($string, $uriRequesterObject,
+	 $foobarbaz, $longParamNameNumber4) {
+  ...
+}]]></code>
+          Lange Bedingungen in einem IF-Statement sollten folgendermaßen eingerückt werden:
+          <code><![CDATA[if (
+    ('172.17.0.27' == $REMOTE_ADDR) ||
+    ('172.17.0.26' == $REMOTE_ADDR) ||
+    ('172.17.0.24' == $REMOTE_ADDR) ||
+   ) {
+    $rightGroup= 'root';
+}]]></code>
+
+          Im Beispiel sind die Bedingungen alle auf gleicher Höhe, sind aber visuell durch 
+          eine (fast) leere Zeile vom Auszuführenden abgetrennt.
+
+          Array-Deklarationen sind bis auf den leeren Array immer umzubrechen:
+          <code><![CDATA[
+$list= array();
+
+$list= array(
+  'Hallo',
+  'Welt'
+);
+
+$fasel= array(
+  'Bla',
+  'Fasel' => array(
+    'Cool',
+    'Oder?'
+  )
+);]]></code>
+
+          Für ternäre Ausdrücke gelten folgende zwei Schreibweisen:
+          <code><![CDATA[
+$alpha= ($booleanExpression) ? $beta : $gamma;
+
+$alpha= ($booleanExpression) 
+        ? $beta 
+        : $gamma;]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>Kommentare</caption>
+        <text>
+          In PHP sind dreierlei Kommentare erlaubt: Die C-typischen // und /*, sowohl als 
+          auch das Perl-Kommentarzeichen #. Aus Java kennen wir den /** ... */ -
+          Dokumentationskommentar. Diese könnten wir zum Extrahieren der Doku mit einem 
+          PHPDoc-System benutzen.
+
+          Die Raute (#) als solche ist zu vermeiden. Die meisten Kommentare sind als // 
+          zu schreiben; ansonsten ist eine Auskommentierung eines gesamten Bereiches 
+          mit /* ... */ nicht mehr einfach möglich. Kommentare sollten nicht in großen 
+          "Kisten" aus Sternchen oder anderen Zeichen gemalt werden. Ein Kommentar 
+          steht immer über dem kommentierten. Vor und nach den Kommentarzeichen 
+          kommt ein Leerzeichen:
+
+          <code><![CDATA[// Korrekt
+$a= 0; // Auch korrekt, aber hier nur gut und nicht "besser":)
+$a= 0;     // Besser
+
+//Vermeiden!
+$a= 0;//Vermeiden!]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>Block-Kommentare</caption>
+        <text>
+          Block-Kommentare werden ausschließlich zur Beschreibung von Dateien (s.o.: 
+          Kommentare am Anfang einer Datei) verwendet.
+          
+          <code><![CDATA[/*
+ * This is a block comment
+ */]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>Einzeilige Kommentare</caption>
+        <text>
+          Einzeilige Kommentare sind als // zu schreiben. Damit kann ein Code-Block, 
+          der mehrere solcher Kommentare enthält, durch /* ... */ auskommentiert werden.
+          Auch einzeilige Kommentare sollten durch eine vorhergehende Leerzeile vom 
+          Rest des Codes abgetrennt werden. Außerdem sollten sie sich auf der gleichen 
+          Einrückung befinden:
+          <code><![CDATA[if ($condition) {
+
+  // Hier hole ich mir die Daten 
+  ...
+}]]></code>
+
+          Wenn mehr als eine Zeile Text oder Kommentare auskommentiert weden sollen, 
+          sei folgende Notation zu empfehlen:
+
+          <code><![CDATA[if ($condition) {
+   ...
+
+  // // Das hier ist zum Debuggen
+  // $debug= TRUE;
+  // fsockopen("debug-srv", 0x9282);
+  // ...
+}]]></code>
+
+          Bei einem noch größeren Block seien die /* */ nur beim Entwickeln oder 
+          in Sonderfällen (temporäre Außerbetriebnahme, ...) gestattet. Vor dem Commit 
+          rauslöschen, dafür ist schließlich CVS da.
+        </text>
+      </para>
+      <para>
+        <caption>Kommentare am Ende einer Zeile</caption>
+        <text>
+          Auch diese Kommentare sind aus gleichen Gründen wie oben genannt als // 
+          zu schreiben. Sind mehrere Kommentare dieser Form in einem Code-Block, so 
+          sollten sie die gleiche Einrückung haben.
+
+          <code><![CDATA[if ($condition) {
+  return FALSE;	// Begründung
+}
+
+if ($condition) {
+  $alpha= FALSE;				// Begründung
+} else {
+  $alpha= substr($beta, 0, strlen($gamma));	// Warum auch immer
+}]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>Dokumentations-Kommentare</caption>
+        <text>
+          Siehe <ref link="about.doc">Documenting classes</ref>
+        </text>
+      </para>
+      <para>
+        <caption>Spezielle Kommentare</caption>
+        <text>
+          Ein FIXME: oder TODO:  gleich nach einem Kommentar soll heißen, dass 
+          es hier noch nicht ganz ausgegoren ist:
+
+          // FIXME: Hier könnte evtl. noch ein Datenbank-Fehler auftauchen
+          // TODO: Besseres Backchecking einbauen
+
+          <quote>
+            Note:The frequency of comments sometimes reflects poor quality of 
+            code. When you feel compelled to add a comment, consider rewriting 
+            the code to make it clearer. 
+          </quote>
+        </text>
+      </para>
+      <para>
+        <caption>Deklarationen</caption>
+        <text>
+          Deklarationen sind innerhalb PHP eigentlich nicht nötig, sind aber 
+          "schöner" und eigentlich auch ein guter Stil. Zumindest innerhalb Klassen 
+          sollten die Klassenattribute deklariert werden.
+          <code><![CDATA[class Foo {
+  var $anywhere;
+
+  var 
+    $parent,
+    $child;
+
+  var
+    $encoding= ENC_ISO_8859_1;
+
+  function Foo() {
+    ...
+  }
+}]]></code>
+
+          Die Klassenmethoden oder der Konstruktor hat eine Zeile Abstand zu den Deklarationen.
+        </text>
+      </para>
+      <para>
+        <caption>Statements</caption>
+        <text>
+          Eine Zeile sollte höchstens ein Statement enthalten:
+          <code><![CDATA[
+$a++;			// Korrekt
+$b++;			// Korrekt
+$a--; $b--;		// Nicht gut]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>Blöcke</caption>
+        <text>
+          Blöcke sind in { und } eingeschlossen. Dabei gilt:
+          
+          <ul>
+            <li>Blöcke werden eingerückt</li>
+            <li>Die öffnenden geschweifte Klammer steht am Ende der Zeile, die den Block beginnt</li>
+            <li>Die schließende geschweifte Klammer sollte am Anfang einer neuen Zeile 
+                stehen und die gleiche Einrückung wie der Anfang des Blocks haben.
+            </li>
+            <li>Jeder Block wird immer in geschweiften Klammern geschrieben, obwohl man 
+                es für Single-Statements auch weglassen könnte. Das verringert die Gefahr, 
+                dass man Code dazufügt, der dann nicht ausgeführt wird, weil eben die 
+                Klammerung fehlt. Ausnahme: In Verbindung mit Return (s.u.)
+                <code><![CDATA[$result= $dbo->select('baz from bar where foo= NULL');
+if(!$result) return FALSE;
+
+if (FALSE === ($result= $dbo->select('baz from bar where foo= NULL'))) return FALSE;]]></code>
+            </li>
+          </ul>
+        </text>
+      </para>
+      <para>
+        <caption>Return</caption>
+        <text>
+          Ein Return-Statement sollte nur Klammerung benutzen, wenn diese nötig sind 
+          oder der besseren Lesbarkeit (Gruppierung) dienen.
+
+          <code><![CDATA[return TRUE;
+return $dbo->query('set rowcount 0');
+return (isset($size) 
+  ? $size 
+  : $defaultSize
+);]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>if, if-else, if else-if else Statements</caption>
+        <text>
+          Die if-else-Klassen von Statements sollten folgende Form haben:
+          
+          <code><![CDATA[if ($condition) {
+  imageSize(...);
+}
+
+if ($condition) {
+  imageSize(...);
+} else {
+  imageCreate(...);
+}
+
+if ($condition) {
+  imageSize(...);
+} elseif ($condition2) {
+  imageCreate(...);
+} else {
+  imageDispose(...);
+}]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>for-Statements</caption>
+        <text>
+          Ein for-Statement sollte folgende Form haben:
+
+          <code><![CDATA[for ($init; $condition; $update) {
+  doSomething();
+}]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>while-Statements</caption>
+        <text>
+          Ein while-Statement sollte folgende Form haben:
+          
+          <code><![CDATA[while ($condition) {
+  doSomething();
+}
+
+do {
+  doSomething();
+} while ($condition);]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>switch-Statements</caption>
+        <text>
+          Ein switch-Statement sollte folgende Form haben:
+          
+          <code><![CDATA[switch ($condition) {
+  case ENC_ISO_8859_1:
+    $output= 'bla';
+    $needsParsing= FALSE;
+
+  case ENC_ISO_8859_2:
+    $output= 'foo';
+    break;
+
+  default:
+    statement();
+    break;
+}]]></code>
+
+          Nach dem ersten case empfiehlt sich ein Kommentar, damit 
+          ersichtlich ist, dass hier kein break; vergessen wurde:
+
+          <code><![CDATA[case ENC_ISO_8859_1:
+    $output= 'bla';
+    $needsParsing= FALSE;
+
+    // break missing intentionally
+  case ENC_ISO_8859_2:
+]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>try/catch-Blöcke</caption>
+        <text>
+          Ein try/catch-Block soll folgende Form haben:
+          
+          <code><![CDATA[// Zend Engine 1:
+try(); {
+  doSomethinWhichMightRaiseAnException();
+} if (catch('WhatEverException', $e)) {
+  handleException();
+} if (catch('Exception', $e)) {
+  handleException();
+}
+
+// Zend Engine 2
+try {
+  doSomethinWhichMightRaiseAnException();
+} catch(WhatEverException $e)) {
+  handleException();
+} catch(Exception $e)) {
+  handleException();
+}]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>throw</caption>
+        <text>
+          Throw wirft immer Objekte, die von der Basisklasse "Exception" abstammen.
+          
+          <code><![CDATA[
+// Zend Engine 1
+if (FALSE === ($dbh= sybase_connect([...])) return throw(new SQLException(
+  'unable to connect'
+));
+
+// Zend Engine 2
+if (FALSE === ($dbh= sybase_connect([...])) throw(new SQLException(
+  'unable to connect'
+));]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>Whitespace</caption>
+        <text>
+          <ol>
+            <li>
+              Leerzeilen<br/>
+              Leerzeilen erhöhen die Lesbarkeit des Codes. Eine Leerzeile gehört an folgende Punkte:
+              <ul>
+                <li>Zwischen Methoden (Funktionen)</li>
+                <li>Zwischen dem global/static-Statement innerhalb einer Funktion und der ersten 
+                    Zeile Code dieser Funktion</li>
+                <li>Vor einem einzeiligen Kommentar oder einem Block-Kommentar</li>
+                <li>Nach dem Kommentar am Dokument-Anfang</li>
+                <li>Zwischen logischen Abschnitten innerhalb einer Methode, um die Lesbarkeit 
+                    zu erhöhen und die Zusammengehörigkeit zu "demonstrieren"</li>
+              </ul>
+            </li>
+            <li>
+              Leerzeichen<br/>
+              Leerzeichen sollten an folgenden Stellen verwendet werden:
+              <ul>
+                <li>
+                  Ein Keyword (if, else, while, for, ...), gefolgt von einer Klammer, sollte 
+                  durch ein Leerzeichen abgetrennt werden
+                  <code><![CDATA[while (TRUE) {
+  ...
+}]]></code>
+
+                  Hinweis: Nach einerm Funktionsaufruf und den Klammern kommt kein Leerzeichen. 
+                  Das hilft, Keywords und Funktionsaufrufe voneinander zu unterscheiden
+                </li>
+                <li>Nach einem Komma in einer Liste von Argumenten.</li>
+                <li>
+                  Eine Array-Key-Value-Zuweisung wird durch ein Leerzeichen vor dem => und 
+                  eines danach abgetrennt
+                </li>
+                <li>
+                  Die Klasseninstanz und die Klassenmethode bzw. das Klassenatribut werden 
+                  durch -> getrennt, aber auf gar keinen Fall durch irgendwelche Leerzeichen 
+                  zwischendrin.
+                  <code><![CDATA[$this->foo	// OK
+$this -> bar	// Unnötig]]></code>
+                </li>
+                <li>
+                  Runde Klammern werden nicht durch Leerzeichen voneinander abgetrennt
+                  <code><![CDATA[while (($a > 0) && ($b < 1)) ...	 // Korrekt
+while ( ($a > 0) && ($b < 1) ) ... // Unnötig]]></code>
+                </li>
+                <li>
+                  Alle Operatoren aus (+ - * / % &amp; | ~ &amp;&amp; &lt; &gt; &lt;= &gt;= != == || etc.) sollten 
+                  durch Leerzeichen zu beiden Seiten abgetrennt werden.
+                </li>
+                <li>Alle Operatoren aus (++ -- etc.) haben kein vorangestelltes Leerzeichen</li>
+                <li>Der String-Concatenation-Operator (.) hat zu keiner Seite ein Leerzeichen</li>
+                <li>In einem for-Statement werden die einzelnen Ausdrücke durch Leerzeichen getrennt.
+                  <code><![CDATA[for ($init; $condition; $update)...]]></code>
+                </li>
+                <li>
+                  Type-Casting hat kein Leerzeichen zur rechten Seite hin, sondern liegt direkt 
+                  an der Variable "an", welche gecastet wird.
+
+                  <code><![CDATA[myMethod((int)$a, (array)$this);]]></code>
+                </li>
+              </ul>
+            </li>
+          </ol>
+        </text>
+      </para>
+      <para>
+        <caption>Namenskonventionen</caption>
+        <text>
+          <ul>
+            <li>
+              Klassen<br/>
+              Klassennamen fangen mit einem Großbuchstaben an. Jedes folgende Wort hat wieder 
+              einen Großbuchstaben ("Studly Caps"). Klassennamen sind so kurz wie möglich zu 
+              halten, sollen aber trotzdem signifikant für das stehen, was sie tun. Bei 
+              Datenbanknamen oder Abkürzungen (GUI, HTML) sollen Großbuchstaben verwendet 
+              werden.
+
+              <code><![CDATA[class TOGAL;
+class MyTemplate;
+class Raster;
+class GenericGUI;]]></code>
+            </li>
+            <li>
+              Konstruktoren von Klassen<br/>
+              Der Konstruktor einer Klasse heißt __construct() . Er muss, wenn er überschrieben 
+              wird, denn Destruktor der Parent-Klasse aufrufen (parent::__construct();).
+            </li>
+            <li>
+              Destruktoren von Klassen<br/>
+              Der Destruktor einer Klasse heißt __destruct() und erwartet keine Parameter. Er 
+              muss, wenn er überschrieben wird, denn Destruktor der Parent-Klasse aufrufen 
+              (parent::__destruct();).
+            </li>
+            <li>
+              Methoden<br/>
+              Methoden (Funktionen) sollten Verben sein, der erste Buchstabe klein. Jedes 
+              folgende Wort hat wieder einen Großbuchstaben am Anfang:
+
+              <code><![CDATA[function run();
+function runBackground();
+function getMessage();
+function makeInstallation();]]></code>
+            </li>
+            <li>
+              Private/Public<br/>
+              Private Methoden innerhalb einer Klasse (da es auch sowas in PHP nicht gibt) fangen 
+              mit einem Unterstrich an:
+
+              <code><![CDATA[function _myPrivateMethod();]]></code>
+            </li>
+            <li>
+              Variabeln<br/>
+              Variabelnnamen sollten kurz und prägnant sein und aussagen, was sie tun. Zu 
+              vermeiden sind Variabeln wie $foo, $bar, $baz, $ficken und Variabelnnamen mit 
+              weniger als zwei Zeichen. Ausnahme: Temporäre "Wegwerf"-Variabeln wie i,j,k,m,n 
+              (für Integer) und c,d,e (für Char), z.B. als Zählvariable. Namen in Variabeln 
+              sind entweder durch gemixte Groß- und Kleinschreibung oder durch Unterstrich 
+              (_) getrennt. Variabeln, die per GET übermittelt werden, fangen mit zwei 
+              Unterstrichen an (sicherheitsrelevant).
+
+              <code><![CDATA[$myWidth;
+$i;
+$message_id;
+$__page;]]></code>
+            </li>
+            <li>
+              Konstanten<br/>
+              Konstanten werden komplett in Großbuchstaben geschrieben.
+              <code><![CDATA[define('TA_NOTFOUND',   0x0001);
+define('TA_OKAY',       0x0002);]]></code>
+
+              Wenn möglich, defines nur als Integer und dort präferablerweise als 
+              hexadezimale Darstellung.  Mehrere Defines untereinander halten den rechten 
+              Teil auf der gleichen Höhe.
+            </li>
+            <li>
+              Misc:<br/>
+              Konstanten statt Integer oder Character-Return, wo möglich
+              Anstatt den Returnwert einer Funktion mit return 1, return "foo" oder return 
+              -55 zu setzen, sind, wo möglich, Konstanten zu verwenden. Diese werden noch 
+              vor allem anderen in einer Datei (gleich nach dem anfänglichen Kommentar) 
+              definiert. Ausnahme sei TRUE / FALSE, die auch als 0 und 1 geschrieben werden 
+              können (das hat sich eingebürgert und ist für jeden verständlich).
+            </li>
+          </ul>
+        </text>
+      </para>
+      <para>
+        <caption>Klammerung</caption>
+        <text>
+          <ul>
+            <li>
+              "and und or ersetzen Klammern" - also:
+              <code><![CDATA[if ($stage and $this->debug)
+if (($i < 0) || ($a > $c))]]></code>
+            </li>
+            <li>
+              eine Negation braucht keine Extra-Klammer - also:
+              <code><![CDATA[if (!(is_null($foo)))         // Unnötig
+   if (!is_null($foo))           // Besser]]></code>
+            </li>
+            <li>Klamern werden zusammengeschrieben und enthalten kein Whitespace (s.o.)</li>
+            <li>
+              Auch Sprachkonstrukte wie require, include, require_once und include_once 
+              erhalten Klammern.
+              <code><![CDATA[require_once("Project.class.php");
+include("stop.inc");]]></code>
+            </li>
+          </ul>
+        </text>
+      </para>
+      <para>
+        <caption>Variabelnzuweisung und Vergleiche</caption>
+        <text>
+          Zwischen einer Zuweisung einer Variabeln und dem Wert steht auf der rechten Seite 
+          ein Leerzeichen, bei einem Vergleich auf beiden Seiten. Dadurch können Fehler wie 
+          if ($a = 1) vermieden werden, da es schon vom Aussehen her anders wirkt.
+          Bei Arrays sind die Keys und Values gleich einzurücken.
+
+          <code><![CDATA[$a= 'hello';
+if ($a == 'hello') ...
+
+// Noch besser, um auch hier Tippfehler zu vermeiden. Bei Zeile eins würde
+// der Compiler bereits meckern.
+if ('http://' = substr($uri, 0, 7)) ...
+if ('http://' == substr($uri, 0, 7)) ...
+
+$array= array(
+  IT_STRING     => '<input type="text" value="%s"/>',
+  IT_TEXTAREA   => '<textarea>%s</textarea>'
+);]]></code>
+
+          Referenzzeichen stehen direkt vor dem, was die Referenz ist.
+          <code><![CDATA[
+function &getDomains() {
+  return $this->domains;
+}
+...
+$domains= &$auftrag->domains();
+
+$a= &$b;
+
+function selectByName(&$dbo) ...]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>Return</caption>
+        <text>
+          Return springt immer sofort aus einer Funktion heraus, daher ist statt:
+          <code><![CDATA[function foo($file) {
+  if ($fd= fopen($file, "r")) {
+      ...
+  } else {
+    return 0;
+  }
+}]]></code>
+
+          zu schreiben:
+          <code><![CDATA[function foo($file) {
+  if (!$fd= fopen($file, "r")) return 0;
+  ...
+}]]></code>
+
+          Ähnliches gilt für continue:
+          <code><![CDATA[while ($entry= $dir->read()) {
+  if('.' == $entry or '..' == $entry) continue;
+  ...
+}]]></code>
+
+          Der ternäre Operator ist, soweit möglich, einem if-else-Konstrukt vorzuziehen:
+          <code><![CDATA[// Aufwändig und unnötig
+if ($condition == NULL) {
+  return FALSE;
+} else {
+  return TRUE;
+}
+
+// Besser
+return ($condition == NULL) ? FALSE : TRUE;
+
+// Noch besser
+return ($condition != NULL);]]></code>
+
+          Wenn ein binärer Operator (z.B. &gt;=, &lt;=, ==, etc.) in einem ternären Operator 
+          auftaucht, so sollte dies geklammert werden.
+        </text>
+      </para>
+      <para>
+        <caption>PHP-Start- und Endtags</caption>
+        <text>
+          Nach den Start-und-Endtags ist eine Einrückung von zwei Zeichen vorzunehmen:
+          <code><![CDATA[<?php
+  class Foo {
+    var $x= NULL;
+  }
+?>]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>Sauberes Programmieren in PHP</caption>
+        <text>
+          <ul>
+            <li>
+              Error-Reporting<br/>
+              Dies ist auf E_ALL zu halten.
+
+              Bei Funktionen, deren Warnings man geflissentlich ignorieren möchte, ist 
+              der @-Operator zu verwenden.
+
+              <code><![CDATA[// Lesbar und klar, was es macht
+$dbh= @sybase_connect(...);
+
+// Zu vermeiden, sowieso unnötig
+$e= error_reporting(0);
+$dbh= sybase_connect(...);
+error_reporting($e);]]></code>
+            </li>
+            <li>
+              Checks
+              Anstatt Variabeln mit dem Negationsoperator auf Nichtexistenz zu prüfen, 
+              sollte isset() verwendet werden. Der erste Fall führt zu einer Notice vom 
+              Compiler und validiert außerdem auf NULL, die Zahl Null, leere Strings und 
+              das booleansche FALSE. empty() erfüllt die Bedingung isset und 
+              (NULL || 0 | "" | FALSE).
+            </li>
+            <li>
+              Mischung von HTML und PHP
+              Ist natürlich verlockend und außerdem richtig fix. Trotzdem verstößt es gegen 
+              die Richtlinie, Design und Programmierung zu trennen, außerdem macht es den 
+              Code absolut unlesbar, zumal HTML wahrscheinlich anders eingerückt wird 
+              als der Code.
+            </li>
+          </ul>
+        </text>
+      </para>
+      <para>
+        <caption>String Concatenation vs. zeilenübergreifende Strings</caption>
+        <text>
+          Gerade bei SQL ist es richtig schick, dass es auf Zeilenumbrüche und Leerzeichen 
+          nicht ankommt.
+
+          <code><![CDATA[$result= $dbo->query('
+  select * from foo, bar
+  where baz= 2
+  and foo.i= bar.i
+');]]></code>
+
+          zum Beispiel ist einfach zu erweitern und vor allem auch einfach gegen etwas 
+          anderes auszutauschen oder in ein SQSH-Fenster zu kopieren (hier ist eine 
+          zusätzliche Einrückung von zwei Zeichen zu empfehlen).
+
+          <code><![CDATA[$result= $dbo->query('select * from foo, bar '.
+                     'where baz= 2 '.
+                     'and foo.i= bar.i ');]]></code>
+
+          halte ich dagegen für unlesbar und schlecht wiederverwendbar. Zudem ist es 
+          anfällig, wenn man hinten noch Leerzeichen vergisst (=> Syntax Error von DBMS).
+        </text>
+      </para>
+      <para>
+        <caption>Variabeln in Strings</caption>
+        <text>
+          Sind, falls möglich, zu vermeiden, aber keine Schandtat.
+        </text>
+      </para>
+      <para>
+        <caption>Regular Expressions</caption>
+        <text>
+          Sind bei Eingabeprüfungen fast unabdingbar. Allerdings sollten hier statt den 
+          ereg_* Funktionen die preg_* -Funktionen benutzt werden. Diese sind schneller 
+          und haben einen weit höheren Funktionsumfang (siehe Manual). Die Match-und 
+          Replace-Strings sind in einfachen Quotes zu schreiben, das erübrigt unnötiges 
+          Zeichenquoting.
+        </text>
+      </para>
+      <para>
+        <caption>Array-Indizes</caption>
+        <text>
+          Sind immer in Quote-Zeichen zu schreiben.
+          <code><![CDATA[echo $arr[helptext_domain_name];	// "undefined constant, assuming string"
+echo $arr['helptext_domain_name'];	// Hier ist der Parser glücklich]]></code>
+        </text>
+      </para>
+      <para>
+        <caption>Klassen</caption>
+        <text>
+          Jede Klasse vererbt entweder die Klasse "Object" oder eine Klasse, die Object
+          vererbt. Nur dadurch ist eine Klasse dem Framework konform.
+
+          Ein Klassenname muss (im gesamten Framework) unique sein. Das ist eine 
+          Einschränkung, die durch die Zend Engine 1 vorgegeben ist. In der Zend
+          Engine 2 können Klassenname mit Namespaces versehen werden:
+
+          <code><![CDATA[class XML::Tree extends XML::XML { }]]></code>
+
+          ...und über die import-Funktion einfach angesprochen werden:
+
+          <code><![CDATA[import Tree from XML;
+$tree= new Tree();]]></code>
+
+          Für den Moment (in der Zend Engine 1) müssen die Klassennamen bspw.
+          XMLTree und XMLNode heißen (Namespaces werden über den Namen realisiert
+          bzw. wie in Sybase einfach weggelassen).
+
+          Die Sybase-Klasse wird in Zukunft [ZE2] bspw. RDBMS::Sybase heißen, usw.
+        </text>
+      </para>
+    </content>
+    <references>
+      <ref link="about">Introduction</ref>
+      <ref type="ext" link="http://java.sun.com/docs/codeconv">Java: Coding standards</ref>
+    </references>
+  </main>
+</document>
