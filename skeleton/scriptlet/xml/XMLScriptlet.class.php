@@ -196,6 +196,32 @@
         $request->getStateName()
       ));
     }
+
+    /**
+     * Process request
+     *
+     * @access  protected
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   &scriptlet.xml.XMLScriptletResponse response 
+     */
+    function processRequest(&$request, &$response) {
+
+      // Define special parameters
+      $response->setParam('state',   $request->getStateName());
+      $response->setParam('page',    $request->getPage());
+      $response->setParam('lang',    $request->getLanguage());
+      $response->setParam('product', $request->getProduct());
+      $response->setParam('sess',    $request->getSessionId());
+      $response->setParam('query',   $request->getEnvValue('QUERY_STRING'));
+      
+      // Set XSL stylesheet
+      $this->_setStylesheet($request, $response);
+
+      // Add all request parameters to the formvalue node
+      foreach ($request->params as $key => $value) {
+        $response->addFormValue($key, $value);
+      }
+    }
     
     /**
      * Handle all requests. This method is called from <pre>doPost</pre> since
@@ -214,21 +240,7 @@
      * @see     xp://scriptlet.HttpScriptlet#doGet
      */
     function doGet(&$request, &$response) {
-    
-      // Define special parameters
-      $response->setParam('state',   $request->getStateName());
-      $response->setParam('lang',    $request->getLanguage());
-      $response->setParam('product', $request->getProduct());
-      $response->setParam('sess',    $request->getSessionId());
-      $response->setParam('query',   $request->getEnvValue('QUERY_STRING'));
-      
-      // Set XSL stylesheet
-      $this->_setStylesheet($request, $response);
-
-      // Add all request parameters to the formvalue node
-      foreach ($request->params as $key => $value) {
-        $response->addFormValue($key, $value);
-      }
+      $this->processRequest($request, $response);
     }
     
     /**
