@@ -45,7 +45,7 @@
      * @return  string
      */
     function getType() {
-      return 'xsi:long';
+      return 'xsd:long';
     }
   }
 ?>
