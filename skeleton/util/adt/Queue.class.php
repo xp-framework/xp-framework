@@ -31,6 +31,7 @@
    * </code>
    *
    * @purpose  Abstract data type
+   * @see      xp://util.adt.Stack
    * @see      http://www.faqs.org/docs/javap/c12/ex-12-1-answer.html
    */
   class Queue extends Object {
