@@ -3,13 +3,16 @@
  *
  * $Id$
  */
- 
+
+  uses('io.IOException');
+
   /**
-   * OperationTimedOutException
+   * Indicates an operation timed out
    *
-   * @purpose  Indicate an operation timed out
+   * @see      xp://io.IOException
+   * @purpose  Exception
    */
-  class OperationTimedOutException extends Exception {
+  class OperationTimedOutException extends IOException {
   
   }
 ?>
