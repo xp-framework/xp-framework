@@ -77,8 +77,12 @@
 	 * @throws	ClassNotFoundException when there is no such class
      */
 	function &newInstance() {
-      if (FALSE === ($name= ClassLoader::loadClass($this->name))) return NULL;
-	  return new $name();
+      $paramstr= '';
+      for ($i= 0, $m= func_num_args(); $i < $m; $i++) {
+        $paramstr.= ', func_get_arg('.$i.')';
+      }
+      
+      return eval('return new '.reflect($this->name).'('.substr($paramstr, 2).');');
 	}
 	
     /**
