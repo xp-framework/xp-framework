@@ -62,7 +62,6 @@
         )));
       }
       
-      $a= func_get_args();
       return call_user_func_array(array(&$obj, $this->name), $args);
     }
   }
