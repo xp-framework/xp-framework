@@ -20,7 +20,8 @@
    *   echo 'The class name for $o is '.$c->getName();
    * </code>
    *
-   * @see lang.Object#getClass()
+   * @see      xp://lang.Object#getClass()
+   * @purpose  Reflection
    */
   class XPClass extends Object {
     var 
@@ -67,7 +68,18 @@
      *   }
      * </code>
      *
+     * Example (passing arguments):
+     * <code>
+     *   try(); {
+     *     $c= &XPClass::forName('peer.Socket') &&
+     *     $o= &$c->newInstance('localhost', 6100);
+     *   } if (catch('ClassNotFoundException', $e)) {
+     *     // handle it!
+     *   }
+     * </code>
+     *
      * @access  public
+     * @param   mixed* args
      * @return  &lang.Object 
      */
     function &newInstance() {
@@ -93,7 +105,7 @@
     /**
      * Checks whether this class has a method named "$method" or not.
      *
-     * Since in PHP, methods are case-insensitive, calling 
+     * Note: Since in PHP, methods are case-insensitive, calling 
      * hasMethod('toString') will provide the same result as 
      * hasMethod('tostring')
      *
