@@ -16,6 +16,25 @@
     var
       $name     = '',
       $handlers = array();
+      
+    /**
+     * Retrieve instance of this state
+     *
+     * @access  public
+     * @param   string name
+     * @return  &org.apache.xml.workflow.State
+     */
+    function &getInstance($name) {
+      static $instance= array();
+      
+      if (!isset($instance[$name])) {
+        $class= $name.'State';
+        $instance[$name]= new $class();
+        $instance[$name]->name= $name;
+      }
+      
+      return $instance[$name];
+    }
     
     /**
      * Initialize this state
@@ -39,7 +58,7 @@
     }
 
     /**
-     * Set Name
+     * Set this state's name
      *
      * @access  public
      * @param   string name
@@ -49,7 +68,7 @@
     }
 
     /**
-     * Get Name
+     * Get this state's name
      *
      * @access  public
      * @return  string
@@ -63,36 +82,131 @@
      *
      * @access  public
      * @param   &org.apache.xml.workflow.Context context
+     * @param   &org.apache.xml.XMLScriptletRequest request
      * @return  bool
      */
-    function isAccessible(&$context) {
-      return TRUE;
+    function isAccessible(&$context, &$request) {
+      $l= &Logger::getInstance();
+      $cat= &$l->getCategory($this->getClassName());
+
+      if (0 == ($s= sizeof($this->handlers))) {     // Border case
+        $cat->warn($this->getClassName(), 'accessible');
+        return TRUE;
+      }
+      
+      for ($i= 0; $i < $s; $i++) {
+        $cat->infof('Calling handler #%d: %s', $i, $this->handlers[$i]->getClassName());
+                
+        if (!$this->handlers[$i]->prerequisitesMet($context)) {
+          $cat->warn($i, '>> Prerequisites not met, page is not accessible');
+          
+          // Here we know at least one handler's prerequisites are 
+          // *not* met - no need to check the rest:)
+          return FALSE;
+        }
+        
+        if ($this->handlers[$i]->isActive($context)) {
+          $cat->warn($i, '>> is active, page is accessible');
+          
+          // Here we know at least one handler is active - therefore
+          // we can safely assume it's OK to show the page.
+          return TRUE;
+        }
+      }
+      
+      $cat->warn($this->getClassName(), 'not accessible');
+      return FALSE;
     }
     
     /**
      * Returns whether this state has been triggered by submit data
      *
      * @access  public
-     * @param   &org.apache.xml.HttpScriptletRequest request
+     * @param   &org.apache.xml.workflow.Context context
+     * @param   &org.apache.xml.XMLScriptletRequest request
      * @return  string submit trigger's name or NULL
      */
-    function isSubmitTrigger(&$request) {
-      foreach (array('form', 'sendingdata') as $magic) {
-        if ($request->hasParam('__'.$magic)) return $request->getParam('__'.$magic);
-      }
-      return NULL;
+    function isSubmitTrigger(&$context, &$request) {
+      return $request->hasParam('__form');
     }
-    
+
     /**
-     * Include your application logic here
+     * Returns whether this state has been triggered directly
      *
      * @access  public
      * @param   &org.apache.xml.workflow.Context context
-     * @param   &org.apache.xml.HttpScriptletRequest request
-     * @param   &org.apache.xml.HttpScriptletResponse response
+     * @param   &org.apache.xml.XMLScriptletRequest request
+     * @return  string submit trigger's name or NULL
+     */
+    function isDirectTrigger(&$context, &$request) {
+      return $request->hasParam('__sendingdata');
+    }
+    
+    /**
+     * Retrieve result document
+     *
+     * @access  public
+     * @param   &org.apache.xml.workflow.Context context
+     * @param   &org.apache.xml.XMLScriptletRequest request
+     * @param   &org.apache.xml.XMLScriptletResponse response
      * @return  bool
      */
     function getDocument(&$context, &$request, &$response) {
+      $l= &Logger::getInstance();
+      $cat= &$l->getCategory($this->getClassName());
+      
+      $s= sizeof($this->handlers);
+      $return= TRUE;
+
+      // If we have a submit trigger:
+      if ($this->isSubmitTrigger($context, $request)) {
+        for ($i= 0; $i < $s; $i++) {
+          $cat->infof('Calling handler #%d: %s', $i, $this->handlers[$i]->getClassName());
+          
+          if (!$this->handlers[$i]->isActive($context)) {
+            $cat->warn($i, 'isActive returns FALSE, proceeding...');
+            
+            // The handler is not active - thus, proceed to the next handler
+            continue;
+          }
+          
+          $cat->warn($i, 'Handling submitted data...');
+          if (!$this->handlers[$i]->handleSubmittedData($context, $request)) {
+            $cat->error('Errors occured', $this->handlers[$i]->errors);
+            
+            // The handler states there were errors. Add these to the
+            // formerror document node
+            foreach ($this->handlers[$i]->errors as $error) {
+              $response->addFormError(
+                $this->handlers[$i]->getClassName(),
+                $error[1],
+                $error[0]
+              );
+            }
+            
+            // At least one handler has generated errors, we can not continue
+            $return= FALSE;
+            continue;
+          }
+          
+          // 
+        }
+      }
+      
+      // Go through all existing context resources and call their "insertStatus" method
+      foreach (array_keys($context->crm->hash) as $name) {
+        if (!isset($context->crm->crs[$context->crm->hash[$name]])) continue;
+
+        $crs= &$context->crm->crs[$context->crm->hash[$name]];
+        $cat->debug('Calling insertStatus() for', get_class($crs), $name);
+        $crs->insertStatus($response->addFormResult(new Node(
+          'cr', 
+          NULL, 
+          array('name' => $crs->getClassName())
+        )));
+      }
+      
+      return $return;
     }
   }
 ?>
