@@ -72,10 +72,14 @@
         case 'float':
         case 'double':
         case 'string':
-        case 'array':
-        case 'object':
         case 'bool':
         case 'null':
+          if (is_a($var, 'Object')) $var= $var->toString();
+          settype($var, $type);
+          break;
+
+        case 'array':
+        case 'object':
           settype($var, $type);
           break;
 
