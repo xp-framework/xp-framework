@@ -1,12 +1,7 @@
 <?php
-/*
+/* This class is part of the XP framework
+ *
  * $Id$
- *
- * Diese Klasse ist Bestandteil des XP-Frameworks
- * (c) 2001 Timm Friebe, Schlund+Partner AG
- *
- * @see http://doku.elite.schlund.de/projekte/xp/skeleton/
- *
  */
  
   uses('util.archive.TarArchiveEntry');
@@ -18,7 +13,7 @@
    * <code>
    * $a= &new TarArchive(new File('foo.tar.gz'));
    * $a->open(FILE_MODE_READ);
-   * $e= &$a->getEntry();
+   * $entry= &$a->getEntry();
    * $a->close();
    *
    * printf("Filesize of entry %s is %d bytes\n", $entry->name, $entry->size);
