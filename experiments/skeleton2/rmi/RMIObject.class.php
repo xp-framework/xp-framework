@@ -42,12 +42,7 @@
      * @param   &rmi.RMIConnector connector
      */
     public function __construct(RMIConnector $connector) {
-    
-      // & missing intentionally, overloaded objects have problems with 
-      // this! Adding an ampersand here results in "Fatal error: Cannot 
-      // create references to/from string offsets nor overloaded objects"
       $this->connector= $connector;
-      
     }
     
     /**
@@ -56,11 +51,7 @@
      * @access  public
      */
     public function __destruct() {
-    
-      // $this->connector->__destruct() results in this function being
-      // called in an infinite loop. Seems to be a bug with overload
-      call_user_func(array($this->connector, '__destruct()'));
-      
+      unset($this->connector);
     }
 
     /**
@@ -68,16 +59,10 @@
      *
      * @access  magic
      * @param   string name
-     * @param   &mixed value
-     * @return  bool
+     * @return  mixed
      */
-    public function __get($name, $value) {
-      try {
-        $value= $this->connector->getValue($this, $name);
-      } catch (RMIException $e) {
-        throw ($e);
-      }
-      return TRUE;
+    public function __get($name) {
+      return $this->connector->getValue($this, $name);
     }
 
     /**
@@ -85,16 +70,11 @@
      *
      * @access  magic
      * @param   string name
-     * @param   &mixed value
-     * @return  bool
+     * @param   mixed value
+     * @return  mixed
      */
     public function __set($name, $value) {
-      try {
-        $this->connector->setValue($this, $name, $value);
-      } catch (RMIException $e) {
-        throw ($e);
-      }
-      return TRUE;
+      return $this->connector->setValue($this, $name, $value);
     }
     
     /**
@@ -102,18 +82,11 @@
      *
      * @access  magic
      * @param   string name
-     * @param   &array args
-     * @param   &mixed return
-     * @return  bool
+     * @param   array args
+     * @return  mixed
      */
-    public function __call($name, $args, $return) {
-      try {
-        $return= $this->connector->invokeMethod($this, $name, $args);
-      } catch (RMIException $e) {
-        throw ($e);
-      }
-      return TRUE;
+    public function __call($name, $args) {
+      return $this->connector->invokeMethod($this, $name, $args);
     }
-    
-  } overload('RMIObject');
+  }
 ?>
