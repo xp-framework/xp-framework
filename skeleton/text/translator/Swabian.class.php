@@ -65,6 +65,7 @@
         '/\bViele?s?\b/'         => 'En Haufa',
         '/\bAuto|Daimler\b/'     => 'Heilix Blechle',
         '/Marmelade|Konfitüre/'  => 'Xälz',
+        '/ließ/'                 => 'g\'losse hät',
         '/\b2\b/'                => 'zwoi',
         '/\b5\b/'                => 'fempf',
         '/\b15\b/'               => 'fuffzehn',
