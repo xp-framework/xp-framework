@@ -28,7 +28,7 @@ inline static void mangle_class_name(char **class_name, int *name_len) {
     tmp[len] = 0;
 
     free(*class_name);
-	*class_name = tmp;
+    *class_name = tmp;
     *name_len = len;
   }
 }
