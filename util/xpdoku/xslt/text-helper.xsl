@@ -74,7 +74,11 @@
   </xsl:template>
 
   <xsl:template match="ref[@type= 'ext']">
-    <a title="External link to {@link}" href="{@link}" target="_new"><xsl:value-of select="."/></a>
+    <xsl:param name="label" select="."/>
+    <a title="External link to {@link}" href="{@link}" target="_new">
+      <xsl:value-of select="$label"/>
+      <xsl:if test="$label = ''"><xsl:value-of select="@link"/></xsl:if>
+    </a>
   </xsl:template>
 
   <xsl:template match="ref[@type= 'google']">
