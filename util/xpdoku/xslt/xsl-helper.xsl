@@ -225,7 +225,6 @@
   </xsl:template>
   
   <xsl:template match="code">
-    <br/>
     <xsl:call-template name="frame">
       <xsl:with-param name="color" select="'#cccccc'"/>
       <xsl:with-param name="content">
