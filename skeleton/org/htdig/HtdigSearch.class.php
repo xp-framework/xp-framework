@@ -247,7 +247,7 @@
       
       $result= &new HtdigResultset();
       $metaresult= array();
-      $csvdef= NULL;
+      $hasCsv= FALSE;
 
       try(); {
       
@@ -259,6 +259,7 @@
             $metaresult[trim(strtolower($meta[0]))]= trim($meta[1]);
           } else {
             $result->setCsvdef(explode($this->delimiter, substr(current($output), 4)));
+            $hasCsv= TRUE;
           }
 
           next($output);
@@ -267,8 +268,12 @@
         $result->setMetaresult($metaresult);
 
         // Now parse resultset
-        while (current ($output)) {
-          $result->addResult(explode($this->delimiter, current($output)));
+        while (FALSE !== current ($output)) {
+        
+          // Do not take empty lines into account
+          if (current($output)) {
+            $result->addResult(explode($this->delimiter, current($output)));
+          }
           next ($output);
         }
       } if (catch ('IllegalArgumentException', $e)) {
