@@ -219,7 +219,7 @@
       <key>GDK_D</key>
       <signal>activate</signal>
     </accelerator>
-    <label>Zum _löschen markieren</label>
+    <label>_Delete</label>
     <right_justify>False</right_justify>
   </widget>
 
@@ -231,7 +231,7 @@
       <key>GDK_Z</key>
       <signal>activate</signal>
     </accelerator>
-    <label>Löschen _rückgängig machen</label>
+    <label>_Undelete</label>
     <right_justify>False</right_justify>
   </widget>
 </widget>
