@@ -25,7 +25,7 @@
      * Construct
      *
      * @access  public
-     * @param   string pattern
+     * @param   string pattern including the delimiters
      */
     function __construct($pattern) {
       $this->pattern= $pattern;
