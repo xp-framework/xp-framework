@@ -35,6 +35,10 @@
     </ul>
 
   </xsl:template>
+  
+  <xsl:template match="apidoc/comments//text/code">
+    <code>&lt;?php<xsl:copy-of select="."/>?&gt;</code>
+  </xsl:template>
 
   <!--
    ! Template for content
@@ -46,30 +50,33 @@
     <xsl:variable name="current" select="/formresult/breadcrumb/current"/>
     
     <h1>
-      <a href="../documentation">api documentation</a> (<xsl:value-of select="$current/@collection"/>)
+      <a href="{func:link(documentation)}">api documentation</a> (<xsl:value-of select="$current/@collection"/>)
       <xsl:for-each select="/formresult/breadcrumb/path">
         :: <a href="package?{$current/@collection}/{@qualified}"><xsl:value-of select="."/></a>
       </xsl:for-each>
       :: <xsl:value-of select="$current/@class"/>
     </h1>
-    
+        
     <!-- Header -->
     <h3>
-      <xsl:value-of select="/formresult/apidoc/comments/class/model"/> 
-      class <xsl:value-of select="/formresult/apidoc/comments/class/name"/> 
-      <xsl:if test="/formresult/apidoc/comments/class/extends != ''">
-        extends <xsl:value-of select="/formresult/apidoc/comments/class/extends"/> 
+      <xsl:value-of select="/formresult/apidoc/comments/class/@model"/> 
+      class <xsl:value-of select="/formresult/apidoc/comments/class/@name"/> 
+      <xsl:if test="/formresult/apidoc/comments/class/@extends != ''">
+        extends <xsl:value-of select="/formresult/apidoc/comments/class/@extends"/> 
       </xsl:if>
     </h3>
     <small>
-      <xsl:value-of select="/formresult/apidoc/comments/file/cvsver"/>
+      <xsl:value-of select="/formresult/apidoc/comments/file/@cvs"/>
     </small>
+    <h4>
+      Purpose: <xsl:value-of select="/formresult/apidoc/comments/class/purpose"/>
+    </h4>
     <p>
-      <xsl:copy-of select="/formresult/apidoc/comments/class/text"/>
+      <xsl:apply-templates select="/formresult/apidoc/comments/class/text"/>
     </p>
 
     <!-- Experimental note -->
-    <xsl:if test="/formresult/apidoc/comments/class/experimental != ''">
+    <xsl:if test="/formresult/apidoc/comments/class/@experimental != ''">
       <table width="100%" border="0" cellspacing="0" cellpadding="2" class="intro">
         <tr>
           <td width="1%">
@@ -90,7 +97,7 @@
     </xsl:if>
 
     <!-- Deprecation note -->
-    <xsl:if test="/formresult/apidoc/comments/class/deprecated != ''">
+    <xsl:if test="/formresult/apidoc/comments/class/@deprecated != ''">
       <table width="100%" border="0" cellspacing="0" cellpadding="2" class="intro">
         <tr>
           <td width="1%">
@@ -135,18 +142,18 @@
     
     <!-- Method summary -->
     <h3>
-      Method summary (<xsl:value-of select="count(/formresult/apidoc/comments/function/*)"/>)
+      Method summary (<xsl:value-of select="count(/formresult/apidoc/comments/method)"/>)
     </h3>
     <table border="0" cellspacing="0" cellpadding="0" width="100%">
-      <xsl:for-each select="/formresult/apidoc/comments/function/*">
-        <xsl:sort select="name()"/>
+      <xsl:for-each select="/formresult/apidoc/comments/method">
+        <xsl:sort select="@name"/>
 
         <tr>
-          <td width="1%" valign="top" nowrap="nowrap"><img width="17" height="17" hspace="4" src="/image/{access}.gif"/></td>
+          <td width="1%" valign="top" nowrap="nowrap"><img width="17" height="17" hspace="4" src="/image/{@access}.gif"/></td>
           <td width="99%" valign="top" colspan="2">
             <b>
-              <a href="#{name()}">
-                <xsl:value-of select="concat(access, ' ', model, ' ', return/type, ' ', name())"/>
+              <a href="#{@name}">
+                <xsl:value-of select="concat(@access, ' ', @model, ' ', return/type, ' ', @name)"/>
                 (<xsl:for-each select="params/param">
                   <xsl:value-of select="concat(type, ' ', name)"/>
                   <xsl:if test="position() != last()">, </xsl:if>
@@ -165,16 +172,16 @@
     <h3>
       Method detail
     </h3>
-    <xsl:for-each select="/formresult/apidoc/comments/function/*">
+    <xsl:for-each select="/formresult/apidoc/comments/method">
       <h4>
-        <img align="left" width="17" height="17" hspace="4" src="/image/{access}.gif"/>
+        <img align="left" width="17" height="17" hspace="4" src="/image/{@access}.gif"/>
         <a name="{name()}"><xsl:value-of select="name()"/></a>
       </h4>
       <code>
-        <xsl:value-of select="concat(access, ' ', model, ' ')"/>
+        <xsl:value-of select="concat(@access, ' ', @model, ' ')"/>
         <a href="{func:typehref(return/type)}"><xsl:value-of select="return/type"/></a>
         <xsl:text> </xsl:text>
-        <b><xsl:value-of select="name()"/></b>(<xsl:for-each select="params/param">
+        <b><xsl:value-of select="@name"/></b>(<xsl:for-each select="params/param">
           <xsl:value-of select="concat(type, ' ', name)"/>
           <xsl:if test="position() != last()">, </xsl:if>
         </xsl:for-each>)
