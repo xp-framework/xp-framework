@@ -19,8 +19,8 @@
      * @param   &util.telephony.TelephonyAddress address
      */
     function __construct(&$address) {
-      $this->address= &$address;
       parent::__construct();
+      $this->address= &$address;
     }
     
     /**
@@ -30,7 +30,7 @@
      * @return  string number
      */
     function getAttachedNumber() {
-      return $this->address->getExt();
+      return $this->address->getNumber();
     }
   }
 ?>
