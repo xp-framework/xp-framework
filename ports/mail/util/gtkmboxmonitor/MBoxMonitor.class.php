@@ -8,7 +8,9 @@
     'gui.gtk.GTKGladeApplication',
     'gui.gtk.util.GTKWidgetUtil',
     'gui.gtk.util.GTKPixmapLoader',
-    'peer.mail.store.Pop3Store'
+    'peer.mail.store.Pop3Store',
+    'peer.mail.store.ImapStore',
+    'peer.URL'
   );
 
   /**
@@ -34,16 +36,30 @@
     function __construct(&$p) {
       if (!$p->exists(1)) {
         printf(
-          "Usage: gtkphp %1\$s pop3://user:password@server\n".
-          "\n",
+          "Usage: gtkphp %1\$s protocol://user:password@server\n".
+          "       Supported protocols: pop3, imap\n",
           $p->value(0)
         );
         exit(-1);
       }
+    
+      // Find protocol
+      $this->dsn= &new URL($p->value(1));
+      switch ($this->dsn->getScheme()) {
+        case 'pop3': 
+          $this->stor= &new Pop3Store(); 
+          break;
+          
+        case 'imap': 
+          $this->stor= &new ImapStore(); 
+          break;
+          
+        default: 
+          printf("Protocol %s not supported\n", $this->dsn->getScheme()); 
+          exit(-2);
+      }
       
       parent::__construct('MBoxMonitor', dirname(__FILE__).'/mboxmonitor.glade');
-      $this->stor= &new Pop3Store();
-      $this->dsn= $p->value(1);
     }
     
     /**
@@ -53,6 +69,12 @@
      */
     function init() {
       parent::init();
+      $this->window->set_title(sprintf(
+        'MailboxMonitor [%s] %s@%s',
+        $this->dsn->getScheme(),
+        $this->dsn->getUser(),
+        $this->dsn->getHost()
+      ));
       
       // Connect buttons
       GTKWidgetUtil::connect($this->widget('button_receive'), array(
@@ -198,7 +220,7 @@
         NULL,     // Status
         $msg->from->personal.' <'.$msg->from->localpart.'@'.$msg->from->domain.'>',
         $msg->getSubject(),
-        $msg->date->toString('d.m.Y H:i:s'),
+        $msg->date->toString('Y-m-d H:i:s'),
         sprintf('%0.2f KB', $msg->size / 1024)
       ));
 
@@ -278,7 +300,7 @@
         
         if (!$this->stor->isConnected()) {
           $this->setStatusText('Connecting...');
-          $this->stor->connect($this->dsn); 
+          $this->stor->connect($this->dsn->getURL()); 
         }
         
         $this->setStatusText('Getting folder contents');
