@@ -42,7 +42,7 @@
      * @access  public
      */
     function initialize() {
-      $this->_db= &new DBAFile(System::tempDir().$this->id.'.db', $handler);
+      $this->_db= &new DBAFile(System::tempDir().DIRECTORY_SEPARATOR.$this->id.'.db', $handler);
       
       // See php://dba_open: Use "c" for read/write access and database 
       // creation if it doesn't currently exist
