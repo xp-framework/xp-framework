@@ -1,5 +1,4 @@
 ! Preferences file for NEdit
-! $Id$
 !
 ! This file is overwritten by the "Save Defaults..." command in NEdit 
 ! and serves only the interactively settable options presented in the NEdit
@@ -30,19 +29,19 @@ nedit.shellCommands: \
 	Print:::IDS:\n\
 		lpr %\n\
 	Insert method doc:Alt+D:::\n\
-		/home/thekid/bin/phpdoc --comment\n\
+		$HOME/bin/phpdoc --comment\n\
 	Insert class header:Shift+Alt+D:::\n\
-		/home/thekid/bin/phpdoc --header\n\
+		$HOME/bin/phpdoc --header\n\
 	Create XP class:Shift+Alt+C:::\n\
-		/home/thekid/bin/phpdoc --class\n\
+		$HOME/bin/phpdoc --class\n\
 	Check PHP syntax:Alt+C:C:ADS:\n\
 		php -l\n\
 	PHP contextsensitive help:F1::ID:\n\
-		/home/thekid/bin/phphelp\n\
+		$HOME/bin/phphelp\n\
 	Execute PHP script:F9::AD:\n\
 		php -q\n\
 	Make accessors:Shift+Alt+A::I:\n\
-		php -q /home/thekid/devel/xp/util/bin/mkaccessor.php\n
+		php -q $HOME/devel/xp/util/bin/mkaccessor.php\n
 nedit.macroCommands: \
 	Complete Word:Alt+D::: {\n\
 		# Tuning parameters\n\
