@@ -26,8 +26,8 @@
   $filename= realpath($p->value(1));
 
   // Calculate namespace
-  preg_match('#skeleton/([a-z/]+)/([^\.]+)\.class\.php$#', $filename, $matches);
-  $namespace= strtr($matches[1], '/', ':');
+  preg_match('#skeleton/([a-z/-]+)/([^\.]+)\.class\.php$#', $filename, $matches);
+  $namespace= strtr($matches[1], '/-', ':_');
     
   // Tokenize
   $t= &new PHPTokenizer();
@@ -149,7 +149,8 @@ __;
         if (
           ('getInstance' == $tok[1]) ||
           ('fromString' == $tok[1]) ||
-          ('fromFile' == $tok[1])
+          ('fromFile' == $tok[1]) ||
+          ('getBy' == substr($tok[1], 0, 5))
         ) $out[]= ' static';
         if ('getStackTrace' == $tok[1]) $tok[1]= 'toString';
         $out[]= ' function ';
