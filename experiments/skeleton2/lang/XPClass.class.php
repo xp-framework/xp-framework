@@ -4,51 +4,58 @@
  * $Id$
  */
 
+  uses(
+    'lang.reflect.Field',
+    'lang.reflect.Method',
+    'lang.reflect.Constructor'
+  );
+
   /**
    * Represents classes. Every instance of an XP class has an method
    * called getClass() which returns an instance of this class.
    *
    * Warning:
+   *
    * Do not construct this class publicly, instead use either the
    * $o->getClass() syntax or the static method 
-   * $class= XPClass::forName("fully.qualified.Name")
+   * $class= XPClass::forName('fully.qualified.Name')
    *
    * To retrieve the fully qualified name of a class, use this:
    * <code>
    *   $o= new File();
-   *   echo 'The class name for $o is '.$o->getClass()->getName();
+   *   $c= $o->getClass();
+   *   echo 'The class name for $o is '.$c->getName();
    * </code>
    *
-   * @see lang.Object#getClass()
+   * @see      xp://lang.Object#getClass()
+   * @purpose  Reflection
    */
   class XPClass extends Object {
-    private 
-      $ref      = NULL,
-      $name     = '';
-      
+    protected
+      $_reflection = NULL;
+
     /**
      * Constructor
      *
-     * @access  private
-     * @param   &mixed ref
+     * @access  package
+     * @param   mixed ref a class name, an object or a Reflection_Class object
      */
-    private function __construct(&$ref) {
-      $this->ref= $ref;
-      $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
+    public function __construct($ref) {
+      if ($ref instanceof Reflection_Class) {
+        $this->_reflection= $ref;
+      } else {
+        $this->_reflection= new Reflection_Class($ref);
+      }
     }
     
     /**
      * Retrieves the fully qualified class name for this class.
      * 
-     * Warning: Built-in classes will have a "php." prefixed,
-     * e.g. php.stdClass although there is no such directory "php" 
-     * in the XP framework and no such file "stdClass.class.php" there.
-     *
      * @access  public
      * @return  string name - e.g. "io.File", "rdbms.mysql.MySQL"
      */
     public function getName() {
-      return $this->name;
+      return $this->_reflection->getName();
     }
     
     /**
@@ -57,40 +64,65 @@
      *
      * Example:
      * <code>
-     *   try {
-     *     $o= XPClass::forName($name)->newInstance();
-     *   } catch (ClassNotFoundException $e) {
+     *   try(); {
+     *     $c= XPClass::forName($name) &&
+     *     $o= $c->newInstance();
+     *   } if (catch('ClassNotFoundException', $e)) {
+     *     // handle it!
+     *   }
+     * </code>
+     *
+     * Example (passing arguments):
+     * <code>
+     *   try(); {
+     *     $c= XPClass::forName('peer.Socket') &&
+     *     $o= $c->newInstance('localhost', 6100);
+     *   } if (catch('ClassNotFoundException', $e)) {
      *     // handle it!
      *   }
      * </code>
      *
      * @access  public
+     * @param   mixed* args
      * @return  &lang.Object 
      */
     public function newInstance() {
-      $paramstr= '';
       $args= func_get_args();
-      for ($i= 0, $m= func_num_args(); $i < $m; $i++) {
-        $paramstr.= ', $args['.$i.']';
-      }
-      
-      return eval('return new '.xp::reflect($this->name).'('.substr($paramstr, 2).');');
+      return call_user_func_array(array(&$this->_reflection, 'newInstance'), $args);
     }
     
     /**
      * Gets class methods for this class
      *
      * @access  public
-     * @return  string[] methodname
+     * @return  lang.reflect.Method[]
      */
     public function getMethods() {
-      return get_class_methods($this->ref);
+      $m= array();
+      foreach ($this->_reflection->getMethods() as $method) {
+        $m[]= new Method($method);
+      }
+      return $m;
+    }
+
+    /**
+     * Gets a method by a specified name. Returns NULL if the specified 
+     * method does not exist.
+     *
+     * @access  public
+     * @param   string name
+     * @return  &lang.Method
+     * @see     xp://lang.reflect.Method
+     */
+    public function getMethod($name) {
+      if (!($m= $this->_reflection->getMethod($name))) return NULL;
+      return new Method($m); 
     }
     
     /**
      * Checks whether this class has a method named "$method" or not.
      *
-     * Since in PHP, methods are case-insensitive, calling 
+     * Note: Since in PHP, methods are case-insensitive, calling 
      * hasMethod('toString') will provide the same result as 
      * hasMethod('tostring')
      *
@@ -99,74 +131,136 @@
      * @return  bool TRUE if method exists
      */
     public function hasMethod($method) {
-      return in_array(
-        strtolower($method),
-        get_class_methods($this->ref)
-      );
+      return (NULL !== $this->_reflection->getMethod($method));
+    }
+    
+    /**
+     * Retrieves this class' constructor
+     *
+     * @access  public
+     * @return  &lang.reflect.Constructor
+     * @see     xp://lang.reflect.Constructor
+     */
+    public function getConstructor() {
+      if (!($c= $this->_reflection->getConstructor())) return NULL;
+      return new Constructor($c); 
     }
     
     /**
      * Retrieve a list of all declared member variables
      *
      * @access  public
-     * @return  string[] member names
+     * @return  lang.reflect.Field[]
      */
     public function getFields() {
-      return (is_object($this->ref) 
-        ? get_object_vars($this->ref) 
-        : get_class_vars($this->ref)
-      );
+      $f= array();
+      foreach ($this->_reflection->getProperties() as $prop) {
+        $f[]= new Field($prop);
+      }
+      return $f;
     }
     
     /**
-     * Retrieve the parent class's class object
+     * Retrieve the parent class's class object. Returns NULL if there
+     * is no parent class.
      *
      * @access  public
      * @return  &lang.XPClass class object
      */
     public function getParentclass() {
-      return new XPClass(get_parent_class($this->ref));
+      if (!($p= $this->_reflection->getParentClass())) return NULL;
+      return new XPClass($p);
     }
     
     /**
-     * Returns the Class object associated with the class with the given string name.
+     * Tests whether this class is a subclass of a specified class.
+     *
+     * @access  public
+     * @param   string name class name
+     * @return  bool
+     */
+    public function isSubclassOf($name) {
+      return $this->_reflection->isSubclassOf(new Reflection_Class(xp::reflect($name)));
+    }
+    
+    /**
+     * Determines whether the specified object is an instance of this
+     * class. This is the equivalent of the is() core functionality.
+     *
+     * <code>
+     *   uses('io.File', 'io.TempFile');
+     *   $class= XPClass::forName('io.File');
+     * 
+     *   var_dump($class->isInstance(new TempFile()));  // TRUE
+     *   var_dump($class->isInstance(new File()));      // TRUE
+     *   var_dump($class->isInstance(new Object()));    // FALSE
+     * </code>
+     *
+     * @access  public
+     * @param   &lang.Object obj
+     * @return  bool
+     */
+    public function isInstance(Object $obj) {
+      return $this->_reflection->isInstance($obj);
+    }
+    
+    /**
+     * Determines if this XPClass object represents an interface type.
+     *
+     * @access  public
+     * @return  bool
+     */
+    public function isInterface() {
+      return $this->_reflection->isInterface();
+    }
+    
+    /**
+     * Retrieve interfaces this class implements
+     *
+     * @access  public
+     * @return  lang.XPClass[]
+     */
+    public function getInterfaces() {
+      $r= array();
+      foreach ($this->_reflection->getInterfaces() as $iface) {
+        $r[]= new XPClass($iface);
+      }
+      return $r;
+    }
+    
+    /**
+     * Returns the XPClass object associated with the class with the given 
+     * string name. Uses the default classloader if none is specified.
      *
      * @model   static
      * @access  public
      * @param   string name - e.g. "io.File", "rdbms.mysql.MySQL"
+     * @param   lang.ClassLoader classloader default NULL
      * @return  &lang.XPClass class object
      * @throws  lang.ClassNotFoundException when there is no such class
      */
-    public static function forName($name) {
-      return new XPClass(ClassLoader::loadClass($name));
-    }
-
-    /**
-     * Returns the Class object associated with the given instance.
-     *
-     * @model   static
-     * @access  public
-     * @param   &lang.Object instance
-     * @return  &lang.XPClass class object
-     * @throws  lang.ClassNotFoundException when there is no such class
-     */
-    public static function forInstance($instance) {
-      return new XPClass($instance);
+    public static function forName($name, ClassLoader $classloader= NULL) {
+      if (NULL === $classloader) {
+        $classloader= ClassLoader::getDefault();
+      }
+    
+      return $classloader->loadClass($name);
     }
     
     /**
-     * Returns an array containing class objects representing all the public classes
+     * Returns an array containing class objects representing all the 
+     * public classes
      *
      * @model   static
      * @access  public
      * @return  &lang.XPClass[] class objects
      */
     public static function getClasses() {
-      $ret= array();
+      $r= array();
       foreach (get_declared_classes() as $name) {
-        $ret[]= new XPClass($name);
+        if (isset(xp::$classes[strtolower($name)])) $r[]= new XPClass($name);
       }
-      return $ret;
+      return $r;
     }
   }
 ?>
