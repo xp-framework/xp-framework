@@ -7,6 +7,7 @@
   uses(
     'peer.irc.IRCConnectionListener', 
     'peer.irc.IRCColor',
+    'text.translator.Swabian',
     'io.File'
   );
 
@@ -118,6 +119,10 @@
             } else {
               $connection->sendMessage($nick, 'Nice try, but >%s< is incorrect', $params);
             }
+            break;
+          
+          case 'schwob':
+            $connection->sendMessage($target, Swabian::translate($params));
             break;
 
           case 'bite':
