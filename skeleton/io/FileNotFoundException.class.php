@@ -9,6 +9,7 @@
   /**
    * Indicates the file could not be found
    *
+   * @see      xp://io.IOException
    * @purpose  Exception
    */
   class FileNotFoundException extends IOException {
