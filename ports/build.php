@@ -24,6 +24,7 @@
   try(); {
     $prop->reset();
     $name= $prop->readString('port', 'name');
+    $version= $prop->readString('port', 'version');
   } if (catch('Exception', $e)) {
     printf("*** Error: Missing port.ini (%s)\n", $e->getStackTrace());
     exit();
@@ -39,7 +40,7 @@
   }
   
   // Create archive
-  $a= &new Archive(new File($build->uri.'/port.cca'));
+  $a= &new Archive(new File($build->uri.'/'.$name.'-'.$version.'.cca'));
   printf("---> Create archive...\n");
   try(); {
     do {
