@@ -540,6 +540,43 @@
         : ";\n\tcharset=\"{$this->charset}\""
       );
     }
+
+    /**
+     * Build representation of address list
+     *
+     * @access  protected
+     * @param   string t header token
+     * @param   &peer.mail.InternetAddress[] addrs
+     * @return  string
+     */
+    function _astr($t, &$addrs) {
+      $l= '';
+      for ($i= 0, $s= sizeof($addrs); $i < $s; $i++) {
+        if (!is_a($addrs[$i], 'InternetAddress')) continue; // Ignore!
+        $l.= $addrs[$i]->toString().",\n\t";
+      }
+      return empty($l) ? '' : $t.': '.substr($l, 0, -3)."\n";
+    }
+      
+    /**
+     * Check if a string needs to be encoded and encode it if necessary
+     *
+     * @access  protected
+     * @param   string str
+     * @return  string
+     */
+    function _qstr($str) {
+      static $q;
+
+      if (!isset($q)) $q= QuotedPrintable::getCharsToEncode();
+      $n= FALSE;
+      for ($i= 0, $s= strlen($str); $i < $s; $i++) {
+        if (in_array($str{$i}, $q)) continue;
+        $n= TRUE;
+        break;
+      }
+      return $n ? QuotedPrintable::encode($str) : $str;
+    }
     
     /**
      * Return headers as string
@@ -548,49 +585,25 @@
      * @return  string headers
      */
     function getHeaderString() {
-    
-      // Build representation of address list
-      if (!function_exists('astr')) { function astr($t, &$addrs) {
-        $l= '';
-        for ($i= 0, $s= sizeof($addrs); $i < $s; $i++) {
-          if (!is_a($addrs[$i], 'InternetAddress')) continue; // Ignore!
-          $l.= $addrs[$i]->toString().",\n\t";
-        }
-        return empty($l) ? '' : $t.': '.substr($l, 0, -3)."\n";
-      }}
-      
-      // Check if a string needs to be encoded
-      if (!function_exists('qstr')) { function qstr($str) {
-        static $q;
-        
-        if (!isset($q)) $q= QuotedPrintable::getCharsToEncode();
-        $n= FALSE;
-        for ($i= 0, $s= strlen($str); $i < $s; $i++) {
-          if (in_array($str{$i}, $q)) continue;
-          $n= TRUE;
-          break;
-        }
-        return $n ? QuotedPrintable::encode($str) : $str;
-      }}
       
       // Default headers
       $h= (
-        astr(HEADER_FROM,   $a= array($this->from)).
-        astr(HEADER_TO,     $this->to).
-        astr(HEADER_CC,     $this->cc).
-        astr(HEADER_BCC,    $this->bcc)
+        $this->_astr(HEADER_FROM,   $a= array($this->from)).
+        $this->_astr(HEADER_TO,     $this->to).
+        $this->_astr(HEADER_CC,     $this->cc).
+        $this->_astr(HEADER_BCC,    $this->bcc)
       );
       
       // Additional headers
       foreach (array_merge($this->headers, array(
-        HEADER_SUBJECT      => qstr(@$this->subject),
+        HEADER_SUBJECT      => $this->_qstr(@$this->subject),
         HEADER_CONTENTTYPE  => $this->_getContenttypeHeaderString(),
         HEADER_MIMEVER      => $this->mimever,
         HEADER_ENCODING     => $this->encoding,
         HEADER_PRIORITY     => $this->priority,
         HEADER_DATE         => $this->date->toString()
       )) as $key => $val) {
-        if (!empty($val)) $h.= $key.': '.qstr($val)."\n";
+        if (!empty($val)) $h.= $key.': '.$this->_qstr($val)."\n";
       }
       return $h;
     }
