@@ -108,11 +108,13 @@
           : $t['class']
         );
         $args= array();
-        for ($j= 0, $a= sizeof($t['args']); $j < $a; $j++) {
+        if (isset($t['args'])) for ($j= 0, $a= sizeof($t['args']); $j < $a; $j++) {
           if (is_array($t['args'][$j])) {
-            $args[]= 'array ( ... )';
+            $args[]= 'array['.sizeof($t['args'][$j]).']';
           } elseif (is_object($t['args'][$j])) {
-            $args[]= get_class($t['args'][$j]).' { ... }';
+            $args[]= get_class($t['args'][$j]).'{}';
+          } elseif (is_string($t['args'][$j])) {
+            $args[]= '(0x'.dechex(strlen($t['args'][$j])).")'".addcslashes(substr($t['args'][$j], 0, 0xFF), "\0..\17")."'";
           } else {
             $args[]= var_export($t['args'][$j], 1);
           }
