@@ -35,6 +35,9 @@
     </p>
 
     <em><xsl:value-of select="func:datetime(/formresult/item/created_at)"/></em>
+    <br/>
+    <br/>
+    <a href="../news">Overview</a>
   </xsl:template>
   
 </xsl:stylesheet>
