@@ -149,6 +149,10 @@
           ? MIME_DISPOSITION_ATTACHMENT 
           : MIME_DISPOSITION_INLINE
         );
+        if (count ($p[$i]->dparameters)) foreach ($p[$i]->dparameters as $dp) {
+          if ('filename' == strtolower ($dp->attribute) && !empty ($dp->value))
+            $part->setFilename ($dp->value);
+        }
         $part->id= $pid;
         
         // We can retreive the body here since the message has been read anyway
