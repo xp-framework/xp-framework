@@ -59,6 +59,7 @@
      * @param int cvsCmd Command to execute
      * @return array output
      * @throws CVSInterfaceException, if cvs fails
+     * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC115
      */
     function _execute($cvsCmd) {
       $cmdLine= sprintf ("%s %s %s %s 2>&1",
@@ -67,11 +68,17 @@
         $cvsCmd,
         basename ($this->filename)
       );
-
+      
+      // CVS sometimes needs to have the current directory
+      // to be the same, the file is in:
       $oldDir= getcwd();
       chdir (dirname ($this->filename));      
       exec ($cmdLine, $output, $returnCode);
       chdir ($oldDir);
+      
+      if (0 !== $returnCode && 'diff' != substr ($cvsCmd, 0, 4)) {
+        return throw (new CVSInterfaceException ('CVS returned failure'));
+      }
       
       if (count ($output) && strstr ($output[0], 'Cannot access'))
         return throw (
@@ -146,8 +153,9 @@
      * Update a file or directory
      *
      * @access public
-     * @param bool simulate simulate or do really
+     * @param bool simulate simulation mode
      * @return array stats
+     * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC152
      */
     function update($sim= false) {
       $results= $this->_execute (sprintf ('update %s',
@@ -239,6 +247,7 @@
      *
      * @access public
      * @param string comment
+     * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC124
      */
     function commit($comment) {
       $tmpFilename= '/tmp/cvscommitmsg.'.rand(1, 10000);
@@ -256,12 +265,13 @@
         $tmpFilename
       ));
       
-      $f->unlink();
+      // It seems CVS automatically removes the tmp-file after
+      // reading it, so we don't need to do so (gives error).
       return $return;
     }
     
     /**
-     * Removes a file from the repository, deletes (renames) it locally
+     * Removes a file from the repository, deletes (renames) it locally.
      * To complete this action, you have to call commit. Use this with
      * caution.
      *
@@ -291,6 +301,7 @@
      * @param string revision_from
      * @param string revision_to
      * @return array diff lines from the diff
+     * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC129
      */
     function diff($r1= NULL, $r2= NULL) {
       $cmd= sprintf ('diff %s %s',
@@ -299,6 +310,66 @@
       );
 
       return $this->_execute ($cmd);
+    }
+    
+    /**
+     * Get the log entries from cvs. The output format for those
+     * log-entries are crap because the format is ambigous. This
+     * parser will fail to correctly identify log-entries if any
+     * log-line contains a line of 28 '-'.
+     *
+     * @access public
+     * @return array logs
+     * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC142
+     */
+    function &getLog() {
+      $output= $this->_execute ('log');
+      $log= array();
+      
+      $cnt= count ($output);
+      for ($i= 0; $i < $cnt-2; $i++) {
+        $l= $output[$i];
+        // printf ("* Checking: %s\n", $output[$i]);
+        if (substr ($output[$i], 0, 28) == str_repeat ('-', 28) &&
+          preg_match ('/^revision (\S+)$/', $output[$i+1], $match)) {
+          
+          // Set data for log
+          $activeRev= $match[1];
+          list ($date, $author, $state)= explode (';', $output[$i+2]);
+          $activeLog= '';
+          
+          for ($y= $i+3; $y < $cnt-1; $y++) {
+            
+            if (str_repeat ('-', 28) != $output[$y]) {
+              // printf ("+ Add [%s]: %s\n", $activeRev, $output[$y]);
+              $activeLog.= $output[$y]."\n";
+            } else {
+              // printf ("-Skip [%s]: %s\n", $activeRev, $output[$y]);
+              break;
+            }
+          }
+          
+          // Make that entry
+          list (,$date)= explode (': ', $date);
+          list (,$author)= explode (': ', $author);
+          list (,$state)= explode (': ', $state);
+          
+          $entry= array (
+            'date' => $date,
+            'author' => $author,
+            'state' => $state,
+            'revision' => $activeRev,
+            'log' => $activeLog
+          );
+          $log[$activeRev]= (Object)$entry;
+          // var_dump ($log);
+          
+          // Move pointer to where we stopped
+          $i= $y-1;
+        }
+      }
+      
+      return $log;
     }
   }
 ?>
