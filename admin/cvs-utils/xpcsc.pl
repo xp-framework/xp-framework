@@ -98,6 +98,6 @@ while (@ARGV) {
   }
   close FILE;
 
-  print $ARGV[0]." coding standards conformance ok [".$warnings." warning(s)]\n";
+  print $FILE." coding standards conformance ok [".$warnings." warning(s)]\n";
 }
 # }}}
