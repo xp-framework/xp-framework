@@ -85,14 +85,14 @@
           );
           
           // Assume this is a regular class
-          $nodes[$idx]->attribute['type']= 'default';
+          $classtype= 'default';
           
           // Check to see if this is an interface
           if (
             (0 == strcasecmp($nodes[$idx]->attribute['idx'], 'Interface')) ||
             (0 == strcasecmp($nodes[$idx]->attribute['parent-idx'], 'Interface'))
           ) {
-            $nodes[$idx]->attribute['type']= 'interface';
+            $classtype= 'interface';
           } else {
           
             // Let's see if this is an exception
@@ -102,11 +102,14 @@
               'Error'     => 'exception'
             ) as $portion => $type) {
               if (strstr($subNode->attribute['shortName'], $portion)) {
-                $nodes[$idx]->attribute['type']= $type;
+                $classtype= $type;
                 break;
               }
             }
           }
+          
+          $nodes[$idx]->attribute['type']= $classtype;
+          $subNode->attribute['type']= $classtype;
         } if (catch('Exception', $e)) {
           $e->printStackTrace();
           continue;
@@ -123,7 +126,8 @@
         $node->attribute['classname']= $uses;
         $node->attribute['generated_at']= date ('l, F d, Y');  
         $node->attribute['collection']= $subTree->attribute['prefix'];      
-
+        $node->attribute['type']= $classtype;
+        
         $cvsId= @$result['comments']['file']->cvsver;
         if (!empty ($cvsId)) {
           @list (,,$version,$date,$time,$user)= explode (' ', $cvsId);
