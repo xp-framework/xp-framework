@@ -33,7 +33,16 @@
         : explode('@', $mail)
       );
       $this->personal= $personal;
-      
+    }
+    
+    /**
+     * Retrieve hashcode
+     *
+     * @access  public
+     * @return  string
+     */
+    function hashCode() {
+      return md5($this->localpart.'@'.$this->domain);
     }
     
     /**
