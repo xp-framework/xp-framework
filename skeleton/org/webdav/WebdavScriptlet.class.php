@@ -366,7 +366,11 @@
         $created= $this->handlingImpl->move(
           $request->getPath(),
           $request->getRelativePath($request->getHeader('Destination')),
-          WebdavBool::fromString($request->getHeader('Overwrite'))
+          WebdavBool::fromString(
+            $request->getHeader('Overwrite') === NULL ?
+            'f' :
+            $request->getHeader('Overwrite')
+          )
         );
       } if (catch('OperationFailedException', $e)) {
       
@@ -400,7 +404,11 @@
         $created= $this->handlingImpl->copy(
           $request->getPath(),
           $request->getRelativePath($request->getHeader('Destination')),
-          WebdavBool::fromString($request->getHeader('Overwrite'))
+          WebdavBool::fromString(
+            $request->getHeader('Overwrite') === NULL ?
+            'f' :
+            $request->getHeader('Overwrite')
+          )
         );
       } if (catch('OperationFailedException', $e)) {
       
@@ -456,7 +464,7 @@
         return FALSE; 
       }
 
-      $response->setHeader('Content-Type','application/xml; charset="utf-8"');
+      $response->setHeader('Content-Type', 'application/xml; charset="utf-8"');
       $response->setStatus(HTTP_OK);
 
     }
