@@ -48,6 +48,28 @@
       <p><a href="{func:link(concat('album/view?', @name))}">See more</a></p>
       <hr/>
     </xsl:for-each>
+    
+    <br clear="all"/> 
+    <table width="100%">
+      <tr>
+        <td align="left">
+          <xsl:if test="/formresult/pager/@offset &gt; 0">
+            <a href="{func:link(concat(
+              'static?page', 
+              /formresult/pager/@offset - 1
+            ))}">NEXT</a>
+          </xsl:if>
+        </td>
+        <td align="right">
+          <xsl:if test="(/formresult/pager/@offset + 1) * 8 &lt; /formresult/pager/@total">
+            <a href="{func:link(concat(
+              'static?page', 
+              /formresult/pager/@offset + 1
+            ))}">PREV</a>
+          </xsl:if>
+        </td>
+      </tr>
+    </table>
   </xsl:template>
   
 </xsl:stylesheet>
