@@ -50,10 +50,22 @@
      */
     function setBoundary($b) {
       $this->boundary= $b;
-      $this->contenttype= 'multipart/alternative; boundary="'.$this->boundary.'"';
+      // $this->contenttype= 'multipart/alternative; boundary="'.$this->boundary.'"';
+      $this->setContenttype('multipart/alternative');
       $this->charset= '';
     }
-
+    
+    /**
+     * Sets content-type and updates the header. The boundary will be appended
+     * to the content-type header.
+     *
+     * @access  public
+     * @param   string content-type
+     */
+    function setContenttype($c) {
+      $this->contenttype= $c;
+    }
+    
     /**
      * Add a Mime Part
      *
@@ -111,7 +123,7 @@
 
       for ($i= 0, $s= sizeof($this->parts); $i < $s; $i++) {
         $body.= (
-          '--'.$this->boundary."\n".
+          '--'.trim($this->boundary)."\n".
           $this->parts[$i]->getHeaderString().
           "\n".
           $this->parts[$i]->getBody().
