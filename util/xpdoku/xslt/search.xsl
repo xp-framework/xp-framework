@@ -37,15 +37,15 @@
   
   $keyword= urldecode ($_REQUEST['keyword']);
   $keylower= strtolower ($keyword);
-  $keypointless= str_replace ('.', '', strtolower ($keypointless));
+  $keypointless= str_replace ('.', '', strtolower ($keylower));
   $keysound= soundex ($keypointless);
   
   $classHits= array ();
   
   // Cycle through array to find matches
   foreach ($classes as $idx=> $fqClassName) {
-    $className= substr ($fqClassName, max (0, strrpos ($fqClassName, '.')+1));
-    if ($keylower == strtolower (basename ($className))) {
+    $className= strtolower (substr ($fqClassName, max (0, strrpos ($fqClassName, '.')+1)));
+    if ($keylower == $className) {
       // It's a match
       $classHits[]= $idx;
     }
@@ -57,8 +57,13 @@
       // Direct relocate?
     }
 
-    if ($keysound == soundex (str_replace ('.', '', strtolower ($fqClassName)))) {
+    if ($keysound == soundex ($className)) {
       // Soundex match
+      $classHits[]= $idx;
+    }
+    
+    if ($keysound == soundex (str_replace ('.', '', ($fqClassName)))) {
+      // Soundex match on complete classname
       $classHits[]= $idx;
     }
   }
