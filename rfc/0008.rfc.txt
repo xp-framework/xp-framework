@@ -44,8 +44,6 @@ a) Syntax changes and additions
 * Class instance creation expressions
 
 b) New features
-* "self" would be evaluated at runtime
-* Class static initializer
 * Operator overloading
 
 c) Removed restrictions
@@ -292,39 +290,6 @@ Details
   ?>
   In this case, the class being instantiated is a class implementing
   the Comparator interface.
-
-* "self" would be evaluated at runtime:
-  This would make the following possible:
-  <?php
-    class A { 
-      protected static $instance;
-
-      public static function instance() { 
-        return self::$instance; 
-      }
-      
-      __static {
-        self::$instance= new self();
-      }
-    }
-    
-    class B extends A { }
-    
-    var_dump(B::instance()); // object(b)
-  ?>
-
-* Class static initializer
-  Class contained in the static initializer block of a class would lead 
-  to execution of this code at the time the class was first loaded.
-  <?php
-    class Console {
-      public static $err = NULL;
-      
-      __static {
-        self::$err= new OutputStream(STDERR);
-      }
-    }
-  ?>
 
 * Operator overloading
   For details, see 
