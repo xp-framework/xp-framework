@@ -32,6 +32,9 @@
         # Enable php-parsing of .html-files
         AddType application/x-httpd-php .html
 
+        # Include path
+        php_value include_path ".:/usr/local/lib/xp"
+
         RewriteEngine On
 
         # Nice "show-source-path"
