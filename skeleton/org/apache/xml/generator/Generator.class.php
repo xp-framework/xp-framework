@@ -204,7 +204,6 @@
      * @return  string xml
      */
     function schemeHandler($p, $scheme, $rest) {
-      printf("===> Scheme handler for <%s> <%s>\n", $scheme, $rest);
       list($name, $params)= explode('?', substr($rest, 1), 2);
       try(); {
         if ($dep= &$this->tracker->addDependency(
