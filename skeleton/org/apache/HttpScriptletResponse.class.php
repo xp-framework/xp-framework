@@ -109,13 +109,19 @@
     }
     
     /**
-     * Set a cookie
+     * Set a cookie. May be called multiple times with different cookies
+     * to set more than one cookie.
+     *
+     * Example:
+     * <code>
+     *   $response->setCookie(new Cookie('lastvisit', date('Y-m-d')));
+     * </code>
      *
      * @access  public
-     * @param   &peer.http.Cookie cookie
+     * @param   &org.apache.Cookie cookie
      */
     function setCookie(&$cookie) {
-      $this->headers[]= 'Set-Cookie: '.$cookie->getValueRepresentation();
+      $this->headers[]= 'Set-Cookie: '.$cookie->getHeaderValue();
     }
     
     /**
