@@ -13,6 +13,7 @@
 >
   <xsl:include href="../layout.xsl"/>
   <xsl:include href="../news.inc.xsl"/>
+  <xsl:include href="../calendar.inc.xsl"/>
   
   <!--
    ! Template for context navigation
@@ -21,6 +22,12 @@
    ! @purpose  Context navigation
    !-->
   <xsl:template name="context">
+
+    <!-- Calendar -->
+    <xsl:call-template name="calendar">
+      <xsl:with-param name="month" select="/formresult/month"/>
+    </xsl:call-template>
+
     <!-- Categories -->
     <h4 class="context">Categories</h4>
     <table border="0">
