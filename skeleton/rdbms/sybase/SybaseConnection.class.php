@@ -35,7 +35,7 @@
      *
      * @access  public  
      * @return  bool success
-     * @throws  rdbms.SQLException
+     * @throws  rdbms.SQLConnectException
      */
     function connect() {
       if (is_resource($this->handle)) return TRUE;  // Already connected
@@ -56,12 +56,7 @@
       }
 
       if (!is_resource($this->handle)) {
-        return throw(new SQLException(sprintf(
-          'Unable to connect to %s@%s - using password: %s',
-          $this->dsn->getUser(),
-          $this->dsn->getHost(),
-          $this->dsn->getPassword() ? 'yes' : 'no'
-        )));
+        return throw(new SQLConnectException(trim(sybase_get_last_message()), $this->dsn));
       }
       
       return parent::connect();
@@ -87,11 +82,15 @@
      * @access  public
      * @param   string db name of database to select
      * @return  bool success
-     * @throws  rdbms.SQLException
+     * @throws  rdbms.SQLStatementFailedException
      */
     function selectdb($db) {
       if (!sybase_select_db($db, $this->handle)) {
-        return throw(new SQLException('Cannot select database', 'use '.$db));
+        return throw(new SQLStatementFailedException(
+          'Cannot select database: '.trim(sybase_get_last_message()),
+          'use '.$db,
+          array_pop(sybase_fetch_row(sybase_query('select @@error', $this->handle)))
+        ));
       }
       return TRUE;
     }
@@ -173,7 +172,7 @@
      * @access  public
      * @param   mixed *args
      * @return  int number of affected rows
-     * @throws  rdbms.SQLException
+     * @throws  rdbms.SQLStatementFailedException
      */
     function insert() { 
       $args= func_get_args();
@@ -192,7 +191,7 @@
      * @access  public
      * @param   mixed* args
      * @return  int number of affected rows
-     * @throws  rdbms.SQLException
+     * @throws  rdbms.SQLStatementFailedException
      */
     function update() {
       $args= func_get_args();
@@ -210,7 +209,7 @@
      * @access  public
      * @param   mixed* args
      * @return  int number of affected rows
-     * @throws  rdbms.SQLException
+     * @throws  rdbms.SQLStatementFailedException
      */
     function delete() { 
       $args= func_get_args();
@@ -228,7 +227,7 @@
      * @access  public
      * @param   mixed* args
      * @return  array rowsets
-     * @throws  rdbms.SQLException
+     * @throws  rdbms.SQLStatementFailedException
      */
     function select() { 
       $args= func_get_args();
@@ -256,19 +255,18 @@
       $sql= $this->_prepare($args);
 
       if (!is_resource($this->handle)) {
-        if (!($this->flags & DB_AUTOCONNECT)) return throw(new SQLException('Not connected'));
+        if (!($this->flags & DB_AUTOCONNECT)) return throw(new SQLStateException('Not connected'));
         try(); {
           $c= $this->connect();
-        }
-        if (catch ('SQLException', $e)) {
+        } if (catch ('SQLException', $e)) {
           return throw ($e);
         }
         
         // Check for subsequent connection errors
-        if (FALSE === $c) return throw(new SQLException('Previously failed to connect.'));
+        if (FALSE === $c) return throw(new SQLStateException('Previously failed to connect'));
       }
       
-      $this->log && $this->log->debug ($sql);
+      $this->log && $this->log->debug($sql);
       if ($this->flags & DB_UNBUFFERED) {
         $result= sybase_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
       } else {
@@ -276,10 +274,14 @@
       }
 
       if (FALSE === $result) {
-        return throw(new SQLException('Statement failed', $sql));
-      } else {
-        return new SybaseResultSet($result);
+        return throw(new SQLStatementFailedException(
+          'Statement failed: '.trim(sybase_get_last_message()), 
+          $sql,
+          array_pop(sybase_fetch_row(sybase_query('select @@error', $this->handle)))
+        ));
       }
+
+      return new SybaseResultSet($result);
     }
     
     /**

@@ -35,9 +35,9 @@
      * @param   array fields
      */
     function __construct($handle, $fields) {
+      parent::__construct();
       $this->handle= $handle;
       $this->fields= $fields;
-      parent::__construct();
     }
     
     /**

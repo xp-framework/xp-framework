@@ -4,7 +4,14 @@
  * $Id$
  */
  
-  uses('rdbms.SQLException', 'rdbms.DSN', 'rdbms.ResultSet');
+  uses(
+    'rdbms.SQLException',
+    'rdbms.SQLConnectException',
+    'rdbms.SQLStateException',
+    'rdbms.SQLStatementFailedException',
+    'rdbms.DSN', 
+    'rdbms.ResultSet'
+  );
   
   define('DB_STORE_RESULT',     0x0001);
   define('DB_UNBUFFERED',       0x0002);
@@ -36,7 +43,7 @@
       $this->flags= $dsn->getFlags();
       $this->setTimeout($dsn->getProperty('timeout', 0));   // 0 means no timeout
       
-      if (FALSE !== ($cat= $this->dsn->getValue ('log'))) {
+      if (FALSE !== ($cat= $this->dsn->getValue('log'))) {
         $l= &Logger::getInstance();
         $this->setTrace ($l->getCategory ($cat));
       }
@@ -207,7 +214,7 @@
      * Set trace for debugging
      *
      * @access  public
-     * @param   util.log.LogCategory
+     * @param   &util.log.LogCategory
      */
     function setTrace(&$log) {
       $this->log= &$log;

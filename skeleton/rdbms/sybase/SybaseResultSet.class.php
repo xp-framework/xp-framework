@@ -60,7 +60,7 @@
       if (FALSE === ($row= sybase_fetch_assoc($this->handle))) {
         return FALSE;
       }
-      
+
       foreach (array_keys($row) as $key) {
         if (NULL === $row[$key] || !isset($this->fields[$key])) continue;
         if ('datetime' == $this->fields[$key]) {
@@ -80,6 +80,5 @@
     function close() { 
       return sybase_free_result($this->handle);
     }
-
   }
 ?>
