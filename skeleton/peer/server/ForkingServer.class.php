@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.server.Server', 'lang.RuntimeException');
+  uses('peer.server.Server', 'lang.RuntimeError');
 
   /**
    * Forking TCP/IP Server
@@ -28,7 +28,7 @@
         // Have connection, fork child
         $pid= pcntl_fork();
         if (-1 == $pid) {       // Woops?
-          return throw(new RuntimeException('Could not fork'));
+          return throw(new RuntimeError('Could not fork'));
         } else if ($pid) {      // Parent
           while (pcntl_waitpid(-1, $status, WNOHANG)) { }
           $m->close();

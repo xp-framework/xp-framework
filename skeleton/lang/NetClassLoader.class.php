@@ -7,7 +7,7 @@
   uses(
     'lang.ClassLoader', 
     'peer.http.HttpConnection', 
-    'lang.RuntimeException',
+    'lang.RuntimeError',
     'io.File'
   );
   
@@ -179,11 +179,11 @@
       // Try to include the file. Other classes are also loaded
       // off the net as we execute this (using NetClassLoader::uses())
       if (!include_once($f->uri)) {
-        return throw(new RuntimeException('Internal error'));
+        return throw(new RuntimeError('Internal error ('.$f->uri.')'));
       }
       
-      $GLOBALS['php_class_names'][reflect($className)]= $className;
-      return reflect($className);
+      xp::registry('class.'.xp::reflect($className), $className);
+      return xp::reflect($className);
     }
 
     /**
