@@ -74,6 +74,7 @@
       if ($this->assertSubclass($r, 'rdbms.ResultSet')) {
         $version= $r->next('version');
         $this->assertNotEmpty($version);
+        $this->assertEquals($version, '$Revision$');
         return $version;
       }
     }
