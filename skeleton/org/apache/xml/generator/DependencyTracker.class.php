@@ -57,10 +57,8 @@
      * @return  bool success
      */
     function updateDependency($target, $time) {
-      // DEBUG printf("---> Update dependency for %s to %s\n", $target, date('r', $time));
       foreach (array_keys($this->deps) as $key) {
         if (isset($this->deps[$key][$target])) {
-          // DEBUG printf("---> Touch dependency %s.%s\n", $key, $target);
           $this->deps[$key][$target]->touch($time);
           return TRUE;
         }

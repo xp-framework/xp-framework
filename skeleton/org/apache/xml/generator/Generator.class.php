@@ -186,7 +186,6 @@
       
       // Save contents to file
       try(); {
-        // DEBUG printf("---> Saving: "); var_dump($contents);
         FileUtil::setContents($dest, $contents);
       } if (catch('IOException', $e)) {
         return throw($e);
@@ -228,7 +227,6 @@
       $this->notifyObservers(GENERATOR_UPDATEDDEP, $name);
       $this->tracker->updateDependency($dep->name, time());
       
-      // DEBUG printf("---> Returning for %s: %s\n", var_export($dep, 1), $return);
       return (empty($return) ? '<call/>' : $return);
     }
   }

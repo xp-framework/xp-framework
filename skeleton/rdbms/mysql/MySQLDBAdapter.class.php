@@ -97,7 +97,6 @@
         $q= &$this->conn->query('describe %c', $table);
         while ($record= $q->next()) {
           preg_match('#^([a-z]+)(\(([0-9]+)\))?$#', $record['Type'], $regs);
-          // DEBUG var_dump($record, $regs);
           
           $t->addAttribute(new DBTableAttribute(
             $record['Field'], 

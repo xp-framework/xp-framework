@@ -88,7 +88,6 @@
       do {
         while (!$stream->eof() && FALSE !== ($line= $stream->readLine())) {
           $num++;
-          // DEBUG printf("State 0x%04x on line %2d: %s\n", $state, $num, $line);
           
           // Ignore empty lines
           if (empty($line)) continue;
