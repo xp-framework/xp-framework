@@ -242,7 +242,7 @@
         $columns= $map= $qualified= array();
         foreach (array_keys($this->types) as $colunn) {
           $columns[]= $this->identifier.'.'.$colunn;
-          $map[$colunn]= '%c';
+          $map[$colunn]= $map[$this->identifier.'.'.$colunn]= '%c';
           $qualified[$this->identifier.'.'.$colunn]= $this->types[$colunn];
         }
         foreach (array_keys($peer->types) as $colunn) {
