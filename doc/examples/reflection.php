@@ -8,6 +8,12 @@
 
   // {{{ main
   $p= &new ParamString();
+  $cl= &ClassLoader::getDefault();
+  if (!$cl->findClass($p->value(1))) {
+    Console::writeLinef('Class "%s" could not be found', $p->value(1));
+    exit();
+  }
+
   try(); {
     $class= &XPClass::forName($p->value(1));
     $parent= &$class->getParentClass();
