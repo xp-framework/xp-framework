@@ -169,7 +169,6 @@
 
       delete($proc);
       if (!$this->output) {
-        echo '<xmp>'; var_dump(xp::$errors);
         throw (new TransformerException('Transformation failed'));
       }
       
