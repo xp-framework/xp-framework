@@ -244,7 +244,7 @@
      * @param   &peer.server.ConnectionEvent event
      */
     function connected(&$event) {
-      $this->data[$event->stream->__id]= '';
+      $this->data[$event->stream->hashCode()]= '';
     }
     
     /**
@@ -254,14 +254,14 @@
      * @param   &peer.server.ConnectionEvent event
      */
     function data(&$event) {
-      $this->data[$event->stream->__id].= $event->data;
+      $this->data[$event->stream->hashCode()].= $event->data;
       if ("\n" != $event->data{strlen($event->data)- 1}) {        // Wait for more data
         return;
       }
       
       // Scan input string
-      $cmd= sscanf($this->data[$event->stream->__id], "%s %s %[^\r]");
-      $this->data[$event->stream->__id]= '';
+      $cmd= sscanf($this->data[$event->stream->hashCode()], "%s %s %[^\r]");
+      $this->data[$event->stream->hashCode()]= '';
       try(); {
         if (!method_exists($this, 'handle'.$cmd[0])) {
           throw(new MethodNotImplementedException('Operation not supported', $cmd[0]));
