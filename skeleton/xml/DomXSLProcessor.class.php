@@ -29,7 +29,14 @@
    */
   class DomXSLProcessor extends XML {
     var 
-      $document     = NULL;
+      $processor    = NULL,
+      $stylesheet   = array(),
+      $document     = NULL,
+      $params       = array(),
+      $output       = '';
+
+    var
+      $_base        = '';
       
     /**
      * Constructor
@@ -38,6 +45,16 @@
      */
     function __construct() {
       $this->processor= NULL;
+    }
+
+    /**
+     * Set base directory
+     *
+     * @access  public
+     * @param   string dir
+     */
+    function setBase($dir) {
+      $this->_base= rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
     
     /**
@@ -122,17 +139,16 @@
     function run() {
       
       // Get stylesheet
-      $proc= FALSE;
       switch ($this->stylesheet[0]) {
         case 0: $proc= &domxml_xslt_stylesheet_file($this->stylesheet[1]); break;
         case 1: $proc= &domxml_xslt_stylesheet($this->stylesheet[1]);
+        default: $proc= FALSE;
       }
       
       // Transform this
       $result= FALSE;
       $proc && $result= &$proc->process($this->document, $this->params, FALSE);
-      
-      if (!$result) {
+      if (!$result || xp::errorAt(__FILE__, __LINE__ - 1)) {
         return throw(new TransformerException('Transformation failed'));
       }
       
