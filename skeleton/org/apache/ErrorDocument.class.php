@@ -44,6 +44,7 @@
    * contain details not intended for the outside world.
    *
    * @see org.apache.HttpScriptlet
+   * @deprecated
    */
   class ErrorDocument extends Object {
     var 

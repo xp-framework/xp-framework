@@ -11,6 +11,7 @@
    *
    * @see      xp://org.apache.HttpScriptletException
    * @purpose  Exception
+   * @deprecated
    */  
   class HttpSessionInvalidException extends HttpScriptletException {
   }

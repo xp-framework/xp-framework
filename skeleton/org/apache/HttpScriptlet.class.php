@@ -64,6 +64,8 @@
    * 
    *   $s->finalize();
    * </code>
+   *
+   * @deprecated
    */
   class HttpScriptlet extends Object {
     var

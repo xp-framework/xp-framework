@@ -8,6 +8,7 @@
    * Creates dependencies
    *
    * @purpose  Factory
+   * @deprecated
    */
   class DependencyFactory extends Object {
 

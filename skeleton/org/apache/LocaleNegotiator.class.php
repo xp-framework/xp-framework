@@ -54,6 +54,7 @@
    *
    * @see      http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
    * @purpose  Negotiate locales
+   * @deprecated
    */
   class LocaleNegotiator extends Object {
     var

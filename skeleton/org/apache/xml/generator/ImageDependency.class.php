@@ -13,6 +13,7 @@
    * Image dependency
    *
    * @purpose  Dependency
+   * @deprecated
    */
   class ImageDependency extends Dependency {
   

@@ -14,6 +14,7 @@
    *
    * @see      xp://org.apache.HttpScriptlet
    * @purpose  Wrap request
+   * @deprecated
    */  
   class HttpScriptletRequest extends Object {
     var

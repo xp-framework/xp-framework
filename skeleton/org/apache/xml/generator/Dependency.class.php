@@ -9,6 +9,7 @@
    *
    * @model    abstract
    * @purpose  Base class
+   * @deprecated
    */
   class Dependency extends Object {
     var

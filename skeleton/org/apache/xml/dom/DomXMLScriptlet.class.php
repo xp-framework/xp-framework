@@ -16,6 +16,7 @@
    * @ext      domxml
    * @see      xp://org.apache.xml.XMLSriptlet
    * @purpose  XMLScriptlet using DomXML
+   * @deprecated
    */
   class DomXMLScriptlet extends XMLScriptlet {
 

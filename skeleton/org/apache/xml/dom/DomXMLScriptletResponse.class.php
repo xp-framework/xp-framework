@@ -13,6 +13,7 @@
    * Wraps XML response for Dom
    *
    * @purpose  DomXML
+   * @deprecated
    */
   class DomXMLScriptletResponse extends XMLScriptletResponse {
     

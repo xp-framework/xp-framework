@@ -43,6 +43,7 @@
    * @see      xp://org.apache.xml.XMLSriptletResponse#addFormError
    * @see      xp://org.apache.xml.XMLSriptletResponse#addFormResult
    * @purpose  Base class for websites using XML/XSL to render their output
+   * @deprecated
    */
   class XMLScriptlet extends HttpScriptlet {
     var 

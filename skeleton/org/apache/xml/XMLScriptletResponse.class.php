@@ -22,6 +22,7 @@
    *
    * @see org.apache.xml.OutputDocument
    * @see org.apache.HttpScriptletResponse  
+   * @deprecated
    */
   class XMLScriptletResponse extends HttpScriptletResponse {
     var 

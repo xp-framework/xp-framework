@@ -8,6 +8,7 @@
    * Dependency tracker
    *
    * @purpose  Save dependencies
+   * @deprecated
    */
   class DependencyTracker extends Object {
     var

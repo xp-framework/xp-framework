@@ -63,6 +63,7 @@
    *
    * @see      xp://org.apache.HttpScriptlet
    * @purpose  Provide a way to access the HTTP response
+   * @deprecated
    */  
   class HttpScriptletResponse extends Object {
     var

@@ -13,6 +13,7 @@
    * Include dependency
    *
    * @purpose  Dependency
+   * @deprecated
    */
   class IncludeDependency extends Dependency {
 

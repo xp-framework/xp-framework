@@ -24,6 +24,7 @@
    * @see      xp://org.apache.HttpScriptletRequest#getCookie
    * @see      xp://org.apache.HttpScriptletRequest#getCookies
    * @purpose  Cookie header
+   * @deprecated
    */
   class Cookie extends Object {
     var 

@@ -19,6 +19,7 @@
    *
    * @see      xp://org.apache.HttpScriptlet#process
    * @purpose  Exception
+   * @deprecated
    */  
   class HttpScriptletException extends Exception {
     var

@@ -49,6 +49,7 @@
    * @see      http://httpd.apache.org/docs/mod/mod_rewrite.html#RewriteRule
    * @see      http://www.engelschall.com/pw/apache/rewriteguide/
    * @purpose  Session
+   * @deprecated
    */
   class HttpSession extends Object {
     var 

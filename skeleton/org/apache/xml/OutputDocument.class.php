@@ -40,6 +40,7 @@
    * </pre>
    *
    * @see xml.Tree
+   * @deprecated
    */  
   class OutputDocument extends Tree {
     var

@@ -8,6 +8,7 @@
    * Dependency storage
    *
    * @purpose  purpose
+   * @deprecated
    */
   class DependencyStorage extends Object {
   

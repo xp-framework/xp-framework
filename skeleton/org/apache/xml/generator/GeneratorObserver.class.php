@@ -10,6 +10,7 @@
    * @model    abstract
    * @see      xp://org.apache.xml.generator.Generator#addObserver
    * @purpose  Base class
+   * @deprecated
    */
   class GeneratorObserver extends Object {
 

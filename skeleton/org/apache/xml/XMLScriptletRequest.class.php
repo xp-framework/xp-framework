@@ -26,6 +26,7 @@
    * to http://foo.bar/xml/pr:de_DE/static?
    *
    * @see org.apache.HttpScriptletRequest
+   * @deprecated
    */
   class XMLScriptletRequest extends HttpScriptletRequest {
     var

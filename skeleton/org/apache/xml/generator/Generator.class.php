@@ -24,6 +24,7 @@
    * Generator
    *
    * @purpose  Generator
+   * @deprecated
    */
   class Generator extends Object {
     var

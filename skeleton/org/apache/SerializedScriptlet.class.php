@@ -14,6 +14,7 @@
    *
    * @see      xp://util.semaphore.Semaphore
    * @purpose  Serialize requests of scriptlets
+   * @deprecated
    */
   class SerializedScriptlet extends Interface {
 
