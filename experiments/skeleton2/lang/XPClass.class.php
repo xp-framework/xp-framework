@@ -23,8 +23,7 @@
    * To retrieve the fully qualified name of a class, use this:
    * <code>
    *   $o= new File();
-   *   $c= $o->getClass();
-   *   echo 'The class name for $o is '.$c->getName();
+   *   echo 'The class name for $o is '.$o->getClass()->getName();
    * </code>
    *
    * @see      xp://lang.Object#getClass()
@@ -65,8 +64,7 @@
      * Example:
      * <code>
      *   try(); {
-     *     $c= XPClass::forName($name) &&
-     *     $o= $c->newInstance();
+     *     $o= XPClass::forName($name)->newInstance();
      *   } if (catch('ClassNotFoundException', $e)) {
      *     // handle it!
      *   }
@@ -75,8 +73,7 @@
      * Example (passing arguments):
      * <code>
      *   try(); {
-     *     $c= XPClass::forName('peer.Socket') &&
-     *     $o= $c->newInstance('localhost', 6100);
+     *     $o= XPClass::forName('peer.Socket')->newInstance('localhost', 6100);
      *   } if (catch('ClassNotFoundException', $e)) {
      *     // handle it!
      *   }
