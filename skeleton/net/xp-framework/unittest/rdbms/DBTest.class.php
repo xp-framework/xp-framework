@@ -70,9 +70,12 @@
      * @access  public
      */
     function testSelect() {
-      $r= &$this->conn->query('select %s as version', '$Version$');
-      $this->assertSubclass($r, 'rdbms.ResultSet');
-      $r && $this->assertNotEmpty($r->next('version'));
+      $r= &$this->conn->query('select %s as version', '$Revision$');
+      if ($this->assertSubclass($r, 'rdbms.ResultSet')) {
+        $version= $r->next('version');
+        $this->assertNotEmpty($version);
+        return $version;
+      }
     }
   }
 ?>
