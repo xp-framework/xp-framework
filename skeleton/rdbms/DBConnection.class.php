@@ -212,5 +212,5 @@
     function setTrace(&$log) {
       $this->log= &$log;
     }    
-  }
+  } implements(__FILE__, 'util.log.Traceable');
 ?>
