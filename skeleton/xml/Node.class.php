@@ -251,15 +251,30 @@
      */
     function getSource($indent= INDENT_WRAPPED, $inset= '') {
       $xml= $inset.'<'.$this->name;
-      if (is_a($this->content, 'PCData')) {
-        $content= $this->content->pcdata;
-      } elseif (is_a($this->content, 'CData')) {
-        $content= '<![CDATA['.str_replace(']]>', ']]&gt;', $this->content->cdata).']]>';
-      } else {
-        if (is_float ($this->content)) 
-          $content= number_format($this->content, 0, NULL, NULL);
-        else
-          $content= htmlspecialchars($this->content);
+      switch (xp::typeOf($this->content)) {
+        case 'xml.PCData':
+          $content= $this->content->pcdata;
+          break;
+
+        case 'xml.CData':
+          $content= '<![CDATA['.str_replace(']]>', ']]&gt;', $this->content->cdata).']]>';
+          break;
+
+        case 'string': 
+          $content= htmlspecialchars($this->content); 
+          break;
+
+        case 'float':
+        
+          // Check for integers bigger than MAX_INT
+          if ($this->content - floor($this->content) == 0) {
+            $content= number_format($this->content, 0, NULL, NULL);
+            break;
+          }
+          // Break missing intentionally
+
+        default: 
+          $content= $this->content; break;
       }
 
       switch ($indent) {
