@@ -14,7 +14,7 @@ public class Test {
       p.id = 1549;
       p.firstname= "Timm";
       p.lastname= "Friebe";
-      p.birthDay= new Date(14, 12, 1977);
+      p.birthDay= new Date(77, 11, 14, 11, 55);
     }
     System.out.println(Serializer.serialize(p));
   }
