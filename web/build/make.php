@@ -23,8 +23,8 @@
 
     // Set up parser
     if (!$parser) $parser= array(
-      'class.php' => new ClassParser(),
-      'sapi.php'  => new SapiParser()
+      'class' => new ClassParser(),
+      'sapi'  => new SapiParser()
     );
     
     // Sanity check
@@ -44,11 +44,12 @@
   }
   // }}}
 
-  // {{{ void recurse(&util.Hashmap list, string base, string uri= '') throws lang.IllegalArgumentException
+  // {{{ void recurse(&util.Hashmap list, string name, string base, string prefix= '', string uri= '') throws lang.IllegalArgumentException
   //     Recurse a folder an build a sub-tree
-  function recurse(&$list, $base, $uri= '') {
+  function recurse(&$list, $name, $base, $prefix= '', $uri= '') {
     static $except= array('META-INF', 'CVS');
-    static $include= array('class.php', 'sapi.php');
+    static $include= array('class', 'sapi');
+    static $output= array();
     
     $f= &new Folder($base.DIRECTORY_SEPARATOR.$uri);
     if (!$f->exists()) {
@@ -62,13 +63,13 @@
       // Recurse into subdirectories, ignoring well-known directories 
       // defined in static variable "except"
       if (is_dir($fn) && !in_array($entry, $except)) {
-        recurse($list, $base, str_replace($base, '', $fn));
+        recurse($list, $name, $base, $prefix, str_replace($base, '', $fn));
         continue;
       }
 
       // Only take documentable files into account
       if (
-        (2 != sscanf($entry, '%[^\.].%s', $filename, $indicator)) || 
+        (2 != sscanf($entry, '%[^\.].%[^\.].php', $filename, $indicator)) || 
         (!in_array($indicator, $include))
       ) continue;
 
@@ -98,15 +99,33 @@
         continue;
       }
       
+      // Calculate package name
+      $package= ltrim($prefix.str_replace(
+        DIRECTORY_SEPARATOR, 
+        '.', 
+        $uri
+      ), '.');
+      
       // Store parsed information
       $stor= &new File(sprintf(
-        'cache%s%s%s%s%s',
+        'cache%s%s%s%s%s%s.%s',
+        DIRECTORY_SEPARATOR,
+        $name,
         DIRECTORY_SEPARATOR,
         $indicator,
         DIRECTORY_SEPARATOR,
-        str_replace(DIRECTORY_SEPARATOR, '.', substr(strstr($f->getURI(), 'skeleton'), 9)),
+        $package,
         $filename
       ));
+      
+      // Check if output directory exists. Create, if not
+      if (!isset($output[$stor->getPath()])) {
+        $path= &new Folder($stor->getPath());
+        $path->exists() || $path->create();
+        $output[$stor->getPath()]= &$path;
+        Console::writeLine('---> Created output directory ', $path->getURI());
+      }
+      
       Console::writeLine('---> Writing api documentation to ', $stor->getURI());
       FileUtil::setContents($stor, serialize($apidoc));
       delete($stor);
@@ -116,6 +135,7 @@
       $list->put($fn, $result);
     }
     $f->close();
+    delete($f);
   }
   // }}}
  
@@ -142,8 +162,15 @@
 
     // Process a single collection
     $base= realpath($prop->readString($sect, 'base')).DIRECTORY_SEPARATOR;
-    Console::writeLinef('===> Processing collection %s based in %s', $sect, $base);
-    recurse($list, $base);
+    $prefix= rtrim($prop->readString($sect, 'prefix'), '.').'.';
+
+    Console::writeLinef(
+      '===> Processing collection %s based in %s [prefix: %s]', 
+      $sect, 
+      $base,
+      $prefix != '.' ? '"'.$prefix.'"' : '(none)'
+    );
+    recurse($list, $sect, $base, $prefix);
 
   } while ($sect= $prop->getNextSection());
   
