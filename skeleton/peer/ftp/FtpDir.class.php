@@ -14,7 +14,7 @@
    */
   class FtpDir extends FtpEntry {
     var
-      $entries  = array();
+      $entries  = NULL;
       
     /**
      * Get entries (iterative function)
@@ -23,18 +23,17 @@
      * @return  &peer.ftp.FtpEntry FALSE to indicate EOL
      */
     function &getEntry() {
-      if (empty($this->entries)) {
+      if (NULL === $this->entries) {
 
         // Retrive entries, getting rid of directory self-reference "." and
         // parent directory reference, ".." - these are always reported first
         // TBD: Check if this assumption is true
         $this->entries= array_slice(ftp_rawlist($this->_hdl, $this->name), 2);
+        if (empty($this->entries)) return FALSE;
         $entry= $this->entries[0];
-      } else {
-        if (FALSE === ($entry= next($this->entries))) {
-          reset($this->entries);
-          return FALSE;
-        }
+      } else if (FALSE === ($entry= next($this->entries))) {
+        reset($this->entries);
+        return FALSE;
       }
 
       // Parse entry
