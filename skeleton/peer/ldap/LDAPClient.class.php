@@ -154,6 +154,41 @@
     }
     
     /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function &read(&$entry, $filter= 'objectClass=*') {
+      if (!is_a($entry, 'LDAPEntry')) {
+        return throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
+      }
+      
+      $res= ldap_list($this->_hdl, $entry->getDN(), $filter);
+      if (0 != ldap_error($this->_hdl)) {
+        return throw(new IOException('Read "'.$entry->getDN().'" failed ['.$this->getLastError().']'));
+      }
+      
+      // Nothing found?
+      if (FALSE === $res) return NULL;
+      
+      $result= ldap_get_entries($this->_hdl, $res);
+      return LDAPEntry::fromData($result[0]);
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function exists(&$entry, $filter= 'objectClass=*') {
+      return (NULL === $this->read($entry, $filter)) ? FALSE : TRUE;
+    }
+    
+    /**
      * Add an entry
      *
      * @access  public
@@ -173,7 +208,7 @@
         $entry->getDN(), 
         array_map(array(&$this, '_encode'), $entry->getAttributes())
       ))) {
-        return throw(new IOException('Add failed ['.$this->getLastError().']'));
+        return throw(new IOException('Add for "'.$entry->getDN().'" failed ['.$this->getLastError().']'));
       }
       
       return $res;
