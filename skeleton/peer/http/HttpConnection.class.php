@@ -51,8 +51,19 @@
      * @param   mixed url a string or a peer.URL object
      */
     function __construct($url) {
-      $this->request= &HttpRequestFactory::factory($url);
+      if (!is_a($url, 'URL')) $url= &new URL($url);
+      $this->_createRequest($url);
       parent::__construct();
+    }
+    
+    /**
+     * Create the request object
+     *
+     * @access  protected
+     * @param   &peer.URL object
+     */
+    function _createRequest(&$url) {
+      $this->request= &HttpRequestFactory::factory($url);
     }
     
     /**
