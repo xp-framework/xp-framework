@@ -15,11 +15,16 @@
 <widget>
   <class>GtkWindow</class>
   <name>mainwindow</name>
+  <accelerator>
+    <modifiers>GDK_CONTROL_MASK</modifiers>
+    <key>GDK_Q</key>
+    <signal>destroy</signal>
+  </accelerator>
   <title>Project Manager</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
+  <allow_shrink>True</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
 
