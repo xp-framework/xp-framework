@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document title="XP::Development::Writing documentation">
+  <main>
+    <content>
+      <title>Documenting classes</title>
+      <editor>$Id$</editor>
+      
+      <para>
+        <caption>General</caption>
+        <text>
+          The style of documentation has been taken from JavaDoc and adopted where
+          needed. A class has to be documented to be conform to the coding standards
+          of the XP framework.
+        </text>
+      </para>
+      <para>
+        <caption>Example</caption>
+        <text>
+          This example shows the basics (from lang/System.class.php):
+          
+          <code><![CDATA[
+/**
+ * Sets an environment variable
+ *
+ * @access  public
+ * @param   string name
+ * @param   mixed var
+ * @return  bool success
+ */
+function putEnv($name, $var) {
+  return putenv($name.'='.$var);
+}]]></code>
+        </text>
+      </para>              
+      <para>
+        <caption>Generic keywords</caption>
+        <text>
+          <pre><![CDATA[
+@see     A link
+         Syntax: (<url>|<class>|<class>#<method>|<email>|php://<function>|rfc://<number>)
+         
+         @see    http://xp-framework.net/
+         @see    xp://io.File
+         @see    xp://io.File#open
+         @see    mailto:thekid@thekid.de
+         @see    php://fopen
+         @see    php-gtk://blubb
+         @see    rfc://821]]></pre></text>
+      </para>              
+      <para>
+        <caption>Method keywords</caption>
+        <text>
+          <pre><![CDATA[@access  Defines the access priviliges for a method
+         Allowed values are "public" and "private". 
+         
+         @access public
+
+@param   Documents a parameter
+         Syntax: <typ> <name> [default <default>] <description>
+         
+         @param  string $str default '' The given string
+         @param  int $i Number of results to return
+         @param  lang.Exception $e An exception
+         @param  mixed $var A string or an integer
+         
+@return  Documents the return value
+         Syntax: <typ> <description>
+         
+         @return bool Success
+         @return array Array of domainnames
+         
+@throws  Documents that this method throws an exception.
+         Syntax <typ>[, <condition>]
+         
+         @throws IOException
+         @throws IllegalStateException, if file is not open.
+]]></pre></text>
+      </para>              
+      <para>
+        <caption>Class keywords</caption>
+        <text>
+          <pre><![CDATA[@ext          Defines a PHP-extension that is needed when utilizing this class.
+              (There can be more than one @ext.)
+@model        Defines the model (generic/static/singleton) of a class
+
+@doc          Link to an example script. Example scripts reside in ~/doc
+              Syntax: (<script_relative_location>|<script_url>)
+
+              @doc    trycatch.php
+              @doc    http://foo.bar/baz.php
+         
+@purpose      Purpose of use (short description)
+              Syntax: <purpose>
+         
+              @purpose Encapsulates operations of an IMAP-server.
+
+@deprecated   Indicates this class is deprecated. Usage is discouraged, though
+              it remains in the framework for backwardds compatibility.
+
+@experimental Indicates this class is experimental. The API may still change
+              or disappear completely.
+]]></pre></text>
+      </para>              
+      <para>
+        <caption>Template</caption>
+        <text>
+          <pre><![CDATA[ /**
+  * (Insert method's description here)
+  *
+  * @access  
+  * @param   
+  * @return  
+  */
+]]></pre></text>
+      </para>              
+
+    </content>
+    <references>
+      <ref link="about">Introduction</ref>
+      <ref link="../apidoc/index">XP API-Doc</ref>
+      <ref type="ext" link="http://java.sun.com/j2se/javadoc/writingdoccomments/index.html">Java: Writing doc comments</ref>
+    </references>
+  </main>
+</document>
