@@ -1,0 +1,74 @@
+RFC 0019: LDAP query infrastructure
+===================================
+$Id$
+
+@authors: kiesel
+@created: Thu Feb 24 09:20:27 CET 2005
+@status: draft
+@category: peer.ldap
+
+Scope of change
+---------------
+Introduce a peer.ldap.LDAPQuery class that controls how queries with 
+peer.ldap.LDAPClient are done. Simultaneously extend peer.ldap.LDAPClient 
+to store a default search base for a connection.
+
+Rationale
+---------
+Inspired by rdbms.DBConnection's prepare() method, LDAP queries should
+also have some way to sanitize query input: it's needed to simplify
+LDAP access and ensure the correctness of LDAP queries.
+
+This is the continuation of the rdbms collection's success of formulating
+queries in a way that makes them immune against SQL code injection.
+
+Having a default search base for a connection removes the need for a query
+to always specify it.
+
+Functionality
+-------------
+Example:
+<?php
+  $ldap= &new LDAPClient('ldap.openldap.org');
+  $ldap->connect();
+  $ldap->bind();
+  
+  $res= &$ldap->search(new LDAPQuery(
+    '(&(objectClass=simpleSecurityObject)(|(userName=%s|email=%s)))',
+    $_REQUEST['input'],
+    $_REQUEST['input']
+  ));
+  
+  $res= &$ldap->search(new LDAPQuery(
+    '(&(objectClass=%c)(uid=%d))',
+    '*',
+    1552
+  ));
+?>
+
+More subtile settings can be done, too:
+<?php
+  [...]
+  
+  $query= &new LDAPQuery();
+  $query->setScope(LDAP_SCOPE_SUB);
+  $query->setBase('ou=permissions,o=openldap,c=DE');
+  $query->setFilter('(&(objectClass=foo)(uid=%d))', $_REQUEST['userid']);
+  $res= &$ldap->search($query);
+?>
+
+To offer a full interface for an LDAP query, peer.ldap.LDAPQuery should offer
+accessors to change query parameters like attributes, attrsonly, sizelimit,
+timelimit and deref.
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+http://php3.de/ldap_search
+
+Comments
+--------
+n/a
