@@ -200,6 +200,16 @@
     /**
      * Callback for private messages
      *
+     * Example (implementing "commands"):
+     * <code>
+     *   if (sscanf($message, "!%s %[^\r]", $command, $params)) {
+     *     switch (strtolower($command)) {
+     *       case 'status':
+     *         // ...
+     *     }
+     *   }
+     * </code>
+     *
      * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
