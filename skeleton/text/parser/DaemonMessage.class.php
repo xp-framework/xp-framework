@@ -15,6 +15,13 @@
   define('DAEMON_SMTPCONN',     'smtpconnfailure');
   define('DAEMON_DELAYED',      'delayed');
   
+  define('DAEMON_TYPE_POSTFIX',  'inline/postfix');
+  define('DAEMON_TYPE_TONLINE',  'inline/t-online');
+  define('DAEMON_TYPE_QMAIL',    'inline/qmail');
+  define('DAEMON_TYPE_EXIM',     'inline/exim');
+  define('DAEMON_TYPE_SENDMAIL', 'inline/sendmail');
+  define('DAEMON_TYPE_MULTIPART','multipart/delivery');
+  
   /**
    * DaemonMessage
    *
@@ -24,6 +31,7 @@
     var 
       $failed=   NULL,
       $reason=   '',
+      $details=  array(),
       $status=   DAEMON_UNKNOWN;
       
     /**
