@@ -44,10 +44,6 @@ instead - "main" is the indicator a class is declared outside of any
 package (such as the built-in class Exception, for instance). Thus,
 packages may not be called "main".
 
-Examples
---------
-Examples can be found at http://sitten-polizei.de/php/packages/
-
 Why are the curly braces necessary?
 -----------------------------------
 The RFC suggests the following syntax:
