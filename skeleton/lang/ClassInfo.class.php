@@ -39,14 +39,14 @@
     function setClass($class) {
       try(); {
         import($class);
-      } if ($e= catch(E_ANY_EXCEPTION)) {
+      } if (catch('Exception', $e)) {
         return throw($e);
       }      
       $parts= explode('.', $class);
       $this->className= $parts[sizeof($parts)- 1];
       $this->classPath= implode('.', array_slice($parts, 0, -1));
       if (!class_exists(strtolower($this->className))) {
-        return throw(E_IO_EXCEPTION, 'noclassdeffounderror');
+        return throw(new IOException('noclassdeffounderror'));
       }
     }
     
@@ -64,7 +64,7 @@
         '.'     => '/'
       )).'.class.php', 'r');
       if (!$fd) {
-        return throw(E_IO_EXCEPTION, $this->classPath.'.'.$this->className);
+        return throw(new IOException($this->classPath.'.'.$this->className));
       }
       
       $this->_comments= array();
