@@ -385,7 +385,12 @@
     function onList(&$event, $params) {
       if (!$socket= &$this->openDatasock($event)) return;
             
-      $params= str_replace('-L', '', $params);
+      // Remove all -options
+      if ($parts= sscanf($params, '-%s %s')) {
+        $this->cat->debug('+++ Removed options:', $parts[0]);
+        $params= $parts[1];
+      }
+      
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         $socket->close();
