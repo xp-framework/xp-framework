@@ -7,7 +7,8 @@
   uses(
     'xml.Tree', 
     'xml.Node',
-    'xml.wsdl.WsdlMessage'
+    'xml.wsdl.WsdlMessage',
+    'xml.schema.XmlSchema'
   );
   
   // Namespaces
@@ -95,7 +96,26 @@
         return throw(new IllegalArgumentException('schema is not a xml.schema.XmlSchema'));
       }
 
-      $this->types= &$schema;
+      $this->types= &$schema->getComplexTypes();
+      
+      // Build DOM
+      $s= &$this->root->addChild(new Node('xsd:schema', NULL, array(
+        'xmlns'           => XMLNS_SCHEMA,
+        'targetNamespace' => $schema->getTargetNamespace()
+      )));
+                
+      foreach (array_keys($this->types) as $key) {
+        $n= &$s->addChild(new Node('xsd:complexType', NULL, array(
+          'name'  => $this->types[$key]->getName()
+        )));
+        
+        foreach ($this->types[$key]->getElements() as $element) {
+          $n->addChild(new Node('xsd:element', NULL, array(
+            'name'  => $element->name,
+            'type'  => $element->namespace.':'.$element->type
+          )));
+        }
+      }
     }
     
     /**
@@ -200,7 +220,7 @@
      */
     function &getFirstMessage() {
       reset($this->messages);
-      return key($this->messages);
+      return $this->messages[key($this->messages)]['obj'];
     }
     
     /**
@@ -216,9 +236,9 @@
      * @access  public
      * @return  &xml.wsdl.WsdlMessage message
      */
-    function getNextMessage() {
+    function &getNextMessage() {
       if (FALSE === next($this->messages)) return FALSE;
-      return key($this->messages);
+      return $this->messages[key($this->messages)]['obj'];
     }
     
     /**
