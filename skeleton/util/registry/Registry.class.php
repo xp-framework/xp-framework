@@ -117,8 +117,7 @@
         return $__instance[$p->id];
       }
       
-      trigger_error('Type: '.gettype($p), E_USER_WARNING);
-      return throw(new IllegalArgumentException('Argument passed is of wrong type'));
+      return throw(new IllegalArgumentException('Argument passed is of wrong type ('.xp::typeOf($p).')'));
     }
   }
 ?>
