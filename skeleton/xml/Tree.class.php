@@ -128,10 +128,10 @@
      * Callback function for XMLParser
      *
      * @access  public
-     * @param   &resource parser
+     * @param   resource parser
      * @param   string name
      * @param   string attrs
-     * @see     xp://xml.XMLParser
+     * @see     xp://xml.parser.XMLParser
      */
     function onStartElement($parser, $name, $attrs) {
       $this->_cdata= '';
@@ -151,9 +151,9 @@
      * Callback function for XMLParser
      *
      * @access  public
-     * @param   &resource parser
+     * @param   resource parser
      * @param   string name
-     * @see     xp://xml.XMLParser
+     * @see     xp://xml.parser.XMLParser
      */
     function onEndElement($parser, $name) {
       if ($this->_cnt > 1) {
@@ -170,9 +170,9 @@
      * Callback function for XMLParser
      *
      * @access  public
-     * @param   &resource parser
+     * @param   resource parser
      * @param   string cdata
-     * @see     xp://xml.XMLParser
+     * @see     xp://xml.parser.XMLParser
      */
     function onCData($parser, $cdata) {
       $this->_cdata.= $cdata;
@@ -182,9 +182,9 @@
      * Callback function for XMLParser
      *
      * @access  public
-     * @param   &resource parser
+     * @param   resource parser
      * @param   string data
-     * @see     xp://xml.XMLParser
+     * @see     xp://xml.parser.XMLParser
      */
     function onDefault($parser, $data) {
     }
