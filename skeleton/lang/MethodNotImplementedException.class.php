@@ -20,7 +20,7 @@
      * @access  public
      * @param   string message
      * @param   string method
-     * @see   lang.Exception#construct
+     * @see     lang.Exception#construct
      */
     function __construct($message, $method) {
       $this->method= $method;
@@ -28,12 +28,13 @@
     }
     
     /**
-     * Return stacktrace
+     * Get string representation
      *
+     * @access  public
      * @return  string stacktrace
      */
-    function getStackTrace() {
-      return parent::getStackTrace()."\n  [method: {$this->method}]\n";
+    function toString() {
+      return parent::toString()."\n  [method: {$this->method}]\n";
     }
   }
 ?>

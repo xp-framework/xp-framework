@@ -30,8 +30,8 @@
      * @access  public
      * @return  string
      */
-    function getStackTrace() {
-      return parent::getStackTrace().sprintf(
+    function toString() {
+      return parent::toString().sprintf(
         "  [\n    fault.faultcode= '%s'\n    fault.faultactor= '%s'\n    fault.detail= %s\n  ]\n",
         $this->fault->faultcode,
         $this->fault->faultactor,

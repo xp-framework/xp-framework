@@ -27,13 +27,13 @@
     }
   
     /**
-     * Return a formatted representation of the "stracktrace"
+     * Get string representation
      *
      * @access  public
      * @return  string
      */
-    function getStackTrace() {
-      return parent::getStackTrace().(is_a($this->cause, 'Exception') 
+    function toString() {
+      return parent::toString().(is_a($this->cause, 'Exception') 
         ? '  [caused by '.$this->cause->getClassName()."\n  (".$this->cause->message.")\n  ]"
         : '  [no cause]'
       );

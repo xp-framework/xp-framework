@@ -154,13 +154,13 @@
       
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('Exception', $e)) {
       
         // Not allowd
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } 
       
@@ -184,13 +184,13 @@
       
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('Exception', $e)) {
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } 
       
@@ -231,13 +231,13 @@
       
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('Exception', $e)) {
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } 
       
@@ -267,13 +267,13 @@
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('OperationNotAllowedException', $e)) {
       
         // Not allowed
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       }
       
@@ -300,7 +300,7 @@
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } 
       
@@ -328,13 +328,13 @@
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('OperationNotAllowedException', $e)) {
       
         // Not allowed
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       }
       
@@ -362,13 +362,13 @@
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('OperationNotAllowedException', $e)) {
       
         // Not allowed
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       }
       
@@ -437,13 +437,13 @@
       
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('FormatException', $e)) {
       
         // XML parse errors
         $response->setStatus(HTTP_BAD_REQUEST);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('Exception', $e)) {
       
@@ -484,19 +484,19 @@
       
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('FormatException', $e)) {
       
         // XML parse errors
         $response->setStatus(HTTP_BAD_REQUEST);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('OperationFailedException', $e)) {
       
         // Element not found
         $response->setStatus(HTTP_CONFLICT);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('Exception', $e)) {
       

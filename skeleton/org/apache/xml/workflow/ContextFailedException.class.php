@@ -27,13 +27,13 @@
     }
     
     /**
-     * Get stack trace
+     * Create string representation
      *
      * @access  public
-     * @return  string stacktrace
+     * @return  string
      */
-    function getStackTrace() {
-      return parent::getStackTrace()."\n  [caused by ".$this->cause->getStackTrace().']';
+    function toString() {
+      return parent::toString()."\n  [caused by ".$this->cause->toString().']';
     }
   }
 ?>

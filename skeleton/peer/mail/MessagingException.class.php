@@ -26,13 +26,13 @@
     }
   
     /**
-     * Return a formatted representation of the "stracktrace"
+     * Get string representation
      *
      * @access  public
      * @return  string
      */
-    function getStackTrace() {
-      return parent::getStackTrace().'  ['.$this->detail."]\n";
+    function toString() {
+      return parent::toString().'  ['.$this->detail."]\n";
     }
   }
 ?>

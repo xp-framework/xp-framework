@@ -85,7 +85,7 @@
         $contents= $f->read($f->size());
         $f->close();
       } if (catch('Exception', $e)) {
-        $this->message.= $e->getStackTrace();
+        $this->message.= $e->toString();
         $contents= '<xp:value-of select="reason"/>';
       }
 

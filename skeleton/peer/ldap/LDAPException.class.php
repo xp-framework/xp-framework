@@ -100,13 +100,13 @@
     }
     
     /**
-     * Retrieve stack trace as a string
+     * Create string representation
      *
      * @access  public
      * @return  string
      */
-    function getStackTrace() {
-      return parent::getStackTrace().sprintf(
+    function toString() {
+      return parent::toString().sprintf(
         "  *** LDAP code #%d [%s]\n",
         $this->code,
         ldap_err2str($this->code)
