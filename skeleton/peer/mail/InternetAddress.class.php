@@ -62,7 +62,7 @@
      * @access  public
      * @param   string str
      * @return  &peer.mail.InternetAddress address object
-     * @throws  FormatException in case the string could not be parsed into an address
+     * @throws  lang.FormatException in case the string could not be parsed into an address
      */
     function &fromString($str) {
       static $matches= array(
@@ -84,7 +84,7 @@
           case 3: $mail= $_[4]; switch (strtoupper($_[2])) {
             case 'Q': $personal= QuotedPrintable::decode($_[3]); break;
             case 'B': $personal= Base64::decode($_[3]); break;
-          } 
+          }
           break;
         }
         
