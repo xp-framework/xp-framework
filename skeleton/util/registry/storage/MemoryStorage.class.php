@@ -3,18 +3,28 @@
  *
  * $Id$
  */
+
+  uses('util.Hashmap');
  
-  uses('util.registry.storage.RegistryStorage');
-  
   /**
    * Memory storage
    *
    * @purpose  A storage provider
    */
-  class MemoryStorage extends RegistryStorage {
+  class MemoryStorage extends Object {
     var
-      $segments = array();
+      $_hash   = NULL;
     
+    /**
+     * Initialize this storage
+     *
+     * @access  public
+     * @param   string id
+     */
+    function initialize($id) {
+      $this->_hash= &new Hashmap();
+    }
+
     /**
      * Returns whether this storage contains the given key
      *
@@ -23,7 +33,7 @@
      * @return  bool TRUE when this key exists
      */
     function contains($key) {
-      return isset($this->segments[$key]);
+      return $this->_hash->containsKey($key);
     }
 
     /**
@@ -33,7 +43,7 @@
      * @return  string[] key
      */
     function keys() { 
-      return array_keys($this->segments);
+      return $this->_hash->keys();
     }
     
     /**
@@ -44,11 +54,7 @@
      * @return  &mixed
      */
     function &get($key) {
-      if (!isset($this->segments[$key])) {
-        return throw(new ElementNotFoundException($key.' does not exist'));
-      }
-      
-      return $this->segments[$key]->get();
+      return $this->_hash->get($key);
     }
 
     /**
@@ -60,7 +66,7 @@
      * @param   int permissions default 0666 (ignored)
      */
     function put($key, &$value, $permissions= 0666) {
-      $this->segments[$key]= &$value;
+      $this->_hash->put($key, $value);
     }
 
     /**
@@ -70,7 +76,7 @@
      * @param   string key
      */
     function remove($key) {
-      unset($this->segments[$key]);
+      $this->_hash->remove($key);
     }
   
     /**
@@ -79,7 +85,7 @@
      * @access  public
      */
     function free() { 
-      $this->segments= array();
+      $this->_hash->clear();
     }
-  }
+  } implements(__FILE__, 'util.registry.RegistryStorageProvider');
 ?>

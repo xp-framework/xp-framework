@@ -8,8 +8,7 @@
     'lang.System',
     'io.File',
     'io.FileUtil',
-    'util.Hashmap',
-    'util.registry.storage.RegistryStorage'
+    'util.Hashmap'
   );
   
   /**
@@ -18,7 +17,7 @@
    * @purpose  A storage provider that uses flat files
    * @see      php://serialize
    */
-  class FlatfileStorage extends RegistryStorage {
+  class FlatfileStorage extends Object {
     var
       $_file   = NULL,
       $_hash   = NULL;
@@ -27,14 +26,17 @@
      * Initialize this storage
      *
      * @access  public
+     * @param   string id
      */
-    function initialize() {
-      $this->_file= &new File(System::tempDir().DIRECTORY_SEPARATOR.$this->id.'.dat');
-      if (!$this->_file->exists()) {
+    function initialize($id) {
+      $this->_file= &new File(System::tempDir().DIRECTORY_SEPARATOR.$id.'.dat');
+      if ($this->_file->exists()) {
+        $this->_hash= unserialize(FileUtil::getContents($this->_file));
+      }
+      
+      if (!$this->_hash) {
         touch($this->_file->getURI());
         $this->_hash= &new Hashmap();
-      } else {
-        $this->_hash= unserialize(FileUtil::getContents($this->_file));
       }    
     }
     
@@ -103,5 +105,5 @@
       $this->_hash->clear();
       FileUtil::setContents($this->_file, serialize($this->_hash));
     }
-  }
+  } implements(__FILE__, 'util.registry.RegistryStorageProvider');
 ?>

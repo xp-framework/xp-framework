@@ -27,12 +27,10 @@
      * Constructor
      * 
      * @access  public
-     * @param   string id
      * @param   string handler default DBH_GDBM one of the DBH_* constants
      * @see     xp://io.dba.DBAFile (section "class constants")
      */
-    function __construct($id, $handler= DBH_GDBM) {
-      parent::__construct($id);
+    function __construct($handler= DBH_GDBM) {
       $this->handler= $handler;
     }
     
@@ -40,9 +38,13 @@
      * Initialize this storage
      *
      * @access  public
+     * @param   string id
      */
-    function initialize() {
-      $this->_db= &new DBAFile(System::tempDir().DIRECTORY_SEPARATOR.$this->id.'.db', $handler);
+    function initialize($id) {
+      $this->_db= &new DBAFile(
+        System::tempDir().DIRECTORY_SEPARATOR.$id.'.db', 
+        $this->handler
+      );
       
       // See php://dba_open: Use "c" for read/write access and database 
       // creation if it doesn't currently exist
@@ -90,7 +92,7 @@
      * @param   int permissions default 0666 (ignored for this storage)
      */
     function put($key, &$value, $permissions= 0666) {
-      return $this->_db->store($key, $value);
+      $this->_db->store($key, $value);
     }
 
     /**
@@ -100,7 +102,7 @@
      * @param   string key
      */
     function remove($key) {
-      return $this->_db->delete($key);
+      $this->_db->delete($key);
     }
   
     /**
@@ -112,7 +114,6 @@
       for ($i= &$this->_db->iterator(); $i->hasNext(); ) {
         $this->_db->delete($i->next());
       }
-      return TRUE;
     }
-  }
+  } implements(__FILE__, 'util.registry.RegistryStorageProvider');
 ?>

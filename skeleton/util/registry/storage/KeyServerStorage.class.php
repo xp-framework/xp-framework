@@ -26,18 +26,30 @@
    */
   class KeyServerStorage extends RegistryStorage {
     var
-      $_sock= NULL;
+      $namespace = '';
+
+    var
+      $_sock     = NULL;
+
+    /**
+     * Constructor
+     * 
+     * @access  public
+     * @param   string host Hostname or IP
+     * @param   int port default 6100 Port
+     */
+    function __construct($host, $port= 6100) {
+      $this->_sock= &new Socket($host, $port);
+    }
 
     /**
      * Initialize this storage
      *
      * @access  public
-     * @param   string host Hostname or IP
-     * @param   int port default 6100 Port
-     * @throws  IOException
+     * @param   string id
      */
-    function initialize($host, $port= 6100) {
-      $this->_sock= &new Socket($host, $port);
+    function initialize($id) {
+      $this->namespace= urlencode($id);
       return $this->_sock->connect();
     }      
       
@@ -73,7 +85,7 @@
      * @return  bool TRUE when this key exists
      */
     function contains($key) {
-      return FALSE !== $this->_cmd('GET %s/%s', urlencode($this->id), urlencode($key));
+      return FALSE !== $this->_cmd('GET %s/%s', $this->namespace, urlencode($key));
     }
 
     /**
@@ -95,7 +107,7 @@
      * @return  &mixed
      */
     function &get($key) {
-      if (FALSE === ($return= $this->_cmd('GET %s/%s', urlencode($this->id), urlencode($key)))) {
+      if (FALSE === ($return= $this->_cmd('GET %s/%s', $this->namespace, urlencode($key)))) {
         return throw(new ElementNotFoundException($key.' does not exist'));
       }
       return unserialize(urldecode($return));
@@ -112,7 +124,7 @@
     function put($key, &$value, $permissions= 0666) {
       if (FALSE === $this->_cmd(
         'SET %s/%s=%s', 
-        urlencode($this->id), 
+        $this->namespace, 
         urlencode($key),
         urlencode(serialize($value)))
       ) {
@@ -128,7 +140,7 @@
      * @param   string key
      */
     function remove($key) {
-      if (FALSE === $this->_cmd('DELE s/%s', urlencode($this->id), urlencode($key))) {
+      if (FALSE === $this->_cmd('DELE s/%s', $this->namespace, urlencode($key))) {
         return throw(new IOException($key.' could not be deleted'));
       }
       return TRUE;
@@ -144,5 +156,5 @@
         $this->remove($key);
       }
     }
-  }  
+  } implements(__FILE__, 'util.registry.RegistryStorageProvider');
 ?>

@@ -4,23 +4,36 @@
  * $Id$
  */
 
+  uses('lang.ElementNotFoundException');
+
   /**
    * Registry is basically a key/value-storage system. This class actually
    * acts as a proxy to the storage providers.
    *
-   * Usage (Setup):
+   * Usage (setup):
    * <code>
-   *   $r= &Registry::getInstance(new SharedMemoryStorage('HKEY_GLOBAL'));
+   *   uses(
+   *     'util.registry.Registry', 
+   *     'util.registry.storage.SharedMemoryStorage',
+   *     'util.Properties'
+   *   );
+   *
+   *   $r= &Registry::setup('settings', new SharedMemoryStorage());
+   *
+   *   // Register properties if not already existant.
+   *   if ($r->contains('database')) {
+   *     $p= &new Properties('database.ini');
+   *     $p->reset();
+   *     $r->put('database', $config, 0600);
+   *   }
    * </code>
    *
    * Usage (somewhere later on):
    * <code>
-   *   $r= &Registry::getInstance('HKEY_GLOBAL');
-   *   if (!$r->contains('config')) {
-   *     $config= &new Properties('foo.ini');
-   *     $config->reset();
-   *     $r->put('config', $config, 0600);
-   *   }
+   *   $r= &Registry::getInstance('settings');
+   *   $p= &$r->get('database');
+   *
+   *   // ... work with properties ...
    * </code>
    *
    * @purpose  Provide a mechanism to register any type of variable
@@ -87,37 +100,63 @@
     }
 
     /**
-     * Get an instance
-     * 
-     * @access  static
-     * @param   mixed a string or a util.registry.RegistryStorage object
-     * @return  &util.Registry registry object
-     * @throws  IllegalArgumentException
+     * Private helper that simulates a static variable
+     *
+     * @access  private
+     * @return  &util.registry.Registry[]
      */
-    function &getInstance() {
-      static $instance = array();
-      
-      $p= &func_get_arg(0);
-      
-      // Subsequent calls
-      if (is_string($p)) {
-        if (!isset($instance[$p])) {
-          return throw(new IllegalAccessException('Registry "'.$p.'" hasn\'t been setup yet'));
-        }
-        return $instance[$p];
+    function &_instances() {
+      static $instances= array();
+      return $instances;
+    }
+
+    /**
+     * Setup this registry. You may call this method more than once to add
+     * different storages. 
+     *
+     * For example, you may have a temporary storage that will simply go 
+     * to shared memory, whereas (for assured persistance) you want to 
+     * write another storage to the filesystem (or even a database). To
+     * put this in code:
+     *
+     * <code>
+     *   Registry::setup('temp', new SharedMemoryStorage());
+     *   Registry::setup('persistent', new DBAStorage());
+     * </code>
+     *
+     * @see     xp://util.registry.Registry#getInstance
+     * @model   static
+     * @access  public
+     * @param   string name
+     * @param   &util.registry.RegistryStorageProvider storage
+     * @return  &util.registry.Registry registry object
+     */
+    function &setup($name, &$storage) {
+      $instances= &Registry::_instances();
+      $instances[$name]= &new Registry();
+      $instances[$name]->storage= &$storage;
+      $instances[$name]->storage->initialize($name);
+
+      return $instances[$name];
+    }
+    
+    /**
+     * Get registry instance by name. The name corresponds to the name that
+     * was used for the setup() method.
+     * 
+     * @see     xp://util.registry.Registry#setup
+     * @model   static
+     * @access  public
+     * @param   string name
+     * @return  &util.registry.Registry registry object
+     * @throws  lang.ElementNotFoundException if specified registry cannot be found
+     */
+    function &getInstance($name) {
+      $instances= &Registry::_instances();
+      if (!isset($instances[$name])) {
+        return throw(new ElementNotFoundException('No setup for '.$name));
       }
-      
-      // Initial setup
-      if (is_a($p, 'RegistryStorage')) {
-        
-        $instance[$p->id]= new Registry();
-        $instance[$p->id]->storage= &$p;
-        $instance[$p->id]->storage->initialize();
-        
-        return $instance[$p->id];
-      }
-      
-      return throw(new IllegalArgumentException('Argument passed is of wrong type ('.xp::typeOf($p).')'));
+      return $instances[$name];
     }
   }
 ?>

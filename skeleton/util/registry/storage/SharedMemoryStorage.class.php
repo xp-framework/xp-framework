@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('io.sys.ShmSegment', 'util.registry.storage.RegistryStorage');
+  uses('io.sys.ShmSegment');
   
   /**
    * Shared Memory storage
@@ -12,7 +12,7 @@
    * @purpose  A storage provider that uses shared memory
    * @see      xp://io.sys.ShmSegment
    */
-  class SharedMemoryStorage extends RegistryStorage {
+  class SharedMemoryStorage extends Object {
     var
       $segments = array();
       
@@ -23,9 +23,10 @@
      * Initialize this storage
      *
      * @access  public
+     * @param   string id
      */
-    function initialize() {
-      $this->_seg= &new ShmSegment($this->id);
+    function initialize($id) {
+      $this->_seg= &new ShmSegment($id);
       if (!$this->_seg->isEmpty('segments')) {
         $this->segments= $this->_seg->get('segments');
       }
@@ -109,5 +110,5 @@
       $this->segments= array();
       $this->_seg->put($this->segments);
     }
-  }
+  } implements(__FILE__, 'util.registry.RegistryStorageProvider');
 ?>

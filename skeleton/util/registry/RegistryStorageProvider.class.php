@@ -4,37 +4,22 @@
  * $Id$
  */
  
-  uses('lang.ElementNotFoundException');
-
-
   /**
-   * RegistryStorage
+   * RegistryStorageProvider
    *
-   * @purpose  Abstract base class for storage
+   * @purpose  Interface
    * @see      xp://util.registry.Registry
    */
-  class RegistryStorage extends Object {
-    var 
-      $id = '';
+  class RegistryStorageProvider extends Interface {
       
-    /**
-     * Constructor
-     * 
-     * @access  public
-     * @param   string id
-     */
-    function __construct($id) {
-      $this->id= $id;
-      parent::__construct();
-    }
-    
     /**
      * Initialize this storage
      *
      * @model   abstract
+     * @param   string name
      * @access  public
      */
-    function initialize() { }
+    function initialize($name) { }
     
     /**
      * Returns whether this storage contains the given key
