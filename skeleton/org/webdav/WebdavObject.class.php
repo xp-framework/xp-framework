@@ -48,8 +48,7 @@
       $creationDate= NULL,
       $modifiedDate= NULL,
       $properties= array()
-      ) {
-      
+    ) {
       $this->href=          $href;              
       $this->resourceType=  $resourceType;      
       $this->contentLength= $contentLength;      
