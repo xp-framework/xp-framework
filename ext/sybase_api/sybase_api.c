@@ -102,6 +102,9 @@ SYBASE_API int sybase_alloc(sybase_link **link)
  * Connect to the database
  * 
  * @param   sybase_environment *env the environment previously initialized with sybase_init
+ * @param   char *host
+ * @param   char *user
+ * @param   char *pass
  * @param   sybase_link *link
  * @return  int
  */
@@ -138,7 +141,7 @@ SYBASE_API CS_INT sybase_connection_status(sybase_link *link)
     CS_INT status;
     
     if (ct_con_props(link->connection, CS_GET, CS_CON_STATUS, &status, CS_UNUSED, NULL) != CS_SUCCEED) {
-        status = CS_CONSTAT_DEAD;
+        status= CS_CONSTAT_DEAD;
     }
     
     return status;
