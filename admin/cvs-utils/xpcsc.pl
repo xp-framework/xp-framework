@@ -35,6 +35,7 @@ sub error() {
   $_ =~ s/\t/\\t/g;
   chomp $_;
   print "*** Error: ".$message." at line ".$l." of ".$ARGV[0]."\n    ".$_."\n---> [".$code."] ".$LINK{$code}."\n";
+  close FILE;
   exit 32;
 }
 # }}}
