@@ -112,11 +112,12 @@
           $database
         );
         $name= NULL;
-        $pos= 0;
+        $pos= -1;
         while ($record= $q->next()) {
           if ($name != $record['table']) {
             $t[]= &new Table($record['table']);
             $pos++;
+            $name= $record['table'];
           }
           $t[$pos]->addAttribute(new DBTableAttribute(
             $record['name'], 
