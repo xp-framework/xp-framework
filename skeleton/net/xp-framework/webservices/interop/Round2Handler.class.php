@@ -101,7 +101,7 @@
      * @return  float
      */
     function echoFloat($inputFloat) {
-      $this->_assertType('float', $inputFloat);
+      $this->_assertType('double', $inputFloat);
       return $inputFloat;
     }
     
@@ -115,7 +115,7 @@
      */
     function echoFloatArray($inputFloatArray) {
       $this->_assertType('array', $inputFloatArray);
-      $this->_assertSubtype('float', $inputFloatArray);
+      $this->_assertSubtype('double', $inputFloatArray);
       return $inputFloatArray;
     }
     
@@ -131,7 +131,7 @@
       $this->_assertType('array',   $inputStruct);
       $this->_assertType('string',  $inputStruct['varString']);
       $this->_assertType('integer', $inputStruct['varInt']);
-      $this->_assertType('float',   $inputStruct['varFloat']);
+      $this->_assertType('double',   $inputStruct['varFloat']);
       return $inputStruct;
     }
     
@@ -202,7 +202,7 @@
      * @return  float
      */
     function echoDecimal($inputDecimal) {
-      $this->_assertType('float', $inputDecimal);
+      $this->_assertType('double', $inputDecimal);
       return $inputDecimal;
     }
     
