@@ -29,7 +29,29 @@
   </xsl:template>
 
   <xsl:template match="ref[@type= 'api:class']">
-    <a title="XP API-Doc: {@link}" href="/apidoc/classes/{substring-before(@link, '#')}.html#{substring-after(@link, '#')}"><xsl:value-of select="@link"/></a>
+    <xsl:param name="label" select="."/>
+    <xsl:param name="link">
+      <xsl:choose>
+        <xsl:when test="contains(@link, '#')">
+          <xsl:value-of select="concat(substring-before(@link, '#'), '.html#', substring-after(@link, '#'))"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="concat(@link, '.html')"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:param>
+    <a title="XP API-Doc: Class {@link}" href="/apidoc/classes/{$link}">
+      <xsl:value-of select="$label"/>
+      <xsl:if test="$label = ''"><xsl:value-of select="@link"/></xsl:if>
+    </a>
+  </xsl:template>
+
+  <xsl:template match="ref[@type= 'api:collection']">
+    <xsl:param name="label" select="."/>
+    <a title="XP API-Doc: Collection {@link}" href="/apidoc/collections/{@link}.html">
+      <xsl:value-of select="$label"/>
+      <xsl:if test="$label = ''"><xsl:value-of select="@link"/></xsl:if>
+    </a>
   </xsl:template>
   
   <xsl:template match="ref">
@@ -121,6 +143,23 @@
         </span>
       </xsl:with-param>
     </xsl:call-template>
+  </xsl:template>
+  
+  <xsl:template match="box">
+    <br/><br/>
+    <xsl:call-template name="frame">
+      <xsl:with-param name="margin" select="'4'"/>
+      <xsl:with-param name="color" select="'#cccccc'"/>
+      <xsl:with-param name="icolor" select="'#f6f6f6'"/>
+      <xsl:with-param name="content">
+        <xsl:if test="@caption">
+          <b><xsl:value-of select="@caption"/></b>
+          <br/>
+        </xsl:if>
+        <xsl:apply-templates/>
+      </xsl:with-param>
+    </xsl:call-template>
+    <br/>
   </xsl:template>
   
   <xsl:template match="code">
