@@ -132,6 +132,8 @@
         $this->running= TRUE;
         $this->_id= $pid;
       } else {              // Child
+        $this->running= TRUE;
+        $this->_id= getmypid();
         $this->run();
         exit();
       }
