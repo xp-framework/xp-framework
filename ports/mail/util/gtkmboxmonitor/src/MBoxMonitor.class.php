@@ -10,6 +10,7 @@
     'gui.gtk.util.GTKPixmapLoader',
     'peer.mail.store.Pop3Store',
     'peer.mail.store.ImapStore',
+    'gui.gtk.widgets.MessageBox',
     'peer.URL'
   );
 
@@ -126,7 +127,7 @@
           $msg->folder->deleteMessage($msg);
         } if (catch('Exception', $e)) {
           $this->cat->error($e);
-          
+          MessageBox::display($e->getMessage(), 'Error', MB_OK | MB_ICONEXCLAMATION, MB_OK | MB_ICONEXCLAMATION);
           $this->setStatusText('Error updating message status');
           continue;
         }
@@ -158,8 +159,8 @@
         try(); {
           $msg->folder->undeleteMessage($msg);
         } if (catch('Exception', $e)) {
-          $this->cat->debug($e);
-          
+          $this->cat->error($e);
+          MessageBox::display($e->getMessage(), 'Error', MB_OK | MB_ICONEXCLAMATION);
           $this->setStatusText('Error updating message status');
           continue;
         }
@@ -184,7 +185,6 @@
      * @param   &php.GtkWidget item
      */
     function onMenuItemActivated(&$item) {
-      // DEBUG $this->cat->debug($item->get_name(), '::', $this->tree->selection);
       return call_user_func(
         array(&$this, sprintf('on%sMenuItemActivated', ucfirst($item->get_name()))),
         $this->tree->selection
@@ -374,6 +374,7 @@
         $this->stor->expunge();
       } if (catch('Exception', $e)) {
         $this->cat->error($e);
+        MessageBox::display($e->getMessage(), 'Error', MB_OK | MB_ICONEXCLAMATION);
         $this->setStatusText('Error expunging!');
         return;
       }
@@ -426,8 +427,7 @@
         }
       } if (catch('Exception', $e)) {
         $this->setStatusText('Error retrieving messages');
-        
-        // TBD: Show messagebox
+        MessageBox::display($e->getMessage(), 'Error', MB_OK | MB_ICONEXCLAMATION);
         $this->cat->error($e);
         $r->set_sensitive(TRUE);
         
