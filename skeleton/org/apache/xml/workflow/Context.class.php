@@ -119,8 +119,6 @@
           $class= &$this->classloader->loadClass($class);
         } if (catch('ClassNotFoundException', $e)) {
           return throw(new HttpScriptletException($e->message));
-        } if (catch('RunTimeException', $e)) {
-          return throw(new HttpScriptletException($e->message));
         }
       }
       
