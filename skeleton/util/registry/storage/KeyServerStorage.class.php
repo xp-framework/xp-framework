@@ -55,8 +55,6 @@
       $this->_sock->write($cmd= vsprintf($args[0]."\n", array_slice($args, 1)));
       $return= chop($this->_sock->read(65536));
       
-      // DEBUG var_dump($this->_sock, $cmd, $return);
-      
       // +OK text saved.
       // -ERR SET format: key=val
       // -ERR not understood

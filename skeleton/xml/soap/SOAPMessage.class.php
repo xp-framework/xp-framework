@@ -137,13 +137,6 @@
         $regs[2]= 'Array';
       }
 
-      #ifdef DEBUG
-      #$l= &Logger::getInstance();
-      #$c= &$l->getCategory($this->getClassName());
-      #$c->debug('SOAPMessage::unmarshall(', $child->getClassName(), $context, ').$regs=', $regs);
-      #$c->debug($child->getSource(0));
-      #endif
-
       switch (strtolower($regs[2])) {
         case 'array':
         case 'vector':

@@ -79,7 +79,7 @@
     }
     
     /**
-     * Uses wrapper for
+     * Uses wrapper
      *
      * @model   static
      * @access  public
@@ -90,12 +90,6 @@
      * @return  bool
      */
     function uses() {
-      // DEBUG
-      // $args= func_get_args();
-      // echo "NetClassLoader::uses(\n";
-      // var_dump($args);
-      // echo ")\n";
- 
       $codebase= func_get_arg(0);
       $prefix= func_get_arg(1);
       $cache= func_get_arg(2);
@@ -128,16 +122,8 @@
      * @return  mixed string classname or FALSE if the class is not found
      */
     function _load($codebase, $prefix, $cache, $className) {
-      // DEBUG
-      // echo "NetClassLoader::_load(\n";
-      // var_dump($codebase, $prefix, $cache, $className);
-      // echo ")\n";
-      
       $uri= $this->codebase.strtr($className, '.', '/').'.class.php';
       $cacheName= $cache.'/'.$prefix.strtr($uri, '/:', '__').'.class.php';
-      
-      // DEBUG var_dump($uri, $cacheName);
-      
       $headers= array();
       
       $f= &new File($cacheName);

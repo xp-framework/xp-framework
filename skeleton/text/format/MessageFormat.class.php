@@ -137,19 +137,15 @@
       $result= '';
       do {
         $result.= substr($fmt, 0, $p);
-        // DEBUG echo str_repeat('-', 72)."\n";
-        // DEBUG printf("===> %s\n", $fmt);
-        
+
         // Find corresponding closing bracket
         $index= $rest= FALSE;
         $c= 0;
         for ($i= $p, $l= strlen($fmt); $i < $l; $i++) {
-          // DEBUG printf("     >> %d %s [bracket_count %d]\n", $i, $fmt{$i}, $c);
           switch($fmt{$i}) {
             case '{': $c++; break;
             case '}': 
               if (0 >= --$c) {
-                // DEBUG printf("     >> @@ %d - %d @@\n", $p, $i);
                 $index= substr($fmt, $p+ 1, $i- $p- 1);
                 $fmt= substr($fmt, $i+ 1);
                 break 2; 
@@ -157,9 +153,6 @@
               break;
           }
         }
-        // DEBUG printf("---> %s\n", $index);
-        // DEBUG printf("---> %s\n", $fmt);
-        // DEBUG printf("---> %s\n", $result);
         
         // No closing bracket found
         if (FALSE === $index) {
@@ -202,17 +195,8 @@
           return FALSE;
         }
         
-        // DEBUG 
-        // printf(
-        //   "%s::apply('%s', %s)\n", 
-        //   $this->formatters[$type]->getClassName(), 
-        //   $param, 
-        //   $argument[$index]
-        // );
-        
         // Look to see if a formatstring was returned
         if (FALSE !== strpos($format, '{')) {
-          // DEBUG var_dump('RECURSIVELY APPLYING', $format, $argument[$index]);
           $format= $instance->apply($format, $argument[$index]);
         }
         
