@@ -81,3 +81,9 @@ ul.intro {
   list-style-image: url(image/dot.gif);
   line-height: 18px;
 }
+hr {
+  border: 0;
+  background-color: #6c599b;
+  color: #6c599b;
+  height: 1px;
+}
