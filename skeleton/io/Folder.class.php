@@ -74,7 +74,7 @@
       // Bug in real_path if file is not existant
       if ('' == $this->uri && $uri!= $this->uri) $this->uri= $uri;
       
-      // Add trailing / (or \, or whatever else DIRECTORY_SEPARATOR is defined t o)
+      // Add trailing / (or \, or whatever else DIRECTORY_SEPARATOR is defined to)
       // if necessary
       if (DIRECTORY_SEPARATOR != substr($this->uri, -1 * strlen(DIRECTORY_SEPARATOR))) {
         $this->uri.= DIRECTORY_SEPARATOR;
@@ -95,18 +95,18 @@
     }
     
     /**
-     * Das Verzeichnis anlegen, rekursiv, wenn es sein muss!
+     * Create this directory, recursively, if needed.
      *
      * @access  public
-     * @param   int permissions default 0700 Berechtigungen
-     * @return  bool Hat geklappt (oder war bereits vorhanden)
-     * @throws  IOException, wenn ein Verzeichnis nicht angelegt werden kann
+     * @param   int permissions default 0700
+     * @return  bool TRUE in case the creation succeeded or the directory already exists
+     * @throws  io.IOException in case of an error
      */
     function create($permissions= 0700) {
       if (is_dir($this->uri)) return TRUE;
       $i= 0;
       $umask= umask(000);
-      while (FALSE !== ($i= strpos($this->uri, '/', $i))) {
+      while (FALSE !== ($i= strpos($this->uri, DIRECTORY_SEPARATOR, $i))) {
         if (is_dir($d= substr($this->uri, 0, ++$i))) continue;
         if (FALSE === mkdir($d, $permissions)) {
           umask($umask);
@@ -127,7 +127,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException in case one of the entries could'nt be deleted
+     * @throws  io.IOException in case one of the entries could'nt be deleted
      */
     function unlink($uri= NULL) {
       if (NULL === $uri) $uri= $this->uri; // We also use this recursively
@@ -168,15 +168,15 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException in case of an error (e.g., lack of permissions)
+     * @throws  io.IOException in case of an error (e.g., lack of permissions)
      * @throws  IllegalStateException in case the directory is still open
      */
     function move($target) {
       if (is_resource($this->_hdir)) {
-        return throw(new IllegalStateException('directory still open'));
+        return throw(new IllegalStateException('Directory still open'));
       }
       if (FALSE === rename($this->uri, $target)) {
-        return throw(new IOException('cannot move directory '.$this->uri.' to '.$target));
+        return throw(new IOException('Cannot move directory '.$this->uri.' to '.$target));
       }
       return TRUE;
     }
@@ -196,17 +196,14 @@
      *
      * @access  public
      * @return  string entry directory entry (w/o path!), FALSE, if no more entries are left
-     * @throws  IOException in case an error occurs
+     * @throws  io.IOException in case an error occurs
      */
     function getEntry() {
       if (
         (FALSE === $this->_hdir) &&
         (FALSE === ($this->_hdir= dir($this->uri)))
       ) {
-        return throw(new IOException(sprintf(
-          'Cannot open directory "%s"',
-          $this->uri
-        )));
+        return throw(new IOException('Cannot open directory "'.$this->uri.'"'));
       }
       
       while (FALSE !== ($entry= $this->_hdir->read())) {
@@ -218,7 +215,8 @@
     /**
      * Rewinds the directory to the beginning.
      *
-     * @access public
+     * @access  public
+     * @throws  io.IOException in case an error occurs
      */
     function rewind() {
       if (FALSE === $this->_hdir)
@@ -226,6 +224,5 @@
       
       rewinddir ($this->_hdir);
     }
-
   }
 ?>
