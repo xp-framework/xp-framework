@@ -265,7 +265,7 @@ static int _update_constant_recursive(zval **pp, void *arg TSRMLS_DC)
 			break;
 
 		case IS_ARRAY:
-			zend_hash_apply_with_argument(Z_ARRVAL_PP(pp), (apply_func_arg_t) _update_constant_recursive, (void *) 1 TSRMLS_CC);
+			zend_hash_apply_with_argument(Z_ARRVAL_PP(pp), (apply_func_arg_t) _update_constant_recursive, (void *) arg TSRMLS_CC);
 			break;
 	}
 	return 0;
