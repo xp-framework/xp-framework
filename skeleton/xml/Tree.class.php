@@ -94,8 +94,7 @@
       
       try(); {
         $file->open(FILE_MODE_READ);
-        $string= '';
-        while (!$file->eof()) $string.= $file->read();
+        $string= $file->read($file->size());
         $file->close();
       } if (catch('Exception', $e)) {
         return throw($e);
