@@ -65,52 +65,70 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Recurse an array
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  private
+     * @param   string c class type
+     * @param   &xml.Node e element to add array to
+     * @param   array a
      */
-    function _recurseArray(&$elem, $arr) {
-      $nodeType= get_class($this);
-      foreach ($arr as $field=> $value) {
-        $child= &$elem->addChild(new $nodeType(array(
-          'name'        => (is_numeric($field) ? preg_replace('=s$=', '', $elem->name) : $field)
-        )));
-        if (is_array($value)) {
-          $this->_recurseArray($child, $value);
-        } else if (is_object($value)) {
-          $this->_recurseArray($child, get_object_vars($value));
+    function _recurse($c, &$e, $a) {
+      foreach (array_keys($a) as $field) {
+        $child= &$e->addChild(new $c(is_numeric($field) 
+          ? preg_replace('=s$=', '', $elem->name) 
+          : $field
+        ));
+        if (is_array($a[$field])) {
+          Node::_recurse($c, $child, $a[$field]);
+        } else if (is_object($a[$field])) {
+          Node::_recurse($c, $child, get_object_vars($a[$field]));
         } else {
-          $child->setContent($value);
+          $child->setContent($a[$field]);
         }
       }
     }
     
     /**
-     * (Insert method's description here)
+     * Create a node from an array
      *
-     * @access  
-     * @param   
-     * @return  
+     * Usage example:
+     * <code>
+     *   $n= &Node::fromArray($array, 'elements');
+     * </code>
+     *
+     * @model   static
+     * @access  public
+     * @param   array arr
+     * @param   string name default 'array'
+     * @return  &xml.Node
      */
     function fromArray($arr, $name= 'array') {
-      $this->name= $name;
-      $this->_recurseArray($this, $arr);
-      return $this;  
+      $c= get_class($this);
+      $n= &new $c($name);
+      $n->_recurse($c, $n, $arr);
+      return $n;  
     }
     
     /**
-     * (Insert method's description here)
+     * Create a node from an object. Will use class name as node name
+     * if the optional argument name is omitted.
      *
-     * @access  
-     * @param   
-     * @return  
+     * Usage example:
+     * <code>
+     *   $n= &Node::fromObject($object);
+     * </code>
+     *
+     * @model   static
+     * @access  public
+     * @param   object obj
+     * @param   string name default NULL
+     * @return  &xml.Node
      */
     function fromObject($obj, $name= NULL) {
-      $this->name= (NULL === $name) ? get_class($obj) : $name;
-      $this->_recurseArray($this, get_object_vars($obj));
-      return $this;
+      $c= get_class($this);
+      $n= &new $c((NULL === $name) ? get_class($obj) : $name);
+      $n->_recurse($c, $n, get_object_vars($obj));
+      return $n;  
     }
     
     /**
