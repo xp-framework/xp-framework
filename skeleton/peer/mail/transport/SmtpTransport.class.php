@@ -229,10 +229,8 @@
      */
     function connect($dsn= NULL) { 
       if (FALSE === $this->_parsedsn($dsn)) return FALSE;
-      var_dump($this);
       
       $this->_sock= &new Socket($this->host, $this->port);
-      
       try(); {
         $this->_sock->connect();
         $this->_sockcmd(FALSE, 220);            // Read banner message
