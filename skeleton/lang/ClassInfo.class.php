@@ -38,16 +38,12 @@
     
     function setClass($class) {
       try(); {
-        import($class);
+        $name= ClassLoader::loadClass($class);
       } if (catch('Exception', $e)) {
         return throw($e);
       }      
-      $parts= explode('.', $class);
-      $this->className= $parts[sizeof($parts)- 1];
-      $this->classPath= implode('.', array_slice($parts, 0, -1));
-      if (!class_exists(strtolower($this->className))) {
-        return throw(new IOException('noclassdeffounderror'));
-      }
+      $this->className= substr($class, strrpos($class, '.')+ 1);
+      $this->classPath= substr($class, 0, strrpos($class, '.'));
     }
     
     function _new() {
@@ -123,14 +119,14 @@
               list($indicator, $doc)= preg_split('/\s+/', substr($line, 1), 2);
               switch ($indicator) {
                 case 'return':
-                  list(
+                  @list(
                     $c->return->type, 
                     $c->return->comment
                   )= explode(' ', $doc, 2);
                   break;
                 case 'param':
                   $param= new StdClass();
-                  list(
+                  @list(
                     $param->type,
                     $param->var,
                     $param->comment
@@ -146,7 +142,10 @@
                   break;
                 case 'throws':
                   $except= new StdClass;
-                  list($except->name, $except->comment)= preg_split('/,? /', $doc, 2);
+                  @list(
+                    $except->name, 
+                    $except->comment
+                  )= preg_split('/,? /', $doc, 2);
                   $c->throws[]= $except;
                   break;
                 default:
