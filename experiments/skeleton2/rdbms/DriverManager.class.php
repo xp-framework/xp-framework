@@ -42,10 +42,8 @@
      * @return  &rdbms.DriverManager
      */
     public static function getInstance() {
-      if (!self::$instance) {
-        self::$instance= new DriverManager();
-      }
-      return $instance;
+      if (!self::$instance) self::$instance= new DriverManager();
+      return self::$instance;
     }
   
     /**
@@ -64,8 +62,7 @@
      * @param   &lang.XPClass class
      */
     public static function register($name, XPClass $class) {
-      $i= DriverManager::getInstance();
-      $i->drivers[$name]= $class;
+      DriverManager::getInstance()->drivers[$name]= $class;
     }
     
     /**
