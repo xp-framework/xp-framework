@@ -26,7 +26,8 @@
   class Criteria extends Object {
     var 
       $conditions   = array(),
-      $orderings    = array();
+      $orderings    = array(),
+      $groupings    = array();
     
     /**
      * Constructor
@@ -64,12 +65,12 @@
     }
 
     /**
-     * Add an order
+     * Add order by
      *
      * <code>
      *   with ($c= &new Criteria()); {
-     *     $c->add('bz_id', 500, EQUAL);
-     *     $c->addOrderBy('created_at', DESCENDING);
+     *     $this->add('bz_id', 500, EQUAL);
+     *     $this->addOrderBy('created_at', DESCENDING);
      *   }
      * </code>
      *
@@ -85,6 +86,63 @@
      */
     function addOrderBy($column, $order= ASCENDING) {
       $this->orderings[]= array($column, $order);
+    }
+
+    /**
+     * Add group by
+     *
+     * @access  public
+     * @param   string column
+     */
+    function addGroupBy($column) {
+      $this->groupings[]= $column;
+    }
+    
+    /**
+     * Export SQL
+     *
+     * @access  public
+     * @param   &rdbms.DBConnection db
+     * @param   array types
+     * @return  string
+     * @throws  rdbms.SQLStateException
+     */
+    function toSQL(&$db, $types) {
+      $sql= '';
+      
+      // Process conditions
+      if (!empty($this->conditions)) {
+        $sql.= ' where ';
+        foreach ($this->conditions as $condition) {
+          if (!isset($types[$condition[0]])) {
+            return throw(new SQLStateException('Field "'.$condition[0].'" unknown'));
+          }
+          $sql.= $condition[0].' '.$db->prepare(
+            str_replace('?', $types[$condition[0]], $condition[2]).' and ', 
+            $condition[1]
+          );
+        }
+        $sql= substr($sql, 0, -4);
+      }
+
+      // Process group by
+      if (!empty($this->groupings)) {
+        $sql.= $db->prepare(' group by %c', $this->groupings);
+      }
+
+      // Process order by
+      if (!empty($this->orderings)) {
+        $sql.= ' order by ';
+        foreach ($this->orderings as $order) {
+          if (!isset($types[$order[0]])) {
+            return throw(new SQLStateException('Field "'.$order[0].'" unknown'));
+          }
+          $sql.= $order[0].' '.$order[1].', ';
+        }
+        $sql= substr($sql, 0, -2);
+      }
+      
+      return $sql;
     }
   }
 ?>
