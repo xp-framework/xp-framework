@@ -126,7 +126,7 @@ collections="info.friebe|de.*"
 ; Verbosity-Level of output, values seperated by |, allowed: warn, info, debug and error
 verbosity="error|warn"
 ; Method, supported: mail [send email], log [write to file]
-method="mail://friebe@schlund.de"
+method="mail://friebe@php3.de"
 ; What to include in report, values seperated by |, allowed: are all, added, updated, removed
 ; Optionally, regexes of collections can be specified behind a colon
 ; to narrow in on the collections
@@ -155,14 +155,14 @@ experimental=no
 [maintainers]
 list="friebe|kiesel"
 name.friebe="Timm Friebe"
-email.friebe="friebe@schlund.de"
+email.friebe="friebe@php3.de"
 site.friebe="http://thekid.de/"
 name.kiesel="Alex Kiesel"
-email.kiesel="kiesel@schlund.de"
+email.kiesel="kiesel@php3.de"
 site.kiesel="http://alexkiesel.de/"
 
 [distribution]
-site.0="http://edit.schlund.de/collections/"
+site.0="http://xp.schlund.de/collections/"
 site.1="ftp://anonymous:foo@baz.de/collections/"
 site.2="cvs://pserver/cvs:cvsread@foo.bar/repository?module"
 site.3="cvs://ext/adminphp@cvs/home/cvs/repositories?module"
@@ -171,7 +171,7 @@ site.3="cvs://ext/adminphp@cvs/home/cvs/repositories?module"
 depend.0="org.apache:=1.0"
 depend.1="info.friebe:>1.0"
 depend.2="de.thekid:~:0.9,1.1"
-depend.3="de.schlund"
+depend.3="info.binford6100"
 </collection.ini>
 
 Wenn die Collection per make publish veröffentlicht wird, so wird
