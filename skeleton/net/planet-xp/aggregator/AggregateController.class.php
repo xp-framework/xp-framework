@@ -54,6 +54,11 @@
         return throw($e);
       }
       
+      // When target has not been modified, TRUE is returned
+      if (TRUE === $result)
+        return TRUE;
+      
+      // Set result into members for later processing
       $this->feed= &$result['feed'];
       $this->feedItems= &$result['feeditems'];
     }
@@ -65,7 +70,7 @@
      * @return  bool success
      */
     function update() {
-      $cm= &ConnectionManager::getINstance();
+      $cm= &ConnectionManager::getInstance();
       
       // Fetch database object and start transaction
       try(); {

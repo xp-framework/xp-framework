@@ -29,25 +29,41 @@
      * @return  &array
      */
     function &fetch($feed_id, $url, $lastModified= NULL) {
-      $params= array();
+      $headers= array();
 
-      // TBI:
-      // if (is('util.Date', $lastModified)) {
-      //   $params['lastModified']= $date->toString('d.m.Y');
-      // }
+      if (is('util.Date', $lastModified))
+        $headers[]= &new Header('If-Modified-Since', $lastModified->toString('r'));
 
       try(); {
         $data= '';
         $client= &new HttpConnection($url);
-        $response= &$client->get();
+        $response= &$client->get(NULL, $headers);
         
         while ($response && FALSE !== ($l= $response->readData())) { $data.= $l; }
       } if (catch('Exception', $e)) {
         return throw($e);
       }
       
+      if ($response && HTTP_NOT_MODIFIED == $response->getStatusCode()) {
+        return TRUE;
+      }
+      
+      if ($response && HTTP_OK != $response->getStatusCode()) {
+        return throw(new IllegalStateException('Stream broken: HTTP-Status is '.$response->getStatusCode()));
+      }
+      
       // Construct RDF tree
       try(); {
+      
+        // Decode data if necessary:
+        if (
+          ($ctype= $response->getHeader('Content-Type')) && 
+          preg_match('/.*; charset=(.*)$/', $ctype, $match) &&
+          0 == strcasecmp('utf-8', $match[1])
+        ) {
+          $data= utf8_decode($data);
+        }
+      
         $rdf= &RDFNewsFeed::fromString($data);
       } if (catch('FormatException', $e)) {
         return throw($e);
