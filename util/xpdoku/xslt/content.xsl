@@ -43,33 +43,45 @@
       </td></tr>
     </table>
     <br/>
+
+    <xsl:choose>
     
-    <table border="0" width="100%" cellspacing="0" cellpadding="2" bgcolor="#f6f6ff" style="border: 1px dotted #3654a5">
-      <tr>
-        <td width="4%" nowrap="nowrap">
-          <img src="/image/nav_toc.gif" height="17" width="17" alt="=&gt;" hspace="2" vspace="2"/>
-        </td>
-        <td>
-          <a name="contents"><b style="color: #000066">
-            Table of Contents
-          </b></a>
-        </td>
-      </tr>
-      <xsl:for-each select="content/para/caption">
-        <tr>
-          <td width="4%" nowrap="nowrap">
-            <img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/>
-          </td>
-          <td>
-            Chapter <b><xsl:value-of select="position()"/></b>: <a href="#{position()}"><xsl:value-of select="."/></a>
-          </td>
-        </tr>
-      </xsl:for-each>
-    </table>
-    <br/>
-    <br/>
-    
-    <xsl:apply-templates select="content/para"/>
+      <!-- Multipart: TOC, captions and scrollto links -->
+      <xsl:when test="count(content/para) &gt; 1">    
+        <table border="0" width="100%" cellspacing="0" cellpadding="2" bgcolor="#f6f6ff" style="border: 1px dotted #3654a5">
+          <tr>
+            <td width="4%" nowrap="nowrap">
+              <img src="/image/nav_toc.gif" height="17" width="17" alt="=&gt;" hspace="2" vspace="2"/>
+            </td>
+            <td>
+              <a name="contents"><b style="color: #000066">
+                Table of Contents
+              </b></a>
+            </td>
+          </tr>
+          <xsl:for-each select="content/para/caption">
+            <tr>
+              <td width="4%" nowrap="nowrap">
+                <img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/>
+              </td>
+              <td>
+                Chapter <b><xsl:value-of select="position()"/></b>: <a href="#{position()}"><xsl:value-of select="."/></a>
+              </td>
+            </tr>
+          </xsl:for-each>
+        </table>
+        <br/>
+        <br/>
+        <xsl:apply-templates select="content/para"/>
+      </xsl:when>
+      
+      <!-- Single part: No TOC, no scrollto links -->
+      <xsl:otherwise>
+        <b><xsl:value-of select="content/para/caption"/></b>
+        <br/>
+        <xsl:apply-templates select="content/para/text"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
   <xsl:template match="main/content/para">
