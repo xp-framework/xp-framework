@@ -18,6 +18,10 @@ Operators           Overloadability
 +=, -=, *=, /=, %=  Assignment operators cannot be overloaded, but +=, 
                     for example, is evaluated using +, which can be 
                     overloaded.
+
+== != < > <= >=     Comparison operators can be overloaded, but only
+                    all of them at once, using the compare operator
+                    (see below).
 </pre>
 
 Basic syntax
@@ -25,11 +29,41 @@ Basic syntax
 The key to operator overloading is the new keyword "operator". Apart
 from that, the syntax is equal to that of a normal method declaration:
 
+Abbreviated example:
+<pre>
   class Integer {
-    
+
     public static operator + (Integer $a, Integer $b) {
-      // ...
+      return new Integer($a->value + $b->value);
     }
   }
+</pre>
+  
+Comparison operator
+-------------------
+The comparison operator overloads all comparison operators:
+* Equal (==)
+* Unequal (!=)
+* Greater than (>)
+* Less than (<)
+* Greater than or equal to (=)
+* Less than or equal (<=)
+
+The method must return one of the following:
+* If the two values are equal: 0
+* If the first value is smaller than the second: -1
+* If the first value is bigger than the second: 1
+
+Abbreviated example:
+<pre>
+  class Integer {
+    
+    public static operator compare (Integer $a, Integer $b) {
+      if ($a->value < $b->value) return -1;
+      if ($a->value == $b->value) return 0;
+      if ($a->value > $b->value) return 1;
+    }
+  }
+</pre>
 
 <EOF>

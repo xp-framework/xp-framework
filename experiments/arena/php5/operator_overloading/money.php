@@ -8,7 +8,7 @@
   class Money {
     protected static
       $conversion = array(
-        'USD,EUR'   => 0.8271,
+        'USD,EUR'   => 0.8286,
         'EUR,USD'   => 1.2068
       );
         
@@ -39,6 +39,13 @@
     public static operator - (Money $m1, Money $m2) {
       return new Money($m1->amount - $m2->amountIn($m1->currency), $m1->currency);
     }
+    
+    public static operator compare (Money $m1, Money $m2) {
+      return strcmp(
+        sprintf('%.4f', $m1->amountIn($m2->currency)),
+        sprintf('%.4f', $m2->amount)
+      );
+    }
 
     public function toString() {
       return sprintf('%.4f %s', $this->amount, $this->currency);
@@ -54,10 +61,15 @@
   
   // Convert
   echo $eur->toString(), ' in USD = ', $eur->convertTo('USD')->toString(), "\n";
-  echo $usd->toString(), ' in USD = ', $usd->convertTo('EUR')->toString(), "\n";
+  echo $usd->toString(), ' in EUR = ', $usd->convertTo('EUR')->toString(), "\n";
   
   // Sum
   $sum= $eur + $usd;
   echo $eur->toString(), ' + ', $usd->toString(), ' = ', $sum->toString(), "\n"; 
+  
+  // Compare
+  echo $eur->toString(), ' == ', $usd->toString(), ' ? ', var_export($eur == $usd, 1), "\n";
+  echo $eur->toString(), ' <= ', $usd->toString(), ' ? ', var_export($eur <= $usd, 1), "\n";
+  echo $eur->toString(), ' >= ', $usd->toString(), ' ? ', var_export($eur >= $usd, 1), "\n";
   // }}}
 ?>
