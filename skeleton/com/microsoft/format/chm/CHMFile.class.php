@@ -140,14 +140,14 @@
               'offset'    => $this->_int($str, $pos),
               'length'    => $this->_int($str, $pos)
             );
-              break;
+            break;
 
           case CHM_CHUNK_INDEX:
             $entries[$name]= array(
               'name'        => $name,
               'index'        => $this->_int($str, $pos)
             );
-              break;
+            break;
         }
       } while ($pos < $max);
       $this->stream->seek($qref, SEEK_CUR);
@@ -202,7 +202,7 @@
       ));
       
       // Always {7C01FD10-7BAA-11D0-9E0C-00A0-C922-E6EC}
-       $this->header->setGuid1($this->_guid(unpack(
+      $this->header->setGuid1($this->_guid(unpack(
         'Lguid1/v2guid2/C8guid3',
         $this->stream->read(0x10)
       )));
