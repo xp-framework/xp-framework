@@ -15,20 +15,23 @@
   define('PHPPARSER_MODE_GET_CLASS_NAME',   0x0002);
   define('PHPPARSER_MODE_GET_USES',         0x0003);
   define('PHPPARSER_MODE_GET_REQUIRE',      0x0004);
+  define('PHPPARSER_MODE_GET_SAPIS',        0x0005);
 
   /**
    * Class to parse PHP files. Parsing tries to extract informations
    * about contained global functions, classes and its functions.
    *
-   * @ext tokenizer
+   * @ext      tokenizer
+   * @purpose  Parser
    */
   class PHPParser extends Object {
     var
-      $functions= NULL,
-      $classes=   NULL,
-      $filename=  NULL,
-      $uses=      NULL,
-      $requires=  NULL,
+      $functions= array(),
+      $classes=   array(),
+      $uses=      array(),
+      $requires=  array(),
+      $sapis=     array(),
+      $filename=  '',
       $log=       NULL;
     
     var
@@ -38,17 +41,15 @@
      * Constructor
      *
      * @access  public
-     * @param   string filename;
+     * @param   string filename The filename to parse
      */
     function __construct($filename) {
-      $this->functions= $this->classes= $this->uses= $this->requires= array();
-      
+      parent::__construct();
       $this->filename= $filename;
-      $this->_utimeLastChange= 0;
     }
     
     /**
-     * Sets a trace
+     * Sets a trace for debugging
      *
      * @access  public
      * @param   &util.log.LogCategory
@@ -81,6 +82,16 @@
     function getLastChange() {
       return $this->_utimeLastChange;
     }
+
+    /**
+     * Set time of last parsing
+     *
+     * @access  public
+     * @param   int lp Unix-timestamp
+     */
+    function setLastChange($lp) {
+      $this->_utimeLastChange= $lp;
+    }
     
     /**
      * Clears for reparsing
@@ -88,8 +99,8 @@
      * @access  public
      */
     function clear() {
-      $this->functions= $this->classes= array();
-      $this->_utimeLastChange= 0;
+      $this->functions= $this->classes= $this->uses= $this->requires= $this->sapis= array();
+      $this->setLastChange(0);
     }     
 
     /**
@@ -97,6 +108,7 @@
      *
      * @access  public
      * @return  bool success
+     * @throws  lang.Exception in case the file could not be read
      */
     function parse() {
       try(); {
@@ -241,7 +253,7 @@
       
       // 2nd pass: try to find uses(), require() and include()
       $brace= 0; $mode= PHPPARSER_MODE_UNDEF;
-      foreach ($tokens as $token) {
+      foreach ($tokens as $offset => $token) {
         if (is_string($token)) {
           switch ($token) {
             case '(':
@@ -262,7 +274,18 @@
         list ($tokenId, $data)= $token;
         switch ($tokenId) {
           case T_STRING:
-            if ('uses' == $data) $mode= PHPPARSER_MODE_GET_USES;
+            switch ($data) {
+              case 'uses':      // uses() 
+                $mode= PHPPARSER_MODE_GET_USES; 
+                break;
+
+              case 'sapi':      // xp::sapi()
+                if ('xp::' != $tokens[$offset- 2][1].$tokens[$offset- 1][1]) break;
+                $mode= PHPPARSER_MODE_GET_SAPIS; 
+                break;
+
+              default:          // Ignore
+            }
             break;
           
           case T_INCLUDE:
@@ -282,15 +305,20 @@
           case PHPPARSER_MODE_GET_REQUIRE:
             if (T_CONSTANT_ENCAPSED_STRING == $tokenId) 
               $this->requires[]= substr ($data, 1, strlen ($data)-2);
+            break;
+          
+          case PHPPARSER_MODE_GET_SAPIS:
+            if (T_CONSTANT_ENCAPSED_STRING == $tokenId) 
+              $this->sapis[]= substr ($data, 1, strlen ($data)-2);
+            break;
           
           default:
             break;
         }
       }
       
-      $this->_utimeLastChange= time();
+      $this->setLastChange(time());
       return TRUE;
     }
-  }
-
+  } implements(__FILE__, 'util.log.Traceable');
 ?>
