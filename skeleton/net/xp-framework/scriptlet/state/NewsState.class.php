@@ -14,6 +14,16 @@
   class NewsState extends AbstractNewsListingState {
 
     /**
+     * Retrieve parent category's ID
+     *
+     * @access  public
+     * @return  int
+     */
+    function getParentCategory() {
+      return 8;
+    }
+
+    /**
      * Retrieve entries
      *
      * @access  protected
@@ -38,13 +48,15 @@
           serendipity_entrycat matrix,
           serendipity_category category
         where
-          isdraft = "false"
+          category.parentid = %d
+          and entry.isdraft = "false"
           and entry.id = matrix.entryid
           and matrix.categoryid = category.categoryid
         order by
           timestamp desc
-        limit 20
-      ');
+        limit 20',
+        $this->getParentCategory()
+      );
     }
   }
 ?>

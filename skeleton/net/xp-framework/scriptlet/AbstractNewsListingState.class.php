@@ -41,6 +41,16 @@
     }
     
     /**
+     * Retrieve parent category's ID
+     *
+     * @access  public
+     * @return  int
+     */
+    function getParentCategory() {
+      return 0;
+    }
+    
+    /**
      * Process this state.
      *
      * @access  public
@@ -66,7 +76,10 @@
         
         // Add all categories to the formresult
         $n= &$response->addFormResult(new Node('categories'));
-        $q= &$db->query('select categoryid, category_name from serendipity_category');
+        $q= &$db->query(
+          'select categoryid, category_name from serendipity_category where parentid= %d',
+          $this->getParentCategory()
+        );
         while ($record= $q->next()) {
           $n->addChild(new Node('category', $record['category_name'], array(
             'id' => $record['categoryid']
