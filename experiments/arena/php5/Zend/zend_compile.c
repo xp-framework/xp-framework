@@ -4109,12 +4109,15 @@ void zend_do_begin_enum_declaration(znode *enum_name TSRMLS_DC)
 {
 	zend_op *opline;
 	zend_class_entry *new_class_entry = emalloc(sizeof(zend_class_entry));
-	char *lcname = zend_str_tolower_dup(enum_name->u.constant.value.str.val, enum_name->u.constant.value.str.len);
+	char *lcname;
 
 	if (CG(active_class_entry)) {
 		zend_error(E_COMPILE_ERROR, "Class declarations may not be nested");
 		return;
 	}
+
+	MANGLE_CLASS_NAME(enum_name);
+	lcname = zend_str_tolower_dup(enum_name->u.constant.value.str.val, enum_name->u.constant.value.str.len);
 
 	if (!(strcmp(lcname, "self") && strcmp(lcname, "parent"))) {
 		efree(lcname);

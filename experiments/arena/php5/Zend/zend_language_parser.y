@@ -299,6 +299,7 @@ package_inner_statement_list:
 
 package_inner_statement:
 		class_declaration_statement { zend_do_early_binding(TSRMLS_C); }
+	|	enum_declaration_statement
 	|	T_IMPORT package_import_list ';'
 ;
 
