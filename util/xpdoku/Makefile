@@ -6,7 +6,7 @@ OUTPUT=output
 TARGET=/home/httpd/xp.php3.de/doc_root/
 XML=xml
 CTREE=$(XML)/classTree.xpdoc.xml
-SABCMD=sabcmd
+SABCMD=sabcmd 
 PHP=php -q
 
 .PHONY: all clean install xml
@@ -28,40 +28,43 @@ $(XML):
 	-mkdir $(XML)
 
 $(OUTPUT):
-	-mkdir $(OUTPUT)
-	-mkdir $(OUTPUT)/collections
-	-mkdir $(OUTPUT)/classes
-	-mkdir $(OUTPUT)/image
-	-cp -R src/ $(OUTPUT)
+	@echo "===> Preparing output directory"
+	@-mkdir $(OUTPUT)
+	@-mkdir $(OUTPUT)/collections
+	@-mkdir $(OUTPUT)/classes
+	@-mkdir $(OUTPUT)/image
+	@-cp -R src/ $(OUTPUT)
 
 install:
 	cp -R $(OUTPUT)/* $(TARGET)
                 
 $(TARGET):
-	-mkdir $(TARGET)
+	@-mkdir $(TARGET)
 
 clean:
-	-rm -rvf output/
-	-rm -rvf xml/
+	-rm -rf output/
+	-rm -rf xml/
         
 gen: index collections classes
 	
 makexml: $(XML)
-	$(PHP) xpdoku.php
+	@$(PHP) xpdoku.php
 
 index: $(OUTPUT) $(XML)
-	$(SABCMD) xslt/index.xsl $(CTREE) $(OUTPUT)/index.html
+	@$(SABCMD) xslt/index.xsl $(CTREE) $(OUTPUT)/index.html 2>/dev/null
         
 collections: $(OUTPUT) $(XML)
-	for k in `$(SABCMD) xslt/helper.xsl $(CTREE) '$$mode=allcollections' | sed -e 's/<.*>//'`; do $(MAKE) "collection_$$k" ; done
+	@echo "===> Processing collections"
+	@for k in `$(SABCMD) xslt/helper.xsl $(CTREE) '$$mode=allcollections' | sed -e 's/<.*>//'`; do $(MAKE) -s "collection_$$k" ; done
 
 classes: $(OUTPUT) $(XML)
-	for k in `$(SABCMD) xslt/helper.xsl $(CTREE) '$$mode=allclasses' | sed -e 's/<.*>//'`; do $(MAKE) class_$$k; done
+	@echo "===> Processing classes"
+	@for k in `$(SABCMD) xslt/helper.xsl $(CTREE) '$$mode=allclasses' | sed -e 's/<.*>//'`; do $(MAKE) -s class_$$k; done
 
 collection_%:
-	@echo "===> Making collection $*"
-	@$(SABCMD) xslt/collection.xsl $(CTREE) '$$mode=collection' '$$collection=$*' $(OUTPUT)/collections/$*.html
+	@echo "---> Processing collection $*"
+	@$(SABCMD) xslt/collection.xsl $(CTREE) '$$mode=collection' '$$collection=$*' $(OUTPUT)/collections/$*.html 2>/dev/null
 
 class_%:
-	@echo "---> Making class $*"
-	@$(SABCMD) xslt/class.xsl $(XML)/$*.xpdoc.xml $(OUTPUT)/classes/$*.html
+	@echo "---> Processing class $*"
+	@$(SABCMD) xslt/class.xsl $(XML)/$*.xpdoc.xml $(OUTPUT)/classes/$*.html 2>/dev/null
