@@ -252,6 +252,17 @@
      * @throws  Exception to indicate failure
      */
     function doMkCol(&$request, &$response) {
+      try(); {
+        $created= $this->handlingImpl->mkcol($request->uri['path_translated']);
+      } if (catch('Exception', $e)) {
+      
+        // Conflict
+        $response->setStatus(HTTP_CONFLICT);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      } 
+      
+      $response->setStatus(HTTP_CREATED);
     }
 
     /**

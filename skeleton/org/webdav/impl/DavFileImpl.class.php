@@ -85,6 +85,25 @@
     }
 
     /**
+     * Make a directory ("collection")
+     *
+     * @access  public
+     * @param   string colname
+     * @return  bool success
+     * @throws  MethodNotImplementedException
+     */
+    function &mkcol($colname) {
+      $f= &new Folder($this->base.$colname);
+      try(); {
+        $f->create(0700);
+      } if (catch('IOException', $e)) {
+        return throw(new Exception($filename.' cannot be created ('.$e->message.')'));
+      }
+      
+      return TRUE;
+    }
+
+    /**
      * Delete a file
      *
      * @access  public
@@ -95,10 +114,12 @@
      */
     function &delete($filename) {
       if (is_dir($this->base.$filename)) {
-        return throw(new Exception('Deletion of directories not yet implemented'));
+        $f= &new Folder($this->base.$filename);
+      } else {
+        $f= &new File($this->base.$filename);
       }
       
-      $f= &new File($this->base.$filename);
+      // If the specified argument doesn't exist, raise an error
       if (!$f->exists()) {
         return throw(new ElementNotFoundException($filename.' not found'));
       }

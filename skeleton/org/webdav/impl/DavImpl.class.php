@@ -33,6 +33,18 @@
     }
 
     /**
+     * Make a directory
+     *
+     * @access  abstract
+     * @param   string colname
+     * @return  bool success
+     * @throws  MethodNotImplementedException
+     */
+    function &mkcol($colname) {
+      return throw(new MethodNotImplementedException($this->getName().'::mkcol not implemented'));
+    }
+
+    /**
      * Delete a file
      *
      * @access  abstract
