@@ -12,7 +12,7 @@
    * @purpose  SQL-Exception
    */
   class SQLConnectException extends SQLException {
-    public 
+    public
       $dsn  = NULL;
 
     /**
@@ -22,7 +22,7 @@
      * @param   string message
      * @param   &rdbms.DSN dsn
      */
-    public function __construct($message, &$dsn) {
+    public function __construct($message, DSN $dsn) {
       parent::__construct($message);
       $this->dsn= $dsn;
     }

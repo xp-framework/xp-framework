@@ -13,12 +13,12 @@
    * @purpose  Appender
    */  
   class SmtpAppender extends LogAppender {
-    public 
+    public
       $email    = '',
       $prefix   = '',
       $sync     = TRUE;
       
-    public
+    protected
       $_data    = array();
     
     /**

@@ -41,7 +41,7 @@
      * @access  public
      * @param   &rmi.RMIConnector connector
      */
-    public function __construct(&$connector) {
+    public function __construct(RMIConnector $connector) {
     
       // & missing intentionally, overloaded objects have problems with 
       // this! Adding an ampersand here results in "Fatal error: Cannot 
@@ -71,7 +71,7 @@
      * @param   &mixed value
      * @return  bool
      */
-    public function __get($name, &$value) {
+    public function __get($name, $value) {
       try {
         $value= $this->connector->getValue($this, $name);
       } catch (RMIException $e) {
@@ -88,7 +88,7 @@
      * @param   &mixed value
      * @return  bool
      */
-    public function __set($name, &$value) {
+    public function __set($name, $value) {
       try {
         $this->connector->setValue($this, $name, $value);
       } catch (RMIException $e) {
@@ -106,7 +106,7 @@
      * @param   &mixed return
      * @return  bool
      */
-    public function __call($name, &$args, &$return) {
+    public function __call($name, $args, $return) {
       try {
         $return= $this->connector->invokeMethod($this, $name, $args);
       } catch (RMIException $e) {

@@ -42,8 +42,9 @@
    * @purpose  Interface for different MailStores
    */
   class MailStore extends Object {
-    public 
-      $_hdl  = NULL,
+    protected
+      $_hdl  = NULL;
+    public
       $cache = NULL;
      
     /**
@@ -52,7 +53,7 @@
      * @access  public
      * @param   peer.mail.store.StoreCache cache default NULL
      */ 
-    public function __construct($cache= NULL) {
+    public function __construct(StoreCache $cache= NULL) {
       if (NULL === $cache) {
         $this->cache= new StoreCache();
       } else {
@@ -103,7 +104,7 @@
      * @param   bool readonly default FALSE
      * @return  bool success
      */
-    public function openFolder(&$f, $readonly= FALSE) { }
+    public function openFolder(MailFolder $f, $readonly= FALSE) { }
     
     /**
      * Close a folder
@@ -112,7 +113,7 @@
      * @param   &peer.mail.MailFolder f
      * @return  bool success
      */
-    public function closeFolder(&$f) { }
+    public function closeFolder(MailFolder $f) { }
     
     /**
      * Get messages in a folder
@@ -122,7 +123,7 @@
      * @param   mixed* msgnums
      * @return  &peer.mail.Message[]
      */
-    public function getMessages(&$f) { }
+    public function getMessages(MailFolder $f) { }
 
     /**
      * Get number of messages in this folder
@@ -132,6 +133,6 @@
      * @param   string attr one of "message", "recent" or "unseen"
      * @return  int
      */
-    public function getMessageCount(&$f, $attr) { }
+    public function getMessageCount(MailFolder $f, $attr) { }
   }
 ?>

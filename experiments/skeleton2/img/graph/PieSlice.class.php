@@ -10,7 +10,7 @@
    * @see img.graph.PieChart
    */
   class PieSlice extends Object {
-    public 
+    public
       $val      = 0.0,
       $colors   = array();
       
@@ -22,7 +22,7 @@
      * @param   &mixed colors either an array of two colors, the second
      *          representing the shadow, or one color, for both lid and shadow
      */
-    public function __construct($val, &$colors) {
+    public function __construct($val, $colors) {
       $this->val= $val;
       if (!is_array($colors)) {
         $this->colors= array($colors, $colors);

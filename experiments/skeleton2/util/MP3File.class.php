@@ -23,7 +23,7 @@
      * @access  public
      * @param   &io.File file
      */
-    public function __construct(&$file) {
+    public function __construct(File $file) {
       $this->file= $file;
       
     }

@@ -12,6 +12,23 @@
     'org.webdav.xml.WebdavMultistatus'
   );
 
+  // HTTP methods for distributed authoring
+  define('WEBDAV_METHOD_PROPFIND',  'PROPFIND');
+  define('WEBDAV_METHOD_PROPPATCH', 'PROPPATCH');
+  define('WEBDAV_METHOD_MKCOL',     'MKCOL');
+  define('WEBDAV_METHOD_LOCK',      'LOCK');
+  define('WEBDAV_METHOD_UNLOCK',    'UNLOCK');
+  define('WEBDAV_METHOD_COPY',      'COPY');
+  define('WEBDAV_METHOD_MOVE',      'MOVE');
+  
+  // Status code extensions to http/1.1 
+  define('WEBDAV_PROCESSING',       102);
+  define('WEBDAV_MULTISTATUS',      207);
+  define('WEBDAV_UNPROCESSABLE',    422);
+  define('WEBDAV_LOCKED',           423);
+  define('WEBDAV_FAILEDDEPENDENCY', 424);
+  define('WEBDAV_INSUFFICIENTSTOR', 507);
+  
   /**
    * <quote>
    * WebDAV is an extension to the HTTP/1.1 protocol that
@@ -63,21 +80,6 @@
    * @purpose  Provide the base for Webdav Services
    */
   class WebdavScriptlet extends HttpScriptlet {
-    const
-      WEBDAV_METHOD_PROPFIND = 'PROPFIND',
-      WEBDAV_METHOD_PROPPATCH = 'PROPPATCH',
-      WEBDAV_METHOD_MKCOL = 'MKCOL',
-      WEBDAV_METHOD_LOCK = 'LOCK',
-      WEBDAV_METHOD_UNLOCK = 'UNLOCK',
-      WEBDAV_METHOD_COPY = 'COPY',
-      WEBDAV_METHOD_MOVE = 'MOVE',
-      WEBDAV_PROCESSING = 102,
-      WEBDAV_MULTISTATUS = 207,
-      WEBDAV_UNPROCESSABLE = 422,
-      WEBDAV_LOCKED = 423,
-      WEBDAV_FAILEDDEPENDENCY = 424,
-      WEBDAV_INSUFFICIENTSTOR = 507;
-
     public
       $impl         = array(),
       $handlingImpl = NULL;
@@ -115,7 +117,7 @@
      * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
-    public function doOptions(&$request, &$response) {
+    public function doOptions(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       $response->setHeader('MS-Author-Via', 'DAV');         // MS-clients want this
       $response->setHeader('Allow', implode(', ', array(
         HTTP_METHOD_GET,
@@ -145,7 +147,7 @@
      * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
-    public function doDelete(&$request, &$response) {
+    public function doDelete(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       try {
         $object= $this->handlingImpl->delete($request->uri['path_translated']);
       } catch (ElementNotFoundException $e) {
@@ -175,7 +177,7 @@
      * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
-    public function doGet(&$request, &$response) {
+    public function doGet(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       try {
         $object= $this->handlingImpl->get($request->uri['path_translated']);
       } catch (ElementNotFoundException $e) {
@@ -209,7 +211,7 @@
      * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
-    public function doPost(&$request, &$response) {
+    public function doPost(HttpScriptletRequest $request, HttpScriptletResponse $response) {
     }
 
     /**
@@ -222,7 +224,7 @@
      * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
-    public function doHead(&$request, &$response) {
+    public function doHead(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       try {
         $object= $this->handlingImpl->get($request->uri['path_translated']);
       } catch (ElementNotFoundException $e) {
@@ -255,7 +257,7 @@
      * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
-    public function doPut(&$request, &$response) {
+    public function doPut(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       try {
         $created= $this->handlingImpl->put(
           $request->uri['path_translated'],
@@ -291,7 +293,7 @@
      * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
-    public function doMkCol(&$request, &$response) {
+    public function doMkCol(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       try {
         $created= $this->handlingImpl->mkcol($request->uri['path_translated']);
       } catch (OperationFailedException $e) {
@@ -315,7 +317,7 @@
      * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
-    public function doMove(&$request, &$response) {
+    public function doMove(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       try {
         $created= $this->handlingImpl->copy(
           $request->uri['path_translated'],
@@ -349,7 +351,7 @@
      * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
-    public function doCopy(&$request, &$response) {
+    public function doCopy(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       try {
         $created= $this->handlingImpl->copy(
           $request->uri['path_translated'],
@@ -392,7 +394,7 @@
      * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
-    public function doLock(&$request, &$response) {
+    public function doLock(HttpScriptletRequest $request, HttpScriptletResponse $response) {
     }
 
     /**
@@ -405,7 +407,7 @@
      * @access  response org.apache.HttpScriptletResponse
      * @throws  Exception to indicate failure
      */
-    public function doUnlock(&$request, &$response) {
+    public function doUnlock($request, $response) {
     }
     
     /**
@@ -425,7 +427,7 @@
      * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
-    public function doPropFind(&$request, &$response) {
+    public function doPropFind(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       try {
         $multistatus= $this->handlingImpl->propfind(
           new WebdavPropFindRequest($request),
@@ -473,7 +475,7 @@
      * @param   &org.apache.HttpScriptletResponse response
      * @throws  Exception to indicate failure
      */
-    public function doPropPatch(&$request, &$response) {
+    public function doPropPatch(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       try {
         $this->handlingImpl->proppatch(
           new WebdavPropPatchRequest($request)

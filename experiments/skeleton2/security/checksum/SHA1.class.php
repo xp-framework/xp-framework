@@ -33,7 +33,7 @@
      * @param   &io.File file
      * @return  &security.checksum.SHA1
      */
-    public function fromFile(&$file) {
+    public function fromFile(File $file) {
       return new SHA1(sha1_file($file->uri));
     }
   }

@@ -23,12 +23,12 @@
    * </code>
    */
   class Folder extends Object {
-    public 
+    public
       $uri= '',
       $dirname= '',
       $path= '';
     
-    public
+    protected
       $_hdir= FALSE;
       
     /**
@@ -147,14 +147,14 @@
         }
         if (FALSE === $ret) throw (new IOException(sprintf(
           'unlink of "%s" failed',
-           $fn
+          $fn
         )));
       }
       $d->close();
 
       if (FALSE === rmdir($uri)) throw (new IOException(sprintf(
         'unlink of "%s" failed',
-         $uri
+        $uri
       )));
       
       return TRUE;

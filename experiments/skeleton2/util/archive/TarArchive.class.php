@@ -31,7 +31,7 @@
      * @access  public
      * @param   io.File file File-Objekt
      */  
-    public function __construct($file) {
+    public function __construct(File $file) {
       $this->file= $file;
       
     }
@@ -103,7 +103,7 @@
      * @param   io.TarArchiveEntry e TarArchvieEntry-Objekt
      * @return  string content
      */
-    public function getEntryData($e) {
+    public function getEntryData(TarArchiveEntry $e) {
       $this->file->seek($e->offset);
       $content= $this->file->read($e->size);
       $this->file->seek($e->offset);

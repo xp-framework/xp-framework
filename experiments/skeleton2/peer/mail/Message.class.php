@@ -9,6 +9,38 @@
     'util.Date'
   );
 
+  // Flags
+  define('MAIL_FLAG_ANSWERED',      0x0001);
+  define('MAIL_FLAG_DELETED',       0x0002);
+  define('MAIL_FLAG_DRAFT',         0x0004);
+  define('MAIL_FLAG_FLAGGED',       0x0008);
+  define('MAIL_FLAG_RECENT',        0x0010);
+  define('MAIL_FLAG_SEEN',          0x0020);
+  define('MAIL_FLAG_USER',          0x0030);
+
+  // Priorities
+  define('MAIL_PRIORITY_LOW',       0x0005);
+  define('MAIL_PRIORITY_NORMAL',    0x0003);
+  define('MAIL_PRIORITY_HIGH',      0x0001);
+  
+  // Recipient type for addRecipient, addRecipients and getRecipients
+  define('TO',  'to');
+  define('CC',  'cc');
+  define('BCC', 'bcc');
+
+  // Common Header
+  define('HEADER_FROM',         'From');
+  define('HEADER_TO',           'To');
+  define('HEADER_CC',           'Cc');
+  define('HEADER_BCC',          'Bcc');
+  define('HEADER_SUBJECT',      'Subject');
+  define('HEADER_PRIORITY',     'X-Priority');
+  define('HEADER_ENCODING',     'Content-Transfer-Encoding');
+  define('HEADER_CONTENTTYPE',  'Content-Type');
+  define('HEADER_DATE',         'Date');
+  define('HEADER_MIMEVER',      'Mime-Version');
+  
+  
   /**
    * This class models an email message.
    *
@@ -37,32 +69,7 @@
    * @purpose  Provide a basic e-mail message (single-part)
    */
   class Message extends Object {
-    const
-      MAIL_FLAG_ANSWERED = 0x0001,
-      MAIL_FLAG_DELETED = 0x0002,
-      MAIL_FLAG_DRAFT = 0x0004,
-      MAIL_FLAG_FLAGGED = 0x0008,
-      MAIL_FLAG_RECENT = 0x0010,
-      MAIL_FLAG_SEEN = 0x0020,
-      MAIL_FLAG_USER = 0x0030,
-      MAIL_PRIORITY_LOW = 0x0005,
-      MAIL_PRIORITY_NORMAL = 0x0003,
-      MAIL_PRIORITY_HIGH = 0x0001,
-      TO = 'to',
-      CC = 'cc',
-      BCC = 'bcc',
-      HEADER_FROM = 'From',
-      HEADER_TO = 'To',
-      HEADER_CC = 'Cc',
-      HEADER_BCC = 'Bcc',
-      HEADER_SUBJECT = 'Subject',
-      HEADER_PRIORITY = 'X-Priority',
-      HEADER_ENCODING = 'Content-Transfer-Encoding',
-      HEADER_CONTENTTYPE = 'Content-Type',
-      HEADER_DATE = 'Date',
-      HEADER_MIMEVER = 'Mime-Version';
-
-    public 
+    public
       $headers          = array(),
       $body             = '',
       $to               = array(),
@@ -81,7 +88,7 @@
       $mimever          = '1.0',
       $date             = NULL;
       
-    public
+    protected
       $_headerlookup    = NULL;
       
     /**
@@ -202,8 +209,18 @@
      * @access  public
      * @param   mixed arg
      */
-    public function setDate(&$arg) {
+    public function setDate($arg) {
       if (is_a($arg, 'Date')) $this->date= $arg; else $this->date= new Date($arg);
+    }
+    
+    /**
+     * Retrieve message date
+     *
+     * @access  public
+     * @return  &util.Date
+     */
+    public function getDate() {
+      return $this->date;
     }
   
     /**
@@ -213,7 +230,7 @@
      * @param   string type one of the constants TO, CC, BCC
      * @param   &peer.mail.InternetAddress adr address to add
      */
-    public function addRecipient($type, &$adr) {
+    public function addRecipient($type, InternetAddress $adr) {
       $m= $this->$type;
       $m[]= $adr;
     }
@@ -225,7 +242,7 @@
      * @param   string type one of the constants TO, CC, BCC
      * @param   &peer.mail.InternetAddress[] adr addresses to add
      */
-    public function addRecipients($type, &$adr) {
+    public function addRecipients($type, $adr) {
       $this->$type= array_merge($this->$type, $adr);
     }
 
@@ -270,7 +287,7 @@
      * @access  public
      * @param   &peer.mail.InternetAddress[] adr addresses to add
      */
-    public function setFrom(&$adr) {
+    public function setFrom($adr) {
       $this->from= $adr;
     }
 
@@ -545,7 +562,7 @@
      * @param   &peer.mail.InternetAddress[] addrs
      * @return  string
      */
-    protected function _astr($t, &$addrs) {
+    protected function _astr($t, $addrs) {
       $l= '';
       for ($i= 0, $s= sizeof($addrs); $i < $s; $i++) {
         if (!is_a($addrs[$i], 'InternetAddress')) continue; // Ignore!
@@ -567,7 +584,7 @@
       if (!isset($q)) $q= QuotedPrintable::getCharsToEncode();
       $n= FALSE;
       for ($i= 0, $s= strlen($str); $i < $s; $i++) {
-        if (in_array($str{$i}, $q)) continue;
+        if (!in_array(ord($str{$i}), $q)) continue;
         $n= TRUE;
         break;
       }
@@ -599,7 +616,7 @@
         HEADER_PRIORITY     => $this->priority,
         HEADER_DATE         => $this->date->toString()
       )) as $key => $val) {
-        if (!empty($val)) $h.= $key.': '.self::_qstr($val)."\n";
+        if (!empty($val)) $h.= $key.': '.$val."\n";
       }
       return $h;
     }

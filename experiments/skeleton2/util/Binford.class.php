@@ -13,7 +13,7 @@
    * @see      http://www.binford.de/
    */
   class Binford extends Object { 
-    public 
+    public
       $poweredBy= 6100;
     
     /**

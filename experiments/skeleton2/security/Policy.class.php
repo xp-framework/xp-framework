@@ -10,6 +10,21 @@
     'security.Permission'
   );
 
+  // Parser states: General
+  define('PF_ST_INITIAL',  0x0000);
+  define('PF_ST_GRANT',    0x0001);
+  define('PF_ST_BREAK',    0x0999);
+  
+  // Parser states: Errors
+  define('PF_ST_EPARSE',   0x1000);
+  define('PF_ST_EGRANT',   0x1001);
+  define('PF_ST_EPERM',    0x1002);
+  define('PF_ST_ESTATE',   0x1003);
+  define('PF_ST_EREFLECT', 0x1004);
+  
+  // Parser states: Done
+  define('PF_ST_DONE',     0xFFFF);
+ 
   /**
    * Policy
    *
@@ -19,17 +34,6 @@
    * @see      xp://security.Permission
    */
   class Policy extends Object {
-    const
-      PF_ST_INITIAL = 0x0000,
-      PF_ST_GRANT = 0x0001,
-      PF_ST_BREAK = 0x0999,
-      PF_ST_EPARSE = 0x1000,
-      PF_ST_EGRANT = 0x1001,
-      PF_ST_EPERM = 0x1002,
-      PF_ST_ESTATE = 0x1003,
-      PF_ST_EREFLECT = 0x1004,
-      PF_ST_DONE = 0xFFFF;
-
     public
       $permissions  = array();
       
@@ -40,7 +44,7 @@
      * @param   &security.Permission p
      * @return  security.Permission the added permission
      */
-    public function addPermission(&$p) {
+    public function addPermission(Permission $p) {
       $this->permissions[]= $p;
       return $p;
     }
@@ -67,7 +71,7 @@
      * @param   &io.Stream stream
      * @return  &security.Policy policy
      */
-    public static function fromFile(&$stream) {
+    public static function fromFile(Stream $stream) {
       static $errors= array(
         PF_ST_EPARSE    => 'Parse error', 
         PF_ST_EGRANT    => 'Grant syntax error',

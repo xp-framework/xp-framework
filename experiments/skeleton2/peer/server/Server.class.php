@@ -34,7 +34,8 @@
    */
   class Server extends Object {
     public
-      $socket   = NULL;
+      $socket     = NULL,
+      $terminate  = FALSE;
       
     /**
      * Constructor
@@ -65,7 +66,9 @@
      * @access  public
      */
     public function shutdown() {
+      $this->server->terminate= TRUE;
       $this->socket->close();
+      $this->server->terminate= FALSE;
     }
     
     /**
@@ -75,7 +78,7 @@
      * @param   &peer.server.ConnectionListener listener
      * @return  &peer.server.ConnectionListener the added listener
      */
-    public function addListener(&$listener) {
+    public function addListener(ConnectionListener $listener) {
       $this->listeners[]= $listener;
       return $listener;
     }
@@ -86,7 +89,7 @@
      * @access  protected
      * @param   &peer.server.ConnectionEvent event
      */
-    protected function notify(&$event) {
+    protected function notify(ConnectionEvent $event) {
       for ($i= 0, $s= sizeof($this->listeners); $i < $s; $i++) {
         $this->listeners[$i]->{$event->type}($event);
       }
@@ -100,7 +103,10 @@
     public function service() {
       if (!$this->socket->isConnected()) return FALSE;
       
-      while ($m= $this->socket->accept()) {
+      while (!$this->terminate) {
+        if (!($m= $this->socket->accept())) continue;
+        
+        // Have connection
         $m->setBlocking(TRUE);
         self::notify(new ConnectionEvent(EVENT_CONNECTED, $m));
         

@@ -44,7 +44,7 @@
      * @param   int maxdepth
      * @throws  ElementNotFoundException
      */
-    private function _recurse($path, $root, &$response, $maxdepth) {
+    private function _recurse($path, $root, WebdavPropFindResponse $response, $maxdepth) {
       $realpath= $this->base.$path;
       if (!file_exists($realpath)) {
         throw (new ElementNotFoundException($path.' not found'));
@@ -210,7 +210,7 @@
      * @return  bool new
      * @throws  ElementNotFoundException
      */
-    public function put($filename, &$data) {
+    public function put($filename, $data) {
       if (is_dir($this->base.$filename)) {
         throw (new OperationNotAllowedException($filename.' cannot be written (not a file)'));
       }
@@ -272,7 +272,7 @@
      * @throws  OperationFailedException
      * @throws  ElementNotFoundException
      */
-    public function proppatch(&$request) {
+    public function proppatch(WebdavPropPatcRequest $request) {
       if (!is_a($request, 'WebdavPropPatchRequest')) {
         throw (new IllegalArgumentException(
           'Parameter request passed of wrong type ('.xp::typeOf($request).')'
@@ -313,7 +313,7 @@
      * @param   &org.webdav.xml.WebdavMultistatus response
      * @return  &org.webdav.xml.WebdavMultistatus response
      */
-    public function propfind(&$request, &$response) {
+    public function propfind(WebdavPropFindRequest $request, WebdavMultistatus $response) {
       if (
         (!is_a($request, 'WebdavPropFindRequest')) ||
         (!is_a($response, 'WebdavMultistatus'))

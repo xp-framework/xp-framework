@@ -55,7 +55,7 @@
      * @param   string error default 'datenotequal'
      * @return  bool
      */
-    private function assertDateEquals(&$d, $str, $error= 'datenotequal') {
+    private function assertDateEquals(Date $d, $str, $error= 'datenotequal') {
       return self::assertEquals($d->format('%Y-%m-%d %H:%M:%S'), $str, $error);
     }
     

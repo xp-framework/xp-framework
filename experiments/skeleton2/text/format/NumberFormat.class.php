@@ -35,7 +35,7 @@
      * @return  string
      * @throws  FormatException
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       if (!is_numeric($argument)) {
         throw (new FormatException('Argument '.$argument.' of type "'.gettype($argument).'" is not a number'));
       }

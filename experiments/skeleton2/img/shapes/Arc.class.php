@@ -45,7 +45,7 @@
      *          IMG_ARC_NOFILL
      *          IMG_ARC_EDGED
      */ 
-    public function __construct(&$col, $cx, $cy, $w, $h, $s= 0, $e= 360, $fill= FALSE) {
+    public function __construct(Color $col, $cx, $cy, $w, $h, $s= 0, $e= 360, $fill= FALSE) {
       $this->col= $col;
       $this->cx= $cx;
       $this->cy= $cy;
@@ -63,7 +63,7 @@
      * @access  public
      * @param   &resource hdl an image resource
      */
-    public function draw(&$hdl) {
+    public function draw($hdl) {
       if (FALSE !== $this->fill) return imagefilledarc(
         $hdl,
         $this->cx,

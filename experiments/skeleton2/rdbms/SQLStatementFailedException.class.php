@@ -12,7 +12,7 @@
    * @purpose  SQL-Exception
    */
   class SQLStatementFailedException extends SQLException {
-    public 
+    public
       $sql  = '',
       $code = 0;
 

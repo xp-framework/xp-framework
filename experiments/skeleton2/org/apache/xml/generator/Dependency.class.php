@@ -56,7 +56,7 @@
      * @param   &org.apache.xml.generator.Generator generator
      * @return  bool success
      */
-    public abstract function generate(&$generator) ;
+    public abstract function generate(Generator $generator);
   
     /**
      * Process this dependency
@@ -66,7 +66,7 @@
      * @param   string params
      * @return  string xml
      */
-    public abstract function process($params) ;
+    public abstract function process($params);
   
   }
 ?>

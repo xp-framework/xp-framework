@@ -37,7 +37,7 @@
      * @param   
      * @return  
      */
-    public function generate(&$generator) {
+    public function generate($generator) {
       $generator->processor->setXMLFile($this->name);
 
       // Run the XML/XSL transformation

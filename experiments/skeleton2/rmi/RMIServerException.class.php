@@ -14,7 +14,7 @@
    * @purpose  Exception
    */
   class RMIServerException extends RMIException {
-    public 
+    public
       $cause    = NULL;
   
     /**
@@ -24,7 +24,7 @@
      * @param   string message
      * @param   &lang.Exception cause
      */
-    public function __construct($message, &$cause) {
+    public function __construct($message, XPException $cause) {
       $this->cause= $cause;
       parent::__construct($message);
     }

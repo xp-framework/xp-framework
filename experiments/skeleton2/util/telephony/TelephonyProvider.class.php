@@ -9,7 +9,8 @@
     'util.telephony.TelephonyAddressParser',
     'util.telephony.TelephonyTerminal',
     'util.telephony.TelephonyCall',
-    'util.telephony.TelephonyException'
+    'util.telephony.TelephonyException',
+    'util.log.Traceable'
   );
 
   /**
@@ -40,8 +41,8 @@
    *   $c->setTrace($cat);
    *   try(); {
    *     $c->connect();
-   *     $term= $c->getTerminal($c->getAddress('int:'.$p->value(2)));
-   *     $call= $c->createCall($term, $c->getAddress('ext:'.$p->value(3)));
+   *     $term= $c->getTerminal($c->getAddress($p->value(2)));
+   *     $call= $c->createCall($term, $c->getAddress($p->value(3)));
    *     $c->releaseTerminal($term);
    *     $c->close();
    *   } if (catch('Exception', $e)) {
@@ -52,16 +53,13 @@
    *   printf("Done\n");
    * </code>
    *
-   * @purpose Provides an interface to telephony
-   * @see     http://java.sun.com/products/jtapi/jtapi-1.3/html/overview-summary.html
+   * @purpose  Provides an interface to telephony
+   * @see      http://java.sun.com/products/jtapi/jtapi-1.3/html/overview-summary.html
    */
-  class TelephonyProvider extends Object {
+  class TelephonyProvider extends Object implements Traceable {
     public
       $cat  = NULL;
     
-    public
-      $_addressParserDefaults= array();
-      
     /**
      * Set a LogCategory for tracing communication
      *
@@ -70,8 +68,8 @@
      *          information will be passed to or NULL to stop tracing
      * @throws  IllegalArgumentException in case a of a type mismatch
      */
-    public function setTrace(&$cat) {
-      if (NULL !== $cat && !is_a($cat, 'LogCategory')) {
+    public function setTrace(LogCategory $cat) {
+      if (NULL !== $cat && !is('LogCategory', $cat)) {
         throw (new IllegalArgumentException('Argument passed is not a LogCategory'));
       }
       
@@ -85,7 +83,8 @@
      * @param   mixed* arguments
      */
     protected function trace() {
-      if (NULL == $this->cat) return;
+      if (!$this->cat) return;
+
       $args= func_get_args();
       call_user_func_array(array($this->cat, 'debug'), $args);
     }
@@ -93,9 +92,10 @@
     /**
      * Connect and initiate the communication
      *
+     * @model   abstract
      * @access  public
      */
-    public function connect() { }
+    public abstract function connect();
 
     /**
      * Close connection and end the communication
@@ -112,68 +112,39 @@
      * @return  &util.telephony.TelephonyAddress 
      */
     public function getAddress($number) { 
-      try {
-        $p= new TelephonyAddressParser($this->_addressParserDefaults);
-        $ta= $p->parseNumber ($number);
-      } catch (FormatException $e) {
-        throw  ($e);
-      }
-      
-      return $ta;
+      return new TelephonyAddress($number);
     }
     
     /**
      * Create a call
      *
+     * @model   abstract
      * @access  public
      * @param   &util.telephony.TelephonyTerminal terminal
      * @param   &util.telephony.TelephonyAddress destination
-     * @throws  IllegalArgumentException in case of parameter type mismatch
      * @return  &util.telephony.TelephonyCall a call object
      */
-    public function createCall(&$terminal, &$destination) {
-      if (!is_a($terminal, 'TelephonyTerminal')) {
-        trigger_error('type: '.gettype($terminal), E_USER_WARNING);
-        throw (new IllegalArgumentException('Terminal parameter is not a TelephonyTerminal'));
-      }
-      if (!is_a($destination, 'TelephonyAddress')) {
-        trigger_error('type: '.gettype($destination), E_USER_WARNING);
-        throw (new IllegalArgumentException('Destination parameter is not a TelephonyAddress'));
-      }
-      return NULL;
-    }
+    public abstract function createCall(TelephonyTerminal $terminal, TelephonyAddress $destination);
     
     /**
      * Get terminal
      *
+     * @model   abstract
      * @access  public
      * @param   &util.telephony.TelephonyAddress address
-     * @throws  IllegalArgumentException in case of parameter type mismatch
+     * @return  &util.telephony.TelephonyTerminal
      */
-    public function getTerminal(&$address) { 
-      if (!is_a($address, 'TelephonyAddress')) {
-        trigger_error('type: '.gettype($address), E_USER_WARNING);
-        throw (new IllegalArgumentException('Address parameter is not a TelephonyAddress'));
-      }
-      //if (TEL_ADDRESS_INTERNAL !== $address->getType()) {
-      //  return throw(new IllegalArgumentException('Terminals can only have internal addresses'));
-      //}
-      return NULL;
-    }
+    public abstract function getTerminal(TelephonyAddress $address);
     
     /**
      * Release terminal
      *
+     * @model   abstract
      * @access  public
      * @param   &util.telephony.TelephonyTerminal terminal
      * @return  bool success
      */
-    public function releaseTerminal(&$terminal) {
-      if (!is_a($terminal, 'TelephonyTerminal')) {
-        trigger_error('type: '.gettype($terminal), E_USER_WARNING);
-        throw (new IllegalArgumentException('Terminal parameter is not a TelephonyTerminal'));
-      }
-      return TRUE;
-    }
+    public abstract function releaseTerminal(TelephonyTerminal $terminal);
+
   }
 ?>

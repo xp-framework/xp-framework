@@ -70,7 +70,7 @@
    * @purpose  
    */
   class X509Certificate extends Certificate {
-    public
+    protected
       $_res=  NULL,
       $_info= array();
     
@@ -94,7 +94,7 @@
      * @param   util.Date date default NULL (date to check against, defaulting to now)
      * @return  bool TRUE if this certificate is valid for the given date
      */
-    public function checkValidity($date= NULL) {
+    public function checkValidity(Date $date= NULL) {
       if (NULL === $date) $date= new Date(time());
       return (
         ($date->getTime() >= $this->_info['validFrom_time_t']) ||

@@ -22,7 +22,7 @@
    * @purpose  Basic Authorization header
    */
   class BasicAuthorization extends Header {
-    public 
+    public
       $user = '',
       $pass = '';
     
@@ -40,13 +40,13 @@
     }
     
     /**
-     * Get header value
+     * Get header value representation
      *
      * @access  public
      * @return  string value
      */
-    public function getValue() {
+    public function getValueRepresentation() {
       return $this->value.' '.base64_encode($this->user.':'.$this->pass);
-     }
+    }
   }
 ?>

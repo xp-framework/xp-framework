@@ -21,7 +21,7 @@
      * @access  public
      * @param   &mixed arg
      */    
-    public function __construct(&$arg) {
+    public function __construct($arg) {
       
       if (is_object($arg)) {
         $this->date= new Date (VFormatParser::decodeDate($arg->_value));

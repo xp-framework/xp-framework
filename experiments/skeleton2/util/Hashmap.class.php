@@ -26,7 +26,8 @@
    * @purpose  Associative array wrapper class
    */
   class Hashmap extends Object {
-    public $_hash= array();
+    protected
+      $_hash= array();
 
     /**
      * Constructor
@@ -36,7 +37,6 @@
      */
     public function __construct($map= NULL) {
       if (is_array($map)) $this->_hash= $map;
-      
     }
     
     /**
@@ -46,20 +46,8 @@
      */
     public function __destruct() {
       unset($this->_hash);
-      
     }
 
-    /**
-     * Returns a shallow copy of this hashmap. Values are *not*
-     * cloned
-     *
-     * @access  public
-     * @return  util.Hashmap copy 
-     */
-    public function clone() {
-      return new Hashmap($this->_hash);
-    }
-    
     /**
      * Returns an iterator over the keys of this hashmap
      *
@@ -188,7 +176,7 @@
      * @param   bool recursive default FALSE Merge hashmaps recursively
      * @throws  IllegalArgumentException in case the parameter is neither an array nor a Hashmap
      */
-    public function merge(&$map, $recursive= FALSE) {
+    public function merge($map, $recursive= FALSE) {
       if (is_a($map, 'Hashmap')) {
         $h= $map->_hash;
       } elseif (is_array($map)) {
@@ -234,7 +222,7 @@
      * @param  bool strict default FALSE use strict checking.
      * @return mixed value TRUE if value exists, its key otherwise
      */     
-    public function containsValue(&$val, $strict= FALSE) {
+    public function containsValue($val, $strict= FALSE) {
       return array_search($val, $this->_hash, $strict);
     }
     
@@ -245,7 +233,7 @@
      * @param   scalar key
      * @param   &mixed value
      */
-    public function putref($key, &$value) {
+    public function putref($key, $value) {
       $this->_hash[$key]= $value;
     }
 
@@ -285,7 +273,7 @@
      * Returns size of the hashmap
      *
      * @access  public
-     * @param   int size
+     * @return  int size
      */
     public function size() {
       return sizeof(array_keys($this->_hash));
@@ -320,6 +308,22 @@
      */
     public function values() {
       return array_values($this->_hash);
+    }
+    
+    /**
+     * Compares two hashmaps and returns TRUE when equal.
+     *
+     * @access  public
+     * @param   &util.Hashmap hashmap to compare with
+     * @return  boolean isequal
+     * @throws  lang.IllegalArgumentException in case cmp is not a Hashmap
+     */
+    public function isEqual($cmp) {
+      if (!is('util.Hashmap', $cmp)) {
+        throw (new IllegalArgumentException('Argument is not a util.Hashmap'));
+      }
+        
+      return ($this->_hash === $cmp->_hash);
     }
     
     /**

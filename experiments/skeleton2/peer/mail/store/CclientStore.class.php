@@ -41,7 +41,7 @@
      * @return  bool
      * @throws  IllegalArgumentException
      */
-    protected function _supports($u, &$attr) {
+    protected function _supports($u, $attr) {
       throw (new IllegalArgumentException('Scheme "'.$u['scheme'].'" not recognized'));
     }
     
@@ -200,7 +200,7 @@
      * @throws  MessagingException in case opening the folder failed
      * @throws  IllegalAccessException in case there is already a folder open
      */
-    public function openFolder(&$f, $readonly= FALSE) {
+    public function openFolder(MailFolder $f, $readonly= FALSE) {
     
       // Is it already open?
       if ($this->currentfolder === $f->name) return TRUE;
@@ -239,7 +239,7 @@
      * @param   &peer.mail.MailFolder f
      * @return  bool success
      */
-    public function closeFolder(&$f) { 
+    public function closeFolder(MailFolder $f) { 
       $this->currentfolder= NULL;
       return TRUE;
     }
@@ -253,7 +253,7 @@
      * @param   string part
      * @return  string
      */
-    public function getMessagePart(&$f, $uid, $part) {
+    public function getMessagePart(MailFolder $f, $uid, $part) {
       return imap_fetchbody(
         $this->_hdl[0], 
         $uid, 
@@ -271,7 +271,7 @@
      * @see     php://imap_fetchstructure
      * @return  &object
      */
-    public function getMessageStruct(&$f, $uid) {
+    public function getMessageStruct(MailFolder $f, $uid) {
       return imap_fetchstructure(
         $this->_hdl[0], 
         $uid,
@@ -287,7 +287,7 @@
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    public function deleteMessage(&$f, &$msg) {
+    public function deleteMessage(MailFolder $f, Message $msg) {
       if (FALSE === imap_delete($this->_hdl[0], $msg->uid, FT_UID)) {
         trigger_error('UID: '.$msg->uid, E_USER_NOTICE);
         throw (new MessagingException(
@@ -308,7 +308,7 @@
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    public function undeleteMessage(&$f, &$msg) {
+    public function undeleteMessage(MailFolder $f, Message $msg) {
       if (FALSE === imap_undelete($this->_hdl[0], $msg->uid, FT_UID)) {
         trigger_error('UID: '.$msg->uid, E_USER_NOTICE);
         throw (new MessagingException(
@@ -330,7 +330,7 @@
      * @return  &peer.mail.Message[]
      * @throws  MessagingException
      */
-    public function getMessages(&$f) {
+    public function getMessages(MailFolder $f) {
       if (1 == func_num_args()) {
         $count= self::getMessageCount($f, 'messages');
         $msgnums= range(1, $count);
@@ -403,7 +403,7 @@
      * @param   string attr one of "message", "recent" or "unseen"
      * @return  int status
      */
-    public function getMessageCount(&$f, $attr) {
+    public function getMessageCount(MailFolder $f, $attr) {
       if (NULL === ($info= $this->cache->get(SKEY_INFO.SKEY_FOLDER.$f->name))) {
         if (FALSE === ($info= imap_status(
           $this->_hdl[0], 

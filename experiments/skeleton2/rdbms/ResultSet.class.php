@@ -49,7 +49,7 @@
      * @return  bool success
      * @throws  rdbms.SQLException
      */
-    public abstract function seek($offset) ;
+    public abstract function seek($offset);
 
     /**
      * Iterator function. Returns a rowset if called without parameter,
@@ -61,7 +61,7 @@
      * @param   string field default NULL
      * @return  mixed
      */
-    public abstract function next($field= NULL) ;
+    public abstract function next($field= NULL);
     
     /**
      * Close resultset and free result memory

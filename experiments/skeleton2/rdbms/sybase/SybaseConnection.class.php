@@ -34,12 +34,13 @@
      * Connect
      *
      * @access  public  
+     * @param   bool reconnect default FALSE
      * @return  bool success
      * @throws  rdbms.SQLConnectException
      */
-    public function connect() {
+    public function connect($reconnect= FALSE) {
       if (is_resource($this->handle)) return TRUE;  // Already connected
-      if (FALSE === $this->handle) return FALSE;    // Previously failed connecting
+      if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
       if ($this->flags & DB_PERSISTENT) {
         $this->handle= sybase_pconnect(
@@ -121,22 +122,28 @@
         
         // Type-based conversion
         if (is_a($args[$ofs], 'Date')) {
-          $arg= date('Y-m-d h:iA', $args[$ofs]->getTime());
+          $tok{$mod}= 'u';
+          $a= array($args[$ofs]->getTime());
         } elseif (is_a($args[$ofs], 'Object')) {
-          $arg= $args[$ofs]->toString();
+          $a= array($args[$ofs]->toString());
+        } elseif (is_array($args[$ofs])) {
+          $a= $args[$ofs];
         } else {
-          $arg= $args[$ofs];
+          $a= array($args[$ofs]);
         }
         
-        switch ($tok{0 + $mod}) {
-          case 'd': $r= is_null($arg) ? 'NULL' : intval($arg); break;
-          case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
-          case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
-          case 's': $r= is_null($arg) ? 'NULL' : '"'.str_replace('"', '""', $arg).'"'; break;
-          case 'u': $r= is_null($arg) ? 'NULL' : '"'.date ('Y-m-d h:iA', $arg).'"'; break;
-          default: $sql.= '%'.$tok; $i--; continue;
+        foreach ($a as $arg) {
+          switch ($tok{$mod}) {
+            case 'd': $r= is_null($arg) ? 'NULL' : sprintf('%.0f', $arg); break;
+            case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
+            case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
+            case 's': $r= is_null($arg) ? 'NULL' : '"'.str_replace('"', '""', $arg).'"'; break;
+            case 'u': $r= is_null($arg) ? 'NULL' : '"'.date ('Y-m-d h:iA', $arg).'"'; break;
+            default: $sql.= '%'.$tok; $i--; continue;
+          }
+          $sql.= $r.', ';
         }
-        $sql.= $r.substr($tok, 1 + $mod);
+        $sql= substr($sql, 0, -2).substr($tok, 1 + $mod);
       }
       return $sql;
     }
@@ -160,10 +167,12 @@
      * @return  mixed identity value
      */
     public function identity() { 
-      if (FALSE === ($r= self::query('select @@identity as i'))) {
+      if (!($r= self::query('select @@identity as i'))) {
         return FALSE;
       }
-      return $r->next('i');
+      $i= $r->next('i');
+      $this->log && $this->log->debug('Identity is', $i);
+      return $i;
     }
 
     /**
@@ -177,7 +186,7 @@
     public function insert() { 
       $args= func_get_args();
       $args[0]= 'insert '.$args[0];
-      if (FALSE === ($r= call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -196,7 +205,7 @@
     public function update() {
       $args= func_get_args();
       $args[0]= 'update '.$args[0];
-      if (FALSE === ($r= call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -214,7 +223,7 @@
     public function delete() { 
       $args= func_get_args();
       $args[0]= 'delete '.$args[0];
-      if (FALSE === ($r= call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -232,7 +241,7 @@
     public function select() { 
       $args= func_get_args();
       $args[0]= 'select '.$args[0];
-      if (FALSE === ($r= call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -291,7 +300,7 @@
      * @param   &rdbms.Transaction transaction
      * @return  &rdbms.Transaction
      */
-    public function begin(&$transaction) {
+    public function begin(Transaction $transaction) {
       if (FALSE === self::query('begin transaction xp_%c', $transaction->name)) {
         return FALSE;
       }

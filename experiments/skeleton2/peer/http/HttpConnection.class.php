@@ -16,8 +16,8 @@
    *       array('a' => 'b'),
    *       array(
    *         new Header('X-Binford', '6100 (more power)'),
-   *         new Cookie('test', 'foo'),
-   *         new BasicAuthorization('baz', 'bar')
+   *         new BasicAuthorization('baz', 'bar'),
+   *         'Cookie' => 'username=fred; lastvisit=2004-01-10'
    *       )
    *     );
    *     while (FALSE !== ($buf= $response->readData())) {
@@ -39,7 +39,7 @@
    * @purpose  Provide
    */
   class HttpConnection extends Object {
-    public 
+    public
       $request     = NULL,
       $response    = NULL,
       $auth        = NULL;
@@ -62,7 +62,7 @@
      * @access  protected
      * @param   &peer.URL object
      */
-    protected function _createRequest(&$url) {
+    protected function _createRequest($url) {
       $this->request= HttpRequestFactory::factory($url);
     }
     
@@ -99,11 +99,11 @@
      * Perform a GET request
      *
      * @access  public
-     * @param   mixed arg
+     * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    public function get($arg, $headers= array()) {
+    public function get($arg= NULL, $headers= array()) {
       return self::request(HTTP_GET, $arg, $headers);
     }
     
@@ -111,11 +111,11 @@
      * Perform a HEAD request
      *
      * @access  public
-     * @param   mixed arg
+     * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    public function head($arg, $headers= array()) {
+    public function head($arg= NULL, $headers= array()) {
       return self::request(HTTP_HEAD, $arg, $headers);
     }
     
@@ -123,11 +123,11 @@
      * Perform a POST request
      *
      * @access  public
-     * @param   mixed arg
+     * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    public function post($arg, $headers= array()) {
+    public function post($arg= NULL, $headers= array()) {
       return self::request(HTTP_POST, $arg, $headers);
     }
   }

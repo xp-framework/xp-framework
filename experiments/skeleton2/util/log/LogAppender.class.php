@@ -19,7 +19,7 @@
      * @access  public
      * @param   mixed* args
      */ 
-    public abstract function append() ;
+    public abstract function append();
  
     /**
      * Finalize this appender. This method is called
@@ -27,7 +27,7 @@
      * @model   abstract
      * @access  public
      */   
-    public abstract function finalize() ;
+    public abstract function finalize();
     
     /**
      * Retrieve a readable representation of a variable

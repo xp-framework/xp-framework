@@ -25,7 +25,7 @@
      * @param   &peer.Socket stream
      * @param   mixed data default NULL
      */
-    public function __construct($type, &$stream, $data= NULL) {
+    public function __construct($type, Socket $stream, $data= NULL) {
       $this->type= $type;
       $this->stream= $stream;
       $this->data= $data;

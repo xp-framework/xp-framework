@@ -9,26 +9,28 @@
     'org.cvshome.CVSInterfaceException'
   );
 
+  // Constants for CVS
+  define('CVS_ADDED',    0x0001);
+  define('CVS_UNKNOWN',  0x0002);
+  define('CVS_PATCHED',  0x0003);
+  define('CVS_UPDATED',  0x0004);
+  define('CVS_REMOVED',  0x0005);
+  define('CVS_MODIFIED', 0x0006);
+  define('CVS_CONFLICT', 0x0007);
+  define('CVS_UPTODATE', 0x0008);
+
+  
+  
   /**
    * Wraps CVS commands
    *
    * @purpose  Base class
    */
   class CVSInterface extends Object {
-    const
-      CVS_ADDED = 0x0001,
-      CVS_UNKNOWN = 0x0002,
-      CVS_PATCHED = 0x0003,
-      CVS_UPDATED = 0x0004,
-      CVS_REMOVED = 0x0005,
-      CVS_MODIFIED = 0x0006,
-      CVS_CONFLICT = 0x0007,
-      CVS_UPTODATE = 0x0008;
-
     public
       $cvsRoot= NULL;
     
-    public
+    protected
       $_CVS= 'cvs';
   
     /**

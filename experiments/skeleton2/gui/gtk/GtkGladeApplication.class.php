@@ -16,7 +16,7 @@
    * @purpose  Base class
    */  
   class GtkGladeApplication extends GtkApplication {
-    public 
+    public
       $glade        = NULL,
       $mainwin      = '';
 
@@ -28,7 +28,7 @@
      * @param   string gladefile location of the .glade-file
      * @param   string mainwin default 'window1'
      */
-    public function __construct(&$p, $gladefile, $mainwin= 'window1') {
+    public function __construct($p, $gladefile, $mainwin= 'window1') {
       if (!$this->glade= new GladeXML($gladefile)) {
         throw (new GuiException('Cannot read glade file '.$gladefile));
       }

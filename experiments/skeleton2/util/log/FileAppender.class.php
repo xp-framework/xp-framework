@@ -13,7 +13,7 @@
    * @purpose  Appender
    */  
   class FileAppender extends LogAppender {
-    public 
+    public
       $filename = '';
     
     /**

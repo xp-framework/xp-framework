@@ -13,12 +13,12 @@
    * @purpose  Wrap
    */
   class MultiPart extends MimePart {
-    public 
+    public
       $parts     = array(),
       $charset   = '',
       $boundary  = '';
       
-    public
+    protected
       $_ofs      = 0;
       
     /**
@@ -73,7 +73,7 @@
      * @param   &peer.mail.MimePart part
      * @throws  IllegalArgumentException if part argument is not a peer.mail.MimePart
      */
-    public function addPart(&$part) {
+    public function addPart(MimePart $part) {
       if (!is_a($part, 'MimePart')) {
         throw (new IllegalArgumentException(
           'Parameter part is not a peer.mail.MimePart (given: '.xp::typeOf($part).')'

@@ -33,7 +33,7 @@
      * @param   &io.File file
      * @return  &security.checksum.MD5
      */
-    public function fromFile(&$file) {
+    public function fromFile(File $file) {
       return new MD5(md5_file($file->uri));
     }
   }

@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  define('SESS_CREATE',    '__PHP_SessionCreatedAt');
+
   /**
    * A session provides a way of identifying users across a website
    * and having data associated to this person available on every page.
@@ -49,10 +51,7 @@
    * @purpose  Session
    */
   class HttpSession extends Object {
-    const
-      SESS_CREATE = '__PHP_SessionCreatedAt';
-
-    public 
+    public
       $id,
       $isNew=   FALSE;
       
@@ -159,7 +158,7 @@
      * @param   mixed& value Any data type
      * @throws  lang.IllegalStateException when session is invalid
      */
-    public function putValue($name, &$value) {
+    public function putValue($name, $value) {
       if (!self::isValid()) throw (new IllegalStateException('Session is invalid'));
       $_SESSION[$name]= serialize($value);
     }
@@ -198,7 +197,9 @@
      */
     public function removeValue($name) {
       if (!self::isValid()) throw (new IllegalStateException('Session is invalid'));
-      if (isset($_SESSION[$name])) unset($_SESSION[$name]);
+      if (isset($_SESSION[$name])) {
+        $_SESSION[$name]= NULL;
+      }
     }
     
     /**

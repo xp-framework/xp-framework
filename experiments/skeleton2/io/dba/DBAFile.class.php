@@ -9,6 +9,24 @@
     'io.dba.DBAIterator'
   );
 
+  // Open modes
+  define('DBO_READ',    'r');
+  define('DBO_WRITE',   'w');
+  define('DBO_CREATE',  'c');
+  define('DBO_TRUNC',   'n');
+  
+  // Handlers
+  define('DBH_GDBM',     'gdbm');
+  define('DBH_NDBM',     'ndbm');
+  define('DBH_DBM',      'dbm');
+  define('DBH_DB2',      'db2');
+  define('DBH_DB3',      'db3');
+  define('DBH_DB4',      'db4');
+  define('DBH_CDB',      'cdb');
+  define('DBH_CDBMAKE',  'cdb_make');
+  define('DBH_FLATFILE', 'flatfile');
+  define('DBH_INIFILE',  'inifile');
+
   /**
    * DBA File - abstraction layer of Berkeley DB style databases. Wraps
    * GDBM, NDBM, DBM, DB2, ... into one API.
@@ -43,27 +61,11 @@
    * @purpose  Access Berkeley DB style databases.
    */
   class DBAFile extends Object {
-    const
-      DBO_READ = 'r',
-      DBO_WRITE = 'w',
-      DBO_CREATE = 'c',
-      DBO_TRUNC = 'n',
-      DBH_GDBM = 'gdbm',
-      DBH_NDBM = 'ndbm',
-      DBH_DBM = 'dbm',
-      DBH_DB2 = 'db2',
-      DBH_DB3 = 'db3',
-      DBH_DB4 = 'db4',
-      DBH_CDB = 'cdb',
-      DBH_CDBMAKE = 'cdb_make',
-      DBH_FLATFILE = 'flatfile',
-      DBH_INIFILE = 'inifile';
-
     public
       $filename = '',
       $handler  = '';
 
-    public
+    protected
       $_fd      = NULL;
       
     /**
@@ -74,7 +76,7 @@
      * @param   const handler one of DBH_* handlers
      * @see     php://dba#dba.requirements Handler decriptions
      */
-    public function __construct($filename, const $handler) {
+    public function __construct($filename, $handler) {
       
       $this->filename= $filename;
       $this->handler= $handler;

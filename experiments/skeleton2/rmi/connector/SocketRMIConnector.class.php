@@ -29,7 +29,7 @@
      * @access  public
      * @param   &peer.Socket socket
      */
-    public function __construct(&$socket) {
+    public function __construct(Socket $socket) {
       $this->socket= $socket;
       parent::__construct();
     }
@@ -120,7 +120,7 @@
      * @return  &mixed value
      * @throws  rmi.RMIException to indicate failure
      */
-    public abstract function getValue(&$object, $name) ;
+    public abstract function getValue(RMIObject $object, $name);
     
     /**
      * Set a value by its name
@@ -131,7 +131,7 @@
      * @param   string name
      * @param   &mixed value
      */
-    public abstract function setValue(&$object, $name, &$value) ;
+    public abstract function setValue(RMIObject $object, $name, $value);
     
     /**
      * Invoke a method
@@ -143,7 +143,7 @@
      * @param   &array args
      * @return  &mixed value
      */
-    public abstract function invokeMethod(&$object, $name, &$args) ;
+    public abstract function invokeMethod(RMIObject $object, $name, $args);
     
     /**
      * Destructor

@@ -4,16 +4,16 @@
  * $Id$
  */
 
+  // Defines for menus
+  define('MENU_WANT_LEFTCLICK',     1);
+  define('MENU_WANT_RIGHTCLICK',    3);
+
   /**
    * Menu
    *
    * @purpose  Wrapper for GtkMenu
    */
   class GtkMenuWidget extends Object {
-    const
-      MENU_WANT_LEFTCLICK = 1,
-      MENU_WANT_RIGHTCLICK = 3;
-
     public
       $menu   = NULL;
     

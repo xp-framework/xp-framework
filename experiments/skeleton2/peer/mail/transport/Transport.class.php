@@ -4,15 +4,20 @@
  * $Id$
  */
 
-  uses('peer.mail.transport.TransportException');
+  uses(
+    'peer.mail.transport.TransportException',
+    'util.log.Traceable'
+  );
 
   /**
    * Abstract base class for mail transport
    *
    * @purpose  Provide an interface
    */
-  class Transport extends Object {
-  
+  class Transport extends Object implements Traceable {
+    public
+      $cat    = NULL;
+
     /**
      * Connect to this transport
      *
@@ -35,7 +40,7 @@
      * @param   &peer.mail.Message message the Message object to send
      * @throws  TransportException to indicate an error occured
      */
-    public function send(&$message) { }
+    public function send(Message $message) { }
     
     /**
      * Set a LogCategory for tracing communication
@@ -45,7 +50,7 @@
      *          information will be passed to or NULL to stop tracing
      * @throws  IllegalArgumentException in case a of a type mismatch
      */
-    public function setTrace(&$cat) {
+    public function setTrace(LogCategory $cat) {
       if (NULL !== $cat && !is_a($cat, 'LogCategory')) {
         throw (new IllegalArgumentException('Argument passed is not a LogCategory'));
       }
@@ -64,5 +69,6 @@
       $args= func_get_args();
       call_user_func_array(array($this->cat, 'debug'), $args);
     }
+
   }
 ?>

@@ -15,7 +15,8 @@
    * @ext   xslt
    */
   class XPath extends XML {
-    public $_proc= NULL;
+    protected
+      $_proc= NULL;
     
     public function __construct($params= NULL) {
       XML::__construct();

@@ -20,7 +20,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
+    public function setTrace(LogCategory $cat) {
       $this->cat= $cat;
     }
  
@@ -30,7 +30,7 @@
      * @access  public
      * @param   &xml.soap.SOAPMessage message
      */
-    public function send(&$message) { }
+    public function send(SOAPMessage $message) { }
    
     /**
      * Retrieve the answer

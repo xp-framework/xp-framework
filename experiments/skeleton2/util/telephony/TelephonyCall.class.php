@@ -9,7 +9,7 @@
    *
    */
   class TelephonyCall extends Object {
-    public 
+    public
       $origin       = NULL,
       $destination  = NULL;
       
@@ -20,7 +20,7 @@
      * @param   &util.telephony.TelephonyAddress origin
      * @param   &util.telephony.TelephonyAddress destination
      */
-    public function __construct(&$origin, &$destination) {
+    public function __construct(TelephonyAddress $origin, TelephonyAddress $destination) {
       $this->origin= $origin;
       $this->destination= $destination;
       

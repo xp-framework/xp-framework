@@ -10,18 +10,28 @@
    * @purpose  Exception
    */
   class SOAPFaultException extends XPException {
-    public 
+    public
       $fault= NULL; 
-      
+
     /**
      * Constructor
      *
      * @access  public
      * @param   &xml.soap.SOAPFault fault
      */
-    public function __construct(&$fault) {
+    public function __construct(SOAPFault $fault) {
       $this->fault= $fault;
       parent::__construct($this->fault->faultstring);
+    }
+
+    /**
+     * Get Fault
+     *
+     * @access  public
+     * @return  &xml.soap.SOAPFault
+     */
+    public function getFault() {
+      return $this->fault;
     }
     
     /**

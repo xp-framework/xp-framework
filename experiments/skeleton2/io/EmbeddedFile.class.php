@@ -17,7 +17,7 @@
    * @ext     overload
    */  
   class EmbeddedFile extends Object {
-    public
+    protected
       $_stream=   NULL;
 
     /**
@@ -59,7 +59,7 @@
      * @param   string name
      * @param   &mixed value
      */    
-    public function __set($name, &$value) {
+    public function __set($name, $value) {
       $this->_stream->{$name}= $value;
     }
 
@@ -72,7 +72,7 @@
      * @param   &mixed return
      * @return  boolean
      */    
-    public function __call($method, $params, &$return) {
+    public function __call($method, $params, $return) {
       $return= call_user_func_array (array (&$this->_stream, $method), $params);
       return TRUE;
     }

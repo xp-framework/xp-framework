@@ -26,7 +26,7 @@
      * @param   int x
      * @param   int y
      */ 
-    public function __construct(&$col, &$font, $text, $x, $y) {
+    public function __construct(Font $col, $font, $text, $x, $y) {
       $this->col= $col;
       $this->font= $font;
       $this->text= $text;
@@ -41,7 +41,7 @@
      * @access  public
      * @param   &resource hdl an image resource
      */
-    public function draw(&$hdl) {
+    public function draw($hdl) {
       return $this->font->drawtext(
         $hdl, 
         $this->col, 

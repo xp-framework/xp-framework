@@ -21,7 +21,7 @@
       $folderName,
       $activeMailbox;
       
-    public 
+    public
       $msg,
       $ptr;
     
@@ -77,7 +77,7 @@
      * @access public
      * @param IMAPClient clt
      */
-    public function setIMAP(&$imap) {
+    public function setIMAP($imap) {
       $this->imap= $imap;
     }
 

@@ -9,6 +9,15 @@
     'org.dict.DictDefinitionEntry'
   );
 
+  define('DICT_STRATEGY_SUBSTRING', 'substring');
+  define('DICT_STRATEGY_EXACT',     'exact');
+  define('DICT_STRATEGY_PREFIX',    'prefix');
+  define('DICT_STRATEGY_SUFFIX',    'suffix');
+  define('DICT_STRATEGY_RE',        're');
+  define('DICT_STRATEGY_REGEXP',    'regexp');
+  define('DICT_STRATEGY_SOUNDEX',   'soundex');
+  define('DICT_STRATEGY_LEV',       'lev');
+  
   /**
    * The Dictionary Server Protocol (DICT) is a TCP transaction based 
    * query/response protocol that allows a client to access dictionary 
@@ -35,20 +44,10 @@
    * @purpose  Implement DICT
    */
   class DictClient extends Object {
-    const
-      DICT_STRATEGY_SUBSTRING = 'substring',
-      DICT_STRATEGY_EXACT = 'exact',
-      DICT_STRATEGY_PREFIX = 'prefix',
-      DICT_STRATEGY_SUFFIX = 'suffix',
-      DICT_STRATEGY_RE = 're',
-      DICT_STRATEGY_REGEXP = 'regexp',
-      DICT_STRATEGY_SOUNDEX = 'soundex',
-      DICT_STRATEGY_LEV = 'lev';
-
     public
       $info= '';
       
-    public
+    protected
       $_sock= NULL;
       
     /**

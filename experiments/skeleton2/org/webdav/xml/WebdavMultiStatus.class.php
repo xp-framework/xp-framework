@@ -9,6 +9,8 @@
     'util.Date'
   );
 
+  define('WEBDAV_COLLECTION',   'collection');
+
   /**
    * PropFind response XML
    *
@@ -38,9 +40,6 @@
    * </pre>
    */
   class WebdavMultiStatus extends Tree {
-    const
-      WEBDAV_COLLECTION = 'collection';
-
     
     /**
      * Constructor
@@ -61,7 +60,7 @@
      * @access  public
      * @param   &org.webdav.WebdavObject o
      */
-    public function addEntry(&$o) {
+    public function addEntry(WebdavObject $o) {
       $e= $this->root->addChild(new Node('D:response', NULL, array(
         'xmlns:P' => 'http://apache.org/dav/props/'
       )));
@@ -91,7 +90,7 @@
         $o->contentType= 'httpd/unix-directory';
         $o->contentLength= 0;
         $o->executable= FALSE;
-       }
+      }
       
       // Additional properties
       foreach (array_merge_recursive(array(

@@ -4,43 +4,42 @@
  * $Id$
  */
 
+  define('DB_ATTRTYPE_BINARY',         0x0000);             
+  define('DB_ATTRTYPE_BIT',            0x0001);               
+  define('DB_ATTRTYPE_CHAR',           0x0002);              
+  define('DB_ATTRTYPE_DATETIME',       0x0003);            
+  define('DB_ATTRTYPE_DATETIMN',       0x0004);            
+  define('DB_ATTRTYPE_DECIMAL',        0x0005);             
+  define('DB_ATTRTYPE_DECIMALN',       0x0006);            
+  define('DB_ATTRTYPE_FLOAT',          0x0007);             
+  define('DB_ATTRTYPE_FLOATN',         0x0008);            
+  define('DB_ATTRTYPE_IMAGE',          0x0009);             
+  define('DB_ATTRTYPE_INT',            0x000A);               
+  define('DB_ATTRTYPE_INTN',           0x000B);              
+  define('DB_ATTRTYPE_MONEY',          0x000C);             
+  define('DB_ATTRTYPE_MONEYN',         0x000D);            
+  define('DB_ATTRTYPE_NCHAR',          0x000E);             
+  define('DB_ATTRTYPE_NUMERIC',        0x000F);             
+  define('DB_ATTRTYPE_NUMERICN',       0x0010);            
+  define('DB_ATTRTYPE_NVARCHAR',       0x0011);            
+  define('DB_ATTRTYPE_REAL',           0x0012);              
+  define('DB_ATTRTYPE_SMALLDATETIME',  0x0013);         
+  define('DB_ATTRTYPE_SMALLINT',       0x0014);         
+  define('DB_ATTRTYPE_SMALLMONEY',     0x0015);       
+  define('DB_ATTRTYPE_SYSNAME',        0x0016);          
+  define('DB_ATTRTYPE_TEXT',           0x0017);           
+  define('DB_ATTRTYPE_TIMESTAMP',      0x0018);        
+  define('DB_ATTRTYPE_TINYINT',        0x0019);          
+  define('DB_ATTRTYPE_VARBINARY',      0x001A);        
+  define('DB_ATTRTYPE_VARCHAR',        0x001B);          
+  
   /**
    * Represents a table's attribute
    *
    * @see   xp://rdbms.DBTable
    */
   class DBTableAttribute extends Object {
-    const
-      DB_ATTRTYPE_BINARY = 0x0000,
-      DB_ATTRTYPE_BIT = 0x0001,
-      DB_ATTRTYPE_CHAR = 0x0002,
-      DB_ATTRTYPE_DATETIME = 0x0003,
-      DB_ATTRTYPE_DATETIMN = 0x0004,
-      DB_ATTRTYPE_DECIMAL = 0x0005,
-      DB_ATTRTYPE_DECIMALN = 0x0006,
-      DB_ATTRTYPE_FLOAT = 0x0007,
-      DB_ATTRTYPE_FLOATN = 0x0008,
-      DB_ATTRTYPE_IMAGE = 0x0009,
-      DB_ATTRTYPE_INT = 0x000A,
-      DB_ATTRTYPE_INTN = 0x000B,
-      DB_ATTRTYPE_MONEY = 0x000C,
-      DB_ATTRTYPE_MONEYN = 0x000D,
-      DB_ATTRTYPE_NCHAR = 0x000E,
-      DB_ATTRTYPE_NUMERIC = 0x000F,
-      DB_ATTRTYPE_NUMERICN = 0x0010,
-      DB_ATTRTYPE_NVARCHAR = 0x0011,
-      DB_ATTRTYPE_REAL = 0x0012,
-      DB_ATTRTYPE_SMALLDATETIME = 0x0013,
-      DB_ATTRTYPE_SMALLINT = 0x0014,
-      DB_ATTRTYPE_SMALLMONEY = 0x0015,
-      DB_ATTRTYPE_SYSNAME = 0x0016,
-      DB_ATTRTYPE_TEXT = 0x0017,
-      DB_ATTRTYPE_TIMESTAMP = 0x0018,
-      DB_ATTRTYPE_TINYINT = 0x0019,
-      DB_ATTRTYPE_VARBINARY = 0x001A,
-      DB_ATTRTYPE_VARCHAR = 0x001B;
-
-    public 
+    public
       $name=        '',
       $type=        -1,
       $ident=       FALSE,
@@ -61,8 +60,15 @@
      * @param   int precision default 0,
      * @param   int scale default 0
      */
-    public function __construct($name, $type, $identity= FALSE, $nullable= FALSE, 
-               $length= 0, $precision= 0, $scale= 0) {
+    public function __construct(
+      $name, 
+      $type, 
+      $identity= FALSE, 
+      $nullable= FALSE, 
+      $length= 0, 
+      $precision= 0, 
+      $scale= 0
+    ) {
       $this->name= $name;
       $this->type= $type;
       $this->identity= $identity;

@@ -47,7 +47,7 @@
    * @see org.apache.HttpScriptlet
    */
   class ErrorDocument extends Object {
-    public 
+    public
       $statusCode,
       $language,
       $message,

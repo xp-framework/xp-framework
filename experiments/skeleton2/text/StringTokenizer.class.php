@@ -29,7 +29,9 @@
    * @see php://strtok
    */
   class StringTokenizer extends Object {
-    public $delim, $tok;
+    public
+      $delim,
+      $tok;
     
     /**
      * Constructor
@@ -65,5 +67,5 @@
       $this->tok= strtok($this->delim);
       return $tok;
     }
- }
+  }
 ?>

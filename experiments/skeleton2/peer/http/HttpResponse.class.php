@@ -15,9 +15,10 @@
       $statuscode    = 0,
       $message       = '',
       $version       = '',
-      $headers       = array();
+      $headers       = array(),
+      $chunked       = NULL;
     
-    public
+    protected
       $_headerlookup = array();
       
     /**
@@ -26,7 +27,7 @@
      * @access  public
      * @param   &lang.Object stream
      */
-    public function __construct(&$stream) {
+    public function __construct(Object $stream) {
       $this->stream= $stream;
       
     }
@@ -39,19 +40,18 @@
      */    
     private function _readstatus() {
       $s= chop($this->stream->read());
-      if (3 != ($r= sscanf(
+      if (3 > ($r= sscanf(
         $s, 
-        'HTTP/%d.%d %3d', 
+        "HTTP/%d.%d %3d %[^\r]",
         $major, 
         $minor, 
-        $this->statuscode
+        $this->statuscode,
+        $this->message
       ))) {
         throw (new FormatException('"'.$s.'" is not a valid HTTP response ['.$r.']'));
       }
       
-      $this->message= substr($s, 12);
       $this->version= $major.'.'.$minor;
-      
       return TRUE;
     }
     
@@ -82,6 +82,9 @@
         list($k, $v)= explode(': ', $l, 2);
         $this->headers[$k]= $v;
       }
+
+      // Check for chunked transfer encoding
+      $this->chunked= (bool)stristr(self::getHeader('Transfer-Encoding'), 'chunked');
       
       return TRUE;
     }
@@ -95,32 +98,54 @@
      * @return  string buf or FALSE to indicate EOF
      */
     public function readData($size= 8192, $binary= FALSE) {
-      static $chunked;
-      
       if (!self::_readhead()) return FALSE;        // Read head if not done before
       if ($this->stream->eof()) {                   // EOF, return FALSE to indicate end
         $this->stream->close();
-        $this->stream->__destruct();
-        unset($this->stream);
+        delete($this->stream);
         return FALSE;
       }
-      if (!isset($chunked)) {                       // Check for "chunked"
-        $chunked= stristr(self::getHeader('Transfer-Encoding'), 'chunked');
+      
+      if (!$this->chunked) {
+        $func= $binary ? 'readBinary' : 'read';
+        if (!($buf= $this->stream->$func($size))) return FALSE;
+
+        return $buf;
       }
-      
-      $func= $binary ? 'readBinary' : 'read';
-      if (FALSE === ($buf= $this->stream->$func($size))) return FALSE;
-      
-      // Handle chunked
-      if (
-        $chunked &&
-        !$binary && 
-        preg_match('/^([0-9a-fA-F]+)(( ;.*)| )?\r\n$/', $buf, $regs)
-      ) {
-        return self::readData($size, $binary);
+
+      // Handle chunked transfer encoding. In chunked transfer encoding,
+      // a hexadecimal number followed by optional text is on a line by
+      // itself. The line is terminated by \r\n. The hexadecimal number
+      // indicates the size of the chunk. The first chunk indicator comes 
+      // immediately after the headers. Note: We assume that a chunked 
+      // indicator line will never be longer than 1024 bytes. We ignore
+      // any chunk extensions. We ignore the size and boolean parameters
+      // to this method completely to ensure functionality. For more 
+      // details, see RFC 2616, section 3.6.1
+      if (!($buf= $this->stream->read(1024))) return FALSE;
+      if (!(sscanf($buf, "%x%s\r\n", $chunksize, $extension))) {
+        throw (new IOException(sprintf(
+          'Chunked transfer encoding: Indicator line "%s" invalid', 
+          addcslashes($buf, "\0..\17")
+        )));
+        return FALSE;
       }
-      
-      return $buf;
+
+      // A chunk of size 0 means we're at the end of the document. We 
+      // ignore any trailers.
+      if (0 == $chunksize) return FALSE;
+
+      // A chunk is terminated by \r\n, so add 2 to the chunksize. We will
+      // trim these characters off later.
+      $chunksize+= 2;
+
+      // Read up until end of chunk
+      $buf= '';
+      do {
+        if (!($data= $this->stream->readBinary($chunksize- strlen($buf)))) return FALSE;
+        $buf.= $data;
+      } while (strlen($buf) < $chunksize);
+
+      return rtrim($buf, "\r\n");
     }
     
     /**
@@ -128,14 +153,13 @@
      *
      * Example:
      * <pre>
-     * peer.http.HttpResponse {
-     *   HTTP/1.1 300  Multiple Choices
-     *   [Date                ] Sat, 01 Feb 2003 01:27:26 GMT
-     *   [Server              ] Apache/1.3.27 (Unix)
-     *   [Connection          ] close
-     *   [Transfer-Encoding   ] chunked
-     *   [Content-Type        ] text/html; charset=iso-8859-1
-     * }
+     *   peer.http.HttpResponse (HTTP/1.1 300 Multiple Choices) {
+     *     [Date                ] Sat, 01 Feb 2003 01:27:26 GMT
+     *     [Server              ] Apache/1.3.27 (Unix)
+     *     [Connection          ] close
+     *     [Transfer-Encoding   ] chunked
+     *     [Content-Type        ] text/html; charset=iso-8859-1
+     *   }
      * </pre>
      *
      * @access  public
@@ -149,7 +173,7 @@
         $h.= sprintf("  [%-20s] %s\n", $k, $v);
       }
       return sprintf(
-        "%s {\n  HTTP/%s %3d %s\n%s}",
+        "%s (HTTP/%s %3d %s) {\n%s}",
         self::getClassName(),
         $this->version,
         $this->statuscode,

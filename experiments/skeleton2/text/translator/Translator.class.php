@@ -19,7 +19,7 @@
      * @param   string sentence
      * @return  string translation
      */  
-    public static function translate($string) ;
+    public static function translate($string);
 
   }
 ?>

@@ -6,6 +6,15 @@
 
   uses('util.Date');
 
+  define('CAL_SEC_HOUR',    3600);
+  define('CAL_SEC_DAY',     86400);
+  define('CAL_SEC_WEEK',    604800);
+  
+  define('CAL_DST_EU',      0x0000);
+  define('CAL_DST_US',      0x0001);
+  
+  
+  
   /**
    * Calendar class
    *
@@ -13,13 +22,6 @@
    * @purpose  Utility functions for date calculations
    */
   class Calendar extends Object {
-    const
-      CAL_SEC_HOUR = 3600,
-      CAL_SEC_DAY = 86400,
-      CAL_SEC_WEEK = 604800,
-      CAL_DST_EU = 0x0000,
-      CAL_DST_US = 0x0001;
-
 
     /**
      * Calculates start of DST (daylight savings time).
@@ -79,7 +81,7 @@
      * @param   array holidays default array() holidays to be included in calculation
      * @return  int number of workdays
      */
-    public function workdays(&$start, &$end, $holidays= array()) {
+    public function workdays(Date $start, Date $end, $holidays= array()) {
       $s= $start->getTime();
       $e= $end->getTime();
 
@@ -104,7 +106,7 @@
      * @param   &util.Date date
      * @return  &util.Date
      */
-    public static function midnight(&$date) {
+    public static function midnight(Date $date) {
       return new Date(mktime(0, 0, 0, $date->mon, $date->mday, $date->year));
     }
     
@@ -117,7 +119,7 @@
      * @param   &util.Date date
      * @return  &util.Date
      */
-    public static function monthBegin(&$date) {
+    public static function monthBegin(Date $date) {
       return new Date(mktime(0, 0, 0, $date->mon, 1, $date->year));
     }
 
@@ -130,7 +132,7 @@
      * @param   &util.Date date
      * @return  &util.Date
      */
-    public static function monthEnd(&$date) {
+    public static function monthEnd(Date $date) {
       return new Date(mktime(23, 59, 59, $date->mon+ 1, 0, $date->year));
     }
 
@@ -157,7 +159,7 @@
      * @return  int calendar week
      * @see     http://www.salesianer.de/util/kalwoch.html 
      */
-    public static function week(&$date) {
+    public static function week(Date $date) {
       $d= $date->getTime();
       $y= $date->year + 1;
       do {

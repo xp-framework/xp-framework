@@ -28,7 +28,7 @@
      * @param   &peer.irc.IRCConnection connection
      * @param   string data
      */
-    public abstract function onPings(&$connection, $data) ;
+    public abstract function onPings(IRCConnection $connection, $data);
 
     /**
      * Callback for when a connection to the IRC server has been 
@@ -41,7 +41,7 @@
      * @param   string server
      * @param   int port
      */
-    public abstract function onConnect(&$connection, $server, $port) ;
+    public abstract function onConnect(IRCConnection $connection, $server, $port);
 
     /**
      * Callback for when a connection to the IRC server has been 
@@ -55,7 +55,7 @@
      * @param   string server
      * @param   int port
      */
-    public abstract function onDisconnect(&$connection, $server, $port) ;
+    public abstract function onDisconnect(IRCConnection $connection, $server, $port);
     
     /**
      * Callback for server message MOTDSTART (375)
@@ -67,7 +67,7 @@
      * @param   string target whom the message is for
      * @param   string data
      */
-    public abstract function onMOTDStart(&$connection, $server, $target, $data) ;
+    public abstract function onMOTDStart(IRCConnection $connection, $server, $target, $data);
 
     /**
      * Callback for server message MOTD (372)
@@ -79,7 +79,7 @@
      * @param   string target whom the message is for
      * @param   string data
      */
-    public abstract function onMOTD(&$connection, $server, $target, $data) ;
+    public abstract function onMOTD(IRCConnection $connection, $server, $target, $data);
 
     /**
      * Callback for server message REPLY_ENDOFMOTD (376)
@@ -91,7 +91,7 @@
      * @param   string target whom the message is for
      * @param   string data
      */
-    public abstract function onEndOfMOTD(&$connection, $server, $target, $data) ;
+    public abstract function onEndOfMOTD(IRCConnection $connection, $server, $target, $data);
     
     /**
      * Callback for all other server messages
@@ -104,7 +104,7 @@
      * @param   string target whom the message is for
      * @param   string data
      */
-    public abstract function onServerMessage(&$connection, $server, $code, $target, $data) ;
+    public abstract function onServerMessage(IRCConnection $connection, $server, $code, $target, $data);
 
     /**
      * Callback for invitations. Note: Due to the limitations of the INVITE
@@ -123,7 +123,7 @@
      * @param   string who who is invited
      * @param   string channel invitation is for
      */
-    public abstract function onInvite(&$connection, $nick, $who, $channel) ;
+    public abstract function onInvite(IRCConnection $connection, $nick, $who, $channel);
 
     /**
      * Callback for kicks
@@ -143,7 +143,7 @@
      * @param   string who who was kicked
      * @param   string reason what reason the user was kicked for
      */
-    public abstract function onKicks(&$connection, $channel, $nick, $who, $reason) ;
+    public abstract function onKicks(IRCConnection $connection, $channel, $nick, $who, $reason);
 
     /**
      * Callback for quits
@@ -155,7 +155,7 @@
      * @param   string nick who quit
      * @param   string reason what reason the user supplied for quitting
      */
-    public abstract function onQuits(&$connection, $channel, $nick, $reason) ;
+    public abstract function onQuits(IRCConnection $connection, $channel, $nick, $reason);
 
     /**
      * Callback for nick changes
@@ -167,7 +167,7 @@
      * @param   string nick the old nick
      * @param   string new the new nick
      */
-    public abstract function onNickChanges(&$connection, $channel, $nick, $new) ;
+    public abstract function onNickChanges(IRCConnection $connection, $channel, $nick, $new);
 
     /**
      * Callback for joins
@@ -187,7 +187,7 @@
      * @param   string channel which channel was joined
      * @param   string nick who joined
      */
-    public abstract function onJoins(&$connection, $channel, $nick) ;
+    public abstract function onJoins(IRCConnection $connection, $channel, $nick);
 
     /**
      * Callback for parts
@@ -199,7 +199,7 @@
      * @param   string nick who part
      * @param   string message the part message, if any
      */
-    public abstract function onParts(&$connection, $channel, $nick, $message) ;
+    public abstract function onParts(IRCConnection $connection, $channel, $nick, $message);
     
     /**
      * Callback for mode changes
@@ -212,7 +212,7 @@
      * @param   string mode the mode including a + or - as its first letter
      * @param   string params additional parameters
      */
-    public abstract function onModeChanges(&$connection, $nick, $target, $mode, $params) ;
+    public abstract function onModeChanges(IRCConnection $connection, $nick, $target, $mode, $params);
   
     /**
      * Callback for private messages
@@ -234,7 +234,7 @@
      * @param   string target
      * @param   string message
      */
-    public abstract function onPrivateMessage(&$connection, $nick, $target, $message) ;
+    public abstract function onPrivateMessage(IRCConnection $connection, $nick, $target, $message);
 
     /**
      * Callback for topic changes
@@ -246,7 +246,7 @@
      * @param   string channel what channel the topic was changed for
      * @param   string topic the new topic
      */
-    public abstract function onTopic(&$connection, $nick, $channel, $topic) ;
+    public abstract function onTopic(IRCConnection $connection, $nick, $channel, $topic);
 
     /**
      * Callback for notices
@@ -258,7 +258,7 @@
      * @param   string target
      * @param   string message
      */
-    public abstract function onNotice(&$connection, $nick, $target, $message) ;
+    public abstract function onNotice(IRCConnection $connection, $nick, $target, $message);
 
     /**
      * Callback for actions. Actions are when somebody writes /me ...
@@ -276,7 +276,7 @@
      * @param   string target where action was initiated
      * @param   string action what actually happened (e.g. "looks around")
      */
-    public abstract function onAction(&$connection, $nick, $target, $action) ;
+    public abstract function onAction(IRCConnection $connection, $nick, $target, $action);
 
     /**
      * Callback for CTCP VERSION
@@ -288,7 +288,7 @@
      * @param   string target where version was requested
      * @param   string params additional parameters
      */
-    public abstract function onVersion(&$connection, $nick, $target, $params) ;
+    public abstract function onVersion(IRCConnection $connection, $nick, $target, $params);
 
     /**
      * Callback for CTCP USERINFO
@@ -300,7 +300,7 @@
      * @param   string target where user information was requested
      * @param   string params additional parameters
      */
-    public abstract function onUserInfo(&$connection, $nick, $target, $params) ;
+    public abstract function onUserInfo(IRCConnection $connection, $nick, $target, $params);
 
     /**
      * Callback for CTCP CLIENTINFO
@@ -312,7 +312,7 @@
      * @param   string target where client information was requested
      * @param   string params additional parameters
      */
-    public abstract function onClientInfo(&$connection, $nick, $target, $params) ;
+    public abstract function onClientInfo(IRCConnection $connection, $nick, $target, $params);
 
     /**
      * Callback for CTCP PING
@@ -324,7 +324,7 @@
      * @param   string target where ping was requested
      * @param   string params additional parameters
      */
-    public abstract function onPing(&$connection, $nick, $target, $params) ;
+    public abstract function onPing(IRCConnection $connection, $nick, $target, $params);
 
     /**
      * Callback for CTCP TIME
@@ -336,7 +336,7 @@
      * @param   string target where time was requested
      * @param   string params additional parameters
      */
-    public abstract function onTime(&$connection, $nick, $target, $params) ;
+    public abstract function onTime(IRCConnection $connection, $nick, $target, $params);
 
     /**
      * Callback for CTCP FINGER
@@ -348,7 +348,7 @@
      * @param   string target where finger information was requested
      * @param   string params additional parameters
      */
-    public abstract function onFinger(&$connection, $nick, $target, $params) ;
+    public abstract function onFinger(IRCConnection $connection, $nick, $target, $params);
   
   }
 ?>

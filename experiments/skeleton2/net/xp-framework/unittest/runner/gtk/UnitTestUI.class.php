@@ -37,7 +37,7 @@
      * @access  public
      * @param   &util.cmd.ParamString p
      */
-    public function __construct(&$p) {
+    public function __construct(ParamString $p) {
       parent::__construct($p, dirname($p->value(0)).'/gtkui.glade', 'mainwindow');
     }
     
@@ -129,7 +129,7 @@
      * @param   string result
      * @param   &mixed data
      */
-    protected function updateTest($id, $result, &$data) {
+    protected function updateTest($id, $result, $data) {
       $content= $this->hierarchy->node_get_pixtext($this->node[$id], 0);
       $this->hierarchy->node_set_pixtext(
         $this->node[$id], 
@@ -149,7 +149,7 @@
      * @param   &php.GtkWidget widget the ctree
      * @param   &php.GtkNode node the selected node
      */
-    protected function onSelectTest(&$widget, &$node) {
+    protected function onSelectTest(GtkWidget $widget, GtkNode $node) {
     
       // Only make test nodes selectable
       if (!$node->is_leaf) return;
@@ -208,7 +208,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    protected function onClearClicked(&$widget) {
+    protected function onClearClicked(GtkWidget $widget) {
       $this->hierarchy->clear();
       $this->trace->clear();
       $this->trace->columns_autosize();
@@ -224,7 +224,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    protected function onRunClicked(&$widget) {
+    protected function onRunClicked(GtkWidget $widget) {
       $numtests= $this->suite->numTests();
       $this->progress->configure(0.0, 0.0, $numtests);
       $result= new TestResult();
@@ -263,7 +263,7 @@
      * @param   &util.Properties config
      * @param   string section
      */
-    private function addTestsFromSection(&$config, $section) {
+    private function addTestsFromSection(Properties $config, $section) {
       if (-1 == ($numtests= $config->readInteger($section, 'numtests', -1))) {
         MessageBox::display('Section '.$section.': key "numtests" missing', 'Error', MB_OK | MB_ICONERROR);
         return FALSE;
@@ -367,7 +367,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    protected function onSelectClicked(&$widget) {
+    protected function onSelectClicked(GtkWidget $widget) {
       do {
       
         // If anything else than "OK" is pressed in the dialog, break

@@ -23,8 +23,8 @@
    * @ext      dba
    * @purpose  Iterator
    */
-  class DBAIterator extends Object implements Iterator {
-    public
+  class DBAIterator extends Object implements XPIterator {
+    protected
       $_key     = NULL,
       $_fd      = NULL;
   

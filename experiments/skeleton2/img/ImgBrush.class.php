@@ -14,7 +14,7 @@
       $image    = NULL,
       $style    = NULL;
       
-    public
+    protected
       $_hdl     = IMG_COLOR_STYLEDBRUSHED;
     
     /**
@@ -24,7 +24,7 @@
      * @param   img.Image an image object
      * @param   img.ImgStyle a style object
      */
-    public function __construct(&$i, &$s) {
+    public function __construct($i, $s) {
       $this->image= $i;
       $this->style= $s;
       

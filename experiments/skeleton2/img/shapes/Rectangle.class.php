@@ -36,7 +36,7 @@
      * @param   int y2 y coordinate of bottom right corner
      * @param   bool fill default FALSE
      */ 
-    public function __construct(&$col, $x1, $y1, $x2, $y2, $fill= FALSE) {
+    public function __construct(Color $col, $x1, $y1, $x2, $y2, $fill= FALSE) {
       $this->col= $col;
       $this->x1= $x1;
       $this->y1= $y1;
@@ -52,7 +52,7 @@
      * @access  public
      * @param   &resource hdl an image resource
      */
-    public function draw(&$hdl) {
+    public function draw($hdl) {
       if ($this->fill) return imagefilledrectangle(
         $hdl,
         $this->x1,

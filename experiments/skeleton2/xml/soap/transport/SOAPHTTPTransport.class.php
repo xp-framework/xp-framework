@@ -17,7 +17,7 @@
    * @see      xp://xml.soap.SOAPClient
    */
   class SOAPHTTPTransport extends SOAPTransport {
-    public
+    protected
       $_conn,
       $_action;
       
@@ -45,7 +45,7 @@
     /**
      * Create a string representation
      *
-     * @access  pubic
+     * @access  public
      * @return  string
      */
     public function toString() {
@@ -59,7 +59,7 @@
      * @param   &xml.soap.SOAPMessage message
      * @throws  IllegalArgumentException in case the given parameter is not a xml.soap.SOAPMessage
      */
-    public function send(&$message) {
+    public function send(SOAPMessage $message) {
     
       // Sanity checks
       if (!is_a($message, 'SOAPMessage')) throw (new IllegalArgumentException(
@@ -89,7 +89,7 @@
       }
       
       return $res;
-   }
+    }
    
     /**
      * Retrieve the answer
@@ -97,7 +97,7 @@
      * @access  public
      * @return  &xml.soap.SOAPMessage
      */
-    public function retrieve(&$response) {
+    public function retrieve($response) {
 
       // HACK: Read statuscode, so all headers are read before $response
       // is dumped. Otherwise the result is b0rked.
@@ -134,7 +134,6 @@
       }
       
       return $answer;
-   }
- 
- }
+    }
+  }
 ?>

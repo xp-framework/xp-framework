@@ -24,7 +24,7 @@
       $status           = 0,
       $properties       = array();
       
-    public
+    protected
       $_data            = '';
  
     /**
@@ -44,8 +44,8 @@
     public function __construct(
       $displayName,
       $href,
-      &$creationDate,
-      &$lastModified,
+      Date $creationDate,
+      Date $lastModified,
       $resourceType,
       $contentLength= 0,
       $contentType= NULL,
@@ -72,7 +72,7 @@
      * @access  public 
      * @param   &string data
      */
-    public function setData(&$data) {
+    public function setData($data) {
       $this->_data= $data;
     }
     

@@ -4,6 +4,9 @@
  * $Id$ 
  */
 
+  // Header identifier
+  define('CHM_HEADER_IDENTIFIER',   'ITSF');
+
   /**
    * CHM header
    *
@@ -12,9 +15,6 @@
    * @experimental
    */
   class CHMHeader extends Object {
-    const
-      CHM_HEADER_IDENTIFIER = 'ITSF';
-
     public
       $identifier       = CHM_HEADER_IDENTIFIER,
       $version          = 0,

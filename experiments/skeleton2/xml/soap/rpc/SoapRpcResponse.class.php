@@ -12,7 +12,7 @@
    * @see org.apache.HttpScriptletResponse  
    */
   class SoapRpcResponse extends HttpScriptletResponse {
-    public 
+    public
       $message= NULL;
     
     /**
@@ -54,7 +54,7 @@
      * @access  public
      * @param   &xml.soap.SOAPMessage msg SOAPmessage object
      */
-    public function setMessage(&$msg) {
+    public function setMessage(SOAPMessage $msg) {
       $this->message= $msg;
     }
     

@@ -119,7 +119,7 @@
      * @return  bool success
      * @throws  FormatException
      */
-    public function parse(&$stream) {
+    public function parse(Stream $stream) {
       $stream->open(STREAM_MODE_READ);
       if (!($result= self::_checkHeader($l= $stream->readLine()))) {
         $stream->close();
@@ -208,9 +208,9 @@
         $props= explode(';', $key);
         $kargs= array (strtoupper (array_shift ($props)));
 
-        $val= new StdClass();
+        $val= new stdClass();
         $val->_value= $value;
-        foreach ($this->_parseProperties (implode(';', $props)) as $pname=> $pvalue) {
+        foreach ($this->_parseProperties (implode(';', $props)) as $pname => $pvalue) {
           $val->{$pname}= $pvalue;
         }
         

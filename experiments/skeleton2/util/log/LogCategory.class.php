@@ -4,6 +4,12 @@
  * $Id$
  */
 
+  define('LOGGER_FLAG_INFO',    0x0001);
+  define('LOGGER_FLAG_WARN',    0x0002);
+  define('LOGGER_FLAG_ERROR',   0x0004);
+  define('LOGGER_FLAG_DEBUG',   0x0008);
+  define('LOGGER_FLAG_ALL',     LOGGER_FLAG_INFO | LOGGER_FLAG_WARN | LOGGER_FLAG_ERROR | LOGGER_FLAG_DEBUG);
+  
   /**
    * The log category is the interface to be used. All logging information
    * is sent to a log category via one of the info, warn, error, debug 
@@ -32,14 +38,7 @@
    * @purpose  Base class
    */
   class LogCategory extends Object {
-    const
-      LOGGER_FLAG_INFO = 0x0001,
-      LOGGER_FLAG_WARN = 0x0002,
-      LOGGER_FLAG_ERROR = 0x0004,
-      LOGGER_FLAG_DEBUG = 0x0008,
-      LOGGER_FLAG_ALL = LOGGER_FLAG_INFO | LOGGER_FLAG_WARN | LOGGER_FLAG_ERROR | LOGGER_FLAG_DEBUG;
-
-    public 
+    protected
       $_appenders= array(),
       $_indicators= array(
         LOGGER_FLAG_INFO        => 'info',
@@ -144,7 +143,7 @@
      * @param   int flag default LOGGER_FLAG_ALL
      * @return  &util.log.LogAppender the appender added
      */
-    public function addAppender(&$appender, $flag= LOGGER_FLAG_ALL) {
+    public function addAppender(LogAppender $appender, $flag= LOGGER_FLAG_ALL) {
       $this->_appenders[$flag][]= $appender;
       return $appender;
     }

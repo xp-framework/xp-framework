@@ -9,7 +9,7 @@
    *
    */
   class TelephonyTerminal extends Object {
-    public 
+    public
       $address= NULL;
       
     /**
@@ -18,9 +18,9 @@
      * @access  public
      * @param   &util.telephony.TelephonyAddress address
      */
-    public function __construct(&$address) {
-      $this->address= $address;
+    public function __construct(TelephonyAddress $address) {
       
+      $this->address= $address;
     }
     
     /**
@@ -30,7 +30,7 @@
      * @return  string number
      */
     public function getAttachedNumber() {
-      return $this->address->getExt();
+      return $this->address->getNumber();
     }
   }
 ?>

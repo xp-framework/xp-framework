@@ -9,6 +9,10 @@
     'peer.Socket'
   );
 
+  // Authentication methods
+  define('SMTP_AUTH_PLAIN', 'plain');
+  define('SMTP_AUTH_LOGIN', 'login');
+ 
   /**
    * Mail transport via SMTP
    *
@@ -40,10 +44,6 @@
    * @purpose  Provide a transport for SMTP/ESMTP
    */
   class SmtpTransport extends Transport {
-    const
-      SMTP_AUTH_PLAIN = 'plain',
-      SMTP_AUTH_LOGIN = 'login';
-
     public
       $host  = '127.0.0.1',
       $me    = 'localhost',
@@ -53,7 +53,7 @@
       $opt   = array(),
       $port  = 25;
       
-    public
+    protected
       $_sock = NULL;
     
     /**
@@ -206,13 +206,16 @@
       $this->port= isset($u['port']) ? $u['port'] : 25;
       
       // Extra attributes
-      parse_str($u['query'], $attr);
-      
+      if (isset($u['query'])) {
+        parse_str($u['query'], $attr);
+        $this->auth= isset($attr['auth']) ? $attr['auth'] : SMTP_AUTH_PLAIN;
+      }
+
       // User & password
-      if (!isset($u['user'])) return TRUE;
-      $this->user= $u['user'];
-      $this->pass= $u['pass'];
-      $this->auth= isset($attr['auth']) ? $attr['auth'] : SMTP_AUTH_PLAIN;
+      if (isset($u['user'])) {
+        $this->user= $u['user'];
+        $this->pass= $u['pass'];
+      }
     }
     
     /**
@@ -269,7 +272,7 @@
      * @param   &peer.mail.Message message the Message object to send
      * @throws  TransportException to indicate an error occured
      */
-    public function send(&$message) {
+    public function send(Message $message) {
       try {
         self::_sockcmd(
           'MAIL FROM: %s', 

@@ -9,6 +9,8 @@
     'org.gnu.readline.Completer'
   );
 
+  define('RL_LIBRARY_VERSION',  'library_version');
+
   /**
    * Readline
    *
@@ -52,9 +54,6 @@
    * @purpose  Readline functionality
    */
   class ReadLine extends Object {
-    const
-      RL_LIBRARY_VERSION = 'library_version';
-
   
     /**
      * Wrapper for missing static variables
@@ -81,7 +80,7 @@
      * @return  bool success
      * @throws  lang.IllegalArgumentException
      */
-    public function setCompleter(&$completer) {
+    public function setCompleter(ReadLineCompleter $completer) {
       if (!is('org.gnu.readline.Completer', $completer)) {
         throw (new IllegalArgumentException(
           'Argument is expected to implement org.gnu.readline.Completer'
@@ -113,7 +112,7 @@
      * @param   const name e.g. RL_LIBRARY_VERSION
      * @return  string
      */
-    public function getVar(const $name) {
+    public function getVar($name) {
       return readline_info($name);
     }
 
@@ -156,7 +155,7 @@
      * @return  bool success
      * @throws  io.IOException
      */
-    public function readHistoryFile(&$file) {
+    public function readHistoryFile(File $file) {
       if (FALSE === readline_read_history($file->getURI())) {
         throw (new IOException('Could not read history from '.$file->getURI()));
       }
@@ -171,7 +170,7 @@
      * @return  bool success
      * @throws  io.IOException
      */
-    public function writeHistoryFile(&$file) {
+    public function writeHistoryFile(File $file) {
       if (FALSE === readline_write_history($file->getURI())) {
         throw (new IOException('Could not write history to '.$file->getURI()));
       }

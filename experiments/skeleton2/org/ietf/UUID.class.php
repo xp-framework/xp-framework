@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  define('UUID_FMTSTRING',  '%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x');
+
   /**
    * Encapsulates UUIDs (Universally Unique IDentifiers), also known as
    * GUIDs (Globally Unique IDentifiers).
@@ -37,9 +39,6 @@
    * @see      http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-00.txt
    */
   class UUID extends Object {
-    const
-      FMTSTRING = '%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x';
-
     public
       $time_low                     = 0,
       $time_mid                     = 0,

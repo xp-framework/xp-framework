@@ -12,6 +12,7 @@
    * @model    static
    */
   class IFormat extends Object {
+    protected static $instance= NULL;
     public
       $formatString = '';
 
@@ -33,10 +34,8 @@
      * @return  &text.format.Format
      */
     public function getInstance($name) {
-      static $__instance= array();
-      
-      if (!isset($__instance[$name])) $__instance[$name]= XPClass::forName($name)->newInstance();
-      return $__instance[$name];
+      if (!isset(self::$instance[$name])) self::$instance[$name]= new $name();
+      return self::$instance[$name];
     }
       
     /**
@@ -48,7 +47,7 @@
      * @return  string
      * @throws  IllegalAccessException
      */
-    public function apply($fmt, &$argument) { 
+    public function apply($fmt, $argument) { 
       throw (new IllegalAccessException('Calling apply method of base class text.format.Format'));
     }
     

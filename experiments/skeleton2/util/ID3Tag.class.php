@@ -6,6 +6,12 @@
 
   uses('util.mp3.ID3Genre');
 
+  // Versions 
+  define('ID3_VERSION_UNKNOWN',               '?');
+  define('ID3_VERSION_1',                     '1');
+  define('ID3_VERSION_1_1',                 '1.1');
+  define('ID3_VERSION_2',                     '2');
+  
   /**
    * This class represents an ID3 tag
    *
@@ -26,13 +32,7 @@
    * @see      http://www.id3.org/id3v1.html
    */
   class ID3Tag extends Object {
-    const
-      ID3_VERSION_UNKNOWN = '?',
-      ID3_VERSION_1 = '1',
-      ID3_VERSION_1_1 = '1.1',
-      ID3_VERSION_2 = '2';
-
-    public 
+    public
       $version  = ID3_VERSION_UNKNOWN,
       $tag      = '',
       $name     = '',
@@ -90,7 +90,7 @@
      * @param   string version one of the ID3_VERSION_* constants
      * @return  &util.mp3.ID3Tag a tag
      */
-    public static function fromString(&$buf, $version) {
+    public static function fromString($buf, $version) {
       $tag= new ID3Tag();
       
       switch ($version) {

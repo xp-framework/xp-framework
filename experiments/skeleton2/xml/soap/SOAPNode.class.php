@@ -18,7 +18,7 @@
    * @see   xp://xml.Node
    */
   class SOAPNode extends Node {
-    public 
+    public
       $namespace= 'ctl';
     
     /**
@@ -28,7 +28,7 @@
      * @param   &mixed content
      * @return  string typename, e.g. "xsd:string"
      */
-    private function _typeName(&$content) {
+    private function _typeName($content) {
       static $tmap= array(      // Mapping PHP-typename => SOAP-typename
         'double'        => 'float',
         'integer'       => 'int'
@@ -46,7 +46,7 @@
      * @param   &mixed content
      * @return  &mixed content, formatted, if necessary
      */
-    private function _contentFormat(&$content) {
+    private function _contentFormat($content) {
       if (is_bool($content)) {
         return $content ? 'true' : 'false';
       }
@@ -89,7 +89,8 @@
           
         case 'date':
         case 'datetime':    // ISO 8601: http://www.w3.org/TR/xmlschema-2/#ISO8601 http://www.w3.org/TR/xmlschema-2/#dateTime
-          return new Date(str_replace('T', ' ', $ret));
+          sscanf($ret, '%4d-%2d-%2dT%2d:%2d:%2d', $year, $month, $day, $hour, $minute, $second);
+          return new Date(mktime($hour, $minute, $second, $month, $day, $year));
           break;
           
         default:
@@ -114,7 +115,7 @@
      * @param   &xml.soap.SOAPNode child
      * @param   mixed value
      */
-    private function _marshall(&$child, $value) {
+    private function _marshall(SOAPNode $child, $value) {
       static $ns= 0;
       
       if (is_scalar($value)) {          // Scalar
@@ -198,7 +199,7 @@
      * @param   &xml.Node e element to add array to
      * @param   array a
      */
-    protected function _recurse(&$e, $a) {
+    protected function _recurse(Node $e, $a) {
       foreach (array_keys($a) as $field) {
         if ('_' == $field{0}) continue;
         self::_marshall(

@@ -42,7 +42,7 @@
      * @param   string key
      * @param   &mixed val
      */
-    public function put($key, &$val) { }
+    public function put($key, $val) { }
     
     /**
      * Check whether cache has a value by key

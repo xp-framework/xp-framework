@@ -49,7 +49,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    protected function onClose(&$widget) {
+    protected function onClose(GtkWidget $widget) {
       $this->success= ('button_ok' == $widget->get_name());
       self::close();
     }
@@ -60,7 +60,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    protected function onUpDirClicked(&$widget) {
+    protected function onUpDirClicked(GtkWidget $widget) {
       self::setDirectory(substr($this->dir, 0, strrpos(
         substr($this->dir, 0, -1), 
         DIRECTORY_SEPARATOR
@@ -74,7 +74,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    protected function onHomeClicked(&$widget) {
+    protected function onHomeClicked(GtkWidget $widget) {
       self::setDirectory(System::getProperty('user.home'));
     }
 
@@ -84,7 +84,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    protected function onFavoriteClicked(&$widget) {
+    protected function onFavoriteClicked(GtkWidget $widget) {
       $d= strtr(substr($widget->get_name(), 11), array(
         'HOME'  => System::getProperty('user.home'),
         'TMP'   => System::getProperty('os.tempdir'),
@@ -100,7 +100,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    protected function onRefreshClicked(&$widget) {
+    protected function onRefreshClicked(GtkWidget $widget) {
       self::setDirectory($this->dir);
     }
     
@@ -110,7 +110,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    protected function onPNClicked(&$widget) {
+    protected function onPNClicked(GtkWidget $widget) {
       $this->cat->debug($widget->get_name(), $this->history, $this->history_offset);
       $this->history_offset+= ('button_prev' == $widget->get_name()) ? -1 : 1;
       $this->cat->debug($widget->get_name(), $this->history_offset, $this->history[$this->history_offset]);
@@ -126,7 +126,7 @@
      * @param   mixed data
      * @param   php.GtkEvent event
      */
-    protected function onEntrySelected(&$widget, $row, $data, $event) {
+    protected function onEntrySelected(GtkWidget $widget, $row, $data, GtkEvent $event) {
       $filetype= $widget->get_text($row, 1);
       $entry= $widget->get_pixtext($row, 0);
       

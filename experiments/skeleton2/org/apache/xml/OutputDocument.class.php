@@ -47,8 +47,8 @@
    */  
   class OutputDocument extends Tree {
     public
-      $formresult, 
-      $formvalues, 
+      $formresult,
+      $formvalues,
       $formerrors;
 
     /**

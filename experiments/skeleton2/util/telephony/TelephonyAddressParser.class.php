@@ -9,6 +9,8 @@
     'lang.IllegalArgumentException'
   );
 
+  define ('TAP_MIN_SUBSCRIBER_NUMBER', 4);
+
   /**
    * This class parses an telephone number. Its main purpose
    * is to bring phone numbers into a normalized form.
@@ -18,15 +20,13 @@
    * @see     http://www.construction-site.com/int_dial.htm
    */
   class TelephonyAddressParser extends Object {
-    const
-      TAP_MIN_SUBSCRIBER_NUMBER = 4;
-
-    public 
+    public
       $defaultCountryCode=  NULL,
       $defaultAreaCode=     NULL,
       $defaultSubscriber=   NULL;
 
-    public $intDialCodes= array (
+    public
+      $intDialCodes= array (
       '93'       => 'Afghanistan',               
       '355'      => 'Albania',                  
       '213'      => 'Algeria',                  
@@ -246,7 +246,7 @@
       '243'      => 'Zaire',                    
       '260'      => 'Zambia',                   
       '263'      => 'Zimbabwe'                  
-      );
+    );
       
     /**
      * Creates a PhoneNumber object
@@ -268,34 +268,23 @@
      * @return  string phonestring
      */
     private function _prepare($string) {
-      // Gracefully taken from hotlinetool/ssl/datenabfrage/hotline2.php3
-      $letters = array ("'a|b|c'",
-                        "'d|e|f'",
-                        "'g|h|i'",
-                        "'j|k|l'",
-                        "'m|n|o'",
-                        "'p|q|r|s'",
-                        "'t|u|v'",
-                        "'w|x|y|z'"
-                        );
-
-      $numbers = array ('2',
-                        '3',
-                        '4',
-                        '5',
-                        '6',
-                        '7',
-                        '8',
-                        '9'
-                       );
+      static $letters= array(
+        '/a|b|c/',
+        '/d|e|f/',
+        '/g|h|i/',
+        '/j|k|l/',
+        '/m|n|o/',
+        '/p|q|r|s/',
+        '/t|u|v/',
+        '/w|x|y|z/'
+      );
+      static $numbers= array ('2', '3', '4', '5', '6', '7', '8', '9');
                        
-      // Char to int conversion
-      $string= preg_replace ($letters, $numbers, strtolower ($string));
-      
-      // Clean up string
-      $string= preg_replace ('/(\D)\D*/', '\1', $string);
-      
-      return $string;
+      return preg_replace('/(\D)\D*/', '\1', preg_replace(
+        $letters, 
+        $numbers, 
+        strtolower($string)
+      ));
     }
     
     /**
@@ -341,7 +330,7 @@
       
       // Find out international dial country code
       if ('+' == $number{0}) {
-        foreach ($this->intDialCodes as $dial=> $countryName) {
+        foreach ($this->intDialCodes as $dial => $countryName) {
           if (($prefix= '+'.str_replace (' ', '', $dial)) == substr ($number, 0, strlen ($prefix))) {
             $a->setCountryCode ($prefix);
           }

@@ -4,30 +4,30 @@
  * $Id$
  */
 
+  // Bitmasken für den Dateitypen
+  define('TAR_FTYPE_IFDIR',  0040000); // Directory
+  define('TAR_FTYPE_IFCHR',  0020000); // Character device
+  define('TAR_FTYPE_IFBLK',  0060000); // Block device
+  define('TAR_FTYPE_IFREG',  0100000); // Regular file
+  define('TAR_FTYPE_IFIFO',  0010000); // FIFO
+  define('TAR_FTYPE_IFLNK',  0120000); // Symbolic link
+  define('TAR_FTYPE_IFSOCK', 0140000); // Socket  
+
   /**
    * Kapselt ein Tar-Archiv-Eintrag
    *
    * @see http://www.gnu.org/software/tar/tar.html
    */
   class TarArchiveEntry extends Object {
-    const
-      TAR_FTYPE_IFDIR = 0040000,
-      TAR_FTYPE_IFCHR = 0020000,
-      TAR_FTYPE_IFBLK = 0060000,
-      TAR_FTYPE_IFREG = 0100000,
-      TAR_FTYPE_IFIFO = 0010000,
-      TAR_FTYPE_IFLNK = 0120000,
-      TAR_FTYPE_IFSOCK = 0140000;
-
     public
-      $filename,        // Dateiname
-      $mode,            // Modus
-      $uid,             // User-ID
-      $gid,             // Group ID
-      $size,            // Größe in Bytes
-      $mtime,           // fileModifiedTime
-      $checksum,        // Checksumme
-      $typeflag,        // Dateityp
+      $filename,
+      $mode,
+      $uid,
+      $gid,
+      $size,
+      $mtime,
+      $checksum,
+      $typeflag,
       $link,
       $magic,
       $version,

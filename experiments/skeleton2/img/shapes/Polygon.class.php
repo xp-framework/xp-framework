@@ -44,7 +44,7 @@
      * @param   int[] points
      * @param   bool fill default FALSE
      */ 
-    public function __construct(&$col, $points, $fill= FALSE) {
+    public function __construct(Color $col, $points, $fill= FALSE) {
       $this->col= $col;
       $this->points= $points;
       $this->fill= $fill;
@@ -57,7 +57,7 @@
      * @access  public
      * @param   &resource hdl an image resource
      */
-    public function draw(&$hdl) {
+    public function draw($hdl) {
       if ($this->fill) return imagefilledpolygon(
         $hdl,
         $this->points,

@@ -15,7 +15,8 @@
    * @purpose  Hold connections to databases
    */
   class ConnectionManager extends Object {
-    public 
+    protected static $instance= NULL;
+    public
       $pool= array();
     
     /**
@@ -26,10 +27,8 @@
      * @return  &rdbms.ConnectionManager
      */
     public static function getInstance() {
-      static $instance= NULL;
-      
-      if (!$instance) $instance= new ConnectionManager();
-      return $instance;
+      if (!self::$instance) self::$instance= new ConnectionManager();
+      return self::$instance;
     }
     
     /**
@@ -49,7 +48,7 @@
      * @return  bool
      * @throws  rdbms.DriverNotSupportedException
      */
-    public function configure(&$properties) {
+    public function configure(Properties $properties) {
       $section= $properties->getFirstSection();
       do {
         try {
@@ -88,7 +87,7 @@
      * @param   string hostAlias default NULL
      * @param   string userAlias default NULL
      */
-    public function register(&$conn, $hostAlias= NULL, $userAlias= NULL) {
+    public function register(DBConnection $conn, $hostAlias= NULL, $userAlias= NULL) {
       $host= (NULL == $hostAlias) ? $conn->dsn->getHost() : $hostAlias;
       $user= (NULL == $userAlias) ? $conn->dsn->getUser() : $userAlias;
       

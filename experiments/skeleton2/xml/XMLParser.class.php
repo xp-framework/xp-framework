@@ -44,6 +44,16 @@
     }
     
     /**
+     * Set callback
+     *
+     * @access  public
+     * @param   &lang.Object callback
+     */
+    public function setCallback(Object $callback) {
+      $this->callback= $callback;
+    }
+    
+    /**
      * Free this parser
      *
      * @access  private
@@ -63,9 +73,9 @@
      */
     public function parse($data) {
       if (NULL == $this->parser) self::_create();
-      if (!isset($this->callback) || !is_object($this->callback)) throw (new IllegalArgumentException(
-        'callback is not an object'
-      ));
+      if (!isset($this->callback) || !is_object($this->callback)) {
+        throw (new IllegalArgumentException('Callback is not an object'));
+      }
       
       xml_set_object($this->parser, $this->callback);
       xml_set_element_handler($this->parser, 'onStartElement', 'onEndElement');

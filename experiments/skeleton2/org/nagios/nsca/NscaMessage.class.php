@@ -4,6 +4,11 @@
  * $Id$ 
  */
 
+  define('NSCA_OK',        0x0000);
+  define('NSCA_WARN',      0x0001);
+  define('NSCA_ERROR',     0x0002);
+  define('NSCA_UNKNOWN',   0x0003);
+
   /**
    * Represents a single NSCA message
    *
@@ -11,12 +16,6 @@
    * @purpose  Wrapper
    */
   class NscaMessage extends Object {
-    const
-      NSCA_OK = 0x0000,
-      NSCA_WARN = 0x0001,
-      NSCA_ERROR = 0x0002,
-      NSCA_UNKNOWN = 0x0003;
-
     public
       $host         = '',
       $service      = '',
@@ -38,6 +37,24 @@
       $this->service= $service;
       $this->status= $status;
       $this->information= $information;
+    }
+    
+    /**
+     * Retrieve a status' name
+     *
+     * @model   static
+     * @access  public
+     * @param   int status
+     * @return  string name
+     */
+    public static function nameOfStatus($status) {
+      static $map= array(
+        NSCA_OK      => 'NSCA_OK',     
+        NSCA_WARN    => 'NSCA_WARN',   
+        NSCA_ERROR   => 'NSCA_ERROR',  
+        NSCA_UNKNOWN => 'NSCA_UNKNOWN'
+      );
+      return $map[$status];
     }
 
     /**

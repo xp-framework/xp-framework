@@ -45,7 +45,7 @@
    * @purpose  Base class for websites using XML/XSL to render their output
    */
   class XMLScriptlet extends HttpScriptlet {
-    public 
+    public
       $document         = NULL,
       $stylesheetBase   = '';
       
@@ -91,7 +91,7 @@
       parent::init();
       if (FALSE === getenv('PRODUCT')) $this->request->method= 'CREATE';
       $this->request->state= getenv('STATE');
-      $this->request->language= getenv('LANG');
+      $this->request->language= getenv('LANGUAGE');
       $this->request->page= $this->request->getParam('__page');
     }
     
@@ -122,7 +122,7 @@
      * @param   &org.apache.xml.XMLScriptletResponse response
      * @return  bool
      */
-    protected function doCreate(&$request, &$response) {
+    protected function doCreate(XMLScriptletRequest $request, XMLScriptletResponse $response) {
       $uri= $request->getURI();
 
       // Get product and language from the environment if necessary
@@ -135,13 +135,15 @@
       
       // Send redirect
       $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s;%s/%s?__page=%s', 
+        '%s://%s/xml/%s.%s/%s?__page=%s%s%s', 
         $uri['scheme'],
         $uri['host'],          
         $product ? $product : 'site',
         $language ? $language : 'en_US',
         $state ? $state : 'static',
-        $page ? $page : 'home'
+        $page ? $page : 'home',
+        empty($uri['query']) ? '' : '&'.$uri['query'],
+        empty($uri['fraction']) ? '' : '#'.$uri['fraction']        
       ));
       
       return FALSE; // Indicate no further processing is to be done
@@ -155,7 +157,7 @@
      * @param   &org.apache.HttpScriptletRequest request 
      * @param   &org.apache.HttpScriptletResponse response 
      */
-    public function doCreateSession(&$request, &$response) {
+    public function doCreateSession(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       $uri= $request->getURI();
       
       // Get product and language from the environment if necessary
@@ -168,14 +170,16 @@
       
       // Send redirect
       $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s;%s;psessionid=%s/%s?__page=%s', 
+        '%s://%s/xml/%s.%s.psessionid=%s/%s?__page=%s%s%s', 
         $uri['scheme'],
         $uri['host'],          
         $product ? $product : 'site',
         $language ? $language : 'en_US',
         $request->session->getId(),
         $state ? $state : 'static',
-        $page ? $page : 'home'
+        $page ? $page : 'home',
+        empty($uri['query']) ? '' : '&'.$uri['query'],
+        empty($uri['fraction']) ? '' : '#'.$uri['fraction']
       ));
       
       return FALSE; // Indicate no further processing is to be done
@@ -188,7 +192,7 @@
      * @param   &org.apache.scriptlet.XMLScriptletRequest
      * @param   &org.apache.scriptlet.XMLScriptletResponse
      */
-    private function _setStylesheet(&$request, &$response) {
+    private function _setStylesheet($request, $response) {
       $response->setStylesheet(sprintf(
         '%s%s/%s/%s/%s.xsl',
         $this->stylesheetBase,
@@ -215,7 +219,7 @@
      * @throws  Exception to indicate failure
      * @see     xp://org.apache.HttpScriptlet#doGet
      */
-    protected function doGet(&$request, &$response) {
+    protected function doGet(HttpScriptletRequest $request, HttpScriptletResponse $response) {
     
       // Define special parameters
       $response->setParam('page',    $request->getPage());
@@ -245,8 +249,8 @@
      * @throws  Exception to indicate failure
      * @see     xp://org.apache.HttpScriptlet#doPost
      */
-    protected function doPost(&$req, &$res) {
-      self::doGet($req, $res);
+    protected function doPost($req, $res) {
+      return self::doGet($req, $res);
     }
   }
 ?>

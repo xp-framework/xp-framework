@@ -10,12 +10,15 @@
    * Defines an exception which is thrown inside an HttpScriptlet
    * when it encounters a fatal error situation.
    *
-   * These might be:
-   * - Session initialization fails
-   * - HTTP method is not supported (e.g., DELETE)
-   * - Request processing fails with an Exception
+   * These might be
+   * <ul>
+   *   <li>Session initialization fails</li>
+   *   <li>HTTP method is not supported (e.g., DELETE)</li>
+   *   <li>Request processing fails with an Exception</li>
+   * </ul>
    *
-   * @see   xp://org.apache.HttpScriptlet#process
+   * @see      xp://org.apache.HttpScriptlet#process
+   * @purpose  Exception
    */  
   class HttpScriptletException extends XPException {
     public
@@ -51,7 +54,7 @@
      */
     private function _response($statusCode) {
       $this->response= new HttpScriptletResponse();
-      $this->response->statusCode= $statusCode;
+      $this->response->setStatus($statusCode);
       $this->response->setContent(sprintf(
         "<h1>Internal Server Error</h1>\n<xmp>\n%s</xmp>\n",
         self::toString()

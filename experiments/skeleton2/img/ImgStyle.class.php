@@ -14,7 +14,7 @@
       $colors   = array(),
       $pixels   = array();
       
-    public
+    protected
       $_hdl     = IMG_COLOR_STYLED;
     
     /**
@@ -23,7 +23,7 @@
      * @access  public
      * @param   img.Color[] colors an array of pixels
      */
-    public function __construct(&$colors) {
+    public function __construct($colors) {
       $this->colors= $colors;
       for ($i= 0, $s= sizeof($this->colors); $i < $s; $i++) {
         $this->pixels[]= $this->colors[$i]->_hdl;

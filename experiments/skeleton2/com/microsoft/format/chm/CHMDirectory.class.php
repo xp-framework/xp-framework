@@ -4,6 +4,9 @@
  * $Id$ 
  */
 
+  // Header identifier
+  define('CHM_DIRECTORY_IDENTIFIER',   'ITSP');
+
   /**
    * CHM directory
    *
@@ -12,9 +15,6 @@
    * @experimental
    */
   class CHMDirectory extends Object {
-    const
-      CHM_DIRECTORY_IDENTIFIER = 'ITSP';
-
     public
       $identifier       = CHM_DIRECTORY_IDENTIFIER,
       $version          = 0,

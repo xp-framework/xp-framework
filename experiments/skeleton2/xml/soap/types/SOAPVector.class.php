@@ -16,7 +16,7 @@
    * @purpose  Vector type
    */
   class SOAPVector extends SoapType {
-    public 
+    protected
       $_vector;
     
     /**

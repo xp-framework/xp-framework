@@ -19,7 +19,7 @@
     public
       $segments = array();
       
-    public
+    protected
       $_seg     = NULL;
     
     /**
@@ -78,7 +78,7 @@
      * @param   &mixed value
      * @param   int permissions default 0666
      */
-    public function put($key, &$value, $permissions= 0666) {
+    public function put($key, $value, $permissions= 0666) {
       if (!isset($this->segments[$key])) {
         $this->segments[$key]= new ShmSegment($key);
         $this->_seg->put($this->segments);

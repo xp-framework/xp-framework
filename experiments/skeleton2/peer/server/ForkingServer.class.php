@@ -26,15 +26,27 @@
     public function service() {
       if (!$this->socket->isConnected()) return FALSE;
       
-      while ($m= $this->socket->accept()) {
+      while (!$this->terminate) {
+        try {
+          $m= $this->socket->accept();
+        } catch (IOException $e) {
+          self::shutdown();
+          break;
+        }
+        if (!$m) continue;
 
         // Have connection, fork child
         $pid= pcntl_fork();
         if (-1 == $pid) {       // Woops?
           throw (new RuntimeError('Could not fork'));
         } else if ($pid) {      // Parent
-          while (pcntl_waitpid(-1, $status, WNOHANG)) { }
+
+          // Close own copy of message socket
           $m->close();
+          delete($m);
+          
+          // Use waitpid w/ NOHANG to avoid zombies hanging around
+          while (pcntl_waitpid(-1, $status, WNOHANG)) { }
         } else {                // Child
           self::notify(new ConnectionEvent(EVENT_CONNECTED, $m));
 
@@ -52,8 +64,9 @@
 
           } while (!$m->eof());
 
+          $m->close();
           self::notify(new ConnectionEvent(EVENT_DISCONNECTED, $m));
-          
+
           // Exit out of child
           exit();
         }

@@ -12,6 +12,9 @@
     'org.webdav.util.WebdavBool'
   );
 
+  define('WEBDAV_IMPL_PROPFIND',    0x0001);
+  define('WEBDAV_IMPL_PROPPATCH',   0x0002);
+
   /**
    * Base class of DAV implementation
    *
@@ -19,10 +22,6 @@
    * @see      org.webdav.WebdavScriptlet#__construct
    */ 
   class DavImpl extends Object {
-    const
-      WEBDAV_IMPL_PROPFIND = 0x0001,
-      WEBDAV_IMPL_PROPPATCH = 0x0002;
-
     public
       $capabilities = 0;
       
@@ -97,7 +96,7 @@
      * @return  bool new
      * @throws  MethodNotImplementedException
      */
-    public function put($filename, &$data) {
+    public function put($filename, $data) {
       throw (new MethodNotImplementedException(self::getName().'::put not implemented'));
     }
     
@@ -122,7 +121,7 @@
      * @return  &org.webdav.xml.WebdavMultistatus response
      * @throws  MethodNotImplementedException
      */
-    public function propfind(&$request, &$response) { 
+    public function propfind(WebdavPropFindRequest $request, WebdavMultistatus $response) { 
       throw (new MethodNotImplementedException(self::getName().'::propfind not implemented'));
     }
 
@@ -133,7 +132,7 @@
      * @param   &org.webdav.xml.WebdavPropPatcRequest request
      * @throws  MethodNotImplementedException
      */
-    public function proppatch(&$request) { 
+    public function proppatch(WebdavPropPatcRequest $request) { 
       throw (new MethodNotImplementedException(self::getName().'::proppatch not implemented'));
     }
   

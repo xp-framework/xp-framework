@@ -13,12 +13,12 @@
    * @see php://image
    */
   class Image extends Object {
-    public 
+    public
       $width    = 0,
       $height   = 0,
       $palette  = array();
     
-    public
+    protected
       $_hdl     = NULL;
     
     /**
@@ -188,8 +188,16 @@
      * @param   int dst_w default -1 width of the area to copy to, -1 defaults to the source image's width
      * @param   int dst_h default -1 height of the area to copy to, -1 defaults to the source image's height
      */
-    public function copyFrom(&$img, $dst_x= 0, $dst_y= 0, 
-                  $src_x= 0, $src_y= 0, $src_w= -1, $src_h= -1, $dst_w= -1, $dst_h= -1
+    public function copyFrom(
+      Image $img, 
+      $dst_x= 0, 
+      $dst_y= 0, 
+      $src_x= 0, 
+      $src_y= 0, 
+      $src_w= -1, 
+      $src_h= -1, 
+      $dst_w= -1, 
+      $dst_h= -1
     ) {
       if (-1 == $src_w) $src_w= $img->getWidth();
       if (-1 == $src_h) $src_h= $img->getHeight();
@@ -236,8 +244,15 @@
      * @param   int src_w default -1 width of the area to copy, -1 defaults to the source image's width
      * @param   int src_h default -1 height of the area to copy, -1 defaults to the source image's height
      */
-    public function mergeFrom(&$img, $pct= 50, $dst_x= 0, $dst_y= 0, 
-                   $src_x= 0, $src_y= 0, $src_w= -1, $src_h= -1
+    public function mergeFrom(
+      Image $img, 
+      $pct= 50, 
+      $dst_x= 0, 
+      $dst_y= 0, 
+      $src_x= 0, 
+      $src_y= 0, 
+      $src_w= -1, 
+      $src_h= -1
     ) {
       if (-1 == $src_w) $src_w= $img->getWidth();
       if (-1 == $src_h) $src_h= $img->getHeight();
@@ -261,7 +276,7 @@
      * @param   &img.Color color
      * @return  &img.Color color the color put in
      */
-    public function allocate(&$color) {
+    public function allocate(Color $color) {
       $color->_hdl= imagecolorallocate(
         $this->_hdl, 
         $color->red,
@@ -281,7 +296,7 @@
      * @return  &img.ImgStyle the new style object
      * @throws  IllegalArgumentException if style is not an ImgStyle object
      */
-    public function setStyle(&$style) {
+    public function setStyle(ImgStyle $style) {
       if (!is_a($style, 'ImgStyle')) {
         throw (new IllegalArgumentException('style parameter is not an ImgStyle object'));
       }
@@ -298,7 +313,7 @@
      * @return  &img.ImgBrush the new style object
      * @throws  IllegalArgumentException if style is not an ImgBrush object
      */
-    public function setBrush(&$brush) {
+    public function setBrush(ImgBrush $brush) {
       if (!is_a($brush, 'ImgBrush')) {
         throw (new IllegalArgumentException('brush parameter is not an ImgBrush object'));
       }
@@ -345,7 +360,7 @@
      * @see     php://imagefill
      * @see     php://imagefilltoborder
      */
-    public function fill(&$col, $x= 0, $y= 0) {
+    public function fill($col, $x= 0, $y= 0) {
       if (is_array($col)) {
         imagefilltoborder($this->_hdl, $x, $y, $col[1]->_hdl, $col[0]->_hdl);
       } else {
@@ -378,7 +393,7 @@
      * @access  public
      * @param   &img.Color color
      */
-    public function setTransparency(&$col) {
+    public function setTransparency($col) {
       imagecolortransparent($this->_hdl, $col->_hdl);
     }
     
@@ -399,7 +414,7 @@
      * @param   img.DrawableObject obj
      * @return  mixed the return value of obj's draw function
      */
-    public function draw(&$obj) {
+    public function draw(DrawableObject $obj) {
       return $obj->draw($this->_hdl);
     }
     
@@ -442,7 +457,7 @@
      * @throws  ImagingException if an error occurs
      * @throws  IllegalArgumentException if parameter is not a file object
      */  
-    public function toFile(&$file) {
+    public function toFile($file) {
       if (!is_a($file, 'File')) {
         throw (new IllegalArgumentException('given file is not a file object'));
       }

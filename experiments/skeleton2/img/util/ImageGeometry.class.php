@@ -4,6 +4,22 @@
  * $Id$
  */
 
+  // Image types
+  define('IMAGE_GIF',           1);
+  define('IMAGE_JPEG',          2);
+  define('IMAGE_PNG',           3);
+  define('IMAGE_SWF',           4);
+  define('IMAGE_PSD',           5);
+  define('IMAGE_BMP',           6);
+  define('IMAGE_TIFF_INTEL',    7);
+  define('IMAGE_TIFF_MOTOROLA', 8);
+  define('IMAGE_JPC',           9);
+  define('IMAGE_JP2',          10);
+  define('IMAGE_JPX',          11);
+  define('IMAGE_JB2',          12);
+  define('IMAGE_SWC',          13);
+  define('IMAGE_IFF',          14);
+ 
   /**
    * Image geometry for local and remote files
    *
@@ -21,25 +37,10 @@
    * @see php://getimagesize
    */
   class ImageGeometry extends Object {
-    const
-      IMAGE_GIF = 1,
-      IMAGE_JPEG = 2,
-      IMAGE_PNG = 3,
-      IMAGE_SWF = 4,
-      IMAGE_PSD = 5,
-      IMAGE_BMP = 6,
-      IMAGE_TIFF_INTEL = 7,
-      IMAGE_TIFF_MOTOROLA = 8,
-      IMAGE_JPC = 9,
-      IMAGE_JP2 = 10,
-      IMAGE_JPX = 11,
-      IMAGE_JB2 = 12,
-      IMAGE_SWC = 13,
-      IMAGE_IFF = 14;
-
-    public
-      $image= '',
+    protected
       $_info= array();
+    public
+      $image= '';
       
     /**
      * Constructor

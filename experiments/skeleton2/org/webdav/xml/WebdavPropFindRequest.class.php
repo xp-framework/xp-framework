@@ -6,6 +6,9 @@
 
   uses('xml.Tree');
 
+  // Get all properties
+  define('WEBDAV_PROPERTY_ALL',     NULL);
+
   /**
    * PropFind request XML
    *
@@ -35,9 +38,6 @@
    * @see      xp://org.webdav.WebdavScriptlet#doPropFind
    */
   class WebdavPropFindRequest extends Tree {
-    const
-      WEBDAV_PROPERTY_ALL = NULL;
-
     public
       $properties = array(),
       $path       = '',
@@ -51,7 +51,7 @@
      * @param   &org.apache.HttpScriptletRequest request
      * @throws  Exception to indicate failure
      */
-    public function __construct(&$request) {
+    public function __construct(HttpScriptletRequest $request) {
       if (FALSE === self::fromString($request->getData())) {
         return FALSE;
       }

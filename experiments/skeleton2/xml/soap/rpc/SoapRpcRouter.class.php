@@ -55,7 +55,7 @@
      * @param   string handlerClassPath the class path in its notation xxx.yyy.zzz
      *          to the location where the classes are located
      */
-    public function __construct(&$classloader) {
+    public function __construct($classloader) {
       $this->classloader= $classloader;
       parent::__construct();
     }
@@ -85,7 +85,7 @@
      *
      * @see     org.apache.HttpScriptlet#doGet
      */
-    public function doGet(&$request, &$response) {
+    public function doGet($request, $response) {
       throw (new IllegalAccessException('GET is not supported'));
     }
 
@@ -94,7 +94,7 @@
      *
      * @see     org.apache.HttpScriptlet#doGet
      */
-    public function doPost(&$request, &$response) {
+    public function doPost($request, $response) {
       try {
 
         // Get message
@@ -142,37 +142,32 @@
      * @throws  lang.IllegalArgumentException if there is no such method
      * @throws  lang.IllegalAccessException for non-public methods
      */
-    protected function callReflectHandler(&$msg) {
+    protected function callReflectHandler($msg) {
       if ('_' == $msg->method{0}) {
         throw (new IllegalAccessException('Cannot access non-public method '.$msg->method));
       }
 
       // Create message from request data
       try {
-        $reflect= $this->classloader->loadClass($msg->action.'Handler');
-
-        // Check if method can be handled
-        if (!in_array(strtolower($msg->method), get_class_methods($reflect))) throw (new IllegalArgumentException(
-          $reflect.' cannot handle method '.$msg->method
-        ));
-      } catch (XPException $e) {
+        $class= $this->classloader->loadClass($msg->action.'Handler');
+      } catch (ClassNotFoundException $e) {
         throw ($e);
       }
 
-      // Create instance
-      $handler= XPClass::forName($reflect)->newInstance();
+      // Check if method can be handled
+      if (!$class->hasMethod($msg->method)) {
+        throw (new IllegalArgumentException(
+          $class->getName().' cannot handle method '.$msg->method
+        ));
+      }
 
-      // Call method
-      $return= call_user_func_array(
-        array(&$handler, $msg->method),
-        $msg->getData(NULL)
-      );
-
-      // Clean up
-      $handler->__destruct();
-
-      // Return data
-      return $return;
+      // Create instance and invoke method
+      with ($method= $class->getMethod($msg->method)); {
+        return $method->invoke(
+          $class->newInstance(),
+          $msg->getData(NULL)
+        );
+      }
     }
 
   }

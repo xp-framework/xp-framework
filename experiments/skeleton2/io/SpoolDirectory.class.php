@@ -19,7 +19,7 @@
     public
       $root;
     
-    public
+    protected
       $_hNew=   NULL,
       $_hDone=  NULL,
       $_hTodo=  NULL,
@@ -94,7 +94,7 @@
      * @return  bool success
      * @throws  io.IOException if file could not be closed and moved.
      */    
-    public function enqueueSpoolEntry(&$f) {
+    public function enqueueSpoolEntry($f) {
       try {
         $f->close();
         $f->move ($this->_hTodo->getURI().DIRECTORY_SEPARATOR.$f->getFileName());
@@ -133,7 +133,7 @@
      * @return  bool success
      * @throws  io.IOException if file could not be closed and moved.
      */
-    public function finishSpoolEntry(&$f) {
+    public function finishSpoolEntry($f) {
       try {
         $f->close();
         $f->move ($this->_hDone->getURI().DIRECTORY_SEPARATOR.$f->getFileName());
@@ -152,7 +152,7 @@
      * @return  bool success
      * @throws  io.IOException if file could not be closed and moved.
      */    
-    public function failSpoolEntry(&$f) {
+    public function failSpoolEntry($f) {
       try {
         $f->close();
         $f->move ($this->_hError->getURI().DIRECTORY_SEPARATOR.$f->getFileName());

@@ -10,14 +10,14 @@
    * @purpose  XML subtree
    */
   class SOAPFault extends XML {
-    public 
-      $faultcode    = '', 
-      $faultstring  = '', 
+    public
+      $faultcode    = '',
+      $faultstring  = '',
       $faultactor   = NULL,
       $detail       = NULL;
 
     /**
-     * Fill in this fault with data
+     * Constructor
      *
      * @access  public
      * @param   string faultcode
@@ -25,7 +25,7 @@
      * @param   string faultactor default NULL
      * @param   mixed detail default NULL
      */  
-    public function create(
+    public function __construct(
       $faultcode, 
       $faultstring, 
       $faultactor= NULL, 

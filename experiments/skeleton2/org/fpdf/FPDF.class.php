@@ -6,6 +6,24 @@
 
   uses('org.fpdf.FPDFFont');
 
+  define('FPDF_VERSION',        1.5);
+  
+  define('FPDF_LANDSCAPE',      'L');
+  define('FPDF_PORTRAIT',       'P');
+
+  define('FPDF_UNIT_PT',        'pt');
+  define('FPDF_UNIT_MM',        'mm');
+  define('FPDF_UNIT_CM',        'cm');
+  define('FPDF_UNIT_INCH',      'in');
+  
+  define('FPDF_FORMAT_A3',      'A3');
+  define('FPDF_FORMAT_A4',      'A4');
+  define('FPDF_FORMAT_A5',      'A5');
+  define('FPDF_FORMAT_LETTER',  'LETTER');
+  define('FPDF_FORMAT_LEGAL',   'LEGAL');
+  
+  
+  
   /**
    * PDF creator
    *
@@ -13,71 +31,62 @@
    * @see      http://fpdf.org/
    */
   class FPDF extends Object {
-    const
-      VERSION = 1.5,
-      LANDSCAPE = 'L',
-      PORTRAIT = 'P',
-      UNIT_PT = 'pt',
-      UNIT_MM = 'mm',
-      UNIT_CM = 'cm',
-      UNIT_INCH = 'in',
-      FORMAT_A3 = 'A3',
-      FORMAT_A4 = 'A4',
-      FORMAT_A5 = 'A5',
-      FORMAT_LETTER = 'LETTER',
-      FORMAT_LEGAL = 'LEGAL';
-
-    public 
-      $page               = 0,        // current page number
-      $n                  = 2,        // current object number
-      $offsets,                       // array of object offsets
-      $buffer             = '',       // buffer holding in-memory PDF
-      $pages              = array(),  // array containing pages
-      $state              = 0,        // current document state
-      $compress,                      // compression flag
-      $DefOrientation,                // default orientation
-      $CurOrientation,                // current orientation
-      $OrientationChanges = array(),  // array indicating orientation changes
-      $fwPt,$fhPt,                    // dimensions of page format in points
-      $fw,$fh,                        // dimensions of page format in user unit
-      $wPt,$hPt,                      // current dimensions of page in points
-      $k,                             // scale factor (number of points in user unit)
-      $w,$h,                          // current dimensions of page in user unit
-      $lMargin,                       // left margin
-      $tMargin,                       // top margin
-      $rMargin,                       // right margin
-      $bMargin,                       // page break margin
-      $cMargin,                       // cell margin
-      $x,$y,                          // current position in user unit for cell positionning
-      $lasth,                         // height of last cell printed
-      $LineWidth,                     // line width in user unit
-      $fonts              = array(),  // array of used fonts
-      $FontFiles          = array(),  // array of font files
-      $diffs              = array(),  // array of encoding differences
-      $images             = array(),  // array of used images
-      $PageLinks,                     // array of links in pages
-      $links              = array(),  // array of internal links
-      $FontFamily         = '',       // current font family
-      $FontStyle          = '',       // current font style
-      $underline          = FALSE,    // underlining flag
-      $CurrentFont,                   // current font info
-      $FontSizePt         = 12,       // current font size in points
-      $FontSize,                      // current font size in user unit
-      $DrawColor          = '0 G',    // commands for drawing color
-      $FillColor          = '0 g',    // commands for filling color
-      $TextColor          = '0 g',    // commands for text color
-      $ColorFlag          = FALSE,    // indicates whether fill and text colors are different
-      $ws                 = 0,        // word spacing
-      $AutoPageBreak,                 // automatic page breaking
-      $PageBreakTrigger,              // threshold used to trigger page breaks
-      $InFooter           = FALSE,    // flag set when processing footer
-      $ZoomMode,                      // zoom display mode
-      $LayoutMode,                    // layout display mode
-      $title,                         // title
-      $subject,                       // subject
-      $author,                        // author
-      $keywords,                      // keywords
-      $creator,                       // creator
+    public
+      $page               = 0,
+      $n                  = 2,
+      $offsets,
+      $buffer             = '',
+      $pages              = array(),
+      $state              = 0,
+      $compress,
+      $DefOrientation,
+      $CurOrientation,
+      $OrientationChanges = array(),
+      $fwPt,
+      $fhPt,
+      $fw,
+      $fh,
+      $wPt,
+      $hPt,
+      $k,
+      $w,
+      $h,
+      $lMargin,
+      $tMargin,
+      $rMargin,
+      $bMargin,
+      $cMargin,
+      $x,
+      $y,
+      $lasth,
+      $LineWidth,
+      $fonts              = array(),
+      $FontFiles          = array(),
+      $diffs              = array(),
+      $images             = array(),
+      $PageLinks,
+      $links              = array(),
+      $FontFamily         = '',
+      $FontStyle          = '',
+      $underline          = FALSE,
+      $CurrentFont,
+      $FontSizePt         = 12,
+      $FontSize,
+      $DrawColor          = '0 G',
+      $FillColor          = '0 g',
+      $TextColor          = '0 g',
+      $ColorFlag          = FALSE,
+      $ws                 = 0,
+      $AutoPageBreak,
+      $PageBreakTrigger,
+      $InFooter           = FALSE,
+      $ZoomMode,
+      $LayoutMode,
+      $title,
+      $subject,
+      $author,
+      $keywords,
+      $creator,
       $AliasNbPages;                  // alias for total number of pages
 
     /**
@@ -87,7 +96,7 @@
      * @param   
      * @return  
      */
-    public function loadFonts(&$prop) {
+    public function loadFonts($prop) {
       $section= $prop->getFirstSection();
       do {
         $f= new FPDFFont($section);
@@ -492,7 +501,7 @@
      * @access  public
      * @param   org.pdf.FPDFFont font Ein Font-Objekt
      */
-    public function addFont(&$font) {
+    public function addFont(FPDFFont $font) {
       if (isset($this->fonts[$font->family.$font->style])) return 1;
       
       // Diff?
@@ -533,7 +542,7 @@
      * @param   
      * @return  
      */
-    public function setFont(&$font, $size= 0) {
+    public function setFont($font, $size= 0) {
       if (NULL == $font) throw (new IllegalArgumentException('font is not a org.pdf.FPDFFont'));
       
       $this->underline= $font->isUnderline();

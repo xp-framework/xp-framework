@@ -20,8 +20,8 @@
   class ColoredConsoleAppender extends ConsoleAppender {
     public
       $cerror    = '',
-      $cwarn     = '', 
-      $cinfo     = '', 
+      $cwarn     = '',
+      $cinfo     = '',
       $cdebug    = '',
       $cdefault  = '';
 

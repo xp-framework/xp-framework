@@ -18,7 +18,7 @@
    * @purpose  Time zone calculation
    */
   class TimeZone extends Object {
-    public 
+    public
       $offset=  '',
       $tz=      '';
 
@@ -158,7 +158,7 @@
      * @param   &util.TimeZone
      * @return  &util.Date
      */
-    public function convertDate(&$date, &$tz) {
+    public function convertDate($date, $tz) {
       return new Date ($date->getTime() + (self::getOffsetInSeconds() - $tz->getOffsetInSeconds()));
     }
 
@@ -170,7 +170,7 @@
      * @param   &util.Date
      * @return  &util.Date
      */    
-    public function convertLocalDate(&$date) {
+    public function convertLocalDate($date) {
       return self::convertDate($date, TimeZone::getLocal());
     }
   }

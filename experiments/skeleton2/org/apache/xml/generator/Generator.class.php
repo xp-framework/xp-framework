@@ -13,25 +13,24 @@
     'util.Properties'
   );
 
+  define('GENERATOR_START',      'start');
+  define('GENERATOR_SUCCESS',    'success');
+  define('GENERATOR_FAILURE',    'failure');
+  define('GENERATOR_OMIT',       'omit');
+  define('GENERATOR_NEWDEP',     'newdependency');
+  define('GENERATOR_UPDATEDDEP', 'dependencyupdated');
+
   /**
    * Generator
    *
    * @purpose  Generator
    */
   class Generator extends Object {
-    const
-      START = 'start',
-      SUCCESS = 'success',
-      FAILURE = 'failure',
-      OMIT = 'omit',
-      NEWDEP = 'newdependency',
-      UPDATEDDEP = 'dependencyupdated';
-
     public
       $processor    = NULL,
       $tracker      = NULL;
       
-    public
+    protected
       $_target      = '',
       $_obs         = array();
       
@@ -42,7 +41,7 @@
      * @param   &util.Properties prop
      * @return  bool
      */
-    public function configure(&$prop) {
+    public function configure(Properties $prop) {
       try {
         $this->config= $prop->readSection('generator');
         $proc= XPClass::forName($this->config['xsl.processor']);
@@ -68,7 +67,7 @@
      * @access  protected
      * @param   &xsl.XSLProcessor processor
      */
-    protected function setProcessor(&$processor) {
+    protected function setProcessor(XSLProcessor $processor) {
       $this->processor= $processor;
       $this->processor->setSchemeHandler(array(
         'get_all' => array(&$this, 'schemeHandler')
@@ -83,7 +82,7 @@
      * @param   &org.apache.xml.generator.GeneratorObserver o
      * @return  &org.apache.xml.generator.GeneratorObserver the added observer
      */
-    public function addObserver(&$o) {
+    public function addObserver(GeneratorObserver $o) {
       $this->_obs[]= $o;
       return $o;
     }
@@ -96,7 +95,7 @@
      * @param   string target
      * @param   lang.Exception error default NULL
      */
-    protected function notifyObservers($status, $target, $error= NULL) {
+    protected function notifyObservers($status, $target, XPException $error= NULL) {
       for ($i= 0, $s= sizeof($this->_obs); $i < $s; $i++) {
         call_user_func(array(&$this->_obs[$i], 'on'.$target), $target, $error);
       }
@@ -205,7 +204,6 @@
      * @return  string xml
      */
     private function schemeHandler($p, $scheme, $rest) {
-      printf("===> Scheme handler for <%s> <%s>\n", $scheme, $rest);
       list($name, $params)= explode('?', substr($rest, 1), 2);
       try {
         if ($dep= $this->tracker->addDependency(

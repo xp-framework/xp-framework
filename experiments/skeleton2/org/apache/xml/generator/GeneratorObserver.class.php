@@ -20,7 +20,7 @@
      * @access  public
      * @param   string target
      */    
-    public abstract function onStart($target) ;
+    public abstract function onStart($target);
 
     /**
      * Callback for when generation of target succeeds
@@ -29,7 +29,7 @@
      * @access  public
      * @param   string target
      */    
-    public abstract function onSuccess($target) ;
+    public abstract function onSuccess($target);
     
     /**
      * Callback for when generation of target is omitted
@@ -38,7 +38,7 @@
      * @access  public
      * @param   string target
      */    
-    public abstract function onOmit($target) ;
+    public abstract function onOmit($target);
 
     /**
      * Callback for when generation of target fails
@@ -48,7 +48,7 @@
      * @param   string target
      * @param   &lang.Exception reason
      */    
-    public abstract function onFailure($target, &$reason) ;
+    public abstract function onFailure($target, XPException $reason);
 
     /**
      * Callback for when a new dependency is registered
@@ -57,7 +57,7 @@
      * @access  public
      * @param   string target
      */    
-    public abstract function onNewDependency($target) ;
+    public abstract function onNewDependency($target);
 
     /**
      * Callback for when a new dependency is updated
@@ -66,7 +66,7 @@
      * @access  public
      * @param   string target
      */    
-    public abstract function onDependencyUpdated($target) ;
+    public abstract function onDependencyUpdated($target);
 
   }
 ?>

@@ -59,7 +59,7 @@
      * @param   &mixed value
      * @param   int permissions default 0666 (ignored)
      */
-    public function put($key, &$value, $permissions= 0666) {
+    public function put($key, $value, $permissions= 0666) {
       $this->segments[$key]= $value;
     }
 

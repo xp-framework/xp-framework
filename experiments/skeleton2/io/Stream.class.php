@@ -4,22 +4,23 @@
  * $Id$
  */
 
+  // Mode constants for open() method
+  define('STREAM_MODE_READ',      'r');          // Read
+  define('STREAM_MODE_READWRITE', 'r+');         // Read/Write
+  define('STREAM_MODE_WRITE',     'w');          // Write
+  define('STREAM_MODE_REWRITE',   'w+');         // Read/Write, truncate on open
+  define('STREAM_MODE_APPEND',    'a');          // Append (Read-only)
+  define('STREAM_MODE_READAPPEND','a+');         // Append (Read/Write)
+  
+  define('STREAM_READ',  0x0001);
+  define('STREAM_WRITE', 0x0002);
+
   /**
    * Stream
    * 
    * @purpose  Represent a generic stream
    */
   class Stream extends Object {
-    const
-      MODE_READ = 'r',
-      MODE_READWRITE = 'r+',
-      MODE_WRITE = 'w',
-      MODE_REWRITE = 'w+',
-      MODE_APPEND = 'a',
-      MODE_READAPPEND = 'a+',
-      READ = 0x0001,
-      WRITE = 0x0002;
-
     public
       $buffer   = '',
       $flags    = 0,

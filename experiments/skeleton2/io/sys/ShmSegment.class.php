@@ -23,7 +23,7 @@
    * @see       xp://io.sys.Semaphore
    */
   class ShmSegment extends Object {
-    public 
+    public
       $name     = '',
       $spot     = '';
       
@@ -93,7 +93,7 @@
      * @return  bool success
      * @throws  IOException in case an error occurs
      */
-    public function put(&$val, $permissions= 0666) {
+    public function put($val, $permissions= 0666) {
       $v= array($val);
       $h= shm_attach($this->spot, (strlen(serialize($v)) + 44) * 2, $permissions);
       $ret= shm_put_var($h, $this->name, $v);

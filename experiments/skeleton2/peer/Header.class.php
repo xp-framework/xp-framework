@@ -10,7 +10,7 @@
    * @purpose  Base class for Cookie, Authorization, etc.
    */
   class Header extends Object {
-    public 
+    public
       $name     = '',
       $value    = '';
       
@@ -40,10 +40,21 @@
     /**
      * Get header value
      *
+     * @model   final
      * @access  public
      * @return  string value
      */
-    public function getValue() {
+    public final function getValue() {
+      return $this->value;
+    }
+    
+    /**
+     * Get header value representation
+     *
+     * @access  public
+     * @return  string value
+     */
+    public function getValueRepresentation() {
       return $this->value;
     }
     
@@ -54,7 +65,7 @@
      * @return  string
      */
     public function toString() {
-      return self::getName().': '.self::getValue();
+      return self::getName().': '.self::getValueRepresentation();
     }
     
     /**

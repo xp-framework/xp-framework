@@ -45,7 +45,7 @@
      * @param   stream stream
      * @return  bool success
      */    
-    public function setOutputStream(&$stream) {
+    public function setOutputStream($stream) {
       try {
         if (!$stream->isOpen()) $stream->open (STREAM_MODE_WRITE);
         $this->stream= $stream;
@@ -143,7 +143,7 @@
       if (self::_hasHeader())
         $cols= array_keys ($this->colName);
     
-      foreach ($cols as $idx=> $colName) {
+      foreach ($cols as $idx => $colName) {
         if (isset ($data[$colName]))
           $this->_writeColumn ($data[$colName]);
         else

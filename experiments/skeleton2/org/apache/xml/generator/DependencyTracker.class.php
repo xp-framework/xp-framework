@@ -37,7 +37,7 @@
      * @param   &org.apache.xml.generator.Dependency dep
      * @return  &org.apache.xml.generator.Dependency the added dependency
      */
-    public function addDependency($target, &$dep) {
+    public function addDependency($target, Dependency $dep) {
     
       if (!isset($this->deps[$target])) {
         $this->deps[$target]= array();

@@ -63,7 +63,7 @@
      * @access  protected
      * @param   &mixed url a string or a peer.URL object
      */
-    protected function _createRequest(&$url) {
+    protected function _createRequest($url) {
       $this->request= new AjpRequest($url);
     }  
   }

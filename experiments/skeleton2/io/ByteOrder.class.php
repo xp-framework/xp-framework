@@ -4,6 +4,9 @@
  * $Id$ 
  */
 
+  define('BIG_ENDIAN',      0x0000);
+  define('LITTLE_ENDIAN',   0x0001);
+
   /**
    * Byte order
    *
@@ -16,10 +19,6 @@
    * @purpose  Utility class
    */
   class ByteOrder extends Object {
-    const
-      BIG_ENDIAN = 0x0000,
-      LITTLE_ENDIAN = 0x0001;
-
   
     /**
      * Retrieves the name of a byteorder

@@ -22,7 +22,7 @@
      * @param   &util.profiling.unittest.TestCase test
      * @param   &mixed reason
      */
-    public function __construct(&$test, &$reason) {
+    public function __construct(TestCase $test, $reason) {
       $this->test= $test;
       $this->reason= $reason;
       

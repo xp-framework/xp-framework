@@ -131,7 +131,7 @@
             $name= is_a($v, 'Header') ? $v->getName() : $k;
             $idx= strtolower($name);
             $p.= isset($headermap[$idx]) ? $headermap[$idx] : self::_encode($name);
-            $p.= self::_encode(is_a($v, 'Header') ? $v->getValue() : $v);
+            $p.= self::_encode(is_a($v, 'Header') ? $v->getValueRepresentation() : $v);
           }
           $p.= "\xFF";
           

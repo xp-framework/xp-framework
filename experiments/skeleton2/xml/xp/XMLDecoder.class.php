@@ -27,8 +27,8 @@
      * @access  public
      * @param   &io.File file
      */
-    public function __construct(&$file) {
-     $this->file= $file;
+    public function __construct(File $file) {
+      $this->file= $file;
       $this->file->open(FILE_MODE_READ);
       
     }
@@ -40,7 +40,7 @@
      * @param   &xml.Node node
      * @return  array result
      */
-    public function _recurse(&$node, $trim) {
+    public function _recurse(Node $node, $trim) {
       $result= array();
       for ($i= 0, $s= sizeof($node->children); $i < $s; $i++) {
         $type= $node->children[$i]->attribute['type'];
@@ -53,14 +53,14 @@
             
           case 'object':
             try {
-              $class= ClassLoader::loadClass($node->children[$i]->attribute['class']);
-            } catch (XPException $e) {
-              $class= 'stdClass';
+              $class= XPClass::forName($node->children[$i]->attribute['class']);
+            } catch (ClassNotFoundException $e) {
+              throw ($e);
             }
-            $result[$name]= cast(
-              self::_recurse($node->children[$i], $trim),
-              $class
-            );
+            $result[$name]= $class->newInstance();
+            foreach (self::_recurse($node->children[$i], $trim) as $k => $v) {
+              $result[$name]->$k= $v;
+            }
             break;
             
           default:
@@ -90,13 +90,17 @@
         do {
           if (!($buf= FileUtil::getContents($this->file))) break;
           if (!($tree= Tree::fromString($buf))) break;
-          $name= ClassLoader::loadClass($tree->root->attribute['class']);
+          if (!($class= XPClass::forName($tree->root->attribute['class']))) break;
+          $result= $class->newInstance();
         } while (0);
       } catch (XPException $e) {
         throw ($e);
       }
-      
-      return cast(self::_recurse($tree->root, $trim), $name);
+
+      foreach (self::_recurse($tree->root, $trim) as $k => $v) {
+        $result[$name]->$k= $v;
+      }      
+      return $result;
     }
     
     /**

@@ -126,7 +126,7 @@
      * @param   io.File file
      * @throws  IOException
      */    
-    public function setFile(&$file) {
+    public function setFile(File $file) {
       $file->open(FILE_MODE_READ);
       $this->source= $file->read($file->size());
       $file->close();

@@ -11,9 +11,15 @@
     'rdbms.SQLStatementFailedException',
     'rdbms.DSN',
     'rdbms.ResultSet',
+    'util.log.Logger',
     'util.log.Traceable'
   );
 
+  define('DB_STORE_RESULT',     0x0001);
+  define('DB_UNBUFFERED',       0x0002);
+  define('DB_AUTOCONNECT',      0x0004);
+  define('DB_PERSISTENT',       0x0008);
+  
   /**
    * Provide an interface from which all other database connection
    * classes extend.
@@ -21,13 +27,7 @@
    * @purpose  Base class for database connections
    */
   class DBConnection extends Object implements Traceable {
-    const
-      DB_STORE_RESULT = 0x0001,
-      DB_UNBUFFERED = 0x0002,
-      DB_AUTOCONNECT = 0x0004,
-      DB_PERSISTENT = 0x0008;
-
-    public 
+    public
       $handle  = NULL,
       $dsn     = NULL,
       $log     = NULL,
@@ -40,7 +40,7 @@
      * @access  public
      * @param   &rdbms.DSN dsn
      */
-    public function __construct(&$dsn) { 
+    public function __construct(DSN $dsn) { 
       $this->dsn= $dsn;
       $this->flags= $dsn->getFlags();
       self::setTimeout($dsn->getProperty('timeout', 0));   // 0 means no timeout
@@ -86,7 +86,7 @@
     /**
      * Connect
      *
-     * @access  public  
+     * @access  public
      * @return  bool success
      */
     public function connect() { 
@@ -172,7 +172,7 @@
      *
      * @access  public
      * @param   mixed* args
-     * @return  resource set
+     * @return  &rdbms.ResultSet
      */
     public function query() { }
     
@@ -183,7 +183,7 @@
      * @param   &rdbms.DBTransaction transaction
      * @return  &rdbms.DBTransaction
      */
-    public function begin(&$transaction) { }
+    public function begin(DBTransaction $transaction) { }
     
     /**
      * Retrieve transaction state
@@ -218,7 +218,7 @@
      * @access  public
      * @param   &util.log.LogCategory
      */
-    public function setTrace(&$log) {
+    public function setTrace($log) {
       $this->log= $log;
     }    
   }

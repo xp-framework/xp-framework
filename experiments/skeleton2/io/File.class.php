@@ -10,6 +10,16 @@
     'io.FileNotFoundException'
   );
 
+  // Mode constants for open() method
+  define('FILE_MODE_READ',      'rb');          // Read
+  define('FILE_MODE_READWRITE', 'rb+');         // Read/Write
+  define('FILE_MODE_WRITE',     'wb');          // Write
+  define('FILE_MODE_REWRITE',   'wb+');         // Read/Write, truncate on open
+  define('FILE_MODE_APPEND',    'ab');          // Append (Read-only)
+  define('FILE_MODE_READAPPEND','ab+');         // Append (Read/Write)
+  
+  
+    
   /**
    * Instances of the file class serve as an opaque handle to the underlying machine-
    * specific structure representing an open file.
@@ -17,22 +27,14 @@
    * @purpose  Represent a file
    */
   class File extends Stream {
-    const
-      MODE_READ = 'rb',
-      MODE_READWRITE = 'rb+',
-      MODE_WRITE = 'wb',
-      MODE_REWRITE = 'wb+',
-      MODE_APPEND = 'ab',
-      MODE_READAPPEND = 'ab+';
-
-    public 
-      $uri=         '', 
+    public
+      $uri=         '',
       $filename=    '',
       $path=        '',
       $extension=   '',
       $mode=        FILE_MODE_READ;
     
-    public 
+    protected
       $_fd= NULL;
     
     /**
@@ -130,7 +132,7 @@
       $this->mode= $mode;
       if (
         ('php://' != substr($this->uri, 0, 6)) &&
-        ($mode== FILE_MODE_READ) && 
+        (FILE_MODE_READ == $mode) && 
         (!self::exists())
       ) throw (new FileNotFoundException($this->uri));
       

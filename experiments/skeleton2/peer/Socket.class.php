@@ -18,45 +18,28 @@
   class Socket extends Object {
     public
       $host     = '',
-      $port     = 0,
-      $timeout  = 2;
+      $port     = 0;
       
-    public
-      $_sock    = NULL;
+    protected
+      $_sock    = NULL,
+      $_prefix  = '';
     
     /**
      * Constructor
      *
-     * May also be called with the array syntax:
-     * <code>
-     *   $sock= new Socket(array(
-     *     'host' => '127.0.0.1',
-     *     'port' => 80
-     *   ));
-     * </code>
+     * Note: When specifying a numerical IPv6 address (e.g. fe80::1) 
+     * as value for the parameter "host", you must enclose the IP in 
+     * square brackets.
      *
      * @access  public
      * @param   string host hostname or IP address
      * @param   int port
+     * @param   resource socket default NULL
      */
-    public function __construct() {
-      switch (func_num_args()) {
-        case 1: 
-          $data= func_get_arg(0); 
-          break;
-          
-        case 2: 
-          $data= array(
-            'host' => func_get_arg(0),
-            'port' => func_get_arg(1)
-          );
-          break;
-          
-        default:
-          $data= array();
-      }
-       
-      
+    public function __construct($host, $port, $socket= NULL) {
+      $this->host= $host;
+      $this->port= $port;
+      $this->_sock= $socket;
     }
     
     /**
@@ -86,18 +69,26 @@
      * Connect
      *
      * @access  public
+     * @param   float timeout default 2.0
+     * @see     php://fsockopen
      * @return  bool success
      * @throws  peer.ConnectException
      */
-    public function connect() {
+    public function connect($timeout= 2.0) {
       if (self::isConnected()) return 1;
       
-      if (!$this->_sock= fsockopen($this->host, $this->port, $errno, $errstr, $this->timeout)) {
+      if (!$this->_sock= fsockopen(
+        $this->_prefix.$this->host, 
+        $this->port, 
+        $errno, 
+        $errstr, 
+        $timeout
+      )) {
         throw (new ConnectException(sprintf(
           'Failed connecting to %s:%s within %s seconds [%d: %s]',
           $this->host,
           $this->port,
-          $this->timeout,
+          $timeout,
           $errno,
           $errstr
         )));

@@ -19,6 +19,6 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) ;
+    public function setTrace(LogCategory $cat);
   }
 ?>

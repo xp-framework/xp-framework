@@ -60,7 +60,7 @@
      * @param   string server
      * @param   int port default 6667
      */
-    public function __construct(&$user, $server, $port= 6667) {
+    public function __construct(IRCUser $user, $server, $port= 6667) {
       
       $this->user= $user;
       $this->sock= new Socket($server, $port);
@@ -74,7 +74,7 @@
      * @param   &peer.irc.IRCConnectionListener listener
      * @return  &peer.irc.IRCConnectionListener the listener added
      */
-    public function addListener(&$listener) {
+    public function addListener(IRCConnectionListener $listener) {
       $this->listeners[]= $listener;
       return $listener;
     }
@@ -85,7 +85,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
+    public function setTrace(LogCategory $cat) {
       $this->cat= $cat;
     }
   

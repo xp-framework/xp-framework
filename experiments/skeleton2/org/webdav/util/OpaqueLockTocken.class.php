@@ -6,6 +6,8 @@
 
   uses('org.ietf.UUID');
 
+  define('LOCKTOKEN_PREFIX', 'opaquelocktoken');
+  
   /**
    * <quote>
    * A lock token is a type of state token, represented as a URI, which
@@ -29,9 +31,6 @@
    * @see      http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-00.txt
    */
   class OpaqueLockTocken extends Object {
-    const
-      LOCKTOKEN_PREFIX = 'opaquelocktoken';
-
     public
       $uuid= NULL;
     
@@ -41,7 +40,7 @@
      * @access  public
      * @param   &org.ietf.UUID uuid
      */
-    public function __construct(&$uuid) {
+    public function __construct(UUID $uuid) {
       $this->uuid= $uuid;
       
     }

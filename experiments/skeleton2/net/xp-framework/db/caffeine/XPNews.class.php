@@ -29,7 +29,8 @@
     /**
      * Gets an instance of this object by unique index "news_news_i_640032591"
      *
-     * @access  static
+     * @model   static
+     * @access  public
      * @param   int news_id
      * @return  &net.xp-framework.db.caffeine.XPNews object
      * @throws  rdbms.SQLException in case an error occurs
@@ -65,7 +66,8 @@
     /**
      * Gets an array of instances of this object by bz_id
      *
-     * @access  static
+     * @model   static
+     * @access  public
      * @param   int bz_id
      * @return  &net.xp-framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
@@ -107,7 +109,8 @@
      * Gets an array of instances of this object descendingly ordered by created_at
      * (newest first)
      *
-     * @access  static
+     * @model   static
+     * @access  public
      * @param   int max default -1 maximum number of rows to get)
      * @return  &net.xp-framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
@@ -244,7 +247,7 @@
      * @access  public
      * @param   util.Date created_at
      */
-    public function setCreated_at($created_at) {
+    public function setCreated_at(Date $created_at) {
       $this->created_at= $created_at;
     }
       
@@ -264,7 +267,7 @@
      * @access  public
      * @param   util.Date lastchange
      */
-    public function setLastchange($lastchange) {
+    public function setLastchange(Date $lastchange) {
       $this->lastchange= $lastchange;
     }
       

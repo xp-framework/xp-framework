@@ -33,7 +33,7 @@
      * @param   &mixed argument
      * @return  string
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       switch (gettype($argument)) {
         case 'array':
           return vsprintf($fmt, array_values($argument));

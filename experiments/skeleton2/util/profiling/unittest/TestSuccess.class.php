@@ -22,7 +22,7 @@
      * @param   &util.profiling.unittest.TestCase test
      * @param   &mixed result
      */
-    public function __construct(&$test, &$result) {
+    public function __construct(TestCase $test, $result) {
       $this->test= $test;
       $this->result= $result;
       

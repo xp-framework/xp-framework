@@ -6,6 +6,7 @@
 
   uses(
     'xml.soap.SOAPMessage',
+    'xml.QName',
     'util.log.Traceable'
   );
 
@@ -27,9 +28,10 @@
    * @purpose  Generic SOAP client base class
    */
   class SOAPClient extends Object implements Traceable {
-    public 
+    public
       $transport    = NULL,
-      $action       = '';
+      $action       = '',
+      $mapping      = array();
     
     /**
      * Constructor
@@ -38,7 +40,7 @@
      * @param   &xml.soap.transport.SOAPTransport transport a SOAP transport
      * @param   string action Action
      */
-    public function __construct(&$transport, $action) {
+    public function __construct(SOAPTransport $transport, $action) {
       $this->transport= $transport;
       $this->action= $action;
       
@@ -50,8 +52,25 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
+    public function setTrace(LogCategory $cat) {
       $this->transport->setTrace($cat);
+    }
+    
+    /**
+     * Register mapping for a qname to a class obkect
+     *
+     * @access  public
+     * @param   &xml.QName qname
+     * @param   &lang.XPClass class
+     * @throws  lang.IllegalArgumentException
+     */
+    public function registerMapping(QName $qname, XPClass $class) {
+      if (!is('XPClass', $class)) {
+        throw (new IllegalArgumentException(
+          'Argument class is not an XPClass (given: '.xp::typeOf($class).')'
+        ));
+      }
+      $this->mapping[strtolower($qname->toString())]= $class;
     }
     
     /**
@@ -82,7 +101,7 @@
       // Response
       if (FALSE == ($this->answer= $this->transport->retrieve($response))) return FALSE;
       
-      $data= $this->answer->getData();
+      $data= $this->answer->getData('ENUM', $this->mapping);
       return sizeof($data) == 1 ? $data[0] : $data;
     }
   }

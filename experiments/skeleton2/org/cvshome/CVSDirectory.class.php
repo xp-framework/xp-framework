@@ -10,9 +10,10 @@
    * @purpose  Interface to CVS binary
    */
   class CVSDirectory extends CVSInterface {
-    public
-      $path     = NULL,
+    protected
       $_folder  = NULL;
+    public
+      $path     = NULL;
     
     /**
      * Constructor

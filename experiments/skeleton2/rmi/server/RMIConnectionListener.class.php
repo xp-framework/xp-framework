@@ -27,7 +27,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
+    public function setTrace(LogCategory $cat) {
       $this->cat= $cat;
     }
   
@@ -37,7 +37,7 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function connected(&$event) {
+    public function connected(ConnectionEvent $event) {
       $this->cat && $this->cat->info('ConnectionListener::connected()');
     }
     
@@ -104,7 +104,7 @@
      * @param   string data
      * @return  bool success
      */
-    private function respond(&$stream, $identifier, $data) {
+    private function respond(Stream $stream, $identifier, $data) {
       $this->cat && $this->cat->infof(
         'ConnectionListener::respond(%s %s)', 
         $identifier,
@@ -129,7 +129,7 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function data(&$event) { 
+    public function data(ConnectionEvent $event) { 
       if (!strstr('GSI', $event->data{0})) {    // Ignore corrupt data
         $this->cat && $this->cat->debug('Corrupt >', addcslashes($event->data, "\0..\37"), '<');
         $event->stream->close();
@@ -162,7 +162,7 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function disconnected(&$event) { 
+    public function disconnected(ConnectionEvent $event) { 
       $this->cat && $this->cat->info('ConnectionListener::disconnected()');
     }
     
@@ -172,7 +172,7 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function error(&$event) { 
+    public function error(ConnectionEvent $event) { 
       if ($this->cat) {
         $this->cat->warn('ConnectionListener::error(', $event->data->getStackTrace(), ')');
       } else {

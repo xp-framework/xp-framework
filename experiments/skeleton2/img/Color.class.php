@@ -15,7 +15,7 @@
       $green    = 0,
       $blue     = 0;
       
-    public
+    protected
       $_hdl     = NULL;
     
     /**

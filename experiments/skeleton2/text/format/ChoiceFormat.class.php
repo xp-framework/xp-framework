@@ -33,7 +33,7 @@
      * @return  string
      * @throws  FormatException
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       foreach (explode('|', $fmt) as $choice) {
         list($cmp, $val)= explode(':', $choice);
         if ($argument == $cmp) {

@@ -35,18 +35,6 @@
       return $this === $cmp;
     }
     
-    /**
-     * Clones this object
-     *
-     * @access  public
-     * @return  &lang.Object the clone
-     */
-    public function clone() {
-      $clone= $this->__clone();
-      $clone->__id= microtime();
-      return $clone;
-    }
-    
     /** 
      * Returns the fully qualified class name for this class 
      * (e.g. "io.File")

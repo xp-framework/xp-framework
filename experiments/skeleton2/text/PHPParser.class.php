@@ -10,6 +10,14 @@
     'util.log.Traceable'
   );
 
+  // Modes of operation
+  define('PHPPARSER_MODE_UNDEF',            0x0000);
+  define('PHPPARSER_MODE_GET_FUNC_NAME',    0x0001);
+  define('PHPPARSER_MODE_GET_CLASS_NAME',   0x0002);
+  define('PHPPARSER_MODE_GET_USES',         0x0003);
+  define('PHPPARSER_MODE_GET_REQUIRE',      0x0004);
+  define('PHPPARSER_MODE_GET_SAPIS',        0x0005);
+
   /**
    * Class to parse PHP files. Parsing tries to extract informations
    * about contained global functions, classes and its functions.
@@ -18,14 +26,6 @@
    * @purpose  Parser
    */
   class PHPParser extends Object implements Traceable {
-    const
-      MODE_UNDEF = 0x0000,
-      MODE_GET_FUNC_NAME = 0x0001,
-      MODE_GET_CLASS_NAME = 0x0002,
-      MODE_GET_USES = 0x0003,
-      MODE_GET_REQUIRE = 0x0004,
-      MODE_GET_SAPIS = 0x0005;
-
     public
       $functions= array(),
       $classes=   array(),
@@ -35,7 +35,7 @@
       $filename=  '',
       $log=       NULL;
     
-    public
+    protected
       $_utimeLastChange= 0;
     
     /**
@@ -55,7 +55,7 @@
      * @access  public
      * @param   &util.log.LogCategory
      */
-    public function setTrace(&$log) {
+    public function setTrace($log) {
       $this->log= $log;
     }    
     
@@ -132,9 +132,9 @@
         if (is_string ($token)) {
 
           // No active 'workspace' => continue
-          if (0 == count ($currentSpace)) continue;
+          if (empty($currentSpace)) continue;
 
-          $s= $currentSpace[count($currentSpace)-1];
+          $s= $currentSpace[sizeof($currentSpace)- 1];
           
           switch ($token) {
             case '{':
@@ -211,8 +211,8 @@
                 $f->line= $lineno;
                 $f->braces= 0;
                 
-                if (0 < count ($currentClass)) {
-                  $c= $currentClass[count($currentClass)-1];
+                if (!empty($currentClass)) {
+                  $c= $currentClass[sizeof($currentClass)- 1];
                   $c->functions[]= $f;
                 } else {
                   $this->functions[]= $f;

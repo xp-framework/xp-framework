@@ -9,6 +9,11 @@
     'com.microsoft.wscript.WshShell'
   );
 
+  define('REG_SZ',        'REG_SZ');
+  define('REG_EXPAND_SZ', 'REG_EXPAND_SZ'); 
+  define('REG_DWORD',     'REG_DWORD');
+  define('REG_BINARY',    'REG_BINARY'); 
+  
   /**
    * Registry
    *
@@ -54,16 +59,10 @@
    * @platform Windows
    */
   class RegistryKey extends Object {
-    const
-      REG_SZ = 'REG_SZ',
-      REG_EXPAND_SZ = 'REG_EXPAND_SZ',
-      REG_DWORD = 'REG_DWORD',
-      REG_BINARY = 'REG_BINARY';
-
-    public 
+    public
       $name = '';
        
-    public
+    protected
       $_sh  = NULL;
   
     /**

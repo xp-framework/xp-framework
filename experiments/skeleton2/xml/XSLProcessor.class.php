@@ -31,7 +31,7 @@
    * @see      http://www.gingerall.com - Sablotron
    */
   class XSLProcessor extends XML {
-    public 
+    public
       $processor    = NULL,
       $stylesheet   = '',
       $buffer       = array(),

@@ -29,7 +29,7 @@
      * @access  public
      * @param   &util.Date date
      */
-    public function setDate(&$date) {
+    public function setDate(Date $date) {
       $this->date= $date;
     }
 
@@ -49,7 +49,7 @@
      * @access  public
      * @param   &util.Date starts
      */
-    public function setStarts(&$starts) {
+    public function setStarts(Date $starts) {
       $this->starts= $starts;
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      * @param   &util.Date ends
      */
-    public function setEnds(&$ends) {
+    public function setEnds(Date $ends) {
       $this->ends= $ends;
     }
 
@@ -196,7 +196,7 @@
         // Convert date into string
         $value= $value->toString ('Ymd').'T'.$value->toString ('His').'Z';
       } else if (is_object ($value)) {
-        foreach (get_object_vars ($value) as $pkey=> $pvalue) {
+        foreach (get_object_vars ($value) as $pkey => $pvalue) {
           if ('_value' == $pkey) continue;
           
           // Append parameters

@@ -14,7 +14,7 @@
     public
       $name     = '';
       
-    public
+    protected
       $_hdl     = NULL;
       
     /**

@@ -22,6 +22,6 @@
      * @param   int length
      * @return  string[] completion matches
      */
-    public function complete($string, $offset, $length) ;
+    public function complete($string, $offset, $length);
   }
 ?>

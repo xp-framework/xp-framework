@@ -29,7 +29,7 @@
      * @param   &util.profiling.unittest.TestCase test
      * @param   mixed value
      */
-    public function setSucceeded(&$test, $value) {
+    public function setSucceeded(TestCase $test, $value) {
       $this->succeeded[$test->hashCode()]= new TestSuccess($test, $value);
     }
     
@@ -40,7 +40,7 @@
      * @param   &util.profiling.unittest.TestCase test
      * @param   mixed reason
      */
-    public function setFailed(&$test, $reason) {
+    public function setFailed(TestCase $test, $reason) {
       $this->failed[$test->hashCode()]= new TestFailure($test, $reason);
     }
 
@@ -51,7 +51,7 @@
      * @param   &util.profiling.unittest.TestCase test
      * @param   mixed reason
      */
-    public function setSkipped(&$test, $reason) {
+    public function setSkipped(TestCase $test, $reason) {
       $this->skipped[$test->hashCode()]= new TestSkipped($test, $reason);
     }
 

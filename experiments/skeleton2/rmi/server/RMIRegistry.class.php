@@ -17,6 +17,7 @@
    * @purpose  Registry
    */
   class RMIRegistry extends Object {
+    protected static $instance= NULL;
     public
       $storage  = NULL;
     
@@ -28,7 +29,7 @@
      * @param   &util.registry.storage.RegistryStorage
      * @return  &rmi.RMIRegistry
      */  
-    public static function setup(&$storage) {
+    public static function setup($storage) {
       $instance= RMIRegistry::getInstance();
       
       // Initialize storage
@@ -55,10 +56,8 @@
      * @return  &rmi.RMIRegistry
      */  
     public static function getInstance() {
-      static $instance= NULL;
-
-      if (!$instance) $instance= new RMIRegistry();
-      return $instance;
+      if (!self::$instance) self::$instance= new RMIRegistry();
+      return self::$instance;
     }
   
     /**
@@ -84,7 +83,7 @@
      * @param   &lang.Object object
      * @return  bool success
      */
-    public function update($name, &$object) {
+    public function update($name, Object $object) {
       return $this->storage->put($name, $object);
     }
     
@@ -96,7 +95,7 @@
      * @param   string name default NULL defaults to object->getClassName()
      * @return  bool success
      */
-    public function register(&$object, $name= NULL) {
+    public function register($object, $name= NULL) {
       return $this->storage->put(
         $name ? $name : $object->getClassName(),
         $object

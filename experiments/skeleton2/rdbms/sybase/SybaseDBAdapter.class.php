@@ -22,7 +22,7 @@
      * @access  public
      * @param   &Object conn database connection
      */
-    public function __construct(&$conn) {
+    public function __construct($conn) {
       $this->map= array(
         'binary'        => DB_ATTRTYPE_BINARY, 
         'bit'           => DB_ATTRTYPE_BIT,      

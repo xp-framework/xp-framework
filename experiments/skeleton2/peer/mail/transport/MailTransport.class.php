@@ -53,7 +53,7 @@
      * @param   &peer.mail.Message message the Message object to send
      * @return  bool success
      */
-    public function send(&$message) { 
+    public function send(Message $message) { 
     
       // Sanity check: Is this a message?
       if (!is_a($message, 'Message')) {

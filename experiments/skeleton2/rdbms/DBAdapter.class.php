@@ -21,7 +21,7 @@
      * @access  public
      * @param   &Object a database connection
      */
-    public function __construct(&$conn) {
+    public function __construct($conn) {
       $this->conn= $conn;
       
     }

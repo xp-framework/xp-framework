@@ -4,6 +4,9 @@
  * $Id$
  */
 
+  define('T_NONE',            0x0000);    // None of the known tokens, CDATA only
+  define('T_ANY',             0xFFFF);    // Any token
+ 
   /**
    * PHP Tokenizer
    * Class wrapper around PHPs tokenizer extension
@@ -13,15 +16,11 @@
    * @see   xp://lang.apidoc.parser.GenericParser
    */ 
   class PHPTokenizer extends Object {
-    const
-      T_NONE = 0x0000,
-      T_ANY = 0xFFFF;
-
-    public 
+    public
       $tokens= array(),
       $rules=  array();
       
-    public
+    protected
       $_offset,
       $_size;
       
@@ -141,7 +140,7 @@
      * @param   util.log.LogCategory CAT default NULL a log category to print debug to
      * @return  bool success
      */
-    public function applyRules($CAT= NULL) {
+    public function applyRules(LogCategory $CAT= NULL) {
       $data= array();
       
       // Loop throught tokens
@@ -192,7 +191,7 @@
             $CAT && $CAT->debugf('[%04x:%-18s] %s =~ %s, token %s', $i, $name, $expect, $cdata, token_name($token));
             $f= TRUE;
           } else if (
-            ("!" === $expect{0}) &&
+            ('!' === $expect{0}) &&
             (
               (T_NONE === $token) ||
               (token_name($token) !== substr($expect, 1))
@@ -236,7 +235,7 @@
           }
 
           // Found n'th token in list...
-            $CAT && $CAT->infof('[%04x:%-18s] +++ found %s for rule %s [%d/%d]', $i, $name, token_name($token), $name, $rule['expect'], $s);
+          $CAT && $CAT->infof('[%04x:%-18s] +++ found %s for rule %s [%d/%d]', $i, $name, token_name($token), $name, $rule['expect'], $s);
           $rule['expect']++;
           $data[$name][$rule['expect']]= $cdata;
 

@@ -32,6 +32,7 @@
    * @purpose  Make assertian
    */
   class Assert extends Object {
+    protected static $instance= NULL;
     public
       $exception= NULL;
       
@@ -59,14 +60,12 @@
      * @return  &util.Assert
      */
     private function getInstance() {
-      static $__instance;
-      
-      if (!isset($__instance)) {
-        $__instance= new Assert();
-        assert_options(ASSERT_CALLBACK, array(&$__instance, 'onAssertionFailed'));
+      if (!isset(self::$instance)) {
+        self::$instance= new Assert();
+        assert_options(ASSERT_CALLBACK, array(&self::$instance, 'onAssertionFailed'));
         assert_options(ASSERT_WARNING, 0);
       }
-      return $__instance;
+      return $instance;
     }
   
     /**

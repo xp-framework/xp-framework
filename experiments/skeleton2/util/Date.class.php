@@ -24,7 +24,7 @@
    * @purpose  Represent a date
    */
   class Date extends Object {
-    public
+    protected
       $_utime   = 0;
       
     public
@@ -110,7 +110,7 @@
      * @param   &util.Date date A date object
      * @return  int equal: 0, date before $this: < 0, date after $this: > 0
      */
-    public function compareTo(&$date) {
+    public function compareTo(Date $date) {
       return $date->getTime()- self::getTime();
     }
     
@@ -121,7 +121,7 @@
      * @param   &util.Date date
      * @return  bool
      */
-    public function isBefore(&$date) {
+    public function isBefore(Date $date) {
       return self::getTime() < $date->getTime();
     }
 
@@ -132,7 +132,7 @@
      * @param   &util.Date date
      * @return  bool
      */
-    public function isAfter(&$date) {
+    public function isAfter(Date $date) {
       return self::getTime() > $date->getTime();
     }
     

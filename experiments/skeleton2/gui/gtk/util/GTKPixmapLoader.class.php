@@ -18,7 +18,7 @@
    * Transparent color will default to black (RGB {0, 0, 0})
    */
   class GTKPixmapLoader extends Object {
-    public 
+    public
       $windowRef,
       $baseDir,
       $transparentColor;
@@ -30,7 +30,7 @@
      * @param   GtkWindow window a valid window object
      * @param   string baseDir default '.' base directory for pixmaps
      */      
-    public function __construct(&$window, $baseDir= '.') {
+    public function __construct($window, $baseDir= '.') {
       self::setWindowRef($window);
       self::setBase($baseDir);
       self::setTransparentColor(new GdkColor(0, 0, 0));
@@ -43,7 +43,7 @@
      * @access  public
      * @param   GtkWindow window a valid window object
      */
-    public function setWindowRef(&$window) {
+    public function setWindowRef($window) {
       $this->windowRef= $window;
     }
     
@@ -63,7 +63,7 @@
      * @access  public
      * @param   GdkColor color the color to be transparent
      */
-    public function setTransparentColor(&$color) {
+    public function setTransparentColor($color) {
       $this->transparentColor= $color;
     }
     
@@ -74,13 +74,13 @@
      * @param   &array container
      * @param   string name
      */
-    private function _load(&$container, $name) {
+    private function _load($container, $name) {
       list(
         $container['p:'.$name],
         $container['m:'.$name]
       )= Gdk::pixmap_create_from_xpm(
-        &$this->windowRef, 
-        &$this->transparentColor,
+        $this->windowRef, 
+        $this->transparentColor,
         $this->baseDir.DIRECTORY_SEPARATOR.$name.'.xpm'
       );
     }

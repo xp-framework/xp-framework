@@ -34,7 +34,7 @@
      * @return  string
      * @throws  FormatException
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       switch (gettype($argument)) {
         case 'string':
           if (-1 == ($u= strtotime($argument))) {

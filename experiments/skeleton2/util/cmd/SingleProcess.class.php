@@ -33,8 +33,8 @@
    * @purpose  Lock process so it can only be run once
    */  
   class SingleProcess extends Object {
-    public 
-      $pid          = 0, 
+    public
+      $pid          = 0,
       $lockfile     = '';
 
     /**

@@ -28,7 +28,7 @@
       $this->mode= $mode;
       if (
         ('php://' != substr($this->uri, 0, 6)) &&
-        ($mode== FILE_MODE_READ) && 
+        (FILE_MODE_READ == $mode) && 
         (!self::exists())
       ) throw (new FileNotFoundException($this->uri));
       

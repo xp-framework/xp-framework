@@ -12,7 +12,8 @@
    * @see xp://img.Image
    */
   class JpegImage extends Image {
-    public $quality= 75.0;
+    public
+      $quality= 75.0;
     
     /**
      * Private function which produces the image

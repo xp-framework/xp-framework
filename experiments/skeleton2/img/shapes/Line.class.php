@@ -35,7 +35,7 @@
      * @param   int x2 x coordinate of ending point
      * @param   int y2 y coordinate of ending point
      */ 
-    public function __construct(&$col, $x1, $y1, $x2, $y2) {
+    public function __construct(Color $col, $x1, $y1, $x2, $y2) {
       $this->col= $col;
       $this->x1= $x1;
       $this->y1= $y1;
@@ -50,7 +50,7 @@
      * @access  public
      * @param   &resource hdl an image resource
      */
-    public function draw(&$hdl) {
+    public function draw($hdl) {
       return imageline(
         $hdl,
         $this->x1,

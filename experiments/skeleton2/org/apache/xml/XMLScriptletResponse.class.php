@@ -10,6 +10,9 @@
     'xml.XSLProcessor'
   );
 
+  define('XSLT_BUFFER', 0x0000);
+  define('XSLT_FILE',   0x0001);
+  
   /**
    * Wraps XML response
    *
@@ -21,11 +24,7 @@
    * @see org.apache.HttpScriptletResponse  
    */
   class XMLScriptletResponse extends HttpScriptletResponse {
-    const
-      XSLT_BUFFER = 0x0000,
-      XSLT_FILE = 0x0001;
-
-    public 
+    public
       $document,
       $processor,
       $stylesheet,
@@ -39,8 +38,18 @@
      */
     public function __construct() {
       $this->document= new OutputDocument();
-      $this->processor= new XSLProcessor();
+      $this->processor= self::getProcessor();
       parent::__construct();
+    }
+
+    /**
+     * Retrieve the XSL processor
+     *
+     * @access  protected
+     * @return  &xml.XSLProcessor
+     */
+    protected function getProcessor() {
+      return new XSLProcessor();
     }
     
     /**
@@ -97,7 +106,7 @@
      * @param   string name name
      * @return  &mixed val value
      */
-    public function addFormValue($name, &$val) {
+    public function addFormValue($name, $val) {
       if (!is_array($val)) $val= array($val);
 
       foreach (array_keys($val) as $k) {
@@ -160,7 +169,7 @@
      * @throws  IllegalArgumentException if you try to add a node with
      *          the name "formerrors" or "formvalues"
      */
-    public function addFormResult(&$node) {
+    public function addFormResult(Node $node) {
       if (
         ('formerrors' == $node->name) ||
         ('formvalues' == $node->name)

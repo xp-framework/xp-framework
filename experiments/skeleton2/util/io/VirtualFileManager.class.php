@@ -15,6 +15,7 @@
    */
   class VirtualFileManager extends Object {
     
+    protected static $instance= NULL;
     /**
      * Constructor
      *
@@ -31,10 +32,8 @@
      * @return  &io.VirtualFileManager
      */
     public function getInstance() {
-      static $instance= NULL;
-      
-      if (NULL === $instance) $instance= new VirtualFileManager();
-      return $instance;
+      if (NULL === self::$instance) self::$instance= new VirtualFileManager();
+      return self::$instance;
     }
     
     /**
@@ -44,7 +43,7 @@
      * @param   string path
      * @param   &string data
      */
-    public function addFile($path, &$data) {
+    public function addFile($path, $data) {
       $stream= new Stream();
       $stream->open (STREAM_MODE_READWRITE);
       $stream->write ($data);

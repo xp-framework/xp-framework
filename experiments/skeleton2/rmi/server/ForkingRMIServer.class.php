@@ -36,7 +36,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
+    public function setTrace(LogCategory $cat) {
       $this->listeners[0]->setTrace($cat);
     }
   }

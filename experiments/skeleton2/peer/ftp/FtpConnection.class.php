@@ -39,7 +39,7 @@
       $url      = array(),
       $opt      = array();
       
-    public
+    protected
       $_hdl     = NULL;
       
     /**
@@ -163,7 +163,7 @@
      * @param   &peer.ftp.FtpDir f
      * @return  bool success
      */
-    public function setDir(&$f) {
+    public function setDir(FtpDir $f) {
       return ftp_chdir($this->_hdl, $f->name);
     }
 
@@ -174,7 +174,7 @@
      * @param   &peer.ftp.FtpDir f
      * @return  bool success
      */
-    public function makeDir(&$f) {
+    public function makeDir(FtpDir $f) {
       return ftp_mkdir($this->_hdl, $f->name);
     }
     
@@ -188,7 +188,7 @@
      * @return  bool success
      * @throws  IOException
      */
-    public function put(&$arg, $remote= NULL, $mode= FTP_ASCII) {
+    public function put($arg, $remote= NULL, $mode= FTP_ASCII) {
       if (is_a($arg, 'File')) {
         $local= $arg->_fd;
         if (empty($remote)) $remote= basename ($arg->getUri());
@@ -218,7 +218,7 @@
      * @return  bool success
      * @throws  IOException
      */
-    public function get($remote, &$arg, $mode= FTP_ASCII) {
+    public function get($remote, $arg, $mode= FTP_ASCII) {
       if (is_a($arg, 'File')) {
         $local= $arg->_fd;
         $f= 'ftp_fget';

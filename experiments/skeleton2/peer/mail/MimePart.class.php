@@ -4,6 +4,16 @@
  * $Id$
  */
 
+  // Content-Disposition
+  define('MIME_DISPOSITION_INLINE',     'inline');
+  define('MIME_DISPOSITION_UNKNOWN',     '');
+  define('MIME_DISPOSITION_ATTACHMENT', 'attachment');
+
+  // Mime encodings
+  define('MIME_ENC_BASE64',     'base64');
+  define('MIME_ENC_QPRINT',     'quoted-printable');
+  define('MIME_ENC_8BIT',       '8-bit');
+  
   /**
    * MIME message part
    *
@@ -11,14 +21,6 @@
    * @purpose  Wrap
    */
   class MimePart extends Object {
-    const
-      MIME_DISPOSITION_INLINE = 'inline',
-      MIME_DISPOSITION_UNKNOWN = '',
-      MIME_DISPOSITION_ATTACHMENT = 'attachment',
-      MIME_ENC_BASE64 = 'base64',
-      MIME_ENC_QPRINT = 'quoted-printable',
-      MIME_ENC_8BIT = '8-bit';
-
     public
       $contenttype      = '',
       $charset          = '',

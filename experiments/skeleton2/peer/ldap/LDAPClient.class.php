@@ -10,6 +10,13 @@
     'peer.ldap.LDAPSearchResult'
   );
 
+  // Search scopes
+  define('LDAP_SCOPE_BASE',     0x0000);
+  define('LDAP_SCOPE_ONELEVEL', 0x0001);
+  define('LDAP_SCOPE_SUB',      0x0002);
+
+  
+  
   /**
    * LDAP client
    * 
@@ -59,16 +66,11 @@
    * @purpose  LDAP client
    */
   class LDAPClient extends Object {
-    const
-      LDAP_SCOPE_BASE = 0x0000,
-      LDAP_SCOPE_ONELEVEL = 0x0001,
-      LDAP_SCOPE_SUB = 0x0002;
-
-    public 
+    public
       $host,
       $port;
       
-    public
+    protected
       $_hdl;
     
     /**
@@ -105,10 +107,17 @@
      * @access  public
      * @return  bool success
      * @throws  peer.ldap.LDAPException
+     * @throws  peer.ConnectException
      */
     public function bind($user= NULL, $pass= NULL) {
       if (FALSE === ($res= ldap_bind($this->_hdl, $user, $pass))) {
-        throw (new LDAPException('Cannot bind for "'.$user.'"', ldap_errno($this->_hdl)));
+        switch ($error= ldap_errno($this->_hdl)) {
+          case LDAP_SERVER_DOWN:
+            throw (new ConnectException('Cannot connect to '.$this->host.':'.$this->port));
+          
+          default:
+            throw (new LDAPException('Cannot bind for "'.$user.'"', $error));
+        }
       }
       
       return $res;
@@ -232,7 +241,7 @@
      * @throws  IllegalArgumentException
      * @throws  peer.ldap.LDAPException
      */
-    public function read(&$entry) {
+    public function read(LDAPEntry $entry) {
       if (!is_a($entry, 'LDAPEntry')) {
         throw (new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       }
@@ -257,7 +266,7 @@
      * @param   &peer.ldap.LDAPEntry entry specifying the dn
      * @return  bool TRUE if the entry exists
      */
-    public function exists(&$entry, $filter= 'objectClass=*') {
+    public function exists(LDAPEntry $entry, $filter= 'objectClass=*') {
       return NULL !== self::read($entry, $filter);
     }
     
@@ -268,7 +277,7 @@
      * @param   &mixed v
      * @return  string encoded entry
      */
-    private function _encode(&$v) {
+    private function _encode($v) {
       if (is_array($v)) {
         foreach (array_keys($v) as $i) $v[$i]= self::_encode($v[$i]);
         return $v;
@@ -285,7 +294,7 @@
      * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
      * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
-    public function add(&$entry) {
+    public function add(LDAPEntry $entry) {
       if (!is_a($entry, 'LDAPEntry')) {
         throw (new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       } 
@@ -314,7 +323,7 @@
      * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
      * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
-    public function modify(&$entry) {
+    public function modify(LDAPEntry $entry) {
       if (!is_a($entry, 'LDAPEntry')) {
         throw (new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       } 
@@ -339,7 +348,7 @@
      * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
      * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
-    public function delete(&$entry) {
+    public function delete(LDAPEntry $entry) {
       if (!is_a($entry, 'LDAPEntry')) {
         throw (new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       } 

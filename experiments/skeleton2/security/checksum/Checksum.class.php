@@ -62,7 +62,7 @@
      * @access  abstract
      * @param   &io.File file
      */
-    public function fromFile(&$file) { }
+    public function fromFile(File $file) { }
     
     /**
      * Retrieve the checksum's value
@@ -81,7 +81,7 @@
      * @param   &security.checksum.Checksum
      * @return  bool TRUE if these checksums match
      */
-    public function verify(&$sum) {
+    public function verify($sum) {
       return $this->value === $sum->value;
     }
   }

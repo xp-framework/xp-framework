@@ -13,7 +13,7 @@
    * @see      xp://util.registry.Registry
    */
   class RegistryStorage extends Object {
-    public 
+    public
       $id = '';
       
     /**
@@ -33,7 +33,7 @@
      * @model   abstract
      * @access  public
      */
-    public abstract function initialize() ;
+    public abstract function initialize();
     
     /**
      * Returns whether this storage contains the given key
@@ -43,7 +43,7 @@
      * @param   string key
      * @return  bool TRUE when this key exists
      */
-    public abstract function contains($key) ;
+    public abstract function contains($key);
     
     /**
      * Get a key by it's name
@@ -53,7 +53,7 @@
      * @param   string key
      * @return  &mixed
      */
-    public abstract function get($key) ;
+    public abstract function get($key);
 
     /**
      * Insert/update a key
@@ -64,7 +64,7 @@
      * @param   &mixed value
      * @param   int permissions default 0666
      */
-    public abstract function put($key, &$value, $permissions= 0666) ;
+    public abstract function put($key, $value, $permissions= 0666);
 
     /**
      * Remove a key
@@ -73,7 +73,7 @@
      * @access  public
      * @param   string key
      */
-    public abstract function remove($key) ;
+    public abstract function remove($key);
 
     /**
      * Remove all keys
@@ -81,7 +81,7 @@
      * @model   abstract
      * @access  public
      */
-    public abstract function free() ;
+    public abstract function free();
 
     /**
      * Get all keys
@@ -90,7 +90,7 @@
      * @access  public
      * @return  string[] key
      */
-    public abstract function keys() ;
+    public abstract function keys();
 
   }
 ?>

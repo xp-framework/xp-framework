@@ -4,6 +4,12 @@
  * $Id$ 
  */
 
+  uses('lang.IndexOutOfBoundsException');
+
+  define('CR',      "\r");
+  define('LF',      "\n");
+  define('CRLF',    "\r\n");
+
   /**
    * Represents a string. 
    *
@@ -20,12 +26,7 @@
    * @purpose  Type wrapper
    */
   class String extends Object {
-    const
-      CR = "\r",
-      LF = "\n",
-      CRLF = "\r\n";
-
-    public 
+    public
       $buffer   = '';
 
     /**
@@ -99,13 +100,27 @@
      * @see     php://strcmp for case-sensitive comparison
      * @see     php://strcasecmp for case-insensitive comparison
      */
-    public function compareTo(&$string, $cs= TRUE) {
+    public function compareTo(String $string, $cs= TRUE) {
       return ($cs 
         ? strcmp($string->buffer, $this->buffer) 
         : strcasecmp($string->buffer, $this->buffer)
       );
     }
- 
+
+    /**
+     * Returns true if the specified string matches this string.
+     *
+     * @access  public
+     * @param   string str
+     * @return  bool
+     */
+    public function equals($str, $cs= TRUE) {
+      return 0 == ($cs 
+        ? strcmp($str, $this->buffer) 
+        : strcasecmp($str, $this->buffer)
+      );
+    }
+     
     /**
      * Compares two strings lexicographically using a "natural order" 
      * algorithm
@@ -117,7 +132,7 @@
      * @see     php://strnatcmp for case-sensitive comparison
      * @see     php://strnatcasecmp for case-insensitive comparison
      */
-    public function compareToNat(&$string, $cs= TRUE) {
+    public function compareToNat(String $string, $cs= TRUE) {
       return ($cs 
         ? strnatcmp($string->buffer, $this->buffer) 
         : strnatcasecmp($string->buffer, $this->buffer)
@@ -268,7 +283,7 @@
      * @param   &text.String
      * @return  &text.String a new string
      */
-    public function concat(&$string) {
+    public function concat($string) {
       return new String($this->buffer.$string->buffer);
     }
     
@@ -279,7 +294,7 @@
      * @access  public
      * @param   &text.String
      */
-    public function append(&$string) {
+    public function append($string) {
       $this->buffer.= $string->buffer;
     }
     

@@ -16,6 +16,7 @@
    */
   class WshShell extends COMObject {
 
+    protected static $instance= NULL;
     /**
      * Constructor
      *
@@ -33,10 +34,8 @@
      * @return  &com.microsoft.wscript.WshShell
      */
     public static function getInstance() {
-      static $instance= NULL;
-      
-      if (!$instance) $instance= new WshShell();
-      return $instance;
+      if (!self::$instance) self::$instance= new WshShell();
+      return self::$instance;
     }
   }
 ?>

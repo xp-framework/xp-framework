@@ -35,7 +35,7 @@
      * @param   &mixed v
      * @return  string decoded entry
      */
-    private function _decode(&$v) {
+    private function _decode($v) {
       if (is_array($v)) for ($i= 0, $m= sizeof($v); $i < $m; $i++) {
         $v[$i]= self::_decode($v[$i]);
         return $v;
@@ -52,7 +52,7 @@
      * @param   &mixed data return value from ldap_* functions
      * @return  &peer.ldap.LDAPEntry object
      */
-    public static function fromData(&$data) {
+    public static function fromData($data) {
       $e= new LDAPEntry($data['dn']);
       
       unset($data['dn']);

@@ -4,6 +4,12 @@
  * $Id$
  */
 
+  define('BIFF_LITTLE_ENDIAN',  0x0000);
+  define('BIFF_BIG_ENDIAN',     0x0001);
+  
+  define('BOF_TYPE_WORKBOOK',   0x0005);
+  define('BOF_TYPE_WORKSHEET',  0x0010);
+
   /**
    * BIFF writer
    *
@@ -19,16 +25,10 @@
    * @purpose  Write Excel (Biff) files
    */
   class BIFFWriter extends Object {
-    const
-      BIFF_LITTLE_ENDIAN = 0x0000,
-      BIFF_BIG_ENDIAN = 0x0001,
-      BOF_TYPE_WORKBOOK = 0x0005,
-      BOF_TYPE_WORKSHEET = 0x0010;
-
-    public 
+    public
       $version      = 0x0500;
       
-    public
+    protected
       $_data        = '',
       $_datasize    = 0,
       $_limit       = 2080,
@@ -150,7 +150,7 @@
      * @return  &io.Stream stream passed in
      * @throws  io.IOException
      */
-    public function write(&$stream) {
+    public function write(Stream $stream) {
       $stream->open(FILE_MODE_WRITE);
       $stream->write($this->_data);
       $stream->close();

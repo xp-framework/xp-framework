@@ -43,7 +43,7 @@
      * @param   &util.profiling.unittest.TestCase test
      * @return  &util.profiling.unittest.TestCase
      */
-    public function addTest(&$test) {
+    public function addTest(TestCase $test) {
       $this->tests[]= $test;
       return $test;
     }
@@ -96,7 +96,7 @@
      * @param   &util.profiling.unittest.TestResult
      * @return  bool success
      */
-    public function runTest(&$test, &$result) {
+    public function runTest(TestCase $test, $result) {
       try {
         $test->setUp();
       } catch (PrerequisitesNotMetError $e) {

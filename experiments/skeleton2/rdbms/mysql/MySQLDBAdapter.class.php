@@ -20,10 +20,17 @@
      * @access  public
      * @param   &Object conn database connection
      */
-    public function __construct(&$conn) {
+    public function __construct($conn) {
       $this->map= array(
-        'varchar'   => DB_ATTRTYPE_VARCHAR,
-        'int'       => DB_ATTRTYPE_INT
+        'varchar'    => DB_ATTRTYPE_VARCHAR,
+        'int'        => DB_ATTRTYPE_INT,
+        'bigint'     => DB_ATTRTYPE_NUMERIC,
+        'mediumint'  => DB_ATTRTYPE_SMALLINT,
+        'tinyint'    => DB_ATTRTYPE_TINYINT,
+        'datetime'   => DB_ATTRTYPE_DATETIME,
+        'timestamp'  => DB_ATTRTYPE_TIMESTAMP,
+        'mediumtext' => DB_ATTRTYPE_TEXT,
+        'text'       => DB_ATTRTYPE_TEXT,
       );
       parent::__construct($conn);
     }
@@ -60,7 +67,7 @@
       try {
         $q= $this->conn->query('show tables');
         while ($table= $q->next('table')) {
-          $t[]= new Table($table);
+          $t[]= new DBTable($table);
         }
       } catch (SQLException $e) {
         throw ($e);

@@ -12,6 +12,16 @@
     'org.apache.HttpSession'
   );
 
+  // HTTP methods
+  define('HTTP_METHOD_GET',     'GET');
+  define('HTTP_METHOD_POST',    'POST');
+  define('HTTP_METHOD_HEAD',    'HEAD');
+  define('HTTP_METHOD_PUT',     'PUT');
+  define('HTTP_METHOD_DELETE',  'DELETE');
+  define('HTTP_METHOD_OPTIONS', 'OPTIONS');
+ 
+  
+  
   /**
    * Scriptlets are the counterpart to Java's Servlets - as one might
    * have guessed from their name. Scriptlets, in comparison to Java
@@ -58,21 +68,13 @@
    * </code>
    */
   class HttpScriptlet extends Object {
-    const
-      HTTP_METHOD_GET = 'GET',
-      HTTP_METHOD_POST = 'POST',
-      HTTP_METHOD_HEAD = 'HEAD',
-      HTTP_METHOD_PUT = 'PUT',
-      HTTP_METHOD_DELETE = 'DELETE',
-      HTTP_METHOD_OPTIONS = 'OPTIONS';
-
     public
       $request          = NULL,
       $response         = NULL,
       $needsSession     = FALSE,
       $sessionURIFormat = '%1$s://%2$s%3$s/%6$s?%s&psessionid=%7$s';
     
-    public 
+    protected
       $_method= NULL;
   
     /**
@@ -125,6 +127,21 @@
      */
     protected function _response() {
       $this->response= new HttpScriptletResponse();
+    }
+    
+    /**
+     * Handle the case when we find the given session invalid.
+     * By default, we just return error for this, a derived class
+     * may choose to gracefully handle this case.
+     *
+     * This function must return TRUE if the scriptlet is
+     * supposed to continue processing the request.
+     *
+     * @access  protected
+     * @return  bool continue
+     */
+    protected function _handleInvalidSession() {
+      return FALSE;
     }
     
     /**
@@ -194,7 +211,7 @@
      * @param   &org.apache.HttpScriptletResponse response 
      * @throws  Exception to indicate failure
      */
-    public function doGet(&$request, &$response) {
+    public function doGet(HttpScriptletRequest $request, HttpScriptletResponse $response) {
     }
     
     /**
@@ -207,7 +224,7 @@
      * @param   &org.apache.HttpScriptletResponse response 
      * @throws  Exception to indicate failure
      */
-    public function doPost(&$request, &$response) {
+    public function doPost(HttpScriptletRequest $request, HttpScriptletResponse $response) {
     }
     
     /**
@@ -230,7 +247,7 @@
      * @param   &org.apache.HttpScriptletResponse response 
      * @throws  Exception to indicate failure
      */
-    public function doHead(&$request, &$response) {
+    public function doHead(HttpScriptletRequest $request, HttpScriptletResponse $response) {
     }
     
     /**
@@ -259,7 +276,7 @@
      * @param   &org.apache.HttpScriptletResponse response 
      * @throws  Exception to indicate failure
      */
-    public function doCreateSession(&$request, &$response) {
+    public function doCreateSession(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       $uri= $request->getURI();
       $response->sendRedirect(sprintf(
         $this->sessionURIFormat,
@@ -293,8 +310,6 @@
         getenv('HTTP_HOST').
         getenv('REQUEST_URI')
       ));
-      
-      if ($this->needsSession) self::_session();
     }
     
     /**
@@ -325,16 +340,21 @@
         )));
       }
       
-      // Check for session
-      if ($this->needsSession) {
+      // Check if a session is present. This is either the case when a session
+      // is already in the URL or if the scriptlet explicetly states it needs 
+      // one (by setting the member variable "needsSession" to TRUE).
+      if ($this->needsSession || $this->request->getSessionId()) {
+        self::_session();
         try {
           $this->request->session->initialize($this->request->getSessionId());
           $valid= $this->request->session->isValid();
         } catch (XPException $e) {
-          throw (new HttpSessionInvalidException(
-            'Session initialize failed: '.$e->message,
-            HTTP_BAD_REQUEST
-          ));
+          if (!self::_handleInvalidSession()) {
+            throw (new HttpSessionInvalidException(
+              'Session initialize failed: '.$e->message,
+              HTTP_BAD_REQUEST
+            ));
+          }
         }
         
         // Do we need a new session?
@@ -343,6 +363,17 @@
           (!$valid)
         ) {
           $this->_method= 'doCreateSession';
+        }
+      }
+
+      // Perform locking when this is a SerializedScriptlet
+      if (is('org.apache.SerializedScriptlet', $this)) {
+        try { 
+          self::lock(); 
+        } catch (XPException $e) {
+          throw (new HttpScriptletException(
+            'Semaphore locking failed: '.$e->getMessage()
+          ));
         }
       }
 
@@ -358,6 +389,15 @@
         throw (new HttpScriptletException(
           'Request processing failed ['.$this->_method.']: '.$e->getMessage()
         ));
+      }
+      
+      // Remove the semaphore
+      if (is('org.apache.SerializedScriptlet', $this)) {
+        try {
+          self::unlock();
+        } catch (XPException $e) {
+          throw (new HttpScriptletException('Semaphore unlocking failed: '.$e->getMessage()));
+        }
       }
 
       // Return it

@@ -21,23 +21,21 @@
     /**
      * Encode string
      *
-     * @access  abstract
+     * @model   abstract
+     * @access  public
      * @param   string str
      * @return  string
      */
-    public function encode($str) { 
-      return utf8_encode($str);
-    }
+    public abstract function encode($str);
     
     /**
      * Decode utf8 encoded data
      *
-     * @access  abstract
+     * @model   abstract
+     * @access  public
      * @param   string str
      * @return  string
      */
-    public function decode($str) { 
-      return utf8_decode($str);
-    }
+    public abstract function decode($str);
   }
 ?>

@@ -25,7 +25,7 @@
     public
       $colName;
       
-    public 
+    public
       $buffer;
     
     /**
@@ -47,7 +47,7 @@
      * @param   char delim delimiter
      * @return  string token
      */
-    private function _strtok(&$string, $delim) {
+    private function _strtok($string, $delim) {
 
       // Note: don't use builtin strtok, because it does ignore an
       // empty field (two delimiters in a row). We need this information.
@@ -71,7 +71,7 @@
      * @access  public
      * @param   Stream stream
      */    
-    public function setInputStream(&$stream) {
+    public function setInputStream($stream) {
       try {
         if (!$stream->isOpen ()) $stream->open ();
       } catch (IOException $e) {

@@ -51,7 +51,7 @@
      * @param   &mixed value
      * @return  bool success
      */
-    public function __get($name, &$value) {
+    public function __get($name, $value) {
       $value= com_get($this->h, $name);
       return TRUE;
     }
@@ -64,7 +64,7 @@
      * @param   &mixed value
      * @return  bool success
      */
-    public function __set($name, &$value) {
+    public function __set($name, $value) {
       com_set($this->h, $name, $value);
       return TRUE;
     }

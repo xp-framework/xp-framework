@@ -56,7 +56,7 @@
      * @param   &security.Principal principal
      * @param   &security.KeyPair keypair
      */
-    public function __construct(&$principal, &$keypair) {
+    public function __construct(Principal $principal, KeyPair $keypair) {
       $this->_res= openssl_csr_new(array(
         'countryName'               => $principal->getCountryName(),
         'stateOrProvinceName'       => $principal->getStateOrProvinceName(),
@@ -93,7 +93,7 @@
      * @param   mixed cacert default NULL
      * @return  &security.cert.X509Certificate
      */
-    public function sign(&$keypair, $days= 365, $cacert= NULL) {
+    public function sign(KeyPair $keypair, $days= 365, $cacert= NULL) {
       if (FALSE === ($x509= openssl_csr_sign($this->_res, $cacert, $keypair->_res, $days))) {
         trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
         throw (new CertificateException('Cannot sign certificate'));

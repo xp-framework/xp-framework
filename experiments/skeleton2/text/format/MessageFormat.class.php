@@ -89,13 +89,13 @@
     /**
      * Set a format handler for a special type
      *
-     * @access  publuc
+     * @access  public
      * @param   string alias
      * @param   &text.format.PrintfFormat formatter
      * @return  &text.format.PrintfFormat formatter
      * @throws  IllegalArgumentException 
      */
-    public function setFormatter($alias, &$formatter) {
+    public function setFormatter($alias, PrintfFormat $formatter) {
       if (!is_a($formatter, 'IFormat')) {
         throw (new IllegalArgumentException('Formatter must be a text.format.Format'));
       }
@@ -122,7 +122,7 @@
      * @param   &mixed argument
      * @return  string
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       static $instance;
       static $level= 0;
       
@@ -142,7 +142,7 @@
         $index= $rest= FALSE;
         $c= 0;
         for ($i= $p, $l= strlen($fmt); $i < $l; $i++) {
-          switch($fmt{$i}) {
+          switch ($fmt{$i}) {
             case '{': $c++; break;
             case '}': 
               if (0 >= --$c) {

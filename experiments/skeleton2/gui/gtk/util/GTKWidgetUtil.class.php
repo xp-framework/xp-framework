@@ -28,7 +28,7 @@
      * @see     php-gtk://GtkObject%3A%3Aconnect
      * @see     php-gtk://GtkObject%3A%3Aconnect_after
      */
-    public function connect(&$widget, $signals) {
+    public function connect($widget, $signals) {
       foreach (array_keys($signals) as $key) {
         list($mode, $signal)= explode(':', $key);
         
@@ -63,13 +63,13 @@
      * @param   &GtkWidget widget
      * @see     #connect
      */
-    public function connectChildren(&$widget, $signals) {
+    public function connectChildren($widget, $signals) {
       foreach ($widget->children() as $child) {
         GTKWidgetUtil::connect($child, $signals);
       }
     }
     
-    public function setChildrenSensitive(&$widget, $sensitivity) {
+    public function setChildrenSensitive($widget, $sensitivity) {
       foreach ($widget->children() as $child) {
         if (!isset($sensitivity[$name= $child->get_name()])) continue;
         $child->set_sensitive($sensitivity[$name]);

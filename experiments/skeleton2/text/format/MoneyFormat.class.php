@@ -33,7 +33,7 @@
      * @param   &mixed argument
      * @return  string
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       if (!function_exists('money_format')) {
         throw (new FormatException('money_format requires PHP >= 4.3.0'));
       }

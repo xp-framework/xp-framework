@@ -4,6 +4,11 @@
  * $Id$
  */
 
+  define('EVENT_CONNECTED',     'connected');
+  define('EVENT_DATA',          'data');
+  define('EVENT_ERROR',         'error');
+  define('EVENT_DISCONNECTED',  'disconnected');
+
   /**
    * Connection listener
    *
@@ -13,12 +18,6 @@
    * @experimental
    */
   class ConnectionListener extends Object {
-    const
-      EVENT_CONNECTED = 'connected',
-      EVENT_DATA = 'data',
-      EVENT_ERROR = 'error',
-      EVENT_DISCONNECTED = 'disconnected';
-
   
     /**
      * Method to be triggered when a client connects
@@ -31,7 +30,7 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function connected(&$event) {
+    public function connected(ConnectionEvent $event) {
     }
     
     /**
@@ -52,7 +51,7 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function data(&$event) { 
+    public function data(ConnectionEvent $event) { 
     }
     
     /**
@@ -66,7 +65,7 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function disconnected(&$event) { 
+    public function disconnected(ConnectionEvent $event) { 
     }
     
     /**
@@ -81,7 +80,7 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function error(&$event) { 
+    public function error(ConnectionEvent $event) { 
     }
   
   }

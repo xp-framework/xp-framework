@@ -13,7 +13,7 @@
    * @purpose  Appender
    */  
   class BufferedAppender extends LogAppender {
-    public 
+    public
       $buffer = '';
 
     /**

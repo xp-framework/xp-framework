@@ -25,7 +25,7 @@
       $key       = 0,
       $maxAquire = 1;
       
-    public
+    protected
       $_hdl      = NULL;
       
     /**

@@ -19,11 +19,11 @@
    * @experimental
    */
   class MaildirStore extends MailStore {
-    public 
+    public
       $cache= NULL,
       $currentFolder= NULL;
     
-    public
+    protected
       $_folder= NULL,
       $_root=   NULL;
       
@@ -138,7 +138,7 @@
      * @throws  IllegalAccessException if another folder is still open
      * @throws  IOException if folder cannot be opened
      */
-    public function openFolder(&$f, $readonly= FALSE) {
+    public function openFolder($f, $readonly= FALSE) {
       // Is it already open?
       if ($this->currentfolder === $f->name)
         return TRUE;
@@ -173,7 +173,7 @@
      * @return  boolean success
      * @throws  IllegalArgumentException if folder is not opened folder
      */    
-    public function closeFolder(&$f) {
+    public function closeFolder($f) {
       // Is it already open?
       if ($this->currentfolder !== $f->name)
         throw  (new IllegalArgumentException (
@@ -195,7 +195,7 @@
      * @param   int attr default 0xFFFF
      * @return  int count
      */    
-    public function getMessageCount(&$f, $attr= 0xFFFF) {
+    public function getMessageCount(Mailfolder $f, $attr= 0xFFFF) {
       $this->openFolder ($f);
       $f= new Folder ($f->name.DIRECTORY_SEPARATOR.'cur');
       if (!$f->exists())
@@ -224,7 +224,7 @@
      * @param   int number
      * @return  string uri
      */    
-    private function _getMessageURI(&$f, $nr) {
+    private function _getMessageURI($f, $nr) {
       $this->_folder->rewind();
 
       while (FALSE !== ($entry= $this->_folder->getEntry()) && $nr <= $i++) {
@@ -302,7 +302,7 @@
      * @param   mixed* msgnums
      * @return  array messages
      */    
-    public function getMessages(&$f) {
+    public function getMessages($f) {
       $this->openFolder ($f);
       if (1 == func_num_args()) {
         $count= $this->getMessageCount ();

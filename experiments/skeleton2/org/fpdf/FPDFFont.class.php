@@ -11,7 +11,7 @@
    * @purpose  Represent a font
    */
   class FPDFFont extends Object {
-    public 
+    public
       $name     = NULL,
       $index    = 0;
 
@@ -74,7 +74,7 @@
      * @access  public
      * @param   &util.Properties p
      */
-    public function configure(&$p) {
+    public function configure(Properties $p) {
       if (NULL == $this->name) throw (new IllegalStateException('no name defined'));
       
       $this->cw= $p->readArray($this->name, 'cw', array());

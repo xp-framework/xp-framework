@@ -69,7 +69,7 @@
      * @param   img.DrawableGraphObject graphObject
      * @return  mixed the return value of graphObject's draw function
      */
-    public function draw(&$graphObject) {
+    public function draw(DrawableGraphObject $graphObject) {
       return $graphObject->draw($this->_hdl, self::getWidth(), self::getHeight());
     }
   }

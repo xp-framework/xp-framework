@@ -6,6 +6,36 @@
 
   uses('gui.gtk.GtkGladeDialogWindow');
 
+  // Style: Buttons
+  define('MB_OK',               0x0001);
+  define('MB_CANCEL',           0x0002);
+  define('MB_YES',              0x0004);
+  define('MB_NO',               0x0008);
+  define('MB_RETRY',            0x0010);
+  define('MB_IGNORE',           0x0020);
+  define('MB_ABORT',            0x0040);
+  
+  // Style: Buttons combined
+  define('MB_OKCANCEL',         MB_OK | MB_CANCEL);
+  define('MB_YESNO',            MB_YES | MB_NO);
+  define('MB_YESNOCANCEL',      MB_YES | MB_NO | MB_CANCEL);
+  define('MB_RETRYCANCEL',      MB_RETRY | MB_CANCEL);
+  
+  // Style: Icons  
+  define('MB_ICONHAND',         0x0080);
+  define('MB_ICONQUESTION',     0x0100);
+  define('MB_ICONEXCLAMATION',  0x0200);
+  define('MB_ICONASTERISK',     0x0300);
+  define('MB_ICONMASK',         MB_ICONHAND | MB_ICONQUESTION | MB_ICONEXCLAMATION | MB_ICONASTERISK);
+
+  // Style: Icons aliases
+  define('MB_ICONINFORMATION',  MB_ICONASTERISK);
+  define('MB_ICONERROR',        MB_ICONHAND);
+  define('MB_ICONWARNING',      MB_ICONEXCLAMATION);
+  
+  // Style: Default (information icon and OK button)
+  define('MB_DEFAULT',          MB_OK | MB_ICONINFORMATION);
+
   /**
    * Messagebox
    *
@@ -23,28 +53,6 @@
    * @purpose  Widget
    */
   class MessageBox extends GtkGladeDialogWindow {
-    const
-      MB_OK = 0x0001,
-      MB_CANCEL = 0x0002,
-      MB_YES = 0x0004,
-      MB_NO = 0x0008,
-      MB_RETRY = 0x0010,
-      MB_IGNORE = 0x0020,
-      MB_ABORT = 0x0040,
-      MB_OKCANCEL = MB_OK | MB_CANCEL,
-      MB_YESNO = MB_YES | MB_NO,
-      MB_YESNOCANCEL = MB_YES | MB_NO | MB_CANCEL,
-      MB_RETRYCANCEL = MB_RETRY | MB_CANCEL,
-      MB_ICONHAND = 0x0080,
-      MB_ICONQUESTION = 0x0100,
-      MB_ICONEXCLAMATION = 0x0200,
-      MB_ICONASTERISK = 0x0300,
-      MB_ICONMASK = MB_ICONHAND | MB_ICONQUESTION | MB_ICONEXCLAMATION | MB_ICONASTERISK,
-      MB_ICONINFORMATION = MB_ICONASTERISK,
-      MB_ICONERROR = MB_ICONHAND,
-      MB_ICONWARNING = MB_ICONEXCLAMATION,
-      MB_DEFAULT = MB_OK | MB_ICONINFORMATION;
-
     public
       $message  = '',
       $caption  = '',
@@ -172,7 +180,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    protected function onButtonClicked(&$widget) {
+    protected function onButtonClicked(GtkWidget $widget) {
       $this->pressed= constant('MB_'.$widget->get_name());
       self::close();
     }

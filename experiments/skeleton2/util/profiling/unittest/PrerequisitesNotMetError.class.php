@@ -4,16 +4,15 @@
  * $Id$ 
  */
 
+  define('PREREQUISITE_LIBRARYMISSING', 'library.missing');
+  define('PREREQUISITE_INITFAILED',     'initialization.failed');
+
   /**
    * Indicates prerequisites have not been met
    *
    * @purpose  Exception
    */
   class PrerequisitesNotMetError extends XPException {
-    const
-      PREREQUISITE_LIBRARYMISSING = 'library.missing',
-      PREREQUISITE_INITFAILED = 'initialization.failed';
-
     public
       $cause           = NULL,
       $prerequisites   = array();
@@ -27,7 +26,7 @@
      * @param   array prerequisites default array()
      * @param   string code
      */
-    public function __construct($message, &$cause, $prerequisites= array()) {
+    public function __construct($message, XPException $cause, $prerequisites= array()) {
       $this->cause= $cause;
       $this->prerequisites= $prerequisites;
       parent::__construct($message);

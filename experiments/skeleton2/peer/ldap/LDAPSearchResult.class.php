@@ -16,7 +16,7 @@
       $data= NULL,
       $size= 0;
       
-    public
+    protected
       $_offset= 0;
   
     /**
@@ -25,7 +25,7 @@
      * @access  public
      * @param   array result returnvalue of ldap_get_entries()
      */
-    public function __construct(&$hdl, $res) {
+    public function __construct($hdl, $res) {
       $this->data= ldap_get_entries($hdl, $res);
       $this->size= $this->data['count'];
       

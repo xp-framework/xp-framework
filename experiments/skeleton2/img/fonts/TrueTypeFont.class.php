@@ -34,7 +34,7 @@
      * @access  public
      * @param   &resource hdl an image resource
      */
-    public function drawtext(&$hdl, &$col, $text, $x, $y) {
+    public function drawtext($hdl, $col, $text, $x, $y) {
       return imagettftext(
         $hdl,
         $this->size,

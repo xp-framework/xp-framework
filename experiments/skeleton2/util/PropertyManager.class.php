@@ -25,7 +25,8 @@
    * @purpose  Container
    */
   class PropertyManager extends Object {
-    public 
+    protected static $instance= NULL;
+    protected
       $_path    = '.',
       $_prop    = array();
     
@@ -37,10 +38,8 @@
      * @return  &util.PropertyManager
      */
     public static function getInstance() {
-      static $__instance;
-      
-      if (!isset($__instance)) $__instance= new PropertyManager();
-      return $__instance;
+      if (!isset(self::$instance)) self::$instance= new PropertyManager();
+      return self::$instance;
     }
 
     /**

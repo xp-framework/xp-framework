@@ -11,6 +11,13 @@
     'util.Date'
   );
 
+  // Identifier
+  define('VCAL_ID',             'VCALENDAR');
+
+  // Methods
+  define('VCAL_METHOD_REQUEST', 'REQUEST');
+  define('VCAL_METHOD_PUBLISH', 'PUBLISH');
+
   /**
    * VCalendar
    * 
@@ -94,11 +101,6 @@
    * @purpose  Handle vCalendar
    */
   class VCalendar extends Object {
-    const
-      VCAL_ID = 'VCALENDAR',
-      VCAL_METHOD_REQUEST = 'REQUEST',
-      VCAL_METHOD_PUBLISH = 'PUBLISH';
-
     public
       $uid      = '',
       $method   = '',
@@ -150,7 +152,7 @@
      * @access  public
      * @param   org.imc.VEvent event
      */
-    public function addEvent(&$event) {
+    public function addEvent(VEvent $event) {
       $this->events[]= $event;
     }
 
@@ -278,7 +280,7 @@
         
         case 'vtimezone/daylight':
         case 'vtimezone/standard':
-          $type= $context[count($context)-1];
+          $type= $context[sizeof($context)-1];
           
           switch ($keys[0]) {
             case 'BEGIN':
@@ -326,7 +328,7 @@
      * @param   &io.Stream stream
      * @return  &org.imc.VCard
      */
-    public static function fromStream(&$stream) {
+    public static function fromStream(Stream $stream) {
       $cal= new VCalendar();
       
       $p= new VFormatParser(VCAL_ID);

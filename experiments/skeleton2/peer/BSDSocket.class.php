@@ -15,7 +15,7 @@
    * @ext      sockets                                                    
    */
   class BSDSocket extends Socket {
-    public
+    protected
       $_eof = FALSE;
       
     /**

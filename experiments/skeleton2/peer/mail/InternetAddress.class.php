@@ -18,7 +18,7 @@
    * @purpose  Wrap
    */
   class InternetAddress extends Object {
-    public 
+    public
       $personal  = '',
       $localpart = '',
       $domain    = '';
@@ -87,7 +87,7 @@
       
       // Was it unparsable?
       if (!isset($mail)) throw (
-         new FormatException('String "'.$str.'" could not be parsed')
+        new FormatException('String "'.$str.'" could not be parsed')
       );
       
       return new InternetAddress($mail, $personal);

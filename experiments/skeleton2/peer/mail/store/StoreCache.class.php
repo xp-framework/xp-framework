@@ -4,6 +4,13 @@
  * $Id$ 
  */
 
+  define('SKEY_FOLDER',   'folder.');
+  define('SKEY_LIST',     'list.');
+  define('SKEY_INFO',     'info.');
+  define('SKEY_MESSAGE',  'message.');
+  define('SKEY_HEADER',   'header.');
+  define('SKEY_PART',     'part.');
+
   /**
    * MailStore cache base class
    *
@@ -11,14 +18,6 @@
    * @purpose  Provide an API for caching of MailStore objects
    */
   class StoreCache extends Object {
-    const
-      SKEY_FOLDER = 'folder.',
-      SKEY_LIST = 'list.',
-      SKEY_INFO = 'info.',
-      SKEY_MESSAGE = 'message.',
-      SKEY_HEADER = 'header.',
-      SKEY_PART = 'part.';
-
     public
       $data = array();
     
@@ -90,7 +89,7 @@
      * @param   string key
      * @param   &mixed val
      */
-    public function put($key, &$val) {
+    public function put($key, $val) {
       $this->data[$key]= $val;
     }
     

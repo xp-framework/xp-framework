@@ -9,6 +9,15 @@
     'xml.soap.transport.SOAPHTTPTransport'
   );
 
+  // Language defines
+  define('BABELFISH_LANG_ENGLISH',    'en');
+  define('BABELFISH_LANG_GERMAN',     'de');
+  define('BABELFISH_LANG_FRENCH',     'fr');
+  define('BABELFISH_LANG_ITALIAN',    'it');
+  define('BABELFISH_LANG_PORTUGESE',  'pt');
+  define('BABELFISH_LANG_SPANISH',    'es');
+  define('BABELFISH_LANG_RUSSIAN',    'ru');
+  
   /**
    * Interface for AltaVista's Babelfish service.
    * 
@@ -36,15 +45,6 @@
    * @purpose  SOAP-Proxy
    */
   class BabelFish extends SOAPClient {
-    const
-      LANG_ENGLISH = 'en',
-      LANG_GERMAN = 'de',
-      LANG_FRENCH = 'fr',
-      LANG_ITALIAN = 'it',
-      LANG_PORTUGESE = 'pt',
-      LANG_SPANISH = 'es',
-      LANG_RUSSIAN = 'ru';
-
 
     /**
      * Constructor

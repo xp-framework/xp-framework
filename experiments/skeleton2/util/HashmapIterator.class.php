@@ -22,8 +22,8 @@
    * @see      xp://util.Hashmap
    * @purpose  Iterator
    */
-  class HashmapIterator extends Object implements Iterator {
-    public
+  class HashmapIterator extends Object implements XPIterator {
+    protected
       $_hash    = NULL,
       $_key     = FALSE;
   
@@ -34,7 +34,7 @@
      * @param   &array hash
      * @see     xp://util.Hashmap#iterator
      */
-    public function __construct(&$hash) {
+    public function __construct($hash) {
       
       $this->_hash= $hash;
       reset($this->_hash);

@@ -20,7 +20,7 @@
    * <pre>
    * RewriteRule _
    * ^/xml/([a-zA-Z]+):([a-zA-Z_]+)(;psessionid=([0-9A-Za-z]+))?/([a-zA-Z/]+)$ /xml.php _
-   * [E=PRODUCT:$1,E=LANG:$2,E=SESS:$4,E=STATE:$5,PT]
+   * [E=PRODUCT:$1,E=LANGUAGE:$2,E=SESS:$4,E=STATE:$5,PT]
    * </pre>
    * 
    * Make sure you have a directory index file or another RewriteRule to redirect

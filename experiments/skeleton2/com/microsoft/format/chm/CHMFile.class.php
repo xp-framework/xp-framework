@@ -10,6 +10,21 @@
     'com.microsoft.format.chm.CHMDirectory'
   );
 
+  // Languages  
+  define('CHM_LANG_ENGLISH',    0x0409);
+  define('CHM_LANG_GERMAN',     0x0407);
+  
+  // Chunk types
+  define('CHM_CHUNK_LISTING',   0x0000);
+  define('CHM_CHUNK_INDEX',     0x0001);
+  
+  // Well known identifier for namelist
+  define('CHM_FILE_NAMELIST',   '::DataSpace/NameList');
+  
+  // Compressed / uncompressed identifiers
+  define('CHM_COMPRESSED',      'MSCompressed');
+  define('CHM_UNCOMPRESSED',    'Uncompressed');
+
   /**
    * CHM (Compile HTML) reader
    *
@@ -37,21 +52,12 @@
    * @experimental
    */
   class CHMFile extends Object {
-    const
-      CHM_LANG_ENGLISH = 0x0409,
-      CHM_LANG_GERMAN = 0x0407,
-      CHM_CHUNK_LISTING = 0x0000,
-      CHM_CHUNK_INDEX = 0x0001,
-      CHM_FILE_NAMELIST = '::DataSpace/NameList',
-      CHM_COMPRESSED = 'MSCompressed',
-      CHM_UNCOMPRESSED = 'Uncompressed';
-
     public
       $stream           = NULL,
       $header           = NULL,
       $directory        = NULL;
       
-    public
+    protected
       $_headeroffset    = 0,
       $_diroffset       = 0;
     
@@ -62,7 +68,7 @@
      * @param   &io.Stream stream
      * @return  
      */  
-    public function __construct(&$stream) {
+    public function __construct(Stream $stream) {
       $this->stream= $stream;
       
     }
@@ -88,7 +94,7 @@
      * @param   int len
      * @return  string str
      */
-    private function _substr($str, &$p, $len) {
+    private function _substr($str, $p, $len) {
       $str= substr($str, ++$p, $len);
       $p+= $len;
       return $str;
@@ -103,7 +109,7 @@
      * @param   &int p
      * @return  int
      */
-    private function _int($str, &$p) {
+    private function _int($str, $p) {
       $r= 0;
       while (ord($str{$p}) & 0x80) {
         $r= ($r << 7) | (ord($str{$p++}) & 0x7F);
@@ -134,14 +140,14 @@
               'offset'    => self::_int($str, $pos),
               'length'    => self::_int($str, $pos)
             );
-              break;
+            break;
 
           case CHM_CHUNK_INDEX:
             $entries[$name]= array(
               'name'        => $name,
               'index'        => self::_int($str, $pos)
             );
-              break;
+            break;
         }
       } while ($pos < $max);
       $this->stream->seek($qref, SEEK_CUR);
@@ -196,7 +202,7 @@
       ));
       
       // Always {7C01FD10-7BAA-11D0-9E0C-00A0-C922-E6EC}
-       $this->header->setGuid1(self::_guid(unpack(
+      $this->header->setGuid1(self::_guid(unpack(
         'Lguid1/v2guid2/C8guid3',
         $this->stream->read(0x10)
       )));

@@ -33,7 +33,7 @@
      * @param   &io.File file
      * @return  &security.checksum.CRC32
      */
-    public function fromFile(&$file) {
+    public function fromFile(File $file) {
       try {
         $file->open(FILE_MODE_READ);
         $data= $file->read($file->size());

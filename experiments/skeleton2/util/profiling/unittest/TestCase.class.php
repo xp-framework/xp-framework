@@ -159,7 +159,7 @@
      * @return  bool
      */
     public function assertString($var, $error= 'notstring') {
-      return assert('$this->test(is_string($var, $error, gettype($var), "string"))');
+      return assert('$this->test(is_string($var), $error, gettype($var), "string")');
     }
 
     /**
@@ -194,7 +194,7 @@
      * @param   string error default 'notobject'
      * @return  bool
      */
-    public function assertObject(&$var, $error= 'notobject') {
+    public function assertObject($var, $error= 'notobject') {
       return assert('$this->test(is_object($var), $error, gettype($var), "object")');
     }
     
@@ -316,7 +316,7 @@
      * @param   string error default 'notequal'
      * @return  bool
      */
-    public function assertClass(&$var, $name, $error= 'notequal') {
+    public function assertClass(Object $var, $name, $error= 'notequal') {
       if ($r= self::assertObject($var, $error)) {
         $r= assert('$this->test($var->getClassName() === $name, $error, xp::typeOf($var), $name)');
       }
@@ -332,7 +332,7 @@
      * @param   string error default 'notsubclass'
      * @return  bool
      */
-    public function assertSubclass(&$var, $name, $error= 'notsubclass') {
+    public function assertSubclass(Object $var, $name, $error= 'notsubclass') {
       if ($r= self::assertObject($var, $error)) {
         $r= assert('$this->test(is($name, $var), $error, xp::typeOf($var), $name)');
       }
@@ -361,7 +361,7 @@
      * @access  public
      * @throws  util.profiling.unittest.PrerequisitesNotMetError
      */
-    public abstract function setUp() ;
+    public abstract function setUp();
     
     /**
      * Tear down this test case. Overwrite in subclasses.
@@ -369,7 +369,7 @@
      * @model   abstract
      * @access  public
      */
-    public abstract function tearDown() ;
+    public abstract function tearDown();
     
     /**
      * Run this test case.

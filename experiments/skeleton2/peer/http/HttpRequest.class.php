@@ -12,18 +12,21 @@
     'peer.Header'
   );
 
+  define('HTTP_GET',     'GET');
+  define('HTTP_POST',    'POST');
+  define('HTTP_HEAD',    'HEAD');
+  
+  
+  
   /**
-   * HTTP request
+   * Wrap HTTP/1.0 and HTTP/1.1 requests (used internally by the 
+   * HttpConnection class)
    *
+   * @see      xp://peer.http.HttpConnection
    * @see      rfc://2616
-   * @purpose  Wrap
+   * @purpose  HTTP request
    */
   class HttpRequest extends Object {
-    const
-      HTTP_GET = 'GET',
-      HTTP_POST = 'POST',
-      HTTP_HEAD = 'HEAD';
-
     public
       $url        = NULL,
       $method     = HTTP_GET,
@@ -39,7 +42,7 @@
      * @access  public
      * @param   &peer.URL url object
      */
-    public function __construct(&$url) {
+    public function __construct(URL $url) {
       $this->url= $url;
       
     }

@@ -4,13 +4,16 @@
  * $Id$
  */
 
+  uses('org.apache.Cookie');
+
   /**
    * Defines the request sent by the client to the server
    *
    * An instance of this object is passed to the do* methods by
    * the <pre>process</pre> method.
    *
-   * @see   xp://org.apache.HttpScriptlet
+   * @see      xp://org.apache.HttpScriptlet
+   * @purpose  Wrap request
    */  
   class HttpScriptletRequest extends Object {
     public
@@ -24,33 +27,87 @@
      * Retrieves the session or NULL if none exists
      *
      * @access  public
-     * @return  lang.Object session object
+     * @return  &org.apache.HttpSession session object
      */
     public function getSession() {
       return $this->session;
+    }
+
+    /**
+     * Returns whether a session exists
+     *
+     * @access  public
+     * @return  bool
+     */
+    public function hasSession() {
+      return $this->session != NULL;
     }
     
     /**
      * Sets session
      *
      * @access  public
-     * @param   lang.Object session
+     * @param   &org.apache.HttpSession session
      */
-    public function setSession(&$s) {
+    public function setSession($s) {
       $this->session= $s;
     }
 
     /**
-     * Gibt eine Umgebungsvariable zurücke
+     * Returns environment value
      *
      * @access  public
-     * @param   string name Header
-     * @return  string Header-Wert
+     * @param   string name
+     * @return  string
      */
     public function getEnvValue($name) {
       return getenv($name);
     }
-      
+
+    /**
+     * Retrieve all cookies
+     *
+     * @access  public
+     * @return  peer.http.Cookie[]
+     */
+    public function getCookies() {
+      $r= array();
+      foreach (array_keys($_COOKIE) as $name) {
+        $r[]= new Cookie($name, $_COOKIE[$name]);
+      }
+      return $r;
+    }
+    
+    /**
+     * Check whether a cookie exists by a specified name
+     *
+     * <code>
+     *   if ($request->hasCookie('username')) {
+     *     with ($c= $request->getCookie('username')); {
+     *       $response->write('Welcome back, '.$c->getValue());
+     *     }
+     *   }
+     * </code>
+     *
+     * @access  public
+     * @param   string name
+     * @return  bool
+     */
+    public function hasCookie($name) {
+      return isset($_COOKIE[$name]);
+    }
+
+    /**
+     * Retrieve cookie by it's name
+     *
+     * @access  public
+     * @param   mixed default default NULL the default value if cookie is non-existant
+     * @return  &peer.http.Cookie
+     */
+    public function getCookie($name, $default= NULL) {
+      if (isset($_COOKIE[$name])) return new Cookie($name, $_COOKIE[$name]); else return $default;
+    }
+
     /**
      * Returns a request header by its name or NULL if there is no such header
      * Typical request headers are: Accept, Accept-Charset, Accept-Encoding,
@@ -58,11 +115,12 @@
      *
      * @access  public
      * @param   string name Header
+     * @param   mixed default default NULL the default value if header is non-existant
      * @return  string Header value
      */
-    public function getHeader($name) {
+    public function getHeader($name, $default= NULL) {
       $name= strtolower($name);
-      if (isset($this->headers[$name])) return $this->headers[$name]; else return NULL;
+      if (isset($this->headers[$name])) return $this->headers[$name]; else return $default;
     }
     
     /**
@@ -71,11 +129,12 @@
      *
      * @access  public
      * @param   string name Parameter name
+     * @param   mixed default default NULL the default value if parameter is non-existant
      * @return  string Parameter value
      */
-    public function getParam($name) {
-      $name= strtolower($name);
-      if (isset($this->params[$name])) return $this->params[$name]; else return NULL;
+    public function getParam($name, $default= NULL) {
+      $name= strtolower(strtr($name, '. ', '__'));
+      if (isset($this->params[$name])) return $this->params[$name]; else return $default;
     }
 
     /**
@@ -86,7 +145,7 @@
      * @return  bool
      */
     public function hasParam($name) {
-      return isset($this->params[strtolower($name)]);
+      return isset($this->params[strtolower(strtr($name, '. ', '__'))]);
     }
     
     /**
@@ -128,7 +187,7 @@
      * @access  public
      * @param   &array params
      */
-    public function setParams(&$params) {
+    public function setParams($params) {
       $this->params= $params;
     }
 
@@ -149,7 +208,7 @@
      * @param   &string data
      * @see     xp://org.apache.HttpScriptlet#_handleMethod
      */
-    public function setData(&$data) {
+    public function setData($data) {
       $this->data= $data;
     }
     

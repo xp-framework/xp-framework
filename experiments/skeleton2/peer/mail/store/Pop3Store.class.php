@@ -31,7 +31,7 @@
      * @return  bool
      * @throws  IllegalArgumentException
      */
-    protected function _supports($u, &$attr) {
+    protected function _supports($u, $attr) {
       switch (strtolower($u['scheme'])) {
         case 'pop3': 
           $attr['proto']= 'pop3'; 

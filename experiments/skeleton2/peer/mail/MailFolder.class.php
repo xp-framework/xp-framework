@@ -20,7 +20,7 @@
       $name  = '',
       $store = NULL;
       
-    public
+    protected
       $_ofs  = 0;
     
     /**
@@ -30,7 +30,7 @@
      * @param   &peer.mail.store.MailStore store
      * @param   string name default ''
      */  
-    public function __construct(&$store, $name= '') {
+    public function __construct(MailStore $store, $name= '') {
       $this->name= $name;
       $this->store= $store;
       
@@ -130,7 +130,7 @@
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    public function deleteMessage(&$msg) {
+    public function deleteMessage(Message $msg) {
       return $this->store->deleteMessage($this, $msg);
     }
 
@@ -141,7 +141,7 @@
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    public function undeleteMessage(&$msg) {
+    public function undeleteMessage(Message $msg) {
       return $this->store->undeleteMessage($this, $msg);
     }
     

@@ -6,30 +6,30 @@
 
   uses('peer.mail.Message');
 
+  define('DAEMON_UNKNOWN',       'unknownfailure');
+  define('DAEMON_GENERIC',       'genericfailure');
+  define('DAEMON_LOCALPART',     'localpartunknown');
+  define('DAEMON_QUOTA',         'quotaexceeded');
+  define('DAEMON_RELAYING',      'relayingdenied');
+  define('DAEMON_NOROUTE',       'noroutetohost');
+  define('DAEMON_SMTPCONN',      'smtpconnfailure');
+  define('DAEMON_UNROUTEABLE',   'unrouteable');
+  define('DAEMON_DELAYED',       'delayed');
+  
+  define('DAEMON_TYPE_POSTFIX',  'inline/postfix');
+  define('DAEMON_TYPE_TONLINE',  'inline/t-online');
+  define('DAEMON_TYPE_QMAIL',    'inline/qmail');
+  define('DAEMON_TYPE_EXIM',     'inline/exim');
+  define('DAEMON_TYPE_SENDMAIL', 'inline/sendmail');
+  define('DAEMON_TYPE_MULTIPART','multipart/delivery');
+  
   /**
    * DaemonMessage
    *
    * @purpose  Mailer daemom message
    */
   class DaemonMessage extends Message {
-    const
-      DAEMON_UNKNOWN = 'unknownfailure',
-      DAEMON_GENERIC = 'genericfailure',
-      DAEMON_LOCALPART = 'localpartunknown',
-      DAEMON_QUOTA = 'quotaexceeded',
-      DAEMON_RELAYING = 'relayingdenied',
-      DAEMON_NOROUTE = 'noroutetohost',
-      DAEMON_SMTPCONN = 'smtpconnfailure',
-      DAEMON_UNROUTEABLE = 'unrouteable',
-      DAEMON_DELAYED = 'delayed',
-      DAEMON_TYPE_POSTFIX = 'inline/postfix',
-      DAEMON_TYPE_TONLINE = 'inline/t-online',
-      DAEMON_TYPE_QMAIL = 'inline/qmail',
-      DAEMON_TYPE_EXIM = 'inline/exim',
-      DAEMON_TYPE_SENDMAIL = 'inline/sendmail',
-      DAEMON_TYPE_MULTIPART = 'multipart/delivery';
-
-    public 
+    public
       $failed=   NULL,
       $reason=   '',
       $details=  array(),
@@ -41,7 +41,7 @@
      * @access  public
      * @param   &peer.mail.InternetAddress r
      */
-    public function setFailedRecipient(&$r) {
+    public function setFailedRecipient(InternetAddress $r) {
       $this->failed= $r;
     }
     

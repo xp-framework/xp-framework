@@ -15,7 +15,7 @@
    * @purpose  Unified connect string
    */
   class DSN extends Object {
-    public 
+    public
       $parts    = array(),
       $prop     = array();
       
@@ -101,6 +101,17 @@
      */
     public function getHost($default= NULL) {
       return isset($this->parts['host']) ? $this->parts['host'] : $default;
+    }
+
+    /**
+     * Retrieve port
+     *
+     * @access  public
+     * @param   mixed default default NULL  
+     * @return  string host or default if none is set
+     */
+    public function getPort($default= NULL) {
+      return isset($this->parts['port']) ? $this->parts['port'] : $default;
     }
 
     /**

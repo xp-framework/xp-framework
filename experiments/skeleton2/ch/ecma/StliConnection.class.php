@@ -6,6 +6,16 @@
 
   uses('util.telephony.TelephonyProvider');
 
+  // Response codes
+  define('STLI_INIT_RESPONSE',      'error_ind SUCCESS STLI Version "%d"');
+  define('STLI_BYE_RESPONSE',       'error_ind SUCCESS BYE');
+  define('STLI_MON_START_RESPONSE', 'error_ind SUCCESS MonitorStart');
+  define('STLI_MON_STOP_RESPONSE',  'error_ind SUCCESS MonitorStop');
+  define('STLI_MAKECALL_RESPONSE',  'error_ind SUCCESS MakeCall');
+  
+  // Supported protocol versions
+  define('STLI_VERSION_2',      2);
+
   /**
    * STLI Client
    *
@@ -30,25 +40,9 @@
    * @see      http://www.ecma.ch/ecma1/STAND/ecma-323.htm
    */
   class StliConnection extends TelephonyProvider {
-    const
-      STLI_INIT_RESPONSE = 'error_ind SUCCESS STLI Version "%d"',
-      STLI_BYE_RESPONSE = 'error_ind SUCCESS BYE',
-      STLI_MON_START_RESPONSE = 'error_ind SUCCESS MonitorStart',
-      STLI_MON_STOP_RESPONSE = 'error_ind SUCCESS MonitorStop',
-      STLI_MAKECALL_RESPONSE = 'error_ind SUCCESS MakeCall',
-      STLI_VERSION_2 = 2;
-
     public
-      $sock        = NULL,
-      $version    = 0,
-      
-      // The prefix is a constant that depends on your telephony system
-      $prefix   = array(
-        TEL_CALL_INTERNATIONAL   => '0',
-        TEL_CALL_NATIONAL        => '0',
-        TEL_CALL_CITY            => '0',
-        TEL_CALL_INTERNAL        => ''
-      );
+      $sock       = NULL,
+      $version    = 0;
 
     /**
      * Constructor. 
@@ -61,60 +55,12 @@
      *
      * @access  public
      * @param   &peer.Socket sock
+     * @param   int version default STLI_VERSION_2
      */
-    public function __construct(&$sock, $parserDefaults, $version= STLI_VERSION_2) {
+    public function __construct(Socket $sock, $version= STLI_VERSION_2) {
+      parent::__construct();
       $this->sock= $sock;
       $this->version= $version;
-      $this->_addressParserDefaults= $parserDefaults;
-      parent::__construct();
-    }
-    
-    /**
-     * Set dialing prefix
-     *
-     * @access  public
-     * @param   string type one of the TEL_CALL_* constants
-     * @param   value the value for the dialing prefix
-     */
-    public function setPrefix($type, $value) {
-      $this->prefix[$type]= $value;
-    }
-    
-    /**
-     * Retrieve dialing prefix
-     *
-     * @access  public
-     * @param   string type one of the TEL_CALL_* constants
-     * @return  value the value for the specified dialing prefix type
-     */
-    public function getPrefix($type) {
-      return $this->prefix[$type];
-    }
-    
-    /**
-     * Add prefix to phone number where necessary. Also make up
-     * the resulting string to a form that can be given to the
-     * stli server
-     *
-     * @access  public
-     * @param   &util.telephony.TelephonyAddress callee
-     * @param   &util.telephony.TelephonyAddress destination
-     * @return  string number
-     */    
-    public function applyPrefix(&$callee, &$destination) {
-      $callCategory= $destination->getCallCategory ($callee);
-
-      $this->trace ('Call category: ', $callCategory);
-      $this->trace ('Number base: ', $destination->getNumber ($callCategory));
-
-      $nr= str_replace (
-        '+',
-        '00',
-        $this->getPrefix ($callCategory).$destination->getNumber ($callCategory)
-      );
-      
-      $this->trace ('Calling number: ', $nr);
-      return $nr;
     }
     
     /**
@@ -123,7 +69,7 @@
      *
      * @access  public
      * @param   int version
-     * @throws  IllegalStateException in case already having connected
+     * @throws  lang.IllegalStateException in case already having connected
      */
     public function setVersion($version) { 
       if ($this->sock->isConnected()) throw (new IllegalStateException(
@@ -140,10 +86,15 @@
     private function _sockcmd() {
       $args= func_get_args();
       $write= vsprintf($args[0], array_slice($args, 1));
+      
+      // Write command
       self::trace('>>>', $write);
       $this->sock->write($write."\n");
+      
+      // Read response
       $read= chop($this->sock->read());
       self::trace('<<<', $read);
+      
       return $read;
     }
     
@@ -157,6 +108,7 @@
         throw (new TelephonyException(sprintf(
           'Protocol error: Expecting "%s", have "%s"', $expect, $have
         )));
+        return FALSE;
       }
       
       return $have;
@@ -196,18 +148,6 @@
     }
     
     /**
-     * Retrieve an address
-     *
-     * @access  public  
-     * @param   string number
-     * @return  &util.telephony.TelephonyAddress 
-     */
-    public function getAddress($number) {
-      $a= parent::getAddress($number);
-      return $a;
-    }
-    
-    /**
      * Create a call
      *
      * @access  public
@@ -215,15 +155,13 @@
      * @param   &util.telephony.TelephonyAddress destination
      * @return  &util.telephony.TelephonyCall a call object
      */
-    public function createCall(&$terminal, &$destination) {
-      if (FALSE === parent::createCall($terminal, $destination)) return FALSE;
-      
+    public function createCall(TelephonyTerminal $terminal, TelephonyAddress $destination) {
       if (FALSE === self::_expect(
         STLI_MAKECALL_RESPONSE,
         self::_sockcmd('MakeCall %s %s', 
           $terminal->getAttachedNumber(), 
-          $this->applyPrefix ($terminal->address, $destination)
-      ))) return FALSE;
+          $destination->getNumber()
+      ))) return NULL;
       
       return new TelephonyCall($terminal->address, $destination);
     }
@@ -233,14 +171,33 @@
      *
      * @access  public
      * @param   &util.telephony.TelephonyAddress address
+     * @return  &util.telephony.TelephonyTerminal
      */
-    public function getTerminal(&$address) {
-      if (FALSE === parent::getTerminal($address)) return FALSE;
-      if (FALSE === self::_expect(
-        STLI_MON_START_RESPONSE,
-        self::_sockcmd('MonitorStart %s', $address->getExt())
-      )) return FALSE;
+    public function getTerminal(TelephonyAddress $address) {
       return new TelephonyTerminal($address);
+    }
+
+    /**
+     * Observe a terminal
+     *
+     * @access  public
+     * @param   &util.telephony.TelephonyTerminal terminal
+     * @param   bool status TRUE to start observing, FALSE top stop
+     * @return  bool success
+     */
+    public function observeTerminal(TelephonyTerminal $terminal, $status) {
+      if ($status) {
+        $success= self::_expect(
+          STLI_MON_START_RESPONSE,
+          self::_sockcmd('MonitorStart %s', $terminal->getAttachedNumber())
+        );      
+      } else {
+        $success= self::_expect(
+          STLI_MON_STOP_RESPONSE,
+          self::_sockcmd('MonitorStop %s', $terminal->getAttachedNumber())
+        );
+      }
+      return $success;
     }
 
     /**
@@ -248,14 +205,9 @@
      *
      * @access  public
      * @param   &util.telephony.TelephonyTerminal terminal
+     * @return  bool success
      */
-    public function releaseTerminal($terminal) {
-      if (FALSE === parent::releaseTerminal($terminal)) return FALSE;
-      if (FALSE === self::_expect(
-        STLI_MON_STOP_RESPONSE,
-        self::_sockcmd('MonitorStop %s', $terminal->getAttachedNumber())
-      )) return FALSE;
-      
+    public function releaseTerminal(TelephonyTerminal $terminal) {
       return TRUE;
     }
   }

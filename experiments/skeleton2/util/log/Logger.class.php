@@ -6,6 +6,8 @@
 
   uses('util.log.LogCategory');
 
+  define('LOG_DEFINES_DEFAULT', 'default');
+  
   /**
    * A singleton logger
    * 
@@ -76,10 +78,8 @@
    * @purpose  Singleton logger
    */
   class Logger extends Object {
-    const
-      LOG_DEFINES_DEFAULT = 'default';
-
-    public 
+    protected static $instance= NULL;
+    public
       $category     = array();
     
     public
@@ -89,7 +89,7 @@
       $defaultFlags,
       $defaultAppenders;
   
-    public
+    protected
       $_finalized   = FALSE;
 
     /**
@@ -110,7 +110,7 @@
      * @access  public
      * @param   &util.Properties prop instance of a Properties object
      */
-    public function configure(&$prop) {
+    public function configure(Properties $prop) {
       $class= array();
       
       // Read default properties
@@ -201,26 +201,24 @@
      * @return  &util.log.Logger a logger object
      */
     public function getInstance() {
-      static $__instance;
-  
-      if (!isset($__instance)) {
-        $__instance= new Logger();
-        $__instance->defaultIdentifier= getmypid();
-        $__instance->defaultFormat= '[%1$s %2$s %3$5s]';
-        $__instance->defaultDateformat= 'H:i:s';
-        $__instance->defaultFlags= LOGGER_FLAG_ALL;
-        $__instance->defaultAppenders= array();
+      if (!isset(self::$instance)) {
+        self::$instance= new Logger();
+        self::$instance->defaultIdentifier= getmypid();
+        self::$instance->defaultFormat= '[%1$s %2$s %3$5s]';
+        self::$instance->defaultDateformat= 'H:i:s';
+        self::$instance->defaultFlags= LOGGER_FLAG_ALL;
+        self::$instance->defaultAppenders= array();
         
         // Create an empty LogCategory
-        $__instance->category[LOG_DEFINES_DEFAULT]= new LogCategory(
-          $__instance->defaultIdentifier,
-          $__instance->defaultFormat,
-          $__instance->defaultDateformat,
-          $__instance->defaultFlags
+        self::$instance->category[LOG_DEFINES_DEFAULT]= new LogCategory(
+          self::$instance->defaultIdentifier,
+          self::$instance->defaultFormat,
+          self::$instance->defaultDateformat,
+          self::$instance->defaultFlags
         );
 
       }
-      return $__instance;
+      return $instance;
     }
   }
 ?>

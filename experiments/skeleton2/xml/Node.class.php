@@ -11,21 +11,20 @@
     'xml.CData'
   );
 
+  define('INDENT_DEFAULT',    0);
+  define('INDENT_WRAPPED',    1);
+  define('INDENT_NONE',       2);
+
   /**
    * Represents a node
    *
    * @see   xp://xml.Tree#addChild
    */
   class Node extends XML {
-    const
-      INDENT_DEFAULT = 0,
-      INDENT_WRAPPED = 1,
-      INDENT_NONE = 2;
-
-    public 
+    public
       $name         = '',
       $attribute    = array(),
-      $content      = '',
+      $content      = NULL,
       $children     = array();
 
     /**
@@ -35,6 +34,8 @@
      *   $n= new Node('document');
      *   $n= new Node('text', 'Hello World');
      *   $n= new Node('article', '', array('id' => 42));
+     *
+     *   // This is deprecated
      *   $n= new Node(array(
      *     'name'    => 'changedby',
      *     'content' => 'me'
@@ -43,7 +44,7 @@
      *
      * @access  public
      * @param   mixed*
-     * @throws  IllegalArgumentException
+     * @throws  lang.IllegalArgumentException
      */
     public function __construct() {
       switch (func_num_args()) {
@@ -81,7 +82,7 @@
      * @param   &xml.Node e element to add array to
      * @param   array a
      */
-    protected function _recurse(&$e, $a) {
+    protected function _recurse(Node $e, $a) {
       foreach (array_keys($a) as $field) {
         $child= $e->addChild(new Node(is_numeric($field) 
           ? preg_replace('=s$=', '', $e->name) 
@@ -137,6 +138,26 @@
         get_object_vars($obj), 
         (NULL === $name) ? get_class($obj) : $name
       );
+    }
+
+    /**
+     * Set Name
+     *
+     * @access  public
+     * @param   string name
+     */
+    public function setName($name) {
+      $this->name= $name;
+    }
+
+    /**
+     * Get Name
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getName() {
+      return $this->name;
     }
     
     /**
@@ -236,12 +257,30 @@
      */
     public function getSource($indent= INDENT_WRAPPED, $inset= '') {
       $xml= $inset.'<'.$this->name;
-      if (is_a($this->content, 'PCData')) {
-        $content= $this->content->pcdata;
-      } elseif (is_a($this->content, 'CData')) {
-        $content= '<![CDATA['.str_replace(']]>', ']]&gt;', $this->content->cdata).']]>';
-      } else {
-        $content= htmlspecialchars($this->content);
+      switch (xp::typeOf($this->content)) {
+        case 'xml.PCData':
+          $content= $this->content->pcdata;
+          break;
+
+        case 'xml.CData':
+          $content= '<![CDATA['.str_replace(']]>', ']]&gt;', $this->content->cdata).']]>';
+          break;
+
+        case 'string': 
+          $content= htmlspecialchars($this->content); 
+          break;
+
+        case 'float':
+        
+          // Check for integers bigger than MAX_INT
+          if ($this->content - floor($this->content) == 0) {
+            $content= number_format($this->content, 0, NULL, NULL);
+            break;
+          }
+          // Break missing intentionally
+
+        default: 
+          $content= $this->content; break;
       }
 
       switch ($indent) {
@@ -297,13 +336,13 @@
      * @return  &xml.Node added child
      * @throws  lang.IllegalArgumentException
      */
-    public function addChild(&$child) {
+    public function addChild(Node $child) {
       if (!is_a($child, 'Node')) {
         throw (new IllegalArgumentException(
           'Parameter child must be an xml.Node (given: '.xp::typeOf($child).')'
         ));
       }
-      
+
       $this->children[]= $child;
       return $child;
     }

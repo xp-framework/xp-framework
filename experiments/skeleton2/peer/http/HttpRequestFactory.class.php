@@ -11,11 +11,10 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Request factory. Used internally by the HttpConnection class.
    *
-   * @ext      extensiom
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.http.HttpConnection
+   * @purpose  Factory for HTTP / HTTPS
    */
   class HttpRequestFactory extends Object {
   
@@ -25,9 +24,9 @@
      * @access  public
      * @param   &peer.URL an url object
      * @return  &lang.Object a request object
-     * @throws  Exception
+     * @throws  lang.IllegalArgumentException in case the scheme is not supported
      */
-    public function factory(&$url) {
+    public function factory($url) {
       switch ($url->getScheme()) {
         case 'http':
           return new HttpRequest($url);
@@ -36,7 +35,7 @@
           return new HttpsRequest($url);
         
         default:
-          throw (new Exception('Scheme "'.$url->getScheme().'" not supported'));
+          throw (new IllegalArgumentException('Scheme "'.$url->getScheme().'" not supported'));
       }
     }
   }

@@ -48,7 +48,7 @@
      * @param   &img.graph.PieSlice a slice object
      * @return  &img.graph.PieSlice the slice object put in
      */
-    public function addSlice($key, &$s) {
+    public function addSlice($key, $s) {
       $this->data[$key]= $s;
       return $s;
     }
@@ -61,7 +61,7 @@
      * @param   int w width of graph
      * @param   int h height of graph
      */
-    public function draw(&$hdl, $gw, $gh) {
+    public function draw($hdl, $gw, $gh) {
       $a= new Arc(
         NULL,
         $gw / 2, 

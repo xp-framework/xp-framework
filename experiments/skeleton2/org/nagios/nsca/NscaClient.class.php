@@ -11,6 +11,13 @@
     'lang.MethodNotImplementedException'
   );
 
+  define('NSCA_VERSION_2',  2);  
+  define('NSCA_VERSION_3',  3);
+  
+  // Encryption methods
+  define('NSCA_CRYPT_NONE', 0x0000);
+  define('NSCA_CRYPT_XOR',  0x0001);
+
   /**
    * NSCA (Nagios Service Check Acceptor) Client
    *
@@ -46,17 +53,11 @@
    * @purpose  Passive checks for Nagios
    */
   class NscaClient extends Object {
-    const
-      NSCA_VERSION_2 = 2,
-      NSCA_VERSION_3 = 3,
-      NSCA_CRYPT_NONE = 0x0000,
-      NSCA_CRYPT_XOR = 0x0001;
-
     public
       $version      = 0,
       $cryptmethod  = 0;
       
-    public
+    protected
       $_xorkey      = '',
       $_timestamp   = '';
 
@@ -187,7 +188,7 @@
      * @param   &org.nagios.nsca.NscaMessage message
      * @return  string packed data
      */
-    private function pack($crc, &$message) {
+    private function pack($crc, NscaMessage $message) {
       return pack(
         'nxxNa4na64a128a512xx',
         $this->version,
@@ -236,7 +237,7 @@
      * @return  bool
      * @throws  lang.IllegalStateException
      */
-    public function send(&$message) {
+    public function send(NscaMessage $message) {
       if (!$this->sock->isConnected()) {
         throw (new IllegalStateException('Not connected'));
       }

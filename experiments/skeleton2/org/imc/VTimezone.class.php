@@ -9,15 +9,15 @@
     'peer.URL'
   );
 
+  // Identifier
+  define('VTZ_ID',       'VTIMEZONE');
+  
   /**
    * VTimezone
    *
    * @purpose  Timezone wrapper for VCalendar
    */
   class VTimezone extends Object {
-    const
-      VTZ_ID = 'VTIMEZONE';
-
     public
       $tzid=      '',
       $daylight=  NULL,
@@ -69,7 +69,7 @@
      * @access  public
      * @param   &peer.URL url
      */    
-    public function setTZUrl(&$url) {
+    public function setTZUrl(URL $url) {
       $this->tzurl= $url;
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @param   &util.Date date
      */    
-    public function setLastMod(&$date) {
+    public function setLastMod(Date $date) {
       $this->lastmod= $date;
     }
 
@@ -151,7 +151,7 @@
         $ret.= $this->_export ('BEGIN', strtoupper ($type));
         
         // Export all attributes
-        foreach ($this->{$type} as $key=> $value) {
+        foreach ($this->{$type} as $key => $value) {
           if ($value) { $ret.= $this->_export (strtoupper ($key), $value); }
         }
         

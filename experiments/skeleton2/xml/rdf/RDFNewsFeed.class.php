@@ -9,6 +9,9 @@
     'util.Date'
   );
 
+  define('RDF_NEWS_RDF',        0x0000);
+  define('RDF_NEWS_RSS',        0x0001);
+ 
   /**
    * RDF- and RSS- newsfeeds
    *
@@ -61,11 +64,7 @@
    * @see http://dublincore.org/2001/08/14/dces_deDE
    */
   class RDFNewsFeed extends Tree {
-    const
-      RDF_NEWS_RDF = 0x0000,
-      RDF_NEWS_RSS = 0x0001;
-
-    public 
+    public
       $channel,
       $image,
       $items;
@@ -79,15 +78,11 @@
      * @access public
      */
     public function __construct() {
-      parent::__construct();
-      $this->root= new Node(array(
-        'name'          => 'rdf:RDF',
-        'attribute'     => array(
-          'xmlns:rdf'   => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-          'xmlns:dc'    => 'http://purl.org/dc/elements/1.1/',
-          'xmlns'       => 'http://my.netscape.com/rdf/simple/0.9/'
-        )
-      ));
+      parent::__construct('rdf:RDF');
+      $this->root->setAttribute('xmlns:rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+      $this->root->setAttribute('xmlns:dc',  'http://purl.org/dc/elements/1.1/');
+      $this->root->setAttribute('xmlns',     'http://my.netscape.com/rdf/simple/0.9/');
+
       $this->channel= new stdClass();
       $this->image= new stdClass();
       $this->items= array();
@@ -106,8 +101,16 @@
      * @param   string publisher default ''
      * @param   string rights default ''
      */
-    public function setChannel($title, $link, $description= '', $date= NULL, $language= '',
-                        $creator= '', $publisher= '', $rights= '') {
+    public function setChannel(
+      $title, 
+      $link, 
+      $description= '', 
+      $date= NULL, 
+      $language= '',
+      $creator= '', 
+      $publisher= '', 
+      $rights= ''
+    ) {
       if (NULL === $date) $date= new Date(time());
       
       $this->channel->title= $title;
@@ -153,6 +156,30 @@
       ), 'image');
       if (!isset($this->image->node)) $node= $this->root->addChild($node);
       $this->image->node= $node;
+    }
+    
+    /**
+     * Create a RDF from a string
+     *
+     * @model   static
+     * @access  public
+     * @param   string str
+     * @return  &xml.rdf.RDFNewsfeed
+     */
+    public static function fromString($str) {
+      return parent::fromString($str, __CLASS__);
+    }
+
+    /**
+     * Create a RDF from a file
+     *
+     * @model   static
+     * @access  public
+     * @param   &io.File file
+     * @return  &xml.rdf.RDFNewsfeed
+     */
+    public static function fromFile(File $file) {
+      return parent::fromFile($file, __CLASS__);
     }
     
     /**
@@ -242,7 +269,6 @@
      *
      * @see     xp://xml.XMLParser
      * @access  public
-     * @throws  lang.FormatException in case an unrecognized element is encountered
      */
     public function onEndElement($parser, $name) {
       static $trans;
@@ -252,7 +278,7 @@
       if ($this->_cnt <= 0) return;
 
       // &lt; &amp;, &#XX; etc. ersetzen
-      if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_ENTITIES));
+      if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_SPECIALCHARS));
       $cdata= preg_replace(
         '/&#([0-9]+);/me', 
         'chr(\'\1\')', 
@@ -287,8 +313,12 @@
           break;
 
         case 'channel/pubdate':         // 14 May 2002
-        case 'channel/dc:date':         // 2002-07-12T15:59
-          $this->channel->date= new Date(str_replace('T', ' ', $cdata));
+          $this->channel->date= new Date($cdata);
+          break;
+
+        case 'channel/dc:date':         // 2002-07-12T15:59 or 2003-12-19T12:26:00+01:00
+          sscanf($cdata, '%4d-%2d-%2dT%2d:%2d', $year, $month, $day, $hour, $minute);
+          $this->channel->date= new Date(mktime($hour, $minute, 0, $month, $day, $year));
           break;
 
         case 'channel/dc:publisher':
@@ -329,14 +359,18 @@
           $this->items[sizeof($this->items)- 1]->link= $cdata;
           break;
           
-        case 'channel/item/date':
-        case 'item/dc:date':         // 2002-07-12T15:59
-          $this->items[sizeof($this->items)- 1]->date= new Date(str_replace('T', ' ', $cdata));
+        case 'channel/item/date':         // 14 May 2002
+          $this->items[sizeof($this->items)- 1]->date= new Date($cdata);
+          break;
+
+        case 'item/dc:date':         // 2002-07-12T15:59 or 2003-12-19T12:26:00+01:00
+          sscanf($cdata, '%4d-%2d-%2dT%2d:%2d', $year, $month, $day, $hour, $minute);
+          $this->items[sizeof($this->items)- 1]->date= new Date(mktime($hour, $minute, 0, $month, $day, $year));
           break;
 
 
         default:
-          throw (new FormatException('Unrecognized element "'.$name.'"'));
+          // Ignore
       }
     }
   }

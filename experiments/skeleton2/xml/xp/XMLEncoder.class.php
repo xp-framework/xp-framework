@@ -36,7 +36,7 @@
      * @access  public
      * @param   &io.File file
      */
-    public function __construct(&$file) {
+    public function __construct(File $file) {
       $this->file= $file;
       $this->file->open(FILE_MODE_WRITE);
       
@@ -49,14 +49,11 @@
      * @param   &xml.Node node
      * @param   &mixed value
      */
-    private function _recurse(&$node, &$value, $name= 'xp:property') {
+    private function _recurse(Node $node, $value, $name= 'xp:property') {
       foreach (array_keys($value) as $key) {
-        $n= $node->addChild(new Node(array(
-          'name'      => $name,
-          'attribute' => array(
-            'name'    => $key,
-            'type'    => strtolower(gettype($value[$key]))
-          )
+        $n= $node->addChild(new Node($name, NULL, array(
+          'name'    => $key,
+          'type'    => strtolower(gettype($value[$key]))
         )));
         
         switch (gettype($value[$key])) {
@@ -84,13 +81,12 @@
      * @param   &Object o
      * @throws  Exception in case write/format fails
      */
-    public function writeObject(&$o) {
+    public function writeObject($o) {
     
       // Create header
-      $tree= new Tree();
-      $tree->root->name= 'xp:object';
-      $tree->root->attribute['xmlns:xp']= 'http://xp.php3.de/ns/';
-      $tree->root->attribute['class']= $o->getClassName();
+      $tree= new Tree('xp:object');
+      $tree->root->setAttribute('xmlns:xp', 'http://xp-framework.net/ns/');
+      $tree->root->setAttribute('class',    $o->getClassName());
       
       // Properties
       self::_recurse($tree->root, $o= get_object_vars($o));

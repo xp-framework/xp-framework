@@ -39,46 +39,41 @@
      * @param   string database
      * @return  &rdbms.util.DBXmlGenerator object
      */    
-    public static function createFromTable(&$table, $dbhost, $database) {
+    public static function createFromTable(DBTable $table, $dbhost, $database) {
       if (!is_a($table, 'DBTable')) {
         throw (new IllegalArgumentException('Argument table is not a DBTable object'));
       }
       
       $g= new DBXmlGenerator();
+      $g->doc->root->setAttribute('created_at', date('r'));
+      $g->doc->root->setAttribute('created_by', System::getProperty('user.name'));
       
-      $g->doc->root->attribute['created_at']= date('r');
-      $g->doc->root->attribute['created_by']= System::getProperty('user.name');
-      
-      $t= $g->doc->root->addChild(new Node(array(
-          'name' => 'table'
+      $t= $g->doc->root->addChild(new Node('table', NULL, array(
+        'name'     => $table->name,
+        'dbhost'   => $dbhost,
+        'database' => $database
       )));
-      $t->attribute['name']=      $table->name;
-      $t->attribute['dbhost']=    $dbhost;
-      $t->attribute['database']=  $database;
       
       // Attributes
       if ($attr= $table->getFirstAttribute()) do {
-        $n= $t->addChild(new Node(array(
-          'name'  => 'attribute'
+        $t->addChild(new Node('attribute', NULL, array(
+          'name'     => trim($attr->getName()),
+          'type'     => $attr->getTypeString(),
+          'identity' => $attr->isIdentity()  ? 'true' : 'false',
+          'typename' => $attr->typeName(),
+          'nullable' => $attr->isNullable() ? 'true' : 'false',
         )));
-        $n->attribute['name']= $attr->getName();
-        $n->attribute['type']= $attr->getTypeString();
-        $n->attribute['identity']= $attr->isIdentity()  ? 'true' : 'false';
-        $n->attribute['typename']= $attr->typeName();
-        $n->attribute['nullable']= $attr->isNullable() ? 'true' : 'false';
       } while ($attr= $table->getNextAttribute());
 
       // Attributes
       if ($index= $table->getFirstIndex()) do {
-        $n= $t->addChild(new Node(array(
-          'name'  => 'index'
+        $n= $t->addChild(new Node('index', NULL, array(
+          'name'    => trim($index->getName()),
+          'unique'  => $index->isUnique() ? 'true' : 'false',
+          'primary' => $index->isUnique() ? 'true' : 'false',
         )));
-        $n->attribute['name']= $index->getName();
-        $n->attribute['unique']= $index->isUnique() ? 'true' : 'false';
-        $n->attribute['primary']= $index->isUnique() ? 'true' : 'false';
         foreach ($index->getKeys() as $key) {
-          $k= $n->addChild(new Node(array('name' => 'key')));
-          $k->setContent($key);
+          $n->addChild(new Node('key', $key));
         }
       } while ($index= $table->getNextIndex());
       

@@ -9,6 +9,25 @@
     'util.Date'
   );
 
+  // Identifier
+  define('VCARD_ID',             'VCARD');
+
+  // Property params: TEL
+  define('VCARD_TEL_TYPE_FAX',   'FAX');
+  define('VCARD_TEL_TYPE_VOICE', 'VOICE');
+  define('VCARD_TEL_LOC_WORK',   'WORK');
+  define('VCARD_TEL_LOC_HOME',   'HOME');
+  define('VCARD_TEL_LOC_CELL',   'CELL');
+  
+  // Property params: ADR
+  define('VCARD_ADR_HOME',       'HOME');
+  define('VCARD_ADR_WORK',       'WORK');
+  define('VCARD_ADR_POSTAL',     'POSTAL');
+  
+  // Property params: EMAIL
+  define('VCARD_EMAIL_DEFAULT',  'DEFAULT');
+  define('VCARD_EMAIL_WORK',     'WORK');
+  
   /**
    * VCard
    *
@@ -69,19 +88,6 @@
    * @purpose  Handle vCard
    */
   class VCard extends Object {
-    const
-      ID = 'VCARD',
-      TEL_TYPE_FAX = 'FAX',
-      TEL_TYPE_VOICE = 'VOICE',
-      TEL_LOC_WORK = 'WORK',
-      TEL_LOC_HOME = 'HOME',
-      TEL_LOC_CELL = 'CELL',
-      ADR_HOME = 'HOME',
-      ADR_WORK = 'WORK',
-      ADR_POSTAL = 'POSTAL',
-      EMAIL_DEFAULT = 'DEFAULT',
-      EMAIL_WORK = 'WORK';
-
     public
       $name             = array(),
       $address          = array(),
@@ -262,7 +268,7 @@
      * @access  public
      * @param   &util.Date birthday
      */
-    public function setBirthday(&$birthday) {
+    public function setBirthday(Date $birthday) {
       $this->birthday= $birthday;
     }
 
@@ -471,7 +477,7 @@
      * @param   &io.Stream stream
      * @return  &org.imc.VCard
      */
-    public static function fromStream(&$stream) {
+    public static function fromStream(Stream $stream) {
       $card= new VCard();
       
       $p= new VFormatParser(VCARD_ID);

@@ -14,7 +14,7 @@
    *
    */  
   class DBTable extends Object {
-    public 
+    public
       $name=        '',
       $attributes=  array(),
       $indexes=     array(),
@@ -39,7 +39,7 @@
      * @param   string name
      * @return  &rdbms.DBTable a table object
      */
-    public static function getByName(&$adapter, $name) {
+    public static function getByName($adapter, $name) {
       return $adapter->getTable($name);
     }
 
@@ -51,7 +51,7 @@
      * @param   string database
      * @return  &rdbms.DBTable[] an array of table objects
      */
-    public static function getByDatabase(&$adapter, $database) {
+    public static function getByDatabase($adapter, $database) {
       return $adapter->getTables($database);
     }
 
@@ -93,7 +93,7 @@
      * @param   &rdbms.DBAttribute attr the attribute to add
      * @return  &rdbms.DBAttribute the added attribute
      */
-    public function addAttribute(&$attr) {
+    public function addAttribute(DBAttribute $attr) {
       $this->attributes[]= $attr;
       return $attr;
     }
@@ -105,7 +105,7 @@
      * @param   &rdbms.DBIndex index the index to add
      * @return  &rdbms.DBIndex the added index
      */
-    public function addIndex(&$index) {
+    public function addIndex(DBIndex $index) {
       $this->indexes[]= $index;
       return $index;
     }

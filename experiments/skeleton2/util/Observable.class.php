@@ -62,7 +62,7 @@
    * @purpose  Base class
    */
   class Observable extends Object {
-    public
+    protected
       $_obs      = array(),
       $_changed  = FALSE;
       
@@ -73,7 +73,7 @@
      * @param   &util.Observer observer a class implementing the util.Observer interface
      * @throws  lang.IllegalArgumentException in case the argument is not an observer
      */
-    public function addObserver(&$observer) {
+    public function addObserver(Observer $observer) {
       if (!is('util.Observer', $observer)) {
         throw (new IllegalArgumentException('Passed argument is not an util.Observer'));
       }

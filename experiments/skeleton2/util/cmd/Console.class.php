@@ -14,6 +14,7 @@
    *   Console::writeLinef('Hello %s', 'World');    // Hello World
    * </code>
    *
+   * @see      http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpref/html/frlrfSystemConsoleClassTopic.asp
    * @model    static
    * @purpose  I/O functions
    */
@@ -78,6 +79,32 @@
     public static function writeLinef() {
       $a= func_get_args();
       fwrite(STDOUT, vsprintf(array_shift($a), $a)."\n");
+    }
+    
+    /**
+     * Read a line from standard input. The line ending (\r and/or \n)
+     * is trimmed off the end.
+     *
+     * @access  public
+     * @return  string
+     */    
+    public function readLine() {
+      $r= '';
+      while ($bytes= fgets(STDIN, 0x20)) {
+        $r.= $bytes;
+        if (FALSE !== strpos("\r\n", substr($r, -1))) break;
+      }
+      return rtrim($r, "\r\n");
+    }
+
+    /**
+     * Read a single character from standard input.
+     *
+     * @access  public
+     * @return  string
+     */    
+    public function read() {
+      return fgetc(STDIN);
     }
   }
 ?>

@@ -30,9 +30,7 @@
       ));
       foreach ($params as $key => $value) {
         $item= $this->item->addChild(new SOAPNode('item'));
-        $item->addChild(new SOAPNode('key', $key, array(
-          'xsi:type'  => 'xsd:string'
-        )));
+        $this->item->_recurse($item, array('key' => $key));
         $this->item->_recurse($item, array('value' => $value));
       }
       parent::__construct();

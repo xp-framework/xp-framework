@@ -75,7 +75,7 @@
      * @access  public
      * @param   &util.Locale locale
      */
-    public static function setDefault(&$locale) {
+    public static function setDefault(Locale $locale) {
       setlocale(LC_ALL, $locale->toString());
     }
 
@@ -107,6 +107,16 @@
      */
     public function getVariant() {
       return $this->variant;
+    }
+
+    /**
+     * Returns a hashcode for this object
+     *
+     * @access  public
+     * @return  string
+     */
+    public function hashCode() {
+      return sprintf('%u', crc32($this->lang.$this->country.$this->variant));
     }
     
     /**

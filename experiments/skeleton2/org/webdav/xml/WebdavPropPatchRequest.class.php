@@ -37,7 +37,7 @@
      * @param   &org.apache.HttpScriptletRequest request
      * @throws  Exception to indicate failure
      */
-    public function __construct(&$request) {
+    public function __construct(HttpScriptletRequest $request) {
       if (FALSE === self::fromString($request->getData())) {
         return FALSE;
       }

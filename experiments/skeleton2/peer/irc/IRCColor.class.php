@@ -4,6 +4,25 @@
  * $Id$ 
  */
 
+  define('IRC_COLOR_DEFAULT',     0);
+  define('IRC_COLOR_BLACK',       1);
+  define('IRC_COLOR_DARKBLUE',    2);
+  define('IRC_COLOR_DARKGREEN',   3);
+  define('IRC_COLOR_RED',         4);
+  define('IRC_COLOR_PURPLE',      5);
+  define('IRC_COLOR_DARKRED',     6);
+  define('IRC_COLOR_ORANGE',      7);
+  define('IRC_COLOR_YELLOW',      8);
+  define('IRC_COLOR_GREEN',       9);
+  define('IRC_COLOR_MAGENTA',    10);
+  define('IRC_COLOR_STEELBLUE',  11);
+  define('IRC_COLOR_BLUE',       12);
+  define('IRC_COLOR_PINK',       13);
+  define('IRC_COLOR_DARKGRAY',   14);
+  define('IRC_COLOR_LIGHTGRAY',  15);
+  define('IRC_COLOR_WHITE',      16);
+
+
   /**
    * IRC colors
    *
@@ -19,25 +38,6 @@
    * @purpose  Utility class
    */
   class IRCColor extends Object {
-    const
-      IRC_COLOR_DEFAULT = 0,
-      IRC_COLOR_BLACK = 1,
-      IRC_COLOR_DARKBLUE = 2,
-      IRC_COLOR_DARKGREEN = 3,
-      IRC_COLOR_RED = 4,
-      IRC_COLOR_PURPLE = 5,
-      IRC_COLOR_DARKRED = 6,
-      IRC_COLOR_ORANGE = 7,
-      IRC_COLOR_YELLOW = 8,
-      IRC_COLOR_GREEN = 9,
-      IRC_COLOR_MAGENTA = 10,
-      IRC_COLOR_STEELBLUE = 11,
-      IRC_COLOR_BLUE = 12,
-      IRC_COLOR_PINK = 13,
-      IRC_COLOR_DARKGRAY = 14,
-      IRC_COLOR_LIGHTGRAY = 15,
-      IRC_COLOR_WHITE = 16;
-
   
     /**
      * Retrieves color representation

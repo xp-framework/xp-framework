@@ -22,12 +22,13 @@
      * Connect
      *
      * @access  public  
+     * @param   bool reconnect default FALSE
      * @return  bool success
      * @throws  rdbms.SQLConnectException
      */
-    public function connect() {
+    public function connect($reconnect= FALSE) {
       if (is_resource($this->handle)) return TRUE;  // Already connected
-      if (FALSE === $this->handle) return FALSE;    // Previously failed connecting
+      if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
       if ($this->flags & DB_PERSISTENT) {
         $this->handle= mysql_pconnect(
@@ -109,22 +110,28 @@
 
         // Type-based conversion
         if (is_a($args[$ofs], 'Date')) {
-          $arg= date('Y-m-d H:i:s', $args[$ofs]->getTime());
+          $tok{$mod}= 'u';
+          $a= array($args[$ofs]->getTime());
         } elseif (is_a($args[$ofs], 'Object')) {
-          $arg= $args[$ofs]->toString();
+          $a= array($args[$ofs]->toString());
+        } elseif (is_array($args[$ofs])) {
+          $a= $args[$ofs];
         } else {
-          $arg= $args[$ofs];
+          $a= array($args[$ofs]);
         }
-
-        switch ($tok{0 + $mod}) {
-          case 'd': is_null($arg) ? 'NULL' : $r= intval($arg); break;
-          case 'f': is_null($arg) ? 'NULL' : $r= floatval($arg); break;
-          case 'c': is_null($arg) ? 'NULL' : $r= $arg; break;
-          case 's': is_null($arg) ? 'NULL' : $r= '"'.str_replace('"', '\"', $arg).'"'; break;
-          case 'u': is_null($arg) ? 'NULL' : $r= '"'.date ('Y-m-d h:i:s', $arg).'"'; break;
-          default: $sql.= '%'.$tok; $i--; continue;
+        
+        foreach ($a as $arg) {
+          switch ($tok{0 + $mod}) {
+            case 'd': $r= is_null($arg) ? 'NULL' : sprintf('%.0f', $arg); break;
+            case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
+            case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
+            case 's': $r= is_null($arg) ? 'NULL' : '"'.str_replace('"', '\"', $arg).'"'; break;
+            case 'u': $r= is_null($arg) ? 'NULL' : '"'.date ('Y-m-d H:i:s', $arg).'"'; break;
+            default: $sql.= '%'.$tok; $i--; continue;
+          }
+          $sql.= $r.', ';
         }
-        $sql.= $r.substr($tok, 1 + $mod);
+        $sql= substr($sql, 0, -2).substr($tok, 1 + $mod);
       }
       return $sql;
     }
@@ -148,7 +155,9 @@
      * @return  mixed identity value
      */
     public function identity() { 
-      return mysql_insert_id($this->handle);
+      $i= mysql_insert_id($this->handle);
+      $this->log && $this->log->debug('Identity is', $i);
+      return $i;
     }
 
     /**
@@ -162,7 +171,7 @@
     public function insert() { 
       $args= func_get_args();
       $args[0]= 'insert '.$args[0];
-      if (FALSE === ($r= call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -181,7 +190,7 @@
     public function update() {
       $args= func_get_args();
       $args[0]= 'update '.$args[0];
-      if (FALSE === ($r= call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -199,7 +208,7 @@
     public function delete() { 
       $args= func_get_args();
       $args[0]= 'delete '.$args[0];
-      if (FALSE === ($r= call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -217,7 +226,7 @@
     public function select() { 
       $args= func_get_args();
       $args[0]= 'select '.$args[0];
-      if (FALSE === ($r= call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -231,7 +240,7 @@
      *
      * @access  public
      * @param   mixed* args
-     * @return  &rdbms.sybase.MySQLResultSet or FALSE to indicate failure
+     * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
     public function query() { 

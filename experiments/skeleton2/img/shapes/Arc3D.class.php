@@ -43,7 +43,7 @@
      *          IMG_ARC_EDGED
      * @param   int shadow default 10 
      */ 
-    public function __construct(&$colors, $cx, $cy, $w, $h, $s= 0, $e= 360, $fill= IMG_ARC_PIE, $shadow= 10) {
+    public function __construct($colors, $cx, $cy, $w, $h, $s= 0, $e= 360, $fill= IMG_ARC_PIE, $shadow= 10) {
       $this->colors= $colors;
       $this->shadow= $shadow;
       parent::__construct($colors[0], $cx, $cy, $w, $h, $s, $e, $fill);
@@ -55,7 +55,7 @@
      * @access  public
      * @param   &resource hdl an image resource
      */
-    public function draw(&$hdl) {
+    public function draw($hdl) {
       $this->col= $this->colors[1];
       $cy= $this->cy;
       for ($i= 1; $i < $this->shadow; $i++) {

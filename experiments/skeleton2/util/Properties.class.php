@@ -29,7 +29,7 @@
    * @purpose  Wrapper around parse_ini_file
    */
   class Properties extends Object {
-    public
+    protected
       $_file    = '',
       $_data    = NULL;
       
@@ -42,6 +42,53 @@
     public function __construct($filename) {
       $this->_file= $filename;
       
+    }
+    
+    /**
+     * Create a property file from an io.File object
+     *
+     * @access  public
+     * @param   &io.File file
+     * @return  &util.Properties
+     */
+    public function fromFile(File $file) {
+      return new Properties($file->getURI());
+    }
+
+    /**
+     * Create a property file from a string
+     *
+     * @access  public
+     * @param   string str
+     * @return  &util.Properties
+     */
+    public function fromString($str) {
+      with ($prop= new Properties(NULL)); {
+        $section= NULL;
+        $prop->_data= array();
+        if ($t= strtok($str, "\r\n")) do {
+          switch ($t{0}) {
+            case ';':
+            case '#':
+              break;
+
+            case '[':
+              $p= strpos($t, '[');
+              $section= substr($t, $p+ 1, strpos($t, ']', $p)- 1);
+              $prop->_data[$section]= array();
+              break;
+
+            default:
+              if (FALSE === ($p= strpos($t, '='))) break;
+              $key= trim(substr($t, 0, $p));
+              $value= trim(substr($t, $p+ 1), ' "');
+
+              $prop->_data[$section][$key]= $value;
+              break;
+          }
+        } while ($t= strtok("\r\n"));
+      }
+      return $prop;
     }
     
     /**
@@ -109,19 +156,17 @@
       $fd= new File($this->_file);
       $fd->open(FILE_MODE_WRITE);
       
-      // Sektionen durchgehen
-      foreach ($this->_data as $section=> $values) {
+      foreach (array_keys($this->_data) as $section) {
         $fd->write(sprintf("[%s]\n", $section));
         
-        // Werte einer Sektion
-        foreach ($values as $key=> $val) {
+        foreach ($this->_data[$section] as $key => $val) {
           if (';' == $key{0}) {
             $fd->write(sprintf("\n; %s\n", $val)); 
           } else {
             if (is_a($val, 'Hashmap')) {
               $str= '';
-              foreach ($val->_hash as $k=> $v) {
-                $str.= '|'.$k.':'.$v;
+              foreach ($val->keys() as $k) {
+                $str.= '|'.$k.':'.$val->get($v);
               }
               $val= substr($str, 1);
             }

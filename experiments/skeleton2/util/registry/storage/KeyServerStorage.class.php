@@ -28,7 +28,7 @@
    * @purpose  A storage provider that uses a key server
    */
   class KeyServerStorage extends RegistryStorage {
-    public
+    protected
       $_sock= NULL;
 
     /**
@@ -112,7 +112,7 @@
      * @param   &mixed value
      * @param   int permissions default 0666
      */
-    public function put($key, &$value, $permissions= 0666) {
+    public function put($key, $value, $permissions= 0666) {
       if (FALSE === self::_cmd(
         'SET %s/%s=%s', 
         urlencode($this->id), 

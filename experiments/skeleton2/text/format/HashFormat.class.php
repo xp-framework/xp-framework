@@ -32,7 +32,7 @@
      * @param   &mixed argument
      * @return  string
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       if (is_scalar($argument)) {
         throw (new FormatException('Argument with type '.gettype($argument).' is not an array or object'));
       }

@@ -37,9 +37,10 @@
    * @purpose  Represent SOAP Message
    */
   class SOAPMessage extends Tree {
-    public 
+    public
       $body         = '',
       $namespace    = 'ctl',
+      $namespaces   = array(),
       $encoding     = XML_ENCODING_DEFAULT,
       $nodeType     = 'SOAPNode',
       $action       = '',
@@ -56,20 +57,17 @@
       $this->action= $action;
       $this->method= $method;
 
-      $this->root= new Node(array(
-        'name'          => 'SOAP-ENV:Envelope',
-        'attribute'     => array(
-          'xmlns:SOAP-ENV'              => 'http://schemas.xmlsoap.org/soap/envelope/', 
-          'xmlns:xsd'                   => 'http://www.w3.org/2001/XMLSchema', 
-          'xmlns:xsi'                   => 'http://www.w3.org/2001/XMLSchema-instance', 
-          'xmlns:SOAP-ENC'              => 'http://schemas.xmlsoap.org/soap/encoding/', 
-          'xmlns:si'                    => 'http://soapinterop.org/xsd', 
-          'SOAP-ENV:encodingStyle'      => 'http://schemas.xmlsoap.org/soap/encoding/',
-          'xmlns:'.$this->namespace     => $this->action   
-        )
+      $this->root= new Node('SOAP-ENV:Envelope', NULL, array(
+        'xmlns:SOAP-ENV'              => 'http://schemas.xmlsoap.org/soap/envelope/', 
+        'xmlns:xsd'                   => 'http://www.w3.org/2001/XMLSchema', 
+        'xmlns:xsi'                   => 'http://www.w3.org/2001/XMLSchema-instance', 
+        'xmlns:SOAP-ENC'              => 'http://schemas.xmlsoap.org/soap/encoding/', 
+        'xmlns:si'                    => 'http://soapinterop.org/xsd', 
+        'SOAP-ENV:encodingStyle'      => 'http://schemas.xmlsoap.org/soap/encoding/',
+        'xmlns:'.$this->namespace     => $this->action   
       ));
-      $this->root->addChild(new Node(array('name' => 'SOAP-ENV:Body')));
-      $this->root->children[0]->addChild(new Node(array('name' => $this->namespace.':'.$this->method)));
+      $this->root->addChild(new Node('SOAP-ENV:Body'));
+      $this->root->children[0]->addChild(new Node($this->namespace.':'.$this->method));
     }
     
     /**
@@ -94,9 +92,11 @@
      *
      * @access  private
      * @param   &xml.Node child
+     * @param   string context default NULL
+     * @param   array mapping
      * @return  &mixed result
      */
-    private function unmarshall(&$child, $context= NULL) {
+    private function unmarshall(Node $child, $context= NULL, $mapping) {
       if (
         isset($child->attribute['xsi:null']) or       // Java
         isset($child->attribute['xsi:nil'])           // SOAP::Lite
@@ -115,29 +115,39 @@
           // Create a copy and pass name to it
           $c= $this->root->children[0]->children[$idx];
           $c->name= $child->name;
-          return self::unmarshall($c, $context);
+          return self::unmarshall($c, $context, $mapping);
           break;
         }
       }
       
-      // Recognize XP object
+      // Update namespaces list
+      $xpns= NULL;
       foreach ($child->attribute as $key => $val) {
-        if ('xmlns' == substr($key, 0, 5) && 'http://xp-framework.net/xmlns/xp' == substr($val, 0, 32)) {
-          try {
-            $n= ClassLoader::loadClass(substr($child->attribute['xsi:type'], strlen($key) - 5));
-          } catch (XPException $e) {
-          
-            // Handle this gracefully
-            trigger_error($e->message, E_USER_NOTICE);
-            $n= 'Object';
-          }
-          $result= XPClass::forName($n)->newInstance();
-          foreach (self::_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
-            $result->$key= $val;
-          }
+        if ('xmlns' != substr($key, 0, 5)) continue;
         
-          return $result;          
+        $this->namespaces[substr($key, 6)]= $val;
+        
+        // Recognize XP object
+        if ('http://xp-framework.net/xmlns/xp' == substr($val, 0, 32)) {
+          $xpns= substr($child->attribute['xsi:type'], strlen($key) - 5);
         }
+      }
+      
+      if ($xpns) {
+        try {
+          $class= XPClass::forName(substr($child->attribute['xsi:type'], strlen($key) - 5));
+        } catch (ClassNotFoundException $e) {
+
+          // Handle this gracefully
+          $class= XPClass::forName('lang.Object');
+        }
+
+        $result= $class->newInstance();
+        foreach (self::_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
+          $result->$key= $val;
+        }
+
+        return $result;          
       }
 
       // Typenabhängig
@@ -158,7 +168,7 @@
       switch (strtolower($regs[2])) {
         case 'array':
         case 'vector':
-          $result= self::_recurseData($child, FALSE, 'ARRAY');
+          $result= self::_recurseData($child, FALSE, 'ARRAY', $mapping);
           break;
 
         case 'map':
@@ -177,7 +187,7 @@
             $key= $item->children[0]->getContent(self::getEncoding());
             $result[$key]= (empty($item->children[1]->children) 
               ? $item->children[1]->getContent(self::getEncoding())
-              : self::unmarshall($item->children[1], 'MAP')
+              : self::unmarshall($item->children[1], 'MAP', $mapping)
             );
           }
           break;
@@ -186,25 +196,32 @@
         case 'struct':      
         case 'ur-type':
           if ('xsd' == $regs[1]) {
-            $result= self::_recurseData($child, TRUE, 'HASHMAP');
+            $result= self::_recurseData($child, TRUE, 'HASHMAP', $mapping);
             break;
           }
 
-          $result= new stdClass();
-          foreach (self::_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
+          $result= new Object();
+          foreach (self::_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
             $result->$key= $val;
           }
           break;
           
         default:
           if (!empty($child->children)) {
-            if ($regs[1]== 'xsd') {
-              $result= self::_recurseData($child, TRUE, 'STRUCT');
+            if ('xsd' == $regs[1]) {
+              $result= self::_recurseData($child, TRUE, 'STRUCT', $mapping);
               break;
             }
 
-            $result= new stdClass();
-            foreach (self::_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
+            // Check for mapping
+            $qname= strtolower($this->namespaces[$regs[1]].'/'.$regs[2]);
+            if (isset($mapping[$qname])) {
+              $result= $mapping[$qname]->newInstance();
+            } else {
+              $result= new Object();
+              $result->qname= $qname;
+            }
+            foreach (self::_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
               $result->$key= $val;
             }
             break;
@@ -213,16 +230,6 @@
           $result= $child->getContent(self::getEncoding());
       }
 
-      // HACK
-      if (
-        ($context == NULL) &&
-        ($child->name != 'item') &&                    // PHP, XP, ...
-        (substr($child->name, 1, 7) != '-gensym') &&   // Perl
-        (sscanf($child->name, 'arg%d', $num) < 1)      // Axis
-      ) {
-        $result= new SOAPNamedItem($child->name, $result);
-      }
-      
       return $result;
     }
 
@@ -233,16 +240,22 @@
      * @param   &xml.Node node
      * @param   bool names default FALSE
      * @param   string context default NULL
+     * @param   array mapping
      * @return  &mixed data
      */    
-    private function _recurseData(&$node, $names= FALSE, $context= NULL) {
+    private function _recurseData(Node $node, $names= FALSE, $context= NULL, $mapping) {
       if (empty($node->children)) return array();
+
+      foreach ($node->attribute as $key => $val) {
+        if ('xmlns' == substr($key, 0, 5)) $this->namespaces[substr($key, 6)]= $val;
+      }
       
       $results= array();
       for ($i= 0, $s= sizeof($node->children); $i < $s; $i++) {
         $results[$names ? $node->children[$i]->name : $i]= self::unmarshall(
           $node->children[$i], 
-          $context
+          $context,
+          $mapping
         );
       }
       return $results;
@@ -258,12 +271,12 @@
      * @param   mixed detail default NULL
      */    
     public function setFault($faultcode, $faultstring, $faultactor= NULL, $detail= NULL) {
-      $this->root->children[0]->children[0]= SOAPNode::fromObject(new SOAPFault(array(
-        'faultcode'      => $faultcode,
-        'faultstring'    => $faultstring,
-        'faultactor'     => $faultactor,
-        'detail'         => $detail
-      )), 'SOAP-ENV:Fault');
+      $this->root->children[0]->children[0]= SOAPNode::fromObject(new SOAPFault(
+        $faultcode,
+        $faultstring,
+        $faultactor,
+        $detail
+      ), 'SOAP-ENV:Fault');
       $this->root->children[0]->children[0]->name= 'SOAP-ENV:Fault';
     }
 
@@ -295,7 +308,7 @@
      * @param   &io.File file
      * @return  &xml.Tree
      */ 
-    public static function fromFile(&$file) {
+    public static function fromFile(File $file) {
       return parent::fromFile($file, 'SOAPMessage');
     }
 
@@ -308,13 +321,13 @@
     public function getFault() {
       if (!strstr($this->root->children[0]->children[0]->name, ':Fault')) return NULL;
       
-      list($return)= self::_recurseData($this->root->children[0], FALSE, 'OBJECT');
-      return new SOAPFault(array(
-        'faultcode'      => $return['faultcode'],
-        'faultstring'    => $return['faultstring'],
-        'faultactor'     => $return['faultactor'],
-        'detail'         => $return['detail']
-      ));
+      list($return)= self::_recurseData($this->root->children[0], FALSE, 'OBJECT', array());
+      return new SOAPFault(
+        $return['faultcode'],
+        $return['faultstring'],
+        $return['faultactor'],
+        $return['detail']
+      );
     }
     
     /**
@@ -322,15 +335,20 @@
      *
      * @access  public
      * @param   string context default 'ENUM'
+     * @param   array mapping default array()
      * @return  &mixed data
      */
-    public function getData($context= 'ENUM') {
-      foreach ($this->root->attribute as $key=> $val) { // Namespace suchen
+    public function getData($context= 'ENUM', $mapping= array()) {
+      foreach ($this->root->attribute as $key => $val) { // Look for namespaces
         if ($val == $this->action) $this->namespace= substr($key, strlen('xmlns:'));
       }
 
-      $return= self::_recurseData($this->root->children[0]->children[0], FALSE, $context);
-      return $return;
+      return self::_recurseData(
+        $this->root->children[0]->children[0], 
+        FALSE, 
+        $context,
+        $mapping
+      );
     }
   }
 ?>

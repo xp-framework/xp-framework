@@ -24,7 +24,7 @@
    * @purpose  Base class
    */
   class GtkApplication extends Object {
-    public 
+    public
       $window   = NULL,
       $cat      = NULL,
       $rcfile   = '';
@@ -35,7 +35,7 @@
      * @access  public
      * @param   &util.ParamString p
      */
-    public function __construct(&$p) {
+    public function __construct(ParamString $p) {
 
       // Set up logger
       $l= Logger::getInstance();
@@ -108,7 +108,7 @@
      * @return  &php.GtkWidget widget
      * @throws  gui.GuiException in case the signal connecting failed
      */
-    protected function connect(&$widget, $signal, $callback= NULL, $data= NULL) {
+    protected function connect(GtkWidget $widget, $signal, $callback= NULL, $data= NULL) {
       if (!$widget) return FALSE;
       if ('after:' == substr($signal, 0, 6)) {
         $signal= substr($signal, 6);
@@ -143,7 +143,7 @@
      * @model   abstract
      * @access  public
      */
-    public abstract function init() ;
+    public abstract function init();
 
     /**
      * Is called after the application comes down. Include cleanup
@@ -152,7 +152,7 @@
      * @model   abstract
      * @access  public
      */
-    public abstract function done() ;
+    public abstract function done();
 
     /**
      * Shows application window and enters main loop.
