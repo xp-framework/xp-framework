@@ -59,7 +59,7 @@
      * @access  public
      * @return  boolean needreparseing
      */
-    function needReparsing() {
+    function needsReparsing() {
       if (NULL === $this->filename) return FALSE;
       
       if (FALSE !== ($mtime= filemtime ($this->filename)))
