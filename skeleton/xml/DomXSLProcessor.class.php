@@ -41,16 +41,6 @@
     }
     
     /**
-     * Set an error handler
-     *
-     * @access  public
-     * @param   mixed callback
-     */
-    function setErrorHandler($funcName) {
-      // Not implemented in DOM
-    }
-
-    /**
      * Set a scheme handler
      *
      * @access  public
