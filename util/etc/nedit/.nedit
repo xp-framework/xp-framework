@@ -482,7 +482,7 @@ nedit.highlightPatterns: C:1:0{\n\
 		heredoc:"\\<\\<\\<__":"^__"::Text Key1:phptags:\n\
 		classname:"([A-Za-z_·:]+)?(::)([A-Za-z]+)":::String1:phptags:\n\
 		classnameseperator:"\\2":""::Pointer:classname:C\n\
-		constants:"(NULL|FALSE|TRUE)":::Ada Attributes:phptags:\n\
+		constants:"(NULL|FALSE|TRUE|<[A-Z_]+>)":::Ada Attributes:phptags:\n\
 	}\n\
 	CSS:Default\n\
 	Regex:Default\n\
