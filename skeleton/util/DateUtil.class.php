@@ -20,7 +20,7 @@
      *
      * @model   static
      * @access  public
-     * @param   &util.Date
+     * @param   &util.Date date
      * @return  &util.Date
      */
     function &getMidnight(&$date) {
@@ -39,7 +39,7 @@
      *
      * @model   static
      * @access  public
-     * @param   &util.Date
+     * @param   &util.Date date
      * @return  &util.Date
      */
     function &getLastOfMonth(&$date) {
@@ -58,7 +58,7 @@
      *
      * @model   static
      * @access  public
-     * @param   &util.Date
+     * @param   &util.Date date
      * @return  &util.Date
      */
     function &getFirstOfMonth(&$date) {
@@ -77,11 +77,11 @@
      *
      * @model   static
      * @access  public
-     * @param   &util.Date
-     * @param   int count
+     * @param   &util.Date date
+     * @param   int count default 1
      * @return  &util.Date
      */
-    function addMonths(&$date, $count= 1) {
+    function &addMonths(&$date, $count= 1) {
       return new Date (mktime (
         $date->getHours(),
         $date->getMinutes(),
@@ -97,11 +97,11 @@
      *
      * @model   static
      * @access  public
-     * @param   &util.Date
-     * @param   int count
+     * @param   &util.Date date
+     * @param   int count default 1
      * @return  &util.Date
      */
-    function addWeeks(&$date, $count= 1) {
+    function &addWeeks(&$date, $count= 1) {
       return new Date($date->getTime() + $count * 604800);
     }
     
@@ -110,11 +110,11 @@
      *
      * @model   static
      * @access  public
-     * @param   &util.Date
-     * @param   int count
+     * @param   &util.Date date 
+     * @param   int count default 1
      * @return  &util.Date
      */
-    function addDays(&$date, $count= 1) {
+    function &addDays(&$date, $count= 1) {
       return new Date($date->getTime() + $count * 86400);
     }
     
@@ -123,11 +123,11 @@
      *
      * @model   static
      * @access  public
-     * @param   &util.Date
-     * @param   int count
+     * @param   &util.Date date 
+     * @param   int count default 1
      * @return  &util.Date
      */
-    function addHours(&$date, $count= 1) {
+    function &addHours(&$date, $count= 1) {
       return new Date($date->getTime() + $count * 3600);
     }
     
@@ -136,11 +136,11 @@
      *
      * @model   static
      * @access  public
-     * @param   &util.Date
-     * @param   int count
+     * @param   &util.Date date 
+     * @param   int count default 1
      * @return  &util.Date
      */
-    function addMinutes(&$date, $count= 1) {
+    function &addMinutes(&$date, $count= 1) {
       return new Date($date->getTime() + $count * 60);
     }
 
@@ -149,11 +149,11 @@
      *
      * @model   static
      * @access  public
-     * @param   &util.Date
-     * @param   int count
+     * @param   &util.Date date 
+     * @param   int count default 1
      * @return  &util.Date
      */
-    function addSeconds(&$date, $count= 1) {
+    function &addSeconds(&$date, $count= 1) {
       return new Date($date->getTime() + $count);
     }
   }
