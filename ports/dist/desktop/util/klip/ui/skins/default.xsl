@@ -43,9 +43,18 @@
             <xsl:value-of select="$contentsource/items/@count"/>
           </td>
           <td valign="top">
-            <xsl:for-each select="$contentsource/items/item">
-              <a href="{@link}"><xsl:value-of select="."/></a><br/>
-            </xsl:for-each>
+            <table width="100%" border="0" cellspacing="0" cellpadding="1">
+              <xsl:for-each select="$contentsource/items/item">
+                <tr>
+                  <td width="1%" valign="top">
+                    <img src="chrome://ui/skins/image/arrow.gif"/>
+                  </td>
+                  <td valign="top">
+                    <a href="{@link}"><xsl:value-of select="."/></a>
+                  </td>
+                </tr>
+              </xsl:for-each>
+            </table>
           </td>
         </tr>
       </table>
