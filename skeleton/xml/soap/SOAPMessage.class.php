@@ -102,6 +102,24 @@
       ) {
         return NULL;
       }
+      
+      // Recognize XP object
+      if (isset($child->attribute['xmlns:xp'])) {
+        try(); {
+          $n= ClassLoader::loadClass(substr($child->attribute['xsi:type'], 3));
+        } if (catch('Exception', $e)) {
+          
+          // Handle this gracefully
+          trigger_error($e->message, E_USER_NOTICE);
+          $n= 'Object';
+        }
+        $result= &new $n();
+        foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
+          $result->$key= $val;
+        }
+        
+        return $result;          
+      }
 
       // Typenabhängig
       if (!isset($child->attribute['xsi:type']) || !preg_match(
@@ -118,18 +136,20 @@
         $regs[2]= 'Array';
       }
 
-      # DEBUG echo "*** {$child->name} [{$names}, {$context}, {$idx}] is {$regs[2]}\n";
-      # DEBUG echo $child->getSource(0);
+      #ifdef DEBUG
+      #$l= &Logger::getInstance();
+      #$c= &$l->getCategory($this->getClassName());
+      #$c->debug('SOAPMessage::unmarshall(', $child->getClassName(), $context, ').$regs=', $regs);
+      #$c->debug($child->getSource(0));
+      #endif
 
       switch (strtolower($regs[2])) {
         case 'array':
         case 'vector':
-          # DEBUG echo "+++ Using array/vector deserializer\n";
           $result= $this->_recurseData($child, FALSE, 'ARRAY');
           break;
 
         case 'map':
-          # DEBUG echo "+++ Using map deserializer\n";
           // <old_data xmlns:ns4="http://xml.apache.org/xml-soap" xsi:type="ns4:Map">
           // <item>
           // <key xsi:type="xsd:string">Nachname</key>
@@ -153,35 +173,24 @@
         case 'soapstruct':
         case 'struct':      
         case 'ur-type':
-          # DEBUG echo "+++ Using struct.{$regs[1]} deserializer\n";
-          if ($regs[1]== 'xsd') {
+          if ('xsd' == $regs[1]) {
             $result= $this->_recurseData($child, TRUE, 'HASHMAP');
             break;
           }
 
-          $n= 'stdClass';
-          if (isset($child->attribute['xmlns:xp'])) {
-            try(); {
-              $n= ClassLoader::loadClass($regs[2]);
-            } if (catch('Exception', $e)) {
-              $n= 'stdClass';
-            }
-          }
-          $result= &new $n();
+          $result= &new stdClass();
           foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
             $result->$key= $val;
           }
           break;
-
+          
         default:
           if (!empty($child->children)) {
             if ($regs[1]== 'xsd') {
-              # DEBUG echo "+++ Using hashmap.{$regs[1]} deserializer\n";
               $result= $this->_recurseData($child, TRUE, 'STRUCT');
               break;
             }
 
-            # DEBUG echo "+++ Using object.{$regs[1]} deserializer\n";
             $result= &new stdClass();
             foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
               $result->$key= $val;
@@ -189,7 +198,6 @@
             break;
           }
 
-          # DEBUG echo "+++ Using scalar deserializer\n";
           $result= $child->getContent($this->getEncoding());
       }
 
@@ -223,7 +231,6 @@
           $node->children[$i], 
           $context
         );
-        # DEBUG var_dump($results[$names ? $node->children[$i]->name : $i]);
       }
       return $results;
     }
@@ -280,7 +287,8 @@
         if ($val == $this->action) $this->namespace= substr($key, strlen('xmlns:'));
       }
       
-      return $this->_recurseData($this->root->children[0]->children[0], FALSE, $context);
+      $return= $this->_recurseData($this->root->children[0]->children[0], FALSE, $context);
+      return $return;
     }
   }
 ?>
