@@ -15,6 +15,7 @@
    *
    * @purpose Datenbank-Klasse für Schlund-Datenbanken
    * @example sybase.ini
+   * @ext     sybase
    * @see     http://manuals.sybase.com/
    * @see     http://curry.schlund.de/datenbank/MIGRAENE.html#bearbeitungszustand
    */
