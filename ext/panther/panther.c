@@ -313,6 +313,9 @@ void* _thread(void* sd)
                                 strncat(eval, request->member, request->member_len);
                                 strncat(eval, "($_)", sizeof("($_)"));
                                 break;
+
+                            default:
+                                eval= (char*) malloc(0);    /* Shut up, GCC */
                         }
 
                         panther_error(PANTHER_LOG, "Executing (%d)'%s'\n", strlen(eval), eval);
@@ -387,8 +390,6 @@ int main (int argc, char *argv[])
     pthread_t* threads= NULL;
     int rc, t, opt;
     void* status;
-    /* void ***tsrm_ls; */
-    zval* tmp;
     struct sockaddr_in serv_addr;
     int max_threads;
     int serverport;
