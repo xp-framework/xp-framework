@@ -92,16 +92,16 @@
     function connect() {
       if ($this->isConnected()) return 1;
       
-      if (!$this->_sock= fsockopen($this->host, $this->port, $errno, $errstr, $this->timeout)) return (
-        throw(new ConnectException(sprintf(
+      if (!$this->_sock= fsockopen($this->host, $this->port, $errno, $errstr, $this->timeout)) {
+        return throw(new ConnectException(sprintf(
           'Failed connecting to %s:%s within %s seconds [%d: %s]',
           $this->host,
           $this->port,
           $this->timeout,
           $errno,
           $errstr
-        )))
-      );
+        )));
+      }
       return 1;
     }
 
