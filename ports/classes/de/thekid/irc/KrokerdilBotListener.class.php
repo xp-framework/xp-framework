@@ -121,6 +121,14 @@
             }
             break;
           
+          case 'uptime':
+            $r= getrusage();
+            $connection->sendAction($target, '\'s uptime ist %s', strftime(
+              '%d Tag(e), %H Stunde(n), %M Minute(n)',
+              $r['ru_utime.tv_sec']
+            ));
+            break;
+          
           case 'say':
             list($dest, $message)= explode(' ', $params, 2);
             $connection->sendMessage($dest, $message);
