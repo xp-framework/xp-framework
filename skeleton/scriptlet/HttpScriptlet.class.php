@@ -33,7 +33,7 @@
    * <code>
    *   uses('scriptlet.HttpScriptlet');
    * 
-   *   class MyScriptlet extends HttpScriplet {
+   *   class MyScriptlet extends HttpScriptlet {
    *     function doGet(&$request, &$response) {
    *       $response->write('Hello World');
    *     }
