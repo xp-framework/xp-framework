@@ -6,10 +6,6 @@
 
   uses('lang.IndexOutOfBoundsException');
 
-  define('CR',      "\r");
-  define('LF',      "\n");
-  define('CRLF',    "\r\n");
-
   /**
    * Represents a string. 
    *
@@ -26,6 +22,11 @@
    * @purpose  Type wrapper
    */
   class String extends Object {
+    const 
+      CR    = "\r",
+      LF    = "\n",
+      CRLF  = "\r\n";
+
     protected
       $buffer   = '';
 
@@ -585,6 +586,16 @@
         return new String(implode('', $arg));
       }
       return new String(strval($arg));
+    }
+    
+    /**
+     * Magic method - called from PHP when casting to a string
+     *
+     * @access  public
+     * @return  string
+     */
+    public function __toString() {
+      return $this->buffer;
     }
   }
 ?>
