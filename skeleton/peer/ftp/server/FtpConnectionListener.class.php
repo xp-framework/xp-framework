@@ -4,11 +4,8 @@
  * $Id$ 
  */
 
-  uses('peer.server.ConnectionListener');
+  uses('peer.server.ConnectionListener', 'peer.ftp.server.FtpSession');
   
-  define('TYPE_ASCII',  'A');
-  define('TYPE_BINARY', 'I');
-
   /**
    * Implement FTP server functionality
    *
@@ -18,12 +15,11 @@
    */
   class FtpConnectionListener extends ConnectionListener {
     var
-      $user             = array('username' => NULL, 'loggedin' => FALSE),
-      $type             = TYPE_ASCII,
+      $sessions         = array(),
       $cat              = NULL,
       $authenticator    = NULL,
       $storage          = NULL,
-      $datasock         = NULL;   // For passive mode
+      $datasock         = array();   // For passive mode
 
     /**
      * Constructor
@@ -48,46 +44,14 @@
     }
 
     /**
-     * Returns end of line identifier depending on the type
+     * Returns end of line identifier depending on the given type
      *
      * @access  protected
+     * @param   char type
      * @return  string
      */
-    function eol() {
-      return (TYPE_ASCII == $this->type) ? "\r\n" : "\n";
-    }
-    
-    /**
-     * Returns type name depending on the type
-     *
-     * The following codes are assigned:
-     * <pre>
-     * A = ASCII (text files)
-     * N = Non-print (files that have no vertical format controls such 
-     *     as carriage returns and line feeds)
-     * T = Telnet format effectors (files that have ASCII or EBCDIC 
-     *     vertical format controls)
-     * E = EBCDIC (files being transferred between systems that use 
-     *     EBCDIC for internal character representation)
-     * C = Carriage Control (ASA) (files that contain ASA [FORTRAN] 
-     *     vertical format controls)
-     * I = Image (binary files)
-     * L = Local byte size (files that need to be transferred using 
-     *     specific non-standard size bytes)
-     * </pre>
-     *
-     * The default representation type is ASCII Non-print. This 
-     * implementation supports ASCII (A) and BINARY (I)
-     *
-     * @access  protected
-     * @return  string
-     */
-    function typeName() {
-      static $names= array(
-        TYPE_ASCII  => 'ASCII',
-        TYPE_BINARY => 'BINARY'
-      );
-      return $names[$this->type];
+    function eol($type) {
+      return (TYPE_ASCII == $type) ? "\r\n" : "\n";
     }
     
     /**
@@ -119,11 +83,9 @@
      * @param   string params
      */
     function onUser(&$event, $params) {
-      $this->user= array(
-        'name'     => $params,
-        'loggedin' => FALSE
-      );
-      $this->answer($event->stream, 331, 'Password required for '.$this->user['name']);
+      $this->sessions[$event->stream->hashCode()]->setUsername($params);
+      $this->sessions[$event->stream->hashCode()]->setAuthenticated(FALSE);
+      $this->answer($event->stream, 331, 'Password required for '.$params);
     }
     
     /**
@@ -134,20 +96,22 @@
      * @param   string params
      */
     function onPass(&$event, $params) {
-      try(); {
-        $r= $this->authenticator->authenticate($this->user['name'], $params);
-      } if (catch('AuthenticatorException', $e)) {
-        $this->answer($event->stream, 550, $e->getMessage());
-        return;
+      with ($user= $this->sessions[$event->stream->hashCode()]->getUsername()); {
+        try(); {
+          $r= $this->authenticator->authenticate($user, $params);
+        } if (catch('AuthenticatorException', $e)) {
+          $this->answer($event->stream, 550, $e->getMessage());
+          return;
+        }
+
+        // Did the authentication succeed?
+        if (!$r) {
+          $this->answer($event->stream, 530, 'Autentication failed for '.$user);
+          return;
+        }
+        $this->answer($event->stream, 230, 'User '.$user.' logged in');
+        $this->sessions[$event->stream->hashCode()]->setAuthenticated(TRUE);
       }
-      
-      // Did the authentication succeed?
-      if (!$r) {
-        $this->answer($event->stream, 530, 'Autentication failed for '.$this->user['name']);
-        return;
-      }
-      $this->answer($event->stream, 230, 'User '.$this->username.' logged in');
-      $this->user['loggedin']= TRUE;
     }
     
     /**
@@ -160,8 +124,8 @@
      * @param   string params
      */
     function onRein(&$event, $params) {
-      delete($this->datasock);
-      $this->user['loggedin']= FALSE;
+      delete($this->datasock[$event->stream->hashCode()]);
+      $this->sessions[$event->stream->hashCode()]->setAuthenticated(FALSE);
     }
         
     /**
@@ -348,10 +312,10 @@
       }
       
       // Assume this is a passive connection
-      $m= &$this->datasock->accept();
+      $m= &$this->datasock[$event->stream->hashCode()]->accept();
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for filelist',
-        $this->typeName()
+        $this->sessions[$event->stream->hashCode()]->typeName()
       ));
       
       // If a collection was specified, list its elements, otherwise,
@@ -374,7 +338,7 @@
           $elements[$i]->getName()
         );
         $this->cat && $this->cat->debug('    ', $buf);
-        $m->write($buf.$this->eol());
+        $m->write($buf.$this->eol($this->sessions[$event->stream->hashCode()]->getType()));
       }
       $m->close();
       $this->answer($event->stream, 226, 'Transfer complete');
@@ -395,10 +359,10 @@
       }
       
       // Assume this is a passive connection
-      $m= &$this->datasock->accept();
+      $m= &$this->datasock[$event->stream->hashCode()]->accept();
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for filelist',
-        $this->typeName()
+        $this->sessions[$event->stream->hashCode()]->typeName()
       ));
       
       // If a collection was specified, list its elements, otherwise,
@@ -410,7 +374,10 @@
       }
       
       for ($i= 0, $s= sizeof($elements); $i < $s; $i++) {
-        $m->write($elements[$i]->getName().$this->eol());
+        $m->write(
+          $elements[$i]->getName().
+          $this->eol($this->sessions[$event->stream->hashCode()]->getType())
+        );
       }
       $m->close();
       $this->answer($event->stream, 226, 'Transfer complete');
@@ -525,10 +492,10 @@
       }
       
       // Assume this is a passive connection
-      $m= &$this->datasock->accept();
+      $m= &$this->datasock[$event->stream->hashCode()]->accept();
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for %s (%d bytes)',
-        $this->typeName(),
+        $this->sessions[$event->stream->hashCode()]->getType(),
         $entry->getName(),
         $entry->getSize()
       ));
@@ -567,10 +534,10 @@
       }
       
       // Assume this is a passive connection
-      $m= &$this->datasock->accept();
+      $m= &$this->datasock[$event->stream->hashCode()]->accept();
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for %s',
-        $this->typeName(),
+        $this->sessions[$event->stream->hashCode()]->getType(),
         $entry->getName()
       ));
       try(); {
@@ -598,7 +565,7 @@
       switch ($params) {
         case TYPE_ASCII:
         case TYPE_BINARY:
-          $this->type= $params;
+          $this->sessions[$event->stream->hashCode()]->setType($params);
           $this->answer($event->stream, 200, 'Type set to '.$params);
           break;
           
@@ -617,6 +584,9 @@
     function onQuit(&$event, $params) {
       $this->answer($event->stream, 221, 'Goodbye');
       $event->stream->close();
+      
+      // Kill associated session
+      delete($this->sessions[$event->stream->hashCode()]);
     }
 
     /**
@@ -633,7 +603,7 @@
       $this->answer($event->stream, 200, 'PORT command successful');
 
       // TBI: What next?
-      var_dump($this->datasock);
+      var_dump($this->datasock[$event->stream->hashCode()]);
     }
 
     /**
@@ -661,22 +631,22 @@
      * @param   string params
      */
     function onPasv(&$event, $params) {
-      if ($this->datasock) {
-        $port= $this->datasock->port;   // Recycle it!
+      if ($this->datasock[$event->stream->hashCode()]) {
+        $port= $this->datasock[$event->stream->hashCode()]->port;   // Recycle it!
       } else {
         $port= rand(1000, 65536);
-        $this->datasock= &new ServerSocket($this->server->socket->host, $port);
+        $this->datasock[$event->stream->hashCode()]= &new ServerSocket($this->server->socket->host, $port);
         try(); {
-          $this->datasock->create();
-          $this->datasock->bind();
-          $this->datasock->listen();
+          $this->datasock[$event->stream->hashCode()]->create();
+          $this->datasock[$event->stream->hashCode()]->bind();
+          $this->datasock[$event->stream->hashCode()]->listen();
         } if (catch('IOException', $e)) {
           $this->answer($event->stream, 425, 'Cannot open passive connection '.$e->getMessage());
-          delete($this->datasock);
+          delete($this->datasock[$event->stream->hashCode()]);
           return;
         }
       }
-      $this->cat && $this->cat->debug('Passive mode: Data socket is', $this->datasock);
+      $this->cat && $this->cat->debug('Passive mode: Data socket is', $this->datasock[$event->stream->hashCode()]);
 
       $octets= strtr(gethostbyname($this->server->socket->host), '.', ',').','.($port >> 8).','.($port & 0xFF);
       $this->answer($event->stream, 227, 'Entering passive mode ('.$octets.')');
@@ -690,6 +660,9 @@
      */
     function connected(&$event) {
       $this->cat && $this->cat->debugf('===> Client %s connected', $event->stream->host);
+
+      // Create a new session object for this client
+      $this->sessions[$event->stream->hashCode()]= &new FtpSession();
       $this->answer($event->stream, 220, 'FTP server ready');
     }
     
@@ -714,7 +687,10 @@
       }
       
       // Check if user needs to be logged in in order to execute this command
-      if (!$this->user['loggedin'] && !in_array($method, $public)) {
+      if (
+        !$this->sessions[$event->stream->hashCode()]->isAuthenticated() && 
+        !in_array($method, $public)
+      ) {
         $this->answer($event->stream, 530, 'Please log in first');
         return;
       }
@@ -736,6 +712,9 @@
      */
     function disconnected(&$event) {
       $this->cat && $this->cat->debugf('Client %s disconnected', $event->stream->host);
+      
+      // Kill associated session
+      delete($this->sessions[$event->stream->hashCode()]);
     }
 
   } implements(__FILE__, 'util.log.Traceable');
