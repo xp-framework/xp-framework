@@ -58,8 +58,6 @@
           'Given argument is neither a timestamp nor a well-formed timestring'
         ));
       }
-      
-      parent::__construct();
     }
     
     /**
