@@ -29,7 +29,6 @@
      */  
     public function __construct($url) {
       $this->_conn= new HttpConnection($url);
-      parent::__construct();
     }
     
     /**

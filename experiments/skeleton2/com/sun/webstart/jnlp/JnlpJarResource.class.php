@@ -28,7 +28,6 @@
      * @param   string href
      */
     public function __construct($href) {
-      parent::__construct();
       $this->href= $href;
     }
 

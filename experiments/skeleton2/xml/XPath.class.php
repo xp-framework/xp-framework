@@ -18,8 +18,12 @@
     protected
       $_proc= NULL;
     
-    public function __construct($params= NULL) {
-      XML::__construct();
+    /**
+     * Constructor
+     *
+     * @access  public
+     */
+    public function __construct() {
       $this->_proc= new XSLProcessor();
     }
     
@@ -66,7 +70,6 @@
      */
     public function __destruct() {
       $this->_proc->__destruct();
-      XML::__destruct();
     }
   }
 ?>

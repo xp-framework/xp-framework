@@ -42,10 +42,8 @@
      * Constructor
      *
      * @access  public
-     * @params  array params default NULL
      */
-    public function __construct($params= NULL) {
-      parent::__construct($params);
+    public function __construct() {
       $this->processor= xslt_create();
     }
     
@@ -188,7 +186,6 @@
         xslt_free($this->processor);
         $this->processor= NULL;
       }
-      parent::__destruct();
     }
   }
 ?>

@@ -84,7 +84,6 @@
     private function __construct($_info, $_res) {
       $this->_info= $_info;
       $this->_res= $_res;
-      parent::__construct();
     }
     
     /**
