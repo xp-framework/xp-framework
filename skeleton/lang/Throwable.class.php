@@ -31,29 +31,27 @@
       $this->message= $message;
       
       $errors= xp::registry('errors');
-      if (function_exists('debug_backtrace')) {
-        foreach (debug_backtrace() as $trace) {
-          if (!isset($trace['function']) || in_array($trace['function'], $except)) continue;
+      foreach (debug_backtrace() as $trace) {
+        if (!isset($trace['function']) || in_array($trace['function'], $except)) continue;
 
-          // Pop error messages off the copied error stack
-          if (isset($trace['file']) && isset($errors[$trace['file']])) {
-            $messages= $errors[$trace['file']];
-            unset($errors[$trace['file']]);
-          } else {
-            $messages= array();
-          }
-
-          // Not all of these are always set: debug_backtrace() should
-          // initialize these - at least - to NULL, IMO => Workaround.
-          $this->trace[]= &new StackTraceElement(
-            isset($trace['file']) ? $trace['file'] : NULL,
-            isset($trace['class']) ? $trace['class'] : NULL,
-            isset($trace['function']) ? $trace['function'] : NULL,
-            isset($trace['line']) ? $trace['line'] : NULL,
-            isset($trace['args']) ? $trace['args'] : NULL,
-            $messages
-          );
+        // Pop error messages off the copied error stack
+        if (isset($trace['file']) && isset($errors[$trace['file']])) {
+          $messages= $errors[$trace['file']];
+          unset($errors[$trace['file']]);
+        } else {
+          $messages= array();
         }
+
+        // Not all of these are always set: debug_backtrace() should
+        // initialize these - at least - to NULL, IMO => Workaround.
+        $this->trace[]= &new StackTraceElement(
+          isset($trace['file']) ? $trace['file'] : NULL,
+          isset($trace['class']) ? $trace['class'] : NULL,
+          isset($trace['function']) ? $trace['function'] : NULL,
+          isset($trace['line']) ? $trace['line'] : NULL,
+          isset($trace['args']) ? $trace['args'] : NULL,
+          $messages
+        );
       }
       
       // Remaining error messages
