@@ -70,11 +70,10 @@
      *
      * @access  public
      * @param   string filename
-     * @param   const handler one of DBH_* handlers
+     * @param   string handler one of DBH_* handler constants
      * @see     php://dba#dba.requirements Handler decriptions
      */
     function __construct($filename, $handler) {
-      parent::__construct();
       $this->filename= $filename;
       $this->handler= $handler;
     }
@@ -192,7 +191,7 @@
      */
     function store($key, $value) {
       if (!dba_replace($key, $value, $this->_fd)) {
-        return throw(new IOException('Could not insert key "'.$key.'"'));
+        return throw(new IOException('Could not replace key "'.$key.'"'));
       }
       return TRUE;
     }
@@ -248,7 +247,7 @@
      * @return  bool success
      * @throws  io.IOException in case saving and/or optimizing failed
      */    
-    function save() {
+    function save($optimize= FALSE) {
       if ($optimize) if (!dba_optimize($this->_fd)) {
         return throw(new IOException('Could not optimize database'));
       }
