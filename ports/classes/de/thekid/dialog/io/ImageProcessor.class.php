@@ -80,6 +80,13 @@
      */
     function fullImageFor(&$origin, &$exifData) {
       $dimensions= $exifData->isHorizontal() ? array(640, 480) : array(480, 640);
+      
+      $aspect= $origin->getWidth() / $origin->getHeight();
+      if ($aspect > 1.0 && $exifData->isVertical()) {
+        $this->cat && $this->cat->warn('Image is vertically oriented but its dimensions suggest otherwise');
+        $dimensions= array(640, 480);
+      }
+      
       $this->cat && $this->cat->debug('Resampling full-view to', implode('x', $dimensions));
 
       with ($full= &Image::create($dimensions[0], $dimensions[1], IMG_TRUECOLOR)); {
