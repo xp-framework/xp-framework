@@ -42,7 +42,9 @@
      */
     function __construct(&$url) {
       $this->url= &$url;
-      parent::__construct();
+      if ($url->getUser() && $url->getPassword()) {
+        $this->headers['Authorization']= 'Basic '.base64_encode($url->getUser().':'.$url->getPassword());
+      }
     }
     
     /**
