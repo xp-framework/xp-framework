@@ -303,7 +303,7 @@
         $test= &call_user_func_array(array(&$class, 'newInstance'), array_merge(
           (array)$methods[$i]->getName(),
           $config->readArray($section, 'args')
-        )));
+        ));
         
         // Insert into hierarchy tree
         if (!isset($this->node[$test->getClassName()])) {
