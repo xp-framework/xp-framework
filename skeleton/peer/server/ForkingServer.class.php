@@ -30,7 +30,7 @@
         if (-1 == $pid) {       // Woops?
           return throw(new RuntimeException('Could not fork'));
         } else if ($pid) {      // Parent
-          while (pcntl_waitpid(-1, $status, WNOHANG)) { }
+          pcntl_waitpid(-1, $status, WUNTRACED);
           $m->close();
         } else {                // Child
           $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
