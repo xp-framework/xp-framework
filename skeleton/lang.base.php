@@ -53,11 +53,13 @@
     }
     // }}}
     
-    // {{{ public mixed sapi(string name)
+    // {{{ public mixed sapi(string* sapis)
     //     Sets an SAPI
-    function sapi($name) {
-      require_once('sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php');
-      xp::registry('sapi', $name);
+    function sapi() {
+      foreach ($a= func_get_args() as $name) {
+        require_once('sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php');
+      }
+      xp::registry('sapi', $a);
     }
     // }}}
     
