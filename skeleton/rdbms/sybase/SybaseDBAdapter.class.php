@@ -10,7 +10,7 @@
    * Adapter for sybase
    *
    * @see   xp://rdbms.DBAdapter
-   * @see   xp://rdbms.sybase.SPSybase
+   * @see   xp://rdbms.sybase.SybaseConnection
    */
   class SybaseDBAdapter extends DBAdapter {
     var
