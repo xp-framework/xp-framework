@@ -42,6 +42,15 @@
           </ul>
         </text>
       </para>
+      <para>
+        <caption>SOAP Interop</caption>
+        <text>
+          <ul>
+            <li>Alex Kiesel, <ref type="ext" link="http://document-root.de/">Homepage</ref></li>
+          </ul>
+          (The SOAP Interop test suite can be found <ref type="ext" link="http://interop.xp-framework.net/">here</ref>)
+        </text>
+      </para>
     </content>
   </main>
 </document>
