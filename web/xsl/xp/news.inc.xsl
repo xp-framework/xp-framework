@@ -20,10 +20,10 @@
   <xsl:template match="emoticon">
     <img 
      src="/image/icons/{@id}.gif" 
-     width="18" 
-     height="18" 
+     width="13" 
+     height="13" 
      border="0" 
-     hspace="0" 
+     hspace="1" 
      vspace="0" 
      alt="{@text}"
    />
