@@ -34,7 +34,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    function __construct(&$p) {
 
       // Set up logger
       $l= &Logger::getInstance();
@@ -53,6 +53,8 @@
 
       // Connect destroy signal
       $this->window->connect('destroy', array(&$this, 'destroy'));
+
+      $this->param= &$p;
 
       parent::__construct();
     }

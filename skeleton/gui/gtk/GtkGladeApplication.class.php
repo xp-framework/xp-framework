@@ -24,13 +24,14 @@
      * Constructor
      *
      * @access  public
+     * @param   &util.cmd.ParamString paramstring
      * @param   string gladefile location of the .glade-file
      * @param   string mainwin default 'window1' Name des Hauptfensters
      */
-    function __construct($gladefile, $mainwin= 'window1') {
+    function __construct(&$p, $gladefile, $mainwin= 'window1') {
       $this->glade= &new GladeXML($gladefile);
       $this->mainwin= $mainwin;
-      parent::__construct();
+      parent::__construct($p);
     }
 
     /**
