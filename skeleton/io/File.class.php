@@ -12,22 +12,16 @@
   define('FILE_MODE_APPEND',    'a');          // Append (Read-only)
   define('FILE_MODE_READAPPEND','a+');         // Append (Read/Write)
   
-  // Define default filehandles
-  if (!defined('STDIN'))  define('STDIN',      fopen ('php://stdin',  'r'));          
-  if (!defined('STDOUT')) define('STDOUT',     fopen ('php://stdout', 'w'));          
-  if (!defined('STDERR')) define('STDERR',     fopen ('php://stderr', 'w'));         
-  
   uses(
     'io.IOException',
     'io.FileNotFoundException'
   );
     
   /**
-   * Represents a file
-   *
    * Instances of the file class serve as an opaque handle to the underlying machine-
    * specific structure representing an open file.
    * 
+   * @purpose  Represent a file
    */
   class File extends Object {
     var 
@@ -43,7 +37,8 @@
     /**
      * Constructor
      *
-     * @param  string filename The filename, e.g. /etc/hosts
+     * @access  public
+     * @param   string filename The filename, e.g. /etc/hosts
      */
     function __construct($filename) {
       $this->setURI($filename);
