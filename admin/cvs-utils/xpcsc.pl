@@ -148,7 +148,7 @@ while (@ARGV) {
     }
 
     if ($_ =~ /(.*)(echo|var_dump|print_r)/ && $1 !~ /\*/) {
-      &warning("You should not be using direct output statements ($1)", WOUTPUT);
+      &warning("You should not be using direct output statements ($2)", WOUTPUT);
     }
 
     if ($_ =~ /(TODO|TBI|TBD|FIXME)/) {
