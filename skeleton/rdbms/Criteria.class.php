@@ -15,6 +15,7 @@
   define('GREATER_THAN',    '> ?');
   define('LESS_EQUAL',      '<= ?');
   define('GREATER_EQUAL',   '>= ?');
+  define('BIT_AND',         ' & ? = ?');
   
   define('ASCENDING',       'asc');
   define('DESCENDING',      'desc');
