@@ -24,7 +24,7 @@
    * </code>
    *
    * @purpose  Provide a mechanism to register any type of variable
-   * @see      xp://util.registry.RegistryStorage
+   * @see      xp://util.registry.storage.RegistryStorage
    */ 
   class Registry extends Object {
     var
