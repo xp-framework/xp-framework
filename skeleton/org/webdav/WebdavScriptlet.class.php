@@ -839,7 +839,8 @@
         // Check for permissions
         if (!$this->handlingAuth->isAuthorized(
           $this->handlingImpl->base.$request->getPath(),
-          $request->getUser())
+          $request->getUser(),
+          &$request)
         ) {
           return 'doAuthorizationDeny';
         }
