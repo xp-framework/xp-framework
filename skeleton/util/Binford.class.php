@@ -9,8 +9,8 @@
   /**
    * This class has more power
    *
-   * @purpose Die Klasse für mehr Power
-   * @see     http://www.binford.de/
+   * @purpose  Add power to an application
+   * @see      http://www.binford.de/
    */
   class Binford extends Object { 
     var 
@@ -21,7 +21,7 @@
      *
      * @access  public
      * @param   int p power
-     * @throws  IllegalArgumentException in case the parameter p contains an illegal value
+     * @throws  lang.IllegalArgumentException in case the parameter p contains an illegal value
      */
     function setPoweredBy($p) {
       if (!($x= log10($p / 6.1)) || (floor($x) != $x)) {
