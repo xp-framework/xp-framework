@@ -9,6 +9,17 @@
   /**
    * Base class for images
    *
+   * Usage example: Creating an empty image:
+   * <code>
+   *   $palette_image= &Image::create(640, 480);
+   *   $truecolor_image= &Image::create(640, 480, TRUE);
+   * </code>
+   *
+   * Usage example: Loading an image from a file:
+   * <code>
+   *   $image= &Image::loadFrom(new JpegStreamReader(new File('picture.jpg')));
+   * </code>
+   *
    * @ext gd
    * @see php://image
    */
@@ -24,14 +35,14 @@
     /**
      * Constructor
      *
-     * @access  public
-     * @param   $width
-     * @param   $height
+     * @access  protected
+     * @param   int width default 
+     * @param   int height
      */
-    function __construct($width= -1, $height= -1) {
-      $this->width= $width;
-      $this->height= $height;
-      
+    function __construct($handle) {
+      $this->_hdl= $handle;
+      $this->width= imagesx($handle);
+      $this->height= imagesy($handle);
     }
     
     /**
@@ -47,103 +58,44 @@
     /**
      * Creates a new blank image in memory
      *
+     * @model   static
      * @access  public
+     * @param   int w width
+     * @param   int h height
      * @param   bool truecolor default FALSE
      */
-    function create($truecolor= FALSE) {
+    function &create($w, $h, $truecolor= FALSE) {
       if ($truecolor) {
-        $this->_hdl= imagecreatetruecolor($this->width, $this->height);
+        return new Image(imagecreatetruecolor($w, $h));
       } else {
-        $this->_hdl= imagecreate($this->width, $this->height);
+        return new Image(imagecreate($w, $h));
       }
-    }
-    
-    /**
-     * Creates a new image in memory from the image stream in the
-     * string
-     *
-     * @access  public
-     * @param   string str
-     * @return  bool success
-     * @throws  ImagingException in case the url is not valid or the picture cannot be created
-     */
-    function fromString($str) {
-      if (FALSE === ($this->_hdl= imagecreatefromstring($str))) {
-        return throw(new ImagingException('Cannot create image from specified data ['.strlen($str).' bytes]'));
-      }
-      return TRUE;
     }
 
     /**
-     * Creates a new image in memory from the url specified. Do this if you're
-     * not sure about the format
+     * Loads an image from a reader
      *
+     * @model   static
      * @access  public
-     * @param   string str
-     * @throws  FormatException in case the format is unknown or unsupported
-     * @throws  ImagingException in case the url is not valid or the picture cannot be created
+     * @param   &img.io.ImageReader
+     * @return  &img.Image
      */
-    function fromFile($url) {
-      if (FALSE === ($i= getimagesize($url))) {
-        return throw(new FormatException('Unable to retrieve image information for '.$this->image));
-      }
-      switch ($i[2]) {
-        case 1: return $this->fromGif($url);
-        case 2: return $this->fromJpeg($url);
-        case 3: return $this->fromPng($url);
-      }
-      
-      return throw(new ImagingException('Cannot create images from '.image_type_to_mime_type($i[2])));
+    function &loadFrom(&$reader) {
+      return new Image($reader->getResource());
     }
     
     /**
-     * Creates a new image in memory from an existing URL defining
-     * the location of a PNG file
+     * Saves an image to a reader
      *
+     * @model   static
      * @access  public
-     * @param   string url
-     * @return  bool success
-     * @throws  ImagingException in case the url is not valid or the picture cannot be created
+     * @param   &img.io.ImageReader
+     * @return  &img.Image
      */
-    function fromPng($url) {
-      if (FALSE === ($this->_hdl= imagecreatefrompng($url))) {
-        return throw(new ImagingException('Cannot create image from '.$url));
-      }
-      return TRUE;
+    function &saveTo(&$writer) {
+      $writer->setResource($this->_hdl);
     }
-    
-    /**
-     * Creates a new image in memory from an existing URL defining
-     * the location of a GIF file
-     *
-     * @access  public
-     * @param   string url
-     * @return  bool success
-     * @throws  ImagingException in case the url is not valid or the picture cannot be created
-     */
-    function fromGif($url) {
-      if (FALSE === ($this->_hdl= imagecreatefromgif($url))) {
-        return throw(new ImagingException('Cannot create image from '.$url));
-      }
-      return TRUE;
-    }
-    
-    /**
-     * Creates a new image in memory from an existing URL defining
-     * the location of a JPEG file
-     *
-     * @access  public
-     * @param   string url
-     * @return  bool success
-     * @throws  ImagingException in case the url is not valid or the picture cannot be created
-     */
-    function fromJpeg($url) {
-      if (FALSE === ($this->_hdl= imagecreatefromjpeg($url))) {
-        return throw(new ImagingException('Cannot create image from '.$url));
-      }
-      return TRUE;
-    }
-    
+
     /**
      * Returns width of image
      *
@@ -432,39 +384,13 @@
     }
     
     /**
-     * Retrieve image data as a string
+     * Retrieve string representation
      *
      * @access  public
-     * @return  string image date
-     * @throws  ImagingException if an error occurs
+     * @return  string
      */
     function toString() {
-      ob_start();
-      if (FALSE === $this->_out()) {
-        ob_end_clean();
-        return throw(new ImagingException('Could not create image'));
-      }
-      $str= ob_get_contents();
-      ob_end_clean();
-      return $str;
-    }
-  
-    /**
-     * Retrieve image data as a file
-     *
-     * @access  public
-     * @return  io.File file object
-     * @throws  ImagingException if an error occurs
-     * @throws  IllegalArgumentException if parameter is not a file object
-     */  
-    function &toFile(&$file) {
-      if (!is_a($file, 'File')) {
-        return throw(new IllegalArgumentException('given file is not a file object'));
-      }
-      if (FALSE === $this->_out($file->uri)) {
-        return throw(new ImagingException('Could not create image'));
-      }
-      return $file;
+      return $this->getClassName().'('.$this->width.'x'.$this->height.')';
     }
   }
 ?>
