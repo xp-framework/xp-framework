@@ -24,7 +24,6 @@
      * @param   &lang.ClassLoader classloader
      */
     function __construct(&$classloader) {
-      parent::__construct();
       $this->classloader= &$classloader;
     }
 

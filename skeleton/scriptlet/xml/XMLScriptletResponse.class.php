@@ -40,7 +40,6 @@
      * @param   &xml.XSLProcessor processor
      */
     function __construct(&$processor) {
-      parent::__construct();
       $this->processor= &$processor;
       $this->document= &new OutputDocument();
     }
