@@ -19,7 +19,10 @@
 /* This class is part of the XP framework
  *
  * $Id$
- */</xsl:text>
+ */
+ 
+  uses('rdbms.ConnectionManager');
+ </xsl:text>
       <xsl:apply-templates/>
 	<xsl:text>?></xsl:text>
   </xsl:template>
@@ -89,7 +92,7 @@
 	  </xsl:for-each>
 	  <xsl:text>) {
       $cm= &amp;ConnectionManager::getInstance();  
-      if (NULL === ($db= $cm->getByHost('***', 0))) {
+      if (FALSE === ($db= $cm->getByHost('***', 0))) {
         return throw(new IllegalAccessException('No connection available'));
       }
 
