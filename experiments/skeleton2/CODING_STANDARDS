@@ -43,15 +43,13 @@ or
 The accessor is a public static function getInstance().
 
 Example:
-  namespace rdbms {
-    class ConnectionManager extends Object {
-      private static
-        $instance   = NULL;
-        
-      public static function getInstance() {
-        if (!isset(self::$instance)) self::$instance= new ConnectionManager();
-        return self::$instance;
-      }
+  class ConnectionManager extends Object {
+    private static
+      $instance   = NULL;
+
+    public static function getInstance() {
+      if (!isset(self::$instance)) self::$instance= new ConnectionManager();
+      return self::$instance;
     }
   }
   
