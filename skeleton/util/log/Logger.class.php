@@ -200,26 +200,26 @@
      * @return  &util.log.Logger a logger object
      */
     function &getInstance() {
-      static $__instance;
+      static $instance;
   
-      if (!isset($__instance)) {
-        $__instance= new Logger();
-        $__instance->defaultIdentifier= getmypid();
-        $__instance->defaultFormat= '[%1$s %2$s %3$5s]';
-        $__instance->defaultDateformat= 'H:i:s';
-        $__instance->defaultFlags= LOGGER_FLAG_ALL;
-        $__instance->defaultAppenders= array();
+      if (!isset($instance)) {
+        $instance= new Logger();
+        $instance->defaultIdentifier= getmypid();
+        $instance->defaultFormat= '[%1$s %2$s %3$5s]';
+        $instance->defaultDateformat= 'H:i:s';
+        $instance->defaultFlags= LOGGER_FLAG_ALL;
+        $instance->defaultAppenders= array();
         
         // Create an empty LogCategory
-        $__instance->category[LOG_DEFINES_DEFAULT]= &new LogCategory(
-          $__instance->defaultIdentifier,
-          $__instance->defaultFormat,
-          $__instance->defaultDateformat,
-          $__instance->defaultFlags
+        $instance->category[LOG_DEFINES_DEFAULT]= &new LogCategory(
+          $instance->defaultIdentifier,
+          $instance->defaultFormat,
+          $instance->defaultDateformat,
+          $instance->defaultFlags
         );
 
       }
-      return $__instance;
+      return $instance;
     }
   }
 ?>
