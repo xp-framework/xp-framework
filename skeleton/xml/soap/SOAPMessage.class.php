@@ -229,7 +229,7 @@
             }
 
             // Check for mapping
-            $qname= strtolower($this->namespaces[$regs[1]].'/'.$regs[2]);
+            $qname= strtolower(array_search($regs[1], $this->namespaces).'/'.$regs[2]);
             if (isset($mapping[$qname])) {
               $result= &$mapping[$qname]->newInstance();
             } else {
