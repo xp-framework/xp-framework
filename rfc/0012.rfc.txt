@@ -93,8 +93,10 @@ authorization object.
 
 Using the PHP access API without naming lookups:
 <?php
-  $search= &Remote::forName('rmi://127.0.0.1:4444/ISearch');
-  $search->context->addAuthorization(new PasswordAuth('username', 'password'));
+  $context= &new RemoteContext();
+  $context->addAuthorization(new PasswordAuth('username', 'password'));
+
+  $search= &Remote::forName('rmi://127.0.0.1:4444/ISearch', $context);
 
   // Now, we can invoke methods on the instance
   var_dump($search->execute('Hello'));
@@ -104,8 +106,10 @@ Using the PHP access API with naming lookup:
 <?php
   Naming::setProvider(new RemoteNamingProvider('example.com', 1099));
 
-  $search= &Naming::lookup('website/ISearch');
-  $search->context->addAuthorization(new PasswordAuth('username', 'password'));
+  $context= &new RemoteContext();
+  $context->addAuthorization(new PasswordAuth('username', 'password'));
+
+  $search= &Naming::lookup('website/ISearch', $context);
   
   // Now, we can invoke methods on the instance
   var_dump($search->execute('Hello'));
@@ -169,5 +173,8 @@ Comments
 
 - friebe, Wed Jan 19 11:44:56 CET 2005
   First idea on authentication
+
+- friebe, Wed Jan 19 12:51:36 CET 2005
+  Second idea on authentication
   
 <EOF>
