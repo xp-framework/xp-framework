@@ -40,6 +40,18 @@
         </text>
       </para>
       <para>
+        <caption>Side Note (2): Do not use this patch in production systems</caption>
+        <text>
+          We received reports from users that this patch can break scripts in
+          certain circumstances. Because <tt>output buffering</tt> collects all
+          output into a buffer, that buffer increases in size over the time.
+          Tough this may not be a problem for short running applications such as
+          a script invoked by <tt>cron</tt>, it may become a problem when it is a 
+          long running application that prints out a lot of information. One time
+          your memory limit will be reached and the script breaks.
+        </text>
+      </para>
+      <para>
         <caption>Details explanation</caption>
         <text>
           Let's have a look at this script (further referred to as test.php):
