@@ -45,7 +45,7 @@
   
   require ('lang.base.php');
   uses (
-    'util.text.PHPSyntaxHighlighter',
+    'text.PHPSyntaxHighlighter',
     'io.File'
   );
   

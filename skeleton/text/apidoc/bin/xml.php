@@ -6,7 +6,7 @@
     'io.Folder', 
     'lang.apidoc.parser.ClassParser',
     'util.cmd.ParamString',
-    'util.text.PHPSyntaxHighlighter'
+    'text.PHPSyntaxHighlighter'
   );
   
   function highlightPHPSource($str) {

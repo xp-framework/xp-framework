@@ -11,7 +11,7 @@
     'io.Folder',
     'util.Properties',
     'util.cmd.ParamString',
-    'util.text.PHPTokenizer'
+    'text.PHPTokenizer'
   );
   
   // {{{ main

@@ -9,7 +9,7 @@
     'util.cmd.ParamString', 
     'io.File',
     'io.FileUtil',
-    'util.text.PHPTokenizer'
+    'text.PHPTokenizer'
   );
   
   // {{{ main

@@ -4,7 +4,7 @@
  * $Id$
  */
   require('lang.base.php');
-  uses('io.File', 'util.text.PHPTokenizer', 'util.cmd.ParamString');
+  uses('io.File', 'text.PHPTokenizer', 'util.cmd.ParamString');
   
   $p= &new ParamString();
   if (2 != $p->count) {

@@ -8,11 +8,13 @@
  * $Id$
  */
   require('lang.base.php');
-  uses('util.text.PHPSyntaxHighlighter');
+  uses('text.PHPSyntaxHighlighter');
   
   $p= &new PHPSyntaxHighlighter('<?php
   // Test class
   class Test extends Object {
+    var $test;
+    
     function init() {
       $this->test= array(
         "hello"     => "world"
