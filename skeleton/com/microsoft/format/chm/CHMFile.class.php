@@ -50,7 +50,7 @@
   class CHMFile extends Object {
     var
       $stream   = NULL,
-      $header   = array();
+      $header   = NULL;
     
     /**
      * Constructor
@@ -63,7 +63,7 @@
       $this->stream= &$stream;
       parent::__construct();
     }
-    
+
     /**
      * Create a GUID from an array
      *
@@ -185,7 +185,7 @@
       
 	  $this->header= &new CHMHeader(unpack(
         'Lversion/Llength/Lunknown/Ltime/Llang', 
-	    $this->stream->read(0x18)
+	    $this->stream->read(0x14)
 	  ));
       $this->header->setIdentifier($id);
  	  $this->header->setGuid1($this->_guid(unpack(
