@@ -51,8 +51,7 @@
      * Constructor
      *
      * @access  public
-     * @param   string handlerClassPath the class path in its notation xxx.yyy.zzz
-     *          to the location where the classes are located
+     * @param   &lang.ClassLoader classloader
      */
     function __construct(&$classloader) {
       $this->classloader= &$classloader;
@@ -93,7 +92,8 @@
     }
 
     /**
-     * Handle POST requests. The complete POST data consits
+     * Handle POST requests. The complete POST data consits of the SOAP
+     * XML message.
      *
      * @access  public
      * @param   &xml.soap.rpc.SoapRpcRequest request
