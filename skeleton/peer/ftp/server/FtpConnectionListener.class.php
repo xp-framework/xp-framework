@@ -54,7 +54,7 @@
      * @return  string
      */
     function eol() {
-      return $this->type == TYPE_ASCII ? "\r\n" : "\n";
+      return (TYPE_ASCII == $this->type) ? "\r\n" : "\n";
     }
     
     /**
@@ -103,9 +103,9 @@
      */
     function answer(&$sock, $code, $text, $lines= NULL) {
       if (is_array($lines)) {
-        $answer= $code.'-'.$text.":\r\n  ".implode("\r\n  ", $lines)."\r\n".$code." End\r\n";
+        $answer= $code.'-'.$text.":\n  ".implode("\n  ", $lines)."\n".$code." End\n";
       } else {
-        $answer= sprintf("%d %s\r\n", $code, $text);
+        $answer= sprintf("%d %s\n", $code, $text);
       }
       $this->cat && $this->cat->debug('<<< ', addcslashes($answer, "\0..\17"));
       return $sock->write($answer);
@@ -376,6 +376,7 @@
         $this->cat && $this->cat->debug('    ', $buf);
         $m->write($buf.$this->eol());
       }
+      $m->close();
       $this->answer($event->stream, 226, 'Transfer complete');
     }
 
@@ -411,6 +412,7 @@
       for ($i= 0, $s= sizeof($elements); $i < $s; $i++) {
         $m->write($elements[$i]->getName().$this->eol());
       }
+      $m->close();
       $this->answer($event->stream, 226, 'Transfer complete');
     }
 
@@ -532,7 +534,7 @@
       ));
       try(); {
         $entry->open(SE_READ);
-        while ($buf= $entry->read()) {
+        while (!$m->eof() && $buf= $entry->readBinary()) {
           $m->write($buf);
         }
         $entry->close();
@@ -540,6 +542,7 @@
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
         return;
       }
+      $m->close();
       $this->answer($event->stream, 226, 'Transfer complete');
     }
 
@@ -572,7 +575,7 @@
       ));
       try(); {
         $entry->open(SE_WRITE);
-        while ($buf= $m->read()) {
+        while (!$m->eof() && $buf= $m->readBinary()) {
           $entry->write($buf);
         }
         $entry->close();
@@ -580,6 +583,7 @@
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
         return;
       }
+      $m->close();
       $this->answer($event->stream, 226, 'Transfer complete');
     }
 
