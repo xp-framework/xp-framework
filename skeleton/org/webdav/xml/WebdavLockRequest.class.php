@@ -46,8 +46,7 @@
    */
   class WebdavLockRequest extends WebdavScriptletRequest {
     var
-      $properties=  array(),
-      $namespaces=  array();
+      $properties=  array();
       
     
     /**
@@ -85,16 +84,6 @@
      */
     function &getProperties() {
       return $this->properties;
-    }
-
-    /**
-     * Get all namespaces
-     *
-     * @access  public
-     * @return  &string[] properties
-     */
-    function &getNamespaces() {
-      return $this->namespaces;
     }
 
     /**
