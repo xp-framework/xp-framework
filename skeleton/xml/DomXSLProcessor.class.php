@@ -196,7 +196,7 @@
      */
     function __destruct() {
       if ($this->document) { with ($n= &$this->document->document_element); {
-        $n->unlink_node($n);
+        $n && $n->unlink_node($n);
       }}
       $this->document= NULL;
       parent::__destruct();
