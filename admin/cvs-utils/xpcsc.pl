@@ -34,7 +34,7 @@ sub error() {
   
   $_ =~ s/\t/\\t/g;
   chomp $_;
-  print "*** Error: ".$message." at line ".$l." of ".$ARGV[0]."\n    ".$_."\n---> [".$code."] ".$LINK{$code}."\n";
+  print "*** Error: ".$message." at line ".$l." of ".$FILE."\n    ".$_."\n---> [".$code."] ".$LINK{$code}."\n";
   close FILE;
   exit 32;
 }
@@ -47,7 +47,7 @@ sub warning() {
   
   $_ =~ s/\t/\\t/g;
   chomp $_;
-  print "--- Warning: ".$message." at line ".$l." of ".$ARGV[0]."\n    ".$_."\n---> [".$code."] ".$LINK{$code}."\n";
+  print "--- Warning: ".$message." at line ".$l." of ".$FILE."\n    ".$_."\n---> [".$code."] ".$LINK{$code}."\n";
   $warnings++;
 }
 # }}}
@@ -55,43 +55,46 @@ sub warning() {
 # {{{ main
 $warnings= 0;
 
-open(FILE, $ARGV[0]) || die "Cannot open $ARGV[0]";
-$l= 0;
-while (<FILE>) {
-  $l++;
-  
-  SWITCH: {
-    if (1 == $l && $_ !~ /^\<\?php/) { &error("First line does not contain <?php", ESHORTOPEN); }
-    if (2 == $l && $_ !~ /^\/\*/) { &error("Second line does not contain XP header", ENOHEADER); }
-    if (4 == $l && $_ !~ /\$Id/) { &error("Second line does not contain CVS Id-Tag", ENOHEADER); }
-    if ($l < 5) { next; }
-  }
-  
-  if ($_ =~ /\t/) {
-    &error("Tab character found", ETAB);
-  }
-  
-  if ($_ =~ /^(\s+)class/ && 2 != length($1)) {
-    &error("Class declarations must be indented with 2 spaces", EINDENT);
-  }
-  
-  if ($_ =~ /^(\s+)function/ && 4 != length($1)) {
-    &error("Methods must be indented with 4 spaces", EINDENT);
-  }
-  
-  if ($_ =~ /(.)\/\*[^\*]/ && $l > 2 && $1 ne "'") {
-    &error("Block comments may not be contained within source, use // instead", ECOMMENT);
-  }
-  
-  if ($_ =~ /(echo|var_dump|print_r)/) {
-    &warning("You should not be using direct output statements ($1)", WOUTPUT);
-  }
-  
-  if ($_ =~ /(TODO|TBI|TBD|FIXME)/) {
-    &warning("You have a $1 comment in your sourcecode...", WTBD);
-  }
-}
-close FILE;
+while (@ARGV) {
+  $FILE= shift @ARGV;
+  open(FILE, $FILE) || die "Cannot open $FILE";
+  $l= 0;
+  while (<FILE>) {
+    $l++;
 
-print $ARGV[0]." coding standards conformance ok [".$warnings." warning(s)]\n";
+    SWITCH: {
+      if (1 == $l && $_ !~ /^\<\?php/) { &error("First line does not contain <?php", ESHORTOPEN); }
+      if (2 == $l && $_ !~ /^\/\*/) { &error("Second line does not contain XP header", ENOHEADER); }
+      if (4 == $l && $_ !~ /\$Id/) { &error("Second line does not contain CVS Id-Tag", ENOHEADER); }
+      if ($l < 5) { next; }
+    }
+
+    if ($_ =~ /\t/) {
+      &error("Tab character found", ETAB);
+    }
+
+    if ($_ =~ /^(\s+)class/ && 2 != length($1)) {
+      &error("Class declarations must be indented with 2 spaces", EINDENT);
+    }
+
+    if ($_ =~ /^(\s+)function/ && 4 != length($1)) {
+      &error("Methods must be indented with 4 spaces", EINDENT);
+    }
+
+    if ($_ =~ /(.)\/\*[^\*]/ && $l > 2 && $1 ne "'") {
+      &error("Block comments may not be contained within source, use // instead", ECOMMENT);
+    }
+
+    if ($_ =~ /(echo|var_dump|print_r)/) {
+      &warning("You should not be using direct output statements ($1)", WOUTPUT);
+    }
+
+    if ($_ =~ /(TODO|TBI|TBD|FIXME)/) {
+      &warning("You have a $1 comment in your sourcecode...", WTBD);
+    }
+  }
+  close FILE;
+
+  print $ARGV[0]." coding standards conformance ok [".$warnings." warning(s)]\n";
+}
 # }}}
