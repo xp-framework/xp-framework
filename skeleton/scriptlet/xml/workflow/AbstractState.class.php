@@ -53,12 +53,19 @@
       with ($h= &$response->addFormResult(new Node('handlers'))); {
         for ($i= 0, $s= sizeof($this->handlers); $i < $s; $i++) {
           with ($name= $this->handlers[$i]->getName()); {
-            $identifier= 'handler.'.$request->getStateName().'.'.$name;
-            $handler= &$h->addChild(new Node('handler', NULL, array('name' => $name)));
-            $this->cat && $this->cat->debug('Processing handler #'.$i, $this->handlers[$i]);
+            $this->handlers[$i]->identifier= sprintf(
+              'handler.%s.%s',
+              $request->getStateName(),
+              $this->handlers[$i]->identifierFor($request, $context)
+            );
+            $handler= &$h->addChild(new Node('handler', NULL, array(
+              'id'   => $this->handlers[$i]->identifier,
+              'name' => $name
+            )));
+            $this->cat && $this->cat->debug('Processing handler #', $i, $this->handlers[$i]);
             
             $setup= FALSE;
-            if (!$request->session->hasValue($identifier)) {
+            if (!$request->session->hasValue($this->handlers[$i]->identifier)) {
 
               // If the handler is already active, this means the page was reloaded
               if ($this->handlers[$i]->isActive($request)) {
@@ -101,7 +108,7 @@
 
               // Handler was successfully set up, register to session
               $handler->setAttribute('status', HANDLER_SETUP);
-              $request->session->putValue($identifier, $this->handlers[$i]->values);
+              $request->session->putValue($this->handlers[$i]->identifier, $this->handlers[$i]->values);
               $handler->addChild(Node::fromArray($this->handlers[$i]->values[HVAL_PERSISTENT], 'values'));
               foreach (array_keys($this->handlers[$i]->values[HVAL_FORMPARAM]) as $key) {
                 $response->addFormValue($key, $this->handlers[$i]->values[HVAL_FORMPARAM][$key]);
@@ -111,7 +118,7 @@
             }
 
             // Load handler values from session
-            $this->handlers[$i]->values= $request->session->getValue($identifier);
+            $this->handlers[$i]->values= $request->session->getValue($this->handlers[$i]->identifier);
             $handler->setAttribute('status', HANDLER_INITIALIZED);
             $handler->addChild(Node::fromArray($this->handlers[$i]->values[HVAL_PERSISTENT], 'values'));
             foreach (array_keys($this->handlers[$i]->values[HVAL_FORMPARAM]) as $key) {
@@ -163,7 +170,7 @@
 
             // Submitted data was handled successfully, now remove the handler
             // from the session
-            $request->session->removeValue($identifier);
+            $request->session->removeValue($this->handlers[$i]->identifier);
 
             // Tell the handler to finalize itself. This may include adding a 
             // node to the formresult or sending a redirect to another page

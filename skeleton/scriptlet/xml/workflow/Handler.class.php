@@ -24,10 +24,11 @@
    */
   class Handler extends Object {
     var
-      $wrapper  = NULL,
-      $values   = array(HVAL_PERSISTENT => array(), HVAL_FORMPARAM => array()),
-      $errors   = array(),
-      $name     = '';
+      $wrapper      = NULL,
+      $values       = array(HVAL_PERSISTENT => array(), HVAL_FORMPARAM => array()),
+      $errors       = array(),
+      $identifier   = '',
+      $name         = '';
 
     /**
      * Constructor
@@ -46,9 +47,13 @@
      */
     function toString() {
       $s= sprintf(
-        "%s(%s,wrapper=%s)@{\n",
+        "%s@{\n".
+        "  [name               ] %s\n".
+        "  [identifier         ] %s\n".
+        "  [wrapper            ] %s\n",
         $this->getClassName(),
         $this->name,
+        $this->identifier,
         $this->wrapper ? $this->wrapper->getClassName() : '(null)'
       );
       foreach (array_keys($this->values[HVAL_PERSISTENT]) as $key) {
@@ -170,6 +175,19 @@
     }
 
     /**
+     * Get identifier. Returns name in this default implementation.
+     * Overwrite in subclasses.
+     *
+     * @access  public
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   &scriptlet.xml.Context context
+     * @return  string
+     */
+    function identifierFor(&$request, &$context) {
+      return $this->name;
+    }
+
+    /**
      * Add an error
      *
      * @access  public
@@ -203,7 +221,7 @@
      * @return  bool
      */
     function isActive(&$request, &$context) {
-      return ($request->getParam('__handler') == $this->name);
+      return ($request->getParam('__handler') == $this->identifier);
     }
 
     /**
