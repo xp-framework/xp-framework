@@ -175,7 +175,7 @@
         // the string "multiple", the array will be preserved. Otherwise, the
         // first element will be copied to the values hash, thus making 
         // accessibility easy.
-        if (0 == strlen($value[0])) {
+        if (0 == strlen($value[key($value)])) {
           if (!($definitions['occurrence'] & OCCURRENCE_OPTIONAL)) {
             $handler->addError('missing', $name);
             continue;
@@ -223,8 +223,8 @@
         // the values hash which is publicly accessible.
         if ($definitions['occurrence'] & OCCURRENCE_MULTIPLE) {
           $this->values[$name]= $value;
-        } elseif (isset($value[0])) {
-          $this->values[$name]= $value[0];
+        } elseif (isset($value[key($value)])) {
+          $this->values[$name]= $value[key($value)];
         } else {
           $this->values[$name]= NULL;
         }
