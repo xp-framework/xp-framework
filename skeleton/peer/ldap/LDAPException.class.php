@@ -107,7 +107,7 @@
      */
     function getStackTrace() {
       return parent::getStackTrace().sprintf(
-        "  *** LDAP code #%d [%s]\n".
+        "  *** LDAP code #%d [%s]\n",
         $this->code,
         ldap_err2str($this->code)
       );
