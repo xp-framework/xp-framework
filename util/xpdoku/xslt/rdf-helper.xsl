@@ -3,6 +3,6 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
   version="1.0"
 >
-  <xsl:variable name="news" select="document('../content/news.rdf.xml')"/>
+  <xsl:variable name="news" select="document('../output/news.rdf.xml')"/>
   
 </xsl:stylesheet>
