@@ -11,6 +11,7 @@
    *
    * @purpose  Provide a Format wrapper for numbers
    * @see      php://number_format
+   * @see      php://localeconv
    * @see      xp://util.text.format.IFormat
    */
   class NumberFormat extends IFormat {
