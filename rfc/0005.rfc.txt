@@ -24,12 +24,12 @@ on success. On this object, one can invoke the method newInstance() to
 instanciate an object of this class.
 
 <?php
-  $cl= &ClassLoader::getDefault();
+  $cl= &new ClassLoader('de.thekid.irc');
   
   // Define the class
   try(); {
-    $class= &$cl->defineClass('de.thekid.irc.IRCUser');
-  } if(catch('ClassFormatError', $e)) {
+    $class= &$cl->defineClass('IRCUser', $bytes);
+  } if(catch('FormatException', $e)) {
     $e->printStackTrace();
     exit(-1);
   }
