@@ -154,10 +154,10 @@
       
       // Update trace
       $this->trace->clear();
-      if (is_a($data, 'Exception')) {
+      if (is_a($data, 'Throwable')) {
         $type= 'exception';
         $caption= $data->getClassName().' ('.$data->getMessage().')';
-        $trace= array_slice(explode("\n", chop($data->getStackTrace())), 1); // UGLY!
+        $trace= $data->getStackTrace();
       } else {
         // TBI
       }
@@ -176,11 +176,11 @@
           TRUE
         );
         if (!empty($trace)) {
-          foreach ($trace as $element) {
+          for ($i= 0, $s= sizeof($trace); $i < $s; $i++) {
             $this->trace->insert_node(
               $node,
               NULL,
-              array(trim($element)),
+              array($trace[$i]->toString()),
               4,
               $this->pixmaps['p:traceelement'],
               $this->pixmaps['m:traceelement'],
