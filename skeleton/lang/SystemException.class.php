@@ -5,8 +5,8 @@
  */
  
   /**
-   * Kapselt die SystemException, die außer der Fehlermeldung
-   * noch einen Fehler-Code definiert
+   * Encapsulates the SystemException which contains an error-code
+   * and the error message.
    *
    * @see Exception
    */
@@ -17,8 +17,8 @@
      * Constructor
      *
      * @access  public
-     * @param   string message Die Fehlermeldung
-     * @param   int code Der Fehlercode
+     * @param   string message the error-message
+     * @param   int code the error-code
      */
     function __construct($message, $code) {
       $this->code= $code;
