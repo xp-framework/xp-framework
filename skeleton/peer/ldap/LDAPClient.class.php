@@ -30,6 +30,15 @@
    * </code>
    *
    * @see php-doc://ldap
+   * @see http://developer.netscape.com/docs/manuals/directory/41/ag/
+   * @see http://developer.netscape.com/docs/manuals/dirsdk/jsdk40/contents.htm
+   * @see http://perl-ldap.sourceforge.net/doc/Net/LDAP/
+   * @see rfc://2251
+   * @see rfc://2252
+   * @see rfc://2253
+   * @see rfc://2254
+   * @see rfc://2255
+   * @see rfc://2256
    * @ext ldap
    */
   class LDAPClient extends Object {
