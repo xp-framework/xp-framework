@@ -31,11 +31,34 @@
     $eeappend= &new BufferedAppender();
     $acat->addAppender($eeappend);
     
+    $uri= $prop->readString($service, 'uri');
+    $urn= $prop->readString($service, 'urn');
+    
+    // Prepare the result XML tree
+    $tree= &new Tree('client');
+    $tree->root= &new Node('client', NULL, array(
+      'name'  => $service,
+      'uri'   => $uri,
+      'urn'   => $urn
+    ));
+    
     Console::writeLine('===> Testing service ', $service);
+
+    // Prepare tracking directory
+    try(); {
+      $folder= &new Folder(dirname(__FILE__).'/../log/'.$service);
+      if (!$folder->exists()) {
+        Console::writeLine('Creating folder ', $folder->getUri());
+        $folder->create(0755);
+      }
+    } if (catch ('IOException', $e)) {
+      Console::writeLine('Could not create tracking folder ', $folder->getUri());
+      return FALSE;
+    }
     
     $client= &new Round2BaseClient(
-      new SOAPHTTPTransport($prop->readString($service, 'uri'), array()),
-      $prop->readString($service, 'urn')
+      new SOAPHTTPTransport($uri, array()),
+      $urn
     );
     
     $client->setTrace($scat);
@@ -62,28 +85,30 @@
       
       Console::writeLinef('---> Calling Round2 Base method "%s"', $method->getName());
 
-      // Prepare tracking directory
-      try(); {
-        $folder= &new Folder(dirname(__FILE__).'/../log/'.$service);
-        if (!$folder->exists()) {
-          Console::writeLine('Creating folder ', $folder->getUri());
-          $folder->create(0755);
-        }
-      } if (catch ('IOException', $e)) {
-        Console::writeLine('Could not create tracking folder ', $folder->getUri());
-        return FALSE;
-      }
-      
       try(); {
         $result= &call_user_func_array(array(&$client, $method->getName()), 'dummy');
         Console::writeLinef('     Result: %s',
           $result === TRUE ? 'PASSED' : 'FAILED'
         );
-
-      } if (catch ('SoapFaultException', $e)) {
-        $f= &$e->getFault();
         
-        Console::writeLinef('SoapFault: [%d] %s', $f->getFaultcode(), $f->getFaultString());
+        $n= &$tree->addChild(new Node('method', NULL, array(
+          'name'    => $method->getName(),
+          'result'  => (int)$result,
+          'date'    => date('Y-m-d H:i:S')
+        )));
+
+      } if (catch ('IOException', $e)) {
+        Console::writeLine('     ! IOException, discontinuing checking this service.');
+        Console::writeLine('       '.$e->getMessage());
+        $n->setAttribute('error', 'temporary');
+        break;
+        
+      } if (catch ('SOAPFaultException', $e)) {
+        $n->setAttribute('error', 'permanent');
+        $f= &$e->getFault();
+        $n->addChild(Node::fromObject($f, 'soapfault'));
+        
+        Console::writeLinef('     ! SoapFault: [%d] %s', $f->getFaultcode(), $f->getFaultString());
         FileUtil::setContents(
           new File(sprintf('%s/%s.errmsg', $folder->getUri(), $method->getName())),
           sprintf('SoapFault: [%d] %s', $f->getFaultcode(), $f->getFaultString())
@@ -120,6 +145,12 @@
       $appender->clear();
       $eeappend->clear();
     }
+    
+    // Write test results...
+    FileUtil::setContents(
+      new File(sprintf('%s/servicetest.xml', $folder->getUri())),
+      $tree->getDeclaration()."\n".$tree->getSource(INDENT_WRAPPED)
+    );
     
     Console::writeLinef('===> Testing for service %s has ended.', $service);
   }
@@ -169,10 +200,9 @@
   
   // Default mode: iterate through all configured services
   $section= $prop->getFirstSection();
-
   do {
     
     checkService($section);
   } while ($section= $prop->getNextSection());
-    
+  
 ?>
