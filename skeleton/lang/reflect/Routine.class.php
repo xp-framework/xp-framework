@@ -38,13 +38,18 @@
     }
 
     /**
-     * Get Name
+     * Get method's name. If the optional parameter "asDeclared" is set to TRUE,
+     * the name will be parsed from the sourcecode, thus preserving case.
      *
      * @access  public
+     * @param   bool asDeclared default FALSE
      * @return  string
      */
-    function getName() {
-      return $this->name;
+    function getName($asDeclared= FALSE) {
+      if (!$asDeclared) return $this->name;
+
+      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
+      return $details[DETAIL_NAME];
     }
     
     /**
