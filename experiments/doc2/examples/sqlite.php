@@ -28,35 +28,49 @@
     $conn->query('create table test (
       id INTEGER primary key,
       name varchar(255) not null,
+      percentage float(3) not null,
       lastchange timestamp null,
       changedby varchar(255) default "user"
     )');
     
     // Insert two records
     $conn->insert(
-      'into test (name, lastchange, changedby) values (%s, %s, %s)',
+      'into test (name, percentage, lastchange, changedby) values (%s, %f, %s, %s)',
       'Timm\'s question was: "Is that a real \n?"',
+      6.1,
       Date::now(),
       'timm'
     );
     $conn->insert(
-      'into test (name, lastchange) values (%s, %s)',
+      'into test (name, percentage, lastchange) values (%s, %f, %s)',
       'KrokerdilBot',
+      99.6,
       NULL
     );
     
     // Select
-    $result= $conn->query('select int(id) id, name, date(lastchange) "lastchange", changedby from test');
+    $result= $conn->query('
+      select 
+        cast(id, "int") id, 
+        name, 
+        cast(percentage, "float") percentage,
+        cast(lastchange, "date") lastchange, 
+        changedby
+      from 
+        test
+    ');
     Console::writeLine('Result: ', var_export($result, 1));
     while ($record= $result->next()) {
       Console::writeLinef(
-        "Record (id=%d) {\n".
+        "Record (id=%s) {\n".
         "  [name      ] %s\n".
+        "  [percentage] %s\n".
         "  [lastchange] %s\n".
         "  [changedby ] %s\n".
         "}",
-        $record['id'],
+        var_export($record['id'], 1),
         $record['name'],
+        var_export($record['percentage'], 1),
         $record['lastchange'] instanceof Date ? $record['lastchange']->toString() : 'NULL',
         $record['changedby']
       );
