@@ -20,7 +20,6 @@
   //     Parses API doc 
   function parse($filename, $indicator) {
     static $parser= NULL;
-    static $appender= NULL;
 
     // Set up parser
     if (!$parser) $parser= array(
