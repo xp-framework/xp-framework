@@ -17,10 +17,27 @@
   
   /**
    * Webdav
+   * 
+   * <code>
+   *   $s= &new WebdavScriptlet('/path/you/want/to/provide/via/dav');
+   *   try(); {
+   *     $s->init();
+   *     $response= &$s->process();
+   *   } if (catch('HttpScriptletException', $e)) {
+   *     // Retreive standard "Internal Server Error"-Document
+   *     $response= &$e->getResponse(); 
+   *   }
+   *   
+   *   $response->sendHeaders();
+   *   $response->sendContent();
+   *   $s->finalize();  
+   * </code>
    *
    * Note: Needs PHP patched to work!
    *
    * @see      http://sitten-polizei.de/php/webdav.patch
+   * @see      http://www.webdav.org/
+   * @see      http://www.webdav.org/cadaver/
    * @purpose  Provide the base for Webdav Services
    */
   class WebdavScriptlet extends HttpScriptlet {
