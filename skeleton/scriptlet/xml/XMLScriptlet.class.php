@@ -5,6 +5,7 @@
  */
  
   uses(
+    'xml.XSLProcessor',
     'scriptlet.HttpScriptlet',
     'scriptlet.xml.XMLScriptletResponse',
     'scriptlet.xml.XMLScriptletRequest'
@@ -54,13 +55,22 @@
      * Constructor
      *
      * @access  public
-     * @param   &xml.XSLProcessor processor
      * @param   string base default ''
      */
-    function __construct(&$processor, $base= '') {
+    function __construct($base= '') {
       parent::__construct();
-      $this->processor= &$processor;
+      $this->processor= &$this->_processor();
       $this->processor->setBase($base);
+    }
+    
+    /**
+     * Set our own processor object
+     *
+     * @access  protected
+     * @return  &.xml.XSLProcessor
+     */
+    function &_processor() {
+      return new XSLProcessor();
     }
     
     /**
