@@ -13,8 +13,8 @@
    * Implementation of GenericParser for classes from within
    * the XP framework
    *
-   * @see     xp://lang.apidoc.parser.GenericParser
-   * @purpose Parses classes
+   * @see      xp://lang.apidoc.parser.GenericParser
+   * @purpose  Parses classes
    */
   class ClassParser extends GenericParser {
     var 
