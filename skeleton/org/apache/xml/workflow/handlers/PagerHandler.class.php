@@ -39,6 +39,13 @@
      * @return  bool
      */
     function needsData(&$context) {
+      $pagercontextresource= &$context->getContextResource($this->form, $this->pager);
+      
+      // Update pager if necessary
+      if (!$pagercontextresource->hasItems()) {
+        $pagercontextresource->update($this);
+      }
+      
       return TRUE;
     }
 
@@ -54,8 +61,8 @@
       $pagercontextresource= &$context->getContextResource($this->form, $this->pager);
       
       // Update pager if necessary
-      if (!$pagercontextresource->hasItems() || $request->hasParam('update')) {
-        $pagercontextresource->update();
+      if ($request->hasParam('update')) {
+        $pagercontextresource->update($this);
       }
       
       // Switch on pager commands
