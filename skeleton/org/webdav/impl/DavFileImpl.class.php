@@ -85,19 +85,92 @@
     }
 
     /**
+     * Move a file
+     *
+     * @access  public
+     * @param   string filename
+     * @param   string destination
+     * @param   bool overwrite
+     * @return  bool created
+     * @throws  OperationNotAllowedException
+     * @throws  OperationFailedException
+     */
+    function &move($filename, $destination, $overwrite) {
+      if (is_dir($this->base.$filename)) {
+        $f= &new Folder($this->base.$filename);
+        $exists= file_exists($this->base.$destination);
+      } else {
+        $f= &new File($this->base.$filename);
+        $exists= (file_exists($this->base.$destination) && !is_dir($this->base.$destination));
+      }
+
+      // Is overwriting permitted?
+      if (!$overwrite && $exists) {
+        return throw(new OperationNotAllowedException($destination.' may not be overwritten by '.$filename));
+      }
+      
+      try(); {
+        $f->move($this->base.$destination);
+      } if (catch('IOException', $e)) {
+        return throw(new OperationFailedException($filename.' cannot be copied to '.$destination.' ('.$e->message.')'));
+      }
+      
+      return !$exists;;
+    }
+
+    /**
+     * Copy a file
+     *
+     * @access  public
+     * @param   string filename
+     * @param   string destination
+     * @param   bool overwrite
+     * @return  bool created
+     * @throws  OperationNotAllowedException
+     * @throws  OperationFailedException
+     */
+    function &copy($filename, $destination, $overwrite) {
+      if (is_dir($this->base.$filename)) {
+        return throw(new OperationNotAllowedException($filename.' cannot be copied as it is a directory'));
+      }
+      
+      // Check if the destination exists
+      $exists= (file_exists($this->base.$destination) && !is_dir($this->base.$destination));
+      
+      // Is overwriting permitted?
+      if (!$overwrite && $exists) {
+        return throw(new OperationNotAllowedException($destination.' may not be overwritten by '.$filename));
+      }
+
+      $f= &new File($this->base.$filename);
+      try(); {
+        $f->copy($this->base.$destination);
+      } if (catch('IOException', $e)) {
+        return throw(new OperationFailedException($filename.' cannot be copied to '.$destination.' ('.$e->message.')'));
+      }
+      
+      return !$exists;
+    }
+
+    /**
      * Make a directory ("collection")
      *
      * @access  public
      * @param   string colname
      * @return  bool success
-     * @throws  MethodNotImplementedException
+     * @throws  OperationFailedException
+     * @throws  OperationNotAllowedException
      */
     function &mkcol($colname) {
       $f= &new Folder($this->base.$colname);
+      if ($f->exists()) {
+        return throw(new OperationFailedException($colname.' already exists'));
+      }
+      
       try(); {
         $f->create(0700);
       } if (catch('IOException', $e)) {
-        return throw(new Exception($filename.' cannot be created ('.$e->message.')'));
+        return throw(new OperationFailedException($colname.' cannot be created ('.$e->message.')'));
       }
       
       return TRUE;
@@ -127,7 +200,7 @@
       try(); {
         $f->unlink();
       } if (catch('IOException', $e)) {
-        return throw(new Exception($filename.' cannot be deleted ('.$e->message.')'));
+        return throw(new OperationFailedException($filename.' cannot be deleted ('.$e->message.')'));
       }
       
       return TRUE;
@@ -144,7 +217,7 @@
      */
     function &put($filename, &$data) {
       if (is_dir($this->base.$filename)) {
-        return throw(new Exception($filename.' cannot be written (not a file)'));
+        return throw(new OperationNotAllowedException($filename.' cannot be written (not a file)'));
       }
       
       // Open file and write contents
@@ -155,7 +228,7 @@
         $f->write($data);
         $f->close();
       } if (catch('IOException', $e)) {
-        return throw(new Exception($filename.' cannot be written to ('.$e->message.')'));
+        return throw(new OperationFailedException($filename.' cannot be written to ('.$e->message.')'));
       }
       
       return $new;
@@ -171,7 +244,7 @@
      */
     function &get($filename) {
       if (is_dir($this->base.$filename)) {
-        return throw(new Exception($filename.' cannot be retreived using GET'));
+        return throw(new OperationNotAllowedException($filename.' cannot be retreived using GET'));
       }
       
       // Open file and read contents

@@ -75,6 +75,34 @@
     }
 
     /**
+     * Private helper function
+     *
+     * @access  private
+     * @param   string s
+     * @return  bool
+     * @throws  IllegalArgumentException
+     */
+    function _bool($s) {
+      switch ($s) {
+        case 'T': return TRUE;
+        case 'F': return FALSE;
+        default:  return throw(new IllegalArgumentException('Value '.$s.' not recognized'));
+      }
+    }
+    
+    /**
+     * Private helper function
+     *
+     * @access  private
+     * @param   string s
+     * @return  string
+     */
+    function _relativeTarget($str) {
+      $p= parse_url($str);
+      return str_replace($this->request->uri['path_root'], '', $p['path']);
+    }
+
+    /**
      * Handle OPTIONS
      *
      * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
@@ -230,15 +258,21 @@
           $request->uri['path_translated'],
           $request->getData()
         );
-      } if (catch('Exception', $e)) {
+      } if (catch('OperationFailedException', $e)) {
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->getStackTrace());
         return FALSE;
-      } 
+      } if (catch('OperationNotAllowedException', $e)) {
       
-      $response->setStatus($new ? HTTP_CREATED : HTTP_NO_CONTENT);
+        // Not allowed
+        $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      }
+      
+      $response->setStatus($created ? HTTP_CREATED : HTTP_NO_CONTENT);
     }
 
     /**
@@ -254,7 +288,7 @@
     function doMkCol(&$request, &$response) {
       try(); {
         $created= $this->handlingImpl->mkcol($request->uri['path_translated']);
-      } if (catch('Exception', $e)) {
+      } if (catch('OperationFailedException', $e)) {
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
@@ -264,7 +298,7 @@
       
       $response->setStatus(HTTP_CREATED);
     }
-
+    
     /**
      * Handle MOVE
      *
@@ -276,6 +310,27 @@
      * @throws  Exception to indicate failure
      */
     function doMove(&$request, &$response) {
+      try(); {
+        $created= $this->handlingImpl->copy(
+          $request->uri['path_translated'],
+          $this->_relativeTarget($request->getHeader('Destination')),
+          $this->_bool($request->getHeader('Overwrite'))
+        );
+      } if (catch('OperationFailedException', $e)) {
+      
+        // Conflict
+        $response->setStatus(HTTP_CONFLICT);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      } if (catch('OperationNotAllowedException', $e)) {
+      
+        // Not allowed
+        $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      }
+      
+      $response->setStatus($created ? HTTP_CREATED : HTTP_NO_CONTENT);
     }
 
     /**
@@ -289,6 +344,27 @@
      * @throws  Exception to indicate failure
      */
     function doCopy(&$request, &$response) {
+      try(); {
+        $created= $this->handlingImpl->copy(
+          $request->uri['path_translated'],
+          $this->_relativeTarget($request->getHeader('Destination')),
+          $this->_bool($request->getHeader('Overwrite'))
+        );
+      } if (catch('OperationFailedException', $e)) {
+      
+        // Conflict
+        $response->setStatus(HTTP_CONFLICT);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      } if (catch('OperationNotAllowedException', $e)) {
+      
+        // Not allowed
+        $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
+        $response->setContent($e->getStackTrace());
+        return FALSE;
+      }
+      
+      $response->setStatus($created ? HTTP_CREATED : HTTP_NO_CONTENT);
     }
 
     /**
@@ -404,9 +480,6 @@
         WEBDAV_METHOD_MOVE        => 'doMove'
       );
             
-      $l= &Logger::getInstance();
-      $c= &$l->getCategory();
-      
       // Read input if we have a Content-length header,
       // else get data from QUERY_STRING
       if (
@@ -414,7 +487,6 @@
         (FALSE !== ($fd= fopen('php://input', 'r')))
       ) {
         $data= fread($fd, $len);
-        $c->debug($method, $len, $data);
         fclose($fd);
         
         $this->request->setData($data);
@@ -448,7 +520,7 @@
         return $this->_method;  
       }
       
-      return throw(new HttpScriptlet('Cannot handle method "'.$method.'"'));
+      return throw(new HttpScriptletException('Cannot handle method "'.$method.'"'));
     }
   }
 ?>

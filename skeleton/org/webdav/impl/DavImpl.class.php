@@ -6,6 +6,8 @@
  
   uses(
     'lang.MethodNotImplementedException',
+    'org.webdav.OperationFailedException',
+    'org.webdav.OperationNotAllowedException',
     'org.webdav.WebdavObject'
   );
   
@@ -33,6 +35,34 @@
     }
 
     /**
+     * Move a file
+     *
+     * @access  abstract
+     * @param   string filename
+     * @param   string destination
+     * @param   bool overwrite
+     * @return  bool created
+     * @throws  MethodNotImplementedException
+     */
+    function &move($filename, $destination, $overwrite) {
+      return throw(new MethodNotImplementedException($this->getName().'::move not implemented'));
+    }
+
+    /**
+     * Copy a file
+     *
+     * @access  abstract
+     * @param   string filename
+     * @param   string destination
+     * @param   bool overwrite
+     * @return  bool created
+     * @throws  MethodNotImplementedException
+     */
+    function &copy($filename, $destination, $overwrite) {
+      return throw(new MethodNotImplementedException($this->getName().'::copy not implemented'));
+    }
+
+    /**
      * Make a directory
      *
      * @access  abstract
@@ -49,7 +79,6 @@
      *
      * @access  abstract
      * @param   string filename
-     * @param   &string data
      * @return  bool success
      * @throws  MethodNotImplementedException
      */
