@@ -147,7 +147,7 @@
         }
         if (FALSE === $ret) return throw(new IOException(sprintf(
           'unlink of "%s" failed',
-           $fn
+          $fn
         )));
       }
       $d->close();

@@ -188,8 +188,16 @@
      * @param   int dst_w default -1 width of the area to copy to, -1 defaults to the source image's width
      * @param   int dst_h default -1 height of the area to copy to, -1 defaults to the source image's height
      */
-    function copyFrom(&$img, $dst_x= 0, $dst_y= 0, 
-                  $src_x= 0, $src_y= 0, $src_w= -1, $src_h= -1, $dst_w= -1, $dst_h= -1
+    function copyFrom(
+      &$img, 
+      $dst_x= 0, 
+      $dst_y= 0, 
+      $src_x= 0, 
+      $src_y= 0, 
+      $src_w= -1, 
+      $src_h= -1, 
+      $dst_w= -1, 
+      $dst_h= -1
     ) {
       if (-1 == $src_w) $src_w= $img->getWidth();
       if (-1 == $src_h) $src_h= $img->getHeight();
@@ -236,8 +244,15 @@
      * @param   int src_w default -1 width of the area to copy, -1 defaults to the source image's width
      * @param   int src_h default -1 height of the area to copy, -1 defaults to the source image's height
      */
-    function mergeFrom(&$img, $pct= 50, $dst_x= 0, $dst_y= 0, 
-                   $src_x= 0, $src_y= 0, $src_w= -1, $src_h= -1
+    function mergeFrom(
+      &$img, 
+      $pct= 50, 
+      $dst_x= 0, 
+      $dst_y= 0, 
+      $src_x= 0, 
+      $src_y= 0, 
+      $src_w= -1, 
+      $src_h= -1
     ) {
       if (-1 == $src_w) $src_w= $img->getWidth();
       if (-1 == $src_h) $src_h= $img->getHeight();

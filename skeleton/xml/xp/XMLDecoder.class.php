@@ -24,7 +24,7 @@
      * @param   &io.File file
      */
     function __construct(&$file) {
-     $this->file= &$file;
+      $this->file= &$file;
       $this->file->open(FILE_MODE_READ);
       parent::__construct();
     }
