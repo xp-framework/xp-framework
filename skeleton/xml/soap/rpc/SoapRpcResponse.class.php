@@ -22,29 +22,6 @@
      */
     function __construct() {
       $this->setHeader('Server', 'SOAP 1.0#/PHP'.phpversion().'/'.php_uname());
-      $this->setHeader('Content-type', 'text/xml');
-    }
-    
-    /**
-     * Overwritten method from parent class
-     *
-     * @access  public
-     * @throws  IllegalAccessException
-     * @see     #setMessage
-     */
-    function write() {
-      throw(new IllegalAccessException('Cannot write directly'));
-    }
-    
-    /**
-     * Overwritten method from parent class
-     *
-     * @access  public
-     * @throws  IllegalAccessException
-     * @see     #setMessage
-     */
-    function setContent() {
-      throw(new IllegalAccessException('Cannot write directly'));
     }
     
     /**
@@ -58,29 +35,22 @@
     }
     
     /**
-     * Gets content for HTTP response
-     *
-     * @access  public
-     * @return  string content
-     * @see     scriptlet.HttpScriptletResponse#getContent
-     */
-    function getContent() {
-      return (
-        $this->message->getDeclaration()."\n".
-        $this->message->getSource(0)
-      );
-    }
-    
-    /**
      * Make sure a fault is passed as "500 Internal Server Error"
      *
      * @access  public
      * @see     scriptlet.HttpScriptletResponse#process
      */
     function process() {
-      if ($this->message && NULL !== $this->message->getFault()) {
+      if (!$this->message) return;
+
+      $this->setHeader('Content-type', 'text/xml');      
+      if (NULL !== $this->message->getFault()) {
         $this->setStatus(HTTP_INTERNAL_SERVER_ERROR);
       }
+      $this->content= (
+        $this->message->getDeclaration()."\n".
+        $this->message->getSource(0)
+      );
     }
     
     /**
