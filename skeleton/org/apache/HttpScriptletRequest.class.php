@@ -4,13 +4,16 @@
  * $Id$
  */
 
+  uses('peer.http.Cookie');
+
   /**
    * Defines the request sent by the client to the server
    *
    * An instance of this object is passed to the do* methods by
    * the <pre>process</pre> method.
    *
-   * @see   xp://org.apache.HttpScriptlet
+   * @see      xp://org.apache.HttpScriptlet
+   * @purpose  Wrap request
    */  
   class HttpScriptletRequest extends Object {
     var
@@ -24,7 +27,7 @@
      * Retrieves the session or NULL if none exists
      *
      * @access  public
-     * @return  lang.Object session object
+     * @return  &org.apache.HttpSession session object
      */
     function &getSession() {
       return $this->session;
@@ -34,23 +37,48 @@
      * Sets session
      *
      * @access  public
-     * @param   lang.Object session
+     * @param   &org.apache.HttpSession session
      */
     function setSession(&$s) {
       $this->session= &$s;
     }
 
     /**
-     * Gibt eine Umgebungsvariable zurücke
+     * Returns environment value
      *
      * @access  public
-     * @param   string name Header
-     * @return  string Header-Wert
+     * @param   string name
+     * @return  string
      */
     function getEnvValue($name) {
       return getenv($name);
     }
-      
+
+    /**
+     * Retrieve cookies
+     *
+     * @access  public
+     * @return  peer.http.Cookie[]
+     */
+    function getCookies() {
+      $r= array();
+      foreach (array_keys($_COOKIE) as $name) {
+        $r[]= &new Cookie($name, $_COOKIE[$name]);
+      }
+      return $r;
+    }
+
+    /**
+     * Retrieve cookie by it's name
+     *
+     * @access  public
+     * @param   mixed default default NULL the default value if cookie is non-existant
+     * @return  &peer.http.Cookie
+     */
+    function &getCookie($name, $default= NULL) {
+      if (isset($_COOKIE[$name])) return new Cookie($name, $_COOKIE[$name]); else return $default;
+    }
+
     /**
      * Returns a request header by its name or NULL if there is no such header
      * Typical request headers are: Accept, Accept-Charset, Accept-Encoding,
