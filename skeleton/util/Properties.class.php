@@ -41,6 +41,53 @@
     }
     
     /**
+     * Create a property file from an io.File object
+     *
+     * @access  public
+     * @param   &io.File file
+     * @return  &util.Properties
+     */
+    function &fromFile(&$file) {
+      return new Properties($file->getURI());
+    }
+
+    /**
+     * Create a property file from a string
+     *
+     * @access  public
+     * @param   string str
+     * @return  &util.Properties
+     */
+    function &fromString($str) {
+      with ($prop= &new Properties(NULL)); {
+        $section= NULL;
+        $prop->_data= array();
+        if ($t= strtok($str, "\r\n")) do {
+          switch ($t{0}) {
+            case ';':
+            case '#':
+              break;
+
+            case '[':
+              $p= strpos($t, '[');
+              $section= substr($t, $p+ 1, strpos($t, ']', $p)- 1);
+              $prop->_data[$section]= array();
+              break;
+
+            default:
+              if (FALSE === ($p= strpos($t, '='))) break;
+              $key= trim(substr($t, 0, $p));
+              $value= trim(substr($t, $p+ 1), ' "');
+
+              $prop->_data[$section][$key]= $value;
+              break;
+          }
+        } while ($t= strtok("\r\n"));
+      }
+      return $prop;
+    }
+    
+    /**
      * Retrieves the file name containing the properties
      *
      * @access  public
