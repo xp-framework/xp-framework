@@ -81,6 +81,12 @@
     </a>
   </xsl:template>
 
+  <xsl:template match="ref[@type= 'cvs']">
+    <a href="http://cvs.xp-framework.net/horde/chora/co.php/{@link}" target="_cvs">
+      CVS view of <xsl:value-of select="@link"/>
+    </a>
+  </xsl:template>
+
   <xsl:template match="ref[@type= 'google']">
     <a href="http://google.de/search?q={@link}" target="_new">Google search: <xsl:value-of select="@link"/></a>
   </xsl:template>
