@@ -5,7 +5,7 @@ PHP=`which php || which php4`
 PERL=`which perl`
 XMLLINT=`which xmllint`
 
-EXTENSION=`echo $1 | sed -E 's/.+\.([a-z]+)$/\1/g'`
+EXTENSION=`echo ${1##*.}`
 
 case $EXTENSION in
   php)
