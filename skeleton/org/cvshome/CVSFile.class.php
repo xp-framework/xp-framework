@@ -6,7 +6,6 @@
 
   uses (
     'org.cvshome.CVSInterface',
-    'lang.IllegalArgumentException',
     'io.File'
   );
 
@@ -26,13 +25,13 @@
      *
      * @access public
      * @param string filename
-     * @throws IllegalArgumentException, if filename is not a file
+     * @throws FileNotFoundException, if filename is not a file
      */
     function __construct($filename) {
-      $this->filename= $filename;
+      $this->filename= realpath($filename);
       
       if (!file_exists ($this->filename) || !is_file ($this->filename)) {
-        return throw (new IllegalArgumentException ('Given file must be an existing file'));
+        return throw (new FileNotFoundException ('Given file must be an existing file: '.$this->filename));
       }
       
       parent::__construct();
