@@ -302,6 +302,9 @@ Details
     var_dump(B::getInstance());     // object(B)
   ?>
 
+  For details, see
+  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/syntax
+
 * No implementation check during inheritance
   The following would not be checked upon (not even in strict mode):
   <?php
