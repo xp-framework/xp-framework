@@ -29,7 +29,7 @@
       $version      = 0x0500;
       
     var
-      $_dat         = '',
+      $_data        = '',
       $_datasize    = 0,
       $_limit       = 2080,
       $_byteorder   = -1;
@@ -51,6 +51,26 @@
         throw(new FormatException('Cannot determine byte order'));
       }
       parent::__construct();
+    }
+    
+    /**
+     * Set version
+     *
+     * @access  public
+     * @param   int version
+     */
+    function setVersion($version) {
+      $this->version= $version;
+    }
+    
+    /**
+     * Retreive version
+     *
+     * @access  public
+     * @return  int version
+     */
+    function getVersion() {
+      return $this->version;
     }
     
     /**
@@ -119,6 +139,22 @@
         $t.= $h.substr($d, $i, $this->_limit);
       }
       return $t.pack('vv', 0x003C, strlen($d)- $i).substr($d, $i, strlen($d)- $i);
+    }
+    
+    /**
+     * Write to a stream
+     *
+     * @access  public
+     * @see     xp://io.Stream#write
+     * @param   &io.Stream stream
+     * @return  &io.Stream stream passed in
+     * @throws  io.IOException
+     */
+    function &write(&$stream) {
+      $stream->open(FILE_MODE_WRITE);
+      $stream->write($this->_data);
+      $stream->close();
+      return $stream;
     }
   }
 ?>
