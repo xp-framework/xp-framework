@@ -21,7 +21,7 @@
 #ifndef PHP_XP_H
 #define PHP_XP_H
 
-#define XP_DEBUG 1
+#define XP_DEBUGGING 1
 
 extern zend_module_entry xp_module_entry;
 #define phpext_xp_ptr &xp_module_entry
@@ -44,7 +44,7 @@ PHP_MINFO_FUNCTION(xp);
 
 /* Global functions */
 PHP_FUNCTION(uses);
-#ifdef XP_DEBUG
+#ifdef XP_DEBUGGING
 PHP_FUNCTION(testnames);
 #endif
 
