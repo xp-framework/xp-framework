@@ -13,6 +13,8 @@
   define('WEBDAV_METHOD_UNLOCK',    'UNLOCK');
   define('WEBDAV_METHOD_COPY',      'COPY');
   define('WEBDAV_METHOD_MOVE',      'MOVE');
+  define('WEBDAV_METHOD_REPORT',    'REPORT');
+  define('WEBDAV_METHOD_VERSION',   'VERSION-CONTROL');
   
   /**
    * Webdav connection
@@ -20,6 +22,7 @@
    * @purpose  Provide a webdav connection
    */
   class WebdavConnection extends HttpConnection {
+  
 
     /**
      * Perform a Propfind request
@@ -103,6 +106,30 @@
      */
     function move($arg= NULL, $headers= array()) {
       return $this->request(WEBDAV_METHOD_MOVE, $arg, $headers);
+    }
+    
+    /**
+     * Perform a VersionControl request
+     *
+     * @access  public
+     * @param   mixed arg default NULL
+     * @param   array headers default array()
+     * @return  &peer.http.HttpResponse response object
+     */
+    function version($arg= NULL, $headers= array()) {
+      return $this->request(WEBDAV_METHOD_VERSION, $arg, $headers);
+    }
+    
+    /**
+     * Perform a report request
+     *
+     * @access  public
+     * @param   mixed arg default NULL
+     * @param   array headers default array()
+     * @return  &peer.http.HttpResponse response object
+     */
+    function report($arg= NULL, $headers= array()) {
+      return $this->request(WEBDAV_METHOD_REPORT, $arg, $headers);
     }
   }
 ?>
