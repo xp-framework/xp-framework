@@ -30,6 +30,7 @@
      */
     function __construct($email= NULL, $prefix= '', $sync= TRUE) {
       $this->email= $email;
+      $this->prefix= $prefix;
       $this->sync= $sync;
       parent::__construct();
     }
