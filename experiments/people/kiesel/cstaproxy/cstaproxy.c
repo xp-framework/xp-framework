@@ -65,7 +65,7 @@ int regex_match (char *haystack, char *needle) {
 void catch_interrupt(int signum) {
 	signal(SIGINT, catch_interrupt);
 	
-	printf ("Catched Ctrl-C");
+	printf ("Caught Ctrl-C");
 	fflush (stdout);
 	
 	exit (0);
