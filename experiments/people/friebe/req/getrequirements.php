@@ -153,5 +153,9 @@
   }
   
   Console::writeLine($requirements->toString());
+  
+  for ($i= 0, $s= sizeof($requirements->deps); $i < $s; $i++) {
+    Console::writeLine($requirements->deps[$i]);
+  }
   // }}}
 ?>
