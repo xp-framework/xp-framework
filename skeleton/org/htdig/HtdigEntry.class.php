@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('text.format.DateParser');
+
   /**
    * Represents a htdig search entry
    *
@@ -11,14 +13,14 @@
    */
   class HtdigEntry extends Object {
     var
-      $current=   NULL,
-      $docId=     NULL,
+      $current=   0,
+      $docId=     '',
       $stars=     0,
       $score=     0,
       $url=       '',
       $title=     '',
       $excerpt=   '',
-      $metadesc=  NULL,
+      $metadesc=  '',
       $modified=  NULL,
       $size=      0,
       $hopcount=  0,
@@ -28,19 +30,19 @@
      * Set Current
      *
      * @access  public
-     * @param   &lang.Object current
+     * @param   int current
      */
-    function setCurrent(&$current) {
-      $this->current= &$current;
+    function setCurrent($current) {
+      $this->current= $current;
     }
 
     /**
      * Get Current
      *
      * @access  public
-     * @return  &lang.Object
+     * @return  int
      */
-    function &getCurrent() {
+    function getCurrent() {
       return $this->current;
     }
 
@@ -48,19 +50,19 @@
      * Set DocId
      *
      * @access  public
-     * @param   &lang.Object docId
+     * @param   string docId
      */
-    function setDocId(&$docId) {
-      $this->docId= &$docId;
+    function setDocId($docId) {
+      $this->docId= $docId;
     }
 
     /**
      * Get DocId
      *
      * @access  public
-     * @return  &lang.Object
+     * @return  string
      */
-    function &getDocId() {
+    function getDocId() {
       return $this->docId;
     }
 
@@ -168,19 +170,19 @@
      * Set Metadesc
      *
      * @access  public
-     * @param   &lang.Object metadesc
+     * @param   string metadesc
      */
-    function setMetadesc(&$metadesc) {
-      $this->metadesc= &$metadesc;
+    function setMetadesc($metadesc) {
+      $this->metadesc= $metadesc;
     }
 
     /**
      * Get Metadesc
      *
      * @access  public
-     * @return  &lang.Object
+     * @return  string
      */
-    function &getMetadesc() {
+    function getMetadesc() {
       return $this->metadesc;
     }
 
@@ -191,14 +193,27 @@
      * @param   &lang.Object modified
      */
     function setModified(&$modified) {
-      $this->modified= &$modified;
+      if (is('util.Date', $modified)) {
+        $this->modified= &$modified;
+        return;
+      }
+      
+      try(); {
+        $d= &DateParser::parse($modified);
+      } if (catch ('FormatException', $e)) {
+      
+        // Date could not be parsed, so default to now.
+        $this->modified= &Date::now();
+      }
+      
+      $this->modified= &$d;
     }
 
     /**
      * Get Modified
      *
      * @access  public
-     * @return  &lang.Object
+     * @return  &util.Date
      */
     function &getModified() {
       return $this->modified;
