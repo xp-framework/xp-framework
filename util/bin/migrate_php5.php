@@ -108,7 +108,7 @@ __;
         $tok= $t->getNextToken(); // Swallow ";"
         $tok= array(T_NONE, '');
         break;
-        
+
       case 'implements':
         while (')' !== $tok[1]) {
           if (T_CONSTANT_ENCAPSED_STRING === $tok[0]) $implements[]= $tok[1];
@@ -125,7 +125,7 @@ __;
           $parentcall.= $tok[1];
           $tok= $t->getNextToken();
           if (
-            ('__construct' == $tok[1] || '__destruct' == $tok[1]) && 
+            ('__construct' == $tok[1]) && 
             ('Object' == $extends)
           ) {
             $remove= TRUE;
