@@ -105,8 +105,8 @@
                 for ($i= 0; $i < $s; $i++) {
                   $xml.= sprintf(
                     '<item link="%s">%s</item>',
-                    $rdf->items[$i]->link,
-                    $rdf->items[$i]->title
+                    htmlspecialchars($rdf->items[$i]->link),
+                    htmlspecialchars($rdf->items[$i]->title)
                   );
                 }
                 $xml.= '</items>';
