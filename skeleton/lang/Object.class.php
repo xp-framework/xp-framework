@@ -43,4 +43,8 @@
     function getName() {
       return $GLOBALS['php_class_names'][get_class($this)];
     }
+
+    function toString() {
+      return $this->getName().'@'.serialize($this);
+    }
   }
