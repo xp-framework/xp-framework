@@ -212,7 +212,7 @@
       <td width="1%" valign="top"><img src="/image/nav_see.gif"/></td>
       <td width="50%">
         <xsl:apply-templates select="link"/>
-        <xsl:if test="link/description">
+        <xsl:if test="string-length (link/description) != 0">
           <xsl:text> - </xsl:text>
           <xsl:value-of select="link/description"/>
         </xsl:if>
