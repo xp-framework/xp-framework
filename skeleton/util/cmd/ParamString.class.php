@@ -122,7 +122,8 @@
         isset($this->list[$pos]) && 
         strncmp('--'.$long, $this->list[$pos], strlen($long) + 2) == 0
       ) {
-        return str_replace("--{$long}=", '', $this->list[$pos]);
+        sscanf($this->list[$pos], '--'.$long.'=%s', $val);
+        return $val;
       }
       
       // Usage in short (eg.: '-v' or '-f /foo/bar')
