@@ -4,10 +4,6 @@
  * $Id$
  */
 
-  if (!defined('PATH_SEPARATOR')) {
-    define('PATH_SEPARATOR',  0 == strncasecmp('WIN', PHP_OS, 3) ? ';' : ':');    
-  }
-  
   if (!defined('STDOUT')) {
     define('STDOUT', fopen('php://stdout', 'wb'));
     define('STDERR', fopen('php://stderr', 'wb'));
