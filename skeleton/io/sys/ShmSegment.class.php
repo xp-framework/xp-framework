@@ -9,8 +9,18 @@
   /**
    * Shared memory segment
    *
+   * Shared memory may be used to provide access to global variables. Different 
+   * httpd-daemons and even other programs (such as Perl, C, ...) are able to access 
+   * this data to provide a global data-exchange. Remember, that shared memory is NOT 
+   * safe against simultaneous access. Use semaphores for synchronization.
+   *
+   * Note: This extension is not available on Windows platforms. 
+   *
    * @purpose   Provide a wrapper around shared memory segments
    * @ext       sem
+   * @see       http://www.cs.cf.ac.uk/Dave/C/node27.html#SECTION002700000000000000000
+   * @see       http://www.cs.cf.ac.uk/Dave/C/node26.html#SECTION002600000000000000000
+   * @see       xp://io.sys.Semaphore
    */
   class ShmSegment extends Object {
     var 
