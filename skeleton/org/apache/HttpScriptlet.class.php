@@ -348,8 +348,8 @@
         } if (catch('Exception', $e)) {
           if (!$this->_handleInvalidSession()) {
             return throw(new HttpSessionInvalidException(
-             'Session initialize failed: '.$e->message,
-             HTTP_BAD_REQUEST
+              'Session initialize failed: '.$e->message,
+              HTTP_BAD_REQUEST
             ));
           }
         }
@@ -364,14 +364,14 @@
       }
 
       // Perform locking when this is a SerializedScriptlet
-      try(); {
-        if (is('org.apache.SerializedScriptlet', $this)) {
-          $this->lock();
+      if (is('org.apache.SerializedScriptlet', $this)) {
+        try(); { 
+          $this->lock(); 
+        } if (catch('Exception', $e)) {
+          return throw(new HttpScriptletException(
+            'Semaphore locking failed: '.$e->getMessage()
+          ));
         }
-      } if (catch('Exception', $e)) {
-        return throw(new HttpScriptletException(
-          'Semaphore locking failed: '.$e->getMessage()
-        ));
       }
 
       // Call method handler and response processor
@@ -389,12 +389,12 @@
       }
       
       // Remove the semaphore
-      try(); {
-        if (is('org.apache.SerializedScriptlet', $this)) {
+      if (is('org.apache.SerializedScriptlet', $this)) {
+        try(); {
           $this->unlock();
+        } if (catch('Exception', $e)) {
+          return throw(new HttpScriptletException('Semaphore unlocking failed: '.$e->getMessage()));
         }
-      } if (catch('Exception', $e)) {
-        return throw(new HttpScriptletException('Semaphore unlocking failed: '.$e->getMessage()));
       }
 
       // Return it
