@@ -11,8 +11,8 @@
    *
    * <code>
    *   $p= &new VFormatParser('VCARD');
-   *   $p->setHandler('EMAIL', array(&$this, 'setEmail'));
-   *   $p->setHandler('NICKNAME', array(&$this, 'setNick'));
+   *   $p->setHandler('EMAIL', 'setEmail');
+   *   $p->setHandler('NICKNAME', 'setNick');
    *   $p->setDefaultHandler('var_dump');
    *   try(); {
    *     $p->parse(new File('test.vcf'));
@@ -51,9 +51,9 @@
      * Set default handler
      *
      * @access  public
-     * @param   &function func
+     * @param   function func
      */
-    function setDefaultHandler(&$func) {
+    function setDefaultHandler($func) {
       $this->handlers[NULL]= &$func;
     }
     
@@ -62,9 +62,9 @@
      *
      * @access  public
      * @param   string element
-     * @param   &function func
+     * @param   function func
      */
-    function setHandler($element, &$func) {
+    function setHandler($element, $func) {
       $this->handlers[$element]= &$func;
     }
     
@@ -85,40 +85,72 @@
         ));
       }
       
+      $r= TRUE;
+      $key= $value= '';
       do {
-        if ($this->_parse($l= $stream->readLine())) continue;
-        $result= FALSE;
-        break;
-      } while (!$this->_checkFooter($l) && !$stream->eof());
+        do {
+          $l= $stream->readLine();
+
+          // Check for footer
+          if ($this->_checkFooter($l)) break;
+
+          // Discard empty lines
+          if (empty($l)) continue;
+
+          // Multiline values are indented with spaces
+          if (' ' == $l{0}) {
+            $value.= ltrim($l);
+            continue;
+          }
+
+          // Property;Property_Param*:Property_Value
+          // ------------------------ vs. ------------------------
+          // Property;Property_Param*:
+          //    Property_Value
+          //
+          // Property2:Value2
+          list($k, $v)= explode(':', $l, 2);
+
+          // Found a key->value pair
+          if ($key) if (FALSE === $this->_parse($key, $value)) {
+            $r= FALSE;
+            break 2;
+          }
+
+          // Next round
+          $key= $k;
+          $value= $v;
+
+        } while (!$stream->eof());
+        
+        // Parse last key->value pair
+        $r= $this->_parse($key, $value);
+      } while (0);
+      
       $stream->close();
       
-      return TRUE;
+      return $r;
     }
-
+    
     /**
-     * Parse a single line
+     * Parse a key->value pair
      *
      * @access  private
-     * @param   string line
+     * @param   string key
+     * @param   string value
      * @return  bool success
      */
-    function _parse($s) {
-      static $line= '';
+    function _parse($key, $value) {
+      printf(">>> %s::=%s\n", $key, $value); 
       
-      // Discard empty lines
-      if (empty($s)) return TRUE;
-      
-      $line.= $s;
-      list($key, $value)= explode(':', $line, 2);
-
-      // Divided values
+      // Property params
       if (FALSE !== ($i= strpos($key, ';'))) {
         $kargs= explode(';', strtoupper($key));
         $key= substr($key, 0, $i);
       } else {
         $kargs= array(strtoupper($key));
       }
-
+      
       // Charsets and encodings
       for ($i= 0, $m= sizeof($kargs); $i< $m; $i++) switch ($kargs[$i]) {
         case 'CHARSET=UTF-8': 
@@ -136,33 +168,31 @@
       }
       
       // Call handler
-      if (isset($this->handler[$kargs[0]])) {
-        $func= $this->handler[$kargs[0]];
+      if (isset($this->handlers[$kargs[0]])) {
+        $func= $this->handlers[$kargs[0]];
         array_shift($kargs);
       } else {
-        $func= $this->handler[0];
+        $func= $this->handlers[NULL];
       }
       
-      if (!call_user_func($func, $kargs, explode(';', $value))) {
-        $fname= is_array($func) ? get_class($func[0]).'::'.$func[1] : $func;
-        return throw(new MethodNotImplementedException('Could not invoke callback for '.$fname));
+      echo "-----------------------------------------------------------------------------------\n";
+      if (FALSE === call_user_func($func, $kargs, explode(';', $value))) {
+        trigger_error('Callback:'.(is_array($func) ? get_class($func[0]).'::'.$func[1] : $func), E_USER_NOTICE);
+        return throw(new MethodNotImplementedException('Could not invoke callback for "'.$kargs[0].'"'));
       }
-
-      $line= '';
-      return TRUE;
     }
   
     /**
      * Check for a valid header
      *
      * @access  private
-     * @param   string hdr Line where header is supposedly located
+     * @param   string l Line where header is supposedly located
      * @return  bool valid
      */
-    function _checkHeader($hdr) {
-      return (strcmp(
+    function _checkHeader($l) {
+      return (strcasecmp(
         'BEGIN:'.$this->identifier,
-        substr($hdr, 0, strlen($this->identifier)+ 6)
+        substr($l, 0, strlen($this->identifier)+ 6)
       ) == 0);
     }
 
@@ -170,13 +200,13 @@
      * Check for a valid footer
      *
      * @access  private
-     * @param   string hdr Line where footer is supposedly located
+     * @param   string l Line where footer is supposedly located
      * @return  bool valid
      */
-    function _checkFooter($hdr) {
-      return (strcmp(
+    function _checkFooter($l) {
+      return (strcasecmp(
         'END:'.$this->identifier,
-        substr($hdr, 0, strlen($this->identifier)+ 4)
+        substr($l, 0, strlen($this->identifier)+ 4)
       ) == 0);
     }
 
