@@ -2,7 +2,6 @@
 /* This class is part of the XP framework
  *
  * $Id$
- *
  */
 
   uses('xml.XML');
@@ -10,35 +9,53 @@
   /**
    * XML Parser
    *
+   * @purpose  Parse XML
    */
   class XMLParser extends XML {
     var
-      $parser,
-      $error,
-      $dataSource;
-      
-    var
-      $callback;
-      
-    function XMLParser($params= NULL) {
-      $this->__construct($params);
-    }
-    
+      $parser       = NULL,
+      $error        = NULL,
+      $dataSource   = NULL,
+      $callback     = NULL;
+
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   array params default NULL
+     */      
     function __construct($params= NULL) {
       parent::__construct();
       $this->parser= $this->error= $this->dataSource= NULL;
     }
     
+    /**
+     * Create this parser
+     *
+     * @access  private
+     * @return  &resource parser handles
+     */
     function &_create() {
       $this->parser = xml_parser_create();
       xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, FALSE);
       return $this->parser;
     }
     
+    /**
+     * Free this parser
+     *
+     * @access  private
+     */
     function _free() {
       if (is_resource($this->parser)) return xml_parser_free($this->parser);
     }
     
+    /**
+     * Returns error message
+     *
+     * @access  privtae
+     * @return  string errormessage
+     */
     function &_error() {
       $this->error= &new StdClass();
       $this->error->type= xml_get_error_code($this->parser);
@@ -49,13 +66,22 @@
 
       return sprintf(
         "XML parser error #%d on line %d offset %d: %s",
-	$this->error->type,
-	$this->error->line,
-	$this->error->column,
-	$this->error->message
-      );	
+        $this->error->type,
+        $this->error->line,
+        $this->error->column,
+        $this->error->message
+      );    
     }
     
+    /**
+     * Parse
+     *
+     * @access  public
+     * @param   string data
+     * @return  bool
+     * @throws  lang.IllegalArgumentException in case there is no valid callback
+     * @throws  lang.FormatException in case the data could not be parsed
+     */
     function parse($data) {
       unset($this->error);
       if (NULL == $this->parser) $this->_create();
@@ -70,10 +96,16 @@
 
       if (!xml_parse($this->parser, $data)) {
         return throw(new FormatException($this->_error()));
-      }  	
-      return 1;
+      }
+         
+      return TRUE;
     }
     
+    /**
+     * Destructor
+     *
+     * @access  public
+     */
     function __destruct() {
       $this->_free();
       parent::__destruct();
