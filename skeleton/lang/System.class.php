@@ -50,6 +50,7 @@
      * user.name         Current user's name
      * </pre>
      *
+     * @model   static
      * @access  public
      * @param   string name
      * @return  mixed
@@ -71,7 +72,7 @@
           break;
 
         case 'os.tempdir':
-          $prop[$name]= $this->tempDir();
+          $prop[$name]= System::tempDir();
           break;
         
         case 'host.name': 
@@ -79,7 +80,7 @@
             $uname= posix_uname();
             $prop[$name]= $uname['nodename'].'.'.$uname['domainname'];
           }
-          $prop[$name]= $this->_env('HOSTNAME', 'COMPUTERNAME');
+          $prop[$name]= System::_env('HOSTNAME', 'COMPUTERNAME');
           break;
 
         case 'host.arch':
@@ -87,7 +88,7 @@
             $uname= posix_uname();
             $prop[$name]= $uname['machine'];
           }
-          $prop[$name]= $this->_env('HOSTTYPE', 'PROCESSOR_ARCHITECTURE');
+          $prop[$name]= System::_env('HOSTTYPE', 'PROCESSOR_ARCHITECTURE');
           break;
           
         case 'user.home': 
@@ -96,7 +97,7 @@
             $prop[$name]= $pwuid['dir'];
             break;
           }
-          $prop[$name]= str_replace('\\', DIRECTORY_SEPARATOR, $this->_env('HOME', 'HOMEPATH'));
+          $prop[$name]= str_replace('\\', DIRECTORY_SEPARATOR, System::_env('HOME', 'HOMEPATH'));
           break;
           
         case 'user.name': 
