@@ -157,8 +157,8 @@
      * <code>
      *   $a= &new Archive(new File('port.cca'));
      *   $a->open(ARCHIVE_READ);
-     *   while ($e= $a->getEntry()) {
-     *     var_dump($e);
+     *   while ($id= $a->getEntry()) {
+     *     var_dump($id);
      *   }
      *   $a->close();
      * </code>
