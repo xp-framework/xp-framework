@@ -38,7 +38,7 @@
 
       // User
       $prop['user.home']= str_replace('\\', '/', (getenv('HOME')== '') ? getenv('HOMEPATH') : getenv('HOME'));
-      $prop['user.name']= (getenv('USER')== '') ? getenv('USERNAME') : getenv('USER');
+      $prop['user.name']= get_current_user();
       
       return $prop;
     }
