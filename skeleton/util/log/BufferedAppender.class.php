@@ -7,9 +7,10 @@
   uses('util.log.LogAppender');
 
   /**
-   * Appender which appends all data to an appender
+   * Appender which appends all data to a buffer
    *
-   * @see   xp://util.log.LogAppender
+   * @see      xp://util.log.LogAppender
+   * @purpose  Appender
    */  
   class BufferedAppender extends LogAppender {
     var 
@@ -19,7 +20,7 @@
      * Appends log data to the buffer
      *
      * @access public
-     * @param  mixed args variables
+     * @param  mixed* args variables
      */
     function append() {
       foreach (func_get_args() as $arg) {
@@ -29,7 +30,7 @@
     }
     
     /**
-     * Get Buffer
+     * Get buffer's contents
      *
      * @access  public
      * @return  string
