@@ -66,7 +66,7 @@ int main(int argc, char **argv)
         sprintf(prompt, "%s@%s > ", argv[2], argv[1]);
         while (1) {
             sql= readline(prompt);
-            if (strncmp(sql, "quit", 4) == 0) {
+            if (!sql || strncmp(sql, "quit", 4) == 0) {
                 free(sql);
                 break;
             }
