@@ -1,15 +1,26 @@
 #include <stdio.h>
 
+#define STRING 1
+#define INT 2
+
 typedef struct {
     int key;
-    char *value;
+    int type;
+    struct {
+        char *strval;
+        int intval;
+    } value;
 } hash;
 
 static void printhash(char *name, hash *h)
 {
     printf("%s = {\n", name);
     while (h->key != NULL) {
-        printf("  %d: %s\n", h->key, h->value);
+        if (h->type == STRING) {
+            printf("  %d: (string)%s\n", h->key, h->value.strval);
+        } else {
+            printf("  %d: (int)%d\n", h->key, h->value.intval);
+        }
         h++;
     }
     printf("}\n");
@@ -18,9 +29,10 @@ static void printhash(char *name, hash *h)
 int main(int argc, char **argv)
 {
     hash a[] = {
-        { 1, "Hello" },
-        { 2, "World" },
-        { NULL, NULL }
+        { 1, STRING, { "Hello", 0 } },
+        { 2, STRING, { "World", 0 } },
+        { 3, INT, { NULL, 1 } },
+        { NULL }
     };
     hash b[2];
     hash *c;
@@ -28,16 +40,16 @@ int main(int argc, char **argv)
     printhash("a", a);
     
     b[0].key= 1;
-    b[0].value= "Dynamic";
+    b[0].value.strval= "Dynamic";
+    b[0].type= STRING;
     b[1].key= NULL;
-    b[1].value= NULL;
     printhash("b", b);
     
     c= (hash *) malloc(sizeof(hash) * 2);
     c[0].key= 1;
-    c[0].value= "Pointer";
+    c[0].value.strval= "Pointer";
+    c[0].type= STRING;
     c[1].key= NULL;
-    c[1].value= NULL;
     printhash("c", c);
     free(c);
     
