@@ -267,7 +267,7 @@
       if ($this->_cnt <= 0) return;
 
       // &lt; &amp;, &#XX; etc. ersetzen
-      if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_ENTITIES));
+      if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_SPECIALCHARS));
       $cdata= preg_replace(
         '/&#([0-9]+);/me', 
         'chr(\'\1\')', 
