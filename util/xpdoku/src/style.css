@@ -1,3 +1,8 @@
+ul {
+    list-style-type: square;
+    list-style-image: url(/image/icn_li.gif);
+}
+
 body, td, th {
 	font-family: arial,helvetica,sans-serif;
 	font-size: 12px;
