@@ -45,11 +45,15 @@
       parent::setData($data);
 
       // Select properties which should be set
-      if ($propupdate= $this->getNode('/D:propertyupdate/D:set/D:prop')) {
+      foreach (array(
+        FALSE => $this->getNode('/D:propertyupdate/D:set/D:prop'),
+        TRUE  => $this->getNode('/D:propertyupdate/D:remove/D:prop')
+      ) as $remove => $propupdate) {
+        if (!$propupdate) continue;
         if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_ENTITIES));
         
         // Copied from WebdavPropFindRequest::setData()
-        foreach($propupdate->children as $node) {
+        foreach ($propupdate->children as $node) {
           $name= $node->getName();
           $ns= 'xmlns';
           $nsprefix= '';
@@ -57,7 +61,7 @@
             $ns.= ':'.($nsprefix= substr($name, 0, $p));
             $name= substr($name, $p+1);
           }
-          $p= new WebdavProperty(
+          $p= &new WebdavProperty(
             $name,
             utf8_decode(preg_replace(
               '/&#([0-9]+);/me', 
@@ -69,9 +73,10 @@
             $p->setNamespaceName($nsname);
             if ($nsprefix) $p->setNamespacePrefix($nsprefix);
           }
-          $this->addProperty($p);
+          $this->addProperty($p, $remove);
         }
       }
+      
     }
     
     /**
@@ -90,8 +95,8 @@
      * @access  public
      * @param   org.webdav.WebdavProperty property The property object
      */
-    function addProperty($property) {
-      $this->properties[]= $property;
+    function addProperty($property, $remove= FALSE) {
+      $this->properties[$remove][]= $property;
     }
     
     /**
@@ -100,8 +105,8 @@
      * @access  public
      * @return  &org.webdav.WebdavProperty[]
      */
-    function &getProperties() {
-      return $this->properties;
+    function &getProperties($remove= FALSE) {
+      return $this->properties[$remove];
     }
   }
 ?>
