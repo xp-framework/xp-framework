@@ -51,7 +51,7 @@
      * @access  public
      * @return  &peer.Header
      */
-    function getHeader() {
+    function &getHeader() {
       return new Header('X-Binford', $this->poweredBy.' (more power)');
     }
   }
