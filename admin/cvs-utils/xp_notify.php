@@ -33,6 +33,8 @@
   // Argument #3 contains the directory, the committed files and their versions
   $args= explode(' ', $argv[3]);
   
+  var_dump($args, $argv);
+  
   // First element is directory relative to CVSROOT environment variable
   // Commits in multiple directories are scheduled as two or more commits, actually
   $dir= $args[0];
