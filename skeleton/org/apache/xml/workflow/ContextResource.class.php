@@ -11,7 +11,15 @@
    */
   class ContextResource extends Object {
     var
-      $values   = array();
+      $values       = array();
+
+    /**
+     * Notify observers
+     *
+     * @model   abstract
+     * @access  protected
+     */
+    function notifyAll() { }
 
     /**
      * Set a value
@@ -22,6 +30,7 @@
      */
     function setValue($name, &$data) {
       $this->values[$name]= &$data;
+      $this->notifyAll();
     }
 
     /**
