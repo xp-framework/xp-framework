@@ -102,8 +102,29 @@
    */
   class VCalendar extends Object {
     var
+      $uid      = '',
       $method   = '',
       $events   = array();
+
+    /**
+     * Set UID
+     *
+     * @access  public
+     * @param   string uid
+     */
+    function setUID($uid) {
+      $this->uid= $uid;
+    }
+    
+    /**
+     * Get UID
+     *
+     * @access  public
+     * @return  string uid
+     */    
+    function getUID() {
+      return $this->uid;
+    }
 
     /**
      * Set Method
