@@ -104,6 +104,19 @@
     }
     
     /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function finalize() {
+      foreach ($this->_appenders as $appender) {
+        $appender->finalize();
+      }
+    }
+    
+    /**
      * Fügt einen Appender hinzu
      *
      * @access  public

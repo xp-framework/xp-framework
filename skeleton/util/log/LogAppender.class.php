@@ -9,6 +9,17 @@
      */ 
     function append() {
     }
+ 
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */   
+    function finalize() {
+    
+    }
     
     /**
      * Gibt eine Variable schön lesbar zurück
