@@ -65,6 +65,7 @@
      * Returns the next token from this tokenizer's string
      *
      * @access  public
+     * @param   bool delimiters default NULL
      * @return  string next token
      */
     function nextToken($delimiters= NULL) {
