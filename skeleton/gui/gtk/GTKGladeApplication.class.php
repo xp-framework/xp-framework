@@ -1,11 +1,24 @@
 <?php  
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
  * $Id$
  */
  
   uses('gui.gtk.GTKApplication');
-  
+
+  /**
+   * Application class with Glade
+   *
+   * Example:
+   * <code>
+   *   $app= &new GTKGladeApplication('Example', 'example.glade');
+   *   $app->init();
+   *   $app->run();
+   *   $app->done();
+   * </code>
+   * 
+   * @see   http://glade.gnome.org/
+   */  
   class GTKGladeApplication extends GTKApplication {
     var $glade;
     var $gladeFile;

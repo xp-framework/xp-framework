@@ -1,11 +1,25 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
  * $Id$
  */
  
   uses('util.log.Logger', 'util.log.FileAppender');
  
+  /**
+   * Base application class
+   *
+   * Example program (does nothing, simply shows an empty window)
+   * <code>
+   *   $app= &new GTKApplication('Example');
+   *   $app->init();
+   *   $app->run();
+   *   $app->done();
+   * </code>
+   *
+   * @see   php-gtk-doc://GtkWindow
+   * @see   http://gtk.org/
+   */
   class GtkApplication extends Object {
     var 
       $name,
