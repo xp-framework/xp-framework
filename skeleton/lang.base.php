@@ -130,7 +130,7 @@
   // {{{ internal void __error(int code, string msg, string file, int line)
   //     Error callback
   function __error($code, $msg, $file, $line) {
-    if (0 == error_reporting()) return;
+    if (0 == error_reporting() || is_null($file)) return;
 
     $errors= &xp::registry('errors');
     $errors[$file][]= array($code, $msg, $line);
