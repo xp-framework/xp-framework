@@ -12,7 +12,7 @@
       checks are initiated by Nagios in configured intervals. Passive checks 
       results are submitted by the monitored service itself. NSCA is a client/server
       protocol that allows inter-machine status result transfers via TCP/IP.
-      <br/>
+      <br/><br/>
       See <ref type="api:class" link="org.nagios.nsca.NscaClient."/> 
       for an example on how to use these classes.<br/>
     </text>
