@@ -200,7 +200,7 @@
      * Process request
      *
      * @access  protected
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   &scriptlet.xml.XMLScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      */
     function processRequest(&$request, &$response) {
@@ -239,7 +239,7 @@
      * @see     xp://scriptlet.HttpScriptlet#doGet
      */
     function doGet(&$request, &$response) {
-      $this->processRequest($request, $response);
+      return $this->processRequest($request, $response);
     }
     
     /**
