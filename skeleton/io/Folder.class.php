@@ -143,7 +143,7 @@
         if (!is_dir($fn)) {
           $ret= unlink($fn);
         } else {
-          $ret= $this->unlink($fn.'/');
+          $ret= $this->unlink($fn.DIRECTORY_SEPARATOR);
         }
         if (FALSE === $ret) return throw(new IOException(sprintf(
           'unlink of "%s" failed',

@@ -72,7 +72,7 @@
       if (FALSE === ($d= dir($this->cache))) return FALSE;
       while ($entry= $d->read()) {
         if ($this->prefix != substr($entry, 0, strlen($this->prefix))) continue;
-        unlink($d->path.'/'.$entry);
+        unlink($d->path.DIRECTORY_SEPARATOR.$entry);
       }
       $d->close();
       return TRUE;

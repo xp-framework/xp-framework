@@ -81,7 +81,7 @@
       )= Gdk::pixmap_create_from_xpm(
         &$this->windowRef, 
         &$this->transparentColor,
-        $this->baseDir.'/'.$name.'.xpm'
+        $this->baseDir.DIRECTORY_SEPARATOR.$name.'.xpm'
       );
     }
     
