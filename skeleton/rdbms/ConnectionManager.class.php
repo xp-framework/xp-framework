@@ -32,6 +32,30 @@
       return $ConnectionManager__instance;
     }
     
+    function configure($properties) {
+      $section= $properties->getFirstSection();
+      do {
+        $defines= $properties->readSection($section);
+        try(); {
+          uses($defines['reflect']);
+        } if ($e= catch(E_ANY_EXCEPTION)) {
+          return throw(
+            $e->type, 
+            'ConnectionManager::couldn\'t use '.$defines['reflect'].'::'.$e->message
+          );
+        }
+
+        $reflect= substr($defines['reflect'], strrpos($defines['reflect'], '.')+ 1);
+        unset($defines['reflect']);
+        
+        // In den Pool mit aufnehmen
+        $this->register(
+          new $reflect($defines),
+          $section
+        );
+      } while ($section= $properties->getNextSection());
+    }
+    
     function register($obj, $hostAlias= NULL, $userAlias= NULL) {
       $host= (NULL == $hostAlias) ? $obj->host : $hostAlias;
       $user= (NULL == $userAlias) ? $obj->user : $userAlias;
