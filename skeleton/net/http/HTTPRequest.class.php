@@ -98,7 +98,11 @@
       
       // Absenden
       $this->request.= "\r\n".$body;
-      if (!$this->write($this->request)) return throw(new IOException($this->request));
+      try(); {
+        $this->write($this->request);
+      } if (catch('Exception', $e)) {
+        return throw(new IOException($e->getStackTrace().'::'.$this->request));
+      }
 
       // Antwort lesen
       $this->response= new StdClass();
