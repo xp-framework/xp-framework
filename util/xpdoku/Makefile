@@ -34,7 +34,7 @@ clean:
 	-rm -rvf output/
 	-rm -rvf xml/
         
-gen: makexml index collections classes
+gen: index collections classes
 	
 makexml: $(XML)
 	$(PHP) xpdoku.php
