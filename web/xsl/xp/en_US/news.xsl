@@ -12,6 +12,7 @@
  extension-element-prefixes="func"
 >
   <xsl:include href="../layout.xsl"/>
+  <xsl:include href="../news.inc.xsl"/>
   
   <!--
    ! Template for context navigation
