@@ -105,27 +105,6 @@
         </advanced>
       </para>
 
-      <!-- db -->
-      <para>
-        <caption>Databases</caption>
-        <text>
-          <!-- RDBMS classes, ConnectionManager -->
-          Duis nulla eros, tristique sed, tristique sed, consectetuer sed, felis. Vivamus facilisis risus a risus. Cras id turpis non mi viverra gravida. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed consectetuer. Nullam enim. Sed vestibulum. Maecenas tristique gravida elit. Phasellus hendrerit viverra nibh. Etiam massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla vel urna vitae magna mattis vestibulum. Cras elementum. Donec malesuada placerat nulla.          
-        </text>
-        <advanced>
-          <ref link="tasks.db.classgen">Generating classes from tables</ref>
-        </advanced>
-      </para>
-
-      <!-- log -->
-      <para>
-        <caption>Logging</caption>
-        <text>
-          <!-- Logger -->
-          Integer tincidunt enim in mauris. Vivamus aliquam, diam sed aliquet ultrices, mi metus ultricies metus, vel adipiscing dolor libero vel metus. Maecenas ornare tellus ac urna. Nam quis eros at ipsum tristique tincidunt. Sed est dolor, sagittis non, volutpat ac, feugiat non, diam. Sed et massa. Curabitur sed nisl id urna convallis rhoncus. Suspendisse imperdiet. Aliquam ac libero eu velit congue venenatis. Suspendisse eu ante et sem dictum sagittis. Phasellus fermentum.
-        </text>
-      </para>
-      
       <!-- soap -->
       <para>
         <caption>SOAP clients/servers</caption>
