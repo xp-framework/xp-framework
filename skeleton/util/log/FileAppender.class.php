@@ -9,16 +9,18 @@
   /**
    * LogAppender which appends data to a file
    *
-   * @see   xp://util.log.LogAppender
+   * @see      xp://util.log.LogAppender
+   * @purpose  Appender
    */  
   class FileAppender extends LogAppender {
     var 
-      $filename;
+      $filename = '';
     
     /**
      * Constructor
      *
-     * @param  string filename default 'php://stderr' filename to log to
+     * @access  public
+     * @param   string filename default 'php://stderr' filename to log to
      */
     function __construct($filename= 'php://stderr') {
       $this->filename= $filename;
@@ -28,8 +30,8 @@
     /**
      * Appends log data to the file
      *
-     * @access public
-     * @param  mixed args variables
+     * @access  public
+     * @param   mixed* args variables
      */
     function append() {
       $fd= fopen($this->filename, 'a');
