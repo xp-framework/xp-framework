@@ -8,14 +8,16 @@
    * Transaction
    *
    * <code>
-   *   $s= &new SybaseConnection(new DSN('sybase://user:password@server/database'));
-   *   $tran= &$s->begin(new Transaction('test'));
+   *   uses('rdbms.DriverManager');
+   *
+   *   $conn= &DriverManager::getConnection('sybase://user:password@server/database');
+   *   $tran= &$conn->begin(new Transaction('test'));
    *   try(); {
    *     // ... execute SQL statements
    *   } if (catch('SQLException', $e)) {
    *     $tran->rollback();
    *     $e->printStackTrace();
-   *     exit();
+   *     exit(-1);
    *   }
    *   $tran->commit();
    * </code>
