@@ -40,6 +40,7 @@
       list($ns, $t)= explode(':', $this->attribute['xsi:type']);
       
       switch ($t) {
+        case 'base64':
         case 'base64Binary':
           return new SOAPBase64Binary(base64_decode($ret));
           break;
