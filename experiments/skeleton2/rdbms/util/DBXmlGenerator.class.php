@@ -40,10 +40,6 @@
      * @return  &rdbms.util.DBXmlGenerator object
      */    
     public static function createFromTable(DBTable $table, $dbhost, $database) {
-      if (!is_a($table, 'DBTable')) {
-        throw (new IllegalArgumentException('Argument table is not a DBTable object'));
-      }
-      
       $g= new DBXmlGenerator();
       $g->doc->root->setAttribute('created_at', date('r'));
       $g->doc->root->setAttribute('created_by', System::getProperty('user.name'));
