@@ -22,7 +22,7 @@
    *
    * @purpose  Resultset wrapper
    */
-  class ResultSet extends Object {
+  abstract class ResultSet extends Object {
     public
       $handle,
       $fields;
@@ -35,7 +35,6 @@
      * @param   array fields
      */
     public function __construct($handle, $fields) {
-      
       $this->handle= $handle;
       $this->fields= $fields;
     }
@@ -69,7 +68,7 @@
      * @access  public
      * @return  bool success
      */
-    public function close() { }
-
+    public function close() { 
+    }
   }
 ?>
