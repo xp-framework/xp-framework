@@ -7,9 +7,14 @@
   /**
    * Base class for comments
    *
+   * @see      xp://lang.apidoc.FileComment
+   * @see      xp://lang.apidoc.ClassComment
+   * @see      xp://lang.apidoc.FunctionComment
+   * @purpose  Base class
    */
   class Comment extends Object {
-    var $text;
+    var 
+      $text;
     
     /**
      * Handles tags - override!
@@ -19,7 +24,7 @@
      * @param   string line Line of text
      * @return  bool handled
      */
-    function &_handleTag($tag, $line) {
+    function _handleTag($tag, $line) {
       return FALSE;
     }
     
@@ -52,7 +57,7 @@
      */
     function fromString($str) {
       if ('/*' !== substr($str, 0, 2)) {
-        return throw(new FormatException('comment format unrecognized ['.$str.']'));
+        return throw(new FormatException('Comment format unrecognized ['.$str.']'));
       }
       
       $tag= '';
