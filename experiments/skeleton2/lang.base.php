@@ -224,6 +224,13 @@
   }
   // }}}
 
+  // {{{ proto lang.Generic create(&lang.Generic object)
+  //     Syntactic sugar to allow dereferencing
+  function create($o) {
+    return $o;
+  }
+  // }}}
+
   // {{{ initialization
   error_reporting(E_ALL);
   define('SKELETON_PATH', (getenv('SKELETON_PATH')
