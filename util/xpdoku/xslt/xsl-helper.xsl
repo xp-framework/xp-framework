@@ -46,8 +46,8 @@
       <font color="#ffffff">
         <b>
           <xsl:processing-instruction name="php">
-          echo date ('l, F d, Y');
-          ?</xsl:processing-instruction>
+            echo date ('l, F d, Y');
+          </xsl:processing-instruction>
         </b>
         <br/>
       </font>
@@ -126,7 +126,11 @@
               <xsl:with-param name="collection" select="$collection"/>
             </xsl:call-template>
             
-            <xsl:call-template name="class"/>            
+            <xsl:call-template name="class"/>   
+          </xsl:when>
+          
+          <xsl:when test="$mode = 'showsource'">
+            <xsl:call-template name="showsource"/>
           </xsl:when>
 
         </xsl:choose>

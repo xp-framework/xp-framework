@@ -1,8 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
 <xsl:stylesheet 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
   version="1.0"
 >
-  <xsl:output method="html" encoding="iso-8859-1"/>
+  <xsl:output method="xhtml" encoding="iso-8859-1"/>
   
   <xsl:param name="collection"/>
   <xsl:param name="package"/>
@@ -165,15 +166,18 @@
   </xsl:template>
   
   <xsl:template match="link">
-    <xsl:if test="./scheme = 'http'">
-      <a href="{./scheme}://{./host}{./path}#{./fragment}" target="_blank">
-      <xsl:value-of select="./scheme"/>://<xsl:value-of select="./host"/><xsl:value-of select="./path"/>#<xsl:value-of select="./fragment"/>
-      </a>
-    </xsl:if>
-    
-    <xsl:if test="./scheme = 'xp'">
-      <a href="http://xp.php3.de/s/?_search={./fragment}">xp://<xsl:value-of select="./fragment"/></a>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="./scheme = 'http'">
+        <a href="{./scheme}://{./host}{./path}#{./fragment}" target="_blank">
+        <xsl:value-of select="./scheme"/>://<xsl:value-of select="./host"/><xsl:value-of select="./path"/>#<xsl:value-of select="./fragment"/>
+        </a>
+      </xsl:when>
+
+      <xsl:otherwise>
+        <a href="http://xp.php3.de/ref/?_host={./host}&amp;_path={./path}&amp;_fragment={./fragment}"><xsl:value-of select="./scheme"/>://
+        <xsl:value-of select="./host"/><xsl:value-of select="./path"/><xsl:value-of select="./fragment"/></a>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
   <xsl:template match="defines">

@@ -11,7 +11,7 @@
   <!-- Include main window part -->
   <xsl:include href="xsl-helper.xsl"/>  
 
-  <xsl:output method="html" encoding="iso-8859-1"/>
+  <xsl:output method="xhtml" encoding="iso-8859-1"/>
   
   <xsl:template match="collection">
     <table border="0" width="100%" cellspacing="0" cellpadding="0">

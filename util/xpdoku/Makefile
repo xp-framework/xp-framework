@@ -33,7 +33,9 @@ $(OUTPUT):
 	@-mkdir $(OUTPUT)/collections
 	@-mkdir $(OUTPUT)/classes
 	@-mkdir $(OUTPUT)/image
+	@-mkdir $(OUTPUT)/src
 	@-cp -R src/ $(OUTPUT)
+	@-$(PHP) getSource.php --dest=$(OUTPUT)/src
 
 install:
 	cp -R $(OUTPUT)/* $(TARGET)
@@ -52,6 +54,7 @@ makexml: $(XML)
 
 index: $(OUTPUT) $(XML)
 	@$(SABCMD) xslt/index.xsl $(CTREE) $(OUTPUT)/index.html 2>/dev/null
+	@$(SABCMD) xslt/showsource.xsl $(CTREE) $(OUTPUT)/showsource.php 2>/dev/null
         
 collections: $(OUTPUT) $(XML)
 	@echo "===> Processing collections"
