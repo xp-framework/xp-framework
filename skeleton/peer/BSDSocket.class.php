@@ -126,7 +126,7 @@
      * @throws	IOException
      */
     function read($maxLen= 4096) {
-      $res= socket_read($this->_sock, 4096);
+      $res= socket_read($this->_sock, $maxLen);
       # DEBUG echo "RECV(".$maxLen.") ".var_export($res, 1)."\n";
       
       if (FALSE === $res) {
