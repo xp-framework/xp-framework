@@ -127,6 +127,9 @@ Details
   <?php
     import lang~String, lang~Object;
     import de~schlund~webservices~ServiceLocator as Locator;
+    
+    $class= 'de~binford6100~Power';
+    import $class;
   ?>
   Name clashes cause a Fatal (Compile-Time) Error.
 
