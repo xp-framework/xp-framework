@@ -38,9 +38,9 @@
    * @see      http://sitten-polizei.de/php/webdav.patch
    * @see      http://www.webdav.org/
    * @see      http://www.webdav.org/cadaver/
-   * @see      rfc://rfc2518 (WebDAV)
-   * @see      rfc://rfc2616 (HTTP/1.1)
-   * @see      rfc://rfc3253 (DeltaV)
+   * @see      rfc://2518 (WebDAV)
+   * @see      rfc://2616 (HTTP/1.1)
+   * @see      rfc://3253 (DeltaV)
    * @purpose  Provide the base for Webdav Services
    */
   class WebdavScriptlet extends HttpScriptlet {
