@@ -319,7 +319,7 @@
               TRUE
             );
           }
-          $this->node[$test->getClassName().'::'.$test->getName()]= &$this->hierarchy->insert_node(
+          $this->node[$test->hashCode()]= &$this->hierarchy->insert_node(
             $this->node[$test->getClassName()],
             NULL,
             array($test->getName(), ''),

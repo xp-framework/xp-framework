@@ -30,7 +30,7 @@
      * @param   mixed value
      */
     function setSucceeded(&$test, $value) {
-      $this->succeeded[$test->getClassName().'::'.$test->getName()]= &new TestSuccess($value);
+      $this->succeeded[$test->hashCode()]= &new TestSuccess($value);
     }
     
     /**
@@ -41,7 +41,7 @@
      * @param   mixed reason
      */
     function setFailed(&$test, $reason) {
-      $this->failed[$test->getClassName().'::'.$test->getName()]= &new TestFailure($reason);
+      $this->failed[$test->hashCode()]= &new TestFailure($reason);
     }
 
     /**
@@ -52,7 +52,7 @@
      * @param   mixed reason
      */
     function setSkipped(&$test, $reason) {
-      $this->skipped[$test->getClassName().'::'.$test->getName()]= &new TestSkipped($reason);
+      $this->skipped[$test->hashCode()]= &new TestSkipped($reason);
     }
 
     /**
