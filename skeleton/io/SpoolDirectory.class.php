@@ -43,10 +43,10 @@
      */    
     function open() {
       try(); {
-        $this->_hNew=   &new Folder ($this->root.'/new/');
-        $this->_hTodo=  &new Folder ($this->root.'/todo/');
-        $this->_hDone=  &new Folder ($this->root.'/done/');
-        $this->_hError= &new Folder ($this->root.'/error/');
+        $this->_hNew=   &new Folder ($this->root.DIRECTORY_SEPARATOR.'new');
+        $this->_hTodo=  &new Folder ($this->root.DIRECTORY_SEPARATOR.'todo');
+        $this->_hDone=  &new Folder ($this->root.DIRECTORY_SEPARATOR.'done');
+        $this->_hError= &new Folder ($this->root.DIRECTORY_SEPARATOR.'error');
 
         if (!$this->_hNew->exists())    $this->_hNew->create ();
         if (!$this->_hTodo->exists())   $this->_hTodo->create ();
@@ -77,7 +77,7 @@
         $abstract= date ('Y-m-d-H-i-s').'_'.$abstract;
       
       try(); {
-        $f= &new File ($this->_hNew->getURI().'/'.$abstract.'.spool');
+        $f= &new File ($this->_hNew->getURI().DIRECTORY_SEPARATOR.$abstract.'.spool');
         $f->open (FILE_MODE_WRITE);
       } if (catch ('IOException', $e)) {
         return throw ($e);
@@ -97,7 +97,7 @@
     function enqueueSpoolEntry(&$f) {
       try(); {
         $f->close();
-        $f->move ($this->_hTodo->getURI().'/'.$f->getFileName());
+        $f->move ($this->_hTodo->getURI().DIRECTORY_SEPARATOR.$f->getFileName());
       } if (catch ('IOException', $e)) {
         return throw ($e);
       }
@@ -115,7 +115,7 @@
     function &getNextSpoolEntry() {
       try(); {
         if (FALSE !== ($entry= $this->_hTodo->getEntry())) {
-          $f= &new File ($this->_hTodo->getURI().'/'.$entry);
+          $f= &new File ($this->_hTodo->getURI().DIRECTORY_SEPARATOR.$entry);
           $f->open (FILE_MODE_READWRITE);
         }
       } if (catch ('IOException', $e)) {
@@ -136,7 +136,7 @@
     function finishSpoolEntry(&$f) {
       try(); {
         $f->close();
-        $f->move ($this->_hDone->getURI().'/'.$f->getFileName());
+        $f->move ($this->_hDone->getURI().DIRECTORY_SEPARATOR.$f->getFileName());
       } if (catch ('IOException', $e)) {
         return throw ($e);
       }
@@ -155,7 +155,7 @@
     function failSpoolEntry(&$f) {
       try(); {
         $f->close();
-        $f->move ($this->_hError->getURI().'/'.$f->getFileName());
+        $f->move ($this->_hError->getURI().DIRECTORY_SEPARATOR.$f->getFileName());
       } if (catch ('IOException', $e)) {
         return throw ($e);
       }
