@@ -155,7 +155,7 @@
      * @return  string
      */
     function read() { 
-      return $this->f->read();
+      return $this->f->read(32768);
     }
     
     /**
