@@ -50,8 +50,13 @@
      * @throws  IllegalArgumentException in case the given parameter is not a xml.soap.SOAPMessage
      */
     function &send(&$message) {
+    
+      // Sanity checks
       if (!is_a($message, 'SOAPMessage')) return throw(new IllegalArgumentException(
         'parameter "message" must be a xml.soap.SOAPMessage'
+      ));
+      if (!$this->_conn->request) return throw(new IllegalArgumentException(
+        'Factory method failed'
       ));
 
       // Action
@@ -83,11 +88,9 @@
      * @return  &xml.soap.SOAPMessage
      */
    function &retreive(&$response) {
-   
-      // Rückgabe auswerten
       $answer= &new SOAPMessage();
       
-      // Auf das Encoding achten!
+      // Check encoding
       if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
         @list($type, $charset)= explode('; charset=', $content_type);
         if (!empty($charset)) $answer->setEncoding($charset);
