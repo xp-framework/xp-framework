@@ -5,14 +5,14 @@
  */
 
   // Constants for CVS
-  define ('CVS_ADDED',    0x0001);
-  define ('CVS_UNKNOWN',  0x0002);
-  define ('CVS_PATCHED',  0x0003);
-  define ('CVS_UPDATED',  0x0004);
-  define ('CVS_REMOVED',  0x0005);
-  define ('CVS_MODIFIED', 0x0006);
-  define ('CVS_CONFLICT', 0x0007);
-  define ('CVS_UPTODATE', 0x0008);
+  define('CVS_ADDED',    0x0001);
+  define('CVS_UNKNOWN',  0x0002);
+  define('CVS_PATCHED',  0x0003);
+  define('CVS_UPDATED',  0x0004);
+  define('CVS_REMOVED',  0x0005);
+  define('CVS_MODIFIED', 0x0006);
+  define('CVS_CONFLICT', 0x0007);
+  define('CVS_UPTODATE', 0x0008);
 
   uses (
     'org.cvshome.CVSInterfaceException'
@@ -42,10 +42,12 @@
         $object
       );
       
-      exec ($cmdLine, $output, $returnCode);
-      
-      if (0 !== $returnCode && 'diff' != substr ($cvsCmd, 0, 4)) {
-        return throw (new CVSInterfaceException ('CVS returned failure'));
+      try(); {
+        $output= System::exec ($cmdLine, '2>&1', FALSE);
+      } if (catch ('SystemException', $e)) {
+        // Only return error if command was not "diff"
+        if ('diff' != substr ($cvsCmd, 0, 4))
+          return throw (new CVSInterfaceException ('CVS returned failure'));
       }
       
       if (count ($output) && strstr ($output[0], 'Cannot access'))
