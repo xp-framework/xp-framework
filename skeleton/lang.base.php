@@ -24,6 +24,13 @@
     }
     // }}}
 
+    // {{{ public string stringOf(&mixed arg)
+    //     Returns a string representation of the given argument
+    function stringOf(&$arg) {
+      return is_a($arg, 'Object') ? $arg->toString() : var_export($arg, 1);
+    }
+    // }}}
+
     // {{{ public void gc()
     //     Runs the garbage collector
     function gc() {
