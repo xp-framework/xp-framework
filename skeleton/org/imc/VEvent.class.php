@@ -3,6 +3,8 @@
  *
  * $Id$ 
  */
+ 
+  uses('util.Date');
 
   /**
    * VEvent
@@ -11,6 +13,15 @@
    * @purpose  Represent a single event
    */
   class VEvent extends Object {
+    var
+      $date=         NULL,
+      $starts=       NULL,
+      $ends=         NULL,
+      $summary=      '',
+      $location=     '',
+      $description=  '',
+      $attendee=     array(),
+      $organizer=    '';
   
   }
 ?>
