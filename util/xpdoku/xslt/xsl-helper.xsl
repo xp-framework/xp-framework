@@ -75,9 +75,9 @@
 
       <tr bgcolor="#000033"><td colspan="2"><img src="/image/spacer.gif" width="1" height="1" border="0" alt=""/><br/></td></tr>
 
-      <tr bgcolor="#3654a5"> <!-- #e0e8fc"> -->
+      <tr bgcolor="#3654a5">
         <form method="GET" action="/search.php">
-          <td align="right" valign="top" colspan="2" nowrap="nowrap">
+          <td class="searchbar" align="right" valign="top" colspan="2" nowrap="nowrap">
             <font color="#ffffff">
               <small><u>s</u>earch for</small>
               <input class="small" type="text" name="keyword" value="&lt;?php echo isset($_REQUEST['keyword']) ?  $_REQUEST['keyword'] : ''; ?&gt;" size="30" accesskey="s"/>
