@@ -11,6 +11,10 @@
 
   uses('lang.SystemException');
   
+  // Known return codes
+  define('SYSTEM_RETURN_CMDNOTFOUND',        127);
+  define('SYSTEM_RETURN_CMDNOTEXECUTABLE',   126);
+  
   /**
    * Die System-Klasse
    * Betriebssystem/Umgebungsspezifisches
