@@ -43,7 +43,8 @@
     function append() {
       $body= '';
       for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
-        $body.= sprintf("[%08x] %s\n", $i, $this->varSource(func_get_arg($i)));
+        $arg= &func_get_arg($i);
+        $body.= sprintf("[%08x] %s\n", $i, $this->varSource($arg));
       }
 
       if ($this->sync) { 
