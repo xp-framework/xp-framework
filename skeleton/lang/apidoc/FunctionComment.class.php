@@ -9,6 +9,7 @@
   // Function access
   define('APIDOC_FUNCTION_ACCESS_PUBLIC',  'public');
   define('APIDOC_FUNCTION_ACCESS_PRIVATE', 'private');
+  define('APIDOC_FUNCTION_MODEL_GENERIC',  '');
   
   /**
    * Class wrapping function comments
@@ -20,6 +21,7 @@
       $references   = array(),
       $return       = NULL,
       $access       = APIDOC_FUNCTION_ACCESS_PUBLIC,
+      $model        = APIDOC_FUNCTION_MODEL_GENERIC,
       $throws       = array(),
       $params       = array();
       
@@ -60,6 +62,26 @@
       return $this->return->description;
     }
     
+    /**
+     * Set Model
+     *
+     * @access  public
+     * @param   mixed model
+     */
+    function setModel($model) {
+      $this->model= $model;
+    }
+
+    /**
+     * Get Model
+     *
+     * @access  public
+     * @return  mixed
+     */
+    function getModel() {
+      return $this->model;
+    }
+
     /**
      * Add a throws
      *
@@ -129,6 +151,11 @@
 
         case 'access':
           $this->setAccess($line);
+          $descr= NULL;
+          break;
+        
+        case 'model':
+          $this->setModel($line);
           $descr= NULL;
           break;
 
