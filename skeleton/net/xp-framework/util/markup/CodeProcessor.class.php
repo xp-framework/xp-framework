@@ -71,7 +71,7 @@
           $current= $class;
         }
 
-        $out.= htmlentities(is_array($token) ? $token[1] : $token);
+        $out.= htmlspecialchars(is_array($token) ? $token[1] : $token);
       }
       
       return '<code><span>'.substr($out, 8, -5).'</span></code>';
