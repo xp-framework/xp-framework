@@ -150,6 +150,7 @@ __;
           ('getInstance' == $tok[1]) ||
           ('fromString' == $tok[1]) ||
           ('fromFile' == $tok[1]) ||
+          ('factory' == $tok[1]) ||
           ('getBy' == substr($tok[1], 0, 5))
         ) $out[]= ' static';
         if ('getStackTrace' == $tok[1]) $tok[1]= 'toString';
