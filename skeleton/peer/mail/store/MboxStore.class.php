@@ -31,8 +31,8 @@
      */
     function _supports($u, &$attr) {
       switch (strtolower($u['scheme'])) {
-        case 'pop3': 
-          $attr['mbx']= $u['path'];
+        case 'mbox': 
+          $attr['mbx']= getcwd().'/'.$u['host'].(isset($u['path']) ? '/'.$u['path'] : '');
           break;
           
         default: 
@@ -42,5 +42,16 @@
       return TRUE;   
     }
   
+    /**
+     * Get a folder. Note: Results from this method are cached.
+     *
+     * @access  public
+     * @param   string name
+     * @return  &peer.mail.MailFolder
+     * @throws  MessagingException
+     */  
+    function &getFolder() {
+      return parent::getFolder('*');
+    }
   }
 ?>
