@@ -74,9 +74,7 @@
    * @see      http://developer.netscape.com/docs/manuals/dirsdk/jsdk40/Reference/netscape/ldap/LDAPException.html
    */
   class LDAPException extends XPException {
-    public
-      $code = 0;
-      
+
     /**
      * Constructor
      *
@@ -85,20 +83,10 @@
      * @param   int code
      */
     public function __construct($message, $code) {
-      $this->code= $code;
       parent::__construct($message);
+      $this->code= $code;
     }
 
-    /**
-     * Get Code
-     *
-     * @access  public
-     * @return  int
-     */
-    public function getCode() {
-      return $this->code;
-    }
-    
     /**
      * Create string representation
      *
