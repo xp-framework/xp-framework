@@ -90,6 +90,24 @@
     function doGet(&$request, &$response) {
       return throw(new IllegalAccessException('GET is not supported'));
     }
+    
+    /**
+     * Formats stack trace to be used in SOAP fault messages. Makes sure
+     * the stack trace elements' string representation is XML-safe (unsafe 
+     * characters are replaced with the character ¿ (ASCII #191)).
+     *
+     * @access  protected
+     * @param   lang.StackTraceElement[] elements
+     * @return  string[]
+     */
+    function formatStackTrace($elements) {
+      $stacktrace= array();
+      $replace= str_repeat('¿', strlen(XML_ILLEGAL_CHARS));
+      foreach ($elements as $element) {
+        $stacktrace[]= strtr($element->toString(), XML_ILLEGAL_CHARS, $replace); 
+      }
+      return $stacktrace;
+    }
 
     /**
      * Handle POST requests. The complete POST data consits of the SOAP
@@ -123,30 +141,19 @@
       
         // Server methods may throw a ServerFaultException to have more
         // conveniant control over the faultcode which is returned to the client.
-        $stacktrace= array();
-        foreach ($e->getStackTrace() as $element) {
-          $stacktrace[]= $element->toString();
-        }
-        
         $answer->setFault(
           $e->getFaultcode(),
           $e->getMessage(),
           $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
-          $stacktrace
+          $this->formatStackTrace($e->getStackTrace())
         );
 
       } if (catch('Exception', $e)) {
-        $stacktrace= array();
-        foreach ($e->getStackTrace() as $element) {
-          $stacktrace[]= $element->toString();
-        }
-        
-        // An exception occured
         $answer->setFault(
           HTTP_INTERNAL_SERVER_ERROR,
           $e->message,
           $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
-          $stacktrace
+          $this->formatStackTrace($e->getStackTrace())
         );
       }
 
