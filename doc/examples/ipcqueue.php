@@ -9,7 +9,6 @@
     'io.sys.IPCQueue',
     'io.sys.Ftok', 
     'lang.Thread'
-
   );
 
   // {{{ sender thread
@@ -17,12 +16,17 @@
     public
       $num  = 0;
 
+    // {{{ SenderThread __construct(int num)
+    //     Constructor
     public function __construct($num) {
       parent::__construct('sender.'.$num);
       $this->num= $num;
       $this->queue= new IPCQueue(8925638);
     }
+    // }}}
 
+    // {{{ void run(void)
+    //     Thread runner implementation
     public function run() {
       while ($this->sent < $this->num) {
         Thread::sleep(rand(100, 4000));
@@ -41,17 +45,23 @@
       // Add message to signal receiver we've finished
       $this->queue->putMessage('__FINISH__');
     }
+    // }}}
   }
   // }}}
   
   // {{{ receiver thread
   class ReceiverThread extends Thread {
 
-    public function __construct($name) {
+    // {{{ ReceiverThread __construct(void)
+    //     Constructor
+    public function __construct() {
       parent::__construct('receiver');
       $this->queue= new IPCQueue(8925638);
     }
+    // }}}
 
+    // {{{ void run(void)
+    //     Thread runner implementation
     public function run() {
       do {
 
@@ -83,6 +93,7 @@
       $this->queue->removeQueue();
       Console::writeLinef('<%s> All messages received, queue removed.', $this->name);
     }
+    // }}}
   }
   // }}}
 
