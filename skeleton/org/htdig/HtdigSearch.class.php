@@ -45,10 +45,13 @@
    */
   class HtdigSearch extends Object {
     var
-      $delimiter=   '###\+\+\+###',
       $config=      NULL,    
       $params=      array(), 
       $words=       array(),
+      $excludes=    array();
+    
+    var
+      $delimiter=   '###\+\+\+###',
       $executable=  '';
 
     /**
@@ -135,14 +138,34 @@
     function getWords() {
       return $this->words;
     }
-    
+
+    /**
+     * Set Excludes
+     *
+     * @access  public
+     * @param   mixed[] excludes
+     */
+    function setExcludes($excludes) {
+      $this->excludes= $excludes;
+    }
+
+    /**
+     * Get Excludes
+     *
+     * @access  public
+     * @return  mixed[]
+     */
+    function getExcludes() {
+      return $this->excludes;
+    }
+
     /**
      * Build the query string for the search.
      *
-     * @access  public
+     * @access  protected
      * @return  string query
      */
-    function getWordString() {
+    function _getWordString() {
       $str= '';
       foreach ($words as $w) { 
         if ($w{0} != '-') {
@@ -152,7 +175,25 @@
         }
       }
       
-      return substr ($str, 4);
+      return escapeshellarg(substr ($str, 4));
+    }
+    
+    /**
+     * Build query string.
+     *
+     * @access  protected
+     * @return  string query
+     */
+    function _getQuery() {
+      $params= $this->getParams();
+      $params['exclude']= $this->getExcludes();
+      $params['words']= $this->_getWordString();
+      
+      foreach (array_keys($params) as $key) {
+        $params[$key]= urlencode($params[$key]);
+      }
+      
+      return implode('&', $params);
     }
 
     /**
@@ -188,7 +229,7 @@
         $p= &new Process(sprintf('%s -v %s %s',
           $this->getExecutable(),
           strlen($this->getConfiguration()) ? '-c '.$this->getConfiguration() : '',
-          "'".$this->getWords()."'"
+          "'".$this->_getQuery()."'"
         ));
 
         // Read all errors
