@@ -6,6 +6,10 @@
  */
 
   uses('xml.XML', 'xml.PCData', 'xml.CData');
+  
+  define('INDENT_DEFAULT',    0);
+  define('INDENT_WRAPPED',    1);
+  define('INDENT_NONE',       2);
 
   /**
    * Represents a node
@@ -186,7 +190,7 @@
     /**
      * Retrieve XML representation
      *
-     * Setting indent to 0 yields this result:
+     * Setting indent to 0 (INDENT_DEFAULT) yields this result:
      * <pre>
      *   <item>  
      *     <title>Website created</title>
@@ -196,7 +200,7 @@
      *   </item>
      * </pre>
      *
-     * Setting indent to 1 yields this result:
+     * Setting indent to 1 (INDENT_WRAPPED) yields this result:
      * <pre>
      *   <item>
      *     <title>
@@ -212,7 +216,7 @@
      *   </item>
      * </pre>
      *
-     * Setting indent to 2 yields this result (wrapped for readability,
+     * Setting indent to 2 (INDENT_NONE) yields this result (wrapped for readability,
      * returned XML is on one line):
      * <pre>
      *   <item><title>Website created</title><link></link><description>The 
@@ -221,11 +225,11 @@
      * </pre>
      *
      * @access  public
-     * @param   int indent default 1
+     * @param   int indent default INDENT_WRAPPED
      * @param   string inset default ''
      * @return  string XML
      */
-    function getSource($indent= 1, $inset= '') {
+    function getSource($indent= INDENT_WRAPPED, $inset= '') {
       $xml= $inset.'<'.$this->name;
       if (is_a($this->content, 'PCData')) {
         $content= $this->content->pcdata;
@@ -236,8 +240,8 @@
       }
 
       switch ($indent) {
-        case 0:
-        case 1:
+        case INDENT_DEFAULT:
+        case INDENT_WRAPPED:
           if (!empty($this->attribute)) {
             $sep= (sizeof($this->attribute) < 3) ? '' : "\n".$inset;
             foreach (array_keys($this->attribute) as $key) {
@@ -265,7 +269,7 @@
           }
           return $xml.($indent ? "\n".$inset : '').'</'.$this->name.">\n";
           
-        case 2:
+        case INDENT_NONE:
           foreach (array_keys($this->attribute) as $key) {
             $xml.= ' '.$key.'="'.htmlspecialchars($this->attribute[$key]).'"';
           }
