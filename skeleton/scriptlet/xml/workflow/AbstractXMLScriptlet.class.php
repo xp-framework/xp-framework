@@ -19,6 +19,18 @@
       $classloader  = NULL;
 
     /**
+     * Constructor
+     *
+     * @access  public
+     * @param   &lang.ClassLoader classloader
+     * @param   string base default ''
+     */
+    function __construct(&$classloader, $base= '') {
+      parent::__construct($base);
+      $this->classloader= &$classloader;
+    }
+
+    /**
      * Create the request object
      *
      * @access  protected
