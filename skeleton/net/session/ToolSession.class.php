@@ -252,6 +252,21 @@
      * @param   
      * @return  
      */
+    function var_unregGlobal($key) {
+      $this->ss_talk(sprintf("var_delete %s tmp %s",
+        $this->urlencode($this->ID),
+        $this->urlencode($key)
+      ));
+      return ($this->status()== "+OK")? 1: 0;
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
     function var_unregPerm($key) {
       $this->ss_talk(sprintf("var_delete %s perm %04d%s",
         $this->urlencode($this->ID),
@@ -301,6 +316,23 @@
       
       $this->logline_text("var_get $command", $return);
       if(!empty($return)) return $return;
+    }
+    
+    function var_getGlobal($key) {
+        $command= sprintf ("var_read %s tmp %s",
+            $this->urlencode ($this->ID),
+            $this->urlencode ($key)
+        );
+        $return= $this->ss_talk ($command);
+        if (!is_string($return)) {
+          LOG::warn($this->getName().'::'.$command.'::'.var_export($return, 1));
+          return NULL;
+        }
+        // LOG::info($this->getName().'::'.$command.'::'.var_export($return, 1));
+        $return= unserialize(urldecode(trim($return)));
+
+        $this->logline_text("var_get $command", $return);
+        if(!empty($return)) return $return;
     }
     
     /**
