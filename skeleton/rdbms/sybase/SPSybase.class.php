@@ -42,7 +42,8 @@
      * Constructor
      */
     function __construct($params) {
-      $this->log= &Logger::getInstance();
+      $l= &Logger::getInstance();
+      $this->log= &$l->getCategory($this->getName());
       parent::__construct($params);
     }
     

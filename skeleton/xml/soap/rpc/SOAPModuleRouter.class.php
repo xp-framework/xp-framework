@@ -12,9 +12,16 @@
     var
       $handler;
       
+    var
+      $_cat;
+      
     function __construct($handler) {
       parent::__construct();
       $this->handler= $handler;
+      
+      // Get logger category
+      $log= &Logger::getInstance();
+      $this->cat= &$log->getCategory($this->getName());
     }
     
     function callReflectHandler($msg) {
@@ -57,8 +64,7 @@
     function doPost($request, &$response) {
     
       // Get request
-      $log= &Logger::getInstance();
-      $log->warn($request);
+      $this->cat->warn($request);
       
       $msg= &new SOAPMessage();
       list(
@@ -73,7 +79,7 @@
       try(); {
         $msg->fromString($request->getData()) && 
         $answer->setData(array(
-          $this->callReflectHandler(&$msg)
+          $this->callReflectHandler($msg)
         ));
       } if (catch('Exception', $e)) {
         $answer->setFault(

@@ -4,12 +4,9 @@
  * $Id$
  */
 
-  // Logger-Flags, die Definieren, was geloggt wird
-  define('LOGGER_FLAG_INFO',    0x0001);
-  define('LOGGER_FLAG_WARN',    0x0002);
-  define('LOGGER_FLAG_ERROR',   0x0004);
-  define('LOGGER_FLAG_DEBUG',   0x0008);
-  define('LOGGER_FLAG_ALL',     LOGGER_FLAG_INFO | LOGGER_FLAG_WARN | LOGGER_FLAG_ERROR | LOGGER_FLAG_DEBUG);
+  uses('util.log.LogCategory');
+  
+  define('LOG_DEFINES_DEFAULT', 'default');
   
   /**
    * Kapselt einen Logger (SingleTon)
@@ -39,68 +36,83 @@
    */
   class Logger extends Object {
     var 
-      $_appenders= array(),
-      $_indicators= array(
-        LOGGER_FLAG_INFO        => 'info',
-        LOGGER_FLAG_WARN        => 'warn',
-        LOGGER_FLAG_ERROR       => 'error',
-        LOGGER_FLAG_DEBUG       => 'debug'
-      ),
-      $_flags= LOGGER_FLAG_ALL;
-      
+      $category= array();
+    
     var
-      $identifier,
-      $dateformat= 'H:i:s',
-      $format=     '[%1$s %2$s %3$s]';
+      $defaultIdentifier,
+      $defaultDateformat,
+      $defaultFormat,
+      $defaultFlags,
+      $defaultAppenders;
   
     /**
-     * Gibt eine Instanz zurück
+     * (Insert method's description here)
      *
-     * @access  public
-     * @return  Logger Das Logger-Objekt
-     */
-    function &getInstance() {
-      static $LOG__instance;
-  
-      if (!isset($LOG__instance)) {
-        $LOG__instance= new Logger();
-        $LOG__instance->identifier= getmypid();
-      }
-      return $LOG__instance;
+     * @access  
+     * @param   
+     * @return  
+     */ 
+    function &getCategory($name= LOG_DEFINES_DEFAULT) {
+      if (!isset($this->category[$name])) $name= LOG_DEFINES_DEFAULT;
+      return $this->category[$name];
     }
     
     /**
-     * Setzt die Flags (was geloggt werden soll)
+     * (Insert method's description here)
      *
-     * @access  public
-     * @param   int flags Bitfeld mit den Flags (LOGGER_FLAG_*)
+     * @access  
+     * @param   
+     * @return  
      */
-    function setFlags($flags) {
-      $this->_flags= $flags;
-    }
+    function configure(&$prop) {
     
-    /**
-     * Private Helper-Funktion
-     *
-     * @access private
-     */
-    function callAppenders() {
-      $args= func_get_args();
-      $flag= $args[0];
-      if (!($this->_flags & $flag)) return;
+      // Read default properties
+      $this->defaultIdentifier= $prop->readString(LOG_DEFINES_DEFAULT, 'identifier', $this->defaultIdentifier);
+      $this->defaultFormat= $prop->readString(LOG_DEFINES_DEFAULT, 'format', $this->defaultFormat);
+      $this->defaultDateformat= $prop->readString(LOG_DEFINES_DEFAULT, 'date.format', $this->defaultDateformat);
+      $this->defaultFlags= $prop->readInteger(LOG_DEFINES_DEFAULT, 'flags', $this->defaultFlags);
+      $this->defaultAppenders= $prop->readArray(LOG_DEFINES_DEFAULT, 'appenders', $this->defaultAppenders);
       
-      $args[0]= sprintf(
-        $this->format,
-        date($this->dateformat),
-        $this->identifier,
-        $this->_indicators[$flag]
-      );
-      foreach ($this->_appenders as $appender) {
-        call_user_func_array(
-          array(&$appender, 'append'),
-          $args
+      // Read all other properties
+      $section= $prop->getFirstSection();
+      do {
+        // Create new
+        $this->category[$section]= &new LogCategory(
+          $this->defaultIdentifier,
+          $prop->readString($section, 'format', $this->defaultFormat),
+          $prop->readString($section, 'date.format', $this->defaultDateformat),
+          $prop->readInteger($section, 'flags', $this->defaultFlags)
         );
-      }
+        
+        // Has an appender?
+        $param_section= $section;
+        if (NULL === ($appenders= $prop->readArray($section, 'appenders', NULL))) {
+          $appenders= $this->defaultAppenders;
+          $param_section= LOG_DEFINES_DEFAULT;
+        }
+        
+        // Go through all of the appenders
+        foreach ($appenders as $appender) {
+          try(); {
+            $reflect= ClassLoader::loadClass($appender);
+          } if (catch('Exception', $e)) {
+            return throw($e);
+          }
+          $a= &$this->category[$section]->addAppender(new $reflect());
+          $params= $prop->readArray($param_section, 'appender.'.$appender.'.params', array());
+          
+          // Params
+          foreach ($params as $param) {
+            $a->{$param}= strftime(
+              $prop->readString(
+                $param_section, 
+                'appender.'.$appender.'.param.'.$param,
+                ''
+              )
+            );
+          }
+        }
+      } while ($section= $prop->getNextSection());
     }
     
     /**
@@ -111,152 +123,38 @@
      * @return  
      */
     function finalize() {
-      foreach ($this->_appenders as $appender) {
-        $appender->finalize();
+      foreach (array_keys($this->category) as $name) {
+        $this->category[$name]->finalize();
       }
     }
-    
+  
     /**
-     * Fügt einen Appender hinzu
+     * Gibt eine Instanz zurück
      *
      * @access  public
-     * @param   Appender appender Das Appender-Objekt
+     * @return  Logger Das Logger-Objekt
      */
-    function addAppender(&$appender) {
-      $this->_appenders[]= &$appender;
-    }
+    function &getInstance() {
+      static $__instance;
+  
+      if (!isset($__instance)) {
+        $__instance= new Logger();
+        $__instance->defaultIdentifier= getmypid();
+        $__instance->defaultFormat= '[%1$s %2$s %3$s]';
+        $__instance->defaultDateformat= 'H:i:s';
+        $__instance->defaultFlags= LOGGER_FLAG_ALL;
+        $__instance->defaultAppenders= array();
+        
+        // Create an empty LogCategory
+        $__instance->category[LOG_DEFINES_DEFAULT]= &new LogCategory(
+          $__instance->defaultIdentifier,
+          $__instance->defaultFormat,
+          $__instance->defaultDateformat,
+          $__instance->defaultFlags
+        );
 
-    /**
-     * Hängt einen Info-String an
-     *
-     * @access  public
-     * @param   mixed args Beliebige Variablen
-     */
-    function info() {
-      $args= func_get_args();
-      array_unshift($args, LOGGER_FLAG_INFO);
-      call_user_func_array(
-        array(&$this, 'callAppenders'),
-        $args
-      );
+      }
+      return $__instance;
     }
-
-    /**
-     * Hängt einen Info-String an
-     *
-     * @access  public
-     * @param   string format Format-String (siehe sprintf() und Konsorten)
-     * @param   mixed args Beliebige Variablen
-     */
-    function infof() {
-      $args= func_get_args();
-      $this->callAppenders(
-        LOGGER_FLAG_INFO,
-        vsprintf($args[0], array_slice($args, 1))
-      );
-    }
-
-    /**
-     * Hängt einen Warn-String an
-     *
-     * @access  public
-     * @param   mixed args Beliebige Variablen
-     */
-    function warn() {
-      $args= func_get_args();
-      array_unshift($args, LOGGER_FLAG_WARN);
-      call_user_func_array(
-        array(&$this, 'callAppenders'),
-        $args
-      );
-    }
-
-    /**
-     * Hängt einen Warn-String an
-     *
-     * @access  public
-     * @param   string format Format-String (siehe sprintf() und Konsorten)
-     * @param   mixed args Beliebige Variablen
-     */
-    function warnf() {
-      $args= func_get_args();
-      $this->callAppenders(
-        LOGGER_FLAG_WARN,
-        vsprintf($args[0], array_slice($args, 1))
-      );
-    }
-
-    /**
-     * Hängt einen Fehler-String an
-     *
-     * @access  public
-     * @param   mixed args Beliebige Variablen
-     */
-    function error() {
-      $args= func_get_args();
-      array_unshift($args, LOGGER_FLAG_ERROR);
-      call_user_func_array(
-        array(&$this, 'callAppenders'),
-        $args
-      );
-    }
-
-    /**
-     * Hängt einen Fehler-String an
-     *
-     * @access  public
-     * @param   string format Format-String (siehe sprintf() und Konsorten)
-     * @param   mixed args Beliebige Variablen
-     */
-    function errorf() {
-      $args= func_get_args();
-      $this->callAppenders(
-        LOGGER_FLAG_ERROR,
-        vsprintf($args[0], array_slice($args, 1))
-      );
-    }
-
-    /**
-     * Hängt einen Debug-String an
-     *
-     * @access  public
-     * @param   mixed args Beliebige Variablen
-     */
-    function debug() {
-      $args= func_get_args();
-      array_unshift($args, LOGGER_FLAG_DEBUG);
-      call_user_func_array(
-        array(&$this, 'callAppenders'),
-        $args
-      );
-    }
- 
-     /**
-     * Hängt einen Debug-String an
-     *
-     * @access  public
-     * @param   string format Format-String (siehe sprintf() und Konsorten)
-     * @param   mixed args Beliebige Variablen
-     */
-    function debugf() {
-      $args= func_get_args();
-      $this->callAppenders(
-        LOGGER_FLAG_ERROR,
-        vsprintf($args[0], array_slice($args, 1))
-      );
-    }
-   
-    /**
-     * Hängt einen Trenner an
-     *
-     * @access  public
-     */
-    function mark() {
-      $this->callAppenders(
-        LOGGER_FLAG_INFO, 
-        str_repeat('-', 72)
-      );
-    }
-
   }
 ?>
