@@ -21,9 +21,9 @@
       $this->call->setData($this->data);
     }
     
-    function call($data= NULL) {
+    function call() {
       if (!isset($this->call)) {
-        $this->data= $data;
+        $this->data= func_get_args();
         $this->_create();
       }
       $this->headers['SOAPAction']= '"'.$this->action.'#'.$this->method.'"';
