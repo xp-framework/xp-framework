@@ -12,14 +12,14 @@
    * addition to insert(), update() and delete() methods and one or more 
    * static methods are provided to retrieve datasets from the database. 
    *
-   * For example, a table containing news  might provide a getByDate() 
-   * method which returns an array of news objects and a getByNewsId() 
-   * method returning one object.
-   *
    * Note: All of these methods will rely on an instance of 
    * rdbms.ConnectionManager having been setup with a suitable connection. 
    * This way, there is no need to pass a connection instance to every
    * single method.
+   *
+   * For example, a table containing news  might provide a getByDate() 
+   * method which returns an array of news objects and a getByNewsId() 
+   * method returning one object.
    *
    * The basic ways to use the abovementioned example class would be:
    *
