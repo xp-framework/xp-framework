@@ -46,7 +46,6 @@
       $filename=    NULL,
       $namespaces=  array();
       
-      
     /**
      * Constructor
      *
@@ -55,11 +54,8 @@
      * @throws  Exception to indicate failure
      */
     function __construct(&$request) {
-    parent::__construct();
+      parent::__construct();
     
-      $l= &Logger::getInstance();
-      $this->c= &$l->getCategory();
-
       $this->filename= $request->uri['path_translated'];
       $this->uri= $request->uri['path'];
      
@@ -80,7 +76,6 @@
       if (FALSE === $this->fromString($request->getData())) {
         return FALSE;
       }
-
     }
     
     /**
@@ -100,7 +95,6 @@
      * @param   string name
      */
     function registerLock($owner, $lktype, $lkscope, $lktoken= NULL, $filename= NULL) {
-
       if (!$filename) $filename= $this->filename;
       
       $this->properties= array(
@@ -121,9 +115,7 @@
      * @return  &string[] properties
      */
     function &getProperties($action= NULL) {
-      if ($action)
-        return $this->properties[$action];
-    return $this->properties;
+      if ($action) return $this->properties[$action]; else return $this->properties;
     }
 
     /**
@@ -159,9 +151,6 @@
       parent::_pCallStartElement($parser, $name, $attrs);
       
       $path= $this->_pathname();
-      $l= &Logger::getInstance();
-      $this->c=&$l->getCategory();
-
       if (!empty($attrs)){
         foreach ($attrs as $name => $val){
           if ('xmlns:' == substr($name,0,6)){
@@ -187,9 +176,6 @@
       static $lktoken;
       static $owner;
       
-      $l= &Logger::getInstance();
-      $this->c=&$l->getCategory();
-      
       if (!isset($lktype)) $lktype= NULL;
       if (!isset($lkscope)) $lkscope= NULL;
       if (!isset($lktoken)) $lktoken= NULL;
@@ -202,7 +188,7 @@
       if (19 < strlen($path) && '/lockinfo/locktype/' == substr($path, 0, 19)) {
         if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_ENTITIES));
         
-        switch (substr($path,19,1)){
+        switch (substr($path, 19, 1)) {
           case 'r':
             $lktype= WEBDAV_LOCKTYPE_READ;
           break;
@@ -215,7 +201,7 @@
         }
       }
       
-      // selektive lockscope
+      // selective lockscope
       if (20 < strlen($path) && '/lockinfo/lockscope/' == substr($path, 0, 20)) {
         if (!isset($trans)) $trans= array_flip(get_html_translation_table(HTML_ENTITIES));
 
@@ -233,7 +219,7 @@
       }
       
       // owner
-      if (20 < strlen($path) && '/lockinfo/owner/href' == substr($path, 0, 20)){
+      if (20 < strlen($path) && '/lockinfo/owner/href' == substr($path, 0, 20)) {
         $owner= utf8_decode(preg_replace('/&#([0-9]+);/me', 
           'chr("\1")', 
           strtr(trim($this->_objs[$this->_cnt+ 1]->content), $trans))
@@ -241,23 +227,20 @@
       }
       
       // Locktoken
-      if (20 < strlen($path) && '/lockinfo/token/href' == substr($path, 0, 20)){
+      if (20 < strlen($path) && '/lockinfo/token/href' == substr($path, 0, 20)) {
         $lktoken= utf8_decode(preg_replace('/&#([0-9]+);/me', 
           'chr("\1")', 
           strtr(trim($this->_objs[$this->_cnt+ 1]->content), $trans))
         );
       }
       
-      if ($path == '/lockinfo/'){ // done
+      if ($path == '/lockinfo/') { // done
         $this->registerLock($owner, $lktype, $lkscope, $lktoken);
         $owner= NULL;
         $lktype= NULL;
         $lkscope= NULL;
         $lktoken= NULL;
       }
-      
-      return;
     }
   }
-
 ?>
