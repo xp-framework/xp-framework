@@ -102,69 +102,68 @@ edit/mail_notify.php]]></pre>
             <li>wrapped lines have to be indented</li>
           </ul>
           An example:
-          <code><![CDATA[$r= sprintf('<a href="http://%s:%d/%s/%s.bar" target="%s">%s</a>',
-  $host, $port, $path, $file, $target, $anchor
-);
+          <code><![CDATA[  $r= sprintf('<a href="http://%s:%d/%s/%s.bar" target="%s">%s</a>',
+    $host, $port, $path, $file, $target, $anchor
+  );
 
-$r= sprintf(
-  '<a href="http://%s:%d/%s/%s.bar" target="%s">%s</a>',
-  $host, 
-  $port, 
-  $path,
-  $file,
-  $target,
-  $anchor
-);]]></code>
+  $r= sprintf(
+    '<a href="http://%s:%d/%s/%s.bar" target="%s">%s</a>',
+    $host, 
+    $port, 
+    $path,
+    $file,
+    $target,
+    $anchor
+  );]]></code>
 
           In function declarations wrapped parameters should be indented as in the
           above sprintf example:
-          <code><![CDATA[function reallyReallyLongFunctionNameWithParameters(
-  $string, 
-  $uriRequesterObject,
-  $foobarbaz, 
-  $longParamNameNumber4
-) {
-  ...
-}]]></code>
+          <code><![CDATA[  function reallyReallyLongFunctionNameWithParameters(
+    $string, 
+    $uriRequesterObject,
+    $foobarbaz, 
+    $longParamNameNumber4
+  ) {
+    ...
+  }]]></code>
           (Note that you should resist to use overly long function names).
           Long conditions in an if-statement should be indented this way:
-          <code><![CDATA[if (
-  ('172.17.0.27' == $REMOTE_ADDR) ||
-  ('172.17.0.26' == $REMOTE_ADDR) ||
-  ('172.17.0.24' == $REMOTE_ADDR) ||
-) {
-  $rightGroup= 'root';
-}]]></code>
+          <code><![CDATA[  if (
+    ('172.17.0.27' == $REMOTE_ADDR) ||
+    ('172.17.0.26' == $REMOTE_ADDR) ||
+    ('172.17.0.24' == $REMOTE_ADDR) ||
+  ) {
+    $rightGroup= 'root';
+  }]]></code>
 
           In this example all conditions have been indented to the same column, but still
           remain separated from the "executing" code by one (almost) empty line.
 
           Array declarations always have to be wrapped until the array is an empty one:
-          <code><![CDATA[
-$list= array();
+          <code><![CDATA[  $list= array();
 
-$list= array(
-  'Hello',
-  'World'
-);
+  $list= array(
+    'Hello',
+    'World'
+  );
 
-$hash= array(
-  'Bla' => 0,
-  'Foo' => array(
-    'Bar',
-    'Baz'
-  ),
-  'XP'  => 'Über-Framework'
-);]]></code>
+  $hash= array(
+    'Bla' => 0,
+    'Foo' => array(
+      'Bar',
+      'Baz'
+    ),
+    'XP'  => 'Über-Framework'
+  );]]></code>
 
           Ternary expressions adhere to the following writing guidelines:
           <code><![CDATA[
-$alpha= ($booleanExpression) ? $beta : $gamma;
+  $alpha= ($booleanExpression) ? $beta : $gamma;
 
-$alpha= ($reallyReallyLongbooleanExpression
-  ? $beta 
-  : $gamma
-);]]></code>
+  $alpha= ($reallyReallyLongbooleanExpression
+    ? $beta 
+    : $gamma
+  );]]></code>
         </text>
       </para>
       <para>
@@ -190,11 +189,11 @@ $alpha= ($reallyReallyLongbooleanExpression
           comment sign a space should be placed:
           
           <code><![CDATA[  // Correct
-$a= 0; // Correct as well, but just good and not "better"! :)
-$a= 0;     // Better
+  $a= 0; // Correct as well, but just good and not "better"! :)
+  $a= 0;     // Better
 
-//Avoid this!
-$a= 0;//Avoid this!]]></code>
+  //Avoid this!
+  $a= 0;//Avoid this!]]></code>
         </text>
       </para>
       <para>
@@ -213,23 +212,22 @@ $a= 0;//Avoid this!]]></code>
           Single line comments must be written using //. Single line comments should
           be separated from the above parts by an empty line and keep the current
           indenting width:
-          <code><![CDATA[if ($condition) {
+          <code><![CDATA[  if ($condition) {
 
-  // Fetching files here...
-  ...
-}]]></code>
+    // Fetching files here...
+    ...
+  }]]></code>
 
           If you need to comment more that just one line of code, the following
           notion is recommended:
 
-          <code><![CDATA[if ($condition) {
-   ...
+          <code><![CDATA[  if ($condition) {
+    ...
 
-  // DEBUG
-  // $debug= TRUE;
-  // fsockopen("debug-srv", 0x9282);
-  // ...
-}]]></code>
+    // DEBUG
+    // fsockopen("debug-srv", 0x9282);
+    // ...
+  }]]></code>
 
           For an even larger block, /* */ may be used while in development or
           for special cases (like temporary disabling of code portions).
@@ -243,15 +241,15 @@ $a= 0;//Avoid this!]]></code>
           stated above. When multiple comments of this form exist in a code block,
           they should begin at the same indentation.
 
-          <code><![CDATA[if ($condition) {
-  return FALSE;	// Reason
-}
+          <code><![CDATA[  if ($condition) {
+    return FALSE;	// Reason
+  }
 
-if ($condition) {
-  $alpha= FALSE;                             // Reason
-} else {
-  $alpha= substr($beta, 0, strlen($gamma));  // Why's that?
-}]]></code>
+  if ($condition) {
+    $alpha= FALSE;                             // Reason
+  } else {
+    $alpha= substr($beta, 0, strlen($gamma));  // Why's that?
+  }]]></code>
         </text>
       </para>
       <para>
@@ -282,20 +280,20 @@ if ($condition) {
           Declarations within PHP normally are not neccessary, but they are more
           "beautiful" and "good style". At least within classes, their attributes
           should be declared.
-          <code><![CDATA[class Foo {
-  var $anywhere;
+          <code><![CDATA[  class Foo {
+    var $anywhere;
 
-  var 
-    $parent,
-    $child;
+    var 
+      $parent,
+      $child;
 
-  var
-    $encoding= ENC_ISO_8859_1;
+    var
+      $encoding= ENC_ISO_8859_1;
 
-  function Foo() {
-    ...
-  }
-}]]></code>
+    function Foo() {
+      ...
+    }
+  }]]></code>
 
           Classes methods or the constructor must have one line distance to the declarations.
         </text>
@@ -305,9 +303,9 @@ if ($condition) {
         <text>
           One line should only contain one statement:
           <code><![CDATA[
-$a++;           // Correct
-$b++;           // Correct
-$a--; $b--;     // Bad]]></code>
+  $a++;           // Correct
+  $b++;           // Correct
+  $a--; $b--;     // Bad]]></code>
         </text>
       </para>
       <para>
@@ -326,10 +324,10 @@ $a--; $b--;     // Bad]]></code>
                 forgetting to add braces leading to breakage of the script as the added
                 code will not execute. There is an exception for statements in conjunction
                 with a return (see below):
-                <code><![CDATA[$result= $dbo->select('baz from bar where foo= NULL');
-if (!$result) return FALSE;
+                <code><![CDATA[  $result= $dbo->select('baz from bar where foo= NULL');
+  if (!$result) return FALSE;
 
-if (FALSE === ($result= $dbo->select('baz from bar where foo= NULL'))) return FALSE;]]></code>
+  if (FALSE === ($result= $dbo->select('baz from bar where foo= NULL'))) return FALSE;]]></code>
             </li>
           </ul>
         </text>
@@ -340,12 +338,12 @@ if (FALSE === ($result= $dbo->select('baz from bar where foo= NULL'))) return FA
           A return statement should only use braces when they are neccessary or improve
           the readability (by grouping).
 
-          <code><![CDATA[return TRUE;
-return $dbo->query('set rowcount 0');
-return (isset($size) 
-  ? $size 
-  : $defaultSize
-);]]></code>
+          <code><![CDATA[  return TRUE;
+  return $dbo->query('set rowcount 0');
+  return (isset($size) 
+    ? $size 
+    : $defaultSize
+  );]]></code>
         </text>
       </para>
       <para>
@@ -427,8 +425,7 @@ return (isset($size)
       case ENC_ISO_8859_2:
         // ...
         break;
-  }
-]]></code>
+  }]]></code>
         </text>
       </para>
       <para>
