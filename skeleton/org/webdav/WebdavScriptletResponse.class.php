@@ -65,7 +65,7 @@
       parent::process();
       
       if ($this->tree !== NULL) {
-        $this->setHeader('Content-Type', 'text/xml, charset="'.$this->tree->getEncoding().'"');
+        $this->setHeader('Content-Type', 'text/xml; charset="'.$this->tree->getEncoding().'"');
         $this->setContent($body= $this->tree->getDeclaration()."\n".$this->tree->getSource(0));
         $this->setHeader('Content-length', strlen($body));
       }
