@@ -204,7 +204,6 @@
      * @throws  IOException in case of an error
      */
     function createdAt() {
-      if (!isset($this->uri)) return throw(new IllegalStateException('no uri defined'));
       $mtime= filectime($this->uri);
       if (FALSE === $mtime) return throw(new IOException('cannot get mtime for '.$this->uri));
       return $mtime;
@@ -305,7 +304,6 @@
      * @throws  IOException in case of an error
      */
     function writeLine($string) {
-      if (!isset($this->_fd)) return throw(new IllegalStateException('file not open'));
       $result= fputs($this->_fd, $string."\n");
       if (is_error() && $result === FALSE) {
         throw(new IOException('cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
