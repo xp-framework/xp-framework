@@ -137,18 +137,31 @@
      * @throws  xml.TransformerException
      */
     function run() {
-      
+      $cwd= FALSE;
+
       // Get stylesheet
       switch ($this->stylesheet[0]) {
-        case 0: $proc= &domxml_xslt_stylesheet_file($this->stylesheet[1]); break;
-        case 1: $proc= &domxml_xslt_stylesheet($this->stylesheet[1]);
-        default: $proc= FALSE;
+        case 0: 
+          $proc= &domxml_xslt_stylesheet_file($this->stylesheet[1]); 
+          break;
+
+        case 1:
+          if ($this->_base) {
+            $cwd= getcwd();
+            chdir($this->_base);
+          }
+          $proc= &domxml_xslt_stylesheet($this->stylesheet[1]);
+          break;
+
+        default:
+          $proc= FALSE;
       }
       
       // Transform this
       $result= FALSE;
       $proc && $result= &$proc->process($this->document, $this->params, FALSE);
-      if (!$result || xp::errorAt(__FILE__, __LINE__ - 1)) {
+      $cwd && chdir($cwd);
+      if (!$result || xp::errorAt(__FILE__, __LINE__ - 2)) {
         return throw(new TransformerException('Transformation failed'));
       }
       
