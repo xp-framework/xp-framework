@@ -37,10 +37,6 @@
       $host,
       $port;
       
-    var 
-      $user,
-      $pass;
-      
     var
       $_hdl;
     
@@ -51,11 +47,9 @@
      * @param   string host default 'localhost' LDAP server
      * @param   int port default 389 Port
      */
-    function __construct($host= 'localhost', $port= 389, $user= NULL, $pass= NULL) {
+    function __construct($host= 'localhost', $port= 389) {
       $this->host= $host;
       $this->port= $port;
-      $this->user= $user;
-      $this->pass= $pass;
       parent::__construct();
     }
     
@@ -90,8 +84,8 @@
      * @return  bool success
      * @throws  IOException
      */
-    function bind() {
-      if (FALSE === ($res= ldap_bind($this->_hdl, $this->user, $this->pass))) {
+    function bind($user= NULL, $pass= NULL) {
+      if (FALSE === ($res= ldap_bind($this->_hdl, $user, $pass))) {
         return throw(new IOException('Cannot bind for '.$this->user.' ['.$this->getLastError().']'));
       }
       
