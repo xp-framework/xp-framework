@@ -224,7 +224,7 @@
     
     /**
      * Fetches the value associated with a specified key from this 
-     * database
+     * database. Returns FALSE in case the key cannot be found.
      *
      * @access  public
      * @param   string key
@@ -232,7 +232,8 @@
      * @throws  io.IOException in case reading failed
      */
     function fetch($key) {
-      if (!is_string($r= dba_fetch($key, $this->_fd))) {
+      $r= dba_fetch($key, $this->_fd);
+      if (NULL === $r) {
         return throw(new IOException('Could not fetch key "'.$key.'"'));
       }
       return $r;
