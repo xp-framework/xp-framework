@@ -62,16 +62,22 @@
     Console::writeLine('Result: ', var_export($result, 1));
     while ($record= $result->next()) {
       Console::writeLinef(
-        "Record (id=%s) {\n".
-        "  [name      ] %s\n".
-        "  [percentage] %s\n".
-        "  [lastchange] %s\n".
-        "  [changedby ] %s\n".
+        "Record {\n".
+        "  [%-9s id        ] %d\n".
+        "  [%-9s name      ] %s\n".
+        "  [%-9s percentage] %.2f\n".
+        "  [%-9s lastchange] %s\n".
+        "  [%-9s changedby ] %s\n".
         "}",
-        var_export($record['id'], 1),
+        xp::typeOf($record['id']),
+        $record['id'],
+        xp::typeOf($record['name']),
         $record['name'],
-        var_export($record['percentage'], 1),
+        xp::typeOf($record['percentage']),
+        $record['percentage'],
+        xp::typeOf($record['lastchange']),
         $record['lastchange'] instanceof Date ? $record['lastchange']->toString() : 'NULL',
+        xp::typeOf($record['changedby']),
         $record['changedby']
       );
     }
