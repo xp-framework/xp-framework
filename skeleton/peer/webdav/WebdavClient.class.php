@@ -19,15 +19,12 @@
    * on remote web servers.
    *
    * <code>
-   *   require('lang.base.php');
-   *   xp::sapi('cli');
    *   uses(
    *     'peer.webdav.WebdavClient',
    *     'peer.URL'
    *   );
    *   
    *   $client= &new WebdavClient(new URL('http://kiesel:password@xp-framework.net/xp/doc'));
-   *   
    *   try(); {
    *     $response= &$client->get('class.xslt');
    *     while ($r= $response->readData()) {
@@ -35,7 +32,7 @@
    *     }
    *   } if (catch ('Exception', $e)) {
    *     $e->printStackTrace();
-   *     exit();
+   *     exit(-1);
    *   }
    * </code>
    *
@@ -54,12 +51,10 @@
      * Constructor.
      *
      * @access  public
-     * @param   string url or peer.Url
+     * @param   mixed url either a string or a peer.URL object
      */
     function __construct($url) {
-      parent::__construct();
-      if (!is_a($url, 'URL')) $url= &new URL($url);
-      $this->url= &$url;
+      if (!is_a($url, 'URL')) $this->url= &new URL($url); else $this->url= &$url;
     }
     
     /**
@@ -110,12 +105,11 @@
      * Do a Put on Webdav server
      *
      * @access  public
-     * @param   io.File
+     * @param   &io.File file
      * @param   string filename or directory
      * @return  &peer.http.HttpResponse response object
      */
-    function &put($file, $name= NULL) {    
-
+    function &put(&$file, $name= NULL) {    
       if (!$file->isOpen()) $file->open(FILE_MODE_READ);
       try(); {
         $c= &$this->getConnection($name);
@@ -157,7 +151,6 @@
      * @return  &peer.http.HttpResponse response object
      */
     function &proppatch($properties, $name= NULL) {
-      
       try(); {
         $c= &$this->getConnection($name);
         $response= &$c->proppatch($properties);
@@ -166,7 +159,5 @@
       }
       return $response;    
     }
-
-  
   }
 ?>

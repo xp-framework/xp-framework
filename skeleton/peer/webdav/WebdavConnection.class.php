@@ -104,6 +104,5 @@
     function move($arg= NULL, $headers= array()) {
       return $this->request(WEBDAV_METHOD_MOVE, $arg, $headers);
     }
-    
   }
 ?>
