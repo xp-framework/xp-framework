@@ -27,6 +27,7 @@
             <li><b>bool:</b> TRUE, FALSE</li>
             <li><b>null:</b> NULL</li>
           </ul>
+          Also note that the automagic type conversion is time- and memory consuming.
         </text>
       </para>
       <para>
@@ -52,10 +53,8 @@
         </text>
       </para>
     </content>
-    <!--
     <references>
-      <ref link="about">Introduction</ref>
+      <ref link="../devel/index">Overview</ref>
     </references>
-    -->
   </main>
 </document>
