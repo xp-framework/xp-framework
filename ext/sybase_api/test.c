@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     } else {
         printf("Connect failed!\n");
     }
-        
+    
     sybase_close(link);
     sybase_free(link);
     
