@@ -13,6 +13,23 @@
    * @purpose  Resultset wrapper
    */
   class SybaseResultSet extends ResultSet {
+  
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   resource handle
+     */
+    function __construct($result) {
+      $fields= array();
+      if (is_resource($result)) {
+        for ($i= 0, $num= sybase_num_fields($result); $i < $num; $i++) {
+          $field= sybase_fetch_field($result, $i);
+          $fields[$field->name]= $field->type;
+        }
+      }
+      parent::__construct($result, $fields);
+    }
 
     /**
      * Seek
@@ -30,12 +47,16 @@
     }
     
     /**
-     * Fetch a row (iterator function)
+     * Iterator function. Returns a rowset if called without parameter,
+     * the fields contents if a field is specified or FALSE to indicate
+     * no more rows are available.
      *
+     * @model   abstract
      * @access  public
-     * @return  array rowset or FALSE to indicate all rows have been fetched
+     * @param   string field default NULL
+     * @return  mixed
      */
-    function next() {
+    function next($field= NULL) {
       if (FALSE === ($row= sybase_fetch_assoc($this->handle))) {
         return FALSE;
       }
@@ -46,7 +67,7 @@
         }
       }
       
-      return $row;
+      if ($field) return $row[$field]; else return $row;
     }
     
     /**
