@@ -31,7 +31,6 @@
      * @param   string rootName default 'document'
      */
     function __construct($rootName= 'document') {
-      parent::__construct();
       $this->root= &new Node($rootName);
     }
     
