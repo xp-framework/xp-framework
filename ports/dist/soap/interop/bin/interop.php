@@ -32,7 +32,7 @@
     $acat->addAppender($eeappend);
     
     $uri= $prop->readString($service, 'uri');
-    $urn= $prop->readString($service, 'urn');
+    $urn= $prop->readString($service, 'urn', 'http://soapinterop.org/');
     $act= $prop->readString($service, 'action', 'SOAP_ACTION_HARDCODE');
     
     // Prepare the result XML tree
@@ -102,7 +102,7 @@
         Console::writeLine('     ! IOException, discontinuing checking this service.');
         Console::writeLine('       '.$e->getMessage());
         $n->setAttribute('error', 'temporary');
-        break;
+        continue;
         
       } if (catch ('SOAPFaultException', $e)) {
         $n->setAttribute('error', 'permanent');
