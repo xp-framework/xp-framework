@@ -15,7 +15,8 @@
     var
       $name         = '',
       $last         = NULL,
-      $first        = NULL;
+      $first        = NULL,
+      $flags        = '';
 
     /**
      * Constructor
@@ -25,10 +26,11 @@
      * @param   string lastmessage
      * @param   string firstmessage
      */
-    function __construct($name, $last, $first) {
+    function __construct($name, $last, $first, $flags) {
       $this->name= $name;
       $this->last= $last;
       $this->first= $first;
+      $this->flags= $flags;
     }
 
     /**
@@ -91,6 +93,24 @@
       return $this->first;
     }
 
+    /**
+     * Set Flags
+     *
+     * @access  public
+     * @param   string flags
+     */
+    function setFlags($flags) {
+      $this->flags= $flags;
+    }
 
+    /**
+     * Get Flags
+     *
+     * @access  public
+     * @return  string
+     */
+    function getFlags() {
+      return $this->flags;
+    }
   }
 ?>
