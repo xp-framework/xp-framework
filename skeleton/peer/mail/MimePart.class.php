@@ -198,9 +198,18 @@
      * Get part body.
      *
      * @access  public
+     * @param   decode default FALSE
      * @return  string
      */
-    function getBody() {
+    function getBody($d= FALSE) {
+      if ($d && !empty ($this->encoding)) switch ($this->getEncoding()) {
+        case MIME_ENC_BASE64:
+          return base64_decode ($this->body);
+        case MIME_ENC_QPRINT:
+          return quoted_printable_decode ($this->body);
+        case MIME_ENC_8BIT:
+          return $this->body;
+      }
       return $this->body;
     }
   
@@ -218,6 +227,7 @@
           case HEADER_CONTENTTYPE:
           case HEADER_ENCODING:
           case 'Content-Disposition':
+            
             // Ignore, these are alreay set
             break;
           
