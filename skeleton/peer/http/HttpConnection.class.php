@@ -99,11 +99,11 @@
      * Perform a GET request
      *
      * @access  public
-     * @param   mixed arg
+     * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    function get($arg, $headers= array()) {
+    function get($arg= NULL, $headers= array()) {
       return $this->request(HTTP_GET, $arg, $headers);
     }
     
@@ -111,11 +111,11 @@
      * Perform a HEAD request
      *
      * @access  public
-     * @param   mixed arg
+     * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    function head($arg, $headers= array()) {
+    function head($arg= NULL, $headers= array()) {
       return $this->request(HTTP_HEAD, $arg, $headers);
     }
     
@@ -123,11 +123,11 @@
      * Perform a POST request
      *
      * @access  public
-     * @param   mixed arg
+     * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    function post($arg, $headers= array()) {
+    function post($arg= NULL, $headers= array()) {
       return $this->request(HTTP_POST, $arg, $headers);
     }
   }
