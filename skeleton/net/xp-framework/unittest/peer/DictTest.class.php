@@ -44,7 +44,11 @@
       try(); {
         $this->dc->connect($this->server, (int)$this->port);
       } if (catch('Exception', $e)) {
-        return $e;
+        throw (new PrerequisitesNotMetError(
+          PREREQUISITE_INITFAILED,
+          $e,
+          array('connect', $this->server, $this->port)
+        ));
       }
     }
     

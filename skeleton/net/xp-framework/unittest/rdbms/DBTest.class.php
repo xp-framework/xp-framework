@@ -41,7 +41,11 @@
       try(); {
         $this->conn= &DriverManager::getConnection($this->dsn);
       } if (catch('DriverNotSupportedException', $e)) {
-        return throw($e);
+        throw (new PrerequisitesNotMetError(
+          PREREQUISITE_INITFAILED,
+          $e,
+          array(substr($this->dsn, 0, strpos($this->dsn, '://')))
+        ));
       }
     }
     

@@ -22,7 +22,13 @@
      * @access  public
      */
     function setUp() {
-      if (!extension_loaded('openssl')) return 'openssl.notsupported';
+      if (!extension_loaded('openssl')) {
+        throw(new PrerequisitesNotMetError(
+          PREREQUISITE_LIBRARYMISSING, 
+          $cause= NULL, 
+          array('openssl')
+        ));
+      }
     }
     
     /**
