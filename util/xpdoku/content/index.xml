@@ -22,9 +22,39 @@
       <a href="/content/tasks.html"><b>Learn more...</b></a>
     </introduction>
     
-    
-    
     <links>
+      <link href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnaspp/html/phpvsaspnet.asp">
+        <caption>Head-to-Head: PHP vs. ASP.NET</caption>
+        <description>
+          A comparison of PHP4 to the ASP.NET framework. Although it is definitely true
+          that some features concerning object orientation are not present in PHP4, the
+          complaints about a missing class library, consistent naming patterns and the
+          missing database abstraction layer are answered here!<br/><br/>
+          Take the following section:<br/>
+          <quote>
+            Unlike PHP, ASP.NET does not have a set of built-in functions. Instead, ASP.NET 
+            is built on top of the Microsoft .NET Framework. Inside the framework is the 
+            Microsoft .NET Class Library, which contains an enormous number of classes 
+            organized hierarchically into namespaces. Each namespace contains all the classes 
+            necessary to achieve a certain goal, such as working XML, Web controls or data. 
+            Each class contains a specific set of properties and methods, all aligned with 
+            the purpose of the class. In most cases, in order to use these properties and 
+            methods, you must create an instance of the class (object), and then its 
+            properties and methods are available.<br/>
+            The interfaces of the above set of classes and namespaces are publicly available, 
+            and viewable through the use of the Microsoft .NET Class Browser sample application 
+            provided with ASP.NET. You can navigate the set of namespaces and look at all 
+            the properties, methods and constructors for each class. In addition, well-written 
+            documentation for each namespace is included with ASP.NET. Since functionality is 
+            organized by namespace, you can locate information quickly.<br/>
+            Since ASP.NET's class library is a compiled set of namespaces, it offers a great 
+            deal more functionality than a flat set of functions.     
+          </quote>
+          <br/>
+          Now substitue ASP.NET with XP and class browser with http://xp-framework.net/apidoc/.
+          <i>Does it sound familiar?</i>
+        </description>
+      </link>
       <link href="http://mindview.net/WebLog/log-0025">
         <caption>Strong Typing vs. Strong Testing</caption>
         <description>
@@ -51,31 +81,6 @@
           </quote>
           <br/>
           By Robert C. Martin
-        </description>
-      </link>
-      <link href="/apidoc/">
-        <caption>API-Docs: Overview</caption>
-        <description>
-          Browse the XP classes' API documentation
-        </description>
-      </link>
-      <link href="/content/about.html">
-        <caption>An introduction to XP</caption>
-        <description>
-          Learn what XP is all about, what it looks and feels like.
-        </description>
-      </link>
-      <link href="/content/tasks.html">
-        <caption>How to complete common tasks with XP</caption>
-        <description>
-          This section will give an introduction to the basics of common 
-          tasks and how to accomplish them using the XP framework.
-        </description>
-      </link>
-      <link href="/content/about.install.html">
-        <caption>Installation</caption>
-        <description>
-          How to install the XP framework.
         </description>
       </link>
     </links>
