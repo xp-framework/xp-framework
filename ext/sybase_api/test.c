@@ -6,6 +6,8 @@
 #include "sybase_api.h"
 #include "sybase_mm.h"
 #include "sybase_hash.h"
+#include <readline/readline.h>
+#include <readline/history.h>
 
 static CS_RETCODE CS_PUBLIC servermessage(CS_CONTEXT *context, CS_CONNECTION *connection, CS_SERVERMSG *message)
 {
@@ -39,8 +41,8 @@ int main(int argc, char **argv)
     sybase_hash *properties= NULL;
     sybase_environment *env= NULL;
     
-    if (argc < 5) {
-        printf("Usage: %s <host> <username> <password> <sql> [--wait]\n", argv[0]);
+    if (argc != 4) {
+        printf("Usage: %s <host> <username> <password>\n", argv[0]);
         return 1;
     }
     
@@ -56,79 +58,83 @@ int main(int argc, char **argv)
     if (sybase_connect(env, link, argv[1], argv[2], argv[3], properties) == SA_SUCCESS) {
         sybase_result *result= NULL;
         sybase_resultset *resultset= NULL;
+        char *sql, *prompt;
         
-        printf("===> Connected to %s@%s\n", argv[2], argv[1]);
-        printf("---> Executing query '%s':\n", argv[4]);
-        if (sybase_query(link, &result, argv[4]) == SA_SUCCESS) {
-            int done= 0;
-            int i= 0;
+        printf("===> Connected\n");
 
-            while (!done && (sybase_results(&result) == SA_SUCCESS)) {
+        prompt= (char*) malloc(strlen(argv[2])+ 1+ strlen(argv[1])+ 3);
+        sprintf(prompt, "%s@%s > ", argv[2], argv[1]);
+        while (1) {
+            sql= readline(prompt);
+            if (strncmp(sql, "quit", 4) == 0) {
+                break;
+            }
+            
+            printf("---> Executing query '%s':\n", sql);
+            if (sybase_query(link, &result, sql) == SA_SUCCESS) {
+                int done= 0;
+                int i= 0;
+
+                while (!done && (sybase_results(&result) == SA_SUCCESS)) {
+                    printf(
+                        "     result->type %4d [%-20s] result->code %4d [%-20s]\n",
+                        result->type,
+                        sybase_nameoftype(result->type), 
+                        result->code,
+                        sybase_nameofcode(result->code)
+                    );
+                    switch ((int)result->type) {
+                        case CS_ROW_RESULT:
+                            sybase_init_resultset(result, &resultset);
+
+                            /* Print out field information */
+                            printf(HLINE);
+                            for (i= 0; i < resultset->fields; i++) {
+                                printf(
+                                    "     field #%d: datatype %3d [%-20s] name '%s'\n",
+                                    i,
+                                    resultset->types[i],
+                                    sybase_nameofdatatype(resultset->types[i]),
+                                    resultset->dataformat[i].name
+                                );
+                            }
+                            printf(HLINE);
+
+                            /* Print out field contents */
+                            while (sybase_fetch(result, &resultset) == SA_SUCCESS) {
+                                for (i= 0; i < resultset->fields; i++) {
+                                    printf(
+                                        "     %-32s: [%d:%d] '%s'\n", 
+                                        resultset->dataformat[i].name, 
+                                        resultset->columns[i].indicator,
+                                        resultset->columns[i].valuelen,
+                                        resultset->columns[i].value
+                                    );
+                                }
+                                printf("\n");
+                            }
+                            sybase_free_resultset(resultset);
+                            break;
+
+                        case CS_CMD_SUCCEED:
+                            printf("---> Affected rows: %d\n", sybase_rowcount(result));
+                            break;
+
+                        case CS_CMD_FAIL:
+                        case CS_CANCELED:
+                            done= 1;
+                            break;
+                    }
+                }
                 printf(
-                    "     result->type %4d [%-20s] result->code %4d [%-20s]\n",
+                    "---> result->type %4d [%-20s] result->code %4d [%-20s]\n", 
                     result->type,
                     sybase_nameoftype(result->type), 
                     result->code,
                     sybase_nameofcode(result->code)
                 );
-                switch ((int)result->type) {
-                    case CS_ROW_RESULT:
-                        sybase_init_resultset(result, &resultset);
-                        
-                        /* Print out field information */
-                        printf(HLINE);
-                        for (i= 0; i < resultset->fields; i++) {
-                            printf(
-                                "     field #%d: datatype %3d [%-20s] name '%s'\n",
-                                i,
-                                resultset->types[i],
-                                sybase_nameofdatatype(resultset->types[i]),
-                                resultset->dataformat[i].name
-                            );
-                        }
-                        printf(HLINE);
-                        
-                        /* Print out field contents */
-                        while (sybase_fetch(result, &resultset) == SA_SUCCESS) {
-                            for (i= 0; i < resultset->fields; i++) {
-                                printf(
-                                    "     %-32s: [%d:%d] '%s'\n", 
-                                    resultset->dataformat[i].name, 
-                                    resultset->columns[i].indicator,
-                                    resultset->columns[i].valuelen,
-                                    resultset->columns[i].value
-                                );
-                            }
-                            printf("\n");
-                        }
-                        sybase_free_resultset(resultset);
-                        break;
-                        
-                    case CS_CMD_SUCCEED:
-                        printf("---> Affected rows: %d\n", sybase_rowcount(result));
-                        break;
-
-                    case CS_CMD_FAIL:
-                    case CS_CANCELED:
-                        done= 1;
-                        break;
-                }
+                sybase_free_result(result);
             }
-            printf(
-                "---> result->type %4d [%-20s] result->code %4d [%-20s]\n", 
-                result->type,
-                sybase_nameoftype(result->type), 
-                result->code,
-                sybase_nameofcode(result->code)
-            );
-            sybase_free_result(result);
-        }
-        
-        /* Wait for user input. We now have time to look at sp_who
-         * on the server, for example... */
-        if (argc == 6 && strcmp(argv[5], "--wait") == 0) {
-            printf("+++  Press return to continue\n");
-            getc(stdin);
         }
     } else {
         printf("---> Connect failed!\n");

@@ -250,7 +250,6 @@ SYBASE_API int sybase_rowcount(sybase_result *result)
     return rowcount;
 }
 
-
 /**
  * Read a result
  * 
