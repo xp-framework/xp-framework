@@ -128,6 +128,21 @@
     }
     
     /**
+     * Handle the case when we find the given session invalid.
+     * By default, we just return error for this, a derived class
+     * may choose to gracefully handle this case.
+     *
+     * This function must return TRUE if the scriptlet is
+     * supposed to continue processing the request.
+     *
+     * @access  protected
+     * @return  bool continue
+     */
+    function _handleInvalidSession() {
+      return FALSE;
+    }
+    
+    /**
      * Handles the different HTTP methods. Supports GET, POST and
      * HEAD - other HTTP methods pose security risks if not handled
      * properly and are used very uncommly anyway. 
@@ -331,10 +346,12 @@
           $this->request->session->initialize($this->request->getSessionId());
           $valid= $this->request->session->isValid();
         } if (catch('Exception', $e)) {
-          return throw(new HttpSessionInvalidException(
-            'Session initialize failed: '.$e->message,
-            HTTP_BAD_REQUEST
-          ));
+          if (!$this->_handleInvalidSession()) {
+            return throw(throw(new HttpSessionInvalidException(
+             'Session initialize failed: '.$e->message,
+             HTTP_BAD_REQUEST
+            )));
+          }
         }
         
         // Do we need a new session?
