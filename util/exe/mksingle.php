@@ -20,7 +20,7 @@
   
   $p= &new ParamString();
   if (!$p->exists (1)) {
-    printf ("Usage: %s scriptname.php > fullfile.php\n", basename ($p->value (0)));
+    printf ("Usage: %s scriptname.php [script2.php ...] > fullfile.php\n", basename ($p->value (0)));
     exit();
   }
   
@@ -72,16 +72,23 @@
     return $data;
   }
   
-  $cd= getcwd(); chdir (dirname ($p->value (1)));
-  
-  $filelist= array ();
-  $fileData= fileAddContents ($p->value (1), $filelist);
-  
-  // Strip off all uses(), require() and include()
-  // Note: this is a bit of a hack, possibly includes are removed that are still needed. 
-  $fileData= preg_replace ('/^\s+(uses|require|require_once|include|include_once)\s*\([^\)]*\);\s*$/mU', '', $fileData);
-  
-  chdir ($cd);
-  
-  print $fileData;
+  $filename= $p->value (1); $i= 1;
+  while (FALSE !== $filename) {
+    $cd= getcwd(); chdir (dirname ($filename));
+
+    $filelist= array ();
+    $fileData= fileAddContents ($filename, $filelist);
+
+    // Strip off all uses(), require() and include()
+    // Note: this is a bit of a hack, possibly includes are removed that are still needed. 
+    $fileData= preg_replace ('/^\s+(uses|require|require_once|include|include_once)\s*\([^\)]*\);\s*$/mU', '', $fileData);
+
+    chdir ($cd);
+
+    print $fileData;
+    
+    try(); {
+      $filename= $p->value (++$i);
+    } if (catch ('IllegalArgumentException', $e)) { }
+  }
 ?>
