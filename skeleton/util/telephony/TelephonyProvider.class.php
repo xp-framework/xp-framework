@@ -6,6 +6,7 @@
 
   uses(
     'util.telephony.TelephonyAddress', 
+    'util.telephony.TelephonyAddressParser',    
     'util.telephony.TelephonyTerminal',
     'util.telephony.TelephonyCall',
     'util.telephony.TelephonyException'
@@ -57,6 +58,9 @@
   class TelephonyProvider extends Object {
     var
       $cat  = NULL;
+    
+    var
+      $_addressParserDefaults= array();
       
     /**
      * Set a LogCategory for tracing communication
@@ -108,7 +112,14 @@
      * @return  &util.telephony.TelephonyAddress 
      */
     function &getAddress($number) { 
-      return new TelephonyAddress($number);
+      try(); {
+        $p= &new TelephonyAddressParser($this->_addressParserDefaults);
+        $ta= &$p->parseNumber ($number);
+      } if (catch ('FormatException', $e)) {
+        return throw ($e);
+      }
+      
+      return $ta;
     }
     
     /**
@@ -139,14 +150,14 @@
      * @param   &util.telephony.TelephonyAddress address
      * @throws  IllegalArgumentException in case of parameter type mismatch
      */
-    function getTerminal(&$address) { 
+    function &getTerminal(&$address) { 
       if (!is_a($address, 'TelephonyAddress')) {
         trigger_error('type: '.gettype($address), E_USER_WARNING);
         return throw(new IllegalArgumentException('Address parameter is not a TelephonyAddress'));
       }
-      if (TEL_ADDRESS_INTERNAL !== $address->getType()) {
-        return throw(new IllegalArgumentException('Terminals can only have internal addresses'));
-      }
+      //if (TEL_ADDRESS_INTERNAL !== $address->getType()) {
+      //  return throw(new IllegalArgumentException('Terminals can only have internal addresses'));
+      //}
       return NULL;
     }
     
