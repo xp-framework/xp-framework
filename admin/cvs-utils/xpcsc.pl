@@ -175,6 +175,12 @@ while (@ARGV) {
       $string= 1;
     }
     
+    # Remove all strings 
+    s/\\"//g;
+    s/\\'//g;
+    s/"[^"]+"/""/;
+    s/'[^']+'/''/;
+    
     # Check class name
     if (!$comment && $_ =~ /class ([^\s]+)/) {
       $class= $1;
@@ -287,13 +293,31 @@ while (@ARGV) {
     }
     
     # Check for incomplete API doc #1
-    if ($comment && $_ =~ /\@(access|param|return|throws|see|ext|purpose)\s+$/) {
+    if ($comment && $_ =~ /\@(access|throws|see|ext|purpose)\s+$/) {
       &warning("Your inline documentation is incomplete.", WNOHINT);
     }
     
     # Check for incomplete API doc #2
     if ($comment && $_ =~ /\(Insert (class'|method's) description here\)/) {
       &warning("You should supply a description for your method", WNOHINT);
+    }
+    
+    # Check for omitted parameter types or their names
+    if ($comment && $_ =~ /\@param\s+([a-zA-Z0-9\.\&]+)?\s?(\w?)/) {
+      if (!length($1)) { &warning("Your inline documentation misses the type of the parameter", WNOHINT); }
+      if (!length($2)) { &warning("Your inline documentation misses the parameter's name", WNOHINT); }
+    }
+    
+    # Check for inconsistent API doc #1
+    if ($comment && $_ =~/\@return\s+(\&)?([a-zA-Z0-9\.\&]+)?/) {
+      if (!length($2)) { &warning("Your inline documentations misses the functions return type", WNOHINT); }
+      if (length($2)) { $lastFuncIsRef= $1; }
+    }
+    
+    # Check for inconsistent API doc #2
+    if (!$comment && $_ =~ /function (\&)?[a-zA-Z0-9]+/) {
+      if (length($1) && !length($lastFuncIsRef)) { &warning("Apidoc states function returns value but function returns reference", WNOHINT); }
+      if (!length($1) && length($lastFuncIsRef)) { &warning("Apidoc states function returns reference but function does not", WNOHINT); }
     }
     
     $DEBUG && print "[".$class."|".$comment."|".$string."|".$indent."]".$_;
