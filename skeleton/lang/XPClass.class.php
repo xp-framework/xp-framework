@@ -22,6 +22,7 @@
   define('DETAIL_THROWS',         3);
   define('DETAIL_COMMENT',        4);
   define('DETAIL_ANNOTATIONS',    5);
+  define('DETAIL_NAME',           6);
  
   /**
    * Represents classes. Every instance of an XP class has an method
@@ -440,7 +441,8 @@
                   4,                              // "/**\n"
                   strpos($comment, '* @')- 2      // position of first details token
                 )),
-                DETAIL_ANNOTATIONS  => $annotations
+                DETAIL_ANNOTATIONS  => $annotations,
+                DETAIL_NAME         => $tokens[$i][1]
               );
               $matches= NULL;
               preg_match_all(
