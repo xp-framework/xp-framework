@@ -21,7 +21,7 @@
 #ifndef PHP_XP_H
 #define PHP_XP_H
 
-#define XP_DEBUGGING 1
+/* #define XP_DEBUGGING 1 */
 
 extern zend_module_entry xp_module_entry;
 #define phpext_xp_ptr &xp_module_entry
