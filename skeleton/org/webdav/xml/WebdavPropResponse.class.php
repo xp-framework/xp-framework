@@ -5,7 +5,7 @@
  */
  
   uses(
-    'xml.Tree',
+    'org.webdav.WebdavScriptletResponse',
     'util.Date'
   );
 
@@ -43,7 +43,7 @@
    *
    * @purpose  Represent a WebDavObject as PropFind-Response
    */
-  class WebdavPropResponse extends Tree {
+  class WebdavPropResponse extends WebdavScriptletResponse {
       
     /**
      * Constructor
@@ -51,24 +51,11 @@
      * @access  public
      * @param   &org.webdav.xml.WebdavPropFindRequest request
      * @param   &org.webdav.xml.WebdavMultistatus response
-     * @param   &org.webdav.xml.DavImpl wdav
+     * @param   &org.webdav.WebdavObject o
      */
-    function __construct(&$request, &$response, &$wdav) {
-      parent::__construct();
-      $this->_createRoot($response, $request, $wdav);
-      $this->_applyWebDavObject($wdav, $request);
-    }
-
-    /**
-     * Create Root
-     *
-     * @access  private
-     * @param   &org.webdav.xml.WebdavMultistatus response      
-     * @param   &org.webdav.xml.WebdavPropFindRequest request
-     * @param   &org.webdav.WebdavObject o 
-     */
-    function _createRoot(&$response, &$request, &$o) {
-      $this->root= &$response->addChild(new Node('D:response'));
+    function __construct(&$request, &$response, &$o) {
+      $this->setStatus(WEBDAV_MULTISTATUS);
+      $this->setRootNode(new Node('D:multistatus'));
     }
     
     /**
@@ -78,8 +65,7 @@
      * @param   &org.webdav.WebdavObject o
      * @param   &org.webdav.xml.WebdavPropFindRequest request     
      */
-    function _applyWebDavObject(&$o, &$request) {
-    
+    function addWebdavObject(&$o) {
       // Get the property lists
       $reqprops= &$request->getProperties();    // properties requested
       $propsList= &$o->getProperties();         // properties available
@@ -167,9 +153,9 @@
           if (!empty($nsprefix)) $name= $nsprefix.':'.$name;
         }
         if ($found) {
-          $n= &$found_props->addChild(new Node($name, $property->toString(), $attr));
+          $n= &$found_props->addChild(new Node($name, utf8_encode($property->toString()), $attr));
         } else {
-          $n= &$notfound_props->addChild(new Node($name, $property->toString(), $attr));
+          $n= &$notfound_props->addChild(new Node($name, utf8_encode($property->toString()), $attr));
         }
       }
 
