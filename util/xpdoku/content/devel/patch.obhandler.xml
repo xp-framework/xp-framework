@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document title="XP::Development::Patches::OBHandler">
+  <main>
+    <content>
+      <title>Error Handling Patch</title>
+      <editor>$Id$</editor>
+      
+      <para>
+        <caption>Introduction</caption>
+        <text>
+          The output buffering functions let us define a callback function
+          which captures all output made by any function writing to the output
+          layer. This function will be called when either ob_end_flush is 
+          called or implicitly at script termination; thus being a sort of
+          shutdown function but with the ability to still send and/or 
+          manipulate buffer data.
+          <br/><br/>
+          As an interesting side effect, it is called even in the case of a 
+          fatal error (which is, as any other output, written to the output 
+          buffer) and therefore gives us the possibility to deal with it.
+        </text>
+      </para>
+      <para>
+        <caption>Side Note: Why this is a patch.</caption>
+        <text>
+          The API for this still needs to be discussed, so, for now, there
+          is a patch (lang.diff) for download accomplishing a simple callback 
+          printing a backtrace in case of a fatal error. If tests go well,
+          this behaviour will become part of the XP core.
+          <br/><br/>
+          Also, there might be needs to react differently to any fatal errors
+          in different situations. E.g., a SOAP service would probably return
+          a SOAP fault, a web site might show an error500.html and CLI scripts
+          would print out information to STDERR and return with a non-zero 
+          exit code. Maybe this behaviour is not intended at all?
+          <br/><br/>
+          There needs to be a way to register a private callback for this,
+          maybe by using a base class and extend it, thus being able to
+          inheriting useful features. <b>This will need to be discussed.</b>
+        </text>
+      </para>
+      <para>
+        <caption>Details explanation</caption>
+        <text>
+          Let's have a look at this script (further referred to as test.php):
+          <code><![CDATA[  require('lang.base.php');
+
+  $class= &XPClass::forName($argv[1]);
+  var_dump($class->toString()); ]]></code>
+
+          Two errors may occur (and will, if used incorrectly):
+          <br/><br/>
+          <ul>
+            <li>XPClass::forName will throw an exception if the class specified
+                by $argv[1] cannot be found.
+            </li>
+            <li>$class-&gt;toString will result in a fatal error in case $class is
+                NULL (or FALSE, or anything else than an object).
+            </li>
+          </ul>
+          <br/>
+
+          The output of the script mentioned above will be the following
+          for the following three situation, if the patch is applied:
+
+          <br/><br/>
+          <ul>
+            <li>
+              Correct parameter: 
+              <pre><![CDATA[
+thekid@thekid:~/devel/xp.public/skeleton > php test.php lang.Exception
+string(92) "lang.XPClass@class xpclass {
+  var $_objref = 'exception';
+  var $name = 'lang.Exception';
+}"]]></pre>
+            </li>
+            <li>
+              Wrong parameter:
+              <pre><![CDATA[
+thekid@thekid:~/devel/xp.public/skeleton > php test.php foo.Bar       
+Uncaught error: Exception lang.Error (
+  Fatal error: Call to a member function on a non-object in
+  /usr/home/thekid/devel/xp.public/skeleton/test.php on line 5
+)]]></pre>
+              <i>[...Shortened for brevity...]</i><br/><br/>
+            </li>
+            <li>
+              Wrong parameter, but last line is commented out:
+              <pre><![CDATA[
+thekid@thekid:~/devel/xp.public/skeleton > php test.php foo.Bar
+Uncaught exception: Exception lang.ClassNotFoundException (class
+  "foo.Bar" [bar] not found
+)]]></pre>
+              <i>[...Shortened for brevity...]</i><br/><br/>
+            </li>
+          </ul>
+        </text>
+      </para>
+      <para>
+        <caption>Downloading and installing</caption>
+        <text>
+          The patch (<tt>lang.diff</tt>) can be downloaded from 
+          <ref link="../resources/index">the resources section</ref>.
+          <br/><br/>
+          Apply as following:
+              <pre><![CDATA[
+thekid@thekid:~/devel/xp.public/skeleton > patch < lang.diff
+[...]
+]]></pre>          
+        </text>
+      </para>
+    </content>
+    <references>
+      <ref link="../devel/index">Overview</ref>
+    </references>
+  </main>
+</document>
