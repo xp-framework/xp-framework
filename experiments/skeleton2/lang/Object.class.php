@@ -50,6 +50,11 @@
     /** 
      * Returns the fully qualified class name for this class 
      * (e.g. "io.File")
+     *
+     * This is a shorthand for the following:
+     * <code>
+     *   $name= $instance->getClass()->getName();
+     * </code>
      * 
      * @return  string fully qualified class name
      */
