@@ -155,6 +155,8 @@
      *   $name= $instance->getClass()->getName();
      * </code>
      * 
+     * @model   final
+     * @access  public
      * @return  string fully qualified class name
      */
     public final function getClassName() {
@@ -164,6 +166,7 @@
     /**
      * Returns the runtime class of an object.
      *
+     * @model   final
      * @access  public
      * @return  &lang.XPClass runtime class
      * @see     xp://lang.XPClass
@@ -179,7 +182,7 @@
      * @access  public
      * @return  string
      */
-    public final function __toString() {
+    public function __toString() {
       return self::toString();
     }
   }
