@@ -143,7 +143,12 @@
           break;
 
         case 'throws':
-          list($exception, $condition)= preg_split('/[, ]+/', $line, 2);
+          $args= preg_split('/[, ]+/', $line, 2);
+          $exception= $condition= '';
+          switch (sizeof($args)) {
+            case 1: $exception= $args[0]; break;
+            case 2: list($exception, $condition)= $args; break;
+          }
           $descr= &$this->addThrows($exception, $condition);
           break;
 
