@@ -34,7 +34,7 @@ $(OUTPUT):
 	@-mkdir $(OUTPUT)/image
 	@-mkdir $(OUTPUT)/src
 	@-cp -R src/ $(OUTPUT)
-	@-$(PHP) getSource.php --dest=$(OUTPUT)/src
+	@-$(PHP) uril/getSource.php --dest=$(OUTPUT)/src
 
 install:
 	cp -R $(OUTPUT)/* $(TARGET)
