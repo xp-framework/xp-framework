@@ -20,14 +20,14 @@
    *       $ticks    = 0,
    *       $timeout  = 0;
    *       
-   *     function __construct($timeout) {
-   *       $this->timeout= $timeout;
+   *     public function __construct($timeout) {
    *       parent::__construct('timer.'.$timeout);
+   *       $this->timeout= $timeout;
    *     }
    *       
-   *     function run() {
+   *     public function run() {
    *       while ($this->ticks < $this->timeout) {
-   *         Thread::sleep(1000);
+   *         self::sleep(1000);
    *         $this->ticks++;
    *         printf("<%s> tick\n", $this->name);
    *       }
