@@ -200,7 +200,7 @@
           $result= $child->getContent($this->getEncoding());
       }
 
-      /* HACK */
+      // HACK
       if (
         $context == NULL and 
         $child->name != 'item' and

@@ -50,9 +50,9 @@
      * @return string token
      */
     function _strtok(&$string, $delim) {
-      /* Note: don't use builtin strtok, because it does ignore an
-       * empty field (two delimiters in a row). We need this information.
-       */
+
+      // Note: don't use builtin strtok, because it does ignore an
+      // empty field (two delimiters in a row). We need this information.
       if (empty ($string))
         return false;
       if (false === ($tpos= strpos ($string, $delim))) {
@@ -165,22 +165,19 @@
         return false;
 
       $tok= $this->_strtok ($this->buffer, $this->colDelim);
-      /* 
-       * Trick: when there is an odd number of escape characters
-       * you know that this found delimiter is part of a string inside
-       * the payload. Search for the next, until you have an even number 
-       * of escapers (then all quoted parts are closed).
-       */
+
+      // Trick: when there is an odd number of escape characters
+      // you know that this found delimiter is part of a string inside
+      // the payload. Search for the next, until you have an even number 
+      // of escapers (then all quoted parts are closed).
       while (0 !== substr_count ($tok, $this->escape) % 2) {
         $add= $this->colDelim.$this->_strtok ($this->buffer, $this->colDelim);
         $tok.= $add;
       }
       // $this->buffer= substr ($this->buffer, strlen ($tok)+1);
-      
-      /* 
-       * Single escape characters become nothing, double escape
-       * characters become the escape character itself.
-       */
+
+      // Single escape characters become nothing, double escape
+      // characters become the escape character itself.
       $tok= trim ($tok);
       $i= 0; $j= 0; $res= '';
       while (false !== ($i= strpos ($tok, $this->escape, $j))) {
