@@ -171,79 +171,81 @@
     </table>
     
     <!-- Method detail -->
-    <h3>
-      Method detail
-    </h3>
-    <xsl:for-each select="/formresult/apidoc/comments/method">
-      <xsl:sort select="@name"/>
+    <xsl:if test="count(/formresult/apidoc/comments/method) &gt; 0">
+      <h3>
+        Method detail
+      </h3>
+      <xsl:for-each select="/formresult/apidoc/comments/method">
+        <xsl:sort select="@name"/>
 
-      <h4>
-        <img align="left" width="17" height="17" hspace="4" src="/image/{@access}.gif"/>
-        <a name="{@name}">
-          <xsl:value-of select="concat(@access, ' ', @model, ' ')"/>
-          <a href="{func:typehref(return/type)}"><xsl:value-of select="return/type"/></a>
-          <xsl:text> </xsl:text>
-          <b><xsl:value-of select="@name"/></b>(<xsl:for-each select="params/param">
-            <a href="{func:typehref(type)}"><xsl:value-of select="type"/></a>
+        <h4>
+          <img align="left" width="17" height="17" hspace="4" src="/image/{@access}.gif"/>
+          <a name="{@name}">
+            <xsl:value-of select="concat(@access, ' ', @model, ' ')"/>
+            <a href="{func:typehref(return/type)}"><xsl:value-of select="return/type"/></a>
             <xsl:text> </xsl:text>
-            <xsl:value-of select="name"/>
-            <xsl:if test="position() != last()">, </xsl:if>
-          </xsl:for-each>)
-        </a>
-      </h4>
-      <div style="padding-left: 2em">
-        <p>
-          <xsl:apply-templates select="text"/>
-        </p>
-        
-        <!-- Parameters, return value and exceptions -->
-        <xsl:if test="count(params/param) &gt; 0">
-          <b>Parameters:</b>
-          <ul>
-            <xsl:for-each select="params/param">
-              <li>
-                <a href="{func:typehref(type)}"><xsl:value-of select="type"/></a>
-                <xsl:text> </xsl:text>
-                <b><xsl:value-of select="name"/></b>
-                <xsl:text> </xsl:text>
-                <xsl:value-of select="description"/>
-              </li>
-            </xsl:for-each>
-          </ul>
-        </xsl:if>
-        <xsl:if test="count(return/type) &gt; 0">
-          <b>Returns:</b>
-          <ul>
-            <li>
-              <a href="{func:typehref(return/type)}"><xsl:value-of select="return/type"/></a>
+            <b><xsl:value-of select="@name"/></b>(<xsl:for-each select="params/param">
+              <a href="{func:typehref(type)}"><xsl:value-of select="type"/></a>
               <xsl:text> </xsl:text>
-              <xsl:value-of select="return/description"/>
-            </li>
-          </ul>
-        </xsl:if>
-        <xsl:if test="count(throws/throw) &gt; 0">
-          <b>Throws:</b>
-          <ul>
-            <xsl:for-each select="throws/throw">
+              <xsl:value-of select="name"/>
+              <xsl:if test="position() != last()">, </xsl:if>
+            </xsl:for-each>)
+          </a>
+        </h4>
+        <div style="padding-left: 2em">
+          <p>
+            <xsl:apply-templates select="text"/>
+          </p>
+
+          <!-- Parameters, return value and exceptions -->
+          <xsl:if test="count(params/param) &gt; 0">
+            <b>Parameters:</b>
+            <ul>
+              <xsl:for-each select="params/param">
+                <li>
+                  <a href="{func:typehref(type)}"><xsl:value-of select="type"/></a>
+                  <xsl:text> </xsl:text>
+                  <b><xsl:value-of select="name"/></b>
+                  <xsl:text> </xsl:text>
+                  <xsl:value-of select="description"/>
+                </li>
+              </xsl:for-each>
+            </ul>
+          </xsl:if>
+          <xsl:if test="count(return/type) &gt; 0">
+            <b>Returns:</b>
+            <ul>
               <li>
-                <a href="{func:typehref(exception)}"><xsl:value-of select="exception"/></a>
+                <a href="{func:typehref(return/type)}"><xsl:value-of select="return/type"/></a>
                 <xsl:text> </xsl:text>
-                <xsl:value-of select="condition"/>
+                <xsl:value-of select="return/description"/>
               </li>
-            </xsl:for-each>
-          </ul>
-        </xsl:if>
-        <xsl:if test="count(references/reference) &gt; 0">
-          <b>See also:</b>
-          <ul>
-            <xsl:for-each select="references/reference">
-              <li><xsl:apply-templates select="link"/></li>
-            </xsl:for-each>
-          </ul>
-        </xsl:if>
-      </div>
-      <hr/>
-    </xsl:for-each> 
+            </ul>
+          </xsl:if>
+          <xsl:if test="count(throws/throw) &gt; 0">
+            <b>Throws:</b>
+            <ul>
+              <xsl:for-each select="throws/throw">
+                <li>
+                  <a href="{func:typehref(exception)}"><xsl:value-of select="exception"/></a>
+                  <xsl:text> </xsl:text>
+                  <xsl:value-of select="condition"/>
+                </li>
+              </xsl:for-each>
+            </ul>
+          </xsl:if>
+          <xsl:if test="count(references/reference) &gt; 0">
+            <b>See also:</b>
+            <ul>
+              <xsl:for-each select="references/reference">
+                <li><xsl:apply-templates select="link"/></li>
+              </xsl:for-each>
+            </ul>
+          </xsl:if>
+        </div>
+        <hr/>
+      </xsl:for-each> 
+    </xsl:if>
   </xsl:template>
   
 </xsl:stylesheet>
