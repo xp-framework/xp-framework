@@ -1,4 +1,9 @@
 <?php
+/* Diese Klasse ist Teil des XP-Frameworks
+ *
+ * $Id$
+ */
+
   uses('xml.Tree');
   uses('xml.Node');
   uses('xml.soap.SOAPNode');
@@ -73,16 +78,16 @@
         }
         
         // Typenabhängig
-        if (!preg_match(
+        if (!isset( $child->attribute['xsi:type']) || !preg_match(
           '#^([^:]+):([^\[]+)(\[[0-9+]\])?$#', 
           $child->attribute['xsi:type'],
           $regs
         )) {
           // Zum Beispiel SOAP-ENV:Fault
-          $regs= array(0, 'xsd', 'struct');
+          $regs= array(0, 'xsd', 'string');
         }
         
-        // echo "{$child->name} is {$regs[2]}\n";
+        //echo "{$child->name} is {$regs[2]}\n";
         switch ($regs[2]) {
           case 'Array':
             $results[$idx]= $this->_recurseData($child);
@@ -141,14 +146,15 @@
      * @return  
      */
     function getFault() {
-      if ($this->root->children[0]->children[0]->name == 'SOAP-ENV:Fault') {
-        $fault= new SOAPFault();
-        foreach ($this->root->children[0]->children[0]->children as $child) {
-          $fault->{$child->name}= $child->getContent();
-        }
-        return $fault;
-      }
-      return FALSE;
+      if ($this->root->children[0]->children[0]->name != 'SOAP-ENV:Fault') return NULL;
+      
+      list($return)= $this->_recurseData($this->root->children[0]);
+      return new SOAPFault(array(
+        'faultcode'      => $return['faultcode'],
+        'faultstring'    => $return['faultstring'],
+        'faultactor'     => $return['faultcode'],
+        'detail'         => $return['detail']
+      ));
     }
     
     /**
