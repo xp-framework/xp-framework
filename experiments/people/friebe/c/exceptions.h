@@ -32,7 +32,6 @@
     else
 
 #define catch(e) exception__catch(((e) = the_exception_context->v.etmp, 0))
-#define catch_anonymous exception__catch(0)
 
 #define throw(msg)                                              \
     for (;; longjmp(*the_exception_context->penv, 1)) {         \
