@@ -25,6 +25,7 @@
   $cm->configure($pm->getProperties('database'));
   
   $param= &new ParamString();
+  $quiet= $param->exists('quiet', 'q');
   
   // Load all feeds that require updates
   try(); {
@@ -50,7 +51,7 @@
   
   foreach ($feeds as $feed) {
     try(); {
-      Console::writeLinef('===> Aggregating feed [%d] from %s', $feed['feed_id'], $feed['url']);
+      $quiet || Console::writeLinef('===> Aggregating feed [%d] from %s', $feed['feed_id'], $feed['url']);
       $controller= &new AggregateController(
         $feed['feed_id'], 
         $feed['url'], 
