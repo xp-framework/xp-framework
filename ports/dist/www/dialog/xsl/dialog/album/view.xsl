@@ -61,7 +61,10 @@
         </xsl:for-each>
       </tr>
     </table>
-    <br/><br clear="all"/>
+    <p>
+      This album contains <xsl:value-of select="/formresult/album/@num_images"/> images in <xsl:value-of select="/formresult/album/@num_chapters"/> chapters.
+    </p>
+    <br clear="all"/>
 
     <xsl:for-each select="/formresult/album/chapters/chapter">
       <xsl:variable name="total" select="count(images/image)"/>
