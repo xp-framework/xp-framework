@@ -132,7 +132,10 @@ int _open_server_connection(fd_set *master, int *fdMax, proxy_connection *conn) 
 	conn->hServer= hSocket;
 	FD_SET (hSocket, master);
 	if (hSocket > *fdMax) *fdMax= hSocket;
-	
+
+	/* Perform filter actions */
+	csta_filter_init (conn);
+
 	LOG("Added server connection");
 	return 1;
 }
@@ -156,6 +159,9 @@ int _shutdown_connections(fd_set *master, connection_context *ctx, int hSocket) 
 		ERR ("Unable to find proxy connection in context");
 		return 0;
 	}
+	
+	/* Perform filter shutdown */
+	csta_filter_shutdown(conn);
 
 	/* Close all associated sockets */
 	if (conn->hServer) {
@@ -262,17 +268,14 @@ int process_client(fd_set *master, int *fdMax, connection_context *ctx, int hSoc
 
 		/* Client is authenticated and server socket exists */
 		if (hSocket == conn->hClient && conn->is_authenticated && conn->hServer) {
-			char *answer;
 			/* This is an authenticated client => pass data through */
 			LOG("Client -> Server");
 
 			/* Any special actions? */
-			if (0 != csta_filter (conn, buf, &answer)) {
-				send (conn->hClient, answer, strlen (answer), 0);
-				free (answer);
-				
+			if (0 != csta_filter (conn, buf)) {
 				return 1;
 			}
+			
 			send (conn->hServer, buf, nbytes, 0);
 			return 1;
 		}
