@@ -45,15 +45,32 @@
      * @return  string
      */    
     function finalize() {
-      ob_start();
-      highlight_string('<?php '.str_replace('&#160;', ' ', $this->buffer).'?>');
-      $s= ob_get_contents();
-      ob_end_clean();
+      static $classes= array(
+        T_VARIABLE          => 'variable',
+        T_CLASS             => 'keyword',
+        T_FUNCTION          => 'keyword',
+        T_NEW               => 'keyword',
+        T_STATIC            => 'keyword',
+        '{'                 => 'bracket',
+        '}'                 => 'bracket',
+        '('                 => 'bracket',
+        ')'                 => 'bracket',
+      );
+      
+      $current= 'default';
+      $out= '<code><span>';
+      foreach (token_get_all('<?php '.str_replace('&#160;', ' ', $this->buffer).'?>') as $token) {
+        $class= isset($classes[$token[0]]) ? $classes[$token[0]] : 'default';
+        if ($current != $class) {
+          $out.= '</span><span class="'.$class.'">';
+          $current= $class;
+        }
 
-      return strtr($s, array(
-        '&nbsp;' => '&#160;', 
-        "\r"     => ''
-      ));
+        $out.= htmlentities(is_array($token) ? $token[1] : $token);
+      }
+      $out.= '</span></code>';
+      
+      return $out;
     }
   }
 ?>
