@@ -154,32 +154,42 @@
       
       // Update trace
       $this->trace->clear();
-      if (is_a($data, 'AssertionFailedError')) {
+      if (is_a($data, 'Exception')) {
+        $type= 'exception';
+        $caption= $data->getClassName().' ('.$data->getMessage().')';
+        $trace= array_slice(explode("\n", chop($data->getStackTrace())), 1); // UGLY!
+      } else {
+        // TBI
+      }
+      
+      if (isset($type)) {
         $node= &$this->trace->insert_node(
           NULL,
           NULL,
-          array($data->getClassName().' ('.$data->getMessage().')'),
+          array($caption),
           4,
-          $this->pixmaps['p:exception'],
-          $this->pixmaps['m:exception'],
-          $this->pixmaps['p:exception'],
-          $this->pixmaps['m:exception'],
+          $this->pixmaps['p:'.$type],
+          $this->pixmaps['m:'.$type],
+          $this->pixmaps['p:'.$type],
+          $this->pixmaps['m:'.$type],
           FALSE,
           TRUE
         );
-        foreach (array_slice(explode("\n", chop($data->getTrace())), 1) as $element) {
-          $this->trace->insert_node(
-            $node,
-            NULL,
-            array(trim($element)),
-            4,
-            $this->pixmaps['p:traceelement'],
-            $this->pixmaps['m:traceelement'],
-            $this->pixmaps['p:traceelement'],
-            $this->pixmaps['m:traceelement'],
-            FALSE,
-            FALSE
-          );
+        if (!empty($trace)) {
+          foreach ($trace as $element) {
+            $this->trace->insert_node(
+              $node,
+              NULL,
+              array(trim($element)),
+              4,
+              $this->pixmaps['p:traceelement'],
+              $this->pixmaps['m:traceelement'],
+              $this->pixmaps['p:traceelement'],
+              $this->pixmaps['m:traceelement'],
+              FALSE,
+              FALSE
+            );
+          }
         }
       }
       $this->trace->columns_autosize();
@@ -229,7 +239,7 @@
       }
       $this->labels['skipped']->set_text('Skipped: '.$result->skipCount());
       foreach ($result->skipped as $id => $skipped) {
-        $this->updateTest($id, 'skipped', $skipped, $skipped->reason);
+        $this->updateTest($id, 'skipped', $skipped->reason);
       }
       $this->labels['failed']->set_text('Failed: '.$result->failureCount());
       foreach ($result->failed as $id => $failed) {
