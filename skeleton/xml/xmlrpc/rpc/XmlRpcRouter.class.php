@@ -15,24 +15,24 @@
    * a XML-RPC webservice.
    *
    * <code>
-   *  require('lang.base.php');
-   *  xp::sapi('xmlrpc.service');
+   *   require('lang.base.php');
+   *   xp::sapi('xmlrpc.service');
    * 
-   *  $s= &new XmlRpcRouter(new ClassLoader('net.xp-framework.webservices.xmlrpc'));
+   *   $s= &new XmlRpcRouter(new ClassLoader('net.xp-framework.webservices.xmlrpc'));
    * 
-   *  try(); {
-   *    $s->init();
-   *    $response= &$s->process();
-   *  } if (catch('HttpScriptletException', $e)) {
+   *   try(); {
+   *     $s->init();
+   *     $response= &$s->process();
+   *   } if (catch('HttpScriptletException', $e)) {
    * 
-   *    // Retrieve standard "Internal Server Error"-Document
-   *    $response= &$e->getResponse();
-   *  }
+   *     // Retrieve standard "Internal Server Error"-Document
+   *     $response= &$e->getResponse();
+   *   }
    * 
-   *  $response->sendHeaders();
-   *  $response->sendContent();
+   *   $response->sendHeaders();
+   *   $response->sendContent();
    * 
-   *  $s->finalize();
+   *   $s->finalize();
    * </code>
    *
    * The default implementation of the XmlRpcRouter takes the given methodName from the
