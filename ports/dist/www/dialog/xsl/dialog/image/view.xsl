@@ -56,10 +56,22 @@
       </a>
     </center>
     
+    <!-- Selected image -->
     <table width="100%" border="0">
       <tr>
         <td id="image" align="center">
-          <img src="/albums/{/formresult/album/@name}/{/formresult/selected/name}"/>
+          <a>
+            <xsl:if test="/formresult/selected/@last = ''">
+              <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
+                'image/view?', 
+                /formresult/album/@name, ',',
+                /formresult/selected/@type, ',',
+                /formresult/selected/@chapter, ',',
+                /formresult/selected/@id + 1
+              ))"/></xsl:attribute>
+            </xsl:if>
+            <img border="0" src="/albums/{/formresult/album/@name}/{/formresult/selected/name}"/>
+          </a>
         </td>
       </tr>
     </table>
