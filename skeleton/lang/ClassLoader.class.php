@@ -70,10 +70,10 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     function &loadClass($class) {
-      $qname= $this->classpath.$class;
-      $name= xp::reflect($qname);
+      $name= xp::reflect($class);
 
       if (!class_exists($name)) {
+        $qname= $this->classpath.$class;
         if (!include_once(strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php')) {
           return throw(new ClassNotFoundException('Class "'.$qname.'" not found'));
         }
@@ -82,7 +82,7 @@
       }
       return new XPClass($name);
     }
-    
+
     /**
      * Define a class with a given name
      *
