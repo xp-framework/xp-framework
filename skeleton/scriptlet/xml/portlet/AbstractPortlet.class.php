@@ -14,16 +14,16 @@
     var
       $name       = '',
       $properties = NULL,
+      $layout     = NULL,
       $attributes = array();
 
     /**
      * Constructor
      *
      * @access  public
-     * @param   string name
      */
-    function __construct($name) {
-      $this->setName($name);
+    function __construct() {
+      $this->setName(substr(get_class($this), 0, -1* strlen('Portlet')));
     }
 
     /**
@@ -44,6 +44,26 @@
      */
     function setName($name) { 
       $this->name= $name;
+    }
+    
+    /**
+     * Set layout of portlet usage
+     *
+     * @access  public
+     * @param   string layout
+     */
+    function setLayout($layout) {
+      $this->layout= $layout;
+    }
+    
+    /**
+     * Get layout of portlet usage
+     *
+     * @access  public
+     * @return  string layout
+     */
+    function getLayout() {
+      return $this->layout;
     }
   
     /**
