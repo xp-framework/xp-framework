@@ -48,7 +48,9 @@
    * @purpose  Connection Listener for the storage daemon
    */
   class StorageListener extends ConnectionListener {
-  
+    var
+      $data= array();
+
     /**
      * Handle method "GET"
      *
@@ -242,9 +244,16 @@
      * @param   &peer.server.ConnectionEvent event
      */
     function data(&$event) {
-
+      if (!isset($this->data[$event->stream->__id])) {
+        $this->data[$event->stream->__id]= '';
+      }
+      $this->data[$event->stream->__id].= $event->data;
+      if ("\n" != $event->data{strlen($event->data)- 1}) {        // Wait for more data
+        return;
+      }
+      
       // Scan input string
-      $cmd= sscanf($event->data, "%s %s %[^\r]");
+      $cmd= sscanf($this->data[$event->stream->__id], "%s %s %[^\r]");
       try(); {
         if (!method_exists($this, 'handle'.$cmd[0])) {
           throw(new MethodNotImplementedException('Operation not supported', $cmd[0]));
