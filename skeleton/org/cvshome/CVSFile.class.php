@@ -10,11 +10,11 @@
   );
 
   /**
-   * This class is an easy to use interface to the 
-   * concurrent versioning system executables
+   * This class is an easy to use interface to the concurrent versioning 
+   * system executables.
    *
-   * @purpose interface to CVS
-   * @see http://www.cvshome.org
+   * @purpose  interface to CVS
+   * @see      http://www.cvshome.org
    */
   class CVSFile extends CVSInterface {
     var
@@ -23,33 +23,44 @@
     /**
      * Construct a new CVS Interface object
      *
-     * @access public
-     * @param string filename
-     * @throws FileNotFoundException, if filename is not a file
+     * @access  public
+     * @param   string filename
+     * @throws  io.FileNotFoundException, if filename is not a file
      */
     function __construct($filename) {
+      parent::__construct();
       $this->filename= realpath($filename);
       
       if (!file_exists ($this->filename) || !is_file ($this->filename)) {
         return throw (new FileNotFoundException ('Given file must be an existing file: '.$this->filename));
       }
-      
-      parent::__construct();
     }
     
+    /**
+     * Protected helper method that executes a CVS command, changing
+     * to the desired directory before doing so and changing it back
+     * after finishing.
+     *
+     * @access  protected
+     * @param   string cvsCmd
+     * @return  string[]
+     */
     function _execute($cvsCmd) {
-      $olddir= getcwd(); chdir (dirname ($this->filename));
-      return parent::_execute ($cvsCmd, basename ($this->filename));
-      chdir ($olddir);
+      $olddir= getcwd(); 
+      chdir($this->path);
+      $r= parent::_execute ($cvsCmd);
+      chdir($olddir);
+      
+      return $r;
     }
     
     /**
      * Update a file or directory
      *
-     * @access public
-     * @param bool simulate simulation mode
-     * @return array stats
-     * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC152
+     * @access  public
+     * @param   bool sim default FALSE whether to simulate
+     * @return  stdclass[] objects
+     * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC152
      */
     function update($sim= FALSE) {
       $results= $this->_execute (sprintf ('update %s',
@@ -76,27 +87,30 @@
     /**
      * Get the status from a file
      *
+     * The returned object has the form:
+     * <code>
+     *   $result->workingrevision= '1.20';
+     *   $result->tags['STABLE']= '1.15';
+     * </cde>
+     *
      * @access  public
-     * @param 
-     * @return object status
-     *         The returned object has the form:
-     *         result->workingrevision= '1.20';
-     *         result->tags['STABLE']= '1.15'; etc.
-     * 
+     * @return  &stdclass status
      */
     function &getStatus() {
       try(); {
         $output= $this->_execute ('status -v');
       } if (catch ('CVSInterfaceException', $e)) {
-        $e->printStackTrace();
-        return $e;
+        return throw($e);
       }
       
-      if (strstr ($output[0], 'cvs server: nothing known about'))
-        return throw (new CVSInterfaceException ('File '.$this->filename.
-          ' is not known to CVS'));
+      if (strstr ($output[0], 'cvs server: nothing known about')) {
+        return throw (new CVSInterfaceException (
+          'File '.$this->filename.' is not known to CVS'
+        ));
+      }
 
-      $result= new StdClass(); $inTags= false;
+      $result= &new stdClass(); 
+      $inTags= false;
       $result->tags= array();
       foreach ($output as $r) {
         if ($inTags) {
@@ -128,7 +142,7 @@
         }
         
         if (strstr ($r, 'Existing Tags:')) {
-          $inTags= true;
+          $inTags= TRUE;
           continue;
         }
       }
@@ -139,25 +153,21 @@
     /**
      * Commit the file (needs write access to repository)
      *
-     * @access public
-     * @param string comment
-     * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC124
+     * @access  public
+     * @param   string comment
+     * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC124
      */
     function commit($comment) {
-      $tmpFilename= '/tmp/cvscommitmsg.'.rand(1, 10000);
-      $f= &new File ($tmpFilename);
+      $f= &new TempFile();
       try(); {
         $f->open (FILE_MODE_WRITE);
         $f->writeLine ($comment);
         $f->close();
       } if (catch ('IOException', $e)) {
-        echo $e->printStackTrace();
-        return $e;
+        return throw($e);
       }
 
-      $return= &$this->_execute (sprintf ("commit -F %s",
-        $tmpFilename
-      ));
+      $return= &$this->_execute(sprintf ('commit -F %s', $f->getURI()));
       
       // It seems CVS automatically removes the tmp-file after
       // reading it, so we don't need to do so (gives error).
@@ -169,16 +179,15 @@
      * To complete this action, you have to call commit. Use this with
      * caution.
      *
-     * @access public
-     * @return bool success
+     * @access  public
+     * @return  bool success
      */
     function remove() {
       $f= &new File ($this->filename);
       try(); {
         $f->move ($this->filename.'.cvsremove');
       } if (catch ('IOException', $e)) {
-        $e->printStackTrace();
-        return false;
+        return throw($e);
       }
       
       return $this->_execute ('remove');
@@ -189,9 +198,8 @@
      * that the directory also already exists in CVS, otherwise
      * an error will be thrown.
      *
-     * @access public
-     * @param 
-     * @return bool success
+     * @access  public
+     * @return  bool success
      */    
     function add() {
       return $this->_execute ('add');
@@ -204,11 +212,11 @@
      * Specify both params to diff two CVS-revisions against each other.
      * You can also use CVS-Tags here.
      *
-     * @access public
-     * @param string revision_from
-     * @param string revision_to
-     * @return array diff lines from the diff
-     * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC129
+     * @access  public
+     * @param   string revision_from
+     * @param   string revision_to
+     * @return  array diff lines from the diff
+     * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC129
      */
     function diff($r1= NULL, $r2= NULL) {
       $cmd= sprintf ('diff -B -b %s %s',
@@ -225,18 +233,18 @@
      * parser will fail to correctly identify log-entries if any
      * log-line contains a line of 28 '-'.
      *
-     * @access public
-     * @return array logs
-     * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC142
+     * @access  public
+     * @return  array logs
+     * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC142
      */
     function &getLog() {
       $output= $this->_execute ('log');
+      $divider= str_repeat ('-', 28);
       $log= array();
       
       $cnt= count ($output);
       for ($i= 0; $i < $cnt-2; $i++) {
         $l= $output[$i];
-        // printf ("* Checking: %s\n", $output[$i]);
         if (substr ($output[$i], 0, 28) == str_repeat ('-', 28) &&
           preg_match ('/^revision (\S+)$/', $output[$i+1], $match)) {
           
@@ -245,31 +253,27 @@
           list ($date, $author, $state)= explode (';', $output[$i+2]);
           $activeLog= '';
           
-          for ($y= $i+3; $y < $cnt-1; $y++) {
-            
-            if (str_repeat ('-', 28) != $output[$y]) {
-              // printf ("+ Add [%s]: %s\n", $activeRev, $output[$y]);
+          for ($y= $i+ 3; $y < $cnt- 1; $y++) {
+            if ($divider != $output[$y]) {
               $activeLog.= $output[$y]."\n";
             } else {
-              // printf ("-Skip [%s]: %s\n", $activeRev, $output[$y]);
               break;
             }
           }
           
           // Make that entry
-          list (,$date)= explode (': ', $date);
-          list (,$author)= explode (': ', $author);
-          list (,$state)= explode (': ', $state);
+          list (,$date)= explode (': ', $date, 2);
+          list (,$author)= explode (': ', $author, 2);
+          list (,$state)= explode (': ', $state, 2);
           
-          $entry= array (
-            'date' => $date,
-            'author' => $author,
-            'state' => $state,
-            'revision' => $activeRev,
-            'log' => $activeLog
+          $entry= array(
+            'date'      => $date,
+            'author'    => $author,
+            'state'     => $state,
+            'revision'  => $activeRev,
+            'log'       => $activeLog
           );
-          $log[$activeRev]= (Object)$entry;
-          // var_dump ($log);
+          $log[$activeRev]= (object)$entry;
           
           // Move pointer to where we stopped
           $i= $y-1;
@@ -299,7 +303,6 @@
         return FALSE;
       
       return implode ("\n", $data);
-    }
-    
+    }    
   }
 ?>
