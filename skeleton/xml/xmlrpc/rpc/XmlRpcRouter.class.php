@@ -36,9 +36,9 @@
    * </code>
    *
    * The default implementation of the XmlRpcRouter takes the given methodName from the
-   * XML-RPC request, splits it at the '::' and takes the first part as the class name,
+   * XML-RPC request, splits it at the '.' and takes the first part as the class name,
    * the second part as the method name. A request on a server with the setup given above
-   * and a requested methodName of 'XmlRpcTest::runTest' would try to instanciate class
+   * and a requested methodName of 'XmlRpcTest.runTest' would try to instanciate class
    * net.xp-framework.webservices.xmlrpc.XmlRpcTestHandler and run methon 'runTest'
    * on it.
    *
@@ -154,10 +154,10 @@
     function &callReflectHandler(&$msg) {
     
       // Determine requested class and method
-      if (FALSE === strpos($msg->method, '::'))
+      if (FALSE === strpos($msg->method, '.'))
         return throw(new IllegalArgumentException('Malformed method: "'.$msg->method.'"'));
         
-      list($className, $methodName)= explode('::', $msg->method, 2);
+      list($className, $methodName)= explode('.', $msg->method, 2);
     
       if ('_' == $methodName{0}) {
         return throw(new IllegalAccessException('Cannot access non-public method '.$methodName));
@@ -165,7 +165,7 @@
 
       // Create message from request data
       try(); {
-        $class= &$this->classloader->loadClass($className.'Handler');
+        $class= &$this->classloader->loadClass(ucfirst($className).'Handler');
       } if (catch('ClassNotFoundException', $e)) {
         return throw($e);
       }
