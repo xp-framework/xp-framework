@@ -238,7 +238,7 @@
      * @param   int size
      */
     function setSize($size) {
-      $this->size= $size;
+      $this->size= (int)$size;
     }
 
     /**
@@ -258,7 +258,7 @@
      * @param   int hopcount
      */
     function setHopcount($hopcount) {
-      $this->hopcount= $hopcount;
+      $this->hopcount= (int)$hopcount;
     }
 
     /**
@@ -278,7 +278,7 @@
      * @param   int percent
      */
     function setPercent($percent) {
-      $this->percent= $percent;
+      $this->percent= (int)$percent;
     }
 
     /**
