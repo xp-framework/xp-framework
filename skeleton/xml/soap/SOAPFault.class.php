@@ -11,10 +11,10 @@
    */
   class SOAPFault extends XML {
     var 
-      $faultcode, 
-      $faultstring, 
-      $faultactor= NULL,
-      $detail= NULL;
+      $faultcode    = '', 
+      $faultstring  = '', 
+      $faultactor   = NULL,
+      $detail       = NULL;
     
     /**
      * Fill in this fault with data
