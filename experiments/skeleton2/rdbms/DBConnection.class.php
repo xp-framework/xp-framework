@@ -51,6 +51,21 @@
     }
 
     /**
+     * Returns a hashcode for this connection
+     *
+     * Example:
+     * <pre>
+     *   sybase-ct link #50
+     * </pre>
+     *
+     * @access  public
+     * @return  string
+     */
+    public function hashCode() {
+      return get_resource_type($this->handle).' #'.(int)$this->handle;
+    }
+
+    /**
      * Set Timeout
      *
      * @access  public
