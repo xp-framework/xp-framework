@@ -53,13 +53,14 @@
      */
     function loadClass($className, $codebase= '', $format= '%s.class.php') {
       if (isset($this)) {
-        $p= ini_get('include_path');
         $codebase= $this->codebase;
         $format= $this->format;
-        ini_set('include_path', $codebase.':'.$p);
       }
+      $p= ini_get('include_path');
+      ini_set('include_path', $codebase.':'.$p);
+      
       $result= include_once(sprintf($format, $className));
-      if (isset($p)) ini_set('include_path', $p);
+      ini_set('include_path', $p);
       
       if (FALSE === $result) return throw(new ClassNotFoundException(sprintf(
         'class "%s" [codebase %s, format %s] not found',
