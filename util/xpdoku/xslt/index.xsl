@@ -10,10 +10,61 @@
   <xsl:param name="mode" select="'index'"/>
   <xsl:include href="xsl-helper.xsl"/>
   <xsl:include href="rdf-helper.xsl"/>
+  <xsl:variable name="cvs" select="document('../src/cvs_history.xml')/document"/>
+   
+  <xsl:template name="cvs">
+    <xsl:param name="action"/>
+    <xsl:param name="symbol">
+      <symbol for="A">+</symbol>
+      <symbol for="R">-</symbol>
+      <symbol for="M">~</symbol>
+    </xsl:param>
+    <xsl:for-each select="$cvs/entry[@action = $action]">
+      <xsl:if test="position() &lt; 4">
+        <tr>
+          <td><xsl:apply-templates select="$symbol/symbol[@for= $action]"/></td>
+          <td>
+            <a title="{collection}.{class}" href="#">
+              <xsl:if test="$action != 'R'">
+                <xsl:attribute name="href">/apidoc/classes/<xsl:value-of select="concat(collection, '.', class)"/>.html</xsl:attribute>
+              </xsl:if>
+              <xsl:value-of select="class"/>
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td/>
+          <td>
+            <small><xsl:value-of select="user"/>, <xsl:value-of select="date"/></small>
+          </td>
+        </tr>
+      </xsl:if>
+    </xsl:for-each>    
+  </xsl:template>
 
   <xsl:template name="navigation">
+    
     <a href="/">XP</a> stands for <b>X</b>ML <b>P</b>HP.<br/>
     XP is far more than that!
+    
+    <br/><br/>
+    <xsl:call-template name="nav-divider">
+      <xsl:with-param name="caption">CVS activity</xsl:with-param>
+    </xsl:call-template>
+    <table border="0" width="100%" cellspacing="0" cellpadding="2">
+      <tr>
+        <td colspan="2"><b>Changed classes</b></td>
+      </tr>
+      <xsl:call-template name="cvs"><xsl:with-param name="action" select="'M'"/></xsl:call-template>
+      <tr>
+        <td colspan="2"><b>Added classes</b></td>
+      </tr>
+      <xsl:call-template name="cvs"><xsl:with-param name="action" select="'A'"/></xsl:call-template>
+      <tr>
+        <td colspan="2"><b>Removed classes</b></td>
+      </tr>
+      <xsl:call-template name="cvs"><xsl:with-param name="action" select="'R'"/></xsl:call-template>
+    </table>
   </xsl:template>
 
   <xsl:template match="main">
