@@ -40,9 +40,7 @@
     function &getInstance() {
       static $instance= NULL;
       
-      if (!$instance) {
-        $instance= new DriverManager();
-      }
+      if (!$instance) $instance= new DriverManager();
       return $instance;
     }
   
