@@ -373,8 +373,8 @@
     function encodeString($str) {
       try(); {
         $out= '';
-        $flags= array();
-        for ($i= 0, $c= strlen($str); $i<$c; $i++) $flags[] = FALSE;
+        $flags= array_fill(0, strlen($str)+ 1, FALSE);
+        array_pop($flags);
         $p= &new PunyCode();
         $p->encode($str, $out, $flags);
       } if (catch('Exception', $e)) {
@@ -384,5 +384,4 @@
     }
 
   }
-
 ?>
