@@ -144,7 +144,7 @@
           <xsl:otherwise>
             <xsl:text>
         $data= array();
-        if ($q) while ($r= $q-&gt;next($q)) {
+        if ($q) while ($r= $q-&gt;next()) {
           $data[]= &amp;new </xsl:text>
     <xsl:call-template name="prettyname">
     <xsl:with-param name="string" select="../@name"/>
