@@ -34,7 +34,7 @@ $(OUTPUT):
 	@-mkdir $(OUTPUT)/image
 	@-mkdir $(OUTPUT)/src
 	@-cp -R src/ $(OUTPUT)
-	@-$(PHP) util/getSource.php --dest=$(OUTPUT)/src
+	@-$(PHP) -C util/getSource.php --dest=$(OUTPUT)/src
 
 install:
 	cp -R $(OUTPUT)/* $(TARGET)
