@@ -252,7 +252,7 @@
       
       $results= array();
       for ($i= 0, $s= sizeof($node->children); $i < $s; $i++) {
-        $results[$names ? $node->children[$i]->name : $i]= $this->unmarshall(
+        $results[$names ? array_pop(explode(':', $node->children[$i]->name)) : $i]= $this->unmarshall(
           $node->children[$i], 
           $context,
           $mapping
