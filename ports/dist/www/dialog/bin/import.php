@@ -81,54 +81,70 @@ __
     $cat->addAppender(new ConsoleAppender());
     $processor->setTrace($cat);
   }
-  
-  // Create album
-  with ($album= &new Album()); {
+
+  // Check if album already exists
+  $serialized= &new File(DATA_FOLDER.$name.'.dat');
+  if ($serialized->exists()) {
+    Console::writeLine('---> Found existing album ');
+    try(); {
+      $album= unserialize(FileUtil::getContents($serialized));
+    } if (catch('IOException', $e)) {
+      $e->printStackTrace();
+      exit(-1);
+    }
+
+    // We will regenerate these from scratch...
+    $album->highlights= $album->chapters= array();
+  } else {
+    Console::writeLine('---> Creating new album... ');
+
+    // Create album
+    $album= &new Album();
     $album->setName($name);
     $album->setTitle($param->value('title', 't', $origin->dirname));
     $album->setCreatedAt(new Date($param->value('date', 'D', $origin->createdAt())));
+  }
+  
+  // Read the introductory text from description.txt if existant
+  if (is_file($df= $origin->getURI().DESCRIPTION_FILE)) {
+    $album->setDescription(file_get_contents($df));
+  }
 
-    // Read the introductory text from description.txt if existant
-    if (is_file($df= $origin->getURI().DESCRIPTION_FILE)) {
-      $album->setDescription(file_get_contents($df));
-    }
-    
-    // Get highlights from special folder if existant
-    $highlights= &new Folder($origin->getURI().HIGHLIGHTS_FOLDER);
-    if ($highlights->exists()) {
-      for ($i= &new FilteredFolderIterator($highlights, FOLDER_FILTER); $i->hasNext(); ) {
-        try(); {
-          $highlight= &$processor->albumImageFor($highlights->getURI().$i->next());
-        } if (catch('ImagingException', $e)) {
-          $e->printStackTrace();
-          exit(-2);
-        }
-        $album->addHighlight($highlight);
-        Console::writeLine('---> Added highlight ', $highlight->getName());
-      }
-      $highlights->close();
-    }
-    $needsHighlights= HIGHLIGHTS_MAX - $album->numHighlights();
-
-    // Process all images
-    $images= array();
-    for ($i= &new FilteredFolderIterator($origin, FOLDER_FILTER); $i->hasNext(); ) {
+  // Get highlights from special folder if existant
+  $highlights= &new Folder($origin->getURI().HIGHLIGHTS_FOLDER);
+  if ($highlights->exists()) {
+    for ($i= &new FilteredFolderIterator($highlights, FOLDER_FILTER); $i->hasNext(); ) {
       try(); {
-        $image= &$processor->albumImageFor($origin->getURI().$i->next());
+        $highlight= &$processor->albumImageFor($highlights->getURI().$i->next());
       } if (catch('ImagingException', $e)) {
         $e->printStackTrace();
         exit(-2);
       }
-      $images[]= &$image;
-      Console::writeLine('---> Added image ', $image->getName());
-      
-      // Check if more highlights are needed
-      if ($needsHighlights <= 0) continue;
-
-      Console::writeLine('     >> Need ', $needsHighlights, ' more highlight(s), using above image');
-      $album->addHighlight($image);
-      $needsHighlights--;
+      $album->addHighlight($highlight);
+      Console::writeLine('     >> Added highlight ', $highlight->getName());
     }
+    $highlights->close();
+  }
+  $needsHighlights= HIGHLIGHTS_MAX - $album->numHighlights();
+
+  // Process all images
+  $images= array();
+  for ($i= &new FilteredFolderIterator($origin, FOLDER_FILTER); $i->hasNext(); ) {
+    try(); {
+      $image= &$processor->albumImageFor($origin->getURI().$i->next());
+    } if (catch('ImagingException', $e)) {
+      $e->printStackTrace();
+      exit(-2);
+    }
+    $images[]= &$image;
+    Console::writeLine('     >> Added image ', $image->getName());
+
+    // Check if more highlights are needed
+    if ($needsHighlights <= 0) continue;
+
+    Console::writeLine('     >> Need ', $needsHighlights, ' more highlight(s), using above image');
+    $album->addHighlight($image);
+    $needsHighlights--;
   }
   $origin->close();
 
@@ -150,7 +166,6 @@ __
 
   // Save album
   $cat && $cat->debug($album);
-  $serialized= &new File(DATA_FOLDER.$name.'.dat');
   try(); {
     FileUtil::setContents($serialized, serialize($album));
   } if (catch('IOException', $e)) {
