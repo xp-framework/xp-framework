@@ -20,7 +20,7 @@
           like a huge commit of many changes in many files. Instead you should clearly
           document what you changed and why. This requires discipline - to the benefit that
           anyone can understand what you did. That is better for everyone.
-
+          <br/>
           The following format has been found readable:
           
           <pre><![CDATA[|----------------------------
@@ -45,12 +45,60 @@
 |  We have a cvs checkout on that machine, so we could directly work on
 |  it and commit there in case of emergency.
 |----------------------------]]></pre>
-
           
         </text>
       </para>              
       <para>
-        <caption>What the thing with those STABLE - tags?</caption>
+        <caption>Comments in CVS log messages</caption>
+        <text>
+          When commiting, one somebody feels the desire to add some more information 
+          to the log message, such as reasoning for the commit or further references
+          (such as howtos, documentation, bug links) which actually have nothing to 
+          do with the changes themselves.
+          <br/>
+          Use a # to prefix these "comments".
+          <pre><![CDATA[|----------------------------
+|revision 1.32
+|date: 2004/02/16 21:51:42;  author: friebe;  state: Exp;  lines: +120 -32
+|- Fix serializing of SOAP structs for Axis
+|# See http://ws.apache.org/axis/ for details on their serializer
+|----------------------------]]></pre>
+          
+        </text>
+      </para>              
+      <para>
+        <caption>Quality assurance work</caption>
+        <text>
+          From time to time, classes undergo a quality assurance phase. That means
+          they are checked for possible error conditions, coding standards or whether
+          their api documentation still conforms to the current behaviour.
+          <br/>
+          Commits serving these purposes will be prefixed with <tt>QA</tt>. Example:
+          <pre><![CDATA[|----------------------------
+|revision 1.42
+|date: 2004/02/16 21:59:14;  author: friebe;  state: Exp;  lines: +1 -1
+|- QA: Whitespace fix
+|----------------------------]]></pre>
+          
+        </text>
+      </para>
+      <para>
+        <caption>Abbreviations used in CVS commit messages</caption>
+        <text>
+          The following abbreviations (all in capital letters) are used in log messages:
+          
+          <ul>
+            <li><b>MFH</b>: Merge from Head (when working with branches)</li>
+            <li><b>MFP</b>: Merge from Public (when working with separate CVS repositories)</li>
+            <li><b>WS</b>: Whitespace</li>
+            <li><b>CS</b>: Coding standards</li>
+            <li><b>TBD</b>: To be discussed</li>
+            <li><b>TODO</b>: (self-explanatory)</li>
+          </ul>
+        </text>
+      </para>          
+      <para>
+        <caption>What's the thing with those STABLE - tags?</caption>
         <text>
           Setting a STABLE-tag defines that this piece can be used in a production
           environment. This is the commitment of the respective author that he
