@@ -30,11 +30,11 @@ Generische Keywords:
          Syntax: (<url>|<klasse>|<klasse>#<methode>|<email>|php://<funktion>|rfc://<nummer>)
          
          @see    http://schlund.de/
-         @see    io.File
-         @see    io.File#open
-         @see    thekid@thekid.de
-         @see    "Timm Friebe" <thekid@thekid.de>
+         @see    xp://io.File
+         @see    xp://io.File#open
+         @see    mail://thekid@thekid.de
          @see    php://fopen
+         @see    php-gtk://blubb
          @see    rfc://821
 
 Methoden-Keywords:
@@ -66,7 +66,7 @@ Methoden-Keywords:
 
 Klassen-Keywords:     
 -----------------
-@static  Definiert eine statische Klasse.
+@model  Definiert das Modell (generisch/statis/singleton) einer Klasse.
 
 @doc     Verweis zu einem Beispielskript. Beispielskripte liegen in ~/doc
          Syntax: (<script_relative_location>|<script_url>)
