@@ -105,7 +105,7 @@ To be discussed
   fatal error.
 
   The syntax would then change to "class Iterator extends Interface".
-  See interface_subclass.patch for an implementation.
+  See interface_subclass.patch for an implementation³.
 
 * Do we need a different error instead of lang.Error? Should it be 
   something like "CompileError" or "CoreError"? Is the stack trace
@@ -160,5 +160,20 @@ Examples:
   is('Exception', new IllegalArgumentException());  // TRUE
   is('Date', new String());                         // FALSE
 </code>
+
+Appendix: 3] subclass patch
+---------------------------
+With this patch, trying to instanciate an interface would result in:
+<pre>
+$ php interface.php Iterator
+Exception lang.Error (Interfaces cannot be instanciated)
+  at lang.Error::__construct() [line 87 of StackTraceElement.class.php] 
+  at Iterator::interface() [line 1 of XPClass.class.php(81) : eval()'d code] 
+  at <main>::eval() [line 81 of XPClass.class.php] 
+  at lang.XPClass::newinstance() [line 62 of interface.php]  
+</pre>
+
+Additional downsides: One extra class and slower declaration due to
+additional checks in implements().
 
 <EOF>
