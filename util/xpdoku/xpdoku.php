@@ -23,7 +23,7 @@
     if (!isset($p)) $p= &new PHPSyntaxHighlighter();
     if (!isset($t)) $t= array_flip(get_html_translation_table(HTML_ENTITIES));
     
-    $p->setSource('<?php '.strtr(strtr($str, $t), $t).' ?>');
+    $p->setSource('<?php '.strtr($str, $t).' ?>');
     return $p->getHighlight();
   }
   
@@ -120,13 +120,13 @@
           $out->writeLine($node->getDeclaration());
           $out->writeLine(preg_replace(
             array(
-              '#&amp;lt;pre&amp;gt;(.*)&amp;lt;/pre&amp;gt;#sU',
-              '#&amp;lt;xmp&amp;gt;(.*)&amp;lt;/xmp&amp;gt;#sU',
-              '#&amp;lt;quote&amp;gt;(.*)&amp;lt;/quote&amp;gt;#sU',
-              '#&amp;lt;code&amp;gt;(.*)&amp;lt;/code&amp;gt;#sUe',
-              '#&amp;lt;ul&amp;gt;(.*)&amp;lt;/ul&amp;gt;#sU',
-              '#&amp;lt;(/?li ?)&amp;gt;#sU',
-              '#&amp;lt;(br ?/?)&amp;gt;#sU'
+              '#&lt;pre&gt;(.*)&lt;/pre&gt;#sU',
+              '#&lt;xmp&gt;(.*)&lt;/xmp&gt;#sU',
+              '#&lt;quote&gt;(.*)&lt;/quote&gt;#sU',
+              '#&lt;code&gt;(.*)&lt;/code&gt;#sUe',
+              '#&lt;ul&gt;(.*)&lt;/ul&gt;#sU',
+              '#&lt;(/?li ?)&gt;#sU',
+              '#&lt;(br ?/?)&gt;#sU'
             ), array(
               '<pre>$1</pre>',
               '<pre>$1</pre>',
