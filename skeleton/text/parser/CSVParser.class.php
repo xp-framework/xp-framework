@@ -183,6 +183,17 @@
     }
     
     /**
+     * Manually set the header information to be able to supply
+     * additional information and get nicer output (non-enumerated)
+     *
+     * @access public
+     * @param array headers
+     */    
+    function setHeaderRecord($headers) {
+      $this->colName= $headers;
+    }
+    
+    /**
      * Read the next record from the stream. This returns a 
      * StdClass object with the members named as the header
      * record supposes. When no header was available, the
