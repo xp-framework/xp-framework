@@ -48,7 +48,11 @@
             <tr>
               <td width="30%" valign="top">Filename:</td>
               <td width="70%"><xsl:value-of select="./@filename"/><br/>
-                <a href="/source/{./@classname}">[View source]</a>
+                [ 
+                  <a href="/source/{./@classname}">View source</a> |
+                  <a href="/class/{./@classname}">Link: Class</a> |
+                  <a href="/package/{./@collection">Link: Collection</a>
+                ]
               </td>
             </tr>
             <tr>
