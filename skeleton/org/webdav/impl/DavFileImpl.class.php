@@ -464,9 +464,8 @@
      * do unlocking
      *
      * @access  public
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &org.webdav.xml.WebdavMultistatus response
-     * @return  &org.webdav.xml.WebdavMultistatus response
+     * @param   &org.webdav.xml.WebdavScriptletRequest  response
+     * @param   &org.webdav.xml.WebdavScripltetResponse response
      * @throws  OperationNotAllowedException
      */
     function &unlock(&$request, &$response) {
@@ -503,9 +502,8 @@
      * do locking
      *
      * @access  public
-     * @param   &org.webdav.xml.WebdavLockRequest request
-     * @param   &org.webdav.xml.WebdavMultistatus response
-     * @return  &org.webdav.xml.WebdavMultistatus response
+     * @param   &org.webdav.xml.WebdavLockRequest       request
+     * @param   &org.webdav.xml.WebdavScriptletResponse response
      * @throws  OperationNotAllowedException
      */
     function &lock(&$request, &$response) {
@@ -530,9 +528,8 @@
      * Find properties
      *
      * @access  public
-     * @param   &org.webdav.xml.WebdavPropFindRequest ßrequest
+     * @param   &org.webdav.xml.WebdavPropFindRequest     request
      * @param   &org.webdav.xml.WebdavMultistatusResponse response
-     * @return  &org.webdav.xml.WebdavMultistatus response
      */
     function &propfind(&$request, &$response, $useragent= 0) {
       try(); {
