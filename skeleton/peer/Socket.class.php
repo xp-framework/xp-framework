@@ -1,11 +1,16 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
  * $Id$
  */
  
   uses('io.IOException');
   
+  /**
+   * Socket class
+   *
+   * @see   php://network
+   */
   class Socket extends Object {
     var
       $host,
@@ -20,7 +25,7 @@
      * @return  bool Connection ist offen
      */
     function isConnected() {
-      return (bool)is_resource($this->_hSocket);
+      return isset($this->_hSocket) ? 1 : 0;
     }
     
     /**
@@ -37,7 +42,6 @@
       if (empty($this->host) || empty($this->port)) return (
         throw(new IllegalArgumentException('Socket::connect ===> no host specified'))
       );
-      
       if (!$this->_hSocket= fsockopen($this->host, $this->port, $errno, $errstr, $this->timeout)) return (
         throw(new IOException(sprintf(
           'sock::failed connecting to %s:%s within %s seconds [%d: %s]',
@@ -58,19 +62,8 @@
      * @param   int size default 4096 Anzahl zu lesender Bytes
      * @return  string Gelesene Daten
      */
-    function gets($size= 4096) {
+    function read($size= 4096) {
       return fgets($this->_hSocket, $size);
-    }
-    
-    /**
-     * Eine Zeile vom Socket lesen. Schneidet \r und/oder \n am Ende des Strings ab
-     *
-     * @access  public
-     * @param   int size default 4096 Anzahl zu lesender Bytes
-     * @return  string Gelesene Daten
-     */
-    function readLine($size= 4096) {
-      return chop($this->gets($size));
     }
 
     /**
@@ -80,7 +73,7 @@
      * @param   int size default 4096 Anzahl zu lesender Bytes
      * @return  string Gelesene Daten
      */
-    function read($size= 4096) {
+    function readBinary($size= 4096) {
       return fread($this->_hSocket, $size);
     }
     
