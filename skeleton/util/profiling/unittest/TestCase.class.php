@@ -290,7 +290,7 @@
      * @see     php://preg_match
      */
     function assertMatches($var, $pattern, $error= 'nomatches') {
-      return assert('$this->test(preg_match($var, $pattern), $error, $var, $pattern)');
+      return assert('$this->test(preg_match($pattern, $var), $error, $var, $pattern)');
     }
 
     /**
