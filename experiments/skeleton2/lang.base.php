@@ -114,7 +114,7 @@
     // }}}
   }
   // }}}
-
+  
   // {{{ internal void __error(int code, string msg, string file, int line)
   //     Error callback
   function __error($code, $msg, $file, $line) {
@@ -230,6 +230,7 @@
   set_error_handler('__error');
 
   uses(
+    'lang.Generic',
     'lang.Object',
     'lang.XPException',
     'lang.XPClass',
