@@ -130,6 +130,26 @@
     }
     
     /**
+     * Set the absolute Uri of requested directory
+     *
+     * @access  public 
+     * @param   string uri (e.g. /path/to/resource/directory/test.txt => /path/to/resource/directory/)
+     */
+    function setAbsoluteURI($uri) {
+      $this->absoluteUri= is_file($uri) ? dirname($uri) : $uri;
+    }
+    
+    /**
+     * Retrieve the absolute Uri of requested directory
+     *
+     * @access  public 
+     * @return  string uri
+     */
+    function getAbsoluteURI() {
+      return $this->absoluteUri;
+    }
+    
+    /**
      * Set request's data and try to parse the request body (if available)
      *
      * @access private
