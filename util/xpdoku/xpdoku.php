@@ -198,7 +198,7 @@
   // Find "unresolved" dependencies, so we won't end up with endless loop
   foreach ($depTree as $class=> $parent) {
     if ('StdClass' != $parent && !isset ($depTree[$parent])) {
-      echo sprintf ("- Unresolved dependency: %s extends unknown class %s\n",
+      echo sprintf ("     - Unresolved dependency: %s extends unknown class %s\n",
         $class,
         $parent
       );
