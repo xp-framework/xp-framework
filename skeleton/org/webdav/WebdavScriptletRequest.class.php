@@ -19,6 +19,7 @@
       $rootURI=  NULL,
       $tree=     NULL;
 
+
     /**
      * Decode string in the right encoding (currently UTF-8 is used)
      *
@@ -153,6 +154,7 @@
      * @return xml.Node
      */
     function &getNode($path) {
+
       if (!$this->tree || $this->tree->root === NULL) return NULL;
       $node= &$this->tree->root;
       $parts= explode('/', $path);
@@ -171,6 +173,17 @@
         if (!$found) return NULL;
       }
       return $node;
+    }
+    
+    /**
+     * Returns the given Namespaceprefix
+     *
+     * @access  public
+     * @return  string prefix; (e.g. skunk), default "D"
+     */
+    function getNamespacePrefix() {
+      $ns= explode(":", key($this->tree->root->attribute));
+      return empty($ns[1]) ? 'D' : $ns[1];
     }
   
   }
