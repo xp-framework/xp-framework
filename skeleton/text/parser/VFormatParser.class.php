@@ -81,7 +81,7 @@
       if (!($result= $this->_checkHeader($l= $stream->readLine()))) {
         $stream->close();
         return throw(new FormatException(
-          'Expecting "END:'.$this->identifier.'", have "'.$l.'"'
+          'Expecting "BEGIN:'.$this->identifier.'", have "'.$l.'"'
         ));
       }
       
@@ -136,10 +136,13 @@
       }
       
       // Call handler
-      $func= (isset($this->handler[$kargs[0]]) 
-        ? $this->handler[$kargs[0]] 
-        : $this->handler[0]
-      );
+      if (isset($this->handler[$kargs[0]])) {
+        $func= $this->handler[$kargs[0]];
+        array_shift($kargs);
+      } else {
+        $func= $this->handler[0];
+      }
+      
       if (!call_user_func($func, $kargs, explode(';', $value))) {
         $fname= is_array($func) ? get_class($func[0]).'::'.$func[1] : $func;
         return throw(new MethodNotImplementedException('Could not invoke callback for '.$fname));
