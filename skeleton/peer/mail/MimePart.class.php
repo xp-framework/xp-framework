@@ -36,8 +36,10 @@
      * Constructor
      *
      * @access  public
-     * @param   string body
-     * @param   string contenttype
+     * @param   string body default ''
+     * @param   string contenttype default ''
+     * @param   string encoding default ''
+     * @param   name
      */ 
     function __construct(
       $body= '', 
@@ -182,6 +184,42 @@
     function setContenttype($contenttype) {
       $this->contenttype= $contenttype;
     }
+    
+    /**
+     * Retrieves the mimeparts content-id. If this mimepart
+     * does not yet have a content-id, generateContentId() will
+     * be used to create one.
+     *
+     * @access  public
+     * @return  string id
+     */
+    function getContentId() {
+      if (empty ($this->id))
+        $this->generateContentId();
+        
+      return $this->id;
+    }
+
+    /**
+     * Sets the content-id for this mimepart. The content-id
+     * is used to reference this part within other mime-parts
+     * and thus must be unique.
+     *
+     * @access  public
+     * @param   string id
+     */    
+    function setContentId($id) {
+      $this->id= $id;
+    }
+    
+    /**
+     * Generate a unique id for this mimepart.
+     *
+     * @access  public
+     */
+    function generateContentId() {
+      $this->id= uniqid(time(), TRUE);
+    }
       
     /**
      * Set part body
@@ -249,6 +287,10 @@
       // Content-Type: application/octet-stream; name="Document003.pif"
       // Content-Type: text/plain; charset="iso-8859-1"
       $h= 'Content-Type: '.$this->contenttype;
+      if (!empty ($this->boundary)) {
+        $h.= '; boundary= "'.$this->boundary.'"';
+      }
+      
       if (!empty($this->name)) {
         $h.= '; name='.$this->name;
       } else if (!empty($this->charset)) {
