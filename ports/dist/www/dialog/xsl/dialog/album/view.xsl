@@ -26,7 +26,7 @@
     </h2>
     
     <p align="justify">
-      <xsl:copy-of select="description"/>
+      <xsl:copy-of select="/formresult/album/description"/>
       <br clear="all"/>
     </p>
 
