@@ -25,7 +25,7 @@ Functionality
 -------------
 The syntax will be almost the same as in the patched PHP (see related
 documents below for definitions) but will make use of the "#" sign (so
-that effectively, the annotations are comments.
+that effectively, the annotations are comments).
 
 Example #1: Webservices API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,6 +61,9 @@ Reflection
 ~~~~~~~~~~
 The reflection API offers the following ways to retrieve these
 annotations:
+
+- bool lang.reflect.Method::hasAnnotations()
+  Allows you to check whether any annotation exists for this method
 
 - array lang.reflect.Method::getAnnotations()
   Returns an associative array of annotation names and their 
@@ -107,6 +110,9 @@ Related documents
 
 - Annotations in Tiger, Part 1: Add metadata to Java code
   http://www-106.ibm.com/developerworks/library/j-annotate1/?ca=dnt-535
+
+- Initial implementation
+  http://xp-framework.net/downloads/rfc0016.diff
 
 Comments
 --------
