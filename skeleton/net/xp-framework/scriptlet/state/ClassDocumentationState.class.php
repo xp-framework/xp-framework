@@ -61,8 +61,6 @@
         return;
       }
 
-      echo '<xmp>'; var_dump($apidoc); echo '</xmp>';
-      
       // Add to formresult
       with (
         $n= &$response->addFormResult(new Node('apidoc')),
