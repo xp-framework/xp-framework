@@ -82,7 +82,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             bug_id = %d
           ', 
@@ -137,7 +137,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             assigned_to = %d
           ', 
@@ -198,7 +198,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             creation_ts = %s
           ', 
@@ -259,7 +259,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             delta_ts = %s
           ', 
@@ -320,7 +320,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             bug_severity = %s
           ', 
@@ -381,7 +381,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             bug_status = %s
           ', 
@@ -442,7 +442,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             op_sys = %s
           ', 
@@ -503,7 +503,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             priority = %s
           ', 
@@ -564,7 +564,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             product = %s
           ', 
@@ -625,7 +625,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             reporter = %d
           ', 
@@ -686,7 +686,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             version = %s
           ', 
@@ -747,7 +747,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             component = %s
           ', 
@@ -808,7 +808,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             resolution = %s
           ', 
@@ -869,7 +869,7 @@
             reporter_accessible,
             cclist_accessible
           from
-            bugs..bugs 
+            bugs.bugs 
           where
             votes = %d
           ', 
@@ -1447,7 +1447,7 @@
       try(); {
         $db= &$cm->getByHost('bugzilla', 0);
         $db->update(
-          'bugs..bugs set %c where bug_id = %d',
+          'bugs.bugs set %c where bug_id = %d',
           $this->_updated($db),
           $this->bug_id
         );
@@ -1470,7 +1470,7 @@
       $cm= &ConnectionManager::getInstance(); 
       try(); {
         $db= &$cm->getByHost('bugzilla', 0);
-        $db->insert('bugs..bugs (%c)', $this->_inserted($db));
+        $db->insert('bugs.bugs (%c)', $this->_inserted($db));
 
         // Fetch identity
         $this->bug_id= $db->identity();
