@@ -126,7 +126,7 @@
       // Owner
       $owner= $this->getNode('/lockinfo/owner');
       if (($node= $this->getNode('/lockinfo/owner')) !== NULL) {
-        $owner= $node->getContent();
+        $owner= $node->getSource(0);
       } else {
         // If we dont have a user in the request, take it from the authorization
         if ($this->getUser() !== NULL) {
