@@ -202,6 +202,22 @@ SYBASE_API int sybase_results(sybase_result **result)
     return ((*result)->code == CS_SUCCEED) ? SA_SUCCESS : SA_FAILURE;
 }
 
+
+/**
+ * Free a result
+ * 
+ * @param   sybase_result **result
+ * @return  int
+ */
+SYBASE_API int sybase_free_result(sybase_result *result)
+{
+    if (!result) {
+        return SA_FAILURE | SA_EALREADYFREE;
+    }
+    sfree(result);
+    return SA_SUCCESS;
+}
+
 /**
  * Close the connection to the database
  * 
@@ -284,7 +300,7 @@ SYBASE_API char *sybase_nameoftype(CS_INT type)
 }
 
 /**
- * Return the name of a return type
+ * Return the name of a return code
  *
  * @param   CS_INT type
  * @return  char* name or (UNKNOWN) if the type is unknown
