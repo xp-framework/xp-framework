@@ -48,6 +48,7 @@
       $this->root= &new Node('D:multistatus', NULL, array(
         'xmlns:D' => 'DAV:'
       ));
+      $this->setEncoding('utf-8');
     }
     
     /**
