@@ -123,6 +123,7 @@
           <code><![CDATA[  require('lang.base.php');
   xp::sapi('cli');
 
+  // {{{ main
   $p= &new ParamString();
 
   try(); {
@@ -136,34 +137,36 @@
     exit(-2);
   }
 
+  $methods= '';
+  foreach ($class->getMethods() as $method) {
+    $methods.= '  - '.$method->getName()."()\n";
+  }
+
   Console::writef(
     "Class '%s'\n".
-    "* Methods:\n  - %s()\n\n".
+    "* Methods:\n%s\n".
     "* Fields:\n  - \$%s\n\n".
     "* Has method 'toString': %s\n\n".
     "* Instance toString() output: %s\n",
     $class->getName(),
-    implode("()\n  - ", $class->getMethods()),
+    $methods,
     implode("\n  - \$", array_keys($class->getFields())),
     var_export($class->hasMethod('toString'), 1),
     $instance->toString()
-  );]]></code>
+  );
+  // }}}]]></code>
           <box caption="Output (when called with util.Binford as command line argument)"><pre><![CDATA[
 Class 'util.Binford'
 * Methods:
-  - object()
-  - __construct()
   - hashcode()
   - equals()
   - clone()
-  - __destruct()
   - getclassname()
   - getclass()
   - tostring()
   - setpoweredby()
   - getpoweredby()
   - getheader()
-  - binford()
 
 * Fields:
   - $__id
@@ -172,7 +175,7 @@ Class 'util.Binford'
 * Has method 'toString': true
 
 * Instance toString() output: util.Binford@class binford {
-  var $__id = '0.11315700 1064762623';
+  var $__id = '0.44672000 1084272285';
   var $poweredBy = 6100;
 }]]></pre>
           </box>
