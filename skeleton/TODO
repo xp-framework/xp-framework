@@ -18,7 +18,7 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
   - Java Interface via ext/java (Prerequisite: Compile PHP
     --with-java successfully)
     
-  - PostgreSQL/Oracle/... rdbms classes
+  - Oracle/... rdbms classes
   
   - img.graph additions to draw real statistical data
   
@@ -30,7 +30,7 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
   
   - Finish Excel support
   
-  - Finish WSDL support
+  - Finish WSDL support (status: in progress)
   
   - Finish xni
   
@@ -41,13 +41,10 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
   - Finish telephony API (use same model with connection 
     listeners as in peer.irc/peer.server APIs)
   
-  - Come to a consensus about org.apache.xml.workflow. This
-    API is needed but still not fully functional!
-
 2) Documentation
 =================
 
-* New website
+* New website (status: in progress)
 
 * Include ports
 
@@ -69,14 +66,11 @@ friebe, Sat Sep 27 16:17:53 CEST 2003
 
 * ChangeLog / NEWS generation for display on resources page.
 
-* Write a dependency tracker that will find out all dependencies
-  for a given script or class, thus making CVS tagging and 
-  installation easiert.
-
 4) PHP5 / ZE2 / The future
 ==========================
 
-* Find out if package/namespace support will be included in 5.0-STABLE
-  I guess we could live without as we do right now...
+* Finish reflection API (TBD: Modifiers, Function Arguments)
+
+* Migrate examples contained in API doc
 
 <EOF>
