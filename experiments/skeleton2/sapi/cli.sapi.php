@@ -21,18 +21,20 @@
         return 'Uncaught error: '.$e->toString();
       }
 
-      // Check for uncaught exceptions
-      if ($exceptions= &xp::registry('exceptions')) {
-        return 'Uncaught exception: '.$exceptions[key($exceptions)]->toString();
-      }
-
       return $buf;
     }
     // }}}
-    
+
+    // {{{ internal void exception(Exception e)
+    //     Exception handler
+    function exception($e) {
+      echo 'Uncaught ', $e;
+    }
+    // }}}
   }
   // }}}
   
   ini_set('error_prepend_string', EPREPEND_IDENTIFIER);
+  set_exception_handler(array('sapi·cli', 'exception'));
   ob_start(array('sapi·cli', 'output'));
 ?>
