@@ -521,7 +521,7 @@
       }
       
       if (FALSE === copy($this->uri, $target)) {
-        return throw(new IOException('cannot move file '.$this->uri.' to '.$target));
+        return throw(new IOException('cannot copy file '.$this->uri.' to '.$target));
       }
       return TRUE;
     }
