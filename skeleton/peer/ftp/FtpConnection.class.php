@@ -4,7 +4,12 @@
  * $Id$
  */
 
-  uses('peer.ftp.FtpDir', 'io.IOException');
+  uses(
+    'peer.ftp.FtpDir', 
+    'peer.SocketException', 
+    'peer.ConnectException', 
+    'peer.AuthenticationException'
+  );
  
   /**
    * FTP connection
@@ -87,11 +92,12 @@
     }
 
     /**
-     * Connect
+     * Connect (and log in, if necessary)
      *
      * @access  public  
      * @return  bool success
-     * @throws  IOException in case there's an error during connecting
+     * @throws  peer.ConnectException in case there's an error during connecting
+     * @throws  peer.AuthenticationException when authentication fails
      */
     function connect() {
       switch ($this->url['scheme']) {
@@ -113,7 +119,7 @@
       }
       
       if (FALSE === $this->_hdl) {
-        return throw(new IOException(sprintf(
+        return throw(new ConnectException(sprintf(
           'Could not connect to %s:%d within %d seconds',
           $this->url['host'], $this->url['port'], $this->opt['timeout']
         )));
@@ -123,7 +129,7 @@
       if (empty($this->url['user'])) return TRUE;
       
       if (FALSE === ftp_login($this->_hdl, $this->url['user'], $this->url['pass'])) {
-        return throw(new IOException(sprintf(
+        return throw(new AuthenticationException(sprintf(
           'Authentication failed for %s@%s (using password: %s)',
           $this->url['user'], $this->url['host'], empty($this->url['pass']) ? 'no' : 'yes'
         )));
@@ -183,7 +189,7 @@
      * @param   string remote default NULL remote filename, will default to basename of arg
      * @param   string mode default FTP_ASCII (either FTP_ASCII or FTP_BINARY)
      * @return  bool success
-     * @throws  IOException
+     * @throws  peer.SocketException
      */
     function put(&$arg, $remote= NULL, $mode= FTP_ASCII) {
       if (is_a($arg, 'File')) {
@@ -196,7 +202,7 @@
         $f= 'ftp_put';
       }
       if (FALSE === $f($this->_hdl, $remote, $local, $mode)) {
-        return throw(new IOException(sprintf(
+        return throw(new SocketException(sprintf(
           'Could not put %s to %s using mode %s',
           $local, $remote, $mode
         )));
@@ -213,7 +219,7 @@
      * @param   &mixed arg either a filename or an open File object
      * @param   string mode default FTP_ASCII (either FTP_ASCII or FTP_BINARY)
      * @return  bool success
-     * @throws  IOException
+     * @throws  peer.SocketException
      */
     function get($remote, &$arg, $mode= FTP_ASCII) {
       if (is_a($arg, 'File')) {
@@ -224,7 +230,7 @@
         $f= 'ftp_get';
       }
       if (FALSE === $f($this->_hdl, $local, $remote, $mode)) {
-        return throw(new IOException(sprintf(
+        return throw(new SocketException(sprintf(
           'Could not get %s to %s using mode %s',
           $remote, $local, $mode
         )));
@@ -267,14 +273,13 @@
      * @access  public
      * @param   bool enable enable or disable passive mode
      * @return  bool success
-     * @throws  IOException
+     * @throws  peer.SocketException
      */
     function setPassive($enable= TRUE) {
-      if (NULL === $this->_hdl)
-        return throw (new IOException ('Cannot change passive mode flag with no open connection'));
-        
-      return ftp_pasv ($this->_hdl, $enable);
+      if (NULL === $this->_hdl) {
+        return throw(new SocketException('Cannot change passive mode flag with no open connection'));
+      }
+      return ftp_pasv($this->_hdl, $enable);
     }
-  
   }
 ?>
