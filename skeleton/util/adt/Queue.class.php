@@ -74,8 +74,7 @@
      * @return  &lang.Object object
      */        
     function &peek() {
-      if (empty($this->_elements)) return NULL;
-      return $this->_elements[0];
+      if (empty($this->_elements)) return NULL; else return $this->_elements[0];
     }
   
     /**
@@ -86,7 +85,7 @@
      * @return  bool
      */
     function isEmpty() {
-      return 0 == sizeof($this->_elements);
+      return empty($this->_elements);
     }
 
     /**
