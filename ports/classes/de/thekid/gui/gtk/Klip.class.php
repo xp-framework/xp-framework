@@ -4,11 +4,14 @@
  * $Id$
  */
 
+  define('XML_HEADER',  '<?xml version="1.0" encoding="iso-8859-1"?>');
+
   uses(
     'gui.gtk.GtkGladeApplication',
     'gui.gtk.util.GTKPixmapLoader',
     'peer.http.HttpConnection',
     'io.File',
+    'util.Hashmap',
     'lang.System',
     'xml.XSLProcessor',
     'xml.rdf.RDFNewsFeed'
@@ -23,9 +26,10 @@
    */
   class Klip extends GTKGladeApplication {
     var
-      $conn = NULL,
-      $proc = NULL,
-      $view = NULL;
+      $conn     = NULL,
+      $proc     = NULL,
+      $view     = NULL,
+      $visited  = NULL;
       
     /**
      * Constructor
@@ -35,6 +39,8 @@
      */
     function __construct(&$p) {
       parent::__construct($p, dirname($p->value(0)).'/../ui/klip.glade', 'main');
+      
+      $this->visited= &new Hashmap();
 
       // Set up HTTP connection
       $this->conn= &new HttpConnection($p->value(1));
@@ -106,8 +112,9 @@
                 $xml= $rdf->getDeclaration().sprintf('<items count="%d">', $s);
                 for ($i= 0; $i < $s; $i++) {
                   $xml.= sprintf(
-                    '<item link="%s">%s</item>',
+                    '<item link="%s" read="%d">%s</item>',
                     htmlspecialchars($rdf->items[$i]->link),
+                    $this->visited->get($rdf->items[$i]->link),
                     htmlspecialchars($rdf->items[$i]->title)
                   );
                 }
@@ -142,7 +149,8 @@
      */
     function onLinkClicked(&$widget, $url) {
       $this->cat->debug('Clicked:', $url, 'in widget', $widget);
-      
+      $this->visited->put($url, TRUE);
+
       // TBI: Make browser command line and redirection configurable
       try(); {
         System::exec('galeon '.$url, '2>/dev/null 1>/dev/null', TRUE);
@@ -150,6 +158,9 @@
         $this->cat->error('Opening browser failed', $e);
         return FALSE;
       }
+
+      // Refresh view to reflect changes in read/unread status
+      $this->refreshView();
       return TRUE;
     }
 
@@ -226,6 +237,28 @@
     }
     
     /**
+     * Refresh view - run processor on previously downloaded information
+     *
+     * @access  protected
+     */
+    function refreshView() {
+      try(); {
+        $this->proc->run();
+      } if (catch('TransformerException', $e)) {
+        $this->cat->error($e);
+        $this->cat->debug($klipsrc);
+        return;
+      }
+      
+      // Update GtkHTML view
+      with ($html= $this->proc->output(), $stream= &$this->view->begin()); {
+        $this->cat->debug('Writing to', $this->view, 'html', strlen($html), 'bytes');
+        $this->streamWrite($stream, $html);
+        $this->view->end($stream, GTK_HTML_STREAM_OK);
+      }
+    }
+    
+    /**
      * Callback for when btn_refresh widget is clicked
      *
      * @access  protected
@@ -239,7 +272,7 @@
       // junk after document element
       try(); {
         if ($response= &$this->conn->get()) {
-          $klipsrc= '<?xml version="1.0" encoding="iso-8859-1"?>';
+          $klipsrc= XML_HEADER;
           while ($buf= $response->readData()) {
             $klipsrc.= strtr($buf, array(
               '©'     => '&#169;'
@@ -248,23 +281,13 @@
           }
           
           $this->proc->setXMLBuf(substr($klipsrc, 0, strpos($klipsrc, '</klip>')+ 7));
-          $this->proc->run();
         }
-      } if (catch('TransformerException', $e)) {
-        $this->cat->error($e);
-        $this->cat->debug($klipsrc);
-        return FALSE;
       } if (catch('Exception', $e)) {
         $this->cat->error($e);
         return FALSE;
       }
       
-      // Update GtkHTML view
-      with ($html= $this->proc->output(), $stream= &$this->view->begin()); {
-        $this->cat->debug('Writing to', $this->view, 'html', strlen($html), 'bytes');
-        $this->streamWrite($stream, $html);
-        $this->view->end($stream, GTK_HTML_STREAM_OK);
-      }
+      $this->refreshView();
     }
   }
 ?>
