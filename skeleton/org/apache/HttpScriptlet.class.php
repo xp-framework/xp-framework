@@ -308,8 +308,6 @@
         getenv('HTTP_HOST').
         getenv('REQUEST_URI')
       ));
-      
-      if ($this->needsSession) $this->_session();
     }
     
     /**
@@ -340,8 +338,11 @@
         )));
       }
       
-      // Check for session
-      if ($this->needsSession) {
+      // Check if a session is present. This is either the case when a session
+      // is already in the URL or if the scriptlet explicetly states it needs 
+      // one (by setting the member variable "needsSession" to TRUE).
+      if ($this->needsSession || $this->request->getSessionId()) {
+        $this->_session();
         try(); {
           $this->request->session->initialize($this->request->getSessionId());
           $valid= $this->request->session->isValid();
