@@ -35,6 +35,10 @@
     exit;
   }
   
+  function relocateClass ($className) {
+    relocate ('/classes/'.$className.'.html');
+  }
+  
   $keyword= urldecode ($_REQUEST['keyword']);
   $keylower= strtolower ($keyword);
   $keypointless= str_replace ('.', '', strtolower ($keylower));
@@ -46,15 +50,17 @@
   foreach ($classes as $idx=> $fqClassName) {
     $className= strtolower (substr ($fqClassName, max (0, strrpos ($fqClassName, '.')+1)));
     if ($keylower == $className) {
-      // It's a match
+      // It's a (more or less) direct match
       $classHits[]= $idx;
+      
+      relocateClass ($fqClassName);
     }
     
     if ($keylower == strtolower ($fqClassName)) {
       // Exact match
       $classHits[]= $idx;
       
-      // Direct relocate?
+      relocateClass ($fqClassName);
     }
 
     if ($keysound == soundex ($className)) {
@@ -70,7 +76,7 @@
   
   // One hit => direct jumping
   if (count ($classHits) == 1) {
-    relocate ('/classes/'.$classes[$classHits[0]].'.html');
+    relocateClass ($classes[$classHits[0]]);
     exit;
   }
   
@@ -100,5 +106,31 @@
         echo $r;
       ]]>
     </xsl:processing-instruction>
+    <br/>
+    <br/>
+    <xsl:call-template name="divider"/>
+    <br/>
+    <xsl:call-template name="frame">
+      <xsl:with-param name="color" select="'#cccccc'"/>
+      <xsl:with-param name="content">
+        To improve your search results, here you are a few tips:<br/>
+        <ul>
+          <li>Search is case insensitive.</li>
+          <li>You can specify the class-name as you call the class in your
+            scripts.
+          </li>
+          <li>You can specify the complete class-path and class-name (this is
+            known as the fully qualified classname (fqcn)).
+          </li>
+          <li>The search takes advantage of the <tt>soundex</tt>-functions in
+            PHP, so you can do prefix-searching (as the function only looks at
+            the first few letters of your input) and even make a mistake
+            entering your search.<br/>
+            E.g. search will find <tt>rdbms.sybase.SPSybase</tt> if you type in
+            <tt>spsübase</tt>.
+          </li>
+        </ul>
+      </xsl:with-param>
+    </xsl:call-template>
   </xsl:template>
 </xsl:stylesheet>
