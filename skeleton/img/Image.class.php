@@ -27,10 +27,8 @@
     var 
       $width    = 0,
       $height   = 0,
-      $palette  = array();
-    
-    var
-      $_hdl     = NULL;
+      $palette  = array(),
+      $handle   = NULL;
     
     /**
      * Constructor
@@ -40,7 +38,7 @@
      * @param   int height
      */
     function __construct($handle) {
-      $this->_hdl= $handle;
+      $this->handle= $handle;
       $this->width= imagesx($handle);
       $this->height= imagesy($handle);
     }
@@ -51,7 +49,7 @@
      * @access  public
      */
     function __destruct() {
-      if (is_resource($this->_hdl)) imagedestroy($this->_hdl);
+      if (is_resource($this->handle)) imagedestroy($this->handle);
       parent::__destruct();
     }
     
@@ -93,7 +91,7 @@
      * @return  &img.Image
      */
     function &saveTo(&$writer) {
-      $writer->setResource($this->_hdl);
+      $writer->setResource($this->handle);
     }
 
     /**
@@ -103,7 +101,7 @@
      * @return  int width
      */
     function getWidth() {
-      return imagesx($this->_hdl);
+      return imagesx($this->handle);
     }
     
     /**
@@ -113,7 +111,7 @@
      * @return  int height
      */
     function getHeight() {
-      return imagesy($this->_hdl);
+      return imagesy($this->handle);
     }
     
     /**
@@ -123,7 +121,7 @@
      * @return  int[] width, height
      */
     function getDimensions() {
-      return array(imagesx($this->_hdl), imagesy($this->_hdl));
+      return array(imagesx($this->handle), imagesy($this->handle));
     }
 
     /**
@@ -155,8 +153,8 @@
       if (-1 == $src_h) $src_h= $img->getHeight();
       if (-1 != $dst_w || -1 != $dst_h) {
         imagecopyresized(
-          $this->_hdl, 
-          $img->_hdl, 
+          $this->handle, 
+          $img->handle, 
           $dst_x, 
           $dst_y, 
           $src_x, 
@@ -168,8 +166,8 @@
         );
       } else {
         imagecopy(
-          $this->_hdl, 
-          $img->_hdl, 
+          $this->handle, 
+          $img->handle, 
           $dst_x, 
           $dst_y, 
           $src_x, 
@@ -209,8 +207,8 @@
       if (-1 == $src_w) $src_w= $img->getWidth();
       if (-1 == $src_h) $src_h= $img->getHeight();
       imagecopymerge(
-        $this->_hdl, 
-        $img->_hdl, 
+        $this->handle, 
+        $img->handle, 
         $dst_x, 
         $dst_y, 
         $src_x, 
@@ -229,13 +227,13 @@
      * @return  &img.Color color the color put in
      */
     function &allocate(&$color) {
-      $color->_hdl= imagecolorallocate(
-        $this->_hdl, 
+      $color->handle= imagecolorallocate(
+        $this->handle, 
         $color->red,
         $color->green,
         $color->blue
       );
-      $this->palette[$color->_hdl]= &$color;
+      $this->palette[$color->handle]= &$color;
       return $color;
     }
     
@@ -252,7 +250,7 @@
       if (!is_a($style, 'ImgStyle')) {
         return throw(new IllegalArgumentException('style parameter is not an ImgStyle object'));
       }
-      imagesetstyle($this->_hdl, $style->getPixels());
+      imagesetstyle($this->handle, $style->getPixels());
       return $style;
     }
 
@@ -270,9 +268,9 @@
         return throw(new IllegalArgumentException('brush parameter is not an ImgBrush object'));
       }
       if (NULL !== $brush->style) {
-        imagesetstyle($this->_hdl, $brush->style->getPixels());
+        imagesetstyle($this->handle, $brush->style->getPixels());
       }
-      imagesetbrush($this->_hdl, $brush->image->_hdl);
+      imagesetbrush($this->handle, $brush->image->handle);
       return $brush;
     }
     
@@ -285,7 +283,7 @@
      * @return  &img.Color color object
      */
     function &colorAt($x, $y) {
-      return $this->palette[imagecolorat($this->_hdl, $x, $y)];
+      return $this->palette[imagecolorat($this->handle, $x, $y)];
     }
     
     /**
@@ -297,7 +295,7 @@
      * @return  bool success
      */
     function correctGamma($in, $out) {
-      return imagegammacorrect($this->_hdl, $in, $out);
+      return imagegammacorrect($this->handle, $in, $out);
     }
     
     /**
@@ -314,9 +312,9 @@
      */
     function fill(&$col, $x= 0, $y= 0) {
       if (is_array($col)) {
-        imagefilltoborder($this->_hdl, $x, $y, $col[1]->_hdl, $col[0]->_hdl);
+        imagefilltoborder($this->handle, $x, $y, $col[1]->handle, $col[0]->handle);
       } else {
-        imagefill($this->_hdl, $x, $y, $col->_hdl);
+        imagefill($this->handle, $x, $y, $col->handle);
       }
     }
     
@@ -331,7 +329,7 @@
      * @return  bool success
      */
     function setInterlace($on) {
-      return imageinterlace($this->_hdl, $on);
+      return imageinterlace($this->handle, $on);
     }
     
     /**
@@ -346,7 +344,7 @@
      * @param   &img.Color color
      */
     function setTransparency(&$col) {
-      imagecolortransparent($this->_hdl, $col->_hdl);
+      imagecolortransparent($this->handle, $col->handle);
     }
     
     /**
@@ -356,7 +354,7 @@
      * @return  &img.Color color
      */
     function &getTransparency() {
-      return $this->palette[imagecolortransparent($this->_hdl)];
+      return $this->palette[imagecolortransparent($this->handle)];
     }
     
     /**
@@ -367,7 +365,7 @@
      * @return  mixed the return value of obj's draw function
      */
     function draw(&$obj) {
-      return $obj->draw($this->_hdl);
+      return $obj->draw($this->handle);
     }
     
     /**
@@ -382,7 +380,7 @@
      * @return  string
      */
     function hashCode() {
-      return get_resource_type($this->_hdl).' #'.(int)$this->_hdl;
+      return get_resource_type($this->handle).' #'.(int)$this->handle;
     }
     
     /**
