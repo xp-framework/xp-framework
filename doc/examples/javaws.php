@@ -63,53 +63,81 @@
   
   // Download all JAR files, adding them to the classpath as we go
   $classpath= System::getEnv('CLASSPATH');
+  $properties= '';
   Console::writeLinef('---> Processing resources from codebase %s', $j->getCodebase());
   foreach ($j->getResources() as $resource) {
-    if (!is('JnlpJarResource', $resource)) {
-      continue;
-    }
+    switch (xp::typeOf($resource)) {
 
-    $href= $resource->getHref();
-    $classpath.= ':'.rtrim($folder->getURI(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$href;
-    try(); {
+      // A JAR file, download it
+      case 'com.sun.webstart.jnlp.JnlpJarResource':
+        $href= $resource->getHref();
+        $classpath.= ':'.rtrim($folder->getURI(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$href;
+        try(); {
+          $download= TRUE;
 
-      // Download it
-      $c= &new HttpConnection($j->getCodebase().'/'.$href);
-      Console::writef('     >> Downloading %s... ', $href);
-      $response= &$c->get();
-      Console::writef(
-        'Status %d, Length %d of %s... ', 
-        $response->getStatusCode(), 
-        $response->getHeader('Content-length'), 
-        $response->getHeader('Content-type')
-      );
+          // Create a new file instance
+          $jar= &new File($folder->getURI().DIRECTORY_SEPARATOR.$href);
+          if ($jar->exists()) {
+            Console::writef('     >> Have %s... ', $jar->getURI());
+            
+            // TBI: Check if remote file is newer
+            $download= FALSE;
+          }
+
+          if (!$download) {
+            Console::writeLine('OK');
+            break;
+          }
+          
+          // Download it
+          $c= &new HttpConnection($j->getCodebase().'/'.$href);
+          Console::writef('     >> Downloading %s... ', $href);
+          $response= &$c->get();
+          Console::writef(
+            'Status %d, Length %d of %s... ', 
+            $response->getStatusCode(), 
+            $response->getHeader('Content-length'), 
+            $response->getHeader('Content-type')
+          );
+
+          // Check if this file resided in a subdirectory. If so, create this
+          // subdirectory if necessary
+          $f= &new Folder(dirname($jar->getURI()));
+          if (!$f->exists()) $f->create();
+
+          $jar->open(FILE_MODE_WRITE);
+          while (FALSE !== ($buf= $response->readData(0x2000, $binary= TRUE))) {
+            $jar->write($buf);
+          }
+          $jar->close();
+        } if (catch('Exception', $e)) {
+          Console::writeLine('FAIL');
+          $e->printStackTrace();
+          exit(-1);
+        }
+        Console::writeLine('OK');
+        break;
+
+      // A property, add it to the Java command line
+      case 'com.sun.webstart.jnlp.JnlpPropertyResource':
+        Console::writeLine('     >> Have property ', $resource->getName(), '=', $resource->getValue());
+        $properties.= ' -D'.$resource->getName().'='.$resource->getValue();
+        break;
       
-      // Create a new file instance
-      $jar= &new File($folder->getURI().DIRECTORY_SEPARATOR.$href);
-      
-      // Check if this file resided in a subdirectory. If so, create this
-      // subdirectory if necessary
-      $f= &new Folder(dirname($jar->getURI()));
-      if (!$f->exists()) $f->create();
-      
-      $jar->open(FILE_MODE_WRITE);
-      while (FALSE !== ($buf= $response->readData(0x2000, $binary= TRUE))) {
-        $jar->write($buf);
-      }
-      $jar->close();
-    } if (catch('Exception', $e)) {
-      Console::writeLine('FAIL');
-      $e->printStackTrace();
-      exit(-1);
+      // Ignore anything else
+      default:
+        Console::writeLine('     >> Ignoring ['.$resource->getClassName().']');
     }
-    Console::writeLine('OK');
   }
+  
+  // 
   
   // Execute Java
   $app= &$j->getApplicationDesc();
   $cmd= sprintf(
-    '%s -cp %s %s %s 2>&1',
+    '%s %s -cp %s %s %s 2>&1',
     $p->value('java', 'j', 'java'),
+    $properties,
     $classpath,
     $app->getMain_Class(),
     implode(' ', $app->getArguments())
