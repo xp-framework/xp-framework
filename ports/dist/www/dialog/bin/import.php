@@ -204,6 +204,7 @@ __
   // Regenerate indexes
   $index= &IndexCreator::forFolder(new Folder(DATA_FOLDER));
   $index->setEntriesPerPage(ENTRIES_PER_PAGE);
+  $index->setTrace($cat);
   $index->regenerate();
   
   Console::writeLine('===> Finished at ', date('r'));
