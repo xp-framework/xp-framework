@@ -16,6 +16,7 @@
    *     $m->setFrom(new InternetAddress('friebe@example.com', 'Timm Friebe'));
    *     $m->addRecipient(TO, new InternetAddress('bugzilla@example.com'));
    *     $m->setSubject('Bug');
+   *     $m->setProduct('MyProduct');
    *     $m->setComponent('My Component');
    *     $m->setShort_desc('Login page');
    *     $m->setBug_severity(BUG_SEVERITY_ENHANCEMENT);
@@ -24,6 +25,7 @@
    *
    *   $t= &new MailTransport();
    *   try(); {
+   *     $t->connect();
    *     $t->send($m);
    *     $t->close();
    *   } if (catch('TransportException', $e)) {
@@ -40,6 +42,17 @@
   class BugMessage extends Message {
     var
       $tokens= array();
+
+
+    /**
+     * Set Product
+     *
+     * @access  public
+     * @param   string product
+     */
+    function setProduct($product) {
+      $this->tokens['product']= $product;
+    }
 
     /**
      * Set Component
@@ -125,7 +138,7 @@
         $header.= '@'.$key.':'.$val."\n";
       }
 
-      return $header.parent::getBody();
+      return $header."\n".parent::getBody();
     }    
   }
 ?>
