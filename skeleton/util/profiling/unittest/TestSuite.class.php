@@ -59,6 +59,15 @@
     }
     
     /**
+     * Remove all tests
+     *
+     * @access  public
+     */
+    function clearTests() {
+      $this->tests= array();
+    }
+    
+    /**
      * Returns test at a given position
      *
      * Example for numTests and testAt:
