@@ -67,7 +67,7 @@
      * @access  public
      * @return  &lang.Object the clone
      */
-    function clone() {
+    function &clone() {
       $clone= $this;
       $clone->__id= microtime();
       return $clone;
