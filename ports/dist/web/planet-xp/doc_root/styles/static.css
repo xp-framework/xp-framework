@@ -7,27 +7,36 @@ td, p, ul {
   font: 12px "Tahoma", "Verdana", "Arial", sans-serif; 
   line-height: 18px;
 }
+
 h1 { 
   font: 20px "Lucida Grande", "Verdana", "Arial", sans-serif;
   color: #666666;
   letter-spacing: 4px;
 }
+
 h2 { 
   font: 18px "Lucida Grande", "Verdana", "Arial", sans-serif;
   color: #666666;
   letter-spacing: 2px;
 }
+
 h2.date {
   font: bold 16px "Georgia", serif;
   letter-spacing: 0px;
   margin: 2px;
 }
+
 h3 { 
   font: bold 13px "Lucida Grande", "Verdana", "Arial", sans-serif;
   color: #666666;
   letter-spacing: 1px;
   border-bottom: 1px solid #a4b6c5;  
 }
+
+h3 a {
+  text-decoration: none;
+}
+
 h4 { 
   font: bold 13px "Lucida Grande", "Verdana", "Arial", sans-serif;
 }
@@ -113,9 +122,9 @@ table.shortcuts td {
   background: url(/image/icons/entry.png) white;
   background-position: left center; 
   background-repeat: no-repeat;
-  padding-left: 20px;
+  /* padding-left: 20px; */
 }
-.entryclass-2 h3 {
+.entryclass-1 h3 {
   background: url(/image/xpframework.png) white;
   background-position: left center; 
   background-repeat: no-repeat;
@@ -154,6 +163,9 @@ code .string {
 }
 code .comment {
   color: #a9a9a9;
+}
+pre {
+  white-space: normal;
 }
 
 /* Examples */
