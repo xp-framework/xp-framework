@@ -14,6 +14,34 @@
   <xsl:include href="layout.xsl"/>
   
   <!--
+   ! Template for pager
+   !
+   ! @purpose  Links to previos 
+   !-->
+  <xsl:template name="pager">
+    <center>
+      <a title="Newer entries" class="pager" id="{/formresult/pager/@offset &gt; 0}">
+        <xsl:if test="/formresult/pager/@offset &gt; 0">
+          <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
+            'static?page', 
+            /formresult/pager/@offset - 1
+          ))"/></xsl:attribute>
+        </xsl:if>
+        <img alt="&#xab;" src="/image/prev.gif" border="0" width="19" height="15"/>
+      </a>
+      <a title="Older entries" class="pager" id="{(/formresult/pager/@offset + 1) * /formresult/pager/@perpage &lt; /formresult/pager/@total}">
+        <xsl:if test="(/formresult/pager/@offset + 1) * /formresult/pager/@perpage &lt; /formresult/pager/@total">
+          <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
+            'static?page', 
+            /formresult/pager/@offset + 1
+          ))"/></xsl:attribute>
+        </xsl:if>
+        <img alt="&#xbb;" src="/image/next.gif" border="0" width="19" height="15"/>
+      </a>
+    </center>
+  </xsl:template>
+  
+  <!--
    ! Template for content
    !
    ! @see      ../layout.xsl
@@ -22,9 +50,15 @@
   <xsl:template name="content">
     <h3>
       <a href="{func:link('static')}">Home</a>
-      <!-- TBD: Pager -->
+      <xsl:if test="/formresult/pager/@offset &gt; 0">
+        &#xbb;
+        <a href="{func:link(concat('static?page', /formresult/pager/@offset))}">
+          Page #<xsl:value-of select="/formresult/pager/@offset"/>
+        </a>
+      </xsl:if>
     </h3>
     <br clear="all"/>
+    <xsl:call-template name="pager"/>
   
     <xsl:for-each select="/formresult/albums/album">
       <div class="datebox">
@@ -58,27 +92,8 @@
       <br/><br clear="all"/>
     </xsl:for-each>
     
-    <br clear="all"/> 
-    <table width="100%">
-      <tr>
-        <td align="left">
-          <xsl:if test="/formresult/pager/@offset &gt; 0">
-            <a href="{func:link(concat(
-              'static?page', 
-              /formresult/pager/@offset - 1
-            ))}">NEXT</a>
-          </xsl:if>
-        </td>
-        <td align="right">
-          <xsl:if test="(/formresult/pager/@offset + 1) * /formresult/pager/@perpage &lt; /formresult/pager/@total">
-            <a href="{func:link(concat(
-              'static?page', 
-              /formresult/pager/@offset + 1
-            ))}">PREV</a>
-          </xsl:if>
-        </td>
-      </tr>
-    </table>
+    <br clear="all"/>
+    <xsl:call-template name="pager"/>
   </xsl:template>
   
 </xsl:stylesheet>
