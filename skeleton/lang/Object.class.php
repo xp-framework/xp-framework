@@ -93,7 +93,9 @@
      * 
      * Example:
      * <xmp>
-     *   de.sitten-polizei.Test@O:4:"test":1:{s:4:"test";N;}
+     * lang.Object@class object {
+     *   var $__id = '0.06823200 1062749651';
+     * }
      * </xmp>
      *
      * @access  public
