@@ -23,6 +23,8 @@
           date= new Date();
         }
         object.value= date.add(0, 0, days).format('%d.%m.%Y');
+        
+        document.forms.select.debug.value= date.add(0, 0, days).toString();
       }
     </script>
   </head>
@@ -30,18 +32,29 @@
     <form name="select">
       <table>
         <tr>
-          <td><input type="text" name="date" value="" onBlur="changeDate(document.forms.select.date, 0)"/></td>
+          <td width="10%">
+            <input 
+             type="text" 
+             name="date" 
+             value="" 
+             onBlur="changeDate(document.forms.select.date, 0)"
+             size="20"
+            />
+          </td>
           <td>
             <a 
-              onclick="changeDate(document.forms.select.date, 1)" 
-              href="#"
+             onclick="changeDate(document.forms.select.date, 1)" 
+             href="#"
             ><img border="0" src="image/date_plus.gif"/></a>
             <br/>
             <a 
-              onclick="changeDate(document.forms.select.date, -1)" 
-              href="#"
+             onclick="changeDate(document.forms.select.date, -1)" 
+             href="#"
             ><img border="0" src="image/date_minus.gif"/></a>
           </td>
+        </tr>
+        <tr>
+          <td colspan="2"><input type="text" name="debug" readonly="yes" size="50"/></td>
         </tr>
       </table>
     </form>
