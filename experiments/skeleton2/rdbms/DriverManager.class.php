@@ -17,10 +17,10 @@
    *   uses('rdbms.DriverManager');
    *
    *   $conn= DriverManager::getConnection('sybase://user:pass@server');
-   *   try(); {
+   *   try {
    *     $conn->connect();
    *     $r= $conn->query('select @@version as version');
-   *   } if (catch('SQLException', $e)) {
+   *   } catch (SQLException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
@@ -79,6 +79,7 @@
         'sybase'   => 'rdbms.sybase.SybaseConnection',
         'mysql'    => 'rdbms.mysql.MySQLConnection',
         'pgsql'    => 'rdbms.pgsql.PostgreSQLConnection',
+        'sqlite'   => 'rdbms.sqlite.SQLiteConnection',
         // TBI: Oracle, ...
       );
       
