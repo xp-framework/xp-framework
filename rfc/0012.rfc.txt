@@ -50,6 +50,22 @@ requested, the script is compiled, then executed, then shut down).
 Therefore, the naming lookup should be made optional for performance
 reasons.
 
+The interface class used in both client and server:
+<?php
+  class ISearch extends Interface {
+
+    /**
+     * Execute a search
+     *
+     * @access  public
+     * @param   string query
+     * @return  string[] results
+     */
+    function execute($query) { }
+  
+  }
+?>
+
 Using the PHP access API without naming lookups:
 <?php
   $search= &Remote::forName('rmi://127.0.0.1:4444/ISearch');
@@ -93,7 +109,8 @@ Interaction
 2) The client loads the protocol class and passes it the fully qualified
    URL (as peer.URL object).
 
-3) The client initiates the communication with the server.
+3) The client initiates the communication with the server using the
+   protocol class.
 
 4) The client calls a method on the server and reads the results.
 
