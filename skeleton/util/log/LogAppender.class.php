@@ -22,9 +22,9 @@
     function append() { }
  
     /**
-     * Finalize this appender. This method is called
+     * Finalize this appender. This method is called when the logger
+     * is shut down. Does nothing in this default implementation.
      *
-     * @model   abstract
      * @access  public
      */   
     function finalize() { }
