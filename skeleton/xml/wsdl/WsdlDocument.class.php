@@ -33,36 +33,72 @@
      */
     function __construct($name= NULL, $targetNamespace= NULL) {
       parent::__construct();
-      $this->root= &new Node(array(
-        'name'          => 'definitions',
-        'attribute'     => array(
-          'xmlns:xsd'       => XMLNS_XSD,
-          'xmlns:soap'      => XMLNS_SOAP,
-          'xmlns:soapenc'   => XMLNS_SOAPENC,
-          'xmlns:wsdl'      => XMLNS_WSDL,
-          'xmlns'           => XMLNS_WSDL
-        )
+      $this->root= &new Node('definitions', NULL, array(
+        'xmlns:xsd'       => XMLNS_XSD,
+        'xmlns:soap'      => XMLNS_SOAP,
+        'xmlns:soapenc'   => XMLNS_SOAPENC,
+        'xmlns:wsdl'      => XMLNS_WSDL,
+        'xmlns'           => XMLNS_WSDL
       ));
       if (NULL !== $name) $this->setName($name);
       if (NULL !== $targetNamespace) $this->setTargetNamespace($targetNamespace);
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
     function addNamespace($name, $urn) {
       $this->root->attribute['xmlns:'.$name]= $urn;
     }
     
+    /**
+     * Set types
+     *
+     * @access  public
+     * @param   &xml.schema.XmlSchema schema
+     */
     function setTypes(&$schema) {
-      
+      if (!is_a($schema, 'XmlSchema')) {
+        trigger_error('Type: '.get_class($schema), E_USER_NOTICE);
+        return throw(new IllegalArgumentException('schema is not a xml.schema.XmlSchema'));
+      }
+
+      $this->types= &$schema;
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
     function addService() {
     
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
     function addPortType() {
     
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
     function addBinding() {
     
     }
@@ -72,32 +108,43 @@
      *
      * @access  public
      * @param   &xml.soap.wsdl.WsdlMessage message
-     * @throws  IllegalArgumentException when message is not a WsdlMessage object
-     *          or message has already been added
-     * @return  &xml.soap.wsdl.WsdlMessage message
+     * @return  &xml.soap.wsdl.WsdlMessage the added message
+     * @throws  IllegalArgumentException when message is not a WsdlMessage object or message has already been added
      */
-    function addMessage(&$message) {
+    function &addMessage(&$message) {
       if (!is_a($message, 'WsdlMessage')) {
-        return throw(new IllegalArgumentException('message is not a WsdlMessage'));
+        trigger_error('Type: '.get_class($message), E_USER_NOTICE);
+        return throw(new IllegalArgumentException('message is not a xml.wsdl.WsdlMessage'));
       }
+      
+      // Does this message already exists
       if (isset($this->messages[$message->name])) {
         return throw(new IllegalArgumentException('Cannot add message "'.$message->name.'" twice'));
       }
       
+      // Put this in a associative array so searching is O(1)
       $this->messages[$message->name]= array();
       $this->messages[$message->name]['obj']= &$message;
-      $this->messages[$message->name]['node']= &$this->root->addChild(new Node(array(
-        'name'        => 'message',
-        'attribute'   => array('name' => $message->name)
-      )));
+      $this->messages[$message->name]['node']= &$this->root->addChild(new Node(
+        'message',
+        NULL,
+        array('name' => $message->name)
+      ));
+      
+      // Build DOM
       foreach (array_keys($message->parts) as $key) {
-        $n= &$this->messages[$message->name]['node']->addChild(new Node(array(
-          'name'        => 'part',
-          'attribute'   => array('name' => $key)
-        )));
+        $n= &$this->messages[$message->name]['node']->addChild(new Node(
+          'part',
+          NULL,
+          array('name' => $key)
+        ));
+        
+        // Type
         if (NULL != $message->parts[$key]->type) {
           $n->attribute['type']= $message->parts[$key]->namespace.':'.$message->parts[$key]->type;
         }
+        
+        // Element
         if (NULL != $message->parts[$key]->element) {
           $n->attribute['element']= $message->parts[$key]->element;
         }
@@ -107,34 +154,39 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retreive a message by name
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string name
+     * @return  &xml.wsdl.WsdlMessage message or NULL if none is found
      */
     function &getMessageByName($name) {
       return isset($this->messages[$name]) ? $this->messages[$name]['obj'] : NULL;
     }
     
     /**
-     * (Insert method's description here)
+     * Get first message
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  &xml.wsdl.WsdlMessage message
      */
-    function getFirstMessage() {
+    function &getFirstMessage() {
       reset($this->messages);
       return key($this->messages);
     }
     
     /**
-     * (Insert method's description here)
+     * Get next message
      *
-     * @access  
-     * @param   
-     * @return  
+     * <code>
+     *   $msg= &$wsdl->getFirstMessage();
+     *   do {
+     *     var_dump($msg);
+     *   } while ($wsdl->getNextMessage());
+     * </code>
+     *
+     * @access  public
+     * @return  &xml.wsdl.WsdlMessage message
      */
     function getNextMessage() {
       if (FALSE === next($this->messages)) return FALSE;
@@ -142,22 +194,20 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Set this WSDL's name
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  publiuc
+     * @param   string name
      */
     function setName($name) {
       $this->root->attribute['name']= $name;
     }
     
     /**
-     * (Insert method's description here)
+     * Get this WSDL's name
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string name
      */
     function getName() {
       return (isset($this->root->attribute['name']) 
@@ -167,22 +217,20 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Set this WSDL's target namespace
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string ns
      */
     function setTargetNamespace($ns) {
       $this->root->attribute['targetNamespace']= $ns;
     }
 
     /**
-     * (Insert method's description here)
+     * Get this WSDL's target namespace
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string
      */
     function getTargetNamespace() {
       return (isset($this->root->attribute['targetNamespace']) 
