@@ -87,10 +87,11 @@
         <td valign="top"><img src="/image/caret-r.gif" height="7" width="11" alt="=&gt;" hspace="2" vspace="4"/></td>
         <td>
           <xsl:processing-instruction name="php"><![CDATA[
-            $f= readlink(getenv('DOCUMENT_ROOT').'/downloads/xp-current.tar.gz');
-            echo '<a href="http://xp-framework.net/downloads/'.basename($f).'">'.basename($f).'</a><br/>';
+            $d= getenv('DOCUMENT_ROOT').'/downloads/';
+            $f= readlink($d.'xp-current.tar.gz');
+            echo '<a href="http://xp-framework.net/downloads/'.$f.'">'.$f.'</a><br/>';
             
-            if (file_exists($f.'.info')) readfile($f.'.info');
+            if (file_exists($d.$f.'.info')) readfile($d.$f.'.info');
           ]]></xsl:processing-instruction>
         </td>
       </tr>
