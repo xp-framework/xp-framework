@@ -71,7 +71,7 @@ publish:
 ifeq ($(target),)
 	@echo "*** Please specify a target"
 else
-	cd $(TARGET) ; tar cfz $(PUBLISH) *
+	cd $(TARGET) ; tar cfz $(PUBLISH) --exclude=downloads *
 	scp $(PUBLISH) $(target):$(TARGET)
 	ssh $(target) cd $(TARGET) \; tar xfz xpdoc.tgz
 	scp content/news.rdf.xml $(target):$(TARGET)
