@@ -45,14 +45,12 @@
      * @param   &org.webdav.xml.WebdavMultistatus response
      */
     function __construct(&$request, &$response) {
-    parent::__construct();
+      parent::__construct();
 
       if (
         (!is_a($request, 'WebdavPropPatchRequest')) ||
         (!is_a($response, 'WebdavMultistatus'))
       ) {
-        trigger_error('[request.type ] '.get_class($request), E_USER_NOTICE);
-        trigger_error('[response.type] '.get_class($response), E_USER_NOTICE);
         return throw(new IllegalArgumentException('Parameters passed of wrong types'));
       }
 
