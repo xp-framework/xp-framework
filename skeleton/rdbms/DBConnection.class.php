@@ -34,6 +34,7 @@
     function __construct(&$dsn) { 
       $this->dsn= &$dsn;
       $this->flags= $dsn->getFlags();
+      $this->setTimeout($dsn->getProperty('timeout', 0));   // 0 means no timeout
       
       if (FALSE !== ($cat= $this->dsn->getValue ('log'))) {
         $l= &Logger::getInstance();
