@@ -76,8 +76,7 @@
      * @return  &peer.mail.MimePart part
      */
     function &getPart($id= -1) {
-      $this->_parts();
-      
+
       // Iterative use
       if (-1 == $id) $id= $this->_ofs++;
       
@@ -90,7 +89,6 @@
       return $this->parts[$id];
     }
     
-
     /**
      * Get message body.
      *
@@ -100,6 +98,15 @@
      */
     function getBody() {
       $body= '';
+      
+      if (1 == ($size= sizeof($this->parts)) && $this->parts[0]->isInline()) {
+        return (
+          $this->parts[0]->getHeaderString().
+          "\n".
+          $this->parts[0]->getBody()
+        );
+      }
+
       for ($i= 0, $s= sizeof($this->parts); $i < $s; $i++) {
         $body.= (
           '--'.$this->boundary."\n".
