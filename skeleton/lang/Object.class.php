@@ -11,13 +11,15 @@
    * @purpose  Base class for all others
    */
   class Object {
-  
+    var $__id;
+    
     /**
      * Constructor wrapper 
      * 
      * @access  private
      */
     function Object() {
+      $this->__id= microtime();
       $args= func_get_args();
       call_user_func_array(
         array(&$this, '__construct'),
@@ -36,6 +38,16 @@
       if (is_array($params)) {
         foreach ($params as $key=> $val) $this->$key= $val;
       }
+    }
+    
+    /**
+     * Returns a hashcode for this object
+     *
+     * @access  public
+     * @return  
+     */
+    function hashCode() {
+      return $this->__id;
     }
     
     /**
