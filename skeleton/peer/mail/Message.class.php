@@ -36,7 +36,7 @@
   define('HEADER_CONTENTTYPE',  'Content-Type');
   define('HEADER_DATE',         'Date');
   define('HEADER_MIMEVER',      'Mime-Version');
-  
+  define('HEADER_MESSAGEID',    'Message-ID');
   
   /**
    * This class models an email message.
@@ -83,7 +83,8 @@
       $flags            = 0,
       $size             = 0,
       $mimever          = '1.0',
-      $date             = NULL;
+      $date             = NULL,
+      $message_id       = '';
       
     var
       $_headerlookup    = NULL;
@@ -199,6 +200,46 @@
       }
       return $this->getClassName().'['.$this->uid."]@{\n".$s."}\n";
     }
+
+    /**
+     * Sets message size
+     *
+     * @access  public
+     * @param   mixed arg
+     */
+    function setSize($size) {
+      return $this->size;
+    }
+    
+    /**
+     * Retrieve message size
+     *
+     * @access  public
+     * @return  string
+     */
+    function &getSize() {
+      return $this->size;
+    }
+
+    /**
+     * Sets message-id
+     *
+     * @access  public
+     * @param   mixed arg
+     */
+    function setMessageId($message_id) {
+      return $this->message_id;
+    }
+    
+    /**
+     * Retrieve message-id
+     *
+     * @access  public
+     * @return  string
+     */
+    function &getMessageId() {
+      return $this->message_id;
+    }
     
     /**
      * Sets message date
@@ -289,7 +330,7 @@
     }
 
     /**
-     * Get from
+     * Get recipients
      *
      * @access  public
      * @return  &peer.mail.InternetAddress[] adr addresses to add
@@ -528,6 +569,10 @@
           case HEADER_PRIORITY:
             $this->priority= (int)$t;
             break;
+
+          case HEADER_MESSAGEID:
+            $this->message_id= $t;
+            break;
           
           default:
             $this->_setHeader($k, $t, "\n");
@@ -616,7 +661,8 @@
         HEADER_MIMEVER      => $this->mimever,
         HEADER_ENCODING     => $this->encoding,
         HEADER_PRIORITY     => $this->priority.' ('.$priorities[$this->priority].')',
-        HEADER_DATE         => $this->date->toString()
+        HEADER_DATE         => $this->date->toString(),
+        HEADER_MESSAGEID    => $this->message_id
       )) as $key => $val) {
         if (!empty($val)) $h.= $key.': '.$val."\n";
       }
