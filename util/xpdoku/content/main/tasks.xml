@@ -4,6 +4,9 @@
     <references>
       <ref link="about">An introduction</ref>
       <ref type="ext" link="http://php3.de/manual/en/features.commandline.php">Using PHP from the command line</ref>
+      <ref type="ext" link="http://www.gnome.org/seegnome.html">See GTK/Gnome in action</ref>
+      <ref type="ext" link="http://www.gimp.org/the_gimp_screenshots.html">GIMP screenshots</ref>
+      <ref type="ext" link="http://gtk.php.net/resources.php">PHP-GTK: Resources</ref>
     </references>
     <content>
       <title>Common Tasks</title>
@@ -75,7 +78,7 @@
           <code><![CDATA[  if (2 != $p->count || $p->exists('help', '?')) { ]]></code>
           As soon as a user calls <tt>php -q hello.php -?</tt> or <tt>php -q hello.php --help</tt>,
           the tool will now also print out the usage information. Have a look at the 
-          <ref type="api:class" link="util.cmd.ParamString#"/> class for more information.
+          <ref type="api:class" link="util.cmd.ParamString"/> class for more information.
           <br/>
           <br/>
           There is actually not much more to know about the basics of command line scripts
@@ -93,7 +96,7 @@
       <para>
         <caption>Web sites</caption>
         <text>
-          <!-- <ref type="api:class" link="org.apache.HttpScriptlet#"/> -->
+          <!-- <ref type="api:class" link="org.apache.HttpScriptlet"/> -->
           Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nulla facilisi. Vivamus condimentum tortor eu dui. Aliquam et ipsum. Quisque sodales, dui eu ultrices mattis, nunc odio vestibulum augue, sed eleifend nulla arcu in velit. Pellentesque dignissim, ipsum in dictum laoreet, elit libero venenatis nunc, at hendrerit erat velit in metus. Nam quam felis, volutpat vitae, rutrum vel, fermentum sodales, tellus. Morbi elit. Pellentesque nibh. Fusce rhoncus adipiscing nibh. Aenean suscipit aliquet urna. Curabitur pulvinar elit non orci vulputate rutrum. Duis porttitor molestie augue. Aliquam wisi ligula, tincidunt nec, eleifend quis, hendrerit a, diam. Vivamus euismod. Maecenas vel ligula. Vestibulum rutrum pede quis est. Fusce feugiat turpis vitae neque.
         </text>
         <advanced>
@@ -127,7 +130,7 @@
       <para>
         <caption>SOAP clients/servers</caption>
         <text>
-          <!-- <ref type="api:class" link="xml.soap.rpc.SoapRpcRouter#"/> -->
+          <!-- <ref type="api:class" link="xml.soap.rpc.SoapRpcRouter"/> -->
           Nullam egestas, dolor a iaculis malesuada, quam erat placerat nisl, non congue urna orci eu est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Praesent mattis. Suspendisse ultricies cursus risus. In nec metus. Nam enim ante, dictum eu, eleifend a, consectetuer condimentum, arcu. Suspendisse lacus mi, placerat id, ornare et, vulputate sit amet, tortor. Morbi ornare dui ut risus. Donec nonummy, sapien in vehicula pulvinar, risus libero vehicula sem, at egestas libero elit a sem. Integer elementum commodo neque. Pellentesque elementum viverra turpis. Cras eu risus. Pellentesque eu purus. Donec eget magna.
         </text>
         <advanced>
@@ -144,11 +147,7 @@
           was originally developed to serve as a widget set for this open source 
           graphics program. GTK is available for Unix systems as well as for Windows, 
           Mac OS X and even BeOS.
-          <ul>
-            <li><ref type="ext" link="http://www.gnome.org/seegnome.html">See GTK/Gnome in action</ref></li>
-            <li><ref type="ext" link="http://www.gimp.org/the_gimp_screenshots.html">GIMP screenshots</ref></li>
-            <li><ref type="ext" link="http://gtk.themes.org/">GTK+ Themes</ref></li>
-          </ul>
+          <br/>
           GTK has language bindings for a number of different programming languages,
           including, as of May 2001, PHP (see the <ref type="ext" link="http://gtk.php.net/">
           GTK-PHP website</ref> for details). In PHP, every widget is represented by a
@@ -166,17 +165,24 @@
   $app->init();
   $app->run();
   $app->done(); ]]></code>
-          API Docs: <ref type="api:class" link="gui.gtk.GTKApplication#"/><br/>
+          API Docs: <ref type="api:class" link="gui.gtk.GTKApplication"/><br/>
           <br/>
           The sample shown above has absolutely no functionality so far. It will,
           when executed, show a window which can be resized, moved, maximized,
           minimized and closed, but contains no elements such as buttons, images.
+          <box caption="Note:">
+            Always calling init, run, done may seem like overhead. There is
+            a utility script in <tt>util/bin</tt> called <tt>gtkphp</tt> which will
+            automagically take over this part for you. Simply create a class as shown 
+            above, but without the require and without the last four lines. Then call
+            <tt>gtkphp /path/to/your/app/MyApp.class.php</tt> and enjoy.
+          </box>
+          In the following examples, it is assumed you either paste the glue text
+          above and below your classes or resent to using the gtkphp script.
+          <br/>
           <br/>
           Extending GTKApplication is the way to add functionality to your application.
-          <code><![CDATA[  require('lang.base.php');
-  uses('gui.gtk.GTKApplication');
-  
-  class MyApp extends GTKApplication {
+          <code><![CDATA[  class MyApp extends GTKApplication {
   
     function init() {
       parent::init();
@@ -186,21 +192,9 @@
       $this->window->add($button);
     }
   
-  }
-
-  $app= &new MyApp('Hello World');
-  $app->init();
-  $app->run();
-  $app->done(); ]]></code>
+  }]]></code>
           This application will now have a button labeled OK, which, when pressed,
           will quit the application.
-          <br/>
-          <br/>
-          Hint: Always calling init, run, done may seem like overhead. There is
-          a utility script in <tt>util/bin</tt> called <tt>gtkphp</tt> which will
-          automagically take over this part for you. Simply create a class as shown 
-          above, but without the require and without the last four lines. Then call
-          <tt>gtkphp /path/to/your/app/MyApp.class.php</tt> and enjoy.
         </text>
         <advanced>
           <ref link="tasks.gui.glade">Using Glade to build interfaces</ref>
@@ -213,7 +207,7 @@
       <para>
         <caption>Stand-Alone servers</caption>
         <text>
-          <!-- <ref type="api:class" link="peer.ServerSocket#"/> -->
+          <!-- <ref type="api:class" link="peer.ServerSocket"/> -->
           Ut eu leo nec nunc aliquet aliquam. Proin sed sapien. Praesent orci. Integer pharetra laoreet libero. Mauris eu urna. Maecenas interdum tellus varius tellus. Curabitur et enim ut libero interdum fringilla. Aenean gravida. Morbi vel massa. Curabitur commodo vehicula libero. Phasellus posuere lacus vestibulum orci. Aliquam rutrum risus et sapien. Aliquam elementum.
         </text>
         <advanced>
