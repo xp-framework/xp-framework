@@ -163,7 +163,13 @@
     function &retrieve(&$response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());
       
-      switch ($response->getStatusCode()) {
+      try(); {
+        $code= $response->getStatusCode();
+      } if (catch ('SocketException', $e)) {
+        return throw($e);
+      }
+      
+      switch ($code) {
         case HTTP_OK:
         case HTTP_INTERNAL_SERVER_ERROR:
           try(); {

@@ -39,7 +39,13 @@
      * @return  bool success
      */    
     function _readstatus() {
-      $s= chop($this->stream->read());
+      try(); {
+        $str= $this->stream->read();
+      } if (catch ('SocketException', $e)) {
+        return throw($e);
+      }
+      
+      $s= chop($str);
       if (3 > ($r= sscanf(
         $s, 
         "HTTP/%d.%d %3d %[^\r]",
