@@ -120,9 +120,8 @@
      * @model   static
      * @access  public
      * @param   &img.io.ImageWriter
-     * @return  &img.Image
      */
-    function &saveTo(&$writer) {
+    function saveTo(&$writer) {
       $writer->setResource($this->handle);
     }
     
