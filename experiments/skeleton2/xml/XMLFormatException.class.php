@@ -38,10 +38,10 @@
    */
   class XMLFormatException extends FormatException {
     public
-      $type     = 0,
-      $file     = '',
-      $line     = 0,
-      $column   = 0;
+      $type       = 0,
+      $filename   = '',
+      $linenumber = 0,
+      $column     = 0;
   
     /**
      * Constructor
@@ -62,8 +62,8 @@
     ) {
       parent::__construct($message);
       $this->type= $type;
-      $this->file= $file;
-      $this->line= $line;
+      $this->filename= $file;
+      $this->linenumber= $line;
       $this->column= $column;
     }
     
@@ -85,8 +85,8 @@
         self::getMessage(),
         self::getType(),
         self::getTypeName(),
-        var_export(self::getFile(), 1),
-        self::getLine(),
+        var_export(self::getFileName(), 1),
+        self::getLineNumber(),
         self::getColumn()
       );
       for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
@@ -145,8 +145,8 @@
      * @access  public
      * @return  string
      */
-    public function getFile() {
-      return $this->file;
+    public function getFileName() {
+      return $this->filename;
     }
 
     /**
@@ -155,8 +155,8 @@
      * @access  public
      * @return  int
      */
-    public function getLine() {
-      return $this->line;
+    public function getLineNumber() {
+      return $this->linenumber;
     }
 
     /**
