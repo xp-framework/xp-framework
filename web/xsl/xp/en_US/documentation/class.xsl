@@ -52,7 +52,7 @@
     <xsl:variable name="current" select="/formresult/breadcrumb/current"/>
     
     <h1>
-      <a href="{func:link(documentation)}">api documentation</a> (<xsl:value-of select="$current/@collection"/>)
+      <a href="{func:link('documentation')}">api documentation</a> (<xsl:value-of select="$current/@collection"/>)
       <xsl:for-each select="/formresult/breadcrumb/path">
         :: <a href="package?{$current/@collection}/{@qualified}"><xsl:value-of select="."/></a>
       </xsl:for-each>
