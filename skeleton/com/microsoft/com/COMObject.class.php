@@ -24,6 +24,7 @@
    * @see      http://www.developmentor.com/dbox/yacl.htm Yet Another COM Library (YACL) 
    * @ext      com
    * @purpose  Base class
+   * @platform Windows
    */
   class COMObject extends Object {
     var
@@ -41,6 +42,46 @@
     }
     
     /**
+     * Magic interceptor for member read access
+     *
+     * @access  magic
+     * @param   string name
+     * @param   &mixed value
+     * @return  bool success
+     */
+    function __get($name, &$value) {
+      $value= &$this->h->$name;
+      return TRUE;
+    }
+    
+    /**
+     * Magic interceptor for member write access
+     *
+     * @access  magic
+     * @param   string name
+     * @param   &mixed value
+     * @return  bool success
+     */
+    function __set($name, &$value) {
+      $this->h->$name= &$value;
+      return TRUE;
+    }
+    
+    /**
+     * Magic interceptor for member method access
+     *
+     * @access  magic
+     * @param   string name
+     * @param   &array args
+     * @param   &mixed return
+     * @return  bool success
+     */
+    function __call($name, &$args, $return) {
+      $return= &call_user_func_array(array($this->h, $name), $args);
+      return TRUE;
+    }
+    
+    /**
      * Destructor
      *
      * @access  public
@@ -49,5 +90,5 @@
       $this->h= NULL;
       parent::__destruct();
     }
-  }
+  } overload('COMObject');
 ?>
