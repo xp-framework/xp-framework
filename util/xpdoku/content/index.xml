@@ -12,6 +12,8 @@
         <li>GUI applications with the power of GTK-PHP</li>
         <li>Web sites using HTML or XML/XSL</li>
         <li>SOAP clients/servers</li>
+        <li>Cron jobs</li>
+        <li>Daemons (TCP/IP client/server architecture)</li>
       </ul>
       
       XP brings you nearer to the future of PHP: All of the framework will
