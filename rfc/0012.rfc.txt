@@ -192,6 +192,8 @@ Each protocol message has a header. It consists of the following elements:
 
 * The data length packed into 4 bytes using pack("N", $length)
 
+(=> the header is 12 bytes long).
+
 Encoding the header in PHP:
 <?php
   $header= pack(
