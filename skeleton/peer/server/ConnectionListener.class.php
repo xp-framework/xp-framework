@@ -39,7 +39,7 @@
      * <code>
      *   printf(                                                
      *     ">>> ConnectionListener::data(%s) @%d\n",            
-     *     addcslashes($event->data, "\0..\37!@\177..\377"),    
+     *     addcslashes($event->data, [...]), // see addcslashes() manual page
      *     getmypid()                                           
      *   );                                                     
      *   if ('QUIT' == substr($event->data, 0, 4)) {            
