@@ -73,9 +73,10 @@
         $size= min($size, $n, $r);
         if ($r < $size) $size+= ("\n" == $str{$r+ 1});
         $str= substr($str, 0, $size+ 1);
+        $size++;
       }
       
-      if (FALSE === ($this->stream[1]= substr($this->stream[1], $size+ 1))) {
+      if (FALSE === ($this->stream[1]= substr($this->stream[1], $size))) {
         curl_close($this->stream[0]);
         unset($this->stream);
       }
