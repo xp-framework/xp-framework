@@ -18,13 +18,12 @@
     /**
      * Factory method
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &peer.URL an url object
+     * @return  &lang.Object a request object
      * @throws  Exception
      */
     function factory(&$url) {
-      if (!is_a($url, 'URL')) $url= &new URL($url);
       switch ($url->getScheme()) {
         case 'http':
           return new HttpRequest($url);
