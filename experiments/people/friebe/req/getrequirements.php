@@ -15,7 +15,7 @@
       }
       foreach ($includepaths as $path) {
         $fn= $path.DIRECTORY_SEPARATOR.$filename;
-        if (!file_exists($fn)) continue;
+        if (!is_file($fn)) continue;
         return realpath($fn);
       }
       
