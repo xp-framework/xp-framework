@@ -117,7 +117,7 @@
      * @return  string password or default if none is set
      */
     function getPassword($default= NULL) {
-      return isset($this->_info['password']) ? $this->_info['password'] : $default;
+      return isset($this->_info['pass']) ? $this->_info['pass'] : $default;
     }
 
     /**
