@@ -56,8 +56,8 @@
             $args[]= get_class($this->args[$j]).'{}';
           } elseif (is_string($this->args[$j])) {
             $display= addcslashes(substr($this->args[$j], 0, min(
-              strpos($this->args[$j], "\n"), 
-              0x7F
+              (FALSE === $p= strpos($this->args[$j], "\n")) ? 0x40 : $p, 
+              0x40
             )), "\0..\17");
             $args[]= (
               '(0x'.dechex(strlen($this->args[$j])).")'".
