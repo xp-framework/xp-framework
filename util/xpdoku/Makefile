@@ -83,8 +83,13 @@ index: $(OUTPUT) $(XML) news
 	@$(SABCMD) xslt/search.xsl $(CTREE) $(OUTPUT)/search.php 2>/dev/null
 
 news:
+ifneq ($(news),)
+	@echo "===> Creating news from $(news)"
+	cp $(news) content/news.rdf.xml   
+else
 	@echo "===> Creating news"
 	@-$(PHP) util/news.php > content/news.rdf.xml
+endif
 	@$(SABCMD) xslt/news.xsl content/news.xml $(OUTPUT)/news.html 2>/dev/null
 
 content:
