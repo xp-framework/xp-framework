@@ -6,5 +6,5 @@
 
   enum CoinColor { copper, nickel, silver }
   
-  echo CoinColor::size();
+  echo CoinColor::size(), "\n";
 ?>
