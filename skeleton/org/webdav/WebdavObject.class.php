@@ -6,16 +6,8 @@
 
   uses('org.webdav.util.WebdavBool');
 
-  define ('WEBDAV_XMLTYPE_STRING',     0x0001);
-  define ('WEBDAV_XMLTYPE_INT',        0x0002);
-  define ('WEBDAV_XMLTYPE_BOOL',       0x0003);
-  define ('WEBDAV_XMLTYPE_DATE',       0x0004);
-  define ('WEBDAV_XMLTYPE_DATE_RFC',   0x0005);
-  
-  define ('WEBDAV_OBJECT_PROP_VAL',      0x0000);
-  define ('WEBDAV_OBJECT_PROP_NS',       0x0001);
-  define ('WEBDAV_OBJECT_PROP_XMLEXT',   0x0002);
-
+  // Ressource types
+  define('WEBDAV_COLLECTION',   'collection');
 
   /**
    * Webdav Object
@@ -34,7 +26,7 @@
       $properties       = array(),
       $_lockinfo        = array(),      
       $nameSpaces       = array();
-
+      
  
     /**
      * Constructor
@@ -60,14 +52,13 @@
       
       $this->href=          $href;              
       $this->resourceType=  $resourceType;      
-      $this->contentType=   $contentType;      
       $this->contentLength= $contentLength;      
+      $this->contentType=   $contentType;      
       $this->creationDate=  $creationDate;
       $this->modifiedDate=  $modifiedDate;
       $this->properties=    $properties;
         
       $this->_calcProperties();
-      parent::__construct();      
     }
     
     /**
@@ -197,7 +188,7 @@
      * @access  public
      * @param   array properties
      */
-    function setProperty($properties) {
+    function setProperties($properties) {
       $this->properties= $properties;
     }
     
@@ -217,50 +208,44 @@
      * @access  private
      */
     function _calcProperties() {
-    
-      if (!isset($this->properties['creationdate']) and $this->creationDate)
-        $this->addProperty('creationdate', $this->creationDate,'DAV:', WEBDAV_XMLTYPE_DATE_RFC);
+      $etag= md5($this->href);
+      $etag= sprintf(
+        '%s-%s-%s',
+        substr($etag,0,7),
+        substr($etag,7,4),
+        substr($etag,11,8)
+      );
+      foreach(array(
+        // Default
+        'creationdate'     => array('value' => $this->creationDate, 'ns' => 'DAV:'),
+        'getlastmodified'  => array('value' => $this->modifiedDate, 'ns' => 'DAV:'),
+        'getcontentlength' => array('value' => $this->contentLength, 'ns' => 'DAV:'),
+        'getcontenttype'   => array('value' => $this->contentType, 'ns' => 'DAV:'),
         
-      if (!isset($this->properties['getlastmodified']) and $this->modifiedDate)
-        $this->addProperty('getlastmodified', $this->modifiedDate,'DAV:', WEBDAV_XMLTYPE_DATE_RFC);
-
-      // Microsoft
-      if (!isset($this->properties['iscollection']))
-        $this->addProperty('iscollection', WEBDAV_COLLECTION == $this->resourceType,'DAV:', WEBDAV_XMLTYPE_BOOL);
+        // Microsoft
+        'iscollection'     => array('value' => WEBDAV_COLLECTION == $this->resourceType, 'ns' => 'DAV:'),
+        'isfolder'         => array('value' => WEBDAV_COLLECTION == $this->resourceType, 'ns' => 'DAV:'),
         
-      if (!isset($this->properties['isfolder']))
-        $this->addProperty('isfolder', WEBDAV_COLLECTION == $this->resourceType,'DAV:' ,WEBDAV_XMLTYPE_BOOL);
-
-      // Nautilus
-      if (!isset($this->properties['nautilus-treat-as-directory']))
-        $this->addProperty('nautilus-treat-as-directory', WEBDAV_COLLECTION == $this->resourceType,'http://services.eazel.com/namespaces', WEBDAV_XMLTYPE_BOOL);
-
-      // Standard
-      if (!isset($this->properties['getcontentlength']) and WEBDAV_COLLECTION != $this->resourceType)
-        $this->addProperty('getcontentlength', $this->contentLength,'DAV:', WEBDAV_XMLTYPE_INT);
+        // DAV-FS
+        'executable'       => array('value' => WEBDAV_COLLECTION != $this->resourceType ? FALSE : NULL, 'ns' => 'http://apache.org/dav/props/'),
         
-      if (!isset($this->properties['getcontenttype']) and $this->contentType)
-        $this->addProperty('getcontenttype', $this->contentType,'DAV:', WEBDAV_XMLTYPE_STRING);
-      
-      // DAV-FS
-      if (!isset($this->properties['executable']) and WEBDAV_COLLECTION != $this->resourceType)
-        $this->addProperty('executable',0,'http://apache.org/dav/props/', WEBDAV_XMLTYPE_BOOL);
-      
-      // URI-Specifica
-      if (!isset($this->properties['displayname']))
-        $this->addProperty('displayname',basename($this->href),'DAV:', WEBDAV_XMLTYPE_STRING);
-
-      // href again, because of an bug in the MS Internet Explorer
-      if (!isset($this->properties['getetag'])  && WEBDAV_COLLECTION != $this->resourceType)
-        $this->addProperty('getetag',sprintf(
-          '%s-%s-%s',
-          substr(md5($urlarr['path']),0,7),
-          substr(md5($urlarr['path']),7,4),
-          substr(md5($urlarr['path']),11,8)),
-          'DAV:',
-          WEBDAV_XMLTYPE_STRING);
-      return;
-
+        // URI-Specification
+        'displayname'      => array('value' => basename($this->href), 'ns' => 'DAV:'),
+        
+        // Nautilus
+        'nautilus-treat-as-directory' => array('value' => WEBDAV_COLLECTION == $this->resourceType, 'ns' => 'http://services.eazel.com/namespaces'),
+        'getlastmodified'  => array('value' => $this->modifiedDate, 'ns' => 'DAV:'),
+        
+        // etag generation (aka Entity Tags)
+        'getetag'          => array('value' => WEBDAV_COLLECTION != $this->resourceType ? $etag : NULL, 'ns' => 'DAV:')
+        
+      ) as $name=>$propDef) {
+        if ($propDef['value'] === NULL) continue;
+        $p= &new WebdavProperty($name, $propDef['value']);
+        $p->setNamespaceName($propDef['ns']);
+        $p->setProtected(TRUE);
+        $this->addProperty($p);
+      }
     }
 
     
@@ -330,37 +315,9 @@
      *
      * @access  public
      * @param   string propname
-     * @param   string value
-     * @param   string defaultnamespace
-     * @param   constant xmltype
-     * @param   string extension
      */      
-    function &addProperty($propname, $value, $defaultnamespace= 'DAV:', $xmlType= WEBDAV_XMLTYPE_STRING, $extension= NULL) {
-      
-      switch ($xmlType){
-        case WEBDAV_XMLTYPE_BOOL:
-          $this->properties[$propname]= array(WebdavBool::fromBool($value), $defaultnamespace);                                           
-          break;
-        case WEBDAV_XMLTYPE_DATE:
-          $this->properties[$propname]= array($value->toString('Y-m-d\TH:i:s\Z'), $defaultnamespace);                                             
-          break;
-        
-        case WEBDAV_XMLTYPE_DATE_RFC:
-          $this->properties[$propname]= array(
-            $value->toString('D, j M Y H:m:s \G\M\T'), 'DAV:',
-              array('xmlns:b' => 'urn:uuid:c2f41010-65b3-11d1-a29f-00aa00c14882/',
-              'b:dt' =>  'dateTime.rfc1123')
-            );
-          break;
-        default:
-          $this->properties[$propname]= array($value, $defaultnamespace, $extension);
-          break;
-      }
-
-      if (!isset($this->nameSpaces[$defaultnamespace]))
-        $this->nameSpaces[$defaultnamespace]= sizeof($this->nameSpaces[$defaultnamespace]);
-      
-      return TRUE;
+    function &addProperty($property) {
+      $this->properties[$property->getName()]= $property;
     }
     
     /**
