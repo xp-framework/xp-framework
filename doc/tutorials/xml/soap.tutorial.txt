@@ -1,0 +1,134 @@
+SOAP: Eine Einführung für Praktiker
+======================================================================
+$Id$
+
+Was ist SOAP?:
+--------------
+Hierzu gibt es mehrere Einführungen und ich habe keine Zeit und Lust,
+das Rad neu zu erfinden und noch eine zu schrieben:
+
+Lektüre:
+- http://www.eit.uni-kl.de/litz/lehre/seminar/seminar_ss_01/Meisner/sld012.htm
+- http://www.fh-wedel.de/~si/seminare/ws00/Ausarbeitung/6.soap/soap01.htm
+
+Offiziell ist SOAP 1.1 hier definiert:
+- http://www.w3.org/TR/SOAP/
+
+Doch kommen wir gleich zu den schönen Teilen:
+
+SOAP ist XML:
+-------------
+Das folgende Beispiel ist ein Aufruf der Google-SOAP-API:
+
+<pre>
+<SOAP-ENV:Envelope
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:si="http://soapinterop.org/xsd"
+ SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:ctl="urn:GoogleSearch"
+>
+  <SOAP-ENV:Body>
+    <ctl:doGoogleSearch>
+      <key xsi:type="xsd:string">[...KEY...]</key>
+      <q xsi:type="xsd:string">1&amp;1 WebHosting</q>
+      <start xsi:type="xsd:int">0</start>
+      <maxresults xsi:type="xsd:int">5</maxresults>
+      <filter xsi:type="xsd:boolean">false</filter>
+      <restrict xsi:type="xsd:string"/>
+      <safeSearch xsi:type="xsd:boolean">false</safeSearch>
+      <lr xsi:type="xsd:string"/>
+      <ie xsi:type="xsd:string"/>
+      <oe xsi:type="xsd:string"/>
+    </ctl:doGoogleSearch>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+</pre>
+
+Das Root-Element eines SOAP-Dokumtes ist "SOAP-ENV:Envelope". Um die 
+Attribute kümmern wir uns einfach mal nicht und nehmen Sie als gegeben 
+hin.
+
+Innerhalb des Elements "SOAP-ENV:Body" befinden sich nun die benutzer-
+definierten Daten, in diesem Fall die Parameter für den Aufruf der 
+Google-Suche.
+
+Die Seralisierung:
+------------------
+Wie man am obigen Beispiel sehen kann, ist zu jedem Element innerhalb
+<ctl:doGoogleSearch>[...]</ctl:doGoogleSearch> ein Attribut mit dem
+Datentypen des Elementinhaltes.
+
+Für Apache-SOAP (Java) gibt es eine sehr ausführliche Erklärung:
+- http://www-106.ibm.com/developerworks/webservices/library/ws-soapmap1/
+
+In den XP-Framework-Libraries ist das zur Zeit so definiert:
+
+<pre>
+PHP-Typ         Attribut                        Zusatz
+--------------- ------------------------------- ---------------------
+integer         xsi:type="xsd:int"
+float           xsi:type="xsd:float"
+bool            xsi:type="xsd:boolean"
+string          xsi:type="xsd:string"
+NULL            xsi:null="true"
+array[enum]     xsi:type="SOAP-ENC:Array"       SOAP-ENC:arrayType="xsd:anyType[2]"
+array[assoc]    xsi:type="xsd:ur-type"
+object          xsi:type="ns1:struct"           xmlns:ns1="stdClass"
+</pre>
+
+Beispiele:
+----------
+1. Simple Typen:
+<pre>
+PHP: $i= 1;          
+XML: <item xsi:type="xsd:int">1</item>
+
+PHP: $f= 0.61;
+XML: <item xsi:type="xsd:float">0.61</item>
+
+PHP: $b= FALSE;
+XML: <item xsi:type="xsd:boolean">true</item>
+
+PHP: $s= 'foo';
+XML: <item xsi:type="xsd:string">foo</item>
+
+PHP: $n= NULL;
+XML: <item xsi:null="true" xsi:type="xsd:NULL"/>
+</pre>
+
+2. Komplexe Typen:
+<pre>
+PHP: $a= array(1, 2);
+XML: <item xsi:type="SOAP-ENC:Array" SOAP-ENC:arrayType="xsd:anyType[2]">
+       <item xsi:type="xsd:int">1</item>
+       <item xsi:type="xsd:int">2</item>
+     </item>
+
+PHP: $h= array('hello' => 1, 'world' => 2);
+XML: <item xsi:type="xsd:ur-type">
+       <hello xsi:type="xsd:int">1</hello>
+       <world xsi:type="xsd:int">2</world>
+     </item>
+     
+PHP: $o= new stdClass(); $o->foo= 'bar';
+XML: <item xsi:type="ns1:struct" xmlns:ns1="stdClass">
+       <foo xsi:type="xsd:string">bar</foo>
+     </item>
+</pre>
+
+3. Spezielle Typen:
+<pre>
+PHP: new SOAPNamedItem('name', '')
+XML: <name xsi:type="xsd:string"/>
+
+PHP: new SOAPDateTime(time()),
+XML: <item xsi:type="xsd:dateTime">2002-07-09T14:45:53</item>
+
+PHP: new SOAPBase64Binary('Test')
+XML: <item xsi:type="xsd:base64Binary">VGVzdA==</item>
+</pre>
+
+<EOF>
