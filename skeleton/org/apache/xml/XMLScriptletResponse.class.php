@@ -129,11 +129,11 @@
      */
     function addFormError($checker, $type, $field= '*', $info= NULL) {
       if (is_array($info)) {
-        $c= &Node::fromArray($info, 'param');
+        $c= &Node::fromArray($info, 'error');
       } elseif (is_object($info)) {
-        $c= &Node::fromObject($info, 'param');
+        $c= &Node::fromObject($info, 'error');
       } else {
-        $c= &new Node('param', $info);
+        $c= &new Node('error', $info);
       }
       $c->attribute= array(
         'type'        => $type,
