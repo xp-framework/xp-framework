@@ -63,7 +63,7 @@
      * @return  bool connected
      */
     function isConnected() {
-      return isset($this->_sock) && is_resource($this->_sock);
+      return is_resource($this->_sock);
     }
     
     /**
@@ -112,17 +112,22 @@
     }
 
     /**
-     * Set _timeout
+     * Set timeout
      *
      * @access  public
      * @param   mixed _timeout
      */
     function setTimeout($timeout) {
       $this->_timeout= $timeout;
+      
+      // Apply changes to already opened connection
+      if (is_resource($this->_sock)) {
+        socket_set_timeout($this->_sock, $this->_timeout);
+      }
     }
 
     /**
-     * Get _timeout
+     * Get timeout
      *
      * @access  public
      * @return  mixed
