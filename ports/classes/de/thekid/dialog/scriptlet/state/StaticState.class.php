@@ -22,8 +22,8 @@
      * @param   &scriptlet.xml.workflow.Context context
      */
     function process(&$request, &$response, &$context) {
-      $page= (int)$request->getQueryString();
-      $index= $this->getIndexPage($page);
+      sscanf($request->getQueryString(), 'page%d', $page);
+      $index= $this->getIndexPage((int)$page);
       
       // Add paging information
       $response->addFormResult(new Node('pager', NULL, array(
