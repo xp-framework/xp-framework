@@ -483,6 +483,7 @@ nedit.highlightPatterns: C:1:0{\n\
 		classname:"([A-Za-z_·:]+)?(::)([A-Za-z]+)":::String1:phptags:\n\
 		classnameseperator:"\\2":""::Pointer:classname:C\n\
 		constants:"(NULL|FALSE|TRUE|<[A-Z_]+>)":::Ada Attributes:phptags:\n\
+		annotation:"@([a-zA-Z]+)(\\('[^']+'\\))?":::Text Comment:phptags:\n\
 	}\n\
 	CSS:Default\n\
 	Regex:Default\n\
