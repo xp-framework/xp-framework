@@ -8,7 +8,9 @@
   uses('lang.Throwable');
   
   /**
-   * Exception
+   * An Error is a subclass of Throwable that indicates serious problems 
+   * that a reasonable application should not try to catch. Most such 
+   * errors are abnormal conditions.
    *
    * @purpose  Base class for all other errors
    * @see      http://java.sun.com/docs/books/tutorial/essential/exceptions/definition.html
