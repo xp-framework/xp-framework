@@ -119,7 +119,7 @@
           </td>
         </tr>
         <xsl:call-template name="embedded-divider"/>
-
+      </xsl:if>
 
       <!-- Class purpose -->
       <tr>
