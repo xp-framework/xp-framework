@@ -141,7 +141,7 @@
         if (isset($this->db)) $this->select_db();
       }
       
-      $this->cat->info('Sybase::'.$sql);
+      $this->cat->info('MySQL::'.$sql);
       $result= mysql_query($sql, $this->handle);
       if (FALSE === $result) {
         return throw(new SQLException(sprintf(
@@ -156,11 +156,10 @@
 	  $this->lengths= $this->fields= array();
       while (++$i < @mysql_num_fields($result)) {
         $field= mysql_fetch_field($result, $i);
-        // $this->cat->debug('Sybase::fields', $field);
         $this->fields[$field->name]= $field->type;
 		$this->lengths[$field->name]= $field->max_length;
       }
-      // $this->cat->debug('Sybase::fields', $this->fields);
+      // $this->cat->debug('MySQL::fields', $this->fields);
       
       return $result;
     }
@@ -197,7 +196,7 @@
         }
         
         // FALSE ==> NULL
-        $this->cat->debug($key.' is NULL ?', ($val === FALSE) ? 'yes' : 'no');
+        // $this->cat->debug($key.' is NULL ?', ($val === FALSE) ? 'yes' : 'no');
         if ($val === FALSE) {
           $row[$key]= NULL;
           continue;
