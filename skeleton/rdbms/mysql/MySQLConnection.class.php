@@ -228,7 +228,7 @@
      *
      * @access  public
      * @param   mixed* args
-     * @return  &rdbms.sybase.MySQLResultSet or FALSE to indicate failure
+     * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
     function &query() { 
