@@ -169,8 +169,8 @@
 <table border="0" cellspacing="0" cellpadding="6" width="100%">
   <tr valign="top" bgcolor="#f0f0f0">
     <td><small>
-      <a href="http://schlund.com/"><img src="/image/schlund.gif" border="0" align="left"/></a>      
-	  <a href="/copyright.html">Copyright XP-Team, Schlund+Partner AG</a><br/>
+      <a href="http://schlund.com/"><img title="Hosted by Schlund+Partner" alt="Schlund+Partner logo" src="/image/schlund.gif" width="110" height="20" border="0" align="left"/></a>      
+	  <a href="/copyright.html">Copyright XP-Team</a><br/>
       All rights reserved.<br/>
       </small>
     </td>
