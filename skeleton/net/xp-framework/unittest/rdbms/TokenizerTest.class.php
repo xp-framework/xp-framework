@@ -57,6 +57,30 @@
     function tearDown() {
       $this->conn->close();
     }
+
+    /**
+     * Test percent token
+     *
+     * @access  public
+     */
+    function testPercentToken() {
+      $this->assertEquals(
+        $this->conn->prepare('select * from test where name like "%%.de"', 1),
+        'select * from test where name like "%.de"'
+      );
+    }
+
+    /**
+     * Test unknown token
+     *
+     * @access  public
+     */
+    function testUnknownToken() {
+      $this->assertEquals(
+        $this->conn->prepare('select * from test where name like "%X"', 1),
+        'select * from test where name like "%X"'
+      );
+    }
     
     /**
      * Test integer token
@@ -65,8 +89,8 @@
      */
     function testIntegerToken() {
       $this->assertEquals(
-        'select 1 as intval',
-        $this->conn->prepare('select %d as intval', 1)
+        $this->conn->prepare('select %d as intval', 1),
+        'select 1 as intval'
       );
     }
 
@@ -77,8 +101,8 @@
      */
     function testFloatToken() {
       $this->assertEquals(
-        'select 6.1 as floatval',
-        $this->conn->prepare('select %f as floatval', 6.1)
+        $this->conn->prepare('select %f as floatval', 6.1),
+        'select 6.1 as floatval'
       );
     }
 
@@ -94,8 +118,8 @@
       );
       
       $this->assertEquals(
-        $expect[substr($this->dsn, 0, strpos($this->dsn, '://'))],
-        $this->conn->prepare('select %s as strval', '"Hello", Tom\'s friend said')
+        $this->conn->prepare('select %s as strval', '"Hello", Tom\'s friend said'),
+        $expect[substr($this->dsn, 0, strpos($this->dsn, '://'))]
       );
     }
     
@@ -106,12 +130,12 @@
      */
     function testIntegerArrayToken() {
       $this->assertEquals(
-        'select * from news where news_id in ()',
-        $this->conn->prepare('select * from news where news_id in (%d)', array())
+        $this->conn->prepare('select * from news where news_id in (%d)', array()),
+        'select * from news where news_id in ()'
       );
       $this->assertEquals(
-        'select * from news where news_id in (1, 2, 3)',
-        $this->conn->prepare('select * from news where news_id in (%d)', array(1, 2, 3))
+        $this->conn->prepare('select * from news where news_id in (%d)', array(1, 2, 3)),
+        'select * from news where news_id in (1, 2, 3)'
       );
     }
   }
