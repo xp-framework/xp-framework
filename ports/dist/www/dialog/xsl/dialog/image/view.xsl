@@ -24,7 +24,12 @@
       <a href="{func:link('static')}">Home</a> &#xbb; 
       <a href="{func:link(concat('album/view?', /formresult/album/@name))}">
         <xsl:value-of select="/formresult/album/@title"/>
-      </a> &#xbb; 
+      </a> 
+      &#xbb; 
+      <a href="{func:link(concat('chapter/view?', /formresult/album/@name, ',', /formresult/selected/@chapter))}">
+        Chapter #<xsl:value-of select="/formresult/selected/@chapter + 1"/>
+      </a>
+       &#xbb;
       <xsl:value-of select="/formresult/selected/name"/>
     </h3>
 
