@@ -101,8 +101,7 @@
       <class>GtkVPaned</class>
       <name>vpaned1</name>
       <handle_size>10</handle_size>
-      <gutter_size>10</gutter_size>
-      <position>350</position>
+      <gutter_size>6</gutter_size>
       <child>
 	<padding>0</padding>
 	<expand>True</expand>
@@ -128,7 +127,7 @@
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
-	    <fill>True</fill>
+	    <fill>False</fill>
 	  </child>
 
 	  <widget>
@@ -293,13 +292,13 @@
 	<class>GtkFrame</class>
 	<name>frame1</name>
 	<border_width>4</border_width>
-	<height>141</height>
+	<height>40</height>
 	<label>Failure trace</label>
 	<label_xalign>0</label_xalign>
 	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	<child>
-	  <shrink>True</shrink>
-	  <resize>True</resize>
+	  <shrink>False</shrink>
+	  <resize>False</resize>
 	</child>
 
 	<widget>
