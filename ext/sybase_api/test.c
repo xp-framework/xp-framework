@@ -44,8 +44,7 @@ int main(int argc, char **argv)
 
             while (!done && (sybase_results(&result) == SA_SUCCESS)) {
                 printf(
-                    "[%3d] result->type %4d [%-20s] result->code %4d [%-20s]\n", 
-                    i,
+                    "     result->type %4d [%-20s] result->code %4d [%-20s]\n", 
                     result->type,
                     sybase_nameoftype(result->type), 
                     result->code,
@@ -56,7 +55,7 @@ int main(int argc, char **argv)
                         sybase_init_resultset(result, &resultset);
                         for (i= 0; i < resultset->fields; i++) {
                             printf(
-                                "     datatype[%d] %3d [%-20s]\n",
+                                "     datatype[%3d] %3d [%-20s]\n",
                                 i,
                                 resultset->dataformat[i].datatype,
                                 sybase_nameofdatatype(resultset->dataformat[i].datatype)
@@ -72,7 +71,7 @@ int main(int argc, char **argv)
                 }
             }
             printf(
-                "[END] result->type %4d [%-20s] result->code %4d [%-20s]\n", 
+                "---> result->type %4d [%-20s] result->code %4d [%-20s]\n", 
                 result->type,
                 sybase_nameoftype(result->type), 
                 result->code,
