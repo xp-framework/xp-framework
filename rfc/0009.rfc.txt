@@ -95,7 +95,7 @@ Using the value:
 
     var $value= 0;
 
-    function __construct($name, $value= NULL) { 
+    function __construct($name, $value) { 
       parent::__construct($name); 
       $this->value= $value; 
     }
@@ -114,6 +114,41 @@ The above example prints out the following:
   nickel: 5¢ (nickel)
   dime: 10¢ (silver)
   quarter: 25¢ (silver)
+</pre>
+
+Enumeration members may declare methods.
+
+<?php
+  enum Operation {
+    plus { 
+      function evaluate($x, $y) { return $x + $y; } 
+    }
+    minus { 
+      function evaluate($x, $y) { return $x - $y; } 
+    }
+    times { 
+      function evaluate($x, $y) { return $x * $y; } 
+    }
+    divided_by { 
+      function evaluate($x, $y) { return $x / $y; } 
+    }
+    
+    function evaluate($x, $y);
+  }
+  
+  $x= 2;
+  $y= 4;
+  foreach (Operation::values() as $op) {
+    printf("%d %s %s = %.1f\n", $x, $op->name, $y, $op->evaluate($x, $y));
+  }
+?>
+
+The above example prints out the following:
+<pre>
+  2 plus 4 = 6.0
+  2 minus 4 = -2.0
+  2 times 4 = 8.0
+  2 divided_by 4 = 0.5
 </pre>
 
 
