@@ -178,7 +178,7 @@
      * @return  &util.Date for date of the first of advent
      * @see     http://www.salesianer.de/util/kalfaq.html
      */
-    function advent($year= -1) {
+    function &advent($year= -1) {
       if (-1 == $year) $year= date('Y');
      
       $s= mktime(0, 0, 0, 11, 26, $year);
@@ -200,8 +200,8 @@
      * @see     http://www.salesianer.de/util/kalfaq.html
      * @see     php://easter-date#user_contrib
      */
-    function easter($year= -1) {
-      if ($year == -1) $year= date('Y');
+    function &easter($year= -1) {
+      if (-1 == $year) $year= date('Y');
       
       $g = $year % 19;
       $c = (int)($year / 100);
