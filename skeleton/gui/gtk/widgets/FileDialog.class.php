@@ -7,6 +7,11 @@
   require('lang.base.php');
   uses('gui.gtk.GTKGladeApplication', 'io.Folder');
 
+  /**
+   * File dialog
+   *
+   * @purpose Provide a widget for file dialogs
+   */
   class FileDialog extends GTKGladeApplication {
     var
       $filename = NULL,

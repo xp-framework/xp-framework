@@ -10,6 +10,11 @@
     'util.text.PHPTokenizer'
   );
 
+  /**
+   * Generic parser
+   *
+   * @purpose Parse PHP files
+   */
   class GenericParser extends Object {
     var 
       $file=       NULL,
