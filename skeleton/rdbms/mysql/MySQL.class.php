@@ -144,7 +144,11 @@
       $this->cat->info('Sybase::'.$sql);
       $result= mysql_query($sql, $this->handle);
       if (FALSE === $result) {
-        return throw(new SQLException('statement failed', $sql));
+        return throw(new SQLException(sprintf(
+          'statement failed [%d: %s]', 
+          mysql_errno(),
+          mysql_error()
+        ), $sql));
       }
       
       // Feldtypen herausfinden
