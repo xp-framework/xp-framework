@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <document>
   <entry action="M">  
-    <collection>util</collection>
-    <class>Calendar</class>
-    <revision>1.8</revision>
+    <collection>lang</collection>
+    <class>Exception</class>
+    <revision>1.10</revision>
     <user>friebe</user>
-    <date>2003-06-09 22:45</date>
+    <date>2003-06-10 20:42</date>
   </entry>
   <entry action="M">  
     <collection>rdbms.sybase</collection>
     <class>Sybase</class>
+    <revision>1.9</revision>
+    <user>friebe</user>
+    <date>2003-06-10 12:20</date>
+  </entry>
+  <entry action="M">  
+    <collection>rdbms.mysql</collection>
+    <class>MySQL</class>
+    <revision>1.12</revision>
+    <user>friebe</user>
+    <date>2003-06-10 12:20</date>
+  </entry>
+  <entry action="M">  
+    <collection>rdbms</collection>
+    <class>Transaction</class>
+    <revision>1.4</revision>
+    <user>friebe</user>
+    <date>2003-06-10 10:49</date>
+  </entry>
+  <entry action="M">  
+    <collection>util</collection>
+    <class>Calendar</class>
     <revision>1.8</revision>
     <user>friebe</user>
     <date>2003-06-09 22:45</date>
@@ -76,13 +97,6 @@
     <revision>1.3</revision>
     <user>friebe</user>
     <date>2003-06-08 15:47</date>
-  </entry>
-  <entry action="M">  
-    <collection>lang</collection>
-    <class>Exception</class>
-    <revision>1.9</revision>
-    <user>friebe</user>
-    <date>2003-06-08 15:21</date>
   </entry>
   <entry action="M">  
     <collection>xml.wsdl</collection>
@@ -268,22 +282,8 @@
   </entry>
   <entry action="M">  
     <collection>rdbms</collection>
-    <class>Transaction</class>
-    <revision>1.3</revision>
-    <user>friebe</user>
-    <date>2003-06-06 00:47</date>
-  </entry>
-  <entry action="M">  
-    <collection>rdbms</collection>
     <class>SQLException</class>
     <revision>1.7</revision>
-    <user>friebe</user>
-    <date>2003-06-06 00:47</date>
-  </entry>
-  <entry action="M">  
-    <collection>rdbms.mysql</collection>
-    <class>MySQL</class>
-    <revision>1.11</revision>
     <user>friebe</user>
     <date>2003-06-06 00:47</date>
   </entry>
