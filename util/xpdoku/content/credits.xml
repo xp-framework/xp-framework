@@ -6,21 +6,39 @@
       <editor>$Id$</editor>
       
       <para>
-        <caption>Core</caption>
+        <caption>Idea / Core</caption>
         <text>
-          Timm Friebe, Alex Kiesel
+          <ul>
+            <li>Timm Friebe, <ref type="ext" href="http://thekid.de/">Homepage</ref></li>
+            <li>Alex Kiesel, <ref type="ext" href="http://document-root.de/">Homepage</ref></li>
+          </ul>
+        </text>
+      </para>
+      <para>
+        <caption>Contributions</caption>
+        <text>
+          <ul>
+            <li>Christian Lang (Webdav)</li>
+            <li>Christian Gellweiler (IPCQueue, patches to scriptlet API and more)</li>
+            <li>Oliver Hinckel (PunyCode, numerous patches)</li>
+          </ul>
         </text>
       </para>
       <para>
         <caption>Documentation system</caption>
         <text>
-          Alex Kiesel
+          <ul>
+            <li>Alex Kiesel, <ref type="ext" href="http://document-root.de/">Homepage</ref></li>
+            <li>Timm Friebe, <ref type="ext" href="http://thekid.de/">Homepage</ref></li>
+          </ul>
         </text>
       </para>
       <para>
         <caption>Website design</caption>
         <text>
-          Timm Friebe
+          <ul>
+            <li>Timm Friebe, <ref type="ext" href="http://thekid.de/">Homepage</ref></li>
+          </ul>
         </text>
       </para>
     </content>
