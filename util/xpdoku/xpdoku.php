@@ -202,11 +202,7 @@
       'generated_at'    => date ('l, F d, Y')
     )
   ));
-  $nodes[NULL]= &$main->addChild(new Node(array('name' => 'tree')));
-  
-  $fd= fopen('tmp', 'w');
-  fputs($fd, serialize($nodes));
-  fclose($fd);
+  $nodes[NULL]= &$main->addChild(new Node(array('name' => 'main')));
   
   foreach (array_keys($nodes) as $class) {
     if (NULL == $class) continue;
