@@ -53,7 +53,7 @@
         ('.class.php' == substr($entry, -10)) &&
         (preg_match($pattern, $entry))
       ) {
-        Console::writef("===> Parse %s\n", getXPClassName ($folder->uri.$entry, $base));
+        Console::writef('===> Parse %s: ', getXPClassName ($folder->uri.$entry, $base));
         try(); {
           $parser->setFile(new File($folder->uri.$entry));
           $result= &$parser->parse();
@@ -84,6 +84,29 @@
             : NULL
           );
           
+          // Assume this is a regular class
+          $nodes[$idx]->attribute['type']= 'default';
+          
+          // Check to see if this is an interface
+          if (
+            (0 == strcasecmp($nodes[$idx]->attribute['idx'], 'Interface')) ||
+            (0 == strcasecmp($nodes[$idx]->attribute['parent-idx'], 'Interface'))
+          ) {
+            $nodes[$idx]->attribute['type']= 'interface';
+          } else {
+          
+            // Let's see if this is an exception
+            foreach (array(
+              'Exception' => 'exception', 
+              'Throwable' => 'exception', 
+              'Error'     => 'exception'
+            ) as $portion => $type) {
+              if (strstr($subNode->attribute['shortName'], $portion)) {
+                $nodes[$idx]->attribute['type']= $type;
+                break;
+              }
+            }
+          }
         } if (catch('Exception', $e)) {
           $e->printStackTrace();
           continue;
@@ -139,6 +162,7 @@
           $e->printStackTrace(STDERR);
           continue;
         }
+        Console::writeLinef('OK, type %s', $nodes[$idx]->attribute['type']);
       } else if (is_dir($folder->uri.$entry) && 'CVS' != $entry) {
         if ($child= &recurseFolders($folder->uri.$entry, $pattern, $base, $parser, $nodes)) {
           // Only add children if they contain children itself (are not empty)
