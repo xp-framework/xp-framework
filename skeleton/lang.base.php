@@ -38,6 +38,10 @@
     $GLOBALS['php_exceptions']= array();
   }
   
+  function finally() {
+    // Intentionally empty
+  }
+  
   function is_error() {
     return empty($GLOBALS['php_errormessage']) ? FALSE : $GLOBALS['php_errormessage'];
   }
