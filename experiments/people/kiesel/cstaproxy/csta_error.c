@@ -29,7 +29,7 @@ void log (char *file, int line, char *format, ...) {
 	(void)vsnprintf (p, 1024, format, ap);
 	va_end (ap);
 	
-	fprintf (stderr, "[E] %s\n    at %s, line %d\n",
+	fprintf (stdout, "[LOG] %s\n      at %s, line %d\n",
 		p,
 		file,
 		line
