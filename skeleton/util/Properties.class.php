@@ -105,12 +105,10 @@
       $fd= &new File($this->_file);
       $fd->open(FILE_MODE_WRITE);
       
-      // Sektionen durchgehen
-      foreach ($this->_data as $section=> $values) {
+      foreach (array_keys($this->_data) as $section) {
         $fd->write(sprintf("[%s]\n", $section));
         
-        // Werte einer Sektion
-        foreach ($values as $key=> $val) {
+        foreach ($this->_data[$section] as $key => $val) {
           if (';' == $key{0}) {
             $fd->write(sprintf("\n; %s\n", $val)); 
           } else {
