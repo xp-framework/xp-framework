@@ -216,10 +216,10 @@
     }
     
     /**
-     * Transorms the OutputDocument's XML and the stylesheet
+     * Transforms the OutputDocument's XML and the stylesheet
      *
      * @throws  lang.IllegalStateException if no stylesheet is set
-     * @throws  xml.TransformerException if the transformation fails
+     * @throws  scriptlet.HttpScriptletException if the transformation fails
      * @see     xp://scriptlet.HttpScriptletResponse#process
      */
     function process() {
@@ -227,7 +227,11 @@
 
       switch ($this->_stylesheet[0]) {
         case XSLT_FILE:
-          $this->processor->setXSLFile($this->_stylesheet[1]);
+          try(); {
+            $this->processor->setXSLFile($this->_stylesheet[1]);
+          } if (catch('FileNotFoundException', $e)) {
+            return throw(new HttpScriptletException($e->getMessage(), HTTP_NOT_FOUND));
+          }
           break;
           
         case XSLT_BUFFER:
@@ -250,7 +254,7 @@
       try(); {
         $this->processor->run();
       } if (catch('TransformerException', $e)) {
-        return throw($e);
+        return throw(new HttpScriptletException($e, HTTP_INTERNAL_SERVER_ERROR));
       }
       
       $this->content= &$this->processor->output();
