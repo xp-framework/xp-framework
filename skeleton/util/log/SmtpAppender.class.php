@@ -39,8 +39,8 @@
     /**
      * Sends log data to the specified email address
      *
-     * @access public
-     * @param  mixed args variables
+     * @access  public
+     * @param   mixed args variables
      */
     function append() {
       $body= '';
@@ -62,7 +62,7 @@
      * Finalize this appender - is called when the logger shuts down
      * at the end of the request.
      *
-     * @access public 
+     * @access  public 
      */
     function finalize() {
       if ($this->sync) return;

@@ -37,9 +37,9 @@
     /**
      * Opens all neccessary directorys and creates them if nonexistant
      *
-     * @access public
-     * @return bool success
-     * @throws IOException if there are permission problems
+     * @access  public
+     * @return  bool success
+     * @throws  IOException if there are permission problems
      */    
     function open() {
       try(); {
@@ -65,10 +65,10 @@
      * unique id). If the abstract is omitted, a id
      * generator will be used.
      *
-     * @access public
-     * @param string abstract default NULL
-     * @return io.File opened spool file
-     * @throws IOException if file could not be created
+     * @access  public
+     * @param   string abstract default NULL
+     * @return  io.File opened spool file
+     * @throws  IOException if file could not be created
      */    
     function &createSpoolEntry($abstract= NULL) {
       if (NULL === $abstract)
@@ -89,10 +89,10 @@
     /**
      * Enqueues the spoolentry into the todo-queue. 
      *
-     * @access public
-     * @param io.File Spoolfile
-     * @return bool success
-     * @throws IOException if file could not be closed and moved.
+     * @access  public
+     * @param   io.File Spoolfile
+     * @return  bool success
+     * @throws  io.IOException if file could not be closed and moved.
      */    
     function enqueueSpoolEntry(&$f) {
       try(); {
@@ -108,9 +108,9 @@
     /**
      * Retrieves the next spool entry.
      *
-     * @access public
-     * @return io.File spoolfile next spoolfile. Its opened in read/write mode.
-     * @throws IOException if an error occurs
+     * @access  public
+     * @return  io.File spoolfile next spoolfile. Its opened in read/write mode.
+     * @throws  io.IOException if an error occurs
      */    
     function &getNextSpoolEntry() {
       try(); {
@@ -128,10 +128,10 @@
     /**
      * Mark the given spool entry as done.
      *
-     * @access public
-     * @param io.File spoolfile
-     * @return bool success
-     * @throws IOException if file could not be closed and moved.
+     * @access  public
+     * @param   io.File spoolfile
+     * @return  bool success
+     * @throws  io.IOException if file could not be closed and moved.
      */
     function finishSpoolEntry(&$f) {
       try(); {
@@ -147,10 +147,10 @@
     /**
      * Mark the given spool entry as failed.
      *
-     * @access public
-     * @param io.File spoolfile
-     * @return bool success
-     * @throws IOException if file could not be closed and moved.
+     * @access  public
+     * @param   io.File spoolfile
+     * @return  bool success
+     * @throws  io.IOException if file could not be closed and moved.
      */    
     function failSpoolEntry(&$f) {
       try(); {

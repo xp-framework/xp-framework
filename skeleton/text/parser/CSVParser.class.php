@@ -13,7 +13,7 @@
    * value) - files. This class proposes "|" as default delimiter, tough.
    *
    * @purpose Interface for parsing CSV-files
-   * @see http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm
+   * @see     http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm
    */
   class CSVParser extends Object {
     var
@@ -33,8 +33,8 @@
     /**
      * Creates a CSVParser object
      *
-     * @access public
-     * @param int mode header or headerless mode
+     * @access  public
+     * @param   int mode header or headerless mode
      */    
     function __construct() {
       $this->buffer= '';
@@ -44,10 +44,10 @@
     /**
      * Tokenizes a string according to our needs.
      *
-     * @access private
-     * @param string &string string to take token of
-     * @param char delim delimiter
-     * @return string token
+     * @access  private
+     * @param   string &string string to take token of
+     * @param   char delim delimiter
+     * @return  string token
      */
     function _strtok(&$string, $delim) {
 
@@ -70,8 +70,8 @@
      * Sets the input stream. This stream must support
      * isOpen(), open(), eof(), readLine().
      *
-     * @access public
-     * @param Stream stream
+     * @access  public
+     * @param   Stream stream
      */    
     function setInputStream(&$stream) {
       try(); {
@@ -88,8 +88,8 @@
      * as delimiter. It only makes sense to call this before any
      * line was read.
      *
-     * @access public
-     * @param char delimiter delimiter to set
+     * @access  public
+     * @param   char delimiter delimiter to set
      */
     function setColDelimiter($delim) {
       $this->colDelim= $delim{0};
@@ -101,8 +101,8 @@
      * an header record is available, so this has to be decided by
      * the calling program (or user).
      *
-     * @access public
-     * @return bool hasHeader TRUE, if header is available
+     * @access  public
+     * @return  bool hasHeader TRUE, if header is available
      */
     function hasHeader() {
       return is_array ($this->colName) && count ($this->colName);
@@ -113,9 +113,9 @@
      * If not existColumn return FALSE, otherwise the index
      * of the column.
      *
-     * @access public
-     * @param string columnname
-     * @return int columnindex
+     * @access  public
+     * @param   string columnname
+     * @return  int columnindex
      */    
     function getColumnIndex($column) {
       $reverse= array_flip ($this->colName);
@@ -130,8 +130,8 @@
      * exactly one record in the buffer.
      * This function affects the member buffer.
      *
-     * @access private
-     * @return string buffer
+     * @access  private
+     * @return  string buffer
      */    
     function &_getNextRecord() {
       try(); {
@@ -156,8 +156,8 @@
      * quotedness of the data, and de-escapes any escaped chars.
      * It also removes the parsed cell from the internal buffer.
      *
-     * @access private
-     * @return string buffer
+     * @access  private
+     * @return  string buffer
      */
     function _parseColumn() {
       if (empty ($this->buffer))
@@ -194,7 +194,7 @@
     /**
      * Read the record and save the result as the header record.
      *
-     * @access public
+     * @access  public
      */    
     function getHeaderRecord() {
       $this->colName= (array)$this->getNextRecord();
@@ -204,8 +204,8 @@
      * Manually set the header information to be able to supply
      * additional information and get nicer output (non-enumerated)
      *
-     * @access public
-     * @param array headers
+     * @access  public
+     * @param   array headers
      */    
     function setHeaderRecord($headers) {
       $this->colName= $headers;
@@ -234,9 +234,9 @@
      * record supposes. When no header was available, the
      * fields are enumerated.
      *
-     * @access public
-     * @return StdClass data
-     * @throws IOException if stream operation failed
+     * @access  public
+     * @return  StdClass data
+     * @throws  IOException if stream operation failed
      */    
     function getNextRecord() {
       try(); {

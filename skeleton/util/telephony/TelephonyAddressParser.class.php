@@ -16,8 +16,8 @@
    * is to bring phone numbers into a normalized form.
    *
    * @purpose Parse any string into a TelephonyAddress object
-   * @see http://www.wtng.info/
-   * @see http://www.construction-site.com/int_dial.htm
+   * @see     http://www.wtng.info/
+   * @see     http://www.construction-site.com/int_dial.htm
    */
   class TelephonyAddressParser extends Object {
     var 
@@ -250,8 +250,8 @@
     /**
      * Creates a PhoneNumber object
      *
-     * @access public
-     * @param array defaults array with default values (may be omitted)
+     * @access  public
+     * @param   array defaults array with default values (may be omitted)
      */      
     function __construct($params= NULL) {
       return parent::__construct($params);
@@ -262,9 +262,9 @@
      * converts any alphabetical char into a corresponding number, to
      * allow phone strings like '0700-NEEDGIRL'.
      *
-     * @access private
-     * @param string phonestring
-     * @return string phonestring
+     * @access  private
+     * @param   string phonestring
+     * @return  string phonestring
      */
     function _prepare($string) {
       // Gracefully taken from hotlinetool/ssl/datenabfrage/hotline2.php3
@@ -308,10 +308,10 @@
      * a list of allowed national area codes the division is absolutely
      * neccessary.
      *
-     * @access public
-     * @param string phonenumber
-     * @return &TelephonyAddress obj
-     * @throws FormatException, if number is malformed
+     * @access  public
+     * @param   string phonenumber
+     * @return  &TelephonyAddress obj
+     * @throws  FormatException, if number is malformed
      */
     function &parseNumber($number) {
       // Check current state

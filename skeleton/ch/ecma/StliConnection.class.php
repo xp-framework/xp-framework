@@ -61,8 +61,8 @@
      *   // [...]
      * </code>
      *
-     * @access    public
-     * @param    &peer.Socket sock
+     * @access  public
+     * @param   &peer.Socket sock
      */
     function __construct(&$sock, $parserDefaults, $version= STLI_VERSION_2) {
       $this->sock= &$sock;
@@ -98,10 +98,10 @@
      * the resulting string to a form that can be given to the
      * stli server
      *
-     * @access public
-     * @param &util.telephony.TelephonyAddress callee
-     * @param &util.telephony.TelephonyAddress destination
-     * @return string number
+     * @access  public
+     * @param   &util.telephony.TelephonyAddress callee
+     * @param   &util.telephony.TelephonyAddress destination
+     * @return  string number
      */    
     function applyPrefix(&$callee, &$destination) {
       $callCategory= $destination->getCallCategory ($callee);
@@ -123,9 +123,9 @@
      * Set the protocol version. This can only be done *prior* to connecting to
      * the server!
      *
-     * @access    public
-     * @param    int version
-     * @throws    IllegalStateException in case already having connected
+     * @access  public
+     * @param   int version
+     * @throws  IllegalStateException in case already having connected
      */
     function setVersion($version) { 
       if ($this->sock->isConnected()) return throw(new IllegalStateException(
@@ -137,7 +137,7 @@
     /**
      * Private helper function
      *
-     * @access    private
+     * @access  private
      */
     function _sockcmd() {
       $args= func_get_args();
@@ -169,7 +169,7 @@
      *
      * @access  public
      * @return  mixed the return code of the socket's connect method
-     * @throws  TelephonyException in case a protocol error occurs
+     * @throws  util.telephony.TelephonyException in case a protocol error occurs
      */
     function connect() {
       if (FALSE === ($ret= $this->sock->connect())) return FALSE;
@@ -186,7 +186,7 @@
      *
      * @access  public
      * @return  mixed the return code of the socket's close method
-     * @throws  TelephonyException in case a protocol error occurs
+     * @throws  util.telephony.TelephonyException in case a protocol error occurs
      */
     function close() {
       if (FALSE === $this->_expect(

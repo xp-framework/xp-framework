@@ -35,8 +35,8 @@
     /**
      * Appends log data to the syslog
      *
-     * @access public
-     * @param  mixed args variables
+     * @access  public
+     * @param   mixed args variables
      */
     function append() {
       $buf= '';
@@ -51,7 +51,7 @@
      * Finalize this appender - is called when the logger shuts down
      * at the end of the request.
      *
-     * @access public 
+     * @access  public 
      */
     function finalize() {
       closelog();

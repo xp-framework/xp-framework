@@ -34,11 +34,11 @@
     /**
      * Execute a CVS command
      *
-     * @access private
-     * @param int cvsCmd Command to execute
-     * @return array output
-     * @throws CVSInterfaceException, if cvs fails
-     * @see http://www.cvshome.org/docs/manual/cvs_16.html#SEC115
+     * @access  private
+     * @param   int cvsCmd Command to execute
+     * @return  array output
+     * @throws  CVSInterfaceException, if cvs fails
+     * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC115
      */
     function _execute($cvsCmd, $object= '') {
       $cmdLine= sprintf ("%s %s %s %s",
@@ -51,6 +51,7 @@
       try(); {
         $output= System::exec ($cmdLine, '2>&1', FALSE);
       } if (catch ('SystemException', $e)) {
+      
         // Only return error if command was not "diff"
         if ('diff' != substr ($cvsCmd, 0, 4))
           return throw (new CVSInterfaceException ('CVS returned failure ['.$cmdLine.']'));
@@ -69,9 +70,9 @@
      * Login must be without "-d"
      * E.g: setCVSRoot ('/home/cvs/', ':ext:alex@php3.de')
      *
-     * @access public
-     * @param string cvsroot
-     * @param string login
+     * @access  public
+     * @param   string cvsroot
+     * @param   string login
      */
     function setCVSRoot($cvsRoot, $login= '') {
       $this->cvsRoot= sprintf ("%s%s%s",
@@ -84,10 +85,10 @@
     /**
      * Returns the internal statuscode from the cvs status string
      *
-     * @access public
-     * @param string statusString
-     * @return int statusCode
-     * @throws CVSInterfaceException
+     * @access  public
+     * @param   string statusString
+     * @return  int statusCode
+     * @throws  CVSInterfaceException
      */
     function getCVSStatusFromString($statusCode) {
       switch ($statusCode) {
@@ -106,10 +107,10 @@
     /**
      * Returns the internal statuscode from the cvs status code
      *
-     * @access public
-     * @param char statusCode
-     * @return int statusCode
-     * @throws CVSInterfaceException
+     * @access  public
+     * @param   char statusCode
+     * @return  int statusCode
+     * @throws  CVSInterfaceException
      */
     function getCVSStatus($statusCode) {
       switch ($statusCode) {

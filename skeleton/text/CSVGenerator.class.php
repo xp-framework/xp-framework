@@ -13,7 +13,7 @@
    * It handles escaping of special characters and thus creates
    * csv-files, that can be used to be exchanged with other OSes
    * 
-   * @see xp://text.parser.CSVParser
+   * @see     xp://text.parser.CSVParser
    * @purpose Small and simple CSV Generator
    */ 
   class CSVGenerator extends Object {
@@ -43,9 +43,9 @@
      * Set the output stream. The stream must be writeable. If the
      * stream is not open, it will be opened.
      *
-     * @access public
-     * @param stream stream
-     * @return bool success
+     * @access  public
+     * @param   stream stream
+     * @return  bool success
      */    
     function setOutputStream(&$stream) {
       try(); {
@@ -60,8 +60,8 @@
     /**
      * Sets another column delimiter (standard is pipe "|").
      *
-     * @access public
-     * @param char delim
+     * @access  public
+     * @param   char delim
      */
     function setColDelimiter($delim) {
       $this->colDelim= $delim{0};
@@ -72,8 +72,8 @@
      * used to write the records, so be sure they are named exactly
      * as the data.
      *
-     * @access public
-     * @param array header
+     * @access  public
+     * @param   array header
      */    
     function setHeader($array) {
       $this->colName= $array;
@@ -83,8 +83,8 @@
     /**
      * Returns whether we have header information available
      *
-     * @access private
-     * @return bool hasHeader
+     * @access  private
+     * @return  bool hasHeader
      */    
     function _hasHeader() {
       return (isset ($this->colName) && !empty ($this->colName));
@@ -93,7 +93,7 @@
     /**
      * Writes the header line.
      *
-     * @access private
+     * @access  private
      */    
     function _writeHeader() {
       $this->stream->writeLine (
@@ -106,8 +106,8 @@
      * Write a single column into the stream. This function takes
      * care of quotedness and escaping.
      *
-     * @access private
-     * @param string data
+     * @access  private
+     * @param   string data
      */    
     function _writeColumn($data= '') {
       if (!$this->delimWritten) $this->stream->write ($this->colDelim);
@@ -132,9 +132,9 @@
     /**
      * Writes a record into the stream.
      *
-     * @access public
-     * @param array data
-     * @throws Exception e if any error occurs
+     * @access  public
+     * @param   array data
+     * @throws  Exception e if any error occurs
      */    
     function writeRecord($data) {
       if ($this->_hasHeader() && !$this->headerWritten)

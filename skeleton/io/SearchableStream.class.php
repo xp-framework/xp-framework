@@ -22,9 +22,9 @@
      * the given token. The delimiter itself is returned
      * as part of the token
      *
-     * @access public
-     * @param  string lim delimiters to use
-     * @return string tokenizes token
+     * @access  public
+     * @param   string lim delimiters to use
+     * @return  string tokenizes token
      */
     function getNextToken($lim) {
       $pos= FALSE;  
@@ -44,9 +44,9 @@
     /**
      * Tokenizes a string by a complex delimiter (multiple characters).
      *
-     * @access public
-     * @param  string* delimiters
-     * @return string token
+     * @access  public
+     * @param   string* delimiters
+     * @return  string token
      */
     function getNextComplexToken() {
       $delims= func_get_args();
@@ -73,9 +73,9 @@
      * Returns the offset of the searched string within the stream 
      * or FALSE if the string was not found.
      *
-     * @access public
-     * @param  string string to search
-     * @return int offset
+     * @access  public
+     * @param   string string to search
+     * @return  int offset
      */    
     function findNext($substring) {
       return strpos ($this->buffer, $substring, $this->offset);
