@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('PrintfFormat');
+
   /**
    * Date adaptor
    *
@@ -49,13 +51,15 @@
      */      
     Date.prototype.format= function(str) {
       var ret= '';
-
+      var lzero= new PrintfFormat('%02d');
+      var pos= 0;
+      
       while (-1 != (pos= str.indexOf('%'))) {
         ret+= str.substring(0, pos);
         switch (str.charAt(pos + 1)) {
-          case 'd': ret+= String(this.getDate()).format('%d'); break;
-          case 'm': ret+= lzero(this.getMonth()); break;
-          case 'Y': ret+= String(this.getFullYear()); break;
+          case 'd': ret+= lzero.format(this.getDate()); break;
+          case 'm': ret+= lzero.format(this.getMonth()); break;
+          case 'Y': ret+= this.getFullYear(); break;
           // TBI: Rest
         }
         str= str.substring(pos + 2, str.length);
