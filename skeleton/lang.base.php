@@ -280,6 +280,7 @@
     if ($p= get_class($object)) do {
       if (isset($implements[$p][$class])) return TRUE;
     } while ($p= get_parent_class($p));
+    return FALSE;
   }
   // }}}
 
