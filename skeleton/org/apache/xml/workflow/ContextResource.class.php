@@ -12,6 +12,7 @@
    * @purpose  purpose
    */
   class ContextResource extends Object {
-  
+    var
+      $values   = array();
   }
 ?>
