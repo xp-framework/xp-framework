@@ -25,8 +25,8 @@
      * @access  public
      * @param   &GtkWidget widget
      * @param   array signals an associative array
-     * @see     php-gtk://GtkObject::connect
-     * @see     php-gtk://GtkObject::connect_after
+     * @see     php-gtk://GtkObject%3A%3Aconnect
+     * @see     php-gtk://GtkObject%3A%3Aconnect_after
      */
     function connect(&$widget, $signals) {
       foreach (array_keys($signals) as $key) {
