@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('io.Stream');
+
   /**
    * This class provides functions for searching, seeking and replacing
    * strings and tokens in a stream.
@@ -14,13 +16,14 @@
    * @purpose Search operations on stream
    */
   class SearchableStream extends Stream {
+  
     /**
      * Tokenizes the stream and moves the offset behind
      * the given token. The delimiter itself is returned
      * as part of the token
      *
      * @access public
-     * @param char* lim delimiters to use
+     * @param  string lim delimiters to use
      * @return string tokenizes token
      */
     function getNextToken($lim) {
@@ -42,7 +45,7 @@
      * Tokenizes a string by a complex delimiter (multiple characters).
      *
      * @access public
-     * @param array delimiters
+     * @param  string* delimiters
      * @return string token
      */
     function getNextComplexToken() {
@@ -71,7 +74,7 @@
      * or FALSE if the string was not found.
      *
      * @access public
-     * @param string string to search
+     * @param  string string to search
      * @return int offset
      */    
     function findNext($substring) {
