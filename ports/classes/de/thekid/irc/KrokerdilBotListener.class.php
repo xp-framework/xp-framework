@@ -19,6 +19,7 @@
    */
   class KrokerdilBotListener extends IRCConnectionListener {
     var
+      $tstart    = 0,
       $config    = NULL,
       $lists     = array();
       
@@ -32,6 +33,7 @@
       parent::__construct();
       $this->config= &$config;
       $this->reloadConfiguration();
+      $this->tstart= time();
     }
     
     /**
@@ -122,12 +124,11 @@
             break;
           
           case 'uptime':
-            $r= getrusage();
-            list($days, $hours, $minutes)= explode('-', strftime('%d-%H-%M', $r['ru_utime.tv_sec']));
+            list($days, $hours, $minutes)= explode('-', strftime('%d-%H-%M', time() - $this->tstart));
             $connection->sendAction(
               $target, 
               '\'s uptime ist %d Tag(e), %d Stunde(n) und %d Minute(n)',
-             $days- 1, $hours- 1, $minutes
+             $days, $hours, $minutes
             );
             break;
           
