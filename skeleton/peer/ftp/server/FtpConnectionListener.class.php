@@ -6,8 +6,16 @@
 
   uses('peer.server.ConnectionListener', 'peer.ftp.server.FtpSession');
   
-  define('MODE_PASSIVE',  0x0001);
-  define('MODE_ACTIVE',   0x0002);
+  define('DATA_PASSIVE',    0x0001);
+  define('DATA_ACTIVE',     0x0002);
+  define('TYPE_ASCII',      'A');
+  define('TYPE_BINARY',     'I');
+  define('STRU_FILE',       'F');
+  define('STRU_RECORD',     'R');
+  define('STRU_PAGE',       'P');
+  define('MODE_STREAM',     'S');
+  define('MODE_BLOCK',      'B');
+  define('MODE_COMPRESSED', 'C');
   
   /**
    * Implement FTP server functionality
@@ -713,7 +721,7 @@
      * @param   string params
      */
     function onType(&$event, $params) {
-      switch ($params) {
+      switch ($params= strtoupper($params)) {
         case TYPE_ASCII:
         case TYPE_BINARY:
           $this->sessions[$event->stream->hashCode()]->setType($params);
@@ -722,6 +730,52 @@
           
         default:
           $this->answer($event->stream, 550, 'Unknown type "'.$params.'"');
+      }
+    }
+
+    /**
+     * Callback for the "STRU" command
+     *
+     * @access  protected
+     * @param   &peer.server.ConnectionEvent event
+     * @param   string params
+     */
+    function onStru(&$event, $params) {
+      switch ($params= strtoupper($params)) {
+        case STRU_FILE:
+          $this->answer($event->stream, 200, 'Structure set to '.$params);
+          break;
+        
+        case STRU_RECORD:
+        case STRU_PAGE:
+          $this->answer($event->stream, 504, $params.': unsupported structure type');
+          break;
+          
+        default:
+          $this->answer($event->stream, 501, $params.': unrecognized structure type');
+      }
+    }
+
+    /**
+     * Callback for the "MODE" command
+     *
+     * @access  protected
+     * @param   &peer.server.ConnectionEvent event
+     * @param   string params
+     */
+    function onMode(&$event, $params) {
+      switch ($params= strtoupper($params)) {
+        case MODE_STREAM:
+          $this->answer($event->stream, 200, 'Mode set to '.$params);
+          break;
+        
+        case MODE_BLOCK:
+        case STRU_COMPRESSED:
+          $this->answer($event->stream, 504, $params.': unsupported transfer mode');
+          break;
+          
+        default:
+          $this->answer($event->stream, 501, $params.': unrecognized transfer mode');
       }
     }
 
@@ -748,7 +802,7 @@
      * @param   string params
      */
     function onPort(&$event, $params) {
-      $this->mode[$event->stream->hashCode()]= MODE_ACTIVE;
+      $this->mode[$event->stream->hashCode()]= DATA_ACTIVE;
       $octets= sscanf($params, '%d,%d,%d,%d,%d,%d');
       $host= sprintf('%s.%s.%s.%s', $octets[0], $octets[1], $octets[2], $octets[3]);
       $port= ($octets[4] * 256) + $octets[5];
@@ -773,8 +827,8 @@
         return;
       }
       
-      // TBI: Do something about it. For now, answer with a lie!
-      $this->answer($event->stream, 200, 'Option '.$option.' set to '.$value);
+      // Do not recognize any opts
+      $this->answer($event->stream, 501, 'Opts: '.$option.'not understood');
     }
 
     /**
@@ -785,7 +839,7 @@
      * @param   string params
      */
     function onPasv(&$event, $params) {
-      $this->mode[$event->stream->hashCode()]= MODE_PASSIVE;
+      $this->mode[$event->stream->hashCode()]= DATA_PASSIVE;
 
       if ($this->datasock[$event->stream->hashCode()]) {
         $port= $this->datasock[$event->stream->hashCode()]->port;   // Recycle it!
