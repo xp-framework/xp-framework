@@ -86,18 +86,18 @@
             subst= String(Math.abs(parseInt(arguments[i])));
             break;
 
-          case 'd':
-            subst= String(parseInt(arguments[i]));
-            break;
-          
           case 'b':
-            subst= parseInt(arguments[i]).toString(2).toLowerCase();
+            subst= parseInt(arguments[i]).toString(2);
             break;
 
           case 'o':
-            subst= parseInt(arguments[i]).toString(8).toLowerCase();
+            subst= parseInt(arguments[i]).toString(8);
             break;
-          
+
+          case 'd':
+            subst= parseInt(arguments[i]).toString(10);
+            break;
+                    
           case 'x':
             subst= parseInt(arguments[i]).toString(16).toLowerCase();
             break;
