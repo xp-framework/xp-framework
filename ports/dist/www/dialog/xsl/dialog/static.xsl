@@ -124,15 +124,19 @@
     <table border="0">
       <tr>
         <td rowspan="2">
-          <img class="singleshot" border="0" src="/shots/detail.{@name}" width="459" height="230"/>
+          <img class="singleshot" border="0" src="/shots/detail.{@filename}" width="459" height="230"/>
         </td>
         <td valign="top">
-          <img class="singleshot_thumb" border="0" src="/shots/thumb.{@name}" width="150" height="113"/>
+          <a href="{func:link(concat('shot/view?', @name, ',0'))}">
+            <img class="singleshot_thumb" border="0" src="/shots/thumb.color.{@filename}" width="150" height="113"/>
+          </a>
         </td>
       </tr>
       <tr>
         <td valign="bottom">
-          <img class="singleshot_thumb" border="0" src="/shots/gray.{@name}" width="150" height="113"/>
+          <a href="{func:link(concat('shot/view?', @name, ',1'))}">
+            <img class="singleshot_thumb" border="0" src="/shots/thumb.gray.{@filename}" width="150" height="113"/>
+          </a>
         </td>
       </tr>
     </table>
