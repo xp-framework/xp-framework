@@ -27,18 +27,18 @@
         <caption>Kommentare am Anfang einer Datei</caption>
         <text>
           Der Kommentar am Anfang einer Datei sollte auf jeden Fall den CVS-Tag enthalten, 
-          also mindestens \$Id$; und eine kurze Beschreibung, was hier vorkommt. Als Stil 
+          also mindestens &#36;Id&#36; und eine kurze Beschreibung, was hier vorkommt. Als Stil 
           wird der Kommentar in C-Notation vorgeschlagen:
 
           <pre><![CDATA[/* This class is part of the XP framework
  *
- * $$Id$
+ * ]]>&#36;Id&#36;<![CDATA[
  */
  ]]></pre>
 
           Dieser Kommentar wird ohne Einrückung direkt hinter das erste &lt;?php geschrieben 
           und erhält genau die obige Form. Die Kurzbeschreibung bleibt bei genau einer Zeile, 
-          das CVS-Tag ist vor dem ersten add / commit als $Id\$ und nur so zu schreiben.
+          das CVS-Tag ist vor dem ersten add / commit als &#36;Id&#36; und nur so zu schreiben.
         </text>
       </para>
       <para>
