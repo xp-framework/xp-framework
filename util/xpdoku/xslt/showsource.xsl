@@ -23,6 +23,9 @@
             <![CDATA[
               $className= strip_tags ($_REQUEST['f']);
               echo '<b>'.$className.'</b>';
+              
+              // This "return"-path must be fixed when the classpath moves
+              // to the new place
               echo '<a href="/classes/'.$className.'.html"><img src="/image/caret-t.gif" border="0"></a>';
             ]]>
           </xsl:processing-instruction>
@@ -46,7 +49,7 @@
   $file= preg_replace ('/^([\/]+)/', '', str_replace ('..', '', $_REQUEST['f']));
   
   $p= &new PHPSyntaxHighlighter (
-    new File ($_SERVER['DOCUMENT_ROOT'].'/src/'.$_REQUEST['f'].'.class.php')
+    new File ($_SERVER['DOCUMENT_ROOT'].'/src/'.$file.'.class.php')
   );
   echo $p->getHighlight();
       
