@@ -30,6 +30,16 @@
     }
     
     /**
+     * Get Trace
+     *
+     * @access  public
+     * @return  string
+     */
+    function getStackTrace() {
+      return $this->trace;
+    }
+    
+    /**
      * Set Code
      *
      * @access  public
