@@ -145,7 +145,9 @@
           
           <!-- Additional comments -->
           <br/>
-          <xsl:apply-templates select="./comments/class/text"/>
+          <span style="white-space: pre">
+            <xsl:apply-templates select="./comments/class/text"/>
+          </span>
           <br/>
         </td>
       </tr>
@@ -452,7 +454,7 @@
 
             <!-- Additional information for this function -->
             <tr>
-              <td colspan="3" valign="top" style="color: black">
+              <td colspan="3" valign="top" style="color: black; white-space: pre">
                 <xsl:apply-templates select="./text"/><br/>
               </td>
             </tr>
