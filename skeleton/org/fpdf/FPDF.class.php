@@ -544,7 +544,7 @@
       $s= (string)$s; // Explicitely cast to a string
 
       for ($i= 0, $l= strlen($s), $w= 0; $i < $l; $i++) {
-        $w+= $this->CurrentFont->cw[$s{$i}];
+        $w+= @$this->CurrentFont->cw[$s{$i}];
       }
       return $w * $this->FontSize / 1000;
     }
@@ -598,13 +598,13 @@
      * @param   int style bitfield of FPDF_RECT_* constants
      * @return  string
      */
-    function _renderrect($x, $y, $w, $h, $style) {
+    function _renderrect($x, $y, $w, $h, $style= NULL) {
       static $ops= array(
         FPDF_RECT_DRAW       => 'S',
         FPDF_RECT_FILL       => 'f',
         FPDF_RECT_FILL_DRAW  => 'B'
       );
-      return $x.' -'.$y.' '.$w.' -'.$h.' re '.$ops[$style];
+      return $x.' -'.$y.' '.$w.' -'.$h.' re '.($style ? $ops[$style] : '');
     }
 
     /**
@@ -660,6 +660,16 @@
       }
       
       return $this->fonts[$idx];
+    }
+    
+    /**
+     * Get font
+     *
+     * @access  public
+     * @return  org.pdf.FPDFFont
+     */
+    function &getFont() {
+      return $this->CurrentFont;
     }
 
     /**
@@ -1162,13 +1172,13 @@
      * @param   string file
      * @param   int x
      * @param   int y
-     * @param   int w
+     * @param   int w default 0
      * @param   int h default 0
      * @param   string type default ''
      * @param   string link default ''
      * @throws  lang.IllegalArgumentException
      */
-    function putImage($file, $x, $y, $w, $h= 0, $type= '', $link= '') {
+    function putImage($file, $x, $y, $w= 0, $h= 0, $type= '', $link= '') {
       if (!isset($this->images[$file])) {
 
         // First use of image, get info
