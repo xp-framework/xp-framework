@@ -212,7 +212,7 @@
     </table>
   </xsl:template>
   
-  <xsl:template match="xmp|pre|code/span/span|code/span/span/br">
+  <xsl:template match="quote|xmp|pre|code/span/span|code/span/span/br">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>
