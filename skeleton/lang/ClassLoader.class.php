@@ -29,8 +29,13 @@
      * @return  mixed Eine Instanz der Klasse
      */
     function loadClass($className) {
-      uses($className);
-      if (class_exists($phpName= reflect($className))) return $phpName;
+      if ('php.' != substr($className, 0, 4)) {
+        uses($className);
+	$phpName= reflect($className);
+      } else {
+        $phpName= substr($className, 4);
+      }
+      if (class_exists($phpName)) return $phpName;
       
       // Fehler!
       return throw(new ClassNotFoundException(sprintf(
