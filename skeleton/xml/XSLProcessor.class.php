@@ -58,6 +58,25 @@
     }
 
     /**
+     * Den Scheme-Handler setzen
+     *
+     * @param   array defines
+     */
+    function setSchemeHandler($defines) {
+      xslt_set_scheme_handlers($this->processor, $defines);
+    }
+
+    /**
+     * Das Base-Dir setzen
+     *
+     * @param   string dir
+     */
+    function setBase($dir, $proto= 'file://') {
+      if ('/' != $dir[strlen($dir)- 1]) $dir.= '/';
+      xslt_set_base($this->processor, $proto.$dir);
+    }
+
+    /**
      * Eine Datei als XSL-Input definieren
      *
      * @param   (string)file Dateiname
