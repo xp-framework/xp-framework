@@ -132,7 +132,7 @@
       }
       
       # var_dump('MESSAGE/DELIVERY', $r);
-      $daemonmessage->details= $r;
+      $daemonmessage->details= array_merge($daemonmessage->details, $r);
     }
     
     /**
@@ -155,7 +155,8 @@
         'Quota'                  => DAEMON_QUOTA,
         'relaying'               => DAEMON_RELAYING,
         'no route to host'       => DAEMON_NOROUTE,
-        'Cannot route'           => DAEMON_NOROUTE,
+        'Cannot route'           => DAEMON_UNROUTEABLE,
+        'unrouteable'            => DAEMON_UNROUTEABLE,
         'Delay'                  => DAEMON_DELAYED,
       );
       
@@ -210,7 +211,7 @@
         ) $host= strtok(" \r\n\t([])="); else continue;
         
         // Ignore: "from mail by xxx.yyy.zz"
-        if (0 == strcasecmp('mail', $host)) continue;
+        if (0 == strcasecmp('mail', $host) || !strstr($host, '.')) continue;
         
         $daemonmessage->details['Received'][]= $host;
       } while ($t= strtok(" \r\n\t([])=")); 
@@ -502,6 +503,8 @@
             // |------------------------- Message text follows: ------------------------|
             if ('|------------------------- Failed addresses follow:' == substr($t, 0, 51)) {
               $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_TONLINE;
+              $daemonmessage->details['Reporting-MTA']= 'dns; '.$daemonmessage->details['Received'][sizeof($daemonmessage->details['Received'])- 1];
+              $daemonmessage->details['Remote-MTA']= 'dns; '.$daemonmessage->details['Received'][sizeof($daemonmessage->details['Received'])- 2];
               
               $daemonmessage->setReason(trim(strtok("\n")));
               strtok("\n");
@@ -565,6 +568,13 @@
                 if ('---' == substr($t, 0, 3)) break;
                 $daemonmessage->setReason(trim($daemonmessage->getReason()).' '.trim($t));
               } while ($t= strtok("\n"));
+              
+              // If the reason (trimmed) contains no spaces it's probably something like this:
+              // - Mailbox_quota_exceeded_-_Mailbox_voll/
+              // - 212.227.126.159_does_not_like_recipient./Remote_host_said:_550_Cannot_route_to_<broker@alloncd.de>/Giving_up_on_212.227.126.159./
+              if (!strstr(trim($daemonmessage->reason), ' ')) {
+                $daemonmessage->setReason(str_replace('_', ' ', $daemonmessage->reason));
+              }
               
               // Now, work on original message
               $state= DMP_ORIGMSG;
