@@ -15,10 +15,11 @@
    * @model    abstract
    * @see      xp://peer.server.Server#notify
    * @purpose  Abstract base class for listeners
-   * @experimental
    */
   class ConnectionListener extends Object {
-  
+    var
+      $server = NULL;
+
     /**
      * Method to be triggered when a client connects
      *
