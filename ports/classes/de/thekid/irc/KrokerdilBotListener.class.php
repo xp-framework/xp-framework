@@ -483,6 +483,13 @@
               $this->setKarma($nick, -2, '@@lamer');
               return;
             }
+            
+            // Don't accept new swears from disliked nicks.
+            if ($this->karma[$nick] < 0) {
+              $connection->sendAction($target, 'hörte weg, als %s das Schimpfwort in den Raum wurf.', $nick);
+              $this->setKarma($nick, -1, '@@lamer');
+              return;
+            }
 
             if (in_array($params, $this->lists['swears'])) {
               $connection->sendAction(
