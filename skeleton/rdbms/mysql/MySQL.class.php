@@ -107,7 +107,7 @@
       $sql= $tok= strtok($sql, '%');
       while (++$j && $tok= strtok('%')) {
         $arg= (is_object($args[$j]) && method_exists($args[$j], 'toString') 
-          ? $args[$j]->toString()
+          ? is_a($args[$j], 'Date') ? $args[$j]->toString('Y-m-d H:i:s') : $args[$j]->toString()
           : $args[$j]
         );
         switch ($tok{0}) {
