@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.soap.SOAPMessage', 'xml.QName');
+  uses('xml.soap.SOAPMessage', 'xml.QName', 'xml.soap.Parameter');
   
   /**
    * Basic SOAP-Client
@@ -81,7 +81,7 @@
      */
     function invoke() {
       if (!is_a($this->transport, 'SOAPTransport')) return throw(new IllegalArgumentException(
-        'transport must be a xml.soap.transport.SOAPTransport'
+        'Transport must be a xml.soap.transport.SOAPTransport'
       ));
       
       $args= func_get_args();

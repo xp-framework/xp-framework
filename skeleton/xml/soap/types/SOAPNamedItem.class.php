@@ -27,6 +27,7 @@
    * course, this is of no difference!). But, alas, other people do 
    * not think so, and so, there's a NamedItem.
    *
+   * @deprecated
    * @see      xp://xml.soap.types.SoapType
    * @purpose  DateTime type
    */

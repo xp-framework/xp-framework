@@ -8,7 +8,6 @@
     'xml.Node',
     'xml.soap.types.SOAPBase64Binary',
     'xml.soap.types.SOAPDateTime',
-    'xml.soap.types.SOAPNamedItem',
     'xml.soap.types.SOAPHashMap'
   );
 
@@ -138,6 +137,12 @@
           if (empty($value)) $child->attribute['xsi:nil']= 'true';
         }
         $this->_recurse($child, $value);
+        return;
+      }
+
+      if (is_a($value, 'Parameter')) {  // Named parameter
+        $child->name= $value->name;
+        $this->_marshall($child, $value->value);
         return;
       }
       
