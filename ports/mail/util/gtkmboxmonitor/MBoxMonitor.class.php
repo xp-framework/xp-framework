@@ -29,6 +29,7 @@
      * Constructor
      *
      * @access  public
+     * @param   &util.cmd.ParamString p
      */
     function __construct(&$p) {
       if (!$p->exists(1)) {
