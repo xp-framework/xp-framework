@@ -53,7 +53,7 @@
      * @access  public
      */
     function showLast() {
-      $this->begin= max($this->count - $this->interval, 0);
+      $this->begin= max($this->count - $this->interval, $this->begin + $this->interval);
     }
 
     /**
