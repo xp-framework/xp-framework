@@ -79,7 +79,7 @@ while (<FILE>) {
     &error("Methods must be indented with 4 spaces", EINDENT);
   }
   
-  if ($_ =~ /\/\*[^\*]/ && $l > 2) {
+  if ($_ =~ /(.)\/\*[^\*]/ && $l > 2 && $1 ne "'") {
     &error("Block comments may not be contained within source, use // instead", ECOMMENT);
   }
   
