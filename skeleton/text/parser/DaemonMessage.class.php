@@ -6,15 +6,15 @@
  
   uses('peer.mail.Message');
 
-  define('DAEMON_UNKNOWN',      'unknownfailure');
-  define('DAEMON_GENERIC',      'genericfailure');
-  define('DAEMON_LOCALPART',    'localpartunknown');
-  define('DAEMON_QUOTA',        'quotaexceeded');
-  define('DAEMON_RELAYING',     'relayingdenied');
-  define('DAEMON_NOROUTE',      'noroutetohost');
-  define('DAEMON_SMTPCONN',     'smtpconnfailure');
-  define('DAEMON_UNROUTEABLE',  'unrouteable');
-  define('DAEMON_DELAYED',      'delayed');
+  define('DAEMON_UNKNOWN',       'unknownfailure');
+  define('DAEMON_GENERIC',       'genericfailure');
+  define('DAEMON_LOCALPART',     'localpartunknown');
+  define('DAEMON_QUOTA',         'quotaexceeded');
+  define('DAEMON_RELAYING',      'relayingdenied');
+  define('DAEMON_NOROUTE',       'noroutetohost');
+  define('DAEMON_SMTPCONN',      'smtpconnfailure');
+  define('DAEMON_UNROUTEABLE',   'unrouteable');
+  define('DAEMON_DELAYED',       'delayed');
   
   define('DAEMON_TYPE_POSTFIX',  'inline/postfix');
   define('DAEMON_TYPE_TONLINE',  'inline/t-online');
@@ -36,40 +36,40 @@
       $status=   DAEMON_UNKNOWN;
       
     /**
-     * (Insert method's description here)
+     * Set the recipient the message was destined for
      *
-     * @access  
-     * @param   
+     * @access  public
+     * @param   &peer.mail.InternetAddress r
      */
     function setFailedRecipient(&$r) {
       $this->failed= &$r;
     }
     
     /**
-     * (Insert method's description here)
+     * Get the recipient the message was destined for
      *
-     * @access  
-     * @return  
+     * @access  public
+     * @return  peer.mail.InternetAddress
      */
     function &getFailedRecipient() {
       return $this->failed;
     }
     
     /**
-     * (Insert method's description here)
+     * Set the reason the message failed for
      *
-     * @access  
-     * @param   
+     * @access  public
+     * @param   string reason
      */
     function setReason($reason) {
       $this->reason= $reason;
     }
     
     /**
-     * (Insert method's description here)
+     * Get the reason the message failed for
      *
-     * @access  
-     * @return  
+     * @access  public
+     * @return  string
      */
     function getReason() {
       return $this->reason;
