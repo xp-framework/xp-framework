@@ -1,4 +1,9 @@
 <?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
   uses(
     'xml.soap.SOAPClient', 
     'xml.soap.transport.SOAPHTTPTransport'
