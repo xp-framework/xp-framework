@@ -68,81 +68,99 @@
     /**
      * Retreive scheme
      *
-     * @access    public
-     * @return    string scheme or NULL if none is set
+     * @access  public
+     * @param   mixed default default NULL  
+     * @return  string scheme or default if none is set
      */
-    function getScheme() {
-      return isset($this->_info['scheme']) ? $this->_info['scheme'] : NULL;
+    function getScheme($default= NULL) {
+      return isset($this->_info['scheme']) ? $this->_info['scheme'] : $default;
     }
 
     /**
      * Retreive host
      *
-     * @access    public
-     * @return    string host or NULL if none is set
+     * @access  public
+     * @param   mixed default default NULL  
+     * @return  string host or default if none is set
      */
-    function getHost() {
-      return isset($this->_info['host']) ? $this->_info['host'] : NULL;
+    function getHost($default= NULL) {
+      return isset($this->_info['host']) ? $this->_info['host'] : $default;
     }
 
     /**
      * Retreive path
      *
-     * @access    public
-     * @return    string path or NULL if none is set
+     * @access  public
+     * @param   mixed default default NULL  
+     * @return  string path or default if none is set
      */
-    function getPath() {
-      return isset($this->_info['path']) ? $this->_info['path'] : NULL;
+    function getPath($default= NULL) {
+      return isset($this->_info['path']) ? $this->_info['path'] : $default;
     }
 
     /**
      * Retreive user
      *
-     * @access    public
-     * @return    string user or NULL if none is set
+     * @access  public
+     * @param   mixed default default NULL  
+     * @return  string user or default if none is set
      */
-    function getUser() {
-      return isset($this->_info['user']) ? $this->_info['user'] : NULL;
+    function getUser($default= NULL) {
+      return isset($this->_info['user']) ? $this->_info['user'] : $default;
     }
 
     /**
      * Retreive password
      *
-     * @access    public
-     * @return    string password or NULL if none is set
+     * @access  public
+     * @param   mixed default default NULL  
+     * @return  string password or default if none is set
      */
-    function getPassword() {
-      return isset($this->_info['password']) ? $this->_info['password'] : NULL;
+    function getPassword($default= NULL) {
+      return isset($this->_info['password']) ? $this->_info['password'] : $default;
     }
 
     /**
      * Retreive query
      *
-     * @access    public
-     * @return    string query or NULL if none is set
+     * @access  public
+     * @param   mixed default default NULL  
+     * @return  string query or default if none is set
      */
-    function getQuery() {
-      return isset($this->_info['query']) ? $this->_info['query'] : NULL;
+    function getQuery($default= NULL) {
+      return isset($this->_info['query']) ? $this->_info['query'] : $default;
     }
 
     /**
      * Retreive fragment
      *
-     * @access    public
-     * @return    string fragment or NULL if none is set
+     * @access  public
+     * @param   mixed default default NULL  
+     * @return  string fragment or default if none is set
      */
-    function getFragment() {
-      return isset($this->_info['fragment']) ? $this->_info['fragment'] : NULL;
+    function getFragment($default= NULL) {
+      return isset($this->_info['fragment']) ? $this->_info['fragment'] : $default;
     }
 
     /**
      * Retreive port
      *
-     * @access    public
-     * @return    int port or NULL if none is set
+     * @access  public
+     * @param   mixed default default NULL  
+     * @return  int port or default if none is set
      */
-    function getPort() {
-      return isset($this->_info['port']) ? $this->_info['port'] : NULL;
+    function getPort($default= NULL) {
+      return isset($this->_info['port']) ? $this->_info['port'] : $default;
+    }
+
+    /**
+     * Retreive parameters
+     *
+     * @access public
+     * @return array params
+     */
+    function getParams() {
+      return $this->_info['params'];
     }
     
     /**
@@ -163,6 +181,11 @@
      */
     function setURL($str) {
       $this->_info= parse_url($str);
+      if (isset($this->_info['query'])) {
+        parse_str($this->_info['query'], $this->_info['params']);
+      } else {
+        $this->_info['params']= array();
+      }
       $this->_info['url']= $str;
     }
   }
