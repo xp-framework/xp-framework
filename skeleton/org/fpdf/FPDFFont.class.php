@@ -18,9 +18,7 @@
     var
       $family,
       $style,
-      $cw,
       $type,
-      $name,
       $desc,
       $up,
       $ut,
