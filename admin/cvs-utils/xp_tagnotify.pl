@@ -2,29 +2,29 @@
 
   #use strict;
   use POSIX;
-
+  use Data::Dumper;
+  
   my %operationVerb= (
     'add' => 'added',
     'mov' => 'moved',
     'del' => 'deleted'
   );
   
-  my $me=         shift @_;
-  my $to=         shift @_;
-  my $tagName=    shift @_;
-  my $operation=  shift @_;
-  my $repository= shift @_;
+  my $to=         shift @ARGV;
+  my $tagName=    shift @ARGV;
+  my $operation=  shift @ARGV;
+  my $repository= shift @ARGV;
   my $localPath=  $repository;
   my $cvsroot=    $ENV{'CVSROOT'};
   $localPath=~    s/$cvsroot\///g;
   
   my @fileInfo; my $filename;
-  while ($filename= shift @_) {
-    my %file;
+  while ($filename= shift @ARGV) {
+    my %file= ();
     $file{'filename'}= $filename;
-    $file{'revision'}= shift @_;
-    $file{'oldrevision'}= getLastTagRevision ($repository.'/',$filename, $tagName, $operation);
-    push @fileInfo, [$file];
+    $file{'revision'}= shift @ARGV;
+    $file{'oldrevision'}= getLastTagRevision ($repository.'/'.$filename, $tagName, $operation);
+    push @fileInfo, {%file};
   }
   
   $realname= getRealname ($ENV{'USER'});
@@ -35,25 +35,30 @@
     $operationVerb{$operation},
     $tagName
   );
-  $head= "============================================================\n\n";
+  $head.= "============================================================\n\n";
   $msg.= $head;
   
-  my $vFormat;
+  my $vFormat= '  %-30s  %6s';
   $_= $operation; 
   SWITCH: {
-    if (/mov/) { $vFormat= '  %-30s  %6s --> %-6s';   last SWITCH; }
-    if (/del/) { $vFormat= '  %-30s  %3$6s --> [  ]'; last SWITCH; }
-    #if (/add/) { 
-      $vFormat= '  %-30s  %3$6s';          last SWITCH; 
-    #}
+    if (/mov/) { $vFormat= '  %-30s  %6s --> %-6s'; last SWITCH; }
+    if (/del/) { $vFormat= '  %-30s  %6s --> [  ]'; last SWITCH; }
+    last SWITCH;
   }
   
   foreach $file (@fileInfo) {
-    $msg.= sprintf ($vFormat."\n",
-      $file{'filename'},
-      '['.$file{'oldrevision'}.']',
-      '['.$file{'revision'}.']'
-    );
+    if ($operation =~ /add|del/) {
+      $msg.= sprintf ($vFormat."\n", 
+        $file->{'filename'},
+        '['.$file->{'revision'}.']'
+      );
+    } else {
+      $msg.= sprintf ($vFormat."\n",
+        $file->{'filename'},
+        '['.$file->{'oldrevision'}.']',
+        '['.$file->{'revision'}.']'
+      );
+    }
   }
   
   $msg.= "\n";
@@ -61,16 +66,15 @@
   # Append signature
   $msg.= "-- \n".$realname."\n";
   
-  open (SENDMAIL, "/usr/sbin/sendmail -t |");
-  
-  print SENDMAIL "To: $to\n";
-  print SENDMAIL "From: \"".getRealName ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
-  print SENDMAIL "Reply-To: $to\n";
-  print SENDMAIL "Subject: [CVS]    tag: $localPath\n";
-  print SENDMAIL "X-CVS: ".$ENV{'CVSROOT'}."\n";
-  print SENDMAIL "\n";
-  print SENDMAIL $msg;
-  close (SENDMAIL);
+  # open (SENDMAIL, "| /usr/sbin/sendmail -t");
+  print STDOUT "To: $to\n";
+  print STDOUT "From: \"".getRealname ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
+  print STDOUT "Reply-To: $to\n";
+  print STDOUT "Subject: [CVS]    tag: $localPath\n";
+  print STDOUT "X-CVS: ".$ENV{'CVSROOT'}."\n";
+  print STDOUT "\n";
+  print STDOUT $msg;
+  #close (SENDMAIL);
   
   exit (0);
 
@@ -93,6 +97,13 @@
     return $realname;
   }
 
+  sub trim {
+    my ($x) = @_;
+    $x =~ s/^\s+//;
+    $x =~ s/\s+$//;
+    return $x;
+  }
+
   sub getEmail {
     my $sysname= shift;
     my $username= lc(getRealname ($sysname));
@@ -110,27 +121,31 @@
     my $tagName=    shift;
     my $operation=  shift;
     
-    open (FILE, $file);
+    open (MYFILE, $file) || open (MYFILE, $file.",v") || return 'EACCESS';
     my $tags= 0;
-    while (<FILE>) {
+    while (<MYFILE>) {
       if ('symbols;' eq trim ($_)) {
-        close (FILE);
+        close (MYFILE);
         return 'N/A';
       }
       
-      if ('symbol' eq trim ($_)) {
+      if ('symbols' eq trim ($_)) {
         $tags= 1;
+        print "There are tags...\n";
       }
+      
+      if ($tags == 1) { print $_; }
       
       if ($tags == 1 && -1 != index ($_, $tagName)) {
         my ($tagInfo, $revision)= split /:/, $_;
-        close (FILE);
+        close (MYFILE);
         $revision=~ s/;//g;
         
+        chop $revision;
         return $revision;
       }
     }
     
-    close (FILE);
+    close (MYFILE);
     return 'PFN';
   }
