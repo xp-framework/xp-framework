@@ -107,7 +107,7 @@
       <xsl:variable name="pos" select="position()"/>
       <xsl:if test="$pos = 1 or exsl:node-set($entries[$pos - 1])/date/yday != ./date/yday">
         <h2>
-          <xsl:value-of select="func:date(date)"/>
+          <xsl:copy-of select="func:smartdate(date)"/>
         </h2>
       </xsl:if>
       <xsl:apply-templates select="."/>
