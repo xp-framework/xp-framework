@@ -43,7 +43,9 @@ ifeq ($(at),)
 	cd .. 
 	tar cvfz $(TARGET)downloads/xp-`date +%Y-%m-%d`.tar.gz --exclude=CVS xp
 	cd $(TARGET)downloads/
+	rm xp-current.tar.gz
 	ln -s xp-`date +%Y-%m-%d`.tar.gz xp-current.tar.gz
+	md5 -q xp-`date +%Y-%m-%d`.tar.gz > xp-`date +%Y-%m-%d`.md5
 else
 	ssh $(at) \
 	  cd $(XPROOT) \; \
@@ -51,7 +53,9 @@ else
 	  cd .. \; \
 	  tar cvfz $(TARGET)downloads/xp-`date +%Y-%m-%d`.tar.gz --exclude=CVS xp \; \
 	  cd $(TARGET)downloads/ \; \
-	  ln -s xp-`date +%Y-%m-%d`.tar.gz xp-current.tar.gz
+	  rm xp-current.tar.gz \; \
+	  ln -s xp-`date +%Y-%m-%d`.tar.gz xp-current.tar.gz \; \
+	  md5 -q xp-`date +%Y-%m-%d`.tar.gz \> xp-`date +%Y-%m-%d`.md5
 endif
 
 cvshist:
