@@ -13,6 +13,7 @@
 >
   <xsl:include href="../layout.xsl"/>
   <xsl:include href="../news.inc.xsl"/>
+  <xsl:include href="../shortcuts.inc.xsl"/>
   
   <xsl:variable name="shortcuts">
     <shortcut href="about/topic?introduction" icon="introduction">Introduction</shortcut>
@@ -77,18 +78,7 @@
   <xsl:template name="content">
     <h1>use::xp</h1>
 
-    <table class="shortcuts">
-      <tr>
-        <xsl:for-each select="exsl:node-set($shortcuts)/shortcut">
-          <td align="middle" valign="top">
-            <a href="{@href}">
-              <img border="0" src="/image/icons/{@icon}.png"/><br/>
-              <xsl:value-of select="."/>
-            </a>
-          </td>
-        </xsl:for-each>
-      </tr>
-    </table>
+    <xsl:copy-of select="func:shortcuts(exsl:node-set($shortcuts))"/>
     
     <xsl:for-each select="/formresult/entries/entry">
       <h3>
