@@ -9,7 +9,7 @@
     <area name="documentation" color="#9eb6fe" logo="logo"/>
     <area name="about" color="#add3b0" logo="logo-green"/>
     <area name="resources" color="#f7c794" logo="logo-orange"/>
-    <area name="devel" color="#ffde41" logo="logo-yellow"/>
+    <area name="devel" color="#ffe97f" logo="logo-yellow"/>
   </xsl:variable>
   
   <xsl:template match="packages|classdoc|document">
