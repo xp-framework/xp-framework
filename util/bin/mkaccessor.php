@@ -13,6 +13,8 @@
   while (!$stdin->eof()) {
     $str.= $stdin->read();
   }
+  
+  echo $str."\n";
 
   $t= strtok($str, "\r\n");
   do {
@@ -65,8 +67,8 @@
      * @access  public
      * @param   %4\$s%3\$s
      */
-    function set%1\$s(\$%4\$s%2\$s) {
-      \$this->%2\$s= \$%4\$s%2\$s;
+    function set%1\$s(%4\$s\$%2\$s) {
+      \$this->%2\$s= %4\$s\$%2\$s;
     }
 
     /**
