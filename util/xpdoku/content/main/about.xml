@@ -382,8 +382,10 @@ Exception io.IOException (Cannot open /file_does_not_exist.txt mode rb)
             <li><pre>bool xp::errorAt(string file [, int line])</pre>
                 Returns whether an error occured at the specified position
             </li>
-            <li><pre>void xp::sapi(string name)</pre>
-                Sets an SAPI.
+            <li><pre>void xp::sapi(string name [, string sapi [, ... ]])</pre>
+                Sets one or more SAPIs.
+                <code><![CDATA[  // Loads the CGI sapi and the 4.2.x compatibility
+  xp::sapi('cgi', 'compat.version4_2');]]></code>
             </li>
           </ul>
         </text>
