@@ -229,7 +229,7 @@
       if (!isset($this->_data[$section][$key])) return $default;
       
       list($min, $max)= explode('..', $this->_data[$section][$key]);
-      return range($min, $max);
+      return range((int)$min, (int)$max);
     }
     
     /**
