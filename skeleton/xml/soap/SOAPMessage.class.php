@@ -64,7 +64,7 @@
      * @param   
      * @return  
      */    
-    function _recurseData(&$node, $names= FALSE) {
+    function _recurseData(&$node, $names= FALSE, $context= NULL) {
       $results= array();
       if (!empty($node->children)) foreach ($node->children as $child) {
         $idx= $names ? $child->name : sizeof($results);
@@ -78,7 +78,7 @@
         }
         
         // Typenabhängig
-        if (!isset( $child->attribute['xsi:type']) || !preg_match(
+        if (!isset($child->attribute['xsi:type']) || !preg_match(
           '#^([^:]+):([^\[]+)(\[[0-9+]\])?$#', 
           $child->attribute['xsi:type'],
           $regs
@@ -87,35 +87,52 @@
           $regs= array(0, 'xsd', 'string');
         }
         
-        //echo "{$child->name} is {$regs[2]}\n";
+        // DEBUG echo "*** {$child->name} [{$names}, {$context}, {$idx}] is {$regs[2]}\n";
+        // DEBUG echo $child->getSource(0);
+        
         switch ($regs[2]) {
           case 'Array':
-            $results[$idx]= $this->_recurseData($child);
+          case 'Vector':
+            $results[$idx]= $this->_recurseData($child, FALSE, 'ARRAY');
             break;
    
           case 'SOAPStruct':
           case 'struct':      
           case 'ur-type':
             if ($regs[1]== 'xsd') {
-              $results[$idx]= $this->_recurseData($child, TRUE);
+              $results[$idx]= $this->_recurseData($child, TRUE, 'HASHMAP');
               break;
             }
-            $results[$idx]= new StdClass();
-            $ret= $this->_recurseData($child, TRUE);
-            foreach ($ret as $key=> $val) {
+            $results[$idx]= &new stdClass();
+            foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
               $results[$idx]->$key= $val;
             }
             break;
-            
+          
           default:
             if (!empty($child->children)) {
-              $results[$idx]= $this->_recurseData($child, TRUE);
+              if ($regs[1]== 'xsd') {
+                $results[$idx]= $this->_recurseData($child, TRUE, 'STRUCT');
+                break;
+              }
+              $results[$idx]= &new stdClass();
+              foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key=> $val) {
+                $results[$idx]->$key= $val;
+              }
               break;
             }
-            $results[$idx]= $child->getContent($this->encoding);
 
+            $results[$idx]= $child->getContent($this->encoding);
         }
+        
+        /* HACK */
+        if ($context == NULL and $child->name != 'item') {
+          $results[$idx]= &new SOAPNamedItem($child->name, $results[$idx]);
+        }
+
       }
+      
+      // DEBUG var_dump($results);
       return $results;
     }
 
@@ -146,9 +163,10 @@
      * @return  
      */
     function getFault() {
+      //echo "+++ SOAPMessage::getFault\n";
       if ($this->root->children[0]->children[0]->name != 'SOAP-ENV:Fault') return NULL;
       
-      list($return)= $this->_recurseData($this->root->children[0]);
+      list($return)= $this->_recurseData($this->root->children[0], FALSE, 'OBJECT');
       return new SOAPFault(array(
         'faultcode'      => $return['faultcode'],
         'faultstring'    => $return['faultstring'],
@@ -164,11 +182,12 @@
      * @param   
      * @return  
      */
-    function getData() {
+    function getData($context= 'ENUM') {
       foreach ($this->root->attribute as $key=> $val) { // Namespace suchen
         if ($val == $this->action) $this->namespace= substr($key, strlen('xmlns:'));
       }
-      $return= $this->_recurseData($this->root->children[0]->children[0]);
+      
+      $return= $this->_recurseData($this->root->children[0]->children[0], FALSE, $context);
       return $return;
     }
   }

@@ -29,7 +29,7 @@
     function _typeName($content) {
       $t= gettype($content);
       if (isset($this->_tmap->export[$t])) $t= $this->_tmap->export[$t];
-      return $t;
+      return 'xsd:'.$t;
     }
     
     function _contentFormat($content) {
@@ -74,7 +74,7 @@
       } 
       return $ret;
     }
-      
+    
     function _recurseArray(&$elem, $arr) {
       static $ns;
       
@@ -88,60 +88,67 @@
         $child= &$elem->addChild(new $nodeType(array(
           'name'        => (is_numeric($field) ? preg_replace('=s$=', '', $elem->name) : $field)
         )));
+        unset($type);
         
-        // Arrays
-        if (is_array($value)) {
-          $this->_recurseArray($child, $value);
-          if (is_numeric(key($value))) {
-            $child->attribute['xsi:type']= 'SOAP-ENC:Array';
-            $child->attribute['SOAP-ENC:arrayType']= 'xsd:anyType['.sizeof($value).']';
-          } else {
-            $child->attribute['xsi:type']= 'xsd:ur-type';
-          }
-          continue;
-        }
+        if (is_a($value, 'Date')) {
         
-        // Datumstypen
-        if (
-          (is_object($value)) && 
-          (is_a($value, 'Date'))
-        ) {
-          $value= new SOAPDateTime($value->_utime);
-        }
-        
-        // SOAP-Typen
-        if (
+          // Date-Typen
+          $value= &new SOAPDateTime($value->_utime);
+        } else if (
           (is_object($value)) && 
           ('soap' == substr(get_class($value), 0, 4))
-        ) {
-        
+        ) {       
+          // SOAP-Typen
+          
           // Namen
           if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
+          
+          if (isset($value->item)) $child= $value->item;
           
           // Inhalt und Typen
           $content= $value->toString();
           $type= $value->getType();
-          if (NULL === ($type)) {
+          if (NULL === $type) {
             $type= $child->_typeName($content);
             $content= $child->_contentFormat($content);
           }
-          $child->attribute['xsi:type']= 'xsd:'.$type;
-          $child->setContent($content);
-          continue;
-        }
+        } else if (is_object($value)) {
         
-        // Andere Objekte 
-        if (is_object($value)) {
-          $this->_recurseArray($child, get_object_vars($value));
+          // Objekte
+          $content= get_object_vars($value);
           $ns++;
-          $child->attribute['xsi:type']= 'ns'.$ns.':struct';
+          $type= 'ns'.$ns.':struct';
           $child->attribute['xmlns:ns'.$ns]= get_class($value);
+        } else if (is_scalar($value)) {
+        
+          // Skalare Typen
+          $type= 'xsd:'.$child->_typeName($value);
+          $content= $child->_contentFormat($value);
+        } else {
+        
+          // Arrays
+          $content= &$value;
+        }
+
+        // Arrays
+        if (is_array($content)) {
+          $this->_recurseArray($child, $content);
+          if (isset($type)) {
+            $child->attribute['xsi:type']= $type;
+          } else {
+            if (is_numeric(key($value))) {
+              $child->attribute['xsi:type']= 'SOAP-ENC:Array';
+              $child->attribute['SOAP-ENC:arrayType']= 'xsd:anyType['.sizeof($value).']';
+            } else {
+              $child->attribute['xsi:type']= 'xsd:ur-type';
+            }
+          }
           continue;
         }
-        
+
         // Skalare Datentypen
-        $child->attribute['xsi:type']= 'xsd:'.$child->_typeName($value);
-        $child->setContent($child->_contentFormat($value));
+        $child->attribute['xsi:type']= $type;
+        $child->setContent($content);
       }
     }
 

@@ -73,7 +73,8 @@
       
       $params= func_get_args();
     
-      $this->message= new SOAPMessage();
+      $this->answer= &new SOAPMessage();
+      $this->message= &new SOAPMessage();
       $this->message->create($this->action, $this->method);
       $this->message->setData($params);
 
@@ -81,7 +82,7 @@
       if (FALSE === $this->transport->send($this->message)) return FALSE;
       
       // Antwort erhalten
-      $this->answer= $this->transport->retreive();
+      $this->answer= &$this->transport->retreive();
       
       // Daten unserialisieren und zurückgeben
       return is_a($this->answer, 'SOAPMessage') ? $this->answer->getData() : FALSE;

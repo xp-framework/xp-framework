@@ -98,8 +98,8 @@
       // Nach Fault checken
       if (intval($this->_conn->response->HTTPstatus) != 200) {
         if (NULL !== ($fault= $answer->getFault())) {
-          throw(new SOAPFaultException($fault));
-          return $answer;
+          //echo '---SOAPHTTPTransport::retreive$fault'; var_dump($fault);
+          return throw(new SOAPFaultException($fault));
         } else {
           return throw(new Exception($this->response->HTTPmessage));
         }
