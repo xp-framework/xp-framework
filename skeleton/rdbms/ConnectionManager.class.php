@@ -113,7 +113,11 @@
       if (sizeof($results) < 1) {
         return throw(new ElementNotFoundException('no connections registered for '.$hostName));
       }
-      return ($num < 0) ? $results : $results[$num];
+      
+      if ($num < 0) {
+        return $results;
+      }
+      return $results[$num];
     }
   }
 ?>
