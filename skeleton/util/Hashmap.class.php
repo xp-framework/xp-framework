@@ -26,7 +26,8 @@
    * @purpose  Associative array wrapper class
    */
   class Hashmap extends Object {
-    var $_hash= array();
+    var 
+      $_hash= array();
 
     /**
      * Constructor
@@ -328,21 +329,14 @@
      * @access  public
      * @param   &util.Hashmap hashmap to compare with
      * @return  boolean isequal
+     * @throws  lang.IllegalArgumentException in case cmp is not a Hashmap
      */
     function isEqual(&$cmp) {
-      if (!is('util.Hashmap', $cmp))
+      if (!is('util.Hashmap', $cmp)) {
         return throw(new IllegalArgumentException('Argument is not a util.Hashmap'));
-      
-      for ($i= &$this->iterator(); $i->hasNext(); ) {
-        $idx= $i->next();
-        
-        if (!$cmp->containsKey($idx) || !($cmp->get($idx) === $this->get($idx)))
-          return FALSE;
       }
-      
-      // All elements contained in this hashmap contain the same values,
-      // now if both have the same number of entries, both have the same contents.
-      return ($this->size() == $cmp->size());
+        
+      return ($this->_hash === $cmp->_hash);
     }
     
     /**
