@@ -43,7 +43,7 @@
       unset($this->error);
       if (NULL == $this->parser) $this->_create();
       if (!isset($this->callback) || !is_object($this->callback)) return throw(new IllegalArgumentException(
-        $this->callback.' is not an object'
+        'callback is not an object'
       ));
       
       xml_set_object($this->parser, $this->callback);
