@@ -31,7 +31,7 @@ wird der Kommentar in C-Notation vorgeschlagen:
 
 Dieser Kommentar wird ohne Einrückung direkt hinter das erste <?php geschrieben 
 und erhält genau die obige Form. Die Kurzbeschreibung bleibt bei genau einer Zeile, 
-das CVS-Tag ist vor dem ersten add / commit als $Id$ und nur so zu schreiben.
+das CVS-Tag ist vor dem ersten add / commit als $Id\$ und nur so zu schreiben.
 
 <?php und ?>
 ------------
