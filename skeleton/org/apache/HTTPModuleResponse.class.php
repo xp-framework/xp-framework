@@ -42,6 +42,10 @@
       }
     }
     
+    function sendContent() {
+      echo $this->content;
+    }
+
     /**
      * Gibt den Seiten-Content zurück
      *
