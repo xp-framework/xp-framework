@@ -55,7 +55,10 @@
      * @return  mixed
      */
     function next($field= NULL) {
-      if (FALSE === ($row= pg_fetch_assoc($this->handle))) {
+      if (
+        !is_resource($this->handle) ||
+        FALSE === ($row= pg_fetch_assoc($this->handle))
+      ) {
         return FALSE;
       }
       

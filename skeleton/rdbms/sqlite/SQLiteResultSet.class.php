@@ -55,7 +55,10 @@
      * @return  mixed
      */
     function next($field= NULL) {
-      if (FALSE === ($row= sqlite_fetch_array($this->handle, SQLITE_ASSOC))) {
+      if (
+        !is_resource($this->handle) ||
+        FALSE === ($row= sqlite_fetch_array($this->handle, SQLITE_ASSOC))
+      ) {
         return FALSE;
       }
       

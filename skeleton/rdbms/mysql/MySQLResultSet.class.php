@@ -56,7 +56,10 @@
      * @return  mixed
      */
     function next($field= NULL) {
-      if (FALSE === ($row= mysql_fetch_assoc($this->handle))) {
+      if (
+        !is_resource($this->handle) ||
+        FALSE === ($row= mysql_fetch_assoc($this->handle))
+      ) {
         return FALSE;
       }
       
