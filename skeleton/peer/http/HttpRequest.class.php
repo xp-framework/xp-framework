@@ -93,9 +93,8 @@
     /**
      * Get request string
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string
      */
     function getRequestString() {
       if (is_a($this->parameters, 'RequestData')) {
@@ -159,7 +158,7 @@
         $s->connect();
         $s->write($request);
       } if (catch('Exception', $e)) {
-        $e->message.= ' { Request: '.$request.'}';
+        $e->message.= ' { Request: '.addcslashes($request, "\0..\37!@\177..\377").'}';
         throw($e);
       }
       
