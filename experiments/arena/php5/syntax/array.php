@@ -6,8 +6,11 @@
   
   // {{{ class Test
   class Test {
-    function method() {
-      return [ $this, __FUNCTION__ ];
+    protected
+      $values = [ 6100 ];
+
+    function method($params= [ ]) {
+      return [ __METHOD__, $this->values, $params ];
     }
   }
   
@@ -15,6 +18,9 @@
   $a= [ 1, 2, 3 ];
   $b= [ 'color' => 'green' ];
   var_dump($a, $b);
+  
+  $a[]= 4;
+  var_dump($a[3], $b['color']);
   
   var_dump(call_user_func([ new Test(), 'method' ]));
   // }}}
