@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('img.ImagingException', 'img.Color');
+  uses('img.ImagingException', 'img.Color', 'lang.CloneNotSupportedException');
   
   define('IMG_PALETTE',   0x0000);
   define('IMG_TRUECOLOR', 0x0001);
@@ -66,7 +66,7 @@
         ? imagecreatetruecolor($this->width, $this->height)
         : imagecreate($this->width, $this->height)
       ))) {
-        return throw(new ImagingException('Could not clone the image'));
+        return throw(new CloneNotSupportedException('Could not clone the image'));
       }
       imagecopy($handle, $this->handle, 0, 0, 0, 0, $this->width, $this->height);
       $this->handle= $handle;
