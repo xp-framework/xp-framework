@@ -6,7 +6,7 @@
  
   // HTTP status codes
   define('HTTP_CONTINUE',                          100);
-  define('HTTP_SWITCHING PROTOCOLS',               101);
+  define('HTTP_SWITCHING_PROTOCOLS',               101);
   define('HTTP_PROCESSING',                        102);
   define('HTTP_OK',                                200);
   define('HTTP_CREATED',                           201);
@@ -30,15 +30,15 @@
   define('HTTP_NOT_FOUND',                         404);
   define('HTTP_METHOD_NOT_ALLOWED',                405);
   define('HTTP_NOT_ACCEPTABLE',                    406);
-  define('HTTP_PROXY_AUTHENTICATION REQUIRED',     407);
+  define('HTTP_PROXY_AUTHENTICATION_REQUIRED',     407);
   define('HTTP_REQUEST_TIME_OUT',                  408);
   define('HTTP_CONFLICT',                          409);
   define('HTTP_GONE',                              410);
   define('HTTP_LENGTH_REQUIRED',                   411);
-  define('HTTP_PRECONDITION FAILED',               412);
+  define('HTTP_PRECONDITION_FAILED',               412);
   define('HTTP_REQUEST_ENTITY_TOO_LARGE',          413);
   define('HTTP_REQUEST_URI_TOO_LARGE',             414);
-  define('HTTP_UNSUPPORTED_MEDIA TYPE',            415);
+  define('HTTP_UNSUPPORTED_MEDIA_TYPE',            415);
   define('HTTP_REQUESTED_RANGE_NOT_SATISFIABLE',   416);
   define('HTTP_EXPECTATION_FAILED',                417);
   define('HTTP_UNPROCESSABLE_ENTITY',              422);
@@ -47,9 +47,9 @@
   define('HTTP_INTERNAL_SERVER_ERROR',             500);
   define('HTTP_METHOD_NOT_IMPLEMENTED',            501);
   define('HTTP_BAD_GATEWAY',                       502);
-  define('HTTP_SERVICE TEMPORARILY UNAVAILABLE',   503);
-  define('HTTP_GATEWAY TIME_OUT',                  504);
-  define('HTTP_HTTP VERSION_NOT SUPPORTED',        505);
+  define('HTTP_SERVICE_TEMPORARILY_UNAVAILABLE',   503);
+  define('HTTP_GATEWAY_TIME_OUT',                  504);
+  define('HTTP_HTTP_VERSION_NOT_SUPPORTED',        505);
   define('HTTP_VARIANT_ALSO_NEGOTIATES',           506);
   define('HTTP_INSUFFICIENT_STORAGE',              507);
   define('HTTP_NOT_EXTENDED',                      510);
@@ -61,7 +61,8 @@
    * An instance of this object is passed to the do* methods by
    * the <pre>process</pre> method.
    *
-   * @see org.apache.HttpScriptlet
+   * @see      xp://org.apache.HttpScriptlet
+   * @purpose  Provide a way to access the HTTP response
    */  
   class HttpScriptletResponse extends Object {
     var
