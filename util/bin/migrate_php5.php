@@ -229,12 +229,14 @@ __;
   try(); {
     $f->open(FILE_MODE_WRITE);
     $f->write($header);
-    if ($uses) {
-      $f->write("uses(\n  ".implode(",\n  ", $uses)."\n);\n\n");
+    switch (sizeof($uses)) {
+      case 0: break;
+      case 1: $f->write('uses('.$uses[0].")\n\n"); break;
+      default: $f->write("uses(\n  ".implode(",\n  ", $uses)."\n);\n\n");
     }
     $f->write('namespace '.$namespace." {\n\n  ");
     $f->write(str_replace('= &', '= ', trim(chop(implode('', $out)))));
-    $f->write("\n}\n?>");
+    $f->write("\n}\n?>\n");
     $f->close();
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
