@@ -154,6 +154,7 @@
         'unknown user'           => DAEMON_LOCALPART,
         'Quota'                  => DAEMON_QUOTA,
         'relaying'               => DAEMON_RELAYING,
+        'Relay access denied'    => DAEMON_RELAYING,
         'no route to host'       => DAEMON_NOROUTE,
         'Cannot route'           => DAEMON_UNROUTEABLE,
         'unrouteable'            => DAEMON_UNROUTEABLE,
@@ -618,12 +619,12 @@
               # var_dump('QMAIL', $message->headers, $t);
               $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_QMAIL;
               
-              // Find first empty line
+              // Find first line starting with <
               do { 
-                if ('' == chop($t)) break;
+                if ('<' == $t{0}) break;
               } while ($t= strtok("\n"));
               
-              $daemonmessage->setFailedRecipient(InternetAddress::fromString(substr(chop(strtok("\n")), 0, -1)));
+              $daemonmessage->setFailedRecipient(InternetAddress::fromString(substr(chop($t), 0, -1)));
               
               // Find line beginning with ---
               do { 
