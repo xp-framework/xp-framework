@@ -21,14 +21,14 @@ use constant WNOHINT    => "WNOHINT";
 
 %LINK = (
   # Errors
-  ETAB        => "http://xp-framework.net/content/about.coding.html#5",
-  EINDENT     => "http://xp-framework.net/content/about.coding.html#5",
-  ECOMMENT    => "http://xp-framework.net/content/about.coding.html#9",
-  ENOHEADER   => "http://xp-framework.net/content/about.coding.html#2",
-  ESHORTOPEN  => "http://xp-framework.net/content/about.coding.html#3",
+  ETAB        => "http://xp-framework.net/devel/coding.html#5",
+  EINDENT     => "http://xp-framework.net/devel/coding.html#5",
+  ECOMMENT    => "http://xp-framework.net/devel/coding.html#9",
+  ENOHEADER   => "http://xp-framework.net/devel/coding.html#2",
+  ESHORTOPEN  => "http://xp-framework.net/devel/coding.html#3",
 
   # Warnings
-  WTBD        => "http://xp-framework.net/content/about.coding.html#13",
+  WTBD        => "http://xp-framework.net/devel/coding.html#13",
   WOUTPUT     => "n/a",
   WNOHINT     => "n/a",
 );
