@@ -4,7 +4,6 @@ EXE='php'
 IFS=
 
 echo "<?php
-  var_dump(get_loaded_extensions());
   require('lang.base.php');
   uses('util.cmd.ParamString');
   
