@@ -10,8 +10,12 @@
   <xsl:include href="xsl-helper.xsl"/>
   
   <xsl:template name="navigation">
-    <b>See also</b>
-    <br/>
+    Browse the class API documentation online.
+    <br/><br/>
+
+    <xsl:call-template name="nav-divider">
+      <xsl:with-param name="caption">See also</xsl:with-param>
+    </xsl:call-template>
     <ul class="nav">
       <li><a href="inheritance.html">Inheritance Tree</a></li>
       <li><a href="/content/about.doc.html">Class documentation howto</a></li>
