@@ -7,9 +7,8 @@
   /**
    * Connection listener
    *
-   * @model    abstract
    * @see      xp://peer.irc.IRCConnection#addListener
-   * @purpose  Abstract base class
+   * @purpose  Base class
    */
   abstract class IRCConnectionListener extends Object {
 
@@ -23,25 +22,23 @@
      * other action having taken place (e.g., maintenance, reload config,
      * ...)
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string data
      */
-    public abstract function onPings(IRCConnection $connection, $data);
+    public function onPings(IRCConnection $connection, $data) { }
 
     /**
      * Callback for when a connection to the IRC server has been 
      * established. This method is called *after* a connecting was
      * successful.
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string server
      * @param   int port
      */
-    public abstract function onConnect(IRCConnection $connection, $server, $port);
+    public function onConnect(IRCConnection $connection, $server, $port) { }
 
     /**
      * Callback for when a connection to the IRC server has been 
@@ -49,54 +46,49 @@
      * dropped; thus making it possible to say goodbye. You cannot do
      * anything to prevent disconnection, though.
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string server
      * @param   int port
      */
-    public abstract function onDisconnect(IRCConnection $connection, $server, $port);
+    public function onDisconnect(IRCConnection $connection, $server, $port) { }
     
     /**
      * Callback for server message MOTDSTART (375)
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string server
      * @param   string target whom the message is for
      * @param   string data
      */
-    public abstract function onMOTDStart(IRCConnection $connection, $server, $target, $data);
+    public function onMOTDStart(IRCConnection $connection, $server, $target, $data) { }
 
     /**
      * Callback for server message MOTD (372)
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string server
      * @param   string target whom the message is for
      * @param   string data
      */
-    public abstract function onMOTD(IRCConnection $connection, $server, $target, $data);
+    public function onMOTD(IRCConnection $connection, $server, $target, $data) { }
 
     /**
      * Callback for server message REPLY_ENDOFMOTD (376)
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string server
      * @param   string target whom the message is for
      * @param   string data
      */
-    public abstract function onEndOfMOTD(IRCConnection $connection, $server, $target, $data);
+    public function onEndOfMOTD(IRCConnection $connection, $server, $target, $data) { }
     
     /**
      * Callback for all other server messages
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string server
@@ -104,7 +96,7 @@
      * @param   string target whom the message is for
      * @param   string data
      */
-    public abstract function onServerMessage(IRCConnection $connection, $server, $code, $target, $data);
+    public function onServerMessage(IRCConnection $connection, $server, $code, $target, $data) { }
 
     /**
      * Callback for invitations. Note: Due to the limitations of the INVITE
@@ -113,17 +105,16 @@
      *
      * Example: Join if we're invited:
      * <code>
-     *   $connection->join($channel);
+     *   $connection->join($channel) { }
      * </code>
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick sending the invitation
      * @param   string who who is invited
      * @param   string channel invitation is for
      */
-    public abstract function onInvite(IRCConnection $connection, $nick, $who, $channel);
+    public function onInvite(IRCConnection $connection, $nick, $who, $channel) { }
 
     /**
      * Callback for kicks
@@ -135,7 +126,6 @@
      *   }
      * </code>
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string channel the channel the user was kicked from
@@ -143,31 +133,29 @@
      * @param   string who who was kicked
      * @param   string reason what reason the user was kicked for
      */
-    public abstract function onKicks(IRCConnection $connection, $channel, $nick, $who, $reason);
+    public function onKicks(IRCConnection $connection, $channel, $nick, $who, $reason) { }
 
     /**
      * Callback for quits
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string channel the channel the user quit from
      * @param   string nick who quit
      * @param   string reason what reason the user supplied for quitting
      */
-    public abstract function onQuits(IRCConnection $connection, $channel, $nick, $reason);
+    public function onQuits(IRCConnection $connection, $channel, $nick, $reason) { }
 
     /**
      * Callback for nick changes
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string channel
      * @param   string nick the old nick
      * @param   string new the new nick
      */
-    public abstract function onNickChanges(IRCConnection $connection, $channel, $nick, $new);
+    public function onNickChanges(IRCConnection $connection, $channel, $nick, $new) { }
 
     /**
      * Callback for joins
@@ -175,36 +163,33 @@
      * Example (welcome users)
      * <code>
      *   // Send it to the channel so everybody knows
-     *   $connection->sendMessage($channel, 'Welcome %s', $nick);
+     *   $connection->sendMessage($channel, 'Welcome %s', $nick) { }
      *
      *   // Send it to the joinee privately
-     *   $connection->sendMessage($nick, 'Welcome!');
+     *   $connection->sendMessage($nick, 'Welcome!') { }
      * </code>
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string channel which channel was joined
      * @param   string nick who joined
      */
-    public abstract function onJoins(IRCConnection $connection, $channel, $nick);
+    public function onJoins(IRCConnection $connection, $channel, $nick) { }
 
     /**
      * Callback for parts
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string channel which channel was part
      * @param   string nick who part
      * @param   string message the part message, if any
      */
-    public abstract function onParts(IRCConnection $connection, $channel, $nick, $message);
+    public function onParts(IRCConnection $connection, $channel, $nick, $message) { }
     
     /**
      * Callback for mode changes
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick who initiated the mode change
@@ -212,7 +197,7 @@
      * @param   string mode the mode including a + or - as its first letter
      * @param   string params additional parameters
      */
-    public abstract function onModeChanges(IRCConnection $connection, $nick, $target, $mode, $params);
+    public function onModeChanges(IRCConnection $connection, $nick, $target, $mode, $params) { }
   
     /**
      * Callback for private messages
@@ -227,38 +212,35 @@
      *   }
      * </code>
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick
      * @param   string target
      * @param   string message
      */
-    public abstract function onPrivateMessage(IRCConnection $connection, $nick, $target, $message);
+    public function onPrivateMessage(IRCConnection $connection, $nick, $target, $message) { }
 
     /**
      * Callback for topic changes
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick who changed the topic
      * @param   string channel what channel the topic was changed for
      * @param   string topic the new topic
      */
-    public abstract function onTopic(IRCConnection $connection, $nick, $channel, $topic);
+    public function onTopic(IRCConnection $connection, $nick, $channel, $topic) { }
 
     /**
      * Callback for notices
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick
      * @param   string target
      * @param   string message
      */
-    public abstract function onNotice(IRCConnection $connection, $nick, $target, $message);
+    public function onNotice(IRCConnection $connection, $nick, $target, $message) { }
 
     /**
      * Callback for actions. Actions are when somebody writes /me ...
@@ -266,89 +248,82 @@
      *
      * Example (annoying:)):
      * <code>
-     *   $connection->sendAction($target, 'imitates %s and %s, too', $nick, $params);
+     *   $connection->sendAction($target, 'imitates %s and %s, too', $nick, $params) { }
      * </code>
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick who initiated the action
      * @param   string target where action was initiated
      * @param   string action what actually happened (e.g. "looks around")
      */
-    public abstract function onAction(IRCConnection $connection, $nick, $target, $action);
+    public function onAction(IRCConnection $connection, $nick, $target, $action) { }
 
     /**
      * Callback for CTCP VERSION
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick nick requesting version
      * @param   string target where version was requested
      * @param   string params additional parameters
      */
-    public abstract function onVersion(IRCConnection $connection, $nick, $target, $params);
+    public function onVersion(IRCConnection $connection, $nick, $target, $params) { }
 
     /**
      * Callback for CTCP USERINFO
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick nick requesting user information
      * @param   string target where user information was requested
      * @param   string params additional parameters
      */
-    public abstract function onUserInfo(IRCConnection $connection, $nick, $target, $params);
+    public function onUserInfo(IRCConnection $connection, $nick, $target, $params) { }
 
     /**
      * Callback for CTCP CLIENTINFO
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick nick requesting client information
      * @param   string target where client information was requested
      * @param   string params additional parameters
      */
-    public abstract function onClientInfo(IRCConnection $connection, $nick, $target, $params);
+    public function onClientInfo(IRCConnection $connection, $nick, $target, $params) { }
 
     /**
      * Callback for CTCP PING
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick nick requesting ping
      * @param   string target where ping was requested
      * @param   string params additional parameters
      */
-    public abstract function onPing(IRCConnection $connection, $nick, $target, $params);
+    public function onPing(IRCConnection $connection, $nick, $target, $params) { }
 
     /**
      * Callback for CTCP TIME
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick nick requesting time
      * @param   string target where time was requested
      * @param   string params additional parameters
      */
-    public abstract function onTime(IRCConnection $connection, $nick, $target, $params);
+    public function onTime(IRCConnection $connection, $nick, $target, $params) { }
 
     /**
      * Callback for CTCP FINGER
      *
-     * @model   abstract
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick nick requesting finger information
      * @param   string target where finger information was requested
      * @param   string params additional parameters
      */
-    public abstract function onFinger(IRCConnection $connection, $nick, $target, $params);
+    public function onFinger(IRCConnection $connection, $nick, $target, $params) { }
   
   }
 ?>
