@@ -46,8 +46,9 @@
   } else {
 
     // Retrieve constructor
-    $constructor= &$class->getConstructor();
-    $decl= &$constructor->getDeclaringClass();
+    if ($constructor= &$class->getConstructor()) {
+      $decl= &$constructor->getDeclaringClass();
+    }
     
     // Retrieve implemented interfaces
     $implements= '';
@@ -60,7 +61,7 @@
   
     Console::writef(
       "Class '%s' (extends %s) %s\n".
-      "* Constructor: %s declared in %s\n".
+      "* Constructor: %s\n".
       "* Methods:\n%s\n".
       "* Fields:\n  - \$%s\n\n".
       "* Has method 'toString': %s\n\n".
@@ -68,8 +69,10 @@
       $class->getName(),
       $parent ? $parent->getName() : '(n/a)',
       $implements ? 'implements '.substr($implements, 2) : '',
-      $constructor->toString(),
-      $decl->getName(),
+      ($constructor
+        ? $constructor->toString().' declared in '.$decl->getName()
+        : '(none)'
+      ),
       $methods,
       implode("\n  - \$", array_keys($class->getFields())),
       var_export($class->hasMethod('toString'), 1),
