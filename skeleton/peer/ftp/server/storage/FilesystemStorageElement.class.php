@@ -126,7 +126,7 @@
      * @param   int permissions
      */  
     function setPermissions($permissions) { 
-      chmod($this->f->getURI(), $permissions);
+      chmod($this->f->getURI(), intval((string)$permissions, 8));
       $this->st['mode']= $permissions;
     }
 
