@@ -268,14 +268,17 @@
     }
     
     /**
-     * Retrieves the data of the file at a specific revision
+     * Retrieves the data of the file at a specific revision.
+     * If no revision is given, this fetches HEAD.
      *
      * @access  public
-     * @param   string revision
+     * @param   string revision default NULL 
      * @return  string contents
      */    
-    function getRevision($rev) {
-      $data= $this->_execute (sprintf ('update -p -r %s', $rev));
+    function getRevision($rev= NULL) {
+      $data= $this->_execute (sprintf ('update -p %s', 
+        NULL !== $rev : '-r '.$rev : ''
+      ));
       if (!count ($data))
         return FALSE;
 
