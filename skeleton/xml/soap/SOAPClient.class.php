@@ -41,7 +41,7 @@
     function __construct(&$transport, $action, $targetNamespace= NULL) {
       $this->transport= &$transport;
       $this->action= $action;
-      $this->targetNamespace= $namespace;
+      $this->targetNamespace= $targetNamespace;
     }
 
     /**
