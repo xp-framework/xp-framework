@@ -301,8 +301,8 @@
   
   <xsl:template name="functionname">
     <tr>
-      <td><xsl:value-of select="./return/type"/></td>
-      <td><a href="#{name()}"><xsl:value-of select="name()"/></a>
+      <td valign="top"><xsl:value-of select="./return/type"/></td>
+      <td valign="top"><a href="#{name()}"><xsl:value-of select="name()"/></a>
         (<xsl:for-each select="./params/param">
           <xsl:value-of select="./type"/><xsl:text> </xsl:text>
           <xsl:value-of select="./name"/>
