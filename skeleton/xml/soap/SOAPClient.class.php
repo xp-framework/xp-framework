@@ -99,6 +99,7 @@
      * @return  bool success
      */
     function __call($name, &$args, &$return) {
+      array_unshift($args, $name);
       $return= &call_user_func_array(array($this, 'invoke'), $args);
       return TRUE;
     }
