@@ -68,7 +68,6 @@
       $this->dateformat= $dateformat;
       $this->flags= $flags;
       $this->_appenders= array();
-      
     }
 
     /**
@@ -146,6 +145,16 @@
     public function addAppender(LogAppender $appender, $flag= LOGGER_FLAG_ALL) {
       $this->_appenders[$flag][]= $appender;
       return $appender;
+    }
+    
+    /**
+     * Retrieves whether this log category has appenders
+     *
+     * @access  public
+     * @return  bool
+     */
+    public function hasAppenders() {
+      return !empty($this->_appenders);
     }
 
     /**
