@@ -5,15 +5,20 @@
  */
 
   // {{{ final class xp
-  class xp {
+  final class xp {
+    public static 
+      $errors   = array(),
+      $classes  = array(),
+      $sapi     = array(),
+      $null     = NULL;
   
     // {{{ public string nameOf(string name)
     //     Returns the fully qualified name
     function nameOf($name) {
-      if (!($n= xp::registry('class.'.$name))) {
+      if (!isset(xp::$classes[$name])) {
         return 'php.'.$name;
       }
-      return $n;
+      return xp::$classes[$name];
     }
     // }}}
 
@@ -27,25 +32,24 @@
     // {{{ public void gc()
     //     Runs the garbage collector
     function gc() {
-      xp::registry('errors', array());
+      xp::$errors= array();
     }
     // }}}
 
     // {{{ public bool errorAt(string file [, int line)
     //     Returns whether an error occured at the specified position
     function errorAt($file, $line= -1) {
-      $errors= &xp::registry('errors');
-      
+
       // If no line is requested, this is O(n)
-      if ($line < 0) return !empty($errors[$file]);
+      if ($line < 0) return !empty(xp::$errors[$file]);
       
       // Else, we'll have to search...
-      if (isset($errors[$file])) for (
-        $i= 0, $s= sizeof($errors[$file]); 
+      if (isset(xp::$errors[$file])) for (
+        $i= 0, $s= sizeof(xp::$errors[$file]); 
         $i < $s; 
         $i++
       ) {
-        if ($line == $errors[$file][$i]['line']) return TRUE;
+        if ($line == xp::$errors[$file][$i]['line']) return TRUE;
       }
       
       return FALSE;
@@ -58,20 +62,7 @@
       foreach ($a= func_get_args() as $name) {
         require_once('sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php');
       }
-      xp::registry('sapi', $a);
-    }
-    // }}}
-    
-    // {{{ internal mixed registry(mixed args*)
-    //     Stores static data
-    function &registry() {
-      static $registry= array();
-      
-      switch (func_num_args()) {
-        case 0: return $registry;
-        case 1: return $registry[func_get_arg(0)];
-        case 2: $registry[func_get_arg(0)]= func_get_arg(1); break;
-      }
+      xp::$sapi= $a;
     }
     // }}}
     
@@ -93,7 +84,7 @@
   // }}}
 
   // {{{ final class null
-  class null {
+  final class null {
 
     // {{{ public object null(void)
     //     Constructor to avoid magic __call invokation
@@ -128,9 +119,7 @@
   function __error($code, $msg, $file, $line) {
     if (0 == error_reporting()) return;
 
-    $errors= &xp::registry('errors');
-    $errors[$file][]= array($code, $msg, $line);
-    xp::registry('errors', $errors);
+    xp::$errors[$file][]= array($code, $msg, $line);
   }
   // }}}
 
@@ -150,7 +139,7 @@
         strtr($str, '.', DIRECTORY_SEPARATOR).
         '.class.php'
       );
-      xp::registry('class.'.xp::reflect($str), $str);
+      xp::$classes[xp::reflect($str)]= $str;
     }
     return $result;
   }
@@ -204,18 +193,17 @@
   }
   // }}}
 
-  // {{{ proto bool is(string class, &lang.Object object)
+  // {{{ proto bool is(string class, lang.Object object)
   //     Checks whether a given object is of the class, a subclass or implements an interface
-  function is($class, &$object) {
+  function is($class, $object) {
     return is_a($object, xp::reflect($class));
   }
   // }}}
 
-  // {{{ proto void delete(&lang.Object object)
+  // {{{ proto void delete(lang.Object object)
   //     Destroys an object
-  function delete(&$object) {
-    $object->__destruct();
-    unset($object);
+  function delete($object) {
+    $object= NULL;
   }
   // }}}
 
@@ -230,8 +218,7 @@
   ));
   ini_set('include_path', SKELETON_PATH.PATH_SEPARATOR.ini_get('include_path'));
   register_shutdown_function('__destroy');
-  xp::registry('null', new null());
-  xp::registry('errors', array());
+  xp::$null= new null();
   set_error_handler('__error');
 
   uses(
