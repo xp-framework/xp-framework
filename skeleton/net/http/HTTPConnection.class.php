@@ -182,7 +182,7 @@
         (TRANSFER_ENCODING_CHUNKED == $this->response->encoding) &&
         (preg_match('/^([0-9a-fA-F]+)(( ;.*)| )?\r\n$/', $answer, $regs))
       ) {
-        printf("---> CHUNKED %s [%s]\n", urlencode($answer), chop($regs[0]));
+        // printf("---> CHUNKED %s [%s]\n", urlencode($answer), chop($regs[0]));
         return $this->getResponse();
       }
 
