@@ -59,5 +59,16 @@
 
       return throw(new FormatException('Unexpected result: '.addcslashes(pack('d', 1), "\0..\17")));
     }
+    
+    /**
+     * Returns the network byte order.
+     *
+     * @access  static
+     * @return  int network byte order
+     * @see     http://www.hyperdictionary.com/computing/network+byte+order
+     */
+    function networkOrder() {
+      return BIG_ENDIAN;
+    }
   }
 ?>
