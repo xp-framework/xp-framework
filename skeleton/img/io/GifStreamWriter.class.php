@@ -24,7 +24,7 @@
      * @return  bool
      */    
     function output($handle) {
-      return imagepng($handle);
+      return imagegif($handle);
     }
   }
 ?>
