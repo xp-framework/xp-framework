@@ -9,7 +9,7 @@
   /**
    * Context resource for pager
    *
-   * @see      reference
+   * @see      xp://org.apache.xml.workflow.handles.PagerHandler
    * @purpose  ContextResource for PagerHandler
    */
   class PagerContextResource extends ContextResource {
@@ -39,88 +39,76 @@
     }
       
     /**
-     * (Insert method's description here)
+     * Set this pager to the beginning
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function showFirst() {
       $this->begin= 0;
     }
 
     /**
-     * (Insert method's description here)
+     * Set this pager to the end
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function showLast() {
       $this->begin= max($this->count - $this->interval, 0);
     }
 
     /**
-     * (Insert method's description here)
+     * Set this pager to the next
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function showNext() {
       $this->begin= max($this->begin + $this->interval, $this->count - $this->interval);
     }
 
     /**
-     * (Insert method's description here)
+     * Set this pager to the previous
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function showPrevious() {
       $this->begin= max($this->begin - $this->interval, 0);
     }
     
     /**
-     * (Insert method's description here)
+     * Get beginning
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  int
      */
     function getShowFrom() {
       return $this->begin;
     }
 
     /**
-     * (Insert method's description here)
+     * Set this pager's beginning to a specified value
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   int from
      */
     function setShowFrom($from) {
       $this->begin= $from;
     }
     
     /**
-     * (Insert method's description here)
+     * Get end
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  int
      */
     function getShowTo() {
       return max($this->begin + $this->interval, $this->count);
     }
     
     /**
-     * (Insert method's description here)
+     * Set items
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &array values
      */
     function setItems(&$values) {
       $this->values= &$values;
@@ -128,42 +116,42 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Check whether this pager has values
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  bool TRUE if there is at least one value in the values list
      */
     function hasItems() {
       return !empty($this->values);
     }
     
     /**
-     * (Insert method's description here)
+     * Callback for when this pager needs updating
      *
      * @model   abstract
      * @access  public
-     * @return  
      */
     function update() { }
     
     /**
-     * (Insert method's description here)
+     * Insert status
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &xml.Node elem
      */
     function insertStatus(&$elem) {
+      if (!$this->hasItems()) $this->update();
+      
       for ($i= $this->getShowFrom(), $to= $this->getShowTo(); $i < $to; $i++) {
         switch (gettype($this->values[$i])) {
           case 'object':
-            $elem->addFormResult(Node::fromObject($this->values[$i])); break;
+            $c= &$elem->addChild(Node::fromObject($this->values[$i], 'item')); break;
           case 'array':
-            $elem->addFormResult(Node::fromArray($this->values[$i])); break;
+            $c= &$elem->addChild(Node::fromArray($this->values[$i], 'item')); break;
           default:
-            $elem->addFormResult(new Node('item', $this->values[$i]));
+            $c= &$elem->addChild(new Node('item', $this->values[$i]));
         }
+        $c->attribute['id']= $i;
       }
     }
   }
