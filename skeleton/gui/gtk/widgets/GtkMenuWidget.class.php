@@ -37,6 +37,18 @@
     }
     
     /**
+     * Add a menu separator
+     *
+     * @access  public
+     * @return  &GtkMenuItem
+     */
+    function &addSeparator() {
+      $s= &$this->addMenuItem ('', NULL);
+      $s->set_sensitive (FALSE);
+      return $s;
+    }    
+    
+    /**
      * (Insert method's description here)
      *
      * @access  public
