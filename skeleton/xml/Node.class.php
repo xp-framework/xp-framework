@@ -28,9 +28,9 @@
       }
     }
     
-    function fromArray($obj, $name= 'array') {
+    function fromArray($arr, $name= 'array') {
       $this->name= $name;
-      $this->_recurseArray($this, $fields);
+      $this->_recurseArray($this, $arr);
       return $this;  
     }
     
@@ -43,28 +43,39 @@
     function setContent($content) {
       $this->content= $content;
     }
-
+    
+    function getContent() {
+      return $this->content;
+    }
+    
     function getSource($indent= TRUE, $inset= '') {
       $xml= $inset.'<'.$this->name;
       
       // Attribute
       $sep= '';
       if (isset($this->attribute) and is_array($this->attribute)) {
-        $sep= ($indent || sizeof($this->attribute)< 2) ? '' : "\n{$inset}";
+        $sep= ($indent || sizeof($this->attribute)< 3) ? '' : "\n{$inset}";
         foreach ($this->attribute as $key=> $val) {
           $xml.= sprintf('%s %s="%s"', $sep, $key, $val);
         }
       }
       $xml.= $sep;
       
-      if (empty($this->content) && !isset($this->children)) {
+      // Kein Content (oder leer?) *UND* keine weiteren Elemente? => Tag zumachen!
+      if (!$indent && isset($this->content)) $this->content= trim(chop($this->content));
+      if (
+        (!isset($this->content) || @$this->content === '') &&
+        (!isset($this->children))
+      ) {
         return $xml."/>\n";
       }
       
       if ($indent) {
-        $xml.= ">\n".(empty($this->content) ? '' : "{$inset}  {$this->content}\n");
+        $xml.= ">\n";
+        if (isset($this->content) && $this->content !== '') $xml.= "{$inset}  {$this->content}\n";
       } else {
-        $xml.= '>'.(empty($this->content) ? '' : $this->content);
+        $xml.= '>';
+        if (isset($this->content) && $this->content !== '') $xml.= $this->content;
       }
       
       // Unterelemente, falls vorhanden
