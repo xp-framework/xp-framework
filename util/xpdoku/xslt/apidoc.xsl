@@ -15,6 +15,7 @@
 
     <xsl:call-template name="nav-divider">
       <xsl:with-param name="caption">See also</xsl:with-param>
+      <xsl:with-param name="colorcode">documentation</xsl:with-param>
     </xsl:call-template>
     <ul class="nav">
       <li><a href="inheritance.html">Inheritance Tree</a></li>
