@@ -167,11 +167,7 @@
         )));      
       }
       
-      return new BSDSocket(array(
-        '_sock' => $msgsock,
-        'host'  => $host,
-        'port'  => $port
-      ));
+      return new BSDSocket($host, $port, $msgsock);
     }
   }
 ?>

@@ -27,36 +27,15 @@
     /**
      * Constructor
      *
-     * May also be called with the array syntax:
-     * <code>
-     *   $sock= &new Socket(array(
-     *     'host' => '127.0.0.1',
-     *     'port' => 80
-     *   ));
-     * </code>
-     *
      * @access  public
      * @param   string host hostname or IP address
      * @param   int port
+     * @param   resource socket default NULL
      */
-    function __construct() {
-      switch (func_num_args()) {
-        case 1: 
-          $data= func_get_arg(0); 
-          break;
-          
-        case 2: 
-          $data= array(
-            'host' => func_get_arg(0),
-            'port' => func_get_arg(1)
-          );
-          break;
-          
-        default:
-          $data= array();
-      }
-       
-      parent::__construct($data);
+    function __construct($host, $port, $socket= NULL) {
+      $this->host= $host;
+      $this->port= $port;
+      $this->_sock= $socket;
     }
     
     /**
