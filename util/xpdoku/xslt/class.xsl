@@ -78,7 +78,7 @@
               <xsl:with-param name="content">
                 <br/>
                 <div align="center">
-                  <b style="font-Weight: bold; Color: #990000">
+                  <b style="font-weight: bold; Color: #990000">
                     This class has been marked as deprecated.
                   </b>
                   <br/>
@@ -214,15 +214,34 @@
     </tr>
   </xsl:template>
   
+  <xsl:template name="cut-string">
+    <xsl:param name="max_len" select="'130'"/>
+    <xsl:param name="string"/>
+  
+    <xsl:choose>
+      <xsl:when test="string-length($string) &gt; $max_len">
+        <xsl:value-of select="substring($string, 1, $max_len)"/>
+        <xsl:text>[...]</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$string"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
   <xsl:template match="link[child::*[name() = 'scheme']/text() = 'http']">
     <a href="{./scheme}://{./host}{./path}?{./query}#{./fragment}" target="_blank">
-      <xsl:value-of select="./scheme"/>://<xsl:value-of select="./host"/><xsl:value-of select="./path"/>
-      <xsl:if test="string-length (./query) != 0">
-        ?<xsl:value-of select="./query"/>
-      </xsl:if>
-      <xsl:if test="string-length (./fragment) != 0">
-        #<xsl:value-of select="./fragment"/>
-      </xsl:if>
+      <xsl:call-template name="cut-string">
+        <xsl:with-param name="string">
+          <xsl:value-of select="./scheme"/>://<xsl:value-of select="./host"/><xsl:value-of select="./path"/>
+          <xsl:if test="string-length (./query) != 0">
+            ?<xsl:value-of select="./query"/>
+          </xsl:if>
+          <xsl:if test="string-length (./fragment) != 0">
+            #<xsl:value-of select="./fragment"/>
+          </xsl:if>
+        </xsl:with-param>
+      </xsl:call-template>
     </a>
   </xsl:template>
   
@@ -361,25 +380,27 @@
               </tr>
             </xsl:if>
             
-            <!-- Return information -->
-            <tr>
-              <td width="1%" valign="top"><img src="/image/caret-r.gif" vspace="4" border="0" height="7" width="11" alt="&gt;"/></td>
-              <td width="20%" valign="top">
-                Returns
-              </td>
-              <td width="60%" valign="top">
-                <ul><li><tt><u>
-                  <xsl:if test="string-length(./return/type) != 0">
-                    <xsl:value-of select="./return/type"/>
-                  </xsl:if>
-                  <xsl:if test="string-length(./return/type) = 0">
-                    void
-                  </xsl:if>
-                </u></tt><br/>
-                <xsl:copy-of select="./return/description"/><br/>
-                </li></ul>
-              </td>
-            </tr>
+            <!-- Return information. Constructors and destructors have no real return value -->
+            <xsl:if test="name() != '__construct' and name() != '__destruct' and name() != /classdoc/@classname">
+              <tr>
+                <td width="1%" valign="top"><img src="/image/caret-r.gif" vspace="4" border="0" height="7" width="11" alt="&gt;"/></td>
+                <td width="20%" valign="top">
+                  Returns
+                </td>
+                <td width="60%" valign="top">
+                  <ul><li><tt><u>
+                    <xsl:if test="string-length(./return/type) != 0">
+                      <xsl:value-of select="./return/type"/>
+                    </xsl:if>
+                    <xsl:if test="string-length(./return/type) = 0">
+                      void
+                    </xsl:if>
+                  </u></tt><br/>
+                  <xsl:copy-of select="./return/description"/><br/>
+                  </li></ul>
+                </td>
+              </tr>
+            </xsl:if>
             
             <!-- Exception information -->
             <xsl:if test="count (./throws/*) &gt; 0">
