@@ -9,7 +9,7 @@
  *
  */
  
-  uses('io.TarArchiveEntry');
+  uses('util.archive.TarArchiveEntry');
 
   /**
    * Kapselt ein Tar-Archiv
