@@ -9,7 +9,8 @@
   /**
    * MP3 file
    *
-   *
+   * @purpose  Represent an MP3 file
+   * @see      http://www.rit.edu/~jlh0956/projects/jd3lib/ 
    */
   class MP3File extends Object {
   
@@ -41,7 +42,7 @@
           switch ($version) {
             case ID3_VERSION_UNKNOWN:
             
-              // Check version 2
+              // Check version 2.x
               $this->file->rewind();
               $buf= $this->file->read(10);
               if ('ID3' == substr($buf, 0, 3)) {
@@ -49,6 +50,7 @@
                 break;
               }
               
+              // Check version 1.x
               $this->file->seek(-128, SEEK_END);
               $buf= $this->file->read(128);
               $version= ID3_VERSION_1;
@@ -70,10 +72,14 @@
 
             case ID3_VERSION_2:
               if (!isset($buf)) {
-                $buf= $this->file->read(10);
+                $buf= $this->file->read(3);
+                if ('ID3' != substr($buf, 0, 3)) {
+                  $version= FALSE;
+                } else {
+                  // TBD: Implement!
+                }
               }
               
-              // TBD: Implement!
               $done= TRUE;
               break;
 
