@@ -4,21 +4,15 @@
  * $Id$
  */
 
-  uses('io.IOException');
+  uses('peer.Socket');
 
   /**
    * BSDSocket implementation
    *
    * @see	php://sockets
    */
-  class BSDSocket extends Object {
-    var 
-      $host,
-      $port;
-      
-    var
-      $_sock;
-    
+  class BSDSocket extends Socket {
+  
     /**
      * Get last error
      *
@@ -28,16 +22,6 @@
      */  
     function getLastError() {
       return sprintf('%d: %s', $e= socket_last_error($this->_sock), socket_strerror($e));
-    }
-    
-    /**
-     * Returns whether a connection has been established
-     *
-     * @access  public
-     * @return  bool connected
-     */
-    function isConnected() {
-      return isset($this->_sock) && is_resource($this->_sock);
     }
     
     /**
@@ -67,6 +51,18 @@
     }
     
     /**
+     * Close socket
+     *
+     * @access  public
+     * @return  bool success
+     */
+    function close() {
+      $res= socket_close($this->_sock);
+      $this->_sock= NULL;
+      return $res;
+    }
+
+    /**
      * Set socket blocking
      *
      * @access  public
@@ -90,19 +86,7 @@
       
       return TRUE;      
     }
-    
-    /**
-     * Close socket
-     *
-     * @access  public
-     * @return  bool success
-     */
-    function close() {
-      $res= socket_close($this->_sock);
-      $this->_sock= NULL;
-      return $res;
-    }
-    
+        
     /**
      * Returns whether there is data that can be read
      *
@@ -149,6 +133,18 @@
       return $res;
     }
     
+    /**
+     * Read data from a socket (binary-safe)
+     *
+     * @access  public
+     * @param   int maxLen maximum bytes to read
+     * @return  string data
+     * @throws	IOException
+     */
+    function readBinary($maxLen= 4096) {
+      return $this->read($maxLen);
+    }
+
     /**
      * Write a string to the socket
      *
