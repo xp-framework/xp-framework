@@ -26,17 +26,16 @@
    *   
    *   $c= new IRCConnection(new IRCUser('KrokerdilBot'), 'irc.xxx.net');
    *   
-   *   $l= Logger::getInstance();
-   *   $cat= $l->getCategory();
+   *   $cat= Logger::getInstance()->getCategory();
    *   $cat->addAppender(new FileAppender('php://stderr'));
    *   $c->setTrace($cat);
    *   
    *   $c->addListener(new KrokerdilBotListener());
-   *   try(); {
+   *   try {
    *     $c->open();
    *     $c->run();
    *     $c->close();
-   *   } if (catch('Exception', $e)) {
+   *   } catch (Exception $e) {
    *     $e->printStackTrace();
    *   }
    * </code>

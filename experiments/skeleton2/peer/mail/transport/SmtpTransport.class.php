@@ -25,7 +25,7 @@
    *     $cat->addAppender(new FileAppender('php://stderr'));
    *     $smtp->setTrace($cat);
    *   }
-   *   try(); {
+   *   try {
    *     $smtp->connect();            // Uses localhost:25 as default
    *     $smtp->send($msg);
    *   } catch (Exception $e) {

@@ -33,21 +33,20 @@
    *   }
    *   list($server, $port)= explode(':', $p->value(1));
    * 
-   *   $l= Logger::getInstance();
-   *   $cat= $l->getCategory();
+   *   $cat= Logger::getInstance()->getCategory();
    *   $cat->addAppender(new FileAppender('php://stderr'));
    * 
    *   $c= new StliConnection(new Socket($server, $port));
    *   $c->setTrace($cat);
-   *   try(); {
+   *   try {
    *     $c->connect();
    *     $term= $c->getTerminal($c->getAddress($p->value(2)));
    *     $call= $c->createCall($term, $c->getAddress($p->value(3)));
    *     $c->releaseTerminal($term);
    *     $c->close();
-   *   } if (catch('Exception', $e)) {
+   *   } catch (Exception $e) {
    *     $e->printStackTrace();
-   *     exit;
+   *     exit(-1);
    *   }
    * 
    *   printf("Done\n");
