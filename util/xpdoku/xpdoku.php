@@ -124,11 +124,17 @@
               '#&lt;xmp&gt;(.*)&lt;/xmp&gt;#sU',
               '#&lt;quote&gt;(.*)&lt;/quote&gt;#sU',
               '#&lt;code&gt;(.*)&lt;/code&gt;#sUe',
+              '#&lt;ul&gt;(.*)&lt;/ul&gt;#sU',
+              '#&lt;(/?li ?)&gt;#sU',
+              '#&lt;(br ?/?)&gt;#sU'
             ), array(
               '<pre>$1</pre>',
-              '<xmp>$1</xmp>',
+              '<pre>$1</pre>',
               '<quote>$1</quote>',
-              'highlightPHPSource(stripslashes(\'$1\'))'
+              'highlightPHPSource(stripslashes(\'$1\'))',
+              '<ul>$1</ul>',
+              '<$1>',
+              '<br/>'
             ),
             $node->getSource(0)
           ));
