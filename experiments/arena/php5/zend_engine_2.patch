@@ -4,7 +4,7 @@ RCS file: /repository/ZendEngine2/zend.h,v
 retrieving revision 1.266
 diff -u -r1.266 zend.h
 --- Zend/zend.h	3 Nov 2004 23:05:17 -0000	1.266
-+++ Zend/zend.h	14 Nov 2004 20:10:49 -0000
++++ Zend/zend.h	14 Nov 2004 20:46:52 -0000
 @@ -255,6 +255,8 @@
   */
  typedef struct _zval_struct zval;
@@ -46,7 +46,7 @@ RCS file: /repository/ZendEngine2/zend_API.c,v
 retrieving revision 1.269
 diff -u -r1.269 zend_API.c
 --- Zend/zend_API.c	2 Nov 2004 13:10:37 -0000	1.269
-+++ Zend/zend_API.c	14 Nov 2004 20:10:50 -0000
++++ Zend/zend_API.c	14 Nov 2004 20:46:53 -0000
 @@ -1313,6 +1313,9 @@
  			internal_function->return_reference = ptr->arg_info[0].return_reference;
  		} else {
@@ -63,7 +63,7 @@ RCS file: /repository/ZendEngine2/zend_builtin_functions.c,v
 retrieving revision 1.254
 diff -u -r1.254 zend_builtin_functions.c
 --- Zend/zend_builtin_functions.c	26 Oct 2004 23:25:05 -0000	1.254
-+++ Zend/zend_builtin_functions.c	14 Nov 2004 20:10:51 -0000
++++ Zend/zend_builtin_functions.c	14 Nov 2004 20:46:54 -0000
 @@ -1205,45 +1205,80 @@
  	zend_uint mask = va_arg(args, zend_uint);
  	zend_uint comply = va_arg(args, zend_uint);
@@ -161,7 +161,7 @@ RCS file: /repository/ZendEngine2/zend_compile.c,v
 retrieving revision 1.600
 diff -u -r1.600 zend_compile.c
 --- Zend/zend_compile.c	16 Oct 2004 23:17:58 -0000	1.600
-+++ Zend/zend_compile.c	14 Nov 2004 20:10:54 -0000
++++ Zend/zend_compile.c	14 Nov 2004 20:46:56 -0000
 @@ -116,6 +116,22 @@
  	CG(declarables).ticks.value.lval = 0;
  }
@@ -502,7 +502,7 @@ RCS file: /repository/ZendEngine2/zend_compile.h,v
 retrieving revision 1.297
 diff -u -r1.297 zend_compile.h
 --- Zend/zend_compile.h	27 Oct 2004 17:58:45 -0000	1.297
-+++ Zend/zend_compile.h	14 Nov 2004 20:10:54 -0000
++++ Zend/zend_compile.h	14 Nov 2004 20:46:56 -0000
 @@ -45,6 +45,23 @@
          CG(doc_comment) = NULL;  \
          CG(doc_comment_len) = 0; \
@@ -590,7 +590,7 @@ RCS file: /repository/ZendEngine2/zend_exceptions.c,v
 retrieving revision 1.74
 diff -u -r1.74 zend_exceptions.c
 --- Zend/zend_exceptions.c	30 Oct 2004 10:13:27 -0000	1.74
-+++ Zend/zend_exceptions.c	14 Nov 2004 20:10:55 -0000
++++ Zend/zend_exceptions.c	14 Nov 2004 20:46:56 -0000
 @@ -28,6 +28,7 @@
  #include "zend_interfaces.h"
  #include "zend_exceptions.h"
@@ -652,7 +652,7 @@ RCS file: /repository/ZendEngine2/zend_globals.h,v
 retrieving revision 1.140
 diff -u -r1.140 zend_globals.h
 --- Zend/zend_globals.h	3 Nov 2004 23:13:32 -0000	1.140
-+++ Zend/zend_globals.h	14 Nov 2004 20:10:55 -0000
++++ Zend/zend_globals.h	14 Nov 2004 20:46:56 -0000
 @@ -73,8 +73,11 @@
  	zend_stack foreach_copy_stack;
  	zend_stack object_stack;
@@ -671,7 +671,7 @@ RCS file: /repository/ZendEngine2/zend_language_parser.y,v
 retrieving revision 1.151
 diff -u -r1.151 zend_language_parser.y
 --- Zend/zend_language_parser.y	4 Oct 2004 19:54:34 -0000	1.151
-+++ Zend/zend_language_parser.y	14 Nov 2004 20:10:55 -0000
++++ Zend/zend_language_parser.y	14 Nov 2004 20:46:57 -0000
 @@ -63,7 +63,7 @@
  %left '^'
  %left '&'
@@ -951,7 +951,7 @@ RCS file: /repository/ZendEngine2/zend_language_scanner.l,v
 retrieving revision 1.116
 diff -u -r1.116 zend_language_scanner.l
 --- Zend/zend_language_scanner.l	3 Nov 2004 23:13:32 -0000	1.116
-+++ Zend/zend_language_scanner.l	14 Nov 2004 20:10:55 -0000
++++ Zend/zend_language_scanner.l	14 Nov 2004 20:46:58 -0000
 @@ -795,6 +795,10 @@
  	return T_THROW;
  }
@@ -1023,7 +1023,7 @@ RCS file: /repository/ZendEngine2/zend_object_handlers.c,v
 retrieving revision 1.106
 diff -u -r1.106 zend_object_handlers.c
 --- Zend/zend_object_handlers.c	30 Oct 2004 19:11:37 -0000	1.106
-+++ Zend/zend_object_handlers.c	14 Nov 2004 20:10:55 -0000
++++ Zend/zend_object_handlers.c	14 Nov 2004 20:46:58 -0000
 @@ -481,7 +481,7 @@
  	zval method_name, method_args;
  	zval *method_name_ptr, *method_args_ptr;
@@ -1086,7 +1086,7 @@ RCS file: /repository/ZendEngine2/zend_opcode.c,v
 retrieving revision 1.109
 diff -u -r1.109 zend_opcode.c
 --- Zend/zend_opcode.c	4 Oct 2004 19:54:34 -0000	1.109
-+++ Zend/zend_opcode.c	14 Nov 2004 20:10:55 -0000
++++ Zend/zend_opcode.c	14 Nov 2004 20:46:58 -0000
 @@ -78,6 +78,9 @@
  	op_array->doc_comment = NULL;
  	op_array->doc_comment_len = 0;
@@ -1165,7 +1165,7 @@ RCS file: /repository/ZendEngine2/zend_operators.c,v
 retrieving revision 1.202
 diff -u -r1.202 zend_operators.c
 --- Zend/zend_operators.c	3 Nov 2004 23:13:32 -0000	1.202
-+++ Zend/zend_operators.c	14 Nov 2004 20:10:56 -0000
++++ Zend/zend_operators.c	14 Nov 2004 20:46:59 -0000
 @@ -102,6 +102,55 @@
  	return result;
  }
@@ -1352,7 +1352,7 @@ RCS file: /repository/ZendEngine2/zend_reflection_api.c,v
 retrieving revision 1.138
 diff -u -r1.138 zend_reflection_api.c
 --- Zend/zend_reflection_api.c	3 Nov 2004 21:18:44 -0000	1.138
-+++ Zend/zend_reflection_api.c	14 Nov 2004 20:10:57 -0000
++++ Zend/zend_reflection_api.c	14 Nov 2004 20:47:00 -0000
 @@ -631,7 +631,18 @@
  	if (fptr->type == ZEND_USER_FUNCTION && fptr->op_array.return_reference) {
  		string_printf(str, "&");
@@ -1652,8 +1652,8 @@ RCS file: /repository/ZendEngine2/zend_vm_def.h,v
 retrieving revision 1.3
 diff -u -r1.3 zend_vm_def.h
 --- Zend/zend_vm_def.h	3 Nov 2004 07:11:49 -0000	1.3
-+++ Zend/zend_vm_def.h	14 Nov 2004 20:10:58 -0000
-@@ -3421,3 +3421,105 @@
++++ Zend/zend_vm_def.h	14 Nov 2004 20:47:01 -0000
+@@ -3421,3 +3421,123 @@
  	ZEND_VM_NEXT_OPCODE();
  }
  
@@ -1663,6 +1663,7 @@ diff -u -r1.3 zend_vm_def.h
 +	int alias_len;
 +	zend_op *opline = EX(opline);
 +	zend_class_entry *ce = EX_T(opline->op1.u.var).class_entry;
++	zend_class_entry **pce = NULL;
 +
 +	switch (OP2_TYPE) {
 +		/* This is the case for:
@@ -1736,13 +1737,30 @@ diff -u -r1.3 zend_vm_def.h
 +	fprintf(stderr, "Import %s => %s\n", ce->name, alias_name);
 +#endif
 +
-+	ce->refcount++;
-+	if (zend_hash_add(CG(class_table), alias_name, alias_len+ 1, &ce, sizeof(zend_class_entry *), NULL)==FAILURE) {
-+		ce->refcount--;
-+		zend_error(E_COMPILE_ERROR, "Cannot import class %s as already declared %s", ce->name, alias_name);
++	/* Check if we previously imported this class. If so, ignore */
++	if (zend_hash_find(CG(class_table), alias_name, alias_len+ 1, (void **) &pce) == SUCCESS) {
++		if (*pce == ce) {
++			goto done;
++		}
++		zend_error(
++			E_COMPILE_ERROR, 
++			"Cannot import class %s as class %s (declared in %s on line %d)",
++			ce->name, 
++			(*pce)->name,
++			(*pce)->filename, 
++			(*pce)->line_start
++		);
 +		/* Bails out */
 +	}
-+	
++
++	ce->refcount++;
++	if (zend_hash_add(CG(class_table), alias_name, alias_len+ 1, &ce, sizeof(zend_class_entry *), NULL) == FAILURE) {
++		ce->refcount--;
++		zend_error(E_CORE_ERROR, "Cannot add class %s to the class table\n", ce->name);
++		/* Bails out */
++	}
++
++done:	
 +	efree(alias_name);
 +	ZEND_VM_NEXT_OPCODE();
 +}
@@ -1765,8 +1783,8 @@ RCS file: /repository/ZendEngine2/zend_vm_execute.h,v
 retrieving revision 1.4
 diff -u -r1.4 zend_vm_execute.h
 --- Zend/zend_vm_execute.h	3 Nov 2004 07:11:49 -0000	1.4
-+++ Zend/zend_vm_execute.h	14 Nov 2004 20:11:06 -0000
-@@ -483,6 +483,96 @@
++++ Zend/zend_vm_execute.h	14 Nov 2004 20:47:09 -0000
+@@ -483,6 +483,114 @@
  	ZEND_VM_NEXT_OPCODE();
  }
  
@@ -1776,6 +1794,7 @@ diff -u -r1.4 zend_vm_execute.h
 +	int alias_len;
 +	zend_op *opline = EX(opline);
 +	zend_class_entry *ce = EX_T(opline->op1.u.var).class_entry;
++	zend_class_entry **pce = NULL;
 +
 +	switch (opline->op2.op_type) {
 +		/* This is the case for:
@@ -1849,13 +1868,30 @@ diff -u -r1.4 zend_vm_execute.h
 +	fprintf(stderr, "Import %s => %s\n", ce->name, alias_name);
 +#endif
 +
-+	ce->refcount++;
-+	if (zend_hash_add(CG(class_table), alias_name, alias_len+ 1, &ce, sizeof(zend_class_entry *), NULL)==FAILURE) {
-+		ce->refcount--;
-+		zend_error(E_COMPILE_ERROR, "Cannot import class %s as already declared %s", ce->name, alias_name);
++	/* Check if we previously imported this class. If so, ignore */
++	if (zend_hash_find(CG(class_table), alias_name, alias_len+ 1, (void **) &pce) == SUCCESS) {
++		if (*pce == ce) {
++			goto done;
++		}
++		zend_error(
++			E_COMPILE_ERROR, 
++			"Cannot import class %s as class %s (declared in %s on line %d)",
++			ce->name, 
++			(*pce)->name,
++			(*pce)->filename, 
++			(*pce)->line_start
++		);
 +		/* Bails out */
 +	}
-+	
++
++	ce->refcount++;
++	if (zend_hash_add(CG(class_table), alias_name, alias_len+ 1, &ce, sizeof(zend_class_entry *), NULL) == FAILURE) {
++		ce->refcount--;
++		zend_error(E_CORE_ERROR, "Cannot add class %s to the class table\n", ce->name);
++		/* Bails out */
++	}
++
++done:	
 +	efree(alias_name);
 +	ZEND_VM_NEXT_OPCODE();
 +}
@@ -1863,7 +1899,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_FETCH_CLASS_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -2472,6 +2562,18 @@
+@@ -2472,6 +2580,18 @@
  	return zend_init_add_array_helper_SPEC_CONST_CONST(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -1882,7 +1918,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_ADD_SPEC_CONST_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -2824,6 +2926,18 @@
+@@ -2824,6 +2944,18 @@
  	return zend_init_add_array_helper_SPEC_CONST_TMP(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -1901,7 +1937,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_ADD_SPEC_CONST_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -3176,6 +3290,18 @@
+@@ -3176,6 +3308,18 @@
  	return zend_init_add_array_helper_SPEC_CONST_VAR(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -1920,7 +1956,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int zend_init_add_array_helper_SPEC_CONST_UNUSED(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -3614,6 +3740,18 @@
+@@ -3614,6 +3758,18 @@
  	return zend_init_add_array_helper_SPEC_CONST_CV(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -1939,7 +1975,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_BW_NOT_SPEC_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -4995,6 +5133,18 @@
+@@ -4995,6 +5151,18 @@
  	return zend_init_add_array_helper_SPEC_TMP_CONST(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -1958,7 +1994,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_ADD_SPEC_TMP_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -5439,6 +5589,18 @@
+@@ -5439,6 +5607,18 @@
  	return zend_init_add_array_helper_SPEC_TMP_TMP(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -1977,7 +2013,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_ADD_SPEC_TMP_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -5883,6 +6045,18 @@
+@@ -5883,6 +6063,18 @@
  	return zend_init_add_array_helper_SPEC_TMP_VAR(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -1996,7 +2032,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int zend_init_add_array_helper_SPEC_TMP_UNUSED(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -6413,6 +6587,18 @@
+@@ -6413,6 +6605,18 @@
  	return zend_init_add_array_helper_SPEC_TMP_CV(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2015,7 +2051,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_BW_NOT_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -9030,6 +9216,18 @@
+@@ -9030,6 +9234,18 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_VAR_CONST(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2034,7 +2070,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_ADD_SPEC_VAR_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -10338,6 +10536,18 @@
+@@ -10338,6 +10554,18 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_VAR_TMP(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2053,7 +2089,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_ADD_SPEC_VAR_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -11667,6 +11877,18 @@
+@@ -11667,6 +11895,18 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_VAR_VAR(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2072,7 +2108,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_FETCH_DIM_W_SPEC_VAR_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -13129,6 +13351,18 @@
+@@ -13129,6 +13369,18 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_VAR_CV(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2091,7 +2127,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_CLONE_SPEC_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -19612,6 +19846,18 @@
+@@ -19612,6 +19864,18 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_CV_CONST(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2110,7 +2146,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_ADD_SPEC_CV_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -20920,6 +21166,18 @@
+@@ -20920,6 +21184,18 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_CV_TMP(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2129,7 +2165,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_ADD_SPEC_CV_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -22249,6 +22507,18 @@
+@@ -22249,6 +22525,18 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_CV_VAR(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2148,7 +2184,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_FETCH_DIM_W_SPEC_CV_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -23711,6 +23981,18 @@
+@@ -23711,6 +23999,18 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_CV_CV(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2167,7 +2203,7 @@ diff -u -r1.4 zend_vm_execute.h
  static int ZEND_NULL_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_error_noreturn(E_ERROR, "Invalid opcode %d/%d/%d.", EX(opline)->opcode, EX(opline)->op1.op_type, EX(opline)->op2.op_type);
-@@ -27471,6 +27753,56 @@
+@@ -27471,6 +27771,56 @@
    	ZEND_HANDLE_EXCEPTION_SPEC_HANDLER,
    	ZEND_HANDLE_EXCEPTION_SPEC_HANDLER,
    	ZEND_HANDLE_EXCEPTION_SPEC_HANDLER,
@@ -2224,7 +2260,7 @@ diff -u -r1.4 zend_vm_execute.h
    	ZEND_NULL_HANDLER
    };
    zend_opcode_handlers = (opcode_handler_t*)labels;
-@@ -30975,6 +31307,108 @@
+@@ -30975,6 +31325,126 @@
  	ZEND_VM_NEXT_OPCODE();
  }
  
@@ -2234,6 +2270,7 @@ diff -u -r1.4 zend_vm_execute.h
 +	int alias_len;
 +	zend_op *opline = EX(opline);
 +	zend_class_entry *ce = EX_T(opline->op1.u.var).class_entry;
++	zend_class_entry **pce = NULL;
 +
 +	switch (opline->op2.op_type) {
 +		/* This is the case for:
@@ -2307,13 +2344,30 @@ diff -u -r1.4 zend_vm_execute.h
 +	fprintf(stderr, "Import %s => %s\n", ce->name, alias_name);
 +#endif
 +
-+	ce->refcount++;
-+	if (zend_hash_add(CG(class_table), alias_name, alias_len+ 1, &ce, sizeof(zend_class_entry *), NULL)==FAILURE) {
-+		ce->refcount--;
-+		zend_error(E_COMPILE_ERROR, "Cannot import class %s as already declared %s", ce->name, alias_name);
++	/* Check if we previously imported this class. If so, ignore */
++	if (zend_hash_find(CG(class_table), alias_name, alias_len+ 1, (void **) &pce) == SUCCESS) {
++		if (*pce == ce) {
++			goto done;
++		}
++		zend_error(
++			E_COMPILE_ERROR, 
++			"Cannot import class %s as class %s (declared in %s on line %d)",
++			ce->name, 
++			(*pce)->name,
++			(*pce)->filename, 
++			(*pce)->line_start
++		);
 +		/* Bails out */
 +	}
-+	
++
++	ce->refcount++;
++	if (zend_hash_add(CG(class_table), alias_name, alias_len+ 1, &ce, sizeof(zend_class_entry *), NULL) == FAILURE) {
++		ce->refcount--;
++		zend_error(E_CORE_ERROR, "Cannot add class %s to the class table\n", ce->name);
++		/* Bails out */
++	}
++
++done:	
 +	efree(alias_name);
 +	ZEND_VM_NEXT_OPCODE();
 +}
@@ -2333,7 +2387,7 @@ diff -u -r1.4 zend_vm_execute.h
  
  void zend_vm_use_old_executor()
  {
-@@ -31129,6 +31563,8 @@
+@@ -31129,6 +31599,8 @@
    	ZEND_ASSIGN_DIM_HANDLER,
    	ZEND_ISSET_ISEMPTY_PROP_OBJ_HANDLER,
    	ZEND_HANDLE_EXCEPTION_HANDLER,
@@ -2348,7 +2402,7 @@ RCS file: /repository/ZendEngine2/zend_vm_opcodes.h,v
 retrieving revision 1.1
 diff -u -r1.1 zend_vm_opcodes.h
 --- Zend/zend_vm_opcodes.h	27 Oct 2004 20:13:59 -0000	1.1
-+++ Zend/zend_vm_opcodes.h	14 Nov 2004 20:11:06 -0000
++++ Zend/zend_vm_opcodes.h	14 Nov 2004 20:47:09 -0000
 @@ -127,3 +127,5 @@
  #define ZEND_ASSIGN_DIM              147
  #define ZEND_ISSET_ISEMPTY_PROP_OBJ  148
