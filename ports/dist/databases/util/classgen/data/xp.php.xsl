@@ -168,16 +168,16 @@
         <xsl:otherwise>
           <xsl:text>      return </xsl:text>
           <xsl:if test="@unique = 'true'">array_shift(</xsl:if>
-          <xsl:text>$peer-&gt;doSelect(new Criteria(array('</xsl:text>
+          <xsl:text>$peer-&gt;doSelect(new Criteria(&#10;</xsl:text>
           <xsl:for-each select="key">
             <xsl:text>        array('</xsl:text>
-            <xsl:value-of select="key"/>
+            <xsl:value-of select="."/>
             <xsl:text>', $</xsl:text>
-            <xsl:value-of select="key"/>
+            <xsl:value-of select="."/>
             <xsl:text>, EQUAL)</xsl:text>
             <xsl:if test="position() != last()">,</xsl:if><xsl:text>&#10;</xsl:text>
           </xsl:for-each>
-          <xsl:text>     ))</xsl:text><xsl:if test="@unique = 'true'">)</xsl:if><xsl:text>;</xsl:text>
+          <xsl:text>      ))</xsl:text><xsl:if test="@unique = 'true'">)</xsl:if><xsl:text>;</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
     <xsl:text>&#10;    }&#10;</xsl:text>
