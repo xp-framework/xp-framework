@@ -27,7 +27,7 @@
      */
     function __static() { 
       with ($peer= &BugzillaLongDescs::getPeer()); {
-        $peer->setTable('bugs.longdescs');
+        $peer->setTable('longdescs');
         $peer->setConnection('bugzilla');
         $peer->setPrimary(array(''));
         $peer->setTypes(array(
