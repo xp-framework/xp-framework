@@ -43,9 +43,14 @@
      * @param   string name
      * @param   string type default WSDL_TYPE_COMPLEX
      */ 
-    function __construct($name, $type= WSDL_TYPE_COMPLEX) {
+    function __construct($name, $type= WSDL_TYPE_COMPLEX, $elements= array()) {
       $this->name= $name;
       $this->type= $type;
+      foreach ($elements as $k => $v) {
+        if (is_scalar($v)) $v= array($v);
+        array_unshift($v, $k);
+        call_user_func_array(array(&$this, 'addElement'), $v);
+      }
       parent::__construct();
     }
 
@@ -119,13 +124,14 @@
      */
     function addElement($name, $type, $namespace= 'xsd') {
       $this->elements[$name]= &new stdClass();
+      $this->elements[$name]->name= $name;
       $this->elements[$name]->type= $type;
       $this->elements[$name]->namespace= $namespace;
     }
     
     /**
      * Gets an element by its name. The returned object will have
-     * the properties type and namespace
+     * the properties name, type and namespace
      *
      * @access  public
      * @param   string name
@@ -133,6 +139,17 @@
      */
     function &getElement($name) {
       return isset($this->elements[$name]) ? $this->elements[$name] : NULL;
+    }
+
+    /**
+     * Gets all elements
+     *
+     * @access  public
+     * @param   string name
+     * @return  &object[] element
+     */
+    function &getElements() {
+      return $this->elements;
     }
   }
 ?>
