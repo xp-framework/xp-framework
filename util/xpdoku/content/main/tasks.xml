@@ -51,7 +51,7 @@
           Anyway, that's another story not to be told here, so let's have a start.
           <br/>
           <br/>
-          So, let's have a look at a sample command line application (e.g., hello.php):
+          Take, for example, this sample command line application:
           <code><![CDATA[  require('lang.base.php');
   uses('util.cmd.ParamString');
 
@@ -61,7 +61,8 @@
     exit();
   }
   printf("Hello %s, how are you?\n", $p->value(1)); ]]></code>
-          Calling this application from the command line as <tt>php -q hello.php</tt>,
+          Calling this application from the command line as <tt>php -q hello.php</tt> 
+          (assuming this script is called hello.php),
           it will simply print out <tt>Usage: hello.php &lt;name&gt;</tt> and exit. If a name
           is specified, e.g. <tt>php -q hello.php Timm</tt>, you will se <tt>Hello Timm, how
           are you?</tt> appear on your shell window. Simple enough?
