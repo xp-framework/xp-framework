@@ -74,6 +74,8 @@
      */
     function __sleep() {
       foreach (array_keys($this->hash) as $name) {
+        if (!isset($this->crs[$this->hash[$name]])) continue;   // was not loaded
+        
         $this->storage->putValue('contextresource.'.$name, $this->crs[$this->hash[$name]]);
       }
       return array('hash');
