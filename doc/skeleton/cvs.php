@@ -4,7 +4,7 @@
  * $Id$
  */
   require('lang.base.php');
-  uses('org.cvshome.CVSInterface', 'util.cmd.ParamString');
+  uses('org.cvshome.CVSFile', 'util.cmd.ParamString');
 
   $p= &new ParamString();
   if (!$p->exists(1)) {
@@ -12,7 +12,7 @@
     exit();
   }
   
-  $cvs= &new CVSInterface($p->value(1));
+  $cvs= &new CVSFile($p->value(1));
   try(); {
     $status= &$cvs->getStatus();
   } if (catch('Exception', $e)) {

@@ -13,7 +13,7 @@
     'lang.apidoc.parser.ClassParser',
     'util.cmd.ParamString',
     'text.PHPSyntaxHighlighter',
-    'org.cvshome.CVSInterface'
+    'org.cvshome.CVSFile'
   );
   
   function highlightPHPSource($str) {
@@ -60,7 +60,7 @@
           $result= &$parser->parse();
           
           if (defined ('USE_CVS')) {
-            $cvs= &new CVSInterface ($folder->uri.$entry);
+            $cvs= &new CVSFile ($folder->uri.$entry);
             $status= $cvs->getStatus();
             $result['comments']['file']->cvstags= $status->tags;
           }
