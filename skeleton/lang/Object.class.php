@@ -20,26 +20,11 @@
      */
     function Object() {
       $this->__id= microtime();
+      if (!method_exists($this, '__construct')) return;
       $args= func_get_args();
-      call_user_func_array(
-        array(&$this, '__construct'),
-        $args
-      );
+      call_user_func_array(array(&$this, '__construct'), $args);
     }
 
-    /**
-     * Constructor. Supports the array syntax, where an associative
-     * array is passed to the constructor, the keys being the member
-     * variables and the values the member's values.
-     *
-     * @access  public
-     */
-    function __construct($params= NULL) {
-      if (is_array($params)) {
-        foreach (array_keys($params) as $key) $this->$key= &$params[$key];
-      }
-    }
-    
     /**
      * Returns a hashcode for this object
      *
