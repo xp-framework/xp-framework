@@ -3,7 +3,7 @@
  *
  * $Id$
  */
- 
+
   /**
    * Represents classes. Every instance of an XP class has an method
    * called getClass() which returns an instance of this class.
@@ -11,19 +11,18 @@
    * Warning:
    * Do not construct this class publicly, instead use either the
    * $o->getClass() syntax or the static method 
-   * $class= &XPClass::forName("fully.qualified.Name")
+   * $class= XPClass::forName("fully.qualified.Name")
    *
    * To retrieve the fully qualified name of a class, use this:
    * <code>
-   *   $o= &new File();
-   *   $c= &$o->getClass();
-   *   echo 'The class name for $o is '.$c->getName();
+   *   $o= new File();
+   *   echo 'The class name for $o is '.$o->getClass()->getName();
    * </code>
    *
    * @see lang.Object#getClass()
    */
   class XPClass extends Object {
-    var 
+    public 
       $_objref  = NULL,
       $name     = '';
       
@@ -33,10 +32,10 @@
      * @access  private
      * @param   &mixed ref
      */
-    function __construct(&$ref) {
-      $this->_objref= &$ref;
+    private function __construct(&$ref) {
+      $this->_objref= $ref;
       $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
-      parent::__construct();
+      
     }
     
     /**
@@ -49,7 +48,7 @@
      * @access  public
      * @return  string name - e.g. "io.File", "rdbms.mysql.MySQL"
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
     
@@ -59,10 +58,9 @@
      *
      * Example:
      * <code>
-     *   try(); {
-     *     $c= &XPClass::forName($name) &&
-     *     $o= &$c->newInstance();
-     *   } if (catch('ClassNotFoundException', $e)) {
+     *   try {
+     *     $o= XPClass::forName($name)->newInstance();
+     *   } catch (ClassNotFoundException $e) {
      *     // handle it!
      *   }
      * </code>
@@ -70,7 +68,7 @@
      * @access  public
      * @return  &lang.Object 
      */
-    function &newInstance() {
+    public function newInstance() {
       $paramstr= '';
       $args= func_get_args();
       for ($i= 0, $m= func_num_args(); $i < $m; $i++) {
@@ -86,7 +84,7 @@
      * @access  public
      * @return  string[] methodname
      */
-    function getMethods() {
+    public function getMethods() {
       return get_class_methods($this->_objref);
     }
     
@@ -101,7 +99,7 @@
      * @param   string method the method's name
      * @return  bool TRUE if method exists
      */
-    function hasMethod($method) {
+    public function hasMethod($method) {
       return in_array(
         strtolower($method),
         get_class_methods($this->_objref)
@@ -114,7 +112,7 @@
      * @access  public
      * @return  string[] member names
      */
-    function getFields() {
+    public function getFields() {
       return (is_object($this->_objref) 
         ? get_object_vars($this->_objref) 
         : get_class_vars($this->_objref)
@@ -127,7 +125,7 @@
      * @access  public
      * @return  &lang.XPClass class object
      */
-    function &getParentclass() {
+    public function getParentclass() {
       return new XPClass(get_parent_class($this->_objref));
     }
     
@@ -140,9 +138,8 @@
      * @return  &lang.XPClass class object
      * @throws  lang.ClassNotFoundException when there is no such class
      */
-    function &forName($name) {
-      if (!($c= ClassLoader::loadClass($name))) return $c;
-      return new XPClass($c);
+    public function forName($name) {
+      return new XPClass(ClassLoader::loadClass($name));
     }
     
     /**
@@ -152,10 +149,10 @@
      * @access  public
      * @return  &lang.XPClass[] class objects
      */
-    function getClasses() {
+    public function getClasses() {
       $ret= array();
       foreach (get_declared_classes() as $name) {
-        $ret[]= &new XPClass($name);
+        $ret[]= new XPClass($name);
       }
       return $ret;
     }
