@@ -18,7 +18,7 @@
    *
    * @access  public
    */
-  class RStorClient extends Socket {
+  class RemoteStorage extends Socket {
     var
       $_timeout= 1;
       
