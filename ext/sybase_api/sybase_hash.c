@@ -3,8 +3,6 @@
  * $Id$
  */
 
-#include "sybase_api.h"
-#include "sybase_mm.h"
 #include "sybase_hash.h"
 
 /**
@@ -70,7 +68,7 @@ SYBASE_API int sybase_hash_addstring(sybase_hash *hash, int key, char *value)
 
     if ((retcode= _check_allocation(hash)) == SA_SUCCESS) {
         hash->elements[hash->count].key= key;
-        hash->elements[hash->count].type= CS_NULLTERM;
+        hash->elements[hash->count].type= HASH_STRING;
         hash->elements[hash->count].value.str.val= (char *) strdup(value);
         hash->elements[hash->count].value.str.len= strlen(value);
         hash->count++;
@@ -93,7 +91,7 @@ SYBASE_API int sybase_hash_addint(sybase_hash *hash, int key, int value)
 
     if ((retcode= _check_allocation(hash)) == SA_SUCCESS) {
         hash->elements[hash->count].key= key;
-        hash->elements[hash->count].type= CS_UNUSED;
+        hash->elements[hash->count].type= HASH_INT;
         hash->elements[hash->count].value.lval= value;
         hash->count++;
     }
@@ -117,7 +115,7 @@ SYBASE_API int sybase_hash_free(sybase_hash *hash)
     
     for (i= 0; i < hash->count; i++) {
         switch ((int)hash->elements[i].type) {
-            case CS_NULLTERM:
+            case HASH_STRING:
                 sfree(hash->elements[i].value.str.val);
                 break;
         }
@@ -125,6 +123,63 @@ SYBASE_API int sybase_hash_free(sybase_hash *hash)
     sfree(hash->elements);
     sfree(hash);
     return SA_SUCCESS;
+}
+
+/**
+ * Iterative functions: retrieve first element
+ * 
+ * Usage example:
+ * <code>
+ *   int c;
+ *   sybase_hash_element *e;
+ *   for (e= sybase_hash_first(hash, &c); 
+ *           sybase_hash_has_more(hash, c); e= sybase_hash_next(hash, &c)) {
+ *       ...
+ *   }
+ * </code>
+ *
+ * @access  public
+ * @param   sybase_hash *hash
+ * @param   int *c
+ * @return  sybase_hash_element *
+ */
+SYBASE_API sybase_hash_element *sybase_hash_first(sybase_hash *hash, int *c)
+{
+    (*c)= 0;
+    if (hash->count == 0) {
+        return NULL;
+    }
+    return &hash->elements[0];
+}
+
+/**
+ * Iterative functions: check whether there are more elements
+ * 
+ * @access  public
+ * @param   sybase_hash *hash
+ * @param   int c
+ * @return  int
+ */
+SYBASE_API int sybase_hash_has_more(sybase_hash *hash, int c)
+{
+    return c < hash->count;
+}
+
+/**
+ * Iterative functions: retrieve next element
+ * 
+ * @access  public
+ * @param   sybase_hash *hash
+ * @param   int *c
+ * @return  sybase_hash_element *
+ */
+SYBASE_API sybase_hash_element *sybase_hash_next(sybase_hash *hash, int *c)
+{
+    (*c)++;
+    if (*c > hash->count) {
+        return NULL;
+    }
+    return &hash->elements[*c];
 }
 
 /**
