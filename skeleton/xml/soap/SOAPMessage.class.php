@@ -11,6 +11,12 @@
     'xml.soap.SOAPFault'
   );
   
+  define('XMLNS_SOAPENV',       'http://schemas.xmlsoap.org/soap/envelope/');
+  define('XMLNS_SOAPENC',       'http://schemas.xmlsoap.org/soap/encoding/');
+  define('XMLNS_SOAPINTEROP',   'http://soapinterop.org/xsd');
+  define('XMLNS_XSD',           'http://www.w3.org/2001/XMLSchema');
+  define('XMLNS_XSI',           'http://www.w3.org/2001/XMLSchema-instance');
+  
   /**
    * A SOAP Message consists of an envelope containing a body, and optionally,
    * headers.
@@ -58,12 +64,12 @@
       $this->method= $method;
 
       $this->root= &new Node('SOAP-ENV:Envelope', NULL, array(
-        'xmlns:SOAP-ENV'              => 'http://schemas.xmlsoap.org/soap/envelope/', 
-        'xmlns:xsd'                   => 'http://www.w3.org/2001/XMLSchema', 
-        'xmlns:xsi'                   => 'http://www.w3.org/2001/XMLSchema-instance', 
-        'xmlns:SOAP-ENC'              => 'http://schemas.xmlsoap.org/soap/encoding/', 
-        'xmlns:si'                    => 'http://soapinterop.org/xsd', 
-        'SOAP-ENV:encodingStyle'      => 'http://schemas.xmlsoap.org/soap/encoding/',
+        'xmlns:SOAP-ENV'              => XMLNS_SOAPENV,
+        'xmlns:xsd'                   => XMLNS_XSD,
+        'xmlns:xsi'                   => XMLNS_XSI,
+        'xmlns:SOAP-ENC'              => XMLNS_SOAPENC,
+        'xmlns:si'                    => XMLNS_SOAPINTEROP,
+        'SOAP-ENV:encodingStyle'      => XMLNS_SOAPENC,
         'xmlns:'.$this->namespace     => $this->action   
       ));
       $this->root->addChild(new Node('SOAP-ENV:Body'));
