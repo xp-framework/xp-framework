@@ -172,9 +172,6 @@
      * @throws  lang.IllegalAccessException for non-public methods
      */
     function &callReflectHandler(&$msg) {
-      if ('_' == $msg->method{0}) {
-        return throw(new IllegalAccessException('Cannot access non-public method '.$msg->method));
-      }
 
       // Create message from request data
       try(); {
@@ -190,12 +187,15 @@
         ));
       }
 
-      // Create instance and invoke method
       with ($method= &$class->getMethod($msg->method)); {
-        return $method->invoke(
-          $class->newInstance(),
-          $msg->getData(NULL)
-        );
+      
+        // Check if this method is a webmethod
+        if (!$method->hasAnnotation('webmethod')) {
+          return throw(new IllegalAccessException('Cannot access non-web method '.$msg->method));
+        }
+
+        // Create instance and invoke method
+        return $method->invoke($class->newInstance(), $msg->getData(NULL));
       }
     }
   }

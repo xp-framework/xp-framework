@@ -159,10 +159,6 @@
         
       list($className, $methodName)= explode('.', $msg->method, 2);
     
-      if ('_' == $methodName{0}) {
-        return throw(new IllegalAccessException('Cannot access non-public method '.$methodName));
-      }
-
       // Create message from request data
       try(); {
         $class= &$this->classloader->loadClass(ucfirst($className).'Handler');
@@ -177,12 +173,15 @@
         ));
       }
 
-      // Create instance and invoke method
       with ($method= &$class->getMethod($methodName)); {
-        return $method->invoke(
-          $class->newInstance(),
-          $msg->getData()
-        );
+
+        // Check if this method is a webmethod
+        if (!$method->hasAnnotation('webmethod')) {
+          return throw(new IllegalAccessException('Cannot access non-web method '.$msg->method));
+        }
+
+        // Create instance and invoke method
+        return $method->invoke($class->newInstance(), $msg->getData());
       }
     }
   }
