@@ -164,18 +164,6 @@ foreach my $dir (@dirs) {
 }
 
 my $from;
-#if (open FD, $cvsusers) {
-#	while(<FD>) {
-#		chop;
-#		if (m/^$cvsuser:(.+?):(.+)$/) {
-#			$from = "\"$1\" <$cvsid>";
-#		}
-#	}
-#	close(FD);
-#}
-#
-#$from ||= "$cvsuser";
-#$from= 'Alex Kiesel <kiesel@schlund.de>';
 $from= '"'.getRealname ($cvsuser).'" <'.getEmail($cvsuser).'>';
 
 my $email;
@@ -192,30 +180,11 @@ my $common_body = "Update of $cvsroot$directory\n".
 
 my $boundary = $cvsuser.time();
 
-#if (length($diffmsg) > 8000) {
-#	my $now = POSIX::strftime("%Y%m%d%H%M%S", localtime);
-#	$email = $common_header.
-#		"MIME-Version: 1.0\n".
-#		"Content-Type: multipart/mixed; boundary=\"$boundary\"\n".
-#		"\n".
-#		"This is a MIME encoded message\n\n".
-#		"--$boundary\n".
-#		"Content-Type: text/plain\n".
-#		"\n".
-#		$common_body.
-#		"--$boundary\n".
-#		"Content-Type: text/plain\n".
-#		"Content-Disposition: attachment; filename=\"$cvsuser-$now.txt\"\n".
-#		"\n".
-#		"$diffmsg\n".
-#		"--$boundary--\n";
-#} else {
 	$email = $common_header.
 		"".
 		$common_body.
 		"$diffmsg\n".
                 "-- \n".getRealname ($cvsuser)."\n";
-#}
 
 $email =~ s/\r//g;
 $email =~ s/\n/\r\n/g;
@@ -303,13 +272,17 @@ sub getRealname {
   my $line;
   close (UDB);
   
-  my $realname= 'Mister Booombastic';
+  my $realname= '';
   foreach $line (@lines) {
     my ($uname, $pass, $uid, $id, $info, $home, $shell)= split /:/, $line;
     if ($sysname eq $uname) {
       $realname= $info;
       $realname =~ s/,.*$//g;
     }
+  }
+  
+  if ('' eq $realname) {
+    $realname= 'Devnull';
   }
   
   return $realname;
