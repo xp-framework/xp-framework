@@ -7,17 +7,13 @@
   uses('gui.gtk.GtkApplication');
 
   /**
-   * Application class with Glade
+   * GTK Application class using glade
    *
-   * Example:
-   * <code>
-   *   $app= &new GTKGladeApplication('Example', 'example.glade');
-   *   $app->init();
-   *   $app->run();
-   *   $app->done();
-   * </code>
-   * 
-   * @see   http://glade.gnome.org/
+   * @ext      gtk
+   * @ext      gtk.glade
+   * @see      xp://gui.gtk.GtkApplication
+   * @see      http://glade.gnome.org/
+   * @purpose  Base class
    */  
   class GtkGladeApplication extends GtkApplication {
     var 
@@ -28,25 +24,27 @@
      * Constructor
      *
      * @access  public
-     * @param   string name application name
      * @param   string gladefile location of the .glade-file
      * @param   string mainwin default 'window1' Name des Hauptfensters
      */
-    function __construct($name, $gladefile, $mainwin= 'window1') {
+    function __construct($gladefile, $mainwin= 'window1') {
       $this->glade= &new GladeXML($gladefile);
       $this->mainwin= $mainwin;
-      parent::__construct($name);
+      parent::__construct();
     }
 
     /**
      * Returns a widget from the glade file
      *
-     * @access  public
+     * @access  protected
      * @param   string name
      * @return  &php.GtkWidget
      */
     function &widget($name) {
-      return $this->glade->get_widget($name);
+      if (!$w= &$this->glade->get_widget($name)) {
+        return throw(new WidgetNotFoundException($name));
+      } 
+      return $w;
     }
 
     /**
@@ -55,7 +53,6 @@
      * @access  protected
      */
     function create() {
-      if (!empty($this->rcfile)) Gtk::rc_parse($this->rcfile);
       $this->window= &$this->widget($this->mainwin);
     }
   }
