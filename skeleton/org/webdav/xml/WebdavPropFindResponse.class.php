@@ -46,8 +46,7 @@
     function __construct() {
       parent::__construct();
       $this->root= &new Node('D:multistatus', NULL, array(
-        'xmlns:D' => 'DAV:',
-        'xmlns:P' => 'http://apache.org/dav/props/'
+        'xmlns:D' => 'DAV:'
       ));
     }
     
@@ -55,33 +54,14 @@
      * Add an entry
      *
      * @access  public
-     * @param   string displayName
-     * @param   string href
-     * @param   &util.Date creationDate
-     * @param   &util.Date lastModified
-     * @param   string resourceType
-     * @param   string contentLength default 0
-     * @param   string contentType default NULL
-     * @param   int status default HTTP_STATUS_OK
-     * @param   array properties default array()
+     * @param   &org.webdav.WebdavObject o
      */
-    function addEntry(
-      $displayName,
-      $href,
-      &$creationDate,
-      &$lastModified,
-      $resourceType,
-      $contentLength= 0,
-      $contentType= NULL,
-      $status= HTTP_OK,
-      $properties= array()
-    ) {
-      $e= &$this->root->addChild(new Node('D:response'));
-      /*, NULL, array(
+    function addEntry(&$o) {
+      $e= &$this->root->addChild(new Node('D:response', NULL, array(
         'xmlns:P' => 'http://apache.org/dav/props/'
-      )));*/
-      $e->addChild(new Node('D:href', $href));
-      $e->addChild(new Node('D:status', 'HTTP/1.1 '.$status));
+      )));
+      $e->addChild(new Node('D:href', $o->href));
+      $e->addChild(new Node('D:status', 'HTTP/1.1 '.$o->status));
 
       // Properties
       $stat= &$e->addChild(new Node('D:propstat'));
@@ -89,30 +69,30 @@
       
       // Properties: Dates
       $props->addChild(new Node(
-        'D:creationdate', $creationDate->toString('Y-m-d\TH-i-s\Z')
+        'D:creationdate', $o->creationDate->toString('Y-m-d\TH-i-s\Z')
       ));
       $props->addChild(new Node(
-        'D:getlastmodified', $creationDate->toString('D, j M Y H:m:s \G\M\T')
+        'D:getlastmodified', $o->lastModified->toString('D, j M Y H:m:s \G\M\T')
       ));
       
       // Resource type
       $rt= &$props->addChild(new Node('D:resourcetype'));
-      if (NULL !== $resourceType) {
-        $rt->addChild(new Node('D:'.$resourceType));
+      if (NULL !== $o->resourceType) {
+        $rt->addChild(new Node('D:'.$o->resourceType));
       }
       
       // Content type/length via resourceType
-      if (WEBDAV_COLLECTION == $resourceType) {
-        $contentType= 'httpd/unix-directory';
-        $contentLength= 0;
-      }
+      if (WEBDAV_COLLECTION == $o->resourceType) {
+        $o->contentType= 'httpd/unix-directory';
+        $o->contentLength= 0;
+       }
       
       // Additional properties
       foreach (array_merge_recursive(array(
-        'P:displayname'       => $displayName,
-        'D:getcontentlength'  => $contentLength,
-        'D:getcontenttype'    => $contentType
-      ), $properties) as $key => $val) {
+        'P:displayname'       => $o->displayName,
+        'D:getcontentlength'  => $o->contentLength,
+        'D:getcontenttype'    => $o->contentType
+      ), $o->properties) as $key => $val) {
         $props->addChild(new Node($key, $val));
       }
     }
