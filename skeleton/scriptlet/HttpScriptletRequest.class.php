@@ -24,17 +24,13 @@
       $session=         NULL;
     
     /**
-     * Initialize this request object
+     * Initialize this request object. Does nothing in this default 
+     * implementation, nevertheless, it is a good idea to call 
+     * parent::initialiaze() if you override this method.
      *
      * @access  public
      */
     function initialize() {
-      $this->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
-      $this->setURI(parse_url(
-        ('on' == getenv('HTTPS') ? 'https' : 'http').'://'.
-        getenv('HTTP_HOST').
-        getenv('REQUEST_URI')
-      ));
     }
     
     /**
@@ -252,6 +248,26 @@
      */
     function &getData() {
       return $this->data;
+    }
+    
+    /**
+     * Retrieve request content type
+     *
+     * @access  public
+     * @return  string
+     */
+    function getContentType() {
+      return $this->getHeader('Content-Type');
+    }
+    
+    /**
+     * Returns whether this request contains multipart data (file uploads)
+     *
+     * @access  public
+     * @return  bool
+     */
+    function isMultiPart() {
+      return (bool)strstr($this->getHeader('Content-Type'), 'multipart/form-data');
     }
   }
 ?>
