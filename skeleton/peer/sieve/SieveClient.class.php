@@ -7,7 +7,6 @@
   uses(
     'peer.Socket', 
     'peer.sieve.SieveScript', 
-    'security.checksum.HMAC_MD5',
     'security.sasl.DigestChallenge'
   );
 
@@ -280,56 +279,15 @@
           $this->cat && $this->cat->debug('Challenge (length '.$len.'):', $str);
           try(); {
             $challenge= &DigestChallenge::fromString($str);
+            $response= &$challenge->responseFor(DC_QOP_AUTH, $user, $pass, $auth);
           } if (catch('FormatException', $e)) {
             return throw($e);
           }
-          $this->cat && $this->cat->debug($challenge);
-          
-          // Check for presence of quality of protection "auth"
-          $qop= DC_QOP_AUTH;
-          if (!$challenge->hasQop($qop)) {
-            return throw(new FormatException('Challenge does not contains DC_QOP_AUTH'));
-          }
+          $this->cat && $this->cat->debug($challenge, $response);
 
-          // Build the response
-          $cnonce= base64_encode(bin2hex(HMAC_MD5::hash(microtime())));
-          $ncount= '00000001';
-          $digest_uri= 'sieve/'.$this->_sock->host;
-          $a1= bin2hex(HMAC_MD5::hash(sprintf(
-            '%s:%s:%s:%s',
-            HMAC_MD5::hash(utf8_encode($user).':'.utf8_encode($challenge->getRealm()).':'.utf8_encode($pass)),
-            $challenge->getNonce(),
-            $cnonce,
-            utf8_encode($auth)
-          )));
-          $a2= bin2hex(HMAC_MD5::hash(sprintf(
-            'AUTHENTICATE:%s',
-            $digest_uri
-          )));
-          $response= bin2hex(HMAC_MD5::hash(sprintf(
-            '%s:%s:%s:%s:%s:%s',
-            $a1,
-            $challenge->getNonce(),
-            $ncount,
-            $cnonce,
-            $qop,
-            $a2
-          )));
-          
-          // Send it
-          $cmd= sprintf(
-            'charset=utf-8,username="%s",realm="%s",nonce="%s",nc=%s,'.
-            'cnonce="%s",digest-uri="%s",response=%s,qop=%s,authzid="%s"',
-            utf8_encode($user),
-            utf8_encode($challenge->getRealm()),
-            $challenge->getNonce(),
-            $ncount,
-            $cnonce,
-            $digest_uri,
-            $response,
-            $qop,
-            utf8_encode($auth)
-          );
+          // Build and send challenge response
+          $response->setDigestUri('sieve/'.$this->_sock->host);
+          $cmd= $response->getString();          
           $this->cat && $this->cat->debug('Sending challenge response', $cmd);
           $this->_sendcmd('"%s"', base64_encode($cmd));
 
