@@ -120,14 +120,30 @@
     }
     
     /**
+     * Checks whether headers have already been sent
+     * to the client. In that case, one cannot trigger sending
+     * of any header again.
+     *
+     * @access  public
+     * @return  bool
+     */
+    function headersSent() {
+      return headers_sent();
+    }
+    
+    /**
      * Sends headers. The statuscode will be sent prior to any headers
      * and prefixed by HTTP/ and the <pre>version</pre> attribute.
      * 
      * Headers spanning multiple lines will be transformed to confirm
      *
      * @access  public
+     * @throws  IllegalStateException
      */  
     function sendHeaders() {
+      if (headers_sent($file, $line))
+        return throw(new IllegalStateException('Headers have already been sent at: '.$file.', line '.$line));
+        
       switch (php_sapi_name()) {
         case 'cgi':
           header('Status: '.$this->statusCode);
