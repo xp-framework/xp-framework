@@ -64,6 +64,13 @@
       }
     }
 
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
     function _recurseArray(&$elem, $arr) {
       $nodeType= get_class($this);
       foreach ($arr as $field=> $value) {
@@ -80,26 +87,60 @@
       }
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
     function fromArray($arr, $name= 'array') {
       $this->name= $name;
       $this->_recurseArray($this, $arr);
       return $this;  
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
     function fromObject($obj, $name= NULL) {
-      if (NULL == $name) $this->name= get_class($obj); else $this->name= $name;
+      $this->name= (NULL === $name) ? get_class($obj) : $name;
       $this->_recurseArray($this, get_object_vars($obj));
       return $this;
     }
     
+    /**
+     * Set content
+     *
+     * @access  public
+     * @param   string contennt
+     */
     function setContent($content) {
       $this->content= $content;
     }
     
+    /**
+     * Get content (all CDATA)
+     *
+     * @access  public
+     * @return  string content
+     */
     function getContent() {
       return $this->content;
     }
     
+    /**
+     * Retreive XML representation
+     *
+     * @access  public
+     * @param   bool indent defaulf TRUE
+     * @param   string inset default ''
+     * @return  string XML
+     */
     function getSource($indent= TRUE, $inset= '') {
       $xml= $inset.'<'.$this->name;
       
