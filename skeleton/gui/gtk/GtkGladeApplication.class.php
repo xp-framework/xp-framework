@@ -44,7 +44,7 @@
      * @return  &php.GtkWidget
      */
     function &widget($name) {
-      if (!$w= &$this->glade->get_widget($name)) {
+      if (!$this->glade || !$w= &$this->glade->get_widget($name)) {
         return throw(new WidgetNotFoundException($name));
       } 
       return $w;
