@@ -74,11 +74,13 @@
       $qname= $this->classpath.$class;
       $name= xp::reflect($qname);
 
-      if (class_exists($name) || uses($qname)) {
-        return new XPClass($name);
+      if (!class_exists($name)) {
+        if (!include_once(strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+          return throw(new ClassNotFoundException('Class "'.$qname.'" not found'));
+        }
+        xp::registry('class.'.$name, $qname);
       }
-      
-      return throw(new ClassNotFoundException('Class "'.$qname.'" not found'));
+      return new XPClass($name);
     }
   }
 ?>
