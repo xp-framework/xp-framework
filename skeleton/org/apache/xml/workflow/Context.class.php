@@ -109,6 +109,7 @@
       
       $l= &Logger::getInstance();
       $cat= &$l->getCategory($this->getClassName());
+      $cat->debug('In handleRequest(request, response)', $this);
       
       // Load corresponding state
       $cat->info('Requested state name is', $request->getState(), $request->getPage());
@@ -120,6 +121,10 @@
       
       // No state found
       if (!$state) {
+        $cat->error(
+          'State/workflow error for request [headers', $request->headers, ']',
+          'stateflow [list', $this->sfm->flow, ']'
+        );
         return throw(new ContextFailedException(
           'State/workflow error', 
           new ElementNotFoundException($request->getState()))
