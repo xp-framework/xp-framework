@@ -13,6 +13,7 @@
    * @purpose Utils to calculate with Date objects
    */
   class DateUtil extends Object {
+
     /**
      * Returns a Date object which represents the date at
      * the given date at midnight.
