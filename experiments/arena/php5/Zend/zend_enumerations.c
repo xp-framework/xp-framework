@@ -64,7 +64,7 @@ ZEND_METHOD(enumeration, values)
 
 		/* Create object for this enumeration memeber */
 		MAKE_STD_ZVAL(container);
-		if (object_init(container) != SUCCESS) {
+		if (object_init_ex(container, EG(scope)) != SUCCESS) {
 			zend_error(E_CORE_ERROR, "Cannot create object in Enumeration::values()");
 		}
 		add_property_stringl(container, "name", name, length, 1);
@@ -100,7 +100,7 @@ ZEND_METHOD(enumeration, valueOf) {
 		if ((*ordinal)->value.lval == needle) {
 			zend_hash_get_current_key_ex(&EG(scope)->constants_table, &name, &length, &dummy, 0, &pos);
 			
-			object_init(return_value);
+			object_init_ex(return_value, EG(scope));
 			add_property_stringl(return_value, "name", name, length, 1);
 			add_property_long(return_value, "ordinal", (*ordinal)->value.lval);
 			return;
