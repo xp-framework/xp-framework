@@ -166,6 +166,7 @@
         $string.
         substr($this->buffer, $this->offset+ strlen($string))
       );
+      $this->offset+= strlen ($string);
     }
 
     /**
@@ -176,7 +177,7 @@
      * @return  bool success
      * @throws  IOException in case of an error
      */
-    function writeLine($string) {
+    function writeLine($string= '') {
       $this->write($string."\n");
     }
     
