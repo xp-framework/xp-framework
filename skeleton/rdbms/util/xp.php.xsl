@@ -128,20 +128,20 @@
 		<xsl:if test="position() != last()">, </xsl:if>
 	  </xsl:for-each>
 	  <xsl:text>);
-	    } if (catch('SQLException', $e)) {
+                } if (catch('SQLException', $e)) {
 
-	        // more error handling TBD here?
-	        return throw($e);
-	    }
+                    // more error handling TBD here?
+                    return throw($e);
+                }
 
-	    $o= &amp;new </xsl:text>
+                $o= &amp;new </xsl:text>
 	  <xsl:call-template name="prettyname">
 		<xsl:with-param name="string" select="../@name"/>
 	  </xsl:call-template>
       <xsl:text>();
-	    foreach ($data as $k => $v) $o->$k= $v;
-	    return $o;
-	}&#10;</xsl:text>
+                foreach ($data as $k => $v) $o->$k= $v;
+                return $o;
+            }&#10;</xsl:text>
 	</xsl:for-each>
 	
 	<!-- Create getters and setters -->
