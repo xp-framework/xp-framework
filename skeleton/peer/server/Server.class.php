@@ -34,7 +34,8 @@
    */
   class Server extends Object {
     var
-      $socket   = NULL;
+      $socket     = NULL,
+      $terminate  = FALSE;
       
     /**
      * Constructor
@@ -100,7 +101,10 @@
     function service() {
       if (!$this->socket->isConnected()) return FALSE;
       
-      while ($m= &$this->socket->accept()) {
+      while (!$this->terminate) {
+        if (!($m= &$this->socket->accept())) continue;
+        
+        // Have connection
         $m->setBlocking(TRUE);
         $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
         

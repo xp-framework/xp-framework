@@ -23,7 +23,8 @@
     function service() {
       if (!$this->socket->isConnected()) return FALSE;
       
-      while ($m= &$this->socket->accept()) {
+      while (!$this->terminate) {
+        if (!($m= &$this->socket->accept())) continue;
 
         // Have connection, fork child
         $pid= pcntl_fork();
