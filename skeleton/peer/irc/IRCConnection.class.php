@@ -230,11 +230,11 @@
               return FALSE;
           }
         } else {
-          $this->cat->error('Could not parse', $r);
+          $this->cat && $this->cat->error('Could not parse', $r);
           return FALSE;
         }
       } else {
-        $this->cat->error('Malformed message', $r);
+        $this->cat && $this->cat->error('Malformed message', $r);
         return FALSE;
       }
       return TRUE;
