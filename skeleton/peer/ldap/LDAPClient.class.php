@@ -81,7 +81,6 @@
     function __construct($host= 'localhost', $port= 389) {
       $this->host= $host;
       $this->port= $port;
-      
     }
     
     /**
