@@ -128,11 +128,14 @@
      * @access  public
      */  
     function sendHeaders() {
-      header(sprintf(
-        'HTTP/%s %d', 
-        $this->version, 
-        $this->statusCode
-      ));
+      switch (php_sapi_name()) {
+        case 'cgi':
+          header('Status: '.$this->statusCode);
+          break;
+
+        default:
+          header(sprintf('HTTP/%s %d', $this->version, $this->statusCode));
+      } 
       foreach (array_keys($this->headers) as $key) {
         header($key.': '.strtr(
           $this->headers[$key], 
