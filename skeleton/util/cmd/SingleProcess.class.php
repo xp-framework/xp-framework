@@ -36,7 +36,7 @@
      *          obwohl er bereist läuft
      */
     function lock() {
-      if ($this->lockfile->exists()) {
+      if ($this->isRunning()) {
         return throw(new IllegalStateException('already running')); 
       }
       try(); {
@@ -78,7 +78,10 @@
       } if (catch('IOException', $e)) {
         return throw($e);
       }
-      if (file_exists('/proc/'.$pid)) return $pid;
+      if (is_dir('/proc/'.$pid)) {
+        // TODO: Further checking
+        return $pid;
+      }
       
       // Wir haben ein "stale lockfile"...
       $this->unLock();
