@@ -82,6 +82,9 @@
       $size             = 0,
       $date             = NULL;
       
+    var
+      $_headerlookup    = NULL;
+      
     /**
      * Constructor
      *
@@ -165,6 +168,7 @@
       $s= '';
       $vars= get_object_vars($this);
       foreach (array_keys($vars) as $var) {
+        if ('_' == $var{0}) continue;
         $s.= sprintf("  [%-12s] %s\n", $var, is_a($vars[$var], 'Object') 
           ? $vars[$var]->toString() 
           : str_replace("\n", "\n  ", var_export($vars[$var], 1))
@@ -311,10 +315,12 @@
      * @return  string value header value or NULL to indicate the header doesn't exist
      */
     function getHeader($header) {
-      static $h;
+      $header= strtolower($header);
+      if (!isset($this->_headerlookup)) {
+        $this->_headerlookup= array_change_key_case($this->headers, CASE_LOWER);
+      }
       
-      if (!isset($h)) $h= array_change_key_case($this->headers, CASE_LOWER);
-      return isset($h[$name]) ? $h[$name] : NULL;
+      return isset($this->_headerlookup[$header]) ? $this->_headerlookup[$header] : NULL;
     }
     
     /**
