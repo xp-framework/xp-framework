@@ -80,7 +80,7 @@ while (<FILE>) {
   }
   
   if ($_ =~ /\/\*[^\*]/ && $l > 2) {
-    &error("Inline comments may not be contained within source, use // instead", ECOMMENT);
+    &error("Block comments may not be contained within source, use // instead", ECOMMENT);
   }
   
   if ($_ =~ /(echo|var_dump|print_r)/) {
