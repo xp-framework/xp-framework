@@ -33,7 +33,7 @@
      *
      * @access  public
      * @param   &xml.xmlrpc.XmlRpcMessage message
-     * @return  &xml.xmlrpc.XmlRpcResponse
+     * @return  &scriptlet.HttpScriptletResponse
      */
     function &send(&$message) { }
     

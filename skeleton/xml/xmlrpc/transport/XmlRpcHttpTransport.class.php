@@ -13,7 +13,7 @@
    * Transport for XmlRpc requests over HTTP.
    *
    * @see      xp://xml.xmlrpc.XmlRpcClient
-   * @purpose  HTTP Transport
+   * @purpose  HTTP Transport for XML-RPC
    */
   class XmlRpcHttpTransport extends XmlRpcTransport {
     var
@@ -82,7 +82,7 @@
      * Retrieve a XML-RPC message.
      *
      * @access  public
-     * @param   &xml.xmlrpc.XmlRpcResponse response
+     * @param   &scriptlet.HttpScriptletResponse response
      * @return  &xml.xmlrpc.XmlRpcMessage
      */
     function &retrieve(&$response) {
