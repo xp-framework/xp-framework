@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('security.sasl.DigestResponse');
+
   // Quality of protection constants
   define('DC_QOP_AUTH',      'auth');
   define('DC_QOP_AUTH_INT',  'auth-int');
@@ -20,7 +22,7 @@
    * Digest challenge
    *
    * @see      rfc://2831
-   * @purpose  purpose
+   * @purpose  Digest challenge wrapper
    */
   class DigestChallenge extends Object {
     var
@@ -107,6 +109,37 @@
         }
       }
       return $challenge;
+    }
+    
+    /**
+     * Returns the challenge response
+     *
+     * @access  public
+     * @param   string qop
+     * @param   string user
+     * @param   string pass
+     * @param   string authzid default NULL
+     * @return  &security.sasl.DigestResponse
+     * @throws  lang.FormatException
+     */
+    function &responseFor($qop, $user, $pass, $authzid= NULL) {
+      if (!$this->hasQop($qop)) {
+        return throw(new FormatException('Challenge does not contains DC_QOP_AUTH'));
+      }
+      
+      with ($r= &new DigestResponse(
+        $this->getRealm(), 
+        $this->getNonce(), 
+        $qop
+      )); {
+        $r->setUser($user);
+        $r->setPass($pass);
+        $r->setCharset($this->getCharset());
+        
+        // Only set authzid if specified
+        $authzid && $r->setAuthzid($authzid);
+      }
+      return $r;
     }
 
     /**
