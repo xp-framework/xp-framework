@@ -20,10 +20,9 @@
      * @param   &org.webdav.auth.WebdavUser The WebdavUser object
      * @return  bool
      */
-    function isAuthorized($handler= NULL, $uri, &$user) {
-      // Always return TRUE if no handler is specified
-      if ($handler === NULL) return TRUE;
-      return $handler->hasPermission($uri, $user);
+    function isAuthorized($uri, &$user) {
+      // Always return TRUE in default implementation
+      return TRUE;
     }
   }
 ?>
