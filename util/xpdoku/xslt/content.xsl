@@ -11,9 +11,13 @@
   <xsl:include href="xsl-helper.xsl"/>
 
   <xsl:template name="navigation">
-    <xsl:for-each select="/main/references/ref">
-      <a href="/content/{@link}.html"><xsl:value-of select="."/></a>
-    </xsl:for-each>
+    <b>See also</b>
+    <br/>
+    <ul class="nav">
+      <xsl:for-each select="/document/main/references/ref">
+        <li><a href="/content/{@link}.html"><xsl:value-of select="."/></a></li>
+      </xsl:for-each>
+    </ul>
   </xsl:template>
   
   <xsl:template match="main/content">
