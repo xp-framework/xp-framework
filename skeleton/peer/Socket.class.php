@@ -157,7 +157,11 @@
       if (!is_array($status= socket_get_status($this->_sock))) {
         return throw(new SocketException('Get status failed: '.$this->getLastError()));
       }
-      
+
+      if (FALSE === socket_set_timeout($this->_sock, 60)) {
+        return throw(new SocketException('Select failed: '.$this->getLastError()));
+      }
+
       return $status['unread_bytes'] > 0;
     }
     
@@ -180,6 +184,27 @@
       }
       
       return $r;
+    }
+
+    /**
+     * Read line from a socket
+     *
+     * @access  public
+     * @param   int maxLen maximum bytes to read
+     * @return  string data
+     * @throws  peer.SocketException
+     */
+    function readLine($maxLen= 4096) {
+      if (FALSE === ($r= fgets($this->_sock, $maxLen))) {
+      
+        // fgets returns FALSE on eof, this is particularily dumb when 
+        // looping, so check for eof() and make it "no error"
+        if ($this->eof()) return NULL;
+        
+        return throw(new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError()));
+      }
+      
+      return chop($r);
     }
 
     /**
