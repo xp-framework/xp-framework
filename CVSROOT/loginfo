@@ -25,4 +25,4 @@
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 
-# DEFAULT   $CVSROOT/CVSROOT/loginfo.pl 'xp-cvs@php3.de' $USER %{sVv}
+DEFAULT   $CVSROOT/CVSROOT/loginfo.pl 'xp-cvs@php3.de' $USER %{sVv}
