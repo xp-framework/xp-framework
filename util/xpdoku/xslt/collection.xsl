@@ -8,6 +8,10 @@
   <xsl:param name="package" select="''"/>
   <xsl:param name="mode" select="'collection'"/>
 
+  <xsl:template name="navigation">
+    <!-- Nothing yet -->
+  </xsl:template>
+
   <!-- Include main window part -->
   <xsl:include href="xsl-helper.xsl"/>  
 

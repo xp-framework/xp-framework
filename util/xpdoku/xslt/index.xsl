@@ -9,6 +9,11 @@
   <xsl:output method="xhtml" encoding="iso-8859-1"/>
   <xsl:param name="mode" select="'index'"/>
   <xsl:include href="xsl-helper.xsl"/>
+
+  <xsl:template name="navigation">
+    <a href="/">XP</a> stands for <b>X</b>ML <b>P</b>HP.<br/>
+    XP is far more than that!
+  </xsl:template>
   
   <xsl:template match="main/news">
     <xsl:variable name="news" select="'../content/news.rdf.xml'"/>

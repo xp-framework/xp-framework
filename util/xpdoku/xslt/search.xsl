@@ -9,6 +9,10 @@
   <xsl:param name="package"/>
   <xsl:param name="mode" select="'search'"/>
 
+  <xsl:template name="navigation">
+    <!-- Nothing yet -->
+  </xsl:template>
+
   <!-- Include main window part -->
   <xsl:include href="xsl-helper.xsl"/>
 

@@ -5,6 +5,10 @@
   <xsl:output method="xhtml" encoding="iso-8859-1"/>
   <xsl:param name="mode" select="'inheritance'"/>
   <xsl:include href="xsl-helper.xsl"/>
+
+  <xsl:template name="navigation">
+    <!-- Nothing yet -->
+  </xsl:template>
   
   <xsl:template match="main">
     <table border="0" width="100%" cellspacing="0" cellpadding="0">

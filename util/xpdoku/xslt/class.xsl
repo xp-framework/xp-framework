@@ -11,6 +11,10 @@
   
   <!-- Include main window part -->
   <xsl:include href="xsl-helper.xsl"/>
+  
+  <xsl:template name="navigation">
+    <!-- Nothing yet -->
+  </xsl:template>
 
   <xsl:template name="classheader">
     <xsl:param name="classname"/>
