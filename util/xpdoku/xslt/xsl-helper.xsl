@@ -4,7 +4,7 @@
   version="1.0"
 >
 
-  <xsl:template match="packages|classdoc">
+  <xsl:template match="packages|classdoc|document">
 <xsl:if test="$mode = 'search'">
   <xsl:call-template name="search"/>
 </xsl:if>
@@ -28,18 +28,14 @@
      <xsl:when test="$mode = 'search'">
        XP::Searchresults
      </xsl:when>
+     <xsl:when test="name() = 'document'">
+       <xsl:value-of select="/document/@title"/>
+     </xsl:when>
      <xsl:otherwise>XP::Documentation</xsl:otherwise>
    </xsl:choose>
  </title>
  <link rel="stylesheet" href="/style.css" />
 </head>
-
-<xsl:comment>
-  Params are:
-  mode = <xsl:value-of select="$mode"/>
-  package = <xsl:value-of select="$package"/>
-  collection = <xsl:value-of select="$collection"/>
-</xsl:comment>
 
 <body
 	topmargin="0" leftmargin="0"
@@ -151,7 +147,7 @@
           </xsl:when>
           
           <xsl:otherwise>
-            <xsl:call-template name="main"/>
+            <xsl:apply-templates select="main"/>
           </xsl:otherwise>
         </xsl:choose>
      </td>
