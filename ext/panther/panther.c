@@ -20,6 +20,7 @@
 #include <netdb.h>
 #include <unistd.h>
 #include "ext/standard/php_var.h"
+#include "ext/standard/php_smart_str.h"
 #include "rmi.h"
 
 #ifndef ZTS
@@ -341,6 +342,8 @@ void* _thread(void* sd)
                                 response->data= (char*)malloc(response->length + 1);
                                 strlcpy(response->data, buf.c, response->length + 1);
                                 zval_ptr_dtor(&retval_ptr); 
+                                smart_str_free(&buf);
+                                efree(&buf);
                             } else {
                                 response->length= sizeof("N;") - 1;
                                 response->data= (char*)malloc(response->length + 1);
@@ -348,6 +351,9 @@ void* _thread(void* sd)
                             }
                         }
                         efree(eval);
+                        if (data_ptr) {
+                            zval_ptr_dtor(&data_ptr);
+                        }
                     }
                     
                 } zend_end_try();
