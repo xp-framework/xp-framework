@@ -208,8 +208,12 @@
       
       $return= array();
       foreach (explode('|', $this->_data[$section][$key]) as $val) {
-        list($k, $v)= explode(':', $val);
-        $return[$k]= $v;
+        if (strstr($val, ':')) {
+          list($k, $v)= explode(':', $val, 2);
+          $return[$k]= $v;
+        } else {
+          $return[]= $val;
+        } 
       }
       
       return new Hashmap($return);
