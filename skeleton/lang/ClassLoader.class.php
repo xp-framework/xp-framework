@@ -24,6 +24,7 @@
     /**
      * Lädt eine Klasse
      *
+     * @call    static
      * @param   string className Klassename, bspw. net.http.HTTPConnection
      * @return  mixed Eine Instanz der Klasse
      */

@@ -59,12 +59,82 @@
      * @param   array list Liste von Mailadressen
      * @return  string Entsprechend obigem Beispiel formatierter Header-Wert
      */    
-    function getAddressList($list) {
-      $return= '';
-      foreach($list as $element) {
-        $return.= "\n\t".$element;
-      }
-      return substr($return, 2);
+    function getAddressList(&$list) {
+      return implode(",\n\t", $list);
+    }
+
+    /**
+     * Sonderzeichen in Headern müssen encoded werden
+     *
+     * @access  private
+     * @param   string str Der Name  
+     * @return  string Der kodierte Name
+     */
+    function _encodeHeader($str) {
+      return (empty($str)
+        ? ''
+        : '=?iso-8859-1?q?'.str_replace(' ', '_', imap_8bit($str)).'?='
+      );
+    }
+    
+    /**
+     * Eine Adresse einem der Felder From, To, Cc oder Bcc hinzufügen
+     *
+     * @access  private
+     * @param   &array what Referenz auf eine Member-Variable bspw. $this->from
+     * @param   string mail Die E-Mail-Adresse
+     * @param   string name default '' Der Name, bspw. "Timm Friebe"
+     */    
+    function _addAddress(&$what, $mail, $name= '') {
+      $what[]= trim(sprintf(
+        '%s <%s>', 
+        $this->_encodeHeader($name),
+        $mail
+      ));
+    }
+
+    /**
+     * Eine Adresse dem Feld "From" hinzufügen
+     *
+     * @access  public
+     * @param   string mail Die E-Mail-Adresse
+     * @param   string name default '' Der Name, bspw. "Timm Friebe"
+     */
+    function addFrom($mail, $name= '') {
+      $this->_addAddress($this->from, $mail, $name);
+    }
+
+    /**
+     * Eine Adresse dem Feld "To" hinzufügen
+     *
+     * @access  public
+     * @param   string mail Die E-Mail-Adresse
+     * @param   string name default '' Der Name, bspw. "Timm Friebe"
+     */
+    function addTo($mail, $name= '') {
+      $this->_addAddress($this->to, $mail, $name);
+    }
+
+    /**
+     * Eine Adresse dem Feld "Cc" hinzufügen
+     *
+     * @access  public
+     * @param   string mail Die E-Mail-Adresse
+     * @param   string name default '' Der Name, bspw. "Timm Friebe"
+     */
+    function addCc($mail, $name= '') {
+      $this->_addAddress($this->cc, $mail, $name);
+    }
+
+    /**
+     * Eine Adresse dem Feld "Bcc" hinzufügen
+     *
+     * @access  public
+     * @param   string mail Die E-Mail-Adresse
+     * @param   string name default '' Der Name, bspw. "Timm Friebe"
+     */
+    function addBcc($mail, $name= '') {
+      $this->_addAddress($this->bcc, $mail, $name);
     }
     
     /**
@@ -163,6 +233,20 @@
         $header.= sprintf("%s: %s\n", $key, $val);
       }
       return $header;
+    }
+    
+    /**
+     * Den Betreff der Mail zurückgeben
+     *
+     * @access  public
+     * @param   int encode default TRUE soll das Encoding vorgenommen werden
+     * @return  string String-Repräsentation des Subjects
+     */
+    function getSubject($encode= TRUE) {
+      return ($encode
+        ? $this->_encodeHeader($this->subject)
+        : $this->subject
+      );
     }
     
     /**

@@ -8,6 +8,7 @@
    * Basis-Objekt für alle anderen
    */
   class Object {
+  
     /**
      * Constructor-Wrapper bis PHP5
      */
