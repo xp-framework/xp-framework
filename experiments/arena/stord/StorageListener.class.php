@@ -4,7 +4,14 @@
  * $Id$ 
  */
  
-  uses('io.File', 'io.FileUtil');
+  uses('io.File', 'io.FileUtil', 'lang.MethodNotImplementedException');
+  
+  define('APPEND',  0x0000);
+  define('PREPEND', 0x0001);
+  define('INSERT',  0x0002);
+  define('UPDATE',  0x0003);
+  define('DELETE',  0x0004);  
+  define('SET',     0x0005);
 
   /**
    * The storage daemon is a TCP/IP server that allows you to store
@@ -12,8 +19,12 @@
    *
    * Socket syntax (>>> is request, <<< is response, ### a comment):
    * <pre>
-   *   ### Add an entry
-   *   >>> ADD user a:2:{i:0;i:9;i:1;i:2;s:9:"thekid.de";}
+   *   ### Prepend an entry to a list-based storage
+   *   >>> PREPEND user a:2:{i:0;i:9;i:1;i:2;s:9:"thekid.de";}
+   *   <<< +OK b:1;
+   *
+   *   ### Append an entry to a list-based storage
+   *   >>> APPEND user a:2:{i:0;i:9;i:1;i:2;s:9:"thekid.de";}
    *   <<< +OK b:1;
    *
    *   ### Clear storage
@@ -52,17 +63,19 @@
       clearstatcache();
       return FileUtil::getContents($f);
     }
-
+    
     /**
-     * Handle method "ADD"
+     * Helper method
      *
      * @access  protected
      * @param   string name
      * @param   string serial serial representation of data
+     * @param   int operation one of APPEND, PREPEND, INSERT, DELTE, UPDATE or SET
+     * @param   int position default 0 where to insert for set
      * @return  string b:1; on success
      * @throws  lang.FormatException in case serial data is corrupt
      */
-    function handleAdd($name, $serial) {
+    function _write($name, $serial, $operation, $position= 0) {
       $data= unserialize($serial);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
         throw(new FormatException('Data "'.$serial.'" format not recognized'));
@@ -87,8 +100,35 @@
         $f->rewind();
       }
       
-      // Prepend data to the beginning of the history
-      array_unshift($a, $data);
+      switch ($operation) {
+        case PREPEND:
+          array_unshift($a, $data);
+          break;
+        
+        case APPEND:
+          array_push($a, $data);
+          break;
+        
+        case INSERT:
+          $a= array_merge(
+            array_slice($a, 0, $position), 
+            $data,
+            array_slice($a, $position)
+          );
+          break;
+        
+        case DELETE:
+          unset($a[$position]);
+          break;
+        
+        case UPDATE:
+          $a[$position]= $data;
+          break;
+        
+        case SET:
+          $a= $data;
+          break;
+      }
       
       // Write it back to the file
       $f->write(serialize($a));
@@ -97,6 +137,86 @@
       // Clean up and return
       delete($f);
       return serialize(TRUE);
+    }
+
+    /**
+     * Handle method "PREPEND"
+     *
+     * @access  protected
+     * @param   string name
+     * @param   string serial serial representation of data
+     * @return  string b:1; on success
+     * @throws  lang.FormatException in case serial data is corrupt
+     */
+    function handlePrepend($name, $serial) {
+      return $this->_write($name, $serial, PREPEND);
+    }
+
+    /**
+     * Handle method "APPEND"
+     *
+     * @access  protected
+     * @param   string name
+     * @param   string serial serial representation of data
+     * @return  string b:1; on success
+     * @throws  lang.FormatException in case serial data is corrupt
+     */
+    function handleAppend($name, $serial) {
+      return $this->_write($name, $serial, APPEND);
+    }
+
+    /**
+     * Handle method "INSERT"
+     *
+     * @access  protected
+     * @param   string name
+     * @param   string data containing a number defining the position and the serial data
+     * @return  string b:1; on success
+     * @throws  lang.FormatException in case serial data is corrupt
+     */
+    function handleInsert($name, $data) {
+      sscanf($data, "%d %[^\r]", $position, $serial);
+      return $this->_write($name, $serial, INSERT, $position);
+    }
+
+    /**
+     * Handle method "UPDATE"
+     *
+     * @access  protected
+     * @param   string name
+     * @param   string data containing a number defining the position and the serial data
+     * @return  string b:1; on success
+     * @throws  lang.FormatException in case serial data is corrupt
+     */
+    function handleUpdate($name, $data) {
+      sscanf($data, "%d %[^\r]", $position, $serial);
+      return $this->_write($name, $serial, UPDATE, $position);
+    }
+
+    /**
+     * Handle method "DELETE"
+     *
+     * @access  protected
+     * @param   string name
+     * @param   string data a number defining the position
+     * @return  string b:1; on success
+     * @throws  lang.FormatException in case serial data is corrupt
+     */
+    function handleDelete($name, $data) {
+      return $this->_write($name, NULL, DELETE, (int)$data);
+    }
+
+    /**
+     * Handle method "SET"
+     *
+     * @access  protected
+     * @param   string name
+     * @param   string serial serial representation of data
+     * @return  string b:1; on success
+     * @throws  lang.FormatException in case serial data is corrupt
+     */
+    function handleSet($name, $serial) {
+      return $this->_write($name, $serial, SET);
     }
     
     /**
@@ -122,15 +242,19 @@
      * @param   &peer.server.ConnectionEvent event
      */
     function data(&$event) {
-      
+
       // Scan input string
       $cmd= sscanf($event->data, "%s %s %[^\r]");
       try(); {
-        $return= call_user_func_array(
-          array(&$this, 'handle'.$cmd[0]), 
-          array_slice($cmd, 1)
-        );
-        if ($return) $response= '+OK '.$return;
+        if (!method_exists($this, 'handle'.$cmd[0])) {
+          throw(new MethodNotImplementedException('Operation not supported', $cmd[0]));
+        } else {
+          $return= call_user_func_array(
+            array(&$this, 'handle'.$cmd[0]), 
+            array_slice($cmd, 1)
+          );
+          if ($return) $response= '+OK '.$return;
+        }
       } if (catch('Exception', $e)) {
         $e->printStackTrace();
         $response= '-ERR '.$e->getMessage();
