@@ -318,7 +318,7 @@
         <caption>Miscellaneous</caption>
         <text>
           <ul>
-            <li>The RDBMS access api is explained <ref type="tasks.rdbms">here</ref>.</li>
+            <li>The RDBMS access api is explained <ref link="tasks.rdbms">here</ref>.</li>
           </ul>
         </text>
       </para>
