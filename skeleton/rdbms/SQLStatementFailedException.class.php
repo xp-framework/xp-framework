@@ -46,7 +46,7 @@
      * @access  public
      * @return  int
      */
-    function getErrorcode()() {
+    function getErrorcode() {
       return $this->errorcode;
     }
     
