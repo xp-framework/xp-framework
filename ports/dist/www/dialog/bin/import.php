@@ -21,6 +21,7 @@
   define('HIGHLIGHTS_FOLDER', 'highlights');
   define('HIGHLIGHTS_MAX',    4);
   define('FOLDER_FILTER',     '/\.jpe?g$/i');
+  define('DATA_FILTER',       '/\.dat$/');
 
   define('DATA_FOLDER',       dirname(__FILE__).'/../data/');
   define('IMAGE_FOLDER',      dirname(__FILE__).'/../doc_root/albums/');
@@ -30,10 +31,13 @@
   if (!$param->exists(1) || $param->exists('help', '?')) {
     Console::writeLine(<<<__
 Imports a directory of images into an album
--------------------------------------------
+------------------------------------------------------------------------
 Usage:
-  php import.php <<directory>> [--debug]
+  php import.php <<directory>> [<<options>>]
 
+Options:
+  --debug, -d     Turns on debugging (default: off)
+  --title, -t     Set album title (default: origin directory name)
 __
     );
     exit(1);
@@ -79,7 +83,7 @@ __
   // Create album
   with ($album= &new Album()); {
     $album->setName($name);
-    $album->setTitle($origin->dirname);
+    $album->setTitle($param->value('title', 't', $origin->dirname));
     $album->setCreatedAt(new Date($origin->createdAt()));
 
     // Read the introductory text from description.txt if existant
@@ -98,10 +102,11 @@ __
           exit(-2);
         }
         $album->addHighlight($highlight);
+        Console::writeLine('---> Added highlight ', $highlight->getName());
       }
       $highlights->close();
     }
-    $needsHighlights= $album->numHighlights() - HIGHLIGHTS_MAX;
+    $needsHighlights= HIGHLIGHTS_MAX - $album->numHighlights();
 
     // Process all images
     $images= array();
@@ -113,10 +118,12 @@ __
         exit(-2);
       }
       $images[]= &$image;
+      Console::writeLine('---> Added image ', $image->getName());
       
       // Check if more highlights are needed
       if ($needsHighlights <= 0) continue;
 
+      Console::writeLine('     >> Need ', $needsHighlights, ' more highlight(s), using above image');
       $album->addHighlight($image);
       $needsHighlights--;
     }
@@ -139,14 +146,36 @@ __
     $chapter[$key]->addImage($images[$i]);
   }
 
+  // Save album
   $cat && $cat->debug($album);
+  $serialized= &new File(DATA_FOLDER.$name.'.dat');
   try(); {
-    FileUtil::setContents(new File(DATA_FOLDER.$name.'.dat'), serialize($album));
+    FileUtil::setContents($serialized, serialize($album));
   } if (catch('IOException', $e)) {
     $e->printStackTrace();
     exit(-1);
   }
+  $serialized->touch($album->createdAt->getTime());
   
+  // Regenerate indexes
+  $data= &new Folder(DATA_FOLDER);
+  $entries= array();
+  for ($i= &new FilteredFolderIterator($data, DATA_FILTER); $i->hasNext(); ) {
+    $entry= $i->next();
+    $entries[filemtime($data->getURI().$entry).$entry]= $entry;
+  }
+  $data->close();
+  krsort($entries);
+  $cat && $cat->debug($entries);
+  
+  // ...for home page: Five newest entries
+  try(); {
+    FileUtil::setContents(new File(DATA_FOLDER.'index'), serialize(array_slice($entries, 0, 5)));
+  } if (catch('IOException', $e)) {
+    $e->printStackTrace();
+    exit(-1);
+  }
+
   Console::writeLine('===> Finished at ', date('r'));
   // }}}
 ?>
