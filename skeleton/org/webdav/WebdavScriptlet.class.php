@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('org.apache.HttpScriptlet');
+  uses(
+    'org.apache.HttpScriptlet',
+    'org.webdav.xml.WebdavPropFindRequest'
+  );
   
   define('WEBDAV_METHOD_PROPFIND',  'PROPFIND');
   define('WEBDAV_METHOD_PROPPATCH', 'PROPPATCH');
@@ -18,32 +21,46 @@
    * @purpose  Provide the base for Webdav Services
    */
   class WebdavScriptlet extends HttpScriptlet {
+    var
+      $path = '';
+      
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   string path default './'
+     */  
+    function __construct($path= './') {
+      $this->path= $path;
+      parent::__construct();
+    }
 
+    /**
+     * Handle OPTIONS
+     *
+     * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
+     * @access  private
+     * @return  bool processed
+     * @public  request org.apache.HttpScriptletRequest
+     * @access  response org.apache.HttpScriptletResponse
+     * @throws  Exception to indicate failure
+     */
+    function doOptions(&$request, &$response) {
+      $response->setHeader('MS-Author-Via', 'DAV');
+      $response->setHeader('Allow', implode(', ', array(
+        HTTP_METHOD_OPTIONS,
+        HTTP_METHOD_GET,
+        HTTP_METHOD_PUT,
+        HTTP_METHOD_DELETE,
+        WEBDAV_METHOD_PROPFIND,
+        WEBDAV_METHOD_PROPPATCH
+      )));
+      $response->setHeader('DAV', '1, 2');
+    }
+    
     /**
      * Receives an PROPPATCH request from the <pre>process()</pre> method
      * and handles it.
-     *
-     * PROPFIND xml[1]:
-     * <pre>
-     *   <?xml version="1.0" encoding="utf-8"?>
-     *   <propfind xmlns="DAV:">
-     *     <allprop/>
-     *   </propfind>
-     * </pre>
-     *
-     * PROPFIND xml[2]:
-     * <pre>
-     *   <?xml version="1.0" encoding="utf-8"?>
-     *   <propfind xmlns="DAV:">
-     *     <prop>
-     *       <getcontentlength xmlns="DAV:"/>
-     *       <getlastmodified xmlns="DAV:"/>
-     *       <displayname xmlns="DAV:"/>
-     *       <executable xmlns="http://apache.org/dav/props/"/>
-     *       <resourcetype xmlns="DAV:"/>
-     *     </prop>
-     *   </propfind>
-     * </pre>
      *
      * @see     xp://org.apache.scriptlet.HttpScriptlet#doGet
      * @access  private
@@ -53,6 +70,25 @@
      * @throws  Exception to indicate failure
      */
     function doPropFind(&$request, &$response) {
+      try(); {
+        $p= &new WebdavPropFindRequest($request->getData());
+        $prop= $p->getProperties();
+      } if (catch('Exception', $e)) {
+        return throw(new HttpScriptletException($e->message));
+      }
+
+      $l= &Logger::getInstance();
+      $c= &$l->getCategory();
+      $c->debug('Properties requested', $prop);
+      
+      // Check which properties were requested
+      if (WEBDAV_PROPERTY_ALL == $prop) {
+        
+      }
+      
+      // Send "HTTP/1.1 207 Multi-Status" response header
+      $response->setStatus(207);
+      $response->setHeader('Content-Type', 'text/xml');
     }
 
     /**
@@ -104,6 +140,12 @@
       }
 
       switch ($method) {
+        case HTTP_METHOD_OPTIONS:
+          $this->request->setData(getenv('QUERY_STRING'));
+          $this->request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
+          $this->_method= 'doOptions';
+          break;
+          
         case WEBDAV_METHOD_PROPFIND:
           $this->request->setData($data);
           $this->request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
