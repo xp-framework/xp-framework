@@ -73,10 +73,10 @@
 	  <handler>on_ClassTree_tree_select_row</handler>
 	  <last_modification_time>Fri, 18 Jul 2003 07:57:25 GMT</last_modification_time>
 	</signal>
-	<columns>3</columns>
-	<column_widths>239,50,45</column_widths>
+	<columns>1</columns>
+	<column_widths>239</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-	<show_titles>True</show_titles>
+	<show_titles>False</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
 
 	<widget>
@@ -84,32 +84,6 @@
 	  <child_name>CTree:title</child_name>
 	  <name>label4</name>
 	  <label>Class / Function</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CTree:title</child_name>
-	  <name>label5</name>
-	  <label>File</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CTree:title</child_name>
-	  <name>label6</name>
-	  <label>Line</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
