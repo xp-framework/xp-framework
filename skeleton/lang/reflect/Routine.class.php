@@ -71,7 +71,7 @@
           for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
             switch ($tokens[$i][0]) {
               case T_COMMENT: 
-                $comment= $tokens[$i][1]; 
+                $comment= $tokens[$i][1];
                 break;
 
               case T_FUNCTION:
@@ -81,7 +81,12 @@
                   0 => 0,           // access
                   1 => array(),     // arguments
                   2 => 'void',      // return
-                  3 => array()      // throws
+                  3 => array(),     // throws
+                  4 => preg_replace('/\n     \* ?/', "\n", "\n".substr(
+                    $comment, 
+                    4,                              // "/**\n"
+                    strpos($comment, '* @')- 2      // position of first apidoc token
+                  ))
                 );
                 preg_match_all(
                   '/@([a-z]+)\s*([^\r\n ]+) ?([^\r\n ]+)? ?([^\r\n ]+)?/', 
@@ -238,6 +243,22 @@
         $c= get_parent_class($c);
       }
       return xp::null();
+    }
+    
+    /**
+     * Retrieves the api doc comment for this method. Returns NULL if
+     * no documentation is present.
+     *
+     * @access  public
+     * @return  string
+     */
+    function getComment() {
+      $c= $this->_ref;
+      while ($apidoc= $this->_apidoc($c)) {
+        if (isset($apidoc[$this->name])) return $apidoc[$this->name][4];
+        $c= get_parent_class($c);
+      }
+      return NULL;  
     }
     
     /**
