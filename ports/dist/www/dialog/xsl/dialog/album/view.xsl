@@ -94,10 +94,10 @@
           <xsl:if test="$total &gt; 4">
             <td>
               <a 
-               title="Show entire chapter" 
+               title="Show image #5" 
                class="pager" 
                id="true"
-               href="{func:link(concat('chapter/view?', ../../@name, ',', $chapter))}"
+               href="{func:link(concat('image/view?', /formresult/album/@name, ',i,', $chapter, ',', 5))}"
               >
                 <img alt="&#xbb;" src="/image/next.gif" border="0" width="19" height="15"/>
               </a>
