@@ -2,7 +2,7 @@
   error_reporting(E_ALL);
 
   function import($str) {
-    include_once(
+    return include_once(
       SKELETON_PATH.
       strtr($str, array('.' => '/', '~' => '..', '_' => '.')).
       '.class.php'
