@@ -15,9 +15,21 @@
     <br/>
     <ul class="nav">
       <xsl:for-each select="/document/main/references/ref">
-        <li><a href="/content/{@link}.html"><xsl:value-of select="."/></a></li>
+        <li><xsl:apply-templates select="."/></li>
       </xsl:for-each>
     </ul>
+  </xsl:template>
+
+  <xsl:template match="ref[@type= 'ext']">
+    <a href="{@link}" target="_new"><xsl:value-of select="."/></a>
+  </xsl:template>
+
+  <xsl:template match="ref[@type= 'google']">
+    <a href="http://google.de/search?q={@link}" target="_new">Google search: <xsl:value-of select="@link"/></a>
+  </xsl:template>
+  
+  <xsl:template match="ref">
+    <a href="/content/{@link}.html"><xsl:value-of select="."/></a>
   </xsl:template>
   
   <xsl:template match="main/content">
@@ -33,7 +45,6 @@
     <br/>
     
     <xsl:apply-templates select="para"/>
-    
   </xsl:template>
   
   <xsl:template match="main/content/para">
