@@ -83,6 +83,7 @@
     'lang.Exception',
     'lang.IllegalStateException',
     'lang.IllegalArgumentException',
+    'lang.FormatException',
     'lang.ClassLoader'
   );
   set_error_handler('error');
