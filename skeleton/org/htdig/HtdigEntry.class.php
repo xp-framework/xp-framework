@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.format.DateParser');
+  uses('text.parser.DateParser');
 
   /**
    * Represents a htdig search entry
