@@ -25,7 +25,7 @@
    * about the service, see the babelfish homepage.  
    * 
    * Example:
-   * <pre>
+   * <code>
    *   $bf= &new BabelFish();
    *   try(); {
    *     $translated= &$bf->translate(
@@ -39,9 +39,10 @@
    *   }
    * 
    *   var_dump($translated);
-   * </pre>
+   * </code>
    * 
-   * @see    http://xmethods.net/ve2/ViewListing.po?serviceid=14
+   * @see      http://xmethods.net/ve2/ViewListing.po?serviceid=14
+   * @purpose  SOAP-Proxy
    */
   class BabelFish extends SOAPClient {
 
@@ -72,6 +73,7 @@
         new SOAPNamedItem('translationmode', sprintf('%s_%s', $src_lang, $target_lang)),
         new SOAPNamedItem('sourcedata', $sourcedata)
       );
+      
       return $translated;
     }
   }
