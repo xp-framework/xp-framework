@@ -38,9 +38,11 @@ static CS_RETCODE CS_PUBLIC clientmessage(CS_CONTEXT *context, CS_CONNECTION *co
 
 static void signal_cancel(int signum)
 {
-	printf("***  Cancelling...\n");
-	fflush(stdout);
+    printf("***  Cancelling...\n");
+    fflush(stdout);
     sybase_cancel(current_result, CS_CANCEL_ALL);
+    printf("     Cancelled.\n");
+    fflush(stdout);
 }
 
 #define HLINE "     ---------------------------------------------------------------------------------\n"
