@@ -17,7 +17,6 @@
   class WebdavScriptletResponse extends HttpScriptletResponse {
   
     var
-      $status= HTTP_OK,
       $tree=   NULL;
     
     /**
@@ -46,18 +45,19 @@
     }
     
     /**
-     * Finalize the response (setting status code, adding XML data to
+     * Process the response (setting status code, adding XML data to
      * response body, ...)
      *
      * @access public
      */
-    function finalize() {
+    function process() {
+      parent::process();
+      
       if ($this->tree !== NULL) {
         $this->setHeader('Content-Type', 'text/xml, charset="'.$this->tree->getEncoding().'"');
         $this->setContent($body= $this->tree->getDeclaration()."\n".$this->tree->getSource(0));
         $this->setHeader('Content-length', strlen($body));
       }
-      $this->setStatus($this->status);
     }
   
     /**
