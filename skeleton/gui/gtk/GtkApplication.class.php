@@ -49,7 +49,8 @@
       
       // Create main window
       $this->create();
-      
+      $this->window->realize();
+
       // Connect destroy signal
       $this->window->connect('destroy', array(&$this, 'destroy'));
 
