@@ -17,6 +17,8 @@ use constant ESHORTOPEN => "ESHORTOPEN";
 use constant WTBD       => "WTBD";
 use constant WOUTPUT    => "WOUTPUT";
 
+use constant WNOHINT    => "WNOHINT";
+
 %LINK = (
   # Errors
   ETAB        => "http://xp-framework.net/content/about.coding.html#5",
@@ -27,7 +29,8 @@ use constant WOUTPUT    => "WOUTPUT";
 
   # Warnings
   WTBD        => "http://xp-framework.net/content/about.coding.html#13",
-  WOUTPUT     => "n/a"
+  WOUTPUT     => "n/a",
+  WNOHINT     => "n/a",
 );
 
 # {{{ utility functions for mail notify
@@ -150,6 +153,14 @@ while (@ARGV) {
 
     if ($_ =~ /(TODO|TBI|TBD|FIXME)/) {
       &warning("You have a $1 comment in your sourcecode...", WTBD);
+    }
+    
+    if ($_ =~ /\@(access|param|return|throws)\s+$/) {
+      &warning("Your inline documentation is incomplete.", WNOHINT);
+    }
+    
+    if ($_ =~ /\(Insert method's description here\)/) {
+      &warning("You should supply a description for your method", WNOHINT);
     }
   }
   close FILE;
