@@ -204,7 +204,7 @@
       if (
         $context == NULL and 
         $child->name != 'item' and
-        substr($child->name, 0, 8) != 'c-gensym'
+        substr($child->name, 1, 7) != '-gensym'
       ) {
         $result= &new SOAPNamedItem($child->name, $result);
       }
