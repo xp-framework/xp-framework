@@ -50,5 +50,21 @@
       
       return str_replace('//', '/', $entry);
     }
+    
+    /**
+     * Renames a file in this directory.
+     *
+     * @access  public
+     * @param   string source
+     * @param   string target
+     * @return  bool success
+     */
+    function renameFile($src, $target) {
+      return ftp_rename (
+        $this->_hdl, 
+        $this->name.'/'.$src, 
+        $this->name.'/'.$target
+      );
+    }
   }
 ?>
