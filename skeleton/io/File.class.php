@@ -176,6 +176,22 @@
       if (FALSE === $mtime) return throw(new IOException('cannot get mtime for '.$this->uri));
       return $mtime;
     }
+    
+    /**
+     * Set last modification time
+     *
+     * @access  public
+     * @param   int time default -1
+     * @return  bool success
+     * @throws  IOException in case of an error
+     */
+    function touch($time= -1) {
+      if (-1 == $time) $time= time();
+      if (FALSE === touch($this->uri, $time)) {
+        return throw(new IOException('cannot set mtime for '.$this->uri));
+      }
+      return TRUE;
+    }
 
     /**
      * Erstellungsdatum
