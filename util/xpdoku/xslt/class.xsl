@@ -139,12 +139,13 @@
               </td>
             </tr>
             <tr>
-              <td valign="top">Additional comments:</td>
-              <td valign="top">
-                <xsl:apply-templates select="./comments/class/text"/>
-              </td>
+              <td valign="top" colspan="2">Additional comments:</td>
             </tr>
           </table>
+          
+          <!-- Additional comments -->
+          <br/>
+          <xsl:apply-templates select="./comments/class/text"/>
           <br/>
         </td>
       </tr>
