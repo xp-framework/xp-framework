@@ -10,8 +10,8 @@
   
   $p= &new ParamString();
 
-  if ($p->count < 1) {
-    Console::writeLinef('%s: --host=sieve://user:pass@host/ --mode=get|put [--file=filename]');
+  if ($p->count < 2) {
+    Console::writeLinef('%s: --host=sieve://user:pass@host/ --mode=get|put [--file=filename]', $p->value(0));
     exit(1);
   }
   
