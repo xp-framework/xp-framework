@@ -150,13 +150,17 @@
       $uri= $request->getURI();
       $defaultProduct= getenv('DEF_PROD');
       $defaultLanguage= getenv('DEF_LANG');
+      $state= $request->getState();
+      $page= $request->getPage();
       $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s;%s;psessionid=%s/static?__page=home', 
+        '%s://%s/xml/%s;%s;psessionid=%s/%s?__page=%s', 
         $uri['scheme'],
         $uri['host'],          
         $defaultProduct ? $defaultProduct : 'site',
         $defaultLanguage ? $defaultLanguage : 'en_US',
-        $request->session->getId()
+        $request->session->getId(),
+        $state ? $state : 'static',
+        $page ? $page : 'home'
       ));
       
       return FALSE; // Indicate no further processing is to be done
