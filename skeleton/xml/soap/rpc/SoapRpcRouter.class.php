@@ -9,7 +9,7 @@
     'xml.soap.rpc.SoapRpcResponse',
     'xml.soap.SOAPMessage'
   );
-  
+
   /**
    * Serves as a working base for SOAP request passed to a CGI
    * executed in an Apache environment.
@@ -24,11 +24,11 @@
    *     $response= &$s->process();
    *   } if (catch('HttpScriptletException', $e)) {
    *     // Retrieve standard "Internal Server Error"-Document
-   *     $response= &$e->getResponse(); 
+   *     $response= &$e->getResponse();
    *   }
    *   $response->sendHeaders();
    *   $response->sendContent();
-   *  
+   *
    *   $s->finalize();
    * </code>
    *
@@ -44,9 +44,9 @@
    * @see org.apache.HttpScriptlet
    */
   class SoapRpcRouter extends HttpScriptlet {
-    var 
+    var
       $classloader= NULL;
-    
+
     /**
      * Constructor
      *
@@ -56,7 +56,7 @@
      */
     function __construct(&$classloader) {
       $this->classloader= &$classloader;
-      
+
       // Modify display of error messages since we cannot catch
       // parse or fatal errors but still want a fault (and not
       // "<br /><b>PHP: Fatal Error</b><br />")
@@ -79,7 +79,7 @@
       ini_set('default_mimetype',   'text/xml');
       parent::__construct();
     }
-  
+
     /**
      * Set our own response object
      *
@@ -97,9 +97,9 @@
     function _request() {
       $this->request= &new SoapRpcRequest();
     }
-    
+
     /**
-     * Handle GET requests. Since SOAP over HTTP is defined via 
+     * Handle GET requests. Since SOAP over HTTP is defined via
      * HTTP POST, throw an exception. We could also provide a usage
      * example, but this may be going to far.
      *
@@ -108,7 +108,7 @@
     function doGet(&$request, &$response) {
       return throw(new IllegalAccessException('GET is not supported'));
     }
-    
+
     /**
      * Handle POST requests. The complete POST data consits
      *
@@ -116,40 +116,43 @@
      */
     function doPost(&$request, &$response) {
       try(); {
-      
+
         // Get message
         $msg= &$request->getMessage();
-        
+
         // Figure out encoding if given
         $type= $request->getHeader('Content-type');
         if (FALSE !== ($pos= strpos($type, 'charset='))) {
           $msg->encoding= substr($type, $pos+ 8);
         }
-      
+
         // Create answer
         $answer= &new SOAPMessage();
         $answer->create($msg->action, $msg->method.'Response');
-      
+
         // Call handler
         $return= &$this->callReflectHandler($msg);
         $answer->setData(array($return));
-        
+
       } if (catch('Exception', $e)) {
-      
+        foreach ($e->getStackTrace() as $element) {
+          $stacktrace[]= $element->toString();
+        }
+        
         // An exception occured
         $answer->setFault(
           HTTP_INTERNAL_SERVER_ERROR,
           $e->message,
           $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
-          $e->getStackTrace()
+          $stacktrace
         );
       }
-      
+
       // Set message
       $response->setHeader('Content-type', 'text/xml; charset='.$answer->encoding);
       $response->setMessage($answer);
     }
-    
+
     /**
      * Calls the handler that the action reflects to
      *
@@ -163,7 +166,7 @@
       // Create message from request data
       try(); {
         $reflect= $this->classloader->loadClass($msg->action.'Handler');
-        
+
         // Check if method can be handled
         if (!in_array(strtolower($msg->method), get_class_methods($reflect))) return throw(new IllegalArgumentException(
           $reflect.' cannot handle method '.$msg->method
@@ -171,19 +174,19 @@
       } if (catch('Exception', $e)) {
         return throw($e);
       }
-      
+
       // Create instance
       $handler= &new $reflect();
-      
+
       // Call method
       $return= call_user_func_array(
         array(&$handler, $msg->method),
         $msg->getData(NULL)
       );
-     
+
       // Clean up
       $handler->__destruct();
-      
+
       // Return data
       return $return;
     }
