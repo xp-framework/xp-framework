@@ -63,9 +63,9 @@ int main(int argc, char **argv)
                             );
                         }
                         sybase_free_resultset(resultset);
+                        sybase_cancel(result, CS_CANCEL_ALL);
                         break;
 
-                    case CS_CMD_DONE:
                     case CS_CMD_FAIL:
                     case CS_CANCELED:
                         done= 1;
