@@ -170,7 +170,7 @@ Exception io.IOException (cannot open /tmp/file_does_not_exist.txt mode r)
 
           Example:
           <pre><![CDATA[
-Exception info.binford6100.db.Message.MessageException (statement failed)
+Exception info.binford6100.db.message.MessageException (statement failed)
   at MessagePart.class.php:create (line 71:Undefined property:  subject)
   at MessagePart.class.php:create (line 71:Undefined property:  abstract)
   at SPSybase.class.php:query (line 140:Sybase:  Server message:  part not found. 
@@ -230,31 +230,32 @@ Exception info.binford6100.db.Message.MessageException (statement failed)
         <caption>Global functions of the framework</caption>
         <text>
           <ul>
-            <li>string reflect(string s) - Creates the classname out of the filename of a class
-                <code><![CDATA[  reflect('IOException.class.php'); // := 'IOException']]></code>
-            </li>
-            <li>void uses(string s [, string t, [...]]) - Inlcudes one or more classes
+            <li><pre>void uses(string s [, string t, [...]])</pre>Inlcudes one or more classes
                 <code><![CDATA[  uses('io.File');
   uses('io.Folder', 'lang.System');]]></code>
             </li>
-            <li>void try(void) - begins a try/catch-block</li>
-            <li>bool catch(string exception, &amp;object e) - Catches exceptions
-                <code><![CDATA[  if (catch('IOException', $e)) die($e->getStackTrace());]]></code>
+            <li><pre>void try(void)</pre>Begins a try/catch-block</li>
+            <li><pre>bool catch(string exception, &amp;lang.Throwable e)</pre>Catches exceptions</li>
+            <li><pre>null throw(lang.Throwable e)</pre>Throws an exception
+                <code><![CDATA[  if (!$fd) throw(new IOException('Cannot open file'));]]></code>
             </li>
-            <li>void throw(object e) - throws an exception
-                <code><![CDATA[  if (!$fd) throw(new IOException('cannot open file'));]]></code>
+            <li><pre>void finally(void)</pre>Finally block syntactic sugar
+                <code><![CDATA[  try(); {
+    // ...
+  } if (catch('FormatException', $e)) {
+    $e->printStackTrace();
+  } finally(); {
+    $file->close();
+    $e && exit(-1);
+  }]]></code>
             </li>
-            <li>&amp;mixed cast(&amp;mixed var [, string type= NULL]) - casts a variable "NULL-safe"
+            <li><pre>bool is(string class, &amp;lang.Object object)</pre>
+                checks whether a given object is of the class, a subclass or implements an interface
+            </li>
+            <li><pre>&amp;mixed cast(&amp;mixed var [, string type= NULL])</pre>Casts a variable "NULL-safe"
                 <code><![CDATA[  cast('hello', 'string') := 'hello';
   cast(NULL, 'string') := NULL]]></code>
             </li>
-            <li>bool is_error(void) - returns PHP error messages or - in case none exist - returns FALSE
-                <code><![CDATA[  if ($e= is_error(
-    $a= preg_match('/'.$userInput.'/', $str);
-  )) return throw(new FormatException($e));]]></code>
-            </li>
-            <li>void destroy(void) - Garbage Collector</li>
-            <li>error(int errno, string errstr, string errfile, string errline) - Errorhandler</li>
           </ul>
         </text>
       </para>              
