@@ -57,13 +57,17 @@
       $this->action= $message->action;
 
       // Post XML
-      return $this->_conn->post(
-        new RequestData($message->getSource(0)),
-        array(
-          new Header('SOAPAction', '"'.$message->action.'#'.$message->method.'"'),
-          new Header('Content-Type', 'text/xml; charset='.$message->getEncoding()),
-        )
-      );
+      $this->_conn->request->setMethod(HTTP_POST);
+      $this->_conn->request->setParameters(new RequestData(
+        $message->getDeclaration()."\n".
+        $message->getSource(0)
+      ));
+      $this->_conn->request->setHeader('SOAPAction', '"'.$message->action.'#'.$message->method.'"');
+      $this->_conn->request->setHeader('Content-Type', 'text/xml; charset='.$message->getEncoding());
+      
+      // DEBUG var_dump($this->_conn->request->getRequestString());
+      
+      return $this->_conn->request->send();
    }
    
     /**
