@@ -76,9 +76,10 @@
       $cat= &$l->getCategory($this->getClassName());
       
       // Load corresponding state
-      $cat->info('Requested state name is', $request->getState());
+      $cat->info('Requested state name is', $request->getState(), $request->getPage());
       $state= &$this->sfm->getStateByName($request->getState());
       while ($state && !$state->isAccessible($this)) {
+        $cat->debug($state->getName(), 'is not accessible, getting next...');
         $state= &$this->sfm->getNextState();
       }
       
@@ -92,7 +93,9 @@
       
       // Initialize state and set is as current state
       $state->initialize($this);
-      $this->sfm->setCurrentState($state->getName());
+      $this->sfm->setCurrentState($state);
+      
+      $request->setState($state->getName());
       $cat->info('Current state is', $state->getClassName());
 
       // Now that we have the correct state:
@@ -172,7 +175,9 @@
         return throw(new ContextFailedException('In state "'.$state->getName().'"', $e));
       }
       
+      $cat->debug('Stateflow:', $this->sfm->offset, '@', $this->sfm->flow);
       $cat->mark();
+
       return $return;
     }
     
