@@ -130,9 +130,9 @@ import java.util.Map;
      * @return  boolean
      */
     public static boolean start(RootDoc root) throws IOException {
-      String name = root.classes()[0].name() + ".gen.xml";
+      String name = root.classes()[0].name();
 
       System.out.println("@@=" + name);
-      return processClass(root.classes()[0], new PrintStream(new FileOutputStream(new File(name))));
+      return processClass(root.classes()[0], new PrintStream(new FileOutputStream(new File(name+ ".gen.xml"))));
     }
   }
