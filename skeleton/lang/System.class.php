@@ -48,6 +48,8 @@
      * host.arch         Host architecture
      * user.home         Current user's home directory
      * user.name         Current user's name
+     * file.separator    File separator ("/" on UNIX)
+     * path.separator    Path separator (":" on UNIX)
      * </pre>
      *
      * @model   static
@@ -108,6 +110,12 @@
         case 'user.name': 
           $prop[$name]= get_current_user();
           break;
+        
+        case 'file.separator':
+          return DIRECTORY_SEPARATOR;
+        
+        case 'path.separator':
+          return PATH_SEPARATOR;
       }
       
       return $prop[$name];
