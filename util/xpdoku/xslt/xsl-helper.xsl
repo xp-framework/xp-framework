@@ -43,6 +43,11 @@
        </xsl:choose>
      </title>
      <link rel="stylesheet" href="/style.css" />
+     <meta name="revisit-after" content="7 days"/>
+     <meta name="description" content="XP is an object-oriented PHP framework"/>
+     <meta name="keywords" content="PHP,PHP5,OOP,ZE2,object-oriented,framework,class collection"/>
+     <meta name="author" content="The XP team"/>
+     <meta name="copyright" content="2002-2003"/>
     </head>
 
     <body
