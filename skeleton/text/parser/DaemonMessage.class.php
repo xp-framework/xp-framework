@@ -10,7 +10,9 @@
   define('DAEMON_GENERIC',      'genericfailure');
   define('DAEMON_LOCALPART',    'localpartunknown');
   define('DAEMON_QUOTA',        'quotaexceeded');
-
+  define('DAEMON_RELAYING',     'relayingdenied');
+  define('DAEMON_NOROUTE',      'noroutetohost');
+  define('DAEMON_SMTPCONN',     'smtpconnfailure');
   /**
    *
    *
