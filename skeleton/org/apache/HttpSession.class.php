@@ -159,7 +159,7 @@
      */
     function putValue($name, &$value) {
       if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
-      $_SESSION[$name]= $value;
+      $_SESSION[$name]= serialize($value);
     }
     
     /**
@@ -173,7 +173,7 @@
      */
     function &getValue($name) {
       if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
-      return isset($_SESSION[$name]) ? $_SESSION[$name] : NULL;
+      return isset($_SESSION[$name]) ? unserialize($_SESSION[$name]) : NULL;
     }
     
     /**
