@@ -29,7 +29,7 @@
   $methods= '';
   for ($i= 0, $m= $class->getMethods(), $s= sizeof($m); $i < $s; $i++) {
     $decl= &$m[$i]->getDeclaringClass();
-    $methods.= '  - '.$m[$i]->getName().'() [declared in '.$decl->getName()."]\n";
+    $methods.= '  - '.$m[$i]->toString().' declared in '.$decl->getName()."\n";
   }
   
   // Check whether this class is an interface
@@ -60,7 +60,7 @@
   
     Console::writef(
       "Class '%s' (extends %s) %s\n".
-      "* Constructor: %s() [declared in %s]\n".
+      "* Constructor: %s declared in %s\n".
       "* Methods:\n%s\n".
       "* Fields:\n  - \$%s\n\n".
       "* Has method 'toString': %s\n\n".
@@ -68,14 +68,14 @@
       $class->getName(),
       $parent ? $parent->getName() : '(n/a)',
       $implements ? 'implements '.substr($implements, 2) : '',
-      $constructor->getName(),
+      $constructor->toString(),
       $decl->getName(),
       $methods,
       implode("\n  - \$", array_keys($class->getFields())),
       var_export($class->hasMethod('toString'), 1),
       $instance->toString()
     );
-  
+
     if ($p->exists('invoke')) {
       with ($m= &$class->getMethod($p->value('invoke'))); {
         $result= &$m->invoke($instance);
