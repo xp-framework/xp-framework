@@ -13,9 +13,11 @@
     'net.xp-framework.db.caffeine.XPNews'
   );
   
+  $p= &new ParamString();
+  
   $cm= &ConnectionManager::getInstance();
   $cm->register(DriverManager::getConnection(
-    'sybase://news:stuemper@php3/CAFFEINE?autoconnect=1'
+    'sybase://'.$p->value(1).'/CAFFEINE?autoconnect=1'
   ), 'caffeine');
   
   $rdf= &new RDFNewsFeed();
