@@ -145,7 +145,7 @@
       // illegal character will be returned (or - if the char is the first in the 
       // string, the string excluding the first char will be returned).
       if (strlen($content) > strlen($p= strtok($content, XML_ILLEGAL_CHARS))) {
-        return throw (new IllegalArgumentException('Content contains illegal character at position '.strlen($p)));
+        return throw (new XMLFormatException('Content contains illegal character at position '.strlen($p)));
       }
       
       $this->content= $content;
