@@ -227,8 +227,9 @@
      * @param   string new the new nick
      */
     function onNickChanges(&$connection, $nick, $new) {
-      $this->cat && $this->cat->debug('Copying karma from', $nick, 'to', $new);
+      $this->cat && $this->cat->debug('Moving karma from', $nick, 'to', $new);
       $this->setKarma($new, $this->karma[$nick]);
+      unset($this->karma[$nick]);
     }
     
     /**
