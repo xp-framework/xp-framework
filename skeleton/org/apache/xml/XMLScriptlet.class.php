@@ -123,7 +123,7 @@
       $defaultProduct= getenv('DEF_PROD');
       $defaultLanguage= getenv('DEF_LANG');
       $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s:%s/static', 
+        '%s://%s/xml/%s:%s/static?__page=home', 
         $uri['scheme'],
         $uri['host'],          
         $defaultProduct ? $defaultProduct : 'site',
@@ -147,7 +147,7 @@
       $defaultProduct= getenv('DEF_PROD');
       $defaultLanguage= getenv('DEF_LANG');
       $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s:%s;psessionid=%s/static', 
+        '%s://%s/xml/%s:%s;psessionid=%s/static?__page=home', 
         $uri['scheme'],
         $uri['host'],          
         $defaultProduct ? $defaultProduct : 'site',
@@ -183,20 +183,20 @@
       $response->setParam('product', $request->getProduct());
       $response->setParam('sess',    $request->getSessionId());
       
-      // Add all request parameters to the formvalue node
-      foreach (array_keys($request->params) as $key) {
-        $response->addFormValue($key, $request->params[$key]);
-      }
-      
       // Set XSL stylesheet
       $response->setStylesheet(sprintf(
         '%s%s/%s/%s/%s.xsl',
         $this->stylesheetBase,
-        $response->getParam('product'),
-        $response->getParam('lang'),
+        $request->getProduct(),
+        $request->getLanguage(),
         $request->getState(),
-        $response->getParam('page')
+        $request->getPage()
       ));
+
+      // Add all request parameters to the formvalue node
+      foreach ($request->params as $key => $value) {
+        $response->addFormValue($key, $value);
+      }
     }
     
     /**
