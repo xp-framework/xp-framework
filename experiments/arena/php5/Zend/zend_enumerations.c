@@ -39,7 +39,7 @@ ZEND_METHOD(enumeration, __construct)
 {
 
 	/* Should never be executable */
-	zend_throw_exception(NULL, "Cannot clone object using __clone()", 0 TSRMLS_CC);
+	zend_throw_exception(NULL, "Cannot construct object", 0 TSRMLS_CC);
 }
 
 ZEND_METHOD(enumeration, size)
@@ -124,7 +124,8 @@ ZEND_METHOD(enumeration, valueOf) {
 
 ZEND_METHOD(enumeration, valueAt) {
 	HashPosition pos;
-	long rpos, cpos, length, dummy;
+	long rpos, cpos, dummy;
+	uint length;
 	zval **data;
 	char *name;
 	
@@ -154,13 +155,92 @@ ZEND_METHOD(enumeration, valueAt) {
 	  cpos++;
 	}
 	
-	zend_error(E_WARNING, "No %dth element in enumeration %s:", rpos, EG(scope)->name);
+	zend_error(E_WARNING, "No %ldth element in enumeration %s", rpos, EG(scope)->name);
 	RETURN_FALSE;
 }
+
+ZEND_METHOD(enumeration, __call) {
+#define _SIZEOF_MAGIC sizeof("__") - 1
+	char *fname, *fcallname;
+	long fname_len, fcallname_len;
+	zval *arguments;
+	zval **property, ***func_params, *retval_ptr;
+	zval *fbc;
+	zend_class_entry *ce;
+	long count, current= 0;
+	HashTable *arg_ht;
+	
+	if (ZEND_NUM_ARGS() != 2) 
+		WRONG_PARAM_COUNT;
+	
+	if (!this_ptr) {
+		zend_error(E_ERROR, "__call() cannot be called statically");
+		return;
+	}
+	
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sa", &fname, &fname_len, &arguments) == FAILURE) {
+		zend_error(E_WARNING, "__call() needs two parameters");
+		return;
+	}
+	
+	/* Determine function to be called */
+	if (zend_hash_find(Z_OBJPROP_P(getThis()), "name", sizeof("name"), (void **)&property) == FAILURE) {
+		zend_error(E_CORE_ERROR, "Could not get name property of enumeration");
+	}
+	
+	/* Fetch object's class */
+	ce= zend_get_class_entry(getThis() TSRMLS_CC);
+	
+	/* Build masked function name, see zend_compile.c: zend_do_begin_enum_function_declaration() */
+	fcallname_len= Z_STRLEN_PP(property) + strlen(fname) + _SIZEOF_MAGIC + 1;
+	fcallname= safe_emalloc(sizeof (char *), fcallname_len, 0);
+	memcpy(fcallname, "__", sizeof("__"));
+	memcpy(fcallname + _SIZEOF_MAGIC, fname, strlen(fname));
+	memcpy(fcallname + _SIZEOF_MAGIC + strlen(fname), Z_STRVAL_PP(property), Z_STRLEN_PP(property));
+	(*(fcallname + _SIZEOF_MAGIC + strlen(fname) + Z_STRLEN_PP(property)))= '\0';
+
+	/* Build function argument list */
+	arg_ht= Z_ARRVAL_P(arguments);
+	count= zend_hash_num_elements(arg_ht);
+	
+	if (count) {
+		func_params= safe_emalloc(sizeof(zval **), count, 0);
+		
+		for (
+			zend_hash_internal_pointer_reset(arg_ht); 
+			zend_hash_get_current_data(arg_ht, (void **)&func_params[current]) == SUCCESS;
+			zend_hash_move_forward(arg_ht)
+		) {
+			current++;
+		}
+	} else {
+		func_params= NULL;
+	}
+	
+	MAKE_STD_ZVAL(fbc);
+	ZVAL_STRINGL(fbc, fcallname, fcallname_len - 1, 0);
+	
+	if (call_user_function_ex(&ce->function_table, &getThis(), fbc, &retval_ptr, count, func_params, 0, NULL TSRMLS_CC) == SUCCESS) {
+		if (retval_ptr) {
+			COPY_PZVAL_TO_ZVAL(*return_value, retval_ptr);
+		}
+	}
+	
+	/* Cleanup */
+	if (func_params) { efree(func_params); }
+	efree(fcallname);
+	efree(fbc);
+}
+
+static ZEND_BEGIN_ARG_INFO_EX(arginfo_enumeration__call, 0, 0, 2)
+	ZEND_ARG_INFO(0, fname)
+	ZEND_ARG_INFO(0, arguments)
+ZEND_END_ARG_INFO();
 
 static zend_function_entry default_enumeration_functions[]= {
 	ZEND_ME(enumeration, __clone, NULL, ZEND_ACC_PRIVATE|ZEND_ACC_FINAL)
 	ZEND_ME(enumeration, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
+	ZEND_ME(enumeration, __call, arginfo_enumeration__call, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
 	ZEND_ME(enumeration, size, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
 	ZEND_ME(enumeration, values, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
 	ZEND_ME(enumeration, valueOf, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)

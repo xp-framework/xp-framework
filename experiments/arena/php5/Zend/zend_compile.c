@@ -4183,17 +4183,19 @@ void zend_do_add_enum_member(znode *name, znode *value TSRMLS_DC)
 		}
 		
 		/* Check for duplicates */
-		zend_hash_internal_pointer_reset_ex(&CG(active_class_entry)->constants_table, &pos);
-		while (zend_hash_get_current_data_ex(&CG(active_class_entry)->constants_table, (void **)&lastdata, &pos) == SUCCESS) {
-			if (
-				((*lastdata)->type == IS_LONG && property->type == IS_LONG && Z_LVAL_PP(lastdata) == Z_LVAL_P(property)) ||
-				((*lastdata)->type == IS_STRING && property->type == IS_STRING && 0 == zend_binary_zval_strcmp(property, *lastdata))
-			) {
-				zend_error(E_COMPILE_ERROR, "Reusing already defined value for enumeration member");
-			}
-			
-			zend_hash_move_forward_ex(&CG(active_class_entry)->constants_table, &pos);
-		}
+        if (!(property->type == IS_LONG && CG(max_enum) < Z_LVAL_P(property))) {
+		    zend_hash_internal_pointer_reset_ex(&CG(active_class_entry)->constants_table, &pos);
+		    while (zend_hash_get_current_data_ex(&CG(active_class_entry)->constants_table, (void **)&lastdata, &pos) == SUCCESS) {
+			    if (
+				    ((*lastdata)->type == IS_LONG && property->type == IS_LONG && Z_LVAL_PP(lastdata) == Z_LVAL_P(property)) ||
+				    ((*lastdata)->type == IS_STRING && property->type == IS_STRING && 0 == zend_binary_zval_strcmp(property, *lastdata))
+			    ) {
+				    zend_error(E_COMPILE_ERROR, "Reusing already defined value for enumeration member %s::%s", CG(active_class_entry)->name, name->u.constant.value.str.val);
+			    }
+
+			    zend_hash_move_forward_ex(&CG(active_class_entry)->constants_table, &pos);
+		    }
+        }
 	} else {
 	
 		/* Retrieve the value of the last numeric element */
@@ -4240,7 +4242,7 @@ void zend_do_begin_enum_function_declaration(znode *enum_token, znode *function_
 	zend_do_add_enum_member(enum_token, NULL TSRMLS_CC);
 
 	/* Add private method */
-	fn_flags_znode->u.constant.value.lval= (fn_flags_znode->u.constant.value.lval | ZEND_ACC_PRIVATE) & ~ZEND_ACC_PUBLIC;
+	fn_flags_znode->u.constant.value.lval= (fn_flags_znode->u.constant.value.lval | ZEND_ACC_PROTECTED) & ~ZEND_ACC_PUBLIC;
 	zend_do_begin_function_declaration(function_token, function_name, is_method, return_reference, fn_flags_znode TSRMLS_CC);
 }
 
