@@ -5,7 +5,10 @@
  */
  
   /**
-   * Kapselt die Exception
+   * Exception
+   *
+   * @purpose  Base class for all other exceptions
+   * @see      http://java.sun.com/docs/books/tutorial/essential/exceptions/definition.html
    */
   class Exception extends Object {
     var 
@@ -13,6 +16,9 @@
      
     /**
      * Constructor
+     *
+     * @access  public
+     * @param   string message
      */
     function __construct($message) {
       $this->message= $message;
@@ -20,16 +26,19 @@
     }
     
     /**
-     * "Stack Trace" ausgeben
+     * Print "stacktrace" to standard output
+     *
+     * @access  public
      */
     function printStackTrace() {
       echo $this->getStackTrace();
     }
     
     /**
-     * "Stack Trace" zurückgeben
+     * Return a formatted representation of the "stracktrace"
      *
-     * @return  string der StackTrace, vorformatiert
+     * @access  public
+     * @return  string
      */
     function getStackTrace() {
       $return= sprintf(
@@ -38,10 +47,8 @@
         $this->message
       );
       
-      // Pfusch, aber in PHP4 nicht anders möglich...
+      // This is ugly...
       for ($i= 0; $i< sizeof($GLOBALS['php_errorcode']); $i++) {
-      
-        // Methoden/Funktionsnamen raussuchen
         if ($fd= @fopen($GLOBALS['php_errorfile'][$i], 'r')) {
           $func= '<main>';
           $no= 0;
