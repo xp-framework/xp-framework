@@ -6,12 +6,14 @@
 
   uses(
     'peer.URL',
+    'peer.http.BasicAuthorization',
     'scriptlet.HttpScriptlet',
     'org.webdav.util.WebdavBool',
     'org.webdav.WebdavScriptletRequest',
     'org.webdav.xml.WebdavPropFindRequest',
     'org.webdav.xml.WebdavPropPatchRequest',
-    'org.webdav.xml.WebdavMultistatus'
+    'org.webdav.xml.WebdavMultistatus',
+    'org.webdav.auth.WebdavUser'
   );
   
   // HTTP methods for distributed authoring
@@ -105,9 +107,14 @@
         WEBDAV_METHOD_COPY       => 'doCopy',
         WEBDAV_METHOD_MOVE       => 'doMove'
       ),
+      $permissions= array(
+        
+      ),
 
       $impl         = array(),
-      $handlingImpl = NULL;
+      $handlingImpl = NULL,
+      $auth         = NULL,
+      $handlingAuth = NULL;
       
     /**
      * Constructor
@@ -120,10 +127,23 @@
 
       // Make sure patterns are always with trailing /
       foreach (array_keys($impl) as $pattern) {
-        $this->impl[rtrim($pattern, '/').'/']= &$impl[$pattern];
+        $path= rtrim($pattern, '/').'/';
+        if (isset($impl[$pattern]['impl']))
+          $this->impl[$path]= &$impl[$pattern]['impl'];
+        else
+          $this->impl[$path]= &$impl[$pattern];
+        if (isset($impl[$pattern]['auth'])) {
+          $this->auth[$path]= &$impl[$pattern]['auth'];
+        }
       }
     }
     
+    /**
+     * Returns a Webdav request object depending on the REQUEST_METHOD
+     *
+     * @access private
+     * @return org.webdav.WebdavScriptletRequest
+     */
     function _request() {
       switch(getenv('REQUEST_METHOD')) {
         case 'PROPFIND':
@@ -134,7 +154,7 @@
           return new WebdavScriptletRequest();
       }
     }
-
+    
     /**
      * Handle OPTIONS
      *
@@ -597,6 +617,38 @@
       
       return FALSE;
     }
+    
+    /**
+     * Called when a authorization is required
+     *
+     * @access  private
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
+     * @return  bool processed
+     * @throws  Exception to indicate failure
+     */
+    function doAuthorizationRequest(&$request, &$response) {
+      $response->setStatus(HTTP_AUTHORIZATION_REQUIRED);
+      $response->setHeader('WWW-Authenticate',  'Basic realm="WebDAV Authorization"');
+      
+      return TRUE;
+    }
+    
+    /**
+     * Called when user hasn't permissions to do something
+     *
+     * @access  private
+     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   &scriptlet.HttpScriptletResponse response
+     * @return  bool processed
+     * @throws  Exception to indicate failure
+     */
+    function doAuthorizationDeny(&$request, &$response) {
+      $response->setStatus(HTTP_FORBIDDEN);
+      
+      return TRUE;
+    }
+    
   
     /**
      * Handle methods
@@ -632,7 +684,7 @@
         if (0 !== strpos(rtrim($request->uri['path'], '/').'/', $pattern)) continue;
         
         // Set the root URL (e.g. http://wedav.host.com/dav/)
-        $request->setRootURL(new URL(sprintf(
+        $request->setRootURL($rootURL= new URL(sprintf(
           '%s://%s%s',
           $request->uri['scheme'],
           $request->uri['host'],
@@ -651,7 +703,6 @@
       
       // Implementation not found
       if (NULL === $this->handlingImpl) {
-        trigger_error('No pattern match ['.implode(', ', array_keys($this->impl)).']', E_USER_NOTICE);
         return throw(new HttpScriptlet('Cannot handle requests to '.$request->uri['path']));
       }
 
@@ -669,6 +720,24 @@
           
         default:
           $this->useragent= WEBDAV_CLIENT_UNKNOWN;
+      }
+      
+      // Check for authorization handler
+      if (isset($this->auth[$rootURL->getPath()])) {
+        $this->handlingAuth= &$this->auth[$rootURL->getPath()];
+        $auth= &BasicAuthorization::fromValue($request->getHeader('Authorization'));
+        
+        // Can not get username/password from Authorization header
+        if (!$auth) return 'doAuthorizationRequest';
+        $request->setUser(new WebdavUser($auth->getUser(), $auth->getPassword()));
+        
+        // Check user
+        if (!$this->handlingAuth->authorize($request->getUser())) return 'doAuthorizationRequest';
+        
+        // Check for permissions
+        if (!$this->handlingAuth->isAuthorized($request)) {
+          return 'doAuthorizationDeny';
+        }
       }
       
       return $this->methods[$request->method];
