@@ -1454,11 +1454,9 @@
       // Info
       $this->_newobj();
       $this->_out('<</Producer (FPDF '.FPDF_VERSION.')');
-      if (!empty($this->info['title'])) $this->_out('/Title ('.$this->_escape($this->info['title']).')');
-      if (!empty($this->info['subject'])) $this->_out('/Subject ('.$this->_escape($this->info['subject']).')');
-      if (!empty($this->info['author'])) $this->_out('/Author ('.$this->_escape($this->info['author']).')');
-      if (!empty($this->info['keywords'])) $this->_out('/Keywords ('.$this->_escape($this->info['keywords']).')');
-      if (!empty($this->info['creator'])) $this->_out('/Creator ('.$this->_escape($this->info['creator']).')');
+      foreach ($this->info as $key => $val) {
+        $this->_out('/'.ucfirst($key).' ('.$this->_escape($this->info[$key]).')');
+      }
       $this->_out('/CreationDate (D:'.date('YmdHis').')>>');
       $this->_out('endobj');
  
@@ -1523,7 +1521,7 @@
     /**
      * Begin a page
      *
-     * @access  public
+     * @access  private
      * @param   string orientation
      */
     function _beginpage($orientation) {
