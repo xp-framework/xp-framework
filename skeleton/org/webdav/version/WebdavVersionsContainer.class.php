@@ -43,6 +43,16 @@
     function getVersions() {
       return $this->versions;
     }
+    
+    /**
+     * Returns the last added version object
+     *
+     * @access  public
+     * @return  &org.webdav.version.Webdav*Version
+     */
+    function &getLatestVersion() {
+      return end($this->versions);
+    }
   
   }
 ?>

@@ -53,7 +53,7 @@
      * Set the versionnumber
      *
      * @access  public
-     * @param   mixed versnr
+     * @param   float versnr
      */
     function setVersionNumber($versnr) {
       $this->versnr= $versnr;
@@ -63,7 +63,7 @@
      * Get the versionnumber
      *
      * @access  public
-     * @return  mixed versnr
+     * @return  float versnr
      */
     function getVersionNumber() {
       return $this->versnr;
