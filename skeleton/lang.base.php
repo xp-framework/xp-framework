@@ -32,6 +32,13 @@
     }
     // }}}
 
+    // {{{ public <null> null()
+    //     Runs a fatal-error safe version of NULL
+    function &null() {
+      return xp::registry('null');
+    }
+    // }}}
+
     // {{{ public bool errorAt(string file [, int line)
     //     Returns whether an error occured at the specified position
     function errorAt($file, $line= -1) {
@@ -273,11 +280,13 @@
   // {{{ proto bool is(string class, &lang.Object object)
   //     Checks whether a given object is of the class, a subclass or implements an interface
   function is($class, &$object) {
+    $p= get_class($object);
+    if (is_null($class) && 'null' == $p) return TRUE;
     $class= xp::reflect($class);
     if (is_a($object, $class)) return TRUE;
     $implements= xp::registry('implements');
     
-    if ($p= get_class($object)) do {
+    do {
       if (isset($implements[$p][$class])) return TRUE;
     } while ($p= get_parent_class($p));
     return FALSE;
