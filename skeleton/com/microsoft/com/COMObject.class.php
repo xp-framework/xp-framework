@@ -1,0 +1,53 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  /**
+   * COM object
+   * 
+   * <quote>
+   * COM is a technology which allows the reuse of code written in any language 
+   * (by any language) using a standard calling convention and hiding behind 
+   * APIs the implementation details such as what machine the Component is 
+   * stored on and the executable which houses it. It can be thought of as a 
+   * super Remote Procedure Call (RPC) mechanism with some basic object roots. 
+   * It separates implementation from interface.
+   * 
+   * COM encourages versioning, separation of implementation from interface and 
+   * hiding the implementation details such as executable location and the 
+   * language it was written in.
+   * </quote>
+   *
+   * @see      http://www.microsoft.com/Com/resources/comdocs.asp COM specification
+   * @see      http://www.developmentor.com/dbox/yacl.htm Yet Another COM Library (YACL) 
+   * @ext      com
+   * @purpose  Base class
+   */
+  class COMObject extends Object {
+    var
+      $h   = NULL;
+  
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   string identifier
+     */    
+    function __construct($identifier) {
+      $this->h= &new COM($identifier);
+      parent::__construct();
+    }
+    
+    /**
+     * Destructor
+     *
+     * @access  public
+     */
+    function __destruct() {
+      $this->h= NULL;
+      parent::__destruct();
+    }
+  }
+?>
