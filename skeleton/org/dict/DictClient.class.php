@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.Socket');
+  uses('peer.Socket', 'org.dict.DictDefinitionEntry');
 
   define('DICT_STRATEGY_SUBSTRING', 'substring');
   define('DICT_STRATEGY_EXACT',     'exact');
@@ -81,7 +81,7 @@
         $cmd= vsprintf($args[0], array_slice($args, 1, -1));
       
         // Write
-        var_dump('>>>', $cmd);
+        # var_dump('>>>', $cmd);
         if (FALSE === $this->_sock->write($cmd."\n")) return FALSE;
 
         // Expecting data?
@@ -90,7 +90,7 @@
       
       // Read
       if (FALSE === ($buf= substr($this->_sock->read(), 0, -2))) return FALSE;
-      var_dump('<<<', $buf);
+      # var_dump('<<<', $buf);
       
       // Got expected data?
       $code= substr($buf, 0, 3);
@@ -188,22 +188,28 @@
      * @access  public
      * @param   string word
      * @param   strind db default '*'
-     * @return  string definition
+     * @return  org.dict.DictDefinitionEntry[]
      * @throws  IOException
      */
-    function getDefinition($word, $db= '*') {
+    function &getDefinition($word, $db= '*') {
       $def= array();
       try(); {
-        $ret= $this->_sockcmd('DEFINE %s \'%s\'', $db, $word, array(250, 552));
-        if ('552' != substr($ret, 0, 3)) {
-          $count= 0;
-          while ('250' != substr($this->_sockcmd(FALSE, array(151, 250)), 0, 3)) {
-            $def[$count]= '';
+        $ret= $this->_sockcmd('DEFINE %s \'%s\'', $db, $word, array(150, 552));
+        if ('150' == substr($ret, 0, 3)) {
+
+          while (
+            ($ret= $this->_sockcmd(FALSE, array(151, 250))) &&
+            ('250' != substr($ret, 0, 3))
+          ) {
+          
+            // Read until we find with a "." on a line with itself
+            $definition= '';
             while ($buf= $this->_sock->read()) {
               if ('.' == $buf{0}) break;
-              $def[$count].= $buf;
+              $definition.= $buf;
             }
-            $count++;
+            
+            $def[]= &new DictDefinitionEntry(substr($ret, 4), $definition);
           }
         }
       } if (catch('Exception', $e)) {
