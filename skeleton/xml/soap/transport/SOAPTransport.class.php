@@ -1,32 +1,44 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
+/* This class is part of the XP framework
  *
  * $Id$
  */
 
   /**
-   * Kapselt den Transport von SOAP-Nachrichten
-   * Dies ist ein "Interface" und soll vererbt werden
-   * 
-   * @see xml.soap.transport.SOAPHTTPTransport
+   * Abstract base class for all other transports
+   *
+   * @purpose  SOAP Transport
+   * @see      xp://xml.soap.transport.SOAPHTTPTransport
    */
   class SOAPTransport extends Object {
- 
+    var
+      $cat  = NULL;
+      
     /**
-     * Die SOAP-Message absenden
+     * Set trace for debugging
      *
      * @access  public
-     * @param   xml.soap.SOAPMessage message Die zu verschickende Nachricht
+     * @param   &util.log.LogCategory cat
+     */
+    function setTrace(&$cat) {
+      $this->cat= &$cat;
+    }
+ 
+    /**
+     * Send the message
+     *
+     * @access  public
+     * @param   &xml.soap.SOAPMessage message
      */
    function send(&$message) { }
    
     /**
-     * Die SOAP-Antwort auswerten
+     * Retreive the answer
      *
      * @access  public
-     * @return  xml.soap.SOAPMessage Die Antwort
+     * @return  &xml.soap.SOAPMessage
      */
-   function retreive() { }
+   function &retreive() { }
  
  }
 ?>
