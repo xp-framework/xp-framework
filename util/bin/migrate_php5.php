@@ -145,7 +145,7 @@ __;
         $t->getNextToken();             // Swallow whitepsace
         $classname= $t->getNextToken();
         $extends= NULL;
-        $out[]= $classname[1];
+        $out[]= isset($map[$classname[1]]) ? $map[$classname[1]] : $classname[1];
         while ('{' !== $tok[1]) {
           $tok= $t->getNextToken();
           $out[]= $tok[1];
@@ -223,7 +223,6 @@ __;
         
         // Kill method body if this function resides in an interface or is declared abstract
         if (('Interface' == $extends) || (@$apidoc['model'] == 'abstract')) { 
-          $out[sizeof($out)- 1]= trim($out[sizeof($out)- 1]);
           while ('}' !== $tok[1]) {
             $tok= $t->getNextToken();
           }
