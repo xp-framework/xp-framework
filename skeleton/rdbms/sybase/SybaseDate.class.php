@@ -4,8 +4,6 @@
  * $Id$
  */
 
-  define('RE_SYBASE_DATE',      '/^([a-zA-Z]{3})[ ]+([0-9]{1,2})[ ]+([0-9]{2,4})[ ]+([0-9]{1,2}):([0-9]{1,2})([A|P]M)$/');
-
   uses('util.Date');
   
   /**
@@ -18,7 +16,7 @@
      *
      * @param   array regs Die Matches auf die Sybase-Datumsregex (siehe SybaseData#RE_SYBASE_DATE)
      */
-    function fromRegs($regs) {
+    function fromString($str) {
       $map= array(
         'Jan' => 1,
         'Feb' => 2,
@@ -37,6 +35,12 @@
         'Dec' => 12,
         'Dez' => 12
       );
+      if (!preg_match(
+        '/^([a-zA-Z]{3})[ ]+([0-9]{1,2})[ ]+([0-9]{2,4})[ ]+([0-9]{1,2}):([0-9]{1,2})([A|P]M)$/', 
+        $str, 
+        $regs
+      )) return NULL;
+      
       $regs[1]= $map[$regs[1]];
       if($regs[6]== "PM" && $regs[4]!= 12) $regs[4]+= 12; // 12 PM => 12:00
       if($regs[6]== "AM" && $regs[4]== 12) $regs[4]= 0;   // 12 AM => 00:00
