@@ -291,7 +291,7 @@
      * @return  &rdbms.Transaction
      */
     function &begin(&$transaction) {
-      if (FALSE === $this->query('begin transaction %c', $transaction->name)) {
+      if (FALSE === $this->query('begin transaction xp_%c', $transaction->name)) {
         return FALSE;
       }
       $transaction->db= &$this;
@@ -320,7 +320,7 @@
      * @return  bool success
      */
     function rollback($name) { 
-      return $this->query('rollback transaction %c', $name);
+      return $this->query('rollback transaction xp_%c', $name);
     }
     
     /**
@@ -331,7 +331,7 @@
      * @return  bool success
      */
     function commit($name) { 
-      return $this->query('commit transaction %c', $name);
+      return $this->query('commit transaction xp_%c', $name);
     }
   }
 ?>
