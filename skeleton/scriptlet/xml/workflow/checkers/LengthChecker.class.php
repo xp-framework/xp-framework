@@ -27,9 +27,9 @@
      *
      * @access  public
      * @param   int min
-     * @param   int max
+     * @param   int max default -1
      */
-    function __construct($min, $max) {
+    function __construct($min, $max= -1) {
       $this->minLength= $min;
       $this->maxLength= $max;
     }
@@ -45,7 +45,7 @@
       foreach ($value as $v) {
         if (strlen($v) < $this->minLength) {
           return 'tooshort';
-        } elseif (strlen($v) > $this->maxLength) {
+        } elseif (($this->maxLength > 0) && (strlen($v) > $this->maxLength)) {
           return 'toolong';
         }
       }    
