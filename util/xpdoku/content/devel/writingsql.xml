@@ -151,6 +151,19 @@ having
           In best-case one should not be able to tell who wrote the SQL.
         </text>
       </para>
+      
+      <para>
+        <caption>SQL and database performance</caption>
+        <text>Good sql code should not only be written in an elegant manner
+          but also be tweaked to get the most performance out of your rdbms.
+          Rdbms often include facilities for tweaking a query. When you utilize
+          a Sybase Server or the MSSQL rdbms, you can enable &qouot;debugging&quot;
+          output by the option <tt>set showplan on|off</tt>. When enabled the
+          server prints the plan of any query that is transmitted. Make sure
+          your query is run on the available indices of the involved tabled. It 
+          is even better to use clustered indices or primary keys of tables.
+        </text>
+      </para>
     </content>
   </main>
 </document>
