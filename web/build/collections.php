@@ -36,21 +36,26 @@
 
     // Go through folder entries
     while (FALSE !== ($entry= $f->getEntry())) {
-      $fn= str_replace($base, '', $f->getURI().$entry);
 
       // Recurse into subdirectories, ignoring well-known directories 
       // defined in static variable "except"
       if (is_dir($f->getURI().$entry) && !in_array($entry, $except)) {
         $packages++;
-        recurse($node, $base, $fn);
+        recurse($node, $base, str_replace($base, '', $f->getURI().$entry));
         continue;
       }
+
+      $fqcn= str_replace(
+        DIRECTORY_SEPARATOR,
+        '.',
+        substr(strstr($f->getURI().$entry, 'skeleton'), 9, -10)
+      );
 
       if ('.class.php' == substr($entry, -10)) {
 
         // Add class node to package node
         $node->addChild(new Node('class', NULL, array(
-          'name' => str_replace(DIRECTORY_SEPARATOR, '.', substr($fn, 0, -10))
+          'name' => $fqcn
         )));
         
         // Parse class API docs
@@ -67,7 +72,7 @@
 
         // Add sapi node to package node
         $node->addChild(new Node('sapi', NULL, array(
-          'name' => str_replace(DIRECTORY_SEPARATOR, '.', substr($fn, 0, -9))
+          'name' => $fqcn
         )));        
       } else {
         continue;
