@@ -16,7 +16,8 @@
 
   uses (
     'lang.IllegalArgumentException',
-    'org.cvshome.CVSInterfaceException'
+    'org.cvshome.CVSInterfaceException',
+    'io.File'
   );
 
   /**
@@ -131,7 +132,10 @@
       switch ($statusCode) {
         case 'Up-to-date': return CVS_UPTODATE;
         case 'Added': return CVS_ADDED;
-        case 'Locally modified': return CVS_MODIFIED;
+        case 'Locally Modified': return CVS_MODIFIED;
+        case 'Unknown': return CVS_UNKNOWN;
+        case 'Needs Checkout': return CVS_UPDATED;
+        case 'Conflict': return CVS_CONFLICT;
         default: break;
       }
       
@@ -237,10 +241,64 @@
      * @param string comment
      */
     function commit($comment) {
-      return $this->_execute (sprintf ("commit -m '%s' %s",
-        addSlashes ($comment),
-        $this->filename
+      $tmpFilename= '/tmp/cvscommitmsg.'.rand(1, 10000);
+      $f= &new File ($tmpFilename);
+      try(); {
+        $f->open (FILE_MODE_WRITE);
+        $f->writeLine ($comment);
+        $f->close();
+      } if (catch ('IOException', $e)) {
+        echo $e->printStackTrace();
+        return $e;
+      }
+
+      $return= &$this->_execute (sprintf ("commit -F %s",
+        $tmpFilename
       ));
+      
+      $f->unlink();
+      return $return;
+    }
+    
+    /**
+     * Removes a file from the repository, deletes (renames) it locally
+     * To complete this action, you have to call commit. Use this with
+     * caution.
+     *
+     * @access public
+     * @return bool success
+     */
+    function remove() {
+      $f= &new File ($this->filename);
+      try(); {
+        $f->move ($this->filename.'.cvsremove');
+      } if (catch ('IOException', $e)) {
+        $e->printStackTrace();
+        return false;
+      }
+      
+      return $this->_execute ('remove');
+    }
+    
+    /**
+     * Compares two versions of this file. Leave both parameters NULL to
+     * let CVS compare the local file agains the one in the repository.
+     * Specify only $r1 to compare local version agains revision $r1.
+     * Specify both params to diff two CVS-revisions against each other.
+     * You can also use CVS-Tags here.
+     *
+     * @access public
+     * @param string revision_from
+     * @param string revision_to
+     * @return array diff lines from the diff
+     */
+    function diff($r1= NULL, $r2= NULL) {
+      $cmd= sprintf ('diff %s %s',
+        (NULL !== $r1 ? '-r'.$r1 : ''),
+        (NULL !== $r2 ? '-r'.$r2 : '')
+      );
+
+      return $this->_execute ($cmd);
     }
   }
 ?>
