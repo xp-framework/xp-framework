@@ -142,7 +142,7 @@
         if (FALSE === imap_list($this->_hdl[0], $this->_hdl[1], $name)) {
           trigger_error('Folder: '.$name, E_USER_NOTICE);
           return throw(new MessagingException(
-            'Retreiving folder failed',
+            'Retrieving folder failed',
             $this->_errors()
           ));      
         }
@@ -169,7 +169,7 @@
         // Retrieve list and cache it
         if (0 == ($s= sizeof($list= &imap_getmailboxes($this->_hdl[0], $this->_hdl[1], '*')))) {
           return throw(new MessagingException(
-            'Retreiving folder list failed',
+            'Retrieving folder list failed',
             $this->_errors()
           ));      
         }
@@ -412,7 +412,7 @@
         ))) {
           trigger_error('Folder: '.$f->name, E_USER_NOTICE);
           return throw(new MessagingException(
-            'Retreiving message count [SA_'.strtoupper($attr).'] failed',
+            'Retrieving message count [SA_'.strtoupper($attr).'] failed',
             $this->_errors()
           ));
         }            
