@@ -136,7 +136,7 @@
     <xsl:variable name="current" select="exsl:node-set($month)/@num"/>
     
     <!-- Calendar -->
-    <table class="calendar" cellpadding="3" cellspacing="0">
+    <table class="calendar" cellpadding="3" cellspacing="0" width="180">
       <tr>
         <th>
           <xsl:variable name="prev" select="func:previous_month($month)"/>
