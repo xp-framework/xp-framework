@@ -7,6 +7,7 @@
   uses(
     'xml.XML',
     'xml.XMLParser',
+    'xml.Node',
     'io.IOException'
   );
  
@@ -47,7 +48,7 @@
      */
     function getSource($indent= TRUE) {
       return (isset($this->root)
-        ? $this->root->getSource($indent)
+        ? $this->getDeclaration()."\n".$this->root->getSource($indent)
         : NULL
       );
     }
@@ -93,7 +94,8 @@
       
       try(); {
         $file->open(FILE_MODE_READ);
-        $string= $file->read($file->size());
+        $string= '';
+        while (!$file->eof()) $string.= $file->read();
         $file->close();
       } if (catch('Exception', $e)) {
         return throw($e);
