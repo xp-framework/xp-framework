@@ -188,6 +188,9 @@ Details
   ?>
   
   The Reflection API offers a way to retrieve these annotations.
+
+  For details, see 
+  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/syntax
   
 * Finally:
   A new keyword finally is introduced which is called regardless of 
