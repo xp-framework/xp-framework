@@ -9,6 +9,7 @@
   /**
    * Class wrapping file comments
    *
+   * @purpose  Comment
    */
   class FileComment extends Comment {
   
@@ -17,7 +18,6 @@
      *
      * @access  public
      * @param   string ver Version
-     * @return  
      */
     function setCVSVersion($ver) {
       $this->cvsver= $ver;
@@ -26,7 +26,11 @@
     /**
      * Handles tags
      *
-     * @see lang.apidoc.Comment
+     * @access  protected
+     * @param   string tag
+     * @param   string line
+     * @return  &mixed
+     * @see     xp://lang.apidoc.Comment
      */
     function _handleTag($tag, $line) {
       $descr= parent::_handleTag($tag, $line);
