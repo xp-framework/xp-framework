@@ -67,18 +67,17 @@
           To use the power of Glade in the XP framework, simply change the second example from
           the introduction to the following:
           <code><![CDATA[  class MyGladeApp extends GTKGladeApplication {
-    function __construct() {
+    function __construct(&$paramstring) {
     
       // Assume the .glade file is in the same directory as this class
-      parent::__construct('Hello', dirname(__FILE__).'/hello.glade');
+      parent::__construct($paramstring, 'Hello', dirname(__FILE__).'/hello.glade');
     }
     
     function init() {
       parent::init();
       $button= &$this->widget('button1');
       $button->connect('clicked', array(&$this, 'done'));
-    }
-  
+    }  
   }]]></code>
         </text>
       </para>
