@@ -69,7 +69,6 @@
      *
      * @access  public
      * @return  &lang.Object 
-     * @throws  lang.ClassNotFoundException when there is no such class
      */
     function &newInstance() {
       $paramstr= '';
@@ -93,7 +92,8 @@
     
     /**
      * Checks whether this class has a method named "$method" or not.
-     * Since in PHP, methods are case-insensitive, calling
+     *
+     * Since in PHP, methods are case-insensitive, calling 
      * hasMethod('toString') will provide the same result as 
      * hasMethod('tostring')
      *
@@ -134,10 +134,11 @@
     /**
      * Returns the Class object associated with the class with the given string name.
      *
-     * @access  static
+     * @model   static
+     * @access  public
      * @param   string name - e.g. "io.File", "rdbms.mysql.MySQL"
      * @return  &lang.XPClass class object
-     * @throws    ClassNotFoundException when there is no such class
+     * @throws  lang.ClassNotFoundException when there is no such class
      */
     function &forName($name) {
       if (!($c= ClassLoader::loadClass($name))) return $c;
@@ -147,6 +148,7 @@
     /**
      * Returns an array containing class objects representing all the public classes
      *
+     * @model   static
      * @access  public
      * @return  &lang.XPClass[] class objects
      */
