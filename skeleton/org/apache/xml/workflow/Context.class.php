@@ -146,7 +146,7 @@
           $cat->info('Calling handler #'.$i, $state->handlers[$i]->getClassName());
 
           // If the prerequisites for this handler are'nt met, proceed
-          if (!$this->handlers[$i]->prerequisitesMet($context)) {
+          if (!$state->handlers[$i]->prerequisitesMet($context)) {
             $cat->warn('Handler\'s prerequisites are not met, proceeding...');
             continue;
           }
