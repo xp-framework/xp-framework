@@ -1,0 +1,251 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+ 
+  define('T_NONE',			0x0000);    // None of the known tokens, CDATA only
+  define('T_ANY',			0xFFFF);    // Any token
+ 
+  /**
+   * PHP Tokenizer
+   * Class wrapper around PHPs tokenizer extension
+   * 
+   * @ext   tokenize
+   * @see   php-src://ext/tokenize
+   * @see   lang.apidoc.parser.GenericParser
+   */ 
+  class PHPTokenizer extends Object {
+    var 
+      $tokens= array(),
+      $rules=  array();
+      
+    var
+      $_offset,
+      $_size;
+    
+    /**
+     * Set tokens
+     *
+     * @access  public
+     * @param   array tokens
+     */
+    function setTokens($tokens) {
+      $this->tokens= $tokens;
+      $this->_offset= 0;
+      $this->_size= sizeof($tokens);
+    }
+    
+    /**
+     * Gets a token's name
+     *
+     * @access  public
+     * @param   int tok Token constant, e.g. T_WHITESPACE
+     * @return  string name
+     */
+    function getTokenName($tok) {
+      switch ($tok) {
+        case T_NONE: return 'T_NONE';
+        case T_ANY: return 'T_ANY';
+      }
+      return token_name($tok);
+    }
+    
+    /**
+     * Adds a rule which can be applied with applyRules()
+     *
+     * When a list of matches has succeeded in applying, the defined callback
+     * function is called with according parameters. Parameters may be any of
+     * PHPs known datatypes in their notation or the special $X syntax:
+     * 
+     * Consider the following parameters:
+     * <code>
+     *   $name=     'function_with_comment';
+     *   $match=    array('T_COMMENT', 'T_WHITESPACE', 'T_FUNCTION', 'T_WHITESPACE', 'T_STRING');
+     *   $callback= 'setFunctionComment';
+     *   $params=   array('$5', '$1', FALSE);
+     * </code>
+     *
+     * In this example, setFunctionComment() is called with the functions name (the 
+     * 5th token, counting from 1) as its first parameter, the comment as its second
+     * and boolean FALSE as its third parameter
+     *
+     * @see     util.text.PHPTokenizer#applyRules
+     * @access  public
+     * @param   string name rule name
+     * @param   array match list of tokens to match
+     * @param   mixed callback either a string or array(&$obj, 'function') syntax
+     * @param   array params parameters for callback
+     */
+    function addRule($name, $match, $callback, $params) {
+      $this->rules[$name]= array(
+        'expect'        => 0,
+        'match'         => $match, 
+        'callback'      => $callback, 
+        'params'        => $params
+      );
+    }
+
+    /**
+     * Private function which always returns an array for a token
+     *
+     * @access  private
+     * @param   int i offset
+     * @return  array tokendata (type, cdata)
+     */
+    function _token($i) {
+      return (is_array($this->tokens[$i])
+        ? $this->tokens[$i]
+        : array(T_NONE, $this->tokens[$i])
+      );
+    }
+    
+    /**
+     * Get first token
+     *
+     * @access  public
+     * @return  array first token
+     */
+    function getFirstToken() {
+      return $this->_token($this->_offset= 0);
+    }
+    
+    /**
+     * Get next token
+     *
+     * @access  public
+     * @return  array next token from current offset or FALSE when no more tokens exist
+     */
+    function getNextToken() {
+      if (++$this->_offset >= $this->_size) return FALSE;
+      return $this->_token($this->_offset);
+    }
+    
+    /**
+     * Apply rules on all tokens
+     *
+     * @access  public
+     * @return  bool success
+     */
+    function applyRules() {
+      $DEBUG= FALSE;
+      $data= array();
+      
+      // Loop throught tokens
+      $tok= $this->getFirstToken();
+      $i= 0;
+      do {
+        list($token, $cdata)= $tok;
+
+        // Go through all rules and see if one matches
+	    foreach (array_keys($this->rules) as $name) {
+	      $rule= &$this->rules[$name];
+          $expect= &$rule['match'][$rule['expect']];
+          $s= sizeof($rule['match']);
+	      $f= FALSE;
+
+          $DEBUG && printf("%4d Executing %s, expecting %s\n", $i, $name, $expect);
+          if (
+            ('{' === $expect{0}) 
+          ) {
+            
+            // Matches list of tokens
+            $tokens= explode(',', substr($expect, 1, -1));
+            if (in_array(token_name($token), $tokens)) {
+              $DEBUG && printf("%4d %s in %s\n", $i, token_name($token), $expect);
+              $f= TRUE;
+            }
+            
+          } else if (
+	        ("'" === $expect{0}) &&
+	        (T_NONE === $token) && 
+		    (preg_match('/'.substr($expect, 1, -1).'/', $cdata))
+          ) {
+
+	        // Matches text
+	        $DEBUG && printf("%4d %s =~ %s\n", $i, $expect, $cdata);
+	        $f= TRUE;
+          } else if (
+            ('(' === $expect{0} && $p= strpos($expect, ')')) &&
+            (token_name($token) === substr($expect, 1, $p- 1)) &&
+            (preg_match('/'.substr($expect, $p+ 2, -1).'/', $cdata))
+          ) {
+          
+	        // Matches token and cdata
+	        $DEBUG && printf("%4d %s =~ %s, token %s\n", $i, $expect, $cdata, token_name($token));
+	        $f= TRUE;
+	      } else if (
+	        ("!" === $expect{0}) &&
+		    (
+		      (T_NONE === $token) ||
+		      (token_name($token) !== substr($expect, 1))
+		    )
+          ) {
+
+	        // Does not match a token
+	        $DEBUG && printf("%4d %s !== %s\n", $i, token_name($token), $expect);
+	        $f= TRUE;
+	      } else if (
+	        (token_name($token) === $expect)
+	      ) {   
+
+	        // Matches a token
+	        $DEBUG && printf("%4d %s === %s\n", $i, token_name($token), $expect);
+	        $f= TRUE;
+	      }
+
+	      if (!$f) {
+          
+	        // No action taken before
+	        if ($rule['expect'] == 0) continue;
+
+		    // One or more tokens found before (but this one doesn't match the expectation)
+	        $DEBUG && printf(
+		      "%4d --- have %s '%s' for rule %s, but was expecting %s\n", 
+		      $i, 
+		      token_name($token),  
+		      chop($cdata),
+		      $name,
+		      $expect
+		    );
+		    if ($rule['expect'] < $s) $rule['expect']= 0;
+
+		    continue;
+	      }
+
+	      // Found n'th token in list...
+  	      $DEBUG && printf("%4d +++ found %s for rule %s [%d/%d]\n", $i, token_name($token), $name, $rule['expect'], $s);
+	      $rule['expect']++;
+	      $data[$name][$rule['expect']]= $cdata;
+
+          // ...but not last one
+	      if ($rule['expect'] < $s) continue;
+
+	      // Completed
+	      $DEBUG && printf("%4d *** List completed::%s\n", $i, var_export($data[$name], 1));
+          
+          // Call user function
+          $params= array();
+          for ($p= 0; $p < sizeof($rule['params']); $p++) {
+            if ('$' == $rule['params'][$p]{0}) {
+              $params[]= $data[$name][substr($rule['params'][$p], 1)];
+            } else {
+              eval('$params[]= '.$rule['params'][$p].';');
+            }
+          }
+          
+          // Interrupt on error
+          if (FALSE === call_user_func_array($rule['callback'], $params)) {
+            return FALSE;
+          }
+
+	      // Reinit for next "round"
+	      $rule['expect']= 0;
+	      $data[$name]= array();
+	    }
+      } while (++$i && $tok= $this->getNextToken());
+      
+      return TRUE;
+    }
+  }
+?>
