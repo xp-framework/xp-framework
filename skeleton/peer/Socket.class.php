@@ -28,6 +28,10 @@
     /**
      * Constructor
      *
+     * Note: When specifying a numerical IPv6 address (e.g. fe80::1) 
+     * as value for the parameter "host", you must enclose the IP in 
+     * square brackets.
+     *
      * @access  public
      * @param   string host hostname or IP address
      * @param   int port
