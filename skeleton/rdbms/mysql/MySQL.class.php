@@ -59,10 +59,11 @@
      * @return  bool success
      */
     function close() { 
-      if ($r= mysql_close($this->handle)) {
+      if ($this->handle && $r= mysql_close($this->handle)) {
         $this->handle= NULL;
+        return $r;
       }
-      return $r;
+      return FALSE;
     }
     
     /**
