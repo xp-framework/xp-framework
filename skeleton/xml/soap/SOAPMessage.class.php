@@ -46,11 +46,19 @@
     var 
       $body         = '',
       $namespace    = 'ctl',
-      $namespaces   = array(),
       $encoding     = XML_ENCODING_DEFAULT,
       $nodeType     = 'SOAPNode',
       $action       = '',
       $method       = '';
+
+    var 
+      $namespaces   = array(
+        XMLNS_SOAPENV     => 'SOAP-ENV',
+        XMLNS_XSD         => 'xsd',
+        XMLNS_XSI         => 'xsi',
+        XMLNS_SOAPENC     => 'SOAP-ENC',
+        XMLNS_SOAPINTEROP => 'si'
+      );
 
     /**
      * Create a message
