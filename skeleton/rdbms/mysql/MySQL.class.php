@@ -185,28 +185,15 @@
      * @return  array Der selektierte Datensatz
      */
     function &fetch($query) {
-      $row= mysql_fetch_array($query);
+      $row= mysql_fetch_assoc($query);
       if (FALSE === $row) return FALSE;
       
       foreach($row as $key=> $val) {
-
-        // Zahlen aus dem Array rippen
-        if(is_int($key)) {
-          unset($row[$key]);
-          continue;
-        }
-        
-        // FALSE ==> NULL
-        // $this->cat->debug($key.' is NULL ?', ($val === FALSE) ? 'yes' : 'no');
-        if ($val === FALSE) {
-          $row[$key]= NULL;
-          continue;
-        }
         
         // Field-Mapping
         if (isset($this->field_map[$key])) $row['map_'.$key]= $this->field_map[$key][$val];
                 
-        // Datumsangaben automatisch umwandeln
+        // Convert datetime, int and real
         switch ($this->fields[$key]) {
           case 'datetime': 
             $row[$key]= &new Date($val); 
@@ -218,12 +205,7 @@
             break;
             
           case 'real':
-            if (floor($val) == $val) {
-              // $this->cat->debug('numeric', $key, $val);
-              settype($row[$key], 'integer');
-            } else {
-              settype($row[$key], 'double'); 
-            }
+            settype($row[$key], 'double'); 
             break;
         }
       }
