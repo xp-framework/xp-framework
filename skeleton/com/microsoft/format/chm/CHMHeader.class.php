@@ -4,17 +4,13 @@
  * $Id$ 
  */
 
-  // Languages  
-  define('CHM_LANG_ENGLISH', 	    0x0409);
-  define('CHM_LANG_GERMAN', 	    0x0407);
-  
   // Header identifier
   define('CHM_HEADER_IDENTIFIER',   'ITSF');
 
   /**
    * CHM header
    *
-   * @see      xp://com.microsoft.format.chm.CHMFile
+   * @see      xp://com.microsoft.format.chm.CHMFile#getHeader
    * @purpose  CHM file class
    */
   class CHMHeader extends Object {
