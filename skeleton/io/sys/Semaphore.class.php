@@ -40,7 +40,7 @@
      * @param   int maxAquire default 1
      * @param   int permissions default 0666
      * @return  &io.sys.Semaphore a semaphore
-     * @throws  IOException
+     * @throws  io.IOException
      */
     function &get($key, $maxAquire= 1, $permissions= 0666) {
       static $semaphores= array();
@@ -50,7 +50,7 @@
         $s->key= $key;
         $s->maxAquire= $maxAquire;
         $s->permissions= $permissions;
-        if (FALSE === ($s->_hdl= sem_get($key, $maxAquire, $permissions))) {
+        if (FALSE === ($s->_hdl= sem_get($key, $maxAquire, $permissions, TRUE))) {
           return throw(new IOException('Could not get semaphore '.$key));
         }
         
@@ -68,7 +68,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException
+     * @throws  io.IOException
      */
     function acquire() {
       if (FALSE === sem_acquire($this->_hdl)) {
@@ -83,7 +83,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException
+     * @throws  io.IOException
      * @see     xp://io.sys.Semaphore#acquire
      */
     function release() {
@@ -99,7 +99,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException
+     * @throws  io.IOException
      */
     function remove() {
       if (FALSE === sem_remove($this->_hdl)) {
