@@ -11,6 +11,8 @@
   define('INDENT_WRAPPED',    1);
   define('INDENT_NONE',       2);
 
+  define('XML_ILLEGAL_CHARS',   "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x0b\x0c\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f");
+
   /**
    * Represents a node
    *
@@ -40,8 +42,8 @@
      */
     function __construct($name, $content= NULL, $attribute= array()) {
       $this->name= $name;
-      $this->content= $content;
       $this->attribute= $attribute;
+      $this->setContent($content);
     }
 
     /**
@@ -133,9 +135,19 @@
      * Set content
      *
      * @access  public
-     * @param   string contennt
+     * @param   string content
+     * @throws  lang.IllegalArgumentException in case content contains illegal characters
      */
     function setContent($content) {
+    
+      // Scan the given string for illegal characters. If no illegal characters are 
+      // found, strtok returns the unchanged string. Otherwise the string up to the 
+      // illegal character will be returned (or - if the char is the first in the 
+      // string, the string excluding the first char will be returned).
+      if (strlen($content) > strlen($p= strtok($content, XML_ILLEGAL_CHARS))) {
+        return throw (new IllegalArgumentException('Content contains illegal character at position '.strlen($p)));
+      }
+      
       $this->content= $content;
     }
     
