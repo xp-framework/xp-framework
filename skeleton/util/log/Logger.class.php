@@ -143,7 +143,15 @@
           } if (catch('Exception', $e)) {
             return throw($e);
           }
-          $a= &$this->category[$section]->addAppender(new $reflect());
+          
+          // Read flags string, evaluate it
+          $flags= $prop->readArray($param_section, 'appender.'.$appender.'.flags', LOGGER_FLAG_ALL);
+          if (!is_int ($flags)) {
+            $arrflags= $flags; $flags= 0;
+            foreach ($arrflags as $f) { if (defined ($f)) $flags |= constant ($f); }
+          }
+          
+          $a= &$this->category[$section]->addAppender(new $reflect(), $flags);
           $params= $prop->readArray($param_section, 'appender.'.$appender.'.params', array());
           
           // Params
