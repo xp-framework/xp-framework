@@ -44,10 +44,10 @@ nedit.shellCommands: \
 		php -q\n\
 	Make accessors:Shift+Alt+A::I:\n\
 		php -q $HOME/devel/xp/util/bin/mkaccessor.php\n\
-	Wordwrap:::EX:\n\
-		$HOME/bin/wordwrap - 72\n\
 	Check XP Coding standards:Alt+V::ADS:\n\
 		$HOME/bin/xpcsc.pl %\n
+	Wordwrap:::EX:\n\
+		$HOME/bin/wordwrap - 72\n
 nedit.macroCommands: \
 	Complete Word:Alt+D::: {\n\
 		# Tuning parameters\n\
@@ -475,7 +475,7 @@ nedit.highlightPatterns: C:1:0{\n\
 		single quote strings:"'":"'"::String:phptags:\n\
 		sq string esc chars:"\\\\(.|\\n)":::String1:single quote strings:\n\
 		ignore escaped chars:"\\\\[#""'\\$msytq]":::Plain:phptags:\n\
-		keywords:"<(isset|const|is_a|namespace|interface|implements|instanceof|try|catch|throw|finally|cast|unset|extends|uses|import|error_reporting|class|switch|include|case|default|define|array|var|global|list|c?function|new|if|until|while|elseif|else|eval|for|foreach|continue|exit|die|return|require|not|\\|\\||\\&\\&|and|or|!==?|===?)>":::Keyword:phptags:\n\
+		keywords:"<(isset|const|is_a|namespace|package|interface|implements|instanceof|try|catch|throw|finally|cast|unset|extends|uses|import|error_reporting|class|switch|include|case|default|define|array|var|global|list|c?function|new|if|until|while|elseif|else|eval|for|foreach|continue|exit|die|return|require|not|\\|\\||\\&\\&|and|or|!==?|===?)>":::Keyword:phptags:\n\
 		classkeywords:"<(public|private|protected|static|abstract|final|__destruct|__construct|__call|__set|__get|parent|self|const)>":::Text Escape:phptags:\n\
 		variables:"(::)?[$](\\{[^}]*}|[^a-zA-Z0-9_ /\\t\\n\\.,\\\\[\\\\{\\\\(]|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)?":::Text Arg:phptags:\n\
 		braces and parens:"[\\[\\]{}\\(\\)]":::Identifier::\n\
@@ -498,6 +498,13 @@ nedit.highlightPatterns: C:1:0{\n\
 		added_lines:"^\\+(.*)":::Subroutine::\n\
 		position:"^@@ (.+) @@":::Text Arg::\n\
 		cvs_header:"^(Index|RCS file|retrieving|diff|=).+":::Text Arg::\n\
+	}\n\
+	ChangeLog:1:0{\n\
+		itemheader:"^([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}|[A-Za-z]{3} [A-Za-z]{3}\\s+[0-9]+ [0-9]{2}:[0-9]{2}:[0-9]{2} [0-9]{4}).+$":::String2::\n\
+		filename:"([a-zA-Z0-9_\\.-]+/)+[a-zA-Z0-9_\\.-]+\\.[a-z0-9]+":::Text Comment::\n\
+		bug:"([bB]ug|[fF]ix).{0,5}\\s?#\\s?[0-9]+":::Pointer::\n\
+		function:"[a-zA-Z0-9_]+\\(\\)":::Keyword::\n\
+		keywords:"<NEWS|MFP|MFB|BFN|MFH|CS|WS>":::Identifier::\n\
 	}
 nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~"\n\
 	C++:.cc .hh .C .H .i .cpp .cs::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~"\n\
@@ -529,7 +536,8 @@ nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~"\n\
 	Regex:.reg .regex:"\\(\\?[:#=!iInN].+\\)":None:Continuous:::\n\
 	XML:.xml .xsl .dtd:"\\<(?i\\?xml|!doctype)"::None:::"<>/=""'()+*?|"\n\
 	Ini-Files:.ini:::None:::\n\
-	Unified diff:.diff:"Index:":::::
+	Unified diff:.diff:"Index:":::::\n\
+	ChangeLog:ChangeLog::::::
 nedit.styles: 	Plain:black:Plain\n\
 	Comment:gray40:Plain\n\
 	Keyword:darkRed:Bold\n\
@@ -591,7 +599,7 @@ nedit.searchMethod: Literal
 nedit.textRows: 40
 nedit.textCols: 80
 nedit.tabDistance: 4
-nedit.emulateTabs: 2
+nedit.emulateTabs: 4
 nedit.insertTabs: False
 nedit.textFont: -adobe-courier-medium-r-normal--12-120-75-75-m-70-iso8859-1
 nedit.boldHighlightFont: -adobe-courier-bold-r-normal--12-120-75-75-m-70-iso8859-1
