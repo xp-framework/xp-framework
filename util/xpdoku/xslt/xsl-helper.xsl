@@ -217,6 +217,12 @@
     </table>
   </xsl:template>
   
+  <xsl:template match="frame">
+    <xsl:call-template name="frame">
+      <xsl:with-param name="content"><xsl:copy-of select="."/></xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+  
   <xsl:template match="quote|ul|ul/li|pre|code/span/span|code/span/span/br">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
