@@ -40,6 +40,8 @@
   define ('WEBDAV_CLIENT_NAUT',    0x4000);
   define ('WEBDAV_CLIENT_DAVFS',   0x8000);
   
+  define('WEBDAV_COLLECTION',   'collection');
+  
   /**
    * <quote>
    * WebDAV is an extension to the HTTP/1.1 protocol that
@@ -146,6 +148,8 @@
           return new WebdavPropFindRequest();
         case 'PROPPATCH':
           return new WebdavPropPatchRequest();
+        case 'LOCK':
+          return new WebdavLockRequest();
         default:
           return new WebdavScriptletRequest();
       }
@@ -436,26 +440,25 @@
      */
     function doLock(&$request, &$response) {
       try(); {
-      $this->handlingImpl->lock(
-        new WebdavLockRequest($request),
-        $response
+        $this->handlingImpl->lock(
+          $request,
+          $response
         );
       } if (catch('ElementNotFoundException', $e)) {
 
         $response->setStatus(HTTP_NOT_FOUND);
-        $response->setContent('');        
+        $response->setContent($e->toString());        
         return FALSE; 
       } if (catch('Exception', $e)) {
 
         $response->setStatus(WEBDAV_PRECONDFAILED);
-        $response->setContent('');
+        $response->setContent($e->toString());
         return FALSE; 
       }
-      
+
       $response->setHeader('Content-Type','application/xml; charset="utf-8"');
       $response->setStatus(HTTP_OK);
-      
-      return TRUE; 
+
     }
 
     /**
@@ -474,15 +477,21 @@
           $request,
           $response
           );
-      }  if (catch('ElementNotFoundException', $e)) {
+          
+      } if (catch('ElementNotFoundException', $e)) {
     
         $response->setStatus(HTTP_NOT_FOUND);
-        $response->setContent('');
+        $response->setContent($e->toString());
         return FALSE; 
-      } if (catch('Exception', $e)) {
-    
+      } if (catch('OperationFailedException', $e)) {
+      
         $response->setStatus(WEBDAV_PRECONDFAILED);
-        $response->setContent('');
+        $response->setContent($e->toString());
+        return FALSE;
+      } if (catch('Exception', $e)) {
+
+        $response->setStatus(HTTP_LOCKED);
+        $response->setContent($e->toString());
         return FALSE; 
       }
       
@@ -587,11 +596,20 @@
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->toString());
         return FALSE;
+      } if (catch('OperationNotAllowedException', $e)) {
+
+        // Forbidden
+        $response->setStatus(HTTP_FORBIDDEN);
+        $response->setContent($e->toString());
+        return FALSE;
+
       } if (catch('Exception', $e)) {
         
         // Other exceptions - throw exception to indicate (complete) failure
         return throw(new HttpScriptletException($e->message));
-      }
+      } 
+      
+      
       $response->setStatus(HTTP_CREATED);
     }
 
@@ -658,20 +676,6 @@
         return throw(new HttpScriptletException('Cannot handle method "'.$request->method.'"'));
       }
       
-      // Read input if we have a Content-length header,
-      // else get data from QUERY_STRING
-      if (
-        (NULL !== ($len= $request->getHeader('Content-length'))) &&
-        (FALSE !== ($fd= fopen('php://input', 'r')))
-      ) {
-        $data= fread($fd, $len);
-        fclose($fd);
-        
-        $request->setData($data);
-      } else {
-        $request->setData(getenv('QUERY_STRING'));
-      }
-
       // Select implementation
       $this->handlingImpl= NULL;
       foreach (array_keys($this->impl) as $pattern) {
@@ -703,7 +707,7 @@
       // determine Useragent
       $client= $request->getHeader('user-agent');
 
-      switch (substr($client,0,3)){
+      switch (substr($client, 0, 3)) {
         case 'Mic':
           $this->useragent= WEBDAV_CLIENT_MS;
           break;
@@ -732,6 +736,20 @@
         if (!$this->handlingAuth->isAuthorized($request)) {
           return 'doAuthorizationDeny';
         }
+      }
+      
+      // Read input if we have a Content-length header,
+      // else get data from QUERY_STRING
+      if (
+        (NULL !== ($len= $request->getHeader('Content-length'))) &&
+        (FALSE !== ($fd= fopen('php://input', 'r')))
+      ) {
+        $data= fread($fd, $len);
+        fclose($fd);
+        
+        $request->setData($data);
+      } else {
+        $request->setData(getenv('QUERY_STRING'));
       }
       
       return $this->methods[$request->method];
