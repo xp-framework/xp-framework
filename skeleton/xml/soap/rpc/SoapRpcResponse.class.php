@@ -4,9 +4,7 @@
  * $Id$
  */
  
-  uses(
-    'scriptlet.HttpScriptletResponse'
-  );
+  uses('scriptlet.HttpScriptletResponse');
   
   /**
    * Wraps SOAP response
@@ -25,7 +23,6 @@
     function __construct() {
       $this->setHeader('Server', 'SOAP 1.0#/PHP'.phpversion().'/'.php_uname());
       $this->setHeader('Content-type', 'text/xml');
-      parent::__construct();
     }
     
     /**
@@ -36,7 +33,7 @@
      * @see     #setMessage
      */
     function write() {
-      throw(IllegalAccessException('Cannot write directly'));
+      throw(new IllegalAccessException('Cannot write directly'));
     }
     
     /**
@@ -47,7 +44,7 @@
      * @see     #setMessage
      */
     function setContent() {
-      throw(IllegalAccessException('Cannot write directly'));
+      throw(new IllegalAccessException('Cannot write directly'));
     }
     
     /**
