@@ -11,7 +11,7 @@ collections=../etc/make/collections.ini
 all: parse collections
 
 cache:
-	test -e cache || mkdir cache cache/sapi.php cache/class.php
+	test -e cache || mkdir cache
 
 parse: cache
 	$(PHP) make.php $(collections)
