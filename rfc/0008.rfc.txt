@@ -169,10 +169,10 @@ Details
   the @ sign to prefix them.
   <?php
     class SoapClient {
-      @debug('level=1') public function setTrace(LogCategory $log) {
+      [@debug('level=1')] public function setTrace(LogCategory $log) {
       }
 
-      @remote public function invoke($params) throws InvokationException {
+      [@remote] public function invoke($params) throws InvokationException {
       }
     }
   ?>
