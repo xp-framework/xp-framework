@@ -31,7 +31,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException
+     * @throws  peer.ConnectException
      */
     function connect() {
       if ($this->isConnected()) return TRUE;
@@ -42,7 +42,7 @@
         gethostbyname($this->host),
         $this->port
       )) {
-        return throw(new IOException(sprintf(
+        return throw(new ConnectException(sprintf(
           'Connect to %s:%d failed: %s',
           $this->host,
           $this->port,
@@ -70,7 +70,7 @@
      * @access  public
      * @param   bool blocking
      * @return  bool success
-     * @throws  IOException
+     * @throws  peer.SocketException
      */
     function setBlocking($blocking) {
       if ($blocking) {
@@ -79,7 +79,7 @@
         $ret= socket_set_nonblock($this->_sock);
       }
       if (FALSE === $ret) {
-        return throw(new IOException(sprintf(
+        return throw(new SocketException(sprintf(
           'setBlocking (%s) failed: %s',
           ($blocking ? 'blocking' : 'nonblocking'),
           $this->getLastError()
@@ -95,7 +95,7 @@
      * @access  public
      * @param   float timeout default NULL Timeout value in seconds (e.g. 0.5)
      * @return  bool there is data that can be read
-     * @throws  IOException in case of failure
+     * @throws  peer.SocketException in case of failure
      */
     function canRead($timeout= NULL) {
       if (NULL === $timeout) {
@@ -112,7 +112,7 @@
         $tv_sec,
         $tv_usec
       ))) {
-        return throw(new IOException('Select failed: '.$this->getLastError()));
+        return throw(new SocketException('Select failed: '.$this->getLastError()));
       }
       
       return $n > 0;
@@ -128,7 +128,7 @@
      */
     function _read($maxLen, $type) {
       if (FALSE === ($res= socket_read($this->_sock, $maxLen, $type))) {
-        return throw(new IOException('Read failed: '.$this->getLastError()));
+        return throw(new SocketException('Read failed: '.$this->getLastError()));
       }
       
       return $res;
@@ -140,7 +140,7 @@
      * @access  public
      * @param   int maxLen maximum bytes to read
      * @return  string data
-     * @throws	IOException
+     * @throws  peer.SocketException
      */
     function read($maxLen= 4096) {
       return $this->_read($maxLen, PHP_NORMAL_READ);
@@ -152,7 +152,7 @@
      * @access  public
      * @param   int maxLen maximum bytes to read
      * @return  string data
-     * @throws	IOException
+     * @throws	peer.SocketException
      */
     function readBinary($maxLen= 4096) {
       return $this->_read($maxLen, PHP_BINARY_READ);
@@ -164,17 +164,15 @@
      * @access  public
      * @param   string str
      * @return  int bytes written
-     * @throws	IOException
+     * @throws	peer.SocketException
      */
     function write($str) {
       $bytesWritten= socket_write($this->_sock, $str, strlen($str));
-      # DEBUG echo "SEND(".var_export($str, 1).") ".var_export($bytesWritten, 1)."\n";
       if (FALSE === $bytesWritten) {
-        return throw(new IOException('Write failed: '.$this->getLastError()));
+        return throw(new SocketException('Write failed: '.$this->getLastError()));
       }
       return $bytesWritten;
     }
-    
 
   }
 ?>
