@@ -48,6 +48,7 @@
      * @param   int sig
      */
     function handleSignal($sig) {
+      $this->cat && $this->cat->infof('Received signal %d in pid %d', $sig, getmypid());
       $this->terminate= TRUE;
     }
 
@@ -59,24 +60,19 @@
     function service() {
       if (!$this->socket->isConnected()) return FALSE;
 
-      // Set up signal handler so a kill -2 $pid (where $pid is the 
-      // process id of the process we are running in) will cleanly shut
-      // down this server. If this server is run within a thread (which
-      // is recommended), a $thread->stop() will accomplish this.
-      pcntl_signal(SIGINT, array(&$this, 'handleSignal'));
-      
       $children= array();
       $i= 0;
-      while ($i <= $this->count) {
+      while (!$this->terminate && ($i <= $this->count)) {
+        $this->cat && $this->cat->debugf('Server #%d: Forking child %d', getmypid(), $i);
         $pid= pcntl_fork();
         if (-1 == $pid) {       // Woops?
           return throw(new RuntimeError('Could not fork'));
         } else if ($pid) {      // Parent
-          $this->cat && $this->cat->infof('Forked child #%d with pid %d', $i, $pid);
+          $this->cat && $this->cat->infof('Server #%d: Forked child #%d with pid %d', getmypid(), $i, $pid);
           $children[$pid]= $i;
           $i++;
         } else {                // Child
-          while (!$this->terminate) {
+          while (1) {
             try(); {
               $m= &$this->socket->accept();
             } if (catch('IOException', $e)) {
@@ -109,33 +105,46 @@
           exit();
         }
         if ($i < $this->count) continue;
+
+        // Set up signal handler so a kill -2 $pid (where $pid is the 
+        // process id of the process we are running in) will cleanly shut
+        // down this server. If this server is run within a thread (which
+        // is recommended), a $thread->stop() will accomplish this.
+        pcntl_signal(SIGINT, array(&$this, 'handleSignal'));
         
         // Wait until we are supposed to terminate. This condition variable
         // is set to TRUE by the signal handler. Sleep a second to decrease
         // load produced. Note: sleep() is interrupted by a SIGINT, we will
         // still be able to catch the shutdown signal in realtime.
-        $this->cat && $this->cat->debug('Starting main loop, children:', $children);
+        $this->cat && $this->cat->debug('Server #'.getmypid().': Starting main loop, children:', $children);
         while (!$this->terminate) { 
           sleep(1);
           if (($pid= pcntl_waitpid(-1, $status, WNOHANG)) <= 0) continue;
+          
+          // If, meanwhile, we've been interrupted, break out of both loops
+          if ($this->terminate) break 2;
 
           // One of our children terminated, remove it from the process 
           // list and fork a new one
-          $this->cat && $this->cat->warnf('Child %d died with exitcode %d', $pid, $status);
+          $this->cat && $this->cat->warnf('Server #%d: Child %d died with exitcode %d', getmypid(), $pid, $status);
           unset($children[$pid]);
           $i--;
           break;
         }
+        
+        // Reset signal handler so it doesn't get copied to child processes
+        pcntl_signal(SIGINT, NULL);
       }
       
       // Terminate children
-      foreach (array_keys($children) as $pid) {
-        $this->cat && $this->cat->info('Terminating child', $pid);
+      foreach ($children as $pid => $i) {
+        $this->cat && $this->cat->infof('Server #%d: Terminating child #%d with pid %d', getmypid(), $i, $pid);
         posix_kill($pid, SIGINT);
       }
 
       // Shut down ourselves
       $this->shutdown();
+      $this->cat && $this->cat->infof('Server #%d: Shutdown complete', getmypid());
     }
   } implements(__FILE__, 'util.log.Traceable');
 ?>
