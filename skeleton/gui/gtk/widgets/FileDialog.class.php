@@ -8,7 +8,8 @@
     'gui.gtk.GtkGladeDialogWindow', 
     'gui.gtk.util.GTKPixmapLoader', 
     'gui.gtk.util.GTKWidgetUtil', 
-    'io.Folder'
+    'io.Folder',
+    'lang.System'
   );
 
   /**
