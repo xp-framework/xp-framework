@@ -32,6 +32,16 @@
     }
     
     /**
+     * Returns number of found elements
+     *
+     * @access  public
+     * @return  int
+     */
+    function numEntries() {
+      return $this->size;
+    }
+    
+    /**
      * Gets first entry
      *
      * @access  public
