@@ -24,5 +24,18 @@
       $this->result= &$result;
       parent::__construct();
     }
+    
+    /**
+     * Return a string representation of this class
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return $this->getClassName().', result '.(is_a($this->result, 'Object') 
+        ? $this->result->toString() 
+        : var_export($this->result, 1)
+      );
+    }
   }
 ?>
