@@ -45,26 +45,20 @@
 
     <br clear="all"/> 
     <center>
-      <a title="Previous image" class="pager{/formresult/selected/@id &gt; 0}" id="previous">
-        <xsl:if test="/formresult/selected/@id &gt; 0">
+      <a title="Previous image" class="pager{/formresult/selected/@prev != ''}" id="previous">
+        <xsl:if test="/formresult/selected/@prev">
           <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
-            'image/view?', 
-            /formresult/album/@name, ',',
-            /formresult/selected/@type, ',',
-            /formresult/selected/@chapter, ',',
-            /formresult/selected/@id - 1
+            'image/view?',
+            /formresult/selected/@prev
           ))"/></xsl:attribute>
         </xsl:if>
         <img alt="&#xab;" src="/image/prev.gif" border="0" width="19" height="15"/>
       </a>
-      <a title="Next image" class="pager{/formresult/selected/@last = ''}" id="next">
-        <xsl:if test="/formresult/selected/@last = ''">
+      <a title="Next image" class="pager{/formresult/selected/@next != ''}" id="next">
+        <xsl:if test="/formresult/selected/@next != ''">
           <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
             'image/view?', 
-            /formresult/album/@name, ',',
-            /formresult/selected/@type, ',',
-            /formresult/selected/@chapter, ',',
-            /formresult/selected/@id + 1
+            /formresult/selected/@next
           ))"/></xsl:attribute>
         </xsl:if>
         <img alt="&#xbb;" src="/image/next.gif" border="0" width="19" height="15"/>
@@ -76,13 +70,10 @@
       <tr>
         <td id="image" align="center">
           <a>
-            <xsl:if test="/formresult/selected/@last = ''">
+            <xsl:if test="/formresult/selected/@next != ''">
               <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
                 'image/view?', 
-                /formresult/album/@name, ',',
-                /formresult/selected/@type, ',',
-                /formresult/selected/@chapter, ',',
-                /formresult/selected/@id + 1
+                /formresult/selected/@next
               ))"/></xsl:attribute>
             </xsl:if>
             <img border="0" src="/albums/{/formresult/album/@name}/{/formresult/selected/name}"/>
