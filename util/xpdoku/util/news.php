@@ -5,9 +5,7 @@
  */
  
   require('lang.base.php');
-  uses(
-    'xml.rdf.RDFNewsFeed'
-  );
+  uses('xml.rdf.RDFNewsFeed');
   
   $news= &new RDFNewsFeed();
   $news->setChannel(
@@ -22,6 +20,12 @@
   );
   
   // TBD: Get from database?
+  $news->addItem(
+    'API Docs: Inheritance tree', 
+    'http://xp.php3.de/apidoc/inheritance.html',
+    'A tree view on class inheritance is now available.',
+    new Date('2002-12-29 18:43:54')
+  );
   $news->addItem(
     'API Docs released', 
     'http://xp.php3.de/apidoc/',
