@@ -91,8 +91,6 @@
      * @return  
      */
     function notify(&$event) {
-      printf("Server::notify(%s, %s)\n", $event->type, var_export($event->data, 1));
-      
       for ($i= 0, $s= sizeof($this->listeners); $i < $s; $i++) {
         $this->listeners[$i]->{$event->type}($event);
       }
@@ -109,8 +107,7 @@
       if (!$this->socket->isConnected()) return FALSE;
       
       while ($m= &$this->socket->accept()) {
-        $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
-        
+
         // Loop
         do {
           try(); {
@@ -119,13 +116,16 @@
             $this->notify(new ConnectionEvent(EVENT_ERROR, $m, $e));
             break;
           }
-          
+
           // Notify listeners
           $this->notify(new ConnectionEvent(EVENT_DATA, $m, $data));
-          
+
         } while (!$m->eof());
-        
+
         $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $m));
+
+        // Close communications
+        $m->close();
       }
     }
   }
