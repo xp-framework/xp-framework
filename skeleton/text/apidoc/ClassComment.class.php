@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('lang.apidoc.Comment', 'lang.apidoc.Reference');
+  uses('text.apidoc.Comment', 'text.apidoc.Reference');
   
   // Class models: static, generic
   define('APIDOC_CLASS_MODEL_STATIC',  'static');
@@ -124,7 +124,7 @@
      *
      * @access  public
      * @param   string see
-     * @return  &lang.apidoc.Reference
+     * @return  &text.apidoc.Reference
      */
     function &addReference($see) {
       $this->references[]= &new Reference($see);
@@ -138,7 +138,7 @@
      * @param   string tag
      * @param   string line
      * @return  &mixed
-     * @see     xp://lang.apidoc.Comment
+     * @see     xp://text.apidoc.Comment
      */
     function &_handleTag($tag, $line) {
       $descr= &parent::_handleTag($tag, $line); 

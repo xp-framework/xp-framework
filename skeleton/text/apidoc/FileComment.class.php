@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('lang.apidoc.Comment');
+  uses('text.apidoc.Comment');
   
   /**
    * Class wrapping file comments
@@ -30,7 +30,7 @@
      * @param   string tag
      * @param   string line
      * @return  &mixed
-     * @see     xp://lang.apidoc.Comment
+     * @see     xp://text.apidoc.Comment
      */
     function _handleTag($tag, $line) {
       $descr= parent::_handleTag($tag, $line);

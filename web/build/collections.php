@@ -9,7 +9,7 @@
     'util.Properties', 
     'xml.Tree', 
     'io.Folder',
-    'lang.apidoc.parser.ClassParser'
+    'text.apidoc.parser.ClassParser'
   );
   
   // {{{ void recurse(&xml.Tree tree, string base, string prefix= '', string uri= '') throws lang.IllegalArgumentException

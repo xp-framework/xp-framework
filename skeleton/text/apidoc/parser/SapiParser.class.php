@@ -5,15 +5,15 @@
  */
  
   uses(
-    'lang.apidoc.parser.GenericParser',
-    'lang.apidoc.CommentFactory'
+    'text.apidoc.parser.GenericParser',
+    'text.apidoc.CommentFactory'
   );
   
   /**
    * Implementation of GenericParser for sapis from within
    * the XP framework
    *
-   * @see      xp://lang.apidoc.parser.GenericParser
+   * @see      xp://text.apidoc.parser.GenericParser
    * @purpose  Parses sapis
    */
   class SapiParser extends GenericParser {

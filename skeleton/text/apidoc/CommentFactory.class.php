@@ -5,10 +5,10 @@
  */
 
   uses(
-    'lang.apidoc.Comment',
-    'lang.apidoc.FileComment',
-    'lang.apidoc.ClassComment',
-    'lang.apidoc.FunctionComment'
+    'text.apidoc.Comment',
+    'text.apidoc.FileComment',
+    'text.apidoc.ClassComment',
+    'text.apidoc.FunctionComment'
   );
   
   // Types of comments this class can factor
@@ -34,7 +34,7 @@
      *
      * @access  public
      * @param   const type one of APIDOC_COMMENT_*
-     * @return  lang.apidoc.Comment object
+     * @return  text.apidoc.Comment object
      */
     function &factory($type) {
       switch ($type) {

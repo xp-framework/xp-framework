@@ -4,7 +4,7 @@
     'xml.Node',
     'io.File', 
     'io.Folder', 
-    'lang.apidoc.parser.ClassParser',
+    'text.apidoc.parser.ClassParser',
     'util.cmd.ParamString',
     'text.PHPSyntaxHighlighter'
   );

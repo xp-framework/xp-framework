@@ -8,7 +8,7 @@
  
   require('lang.base.php');
   uses(
-    'lang.apidoc.parser.ClassParser', 
+    'text.apidoc.parser.ClassParser', 
     'util.cmd.ParamString',
     'util.log.Logger',
     'util.log.FileAppender'

@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('lang.ClassLoader', 'lang.cca.Archive');
+  uses('lang.ClassLoader', 'io.cca.Archive');
   
   /** 
    * Loads XP classes from a CCA (Class Collection Archive)

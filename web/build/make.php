@@ -11,8 +11,8 @@
     'io.Folder',
     'io.File',
     'io.FileUtil',
-    'lang.apidoc.parser.ClassParser',
-    'lang.apidoc.parser.SapiParser'
+    'text.apidoc.parser.ClassParser',
+    'text.apidoc.parser.SapiParser'
   );
   
 

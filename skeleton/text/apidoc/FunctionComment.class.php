@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('lang.apidoc.Comment', 'lang.apidoc.Reference');
+  uses('text.apidoc.Comment', 'text.apidoc.Reference');
   
   // Function access
   define('APIDOC_FUNCTION_ACCESS_PUBLIC',  'public');
@@ -30,7 +30,7 @@
      *
      * @access  public
      * @param   string see
-     * @return  &lang.apidoc.Reference added reference
+     * @return  &text.apidoc.Reference added reference
      */
     function &addReference($see) {
       $this->references[]= &new Reference($see);
@@ -139,7 +139,7 @@
     /**
      * Handles tags
      *
-     * @see lang.apidoc.Comment
+     * @see text.apidoc.Comment
      */
     function &_handleTag($tag, $line) {
       $descr= &parent::_handleTag($tag, $line);

@@ -22,7 +22,7 @@
      *
      * @access  public
      * @param   string str default NULL The string to parse from
-     * @see     xp://lang.apidoc.Reference#fromString
+     * @see     xp://text.apidoc.Reference#fromString
      */
     function __construct($str= NULL) {
       if (NULL !== $str) $this->fromString($str);

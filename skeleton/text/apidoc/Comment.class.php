@@ -7,9 +7,9 @@
   /**
    * Base class for comments
    *
-   * @see      xp://lang.apidoc.FileComment
-   * @see      xp://lang.apidoc.ClassComment
-   * @see      xp://lang.apidoc.FunctionComment
+   * @see      xp://text.apidoc.FileComment
+   * @see      xp://text.apidoc.ClassComment
+   * @see      xp://text.apidoc.FunctionComment
    * @purpose  Base class
    */
   class Comment extends Object {
@@ -53,7 +53,7 @@
      *
      * @access  public
      * @param   string str
-     * @return  &lang.apidoc.Comment a comment object
+     * @return  &text.apidoc.Comment a comment object
      */
     function fromString($str) {
       if ('/*' !== substr($str, 0, 2)) {
