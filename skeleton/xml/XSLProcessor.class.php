@@ -48,14 +48,29 @@
     }
     
     /**
-     * Set an error handler
+     * Error handler callback
      *
-     * @access  public
-     * @param   mixed callback
+     * @access  private
+     * @param   resource parser
+     * @param   int num
+     * @param   int level
+     * @param   array detail
      * @see     php://xslt_set_error_handler
      */
-    function setErrorHandler($funcName) {
-      xslt_set_error_handler($this->processor, $funcName);
+    function _traperror($parser, $num, $level, $detail) {
+      $message= sprintf(
+        '%s %s #%d: %s', 
+        $detail['module'], 
+        $detail['msgtype'], 
+        $detail['code'], 
+        $detail['msg']
+      );
+      
+      // Trigger errors so that messages get appended to the stack trace
+      __error($num, $message, __FILE__, __LINE__);
+      if (isset($detail['URI'])) {
+        __error($num, 'URI: '.$detail['URI'].':'.$detail['line'], __FILE__, __LINE__);
+      }
     }
 
     /**
@@ -151,14 +166,18 @@
       if (NULL != $this->buffer[1]) $buffers['/_xml']= &$this->buffer[1];
       if (NULL != $this->stylesheet[1]) $buffers['/_xsl']= &$this->stylesheet[1];
       
-      if (FALSE === ($this->output= xslt_process(
+      xslt_set_error_handler($this->processor, array(&$this, '_traperror'));
+      $this->output= xslt_process(
         $this->processor, 
         $this->buffer[0],
         $this->stylesheet[0],
         NULL,
         $buffers,
         $this->params
-      ))) {
+      );
+      xslt_set_error_handler($this->processor, NULL);
+      
+      if (FALSE === $this->output) {
         return throw(new TransformerException('Transformation failed'));
       }
       
