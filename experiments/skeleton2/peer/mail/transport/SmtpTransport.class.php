@@ -21,16 +21,14 @@
    *
    *   $smtp= new SmtpTransport();
    *   if (DEBUG) {
-   *     $l= Logger::getInstance();
-   *     $cat= $l->getCategory();
+   *     $cat= Logger::getInstance()->getCategory();
    *     $cat->addAppender(new FileAppender('php://stderr'));
    *     $smtp->setTrace($cat);
    *   }
    *   try(); {
    *     $smtp->connect();            // Uses localhost:25 as default
    *     $smtp->send($msg);
-   *   } if (catch('Exception', $e)) {
-   *     printf("Caught %s\n", $e->getClassName());
+   *   } catch (Exception $e) {
    *     $e->printStackTrace();
    *   }
    * 
