@@ -7,7 +7,10 @@ typedef struct {
 	
 	int is_authenticated;
 	char *username;
-        char *phone;
+	char *phone;
+	
+	int pluginmask;
+	int *callback;
 } proxy_connection;
 
 extern int alloc_connection(proxy_connection **);
@@ -15,6 +18,7 @@ extern void init_connection(proxy_connection *);
 extern void free_connection(proxy_connection **);
 extern void pc_set_username (proxy_connection *, char*);
 extern void pc_set_phone (proxy_connection *, char*);
+extern void pc_set_callback (proxy_connection *, int *);
 
 /**
  * Structure and functions for the administration

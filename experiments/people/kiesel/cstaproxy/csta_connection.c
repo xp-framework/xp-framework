@@ -27,6 +27,7 @@ void init_connection(proxy_connection *conn) {
 	conn->is_authenticated= 0;
 	conn->username= NULL;
 	conn->phone= NULL;
+	conn->callback= NULL;
 }
 
 void free_connection(proxy_connection **conn) {
@@ -46,6 +47,17 @@ void pc_set_phone(proxy_connection *conn, char *phone) {
 		conn->phone= (char*)malloc (strlen (phone)+1);
 		strncpy (conn->phone, phone, strlen (phone)+1);
 	}
+}
+
+void pc_set_callback(proxy_connection *conn, int *cb) {
+	conn->callback= cb;
+}
+
+int pc_call_callback(proxy_connection *conn, char *stream, char **answer) {
+	if (conn->callback == NULL)
+		return 0;
+	
+	return (*conn->connection)(conn, stream, answer);
 }
 
 void alloc_connection_context(connection_context **ctx) {
