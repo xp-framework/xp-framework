@@ -51,7 +51,14 @@
       return $content;
     }
     
-    function getContent($encoding= NULL) {
+    /**
+     * Get content in iso-8859-1 encoding (the default).
+     *
+     * @access  public
+     * @param   string encoding default NULL
+     * @return  &mixed data
+     */
+    function &getContent($encoding= NULL) {
       $ret= $this->content;
       @list($ns, $t)= explode(':', @$this->attribute['xsi:type']);
       
@@ -70,7 +77,7 @@
           
         case 'date':
         case 'dateTime':    // ISO 8601: http://www.w3.org/TR/xmlschema-2/#ISO8601 http://www.w3.org/TR/xmlschema-2/#dateTime
-          return new SOAPDateTime(strtotime(str_replace('T', ' ', $ret)));
+          return new Date(str_replace('T', ' ', $ret));
           break;
       }        
       if (isset($this->_tmap->import[$t])) $t= $this->_tmap->import[$t];
@@ -79,7 +86,6 @@
       switch (strtolower($encoding)) {
         case 'utf-8': $ret= utf8_decode($ret); break;
       }
-      // echo '    Setting "'.$ret.'" to '.$t."\n";
 
       // Rip HTML entities
       $ret= strtr($ret, array_flip(get_html_translation_table(HTML_ENTITIES)));
@@ -109,7 +115,7 @@
         
         if (
           (is_object($value)) && 
-          ('soap' == substr(get_class($value), 0, 4))
+          (is_a($value, 'SoapType'))
         ) {       
           // SOAP-Typen
           
