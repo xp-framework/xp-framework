@@ -30,7 +30,7 @@
       $this->name= $name;
       assert_options(ASSERT_ACTIVE, 1);
       assert_options(ASSERT_WARNING, 1);
-      assert_options(ASSERT_CALLBACK, array('TestCase', '__fail'));
+      assert_options(ASSERT_CALLBACK, array('TestCase', '_fail'));
     }
 
     /**
@@ -51,7 +51,7 @@
      * @param   mixed* arg
      * @return  mixed* arg
      */
-    function store() {
+    function _store() {
       static $store;
       
       if (0 == func_num_args()) {
@@ -70,8 +70,8 @@
      * @param   mixed expect default NULL
      * @return  mixed expr
      */
-    function test($expr, $reason, $actual= NULL, $expect= NULL) {
-      TestCase::store($reason, $actual, $expect);
+    function _test($expr, $reason, $actual= NULL, $expect= NULL) {
+      TestCase::_store($reason, $actual, $expect);
       return $expr;
     }
     
@@ -84,8 +84,8 @@
      * @param   int line
      * @param   string code
      */
-    function __fail($file, $line, $code) {
-      list($reason, $actual, $expect)= TestCase::store();
+    function _fail($file, $line, $code) {
+      list($reason, $actual, $expect)= TestCase::_store();
       TestCase::fail(
         $reason, 
         substr($code, 12, strpos($code, ', $error')- 12),
@@ -122,7 +122,7 @@
      * @return  bool
      */
     function assertBoolean($var, $error= 'notbool') {
-      return assert('$this->test(is_bool($var), $error, gettype($var))');
+      return assert('$this->_test(is_bool($var), $error, gettype($var))');
     }
     
     /**
@@ -134,7 +134,7 @@
      * @return  bool
      */
     function assertFloat($var, $error= 'notfloat') {
-      return assert('$this->test(is_float($var), $error, gettype($var), "float")');
+      return assert('$this->_test(is_float($var), $error, gettype($var), "float")');
     }
     
     /**
@@ -146,7 +146,7 @@
      * @return  bool
      */
     function assertInteger($var, $error= 'notinteger') {
-      return assert('$this->test(is_int($var), $error, gettype($var), "integer")');
+      return assert('$this->_test(is_int($var), $error, gettype($var), "integer")');
     }
 
     /**
@@ -158,7 +158,7 @@
      * @return  bool
      */
     function assertString($var, $error= 'notstring') {
-      return assert('$this->test(is_string($var), $error, gettype($var), "string")');
+      return assert('$this->_test(is_string($var), $error, gettype($var), "string")');
     }
 
     /**
@@ -170,7 +170,7 @@
      * @return  bool
      */
     function assertNull($var, $error= 'notnull') {
-      return assert('$this->test(is_null($var), $error, gettype($var), "null")');
+      return assert('$this->_test(is_null($var), $error, gettype($var), "null")');
     }
     
     /**
@@ -182,7 +182,7 @@
      * @return  bool
      */
     function assertArray($var, $error= 'notarray') {
-      return assert('$this->test(is_array($var), $error, gettype($var), "array")');
+      return assert('$this->_test(is_array($var), $error, gettype($var), "array")');
     }
     
     /**
@@ -194,7 +194,7 @@
      * @return  bool
      */
     function assertObject(&$var, $error= 'notobject') {
-      return assert('$this->test(is_object($var), $error, gettype($var), "object")');
+      return assert('$this->_test(is_object($var), $error, gettype($var), "object")');
     }
     
     /**
@@ -207,7 +207,7 @@
      * @see     php://empty
      */
     function assertEmpty($var, $error= 'notempty') {
-      assert('$this->test(empty($var), $error, $var, "empty(\$var)")');
+      assert('$this->_test(empty($var), $error, $var, "empty(\$var)")');
     }
 
     /**
@@ -220,7 +220,7 @@
      * @see     php://empty
      */
     function assertNotEmpty($var, $error= 'empty') {
-      assert('$this->test(!empty($var), $error, $var, "!empty(\$var)")');
+      assert('$this->_test(!empty($var), $error, $var, "!empty(\$var)")');
     }
 
     /**
@@ -233,7 +233,7 @@
      * @return  bool
      */
     function assertEquals($a, $b, $error= 'notequal') {
-      return assert('$this->test($a === $b, $error, $a, $b)');
+      return assert('$this->_test($a === $b, $error, $a, $b)');
     }
     
     /**
@@ -246,7 +246,7 @@
      * @return  bool
      */
     function assertNotEquals($a, $b, $error= 'equal') {
-      return assert('$this->test($a !== $b, $error, $a, $b)');
+      return assert('$this->_test($a !== $b, $error, $a, $b)');
     }
 
     /**
@@ -259,7 +259,7 @@
      */
     function assertTrue($var, $error= 'nottrue') {
       if ($r= $this->assertBoolean($var, $error)) {
-        $r= assert('$this->test($var === TRUE, $error, $var, TRUE)');
+        $r= assert('$this->_test($var === TRUE, $error, $var, TRUE)');
       }
       return $r;
     }
@@ -274,7 +274,7 @@
      */
     function assertFalse($var, $error= 'notfalse') {
       if ($r= $this->assertBoolean($var, $error)) {
-        $r= assert('$this->test($var === FALSE, $error, $var, FALSE)');
+        $r= assert('$this->_test($var === FALSE, $error, $var, FALSE)');
       }
       return $r;
     }
@@ -290,7 +290,7 @@
      * @see     php://preg_match
      */
     function assertMatches($var, $pattern, $error= 'nomatches') {
-      return assert('$this->test(preg_match($pattern, $var), $error, $var, $pattern)');
+      return assert('$this->_test(preg_match($pattern, $var), $error, $var, $pattern)');
     }
 
     /**
@@ -303,7 +303,7 @@
      * @return  bool
      */
     function assertContains($var, $needle, $error= 'notcontained') {
-      return assert('$this->test(strstr($var, $needle), $error, $var, $needle)');
+      return assert('$this->_test(strstr($var, $needle), $error, $var, $needle)');
     }
     
     /**
@@ -317,7 +317,7 @@
      */
     function assertClass(&$var, $name, $error= 'notequal') {
       if ($r= $this->assertObject($var, $error)) {
-        $r= assert('$this->test($var->getClassName() === $name, $error, xp::typeOf($var), $name)');
+        $r= assert('$this->_test($var->getClassName() === $name, $error, xp::typeOf($var), $name)');
       }
       return $r;
     }
@@ -333,7 +333,7 @@
      */
     function assertSubclass(&$var, $name, $error= 'notsubclass') {
       if ($r= $this->assertObject($var, $error)) {
-        $r= assert('$this->test(is($name, $var), $error, xp::typeOf($var), $name)');
+        $r= assert('$this->_test(is($name, $var), $error, xp::typeOf($var), $name)');
       }
       return $r;
     }
@@ -348,7 +348,7 @@
      * @return  bool
      */
     function assertIn($var, $list, $error= 'notinlist') {
-      return assert('$this->test(in_array($var, $list, TRUE), $error, $list, $var)');
+      return assert('$this->_test(in_array($var, $list, TRUE), $error, $list, $var)');
     }
 
     /**
