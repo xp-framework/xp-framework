@@ -11,3 +11,6 @@
 #	[<whitespace>]<filename><whitespace><error message><end-of-line>
 #
 # comment lines begin with '#'
+
+loginfo.pl unable to checkout / update loginfo.pl in CVSROOT
+commitinfo.pl unable to checkout / update commitinfo.pl in CVSROOT
