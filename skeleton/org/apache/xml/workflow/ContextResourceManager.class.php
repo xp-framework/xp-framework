@@ -4,15 +4,12 @@
  * $Id$ 
  */
 
-  uses(
-    'org.apache.xml.workflow.ContextResource'
-  );
+  uses('org.apache.xml.workflow.ContextResource');
 
   /**
-   * (Insert class' description here)
+   * ContextResourceManager
    *
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Resource Manager
    */
   class ContextResourceManager extends Object {
     var
@@ -22,18 +19,17 @@
      * Called to initialize this resource manager
      *
      * @access  public
-     * @param   
-     * @return  
      */
     function initialize() {
     }
     
     /**
-     * (Insert method's description here)
+     * Get a context resource by name, creating it if necessary.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @see     xp://org.apache.xml.workflow.ContextResource
+     * @access  public
+     * @param   string name
+     * @return  &org.apache.xml.workflow.ContextResource
      */
     function &getContextResource($name) {
       if (!isset($this->crs[$name])) {

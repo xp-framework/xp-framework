@@ -7,19 +7,26 @@
   uses('org.apache.xml.workflow.Handler');
   
   /**
-   * (Insert class' description here)
+   * State
    *
-   * @ext      extensiom
-   * @see      reference
+   * @see      xp://org.apache.xml.workflow.AbstractXMLScriptlet
    * @purpose  Base class
    */
   class State extends Object {
     var
       $name     = '',
       $handlers = array();
+    
+    /**
+     * Initialize this state
+     *
+     * @access  public
+     * @param   &org.apache.xml.workflow.Context context
+     */  
+    function initialize(&$context) { }
 
     /**
-     * (Insert method's description here)
+     * Add a handler
      *
      * @access  
      * @param   
@@ -57,9 +64,9 @@
      * are met.
      *
      * @see     xp://org.apache.xml.workflow.Handler#prerequisitesMet
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &org.apache.xml.workflow.Context context
+     * @return  bool
      */
     function isAccessible(&$context) {
       for ($i= 0, $s= sizeof($this->handlers); $i < $s; $i++) {
@@ -69,23 +76,26 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Returns whether this state has been triggered by submit data
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &org.apache.xml.HttpScriptletRequest request
+     * @return  string submit trigger's name or NULL
      */
     function isSubmitTrigger(&$request) {
-      return ($request->hasParam('__form') || $request->hasParam('__sendingdata'));
+      foreach (array('form', 'sendingdata') as $magic) {
+        if ($request->hasParam('__'.$magic)) return $request->getParam('__'.$magic);
+      }
+      return NULL;
     }
     
     /**
-     * 
+     * Include your application logic here
      *
-     * @access  
-     * @param   
-     * @param   
-     * @param   
+     * @access  public
+     * @param   &org.apache.xml.workflow.Context context
+     * @param   &org.apache.xml.HttpScriptletRequest request
+     * @param   &org.apache.xml.HttpScriptletResponse response
      * @return  bool
      */
     function getDocument(&$context, &$request, &$response) {

@@ -5,21 +5,33 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Handler
    *
-   * @see      reference
+   * @see      xp://org.apache.xml.workflow.State#addHandler
    * @purpose  Abstract base class
    */
   class Handler extends Object {
     var
+      $form     = '',
       $errors   = array();
-      
+    
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string form
+     */
+    function __construct($form) {
+      $this->form= $form;
+      parent::__construct();
+    }
+     
+    /**
+     * Add an error
+     *
+     * @access  public
+     * @param   string statuscode
+     * @return  bool FALSE
      */  
     function addError($statuscode) {
       $this->errors[]= $statuscode;
@@ -27,47 +39,50 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Handle submitted data
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &org.apache.xml.workflow.Context context
+     * @param   &org.apache.xml.HttpScriptletRequest request
+     * @return  bool
      */
     function handleSubmittedData(&$context, &$request) {
       return TRUE;
     }
     
     /**
-     * (Insert method's description here)
+     * Return whether prerequisites for this handler have been met
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &org.apache.xml.workflow.Context context
+     * @return  bool
      */
     function prerequisitesMet(&$context) {
       return TRUE;
     }
     
     /**
-     * (Insert method's description here)
+     * Return whether this handler is active
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &org.apache.xml.workflow.Context context
+     * @param   string st submit trigger name
+     * @return  bool
      */
-    function isActive(&$context) {
-      return TRUE;
+    function isActive(&$context, $st) {
+      return ($st == $this->form);
     }
     
     /**
-     * (Insert method's description here)
+     * Return whether this handler needs data
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &org.apache.xml.workflow.Context context
+     * @return  bool
      */
     function needsData(&$context) {
       return FALSE;
     }
+
   }
 ?>
