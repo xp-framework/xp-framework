@@ -48,7 +48,7 @@
           <xsl:for-each select="highlights/highlight">
             <td>
               <a href="{func:link(concat('image/view?', ../../@name, ',h,0,', position()- 1))}">
-                <img border="0" src="/albums/{../../@name}/thumb.{name}"/>
+                <img width="150" height="113" border="0" src="/albums/{../../@name}/thumb.{name}"/>
               </a>
             </td>
           </xsl:for-each>

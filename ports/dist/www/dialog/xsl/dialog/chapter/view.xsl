@@ -31,7 +31,7 @@
         <xsl:for-each select="exsl:node-set($images)/image[position() &gt;= $i and position() &lt; $i + $max]">
           <td>
             <a href="{func:link(concat('image/view?', $album, ',i,', $chapter, ',', $i))}">
-              <img border="0" src="/albums/{$album}/thumb.{name}"/>
+              <img width="150" height="113" border="0" src="/albums/{$album}/thumb.{name}"/>
             </a>
           </td>
         </xsl:for-each>
