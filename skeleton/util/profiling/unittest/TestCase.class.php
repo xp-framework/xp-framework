@@ -29,7 +29,7 @@
       $this->name= $name;
       assert_options(ASSERT_ACTIVE, 1);
       assert_options(ASSERT_WARNING, 1);
-      assert_options(ASSERT_CALLBACK, array('TestCase', 'fail'));
+      assert_options(ASSERT_CALLBACK, array('TestCase', '__fail'));
       parent::__construct();
     }
 
@@ -83,12 +83,25 @@
      * @param   int line
      * @param   string code
      */
-    function fail($file, $line, $code) {
+    function __fail($file, $line, $code) {
       list($reason, $actual)= TestCase::store();
-      throw(new AssertionFailedError(
+      TestCase::fail($reason, $actual, substr($code, 12, strpos($code, ', $error')- 12));
+    }
+    
+    /**
+     * Fail this test case
+     *
+     * @access  public
+     * @param   string reason
+     * @param   mixed actual
+     * @param   string code
+     * @return  bool FALSE
+     */
+    function fail($reason, $actual, $code) {
+      return throw(new AssertionFailedError(
         $reason, 
         $actual,
-        substr($code, 12, strpos($code, ', $error')- 12)
+        $code
       ));
     }
     
