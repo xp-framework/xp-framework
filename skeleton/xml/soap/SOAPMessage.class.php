@@ -103,9 +103,10 @@
      * @return  &mixed result
      */
     function &unmarshall(&$child, $context= NULL, $mapping) {
+       // DEBUG Console::writeLine('Unmarshalling ', $child->name, ' (', var_export($child->attribute, 1), ') >>> ', $child->content, '<<<', "\n"); // DEBUG
       if (
-        isset($child->attribute['xsi:null']) or       // Java
-        isset($child->attribute['xsi:nil'])           // SOAP::Lite
+        isset($child->attribute[$this->namespaces[XMLNS_XSI].':null']) or       // Java
+        isset($child->attribute[$this->namespaces[XMLNS_XSI].':nil'])           // SOAP::Lite
       ) {
         return NULL;
       }
@@ -157,9 +158,9 @@
       }
 
       // Type dependant
-      if (!isset($child->attribute['xsi:type']) || !preg_match(
+      if (!isset($child->attribute[$this->namespaces[XMLNS_XSI].':type']) || !preg_match(
         '#^([^:]+):([^\[]+)(\[[0-9+]\])?$#', 
-        $child->attribute['xsi:type'],
+        $child->attribute[$this->namespaces[XMLNS_XSI].':type'],
         $regs
       )) {
         // E.g.: SOAP-ENV:Fault
@@ -167,7 +168,7 @@
       }
 
       // SOAP-ENC:arrayType="xsd:anyType[4]"
-      if (isset($child->attribute['SOAP-ENC:arrayType'])) {
+      if (isset($child->attribute[$this->namespaces[XMLNS_SOAPENC].':arrayType'])) {
         $regs[2]= 'Array';
       }
 
@@ -214,7 +215,7 @@
           
         default:
           if (!empty($child->children)) {
-            if ('xsd' == $regs[1]) {
+            if ($this->namespaces[XMLNS_XSD] == $regs[1]) {
               $result= $this->_recurseData($child, TRUE, 'STRUCT', $mapping);
               break;
             }
@@ -253,7 +254,8 @@
       if (empty($node->children)) return array();
 
       foreach ($node->attribute as $key => $val) {
-        if ('xmlns' == substr($key, 0, 5)) $this->namespaces[substr($key, 6)]= $val;
+        if (0 != strncmp('xmlns:', $key, 6)) continue;
+        $this->namespaces[$val]= substr($key, 6);
       }
       
       $results= array();
@@ -319,21 +321,55 @@
     }
 
     /**
+     * Retrieve body element
+     *
+     * @access  protected
+     * @return  &xml.SOAPNode
+     * @throws  lang.FormatException in case the body element could not be found
+     */    
+    function &_bodyElement() {
+
+      // Look for namespaces in the root node
+      foreach ($this->root->attribute as $key => $val) {
+        if (0 != strncmp('xmlns:', $key, 6)) continue;
+        $this->namespaces[$val]= substr($key, 6);
+      }
+      
+      // Search for the body node. For usual, this will be the first element,
+      // but some SOAP clients may include a header node (which we silently 
+      // ignore for now).
+      for ($i= 0, $s= sizeof($this->root->children); $i < $s; $i++) {
+        if (0 == strcasecmp(
+          $this->root->children[$i]->getName(), 
+          $this->namespaces[XMLNS_SOAPENV].':Body'
+        )) return $this->root->children[$i]->children[0];
+      }
+
+      return throw(new FormatException('Could not locate Body element'));
+    }
+
+    /**
      * Get fault
      *
      * @access  public
      * @return  &xml.soap.SOAPFault or NULL if none exists
      */
     function &getFault() {
-      if (!strstr($this->root->children[0]->children[0]->name, ':Fault')) return NULL;
-      
-      list($return)= $this->_recurseData($this->root->children[0], FALSE, 'OBJECT', array());
-      return new SOAPFault(
-        isset($return['faultcode'])   ? $return['faultcode']    : '',
-        isset($return['faultstring']) ? $return['faultstring']  : '',
-        isset($return['faultactor'])  ? $return['faultactor']   : '',
-        isset($return['detail'])      ? $return['detail']       : ''
-      );
+      if ($body= &$this->_bodyElement()) {
+        if (0 != strcasecmp(
+          $body->getName(), 
+          $this->namespaces[XMLNS_SOAPENV].':Fault'
+        )) return NULL;
+
+        $return= $this->_recurseData($body, TRUE, 'OBJECT', array());
+        // DEBUG Console::writeLine('RETURN >>> ', var_export($return, 1), '***'); // DEBUG
+        return new SOAPFault(
+          isset($return['faultcode'])   ? $return['faultcode']    : '',
+          isset($return['faultstring']) ? $return['faultstring']  : '',
+          isset($return['faultactor'])  ? $return['faultactor']   : '',
+          isset($return['detail'])      ? $return['detail']       : ''
+        );
+      }
     }
     
     /**
@@ -343,18 +379,12 @@
      * @param   string context default 'ENUM'
      * @param   array mapping default array()
      * @return  &mixed data
+     * @throws  lang.FormatException in case no XMLNS_SOAPENV:Body was found
      */
     function &getData($context= 'ENUM', $mapping= array()) {
-      foreach ($this->root->attribute as $key => $val) { // Look for namespaces
-        if ($val == $this->action) $this->namespace= substr($key, strlen('xmlns:'));
+      if ($body= &$this->_bodyElement()) {
+        return $this->_recurseData($body, FALSE, $context, $mapping);
       }
-
-      return $this->_recurseData(
-        $this->root->children[0]->children[0], 
-        FALSE, 
-        $context,
-        $mapping
-      );
     }
   }
 ?>
