@@ -157,5 +157,8 @@ Comments
 - friebe, Fri Feb 11 19:46:18 CET 2005
   How do different SOAP client react to HTTP 401? Is there a standard
   defining how "access denied" should be represented?
-  
+
+- friebe, Sat Feb 12 13:45:37 CET 2005
+  This requires class annotations
+
 <EOF>
