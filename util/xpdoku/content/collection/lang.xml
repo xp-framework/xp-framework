@@ -9,9 +9,10 @@
       the reflection class XPClass, various exceptions, a set of classloaders
       and the thread implementation.<br/>
       <br/>
-      These classes are always available: lang.XPClass, lang.Exception, 
+      These classes are always available: lang.Object, lang.Interface, 
+      lang.XPClass, lang.Exception, lang.Error, lang.NullPointerException,
       lang.IllegalAccessException, lang.IllegalArgumentException, 
-      lang.IllegalStateException, lang.FormatException and lang.ClassLoader.
+      lang.IllegalStateException, lang.FormatException and lang.ClassLoader,
     </text>
   </para>
 </introduction>
