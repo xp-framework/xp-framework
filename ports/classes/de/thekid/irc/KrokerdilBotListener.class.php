@@ -655,6 +655,59 @@
             }
             $connection->sendAction($target, 'hat jetzt %d Schimpfwörter', sizeof($this->lists['swears']));
             break;              
+          
+          case 'i-':
+          case 'idiot-':
+          
+            // Don't accept swear removals from disliked nicks.
+            if ($this->karma[$nick] < 0) {
+              $connection->sendAction($target, 'hörte weg, als %s das Schimpfwort in den Raum wurf.', $nick);
+              $this->setKarma($nick, -1, '@@lamer');
+              return;
+            }
+            
+            if (FALSE === ($index= array_search($params, $this->lists['swears']))) {
+              $connection->sendAction($target, 'kennt kein solches Wort.');
+              break;
+            }
+            
+            // Remove from memory list.
+            unset($this->lists['swears'][$index]);
+            
+            // Store the removed word
+            $f= &new File(sprintf(
+              '%s%s%s.deleted',
+              dirname($this->config->getFilename()),
+              DIRECTORY_SEPARATOR,
+              $this->config->readString('lists', 'swears')
+            ));
+            try(); {
+              $f->open(FILE_MODE_APPEND);
+              $f->write($params."\n");
+              $f->close();
+            } if (catch('IOException', $e)) {
+              $connection->sendMessage($target, '! '.$e->getMessage());
+              break;
+            }
+            
+            // Also update the swears file
+            $f= &new File(sprintf(
+              '%s%s%s',
+              dirname($this->config->getFilename()),
+              DIRECTORY_SEPARATOR,
+              $this->config->readString('lists', 'swears')
+            ));
+            try(); {
+              $f->open(FILE_MODE_WRITE);
+              $f->write(implode("\n", $this->lists['swears']));
+              $f->close();
+            } if (catch('IOException', $e)) {
+              $connection->sendMessage($target, '! '.$e->getMessage());
+              break;
+            }
+            
+            $connection->sendMessage($target, 'Und wieder bin ich ein Stückchen anständiger geworden.');
+            break;
 
           case 'ascii':
             $connection->sendMessage($target, 'ASCII #%d = %s', $params, chr($params));
