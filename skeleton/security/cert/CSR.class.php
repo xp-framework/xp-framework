@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('security.cert.X509Certificate');
+  uses('security.cert.X509Certificate', 'security.KeyPair');
 
   /**
    * Certificate signing requests
