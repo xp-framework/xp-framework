@@ -10,7 +10,23 @@
    *
    * Usage: Generating a crypted password
    * <code>
-   *   $password= UnixCrypt::crypt('plain');
+   *   // Use system default, generate a salt
+   *   $default= UnixCrypt::crypt('plain');
+   *
+   *   // Use traditional
+   *   $traditional= UnixCrypt::crypt('plain', 'ab');
+   *
+   *   // Use MD5 encryption with 12 character salt
+   *   $md5= UnixCrypt::crypt('plain', '$1$0123456789AB');
+   *
+   *   // Use blowfish encryption with 16 character salt
+   *   $blowfish= UnixCrypt::crypt('plain', '$2$0123456789ABCDEF');
+   *
+   *   // Use standard DES-based encryption with a two character salt
+   *   $des= UnixCrypt::crypt('plain', '_01');
+   *
+   *   // Use extended DES-based encryption with a nine character salt
+   *   $extdes= UnixCrypt::crypt('plain', '_012345678');
    * </code>
    *
    * Usage: Verifying an entered password
