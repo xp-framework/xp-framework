@@ -54,7 +54,7 @@
       
       $this->hierarchy= &$this->widget('hierarchy');
       $this->hierarchy->set_row_height(20);
-      
+      $this->hierarchy->set_line_style(GTK_CTREE_LINES_DOTTED);
       $this->progress= &$this->widget('progressbar');
       
       $loader= &new GTKPixmapLoader($this->window->window, dirname(__FILE__));
@@ -69,6 +69,25 @@
 
       $this->connect($this->widget('select'), 'clicked');
       $this->connect($this->widget('run'), 'clicked');
+    }
+    
+    /**
+     * Update test
+     *
+     * @access  protected
+     * @param   string id
+     * @param   string result
+     */
+    function updateTest($id, $result) {
+      $content= $this->hierarchy->node_get_pixtext($this->node[$id], 0);
+      $this->hierarchy->node_set_pixtext(
+        $this->node[$id], 
+        0,
+        $content[0],
+        $content[1],
+        $this->pixmaps['p:test_'.$result],
+        $this->pixmaps['m:test_'.$result]
+      );
     }
     
     /**
@@ -91,15 +110,13 @@
       }
       
       foreach ($result->succeeded as $id => $success) {
-        $content= $this->hierarchy->node_get_pixtext($this->node[$id], 0);
-        $this->hierarchy->node_set_pixtext(
-          $this->node[$id], 
-          0,
-          $content[0],
-          $content[1],
-          $this->pixmaps['p:test_succeeded'],
-          $this->pixmaps['m:test_succeeded']
-        );
+        $this->updateTest($id, 'succeeded');
+      }
+      foreach ($result->skipped as $id => $skipped) {
+        $this->updateTest($id, 'skipped');
+      }
+      foreach ($result->failed as $id => $failed) {
+        $this->updateTest($id, 'failed');
       }
     }
     
