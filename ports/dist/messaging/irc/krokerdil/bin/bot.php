@@ -40,13 +40,18 @@
   
   // Connect and run the bot
   $c->addListener(new KrokerdilBotListener($config));
-  try(); {
-    $c->open();
-    $c->run();
-    $c->close();
-  } if (catch('Exception', $e)) {
-    $e->printStackTrace();
-    exit(-1);
+  while (1) {
+    try(); {
+      $c->open();
+      $c->run();
+      $c->close();
+    } if (catch('Exception', $e)) {
+      $e->printStackTrace();
+      // Fall through
+    }
+
+    // Wait for 10 seconds and then try to reconnect
+    sleep(10);
   }
   // }}}
 ?>
