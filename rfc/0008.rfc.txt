@@ -264,7 +264,7 @@ Details
 
   Example 2:
   <?php
-    interface class Comparator {
+    interface Comparator {
       public function compare($a, $b);
     }
 
