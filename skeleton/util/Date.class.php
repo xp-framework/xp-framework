@@ -526,7 +526,7 @@
         switch ($format{$i}) {
           case 'a': $return.= $this->hours > 12 ? 'pm' : 'am'; break;
           case 'A': $return.= $this->hours > 12 ? 'PM' : 'AM'; break;
-          case 'B': $return.= '???SWATCH???'; break;        // FIXME
+          case 'B': $return.= date('B', mktime($this->hours, $this->minutes, $this->seconds)); break;
           case 'c': $return.= sprintf(
               '%04d-%02d-%02dT%02d:%02d:%02d%s%2d:%2d', 
               $this->year,
