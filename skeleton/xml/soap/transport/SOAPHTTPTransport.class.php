@@ -89,6 +89,9 @@
      */
     function &retrieve(&$response) {
 
+      // HACK: Read statuscode, so all headers are read before $response
+      // is dumped. Otherwise the result is b0rked.
+      $response->getStatusCode();
       $this->cat && $this->cat->debug('<<<', $response);
       
       try(); {
