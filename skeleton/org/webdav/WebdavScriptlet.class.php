@@ -5,8 +5,10 @@
  */
 
   uses(
+    'peer.URL',
     'scriptlet.HttpScriptlet',
     'org.webdav.util.WebdavBool',
+    'org.webdav.WebdavScriptletRequest',
     'org.webdav.xml.WebdavPropFindRequest',
     'org.webdav.xml.WebdavPropPatchRequest',
     'org.webdav.xml.WebdavMultistatus'
@@ -88,6 +90,22 @@
    */
   class WebdavScriptlet extends HttpScriptlet {
     var
+      $methods= array(
+        HTTP_GET                 => 'doGet',
+        HTTP_POST                => 'doPost',
+        HTTP_HEAD                => 'doHead',
+        HTTP_OPTIONS             => 'doOptions',
+        HTTP_PUT                 => 'doPut',
+        HTTP_DELETE              => 'doDelete',
+        WEBDAV_METHOD_PROPFIND   => 'doPropFind',
+        WEBDAV_METHOD_PROPPATCH  => 'doPropPatch',
+        WEBDAV_METHOD_MKCOL      => 'doMkCol',
+        WEBDAV_METHOD_LOCK       => 'doLock',
+        WEBDAV_METHOD_UNLOCK     => 'doUnlock',
+        WEBDAV_METHOD_COPY       => 'doCopy',
+        WEBDAV_METHOD_MOVE       => 'doMove'
+      ),
+
       $impl         = array(),
       $handlingImpl = NULL;
       
@@ -98,20 +116,36 @@
      * @param   array impl (associative array of pathmatch => org.webdav.impl.DavImpl)
      */  
     function __construct($impl) {
-      $this->impl= $impl;
       parent::__construct();
+
+      // Make sure patterns are always with trailing /
+      foreach (array_keys($impl) as $pattern) {
+        $this->impl[rtrim($pattern, '/').'/']= &$impl[$pattern];
+      }
+    }
+    
+    function _request() {
+      switch(getenv('REQUEST_METHOD')) {
+        case 'PROPFIND':
+          return new WebdavPropFindRequest();
+        case 'PROPPATCH':
+          return new WebdavPropPatchRequest();
+        default:
+          return new WebdavScriptletRequest();
+      }
     }
 
     /**
      * Private helper function
      *
      * @access  private
-     * @param   string s
+     * @param   string url
      * @return  string
      */
-    function _relativeTarget($str) {
-      $p= parse_url($str);
-      return substr( $p['path'] , strlen($this->request->uri['path_root']));
+    function _relativeTarget($url) {
+      $url= &new URL($url);
+      $root= $this->request->getRootURI();
+      return substr(rawurldecode($url->getPath()), strlen($root->getPath()));
     }
 
     /**
@@ -126,21 +160,7 @@
      */
     function doOptions(&$request, &$response) {
       $response->setHeader('MS-Author-Via', 'DAV');         // MS-clients want this
-      $response->setHeader('Allow', implode(', ', array(
-        HTTP_GET,
-        HTTP_POST,
-        HTTP_HEAD,
-        HTTP_OPTIONS,
-        HTTP_PUT,
-        HTTP_DELETE,
-        WEBDAV_METHOD_PROPFIND,
-        WEBDAV_METHOD_PROPPATCH,
-        WEBDAV_METHOD_MKCOL,
-        WEBDAV_METHOD_LOCK,
-        WEBDAV_METHOD_UNLOCK,
-        WEBDAV_METHOD_COPY,
-        WEBDAV_METHOD_MOVE
-      )));
+      $response->setHeader('Allow', implode(', ', array_keys($this->methods)));
       $response->setHeader('DAV', '1,2,<http://apache.org/dav/propset/fs/1>');
     }
 
@@ -156,18 +176,18 @@
      */
     function doDelete(&$request, &$response) {
       try(); {
-        $object= &$this->handlingImpl->delete($request->uri['path_translated']);
+        $object= &$this->handlingImpl->delete($request->getPath());
       } if (catch('ElementNotFoundException', $e)) {
       
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('Exception', $e)) {
       
         // Not allowd
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } 
       
@@ -248,13 +268,13 @@
       
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('Exception', $e)) {
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } 
       
@@ -277,20 +297,20 @@
     function doPut(&$request, &$response) {
       try(); {
         $created= $this->handlingImpl->put(
-          $request->uri['path_translated'],
+          $request->getPath(),
           $request->getData()
         );
       } if (catch('OperationFailedException', $e)) {
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('OperationNotAllowedException', $e)) {
       
         // Not allowed
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       }
       
@@ -312,12 +332,12 @@
      */
     function doMkCol(&$request, &$response) {
       try(); {
-        $created= $this->handlingImpl->mkcol($request->uri['path_translated']);
+        $created= $this->handlingImpl->mkcol($request->getPath());
       } if (catch('OperationFailedException', $e)) {
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } 
       
@@ -337,7 +357,7 @@
     function doMove(&$request, &$response) {
       try(); {
         $created= $this->handlingImpl->move(
-          $request->uri['path_translated'],
+          $request->getPath(),
           $this->_relativeTarget($request->getHeader('Destination')),
           WebdavBool::fromString($request->getHeader('Overwrite'))
         );
@@ -345,13 +365,13 @@
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('OperationNotAllowedException', $e)) {
       
         // Not allowed
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       }
       
@@ -379,13 +399,13 @@
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('OperationNotAllowedException', $e)) {
       
         // Not allowed
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       }
       
@@ -489,25 +509,25 @@
     function doPropFind(&$request, &$response) {
       try(); {
         $multistatus= &$this->handlingImpl->propfind(
-          new WebdavPropFindRequest($request),
+          $request,
           new WebdavMultistatus()
         );
       } if (catch('ElementNotFoundException', $e)) {
       
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('OperationNotAllowedException', $e)) {
 
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED); 
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('FormatException', $e)) {
 
         // XML parse errors
         $response->setStatus(HTTP_BAD_REQUEST);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('Exception', $e)) {
         
@@ -542,31 +562,34 @@
     function doPropPatch(&$request, &$response) {
       try(); {
         $this->handlingImpl->proppatch(
-          new WebdavPropPatchRequest($request)
+          $request,
+          new WebdavMultiStatus()
         );
+        
       } if (catch('ElementNotFoundException', $e)) {
-      
+
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('FormatException', $e)) {
       
         // XML parse errors
         $response->setStatus(HTTP_BAD_REQUEST);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('OperationFailedException', $e)) {
       
         // Element not found
         $response->setStatus(HTTP_CONFLICT);
-        $response->setContent($e->getStackTrace());
+        $response->setContent($e->toString());
         return FALSE;
       } if (catch('Exception', $e)) {
-      
+        
         // Other exceptions - throw exception to indicate (complete) failure
         return throw(new HttpScriptletException($e->message));
       }
+      $response->setStatus(HTTP_CREATED);
       
       // TBD: MultiStatus response
     }
@@ -587,8 +610,6 @@
       
       return FALSE;
     }
-
-
   
     /**
      * Handle methods
@@ -599,22 +620,11 @@
      * @see     rfc://2518#8 Description of methods
      */
     function handleMethod(&$request) {
-      static $methods= array(
-        HTTP_GET           => 'doGet',
-        HTTP_POST          => 'doPost',
-        HTTP_HEAD          => 'doHead',
-        HTTP_OPTIONS       => 'doOptions',
-        HTTP_PUT           => 'doPut',
-        HTTP_DELETE        => 'doDelete',
-        WEBDAV_METHOD_PROPFIND    => 'doPropFind',
-        WEBDAV_METHOD_PROPPATCH   => 'doPropPatch',
-        WEBDAV_METHOD_MKCOL       => 'doMkCol',
-        WEBDAV_METHOD_LOCK        => 'doLock',
-        WEBDAV_METHOD_UNLOCK      => 'doUnlock',
-        WEBDAV_METHOD_COPY        => 'doCopy',
-        WEBDAV_METHOD_MOVE        => 'doMove'
-      );
-            
+      // Check if we recognize this method
+      if (!isset($this->methods[$request->method])) {
+        return throw(new HttpScriptletException('Cannot handle method "'.$request->method.'"'));
+      }
+      
       // Read input if we have a Content-length header,
       // else get data from QUERY_STRING
       if (
@@ -632,13 +642,22 @@
       // Select implementation
       $this->handlingImpl= NULL;
       foreach (array_keys($this->impl) as $pattern) {
-        if (0 !== strpos($request->uri['path'], $pattern)) continue;
+        if (0 !== strpos(rtrim($request->uri['path'], '/').'/', $pattern)) continue;
         
-        $request->uri['path_root']= $pattern;
-        $request->uri['path_translated']= (string)substr(
+        // Set the root URL (e.g. http://wedav.host.com/dav/)
+        $request->setRootURL(new URL(sprintf(
+          '%s://%s%s',
+          $request->uri['scheme'],
+          $request->uri['host'],
+          $pattern
+        )));
+        
+        // Set request path (e.g. /directory/file)
+        $request->setPath(substr(
           $request->uri['path'], 
           strlen($pattern)
-        );
+        ));
+        
         $this->handlingImpl= &$this->impl[$pattern];
         break;
       }
@@ -664,14 +683,8 @@
         default:
           $this->useragent= WEBDAV_CLIENT_UNKNOWN;
       }
-
-      // Check if we recognize this method
-      if (isset($methods[$request->method])) {
-        $this->_method= $methods[$request->method];
-        return $this->_method;  
-      }
       
-      return throw(new HttpScriptletException('Cannot handle method "'.$request->method.'"'));
+      return $this->methods[$request->method];
     }
   }
 ?>
