@@ -78,15 +78,15 @@
         break;
       
       case ST_KEY.T_CONSTANT_ENCAPSED_STRING:
-        $annotations[$name]= trim($tokens[$i][1], '"\'');
+        $annotations[$name][$key]= trim($tokens[$i][1], '"\'');
         break;        
 
       case ST_KEY.T_LNUMBER:
-        $annotations[$name]= (int)$tokens[$i][1];
+        $annotations[$name][$key]= (int)$tokens[$i][1];
         break;
 
       case ST_KEY.T_DNUMBER:
-        $annotations[$name]= (float)$tokens[$i][1];
+        $annotations[$name][$key]= (float)$tokens[$i][1];
         break;
       
       case ST_KEY.T_STRING:
