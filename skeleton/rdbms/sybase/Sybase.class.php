@@ -249,8 +249,8 @@
      * Begin a transaction
      *
      * @access  public
-     * @param   &rdbms.DBTransaction transaction
-     * @return  &rdbms.DBTransaction
+     * @param   &rdbms.Transaction transaction
+     * @return  &rdbms.Transaction
      */
     function &begin(&$transaction) {
       if (FALSE === $this->query('begin transaction %c', $transaction->name)) {
