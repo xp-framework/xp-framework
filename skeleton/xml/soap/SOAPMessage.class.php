@@ -306,7 +306,7 @@
      * @return  &xml.soap.SOAPFault or NULL if none exists
      */
     function &getFault() {
-      if ($this->root->children[0]->children[0]->name != 'SOAP-ENV:Fault') return NULL;
+      if (!strstr($this->root->children[0]->children[0]->name, ':Fault')) return NULL;
       
       list($return)= $this->_recurseData($this->root->children[0], FALSE, 'OBJECT');
       return new SOAPFault(array(
