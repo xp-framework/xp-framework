@@ -15,6 +15,7 @@
 <widget>
   <class>GtkWindow</class>
   <name>main</name>
+  <visible>False</visible>
   <title>Klip</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
