@@ -125,40 +125,6 @@
     }
     
     /**
-     * Returns a portion of the SQL query suitable for copying into an 
-     * update statement.
-     *
-     * @access  protected
-     * @param   &rdbms.DBConnection db
-     * @return  string sql
-     */
-    function _updated(&$db) {
-      $types= DataSet::registry(get_class($this).'.types');
-      $sql= '';
-      foreach (array_keys($this->_changed) as $key) {
-        $sql.= $key.$db->prepare('= '.$types[$key], $this->{$key}).', ';
-      }
-      return substr($sql, 0, -2);
-    }
-
-    /**
-     * Returns a portion of the SQL query suitable for copying into an 
-     * insert statement.
-     *
-     * @access  protected
-     * @param   &rdbms.DBConnection db
-     * @return  string sql
-     */
-    function _inserted(&$db) {
-      $types= DataSet::registry(get_class($this).'.types');
-      $sql= implode(', ', array_keys($this->_changed)).') values (';
-      foreach (array_keys($this->_changed) as $key) {
-        $sql.= $db->prepare($types[$key], $this->{$key}).', ';
-      }
-      return substr($sql, 0, -2);
-    }
-
-    /**
      * Returns the conditional portion of the SQL query (everything after the
      * WHERE keyword) based on criteria given.
      *
@@ -294,15 +260,30 @@
       $cm= &ConnectionManager::getInstance();  
       try(); {
         $db= &$cm->getByHost(DataSet::registry(get_class($this).'.connection'), 0);
-        $affected= $db->insert(
-          ' into '.DataSet::registry(get_class($this).'.table').
-          $this->_inserted($db)
+
+        // Build the insert command
+        $sql= $db->prepare(
+          'into %c (%c) values (',
+          DataSet::registry(get_class($this).'.table'),
+          array_keys($this->_changed)
         );
+        $types= DataSet::registry(get_class($this).'.types');
+        foreach (array_keys($this->_changed) as $key) {
+          $sql.= $db->prepare($types[$key], $this->{$key}).', ';
+        }
+        
+        // Send it
+        $affected= $db->insert(substr($sql, 0, -2).')');
+
+        // Fetch identity value if requested. We do not use the _change()
+        // method here since the primary key is not supposed to appear
+        // in the list of changed attributes
         $identity && $this->{$identity}= $db->identity();
       } if (catch('SQLException', $e)) {
         return throw($e);
       }
 
+      $this->_changes= array();
       return $affected;
     }
 
@@ -319,15 +300,24 @@
       $cm= &ConnectionManager::getInstance();  
       try(); {
         $db= &$cm->getByHost(DataSet::registry(get_class($this).'.connection'), 0);
-        $affected= $db->update(
-          DataSet::registry(get_class($this).'.table').
-          ' set '.$this->_updated($db).
-          DataSet::criteria($db, $criteria)
+
+        // Build the update command
+        $sql= $db->prepare(
+          '%c set ',
+          DataSet::registry(get_class($this).'.table')
         );
+        $types= DataSet::registry(get_class($this).'.types');
+        foreach (array_keys($this->_changed) as $key) {
+          $sql.= $db->prepare('%c = '.$types[$key], $key, $this->{$key}).', ';
+        }
+
+        // Send it
+        $affected= $db->update(substr($sql, 0, -2).DataSet::criteria($db, $criteria));
       } if (catch('SQLException', $e)) {
         return throw($e);
       }
 
+      $this->_changes= array();
       return $affected;
     }
 
@@ -344,9 +334,11 @@
       $cm= &ConnectionManager::getInstance();  
       try(); {
         $db= &$cm->getByHost(DataSet::registry(get_class($this).'.connection'), 0);
+
+        // Build the delete command and send it
         $affected= $db->delete(
-          ' from '.DataSet::registry(get_class($this).'.table').
-          ' set '.$this->_updated($db).
+          'from %c %c',
+          DataSet::registry(get_class($this).'.table'),
           DataSet::criteria($db, $criteria)
         );
       } if (catch('SQLException', $e)) {
