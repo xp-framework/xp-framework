@@ -119,16 +119,12 @@
     /**
      * Closes the connection
      *
+     * @see     php://ldap_close
      * @access  public
      * @return  bool success
      */
     function close() {
-      if (!$this->isConnected()) return TRUE;
-      
-      $ret= TRUE;
-      $ret= $ret & ldap_unbind($this->_hdl);
-      $ret= $ret & ldap_close($this->_hdl);
-      return $ret;
+      return $this->isConnected() ? ldap_unbind($this->_hdl) : TRUE;
     }
     
     /**
