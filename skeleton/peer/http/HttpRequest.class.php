@@ -14,7 +14,7 @@
     'peer.http.HttpResponse',
     'peer.http.RequestData',
     'peer.Header'
-   );
+  );
   
   /**
    * HTTP request
