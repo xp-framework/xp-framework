@@ -14,6 +14,16 @@
   /**
    * Kapselt ein Tar-Archiv
    *
+   * Usage:
+   * <code>
+   * $a= &new TarArchive(new File('foo.tar.gz'));
+   * $a->open(FILE_MODE_READ);
+   * $e= &$a->getEntry();
+   * $a->close();
+   *
+   * printf("Filesize of entry %s is %d bytes\n", $entry->name, $entry->size);
+   * </code>
+   *
    * @see http://www.gnu.org/software/tar/tar.html
    */
   class TarArchive extends Object {
