@@ -182,6 +182,7 @@
           );
         }
       }
+      $this->trace->columns_autosize();
     }
 
     /**
@@ -192,6 +193,8 @@
      */
     function onClearClicked(&$widget) {
       $this->hierarchy->clear();
+      $this->trace->clear();
+      $this->trace->columns_autosize();
       $this->node= array();
       $this->loaded= array();
       $this->suite->clearTests();
