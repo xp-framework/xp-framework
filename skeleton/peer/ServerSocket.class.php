@@ -74,7 +74,7 @@
      * @throws  IOException in case of an error
      */
     function create() {
-      if (FALSE === ($this->_sock= socket_create($this->domain, $this->type, $this->protocol))) {
+      if (!is_resource($this->_sock= socket_create($this->domain, $this->type, $this->protocol))) {
         return throw(new IOException(sprintf(
           'Creating socket failed',
           $this->getLastError()
@@ -93,8 +93,8 @@
      */
     function bind($reuse= FALSE) {
       if (
-        (FALSE === socket_set_option($this->_sock, SOL_SOCKET, SO_REUSEADDR, $reuse)) ||
-        (FALSE === $this->_sock= socket_bind($this->_sock, $this->host, $this->port))
+        (FALSE === socket_setopt($this->_sock, SOL_SOCKET, SO_REUSEADDR, $reuse)) ||
+        (FALSE === socket_bind($this->_sock, $this->host, $this->port))
       ) {
         return throw(new IOException(sprintf(
           'Binding socket to '.$this->host.':'.$this->port.' failed',
@@ -122,7 +122,7 @@
      * @throws  IOException in case of an error
      */
     function listen($backlog= 10) {
-      if (FALSE === ($this->_sock= socket_bind($this->_sock, $backlog))) {
+      if (FALSE === socket_listen($this->_sock, $backlog)) {
         return throw(new IOException(sprintf(
           'Listening on socket failed',
           $this->getLastError()
@@ -156,8 +156,21 @@
           $this->getLastError()
         )));
       }
+      if (!is_resource($msgsock)) return FALSE;
       
-      return FALSE === $msgsock ? FALSE : new BSDSocket(array('_sock' => $msgsock));
+      // Get peer
+      if (FALSE === socket_getpeername($msgsock, $host, $port)) {
+        return throw(new IOException(sprintf(
+          'Cannot get peer',
+          $this->getLastError()
+        )));      
+      }
+      
+      return new BSDSocket(array(
+        '_sock' => $msgsock,
+        'host'  => $host,
+        'port'  => $port
+      ));
     }
   }
 ?>
