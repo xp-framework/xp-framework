@@ -24,22 +24,20 @@
     <!-- news -->
     <h4 class="context">Newsflash</h4>
     <ul class="context">
-      <li>
-        <em>2003-10-26 18:31</em>:<br/>
-        <a href="#news?__id=3773277">XP2 Alpha</a>
-      </li>
-      <li>
-        <em>2003-09-28 18:33</em>:<br/>
-        <a href="#news?__id=3773276">Examples</a>
-      </li>
-      <li>
-        <em>2003-09-27 15:30</em>:<br/>
-        <a href="#news?__id=3773275">[rdbms] Exception refactoring</a>
-      </li>
-      <li>
-        <em>2003-09-21 20:29</em>:<br/>
-        <a href="#news?__id=3773274">Core feature: Interfaces</a>
-      </li>
+      <xsl:for-each select="/formresult/news/items/item">
+        <li>
+          <em><xsl:value-of select="concat(
+            created_at/year, '-',
+            format-number(created_at/mon, '00'), '-',
+            format-number(created_at/mday, '00'), ' ',
+            format-number(created_at/hours, '00'), ':',
+            format-number(created_at/minutes, '00')
+          )"/></em>:<br/>
+          <a href="news/view?{news_id}">
+            <xsl:value-of select="caption"/>
+          </a>
+        </li>
+      </xsl:for-each>
     </ul>
 
     <!-- cvs -->
