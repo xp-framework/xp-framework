@@ -4,7 +4,7 @@
  * $Id$ 
  */
  
-  uses('peer.Socket', 'util.registry.storage.RegistryStorage');
+  uses('peer.Socket');
 
   /**
    * Remote Storage client implementation of key/vales pairs
@@ -24,7 +24,7 @@
    *
    * @purpose  A storage provider that uses a key server
    */
-  class KeyServerStorage extends RegistryStorage {
+  class KeyServerStorage extends Object {
     var
       $namespace = '';
 
