@@ -13,9 +13,9 @@
   define('FILE_MODE_READAPPEND','a+');         // Append (Read/Write)
   
   // Define default filehandles
-  if (!defined('STDIN'))  define('STDIN',               'php://stdin');
-  if (!defined('STDOUT')) define('STDOUT',              'php://stdout');
-  if (!defined('STDERR')) define('STDERR',              'php://stderr');
+  if (!defined('STDIN'))  define('STDIN',      fopen ('php://stdin',  'r'));          
+  if (!defined('STDOUT')) define('STDOUT',     fopen ('php://stdout', 'w');          
+  if (!defined('STDERR')) define('STDERR',     fopen ('php://stderr', 'w'));         
   
   uses(
     'io.IOException',
