@@ -7,16 +7,18 @@
   /**
    * RequestData
    *
-   * @see      xp://peer.http.HttpRequest#setParamaters
+   * @see      xp://peer.http.HttpRequest#setParameters
    * @purpose  Pass request data directly to
    */
   class RequestData extends Object {
-  
+    var
+      $data = '';
+
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
+     * @access  public
+     * @param   string buf
      */
     function __construct($buf) {
       $this->data= $buf;
@@ -24,10 +26,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve data
      *
-     * @access  
-     * @return  
+     * @access  public
+     * @return  string
      */
     function getData() {
       return $this->data;
