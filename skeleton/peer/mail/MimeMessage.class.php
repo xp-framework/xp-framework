@@ -152,7 +152,7 @@
           : MIME_DISPOSITION_INLINE
         );
         if (FALSE !== ($f= $this->_lookupattr ($p[$i]->dparameters, 'FILENAME')))
-          $this->setFilename($f);
+          $part->setFilename($f);
 
         $part->id= $pid;
         
