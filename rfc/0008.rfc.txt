@@ -37,7 +37,6 @@ a) Syntax changes and additions
 * Enumerations
 * Annotations support
 * Finally
-* Hints for primitives
 * Keywords would be allowed as class and method names where possible
 * Automated getters and setters
 * Default members
@@ -208,15 +207,6 @@ Details
       $file->close();
     }
   ?>
-
-* Hints for primitives
-  Primitive types (string, float, integer, bool, NULL, resource, array)
-  may also be type-hinted:
-  <?php
-    function add(int $i) { }
-  ?>
-  Failure to pass in the correct type would result in an IllegalArgument
-  exception being thrown (see also: Error handling changes).
 
 * Keywords would be allowed as class and method names where possible
   The keywords class, array, list and so on would be allowed as class
