@@ -62,7 +62,7 @@ Example:
       // This method is unrestricted
     }
 
-    #[@webmethod, @restricted(role= 'admin')]
+    #[@webmethod, @restricted(roles= array('admin', 'root'))]
     function sendMessage($customerId, &$message) {
       // This method is restricted to users with "admin" role
     }
