@@ -42,7 +42,7 @@
       $flags= 0;
       parse_str($this->parts['query'], $config);
       foreach ($config as $key => $value) {
-        if ($value) {
+        if ($value && defined ('DB_'.strtoupper ($key))) {
           $flags= $flags | constant('DB_'.strtoupper($key));
         }
       }
