@@ -12,8 +12,7 @@
       the developers have access to one of these databases to verify their
       code actually works).
       <br/>
-      See the <ref type="api:class" link="rdbms.DriverManager"/> API 
-      documentation for a short example.
+      See also: <ref link="tasks.rdbms">The XP rdbms API explained</ref>.
     </text>
   </para>
 </introduction>
