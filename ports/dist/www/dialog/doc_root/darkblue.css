@@ -16,14 +16,14 @@ h1 {
   font: 42px "Arial narrow";
 }
 h2 { 
-  font: 22px "Georgia"; 
+  font: 19px "Georgia"; 
   padding: 0px;
   margin: 1px;
   color: #bfbbe1;
 }
 h3 { 
   font: bold 14px "Georgia";
-  border-bottom: 1px solid #312a72;  
+  margin: 1px;
 }
 h4 { 
   font: bold 14px "Georgia"; 
@@ -126,9 +126,16 @@ table.highlights {
 table.highlights img {
   border: 1px solid #f4f4f4;
 }
+table.chapter img {
+  border: 1px solid #f4f4f4;
+}
+td#image img {
+  border: 2px solid #f4f4f4;
+}
 
 /* Paging elements */
 a.pager img {
+  border: none;
   padding: 3px;
 }
 a.pager#false {
