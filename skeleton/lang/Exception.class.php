@@ -1,94 +1,68 @@
 <?php
-  // Genereller Fehler
-  define('E_GENERAL_EXCEPTION',   0x0008);
-  
-  // Parameter, Format, Typ
-  define('E_PARAM_EXCEPTION',     0xF001);
-  define('E_FORMAT_EXCEPTION',    0xF002);
-  define('E_TYPE_EXCEPTION',      0xF003);
-  
-  // Violations!!!
-  define('E_ILLEGAL_ARGUMENT_EXCEPTION',        0xF100);
-  define('E_ILLEGAL_STATE_EXCEPTION',           0xF101);
-  define('E_CLASS_NOTFOUND_EXCEPTION',          0xF102);
-    
-  // IO
-  define('E_IO_EXCEPTION',        0xF200);
-  
-  // Net
-  define('E_CONNECT_EXCEPTION',   0xF300);
-  
-  // Irgendeine
-  define('E_ANY_EXCEPTION',       0xFFFF);
-  
+/* Diese Klasse ist Teil des XP-Frameworks
+ * 
+ * $Id$
+ */
+ 
+  /**
+   * Kapselt die Exception
+   */
   class Exception extends Object {
-    var            
-      $type,
-      $message,
-      $file,
-      $line;                
-
-    function Exception() {
-      $this->type= $this->message= $this->file= $this->line= NULL;                            
+    var 
+      $message;
+     
+    /**
+     * Constructor
+     */
+    function __construct($message) {
+      $this->message= $message;
+      parent::__construct();
     }
-  }  
-  
-  function Exception__Handler($type, $message, $errfile, $errline) {
-    global $exceptions;
-
-    $exception= new Exception();
-    $exception->type= $type;
-    $exception->message= $message;
-    $exception->file= $errfile;
-    $exception->line= $errline;
     
-    throw($type, $exception);
-    return 0;
-  }
-
-  function try() {
-    global $exceptions;
+    /**
+     * "Stack Trace" ausgeben
+     */
+    function printStackTrace() {
+      echo $this->getStackTrace();
+    }
     
-    $exceptions= array();
-    $GLOBALS['Exception__errorHandler']= set_error_handler('Exception__Handler');
-  }
-
-  function catch($eType) {
-    global $exceptions;
-    
-    // Restore
-    set_error_handler($GLOBALS['Exception__errorHandler']); 
-    
-    // Keine Exceptions->OK:)
-    if (sizeof($exceptions)== 0) return 0;
-
-    // Gibt's eine Exception?
-    $type= (E_ANY_EXCEPTION== $eType) ? key($exceptions): $eType;    
-    if (!isset($exceptions[$type])) return 0;
-
-    // Merken und vom Stack nehmen
-    $exception= $exceptions[$type];
-    unset($exceptions[$type]);
-    return $exception;
-  }
-
-  function throw($type, $e) {
-    global $exceptions;
-    
-    if (!is_object($e)) {
-      Exception__Handler($type, $e, __FILE__, __LINE__);
-    } else {
-      $exceptions[$type]= $e;
-      foreach ($GLOBALS['Exception__attachedHandlers'] as $handler) {
-        $handler($e);
+    /**
+     * "Stack Trace" zurückgeben
+     *
+     * @return  string der StackTrace, vorformatiert
+     */
+    function getStackTrace() {
+      $return= sprintf(
+        "Exception %s (%s)\n",
+        $this->getName(),
+        $this->message
+      );
+      
+      // Pfusch, aber in PHP4 nicht anders möglich...
+      for ($i= 0; $i< sizeof($GLOBALS['php_errorcode']); $i++) {
+      
+        // Methoden/Funktionsnamen raussuchen
+        if ($fd= @fopen($GLOBALS['php_errorfile'][$i], 'r')) {
+          $func= '<main>';
+          $no= 0;
+          while (
+            (FALSE !== ($line= @fgets($fd, 4096))) &&
+            (++$no <= $GLOBALS['php_errorline'][$i])
+          ) {
+            if (preg_match('/function\s+([^\r\n\s\t\(]+)/i', $line, $regs)) $func= $regs[1];
+          }
+          fclose($fd);
+        }
+        
+        $return.= sprintf(
+          "  at %s:%s (line %d:%s)\n",
+          basename($GLOBALS['php_errorfile'][$i]),
+          $func,
+          $GLOBALS['php_errorline'][$i],
+          $GLOBALS['php_errormessage'][$i]
+        );
       }
+      return $return;
     }
-    return 0;
   }
-  
-  function attachHandler($funcName) {
-    $GLOBALS['Exception__attachedHandlers'][]= $funcName;
-  }
-  
-  $GLOBALS['Exception__attachedHandlers']= array();
 ?>
