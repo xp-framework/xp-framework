@@ -121,6 +121,29 @@
     function setHeader($name, $value) {
       $this->headers[]= $name.': '.$value;
     }
+
+    /**
+     * Sets the length of the content body in the response. 
+     *
+     * @access  public
+     * @param   int len
+     */
+    function setContentLength($len) {
+      $this->headers[]= 'Content-Length: '.$len;
+    }
+
+    /**
+     * Sets the content type of the response being sent to the client, 
+     * if the response has not been committed yet. The given content 
+     * type may include a character encoding specification, for example, 
+     * text/html; charset=UTF-8.
+     *
+     * @access  public
+     * @param   string type
+     */
+    function setContentType($type) {
+      $this->headers[]= 'Content-Type: '.$type;
+    }
     
     /**
      * Set a cookie. May be called multiple times with different cookies
