@@ -58,8 +58,8 @@
    *
    * The used template must use the following template-syntax (one line):
    * <pre>
-   *   $(CURRENT)|$(DOCID)|$(NSTARS)|$(SCORE)|$&(URL)|$&(TITLE)|$&(EXCERPT)|
-   *   $&(METADESCRIPTION)|$(MODIFIED)|$(SIZE)|$(HOPCOUNT)|$(PERCENT)
+   *   $(CURRENT)|$(DOCID)|$(NSTARS)|$(SCORE)|$%(URL)|$%(TITLE)|$%(EXCERPT)|
+   *   $%(METADESCRIPTION)|$(MODIFIED)|$(SIZE)|$(HOPCOUNT)|$(PERCENT)
    * </pre>
    *
    * Note also that you can set query parameters which may or may not be overwriteable
@@ -76,6 +76,7 @@
       $excludes=    array(),
       $algorithms=  '',
       $sort=        SORT_SCORE,
+      $method=      'boolean',
       $maxresults=  0;
     
     var
@@ -248,6 +249,26 @@
     }
 
     /**
+     * Set Method
+     *
+     * @access  public
+     * @param   mixed method
+     */
+    function setMethod($method) {
+      $this->method= $method;
+    }
+
+    /**
+     * Get Method
+     *
+     * @access  public
+     * @return  mixed
+     */
+    function getMethod() {
+      return $this->method;
+    }
+
+    /**
      * Build the query string for the search.
      *
      * @access  protected
@@ -259,7 +280,7 @@
         if ($w{0} != '-') {
           $str.= ' AND '.$w;
         } else {
-          $str.= ' AND NOT '.substr($w, 1);
+          $str.= ' NOT '.substr($w, 1);
         }
       }
       
@@ -283,6 +304,16 @@
       if (strlen ($this->getAlgorithms()))
         $params['search_algorithm']= $this->getAlgorithms();
 
+      // Set the search method (regular / boolean)
+      $params['method']= $this->getMethod();
+
+      // If maxresults is 0, use 1000 as matchesperpage. We'll only receive
+      // the first page, so this replaces 'all results' which htdig does not support.
+      $params['matchesperpage']= (empty($this->maxresults) 
+        ? 1000 : 
+        $this->maxresults
+      );
+
       $params['sort']= $this->getSort();
       $params['words']= $this->_getWordString();
       
@@ -291,7 +322,7 @@
         if (strlen($str)) $str.= '&';
         $str.= $key.'='.urlencode($params[$key]);
       }
-      
+
       return $str;
     }
 
