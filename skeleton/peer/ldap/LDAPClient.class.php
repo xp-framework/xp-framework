@@ -243,8 +243,7 @@
         return throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       }
       
-      list($filter, $base)= explode(',', $entry->getDN(), 2);
-      $res= ldap_list($this->_hdl, $base, $filter, array(), FALSE, 1);
+      $res= ldap_read($this->_hdl, $entry->getDN(), 'objectClass=*', array(), FALSE, 0);
       if (0 != ldap_errno($this->_hdl)) {
         return throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
       }
@@ -252,7 +251,8 @@
       // Nothing found?
       $result= ldap_get_entries($this->_hdl, $res);
       if (!is_resource($res) || 0 == $result['count']) return NULL;
-
+      ldap_free_result($res);
+      
       return LDAPEntry::fromData($result[0]);
     }
     
@@ -263,8 +263,8 @@
      * @param   &peer.ldap.LDAPEntry entry specifying the dn
      * @return  bool TRUE if the entry exists
      */
-    function exists(&$entry, $filter= 'objectClass=*') {
-      return NULL !== $this->read($entry, $filter);
+    function exists(&$entry) {
+      return NULL !== $this->read($entry);
     }
     
     /**
