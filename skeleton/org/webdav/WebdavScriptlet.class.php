@@ -11,6 +11,7 @@
     'org.webdav.util.WebdavBool',
     'org.webdav.WebdavScriptletRequest',
     'org.webdav.WebdavScriptletResponse',
+    'org.webdav.xml.WebdavLockRequest',
     'org.webdav.xml.WebdavPropFindRequest',
     'org.webdav.xml.WebdavPropPatchRequest',
     'org.webdav.xml.WebdavPropResponse',
