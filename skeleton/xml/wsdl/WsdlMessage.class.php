@@ -52,12 +52,32 @@
      */
     function __construct($name, $parts= array()) {
       $this->name= $name;
-      foreach ($parts as $k=> $v) {
+      foreach ($parts as $k => $v) {
         if (is_scalar($v)) $v= array($v);
         array_unshift($v, $k);
         call_user_func_array(array(&$this, 'addPart'), $v);
       }
       parent::__construct();
+    }
+
+    /**
+     * Set Name
+     *
+     * @access  public
+     * @param   string name
+     */
+    function setName($name) {
+      $this->name= $name;
+    }
+
+    /**
+     * Get Name
+     *
+     * @access  public
+     * @return  string
+     */
+    function getName() {
+      return $this->name;
     }
     
     /**
