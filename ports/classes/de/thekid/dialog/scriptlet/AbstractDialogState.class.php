@@ -8,7 +8,8 @@
     'scriptlet.xml.workflow.AbstractState',
     'io.FileUtil',
     'io.File',
-    'de.thekid.dialog.Album'
+    'de.thekid.dialog.Album',
+    'util.PropertyManager'
   );
 
   /**
@@ -62,8 +63,17 @@
     function setup(&$request, &$response, &$context) {
       parent::setup($request, $response, $context);
       
-      // FIXME make configurable?
-      $this->dataLocation= $request->getEnvValue('DOCUMENT_ROOT').'/../data/';
+      // Read configuration
+      $pm= &PropertyManager::getInstance();
+      with ($prop= &$pm->getProperties('web')); {
+        $this->dataLocation= $prop->readString(
+          'data',
+          'location',
+          $request->getEnvValue('DOCUMENT_ROOT').'/../data/'
+        );
+        
+        $response->addFormresult(Node::fromArray($prop->readSection('general'), 'config'));
+      }
     }  
   }
 ?>
