@@ -21,6 +21,12 @@
   
   // TBD: Get from database?
   $news->addItem(
+    'Added class org.cvshome.CVSInterface', 
+    'http://xp.php3.de/apidoc/collections/org.cvshome.html',
+    'Description: This class is an easy to use interface to the concurrent versioning system executables',
+    new Date('2002-12-29 19:00:00')
+  );
+  $news->addItem(
     'API Docs: Inheritance tree', 
     'http://xp.php3.de/apidoc/inheritance.html',
     'A tree view on class inheritance is now available.',
