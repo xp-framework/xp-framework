@@ -39,6 +39,17 @@ import net.php.serialize.UnserializeException;
     public static String serialize(String s) {
       return "s:" + s.length() + ":\"" + s + "\";";
     }
+
+    /**
+     * Serializes an boolean
+     *  
+     * @access  public
+     * @param   boolean b 
+     * @return  String the serialized representation
+     */
+    public static String serialize(boolean b) {
+      return "b:" + b + ";";
+    } 
     
     /**
      * Serializes an int
@@ -117,12 +128,30 @@ import net.php.serialize.UnserializeException;
         
         Object value= null; 
         try {
-          value= fields[i].get(o);
+          fields[i].setAccessible(true);
+          Class fieldClass = fields[i].getType();
+
+System.err.println(c.getName() + ": Field #" + i + " '" + fields[i].getName() + " is a '" + fieldClass.getName() + "'");
+
+          if (fieldClass == int.class) {
+            buffer.append(Serializer.serialize(fields[i].getInt(o))); 
+          } else if (fieldClass == long.class) {
+            buffer.append(Serializer.serialize(fields[i].getLong(o)));
+          } else if (fieldClass == boolean.class) { 
+            buffer.append(Serializer.serialize(fields[i].getBoolean(o)));
+          } else if (fieldClass == float.class) {
+            buffer.append(Serializer.serialize(fields[i].getFloat(o)));
+          } else if (fieldClass == double.class) {
+            buffer.append(Serializer.serialize(fields[i].getDouble(o)));
+          } else if (fieldClass == String.class) {
+            buffer.append(Serializer.serialize((String)fields[i].get(o)));
+          } else {
+            buffer.append(Serializer.serialize(fields[i].get(o)));
+          }
         } catch (IllegalAccessException e) {
-          value= null;
+          System.err.println(e.toString());
+          buffer.append("N;"); 
         }
-        
-        buffer.append(Serializer.serialize(value));
       }
       
       buffer.append("}");
