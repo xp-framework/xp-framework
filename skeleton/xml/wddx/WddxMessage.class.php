@@ -1,0 +1,196 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  uses('xml.Tree');
+
+  /**
+   * Class representing wddx messages. It can handle serialization and
+   * deserialization to/from wddx.
+   *
+   * @ext      xml
+   * @see      http://www.openwddx.org/downloads/dtd/wddx_dtd_10.txt
+   * @purpose  Serialize wddx packets.
+   */
+  class WddxMessage extends Tree {
+
+    /**
+     * Constructor.
+     *
+     * @access  public
+     */
+    function __construct() {
+      parent::__construct('wddxPacket');
+      $this->root->setAttribute('version', '1.0');
+    }
+    
+    /**
+     * Create a WddxMessage object from an XML document.
+     *
+     * @model   static
+     * @access  public
+     * @param   string string
+     * @return  &xml.wddx.WddxMessage
+     */
+    function &fromString($string) {
+      parent::fromString($string, 'WddxMessage');
+    }    
+    
+    /**
+     * Sets the comment in a Wddx packet
+     *
+     * @access  public
+     * @param   string comment
+     */
+    function setComment($comment) {
+      $h= &$this->root->addChild(new Node('header'));
+      $h->addChild(new Node('comment', $comment));
+    }
+    
+    /**
+     * Set data for the message
+     *
+     * @access  public
+     * @param   &mixed[] arr
+     */
+    function setData(&$arr) {
+      $d= &$this->root->addChild(new Node('data'));
+      if (sizeof($arr)) foreach (array_keys($arr) as $idx) {
+        $this->_marshall($d, $arr[$idx]);
+      }
+    }
+    
+    /**
+     * Marshall method to serialize data into the Wddx message.
+     *
+     * @access  protected
+     * @param   &xml.Node node
+     * @param   &mixed data
+     * @throws  lang.IllegalArgumentException if passed data could not be serialized
+     */
+    function _marshallData(&$node, &$data) {
+    
+      switch (xp::typeOf($data)) {
+        case 'NULL':
+          $node->addChild(new Node('null'));
+          break;
+        
+        case 'boolean':
+          $node->addChild(new Node('boolean', NULL, array(
+            'value' => $data ? 'true' : 'false'
+          )));
+          break;
+        
+        case 'string':
+          $node->addChild(new Node('string', $data));
+          break;
+        
+        case 'double':
+        case 'integer':
+          $node->addChild(new Node('number', $data));
+          break;
+        
+        case 'array':
+          $s= &$node->addChild(new Node('struct'));
+          foreach (array_keys($data) as $idx) {
+            $this->_marshallData($s->addChild(new Node('var', NULL, array(
+              'name'  => $idx
+            ))), $data[$idx]);
+          }
+          break;
+        
+        case 'util.Date':
+          $node->addChild(new Node('dateTime', $data->toString('c')));
+          break;
+        
+        case 'lang.Collection':
+          $a= &$node->addChild(new Node('array', NULL, array(
+            'length'  => sizeof($data)
+          )));
+          foreach (array_keys($data) as $idx) {
+            $this->_marshall($a, $data[$idx]);
+          }
+          break;
+        
+        default:
+          return throw(new IllegalArgumentException('Found datatype which cannot be serialized: '.xp::typeOf($data)));
+      }
+    }
+    
+    /**
+     * Retrieve data from wddx message.
+     *
+     * @access  public
+     * @return  &mixed[]
+     * @throws  lang.IllegalStateException if no payload data could be found in the message
+     */
+    function &getData() {
+      $ret= array();
+      foreach (array_keys($this->root->children) as $idx) {
+        if ('header' == $this->root->children[$idx]->getName())
+          continue;
+        
+        // Process params node
+        foreach (array_keys($this->root->children[$idx]->children) as $params) {
+          try(); {
+            $ret[]= &$this->_unmarshall($this->root->children[$idx]->children[$params]->children[0]);
+          } if (catch('Exception', $e)) {
+            return throw($e);
+          }
+        }
+        
+        return $ret;
+      }
+      
+      return throw(new IllegalStateException('No payload found.'));
+    }
+    
+    /**
+     * Umarshall method for deserialize data from wddx message
+     *
+     * @access  protected
+     * @param   &xml.Node node
+     * @return  &mixed[]
+     * @throws  lang.IllegalArgumentException if document is not well-formed
+     */
+    function &_unmarshall(&$node) {
+      switch ($node->getName()) {
+        case 'null': return NULL;
+        case 'boolean': return ($node->getContent() == 'true' ? TRUE : FALSE);
+        case 'string': return $node->getContent();
+        case 'dateTime': 
+          $parser= &new DateParser();
+          return $parser->parse($node->getContent());
+        
+        case 'number':
+          if ($node->getContent() == intval($node->getContent())) return intval($node->getContent());
+          return (double)$node->getContent();
+        
+        case 'char':
+          return chr($node->getAttribute('code'));
+        
+        case 'binary':
+          // TBI
+          return;
+        
+        case 'array':
+          $arr= array();
+          foreach (array_keys($node->children) as $idx) {
+            $arr[]= &$this->_unmarshall($node->children[$idx]);
+          }
+          return $arr;
+        
+        case 'struct':
+          $struct= array();
+          foreach (array_keys($node->children) as $idx) {
+            $struct[$node->children[$idx]->getAttribute('name')]= &$this->_unmarshall($node->children[$idx]);
+          }
+          return $struct;
+      }
+      
+      return throw(new IllegalArgumentException('Cannot unserialize not well-formed WDDX document'));
+    }
+  }
+?>
