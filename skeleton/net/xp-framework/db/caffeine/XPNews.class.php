@@ -274,6 +274,17 @@
     function update() {
       return $this->doUpdate(new Criteria(array('news_id', $this->news_id, EQUAL)));
     }
+
+    /**
+     * Delete this object from the database
+     *
+     * @access  public
+     * @return  int affected rows
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    function delete() {
+      return $this->doDelete(new Criteria(array('news_id', $this->news_id, EQUAL)));
+    }
     
     /**
      * Write this object to the database
