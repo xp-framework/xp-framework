@@ -131,9 +131,9 @@
         if (is_string ($token)) {
 
           // No active 'workspace' => continue
-          if (0 == count ($currentSpace)) continue;
+          if (empty($currentSpace)) continue;
 
-          $s= &$currentSpace[count($currentSpace)-1];
+          $s= &$currentSpace[sizeof($currentSpace)- 1];
           
           switch ($token) {
             case '{':
@@ -210,8 +210,8 @@
                 $f->line= $lineno;
                 $f->braces= 0;
                 
-                if (0 < count ($currentClass)) {
-                  $c= &$currentClass[count($currentClass)-1];
+                if (!empty($currentClass)) {
+                  $c= &$currentClass[sizeof($currentClass)- 1];
                   $c->functions[]= &$f;
                 } else {
                   $this->functions[]= &$f;
