@@ -23,6 +23,7 @@
   $tagName=     array_shift ($argv);
   $operation=   array_shift ($argv);
   $repository=  array_shift ($argv);
+  $changed=     FALSE;
   $localPath= str_replace (getenv ('CVSROOT').'/', '', $repository);
   
   $fileInfo= array();
@@ -58,6 +59,7 @@
       '['.$file->oldrevision.']',
       '['.$file->revision.']'
     );
+    $changed= TRUE;
   }
   
   $msg.= "\n";
@@ -66,14 +68,16 @@
   $msg.= "-- \n".$realname."\n";
   
   // Send mail
-  mail (
-    $to,
-    '[CVS]    tag: '.$localPath,
-    $msg,
-    'X-CVS: '.getenv ('CVSROOT')."\n".
-    'From: '.qp_encode_header($realname).' <'.getenv('USER').'@'.getenv('HOSTNAME').">\n".
-    'Reply-To: '.$to
-  );
+  if ($changed) {
+    mail (
+      $to,
+      '[CVS]    tag: '.$localPath,
+      $msg,
+      'X-CVS: '.getenv ('CVSROOT')."\n".
+      'From: '.qp_encode_header($realname).' <'.getenv('USER').'@'.getenv('HOSTNAME').">\n".
+      'Reply-To: '.$to
+    );
+  }
   
   // Return 0, otherwise cvs would block the tag command
   exit (0);

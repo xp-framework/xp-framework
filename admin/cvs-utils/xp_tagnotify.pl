@@ -16,6 +16,7 @@
   my $repository= shift @ARGV;
   my $localPath=  $repository;
   my $cvsroot=    $ENV{'CVSROOT'};
+  my $changed=    0;
   $localPath=~    s/$cvsroot\///g;
   
   my @fileInfo; my $filename;
@@ -59,6 +60,7 @@
         '['.$file->{'revision'}.']'
       );
     }
+    $changed= 1;
   }
   
   $msg.= "\n";
@@ -66,15 +68,17 @@
   # Append signature
   $msg.= "-- \n".$realname."\n";
   
-  open (SENDMAIL, "| /usr/sbin/sendmail -t");
-  print SENDMAIL "To: $to\n";
-  print SENDMAIL "From: \"".getRealname ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
-  print SENDMAIL "Reply-To: $to\n";
-  print SENDMAIL "Subject: [CVS]    tag: $localPath\n";
-  print SENDMAIL "X-CVS: ".$ENV{'CVSROOT'}."\n";
-  print SENDMAIL "\n";
-  print SENDMAIL $msg;
-  close (SENDMAIL);
+  if (1 == $changed) {
+    open (SENDMAIL, "| /usr/sbin/sendmail -t");
+    print SENDMAIL "To: $to\n";
+    print SENDMAIL "From: \"".getRealname ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
+    print SENDMAIL "Reply-To: $to\n";
+    print SENDMAIL "Subject: [CVS]    tag: $localPath\n";
+    print SENDMAIL "X-CVS: ".$ENV{'CVSROOT'}."\n";
+    print SENDMAIL "\n";
+    print SENDMAIL $msg;
+    close (SENDMAIL);
+  }
   
   # Show success
   exit (0);
