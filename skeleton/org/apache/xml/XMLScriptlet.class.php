@@ -161,6 +161,25 @@
       
       return FALSE; // Indicate no further processing is to be done
     }
+
+    /**
+     * Sets the responses XSL stylesheet
+     *
+     * @access  private
+     * @param   &org.apache.scriptlet.XMLScriptletRequest
+     * @param   &org.apache.scriptlet.XMLScriptletResponse
+     */
+    function _setStylesheet(&$request, &$response) {
+      // Set XSL stylesheet
+      $response->setStylesheet(sprintf(
+        '%s%s/%s/%s/%s.xsl',
+        $this->stylesheetBase,
+        $request->getProduct(),
+        $request->getLanguage(),
+        $request->getState(),
+        $request->getPage()
+      ));
+    }
     
     /**
      * Handle all requests. This method is called from <pre>doPost</pre> since
@@ -190,14 +209,7 @@
       $response->setParam('query',   $request->getEnvValue('QUERY_STRING'));
       
       // Set XSL stylesheet
-      $response->setStylesheet(sprintf(
-        '%s%s/%s/%s/%s.xsl',
-        $this->stylesheetBase,
-        $request->getProduct(),
-        $request->getLanguage(),
-        $request->getState(),
-        $request->getPage()
-      ));
+      $this->_setStylesheet($request, $response);
 
       // Add all request parameters to the formvalue node
       foreach ($request->params as $key => $value) {
