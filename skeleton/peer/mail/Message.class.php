@@ -101,6 +101,26 @@
     }
     
     /**
+     * Set Mime version
+     *
+     * @access  public
+     * @param   string mimeversion
+     */
+    function setMimeVersion($mimeversion) {
+      $this->mimever= $mimeversion;
+    }
+
+    /**
+     * Get Mime version
+     *
+     * @access  public
+     * @return  string
+     */
+    function getMimeVersion() {
+      return $this->mimever;
+    }
+    
+    /**
      * Create string representation. Note: This is not suitable for sending mails,
      * use the getHeaderString() and getBody() methods!
      *
@@ -550,11 +570,12 @@
       
       // Additional headers
       foreach (array_merge($this->headers, array(
-        HEADER_SUBJECT      => qstr($this->subject),
+        HEADER_SUBJECT      => qstr(@$this->subject),
         HEADER_CONTENTTYPE  => $this->contenttype.(empty($this->charset) 
           ? '' 
           : ";\n\tcharset=\"{$this->charset}\""
         ),
+        HEADER_MIMEVER      => $this->mimever,
         HEADER_ENCODING     => $this->encoding,
         HEADER_PRIORITY     => $this->priority,
         HEADER_DATE         => $this->date->toString()
