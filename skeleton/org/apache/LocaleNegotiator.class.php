@@ -118,8 +118,8 @@
      * </pre>
      *
      * @access  private
-     * @param   
-     * @return  
+     * @param   string str
+     * @return  array values
      */
     function _parse($str) {
       $values= array();
