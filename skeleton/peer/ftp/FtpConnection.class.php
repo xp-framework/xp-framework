@@ -188,7 +188,7 @@
     function put(&$arg, $remote= NULL, $mode= FTP_ASCII) {
       if (is_a($arg, 'File')) {
         $local= $arg->_fd;
-        if (empty($remote)) $remote= $origin->filename;
+        if (empty($remote)) $remote= basename ($origin->filename);
         $f= 'ftp_fput';
       } else {
         $local= $arg;
@@ -231,6 +231,22 @@
       }
       
       return TRUE;
+    }
+    
+    /**
+     * Enables or disables the passive ftp mode. Call this after the inital
+     * login.
+     *
+     * @access public
+     * @param bool enable enable or disable passive mode
+     * @return bool success
+     * @throws IOException
+     */
+    function setPassive($enable= TRUE) {
+      if (NULL === $this->_hdl)
+        return throw (new IOException ('Cannot change passive mode flag with no open connection'));
+        
+      return ftp_pasv ($this->_hdl, $enable);
     }
   
   }
