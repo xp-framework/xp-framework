@@ -75,4 +75,28 @@ class being instantiated will extend this class. In case it refers to
 an interface, the specified interface will be implemented by the 
 class being instantiated.
 
+A userland equivalent of this would be:
+<pre>
+  function create_instance($name, $arguments, $code) {
+    $lambda= uniqid($name);
+    eval(sprintf(
+      'class %s %s %s %s',
+      $lambda,
+      interface_exists($name) ? 'implements' : 'extends',
+      $name,
+      $code
+    ));
+    return call_user_func_array(
+      array(new ReflectionClass($lambda), 'newInstance'),
+      $arguments
+    );
+  }
+
+  $list->sort(create_instance('Comparator', array(), '{
+    public function compare($a, $b) {
+      return strnatcmp($a, $b);
+    }
+  }'));
+</pre>
+
 <EOF>
