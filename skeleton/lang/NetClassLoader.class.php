@@ -39,6 +39,22 @@
       $this->cache= $cache;
       parent::__construct();
     }
+
+    /**
+     * Destructor
+     *
+     * @access  public
+     */    
+    function __destruct() {
+      $d= dir($this->cache);
+      $prefix= $this->getName().'-'.getmypid().'-';
+      while ($entry= $d->read()) {
+        if ($prefix != substr($entry, 0, strlen($prefix))) continue;
+        unlink($d->path.'/'.$entry);
+      }
+      $d->close();
+      parent::__destruct();
+    }
     
     /**
      * Load
@@ -55,7 +71,7 @@
       }
       
       $uri= sprintf($codebase, $className);
-      $cacheName= $cache.'/'.strtr($uri, '/:', '__').'.class.php';
+      $cacheName= $cache.'/'.$this->getName().'-'.getmypid().'-'.strtr($uri, '/:', '__').'.class.php';
       $f= &new File($cacheName);
       $conn= &new HTTPConnection($uri);
       if ($f->exists()) {
