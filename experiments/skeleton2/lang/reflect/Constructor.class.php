@@ -14,6 +14,16 @@
    * @purpose  Reflection
    */
   class Constructor extends Routine {
+
+     /**
+      * Retrieve return type
+      *
+      * @access  public
+      * @return  string
+      */
+     public function getReturnType() {
+       return xp::nameOf($this->_reflection->getDeclaringClass()->getName());
+     }
     
     /**
      * Uses the constructor represented by this Constructor object to create 
@@ -22,8 +32,7 @@
      *
      * Example:
      * <code>
-     *   $class= XPClass::forName('lang.Object');
-     *   $constructor= $class->getConstructor();
+     *   $constructor= XPClass::forName('lang.Object')->getConstructor();
      *
      *   var_dump($constructor->newInstance());
      * </code>
@@ -33,13 +42,13 @@
      * @return  &lang.Object
      */
     public function newInstance() {
-      $paramstr= '';
-      $args= func_get_args();
-      for ($i= 0, $m= func_num_args(); $i < $m; $i++) {
-        $paramstr.= ', $args['.$i.']';
+      with ($c= $this->_reflection->getDeclaringClass()); {
+        if (!$c->isInstantiable()) {
+          throw (new InstantiationException($c->getName().' is not instantiable'));
+        }
+        $args= func_get_args();
+        return call_user_func_array(array($c, 'newInstance'), $args);
       }
-      
-      return eval('return new '.$this->_ref.'('.substr($paramstr, 2).');');
     }
   }
 ?>

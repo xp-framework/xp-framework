@@ -11,6 +11,13 @@
     'lang.InstantiationException'
   );
 
+  define('MODIFIER_STATIC',       1);
+  define('MODIFIER_ABSTRACT',     2);
+  define('MODIFIER_FINAL',        4);
+  define('MODIFIER_PUBLIC',     256);
+  define('MODIFIER_PROTECTED',  512);
+  define('MODIFIER_PRIVATE',   1024);
+
   /**
    * Represents classes. Every instance of an XP class has an method
    * called getClass() which returns an instance of this class.
@@ -55,7 +62,7 @@
      * @return  string name - e.g. "io.File", "rdbms.mysql.MySQL"
      */
     public function getName() {
-      return $this->_reflection->getName();
+      return xp::nameOf($this->_reflection->getName());
     }
     
     /**
@@ -90,7 +97,7 @@
         throw (new InstantiationException($this->getName().' is not instantiable'));
       }
       $args= func_get_args();
-      return call_user_func_array(array(&$this->_reflection, 'newInstance'), $args);
+      return call_user_func_array(array($this->_reflection, 'newInstance'), $args);
     }
     
     /**
