@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('lang.Method');
+  uses(
+    'lang.reflect.Method',
+    'lang.reflect.Constructor'
+  );
  
   /**
    * Represents classes. Every instance of an XP class has an method
@@ -92,14 +95,37 @@
     }
     
     /**
+     * Helper function that returns this class' methods, excluding the
+     * constructor (and inherited constructors) and the destructor.
+     *
+     * @access  private
+     * @return  string[] method names
+     */
+    function _methods() {
+      $methods= array_flip(get_class_methods($this->_objref));
+      
+      // Well-known methods
+      unset($methods['__construct']);
+      unset($methods['__destruct']);
+
+      // "Inherited" constructors
+      $c= is_object($this->_objref) ? get_class($this->_objref) : $this->_objref;
+      do {
+        unset($methods[$c]);
+      } while ($c= get_parent_class($c));
+
+      return array_keys($methods);
+    }
+    
+    /**
      * Gets class methods for this class
      *
      * @access  public
-     * @return  lang.Method[]
+     * @return  lang.reflect.Method[]
      */
     function getMethods() {
       $m= array();
-      foreach (get_class_methods($this->_objref) as $method) {
+      foreach ($this->_methods() as $method) {
         $m[]= &new Method($this->_objref, $method);
       }
       return $m;
@@ -112,7 +138,7 @@
      * @access  public
      * @param   string name
      * @return  &lang.Method
-     * @see     xp://lang.Method
+     * @see     xp://lang.reflect.Method
      */
     function &getMethod($name) {
       if (!$this->hasMethod($name)) return NULL;
@@ -132,10 +158,18 @@
      * @return  bool TRUE if method exists
      */
     function hasMethod($method) {
-      return in_array(
-        strtolower($method),
-        get_class_methods($this->_objref)
-      );
+      return in_array(strtolower($method), $this->_methods());
+    }
+    
+    /**
+     * Retrieves this class' constructor
+     *
+     * @access  public
+     * @return  &lang.reflect.Constructor
+     * @see     xp://lang.reflect.Constructor
+     */
+    function &getConstructor() {
+      return new Constructor($this->_objref, '__construct'); 
     }
     
     /**
@@ -152,13 +186,15 @@
     }
     
     /**
-     * Retrieve the parent class's class object
+     * Retrieve the parent class's class object. Returns NULL if there
+     * is no parent class.
      *
      * @access  public
      * @return  &lang.XPClass class object
      */
     function &getParentclass() {
-      return new XPClass(get_parent_class($this->_objref));
+      if (!($p= get_parent_class($this->_objref))) return NULL;
+      return new XPClass($p);
     }
     
     /**
@@ -175,6 +211,53 @@
         if ($cmp == $name) return TRUE;
       }
       return FALSE;
+    }
+    
+    /**
+     * Determines whether the specified object is an instance of this
+     * class. This is the equivalent of the is() core functionality.
+     *
+     * <code>
+     *   uses('io.File', 'io.TempFile');
+     *   $class= &XPClass::forName('io.File');
+     * 
+     *   var_dump($class->isInstance(new TempFile()));  // TRUE
+     *   var_dump($class->isInstance(new File()));      // TRUE
+     *   var_dump($class->isInstance(new Object()));    // FALSE
+     * </code>
+     *
+     * @access  public
+     * @param   &lang.Object obj
+     * @return  bool
+     */
+    function isInstance(&$obj) {
+      return is($this->name, $obj);
+    }
+    
+    /**
+     * Determines if this XPClass object represents an interface type.
+     *
+     * @access  public
+     * @return  bool
+     */
+    function isInterface() {
+      return $this->isSubclassOf('lang.Interface');
+    }
+    
+    /**
+     * Retrieve interfaces this class implements
+     *
+     * @access  public
+     * @return  lang.XPClass[]
+     */
+    function getInterfaces() {
+      $r= array();
+      $c= xp::reflect($this->name);
+      $implements= xp::registry('implements');
+      if (isset($implements[$c])) foreach (array_keys($implements[$c]) as $iface) {
+        $r[]= &new XPClass($iface);
+      }
+      return $r;
     }
     
     /**
