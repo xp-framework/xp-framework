@@ -127,7 +127,10 @@
     /**
      * Callback function for XMLParser
      *
-     * @access  magic
+     * @access  public
+     * @param   &resource parser
+     * @param   string name
+     * @param   string attrs
      * @see     xp://xml.XMLParser
      */
     function onStartElement($parser, $name, $attrs) {
@@ -152,7 +155,9 @@
     /**
      * Callback function for XMLParser
      *
-     * @access  magic
+     * @access  public
+     * @param   &resource parser
+     * @param   string name
      * @see     xp://xml.XMLParser
      */
     function onEndElement($parser, $name) {
@@ -169,7 +174,9 @@
     /**
      * Callback function for XMLParser
      *
-     * @access  magic
+     * @access  public
+     * @param   &resource parser
+     * @param   string cdata
      * @see     xp://xml.XMLParser
      */
     function onCData($parser, $cdata) {
@@ -179,7 +186,9 @@
     /**
      * Callback function for XMLParser
      *
-     * @access  magic
+     * @access  public
+     * @param   &resource parser
+     * @param   string data
      * @see     xp://xml.XMLParser
      */
     function onDefault($parser, $data) {
