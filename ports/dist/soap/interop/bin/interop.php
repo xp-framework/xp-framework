@@ -27,15 +27,19 @@
     $appender= &new BufferedAppender();
     $scat->addAppender($appender);
     
+    $acat= &$log->getCategory('end-to-end');
+    $eeappend= &new BufferedAppender();
+    $acat->addAppender($eeappend);
     
     Console::writeLine('===> Testing service ', $service);
     
     $client= &new Round2BaseClient(
-      new SOAPHTTPTransport($prop->readString($service, 'uri')),
+      new SOAPHTTPTransport($prop->readString($service, 'uri'), array()),
       $prop->readString($service, 'urn')
     );
     
     $client->setTrace($scat);
+    $client->setInputOutputTrace($acat);
     
     // Get all available test methods
     $class= &$client->getClass();
@@ -50,6 +54,10 @@
       
       // Don't call inherited methods
       if (!$class->equals($method->getDeclaringClass()))
+        continue;
+      
+      // Only call echo*-methods
+      if ('echo' != substr($method->getName(), 0, 4))
         continue;
       
       Console::writeLinef('---> Calling Round2 Base method "%s"', $method->getName());
@@ -100,6 +108,17 @@
           $b
         );
       }
+      
+      // If nonempty, write the session logs into file.
+      if (strlen($b= $eeappend->getBuffer())) {
+        FileUtil::setContents(
+          new File(sprintf('%s/%s.inout', $folder->getUri(), $method->getName())),
+          $b
+        );
+      }
+      
+      $appender->clear();
+      $eeappend->clear();
     }
     
     Console::writeLinef('===> Testing for service %s has ended.', $service);
