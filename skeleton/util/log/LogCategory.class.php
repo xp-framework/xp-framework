@@ -53,7 +53,7 @@
      * need to add an appender for a category you want to log.
      *
      * @access  public
-     * @param   int flags Bitfeld mit den Flags (LOGGER_FLAG_*)
+     * @param   int flags bitfield with flags (LOGGER_FLAG_*)
      */
     function setFlags($flags) {
       $this->flags= $flags;
