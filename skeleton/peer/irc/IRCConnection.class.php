@@ -420,5 +420,5 @@
       
       return $this->sock->write($cmd."\r\n");
     }
-  }
+  } implements(__FILE__, 'util.log.Traceable');
 ?>

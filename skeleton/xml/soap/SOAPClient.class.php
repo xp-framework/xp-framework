@@ -82,5 +82,5 @@
       $data= $this->answer->getData();
       return sizeof($data) == 1 ? $data[0] : $data;
     }
-  }
+  } implements(__FILE__, 'util.log.Traceable');
 ?>
