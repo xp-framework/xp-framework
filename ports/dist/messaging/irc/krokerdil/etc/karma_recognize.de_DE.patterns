@@ -1,14 +1,28 @@
-/super|toll|gut|cool/i:1
-/dank/i:5
-/bedank/i:5
-/stimm.+zu/i:2
-/(gib|gebe).+Recht/i:1
+##
+# Karma recognition patterns
+#
+# $Id$
+
+# Points when said to the bot directly 
+/super|toll|gut|cool/i:0
+/(gib|gebe).+Recht/i:0
+/(be)?dank/i:0
+/stimm.+zu/i:0
+
+# Bad
 /schlecht/i:-1
 /hass[et]/i:-2
 /verachte/i:-5
 /beleidig/i:-1
+
+# Friendliness
 /(der|die) Beste/i:1
-/(idiot|arsch|fick|schei(ss|ß)|blöd|wix)/i:-1
 /mag|lieb/i:1
+/Hallo|Hi|Hugh|wie geht|Guten/i:2
+
+# Swearing
+/(idiot|arsch|fick|schei(ss|ß)|blöd|wix)/i:-1
+
+# Our local pub, NOT to be censored!
 /K\*p/:-1
 /Kap/:1
