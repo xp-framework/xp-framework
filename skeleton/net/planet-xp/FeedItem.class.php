@@ -15,11 +15,12 @@
     var
       $feeditem_id=       0,
       $feed_id=           0,
-      $title=             '',
-      $link=              '',
-      $content=           '',
-      $author=            '',
-      $guid=              '',
+      $title=             NULL,
+      $link=              NULL,
+      $description=       NULL,
+      $content=           NULL,
+      $author=            NULL,
+      $guid=              NULL,
       $published=         NULL;
     
     /**
@@ -34,14 +35,20 @@
      * @param   string guid the global unique id
      * @param   &util.Date pubDate
      */
-    function __construct($feed_id, $title, $link, $content, $author, $guid, &$pubDate) {
+    function __construct($feed_id, $title, $link, $description, $content, $author, $guid, &$pubDate) {
       $this->feed_id= $feed_id;
       $this->title= $title;
       $this->link= $link;
-      $this->content= $content;
-      $this->author= $author;
-      $this->guid= $guid;
-      $this->published= &$pubDate;
+      
+      if (!empty($description)) $this->description= $description;
+      if (!empty($content)) $this->content= $content;
+      if (!empty($author)) $this->author= $author;
+      
+      // Set a Global Unique ID (or use link which should be unique, too).
+      $this->guid= (empty($guid) ? $link : $guid);
+      
+      // Set a published date, default to NULL.
+      if (is('util.Date', $pubDate)) $this->published= &$pubDate;
     }
 
     /**
@@ -58,6 +65,19 @@
     }
     
     /**
+     * Return content for feed.
+     *
+     * @access  public
+     * @return  string content
+     */
+    function getContent() {
+      if (!empty ($this->content)) return $this->content;
+      if (!empty ($this->description)) return $this->description;
+      
+      return NULL;
+    }
+    
+    /**
      * Synchronizes the feed with the database.
      *
      * @access  public
@@ -68,6 +88,8 @@
       try(); {
         $db= &$cm->getByHost('syndicate', 0);
         
+        // When updating, only override publish date, if it's being explicitly
+        // given. When defaulting to NULL (and thus to now()), omit it on later syncs.
         $cnt= $db->update('
             syndicate.feeditem
           set
@@ -75,18 +97,18 @@
             content= %s,
             link= %s,
             author= %s,
-            published= %s,
             lastchange= %s,
             changedby= %s
+            %c
           where feed_id= %d
             and guid= %s',
           $this->title,
-          $this->content,
+          $this->getContent(),
           $this->link,
           $this->author,
-          $this->published,
           Date::now(),
           __CLASS__,
+          (NULL !== $this->published ? $db->prepare(', published= %s', $this->published) : ''),
           $this->feed_id,
           $this->uniqueId()
         );
@@ -116,10 +138,10 @@
             )',
             $this->feed_id,
             $this->title,
-            $this->content,
+            $this->getContent(),
             $this->link,
             $this->author,
-            $this->published,
+            (NULL !== $this->published ? $this->published : Date::now()),
             $this->uniqueId(),
             Date::now(),
             __CLASS__
