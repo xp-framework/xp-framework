@@ -5,8 +5,13 @@
  */
  
   define('CAL_SEC_HOUR',    3600);
-  define('CAL_SEC_DAY',        86400);
+  define('CAL_SEC_DAY',     86400);
   define('CAL_SEC_WEEK',    604800);
+  
+  define('CAL_DST_EU',      0x0000);
+  define('CAL_DST_US',      0x0001);
+  
+  uses('util.Date');
   
   /**
    * Calendar class
@@ -14,6 +19,45 @@
    * @model   static
    */
   class Calendar extends Object {
+
+    /**
+     * Calculates start of DST (daylight savings time)
+     * This is the last Sunday of March for Europe, the first Sunday of 
+     * April in the U.S.
+     *
+     * @access  public
+     * @param   int year default -1 Year, defaults to current year
+     * @param   int method default CAL_DST_EU Method to calculate (CAL_DST_EU|CAL_DST_US)
+     * @return  util.Date
+     */
+    function &dstBegin($year= -1, $method= CAL_DST_EU) {
+      if (-1 == $year) $year= date('Y');
+      $i= 0;
+      $day= ($method == CAL_DST_US) ? 1 : 0;
+      $ofs= ($method == CAL_DST_US) ? 1 : -1;
+      do {
+        $w= date('w', $m= mktime(0, 0, $day, 4, $i, $year));
+        $i+= $ofs;
+      } while ($w > 0);
+      return new Date($m);
+    }
+  
+    /**
+     * Calculates end of DST (daylight savings time)
+     * This is the last Sunday of October
+     *
+     * @access  public
+     * @param   int year default -1 Year, defaults to current year
+     * @return  util.Date
+     */
+    function &dstEnd($year= -1) {
+      if (-1 == $year) $year= date('Y');
+      $i= 0;
+      do {
+        $w= date('w', $m= mktime(0, 0, 0, 11, $i--, $year));
+      } while ($w > 0);
+      return new Date($m);
+    }
   
     /**
      * Calculates the amount of workdays between to dates
@@ -65,7 +109,7 @@
       
       $year= date('Y', $d)+ 1;
       do {
-          $w= caldiff($d, $year);
+        $w= caldiff($d, $year);
         $year--;
       } while ($w < 1);
       return $w;
