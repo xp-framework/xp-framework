@@ -54,7 +54,7 @@
    ! Whitelist of allowed HTML standard tags.
    !
    !-->
-  <xsl:template match="pre|b|strong|code|ul|li|ol|tt|blockquote|quote">
+  <xsl:template match="pre|b|strong|code|ul|li|ol|tt|blockquote|quote|p">
     <xsl:copy select="node()">
       <xsl:apply-templates/>
     </xsl:copy>
