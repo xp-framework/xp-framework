@@ -57,6 +57,11 @@ Currently implemented
   
   This is particularily useful for callbacks to any of the *sort() functions.
 
+Making it work: Patching configure.in
+-------------------------------------
+configure.in (in the php CVS top-level directory) needs to be patched with
+the file configure.in.patch before anything.
+
 Making it work: Using the patch
 -------------------------------
 The patch needs to be applied against a current CVS checkout of PHP5. Go to
