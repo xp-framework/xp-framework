@@ -51,11 +51,18 @@
   </xsl:template>
 
   <xsl:template match="image">
-    <img>
-      <xsl:copy-of select="@*"/>
-      <xsl:attribute name="border">0</xsl:attribute>
-      <xsl:attribute name="src">/image/content/<xsl:value-of select="@src"/></xsl:attribute>
-    </img>
+    <xsl:call-template name="frame">
+      <xsl:with-param name="color" select="'#cccccc'"/>
+      <xsl:with-param name="content">
+        <center>
+          <b style="line-height: 20px"><xsl:value-of select="@alt"/></b><br/>
+          <img hspace="4" vspace="4" border="0">
+            <xsl:copy-of select="@*"/>
+            <xsl:attribute name="src">/image/content/<xsl:value-of select="@src"/></xsl:attribute>
+          </img>
+        </center>
+      </xsl:with-param>
+    </xsl:call-template>
     <br/>
   </xsl:template>
 
