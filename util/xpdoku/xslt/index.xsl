@@ -79,6 +79,7 @@
     <br/><br/>
     <xsl:call-template name="nav-divider">
       <xsl:with-param name="caption">CVS activity</xsl:with-param>
+      <xsl:with-param name="colorcode">devel</xsl:with-param>
     </xsl:call-template>
     <table border="0" width="100%" cellspacing="0" cellpadding="2">
       <tr>
