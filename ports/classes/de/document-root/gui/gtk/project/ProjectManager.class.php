@@ -207,11 +207,26 @@
       return TRUE;
     }
     
+    /**
+     * Retrieve the realpath
+     *
+     * @access  public
+     * @param   string path
+     * @return  string
+     */    
+    function getRealpath($path) {
+      static $cache= array();
+      
+      if (!isset($cache[$path])) {
+        $cache[$path]= realpath($path);
+      }
+      
+      return $cache[$path];
+    }
+    
     function onTreeSelectRow(&$widget, $row, &$data, &$event) {
       $node= &$this->tree->node_nth ($row);
       $this->_selectedNode= &$node;
-      
-      $this->log->debug('Selected ref:', $this->tree->node_get_row_data($this->_selectedNode));
     }
     
     function onTreeUnselectRow(&$widget, $row, &$data, &$event) {
@@ -225,10 +240,12 @@
       if (3 == $event->button)
         return $this->onTreeRightClick($click, $event);
 
-      if (1 == $event->button && GDK_2BUTTON_PRESS == $event->type)
-        return $this->onFileOpenCtx();
+      if (1 == $event->button && GDK_2BUTTON_PRESS == $event->type) {
+        if (!$this->tree->is_hot_spot($event->x, $event->y))
+          return $this->onFileOpenCtx();
+      }
 
-      if (!isset ($this->_selectedNode)) return FALSE;
+      return TRUE;
     }
     
     function onTreeRightClick(&$clist, &$event) {
@@ -239,7 +256,8 @@
       
       if (isset ($this->_selectedNode)) {
         $this->menu->addSeparator();
-        $this->menu->addMenuItem ('Open', array (&$this, 'onFileOpenCtx'));
+        $this->menu->addMenuItem('Open', array (&$this, 'onFileOpenCtx'));
+        $this->menu->addMenuItem('cvs diff ...', array(&$this, 'onCvsDiff'));
       }
 
       $this->menu->show(MENU_WANT_LEFTCLICK);
@@ -308,6 +326,49 @@
         }
       }
     }
+    
+    function getFqcnFromFile($filename) {
+      foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $include) {
+        $include= $this->getRealpath($include);
+        $filename= $this->getRealpath($filename);
+        
+        if (substr($filename, 0, strlen($include)) == $include) {
+          
+          // The file seems to originate from this include path
+          $file= substr($filename, strlen($include) + 1);
+          $fqdn= str_replace(DIRECTORY_SEPARATOR, '.', str_replace('.class.php', '', $file));
+          return $fqdn;
+        }
+      }
+      
+      return FALSE;
+    }
+    
+    function classifyFile($filename) {
+      
+      // Handle special case
+      if (substr($filename, -13) == 'lang.base.php')
+        return 'core';
+        
+      $classname= $this->getFqcnFromFile($filename);
+      
+      foreach ($this->prop->readArray('classes', 'core', array('core')) as $core) {
+        if (substr($classname, 0, strlen($core)) == $core)
+          return 'core';
+      }
+      
+      foreach ($this->prop->readArray('classes', 'self', array()) as $self) {
+        if (substr($classname, 0, strlen($self)) == $self)
+          return $self;
+      }
+      
+      foreach ($this->prop->readArray('classes', 'ignore', array()) as $ignore) {
+        if (substr($classname, 0, strlen($ignore)) == $ignore)
+          return 'ignore';
+      }
+      
+      return 'framework';
+    }
 
     function addFile($filename) {
       $this->_recursiveAddFile ($filename);
@@ -317,6 +378,7 @@
     }
     
     function &_addNode(&$parent, $label, $ref, $pixmap= 'sv_session') {
+      $this->log && $this->log->info('Added ref', $ref);
       $node= &$this->tree->insert_node (
         $parent,
         NULL,
@@ -342,15 +404,65 @@
       return $node;
     }
     
+    function &getNode($name) {
+      if (!isset($this->nodes[$name])) {
+        $this->log && $this->log->debug('Adding node', $name);
+        $this->nodes[$name]= &$this->tree->insert_node(
+          $this->nodes['root'],
+          NULL,
+          array($name),
+          0,
+          $this->pixmap['p:sv_session'],
+          $this->pixmap['m:sv_session'],
+          $this->pixmap['p:sv_session'],
+          $this->pixmap['m:sv_session'],
+          FALSE,
+          TRUE
+        );
+      }
+
+      return $this->nodes[$name];
+    }
+    
     function updateList() {
       $this->tree->freeze();
       // $this->tree->clear();
       
-      if (empty($this->rootNode)) {
-        $this->rootNode= &$this->tree->insert_node (
+      if (empty($this->nodes['root'])) {
+        $this->nodes['root']= &$this->tree->insert_node (
           NULL,
           NULL,
-          array ('global program space'),
+          array('Workspace'),
+          0,
+          $this->pixmap['p:sv_session'],
+          $this->pixmap['m:sv_session'],
+          $this->pixmap['p:sv_session'],
+          $this->pixmap['m:sv_session'],
+          FALSE,
+          TRUE
+        );
+      }
+      
+      if (empty($this->nodes['core'])) {
+        $this->nodes['core']= &$this->tree->insert_node(
+          $this->nodes['root'],
+          NULL,
+          array('Core classes'),
+          0,
+          $this->pixmap['p:sv_session'],
+          $this->pixmap['m:sv_session'],
+          $this->pixmap['p:sv_session'],
+          $this->pixmap['m:sv_session'],
+          FALSE,
+          FALSE
+        );
+      }
+
+      if (empty($this->nodes['framework'])) {
+        $this->nodes['framework']= &$this->tree->insert_node(
+          $this->nodes['root'],
+          NULL,
+          array('Framework classes'),
           0,
           $this->pixmap['p:sv_session'],
           $this->pixmap['m:sv_session'],
@@ -363,13 +475,20 @@
       
       foreach (array_keys ($this->files) as $idx) {
         $file= &$this->files[$idx];
+
+        $classification= $this->classifyFile($file->filename);
         
+        $this->log && $this->log->debug('Classified', $file->filename, 'as', $classification);
+        
+        if ($classification == 'ignore')
+          continue;
+          
         foreach (array_keys ($file->classes) as $cIdx) {
           $c= &$file->classes[$cIdx];
-
+          
           if (!$this->_nodeExists($this->_getRef($idx, $cIdx))) {
             $classNode= &$this->_addNode (
-              $this->rootNode,
+              $this->getNode($classification),
               array ($c->name),
               $this->_getRef($idx, $cIdx),
               'sv_class'
@@ -419,7 +538,7 @@
             continue;
 
           $this->_addNode (
-            $this->rootNode,
+            $this->getNode($classification),
             array ($f->name),
             $this->_getRef($idx, NULL, $fIdx),
             'sv_private_scalar'
@@ -439,6 +558,10 @@
         }
       }
 
+      $this->tree->set_sort_type(GTK_SORT_ASCENDING);
+      $this->tree->set_sort_column(0);
+      $this->tree->sort_node($this->nodes['framework']);
+      $this->tree->sort_node($this->nodes['core']);
       // $this->tree->columns_autosize();
       $this->tree->thaw();
     }
@@ -455,17 +578,44 @@
       $cmd= $this->prop->readString (
         'editor',
         'cmdline',
-        'nedit -line %d %s'
+        'nedit -line %LINE% %FILE%'
       );
       
       $d= $this->_getRefInfo($n);
 
-      $cmdLine= sprintf ($cmd,
-        $d['line'],
-        $d['file']
+      $vars= array(
+        '%LINE%'  => $d['line'],
+        '%FILE%'  => $d['file'],
+        '%SESS%'  => 'prj:'.getmypid()
       );
+      $cmd= str_replace(array_keys($vars), array_values($vars), $cmd);
+      $this->log && $this->log->debug($cmd);
       
-      System::exec ($cmdLine, '1>/dev/null 2>/dev/null', TRUE);
+      System::exec ($cmd, '1>/dev/null 2>/dev/null', TRUE);
+    }
+    
+    /**
+     * Execute 'cvs diff' command on selected file.
+     *
+     * @access  public
+     */
+    function onCvsDiff() {
+      $n= &$this->tree->node_get_row_data($this->_selectedNode);
+      $d= &$this->_getRefInfo($n);
+      
+      $tmpFile= System::tempDir().DIRECTORY_SEPARATOR.md5($d['file']).'.diff';
+      $cmd= sprintf('cvs diff -u %s', $d['file']);
+      System::exec($cmd, sprintf('1>%1$s 2>%1$s', $tmpFile));
+      
+      $cmd= $this->prop->readString (
+        'editor',
+        'cvsview',
+        'nedit %FILE%'
+      );
+      $cmd= str_replace('%FILE%', $tmpFile, $cmd);
+      
+      System::exec($cmd, '1>/dev/null 2>/dev/null', TRUE);
+      return TRUE;
     }
   }
 
