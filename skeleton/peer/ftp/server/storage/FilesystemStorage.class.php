@@ -54,11 +54,11 @@
               break;
 
             case '..':
-              array_shift($stack);
+              array_pop($stack);
               break;
 
             default:
-              array_unshift($stack, $part);
+              $stack[]= $part;
           }
         }
       }
