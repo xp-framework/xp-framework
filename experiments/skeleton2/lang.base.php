@@ -223,9 +223,6 @@
 
   // {{{ initialization
   error_reporting(E_ALL);
-  if (!defined('PATH_SEPARATOR')) {
-    define('PATH_SEPARATOR',  0 == strncasecmp('WIN', PHP_OS, 3) ? ';' : ':');    
-  }
   define('SKELETON_PATH', (getenv('SKELETON_PATH')
     ? getenv('SKELETON_PATH')
     : dirname(__FILE__).DIRECTORY_SEPARATOR
