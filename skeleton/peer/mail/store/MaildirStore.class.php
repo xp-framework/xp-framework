@@ -46,7 +46,7 @@
      */    
     function open($folder= NULL) {
       if (NULL === $folder)
-        $folder= getenv ('HOME').'/Maildir/';
+        $folder= getenv ('HOME').DIRECTORY_SEPARATOR.'Maildir';
       
       try(); {
         $this->_folder= &new Folder ($folder);
@@ -97,7 +97,7 @@
      * @return &peer.mail.MailFolder folder;
      */    
     function &getFolder($name) {
-      $f= &new Folder ($this->_folder->getURI().'/'.$name);
+      $f= &new Folder ($this->_folder->getURI().DIRECTORY_SEPARATOR.$name);
       if (!$f->exists())
         return throw (new MessagingException (
           'Maildir does not exist: '.$f->getURI()
@@ -116,7 +116,7 @@
     function &getFolders() {
       $f= array();
       while ($entry= $this->_folder->getEntry()) {
-        if (is_dir ($this->_folder->getURI().'/'.$entry)) {
+        if (is_dir ($this->_folder->getURI().DIRECTORY_SEPARATOR.$entry)) {
           if ('.' != $entry{0} || '.' == $entry || '..' == $entry) {
             $f[]= &new MailFolder (
               $this,
@@ -154,7 +154,7 @@
       }
       
       try(); {
-        $nf= &new Folder ($this->_root.'/'.$f->name);
+        $nf= &new Folder ($this->_root.DIRECTORY_SEPARATOR.$f->name);
         $nf->open();
       } if (catch ('IOException', $e)) {
         return throw ($e);
@@ -197,11 +197,8 @@
      * @return int count
      */    
     function getMessageCount(&$f, $attr= 0xFFFF) {
-      static
-        $ignoreFolders= array ('.', '..');
-    
       $this->openFolder ($f);
-      $f= &new Folder ($f->name.'/cur/');
+      $f= &new Folder ($f->name.DIRECTORY_SEPARATOR.'cur');
       if (!$f->exists())
         return 0;
       
@@ -209,13 +206,7 @@
       try(); {
         $f->open();
         while ($e= $f->getEntry()) {
-          if (!in_array ($e, $ignoreFolders)) {
-            if ($attr & $this->_getMailFlags ($e))
-              $cnt++;
-            
-            var_dump ($uniq);
-            var_dump ($flags);
-          }
+          if ($attr & $this->_getMailFlags ($e)) $cnt++;
         }
         $f->close();
       } if (catch ('Exception', $e)) {
@@ -239,7 +230,7 @@
 
       while (FALSE !== ($entry= $this->_folder->getEntry()) && $nr <= $i++) {
         if ($nr == $i) 
-          return $f->getURI().'/'.$entry;
+          return $f->getURI().DIRECTORY_SEPARATOR.$entry;
       }
       return FALSE;
     }
