@@ -81,13 +81,13 @@
           throw(new FormatException('Storage corrupt'));
           return FALSE;
         }
+        $f->rewind();
       }
       
       // Prepend data to the beginning of the history
       array_unshift($a, $data);
       
       // Write it back to the file
-      $f->rewind();
       $f->write(serialize($a));
       $f->close();
       
