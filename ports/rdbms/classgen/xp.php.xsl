@@ -309,7 +309,7 @@
 
             <xsl:if test="position() != last()">, </xsl:if>
         </xsl:for-each>
-        <xsl:text>&#10;         )',&#10;</xsl:text>
+        <xsl:text>&#10;          )',&#10;</xsl:text>
         <xsl:for-each select="attribute[@identity = 'false']">
           <xsl:text>          </xsl:text>
           <xsl:value-of select="concat('$this->', @name)"/>
