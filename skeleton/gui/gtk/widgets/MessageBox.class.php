@@ -166,7 +166,7 @@
           $b->set_flags(GTK_CAN_DEFAULT);
           $b->show();
 
-          $this->connect(array($b, 'clicked'), 'onButtonClicked');
+          $this->connect($b, 'clicked', 'onButtonClicked');
           $this->actionarea->pack_start($b);
         }
       }
