@@ -78,6 +78,7 @@
      * @return  &peer.server.ConnectionListener the added listener
      */
     function &addListener(&$listener) {
+      $listener->server= &$this;
       $this->listeners[]= &$listener;
       return $listener;
     }
