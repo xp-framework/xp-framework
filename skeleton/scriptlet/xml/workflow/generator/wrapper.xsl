@@ -91,7 +91,7 @@
     <xsl:text><![CDATA[<?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id]]>&#36;<![CDATA[
  */
 
   uses('scriptlet.xml.workflow.Wrapper');
