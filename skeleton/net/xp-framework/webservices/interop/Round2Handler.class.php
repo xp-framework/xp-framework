@@ -25,7 +25,7 @@
      */
     function _assertType($type, &$object) {
       if ($type != xp::typeOf($object))
-        return throw (new IllegalArgumentException('Object not of expected type '.$type.', but '.xp::typeOf($object).' with value '.$object));
+        return throw (new IllegalArgumentException('Object not of expected type '.$type.', but '.xp::typeOf($object).' with value '.var_export($object, 1)));
     }
     
     /**
@@ -34,12 +34,12 @@
      * @access  private
      * @param   string type
      * @param   &array
-     * @
+     * @throws  lang.IllegalArgumentException
      */
     function _assertSubtype($type, &$array) {
       foreach (array_keys($array) as $key) {
         if ($type != xp::typeOf($array[$key]))
-          return throw (new IllegalArgumentException('Object (in array) not of expected type '.$type.', but '.xp::typeOf($array[$key]).' with value '.$array[$key]));
+          return throw (new IllegalArgumentException('Object (in array) not of expected type '.$type.', but '.xp::typeOf($array[$key]).' with value '.var_export($array[$key], 1)));
       }
     }
   
@@ -169,7 +169,8 @@
      * @throws  lang.MethodNotImplementedException
      */
     function echoBase64($inputBase64) {
-      return throw (new MethodNotImplementedException('Not implemented'));
+      $this->_assertType('xml.soap.types.SOAPBase64Binary', $inputBase64);
+      return $inputBase64;
     }
     
     /**
