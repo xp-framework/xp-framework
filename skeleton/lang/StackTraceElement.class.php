@@ -64,8 +64,10 @@
               $display.
               "'"
             );
+          } elseif (is_null($this->args[$j])) {
+            $args[]= 'NULL';
           } else {
-            $args[]= var_export($this->args[$j], 1);
+            $args[]= (string)$this->args[$j];
           }
         }
       }
