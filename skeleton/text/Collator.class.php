@@ -4,11 +4,12 @@
  * $Id$ 
  */
 
+  uses('util.Locale');
+
   /**
    * The Collator class performs locale-sensitive String comparison. 
    *
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Comparator
    */
   class Collator extends Object {
     var
@@ -21,7 +22,6 @@
      * @param   string locale
      */ 
     function __construct($locale) {
-      
       $this->locale= $locale;
     }
     
