@@ -77,9 +77,10 @@
      */
     function &getConnection($str) {
       static $builtin= array(
-        'sybase'    => 'rdbms.sybase.SybaseConnection',
-        'mysql'     => 'rdbms.mysql.MySQLConnection',
-        // TBI: Postgres, Oracle, ...
+        'sybase'   => 'rdbms.sybase.SybaseConnection',
+        'mysql'    => 'rdbms.mysql.MySQLConnection',
+        'pgsql'    => 'rdbms.pgsql.PostgreSQLConnection',
+        // TBI: Oracle, ...
       );
       
       $dsn= &new DSN($str);
@@ -99,6 +100,5 @@
       
       return $i->drivers[$id]->newInstance($dsn);
     }
-    
   }
 ?>
