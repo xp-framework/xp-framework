@@ -12,6 +12,7 @@
   class AssertionFailedError extends Exception {
     var
       $actual       = NULL,
+      $expect       = NULL,
       $code         = '';
       
     /**
@@ -19,13 +20,15 @@
      *
      * @access  public
      * @param   string message
-     * @param   mixed actual
      * @param   string code
+     * @param   mixed actual default NULL
+     * @param   mixed expect default NULL
      */
-    function __construct($message, $actual, $code) {
+    function __construct($message, $code, $actual= NULL, $expect= NULL) {
       parent::__construct($message);
-      $this->actual= $actual;
       $this->code= $code;
+      $this->actual= $actual;
+      $this->expect= $expect;
     }
     
     /**
@@ -55,12 +58,24 @@
      * @return  string
      */
     function toString() {
-      return parent::toString().sprintf(
-        "\n  [code]     %s".
-        "\n  [actual]   %s",
+      $s= sprintf(
+        "Exception %s (%s) {\n".
+        "    code:   %s\n".
+        "    have:   [%s] %s\n".
+        "    expect: [%s] %s\n".
+        "  }\n",
+        $this->getClassName(),
+        $this->message,
         $this->code,
-        var_export($this->actual, 1)
+        xp::typeOf($this->actual),
+        var_export($this->actual, 1),
+        xp::typeOf($this->expect),
+        var_export($this->expect, 1)
       );
+      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
+        $s.= $this->trace[$i]->toString();
+      }
+      return $s;
     }
   }
 ?>
