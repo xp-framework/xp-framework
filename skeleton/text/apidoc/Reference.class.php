@@ -40,7 +40,13 @@
      * @throws  FormatException in case the scheme is'nt recognized
      */
     function fromString($str) {
-      $this->link= parse_url($str);
+      if (FALSE !== ($p= strpos($str, ' '))) {
+        $this->link= parse_url(substr($str, 0, $p));
+        $this->link['description']= substr($str, $p+ 1);
+      } else {
+        $this->link= parse_url($str);
+        $this->link['description']= NULL;
+      }
       
       // Links without scheme are internal
       if (empty($this->link['scheme'])) {
