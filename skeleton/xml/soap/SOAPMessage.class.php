@@ -230,16 +230,6 @@
           $result= $child->getContent($this->getEncoding());
       }
 
-      // HACK
-      if (
-        ($context == NULL) &&
-        ($child->name != 'item') &&                    // PHP, XP, ...
-        (substr($child->name, 1, 7) != '-gensym') &&   // Perl
-        (sscanf($child->name, 'arg%d', $num) < 1)      // Axis
-      ) {
-        $result= &new SOAPNamedItem($child->name, $result);
-      }
-      
       return $result;
     }
 
