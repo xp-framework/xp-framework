@@ -71,6 +71,7 @@
      * Returns the fully qualified class name for this class 
      * (e.g. "io.File")
      * 
+     * @access  public
      * @return  string fully qualified class name
      */
     function getClassName() {
