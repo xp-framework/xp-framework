@@ -17,7 +17,7 @@
       <para>
         <caption>Web based CVS</caption>
         <text>
-          For conveniance, we have set up a Web based CVS viewer, so you can
+          For convenience, we have set up a Web based CVS viewer, so you can
           easily inspect the files.<br/>
           Point your browser to 
           <ref type="ext" link="http://cvs.xp-framework.net/">http://cvs.xp-framework.net</ref>
