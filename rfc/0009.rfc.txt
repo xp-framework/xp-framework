@@ -1,4 +1,4 @@
-RFC 0009: Enumerations
+RFC 0009: Typesafe enumerations
 ========================================================================
 $Id$
 
@@ -19,20 +19,101 @@ and utility functions only.
 
 Functionality
 -------------
+Enumerations have a static function "size()" that returns the number of
+members in the enumeration.
 
-Declaration goes as follows:
+Using the size() method:
 <?php
-  enum Suit { CLUBS, DIAMONDS, HEARTS, SPADES }
+  enum CoinColor { copper, nickel, silver }
+  
+  echo CoinColor::size();
 ?>
+
+The above example prints out the following:
+<pre>
+  3
+</pre>
 
 Enumerations have a static function "values()" that returns the values 
 as an array.
+
+Using the values() method:
 <?php
-  foreach (Suit::values() as $value) { }
+  function nameOf($member) {
+    return $member->name;
+  }
+  
+  enum Suit { CLUBS, DIAMONDS, HEARTS, SPADES }
+
+  echo implode(', ', array_map('nameOf', Suit::values()));
 ?>
 
-The sizeof() function applied to an enumeration returns the numbers of 
-elements in an enumeration (for the above example, 4).
+The above example prints out the following:
+<pre>
+  CLUBS, DIAMONDS, HEARTS, SPADES
+</pre>
+
+Enumerations have a static function "valueOf()" that returns the value
+of a single member.
+
+Using the valueOf() method:
+<?php
+  enum Day { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday }
+
+  foreach (range(Monday, Friday) as $day) {
+    echo $day, ': ', cast(Day::valueOf($day), 'string'), "\n";
+  }
+?>
+
+The above example prints out the following:
+<pre>
+  0: Monday
+  1: Tuesday
+  2: Wednesday
+  3: Thursday
+  4: Friday
+</pre>
+
+Enumerations members may have a value associated with them.
+
+Using the value:
+<?php
+  function colorOf($coin) {
+    switch ($coin->ordinal) {
+      case penny: return 'copper';
+      case nickel: return 'nickel';
+      case dime: case quarter: return 'silver';
+    }
+  }
+  
+  enum Coin {
+    penny(1), nickel(5), dime(10), quarter(25);
+
+    var $value= 0;
+
+    function __construct($value) { $this->value= $value; }
+
+    function value() { return $this->value; }
+  }
+  
+  foreach (Coin::values() as $coin) {
+    echo $coin->name, ': ', $coin->value(), '¢ (', colorOf($coin), ")\n";
+  }
+?>
+
+The above example prints out the following:
+<pre>
+  penny: 1¢ (copper)
+  nickel: 5¢ (nickel)
+  dime: 10¢ (silver)
+  quarter: 25¢ (silver)
+</pre>
+
+
+Implementation notes
+--------------------
+
+(TBD)
 
 Related documents
 -----------------
