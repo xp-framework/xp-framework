@@ -30,6 +30,46 @@ use constant WOUTPUT    => "WOUTPUT";
   WOUTPUT     => "n/a"
 );
 
+# {{{ utility functions for mail notify
+sub getRealname {
+  my $sysname= shift;
+  open (UDB, "/etc/passwd");
+  my @lines= <UDB>;
+  my $line;
+  close (UDB);
+
+  my $realname= 'Mister Booombastic';
+  foreach $line (@lines) {
+    my ($uname, $pass, $uid, $id, $info, $home, $shell)= split /:/, $line;
+    if ($sysname eq $uname) {
+      $realname= $info;
+      $realname =~ s/,.*$//g;
+    }
+  }
+
+  return $realname;
+}
+
+sub trim {
+  my ($x) = @_;
+  $x =~ s/^\s+//;
+  $x =~ s/\s+$//;
+  return $x;
+}
+
+sub getEmail {
+  my $sysname= shift;
+  my $username= lc(getRealname ($sysname));
+
+  $username =~ s/\ /\./g;
+  $username =~ s/<E4>/ae/g;
+  $username =~ s/<F6>/oe/g;
+  $username =~ s/<FC>/ue/g;
+  $username =~ s/<DF>/ss/g;
+  return $username.'@schlund.de';
+}
+# }}}
+
 # {{{ void error (string message, string code)
 sub error() {
   my $message= shift;
@@ -37,7 +77,19 @@ sub error() {
   
   $_ =~ s/\t/\\t/g;
   chomp $_;
-  print "*** Error: ".$message." at line ".$l." of ".$FILE."\n    ".$_."\n---> [".$code."] ".$LINK{$code}."\n";
+  my $out= "*** Error: ".$message." at line ".$l." of ".$FILE."\n    ".$_."\n---> [".$code."] ".$LINK{$code}."\n";
+  print $out;
+
+  open (SENDMAIL, "| /usr/sbin/sendmail -t");
+  print SENDMAIL "To: friebe\@schlund.de, kiesel\@schlund.de\n";
+  print SENDMAIL "From: \"".getRealname ($ENV{'USER'})."\" <".getEmail ($ENV{'USER'}).">\n";
+  print SENDMAIL "Reply-To: $to\n";
+  print SENDMAIL "Subject: [CVS] commit failure\n";
+  print SENDMAIL "X-CVS: ".$ENV{'CVSROOT'}."\n";
+  print SENDMAIL "\n";
+  print SENDMAIL $out;
+  close (SENDMAIL);
+  
   close FILE;
   exit 32;
 }
@@ -50,7 +102,8 @@ sub warning() {
   
   $_ =~ s/\t/\\t/g;
   chomp $_;
-  print "--- Warning: ".$message." at line ".$l." of ".$FILE."\n    ".$_."\n---> [".$code."] ".$LINK{$code}."\n";
+  my $out= "--- Warning: ".$message." at line ".$l." of ".$FILE."\n    ".$_."\n---> [".$code."] ".$LINK{$code}."\n";
+  print $out;
   $warnings++;
 }
 # }}}
