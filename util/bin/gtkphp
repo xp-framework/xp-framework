@@ -7,19 +7,26 @@ echo "<?php
   require('lang.base.php');
   uses('util.cmd.ParamString');
   
-  require('$1');
-  
   \$p= &new ParamString(explode('', '$*'));
-  if ('.class.php' == substr('$1', -10)) {
-    \$class= basename(substr('$1', 0, -10));
-    try(); {
-      \$app= &new \$class(\$p); 
-      \$app->init();
-    } if (catch('GuiException', \$e)) {
-      \$e->printStackTrace();
-      exit(-1);
+  try(); {
+    if ('.class.php' == substr('$1', -10)) {
+      require_once('$1');
+      \$class= &new XPClass(basename(substr('$1', 0, -10)));
+    } else {
+      \$class= &XPClass::forName('$1');
     }
-    \$app->run();
-    \$app->done();
+    
+    if (\$class) {
+      \$app= &\$class->newInstance(\$p);
+      \$app->init();
+    }
+  } if (catch('ClassNotFoundException', \$e)) {
+    echo '*** Error loading $1: ', \$e->toString();
+    exit(-2);
+  } if (catch('GuiException', \$e)) {
+    echo '*** Error initializing ', \$class->getClassName(), ': ', \$e->toString();
+    exit(-1);
   }
+  \$app->run();
+  \$app->done();
 ?>" | ${EXE} -q -C -c /usr/local/etc/php.gtk
