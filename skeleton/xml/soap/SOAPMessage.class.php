@@ -1,9 +1,7 @@
 <?php
-  define('E_SOAP_FAULT_EXCEPTION', 0x2FFF);
-  
   uses('xml.Tree');
   uses('xml.Node');
-  uses('xml.soap.WSDLNode');
+  uses('xml.soap.SOAPNode');
   uses('xml.soap.SOAPFault');
   
   class SOAPMessage extends Tree {
@@ -11,8 +9,15 @@
     var $namespace= 'ctl';
     var $encoding= XML_ENCODING_DEFAULT;
     
-    var $nodeType= 'WSDLNode';
-    
+    var $nodeType= 'SOAPNode';
+
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */    
     function create($action, $method) {
       $this->action= $action;
       $this->method= $method;
@@ -39,17 +44,24 @@
      * @param   array arr Array aller zu übergebender Daten
      */
     function setData($arr) {
-      $node= new WSDLNode();
+      $node= new SOAPNode();
       $node->namespace= $this->namespace;
       $node->fromArray($arr, 'item');
       if (!empty($node->children)) foreach ($node->children as $i=> $child) {
         $this->root->children[0]->children[0]->addChild($child);
       }
     }
-    
+
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */    
     function _recurseData(&$node, $names= FALSE) {
       $results= array();
-      foreach ($node->children as $child) {
+      if (!empty($node->children)) foreach ($node->children as $child) {
         $idx= $names ? $child->name : sizeof($results);
         
         if (
@@ -101,18 +113,33 @@
       }
       return $results;
     }
-    
-    function setFault($faultcode, $faultstring, $faultactor= NULL) {
-      $this->root->children[0]->children[0]= new WSDLNode();
+
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */    
+    function setFault($faultcode, $faultstring, $faultactor= NULL, $detail= NULL) {
+      $this->root->children[0]->children[0]= new SOAPNode();
       $this->root->children[0]->children[0]->fromObject(new SOAPFault(array(
         'faultcode'      => $faultcode,
         'faultstring'    => $faultstring,
-        'faultactor'     => $faultactor
+        'faultactor'     => $faultactor,
+        'detail'         => $detail
       )));
       unset($this->root->children[0]->children[0]->attribute);
       $this->root->children[0]->children[0]->name= 'SOAP-ENV:Fault';
     }
 
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
     function getFault() {
       if ($this->root->children[0]->children[0]->name == 'SOAP-ENV:Fault') {
         $fault= new SOAPFault();
@@ -124,6 +151,13 @@
       return FALSE;
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
     function getData() {
       foreach ($this->root->attribute as $key=> $val) { // Namespace suchen
         if ($val == $this->action) $this->namespace= substr($key, strlen('xmlns:'));
