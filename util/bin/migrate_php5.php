@@ -117,8 +117,8 @@ __;
         );
         $out[]= 'class ';
         $t->getNextToken();             // Swallow whitepsace
-        $class= $t->getNextToken();
-        $out[]= $class[1];
+        $classname= $t->getNextToken();
+        $out[]= $classname[1];
         while ('{' !== $tok[1]) {
           $tok= $t->getNextToken();
           $out[]= $tok[1];
@@ -131,12 +131,14 @@ __;
             $out[]= isset($map[$tok[1]]) ? $map[$tok[1]] : $tok[1];
           }
         }
-        $out[]= "\n    const\n";
-        $const= '';
-        foreach ($constants as $name => $tok) {
-          $const.= '      '.preg_replace('/^'.$class[1].'_?/i', '', substr($name, 1, -1)).' = '.$tok[1].",\n";
+        if (!empty($constants)) {
+          $out[]= "\n    const\n";
+          $const= '';
+          foreach ($constants as $name => $tok) {
+            $const.= '      '.preg_replace('/^'.$classname[1].'_?/i', '', substr($name, 1, -1)).' = '.$tok[1].",\n";
+          }
+          $out[]= substr($const, 0, -2).";\n";
         }
-        $out[]= substr($const, 0, -2).";\n";
         $class= TRUE;
         $tok= array(T_NONE, '');
         break;
