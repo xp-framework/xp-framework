@@ -69,7 +69,8 @@
       // Trace
       $this->trace= &$this->widget('trace');
       $this->trace->set_row_height(20);
-
+      $this->trace->set_line_style(GTK_CTREE_LINES_DOTTED);
+      
       // Progress bar
       $this->progress= &$this->widget('progressbar');
       
@@ -85,7 +86,9 @@
         'collection', 
         'test_failed', 
         'test_skipped', 
-        'test_succeeded'
+        'test_succeeded',
+        'traceelement',
+        'exception'
       ));
 
       // Buttons
@@ -151,7 +154,34 @@
       
       // Update trace
       $this->trace->clear();
-      $this->cat->debug($this->trace);
+      if (is_a($data, 'AssertionFailedError')) {
+        $node= &$this->trace->insert_node(
+          NULL,
+          NULL,
+          array($data->getClassName().' ('.$data->getMessage().')'),
+          4,
+          $this->pixmaps['p:exception'],
+          $this->pixmaps['m:exception'],
+          $this->pixmaps['p:exception'],
+          $this->pixmaps['m:exception'],
+          FALSE,
+          TRUE
+        );
+        foreach (array_slice(explode("\n", chop($data->getTrace())), 1) as $element) {
+          $this->trace->insert_node(
+            $node,
+            NULL,
+            array(trim($element)),
+            4,
+            $this->pixmaps['p:traceelement'],
+            $this->pixmaps['m:traceelement'],
+            $this->pixmaps['p:traceelement'],
+            $this->pixmaps['m:traceelement'],
+            FALSE,
+            FALSE
+          );
+        }
+      }
     }
 
     /**
