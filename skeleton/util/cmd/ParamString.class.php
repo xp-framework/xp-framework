@@ -52,7 +52,7 @@
      */ 
     function _find($long, $short= NULL) {
       if (is_null($short)) $short= $long{0};
-      for ($i= 0; $i< sizeof($this->list); $i++) {
+      foreach (array_keys($this->list) as $i) {
       
         // Short notation (e.g. -f value)
         if ($this->list[$i] == '-'.$short) return $i+ 1;
