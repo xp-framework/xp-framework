@@ -20,6 +20,58 @@
    ! @purpose  Context navigation
    !-->
   <xsl:template name="context">
+    <!-- Categories -->
+    <h4 class="context">Categories</h4>
+    <table border="0">
+      <xsl:for-each select="/formresult/categories/category">
+        <xsl:sort key="."/>
+        <tr>
+          <td width="1%" valign="top">
+            <a href="/rss/?{@id}">
+              <img src="/image/rss.png" vspace="1" border="0" height="15" width="27" alt="RSS"/>
+            </a>  
+          </td>
+          <td valign="top">
+            <a class="category{@id}" href="category?{@id}"><xsl:value-of select="."/></a>
+          </td>
+        </tr>
+      </xsl:for-each>
+      <tr>
+        <td width="1%">
+          <a href="/rss/">
+            <img src="/image/rss.png" border="0" height="15" width="27" alt="RSS"/>
+          </a>  
+        </td>
+        <td>
+          <a class="allcategories" href="home">All categories</a>
+        </td>
+      </tr>
+    </table>
+  </xsl:template>
+
+  <!--
+   ! Template that matches on an entry
+   !
+   ! @purpose  Define the layout for an entry
+   !-->
+  <xsl:template match="entry">
+    <div class="entry">
+      <h3>
+        <a href="news/view?{@id}">
+          <xsl:value-of select="title"/>
+        </a>
+      </h3>
+      <p>
+        <xsl:apply-templates select="body"/>
+        <xsl:if test="extended_length &gt; 0">
+          &#160; ... <a href="news/view?{@id}" title="View extended entry"><b>(more)</b></a>
+        </xsl:if>
+      </p>
+      <em>
+        Posted by <xsl:value-of select="author"/> 
+        at <xsl:value-of select="func:datetime(date)"/>
+      </em>
+    </div>
   </xsl:template>
 
   <!--
@@ -29,17 +81,18 @@
    ! @purpose  Define main content
    !-->
   <xsl:template name="content">
-    <h1>News</h1>
+    <xsl:variable name="entries" select="/formresult/entries/entry"/>
 
-    <xsl:for-each select="/formresult/news/item">
-      <h3>
-        <xsl:value-of select="caption"/> (<xsl:value-of select="func:datetime(created_at)"/>)
-      </h3>
-      <p>
-        <xsl:apply-templates select="excerpt"/>
-        &#160;
-        <a href="news/view?{news_id}">More</a>
-      </p>
+    <h1>Newest entries</h1>    
+    <xsl:for-each select="exsl:node-set($entries)">
+      <xsl:variable name="pos" select="position()"/>
+      <xsl:if test="$pos = 1 or exsl:node-set($entries[$pos - 1])/date/yday != ./date/yday">
+        <h2>
+          <xsl:value-of select="func:date(date)"/>
+        </h2>
+      </xsl:if>
+      <xsl:apply-templates select="."/>
+      <br clear="all"/>
     </xsl:for-each>
   </xsl:template>
   
