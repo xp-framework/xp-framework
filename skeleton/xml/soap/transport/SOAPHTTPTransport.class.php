@@ -41,6 +41,16 @@
       $this->_conn->__destruct();
       parent::__destruct();
     }
+    
+    /**
+     * Create a string representation
+     *
+     * @access  pubic
+     * @return  string
+     */
+    function toString() {
+      return sprintf('%s { %s }', $this->getClassName(), $this->_conn->request->url->_info['url']);
+    }
 
     /**
      * Send the message
