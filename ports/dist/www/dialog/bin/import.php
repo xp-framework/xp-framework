@@ -13,6 +13,7 @@
     'util.log.Logger',
     'util.log.ConsoleAppender', 
     'de.thekid.dialog.Album',
+    'de.thekid.dialog.Update',
     'de.thekid.dialog.io.FilteredFolderIterator',
     'de.thekid.dialog.io.ImageProcessor'
   );
@@ -40,6 +41,7 @@ Options:
   --debug, -d     Turns on debugging (default: off)
   --title, -t     Set album title (default: origin directory name)
   --date, -D      Set album date (default: origin directory's creation date)
+  --update, -u    Set text for update (default: do not create update)
 __
     );
     exit(1);
@@ -85,18 +87,39 @@ __
   // Check if album already exists
   $serialized= &new File(DATA_FOLDER.$name.'.dat');
   if ($serialized->exists()) {
-    Console::writeLine('---> Found existing album ');
+    Console::writeLine('---> Found existing album');
     try(); {
       $album= unserialize(FileUtil::getContents($serialized));
     } if (catch('IOException', $e)) {
       $e->printStackTrace();
       exit(-1);
     }
+    
+    // Create update entry if specified
+    if ($param->exists('update', 'u')) {
+      Console::writeLine('---> Creating update entry');
+
+      $update= &new Update();
+      $update->setAlbumName($name);
+      $update->setTitle($album->getTitle());
+      $update->setDate(new Date($param->value('date', 'D', time())));
+      $update->setDescription($param->value('update', 'u'));
+
+      $updateFile= &new File(DATA_FOLDER.$name.'-update_'.date('Ymd').'.dat');
+      try(); {
+        FileUtil::setContents($updateFile, serialize($update));
+      } if (catch('IOException', $e)) {
+        $e->printStackTrace();
+        exit(-1);
+      }
+
+      $updateFile->touch($update->date->getTime());
+    }
 
     // We will regenerate these from scratch...
     $album->highlights= $album->chapters= array();
   } else {
-    Console::writeLine('---> Creating new album... ');
+    Console::writeLine('---> Creating new album...');
 
     // Create album
     $album= &new Album();
