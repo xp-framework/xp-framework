@@ -112,6 +112,12 @@ code .variable {
 code .bracket {
   color: #a90000;
 }
+code .string {
+  color: #0000a9;
+}
+code .comment {
+  color: #a9a9a9;
+}
 
 /* Calendar */
 table.calendar {
