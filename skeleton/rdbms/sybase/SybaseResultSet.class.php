@@ -62,7 +62,7 @@
       }
       
       foreach (array_keys($row) as $key) {
-        if ('datetime' == $this->fields[$key]) {
+        if (isset ($this->fields[$key]) && 'datetime' == $this->fields[$key]) {
           $row[$key]= &Date::fromString($row[$key]);
         }
       }
