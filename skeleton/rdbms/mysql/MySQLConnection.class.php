@@ -145,10 +145,7 @@
      * @return  mixed identity value
      */
     function identity() { 
-      if (FALSE === ($r= &$this->query('@@identity as identity'))) {
-        return FALSE;
-      }
-      return $r->next('identity');
+      return mysql_insert_id($this->handle);
     }
 
     /**
