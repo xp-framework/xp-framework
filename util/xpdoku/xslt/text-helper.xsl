@@ -50,6 +50,15 @@
     <br/>
   </xsl:template>
 
+  <xsl:template match="image">
+    <img>
+      <xsl:copy-of select="@*"/>
+      <xsl:attribute name="border">0</xsl:attribute>
+      <xsl:attribute name="src">/image/content/<xsl:value-of select="@src"/></xsl:attribute>
+    </img>
+    <br/>
+  </xsl:template>
+
   <xsl:template match="text//br|text//tt|php//*">
     <xsl:copy>
       <xsl:copy-of select="@*"/>

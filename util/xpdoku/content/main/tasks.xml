@@ -307,6 +307,7 @@
         </text>
         <advanced>
           <ref link="tasks.gui.glade">Using Glade to build interfaces</ref>
+          <ref link="tasks.gui.widgets">Additional widgets</ref>
           <ref link="tasks.gui.i18n">Internationalized GUIs</ref>
           <ref link="tasks.gui.html">Embedding HTML</ref>
         </advanced>
