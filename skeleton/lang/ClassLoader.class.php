@@ -32,7 +32,7 @@
    *   $obj= &new $name();
    * </code>
    *
-   * @access    static
+   * @access    public, static
    */
   class ClassLoader extends Object {
     var $classpath= '';
@@ -51,6 +51,17 @@
     }
     
     /**
+     * Returns whether this class is a built-in class (e.g., "Directory")
+     *
+     * @access  static
+     * @param   string name
+     * @return  bool true if name represents a built-in class
+     */
+    function isBuiltin($name) {
+      return ('php.' == substr($name, 0, 4));
+    }
+    
+    /**
      * Load
      *
      * @access  public, static
@@ -59,16 +70,17 @@
      * @throws  ClassNotFoundException in case the class can not be found
      */
     function loadClass($className) {
-      if ('php.' != substr($className, 0, 4)) {
-        uses($classpath.$className);
-        $phpName= reflect($this->classpath.$className);
+      if (!ClassLoader::isBuiltin($className)) {
+        $path= isset($this) ? '' : $this->classpath;
+        uses($path.$className);
+        $phpName= reflect($path.$className);
       } else {
         $phpName= substr($className, 4);
       }
       if (class_exists($phpName)) return $phpName;
       
       return throw(new ClassNotFoundException(sprintf(
-        'class %s [%s] not found',
+        'class "%s" [%s] not found',
         $className,
         $phpName
       )));
