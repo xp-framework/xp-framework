@@ -155,11 +155,10 @@
   function uses() {
     $result= TRUE;
     foreach (func_get_args() as $str) {
-      $result= $result & include_once(
-        strtr($str, '.', DIRECTORY_SEPARATOR).
-        '.class.php'
-      );
-      xp::registry('class.'.xp::reflect($str), $str);
+      if ($i= include_once(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+        xp::registry('class.'.xp::reflect($str), $str);
+      }
+      $result= $result & $i;
     }
     return $result;
   }
