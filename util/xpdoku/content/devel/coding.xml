@@ -134,11 +134,11 @@ function sehrsehrLangerMethodenName($string, $uriRequesterObject,
 }]]></code>
           Lange Bedingungen in einem IF-Statement sollten folgendermaßen eingerückt werden:
           <code><![CDATA[if (
-    ('172.17.0.27' == $REMOTE_ADDR) ||
-    ('172.17.0.26' == $REMOTE_ADDR) ||
-    ('172.17.0.24' == $REMOTE_ADDR) ||
-   ) {
-    $rightGroup= 'root';
+  ('172.17.0.27' == $REMOTE_ADDR) ||
+  ('172.17.0.26' == $REMOTE_ADDR) ||
+  ('172.17.0.24' == $REMOTE_ADDR) ||
+) {
+  $rightGroup= 'root';
 }]]></code>
 
           Im Beispiel sind die Bedingungen alle auf gleicher Höhe, sind aber visuell durch 
