@@ -146,7 +146,7 @@
       }
       
       // Set message
-      $response->setHeader('Content-type: text/xml; charset='.$answer->encoding);
+      $response->setHeader('Content-type', 'text/xml; charset='.$answer->encoding);
       $response->setMessage($answer);
     }
     
