@@ -86,13 +86,15 @@
       if (WEBDAV_COLLECTION == $o->resourceType) {
         $o->contentType= 'httpd/unix-directory';
         $o->contentLength= 0;
+        $o->executable= FALSE;
        }
       
       // Additional properties
       foreach (array_merge_recursive(array(
         'P:displayname'       => $o->displayName,
         'D:getcontentlength'  => $o->contentLength,
-        'D:getcontenttype'    => $o->contentType
+        'D:getcontenttype'    => $o->contentType,
+        'P:executable'        => WebdavBool::fromBool($o->executable)
       ), $o->properties) as $key => $val) {
         $props->addChild(new Node($key, $val));
       }

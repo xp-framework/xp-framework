@@ -441,9 +441,15 @@
       
       // Send "HTTP/1.1 207 Multi-Status" response header
       $response->setStatus(WEBDAV_MULTISTATUS);
-      $response->setHeader('Content-Type', 'text/xml');
+      $response->setHeader(
+        'Content-Type', 
+        'text/xml, charset="'.$multistatus->getEncoding().'"'
+      );
       
-      $response->setContent($multistatus->getSource(0));
+      $response->setContent(
+        $multistatus->getDeclaration()."\n".
+        $multistatus->getSource(0)
+      );
     }
 
     /**
@@ -486,13 +492,7 @@
         return throw(new HttpScriptletException($e->message));
       }
       
-      // Send "HTTP/1.1 207 Multi-Status" response header
-      /*
-      $response->setStatus(WEBDAV_MULTISTATUS);
-      $response->setHeader('Content-Type', 'text/xml');
-      
-      $response->setContent($multistatus->getSource(0));
-      */
+      // TBD: MultiStatus response
     }
   
     /**

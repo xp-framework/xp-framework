@@ -80,7 +80,8 @@
         new Date(filemtime($realpath)),
         NULL,
         filesize($realpath),
-        MimeType::getByFilename($path, 'text/plain')
+        MimeType::getByFilename($path, 'text/plain'),
+        is_executable($realpath)
       ));
     }
 

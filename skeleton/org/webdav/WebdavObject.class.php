@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('org.webdav.util.WebdavBool');
+
   /**
    * Webdav Object
    *
@@ -18,6 +20,7 @@
       $resourceType     = '',
       $contentLength    = 0,
       $contentType      = NULL,
+      $executable       = FALSE,
       $status           = 0,
       $properties       = array();
       
@@ -46,6 +49,7 @@
       $resourceType,
       $contentLength= 0,
       $contentType= NULL,
+      $executable= FALSE,
       $status= HTTP_OK,
       $properties= array()
     ) {
@@ -56,6 +60,7 @@
       $this->resourceType  = $resourceType;      
       $this->contentLength = $contentLength;     
       $this->contentType   = $contentType;       
+      $this->executable    = $executable;       
       $this->status        = $status;            
       $this->properties    = $properties;  
       parent::__construct();      
