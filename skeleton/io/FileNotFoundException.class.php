@@ -1,15 +1,15 @@
 <?php
-/* Diese Klasse ist Teil des XP-Frameworks
- * 
- * $Id$
+/* This class is part of the XP framework
+ *
+ * $Id$ 
  */
- 
+
   /**
-   * Kapselt die Filenotfoundexception
+   * Indicates the file could not be found
    *
-   * @see Exception
+   * @purpose  Exception
    */
-  class Filenotfoundexception extends Exception {
+  class FileNotFoundException extends Exception {
   
   }
 ?>
