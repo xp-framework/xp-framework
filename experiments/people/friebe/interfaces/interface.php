@@ -5,7 +5,6 @@
  */
   require('lang.base.php');
   xp::sapi('cli');
-  uses('Interface');
   
   // {{{ proto void implements(string interface [, string interface [, ...]]) 
   //     Defines that the class this is called in implements certain interface(s)
@@ -13,13 +12,11 @@
     $t= debug_backtrace();
     $class= substr(basename($t[0]['file']), 0, -10);
     $classmethods= get_class_methods($class);
-    $classmethods[]= 'interface';
     
     foreach (func_get_args() as $interface) {
       uses($interface);    
-      $signature= array_merge($classmethods, strtolower($interface));
       foreach (get_class_methods($interface) as $method) {
-        if (!in_array($method, $signature)) {
+        if (!in_array($method, $classmethods)) {
           $e= new Error(
             'Interface method '.$interface.'::'.$method.'() not implemented by class '.$class
           );

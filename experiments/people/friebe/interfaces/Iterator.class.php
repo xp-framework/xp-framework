@@ -9,7 +9,7 @@
    *
    * @purpose  Interface
    */
-  class Iterator extends Interface {
+  class Iterator {
   
     /**
      * Get next element
