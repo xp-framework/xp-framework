@@ -141,9 +141,11 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &amp;getBy</xsl:text>
-    <xsl:call-template name="prettyname">
-    <xsl:with-param name="string" select="key/text()"/>
-    </xsl:call-template>
+    <xsl:for-each select="key">
+      <xsl:call-template name="prettyname">
+        <xsl:with-param name="string" select="text()"/>
+      </xsl:call-template>
+    </xsl:for-each>
     <xsl:text>(</xsl:text>
     <xsl:for-each select="key">
       <xsl:value-of select="concat('$', text())"/>
