@@ -42,15 +42,14 @@
       
       // Read status line
       $s= chop($this->stream->read());
-      if (4 != sscanf(
+      if (3 != sscanf(
         $s, 
-        'HTTP/%d.%d %3d %s', 
+        'HTTP/%d.%d %3d', 
         $major, 
         $minor, 
-        $this->statuscode,
-        $this->message
+        $this->statuscode
       )) return throw(new FormatException('"'.$s.'" is not a valid HTTP response'));
-      
+      $this->message= substr($s, 12);
       $this->version= $major.'.'.$minor;
       
       // Read rest of headers
@@ -100,6 +99,41 @@
       }
       
       return $buf;
+    }
+    
+    /**
+     * Return nice string representation
+     *
+     * Example:
+     * <pre>
+     * peer.http.HttpResponse {
+     *   HTTP/1.1 300  Multiple Choices
+     *   [Date                ] Sat, 01 Feb 2003 01:27:26 GMT
+     *   [Server              ] Apache/1.3.27 (Unix)
+     *   [Connection          ] close
+     *   [Transfer-Encoding   ] chunked
+     *   [Content-Type        ] text/html; charset=iso-8859-1
+     * }
+     * </pre>
+     *
+     * @access  public
+     * @return  toString
+     */
+    function toString() {
+      if (!$this->_readhead()) return parent::toString();
+      
+      $h= '';
+      foreach ($this->headers as $k => $v) {
+        $h.= sprintf("  [%-20s] %s\n", $k, $v);
+      }
+      return sprintf(
+        "%s {\n  HTTP/%s %3d %s\n%s}",
+        $this->getClassName(),
+        $this->version,
+        $this->statuscode,
+        $this->message,
+        $h
+      );
     }
 
     /**
