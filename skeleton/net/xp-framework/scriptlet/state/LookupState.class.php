@@ -24,8 +24,8 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
     function process(&$request, &$response) {
-      with ($query= $request->getData(), $uri= $request->getURI()); {
-        $target= 'search?'.$query;
+      with ($query= $request->getParam('q', $request->getData()), $uri= $request->getURI()); {
+        $target= 'search?q='.$query;
         
         // HACK until build system infrastructure provides a better method
         if (file_exists('../build/cache/class.php/'.basename($query))) {
