@@ -89,12 +89,17 @@
      *
      * @access  public
      * @param   string filename or directory
+     * @param   int depth, default 1
      * @return  &peer.http.HttpResponse response object
      */
-    function &read($name= NULL) {    
+    function &read($name= NULL, $depth= '1') {    
       try(); {
         $c= &$this->getConnection($name);
-        $response= &$c->propfind();
+        $response= &$c->propfind('',
+          array(
+            new Header('Depth', $depth)
+          )
+        );
       } if (catch('Exception', $e)) {
         return throw($e);
       }
