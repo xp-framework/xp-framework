@@ -147,15 +147,16 @@
         
           // Objekte
           $content= get_object_vars($value);
-          $ns++;
-          $type= 'ns'.$ns.':struct';
           
           // Class name
           if (method_exists($value, 'getClassName')) {
             $name= $value->getClassName();
             $namespace= 'xp';
+            $type= 'xp:struct';
           } else {
             $name= get_class($value);
+            $ns++;
+            $type= 'ns'.$ns.':struct';
             $namespace= 'ns'.$ns;
           }
           
@@ -165,13 +166,13 @@
           // Skalare Typen
           $type= $child->_typeName($value);
           $content= $child->_contentFormat($value);
-	    } else if (NULL === $value) {
+        } else if (NULL === $value) {
 
-	      // NULL
-	      $type= NULL;
-	      $content= '';
-	      $child->attribute['xsi:nil']= 'true';
-	  
+          // NULL
+          $type= NULL;
+          $content= '';
+          $child->attribute['xsi:nil']= 'true';
+
         } else {
         
           // Arrays
