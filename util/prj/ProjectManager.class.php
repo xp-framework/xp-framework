@@ -25,15 +25,13 @@
      *
      * @access  public
      */
-    function __construct() {
-      $p= &new ParamString();
-      
+    function __construct(&$p) {
       $l= &Logger::getInstance();
       $this->log= &$l->getCategory ($this->getClassName());
       $this->log->addAppender (new FileAppender ('php://stdout'));
 
       $this->prop= &new Properties (getenv ('HOME').'/.prj.ini');
-      parent::__construct(dirname(__FILE__).'/prj.glade', 'mainwindow');
+      parent::__construct($p, dirname(__FILE__).'/prj.glade', 'mainwindow');
     }
 
     /**
