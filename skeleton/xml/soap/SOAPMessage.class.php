@@ -168,7 +168,11 @@
         }
         
         /* HACK */
-        if ($context == NULL and $child->name != 'item') {
+        if (
+          $context == NULL and 
+          $child->name != 'item' and
+          substr($child->name, 0, 8) != 'c-gensym'
+        ) {
           $results[$idx]= &new SOAPNamedItem($child->name, $results[$idx]);
         }
 
