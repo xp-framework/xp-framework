@@ -224,7 +224,6 @@ sub build_list {
 
     if($dir ne $curdir) {
       $curdir = $dir;
-      $msg.= "\n";
     }
 
     $msg.= $dir."/".$file."\n";
