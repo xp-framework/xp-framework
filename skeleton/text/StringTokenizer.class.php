@@ -58,7 +58,7 @@
      * @return  bool more tokens
      */
     function hasMoreTokens() {
-      return strlen($this->_str) > 0;
+      return (!empty($this->_stack) or strlen($this->_str) > 0);
     }
     
     /**
