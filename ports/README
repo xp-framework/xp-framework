@@ -12,7 +12,7 @@ Overview
 - build.php     Builds CCA archives
 - req.php       Fetches requirements
 
-General ussage:
-­--------------
+General ussage
+­-------------
 - cd to a port
 - type "make dist"
