@@ -38,13 +38,32 @@
     }
 
     /**
-     * Set Permissions
+     * Set Permissions. Takes either a string or an integer as argument.
+     * In case a string is passed, it should have the following form:
+     *
+     * <pre>
+     *   rwxr-xr-x  # 755
+     *   rw-r--r--  # 644
+     * </pre>
      *
      * @access  public
-     * @param   int permissions
+     * @param   mixed perm
+     * @throws  lang.IllegalArgumentException
      */
-    function setPermissions($permissions) {
-      $this->permissions= $permissions;
+    function setPermissions($perm) {
+      static $m= array('r' => 4, 'w' => 2, 'x' => 1, '-' => 0);
+
+      if (is_string($perm) && 9 == strlen($perm)) {
+        $this->permissions= (
+          ($m[$perm{0}] | $m[$perm{1}] | $m[$perm{2}]) * 100 +
+          ($m[$perm{3}] | $m[$perm{4}] | $m[$perm{5}]) * 10 +
+          ($m[$perm{6}] | $m[$perm{7}] | $m[$perm{8}])
+        );
+      } elseif (is_int($perm)) {
+        $this->permissions= $perm;
+      } else {
+        return throw(new IllegalArgumentException('Expect: string(9) / int, have '.$perm));
+      }
     }
 
     /**
