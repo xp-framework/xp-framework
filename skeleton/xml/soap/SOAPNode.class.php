@@ -65,8 +65,9 @@
       if (isset($this->_tmap->import[$t])) $t= $this->_tmap->import[$t];
 
       // TODO: Andere Encodings?
-      if ($encoding == 'utf-8') $ret= utf8_decode($ret);
-
+      switch (strtolower($encoding)) {
+        case 'utf-8': $ret= utf8_decode($ret); break;
+      }
       // echo '    Setting "'.$ret.'" to '.$t."\n";
 
       // Rip HTML entities
