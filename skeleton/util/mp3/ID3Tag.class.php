@@ -1,0 +1,111 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+  uses('util.mp3.ID3Genre');
+  
+  // Versions 
+  define('ID3_VERSION_UNKNOWN',               '?');
+  define('ID3_VERSION_1',                     '1');
+  define('ID3_VERSION_1_1',                 '1.1');
+  define('ID3_VERSION_2',                     '2');
+  
+  /**
+   * This class represents an ID3 tag
+   *
+   * @purpose  ID3 Tag object
+   * @see      
+   */
+  class ID3Tag extends Object {
+    var 
+      $version  = ID3_VERSION_UNKNOWN,
+      $tag      = '',
+      $name     = '',
+      $artist   = '',
+      $album    = '',
+      $year     = 0,
+      $comment  = '',
+      $genre    = -1,
+      $track    = 0;
+    
+    /**
+     * Create a string representation
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      static $ver= array(
+        ID3_VERSION_UNKNOWN => 'ID3_VERSION_UNKNOWN',
+        ID3_VERSION_1       => 'ID3_VERSION_1',
+        ID3_VERSION_1_1     => 'ID3_VERSION_1_1',
+        ID3_VERSION_2       => 'ID3_VERSION_2'
+      );
+      
+      $c= &$this->getClass();
+      return sprintf(
+        "%s {\n".
+        "\t[version] %s\n".
+        "\t[tag    ] %s\n".
+        "\t[name   ] %s\n".
+        "\t[artist ] %s\n".
+        "\t[album  ] %s\n".
+        "\t[year   ] %s\n".
+        "\t[comment] %s\n".
+        "\t[genre  ] %d {%s}\n".
+        "}",
+        $c->getName(),
+        $ver[$this->version],
+        $this->tag,
+        $this->name,
+        $this->artist,
+        $this->album,
+        $this->year,
+        $this->comment,
+        $this->genre->id,
+        $this->genre->toString()
+      );
+    }
+    
+    /**
+     * Creates an ID3 Tag from a string
+     *
+     * @model   static
+     * @access  public
+     * @param   &string buf
+     * @param   string version one of the ID3_VERSION_* constants
+     * @return  &util.mp3.ID3Tag a tag
+     */
+    function &fromString(&$buf, $version) {
+      $tag= NULL;
+      
+      switch ($version) {
+        case ID3_VERSION_1:
+          $tag= &new ID3Tag();
+          if ("\0" == $buf{125} && "\0" != $buf{126}) {
+            $data= unpack('a3tag/a30name/a30artist/a30album/a4year/a28comment/x1/C1track/C1genre', $buf);
+            $tag->version= ID3_VERSION_1_1;
+          } else {
+            $data= unpack('a3tag/a30name/a30artist/a30album/a4year/a28comment/C1genre', $buf);
+            $tag->version= ID3_VERSION_1;
+          }
+          
+          $tag->tag= $data['tag'];
+          $tag->name= $data['name'];
+          $tag->artist= $data['artist'];
+          $tag->album= $data['album'];
+          $tag->year= $data['year'];
+          $tag->comment= $data['comment'];
+          $tag->genre= &new ID3Genre($data['genre']);
+          break;
+        
+        default:
+          return throw(new IllegalArgumentException('Version '.$version.' not supported'));
+      }
+      
+      return $tag;
+    }
+  }
+?>
