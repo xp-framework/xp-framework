@@ -66,6 +66,49 @@
           Hash key lookups are always faster than traversing and comparing.
         </text>
       </para>
+      <para>
+        <caption>Objects (relevant only for PHP4)</caption>
+        <text>
+          Rule: Always pass objects by reference in PHP4. This avoids
+          unintentional copies and therefore produces a smaller memory footprint.
+          
+          <code><![CDATA[  // Don't do this:
+  class Foo {
+    function addObject($object) {
+      $this->objects[]= $object;
+    }
+
+    function objectAt($i) {
+      return $this->objects[$i];
+    }
+  }
+  
+  $foo= new Foo();
+  $foo->addObject(new Object());
+  $o= $foo->objectAt(0);
+  
+  // Always write 
+  class Foo {
+    function addObject(&$object) {
+      $this->objects[]= &$object;
+    }
+    
+    function &objectAt($i) {
+      return $this->objects[$i];
+    }
+  }
+  
+  $foo= &new Foo();
+  $foo->addObject(new Object());
+  $o= &$foo->objectAt(0);
+]]></code>
+          This "annoyance" is solved in the Zend Engine 2.
+          <br/><br/>
+          <b>Note:</b> Do <i>not</i> include an ampersand (<b>&amp;</b>) in method calls
+          such as <code><![CDATA[  addObject(&$object); ]]></code>
+          This produces a warning and is deprecated!
+        </text>
+      </para>
     </content>
     <references>
       <ref link="../devel/index">Overview</ref>
