@@ -288,7 +288,7 @@
   //     Destroys an object
   function delete(&$object) {
     $object->__destruct();
-    unset($object);
+    $object= NULL;
   }
   // }}}
 
