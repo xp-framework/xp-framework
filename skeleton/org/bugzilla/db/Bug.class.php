@@ -49,7 +49,7 @@
      */
     function __static() { 
       with ($peer= &Bug::getPeer()); {
-        $peer->setTable('bugs.bugs');
+        $peer->setTable('bugs');
         $peer->setConnection('bugzilla');
         $peer->setIdentity('bug_id');
         $peer->setPrimary(array('bug_id'));
