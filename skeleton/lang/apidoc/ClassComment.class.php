@@ -25,7 +25,8 @@
       $extends      = NULL,
       $name         = '',
       $model        = APIDOC_CLASS_MODEL_GENERIC,
-      $extensions   = NULL;
+      $extensions   = NULL,
+      $deprecated   = NULL;
       
     /**
      * Sets this class's name
@@ -49,6 +50,16 @@
      */
     function setExtends($extends) {
       $this->extends= $extends;
+    }
+      
+    /**
+     * Sets if this class is deprecated and use is discouraged
+     *
+     * @access  public
+     * @param   boolean true if class is deprecated
+     */
+    function setDeprecation($deprecated= true) {
+      $this->deprecated= 'deprecated';
     }
       
     /**
@@ -141,6 +152,10 @@
         
         case 'ext':
           $this->setExtension($line);
+          break;
+        
+        case 'deprecated':
+          $this->setDeprecation();
           break;
       }
       
