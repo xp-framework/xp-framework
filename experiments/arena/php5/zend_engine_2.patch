@@ -1,0 +1,451 @@
+Index: Zend/zend.h
+===================================================================
+RCS file: /repository/ZendEngine2/zend.h,v
+retrieving revision 1.255
+diff -u -r1.255 zend.h
+--- Zend/zend.h	7 Jun 2004 18:57:34 -0000	1.255
++++ Zend/zend.h	19 Jun 2004 13:58:57 -0000
+@@ -254,6 +254,7 @@
+  */
+ typedef struct _zval_struct zval;
+ typedef struct _zend_class_entry zend_class_entry;
++typedef struct _zend_package_entry zend_package_entry;
+ 
+ typedef struct _zend_object {
+ 	zend_class_entry *ce;
+@@ -343,6 +344,11 @@
+ 	struct _zend_module_entry *module;
+ };
+ 
++struct _zend_package_entry {
++	char *name;
++	zend_uint name_length;
++};
++
+ #include "zend_stream.h"
+ typedef struct _zend_utility_functions {
+ 	void (*error_function)(int type, const char *error_filename, const uint error_lineno, const char *format, va_list args) ZEND_ATTRIBUTE_PTR_FORMAT(printf, 4, 0);
+Index: Zend/zend_compile.c
+===================================================================
+RCS file: /repository/ZendEngine2/zend_compile.c,v
+retrieving revision 1.567
+diff -u -r1.567 zend_compile.c
+--- Zend/zend_compile.c	31 May 2004 21:38:01 -0000	1.567
++++ Zend/zend_compile.c	19 Jun 2004 13:58:58 -0000
+@@ -126,6 +126,7 @@
+ 	zend_stack_init(&CG(object_stack));
+ 	zend_stack_init(&CG(declare_stack));
+ 	CG(active_class_entry) = NULL;
++	CG(active_package_entry) = NULL;
+ 	zend_llist_init(&CG(list_llist), sizeof(list_llist_element), NULL, 0);
+ 	zend_llist_init(&CG(dimension_llist), sizeof(int), NULL, 0);
+ 	zend_stack_init(&CG(list_stack));
+@@ -1136,6 +1137,7 @@
+ 	cur_arg_info->pass_by_reference = pass_by_reference;
+ 
+ 	if (class_type->op_type != IS_UNUSED) {
++		MANGLE_CLASS_NAME(class_type);
+ 		cur_arg_info->class_name = class_type->u.constant.value.str.val;
+ 		cur_arg_info->class_name_len = class_type->u.constant.value.str.len;
+ 		cur_arg_info->allow_null = 0;
+@@ -1268,10 +1270,12 @@
+ 				zval_dtor(&class_name->u.constant);
+ 				break;
+ 			default:
++				MANGLE_CLASS_NAME(class_name);
+ 				opline->op2 = *class_name;
+ 				break;
+ 		}
+ 	} else {
++		MANGLE_CLASS_NAME(class_name);
+ 		opline->op2 = *class_name;
+ 	}
+ 	opline->result.u.var = get_temporary_variable(CG(active_op_array));
+@@ -2471,13 +2475,16 @@
+ 	zend_op *opline;
+ 	int doing_inheritance = 0;
+ 	zend_class_entry *new_class_entry = emalloc(sizeof(zend_class_entry));
+-	char *lcname = zend_str_tolower_dup(class_name->u.constant.value.str.val, class_name->u.constant.value.str.len);
++	char *lcname;
+ 
+ 	if (CG(active_class_entry)) {
+ 		zend_error(E_COMPILE_ERROR, "Class declarations may not be nested");
+ 		return;
+ 	}
+ 
++	MANGLE_CLASS_NAME(class_name);
++	lcname = zend_str_tolower_dup(class_name->u.constant.value.str.val, class_name->u.constant.value.str.len);
++ 
+ 	if (!(strcmp(lcname, "self") && strcmp(lcname, "parent"))) {
+ 		efree(lcname);
+ 		zend_error(E_COMPILE_ERROR, "Cannot use '%s' as class name as it is reserved", class_name->u.constant.value.str.val);
+@@ -2580,6 +2587,27 @@
+ 	CG(active_class_entry) = NULL;
+ }
+ 
++void zend_do_begin_package_declaration(znode *package_name TSRMLS_DC)
++{
++   if (strcmp(package_name->u.constant.value.str.val, "main") == 0) {
++	   zend_error(E_COMPILE_ERROR, "Cannot use 'main' as package name as it is reserved");
++   } else {
++	   zend_package_entry *new_package_entry = emalloc(sizeof(zend_package_entry));
++
++	   new_package_entry->name = package_name->u.constant.value.str.val;
++	   new_package_entry->name_length = package_name->u.constant.value.str.len;
++	   zend_str_tolower(new_package_entry->name, new_package_entry->name_length);
++	   CG(active_package_entry) = new_package_entry;
++   }
++}
++
++void zend_do_end_package_declaration(znode *package_name TSRMLS_DC)
++{
++   FREE_PNODE(package_name);
++   efree(CG(active_package_entry));
++   CG(active_package_entry) = NULL;
++}
++ 
+ 
+ void zend_do_implements_interface(znode *interface_znode TSRMLS_DC)
+ {
+Index: Zend/zend_compile.h
+===================================================================
+RCS file: /repository/ZendEngine2/zend_compile.h,v
+retrieving revision 1.284
+diff -u -r1.284 zend_compile.h
+--- Zend/zend_compile.h	6 Jun 2004 08:37:12 -0000	1.284
++++ Zend/zend_compile.h	19 Jun 2004 13:58:59 -0000
+@@ -46,6 +46,24 @@
+         CG(doc_comment) = NULL;  \
+         CG(doc_comment_len) = 0; \
+     }
++#define MANGLE_MAIN_LEN sizeof("main~") - 1
++#define MANGLE_CLASS_NAME(class_name) \
++   if (strncmp(class_name->u.constant.value.str.val, "main~", MANGLE_MAIN_LEN) == 0) { \
++	   class_name->u.constant.value.str.len -= MANGLE_MAIN_LEN; \
++	   strncpy(class_name->u.constant.value.str.val, class_name->u.constant.value.str.val + MANGLE_MAIN_LEN, class_name->u.constant.value.str.len); \
++	   class_name->u.constant.value.str.val[class_name->u.constant.value.str.len]= 0; \
++   } else { \
++	   if (CG(active_package_entry) && !strchr(class_name->u.constant.value.str.val, '~')) { \
++		   int len= CG(active_package_entry)->name_length + 1 + class_name->u.constant.value.str.len; \
++		   char *tmp= estrndup(class_name->u.constant.value.str.val, class_name->u.constant.value.str.len); \
++		   class_name->u.constant.value.str.val= (char*) erealloc(class_name->u.constant.value.str.val, len + 1); \
++		   strncpy(class_name->u.constant.value.str.val, CG(active_package_entry)->name, CG(active_package_entry)->name_length + 1); \
++		   strncat(class_name->u.constant.value.str.val, "~", sizeof("~")); \
++		   strncat(class_name->u.constant.value.str.val, tmp, class_name->u.constant.value.str.len); \
++		   class_name->u.constant.value.str.len= len; \
++		   efree(tmp); \
++	   } \
++   }
+ 
+ typedef struct _zend_op_array zend_op_array;
+ typedef struct _zend_op zend_op;
+@@ -413,6 +431,8 @@
+ 
+ void zend_do_begin_class_declaration(znode *class_token, znode *class_name, znode *parent_class_name TSRMLS_DC);
+ void zend_do_end_class_declaration(znode *class_token, znode *parent_token TSRMLS_DC);
++void zend_do_begin_package_declaration(znode *package_name TSRMLS_DC);
++void zend_do_end_package_declaration(znode *package_name TSRMLS_DC);
+ void zend_do_declare_property(znode *var_name, znode *value, zend_uint access_type TSRMLS_DC);
+ void zend_do_declare_implicit_property(TSRMLS_D);
+ void zend_do_declare_class_constant(znode *var_name, znode *value TSRMLS_DC);
+Index: Zend/zend_globals.h
+===================================================================
+RCS file: /repository/ZendEngine2/zend_globals.h,v
+retrieving revision 1.135
+diff -u -r1.135 zend_globals.h
+--- Zend/zend_globals.h	30 Mar 2004 18:36:53 -0000	1.135
++++ Zend/zend_globals.h	19 Jun 2004 13:58:59 -0000
+@@ -75,6 +75,7 @@
+ 	zend_stack declare_stack;
+ 
+ 	zend_class_entry *active_class_entry;
++	zend_package_entry *active_package_entry;
+ 
+ 	/* variables for list() compilation */
+ 	zend_llist list_llist;
+Index: Zend/zend_language_parser.y
+===================================================================
+RCS file: /repository/ZendEngine2/zend_language_parser.y,v
+retrieving revision 1.144
+diff -u -r1.144 zend_language_parser.y
+--- Zend/zend_language_parser.y	20 Apr 2004 14:14:55 -0000	1.144
++++ Zend/zend_language_parser.y	19 Jun 2004 13:58:59 -0000
+@@ -119,9 +119,12 @@
+ %token T_ISSET
+ %token T_EMPTY
+ %token T_CLASS
++%token T_PACKAGE
++%token T_CLASSNAME
+ %token T_INTERFACE
+ %token T_EXTENDS
+ %token T_IMPLEMENTS
++%token T_OPERATOR
+ %token T_OBJECT_OPERATOR
+ %token T_DOUBLE_ARROW
+ %token T_LIST
+@@ -159,6 +162,7 @@
+ 		statement
+ 	|	function_declaration_statement	{ zend_do_early_binding(TSRMLS_C); }
+ 	|	class_declaration_statement		{ zend_do_early_binding(TSRMLS_C); }
++	|	package_declaration_statement
+ ;
+ 
+ 
+@@ -172,6 +176,7 @@
+ 		statement
+ 	|	function_declaration_statement
+ 	|	class_declaration_statement
++	|	package_declaration_statement
+ ;
+ 
+ 
+@@ -262,6 +267,14 @@
+ 		unticked_class_declaration_statement	{ zend_do_ticks(TSRMLS_C); }
+ ;
+ 
++class_declaration_statements:
++		class_declaration_statement class_declaration_statements
++	|   /* empty */
++;
++
++package_declaration_statement:
++		unticked_package_declaration_statement  { zend_do_ticks(TSRMLS_C); }
++;
+ 
+ is_reference:
+ 		/* empty */	{ $$.op_type = ZEND_RETURN_VAL; }
+@@ -289,6 +302,12 @@
+ 			'}' { zend_do_end_class_declaration(&$1, &$2 TSRMLS_CC); }
+ ;
+ 
++unticked_package_declaration_statement:
++	   T_PACKAGE T_STRING { zend_do_begin_package_declaration(&$2 TSRMLS_CC); }
++		   '{'
++		   class_declaration_statements
++		   '}' { zend_do_end_package_declaration(&$2 TSRMLS_CC); }
++;
+ 
+ class_entry_type:
+ 		T_CLASS			{  $$.u.constant.value.lval = 0; }
+@@ -428,6 +447,7 @@
+ optional_class_type:
+ 		/* empty */		{ $$.op_type = IS_UNUSED; }
+ 	|	T_STRING		{ $$ = $1; }
++	|	T_CLASSNAME		{ $$ = $1; }
+ ;
+ 
+ 
+@@ -479,8 +499,19 @@
+ 	|	class_constant_declaration ';'
+ 	|	method_modifiers T_FUNCTION { $2.u.opline_num = CG(zend_lineno); } is_reference T_STRING { zend_do_begin_function_declaration(&$2, &$5, 1, $4.op_type, &$1 TSRMLS_CC); } '(' 
+ 			parameter_list ')' method_body { zend_do_abstract_method(&$5, &$1, &$10 TSRMLS_CC); zend_do_end_function_declaration(&$2 TSRMLS_CC); }
++	|	method_modifiers T_OPERATOR { $2.u.opline_num = CG(zend_lineno); } is_reference operator_token { zend_do_begin_function_declaration(&$2, &$5, 1, $4.op_type, &$1 TSRMLS_CC); } '(' 
++			parameter_list ')' method_body { zend_do_abstract_method(&$5, &$1, &$10 TSRMLS_CC); zend_do_end_function_declaration(&$2 TSRMLS_CC); }
+ ;
+ 
++operator_token:
++		'+'								{ $$.u.constant.value.str.val = estrndup("+", sizeof("+")- 1); $$.u.constant.value.str.len = sizeof("+")- 1; }
++	|	'-'								{ $$.u.constant.value.str.val = estrndup("-", sizeof("-")- 1); $$.u.constant.value.str.len = sizeof("-")- 1; }
++	|	'*'								{ $$.u.constant.value.str.val = estrndup("*", sizeof("*")- 1); $$.u.constant.value.str.len = sizeof("*")- 1; }
++	|	'/'								{ $$.u.constant.value.str.val = estrndup("/", sizeof("/")- 1); $$.u.constant.value.str.len = sizeof("/")- 1; }
++	|	'%'								{ $$.u.constant.value.str.val = estrndup("%", sizeof("%")- 1); $$.u.constant.value.str.len = sizeof("%")- 1; }
++	|	T_INC							{ $$.u.constant.value.str.val = estrndup("++", sizeof("++")- 1); $$.u.constant.value.str.len = sizeof("++")- 1; }
++	|	T_DEC							{ $$.u.constant.value.str.val = estrndup("--", sizeof("--")- 1); $$.u.constant.value.str.len = sizeof("--")- 1; }
++;
+ 
+ method_body:
+ 		';' /* abstract method */		{ $$.u.constant.value.lval = ZEND_ACC_ABSTRACT; }
+@@ -627,6 +658,7 @@
+ 
+ fully_qualified_class_name:
+ 		T_STRING { zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
++	|	T_CLASSNAME { zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
+ ;
+ 
+ class_name_reference:
+Index: Zend/zend_language_scanner.l
+===================================================================
+RCS file: /repository/ZendEngine2/zend_language_scanner.l,v
+retrieving revision 1.111
+diff -u -r1.111 zend_language_scanner.l
+--- Zend/zend_language_scanner.l	14 Jun 2004 19:09:42 -0000	1.111
++++ Zend/zend_language_scanner.l	19 Jun 2004 13:59:01 -0000
+@@ -889,6 +889,10 @@
+ 	return T_CLASS;
+ }
+ 
++<ST_IN_SCRIPTING>"package" {
++	return T_PACKAGE;
++}
++
+ <ST_IN_SCRIPTING>"interface" {
+ 	return T_INTERFACE;
+ }
+@@ -901,6 +905,10 @@
+ 	return T_IMPLEMENTS;
+ }
+ 
++<ST_IN_SCRIPTING>"operator" {
++	return T_OPERATOR;
++}
++
+ <ST_IN_SCRIPTING,ST_DOUBLE_QUOTES,ST_BACKQUOTE,ST_HEREDOC>"->" {
+ 	yy_push_state(ST_LOOKING_FOR_PROPERTY TSRMLS_CC);
+ 	return T_OBJECT_OPERATOR;
+@@ -1394,6 +1402,12 @@
+ 	return T_STRING;
+ }
+ 
++<ST_IN_SCRIPTING>{LABEL}"~"{LABEL} {
++	zend_copy_value(zendlval, yytext, yyleng);
++	zendlval->type = IS_STRING;
++	return T_CLASSNAME;
++}
++
+ <ST_DOUBLE_QUOTES,ST_BACKQUOTE,ST_HEREDOC>{LABEL} {
+ 	zend_copy_value(zendlval, yytext, yyleng);
+ 	zendlval->type = IS_STRING;
+Index: Zend/zend_operators.c
+===================================================================
+RCS file: /repository/ZendEngine2/zend_operators.c,v
+retrieving revision 1.193
+diff -u -r1.193 zend_operators.c
+--- Zend/zend_operators.c	10 May 2004 14:56:21 -0000	1.193
++++ Zend/zend_operators.c	19 Jun 2004 13:59:02 -0000
+@@ -101,6 +101,59 @@
+ 	return result;
+ }
+ 
++static inline int call_operator_overloading(char *operator, int operator_len, zval *result, zval *op1, zval *op2 TSRMLS_DC)
++{
++	zend_function *mptr;
++	zval *rval, **params[2];
++	zend_fcall_info fci;
++	zend_fcall_info_cache fcc;
++
++	if (zend_hash_find(&Z_OBJCE_P(op1)->function_table, operator, operator_len, (void **) &mptr) == FAILURE) {
++		zend_error(E_ERROR, "Class %s does not support overloading of the %s operator", Z_OBJCE_P(op1)->name, operator);
++		return FAILURE;
++	}
++
++	/* Call operator method statically with operands and take its return value
++	 * as return value for the operation.
++	 */
++	params[0] = &op1;
++	params[1] = &op2;
++
++	fci.size = sizeof(fci);
++	fci.function_table = NULL;
++	fci.function_name = NULL;
++	fci.symbol_table = NULL;
++	fci.object_pp = NULL;
++	fci.retval_ptr_ptr = &rval;
++	fci.param_count = op2 ? 2 : 1;
++	fci.params = params;
++	fci.no_separation = 1;
++
++	fcc.initialized = 1;
++	fcc.function_handler = mptr;
++	fcc.calling_scope = NULL;
++	fcc.object_pp = NULL;
++
++	if (zend_call_function(&fci, &fcc TSRMLS_CC) == FAILURE) {
++		zend_error(E_ERROR, "Could not call operator method %s::%s", Z_OBJCE_P(op1)->name, operator);
++		return FAILURE;
++	}
++
++	if (rval) {
++		/* Special case, e.g. $a+= $b or $a++; */
++		if (result == op1) {
++			*op1 = *rval;
++	    	zval_copy_ctor(op1);
++			zval_ptr_dtor(&result);
++		} else {
++			*result = *rval;
++	    	zval_copy_ctor(result);
++		}
++		zval_ptr_dtor(&rval);
++	}
++	return SUCCESS;
++}
++
+ 
+ ZEND_API void convert_scalar_to_number(zval *op TSRMLS_DC)
+ {
+@@ -773,6 +826,9 @@
+ 		result->value.dval = op1->value.dval + op2->value.dval;
+ 		return SUCCESS;
+ 	}
++	if (op1->type == IS_OBJECT) {
++		return call_operator_overloading("+", sizeof("+"), result, op1, op2 TSRMLS_CC);
++	}
+ 	zend_error(E_ERROR, "Unsupported operand types");
+ 	return FAILURE;				/* unknown datatype */
+ }
+@@ -813,6 +869,9 @@
+ 		result->value.dval = op1->value.dval - op2->value.dval;
+ 		return SUCCESS;
+ 	}
++	if (op1->type == IS_OBJECT) {
++		return call_operator_overloading("-", sizeof("-"), result, op1, op2 TSRMLS_CC);
++	}
+ 	zend_error(E_ERROR, "Unsupported operand types");
+ 	return FAILURE;				/* unknown datatype */
+ }
+@@ -845,6 +904,9 @@
+ 		result->value.dval = op1->value.dval * op2->value.dval;
+ 		return SUCCESS;
+ 	}
++	if (op1->type == IS_OBJECT) {
++		return call_operator_overloading("*", sizeof("*"), result, op1, op2 TSRMLS_CC);
++	}
+ 	zend_error(E_ERROR, "Unsupported operand types");
+ 	return FAILURE;				/* unknown datatype */
+ }
+@@ -884,6 +946,9 @@
+ 		result->value.dval = op1->value.dval / op2->value.dval;
+ 		return SUCCESS;
+ 	}
++	if (op1->type == IS_OBJECT) {
++		return call_operator_overloading("/", sizeof("/"), result, op1, op2 TSRMLS_CC);
++	}
+ 	zend_error(E_ERROR, "Unsupported operand types");
+ 	return FAILURE;				/* unknown datatype */
+ }
+@@ -892,6 +957,10 @@
+ ZEND_API int mod_function(zval *result, zval *op1, zval *op2 TSRMLS_DC)
+ {
+ 	zval op1_copy, op2_copy;
++
++	if (op1->type == IS_OBJECT) {
++		return call_operator_overloading("%", sizeof("%"), result, op1, op2 TSRMLS_CC);
++	}
+ 	
+ 	zendi_convert_to_long(op1, op1_copy, result);
+ 	zendi_convert_to_long(op2, op2_copy, result);
+@@ -1683,6 +1752,12 @@
+ 				}
+ 			}
+ 			break;
++		case IS_OBJECT: {
++				TSRMLS_FETCH();
++			
++				return call_operator_overloading("++", sizeof("++"), op1, op1, NULL TSRMLS_CC);
++			}
++			break;
+ 		default:
+ 			return FAILURE;
+ 	}
+@@ -1732,6 +1807,12 @@
+ 					break;
+ 			}
+ 			break;
++		case IS_OBJECT: {
++				TSRMLS_FETCH();
++			
++				return call_operator_overloading("--", sizeof("--"), op1, op1, NULL TSRMLS_CC);
++			}
++			break;
+ 		default:
+ 			return FAILURE;
+ 	}
