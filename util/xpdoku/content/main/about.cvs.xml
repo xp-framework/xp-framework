@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document title="XP::About::Introduction">
+  <main>
+    <content>
+      <title>CVS-Guidelines</title>
+      <editor>$Id$</editor>
+      
+      <para>
+        <caption>Was ist CVS?</caption>
+        <text>
+          CVS steht für "Concurrent Versions System". Viele Open-Source-Projekte
+          werden mit CVS gepflegt.
+        </text>
+      </para>
+      <para>
+        <caption>Wie schreibe ich Log-Messages?</caption>
+        <text>
+          CVS-Logmessages machen das ganze erst wirklich nachvollziehbar. Logmessages
+          wie "Änderungen" oder "Korrekturen" sind dringlichst zu vermeiden, ebenso 
+          wie Mega-Commits von vielen Dateien auf einmal. Stattdessen soll fein 
+          säuberlich dokumentiert werden, wer was wann warum geändert hat. Das erfordert
+          Disziplin - ist aber für alle Beteiligten im Nachhinein wesentlich erfreulich
+          als oben beschriebene Todsünden.
+
+          Folgendes Format hat sich als lesbar erwiesen:
+          
+          <pre><![CDATA[|----------------------------
+|revision 1.9
+|date: 2002/02/26 18:09:48;  author: friebe;  state: Exp;  lines: +22 -25
+|- Makefile unified
+|- :ext:... added
+|----------------------------]]></pre>
+
+          Für jede Änderung wird also ein - am Anfang der Zeile geschrieben. Weitere 
+          Beispiele:
+          
+          <pre><![CDATA[|----------------------------
+|revision 1.8
+|date: 2002/02/21 14:05:02;  author: friebe;  state: Exp;  lines: +2 -2
+|- Add an optional argument "filename"
+|----------------------------]]></pre>
+
+          <pre><![CDATA[|----------------------------
+|revision 1.3
+|date: 2002/02/21 13:28:46;  author: friebe;  state: Exp;  lines: +10 -9
+|- Auf CVS-install umgestellt
+|  Wir haben auf der Kiste also ein CVS checkout und können zur Not auch
+|  direkt dort arbeiten und committen, falls nötig.
+|----------------------------]]></pre>
+
+          
+        </text>
+      </para>              
+      <para>
+        <caption>Die Sache mit den STABLE-Tags</caption>
+        <text>
+          Das setzen eines STABLE-Tags definiert, dass dieses Stück prinzipiell auch
+          im Real-Betrieb funktioniert. Das ist das Commitment des jeweiligen Autors,
+          dass er seine Version hinreichend getestet hat.
+          Mit cvs status -v werden die Tags einer Datei angezeigt:
+
+          <pre><![CDATA[[...]
+|   Existing Tags:
+|        STABLE                          (revision: 1.12)
+|        Initial                         (revision: 1.1.1.1)
+|        Start                           (branch: 1.1.1)]]></pre>
+        </text>
+      </para>              
+    </content>
+    <references>
+      <ref link="about">Introduction</ref>
+      <ref type="ext" link="http://www.lufmech.rwth-aachen.de/sfb401/software/liebmann/sld001.htm">Was ist CVS?</ref>
+      <ref type="ext" link="http://www.suse.de/de/support/howto/cvs/cvs.html">SuSE: CVS for Dummies</ref>
+      <ref type="ext" link="http://www.fido.de/kama/cvsmtp/de/cvs-de_2.html">What is CVS?</ref>
+      <ref type="google" link="Was ist CVS?"/>
+    </references>
+  </main>
+</document>
