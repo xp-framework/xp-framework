@@ -94,9 +94,11 @@
      *
      * @access  private
      * @param   &xml.Node child
+     * @param   string context default NULL
+     * @param   array mapping
      * @return  &mixed result
      */
-    function &unmarshall(&$child, $context= NULL) {
+    function &unmarshall(&$child, $context= NULL, $mapping) {
       if (
         isset($child->attribute['xsi:null']) or       // Java
         isset($child->attribute['xsi:nil'])           // SOAP::Lite
@@ -115,7 +117,7 @@
           // Create a copy and pass name to it
           $c= $this->root->children[0]->children[$idx];
           $c->name= $child->name;
-          return $this->unmarshall($c, $context);
+          return $this->unmarshall($c, $context, $mapping);
           break;
         }
       }
@@ -132,7 +134,7 @@
             $n= 'Object';
           }
           $result= &new $n();
-          foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key => $val) {
+          foreach ($this->_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
             $result->$key= $val;
           }
         
@@ -158,7 +160,7 @@
       switch (strtolower($regs[2])) {
         case 'array':
         case 'vector':
-          $result= $this->_recurseData($child, FALSE, 'ARRAY');
+          $result= $this->_recurseData($child, FALSE, 'ARRAY', $mapping);
           break;
 
         case 'map':
@@ -177,7 +179,7 @@
             $key= $item->children[0]->getContent($this->getEncoding());
             $result[$key]= (empty($item->children[1]->children) 
               ? $item->children[1]->getContent($this->getEncoding())
-              : $this->unmarshall($item->children[1], 'MAP')
+              : $this->unmarshall($item->children[1], 'MAP', $mapping)
             );
           }
           break;
@@ -186,12 +188,12 @@
         case 'struct':      
         case 'ur-type':
           if ('xsd' == $regs[1]) {
-            $result= $this->_recurseData($child, TRUE, 'HASHMAP');
+            $result= $this->_recurseData($child, TRUE, 'HASHMAP', $mapping);
             break;
           }
 
           $result= &new stdClass();
-          foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key => $val) {
+          foreach ($this->_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
             $result->$key= $val;
           }
           break;
@@ -199,12 +201,19 @@
         default:
           if (!empty($child->children)) {
             if ('xsd' == $regs[1]) {
-              $result= $this->_recurseData($child, TRUE, 'STRUCT');
+              $result= $this->_recurseData($child, TRUE, 'STRUCT', $mapping);
               break;
             }
 
-            $result= &new stdClass();
-            foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key => $val) {
+            // Check for mapping
+            $qname= strtolower($child->attribute['xmlns:'.$regs[1]].'/'.$regs[2]);
+            fwrite(STDERR, $qname."\n".var_export($mapping, 1)."\n");
+            if (isset($mapping[$qname])) {
+              $result= &$mapping[$qname]->newInstance();
+            } else {
+              $result= &new stdClass();
+            }
+            foreach ($this->_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
               $result->$key= $val;
             }
             break;
@@ -233,16 +242,18 @@
      * @param   &xml.Node node
      * @param   bool names default FALSE
      * @param   string context default NULL
+     * @param   array mapping
      * @return  &mixed data
      */    
-    function &_recurseData(&$node, $names= FALSE, $context= NULL) {
+    function &_recurseData(&$node, $names= FALSE, $context= NULL, $mapping) {
       if (empty($node->children)) return array();
       
       $results= array();
       for ($i= 0, $s= sizeof($node->children); $i < $s; $i++) {
         $results[$names ? $node->children[$i]->name : $i]= $this->unmarshall(
           $node->children[$i], 
-          $context
+          $context,
+          $mapping
         );
       }
       return $results;
@@ -308,7 +319,7 @@
     function &getFault() {
       if (!strstr($this->root->children[0]->children[0]->name, ':Fault')) return NULL;
       
-      list($return)= $this->_recurseData($this->root->children[0], FALSE, 'OBJECT');
+      list($return)= $this->_recurseData($this->root->children[0], FALSE, 'OBJECT', array());
       return new SOAPFault(array(
         'faultcode'      => $return['faultcode'],
         'faultstring'    => $return['faultstring'],
@@ -322,15 +333,20 @@
      *
      * @access  public
      * @param   string context default 'ENUM'
+     * @param   array mapping default array()
      * @return  &mixed data
      */
-    function &getData($context= 'ENUM') {
+    function &getData($context= 'ENUM', $mapping= array()) {
       foreach ($this->root->attribute as $key => $val) { // Namespace suchen
         if ($val == $this->action) $this->namespace= substr($key, strlen('xmlns:'));
       }
 
-      $return= $this->_recurseData($this->root->children[0]->children[0], FALSE, $context);
-      return $return;
+      return $this->_recurseData(
+        $this->root->children[0]->children[0], 
+        FALSE, 
+        $context,
+        $mapping
+      );
     }
   }
 ?>
