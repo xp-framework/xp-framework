@@ -153,6 +153,56 @@ SYBASE_API int sybase_is_connected(sybase_link *link)
 }
 
 /**
+ * Send a command
+ * 
+ * @param   sybase_link *link
+ * @param   sybase_result **result
+ * @param   char *query
+ * @return  int
+ */
+SYBASE_API int sybase_query(sybase_link *link, sybase_result **result, char *query)
+{
+    *result= (sybase_result*) smalloc(sizeof(sybase_result));
+    if (ct_cmd_alloc(link->connection, &(*result)->cmd) != CS_SUCCEED) {
+        return SA_FAILURE | SA_EALLOC;
+    }
+    if (ct_command((*result)->cmd, CS_LANG_CMD, query, CS_NULLTERM, CS_UNUSED) != CS_SUCCEED) {
+        return SA_FAILURE;
+    }
+    if (ct_send((*result)->cmd) != CS_SUCCEED) {
+        return SA_FAILURE;
+    }
+    return SA_SUCCESS;
+}
+
+/**
+ * Cancel a command
+ * 
+ * @param   sybase_result *result
+ * @param   int mode CS_CANCEL_ALL, CS_CANCEL_ATTN or CS_CANCEL_CURRENT
+ * @return  int
+ */
+SYBASE_API int sybase_cancel(sybase_result *result, int mode)
+{
+    if (ct_cancel(NULL, result->cmd, mode) != CS_SUCCEED) {
+        return SA_FAILURE;
+    }
+    return SA_SUCCESS;
+}
+
+/**
+ * Read a result
+ * 
+ * @param   sybase_result **result
+ * @return  int
+ */
+SYBASE_API int sybase_results(sybase_result **result)
+{
+    (*result)->code= ct_results((*result)->cmd, &(*result)->type);
+    return ((*result)->code == CS_SUCCEED) ? SA_SUCCESS : SA_FAILURE;
+}
+
+/**
  * Close the connection to the database
  * 
  * @param   sybase_link *link
@@ -192,4 +242,66 @@ SYBASE_API int sybase_free(sybase_link *link)
     }
     sfree(link);
     return SA_SUCCESS;
+}
+
+/**
+ * Return the name of a return type
+ *
+ * @param   CS_INT type
+ * @return  char* name or (UNKNOWN) if the type is unknown
+ */
+SYBASE_API char *sybase_nameoftype(CS_INT type)
+{
+    switch ((int)type) {
+        case CS_CMD_SUCCEED: 
+            return "CS_CMD_SUCCEED";
+        case CS_CMD_DONE: 
+            return "CS_CMD_DONE";
+        case CS_CMD_FAIL: 
+            return "CS_CMD_FAIL";
+        case CS_COMPUTE_RESULT: 
+            return "CS_COMPUTE_RESULT";
+        case CS_CURSOR_RESULT: 
+            return "CS_CURSOR_RESULT";
+        case CS_PARAM_RESULT: 
+            return "CS_PARAM_RESULT";
+        case CS_ROW_RESULT : 
+            return "CS_ROW_RESULT";
+        case CS_STATUS_RESULT : 
+            return "CS_STATUS_RESULT";
+        case CS_COMPUTEFMT_RESULT: 
+            return "CS_COMPUTEFMT_RESULT";
+        case CS_ROWFMT_RESULT: 
+            return "CS_ROWFMT_RESULT";
+        case CS_MSG_RESULT: 
+            return "CS_MSG_RESULT";
+        case CS_DESCRIBE_RESULT: 
+            return "CS_DESCRIBE_RESULT";
+        default:
+            return "(UNKNOWN)";
+    }
+    /* This point will never be reached */
+}
+
+/**
+ * Return the name of a return type
+ *
+ * @param   CS_INT type
+ * @return  char* name or (UNKNOWN) if the type is unknown
+ */
+SYBASE_API char *sybase_nameofcode(CS_INT code)
+{
+    switch ((int)code) {
+        case CS_SUCCEED: 
+            return "CS_SUCCEED";
+        case CS_FAIL: 
+            return "CS_FAIL";
+        case CS_END_RESULTS: 
+            return "CS_END_RESULTS";
+        case CS_CANCELED: 
+            return "CS_CANCELED";
+        default:
+            return "(UNKNOWN)";
+    }
+    /* This point will never be reached */
 }
