@@ -109,7 +109,7 @@
     <table border="0" class="chapter">
       <xsl:copy-of select="func:chapter-images(
         /formresult/album/@name, 
-        /formresult/chapter/@id,
+        /formresult/chapter/@id - 1,
         /formresult/chapter/images
       )"/>
     </table>
