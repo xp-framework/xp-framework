@@ -92,7 +92,7 @@
         // i686/1/OPT/Fri Mar 17 15:45:30 CET 2000)
         $q= &$this->conn->query('
           select 
-            o.name as table,
+            o.name as "table",
             c.name, 
             t.name as type, 
             c.status,
