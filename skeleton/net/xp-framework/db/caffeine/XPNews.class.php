@@ -34,18 +34,31 @@
      * @access  public
      */
     function __static() {
-      DataSet::registry('xpnews.table', 'CAFFEINE..news');
-      DataSet::registry('xpnews.connection', 'caffeine');
-      DataSet::registry('xpnews.types', array(
-        'news_id'      => '%d',
-        'caption'      => '%s',
-        'link'         => '%s',
-        'body'         => '%s',
-        'created_at'   => '%s',
-        'lastchange'   => '%s',
-        'changedby'    => '%s',
-        'bz_id'        => '%d',
-      ));
+      with ($peer= &XPNews::getPeer()); {
+        $peer->setTable('CAFFEINE..news');
+        $peer->setConnection('caffeine');
+        $peer->setIdentity('news_id');
+        $peer->setTypes(array(
+          'news_id'      => '%d',
+          'caption'      => '%s',
+          'link'         => '%s',
+          'body'         => '%s',
+          'created_at'   => '%s',
+          'lastchange'   => '%s',
+          'changedby'    => '%s',
+          'bz_id'        => '%d',
+        ));
+      }
+    }
+    
+    /**
+     * Retrieve associated peer
+     *
+     * @access  public
+     * @return  &rdbms.Peer
+     */
+    function &getPeer() {
+      return Peer::forName(__CLASS__);
     }
 
     /**
@@ -58,9 +71,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByNews_id($news_id) {
-      return array_shift(
-        XPNews::doSelect(new Criteria(array('news_id', $news_id, EQUAL)), __CLASS__)
-      );
+      $peer= &XPNews::getPeer();
+      return array_shift($peer->doSelect(new Criteria(array('news_id', $news_id, EQUAL))));
     }
 
     /**
@@ -69,11 +81,12 @@
      * @model   static
      * @access  public
      * @param   int bz_id
-     * @return  &net.xp-framework.db.caffeine.XPNews[] objects
+     * @return  net.xp-framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByBz_id($bz_id) {
-      return XPNews::doSelect(new Criteria(array('bz_id', $news_id, EQUAL)), __CLASS__);
+    function getByBz_id($bz_id) {
+      $peer= &XPNews::getPeer();
+      return $peer->doSelect(new Criteria(array('bz_id', $news_id, EQUAL)));
     }
 
     /**
@@ -83,16 +96,17 @@
      * @model   static
      * @access  public
      * @param   int max default 0 maximum number of rows to get)
-     * @return  &net.xp-framework.db.caffeine.XPNews[] objects
+     * @return  net.xp-framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByDateOrdered($max= 0) {
+    function getByDateOrdered($max= 0) {
+      $peer= &XPNews::getPeer();
       with ($c= &new Criteria()); {
         $c->add('bz_id', 500, EQUAL);
         $c->addOrderBy('created_at', DESCENDING);
       }
       
-      return XPNews::doSelect($c, __CLASS__, $max);
+      return $peer->doSelect($c, $max);
     }
 
     /**
@@ -294,7 +308,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     function insert() {
-      return $this->doInsert('news_id');
+      return $this->doInsert();
     }
   }
 ?>
