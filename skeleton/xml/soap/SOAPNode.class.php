@@ -77,7 +77,7 @@
     
     function _recurseArray(&$elem, $arr) {
       static $ns;
-      
+
       $nodeType= get_class($this);
       if (!is_array($arr)) return;
       foreach ($arr as $field=> $value) {
@@ -89,12 +89,10 @@
           'name'        => (is_numeric($field) ? preg_replace('=s$=', '', $elem->name) : $field)
         )));
         unset($type);
+       
+        if (is_a($value, 'Date')) $value= &new SOAPDateTime($value->_utime);
         
-        if (is_a($value, 'Date')) {
-        
-          // Date-Typen
-          $value= &new SOAPDateTime($value->_utime);
-        } else if (
+        if (
           (is_object($value)) && 
           ('soap' == substr(get_class($value), 0, 4))
         ) {       
