@@ -40,6 +40,13 @@
     $DEBUG && printf("%s: %s\n", $t->getTokenName($tok[0]), $tok[1]);
     
     switch (strtolower($tok[1])) {
+      case 'function':  // function public, function _private
+        while (T_STRING !== $tok[0]) $tok= $t->getNextToken();
+        var_dump($tok);
+        $out[]= ('_' == $tok[1]{0}) ? 'private' : 'public';
+        $out[]= ' function ';
+        break;
+        
       case 'try':       // try(); {
         while ('{' !== $tok[1]) $tok= $t->getNextToken();
         $out[]= 'try ';
