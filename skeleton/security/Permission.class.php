@@ -12,6 +12,19 @@
    * @see      xp://security.Policy
    */
   class Permission extends Object {
-  
+    var
+      $name     = '',
+      $actions  = array();
+      
+    /**
+     * Constrzctor
+     *
+     * @access  public
+     * @param   string name
+     */
+    function __construct($name) {
+      $this->name= $name;
+      parent::__construct();
+    }  
   }
 ?>
