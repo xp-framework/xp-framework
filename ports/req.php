@@ -4,8 +4,6 @@
  * $Id$ 
  */
 
-  require('lang.base.php');
-  
   function fn2xp($filename) {
     return strtr(realpath(chop($filename)), array(
       SKELETON_PATH         => '',
@@ -15,18 +13,27 @@
   }
 
   // {{{ main
-  $default= array_flip(get_required_files());
+  if (isset($_SERVER['argv'][1])) {
   
-  // Read filenames from STDIN
-  try(); {
-    $fd= fopen('php://stdin', 'r');
-    while ($line= fgets($fd, 4096)) {
-      ClassLoader::loadClass(fn2xp($line));
+    // Filename specified
+    require($_SERVER['argv'][1]);
+    $default= array(realpath($_SERVER['argv'][1]) => 0);
+  } else {
+  
+    // Read filenames from STDIN
+    require('lang.base.php');
+    $default= array_flip(get_required_files());
+    
+    try(); {
+      $fd= fopen('php://stdin', 'r');
+      while ($line= fgets($fd, 4096)) {
+        ClassLoader::loadClass(fn2xp($line));
+      }
+      fclose($fd);
+    } if (catch('Exception', $e)) {
+      $e->printStackTrace();
+      exit();
     }
-    fclose($fd);
-  } if (catch('Exception', $e)) {
-    $e->printStackTrace();
-    exit();
   }
   
   // Output required files
