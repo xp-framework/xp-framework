@@ -37,8 +37,8 @@
      * @access  public
      */
     function testX509Certificate() {
-      $esubject= '/C=DE/ST=Baden-Württemberg/L=Karlsruhe/O=XP Team/OU=XP Team/CN=Timm Friebe/EMAILADDRESS=friebe@xp-framework.net';
-      $eissuer= '/C=DE/ST=Baden-Württemberg/L=Karlsruhe/O=XP Team/OU=XP Team/CN=Timm Friebe/EMAILADDRESS=friebe@xp-framework.net';
+      $esubject= '#^/C=DE/ST=Baden-Württemberg/L=Karlsruhe/O=XP Team/OU=XP Team/CN=Timm Friebe/EMAIL(ADDRESS)?=friebe@xp-framework.net$#';
+      $eissuer= '#^/C=DE/ST=Baden-Württemberg/L=Karlsruhe/O=XP Team/OU=XP Team/CN=Timm Friebe/EMAIL(ADDRESS)?=friebe@xp-framework.net$#';
       $ehash= 'f2473bfa';
       try(); {
         $x509= &X509Certificate::fromString(<<<EOC
@@ -67,8 +67,8 @@ EOC
 
       $subject= &$x509->getSubjectDN();
       $issuer= &$x509->getIssuerDN();
-      $this->assertEquals($subject->getName(), $esubject, 'subject');
-      $this->assertEquals($issuer->getName(), $eissuer, 'issuer');
+      $this->assertMatches($subject->getName(), $esubject, 'subject');
+      $this->assertMatches($issuer->getName(), $eissuer, 'issuer');
       $this->assertEquals($x509->getHash(), $ehash, 'hash');
     }
   }
