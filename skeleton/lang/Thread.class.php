@@ -198,7 +198,7 @@
      * @return  string
      */
     function toString() {
-      return sprintf('%s{%d}@%s', $this->getClassName(), $this->_id, var_export($this, 1));
+      return sprintf('%s[%d]@%s', $this->getClassName(), $this->_id, var_export($this, 1));
     }
     
     /**
