@@ -144,6 +144,11 @@ static inline void zend_pzval_unlock_free_func(zval *z)
 #define CV_OF(i)     (EG(current_execute_data)->CVs[i])
 #define CV_DEF_OF(i) (EG(active_op_array)->vars[i])
 
+ZEND_API zval** zend_get_compiled_variable_value(zend_execute_data *execute_data_ptr, zend_uint var)
+{
+	return execute_data_ptr->CVs[var];
+}
+
 static inline void zend_get_cv_address(zend_compiled_variable *cv, zval ***ptr, temp_variable *Ts TSRMLS_DC)
 {
    zval *new_zval = &EG(uninitialized_zval);
@@ -1190,28 +1195,7 @@ static void zend_fetch_dimension_address(temp_variable *result, zval **container
 					zend_error_noreturn(E_ERROR, "[] operator not supported for strings");
 				}
 
-				if (Z_TYPE_P(dim) == IS_STRING) {
-					char *strval;
-					long  lval;
-
-					strval = Z_STRVAL_P(dim);
-					if (is_numeric_string(strval, Z_STRLEN_P(dim), &lval, NULL, 0) == IS_LONG) {
-					  ZVAL_LONG(&tmp, lval);
-						dim = &tmp;
-					} else {
-						if (type != BP_VAR_IS && type != BP_VAR_UNSET) {
-							zend_error(E_NOTICE, "Trying to get string index from a string");
-						}
-						if (result) {
-							result->var.ptr_ptr = &EG(error_zval_ptr);
-							PZVAL_LOCK(*result->var.ptr_ptr);
-							if (type == BP_VAR_R || type == BP_VAR_IS) {
-								AI_USE_PTR(result->var);
-							}
-						}
-						return;
-					}
-				} else if (dim->type != IS_LONG) {
+				if (dim->type != IS_LONG) {
 					tmp = *dim;
 					zval_copy_ctor(&tmp);
 					convert_to_long(&tmp);
@@ -1362,9 +1346,18 @@ static void zend_fetch_property_address(temp_variable *result, zval **container_
 	if (Z_OBJ_HT_P(container)->get_property_ptr_ptr) {
 		zval **ptr_ptr = Z_OBJ_HT_P(container)->get_property_ptr_ptr(container, prop_ptr TSRMLS_CC);
 		if(NULL == ptr_ptr) {
-			zend_error_noreturn(E_ERROR, "Cannot access undefined property %s::$%s for object with overloaded property access", Z_OBJCE_P(container)->name, Z_STRVAL_P(prop_ptr));
-		}
-		if (result) {
+			zval *ptr;
+
+			if (Z_OBJ_HT_P(container)->read_property &&
+			    (ptr = Z_OBJ_HT_P(container)->read_property(container, prop_ptr, BP_VAR_W TSRMLS_CC)) != NULL) {
+				if (result) {
+					result->var.ptr = ptr;
+					result->var.ptr_ptr = &result->var.ptr;
+				}
+			} else {
+				zend_error(E_ERROR, "Cannot access undefined property for object with overloaded property access");
+			}
+		} else if (result) {
 			result->var.ptr_ptr = ptr_ptr;
 		}
 	} else if (Z_OBJ_HT_P(container)->read_property) {

@@ -1,3 +1,447 @@
+2005-01-28  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * zend_execute_API.c:
+      - Fix severity (found by johannes)
+
+2005-01-25  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * zend.h:
+      New versions of glibc support a RTLD_DEEPBIND flag to dlopen.  The
+      effect of this flag when loading a "foo.so" with undefined symbols is
+      that the search that symbol starts at foo.so and its dependencies
+      *before* the loading process' global symbol table.
+      
+      This is an effective workaround for symbol namespace collisions between
+      various modules and the libraries on which they depend (where fixing the
+      respective modules or libraries is not possible e.g. due to API
+      constraints).
+      
+      (By: Joe Orton)
+
+2005-01-25  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * (PHP_5_0)
+      zend_execute.c
+      zend_interfaces.c
+      tests/bug26229.phpt:
+      - MFH #26229 (getIterator() segfaults when it returns arrays or scalars)
+
+    * zend_interfaces.c
+      zend_vm_def.h
+      zend_vm_execute.h
+      tests/bug26229.phpt:
+      - Bugfix #26229 (getIterator() segfaults when it returns arrays or scalars)
+
+    * Makefile.frag:
+      - Fix dependency
+
+    * zend_vm_def.h
+      zend_vm_execute.h:
+      - Use correct freeing (thx Dmitry)
+
+2005-01-24  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * zend_vm_def.h
+      zend_vm_execute.h
+      tests/bug30725.phpt:
+      - Second and last part of #30725 fix
+
+    * zend_interfaces.c:
+      - Allow getIterator() to fail
+
+    * tests/bug30725.phpt:
+      
+      - Add new test
+
+2005-01-22  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * (PHP_5_0)
+      Zend.m4
+      configure.in
+      zend_strtod.c:
+      MFH: Compile fix for systems without uint32_t typedef
+
+    * Zend.m4
+      configure.in
+      zend_strtod.c:
+      - Compile fix for systems without uint32_t typedef
+
+2005-01-22  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * zend_API.c
+      zend_API.h
+      zend_reflection_api.c:
+      - Fix #31651 (ReflectionClass::getDefaultProperties segfaults with arrays.)
+
+2005-01-22  Andi Gutmans  <andi@zend.com>
+
+    * zend_compile.c
+      zend_compile.h
+      zend_execute.c
+      zend_execute.h:
+      - Two new API calls for Derick (retreive CV name and value) by Dmitry
+
+2005-01-20  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * zend.h
+      zend_constants.c:
+      - Revert the weird change of ZEND_STRS() macro and use the correct
+        ZEND_STRL() macro.
+
+2005-01-19  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * zend_object_handlers.c:
+      - Fixed bug #29183 (Undefined symbol zend_check_private with Solaris CC)
+
+2005-01-19  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * zend_ini_parser.y:
+      - Fix memleak
+
+2005-01-18  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_compile.c:
+      Fixed patch for bug #31478 (SegFault/Memory Leak with empty())
+
+    * zend_execute.c:
+      Fixed bug #28444 (Cannot access undefined property for object with
+      overloaded property access).
+
+    * (PHP_5_0)
+      zend_execute.c:
+      Fixed bug #28444 (Cannot access undefined property for object with
+      overloaded property access). (Dmitry)
+
+2005-01-18  Ilia Alshanetsky  <ilia@prohost.org>
+
+    * (PHP_5_0)
+      zend_operators.h:
+      MFH: Fixed bug #30726 (-.1 like numbers are not being handled correctly).
+
+    * zend_operators.h:
+      Fixed bug #30726 (-.1 like numbers are not being handled correctly).
+
+2005-01-17  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * (PHP_5_0)
+      zend_language_scanner.l:
+      MFH: - Fixed bug #31444 (Memory leak in zend_language_scanner.c)
+
+    * zend_language_scanner.l:
+      - Fixed bug #31444 (Memory leak in zend_language_scanner.c)
+
+2005-01-15  Andi Gutmans  <andi@zend.com>
+
+    * (PHP_5_0)
+      zend_API.c:
+      - Fix WS
+
+    * (PHP_5_0)
+      zend_API.c:
+      - Change to using DL_UNLOAD macro.
+
+    * zend_API.c:
+      - Unload on MAC OS X (shouldn't be a reason not to)
+
+2005-01-14  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_execute.c
+      zend_vm_def.h
+      zend_vm_execute.h
+      zend_vm_opcodes.h
+      tests/bug31098.phpt:
+      Restore behavior of $str["str"]. (Now $str["str"] is equivalent to $str[0]
+      again)
+
+    * (PHP_5_0)
+      tests/bug31098.phpt:
+      Path -> pattern
+
+    * (PHP_5_0)
+      zend_execute.c
+      tests/bug31098.phpt:
+      Revert to old behavior of $str["str"]. ($str["str"] is equivalent of
+      $str[0])
+
+2005-01-13  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_execute.c
+      zend_execute.c:
+      Additional fix for fix of bug #29883
+
+2005-01-12  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_execute.c
+      zend_execute.c
+      zend_vm_def.h
+      zend_vm_execute.h
+      zend_vm_opcodes.h
+      tests/bug31098.phpt
+      tests/bug31098.phpt:
+      Fixed bug #31098 (isset false positive)
+
+2005-01-11  Moriyoshi Koizumi  <moriyoshi@at.wakwak.com>
+
+    * (PHP_5_0)
+      zend_execute.c
+      tests/bug31098.phpt:
+      - MFH: fix for bug #31098.
+
+    * tests/bug31098.phpt
+      tests/bug31436.phpt:
+      
+      - Test renaming
+
+    * zend_vm_execute.h
+      tests/bug31436.phpt:
+      - Fix bug #31436 (isset() incorrectly returns true in dereference of a
+      wrong type)
+
+    * zend_compile.c:
+      - Fix bug #31478 (segfault with empty())
+
+2005-01-10  Rasmus Lerdorf  <rasmus@lerdorf.com>
+
+    * zend.h
+      zend_API.c:
+      Fix OSX DL_UNLOAD macro and actually use it to make shared extensions
+      work on OSX.
+
+2005-01-10  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * header
+      zend_arg_defs.c
+      zend_strtod.c
+      zend_vm_def.h
+      zend_vm_execute.h
+      zend_vm_gen.php
+      zend_vm_opcodes.h:
+      - Added missing header sections.
+
+    * acinclude.m4
+      configure.in:
+      - Added AC_ZEND_C_BIGENDIAN macro (as requested by Andi)
+
+2005-01-09  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * (PHP_5_0)
+      zend.h:
+      MFH: - Fix outside-source-tree builds. Always include generated header
+      files
+             with #include <some_header.h> to make sure the correct file is
+      used.
+
+    * zend.h:
+      - Fix outside-source-tree builds. Always include generated header files
+        with #include <some_header.h> to make sure the correct file is used.
+
+    * zend.c:
+      MFB: - Rationalize code a bit
+
+2005-01-03  Stanislav Malyshev  <stas@zend.com>
+
+    * (PHP_5_0)
+      zend_language_scanner.l:
+      MFH:
+      Fix the following nasty bug:
+      - if compile bails out from the middle of compiling, current_buffer is not
+      restored
+      - if current_buffer is not null, yy_switch_to_buffer will do: *yy_c_buf_p
+      = yy_hold_char; on
+      the next request
+      - which would lead to memory corruption on next request
+
+    * zend_language_scanner.l:
+      Fix the following nasty bug:
+      - if compile bails out from the middle of compiling, current_buffer is not
+      restored
+      - if current_buffer is not null, yy_switch_to_buffer will do: *yy_c_buf_p
+      = yy_hold_char; on
+      the next request
+      - which would lead to memory corruption on next request
+
+2005-01-02  Ilia Alshanetsky  <ilia@prohost.org>
+
+    * (PHP_5_0)
+      zend_highlight.c:
+      MFH: Fixed bug #31371 (highlight_file() trims new line after heredoc).
+
+    * zend_highlight.c:
+      Fixed bug #31371 (highlight_file() trims new line after heredoc).
+
+2004-12-30  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * (PHP_5_0)
+      zend_compile.c
+      zend_highlight.c
+      zend_indent.c
+      zend_ini_scanner.l
+      zend_language_scanner.l:
+      MFH: - Fixed bug #28930 (PHP sources pick wrong header files generated by
+      bison).
+
+    * zend_compile.c
+      zend_highlight.c
+      zend_indent.c
+      zend_ini_scanner.l
+      zend_language_scanner.l:
+      - Fixed bug #28930 (PHP sources pick wrong header files generated by bison)
+
+    * Zend.m4
+      acinclude.m4:
+      MFB_4_3: Quote macro names in AC_DEFUN()
+
+2004-12-27  Zeev Suraski  <zeev@zend.com>
+
+    * zend_builtin_functions.c:
+      MFB
+
+    * (PHP_5_0)
+      zend_builtin_functions.c:
+      Fix desc
+
+2004-12-27  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * (PHP_5_0)
+      zend_reflection_api.c:
+      - MFH: Need to unmangle the class name here
+
+    * zend_reflection_api.c:
+      - Need to unmangle the class name here
+
+2004-12-27  Zeev Suraski  <zeev@zend.com>
+
+    * (PHP_5_0)
+      zend_exceptions.c:
+      Add descriptions
+
+2004-12-27  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_execute.c
+      zend_execute.c
+      zend_vm_def.h
+      zend_vm_execute.h
+      tests/bug22836.phpt
+      tests/bug22836.phpt
+      tests/unset_cv01.phpt
+      tests/unset_cv02.phpt
+      tests/unset_cv03.phpt
+      tests/unset_cv04.phpt
+      tests/unset_cv06.phpt
+      tests/unset_cv08.phpt
+      tests/unset_cv09.phpt
+      tests/unset_cv10.phpt:
+      "Undefined variable:  %s" noticies were fixed to use one space
+
+2004-12-27  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * zend_reflection_api.c:
+      - More proto/error message fixes
+
+    * zend_reflection_api.c:
+      - Small fixlet (by Tony)
+
+2004-12-24  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_vm_def.h
+      zend_vm_execute.h:
+      New sarbage collector's bug was fixed (the behavior should be the same as
+      in PHP_5_0)
+
+    * zend_execute.c
+      tests/unset_cv01.phpt
+      tests/unset_cv02.phpt
+      tests/unset_cv03.phpt
+      tests/unset_cv04.phpt
+      tests/unset_cv06.phpt
+      tests/unset_cv08.phpt
+      tests/unset_cv09.phpt
+      tests/unset_cv10.phpt:
+      "Undefined variable:  %s" noticies were fixed to be compatible with PHP_5_0
+
+2004-12-21  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * (PHP_5_0)
+      zend_strtod.c:
+      MFH: - Use correct header files (in c99 compliant way). uint32_t is
+      preferred.
+
+    * zend_strtod.c:
+      - Use correct header files (in c99 compliant way). uint32_t is preferred.
+
+2004-12-20  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * zend_strtod.c:
+      Better fix for endian compile problems.
+
+2004-12-17  Andi Gutmans  <andi@zend.com>
+
+    * zend_object_handlers.c:
+      - Fixed Bug #30562  	Segmentation fault with __call()
+
+2004-12-17  Derick Rethans  <php@derickrethans.nl>
+
+    * zend_strtod.c
+      zend_strtod.c:
+      - MF43: Fixed strtod for Irix and some other strange platform
+
+2004-12-16  Derick Rethans  <php@derickrethans.nl>
+
+    * zend_strtod.c
+      zend_strtod.c:
+      - MF43: Make it compile on HPUX on Itanium 2
+
+    * zend_strtod.c
+      zend_strtod.c:
+      - MF43: Fixed bug #31107 (strtod on solaris9/intel)
+
+2004-12-16  Jani Taskinen  <jani.taskinen@kolumbus.fi>
+
+    * (PHP_5_0)
+      ChangeLog:
+      - MFH: Fix typo (avaliable -> available). (bug #28725)
+
+    * ChangeLog:
+      - Fix typo (avaliable -> available). (bug #28725)
+
+2004-12-16  Derick Rethans  <php@derickrethans.nl>
+
+    * zend_strtod.c:
+      - MF43: Fixed bug #31110 and #31111 (Zend/zend_strtod.c problems)
+
+    * (PHP_5_0)
+      zend_strtod.c:
+      - Fixed bug #31110 and #31111 (Zend/zend_strtod.c problems)
+
+2004-12-15  Andi Gutmans  <andi@zend.com>
+
+    * (PHP_5_0)
+      zend.h:
+      - 5.0.4-dev
+
+    * (PHP_5_0)
+      zend.h:
+      - Redo 5.0.3
+
+    * (PHP_5_0)
+      zend.h:
+      - Back to -dev
+
+    * (PHP_5_0)
+      zend.h:
+      - Roll PHP 5.0.3
+
+2004-12-14  Derick Rethans  <php@derickrethans.nl>
+
+    * zend_strtod.c
+      zend_strtod.c:
+      - MFH: Fixed compile error related to bug #28605.
+
+2004-12-13  Derick Rethans  <php@derickrethans.nl>
+
+    * zend_operators.c:
+      - Added "G" modifier to ini setting number format.
+
 2004-12-10  Andi Gutmans  <andi@zend.com>
 
     * (PHP_5_0)
@@ -7966,13 +8410,13 @@
 2003-02-08  Ilia Alshanetsky  <ilia@prohost.org>
 
     * zend_builtin_functions.c:
-      The string.h is already avaliable through zend.h, so the manual inclusion
+      The string.h is already available through zend.h, so the manual inclusion
       is not necessary.
 
 2003-02-07  Ilia Alshanetsky  <ilia@prohost.org>
 
     * zend_builtin_functions.c:
-      Added a check to ensure that string.h is avaliable before trying to use it.
+      Added a check to ensure that string.h is available before trying to use it.
       
       Thanks Andi.
 

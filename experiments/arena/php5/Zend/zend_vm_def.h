@@ -2867,10 +2867,20 @@ ZEND_VM_HANDLER(77, ZEND_FE_RESET, CONST|TMP|VAR|CV, ANY)
 	if (ce && ce->get_iterator) {
 		iter = ce->get_iterator(ce, array_ptr TSRMLS_CC);
 
-		if (iter) {
+		if (iter && !EG(exception)) {
 			array_ptr = zend_iterator_wrap(iter TSRMLS_CC);
 		} else {
-			array_ptr->refcount++;
+			zval_ptr_dtor(&array_ptr);
+			if (opline->extended_value) {
+				FREE_OP1_VAR_PTR();
+			} else {
+				FREE_OP1_IF_VAR();
+			}
+			if (!EG(exception)) {
+				zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "Object of type %s did not create an Iterator", ce->name);
+			}
+			zend_throw_exception_internal(NULL TSRMLS_CC);
+			ZEND_VM_NEXT_OPCODE();
 		}
 	}
 
@@ -3197,16 +3207,7 @@ ZEND_VM_HELPER_EX(zend_isset_isempty_dim_prop_obj_handler, VAR|UNUSED|CV, CONST|
 		} else if ((*container)->type == IS_STRING && !prop_dim) { /* string offsets */
 			zval tmp;
 
-			if (Z_TYPE_P(offset) == IS_STRING) {
-				char *strval;
-				long  lval;
-
-				strval = Z_STRVAL_P(offset);
-				if (is_numeric_string(strval, Z_STRLEN_P(offset), &lval, NULL, 0) == IS_LONG) {
-					ZVAL_LONG(&tmp, lval);
-					offset = &tmp;
-				}
-			} else if (offset->type != IS_LONG) {
+			if (offset->type != IS_LONG) {
 				tmp = *offset;
 				zval_copy_ctor(&tmp);
 				convert_to_long(&tmp);

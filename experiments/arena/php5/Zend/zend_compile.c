@@ -3535,6 +3535,7 @@ void zend_do_isset_or_isempty(int type, znode *result, znode *variable TSRMLS_DC
 		last_op->op1.u.constant.value.str.val = estrdup(CG(active_op_array)->vars[variable->u.var].name);
 		SET_UNUSED(last_op->op2);
 		last_op->op2.u.EA.type = ZEND_FETCH_LOCAL;
+		last_op->result.u.var = get_temporary_variable(CG(active_op_array));
 	} else {
 		last_op = &CG(active_op_array)->opcodes[get_next_op_number(CG(active_op_array))-1];
 	
@@ -3551,7 +3552,6 @@ void zend_do_isset_or_isempty(int type, znode *result, znode *variable TSRMLS_DC
 		}
 	}
 	last_op->result.op_type = IS_TMP_VAR;
-	last_op->result.u.var = get_temporary_variable(CG(active_op_array));
 	last_op->extended_value = type;
 
 	*result = last_op->result;
@@ -4100,6 +4100,14 @@ int zend_get_class_fetch_type(char *class_name, uint class_name_len)
 	} else {
 		return ZEND_FETCH_CLASS_DEFAULT;
 	}
+}
+
+ZEND_API char* zend_get_compiled_variable_name(zend_op_array *op_array, zend_uint var, int* name_len)
+{
+	if (name_len) {
+		*name_len = op_array->vars[var].name_len;
+	}
+	return op_array->vars[var].name;
 }
 
 /*

@@ -104,6 +104,8 @@ const char *zend_mh_bundle_error(void);
 
 # if defined(RTLD_GROUP) && defined(RTLD_WORLD) && defined(RTLD_PARENT)
 #  define DL_LOAD(libname)			dlopen(libname, RTLD_LAZY | RTLD_GLOBAL | RTLD_GROUP | RTLD_WORLD | RTLD_PARENT)
+# elif defined(RTLD_DEEPBIND)
+#  define DL_LOAD(libname)			dlopen(libname, RTLD_LAZY | RTLD_GLOBAL | RTLD_DEEPBIND)
 # else
 #  define DL_LOAD(libname)			dlopen(libname, RTLD_LAZY | RTLD_GLOBAL)
 # endif
@@ -391,7 +393,7 @@ typedef int (*zend_write_func_t)(const char *str, uint str_length);
 #define MAX(a, b)  (((a)>(b))?(a):(b))
 #define MIN(a, b)  (((a)<(b))?(a):(b))
 #define ZEND_STRL(str)		(str), (sizeof(str)-1)
-#define ZEND_STRS(str)		(str), (sizeof(str)-1)
+#define ZEND_STRS(str)		(str), (sizeof(str))
 #define ZEND_NORMALIZE_BOOL(n)			\
 	((n) ? (((n)>0) ? 1 : -1) : 0)
 #define ZEND_TRUTH(x)		((x) ? 1 : 0)
