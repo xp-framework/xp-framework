@@ -67,7 +67,7 @@
         if (!$this->archive->isOpen()) {
           $this->archive->open(ARCHIVE_READ);
         }
-        $data= $this->archive->extract($className);
+        $data= &$this->archive->extract($className);
       } if (catch('Exception', $e)) {
         return throw(new ClassNotFoundException(sprintf(
           'class "%s" not found: %s',
