@@ -120,4 +120,8 @@ Comments
   The reflection API will need to tokenize the class file in order to
   read the annotations. This is slow but already done there.
 
+- friebe, Sat Feb 12 12:49:25 CET 2005
+  In future versions, we might want to support annotations for classes,
+  too.
+
 <EOF>
