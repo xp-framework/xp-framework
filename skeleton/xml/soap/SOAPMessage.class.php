@@ -108,7 +108,7 @@
       if (isset($child->attribute['href'])) {
         foreach (array_keys($this->root->children[0]->children) as $idx) {
           if (0 != strcasecmp(
-            $this->root->children[0]->children[$idx]->attribute['id'],
+            @$this->root->children[0]->children[$idx]->attribute['id'],
             substr($child->attribute['href'], 1)
           )) continue;
  
