@@ -322,6 +322,7 @@
   //     Clones an object
   function &clone($object) {
     $object->__id= microtime();
+    is_callable(array(&$object, '__clone')) && call_user_func(array(&$object, '__clone'));
     return $object;
   }
 
