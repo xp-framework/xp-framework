@@ -76,7 +76,7 @@
             failure_prediction_enabled,
             process_performance_data
           from
-            nagios..hoststatus
+            nagios.hoststatus
           where
             host_name= %s',
           $host_name);
@@ -132,7 +132,7 @@
             failure_prediction_enabled,
             process_performance_data
           from
-            nagios..hoststatus
+            nagios.hoststatus
           where
             host_status= %s',
           $host_status);
@@ -187,7 +187,7 @@
             failure_prediction_enabled,
             process_performance_data
           from
-            nagios..hoststatus
+            nagios.hoststatus
           where
             host_status != %s',
           'UP');
@@ -639,7 +639,7 @@
 
       try(); {
         $db->update('
-          nagios..hoststatus set
+          nagios.hoststatus set
             host_name = %s,
             host_status = %s,
             last_update = %s,
@@ -709,7 +709,7 @@
 
       try(); {
         $db->insert('
-          nagios..hoststatus (
+          nagios.hoststatus (
             host_name,
             host_status,
             last_update,

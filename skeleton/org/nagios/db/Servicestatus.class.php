@@ -102,13 +102,13 @@
             process_performance_data,
             obsess_over_service
           from
-            nagios..servicestatus
+            nagios.servicestatus
           where host_name= %s',
           $host_name);
         
         $data= array();
         if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
+          $data[]= &new Servicestatus($r);
         }
       } if (catch('SQLException', $e)) {
         return throw($e);
@@ -171,7 +171,7 @@
             process_performance_data,
             obsess_over_service
           from
-            nagios..servicestatus
+            nagios.servicestatus
           where host_name= %s
             and service_description= %s',
           $host_name,
@@ -179,7 +179,7 @@
         
         $data= array();
         if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
+          $data[]= &new Servicestatus($r);
         }
       } if (catch('SQLException', $e)) {
         return throw($e);
@@ -241,13 +241,13 @@
             process_performance_data,
             obsess_over_service
           from
-            nagios..servicestatus
+            nagios.servicestatus
           where service_status= %s',
           $service_status);
         
         $data= array();
         if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
+          $data[]= &new Servicestatus($r);
         }
       } if (catch('SQLException', $e)) {
         return throw($e);
@@ -308,13 +308,13 @@
             process_performance_data,
             obsess_over_service
           from
-            nagios..servicestatus
+            nagios.servicestatus
           where service_status != %s',
           'OK');
         
         $data= array();
         if ($q) while ($r= $q->next()) {
-          $data[]= &new Bug($r);
+          $data[]= &new Servicestatus($r);
         }
       } if (catch('SQLException', $e)) {
         return throw($e);
@@ -1019,7 +1019,7 @@
 
       try(); {
         $db->update('
-          nagios..servicestatus set
+          nagios.servicestatus set
             host_name = %s,
             service_description = %s,
             service_status = %s,
@@ -1115,7 +1115,7 @@
 
       try(); {
         $db->insert('
-          nagios..servicestatus (
+          nagios.servicestatus (
             host_name,
             service_description,
             service_status,
