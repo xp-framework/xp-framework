@@ -1,0 +1,21 @@
+Syntax enhancements for PHP5: README
+========================================================================
+$Id$
+
+Array sntax
+-----------
+Arrays may be enclosed by [ and ] in addition to the current array 
+syntax, array().
+
+Examples:
+<pre>
+  Old                            New
+  ------------------------------ ------------------------------
+  $n= array();                   $n= [ ];
+  $a= array(1, 2, 3);            $a= [ 1, 2, 3 ];
+  $b= array('color' => 'green'); $b= [ 'color' => 'green' ];
+</pre>
+
+The new notation may be used in any place array() can be used.
+
+<EOF>
