@@ -119,6 +119,7 @@
         case HTTP_POST:
         default:
           $body= substr($query, 1);
+          if (NULL !== $this->url->getQuery()) $target.= '?'.$this->url->getQuery();
           $this->headers['Content-Length']= strlen($body);
           if (empty($this->headers['Content-Type'])) {
             $this->headers['Content-Type']= 'application/x-www-form-urlencoded';
