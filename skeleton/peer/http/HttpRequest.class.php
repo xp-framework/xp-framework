@@ -24,13 +24,13 @@
    */
   class HttpRequest extends Object {
     var
-      $url      = NULL,
-      $method   = HTTP_GET,
-      $params   = array(),
-      $version  = '1.1',
-      $headers  = array(
+      $url        = NULL,
+      $method     = HTTP_GET,
+      $version    = '1.1',
+      $headers    = array(
         'Connection' => 'close'
-      );
+      ),
+      $parameters = array();
       
     /**
      * Constructor
@@ -101,7 +101,7 @@
         $query= "\0".$this->parameters->getData();
       } else {
         $query= '';
-        foreach ($this->parameters as $k => $v) {
+        if (is_array($this->parameters)) foreach ($this->parameters as $k => $v) {
           $query.= '&'.$k.'='.urlencode($v);
         }
       }
