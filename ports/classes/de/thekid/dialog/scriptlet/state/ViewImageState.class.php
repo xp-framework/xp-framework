@@ -37,12 +37,12 @@
         switch ($type) {
           case 'h':
             $selected= &$response->addFormResult(Node::fromObject($album->highlightAt($id), 'selected'));
-            $selected->setAttribute('last', $id >= $album->numHighlights());
+            $selected->setAttribute('last', $id >= $album->numHighlights()- 1);
             break;
 
           case 'i':
             $selected= &$response->addFormResult(Node::fromObject($album->chapters[$chapter]->imageAt($id), 'selected'));
-            $selected->setAttribute('last', $id >= $album->chapters[$chapter]->numImages());
+            $selected->setAttribute('last', $id >= $album->chapters[$chapter]->numImages()- 1);
             break;
         }
 
