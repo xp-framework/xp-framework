@@ -110,6 +110,22 @@
       $args= func_get_args();
       return call_user_func_array(array(&$this, '_call'), $args);
     }
+    
+    /**
+     * Invoke method call
+     *
+     * @access  public
+     * @param   string method name
+     * @param   mixed vars
+     * @return  mixed answer
+     * @throws  lang.IllegalArgumentException
+     * @throws  xml.soap.SOAPFaultException
+     */
+    function invoke() {
+      $args= func_get_args();
+      $this->method= array_shift($args);
+      return call_user_func_array(array(&$this, '_call'), $args);
+    }
   }
   
 ?>
