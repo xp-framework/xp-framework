@@ -9,7 +9,7 @@
   /**
    * Standard Round2 Base test client
    *
-   * @see      reference
+   * @see      http://interop.xp-framework.net/
    * @purpose  Perform Round2 base tests
    */
   class Round2BaseClient extends SOAPClient {
