@@ -90,7 +90,7 @@
      */ 
     function value($long, $short= NULL, $default= NULL) {
       if (is_int($long)) {
-        if (NULL === $default)
+        if (NULL === $default && !isset($this->list[$long]))
           return throw (new IllegalArgumentException ('Parameter #'.$long.' does not exist'));        
 
         return $this->list[$long];
