@@ -108,7 +108,7 @@ ZEND_GET_MODULE(xp)
 /* {{{ PHP_INI
  */
 PHP_INI_BEGIN()
-    STD_PHP_INI_ENTRY("xp.class_path", "/usr/home/thekid/devel/xp/skeleton", PHP_INI_ALL, OnUpdateString, class_path, zend_xp_globals, xp_globals)
+    /* STD_PHP_INI_ENTRY("xp.class_path", "/usr/home/thekid/devel/xp/skeleton", PHP_INI_ALL, OnUpdateString, class_path, zend_xp_globals, xp_globals) */
 PHP_INI_END()
 /* }}} */
 
@@ -163,6 +163,27 @@ static void xp_error(int type, char* msg, ...)
 }
 /* }}} */
 
+#ifdef XP_DEBUGGING
+static int _print_values(zval **zv, int num_args, va_list args, zend_hash_key *hash_key)
+{
+    if (hash_key->nKeyLength == 0) {
+        fprintf(stderr, "--- int(%ld) => ", hash_key->h);
+    } else {
+        fprintf(stderr, "--- string(%d)'%s' => ", hash_key->nKeyLength, hash_key->arKey);        
+    }    
+    zend_print_zval_r(*zv, 0);
+    fprintf(stderr, "\n");
+    return 0;
+}
+
+PHP_FUNCTION(testnames)
+{
+    zend_hash_apply_with_arguments(&XPG(names), (apply_func_args_t) _print_values, 0);
+
+    RETURN_TRUE;
+}
+#endif
+
 /* {{{ php_xp_init_globals
  */
 static void php_xp_init_globals(zend_xp_globals *xp_globals TSRMLS_DC)
@@ -184,28 +205,21 @@ static void php_xp_destroy_globals(zend_xp_globals *xp_globals TSRMLS_DC)
 }
 /* }}} */
 
-static zend_class_entry* xp_register_class(char* name, int name_len, char* prettyname, int prettyname_len, zend_function_entry* functions, zend_namespace* namespace, zend_class_entry* parent)
+static zend_class_entry* xp_register_class(char* name, int name_len, char* prettyname, int prettyname_len, zend_function_entry* functions, zend_class_entry* parent)
 {
     zend_class_entry ce;
     zend_class_entry* ptr;
-    char* fullname;
     zval* xpname;
     
     INIT_CLASS_ENTRY(ce, name, functions);
-    ptr = zend_register_internal_ns_class(&ce, parent, namespace, namespace->name TSRMLS_CC);
-    
-    fullname= (char*) emalloc(name_len+ 2+ namespace->name_length+ 1);
-    strncpy(fullname, namespace->name, namespace->name_length+ 1);
-    strncat(fullname, "::", 2);
-    strncat(fullname, name, name_len);
+    ce.name_length= name_len- 1;
+    ptr = zend_register_internal_class_ex(&ce, parent, NULL TSRMLS_CC);
 
     MAKE_STD_ZVAL(xpname);
     ZVAL_STRINGL(xpname, prettyname, prettyname_len, 1);
     
-    zend_hash_update(&XPG(names), fullname, name_len+ 2+ namespace->name_length, &xpname, sizeof(zval *), NULL);
-    
-    efree(fullname);
-    
+    zend_hash_update(&XPG(names), name, name_len, &xpname, sizeof(zval *), NULL);
+    xp_error(XP_DEBUG, "registered class string(%d)'%s' [string(%d)'%s']", name_len, name, prettyname_len, prettyname);
     return ptr;
 }
 
@@ -215,25 +229,27 @@ static zend_class_entry* xp_register_class(char* name, int name_len, char* prett
  */
 PHP_MINIT_FUNCTION(xp)
 {
-    zend_namespace xp_lang_namespace;
-    zend_namespace* np;
     zend_class_entry* xp_object_ptr;
     zend_class_entry* xp_throwable_ptr;
+    zend_class_entry* pce;
 
     ZEND_INIT_MODULE_GLOBALS(xp, php_xp_init_globals, php_xp_destroy_globals);
     REGISTER_INI_ENTRIES();
 
     xp_error(XP_DEBUG, "PHP_MINIT_FUNCTION");
-    
-    /* Register "lang" namespace */
-    INIT_NAMESPACE(xp_lang_namespace, "lang");
-    np= zend_register_internal_namespace(&xp_lang_namespace TSRMLS_C);
 
+    /* Kill the built-in exception class */
+	if (zend_hash_find(CG(class_table), "exception", sizeof("exception"), (void**) &pce) == FAILURE
+        ||  zend_hash_del(CG(class_table), "exception", sizeof("exception")) == FAILURE) {
+		return FAILURE;
+	}
+    destroy_zend_class(&pce);
+    
     /* Register basic classes */
-    xp_object_ptr = xp_register_class(XN("object", "lang.Object"), xp_object_functions, np, NULL);
-    xp_throwable_ptr = xp_register_class(XN("throwable", "lang.Throwable"), xp_throwable_functions, np, xp_object_ptr);
-    xp_register_class(XN("error", "lang.Error"), NULL, np, xp_throwable_ptr);
-    xp_register_class(XN("exception", "lang.Exception"), NULL, np, xp_throwable_ptr);
+    xp_object_ptr = xp_register_class(XN("object", "lang.Object"), xp_object_functions, NULL);
+    xp_throwable_ptr = xp_register_class(XN("throwable", "lang.Throwable"), xp_throwable_functions, xp_object_ptr);
+    xp_register_class(XN("error", "lang.Error"), NULL, xp_throwable_ptr);
+    xp_register_class(XN("exception", "lang.Exception"), NULL, xp_throwable_ptr);
     
     return SUCCESS;
 }
@@ -296,29 +312,6 @@ PHP_MINFO_FUNCTION(xp)
     DISPLAY_INI_ENTRIES();
 }
 /* }}} */
-
-static void _get_fully_qualified_class_name(zend_class_entry* ce, char** str, int* str_len, int reserve)
-{
-    int ns_len = 0;
-
-    *str_len= ce->name_length + reserve + 1;
-    
-    if (ce->ns 
-        && ce->ns != &CG(global_namespace) 
-        && ce->ns->name) {
-        ns_len = ce->ns->name_length + 2;
-        *str_len += ns_len;
-    }
-
-    *str= (char*) emalloc(*str_len);
-    if (ns_len > 0) {
-        strncpy(*str, ce->ns->name, ns_len);
-        strncat(*str, "::", 2);
-    } else {
-        *str[0]= '\0';
-    }
-    strncat(*str, ce->name, ce->name_length);    
-}
 
 static void smart_str_appendc_n(smart_str* buf, const char c, int num) 
 {
@@ -448,18 +441,13 @@ static void _var_src(smart_str *buf, zval **struc, int level TSRMLS_DC)
             break;
 
         case IS_OBJECT: {
-            char *class_name;
-            int class_name_len;
-
             myht = &Z_OBJCE_PP(struc)->properties_info;
             if (myht->nApplyCount > 1) {
                 smart_str_appendl(buf, "*RECURSION*\n", 12);
                 return;
             }
-            _get_fully_qualified_class_name(Z_OBJCE_PP(struc), &class_name, &class_name_len, 0);
-            smart_str_appendl(buf, class_name, class_name_len - 1);
+            smart_str_appendl(buf, Z_OBJCE_PP(struc)->name, Z_OBJCE_PP(struc)->name_length);
             smart_str_appendl(buf, " {\n", 3);        
-            efree(class_name);
             if (myht) {
                 zend_hash_apply_with_arguments(myht, (apply_func_args_t) _object_property_export, 3, level, buf, *struc);
             }
@@ -510,21 +498,17 @@ PHP_FUNCTION(tostring)
        Returns fully qualified class name */
 PHP_FUNCTION(getclassname)
 {   
-    char *name;
-    int name_len;
     zval **xpname= NULL;
     
     METHOD_NOT_STATIC;
     DEFAULT_0_PARAMS;
 
-    _get_fully_qualified_class_name(Z_OBJCE_P(getThis()), &name, &name_len, 0);    
-    if (FAILURE == zend_hash_find(&XPG(names), name, name_len, (void**)&xpname)) {
-        zend_error(E_WARNING, "Could not find class name for %s\n", name);
+    if (FAILURE == zend_hash_find(&XPG(names), Z_OBJCE_P(getThis())->name, Z_OBJCE_P(getThis())->name_length+ 1, (void**)&xpname)) {
+        zend_error(E_WARNING, "Could not find class name for %s\n", Z_OBJCE_P(getThis())->name);
         RETVAL_FALSE;
     } else {
         RETVAL_STRINGL(Z_STRVAL_PP(xpname), Z_STRLEN_PP(xpname), 1);
     }
-    efree(name);
 }
 /* }}} */
 
@@ -627,8 +611,6 @@ PHP_FUNCTION(throwable_getcode)
        Creates string representation */
 PHP_FUNCTION(throwable_tostring)
 {
-    char *name;
-    int name_len;
     zval **message, **file, **line, **code;
     smart_str buf = {0};
     METHOD_NOT_STATIC;
@@ -639,9 +621,7 @@ PHP_FUNCTION(throwable_tostring)
         RETURN_FALSE;
     }
     
-    _get_fully_qualified_class_name(Z_OBJCE_P(getThis()), &name, &name_len, 0);
-    smart_str_appendl(&buf, name, name_len - 1);
-    efree(name);
+    smart_str_appendl(&buf, Z_OBJCE_P(getThis())->name, Z_OBJCE_P(getThis())->name_length);
     smart_str_appendl(&buf, " (", 2);
     if (zend_hash_find(Z_OBJPROP_P(getThis()), "message", sizeof("message"), (void **) &message) == SUCCESS) {
         smart_str_appendl(&buf, Z_STRVAL_PP(message), Z_STRLEN_PP(message));
@@ -701,29 +681,16 @@ static int php_xp_uses(char *arg, int arg_len TSRMLS_DC)
     xp_error(XP_INFO, "uses(string(%d)'%s') = %d", arg_len, arg, return_value);
     
     if (return_value) {
-        char* fullname= estrndup(arg, arg_len+ 1);
-        char* name= estrdup(strrchr(fullname, '.'));
+        char* name= estrdup(strrchr(arg, '.')+ 1);
         int name_len= strlen(name);
         zval* xpname;
         
-        for (i = 0; i < arg_len - name_len; i++) {
-            switch (fullname[i]) {
-                case '.' : fullname[i]= ':'; break;
-                case '-' : fullname[i]= '_'; break;
-            }
-        }
-        fullname[i]= '\0';
-        strncat(fullname, "::", 2);
-        zend_str_tolower(name++, name_len);
-        strncat(fullname, name, name_len);
-        name--;
-
+        zend_str_tolower(name, name_len);
         MAKE_STD_ZVAL(xpname);
         ZVAL_STRINGL(xpname, arg, arg_len, 1);
-        zend_hash_update(&XPG(names), fullname, arg_len+ 2, &xpname, sizeof(zval *), NULL);
+        zend_hash_update(&XPG(names), name, name_len+ 1, &xpname, sizeof(zval *), NULL);
         
         efree(name);
-        efree(fullname);
     }
 
     return return_value;
@@ -731,7 +698,8 @@ static int php_xp_uses(char *arg, int arg_len TSRMLS_DC)
 /* }}} */
 
 /* {{{ proto bool uses(string* arg)
-   Use a library */
+ *     Use a library
+ */
 PHP_FUNCTION(uses)
 {
     zval ***args;
@@ -759,27 +727,6 @@ PHP_FUNCTION(uses)
     }
 }
 /* }}} */
-
-#ifdef XP_DEBUGGING
-static int _print_values(zval **zv, int num_args, va_list args, zend_hash_key *hash_key)
-{
-    if (hash_key->nKeyLength == 0) {
-        fprintf(stderr, "--- int(%ld) => ", hash_key->h);
-    } else {
-        fprintf(stderr, "--- string(%d)'%s' => ", hash_key->nKeyLength, hash_key->arKey);        
-    }    
-    zend_print_zval_r(*zv, 0);
-    fprintf(stderr, "\n");
-    return 0;
-}
-
-PHP_FUNCTION(testnames)
-{
-    zend_hash_apply_with_arguments(&XPG(names), (apply_func_args_t) _print_values, 0);
-
-    RETURN_TRUE;
-}
-#endif
 
 /*
  * Local variables:
