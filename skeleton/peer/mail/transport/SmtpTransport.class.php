@@ -276,7 +276,7 @@
         );
 
         // List all recipients, hide BCC
-        foreach(array(TO, CC, BCC) as $type) while ($r= &$message->getRecipient($type)) {
+        foreach (array(TO, CC, BCC) as $type) while ($r= &$message->getRecipient($type)) {
           $this->_sockcmd(
             'RCPT TO: %s', 
             $r->localpart.'@'.$r->domain, 
