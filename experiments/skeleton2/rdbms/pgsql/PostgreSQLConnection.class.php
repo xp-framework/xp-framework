@@ -108,10 +108,10 @@
         }
 
         // Type-based conversion
-        if (is_a($args[$ofs], 'Date')) {
+        if ($args[$ofs] instanceof Date) {
           $tok{$mod}= 'u';
           $a= array($args[$ofs]->getTime());
-        } elseif (is_a($args[$ofs], 'Object')) {
+        } elseif ($args[$ofs] instanceof Generic) {
           $a= array($args[$ofs]->toString());
         } elseif (is_array($args[$ofs])) {
           $a= $args[$ofs];
