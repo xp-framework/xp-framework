@@ -102,7 +102,6 @@
       <para>
         <caption>Web sites</caption>
         <text>
-          <!-- <ref type="api:class" link="org.apache.HttpScriptlet"/> -->
           Web sites is what PHP was made for. In his 
           <ref type="ext" link="http://groups.google.com/groups?selm=3r7pgp%24aa1%40ionews.io.org">announce mail</ref>
           in June of 1995, Rasmus Lerdorf marketed PHP (then called "Personal Home Page Tools"
@@ -120,7 +119,7 @@
           implementation of Servlets though one might find a lot of similarities!
           <br/>
           Let's have a look at a simple scriptlet:
-          <code><![CDATA[  uses('org.apache.HttpScriplet');
+          <code><![CDATA[  uses('scriptlet.HttpScriplet');
 
   class HelloScriptlet extends HttpScriplet {
 
