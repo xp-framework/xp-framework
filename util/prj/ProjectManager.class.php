@@ -117,10 +117,7 @@
       return TRUE;
     }
     
-    function addFile(&$parser) {
-      if (!is_a ($parser, 'PHPParser'))
-        return FALSE;
-      
+    function _recursiveAddFile(&$parser, $recurse= TRUE) {
       // Try to prevent adding of the same files twice
       foreach (array_keys ($this->files) as $idx) {
         if ($this->files[$idx]->filename === $parser->filename)
@@ -138,7 +135,7 @@
         foreach (explode (':', ini_get ('include_path')) as $p) {
           $fn= $p.'/'.str_replace ('.', DIRECTORY_SEPARATOR, $u).'.class.php';
           if (is_file ($fn)) {
-            $this->addFile (new PHPParser (realpath($fn)));
+            $this->_recursiveAddFile (new PHPParser (realpath($fn)));
             break;
           }
         }
@@ -148,11 +145,18 @@
         foreach (explode (':', ini_get ('include_path')) as $p) {
           $fn= $p.'/'.$r;
           if (file_exists ($fn)) {
-            $this->addFile (new PHPParser (realpath($fn)));
+            $this->_recursiveAddFile (new PHPParser (realpath($fn)));
             break;
           }
         }
       }
+    }
+
+    function addFile(&$parser) {
+      if (!is_a ($parser, 'PHPParser'))
+        return FALSE;
+        
+      $this->_recursiveAddFile ($parser);
       
       $this->updateList();
       return TRUE;
@@ -173,6 +177,13 @@
       );
       
       $this->tree->node_set_row_data($node, $nodeData);
+
+      // $style= gtk::widget_get_default_style();
+      $style= &new GtkStyle();
+      $style->fg[GTK_STATE_NORMAL]= new GdkColor ('#cccccc');
+      $this->tree->node_set_cell_style ($node, 1, $style);
+      $this->tree->node_set_cell_style ($node, 2, $style);
+
       return $node;
     }
     

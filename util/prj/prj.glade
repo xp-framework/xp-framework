@@ -91,7 +91,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CTree:title</child_name>
 	  <name>label5</name>
-	  <label>Line</label>
+	  <label>File</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -104,7 +104,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CTree:title</child_name>
 	  <name>label6</name>
-	  <label>End</label>
+	  <label>Line</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
