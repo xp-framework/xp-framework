@@ -15,9 +15,11 @@
     static $s= NULL;
     if (!isset($s)) $s= &new PHPSyntaxHighlighter();
 
+    // fputs(STDERR, str_repeat('-', 72)."\n".$rest."\n".str_repeat('-', 72)."\n");
+
     switch ($scheme) {
       case 'php':
-        $s->setSource("<?php\n".substr($rest, 2)."\n?>");
+        $s->setSource("<?php\n".substr($rest, 1)."\n?>");
         return '<php>'.strtr(substr($s->getHighlight(), 6, -7), array(
           '<br />'   => "<br />\n", 
           '&lt;?php' => '',

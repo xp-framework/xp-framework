@@ -43,7 +43,7 @@
       <xsl:with-param name="color" select="'#cccccc'"/>
       <xsl:with-param name="content">
         <code>
-          <xsl:apply-templates select="document(concat('php://', .))"/>
+          <xsl:apply-templates select="document(concat('php:', .))"/>
         </code>
       </xsl:with-param>
     </xsl:call-template>
