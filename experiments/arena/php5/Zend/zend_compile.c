@@ -4233,6 +4233,37 @@ void zend_do_add_enum_member(znode *name, znode *value TSRMLS_DC)
 	FREE_PNODE(name);
 }
 
+void zend_do_begin_enum_function_declaration(znode *enum_token, znode *function_token, znode *function_name, int is_method, int return_reference, znode *fn_flags_znode TSRMLS_DC)
+{
+#define _SIZEOF_MAGIC sizeof("__") - 1
+	char *tmp = estrdup(function_name->u.constant.value.str.val);
+	int length = function_name->u.constant.value.str.len + enum_token->u.constant.value.str.len + _SIZEOF_MAGIC;
+
+	/* Change method name from $name to "__$name$enum". E.g.
+	 * 
+	 * enum Op {
+	 *   plus { function evaluate($x, $y) { return $x + $y; } }
+	 * }
+	 * 
+	 * will result in a class Op with a method __evaluateplus()
+	 */
+	function_name->u.constant.value.str.val= (char*) erealloc(function_name->u.constant.value.str.val, length + 1);
+	memcpy(function_name->u.constant.value.str.val, "__", _SIZEOF_MAGIC);
+	memcpy(function_name->u.constant.value.str.val+ _SIZEOF_MAGIC, tmp, function_name->u.constant.value.str.len);
+	memcpy(function_name->u.constant.value.str.val+ _SIZEOF_MAGIC+ function_name->u.constant.value.str.len, enum_token->u.constant.value.str.val, enum_token->u.constant.value.str.len);
+	function_name->u.constant.value.str.val[length]= '\0';
+	function_name->u.constant.value.str.len= length;
+
+	efree(tmp);
+
+	/* Add member */
+	zend_do_add_enum_member(enum_token, NULL TSRMLS_CC);
+
+	/* Add private method */
+	fn_flags_znode->u.constant.value.lval= (fn_flags_znode->u.constant.value.lval | ZEND_ACC_PRIVATE) & ~ZEND_ACC_PUBLIC;
+	zend_do_begin_function_declaration(function_token, function_name, is_method, return_reference, fn_flags_znode TSRMLS_CC);
+}
+
 ZEND_API char* zend_get_compiled_variable_name(zend_op_array *op_array, zend_uint var, int* name_len)
 {
 	if (name_len) {

@@ -408,6 +408,10 @@ enum_declaration_list:
 enum_declaration_list_member:
 		T_STRING						{ zend_do_add_enum_member(&$1, NULL TSRMLS_CC); }
 	|	T_STRING '(' static_scalar ')'	{ zend_do_add_enum_member(&$1, &$3 TSRMLS_CC);  }
+	|	T_STRING '{' 
+			method_modifiers T_FUNCTION { $4.u.opline_num = CG(zend_lineno); } is_reference T_STRING { zend_do_begin_enum_function_declaration(&$1, &$4, &$7, 1, $6.op_type, &$3 TSRMLS_CC); } '(' 
+			parameter_list ')' throws method_body { zend_do_abstract_method(&$7, &$3, &$13 TSRMLS_CC); zend_do_end_function_declaration(&$4 TSRMLS_CC); }
+		'}'
 ;
 
 foreach_optional_arg:
