@@ -29,6 +29,7 @@
      * @return string Ein Printout der Variable
      */
     function varSource($var) {
+      if (is_a($var, 'Object')) return $var->toString();
       return is_string($var) ? $var : var_export($var, 1);
     }
   }
