@@ -29,25 +29,38 @@
       $conn     = NULL,
       $proc     = NULL,
       $view     = NULL,
-      $visited  = NULL;
+      $visited  = NULL,
+      $timer    = NULL;
       
     /**
      * Constructor
      *
      * @access  public
      * @param   &util.cmd.ParamString p
+     * @param   &util.Properties prop
      */
-    function __construct(&$p) {
+    function __construct(&$p, &$prop) {
       parent::__construct($p, dirname($p->value(0)).'/../ui/klip.glade', 'main');
-      
-      $this->visited= &new Hashmap();
 
-      // Set up HTTP connection
-      $this->conn= &new HttpConnection($p->value(1));
+      // Initialize visited hashmap to an empty set
+      $this->visited= &new Hashmap();
+      
+      // Set up HTTP connection from property file
+      $this->conn= &new HttpConnection($prop->readString('settings', 'url'));
+      
+      // Set refresh interval, defaulting to 60 seconds
+      $timer= &Gtk::timeout_add(
+        $prop->readString('settings', 'refresh', 60) * 1000,
+        array(&$this, 'onRefresh')
+      );
 
       // Set up XSL processor
       $this->proc= &new XSLProcessor();
-      $this->proc->setXSLFile(dirname($p->value(0)).'/../ui/skins/'.$p->value('skin', 's', 'default.xsl'));
+      $this->proc->setXSLFile(sprintf(
+        '%s/../ui/skins/%s.xsl',
+        dirname($p->value(0)),
+        $p->value('skin', 's', 'default')
+      ));
       $this->proc->setSchemeHandler(array('get_all' => array(&$this, 'onScheme')));
     }
     
@@ -259,10 +272,13 @@
     }
     
     /**
-     * Callback for when btn_refresh widget is clicked
+     * Callback for when btn_refresh widget is clicked. Also handles
+     * the interval timer, thus always returning TRUE to keep the timer
+     * going...
      *
      * @access  protected
      * @param   &php.gtk.GtkWidget widget
+     * @return  bool
      */
     function onRefresh(&$widget) {
       
@@ -284,10 +300,11 @@
         }
       } if (catch('Exception', $e)) {
         $this->cat->error($e);
-        return FALSE;
+        return TRUE;
       }
       
       $this->refreshView();
+      return TRUE;
     }
   }
 ?>
