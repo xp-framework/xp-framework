@@ -81,7 +81,11 @@
           <a href="news/bycategory?{@id}">
             <xsl:value-of select="."/>
           </a>
-          <xsl:if test="position() != last()">, </xsl:if>
+          <xsl:choose>
+            <xsl:when test="position() = last()"/>
+            <xsl:when test="position() = last() - 1"> and </xsl:when>
+            <xsl:otherwise>, </xsl:otherwise>
+          </xsl:choose>
         </xsl:for-each>        
         at <xsl:value-of select="func:datetime(date)"/>
       </em>
