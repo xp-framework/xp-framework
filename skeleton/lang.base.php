@@ -72,12 +72,10 @@
     // {{{ internal void destroy(void)
     //     Shutdown function
     function destroy() {
-      error_reporting(0); // Shut up!
-      foreach (array_keys($GLOBALS) as $var) {
-        if (
-          is_object($GLOBALS[$var]) && 
-          method_exists($GLOBALS[$var], '__destruct')
-        ) $GLOBALS[$var]->__destruct();
+      foreach (array_keys($GLOBALS) as $k) {
+        if (is_a($GLOBALS[$k], 'Object')) {
+          $GLOBALS[$k]->__destruct();
+        }
       }
     }
     // }}}
