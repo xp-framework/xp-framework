@@ -721,18 +721,6 @@
         $karma= 0;
         $recognized= FALSE;
         
-        // Hifive with someone
-        if (stristr($message, '*hifive*')) {
-          sleep(5);
-          $connection->sendMessage(
-            $target,
-            '%s: *hifive*',
-            $nick
-          );
-          
-          return;
-        }
-        
         // See if we can recognize something here and calculate karma - multiplied
         // by a random value because this message is directed at me.
         foreach ($this->recognition as $pattern => $delta) {
