@@ -14,11 +14,19 @@
       $response;
       
     function __construct($message) {
-      $this->response= new HTTPModuleResponse(array(
+      $this->_createResponse();
+      parent::__construct($message);
+    }
+    
+    function &getResponse() {
+      return $this->response;
+    }
+    
+    function _createResponse() {
+      $this->response= &new HTTPModuleResponse(array(
         'statusCode'    => 500,
         'content'       => 'Internal Server Error'
       ));
-      parent::__construct($message);
     }
   }
 ?>

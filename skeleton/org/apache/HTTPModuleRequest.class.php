@@ -17,7 +17,18 @@
       
     var
       $method;
-    
+
+    /**
+     * Gibt eine Umgebungsvariable zurücke
+     *
+     * @access  public
+     * @param   string name Header
+     * @return  string Header-Wert
+     */
+    function getEnvValue($name) {
+      return getenv($name);
+    }
+      
     /**
      * Gibt einen Request-Header zurück
      *
@@ -26,7 +37,6 @@
      * @return  string Header-Wert
      */
     function getHeader($name) {
-      if (empty($this->headers)) $this->headers= getallheaders();
       return $this->headers[$name];
     }
     
@@ -41,6 +51,16 @@
       return $this->params[$name];
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function setParams(&$params) {
+      $this->params= &$params;
+    }
     
     /**
      * (Insert method's description here)
@@ -49,7 +69,18 @@
      * @param   
      * @return  
      */
-    function getData() {
+    function setData(&$data) {
+      $this->data= &$data;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function &getData() {
       return $this->data;
     }
   }

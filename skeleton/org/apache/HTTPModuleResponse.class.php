@@ -3,6 +3,11 @@
  *
  * $Id$
  */
+ 
+  define('HTTP_OK',                     200);
+  define('HTTP_MOVED_TEMPORARILY',      302);
+  define('HTTP_NOT_FOUND',              404);
+  define('HTTP_INTERNAL_SERVER_ERROR',  500);
 
   /**
    * Kapselt den HTTP-Response des HTTP-Moduls
@@ -43,7 +48,7 @@
     }
     
     function sendContent() {
-      echo $this->content;
+      echo $this->getContent();
     }
 
     /**

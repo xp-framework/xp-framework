@@ -19,15 +19,16 @@
    *
    * Beispiel-Anwendung in <main>:
    * <pre>
-   * $mod= new HTTPModule();
+   * $mod= &new HTTPModule();
    * try(); {
-   *   $response= $mod->process();
+   *   $mod->init();
+   *   $response= &$mod->process();
    * } catch('HTTPModuleException', $e) {
-   *   $response= $e->getResponse(); // Standard HTTP/1.1 500 Error-Doc
+   *   $response= &$e->getResponse(); // Standard HTTP/1.1 500 Error-Doc
    * }
    * 
    * $response->sendHeaders();
-   * echo $response->getContent();
+   * $response->sendContent();
    * 
    * $mod->finalize();
    * </pre>
@@ -48,9 +49,31 @@
      * @return  
      */  
     function __construct() {
-      $this->request= &new HTTPModuleRequest();
-      $this->response= &new HTTPModuleResponse();
+      $this->_createRequest();
+      $this->_createResponse();
       parent::__construct();
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function _createRequest() {
+      $this->request= &new HTTPModuleRequest();
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function _createResponse() {
+      $this->response= &new HTTPModuleResponse();
     }
     
     /**
@@ -60,21 +83,26 @@
      * @param   string method Request-Methode
      */
     function _handleMethod($method) {
+      $this->request->headers= getallheaders();
+      $this->request->method= $method;
+      
       switch ($method) {
         case HTTP_METHOD_POST:
-          $this->request->data= &$GLOBALS['HTTP_RAW_POST_DATA'];
-          $this->request->params= &$_POST;
+          $this->request->setData($GLOBALS['HTTP_RAW_POST_DATA']);
+          $this->request->setParams($_POST);
           $this->_method= 'doPost';
           break;
           
         case HTTP_METHOD_GET:
-          $this->request->data= getenv('QUERY_STRING');
-          $this->request->params= &$_GET;
+          $this->request->setData(getenv('QUERY_STRING'));
+          $this->request->setParams($_GET);
           $this->_method= 'doGet';
           break;
+          
+        // PHP doesn't support more methods, anyway
+        default:
+          throw(new MethodNotImplementedException($method.' not supported'));
       }
-      
-      $this->request->method= $method;
     }
     
     /**
@@ -82,7 +110,7 @@
      *
      * @access  private
      */
-    function doGet() {
+    function doGet(&$req, &$res) {
     }
     
     /**
@@ -90,11 +118,17 @@
      *
      * @access  private
      */
-    function doPost() {
+    function doPost(&$req, &$res) {
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
     function init() {
-    
     }
     
     /**
@@ -115,10 +149,12 @@
      */
     function &process() {
       $this->_handleMethod(getenv('REQUEST_METHOD'));
-      $return= call_user_func_array(array(&$this, $this->_method), array(
+      if (FALSE === (call_user_func_array(array(&$this, $this->_method), array(
         &$this->request,
         &$this->response
-      ));
+      )))) {
+        return FALSE;
+      }
       return $this->response;
     }
   }
