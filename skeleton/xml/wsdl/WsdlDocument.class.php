@@ -10,13 +10,41 @@
     'xml.wsdl.WsdlMessage'
   );
   
+  // Namespaces
   define('XMLNS_WSDL',    'http://schemas.xmlsoap.org/wsdl/');
   define('XMLNS_XSD',     'http://www.w3.org/2001/XMLSchema');
   define('XMLNS_SOAP',    'http://schemas.xmlsoap.org/wsdl/soap/');
   define('XMLNS_SOAPENC', 'http://schemas.xmlsoap.org/soap/encoding/');
   
   /**
+   * WSDL
    *
+   * <code>
+   *   uses('xml.wsdl.WsdlDocument');
+   *   
+   *   $d= &new WsdlDocument('urn:GoogleSearch', 'urn:GoogleSearch');
+   *   $d->addNamespace('xmlns:typens', 'urn:GoogleSearch');
+   *   
+   *   $d->addMessage(new WsdlMessage('doGoogleSearch', array(
+   *     'key'            => 'string',
+   *     'q'              => 'string',
+   *     'start'          => 'int',
+   *     'maxResults'     => 'int',
+   *     'filter'         => 'boolean',
+   *     'restrict'       => 'string',
+   *     'safeSearch'     => 'boolean',
+   *     'lr'             => 'string',
+   *     'ie'             => 'string',
+   *     'oe'             => 'string',
+   *   )));
+   *   $d->addMessage(new WsdlMessage('doGoogleSearchResponse', array(
+   *     'return'        => array('GoogleSearchResult', 'typens')
+   *   )));
+   * 
+   *   echo $d->getSource(0);
+   * </code>
+   *
+   * @purpose  WSDL
    */
   class WsdlDocument extends Tree {
     var 
