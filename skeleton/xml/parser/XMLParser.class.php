@@ -95,13 +95,15 @@
         // Parse data
         if (!xml_parse($parser, $data, TRUE)) {
           $type= xml_get_error_code($parser);
+          $line= xml_get_current_line_number($parser);
+          $column= xml_get_current_column_number($parser);
           xml_parser_free($parser);
           return throw(new XMLFormatException(
             xml_error_string($type),
             $type,
             $source,
-            xml_get_current_line_number($parser),
-            xml_get_current_column_number($parser)
+            $line,
+            $column
           ));
         }
         xml_parser_free($parser);
