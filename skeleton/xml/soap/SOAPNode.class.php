@@ -60,11 +60,6 @@
      * @return  &mixed data
      */
     function &getContent($encoding= NULL) {
-      static $tmap= array(      // Mapping SOAP-typename => PHP-typename
-        'float'     => 'double',
-        'int'       => 'integer'
-      );
-
       $ret= $this->content;
       @list($ns, $t)= explode(':', @$this->attribute['xsi:type']);
       
@@ -79,7 +74,12 @@
           return $ret == 'false' ? FALSE : TRUE;
          
         case 'long':
-          $t= 'int';
+        case 'int':
+          $t= 'integer';
+          break;
+          
+        case 'float'.
+          $t= 'double';
           break;
           
         case 'date':
@@ -88,8 +88,6 @@
           break;
       }
       
-      if (isset($tmap[$t])) $t= $tmap[$t];
-
       // Decode if necessary
       switch (strtolower($encoding)) {
         case 'utf-8': $ret= utf8_decode($ret); break;
@@ -108,7 +106,7 @@
      * Recurse an array
      *
      * @access  private
-     * @param   &mixed elemt
+     * @param   &mixed elem
      * @param   array arr
      */
     function _recurseArray(&$elem, $arr) {
@@ -116,10 +114,8 @@
 
       $nodeType= get_class($this);
       if (!is_array($arr)) return;
-      foreach ($arr as $field=> $value) {
-      
-        // Private Variablen
-        if ('_' == $field{0}) continue;
+      foreach ($arr as $field => $value) {      
+        if ('_' == $field{0}) continue;     // Ignore "private" members
         
         $child= &$elem->addChild(new $nodeType(array(
           'name'        => (is_numeric($field) ? preg_replace('=s$=', '', $elem->name) : $field)
