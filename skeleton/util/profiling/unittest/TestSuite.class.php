@@ -16,20 +16,20 @@
    * <code>
    *   uses(
    *     'util.profiling.unittest.TestSuite', 
-   *     'net.xp-framework.unittest.SybaseTest'
+   *     'net.xp-framework.unittest.rdbms.DBTest'
    *   );
    *   
    *   $dsn= 'sybase://user:password@host/?autoconnect=1';
    *
    *   $suite= &new TestSuite();
-   *   $suite->addTest(new SybaseTest('testConnect', $dsn));
-   *   $suite->addTest(new SybaseTest('testSelect', $dsn));
+   *   $suite->addTest(new DBTest('testConnect', $dsn));
+   *   $suite->addTest(new DBTest('testSelect', $dsn));
    *   
    *   $result= &$suite->run();
    *   echo $result->toString();
    * </code>
    *
-   * @purpose  purpose
+   * @purpose  Testcase container
    */
   class TestSuite extends Object {
     var
