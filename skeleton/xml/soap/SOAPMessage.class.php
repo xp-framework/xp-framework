@@ -56,20 +56,17 @@
       $this->action= $action;
       $this->method= $method;
 
-      $this->root= &new Node(array(
-        'name'          => 'SOAP-ENV:Envelope',
-        'attribute'     => array(
-          'xmlns:SOAP-ENV'              => 'http://schemas.xmlsoap.org/soap/envelope/', 
-          'xmlns:xsd'                   => 'http://www.w3.org/2001/XMLSchema', 
-          'xmlns:xsi'                   => 'http://www.w3.org/2001/XMLSchema-instance', 
-          'xmlns:SOAP-ENC'              => 'http://schemas.xmlsoap.org/soap/encoding/', 
-          'xmlns:si'                    => 'http://soapinterop.org/xsd', 
-          'SOAP-ENV:encodingStyle'      => 'http://schemas.xmlsoap.org/soap/encoding/',
-          'xmlns:'.$this->namespace     => $this->action   
-        )
+      $this->root= &new Node('SOAP-ENV:Envelope', NULL, array(
+        'xmlns:SOAP-ENV'              => 'http://schemas.xmlsoap.org/soap/envelope/', 
+        'xmlns:xsd'                   => 'http://www.w3.org/2001/XMLSchema', 
+        'xmlns:xsi'                   => 'http://www.w3.org/2001/XMLSchema-instance', 
+        'xmlns:SOAP-ENC'              => 'http://schemas.xmlsoap.org/soap/encoding/', 
+        'xmlns:si'                    => 'http://soapinterop.org/xsd', 
+        'SOAP-ENV:encodingStyle'      => 'http://schemas.xmlsoap.org/soap/encoding/',
+        'xmlns:'.$this->namespace     => $this->action   
       ));
-      $this->root->addChild(new Node(array('name' => 'SOAP-ENV:Body')));
-      $this->root->children[0]->addChild(new Node(array('name' => $this->namespace.':'.$this->method)));
+      $this->root->addChild(new Node('SOAP-ENV:Body'));
+      $this->root->children[0]->addChild(new Node($this->namespace.':'.$this->method));
     }
     
     /**
