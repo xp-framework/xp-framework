@@ -64,7 +64,7 @@
      */
     function writef() {
       $a= func_get_args();
-      fwrite(STDOUT, vsprintf(array_pop($a), $a));
+      fwrite(STDOUT, vsprintf(array_shift($a), $a));
     }
 
     /**
