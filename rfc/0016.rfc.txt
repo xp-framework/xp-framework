@@ -67,7 +67,7 @@ annotations:
   values.
   
   Example (for CustomerHandler::sendMessage):
-</pre>
+<pre>
   array(2) {
     ["webmethod"]=>
     NULL
