@@ -30,7 +30,7 @@
     <html>
       <head>
         <title>XP Framework | <xsl:value-of select="$__state"/> | <xsl:value-of select="$__page"/></title>
-        <link rel="stylesheet" href="/{$__state}.css"/>
+        <link rel="stylesheet" href="/{substring-before(concat($__state, '/'), '/')}.css"/>
       </head>
       <body>
 
