@@ -5,21 +5,17 @@
  */
   require('lang.base.php');
   xp::sapi('cli');
-  uses(
-    'peer.news.NntpConnection',
-    'util.Date',
-    'util.DateUtil'    
-  );
+  uses('peer.news.NntpConnection');
   
   // {{{ main
   $c= &new NntpConnection(new URL('nntp://news.php.net'));
   try(); {
     $c->connect();
     $c->setGroup('php.version4');
-    
+
     $articles= array($c->getArticle());
     
-    for ($i= 0; $i<9; $i++) {
+    for ($i= 0; $i < 9; $i++) {
       $articles[]= $c->getNextArticle();
     }
   } if (catch('IOException', $e)) {
@@ -30,5 +26,5 @@
   foreach ($articles as $article) {
     Console::writeLine($article->toString());
   }
-  
+  // }}}
 ?>
