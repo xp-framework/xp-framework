@@ -42,7 +42,11 @@
           <tr>
             <xsl:for-each select="exsl:node-set($navigation)/nav">
               <xsl:variable name="class">nav<xsl:if test="@target = $__state">active</xsl:if></xsl:variable>
-              <td width="5%" class="{$class}"><a class="{$class}" href="{@target}"><xsl:value-of select="."/></a></td>
+              <td width="5%" class="{$class}">
+                <a class="{$class}" href="/xml/{$__product}.{$__lang}/{@target}">
+                  <xsl:value-of select="."/>
+                </a>
+              </td>
             </xsl:for-each>
             <td class="nav">&#160;</td>
             <td width="5%" class="nav" align="right">
