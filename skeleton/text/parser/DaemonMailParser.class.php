@@ -304,12 +304,6 @@
         $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_MULTIPART;
         
         while ($part= &$message->getPart()) {
-          if (MIME_DISPOSITION_INLINE != $part->getDisposition()) {
-          
-            // Ignore attachments
-            continue;
-          }
-          
           # printf(">> PART >> %s\n", var_export($part, 1));
           
           switch (strtolower($part->getContentType())) {
@@ -423,7 +417,7 @@
               break;
 
             default:
-              # var_dump('###IGNORE >>'.$part->getContentType().'<< IGNORE###');
+              // var_dump('###IGNORE >>'.$part->getContentType().'<< IGNORE###');
               
               // Ignore...
           }
