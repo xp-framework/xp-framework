@@ -7,7 +7,8 @@
   uses(
     'scriptlet.xml.workflow.AbstractState',
     'io.File',
-    'io.FileUtil'
+    'io.FileUtil',
+    'xml.CData'
   );
 
   /**
@@ -15,7 +16,7 @@
    *
    * @purpose  Overview state
    */
-  class OverviewState extends AbstractState {
+  class DetailsState extends AbstractState {
 
     /**
      * Process this state
@@ -26,31 +27,44 @@
      */
     function process(&$request, &$response) {
 
-      $service= NULL;
-      $method=  NULL;
-      $type=    NULL;
+      $service= $request->getParam('service', NULL);
+      $method=  $request->getParam('method',  NULL);
+      $type=    $request->getParam('type',    NULL);
       
-      
+      if (!$service || !$method || !$type) {
+        $this->addFormError($this->getClassName(), 'missing-parameter');
+        return;
+      }
 
       try(); {
 
-        // Open log xml
-        $f= &new File($request->getEnvValue('DOCUMENT_ROOT').'/../log/servicetests.xml');
-        if (!(
-          $f->exists() &&
-          $tree= &Tree::fromString(FileUtil::getContents($f))
-        )) {
-          
-          $response->addFormError($this->getClassName(), 'not-available', 'servicetests');
+        // Open logfile
+        $f= &new File(sprintf('%s/%s.%s',
+          $request->getEnvValue('DOCUMENT_ROOT').'/../log/'.$service,
+          strtolower($method),
+          strtolower($type)
+        ));
+        
+        if (!$f->exists()) {
+          $response->addFormError($this->getClassName(), 'not-available', 'details');
           return;
         }
+        
+        $contents= &new CData(FileUtil::getContents($f));
       } if (catch ('XMLFormatException', $e)) {
-        $response->addFormError($this->getClassName(),'not-well-formed', 'servicetests');
+        $response->addFormError($this->getClassName(),'not-well-formed', 'details');
         return;
       }
       
       // Append result overview to the result tree
-      $response->addFormResult($tree->root);
+      $n= &$response->addFormResult(new Node(
+        'detail', 
+        $contents, 
+        array(
+        'service' => $service,
+        'method'  => $method,
+        'type'    => $type
+      )));
     }
   }
 ?>
