@@ -49,6 +49,8 @@
         if (extension_loaded('mysql')) {
           $instance->drivers['mysql']= &XPClass::forName('rdbms.mysql.MySQL');
         }
+        
+        // TBI: postgres, oracle, ...
       }
       return $instance;
     }
