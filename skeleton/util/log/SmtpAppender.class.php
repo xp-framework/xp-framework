@@ -28,7 +28,7 @@
      * @param   string prefix
      * @param   bool sync default TRUE
      */
-    function __construct($email, $prefix= '', $sync= TRUE) {
+    function __construct($email= NULL, $prefix= '', $sync= TRUE) {
       $this->email= $email;
       $this->sync= $sync;
       parent::__construct();
