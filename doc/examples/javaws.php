@@ -27,7 +27,7 @@
     $response= &$c->get();
     $document= '';
     while (FALSE !== ($buf= $response->readData())) {
-      $document.= $buf;
+      $document.= preg_replace('/&(?!(amp;))/', '&amp;', $buf);
     }
     delete($c);
   } if (catch('Exception', $e)) {
