@@ -48,7 +48,6 @@
       } else {
         $this->setURI($file);
       }
-      parent::__construct();
     }
     
     /**
