@@ -205,7 +205,7 @@
     function update() {
       $cm= &amp;ConnectionManager::getInstance();  
       try(); {
-        $db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="../@dbhost"/><xsl:text>', 0);
+        $db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>', 0);
         $db->update('
           </xsl:text><xsl:value-of select="@database"/>..<xsl:value-of select="@name"/><xsl:text> set&#10;</xsl:text>
       <xsl:for-each select="attribute[@identity = 'false']">
@@ -275,7 +275,7 @@
     function insert() {
       $cm= &amp;ConnectionManager::getInstance();  
       try(); {
-        $db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="../@dbhost"/><xsl:text>', 0);
+        $db= &amp;$cm->getByHost('</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>', 0);
         $db->insert('
           </xsl:text>
        <xsl:value-of select="@database"/>..<xsl:value-of select="@name"/><xsl:text> (&#10;</xsl:text>
