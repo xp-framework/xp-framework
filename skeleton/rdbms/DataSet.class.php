@@ -73,6 +73,7 @@
    *
    * Note: Fields are created as public members (aka "implicit public").
    *
+   * @see      xp://rdbms.Peer
    * @see      xp://rdbms.ConnectionManager
    * @purpose  Base class
    */
