@@ -2,7 +2,18 @@ Das XP-Framework: Todo-Liste
 ======================================================================
 $Id$
 
-
+friebe, Tue Jul  9 15:26:02 CEST 2002
+-------------------------------------
+* SOAP
+  Hashmaps können auch so serialisiert sein:
+  <hash xmlns:ns2="http://xml.apache.org/xml-soap" xsi:type="ns2:Map">
+    <item>
+      <key xsi:type="xsd:string">2</key>
+      <value xsi:type="xsd:string">two</value>
+    <item>
+  </hash>
+  http://www-106.ibm.com/developerworks/webservices/library/ws-soapmap1/
+  
 friebe, Sat Jun 15 22:35:34 CEST 2002
 -------------------------------------
 * Installer etc.
