@@ -14,7 +14,6 @@
   class XMLParser extends XML {
     var
       $parser       = NULL,
-      $error        = NULL,
       $dataSource   = NULL,
       $callback     = NULL;
 
@@ -26,7 +25,7 @@
      */      
     function __construct($params= NULL) {
       parent::__construct();
-      $this->parser= $this->error= $this->dataSource= NULL;
+      $this->parser= $this->dataSource= NULL;
     }
     
     /**
@@ -60,7 +59,6 @@
      * @throws  xml.XMLFormatException in case the data could not be parsed
      */
     function parse($data) {
-      unset($this->error);
       if (NULL == $this->parser) $this->_create();
       if (!isset($this->callback) || !is_object($this->callback)) return throw(new IllegalArgumentException(
         'callback is not an object'
