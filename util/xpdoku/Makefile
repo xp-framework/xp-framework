@@ -12,7 +12,7 @@ PHP=php -q
 .PHONY: all clean install xml
 
 default: all
-all: clean gen install
+all: clean makexml gen install
 
 $(XML):
 	-mkdir $(XML)
