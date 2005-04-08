@@ -37,7 +37,7 @@
      * @model   static
      * @access  public
      * @param   &lang.ClassLoader classloader
-     * @param   string[] interfaces names of the interfaces to implement
+     * @param   lang.XPClass[] interfaces names of the interfaces to implement
      * @return  &lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
@@ -46,7 +46,10 @@
       static $cache= array();
       
       // Calculate cache key (composed of the names of all interfaces)
-      $key= $classloader->hashCode().':'.implode(';', $interfaces);
+      $key= $classloader->hashCode().':'.implode(';', array_map(
+        create_function('$i', 'return $i->getName();'), 
+        $interfaces
+      ));
       if (isset($cache[$key])) return $cache[$key];
       
       // Create proxy class' name, using a unique identifier and a prefix
@@ -54,12 +57,8 @@
       $implements= xp::registry('implements');
       $bytes= 'class '.$name.' extends Proxy { ';
 
-      foreach ($interfaces as $interface) {
-        try(); {
-          $if= &XPClass::forName($interface, $classloader);
-        } if (catch('ClassNotFoundException', $e)) {
-          return throw(new IllegalArgumentException($e->getMessage()));
-        }
+      for ($j= 0, $t= sizeof($interfaces); $j < $t; $j++) {
+        $if= &$interfaces[$j];
         
         // Verify that the Class object actually represents an interface
         if (!$if->isInterface()) {
@@ -115,7 +114,7 @@
      * @model   static
      * @access  public
      * @param   &lang.ClassLoader classloader
-     * @param   string[] interfaces
+     * @param   lang.XPClass[] interfaces
      * @param   &lang.reflect.InvocationHandler handler
      * @return  &lang.XPClass
      * @throws  lang.IllegalArgumentException
