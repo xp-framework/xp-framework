@@ -26,7 +26,7 @@
     }
  
     /**
-     * Send XML-RPC message
+     * Send WDDX message
      *
      * @access  public
      * @param   &xml.wddx.WddxMessage message
@@ -35,12 +35,12 @@
     function &send(&$message) { }
     
     /**
-     * Retrieve a XML-RPC message.
+     * Retrieve a WDDX message.
      *
      * @access  public
      * @param   &scriptlet.HttpScriptletResponse response
      * @return  &xml.wddx.WddxMessage
      */
-    function &retrieve(&$response) { }    
+    function &retrieve(&$response) { }
   } implements(__FILE__, 'util.log.Traceable');
 ?>
