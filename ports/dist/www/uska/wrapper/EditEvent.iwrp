@@ -6,10 +6,10 @@
 >
 
   <!-- Handler class -->
-  <handler class="de.uska.scriptlet.handler.AddEventHandler"/>
+  <handler class="de.uska.scriptlet.handler.EditEventHandler"/>
 
   <!-- event id -->
-  <param name="article_id" type="int" occurrence="passbehind,optional"/>
+  <param name="event_id" type="int" occurrence="passbehind,optional"/>
 
   <!-- team -->
   <param name="team" type="int">
