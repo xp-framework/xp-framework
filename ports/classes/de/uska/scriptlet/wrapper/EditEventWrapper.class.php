@@ -1,0 +1,214 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+  uses(
+    'scriptlet.xml.workflow.Wrapper',
+    'scriptlet.xml.workflow.casters.ToBoolean',
+    'scriptlet.xml.workflow.casters.ToDate',
+    'scriptlet.xml.workflow.casters.ToInteger',
+    'scriptlet.xml.workflow.casters.ToTrimmedString',
+    'scriptlet.xml.workflow.checkers.LengthChecker'    
+  );
+
+  /**
+   * Wrapper for EditEventHandler
+   * Handler class
+   * 
+   * @see      xp://de.uska.scriptlet.handler.EditEventHandler
+   * @purpose  Wrapper
+   */
+  class EditEventWrapper extends Wrapper {
+
+    /**
+     * Constructor
+     *
+     * @access  public
+     */  
+    function __construct() {
+      $this->registerParamInfo(
+        'event_id',
+        OCCURRENCE_PASSBEHIND | OCCURRENCE_OPTIONAL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+      );
+      $this->registerParamInfo(
+        'team',
+        OCCURRENCE_UNDEFINED,
+        NULL,
+        array('scriptlet.xml.workflow.casters.ToInteger'),
+        NULL,
+        NULL
+      );
+      $this->registerParamInfo(
+        'event_type',
+        OCCURRENCE_UNDEFINED,
+        NULL,
+        array('scriptlet.xml.workflow.casters.ToInteger'),
+        NULL,
+        NULL
+      );
+      $this->registerParamInfo(
+        'name',
+        OCCURRENCE_UNDEFINED,
+        NULL,
+        array('scriptlet.xml.workflow.casters.ToTrimmedString'),
+        NULL,
+        array('scriptlet.xml.workflow.checkers.LengthChecker', 4)
+      );
+      $this->registerParamInfo(
+        'description',
+        OCCURRENCE_OPTIONAL,
+        NULL,
+        array('scriptlet.xml.workflow.casters.ToTrimmedString'),
+        NULL,
+        array('scriptlet.xml.workflow.checkers.LengthChecker', 15)
+      );
+      $this->registerParamInfo(
+        'target_date',
+        OCCURRENCE_UNDEFINED,
+        NULL,
+        array('scriptlet.xml.workflow.casters.ToDate'),
+        NULL,
+        NULL
+      );
+      $this->registerParamInfo(
+        'deadline',
+        OCCURRENCE_OPTIONAL,
+        NULL,
+        array('scriptlet.xml.workflow.casters.ToDate'),
+        NULL,
+        NULL
+      );
+      $this->registerParamInfo(
+        'max',
+        OCCURRENCE_OPTIONAL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+      );
+      $this->registerParamInfo(
+        'req',
+        OCCURRENCE_OPTIONAL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+      );
+      $this->registerParamInfo(
+        'guests',
+        OCCURRENCE_UNDEFINED,
+        NULL,
+        array('scriptlet.xml.workflow.casters.ToBoolean'),
+        NULL,
+        NULL
+      );
+    }
+
+    /**
+     * Returns the value of the parameter event_id
+     *
+     * @access  public
+     * @return  int
+     */
+    function getEvent_id() {
+      return $this->getValue('event_id');
+    }
+
+    /**
+     * Returns the value of the parameter team
+     *
+     * @access  public
+     * @return  int
+     */
+    function getTeam() {
+      return $this->getValue('team');
+    }
+
+    /**
+     * Returns the value of the parameter event_type
+     *
+     * @access  public
+     * @return  int
+     */
+    function getEvent_type() {
+      return $this->getValue('event_type');
+    }
+
+    /**
+     * Returns the value of the parameter name
+     *
+     * @access  public
+     * @return  string
+     */
+    function getName() {
+      return $this->getValue('name');
+    }
+
+    /**
+     * Returns the value of the parameter description
+     *
+     * @access  public
+     * @return  string
+     */
+    function getDescription() {
+      return $this->getValue('description');
+    }
+
+    /**
+     * Returns the value of the parameter target_date
+     *
+     * @access  public
+     * @return  string
+     */
+    function getTarget_date() {
+      return $this->getValue('target_date');
+    }
+
+    /**
+     * Returns the value of the parameter deadline
+     *
+     * @access  public
+     * @return  string
+     */
+    function getDeadline() {
+      return $this->getValue('deadline');
+    }
+
+    /**
+     * Returns the value of the parameter max
+     *
+     * @access  public
+     * @return  int
+     */
+    function getMax() {
+      return $this->getValue('max');
+    }
+
+    /**
+     * Returns the value of the parameter req
+     *
+     * @access  public
+     * @return  int
+     */
+    function getReq() {
+      return $this->getValue('req');
+    }
+
+    /**
+     * Returns the value of the parameter guests
+     *
+     * @access  public
+     * @return  boolean
+     */
+    function getGuests() {
+      return $this->getValue('guests');
+    }
+
+  }
+?>
