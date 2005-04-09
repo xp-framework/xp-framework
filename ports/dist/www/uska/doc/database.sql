@@ -4,26 +4,30 @@
  * $Id$
  */
 
-create database uska;
-use uska;
-
 create table player (
   player_id                   int auto_increment primary key,
+  player_type_id              int not null,
   
   firstname                   varchar(50) not null,
   lastname                    varchar(50) not null,
-  username                    varchar(20) not null,
+  username                    varchar(20) null,
   
-  password                    varchar(60) not null,
-  email                       varchar(255) not null,
+  password                    varchar(60) null,
+  email                       varchar(255) null,
   
   position                    int null,
-  sex                         int not null
+  sex                         int null,
+  
+  created_by                  int null,
+  
+  lastchange                  datetime not null,
+  changedby                   varchar(50) not null
 ) Type=InnoDB
-alter table player add index (username)
+alter table player add unique index (username)
+alter table player add foreign key (created_by) references player(player_id)
 
 create table team (
-  team_id                     int auto_increment primary_key,
+  team_id                     int auto_increment primary key,
   
   name                        varchar(255) not null
 ) Type=InnoDB
@@ -56,6 +60,7 @@ create table event (
   
   max_attendees               int null,
   req_attendees               int null,
+  allow_guests                int default 1,
   
   event_type_id               int not null
 ) Type=InnoDB
@@ -90,6 +95,9 @@ create table right (
   right_id                    int auto_increment primary_key,
   name                        varchar(50) not null
 ) Type=InnoDB
+insert into right values ("create_player");
+insert into right values ("create_event")
+insert into right values ("create_news")
 
 create table plane_right_matrix (
   right_id                    int not null,
