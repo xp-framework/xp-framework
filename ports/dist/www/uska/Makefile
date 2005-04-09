@@ -3,6 +3,9 @@
 # $Id$ 
 
 BASE=../../..
+WRAPPER_PHP=../../../classes/de/uska/scriptlet/wrapper
+
+.PHONY: wrapper
 
 include ../../../xp.port.mk
 
