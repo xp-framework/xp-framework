@@ -65,8 +65,8 @@ create table event (
   event_type_id               int not null
 ) Type=InnoDB
 alter table event add index (target_date)
-alter table event add foreign key team_id references team(team_id)
-alter table event add foreign key event_type_id references event_type(event_type_id)
+alter table event add foreign key (team_id) references team(team_id)
+alter table event add foreign key (event_type_id) references event_type(event_type_id)
 
 create table event_attendee (
   event_id                    int not null,
@@ -75,8 +75,8 @@ create table event_attendee (
   offers_seats                int null,
   needs_driver                int null
 ) Type=InnoDB
-alter table event_attendee add foreign key event_id references event(event_id)
-alter table event_attendee add foreign key player_id references player(player_id)
+alter table event_attendee add foreign key (event_id) references event(event_id)
+alter table event_attendee add foreign key (player_id) references player(player_id)
 alter table event_attendee add index (event_id)
 alter table event_attendee add index (player_id)
 alter table event_attendee add unique index (event_id, player_id)
@@ -87,23 +87,23 @@ create table event_points (
   
   points                      int null
 ) Type=InnoDB
-alter table event_points add foreign key event_id references event(event_id)
-alter table event_points add foreign key player_id references player(player_id)
+alter table event_points add foreign key (event_id) references event(event_id)
+alter table event_points add foreign key (player_id) references player(player_id)
 alter table event_points add index (player_id)
 
-create table right (
-  right_id                    int auto_increment primary_key,
+create table permission (
+  permission_id               int auto_increment primary key,
   name                        varchar(50) not null
 ) Type=InnoDB
-insert into right values ("create_player");
-insert into right values ("create_event")
-insert into right values ("create_news")
+insert into permission values (1, "create_player")
+insert into permission values (2, "create_event")
+insert into permission values (3, "create_news")
 
 create table plane_right_matrix (
-  right_id                    int not null,
+  permission_id               int not null,
   player_id                   int not null
 ) Type=InnoDB
 alter table plane_right_matrix add index (player_id)
-alter table plane_right_matrix add unique index (right_id, player_id)
-alter table plane_right_matrix add foreign key right_id references right(right_id)
-alter table plane_right_matrix add foreign key player_id references player(player_id)
+alter table plane_right_matrix add unique index (permission_id, player_id)
+alter table plane_right_matrix add foreign key (permission_id) references permission(permission_id)
+alter table plane_right_matrix add foreign key (player_id) references player(player_id)
