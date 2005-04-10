@@ -51,6 +51,7 @@ insert into event_type values (3, "Sonstiges")
 create table event (
   event_id                    int auto_increment primary key,
   team_id                     int not null,
+  event_type_id               int not null
   
   name                        varchar(255) not null,
   description                 varchar(1023) null,
@@ -62,7 +63,8 @@ create table event (
   req_attendees               int null,
   allow_guests                int default 1,
   
-  event_type_id               int not null
+  lastchange                  datetime not null,
+  changedby                   varchar(50) not null
 ) Type=InnoDB
 alter table event add index (target_date)
 alter table event add foreign key (team_id) references team(team_id)
