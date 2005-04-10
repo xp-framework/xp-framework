@@ -30,15 +30,15 @@
     }
     
     /**
-     * Process this state. Just sets up database connection
+     * Setup this state. Sets up database connection and redirects
+     * to login form in case the state needs an authenticated user.
      *
      * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
-     * @return  boolean
      */
-    function process(&$request, &$response, &$context) {
+    function setup(&$request, &$response, &$context) {
     
       // Automatically handle authentication if state indicates so
       if ($this->requiresAuthentication()) {
@@ -67,6 +67,7 @@
     
       $cm= &ConnectionManager::getInstance();
       $this->db= &$cm->getByHost($request->getProduct(), 0);
+      parent::setup($request, $response, $context);
     }
   
     /**
