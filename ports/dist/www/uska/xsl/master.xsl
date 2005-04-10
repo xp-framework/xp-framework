@@ -13,6 +13,7 @@
 >
   <xsl:output method="html" encoding="iso-8859-1" indent="no"/>
   <xsl:include href="snippets.inc.xsl"/>
+  <xsl:include href="date.inc.xsl"/>
   
   <xsl:param name="__page"/>
   <xsl:param name="__frame"/>
@@ -23,25 +24,6 @@
   <xsl:param name="__query"/>
   
   <xsl:variable name="texts" select="document(concat($__product, '/', $__lang, '/texts.xml'))/texts"/>
-
-  <!--
-   ! Function to display a serialized date object
-   !
-   ! @param  node-set date
-   !-->
-  <func:function name="func:datetime">
-    <xsl:param name="date"/>
-    
-    <func:result>
-      <xsl:value-of select="concat(
-        exsl:node-set($date)/year, '-',
-        format-number(exsl:node-set($date)/mon, '00'), '-',
-        format-number(exsl:node-set($date)/mday, '00'), ' ',
-        format-number(exsl:node-set($date)/hours, '00'), ':',
-        format-number(exsl:node-set($date)/minutes, '00')
-      )"/>
-    </func:result>
-  </func:function>
 
   <!--
    ! Function that returns a fully qualified link to a specified target
