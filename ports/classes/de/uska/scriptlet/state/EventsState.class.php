@@ -34,7 +34,7 @@
         $team= FALSE;
         $type= FALSE;
         with ($env= $request->getEnvValue('QUERY_STRING')); {
-          if (strlen($env)) list($team, $type)= explode(',', $env);
+          if (strlen($env)) list($type, $team)= explode(',', $env);
         }
         
         $events= $this->db->select('
@@ -48,7 +48,9 @@
             e.max_attendees,
             e.req_attendees,
             e.allow_guests,
-            e.event_type_id
+            e.event_type_id,
+            e.lastchange,
+            e.changedby
           from
             event as e,
             team as t
@@ -62,6 +64,7 @@
         return throw($e);
       }
       
+      $this->insertEventCalendar($request, $response, $team);
       $response->addFormResult(Node::fromArray($events, 'events'));
     }
   }
