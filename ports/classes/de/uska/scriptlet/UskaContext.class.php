@@ -25,7 +25,7 @@
     function insertStatus(&$response) {
       if ($this->user) {
         $response->addFormResult(Node::fromObject($this->user, 'user'));
-        $response->addFormResult(Node::fromArray($this->permission, 'permission'));
+        $response->addFormResult(Node::fromArray($this->permissions, 'permission'));
       }
     }
     
