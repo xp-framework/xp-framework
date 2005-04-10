@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+ ! Master stylesheet
+ !
+ ! $Id$
+ !-->
+<xsl:stylesheet
+ version="1.0"
+ xmlns:exsl="http://exslt.org/common"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:func="http://exslt.org/functions"
+ extension-element-prefixes="func"
+>
+
+  <xsl:include href="../layout.xsl"/>
+
+  <xsl:template name="context">
+  </xsl:template>
+
+  <xsl:template name="content">
+    <xsl:apply-templates select="/formresult/event"/>
+  </xsl:template>
+  
+  <xsl:template match="event">
+    <h3>
+      <xsl:value-of select="/formresult/event/name"/> - 
+      <xsl:value-of select="func:datetime(/formresult/event/target_date)"/>
+    </h3>
+    
+    <p>
+      <xsl:if test="description != ''"><xsl:value-of select="description"/><br/></xsl:if>
+      <xsl:value-of select="func:get_text('event#max')"/>: <b><xsl:value-of select="max_attendees"/></b> / 
+      <xsl:value-of select="func:get_text('event#req')"/>: <b><xsl:value-of select="req_attendees"/></b> /
+      <xsl:value-of select="func:get_text(concat('event#guests_allowed-', allow_guests))"/>
+      <br/><br/>
+        
+      <small><xsl:value-of select="func:get_text('event#createdby')"/>&#160;<xsl:value-of select="changedby"/> at <xsl:value-of select="func:datetime(lastchange)"/></small>
+    </p>
+    
+    <table border="0" cellpadding="3" cellspacing="1" class="list" width="600">
+      <tr>
+        <th>Spieler</th>
+        <th>Teilnahme</th>
+        <th>Fahrerinfo</th>
+      </tr>
+      <xsl:for-each select="attendeeinfo/player">
+        <tr class="list_{position() mod 2}">
+          <td><xsl:value-of select="concat(@firstname, ' ', @lastname)"/></td>
+          <td>
+            <xsl:value-of select="func:get_text(concat('attendee#status-', @attend))"/>
+          </td>
+          <td>
+            <xsl:choose>
+              <xsl:when test="@offers_seats &gt; 0"><xsl:value-of select="concat(@offers_seats, ' ', func:get_text('attendee#offers_seats'))"/></xsl:when>
+              <xsl:when test="@needs_driver = 1"><xsl:value-of select="func:get_text('attendee#needs_driver')"/></xsl:when>
+              <xsl:otherwise>&#160;</xsl:otherwise>
+            </xsl:choose>
+          </td>
+        </tr>
+      </xsl:for-each>
+      <tr class="list_compute">
+        <td>Gesamt</td>
+        <td>
+          <xsl:value-of select="count(attendeeinfo/player[@attend = 1])"/>&#160;<xsl:value-of select="func:get_text('attendee#attendees')"/>
+        </td>
+        <td>
+          <xsl:value-of select="sum(attendeeinfo/player[@offers_seats != '']/@offers_seats)"/>&#160;<xsl:value-of select="func:get_text('attendee#availableseats')"/> /
+          <xsl:value-of select="sum(attendeeinfo/player[@needs_driver != '']/@needs_driver)"/>&#160;<xsl:value-of select="func:get_text('attendee#neededseats')"/>
+        </td>
+      </tr>
+    </table>
+  </xsl:template>
+</xsl:stylesheet>
