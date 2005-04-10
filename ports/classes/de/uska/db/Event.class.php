@@ -8,7 +8,7 @@
  
   /**
    * Class wrapper for table event, database uska
-   * (Auto-generated on Sat, 09 Apr 2005 12:04:19 +0200 by alex)
+   * (Auto-generated on Sun, 10 Apr 2005 13:37:17 +0200 by alex)
    *
    * @purpose  Datasource accessor
    */
@@ -23,7 +23,9 @@
       $max_attendees      = NULL,
       $req_attendees      = NULL,
       $allow_guests       = NULL,
-      $event_type_id      = 0;
+      $event_type_id      = 0,
+      $changedby          = '',
+      $lastchange         = NULL;
 
     /**
      * Static initializer
@@ -47,7 +49,9 @@
           'max_attendees'       => '%d',
           'req_attendees'       => '%d',
           'allow_guests'        => '%d',
-          'event_type_id'       => '%d'
+          'event_type_id'       => '%d',
+          'changedby'           => '%s',
+          'lastchange'          => '%s'
         ));
       }
     }  
@@ -322,6 +326,48 @@
      */
     function setEvent_type_id($event_type_id) {
       return $this->_change('event_type_id', $event_type_id);
+    }
+
+    /**
+     * Retrieves changedby
+     *
+     * @access  public
+     * @return  string
+     */
+    function getChangedby() {
+      return $this->changedby;
+    }
+      
+    /**
+     * Sets changedby
+     *
+     * @access  public
+     * @param   string changedby
+     * @return  string the previous value
+     */
+    function setChangedby($changedby) {
+      return $this->_change('changedby', $changedby);
+    }
+
+    /**
+     * Retrieves lastchange
+     *
+     * @access  public
+     * @return  util.Date
+     */
+    function getLastchange() {
+      return $this->lastchange;
+    }
+      
+    /**
+     * Sets lastchange
+     *
+     * @access  public
+     * @param   util.Date lastchange
+     * @return  util.Date the previous value
+     */
+    function setLastchange($lastchange) {
+      return $this->_change('lastchange', $lastchange);
     }
   }
 ?>
