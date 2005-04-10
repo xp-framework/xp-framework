@@ -74,8 +74,12 @@ create table event_attendee (
   event_id                    int not null,
   player_id                   int not null,
   
-  offers_seats                int null,
-  needs_driver                int null
+  attends                     int not null,
+  offers_seats                int not null,
+  needs_driver                int not null,
+  
+  lastchange                  datetime not null,
+  changedby                   varchar(50) not null
 ) Type=InnoDB
 alter table event_attendee add foreign key (event_id) references event(event_id)
 alter table event_attendee add foreign key (player_id) references player(player_id)
