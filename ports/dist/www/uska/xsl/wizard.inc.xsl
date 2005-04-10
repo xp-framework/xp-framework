@@ -96,6 +96,18 @@
     </func:result>
   </func:function>
 
+  <func:function name="func:wizard_row_password">
+    <xsl:param name="name"/>
+    <xsl:param name="size" select="40"/>
+    
+    <func:result>
+      <tr>
+        <xsl:copy-of select="func:_wizard_row_start($name)"/>
+        <td><input type="password" name="{$name}" value="{/formresult/formvalues/param[@name= $name]}" size="{$size}"/></td>
+      </tr>
+    </func:result>
+  </func:function>
+
   <func:function name="func:wizard_row_checkbox">
     <xsl:param name="name"/>
     
