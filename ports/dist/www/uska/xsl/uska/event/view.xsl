@@ -15,6 +15,14 @@
   <xsl:include href="../layout.xsl"/>
 
   <xsl:template name="context">
+    <table class="sidebar" cellpadding="0" cellspacing="0" width="170">
+      <tr><td class="sidebar_head">Aktionen</td></tr>
+      <tr><td><a href="{func:link(concat('event/attend?event_id=', /formresult/event/event_id))}">Anmelden</a></td></tr>
+      
+      <xsl:if test="/formresult/event/allow_guests = 1">
+        <tr><td><a hreF="{func:link(concat('event/attend?guest=add&amp;event_id=', /formresult/event/event_id))}">Gast anmelden</a></td></tr>
+      </xsl:if>
+    </table>
   </xsl:template>
 
   <xsl:template name="content">
@@ -45,16 +53,27 @@
       </tr>
       <xsl:for-each select="attendeeinfo/player">
         <tr class="list_{position() mod 2}">
-          <td><xsl:value-of select="concat(@firstname, ' ', @lastname)"/></td>
           <td>
-            <xsl:value-of select="func:get_text(concat('attendee#status-', @attend))"/>
+            <xsl:value-of select="concat(@firstname, ' ', @lastname)"/>
+            <xsl:if test="@player_type_id = 2">
+              <br/>
+              (<xsl:value-of select="concat(func:get_text('attendee#guestof'), ' ', creator/firstname, ' ', creator/lastname)"/>)
+            </xsl:if>
           </td>
           <td>
-            <xsl:choose>
-              <xsl:when test="@offers_seats &gt; 0"><xsl:value-of select="concat(@offers_seats, ' ', func:get_text('attendee#offers_seats'))"/></xsl:when>
-              <xsl:when test="@needs_driver = 1"><xsl:value-of select="func:get_text('attendee#needs_driver')"/></xsl:when>
-              <xsl:otherwise>&#160;</xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="func:get_text(concat('attendee#status-', @attend))"/>
+            <xsl:if test="/formresult/user and ((@player_type_id = 1 and @player_id = /formresult/user/player_id) or (@player_type_id= 2 and @created_by = /formresult/user/player_id))">
+              &#160;(<a href="{func:link(concat('event/attend?event_id=', /formresult/event/event_id, '&amp;player_id=', @player_id))}">Ändern</a>)
+            </xsl:if>
+          </td>
+          <td>
+            <xsl:if test="@attend = 1">
+              <xsl:choose>
+                <xsl:when test="@offers_seats &gt; 0"><xsl:value-of select="concat(@offers_seats, ' ', func:get_text('attendee#offers_seats'))"/></xsl:when>
+                <xsl:when test="@needs_driver = 1"><xsl:value-of select="func:get_text('attendee#needs_driver')"/></xsl:when>
+                <xsl:otherwise>&#160;</xsl:otherwise>
+              </xsl:choose>
+            </xsl:if>
           </td>
         </tr>
       </xsl:for-each>
@@ -64,8 +83,8 @@
           <xsl:value-of select="count(attendeeinfo/player[@attend = 1])"/>&#160;<xsl:value-of select="func:get_text('attendee#attendees')"/>
         </td>
         <td>
-          <xsl:value-of select="sum(attendeeinfo/player[@offers_seats != '']/@offers_seats)"/>&#160;<xsl:value-of select="func:get_text('attendee#availableseats')"/> /
-          <xsl:value-of select="sum(attendeeinfo/player[@needs_driver != '']/@needs_driver)"/>&#160;<xsl:value-of select="func:get_text('attendee#neededseats')"/>
+          <xsl:value-of select="sum(attendeeinfo/player[@offers_seats != '' and @attend = 1]/@offers_seats)"/>&#160;<xsl:value-of select="func:get_text('attendee#availableseats')"/> /
+          <xsl:value-of select="sum(attendeeinfo/player[@needs_driver != '' and @attend = 1]/@needs_driver)"/>&#160;<xsl:value-of select="func:get_text('attendee#neededseats')"/>
         </td>
       </tr>
     </table>
