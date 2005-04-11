@@ -6,7 +6,8 @@
 
   uses(
     'de.uska.scriptlet.state.UskaState',
-    'de.uska.db.Event'
+    'de.uska.db.Event',
+    'de.uska.db.Player'
   );
 
   /**
@@ -39,6 +40,8 @@
             p.player_id,
             p.firstname,
             p.lastname,
+            p.player_type_id,
+            p.created_by,
             a.offers_seats,
             a.needs_driver,
             a.attend
@@ -47,8 +50,25 @@
             player_team_matrix as ptm,
             player as p left outer join event_attendee as a on p.player_id= a.player_id and a.event_id= e.event_id
           where p.player_id= ptm.player_id
+            and p.player_type_id= 1
             and ptm.team_id= e.team_id
-            and e.event_id= %d
+            and e.event_id= %1$d
+          
+          union select
+            p.player_id,
+            p.firstname,
+            p.lastname,
+            p.player_type_id,
+            p.created_by,
+            a.offers_seats,
+            a.needs_driver,
+            a.attend
+          from
+            event_attendee as a,
+            player as p
+          where p.player_id= a.player_id
+            and p.player_type_id= 2
+            and a.event_id= %1$d
           ',
           $event->getEvent_id()
         );
@@ -59,7 +79,13 @@
       $node= &$response->addFormResult(Node::fromObject($event, 'event'));
       $n= &$node->addChild(new Node('attendeeinfo'));
       while ($query && $record= &$query->next()) {
-        $n->addChild(new Node('player', NULL, $record));
+        $t= &$n->addChild(new Node('player', NULL, $record));
+        
+        // For guests, select creator
+        if (2 == $record['player_type_id']) {
+          $creator= &Player::getByPlayer_id($record['created_by']);
+          $t->addChild(Node::fromObject($creator, 'creator'));
+        }
       }
     }
   }
