@@ -12,6 +12,18 @@
   /**
    * Represents an XSL stylesheet
    *
+   * Usage example:
+   * <code>
+   *   uses('xml.Stylesheet');
+   *
+   *   $s= &new Stylesheet();
+   *   $s->setOutputMethod('text');
+   *   $s->addImport('test.import.xsl');
+   *   $s->addInclude('test.include.xsl');
+   *   
+   *   echo $s->getSource(INDENT_DEFAULT);
+   * </code>
+   *
    * @see      http://www.w3.org/TR/xslt XSL Transformations (XSLT) Version 1.0
    * @purpose  Wrapper class
    */
