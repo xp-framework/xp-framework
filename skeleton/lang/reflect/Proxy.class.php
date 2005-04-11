@@ -87,7 +87,7 @@
         }
         
         // Implement the interface itself
-        $implements[strtolower($name)][xp::reflect($interface)]= 1;
+        $implements[strtolower($name)][xp::reflect($if->getName())]= 1;
       }
       $bytes.= ' }';
 
