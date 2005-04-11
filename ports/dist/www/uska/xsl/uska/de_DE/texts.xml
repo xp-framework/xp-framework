@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <texts>
   <text for=""></text>
+  <text for="event#max">Maximale Teilnehmer</text>
+  <text for="event#req">Notwendige Teilnehmer</text>
+  <text for="event#guests_allowed-0">Keine Gäste!</text>
+  <text for="event#guests_allowed-1">Mit Gästen</text>
+  <text for="event#createdby">Erstellt von</text>
+  
+  <text for="attendee#status-">-</text>
+  <text for="attendee#status-0">kommt nicht</text>
+  <text for="attendee#status-1">ist dabei</text>
+  <text for="attendee#offers_seats">Plätze zum Mitfahren</text>
+  <text for="attendee#needs_driver">braucht Fahrer</text>
+  <text for="attendee#attendees">Teilnehmer</text>
+  <text for="attendee#neededseats">Mitfahrer</text>
+  <text for="attendee#availableseats">Mitfahrgelegenheit(en)</text>
+  <text for="attendee#guestof">Gast von</text>
+  
 </texts>
