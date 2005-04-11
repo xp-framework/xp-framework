@@ -91,6 +91,20 @@
       }
       return $n;
     }
+
+    /**
+     * Add a variable
+     *
+     * @access  public
+     * @param   string import
+     * @return  &xml.Node the added node
+     */
+    function &addVariable($name) {
+      with ($n= &$this->root->addChild(new Node('xsl:variable'))); {
+        $n->setAttribute('name', $name);
+      }
+      return $n;
+    }
     
     /**
      * Construct a stylesheet from a string
