@@ -16,8 +16,11 @@
     var
       $event_id           = 0,
       $player_id          = 0,
+      $attend             = 0,
       $offers_seats       = NULL,
-      $needs_driver       = NULL;
+      $needs_driver       = NULL,
+      $lastchange         = NULL,
+      $changedby          = '';
 
     /**
      * Static initializer
@@ -29,12 +32,15 @@
       with ($peer= &EventAttendee::getPeer()); {
         $peer->setTable('uska.event_attendee');
         $peer->setConnection('uskadb');
-        $peer->setPrimary(array(''));
+        $peer->setPrimary(array('event_id', 'player_id'));
         $peer->setTypes(array(
           'event_id'            => '%d',
           'player_id'           => '%d',
+          'attend'              => '%d',
           'offers_seats'        => '%d',
-          'needs_driver'        => '%d'
+          'needs_driver'        => '%d',
+          'lastchange'          => '%s',
+          'changedby'           => '%s'
         ));
       }
     }  
@@ -135,6 +141,27 @@
     }
 
     /**
+     * Retrieves attend
+     *
+     * @access  public
+     * @return  int
+     */
+    function getAttend() {
+      return $this->attend;
+    }
+      
+    /**
+     * Sets attend
+     *
+     * @access  public
+     * @param   int attend
+     * @return  int the previous value
+     */
+    function setAttend($attend) {
+      return $this->_change('attend', $attend);
+    }
+
+    /**
      * Retrieves offers_seats
      *
      * @access  public
@@ -174,6 +201,48 @@
      */
     function setNeeds_driver($needs_driver) {
       return $this->_change('needs_driver', $needs_driver);
+    }
+
+    /**
+     * Retrieves lastchange
+     *
+     * @access  public
+     * @return  util.Date
+     */
+    function getLastchange() {
+      return $this->lastchange;
+    }
+      
+    /**
+     * Sets lastchange
+     *
+     * @access  public
+     * @param   util.Date lastchange
+     * @return  util.Date the previous value
+     */
+    function setLastchange($lastchange) {
+      return $this->_change('lastchange', $lastchange);
+    }
+
+    /**
+     * Retrieves changedby
+     *
+     * @access  public
+     * @return  string
+     */
+    function getChangedby() {
+      return $this->changedby;
+    }
+      
+    /**
+     * Sets changedby
+     *
+     * @access  public
+     * @param   string changedby
+     * @return  string the previous value
+     */
+    function setChangedby($changedby) {
+      return $this->_change('changedby', $changedby);
     }
   }
 ?>
