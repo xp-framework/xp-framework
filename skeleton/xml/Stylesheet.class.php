@@ -79,7 +79,7 @@
     }
     
     /**
-     * Construct a document from a string
+     * Construct a stylesheet from a string
      *
      * @model   static
      * @access  public
@@ -92,7 +92,7 @@
 
 
     /**
-     * Construct a document from a file
+     * Construct a stylesheet from a file
      *
      * @model   static
      * @access  public
