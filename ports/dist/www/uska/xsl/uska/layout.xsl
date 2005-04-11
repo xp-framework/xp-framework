@@ -12,6 +12,7 @@
  extension-element-prefixes="func"
 >
   <xsl:include href="../master.xsl"/>
+  <xsl:include href="calendar.inc.xsl"/>
   
   <xsl:variable name="navigation">
     <nav target="news">Home</nav>
@@ -26,7 +27,9 @@
     <xsl:choose>
       <xsl:when test="/formresult/user/username != ''">
         LOGOUT<br/>
-        <xsl:value-of select="concat(/formresult/user/firstname, ' ', /formresult/user/lastname)"/>
+        <a href="{func:link(concat('player/edit?player_id=', /formresult/user/player_id))}">
+          <xsl:value-of select="concat(/formresult/user/firstname, ' ', /formresult/user/lastname)"/>
+        </a>
       </xsl:when>
       <xsl:otherwise>
         LOGIN
