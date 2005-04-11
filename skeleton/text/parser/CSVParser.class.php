@@ -4,9 +4,7 @@
  * $Id$
  */
 
-  uses (
-    'io.Stream'
-  );
+  uses('io.Stream');
   
   /**
    * CSVParser provides comfortable way to parse csv (comma separated
@@ -36,17 +34,16 @@
 
       // Note: don't use builtin strtok, because it does ignore an
       // empty field (two delimiters in a row). We need this information.
-      if (empty ($string))
-        return FALSE;
+      if (empty($string)) return FALSE;
         
-      if (FALSE === ($tpos= strpos ($string, $delim))) {
+      if (FALSE === ($tpos= strpos($string, $delim))) {
         $token= $string;
         $string= '';
         return $token;
       }
       
-      $token= substr ($string, 0, $tpos);
-      $string= substr ($string, strlen ($token)+1);
+      $token= substr($string, 0, $tpos);
+      $string= substr($string, strlen($token)+1);
       return $token;
     }
     
@@ -59,7 +56,7 @@
      */    
     function setInputStream(&$stream) {
       try(); {
-        if (!$stream->isOpen ()) $stream->open ();
+        if (!$stream->isOpen()) $stream->open();
       } if (catch('IOException', $e)) {
         return throw ($e);
       }
@@ -93,7 +90,7 @@
       $pos= $this->stream->tell();
       $line= $this->_getNextRecord();
       
-      $freq= count_chars ($line, 1);
+      $freq= count_chars($line, 1);
       $max= 0; $ret= NULL;
       foreach ($freq as $chr => $f) {
         if (
@@ -107,7 +104,6 @@
       
       // Rewind to former position
       $this->stream->seek($pos);
-      
       return $ret;
     }
 
@@ -121,7 +117,7 @@
      * @return  bool hasHeader TRUE, if header is available
      */
     function hasHeader() {
-      return is_array ($this->colName) && count ($this->colName);
+      return is_array($this->colName) && !empty($this->colName);
     }
     
     /**
@@ -134,11 +130,8 @@
      * @return  int columnindex
      */    
     function getColumnIndex($column) {
-      $reverse= array_flip ($this->colName);
-      if (!isset ($reverse[$column]))
-        return FALSE;
-    
-      return $reverse[$column];
+      $reverse= array_flip($this->colName);
+      if (!isset($reverse[$column])) return FALSE; else return $reverse[$column];
     }
     
     /**
@@ -151,11 +144,10 @@
      */    
     function &_getNextRecord() {
       try(); {
-        if ($this->stream->eof())
-          return FALSE;
+        if ($this->stream->eof()) return FALSE;
 
         $row= $this->stream->readLine();
-        while (0 !== substr_count ($row, $this->escape) % 2)
+        while (0 !== substr_count($row, $this->escape) % 2)
           $row.= "\n".$this->stream->readLine();
       
         $this->buffer= $row;
@@ -176,35 +168,30 @@
      * @return  string buffer
      */
     function _parseColumn() {
-      if (empty ($this->buffer))
-        return FALSE;
+      if (empty($this->buffer)) return FALSE;
 
-      $tok= $this->_strtok ($this->buffer, $this->colDelim);
+      $tok= $this->_strtok($this->buffer, $this->colDelim);
 
       // Trick: when there is an odd number of escape characters
       // you know that this found delimiter is part of a string inside
       // the payload. Search for the next, until you have an even number 
       // of escapers (then all quoted parts are closed).
-      while (0 !== substr_count ($tok, $this->escape) % 2) {
-        $add= $this->colDelim.$this->_strtok ($this->buffer, $this->colDelim);
+      while (0 !== substr_count($tok, $this->escape) % 2) {
+        $add= $this->colDelim.$this->_strtok($this->buffer, $this->colDelim);
         $tok.= $add;
       }
-      // $this->buffer= substr ($this->buffer, strlen ($tok)+1);
 
       // Single escape characters become nothing, double escape
       // characters become the escape character itself.
       $tok= trim ($tok);
       $i= 0; $j= 0; $res= '';
-      while (FALSE !== ($i= strpos ($tok, $this->escape, $j))) {
-        if (strlen ($tok) > $i+1 && $tok{$i+1} == $this->escape) $i++;
-        $res.= substr ($tok, $j, $i-$j);
+      while (FALSE !== ($i= strpos($tok, $this->escape, $j))) {
+        if (strlen($tok) > $i+1 && $tok{$i+1} == $this->escape) $i++;
+        $res.= substr($tok, $j, $i-$j);
         $j= $i+1;
       }
       
-      if (empty ($res))
-        return $tok;
-      
-      return $res; 
+      if (empty($res)) return $tok; else return $res;
     }
     
     /**
@@ -235,11 +222,8 @@
      * @return  string name or FALSE if none is available
      */
     function getColumnName($nr) {
-      if (!$this->hasHeader())
-        return FALSE;
-      
-      if (!isset ($this->colName[$nr]))
-        return FALSE;
+      if (!$this->hasHeader()) return FALSE;
+      if (!isset($this->colName[$nr])) return FALSE;
       
       return $this->colName[$nr];
     }    
@@ -251,31 +235,25 @@
      * fields are enumerated.
      *
      * @access  public
-     * @return  StdClass data
-     * @throws  IOException if stream operation failed
+     * @return  array data
+     * @throws  io.IOException if stream operation failed
      */    
     function getNextRecord() {
       try(); {
         $this->_getNextRecord();
       } if (catch('IOException', $e)) {
-        return throw ($e);
+        return throw($e);
       }
 
-      if (empty ($this->buffer))
-        return FALSE;
+      if (empty($this->buffer)) return FALSE;
         
       $data= array(); $idx= 0;
       while (FALSE !== ($cell= $this->_parseColumn())) {
-        if (FALSE !== ($cn= $this->getColumnName($idx)))
-          $data[$cn]= $cell;
-        else 
-          $data[$idx]= $cell;
-        
+        if (FALSE !== ($cn= $this->getColumnName($idx))) $data[$cn]= $cell; else $data[$idx]= $cell;
         $idx++;
       }
 
       return (object)$data;
     }
-  }
-  
+  }  
 ?>
