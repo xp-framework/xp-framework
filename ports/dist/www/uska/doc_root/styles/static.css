@@ -196,6 +196,26 @@ th.formsection {
   text-align: left;
 }
 
+/* News specific */
+.eventbox {
+  border: 1px solid #a9a9a9;
+  border-left: 3px solid #94a6d6;
+  padding: 10px;
+  padding-top: 0px;
+  display: block;
+}
+.eventbox h3 {
+  background: url(/image/icons/entry.png) white;
+  background-position: left center; 
+  background-repeat: no-repeat;
+  /* padding-left: 20px; */
+}
+/*.eventbox-1 h3 {
+  background: url(/image/xpframework.png) white;
+  background-position: left center; 
+  background-repeat: no-repeat;
+  padding-left: 20px;
+}*/
 
 /* News specific */
 .entry {
@@ -324,4 +344,33 @@ table.sidebar td a, table.sidebar th a {
 table.sidebar td a:hover, table.sidebar th a:hover {
   text-decoration: none;
   background-color: #fff4be;
+}
+
+/* Normal table */
+table.list {
+  
+}
+
+table.list th {
+  color: #000044; 
+  border-bottom: 1px solid #2f0c7f; 
+  font-size: 13px; 
+  font-style: bold; 
+  text-align: left;
+}
+
+tr.list_0 {
+  background-color: #ffffff; 
+}
+
+tr.list_1 {
+  background-color: #e2ebf2;
+}
+
+tr.list_compute td {
+  color: #000044; 
+  border-top: 1px solid #2f0c7f; 
+  font-size: 13px; 
+  font-style: bold; 
+  text-align: left;
 }
