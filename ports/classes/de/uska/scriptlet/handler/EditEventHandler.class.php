@@ -107,6 +107,7 @@
      * @return  boolean
      */
     function handleSubmittedData(&$request, &$context) {
+      $sane= TRUE;
       switch ($this->getValue('mode')) {
         case 'update':
           try(); {
@@ -125,29 +126,31 @@
       $event->setDescription($this->wrapper->getDescription());
       $event->setTeam_id($this->wrapper->getTeam());
       $event->setEvent_type_id($this->wrapper->getEvent_type());
+      $event->setChangedby($context->user->getUsername());
+      $event->setLastchange(Date::now());
       
       // Check order of dates. Now < deadline < target_date
       with ($now= &Date::now()); {
         if ($now->isAfter($this->wrapper->getTarget_date())) {
-          $this->addFormError('target_date');
-          return FALSE;
+          $this->addError('order', 'target_date');
+          $sane= FALSE;
         }
         
-        $tdate= &$his->wrapper->getTarget_date();
+        $tdate= &$this->wrapper->getTarget_date();
         if (
           NULL !== $this->wrapper->getDeadline() &&
           $tdate->isBefore($this->wrapper->getDeadline())
         ) {
-          $this->addFormError('deadline');
-          return FALSE;
+          $this->addError('order', 'deadline');
+          $sane= FALSE;
         }
       }
       
       // Max attendees must be greater or requal than requireds
       if ($this->wrapper->getMax() < $this->wrapper->getReq()) {
-        $this->addFormError('max');
-        $this->addFormError('req');
-        return FALSE;
+        $this->addError('order', 'max');
+        $this->addError('order', 'req');
+        $sane= FALSE;
       }
       
       $event->setTarget_date($this->wrapper->getTarget_date());
@@ -156,6 +159,9 @@
       $event->setMax_attendees($this->wrapper->getMax());
       $event->setReq_attendees($this->wrapper->getReq());
       $event->setAllow_guests($this->wrapper->getGuests());
+      
+      // Some check failed, bail out...
+      if (!$sane) return FALSE;
       
       try(); {
         if ($event->getEvent_id() > 0) { 
