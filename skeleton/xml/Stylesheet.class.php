@@ -77,6 +77,20 @@
       }
       return $n;
     }
+
+    /**
+     * Add a parameter
+     *
+     * @access  public
+     * @param   string import
+     * @return  &xml.Node the added node
+     */
+    function &addParam($name) {
+      with ($n= &$this->root->addChild(new Node('xsl:param'))); {
+        $n->setAttribute('name', $name);
+      }
+      return $n;
+    }
     
     /**
      * Construct a stylesheet from a string
