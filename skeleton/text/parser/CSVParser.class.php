@@ -200,7 +200,7 @@
      * @access  public
      */    
     function getHeaderRecord() {
-      $this->colName= (array)$this->getNextRecord();
+      $this->colName= $this->getNextRecord();
     }
     
     /**
@@ -253,7 +253,7 @@
         $idx++;
       }
 
-      return (object)$data;
+      return $data;
     }
   }  
 ?>
