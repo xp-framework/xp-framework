@@ -5,76 +5,102 @@
  */
 
   define('XSL_VERSION_1_0', '1.0');
+  define('XSL_NAMESPACE',   'http://www.w3.org/1999/XSL/Transform');
 
-  uses('xml.Node');
+  uses('xml.Tree');
 
   /**
-   * Stylesheet
+   * Represents an XSL stylesheet
    *
-   * @purpose  Represents an xsl stylesheet
+   * @see      http://www.w3.org/TR/xslt XSL Transformations (XSLT) Version 1.0
+   * @purpose  Wrapper class
    */
-  class Stylesheet extends Node {
-    var
-      $version  = XSL_VERSION_1_0;
+  class Stylesheet extends Tree {
      
     /**
-     * __construct
+     * Constructor
      *
      * @access  public
-     * @param   const version
+     * @param   string version default XSL_VERSION_1_0
      */
     function __construct($version= XSL_VERSION_1_0) {
-      parent::__construct(sprintf(
-        'xsl:stylesheet',
-        $version
-      ));
-      $this->version= $version;
+      parent::__construct('xsl:stylesheet');
       
       // Add attributes for root node
-      $this->setAttribute('version', $version);
-      $this->setAttribute('xmlns:xsl', 'http://www.w3.org/1999/XSL/Transform');
+      $this->root->setAttribute('version', $version);
+      $this->root->setAttribute('xmlns:xsl', XSL_NAMESPACE);
     }
 
     /**
-     * Set outputmethod
+     * Set output method, indentation and encoding.
+     *
+     * Note: Output encoding is set to document encoding if not 
+     * specified otherwise!
      *
      * @access  public
      * @param   string method
+     * @param   bool indent default TRUE
+     * @param   string encoding default NULL
      */
-    function setOutputmethod($method= 'xml') {
-      with ($n= &new Node('xsl:output method')); {
+    function setOutputMethod($method, $indent= TRUE, $encoding= NULL) {
+      with ($n= &$this->root->addChild(new Node('xsl:output'))); {
         $n->setAttribute('method', $method);
-        $n->setAttribute('version', $this->version);
-        $n->setAttribute('encoding', $this->getEncoding());
-        $n->setAttribute('indent', 'yes');
+        $n->setAttribute('encoding', $encoding ? $encoding : $this->getEncoding());
+        $n->setAttribute('indent', $indent ? 'yes' : 'no');
       }
-      $this->addChild($n);
     }
 
     /**
-     * Add an import param
+     * Add an import
      *
      * @access  public
-     * @param   array import
+     * @param   string import
+     * @return  &xml.Node the added node
      */
-    function addImport($import) {
-      with ($n= &new Node('xsl:import')); {
+    function &addImport($import) {
+      with ($n= &$this->root->addChild(new Node('xsl:import'))); {
         $n->setAttribute('href', $import);
       }
-      $this->addChild($n);
+      return $n;
     }
 
     /**
-     * Add an include param
+     * Add an include
      *
      * @access  public
-     * @param   array include
+     * @param   string include
+     * @return  &xml.Node the added node
      */
-    function addInclude($include) {
-      with ($n= &new Node('xsl:include')); {
+    function &addInclude($include) {
+      with ($n= &$this->root->addChild(new Node('xsl:include'))); {
         $n->setAttribute('href', $include);
-        $this->addChild($n);
       }
+      return $n;
+    }
+    
+    /**
+     * Construct a document from a string
+     *
+     * @model   static
+     * @access  public
+     * @param   string string
+     * @return  &xml.Stylesheet
+     */
+    function &fromString($string) {
+      return parent::fromString($string, __CLASS__);
+    }
+
+
+    /**
+     * Construct a document from a file
+     *
+     * @model   static
+     * @access  public
+     * @param   &xml.File file
+     * @return  &xml.Stylesheet
+     */
+    function &fromFile(&$file) {
+      return parent::fromFile($file, __CLASS__);
     }
   }
 ?>
