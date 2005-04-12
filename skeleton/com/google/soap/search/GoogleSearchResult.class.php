@@ -329,7 +329,7 @@
         $this->getClassName(),
         $this->startIndex,
         $this->endIndex,
-        $this->estimatIsExact ? '' : '~',
+        $this->estimateIsExact ? '' : '~',
         $this->estimatedTotalResultsCount,
         $this->searchQuery,
         $this->searchTime,
