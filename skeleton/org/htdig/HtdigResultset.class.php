@@ -139,6 +139,7 @@
     function &getNextResult() {
       $result= &current($this->results);
       next($this->results);
+      return $result;
     }
             
     /**
