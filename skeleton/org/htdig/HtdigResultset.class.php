@@ -121,6 +121,27 @@
     }
     
     /**
+     * Rewinds the result pointer to the first result.
+     *
+     * @access  public
+     */
+    function rewindResults() {
+      reset($this->results);
+    }
+    
+    /**
+     * Fetch the next result object. Returns FALSE when there
+     * are no more result objects left.
+     *
+     * @access  public
+     * @return  &mixed
+     */
+    function &getNextResult() {
+      $result= &current($this->results);
+      next($this->results);
+    }
+            
+    /**
      * Returns the string representation of this object.
      *
      * @access  public
