@@ -27,7 +27,7 @@
   value CDATA #IMPLIED
 >
 
-<!ELEMENT precheck ( cparam )* >
+<!ELEMENT precheck ( cparam* )>
 <!ATTLIST precheck
   class CDATA #REQUIRED
 >
@@ -37,12 +37,17 @@
   class CDATA #REQUIRED
 >
 
-<!ELEMENT postcheck ( cparam )>
+<!ELEMENT postcheck ( cparam* )>
 <!ATTLIST postcheck
   class CDATA #REQUIRED
 >
 
-<!ELEMENT cparam ( #PCDATA )>
+<!ELEMENT cparam ( #PCDATA | value )*>
 <!ATTLIST cparam
-  xsi:type (xsd:boolean|xsd:string|xsd:int|xsd:array) "xsd:int" 
+  xsi:type (xsd:boolean|xsd:string|xsd:int|xsd:array) "xsd:string" 
+>
+
+<!ELEMENT value ( #PCDATA )>
+<!ATTLIST value
+  xsi:type (xsd:boolean|xsd:string|xsd:int|xsd:array) "xsd:string" 
 >
