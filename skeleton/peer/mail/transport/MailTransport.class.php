@@ -91,7 +91,7 @@
           "\r\n" => "\n",
           "\r"   => "\n"
         )),
-        $tmp->getHeaderString(),
+        rtrim($tmp->getHeaderString(), "\n"),
         $this->parameters
       )) {
         return throw(new TransportException(
