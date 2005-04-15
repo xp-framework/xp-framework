@@ -12,6 +12,7 @@ XSLPROC?=		sabcmd
 # Default values for wrapper target
 WRAPPER_SRC?=	wrapper
 WRAPPER_XSL?=	$(BASE)/../skeleton/scriptlet/xml/workflow/generator/wrapper.xsl
+WRAPPER_DTD?=	$(BASE)/../skeleton/scriptlet/xml/workflow/generator/wrapper.dtd
 
 all:    usage
 
@@ -47,6 +48,7 @@ wrapper:
         fi; \
 		for i in `ls -1 $$TARGETS | cut -d '.' -f 1` ; do \
 			echo "--->" $$i; \
-    		sabcmd $(WRAPPER_XSL) $$i.iwrp > $(WRAPPER_PHP)/`basename $$i`Wrapper.class.php; \
+			xmllint -noout -dtdvalid $(WRAPPER_DTD) $$i.iwrp && \
+    		xsltproc $(WRAPPER_XSL) $$i.iwrp > $(WRAPPER_PHP)/`basename $$i`Wrapper.class.php; \
 		done \
 	fi
