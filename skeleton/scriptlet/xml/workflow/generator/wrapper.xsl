@@ -12,6 +12,7 @@
  xmlns:ixsl="http://www.w3.org/1999/XSL/TransformOutputAlias"
  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:exsl="http://exslt.org/common"
 >
   <xsl:output method="text" indent="no"/>
 
@@ -69,14 +70,14 @@
 
     <xsl:choose>
       <xsl:when test="contains($value, ',')">
-        <xsl:value-of select="$names/name[@for = substring-before($value, ',')]"/>
+        <xsl:value-of select="exsl:node-set($names)/name[@for = substring-before($value, ',')]"/>
         <xsl:text> | </xsl:text>
         <xsl:call-template name="occurrence">
           <xsl:with-param name="value" select="substring-after($value, ',')"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="$names/name[@for = $value]"/>
+        <xsl:value-of select="exsl:node-set($names)/name[@for = $value]"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template> 
