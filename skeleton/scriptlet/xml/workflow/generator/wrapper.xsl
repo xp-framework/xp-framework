@@ -15,46 +15,8 @@
  xmlns:exsl="http://exslt.org/common"
 >
   <xsl:output method="text" indent="no"/>
-
-  <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
-  <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
-
-  <!--
-   ! Template that creates a name for use within the sourcecode
-   !
-   ! @param  string string
-   !-->
-  <xsl:template name="name">
-    <xsl:param name="string"/>
+  <xsl:include href="common.inc.xsl"/>
   
-    <xsl:value-of select="concat(
-      translate(substring($string, 1, 1), $lcletters, $ucletters),
-      translate(substring($string, 2), '.', '_')
-    )"/>
-  </xsl:template>
-
-  <!--
-   ! Template that creates a short class name
-   !
-   ! @param  string string
-   !-->  
-  <xsl:template name="classname">
-    <xsl:param name="string"/>
-    <xsl:param name="trim" select="'#'"/>
-
-    <xsl:choose>
-      <xsl:when test="contains($string, '.')">
-        <xsl:call-template name="classname">
-          <xsl:with-param name="string" select="substring-after($string, '.')"/>
-          <xsl:with-param name="trim" select="$trim"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="substring-before(concat($string, $trim), $trim)"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template> 
-
   <!--
    ! Template that creates a bitfield from occurence values
    !
