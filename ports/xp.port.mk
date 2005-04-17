@@ -12,7 +12,11 @@ XSLPROC?=		sabcmd
 # Default values for wrapper target
 WRAPPER_SRC?=	wrapper
 WRAPPER_XSL?=	$(BASE)/../skeleton/scriptlet/xml/workflow/generator/wrapper.xsl
+HANDLER_XSL?=	$(BASE)/../skeleton/scriptlet/xml/workflow/generator/handler.xsl
 WRAPPER_DTD?=	$(BASE)/../skeleton/scriptlet/xml/workflow/generator/wrapper.dtd
+
+# Default values for skeleton path
+XPCLASSPATH?=	$(BASE)/classes
 
 all:    usage
 
@@ -50,5 +54,11 @@ wrapper:
 			echo "--->" $$i; \
 			xmllint -noout -dtdvalid $(WRAPPER_DTD) $$i.iwrp && \
     		xsltproc $(WRAPPER_XSL) $$i.iwrp > $(WRAPPER_PHP)/`basename $$i`Wrapper.class.php; \
+			HANDLER=`cat $$i.iwrp | grep '<handler class=' | cut -d '"' -f 2` ; \
+			HANDLERFILE=`echo $$HANDLER | tr . /`.class.php ; \
+			if [ -n "$$HANDLER" -a ! -f $(XPCLASSPATH)/$$HANDLERFILE ]; then \
+				echo "---> $$HANDLER"; \
+                xsltproc $(HANDLER_XSL) $$i.iwrp > $(XPCLASSPATH)/$$HANDLERFILE ; \
+			fi \
 		done \
 	fi
