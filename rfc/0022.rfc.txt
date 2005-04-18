@@ -10,8 +10,8 @@ $Id$
 Scope of Change
 ---------------
 The core function uses() will be changed to accept parameters with stream 
-references (<pre>scheme://target</pre>). It should not mangle these 
-parameters when giving them to the include statement.
+references (scheme://target). It should not mangle these parameters when 
+giving them to the include statement.
 
 
 Rationale
