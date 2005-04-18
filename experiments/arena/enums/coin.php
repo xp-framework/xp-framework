@@ -5,14 +5,12 @@
  */
   require('lang.base.php');
   require('enum.php');
-  enum('Coin');
+  uses('enum+xp://enum.Coin');
   
-  // Accessing all values
-  echo 'Coin::values()= '; var_dump(Coin::values());
-  
-  // Accessing a single value
-  echo 'Coin_PENNY= '; var_dump(Coin_PENNY);
-  
-  // Calling a function
-  echo 'Coin::colorOf(Coin_DIME)= '; var_dump(Coin::colorOf(Coin_DIME));
+  // {{{ main
+  echo 'Coin: ', Coin::size(), "\n";
+  foreach (Coin::values() as $coin) {
+    echo $coin->name, ': ', $coin->value, '¢ (', $coin->color(), ")\n";
+  }
+  // }}}
 ?>
