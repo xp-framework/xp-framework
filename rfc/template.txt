@@ -1,0 +1,34 @@
+RFC XXXX: 
+========================================================================
+$Id$
+
+@authors: 
+@created: 
+@status: draft
+@category: 
+
+Scope of Change
+---------------
+
+Rationale
+---------
+
+Functionality
+-------------
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
