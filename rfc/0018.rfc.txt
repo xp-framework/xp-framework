@@ -4,8 +4,7 @@ $Id$
 
 @authors: ohinckel
 @created: Mo Feb 21 16:42:02 CET 2005
-@status: implemented
-@implemented: Mi Feb 23 10:11:34 CET 2005
+@status: implemented (Mi Feb 23 10:11:34 CET 2005)
 @category: scriptlet.xml.OutputDocument
 
 Scope of Change

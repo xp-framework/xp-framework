@@ -4,8 +4,7 @@ $Id$
 
 @authors: friebe, kiesel
 @created: Thu Oct 28 22:42:01 CEST 2004
-@status: implemented
-@implemented: Thu Mar 17 22:33:32 CET 2005
+@status: implemented (Thu Mar 17 22:33:32 CET 2005)
 @category: <core>
 
 
