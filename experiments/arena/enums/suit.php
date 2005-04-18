@@ -5,11 +5,8 @@
  */
   require('lang.base.php');
   require('enum.php');
-  enum('Suit');
+  uses('enum+xp://enum.Suit');
   
   // Accessing all values
-  echo 'Suit::values()= '; var_dump(Suit::values());
-  
-  // Accessing a single value
-  echo 'Suit_CLUBS= '; var_dump(Suit_CLUBS);
+  echo 'Suit::values()= ', xp::stringOf(Suit::values());
 ?>

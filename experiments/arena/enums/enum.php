@@ -51,6 +51,7 @@
       
       $tokens= token_get_all(file_get_contents(strtr($url['host'], '.', DIRECTORY_SEPARATOR).'.enum.php'));
       $state= ENUM_PARSER_ST_INITIAL;
+      $bracket= '';
       for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
         switch ($state.$tokens[$i][0]) {
           case ENUM_PARSER_ST_INITIAL.T_STRING:
@@ -82,6 +83,10 @@
             $members[$member]= $value;
             break;
           
+          case ENUM_PARSER_ST_DECL.'}': 
+            $bracket= '}';
+            // Fall through
+
           case ENUM_PARSER_ST_DECL.';':
             $state= ENUM_PARSER_ST_BODY;
             
@@ -89,7 +94,7 @@
             $this->buffer.= 'function __static() { Enum::registry(__CLASS__, array(';
             foreach (array_keys($members) as $ordinal => $member) {
               define($member, $ordinal, 0);
-              $this->buffer.= '  '.$member.' => new '.$class.'(\''.$member.'\', '.$members[$member].'),';
+              $this->buffer.= '  '.$member.' => new '.$class.'(\''.$member.'\', '.xp::stringOf($members[$member]).'),';
             }
             $this->buffer.= ')); } ';
             
@@ -101,6 +106,9 @@
             
             // valueOf() method
             $this->buffer.= 'function valueOf($ordinal) { return Enum::registry(__CLASS__, $ordinal); }';
+            
+            // Add closing bracket if necessary
+            $this->buffer.= $bracket;
             break;
           
           default:
