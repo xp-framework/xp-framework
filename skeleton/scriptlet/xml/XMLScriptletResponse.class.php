@@ -109,6 +109,7 @@
      *
      * @access  public
      * @param   string name name
+     * @param   &mixed val
      */
     function addFormValue($name, &$val) {
       if (!is_array($val)) $val= array($val);
@@ -169,7 +170,7 @@
      *
      * @access  public
      * @param   xml.Node node
-     * @return  xml.Node added node
+     * @return  &xml.Node added node
      * @throws  lang.IllegalArgumentException
      */
     function &addFormResult(&$node) {
@@ -197,7 +198,7 @@
      * Retrieves whether a stylesheet has been set
      *
      * @access  public
-     * @param   bool
+     * @return  bool
      */
     function hasStylesheet() {
       return !empty($this->_stylesheet);
