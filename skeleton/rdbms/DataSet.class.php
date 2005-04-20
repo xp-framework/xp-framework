@@ -79,8 +79,7 @@
    */
   class DataSet extends Object {
     var
-      $_changed     = array(),
-      $_peer        = NULL;
+      $_changed     = array();
     
     /**
      * Constructor. Supports the array syntax, where an associative
@@ -95,30 +94,8 @@
         $k= substr(strrchr('#'.$key, '#'), 1);
         $this->{$k}= &$params[$key];
       }
-      $this->_peer= &$this->getPeer();
     }
     
-    /**
-     * Sleep function
-     *
-     * @access  magic
-     * @return  string[] names of member to serialize
-     */
-    function __sleep() {
-      $a= get_class_vars(get_class($this));
-      unset($a['_peer']);
-      return array_keys($a);
-    }
-    
-    /**
-     * Wakeup function
-     *
-     * @access  magic
-     */
-    function __wakeup() {
-      $this->_peer= &$this->getPeer();
-    }
-
     /**
      * Retrieve associated peer
      *
@@ -176,24 +153,25 @@
      * @return  string
      */
     function toString() {
-      
+      $peer= &$this->getPeer();
+            
       // Retrieve types from peer and figure out the maximum length 
       // of a key which will be used for the key "column". The minimum
       // width of this column is 20 characters.
       $max= 0xF;
-      foreach (array_keys($this->_peer->types) as $key) {
+      foreach (array_keys($peer->types) as $key) {
         $max= max($max, strlen($key));
       }
       $fmt= '  [%-'.$max.'s %2s%2s] %s';
       
       // Build string representation.
       $s= $this->getClassName().'@('.$this->hashCode()."){\n";
-      foreach (array_keys($this->_peer->types) as $key) {
+      foreach (array_keys($peer->types) as $key) {
         $s.= sprintf(
           $fmt, 
           $key,
-          (in_array($key, $this->_peer->primary) ? 'PK' : ''), 
-          ($key == $this->_peer->identity ? ',I' : ''),
+          (in_array($key, $peer->primary) ? 'PK' : ''), 
+          ($key == $peer->identity ? ',I' : ''),
           (is_a($this->$key, 'Object') 
             ? $this->$key->toString()
             : var_export($this->$key, 1)
@@ -212,12 +190,13 @@
      * @throws  rdbms.SQLException in case an error occurs
      */  
     function doInsert() {
-      if ($id= $this->_peer->doInsert($this->_changed)) {
+      $peer= &$this->getPeer();
+      if ($id= $peer->doInsert($this->_changed)) {
       
         // Set identity value if requested. We do not use the _change()
         // method here since the primary key is not supposed to appear
         // in the list of changed attributes
-        $this->{$this->_peer->identity}= $id;
+        $this->{$peer->identity}= $id;
       }
       $this->_changed= array();
       return $id;
@@ -233,7 +212,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */  
     function doUpdate(&$criteria) {
-      $affected= $this->_peer->doUpdate($this->_changed, $criteria);
+      $peer= &$this->getPeer();
+      $affected= $peer->doUpdate($this->_changed, $criteria);
       $this->_changed= array();
       return $affected;
     }
@@ -248,7 +228,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */  
     function doDelete(&$criteria) {
-      $affected= $this->_peer->doDelete($criteria);
+      $peer= &$this->getPeer();
+      $affected= $peer->doDelete($criteria);
       $this->_changed= array();
       return $affected;
     }
@@ -273,14 +254,15 @@
      * @throws  rdbms.SQLException
      */
     function update() {
-      if (empty($this->_peer->primary)) {
+      $peer= &$this->getPeer();
+      if (empty($peer->primary)) {
         return throw(new SQLStateException('No primary key'));
       }
       $criteria= &new Criteria();
-      foreach ($this->_peer->primary as $key) {
+      foreach ($peer->primary as $key) {
         $criteria->add($key, $this->{$key}, EQUAL);
       }
-      $affected= $this->_peer->doUpdate($this->_changed, $criteria);
+      $affected= $peer->doUpdate($this->_changed, $criteria);
       $this->_changed= array();
       return $affected;
     }
@@ -295,14 +277,15 @@
      * @throws  rdbms.SQLException
      */
     function delete() { 
-      if (empty($this->_peer->primary)) {
+      $peer= &$this->getPeer();
+      if (empty($peer->primary)) {
         return throw(new SQLStateException('No primary key'));
       }
       $criteria= &new Criteria();
-      foreach ($this->_peer->primary as $key) {
+      foreach ($peer->primary as $key) {
         $criteria->add($key, $this->{$key}, EQUAL);
       }
-      $affected= $this->_peer->doDelete($criteria);
+      $affected= $peer->doDelete($criteria);
       $this->_changed= array();
       return $affected;
     }
