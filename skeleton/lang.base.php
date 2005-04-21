@@ -373,6 +373,7 @@
   xp::registry('exceptions', array());
   xp::registry('class.xp', '<xp>');
   xp::registry('class.null', '<null>');
+  xp::registry('__id', microtime());
   set_error_handler('__error');
 
   uses(

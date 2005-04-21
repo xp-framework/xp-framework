@@ -34,7 +34,7 @@
      * @return  string
      */
     function hashCode() {
-      return $this->__id;
+      return $this->__id.xp::registry('__id');
     }
     
     /**
