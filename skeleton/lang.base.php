@@ -335,7 +335,9 @@
   // {{{ proto lang.Object &clone(lang.Object object) throws CloneNotSupportedException
   //     Clones an object
   function &clone($object) {
-    $object->__id= microtime();
+    static $i= 0;
+
+    $object->__id= ++$i.'C';
     if (is_callable(array(&$object, '__clone'))) {
       try(); {
         call_user_func(array(&$object, '__clone'));
