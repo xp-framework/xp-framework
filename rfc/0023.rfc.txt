@@ -1,10 +1,10 @@
-RFC 0023: 
+RFC 0023: Fix memory corruption in rdbms.Criteria
 ========================================================================
 $Id$
 
 @authors: kiesel
 @created: Thu Apr 21 14:11:52 CEST 2005
-@status: draft
+@status: discussion
 @category: rdbms
 
 Scope of Change
@@ -32,21 +32,21 @@ As a replacement for the old functionality of the constructor, a new method
 createFor() will be added which must be invoked statically.
 
 The old way of creating criteria objects changes from:
-<pre>
+<?php
   $criteria= &new Criteria(array('bz_id', $bz_id, EQUAL));
-</pre>
+?>
 
 to
 
-<pre>
+<?php
   $criteria= &Criteria::createFor(array('bz_id', $bz_id, EQUAL));
-</pre>
+?>
 
 The "safe" way that prevents memory corruption then is
-<pre>
+<?php
   $criteria= &new Criteria();
   $criteria->add('bz_id', $bz_id, EQUAL);
-</pre>
+?>
 
 Security considerations
 -----------------------
@@ -59,12 +59,13 @@ n/a
 
 Dependencies
 ------------
-* ports/dist/database/util/classgen/data/xp.php.xsl must be updated to
+- ports/dist/database/util/classgen/data/xp.php.xsl must be updated to
   generate database classes following the new Criteria implementation.
 
 Related documents
 -----------------
-n/a
+- http://xp-framework.net/downloads/rfc0023.diff
+  Patch against / implementing this change
 
 Comments
 --------
