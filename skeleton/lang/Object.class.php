@@ -21,7 +21,7 @@
     function Object() {
       static $i= 0;
 
-      $this->__id= ++$i;
+      $this->__id= (string)++$i;
       if (!method_exists($this, '__construct')) return;
       $args= func_get_args();
       call_user_func_array(array(&$this, '__construct'), $args);
