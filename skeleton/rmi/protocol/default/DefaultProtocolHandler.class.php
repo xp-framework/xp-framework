@@ -197,7 +197,7 @@
      * @return  mixed
      */
     function invoke(&$proxy, $method, $args) { 
-      Console::writeLine('>>> '.$proxy->getClassName().'::'.$method.'('.xp::stringOf($args).')');
+      // DEBUG Console::writeLine('>>> '.$proxy->getClassName().'::'.$method.'('.xp::stringOf($args).')');
       
       $mode= 1;   // XXX FIXME XXX
       $return= $this->sendPacket(REMOTE_MSG_REQUEST, (
