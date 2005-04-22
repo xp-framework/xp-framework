@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Thu Apr 21 14:11:52 CEST 2005
-@status: discussion
+@status: rejected
 @category: rdbms
 
 Scope of Change
