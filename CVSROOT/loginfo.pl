@@ -170,7 +170,7 @@ my $email;
 my $common_header = "".
 	"From: $from\n".
 	"To: $mailto\n".
-    "Reply-To: php-dev\@schlund.de\n".
+    "Reply-To: xp\@php3.de\n".
 	"Subject: [CVS] commit: ".trim($module)."$subj\n";
 
 my $common_body = "Update of $cvsroot$directory\n".
