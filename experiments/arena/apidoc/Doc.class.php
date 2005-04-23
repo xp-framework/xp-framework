@@ -6,6 +6,7 @@
  
   /**
    *
+   * @see      http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/
    * @purpose  Base class
    */
   class Doc extends Object {
