@@ -307,7 +307,7 @@
             case ST_CLASS_BODY.T_FUNCTION:
               while (T_STRING !== $tokens[$i][0] && $i < $s) $i++;
 
-              with ($method= &new MethodDoc()); {
+              with ($method= &new MethodDoc(), $method->setRoot($this)); {
                 $method->name= $tokens[$i][1];
                 $method->rawComment= $comment;
                 $method->annotations= $annotations;
@@ -319,6 +319,7 @@
 
             case ST_FUNCTION.'(':
               $state= ST_FUNCTION_ARGUMENTS;
+              $argument= NULL;
               break;
 
             case ST_FUNCTION_ARGUMENTS.T_VARIABLE:
@@ -365,7 +366,7 @@
               break;
 
             case ST_FUNCTION_ARGUMENTS.')':
-              $method->arguments[$argument]= NULL;
+              $argument && $method->arguments[$argument]= NULL;
               $state= ST_FUNCTION;
               break;
 
