@@ -3,11 +3,13 @@
   xp::sapi('cli');
   uses('util.profiling.Timer', 'util.cmd.ParamString', 'RootDoc');
   
+  // {{{ void exportClass(&ClassDoc class [, string indent = ''])
+  //     Export a single class
   function exportClass(&$class, $indent= '') {
     echo '[', $class->name(), "] {\n";
 
     if ($class->superclass) {
-      echo $indent.'  + extends ', exportClass(ClassIterator::parse($class->superclass), $indent.'  ');
+      echo $indent.'  + extends ', exportClass($class->superclass, $indent.'  ');
     }
     while ($class->interfaces->hasNext()) {
       $iface= &$class->interfaces->next();
@@ -19,7 +21,9 @@
     }
     echo $indent, "}\n";
   }
+  // }}}
   
+  // {{{ main
   $timer= &new Timer();
   $timer->start(); {
     $doc= &new RootDoc(new ParamString());
@@ -31,5 +35,5 @@
   $timer->stop();
   
   printf("\n%.3f seconds\n", $timer->elapsedTime());
-  #var_dump(xp::registry('errors'));
+  // }}}
 ?>
