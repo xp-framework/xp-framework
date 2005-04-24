@@ -11,8 +11,17 @@
   //     Prints a class tree  
   class TreeDoclet extends Doclet {
     var 
-      $indent = '';
+      $indent = '',
+      $timer  = NULL,
+      $total  = 0;
 
+    // {{{ __construct()
+    //     Constructor
+    function __construct() {
+      $this->timer= &new Timer();
+    }
+    // }}}
+    
     // {{{ void exportClass(&ClassDoc class [, string offset = ''])
     //     Export a single class
     function exportClass(&$class, $offset= '') {
@@ -31,6 +40,7 @@
         echo $indent.'+ uses ', $this->exportClass($used, $indent);
       }
       echo $offset, "}\n";
+      $this->total++;
     }
     // }}}
 
@@ -39,13 +49,13 @@
     function start(&$root) {
       $this->indent= str_repeat(' ', $root->option('indent', 2));
     
-      with ($timer= &new Timer(), $timer->start()); {
+      with ($this->total= 0, $this->timer->start()); {
         while ($root->classes->hasNext()) {
           $this->exportClass($root->classes->next(), $indent);
         }
 
-        $timer->stop();
-        printf("\n%.3f seconds\n", $timer->elapsedTime());
+        $this->timer->stop();
+        printf("\n%d classes, %.3f seconds\n", $this->total, $this->timer->elapsedTime());
       }
     }
     // }}}
