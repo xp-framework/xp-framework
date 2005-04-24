@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('ClassIterator');
+  uses('ClassIterator', 'util.cmd.ParamString');
   
   define('OPTION_ONLY', 0x0000);
   define('HAS_VALUE',   0x0001);
@@ -19,18 +19,21 @@
       $options = array();
     
     /**
-     * Constructor
+     * Start a doclet
      *
+     * @model   static
      * @access  public
-     * @param   &util.cmd.ParamString options
+     * @param   &Doclet doclet
+     * @param   &util.cmd.ParamString params
+     * @return  bool
      */
-    function __construct(&$options) {
+    function start(&$doclet, &$params) {
       $classes= array();
       
       // Separate options from classes
-      $valid= $this->validOptions();
-      for ($i= 1; $i < $options->count; $i++) {
-        $option= &$options->list[$i];
+      $valid= $doclet->validOptions();
+      for ($i= 1; $i < $params->count; $i++) {
+        $option= &$params->list[$i];
         
         if (0 == strncmp($option, '--', 2)) {        // Long: --foo / --foo=bar
           $p= strpos($option, '=');
@@ -46,7 +49,7 @@
           $name= substr($option, 1);
           if (isset($valid[$name])) {
             if ($valid[$name] == HAS_VALUE) {
-              $this->options[$name]= $options->list[++$i];
+              $this->options[$name]= $params->list[++$i];
             } else {
               $this->options[$name]= TRUE;
             }
@@ -58,28 +61,9 @@
       
       // Set up class iterator
       $this->classes= &new ClassIterator($classes);
-    }
-    
-    /**
-     * Return a list of valid options as an associative array, keys
-     * forming parameter names and values defining whether this option
-     * expects a value.
-     *
-     * Example:
-     * <code>
-     *   return array(
-     *     'classpath' => HAS_VALUE,
-     *     'verbose'   => OPTION_ONLY
-     *   );
-     * </code>
-     *
-     * Returns an empty array in this default implementation.
-     *
-     * @access  public
-     * @return  array
-     */
-    function validOptions() {
-      return array();
+
+      // Start the doclet
+      return $doclet->start($this);
     }
   }
 ?>
