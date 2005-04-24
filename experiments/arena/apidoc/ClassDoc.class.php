@@ -26,7 +26,6 @@
       $interfaces     = NULL,
       $usedClasses    = NULL,
       $superclass     = NULL,
-      $root           = NULL,
       $type           = NULL,
       $qualifiedName  = '';
     
@@ -117,18 +116,6 @@
       return FALSE;
     }
     
-    /**
-     * Set rootdoc
-     *
-     * @access  public
-     * @param   &RootDoc root
-     */
-    function setRoot(&$root) {
-      $this->root= &$root;
-      $this->interfaces->root= &$root;
-      $this->usedClasses->root= &$root;    
-    }
-
     /**
      * Get the fully qualified name of this program element. For example, 
      * for the class util.Date, return "util.Date". 
