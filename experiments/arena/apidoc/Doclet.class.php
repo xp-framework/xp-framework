@@ -7,8 +7,20 @@
   uses('RootDoc');
 
   /**
-   * This is an example of a starting class for a doclet, 
-   * showing the entry-point methods. 
+   * This is the starting class for a doclet.
+   *
+   * Example:
+   * <code>
+   *   class NameListDoclet extends Doclet {
+   * 
+   *     function start(&$root) {
+   *       while ($root->classes->hasNext()) {
+   *         $classdoc= &$root->classes->next();
+   *         echo $classdoc->qualifiedName(), "\n";
+   *       }
+   *     }
+   *   }
+   * </code>
    *
    * @see      http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/
    * @purpose  Abstract base class
