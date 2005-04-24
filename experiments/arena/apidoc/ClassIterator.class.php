@@ -4,8 +4,6 @@
  * $Id$
  */
  
-  uses('ClassDoc', 'MethodDoc');
-
   /**
    * Iterates over a collection of classes, parsing them as going along.
    *
