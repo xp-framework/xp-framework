@@ -25,16 +25,7 @@
     // {{{ void exportClass(&ClassDoc class [, string offset = ''])
     //     Export a single class
     function exportClass(&$class, $offset= '') {
-      if ($class->isException()) {
-        $type= 'exception';
-      } elseif ($class->isError()) {
-        $type= 'error';
-      } elseif ($class->isInterface()) {
-        $type= 'interface';    
-      } else {
-        $type= 'ordinary';
-      }
-      echo '[', $type, ' : ', $class->qualifiedName(), "] {\n";
+      echo '[', $class->classType(), ' : ', $class->qualifiedName(), "] {\n";
 
       $indent= $offset.$this->indent;
       if ($class->superclass) {
