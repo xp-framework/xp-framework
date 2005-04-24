@@ -1,4 +1,8 @@
 <?php
+/* This file is part of the XP framework' experiments
+ *
+ * $Id$
+ */
   require('lang.base.php');
   xp::sapi('cli');
   uses('util.profiling.Timer', 'util.cmd.ParamString', 'RootDoc');
