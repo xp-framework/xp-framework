@@ -139,7 +139,7 @@
      * @access  public
      * @param   string classname fully qualified class name
      * @return  &ClassDoc
-     * @throws  lang.IllegalArgumentException if file could not be parsed
+     * @throws  lang.IllegalArgumentException if class could not be found or parsed
      */
     function &classNamed($classname) {
       static $cache= array();
