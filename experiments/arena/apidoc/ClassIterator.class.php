@@ -25,8 +25,9 @@
   define('T_DEFINE',              0x1002);
   
   /**
+   * Iterates over a collection of classes, parsing them as going along.
    *
-   * @purpose  Base class for all others
+   * @purpose  Iterator
    */
   class ClassIterator extends Object {
     var
@@ -46,7 +47,6 @@
     /**
      * Finds a class by a given class name
      *
-     * @model   static
      * @access  protected
      * @param   string classname
      * @return  string filename
@@ -63,7 +63,6 @@
     /**
      * Parses a class file and returns a classdoc element
      *
-     * @model   static
      * @access  protected
      * @param   string classname fully qualified class name
      * @return  &ClassDoc
@@ -77,7 +76,7 @@
       if (isset($cache[$classname])) return $cache[$classname];
 
       // Find class
-      if (!($filename= ClassIterator::findClass($classname))) {
+      if (!($filename= $this->findClass($classname))) {
         return throw(new IllegalArgumentException('Could not find "'.$classname.'"'));
       }
       
@@ -172,7 +171,7 @@
                   break;
                 }
               }
-              $doc->superclass= $lookup;
+              $doc->superclass= &$this->parse($lookup);
               break;
 
             case ST_CLASS.'{':
@@ -356,7 +355,7 @@
         return throw(new NoSuchElementException('No more elements'));
       }
       next($this->classes);
-      return ClassIterator::parse($this->_key);
+      return $this->parse($this->_key);
     }
 
   } implements(__FILE__, 'util.Iterator');
