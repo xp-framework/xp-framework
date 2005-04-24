@@ -29,6 +29,11 @@
 
       $indent= $offset.$this->indent;
       
+      // Tags
+      foreach ($class->tags() as $tag) {
+        Console::writeLine($indent, '+ ', get_class($tag), ' @', $tag->name(), ' [', $tag->text(), ']');
+      }
+      
       // Superclass
       if ($class->superclass) {
         Console::write($indent, '+ extends ');
@@ -44,7 +49,11 @@
       
       // Methods
       foreach ($class->methods as $method) {
-        Console::writeLine($indent.'+ method ', $method->name(), '()');
+        Console::writeLine  ($indent.'+ method ', $method->name(), '() {');
+        foreach ($method->tags() as $tag) {
+          Console::writeLine($indent.$this->indent, '+ ', get_class($tag), ' @', $tag->name(), ' [', $tag->text(), ']');
+        }
+        Console::writeLine($indent, '}');
       }
 
       // Used classes
