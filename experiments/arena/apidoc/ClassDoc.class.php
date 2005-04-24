@@ -6,6 +6,11 @@
  
   uses('Doc');
 
+  define('EXCEPTION_CLASS',   'exception');
+  define('ERROR_CLASS',       'error');
+  define('INTERFACE_CLASS',   'interface');
+  define('ORDINARY_CLASS',    'ordinary');
+
   /**
    *
    * @purpose  Documents a class
@@ -20,6 +25,7 @@
       $usedClasses    = NULL,
       $superclass     = NULL,
       $root           = NULL,
+      $type           = NULL,
       $qualifiedName  = '';
     
     /**
@@ -33,13 +39,45 @@
     }
     
     /**
+     * Retrieve class type, which one of the following constants
+     * 
+     * <ul>
+     *   <li>EXCEPTION_CLASS</li>
+     *   <li>ERROR_CLASS</li>
+     *   <li>INTERFACE_CLASS</li>
+     *   <li>ORDINARY_CLASS</li>
+     * </ul>
+     *
+     * @access  public
+     * @return  string
+     */
+    function classType() {
+      static $map= array(
+        'lang.Exception' => EXCEPTION_CLASS,
+        'lang.Error'     => ERROR_CLASS,
+        'lang.Interface' => INTERFACE_CLASS
+      );
+
+      if ($this->type) return $this->type;    // Already known
+
+      $cmp= &$this;
+      do {
+        if (isset($map[$cmp->qualifiedName])) {
+          return $this->type= $map[$cmp->qualifiedName];
+        }
+      } while ($cmp= &$cmp->superclass);
+
+      return $this->type= ORDINARY_CLASS;
+    }
+    
+    /**
      * Returns whether this class is an exception class.
      *
      * @access  public
      * @return  bool
      */
     function isException() {
-      return $this->subclassOf($this->root->classNamed('lang.Exception'));
+      return EXCEPTION_CLASS == $this->classType();
     }
     
     /**
@@ -49,7 +87,7 @@
      * @return  bool
      */
     function isError() {
-      return $this->subclassOf($this->root->classNamed('lang.Error'));
+      return ERROR_CLASS == $this->classType();
     }
 
     /**
@@ -59,7 +97,7 @@
      * @return  bool
      */
     function isInterface() {
-      return $this->subclassOf($this->root->classNamed('lang.Interface'));
+      return INTERFACE_CLASS == $this->classType();
     }
     
     /**
