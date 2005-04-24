@@ -6,7 +6,7 @@
   // {{{ void exportClass(&ClassDoc class [, string indent = ''])
   //     Export a single class
   function exportClass(&$class, $indent= '') {
-    echo '[', $class->name(), "] {\n";
+    echo '[', $class->qualifiedName(), "] {\n";
 
     if ($class->superclass) {
       echo $indent.'  + extends ', exportClass($class->superclass, $indent.'  ');
