@@ -33,8 +33,21 @@
   define('T_DEFINE',              0x1002);
   
   /**
+   * Represents the root of the program structure information for one 
+   * run. From this root all other program structure information can 
+   * be extracted. Also represents the command line information - 
+   * the classes and options specified by the user. 
    *
-   * @purpose  Base class for all others
+   * Example:
+   * <code>
+   *   class TreeDoclet extends Doclet {
+   *     // ...
+   *   }
+   *
+   *   RootDoc::start(new TreeDoclet(), new ParamString());
+   * </code>
+   *
+   * @purpose  Entry point
    */
   class RootDoc extends Object {
     var
