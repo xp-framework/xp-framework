@@ -12,6 +12,8 @@
   define('ORDINARY_CLASS',    'ordinary');
 
   /**
+   * Represents an XP class or interface and provides access to 
+   * information about it, its comment and tags, and members.
    *
    * @purpose  Documents a class
    */
