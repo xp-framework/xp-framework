@@ -25,21 +25,24 @@
     // {{{ void exportClass(&ClassDoc class [, string offset = ''])
     //     Export a single class
     function exportClass(&$class, $offset= '') {
-      echo '[', $class->classType(), ' : ', $class->qualifiedName(), "] {\n";
+      Console::writeLine('[', $class->classType(), ' : ', $class->qualifiedName(), '] {');
 
       $indent= $offset.$this->indent;
       if ($class->superclass) {
-        echo $indent.'+ extends ', $this->exportClass($class->superclass, $indent);
+        Console::write($indent, '+ extends ');
+        $this->exportClass($class->superclass, $indent);
       }
       while ($class->interfaces->hasNext()) {
         $iface= &$class->interfaces->next();
-        echo $indent.'+ implements ', $this->exportClass($iface, $indent);
+        Console::write($indent, '+ implements ');
+        $this->exportClass($iface, $indent);
       }
       while ($class->usedClasses->hasNext()) {
         $used= &$class->usedClasses->next();
-        echo $indent.'+ uses ', $this->exportClass($used, $indent);
+        Console::write($indent.'+ uses ');
+        $this->exportClass($used, $indent);
       }
-      echo $offset, "}\n";
+      Console::writeLine($offset, '}');
       $this->total++;
     }
     // }}}
@@ -55,7 +58,7 @@
         }
 
         $this->timer->stop();
-        printf("\n%d classes, %.3f seconds\n", $this->total, $this->timer->elapsedTime());
+        Console::writeLinef('%d classes, %.3f seconds', $this->total, $this->timer->elapsedTime());
       }
     }
     // }}}
