@@ -28,20 +28,32 @@
       Console::writeLine('[', $class->classType(), ' : ', $class->qualifiedName(), '] {');
 
       $indent= $offset.$this->indent;
+      
+      // Superclass
       if ($class->superclass) {
         Console::write($indent, '+ extends ');
         $this->exportClass($class->superclass, $indent);
       }
+      
+      // Interfaces
       while ($class->interfaces->hasNext()) {
         $iface= &$class->interfaces->next();
         Console::write($indent, '+ implements ');
         $this->exportClass($iface, $indent);
       }
+      
+      // Methods
+      foreach ($class->methods as $method) {
+        Console::writeLine($indent.'+ method ', $method->name(), '()');
+      }
+
+      // Used classes
       while ($class->usedClasses->hasNext()) {
         $used= &$class->usedClasses->next();
         Console::write($indent.'+ uses ');
         $this->exportClass($used, $indent);
       }
+
       Console::writeLine($offset, '}');
       $this->total++;
     }
