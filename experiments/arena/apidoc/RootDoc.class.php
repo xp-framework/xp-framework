@@ -4,7 +4,12 @@
  * $Id$
  */
  
-  uses('ClassIterator', 'util.cmd.ParamString');
+  uses(
+    'util.cmd.ParamString',
+    'ClassIterator',
+    'ClassDoc', 
+    'MethodDoc'
+  );
   
   define('OPTION_ONLY', 0x0000);
   define('HAS_VALUE',   0x0001);
