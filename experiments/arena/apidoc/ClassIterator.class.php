@@ -43,6 +43,15 @@
     function __construct($classes= array()) {
       $this->classes= array_flip($classes);
     }
+    
+    /**
+     * Rewinds this iterator
+     *
+     * @access  public
+     */
+    function rewind() {
+      reset($this->classes);
+    }
 
     /**
      * Finds a class by a given class name
