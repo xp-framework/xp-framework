@@ -153,6 +153,7 @@
               while (T_STRING !== $tokens[$i][0] && $i < $s) $i++;
 
               $doc->name= $tokens[$i][1];
+              $doc->qualifiedName= $classname;
               $doc->rawComment= $comment;
               $doc->annotations= $annotations;
               $comment= $annotations= NULL;
