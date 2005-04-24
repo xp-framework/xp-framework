@@ -29,6 +29,7 @@
      */
     function start(&$doclet, &$params) {
       $classes= array();
+      $root= &new RootDoc();
       
       // Separate options from classes
       $valid= $doclet->validOptions();
@@ -40,18 +41,18 @@
           $name= substr($option, 2, FALSE === $p ? strlen($option) : $p- 2);
           if (isset($valid[$name])) {
             if ($valid[$name] == HAS_VALUE) {
-              $this->options[$name]= FALSE === $p ? NULL : substr($option, $p+ 1);
+              $root->options[$name]= FALSE === $p ? NULL : substr($option, $p+ 1);
             } else {
-              $this->options[$name]= TRUE;
+              $root->options[$name]= TRUE;
             }
           }
         } elseif (0 == strncmp($option, '-', 1)) {   // Short: -f / -f bar
           $name= substr($option, 1);
           if (isset($valid[$name])) {
             if ($valid[$name] == HAS_VALUE) {
-              $this->options[$name]= $params->list[++$i];
+              $root->options[$name]= $params->list[++$i];
             } else {
-              $this->options[$name]= TRUE;
+              $root->options[$name]= TRUE;
             }
           }          
         } else {
@@ -60,10 +61,23 @@
       }
       
       // Set up class iterator
-      $this->classes= &new ClassIterator($classes);
+      $root->classes= &new ClassIterator($classes);
 
       // Start the doclet
-      return $doclet->start($this);
+      return $doclet->start($root);
+    }
+    
+    /**
+     * Returns an option by a given name or the specified default value
+     * if the option does not exist.
+     *
+     * @access  public
+     * @param   string name
+     * @param   string default default NULL
+     * @return  string
+     */
+    function option($name, $default= NULL) {
+      return isset($this->options[$name]) ? $this->options[$name] : $default;
     }
   }
 ?>
