@@ -168,10 +168,14 @@
   function uses() {
     foreach (func_get_args() as $str) {
       if (class_exists($class= xp::reflect($str))) continue;
-      if (FALSE === include(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+
+      if (FALSE === include(strpos($str, '+xp://')
+        ? $str
+        : strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')
+      ) {
         xp::error(xp::stringOf(new Error('Cannot include '.$str)));
       }
-      xp::registry('class.'.$class, $str);
+      xp::registry('class.'.$class, substr($str, ($p= strrpos($str, '/')) ? $p+ 1 : 0));
       is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
     }
   }
@@ -335,9 +339,7 @@
   // {{{ proto lang.Object &clone(lang.Object object) throws CloneNotSupportedException
   //     Clones an object
   function &clone($object) {
-    static $i= 0;
-
-    $object->__id= ++$i.'C';
+    $object->__id= microtime();
     if (is_callable(array(&$object, '__clone'))) {
       try(); {
         call_user_func(array(&$object, '__clone'));
@@ -373,7 +375,6 @@
   xp::registry('exceptions', array());
   xp::registry('class.xp', '<xp>');
   xp::registry('class.null', '<null>');
-  xp::registry('__id', microtime());
   set_error_handler('__error');
 
   uses(

@@ -19,9 +19,7 @@
      * @access  private
      */
     function Object() {
-      static $i= 0;
-
-      $this->__id= (string)++$i;
+      $this->__id= microtime();
       if (!method_exists($this, '__construct')) return;
       $args= func_get_args();
       call_user_func_array(array(&$this, '__construct'), $args);
@@ -34,7 +32,7 @@
      * @return  string
      */
     function hashCode() {
-      return $this->__id.xp::registry('__id');
+      return $this->__id;
     }
     
     /**
