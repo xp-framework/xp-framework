@@ -12,13 +12,14 @@
    */
   class ClassDoc extends Doc {
     var
-      $annotations  = array(),
-      $fields       = array(),
-      $methods      = array(),
-      $constants    = array(),
-      $interfaces   = NULL,
-      $usedClasses  = NULL,
-      $superclass   = NULL;
+      $annotations    = array(),
+      $fields         = array(),
+      $methods        = array(),
+      $constants      = array(),
+      $interfaces     = NULL,
+      $usedClasses    = NULL,
+      $superclass     = NULL,
+      $qualifiedName  = '';
     
     /**
      * Constructor
@@ -29,11 +30,16 @@
       $this->interfaces= &new ClassIterator();
       $this->usedClasses= &new ClassIterator();
     }
-    
-    function fields() {
-    }
-    
-    function methods() {      
+
+    /**
+     * Get the fully qualified name of this program element. For example, 
+     * for the class util.Date, return "util.Date". 
+     *
+     * @access  public
+     * @return  string
+     */
+    function qualifiedName() {
+      return $this->qualifiedName;
     }
   }
 ?>
