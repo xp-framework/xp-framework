@@ -30,6 +30,17 @@
       $this->interfaces= &new ClassIterator();
       $this->usedClasses= &new ClassIterator();
     }
+    
+    /**
+     * Set rootdoc
+     *
+     * @access  public
+     * @param   &RootDoc root
+     */
+    function setRoot(&$root) {
+      $this->interfaces->root= &$root;
+      $this->usedClasses->root= &$root;    
+    }
 
     /**
      * Get the fully qualified name of this program element. For example, 
