@@ -47,6 +47,7 @@
    *   RootDoc::start(new TreeDoclet(), new ParamString());
    * </code>
    *
+   * @see      xp://Doclet
    * @purpose  Entry point
    */
   class RootDoc extends Object {
