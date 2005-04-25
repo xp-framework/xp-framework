@@ -17,10 +17,8 @@
   }
   
   $cl= &ClassLoader::getDefault();
-  if (!($filename= $cl->findClass($classname))) {
-    echo 'Class "', $classname, '" not found', "\n";
+  if (!($filename= $cl->findClass($classname)))
     exit(-1);
-  }
   
   echo $filename, "\n";
   // }}}
