@@ -130,7 +130,7 @@
     Console::writeLinef('     * @return  %s', $ret);
   }
   
-  Console::writeLine('     **/');
+  Console::writeLine('     */');
   
   // Function declaration
   Console::writef('    function %s(', $method->getName(TRUE));
