@@ -51,7 +51,7 @@ nedit.shellCommands: \
   CVS Diff:Shift+Alt+V:C:DS:\n\
     php -q $HOME/bin/cvsdiff.php %\n\    
 	Open XP class:Shift+Ctrl+O::ID:\n\
-		/bin/sh -c 'nedit `php $HOME/bin/findclass.php` 1>/dev/null 2>/dev/null &'\n
+		/bin/sh -c 'CLASS=`php $HOME/bin/findclass.php`; if [ 0 = $? ]; then nedit $CLASS 1>/dev/null 2>/dev/null & else echo "Class not found."; fi'\n\
 nedit.macroCommands: \
 	Complete Word:Alt+D::: {\n\
 		# Tuning parameters\n\
