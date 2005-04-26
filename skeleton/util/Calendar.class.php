@@ -213,6 +213,17 @@
 
       return new Date(mktime(0, 0, 0, $m, $d, $year));
     }
+    
+    /**
+     * Returns whether a year is a leap year
+     *
+     * @model   static
+     * @access  protected
+     * @param   int year
+     * @return  bool TRUE if the given year is a leap year
+     */
+    function isLeapYear($year) {
+      return $year % 400 == 0 || ($year > 1582 && $year % 100 == 0 ? FALSE : $year % 4 == 0);
+    }
   }
-
 ?>
