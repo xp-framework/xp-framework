@@ -16,8 +16,84 @@
    */
   class BSDSocket extends Socket {
     var
-      $_eof = FALSE;
-      
+      $_eof     = FALSE,
+      $domain   = AF_INET,
+      $type     = SOCK_STREAM,
+      $protocol = SOL_TCP;
+
+    /**
+     * Set Domain
+     *
+     * @access  public
+     * @param   int domain one of AF_INET, AF_INET6 or AF_UNIX
+     * @throws  lang.IllegalStateException if socket is already connected
+     */
+    function setDomain($domain) {
+      if ($this->isConnected()) {
+        return throw(new IllegalStateException('Cannot set domain on connected socket'));
+      }
+      $this->domain= $domain;
+    }
+
+    /**
+     * Get Domain
+     *
+     * @access  public
+     * @return  int
+     */
+    function getDomain() {
+      return $this->domain;
+    }
+
+    /**
+     * Set Type
+     *
+     * @access  public
+     * @param   int type one of SOCK_STREAM, SOCK_DGRAM, SOCK_RAW, SOCK_SEQPACKET or SOCK_RDM
+     * @throws  lang.IllegalStateException if socket is already connected
+     */
+    function setType($type) {
+      if ($this->isConnected()) {
+        return throw(new IllegalStateException('Cannot set type on connected socket'));
+      }
+      $this->type= $type;
+    }
+
+    /**
+     * Get Type
+     *
+     * @access  public
+     * @return  int
+     */
+    function getType() {
+      return $this->type;
+    }
+
+    /**
+     * Set Protocol
+     *
+     * @access  public
+     * @see     php://getprotobyname
+     * @param   int protocol one of SOL_TCP or SOL_UDP
+     * @throws  lang.IllegalStateException if socket is already connected
+     */
+    function setProtocol($protocol) {
+      if ($this->isConnected()) {
+        return throw(new IllegalStateException('Cannot set protocol on connected socket'));
+      }
+      $this->protocol= $protocol;
+    }
+
+    /**
+     * Get Protocol
+     *
+     * @access  public
+     * @return  int
+     */
+    function getProtocol() {
+      return $this->protocol;
+    }
+
     /**
      * Get last error
      *
@@ -38,19 +114,28 @@
     function connect() {
       if ($this->isConnected()) return TRUE;
       
-      $this->_sock= socket_create(AF_INET, SOCK_STREAM, 0);
-      if (FALSE === socket_connect(
-        $this->_sock, 
-        gethostbyname($this->host),
-        $this->port
-      )) {
-        return throw(new ConnectException(sprintf(
-          'Connect to %s:%d failed: %s',
-          $this->host,
-          $this->port,
-          $this->getLastError()
-        )));
+      // Create and connect the socket
+      $this->_sock= socket_create($this->domain, $this->type, $this->protocol);
+      switch ($this->domain) {
+        case AF_INET: case AF_INET6: {
+          $r= socket_connect($this->_sock, gethostbyname($this->host), $this->port);
+          break;
+        }
+        
+        case AF_UNIX: {
+          $r= socket_connect($this->_sock, $this->host);
+          break;
+        }
       }
+      
+      // Check return status
+      if (FALSE === $r) return throw(new ConnectException(sprintf(
+        'Connect to %s:%d failed: %s',
+        $this->host,
+        $this->port,
+        $this->getLastError()
+      )));
+
       return TRUE;
     }
     
