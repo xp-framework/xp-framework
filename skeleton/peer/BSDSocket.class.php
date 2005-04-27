@@ -112,10 +112,33 @@
      * @throws  peer.ConnectException
      */
     function connect() {
-      if ($this->isConnected()) return TRUE;
+      static $domains= array(
+        AF_INET   => 'AF_INET',
+        AF_UNIX   => 'AF_UNIX'
+      );
+      static $types= array(
+        SOCK_STREAM     => 'SOCK_STREAM',
+        SOCK_DGRAM      => 'SOCK_DGRAM',
+        SOCK_RAW        => 'SOCK_RAW',
+        SOCK_SEQPACKET  => 'SOCK_SEQPACKET',
+        SOCK_RDM        => 'SOCK_RDM'
+      );
       
-      // Create and connect the socket
-      $this->_sock= socket_create($this->domain, $this->type, $this->protocol);
+      if ($this->isConnected()) return TRUE;    // Short-cuircuit this
+      
+      // Create socket...
+      if (!($this->_sock= socket_create($this->domain, $this->type, $this->protocol))) {
+        return throw(new ConnectException(sprintf(
+          'Create of %s socket (type %s, protocol %s) failed: %d: %s',
+          $domains[$this->domain],
+          $types[$this->type],
+          getprotobynumber($this->protocol),
+          $e= socket_last_error(), 
+          socket_strerror($e)
+        )));
+      }
+      
+      // ...and connect it
       switch ($this->domain) {
         case AF_INET: {
           $r= socket_connect($this->_sock, gethostbyname($this->host), $this->port);
