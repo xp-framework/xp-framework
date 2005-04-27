@@ -38,8 +38,15 @@ Example
 
 Parameter format
 ~~~~~~~~~~~~~~~~
+
+With arguments:
 <pre>
   [scheme]"+xp://"[arguments]"/"[fully_qualified_class_name]
+</pre>
+
+Without arguments:
+<pre>
+  [scheme]"+xp://"[fully_qualified_class_name]
 </pre>
 
 * The scheme may consist of any alphanumeric character and the "+" sign.
@@ -61,6 +68,35 @@ Parameter format
      builtin wrapper is disabled due to PHP configuration settings, you
      could not write your own without redefining the scheme name to
      something else.
+
+uses() enhancement
+~~~~~~~~~~~~~~~~~~
+The core function uses() will be enhanced so that it recognizes "+xp://" in
+an argument.
+
+The following then happens:
+
+1) The wrapper type (scheme) is determined from the argument.
+
+2) The wrapper implementation is loaded from the sapi/[type].uwrp.php
+   ("uwrp" stands for "uses wrapper"). Loading this file may not fail.
+
+3) The stream wrapper is registered to a class called "uwrp·"[scheme]
+   (the middle dot is produced by pressing AltGr + . on the keyboard
+   or of course by copying it from above).
+
+4) The entire string is passed to the include() statement so that the
+   wrapper is invoked.
+
+5) The fully qualified class name is determined from everything after
+   the last "/" in the argument. For "enum+xp://enum.Suit", the class
+   name would be "enum.Suit", for "cca+xp://date.cca/util.Date", it
+   would be "util.Date".
+
+6) The class' short name is calculated from the fully qualified class
+   name by using the xp::reflect() functionality.
+
+Note: Step 2 and 3 are only executed once.
 
 
 Security considerations
@@ -108,7 +144,7 @@ Related documents
   http://xp-framework.net/downloads/rfc0022.diff
 
 - Wrapper implementation
-  http://xp-framework.net/downloads/ArchiveWrapper.class.phps
+  http://xp-framework.net/downloads/enum.uwrp.phps
 
 Comments
 --------
