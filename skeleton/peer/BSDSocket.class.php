@@ -25,7 +25,7 @@
      * Set Domain
      *
      * @access  public
-     * @param   int domain one of AF_INET, AF_INET6 or AF_UNIX
+     * @param   int domain one of AF_INET or AF_UNIX
      * @throws  lang.IllegalStateException if socket is already connected
      */
     function setDomain($domain) {
@@ -117,7 +117,7 @@
       // Create and connect the socket
       $this->_sock= socket_create($this->domain, $this->type, $this->protocol);
       switch ($this->domain) {
-        case AF_INET: case AF_INET6: {
+        case AF_INET: {
           $r= socket_connect($this->_sock, gethostbyname($this->host), $this->port);
           break;
         }
