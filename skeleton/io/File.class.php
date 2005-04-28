@@ -51,6 +51,16 @@
     }
     
     /**
+     * Retrieve internal file handle
+     *
+     * @access  public
+     * @return  resource
+     */
+    function getHandle() {
+      return $this->_fd;
+    }
+    
+    /**
      * Returns the URI of the file
      *
      * @access public
