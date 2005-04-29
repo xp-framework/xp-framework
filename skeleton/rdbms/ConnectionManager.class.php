@@ -48,7 +48,7 @@
      */
     function configure(&$properties) {
       $section= $properties->getFirstSection();
-      do {
+      if ($section) do {
         try(); {
           $conn= &DriverManager::getConnection($properties->readString($section, 'dsn'));
         } if (catch('DriverNotSupportedException', $e)) {
