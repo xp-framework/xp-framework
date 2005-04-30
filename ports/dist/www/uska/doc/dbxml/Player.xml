@@ -1,4 +1,4 @@
-<document created_at="Sat, 09 Apr 2005 12:03:37 +0200" created_by="alex">
+<document created_at="Sat, 30 Apr 2005 11:04:36 +0200" created_by="alex">
   <table
    name="player"
    dbhost="uskadb"
@@ -91,6 +91,13 @@
      typename="string"
      nullable="false"
     />
+    <attribute
+     name="team_id"
+     type="DB_ATTRTYPE_INT"
+     identity="false"
+     typename="int"
+     nullable="false"
+    />
     <index
      name="PRIMARY"
      unique="true"
@@ -111,6 +118,13 @@
      primary="false"
     >    
       <key>created_by</key>
+    </index>
+    <index
+     name="team_id"
+     unique="false"
+     primary="false"
+    >    
+      <key>team_id</key>
     </index>
   </table>
 </document>
