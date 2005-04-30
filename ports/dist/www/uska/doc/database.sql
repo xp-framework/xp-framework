@@ -4,9 +4,15 @@
  * $Id$
  */
 
+create table team (
+  team_id                     int auto_increment primary key,
+  name                        varchar(255) not null
+) Type=InnoDB
+
 create table player (
   player_id                   int auto_increment primary key,
   player_type_id              int not null,
+  team_id                     int not null,
   
   firstname                   varchar(50) not null,
   lastname                    varchar(50) not null,
@@ -16,8 +22,6 @@ create table player (
   email                       varchar(255) null,
   
   position                    int null,
-  sex                         int null,
-  
   created_by                  int null,
   
   lastchange                  datetime not null,
@@ -25,20 +29,7 @@ create table player (
 ) Type=InnoDB
 alter table player add unique index (username)
 alter table player add foreign key (created_by) references player(player_id)
-
-create table team (
-  team_id                     int auto_increment primary key,
-  
-  name                        varchar(255) not null
-) Type=InnoDB
-
-create table player_team_matrix (
-  team_id                     int not null,
-  player_id                   int not null
-) Type=InnoDB
-alter table player_team_matrix add unique index (team_id, player_id)
-alter table player_team_matrix add foreign key (team_id) references team(team_id)
-alter table player_team_matrix add foreign key (player_id) references player(player_id)
+alter table player add foreign key (team_id) references team(team_id)
 
 create table event_type (
   event_type_id               int primary key,
