@@ -8,7 +8,7 @@
  
   /**
    * Class wrapper for table player, database uska
-   * (Auto-generated on Sat, 09 Apr 2005 12:03:37 +0200 by alex)
+   * (Auto-generated on Sat, 30 Apr 2005 11:04:36 +0200 by alex)
    *
    * @purpose  Datasource accessor
    */
@@ -25,7 +25,8 @@
       $sex                = NULL,
       $created_by         = NULL,
       $lastchange         = NULL,
-      $changedby          = '';
+      $changedby          = '',
+      $team_id            = 0;
 
     /**
      * Static initializer
@@ -51,7 +52,8 @@
           'sex'                 => '%d',
           'created_by'          => '%d',
           'lastchange'          => '%s',
-          'changedby'           => '%s'
+          'changedby'           => '%s',
+          'team_id'             => '%d'
         ));
       }
     }  
@@ -103,6 +105,19 @@
     function &getByCreated_by($created_by) {
       $peer= &Player::getPeer();
       return $peer->doSelect(new Criteria(array('created_by', $created_by, EQUAL)));
+    }
+
+    /**
+     * Gets an instance of this object by index "team_id"
+     *
+     * @access  static
+     * @param   int team_id
+     * @return  &de.uska.db.Player[] object
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    function &getByTeam_id($team_id) {
+      $peer= &Player::getPeer();
+      return $peer->doSelect(new Criteria(array('team_id', $team_id, EQUAL)));
     }
 
     /**
@@ -355,6 +370,27 @@
      */
     function setChangedby($changedby) {
       return $this->_change('changedby', $changedby);
+    }
+
+    /**
+     * Retrieves team_id
+     *
+     * @access  public
+     * @return  int
+     */
+    function getTeam_id() {
+      return $this->team_id;
+    }
+      
+    /**
+     * Sets team_id
+     *
+     * @access  public
+     * @param   int team_id
+     * @return  int the previous value
+     */
+    function setTeam_id($team_id) {
+      return $this->_change('team_id', $team_id);
     }
   }
 ?>
