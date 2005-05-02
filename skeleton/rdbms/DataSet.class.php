@@ -103,7 +103,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function getPeer() { }
+    function &getPeer() { }
 
     /**
      * Changes a value by a specified key and returns the previous value.
