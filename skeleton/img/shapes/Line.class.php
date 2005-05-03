@@ -45,14 +45,15 @@
     }
     
     /**
-     * Draw function
+     * Draws this object onto an image
      *
      * @access  public
-     * @param   &resource hdl an image resource
+     * @param   &img.Image image
+     * @return  mixed
      */
-    function draw(&$hdl) {
+    function draw(&$image) { }
       return imageline(
-        $hdl,
+        $image->handle,
         $this->x1,
         $this->y1,
         $this->x2,
@@ -60,5 +61,6 @@
         $this->col->handle
       );
     }
-  }
+
+  } implements(__FILE__, 'img.Drawable');
 ?>

@@ -45,23 +45,24 @@
       $this->fill= $fill;
       
     }
-    
+
     /**
-     * Draw function
+     * Draws this object onto an image
      *
      * @access  public
-     * @param   &resource hdl an image resource
+     * @param   &img.Image image
+     * @return  mixed
      */
-    function draw(&$hdl) {
+    function draw(&$image) { }
       if ($this->fill) return imagefilledrectangle(
-        $hdl,
+        $image->handle,
         $this->x1,
         $this->y1,
         $this->x2,
         $this->y2,
         $this->col->handle
       ); else return imagerectangle(
-        $hdl,
+        $image->handle,
         $this->x1,
         $this->y1,
         $this->x2,
@@ -69,5 +70,6 @@
         $this->col->handle
       );
     }
-  }
+
+  } implements(__FILE__, 'img.Drawable');
 ?>

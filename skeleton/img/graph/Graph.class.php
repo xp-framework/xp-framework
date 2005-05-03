@@ -4,70 +4,28 @@
  * $Id$
  */
  
-  uses('img.Image', 'img.Color');
+  uses('img.Image');
   
   /**
    * Graph class
-   *
-   * Example [creating a piechart]:
-   * <code>
-   *   uses(
-   *     'img.graph.Graph',
-   *     'img.graph.PieChart',
-   *     'img.Color',
-   *     'img.PngImage',
-   *     'io.File'
-   *   );
-   *   
-   *   $g= &new Graph(400, 400);
-   *   $g->create();
-   *   $colors= array(
-   *     'white'     => $g->allocate(new Color('#ffffff')),
-   *     'red'       => $g->allocate(new Color('#ff0000')),
-   *     'darkred'   => $g->allocate(new Color('#990000')),
-   *     'blue'      => $g->allocate(new Color('#0000ff')),
-   *     'darkblue'  => $g->allocate(new Color('#000099')),
-   *     'green'     => $g->allocate(new Color('#00ff00')),
-   *     'darkgreen' => $g->allocate(new Color('#009900')),
-   *     'orange'    => $g->allocate(new Color('#ffff00')),
-   *     'brown'     => $g->allocate(new Color('#999900')),
-   *     'violet'    => $g->allocate(new Color('#ff00ff')),
-   *     'purple'    => $g->allocate(new Color('#990099')),
-   *   );
-   *   
-   *   $g->draw(new PieChart(array(
-   *     'first'  => new PieSlice(10.0, array($colors['red'], $colors['darkred'])),
-   *     'second' => new PieSlice(60.0, array($colors['blue'], $colors['darkblue'])),
-   *     'third'  => new PieSlice( 6.0, array($colors['green'], $colors['darkgreen'])),
-   *     'fourth' => new PieSlice( 4.0, array($colors['orange'], $colors['brown'])),
-   *     'fifth'  => new PieSlice(12.0, array($colors['violet'], $colors['purple'])),
-   *   ), 100));
-   *   
-   *   $i= &new PngImage($g->getWidth(), $g->getHeight());
-   *   $i->create();
-   *   $i->copyFrom($g);
-   *   try(); {
-   *     $f= &$i->toFile(new File('out.png'));
-   *   } if (catch('ImagingException', $e)) {
-   *     $e->printStackTrace();
-   *     exit;
-   *   }
-   * </code>
    *
    * @see      xp://img.Image
    * @purpose  Base class for all graphs
    */
   class Graph extends Image {
-  
+
     /**
-     * Draws an object
+     * Creates a new blank image in memory
      *
+     * @model   static
      * @access  public
-     * @param   img.DrawableGraphObject graphObject
-     * @return  mixed the return value of graphObject's draw function
+     * @param   int w width
+     * @param   int h height
+     * @param   int type default IMG_PALETTE either IMG_PALETTE or IMG_TRUECOLOR
+     * @throws  img.ImagingException in case the image could not be created
      */
-    function draw(&$graphObject) {
-      return $graphObject->draw($this->handle, $this->getWidth(), $this->getHeight());
+    function &create($w, $h, $type= IMG_PALETTE) {
+      return parent::create($w, $h, $type, __CLASS__);
     }
   }
 ?>

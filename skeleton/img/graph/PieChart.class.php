@@ -13,27 +13,23 @@
    */
   class PieChart extends Object {
     var
-      $data=   array();
+      $slices       = array(),
+      $perspective  = 0,
+      $shadow       = 0,
+      $fill         = 0;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   array data
      * @param   int perspective default 0
      * @param   int shadow default 10 
-     * @param   int fill default IMG_ARC_PIE one of
-     *          IMG_ARC_PIE
-     *          IMG_ARC_CHORD
-     *          IMG_ARC_NOFILL
-     *          IMG_ARC_EDGED
+     * @param   int fill default IMG_ARC_PIE one of IMG_ARC_* constants
      */ 
-    function __construct($data, $perspective= 0, $shadow= 10, $fill= IMG_ARC_PIE) {
-      $this->data= $data;
-      $this->fill= $fill;
-      $this->shadow= $shadow;
+    function __construct($perspective= 0, $shadow= 10, $fill= IMG_ARC_PIE) {
       $this->perspective= $perspective;
-      
+      $this->shadow= $shadow;
+      $this->fill= $fill;
     }
     
     /**
@@ -44,26 +40,25 @@
      * @param   &img.graph.PieSlice a slice object
      * @return  &img.graph.PieSlice the slice object put in
      */
-    function &add($key, &$s) {
-      $this->data[$key]= &$s;
-      return $s;
+    function &add(&$slice) {
+      $this->slices[]= &$slice;
+      return $slice;
     }
 
     /**
-     * Draw function
+     * Draws this object onto an image
      *
      * @access  public
-     * @param   &resource hdl an image resource
-     * @param   int w width of graph
-     * @param   int h height of graph
+     * @param   &img.Image image
+     * @return  mixed
      */
-    function draw(&$hdl, $gw, $gh) {
+    function draw(&$image) {
       $a= &new Arc(
         NULL,
-        $gw / 2, 
-        $gh / 2, 
-        $gw / 2, 
-        $gh / 2 - $this->perspective, 
+        $image->getWidth() / 2, 
+        $image->getHeight() / 2, 
+        $image->getWidth() / 2, 
+        $image->getHeight() / 2 - $this->perspective, 
         0,
         0,
         $this->fill
@@ -72,13 +67,14 @@
       for ($i= $a->cy+ $this->shadow; $i >= $y; $i--) {
         $a->s= 0;
         $a->cy= $i;
-        foreach (array_keys($this->data) as $key) {
-          $a->col= &$this->data[$key]->colors[$i != $y];
-          $a->e= $a->s+ $this->data[$key]->val * 3.6;
-          $a->draw($hdl);
+        foreach (array_keys($this->slices) as $key) {
+          $a->col= &$this->slices[$key]->colors[$i != $y];
+          $a->e= $a->s+ $this->slices[$key]->value * 3.6;
+          $a->draw($image);
           $a->s= $a->e;
         }
       }
     }
-  }
+
+  } implements(__FILE__, 'img.Drawable');
 ?>

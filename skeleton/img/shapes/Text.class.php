@@ -32,23 +32,24 @@
       $this->text= $text;
       $this->x= $x;
       $this->y= $y;
-      
     }
     
     /**
-     * Draw function
+     * Draws this object onto an image
      *
      * @access  public
-     * @param   &resource hdl an image resource
+     * @param   &img.Image image
+     * @return  mixed
      */
-    function draw(&$hdl) {
+    function draw(&$image) { }
       return $this->font->drawtext(
-        $hdl, 
+        $image->handle, 
         $this->col, 
         $this->text, 
         $this->x, 
         $this->y
       );
     }
-  }
+
+  } implements(__FILE__, 'img.Drawable');
 ?>

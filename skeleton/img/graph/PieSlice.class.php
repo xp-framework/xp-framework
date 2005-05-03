@@ -11,24 +11,44 @@
    */
   class PieSlice extends Object {
     var 
-      $val      = 0.0,
+      $value    = 0.0,
       $colors   = array();
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   float val
+     * @param   float value
      * @param   &mixed colors either an array of two colors, the second
      *          representing the shadow, or one color, for both lid and shadow
      */
-    function __construct($val, &$colors) {
-      $this->val= $val;
+    function __construct($value, &$colors) {
+      $this->value= $value;
       if (!is_array($colors)) {
         $this->colors= array($colors, $colors);
       } else {
         $this->colors= &$colors;
       }
-    } 
+    }
+
+    /**
+     * Set Value
+     *
+     * @access  public
+     * @param   int value
+     */
+    function setValue($value) {
+      $this->value= $value;
+    }
+
+    /**
+     * Get Value
+     *
+     * @access  public
+     * @return  int
+     */
+    function getValue() {
+      return $this->value;
+    }
   }
 ?>

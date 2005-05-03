@@ -50,21 +50,23 @@
     }
 
     /**
-     * Draw function
+     * Draws this object onto an image
      *
      * @access  public
-     * @param   &resource hdl an image resource
+     * @param   &img.Image image
+     * @return  mixed
      */
-    function draw(&$hdl) {
+    function draw(&$image) { }
       $this->col= &$this->colors[1];
       $cy= $this->cy;
       for ($i= 1; $i < $this->shadow; $i++) {
         $this->cy= $cy+ $i;
-        parent::draw($hdl);
+        parent::draw($image);
       }
       $this->cy= $cy;
       $this->col= &$this->colors[0];
-      parent::draw($hdl);
+      parent::draw($image);
     }
-  }
+
+  } implements(__FILE__, 'img.Drawable');
 ?>

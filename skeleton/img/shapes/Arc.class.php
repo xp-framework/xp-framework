@@ -56,16 +56,16 @@
       $this->fill= $fill;
       
     }
-    
     /**
-     * Draw function
+     * Draws this object onto an image
      *
      * @access  public
-     * @param   &resource hdl an image resource
+     * @param   &img.Image image
+     * @return  mixed
      */
-    function draw(&$hdl) {
+    function draw(&$image) {
       if (FALSE !== $this->fill) return imagefilledarc(
-        $hdl,
+        $image->handle,
         $this->cx,
         $this->cy,
         $this->w,
@@ -75,7 +75,7 @@
         $this->col->handle,
         $this->fill
       ); else return imagearc(
-        $hdl,
+        $image->handle,
         $this->cx,
         $this->cy,
         $this->w,
@@ -85,5 +85,6 @@
         $this->col->handle
       );
     }
-  }
+
+  } implements(__FILE__, 'img.Drawable');
 ?>

@@ -52,23 +52,25 @@
     }
     
     /**
-     * Draw function
+     * Draws this object onto an image
      *
      * @access  public
-     * @param   &resource hdl an image resource
+     * @param   &img.Image image
+     * @return  mixed
      */
-    function draw(&$hdl) {
+    function draw(&$image) { }
       if ($this->fill) return imagefilledpolygon(
-        $hdl,
+        $image->handle,
         $this->points,
         sizeof($this->points) / 2,
         $this->col->handle
       ); else return imagepolygon(
-        $hdl,
+        $image->handle,
         $this->points,
         sizeof($this->points) / 2,
         $this->col->handle
       );
     }
-  }
+
+  } implements(__FILE__, 'img.Drawable');
 ?>
