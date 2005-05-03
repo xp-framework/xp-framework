@@ -36,7 +36,6 @@
           $this->blue
         )= $a;
       }
-      
     }
     
     /**
@@ -60,6 +59,22 @@
      */
     function toHex() {
       return '#'.dechex($this->red).dechex($this->green).dechex($this->blue);
+    }
+    
+    /**
+     * Returns a string representation of this color
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return sprintf(
+        '%s@(%03d, %03d, %03d)',
+        $this->getClassName(),
+        $this->red,
+        $this->green,
+        $this->blue
+      );
     }
   }
 ?>
