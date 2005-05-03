@@ -29,7 +29,6 @@
       } else {
         $this->colors= &$colors;
       }
-      
     } 
   }
 ?>
