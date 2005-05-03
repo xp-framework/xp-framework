@@ -80,9 +80,10 @@
      * @param   int w width
      * @param   int h height
      * @param   int type default IMG_PALETTE either IMG_PALETTE or IMG_TRUECOLOR
+     * @param   string class default __CLASS__ class to create, defaulting to "Image"
      * @throws  img.ImagingException in case the image could not be created
      */
-    function &create($w, $h, $type= IMG_PALETTE) {
+    function &create($w, $h, $type= IMG_PALETTE, $class= __CLASS__) {
       switch ($type) {
         case IMG_PALETTE: 
           $handle= imagecreate($w, $h);
@@ -99,7 +100,7 @@
       if (!is_resource($handle)) {
         return throw(new ImagingException('Could not create image of type '.$type));
       }
-      return new Image($handle);
+      return new $class($handle);
     }
 
     /**
@@ -481,14 +482,14 @@
     }
     
     /**
-     * Draws an object
+     * Draws a drawable object onto this image
      *
      * @access  public
-     * @param   img.DrawableObject obj
+     * @param   img.Drawable obj
      * @return  mixed the return value of obj's draw function
      */
-    function draw(&$obj) {
-      return $obj->draw($this->handle);
+    function draw(&$drawable) {
+      return $drawable->draw($this);
     }
     
     /**
