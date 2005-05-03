@@ -19,7 +19,6 @@
      * Constructor
      *
      * @access  public
-     * @param   &img.Color[] col colors, the first for the "lid", the second for the shadow
      * @param   array data
      * @param   int perspective default 0
      * @param   int shadow default 10 
@@ -45,7 +44,7 @@
      * @param   &img.graph.PieSlice a slice object
      * @return  &img.graph.PieSlice the slice object put in
      */
-    function &addSlice($key, &$s) {
+    function &add($key, &$s) {
       $this->data[$key]= &$s;
       return $s;
     }
