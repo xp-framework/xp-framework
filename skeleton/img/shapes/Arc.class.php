@@ -56,6 +56,7 @@
       $this->fill= $fill;
       
     }
+
     /**
      * Draws this object onto an image
      *
