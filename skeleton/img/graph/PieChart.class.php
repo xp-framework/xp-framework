@@ -53,7 +53,7 @@
      * @return  mixed
      */
     function draw(&$image) {
-      $a= &new Arc(
+      $arc= &new Arc(
         NULL,
         $image->getWidth() / 2, 
         $image->getHeight() / 2, 
@@ -63,15 +63,15 @@
         0,
         $this->fill
       );
-      $y= $a->cy;
-      for ($i= $a->cy+ $this->shadow; $i >= $y; $i--) {
-        $a->s= 0;
-        $a->cy= $i;
+      $y= $arc->cy;
+      for ($i= $arc->cy+ $this->shadow; $i >= $y; $i--) {
+        $arc->s= 0;
+        $arc->cy= $i;
         foreach (array_keys($this->slices) as $key) {
-          $a->col= &$this->slices[$key]->colors[$i != $y];
-          $a->e= $a->s+ $this->slices[$key]->value * 3.6;
-          $a->draw($image);
-          $a->s= $a->e;
+          $arc->col= &$this->slices[$key]->colors[$i != $y];
+          $arc->e= $arc->s+ $this->slices[$key]->value * 3.6;
+          $arc->draw($image);
+          $arc->s= $arc->e;
         }
       }
     }
