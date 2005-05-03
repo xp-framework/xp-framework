@@ -7,12 +7,14 @@
   /**
    * Shape class representing a 3D Pie chart's clice
    *
-   * @see img.graph.PieChart
+   * @see     xp://img.graph.PieChart
+   * @purpose Value object
    */
   class PieSlice extends Object {
     var 
       $value    = 0.0,
       $caption  = '',
+      $detached = FALSE,
       $colors   = array();
       
     /**

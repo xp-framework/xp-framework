@@ -64,12 +64,26 @@
         $this->fill
       );
       $y= $arc->cy;
+      $x= $arc->cx;
+      $factor= $arc->w / $arc->h;
       for ($i= $arc->cy+ $this->shadow; $i >= $y; $i--) {
         $arc->s= 0;
-        $arc->cy= $i;
+
         foreach (array_keys($this->slices) as $key) {
           $arc->col= &$this->slices[$key]->colors[$i != $y];
           $arc->e= $arc->s+ $this->slices[$key]->value * 3.6;
+
+          $offset= 2 * M_PI - deg2rad($arc->s + $this->slices[$key]->value * 1.8);
+
+          $arc->cx= $x;
+          $arc->cy= $i;
+
+          // If a slice is detached, move it.
+          if ($this->slices[$key]->detached) {
+            $arc->cx= $x+ 50 * cos($offset);
+            $arc->cy= $i- (50 / $factor) * sin($offset);
+          }
+          
           $arc->draw($image);
           $arc->s= $arc->e;
         }
