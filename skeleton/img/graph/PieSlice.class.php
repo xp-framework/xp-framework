@@ -12,6 +12,7 @@
   class PieSlice extends Object {
     var 
       $value    = 0.0,
+      $caption  = '',
       $colors   = array();
       
     /**
@@ -49,6 +50,26 @@
      */
     function getValue() {
       return $this->value;
+    }
+
+    /**
+     * Set Caption
+     *
+     * @access  public
+     * @param   string caption
+     */
+    function setCaption($caption) {
+      $this->caption= $caption;
+    }
+
+    /**
+     * Get Caption
+     *
+     * @access  public
+     * @return  string
+     */
+    function getCaption() {
+      return $this->caption;
     }
   }
 ?>
