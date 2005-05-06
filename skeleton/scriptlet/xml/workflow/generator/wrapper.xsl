@@ -17,6 +17,13 @@
   <xsl:output method="text" indent="no"/>
   <xsl:include href="common.inc.xsl"/>
   
+  <!-- Build a key to unique the class names of casters, pre-checkers and post-checkers -->
+  <xsl:key 
+    name="elements" 
+    match="//postcheck|//precheck|//caster" 
+    use="generate-id((preceding::* | ancestor::*)[@class = current()/@class])"
+  />
+    
   <!--
    ! Template that creates a bitfield from occurence values
    !
@@ -86,18 +93,14 @@
   uses(
     'scriptlet.xml.workflow.Wrapper']]></xsl:text>
 
-    <!-- Create a unique list of all used classes -->
-    <xsl:variable name="elements" select="//postcheck|//precheck|//caster"/>
-    <xsl:for-each select="$elements">
+    <!-- Insert the unique list of all used classes -->
+    <xsl:for-each select="key('elements', '')">
       <xsl:sort select="@class"/>
-      <xsl:variable name="pos" select="position()- 1"/>
-
-      <xsl:if test="$pos = 0 or @class != $elements[$pos]/@class">
-        <xsl:text>,&#10;</xsl:text>        
-        <xsl:text>    '</xsl:text>
-        <xsl:value-of select="@class"/>
-        <xsl:text>'</xsl:text>
-      </xsl:if>
+ 
+      <xsl:text>,&#10;</xsl:text>        
+      <xsl:text>    '</xsl:text>
+      <xsl:value-of select="@class"/>
+      <xsl:text>'</xsl:text>
     </xsl:for-each>
     <xsl:text><![CDATA[    
   );
