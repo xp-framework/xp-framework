@@ -4,8 +4,6 @@
  * $Id$ 
  */
 
-  uses('img.convert.ColorizeConverter');
-
   /**
    * Converts an image to grayscale. 
    * 
