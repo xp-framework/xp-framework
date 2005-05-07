@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('img.Image');
+  uses('img.convert.ColorizeConverter');
 
   /**
    * Converts an image to grayscale. 
@@ -31,42 +31,15 @@
    * @see      xp://img.convert.ImageConverter
    * @purpose  Converter
    */
-  class GrayscaleConverter extends Object {
-  
+  class GrayscaleConverter extends ColorizeConverter {
+
     /**
-     * Convert an image.
+     * Constructor
      *
      * @access  public
-     * @param   &img.Image image
-     * @return  bool
-     * @throws  img.ImagingException
      */
-    function convert(&$image) {
-      if (imageistruecolor($image->handle)) {
-        $l= array();
-        for ($y= 0, $h= $image->getHeight(); $y < $h; $y++) {
-          for ($x= 0, $w= $image->getWidth(); $x < $w; $x++) {
-            $rgb= imagecolorat($image->handle, $x, $y);
-            if (!isset($l[$rgb])) {
-              $g= (
-                .299 * (($rgb >> 16) & 0xFF) + 
-                .587 * (($rgb >> 8) & 0xFF) +
-                .114 * ($rgb & 0xFF)
-              );
-              $l[$rgb]= imagecolorallocate($image->handle, $g, $g, $g);
-            }
-            imagesetpixel($image->handle, $x, $y, $l[$rgb]);
-          }
-        }
-        unset($l);    
-      } else {
-        for ($i= 0, $t= imagecolorstotal($image->handle); $i < $t; $i++) {   
-          $c= imagecolorsforindex($image->handle, $i);
-          $g= .299 * $c['red'] + .587 * $c['green']+ .114 * $c['blue'];
-          imagecolorset($image->handle, $i, $g, $g, $g);
-        }
-      }
+    function __construct() {
+      parent::__construct(.299, .587, .114);
     }
-
-  } implements(__FILE__, 'img.convert.ImageConverter');
+  }
 ?>
