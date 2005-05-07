@@ -31,15 +31,49 @@
    * @see      xp://img.convert.ImageConverter
    * @purpose  Converter
    */
-  class GrayscaleConverter extends ColorizeConverter {
+  class GrayscaleConverter extends Object {
 
     /**
-     * Constructor
+     * Convert an image.
      *
      * @access  public
+     * @param   &img.Image image
+     * @return  bool
+     * @throws  img.ImagingException
      */
-    function __construct() {
-      parent::__construct(.299, .587, .114);
+    function convert(&$image) {
+    
+      // Create temporary variable as local variable access is faster 
+      // than member variable access.
+      $handle= $image->handle;
+      
+      if (imageistruecolor($handle)) {
+        $l= array();
+        $h= $image->getHeight();
+        $w= $image->getWidth();
+        for ($y= 0; $y < $h; $y++) {
+          for ($x= 0; $x < $w; $x++) {
+            $rgb= imagecolorat($handle, $x, $y);
+            if (!isset($l[$rgb])) {
+              $g= (
+                .299 * (($rgb >> 16) & 0xFF) + 
+                .587 * (($rgb >> 8) & 0xFF) +
+                .114 * ($rgb & 0xFF)
+              );
+              $l[$rgb]= imagecolorallocate($handle, $g, $g, $g);
+            }
+            imagesetpixel($handle, $x, $y, $l[$rgb]);
+          }
+        }
+        unset($l);    
+      } else {
+        for ($i= 0, $t= imagecolorstotal($handle); $i < $t; $i++) {   
+          $c= imagecolorsforindex($handle, $i);
+          $g= .299 * $c['red'] + .587 * $c['green'] + .114 * $c['blue'];
+          imagecolorset($handle, $i, $g, $g, $g);
+        }
+      }
     }
-  }
+
+  } implements(__FILE__, 'img.convert.ImageConverter');
 ?>
