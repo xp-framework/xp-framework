@@ -40,6 +40,9 @@
         $s= &new SimpleTaglet();
         $self->taglets['purpose']= &$s;
         $self->taglets['access']= &$s;
+        $self->taglets['deprecated']= &$s;
+        $self->taglets['experimental']= &$s;
+        $self->taglets['platform']= &$s;
       }
     }
 
