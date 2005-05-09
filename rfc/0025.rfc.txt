@@ -47,7 +47,7 @@ doclet.php
 ~~~~~~~~~~
 <?php
   require('lang.base.php');
-  uses('util.cmd.ParamString');
+  uses('util.cmd.ParamString', 'text.apidoc.RootDoc');
 
   // {{{ main  
   $p= &new ParamString();
