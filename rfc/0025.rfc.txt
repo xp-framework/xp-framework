@@ -28,7 +28,7 @@ de.thekid.doclets.NameListDoclet class
 <?php
   uses('text.apidoc.Doclet');
   
-  class NamelistDoclet extends Doclet {
+  class NameListDoclet extends Doclet {
 
     function start(&$root) {
       while ($root->classes->hasNext()) {
