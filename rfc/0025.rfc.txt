@@ -1,0 +1,97 @@
+RFC 0025: Replace text.apidoc with new API
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon May  9 18:22:13 CEST 2005
+@status: draft
+@category: text.apidoc
+
+Scope of Change
+---------------
+The old API in text.apidoc will be deprecated and replaced by the API 
+from experiments/arena/apidoc.
+
+
+Rationale
+---------
+The old API doc is slow, hard to extend and does not offer sufficient 
+access to all program elements.
+
+
+Functionality
+-------------
+Functionality is achieved by extending the abstract class "Doclet".
+
+de.thekid.doclets.NameListDoclet class
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  uses('text.apidoc.Doclet');
+  
+  class NamelistDoclet extends Doclet {
+
+    function start(&$root) {
+      while ($root->classes->hasNext()) {
+        $classdoc= &$root->classes->next();
+        echo '- ', $classdoc->qualifiedName();
+        if ($classdoc->superclass) {
+          echo ' extends ', $classdoc->superclass->qualifiedName();
+        }
+        echo "\n";
+      }
+    }
+  }
+?>
+
+doclet.php
+~~~~~~~~~~
+<?php
+  require('lang.base.php');
+  uses('util.cmd.ParamString');
+
+  // {{{ main  
+  $p= &new ParamString();
+  $class= &XPClass::forName($p->value('doclet'));
+
+  RootDoc::start($class->newInstance(), $p);
+  // }}}
+?>
+
+Usage
+~~~~~
+<pre>
+  $ php doclet.php --doclet=de.thekid.doclets.NameListDoclet lang.Object lang.XPClass
+</pre>
+
+Output
+~~~~~~
+<pre>
+- lang.Object
+- lang.XPClass extends lang.Object
+</pre>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+The new API, though way more powerful, is actually quite a bit faster due to the
+underlying parser.
+
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+- Javadoc 5.0 Tool
+  http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/
+  
+Comments
+--------
+
+<EOF>
