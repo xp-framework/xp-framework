@@ -183,8 +183,9 @@
 
               // Check encoding
               if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
-                @list($type, $charset)= explode('; charset=', $content_type);
-                if (!empty($charset)) $answer->setEncoding($charset);
+                preg_match('/^([^;]+)(; ?charset=([^;]+))?/i', $content_type, $matches);
+                $type= $matches[1];
+                if (!empty($matches[3])) $answer->setEncoding($matches[3]);
               }
 
               $answer->action= $this->action;
