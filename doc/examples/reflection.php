@@ -29,7 +29,9 @@
   $methods= '';
   for ($i= 0, $m= $class->getMethods(), $s= sizeof($m); $i < $s; $i++) {
     $decl= &$m[$i]->getDeclaringClass();
-    $methods.= '  - '.$m[$i]->toString().' declared in '.$decl->getName()."\n";
+    $methods.= '  - '.$m[$i]->toString().' declared in '.$decl->getName();
+    if ($m[$i]->hasAnnotations()) $methods.= ' [#'.var_export($m[$i]->getAnnotations(), 1).']';
+    $methods.="\n";
   }
   
   // Check whether this class is an interface
