@@ -169,13 +169,29 @@
     foreach (func_get_args() as $str) {
       if (class_exists($class= xp::reflect($str))) continue;
 
-      if (FALSE === include(strpos($str, '+xp://')
-        ? $str
-        : strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')
-      ) {
-        xp::error(xp::stringOf(new Error('Cannot include '.$str)));
+      if ($p= strpos($str, '+xp://')) {
+        $type= substr($str, 0, $p);
+        
+        // Load stream wrapper implementation and register it if not done so before
+        if (!class_exists('uwrp·'.$type)) {
+          require('sapi'.DIRECTORY_SEPARATOR.$type.'.uwrp.php');
+          stream_wrapper_register($type.'+xp', 'uwrp·'.$type);
+        }
+
+        // Load using wrapper
+        if (FALSE === include($str)) {
+          xp::error(xp::stringOf(new Error('Cannot include '.$str)));
+        }
+        $str= substr($str, strrpos($str, '/')+ 1);
+        $class= xp::reflect($str);
+      } else {
+        if (FALSE === include(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+          xp::error(xp::stringOf(new Error('Cannot include '.$str)));
+        }
       }
-      xp::registry('class.'.$class, substr($str, ($p= strrpos($str, '/')) ? $p+ 1 : 0));
+      
+      // Register class name and call static initializer if available
+      xp::registry('class.'.$class, $str);
       is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
     }
   }
