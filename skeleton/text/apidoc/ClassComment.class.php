@@ -15,6 +15,7 @@
    * the class name and may contain any of the keywords @purpose, @see,
    * @model and any plain text you wish.
    *
+   * @deprecated
    * @purpose  Comment
    */
   class ClassComment extends Comment {

@@ -13,6 +13,7 @@
    * Implementation of GenericParser for sapis from within
    * the XP framework
    *
+   * @deprecated
    * @see      xp://text.apidoc.parser.GenericParser
    * @purpose  Parses sapis
    */

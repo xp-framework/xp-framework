@@ -9,6 +9,7 @@
   /**
    * Class wrapping file comments
    *
+   * @deprecated
    * @purpose  Comment
    */
   class FileComment extends Comment {

@@ -25,6 +25,7 @@
    *   $comment= &CommentFactory::factory(APIDOC_COMMENT_FUNCTION):
    * </code>
    *
+   * @deprecated
    * @model static
    */
   class CommentFactory extends Object {

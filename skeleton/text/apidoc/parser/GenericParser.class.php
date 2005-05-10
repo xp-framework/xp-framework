@@ -13,6 +13,7 @@
   /**
    * Generic parser
    *
+   * @deprecated
    * @purpose Parse PHP files
    */
   class GenericParser extends Object {

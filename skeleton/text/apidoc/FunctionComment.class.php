@@ -14,6 +14,7 @@
   /**
    * Class wrapping function comments
    *
+   * @deprecated
    * @see xp-doc:README.DOC
    */
   class FunctionComment extends Comment {

@@ -7,6 +7,7 @@
   /**
    * Base class for comments
    *
+   * @deprecated
    * @see      xp://text.apidoc.FileComment
    * @see      xp://text.apidoc.ClassComment
    * @see      xp://text.apidoc.FunctionComment

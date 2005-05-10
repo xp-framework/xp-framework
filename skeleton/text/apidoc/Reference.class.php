@@ -11,6 +11,7 @@
    *   protocol://foo.bar/path/to/document.extension?query#fragment
    * </pre>
    *
+   * @deprecated
    * @see   xp-doc://README.DOC
    */
   class Reference extends Object {
