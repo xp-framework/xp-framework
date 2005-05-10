@@ -80,7 +80,16 @@
       </xsl:if>
       <xsl:text><![CDATA[     */
     function ]]></xsl:text>
-      <xsl:value-of select="@name"/>
+      <xsl:variable name="name" select="@name"/>
+      <xsl:choose>
+        <xsl:when test="count(/interface/method[@name = $name]) &gt; 1 and . != /interface/method[@name = $name][1]">
+          <xsl:message>*** Method <xsl:value-of select="$name"/>() already exists! ***</xsl:message>
+          <xsl:value-of select="concat($name, position())"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$name"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:text>(</xsl:text>
       <xsl:for-each select="parameters/parameter">
         <xsl:value-of select="concat('$', @name)"/>
