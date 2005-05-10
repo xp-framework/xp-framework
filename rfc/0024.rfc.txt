@@ -58,6 +58,19 @@ Resource interface (PHP4)
   }
 ?>
 
+Defining a class needs an object from the Resource Pool
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  class MyClass extends Object {
+  
+    #[@inject(name = 'xp://env/rdbms/orders')]
+    function setConnection(&$conn) {
+      $this->conn= &$conn;
+    }  
+
+  } requires(__FILE__, 'ResourcePool::Injection');
+?>
+
 Example #1: Registering the database connection to the "orders" database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <?php
@@ -73,18 +86,6 @@ Example #2: Get an rdbms.DBConnection instance by name "orders"
 <?php
   $pool= &ResourcePool::getInstance();
   $conn= &$pool->lookup('xp://env/rdbms/orders');
-?>
-
-Example #3: Defining a class needs an object from the Resource Pool
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
-  class MyClass extends Object {
-  
-    #[@inject(name = 'xp://env/rdbms/orders')]
-    function setConnection(&$conn) {
-      $this->conn= &$conn;
-    }  
-  }
 ?>
 
 Security considerations
