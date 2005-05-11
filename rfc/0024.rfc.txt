@@ -110,6 +110,7 @@ Related documents
 
 Comments
 --------
-n/a
+- friebe, Wed May 11 16:53:13 CEST 2005
+  Is requires() a good idea? Do we want to "waste" new syntax for this?
 
 <EOF>
