@@ -11,7 +11,7 @@
    *
    * Example:
    * <code>
-   *   uses('xml.XMLParser');
+   *   uses('xml.parser.XMLParser');
    *
    *   $parser= &new XMLParser();
    *   try(); {
