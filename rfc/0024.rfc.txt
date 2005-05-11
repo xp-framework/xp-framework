@@ -45,8 +45,8 @@ The following elements implement the Resource interface:
   Contains  : rmi.Remote
 
 
-Resource interface (PHP4)
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Resource interface
+~~~~~~~~~~~~~~~~~~
 <?php
   /**
    * Resource marker interface
