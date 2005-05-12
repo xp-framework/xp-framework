@@ -24,10 +24,10 @@
      * @return  &util.Date
      */
     function &getMidnight(&$date) {
-      return new Date (mktime (
-        23,
-        59,
-        00,
+      return new Date(Date::mktime (
+        0,
+        0,
+        0,
         $date->getMonth(),
         $date->getDay(),
         $date->getYear()
