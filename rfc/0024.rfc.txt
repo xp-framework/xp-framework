@@ -92,6 +92,7 @@ Example #2: Get an rdbms.DBConnection instance by name "orders"
   $conn= &$pool->lookup('xp://env/rdbms/orders');
 ?>
 
+
 Security considerations
 -----------------------
 n/a
