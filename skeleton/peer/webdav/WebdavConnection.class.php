@@ -13,6 +13,7 @@
   define('WEBDAV_METHOD_UNLOCK',    'UNLOCK');
   define('WEBDAV_METHOD_COPY',      'COPY');
   define('WEBDAV_METHOD_MOVE',      'MOVE');
+  define('WEBDAV_METHOD_DELETE',    'DELETE');
   define('WEBDAV_METHOD_REPORT',    'REPORT');
   define('WEBDAV_METHOD_VERSION',   'VERSION-CONTROL');
   
@@ -106,6 +107,18 @@
      */
     function move($arg= NULL, $headers= array()) {
       return $this->request(WEBDAV_METHOD_MOVE, $arg, $headers);
+    }
+    
+    /**
+     * Perform a delete request
+     *
+     * @access  public
+     * @param   mixed arg default NULL
+     * @param   array headers default array()
+     * @return  &peer.http.HttpResponse response object
+     */
+    function delete($arg= NULL, $headers= array()) {
+      return $this->request(WEBDAV_METHOD_DELETE, $arg, $headers);
     }
     
     /**
