@@ -63,12 +63,16 @@ Defining a class needs an object from the Resource Pool
 <?php
   class MyClass extends Object {
   
+    function __static() {
+      ResourcePool::setupFor(__CLASS__);
+    }
+  
     #[@inject(name = 'xp://env/rdbms/orders')]
     function setConnection(&$conn) {
       $this->conn= &$conn;
     }  
 
-  } requires(__FILE__, 'ResourcePool::Injection');
+  }
 ?>
 
 Example #1: Registering the database connection to the "orders" database
@@ -112,5 +116,8 @@ Comments
 --------
 - friebe, Wed May 11 16:53:13 CEST 2005
   Is requires() a good idea? Do we want to "waste" new syntax for this?
+
+- friebe, Fri May 13 11:59:32 CEST 2005
+  Maybe we should use the static initializer? Is setupFor() a good name?
 
 <EOF>
