@@ -195,9 +195,11 @@
      * Retrieves </xsl:text><xsl:value-of select="@name"/><xsl:text>
      *
      * @access  public
-     * @return  </xsl:text><xsl:value-of select="@typename"/><xsl:text>
+     * @return  </xsl:text><xsl:if test="contains(@typename, '.')">&amp;</xsl:if><xsl:value-of select="@typename"/><xsl:text>
      */
-    function get</xsl:text>
+    function </xsl:text>
+    <xsl:if test="contains(@typename, '.')">&amp;</xsl:if>
+    <xsl:text>get</xsl:text>
     <xsl:call-template name="prettyname">
     <xsl:with-param name="string" select="@name"/>
     </xsl:call-template>
@@ -211,14 +213,14 @@
      * Sets </xsl:text><xsl:value-of select="@name"/><xsl:text>
      *
      * @access  public
-     * @param   </xsl:text><xsl:value-of select="concat(@typename, ' ', @name)"/><xsl:text>
-     * @return  </xsl:text><xsl:value-of select="@typename"/><xsl:text> the previous value
+     * @param   </xsl:text><xsl:if test="contains(@typename, '.')">&amp;</xsl:if><xsl:value-of select="concat(@typename, ' ', @name)"/><xsl:text>
+     * @return  </xsl:text><xsl:if test="contains(@typename, '.')">&amp;</xsl:if><xsl:value-of select="@typename"/><xsl:text> the previous value
      */
     function set</xsl:text>
     <xsl:call-template name="prettyname">
     <xsl:with-param name="string" select="@name"/>
     </xsl:call-template>
-      <xsl:text>($</xsl:text><xsl:value-of select="@name"/><xsl:text>) {
+      <xsl:text>(</xsl:text><xsl:if test="contains(@typename, '.')">&amp;</xsl:if>$<xsl:value-of select="@name"/><xsl:text>) {
       return $this->_change('</xsl:text><xsl:value-of select="@name"/><xsl:text>', $</xsl:text><xsl:value-of select="@name"/><xsl:text>);
     }&#10;</xsl:text>
   </xsl:for-each>
