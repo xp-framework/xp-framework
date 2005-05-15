@@ -23,7 +23,7 @@
       <br/><br/>
       <b>I want to use the XP framework. What do I have to do?</b><br/><br/>
       Grab yourself any of the releases at <a href="http://xp-framework.net/resources">http://xp-framework.net/resources</a>
-      or check out a copy of CVS head using anonymous CVS (instructions at the same URL).<br/><br/>
+      or check out a copy of the SVN repo using anonymous SVN (instructions at the same URL).<br/><br/>
       Follow the <a href="/content/about.install.html">installation instruction</a>, have
       a look at the <a href="/content/examples.html">examples section</a> and you're ready to go!
     </introduction>

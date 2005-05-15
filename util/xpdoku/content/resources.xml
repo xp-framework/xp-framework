@@ -6,24 +6,25 @@
       <editor>$Id$</editor>
       
       <para>
-        <caption>Anonymous CVS</caption>
+        <caption>Anonymous SVN</caption>
         <text>
-          We now offer an anonymous cvs access. Check it out with:
-          <pre>cvs -d:pserver:anonymous@php3.de:/home/cvs/repositories/xp co .</pre>
-          (Password is empty).
+          We now offer an anonymous svn access. Check it out with:
+          <pre>svn co svn://php3.de/home/svn/xp</pre>
         </text>
       </para>
 
       <para>
-        <caption>Web based CVS</caption>
+        <caption>Web based SVN</caption>
         <text>
-          For convenience, we have set up a Web based CVS viewer, so you can
+          For convenience, we have set up a Web based SVN viewer, so you can
           easily inspect the files.<br/>
           Point your browser to 
-          <ref type="ext" link="http://cvs.xp-framework.net/">http://cvs.xp-framework.net</ref>
-          to see it.
+          <ref type="ext" link="http://svn.xp-framework.net/">http://svn.xp-framework.net</ref>
+          to see it.<br/>
+          (Note: we once used to use CVS and offered a web based CVS viewer. These services have been
+          shut down since the migration which took place in May 2005).
         </text>
-        <ref>http://cvs.xp-framework.net/</ref>
+        <ref>http://svn.xp-framework.net/</ref>
       </para>
 
       <!-- Show available releases -->
@@ -40,7 +41,7 @@
     </content>
     
     <references>
-      <ref type="ext" link="http://cvs.xp-framework.net/">Web based CVS access</ref>
+      <ref type="ext" link="http://svn.xp-framework.net/">Web based SVN access</ref>
     </references>
   </main>  
 </document>

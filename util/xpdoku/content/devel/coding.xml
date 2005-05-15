@@ -26,7 +26,7 @@
       <para>
         <caption>Comments at the beginning of a file</caption>
         <text>
-          The comment at the top of a file should contain the CVS-Tag, that is at least
+          The comment at the top of a file should contain the Id-Tag, that is at least
           &#36;Id&#36; and a short description what's included. We recommend a C-notation
           style comment:
 
@@ -38,7 +38,7 @@
 
           This comment is supposed to be written directly behind the opening &lt;php and is
           of exactly above form. The short description should not exceed one line and the
-          CVS tag must be included before the first add / commit as &#36;Id&#36; and just
+          Id tag must be included before the first add / commit as &#36;Id&#36; and just
           written like that.
         </text>
       </para>
@@ -80,7 +80,7 @@ edit/mail_notify.php]]></pre>
         <caption>Indenting</caption>
         <text>
           Indenting within one file must be unified, indenting width is two spaces.
-          Tabs may never be used. Actually, in public CVS repository gatekeeper
+          Tabs may never be used. Actually, in public SVN repository gatekeeper
           scripts exists which block any commits containing tabs to class files.
         </text>
       </para>
@@ -179,7 +179,7 @@ edit/mail_notify.php]]></pre>
           Commenting out multiline areas in a code part is no more possible as it will
           be rejected by the coding standards conformance checker script.
           Multiline commented out code most often is being used to test things. Tests, however,
-          should not be committed. Via CVS an undo of a delete can be performed, so
+          should not be committed. Via SVN an undo of a delete can be performed, so
           there just is no need for mutliline comments.
           Therefore comments should not be "drawn" in big comment boxes within /* ... */,
           a comment should always be located directly above the code line to be commented
@@ -231,7 +231,7 @@ edit/mail_notify.php]]></pre>
 
           For an even larger block, /* */ may be used while in development or
           for special cases (like temporary disabling of code portions).
-          Before committing the files, remove it - that's what CVS is for.
+          Before committing the files, remove it - that's what SVN is for.
         </text>
       </para>
       <para>

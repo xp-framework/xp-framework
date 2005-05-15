@@ -8,6 +8,11 @@
       <para>
         <caption>Installing XP for multiple projects</caption>
         <text>
+          Foreword: please note that these instructions aim to CVS as the
+          version control system and may not apply in it's whole to the current
+          system which is subversion. We leave these instructions online as they
+          still contain true and useful information for CVS users.<br>
+          <br>
           Developers that take strong use of xp often need to install
           XP on various machines and for various projects.<br/>
           
