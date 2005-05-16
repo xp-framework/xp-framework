@@ -185,7 +185,7 @@
      * @param   int sizelimit default 0
      * @param   int timelimit default 0 Time limit, 0 means no limit
      * @param   int deref one of LDAP_DEREF_*
-     * @return  peer.ldap.LDAPSearchResult search result object
+     * @return  &peer.ldap.LDAPSearchResult search result object
      * @throws  peer.ldap.LDAPException
      * @see     php://ldap_search
      */
@@ -211,7 +211,7 @@
      * @param   int sizelimit default 0
      * @param   int timelimit default 0 Time limit, 0 means no limit
      * @param   int deref one of LDAP_DEREF_*
-     * @return  peer.ldap.LDAPSearchResult search result object
+     * @return  &peer.ldap.LDAPSearchResult search result object
      * @throws  peer.ldap.LDAPException
      * @see     php://ldap_search
      */
@@ -300,8 +300,8 @@
       
       // This actually returns NULL on failure, not FALSE, as documented
       if (NULL == ($res= ldap_add(
-        $this->_hdl, 
-        $entry->getDN(), 
+        $this->_hdl,
+        $entry->getDN(),
         array_map(array(&$this, '_encode'), $entry->getAttributes())
       ))) {
         return throw(new LDAPException('Add for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
@@ -328,8 +328,8 @@
       } 
       
       if (FALSE == ($res= ldap_modify(
-        $this->_hdl, 
-        $entry->getDN(), 
+        $this->_hdl,
+        $entry->getDN(),
         array_map(array(&$this, '_encode'), $entry->getAttributes())
       ))) {
         return throw(new LDAPException('Modify for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
@@ -353,7 +353,7 @@
       } 
       
       if (FALSE == ($res= ldap_delete(
-        $this->_hdl, 
+        $this->_hdl,
         $entry->getDN()
       ))) {
         return throw(new LDAPException('Delete for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
