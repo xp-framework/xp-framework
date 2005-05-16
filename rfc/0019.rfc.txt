@@ -10,8 +10,7 @@ $Id$
 Scope of change
 ---------------
 Introduce a peer.ldap.LDAPQuery class that controls how queries with 
-peer.ldap.LDAPClient are done. Simultaneously extend peer.ldap.LDAPClient 
-to store a default search base for a connection.
+peer.ldap.LDAPClient are done.
 
 Rationale
 ---------
@@ -21,9 +20,6 @@ LDAP access and ensure the correctness of LDAP queries.
 
 This is the continuation of the rdbms collection's success of formulating
 queries in a way that makes them immune against SQL code injection.
-
-Having a default search base for a connection removes the need for a query
-to always specify it.
 
 Functionality
 -------------
