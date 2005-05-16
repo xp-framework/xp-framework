@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Thu Feb 24 09:20:27 CET 2005
-@status: draft
+@status: discussion, ends at Wed, 01 Jun 2005 12:00:00 +0200
 @category: peer.ldap
 
 Scope of change
@@ -34,6 +34,7 @@ Example:
   $ldap->bind();
   
   $res= &$ldap->search(new LDAPQuery(
+    'ou=permissions,o=openldap,c=DE',
     '(&(objectClass=simpleSecurityObject)(|(userName=%s|email=%s)))',
     $_REQUEST['input'],
     $_REQUEST['input']
@@ -61,13 +62,30 @@ To offer a full interface for an LDAP query, peer.ldap.LDAPQuery should offer
 accessors to change query parameters like attributes, attrsonly, sizelimit,
 timelimit and deref.
 
+Security considerations
+-----------------------
+The new class would automatically take untrusted input and escape all dangerous
+characters dependant on the used token to a secure replacement.
+This change is supposed to make the LDAP query infrastructure more secure.
+
+Speed impact
+------------
+The change adds the need to create one more object for an LDAP query, so it will
+be slightly slower and has a bigger memory footprint. However, LDAP queries
+involve a socket connect and network I/O, so the overhead caused by this change
+will be a smaller factor.
+
 Dependencies
 ------------
 n/a
 
 Related documents
 -----------------
-http://php3.de/ldap_search
+- LDAP Search PHP manual:
+  http://php3.de/ldap_search
+
+- LDAPQuery implementation:
+  http://xp-framework.net/downloads/rfc0019.diff
 
 Comments
 --------
@@ -76,3 +94,16 @@ Comments
   distinguish if an LDAPQuery object or its current first parameter,
   string base_dn. Maybe it would be a good idea to name the new
   function searchBy()?
+
+- kiesel, Mon May 16 12:08:39 CEST 2005
+  Should LDAPClient class get a member $base, which contains the default
+  base? This could make some things simpler.
+
+- kiesel, Mon May 16 12:08:39 CEST 2005
+  What should be the default search scope? Should the scope be configureable
+  with the default constructor?
+
+- kiesel, Mon May 16 12:10:13 CEST 2005
+  Should all input be automatically encoded to UTF-8? This may be suitable
+  on iso-8859-1 systems, but sometimes could require manually decoding input
+  before passing to the LDAPQuery class.
