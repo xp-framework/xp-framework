@@ -125,25 +125,26 @@ div.comment {
 }
 
 /* Syntax */
-code {
+pre.code {
   font: 12px "Courier New", courier;
-  white-space: pre;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
-code .keyword {
+pre.code .keyword {
   color: #990000;
   font-weight: bold;
 }
-code .variable {
+pre.code .variable {
   color: #000099;
   font-weight: bold;
 }
-code .bracket {
+pre.code .bracket {
   color: #a90000;
 }
-code .string {
+pre.code .string {
   color: #0000a9;
 }
-code .comment {
+pre.code .comment {
   color: #a9a9a9;
 }
 
