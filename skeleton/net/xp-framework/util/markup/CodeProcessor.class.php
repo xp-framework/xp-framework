@@ -61,7 +61,7 @@
 
       $current= 'default';
       $out= '';
-      foreach (token_get_all('<?php '.str_replace('&#160;', ' ', $this->buffer).'?>') as $token) {
+      foreach (token_get_all('<?php '.$this->buffer.'?>') as $token) {
         $class= (isset($classes[$token[0]]) 
           ? $classes[$token[0]]
           : 'default'
@@ -71,7 +71,7 @@
           $current= $class;
         }
 
-        $out.= htmlspecialchars(is_array($token) ? $token[1] : $token);
+        $out.= str_replace("\n", '<br/>', htmlspecialchars(is_array($token) ? $token[1] : $token));
       }
       
       return '<code><span>'.substr($out, 8, -5).'</span></code>';
