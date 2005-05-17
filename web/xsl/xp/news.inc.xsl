@@ -98,4 +98,12 @@
     </img>
   </xsl:template>
 
+  <!--
+   ! Displays code 
+   !
+   ! @purpose  Text markup
+   !-->
+  <xsl:template match="code">
+    <pre class="code">&lt;?php<xsl:apply-templates/>?&gt;</pre>
+  </xsl:template>
 </xsl:stylesheet>
