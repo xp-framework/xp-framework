@@ -4,8 +4,8 @@ $Id$
 
 @authors: friebe
 @created: Mon May  9 18:22:13 CEST 2005
-@status: draft
-@category: text.apidoc
+@status: implemented
+@category: text.apidoc, text.doclet
 
 Scope of Change
 ---------------
@@ -93,5 +93,8 @@ Related documents
   
 Comments
 --------
+- friebe, Tue May 17 17:25:54 CEST 2005
+  Copied classes from experiments to text.doclet. Deprecated the old API 
+  but did not remove it.
 
 <EOF>
