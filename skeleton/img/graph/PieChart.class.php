@@ -9,6 +9,7 @@
   /**
    * Shape class representing a 3D Pie chart
    *
+   * @deprecated
    * @see img.Image
    */
   class PieChart extends Object {

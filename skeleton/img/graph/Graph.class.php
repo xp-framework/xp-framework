@@ -9,6 +9,7 @@
   /**
    * Graph class
    *
+   * @deprecated
    * @see      xp://img.Image
    * @purpose  Base class for all graphs
    */

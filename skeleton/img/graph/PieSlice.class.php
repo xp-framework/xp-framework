@@ -7,6 +7,7 @@
   /**
    * Shape class representing a 3D Pie chart's clice
    *
+   * @deprecated
    * @see     xp://img.graph.PieChart
    * @purpose Value object
    */
