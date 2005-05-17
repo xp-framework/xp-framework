@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Mon May  9 18:22:13 CEST 2005
-@status: implemented
+@status: implemented (Tue May 17 22:33:43     2005)
 @category: text.apidoc, text.doclet
 
 Scope of Change
