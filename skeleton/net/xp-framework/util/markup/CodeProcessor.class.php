@@ -71,7 +71,10 @@
           $current= $class;
         }
 
-        $out.= str_replace("\n", '<br/>', htmlspecialchars(is_array($token) ? $token[1] : $token));
+        $out.= strtr(htmlspecialchars(is_array($token) ? $token[1] : $token), array(
+          "\n" => '<br/>',
+          "\r" => ''	  
+        ));
       }
       
       return '<code><span>'.substr($out, 8, -5).'</span></code>';
