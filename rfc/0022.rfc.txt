@@ -146,6 +146,9 @@ Related documents
 - Wrapper implementation
   http://xp-framework.net/downloads/enum.uwrp.phps
 
+- Java uses() wrapper
+  http://xp-framework.info/xml/xp.en_US/news/view?50
+
 Comments
 --------
 n/a
