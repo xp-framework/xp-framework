@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ThrowsTag');
+  uses('text.doclet.ThrowsTag');
 
   /**
    * A taglet that represents the @throws tag. 
@@ -28,5 +28,5 @@
       return new ThrowsTag($holder->root->classNamed($class), $condition);
     }
 
-  } implements(__FILE__, 'Taglet');
+  } implements(__FILE__, 'text.doclet.Taglet');
 ?>

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ReturnTag');
+  uses('text.doclet.ReturnTag');
 
   /**
    * A taglet that represents the @return tag. 

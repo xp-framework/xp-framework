@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('Doc');
+  uses('text.doclet.Doc');
 
   /**
    *

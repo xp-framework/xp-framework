@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ModelTag');
+  uses('text.doclet.ModelTag');
 
   /**
    * A taglet that represents the @model tag. 
@@ -27,5 +27,5 @@
       return new ModelTag($kind, $text);
     }
 
-  } implements(__FILE__, 'Taglet');
+  } implements(__FILE__, 'text.doclet.Taglet');
 ?>

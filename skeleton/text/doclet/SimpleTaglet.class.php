@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('Tag');
+  uses('text.doclet.Tag');
 
   /**
    * A taglet that represents simple tags.
@@ -27,5 +27,5 @@
       return new Tag($kind, $text);
     }
 
-  } implements(__FILE__, 'Taglet');
+  } implements(__FILE__, 'text.doclet.Taglet');
 ?>

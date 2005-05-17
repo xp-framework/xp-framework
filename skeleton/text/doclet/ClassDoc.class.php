@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('Doc');
+  uses('text.doclet.Doc');
 
   define('EXCEPTION_CLASS',   'exception');
   define('ERROR_CLASS',       'error');

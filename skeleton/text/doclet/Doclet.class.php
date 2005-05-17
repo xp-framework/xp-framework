@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('RootDoc');
+  uses('text.doclet.RootDoc');
 
   /**
    * This is the starting class for a doclet.

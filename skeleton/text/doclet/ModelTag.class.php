@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('Tag');
+  uses('text.doclet.Tag');
 
   /**
    * Represents an @model documentation tag

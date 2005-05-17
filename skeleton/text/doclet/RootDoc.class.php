@@ -6,9 +6,9 @@
  
   uses(
     'util.cmd.ParamString',
-    'ClassIterator',
-    'ClassDoc', 
-    'MethodDoc'
+    'text.doclet.ClassIterator',
+    'text.doclet.ClassDoc', 
+    'text.doclet.MethodDoc'
   );
   
   define('OPTION_ONLY', 0x0000);

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('Tag');
+  uses('text.doclet.Tag');
 
   /**
    * Represents a user-defined cross-reference to related documentation.

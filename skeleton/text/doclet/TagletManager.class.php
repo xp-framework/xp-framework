@@ -5,12 +5,12 @@
  */
 
   uses(
-    'SeeTaglet', 
-    'ParamTaglet', 
-    'ReturnTaglet', 
-    'ThrowsTaglet',
-    'SimpleTaglet',
-    'ModelTaglet'
+    'text.doclet.SeeTaglet', 
+    'text.doclet.ParamTaglet', 
+    'text.doclet.ReturnTaglet', 
+    'text.doclet.ThrowsTaglet',
+    'text.doclet.SimpleTaglet',
+    'text.doclet.ModelTaglet'
   );
 
   /**

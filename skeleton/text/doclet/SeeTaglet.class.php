@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('SeeTag');
+  uses('text.doclet.SeeTag');
 
   /**
    * A taglet that represents the @see tag. 
@@ -27,5 +27,5 @@
       return new SeeTag($kind, $text);
     }
 
-  } implements(__FILE__, 'Taglet');
+  } implements(__FILE__, 'text.doclet.Taglet');
 ?>

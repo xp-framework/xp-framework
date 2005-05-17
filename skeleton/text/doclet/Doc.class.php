@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('TagletManager');
+  uses('text.doclet.TagletManager');
 
   /**
    *

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ParamTag');
+  uses('text.doclet.ParamTag');
 
   /**
    * A taglet that represents the @param tag. 
@@ -27,5 +27,5 @@
       return new ParamTag($kind, $text);
     }
 
-  } implements(__FILE__, 'Taglet');
+  } implements(__FILE__, 'text.doclet.Taglet');
 ?>
