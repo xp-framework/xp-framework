@@ -44,10 +44,10 @@
         $img->fill($img->allocate($bc->getColor('background')));
       
         $leftBorder= $rightBorder= $topBorder= $bottomBorder= 10;
+        
+        // Calculate inner borders
         $innerWidth= $this->width- $leftBorder- $rightBorder;
         $innerHeight= $this->height- $topBorder- $bottomBorder;
-        
-        // TBI: Draw X and Y axis
         $color= &$img->allocate($bc->getColor('axis'));
         imagerectangle(
           $img->handle,
