@@ -25,7 +25,6 @@
    *   FileUtil::setContents(new File('chart.svg'), $svg);
    * </code>
    *
-   * @see      reference
    * @purpose  Base class for charts
    */
   class Chart extends Object {
