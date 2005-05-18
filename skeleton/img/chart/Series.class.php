@@ -20,9 +20,9 @@
      *
      * @access  public
      * @param   string name
-     * @param   float[] values
+     * @param   float[] values default array()
      */
-    function __construct($name, $values) {
+    function __construct($name, $values= array()) {
       $this->name= $name;
       $this->values= $values;
     }
