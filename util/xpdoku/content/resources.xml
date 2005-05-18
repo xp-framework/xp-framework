@@ -9,7 +9,7 @@
         <caption>Anonymous SVN</caption>
         <text>
           We now offer an anonymous svn access. Check it out with:
-          <pre>svn co svn://php3.de/home/svn/xp</pre>
+          <pre>svn co svn://php3.de/xp</pre>
         </text>
       </para>
 
