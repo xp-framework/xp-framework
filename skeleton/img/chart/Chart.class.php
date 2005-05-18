@@ -57,7 +57,18 @@
      * @param   &img.Color color
      */
     function setBackgroundColor(&$color) {
-      $this->colors['background']= &$color;
+      $this->setColor('background', $color);
+    }
+    
+    /**
+     * Set a color for a specified key
+     *
+     * @access  public
+     * @param   string key
+     * @param   &img.Color color
+     */
+    function setColor($key, &$color) {
+      $this->colors[$key]= &$color;
     }
     
     /**
