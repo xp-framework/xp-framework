@@ -99,5 +99,5 @@
       return $this->{$method}($chart);
     }
 
-  } implements(__FILE__, 'img.chart.GraphRenderer');
+  } implements(__FILE__, 'img.chart.renderer.GraphRenderer');
 ?>
