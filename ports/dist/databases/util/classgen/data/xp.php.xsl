@@ -216,7 +216,7 @@
      * @param   </xsl:text><xsl:if test="contains(@typename, '.')">&amp;</xsl:if><xsl:value-of select="concat(@typename, ' ', @name)"/><xsl:text>
      * @return  </xsl:text><xsl:if test="contains(@typename, '.')">&amp;</xsl:if><xsl:value-of select="@typename"/><xsl:text> the previous value
      */
-    function set</xsl:text>
+    function </xsl:text><xsl:if test="contains(@typename, '.')">&amp;</xsl:if><xsl:text>set</xsl:text>
     <xsl:call-template name="prettyname">
     <xsl:with-param name="string" select="@name"/>
     </xsl:call-template>
