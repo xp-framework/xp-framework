@@ -1,0 +1,117 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  uses('img.Color', 'img.chart.Series');
+
+  /**
+   * Chart
+   *
+   * <code>
+   *   // Construct a barchart
+   *   $chart= &new BarChart();
+   *   $chart->add(new Series('April', array(1, 2, 4, 10, 11, 28)));
+   *
+   *   // Render it with an ImageRenderer and save to chart.png
+   *   $ir= &new ImageRenderer(400, 400);
+   *   $image= &$ir->render($chart);
+   *   $image->saveTo(new PngStreamWriter(new File('chart.png')));
+   *
+   *   // Render it with an SVG renderer and save to chart.svg
+   *   $sr= &new SVGRenderer();
+   *   $svg= $sr->render($chart);
+   *   FileUtil::setContents(new File('chart.svg'), $svg);
+   * </code>
+   *
+   * @see      reference
+   * @purpose  Base class for charts
+   */
+  class Chart extends Object {
+    var
+      $series = array(),
+      $colors = array(),
+      $theme  = array(
+        'background'  => '#ffffff',
+        'sample'      => '#990000',
+        'axis'        => '#000000'
+      );
+
+    /**
+     * Add a series of data
+     *
+     * @access  public
+     * @param   &img.graph.Series series
+     * @return  &img.graph.Series
+     */
+    function &add(&$series) {
+      $this->series[]= &$series;
+      return $series;
+    }
+    
+    /**
+     * Sets chart's background color
+     *
+     * @access  public
+     * @param   &img.Color color
+     */
+    function setBackgroundColor(&$color) {
+      $this->colors['background']= &$color;
+    }
+    
+    /**
+     * Returns a color by a name
+     *
+     * @access  public
+     * @param   string key
+     * @return  &img.Color
+     */
+    function &getColor($key) {
+      if (!isset($this->colors[$key])) return new Color($this->theme[$key]);
+      return $this->colors[$key];
+    }
+    
+    /**
+     * Returns the number of elements in the longest series
+     *
+     * @access  public
+     * @return  int
+     */
+    function count() {
+      $max= 0;
+      for ($i= 0, $s= sizeof($this->series); $i < $s; $i++) {
+        $max= max($max, sizeof($this->series[$i]->values));
+      }
+      return $max;
+    }
+    
+    /**
+     * Helper method which returns the largest value from all series
+     *
+     * @access  public
+     * @return  float
+     */
+    function max() {
+      $max= 0;
+      for ($i= 0, $s= sizeof($this->series); $i < $s; $i++) {
+        $max= max($max, max($this->series[$i]->values));
+      }
+      return $max;
+    }
+
+    /**
+     * Helper method which returns the smallest value from all series
+     *
+     * @access  public
+     * @return  float
+     */
+    function min() {
+      $min= 0;
+      for ($i= 0, $s= sizeof($this->series); $i < $s; $i++) {
+        $min= min($min, min($this->series[$i]->values));
+      }
+      return $min;
+    }
+  }
+?>
