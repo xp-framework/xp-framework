@@ -118,7 +118,6 @@
     /**
      * Saves an image to a writer
      *
-     * @model   static
      * @access  public
      * @param   &img.io.ImageWriter
      */
