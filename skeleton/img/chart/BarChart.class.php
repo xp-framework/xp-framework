@@ -9,6 +9,8 @@
   define('CHART_HORIZONTAL',  0x0000);
   define('CHART_VERTICAL',    0x0001);
   
+  define('DISTANCE_AUTO',     -1);
+  
   /**
    * Bar chart
    *
@@ -19,7 +21,7 @@
     var
       $alignment = CHART_HORIZONTAL,
       $barWidth  = 20,
-      $distance  = 0;
+      $distance  = DISTANCE_AUTO;
 
     /**
      * Set alignment
@@ -42,10 +44,11 @@
     }
 
     /**
-     * Set distance between the bars
+     * Set distance between the bars. Pass the DISTANCE_AUTO constant to
+     * have it calculated automatically.
      *
      * @access  public
-     * @param   int
+     * @param   int distance
      */
     function setDistance($distance) {
       $this->distance= $distance;
@@ -55,7 +58,7 @@
      * Get distance between the bars
      *
      * @access  public
-     * @return  float
+     * @return  int
      */
     function getDistance() {
       return $this->distance;
