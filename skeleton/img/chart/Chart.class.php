@@ -33,6 +33,7 @@
       $colors = array(),
       $theme  = array(
         'background'  => '#ffffff',
+        'chartback'   => '#efefef',
         'sample'      => '#990000',
         'axis'        => '#000000'
       );
