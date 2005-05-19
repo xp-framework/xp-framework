@@ -60,7 +60,7 @@
         
         // Create local variables for faster access
         $max= $bc->max();
-        $width= $bc->barWidth();
+        $width= $bc->getBarWidth();
         $count= $bc->count();
         
         // Figure out the distance between the bars

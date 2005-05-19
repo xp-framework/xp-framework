@@ -32,6 +32,16 @@
     function setAlignment($alignment) {
       $this->alignment= $alignment;
     }
+
+    /**
+     * Sets the width of one bar in this bar chart
+     *
+     * @access  public
+     * @param   int width
+     */
+    function setBarWidth($width) {
+      $this->barWidth= $width;
+    }
     
     /**
      * Returns the width of one bar in this bar chart
@@ -39,7 +49,7 @@
      * @access  public
      * @return  int
      */
-    function barWidth() {
+    function getBarWidth() {
       return $this->barWidth;
     }
 
