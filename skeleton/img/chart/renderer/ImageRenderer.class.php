@@ -64,7 +64,7 @@
         $count= $bc->count();
         
         // Figure out the distance between the bars
-        $distance= $this->width / $count;
+        $distance= $innerWidth / $count;
 
         // Draw bars
         $color= &$img->allocate($bc->getColor('sample'));
