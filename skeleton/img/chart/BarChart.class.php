@@ -17,8 +17,9 @@
    */
   class BarChart extends Chart {
     var
-      $alignment  = CHART_HORIZONTAL,
-      $barWidth   = 20;
+      $alignment = CHART_HORIZONTAL,
+      $barWidth  = 20,
+      $distance  = 0;
 
     /**
      * Set alignment
@@ -38,6 +39,26 @@
      */
     function barWidth() {
       return $this->barWidth;
+    }
+
+    /**
+     * Set distance between the bars
+     *
+     * @access  public
+     * @param   int
+     */
+    function setDistance($distance) {
+      $this->distance= $distance;
+    }
+
+    /**
+     * Get distance between the bars
+     *
+     * @access  public
+     * @return  float
+     */
+    function getDistance() {
+      return $this->distance;
     }
   }
 ?>
