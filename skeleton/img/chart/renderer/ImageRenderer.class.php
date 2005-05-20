@@ -56,13 +56,18 @@
         return throw(new IllegalArgumentException('Lower range greater than upper range'));
       }
 
+      // Select font
+      $font= 2;
+      $fontw= imagefontwidth($font);
+      $fonth= imagefontheight($font);
+
       // Create image
       with ($img= &Image::create($this->width, $this->height)); {
       
         // Flood fill with background color
         $img->fill($img->allocate($bc->getColor('background')));
       
-        $leftBorder= 30;
+        $leftBorder= 15 + max(strlen($lower), strlen($upper)) * $fontw;
         $rightBorder= $topBorder= $bottomBorder= 10;
         
         // Calculate inner borders
@@ -93,9 +98,6 @@
         );
 
         // Draw Y axis scale
-        $font= 2;
-        $fontw= imagefontwidth($font);
-        $fonth= imagefontheight($font);
         for ($i= $lower; $i <= $upper; $i+= $step) {
           $y= $zero - ($i / ($upper - $lower) * $innerHeight);
           imageline(
@@ -118,7 +120,7 @@
         
         // Figure out the distance between the bars
         if (DISTANCE_AUTO == ($distance= $bc->getDistance())) {
-          $distance= $innerWidth / $count;
+          $distance= round($innerWidth / $count);
         }
         
         // Draw bars
