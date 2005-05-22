@@ -41,6 +41,14 @@
         ));
       }
       
+      // Calculate orientation from dimensions if not available
+      if (!isset($info['Orientation'])) {
+        $info['Orientation']= (($info['COMPUTED']['Width'] / $info['COMPUTED']['Height']) > 1.0
+          ? 1   // normal
+          : 5   // transpose
+        );
+      }
+      
       with ($e= &new ExifData()); {
         $e->setWidth($info['COMPUTED']['Width']);
         $e->setHeight($info['COMPUTED']['Height']);
