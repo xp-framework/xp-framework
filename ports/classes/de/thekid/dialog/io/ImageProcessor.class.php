@@ -70,7 +70,12 @@
         );
       }
       
-      $this->cat && $this->cat->info('Resampling image to', implode('x', $d));
+      $this->cat && $this->cat->infof(
+        'Resampling %s image to %d x %d', 
+        $horizontal ? 'horizontal' : 'vertical',
+        $d[0],
+        $d[1]
+      );
       $resized= &Image::create($d[0], $d[1], IMG_TRUECOLOR);
       $resized->resampleFrom($origin);
       return $resized;
