@@ -36,7 +36,7 @@ Options:
   --debug, -d     Turns on debugging (default: off)
   --title, -t     Set shot title (default: origin file name)
   --desc, -E      Set description in case description file does not exist
-  --date, -D      Set album date (default: origin directory's creation date)
+  --date, -D      Set album date (default: origin file's creation date)
 __
     );
     exit(1);
