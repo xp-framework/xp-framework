@@ -11,6 +11,7 @@
     'lang.System',
     'lang.Process',
     'io.File',
+    'peer.URL',
     'io.Folder'
   );
   
@@ -71,20 +72,28 @@
 
       // A JAR file, download it
       case 'com.sun.webstart.jnlp.JnlpJarResource':
-        $href= ltrim($resource->getHref(), './');
-        $classpath.= ':'.rtrim($folder->getURI(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$href;
+        $href= &new URL(strstr($resource->getHref(), '://')
+          ? $resource->getHref()
+          : $j->getCodebase().'/'.ltrim($resource->getHref(), './')
+        );
+        
+        $classpath.= ':'.rtrim($folder->getURI(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$href->getPath();
         try(); {
           $params= array();
 
           // Create a new file instance
-          $jar= &new File($folder->getURI().DIRECTORY_SEPARATOR.$href);
+          $jar= &new File($folder->getURI().DIRECTORY_SEPARATOR.$href->getPath());
           if ($jar->exists()) {
             Console::writef('     >> Have %s... ', basename($jar->getURI()));
             $params['If-Modified-Since']= date('D, d M Y H:i:s \G\M\T', $jar->lastModified());
           }
 
+
           // Issue HTTP request
-          $c= &new HttpConnection($j->getCodebase().'/'.$resource->getLocation());
+          $c= &new HttpConnection(strstr($resource->getLocation(), '://') 
+            ? $resource->getLocation()
+            : $j->getCodebase().'/'.ltrim($resource->getLocation(), './')
+          );
           $response= &$c->get(NULL, $params);
           Console::write('     << ', $response->getStatuscode(), ' "', $response->getMessage(), '": ');
           
@@ -92,7 +101,7 @@
           switch ($response->getStatusCode()) {
             case 200:
               Console::writeLine();
-              Console::writef('     >> Downloading %s... ', $href);
+              Console::writef('     >> Downloading %s... ', $href->toString());
 
               // Check if this file resided in a subdirectory. If so, create this
               // subdirectory if necessary
