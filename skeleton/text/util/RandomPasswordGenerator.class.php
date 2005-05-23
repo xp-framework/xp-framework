@@ -9,6 +9,7 @@
   /**
    * Generates random password
    *
+   * TODO: allow generation of customer-friendly passwords (no S/5, 1/l, ...)
    *
    * @purpose   Generator
    */
@@ -19,7 +20,8 @@
       $uc= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
       // TODO: split special characters into printable/non-printable?
       // are all special characters allowed in database?
-      $sc= '_-=+!?#@$%^&*()[]|\/{}"\':;.><,',
+      // $sc= '_-=+!?#@$%^&*()[]|\/{}"\':;.><,',
+      $sc= '_-=+!?#@$%^&*()[]{}/\:;.,<>', // don't allow single or double quotes
       $nc= '0123456789',
       $chars= '',
       $length= 8;
