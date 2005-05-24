@@ -49,7 +49,7 @@
       list($lower, $upper, $step)= $bc->getRange();
       RANGE_AUTO == $lower && $lower= $min;
       RANGE_AUTO == $upper && $upper= $max;
-      RANGE_AUTO == $step && $step= round(($max- $min) / 10);
+      RANGE_AUTO == $step && $step= max(round(($max- $min) / 10), 1);
 
       // Sanity checks
       if ($lower > $upper) {
@@ -122,7 +122,20 @@
         if (DISTANCE_AUTO == ($distance= $bc->getDistance())) {
           $distance= round($innerWidth / $count);
         }
-        
+
+        // Draw X axis
+        for ($i= 0; $i < $count; $i++) {
+          $x= $leftBorder + $i * $distance + $width / 2;
+          imageline(
+            $img->handle,
+            $x,
+            $this->height - $bottomBorder,
+            $x,
+            $this->height - $bottomBorder + 5,
+            $color->handle
+          );
+        }
+                
         // Draw bars
         $color= &$img->allocate($bc->getColor('sample'));
         for ($i= 0; $i < $count; $i++) {
