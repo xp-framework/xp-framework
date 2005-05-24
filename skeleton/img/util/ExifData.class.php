@@ -59,8 +59,15 @@
         $e->setFileName($info['FileName']);
         $e->setFileSize($info['FileSize']);
         $e->setMimeType($info['MimeType']);
-        $t= sscanf($info['DateTime'], '%4d:%2d:%2d %2d:%2d:%2d');
-        $e->setDateTime(new Date(mktime($t[3], $t[4], $t[5], $t[1], $t[2], $t[0])));
+        
+        // Find date and time
+        foreach (array('DateTime', 'DateTimeOriginal') as $key) {
+          if (!isset($info[$key])) continue;
+
+          $t= sscanf($info[$key], '%4d:%2d:%2d %2d:%2d:%2d');
+          $e->setDateTime(new Date(mktime($t[3], $t[4], $t[5], $t[1], $t[2], $t[0])));
+          break;
+        }
       }
       return $e;
     }
