@@ -113,7 +113,7 @@
      * @return  &mixed result
      */
     function &unmarshall(&$child, $context= NULL, $mapping) {
-       // DEBUG Console::writeLine('Unmarshalling ', $child->name, ' (', var_export($child->attribute, 1), ') >>> ', $child->content, '<<<', "\n"); // DEBUG
+      // DEBUG Console::writeLine('Unmarshalling ', $child->name, ' (', var_export($child->attribute, 1), ') >>> ', $child->content, '<<<', "\n"); // DEBUG
       if (
         isset($child->attribute[$this->namespaces[XMLNS_XSI].':null']) or       // Java
         isset($child->attribute[$this->namespaces[XMLNS_XSI].':nil'])           // SOAP::Lite
@@ -123,14 +123,15 @@
 
       // References
       if (isset($child->attribute['href'])) {
-        foreach (array_keys($this->root->children[0]->children) as $idx) {
+        $body= &$this->_bodyElement();
+        foreach (array_keys($body->children) as $idx) {
           if (0 != strcasecmp(
-            @$this->root->children[0]->children[$idx]->attribute['id'],
+            @$body->children[$idx]->attribute['id'],
             substr($child->attribute['href'], 1)
           )) continue;
  
           // Create a copy and pass name to it
-          $c= $this->root->children[0]->children[$idx];
+          $c= $body->children[$idx];
           $c->name= $child->name;
           return $this->unmarshall($c, $context, $mapping);
           break;
@@ -361,7 +362,7 @@
         if (0 == strcasecmp(
           $this->root->children[$i]->getName(), 
           $this->namespaces[XMLNS_SOAPENV].':Body'
-        )) return $this->root->children[$i]->children[0];
+        )) return $this->root->children[$i];
       }
 
       return throw(new FormatException('Could not locate Body element'));
@@ -376,11 +377,11 @@
     function &getFault() {
       if ($body= &$this->_bodyElement()) {
         if (0 != strcasecmp(
-          $body->getName(), 
+          $body->children[0]->getName(), 
           $this->namespaces[XMLNS_SOAPENV].':Fault'
         )) return NULL;
 
-        $return= $this->_recurseData($body, TRUE, 'OBJECT', array());
+        $return= $this->_recurseData($body->children[0], TRUE, 'OBJECT', array());
         // DEBUG Console::writeLine('RETURN >>> ', var_export($return, 1), '***'); // DEBUG
         return new SOAPFault(
           isset($return['faultcode'])   ? $return['faultcode']    : '',
@@ -402,7 +403,7 @@
      */
     function &getData($context= 'ENUM', $mapping= array()) {
       if ($body= &$this->_bodyElement()) {
-        return $this->_recurseData($body, FALSE, $context, $mapping);
+        return $this->_recurseData($body->children[0], FALSE, $context, $mapping);
       }
     }
   }
