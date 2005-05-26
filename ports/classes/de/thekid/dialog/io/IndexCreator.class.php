@@ -8,7 +8,10 @@
     'io.Folder',
     'io.File',
     'io.FileUtil',
-    'de.thekid.dialog.io.FilteredFolderIterator'
+    'de.thekid.dialog.io.FilteredFolderIterator',
+    'de.thekid.dialog.Album',
+    'de.thekid.dialog.Update',
+    'de.thekid.dialog.SingleShot'
   );
 
   /**
@@ -67,11 +70,26 @@
       $entries= array();
       for ($i= &new FilteredFolderIterator($this->folder, '/\.dat$/'); $i->hasNext(); ) {
         $entry= $i->next();
-        $entries[filemtime($this->folder->getURI().$entry).$entry]= basename($entry, '.dat');
+        $file= &new File($this->folder->getURI().$entry);
+        try(); {
+          $data= &unserialize(FileUtil::getContents($file));
+        } if (catch('IOException', $e)) {
+          $e->printStackTrace();
+          exit(-1);
+        }
+
+        $date= &$data->getDate();
+        $this->cat && $this->cat->debugf(
+          '---> %s "%s" @ %s', 
+          xp::typeOf($data),
+          $entry,
+          xp::stringOf($date)
+        );
+        $entries[$date->getTime().$entry]= basename($entry, '.dat');
+        delete($data);
       }
       $this->folder->close();
       krsort($entries);
-      $this->cat && $this->cat->debug($entries);
 
       // ...by pages. The index "page_0" can be used for the home page
       for ($i= 0, $s= sizeof($entries); $i < $s; $i+= $this->entriesPerPage) {
@@ -99,7 +117,7 @@
       foreach (array_keys($entries) as $i => $key) {
         $page= intval(floor($i / $this->entriesPerPage));
         $this->cat && $this->cat->debugf(
-          '---> Album %s is on page %d',
+          '---> Element %s is on page %d',
           $entries[$key],
           $page
         );
