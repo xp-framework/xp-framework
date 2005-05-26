@@ -10,6 +10,13 @@
    * @purpose  Interface
    */
   class IEntry extends Interface {
-  
+
+    /**
+     * Get date
+     *
+     * @access  public
+     * @return  &util.Date
+     */
+    function &getDate() { }
   }
 ?>
