@@ -54,7 +54,10 @@
      * @return  string
      */
     function toString() {
-      return parent::toString().($cause ? "\nCaused by ".$cause->toString() : '');
+      return parent::toString().($this->cause
+        ? 'Caused by '.$this->cause->toString() 
+        : ''
+      );
     }
   }
 ?>
