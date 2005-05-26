@@ -112,7 +112,6 @@ __
     $e->printStackTrace();
     exit(-1);
   }
-  $serialized->touch($shot->date->getTime());
 
   // Regenerate indexes
   $index= &IndexCreator::forFolder(new Folder(DATA_FOLDER));

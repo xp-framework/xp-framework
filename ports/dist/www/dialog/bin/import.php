@@ -114,8 +114,6 @@ __
         $e->printStackTrace();
         exit(-1);
       }
-
-      $updateFile->touch($update->date->getTime());
     }
 
     $album->setTitle($param->value('title', 't', $album->getTitle()));
@@ -201,7 +199,6 @@ __
     $e->printStackTrace();
     exit(-1);
   }
-  $serialized->touch($album->createdAt->getTime());
   
   // Regenerate indexes
   $index= &IndexCreator::forFolder(new Folder(DATA_FOLDER));
