@@ -42,7 +42,7 @@ __
     exit(1);
   }
 
-  // Check origin folder
+  // Check origin file
   $origin= &new File($param->value(1));
   if (!$origin->exists()) {
     Console::writeLinef(
