@@ -79,6 +79,17 @@
     function &getCreatedAt() {
       return $this->createdAt;
     }
+    
+    /**
+     * Get date
+     *
+     * @see     xp://de.thekid.dialog.IEntry
+     * @access  public
+     * @return  &util.Date
+     */
+    function &getDate() {
+      return $this->createdAt;
+    }
 
     /**
      * Set Description
