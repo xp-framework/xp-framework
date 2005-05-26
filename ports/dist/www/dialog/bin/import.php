@@ -16,7 +16,8 @@
     'de.thekid.dialog.Update',
     'de.thekid.dialog.io.FilteredFolderIterator',
     'de.thekid.dialog.io.ImageProcessor',
-    'de.thekid.dialog.io.IndexCreator'
+    'de.thekid.dialog.io.IndexCreator',
+    'de.thekid.dialog.GroupByHourStrategy'
   );
   
   define('DESCRIPTION_FILE',  'description.txt');
@@ -182,8 +183,9 @@ __
   ));
   
   // Divide up into chapters by hour
+  $strategy= &new GroupByHourStrategy();
   for ($i= 0, $s= sizeof($images); $i < $s; $i++) {
-    $key= $images[$i]->exifData->dateTime->toString('Y-m-d H');
+    $key= $strategy->groupFor($images[$i]);
     if (!isset($chapter[$key])) {
       $chapter[$key]= &$album->addChapter(new AlbumChapter($key));
     }
