@@ -211,8 +211,8 @@
      * @param   int dst_y default 0 y coordinate within this image
      * @param   int src_x default 0 x coordinate within the source image
      * @param   int src_y default 0 y coordinate within the source image
-     * @param   int dst_w default -1 x coordinate within this image, -1 defaults to this image's width
-     * @param   int dst_h default -1 y coordinate within this image, -1 defaults to this image's height
+     * @param   int dst_w default -1 width of the area to copy to, -1 defaults to this image's width
+     * @param   int dst_h default -1 height of the area to copy to, -1 defaults to this image's height
      * @param   int src_w default -1 width of the area to copy, -1 defaults to the source image's width
      * @param   int src_h default -1 height of the area to copy, -1 defaults to the source image's height
      * @return  bool
@@ -251,8 +251,8 @@
      * @param   int dst_y default 0 y coordinate within this image
      * @param   int src_x default 0 x coordinate within the source image
      * @param   int src_y default 0 y coordinate within the source image
-     * @param   int dst_w default -1 x coordinate within this image, -1 defaults to this image's width
-     * @param   int dst_h default -1 y coordinate within this image, -1 defaults to this image's height
+     * @param   int dst_w default -1 width of the area to copy to, -1 defaults to this image's width
+     * @param   int dst_h default -1 height of the area to copy to, -1 defaults to this image's height
      * @param   int src_w default -1 width of the area to copy, -1 defaults to the source image's width
      * @param   int src_h default -1 height of the area to copy, -1 defaults to the source image's height
      * @return  bool
