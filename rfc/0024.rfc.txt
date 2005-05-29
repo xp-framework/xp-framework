@@ -64,7 +64,7 @@ Defining a class needs an object from the Resource Pool
   class MyClass extends Object {
   
     function __static() {
-      ResourcePool::setupFor(__CLASS__);
+      ResourcePool::bind(__CLASS__);
     }
   
     #[@inject(name = 'xp://env/rdbms/orders')]
@@ -120,5 +120,8 @@ Comments
 
 - friebe, Fri May 13 11:59:32 CEST 2005
   Maybe we should use the static initializer? Is setupFor() a good name?
+
+- friebe, Sun May 29 17:53:17     2005
+  bind() sounds better.
 
 <EOF>
