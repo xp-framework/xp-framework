@@ -63,8 +63,8 @@ Defining a class needs an object from the Resource Pool
 <?php
   class MyClass extends Object {
   
-    function __static() {
-      ResourcePool::bind(__CLASS__);
+    function __construct() {
+      ResourcePool::bind($this);
     }
   
     #[@inject(name = 'xp://env/rdbms/orders')]
@@ -123,5 +123,9 @@ Comments
 
 - friebe, Sun May 29 17:53:17     2005
   bind() sounds better.
+
+- friebe, Sun May 29 18:25:54     2005
+  Static initializer won't work because we're initializing instance 
+  variables. We need to invoke bind() in the constructor.
 
 <EOF>
