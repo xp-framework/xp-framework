@@ -113,6 +113,9 @@ Related documents
 - EJB 3.0 Dependency Injection Annotations
   http://www.caucho.com/resin-3.0/ejb3/bean-ann.xtp#@Inject
 
+- Initial implementation
+  svn://experiments/people/friebe/resourcepool
+
 Comments
 --------
 - friebe, Wed May 11 16:53:13 CEST 2005
