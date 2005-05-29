@@ -96,6 +96,30 @@
     }
 
     /**
+     * Retrieve one of this method's argument by its position
+     *
+     * @access  public
+     * @param   int pos
+     * @return  &lang.reflect.Argument
+     */
+    function &getArgument($pos) {
+      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
+      if (!isset($details[DETAIL_ARGUMENTS][$pos])) return NULL;
+      return $details[DETAIL_ARGUMENTS][$pos];
+    }
+
+    /**
+     * Retrieve how many arguments this method accepts (including optional ones)
+     *
+     * @access  public
+     * @return  int
+     */
+    function numArguments() {
+      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
+      return sizeof($details[DETAIL_ARGUMENTS]);
+    }
+
+    /**
      * Retrieve return type
      *
      * @access  public
