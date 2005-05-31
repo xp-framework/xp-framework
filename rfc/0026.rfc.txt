@@ -104,12 +104,13 @@ Java-Code:
   Message message= subscriber.receive(1000); // time out after a second
   
   // Or: Create a listener
+  TopicSubscriber subscriber= session.createSubscriber(topic);
   TopicListener listener= new TopicListener() {
     public onMessage(Message m) {
       // TBI
     }
   }
-  topicSubscriber.setMessageListener(listener);
+  subscriber.setMessageListener(listener);
   conn.start();
 
   conn.close();
@@ -173,7 +174,41 @@ PHP API
 The Java side contains a lot of boilerplate code which our target is to 
 simplify.
 
-XXX TODO XXX
+1) PTP (point-to-point)
+<?php
+  $conn= &Remote::forName('xp://jndi-proxy-host:4664/jms/queue');
+  $session= &$conn->createQueueSession(FALSE, SESSION_AUTO_ACKNOWLEDGE);
+  
+  // Publish a message to a topic
+  $sender= &$session->createSender('queue/testQueue');
+  $message= &$session->createTextMessage();
+  $sender->send($message);
+  
+  // Receive a message
+  $receiver= &$session->createReceiver('topic/Orders');
+  $conn->start();
+  $message= &$subscriber->receive();
+?>
+
+2) Publish / subscribe 
+<?php
+  $conn= &Remote::forName('xp://jndi-proxy-host:4664/jms/topic');
+  $session= &$conn->createTopicSession(FALSE, SESSION_AUTO_ACKNOWLEDGE);
+  
+  // Publish a message to a topic
+  $publisher= &$session->createPublisher('topic/Orders');
+  $message= &$session->createTextMessage();
+  $publisher->publish($message);
+  
+  // Either: Subscribe to a topic
+  $subscriber= &$session->createSubscriber('topic/Orders');
+  $conn->start();
+  $message= &$subscriber->receive(1000);
+  
+  // Or: Create a listener
+  $subscriber->setMessageListener(new MyTopicListener());
+  $conn->start();
+?>
 
 
 Security considerations
