@@ -1,6 +1,6 @@
 RFC 0026: JMS integration
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: friebe
 @created: Tue May 31 22:04:41     2005
@@ -14,8 +14,8 @@ An API to access JMS (Java Messaging Service) will be created.
 
 Rationale
 ---------
-There are many situations in which a working implementation (which JMS
-has proven to be) or existing messaging service needs to be accessed.
+There are many situations in which an existing, working implementation 
+(which JMS has proven to be) needs to be accessed.
 
 
 Functionality
