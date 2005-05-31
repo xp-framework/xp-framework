@@ -1,0 +1,207 @@
+RFC 0026: JMS integration
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: friebe
+@created: Tue May 31 22:04:41     2005
+@status: draft
+@category: ???
+
+Scope of Change
+---------------
+An API to access JMS (Java Messaging Service) will be created.
+
+
+Rationale
+---------
+There are many situations in which a working implementation (which JMS
+has proven to be) or existing messaging service needs to be accessed.
+
+
+Functionality
+-------------
+First: The PHP extension ext/java will not be used due to its instability
+and memory-hungry implementation.
+
+Analysis of the JMS API #1: Messaging domains
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1) PTP (point-to-point)
+
+Quote: "A point-to-point (PTP) product or application is built around 
+the concept of message queues, senders, and receivers. Each message is 
+addressed to a specific queue, and receiving clients extract messages 
+from the queue(s) established to hold their messages. Queues retain all 
+messages sent to them until the messages are consumed or until the 
+messages expire."
+
+http://java.sun.com/products/jms/tutorial/1_3_1-fcs/doc/images/Fig2.2.gif
+
+Java-Code:
+<code>
+  Context ctx= new InitialContext();
+
+  // Perform JDNI-lookups
+  QueueConnectionFactory qcf= (QueueConnectionFactory)ctx.lookup("QueueConnectionFactory");
+  Queue queue= (Queue)ctx.lookup("queue/testQueue");
+  
+  // Create connection and session
+  QueueConnection conn= qcf.createQueueConnection();
+  QueueSession session= conn.createQueueSession(
+    true,     // transacted
+    0         // no flags
+  );
+  
+  // Send a message
+  QueueSender sender= session.createSender(queue);
+  TextMessage message= session.createTextMessage();
+  message.setText("Hello world");
+  sender.send(message);
+
+  // Receive a message
+  QueueReceiver receiver= session.createReceiver(queue);
+  conn.start();
+  Message message= receiver.receive();
+
+  conn.close();
+</code>
+
+2) Publish / subscribe 
+
+Quote: "In a publish/subscribe (pub/sub) product or application, clients 
+address messages to a topic. Publishers and subscribers are generally 
+anonymous and may dynamically publish or subscribe to the content 
+hierarchy. The system takes care of distributing the messages 
+arriving from a topic's multiple publishers to its multiple subscribers. 
+Topics retain messages only as long as it takes to distribute them to 
+current subscribers."
+
+http://java.sun.com/products/jms/tutorial/1_3_1-fcs/doc/images/Fig2.3.gif
+
+Java-Code:
+<code>
+  Context ctx= new InitialContext();
+
+  // Perform JDNI-lookups
+  TopicConnectionFactory tcf= (TopicConnectionFactory)ctx.lookup("TopicConnectionFactory");
+  Topic topic= (Topic)ctx.lookup("topic/Orders");
+  
+  // Create connection and session
+  TopicConnection conn= topicConnectionFactory.createTopicConnection();
+  TopicSession session= conn.createTopicSession(
+    false,                      // not transacted
+    Session.AUTO_ACKNOWLEDGE    // auto-ack flag
+  );
+  
+  // Publish a message to a topic
+  TopicPublisher publisher= session.createPublisher(topic);
+  TextMessage message= session.createTextMessage();
+  publisher.publish(message);
+
+  // Either: Subscribe to a topic
+  TopicSubscriber subscriber= session.createSubscriber(topic);
+  conn.start();
+  Message message= subscriber.receive(1000); // time out after a second
+  
+  // Or: Create a listener
+  TopicListener listener= new TopicListener() {
+    public onMessage(Message m) {
+      // TBI
+    }
+  }
+  topicSubscriber.setMessageListener(listener);
+  conn.start();
+
+  conn.close();
+</code>
+
+
+Analysis of the JMS API #1: Messages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A JMS message has three parts: 
+
+* A header 
+* Properties (optional) 
+* A body (optional) 
+
+Headers:
+<pre>
+  Header Field      Set By
+  ----------------- -------------------------
+  JMSDestination    send or publish method
+  JMSDeliveryMode   send or publish method
+  JMSExpiration     send or publish method
+  JMSPriority       send or publish method
+  JMSMessageID      send or publish method
+  JMSTimestamp      send or publish method
+  JMSCorrelationID  Client
+  JMSReplyTo        Client
+  JMSType           Client
+  JMSRedelivered    JMS provider
+</pre>
+
+Message types:
+<pre>
+  Message Type    Body Contains
+  --------------- ------------------------------------------------------
+  TextMessage     A java.lang.String object (for example, the contents 
+                  of an Extensible Markup Language file).
+
+  MapMessage      A set of name/value pairs, with names as String objects 
+                  and values as primitive types in the Java programming 
+                  language. The entries can be accessed sequentially by 
+                  enumerator or randomly by name. The order of the 
+                  entries is undefined.
+
+  BytesMessage    A stream of uninterpreted bytes. This message type is 
+                  for literally encoding a body to match an existing 
+                  message format.
+
+  StreamMessage   A stream of primitive values in the Java programming 
+                  language, filled and read sequentially.
+
+  ObjectMessage   A Serializable object in the Java programming language.
+
+  Message         Nothing. Composed of header fields and properties only. 
+                  This message type is useful when a message body is not 
+                  required.
+</pre>
+
+
+PHP API
+~~~~~~~
+The Java side contains a lot of boilerplate code which our target is to 
+simplify.
+
+XXX TODO XXX
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- Java Message Service Tutorial
+  http://java.sun.com/products/jms/tutorial/
+
+- RMI
+  RFC #0012
+
+Comments
+--------
+- friebe, Tue May 31 22:05:03     2005
+  Which package should this be contained in?
+
+<EOF>
