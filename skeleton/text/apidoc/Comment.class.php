@@ -58,11 +58,8 @@
      */
     function fromString($str) {
     
-      // Handle special case for annotations
-      if ('#[' === substr($str, 0, 2)) {
-        $this->_handleTag('annotation', substr($str, 1));
-        return;
-      }
+      // Ignore annotations
+      if ('#' === substr($str, 0, 1)) return;
       
       if ('/*' !== substr($str, 0, 2)) {
         return throw(new FormatException('Comment format unrecognized ['.$str.']'));
