@@ -181,12 +181,18 @@ simplify.
   
   // 1) Send a message
   $producer= &$session->producerFor('queue/testQueue');
-  $message= &$session->createTextMessage();
+  with ($message= &$session->createTextMessage()); {
+    $message->setProperty('Example', 'Test');
+    $message->setText('Enterprise connectivity achieved');
+  }
   $producer->send($message);
 
   // 2) Publish a message to a topic
   $producer= &$session->producerFor('topic/Orders');
-  $message= &$session->createTextMessage();
+  with ($message= &$session->createTextMessage()); {
+    $message->setProperty('Example', 'Test');
+    $message->setText('Enterprise connectivity achieved');
+  }
   $producer->send($message);
   
   // 1) Receive a message
