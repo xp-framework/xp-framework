@@ -185,7 +185,7 @@ simplify.
   $sender->send($message);
   
   // Receive a message
-  $receiver= &$session->createReceiver('topic/Orders');
+  $receiver= &$session->createReceiver('queue/testQueue');
   $conn->start();
   $message= &$subscriber->receive();
 ?>
