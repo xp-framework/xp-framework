@@ -174,40 +174,35 @@ PHP API
 The Java side contains a lot of boilerplate code which our target is to 
 simplify.
 
-1) PTP (point-to-point)
 <?php
-  $conn= &Remote::forName('xp://jndi-proxy-host:4664/jms/queue');
-  $session= &$conn->createQueueSession(FALSE, SESSION_AUTO_ACKNOWLEDGE);
+  $session= &Remote::forName(
+    'xp://jndi-proxy-host:4664/jms/queue/session?transacted=no&auto-acknowledge=1'
+  );
   
-  // Publish a message to a topic
-  $sender= &$session->createSender('queue/testQueue');
+  // 1) Send a message
+  $producer= &$session->producerFor('queue/testQueue');
   $message= &$session->createTextMessage();
-  $sender->send($message);
-  
-  // Receive a message
-  $receiver= &$session->createReceiver('queue/testQueue');
-  $conn->start();
-  $message= &$subscriber->receive();
-?>
+  $producer->send($message);
 
-2) Publish / subscribe 
-<?php
-  $conn= &Remote::forName('xp://jndi-proxy-host:4664/jms/topic');
-  $session= &$conn->createTopicSession(FALSE, SESSION_AUTO_ACKNOWLEDGE);
-  
-  // Publish a message to a topic
-  $publisher= &$session->createPublisher('topic/Orders');
+  // 2) Publish a message to a topic
+  $producer= &$session->producerFor('topic/Orders');
   $message= &$session->createTextMessage();
-  $publisher->publish($message);
+  $producer->send($message);
   
-  // Either: Subscribe to a topic
-  $subscriber= &$session->createSubscriber('topic/Orders');
-  $conn->start();
-  $message= &$subscriber->receive(1000);
+  // 1) Receive a message
+  $consumer= &$session->consumerFor('queue/testQueue');
+  $message= &$consumer->receive();
+  $session->listen();
+
+  // 2) Either: Subscribe to a topic
+  $consumer= &$session->consumerFor('topic/Orders');
+  $message= &$consumer->receive(1000);
+  $session->listen();
   
-  // Or: Create a listener
-  $subscriber->setMessageListener(new MyTopicListener());
-  $conn->start();
+  // 2) Or: Create a listener
+  $consumer= &$session->consumerFor('topic/Orders');
+  $consumer->setMessageListener(new MyTopicListener());
+  $session->listen();
 ?>
 
 
