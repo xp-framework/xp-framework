@@ -25,6 +25,7 @@
    */
   class SOAPClient extends Object {
     var 
+      $encoding           = 'iso-8859-1',
       $transport          = NULL,
       $action             = '',
       $targetNamespace    = NULL,
@@ -52,6 +53,16 @@
      */
     function setTargetNamespace($targetNamespace= NULL) {
       $this->targetNamespace= $targetNamespace;
+    }
+
+    /**
+     * Set encoding
+     *
+     * @access  public
+     * @param   string encoding either utf-8 oder iso-8859-1
+     */
+    function setEncoding($encoding) {
+      $this->encoding= $encoding;
     }
 
     /**
@@ -98,18 +109,18 @@
       
       $args= func_get_args();
       
-      $this->answer= &new SOAPMessage();
-      $this->message= &new SOAPMessage();
-      $this->message->create($this->action, array_shift($args), $this->targetNamespace);
-      $this->message->setData($args);
+      $message= &new SOAPMessage();
+      $message->setEncoding($this->encoding);
+      $message->create($this->action, array_shift($args), $this->targetNamespace);
+      $message->setData($args);
 
       // Send
-      if (FALSE == ($response= &$this->transport->send($this->message))) return FALSE;
+      if (FALSE == ($response= &$this->transport->send($message))) return FALSE;
       
       // Response
-      if (FALSE == ($this->answer= &$this->transport->retrieve($response))) return FALSE;
+      if (FALSE == ($answer= &$this->transport->retrieve($response))) return FALSE;
       
-      $data= $this->answer->getData('ENUM', $this->mapping);
+      $data= $answer->getData('ENUM', $this->mapping);
       return sizeof($data) == 1 ? $data[0] : $data;
     }
   } implements(__FILE__, 'util.log.Traceable');
