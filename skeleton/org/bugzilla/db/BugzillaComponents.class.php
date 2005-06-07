@@ -8,17 +8,18 @@
  
   /**
    * Class wrapper for table components, database bugs
-   * (Auto-generated on Tue, 25 Jan 2005 12:15:23 +0100 by clang)
+   * (Auto-generated on Tue,  7 Jun 2005 12:10:40 +0200 by clang)
    *
    * @purpose  Datasource accessor
    */
   class BugzillaComponents extends DataSet {
     var
-      $value              = NULL,
-      $program            = NULL,
+      $name               = '',
       $initialowner       = 0,
       $initialqacontact   = 0,
-      $description        = '';
+      $description        = '',
+      $product_id         = '',
+      $id                 = '';
 
     /**
      * Static initializer
@@ -30,13 +31,15 @@
       with ($peer= &BugzillaComponents::getPeer()); {
         $peer->setTable('components');
         $peer->setConnection('bugzilla');
-        $peer->setPrimary(array(''));
+        $peer->setIdentity('id');
+        $peer->setPrimary(array('id'));
         $peer->setTypes(array(
-          'value'               => '%s',
-          'program'             => '%s',
+          'name'                => '%s',
           'initialowner'        => '%d',
           'initialqacontact'    => '%d',
-          'description'         => '%s'
+          'description'         => '%s',
+          'product_id'          => '%s',
+          'id'                  => '%s'
         ));
       }
     }  
@@ -50,60 +53,69 @@
     function &getPeer() {
       return Peer::forName(__CLASS__);
     }
-    
-    /**
-     * Gets an instance of this object by "value"
-     *
-     * @access  static
-     * @param   string value
-     * @return  &BugzillaComponents object
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    function &getByValue($value) {
-      $peer= &BugzillaComponents::getPeer();
-      return $peer->doSelect(new Criteria(array('value', $value, EQUAL)));
-    }    
   
     /**
-     * Retrieves value
+     * Gets an instance of this object by index "PRIMARY"
      *
-     * @access  public
-     * @return  string
+     * @access  static
+     * @param   string id
+     * @return  &org.bugzilla.db.BugzillaComponents object
+     * @throws  rdbms.SQLException in case an error occurs
      */
-    function getValue() {
-      return $this->value;
-    }
-      
-    /**
-     * Sets value
-     *
-     * @access  public
-     * @param   string value
-     * @return  string the previous value
-     */
-    function setValue($value) {
-      return $this->_change('value', $value);
+    function &getById($id) {
+      $peer= &BugzillaComponents::getPeer();
+      return array_shift($peer->doSelect(new Criteria(array('id', $id, EQUAL))));
     }
 
     /**
-     * Retrieves program
+     * Gets an instance of this object by index "product_id"
+     *
+     * @access  static
+     * @param   string product_id
+     * @param   string name
+     * @return  &org.bugzilla.db.BugzillaComponents object
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    function &getByProduct_idName($product_id, $name) {
+      $peer= &BugzillaComponents::getPeer();
+      return array_shift($peer->doSelect(new Criteria(
+        array('product_id', $product_id, EQUAL),
+        array('name', $name, EQUAL)
+      )));
+    }
+
+    /**
+     * Gets an instance of this object by index "name"
+     *
+     * @access  static
+     * @param   string name
+     * @return  &org.bugzilla.db.BugzillaComponents[] object
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    function &getByName($name) {
+      $peer= &BugzillaComponents::getPeer();
+      return $peer->doSelect(new Criteria(array('name', $name, EQUAL)));
+    }
+
+    /**
+     * Retrieves name
      *
      * @access  public
      * @return  string
      */
-    function getProgram() {
-      return $this->program;
+    function getName() {
+      return $this->name;
     }
       
     /**
-     * Sets program
+     * Sets name
      *
      * @access  public
-     * @param   string program
+     * @param   string name
      * @return  string the previous value
      */
-    function setProgram($program) {
-      return $this->_change('program', $program);
+    function setName($name) {
+      return $this->_change('name', $name);
     }
 
     /**
@@ -167,6 +179,48 @@
      */
     function setDescription($description) {
       return $this->_change('description', $description);
+    }
+
+    /**
+     * Retrieves product_id
+     *
+     * @access  public
+     * @return  string
+     */
+    function getProduct_id() {
+      return $this->product_id;
+    }
+      
+    /**
+     * Sets product_id
+     *
+     * @access  public
+     * @param   string product_id
+     * @return  string the previous value
+     */
+    function setProduct_id($product_id) {
+      return $this->_change('product_id', $product_id);
+    }
+
+    /**
+     * Retrieves id
+     *
+     * @access  public
+     * @return  string
+     */
+    function getId() {
+      return $this->id;
+    }
+      
+    /**
+     * Sets id
+     *
+     * @access  public
+     * @param   string id
+     * @return  string the previous value
+     */
+    function setId($id) {
+      return $this->_change('id', $id);
     }
   }
 ?>

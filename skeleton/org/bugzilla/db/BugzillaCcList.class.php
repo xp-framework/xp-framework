@@ -25,7 +25,7 @@
      */
     function __static() { 
       with ($peer= &BugzillaCcList::getPeer()); {
-        $peer->setTable('bugs.cc');
+        $peer->setTable('cc');
         $peer->setConnection('bugzilla');
         $peer->setPrimary(array('bug_id', 'who'));
         $peer->setTypes(array(

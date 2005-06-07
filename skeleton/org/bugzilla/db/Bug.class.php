@@ -8,38 +8,40 @@
  
   /**
    * Class wrapper for table bugs, database bugs
-   * (Auto-generated on Mon, 18 Oct 2004 10:19:31 +0200 by thekid)
+   * (Auto-generated on Tue,  7 Jun 2005 11:58:02 +0200 by clang)
    *
    * @purpose  Datasource accessor
    */
   class Bug extends DataSet {
     var
-      $bug_id              = 0,
-      $groupset            = 0,
-      $assigned_to         = 0,
-      $bug_file_loc        = NULL,
-      $bug_severity        = '',
-      $bug_status          = '',
-      $creation_ts         = NULL,
-      $delta_ts            = NULL,
-      $short_desc          = NULL,
-      $op_sys              = '',
-      $priority            = '',
-      $product             = '',
-      $rep_platform        = NULL,
-      $reporter            = 0,
-      $version             = '',
-      $component           = '',
-      $resolution          = '',
-      $target_milestone    = '',
-      $qa_contact          = 0,
-      $status_whiteboard   = '',
-      $votes               = 0,
-      $keywords            = '',
-      $lastdiffed          = NULL,
-      $everconfirmed       = 0,
-      $reporter_accessible = 0,
-      $cclist_accessible   = 0;
+      $bug_id             = 0,
+      $assigned_to        = 0,
+      $bug_file_loc       = NULL,
+      $bug_severity       = '',
+      $bug_status         = '',
+      $creation_ts        = NULL,
+      $delta_ts           = NULL,
+      $short_desc         = '',
+      $op_sys             = '',
+      $priority           = '',
+      $rep_platform       = NULL,
+      $reporter           = 0,
+      $version            = '',
+      $resolution         = '',
+      $target_milestone   = '',
+      $qa_contact         = 0,
+      $status_whiteboard  = '',
+      $votes              = 0,
+      $keywords           = '',
+      $lastdiffed         = NULL,
+      $everconfirmed      = 0,
+      $reporter_accessible= 0,
+      $cclist_accessible  = 0,
+      $estimated_time     = '',
+      $remaining_time     = '',
+      $alias              = NULL,
+      $product_id         = '',
+      $component_id       = '';
 
     /**
      * Static initializer
@@ -55,7 +57,6 @@
         $peer->setPrimary(array('bug_id'));
         $peer->setTypes(array(
           'bug_id'              => '%d',
-          'groupset'            => '%d',
           'assigned_to'         => '%d',
           'bug_file_loc'        => '%s',
           'bug_severity'        => '%s',
@@ -65,11 +66,9 @@
           'short_desc'          => '%s',
           'op_sys'              => '%s',
           'priority'            => '%s',
-          'product'             => '%s',
           'rep_platform'        => '%s',
           'reporter'            => '%d',
           'version'             => '%s',
-          'component'           => '%s',
           'resolution'          => '%s',
           'target_milestone'    => '%s',
           'qa_contact'          => '%d',
@@ -79,7 +78,12 @@
           'lastdiffed'          => '%s',
           'everconfirmed'       => '%d',
           'reporter_accessible' => '%d',
-          'cclist_accessible'   => '%d'
+          'cclist_accessible'   => '%d',
+          'estimated_time'      => '%s',
+          'remaining_time'      => '%s',
+          'alias'               => '%s',
+          'product_id'          => '%s',
+          'component_id'        => '%s'
         ));
       }
     }  
@@ -108,11 +112,24 @@
     }
 
     /**
+     * Gets an instance of this object by index "alias"
+     *
+     * @access  static
+     * @param   string alias
+     * @return  &org.bugzilla.db.Bug object
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    function &getByAlias($alias) {
+      $peer= &Bug::getPeer();
+      return array_shift($peer->doSelect(new Criteria(array('alias', $alias, EQUAL))));
+    }
+
+    /**
      * Gets an instance of this object by index "assigned_to"
      *
      * @access  static
      * @param   int assigned_to
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByAssigned_to($assigned_to) {
@@ -125,7 +142,7 @@
      *
      * @access  static
      * @param   util.Date creation_ts
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByCreation_ts($creation_ts) {
@@ -138,7 +155,7 @@
      *
      * @access  static
      * @param   util.Date delta_ts
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByDelta_ts($delta_ts) {
@@ -151,7 +168,7 @@
      *
      * @access  static
      * @param   string bug_severity
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByBug_severity($bug_severity) {
@@ -164,7 +181,7 @@
      *
      * @access  static
      * @param   string bug_status
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByBug_status($bug_status) {
@@ -177,7 +194,7 @@
      *
      * @access  static
      * @param   string op_sys
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByOp_sys($op_sys) {
@@ -190,7 +207,7 @@
      *
      * @access  static
      * @param   string priority
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByPriority($priority) {
@@ -199,24 +216,11 @@
     }
 
     /**
-     * Gets an instance of this object by index "product"
-     *
-     * @access  static
-     * @param   string product
-     * @return  &org.bugzilla.db.Bug[] objects
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    function &getByProduct($product) {
-      $peer= &Bug::getPeer();
-      return $peer->doSelect(new Criteria(array('product', $product, EQUAL)));
-    }
-
-    /**
      * Gets an instance of this object by index "reporter"
      *
      * @access  static
      * @param   int reporter
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByReporter($reporter) {
@@ -229,7 +233,7 @@
      *
      * @access  static
      * @param   string version
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByVersion($version) {
@@ -238,24 +242,11 @@
     }
 
     /**
-     * Gets an instance of this object by index "component"
-     *
-     * @access  static
-     * @param   string component
-     * @return  &org.bugzilla.db.Bug[] objects
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    function &getByComponent($component) {
-      $peer= &Bug::getPeer();
-      return $peer->doSelect(new Criteria(array('component', $component, EQUAL)));
-    }
-
-    /**
      * Gets an instance of this object by index "resolution"
      *
      * @access  static
      * @param   string resolution
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByResolution($resolution) {
@@ -268,12 +259,51 @@
      *
      * @access  static
      * @param   int votes
-     * @return  &org.bugzilla.db.Bug[] objects
+     * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByVotes($votes) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('votes', $votes, EQUAL)));
+    }
+
+    /**
+     * Gets an instance of this object by index "product_id"
+     *
+     * @access  static
+     * @param   string product_id
+     * @return  &org.bugzilla.db.Bug[] object
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    function &getByProduct_id($product_id) {
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('product_id', $product_id, EQUAL)));
+    }
+
+    /**
+     * Gets an instance of this object by index "component_id"
+     *
+     * @access  static
+     * @param   string component_id
+     * @return  &org.bugzilla.db.Bug[] object
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    function &getByComponent_id($component_id) {
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('component_id', $component_id, EQUAL)));
+    }
+
+    /**
+     * Gets an instance of this object by index "short_desc"
+     *
+     * @access  static
+     * @param   string short_desc
+     * @return  &org.bugzilla.db.Bug[] object
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    function &getByShort_desc($short_desc) {
+      $peer= &Bug::getPeer();
+      return $peer->doSelect(new Criteria(array('short_desc', $short_desc, EQUAL)));
     }
 
     /**
@@ -295,27 +325,6 @@
      */
     function setBug_id($bug_id) {
       return $this->_change('bug_id', $bug_id);
-    }
-
-    /**
-     * Retrieves groupset
-     *
-     * @access  public
-     * @return  int
-     */
-    function getGroupset() {
-      return $this->groupset;
-    }
-      
-    /**
-     * Sets groupset
-     *
-     * @access  public
-     * @param   int groupset
-     * @return  int the previous value
-     */
-    function setGroupset($groupset) {
-      return $this->_change('groupset', $groupset);
     }
 
     /**
@@ -406,9 +415,9 @@
      * Retrieves creation_ts
      *
      * @access  public
-     * @return  util.Date
+     * @return  &util.Date
      */
-    function getCreation_ts() {
+    function &getCreation_ts() {
       return $this->creation_ts;
     }
       
@@ -416,10 +425,10 @@
      * Sets creation_ts
      *
      * @access  public
-     * @param   util.Date creation_ts
-     * @return  util.Date the previous value
+     * @param   &util.Date creation_ts
+     * @return  &util.Date the previous value
      */
-    function setCreation_ts($creation_ts) {
+    function &setCreation_ts(&$creation_ts) {
       return $this->_change('creation_ts', $creation_ts);
     }
 
@@ -427,9 +436,9 @@
      * Retrieves delta_ts
      *
      * @access  public
-     * @return  util.Date
+     * @return  &util.Date
      */
-    function getDelta_ts() {
+    function &getDelta_ts() {
       return $this->delta_ts;
     }
       
@@ -437,10 +446,10 @@
      * Sets delta_ts
      *
      * @access  public
-     * @param   util.Date delta_ts
-     * @return  util.Date the previous value
+     * @param   &util.Date delta_ts
+     * @return  &util.Date the previous value
      */
-    function setDelta_ts($delta_ts) {
+    function &setDelta_ts(&$delta_ts) {
       return $this->_change('delta_ts', $delta_ts);
     }
 
@@ -508,27 +517,6 @@
     }
 
     /**
-     * Retrieves product
-     *
-     * @access  public
-     * @return  string
-     */
-    function getProduct() {
-      return $this->product;
-    }
-      
-    /**
-     * Sets product
-     *
-     * @access  public
-     * @param   string product
-     * @return  string the previous value
-     */
-    function setProduct($product) {
-      return $this->_change('product', $product);
-    }
-
-    /**
      * Retrieves rep_platform
      *
      * @access  public
@@ -589,27 +577,6 @@
      */
     function setVersion($version) {
       return $this->_change('version', $version);
-    }
-
-    /**
-     * Retrieves component
-     *
-     * @access  public
-     * @return  string
-     */
-    function getComponent() {
-      return $this->component;
-    }
-      
-    /**
-     * Sets component
-     *
-     * @access  public
-     * @param   string component
-     * @return  string the previous value
-     */
-    function setComponent($component) {
-      return $this->_change('component', $component);
     }
 
     /**
@@ -742,9 +709,9 @@
      * Retrieves lastdiffed
      *
      * @access  public
-     * @return  util.Date
+     * @return  &util.Date
      */
-    function getLastdiffed() {
+    function &getLastdiffed() {
       return $this->lastdiffed;
     }
       
@@ -752,10 +719,10 @@
      * Sets lastdiffed
      *
      * @access  public
-     * @param   util.Date lastdiffed
-     * @return  util.Date the previous value
+     * @param   &util.Date lastdiffed
+     * @return  &util.Date the previous value
      */
-    function setLastdiffed($lastdiffed) {
+    function &setLastdiffed(&$lastdiffed) {
       return $this->_change('lastdiffed', $lastdiffed);
     }
 
@@ -820,6 +787,111 @@
      */
     function setCclist_accessible($cclist_accessible) {
       return $this->_change('cclist_accessible', $cclist_accessible);
+    }
+
+    /**
+     * Retrieves estimated_time
+     *
+     * @access  public
+     * @return  string
+     */
+    function getEstimated_time() {
+      return $this->estimated_time;
+    }
+      
+    /**
+     * Sets estimated_time
+     *
+     * @access  public
+     * @param   string estimated_time
+     * @return  string the previous value
+     */
+    function setEstimated_time($estimated_time) {
+      return $this->_change('estimated_time', $estimated_time);
+    }
+
+    /**
+     * Retrieves remaining_time
+     *
+     * @access  public
+     * @return  string
+     */
+    function getRemaining_time() {
+      return $this->remaining_time;
+    }
+      
+    /**
+     * Sets remaining_time
+     *
+     * @access  public
+     * @param   string remaining_time
+     * @return  string the previous value
+     */
+    function setRemaining_time($remaining_time) {
+      return $this->_change('remaining_time', $remaining_time);
+    }
+
+    /**
+     * Retrieves alias
+     *
+     * @access  public
+     * @return  string
+     */
+    function getAlias() {
+      return $this->alias;
+    }
+      
+    /**
+     * Sets alias
+     *
+     * @access  public
+     * @param   string alias
+     * @return  string the previous value
+     */
+    function setAlias($alias) {
+      return $this->_change('alias', $alias);
+    }
+
+    /**
+     * Retrieves product_id
+     *
+     * @access  public
+     * @return  string
+     */
+    function getProduct_id() {
+      return $this->product_id;
+    }
+      
+    /**
+     * Sets product_id
+     *
+     * @access  public
+     * @param   string product_id
+     * @return  string the previous value
+     */
+    function setProduct_id($product_id) {
+      return $this->_change('product_id', $product_id);
+    }
+
+    /**
+     * Retrieves component_id
+     *
+     * @access  public
+     * @return  string
+     */
+    function getComponent_id() {
+      return $this->component_id;
+    }
+      
+    /**
+     * Sets component_id
+     *
+     * @access  public
+     * @param   string component_id
+     * @return  string the previous value
+     */
+    function setComponent_id($component_id) {
+      return $this->_change('component_id', $component_id);
     }
   }
 ?>
