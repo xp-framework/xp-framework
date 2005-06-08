@@ -5,7 +5,7 @@ $Id$
 @authors: friebe
 @created: Tue May 31 22:04:41     2005
 @status: draft
-@category: ???
+@category: remote.jms
 
 Scope of Change
 ---------------
