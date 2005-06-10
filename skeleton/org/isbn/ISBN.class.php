@@ -5,9 +5,11 @@
  */
 
   /**
-   * An ISBN is a 10-digit number that identifies a book for purposes of 
-   * commerce and supply chains. The last digit of the ISBN is a check 
-   * digit used to detect transcription errors.
+   * An ISBN is a number that identifies a book for purposes of commerce 
+   * and supply chains. The last digit of the ISBN is a check digit used 
+   * to detect transcription errors.
+   *
+   * Note: This class supports both 10-digit and 13-digit numbers
    *
    * @see      http://www.isbn.org/
    * @see      http://www.isbn.org/standards/home/isbn/us/isbnqa.asp - ISBN FAQ 
@@ -51,24 +53,31 @@
      * @param   string isbn
      * @return  bool TRUE if the number is valid
      */
-    function isValid($isbn) {
-      static $values= '0123456789X';
+    function isValid($isbn) {      
+      switch ($s= strlen($stripped= str_replace('-', '', $isbn))) {
+        case 10: {      // ISBN10, until 01.01.2007
+          for ($product= 0, $i= 0; $i < 9; $i++) {
 
-      for ($checksum= 0, $weight= 10, $i= 0, $s= strlen($isbn); $i < $s; $i++) {
-        if ('-' == $isbn{$i}) continue;
+            // If we encounter an invalid character, break immediately
+            if (!is_numeric($stripped{$i})) return FALSE;
 
-        // If we encounter an invalid character, break immediately
-        if (FALSE === ($value= strpos($values, $isbn{$i}))) return FALSE;
-        
-        // If we encounter an X in an invalid place (may only be at the 
-        // end), break immediately
-        if ($value == 10 && $weight != 1) return FALSE;
+            $product+= $stripped{$i} * (10 - $i);
+          }
+          return (11 - $product % 11) % 11 == ($stripped{9} == 'X' ? 10 : $stripped{9});
+        }
 
-        $checksum+= $weight * $value;
-        $weight--;
+        case 13: {     // ISBN13, transitional from 01.01.2005 - 01.01.2007
+          for ($product= 0, $i= 0; $i < 12; $i++) {
+          
+            // If we encounter an invalid character, break immediately
+            if (!is_numeric($stripped{$i})) return FALSE;
+            $product+= $stripped{$i} * (1 + ($i % 2 ? 2 : 0));
+          }
+          return (10 - $product % 10) % 10 == $stripped{12};
+        }
       }
 
-      return 0 === ($checksum % 11);
+      return FALSE;
     }
     
     /**

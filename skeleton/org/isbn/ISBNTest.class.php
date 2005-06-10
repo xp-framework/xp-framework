@@ -37,6 +37,17 @@
     }
 
     /**
+     * Test 13-digit ISBN
+     *
+     * @access  public
+     * @see     http://www.isbn.org/standards/home/isbn/transition.asp
+     */
+    #[@test]
+    function verify13DigitISBN() {
+      $this->assertTrue(ISBN::isValid('978-0-393-04002-9'));
+    }
+
+    /**
      * Test ISBN with invalid checksum (is: 3, should be: 7)
      *
      * @access  public
