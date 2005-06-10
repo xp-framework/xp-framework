@@ -45,5 +45,18 @@
     function verifyInvalidChecksum() {
       $this->assertFalse(ISBN::isValid('0-8436-1072-3'));
     }
+    
+    /**
+     * Test ISBN::toString()
+     *
+     * @access  public
+     */
+    #[@test]
+    function testStringRepresentation() {
+      $this->assertEquals(
+        'org.isbn.ISBN(3-89864-325-5)', 
+        xp::stringOf(new ISBN('3-89864-325-5'))
+      );
+    }
   }
 ?>
