@@ -32,6 +32,16 @@
       }
       $this->number= $isbn;
     }
+
+    /**
+     * Get Number
+     *
+     * @access  public
+     * @return  string
+     */
+    function getNumber() {
+      return $this->number;
+    }
     
     /**
      * Verify an ISBN number
