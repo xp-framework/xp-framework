@@ -7413,7 +7413,7 @@
 2003-06-10  Jani Taskinen  <sniper@iki.fi>
 
     * zend_multiply.h:
-      - Missing $Id$ tag
+      - Missing $Id: ChangeLog 4892 2005-03-20 18:17:16Z friebe $ tag
 
 2003-06-10  James Cox  <james@imajes.info>
 
@@ -9137,7 +9137,7 @@
       zend_types.h
       zend_variables.c
       zend_variables.h:
-      - Added some missing CVS $Id$ tags, headers and footers.
+      - Added some missing CVS $Id: ChangeLog 4892 2005-03-20 18:17:16Z friebe $ tags, headers and footers.
 
 2003-01-30  Ilia Alshanetsky  <ilia@prohost.org>
 

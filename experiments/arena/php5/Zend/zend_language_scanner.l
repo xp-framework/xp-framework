@@ -19,7 +19,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_language_scanner.l 4869 2005-03-13 19:56:11Z kiesel $ */
 
 #define yyleng SCNG(yy_leng)
 #define yytext SCNG(yy_text)

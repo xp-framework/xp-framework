@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_language_parser.y 4889 2005-03-20 18:01:21Z friebe $ */
 
 /* 
  * LALR shift/reduce conflicts and how they are resolved:

@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_compile.h 4845 2005-03-06 11:55:21Z kiesel $ */
 
 #ifndef ZEND_COMPILE_H
 #define ZEND_COMPILE_H

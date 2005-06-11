@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_dynamic_array.h 4319 2004-12-02 23:06:03Z friebe $ */
 
 #ifndef ZEND_DYNAMIC_ARRAY_H
 #define ZEND_DYNAMIC_ARRAY_H

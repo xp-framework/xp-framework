@@ -5,7 +5,7 @@
 #
 # Written by Sascha Schumann
 #
-# $Id$ 
+# $Id: build.mk 4319 2004-12-02 23:06:03Z friebe $ 
 
 
 LT_TARGETS = ltmain.sh ltconfig

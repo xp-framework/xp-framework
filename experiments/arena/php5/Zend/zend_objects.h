@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_objects.h 4319 2004-12-02 23:06:03Z friebe $ */
 
 #ifndef ZEND_OBJECTS_H
 #define ZEND_OBJECTS_H

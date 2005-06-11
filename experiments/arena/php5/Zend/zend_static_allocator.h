@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_static_allocator.h 4319 2004-12-02 23:06:03Z friebe $ */
 
 #ifndef ZEND_STATIC_ALLOCATOR_H
 #define ZEND_STATIC_ALLOCATOR_H

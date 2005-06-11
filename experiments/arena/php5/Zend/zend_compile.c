@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_compile.c 4873 2005-03-14 13:44:18Z kiesel $ */
 
 #include <zend_language_parser.h>
 #include "zend.h"

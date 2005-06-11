@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_reflection_api.h 4319 2004-12-02 23:06:03Z friebe $ */
 
 #ifndef ZEND_REFLECTION_API_H
 #define ZEND_REFLECTION_API_H

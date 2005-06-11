@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_ini_scanner.l 4682 2005-02-18 09:17:51Z friebe $ */
 
 #define yyleng SCNG(yy_leng)
 #define yytext SCNG(yy_text)

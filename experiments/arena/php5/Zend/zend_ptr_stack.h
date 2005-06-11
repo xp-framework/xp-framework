@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_ptr_stack.h 4319 2004-12-02 23:06:03Z friebe $ */
 
 #ifndef ZEND_PTR_STACK_H
 #define ZEND_PTR_STACK_H

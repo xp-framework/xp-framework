@@ -1,4 +1,4 @@
-dnl $Id$
+dnl $Id: configure.in 4596 2005-01-29 17:56:37Z friebe $
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(zend.c)

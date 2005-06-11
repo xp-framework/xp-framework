@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_fast_cache.h 4319 2004-12-02 23:06:03Z friebe $ */
 
 #ifndef ZEND_FAST_CACHE_H
 #define ZEND_FAST_CACHE_H

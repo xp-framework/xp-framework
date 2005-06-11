@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_enumerations.h 4848 2005-03-06 12:36:19Z friebe $ */
 
 #ifndef ZEND_ENUMERATIONS_H
 #define ZEND_ENUMERATIONS_H

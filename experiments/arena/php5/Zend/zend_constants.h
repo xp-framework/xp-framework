@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_constants.h 4319 2004-12-02 23:06:03Z friebe $ */
 
 #ifndef ZEND_CONSTANTS_H
 #define ZEND_CONSTANTS_H

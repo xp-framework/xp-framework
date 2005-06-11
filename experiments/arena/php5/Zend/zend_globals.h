@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_globals.h 4870 2005-03-13 20:26:32Z kiesel $ */
 
 #ifndef ZEND_GLOBALS_H
 #define ZEND_GLOBALS_H

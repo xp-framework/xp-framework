@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_istdiostream.h 4319 2004-12-02 23:06:03Z friebe $ */
 
 #ifndef _ZEND_STDIOSTREAM
 #define _ZEND_STDIOSTREAM

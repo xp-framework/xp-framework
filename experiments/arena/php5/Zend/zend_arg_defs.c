@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
+/* $Id: zend_arg_defs.c 4529 2005-01-12 13:43:08Z friebe $ */
 
 ZEND_BEGIN_ARG_INFO(first_arg_force_ref, 0)
 	ZEND_ARG_PASS_INFO(1)
