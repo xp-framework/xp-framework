@@ -19,7 +19,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_exceptions.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_exceptions.h,v 1.20 2004/07/15 22:21:36 helly Exp $ */
 
 #ifndef ZEND_EXCEPTIONS_H
 #define ZEND_EXCEPTIONS_H

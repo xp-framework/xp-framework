@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_multibyte.c 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_multibyte.c,v 1.3 2004/01/08 17:31:48 sniper Exp $ */
 
 #include "zend.h"
 #include "zend_compile.h"

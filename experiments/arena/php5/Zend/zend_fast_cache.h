@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_fast_cache.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_fast_cache.h,v 1.20 2004/07/30 20:16:40 andi Exp $ */
 
 #ifndef ZEND_FAST_CACHE_H
 #define ZEND_FAST_CACHE_H

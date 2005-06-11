@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_globals_macros.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_globals_macros.h,v 1.21 2004/01/08 17:31:47 sniper Exp $ */
 
 #ifndef ZEND_GLOBALS_MACROS_H
 #define ZEND_GLOBALS_MACROS_H

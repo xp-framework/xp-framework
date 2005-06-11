@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_llist.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_llist.h,v 1.32 2004/01/08 17:31:47 sniper Exp $ */
 
 #ifndef ZEND_LLIST_H
 #define ZEND_LLIST_H

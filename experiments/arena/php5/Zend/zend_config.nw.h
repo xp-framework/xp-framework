@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_config.nw.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_config.nw.h,v 1.7 2004/10/08 07:43:41 hyanantha Exp $ */
 
 #ifndef ZEND_CONFIG_NW_H
 #define ZEND_CONFIG_NW_H

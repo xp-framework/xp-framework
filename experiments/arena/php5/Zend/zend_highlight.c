@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_highlight.c 4501 2005-01-06 19:56:54Z friebe $ */
+/* $Id: zend_highlight.c,v 1.47 2005/01/02 23:53:43 iliaa Exp $ */
 
 #include "zend.h"
 #include <zend_language_parser.h>

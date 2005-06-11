@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_enumerations.h 4848 2005-03-06 12:36:19Z friebe $ */
+/* $Id: zend_engine_2.patch 4861 2005-03-06 15:06:51Z friebe $ */
 
 #ifndef ZEND_ENUMERATIONS_H
 #define ZEND_ENUMERATIONS_H

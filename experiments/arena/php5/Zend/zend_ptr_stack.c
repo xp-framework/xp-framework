@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_ptr_stack.c 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_ptr_stack.c,v 1.22 2004/07/30 21:00:37 andi Exp $ */
 
 #include "zend.h"
 #include "zend_ptr_stack.h"

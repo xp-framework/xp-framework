@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_stream.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_stream.h,v 1.6 2004/06/25 12:55:11 wez Exp $ */
 
 #ifndef ZEND_STREAM_H
 #define ZEND_STREAM_H

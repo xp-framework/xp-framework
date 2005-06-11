@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_errors.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_errors.h,v 1.17 2004/01/08 17:31:47 sniper Exp $ */
 
 #ifndef ZEND_ERRORS_H
 #define ZEND_ERRORS_H

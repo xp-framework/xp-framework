@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_builtin_functions.c 4897 2005-03-20 18:29:39Z friebe $ */
+/* $Id: zend_builtin_functions.c,v 1.261 2005/03/14 09:21:04 stas Exp $ */
 
 #include "zend.h"
 #include "zend_API.h"

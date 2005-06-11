@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_indent.c 4501 2005-01-06 19:56:54Z friebe $ */
+/* $Id: zend_indent.c,v 1.23 2004/12/30 15:18:23 sniper Exp $ */
 
 /* This indenter doesn't really work, it's here for no particular reason. */
 

@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_constants.c 4596 2005-01-29 17:56:37Z friebe $ */
+/* $Id: zend_constants.c,v 1.70 2005/01/20 02:02:08 sniper Exp $ */
 
 #include "zend.h"
 #include "zend_constants.h"

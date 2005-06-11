@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: acconfig.h 4842 2005-03-06 10:56:33Z friebe $ */
+/* $Id: acconfig.h,v 1.38 2005/02/22 13:49:52 sniper Exp $ */
 
 #define ZEND_API
 #define ZEND_DLEXPORT

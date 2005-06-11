@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_objects.c 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_objects.c,v 1.51 2005/02/24 02:35:59 andi Exp $ */
 
 #include "zend.h"
 #include "zend_globals.h"

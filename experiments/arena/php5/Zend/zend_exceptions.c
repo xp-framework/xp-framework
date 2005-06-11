@@ -19,7 +19,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_exceptions.c 4327 2004-12-12 14:27:57Z friebe $ */
+/* $Id: zend_exceptions.c,v 1.75 2004/12/07 07:46:12 dmitry Exp $ */
 
 #include "zend.h"
 #include "zend_API.h"

@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_iterators.c 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_iterators.c,v 1.11 2004/05/04 15:03:28 wez Exp $ */
 
 #include "zend.h"
 #include "zend_API.h"

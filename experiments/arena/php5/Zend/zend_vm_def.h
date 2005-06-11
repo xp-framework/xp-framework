@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_vm_def.h 4869 2005-03-13 19:56:11Z kiesel $ */
+/* $Id: zend_vm_def.h,v 1.18 2005/03/12 22:39:04 helly Exp $ */
 
 ZEND_VM_HANDLER(1, ZEND_ADD, CONST|TMP|VAR|CV, CONST|TMP|VAR|CV)
 {

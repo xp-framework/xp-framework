@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_interfaces.c 4892 2005-03-20 18:17:16Z friebe $ */
+/* $Id: zend_interfaces.c,v 1.30 2005/03/19 01:11:48 andi Exp $ */
 
 #include "zend.h"
 #include "zend_API.h"

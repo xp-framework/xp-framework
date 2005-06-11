@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_vm_opcodes.h 4596 2005-01-29 17:56:37Z friebe $ */
+/* $Id: zend_vm_opcodes.h,v 1.8 2005/02/24 08:52:11 dmitry Exp $ */
 
 #define ZEND_NOP                       0
 #define ZEND_ADD                       1

@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_highlight.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_highlight.h,v 1.24 2004/01/08 17:31:47 sniper Exp $ */
 
 #ifndef ZEND_HIGHLIGHT_H
 #define ZEND_HIGHLIGHT_H

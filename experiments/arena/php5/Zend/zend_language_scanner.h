@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_language_scanner.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_language_scanner.h,v 1.18 2004/01/17 00:26:12 sniper Exp $ */
 
 #ifndef ZEND_SCANNER_H
 #define ZEND_SCANNER_H

@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_objects_API.c 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_objects_API.c,v 1.45 2005/02/22 14:53:57 helly Exp $ */
 
 #include "zend.h"
 #include "zend_globals.h"

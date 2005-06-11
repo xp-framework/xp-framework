@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_operators.h 4596 2005-01-29 17:56:37Z friebe $ */
+/* $Id: zend_operators.h,v 1.93 2005/01/18 00:29:43 iliaa Exp $ */
 
 #ifndef ZEND_OPERATORS_H
 #define ZEND_OPERATORS_H

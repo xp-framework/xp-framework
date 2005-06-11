@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_ts_hash.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_ts_hash.h,v 1.12 2004/01/08 17:31:48 sniper Exp $ */
 
 #ifndef ZEND_TS_HASH_H
 #define ZEND_TS_HASH_H

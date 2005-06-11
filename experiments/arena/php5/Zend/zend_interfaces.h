@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_interfaces.h 4892 2005-03-20 18:17:16Z friebe $ */
+/* $Id: zend_interfaces.h,v 1.10 2005/03/19 01:11:48 andi Exp $ */
 
 #ifndef ZEND_INTERFACES_H
 #define ZEND_INTERFACES_H

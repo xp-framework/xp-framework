@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_constants.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_constants.h,v 1.30 2004/03/04 11:02:05 derick Exp $ */
 
 #ifndef ZEND_CONSTANTS_H
 #define ZEND_CONSTANTS_H

@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_compile.h 4845 2005-03-06 11:55:21Z kiesel $ */
+/* $Id: zend_compile.h,v 1.302 2005/02/11 22:26:45 helly Exp $ */
 
 #ifndef ZEND_COMPILE_H
 #define ZEND_COMPILE_H

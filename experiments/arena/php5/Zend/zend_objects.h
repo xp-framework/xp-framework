@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_objects.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_objects.h,v 1.24 2005/02/24 02:35:59 andi Exp $ */
 
 #ifndef ZEND_OBJECTS_H
 #define ZEND_OBJECTS_H

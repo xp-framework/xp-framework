@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_multibyte.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_multibyte.h,v 1.2 2004/01/08 17:31:48 sniper Exp $ */
 
 #ifndef ZEND_MULTIBYTE_H
 #define ZEND_MULTIBYTE_H

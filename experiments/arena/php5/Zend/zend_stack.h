@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_stack.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_stack.h,v 1.18 2004/02/18 22:44:40 hholzgra Exp $ */
 
 #ifndef ZEND_STACK_H
 #define ZEND_STACK_H

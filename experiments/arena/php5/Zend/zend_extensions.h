@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_extensions.h 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_extensions.h,v 1.63 2004/10/30 19:27:42 helly Exp $ */
 
 #ifndef ZEND_EXTENSIONS_H
 #define ZEND_EXTENSIONS_H

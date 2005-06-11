@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_extensions.c 4319 2004-12-02 23:06:03Z friebe $ */
+/* $Id: zend_extensions.c,v 1.47 2004/01/08 17:31:47 sniper Exp $ */
 
 #include "zend_extensions.h"
 
