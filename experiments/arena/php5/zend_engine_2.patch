@@ -4,7 +4,7 @@ RCS file: /repository/ZendEngine2/Makefile.am,v
 retrieving revision 1.57
 diff -u -r1.57 Makefile.am
 --- Zend/Makefile.am	21 Feb 2005 15:10:19 -0000	1.57
-+++ Zend/Makefile.am	6 Mar 2005 15:05:57 -0000
++++ Zend/Makefile.am	11 Jun 2005 23:01:46 -0000
 @@ -17,7 +17,7 @@
  	zend_objects_API.c zend_ts_hash.c zend_stream.c zend_mm.c \
  	zend_default_classes.c zend_reflection_api.c \
@@ -17,10 +17,10 @@ diff -u -r1.57 Makefile.am
 Index: Zend/zend.h
 ===================================================================
 RCS file: /repository/ZendEngine2/zend.h,v
-retrieving revision 1.273
-diff -u -r1.273 zend.h
---- Zend/zend.h	23 Feb 2005 11:15:51 -0000	1.273
-+++ Zend/zend.h	6 Mar 2005 15:05:58 -0000
+retrieving revision 1.274
+diff -u -r1.274 zend.h
+--- Zend/zend.h	7 Mar 2005 22:23:13 -0000	1.274
++++ Zend/zend.h	11 Jun 2005 23:01:48 -0000
 @@ -256,6 +256,8 @@
   */
  typedef struct _zval_struct zval;
@@ -38,7 +38,7 @@ diff -u -r1.273 zend.h
  	HashTable constants_table;
  	struct _zend_function_entry *builtin_functions;
  
-@@ -355,6 +358,17 @@
+@@ -357,6 +360,17 @@
  	struct _zend_module_entry *module;
  };
  
@@ -59,10 +59,10 @@ diff -u -r1.273 zend.h
 Index: Zend/zend_API.c
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_API.c,v
-retrieving revision 1.278
-diff -u -r1.278 zend_API.c
---- Zend/zend_API.c	17 Feb 2005 21:05:04 -0000	1.278
-+++ Zend/zend_API.c	6 Mar 2005 15:05:58 -0000
+retrieving revision 1.280
+diff -u -r1.280 zend_API.c
+--- Zend/zend_API.c	16 Mar 2005 04:18:42 -0000	1.280
++++ Zend/zend_API.c	11 Jun 2005 23:01:48 -0000
 @@ -1319,6 +1319,9 @@
  			internal_function->return_reference = ptr->arg_info[0].return_reference;
  		} else {
@@ -76,11 +76,19 @@ diff -u -r1.278 zend_API.c
 Index: Zend/zend_builtin_functions.c
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_builtin_functions.c,v
-retrieving revision 1.258
-diff -u -r1.258 zend_builtin_functions.c
---- Zend/zend_builtin_functions.c	28 Feb 2005 18:53:33 -0000	1.258
-+++ Zend/zend_builtin_functions.c	6 Mar 2005 15:05:59 -0000
-@@ -1213,45 +1213,80 @@
+retrieving revision 1.261
+diff -u -r1.261 zend_builtin_functions.c
+--- Zend/zend_builtin_functions.c	14 Mar 2005 09:21:04 -0000	1.261
++++ Zend/zend_builtin_functions.c	11 Jun 2005 23:01:49 -0000
+@@ -672,7 +672,6 @@
+    Returns true if the object is of this class or has this class as one of its parents */
+ ZEND_FUNCTION(is_a)
+ {
+-	zend_error(E_STRICT, "is_a(): Deprecated. Please use the instanceof operator");
+ 	is_a_impl(INTERNAL_FUNCTION_PARAM_PASSTHRU, 0);
+ }
+ /* }}} */
+@@ -1213,45 +1212,80 @@
  	zend_uint mask = va_arg(args, zend_uint);
  	zend_uint comply = va_arg(args, zend_uint);
  	zend_uint comply_mask = (comply)? mask:0;
@@ -108,13 +116,13 @@ diff -u -r1.258 zend_builtin_functions.c
 +	char *package = NULL;
 +	char *lc_name = NULL;
 +	int package_len;
-+
-+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &package, &package_len) == FAILURE) {
-+		return;
-+	}
  
 -	if (ZEND_NUM_ARGS() != 0) {
 -		ZEND_WRONG_PARAM_COUNT();
++	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &package, &package_len) == FAILURE) {
++		return;
++	}
++
 +	/* Create lowercase package name and concatenate a "~" */
 +	if (package) {
 +		package_len++;
@@ -174,19 +182,10 @@ diff -u -r1.258 zend_builtin_functions.c
 Index: Zend/zend_compile.c
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_compile.c,v
-retrieving revision 1.613
-diff -u -r1.613 zend_compile.c
---- Zend/zend_compile.c	23 Feb 2005 11:15:51 -0000	1.613
-+++ Zend/zend_compile.c	6 Mar 2005 15:06:01 -0000
-@@ -17,7 +17,7 @@
-    +----------------------------------------------------------------------+
- */
- 
--/* $Id$ */
-+/* $Id$ */
- 
- #include <zend_language_parser.h>
- #include "zend.h"
+retrieving revision 1.616
+diff -u -r1.616 zend_compile.c
+--- Zend/zend_compile.c	10 Mar 2005 13:20:25 -0000	1.616
++++ Zend/zend_compile.c	11 Jun 2005 23:01:51 -0000
 @@ -26,6 +26,7 @@
  #include "zend_llist.h"
  #include "zend_API.h"
@@ -435,7 +434,7 @@ diff -u -r1.613 zend_compile.c
  		&& parent->common.scope != (child->common.prototype ? child->common.prototype->common.scope : child->common.scope)
  		&& child->common.fn_flags & (ZEND_ACC_ABSTRACT|ZEND_ACC_IMPLEMENTED_ABSTRACT)) {
  		zend_error(E_COMPILE_ERROR, "Can't inherit abstract function %s::%s() (previously declared abstract in %s)", 
-@@ -2268,7 +2412,7 @@
+@@ -2262,7 +2406,7 @@
  			/* We currently don't early-bind classes that implement interfaces */
  			return;
  		default:
@@ -444,7 +443,7 @@ diff -u -r1.613 zend_compile.c
  			return;
  	}
  
-@@ -2539,13 +2683,16 @@
+@@ -2533,13 +2677,16 @@
  	zend_op *opline;
  	int doing_inheritance = 0;
  	zend_class_entry *new_class_entry = emalloc(sizeof(zend_class_entry));
@@ -462,7 +461,7 @@ diff -u -r1.613 zend_compile.c
  	if (!(strcmp(lcname, "self") && strcmp(lcname, "parent"))) {
  		efree(lcname);
  		zend_error(E_COMPILE_ERROR, "Cannot use '%s' as class name as it is reserved", class_name->u.constant.value.str.val);
-@@ -2594,6 +2741,9 @@
+@@ -2588,6 +2735,9 @@
  		CG(active_class_entry)->doc_comment_len = CG(doc_comment_len);
  		RESET_DOC_COMMENT();
  	}
@@ -472,7 +471,7 @@ diff -u -r1.613 zend_compile.c
  }
  
  
-@@ -2645,9 +2795,91 @@
+@@ -2639,9 +2789,91 @@
  			do_verify_abstract_class(TSRMLS_C);
  		}
  	}
@@ -564,7 +563,7 @@ diff -u -r1.613 zend_compile.c
  
  void zend_do_implements_interface(znode *interface_znode TSRMLS_DC)
  {
-@@ -3831,6 +4063,14 @@
+@@ -3825,6 +4057,14 @@
  	zend_hash_init_ex(&ce->constants_table, 0, NULL, zval_ptr_dtor_func, persistent_hashes, 0);
  	zend_hash_init_ex(&ce->function_table, 0, NULL, ZEND_FUNCTION_DTOR, persistent_hashes, 0);
  
@@ -579,7 +578,7 @@ diff -u -r1.613 zend_compile.c
  	if (nullify_handlers) {
  		ce->constructor = NULL;
  		ce->destructor = NULL;
-@@ -3865,6 +4105,134 @@
+@@ -3861,6 +4101,151 @@
  	}
  }
  
@@ -635,6 +634,9 @@ diff -u -r1.613 zend_compile.c
 +		CG(active_class_entry)->doc_comment_len = CG(doc_comment_len);
 +		RESET_DOC_COMMENT();
 +	}
++	
++	/* Initialize member default value counter */
++	CG(max_enum)= 0;
 +}
 +
 +void zend_do_end_enum_declaration(TSRMLS_D)
@@ -648,55 +650,39 @@ diff -u -r1.613 zend_compile.c
 +
 +void zend_do_add_enum_member(znode *name, znode *value TSRMLS_DC)
 +{
-+	zval *property;
-+	long last;
-+	int count;
-+	zval **lastdata;
++	zval *property, **lastdata;
++	HashPosition pos;
 +	
 +	ALLOC_ZVAL(property);
 +	
-+	count= zend_hash_num_elements(&CG(active_class_entry)->constants_table);
-+
 +	if (value) {
 +		*property = value->u.constant;
 +		
-+		/* For user-supplied enumeration values, we have to make sure, no values will be
-+		 * supplied twice. To simplify implementing this constraint, check that every value
-+		 * added is bigger than the last 
-+		 */
-+		if (count > 0) {
-+		
-+			/* Retrieve the value of the last element */
-+			if (FAILURE == zend_hash_get_current_data(&CG(active_class_entry)->constants_table, (void **)&lastdata)) {
-+				zend_error(E_COMPILE_ERROR, "Could not get constants data");
-+			}
-+			
-+			if (property->value.lval <= (*lastdata)->value.lval) {
-+				zend_error(E_COMPILE_ERROR, "You must add enum values in ascending order");
-+			}
++		/* Only long and string may be added, so cast if necessary */
++		if (property->type != IS_LONG && property->type != IS_STRING) {
++			convert_to_long(property);
 +		}
++		
++		/* Check for duplicates */
++        if (!(property->type == IS_LONG && CG(max_enum) < Z_LVAL_P(property))) {
++		    zend_hash_internal_pointer_reset_ex(&CG(active_class_entry)->constants_table, &pos);
++		    while (zend_hash_get_current_data_ex(&CG(active_class_entry)->constants_table, (void **)&lastdata, &pos) == SUCCESS) {
++			    if (
++				    ((*lastdata)->type == IS_LONG && property->type == IS_LONG && Z_LVAL_PP(lastdata) == Z_LVAL_P(property)) ||
++				    ((*lastdata)->type == IS_STRING && property->type == IS_STRING && 0 == zend_binary_zval_strcmp(property, *lastdata))
++			    ) {
++				    zend_error(E_COMPILE_ERROR, "Reusing already defined value for enumeration member %s::%s", CG(active_class_entry)->name, name->u.constant.value.str.val);
++			    }
++
++			    zend_hash_move_forward_ex(&CG(active_class_entry)->constants_table, &pos);
++		    }
++        }
 +	} else {
 +	
-+		/* Value wasn't given explicitly, so create one */
-+		if (0 == count) {
-+		
-+			/* Default values start at 1 */
-+			last= 0;
-+		} else {
-+			
-+			/* Retrieve the value of the last element */
-+			if (FAILURE == zend_hash_get_current_data(&CG(active_class_entry)->constants_table, (void **)&lastdata)) {
-+				zend_error(E_COMPILE_ERROR, "Could not get constants data");
-+			}
-+			
-+			last= (*lastdata)->value.lval;
-+		}
-+		
++		/* Retrieve the value of the last numeric element */
 +		INIT_PZVAL(property);
-+		ZVAL_LONG(property, ++last);
++		ZVAL_LONG(property, CG(max_enum) + 1);
 +	}
-+	
-+	convert_to_long(property);
 +	
 +	/* Register the constant in the class */
 +	if (zend_hash_add(&CG(active_class_entry)->constants_table, name->u.constant.value.str.val, name->u.constant.value.str.len+1, &property, sizeof(zval *), NULL)==FAILURE) {
@@ -704,11 +690,41 @@ diff -u -r1.613 zend_compile.c
 +		zend_error(E_COMPILE_ERROR, "Cannot redefine enum constant %s::%s", CG(active_class_entry)->name, name->u.constant.value.str.val);
 +	}
 +	
-+	/* Upon insertion of the first element, the internal pointer is set to that element, already. */
-+	/* For following elements, we have to move it ourselves. */
-+	if (0 != count) { zend_hash_move_forward(&CG(active_class_entry)->constants_table); }
++	/* Increment max_enum if it was exceeded */
++	if (property->type == IS_LONG && CG(max_enum) < Z_LVAL_P(property)) { CG(max_enum)= Z_LVAL_P(property); }
 +	
 +	FREE_PNODE(name);
++}
++
++void zend_do_begin_enum_function_declaration(znode *enum_token, znode *function_token, znode *function_name, int is_method, int return_reference, znode *fn_flags_znode TSRMLS_DC)
++{
++#define _SIZEOF_MAGIC sizeof("__") - 1
++	char *tmp = estrdup(function_name->u.constant.value.str.val);
++	int length = function_name->u.constant.value.str.len + enum_token->u.constant.value.str.len + _SIZEOF_MAGIC;
++
++	/* Change method name from $name to "__$name$enum". E.g.
++	 * 
++	 * enum Op {
++	 *    plus { function evaluate($x, $y) { return $x + $y; } }
++	 * }
++	 * 
++	 * will result in a class Op with a method __evaluateplus()
++	 */
++	function_name->u.constant.value.str.val= (char*) erealloc(function_name->u.constant.value.str.val, length + 1);
++	memcpy(function_name->u.constant.value.str.val, "__", _SIZEOF_MAGIC);
++	memcpy(function_name->u.constant.value.str.val+ _SIZEOF_MAGIC, tmp, function_name->u.constant.value.str.len);
++	memcpy(function_name->u.constant.value.str.val+ _SIZEOF_MAGIC+ function_name->u.constant.value.str.len, enum_token->u.constant.value.str.val, enum_token->u.constant.value.str.len);
++	function_name->u.constant.value.str.val[length]= '\0';
++	function_name->u.constant.value.str.len= length;
++
++	efree(tmp);
++
++	/* Add member */
++	zend_do_add_enum_member(enum_token, NULL TSRMLS_CC);
++
++	/* Add private method */
++	fn_flags_znode->u.constant.value.lval= (fn_flags_znode->u.constant.value.lval | ZEND_ACC_PROTECTED) & ~ZEND_ACC_PUBLIC;
++	zend_do_begin_function_declaration(function_token, function_name, is_method, return_reference, fn_flags_znode TSRMLS_CC);
 +}
 +
  ZEND_API char* zend_get_compiled_variable_name(zend_op_array *op_array, zend_uint var, int* name_len)
@@ -720,16 +736,7 @@ RCS file: /repository/ZendEngine2/zend_compile.h,v
 retrieving revision 1.302
 diff -u -r1.302 zend_compile.h
 --- Zend/zend_compile.h	11 Feb 2005 22:26:45 -0000	1.302
-+++ Zend/zend_compile.h	6 Mar 2005 15:06:01 -0000
-@@ -17,7 +17,7 @@
-    +----------------------------------------------------------------------+
- */
- 
--/* $Id$ */
-+/* $Id$ */
- 
- #ifndef ZEND_COMPILE_H
- #define ZEND_COMPILE_H
++++ Zend/zend_compile.h	11 Jun 2005 23:01:51 -0000
 @@ -45,6 +45,23 @@
          CG(doc_comment) = NULL;  \
          CG(doc_comment_len) = 0; \
@@ -826,16 +833,7 @@ RCS file: /repository/ZendEngine2/zend_default_classes.c,v
 retrieving revision 1.58
 diff -u -r1.58 zend_default_classes.c
 --- Zend/zend_default_classes.c	12 Feb 2004 10:38:14 -0000	1.58
-+++ Zend/zend_default_classes.c	6 Mar 2005 15:06:01 -0000
-@@ -17,7 +17,7 @@
-    +----------------------------------------------------------------------+
- */
- 
--/* $Id$ */
-+/* $Id$ */
- 
- #include "zend.h"
- #include "zend_API.h"
++++ Zend/zend_default_classes.c	11 Jun 2005 23:01:51 -0000
 @@ -25,6 +25,7 @@
  #include "zend_builtin_functions.h"
  #include "zend_interfaces.h"
@@ -857,8 +855,8 @@ Index: Zend/zend_enumerations.c
 RCS file: Zend/zend_enumerations.c
 diff -N Zend/zend_enumerations.c
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ Zend/zend_enumerations.c	6 Mar 2005 15:06:01 -0000
-@@ -0,0 +1,129 @@
++++ Zend/zend_enumerations.c	11 Jun 2005 23:01:51 -0000
+@@ -0,0 +1,262 @@
 +/*
 +   +----------------------------------------------------------------------+
 +   | Zend Engine                                                          |
@@ -900,7 +898,7 @@ diff -N Zend/zend_enumerations.c
 +{
 +
 +	/* Should never be executable */
-+	zend_throw_exception(NULL, "Cannot clone object using __clone()", 0 TSRMLS_CC);
++	zend_throw_exception(NULL, "Cannot construct object", 0 TSRMLS_CC);
 +}
 +
 +ZEND_METHOD(enumeration, size)
@@ -915,11 +913,13 @@ diff -N Zend/zend_enumerations.c
 +	char *name;
 +	uint length;
 +	ulong dummy;
++	long enum_pos;
 +	
 +	array_init(return_value);
 +	
 +	/* Go through class constants and add values to the return array */
 +	zend_hash_internal_pointer_reset_ex(&EG(scope)->constants_table, &pos);
++	enum_pos= 0;
 +	while (zend_hash_get_current_data_ex(&EG(scope)->constants_table, (void **)&ordinal, &pos) == SUCCESS) {
 +		zend_hash_get_current_key_ex(&EG(scope)->constants_table, &name, &length, &dummy, 0, &pos);
 +
@@ -928,58 +928,189 @@ diff -N Zend/zend_enumerations.c
 +		if (object_init_ex(container, EG(scope)) != SUCCESS) {
 +			zend_error(E_CORE_ERROR, "Cannot create object in Enumeration::values()");
 +		}
-+		add_property_stringl(container, "name", name, length, 1);
-+		add_property_long(container, "ordinal", (*ordinal)->value.lval);
++		add_property_stringl(container, "name", name, length - 1, 1);
++		add_property_long(container, "ordinal", enum_pos);
++		add_property_zval(container, "value", *ordinal);
 +
 +		/* Add to result array and proceed to next element */
 +		zend_hash_next_index_insert(Z_ARRVAL_P(return_value), &container, sizeof(zval *), NULL);
 +		zend_hash_move_forward_ex(&EG(scope)->constants_table, &pos);
++		enum_pos++;
 +	}
 +}
 +
 +ZEND_METHOD(enumeration, valueOf) {
-+	long needle;
-+	char *name;
++	long needle, needle_len;
++	char *name, *needle_str;
++	zend_uchar searchtype;
 +	uint length;
 +	ulong dummy;
 +	HashPosition pos;
-+	zval **ordinal;
++	zval **data;
++	long enum_pos;
 +	
 +	if (ZEND_NUM_ARGS() != 1)
 +		WRONG_PARAM_COUNT;
 +	
-+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &needle) == FAILURE) {
-+		zend_error(E_WARNING, "valueOf() expects integer.");
-+		return;
++	if (zend_parse_parameters_ex(ZEND_PARSE_PARAMS_QUIET, ZEND_NUM_ARGS() TSRMLS_CC, "l", &needle) == SUCCESS) {
++		searchtype= IS_LONG;
++	} else if (zend_parse_parameters_ex(ZEND_PARSE_PARAMS_QUIET, ZEND_NUM_ARGS() TSRMLS_CC, "s", &needle_str, &needle_len) == SUCCESS) {
++		searchtype= IS_STRING;
++	} else {
++		zend_error(E_WARNING, "valueOf() expects either an integer or a string");
++		RETURN_FALSE;
 +	}
 +	
 +	/* Iterate over constants until the searched needle is found */
 +	zend_hash_internal_pointer_reset_ex(&EG(scope)->constants_table, &pos);
-+	while (zend_hash_get_current_data_ex(&EG(scope)->constants_table, (void **)&ordinal, &pos) == SUCCESS) {
++	enum_pos= 0;
++	while (zend_hash_get_current_data_ex(&EG(scope)->constants_table, (void **)&data, &pos) == SUCCESS) {
 +	
 +		/* Compare current value with searched one. If they equal, it's the right one, because enums are unique */
-+		if ((*ordinal)->value.lval == needle) {
++		if (
++			(searchtype == IS_LONG && Z_TYPE_PP(data) == IS_LONG && Z_LVAL_PP(data) == needle) ||
++			(searchtype == IS_STRING && Z_TYPE_PP(data) == IS_STRING && memcmp(needle_str, Z_STRVAL_PP(data), needle_len) == 0)
++		) {
 +			zend_hash_get_current_key_ex(&EG(scope)->constants_table, &name, &length, &dummy, 0, &pos);
 +			
 +			object_init_ex(return_value, EG(scope));
-+			add_property_stringl(return_value, "name", name, length, 1);
-+			add_property_long(return_value, "ordinal", (*ordinal)->value.lval);
++			add_property_stringl(return_value, "name", name, length - 1, 1);
++			add_property_long(return_value, "ordinal", enum_pos);
++			add_property_zval(return_value, "value", *data);
 +			return;
 +		}
 +		
 +		zend_hash_move_forward_ex(&EG(scope)->constants_table, &pos);
++		enum_pos++;
 +	}
 +	
 +	zend_error(E_WARNING, "Value %s::%ld not bound", EG(scope)->name, needle);
 +	RETURN_FALSE;
 +}
 +
++ZEND_METHOD(enumeration, valueAt) {
++	HashPosition pos;
++	long rpos, cpos, dummy;
++	uint length;
++	zval **data;
++	char *name;
++	
++	if (ZEND_NUM_ARGS() != 1)
++		WRONG_PARAM_COUNT;
++	
++	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &rpos) == FAILURE) {
++		zend_error(E_WARNING, "valueAt() expects integer");
++		return;
++	}
++	
++	zend_hash_internal_pointer_reset_ex(&EG(scope)->constants_table, &pos);
++	cpos= 0;
++	while (zend_hash_get_current_data_ex(&EG(scope)->constants_table, (void **)&data, &pos) == SUCCESS) {
++	  if (cpos == rpos) {
++	  	zend_hash_get_current_key_ex(&EG(scope)->constants_table, &name, &length, &dummy, 0, &pos);
++		
++	  	object_init_ex(return_value, EG(scope));
++		add_property_stringl(return_value, "name", name, length - 1, 1);
++		add_property_long(return_value, "ordinal", cpos);
++		add_property_zval(return_value, "value", *data);
++
++		return;
++	  }
++	  
++	  zend_hash_move_forward_ex(&EG(scope)->constants_table, &pos);
++	  cpos++;
++	}
++	
++	zend_error(E_WARNING, "No %ldth element in enumeration %s", rpos, EG(scope)->name);
++	RETURN_FALSE;
++}
++
++ZEND_METHOD(enumeration, __call) {
++#define _SIZEOF_MAGIC sizeof("__") - 1
++	char *fname, *fcallname;
++	long fname_len, fcallname_len;
++	zval *arguments;
++	zval **property, ***func_params, *retval_ptr;
++	zval *fbc;
++	zend_class_entry *ce;
++	long count, current= 0;
++	HashTable *arg_ht;
++	
++	if (ZEND_NUM_ARGS() != 2) 
++		WRONG_PARAM_COUNT;
++	
++	if (!this_ptr) {
++		zend_error(E_ERROR, "__call() cannot be called statically");
++		return;
++	}
++	
++	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sa", &fname, &fname_len, &arguments) == FAILURE) {
++		zend_error(E_WARNING, "__call() needs two parameters");
++		return;
++	}
++	
++	/* Determine function to be called */
++	if (zend_hash_find(Z_OBJPROP_P(getThis()), "name", sizeof("name"), (void **)&property) == FAILURE) {
++		zend_error(E_CORE_ERROR, "Could not get name property of enumeration");
++	}
++	
++	/* Fetch object's class */
++	ce= zend_get_class_entry(getThis() TSRMLS_CC);
++	
++	/* Build masked function name, see zend_compile.c: zend_do_begin_enum_function_declaration() */
++	fcallname_len= Z_STRLEN_PP(property) + strlen(fname) + _SIZEOF_MAGIC + 1;
++	fcallname= safe_emalloc(sizeof (char *), fcallname_len, 0);
++	memcpy(fcallname, "__", sizeof("__"));
++	memcpy(fcallname + _SIZEOF_MAGIC, fname, strlen(fname));
++	memcpy(fcallname + _SIZEOF_MAGIC + strlen(fname), Z_STRVAL_PP(property), Z_STRLEN_PP(property));
++	(*(fcallname + _SIZEOF_MAGIC + strlen(fname) + Z_STRLEN_PP(property)))= '\0';
++
++	/* Build function argument list */
++	arg_ht= Z_ARRVAL_P(arguments);
++	count= zend_hash_num_elements(arg_ht);
++	
++	if (count) {
++		func_params= safe_emalloc(sizeof(zval **), count, 0);
++		
++		for (
++			zend_hash_internal_pointer_reset(arg_ht); 
++			zend_hash_get_current_data(arg_ht, (void **)&func_params[current]) == SUCCESS;
++			zend_hash_move_forward(arg_ht)
++		) {
++			current++;
++		}
++	} else {
++		func_params= NULL;
++	}
++	
++	MAKE_STD_ZVAL(fbc);
++	ZVAL_STRINGL(fbc, fcallname, fcallname_len - 1, 0);
++	
++	if (call_user_function_ex(&ce->function_table, &getThis(), fbc, &retval_ptr, count, func_params, 0, NULL TSRMLS_CC) == SUCCESS) {
++		if (retval_ptr) {
++			COPY_PZVAL_TO_ZVAL(*return_value, retval_ptr);
++		}
++	}
++	
++	/* Cleanup */
++	if (func_params) { efree(func_params); }
++	efree(fcallname);
++	efree(fbc);
++}
++
++static ZEND_BEGIN_ARG_INFO_EX(arginfo_enumeration__call, 0, 0, 2)
++	ZEND_ARG_INFO(0, fname)
++	ZEND_ARG_INFO(0, arguments)
++ZEND_END_ARG_INFO();
++
 +static zend_function_entry default_enumeration_functions[]= {
 +	ZEND_ME(enumeration, __clone, NULL, ZEND_ACC_PRIVATE|ZEND_ACC_FINAL)
 +	ZEND_ME(enumeration, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
++	ZEND_ME(enumeration, __call, arginfo_enumeration__call, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL) 
 +	ZEND_ME(enumeration, size, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
 +	ZEND_ME(enumeration, values, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
 +	ZEND_ME(enumeration, valueOf, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
++	ZEND_ME(enumeration, valueAt, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
 +};
 +
 +void zend_register_default_enumeration(TSRMLS_D)
@@ -993,7 +1124,7 @@ Index: Zend/zend_enumerations.h
 RCS file: Zend/zend_enumerations.h
 diff -N Zend/zend_enumerations.h
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ Zend/zend_enumerations.h	6 Mar 2005 15:06:01 -0000
++++ Zend/zend_enumerations.h	11 Jun 2005 23:01:51 -0000
 @@ -0,0 +1,39 @@
 +/*
 +   +----------------------------------------------------------------------+
@@ -1040,7 +1171,7 @@ RCS file: /repository/ZendEngine2/zend_exceptions.c,v
 retrieving revision 1.75
 diff -u -r1.75 zend_exceptions.c
 --- Zend/zend_exceptions.c	7 Dec 2004 07:46:12 -0000	1.75
-+++ Zend/zend_exceptions.c	6 Mar 2005 15:06:02 -0000
++++ Zend/zend_exceptions.c	11 Jun 2005 23:01:51 -0000
 @@ -28,6 +28,7 @@
  #include "zend_interfaces.h"
  #include "zend_exceptions.h"
@@ -1102,7 +1233,7 @@ RCS file: /repository/ZendEngine2/zend_globals.h,v
 retrieving revision 1.140
 diff -u -r1.140 zend_globals.h
 --- Zend/zend_globals.h	3 Nov 2004 23:13:32 -0000	1.140
-+++ Zend/zend_globals.h	6 Mar 2005 15:06:02 -0000
++++ Zend/zend_globals.h	11 Jun 2005 23:01:52 -0000
 @@ -73,8 +73,11 @@
  	zend_stack foreach_copy_stack;
  	zend_stack object_stack;
@@ -1115,22 +1246,22 @@ diff -u -r1.140 zend_globals.h
  
  	/* variables for list() compilation */
  	zend_llist list_llist;
+@@ -131,6 +134,8 @@
+ 
+ 	char *doc_comment;
+ 	zend_uint doc_comment_len;
++    
++	zend_uint max_enum;
+ 
+ #ifdef ZEND_MULTIBYTE
+ 	zend_encoding **script_encoding_list;
 Index: Zend/zend_language_parser.y
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_language_parser.y,v
 retrieving revision 1.155
 diff -u -r1.155 zend_language_parser.y
 --- Zend/zend_language_parser.y	11 Feb 2005 22:26:45 -0000	1.155
-+++ Zend/zend_language_parser.y	6 Mar 2005 15:06:02 -0000
-@@ -18,7 +18,7 @@
-    +----------------------------------------------------------------------+
- */
- 
--/* $Id$ */
-+/* $Id$ */
- 
- /* 
-  * LALR shift/reduce conflicts and how they are resolved:
++++ Zend/zend_language_parser.y	11 Jun 2005 23:01:54 -0000
 @@ -63,7 +63,7 @@
  %left '^'
  %left '&'
@@ -1292,7 +1423,7 @@ diff -u -r1.155 zend_language_parser.y
  
  class_entry_type:
  		T_CLASS			{  $$.u.constant.value.lval = 0; }
-@@ -326,6 +389,27 @@
+@@ -326,6 +389,31 @@
  	|	interface_list ',' fully_qualified_class_name { zend_do_implements_interface(&$3 TSRMLS_CC); }
  ;
  
@@ -1315,12 +1446,16 @@ diff -u -r1.155 zend_language_parser.y
 +enum_declaration_list_member:
 +		T_STRING						{ zend_do_add_enum_member(&$1, NULL TSRMLS_CC); }
 +	|	T_STRING '(' static_scalar ')'	{ zend_do_add_enum_member(&$1, &$3 TSRMLS_CC);  }
++	|	T_STRING '{' 
++			method_modifiers T_FUNCTION { $4.u.opline_num = CG(zend_lineno); } is_reference T_STRING { zend_do_begin_enum_function_declaration(&$1, &$4, &$7, 1, $6.op_type, &$3 TSRMLS_CC); } '(' 
++			parameter_list ')' throws method_body { zend_do_abstract_method(&$7, &$3, &$13 TSRMLS_CC); zend_do_end_function_declaration(&$4 TSRMLS_CC); }
++		'}'
 +;
 +
  foreach_optional_arg:
  		/* empty */						{ $$.op_type = IS_UNUSED; }
  	|	T_DOUBLE_ARROW foreach_variable	{ $$ = $2; }
-@@ -434,6 +518,7 @@
+@@ -434,6 +522,7 @@
  optional_class_type:
  		/* empty */		{ $$.op_type = IS_UNUSED; }
  	|	T_STRING		{ $$ = $1; }
@@ -1328,7 +1463,7 @@ diff -u -r1.155 zend_language_parser.y
  ;
  
  
-@@ -484,9 +569,64 @@
+@@ -484,9 +573,64 @@
  		variable_modifiers { CG(access_type) = $1.u.constant.value.lval; } class_variable_declaration ';'
  	|	class_constant_declaration ';'
  	|	method_modifiers T_FUNCTION { $2.u.opline_num = CG(zend_lineno); } is_reference T_STRING { zend_do_begin_function_declaration(&$2, &$5, 1, $4.op_type, &$1 TSRMLS_CC); } '(' 
@@ -1377,7 +1512,7 @@ diff -u -r1.155 zend_language_parser.y
 +
 +annotation_define:
 +		T_STRING { zend_do_annotation_define(&$1, NULL TSRMLS_CC); }
-+	|	T_STRING '=' common_scalar  { zend_do_annotation_define(&$1, &$3 TSRMLS_CC); }
++	|	T_STRING '=' static_scalar  { zend_do_annotation_define(&$1, &$3 TSRMLS_CC); }
 +;
 +
 +operator_token:
@@ -1394,7 +1529,7 @@ diff -u -r1.155 zend_language_parser.y
  
  method_body:
  		';' /* abstract method */		{ $$.u.constant.value.lval = ZEND_ACC_ABSTRACT; }
-@@ -595,6 +735,7 @@
+@@ -595,6 +739,7 @@
  	|	expr T_IS_SMALLER_OR_EQUAL expr { zend_do_binary_op(ZEND_IS_SMALLER_OR_EQUAL, &$$, &$1, &$3 TSRMLS_CC); }
  	|	expr '>' expr 					{ zend_do_binary_op(ZEND_IS_SMALLER, &$$, &$3, &$1 TSRMLS_CC); }
  	|	expr T_IS_GREATER_OR_EQUAL expr { zend_do_binary_op(ZEND_IS_SMALLER_OR_EQUAL, &$$, &$3, &$1 TSRMLS_CC); }
@@ -1402,7 +1537,7 @@ diff -u -r1.155 zend_language_parser.y
  	|	expr T_INSTANCEOF class_name_reference { zend_do_instanceof(&$$, &$1, &$3, 0 TSRMLS_CC); }
  	|	'(' expr ')' 	{ $$ = $2; }
  	|	expr '?' { zend_do_begin_qm_op(&$1, &$2 TSRMLS_CC); }
-@@ -633,10 +774,12 @@
+@@ -633,10 +778,12 @@
  
  fully_qualified_class_name:
  		T_STRING { zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
@@ -1415,7 +1550,7 @@ diff -u -r1.155 zend_language_parser.y
  	|	dynamic_class_name_reference	{ zend_do_end_variable_parse(BP_VAR_R, 0 TSRMLS_CC); zend_do_fetch_class(&$$, &$1 TSRMLS_CC); }
  ;
  
-@@ -667,8 +810,9 @@
+@@ -667,8 +814,9 @@
  
  
  ctor_arguments:
@@ -1430,19 +1565,10 @@ diff -u -r1.155 zend_language_parser.y
 Index: Zend/zend_language_scanner.l
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_language_scanner.l,v
-retrieving revision 1.123
-diff -u -r1.123 zend_language_scanner.l
---- Zend/zend_language_scanner.l	1 Mar 2005 02:17:41 -0000	1.123
-+++ Zend/zend_language_scanner.l	6 Mar 2005 15:06:03 -0000
-@@ -19,7 +19,7 @@
-    +----------------------------------------------------------------------+
- */
- 
--/* $Id$ */
-+/* $Id$ */
- 
- #define yyleng SCNG(yy_leng)
- #define yytext SCNG(yy_text)
+retrieving revision 1.124
+diff -u -r1.124 zend_language_scanner.l
+--- Zend/zend_language_scanner.l	7 Mar 2005 16:48:49 -0000	1.124
++++ Zend/zend_language_scanner.l	11 Jun 2005 23:01:54 -0000
 @@ -810,6 +810,10 @@
  	return T_THROW;
  }
@@ -1522,11 +1648,11 @@ diff -u -r1.123 zend_language_scanner.l
 Index: Zend/zend_object_handlers.c
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_object_handlers.c,v
-retrieving revision 1.110
-diff -u -r1.110 zend_object_handlers.c
---- Zend/zend_object_handlers.c	27 Feb 2005 22:22:26 -0000	1.110
-+++ Zend/zend_object_handlers.c	6 Mar 2005 15:06:03 -0000
-@@ -494,7 +494,7 @@
+retrieving revision 1.113
+diff -u -r1.113 zend_object_handlers.c
+--- Zend/zend_object_handlers.c	19 Mar 2005 15:32:18 -0000	1.113
++++ Zend/zend_object_handlers.c	11 Jun 2005 23:01:55 -0000
+@@ -492,7 +492,7 @@
  	zend_internal_function *func = (zend_internal_function *)EG(function_state_ptr)->function;
  	zval *method_name_ptr, *method_args_ptr;
  	zval *method_result_ptr = NULL;
@@ -1535,7 +1661,7 @@ diff -u -r1.110 zend_object_handlers.c
  	
  	ALLOC_ZVAL(method_args_ptr);
  	INIT_PZVAL(method_args_ptr);
-@@ -513,9 +513,8 @@
+@@ -511,9 +511,8 @@
  	/* __call handler is called with two arguments:
  	   method name
  	   array of method parameters
@@ -1545,8 +1671,8 @@ diff -u -r1.110 zend_object_handlers.c
 +	zend_call_method_with_2_params(this_ptr ? &this_ptr : NULL, ce, &ce->__call, ZEND_CALL_FUNC_NAME, &method_result_ptr, method_name_ptr, method_args_ptr);
  
  	if (method_result_ptr) {
- 		*return_value = *method_result_ptr;
-@@ -619,6 +618,8 @@
+ 		RETVAL_ZVAL(method_result_ptr, 0, 1);
+@@ -615,6 +614,8 @@
  			call_user_call->handler = zend_std_call_user_call;
  			call_user_call->arg_info = NULL;
  			call_user_call->num_args = 0;
@@ -1555,7 +1681,7 @@ diff -u -r1.110 zend_object_handlers.c
  			call_user_call->scope = zobj->ce;
  			call_user_call->fn_flags = 0;
  			call_user_call->function_name = estrndup(method_name, method_len);
-@@ -671,12 +672,22 @@
+@@ -667,12 +668,22 @@
  	zend_function *fbc;
  
  	if (zend_hash_find(&ce->function_table, function_name_strval, function_name_strlen+1, (void **) &fbc)==FAILURE) {
@@ -1588,7 +1714,7 @@ RCS file: /repository/ZendEngine2/zend_opcode.c,v
 retrieving revision 1.109
 diff -u -r1.109 zend_opcode.c
 --- Zend/zend_opcode.c	4 Oct 2004 19:54:34 -0000	1.109
-+++ Zend/zend_opcode.c	6 Mar 2005 15:06:04 -0000
++++ Zend/zend_opcode.c	11 Jun 2005 23:01:55 -0000
 @@ -78,6 +78,9 @@
  	op_array->doc_comment = NULL;
  	op_array->doc_comment_len = 0;
@@ -1676,7 +1802,7 @@ RCS file: /repository/ZendEngine2/zend_operators.c,v
 retrieving revision 1.204
 diff -u -r1.204 zend_operators.c
 --- Zend/zend_operators.c	13 Dec 2004 09:09:06 -0000	1.204
-+++ Zend/zend_operators.c	6 Mar 2005 15:06:04 -0000
++++ Zend/zend_operators.c	11 Jun 2005 23:01:56 -0000
 @@ -106,6 +106,55 @@
  	return result;
  }
@@ -1861,11 +1987,48 @@ diff -u -r1.204 zend_operators.c
 Index: Zend/zend_reflection_api.c
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_reflection_api.c,v
-retrieving revision 1.149
-diff -u -r1.149 zend_reflection_api.c
---- Zend/zend_reflection_api.c	27 Feb 2005 22:21:17 -0000	1.149
-+++ Zend/zend_reflection_api.c	6 Mar 2005 15:06:06 -0000
-@@ -631,7 +631,18 @@
+retrieving revision 1.150
+diff -u -r1.150 zend_reflection_api.c
+--- Zend/zend_reflection_api.c	6 Mar 2005 22:15:35 -0000	1.150
++++ Zend/zend_reflection_api.c	11 Jun 2005 23:01:57 -0000
+@@ -70,6 +70,14 @@
+ 	}                                                                                                       \
+ 	target = intern->ptr;                                                                                   \
+ 
++#define UPDATE_ANNOTATION_CONSTANT(value, resolve_scope)                                                    \
++	if (Z_TYPE_PP(value) == IS_CONSTANT_ARRAY || Z_TYPE_PP(value) == IS_CONSTANT) {                         \
++		zend_class_entry *tmpscope = EG(scope);                                                             \
++		EG(scope) = resolve_scope;                                                                          \
++		zval_update_constant(value, (void *) 1 TSRMLS_CC);                                                  \
++		EG(scope) = tmpscope;                                                                               \
++	}
++
+ /* {{{ Smart string functions */
+ typedef struct _string {
+ 	char *string;
+@@ -248,6 +256,21 @@
+ 	return object;
+ }
+ 
++static int _update_constant_recursive(zval **pp, void *arg TSRMLS_DC)
++{
++	switch (Z_TYPE_PP(pp)) {
++		case IS_CONSTANT_ARRAY:
++		case IS_CONSTANT:
++			zval_update_constant(pp, arg TSRMLS_CC);
++			break;
++
++		case IS_ARRAY:
++			zend_hash_apply_with_argument(Z_ARRVAL_PP(pp), (apply_func_arg_t) _update_constant_recursive, arg TSRMLS_CC);
++			break;
++	}
++	return 0;
++}
++
+ static void _const_string(string *str, char *name, zval *value, char *indent TSRMLS_DC);
+ static void _function_string(string *str, zend_function *fptr, char *indent TSRMLS_DC);
+ static void _property_string(string *str, zend_property_info *prop, char *prop_name, char* indent TSRMLS_DC);
+@@ -631,7 +654,18 @@
  	if (fptr->type == ZEND_USER_FUNCTION && fptr->op_array.return_reference) {
  		string_printf(str, "&");
  	}
@@ -1885,7 +2048,7 @@ diff -u -r1.149 zend_reflection_api.c
  	/* The information where a function is declared is only available for user classes */
  	if (fptr->type == ZEND_USER_FUNCTION) {
  		string_printf(str, "%s  @@ %s %d - %d\n", indent, 
-@@ -1500,7 +1511,7 @@
+@@ -1500,7 +1534,7 @@
  }
  /* }}} */
  
@@ -1894,7 +2057,7 @@ diff -u -r1.149 zend_reflection_api.c
     Returns an array of parameter objects for this function */
  ZEND_METHOD(reflection_function, getParameters)
  {
-@@ -1527,6 +1538,40 @@
+@@ -1527,6 +1561,40 @@
  }
  /* }}} */
  
@@ -1935,7 +2098,7 @@ diff -u -r1.149 zend_reflection_api.c
  /* {{{ proto public static mixed ReflectionParameter::export(mixed function, mixed parameter [, bool return]) throws ReflectionException
     Exports a reflection object. Returns the output if TRUE is specified for return, printing it otherwise. */
  ZEND_METHOD(reflection_parameter, export)
-@@ -2222,6 +2267,90 @@
+@@ -2222,6 +2290,98 @@
  }
  /* }}} */
  
@@ -1992,13 +2155,15 @@ diff -u -r1.149 zend_reflection_api.c
 +
 +	if (define) {
 +		zval **val = NULL;
-+		
++
 +		if (!(Z_TYPE_PP(value) == IS_ARRAY && zend_hash_find(HASH_OF(*value), define, define_len + 1, (void **) &val) == SUCCESS)) {
 +			zend_throw_exception_ex(reflection_exception_ptr, 0 TSRMLS_CC, "Annotation %s['%s'] does not exist", name, define);
 +			return;
 +		}
++		UPDATE_ANNOTATION_CONSTANT(val, mptr->common.scope);
 +		*return_value = **val;
 +	} else {		
++		UPDATE_ANNOTATION_CONSTANT(value, mptr->common.scope);
 +		*return_value = **value;
 +	}
 +	zval_copy_ctor(return_value);
@@ -2018,6 +2183,12 @@ diff -u -r1.149 zend_reflection_api.c
 +
 +	array_init(return_value);
 +	if (mptr->common.annotations) {
++		zend_class_entry *scope = EG(scope);
++
++		EG(scope) = mptr->common.scope;
++		zend_hash_apply_with_argument(mptr->common.annotations, (apply_func_arg_t) _update_constant_recursive, (void *) 1 TSRMLS_CC);
++		EG(scope) = scope;
++
 +		zend_hash_copy(Z_ARRVAL_P(return_value), mptr->common.annotations, (copy_ctor_func_t) zval_add_ref, (void *) &tmp_copy, sizeof(zval *));
 +	}
 +}
@@ -2026,7 +2197,7 @@ diff -u -r1.149 zend_reflection_api.c
  /* {{{ proto public static mixed ReflectionClass::export(mixed argument [, bool return]) throws ReflectionException
     Exports a reflection object. Returns the output if TRUE is specified for return, printing it otherwise. */
  ZEND_METHOD(reflection_class, export)
-@@ -2549,14 +2678,14 @@
+@@ -2549,14 +2709,14 @@
  }
  /* }}} */
  
@@ -2044,7 +2215,7 @@ diff -u -r1.149 zend_reflection_api.c
  
  	METHOD_NOTSTATIC;
  	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
-@@ -2565,13 +2694,10 @@
+@@ -2565,13 +2725,10 @@
  
  	GET_REFLECTION_OBJECT_PTR(ce);
  	lc_name = zend_str_tolower_dup(name, name_len);
@@ -2062,7 +2233,7 @@ diff -u -r1.149 zend_reflection_api.c
  }
  /* }}} */
  
-@@ -3109,6 +3235,107 @@
+@@ -3109,6 +3266,118 @@
  }
  /* }}} */
  
@@ -2142,10 +2313,13 @@ diff -u -r1.149 zend_reflection_api.c
 +			zend_throw_exception_ex(reflection_exception_ptr, 0 TSRMLS_CC, "Annotation %s['%s'] does not exist", name, define);
 +			return;
 +		}
++		UPDATE_ANNOTATION_CONSTANT(val, ce);
 +		*return_value = **val;
 +	} else {		
++		UPDATE_ANNOTATION_CONSTANT(value, ce);
 +		*return_value = **value;
 +	}
++
 +	zval_copy_ctor(return_value);
 +}
 +/* }}} */
@@ -2162,7 +2336,15 @@ diff -u -r1.149 zend_reflection_api.c
 +	GET_REFLECTION_OBJECT_PTR(ce);
 +
 +	array_init(return_value);
-+	zend_hash_copy(Z_ARRVAL_P(return_value), ce->annotations, (copy_ctor_func_t) zval_add_ref, (void *) &tmp_copy, sizeof(zval *));
++	if (ce->annotations) {
++		zend_class_entry *scope = EG(scope);
++
++		EG(scope) = ce;
++		zend_hash_apply_with_argument(ce->annotations, (apply_func_arg_t) _update_constant_recursive, (void *) 1 TSRMLS_CC);
++		EG(scope) = scope;
++
++		zend_hash_copy(Z_ARRVAL_P(return_value), ce->annotations, (copy_ctor_func_t) zval_add_ref, (void *) &tmp_copy, sizeof(zval *));
++	}
 +}
 +/* }}} */
 +
@@ -2170,15 +2352,7 @@ diff -u -r1.149 zend_reflection_api.c
  /* {{{ proto public ReflectionExtension|NULL ReflectionClass::getExtension()
     Returns NULL or the extension the class belongs to */
  ZEND_METHOD(reflection_class, getExtension)
-@@ -3358,6 +3585,7 @@
- 	}
- 
- 	if ((ref->prop->flags & ZEND_ACC_STATIC)) {
-+		zend_update_class_constants(intern->ce TSRMLS_CC);
- 		if (zend_hash_quick_find(intern->ce->static_members, ref->prop->name, ref->prop->name_length + 1, ref->prop->h, (void **) &member) == FAILURE) {
- 			zend_error(E_ERROR, "Internal error: Could not find the property %s", ref->prop->name);
- 			/* Bails out */
-@@ -3725,6 +3953,7 @@
+@@ -3726,6 +3995,7 @@
  	ZEND_ME(reflection_function, invokeArgs, NULL, 0)
  	ZEND_ME(reflection_function, returnsReference, NULL, 0)
  	ZEND_ME(reflection_function, getParameters, NULL, 0)
@@ -2186,7 +2360,7 @@ diff -u -r1.149 zend_reflection_api.c
  	ZEND_ME(reflection_function, getNumberOfParameters, NULL, 0)
  	ZEND_ME(reflection_function, getNumberOfRequiredParameters, NULL, 0)
  	{NULL, NULL, NULL}
-@@ -3746,6 +3975,9 @@
+@@ -3747,6 +4017,9 @@
  	ZEND_ME(reflection_method, invoke, NULL, 0)
  	ZEND_ME(reflection_method, invokeArgs, NULL, 0)
  	ZEND_ME(reflection_method, getDeclaringClass, NULL, 0)
@@ -2196,7 +2370,7 @@ diff -u -r1.149 zend_reflection_api.c
  	{NULL, NULL, NULL}
  };
  
-@@ -3786,9 +4018,13 @@
+@@ -3787,9 +4060,13 @@
  	ZEND_ME(reflection_class, setStaticPropertyValue, NULL, 0)
  	ZEND_ME(reflection_class, getDefaultProperties, NULL, 0)
  	ZEND_ME(reflection_class, isIterateable, NULL, 0)
@@ -2213,10 +2387,10 @@ diff -u -r1.149 zend_reflection_api.c
 Index: Zend/zend_vm_def.h
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_vm_def.h,v
-retrieving revision 1.16
-diff -u -r1.16 zend_vm_def.h
---- Zend/zend_vm_def.h	24 Feb 2005 08:52:10 -0000	1.16
-+++ Zend/zend_vm_def.h	6 Mar 2005 15:06:07 -0000
+retrieving revision 1.18
+diff -u -r1.18 zend_vm_def.h
+--- Zend/zend_vm_def.h	12 Mar 2005 22:39:04 -0000	1.18
++++ Zend/zend_vm_def.h	11 Jun 2005 23:01:58 -0000
 @@ -1655,8 +1655,12 @@
  		EX(fbc) = ce->constructor;
  	}
@@ -2231,7 +2405,7 @@ diff -u -r1.16 zend_vm_def.h
  	if (EX(fbc)->common.fn_flags & ZEND_ACC_STATIC) {
  		EX(object) = NULL;
  	} else {
-@@ -3457,3 +3461,142 @@
+@@ -3460,3 +3464,142 @@
  	ZEND_VM_NEXT_OPCODE();
  }
  
@@ -2377,10 +2551,10 @@ diff -u -r1.16 zend_vm_def.h
 Index: Zend/zend_vm_execute.h
 ===================================================================
 RCS file: /repository/ZendEngine2/zend_vm_execute.h,v
-retrieving revision 1.18
-diff -u -r1.18 zend_vm_execute.h
---- Zend/zend_vm_execute.h	24 Feb 2005 08:52:10 -0000	1.18
-+++ Zend/zend_vm_execute.h	6 Mar 2005 15:06:14 -0000
+retrieving revision 1.20
+diff -u -r1.20 zend_vm_execute.h
+--- Zend/zend_vm_execute.h	12 Mar 2005 22:42:37 -0000	1.20
++++ Zend/zend_vm_execute.h	11 Jun 2005 23:02:03 -0000
 @@ -503,6 +503,132 @@
  	ZEND_VM_NEXT_OPCODE();
  }
@@ -2584,7 +2758,7 @@ diff -u -r1.18 zend_vm_execute.h
  	if (EX(fbc)->common.fn_flags & ZEND_ACC_STATIC) {
  		EX(object) = NULL;
  	} else {
-@@ -2517,6 +2663,19 @@
+@@ -2520,6 +2666,19 @@
  	return zend_init_add_array_helper_SPEC_CONST_CONST(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2604,7 +2778,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_ADD_SPEC_CONST_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -2869,6 +3028,19 @@
+@@ -2872,6 +3031,19 @@
  	return zend_init_add_array_helper_SPEC_CONST_TMP(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2624,7 +2798,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_ADD_SPEC_CONST_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -3221,6 +3393,19 @@
+@@ -3224,6 +3396,19 @@
  	return zend_init_add_array_helper_SPEC_CONST_VAR(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2644,7 +2818,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int zend_init_add_array_helper_SPEC_CONST_UNUSED(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -3659,6 +3844,19 @@
+@@ -3662,6 +3847,19 @@
  	return zend_init_add_array_helper_SPEC_CONST_CV(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2664,7 +2838,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_BW_NOT_SPEC_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -5064,6 +5262,19 @@
+@@ -5070,6 +5268,19 @@
  	return zend_init_add_array_helper_SPEC_TMP_CONST(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2684,7 +2858,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_ADD_SPEC_TMP_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -5508,6 +5719,19 @@
+@@ -5514,6 +5725,19 @@
  	return zend_init_add_array_helper_SPEC_TMP_TMP(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2704,7 +2878,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_ADD_SPEC_TMP_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -5952,6 +6176,19 @@
+@@ -5958,6 +6182,19 @@
  	return zend_init_add_array_helper_SPEC_TMP_VAR(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2724,7 +2898,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int zend_init_add_array_helper_SPEC_TMP_UNUSED(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -6482,6 +6719,19 @@
+@@ -6488,6 +6725,19 @@
  	return zend_init_add_array_helper_SPEC_TMP_CV(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2744,7 +2918,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_BW_NOT_SPEC_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -9114,6 +9364,19 @@
+@@ -9123,6 +9373,19 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_VAR_CONST(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2764,7 +2938,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_ADD_SPEC_VAR_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -10429,6 +10692,19 @@
+@@ -10438,6 +10701,19 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_VAR_TMP(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2784,7 +2958,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_ADD_SPEC_VAR_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -11765,6 +12041,19 @@
+@@ -11774,6 +12050,19 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_VAR_VAR(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2804,7 +2978,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_FETCH_DIM_W_SPEC_VAR_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -13231,6 +13520,19 @@
+@@ -13240,6 +13529,19 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_VAR_CV(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2824,7 +2998,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_CLONE_SPEC_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -19766,6 +20068,19 @@
+@@ -19781,6 +20083,19 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_CV_CONST(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2844,7 +3018,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_ADD_SPEC_CV_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -21081,6 +21396,19 @@
+@@ -21096,6 +21411,19 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_CV_TMP(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2864,7 +3038,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_ADD_SPEC_CV_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -22417,6 +22745,19 @@
+@@ -22432,6 +22760,19 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_CV_VAR(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2884,7 +3058,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_FETCH_DIM_W_SPEC_CV_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_op *opline = EX(opline);
-@@ -23883,6 +24224,19 @@
+@@ -23898,6 +24239,19 @@
  	return zend_isset_isempty_dim_prop_obj_handler_SPEC_CV_CV(1, ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);
  }
  
@@ -2904,7 +3078,7 @@ diff -u -r1.18 zend_vm_execute.h
  static int ZEND_NULL_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
  {
  	zend_error_noreturn(E_ERROR, "Invalid opcode %d/%d/%d.", EX(opline)->opcode, EX(opline)->op1.op_type, EX(opline)->op2.op_type);
-@@ -27643,6 +27997,81 @@
+@@ -27658,6 +28012,81 @@
    	ZEND_HANDLE_EXCEPTION_SPEC_HANDLER,
    	ZEND_HANDLE_EXCEPTION_SPEC_HANDLER,
    	ZEND_HANDLE_EXCEPTION_SPEC_HANDLER,
@@ -2986,7 +3160,7 @@ diff -u -r1.18 zend_vm_execute.h
    	ZEND_NULL_HANDLER
    };
    zend_opcode_handlers = (opcode_handler_t*)labels;
-@@ -29361,8 +29790,12 @@
+@@ -29376,8 +29805,12 @@
  		EX(fbc) = ce->constructor;
  	}
  
@@ -3000,7 +3174,7 @@ diff -u -r1.18 zend_vm_execute.h
  	if (EX(fbc)->common.fn_flags & ZEND_ACC_STATIC) {
  		EX(object) = NULL;
  	} else {
-@@ -31163,6 +31596,145 @@
+@@ -31181,6 +31614,145 @@
  	ZEND_VM_NEXT_OPCODE();
  }
  
@@ -3146,7 +3320,7 @@ diff -u -r1.18 zend_vm_execute.h
  
  void zend_vm_use_old_executor()
  {
-@@ -31317,6 +31889,9 @@
+@@ -31335,6 +31907,9 @@
    	ZEND_ASSIGN_DIM_HANDLER,
    	ZEND_ISSET_ISEMPTY_PROP_OBJ_HANDLER,
    	ZEND_HANDLE_EXCEPTION_HANDLER,
@@ -3162,7 +3336,7 @@ RCS file: /repository/ZendEngine2/zend_vm_opcodes.h,v
 retrieving revision 1.8
 diff -u -r1.8 zend_vm_opcodes.h
 --- Zend/zend_vm_opcodes.h	24 Feb 2005 08:52:11 -0000	1.8
-+++ Zend/zend_vm_opcodes.h	6 Mar 2005 15:06:14 -0000
++++ Zend/zend_vm_opcodes.h	11 Jun 2005 23:02:03 -0000
 @@ -147,3 +147,6 @@
  #define ZEND_ASSIGN_DIM              147
  #define ZEND_ISSET_ISEMPTY_PROP_OBJ  148
