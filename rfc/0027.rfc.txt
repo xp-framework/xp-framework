@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Sat Jun 11 11:52:00 CEST 2005
-@status: draft
+@status: discussion, ends Sat Jun 18 11:52:00 CEST 2005
 @category: <ports>
 
 Scope of Change
@@ -62,6 +62,28 @@ Notes
 
 [3] Step a) may be skipped if stability and the possibility to do bugfixing in
     the branch are not required.
+    
+Branch / tag names
+~~~~~~~~~~~~~~~~~~
+Generally branch / tag names are made up of several parts:
+  * application short name (eg. WEBSITE)
+  * version indicator, which can be one of
+    . pre-releases (indicated by `RC`)
+    . the release (`RELEASE`)
+    . post-releases a.k.a. service packs (`SP`)
+
+For convencience, the symbolic name HEAD exists, which can be used 
+to check out trunk/. All names are in uppercase.
+
+Some examples:
+  "WEBSITE_RELEASE": release version of application website
+  "WEBSITE_RC_5_0": release candidate 5.0 of `website`
+  "WEBSITE_SP_1_0": servicepack 1.0 of `website`
+
+The paths these will be installed in are directly derived from
+the names of the tags. The rule for this derivation is
+`xp.` + lowercased tagname. Underscore will be replaces by dash and
+a dash preceding a digit is be removed.
 
 Security considerations
 -----------------------
