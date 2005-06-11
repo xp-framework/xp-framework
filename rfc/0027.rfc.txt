@@ -1,0 +1,86 @@
+RFC 0027: Redesign of release process for applications
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Sat Jun 11 11:52:00 CEST 2005
+@status: draft
+@category: <ports>
+
+Scope of Change
+---------------
+The release process of XP applications ("ports") will be changed to be more
+flexible when it comes to make post-release changes or bugfixes and will also
+be adapted to subversion.
+
+Rationale
+---------
+With the migration to subversion, the release- and install-process needs to be
+changed that it works with svn.
+
+Because the release- and install-process requires CVS-tags and as tags do no 
+longer exist in subversion, the process needs to be modified.
+
+Functionality
+-------------
+
+The old process
+~~~~~~~~~~~~~~~
+Up to now, the release process includes the following steps:
+a) tagging all files required be the application with a *_RELEASE tag
+b) execution the install target to checkout the port on the target machine(s)
+   or in the packaging enviroment (where .tar.gz's could be made)
+
+The new process
+~~~~~~~~~~~~~~~
+The new process will consist of these steps:
+a) creating a new branch in the branches/<appname-release> directory where all 
+   required files for the release are copied to [1,3]
+b) once the branch has settled, copy the whole branch to the tags/<appname-release>
+   directory. [2]
+c) execute the install target which checks out tags/<appname-release> on the
+   target machine(s)
+
+Notes
+~~~~~
+[1] The repositories directory structure would then look like
+    xp/trunk/
+            /skeleton
+            /ports
+            ...
+      /branches/application-release/
+                                   /skeleton
+                                   /ports
+                                   ...
+      /tags/application-release/
+                               /skeleton
+                               /ports
+                               ...
+
+[2] Though bugfixes may be incorporated into the branch, no real development
+    will happen in branches/ or tags/
+
+[3] Step a) may be skipped if stability and the possibility to do bugfixing in
+    the branch are not required.
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+n/a
+
+Dependencies
+------------
+- Subversion migration (done)
+
+Related documents
+-----------------
+- Subversion Book: "Branching and merging"
+  http://svnbook.red-bean.com/en/1.1/ch04.html
+
+Comments
+--------
+
+<EOF>
