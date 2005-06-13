@@ -376,6 +376,9 @@ Related documents
 
 - http://java.sun.com/developer/onlineTraining/rmi/RMI.html
   jGuru: Remote Method Invocation (RMI)
+
+- Naming on JBoss
+  http://docs.jboss.org/jbossas/admindevel326/html/ch3.chapter.html
   
 Comments
 --------
