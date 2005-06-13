@@ -142,7 +142,19 @@ Using the PHP access API with naming lookup:
 
 Server side
 ~~~~~~~~~~~
-XXX TBD XXX
+The server side is implemented as a JBoss MBean. It provides the following 
+methods:
+
+1) Naming lookups
+
+
+2) Remote method invokation
+
+
+3) Java Messaging
+
+
+4) Discovery API
 
 
 Interaction
