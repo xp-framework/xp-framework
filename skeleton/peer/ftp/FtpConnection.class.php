@@ -118,7 +118,7 @@
           break;
       }
       
-      if (FALSE === $this->_hdl) {
+      if (!is_resource($this->_hdl)) {
         return throw(new ConnectException(sprintf(
           'Could not connect to %s:%d within %d seconds',
           $this->url['host'], $this->url['port'], $this->opt['timeout']
