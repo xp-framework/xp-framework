@@ -875,7 +875,7 @@ diff -N Zend/zend_enumerations.c
 +   +----------------------------------------------------------------------+
 +*/
 +
-+/* $Id$ */
++/* $Id: zend_engine_2.patch 5217 2005-06-11 23:13:35Z kiesel $ */
 +
 +#include "zend.h"
 +#include "zend_API.h"
@@ -1144,7 +1144,7 @@ diff -N Zend/zend_enumerations.h
 +   +----------------------------------------------------------------------+
 +*/
 +
-+/* $Id$ */
++/* $Id: zend_engine_2.patch 5217 2005-06-11 23:13:35Z kiesel $ */
 +
 +#ifndef ZEND_ENUMERATIONS_H
 +#define ZEND_ENUMERATIONS_H
