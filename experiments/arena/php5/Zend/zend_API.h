@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_API.h,v 1.195 2005/02/27 22:18:55 helly Exp $ */
+/* $Id: zend_API.h,v 1.198 2005/05/26 13:46:16 dmitry Exp $ */
 
 #ifndef ZEND_API_H
 #define ZEND_API_H
@@ -57,12 +57,13 @@ typedef struct _zend_function_entry {
                                                     ZEND_FENTRY(name, ZEND_FN(classname##_##alias), arg_info, flags)
 #define ZEND_ME_MAPPING(name, func_name, arg_types) ZEND_NAMED_FE(name, ZEND_FN(func_name), arg_types)
 
-#define ZEND_ARG_INFO(pass_by_ref, name)							{ #name, sizeof(#name)-1, NULL, 0, 0, pass_by_ref, 0, 0 },
-#define ZEND_ARG_PASS_INFO(pass_by_ref)								{ NULL, 0, NULL, 0, 0, pass_by_ref, 0, 0 },
-#define ZEND_ARG_OBJ_INFO(pass_by_ref, name, classname, allow_null) { #name, sizeof(#name)-1, #classname, sizeof(#classname)-1, allow_null, pass_by_ref, 0, 0 },
+#define ZEND_ARG_INFO(pass_by_ref, name)							{ #name, sizeof(#name)-1, NULL, 0, 0, 0, pass_by_ref, 0, 0 },
+#define ZEND_ARG_PASS_INFO(pass_by_ref)								{ NULL, 0, NULL, 0, 0, 0, pass_by_ref, 0, 0 },
+#define ZEND_ARG_OBJ_INFO(pass_by_ref, name, classname, allow_null) { #name, sizeof(#name)-1, #classname, sizeof(#classname)-1, 0, allow_null, pass_by_ref, 0, 0 },
+#define ZEND_ARG_ARRAY_INFO(pass_by_ref, name, allow_null) { #name, sizeof(#name)-1, NULL, 0, 1, allow_null, pass_by_ref, 0, 0 },
 #define ZEND_BEGIN_ARG_INFO_EX(name, pass_rest_by_reference, return_reference, required_num_args)	\
 	zend_arg_info name[] = {																		\
-		{ NULL, 0, NULL, 0, 0, pass_rest_by_reference, return_reference, required_num_args },
+		{ NULL, 0, NULL, 0, 0, 0, pass_rest_by_reference, return_reference, required_num_args },
 #define ZEND_BEGIN_ARG_INFO(name, pass_rest_by_reference)	\
 	ZEND_BEGIN_ARG_INFO_EX(name, pass_rest_by_reference, ZEND_RETURN_REFERENCE_AGNOSTIC, -1)
 #define ZEND_END_ARG_INFO()		};
@@ -184,11 +185,16 @@ ZEND_API int zend_disable_function(char *function_name, uint function_name_lengt
 ZEND_API int zend_disable_class(char *class_name, uint class_name_length TSRMLS_DC);
 
 ZEND_API void zend_wrong_param_count(TSRMLS_D);
-ZEND_API zend_bool zend_is_callable(zval *callable, zend_bool syntax_only, char **callable_name);
+
+#define IS_CALLABLE_CHECK_SYNTAX_ONLY (1<<0)
+#define IS_CALLABLE_CHECK_NO_ACCESS   (1<<1)
+
+ZEND_API zend_bool zend_is_callable(zval *callable, uint check_flags, char **callable_name);
 ZEND_API zend_bool zend_make_callable(zval *callable, char **callable_name TSRMLS_DC);
 ZEND_API char *zend_get_module_version(char *module_name);
 ZEND_API int zend_get_module_started(char *module_name);
 ZEND_API int zend_declare_property(zend_class_entry *ce, char *name, int name_length, zval *property, int access_type TSRMLS_DC);
+ZEND_API int zend_declare_property_ex(zend_class_entry *ce, char *name, int name_length, zval *property, int access_type, char *doc_comment, int doc_comment_len TSRMLS_DC);
 ZEND_API int zend_declare_property_null(zend_class_entry *ce, char *name, int name_length, int access_type TSRMLS_DC);
 ZEND_API int zend_declare_property_bool(zend_class_entry *ce, char *name, int name_length, long value, int access_type TSRMLS_DC);
 ZEND_API int zend_declare_property_long(zend_class_entry *ce, char *name, int name_length, long value, int access_type TSRMLS_DC);

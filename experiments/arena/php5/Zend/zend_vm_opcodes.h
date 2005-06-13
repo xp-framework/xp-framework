@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_vm_opcodes.h,v 1.8 2005/02/24 08:52:11 dmitry Exp $ */
+/* $Id: zend_vm_gen.php,v 1.7 2005/06/13 17:50:07 dmitry Exp $ */
 
 #define ZEND_NOP                       0
 #define ZEND_ADD                       1
@@ -87,7 +87,6 @@
 #define ZEND_SEND_VAR                 66
 #define ZEND_SEND_REF                 67
 #define ZEND_NEW                      68
-#define ZEND_JMP_NO_CTOR              69
 #define ZEND_FREE                     70
 #define ZEND_INIT_ARRAY               71
 #define ZEND_ADD_ARRAY_ELEMENT        72
@@ -127,7 +126,6 @@
 #define ZEND_THROW                   108
 #define ZEND_FETCH_CLASS             109
 #define ZEND_CLONE                   110
-#define ZEND_INIT_CTOR_CALL          111
 #define ZEND_INIT_METHOD_CALL        112
 #define ZEND_INIT_STATIC_METHOD_CALL 113
 #define ZEND_ISSET_ISEMPTY_VAR       114
@@ -147,6 +145,7 @@
 #define ZEND_ASSIGN_DIM              147
 #define ZEND_ISSET_ISEMPTY_PROP_OBJ  148
 #define ZEND_HANDLE_EXCEPTION        149
-#define ZEND_IMPORT                  150
-#define ZEND_COMPARE                 151
-#define ZEND_INSTANCE_CREATION       152
+#define ZEND_USER_OPCODE             150
+#define ZEND_IMPORT                  151
+#define ZEND_COMPARE                 152
+#define ZEND_INSTANCE_CREATION       153

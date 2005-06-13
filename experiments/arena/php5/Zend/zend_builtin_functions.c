@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_builtin_functions.c,v 1.261 2005/03/14 09:21:04 stas Exp $ */
+/* $Id: zend_builtin_functions.c,v 1.271 2005/06/07 13:14:23 dmitry Exp $ */
 
 #include "zend.h"
 #include "zend_API.h"
@@ -43,6 +43,7 @@ static ZEND_FUNCTION(defined);
 static ZEND_FUNCTION(get_class);
 static ZEND_FUNCTION(get_parent_class);
 static ZEND_FUNCTION(method_exists);
+static ZEND_FUNCTION(property_exists);
 static ZEND_FUNCTION(class_exists);
 static ZEND_FUNCTION(interface_exists);
 static ZEND_FUNCTION(function_exists);
@@ -102,6 +103,7 @@ static zend_function_entry builtin_functions[] = {
 	ZEND_FE(get_class,			NULL)
 	ZEND_FE(get_parent_class,	NULL)
 	ZEND_FE(method_exists,		NULL)
+	ZEND_FE(property_exists,	NULL)
 	ZEND_FE(class_exists,		NULL)
 	ZEND_FE(interface_exists,	NULL)
 	ZEND_FE(function_exists,	NULL)
@@ -809,7 +811,6 @@ ZEND_FUNCTION(get_class_methods)
 	zend_class_entry *ce = NULL, **pce;
 	HashPosition pos;
 	zend_function *mptr;
-	int instanceof;
 
 	if (ZEND_NUM_ARGS() != 1 || zend_get_parameters_ex(1, &class)==FAILURE) {
 		ZEND_WRONG_PARAM_COUNT();
@@ -831,14 +832,16 @@ ZEND_FUNCTION(get_class_methods)
 		RETURN_NULL();
 	}
 
-	instanceof = EG(scope) && instanceof_function(EG(scope), ce TSRMLS_CC);
-
 	array_init(return_value);
 	zend_hash_internal_pointer_reset_ex(&ce->function_table, &pos);
 
 	while (zend_hash_get_current_data_ex(&ce->function_table, (void **) &mptr, &pos) == SUCCESS) {
 		if ((mptr->common.fn_flags & ZEND_ACC_PUBLIC) 
-		 || (instanceof && ((mptr->common.fn_flags & ZEND_ACC_PROTECTED) || EG(scope) == mptr->common.scope))) {
+		 || (EG(scope) &&
+		     (((mptr->common.fn_flags & ZEND_ACC_PROTECTED) &&
+		       instanceof_function(EG(scope), mptr->common.scope TSRMLS_CC))
+		   || ((mptr->common.fn_flags & ZEND_ACC_PRIVATE) &&
+		       EG(scope) == mptr->common.scope)))) {
 			MAKE_STD_ZVAL(method_name);
 			ZVAL_STRING(method_name, mptr->common.function_name, 1);
 			zend_hash_next_index_insert(return_value->value.ht, &method_name, sizeof(zval *), NULL);
@@ -866,6 +869,7 @@ ZEND_FUNCTION(method_exists)
 		if (zend_lookup_class(Z_STRVAL_PP(klass), Z_STRLEN_PP(klass), &pce TSRMLS_CC) == FAILURE) {
 			RETURN_FALSE;
 		}
+		ce = *pce;
 	} else {
 		RETURN_FALSE;
 	}
@@ -876,17 +880,91 @@ ZEND_FUNCTION(method_exists)
 		efree(lcname);
 		RETURN_TRUE;
 	} else {
+		union _zend_function *func = NULL;
 		efree(lcname);
+
 		if (Z_TYPE_PP(klass) == IS_OBJECT 
 		&& Z_OBJ_HT_PP(klass)->get_method != NULL
-		&& Z_OBJ_HT_PP(klass)->get_method(klass, Z_STRVAL_PP(method_name), Z_STRLEN_PP(method_name) TSRMLS_CC) != NULL
+		&& (func = Z_OBJ_HT_PP(klass)->get_method(klass, Z_STRVAL_PP(method_name), Z_STRLEN_PP(method_name) TSRMLS_CC)) != NULL
 		) {
+			if (func->type == ZEND_INTERNAL_FUNCTION 
+			&& ((zend_internal_function*)func)->handler == zend_std_call_user_call
+			) {
+				efree(((zend_internal_function*)func)->function_name);
+				efree(func);
+				RETURN_FALSE;
+			}
 			RETURN_TRUE;
 		}
 	}
 	RETURN_FALSE;
 }
 /* }}} */
+
+/* {{{ proto bool property_exists(mixed object_or_class, string property_name)
+   Checks if the object or class has a property */
+ZEND_FUNCTION(property_exists)
+{
+	zval **object, **property;
+	zend_class_entry *ce, **pce;
+	zend_property_info *property_info;
+	char *prop_name, *class_name;
+
+	if (ZEND_NUM_ARGS()!= 2 || zend_get_parameters_ex(2, &object, &property)==FAILURE) {
+		ZEND_WRONG_PARAM_COUNT();
+	}
+	convert_to_string_ex(property);
+	if (!Z_STRLEN_PP(property)) {
+		RETURN_FALSE;
+	}
+
+	switch((*object)->type) {
+	case IS_STRING:
+		if (!Z_STRLEN_PP(object)) {
+			RETURN_FALSE;
+		}
+		if (zend_lookup_class(Z_STRVAL_PP(object), Z_STRLEN_PP(object), &pce TSRMLS_CC) == SUCCESS) {
+			ce = *pce;
+		} else {
+			RETURN_FALSE;
+		}
+		if (!ce) {
+			RETURN_NULL();
+		}
+		if (!(property_info = zend_get_property_info(ce, *property, 1 TSRMLS_CC)) || property_info == &EG(std_property_info)) {
+			RETURN_FALSE;
+		}
+		if (property_info->flags & ZEND_ACC_PUBLIC) {
+			RETURN_TRUE;
+		}
+		zend_unmangle_property_name(property_info->name, &class_name, &prop_name);
+		if (!strncmp(class_name, "*", 1)) {
+			if (instanceof_function(EG(scope), ce TSRMLS_CC)) {
+				RETURN_TRUE;
+			}
+			RETURN_FALSE;
+		}
+		if (zend_lookup_class(Z_STRVAL_PP(object), Z_STRLEN_PP(object), &pce TSRMLS_CC) == SUCCESS) {
+			ce = *pce;
+		} else {
+			RETURN_FALSE; /* shouldn't happen */
+		}
+		RETURN_BOOL(EG(scope) == ce);
+		RETURN_FALSE;
+	
+	case IS_OBJECT:
+		if (Z_OBJ_HANDLER_PP(object, has_property) && Z_OBJ_HANDLER_PP(object, has_property)(*object, *property, 2 TSRMLS_CC)) {
+			RETURN_TRUE;
+		}
+		RETURN_FALSE;
+
+	default:
+		zend_error(E_WARNING, "First parameter must either be an object or the name of an existing class");
+		RETURN_NULL();
+	}
+}
+/* }}} */
+
 
 /* {{{ proto bool class_exists(string classname [, bool autoload])
    Checks if the class exists */
@@ -1641,7 +1719,9 @@ ZEND_FUNCTION(debug_print_backtrace)
 	array_init(return_value);
 
 	while (ptr) {
-   		class_name = call_type = NULL;   
+		char *free_class_name = NULL;
+
+		class_name = call_type = NULL;   
 		arg_array = NULL;
 		if (ptr->op_array) {
 			filename = ptr->op_array->filename;
@@ -1655,7 +1735,13 @@ ZEND_FUNCTION(debug_print_backtrace)
 
 		if (function_name) {
 			if (ptr->object) {
-				class_name = Z_OBJCE(*ptr->object)->name;
+				zend_uint class_name_len;
+				if (Z_OBJ_HT_P(ptr->object)->get_class_name == NULL ||
+			        Z_OBJ_HT_P(ptr->object)->get_class_name(ptr->object, &class_name, &class_name_len, 0 TSRMLS_CC) != SUCCESS) {
+					class_name = Z_OBJCE(*ptr->object)->name;
+				} else {
+					free_class_name = class_name;
+				}
 				call_type = "->";
 			} else if (ptr->function_state.function->common.scope) {
 				class_name = ptr->function_state.function->common.scope->name;
@@ -1720,6 +1806,9 @@ ZEND_FUNCTION(debug_print_backtrace)
 		include_filename = filename;
 		ptr = ptr->prev_execute_data;
 		++indent;
+		if (free_class_name) {
+			efree(free_class_name);
+		}
 	}
 }
 
@@ -1732,7 +1821,6 @@ ZEND_API void zend_fetch_debug_backtrace(zval *return_value, int skip_last TSRML
 	char *function_name;
 	char *filename;
 	char *class_name;
-	char *call_type;
 	char *include_filename = NULL;
 	zval *stack_frame;
 	void **cur_arg_pos = EG(argument_stack).top_element;
@@ -1788,19 +1876,17 @@ ZEND_API void zend_fetch_debug_backtrace(zval *return_value, int skip_last TSRML
 			add_assoc_string_ex(stack_frame, "function", sizeof("function"), function_name, 1);
 
 			if (ptr->object && Z_TYPE_P(ptr->object) == IS_OBJECT) {
-				class_name = Z_OBJCE(*ptr->object)->name;
-				call_type = "->";
+				zend_uint class_name_len;
+				if (Z_OBJ_HT_P(ptr->object)->get_class_name == NULL ||
+                    Z_OBJ_HT_P(ptr->object)->get_class_name(ptr->object, &class_name, &class_name_len, 0 TSRMLS_CC) != SUCCESS) {
+					add_assoc_string_ex(stack_frame, "class", sizeof("class"), Z_OBJCE(*ptr->object)->name, 1);
+				} else {
+					add_assoc_string_ex(stack_frame, "class", sizeof("class"), class_name, 0);
+				}
+				add_assoc_string_ex(stack_frame, "type", sizeof("type"), "->", 1);
 			} else if (ptr->function_state.function->common.scope) {
-				class_name = ptr->function_state.function->common.scope->name;
-				call_type = "::";
-			} else {
-				class_name = NULL;
-				call_type = NULL;
-			}
-
-			if (class_name) {
-				add_assoc_string_ex(stack_frame, "class", sizeof("class"), class_name, 1);
-				add_assoc_string_ex(stack_frame, "type", sizeof("type"), call_type, 1);
+				add_assoc_string_ex(stack_frame, "class", sizeof("class"), ptr->function_state.function->common.scope->name, 1);
+				add_assoc_string_ex(stack_frame, "type", sizeof("type"), "::", 1);
 			}
 
 			if ((! ptr->opline) || ((ptr->opline->opcode == ZEND_DO_FCALL_BY_NAME) || (ptr->opline->opcode == ZEND_DO_FCALL))) {

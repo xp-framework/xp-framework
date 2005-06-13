@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_alloc.c,v 1.141 2004/08/27 16:49:14 andi Exp $ */
+/* $Id: zend_alloc.c,v 1.143 2005/04/07 20:15:21 sniper Exp $ */
 
 #include "zend.h"
 #include "zend_alloc.h"
@@ -408,7 +408,6 @@ ZEND_API char *_estrdup(const char *s ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC)
 	memcpy(p, s, length);
 	return p;
 }
-
 
 ZEND_API char *_estrndup(const char *s, uint length ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC)
 {

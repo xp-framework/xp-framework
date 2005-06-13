@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_compile.h,v 1.302 2005/02/11 22:26:45 helly Exp $ */
+/* $Id: zend_compile.h,v 1.308 2005/06/09 17:20:43 stas Exp $ */
 
 #ifndef ZEND_COMPILE_H
 #define ZEND_COMPILE_H
@@ -40,10 +40,13 @@
 #define DEC_BPC(op_array)	if (CG(interactive)) { ((op_array)->backpatch_count--); }
 #define HANDLE_INTERACTIVE()  if (CG(interactive)) { execute_new_code(TSRMLS_C); }
 
-#define RESET_DOC_COMMENT()      \
-    {                            \
-        CG(doc_comment) = NULL;  \
-        CG(doc_comment_len) = 0; \
+#define RESET_DOC_COMMENT()        \
+    {                              \
+        if (CG(doc_comment)) {     \
+          efree(CG(doc_comment));  \
+          CG(doc_comment) = NULL;  \
+        }                          \
+        CG(doc_comment_len) = 0;   \
     }
 #define MANGLE_MAIN_LEN sizeof("main~") - 1
 #define MANGLE_CLASS_NAME(class_name) \
@@ -147,6 +150,9 @@ typedef struct _zend_try_catch_element {
 /* method flag (bc only), any method that has this flag can be used statically and non statically. */
 #define ZEND_ACC_ALLOW_STATIC	0x10000
 
+/* shadow of parent's private method/property */
+#define ZEND_ACC_SHADOW 0x20000
+
 char *zend_visibility_string(zend_uint fn_flags);
 
 
@@ -155,6 +161,8 @@ typedef struct _zend_property_info {
 	char *name;
 	int name_length;
 	ulong h;
+	char *doc_comment;
+	int doc_comment_len;
 } zend_property_info;
 
 
@@ -163,6 +171,7 @@ typedef struct _zend_arg_info {
 	zend_uint name_len;
 	char *class_name;
 	zend_uint class_name_len;
+	zend_bool array_type_hint;
 	zend_bool allow_null;
 	zend_bool pass_by_reference;
 	zend_bool return_reference;
@@ -344,6 +353,7 @@ ZEND_API char *zend_set_compiled_filename(char *new_compiled_filename TSRMLS_DC)
 ZEND_API void zend_restore_compiled_filename(char *original_compiled_filename TSRMLS_DC);
 ZEND_API char *zend_get_compiled_filename(TSRMLS_D);
 ZEND_API int zend_get_compiled_lineno(TSRMLS_D);
+ZEND_API int zend_get_scanned_file_offset(TSRMLS_D);
 
 ZEND_API char* zend_get_compiled_variable_name(zend_op_array *op_array, zend_uint var, int* name_len);
 
@@ -431,7 +441,7 @@ ZEND_API void zend_do_inherit_interfaces(zend_class_entry *ce, zend_class_entry 
 ZEND_API void zend_do_implement_interface(zend_class_entry *ce, zend_class_entry *iface TSRMLS_DC);
 void zend_do_implements_interface(znode *interface_znode TSRMLS_DC);
 
-void zend_do_inheritance(zend_class_entry *ce, zend_class_entry *parent_ce TSRMLS_DC);
+ZEND_API void zend_do_inheritance(zend_class_entry *ce, zend_class_entry *parent_ce TSRMLS_DC);
 void zend_do_early_binding(TSRMLS_D);
 
 void zend_do_pass_param(znode *param, zend_uchar op, int offset TSRMLS_DC);

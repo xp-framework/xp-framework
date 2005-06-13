@@ -19,7 +19,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_language_scanner.l,v 1.124 2005/03/07 16:48:49 zeev Exp $ */
+/* $Id: zend_language_scanner.l,v 1.128 2005/06/09 08:52:51 dmitry Exp $ */
 
 #define yyleng SCNG(yy_leng)
 #define yytext SCNG(yy_text)
@@ -125,8 +125,9 @@ BEGIN_EXTERN_C()
 void startup_scanner(TSRMLS_D)
 {
 	CG(heredoc) = NULL;
-	CG(heredoc_len)=0;
-	RESET_DOC_COMMENT();
+	CG(heredoc_len) = 0;
+	CG(doc_comment) = NULL;
+	CG(doc_comment_len) = 0;
 	SCNG(yy_start_stack_ptr) = 0;
 	SCNG(yy_start_stack_depth) = 0;
 	SCNG(current_buffer) = NULL;
@@ -244,7 +245,9 @@ ZEND_API void zend_file_handle_dtor(zend_file_handle *fh)
 			fclose(fh->handle.fp);
 			break;
 		case ZEND_HANDLE_STREAM:
-			fh->handle.stream.closer(fh->handle.stream.handle TSRMLS_CC);
+			if (fh->handle.stream.closer) {
+				fh->handle.stream.closer(fh->handle.stream.handle TSRMLS_CC);
+			}
 			break;
 		case ZEND_HANDLE_FILENAME:
 			/* We're only supposed to get here when destructing the used_files hash,
@@ -491,6 +494,20 @@ ZEND_API int zend_prepare_string_for_scanning(zval *str, char *filename TSRMLS_D
 	CG(zend_lineno) = 1;
 	CG(increment_lineno) = 0;
 	return SUCCESS;
+}
+
+
+ZEND_API int zend_get_scanned_file_offset(TSRMLS_D)
+{
+	if (yyin) {
+		int offset_in_buffer = (yy_c_buf_p - (YY_CURRENT_BUFFER)->yy_ch_buf);
+		int read_bytes = (YY_CURRENT_BUFFER)->yy_n_chars;
+		int offset_from_the_end = read_bytes - offset_in_buffer;
+
+		return zend_stream_ftell(yyin TSRMLS_CC) - offset_from_the_end;
+	} else {
+		return -1;
+	}
 }
 
 
@@ -1035,6 +1052,10 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	return T_EMPTY;
 }
 
+<ST_IN_SCRIPTING>"__halt_compiler" {
+	return T_HALT_COMPILER;
+}
+
 <ST_IN_SCRIPTING>"static" {
 	return T_STATIC;
 }
@@ -1499,6 +1520,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 <ST_IN_SCRIPTING>"/**"{WHITESPACE} {
 	CG(comment_start_line) = CG(zend_lineno);
+	RESET_DOC_COMMENT();
 	BEGIN(ST_DOC_COMMENT);
 	yymore();
 }
@@ -1515,7 +1537,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 <ST_DOC_COMMENT>"*/" {
-	CG(doc_comment) = yytext;     /* no copying - intentional */
+	CG(doc_comment) = estrndup(yytext, yyleng);
 	CG(doc_comment_len) = yyleng;
 	HANDLE_NEWLINES(yytext, yyleng);
 	BEGIN(ST_IN_SCRIPTING);

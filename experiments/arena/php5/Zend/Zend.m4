@@ -1,27 +1,8 @@
 dnl
-dnl $Id: Zend.m4,v 1.52 2005/02/27 12:42:28 sniper Exp $
+dnl $Id: Zend.m4,v 1.55 2005/06/07 17:22:40 sniper Exp $
 dnl
 dnl This file contains Zend specific autoconf functions.
 dnl
-
-AC_DEFUN([LIBZEND_BISON_CHECK],[
-  if test "$YACC" = "bison -y"; then
-    AC_CACHE_CHECK([for bison version], php_cv_bison_version, [
-      set `bison --version| grep 'GNU Bison' | cut -d ' ' -f 4 | sed -e 's/\./ /' | tr -d 'a-z'`
-      if test "${1}" = "1" -a "${2}" -lt "28"; then
-        php_cv_bison_version=invalid
-      else
-        php_cv_bison_version="${1}.${2} (ok)"
-      fi
-    ])
-  fi
-  case $php_cv_bison_version in
-    ""|invalid[)]
-      AC_MSG_WARN([You will need bison 1.28, 1.35, 1.75 or 1.875 if you want to regenerate the Zend parsers (found ${1}.${2}).])
-      YACC="exit 0;"
-      ;;
-  esac
-])
 
 AC_DEFUN([LIBZEND_CHECK_INT_TYPE],[
 AC_MSG_CHECKING(for $1)
@@ -141,8 +122,8 @@ AC_ARG_ENABLE(debug,
 AC_DEFUN([LIBZEND_OTHER_CHECKS],[
 
 PHP_ARG_WITH(zend-vm,[virtual machine dispatch method],
-[  --with-zend-vm=TYPE     Sets virtual machine dispatch methos. Type is
-                          one of "CALL" (default), "SWITCH" or "GOTO"], CALL, no)
+[  --with-zend-vm=TYPE     Set virtual machine dispatch method. Type is
+                          one of "CALL", "SWITCH" or "GOTO" [TYPE=CALL]], CALL, no)
 
 case $PHP_ZEND_VM in
   SWITCH)
@@ -156,8 +137,17 @@ case $PHP_ZEND_VM in
     ;;
 esac
 
+AC_ARG_ENABLE(zend-memory-manager,
+[  --disable-zend-memory-manager
+                          Disable the Zend memory manager - FOR DEVELOPERS ONLY!!],
+[
+  ZEND_USE_ZEND_ALLOC=$enableval
+], [
+  ZEND_USE_ZEND_ALLOC=yes
+])
+
 AC_ARG_ENABLE(maintainer-zts,
-[  --enable-maintainer-zts Enable thread safety - for code maintainers only],[
+[  --enable-maintainer-zts Enable thread safety - for code maintainers only!!],[
   ZEND_MAINTAINER_ZTS=$enableval
 ],[
   ZEND_MAINTAINER_ZTS=no
@@ -165,25 +155,28 @@ AC_ARG_ENABLE(maintainer-zts,
 
 AC_ARG_ENABLE(inline-optimization,
 [  --disable-inline-optimization 
-                          If building zend_execute.lo fails, try this switch.],[
+                          If building zend_execute.lo fails, try this switch],[
   ZEND_INLINE_OPTIMIZATION=$enableval
 ],[
   ZEND_INLINE_OPTIMIZATION=yes
 ])
 
 AC_ARG_ENABLE(memory-limit,
-[  --enable-memory-limit   Compile with memory limit support. ], [
+[  --enable-memory-limit   Compile with memory limit support], [
   ZEND_MEMORY_LIMIT=$enableval
 ],[
   ZEND_MEMORY_LIMIT=no
 ])
 
 AC_ARG_ENABLE(zend-multibyte,
-[  --enable-zend-multibyte Compile with zend multibyte support. ], [
+[  --enable-zend-multibyte Compile with zend multibyte support], [
   ZEND_MULTIBYTE=$enableval
 ],[
   ZEND_MULTIBYTE=no
 ])
+
+AC_MSG_CHECKING(whether to enable the Zend memory manager)
+AC_MSG_RESULT($ZEND_USE_ZEND_ALLOC)
 
 AC_MSG_CHECKING(whether to enable thread-safety)
 AC_MSG_RESULT($ZEND_MAINTAINER_ZTS)
@@ -214,6 +207,12 @@ else
 fi
 
 test -n "$DEBUG_CFLAGS" && CFLAGS="$CFLAGS $DEBUG_CFLAGS"
+
+if test "$ZEND_USE_ZEND_ALLOC" = "yes"; then
+  AC_DEFINE(USE_ZEND_ALLOC,1,[Use Zend memory manager])
+else
+  AC_DEFINE(USE_ZEND_ALLOC,0,[Use Zend memory manager])
+fi
 
 if test "$ZEND_MAINTAINER_ZTS" = "yes"; then
   AC_DEFINE(ZTS,1,[ ])

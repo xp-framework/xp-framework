@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_enumerations.c 4875 2005-03-14 17:10:56Z kiesel $ */
+/* $Id: zend_engine_2.patch 5217 2005-06-11 23:13:35Z kiesel $ */
 
 #include "zend.h"
 #include "zend_API.h"

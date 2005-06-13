@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_highlight.c,v 1.47 2005/01/02 23:53:43 iliaa Exp $ */
+/* $Id: zend_highlight.c,v 1.48 2005/05/22 16:40:06 iliaa Exp $ */
 
 #include "zend.h"
 #include <zend_language_parser.h>
@@ -71,17 +71,9 @@ ZEND_API void zend_html_puts(const char *s, uint len TSRMLS_DC)
 	
 	while (ptr<end) {
 		if (*ptr==' ') {
-			/* Series of spaces should be displayed as &nbsp;'s
-			 * whereas single spaces should be displayed as a space
-			 */
-			if ((ptr+1) < end && *(ptr+1)==' ') {
-				do {
-					zend_html_putc(*ptr);
-				} while ((++ptr < end) && (*ptr==' '));
-			} else {
-				ZEND_PUTC(*ptr);
-				ptr++;
-			}
+			do {
+				zend_html_putc(*ptr);
+			} while ((++ptr < end) && (*ptr==' '));
 		} else {
 			zend_html_putc(*ptr++);
 		}

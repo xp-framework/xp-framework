@@ -1,4 +1,4 @@
-/* A Bison parser, made from /usr/home/thekid/devel/php/php/Zend/zend_language_parser.y, by GNU bison 1.75.  */
+/* A Bison parser, made from /mnt/home/alex/cvs/php/Zend/zend_language_parser.y, by GNU bison 1.75.  */
 
 /* Skeleton parser for Yacc-like parsing with Bison,
    Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002 Free Software Foundation, Inc.
@@ -127,36 +127,37 @@
      T_UNSET = 350,
      T_ISSET = 351,
      T_EMPTY = 352,
-     T_CLASS = 353,
-     T_PACKAGE = 354,
-     T_CLASSNAME = 355,
-     T_INTERFACE = 356,
-     T_EXTENDS = 357,
-     T_IMPLEMENTS = 358,
-     T_OPERATOR = 359,
-     T_COMPARE = 360,
-     T_OBJECT_OPERATOR = 361,
-     T_DOUBLE_ARROW = 362,
-     T_LIST = 363,
-     T_ARRAY = 364,
-     T_CLASS_C = 365,
-     T_METHOD_C = 366,
-     T_FUNC_C = 367,
-     T_LINE = 368,
-     T_FILE = 369,
-     T_COMMENT = 370,
-     T_DOC_COMMENT = 371,
-     T_OPEN_TAG = 372,
-     T_OPEN_TAG_WITH_ECHO = 373,
-     T_CLOSE_TAG = 374,
-     T_WHITESPACE = 375,
-     T_START_HEREDOC = 376,
-     T_END_HEREDOC = 377,
-     T_DOLLAR_OPEN_CURLY_BRACES = 378,
-     T_CURLY_OPEN = 379,
-     T_PAAMAYIM_NEKUDOTAYIM = 380,
-     T_IMPORT = 381,
-     T_ENUM = 382
+     T_HALT_COMPILER = 353,
+     T_CLASS = 354,
+     T_PACKAGE = 355,
+     T_CLASSNAME = 356,
+     T_INTERFACE = 357,
+     T_EXTENDS = 358,
+     T_IMPLEMENTS = 359,
+     T_OPERATOR = 360,
+     T_COMPARE = 361,
+     T_OBJECT_OPERATOR = 362,
+     T_DOUBLE_ARROW = 363,
+     T_LIST = 364,
+     T_ARRAY = 365,
+     T_CLASS_C = 366,
+     T_METHOD_C = 367,
+     T_FUNC_C = 368,
+     T_LINE = 369,
+     T_FILE = 370,
+     T_COMMENT = 371,
+     T_DOC_COMMENT = 372,
+     T_OPEN_TAG = 373,
+     T_OPEN_TAG_WITH_ECHO = 374,
+     T_CLOSE_TAG = 375,
+     T_WHITESPACE = 376,
+     T_START_HEREDOC = 377,
+     T_END_HEREDOC = 378,
+     T_DOLLAR_OPEN_CURLY_BRACES = 379,
+     T_CURLY_OPEN = 380,
+     T_PAAMAYIM_NEKUDOTAYIM = 381,
+     T_IMPORT = 382,
+     T_ENUM = 383
    };
 #endif
 #define T_REQUIRE_ONCE 258
@@ -254,36 +255,37 @@
 #define T_UNSET 350
 #define T_ISSET 351
 #define T_EMPTY 352
-#define T_CLASS 353
-#define T_PACKAGE 354
-#define T_CLASSNAME 355
-#define T_INTERFACE 356
-#define T_EXTENDS 357
-#define T_IMPLEMENTS 358
-#define T_OPERATOR 359
-#define T_COMPARE 360
-#define T_OBJECT_OPERATOR 361
-#define T_DOUBLE_ARROW 362
-#define T_LIST 363
-#define T_ARRAY 364
-#define T_CLASS_C 365
-#define T_METHOD_C 366
-#define T_FUNC_C 367
-#define T_LINE 368
-#define T_FILE 369
-#define T_COMMENT 370
-#define T_DOC_COMMENT 371
-#define T_OPEN_TAG 372
-#define T_OPEN_TAG_WITH_ECHO 373
-#define T_CLOSE_TAG 374
-#define T_WHITESPACE 375
-#define T_START_HEREDOC 376
-#define T_END_HEREDOC 377
-#define T_DOLLAR_OPEN_CURLY_BRACES 378
-#define T_CURLY_OPEN 379
-#define T_PAAMAYIM_NEKUDOTAYIM 380
-#define T_IMPORT 381
-#define T_ENUM 382
+#define T_HALT_COMPILER 353
+#define T_CLASS 354
+#define T_PACKAGE 355
+#define T_CLASSNAME 356
+#define T_INTERFACE 357
+#define T_EXTENDS 358
+#define T_IMPLEMENTS 359
+#define T_OPERATOR 360
+#define T_COMPARE 361
+#define T_OBJECT_OPERATOR 362
+#define T_DOUBLE_ARROW 363
+#define T_LIST 364
+#define T_ARRAY 365
+#define T_CLASS_C 366
+#define T_METHOD_C 367
+#define T_FUNC_C 368
+#define T_LINE 369
+#define T_FILE 370
+#define T_COMMENT 371
+#define T_DOC_COMMENT 372
+#define T_OPEN_TAG 373
+#define T_OPEN_TAG_WITH_ECHO 374
+#define T_CLOSE_TAG 375
+#define T_WHITESPACE 376
+#define T_START_HEREDOC 377
+#define T_END_HEREDOC 378
+#define T_DOLLAR_OPEN_CURLY_BRACES 379
+#define T_CURLY_OPEN 380
+#define T_PAAMAYIM_NEKUDOTAYIM 381
+#define T_IMPORT 382
+#define T_ENUM 383
 
 
 

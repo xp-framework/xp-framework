@@ -1,4 +1,4 @@
-/* A Bison parser, made from /usr/home/thekid/devel/php/php/Zend/zend_ini_parser.y, by GNU bison 1.75.  */
+/* A Bison parser, made from /mnt/home/alex/cvs/php/Zend/zend_ini_parser.y, by GNU bison 1.75.  */
 
 /* Skeleton parser for Yacc-like parsing with Bison,
    Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002 Free Software Foundation, Inc.

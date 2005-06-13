@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_alloc.h,v 1.58 2004/08/11 06:11:07 derick Exp $ */
+/* $Id: zend_alloc.h,v 1.62 2005/06/07 13:36:08 derick Exp $ */
 
 #ifndef ZEND_ALLOC_H
 #define ZEND_ALLOC_H
@@ -85,8 +85,6 @@ ZEND_API void *_erealloc(void *ptr, size_t size, int allow_failure ZEND_FILE_LIN
 ZEND_API char *_estrdup(const char *s ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC) ZEND_ATTRIBUTE_MALLOC;
 ZEND_API char *_estrndup(const char *s, unsigned int length ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC) ZEND_ATTRIBUTE_MALLOC;
 
-#define USE_ZEND_ALLOC 1
-
 #if USE_ZEND_ALLOC
 
 /* Standard wrapper macros */
@@ -125,9 +123,6 @@ ZEND_API char *_estrndup(const char *s, unsigned int length ZEND_FILE_LINE_DC ZE
 #define perealloc_recoverable_rel(ptr, size, persistent) ((persistent)?realloc((ptr), (size)):erealloc_recoverable_rel((ptr), (size)))
 #define pestrdup_rel(s, persistent) ((persistent)?strdup(s):estrdup_rel(s))
 
-#define safe_estrdup(ptr)  ((ptr)?(estrdup(ptr)):STR_EMPTY_ALLOC())
-#define safe_estrndup(ptr, len) ((ptr)?(estrndup((ptr), (len))):STR_EMPTY_ALLOC())
-
 #else
 
 #define _GNU_SOURCE
@@ -142,7 +137,7 @@ ZEND_API char *_estrndup(const char *s, unsigned int length ZEND_FILE_LINE_DC ZE
 #define erealloc(ptr, size)				realloc((ptr), (size))
 #define erealloc_recoverable(ptr, size)	realloc((ptr), (size))
 #define estrdup(s)						strdup(s)
-#define estrndup(s, length)				strndup((s), (length))
+#define estrndup(s, length)				zend_strndup((s), (length))
 
 /* Relay wrapper macros */
 #define emalloc_rel(size)					malloc(size)
@@ -152,7 +147,7 @@ ZEND_API char *_estrndup(const char *s, unsigned int length ZEND_FILE_LINE_DC ZE
 #define erealloc_rel(ptr, size)				realloc((ptr), (size))
 #define erealloc_recoverable_rel(ptr, size)	realloc((ptr), (size))
 #define estrdup_rel(s)						strdup(s)
-#define estrndup_rel(s, length)				strndup((s), (length))
+#define estrndup_rel(s, length)				zend_strndup((s), (length))
 
 /* Selective persistent/non persistent allocation macros */
 #define pemalloc(size, persistent)		malloc(size)
@@ -170,10 +165,10 @@ ZEND_API char *_estrndup(const char *s, unsigned int length ZEND_FILE_LINE_DC ZE
 #define perealloc_recoverable_rel(ptr, size, persistent)	realloc((ptr), (size))
 #define pestrdup_rel(s, persistent)			strdup(s)
 
-#define safe_estrdup(ptr)  ((ptr)?(strdup(ptr)):(empty_string))
-#define safe_estrndup(ptr, len) ((ptr)?(strndup((ptr), (len))):(empty_string))
+#endif /* !USE_ZEND_ALLOC */
 
-#endif
+#define safe_estrdup(ptr)  ((ptr)?(estrdup(ptr)):STR_EMPTY_ALLOC())
+#define safe_estrndup(ptr, len) ((ptr)?(estrndup((ptr), (len))):STR_EMPTY_ALLOC())
 
 ZEND_API int zend_set_memory_limit(unsigned int memory_limit);
 

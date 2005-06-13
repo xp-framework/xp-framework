@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend.c,v 1.297 2005/03/15 23:46:29 wez Exp $ */
+/* $Id: zend.c,v 1.304 2005/06/13 11:22:58 dmitry Exp $ */
 
 #include "zend.h"
 #include "zend_extensions.h"
@@ -826,6 +826,8 @@ void zend_deactivate(TSRMLS_D)
 		shutdown_compiler(TSRMLS_C);
 	} zend_end_try();
 
+	zend_destroy_rsrc_list(&EG(regular_list) TSRMLS_CC);
+
 	zend_try {
 		zend_ini_deactivate(TSRMLS_C);
 	} zend_end_try();
@@ -967,6 +969,7 @@ ZEND_API void zend_error(int type, const char *format, ...)
 			z_context->value.ht = EG(active_symbol_table);
 			z_context->type = IS_ARRAY;
 			ZVAL_ADDREF(z_context); /* we don't want this one to be freed */
+			z_context->is_ref = 1;
 
 			params = (zval ***) emalloc(sizeof(zval **)*5);
 			params[0] = &z_error_type;
@@ -979,6 +982,9 @@ ZEND_API void zend_error(int type, const char *format, ...)
 			EG(user_error_handler) = NULL;
 	    
 			if (call_user_function_ex(CG(function_table), NULL, orig_user_error_handler, &retval, 5, params, 1, NULL TSRMLS_CC)==SUCCESS) {
+				if (Z_TYPE_P(z_context) != IS_ARRAY || z_context->value.ht != EG(active_symbol_table)) {
+					zend_error(E_ERROR, "User error handler must not modify error context");
+				}
 				if (retval) {
 					if (Z_TYPE_P(retval) == IS_BOOL && Z_LVAL_P(retval) == 0) {
 						zend_error_cb(type, error_filename, error_lineno, format, args);
@@ -990,15 +996,23 @@ ZEND_API void zend_error(int type, const char *format, ...)
 				zend_error_cb(type, error_filename, error_lineno, format, args);
 			}
 
-			EG(user_error_handler) = orig_user_error_handler;
+			if (!EG(user_error_handler)) {
+				EG(user_error_handler) = orig_user_error_handler;
+			} 
+			else {
+				zval_ptr_dtor(&orig_user_error_handler);
+			}
 
 			efree(params);
 			zval_ptr_dtor(&z_error_message);
 			zval_ptr_dtor(&z_error_type);
 			zval_ptr_dtor(&z_error_filename);
 			zval_ptr_dtor(&z_error_lineno);
-			if (ZVAL_REFCOUNT(z_context) == 2) {
+			if (ZVAL_REFCOUNT(z_context) <= 2) {
 				FREE_ZVAL(z_context);
+			} else {
+				ZVAL_DELREF(z_context);
+				zval_ptr_dtor(&z_context);
 			}
 			break;
 	}
@@ -1011,6 +1025,9 @@ ZEND_API void zend_error(int type, const char *format, ...)
 	}
 }
 
+#if defined(__GNUC__) && !defined(__INTEL_COMPILER)
+void zend_error_noreturn(int type, const char *format, ...) __attribute__ ((alias("zend_error"),noreturn));
+#endif
 
 ZEND_API void zend_output_debug_string(zend_bool trigger_break, char *format, ...)
 {
@@ -1053,6 +1070,10 @@ ZEND_API int zend_execute_scripts(int type TSRMLS_DC, zval **retval, int file_co
 			continue;
 		}
 		EG(active_op_array) = zend_compile_file(file_handle, ZEND_INCLUDE TSRMLS_CC);
+		if(file_handle->opened_path) {
+			int dummy=1;
+			zend_hash_add(&EG(included_files), file_handle->opened_path, strlen(file_handle->opened_path)+1, (void *)&dummy, sizeof(int), NULL);
+		}
 		zend_destroy_file_handle(file_handle TSRMLS_CC);
 		if (EG(active_op_array)) {
 			EG(return_value_ptr_ptr) = retval ? retval : &local_retval;

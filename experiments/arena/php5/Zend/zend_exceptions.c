@@ -19,7 +19,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_exceptions.c,v 1.75 2004/12/07 07:46:12 dmitry Exp $ */
+/* $Id: zend_exceptions.c,v 1.76 2005/04/19 11:41:03 sniper Exp $ */
 
 #include "zend.h"
 #include "zend_API.h"
@@ -177,7 +177,7 @@ ZEND_METHOD(error_exception, __construct)
 	if (argc >= 4) {
 	    zend_update_property_string(default_exception_ce, object, "file", sizeof("file")-1, filename TSRMLS_CC);
     	if (argc < 5) {
-    	    lineno = 0; // invalidate lineno
+    	    lineno = 0; /* invalidate lineno */
     	}
     	zend_update_property_long(default_exception_ce, object, "line", sizeof("line")-1, lineno TSRMLS_CC);
 	}

@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_execute_API.c,v 1.314 2005/03/19 14:25:42 helly Exp $ */
+/* $Id: zend_execute_API.c,v 1.321 2005/06/09 16:57:43 dmitry Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -276,11 +276,6 @@ void shutdown_executor(TSRMLS_D)
 		clean_non_persistent_constants(TSRMLS_C);
 	} zend_end_try();
 
-	/* The regular list must be destroyed after the main symbol table,
-	 * op arrays, and constants are destroyed.
-	 */
-	zend_destroy_rsrc_list(&EG(regular_list) TSRMLS_CC);
-
 	zend_try {
 #if ZEND_DEBUG
 	signal(SIGSEGV, original_sigsegv_handler);
@@ -426,11 +421,13 @@ ZEND_API int zval_update_constant(zval **pp, void *arg TSRMLS_DC)
 
 	if (p->type == IS_CONSTANT) {
 		int refcount;
+		zend_uchar is_ref;
 
-		SEPARATE_ZVAL(pp);
+		SEPARATE_ZVAL_IF_NOT_REF(pp);
 		p = *pp;
 
 		refcount = p->refcount;
+		is_ref = p->is_ref;
 
 		if (!zend_get_constant(p->value.str.val, p->value.str.len, &const_value TSRMLS_CC)) {
 			zend_error(E_NOTICE, "Use of undefined constant %s - assumed '%s'",
@@ -447,15 +444,15 @@ ZEND_API int zval_update_constant(zval **pp, void *arg TSRMLS_DC)
 			*p = const_value;
 		}
 
-		INIT_PZVAL(p);
 		p->refcount = refcount;
+		p->is_ref = is_ref;
 	} else if (p->type == IS_CONSTANT_ARRAY) {
 		zval **element, *new_val;
 		char *str_index;
 		uint str_index_len;
 		ulong num_index;
 
-		SEPARATE_ZVAL(pp);
+		SEPARATE_ZVAL_IF_NOT_REF(pp);
 		p = *pp;
 		p->type = IS_ARRAY;
 
@@ -756,6 +753,11 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache TS
 				zval *new_zval;
 
 				if (fci->no_separation) {
+					if(i) {
+						/* hack to clean up the stack */
+						zend_ptr_stack_n_push(&EG(argument_stack), 2, (void *) (long) i, NULL);
+						zend_ptr_stack_clear_multiple(TSRMLS_C);
+					}
 					return FAILURE;
 				}
 				ALLOC_ZVAL(new_zval);
@@ -890,7 +892,7 @@ ZEND_API int zend_lookup_class(char *name, int name_length, zend_class_entry ***
 {
 	zval **args[1];
 	zval autoload_function;
-	zval class_name, *class_name_ptr = &class_name;
+	zval *class_name_ptr;
 	zval *retval_ptr;
 	int retval;
 	char *lc_name;
@@ -931,8 +933,9 @@ ZEND_API int zend_lookup_class(char *name, int name_length, zend_class_entry ***
 
 	ZVAL_STRINGL(&autoload_function, ZEND_AUTOLOAD_FUNC_NAME, sizeof(ZEND_AUTOLOAD_FUNC_NAME)-1,  0);
 
+	ALLOC_ZVAL(class_name_ptr);
 	INIT_PZVAL(class_name_ptr);
-	ZVAL_STRINGL(class_name_ptr, name, name_length, 0);
+	ZVAL_STRINGL(class_name_ptr, name, name_length, 1);
 	
 	args[0] = &class_name_ptr;
 	
@@ -955,6 +958,8 @@ ZEND_API int zend_lookup_class(char *name, int name_length, zend_class_entry ***
 	EG(exception) = NULL;
 	retval = zend_call_function(&fcall_info, &fcall_cache TSRMLS_CC);
 	EG(autoload_func) = fcall_cache.function_handler;
+
+	zval_ptr_dtor(&class_name_ptr);
 
 	zend_hash_del(EG(in_autoload), lc_name, name_length+1);
 
@@ -1093,6 +1098,17 @@ void execute_new_code(TSRMLS_D)
 		if (opline->op2.op_type==IS_CONST) {
 			opline->op2.u.constant.is_ref = 1;
 			opline->op2.u.constant.refcount = 2;
+		}
+		switch (opline->opcode) {
+			case ZEND_JMP:
+				opline->op1.u.jmp_addr = &CG(active_op_array)->opcodes[opline->op1.u.opline_num];
+				break;
+			case ZEND_JMPZ:
+			case ZEND_JMPNZ:
+			case ZEND_JMPZ_EX:
+			case ZEND_JMPNZ_EX:
+				opline->op2.u.jmp_addr = &CG(active_op_array)->opcodes[opline->op2.u.opline_num];
+				break;
 		}
 		ZEND_VM_SET_OPCODE_HANDLER(opline);
 		opline++;
@@ -1351,8 +1367,9 @@ void zend_verify_abstract_class(zend_class_entry *ce TSRMLS_DC)
 		zend_hash_apply_with_argument(&ce->function_table, (apply_func_arg_t) zend_verify_abstract_class_function, &ai TSRMLS_CC);
 
 		if (ai.cnt) {		
-			zend_error(E_ERROR, "Class %s contains %d abstract methods and must therefore be declared abstract (" MAX_ABSTRACT_INFO_FMT MAX_ABSTRACT_INFO_FMT MAX_ABSTRACT_INFO_FMT ")", 
+			zend_error(E_ERROR, "Class %s contains %d abstract method%s and must therefore be declared abstract or implement the remaining methods (" MAX_ABSTRACT_INFO_FMT MAX_ABSTRACT_INFO_FMT MAX_ABSTRACT_INFO_FMT ")", 
 				ce->name, ai.cnt, 
+				ai.cnt > 1 ? "s" : "",
 				DISPLAY_ABSTRACT_FN(0),
 				DISPLAY_ABSTRACT_FN(1),
 				DISPLAY_ABSTRACT_FN(2)

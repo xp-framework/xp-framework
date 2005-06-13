@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_interfaces.c,v 1.30 2005/03/19 01:11:48 andi Exp $ */
+/* $Id: zend_interfaces.c,v 1.31 2005/04/05 09:16:27 helly Exp $ */
 
 #include "zend.h"
 #include "zend_API.h"
@@ -409,8 +409,8 @@ int zend_user_serialize(zval *object, unsigned char **buffer, zend_uint *buf_len
 		switch(Z_TYPE_P(retval)) {
 		case IS_NULL:
 			/* we could also make this '*buf_len = 0' but this allows to skip variables */
-			result = FAILURE;
-			break;
+			zval_ptr_dtor(&retval);
+			return FAILURE;
 		case IS_STRING:
 			*buffer = estrndup(Z_STRVAL_P(retval), Z_STRLEN_P(retval));
 			*buf_len = Z_STRLEN_P(retval);

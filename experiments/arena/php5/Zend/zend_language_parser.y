@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_language_parser.y,v 1.155 2005/02/11 22:26:45 helly Exp $ */
+/* $Id: zend_language_parser.y,v 1.158 2005/06/08 06:49:00 dmitry Exp $ */
 
 /* 
  * LALR shift/reduce conflicts and how they are resolved:
@@ -35,6 +35,8 @@
 #include "zend_list.h"
 #include "zend_globals.h"
 #include "zend_API.h"
+#include "zend_constants.h"
+
 
 #define YYERROR_VERBOSE
 #define YYSTYPE znode
@@ -119,6 +121,7 @@
 %token T_UNSET
 %token T_ISSET
 %token T_EMPTY
+%token T_HALT_COMPILER
 %token T_CLASS
 %token T_PACKAGE
 %token T_CLASSNAME
@@ -168,6 +171,7 @@ top_statement:
 	|	class_declaration_statement		{ zend_do_early_binding(TSRMLS_C); }
 	|	package_declaration_statement
 	|	enum_declaration_statement
+	|	T_HALT_COMPILER '(' ')' ';'   { REGISTER_MAIN_LONG_CONSTANT("__COMPILER_HALT_OFFSET__", zend_get_scanned_file_offset(TSRMLS_C), CONST_CS); YYACCEPT; }
 ;
 
 
@@ -182,6 +186,7 @@ inner_statement:
 	|	function_declaration_statement
 	|	class_declaration_statement
 	|	package_declaration_statement
+	|	T_HALT_COMPILER '(' ')' ';'   { zend_error(E_COMPILE_ERROR, "__HALT_COMPILER() can only be used from the outermost scope"); }
 ;
 
 
@@ -246,7 +251,7 @@ import_list:
 
 import:
 		class_name_reference                 { zend_do_import(&$1, NULL TSRMLS_CC); }
-	|	class_name_reference T_AS T_STRING   { zend_do_import(&$1, &$3 TSRMLS_CC); }
+	|	class_name_reference T_AS T_STRING	   { zend_do_import(&$1, &$3 TSRMLS_CC); }
 	|	class_name_reference T_AS r_variable { zend_do_import(&$1, &$3 TSRMLS_CC); }
 ;
 
@@ -360,9 +365,9 @@ unticked_package_declaration_statement:
 ;
 
 class_entry_type:
-		T_CLASS			{  $$.u.constant.value.lval = 0; }
-	|	T_ABSTRACT T_CLASS { $$.u.constant.value.lval = ZEND_ACC_EXPLICIT_ABSTRACT_CLASS; }
-	|	T_FINAL T_CLASS { $$.u.constant.value.lval = ZEND_ACC_FINAL_CLASS; }
+		T_CLASS			{ $$.u.opline_num = CG(zend_lineno); $$.u.EA.type = 0; }
+	|	T_ABSTRACT T_CLASS { $$.u.opline_num = CG(zend_lineno); $$.u.EA.type = ZEND_ACC_EXPLICIT_ABSTRACT_CLASS; }
+	|	T_FINAL T_CLASS { $$.u.opline_num = CG(zend_lineno); $$.u.EA.type = ZEND_ACC_FINAL_CLASS; }
 ;
 
 extends_from:
@@ -371,7 +376,7 @@ extends_from:
 ;
 
 interface_entry:
-	T_INTERFACE		{ $$.u.constant.value.lval = ZEND_ACC_INTERFACE; }
+	T_INTERFACE		{ $$.u.opline_num = CG(zend_lineno); $$.u.EA.type = ZEND_ACC_INTERFACE; }
 ;
 
 interface_extends_list:
@@ -522,7 +527,8 @@ non_empty_parameter_list:
 optional_class_type:
 		/* empty */		{ $$.op_type = IS_UNUSED; }
 	|	T_STRING		{ $$ = $1; }
-	|	T_CLASSNAME		{ $$ = $1; }
+	|	T_CLASSNAME
+	|	T_ARRAY		{ $$.op_type = IS_CONST; $$.u.constant.type=IS_NULL;}
 ;
 
 
