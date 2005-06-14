@@ -98,6 +98,16 @@
     }
     
     /**
+     * Returns the number of series
+     *
+     * @access public
+     * @return int
+     */
+    function seriesCount() {
+      return sizeof($this->series);
+    }
+    
+    /**
      * Helper method which returns the largest value from all series
      *
      * @access  public
