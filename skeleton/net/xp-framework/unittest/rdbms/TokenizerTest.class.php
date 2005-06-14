@@ -128,6 +128,25 @@
         $expect[substr($this->dsn, 0, strpos($this->dsn, '://'))]
       );
     }
+
+    /**
+     * Test backslash escaping
+     *
+     * @access  public
+     */
+    #[@test]
+    function testBackslash() {
+      static $expect= array(
+        'sybase' => 'select "Hello \\ " as strval',     // one backslash
+        'mysql'  => 'select "Hello \\\\ " as strval',   // two backslashes
+        // TBD: Other built-in rdbms engines
+      );
+      
+      $this->assertEquals(
+        $this->conn->prepare('select %s as strval', 'Hello \\ '),
+        $expect[substr($this->dsn, 0, strpos($this->dsn, '://'))]
+      );
+    }
     
     /**
      * Test array of integer token
