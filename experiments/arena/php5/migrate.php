@@ -230,7 +230,7 @@ __;
               break;
             
             case ST_INITIAL.T_STRING:
-            case ST_CLASS_BODY.T_STRING:
+            case ST_FUNCTION_BODY.T_STRING:
               if (T_DOUBLE_COLON == $tokens[$i+ 1][0]) {    // Look ahead
                 $t[1]= $this->packagedNameOf($t[1]);
               }
