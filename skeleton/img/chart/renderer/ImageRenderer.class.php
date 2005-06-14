@@ -249,6 +249,13 @@
       return $img;
     }
     
+    /**
+     * Method to render line charts
+     *
+     * @access  protected
+     * @param   img.chart.LineChart bc
+     * @return  &img.Image
+     */
     function renderLineChart($lc) {
  
       // Create local variables for faster access
@@ -259,8 +266,7 @@
         $fontw, $fonth,
         $leftBorder, $rightBorder, $topBorder, $bottomBorder,
         $innerWidth, $innerHeight,
-        $zero,
-        $colors
+        $zero
       )= $this->_prepare($lc, $font= 2);
 
       // Sanity checks
@@ -316,6 +322,51 @@
       return $img;
     }
   
+    /**
+     * Method to render pie charts
+     *
+     * @access  protected
+     * @param   img.chart.PieChart bc
+     * @return  &img.Image
+     */
+    function renderPieChart($pc) {
+ 
+      // Create local variables for faster access
+      $border= 50;
+      $sum= $pc->sum();
+      $innerHeight= $this->height - $border * 2;
+      $innerWidth= $this->width - $border * 2;
+      $middleX= $this->width / 2;
+      $middleY= $this->height / 2;
+      $count= $pc->count();
+
+      // Create image
+      with ($img= &Image::create($this->width, $this->height)); {
+        $colors= $this->_colors($img, $pc->getColor('sample'));
+
+        // Flood fill with background color
+        $img->fill($img->allocate($pc->getColor('chartback')), $leftBorder+ 1, $topBorder+ 1);
+        
+        $start= $end= 0;
+        for ($i= 0; $i < $count; $i++) {
+          $end+= $pc->series[0]->values[$i];
+          imagefilledarc(
+            $img->handle,
+            $middleX,
+            $middleY,
+            $innerWidth,
+            $innerHeight,
+            $start / $sum * 360,
+            $end / $sum * 360,
+            $colors[$i % sizeof($colors)]->handle,
+            IMG_ARC_PIE
+          );
+          $start= $end;
+        }
+      }
+      return $img;
+    }
+
     /**
      * Renders a chart
      *
