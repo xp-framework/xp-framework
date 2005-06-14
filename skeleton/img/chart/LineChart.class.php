@@ -13,7 +13,7 @@
   define('RANGE_AUTO',        -1);
   
   /**
-   * Bar chart
+   * Line chart
    *
    * @see      xp://img.chart.Chart
    * @purpose  Chart
