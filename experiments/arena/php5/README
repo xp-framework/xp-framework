@@ -48,12 +48,14 @@ Currently implemented
 
 * Comparison operator
   The new comparison operator "<=>" returns 0 if the expressions on both 
-  sides are equal, 1 if the left side is smaller and -1 if the right hand
-  side is smaller.
+  sides are equal, -1 if the left side is smaller and 1 if the right hand
+  side is smaller. This is basically the same what strcmp() does, only that
+  implementing it as an operator yields quite a bit of performance.
+  
+  1 <=> 2   // -1
+  2 <=> 1   // 1
+  1 <=> 1   // 0
 
-  1 <=> 1  // 0
-  0 <=> 1  // 1
-  1 <=> 0  // -1
   
   This is particularily useful for callbacks to any of the *sort() functions.
 
