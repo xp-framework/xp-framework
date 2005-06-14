@@ -130,7 +130,7 @@
             case 'd': $r= is_null($arg) ? 'NULL' : sprintf('%.0f', $arg); break;
             case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
             case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
-            case 's': $r= is_null($arg) ? 'NULL' : '"'.str_replace('"', '\"', $arg).'"'; break;
+            case 's': $r= is_null($arg) ? 'NULL' : '"'.strtr($arg, array('"' => '\"', '\\' => '\\\\')).'"'; break;
             case 'u': $r= is_null($arg) ? 'NULL' : '"'.date('Y-m-d H:i:s', $arg).'"'; break;
             default: $r= '%'; $mod= -1; $i--; continue;
           }
