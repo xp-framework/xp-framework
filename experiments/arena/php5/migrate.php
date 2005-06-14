@@ -195,7 +195,7 @@ __;
               break;
             
             case ST_INITIAL.T_TRY:
-            case ST_FUNCTION.T_TRY:
+            case ST_FUNCTION_BODY.T_TRY:
               $skip= TRUE;
               array_unshift($states, ST_LOOKING_FOR_TRY_BRACKET);
               break;
@@ -203,6 +203,7 @@ __;
             case ST_LOOKING_FOR_TRY_BRACKET.'{';
               $skip= FALSE;
               $t= 'try {';
+              $brackets++;
               array_shift($states);
               break;
 
@@ -236,7 +237,7 @@ __;
               break;
 
             case ST_INITIAL.T_IF:
-            case ST_CLASS_BODY.T_IF:
+            case ST_FUNCTION_BODY.T_IF:
               if ('catch' == $tokens[$i+ 3][1]) {           // Look ahead
                 $skip= TRUE;
                 array_unshift($states, ST_LOOKING_FOR_CATCH);
