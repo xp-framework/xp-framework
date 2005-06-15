@@ -28,6 +28,8 @@
         <link rel="stylesheet" href="/{/formresult/config/style}.css"/>
         <script language="JavaScript"><![CDATA[
           function handleKey(event) {
+            if (event.ctrlKey || event.altKey || event.shiftKey) return false;
+
             switch (event.keyCode) {
               case 37:  // Left arrow
               case 8:   // Backspace
