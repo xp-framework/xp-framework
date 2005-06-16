@@ -19,7 +19,7 @@ $header_text = <<< DATA
    +----------------------------------------------------------------------+
 */
 
-/* \$Id: zend_vm_gen.php,v 1.7 2005/06/13 17:50:07 dmitry Exp $ */
+/* \$Id: zend_vm_gen.php,v 1.9 2005/06/16 06:00:48 dmitry Exp $ */
 
 
 DATA;
@@ -380,6 +380,41 @@ function gen_code($f, $spec, $kind, $code, $op1, $op2) {
 			break;
 	}
 
+	/* Remove unused free_op1 and free_op2 declarations */
+	if ($spec && preg_match_all('/^\s*zend_free_op\s+[^;]+;\s*$/me', $code, $matches, PREG_SET_ORDER)) {
+		$n = 0;
+		foreach ($matches as $match) {
+		  $code = preg_replace('/'.preg_quote($match[0],'/').'/', "\$D$n", $code);
+		  ++$n;
+		}
+		$del_free_op1 = (strpos($code, "free_op1") === false);
+		$del_free_op2 = (strpos($code, "free_op2") === false);
+		$n = 0;
+		foreach ($matches as $match) {
+			$dcl = $match[0];
+			$changed = 0;
+			if ($del_free_op1 && strpos($dcl, "free_op1") !== false) {
+				$dcl = preg_replace("/free_op1\s*,\s*/", "", $dcl);
+				$dcl = preg_replace("/free_op1\s*;/", ";", $dcl);
+				$changed = 1;
+			}
+			if ($del_free_op2 && strpos($dcl, "free_op2") !== false) {
+				$dcl = preg_replace("/free_op2\s*,\s*/", "", $dcl);
+				$dcl = preg_replace("/free_op2\s*;/", ";", $dcl);
+				$changed = 1;
+			}
+			if ($changed) {
+				$dcl = preg_replace("/,\s*;/", ";", $dcl);
+				$dcl = preg_replace("/zend_free_op\s*;/", "", $dcl);
+			}
+		  $code = preg_replace("/\\\$D$n/", $dcl, $code);
+		  ++$n;
+		}
+	}
+
+	/* Remove unnecessary ';' */
+	$code = preg_replace('/^\s*;\s*$/m', '', $code);
+
 	out($f, $code);
 }
 
@@ -703,27 +738,30 @@ function gen_executor($f, $skl, $spec, $kind, $executor_name, $initializer_name,
 		if (preg_match("/(.*)[{][%]([A-Z_]*)[%][}](.*)/", $line, $m)) {
 			switch ($m[2]) {
 				case "DEFINES":
+					if (ZEND_VM_OLD_EXECUTOR) {
+						out($f,"static int zend_vm_old_executor = 0;\n\n");
+					}
 					out($f,"static opcode_handler_t zend_vm_get_opcode_handler(zend_uchar opcode, zend_op* op);\n\n");
 					switch ($kind) {
 						case ZEND_VM_KIND_CALL:
 							out($f,"\n");
 							out($f,"#define ZEND_VM_CONTINUE()   return 0\n");
 							out($f,"#define ZEND_VM_RETURN()     return 1\n");
-							out($f,"#define ZEND_VM_DISPATCH(op) return zend_vm_get_opcode_handler(op->opcode, op)(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);\n\n");
+							out($f,"#define ZEND_VM_DISPATCH(opcode, opline) return zend_vm_get_opcode_handler(opcode, opline)(ZEND_OPCODE_HANDLER_ARGS_PASSTHRU);\n\n");
 							out($f,"#define ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_INTERNAL execute_data TSRMLS_CC\n");
 							break;
 						case ZEND_VM_KIND_SWITCH:
 							out($f,"\n");
 							out($f,"#define ZEND_VM_CONTINUE() goto zend_vm_continue\n");
 							out($f,"#define ZEND_VM_RETURN()   return\n");
-							out($f,"#define ZEND_VM_DISPATCH(op) dispatch_handler = zend_vm_get_opcode_handler(op->opcode, op); goto zend_vm_dispatch;\n\n");
+							out($f,"#define ZEND_VM_DISPATCH(opcode, opline) dispatch_handler = zend_vm_get_opcode_handler(opcode, opline); goto zend_vm_dispatch;\n\n");
 							out($f,"#define ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_INTERNAL &execute_data TSRMLS_CC\n");
 							break;
 						case ZEND_VM_KIND_GOTO:
 							out($f,"\n");
 							out($f,"#define ZEND_VM_CONTINUE() goto *(void**)(EX(opline)->handler)\n");
 							out($f,"#define ZEND_VM_RETURN()   return\n");
-							out($f,"#define ZEND_VM_DISPATCH(op) goto *(void**)(zend_vm_get_opcode_handler(op->opcode, op));\n\n");
+							out($f,"#define ZEND_VM_DISPATCH(opcode, opline) goto *(void**)(zend_vm_get_opcode_handler(opcode, opline));\n\n");
 							out($f,"#define ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_INTERNAL &execute_data TSRMLS_CC\n");
 							break;
 					}
@@ -1064,7 +1102,7 @@ function usage() {
 	     "\nOptions:".
 	     "\n  --with-vm-kind=CALL|SWITCH|GOTO - select threading model (default is CALL)".
 	     "\n  --without-specializer           - disable executor specialization".
-	     "\n  --without-old-executor          - disable old executor".
+	     "\n  --with-old-executor             - enable old executor".
 	     "\n  --with-lines                    - enable #line directives".
 	     "\n\n");
 }
@@ -1091,9 +1129,9 @@ for ($i = 1;  $i < $argc; $i++) {
 	} else if ($argv[$i] == "--without-specializer") {
 	  // Disabling specialization
 		define("ZEND_VM_SPEC", 0);
-	} else if ($argv[$i] == "--without-old-executor") {
+	} else if ($argv[$i] == "--with-old-executor") {
 	  // Disabling code for old-style executor
-		define("ZEND_VM_OLD_EXECUTOR", 0);
+		define("ZEND_VM_OLD_EXECUTOR", 1);
 	} else if ($argv[$i] == "--with-lines") {
 		// Enabling debuging using original zend_vm_def.h
 		define("ZEND_VM_LINES", 1);
@@ -1118,7 +1156,7 @@ if (!defined("ZEND_VM_SPEC")) {
 }
 if (!defined("ZEND_VM_OLD_EXECUTOR")) {
   // Include old-style executor by default
-	define("ZEND_VM_OLD_EXECUTOR", 1);
+	define("ZEND_VM_OLD_EXECUTOR", 0);
 }
 if (!defined("ZEND_VM_LINES")) {
   // Disabling #line directives

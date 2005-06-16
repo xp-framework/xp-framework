@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_execute.h,v 1.79 2005/06/10 09:54:37 dmitry Exp $ */
+/* $Id: zend_execute.h,v 1.82 2005/06/16 14:27:08 stas Exp $ */
 
 #ifndef ZEND_EXECUTE_H
 #define ZEND_EXECUTE_H
@@ -180,8 +180,20 @@ ZEND_API zval** zend_get_compiled_variable_value(zend_execute_data *execute_data
 #define ZEND_USER_OPCODE_RETURN     1 /* exit from executor (return from function) */
 #define ZEND_USER_OPCODE_DISPATCH   2 /* call original opcode handler */
 
+#define ZEND_USER_OPCODE_DISPATCH_TO 0x100 /* call original handler of returned opcode */
+
 ZEND_API int zend_set_user_opcode_handler(zend_uchar opcode, opcode_handler_t handler);
 ZEND_API opcode_handler_t zend_get_user_opcode_handler(zend_uchar opcode);
+
+/* former zend_execute_locks.h */
+typedef struct _zend_free_op {
+	zval* var;
+/*	int   is_var; */
+} zend_free_op;
+
+ZEND_API zval *zend_get_zval_ptr(znode *node, temp_variable *Ts, zend_free_op *should_free, int type TSRMLS_DC);
+ZEND_API zval **zend_get_zval_ptr_ptr(znode *node, temp_variable *Ts, zend_free_op *should_free, int type TSRMLS_DC);
+
 
 END_EXTERN_C()
 

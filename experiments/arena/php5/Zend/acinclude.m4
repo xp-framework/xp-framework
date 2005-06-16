@@ -1,10 +1,13 @@
-dnl $Id: acinclude.m4,v 1.14 2005/06/07 16:47:33 sniper Exp $
+dnl $Id: acinclude.m4,v 1.15 2005/06/14 11:41:48 sniper Exp $
 dnl
 dnl This file contains local autoconf functions.
 
 AC_DEFUN([LIBZEND_BISON_CHECK],[
   # we only support certain bison versions
   bison_version_list="1.28 1.35 1.75 1.875 2.0"
+
+  # for standalone build of Zend Engine
+  test -z "$SED" && SED=sed
 
   if test "$YACC"; then
     AC_CACHE_CHECK([for bison version], php_cv_bison_version, [

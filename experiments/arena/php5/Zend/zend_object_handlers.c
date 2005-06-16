@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_object_handlers.c,v 1.130 2005/06/09 17:20:43 stas Exp $ */
+/* $Id: zend_object_handlers.c,v 1.131 2005/06/16 14:52:47 dmitry Exp $ */
 
 #include "zend.h"
 #include "zend_globals.h"
@@ -659,6 +659,8 @@ static union _zend_function *zend_std_get_method(zval **object_ptr, char *method
 			call_user_call->scope = zobj->ce;
 			call_user_call->fn_flags = 0;
 			call_user_call->function_name = estrndup(method_name, method_len);
+			call_user_call->pass_rest_by_reference = 0;
+			call_user_call->return_reference = ZEND_RETURN_VALUE;
 
 			return (union _zend_function *)call_user_call;
 		} else {

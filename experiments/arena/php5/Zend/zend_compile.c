@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_compile.c,v 1.636 2005/06/10 07:56:38 dmitry Exp $ */
+/* $Id: zend_compile.c,v 1.638 2005/06/16 14:52:45 dmitry Exp $ */
 
 #include <zend_language_parser.h>
 #include "zend.h"
@@ -1999,12 +1999,8 @@ static zend_bool zend_do_perform_implementation_check(zend_function *fe, zend_fu
 		return 0;
 	}
 
-	if (proto->common.return_reference != ZEND_RETURN_REFERENCE_AGNOSTIC
-	&& fe->common.return_reference != proto->common.return_reference) {
-		/* atm we cannot let internal function return by ref */
-		if (fe->type == proto->type || fe->type != ZEND_INTERNAL_FUNCTION) {
-			return 0;
-		}
+	if (fe->common.return_reference != proto->common.return_reference) {
+		return 0;
 	}
 
 	for (i=0; i < proto->common.num_args; i++) {
@@ -3565,12 +3561,10 @@ void zend_do_unset(znode *variable TSRMLS_DC)
 				last_op->opcode = ZEND_UNSET_VAR;
 				break;
 			case ZEND_FETCH_DIM_UNSET:
-				last_op->opcode = ZEND_UNSET_DIM_OBJ;
-				last_op->extended_value = ZEND_UNSET_DIM;
+				last_op->opcode = ZEND_UNSET_DIM;
 				break;
 			case ZEND_FETCH_OBJ_UNSET:
-				last_op->opcode = ZEND_UNSET_DIM_OBJ;
-				last_op->extended_value = ZEND_UNSET_OBJ;
+				last_op->opcode = ZEND_UNSET_OBJ;
 				break;
 
 		}

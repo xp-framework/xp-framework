@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_execute.c,v 1.702 2005/06/13 17:50:03 dmitry Exp $ */
+/* $Id: zend_execute.c,v 1.707 2005/06/16 17:29:29 helly Exp $ */
 
 #define ZEND_INTENSIVE_DEBUGGING 0
 
@@ -60,12 +60,6 @@ static void zend_extension_fcall_end_handler(zend_extension *extension, zend_op_
 #define T(offset) (*(temp_variable *)((char *) Ts + offset))
 
 #define TEMP_VAR_STACK_LIMIT 2000
-
-/* former zend_execute_locks.h */
-typedef struct _zend_free_op {
-	zval* var;
-/*	int   is_var; */
-} zend_free_op;
 
 static inline void zend_pzval_unlock_func(zval *z, zend_free_op *should_free)
 {
@@ -1297,7 +1291,8 @@ ZEND_API opcode_handler_t *zend_opcode_handlers;
 
 ZEND_API void execute_internal(zend_execute_data *execute_data_ptr, int return_value_used TSRMLS_DC)
 {
-	((zend_internal_function *) execute_data_ptr->function_state.function)->handler(execute_data_ptr->opline->extended_value, (*(temp_variable *)((char *) execute_data_ptr->Ts + execute_data_ptr->opline->result.u.var)).var.ptr, execute_data_ptr->object, return_value_used TSRMLS_CC);
+	zval **return_value_ptr = &(*(temp_variable *)((char *) execute_data_ptr->Ts + execute_data_ptr->opline->result.u.var)).var.ptr;
+	((zend_internal_function *) execute_data_ptr->function_state.function)->handler(execute_data_ptr->opline->extended_value, *return_value_ptr, execute_data_ptr->function_state.function->common.return_reference?return_value_ptr:NULL, execute_data_ptr->object, return_value_used TSRMLS_CC);
 }
 
 #define ZEND_VM_NEXT_OPCODE() \
@@ -1329,8 +1324,6 @@ ZEND_API void execute_internal(zend_execute_data *execute_data_ptr, int return_v
 #define ZEND_VM_CONTINUE_JMP() \
      ZEND_VM_CONTINUE()    
 
-static int zend_vm_old_executor = 0;
-
 #include "zend_vm_execute.h"
 
 ZEND_API int zend_set_user_opcode_handler(zend_uchar opcode, opcode_handler_t handler)
@@ -1346,6 +1339,14 @@ ZEND_API int zend_set_user_opcode_handler(zend_uchar opcode, opcode_handler_t ha
 ZEND_API opcode_handler_t zend_get_user_opcode_handler(zend_uchar opcode)
 {
 	return zend_user_opcode_handlers[opcode];
+}
+
+ZEND_API zval *zend_get_zval_ptr(znode *node, temp_variable *Ts, zend_free_op *should_free, int type TSRMLS_DC) {
+	return get_zval_ptr(node, Ts, should_free, type);
+}
+
+ZEND_API zval **zend_get_zval_ptr_ptr(znode *node, temp_variable *Ts, zend_free_op *should_free, int type TSRMLS_DC) {
+	return get_zval_ptr_ptr(node, Ts, should_free, type);
 }
 
 /*

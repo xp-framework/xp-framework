@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend.c,v 1.304 2005/06/13 11:22:58 dmitry Exp $ */
+/* $Id: zend.c,v 1.305 2005/06/15 19:05:55 dmitry Exp $ */
 
 #include "zend.h"
 #include "zend_extensions.h"
@@ -1025,7 +1025,7 @@ ZEND_API void zend_error(int type, const char *format, ...)
 	}
 }
 
-#if defined(__GNUC__) && !defined(__INTEL_COMPILER)
+#if defined(__GNUC__) && !defined(__INTEL_COMPILER) && !defined(DARWIN)
 void zend_error_noreturn(int type, const char *format, ...) __attribute__ ((alias("zend_error"),noreturn));
 #endif
 

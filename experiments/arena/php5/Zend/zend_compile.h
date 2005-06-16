@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_compile.h,v 1.308 2005/06/09 17:20:43 stas Exp $ */
+/* $Id: zend_compile.h,v 1.310 2005/06/16 14:52:46 dmitry Exp $ */
 
 #ifndef ZEND_COMPILE_H
 #define ZEND_COMPILE_H
@@ -239,7 +239,6 @@ struct _zend_op_array {
 
 #define ZEND_RETURN_VALUE				0
 #define ZEND_RETURN_REFERENCE			1
-#define ZEND_RETURN_REFERENCE_AGNOSTIC	2
 
 typedef struct _zend_internal_function {
 	/* Common elements */
@@ -619,10 +618,6 @@ int zendlex(znode *zendlval TSRMLS_DC);
 #define ZEND_FETCH_STATIC			2
 #define ZEND_FETCH_STATIC_MEMBER	3
 
-
-/* obj/dim unsets */
-#define ZEND_UNSET_DIM				1
-#define ZEND_UNSET_OBJ				2
 
 /* class fetches */
 #define ZEND_FETCH_CLASS_DEFAULT	0

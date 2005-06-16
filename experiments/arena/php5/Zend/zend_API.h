@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_API.h,v 1.198 2005/05/26 13:46:16 dmitry Exp $ */
+/* $Id: zend_API.h,v 1.199 2005/06/16 14:52:44 dmitry Exp $ */
 
 #ifndef ZEND_API_H
 #define ZEND_API_H
@@ -65,7 +65,7 @@ typedef struct _zend_function_entry {
 	zend_arg_info name[] = {																		\
 		{ NULL, 0, NULL, 0, 0, 0, pass_rest_by_reference, return_reference, required_num_args },
 #define ZEND_BEGIN_ARG_INFO(name, pass_rest_by_reference)	\
-	ZEND_BEGIN_ARG_INFO_EX(name, pass_rest_by_reference, ZEND_RETURN_REFERENCE_AGNOSTIC, -1)
+	ZEND_BEGIN_ARG_INFO_EX(name, pass_rest_by_reference, ZEND_RETURN_VALUE, -1)
 #define ZEND_END_ARG_INFO()		};
 
 /* Name macros */

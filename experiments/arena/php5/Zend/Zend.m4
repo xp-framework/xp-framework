@@ -1,5 +1,5 @@
 dnl
-dnl $Id: Zend.m4,v 1.55 2005/06/07 17:22:40 sniper Exp $
+dnl $Id: Zend.m4,v 1.58 2005/06/14 12:23:26 sniper Exp $
 dnl
 dnl This file contains Zend specific autoconf functions.
 dnl
@@ -121,21 +121,13 @@ AC_ARG_ENABLE(debug,
 
 AC_DEFUN([LIBZEND_OTHER_CHECKS],[
 
-PHP_ARG_WITH(zend-vm,[virtual machine dispatch method],
+AC_ARG_WITH(zend-vm,
 [  --with-zend-vm=TYPE     Set virtual machine dispatch method. Type is
-                          one of "CALL", "SWITCH" or "GOTO" [TYPE=CALL]], CALL, no)
-
-case $PHP_ZEND_VM in
-  SWITCH)
-    AC_DEFINE(ZEND_VM_KIND,ZEND_VM_KIND_SWITCH,[virtual machine dispatch method])
-    ;;
-  GOTO)
-    AC_DEFINE(ZEND_VM_KIND,ZEND_VM_KIND_GOTO,[virtual machine dispatch method])
-    ;;
-  *)
-    AC_DEFINE(ZEND_VM_KIND,ZEND_VM_KIND_CALL,[virtual machine dispatch method])
-    ;;
-esac
+                          one of "CALL", "SWITCH" or "GOTO" [TYPE=CALL]],[
+  PHP_ZEND_VM=$withval
+],[
+  PHP_ZEND_VM=CALL
+])
 
 AC_ARG_ENABLE(zend-memory-manager,
 [  --disable-zend-memory-manager
@@ -175,6 +167,9 @@ AC_ARG_ENABLE(zend-multibyte,
   ZEND_MULTIBYTE=no
 ])
 
+AC_MSG_CHECKING([virtual machine dispatch method])
+AC_MSG_RESULT($PHP_ZEND_VM)
+
 AC_MSG_CHECKING(whether to enable the Zend memory manager)
 AC_MSG_RESULT($ZEND_USE_ZEND_ALLOC)
 
@@ -193,6 +188,19 @@ AC_MSG_RESULT($ZEND_DEBUG)
 AC_MSG_CHECKING(whether to enable Zend multibyte)
 AC_MSG_RESULT($ZEND_MULTIBYTE)
 	
+case $PHP_ZEND_VM in
+  SWITCH)
+    AC_DEFINE(ZEND_VM_KIND,ZEND_VM_KIND_SWITCH,[virtual machine dispatch method])
+    ;;
+  GOTO)
+    AC_DEFINE(ZEND_VM_KIND,ZEND_VM_KIND_GOTO,[virtual machine dispatch method])
+    ;;
+  *)
+    PHP_ZEND_VM=CALL
+    AC_DEFINE(ZEND_VM_KIND,ZEND_VM_KIND_CALL,[virtual machine dispatch method])
+    ;;
+esac
+
 if test "$ZEND_DEBUG" = "yes"; then
   AC_DEFINE(ZEND_DEBUG,1,[ ])
   echo " $CFLAGS" | grep ' -g' >/dev/null || DEBUG_CFLAGS="-g"
