@@ -42,14 +42,15 @@
      * @access  public
      * @param   &peer.http.HttpConnection connection
      * @param   array params default array()
+     * @param   array headers default array()
      * @return  string
      * @throws  peer.http.UnexpectedResponseException
      */
-    function get(&$connection, $params= array()) {
+    function get(&$connection, $params= array(), $headers= array()) {
       $redirected= 0;
       do {
         try(); {
-          $response= &$connection->get($params);
+          $response= &$connection->get($params, $headers);
         } if (catch('Exception', $e)) {
           return throw(new UnexpectedResponseException(
             $e->getMessage(),
