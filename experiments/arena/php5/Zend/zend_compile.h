@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_compile.h,v 1.310 2005/06/16 14:52:46 dmitry Exp $ */
+/* $Id: zend_compile.h,v 1.311 2005/06/17 15:06:27 dmitry Exp $ */
 
 #ifndef ZEND_COMPILE_H
 #define ZEND_COMPILE_H
@@ -312,7 +312,6 @@ struct _zend_execute_data {
 	struct _zend_op *opline;
 	zend_function_state function_state;
 	zend_function *fbc; /* Function Being Called */
-	zend_function *fbc_constructor;
 	zend_op_array *op_array;
 	zval *object;
 	union _temp_variable *Ts;

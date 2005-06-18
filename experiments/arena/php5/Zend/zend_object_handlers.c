@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_object_handlers.c,v 1.131 2005/06/16 14:52:47 dmitry Exp $ */
+/* $Id: zend_object_handlers.c,v 1.132 2005/06/17 10:50:45 dmitry Exp $ */
 
 #include "zend.h"
 #include "zend_globals.h"
@@ -677,7 +677,8 @@ static union _zend_function *zend_std_get_method(zval **object_ptr, char *method
 			zend_function *priv_fbc;
 
 			if (zend_hash_find(&EG(scope)->function_table, lc_method_name, method_len+1, (void **) &priv_fbc)==SUCCESS
-				&& priv_fbc->common.fn_flags & ZEND_ACC_PRIVATE) {
+				&& priv_fbc->common.fn_flags & ZEND_ACC_PRIVATE
+				&& priv_fbc->common.scope == EG(scope)) {
 				fbc = priv_fbc;
 			}
 		}

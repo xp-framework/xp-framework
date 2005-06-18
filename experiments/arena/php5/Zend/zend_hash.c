@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_hash.c,v 1.118 2005/04/25 08:21:15 sniper Exp $ */
+/* $Id: zend_hash.c,v 1.119 2005/06/17 10:50:15 tony2001 Exp $ */
 
 #include "zend.h"
 
@@ -1145,7 +1145,7 @@ ZEND_API int zend_hash_sort(HashTable *ht, sort_func_t sort_func,
 			arTmp[j]->pListLast = arTmp[j-1];
 			arTmp[j]->pListNext = arTmp[j+1];
 		}
-		arTmp[j]->pListLast = ht->pListTail;
+		arTmp[j]->pListLast = arTmp[j-1];
 		arTmp[j]->pListNext = NULL;
 	} else {
 		arTmp[0]->pListNext = NULL;

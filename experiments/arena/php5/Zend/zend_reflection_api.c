@@ -19,7 +19,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_reflection_api.c,v 1.158 2005/06/13 07:55:07 dmitry Exp $ */
+/* $Id: zend_reflection_api.c,v 1.159 2005/06/16 23:02:23 helly Exp $ */
 #include "zend.h"
 #include "zend_API.h"
 #include "zend_exceptions.h"
@@ -677,7 +677,7 @@ static void _function_string(string *str, zend_function *fptr, char* indent TSRM
 	}
 
 	string_printf(str, fptr->common.scope ? "method " : "function ");
-	if (fptr->type == ZEND_USER_FUNCTION && fptr->op_array.return_reference) {
+	if (fptr->op_array.return_reference) {
 		string_printf(str, "&");
 	}
 	string_printf(str, "%s ]", fptr->common.function_name);

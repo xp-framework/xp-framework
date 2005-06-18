@@ -1,3 +1,132 @@
+2005-06-17  Jani Taskinen  <jani.taskinen@sci.fi>
+
+    * tests/bug29368.phpt
+      tests/bug30856.phpt
+      tests/bug30961.phpt
+      tests/bug31720.phpt
+      tests/bug32226.phpt
+      tests/bug33277.phpt:
+      No short-tags!
+
+2005-06-17  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_compile.h
+      zend_vm_def.h
+      zend_vm_execute.h
+      zend_vm_opcodes.h:
+      Removed EX(fbc_constructor) (it is no longer needed)
+
+2005-06-17  Antony Dovgal  <antony@zend.com>
+
+    * (PHP_5_0)
+      zend_API.c
+      zend_list.c:
+      MFH: improve error messages in internal classes
+
+    * zend_API.c
+      zend_list.c:
+      improve error messages when error raised from an internal class (do not
+      hide class name)
+
+2005-06-17  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_object_handlers.c
+      zend_object_handlers.c:
+      Fixed bug #33277 (private method accessed by child class)
+
+2005-06-17  Antony Dovgal  <antony@zend.com>
+
+    * zend_hash.c:
+      fix bug #33382 (array_reverse() fails after *sort())
+      no need to MFH - the bug existed only in HEAD
+
+2005-06-17  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_API.c
+      zend_API.h
+      zend_extensions.h
+      zend_modules.h:
+      Improved PHP extension loading mechanism with support for module
+      dependencies and conflicts.
+
+2005-06-16  Marcus Boerger  <marcus.boerger@post.rwth-aachen.de>
+
+    * zend_reflection_api.c:
+      - Internal functions/methods can now return by reference
+
+    * zend_execute.c:
+      - Fix TSRM build
+
+2005-06-16  Dmitry Stogov  <dmitry@zend.com>
+
+    * bench.php:
+      typo
+
+    * zend.h
+      zend_API.h
+      zend_compile.c
+      zend_compile.h
+      zend_execute.c
+      zend_execute_API.c
+      zend_extensions.h
+      zend_modules.h
+      zend_object_handlers.c
+      zend_vm_def.h
+      zend_vm_execute.h
+      zend_vm_opcodes.h:
+      Allowed return by refrence from internal functions
+
+2005-06-16  Stanislav Malyshev  <stas@zend.com>
+
+    * zend_execute.c
+      zend_execute.h:
+      rename to zend_
+
+2005-06-16  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_vm_def.h
+      zend_vm_execute.h
+      zend_vm_opcodes.h
+      tests/bug33318.phpt:
+      Fixed bug #33318 (throw 1; results in Invalid opcode 108/1/8)
+
+2005-06-16  Zeev Suraski  <zeev@zend.com>
+
+    * zend_language_scanner.l:
+      Fixlet
+
+2005-06-16  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_execute.c
+      zend_vm_def.h
+      zend_vm_execute.h
+      zend_vm_opcodes.h:
+      Compilation warnings
+
+    * zend_compile.c
+      zend_compile.h
+      zend_vm_def.h
+      zend_vm_execute.h
+      zend_vm_opcodes.h:
+      ZEND_UNSET_DIM_OBJ is splitted to ZEND_UNSET_DIM and ZEND_UNSET_OBJ.
+
+2005-06-16  Stanislav Malyshev  <stas@zend.com>
+
+    * zend_execute.c
+      zend_execute.h:
+      export zval getters
+
+2005-06-16  Dmitry Stogov  <dmitry@zend.com>
+
+    * zend_execute.h
+      zend_vm_def.h
+      zend_vm_execute.h
+      zend_vm_gen.php
+      zend_vm_opcodes.h:
+      USER_OPCODE API is improvet.
+      Implemented ability to dispatch from user handler to internal handler of
+      another opcode.
+
 2005-06-15  Dmitry Stogov  <dmitry@zend.com>
 
     * zend.c
@@ -8616,7 +8745,7 @@
 2003-06-10  Jani Taskinen  <sniper@iki.fi>
 
     * zend_multiply.h:
-      - Missing $Id: ChangeLog,v 1.713 2005/06/16 05:38:57 changelog Exp $ tag
+      - Missing $Id: ChangeLog,v 1.715 2005/06/18 05:35:31 changelog Exp $ tag
 
 2003-06-10  James Cox  <james@imajes.info>
 
@@ -10340,7 +10469,7 @@
       zend_types.h
       zend_variables.c
       zend_variables.h:
-      - Added some missing CVS $Id: ChangeLog,v 1.713 2005/06/16 05:38:57 changelog Exp $ tags, headers and footers.
+      - Added some missing CVS $Id: ChangeLog,v 1.715 2005/06/18 05:35:31 changelog Exp $ tags, headers and footers.
 
 2003-01-30  Ilia Alshanetsky  <ilia@prohost.org>
 
