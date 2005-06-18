@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Sat Jun 11 11:52:00 CEST 2005
-@status: discussion, ends Sat Jun 18 11:52:00 CEST 2005
+@status: implemented (Sat Jun 18 22:57:19 CEST 2005)
 @category: <ports>
 
 Scope of Change

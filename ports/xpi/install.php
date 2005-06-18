@@ -48,29 +48,29 @@ __
   // Release modalities:
   $rel= $conf->readString('release', 'name');
   if ($rc= $conf->readString('release', 'candidate', NULL)) {
-    $rel_tag= strtoupper($rel).'_RC_'.$rc;
-    $rel_dir= 'xp.'.strtolower($rel).'-rc'.$rc;
+    $rel_src= 'tags/'.strtoupper($rel).'_RC'.$rc;
+    $rel_dir= 'xp.'.strtolower($rel).'-rc'.$rc;;
   } elseif ($sp= $conf->readString('release', 'servicepack', NULL)) {
-    $rel_tag= strtoupper($rel).'_SP_'.$sp;
+    $rel_src= 'tags/'.strtoupper($rel).'_SP'.$sp;
     $rel_dir= 'xp.'.strtolower($rel).'-sp'.$sp;
   } elseif ($head= $conf->readString('release', 'head', NULL)) {
-    $rel_tag= 'HEAD';
+    $rel_src= 'trunk';
     $rel_dir= 'xp.'.strtolower($rel).'-head';
   } else {
-    $rel_tag= strtoupper($rel).'_RELEASE';
+    $rel_src= 'tags/'.strtoupper($rel).'_RELEASE';
     $rel_dir= 'xp.'.strtolower($rel).'-release';
   }
   
   $ssh= str_replace('//', '/', sprintf(<<<__
 ssh -A %s@%%1\$s 'cd %s/%s/ &&
-  if ( [ -e .xpinstall.block ] && exit %6\$d ) ; then
+  if ( [ -e .xpinstall.block ] && exit %5\$d ) ; then
     echo "-%%1\$s:"; cat .xpinstall.block
   else
     if [ -e .xpinstall.inf ] ; then 
       cat .xpinstall.inf | sed -e 's/^/!/g' ;
     fi ;
     echo "+%%1\$s:"`pwd`"$ " ;
-    cvs update -dP -r %s '%s' 2>&1;
+    svn update '%s' 2>&1 ;
   fi
   '
 __
@@ -78,7 +78,6 @@ __
     $conf->readString('target', 'user', 'cgi'),
     $conf->readString('target', 'base', '/usr/local/lib/'),
     $rel_dir,
-    $rel_tag,
     $p->value('files', 'f', ''),
     $p->exists('force', 'F') ? 0xFF : 0x00
   ));
@@ -100,6 +99,9 @@ __
     $host= $hosts[$offset];
     
     Console::writeLine('===> Installing for '.$host);
+    
+    $VERBOSE && Console::writeLine('---> Executing '.$ssh);
+    
     try(); {
       $p= &new Process(sprintf($ssh, $host));
     } if (catch('IOException', $e)) {

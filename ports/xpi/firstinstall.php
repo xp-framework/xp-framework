@@ -48,21 +48,21 @@ __
   // Release modalities:
   $rel= $conf->readString('release', 'name');
   if ($rc= $conf->readString('release', 'candidate', NULL)) {
-    $rel_tag= strtoupper($rel).'_RC_'.$rc;
-    $rel_dir= 'xp.'.strtolower($rel).'-rc'.$rc;
+    $rel_src= 'tags/'.strtoupper($rel).'_RC'.$rc;
+    $rel_dir= 'xp.'.strtolower($rel).'-rc'.$rc;;
   } elseif ($sp= $conf->readString('release', 'servicepack', NULL)) {
-    $rel_tag= strtoupper($rel).'_SP_'.$sp;
+    $rel_src= 'tags/'.strtoupper($rel).'_SP'.$sp;
     $rel_dir= 'xp.'.strtolower($rel).'-sp'.$sp;
   } elseif ($head= $conf->readString('release', 'head', NULL)) {
-    $rel_tag= 'HEAD';
+    $rel_src= 'trunk';
     $rel_dir= 'xp.'.strtolower($rel).'-head';
   } else {
-    $rel_tag= strtoupper($rel).'_RELEASE';
+    $rel_src= 'tags/'.strtoupper($rel).'_RELEASE';
     $rel_dir= 'xp.'.strtolower($rel).'-release';
   }
 
   // Command to prepare checkout directory
-  $ssh1= str_replace('//', '/', sprintf(<<<__
+  $ssh1= sprintf(<<<__
 ssh -A %s@%%s 'cd %3\$s ;
   if [ -d %4\$s ]; then
     echo "----> Project already installed."
@@ -76,24 +76,22 @@ __
     ,
     $conf->readString('target', 'masteruser', 'root'),
     $conf->readString('target', 'user', 'cgi'),
-    $conf->readString('target', 'base', '/usr/local/lib/'),
-    $rel_dir,
-    $rel_tag
-  ));
+    rtrim($conf->readString('target', 'base', '/usr/local/lib'), '/'),
+    rtrim($rel_dir, '/')
+  );
 
   // Command to actually checkout things...
-  $ssh2= str_replace('//', '/', sprintf(<<<__
-ssh -A %s@%%s 'cd %s/ &&
-  cvs -d:pserver:%s@php3.de:/home/cvs/repositories/xp co -d %s -r %s . 2>&1
+  $ssh2= sprintf(<<<__
+ssh -A %s@%%s 'cd %s/%s &&
+  svn co svn://php3.de/xp/%s . 2>&1
   '
 __
     ,
     $conf->readString('target', 'user', 'cgi'),
-    $conf->readString('target', 'base', '/usr/local/lib/'),
-    $conf->readString('target', 'cvsuser', 'anonymous'),
-    $rel_dir,
-    $rel_tag
-  ));
+    rtrim($conf->readString('target', 'base', '/usr/local/lib/xp'), '/'),
+    rtrim($rel_dir, '/'),
+    rtrim($rel_src, '/')
+  );
   
   // Read host list
   $hosts= array();
@@ -108,7 +106,7 @@ __
   }
   
   foreach ($hosts as $host) {
-    Console::writeLine('===> Installing for ', $host, ' tag ', $rel_tag);
+    Console::writeLine('===> Installing for ', $host, ' tag ', $rel_src);
     $cmd= sprintf ($ssh1, $host);
     $VERBOSE && Console::writeLine('---> Executing ', $cmd);
     try(); {
