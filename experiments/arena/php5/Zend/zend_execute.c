@@ -444,6 +444,7 @@ static inline void make_real_object(zval **object_ptr TSRMLS_DC)
 static inline void zend_verify_arg_type(zend_function *zf, zend_uint arg_num, zval *arg TSRMLS_DC)
 {
 	zend_arg_info *cur_arg_info;
+	zend_class_entry *default_exception_ce;
 
 	if (!zf->common.arg_info
 		|| arg_num>zf->common.num_args) {
@@ -451,15 +452,19 @@ static inline void zend_verify_arg_type(zend_function *zf, zend_uint arg_num, zv
 	}
 
 	cur_arg_info = &zf->common.arg_info[arg_num-1];
-
+	default_exception_ce= zend_exception_get_default();
+	
 	if (cur_arg_info->class_name) {
 		if (!arg) {
-			zend_error_noreturn(E_ERROR, "Argument %d must be an object of class %s", arg_num, cur_arg_info->class_name);
+			zend_throw_exception_ex(default_exception_ce, 0 TSRMLS_CC,
+				"Argument %d must be an object of class %s", arg_num, cur_arg_info->class_name);
+			return;
 		}
 		switch (Z_TYPE_P(arg)) {
 			case IS_NULL:
 				if (!cur_arg_info->allow_null) {
-					zend_error_noreturn(E_ERROR, "Argument %d must not be null", arg_num);
+					zend_throw_exception_ex(default_exception_ce, 0 TSRMLS_CC, "Argument %d must not be null", arg_num);
+					return;
 				}
 				break;
 			case IS_OBJECT: {
@@ -472,28 +477,34 @@ static inline void zend_verify_arg_type(zend_function *zf, zend_uint arg_num, zv
 						} else {
 							error_msg = "be an instance of";
 						}
-						zend_error_noreturn(E_ERROR, "Argument %d must %s %s", arg_num, error_msg, ce->name);
+						
+						zend_throw_exception_ex(default_exception_ce, 0 TSRMLS_CC, "Argument %d must %s %s", arg_num, error_msg, ce->name);
+						return;
 					}
 				}
 				break;
 			default:
-				zend_error_noreturn(E_ERROR, "Argument %d must be an object of class %s", arg_num, cur_arg_info->class_name);
+				zend_throw_exception_ex(default_exception_ce, 0 TSRMLS_CC, "Argument %d must be an object of class %s", arg_num, cur_arg_info->class_name);
+				return;
 				break;
 		}
 	}	else if (cur_arg_info->array_type_hint) {
 		if (!arg) {
-			zend_error_noreturn(E_ERROR, "Argument %d must be an array", arg_num);
+			zend_throw_exception_ex(default_exception_ce, 0 TSRMLS_CC, "Argument %d must be an array", arg_num);
+			return;
 		}
 		switch (Z_TYPE_P(arg)) {
 			case IS_NULL:
 				if (!cur_arg_info->allow_null) {
-					zend_error_noreturn(E_ERROR, "Argument %d must not be null", arg_num);
+					zend_throw_exception_ex(default_exception_ce, 0 TSRMLS_CC, "Argument %d must not be null", arg_num);
+					return;
 				}
 				break;
 			case IS_ARRAY:
 				break;
 			default:	
-				zend_error_noreturn(E_ERROR, "Argument %d must be an array", arg_num);
+				zend_throw_exception_ex(default_exception_ce, 0 TSRMLS_CC, "Argument %d must be an array", arg_num);
+				return;
 				break;
 		}
 	}
