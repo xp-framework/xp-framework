@@ -52,7 +52,7 @@
 #define MANGLE_CLASS_NAME(class_name) \
 	if (memcmp(class_name->u.constant.value.str.val, "main~", MANGLE_MAIN_LEN) == 0) { \
 		class_name->u.constant.value.str.len -= MANGLE_MAIN_LEN; \
-		memcpy(class_name->u.constant.value.str.val, class_name->u.constant.value.str.val + MANGLE_MAIN_LEN, class_name->u.constant.value.str.len); \
+		memmove(class_name->u.constant.value.str.val, class_name->u.constant.value.str.val + MANGLE_MAIN_LEN, class_name->u.constant.value.str.len); \
 		class_name->u.constant.value.str.val[class_name->u.constant.value.str.len] = 0; \
 	} else if (CG(active_package_entry) && !memchr(class_name->u.constant.value.str.val, '~', class_name->u.constant.value.str.len)) { \
 		int len= CG(active_package_entry)->name_length + 1 + class_name->u.constant.value.str.len; \
