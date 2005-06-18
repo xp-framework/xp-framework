@@ -96,7 +96,7 @@ $(OUTPUT):
 	@-$(PHP) -C util/getSource.php --dest=$(OUTPUT)/src
 
 install: $(TARGET)
-	find $(OUTPUT) -name '.svn' -type d -exec rm -rf {} \;
+	find $(OUTPUT) -name '.svn' -type d | xargs rm -rf {} \;
 	cp -R $(OUTPUT)/* $(TARGET)
                 
 $(TARGET):
