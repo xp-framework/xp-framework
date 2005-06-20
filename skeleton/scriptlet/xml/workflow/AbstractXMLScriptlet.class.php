@@ -141,7 +141,18 @@
       }
       
       // Call state's setup() method
-      $request->state->setup($request, $response, $context);
+      try(); {
+        $request->state->setup($request, $response, $context);
+      } if (catch('IllegalStateException', $e)) {
+        throw(new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR));
+        return FALSE;
+      } if (catch('IllegalArgumentException', $e)) {
+        throw(new HttpScriptletException($e->getMessage(), HTTP_NOT_ACCEPTABLE));
+        return FALSE;
+      } if (catch('IllegalAccessException', $e)) {
+        throw(new HttpScriptletException($e->getMessage(), HTTP_FORBIDDEN));
+        return FALSE;
+      }
       
       // Call state's process() method. In case it returns FALSE, the
       // context's insertStatus() method will not be called. This, for
