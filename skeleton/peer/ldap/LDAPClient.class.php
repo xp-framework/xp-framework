@@ -266,7 +266,25 @@
      * @return  bool TRUE if the entry exists
      */
     function exists(&$entry) {
-      return NULL !== $this->read($entry);
+      if (!is_a($entry, 'LDAPEntry')) {
+        return throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
+      }
+      
+      $res= ldap_read($this->_hdl, $entry->getDN(), 'objectClass=*', array(), FALSE, 0);
+      
+      // Check for certain error code (#32)
+      if (LDAP_NO_SUCH_OBJECT == ldap_errno($this->_hdl)) {
+        return FALSE;
+      }
+      
+      // Check for other errors
+      if (LDAP_SUCCESS != ldap_errno($this->_hdl)) {
+        return throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+      }
+      
+      // No errors occurred, requested object exists
+      ldap_free_result($res);
+      return TRUE;
     }
     
     /**
