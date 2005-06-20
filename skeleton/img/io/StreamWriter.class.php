@@ -62,7 +62,7 @@
         // image(gd|jpeg|png|...) functions' output.
         ob_start(array(&$this, 'writeToStream'));
         $r= $this->output($handle);
-        ob_end_flush();
+        ob_end_clean();
         
         $this->stream->close();
         if (!$r) throw(new IOException('Could not write image'));
