@@ -820,7 +820,7 @@ exit_expr:
 
 
 ctor_arguments:
-		/* empty */
+		/* empty */ { memset(&$$, 0, sizeof(znode)); $$.op_type = IS_UNUSED; }
 	|	'(' function_call_parameter_list ')' { $$ = $2; }
 	|	'(' function_call_parameter_list ')' '{' { zend_do_begin_instance_creation(TSRMLS_C); } class_statement_list { zend_do_end_instance_creation(TSRMLS_C); } '}' { $$ = $2; }
 ;
