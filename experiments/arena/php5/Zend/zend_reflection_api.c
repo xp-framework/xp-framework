@@ -596,9 +596,11 @@ static void _parameter_string(string *str, zend_function *fptr, struct _zend_arg
 				}
 				string_write(str, "'", sizeof("'")-1);
 			} else {
-				zend_make_printable_zval(zv, &zv_copy, &use_copy);
-				string_write(str, Z_STRVAL(zv_copy), Z_STRLEN(zv_copy));
-				zval_dtor(&zv_copy);
+				zval zv_copy2;
+
+				zend_make_printable_zval(zv, &zv_copy2, &use_copy);
+				string_write(str, Z_STRVAL(zv_copy2), Z_STRLEN(zv_copy2));
+				zval_dtor(&zv_copy2);
 			}
 			zval_ptr_dtor(&zv);
 		}
