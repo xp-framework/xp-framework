@@ -27,7 +27,44 @@
       $alignment = CHART_HORIZONTAL,
       $barWidth  = 20,
       $distance  = DISTANCE_AUTO,
-      $range     = array(RANGE_AUTO, RANGE_AUTO, RANGE_AUTO);
+      $range     = array(RANGE_AUTO, RANGE_AUTO, RANGE_AUTO),
+      $accumulated= FALSE;
+
+    /**
+     * Helper method which returns the largest value from all series
+     *
+     * @access  public
+     * @return  float
+     */
+    function max() {
+      if (!$this->getAccumulated()) return parent:: max();
+      
+      $max= array();
+      for ($i= 0, $s= sizeof($this->series); $i < $s; $i++) {
+        for ($j= 0, $c= sizeof($this->series[$i]->values); $j < $c; $j++) {
+          $max[$j] += $this->series[$i]->values[$j];
+        }
+      }
+      return max($max);
+    }
+
+    /**
+     * Helper method which returns the smallest value from all series
+     *
+     * @access  public
+     * @return  float
+     */
+    function min() {
+      if ($this->getAccumulated()) return parent::min();
+
+      $min= array();
+      for ($i= 0, $s= sizeof($this->series); $i < $s; $i++) {
+        for ($j= 0, $c= sizeof($this->series[$i]->values); $j < $c; $j++) {
+          $min[$j] += $this->series[$i]->values[$j];
+        }
+      }
+      return min($min) < 0 ? min($min) : 0;
+    }
 
     /**
      * Set range. Pass RANGE_AUTO to upper, lower and/or step to have 
@@ -101,6 +138,26 @@
      */
     function getDistance() {
       return $this->distance;
+    }
+    
+    /**
+     * Set flag to accumulate series
+     *
+     * @access public
+     * @return bool
+     */
+    function getAccumulated() {
+      return $this->accumulated;
+    }
+    
+    /**
+     * Returns flag to accumulate series
+     *
+     * @access public
+     * @param bool bool The flag
+     */
+    function setAccumulated($bool) {
+      $this->accumulated= $bool;
     }
   }
 ?>
