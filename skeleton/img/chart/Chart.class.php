@@ -35,8 +35,13 @@
         'background'  => '#ffffff',
         'chartback'   => '#efefef',
         'sample'      => '#990000',
-        'axis'        => '#000000'
-      );
+        'axis'        => '#000000',
+        'grid'        => '#888888',
+        'legend'      => '#444444',
+        'legendback'  => '#ffffff'
+      ),
+      $gridlines= FALSE,
+      $labels = array();
 
     /**
      * Add a series of data
@@ -81,6 +86,46 @@
     function &getColor($key) {
       if (!isset($this->colors[$key])) return new Color($this->theme[$key]);
       return $this->colors[$key];
+    }
+    
+    /**
+     * Sets series labels
+     +
+     * @access public
+     * @param string[] labels The series labels
+     */
+    function setLabels($labels) {
+      $this->labels= $labels;
+    }
+    
+    /**
+     * Returns labels for series as array
+     *
+     * @access public
+     * @return string[]
+     */
+    function getLabels() {
+      return $this->labels;
+    }
+    
+    /**
+     * Sets grid on or off
+     +
+     * @access public
+     * @param bool gridlines Draw grid lines
+     */
+    function setGridLines($gridlines) {
+      $this->gridlines= $gridlines;
+    }
+    
+    /**
+     * Returns if grid should be drawn or not
+     *
+     * @access public
+     * @return bool
+     */
+    function getGridLines() {
+      return $this->gridlines;
     }
     
     /**
