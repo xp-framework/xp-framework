@@ -53,6 +53,11 @@
       $innerWidth= $this->width- $leftBorder- $rightBorder;
       $innerHeight= $this->height- $topBorder- $bottomBorder;
       $zero= $this->height - $bottomBorder + ($lower / ($upper - $lower) * $innerHeight);
+      if ($chart->getDisplayValues()) {
+        $h= ($fonth + 10) * ($upper - $lower) / $innerHeight;
+        if ($upper > 0) $upper += $h;
+        if ($lower < 0) $lower += $h;
+      }
       return array(
       
         // Common values
@@ -298,11 +303,6 @@
         $zero,
       )= $this->_prepare($bc, $font= 2);
       $width= $bc->getBarWidth();
-      if ($bc->getDisplayValues()) {
-        $h= ($fonth + 10) * ($upper - $lower) / $innerHeight;
-        if ($upper > 0) $upper += $h;
-        if ($lower < 0) $lower += $h;
-      }
       
       // Sanity checks
       if ($lower > $upper) {
@@ -449,7 +449,7 @@
           'upper'           => $upper,
           'step'            => $step,
           'backgroundColor' => $img->allocate($lc->getColor('background')),
-          'axisColor'       => $img->allocate($lc->getColor('axis')),
+          'axisColor'       => $axisColor= $img->allocate($lc->getColor('axis')),
           'chartbackColor'  => $img->allocate($lc->getColor('chartback')),
           'gridColor'       => $img->allocate($lc->getColor('grid')),
           'leftBorder'      => $leftBorder,
@@ -494,6 +494,17 @@
                 $zero - $py[$i] - $h,
                 $colors[$j % sizeof($colors)]->handle
               );
+              $v[$i] += $lc->series[$j]->values[$i];
+              if ($lc->getDisplayValues() && ($j == $seriesCount -1)) {
+                imagestring(
+                  $img->handle,
+                  $font,
+                  $offset - ($fontw * strlen($v[$i])) / 2,
+                  $zero - $py[$i] - $h - $fonth - 5,
+                  $v[$i],
+                  $axisColor->handle
+                );
+              }
               $hold= $h;
               $h+= $py[$i];
               $py[$i] += $hold;
@@ -506,6 +517,16 @@
                 $zero - $h,
                 $colors[$j % sizeof($colors)]->handle
               );
+              if ($lc->getDisplayValues()) {
+                imagestring(
+                  $img->handle,
+                  $font,
+                  $offset + ($barWidth - $fontw * strlen($bc->series[$j]->values[$i])) / 2,
+                  $zero - $h - $fonth - 5,
+                  $lc->series[$j]->values[$i],
+                  $axisColor->handle
+                );
+              }
             }
             $x[$j][]= $offset;
             $y[$j][]= $h;
