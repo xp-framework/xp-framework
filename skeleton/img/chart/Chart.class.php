@@ -41,7 +41,8 @@
         'legendback'  => '#ffffff'
       ),
       $gridlines= FALSE,
-      $labels = array();
+      $labels = array(),
+      $dispval   = FALSE;
 
     /**
      * Add a series of data
@@ -126,6 +127,26 @@
      */
     function getGridLines() {
       return $this->gridlines;
+    }
+    
+    /**
+     * Set flag to display values
+     *
+     * @access public
+     * @return bool
+     */
+    function getDisplayValues() {
+      return $this->disval;
+    }
+    
+    /**
+     * Returns flag to display values
+     *
+     * @access public
+     * @param bool bool The flag
+     */
+    function setDisplayValues($bool) {
+      $this->disval= $bool;
     }
     
     /**
