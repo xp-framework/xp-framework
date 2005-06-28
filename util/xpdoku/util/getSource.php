@@ -53,7 +53,7 @@
         }
       }
 
-      if (!is_file ($base.'/'.$entry) && 'CVS' != $entry) {
+      if (!is_file ($base.'/'.$entry) && 'CVS' != $entry && '.svn' != $entry) {
         echo "---> Diving into $base/$entry\n";
         recurseCopyFlat ($base.'/'.$entry, $dest, $gBase);
         continue;
