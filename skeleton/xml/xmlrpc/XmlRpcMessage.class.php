@@ -4,7 +4,7 @@
  * $Id$ 
  */
   
-  uses('xml.Tree', 'xml.Node', 'xml.xmlrpc.XmlRpcFault');
+  uses('xml.Tree', 'xml.Node', 'xml.xmlrpc.XmlRpcFault', 'util.Date');
 
   // Message-types
   define('XMLRPC_METHODCALL', 'methodCall');
