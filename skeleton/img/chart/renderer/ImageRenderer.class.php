@@ -277,7 +277,7 @@
           $yoffset + ($fonth - $sampleHeight) / 2,
           $xoffset + $fontw,
           $yoffset + ($fonth + $sampleHeight) / 2,
-          $params['sampleColor'][$i]->handle
+          $params['sampleColor'][$i % sizeof($params['sampleColor'])]->handle
         );
         $yoffset += $fonth;
       }
@@ -553,21 +553,41 @@
       $middleX= $this->width / 2;
       $middleY= $this->height / 2;
       $count= $pc->count();
+      $font= 2;
+      $fontw= imagefontwidth($font);
+      $fonth= imagefontheight($font);
 
       // Create image
       with ($img= &Image::create($this->width, $this->height)); {
         $colors= $this->_colors($img, $pc->getColor('sample'));
+        $axisColor= $img->allocate($pc->getColor('axis'));
 
         // Flood fill with background color
         $img->fill($img->allocate($pc->getColor('chartback')), $leftBorder+ 1, $topBorder+ 1);
         
+        $pc->getDisplayLegend() && $this->_renderLegend(array(
+          'labels'          => $pc->getLabels(),
+          'font'            => $font,
+          'fontWidth'       => $fontw,
+          'fontHeight'      => $fonth,
+          'rightBorder'     => $border / 5,
+          'topBorder'       => $border / 5,
+          'margin'          => 5,
+          'legendColor'     => $img->allocate($pc->getColor('legend')),
+          'legendbackColor' => $img->allocate($pc->getColor('legendback')),
+          'sampleColor'     => $colors
+        ), $img);
+
         $start= $end= 0;
         for ($i= 0; $i < $count; $i++) {
           $end+= $pc->series[0]->values[$i];
+          $angle= deg2rad(90 - ($start + ($end - $start) / 2) / $sum * 360);
+          $insetX= sin($angle) * $pc->getValueInset($i);
+          $insetY= cos($angle) * $pc->getvalueInset($i);
           imagefilledarc(
             $img->handle,
-            $middleX,
-            $middleY,
+            $middleX + $insetX,
+            $middleY + $insetY,
             $innerWidth,
             $innerHeight,
             $start / $sum * 360,
@@ -575,6 +595,16 @@
             $colors[$i % sizeof($colors)]->handle,
             IMG_ARC_PIE
           );
+          if ($pc->getDisplayValues()) {
+            imagestring(
+              $img->handle,
+              $font,
+              $middleX + $insetX + sin($angle) * $innerWidth / 3 - strlen($pc->series[0]->values[$i]) * $fontw / 2,
+              $middleY + $insetY + cos($angle) * $innerHeight / 3 - $fonth / 2,
+              $pc->series[0]->values[$i],
+              $axisColor->handle
+            );
+          }
           $start= $end;
         }
       }
