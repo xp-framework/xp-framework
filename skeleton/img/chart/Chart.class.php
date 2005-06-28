@@ -40,8 +40,9 @@
         'legend'      => '#444444',
         'legendback'  => '#ffffff'
       ),
-      $gridlines= FALSE,
-      $labels = array(),
+      $gridlines = FALSE,
+      $labels    = array(),
+      $displeg   = FALSE,
       $dispval   = FALSE;
 
     /**
@@ -127,6 +128,26 @@
      */
     function getGridLines() {
       return $this->gridlines;
+    }
+    
+    /**
+     * Set flag to display a legend
+     * 
+     * @access public
+     * @param bool bool The flag
+     */
+    function setDisplayLegend($bool) {
+      $this->displeg= $bool;
+    }
+    
+    /**
+     * Returns the flag to display a legend
+     *
+     * @access public
+     * @return bool
+     */
+    function getDisplayLegend() {
+      return $this->displeg;
     }
     
     /**
