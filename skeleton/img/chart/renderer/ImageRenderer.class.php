@@ -47,8 +47,12 @@
       $fonth= imagefontheight($font);
       $leftBorder= 15 + max(strlen($lower), strlen($upper)) * $fontw;
       $rightBorder= $topBorder= $bottomBorder= 10;
+      if (sizeof($chart->getLabels())) {
+        $bottomBorder += $fonth + 5;
+      }
       $innerWidth= $this->width- $leftBorder- $rightBorder;
       $innerHeight= $this->height- $topBorder- $bottomBorder;
+      $zero= $this->height - $bottomBorder + ($lower / ($upper - $lower) * $innerHeight);
       return array(
       
         // Common values
@@ -70,7 +74,7 @@
         $innerHeight,
         
         // Calculate zero line
-        $this->height - $bottomBorder + ($lower / ($upper - $lower) * $innerHeight)
+        $zero
       );
     }
     
@@ -111,7 +115,8 @@
       $font= $params['font'];
       $fontw= $params['fontWidth'];
       $fonth= $params['fontHeight'];
-
+      $labels= $params['labels'];
+      
       // Flood fill with background color
       $img->fill($params['backgroundColor']);
 
@@ -142,6 +147,16 @@
       );
 
       // Draw Y axis scale
+      imagesetstyle($img->handle, array(
+        $params['gridColor']->handle,
+        $params['gridColor']->handle,
+        $params['chartbackColor']->handle,
+        $params['chartbackColor']->handle,
+        $params['gridColor']->handle,
+        $params['gridColor']->handle,
+        $params['chartbackColor']->handle,
+        $params['chartbackColor']->handle,
+      ));
       for ($i= $lower; $i <= $upper; $i+= $step) {
         $y= $zero - ($i / ($upper - $lower) * $innerHeight);
         imageline(
@@ -160,6 +175,16 @@
           $i,
           $params['axisColor']->handle
         );
+        if ($params['gridLines'] && ($i> $lower) && ($i<$upper)) {
+          imageline(
+            $img->handle,
+            $leftBorder + 1,
+            $y,
+            $this->width - $rightBorder - 1,
+            $y,
+            IMG_COLOR_STYLED
+          );
+        }
       }
 
       // Draw X axis
@@ -173,8 +198,88 @@
           $this->height - $bottomBorder + 5,
           $params['axisColor']->handle
         );
+        if (isset($labels[$i])) {
+          imagestring(
+            $img->handle,
+            $font,
+            $x - strlen($labels[$i]) * $fontw / 2,
+            $this->height - $bottomBorder + 5,
+            $labels[$i],
+            $params['axisColor']->handle
+          );
+        }
       }
       return $img;
+    }
+    
+    /**
+     * Renders the legend box
+     *
+     * @access private
+     * @param mixed[] params The axis parameters
+     * @param img.Image &img The image
+     * @return &img.Image
+     */
+    function _renderLegend($params, &$img) {
+      $labels= $params['labels'];
+      $font= $params['font'];
+      $fontw= $params['fontWidth'];
+      $fonth= $params['fontHeight'];
+      $rightBorder= $params['rightBorder'];
+      $topBorder= $params['topBorder'];
+      $margin= $params['margin'];
+      $inset= 10;
+      $sampleHeight= (int)($fonth * 0.6);
+      
+      // Get maximum string length
+      $maxlen = 0;
+      foreach ($labels as $label) {
+        if ($maxlen < strlen($label)) $maxlen= strlen($label);
+      }
+      
+      $xoffset= $this->width - $rightBorder - ($maxlen + 2) * $fontw - $margin * 2 - $inset;
+      $yoffset= $topBorder + $inset;
+
+      // Draw bounding box
+      imagefilledrectangle(
+        $img->handle,
+        $xoffset + 1,
+        $yoffset + 1,
+        $xoffset + ($maxlen + 2) * $fontw + $margin * 2 - 1,
+        $yoffset + sizeof($labels) * $fonth + $margin * 2 - 1,
+        $params['legendbackColor']->handle
+      );
+      imagerectangle(
+        $img->handle,
+        $xoffset,
+        $yoffset,
+        $xoffset + ($maxlen + 2) * $fontw + $margin * 2,
+        $yoffset + sizeof($labels) * $fonth + $margin * 2,
+        $params['legendColor']->handle
+      );
+      
+      // Write labels into box
+      $xoffset += $margin;
+      $yoffset += $margin;
+      foreach ($labels as $i => $label) {
+        imagestring(
+          $img->handle,
+          $font,
+          $xoffset + 2 * $fontw,
+          $yoffset,
+          $label,
+          $params['legendColor']->handle
+        );
+        imagefilledrectangle(
+          $img->handle,
+          $xoffset,
+          $yoffset + ($fonth - $sampleHeight) / 2,
+          $xoffset + $fontw,
+          $yoffset + ($fonth + $sampleHeight) / 2,
+          $params['sampleColor'][$i]->handle
+        );
+        $yoffset += $fonth;
+      }
     }
     
     /**
@@ -197,6 +302,11 @@
         $zero,
       )= $this->_prepare($bc, $font= 2);
       $width= $bc->getBarWidth();
+      if ($bc->getDisplayValues()) {
+        $h= ($fonth + 10) * ($upper - $lower) / $innerHeight;
+        if ($upper > 0) $upper += $h;
+        if ($lower < 0) $lower += $h;
+      }
       
       // Sanity checks
       if ($lower > $upper) {
@@ -210,6 +320,7 @@
 
       // Create image
       with ($img= &Image::create($this->width, $this->height)); {
+        $colors= $this->_colors($img, $bc->getColor('sample'));
         $this->_renderAxis(array(
           'count'           => $count,
           'distance'        => $distance,
@@ -217,32 +328,85 @@
           'upper'           => $upper,
           'step'            => $step,
           'backgroundColor' => $img->allocate($bc->getColor('background')),
-          'axisColor'       => $img->allocate($bc->getColor('axis')),
+          'axisColor'       => $axisColor= $img->allocate($bc->getColor('axis')),
           'chartbackColor'  => $img->allocate($bc->getColor('chartback')),
+          'gridColor'       => $img->allocate($bc->getColor('grid')),
           'leftBorder'      => $leftBorder,
           'rightBorder'     => $rightBorder,
           'topBorder'       => $topBorder,
           'bottomBorder'    => $bottomBorder,
           'font'            => $font,
           'fontWidth'       => $fontw,
-          'fontHeight'      => $fonth
+          'fontHeight'      => $fonth,
+          'labels'          => $bc->getLabels(),
+          'gridLines'       => $bc->getGridLines()
+        ), $img);
+        
+        $this->_renderLegend(array(
+          'labels'          => array_map(create_function('$a', 'return $a->name;'), $bc->series),
+          'font'            => $font,
+          'fontWidth'       => $fontw,
+          'fontHeight'      => $fonth,
+          'rightBorder'     => $rightBorder,
+          'topBorder'       => $topBorder,
+          'margin'          => 5,
+          'legendColor'     => $img->allocate($bc->getColor('legend')),
+          'legendbackColor' => $img->allocate($bc->getColor('legendback')),
+          'sampleColor'     => $colors
         ), $img);
         
         // Draw bars
-        $barWidth= $width / $seriesCount;
-        $colors= $this->_colors($img, $bc->getColor('sample'));
+        $barWidth= $bc->getAccumulated()
+          ? $width
+          : $width / $seriesCount;
+        $py= $v= array();
         for ($i= 0; $i < $count; $i++) {
           for ($j= 0; $j < $seriesCount; $j++) {
-            $offset= $leftBorder + ($i + 0.5) * $distance - $width / 2 + $barWidth * $j;
+            $offset= $leftBorder + ($i + 0.5) * $distance - $width / 2;
             $h= ($bc->series[$j]->values[$i] / ($upper - $lower) * $innerHeight);
-            imagefilledrectangle(
-              $img->handle,
-              $offset,
-              $h < 0 ? $zero : $zero - $h,
-              $offset + $barWidth,
-              $h < 0 ? min($zero - $h, $this->height- $bottomBorder) : $zero,
-              $colors[$j % sizeof($colors)]->handle
-            );
+            if ($bc->getAccumulated()) {
+              if (!isset($py[$i])) $py[$i]= $zero;
+              imagefilledrectangle(
+                $img->handle,
+                $offset,
+                $py[$i] - $h,
+                $offset + $barWidth,
+                $py[$i],
+                $colors[$j % sizeof($colors)]->handle
+              );
+              $py[$i] -= $h;
+              $v[$i] += $bc->series[$j]->values[$i];
+              if ($bc->getDisplayValues() && ($j == $seriesCount -1)) {
+                imagestring(
+                  $img->handle,
+                  $font,
+                  $offset + ($barWidth - $fontw * strlen($v[$i])) / 2,
+                  $py[$i] - $fonth - 5,
+                  $v[$i],
+                  $axisColor->handle
+                );
+              }
+            } else {
+              $offset += $barWidth * $j;
+              imagefilledrectangle(
+                $img->handle,
+                $offset,
+                $h < 0 ? $zero : $zero - $h,
+                $offset + $barWidth - 1,
+                $h < 0 ? min($zero - $h, $this->height- $bottomBorder) : $zero,
+                $colors[$j % sizeof($colors)]->handle
+              );
+              if ($bc->getDisplayValues()) {
+                imagestring(
+                  $img->handle,
+                  $font,
+                  $offset + ($barWidth - $fontw * strlen($bc->series[$j]->values[$i])) / 2,
+                  ($h < 0 ? $zero : $zero - $h) - $fonth - 5,
+                  $bc->series[$j]->values[$i],
+                  $axisColor->handle
+                );
+              }
+            }
           }
         }
       }
@@ -281,6 +445,7 @@
 
       // Create image
       with ($img= &Image::create($this->width, $this->height)); {
+        $colors= $this->_colors($img, $lc->getColor('sample'));
         $this->_renderAxis(array(
           'count'           => $count,
           'distance'        => $distance,
@@ -290,30 +455,62 @@
           'backgroundColor' => $img->allocate($lc->getColor('background')),
           'axisColor'       => $img->allocate($lc->getColor('axis')),
           'chartbackColor'  => $img->allocate($lc->getColor('chartback')),
+          'gridColor'       => $img->allocate($lc->getColor('grid')),
           'leftBorder'      => $leftBorder,
           'rightBorder'     => $rightBorder,
           'topBorder'       => $topBorder,
           'bottomBorder'    => $bottomBorder,
           'font'            => $font,
           'fontWidth'       => $fontw,
-          'fontHeight'      => $fonth
+          'fontHeight'      => $fonth,
+          'labels'          => $lc->getLabels(),
+          'gridLines'       => $lc->getGridLines()
+        ), $img);
+        
+        $this->_renderLegend(array(
+          'labels'          => array_map(create_function('$a', 'return $a->name;'), $lc->series),
+          'font'            => $font,
+          'fontWidth'       => $fontw,
+          'fontHeight'      => $fonth,
+          'rightBorder'     => $rightBorder,
+          'topBorder'       => $topBorder,
+          'margin'          => 5,
+          'legendColor'     => $img->allocate($lc->getColor('legend')),
+          'legendbackColor' => $img->allocate($lc->getColor('legendback')),
+          'sampleColor'     => $colors
         ), $img);
         
         // Draw bars
-        $x= $y= array();
-        $colors= $this->_colors($img, $lc->getColor('sample'));
+        $x= $y= $py= array();
         for ($i= 0; $i < $count; $i++) {
           for ($j= 0; $j < $seriesCount; $j++) {
-            $offset= $leftBorder + ($i + 0.5) * $distance - $width / 2 + $barWidth * $j;
+            $offset= $leftBorder + ($i + 0.5) * $distance - $width / 2;
             $h= ($lc->series[$j]->values[$i] / ($upper - $lower) * $innerHeight);
-            imageline(
-              $img->handle,
-              isset($x[$j][sizeof($x[$j]) - 1]) ? $x[$j][sizeof($x[$j]) - 1] : $offset,
-              isset($y[$j][sizeof($y[$j]) - 1]) ? $zero - $y[$j][sizeof($y[$j]) - 1] : $zero - $h,
-              $offset,
-              $zero - $h,
-              $colors[$j % sizeof($colors)]->handle
-            );
+            $xp= $i > 0 ? $x[$j][$i - 1] : $offset;
+            $yp= $i > 0 ? $y[$j][$i - 1] : $py[$i] + $h;
+            if ($lc->getAccumulated()) {
+              if (!isset($py[$i])) $py[$i]= 0;
+              imageline(
+                $img->handle,
+                $xp,
+                $zero - $yp,
+                $offset,
+                $zero - $py[$i] - $h,
+                $colors[$j % sizeof($colors)]->handle
+              );
+              $hold= $h;
+              $h+= $py[$i];
+              $py[$i] += $hold;
+            } else {
+              imageline(
+                $img->handle,
+                $xp,
+                $zero - $yp,
+                $offset,
+                $zero - $h,
+                $colors[$j % sizeof($colors)]->handle
+              );
+            }
             $x[$j][]= $offset;
             $y[$j][]= $h;
           }
