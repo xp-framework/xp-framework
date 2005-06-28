@@ -37,7 +37,7 @@
      * @return  float
      */
     function max() {
-      if (!$this->getAccumulated()) return parent:: max();
+      if (!$this->getAccumulated()) return parent::max();
       
       $max= array();
       for ($i= 0, $s= sizeof($this->series); $i < $s; $i++) {
