@@ -151,11 +151,7 @@
         $params['gridColor']->handle,
         $params['gridColor']->handle,
         $params['chartbackColor']->handle,
-        $params['chartbackColor']->handle,
-        $params['gridColor']->handle,
-        $params['gridColor']->handle,
-        $params['chartbackColor']->handle,
-        $params['chartbackColor']->handle,
+        $params['chartbackColor']->handle
       ));
       for ($i= $lower; $i <= $upper; $i+= $step) {
         $y= $zero - ($i / ($upper - $lower) * $innerHeight);
