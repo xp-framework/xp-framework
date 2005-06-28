@@ -86,13 +86,20 @@
      *
      * @access  public  
      * @param   string q query-string for notes
+     * @param   &util.Date date date only show links on this date
+     * @param   &util.Date afterDate show links after this date
+     * @param   &util.Date beforeDate show links before this date
      * @return  string
      */  
-    function getLinks($q= '') {
+    function getLinks($q= '', $date, $afterDate, $beforeDate) {
       return $this->_doRequest(
         'http://www.simpy.com/simpy/api/rest/GetLinks.do', 
-        array('q' => $q)
-      );
+        array(
+          'q'         => $q,
+          'date'      => is_object($date) ? $date->format('%Y-%m-%d') : '',
+          'afterDate' => is_object($afterDate) ? $afterDate->format('%Y-%m-%d') : '',
+          'beforeDate'=> is_object($beforeDate) ? $beforeDate->format('%Y-%m-%d') : ''
+        ));
     }
 
     /**
