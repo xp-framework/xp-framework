@@ -342,7 +342,7 @@
           'gridLines'       => $bc->getGridLines()
         ), $img);
         
-        $this->_renderLegend(array(
+        $bc->getDisplayLegend() && $this->_renderLegend(array(
           'labels'          => array_map(create_function('$a', 'return $a->name;'), $bc->series),
           'font'            => $font,
           'fontWidth'       => $fontw,
@@ -467,7 +467,7 @@
           'gridLines'       => $lc->getGridLines()
         ), $img);
         
-        $this->_renderLegend(array(
+        $lc->getDisplayLegend() && $this->_renderLegend(array(
           'labels'          => array_map(create_function('$a', 'return $a->name;'), $lc->series),
           'font'            => $font,
           'fontWidth'       => $fontw,
