@@ -92,7 +92,7 @@
     
     /**
      * Sets series labels
-     +
+     *
      * @access public
      * @param string[] labels The series labels
      */
