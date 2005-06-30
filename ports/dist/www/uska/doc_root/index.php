@@ -4,7 +4,7 @@
  * $Id$ 
  */
   require('lang.base.php');
-  xp::sapi('scriptlet.development');
+  xp::sapi('scriptlet.development', 'cgi');
   uses(
     'util.PropertyManager',
     'rdbms.ConnectionManager',
