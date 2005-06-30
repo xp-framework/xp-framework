@@ -13,35 +13,48 @@
 >
 
   <xsl:include href="layout.xsl"/>
+  <xsl:include href="../wizard.inc.xsl"/>
   
   <xsl:template name="context">
   </xsl:template>
   
   <xsl:template name="content">
     <h3>Anmeldung</h3>
-    <p>
-      Der angeforderte Bereich der Seite ist nur nach erfolgreicher Anmeldung zugänglich.<br/>
-      Bitte gib hier deinen Usernamen und Passwort ein, um dich anzumelden:
-    </p>
     
-    <form method="post" action="{$__state}">
-    <input type="hidden" name="__handler" value="{/formresult/handlers/handler[@name= 'loginhandler']/@id}"/>
-    
-    <table width="400" cellpadding="0" cellspacing="5" class="login">
-      <tr>
-        <td align="right">Username:</td>
-        <td><input type="text" name="username" value="{/formresult/formvalues/param[@name= 'username']}" size="20"/></td>
-      </tr>
-      <tr>
-        <td align="right">Passwort:</td>
-        <td><input type="password" name="password" value="{/formresult/formvalues/param[@name= 'password']}" size="20"/></td>
-      </tr>
-      <tr>
-        <td colspan="2" align="right">
-          <input type="submit" name="submit" value="Anmelden"/>
-        </td>
-      </tr>
-    </table>
-    </form>
+    <xsl:choose>
+      <xsl:when test="/formresult/user">
+        <xsl:copy-of select="func:box('success', 'Du bist schon angemeldet. Du hast jetzt Zugriff auf alle
+          geschützten Bereiche der Webseite.')"/>
+        
+        <br/>
+        <a href="{func:link('login?logout')}">Klicke hier, um dich wieder abzumelden!</a>
+      </xsl:when>
+      <xsl:otherwise>
+        <p>
+          Der angeforderte Bereich der Seite ist nur nach erfolgreicher Anmeldung zugänglich.<br/>
+          Bitte gib hier deinen Usernamen und Passwort ein, um dich anzumelden:
+        </p>
+
+        <form method="post" action="{$__state}">
+        <input type="hidden" name="__handler" value="{/formresult/handlers/handler[@name= 'loginhandler']/@id}"/>
+
+        <table width="400" cellpadding="0" cellspacing="5" class="login">
+          <tr>
+            <td align="right">Username:</td>
+            <td><input type="text" name="username" value="{/formresult/formvalues/param[@name= 'username']}" size="20"/></td>
+          </tr>
+          <tr>
+            <td align="right">Passwort:</td>
+            <td><input type="password" name="password" value="{/formresult/formvalues/param[@name= 'password']}" size="20"/></td>
+          </tr>
+          <tr>
+            <td colspan="2" align="right">
+              <input type="submit" name="submit" value="Anmelden"/>
+            </td>
+          </tr>
+        </table>
+        </form>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 </xsl:stylesheet>
