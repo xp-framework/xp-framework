@@ -15,10 +15,28 @@
   <xsl:include href="calendar.inc.xsl"/>
   
   <xsl:variable name="navigation">
-    <nav target="news">Home</nav>
-    <nav target="attendee">Anmeldungen</nav>
-    <nav target="points">Punktestand</nav>
-    <nav target="apply">Mitglied werden</nav>
+    <nav name="news" area="news">
+      <nav name="members" area="news"/>
+      <nav name="posters" area="news"/>
+    </nav>
+    
+    <nav name="events" area="events">
+      <nav name="events/training" area="events"/>
+      <nav name="events/tournaments" area="events"/>
+      <nav name="events/misc" area="events"/>
+    </nav>
+    
+    <nav name="organization" area="organization">
+      <nav name="requests" area="organization"/>
+      <nav name="profile" area="organization"/>
+      <nav name="contact" area="organization"/>
+      <nav name="blog" area="organization"/>
+      <nav name="admin/createplayer" area="organization"/>
+      <nav name="admin/createevent" area="organization"/>
+    </nav>
+    
+    <nav name="about"/>
+    <nav name="login"/>
   </xsl:variable>
   
   <xsl:variable name="area" select="substring-before(concat($__state, '/'), '/')"/>
@@ -61,10 +79,10 @@
             </tr>
             <tr>
               <xsl:for-each select="exsl:node-set($navigation)/nav">
-                <xsl:variable name="class">nav<xsl:if test="@target = $area">active</xsl:if></xsl:variable>
+                <xsl:variable name="class">nav<xsl:if test="@area = $area">active</xsl:if></xsl:variable>
                 <td width="5%" class="{$class}" nowrap="nowrap">
-                  <a class="{$class}" href="{func:link(@target)}">
-                    <xsl:value-of select="."/>
+                  <a class="{$class}" href="{func:link(@name)}">
+                    <xsl:value-of select="func:get_text(concat('nav#', @name))"/>
                   </a>
                 </td>
               </xsl:for-each>

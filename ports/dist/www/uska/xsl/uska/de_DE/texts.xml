@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <texts>
   <text for=""></text>
+  
+  <!-- Navigation snippets -->
+  <text for="nav#news">News</text>
+  <text for="nav#events">Termine</text>
+  <text for="nav#organization">Organisatorisches</text>
+  <text for="nav#about">Über US.KA</text>
+  <text for="nav#login">Login/Logout</text>
+  
   <text for="event#max">Maximale Teilnehmer</text>
   <text for="event#req">Notwendige Teilnehmer</text>
   <text for="event#guests_allowed-0">Keine Gäste!</text>
