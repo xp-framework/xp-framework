@@ -96,11 +96,11 @@ insert into permission values (1, "create_player")
 insert into permission values (2, "create_event")
 insert into permission values (3, "create_news")
 
-create table plane_right_matrix (
+create table plain_right_matrix (
   permission_id               int not null,
   player_id                   int not null
 ) Type=InnoDB
-alter table plane_right_matrix add index (player_id)
-alter table plane_right_matrix add unique index (permission_id, player_id)
-alter table plane_right_matrix add foreign key (permission_id) references permission(permission_id)
-alter table plane_right_matrix add foreign key (player_id) references player(player_id)
+alter table plain_right_matrix add index (player_id)
+alter table plain_right_matrix add unique index (permission_id, player_id)
+alter table plain_right_matrix add foreign key (permission_id) references permission(permission_id)
+alter table plain_right_matrix add foreign key (player_id) references player(player_id)
