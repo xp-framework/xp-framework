@@ -24,6 +24,7 @@
   <xsl:param name="__query"/>
   
   <xsl:variable name="texts" select="document(concat($__product, '/', $__lang, '/texts.xml'))/texts"/>
+  <xsl:key name="permissions" match="/formresult/user/permissions/permission" use="normalize-space(.)"/>
 
   <!--
    ! Function that returns a fully qualified link to a specified target
@@ -47,6 +48,18 @@
         $target
       )"/>
     </func:result>
+  </func:function>
+  
+  <!--
+   ! Check whether a user has certain permission.
+   !
+   ! @param string name
+   ! @return bool
+   !-->
+  <func:function name="func:hasPermission">
+    <xsl:param name="permission"/>
+
+    <func:result><xsl:value-of select="key('permissions', $permission)"/></func:result>
   </func:function>
 
   <!--
