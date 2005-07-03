@@ -61,14 +61,13 @@
      * Add a new post to the Blog
      *
      * @access  public
-     * @param   int blogid
      * @param   string title of the post
      * @param   string link
      * @param   string description it is the body of the post
      * @param   bool publish if set false, post will be saved as draft, true is publish it
      * @return  string the postid of the new post
      */  
-    function newPost($blogid, $title='', $link='', $description='', $publish=FALSE) {
+    function newPost($title='', $link='', $description='', $publish=FALSE) {
       return $this->invoke(
         'metaWeblog.newPost',
         $this->blogid,
