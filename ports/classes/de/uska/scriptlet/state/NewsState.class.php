@@ -4,28 +4,59 @@
  * $Id$ 
  */
 
-  uses('de.uska.scriptlet.state.UskaState');
+  uses('de.uska.scriptlet.AbstractNewsListingState');
 
   /**
-   * (Insert class' description here)
+   * Display news on news state.
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Display news.
    */
-  class NewsState extends UskaState {
+  class NewsState extends AbstractNewsListingState {
   
     /**
-     * Process this state.
+     * Retrieve parent category's ID
      *
      * @access  public
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.XMLScriptletResponse response 
-     * @param   &scriptlet.xml.Context context
+     * @return  int
      */
-    function process(&$request, &$response, &$context) {
-      parent::process($request, $response, $context);
-      $this->insertTeams($request, $response);
+    function getParentCategory() {
+      return 1;
+    }
+
+    /*
+     * Retrieve entries
+     *
+     * @access  protected
+     * @param   &rdbms.DBConnection db
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @return  &rdbms.ResultSet
+     */
+    function &getEntries(&$db, &$request) {
+      return $db->query('
+        select 
+          entry.id as id,
+          entry.title as title,
+          entry.body as body,
+          entry.author as author,
+          entry.timestamp as timestamp,
+          length(entry.extended) as extended_length,
+          category.categoryid as category_id,
+          category.category_name as category,
+          (select count(*) from serendipity_comments c where c.entry_id = entry.id) as num_comments
+        from
+          serendipity_entries entry,
+          serendipity_entrycat matrix,
+          serendipity_category category
+        where
+          (category.parentid = %1$d or category.categoryid = %1$d)
+          and entry.isdraft = "false"
+          and entry.id = matrix.entryid
+          and matrix.categoryid = category.categoryid
+        order by
+          timestamp desc
+        limit 20',
+        $this->getParentCategory()
+      );
     }
   }
 ?>
