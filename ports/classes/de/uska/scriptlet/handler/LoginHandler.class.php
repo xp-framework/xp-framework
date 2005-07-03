@@ -11,22 +11,18 @@
   );
   
   /**
-   * (Insert class' description here)
+   * Handler for login
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Login
    */
   class LoginHandler extends Handler {
     var
       $cat=     NULL;
 
     /**
-     * (Insert method's description here)
+     * Constructor.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function __construct() {
       parent::__construct();
@@ -70,7 +66,7 @@
         $perms= $db->select('
             p.name
           from
-            plane_right_matrix as prm,
+            plain_right_matrix as prm,
             permission as p
           where p.permission_id= prm.permission_id
             and prm.player_id= %d',
@@ -80,8 +76,9 @@
         return throw($e);
       }
       
-      $context->setPermissions($perms);
-      
+      $cperms= array();
+      foreach ($perms as $p) { $cperms[$p['name']]= TRUE; }
+      $context->setPermissions($cperms);
       return TRUE;
     }
     

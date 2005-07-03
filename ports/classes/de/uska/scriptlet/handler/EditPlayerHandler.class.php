@@ -54,12 +54,7 @@
       ) {
       
         // Fetch team
-        $peer= &Player::getPeer();
-        $cm= &ConnectionManager::getInstance();
-        $db= &$cm->getByHost($peer->connection, 0);
-        $team= $db->select('team_id from player_team_matrix where player_id= %d', $player->getPlayer_id());
-
-        $this->setFormValue('team_id', $team[0]['team_id']);
+        $this->setFormValue('team_id', $player->getTeam_id());
         $this->setFormValue('player_id', $player->getPlayer_id());
         $this->setFormValue('firstname', $player->getFirstName());
         $this->setFormValue('lastname', $player->getLastName());
@@ -133,7 +128,7 @@
       $email= &$this->wrapper->getEmail();
       $player->setEmail($email->localpart.'@'.$email->domain);
       $player->setPosition($this->wrapper->getPosition());
-      $player->setSex($this->wrapper->getSex());
+      $player->setTeam_id($this->wrapper->getTeam_id());
       
       if (NULL === $player->getCreated_by()) {
         $player->setCreated_by($context->user->getPlayer_id());
@@ -156,11 +151,6 @@
           $player->insert();
         }
         
-        $db->delete('from player_team_matrix where player_id= %d', $player->getPlayer_id());
-        $db->insert('into player_team_matrix (player_id, team_id) values (%d, %d)',
-          $player->getPlayer_id(),
-          $this->wrapper->getTeam_id()
-        );
       } if (catch('SQLException', $e)) {
         $transaction->rollback();
         return throw($e);

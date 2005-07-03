@@ -131,6 +131,7 @@
           $player->setFirstname($this->wrapper->getFirstname());
           $player->setLastname($this->wrapper->getLastname());
           $player->setCreated_by($context->user->getPlayer_id());
+          $player->setTeam_id($context->user->getTeam_id());
           $player->setChangedby($context->user->getUsername());
           $player->setLastchange(Date::now());
           $player->setPlayer_type_id(2);  // Guest
