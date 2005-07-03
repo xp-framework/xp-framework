@@ -8,7 +8,7 @@
  
   /**
    * Class wrapper for table player, database uska
-   * (Auto-generated on Sat, 30 Apr 2005 11:04:36 +0200 by alex)
+   * (Auto-generated on Sat, 02 Jul 2005 18:44:51 +0200 by alex)
    *
    * @purpose  Datasource accessor
    */
@@ -22,7 +22,6 @@
       $password           = NULL,
       $email              = NULL,
       $position           = NULL,
-      $sex                = NULL,
       $created_by         = NULL,
       $lastchange         = NULL,
       $changedby          = '',
@@ -37,7 +36,7 @@
     function __static() { 
       with ($peer= &Player::getPeer()); {
         $peer->setTable('uska.player');
-        $peer->setConnection('uskadb');
+        $peer->setConnection('uska');
         $peer->setIdentity('player_id');
         $peer->setPrimary(array('player_id'));
         $peer->setTypes(array(
@@ -49,7 +48,6 @@
           'password'            => '%s',
           'email'               => '%s',
           'position'            => '%d',
-          'sex'                 => '%d',
           'created_by'          => '%d',
           'lastchange'          => '%s',
           'changedby'           => '%s',
@@ -334,9 +332,9 @@
      * Retrieves lastchange
      *
      * @access  public
-     * @return  util.Date
+     * @return  &util.Date
      */
-    function getLastchange() {
+    function &getLastchange() {
       return $this->lastchange;
     }
       
@@ -344,10 +342,10 @@
      * Sets lastchange
      *
      * @access  public
-     * @param   util.Date lastchange
-     * @return  util.Date the previous value
+     * @param   &util.Date lastchange
+     * @return  &util.Date the previous value
      */
-    function setLastchange($lastchange) {
+    function &setLastchange(&$lastchange) {
       return $this->_change('lastchange', $lastchange);
     }
 
