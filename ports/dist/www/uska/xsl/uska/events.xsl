@@ -13,6 +13,7 @@
 >
 
   <xsl:include href="layout.xsl"/>
+  <xsl:include href="../wizard.inc.xsl"/>
   
   <xsl:template name="context">
     <xsl:call-template name="calendar">
@@ -20,16 +21,24 @@
     </xsl:call-template>
     <br/>
     
-    <table class="sidebar" cellpadding="0" cellspacing="0" width="170">
-      <tr><td class="sidebar_head">Aktionen</td></tr>
-      <tr><td><a href="{func:link('event/edit')}">Neuen Termin eintragen</a></td></tr>
-    </table>
+    <xsl:if test="func:hasPermission('create_event') != ''">
+      <table class="sidebar" cellpadding="0" cellspacing="0" width="170">
+        <tr><td class="sidebar_head">Aktionen</td></tr>
+        <tr><td><a href="{func:link('event/edit')}">Neuen Termin eintragen</a></td></tr>
+      </table>
+    </xsl:if>
+    
   </xsl:template>
   
   <xsl:template name="content">
-    <b>Die nächsten Events:</b>
+    <h1>Die nächsten Events:</h1>
     
     <xsl:variable name="events" select="/formresult/events"/>
+    
+    <!-- Display message when no events exist -->
+    <xsl:if test="count($events/event) = 0">
+      <xsl:copy-of select="func:box('hint', func:get_text('events#no-events'))"/>
+    </xsl:if>
     
     <xsl:for-each select="$events/event">
       <xsl:variable name="pos" select="position()"/>
