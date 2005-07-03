@@ -24,8 +24,8 @@
      */
     function insertStatus(&$response) {
       if ($this->user) {
-        $response->addFormResult(Node::fromObject($this->user, 'user'));
-        $response->addFormResult(Node::fromArray($this->permissions, 'permission'));
+        $n= &$response->addFormResult(Node::fromObject($this->user, 'user'));
+        $n->addChild(Node::fromArray(array_keys($this->permissions), 'permissions'));
       }
     }
     
@@ -49,6 +49,17 @@
     function setPermissions(&$perm) {
       $this->permissions= &$perm;
       $this->setChanged();
+    }
+    
+    /**
+     * Check whether user has a certain permission
+     *
+     * @access  public
+     * @param   string name
+     * @return  bool
+     */
+    function hasPermission($name) {
+      return isset($this->permissions[$name]);
     }
   }
 ?>
