@@ -26,15 +26,16 @@
     function process(&$request, &$response, &$context) {
       static $types= array(
         'training'    => 1,
-        'tournament'  => 2
+        'tournament'  => 2,
+        'misc'        => 3
       );
       parent::process($request, $response, $context);
       
       try(); {
         $team= FALSE;
         $type= FALSE;
-        with ($env= $request->getEnvValue('QUERY_STRING')); {
-          if (strlen($env)) list($type, $team)= explode(',', $env);
+        with ($env= $request->getQueryString()); {
+          if (strlen($env)) @list($type, $all, $team)= explode(',', $env);
         }
         
         $events= $this->db->select('
@@ -56,9 +57,11 @@
             team as t
           where t.team_id= e.team_id
             %c
+            %c
             %c',
           ($team ? $this->db->prepare('and e.team_id= %d', $team) : ''),
-          ($type ? $this->db->prepare('and e.event_type_id= %d', $types[$type]) : '')
+          ($type ? $this->db->prepare('and e.event_type_id= %d', $types[$type]) : ''),
+          ($all  ? '' : $this->db->prepare('and e.target_date > now()'))
         );
       } if (catch('SQLException', $e)) {
         return throw($e);
