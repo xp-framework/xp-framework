@@ -4,16 +4,37 @@
   
   <!-- Navigation snippets -->
   <text for="nav#news">News</text>
+  <text for="nav#people">Leute</text>
   <text for="nav#events">Termine</text>
   <text for="nav#organization">Organisatorisches</text>
   <text for="nav#about">Über US.KA</text>
   <text for="nav#login">Login/Logout</text>
+  <text for="subnav#events?training">Training</text>
+  <text for="subnav#events?tournaments">Turniere</text>
+  <text for="subnav#events?misc">Sonstige Termine</text>
   
+  <text for="common#today">Heute</text>
+  <text for="common#yesterday">Gestern</text>
+  <text for="common#weekday#0">Sonntag</text>
+  <text for="common#weekday#1">Montag</text>
+  <text for="common#weekday#2">Dienstag</text>
+  <text for="common#weekday#3">Mittwoch</text>
+  <text for="common#weekday#4">Donnerstag</text>
+  <text for="common#weekday#5">Freitag</text>
+  <text for="common#weekday#6">Samstag</text>
+  <text for="common#weekday#7">Sonntag</text>
+  
+  <text for="error#text.xml.XMLParser-XMLFormatException">Der Artikel enthält XML-Fehler und kann daher nicht dargestellt werden. Fehlermeldung:</text>
+              
+  <text for="events#no-events">Es liegen momentan noch keine Termine vor.</text>
   <text for="event#max">Maximale Teilnehmer</text>
   <text for="event#req">Notwendige Teilnehmer</text>
   <text for="event#guests_allowed-0">Keine Gäste!</text>
   <text for="event#guests_allowed-1">Mit Gästen</text>
   <text for="event#createdby">Erstellt von</text>
+  <text for="event_type#training">Training</text>
+  <text for="event_type#tournament">Turnier</text>
+  <text for="event_type#misc">Sonstiges</text>
   
   <text for="attendee#status-">-</text>
   <text for="attendee#status-0">kommt nicht</text>
@@ -25,4 +46,16 @@
   <text for="attendee#availableseats">Mitfahrgelegenheit(en)</text>
   <text for="attendee#guestof">Gast von</text>
   
+  <text for="editeventhandler#newevent">Termin-Editor</text>
+  <text for="wizard#name">Name</text>
+  <text for="wizard#team">Team</text>
+  <text for="wizard#event_type">Art des Termin</text>
+  <text for="wizard#description">Kurzbeschreibung</text>
+  <text for="separator#dates">Daten</text>
+  <text for="wizard#target_date">Startdatum + Uhrzeit (z.B. 12.7.2005 18:30)</text>
+  <text for="wizard#deadline">Anmeldeschluss</text>
+  <text for="separator#attendees">Teilnehmer</text>
+  <text for="wizard#max">Maximal:</text>
+  <text for="wizard#req">Minimal erforderlich:</text>
+  <text for="wizard#guests">Gäste zulassen?</text>
 </texts>
