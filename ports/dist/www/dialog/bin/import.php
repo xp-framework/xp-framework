@@ -116,7 +116,7 @@ __
       }
     }
 
-    $album->setTitle($param->value('title', 't', $album->getTitle()));
+    $album->setTitle($param->value('title', 't', (string)$album->getTitle()));
     $album->setCreatedAt(new Date($param->value('date', 'D', $album->createdAt->getTime())));
 
     // We will regenerate these from scratch...
