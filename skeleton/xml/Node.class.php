@@ -67,7 +67,7 @@
             $vars= get_object_vars($a[$field]);
           } else {
             $vars= array();
-            foreach ($a[$field]->__sleep() as $var) $vars[$var]= $a[$field]->{$var};
+            foreach ($a[$field]->__sleep() as $var) $vars[$var]= &$a[$field]->{$var};
           }
           $child->_recurse($vars);
         } else {
@@ -116,7 +116,7 @@
         $vars= get_object_vars($obj);
       } else {
         $vars= array();
-        foreach ($obj->__sleep() as $var) $vars[$var]= $obj->{$var};
+        foreach ($obj->__sleep() as $var) $vars[$var]= &$obj->{$var};
       }
       return Node::fromArray(
         $vars, 
