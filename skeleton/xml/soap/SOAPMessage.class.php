@@ -47,7 +47,7 @@
     var 
       $body         = '',
       $namespace    = 'ctl',
-      $encoding     = XML_ENCODING_DEFAULT,
+      $encoding     = 'iso-8859-1',
       $nodeType     = 'SOAPNode',
       $action       = '',
       $method       = '';
