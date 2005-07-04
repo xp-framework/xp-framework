@@ -280,7 +280,8 @@
           // Break missing intentionally
 
         default: 
-          $content= $this->content; break;
+          $content= $this->content; 
+          break;
       }
 
       switch ($indent) {
