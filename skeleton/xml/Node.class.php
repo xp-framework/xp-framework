@@ -152,7 +152,7 @@
      * @throws  xml.XMLFormatException in case content contains illegal characters
      */
     function setContent($content) {
-      if (is_scalar($content)) {
+      if (is_string($content)) {
 
         // Scan the given string for illegal characters. If no illegal characters are 
         // found, strtok returns the unchanged string. Otherwise the string up to the 
