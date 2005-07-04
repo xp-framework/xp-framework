@@ -50,18 +50,18 @@
      * Recurse an array
      *
      * @access  protected
-     * @param   &xml.Node e element to add array to
      * @param   array a
      */
-    function _recurse(&$e, $a) {
-      $sname= rtrim($e->name, 's');
+    function _recurse($a) {
+      $sname= rtrim($this->name, 's');
       foreach (array_keys($a) as $field) {
-        $child= &$e->addChild(new Node(is_numeric($field) || '' == $field
+        $child= &$this->addChild(new Node(is_numeric($field) || '' == $field
           ? $sname
           : $field
         ));
+
         if (is_array($a[$field])) {
-          $this->_recurse($child, $a[$field]);
+          $child->_recurse($a[$field]);
         } else if (is_object($a[$field])) {
           if (!method_exists($a[$field], '__sleep')) {
             $vars= get_object_vars($a[$field]);
@@ -69,7 +69,7 @@
             $vars= array();
             foreach ($a[$field]->__sleep() as $var) $vars[$var]= $a[$field]->{$var};
           }
-          $this->_recurse($child, $vars);
+          $child->_recurse($vars);
         } else {
           $child->setContent($a[$field]);
         }
@@ -92,7 +92,7 @@
      */
     function &fromArray($arr, $name= 'array') {
       $n= &new Node($name);
-      $n->_recurse($n, $arr);
+      $n->_recurse($arr);
       return $n;  
     }
     
