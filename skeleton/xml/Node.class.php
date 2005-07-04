@@ -5,7 +5,7 @@
  *
  */
 
-  uses('xml.XML', 'xml.PCData', 'xml.CData');
+  uses('xml.PCData', 'xml.CData');
   
   define('INDENT_DEFAULT',    0);
   define('INDENT_WRAPPED',    1);
@@ -18,7 +18,7 @@
    *
    * @see   xp://xml.Tree#addChild
    */
-  class Node extends XML {
+  class Node extends Object {
     var 
       $name         = '',
       $attribute    = array(),
