@@ -47,36 +47,6 @@
     }
 
     /**
-     * Recurse an array
-     *
-     * @access  protected
-     * @param   array a
-     */
-    function _recurse($a) {
-      $sname= rtrim($this->name, 's');
-      foreach (array_keys($a) as $field) {
-        $child= &$this->addChild(new Node(is_numeric($field) || '' == $field
-          ? $sname
-          : $field
-        ));
-
-        if (is_array($a[$field])) {
-          $child->_recurse($a[$field]);
-        } else if (is_object($a[$field])) {
-          if (!method_exists($a[$field], '__sleep')) {
-            $vars= get_object_vars($a[$field]);
-          } else {
-            $vars= array();
-            foreach ($a[$field]->__sleep() as $var) $vars[$var]= &$a[$field]->{$var};
-          }
-          $child->_recurse($vars);
-        } else {
-          $child->setContent($a[$field]);
-        }
-      }
-    }
-    
-    /**
      * Create a node from an array
      *
      * Usage example:
@@ -90,9 +60,19 @@
      * @param   string name default 'array'
      * @return  &xml.Node
      */
-    function &fromArray($arr, $name= 'array') {
+    function &fromArray($a, $name= 'array') {
       $n= &new Node($name);
-      $n->_recurse($arr);
+      $sname= rtrim($name, 's');
+      foreach (array_keys($a) as $field) {
+        $nname= is_numeric($field) || '' == $field ? $sname : $field;
+        if (is_array($a[$field])) {
+          $n->addChild(Node::fromArray($a[$field], $nname));
+        } else if (is_object($a[$field])) {
+          $n->addChild(Node::fromObject($a[$field], $nname));
+        } else {
+          $n->addChild(new Node($nname, $a[$field]));
+        }
+      }
       return $n;  
     }
     
