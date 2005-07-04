@@ -297,9 +297,7 @@
 
           // No content and no children => close tag
           if (0 == strlen($content)) {
-            if (empty($this->children)) {
-              return $xml."/>\n";
-            }
+            if (empty($this->children)) return $xml."/>\n";
             $xml.= '>';
           } else {
             $xml.= '>'.($indent ? "\n  ".$inset.$content : trim($content));
