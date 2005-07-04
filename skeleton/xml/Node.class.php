@@ -152,12 +152,9 @@
      * @throws  xml.XMLFormatException in case content contains illegal characters
      */
     function setContent($content) {
-      if (is_string($content)) {
 
-        // Scan the given string for illegal characters. If no illegal characters are 
-        // found, strtok returns the unchanged string. Otherwise the string up to the 
-        // illegal character will be returned (or - if the char is the first in the 
-        // string, the string excluding the first char will be returned).
+      // Scan the given string for illegal characters.
+      if (is_string($content)) {  
         if (strlen($content) > ($p= strcspn($content, XML_ILLEGAL_CHARS))) {
           return throw(new XMLFormatException(
             'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
