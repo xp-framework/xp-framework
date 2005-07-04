@@ -149,7 +149,7 @@
      *
      * @access  public
      * @param   string content
-     * @throws  lang.IllegalArgumentException in case content contains illegal characters
+     * @throws  xml.XMLFormatException in case content contains illegal characters
      */
     function setContent($content) {
       if (is_scalar($content)) {
@@ -159,7 +159,7 @@
         // illegal character will be returned (or - if the char is the first in the 
         // string, the string excluding the first char will be returned).
         if (strlen($content) > ($p= strcspn($content, XML_ILLEGAL_CHARS))) {
-          return throw (new XMLFormatException(
+          return throw(new XMLFormatException(
             'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
           ));
         }
