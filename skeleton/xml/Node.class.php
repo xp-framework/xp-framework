@@ -257,17 +257,17 @@
      */
     function getSource($indent= INDENT_WRAPPED, $inset= '') {
       $xml= $inset.'<'.$this->name;
-      switch (xp::typeOf($this->content)) {
-        case 'xml.PCData':
-          $content= $this->content->pcdata;
-          break;
-
-        case 'xml.CData':
-          $content= '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $this->content->cdata).']]>';
-          break;
-
+      switch (gettype($this->content)) {
         case 'string': 
           $content= htmlspecialchars($this->content); 
+          break;
+
+        case 'object':
+          if (is_a($this->content, 'PCData')) {
+            $content= $this->content->pcdata;
+          } else if (is_a($this->content, 'CData')) {
+            $content= '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $this->content->cdata).']]>';
+          }
           break;
 
         case 'float':
