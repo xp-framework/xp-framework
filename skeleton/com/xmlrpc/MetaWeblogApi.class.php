@@ -74,9 +74,9 @@
         $this->username,
         $this->password,
         array(
-          'title'      => $title,
-          'link'       => $link,
-          'description'=> $description
+          'title'       => $title,
+          'link'        => $link,
+          'description' => $description
         ),
         $publish == TRUE ? 1 : 0
       );    
@@ -100,11 +100,11 @@
         $this->username,
         $this->password,
         array(
-          'title'      => $title,
-          'link'       => $link,
-          'description'=> $description
+          'title'       => $title,
+          'link'        => $link,
+          'description' => $description
         ),
-        $publish == TRUE ? 1 : 0
+        (int)$publish
       );
       return $response[0];
     }
