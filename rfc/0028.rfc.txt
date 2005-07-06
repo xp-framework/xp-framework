@@ -56,6 +56,9 @@ New functionality
   $response->forwardTo($stateName, $query, $fraction);
 ?>
 
+Note that neither the query argument nor the fraction argument contain
+the separators ("?" for query, "#" for fraction)!
+
 
 Security considerations
 -----------------------
