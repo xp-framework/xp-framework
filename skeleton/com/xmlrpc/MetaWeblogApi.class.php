@@ -33,13 +33,16 @@
    */
   class MetaWeblogApi extends XmlRpcClient {
     var
-      $url     = '',
-      $username= '',
-      $password= '',
-      $blogid  = '';
+      $url      = '',
+      $username = '',
+      $password = '',
+      $blogid   = '';
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * Note: blogid is only needed if the blog is hosted by blogger.com, 
+     * in which case it is the unique blog id
      *
      * @access  public
      * @param   string url for the weblog you want to access
@@ -47,14 +50,11 @@
      * @param   string password for the weblog
      * @param   int blogid of the weblog
      */
-    function __construct($url, $username, $password, $blogid) {
-      parent::__construct(
-        new XMLRPCHTTPTransport($url)
-      );      
+    function __construct($url, $username, $password, $blogid= '0') {
+      parent::__construct(new XMLRPCHTTPTransport($url));
       $this->username= $username;
       $this->password= $password;
-      // blogid is only needed if the blog is hosted by blogger.com, then it is the unique blog id
-      $this->blogid= empty($blogid) ? "0" : $blogid;
+      $this->blogid= $blogid;
     }
 
     /**
@@ -93,7 +93,7 @@
      * @param   bool publish if set false, post will be saved as draft, true is publish it
      * @return  bool true when post is successfull
      */  
-    function editPost($postid, $title='', $link='', $description='', $publish=FALSE) {
+    function editPost($postid, $title='', $link='', $description='', $publish= FALSE) {
       $response= $this->invoke(
         'metaWeblog.editPost',
         $postid,
@@ -177,5 +177,5 @@
         $numberofposts
       );
     }
-}
+  }
 ?>
