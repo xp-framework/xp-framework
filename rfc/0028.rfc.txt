@@ -1,0 +1,84 @@
+RFC 0028: Add a method forwardTo() to XMLScriptletResponse
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Jul  6 09:57:52     2005
+@status: draft
+@category: scriptlet.xml
+
+Scope of Change
+---------------
+A new method forwardTo() will be added to the XMLScriptletResponse class.
+This method will redirect relatively to the base URI.
+
+
+Rationale
+---------
+A redirect (HTTP statuscodes 301 / 302 with Location header) needs an
+absolute URI to be RFC-conform. Assembling this URI is tedious and 
+developers tend to end up writing $response->redirect('../foo/bar'),
+which works fine because browsers are quite relaxed on this issue.
+
+
+Functionality
+-------------
+
+Current functionality
+~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $uri= $request->getURI();
+  $sessionId= $request->session ? $request->session->getId() : NULL;
+  $response->sendRedirect(sprintf(
+    '%s://%s/xml/%s.%s%s/%s%s%s', 
+    $uri['scheme'],
+    $uri['host'],          
+    $request->getProduct(),
+    $request->getLanguage(),
+    empty($sessionId) ? '' : '.psessionid='.$sessionId,
+    $stateName,
+    empty($query) ? '' : '?'.$query,
+    empty($fraction) ? '' : '#'.$fraction        
+  ));
+?>
+
+New functionality
+~~~~~~~~~~~~~~~~~
+<?php
+  // Simple forward to state $stateName, e.g. 'news/view'
+  $response->forwardTo($stateName);
+  
+  // Also attach a query string and a fraction, e.g. {
+  //   stateName: 'news/view'
+  //   query:     '5'
+  //   fraction:  'extended'
+  // }
+  $response->forwardTo($stateName, $query, $fraction);
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+- New method in XMLScriptletResponse
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+n/a
+
+<EOF>
