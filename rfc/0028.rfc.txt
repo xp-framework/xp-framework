@@ -74,8 +74,8 @@ Dependencies
 
 Related documents
 -----------------
-n/a
-
+- Patch implementing this RFC
+  http://xp-framework.net/downloads/rfc0028.diff
 
 Comments
 --------
