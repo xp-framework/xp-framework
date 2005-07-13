@@ -1,0 +1,110 @@
+RFC 0029: 
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: gellweiler
+@created: Wed Jul 13  18:21:15  2005
+@status: draft
+@category: util
+
+Scope of Change
+---------------
+Add a new class util.AbstractDeferredInvokationHandler implementing 
+lang.reflect.InvocationHandler. This class will provide the ability to
+initialize itself upon the first call of invoke().
+
+Rationale
+--------- 
+Normally when forking children within a PreforkingServer or ForkingServer every 
+child gets a copy of all objects, e.g. by forking children having an already
+conntected ldap connection they all get a copy of the same resource. If one of the
+forked children dies, it also destroys its copy of the connection resource, and therefor
+all copies of all children.
+By creating an instance of a given class when the child was already forked, every child 
+gets its own instance with no copies shared over all children. The class 
+AbstractDeferredInvokationHandler allows creation of objects within a method initialize() which
+will be called with the first invocation of a method of the represented class.
+
+
+Functionality
+-------------
+
+<?php
+  class AbstractDeferredInvokationHandler extends Object {
+    var
+      $_instance    = NULL;
+      
+    function &initialize() { }
+    
+    function invoke(&$proxy, $method, $args) {
+      Console::writeLine("*** ", getmypid(), ": invoke(", xp::stringOf($proxy), ", $method, ", xp::stringOf($args), "\n");
+      if (!isset($this->_instance)) {
+        try(); {
+          $this->_instance= &$this->initialize();
+        } if (catch('Throwable', $e)) {
+          $this->_instance= NULL;
+          return throw(new DeferredInitializationException($method, $e));
+        }
+      }
+      return call_user_func_array(array(&$this->_instance, $method), $args);
+    }
+    
+  } implements(__FILE__, 'lang.reflect.InvocationHandler');
+?>
+
+
+Classes extending AbstractDeferredInvokationHandler implement the method initialize() to create objects
+upon first call of a method:
+
+
+<?php
+  class DeferredLdapAuthenticator extends AbstractDeferredInvokationHandler {
+    function initialize() {    
+      try(); {
+        $l= &new LDAPClient(
+          'ldap.xp-framework.net',
+          '389'
+        );
+
+        $l->setOption(LDAP_OPT_PROTOCOL_VERSION, 3);
+        $l->connect();
+        $l->bind(
+          'uid=chef',
+          'caffein'
+        );
+      } if (catch('Exception', $e)) {
+        Console::writeLine($e->toString());
+        exit;
+      }
+      
+      return new LdapAuthenticator($l, 'ou=xp, o=1und1, c=DE');
+    }
+  }
+?>
+
+When used within a PreforkingServer, the needed LDAPClient will be created
+on the first call of a method of the LdapAuthenticator object which will be
+after the child was forked.
+
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+n/a
+
+Dependencies
+------------
+none
+
+Related documents
+-----------------
+none
+
+Comments
+--------
+n/a
+
+<EOF>
