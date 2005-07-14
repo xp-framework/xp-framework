@@ -58,9 +58,8 @@ initialize() to create objects upon first call of a method:
 <?php
   class DeferredLdapAuthenticator extends AbstractDeferredInvokationHandler {
     function initialize() {    
+      $l= &new LDAPClient('ldap.xp-framework.net', 389);
       try(); {
-        $l= &new LDAPClient('ldap.xp-framework.net', 389);
-
         $l->setOption(LDAP_OPT_PROTOCOL_VERSION, 3);
         $l->connect();
         $l->bind('uid=chef', 'caffeine');
