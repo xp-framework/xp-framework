@@ -14,7 +14,7 @@ lang.reflect.InvocationHandler. This class will provide the ability to
 initialize itself upon the first call of invoke().
 
 Rationale
---------- 
+---------
 Normally when forking children within a PreforkingServer or ForkingServer 
 every child gets a copy of all objects, e.g. by forking children having 
 an already conntected ldap connection they all get a copy of the same 
