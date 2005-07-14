@@ -193,13 +193,13 @@
         $leap= Date::_isLeapYear($year);
         
         // Add number of days per month
-        $days+= array_sum(array_slice($month_table[$leap], $month, 12));
+        $days+= array_sum(array_slice($month_table[$leap], $month + 1, 12));
         
         // Subtract day
         $days+= $month_table[$leap][$month]- $day;
         
         // Calculate stamp
-        $stamp= - ($days * 86400 - (86400 - ($hour * 3600 + $minute * 60 + $second)) - $gmt);
+        $stamp= - ($days * 86400 + (86400 - ($hour * 3600 + $minute * 60 + $second)) - $gmt);
         
         // Gregorian correction
         if ($stamp < -12220185600) {
@@ -575,7 +575,7 @@
               abs($gmt) / 36
             );
             break;
-          case 's': $return.= sprintf('%02d', $this->seconds);
+          case 's': $return.= sprintf('%02d', $this->seconds); break;
           case 'S': $return.= $suffix[max($this->mday % 10, 4)]; break;
           case 't': $return.= $this->ndays; break;
           case 'T': $return.= date('T'); break;
@@ -587,7 +587,7 @@
           case 'z': $return.= $this->yday; break;
           case 'Z': $return.= $gmt * 86400; break;
           case '\\': if ($i++ >= $s) break;
-          default: $return.= $format{$i};
+          default: $return.= $format{$i}; break;
         }
       }
       return $return;
@@ -637,7 +637,7 @@
             ); 
             break;
           case 'R': $return.= sprintf('%02d:%02d', $this->hours, $this->minutes); break;
-          case 'S': $return.= sprintf('%02d', $this->seconds);
+          case 'S': $return.= sprintf('%02d', $this->seconds); break;
           case 't': $return.= "\t"; break;
           case 'T': $return.= sprintf('%02d:%02d:%02d', $this->hours, $this->minutes, $this->seconds); break;
           case 'u': $return.= ($this->wday + 6) % 7; break;
@@ -650,7 +650,7 @@
           case 'y': $return.= sprintf('%02d', $this->year % 100); break;
           case 'Y': $return.= sprintf('%04d', $this->year); break;
           case 'Z': $return.= strftime('%Z'); break;
-          default: $return.= $token{1};
+          default: $return.= $token{1}; break;
         }
         $return.= substr($token, 1);
       } while ($token= strtok('%'));
