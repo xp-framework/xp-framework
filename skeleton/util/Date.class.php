@@ -618,12 +618,12 @@
           case 'd': $return.= sprintf('%02d', $this->mday); break;
           case 'D': $return.= sprintf('%02d/%02d/%02d', $this->mon, $this->mday, $this->year % 100); break;
           case 'e': $return.= $this->mday; break;
-          case 'g': $return.= '???YEAR_CORR???'; break;        // FIXME
-          case 'G': $return.= '???YEAR_CORR???'; break;        // FIXME
+          // case 'g' moved to 'V'
+          // case 'G' moved to 'V'
           case 'h': $return.= strftime('%b', mktime(0, 0, 0, $result['mon'], 2, 1971)); break;
           case 'H': $return.= sprintf('%02d', $this->hours); break;
-          case 'I': $return.= $return.= sprintf('%02d', $this->hours == 0 ? 12 : ($this->hours > 12 ? $this->hours - 12 : $this->hours)); break;
-          case 'j': $return.= '???DAY_OF_YEAR???'; break;       // FIXME
+          case 'I': $return.= sprintf('%02d', $this->hours == 0 ? 12 : ($this->hours > 12 ? $this->hours - 12 : $this->hours)); break;
+          case 'j': $return.= sprintf('%03d', $this->yday + 1); break;
           case 'm': $return.= sprintf('%02d', $this->mon); break;
           case 'M': $return.= sprintf('%02d', $this->minutes); break;
           case 'n': $return.= "\n"; break;
@@ -641,9 +641,41 @@
           case 't': $return.= "\t"; break;
           case 'T': $return.= sprintf('%02d:%02d:%02d', $this->hours, $this->minutes, $this->seconds); break;
           case 'u': $return.= ($this->wday + 6) % 7; break;
-          case 'U': $return.= '???WEEKNUMBER???'; break;        // FIXME
-          case 'V': $return.= '???WEEKNUMBER???'; break;        // FIXME
-          case 'W': $return.= '???WEEKNUMBER???'; break;        // FIXME
+          case 'U': $return.= sprintf('%02d', ($this->yday + 7 - $this->wday) / 7); break;
+          case 'g':
+          case 'G':
+          case 'V': {
+          
+            // Algorithm from FreeBSD 5.4's /usr/src/lib/libc/stdtime/strftime.c (rev 1.40.2.1)
+            $year= $this->year;
+            $yday= $this->yday;
+            $wday= $this->wday;
+            for (;;) {
+              $len= (Date::_isLeapYear($year) ? 366 : 365);
+              
+              // What day does the ISO year begin on?
+              $bot= (($yday + 11 - $wday) % 7) - 3;
+              
+              // What day does the next ISO year begin on?
+              $top= $bot - ($len % 7);
+              if ($top < -3) $top += 7;
+              
+              $top += $len;
+              if ($yday >= $top) { $year++; $w= 1; break; }
+              if ($yday >= $bot) { $w= 1 + (($yday - $bot) / 7); break; }
+              --$year;
+              $yday+= (Date::_isLeapYear($year) ? 366 : 365);
+            }
+            
+            switch ($token{0}) {
+              case 'g': $return.= sprintf('%02d', $year % 100); break;
+              case 'G': $return.= $year; break;
+              case 'V': $return.= sprintf('%02d', $w); break;
+            }
+            
+            break;
+          }
+          case 'W': $return.= sprintf('%02d', ($this->yday + 7 - ($this->wday ? $this->wday - 1 : 6)) / 7); break;
           case 'w': $return.= $this->wday; break;
           case 'x': $return.= '???PREFERRED???'; break;         // FIXME
           case 'X': $return.= '???PREFERRED???'; break;         // FIXME
