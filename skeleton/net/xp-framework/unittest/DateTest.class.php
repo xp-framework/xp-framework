@@ -125,5 +125,31 @@
       $this->assertDateEquals($end, '2003-10-26 00:00:00', 'dstend');
       return $end;
     }
+    
+    /**
+     * Test dates before beginning of Unix epoch (sometimes using PHP
+     * builtin strtotime, depending on machine).
+     *
+     * @access  public
+     */
+    #[@test]
+    function testPreUnixEpoch() {
+      $date= &Date::fromString('Dec 31 1969 00:00:00 +0000');
+      $this->assertDateEquals($date, '1969-12-31 00:00:00', 'preunix');
+      return $date;
+    }
+
+    /**
+     * Test early date (from midage), usually never using PHP's builtin
+     * strtotime(), thus testing XP's implementation.
+     *
+     * @access  public
+     */
+    #[@test]
+    function testMidageEpoch() {
+      $date= &Date::fromString('Jan 01 1500 00:00:00 +0000');
+      $this->assertDateEquals($date, '1500-01-01 00:00:00', 'midage');
+      return $date;
+    }
   }
 ?>
