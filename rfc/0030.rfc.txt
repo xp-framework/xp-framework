@@ -1,0 +1,92 @@
+RFC 0030: 
+========================================================================
+$Id$
+
+@authors: gellweiler
+@created: Thu Jul 6 12:14:18  2005
+@status: draft
+@category: lang.reflect
+
+Scope of Change
+---------------
+Add a new functionality to method getProxyClass() of lang.reflect.Proxy
+class. This functionality will add the ability to design proxy classes
+by a new annotation "@overloaded" being able to give method calls a 
+variable number of arguments, e.g. for overloaded methods in java.
+
+Rationale
+---------
+When creating proxy instances of a java class there is no way in php to
+overload methods. A java bean class implementing the following methods
+
+public string sayHello() {}
+public string sayHello(String name) {}
+
+would cause a "Fatal error: Cannot redeclare sayHello()" when generating
+an Interface for that class. Thus when creating Interfaces with
+overloaded methods, the overloaded method must be declared only once
+with a variable number of parameters.
+
+Functionality
+-------------
+Overloaded methods in Interfaces will be declared as follows:
+
+<?php
+  class HelloWorld extends Interface {
+
+    /**
+     *
+     * @access  public
+     * @param   mixed* args
+     */
+    #[@overloaded(signatures= array(
+    #  array(),
+    #  array('java.lang.String')
+    #))]
+    function sayHello() { }
+  }
+?>
+
+The annotation "@overloaded" indicates that there are several methods
+using the same name and describes the different types of parameters of
+those methods. The lang.reflect.Proxy class then generates special code
+for those kind of classes to cover all possible calls of that method:
+
+<?php
+  class Proxy·0 extends Proxy { 
+    function sayhello($_0= NULL) { 
+      switch (func_num_args()) {
+        case 0: return $this->_h->invoke($this, 'sayHello', array());
+        case 1: return $this->_h->invoke($this, 'sayHello', array($_0));
+        default: return throw(new IllegalArgumentException(
+          'Illegal number of arguments'
+        )); 
+      }
+    }
+  }  
+?>
+
+
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+Slightly decreases speed of generating proxy classes.
+
+Dependencies
+------------
+none
+
+Related documents
+-----------------
+- Patch implementing this RFC
+  http://xp-framework.net/downloads/proxy.diff
+
+Comments
+--------
+n/a
+
+<EOF>
