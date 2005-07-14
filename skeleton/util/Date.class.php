@@ -123,7 +123,7 @@
       // "Dec 31 2070 11:59PM"
       if (2 < sscanf($in, '%3s %02d %04d %02d:%02d%[AP]M', $n, $d, $y, $h, $i, $m)) {
         ($m == 'A' && $h == 12) && $h= 0;
-        ($m == 'P' && $h == 12) || $h+= 12;
+        ($m == 'A') || ($m == 'P' && $h == 12) || $h+= 12;
         return Date::mktime($h, $i, 0, $month_names[$n], $d, $y);
       }
       
