@@ -581,7 +581,7 @@
           case 'T': $return.= date('T'); break;
           case 'U': $return.= $this->_utime; break;
           case 'w': $return.= $this->wday; break;
-          case 'W': $return.= '???WEEKNUMBER???'; break;        // FIXME
+          case 'W': $return.= sprintf('%d', ($this->yday + 7 - ($this->wday ? $this->wday - 1 : 6)) / 7); break;
           case 'Y': $return.= sprintf('%04d', $this->year); break;
           case 'y': $return.= sprintf('%02d', $this->year % 100); break;
           case 'z': $return.= $this->yday; break;
