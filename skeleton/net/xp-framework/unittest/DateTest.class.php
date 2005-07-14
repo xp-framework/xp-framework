@@ -128,28 +128,56 @@
     
     /**
      * Test dates before beginning of Unix epoch (sometimes using PHP
-     * builtin strtotime, depending on machine).
+     * builtin strtotime, depending on machine) and dates even
+     * earlier.
      *
      * @access  public
      */
     #[@test]
     function testPreUnixEpoch() {
-      $date= &Date::fromString('Dec 31 1969 00:00:00 +0000');
+      $date= &Date::fromString('Dec 31 1969 00:00AM');
       $this->assertDateEquals($date, '1969-12-31 00:00:00', 'preunix');
+
+      $date= &Date::fromString('Jan 01 1500 00:00AM');
+      $this->assertDateEquals($date, '1500-01-01 00:00:00', 'midage');
       return $date;
     }
 
     /**
-     * Test early date (from midage), usually never using PHP's builtin
-     * strtotime(), thus testing XP's implementation.
+     * Test setting of correct hours when date was given trough
+     * the AM/PM format. Test against PHP's strtotime() and the
+     * homegrown replacement.
      *
      * @access  public
      */
     #[@test]
-    function testMidageEpoch() {
-      $date= &Date::fromString('Jan 01 1500 00:00:00 +0000');
-      $this->assertDateEquals($date, '1500-01-01 00:00:00', 'midage');
-      return $date;
+    function testAnteAndPostMeridiem() {
+    
+      // Test with default strtotime() implementation
+      $date= &Date::fromString('May 28 1980 1:00AM');
+      $this->assertEquals($date->getHours(), 1, '1:00AM != 1h');
+      
+      $date= &Date::fromString('May 28 1980 12:00AM');
+      $this->assertEquals($date->getHours(), 0, '12:00AM != 0h');
+      
+      $date= &Date::fromString('May 28 1980 1:00PM');
+      $this->assertEquals($date->getHours(), 13, '1:00PM != 13h');
+
+      $date= &Date::fromString('May 28 1980 12:00PM');
+      $this->assertEquals($date->getHours(), 12, '12:00PM != 12h');
+
+      // Test with homegrown strtotime-replacement
+      $date= &Date::fromString('May 28 1580 1:00AM');
+      $this->assertEquals((int)$date->getHours(), 1, '1:00AM != 1h');
+      
+      $date= &Date::fromString('May 28 1580 12:00AM');
+      $this->assertEquals((int)$date->getHours(), 0, '12:00AM != 0h');
+      
+      $date= &Date::fromString('May 28 1580 1:00PM');
+      $this->assertEquals((int)$date->getHours(), 13, '1:00PM != 13h');
+
+      $date= &Date::fromString('May 28 1580 12:00PM');
+      $this->assertEquals((int)$date->getHours(), 12, '12:00PM != 12h');
     }
   }
 ?>
