@@ -101,7 +101,7 @@
           switch ($response->getStatusCode()) {
             case 200:
               Console::writeLine();
-              Console::writef('     >> Downloading %s... ', $href->toString());
+              Console::writef('     >> Downloading %s... ', $href->getURL());
 
               // Check if this file resided in a subdirectory. If so, create this
               // subdirectory if necessary
