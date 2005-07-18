@@ -26,7 +26,7 @@
     /**
      * Initialize this request object. Does nothing in this default 
      * implementation, nevertheless, it is a good idea to call 
-     * parent::initialiaze() if you override this method.
+     * parent::initialize() if you override this method.
      *
      * @access  public
      */
