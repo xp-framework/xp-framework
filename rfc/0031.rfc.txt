@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Fri Jul 15 18:04:00 CEST 2005
-@status: draft
+@status: discussion, ends at Tue Jul 19 09:52:19 CEST 2005
 @category: scriptlet.xml.workflow.checkers
 
 Scope of Change
@@ -45,5 +45,7 @@ n/a
 
 Comments
 --------
-
+- friebe, Mon Jul 18 09:52:00 CEST 2005
+  Maybe RangeChecker is a better name?
+  
 <EOF>
