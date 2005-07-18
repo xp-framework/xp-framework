@@ -138,7 +138,7 @@
         $out= &new File('xml/'.$uses.'.xpdoc.xml');
         try(); {
           $out->open(FILE_MODE_WRITE);
-          $out->writeLine($node->getDeclaration());
+          $out->writeLine('<?xml version="1.0" encoding="iso-8859-1"?>');
           $out->writeLine(preg_replace(
             array(
               '#&lt;pre&gt;(.*)&lt;/pre&gt;#sU',
