@@ -46,8 +46,6 @@
         2 => array('pipe', 'w')   // stderr
       );
       
-      
-      
       // Build command line
       $a= func_get_args();
       $cmd= implode(' ', $a);
