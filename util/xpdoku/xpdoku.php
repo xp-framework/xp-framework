@@ -249,8 +249,8 @@
   
   $out= &new File('xml/classTree.xpdoc.xml');
   $out->open (FILE_MODE_WRITE);
-  $out->writeLine ($classTree->getDeclaration());
-  $out->writeLine ($classTree->getSource());
+  $out->writeLine('<?xml version="1.0" encoding="iso-8859-1"?>');
+  $out->writeLine($classTree->getSource());
   $out->close();
   
   // All xml files have been written, now build the inheritance tree
@@ -281,8 +281,8 @@
   $out= &new File ('xml/inheritanceTree.xml');
   try(); {
     $out->open (FILE_MODE_WRITE);
-    $out->writeLine ($main->getDeclaration());
-    $out->writeLine ($main->getSource());
+    $out->writeLine('<?xml version="1.0" encoding="iso-8859-1"?>');
+    $out->writeLine($main->getSource());
     $out->close();
   } if (catch ('IOException', $e)) {
     $e->printStackTrace(STDERR);
