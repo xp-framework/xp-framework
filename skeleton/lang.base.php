@@ -81,12 +81,14 @@
     //     Stores static data
     function &registry() {
       static $registry= array();
+      static $nullref= NULL;
       
       switch (func_num_args()) {
         case 0: return $registry;
         case 1: return $registry[func_get_arg(0)];
         case 2: $registry[func_get_arg(0)]= func_get_arg(1); break;
       }
+      return $nullref;
     }
     // }}}
     
