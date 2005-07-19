@@ -200,6 +200,40 @@
     }
     
     /**
+     * Perform an LDAP search specified by a given filter.
+     *
+     * @access  public
+     * @param   &peer.ldap.LDAPQuery filter
+     * @return  &peer.ldap.LDAPSearchResult search result object
+     */
+    function &searchBy(&$filter) {
+      static $methods= array(
+        LDAP_SCOPE_BASE     => 'ldap_read',
+        LDAP_SCOPE_ONELEVEL => 'ldap_list',
+        LDAP_SCOPE_SUB      => 'ldap_search'
+      );
+      
+      if (empty($methods[$filter->getScope()]))
+        return throw(new IllegalArgumentException('Scope '.$args[0].' not supported'));
+      
+      if (FALSE === ($res= &call_user_func_array(
+        $methods[$filter->getScope()], array(
+        $this->_hdl,
+        $filter->getBase(),
+        $filter->getFilter(),
+        $filter->getAttrs(),
+        $filter->getAttrsOnly(),
+        $filter->getSizeLimit(),
+        $filter->getTimelimit(),
+        $filter->getDeref()
+      )))) {
+        return throw(new LDAPException('Search failed', ldap_errno($this->_hdl)));
+      }
+      
+      return new LDAPSearchResult($this->_hdl, $res);
+    }
+    
+    /**
      * Perform an LDAP search with a scope
      *
      * @access  public
@@ -318,8 +352,8 @@
       
       // This actually returns NULL on failure, not FALSE, as documented
       if (NULL == ($res= ldap_add(
-        $this->_hdl,
-        $entry->getDN(),
+        $this->_hdl, 
+        $entry->getDN(), 
         array_map(array(&$this, '_encode'), $entry->getAttributes())
       ))) {
         return throw(new LDAPException('Add for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
@@ -379,6 +413,5 @@
       
       return $res;
     }
-    
   }
 ?>
