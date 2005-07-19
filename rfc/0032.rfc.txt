@@ -1,0 +1,90 @@
+RFC 0032: Add annotations for Unittest API
+========================================================================
+$Id$
+
+@authors: kiesel, friebe
+@created: Wed Jul 20 00:37:26 CEST 2005
+@status: draft
+@category: util.profiling.unittest
+
+Scope of Change
+---------------
+The unittest API should be extended to support some of the annotation 
+based features that will be introduces with JUnit 4.0.
+
+These annotations include
+  . @expect
+  . @timeout
+
+
+
+Rationale
+---------
+Sometimes one might not want to check for certain return values. Issueing
+exceptions to check error handling code is even quite common. 
+The annotation `@expect` will simplify the common case where one needs to
+check that a specific exception has been thrown.
+
+The annotation @timeout can be used to check the runtime behaviour of
+a method.
+
+Functionality
+-------------
+The @expect annotation takes the name of the expected exception:
+<code>
+  #[@test, @expect('IllegalArgumentException')]
+  function testMyFault() {
+    $object= &new MyExceptionThrowingClass();
+    $object->throwExpectedException();
+  }
+</code>
+
+The @timeout annotation takes the amount of seconds a method may take
+to execute.
+<code>
+  #[@test, @timeout(13)]
+  function testTimeout() {
+    // Call lengthy method
+    lengthyMethod();
+  }
+</code>
+
+The method will be interrupted if it didn't complete within the time
+specified and the result will be assumed as failed.
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+Of course, exception handling is a slow thing, but this doesn't count
+for unit testing.
+
+Dependencies
+------------
+- ext/pcntl for the timeout thing
+  http://php3.de/pcntl_alarm
+
+Related documents
+-----------------
+- JUnit 4 overview
+  http://www.beust.com/weblog/archives/000292.html
+- JUnit 4.0 (german)
+  http://www.frankwestphal.de/JUnit4.0.html
+
+Comments
+--------
+- testing timeouts seems a bit vague - runtime behavior may be affected by
+  a whole lot of things. Maybe we have no application for this, then.
+  kiesel, Wed Jul 20 00:51:35 CEST 2005
+
+- the resolution of pcntl_alarm is seconds - this may be too much for 
+  fine-grained checks. If one can live without the method being interrupted
+  but only profiled for its execution time, the resolution can be increased.
+  Then, again, the question is if there aren't too many external influences
+  for this.
+  JUnit 4's @timeout annotation specifies the timeout in milliseconds.
+  kiesel, Wed Jul 20 00:53:19 CEST 2005
+
+<EOF>
