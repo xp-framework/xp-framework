@@ -1243,8 +1243,13 @@
       }
       
       // Automatic width or height calculus
-      if (!$w) $w= round($h * $info['w'] / $info['h'], 2);
-      if (!$h) $h= round($w * $info['h'] / $info['w'], 2);
+      if (!$w && !$h) {
+        $w= $info['w'] / $this->k;
+        $h= $info['h'] / $this->k;
+      }
+      
+      if (!$w) $w= $h * $info['w'] / $info['h'];
+      if (!$h) $h= $w * $info['h'] / $info['w'];
 
       $this->_out('q '.$w.' 0 0 '.$h.' '.$x.' -'.($y+ $h).' cm /I'.$info['n'].' Do Q');
       if ($link) $this->putLink($x, $y, $w, $h, $link);
