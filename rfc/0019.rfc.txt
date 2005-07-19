@@ -4,7 +4,8 @@ $Id$
 
 @authors: kiesel
 @created: Thu Feb 24 09:20:27 CET 2005
-@status: discussion, ends at Wed, 01 Jun 2005 12:00:00 +0200
+@status: implemented (Wed Jul 20 00:23:07 CEST 2005)
+
 @category: peer.ldap
 
 Scope of change
