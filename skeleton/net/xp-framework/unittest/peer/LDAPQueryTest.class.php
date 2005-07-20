@@ -76,6 +76,7 @@
      *
      * @access  public
      */
+    #[@test]
     function testNullTokens() {
       $q= &new LDAPQuery();
       
