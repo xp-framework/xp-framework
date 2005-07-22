@@ -46,12 +46,32 @@ public class Serializer {
         return "s:" + s.length() + ":\"" + s + "\";";
     }
 
+    public static String serialize(char c) {
+        return "s:1:\"" + c + "\";";
+    }
+
+    public static String serialize(byte b) {
+        return "i:" + b + ";";
+    }
+
+    public static String serialize(short s) {
+        return "i:" + s + ";";
+    }
+
     public static String serialize(int i) {
         return "i:" + i + ";";
     }
 
     public static String serialize(long l) {
         return "i:" + l + ";";
+    }
+
+    public static String serialize(double d) {
+        return "d:" + d + ";";
+    }
+
+    public static String serialize(float f) {
+        return "d:" + f + ";";
     }
 
     public static String serialize(boolean b) {
