@@ -41,4 +41,21 @@ import java.util.Iterator;
  * @see   http://php.net/serialize
  */
 public class Serializer {
+
+    public static String serialize(String s) {
+        return "s:" + s.length() + ":\"" + s + "\";";
+    }
+
+    public static String serialize(int i) {
+        return "i:" + i + ";";
+    }
+
+    public static String serialize(long l) {
+        return "i:" + l + ";";
+    }
+
+    public static String serialize(boolean b) {
+        return "b:" + (b ? 1 : 0) + ";";
+    }
+
 }
