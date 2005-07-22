@@ -70,6 +70,11 @@ public class Serializer {
     }
 
     @Handler
+    public static String serialize(Integer i) {
+        return "i:" + i + ";";
+    }
+
+    @Handler
     public static String serialize(long l) {
         return "i:" + l + ";";
     }
