@@ -53,7 +53,7 @@ public class SerializerTest {
         assertEquals("d:-0.1;", serialize(-0.1f));
     }
     
-    @Test public void serializeBoolean() {
+    @Test public void serializeBooleanPrimitive() {
         assertEquals("b:1;", serialize(true));
         assertEquals("b:0;", serialize(false));
     }
