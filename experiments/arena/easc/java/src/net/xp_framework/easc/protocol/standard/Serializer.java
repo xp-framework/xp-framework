@@ -10,6 +10,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import net.xp_framework.easc.protocol.standard.Handler;
 
 /**
@@ -87,6 +88,22 @@ public class Serializer {
     public static String serialize(boolean b) {
         return "b:" + (b ? 1 : 0) + ";";
     }
+
+    @Handler
+    public static String serialize(HashMap h) throws Exception {
+        StringBuffer buffer= new StringBuffer("a:" + h.size() + ":{");
+        
+        for (Iterator it= h.keySet().iterator(); it.hasNext(); ) {
+            Object key= it.next();
+            Object value= h.get(key);
+
+            buffer.append(serialize(key, typeMap.get(key.getClass())));
+            buffer.append(serialize(value, typeMap.get(value.getClass())));
+        }
+        
+        buffer.append("}");
+        return buffer.toString();
+    }
     
     protected static ArrayList<Field> classFields(Class c) {
         ArrayList<Field> list= new ArrayList<Field>();
@@ -97,6 +114,15 @@ public class Serializer {
         }
         
         return list;
+    }
+    
+    protected static String serialize(Object o, Method m) throws Exception {
+        if (m == null) {
+            throw new IllegalArgumentException("No mapping for " + o.getClass().getName());
+        }
+
+        // System.out.println("+++ Mapping for " + o.getClass().getName() + " => " + m);
+        return (String)m.invoke(null, new Object[] { o });
     }
 
     @Handler
@@ -113,14 +139,7 @@ public class Serializer {
             buffer.append("\";");
             
             f.setAccessible(true);
-            Method m= typeMap.get(f.getType());
-            if (m != null) {
-                buffer.append(m.invoke(null, new Object[] { f.get(o) }));
-            } else {
-                System.out.println("!!! No mapping for " + f.getType().getName());
-                buffer.append(serialize(f.get(o)));      // Will use serialize(Object o)
-            }
-
+            buffer.append(serialize(f.get(o), typeMap.get(f.getType())));
             numFields++;
         }
 
