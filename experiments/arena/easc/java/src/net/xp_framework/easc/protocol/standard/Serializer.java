@@ -55,12 +55,27 @@ public class Serializer {
     }
 
     @Handler
+    public static String serialize(Character c) {
+        return "s:1:\"" + c + "\";";
+    }
+
+    @Handler
     public static String serialize(byte b) {
         return "i:" + b + ";";
     }
 
     @Handler
+    public static String serialize(Byte b) {
+        return "i:" + b + ";";
+    }
+
+    @Handler
     public static String serialize(short s) {
+        return "i:" + s + ";";
+    }
+
+    @Handler
+    public static String serialize(Short s) {
         return "i:" + s + ";";
     }
 
@@ -80,7 +95,17 @@ public class Serializer {
     }
 
     @Handler
+    public static String serialize(Long l) {
+        return "i:" + l + ";";
+    }
+
+    @Handler
     public static String serialize(double d) {
+        return "d:" + d + ";";
+    }
+
+    @Handler
+    public static String serialize(Double d) {
         return "d:" + d + ";";
     }
 
@@ -90,7 +115,17 @@ public class Serializer {
     }
 
     @Handler
+    public static String serialize(Float f) {
+        return "d:" + f + ";";
+    }
+
+    @Handler
     public static String serialize(boolean b) {
+        return "b:" + (b ? 1 : 0) + ";";
+    }
+
+    @Handler
+    public static String serialize(Boolean b) {
         return "b:" + (b ? 1 : 0) + ";";
     }
 
