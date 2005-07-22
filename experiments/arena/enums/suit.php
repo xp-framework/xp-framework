@@ -4,7 +4,6 @@
  * $Id$
  */
   require('lang.base.php');
-  require('enum.php');
   uses('enum+xp://enum.Suit');
   
   // Accessing all values
