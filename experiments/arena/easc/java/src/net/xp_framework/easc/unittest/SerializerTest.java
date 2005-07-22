@@ -6,9 +6,11 @@
 package net.xp_framework.easc.unittest;
 
 import org.junit.Test;
+import net.xp_framework.easc.unittest.Person;
+import java.util.HashMap;
+
 import static org.junit.Assert.*;
 import static net.xp_framework.easc.protocol.standard.Serializer.*;
-import net.xp_framework.easc.unittest.Person;
 
 public class SerializerTest {
 
@@ -63,6 +65,17 @@ public class SerializerTest {
         assertEquals(
             "O:37:\"net.xp_framework.easc.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}", 
             serialize(new Person())
+        );
+    }
+
+    @Test public void serializeStringHashMap() throws Exception {
+        HashMap h= new HashMap();
+        h.put("key", "value");
+        h.put("number", "6100");
+        
+        assertEquals(
+            "a:2:{s:3:\"key\";s:5:\"value\";s:6:\"number\";s:4:\"6100\";}", 
+            serialize(h)
         );
     }
 }
