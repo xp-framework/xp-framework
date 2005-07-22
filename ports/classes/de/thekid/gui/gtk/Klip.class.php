@@ -30,7 +30,8 @@
       $proc     = NULL,
       $view     = NULL,
       $visited  = NULL,
-      $timer    = NULL;
+      $timer    = NULL,
+      $prop     = NULL;
       
     /**
      * Constructor
@@ -62,6 +63,8 @@
         $p->value('skin', 's', $prop->readString('settings', 'skin', 'default'))
       ));
       $this->proc->setSchemeHandler(array('get_all' => array(&$this, 'onScheme')));
+      
+      $this->prop= &$prop;
     }
     
     /**
@@ -169,9 +172,12 @@
       $this->cat->debug('Clicked:', $url, 'in widget', $widget);
       $this->visited->put($url, TRUE);
 
-      // TBI: Make browser command line and redirection configurable
       try(); {
-        System::exec('galeon '.$url, '2>/dev/null 1>/dev/null', TRUE);
+        System::exec(
+          sprintf($this->prop->readString('settings', 'browser', 'galeon %s'), $url),
+          '2>/dev/null 1>/dev/null', 
+          TRUE
+        );
       } if (catch('SystemException', $e)) {
         $this->cat->error('Opening browser failed', $e);
         return FALSE;
@@ -207,7 +213,7 @@
       switch ($url->getScheme()) {
         case 'chrome':
           $f= &new File(dirname($this->param->value(0)).'/../ui/'.$url->getPath());
-          $this->cat->debug('Loading chrome ui element', $url);
+          $this->cat->debug('Loading chrome ui element', $url->getURL());
           try(); {
             $f->open(FILE_MODE_READ);
             $this->streamWrite($stream, $f->read($f->size()), $f->size());
