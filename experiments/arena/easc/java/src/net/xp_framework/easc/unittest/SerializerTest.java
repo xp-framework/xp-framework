@@ -132,4 +132,11 @@ public class SerializerTest {
             serialize(h)
         );
     }
+    
+    @Test public void serializeStringArray() throws Exception {
+        assertEquals(
+            "a:2:{i:0;s:5:\"First\";i:1;s:6:\"Second\";}", 
+            serialize(new String[] { "First", "Second" })
+        );
+    }
 }
