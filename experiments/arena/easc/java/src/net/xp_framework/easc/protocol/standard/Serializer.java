@@ -5,22 +5,12 @@
 
 package net.xp_framework.easc.protocol.standard;
 
-import java.lang.Integer;
-import java.lang.Long;
-import java.lang.Integer;
-import java.lang.Float;
-import java.lang.Double;
-import java.lang.Boolean;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.NullPointerException;
-
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import net.xp_framework.easc.protocol.standard.Handler;
 
 /**
  * Serializer / unserializer for PHP serialized data
@@ -41,41 +31,101 @@ import java.util.Iterator;
  * @see   http://php.net/serialize
  */
 public class Serializer {
+    private static HashMap<Class, Method> typeMap = new HashMap<Class, Method>();
+    
+    static {
+        
+        // Set up typeMap by inspecting all class methods with @Handler annotation
+        for (Method m : Serializer.class.getDeclaredMethods()) {
+            if (null == m.getAnnotation(Handler.class)) continue;
+            
+            typeMap.put(m.getParameterTypes()[0], m);
+        }
+    }
 
+    @Handler
     public static String serialize(String s) {
         return "s:" + s.length() + ":\"" + s + "\";";
     }
 
+    @Handler
     public static String serialize(char c) {
         return "s:1:\"" + c + "\";";
     }
 
+    @Handler
     public static String serialize(byte b) {
         return "i:" + b + ";";
     }
 
+    @Handler
     public static String serialize(short s) {
         return "i:" + s + ";";
     }
 
+    @Handler
     public static String serialize(int i) {
         return "i:" + i + ";";
     }
 
+    @Handler
     public static String serialize(long l) {
         return "i:" + l + ";";
     }
 
+    @Handler
     public static String serialize(double d) {
         return "d:" + d + ";";
     }
 
+    @Handler
     public static String serialize(float f) {
         return "d:" + f + ";";
     }
 
+    @Handler
     public static String serialize(boolean b) {
         return "b:" + (b ? 1 : 0) + ";";
     }
+    
+    protected static ArrayList<Field> classFields(Class c) {
+        ArrayList<Field> list= new ArrayList<Field>();
+        
+        for (Field f : c.getDeclaredFields()) {
+            if (Modifier.isTransient(f.getModifiers())) continue;
+            list.add(f);
+        }
+        
+        return list;
+    }
 
+    @Handler
+    public static String serialize(Object o) throws Exception {
+        StringBuffer buffer= new StringBuffer();
+        Class c= o.getClass();
+        long numFields = 0;
+
+        for (Field f : classFields(c)) {
+            buffer.append("s:");
+            buffer.append(f.getName().length());
+            buffer.append(":\"");
+            buffer.append(f.getName());
+            buffer.append("\";");
+            
+            f.setAccessible(true);
+            Method m= typeMap.get(f.getType());
+            if (m != null) {
+                buffer.append(m.invoke(null, new Object[] { f.get(o) }));
+            } else {
+                System.out.println("!!! No mapping for " + f.getType().getName());
+                buffer.append(serialize(f.get(o)));      // Will use serialize(Object o)
+            }
+
+            numFields++;
+        }
+
+        buffer.append("}");        
+        buffer.insert(0, "O:" + c.getName().length() + ":\"" + c.getName() + "\":" + numFields + ":{");
+        return buffer.toString();
+    }
 }
