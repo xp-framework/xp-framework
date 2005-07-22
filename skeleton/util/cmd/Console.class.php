@@ -106,7 +106,7 @@
      * @param   string prompt = NULL
      * @return  string
      */    
-    function read() {
+    function read($prompt= NULL) {
       $prompt && Console::write($prompt.' ');
       return fgetc(STDIN);
     }
