@@ -154,6 +154,19 @@ public class Serializer {
         return buffer.toString();
     }
     
+    @Handler
+    public static String serialize(Object[] a) throws Exception {
+        StringBuffer buffer= new StringBuffer("a:" + a.length + ":{");
+
+        for (int i= 0; i < a.length; i++) {
+            buffer.append("i:" + i + ";");
+            buffer.append(serialize(a[i], typeMap.get(a[i].getClass())));
+        }
+
+        buffer.append("}");
+        return buffer.toString();
+    }
+    
     protected static ArrayList<Field> classFields(Class c) {
         ArrayList<Field> list= new ArrayList<Field>();
         
