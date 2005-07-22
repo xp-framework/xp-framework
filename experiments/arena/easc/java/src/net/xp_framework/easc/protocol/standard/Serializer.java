@@ -44,6 +44,15 @@ public class Serializer {
         }
     }
 
+    protected static String serialize(Object o, Method m) throws Exception {
+        if (m == null) {
+            throw new IllegalArgumentException("No mapping for " + o.getClass().getName());
+        }
+
+        // System.out.println("+++ Mapping for " + o.getClass().getName() + " => " + m);
+        return (String)m.invoke(null, new Object[] { o });
+    }
+
     @Handler
     public static String serialize(String s) {
         return "s:" + s.length() + ":\"" + s + "\";";
@@ -156,15 +165,6 @@ public class Serializer {
         return list;
     }
     
-    protected static String serialize(Object o, Method m) throws Exception {
-        if (m == null) {
-            throw new IllegalArgumentException("No mapping for " + o.getClass().getName());
-        }
-
-        // System.out.println("+++ Mapping for " + o.getClass().getName() + " => " + m);
-        return (String)m.invoke(null, new Object[] { o });
-    }
-
     @Handler
     public static String serialize(Object o) throws Exception {
         StringBuffer buffer= new StringBuffer();
