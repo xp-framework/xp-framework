@@ -53,6 +53,7 @@
      * @model   static
      * @access  public
      * @param   string str
+     * @return  &security.checksum.Checksum
      */
     function &fromString($str) { }
 
@@ -64,6 +65,7 @@
      * @model   static
      * @access  public
      * @param   &io.File file
+     * @return  &security.checksum.Checksum
      */
     function &fromFile(&$file) { }
     
@@ -81,7 +83,7 @@
      * Verify this checksum against another checksum
      *
      * @access  public
-     * @param   &security.checksum.Checksum
+     * @param   &security.checksum.Checksum sum
      * @return  bool TRUE if these checksums match
      */
     function verify(&$sum) {

@@ -30,11 +30,10 @@
     }
   
     /**
-     * (Insert method's description here)
+     * Set environment.
      *
      * @access  public
-     * @param   
-     * @return  
+     * @param   array env
      */
     function setEnvironment($env) {
       $this->env= $env;

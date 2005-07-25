@@ -36,7 +36,7 @@
    *   </D:multistatus>
    * </pre>
    */
-  class WebdavMultiStatusResponse extends WebdavScriptletResponse {
+  class WebdavMultistatusResponse extends WebdavScriptletResponse {
   
     /**
      * Constructor
@@ -56,7 +56,7 @@
      * Add a webdav object
      *
      * @access  public
-     * @param   &org.webdav.WebdavObject     object   The webdav object
+     * @param   &org.webdav.WebdavObject object The webdav object
      * @param   &org.webdav.WebdavProperty[] reqprops The requested properties
      */
     function addWebdavObject(&$object, &$reqprops) {

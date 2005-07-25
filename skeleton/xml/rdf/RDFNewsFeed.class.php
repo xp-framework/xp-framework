@@ -187,7 +187,7 @@
      * @param   string link
      * @param   string description default ''
      * @param   string util.Date default NULL date defaulting to current date/time
-     * @return  object the added item
+     * @return  &php.stdclass the added item
      */
     function &addItem($title, $link, $description= '', $date= NULL) {
       if (NULL === $date) {

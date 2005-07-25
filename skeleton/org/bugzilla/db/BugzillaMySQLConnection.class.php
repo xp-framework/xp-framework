@@ -47,7 +47,7 @@
      * Execute an insert statement
      *
      * @access  public
-     * @param   mixed *args
+     * @param   mixed* args
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */

@@ -150,7 +150,7 @@
      * Sets resultElements
      *
      * @access  public
-     * @param   mixed (typens:ResultElementArray) resultElements
+     * @param   mixed resultElements (typens:ResultElementArray)
      */
     function setResultElements($resultElements) {
       $this->resultElements= $resultElements;

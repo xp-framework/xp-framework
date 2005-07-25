@@ -66,7 +66,6 @@
      *
      * @access  public
      * @param   &io.Stream stream
-     * @return  
      */  
     function __construct(&$stream) {
       $this->stream= &$stream;

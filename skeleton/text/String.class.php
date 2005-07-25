@@ -280,7 +280,7 @@
      * and returns a new string containing the result.
      *
      * @access  public
-     * @param   &text.String
+     * @param   &text.String string
      * @return  &text.String a new string
      */
     function &concat(&$string) {
@@ -292,7 +292,7 @@
      * changing this string.
      *
      * @access  public
-     * @param   &text.String
+     * @param   &text.String string
      */
     function append(&$string) {
       $this->buffer.= $string->buffer;
@@ -337,7 +337,7 @@
      * Insert a substring into this string at a specified position. 
      *
      * @access  public
-     * @param   înt pos
+     * @param   int pos
      * @param   string substring
      */
     function insert($pos, $substring) {
@@ -365,7 +365,7 @@
      * @return  &text.String[]
      * @see     php://explode
      */
-    function explode($separator, $limit= 0) {
+    function &explode($separator, $limit= 0) {
       for (
         $a= ($limit 
           ? explode($separator, $this->buffer) 
@@ -388,7 +388,7 @@
      * @return  &text.String[]
      * @see     php://preg_split
      */
-    function split($separator, $limit= 0) {
+    function &split($separator, $limit= 0) {
       for (
         $a= ($limit 
           ? preg_split($separator, $this->buffer) 

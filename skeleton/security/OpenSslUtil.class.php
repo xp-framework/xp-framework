@@ -21,7 +21,7 @@
      */
     function getErrors() {
       $e= array();
-      while($msg= openssl_error_string()) {
+      while ($msg= openssl_error_string()) {
         $e[]= $msg;
       }
       return $e;

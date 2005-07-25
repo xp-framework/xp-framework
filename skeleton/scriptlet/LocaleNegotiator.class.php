@@ -81,7 +81,7 @@
      * @param   string default default NULL
      * @return  &util.Locale
      */
-    function getLocale($supported, $default= NULL) {
+    function &getLocale($supported, $default= NULL) {
       $chosen= FALSE;
       foreach ($this->languages as $lang => $q) {
         if (

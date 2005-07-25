@@ -24,7 +24,7 @@
      * @param   string string
      * @return  &xml.Node
      */
-    function markupNodeFor($name, $string) {
+    function &markupNodeFor($name, $string) {
       static $builder= NULL;
       
       if (!$builder) $builder= new MarkupBuilder();

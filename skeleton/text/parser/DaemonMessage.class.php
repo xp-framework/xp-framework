@@ -49,7 +49,7 @@
      * Get the recipient the message was destined for
      *
      * @access  public
-     * @return  peer.mail.InternetAddress
+     * @return  &peer.mail.InternetAddress
      */
     function &getFailedRecipient() {
       return $this->failed;

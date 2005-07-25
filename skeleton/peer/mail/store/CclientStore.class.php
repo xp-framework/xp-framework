@@ -347,7 +347,7 @@
      * @return  &peer.mail.Message[]
      * @throws  MessagingException
      */
-    function getMessages(&$f) {
+    function &getMessages(&$f) {
       if (1 == func_num_args()) {
         $count= $this->getMessageCount($f, 'messages');
         $msgnums= range(1, $count);

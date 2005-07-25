@@ -57,16 +57,16 @@
      */
     function _doRequest($url, $param= array()) {
       try(); {
-         $buf= HttpUtil::get(
-           new HttpConnection($url),
-           $param,
-           array(new BasicAuthorization($this->username, $this->password))
-         );
-       } if (catch('UnexpectedResponseException', $e)) {
-         return throw($e);
-         exit(-1);
-       }
-       return $buf;    
+        $buf= HttpUtil::get(
+          new HttpConnection($url),
+          $param,
+          array(new BasicAuthorization($this->username, $this->password))
+        );
+      } if (catch('UnexpectedResponseException', $e)) {
+        return throw($e);
+        exit(-1);
+      }
+      return $buf;    
     }
 
     /**

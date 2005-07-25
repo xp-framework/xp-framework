@@ -235,7 +235,7 @@
      * @param   string name default 'array'
      * @return  &xml.Node
      */
-    function fromArray($arr, $name= 'array') {
+    function &fromArray($arr, $name= 'array') {
       $n= &new SOAPNode($name);
       $n->_recurse($n, $arr);
       return $n;  
@@ -256,7 +256,7 @@
      * @param   string name default NULL
      * @return  &xml.Node
      */
-    function fromObject($obj, $name= NULL) {
+    function &fromObject($obj, $name= NULL) {
       return SOAPNode::fromArray(
         get_object_vars($obj), 
         (NULL === $name) ? get_class($obj) : $name

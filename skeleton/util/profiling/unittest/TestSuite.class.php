@@ -43,7 +43,7 @@
      * @param   &util.profiling.unittest.TestCase test
      * @return  &util.profiling.unittest.TestCase
      */
-    function addTest(&$test) {
+    function &addTest(&$test) {
       $this->tests[]= &$test;
       return $test;
     }
@@ -93,7 +93,7 @@
      *
      * @access  public
      * @param   &util.profiling.unittest.TestCase test
-     * @param   &util.profiling.unittest.TestResult
+     * @param   &util.profiling.unittest.TestResult result
      * @return  bool success
      */
     function runTest(&$test, &$result) {

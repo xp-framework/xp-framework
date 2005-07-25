@@ -45,7 +45,8 @@
      * @access  public
      * @param   &util.log.LogCategory cat a LogCategory object to which communication
      *          information will be passed to or NULL to stop tracing
-     * @throws  IllegalArgumentException in case a of a type mismatch
+     * @return  &util.log.LogCategory
+     * @throws  lang.IllegalArgumentException in case a of a type mismatch
      */
     function &setTrace(&$cat) {
       if (NULL !== $cat && !is_a($cat, 'LogCategory')) {

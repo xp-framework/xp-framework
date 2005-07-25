@@ -100,7 +100,7 @@
      * @throws  io.IOException
      * @throws  lang.IllegalAccessException
      */
-    function request($method, $arg, $headers= array()) {
+    function &request($method, $arg, $headers= array()) {
       if (!$this->request) return throw(new IllegalAccessException(
         'No request object returned from HttpRequestFactory::factory'
       ));
@@ -126,7 +126,7 @@
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    function get($arg= NULL, $headers= array()) {
+    function &get($arg= NULL, $headers= array()) {
       return $this->request(HTTP_GET, $arg, $headers);
     }
     
@@ -138,7 +138,7 @@
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    function head($arg= NULL, $headers= array()) {
+    function &head($arg= NULL, $headers= array()) {
       return $this->request(HTTP_HEAD, $arg, $headers);
     }
     
@@ -150,7 +150,7 @@
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    function post($arg= NULL, $headers= array()) {
+    function &post($arg= NULL, $headers= array()) {
       return $this->request(HTTP_POST, $arg, $headers);
     }
     
@@ -162,7 +162,7 @@
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    function put($arg= NULL, $headers= array()) {
+    function &put($arg= NULL, $headers= array()) {
       return $this->request(HTTP_PUT, new RequestData($arg), $headers);
     }
   }

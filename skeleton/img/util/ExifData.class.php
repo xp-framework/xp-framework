@@ -306,8 +306,6 @@
     }
     
     /**
-     * (Insert method's description here)
-     *
      * The orientation of the camera relative to the scene, when the 
      * image was captured. The relation of the '0th row' and '0th column' 
      * to visual position is shown as below:

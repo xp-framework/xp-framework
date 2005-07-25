@@ -135,7 +135,7 @@
 
       $matches= array();      
       foreach (array($images, $css) as $data) {
-        foreach($data as $key => $values) {
+        foreach ($data as $key => $values) {
           foreach ($values as $value) {
             $matches[$key][]= $value;
           }

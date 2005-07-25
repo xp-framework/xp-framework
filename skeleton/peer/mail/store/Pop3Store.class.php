@@ -9,7 +9,6 @@
   /**
    * Mail store
    *
-   * @see
    * @purpose  Wrap
    */
   class Pop3Store extends CclientStore {

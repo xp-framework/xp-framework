@@ -34,8 +34,8 @@
      * Prepare/calculate common values
      *
      * @access private
-     * @param img.chart.Chart &chart The chart
-     * @param int font The font size
+     * @param  &img.chart.Chart chart The chart
+     * @param  int font The font size
      * @return mixed[]
      */
     function _prepare(&$chart, $font) {
@@ -88,8 +88,8 @@
      * image.
      *
      * @access private
-     * @param img.Image &img The image
-     * @param string[] c The colors
+     * @param  &img.Image img The image
+     * @param  string[] c The colors
      * @return &img.Color[]
      */
     function &_colors(&$img, $c) {
@@ -103,8 +103,8 @@
      * Renders the skelton of a chart (e.g. axis)
      *
      * @access private
-     * @param mixed[] params The axis parameters
-     * @param img.Image &img The image
+     * @param  mixed[] params The axis parameters
+     * @param  &img.Image img The image
      * @return &img.Image
      */
     function &_renderAxis($params, &$img) {
@@ -217,8 +217,8 @@
      * Renders the legend box
      *
      * @access private
-     * @param mixed[] params The axis parameters
-     * @param img.Image &img The image
+     * @param  mixed[] params The axis parameters
+     * @param  &img.Image img The image
      * @return &img.Image
      */
     function _renderLegend($params, &$img) {
@@ -416,7 +416,7 @@
      * @param   img.chart.LineChart bc
      * @return  &img.Image
      */
-    function renderLineChart($lc) {
+    function &renderLineChart($lc) {
  
       // Create local variables for faster access
       list(
@@ -543,7 +543,7 @@
      * @param   img.chart.PieChart bc
      * @return  &img.Image
      */
-    function renderPieChart($pc) {
+    function &renderPieChart($pc) {
  
       // Create local variables for faster access
       $border= 50;

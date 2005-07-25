@@ -20,7 +20,7 @@
      *
      * @access  private
      * @param   string type
-     * @param   &mixed
+     * @param   &mixed object
      * @throws  lang.IllegalArgumentException
      */
     function _assertType($type, &$object) {
@@ -33,7 +33,7 @@
      *
      * @access  private
      * @param   string type
-     * @param   &array
+     * @param   &array array
      * @throws  lang.IllegalArgumentException
      */
     function _assertSubtype($type, &$array) {
@@ -47,7 +47,7 @@
      * Echoes a given string.
      *
      * @access  public
-     * @param   string 
+     * @param   string inputString
      * @return  string
      */
     #[@webmethod]
@@ -60,7 +60,7 @@
      * Echoes a given string array.
      *
      * @access  public
-     * @param   string[] 
+     * @param   string[] inputStringArray
      * @return  string[]
      * @throws  lang.IllegalArgumentException
      */
@@ -75,7 +75,7 @@
      * Echoes an integer
      *
      * @access  public
-     * @param   int
+     * @param   int inputInteger
      * @return  int
      */
     #[@webmethod]
@@ -88,7 +88,7 @@
      * Echoes an array of integers
      *
      * @access  public
-     * @param   int[]
+     * @param   int[] inputIntegerArray
      * @return  int[]
      * @throws  lang.IllegalArgumentException
      */
@@ -103,7 +103,7 @@
      * Echoes a float
      *
      * @access  public
-     * @param   float
+     * @param   float inputFloat
      * @return  float
      */
     #[@webmethod]
@@ -116,7 +116,7 @@
      * Echoes an array of floats
      *
      * @access  public
-     * @param   float[]
+     * @param   float[] inputFloatArray
      * @return  float[]
      * @throws  lang.IllegalArgumentException
      */
@@ -131,7 +131,7 @@
      * Echoes a struct.
      *
      * @access  public
-     * @param   mixed[] structure
+     * @param   mixed[] inputStruct
      * @return  mixed[]
      * @throws  lang.IllegalArgumentException
      */
@@ -148,7 +148,7 @@
      * Echoes an array of structs
      *
      * @access  public
-     * @param   mixed[]
+     * @param   mixed[] inputStructArray
      * @return  mixed[]
      * @throws  lang.MethodNotImplementedException
      */
@@ -178,7 +178,7 @@
      * Echoes a base64 string
      *
      * @access  public
-     * @param   string
+     * @param   string inputBase64
      * @return  string
      * @throws  lang.MethodNotImplementedException
      */
@@ -192,7 +192,7 @@
      * Echoes a hexbinary.
      *
      * @access  public
-     * @param   string 
+     * @param   string  inputHexBinary
      * @return  string
      * @throws  lang.MethodNotImplementedException
      */
@@ -206,7 +206,7 @@
      * Echoes a date.
      *
      * @access  public
-     * @param   &util.Date
+     * @param   &util.Date inputDate
      * @return  &util.Date
      * @throws  lang.IllegalArgumentException
      */
@@ -220,7 +220,7 @@
      * Echoes a decimal.
      *
      * @access  public
-     * @param   float
+     * @param   float inputDecimal
      * @return  float
      */
     #[@webmethod]
@@ -233,7 +233,7 @@
      * Echoes a boolean
      *
      * @access  public
-     * @param   boolean
+     * @param   boolean inputBoolean
      * @return  boolean
      */
     #[@webmethod]

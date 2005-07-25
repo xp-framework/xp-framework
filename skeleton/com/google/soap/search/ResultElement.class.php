@@ -175,7 +175,7 @@
      * Sets directoryCategory
      *
      * @access  public
-     * @param   mixed (typens:DirectoryCategory) directoryCategory
+     * @param   mixed directoryCategory (typens:DirectoryCategory)
      */
     function setDirectoryCategory($directoryCategory) {
       $this->directoryCategory= $directoryCategory;

@@ -67,7 +67,7 @@
      *
      * @access  public
      * @param   string abstract default NULL
-     * @return  io.File opened spool file
+     * @return  &io.File opened spool file
      * @throws  IOException if file could not be created
      */    
     function &createSpoolEntry($abstract= NULL) {
@@ -109,7 +109,7 @@
      * Retrieves the next spool entry.
      *
      * @access  public
-     * @return  io.File spoolfile next spoolfile. Its opened in read/write mode.
+     * @return  &io.File spoolfile next spoolfile. Its opened in read/write mode.
      * @throws  io.IOException if an error occurs
      */    
     function &getNextSpoolEntry() {

@@ -35,7 +35,7 @@
      *
      * @access  public
      * @param   const type one of APIDOC_COMMENT_*
-     * @return  text.apidoc.Comment object
+     * @return  &text.apidoc.Comment object
      */
     function &factory($type) {
       switch ($type) {

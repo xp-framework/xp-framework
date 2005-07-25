@@ -75,7 +75,7 @@
     }
       
     /**
-     * Sets class model. This information is parsed from the @purpose
+     * Sets class model. This information is parsed from the @model
      * documentation keyword.
      *
      * @access  public

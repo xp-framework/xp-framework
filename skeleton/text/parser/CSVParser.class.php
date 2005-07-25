@@ -26,7 +26,7 @@
      * Tokenizes a string according to our needs.
      *
      * @access  private
-     * @param   string &string string to take token of
+     * @param   &string string string to take token of
      * @param   char delim delimiter
      * @return  string token
      */

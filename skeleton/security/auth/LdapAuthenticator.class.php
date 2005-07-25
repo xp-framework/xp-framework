@@ -23,7 +23,8 @@
      * Constructor
      *
      * @access  public
-     * @param   &peer.ldap.LDAPClient
+     * @param   &peer.ldap.LDAPClient lc
+     * @param   string basedn
      */
     function __construct(&$lc, $basedn) {
       $this->lc= &$lc;

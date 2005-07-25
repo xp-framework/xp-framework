@@ -9,7 +9,6 @@
   /**
    * Mail message
    *
-   * @see
    * @purpose  Wrap
    */
   class MultiPart extends MimePart {

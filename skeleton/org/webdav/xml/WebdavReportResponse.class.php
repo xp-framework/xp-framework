@@ -66,7 +66,7 @@
      * Apply an WebdavObject
      *
      * @access  private
-     * @param   &org.webdav.version.WebdavVersionContainer
+     * @param   &org.webdav.version.WebdavVersionContainer container
      */
     function addWebdavVersionContainer(&$container) {
 

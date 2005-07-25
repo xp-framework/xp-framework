@@ -249,7 +249,7 @@
      * log-line contains a line of 28 '-'.
      *
      * @access  public
-     * @return  array logs
+     * @return  &array logs
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC142
      */
     function &getLog() {

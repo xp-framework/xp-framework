@@ -138,10 +138,10 @@
      * Parse a stream
      *
      * @access  public 
-     * @param   &peer.mail.Message
+     * @param   &peer.mail.Message message
      * @return  bool success
-     * @throws  FormatException
-     * @throws  IllegalArgumentException
+     * @throws  lang.FormatException
+     * @throws  lang.IllegalArgumentException
      */
     function parse(&$message) {
       static $magic= array(

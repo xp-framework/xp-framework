@@ -56,7 +56,7 @@
      * @param   string name The property's name
      * @return  bool
      */
-     function hasProperty($uri, $name) { }
+    function hasProperty($uri, $name) { }
     
     /**
      * Sets a lock for a specific URI
@@ -83,7 +83,7 @@
      * @param   string uri  The URI
      * @return  &org.webdav.WebdavLock
      */
-    function removeLock($uri) { }
+    function &removeLock($uri) { }
     
   }
 ?>

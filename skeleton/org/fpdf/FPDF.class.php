@@ -369,7 +369,7 @@
      * Sets title of document
      *
      * @access  public
-     * @param   string 
+     * @param   string title
      */
     function setTitle($title) {
       $this->info['title']= $title;
@@ -379,7 +379,7 @@
      * Sets subject of document
      *
      * @access  public
-     * @param   string 
+     * @param   string subject
      */
     function setSubject($subject) {
       $this->info['subject']= $subject;
@@ -389,7 +389,7 @@
      * Sets author of document
      *
      * @access  public
-     * @param   string 
+     * @param   string author
      */
     function setAuthor($author) {
       $this->info['author']= $author;
@@ -402,7 +402,7 @@
      * </pre>
      *
      * @access  public
-     * @param   string 
+     * @param   string keywords
      */
     function setKeywords($keywords) {
       $this->info['keywords']= $keywords;
@@ -687,7 +687,7 @@
      * Get font
      *
      * @access  public
-     * @return  org.pdf.FPDFFont
+     * @return  &org.pdf.FPDFFont
      */
     function &getFont() {
       return $this->CurrentFont;

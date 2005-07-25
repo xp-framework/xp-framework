@@ -39,7 +39,7 @@
      * @param   string body default ''
      * @param   string contenttype default ''
      * @param   string encoding default ''
-     * @param   name
+     * @param   string name
      */ 
     function __construct(
       $body= '', 

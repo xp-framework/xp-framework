@@ -22,7 +22,7 @@
      * @return  &lang.Object a request object
      * @throws  lang.IllegalArgumentException in case the scheme is not supported
      */
-    function factory(&$url) {
+    function &factory(&$url) {
       switch ($url->getScheme()) {
         case 'http':
           return new HttpRequest($url);

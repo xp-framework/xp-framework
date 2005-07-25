@@ -18,7 +18,7 @@
      *
      * @access  public
      * @param   &org.webdav.version.Webdav*Version
-     * @param   &io.File
+     * @param   &io.File file
      * @return  &org.webdav.version.Webdav*Version
      */
     function &getNextVersion(&$actVersion, &$file) {

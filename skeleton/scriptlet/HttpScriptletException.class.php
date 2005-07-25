@@ -42,7 +42,7 @@
      * Retrieve response
      *
      * @access  public
-     * @return  scriptlet.HttpScriptletResponse response object
+     * @return  &scriptlet.HttpScriptletResponse response object
      */
     function &getResponse() {
       return $this->response;

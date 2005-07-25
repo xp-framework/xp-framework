@@ -5,11 +5,10 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Class that reimplements PHP's builtin serialization format.
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      php://serialize
+   * @purpose  Serializer
    */
   class Serializer extends Object {
 

@@ -17,7 +17,7 @@
      * @access  public
      * @param   string uri                       The requested path 
      * @param   &org.webdav.auth.WebdavUser user The WebdavUser object
-     * @param   &org.webdav.xml.Webdav*Request   The Request
+     * @param   &org.webdav.xml.WebdavScriptletRequest request The Request
      * @return  bool
      */
     function isAuthorized($path, &$user, &$request) {

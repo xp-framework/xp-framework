@@ -179,7 +179,7 @@
      * Set the time of creation
      *
      * @access  public 
-     * @param   &util.Date
+     * @param   &util.Date date
      */
     function setCreationDate(&$date) {
       $this->date= &$date;

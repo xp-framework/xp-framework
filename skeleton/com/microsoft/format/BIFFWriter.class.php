@@ -118,8 +118,6 @@
      * Writes EOF record
      *
      * @access  private
-     * @param   
-     * @return  
      */
     function _eof() {
       $this->_append(pack('vv', 0x000A, 0x0000));

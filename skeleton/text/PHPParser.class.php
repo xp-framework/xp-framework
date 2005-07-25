@@ -49,7 +49,7 @@
      * Sets a trace for debugging
      *
      * @access  public
-     * @param   &util.log.LogCategory
+     * @param   &util.log.LogCategory log
      */
     function setTrace(&$log) {
       $this->log= &$log;

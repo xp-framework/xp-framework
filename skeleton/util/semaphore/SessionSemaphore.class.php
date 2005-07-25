@@ -36,7 +36,8 @@
      * Constructor
      *
      * @access  public
-     * @param   &scriptlet.HttpSession
+     * @param   &scriptlet.HttpSession storage
+     * @param   string name default 'semaphore'
      */
     function __construct(&$storage, $name= 'semaphore') {
       if (!is('scriptlet.HttpSession', $storage))

@@ -55,7 +55,7 @@
      * @access  public
      * @param   string type
      * @param   string description
-     * @return  string description
+     * @return  &string description
      */
     function &setReturn($type, $description) {
       $this->return= &new stdClass();
@@ -129,7 +129,7 @@
      * @param   string descriptions
      * @return  &stdClass added parameter
      */
-    function addParam($type, $name, $description) {
+    function &addParam($type, $name, $description) {
       $p= &new stdClass();
       $p->type= $type;
       $p->name= $name;
@@ -158,7 +158,7 @@
      * @access  public
      * @return  &mixed[] annotations
      */
-    function getAnnotations() {
+    function &getAnnotations() {
       return $this->annotations;
     }
 

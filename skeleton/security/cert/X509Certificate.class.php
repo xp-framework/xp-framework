@@ -67,7 +67,7 @@
    *
    * @ext      openssl
    * @see      rfc://2459 Internet X.509 Public Key Infrastructure Certificate and CRL Profile
-   * @purpose  
+   * @purpose  Represent X509 certificate
    */
   class X509Certificate extends Certificate {
     var

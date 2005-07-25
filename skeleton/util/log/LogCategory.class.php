@@ -163,7 +163,8 @@
      * of log category flags, see addAppender().
      * 
      * @access  public
-     * @param   &util.log.LogAppender
+     * @param   &util.log.LogAppender appender
+     * @param   int flag default LOGGER_FLAG_ALL
      */
     function removeAppender(&$appender, $flag= LOGGER_FLAG_ALL) {
       foreach (array_keys($this->_appenders) as $f) {

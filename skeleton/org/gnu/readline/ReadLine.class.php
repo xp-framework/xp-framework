@@ -57,10 +57,10 @@
      *
      * @access  private
      * @param   string name
-     * @param   &mixed* arg
+     * @param   mixed* arg
      * @return  &mixed arg
      */
-    function registry() {
+    function &registry() {
       static $static= array();
       
       switch (func_num_args()) {

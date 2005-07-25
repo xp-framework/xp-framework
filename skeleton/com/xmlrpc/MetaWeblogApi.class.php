@@ -67,7 +67,7 @@
      * @param   bool publish if set false, post will be saved as draft, true is publish it
      * @return  string the postid of the new post
      */  
-    function newPost($title='', $link='', $description='', $publish=FALSE) {
+    function newPost($title= '', $link= '', $description= '', $publish= FALSE) {
       return $this->invoke(
         'metaWeblog.newPost',
         $this->blogid,
@@ -93,7 +93,7 @@
      * @param   bool publish if set false, post will be saved as draft, true is publish it
      * @return  bool true when post is successfull
      */  
-    function editPost($postid, $title='', $link='', $description='', $publish= FALSE) {
+    function editPost($postid, $title= '', $link= '', $description= '', $publish= FALSE) {
       $response= $this->invoke(
         'metaWeblog.editPost',
         $postid,

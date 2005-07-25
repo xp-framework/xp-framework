@@ -153,7 +153,7 @@
      * Set date of last modification
      *
      * @access  public
-     * @param   &util.Date
+     * @param   &util.Date date
      */
     function setLastModified(&$date) {
       $this->lastmodified= &$date;

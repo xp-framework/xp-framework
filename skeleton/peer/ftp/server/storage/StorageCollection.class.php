@@ -21,7 +21,7 @@
      * @access  public
      * @return  &peer.ftp.server.storage.StorageEntry[]
      */
-    function elements() { }
+    function &elements() { }
   
   }
 ?>

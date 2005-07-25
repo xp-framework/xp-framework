@@ -73,7 +73,7 @@
 
         $out.= strtr(htmlspecialchars(is_array($token) ? $token[1] : $token), array(
           "\n" => '<br/>',
-          "\r" => ''	  
+          "\r" => ''
         ));
       }
       

@@ -42,7 +42,7 @@
      *
      * @access  public
      * @param   &security.Permission p
-     * @return  security.Permission the added permission
+     * @return  &security.Permission the added permission
      */
     function &addPermission(&$p) {
       $this->permissions[]= &$p;

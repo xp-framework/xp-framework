@@ -110,7 +110,7 @@
      * Returns a list of all subfolders in current folder.
      *
      * @access  public
-     * @return  array *folders array of peer.mail.MailFolder objects
+     * @return  &array* folders array of peer.mail.MailFolder objects
      */
     function &getFolders() {
       $f= array();

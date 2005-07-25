@@ -49,11 +49,11 @@
      *
      * @model   static
      * @access  public
-     * @param   string
+     * @param   string str
      * @return  &util.webdav.LockTocken
-     * @throws  FormatException in case the string is not a valid opaquelocktoken
+     * @throws  lang.FormatException in case the string is not a valid opaquelocktoken
      */
-    function fromString($str) {
+    function &fromString($str) {
       list($prefix, $uuidstr)= explode(':', $str, 2);
       if (
         (LOCKTOKEN_PREFIX !== $prefix) ||

@@ -140,10 +140,10 @@
      * @param   bool overwrite
      * @param   bool docopy
      * @return  bool created
-     * @throws  OperationNotAllowedException
-     * @throws  OperationFailedException
+     * @throws  org.webdav.OperationNotAllowedException
+     * @throws  org.webdav.OperationFailedException
      */
-    function &move($filename, $destination, $overwrite, $docopy= 0) {
+    function move($filename, $destination, $overwrite, $docopy= 0) {
 
       // Securitychecks (../etc/passwd)
       $uri= $this->_normalizePath($this->base.$filename);
@@ -195,10 +195,10 @@
      * @param   string destination
      * @param   bool overwrite
      * @return  bool created
-     * @throws  OperationNotAllowedException
-     * @throws  OperationFailedException
+     * @throws  org.webdav.OperationNotAllowedException
+     * @throws  org.webdav.OperationFailedException
      */
-    function &copy($filename, $destination, $overwrite) {
+    function copy($filename, $destination, $overwrite) {
       return $this->move($filename, $destination, $overwrite, 1);
     }
 
@@ -208,9 +208,9 @@
      * @access  public
      * @param   string colname
      * @return  bool success
-     * @throws  OperationFailedException
+     * @throws  org.webdav.OperationFailedException
      */
-    function &mkcol($col) {
+    function mkcol($col) {
 
       $colname= $this->_normalizePath($this->base.$col);
       if (file_exists($colname)) {
@@ -238,10 +238,10 @@
      * @param   string filename
      * @return  bool success
      * @throws  ElementNotFoundException
-     * @throws  OperationFailedException
-     * @throws  OperationNotAllowedException
+     * @throws  org.webdav.OperationFailedException
+     * @throws  org.webdav.OperationNotAllowedException
      */
-    function &delete($filename) {    
+    function delete($filename) {    
       $uri= $this->_normalizePath($this->base.$filename);
 
       if (strlen($uri) <= strlen($this->base)) {
@@ -290,10 +290,10 @@
      * @param   mixed data
      * @param   string resourcetype, default NULL
      * @return  bool new
-     * @throws  OperationNotAllowedException
-     * @throws  OperationFailedExcpetion
+     * @throws  org.webdav.OperationNotAllowedException
+     * @throws  org.webdav.OperationFailedExcpetion
      */
-    function &put($filename, &$data, $resourcetype= NULL) {
+    function put($filename, &$data, $resourcetype= NULL) {
       
       $uri= $this->base.$filename;
       if (is_dir($uri)) {
@@ -350,7 +350,7 @@
      * @param   string filename
      * @return  &org.webdav.WebdavObject
      * @throws  ElementNotFoundException
-     * @throws  OperationNotAllowed (locked)
+     * @throws  org.webdav.OperationNotAllowedException
      */
     function &get($filename, $token= NULL) {
     
@@ -464,12 +464,12 @@
      * Patch properties
      *
      * @access  public
-     * @param   &org.webdav.xml.WebdavPropPatchRequest  request
+     * @param   &org.webdav.xml.WebdavPropPatchRequest request
      * @param   &org.webdav.xml.WebdavPropPatchResponse response
-     * @throws  OperationFailedException
-     * @throws  ElementNotFoundException
+     * @throws  org.webdav.OperationFailedException
+     * @throws  lang.ElementNotFoundException
      */
-    function &proppatch(&$request, &$response) {
+    function proppatch(&$request, &$response) {
       $realpath= $this->base.$request->getPath();
       if (!file_exists($realpath)) {
         return throw(new ElementNotFoundException($realpath.' not found'));
@@ -512,9 +512,9 @@
      * do unlocking
      *
      * @access  public
-     * @param   &org.webdav.xml.WebdavScriptletRequest  response
+     * @param   &org.webdav.xml.WebdavScriptletRequest response
      * @param   &org.webdav.xml.WebdavScripltetResponse response
-     * @throws  OperationNotAllowedException
+     * @throws  org.webdav.OperationNotAllowedException
      */
     function &unlock(&$request, &$response) {
       $realpath= $this->base.$request->getPath();
@@ -529,9 +529,9 @@
      * do locking
      *
      * @access  public
-     * @param   &org.webdav.xml.WebdavLockRequest       request
+     * @param   &org.webdav.xml.WebdavLockRequest request
      * @param   &org.webdav.xml.WebdavScriptletResponse response
-     * @throws  OperationNotAllowedException
+     * @throws  org.webdav.OperationNotAllowedException
      */
     function &lock(&$request, &$response) {
       $realpath= $this->base.$request->getPath();
@@ -546,7 +546,7 @@
      * Find properties
      *
      * @access  public
-     * @param   &org.webdav.xml.WebdavPropFindRequest     request
+     * @param   &org.webdav.xml.WebdavPropFindRequest request
      * @param   &org.webdav.xml.WebdavMultistatusResponse response
      */
     function &propfind(&$request, &$response, $useragent= 0) {
@@ -567,8 +567,8 @@
      *
      * @access  public
      * @param   string path
-     * @param   &io.File
-     * @throws  ElementNotFoundException 
+     * @param   &io.File file
+     * @throws  &lang.ElementNotFoundException 
      */
     function &VersionControl($path, &$file) {
       $realpath= $this->base.$path;
@@ -616,8 +616,8 @@
      * @param   string filename
      * @param   string destination
      * @return  bool created
-     * @throws  OperationNotAllowedException
-     * @throws  OperationFailedException
+     * @throws  org.webdav.OperationNotAllowedException
+     * @throws  org.webdav.OperationFailedException
      */
     function &backup($filename, $destination) {
 

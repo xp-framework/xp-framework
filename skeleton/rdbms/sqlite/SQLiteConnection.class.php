@@ -213,7 +213,7 @@
      * Execute an insert statement
      *
      * @access  public
-     * @param   mixed *args
+     * @param   mixed* args
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
@@ -343,7 +343,7 @@
      * @param   &rdbms.Transaction transaction
      * @return  &rdbms.Transaction
      */
-    function begin($transaction) {
+    function &begin($transaction) {
       if (FALSE === $this->query('begin transaction xp_%c', $transaction->name)) {
         return FALSE;
       }

@@ -107,8 +107,8 @@
      *
      * @access  public
      * @param   &peer.mail.MimePart part
-     * @param   &peer.mail.MimePart the part added
-     * @throws  IllegalArgumentException if part argument is not a peer.mail.MimePart
+     * @return  &peer.mail.MimePart the part added
+     * @throws  lang.IllegalArgumentException if part argument is not a peer.mail.MimePart
      */
     function &addPart(&$part) {
       if (!is_a($part, 'MimePart')) {

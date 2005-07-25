@@ -58,7 +58,7 @@
      * Get the offset string by timezone name
      *
      * @access  public
-     * @param   string
+     * @param   string string
      * @return  string
      */
     function getOffsetByTimeZoneString($string) {
@@ -163,11 +163,11 @@
      * timezone.
      *
      * @access  public
-     * @param   &util.Date
-     * @param   &util.TimeZone
+     * @param   &util.Date date
+     * @param   &util.TimeZone tz
      * @return  &util.Date
      */
-    function convertDate(&$date, &$tz) {
+    function &convertDate(&$date, &$tz) {
       return new Date ($date->getTime() + ($this->getOffsetInSeconds() - $tz->getOffsetInSeconds()));
     }
 
@@ -176,7 +176,7 @@
      * timezone.
      *
      * @access  public
-     * @param   &util.Date
+     * @param   &util.Date date
      * @return  &util.Date
      */    
     function &convertLocalDate(&$date) {

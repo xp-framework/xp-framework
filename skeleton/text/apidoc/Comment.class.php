@@ -54,7 +54,7 @@
      *
      * @access  public
      * @param   string str
-     * @return  &text.apidoc.Comment a comment object
+     * @return  text.apidoc.Comment a comment object
      */
     function fromString($str) {
     

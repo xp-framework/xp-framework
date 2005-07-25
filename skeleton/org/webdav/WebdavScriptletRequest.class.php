@@ -45,7 +45,7 @@
      * Get user
      *
      * @access  public
-     * @return  string
+     * @return  &string
      */
     function &getUser() {
       return $this->user;
@@ -153,7 +153,7 @@
      * Set request's data and try to parse the request body (if available)
      *
      * @access private
-     * @param  string  data The request's data
+     * @param  string data The request's data
      */
     function setData(&$data) {
       parent::setData($data);
@@ -171,7 +171,7 @@
      *
      * @access public
      * @param  string path The path string
-     * @return xml.Node
+     * @return &xml.Node
      */
     function &getNode($path) {
 

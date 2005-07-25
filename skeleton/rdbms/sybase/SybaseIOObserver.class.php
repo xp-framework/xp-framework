@@ -129,7 +129,7 @@
       $sc= 0; $reads= 0;
       foreach (array_keys($this->messages) as $idx) {
         $msg= &$this->messages[$idx];
-        switch($msg['msgnumber']) {
+        switch ($msg['msgnumber']) {
           case 3615: {
             $split= sscanf($msg['text'], 'Table: %s scan count %d, logical reads: (regular=%d apf=%d total=%d), physical reads: (regular=%d apf=%d total=%d), apf IOs used=%d');
             $this->cat->infof('IO(%s): scan count= %d, logical= %d, physical= %d',

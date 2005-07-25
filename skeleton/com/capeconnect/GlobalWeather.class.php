@@ -52,11 +52,11 @@
     /**
      * Gets weather report by Airport code
      *
-     * @access  public
-     * @param   string code Airport code, such as "FRA" for Frankfurt/Main, Germany  
-     * @return  object report                                                        
      * @see     http://www.gironet.nl/home/aviator1/iata/iatacode.htm                
      * @see     http://www.wajb.freeserve.co.uk/codes.htm                            
+     * @access  public
+     * @param   string code Airport code, such as "FRA" for Frankfurt/Main, Germany  
+     * @return  &lang.Object report                                                        
      */
     function &getWeatherReport($code) {
       return $this->invoke('getWeatherReport', new Parameter('code', $code));

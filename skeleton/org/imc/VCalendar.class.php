@@ -160,7 +160,7 @@
      * Get Events
      *
      * @access  public
-     * @return  org.imc.VEvent[]
+     * @return  &org.imc.VEvent[]
      */
     function &getEvents() {
       return $this->events;
@@ -197,7 +197,7 @@
         case 'vevent':
           switch ($keys[0]) {
             case 'BEGIN':
-              $event= new VEvent();
+              $event= &new VEvent();
               break;
               
             case 'END':
@@ -258,7 +258,7 @@
         case 'vtimezone':
           switch ($keys[0]) {
             case 'BEGIN':
-              $timezone= new VTimezone();
+              $timezone= &new VTimezone();
               break;
             
             case 'END':

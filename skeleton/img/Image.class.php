@@ -81,6 +81,7 @@
      * @param   int h height
      * @param   int type default IMG_PALETTE either IMG_PALETTE or IMG_TRUECOLOR
      * @param   string class default __CLASS__ class to create, defaulting to "Image"
+     * @return  &img.Image
      * @throws  img.ImagingException in case the image could not be created
      */
     function &create($w, $h, $type= IMG_PALETTE, $class= __CLASS__) {
@@ -108,7 +109,7 @@
      *
      * @model   static
      * @access  public
-     * @param   &img.io.ImageReader
+     * @param   &img.io.ImageReader reader
      * @return  &img.Image
      */
     function &loadFrom(&$reader) {
@@ -119,7 +120,7 @@
      * Saves an image to a writer
      *
      * @access  public
-     * @param   &img.io.ImageWriter
+     * @param   &img.io.ImageWriter writer
      */
     function saveTo(&$writer) {
       $writer->setResource($this->handle);
@@ -129,7 +130,7 @@
      * Convert an image using a given converter
      *
      * @access  public
-     * @param   &img.convert.ImageConverter
+     * @param   &img.convert.ImageConverter converter
      * @return  bool
      */
     function convertTo(&$converter) {

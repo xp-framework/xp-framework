@@ -48,8 +48,8 @@
      * Adds a child to the root node of the tree
      *
      * @access protected
-     * @param  xml.Node  node The node
-     * @return xml.Node
+     * @param  &xml.Node node The node
+     * @return &xml.Node
      */
     function &addChild(&$node) {
       return $this->tree->addChild($node);

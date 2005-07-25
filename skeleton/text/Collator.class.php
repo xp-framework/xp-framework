@@ -32,7 +32,7 @@
      * @param   &util.Locale locale
      * @return  &text.Collator
      */
-    function getInstance(&$locale) {
+    function &getInstance(&$locale) {
       static $instance= array();
       
       $id= $locale->hashCode();

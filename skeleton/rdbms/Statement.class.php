@@ -56,7 +56,7 @@
      * @param   &rdbms.Peer peer
      * @return  &rdbms.ResultSet
      */
-    function executeSelect(&$conn, &$peer) {
+    function &executeSelect(&$conn, &$peer) {
       $this->arguments[0]= preg_replace(
         '/object\(([^\)]+)\)/i', 
         '$1.'.implode(', $1.', array_keys($peer->types)),

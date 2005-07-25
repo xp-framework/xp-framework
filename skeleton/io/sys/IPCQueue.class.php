@@ -119,7 +119,7 @@
      * Put a message into queue
      *
      * @access  public
-     * @param   io.sys.IPCMessage
+     * @param   io.sys.IPCMessage msg
      * @param   bool serialize default TRUE
      * @param   bool blocking default TRUE
      * @throws  io.IOException

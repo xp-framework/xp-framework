@@ -54,11 +54,11 @@
      *
      * @access  static
      * @param   string hostname
-     * @return  &Servicestatus[] object
+     * @return  &org.nagios.db.Servicestatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
-    function getByHost_name($host_name) {
+    function &getByHost_name($host_name) {
       $cm= &ConnectionManager::getInstance();  
       try(); {
         $db= &$cm->getByHost('nagios', 0);
@@ -120,11 +120,11 @@
      * @access  static
      * @param   string hostname
      * @param   string servicedescription
-     * @return  &Servicestatus[] object
+     * @return  &org.nagios.db.Servicestatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
-    function getByHostService($host_name, $service) {
+    function &getByHostService($host_name, $service) {
       $cm= &ConnectionManager::getInstance();  
       try(); {
         $db= &$cm->getByHost('nagios', 0);
@@ -187,11 +187,11 @@
      *
      * @access  static
      * @param   string status
-     * @return  &Servicestatus[] object
+     * @return  &org.nagios.db.Servicestatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
-    function getByService_status($service_status) {
+    function &getByService_status($service_status) {
       $cm= &ConnectionManager::getInstance();  
       try(); {
         $db= &$cm->getByHost('nagios', 0);
@@ -251,11 +251,11 @@
      * Gets an instance of this object with service status of not OK
      *
      * @access  static
-     * @return  &Servicestatus[] object
+     * @return  &org.nagios.db.Servicestatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
-    function getByNotOk() {
+    function &getByNotOk() {
       $cm= &ConnectionManager::getInstance();  
       try(); {
         $db= &$cm->getByHost('nagios', 0);

@@ -46,7 +46,7 @@
      * Constructor
      *
      * @access  private
-     * @param   &peer.URL
+     * @param   &peer.URL url
      */
     function __construct(&$url) {
       $this->url= &$url;
@@ -236,7 +236,7 @@
      * Get groups
      *
      * @access  public
-     * @return  array &peer.news.Newsgroup
+     * @return  &peer.news.Newsgroup[]
      */
     function &getGroups() {
       $status= $this->_sendcmd('LIST');
@@ -398,8 +398,8 @@
      * Get a list of articles in a given range
      *
      * @access  public
-     * @param   string range
-     * @return  array articleId
+     * @param   string range default NULL
+     * @return  &int[] articleId
      */
     function &getOverview($range= NULL) {
       $status= $this->_sendcmd('XOVER', $range);
@@ -417,7 +417,7 @@
      * than the given date
      *
      * @access  public
-     * @param   &utilDate
+     * @param   &util.Date date
      * @param   string newsgroup
      * @return  array messageId
      */ 
@@ -440,7 +440,7 @@
      * than the given date
      *
      * @access  public
-     * @param   &util.Date
+     * @param   &util.Date date
      * @return  array &peer.news.Newsgroup
      */
     function newGroups(&$date) {

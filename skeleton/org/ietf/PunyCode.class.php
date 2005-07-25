@@ -39,7 +39,7 @@
      * Return valid ASCII characters for Punycode
      *
      * @access  private
-     * @return  string
+     * @return  &string
      * @see rfc://3492
      */
     function &getASCII() {
@@ -100,7 +100,7 @@
      *   26..35 map to ASCII 0..9         
      *
      * @access priveate
-     * @param  int  d
+     * @param  int d
      * @param  bool flag
      * @return int
      */
@@ -141,12 +141,12 @@
      * Decode Punycode string and return TRUE on success.
      *
      * @access public
-     * @param  string  input  The punycode string
-     * @param  string &result The result ASCII string
-     * @param  array  &flags  The flags for each character (see _flagged() function)
+     * @param  string input  The punycode string
+     * @param  &string result The result ASCII string
+     * @param  &array flags  The flags for each character (see _flagged() function)
      * @return bool
-     * throws IllegalArgumentException in case $input is not a punycode string
-     * throws SystemException in case there's an interger overflow
+     * @throws lang.IllegalArgumentException in case $input is not a punycode string
+     * @throws lang.SystemException in case there's an interger overflow
      */
     function decode($input, &$result, &$flags) {
       $in_len= strlen($input);
@@ -246,12 +246,12 @@
      * Encode ASCII string to Punycode string and return TRUE on success.
      *
      * @access public
-     * @param  string  input  The ASCII string 
-     * @param  stirng &result The result punycode string
-     * @param  array   flags  The flags for each character (see _flagged() function)
+     * @param  string input  The ASCII string 
+     * @param  &string result The result punycode string
+     * @param  array flags  The flags for each character (see _flagged() function)
      * @return bool
-     * throws IllegalArgumentException in case $input is not a punycode string
-     * throws SystemException in case there's an interger overflow
+     * @throws lang.IllegalArgumentException in case $input is not a punycode string
+     * @throws lang.SystemException in case there's an interger overflow
      */
     function encode($input, &$result, $flags) {
       $in_len= strlen($input);

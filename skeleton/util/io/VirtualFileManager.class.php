@@ -30,7 +30,7 @@
      * @access  public
      * @return  &io.VirtualFileManager
      */
-    function getInstance() {
+    function &getInstance() {
       static $instance= NULL;
       
       if (NULL === $instance) $instance= new VirtualFileManager();

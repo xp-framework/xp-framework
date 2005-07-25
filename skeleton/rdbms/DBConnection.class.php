@@ -163,7 +163,7 @@
      * Execute an insert statement
      *
      * @access  public
-     * @param   mixed *args
+     * @param   mixed* args
      * @return  bool success
      */
     function insert() { }

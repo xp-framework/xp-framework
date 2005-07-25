@@ -12,7 +12,6 @@
   /**
    * Mail folder
    *
-   * @see
    * @purpose  Wrap
    */
   class MailFolder extends Object {
@@ -183,7 +182,7 @@
      * @access  public
      * @param   string uid
      * @param   string part
-     * @return  int
+     * @return  &int
      */
     function &getMessagePart($uid, $part) { 
       return $this->store->getMessagePart($this, $uid, $part);

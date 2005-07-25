@@ -33,22 +33,21 @@
       $chunks           = array();
       
     /**
-     * (Insert method's description here)
+     * Adds a chunk
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string chunk
      */
     function addChunk($chunk) {
       $this->chunks[]= $chunk;
     }
     
     /**
-     * (Insert method's description here)
+     * Get's the ith chunk.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   int i
+     * @return  string
      */
     function getChunk($i) {
       return $this->chunks[$i];

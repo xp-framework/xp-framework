@@ -56,7 +56,7 @@
         !$this->getNode('/propfind/allprop') &&
         ($propfind= &$this->getNode('/propfind/prop'))
       ) {
-        foreach($propfind->children as $node) {
+        foreach ($propfind->children as $node) {
           $name= $node->getName();
           $ns= 'xmlns';
           $nsprefix= '';
@@ -64,7 +64,7 @@
             $ns.= ':'.($nsprefix= substr($name, 0, $p));
             $name= substr($name, $p+1);
           }
-          $p= new WebdavProperty($name);
+          $p= &new WebdavProperty($name);
           if ($nsname= $node->getAttribute($ns)) {
             $p->setNamespaceName($nsname);
             if ($nsprefix) $p->setNamespacePrefix($nsprefix);

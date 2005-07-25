@@ -37,7 +37,7 @@
      * @model   static
      * @access  public
      * @param   &string string
-     * @param   înt pos
+     * @param   int pos
      * @param   char char
      * @return  string
      */

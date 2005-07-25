@@ -65,7 +65,7 @@
      * @param   string sourcedata The text to be translated.
      * @param   string src_lang Source language
      * @param   string target_lang Target language
-     * @return  string Translated text
+     * @return  &string Translated text
      */
     function &translate($sourcedata, $src_lang, $target_lang) {
       $translated= $this->invoke(
@@ -78,4 +78,3 @@
     }
   }
 ?>
- 

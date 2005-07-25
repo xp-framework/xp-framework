@@ -304,10 +304,13 @@
      */
     function &parseNumber($number) {
       // Check current state
-      if (NULL === $this->defaultCountryCode ||
-          NULL === $this->defaultAreaCode ||
-          NULL === $this->defaultSubscriber) 
+      if (
+        NULL === $this->defaultCountryCode ||
+        NULL === $this->defaultAreaCode ||
+        NULL === $this->defaultSubscriber
+      ) {
         return throw (new IllegalStateException ('At least one of the default numbers has not been set. Set them before parsing'));
+      }
 
       // Parsing
       $a= &new TelephonyAddress();

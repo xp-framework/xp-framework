@@ -188,7 +188,7 @@
      * @access  public
      * @param   string word
      * @param   strind db default '*'
-     * @return  org.dict.DictDefinitionEntry[]
+     * @return  &org.dict.DictDefinitionEntry[]
      * @throws  io.IOException
      */
     function &getDefinition($word, $db= '*') {

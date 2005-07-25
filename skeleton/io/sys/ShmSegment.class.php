@@ -112,7 +112,7 @@
      * @return  bool success
      * @throws  IOException in case an error occurs
      */
-    function &remove() {
+    function remove() {
       $h= shm_attach($this->spot);
       $ret= shm_remove_var($h, $this->name);
       shm_detach($h);

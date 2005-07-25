@@ -122,7 +122,7 @@
      * @param   mixed* msgnums
      * @return  &peer.mail.Message[]
      */
-    function getMessages(&$f) { }
+    function &getMessages(&$f) { }
 
     /**
      * Get number of messages in this folder

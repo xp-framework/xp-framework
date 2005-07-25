@@ -153,7 +153,7 @@
      * @access  public
      * @return  &peer.ftp.server.storage.StorageEntry[]
      */
-    function elements() { 
+    function &elements() { 
       $r= array();
       $r[]= &new FilesystemStorageCollection($this->f->getURI().'.');
       $r[]= &new FilesystemStorageCollection($this->f->getURI().'..');

@@ -102,7 +102,7 @@
      * @access public
      */    
     function process() {
-      foreach(array_keys($this->propstatNode) as $status) {
+      foreach (array_keys($this->propstatNode) as $status) {
         $this->propstatNode[$status]->addChild(new Node('D:status', 'HTTP/1.0 '.$status));
       }
 

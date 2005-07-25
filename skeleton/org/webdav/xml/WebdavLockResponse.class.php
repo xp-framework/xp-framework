@@ -52,7 +52,7 @@
      * Add a webdav object
      *
      * @access  public
-     * @param   &org.webdav.WebdavObject     object   The webdav object
+     * @param   &org.webdav.WebdavObject object   The webdav object
      * @param   &org.webdav.WebdavProperty[] reqprops The requested properties
      */
     function addLock(&$lock) {

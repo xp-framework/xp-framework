@@ -45,7 +45,7 @@
      * @access  public
      * @param   string method
      * @param   mixed params
-     * @param   mixed &return
+     * @param   &mixed return
      * @return  boolean success
      */    
     function __call($method, $params, &$return) {
