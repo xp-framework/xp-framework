@@ -20,7 +20,7 @@ package net.xp_framework.easc.protocol.standard;
  *
  * @see net.xp_framework.easc.protocol.standard.Serializer
  */
-public abstract class ArraySerializer {
+abstract public class ArraySerializer {
     protected StringBuffer buffer = null;
     
     /**
