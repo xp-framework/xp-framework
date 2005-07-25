@@ -8,6 +8,7 @@ package net.xp_framework.easc.unittest;
 import org.junit.Test;
 import net.xp_framework.easc.unittest.Person;
 import java.util.HashMap;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 import static net.xp_framework.easc.protocol.standard.Serializer.*;
@@ -144,6 +145,13 @@ public class SerializerTest {
         assertEquals(
             "a:2:{i:0;i:3;i:1;i:4;}", 
             serialize(new int[] {3, 4})
+        );
+    }
+    
+    @Test public void serializeDate() throws Exception {
+        assertEquals(
+            "D:1234567;",
+            serialize(new Date(1234567))
         );
     }
 }

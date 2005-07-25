@@ -10,6 +10,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Date;
 import java.util.Iterator;
 import net.xp_framework.easc.protocol.standard.Handler;
 import net.xp_framework.easc.protocol.standard.ArraySerializer;
@@ -249,6 +250,11 @@ public class Serializer {
         }
         
         return list;
+    }
+    
+    @Handler
+    public static String serialize(Date d) throws Exception {
+        return "D:" + d.getTime() + ";";
     }
     
     @Handler
