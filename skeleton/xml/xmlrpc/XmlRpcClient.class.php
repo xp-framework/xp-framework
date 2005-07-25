@@ -17,7 +17,7 @@
    * implementations really understand themselves.
    *
    * <code>
-   *   uses('xml.xmlrpc.XmlRpcClient');
+   *   uses('xml.xmlrpc.XmlRpcClient', 'xml.xmlrpc.transport.XmlRpcHttpTransport');
    *   $c= &new XmlRpcClient(new XMLRPCHTTPTransport('http://xmlrpc.xp-framework.net'));
    *   
    *   try(); {
