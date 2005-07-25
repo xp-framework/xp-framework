@@ -383,7 +383,7 @@
      */
     function _utime($utime) {
       foreach ($this->_getdate($this->_utime= $utime) as $key => $val) {
-        $this->{$key}= $val;
+        is_string($key) && $this->{$key}= $val;
       }
     }
     
