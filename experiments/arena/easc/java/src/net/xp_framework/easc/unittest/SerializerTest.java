@@ -139,4 +139,11 @@ public class SerializerTest {
             serialize(new String[] { "First", "Second" })
         );
     }
+
+    @Test public void serializeIntegerPrimitiveArray() throws Exception {
+        assertEquals(
+            "a:2:{i:0;i:3;i:1;i:4;}", 
+            serialize(new int[] {3, 4})
+        );
+    }
 }
