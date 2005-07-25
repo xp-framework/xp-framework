@@ -539,7 +539,7 @@
      * @access  public
      * @return  &lang.XPClass[] class objects
      */
-    function getClasses() {
+    function &getClasses() {
       $ret= array();
       foreach (get_declared_classes() as $name) {
         if (xp::registry('class.'.$name)) $ret[]= &new XPClass($name);

@@ -48,7 +48,7 @@
      * @return  &lang.Collection
      * @throws  lang.ClassNotFoundException
      */
-    function forClass($class) {
+    function &forClass($class) {
       if (!class_exists(xp::reflect($class))) {
         return throw(new ClassNotFoundException('Class "'.$class.'" does not exist'));
       }
@@ -99,7 +99,7 @@
      * Adds an element to this list
      *
      * @access  public
-     * @param   &lang.Object
+     * @param   &lang.Object element
      * @return  &lang.Object the added element
      * @throws  lang.IllegalArgumentException
      */
@@ -120,7 +120,7 @@
      * Adds an element to the beginning of this list
      *
      * @access  public
-     * @param   &lang.Object
+     * @param   &lang.Object element
      * @return  &lang.Object the prepended element
      * @throws  lang.IllegalArgumentException
      */
@@ -141,7 +141,7 @@
      * Adds an array of elements to this list
      *
      * @access  public
-     * @param   lang.Object[]
+     * @param   lang.Object[] array
      * @throws  lang.IllegalArgumentException
      */
     function addAll($array) {
@@ -162,7 +162,7 @@
      * Prepend an array of elements to this list
      *
      * @access  public
-     * @param   lang.Object[]
+     * @param   lang.Object[] array
      * @throws  lang.IllegalArgumentException
      */
     function prependAll($array) {
@@ -185,7 +185,7 @@
      *
      * @access  public
      * @param   int index
-     * @param   &lang.Object
+     * @param   &lang.Object element
      * @return  &lang.Object the element previously at the specified position.
      */
     function &set($index, &$element) {
