@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import net.xp_framework.easc.protocol.standard.Handler;
+import net.xp_framework.easc.protocol.standard.ArraySerializer;
 
 /**
  * Serializer / unserializer for PHP serialized data
@@ -62,6 +63,15 @@ public class Serializer {
     public static String serialize(char c) {
         return "s:1:\"" + c + "\";";
     }
+    
+    @Handler
+    public static String serialize(final char[] array) throws Exception {
+        return new ArraySerializer() {
+            public void yield(int i) {
+                this.buffer.append(serialize(array[i]));
+            }
+        }.run(array.length);
+    }
 
     @Handler
     public static String serialize(Character c) {
@@ -72,6 +82,15 @@ public class Serializer {
     public static String serialize(byte b) {
         return "i:" + b + ";";
     }
+    
+    @Handler
+    public static String serialize(final byte[] array) throws Exception {
+        return new ArraySerializer() {
+            public void yield(int i) {
+                this.buffer.append(serialize(array[i]));
+            }
+        }.run(array.length);
+    }
 
     @Handler
     public static String serialize(Byte b) {
@@ -81,6 +100,15 @@ public class Serializer {
     @Handler
     public static String serialize(short s) {
         return "i:" + s + ";";
+    }
+    
+    @Handler
+    public static String serialize(final short[] array) throws Exception {
+        return new ArraySerializer() {
+            public void yield(int i) {
+                this.buffer.append(serialize(array[i]));
+            }
+        }.run(array.length);
     }
 
     @Handler
@@ -94,6 +122,15 @@ public class Serializer {
     }
 
     @Handler
+    public static String serialize(final int[] array) throws Exception {
+        return new ArraySerializer() {
+            public void yield(int i) {
+                this.buffer.append(serialize(array[i]));
+            }
+        }.run(array.length);
+    }
+
+    @Handler
     public static String serialize(Integer i) {
         return "i:" + i + ";";
     }
@@ -101,6 +138,15 @@ public class Serializer {
     @Handler
     public static String serialize(long l) {
         return "i:" + l + ";";
+    }
+
+    @Handler
+    public static String serialize(final long[] array) throws Exception {
+        return new ArraySerializer() {
+            public void yield(int i) {
+                this.buffer.append(serialize(array[i]));
+            }
+        }.run(array.length);
     }
 
     @Handler
@@ -112,6 +158,15 @@ public class Serializer {
     public static String serialize(double d) {
         return "d:" + d + ";";
     }
+    
+    @Handler
+    public static String serialize(final double[] array) throws Exception {
+        return new ArraySerializer() {
+            public void yield(int i) {
+                this.buffer.append(serialize(array[i]));
+            }
+        }.run(array.length);
+    }
 
     @Handler
     public static String serialize(Double d) {
@@ -122,6 +177,15 @@ public class Serializer {
     public static String serialize(float f) {
         return "d:" + f + ";";
     }
+    
+    @Handler
+    public static String serialize(final float[] array) throws Exception {
+        return new ArraySerializer() {
+            public void yield(int i) {
+                this.buffer.append(serialize(array[i]));
+            }
+        }.run(array.length);
+    }
 
     @Handler
     public static String serialize(Float f) {
@@ -131,6 +195,15 @@ public class Serializer {
     @Handler
     public static String serialize(boolean b) {
         return "b:" + (b ? 1 : 0) + ";";
+    }
+
+    @Handler
+    public static String serialize(final boolean[] array) throws Exception {
+        return new ArraySerializer() {
+            public void yield(int i) {
+                this.buffer.append(serialize(array[i]));
+            }
+        }.run(array.length);
     }
 
     @Handler
