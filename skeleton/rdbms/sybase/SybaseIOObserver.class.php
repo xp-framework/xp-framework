@@ -27,7 +27,8 @@
     /**
      * Sybase message callback.
      *
-     * @access  magic
+     * @magic
+     * @access  protected
      * @param   int msgnumber
      * @param   int severity
      * @param   int state

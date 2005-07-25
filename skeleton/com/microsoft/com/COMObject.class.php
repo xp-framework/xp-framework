@@ -46,7 +46,7 @@
     /**
      * Magic interceptor for member read access
      *
-     * @access  magic
+     * @access  protected
      * @param   string name
      * @param   &mixed value
      * @return  bool success
@@ -59,7 +59,7 @@
     /**
      * Magic interceptor for member write access
      *
-     * @access  magic
+     * @access  protected
      * @param   string name
      * @param   &mixed value
      * @return  bool success
@@ -72,7 +72,7 @@
     /**
      * Magic interceptor for member method access
      *
-     * @access  magic
+     * @access  protected
      * @param   string name
      * @param   array args
      * @param   &mixed return

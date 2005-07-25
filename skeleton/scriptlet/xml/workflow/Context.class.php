@@ -63,7 +63,7 @@
      * implementation, it returns all public members (members whose names
      * do not begin with an underscore).
      *
-     * @access  magic
+     * @access  protected
      * @return  string[]
      */
     function __sleep() {

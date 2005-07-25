@@ -79,7 +79,7 @@
      * Callback for assert
      *
      * @model   static
-     * @access  magic
+     * @access  protected
      * @param   string filee
      * @param   int line
      * @param   string code
