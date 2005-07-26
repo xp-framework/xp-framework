@@ -65,13 +65,6 @@ public class Serializer {
             
             typeMap.put(m.getParameterTypes()[0], new MethodTarget(m));
         }
-        
-        // Set up wrapper
-        registerMapping(Date.class, new InvokationTarget<Date>() {
-            public String invoke(Date d) throws Exception {
-                return "D:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
-            }
-        });
     }
     
     public static void registerMapping(Class c, Invokeable i) {
@@ -303,5 +296,10 @@ public class Serializer {
     @Handler
     public static String serialize(Object o) throws Exception {
         return serialize(o, typeMap.get(o.getClass()));
+    }
+   
+    @Handler
+    public static String serialize(Date d) throws Exception {
+        return "D:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
     }
 }
