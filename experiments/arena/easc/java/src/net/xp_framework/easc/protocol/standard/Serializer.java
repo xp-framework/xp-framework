@@ -55,7 +55,7 @@ public class Serializer {
         
         // Set up typeMap by inspecting all class methods with @Handler annotation
         for (Method m : Serializer.class.getDeclaredMethods()) {
-            if (null == m.getAnnotation(Handler.class)) continue;
+            if (!m.isAnnotationPresent(Handler.class)) continue;
             
             registerMapping(m.getParameterTypes()[0], new MethodTarget<String, Object>(m));
         }
