@@ -246,7 +246,15 @@ public class Serializer {
         buffer.append("}");
         return buffer.toString();
     }
+
+    @Handler public static String representationOf(Date d) throws Exception {
+        return "D:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
+    }
     
+    @Handler public static String representationOf(Object o) throws Exception {
+        return representationOf(o, typeMap.get(o.getClass()));
+    }
+
     @Handler public static String representationOf(Object[] a) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + a.length + ":{");
 
@@ -257,13 +265,5 @@ public class Serializer {
 
         buffer.append("}");
         return buffer.toString();
-    }
-    
-    @Handler public static String representationOf(Object o) throws Exception {
-        return representationOf(o, typeMap.get(o.getClass()));
-    }
-   
-    @Handler public static String representationOf(Date d) throws Exception {
-        return "D:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
     }
 }
