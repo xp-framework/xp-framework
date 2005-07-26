@@ -35,27 +35,27 @@ import net.xp_framework.easc.protocol.standard.ArraySerializer;
  */
 public class Serializer {
     
-    static interface Invokeable<Element> {
-        public String invoke(Element e) throws Exception;
+    static interface Invokeable<Return, Parameter> {
+        public Return invoke(Parameter p) throws Exception;
     }
     
-    abstract static class InvokationTarget<Element> implements Invokeable<Element> {
-        abstract public String invoke(Element e) throws Exception;
+    abstract static class InvokationTarget<Return, Parameter> implements Invokeable<Return, Parameter> {
+        abstract public Return invoke(Parameter p) throws Exception;
     }
     
-    static class MethodTarget<Element> implements Invokeable<Element> {
+    static class MethodTarget<Return, Parameter> implements Invokeable<Return, Parameter> {
         private Method method = null;
         
         MethodTarget(Method m) {
             this.method= m;    
         }
         
-        public String invoke(Element e) throws Exception {
-            return (String)this.method.invoke(null, new Object[] { e });
+        public Return invoke(Parameter p) throws Exception {
+            return (Return)this.method.invoke(null, new Object[] { p });
         }
     }
 
-    private static HashMap<Class, Invokeable<Object>> typeMap= new HashMap<Class, Invokeable<Object>>();
+    private static HashMap<Class, Invokeable<String, Object>> typeMap= new HashMap<Class, Invokeable<String, Object>>();
     
     static {
         
@@ -63,15 +63,15 @@ public class Serializer {
         for (Method m : Serializer.class.getDeclaredMethods()) {
             if (null == m.getAnnotation(Handler.class)) continue;
             
-            registerMapping(m.getParameterTypes()[0], new MethodTarget<Object>(m));
+            registerMapping(m.getParameterTypes()[0], new MethodTarget<String, Object>(m));
         }
     }
     
-    public static void registerMapping(Class c, Invokeable<Object> i) {
+    public static void registerMapping(Class c, Invokeable<String, Object> i) {
         typeMap.put(c, i);
     }
 
-    private static String representationOf(Object o, Invokeable<Object> i) throws Exception {
+    private static String representationOf(Object o, Invokeable<String, Object> i) throws Exception {
         if (i != null) return i.invoke(o);
 
         // Default object serialization
