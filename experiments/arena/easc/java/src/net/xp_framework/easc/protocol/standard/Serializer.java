@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Iterator;
 import net.xp_framework.easc.protocol.standard.Handler;
 import net.xp_framework.easc.protocol.standard.ArraySerializer;
+import net.xp_framework.easc.protocol.standard.Invokeable;
 
 /**
  * Serializer / unserializer for PHP representationOfd data
@@ -35,14 +36,6 @@ import net.xp_framework.easc.protocol.standard.ArraySerializer;
  */
 public class Serializer {
     
-    static interface Invokeable<Return, Parameter> {
-        public Return invoke(Parameter p) throws Exception;
-    }
-    
-    abstract static class InvokationTarget<Return, Parameter> implements Invokeable<Return, Parameter> {
-        abstract public Return invoke(Parameter p) throws Exception;
-    }
-    
     static class MethodTarget<Return, Parameter> implements Invokeable<Return, Parameter> {
         private Method method = null;
         
@@ -55,7 +48,7 @@ public class Serializer {
         }
     }
 
-    private static HashMap<Class, Invokeable<String, Object>> typeMap= new HashMap<Class, Invokeable<String, Object>>();
+    private static HashMap<Class, Invokeable<?, ?>> typeMap= new HashMap<Class, Invokeable<?, ?>>();
     
     static {
         
@@ -67,7 +60,7 @@ public class Serializer {
         }
     }
     
-    public static void registerMapping(Class c, Invokeable<String, Object> i) {
+    public static void registerMapping(Class c, Invokeable<?, ?> i) {
         typeMap.put(c, i);
     }
 
@@ -82,8 +75,8 @@ public class Serializer {
         return list;
     }
 
-    private static String representationOf(Object o, Invokeable<String, Object> i) throws Exception {
-        if (i != null) return i.invoke(o);
+    private static String representationOf(Object o, Invokeable i) throws Exception {
+        if (i != null) return (String)i.invoke(o);
 
         // Default object serialization
         StringBuffer buffer= new StringBuffer();
