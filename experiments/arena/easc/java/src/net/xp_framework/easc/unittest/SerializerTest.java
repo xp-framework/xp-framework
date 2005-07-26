@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Date;
 
 import static org.junit.Assert.*;
-import static net.xp_framework.easc.protocol.standard.Serializer.*;
+import static net.xp_framework.easc.protocol.standard.Serializer.representationOf;
 
 public class SerializerTest {
 
