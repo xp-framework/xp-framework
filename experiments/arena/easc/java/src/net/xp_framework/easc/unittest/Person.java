@@ -13,4 +13,30 @@ package net.xp_framework.easc.unittest;
 public class Person {
     public int id = 1549;
     public String name = "Timm Friebe";
+    
+    /**
+     * Returns a string representation if this person object
+     *
+     * @access  public
+     * @return  java.lang.String
+     */
+    @Override public String toString() {
+        return (this.getClass().getName() + "(" + id + ") [ name= '" + this.name + "']");
+    }
+    
+    /**
+     * Checks for equality of two person objects. Returns true if id and name
+     * members are equal.
+     *
+     * @access  public
+     * @param   java.lang.Object o
+     * @return  boolean
+     */
+    @Override public boolean equals(Object o) {
+        if (!(o instanceof Person)) return false;  // Short-cuircuit
+        
+        Person cmp= (Person)o;
+        return this.id == cmp.id && this.name.equals(cmp.name);
+    }
+    
 }
