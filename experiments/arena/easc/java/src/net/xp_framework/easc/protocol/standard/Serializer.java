@@ -15,6 +15,7 @@ import java.util.Iterator;
 import net.xp_framework.easc.protocol.standard.Handler;
 import net.xp_framework.easc.protocol.standard.ArraySerializer;
 import net.xp_framework.easc.protocol.standard.Invokeable;
+import net.xp_framework.easc.protocol.standard.SerializationException;
 
 /**
  * Serializer / unserializer for PHP representationOfd data
@@ -265,5 +266,25 @@ public class Serializer {
 
         buffer.append("}");
         return buffer.toString();
+    }
+    
+    protected static Object valueOf(String serialized, int length) throws Exception {
+        switch (serialized.charAt(0)) {
+            case 'N': {
+                length= 2; 
+                return null;
+            }
+            case 'b': {
+                length= 4; 
+                return ('1' == serialized.charAt(2));
+            }
+        }
+        
+        throw new SerializationException("Unknown type '" + serialized.charAt(0) + "' at offset " + length);
+    }
+    
+    public static Object valueOf(String serialized) throws Exception {
+        int length= 0;
+        return valueOf(serialized, length);
     }
 }
