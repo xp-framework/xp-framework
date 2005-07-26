@@ -49,6 +49,169 @@ public class Serializer {
         }
     }
 
+    private static class Length {
+        public int value = 0;
+
+        public Length(int initial) {
+            this.value = initial;
+        }
+        
+        @Override public String toString() {
+            return "Length(" + this.value + ")";
+        }
+    }
+    
+    private static enum Token {
+        T_NULL {
+            public Object handle(String serialized, Length length) throws Exception { 
+                length.value= 2;
+                return null;
+            }
+        },
+
+        T_BOOLEAN {
+            public Object handle(String serialized, Length length) throws Exception { 
+                length.value= 4; 
+                return ('1' == serialized.charAt(2));
+            }
+        },
+
+        T_INTEGER {
+            public Object handle(String serialized, Length length) throws Exception { 
+               String value= serialized.substring(2, serialized.indexOf(';', 2));
+
+               length.value= value.length() + 3;
+               return Long.parseLong(value);
+            }
+        },
+
+        T_FLOAT {
+            public Object handle(String serialized, Length length) throws Exception { 
+                String value= serialized.substring(2, serialized.indexOf(';', 2));
+
+                length.value= value.length() + 3;
+                return Double.parseDouble(value);
+            }
+        },
+
+        T_STRING {
+            public Object handle(String serialized, Length length) throws Exception { 
+                String strlength= serialized.substring(2, serialized.indexOf(':', 2));
+                int offset= 2 + strlength.length() + 2;
+                int parsed= Integer.parseInt(strlength);
+
+                length.value= offset + parsed + 2;
+                return serialized.substring(offset, parsed+ offset); 
+
+            }
+        },
+
+        T_ARRAY {
+            public Object handle(String serialized, Length length) throws Exception { 
+                String arraylength= serialized.substring(2, serialized.indexOf(':', 2));
+                int parsed= Integer.parseInt(arraylength);
+                int offset= arraylength.length() + 2 + 2;
+                HashMap h= new HashMap(parsed);
+                
+                for (int i= 0; i < parsed; i++) {
+                    Object key= Serializer.valueOf(serialized.substring(offset), length);
+                    offset+= length.value;
+                    Object value= Serializer.valueOf(serialized.substring(offset), length);
+                    offset+= length.value;
+                    
+                    h.put(key, value);
+                }
+
+                length.value= offset + 1;
+                return h;
+            }
+        }, 
+
+        T_OBJECT {
+            public Object handle(String serialized, Length length) throws Exception { 
+                String classnamelength= serialized.substring(2, serialized.indexOf(':', 2));
+                int offset= classnamelength.length() + 2 + 2;
+                int parsed= Integer.parseInt(classnamelength);
+                Class c= null;
+                Object instance= null;
+
+                // Load class
+                try {
+                    c= Class.forName(serialized.substring(offset, parsed+ offset)); 
+                } catch (ClassNotFoundException e) {
+                    throw new SerializationException(e.getMessage());
+                }
+                
+                instance= c.newInstance();
+                
+                String objectlength= serialized.substring(parsed+ offset+ 2, serialized.indexOf(':', parsed+ offset+ 2));
+                offset+= parsed+ 2 + objectlength.length() + 2;
+                
+                for (int i= 0; i < Integer.parseInt(objectlength); i++) {
+                    Field f= c.getDeclaredField((String)Serializer.valueOf(serialized.substring(offset), length));
+                    offset+= length.value;
+                    Object value= Serializer.valueOf(serialized.substring(offset), length);
+                    offset+= length.value;
+                    
+                    // Set field value
+                    f.setAccessible(true);
+                    if (f.getType() == char.class) {
+                        f.setChar(instance, ((String)value).charAt(0));
+                    } else if (f.getType() == byte.class) {
+                        f.setByte(instance, ((Long)value).byteValue());
+                    } else if (f.getType() == short.class) {
+                        f.setShort(instance, ((Long)value).shortValue());
+                    } else if (f.getType() == int.class) {
+                        f.setInt(instance, ((Long)value).intValue());
+                    } else if (f.getType() == long.class) {
+                        f.setLong(instance, ((Long)value).longValue());
+                    } else if (f.getType() == double.class) {
+                        f.setDouble(instance, ((Double)value).doubleValue());
+                    } else if (f.getType() == float.class) {
+                        f.setFloat(instance, ((Double)value).floatValue());
+                    } else if (f.getType() == boolean.class) {
+                        f.setBoolean(instance, ((Boolean)value).booleanValue());
+                    } else {
+                        f.set(instance, value);
+                    }
+                }
+
+                return instance;
+            }
+        },
+
+        T_DATE {
+            public Object handle(String serialized, Length length) throws Exception { 
+               String value= serialized.substring(2, serialized.indexOf(';', 2));
+
+               length.value= value.length() + 3;
+               return new Date(Long.parseLong(value) * 1000);
+            }
+        };
+      
+        private static HashMap<Character, Token> map= new HashMap<Character, Token>();
+      
+        static {
+            map.put('N', T_NULL);
+            map.put('b', T_BOOLEAN);
+            map.put('i', T_INTEGER);
+            map.put('f', T_FLOAT);
+            map.put('s', T_STRING);
+            map.put('a', T_ARRAY);
+            map.put('O', T_OBJECT);
+            map.put('D', T_DATE);
+        }
+      
+        public static Token valueOf(char c) throws Exception {
+            if (!map.containsKey(c)) {
+                throw new SerializationException("Unknown type '" + c + "'");
+            }
+            return map.get(c);
+        }
+      
+        abstract public Object handle(String serialized, Length length) throws Exception;
+    }
+
     private static HashMap<Class, Invokeable<?, ?>> typeMap= new HashMap<Class, Invokeable<?, ?>>();
     
     static {
@@ -266,162 +429,6 @@ public class Serializer {
 
         buffer.append("}");
         return buffer.toString();
-    }
-    
-    private static class Length {
-        public int value = 0;
-
-        public Length(int initial) {
-            this.value = initial;
-        }
-        
-        @Override public String toString() {
-            return "Length(" + this.value + ")";
-        }
-    }
-    
-    private static enum Token {
-        T_NULL {
-            public Object handle(String serialized, Length length) throws Exception { 
-                length.value= 2;
-                return null;
-            }
-        },
-        T_BOOLEAN {
-            public Object handle(String serialized, Length length) throws Exception { 
-                length.value= 4; 
-                return ('1' == serialized.charAt(2));
-            }
-        },
-        T_INTEGER {
-            public Object handle(String serialized, Length length) throws Exception { 
-               String value= serialized.substring(2, serialized.indexOf(';', 2));
-
-               length.value= value.length() + 3;
-               return Long.parseLong(value);
-            }
-        },
-        T_FLOAT {
-            public Object handle(String serialized, Length length) throws Exception { 
-                String value= serialized.substring(2, serialized.indexOf(';', 2));
-
-                length.value= value.length() + 3;
-                return Double.parseDouble(value);
-            }
-        },
-        T_STRING {
-            public Object handle(String serialized, Length length) throws Exception { 
-                String strlength= serialized.substring(2, serialized.indexOf(':', 2));
-                int offset= 2 + strlength.length() + 2;
-                int parsed= Integer.parseInt(strlength);
-
-                length.value= offset + parsed + 2;
-                return serialized.substring(offset, parsed+ offset); 
-
-            }
-        },
-        T_ARRAY {
-            public Object handle(String serialized, Length length) throws Exception { 
-                String arraylength= serialized.substring(2, serialized.indexOf(':', 2));
-                int parsed= Integer.parseInt(arraylength);
-                int offset= arraylength.length() + 2 + 2;
-                HashMap h= new HashMap(parsed);
-                
-                for (int i= 0; i < parsed; i++) {
-                    Object key= Serializer.valueOf(serialized.substring(offset), length);
-                    offset+= length.value;
-                    Object value= Serializer.valueOf(serialized.substring(offset), length);
-                    offset+= length.value;
-                    
-                    h.put(key, value);
-                }
-
-                length.value= offset + 1;
-                return h;
-            }
-        }, 
-        T_OBJECT {
-            public Object handle(String serialized, Length length) throws Exception { 
-                String classnamelength= serialized.substring(2, serialized.indexOf(':', 2));
-                int offset= classnamelength.length() + 2 + 2;
-                int parsed= Integer.parseInt(classnamelength);
-                Class c= null;
-                Object instance= null;
-
-                // Load class
-                try {
-                    c= Class.forName(serialized.substring(offset, parsed+ offset)); 
-                } catch (ClassNotFoundException e) {
-                    throw new SerializationException(e.getMessage());
-                }
-                
-                instance= c.newInstance();
-                
-                String objectlength= serialized.substring(parsed+ offset+ 2, serialized.indexOf(':', parsed+ offset+ 2));
-                offset+= parsed+ 2 + objectlength.length() + 2;
-                
-                for (int i= 0; i < Integer.parseInt(objectlength); i++) {
-                    Field f= c.getDeclaredField((String)Serializer.valueOf(serialized.substring(offset), length));
-                    offset+= length.value;
-                    Object value= Serializer.valueOf(serialized.substring(offset), length);
-                    offset+= length.value;
-                    
-                    // Set field value
-                    f.setAccessible(true);
-                    if (f.getType() == char.class) {
-                        f.setChar(instance, ((String)value).charAt(0));
-                    } else if (f.getType() == byte.class) {
-                        f.setByte(instance, ((Long)value).byteValue());
-                    } else if (f.getType() == short.class) {
-                        f.setShort(instance, ((Long)value).shortValue());
-                    } else if (f.getType() == int.class) {
-                        f.setInt(instance, ((Long)value).intValue());
-                    } else if (f.getType() == long.class) {
-                        f.setLong(instance, ((Long)value).longValue());
-                    } else if (f.getType() == double.class) {
-                        f.setDouble(instance, ((Double)value).doubleValue());
-                    } else if (f.getType() == float.class) {
-                        f.setFloat(instance, ((Double)value).floatValue());
-                    } else if (f.getType() == boolean.class) {
-                        f.setBoolean(instance, ((Boolean)value).booleanValue());
-                    } else {
-                        f.set(instance, value);
-                    }
-                }
-
-                return instance;
-            }
-        },
-        T_DATE {
-            public Object handle(String serialized, Length length) throws Exception { 
-               String value= serialized.substring(2, serialized.indexOf(';', 2));
-
-               length.value= value.length() + 3;
-               return new Date(Long.parseLong(value) * 1000);
-            }
-        };
-      
-        private static HashMap<Character, Token> map= new HashMap<Character, Token>();
-      
-        static {
-            map.put('N', T_NULL);
-            map.put('b', T_BOOLEAN);
-            map.put('i', T_INTEGER);
-            map.put('f', T_FLOAT);
-            map.put('s', T_STRING);
-            map.put('a', T_ARRAY);
-            map.put('O', T_OBJECT);
-            map.put('D', T_DATE);
-        }
-      
-        public static Token valueOf(char c) throws Exception {
-            if (!map.containsKey(c)) {
-                throw new SerializationException("Unknown type '" + c + "'");
-            }
-            return map.get(c);
-        }
-      
-        abstract public Object handle(String serialized, Length length) throws Exception;
     }
     
     private static Object valueOf(String serialized, Length length) throws Exception {
