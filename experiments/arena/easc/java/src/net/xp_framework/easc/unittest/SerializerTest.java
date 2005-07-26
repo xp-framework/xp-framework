@@ -180,4 +180,9 @@ public class SerializerTest {
         assertEquals(true, valueOf("b:1;"));
         assertEquals(false, valueOf("b:0;"));
     }
+
+    @Test public void valueOfInteger() throws Exception {
+        assertEquals(6100, valueOf("i:6100;"));
+        assertEquals(-6100, valueOf("i:-6100;"));
+    }
 }
