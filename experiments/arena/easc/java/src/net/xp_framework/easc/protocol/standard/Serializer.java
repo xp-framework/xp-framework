@@ -55,7 +55,7 @@ public class Serializer {
         }
     }
 
-    private static HashMap<Class, Invokeable<?>> typeMap= new HashMap<Class, Invokeable<?>>();
+    private static HashMap<Class, Invokeable<Object>> typeMap= new HashMap<Class, Invokeable<Object>>();
     
     static {
         
@@ -63,15 +63,15 @@ public class Serializer {
         for (Method m : Serializer.class.getDeclaredMethods()) {
             if (null == m.getAnnotation(Handler.class)) continue;
             
-            typeMap.put(m.getParameterTypes()[0], new MethodTarget(m));
+            registerMapping(m.getParameterTypes()[0], new MethodTarget<Object>(m));
         }
     }
     
-    public static void registerMapping(Class c, Invokeable<?> i) {
+    public static void registerMapping(Class c, Invokeable<Object> i) {
         typeMap.put(c, i);
     }
 
-    protected static String representationOf(Object o, Invokeable<?> i) throws Exception {
+    protected static String representationOf(Object o, Invokeable<Object> i) throws Exception {
         if (i != null) return i.invoke(o);
 
         // Default object serialization
