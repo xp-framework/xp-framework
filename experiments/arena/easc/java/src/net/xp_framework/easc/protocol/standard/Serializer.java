@@ -333,6 +333,45 @@ public class Serializer {
                 length.value= offset + 1;
                 return h;
             }
+            
+            case 'O': {
+                String classnamelength= serialized.substring(2, serialized.indexOf(':', 2));
+                int offset= classnamelength.length() + 2 + 2;
+                int parsed= Integer.parseInt(classnamelength);
+                Class c= null;
+                Object instance= null;
+
+                // Load class
+                try {
+                    c= Class.forName(serialized.substring(offset, parsed+ offset)); 
+                } catch (ClassNotFoundException e) {
+                    throw new SerializationException(e.getMessage());
+                }
+                
+                instance= c.newInstance();
+                
+                String objectlength= serialized.substring(parsed+ offset+ 2, serialized.indexOf(':', parsed+ offset+ 2));
+                offset+= parsed+ 2 + objectlength.length() + 2;
+                
+                for (int i= 0; i < Integer.parseInt(objectlength); i++) {
+                    Field f= c.getDeclaredField((String)valueOf(serialized.substring(offset), length));
+                    offset+= length.value;
+                    Object value= valueOf(serialized.substring(offset), length);
+                    offset+= length.value;
+                    
+                    // Set field value (TODO: Check for all primitivies!, not only int and long!)
+                    f.setAccessible(true);
+                    if (f.getType() == int.class) {
+                        f.setInt(instance, ((Long)value).intValue());
+                    } else if (f.getType() == long.class) {
+                        f.setLong(instance, ((Long)value).longValue());
+                    } else {
+                        f.set(instance, value);
+                    }
+                }
+
+                return instance;
+            }
         }
         
         throw new SerializationException("Unknown type '" + serialized.charAt(0) + "' at offset " + length);
