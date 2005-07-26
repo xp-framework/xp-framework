@@ -6,11 +6,13 @@
 package net.xp_framework.easc.unittest;
 
 import org.junit.Test;
+import org.junit.Ignore;
 import net.xp_framework.easc.unittest.Person;
 import net.xp_framework.easc.protocol.standard.Invokeable;
 import java.util.HashMap;
 import java.util.Date;
 import java.util.UUID;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 import static net.xp_framework.easc.protocol.standard.Serializer.representationOf;
@@ -181,8 +183,30 @@ public class SerializerTest {
         assertEquals(false, valueOf("b:0;"));
     }
 
-    @Test public void valueOfInteger() throws Exception {
-        assertEquals(6100, valueOf("i:6100;"));
-        assertEquals(-6100, valueOf("i:-6100;"));
+    @Test public void valueOfLong() throws Exception {
+        assertEquals(6100L, (Long)valueOf("i:6100;"));
+        assertEquals(-6100L, (Long)valueOf("i:-6100;"));
+    }
+
+    @Test public void valueOfDouble() throws Exception {
+        assertEquals(0.1, (Double)valueOf("f:0.1;"), 0.0001);
+        assertEquals(-0.1, (Double)valueOf("f:-0.1;"), 0.0001);
+    }
+
+    @Test public void valueOfString() throws Exception {
+        assertEquals("Hello", valueOf("s:5:\"Hello\";"));
+    }
+
+    @Test public void valueOfQuotedString() throws Exception {
+        assertEquals("\"Hello\", he said.", valueOf("s:17:\"\"Hello\", he said.\";"));
+    }
+
+    @Test @Ignore(value= "Hashmap comparison broken?") 
+    public void valueOfArray() throws Exception {
+        HashMap h= new HashMap();
+        h.put(0, 3);
+        h.put(1, 4);
+
+        assertEquals(h, valueOf("a:2:{i:0;i:3;i:1;i:4;}"));
     }
 }
