@@ -359,12 +359,24 @@ public class Serializer {
                     Object value= valueOf(serialized.substring(offset), length);
                     offset+= length.value;
                     
-                    // Set field value (TODO: Check for all primitivies!, not only int and long!)
+                    // Set field value
                     f.setAccessible(true);
-                    if (f.getType() == int.class) {
+                    if (f.getType() == char.class) {
+                        f.setChar(instance, ((String)value).charAt(0));
+                    } else if (f.getType() == byte.class) {
+                        f.setByte(instance, ((Long)value).byteValue());
+                    } else if (f.getType() == short.class) {
+                        f.setShort(instance, ((Long)value).shortValue());
+                    } else if (f.getType() == int.class) {
                         f.setInt(instance, ((Long)value).intValue());
                     } else if (f.getType() == long.class) {
                         f.setLong(instance, ((Long)value).longValue());
+                    } else if (f.getType() == double.class) {
+                        f.setDouble(instance, ((Double)value).doubleValue());
+                    } else if (f.getType() == float.class) {
+                        f.setFloat(instance, ((Double)value).floatValue());
+                    } else if (f.getType() == boolean.class) {
+                        f.setBoolean(instance, ((Boolean)value).booleanValue());
                     } else {
                         f.set(instance, value);
                     }
