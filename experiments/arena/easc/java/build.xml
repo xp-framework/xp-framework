@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ! Buildfile for ant
+ !
+ ! $Id$
+ !-->
 <project default="test">
   <property name="build.srcdir" value="src"/>
   <property name="build.destdir" value="build"/>
