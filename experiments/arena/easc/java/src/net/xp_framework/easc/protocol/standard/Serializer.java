@@ -37,7 +37,7 @@ import net.xp_framework.easc.protocol.standard.SerializationException;
  */
 public class Serializer {
     
-    static class MethodTarget<Return, Parameter> implements Invokeable<Return, Parameter> {
+    private static class MethodTarget<Return, Parameter> implements Invokeable<Return, Parameter> {
         private Method method = null;
         
         MethodTarget(Method m) {
@@ -268,7 +268,7 @@ public class Serializer {
         return buffer.toString();
     }
     
-    static class Length {
+    private static class Length {
         public int value = 0;
 
         public Length(int initial) {
@@ -280,7 +280,7 @@ public class Serializer {
         }
     }
     
-    protected static Object valueOf(String serialized, Length length) throws Exception {
+    private static Object valueOf(String serialized, Length length) throws Exception {
         switch (serialized.charAt(0)) {
             case 'N': {
                 length.value= 2; 
