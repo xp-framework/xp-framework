@@ -203,10 +203,6 @@ public class SerializerTest {
 
     @Test
     public void valueOfArray() throws Exception {
-        HashMap h= new HashMap();
-        h.put(0, 3);
-        h.put(1, 4);
-
         assertEquals("{1=4, 0=3}", ((HashMap)valueOf("a:2:{i:0;i:3;i:1;i:4;}")).toString());
     }
 }
