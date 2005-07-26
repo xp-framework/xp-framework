@@ -55,7 +55,7 @@ public class Serializer {
         }
     }
 
-    private static HashMap<Class, Invokeable> typeMap = new HashMap<Class, Invokeable>();
+    private static HashMap<Class, Invokeable> typeMap= new HashMap<Class, Invokeable>();
     
     static {
         
