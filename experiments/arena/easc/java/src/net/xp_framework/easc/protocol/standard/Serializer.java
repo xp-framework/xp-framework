@@ -278,6 +278,11 @@ public class Serializer {
                 length= 4; 
                 return ('1' == serialized.charAt(2));
             }
+            case 'i': {
+                String value= serialized.substring(2, serialized.indexOf(';', 2));
+                length= value.length() + 3;
+                return Integer.parseInt(value);
+            }
         }
         
         throw new SerializationException("Unknown type '" + serialized.charAt(0) + "' at offset " + length);
