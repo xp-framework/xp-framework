@@ -71,6 +71,17 @@ public class Serializer {
         typeMap.put(c, i);
     }
 
+    private static ArrayList<Field> classFields(Class c) {
+        ArrayList<Field> list= new ArrayList<Field>();
+        
+        for (Field f : c.getDeclaredFields()) {
+            if (Modifier.isTransient(f.getModifiers())) continue;
+            list.add(f);
+        }
+        
+        return list;
+    }
+
     private static String representationOf(Object o, Invokeable<String, Object> i) throws Exception {
         if (i != null) return i.invoke(o);
 
@@ -253,17 +264,6 @@ public class Serializer {
 
         buffer.append("}");
         return buffer.toString();
-    }
-    
-    protected static ArrayList<Field> classFields(Class c) {
-        ArrayList<Field> list= new ArrayList<Field>();
-        
-        for (Field f : c.getDeclaredFields()) {
-            if (Modifier.isTransient(f.getModifiers())) continue;
-            list.add(f);
-        }
-        
-        return list;
     }
     
     @Handler public static String representationOf(Object o) throws Exception {
