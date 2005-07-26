@@ -142,18 +142,19 @@ public class Serializer {
                     throw new SerializationException(e.getMessage());
                 }
                 
+                // Instanciate
                 instance= c.newInstance();
                 
                 String objectlength= serialized.substring(parsed+ offset+ 2, serialized.indexOf(':', parsed+ offset+ 2));
                 offset+= parsed+ 2 + objectlength.length() + 2;
                 
+                // Set field values
                 for (int i= 0; i < Integer.parseInt(objectlength); i++) {
                     Field f= c.getDeclaredField((String)Serializer.valueOf(serialized.substring(offset), length));
                     offset+= length.value;
                     Object value= Serializer.valueOf(serialized.substring(offset), length);
                     offset+= length.value;
                     
-                    // Set field value
                     f.setAccessible(true);
                     if (f.getType() == char.class) {
                         f.setChar(instance, ((String)value).charAt(0));
