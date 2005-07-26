@@ -213,4 +213,12 @@ public class SerializerTest {
             ((HashMap)valueOf("a:2:{i:0;s:7:\"Binford\";i:1;s:4:\"More\";}")).toString()
         );
     }
+    
+    @Test
+    public void valueOfPersonObject() throws Exception {
+        assertEquals(
+            new Person(), 
+            valueOf("O:37:\"net.xp_framework.easc.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}")
+        );
+    }
 }
