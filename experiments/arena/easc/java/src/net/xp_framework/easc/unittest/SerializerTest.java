@@ -221,4 +221,12 @@ public class SerializerTest {
             valueOf("O:37:\"net.xp_framework.easc.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}")
         );
     }
+
+    @Test
+    public void valueOfDate() throws Exception {
+        assertEquals(
+            new Date(1122369782000L), 
+            valueOf("D:1122369782;")
+        );
+    }
 }
