@@ -254,7 +254,7 @@ public class Serializer {
     
     @Handler
     public static String serialize(Date d) throws Exception {
-        return "D:" + d.getTime() + ";";
+        return "D:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
     }
     
     @Handler

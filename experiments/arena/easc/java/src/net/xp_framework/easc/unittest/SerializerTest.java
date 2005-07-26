@@ -150,8 +150,8 @@ public class SerializerTest {
     
     @Test public void serializeDate() throws Exception {
         assertEquals(
-            "D:1234567;",
-            serialize(new Date(1234567))
+            "D:1122369782;",
+            serialize(new Date(1122369782000L))
         );
     }
 }
