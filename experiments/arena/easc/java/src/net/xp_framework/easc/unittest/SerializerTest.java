@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 import static net.xp_framework.easc.protocol.standard.Serializer.representationOf;
+import static net.xp_framework.easc.protocol.standard.Serializer.valueOf;
 import static net.xp_framework.easc.protocol.standard.Serializer.registerMapping;
 
 public class SerializerTest {
@@ -169,5 +170,14 @@ public class SerializerTest {
             "U:f0563880-3880-1056-9c5b-98814601ad8f;", 
             representationOf(UUID.fromString("f0563880-3880-1056-9c5b-98814601ad8f")
         ));
+    }
+    
+    @Test public void valueOfNull() throws Exception {
+        assertEquals(null, valueOf("N;"));
+    }
+
+    @Test public void valueOfBoolean() throws Exception {
+        assertEquals(true, valueOf("b:1;"));
+        assertEquals(false, valueOf("b:0;"));
     }
 }
