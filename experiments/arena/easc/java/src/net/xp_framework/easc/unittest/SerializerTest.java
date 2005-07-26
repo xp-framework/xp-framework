@@ -202,7 +202,15 @@ public class SerializerTest {
     }
 
     @Test
-    public void valueOfArray() throws Exception {
+    public void valueOfIntegerArray() throws Exception {
         assertEquals("{1=4, 0=3}", ((HashMap)valueOf("a:2:{i:0;i:3;i:1;i:4;}")).toString());
+    }
+
+    @Test
+    public void valueOfStringArray() throws Exception {
+        assertEquals(
+            "{1=More, 0=Binford}", 
+            ((HashMap)valueOf("a:2:{i:0;s:7:\"Binford\";i:1;s:4:\"More\";}")).toString()
+        );
     }
 }
