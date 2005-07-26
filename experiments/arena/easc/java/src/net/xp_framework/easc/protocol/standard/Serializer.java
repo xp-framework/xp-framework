@@ -55,7 +55,7 @@ public class Serializer {
         }
     }
 
-    private static HashMap<Class, Invokeable> typeMap= new HashMap<Class, Invokeable>();
+    private static HashMap<Class, Invokeable<?>> typeMap= new HashMap<Class, Invokeable<?>>();
     
     static {
         
@@ -67,11 +67,11 @@ public class Serializer {
         }
     }
     
-    public static void registerMapping(Class c, Invokeable i) {
+    public static void registerMapping(Class c, Invokeable<?> i) {
         typeMap.put(c, i);
     }
 
-    protected static String representationOf(Object o, Invokeable i) throws Exception {
+    protected static String representationOf(Object o, Invokeable<?> i) throws Exception {
         if (i != null) return i.invoke(o);
 
         // Default object serialization
@@ -99,7 +99,7 @@ public class Serializer {
     @Handler
     public static String representationOf(String s) {
         return "s:" + s.length() + ":\"" + s + "\";";
-    }
+    } 
 
     @Handler
     public static String representationOf(char c) {
