@@ -280,51 +280,57 @@ public class Serializer {
         }
     }
     
-    private static Object valueOf(String serialized, Length length) throws Exception {
-        switch (serialized.charAt(0)) {
-            case 'N': {
-                length.value= 2; 
+    private static enum Token {
+        T_NULL {
+            public Object handle(String serialized, Length length) throws Exception { 
+                length.value= 2;
                 return null;
             }
-
-            case 'b': {
+        },
+        T_BOOLEAN {
+            public Object handle(String serialized, Length length) throws Exception { 
                 length.value= 4; 
                 return ('1' == serialized.charAt(2));
             }
+        },
+        T_INTEGER {
+            public Object handle(String serialized, Length length) throws Exception { 
+               String value= serialized.substring(2, serialized.indexOf(';', 2));
 
-            case 'i': {   // Use long as it has a larger range
-                String value= serialized.substring(2, serialized.indexOf(';', 2));
-
-                length.value= value.length() + 3;
-                return Long.parseLong(value);
+               length.value= value.length() + 3;
+               return Long.parseLong(value);
             }
-
-            case 'f': {   // Use double as it has a larger range
+        },
+        T_FLOAT {
+            public Object handle(String serialized, Length length) throws Exception { 
                 String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                 length.value= value.length() + 3;
                 return Double.parseDouble(value);
             }
-
-            case 's': {
+        },
+        T_STRING {
+            public Object handle(String serialized, Length length) throws Exception { 
                 String strlength= serialized.substring(2, serialized.indexOf(':', 2));
                 int offset= 2 + strlength.length() + 2;
                 int parsed= Integer.parseInt(strlength);
 
                 length.value= offset + parsed + 2;
                 return serialized.substring(offset, parsed+ offset); 
+
             }
-            
-            case 'a': {
+        },
+        T_ARRAY {
+            public Object handle(String serialized, Length length) throws Exception { 
                 String arraylength= serialized.substring(2, serialized.indexOf(':', 2));
                 int parsed= Integer.parseInt(arraylength);
                 int offset= arraylength.length() + 2 + 2;
                 HashMap h= new HashMap(parsed);
                 
                 for (int i= 0; i < parsed; i++) {
-                    Object key= valueOf(serialized.substring(offset), length);
+                    Object key= Serializer.valueOf(serialized.substring(offset), length);
                     offset+= length.value;
-                    Object value= valueOf(serialized.substring(offset), length);
+                    Object value= Serializer.valueOf(serialized.substring(offset), length);
                     offset+= length.value;
                     
                     h.put(key, value);
@@ -333,8 +339,9 @@ public class Serializer {
                 length.value= offset + 1;
                 return h;
             }
-            
-            case 'O': {
+        }, 
+        T_OBJECT {
+            public Object handle(String serialized, Length length) throws Exception { 
                 String classnamelength= serialized.substring(2, serialized.indexOf(':', 2));
                 int offset= classnamelength.length() + 2 + 2;
                 int parsed= Integer.parseInt(classnamelength);
@@ -354,9 +361,9 @@ public class Serializer {
                 offset+= parsed+ 2 + objectlength.length() + 2;
                 
                 for (int i= 0; i < Integer.parseInt(objectlength); i++) {
-                    Field f= c.getDeclaredField((String)valueOf(serialized.substring(offset), length));
+                    Field f= c.getDeclaredField((String)Serializer.valueOf(serialized.substring(offset), length));
                     offset+= length.value;
-                    Object value= valueOf(serialized.substring(offset), length);
+                    Object value= Serializer.valueOf(serialized.substring(offset), length);
                     offset+= length.value;
                     
                     // Set field value
@@ -384,13 +391,35 @@ public class Serializer {
 
                 return instance;
             }
+        };
+      
+        private static HashMap<Character, Token> map= new HashMap<Character, Token>();
+      
+        static {
+            map.put('N', T_NULL);
+            map.put('b', T_BOOLEAN);
+            map.put('i', T_INTEGER);
+            map.put('f', T_FLOAT);
+            map.put('s', T_STRING);
+            map.put('a', T_ARRAY);
+            map.put('O', T_OBJECT);
         }
-        
-        throw new SerializationException("Unknown type '" + serialized.charAt(0) + "' at offset " + length);
+      
+        public static Token valueOf(char c) throws Exception {
+            if (!map.containsKey(c)) {
+                throw new SerializationException("Unknown type '" + c + "'");
+            }
+            return map.get(c);
+        }
+      
+        abstract public Object handle(String serialized, Length length) throws Exception;
+    }
+    
+    private static Object valueOf(String serialized, Length length) throws Exception {
+        return Token.valueOf(serialized.charAt(0)).handle(serialized, length);
     }
     
     public static Object valueOf(String serialized) throws Exception {
-        Length length= new Length(0);
-        return valueOf(serialized, length);
+        return valueOf(serialized, new Length(0));
     }
 }
