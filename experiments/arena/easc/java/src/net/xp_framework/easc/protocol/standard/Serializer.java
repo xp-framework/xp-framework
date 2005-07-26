@@ -268,20 +268,70 @@ public class Serializer {
         return buffer.toString();
     }
     
-    protected static Object valueOf(String serialized, int length) throws Exception {
+    static class Length {
+        public int value = 0;
+
+        public Length(int initial) {
+            this.value = initial;
+        }
+        
+        @Override public String toString() {
+            return "Length(" + this.value + ")";
+        }
+    }
+    
+    protected static Object valueOf(String serialized, Length length) throws Exception {
         switch (serialized.charAt(0)) {
             case 'N': {
-                length= 2; 
+                length.value= 2; 
                 return null;
             }
+
             case 'b': {
-                length= 4; 
+                length.value= 4; 
                 return ('1' == serialized.charAt(2));
             }
-            case 'i': {
+
+            case 'i': {   // Use long as it has a larger range
                 String value= serialized.substring(2, serialized.indexOf(';', 2));
-                length= value.length() + 3;
-                return Integer.parseInt(value);
+
+                length.value= value.length() + 3;
+                return Long.parseLong(value);
+            }
+
+            case 'f': {   // Use double as it has a larger range
+                String value= serialized.substring(2, serialized.indexOf(';', 2));
+
+                length.value= value.length() + 3;
+                return Double.parseDouble(value);
+            }
+
+            case 's': {
+                String strlength= serialized.substring(2, serialized.indexOf(':', 2));
+                int offset= 2 + strlength.length() + 2;
+                int parsed= Integer.parseInt(strlength);
+
+                length.value= offset + parsed + 2;
+                return serialized.substring(offset, parsed+ offset); 
+            }
+            
+            case 'a': {
+                String arraylength= serialized.substring(2, serialized.indexOf(':', 2));
+                int parsed= Integer.parseInt(arraylength);
+                int offset= arraylength.length() + 2 + 2;
+                HashMap h= new HashMap(parsed);
+                
+                for (int i= 0; i < parsed; i++) {
+                    Object key= valueOf(serialized.substring(offset), length);
+                    offset+= length.value;
+                    Object value= valueOf(serialized.substring(offset), length);
+                    offset+= length.value;
+                    
+                    h.put(key, value);
+                }
+
+                length.value= offset + 1;
+                return h;
             }
         }
         
@@ -289,7 +339,7 @@ public class Serializer {
     }
     
     public static Object valueOf(String serialized) throws Exception {
-        int length= 0;
+        Length length= new Length(0);
         return valueOf(serialized, length);
     }
 }
