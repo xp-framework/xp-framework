@@ -34,7 +34,28 @@ import net.xp_framework.easc.protocol.standard.ArraySerializer;
  * @see   http://php.net/serialize
  */
 public class Serializer {
-    private static HashMap<Class, Method> typeMap = new HashMap<Class, Method>();
+    
+    static interface Invokeable<Element> {
+        public String invoke(Element e) throws Exception;
+    }
+    
+    abstract static class InvokationTarget<Element> implements Invokeable<Element> {
+        abstract public String invoke(Element e) throws Exception;
+    }
+    
+    static class MethodTarget<Element> implements Invokeable<Element> {
+        private Method method = null;
+        
+        MethodTarget(Method m) {
+            this.method= m;    
+        }
+        
+        public String invoke(Element e) throws Exception {
+            return (String)this.method.invoke(null, new Object[] { e });
+        }
+    }
+
+    private static HashMap<Class, Invokeable> typeMap = new HashMap<Class, Invokeable>();
     
     static {
         
@@ -42,17 +63,44 @@ public class Serializer {
         for (Method m : Serializer.class.getDeclaredMethods()) {
             if (null == m.getAnnotation(Handler.class)) continue;
             
-            typeMap.put(m.getParameterTypes()[0], m);
+            typeMap.put(m.getParameterTypes()[0], new MethodTarget(m));
         }
+        
+        // Set up wrapper
+        registerMapping(Date.class, new InvokationTarget<Date>() {
+            public String invoke(Date d) throws Exception {
+                return "D:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
+            }
+        });
+    }
+    
+    public static void registerMapping(Class c, Invokeable i) {
+        typeMap.put(c, i);
     }
 
-    protected static String serialize(Object o, Method m) throws Exception {
-        if (m == null) {
-            throw new IllegalArgumentException("No mapping for " + o.getClass().getName());
+    protected static String serialize(Object o, Invokeable i) throws Exception {
+        if (i != null) return i.invoke(o);
+
+        // Default object serialization
+        StringBuffer buffer= new StringBuffer();
+        Class c= o.getClass();
+        long numFields = 0;
+
+        for (Field f : classFields(c)) {
+            buffer.append("s:");
+            buffer.append(f.getName().length());
+            buffer.append(":\"");
+            buffer.append(f.getName());
+            buffer.append("\";");
+
+            f.setAccessible(true);
+            buffer.append(serialize(f.get(o), typeMap.get(f.getType())));
+            numFields++;
         }
 
-        // System.out.println("+++ Mapping for " + o.getClass().getName() + " => " + m);
-        return (String)m.invoke(null, new Object[] { o });
+        buffer.append("}");        
+        buffer.insert(0, "O:" + c.getName().length() + ":\"" + c.getName() + "\":" + numFields + ":{");
+        return buffer.toString();
     }
 
     @Handler
@@ -253,30 +301,7 @@ public class Serializer {
     }
     
     @Handler
-    public static String serialize(Date d) throws Exception {
-        return "D:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
-    }
-    
-    @Handler
     public static String serialize(Object o) throws Exception {
-        StringBuffer buffer= new StringBuffer();
-        Class c= o.getClass();
-        long numFields = 0;
-
-        for (Field f : classFields(c)) {
-            buffer.append("s:");
-            buffer.append(f.getName().length());
-            buffer.append(":\"");
-            buffer.append(f.getName());
-            buffer.append("\";");
-            
-            f.setAccessible(true);
-            buffer.append(serialize(f.get(o), typeMap.get(f.getType())));
-            numFields++;
-        }
-
-        buffer.append("}");        
-        buffer.insert(0, "O:" + c.getName().length() + ":\"" + c.getName() + "\":" + numFields + ":{");
-        return buffer.toString();
+        return serialize(o, typeMap.get(o.getClass()));
     }
 }
