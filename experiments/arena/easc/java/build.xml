@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="test">
+  <property name="build.srcdir" value="src"/>
+  <property name="build.destdir" value="build"/>
+  <property name="build.compiler" value="javac1.5"/>
+  
+  <path id="classpath.build">
+    <pathelement path="${classpath}"/>
+    <fileset dir="lib">
+      <include name="junit.jar"/>
+    </fileset>
+  </path>
+
+  <path id="classpath.run">
+    <pathelement path="${classpath}"/>
+    <pathelement path="${build.destdir}"/>
+    <fileset dir="lib">
+      <include name="junit.jar"/>
+    </fileset>
+  </path>
+  
+  <target name="prepare">
+    <mkdir dir="${build.destdir}"/>
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac 
+      srcdir="${build.srcdir}"
+      destdir="${build.destdir}"
+      classpath="${build.classpath}"
+      debug="true"
+    >
+      <classpath refid="project.classpath"/>
+    </javac>
+  </target>
+  
+  <target name="clean">
+    <delete dir="${build.destdir}"/>
+  </target>
+
+  <!-- Invoke tests -->
+  <target name="test" depends="compile">
+    <echo>===&gt; Executing net.xp_framework.easc.protocol.standard.SerializerTest</echo>
+    <java classname="org.junit.runner.JUnitCore">
+      <arg value="net.xp_framework.easc.unittest.SerializerTest"/>
+      <classpath refid="classpath.run"/>
+    </java>
+  </target>
+</project>
