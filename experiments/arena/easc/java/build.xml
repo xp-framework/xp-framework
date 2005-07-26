@@ -30,7 +30,7 @@
       classpath="${build.classpath}"
       debug="true"
     >
-      <classpath refid="project.classpath"/>
+      <classpath refid="classpath.build"/>
     </javac>
   </target>
   
