@@ -7,11 +7,14 @@ package net.xp_framework.easc.unittest;
 
 import org.junit.Test;
 import net.xp_framework.easc.unittest.Person;
+import net.xp_framework.easc.protocol.standard.Invokeable;
 import java.util.HashMap;
 import java.util.Date;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 import static net.xp_framework.easc.protocol.standard.Serializer.representationOf;
+import static net.xp_framework.easc.protocol.standard.Serializer.registerMapping;
 
 public class SerializerTest {
 
@@ -153,5 +156,18 @@ public class SerializerTest {
             "D:1122369782;",
             representationOf(new Date(1122369782000L))
         );
+    }
+    
+    @Test public void representationOfUserType() throws Exception {
+        registerMapping(UUID.class, new Invokeable<String, UUID>() {
+            public String invoke(UUID u) throws Exception {
+                return "U:" + u + ";";
+            }
+        });
+        
+        assertEquals(
+            "U:f0563880-3880-1056-9c5b-98814601ad8f;", 
+            representationOf(UUID.fromString("f0563880-3880-1056-9c5b-98814601ad8f")
+        ));
     }
 }
