@@ -71,7 +71,7 @@ public class Serializer {
         typeMap.put(c, i);
     }
 
-    protected static String representationOf(Object o, Invokeable<Object> i) throws Exception {
+    private static String representationOf(Object o, Invokeable<Object> i) throws Exception {
         if (i != null) return i.invoke(o);
 
         // Default object serialization
