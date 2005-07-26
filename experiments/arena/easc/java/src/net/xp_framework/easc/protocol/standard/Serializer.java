@@ -391,6 +391,14 @@ public class Serializer {
 
                 return instance;
             }
+        },
+        T_DATE {
+            public Object handle(String serialized, Length length) throws Exception { 
+               String value= serialized.substring(2, serialized.indexOf(';', 2));
+
+               length.value= value.length() + 3;
+               return new Date(Long.parseLong(value) * 1000);
+            }
         };
       
         private static HashMap<Character, Token> map= new HashMap<Character, Token>();
@@ -403,6 +411,7 @@ public class Serializer {
             map.put('s', T_STRING);
             map.put('a', T_ARRAY);
             map.put('O', T_OBJECT);
+            map.put('D', T_DATE);
         }
       
         public static Token valueOf(char c) throws Exception {
