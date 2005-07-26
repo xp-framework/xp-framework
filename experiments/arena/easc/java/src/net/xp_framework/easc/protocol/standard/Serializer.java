@@ -96,18 +96,15 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler
-    public static String representationOf(String s) {
+    @Handler public static String representationOf(String s) {
         return "s:" + s.length() + ":\"" + s + "\";";
     } 
 
-    @Handler
-    public static String representationOf(char c) {
+    @Handler public static String representationOf(char c) {
         return "s:1:\"" + c + "\";";
     }
     
-    @Handler
-    public static String representationOf(final char[] array) throws Exception {
+    @Handler public static String representationOf(final char[] array) throws Exception {
         return new ArraySerializer() {
             public void yield(int i) {
                 this.buffer.append(representationOf(array[i]));
@@ -115,18 +112,15 @@ public class Serializer {
         }.run(array.length);
     }
 
-    @Handler
-    public static String representationOf(Character c) {
+    @Handler public static String representationOf(Character c) {
         return "s:1:\"" + c + "\";";
     }
 
-    @Handler
-    public static String representationOf(byte b) {
+    @Handler public static String representationOf(byte b) {
         return "i:" + b + ";";
     }
     
-    @Handler
-    public static String representationOf(final byte[] array) throws Exception {
+    @Handler public static String representationOf(final byte[] array) throws Exception {
         return new ArraySerializer() {
             public void yield(int i) {
                 this.buffer.append(representationOf(array[i]));
@@ -134,18 +128,15 @@ public class Serializer {
         }.run(array.length);
     }
 
-    @Handler
-    public static String representationOf(Byte b) {
+    @Handler public static String representationOf(Byte b) {
         return "i:" + b + ";";
     }
 
-    @Handler
-    public static String representationOf(short s) {
+    @Handler public static String representationOf(short s) {
         return "i:" + s + ";";
     }
     
-    @Handler
-    public static String representationOf(final short[] array) throws Exception {
+    @Handler public static String representationOf(final short[] array) throws Exception {
         return new ArraySerializer() {
             public void yield(int i) {
                 this.buffer.append(representationOf(array[i]));
@@ -153,18 +144,15 @@ public class Serializer {
         }.run(array.length);
     }
 
-    @Handler
-    public static String representationOf(Short s) {
+    @Handler public static String representationOf(Short s) {
         return "i:" + s + ";";
     }
 
-    @Handler
-    public static String representationOf(int i) {
+    @Handler public static String representationOf(int i) {
         return "i:" + i + ";";
     }
 
-    @Handler
-    public static String representationOf(final int[] array) throws Exception {
+    @Handler public static String representationOf(final int[] array) throws Exception {
         return new ArraySerializer() {
             public void yield(int i) {
                 this.buffer.append(representationOf(array[i]));
@@ -172,18 +160,15 @@ public class Serializer {
         }.run(array.length);
     }
 
-    @Handler
-    public static String representationOf(Integer i) {
+    @Handler public static String representationOf(Integer i) {
         return "i:" + i + ";";
     }
 
-    @Handler
-    public static String representationOf(long l) {
+    @Handler public static String representationOf(long l) {
         return "i:" + l + ";";
     }
 
-    @Handler
-    public static String representationOf(final long[] array) throws Exception {
+    @Handler public static String representationOf(final long[] array) throws Exception {
         return new ArraySerializer() {
             public void yield(int i) {
                 this.buffer.append(representationOf(array[i]));
@@ -191,18 +176,15 @@ public class Serializer {
         }.run(array.length);
     }
 
-    @Handler
-    public static String representationOf(Long l) {
+    @Handler public static String representationOf(Long l) {
         return "i:" + l + ";";
     }
 
-    @Handler
-    public static String representationOf(double d) {
+    @Handler public static String representationOf(double d) {
         return "d:" + d + ";";
     }
     
-    @Handler
-    public static String representationOf(final double[] array) throws Exception {
+    @Handler public static String representationOf(final double[] array) throws Exception {
         return new ArraySerializer() {
             public void yield(int i) {
                 this.buffer.append(representationOf(array[i]));
@@ -210,18 +192,15 @@ public class Serializer {
         }.run(array.length);
     }
 
-    @Handler
-    public static String representationOf(Double d) {
+    @Handler public static String representationOf(Double d) {
         return "d:" + d + ";";
     }
 
-    @Handler
-    public static String representationOf(float f) {
+    @Handler public static String representationOf(float f) {
         return "d:" + f + ";";
     }
     
-    @Handler
-    public static String representationOf(final float[] array) throws Exception {
+    @Handler public static String representationOf(final float[] array) throws Exception {
         return new ArraySerializer() {
             public void yield(int i) {
                 this.buffer.append(representationOf(array[i]));
@@ -229,18 +208,15 @@ public class Serializer {
         }.run(array.length);
     }
 
-    @Handler
-    public static String representationOf(Float f) {
+    @Handler public static String representationOf(Float f) {
         return "d:" + f + ";";
     }
 
-    @Handler
-    public static String representationOf(boolean b) {
+    @Handler public static String representationOf(boolean b) {
         return "b:" + (b ? 1 : 0) + ";";
     }
 
-    @Handler
-    public static String representationOf(final boolean[] array) throws Exception {
+    @Handler public static String representationOf(final boolean[] array) throws Exception {
         return new ArraySerializer() {
             public void yield(int i) {
                 this.buffer.append(representationOf(array[i]));
@@ -248,13 +224,11 @@ public class Serializer {
         }.run(array.length);
     }
 
-    @Handler
-    public static String representationOf(Boolean b) {
+    @Handler public static String representationOf(Boolean b) {
         return "b:" + (b ? 1 : 0) + ";";
     }
 
-    @Handler
-    public static String representationOf(HashMap h) throws Exception {
+    @Handler public static String representationOf(HashMap h) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + h.size() + ":{");
         
         for (Iterator it= h.keySet().iterator(); it.hasNext(); ) {
@@ -269,8 +243,7 @@ public class Serializer {
         return buffer.toString();
     }
     
-    @Handler
-    public static String representationOf(Object[] a) throws Exception {
+    @Handler public static String representationOf(Object[] a) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + a.length + ":{");
 
         for (int i= 0; i < a.length; i++) {
@@ -293,13 +266,11 @@ public class Serializer {
         return list;
     }
     
-    @Handler
-    public static String representationOf(Object o) throws Exception {
+    @Handler public static String representationOf(Object o) throws Exception {
         return representationOf(o, typeMap.get(o.getClass()));
     }
    
-    @Handler
-    public static String representationOf(Date d) throws Exception {
+    @Handler public static String representationOf(Date d) throws Exception {
         return "D:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
     }
 }
