@@ -113,7 +113,7 @@ public class SerializerTest {
     }
 
     @Test public void representationOfStringHashMap() throws Exception {
-        HashMap h= new HashMap();
+        HashMap<String, String> h= new HashMap<String, String>();
         h.put("key", "value");
         h.put("number", "6100");
         
@@ -124,7 +124,7 @@ public class SerializerTest {
     }
 
     @Test public void representationOfMixedHashMap() throws Exception {
-        HashMap h= new HashMap();
+        HashMap<String, Object> h= new HashMap<String, Object>();
         h.put("key", "value");
         h.put("number", 6100);
         
