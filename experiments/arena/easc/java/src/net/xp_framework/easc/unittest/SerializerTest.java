@@ -15,143 +15,143 @@ import static net.xp_framework.easc.protocol.standard.Serializer.*;
 
 public class SerializerTest {
 
-    @Test public void serializeString() throws Exception {
-        assertEquals("s:11:\"Hello World\";", serialize("Hello World"));
+    @Test public void representationOfString() throws Exception {
+        assertEquals("s:11:\"Hello World\";", representationOf("Hello World"));
     }
 
-    @Test public void serializeCharPrimitive() throws Exception {
-        assertEquals("s:1:\"X\";", serialize('X'));
+    @Test public void representationOfCharPrimitive() throws Exception {
+        assertEquals("s:1:\"X\";", representationOf('X'));
     }
 
-    @Test public void serializeCharacter() throws Exception {
-        assertEquals("s:1:\"X\";", serialize(new Character('X')));
+    @Test public void representationOfCharacter() throws Exception {
+        assertEquals("s:1:\"X\";", representationOf(new Character('X')));
     }
 
-    @Test public void serializeUmlautCharPrimitive() throws Exception {
-        assertEquals("s:1:\"Ü\";", serialize('Ü'));
+    @Test public void representationOfUmlautCharPrimitive() throws Exception {
+        assertEquals("s:1:\"Ü\";", representationOf('Ü'));
     }
 
-    @Test public void serializeUmlautCharacter() throws Exception {
-        assertEquals("s:1:\"Ü\";", serialize(new Character('Ü')));
+    @Test public void representationOfUmlautCharacter() throws Exception {
+        assertEquals("s:1:\"Ü\";", representationOf(new Character('Ü')));
     }
 
-    @Test public void serializeBytePrimitive() throws Exception {
-        assertEquals("i:16;", serialize((byte)16));
-        assertEquals("i:-16;", serialize((byte)-16));
+    @Test public void representationOfBytePrimitive() throws Exception {
+        assertEquals("i:16;", representationOf((byte)16));
+        assertEquals("i:-16;", representationOf((byte)-16));
     }
 
-    @Test public void serializeBytes() throws Exception {
-        assertEquals("i:16;", serialize(new Byte((byte)16)));
-        assertEquals("i:-16;", serialize(new Byte((byte)-16)));
+    @Test public void representationOfBytes() throws Exception {
+        assertEquals("i:16;", representationOf(new Byte((byte)16)));
+        assertEquals("i:-16;", representationOf(new Byte((byte)-16)));
     }
 
-    @Test public void serializeShortPrimitive() throws Exception {
-        assertEquals("i:1214;", serialize((short)1214));
-        assertEquals("i:-1214;", serialize((short)-1214));
+    @Test public void representationOfShortPrimitive() throws Exception {
+        assertEquals("i:1214;", representationOf((short)1214));
+        assertEquals("i:-1214;", representationOf((short)-1214));
     }
 
-    @Test public void serializeShorts() throws Exception {
-        assertEquals("i:1214;", serialize(new Short((short)1214)));
-        assertEquals("i:-1214;", serialize(new Short((short)-1214)));
+    @Test public void representationOfShorts() throws Exception {
+        assertEquals("i:1214;", representationOf(new Short((short)1214)));
+        assertEquals("i:-1214;", representationOf(new Short((short)-1214)));
     }
 
-    @Test public void serializeIntPrimitive() throws Exception {
-        assertEquals("i:6100;", serialize(6100));
-        assertEquals("i:-6100;", serialize(-6100));
+    @Test public void representationOfIntPrimitive() throws Exception {
+        assertEquals("i:6100;", representationOf(6100));
+        assertEquals("i:-6100;", representationOf(-6100));
     }
 
-    @Test public void serializeIntegers() throws Exception {
-        assertEquals("i:6100;", serialize(new Integer(6100)));
-        assertEquals("i:-6100;", serialize(new Integer(-6100)));
+    @Test public void representationOfIntegers() throws Exception {
+        assertEquals("i:6100;", representationOf(new Integer(6100)));
+        assertEquals("i:-6100;", representationOf(new Integer(-6100)));
     }
 
-    @Test public void serializeLongPrimitive() throws Exception {
-        assertEquals("i:6100;", serialize(6100L));
-        assertEquals("i:-6100;", serialize(-6100L));
+    @Test public void representationOfLongPrimitive() throws Exception {
+        assertEquals("i:6100;", representationOf(6100L));
+        assertEquals("i:-6100;", representationOf(-6100L));
     }
 
-    @Test public void serializeLongs() throws Exception {
-        assertEquals("i:6100;", serialize(new Long(6100L)));
-        assertEquals("i:-6100;", serialize(new Long(-6100L)));
+    @Test public void representationOfLongs() throws Exception {
+        assertEquals("i:6100;", representationOf(new Long(6100L)));
+        assertEquals("i:-6100;", representationOf(new Long(-6100L)));
     }
 
-    @Test public void serializeDoublePrimitive() throws Exception {
-        assertEquals("d:0.1;", serialize(0.1));
-        assertEquals("d:-0.1;", serialize(-0.1));
+    @Test public void representationOfDoublePrimitive() throws Exception {
+        assertEquals("d:0.1;", representationOf(0.1));
+        assertEquals("d:-0.1;", representationOf(-0.1));
     }
 
-    @Test public void serializeDoubles() throws Exception {
-        assertEquals("d:0.1;", serialize(new Double(0.1)));
-        assertEquals("d:-0.1;", serialize(new Double(-0.1)));
+    @Test public void representationOfDoubles() throws Exception {
+        assertEquals("d:0.1;", representationOf(new Double(0.1)));
+        assertEquals("d:-0.1;", representationOf(new Double(-0.1)));
     }
 
-    @Test public void serializeFloatPrimitive() throws Exception {
-        assertEquals("d:0.1;", serialize(0.1f));
-        assertEquals("d:-0.1;", serialize(-0.1f));
+    @Test public void representationOfFloatPrimitive() throws Exception {
+        assertEquals("d:0.1;", representationOf(0.1f));
+        assertEquals("d:-0.1;", representationOf(-0.1f));
     }
 
-    @Test public void serializeFloats() throws Exception {
-        assertEquals("d:0.1;", serialize(new Float(0.1f)));
-        assertEquals("d:-0.1;", serialize(new Float(-0.1f)));
+    @Test public void representationOfFloats() throws Exception {
+        assertEquals("d:0.1;", representationOf(new Float(0.1f)));
+        assertEquals("d:-0.1;", representationOf(new Float(-0.1f)));
     }
     
-    @Test public void serializeBooleanPrimitive() throws Exception {
-        assertEquals("b:1;", serialize(true));
-        assertEquals("b:0;", serialize(false));
+    @Test public void representationOfBooleanPrimitive() throws Exception {
+        assertEquals("b:1;", representationOf(true));
+        assertEquals("b:0;", representationOf(false));
     }
 
-    @Test public void serializeBooleans() throws Exception {
-        assertEquals("b:1;", serialize(new Boolean(true)));
-        assertEquals("b:0;", serialize(new Boolean(false)));
+    @Test public void representationOfBooleans() throws Exception {
+        assertEquals("b:1;", representationOf(new Boolean(true)));
+        assertEquals("b:0;", representationOf(new Boolean(false)));
     }
 
-    @Test public void serializeValueObject() throws Exception {
+    @Test public void representationOfValueObject() throws Exception {
         assertEquals(
             "O:37:\"net.xp_framework.easc.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}", 
-            serialize(new Person())
+            representationOf(new Person())
         );
     }
 
-    @Test public void serializeStringHashMap() throws Exception {
+    @Test public void representationOfStringHashMap() throws Exception {
         HashMap h= new HashMap();
         h.put("key", "value");
         h.put("number", "6100");
         
         assertEquals(
             "a:2:{s:3:\"key\";s:5:\"value\";s:6:\"number\";s:4:\"6100\";}", 
-            serialize(h)
+            representationOf(h)
         );
     }
 
-    @Test public void serializeMixedHashMap() throws Exception {
+    @Test public void representationOfMixedHashMap() throws Exception {
         HashMap h= new HashMap();
         h.put("key", "value");
         h.put("number", 6100);
         
         assertEquals(
             "a:2:{s:3:\"key\";s:5:\"value\";s:6:\"number\";i:6100;}", 
-            serialize(h)
+            representationOf(h)
         );
     }
     
-    @Test public void serializeStringArray() throws Exception {
+    @Test public void representationOfStringArray() throws Exception {
         assertEquals(
             "a:2:{i:0;s:5:\"First\";i:1;s:6:\"Second\";}", 
-            serialize(new String[] { "First", "Second" })
+            representationOf(new String[] { "First", "Second" })
         );
     }
 
-    @Test public void serializeIntegerPrimitiveArray() throws Exception {
+    @Test public void representationOfIntegerPrimitiveArray() throws Exception {
         assertEquals(
             "a:2:{i:0;i:3;i:1;i:4;}", 
-            serialize(new int[] {3, 4})
+            representationOf(new int[] {3, 4})
         );
     }
     
-    @Test public void serializeDate() throws Exception {
+    @Test public void representationOfDate() throws Exception {
         assertEquals(
             "D:1122369782;",
-            serialize(new Date(1122369782000L))
+            representationOf(new Date(1122369782000L))
         );
     }
 }
