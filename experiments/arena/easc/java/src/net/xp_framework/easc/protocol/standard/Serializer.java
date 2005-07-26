@@ -18,7 +18,7 @@ import net.xp_framework.easc.protocol.standard.Invokeable;
 import net.xp_framework.easc.protocol.standard.SerializationException;
 
 /**
- * Serializer / unserializer for PHP representationOfd data
+ * Serializer / unserializer for PHP serialized data
  *
  * Usage example:
  * <code>
