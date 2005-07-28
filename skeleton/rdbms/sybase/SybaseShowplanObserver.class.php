@@ -14,7 +14,7 @@
   class SybaseShowplanObserver extends Object {
 
     /**
-     * Constrcutor.
+     * Constructor.
      *
      * @access  protected
      * @param   string argument
@@ -132,8 +132,7 @@
 
       $showplan= '';
       foreach (array_keys($this->messages) as $idx) {
-        $msg= &$this->messages[$idx];
-        $showplan.= $msg['text']."\n";
+        $showplan.= $this->messages[$idx]['text']."\n";
       }
       
       $this->cat->infof("Showplan output is:\n%s", $showplan);
