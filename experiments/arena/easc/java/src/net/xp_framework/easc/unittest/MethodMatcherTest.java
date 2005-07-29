@@ -55,7 +55,7 @@ public class MethodMatcherTest {
             buf.append(c.getName()).append(", ");
         }
         if (parameters.length > 0) {  
-            buf.delete(buf.length() - 2, 2);
+            buf.delete(buf.length() - 2, buf.length());
         }
         
         return buf.append(')').toString();
@@ -65,6 +65,13 @@ public class MethodMatcherTest {
         assertEquals(
             "int getId:0()", 
             methodString(methodFor(Person.class, "getId", new Object[] { }))
+        );
+    }
+
+    @Test public void oneArgMethod() throws Exception {
+        assertEquals(
+            "void setName:1(java.lang.String)", 
+            methodString(methodFor(Person.class, "setName", new Object[] { "New name" }))
         );
     }
 }
