@@ -152,8 +152,8 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void representationOfLongPrimitive() throws Exception {
-        assertEquals("i:6100;", representationOf(6100L));
-        assertEquals("i:-6100;", representationOf(-6100L));
+        assertEquals("l:6100;", representationOf(6100L));
+        assertEquals("l:-6100;", representationOf(-6100L));
     }
 
     /**
@@ -163,8 +163,8 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void representationOfLongs() throws Exception {
-        assertEquals("i:6100;", representationOf(new Long(6100L)));
-        assertEquals("i:-6100;", representationOf(new Long(-6100L)));
+        assertEquals("l:6100;", representationOf(new Long(6100L)));
+        assertEquals("l:-6100;", representationOf(new Long(-6100L)));
     }
 
     /**
@@ -196,8 +196,8 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void representationOfFloatPrimitive() throws Exception {
-        assertEquals("d:0.1;", representationOf(0.1f));
-        assertEquals("d:-0.1;", representationOf(-0.1f));
+        assertEquals("f:0.1;", representationOf(0.1f));
+        assertEquals("f:-0.1;", representationOf(-0.1f));
     }
 
     /**
@@ -207,8 +207,8 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void representationOfFloats() throws Exception {
-        assertEquals("d:0.1;", representationOf(new Float(0.1f)));
-        assertEquals("d:-0.1;", representationOf(new Float(-0.1f)));
+        assertEquals("f:0.1;", representationOf(new Float(0.1f)));
+        assertEquals("f:-0.1;", representationOf(new Float(-0.1f)));
     }
     
     /**

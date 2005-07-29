@@ -374,7 +374,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(long l) {
-        return "i:" + l + ";";
+        return "l:" + l + ";";
     }
 
     @Handler public static String representationOf(final long[] array) throws Exception {
@@ -386,7 +386,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Long l) {
-        return "i:" + l + ";";
+        return "l:" + l + ";";
     }
 
     @Handler public static String representationOf(double d) {
@@ -406,7 +406,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(float f) {
-        return "d:" + f + ";";
+        return "f:" + f + ";";
     }
     
     @Handler public static String representationOf(final float[] array) throws Exception {
@@ -418,7 +418,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Float f) {
-        return "d:" + f + ";";
+        return "f:" + f + ";";
     }
 
     @Handler public static String representationOf(boolean b) {
