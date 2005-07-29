@@ -1,0 +1,20 @@
+EASC (Enterprise Application Server Connectivity): PHP part
+========================================================================
+$Id$
+
+Getting started
+---------------
+Type "make":)
+
+Requirements
+------------
+- PHP4 + XP
+- Make
+
+Modules
+-------
+* Serializer
+  Implementation: Serializer
+  Unit tests:     SerializerTest
+
+<EOF>
