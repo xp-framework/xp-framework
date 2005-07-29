@@ -25,7 +25,7 @@
         case 'NULL':    return 'N;';
         case 'boolean': return 'b:'.($var ? 1 : 0).';';
         case 'integer': return 'i:'.$var.';';
-        case 'double':   return 'f:'.$var.';';
+        case 'double':  return 'f:'.$var.';';
         case 'string':  return 's:'.strlen($var).':"'.$var.'";';
         case 'array':
           $s= 'a:'.sizeof($var).':{';
