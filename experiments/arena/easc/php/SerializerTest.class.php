@@ -12,7 +12,8 @@
     'wrapper.Long',
     'wrapper.Double',
     'wrapper.Short',
-    'wrapper.Byte'
+    'wrapper.Byte',
+    'Person'
   );
 
   /**
@@ -188,6 +189,20 @@
       $this->assertEquals(
         'a:2:{s:3:"key";s:5:"value";s:6:"number";i:6100;}', 
         Serializer::representationOf($h)
+      );
+    }
+    
+    /**
+     * Test serialization of a generic value object
+     *
+     * @access  public
+     * @see     xp://Person
+     */
+    #[@test]
+    function representationOfValueObject() {
+      $this->assertEquals(
+        'O:6:"Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}',
+        Serializer::representationOf(new Person())
       );
     }
   }
