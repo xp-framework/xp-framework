@@ -39,4 +39,23 @@ public class Person {
         return this.id == cmp.id && this.name.equals(cmp.name);
     }
     
+    /**
+     * Retrieve name
+     *
+     * @access  public
+     * @return  java.lang.String
+     */
+    public String getName() {
+        return this.name;
+    }
+    
+    /**
+     * Retrieve id
+     *
+     * @access  public
+     * @return  int
+     */
+    public int getId() {
+        return this.id;
+    }
 }
