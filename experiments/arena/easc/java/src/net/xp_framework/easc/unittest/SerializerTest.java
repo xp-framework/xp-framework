@@ -85,8 +85,8 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void representationOfBytePrimitive() throws Exception {
-        assertEquals("i:16;", representationOf((byte)16));
-        assertEquals("i:-16;", representationOf((byte)-16));
+        assertEquals("B:16;", representationOf((byte)16));
+        assertEquals("B:-16;", representationOf((byte)-16));
     }
 
 
@@ -97,8 +97,8 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void representationOfBytes() throws Exception {
-        assertEquals("i:16;", representationOf(new Byte((byte)16)));
-        assertEquals("i:-16;", representationOf(new Byte((byte)-16)));
+        assertEquals("B:16;", representationOf(new Byte((byte)16)));
+        assertEquals("B:-16;", representationOf(new Byte((byte)-16)));
     }
 
     /**
@@ -108,8 +108,8 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void representationOfShortPrimitive() throws Exception {
-        assertEquals("i:1214;", representationOf((short)1214));
-        assertEquals("i:-1214;", representationOf((short)-1214));
+        assertEquals("S:1214;", representationOf((short)1214));
+        assertEquals("S:-1214;", representationOf((short)-1214));
     }
 
     /**
@@ -119,8 +119,8 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void representationOfShorts() throws Exception {
-        assertEquals("i:1214;", representationOf(new Short((short)1214)));
-        assertEquals("i:-1214;", representationOf(new Short((short)-1214)));
+        assertEquals("S:1214;", representationOf(new Short((short)1214)));
+        assertEquals("S:-1214;", representationOf(new Short((short)-1214)));
     }
 
     /**

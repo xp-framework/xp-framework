@@ -326,7 +326,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(byte b) {
-        return "i:" + b + ";";
+        return "B:" + b + ";";
     }
     
     @Handler public static String representationOf(final byte[] array) throws Exception {
@@ -338,11 +338,11 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Byte b) {
-        return "i:" + b + ";";
+        return "B:" + b + ";";
     }
 
     @Handler public static String representationOf(short s) {
-        return "i:" + s + ";";
+        return "S:" + s + ";";
     }
     
     @Handler public static String representationOf(final short[] array) throws Exception {
@@ -354,7 +354,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Short s) {
-        return "i:" + s + ";";
+        return "S:" + s + ";";
     }
 
     @Handler public static String representationOf(int i) {
