@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('wrapper.Number');
+
   /**
    * The Long class wraps a value of the type long 
    * 
@@ -11,9 +13,7 @@
    *
    * @purpose  Wrapper
    */
-  class Long extends Object {
-    var
-      $value  = '';
+  class Long extends Number {
     
     /**
      * Constructor

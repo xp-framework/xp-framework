@@ -4,14 +4,14 @@
  * $Id$ 
  */
 
+  uses('wrapper.Number');
+
   /**
    * The Double class wraps a value of the type double
    *
    * @purpose  Wrapper
    */
-  class Double extends Object {
-    var
-      $value  = '';
+  class Double extends Number {
     
     /**
      * Constructor

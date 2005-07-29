@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('wrapper.Number');
+
   /**
    * The Short class wraps a value of the type short 
    * 
@@ -11,9 +13,7 @@
    *
    * @purpose  Wrapper
    */
-  class Short extends Object {
-    var
-      $value  = '';
+  class Short extends Number {
     
     /**
      * Constructor

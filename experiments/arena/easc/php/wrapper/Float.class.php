@@ -4,14 +4,14 @@
  * $Id$
  */
 
+  uses('wrapper.Number');
+
   /**
    * The Float class wraps a value of the type float
    *
    * @purpose  Wrapper
    */
-  class Float extends Object {
-    var
-      $value  = '';
+  class Float extends Number {
     
     /**
      * Constructor

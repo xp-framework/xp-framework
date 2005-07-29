@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('wrapper.Number');
+
   /**
    * The Byte class wraps a value of the type byte 
    * 
@@ -11,9 +13,7 @@
    *
    * @purpose  Wrapper
    */
-  class Byte extends Object {
-    var
-      $value  = '';
+  class Byte extends Number {
     
     /**
      * Constructor

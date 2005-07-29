@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('wrapper.Number');
+
   /**
    * The Integer class wraps a value of the type int 
    * 
@@ -11,9 +13,7 @@
    *
    * @purpose  Wrapper
    */
-  class Integer extends Object {
-    var
-      $value  = '';
+  class Integer extends Number {
     
     /**
      * Constructor
