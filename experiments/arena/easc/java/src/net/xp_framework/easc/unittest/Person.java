@@ -50,6 +50,16 @@ public class Person {
     }
     
     /**
+     * Set name
+     *
+     * @access  public
+     * @param   java.lang.String name
+     */
+    public void setName(String name) {
+        this.name= name;
+    }
+    
+    /**
      * Retrieve id
      *
      * @access  public
