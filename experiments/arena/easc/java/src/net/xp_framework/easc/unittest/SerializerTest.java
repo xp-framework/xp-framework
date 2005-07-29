@@ -396,6 +396,17 @@ public class SerializerTest {
     }
 
     /**
+     * Tests deserialization of doubles (identified by "d" token)
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void valueOfDouble() throws Exception {
+        assertEquals(0.1d, (Double)valueOf("d:0.1;"), 0.0001);
+        assertEquals(-0.1d, (Double)valueOf("d:-0.1;"), 0.0001);
+    }
+
+    /**
      * Tests deserialization of strings (identified by "s" token)
      *
      * @access  public
