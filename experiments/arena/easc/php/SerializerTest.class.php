@@ -8,7 +8,9 @@
     'util.profiling.unittest.TestCase', 
     'util.Date',
     'util.Hashmap',
-    'Serializer'
+    'Serializer',
+    'wrapper.Long',
+    'wrapper.Double'
   );
 
   /**
@@ -51,6 +53,17 @@
     }
 
     /**
+     * Test serialization of longs
+     *
+     * @access  public
+     */
+    #[@test]
+    function representationOfLongs() {
+      $this->assertEquals('l:6100;', Serializer::representationOf(new Long(6100)));
+      $this->assertEquals('l:-6100;', Serializer::representationOf(new Long(-6100)));
+    }
+
+    /**
      * Test serialization of floats
      *
      * @access  public
@@ -59,6 +72,17 @@
     function representationOfFloats() {
       $this->assertEquals('f:0.1;', Serializer::representationOf($var= 0.1));
       $this->assertEquals('f:-0.1;', Serializer::representationOf($var= -0.1));
+    }
+
+    /**
+     * Test serialization of doubles
+     *
+     * @access  public
+     */
+    #[@test]
+    function representationOfDoubles() {
+      $this->assertEquals('d:0.1;', Serializer::representationOf(new Double(0.1)));
+      $this->assertEquals('d:-0.1;', Serializer::representationOf(new Double(-0.1)));
     }
 
     /**

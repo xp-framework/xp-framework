@@ -41,6 +41,12 @@
             case is_a($var, 'HashMap'): {
               return Serializer::representationOf($var->_hash);
             }
+            case is_a($var, 'Long'): {
+              return 'l:'.$var->value.';';
+            }
+            case is_a($var, 'Double'): {
+              return 'd:'.$var->value.';';
+            }
             default: {
               $name= xp::typeOf($var);
               $props= get_object_vars($var);
