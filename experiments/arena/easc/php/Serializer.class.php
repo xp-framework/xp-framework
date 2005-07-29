@@ -47,6 +47,12 @@
             case is_a($var, 'Double'): {
               return 'd:'.$var->value.';';
             }
+            case is_a($var, 'Byte'): {
+              return 'B:'.$var->value.';';
+            }
+            case is_a($var, 'Short'): {
+              return 'S:'.$var->value.';';
+            }
             default: {
               $name= xp::typeOf($var);
               $props= get_object_vars($var);

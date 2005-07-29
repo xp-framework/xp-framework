@@ -10,7 +10,9 @@
     'util.Hashmap',
     'Serializer',
     'wrapper.Long',
-    'wrapper.Double'
+    'wrapper.Double',
+    'wrapper.Short',
+    'wrapper.Byte'
   );
 
   /**
@@ -28,6 +30,28 @@
     #[@test]
     function representationOfNull() {
       $this->assertEquals('N;', Serializer::representationOf($var= NULL));
+    }
+
+    /**
+     * Test serialization of Shorts
+     *
+     * @access  public
+     */
+    #[@test]
+    function representationOfShorts() {
+      $this->assertEquals('S:300;', Serializer::representationOf(new Short(300)));
+      $this->assertEquals('S:-300;', Serializer::representationOf(new Short(-300)));
+    }
+
+    /**
+     * Test serialization of longs
+     *
+     * @access  public
+     */
+    #[@test]
+    function representationOfBytes() {
+      $this->assertEquals('B:127;', Serializer::representationOf(new Byte(127)));
+      $this->assertEquals('B:-128;', Serializer::representationOf(new Byte(-128)));
     }
 
     /**
