@@ -53,6 +53,12 @@
             case is_a($var, 'Short'): {
               return 'S:'.$var->value.';';
             }
+            case is_a($var, 'Integer'): {
+              return 'i:'.$var->value.';';
+            }
+            case is_a($var, 'Float'): {
+              return 'f:'.$var->value.';';
+            }
             default: {
               $name= xp::typeOf($var);
               $props= get_object_vars($var);
