@@ -200,7 +200,7 @@ public class Serializer {
             map.put('s', T_STRING);
             map.put('a', T_ARRAY);
             map.put('O', T_OBJECT);
-            map.put('D', T_DATE);
+            map.put('T', T_DATE);
         }
       
         public static Token valueOf(char c) throws Exception {
@@ -413,7 +413,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Date d) throws Exception {
-        return "D:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
+        return "T:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
     }
     
     @Handler public static String representationOf(Object o) throws Exception {

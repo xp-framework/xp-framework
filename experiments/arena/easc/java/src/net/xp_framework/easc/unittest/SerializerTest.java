@@ -316,7 +316,7 @@ public class SerializerTest {
      */
     @Test public void representationOfDate() throws Exception {
         assertEquals(
-            "D:1122369782;",
+            "T:1122369782;",
             representationOf(new Date(1122369782000L))
         );
     }
@@ -451,7 +451,7 @@ public class SerializerTest {
     @Test public void valueOfDate() throws Exception {
         assertEquals(
             new Date(1122369782000L), 
-            valueOf("D:1122369782;")
+            valueOf("T:1122369782;")
         );
     }
 }
