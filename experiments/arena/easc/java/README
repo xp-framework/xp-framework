@@ -1,0 +1,29 @@
+EASC (Enterprise Application Server Connectivity): Java part
+========================================================================
+$Id$
+
+Getting started
+---------------
+Type "ant":)
+
+Requirements
+------------
+- JDK 1.5
+- Apache Ant
+
+Modules
+-------
+* Serializer
+  Implementation: net.xp_framework.easc.protocol.standard.Serializer
+  Unit tests:     net.xp_framework.easc.unittest.SerializerTest
+
+* Methodmatcher
+  TBI
+
+* MBean
+  TBI
+
+* Multithreaded TCP/IP Server
+  TBI
+
+<EOF>
