@@ -74,7 +74,14 @@ public class MethodMatcherTest {
             methodString(methodFor(Person.class, "setName", new Object[] { "New name" }))
         );
     }
-    
+
+    @Test public void onePrimitiveArgMethod() throws Exception {
+        assertEquals(
+            "void setId:1(int)", 
+            methodString(methodFor(Person.class, "setId", new Object[] { new Integer(1) }))
+        );
+    }
+
     @Test public void methodNotFound() throws Exception {
         assertEquals(
             "(null)", 
@@ -88,4 +95,12 @@ public class MethodMatcherTest {
             methodString(methodFor(Person.class, "setName", new Object[] { new Integer(1) }))
         );
     }
+
+    @Test public void primitiveArgumentsMismatch() throws Exception {
+        assertEquals(
+            "(null)", 
+            methodString(methodFor(Person.class, "setId", new Object[] { new Long(1) }))
+        );
+    }
+    
 }
