@@ -22,6 +22,7 @@ import static net.xp_framework.easc.protocol.standard.Serializer.registerMapping
 /**
  * Test the serialization / deserialization functionality
  *
+ * Note: This is a JUnit 4 testcase!
  *
  * @see   net.xp_framework.easc.protocol.standard.Serializer
  */
