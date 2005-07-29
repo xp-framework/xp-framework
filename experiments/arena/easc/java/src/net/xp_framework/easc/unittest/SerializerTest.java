@@ -374,6 +374,17 @@ public class SerializerTest {
     }
 
     /**
+     * Tests deserialization of longs (identified by "d" token)
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void valueOfLong() throws Exception {
+        assertEquals(6100L, (Long)valueOf("l:6100;"));
+        assertEquals(-6100L, (Long)valueOf("l:-6100;"));
+    }
+
+    /**
      * Tests deserialization of floats (identified by "f" token)
      *
      * @access  public
