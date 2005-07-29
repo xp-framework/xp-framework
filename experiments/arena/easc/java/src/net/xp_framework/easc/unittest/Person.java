@@ -68,4 +68,14 @@ public class Person {
     public int getId() {
         return this.id;
     }
+
+    /**
+     * Set id
+     *
+     * @access  public
+     * @param   int id
+     */
+    public void setId(int i) {
+        this.id = id;
+    }
 }
