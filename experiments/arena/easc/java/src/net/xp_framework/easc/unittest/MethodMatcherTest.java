@@ -21,6 +21,23 @@ import static org.junit.Assert.*;
  */
 public class MethodMatcherTest {
 
+    /**
+     * Returns a string representation of a method
+     *
+     * Format:
+     *   [returnType] [methodName]:[numArguments]([optArgumentList])
+     *
+     * Notes:
+     * - returnType is the return type's class name
+     * - optArgumentList is a comma-separated list of argument class names
+     *
+     * Returns the string "(null)" if the specified argument is NULL
+     *
+     * @see     java.lang.reflect.Method#toString
+     * @access  protected
+     * @param   java.lang.reflect.Method m
+     * @return  java.lang.String
+     */
     protected String methodString(Method m) {
         if (m == null) return "(null)";   // Catch border-case, prevent NPE
 
