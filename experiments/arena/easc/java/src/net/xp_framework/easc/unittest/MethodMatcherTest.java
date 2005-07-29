@@ -81,4 +81,11 @@ public class MethodMatcherTest {
             methodString(methodFor(Person.class, "nonExistantName", new Object[] { }))
         );
     }
+
+    @Test public void argumentsMismatch() throws Exception {
+        assertEquals(
+            "(null)", 
+            methodString(methodFor(Person.class, "setName", new Object[] { new Integer(1) }))
+        );
+    }
 }
