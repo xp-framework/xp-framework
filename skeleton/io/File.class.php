@@ -133,6 +133,7 @@
      *
      * @access  public
      * @param   string mode one of the FILE_MODE_* constants
+     * @return  bool TRUE if file could be opened
      * @throws  io.FileNotFoundException in case the file is not found
      * @throws  io.IOException in case the file cannot be opened (e.g., lacking permissions)
      */
@@ -187,7 +188,7 @@
      * Truncate the file to the specified length
      *
      * @access  public
-     * @param   int size default 0 New size in bytes
+     * @param   bool TRUE if method succeeded
      * @throws  io.IOException in case of an error
      */
     function truncate($size= 0) {
@@ -328,7 +329,7 @@
      *
      * @access  public
      * @param   string string data to write
-     * @return  bool success
+     * @return  int number of bytes written
      * @throws  io.IOException in case of an error
      */
     function write($string) {
@@ -343,11 +344,11 @@
      *
      * @access  public
      * @param   string string data default '' to write
-     * @return  bool success
+     * @return  int number of bytes written
      * @throws  io.IOException in case of an error
      */
     function writeLine($string= '') {
-      if (FALSE === ($result= fputs($this->_fd, $string."\n"))) {
+      if (FALSE === ($result= fwrite($this->_fd, $string."\n"))) {
         return throw(new IOException('Cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
       }
       return $result;
