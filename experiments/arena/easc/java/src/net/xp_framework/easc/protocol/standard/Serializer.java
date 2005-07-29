@@ -81,11 +81,29 @@ public class Serializer {
                String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                length.value= value.length() + 3;
+               return Integer.parseInt(value);
+            }
+        },
+
+        T_LONG {
+            public Object handle(String serialized, Length length) throws Exception { 
+               String value= serialized.substring(2, serialized.indexOf(';', 2));
+
+               length.value= value.length() + 3;
                return Long.parseLong(value);
             }
         },
 
         T_FLOAT {
+            public Object handle(String serialized, Length length) throws Exception { 
+                String value= serialized.substring(2, serialized.indexOf(';', 2));
+
+                length.value= value.length() + 3;
+                return Float.parseFloat(value);
+            }
+        },
+
+        T_DOUBLE {
             public Object handle(String serialized, Length length) throws Exception { 
                 String value= serialized.substring(2, serialized.indexOf(';', 2));
 
@@ -159,17 +177,17 @@ public class Serializer {
                     if (f.getType() == char.class) {
                         f.setChar(instance, ((String)value).charAt(0));
                     } else if (f.getType() == byte.class) {
-                        f.setByte(instance, ((Long)value).byteValue());
+                        f.setByte(instance, ((Byte)value).byteValue());
                     } else if (f.getType() == short.class) {
-                        f.setShort(instance, ((Long)value).shortValue());
+                        f.setShort(instance, ((Short)value).shortValue());
                     } else if (f.getType() == int.class) {
-                        f.setInt(instance, ((Long)value).intValue());
+                        f.setInt(instance, ((Integer)value).intValue());
                     } else if (f.getType() == long.class) {
                         f.setLong(instance, ((Long)value).longValue());
                     } else if (f.getType() == double.class) {
                         f.setDouble(instance, ((Double)value).doubleValue());
                     } else if (f.getType() == float.class) {
-                        f.setFloat(instance, ((Double)value).floatValue());
+                        f.setFloat(instance, ((Float)value).floatValue());
                     } else if (f.getType() == boolean.class) {
                         f.setBoolean(instance, ((Boolean)value).booleanValue());
                     } else {
@@ -188,6 +206,24 @@ public class Serializer {
                length.value= value.length() + 3;
                return new Date(Long.parseLong(value) * 1000);
             }
+        },
+
+        T_BYTE {
+            public Object handle(String serialized, Length length) throws Exception { 
+                String value= serialized.substring(2, serialized.indexOf(';', 2));
+
+                length.value= value.length() + 3;
+                return Byte.parseByte(value);
+            }
+        },
+
+        T_SHORT {
+            public Object handle(String serialized, Length length) throws Exception { 
+                String value= serialized.substring(2, serialized.indexOf(';', 2));
+
+                length.value= value.length() + 3;
+                return Short.parseShort(value);
+            }
         };
       
         private static HashMap<Character, Token> map= new HashMap<Character, Token>();
@@ -196,11 +232,15 @@ public class Serializer {
             map.put('N', T_NULL);
             map.put('b', T_BOOLEAN);
             map.put('i', T_INTEGER);
+            map.put('l', T_LONG);
             map.put('f', T_FLOAT);
+            map.put('d', T_DOUBLE);
             map.put('s', T_STRING);
             map.put('a', T_ARRAY);
             map.put('O', T_OBJECT);
             map.put('T', T_DATE);
+            map.put('B', T_BYTE);
+            map.put('S', T_SHORT);
         }
       
         public static Token valueOf(char c) throws Exception {

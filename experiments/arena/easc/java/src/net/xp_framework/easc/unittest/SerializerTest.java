@@ -363,25 +363,25 @@ public class SerializerTest {
     }
 
     /**
-     * Tests deserialization of longs (identified by "i" token)
+     * Tests deserialization of integers (identified by "i" token)
      *
      * @access  public
      * @throws  java.lang.Exception
      */
-    @Test public void valueOfLong() throws Exception {
-        assertEquals(6100L, (Long)valueOf("i:6100;"));
-        assertEquals(-6100L, (Long)valueOf("i:-6100;"));
+    @Test public void valueOfInteger() throws Exception {
+        assertEquals(6100, (Integer)valueOf("i:6100;"));
+        assertEquals(-6100, (Integer)valueOf("i:-6100;"));
     }
 
     /**
-     * Tests deserialization of doubles (identified by "f" token)
+     * Tests deserialization of floats (identified by "f" token)
      *
      * @access  public
      * @throws  java.lang.Exception
      */
-    @Test public void valueOfDouble() throws Exception {
-        assertEquals(0.1, (Double)valueOf("f:0.1;"), 0.0001);
-        assertEquals(-0.1, (Double)valueOf("f:-0.1;"), 0.0001);
+    @Test public void valueOfFloat() throws Exception {
+        assertEquals(0.1f, (Float)valueOf("f:0.1;"), 0.0001);
+        assertEquals(-0.1f, (Float)valueOf("f:-0.1;"), 0.0001);
     }
 
     /**
