@@ -74,4 +74,11 @@ public class MethodMatcherTest {
             methodString(methodFor(Person.class, "setName", new Object[] { "New name" }))
         );
     }
+    
+    @Test public void methodNotFound() throws Exception {
+        assertEquals(
+            "(null)", 
+            methodString(methodFor(Person.class, "nonExistantName", new Object[] { }))
+        );
+    }
 }
