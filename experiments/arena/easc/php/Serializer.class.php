@@ -56,6 +56,7 @@
             default: {
               $name= xp::typeOf($var);
               $props= get_object_vars($var);
+              unset($props['__id']);
               $s= 'O:'.strlen($name).':"'.$name.'":'.sizeof($props).':{';
               foreach (array_keys($props) as $name) {
                 $s.= serialize($name).Serializer::representationOf($var->{$name});
