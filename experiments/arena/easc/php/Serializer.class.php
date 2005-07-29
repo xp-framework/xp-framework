@@ -21,7 +21,7 @@
      * @throws  lang.FormatException if an error is encountered in the format 
      */  
     function representationOf(&$var) {
-      switch (xp::typeOf($var)) {
+      switch (gettype($var)) {
         case 'NULL':    return 'N;';
         case 'boolean': return 'b:'.($var ? 1 : 0).';';
         case 'integer': return 'i:'.$var.';';
@@ -30,18 +30,28 @@
         case 'array':
           $s= 'a:'.sizeof($var).':{';
           foreach (array_keys($var) as $key) {
-            $s.= Serializer::representationOf($key).Serializer::representationOf($var[$key]);
+            $s.= serialize($key).Serializer::representationOf($var[$key]);
           }
           return $s.'}';
         case 'object':
-          $name= xp::typeOf($var);
-          $props= get_object_vars($var);
-          $s= 'O:'.strlen($name).':"'.$name.'":'.sizeof($props).':{';
-          foreach (array_keys($props) as $name) {
-            $s.= Serializer::representationOf($name).Serializer::representationOf($var->{$name});
+          switch (1) {
+            case is_a($var, 'Date'): {
+              return 'T:'.$var->getTime().';';
+            }
+            case is_a($var, 'HashMap'): {
+              return Serializer::representationOf($var->_hash);
+            }
+            default: {
+              $name= xp::typeOf($var);
+              $props= get_object_vars($var);
+              $s= 'O:'.strlen($name).':"'.$name.'":'.sizeof($props).':{';
+              foreach (array_keys($props) as $name) {
+                $s.= serialize($name).Serializer::representationOf($var->{$name});
+              }
+              unset($r);
+              return $s.'}';
+            }
           }
-          unset($r);
-          return $s.'}';
         case 'resource': return ''; // Ignore (resources can't be serialized)
         default: throw(new FormatException(
           'Cannot serialize unknown type '.xp::typeOf($var)
