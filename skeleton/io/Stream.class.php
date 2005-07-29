@@ -77,7 +77,6 @@
      *
      * @access  public
      * @return  int size streamsize in bytes
-     * @throws  IOException in case of an error
      */
     function size() {
       return strlen($this->buffer);
@@ -87,11 +86,12 @@
      * Truncate the stream to the specified length
      *
      * @access  public
-     * @param   int size default 0 New size in bytes
-     * @throws  IOException in case of an error
+     * @param   int size default 0
+     * @return  bool
      */
     function truncate($size= 0) {
       $this->buffer= substr($this->buffer, 0, $size);
+      return TRUE;
     }
 
     /**
@@ -104,7 +104,6 @@
      * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
-     * @throws  IOException in case of an error
      */
     function readLine($bytes= 4096) {
       return chop($this->gets($bytes));
@@ -115,7 +114,6 @@
      *
      * @access  public
      * @return  char the character read
-     * @throws  IOException in case of an error
      */
     function readChar() {
       return substr($this->buffer, $this->offset++, 1);
@@ -130,7 +128,6 @@
      * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
-     * @throws  IOException in case of an error
      */
     function gets($bytes= 4096) {
       $str= substr($this->buffer, $this->offset, $bytes);
@@ -146,7 +143,6 @@
      * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
-     * @throws  IOException in case of an error
      */
     function read($bytes= 4096) {
       $data= substr($this->buffer, $this->offset, $bytes);
@@ -159,8 +155,7 @@
      *
      * @access  public
      * @param   string string data to write
-     * @return  bool success
-     * @throws  IOException in case of an error
+     * @return  int number of bytes written
      */
     function write($string) {
       $this->buffer= (
@@ -168,7 +163,8 @@
         $string.
         substr($this->buffer, $this->offset+ strlen($string))
       );
-      $this->offset+= strlen ($string);
+      $this->offset+= ($l= strlen ($string));
+      return $l;
     }
 
     /**
@@ -176,11 +172,10 @@
      *
      * @access  public
      * @param   string string default '' data to write
-     * @return  bool success
-     * @throws  IOException in case of an error
+     * @return  int number of bytes written
      */
     function writeLine($string= '') {
-      $this->write($string."\n");
+      return $this->write($string."\n");
     }
     
     /**
@@ -191,7 +186,6 @@
      *
      * @access  public
      * @return  bool TRUE when the end of the stream is reached
-     * @throws  IOException in case of an error (e.g., the stream's not been opened)
      */
     function eof() {
       return $this->offset >= strlen($this->buffer);
@@ -204,7 +198,7 @@
      * This function is identical to a call of $f->seek(0, SEEK_SET)
      *
      * @access  public
-     * @throws  IOException in case of an error
+     * @throws  io.IOException in case of an error
      */
     function rewind() {
       $this->offset= 0;
@@ -213,11 +207,10 @@
     /**
      * Move stream pointer to a new position
      *
+     * @see     php://fseek
      * @access  public
      * @param   int position default 0 The new position
      * @param   int mode default SEEK_SET 
-     * @see     php://fseek
-     * @throws  IOException in case of an error
      * @return  bool success
      */
     function seek($position= 0, $mode= SEEK_SET) {
@@ -226,13 +219,14 @@
         case SEEK_CUR: $this->offset+= $position; break;
         case SEEK_END: $this->offset= strlen($this->buffer)+ $position; break;
       }
+      
+      return TRUE;
     }
     
     /**
      * Retrieve stream pointer position
      *
      * @access  public
-     * @throws  IOException in case of an error
      * @return  int position
      */
     function tell() {
@@ -248,6 +242,7 @@
      */
     function close() {
       $this->flags= 0;
+      return TRUE;
     }
   }
 ?>
