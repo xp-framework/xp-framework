@@ -18,7 +18,8 @@ Modules
   Unit tests:     net.xp_framework.easc.unittest.SerializerTest
 
 * Methodmatcher
-  TBI
+  Implementation: net.xp_framework.easc.util.MethodMatcher
+  Unit tests:     net.xp_framework.easc.unittest.MethodMatcherTest
 
 * MBean
   TBI
