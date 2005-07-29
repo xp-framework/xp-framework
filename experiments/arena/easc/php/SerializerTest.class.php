@@ -6,6 +6,8 @@
 
   uses(
     'util.profiling.unittest.TestCase', 
+    'util.Date',
+    'util.Hashmap',
     'Serializer'
   );
 
@@ -94,6 +96,50 @@
       $this->assertEquals(
         'a:2:{i:0;s:4:"More";i:1;s:5:"Power";}', 
         Serializer::representationOf($var= array('More', 'Power'))
+      );
+    }
+    
+    /**
+     * Test serialization of a date object
+     *
+     * @access  public
+     */
+    #[@test]
+    function representationOfDate() {
+      $this->assertEquals('T:1122644265;', Serializer::representationOf(new Date(1122644265)));
+    }
+
+    /**
+     * Test serialization of a hashmap
+     *
+     * @access  public
+     */
+    #[@test]
+    function representationOfHashmap() {
+      $h= &new Hashmap();
+      $h->put('key', 'value');
+      $h->put('number', '6100');
+
+      $this->assertEquals(
+        'a:2:{s:3:"key";s:5:"value";s:6:"number";s:4:"6100";}', 
+        Serializer::representationOf($h)
+      );
+    }
+
+    /**
+     * Test serialization of a hashmap with mixed values
+     *
+     * @access  public
+     */
+    #[@test]
+    function representationOfMixedHashmap() {
+      $h= &new Hashmap();
+      $h->put('key', 'value');
+      $h->put('number', 6100);
+
+      $this->assertEquals(
+        'a:2:{s:3:"key";s:5:"value";s:6:"number";i:6100;}', 
+        Serializer::representationOf($h)
       );
     }
   }
