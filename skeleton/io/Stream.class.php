@@ -90,8 +90,15 @@
      * @return  bool
      */
     function truncate($size= 0) {
-      $this->buffer= substr($this->buffer, 0, $size);
-      return TRUE;
+      if (strlen($this->buffer) > $size) {
+        $this->buffer= substr($this->buffer, 0, $size);
+        
+        // If position is in truncated area, rewind it as far as needed
+        if ($this->offset > $size) $this->offset= strlen($this->buffer);
+        return TRUE;
+      }
+      
+      return FALSE;
     }
 
     /**
@@ -130,11 +137,11 @@
      * @return  string Data read
      */
     function gets($bytes= 4096) {
-      $str= substr($this->buffer, $this->offset, $bytes);
-      if (FALSE === ($p= strpos($this->buffer, "\n"))) $p= $bytes;
-      $bytes= min($p, $bytes);
-      $this->offset+= $bytes;
-      return substr($str, 0, $bytes);
+      if ($this->eof()) return '';
+      if (FALSE === ($p= strpos($this->buffer, "\n", $this->offset))) $p= $bytes;
+      $l= min($p + 1 - $this->offset, $bytes);
+      $this->offset+= $l;
+      return substr($this->buffer, $this->offset - $l, $l);
     }
 
     /**
@@ -145,8 +152,12 @@
      * @return  string Data read
      */
     function read($bytes= 4096) {
-      $data= substr($this->buffer, $this->offset, $bytes);
-      $this->offset+= $bytes;
+      if ($this->eof()) return '';
+      if (FALSE === ($data= substr($this->buffer, $this->offset, $bytes))) {
+        return throw(new IOException('Cannot read '.$bytes.' bytes from stream.'));
+      }
+      
+      $this->offset+= strlen($data);
       return $data;
     }
 
@@ -158,6 +169,15 @@
      * @return  int number of bytes written
      */
     function write($string) {
+    
+      // Handle faster common case where we append to the end
+      if ($this->offset == strlen($this->buffer)) {
+        $this->buffer.= $string;
+        $this->offset+= ($l= strlen($string));
+        return $l;
+      }
+      
+      // Now handle overwrite of stream data
       $this->buffer= (
         substr($this->buffer, 0, $this->offset).
         $string.
@@ -198,14 +218,15 @@
      * This function is identical to a call of $f->seek(0, SEEK_SET)
      *
      * @access  public
-     * @throws  io.IOException in case of an error
      */
     function rewind() {
       $this->offset= 0;
     }
     
     /**
-     * Move stream pointer to a new position
+     * Move stream pointer to a new position. If the pointer exceeds the
+     * actual buffer size, it is reset to the end of the buffer. This case
+     * is not considered an error.
      *
      * @see     php://fseek
      * @access  public
@@ -219,6 +240,9 @@
         case SEEK_CUR: $this->offset+= $position; break;
         case SEEK_END: $this->offset= strlen($this->buffer)+ $position; break;
       }
+      
+      // Assure, we don't exceed buffer size
+      if ($this->offset > strlen($this->buffer)) $this->offset= strlen($this->buffer);
       
       return TRUE;
     }
