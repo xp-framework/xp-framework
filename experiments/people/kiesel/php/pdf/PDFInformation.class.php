@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('PDFObject');
+
   /**
    * (Insert class' description here)
    *
@@ -14,12 +16,19 @@
   class PDFInformation extends PDFObject {
     var
       $producer=    '';
+    
+    function setProducer($p) {
+      $this->producer= $p;
+    }
       
     function toPDF() {
-      return 
-        $this->number.' '.$this->generation." obj\n".
-        "<< /Type /Info\n".
-        "/Producer (" + $this->producer + ") >>\nendobj\n";
+      $s= 
+        $this->getObjectDeclaration().
+        "/Type /Info\n".
+        "/Producer (".$this->producer.")\n".
+        $this->getObjectEndDeclaration();
+      
+      return $s;
     }
   }
 ?>

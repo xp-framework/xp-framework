@@ -59,19 +59,14 @@
       $this->trailer->add($this->resources);
       
       $this->info= &new PDFInformation(++$this->objectcount);
-      $this->trailer->add($this->info);
+      $this->info->setProducer('XP Framework $Id$');
+      $this->objects->add($this->info);
     }
     
     function output(&$stream) {
       $this->position= 0;
       $this->_outputHeader($stream);
-      
-      // Output all objects
-      for ($i= 0; $i < $this->objects->size(); $i++) {
-        $object= &$this->object->get($i);
-        $object->output($stream);
-      }
-      
+      $this->_outputObjects($stream);
       $this->_outputTrailer($stream);
     }
 
@@ -81,13 +76,25 @@
       $this->position+= $l;
     }
     
+    function _outputObjects(&$stream) {
+      // Output all objects
+      for ($i= 0; $i < $this->objects->size(); $i++) {
+        $object= &$this->objects->get($i);
+        
+        // Write object to stream and remember its position
+        $len= $object->output($stream);
+        $this->location[$object->getNumber()]= $this->position;
+        $this->position+= $len;;
+      }
+    }
+    
     function _outputTrailer(&$stream) {
     
       // Write the trailer objects
       for ($i= 0; $i < $this->trailer->size(); $i++) {
         $object= &$this->trailer->get($i);
         
-        // Remember location
+        // Write object to stream and remember its position
         $this->location[$object->getNumber()]= $this->position;
         $len= $object->output($stream);
         $this->position+= $len;
