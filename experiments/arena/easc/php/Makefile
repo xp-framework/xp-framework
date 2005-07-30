@@ -3,7 +3,7 @@
 #
 # $Id$
 
-UNITTEST_RUNNER=unittest -c
+UNITTEST_RUNNER=php unittest.php
 
 all:
 	@echo "Targets:"
