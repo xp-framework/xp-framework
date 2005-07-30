@@ -4,10 +4,7 @@
  * $Id$ 
  */
 
-  uses(
-    'PDFObject',
-    'util.Hashmap'
-  );
+  uses('PDFObject');
   
   /**
    * (Insert class' description here)
@@ -22,6 +19,15 @@
     
     function setRootPages(&$pages) {
       $this->rootPages= &$pages;
+    }
+    
+    function toPDF() {
+      $s= $this->getObjectDeclaration();
+      $s.= "/Type /Catalog\n";
+      $s.= "/Pages ".$this->rootPages->getReference()."\n";
+      
+      $s.= $this->getObjectEndDeclaration();
+      return $s;
     }
   }
 ?>

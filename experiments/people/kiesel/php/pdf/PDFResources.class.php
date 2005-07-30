@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('PDFObject');
+  uses(
+    'PDFObject',
+    'util.Hashmap'
+  );
 
   /**
    * (Insert class' description here)
@@ -24,6 +27,14 @@
     
     function addFont(&$font) {
       $this->fonts->put($font->getName(), $font);
+    }
+    
+    function toPDF() {
+      $s=
+        $this->getObjectDeclaration().
+        $this->getObjectEndDeclaration();
+      
+      return $s;
     }
   }
 ?>

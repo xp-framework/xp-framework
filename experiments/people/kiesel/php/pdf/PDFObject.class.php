@@ -78,6 +78,14 @@
       return $this->number.' '.$this->generation.' R';
     }
     
+    function getObjectDeclaration() {
+      return $this->number.' '.$this->generation." obj\n<< ";
+    }
+    
+    function getObjectEndDeclaration() {
+      return ">>\nendobject\n";
+    }
+    
     function toPDF() {
       return $this->getClassName()."::toPDF()\n";
     }

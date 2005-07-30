@@ -59,11 +59,19 @@
       $this->trailer->add($this->resources);
       
       $this->info= &new PDFInformation(++$this->objectcount);
+      $this->trailer->add($this->info);
     }
     
     function output(&$stream) {
       $this->position= 0;
       $this->_outputHeader($stream);
+      
+      // Output all objects
+      for ($i= 0; $i < $this->objects->size(); $i++) {
+        $object= &$this->object->get($i);
+        $object->output($stream);
+      }
+      
       $this->_outputTrailer($stream);
     }
 
@@ -91,9 +99,9 @@
       $this->position+= (
         $stream->writeLine('trailer') +
         $stream->writeLine('<<') +
-        $stream->writeLine('/Size '.$this->objectcount + 1) +
-        $stream->writeLine('/Root '.$this->catalogue->getNumber().' '.$this->catalogue->getGeneration().' R') +
-        $stream->writeLine('/Info '.$this->info->getNumber().' '.$this->info->getGeneration().' R') +
+        $stream->writeLine('/Size '.($this->objectcount + 1)) +
+        $stream->writeLine('/Root '.$this->catalogue->getReference()) +
+        $stream->writeLine('/Info '.$this->info->getReference()) +
         $stream->writeLine('>>') + 
         $stream->writeLine('startxref') +
         $stream->writeLine($this->xrefpos) +

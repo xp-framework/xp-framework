@@ -44,5 +44,18 @@
     function setContent(&$pdfstream) {
       $this->content= &$pdfstream;
     }
+    
+    function toPDF() {
+      $s.= 
+        $this->getObjectDeclaration().
+        "/Type /Page\n".
+        "/Parent ".$this->parent->getReference()."\n".
+        "/MediaBox [ 0 0 ".$this->width." ".$this->height." ]\n".
+        "/Resources ".$this->resources->getReference()."\n".
+        "/Contents ".$this->contents->getReference()."\n".
+        $this->getObjectEndDeclaration();
+      
+      return $s;
+    }
   }
 ?>
