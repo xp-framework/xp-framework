@@ -16,14 +16,22 @@
   class PDFPages extends PDFObject {
     var
       $parent=      NULL,
-      $children=    array();
+      $children=    array(),
+      $_document=   NULL;
     
-    function addChild(&$page) {
+    function &addChild(&$page) {
+      $this->_document->registerObject($page);
       $this->children[]= &$page;
+      $page->setParent($this);
+      return $page;
     }
     
     function getCount() {
       return sizeof($this->children);
+    }
+    
+    function setDocument(&$document) {
+      $this->_document= &$document;
     }
     
     function toPDF() {

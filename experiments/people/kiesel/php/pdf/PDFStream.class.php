@@ -15,14 +15,32 @@
    */
   class PDFStream extends PDFObject {
     var
-      $data=    '';
+      $data=    '',
+      $filter=  NULL;
     
+    function addFiler(&$filter) {
+      // XXX TBI
+    }
+
     function set($data) {
       $this->data= $data;
     }
     
     function append($data) {
       $this->data.= $data;
+    }
+    
+    function toPDF() {
+      $s=
+        $this->getObjectDeclaration().
+        "/Length ".strlen($data)."\n".
+        ">>\n".
+        "stream\n".
+        $this->data."\n".
+        "endstream\n".
+        "endobj\n";
+      
+      return $s;
     }
   }
 ?>

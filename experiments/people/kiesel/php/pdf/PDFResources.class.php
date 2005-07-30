@@ -20,8 +20,8 @@
     var
       $fonts=       NULL;
     
-    function __construct($objectno) {
-      parent::__construct($objectno);
+    function __construct() {
+      parent::__construct();
       $this->fonts= &new Hashmap();
     }
     

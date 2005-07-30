@@ -20,17 +20,9 @@
       $height=      0,
       $contents=    NULL;
     
-    function __construct($number, $width, $height) {
-      parent::__construct($number);
+    function __construct($width, $height) {
       $this->width= $width;
       $this->height= $height;
-    }
-    
-    function &create($number, $width, $height, &$parent, &$resources) {
-      $page= &new PDFPage($number, $width, $height);
-      $page->setParent($parent);
-      $page->setResources($resources);
-      return $page;
     }
     
     function setParent(&$parent) {
@@ -42,7 +34,7 @@
     }
     
     function setContent(&$pdfstream) {
-      $this->content= &$pdfstream;
+      $this->contents= &$pdfstream;
     }
     
     function toPDF() {
@@ -50,8 +42,12 @@
         $this->getObjectDeclaration().
         "/Type /Page\n".
         "/Parent ".$this->parent->getReference()."\n".
-        "/MediaBox [ 0 0 ".$this->width." ".$this->height." ]\n".
-        "/Resources ".$this->resources->getReference()."\n".
+        "/MediaBox [ 0 0 ".$this->width." ".$this->height." ]\n";
+      
+      $this->resources && $s.=
+        "/Resources ".$this->resources->getReference()."\n";
+      
+      $s.=
         "/Contents ".$this->contents->getReference()."\n".
         $this->getObjectEndDeclaration();
       

@@ -14,7 +14,7 @@
   class PDFObject extends Object {
     var
       $generation=    0,
-      $number=        0;
+      $number=        -1;
     
     /**
      * (Insert method's description here)
@@ -23,7 +23,7 @@
      * @param   
      * @return  
      */
-    function __construct($number) {
+    function __construct($number= -1) {
       $this->number= $number;
     }
 
@@ -75,6 +75,9 @@
      * @return  
      */
     function getReference() {
+      if (0 > $this->number) return throw(new IllegalStateException(
+        'Object has not yet been registered in the document. Cannot create reference.'
+      ));
       return $this->number.' '.$this->generation.' R';
     }
     

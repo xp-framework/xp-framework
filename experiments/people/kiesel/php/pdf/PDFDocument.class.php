@@ -5,6 +5,7 @@
  */
 
   uses(
+    'PDFPage',
     'PDFPages',
     'PDFCatalogue',
     'PDFResources',
@@ -25,8 +26,9 @@
       $pages=           NULL,     // Root Pages
       $dict=            NULL,     // Dictionary
       $info=            NULL,     // PDF information
-      $objects=         NULL,     // all objects
       $objectcount=     0,        // count of objects
+      $resources=       NULL,     // Resources
+      $objects=         NULL,     // all objects
       $trailer=         NULL;     // objects being printed in the trailer
     
     var
@@ -48,19 +50,27 @@
       $this->trailer= &Collection::forClass('PDFObject');
       
       // Create root and pages
-      $this->pages= &new PDFPages(++$this->objectcount);
+      $this->pages= &new PDFPages();
+      $this->pages->setNumber(++$this->objectcount);
+      $this->pages->setDocument($this);
       $this->trailer->add($this->pages);
       
-      $this->catalogue= &new PDFCatalogue(++$this->objectcount);
+      $this->catalogue= &new PDFCatalogue();
+      $this->catalogue->setNumber(++$this->objectcount);
       $this->catalogue->setRootPages($this->pages);
       $this->trailer->add($this->catalogue);
       
-      $this->resources= &new PDFResources(++$this->objectcount);
+      $this->resources= &new PDFResources();
+      $this->resources->setNumber(++$this->objectcount);
       $this->trailer->add($this->resources);
       
-      $this->info= &new PDFInformation(++$this->objectcount);
-      $this->info->setProducer('XP Framework $Id$');
-      $this->objects->add($this->info);
+      $this->info= &new PDFInformation();
+      $this->registerObject($this->info);
+      $this->info->setProducer('XP Framework PDF Creator exp');
+    }
+    
+    function &getRootPage() {
+      return $this->pages;
     }
     
     function output(&$stream) {
@@ -125,11 +135,30 @@
         "0 ".($this->objectcount + 1)."\n".
         "0000000000 65535 f \n";
       
+      ksort($this->location);
       foreach ($this->location as $number => $position) {
         $xref.= sprintf("%010d 00000 n \n", $position);
       }
       
       return $stream->write($xref);
+    }
+    
+    function &createPage($width, $height, &$parent) {
+      $page= &PDFPage::create(++$this->objectcount, $width, $height, $parent, $this->resources);
+      $this->objects->add($page);
+      return $page;
+    }
+    
+    function &createStream($data) {
+      $stream= &new PDFStream(++$this->objectcount);
+      $stream->set($data);
+      $this->objects->add($stream);
+      return $stream;
+    }
+    
+    function registerObject(&$object) {
+      $object->setNumber(++$this->objectcount);
+      $this->objects->add($object);
     }
   }
 ?>
