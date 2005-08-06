@@ -141,7 +141,7 @@ __
   if ($highlights->exists()) {
     for ($i= &new FilteredFolderIterator($highlights, FOLDER_FILTER); $i->hasNext(); ) {
       try(); {
-        $highlight= &$processor->albumImageFor($highlights->getURI().$i->next());
+        $highlight= &$processor->albumImageFor($i->next());
       } if (catch('ImagingException', $e)) {
         $e->printStackTrace();
         exit(-2);
@@ -157,7 +157,7 @@ __
   $images= array();
   for ($i= &new FilteredFolderIterator($origin, FOLDER_FILTER); $i->hasNext(); ) {
     try(); {
-      $image= &$processor->albumImageFor($origin->getURI().$i->next());
+      $image= &$processor->albumImageFor($i->next());
     } if (catch('ImagingException', $e)) {
       $e->printStackTrace();
       exit(-2);
