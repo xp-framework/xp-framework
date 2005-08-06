@@ -16,17 +16,17 @@ h1 {
   font: 42px "Arial narrow";
 }
 h2 { 
-  font: 19px "Georgia"; 
+  font: 19px "Tahoma"; 
   padding: 0px;
   margin: 1px;
   color: #ffcc84; 
 }
 h3 { 
-  font: bold 14px "Georgia";
+  font: bold 13px "Tahoma";
   margin: 1px;
 }
 h4 { 
-  font: bold 14px "Georgia"; 
+  font: bold 13px "Tahoma"; 
   padding: 0px;
   margin: 0px;
 }
