@@ -1,4 +1,4 @@
-/* Stylesheet for Dialog (red/orange)
+/* Stylesheet for xp website (home page)
  *
  * $Id$
  */
@@ -51,7 +51,7 @@ tr#header {
   text-align: left;
   padding-left: 10px;
   height: 60px;
-  background-image: url(/image/bg_head_orange.jpg);
+  background-image: url(/image/bg_head_red.jpg);
 }
 .gutter {
   height: 60px;
