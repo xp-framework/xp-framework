@@ -70,7 +70,7 @@
       $entries= array();
       for ($i= &new FilteredFolderIterator($this->folder, '/\.dat$/'); $i->hasNext(); ) {
         $entry= $i->next();
-        $file= &new File($this->folder->getURI().$entry);
+        $file= &new File($entry);
         try(); {
           $data= &unserialize(FileUtil::getContents($file));
         } if (catch('IOException', $e)) {
