@@ -7,7 +7,7 @@
   uses('io.Folder');
 
   /**
-   * Iterates over elements a directory, only returning those elements that
+   * Iterates over elements of a directory, only returning those elements that
    * match the given pattern.
    *
    * <code>
