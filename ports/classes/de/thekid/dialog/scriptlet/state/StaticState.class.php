@@ -90,6 +90,34 @@
     }
 
     /**
+     * Handler for entry collections
+     *
+     * @access  public
+     * @param   &de.thekid.dialog.EntryCollection collection
+     * @return  &xml.Node node
+     */
+    #[@handles('de.thekid.dialog.EntryCollection')]
+    function &collectionNode(&$collection) {
+      $numEntries= $collection->numEntries();
+      $node= &new Node('entry', NULL, array(
+        'name'          => $collection->getName(),
+        'title'         => $collection->getTitle(),
+        'num_entries'   => $numEntries
+      ));
+      $node->addChild(new Node('description', new PCData($collection->getDescription())));
+      $node->addChild(Node::fromObject($collection->createdAt, 'created'));
+      
+      for ($i= 0; $i < $numEntries; $i++) {
+        $entry= &$collection->entryAt($i);
+        
+        $child= &$node->addChild($this->nodeHandlers[$entry->getClassName()]->invoke($i= NULL, array($entry)));
+        $child->setAttribute('type', $entry->getClassName());
+      }
+      
+      return $node;
+    }
+
+    /**
      * Process this state.
      *
      * @access  public
