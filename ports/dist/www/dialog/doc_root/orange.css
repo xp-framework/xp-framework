@@ -129,6 +129,15 @@ table.highlights img {
 table.chapter img {
   border: 1px solid #f4f4f4;
 }
+table.collection_list {
+  border-top: 1px solid #eeeeee;
+}
+table.collection_list img {
+  border: 1px solid #f4f4f4;
+}
+table.collection_list td {
+  color: #444444;
+}
 td#image img {
   border: 2px solid #f4f4f4;
 }
