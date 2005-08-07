@@ -11,6 +11,7 @@
     'de.thekid.dialog.Album',
     'de.thekid.dialog.Update',
     'de.thekid.dialog.SingleShot',
+    'de.thekid.dialog.EntryCollection',
     'util.PropertyManager'
   );
 
