@@ -85,7 +85,7 @@
           $entry,
           xp::stringOf($date)
         );
-        $entries[$date->getTime().$entry]= basename($entry, '.dat');
+        $entries[$date->getTime().basename($entry)]= basename($entry, '.dat');
         delete($data);
       }
       $this->folder->close();
