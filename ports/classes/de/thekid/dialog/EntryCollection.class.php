@@ -140,7 +140,7 @@
      * @access  public
      * @return  int
      */
-    function numEntrys() {
+    function numEntries() {
       return sizeof($this->entries);
     }
   
