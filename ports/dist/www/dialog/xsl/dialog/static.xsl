@@ -170,14 +170,14 @@
             <img width="150" height="113" border="0" src="/albums/{@name}/thumb.{./highlights/highlight[1]/name}"/>
           </td>
           <td width="466" valign="top">
-            <h3 style="margin: 0px; padding: 0px">
-	      <xsl:value-of select="concat(created/mday, ' ', substring(created/month, 1, 3))"/>:
+            <h3>
+              <xsl:value-of select="concat(created/mday, ' ', substring(created/month, 1, 3))"/>:
               <a href="{func:link(concat('album/view?', @name))}">
                 <xsl:value-of select="@title"/>
               </a>
               (<xsl:value-of select="@num_images"/> images in <xsl:value-of select="@num_chapters"/> chapters)
             </h3>
-            <p align="justify" style="margin: 0px; padding: 0px">
+            <p align="justify">
               <xsl:copy-of select="description"/>
               <br clear="all"/>
             </p>
