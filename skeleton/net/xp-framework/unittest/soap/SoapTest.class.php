@@ -17,7 +17,7 @@
   class SoapTest extends TestCase {
       
     /**
-     * Test serializatio
+     * Test serialization
      *
      * @access  public
      */
@@ -89,6 +89,39 @@
         $src, '<method xsi:type="xsd:string">testSerialization</method>', 'hash.inner'
       );
       return $src;
+    }
+    
+    /**
+     * Test deserialization of SOAP header
+     *
+     * @access  public
+     */
+    #[@test]
+    function testHeader() {
+      $msg= &SOAPMessage::fromString('
+        <SOAP-ENV:Envelope
+          xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <SOAP-ENV:Header>
+          <targetAddress SOAP-ENV:mustUnderstand="1">
+            http://tokyo:8004/glue/urn:CorpDataServices
+          </targetAddress>
+        </SOAP-ENV:Header>
+        <SOAP-ENV:Body>
+          <ns1:getQuote
+           xmlns:ns1="urn:DirectedQuoteProxyService"
+           SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+            <stocks xsi:type="xsd:string">AMX</stocks>
+          </ns1:getQuote>
+        </SOAP-ENV:Body>
+        </SOAP-ENV:Envelope>
+      ');
+      
+      $headers= $msg->getHeader();
+      $this->assertNotEquals($msg->getHeader(), FALSE);
+      $this->assertEquals(sizeof ($headers), 1);
+      foreach ($headers as $h) { $this->assertSubclass($h, 'xml.soap.SOAPHeaderElement'); }
     }
   }
 ?>
