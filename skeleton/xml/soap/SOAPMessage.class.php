@@ -8,6 +8,7 @@
     'xml.Tree',
     'xml.Node',
     'xml.soap.SOAPNode',
+    'xml.soap.SOAPHeaderElement',
     'xml.soap.SOAPFault'
   );
   
@@ -339,6 +340,43 @@
     function &fromFile(&$file) {
       return parent::fromFile($file, 'SOAPMessage');
     }
+    
+    /**
+     * Inspect the given node whether it contains any
+     * namespace declarations. If a declaration is found,
+     * register the new namespace alias in the namespaces
+     * list.
+     *
+     * @access  protected
+     * @param   &xml.SOAPNode node
+     */
+    function _retrieveNamespaces(&$node) {
+      foreach ($node->attribute as $key => $val) {
+        if (0 != strncmp('xmlns:', $key, 6)) continue;
+        $this->namespaces[$val]= substr($key, 6);
+      }
+    }
+    
+    /**
+     * Retrieve header element or return FALSE if no header
+     * exists.
+     *
+     * @access  protected
+     * @return  &xml.SOAPNode
+     */
+    function &_headerElement() {
+      
+      // The header element must - if it exists - be the first child
+      // of the SOAP envelope.
+      $this->_retrieveNamespaces($this->root);
+      
+      if (0 == strcasecmp(
+        $this->root->children[0]->getName(),
+        $this->namespaces[XMLNS_SOAPENV].':Header'
+      )) return $this->root->children[0];
+      
+      return FALSE;
+    }
 
     /**
      * Retrieve body element
@@ -350,10 +388,7 @@
     function &_bodyElement() {
 
       // Look for namespaces in the root node
-      foreach ($this->root->attribute as $key => $val) {
-        if (0 != strncmp('xmlns:', $key, 6)) continue;
-        $this->namespaces[$val]= substr($key, 6);
-      }
+      $this->_retrieveNamespaces($this->root);
       
       // Search for the body node. For usual, this will be the first element,
       // but some SOAP clients may include a header node (which we silently 
@@ -405,6 +440,24 @@
       if ($body= &$this->_bodyElement()) {
         return $this->_recurseData($body->children[0], FALSE, $context, $mapping);
       }
+    }
+    
+    /**
+     * Get headers from envelope.
+     *
+     * @access  public
+     * @return  &xml.soap.SOAPHeaderElement[]
+     */
+    function getHeader() {
+      if (!($h= &$this->_headerElement())) return NULL;
+      
+      // Go through all children
+      $headers= array();
+      foreach (array_keys($h->children) as $idx) {
+        $headers[]= &SOAPHeaderElement::fromNode($h->children[$idx], $this->namespaces);
+      }
+      
+      return $headers;
     }
   }
 ?>
