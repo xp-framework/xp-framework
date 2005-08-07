@@ -144,6 +144,51 @@
   </xsl:template>
 
   <!--
+   ! Template for collections 
+   !
+   ! @purpose  Specialized entry template
+   !-->
+  <xsl:template match="entry[@type = 'de.thekid.dialog.EntryCollection']">
+    <div class="datebox">
+      <h2><xsl:value-of select="created/mday"/></h2>
+      <xsl:value-of select="substring(created/month, 1, 3)"/>&#160;
+      <xsl:value-of select="created/year"/>
+    </div>
+    <h2>
+      Collection: <xsl:value-of select="@title"/>
+    </h2>
+    <p align="justify">
+      <xsl:copy-of select="description"/>
+      <br clear="all"/>
+    </p>
+
+    <h4>Albums</h4>
+    <table class="collection_list" border="0">
+      <xsl:for-each select="entry[@type='de.thekid.dialog.Album']">
+        <tr>
+          <td width="160">
+            <img width="150" height="113" border="0" src="/albums/{@name}/thumb.{./highlights/highlight[1]/name}"/>
+          </td>
+          <td width="466" valign="top">
+            <h3>
+              <a href="{func:link(concat('album/view?', @name))}">
+                <xsl:value-of select="@title"/>
+              </a>
+              (<xsl:value-of select="@num_images"/> images in <xsl:value-of select="@num_chapters"/> chapters)
+            </h3>
+            <p align="justify">
+              <xsl:copy-of select="description"/>
+              <br clear="all"/>
+            </p>
+          </td>
+        </tr>
+      </xsl:for-each>
+    </table>
+      
+    <br/><br clear="all"/>
+  </xsl:template>
+
+  <!--
    ! Template for content
    !
    ! @see      ../layout.xsl
@@ -161,7 +206,7 @@
     </h3>
     <br clear="all"/>
     <xsl:call-template name="pager"/>
-  
+
     <xsl:for-each select="/formresult/entries/entry">
       <xsl:apply-templates select="."/>
     </xsl:for-each>
