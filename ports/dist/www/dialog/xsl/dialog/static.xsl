@@ -166,7 +166,7 @@
     <table class="collection_list" border="0">
       <xsl:for-each select="entry[@type='de.thekid.dialog.Album']">
         <tr>
-          <td width="160">
+          <td width="160" valign="top">
             <img width="150" height="113" border="0" src="/albums/{@name}/thumb.{./highlights/highlight[1]/name}"/>
           </td>
           <td width="466" valign="top">
