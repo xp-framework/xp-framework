@@ -109,8 +109,11 @@
       
       for ($i= 0; $i < $numEntries; $i++) {
         $entry= &$collection->entryAt($i);
+        if (!isset($this->nodeHandlers[$entry->getClassName()])) {
+          return throw(new FormatException('Index contains unknown element "'.$entry->getClassName().'"'));
+        }
         
-        $child= &$node->addChild($this->nodeHandlers[$entry->getClassName()]->invoke($i= NULL, array($entry)));
+        $child= &$node->addChild($this->nodeHandlers[$entry->getClassName()]->invoke($this, array($entry)));
         $child->setAttribute('type', $entry->getClassName());
       }
       
@@ -144,7 +147,7 @@
           return throw(new FormatException('Index contains unknown element "'.$entry->getClassName().'"'));
         }
 
-        $child= &$node->addChild($this->nodeHandlers[$entry->getClassName()]->invoke($i= NULL, array($entry)));
+        $child= &$node->addChild($this->nodeHandlers[$entry->getClassName()]->invoke($this, array($entry)));
         $child->setAttribute('type', $entry->getClassName());
       }
     }
