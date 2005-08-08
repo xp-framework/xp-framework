@@ -446,9 +446,9 @@
      * Get headers from envelope.
      *
      * @access  public
-     * @return  &xml.soap.SOAPHeaderElement[]
+     * @return  xml.soap.SOAPHeaderElement[]
      */
-    function getHeader() {
+    function getHeaders() {
       if (!($h= &$this->_headerElement())) return NULL;
       
       // Go through all children
