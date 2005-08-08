@@ -126,7 +126,7 @@
      * @param   string count - defaults to 15, max is 100
      * @return  string
      */
-    function getRecentsPosts($tag, $count) {
+    function getRecentPosts($tag, $count) {
       return $this->_doRequest(
         'http://del.icio.us/api/posts/recent?',
         array(
