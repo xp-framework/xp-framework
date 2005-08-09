@@ -194,7 +194,7 @@ public class Header {
     }
 
     /**
-     * Return get version major number
+     * Return version major number
      *
      * @access  public
      * @return  byte version major
