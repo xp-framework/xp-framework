@@ -33,5 +33,6 @@ public class TypeTest {
         assertEquals(MessageType.Call, MessageType.valueOf(3));
         assertEquals(MessageType.Value, MessageType.valueOf(4));
         assertEquals(MessageType.Finalize, MessageType.valueOf(5));
+        assertEquals(null, MessageType.valueOf(6100));
     }
 }
