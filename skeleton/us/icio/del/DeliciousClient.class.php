@@ -17,7 +17,7 @@
    *   require('lang.base.php');
    *   uses('us.icio.del.DeliciousClient');
    *
-   *   $m= &new DeliciousClient('url', 'username', 'password');
+   *   $m= &new DeliciousClient('username', 'password');
    *   try(); {
    *     
    *   } if (catch('Exception', $e)) {
