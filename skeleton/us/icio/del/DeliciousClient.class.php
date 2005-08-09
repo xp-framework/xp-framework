@@ -110,7 +110,7 @@
      */
     function getPostsByTag($tag, $date) {
       return $this->_doRequest(
-        'http://del.icio.us/api/post/get?',
+        'http://del.icio.us/api/posts/get?',
         array(
           'tag' => $tag,
           'dt'  => is_object($date) ? $date->format('%Y-%m-%d') : ''
