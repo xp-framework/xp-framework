@@ -71,7 +71,7 @@ public class HeaderTest {
             1015490375,
             (byte)1,
             (byte)0,
-            MessageType.valueOf(6100),    // 6100 is out of bounds, valueOf() will return null
+            null,
             true,
             0
         );
