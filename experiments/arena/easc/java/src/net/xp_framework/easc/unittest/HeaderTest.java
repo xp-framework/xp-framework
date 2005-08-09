@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
  */
 public class HeaderTest {
     private Header header= new Header(
-        1015490375,
+        Header.DEFAULT_MAGIC_NUMBER,
         (byte)1,
         (byte)0,
         MessageType.Initialize,
@@ -68,7 +68,7 @@ public class HeaderTest {
      */
     @Test(expected= NullPointerException.class) public void nullType() throws Exception {
         new Header(
-            1015490375,
+            Header.DEFAULT_MAGIC_NUMBER,
             (byte)1,
             (byte)0,
             null,
