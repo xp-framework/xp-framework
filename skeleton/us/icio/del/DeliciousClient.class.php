@@ -17,14 +17,14 @@
    *   require('lang.base.php');
    *   uses('us.icio.del.DeliciousClient');
    *
-   *   $m= &new DeliciousClient('username', 'password');
+   *   $d= &new DeliciousClient('username', 'password');
    *   try(); {
-   *     
+   *     $posts= $d->getAllPosts('Flash');
    *   } if (catch('Exception', $e)) {
    *     $e->printStackTrace();
    *     exit;
    *   }
-   *   var_dump($links);
+   *   var_dump($posts);
    * </code>
    *
    * @purpose Provide an API to del.icio.us
