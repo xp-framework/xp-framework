@@ -58,4 +58,22 @@ public class HeaderTest {
         ByteArrayInputStream in= new ByteArrayInputStream(out.toByteArray());
         assertEquals(this.header, Header.readFrom(new DataInputStream(in)));
     }
+    
+    /**
+     * Tests that Header constructor will throw a NullPointerException
+     * when passed null for its messageType argument
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test(expected= NullPointerException.class) public void nullType() throws Exception {
+        new Header(
+            1015490375,
+            (byte)1,
+            (byte)0,
+            MessageType.valueOf(6100),    // 6100 is out of bounds, valueOf() will return null
+            true,
+            0
+        );
+    }
 }
