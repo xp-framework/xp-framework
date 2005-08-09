@@ -340,7 +340,18 @@ public class SerializerTest {
             representationOf(UUID.fromString("f0563880-3880-1056-9c5b-98814601ad8f")
         ));
     }
-    
+ 
+    /**
+     * Tests serialization of null
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOfNull() throws Exception {
+        Object o= null;
+        assertEquals("N;", representationOf(o));
+    }
+   
     /**
      * Tests deserialization of null (identified by "N" token)
      *
