@@ -13,8 +13,38 @@ import java.io.IOException;
 /**
  * Message header
  *
+ * A header consists of the following elements:
+ * <ul>
+ *   <li>
+ *     A magic number, constructed from the crc32 checksum of the string "xrmi"
+ *     (0x3c872747 or 1015490375), packed into 4 bytes using pack("N", $magic).
+ *     "N" stands for 'unsigned long (always 32 bit, big endian byte order)'.
+ *   </li>
+ *   <li>
+ *     The protocol major version, as one byte
+ *   </li>
+ *   <li>
+ *     The protocol minor version, as one byte
+ *   </li>
+ *   <li>
+ *     The message type, as one byte
+ *   </li>
+ *   <li>
+ *     If the data is compressed, as one byte (TRUE or FALSE)
+ *   </li>
+ *   <li>
+ *     The data length packed into 4 bytes using pack("N", $length)
+ *   </li>
+ * </ul>
+ *
+ * The header is 12 bytes long.
+ *
+ * @see   http://php.net/pack
+ * @see   http://php.net/crc32
  */
 public class Header {
+    public static final int DEFAULT_MAGIC_NUMBER= 0x3c872747;
+
     private int magicNumber;
     private byte versionMajor;
     private byte versionMinor;
