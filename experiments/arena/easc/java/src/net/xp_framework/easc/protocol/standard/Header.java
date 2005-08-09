@@ -32,12 +32,22 @@ public class Header {
      * @param   net.xp_framework.easc.protocol.standard.MessageType message type
      * @param   boolean compressed
      * @param   int data length
+     * @throws  java.lang.NullPointerException if messageType is null
      */
-    public Header(int magicNumber, byte versionMajor, byte versionMinor, MessageType messageType, boolean compressed, int dataLength) {
+    public Header(
+        int magicNumber, 
+        byte versionMajor, 
+        byte versionMinor, 
+        MessageType messageType, 
+        boolean compressed, 
+        int dataLength
+    ) throws NullPointerException {
+        if (null == (this.messageType= messageType)) {
+            throw new NullPointerException("Messagetype may not be null");
+        }
         this.magicNumber= magicNumber;
         this.versionMajor= versionMajor;
         this.versionMinor= versionMinor;
-        this.messageType= messageType;
         this.compressed= compressed;
         this.dataLength= dataLength;
     }
