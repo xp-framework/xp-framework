@@ -201,7 +201,7 @@
         $this->answer($event->stream, 450, $e->getMessage());
         return;
       }
-      $this->answer($event->stream, 200, '"'.$pwd.'" is new working directory');
+      $this->answer($event->stream, 250, '"'.$pwd.'" is new working directory');
     }
 
     /**
