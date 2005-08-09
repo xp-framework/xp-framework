@@ -457,6 +457,7 @@ public class Serializer {
     }
     
     @Handler public static String representationOf(Object o) throws Exception {
+        if (null == o) return "N;";
         return representationOf(o, typeMap.get(o.getClass()));
     }
 
