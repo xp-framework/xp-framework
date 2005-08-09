@@ -15,6 +15,16 @@
   class FtpDir extends FtpEntry {
     var
       $entries  = NULL;
+
+    /**
+     * Check if directory exists
+     *
+     * @access  public
+     * @return  bool
+     */
+    function exists() {
+      return ftp_size($this->_hdl, $this->name) != -1;
+    }
       
     /**
      * Get entries (iterative function)
