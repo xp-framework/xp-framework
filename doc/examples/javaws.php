@@ -11,9 +11,28 @@
     'lang.System',
     'lang.Process',
     'io.File',
+    'io.FileUtil',
     'peer.URL',
     'io.Folder'
   );
+  
+  // {{{ string makeLink(&peer.URL codebase, string href)
+  //     Returns fully qualified link for a given codebase and a specified URI reference
+  function makeLink(&$codebase, $href) {
+    if (strstr($href, '://')) return $href;   // Fully qualified
+    
+    $base= sprintf(
+      '%s://%s:%d',
+      $codebase->getScheme(),
+      $codebase->getHost(),
+      $codebase->getPort()
+    );
+
+    if ('/' == $href{0}) return $base.$href;  // Absolute
+
+    return $base.$codebase->getPath().$href;  // Relative
+  }
+  // }}}
   
   // {{{ main
   $p= &new ParamString();
@@ -22,19 +41,30 @@
     exit(1);
   }
   
-  Console::writeLine('===> Downloading webstart URL ', $p->value(1));
-  try(); {
-    $c= &new HttpConnection($p->value(1));
-    if ($response= &$c->get()) {
-      $document= '';
-      while (FALSE !== ($buf= $response->readData())) {
-        $document.= preg_replace('/&(?!(amp;))/', '&amp;', $buf);
+  $uri= $p->value(1);
+  if (strstr($uri, '://')) {
+    Console::writeLine('===> Downloading webstart URL ', $uri);
+    try(); {
+      $c= &new HttpConnection($uri);
+      if ($response= &$c->get()) {
+        $document= '';
+        while (FALSE !== ($buf= $response->readData())) {
+          $document.= preg_replace('/&(?!(amp;))/', '&amp;', $buf);
+        }
       }
+      delete($c);
+    } if (catch('Exception', $e)) {
+      $e->printStackTrace();
+      exit(-1);
     }
-    delete($c);
-  } if (catch('Exception', $e)) {
-    $e->printStackTrace();
-    exit(-1);
+  } else {
+    Console::writeLine('===> Reading webstart document ', $uri);
+    try(); {
+      $document= preg_replace('/&(?!(amp;))/', '&amp;', FileUtil::getContents(new File($uri)));
+    } if (catch('Exception', $e)) {
+      $e->printStackTrace();
+      exit(-1);
+    }
   }
   
   try(); {
@@ -66,16 +96,14 @@
   // Download all JAR files, adding them to the classpath as we go
   $classpath= System::getEnv('CLASSPATH');
   $properties= '';
+  $codebase= &new URL($j->getCodebase());
   Console::writeLinef('---> Processing resources from codebase %s', $j->getCodebase());
   foreach ($j->getResources() as $resource) {
     switch (xp::typeOf($resource)) {
 
       // A JAR file, download it
       case 'com.sun.webstart.jnlp.JnlpJarResource':
-        $href= &new URL(strstr($resource->getHref(), '://')
-          ? $resource->getHref()
-          : $j->getCodebase().'/'.ltrim($resource->getHref(), './')
-        );
+        $href= &new URL(makeLink($codebase, $resource->getHref()));
         
         $classpath.= ':'.rtrim($folder->getURI(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$href->getPath();
         try(); {
@@ -90,10 +118,7 @@
 
 
           // Issue HTTP request
-          $c= &new HttpConnection(strstr($resource->getLocation(), '://') 
-            ? $resource->getLocation()
-            : $j->getCodebase().'/'.ltrim($resource->getLocation(), './')
-          );
+          $c= &new HttpConnection(makeLink($codebase, $resource->getLocation()));
           $response= &$c->get(NULL, $params);
           Console::write('     << ', $response->getStatuscode(), ' "', $response->getMessage(), '": ');
           
