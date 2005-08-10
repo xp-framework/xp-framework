@@ -12,8 +12,11 @@ import java.io.DataInputStream;
 import net.xp_framework.easc.server.Handler;
 
 /**
- * Handler thread
+ * The handler thread is started from within the server thread after a
+ * call to ServerSocket.accept() to be able to handle multiple connections
+ * simultaneously.
  *
+ * @see   net.xp_framework.easc.server.ServerThread
  */
 public class HandlerThread extends Thread {
     private Socket socket= null;
