@@ -56,6 +56,9 @@
 
 - test.header
   Runs net.xp_framework.easc.unittest.HeaderTest
+
+- test.server
+  Runs net.xp_framework.easc.unittest.ServerTest
     </echo>
   </target>
 
@@ -91,6 +94,15 @@
     <echo>===&gt; Testing header class</echo>
     <java classname="org.junit.runner.JUnitCore">
       <arg value="net.xp_framework.easc.unittest.HeaderTest"/>
+      <classpath refid="classpath.run"/>
+    </java>
+  </target>
+  
+  <!-- Server -->
+  <target name="test.server" depends="compile">
+    <echo>===&gt; Testing server integration</echo>
+    <java classname="org.junit.runner.JUnitCore">
+      <arg value="net.xp_framework.easc.unittest.ServerTest"/>
       <classpath refid="classpath.run"/>
     </java>
   </target>
