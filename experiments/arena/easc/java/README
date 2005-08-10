@@ -25,6 +25,8 @@ Modules
   TBI
 
 * Multithreaded TCP/IP Server
-  TBI
+  Implementation: net.xp_framework.easc.server.ServerThread
+  Unit tests:     net.xp_framework.easc.unittest.ServerTest
+
 
 <EOF>
