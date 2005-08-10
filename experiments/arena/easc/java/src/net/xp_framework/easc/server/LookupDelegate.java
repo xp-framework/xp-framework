@@ -18,11 +18,6 @@ public class LookupDelegate implements Delegate {
     }
 
     public Object invoke() throws Exception {
-        Properties env= new Properties();
-		env.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
-		env.setProperty(Context.URL_PKG_PREFIXES, "org.jboss.naming:org.jnp.interfaces");
-		env.setProperty(Context.PROVIDER_URL, "jnp://ia.schlund.de:1099");     
-        
-        return (new InitialContext(env)).lookup(this.jndiName);
+        return (new InitialContext()).lookup(this.jndiName);
     }
 }
