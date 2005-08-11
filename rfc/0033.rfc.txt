@@ -1,0 +1,54 @@
+RFC 0033: Annotation support for members
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Thu Aug 11 16:53:25 CEST 2005
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+Annotations will be supported for member variables.
+
+Rationale
+---------
+A situation in which this will be useful is when generating WSDLs for
+complex types (objects). Because PHP can not initialize member variables
+to objects and because PHP variables only get a type when they're 
+assigned something, we cannot correctly reflect types of those member
+variables.
+
+Functionality
+-------------
+
+Type hinting member variables
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  class LoginHandler extends Object {
+    var
+      #[@type= 'com.example.intranet.User'] 
+      $user   = NULL;
+  }
+?>
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+- Reflection will be a bit slower
+
+Dependencies
+------------
+
+Related documents
+-----------------
+- RFC #0016: Metadata for PHP4
+
+Comments
+--------
+n/a
+
+<EOF>
