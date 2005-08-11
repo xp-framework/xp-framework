@@ -1,4 +1,4 @@
-RFC 0033: Annotation support for members
+RFC 0033: Annotation support for members / lang.reflect.Field
 ========================================================================
 $Id$
 
@@ -9,7 +9,9 @@ $Id$
 
 Scope of Change
 ---------------
-Annotations will be supported for member variables.
+Annotations will be supported for member variables. XPClass::getFields() 
+will no longer return an hash of name => value for each member variable
+but an array of Field objects.
 
 Rationale
 ---------
@@ -31,6 +33,15 @@ Type hinting member variables
       $user   = NULL;
   }
 ?>
+
+Retrieving class fields
+~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  foreach ($class->getFields() as $field) {
+    echo $field->getType(), ' ', $field->getName(), "\n";
+  }
+?>
+
 
 Security considerations
 -----------------------
