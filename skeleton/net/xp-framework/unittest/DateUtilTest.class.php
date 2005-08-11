@@ -22,7 +22,7 @@
      * @param   &lang.Object var
      * @param   string error
      */
-    function assertEquivalent(&$expect, &$var, $error) {
+    function assertEquivalent(&$expect, &$var, $error= 'not_equivalent') {
       assert('$this->_test($expect->equals($var), $error, $expect, $var)');
     }
 
