@@ -60,5 +60,80 @@
         DateUtil::addMonths($date, 1)
       );
     }
+    
+    /**
+     * Test basic add operations with negative values.
+     *
+     * @access  public
+     */
+    #[@test]
+    function testSimpleSubstraction() {
+      $date= &new Date(Date::mktime(12, 15, 11, 1, 1, 2000));
+      
+      $this->assertEquivalent(
+        new Date(Date::mktime(12, 14, 52, 1, 1, 2000)),
+        DateUtil::addSeconds($date, -19)
+      );
+      
+      $this->assertEquivalent(
+        new Date(Date::mktime(11, 46, 11, 1, 1, 2000)),
+        DateUtil::addMinutes($date, -29)
+      );
+      
+      $this->assertEquivalent(
+        new Date(Date::mktime(11, 15, 11, 1, 1, 2000)),
+        DateUtil::addHours($date, -1)
+      );
+      
+      $this->assertEquivalent(
+        new Date(Date::mktime(12, 15, 11, 12, 31, 1999)),
+        DateUtil::addDays($date, -1)
+      );
+      
+      $this->assertEquivalent(
+        new Date(Date::mktime(12, 15, 11, 12, 1, 1999)),
+        DateUtil::addMonths($date, -1)
+      );
+    }
+    
+    /**
+     * Check leap year handling
+     *
+     * @access  public
+     */
+    #[@test]
+    function testLeapYear() {
+      $date= &new Date(Date::mktime(0, 0, 0, 2, 1, 2000));
+      
+      $this->assertEquivalent(
+        new Date(Date::mktime(0, 0, 0, 3, 1, 2000)),
+        DateUtil::addMonths($date, 1)
+      );
+      
+      $this->assertEquivalent(
+        new Date(Date::mktime(0, 0, 0, 3, 2, 2000)),
+        DateUtil::addDays($date, 30)
+      );
+    }
+    
+    /**
+     * Check non-leap year handling
+     *
+     * @access  public
+     */
+    #[@test]
+    function testNonLeapYear() {
+      $date= &new Date(Date::mktime(0, 0, 0, 2, 1, 1999));
+      
+      $this->assertEquivalent(
+        new Date(Date::mktime(0, 0, 0, 3, 1, 1999)),
+        DateUtil::addMonths($date, 1)
+      );
+      
+      $this->assertEquivalent(
+        new Date(Date::mktime(0, 0, 0, 3, 3, 1999)),
+        DateUtil::addDays($date, 30)
+      );
+    }
   }
 ?>
