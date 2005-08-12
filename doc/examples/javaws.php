@@ -30,7 +30,7 @@
 
     if ('/' == $href{0}) return $base.$href;  // Absolute
 
-    return $base.$codebase->getPath().$href;  // Relative
+    return $base.rtrim($codebase->getPath(), '/').'/'.$href;  // Relative
   }
   // }}}
   
@@ -118,7 +118,8 @@
 
 
           // Issue HTTP request
-          $c= &new HttpConnection(makeLink($codebase, $resource->getLocation()));
+          $url= makeLink($codebase, $resource->getLocation());
+          $c= &new HttpConnection($url);
           $response= &$c->get(NULL, $params);
           Console::write('     << ', $response->getStatuscode(), ' "', $response->getMessage(), '": ');
           
@@ -146,7 +147,7 @@
               break;
             
             case 404:
-              Console::writeLinef('FAIL %s... ', $j->getCodebase().'/'.$resource->getLocation());
+              Console::writeLinef('FAIL %s... ', $url);
               break;
 
             default:
