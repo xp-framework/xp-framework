@@ -87,7 +87,8 @@ __
     $shot->setDate(new Date($param->value('date', 'D', $origin->createdAt())));
 
     // Read the introductory text from [filename].txt if existant
-    if (is_file($df= $filename.DESCRIPTION_EXT)) {
+    if (is_file($df= $origin->getPath().DIRECTORY_SEPARATOR.$filename.DESCRIPTION_EXT)) {
+      Console::writeLine('---> Using description from ', $df);
       $shot->setDescription(file_get_contents($df));
     } else {
       $shot->setDescription($param->value('desc', 'E', ''));
