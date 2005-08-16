@@ -61,6 +61,22 @@
       } while ($w > 0);
       return new Date($m);
     }
+    
+    /**
+     * Retrieve whether a given date object is in daylight savings time.
+     *
+     * @model   static
+     * @access  public
+     * @param   &util.Date date
+     * @param   int method default CAL_DST_EU Method to calculate (CAL_DST_EU|CAL_DST_US)
+     * @return  bool
+     */
+    function inDst(&$date, $method= CAL_DST_EU) {
+      return (
+        $date->isAfter(Calendar::dstBegin($date->getYear(), $method)) &&
+        $date->isBefore(Calendar::dstEnd($date->getYear()))
+      );
+    }
   
     /**
      * Calculates the amount of workdays between to dates. Workdays are 
