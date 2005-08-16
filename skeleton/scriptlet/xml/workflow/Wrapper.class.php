@@ -182,7 +182,7 @@
           }
           
           // Set it to the default value
-          $value= (array)$definitions['default'];
+          if ($definitions['default']) $value[key($value)]= $definitions['default'];
         } else {
  
           // Run the precheck. This can be utilized for assertion-style checks
