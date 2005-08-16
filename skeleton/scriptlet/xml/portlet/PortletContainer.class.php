@@ -64,9 +64,7 @@
           $response->addFormError($e->getClassName(), '*', $e->getMessage());
           return;
         }
-        
-        
-        $portlet->addChild($content);
+        $content && $portlet->addChild($content);
       }
     }  
   }
