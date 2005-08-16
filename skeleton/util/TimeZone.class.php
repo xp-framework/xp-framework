@@ -98,9 +98,9 @@
         'CEST'=> '+0200',             // Central European Summer Time
         'MEST'=> '+0200',             // Middle European Summer Time
         'MESZ'=> '+0200',             // Middle European Summer Time
+        'EEST'=> '+0300',             // Eastern European Summer Time
         'SST' => '+0200',             // Swedish Summer
         'FST' => '+0200',             // French Summer
-        'BST' => '+0100',             // British Summer Time
         'ADT' => '-0300',             // Atlantic Daylight
         'EDT' => '-0400',             // Eastern Daylight
         'CDT' => '-0500',             // Central Daylight
