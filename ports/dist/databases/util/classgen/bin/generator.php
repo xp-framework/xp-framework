@@ -58,13 +58,20 @@ __
   // Get connection
   $dm= &DriverManager::getInstance();
   $dbo= &$dm->getConnection(sprintf(
-    '%s://%s:%s@%s/%s?autoconnect=1',
+    '%s://%s:%s@%s/%s',
     $dsn['scheme'],
     $dsn['user'],
     $dsn['pass'],
     $dsn['host'],
     $database
   ));
+
+  try(); {
+    $dbo->connect();
+  } if (catch('SQLException', $e)) {
+    $e->printStackTrace();
+    exit;
+  }
 
   // Create adapter instance
   $class= &XPClass::forName($adapters[$dsn['scheme']]);
