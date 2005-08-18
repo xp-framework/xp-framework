@@ -29,7 +29,7 @@
    !-->
   <xsl:variable name="typemap">
     <mapping for="xsd:string">string</mapping>
-    <mapping for="xsd:long">int</mapping>
+    <mapping for="xsd:long">xml.soap.types.SOAPLong</mapping>
     <mapping for="xsd:int">int</mapping>
     <mapping for="xsd:float">float</mapping>
     <mapping for="xsd:double">float</mapping>
@@ -91,9 +91,11 @@
    !
    ! @type   named
    ! @param  string name
+   ! @param  string postfix default ''
    !-->
   <xsl:template name="class">
     <xsl:param name="name"/>
+    <xsl:param name="postfix" select="''"/>
     
     <xsl:choose>
       <xsl:when test="contains($name, 'Service')">
@@ -103,6 +105,7 @@
         <xsl:value-of select="$name"/>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:value-of select="$postfix"/>
   </xsl:template>
 
   <!--
@@ -399,6 +402,88 @@
   </xsl:template>
 
   <!--
+   ! Template that matches a complexType node that has a subnode whose
+   ! name is "sequence"
+   !
+   ! @type   match
+   !-->
+  <xsl:template match="xsd:complexType[child::*[name() = 'sequence']]">
+    <xsl:call-template name="nextpart">
+      <xsl:with-param name="filename" select="@name"/>
+    </xsl:call-template>
+    <xsl:text><![CDATA[<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  /**
+   * Type wrapper
+   *
+   * @purpose  Specialized SOAP type
+   */
+  class ]]></xsl:text><xsl:value-of select="concat($prefix, @name)"/><xsl:text> extends Object {
+    var</xsl:text>
+    <xsl:for-each select="xsd:sequence/xsd:element">
+      $<xsl:value-of select="@name"/>
+      <xsl:if test="position() &lt; last()">,</xsl:if>
+    </xsl:for-each>
+    <xsl:text>;&#10;</xsl:text>
+    
+    <xsl:for-each select="xsd:sequence/xsd:element">
+
+      <!-- Getter -->
+      <xsl:text><![CDATA[
+    /**
+     * Retrieves ]]></xsl:text><xsl:value-of select="@name"/><xsl:text><![CDATA[
+     *
+     * @access  public
+     * @return  ]]></xsl:text>
+      <xsl:call-template name="xpdoc:argument">
+        <xsl:with-param name="type" select="@type"/>
+      </xsl:call-template>
+      <xsl:text>
+     */
+    function get</xsl:text>
+      <xsl:call-template name="ucfirst">
+        <xsl:with-param name="string" select="@name"/>
+      </xsl:call-template>
+      <xsl:text>() {
+      return $this-></xsl:text><xsl:value-of select="@name"/><xsl:text>;
+    }
+</xsl:text>
+      
+      <!-- Setter -->
+      <xsl:text><![CDATA[
+    /**
+     * Sets ]]></xsl:text><xsl:value-of select="@name"/><xsl:text><![CDATA[
+     *
+     * @access  public
+     * @param   ]]></xsl:text>
+      <xsl:call-template name="xpdoc:argument">
+        <xsl:with-param name="type" select="@type"/>
+      </xsl:call-template>
+      <xsl:value-of select="@name"/>
+      <xsl:text>
+     */
+    function set</xsl:text>
+      <xsl:call-template name="ucfirst">
+        <xsl:with-param name="string" select="@name"/>
+      </xsl:call-template>
+      <xsl:text>($</xsl:text><xsl:value-of select="@name"/><xsl:text>) {
+      $this-></xsl:text><xsl:value-of select="@name"/>
+      <xsl:text>= $</xsl:text>
+      <xsl:value-of select="@name"/><xsl:text>;
+    }
+</xsl:text>
+    </xsl:for-each>
+    
+    <xsl:text><![CDATA[  }
+?>
+]]></xsl:text>
+  </xsl:template>
+
+  <!--
    ! Template that matches a complexType node
    !
    ! @type   match
@@ -468,8 +553,7 @@
    ! @type   match
    !-->
   <xsl:template match="wsdl:definitions">
-    <!-- TBI: complexType/xsd:complexContent, complexType/sequence -->
-    <xsl:variable name="types" select="wsdl:types/xsd:schema/xsd:complexType[child::*[name() = 'xsd:all']]"/>
+    <xsl:variable name="types" select="wsdl:types/xsd:schema/xsd:complexType[child::*[name() = 'sequence' or name() = 'xsd:all']]"/>
 
     <!-- User-defined types -->
     <xsl:apply-templates select="$types"/>
@@ -479,6 +563,7 @@
       <xsl:with-param name="filename">
         <xsl:call-template name="class">
           <xsl:with-param name="name" select="wsdl:service/@name"/>
+          <xsl:with-param name="postfix" select="'Client'"/>
         </xsl:call-template>
       </xsl:with-param>
     </xsl:call-template>
