@@ -115,7 +115,7 @@
      * @return  string
      */
     function getTagName() { 
-      return 'jar';
+      return 'extension';
     }
 
     /**
@@ -127,6 +127,7 @@
     function getTagAttributes() { 
       return array_merge(
         array('href' => $this->href), 
+        $this->name ? array('name' => $this->name) : array(),
         $this->version ? array('version' => $this->version) : array()
       );
     }
