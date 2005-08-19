@@ -123,40 +123,40 @@
       // Extract resources
       with ($this->_nodes['resources']= &$this->findFirst($this->root, 'resources')); {
         for ($i= 0, $s= sizeof($this->_nodes['resources']->children); $i < $s; $i++) {
-          $name= $this->_nodes['resources']->children[$i]->getName();
-          switch ($name) {
+          $node= &$this->_nodes['resources']->children[$i];
+          switch ($name= $node->getName()) {
             case 'j2se':    // The Java2 version required
               $this->resources[]= &new JnlpJ2seResource(
-                $this->_nodes['resources']->children[$i]->getAttribute('version')
+                $node->getAttribute('version')
               );
               break;
 
             case 'jar':     // A jar
               $this->resources[]= &new JnlpJarResource(
-                $this->_nodes['resources']->children[$i]->getAttribute('href'),
-                $this->_nodes['resources']->children[$i]->getAttribute('version')
+                $node->getAttribute('href'),
+                $node->getAttribute('version')
               );
               break;
             
             case 'property':
               $this->resources[]= &new JnlpPropertyResource(
-                $this->_nodes['resources']->children[$i]->getAttribute('name'),
-                $this->_nodes['resources']->children[$i]->getAttribute('value')
+                $node->getAttribute('name'),
+                $node->getAttribute('value')
               );
               break;
 
             case 'nativelib':
               $this->resources[]= &new JnlpJarResource(
-                $this->_nodes['resources']->children[$i]->getAttribute('href'),
-                $this->_nodes['resources']->children[$i]->getAttribute('version')
+                $node->getAttribute('href'),
+                $node->getAttribute('version')
               );
               break;              
 
             case 'extension':
               $this->resources[]= &new JnlpExtensionResource(
-                $this->_nodes['resources']->children[$i]->getAttribute('name'),
-                $this->_nodes['resources']->children[$i]->getAttribute('href'),
-                $this->_nodes['resources']->children[$i]->getAttribute('version')
+                $node->getAttribute('name'),
+                $node->getAttribute('href'),
+                $node->getAttribute('version')
               );
               break;              
 
