@@ -18,6 +18,7 @@
   /**
    * JNLP Document
    *
+   * @see      http://lopica.sourceforge.net/ref.html - JNLP Tag Reference
    * @purpose  Represents JNLP XML structure
    */
   class JnlpDocument extends Tree {
