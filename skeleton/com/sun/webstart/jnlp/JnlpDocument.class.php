@@ -10,7 +10,8 @@
     'com.sun.webstart.jnlp.JnlpApplicationDesc',
     'com.sun.webstart.jnlp.JnlpJ2seResource',
     'com.sun.webstart.jnlp.JnlpJarResource',
-    'com.sun.webstart.jnlp.JnlpPropertyResource'
+    'com.sun.webstart.jnlp.JnlpPropertyResource',
+    'com.sun.webstart.jnlp.JnlpExtensionResource'
   );
   
   define('JNLP_SPEC_1_PLUS',  '1.0+');
@@ -146,6 +147,14 @@
 
             case 'nativelib':
               $this->resources[]= &new JnlpJarResource(
+                $this->_nodes['resources']->children[$i]->getAttribute('href'),
+                $this->_nodes['resources']->children[$i]->getAttribute('version')
+              );
+              break;              
+
+            case 'extension':
+              $this->resources[]= &new JnlpExtensionResource(
+                $this->_nodes['resources']->children[$i]->getAttribute('name'),
                 $this->_nodes['resources']->children[$i]->getAttribute('href'),
                 $this->_nodes['resources']->children[$i]->getAttribute('version')
               );
