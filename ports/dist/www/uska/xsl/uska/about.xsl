@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!--
- ! Master stylesheet
+ ! About state
  !
  ! $Id: events.xsl 4970 2005-04-10 17:05:20Z kiesel $
  !-->
@@ -15,6 +15,14 @@
   <xsl:include href="layout.xsl"/>
 
   <xsl:template name="context">
+    <xsl:call-template name="default_subnavigation">
+      <xsl:with-param name="items">
+        <items>
+          <item href="{func:link('about/reports')}">Spielberichte</item>
+          <item href="{func:link('about/pictures')}">Fotos</item>
+        </items>
+      </xsl:with-param>
+    </xsl:call-template>
   </xsl:template>
   
   <xsl:template name="content">

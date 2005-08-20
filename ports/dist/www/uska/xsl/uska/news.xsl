@@ -18,10 +18,11 @@
   
   <xsl:template name="context">
     <xsl:if test="func:hasPermission('create_news') != ''">
-      <table class="sidebar" cellpadding="0" cellspacing="0" width="170">
-        <tr><td class="sidebar_head">Aktionen</td></tr>
-        <tr><td><a href="http://cms.uska.de">Artikel-Editor öffnen</a></td></tr>
-      </table>
+      <xsl:call-template name="default_subnavigation">
+        <xsl:with-param name="items">
+          <item href="http://cms.uska.de">Artikel-Editor öffnen</item>
+        </xsl:with-param>
+      </xsl:call-template>
     </xsl:if>
   </xsl:template>
   
@@ -51,7 +52,7 @@
           </a>
           <xsl:choose>
             <xsl:when test="position() = last()"/>
-            <xsl:when test="position() = last() - 1"> and </xsl:when>
+            <xsl:when test="position() = last() - 1"> und </xsl:when>
             <xsl:otherwise>, </xsl:otherwise>
           </xsl:choose>
         </xsl:for-each>        
@@ -63,13 +64,12 @@
   <xsl:template name="content">
     <xsl:variable name="entries" select="/formresult/entries/entry"/>
 
-    <h1>Die letzten News</h1>    
     <xsl:for-each select="exsl:node-set($entries)">
       <xsl:variable name="pos" select="position()"/>
       <xsl:if test="$pos = 1 or exsl:node-set($entries[$pos - 1])/date/yday != ./date/yday">
-        <h2 class="date">
+        <h3 class="date">
           <xsl:copy-of select="func:smartdate(date)"/>
-        </h2>
+        </h3>
       </xsl:if>
       <xsl:apply-templates select="."/>
       <br clear="all"/>
