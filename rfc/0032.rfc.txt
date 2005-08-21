@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel, friebe
 @created: Wed Jul 20 00:37:26 CEST 2005
-@status: draft
+@status: discussion, ends Sun, 28 Aug 2005 12:19:15 +0200
 @category: util.profiling.unittest
 
 Scope of Change
@@ -15,8 +15,6 @@ based features that will be introduces with JUnit 4.0.
 These annotations include
   . @expect
   . @timeout
-
-
 
 Rationale
 ---------
@@ -32,7 +30,7 @@ Functionality
 -------------
 The @expect annotation takes the name of the expected exception:
 <code>
-  #[@test, @expect('IllegalArgumentException')]
+  #[@test, @expect('lang.IllegalArgumentException')]
   function testMyFault() {
     $object= &new MyExceptionThrowingClass();
     $object->throwExpectedException();
@@ -72,6 +70,8 @@ Related documents
   http://www.beust.com/weblog/archives/000292.html
 - JUnit 4.0 (german)
   http://www.frankwestphal.de/JUnit4.0.html
+- Patch against util.profiling.unittest.TestCase
+  http://xp-framework.net/downloads/rfc0032.diff
 
 Comments
 --------
@@ -86,5 +86,14 @@ Comments
   for this.
   JUnit 4's @timeout annotation specifies the timeout in milliseconds.
   kiesel, Wed Jul 20 00:53:19 CEST 2005
+
+- the attached patch implements the @expect attribute; it does not implement
+  the timeout as I personally think that it is not of use enough. Someone
+  may come up with another patch or convince me:)
+  The @expect attribute has also been changed to take the fully qualified
+  classname of the exception class.
+  kiesel, Sun Aug 21 12:17:27 CEST 2005
+
+  
 
 <EOF>
