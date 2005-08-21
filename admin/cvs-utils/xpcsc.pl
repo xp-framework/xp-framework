@@ -326,13 +326,13 @@ while (@ARGV) {
     }
     
     # Check for omitted parameter types or their names
-    if ($comment && $_ =~ /\@param\s+([a-zA-Z0-9\.\&\[\]\-]+)?\s?(\w?)/) {
+    if ($comment && $_ =~ /\@param\s+([a-zA-Z0-9\.\&\[\]\-\*]+)?\s?(\w?)/) {
       if (!length($1)) { &warning("Your inline documentation misses the type of the parameter", WNOHINT); }
       if (!length($2)) { &warning("Your inline documentation misses the parameter's name", WNOHINT); }
     }
     
     # Check for inconsistent API doc #1
-    if ($comment && $_ =~/\@return\s+(\&)?([a-zA-Z0-9\.\&\-]+)?/) {
+    if ($comment && $_ =~/\@return\s+(\&)?([a-zA-Z0-9\.\&\-\*]+)?/) {
       if (!length($2)) { &warning("Your inline documentations misses the functions return type", WNOHINT); }
       if (length($2)) { $lastFuncIsRef= $1; }
     }
