@@ -32,9 +32,9 @@
      *
      * @access  public
      * @param   string href
-     * @param   string version
+     * @param   string version default NULL
      */
-    function __construct($href, $version) {
+    function __construct($href, $version= NULL) {
       $this->href= $href;
       $this->version= $version;
     }
