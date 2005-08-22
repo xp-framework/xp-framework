@@ -180,7 +180,7 @@
      * @access  public
      * @param   string base_dn
      * @param   string filter
-     * @param   array attributes default NULL
+     * @param   array attributes default array()
      * @param   int attrsonly default 0,
      * @param   int sizelimit default 0
      * @param   int timelimit default 0 Time limit, 0 means no limit
