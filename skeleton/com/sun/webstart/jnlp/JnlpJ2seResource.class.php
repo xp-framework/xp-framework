@@ -14,21 +14,40 @@
    *   <j2se version="1.4+"/>
    * </pre>
    *
+   * XML representation with more than one version
+   * <pre>
+   *   <j2se version="1.4 1.3 1.2.2+"/>
+   * </pre>
+   *
+   * XML representation with heap sizes:
+   * <pre>
+   *   <j2se version="1.3+" initial-heap-size="64m" max-heap-size="512m" />
+   * </pre>
+   *
    * @see      xp://com.sun.webstart.JnlpResource
    * @purpose  JNLP resource
    */
   class JnlpJ2seResource extends JnlpResource {
     var
-      $version   = '';
+      $version          = '',
+      $href             = '',
+      $initialHeapSize  = 0,
+      $maxHeapSize      = 0;
 
     /**
      * Constructor
      *
      * @access  public
      * @param   string version
+     * @param   string href default NULL
+     * @param   int initialHeapSize default 0
+     * @param   int maxHeapSize default 0
      */
-    function __construct($version) {
+    function __construct($version, $href= NULL, $initialHeapSize= 0, $maxHeapSize= 0) {
       $this->version= $version;
+      $this->href= $href;
+      $this->initialHeapSize= $initialHeapSize;
+      $this->maxHeapSize= $maxHeapSize;
     }
 
     /**
@@ -50,6 +69,66 @@
     function getVersion() {
       return $this->version;
     }
+    
+    /**
+     * Set Href
+     *
+     * @access  public
+     * @param   string href
+     */
+    function setHref($href) {
+      $this->href= $href;
+    }
+
+    /**
+     * Get Href
+     *
+     * @access  public
+     * @return  string
+     */
+    function getHref() {
+      return $this->href;
+    }
+
+    /**
+     * Set InitialHeapSize
+     *
+     * @access  public
+     * @param   int initialHeapSize
+     */
+    function setInitialHeapSize($initialHeapSize) {
+      $this->initialHeapSize= $initialHeapSize;
+    }
+
+    /**
+     * Get InitialHeapSize
+     *
+     * @access  public
+     * @return  int
+     */
+    function getInitialHeapSize() {
+      return $this->initialHeapSize;
+    }
+
+    /**
+     * Set MaxHeapSize
+     *
+     * @access  public
+     * @param   int maxHeapSize
+     */
+    function setMaxHeapSize($maxHeapSize) {
+      $this->maxHeapSize= $maxHeapSize;
+    }
+
+    /**
+     * Get MaxHeapSize
+     *
+     * @access  public
+     * @return  int
+     */
+    function getMaxHeapSize() {
+      return $this->maxHeapSize;
+    }
 
     /**
      * Get name
@@ -68,8 +147,12 @@
      * @return  array
      */
     function getTagAttributes() { 
-      return array('version' => $this->version);
+      return array_merge(
+        array('href' => $this->href), 
+        $this->href ? array('href' => $this->href) : array(),
+        $this->initialHeapSize ? array('initialHeapSize' => $this->initialHeapSize) : array(),
+        $this->maxHeapSize ? array('maxHeapSize' => $this->maxHeapSize) : array()
+      );
     }
-  
   }
 ?>

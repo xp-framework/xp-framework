@@ -127,7 +127,10 @@
           switch ($name= $node->getName()) {
             case 'j2se':    // The Java2 version required
               $this->resources[]= &new JnlpJ2seResource(
-                $node->getAttribute('version')
+                $node->getAttribute('version'),
+                $node->getAttribute('href'),
+                $node->getAttribute('initial-heap-size'),
+                $node->getAttribute('max-heap-size')
               );
               break;
 
