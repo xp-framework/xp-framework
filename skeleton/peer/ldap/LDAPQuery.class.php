@@ -21,6 +21,7 @@
       $attrs=       array(),
       $sizelimit=   0,
       $timelimit=   0,
+      $sort=        NULL,
       $deref=       FALSE;
       
     /**
@@ -250,6 +251,26 @@
     function getTimelimit() {
       return $this->timelimit;
     }
+
+    /**
+     * Set sort
+     *
+     * @access  public
+     * @param   mixed sort
+     */
+    function setSort($sort) {
+      $this->sort= $sort;
+    }
+
+    /**
+     * Get sort
+     *
+     * @access  public
+     * @return  array sort
+     */
+    function getSort() {
+      return (array)$this->sort;
+    }        
 
     /**
      * Set Deref
