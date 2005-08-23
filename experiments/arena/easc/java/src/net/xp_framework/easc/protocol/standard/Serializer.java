@@ -268,6 +268,25 @@ public class Serializer {
     public static void registerMapping(Class c, Invokeable<?, ?> i) {
         typeMap.put(c, i);
     }
+    
+    public static Invokeable<?, ?> invokeableFor(Class c) {
+        Invokeable<?, ?> i= null;
+        if (null != (i= typeMap.get(c))) return i;    // Direct hit
+        
+        // Search for classes the specified class is assignable from
+        for (Class key: typeMap.keySet()) {
+            if (!key.isAssignableFrom(c)) continue;
+
+            // Cache results. Next time around, we'll have a direct hit
+            i= typeMap.get(key);
+            typeMap.put(c, i);
+            return i;
+        }
+        
+        // Nothing found, return NULL. This will make representationOf()
+        // use the default object serialization mechanism (field-based)
+        return null;
+    }
 
     private static ArrayList<Field> classFields(Class c) {
         ArrayList<Field> list= new ArrayList<Field>();
@@ -296,7 +315,7 @@ public class Serializer {
             buffer.append("\";");
 
             f.setAccessible(true);
-            buffer.append(representationOf(f.get(o), typeMap.get(f.getType())));
+            buffer.append(representationOf(f.get(o), invokeableFor(f.getType())));
             numFields++;
         }
 
@@ -444,8 +463,8 @@ public class Serializer {
             Object key= it.next();
             Object value= h.get(key);
 
-            buffer.append(representationOf(key, typeMap.get(key.getClass())));
-            buffer.append(representationOf(value, typeMap.get(value.getClass())));
+            buffer.append(representationOf(key, invokeableFor(key.getClass())));
+            buffer.append(representationOf(value, invokeableFor(value.getClass())));
         }
         
         buffer.append("}");
@@ -456,23 +475,40 @@ public class Serializer {
         return "T:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
     }
     
-    @Handler public static String representationOf(Object o) throws Exception {
-        if (null == o) return "N;";
-        return representationOf(o, typeMap.get(o.getClass()));
-    }
-
     @Handler public static String representationOf(Object[] a) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + a.length + ":{");
 
         for (int i= 0; i < a.length; i++) {
             buffer.append("i:" + i + ";");
-            buffer.append(representationOf(a[i], typeMap.get(a[i].getClass())));
+            buffer.append(representationOf(a[i], invokeableFor(a[i].getClass())));
         }
 
         buffer.append("}");
         return buffer.toString();
     }
     
+    /**
+     * Fall-back method for default serialization. Not a handler since this 
+     * would lead to an infinite loop in the invokeableFor() method.
+     *
+     * @static
+     * @access  public
+     * @param   java.lang.Object o
+     * @return  java.lang.String
+     */
+    public static String representationOf(Object o) throws Exception {
+        if (null == o) return "N;";
+        return representationOf(o, invokeableFor(o.getClass()));
+    }
+    
+    /**
+     * Private helper method for public valueOf()
+     *
+     * @access  private
+     * @param   java.lang.String serialized
+     * @param   Length length
+     * @return  java.lang.Object
+     */
     private static Object valueOf(String serialized, Length length) throws Exception {
         return Token.valueOf(serialized.charAt(0)).handle(serialized, length);
     }
