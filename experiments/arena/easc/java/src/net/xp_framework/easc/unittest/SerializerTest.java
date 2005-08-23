@@ -8,11 +8,15 @@ package net.xp_framework.easc.unittest;
 import org.junit.Test;
 import org.junit.Ignore;
 import net.xp_framework.easc.unittest.Person;
+import net.xp_framework.easc.unittest.ITest;
 import net.xp_framework.easc.protocol.standard.Invokeable;
 import java.util.HashMap;
 import java.util.Date;
 import java.util.UUID;
 import java.util.Arrays;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationHandler;
 
 import static org.junit.Assert.*;
 import static net.xp_framework.easc.protocol.standard.Serializer.representationOf;
@@ -340,7 +344,34 @@ public class SerializerTest {
             representationOf(UUID.fromString("f0563880-3880-1056-9c5b-98814601ad8f")
         ));
     }
- 
+
+    /**
+     * Tests serialization of a proxy instance
+     *
+     * @see     net.xp_framework.easc.protocol.standard.Serializer#registerMapping
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOfProxy() throws Exception {
+        registerMapping(Proxy.class, new Invokeable<String, Proxy>() {
+            public String invoke(Proxy p) throws Exception {
+                return "I:" + p.getClass().getInterfaces()[0].getName() + ";";
+            }
+        }); 
+        assertEquals(
+            "I:net.xp_framework.easc.unittest.ITest;",
+            representationOf(Proxy.newProxyInstance(
+                ITest.class.getClassLoader(),
+                new Class[] { ITest.class },
+                new InvocationHandler() {
+                    public Object invoke(Object proxy, Method method, Object[] args) {
+                        return null;
+                    }
+                }
+            ))
+        );
+    }
+    
     /**
      * Tests serialization of null
      *
