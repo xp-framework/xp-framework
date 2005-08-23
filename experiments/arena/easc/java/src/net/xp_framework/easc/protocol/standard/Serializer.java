@@ -5,6 +5,7 @@
 
 package net.xp_framework.easc.protocol.standard;
 
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Method;
@@ -485,6 +486,21 @@ public class Serializer {
 
         buffer.append("}");
         return buffer.toString();
+    }
+    
+    
+    @Handler public static String representationOf(Proxy p) throws Exception {
+        StringBuffer serialized= new StringBuffer();
+        int numInterfaces= 0;
+
+        // Create list of all interfaces this proxy implements
+        for (Class i: p.getClass().getInterfaces()) {
+            serialized.append(i.getName()).append(',');
+            numInterfaces++;
+        }
+        serialized.setLength(serialized.length()- 1);
+
+        return "P:" + numInterfaces + ":" + serialized + ";";
     }
     
     /**

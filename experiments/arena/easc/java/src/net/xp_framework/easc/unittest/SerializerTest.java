@@ -353,21 +353,6 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void representationOfProxy() throws Exception {
-        registerMapping(Proxy.class, new Invokeable<String, Proxy>() {
-            public String invoke(Proxy p) throws Exception {
-                StringBuffer serialized= new StringBuffer();
-                int numInterfaces= 0;
-
-                // Create list of all interfaces this proxy implements
-                for (Class i: p.getClass().getInterfaces()) {
-                    serialized.append(i.getName()).append(',');
-                    numInterfaces++;
-                }
-                serialized.setLength(serialized.length()- 1);
-
-                return "P:" + numInterfaces + ":" + serialized + ";";
-            }
-        }); 
         assertEquals(
             "P:1:net.xp_framework.easc.unittest.ITest;",
             representationOf(Proxy.newProxyInstance(
