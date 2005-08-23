@@ -20,7 +20,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
 import net.xp_framework.easc.server.ServerThread;
-import net.xp_framework.easc.protocol.standard.ServerHandler;
+import net.xp_framework.easc.server.Handler;
 import net.xp_framework.easc.protocol.standard.Header;
 import net.xp_framework.easc.protocol.standard.MessageType;
 import net.xp_framework.easc.protocol.standard.Serializer;
@@ -35,6 +35,7 @@ import javax.naming.spi.InitialContextFactoryBuilder;
 import javax.naming.spi.InitialContextFactory;
 
 import static org.junit.Assert.*;
+import static net.xp_framework.easc.protocol.standard.Header.DEFAULT_MAGIC_NUMBER;
 
 /**
  * Test server
@@ -63,7 +64,32 @@ public class ServerTest {
 
         // Create server, set handler and start it!
         server= new ServerThread(new ServerSocket(TEST_PORT, 1, addr));
-        server.setHandler(new ServerHandler());
+        server.setHandler(new Handler() {
+            public void handle(DataInputStream in, DataOutputStream out) throws IOException {
+                while (true) {
+                    Header requestHeader= Header.readFrom(in);
+
+                    // Verify magic number
+                    if (DEFAULT_MAGIC_NUMBER != requestHeader.getMagicNumber()) {
+                        out.writeUTF("-ERR MAGIC");
+                        out.flush();
+                        break;
+                    }
+
+                    System.out.print(requestHeader.getMessageType() + " => ");
+                    Delegate delegate= requestHeader.getMessageType().delegateFrom(in);
+
+                    try {
+                        out.writeUTF("+OK " + delegate.getClass().getName() + ": " + Serializer.representationOf(delegate.invoke()));
+                    } catch (Exception e) {
+                        e.printStackTrace(System.err);
+                        out.writeUTF("-ERR " + e.getClass().getName());
+                    }
+
+                    out.flush();
+                }
+            }
+        });
         server.start();
         
         // Set up client socket
