@@ -20,7 +20,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
 import net.xp_framework.easc.server.ServerThread;
-import net.xp_framework.easc.server.Handler;
+import net.xp_framework.easc.protocol.standard.ServerHandler;
 import net.xp_framework.easc.protocol.standard.Header;
 import net.xp_framework.easc.protocol.standard.MessageType;
 import net.xp_framework.easc.protocol.standard.Serializer;
@@ -28,6 +28,7 @@ import net.xp_framework.easc.unittest.MockContextFactory;
 import net.xp_framework.easc.unittest.Person;
 import net.xp_framework.easc.unittest.ITest;
 import net.xp_framework.easc.server.Delegate;
+import net.xp_framework.easc.unittest.NullInvocationHandler;
 import javax.naming.InitialContext;
 import javax.naming.spi.NamingManager;
 import javax.naming.spi.InitialContextFactoryBuilder;
@@ -62,32 +63,7 @@ public class ServerTest {
 
         // Create server, set handler and start it!
         server= new ServerThread(new ServerSocket(TEST_PORT, 1, addr));
-        server.setHandler(new Handler() {
-            public void handle(DataInputStream in, DataOutputStream out) throws IOException {
-                while (true) {
-                    Header h= Header.readFrom(in);
-
-                    // Verify magic number
-                    if (Header.DEFAULT_MAGIC_NUMBER != h.getMagicNumber()) {
-                        out.writeUTF("-ERR MAGIC");
-                        out.flush();
-                        break;
-                    }
-                    
-                    System.out.print(h.getMessageType() + " => ");
-                    Delegate delegate= h.getMessageType().delegateFrom(in);
-                    
-                    try {
-                        out.writeUTF("+OK " + delegate.getClass().getName() + ": " + Serializer.representationOf(delegate.invoke()));
-                    } catch (Exception e) {
-                        e.printStackTrace(System.err);
-                        out.writeUTF("-ERR " + e.getClass().getName());
-                    }
-                    
-                    out.flush();
-                }
-            }
-        });
+        server.setHandler(new ServerHandler());
         server.start();
         
         // Set up client socket
@@ -107,11 +83,7 @@ public class ServerTest {
         ctx.bind("test/Interface", Proxy.newProxyInstance(
             ITest.class.getClassLoader(),
             new Class[] { ITest.class },
-            new InvocationHandler() {
-                public Object invoke(Object proxy, Method method, Object[] args) {
-                    return null;
-                }
-            }
+            new NullInvocationHandler()
         ));
         
     }
@@ -248,7 +220,7 @@ public class ServerTest {
      */
     @Test public void lookupProxy() throws Exception {
         assertAnswer(
-            "+OK net.xp_framework.easc.server.LookupDelegate: P:1:net.xp_framework.easc.unittest.ITest;", 
+            "+OK net.xp_framework.easc.server.LookupDelegate: P:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";s:52:\"net.xp_framework.easc.unittest.NullInvocationHandler\";}", 
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,
