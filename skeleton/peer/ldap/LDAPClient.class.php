@@ -229,7 +229,11 @@
       )))) {
         return throw(new LDAPException('Search failed', ldap_errno($this->_hdl)));
       }
-      
+
+      // Sort results by given sort attributes
+      foreach ($filter->getSort() as $sort) {
+        ldap_sort($this->_hdl, $res, $sort);
+      }
       return new LDAPSearchResult($this->_hdl, $res);
     }
     
