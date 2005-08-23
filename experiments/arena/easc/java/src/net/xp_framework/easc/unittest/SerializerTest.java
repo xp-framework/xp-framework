@@ -9,14 +9,13 @@ import org.junit.Test;
 import org.junit.Ignore;
 import net.xp_framework.easc.unittest.Person;
 import net.xp_framework.easc.unittest.ITest;
+import net.xp_framework.easc.unittest.NullInvocationHandler;
 import net.xp_framework.easc.protocol.standard.Invokeable;
 import java.util.HashMap;
 import java.util.Date;
 import java.util.UUID;
 import java.util.Arrays;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationHandler;
 
 import static org.junit.Assert.*;
 import static net.xp_framework.easc.protocol.standard.Serializer.representationOf;
@@ -354,15 +353,11 @@ public class SerializerTest {
      */
     @Test public void representationOfProxy() throws Exception {
         assertEquals(
-            "P:1:net.xp_framework.easc.unittest.ITest;",
+            "P:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";s:52:\"net.xp_framework.easc.unittest.NullInvocationHandler\";}",
             representationOf(Proxy.newProxyInstance(
                 ITest.class.getClassLoader(),
                 new Class[] { ITest.class },
-                new InvocationHandler() {
-                    public Object invoke(Object proxy, Method method, Object[] args) {
-                        return null;
-                    }
-                }
+                new NullInvocationHandler()
             ))
         );
     }
@@ -512,5 +507,17 @@ public class SerializerTest {
             new Date(1122369782000L), 
             valueOf("T:1122369782;")
         );
+    }
+
+    /**
+     * Tests deserialization of a proxy instance (identified by "P" token)
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void valueOfProxy() throws Exception {
+        Proxy p= (Proxy)valueOf("P:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";s:52:\"net.xp_framework.easc.unittest.NullInvocationHandler\";}");
+        assertEquals(p.getClass().getInterfaces()[0], ITest.class);
+        assertEquals(Proxy.getInvocationHandler(p).getClass(), NullInvocationHandler.class);
     }
 }

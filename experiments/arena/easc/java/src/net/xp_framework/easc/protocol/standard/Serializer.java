@@ -9,6 +9,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Date;
@@ -144,7 +145,38 @@ public class Serializer {
                 length.value= offset + 1;
                 return h;
             }
-        }, 
+        },
+        
+        T_PROXY {
+            public Object handle(String serialized, Length length) throws Exception {
+                String interfaceslength= serialized.substring(2, serialized.indexOf(':', 2));
+                int parsed= Integer.parseInt(interfaceslength);
+                int offset= interfaceslength.length() + 2 + 2;
+                Class[] interfaces= new Class[parsed];
+                Class invocationHandlerClass= null;
+    
+                try {
+                    // Load interfaces
+                    for (int i= 0; i < parsed; i++) {
+                        interfaces[i]= Class.forName((String)Serializer.valueOf(serialized.substring(offset), length)); 
+                        offset+= length.value;
+                    }
+                
+                    // Load invocationhandler
+                    invocationHandlerClass= Class.forName((String)Serializer.valueOf(serialized.substring(offset), length));
+                    offset+= length.value;
+                } catch (ClassNotFoundException e) {
+                    throw new SerializationException(e.getMessage());
+                }
+                
+                length.value= offset + 1;
+                return Proxy.newProxyInstance(
+                    interfaces[0].getClassLoader(), 
+                    interfaces, 
+                    (InvocationHandler)invocationHandlerClass.newInstance()
+                );
+            }
+        },
 
         T_OBJECT {
             public Object handle(String serialized, Length length) throws Exception { 
@@ -242,6 +274,7 @@ public class Serializer {
             map.put('T', T_DATE);
             map.put('B', T_BYTE);
             map.put('S', T_SHORT);
+            map.put('P', T_PROXY);
         }
       
         public static Token valueOf(char c) throws Exception {
@@ -495,12 +528,14 @@ public class Serializer {
 
         // Create list of all interfaces this proxy implements
         for (Class i: p.getClass().getInterfaces()) {
-            serialized.append(i.getName()).append(',');
+            serialized.append(representationOf(i.getName()));
             numInterfaces++;
         }
-        serialized.setLength(serialized.length()- 1);
+        
+        // Append invocationhandler's class name
+        serialized.append(representationOf(Proxy.getInvocationHandler(p).getClass().getName()));
 
-        return "P:" + numInterfaces + ":" + serialized + ";";
+        return "P:" + numInterfaces + ":{" + serialized + "}";
     }
     
     /**
