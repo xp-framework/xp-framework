@@ -8,11 +8,18 @@
   <property name="build.srcdir" value="src"/>
   <property name="build.destdir" value="build"/>
   <property name="build.compiler" value="javac1.5"/>
+
+  <property name="dist.dir" value="dist"/>
+  <property name="dist.resourcesdir" value="resources"/>
+  <property name="dist.name" value="xp-easc"/>
+  <property name="dist.version" value="1.0"/>
   
   <path id="classpath.build">
     <pathelement path="${classpath}"/>
     <fileset dir="lib">
       <include name="junit.jar"/>
+      <include name="jboss-system.jar"/>
+      <include name="jboss-jmx.jar"/>
     </fileset>
   </path>
 
@@ -62,6 +69,9 @@
 
 - test
   Runs all tests
+
+- jboss-sar
+  Creates a JBoss SAR (Service Application Archive)
     </echo>
   </target>
 
@@ -123,4 +133,21 @@
     </java>
   </target>
 
+  <!-- JBoss SAR -->
+  <target name="jboss-sar" depends="compile">
+    <echo>===&gt; Creating JBoss MBean Service Application Archive</echo>
+
+    <mkdir dir="${dist.dir}"/>
+
+    <!-- Clean up first -->
+    <delete>
+	  <fileset dir="${dist.dir}" includes="**/*"/>
+    </delete>
+
+    <!-- Generate MBean SAR -->
+    <jar jarfile="${dist.dir}/${dist.name}-${dist.version}.sar">
+	  <zipfileset dir="${dist.resourcesdir}" includes="jboss-service.xml" prefix="META-INF"/>
+	  <fileset dir="${build.destdir}" includes="net/xp_framework/easc/**"/>
+    </jar>
+  </target>
 </project>
