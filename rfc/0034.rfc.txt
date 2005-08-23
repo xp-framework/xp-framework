@@ -1,0 +1,89 @@
+RFC XXXX: 
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: bayer
+@created: Tue Aug 23 17:09:27 CEST 2005
+@status: draft
+@category: util
+
+Scope of Change
+---------------
+Add a new class "TimeSpan" to package util,
+add new method "diff(&util.Date, &util.Date)" to util.DateUtil.
+This will enable users to describe spans of time
+in a more comfortable way than using unix timestamps, and will
+provide a simple way to compare Date objects.
+
+Rationale
+---------
+Often spans of time need to be  instances of util.Date need to be 
+compared, until now users have to diff the unix timestamps the
+util.Date class should hide manually.
+
+Functionality
+-------------
+The TimeSpan class will store an amount of seconds equal to
+the span of time, but will provide methods for accessing this
+amount of seconds in a "nicer" way, similar to util.Date:
+
+http://satansoft.de/xp/TimeSpan.class.txt
+
+the names of those methods may be worth a discussion. I have 
+written a small test script that uses the first command line
+argument to instantiate a TimeSpan class and output some tests:
+
+http://satansoft.de/xp/timespantest.php.txt
+
+I also created a patch for the new DateUtil functionality:
+
+http://satansoft.de/xp/DateUtil.class.php-rfc0034.patch
+
+
+7c7
+<   uses ('util.Date');
+---
+>   uses ('util.Date', 'util.TimeSpan');
+186a187,201
+> 
+>     /**
+>      * returns a TimeSpan representing the difference 
+>      * between the two given Date objects
+>      *
+>      * @model   static
+>      * @access  public
+>      * @param   &util.Date d1
+>      * @param   &util.Date d2
+>      * @return  &util.TimeSpan
+>      */
+>     function &diff(&$d1, &$d2) {
+>       return new TimeSpan($d1->getTime()-$d2->getTime());  
+>     }
+> 
+
+
+Security considerations
+-----------------------
+none that I know of
+
+Speed impact
+------------
+Due to the fact that TimeSpan doesn't cache any of the
+'nice' members it might be a tad bit slow, but it should
+not be measurable
+
+Dependencies
+------------
+util.Date
+util.DateUtil
+
+
+Related documents
+-----------------
+none
+
+
+Comments
+--------
+
+<EOF>
