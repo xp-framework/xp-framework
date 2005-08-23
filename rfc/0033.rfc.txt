@@ -58,6 +58,9 @@ Related documents
 -----------------
 - RFC #0016: Metadata for PHP4
 
+- http://xp-framework.net/downloads/0033.rfc.diff
+  Implementing patch
+
 Comments
 --------
 n/a
