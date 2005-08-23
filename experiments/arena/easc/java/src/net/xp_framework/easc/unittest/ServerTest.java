@@ -16,6 +16,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Date;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationHandler;
 import net.xp_framework.easc.server.ServerThread;
 import net.xp_framework.easc.server.Handler;
 import net.xp_framework.easc.protocol.standard.Header;
@@ -23,6 +26,7 @@ import net.xp_framework.easc.protocol.standard.MessageType;
 import net.xp_framework.easc.protocol.standard.Serializer;
 import net.xp_framework.easc.unittest.MockContextFactory;
 import net.xp_framework.easc.unittest.Person;
+import net.xp_framework.easc.unittest.ITest;
 import net.xp_framework.easc.server.Delegate;
 import javax.naming.InitialContext;
 import javax.naming.spi.NamingManager;
@@ -100,6 +104,16 @@ public class ServerTest {
         InitialContext ctx= new InitialContext();
         ctx.bind("test/DateObject", new Date(1123681953000L));
         ctx.bind("test/PersonObject", new Person());
+        ctx.bind("test/Interface", Proxy.newProxyInstance(
+            ITest.class.getClassLoader(),
+            new Class[] { ITest.class },
+            new InvocationHandler() {
+                public Object invoke(Object proxy, Method method, Object[] args) {
+                    return null;
+                }
+            }
+        ));
+        
     }
 
     /**
@@ -221,6 +235,31 @@ public class ServerTest {
             new Writer() {
                 public void writeTo(DataOutputStream out) throws IOException {
                     out.writeUTF("test/PersonObject");
+                }
+            }
+        );
+    }
+
+    /**
+     * Tests lookup of a Proxy instance
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void lookupProxy() throws Exception {
+        assertAnswer(
+            "+OK net.xp_framework.easc.server.LookupDelegate: P:1:net.xp_framework.easc.unittest.ITest;", 
+            new Header(
+                Header.DEFAULT_MAGIC_NUMBER,
+                (byte)1,
+                (byte)0,
+                MessageType.Lookup,
+                true,
+                0
+            ),
+            new Writer() {
+                public void writeTo(DataOutputStream out) throws IOException {
+                    out.writeUTF("test/Interface");
                 }
             }
         );
