@@ -72,7 +72,7 @@ public class ServerTest {
                     // Verify magic number
                     if (DEFAULT_MAGIC_NUMBER != requestHeader.getMagicNumber()) {
                         out.writeUTF("-ERR MAGIC");
-                        out.flush();
+                        out.close();
                         break;
                     }
 
@@ -247,7 +247,10 @@ public class ServerTest {
     }
 
     /**
-     * Test that sending a wrong magic number will return an error
+     * Test that sending a wrong magic number will return an error. 
+     *
+     * Note: Must be the last test in this class for the server will 
+     * close the connection!
      *
      * @access  public
      * @throws  java.lang.Exception
