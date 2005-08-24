@@ -231,7 +231,7 @@
       }
 
       // Sort results by given sort attributes
-      foreach ($filter->getSort() as $sort) {
+      if ($filter->getSort()) foreach ($filter->getSort() as $sort) {
         ldap_sort($this->_hdl, $res, $sort);
       }
       return new LDAPSearchResult($this->_hdl, $res);

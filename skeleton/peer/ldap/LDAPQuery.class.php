@@ -21,7 +21,7 @@
       $attrs=       array(),
       $sizelimit=   0,
       $timelimit=   0,
-      $sort=        NULL,
+      $sort=        FALSE,
       $deref=       FALSE;
       
     /**
@@ -253,10 +253,13 @@
     }
 
     /**
-     * Set sort
+     * Set sort fields; the field(s) to sort on must be
+     * used in the filter, as well, for the sort to take
+     * place at all.
      *
+     * @see     php://ldap_sort
      * @access  public
-     * @param   mixed sort
+     * @param   string[] sort array of fields to sort with
      */
     function setSort($sort) {
       $this->sort= $sort;
