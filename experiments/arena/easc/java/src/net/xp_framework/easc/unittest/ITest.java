@@ -11,6 +11,6 @@ package net.xp_framework.easc.unittest;
  * @purpose Base for Proxy generator
  */
 public interface ITest {
-    public void hello();
-    public void hello(String name);
+    public Object hello();
+    public Object hello(String name);
 }
