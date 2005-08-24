@@ -99,8 +99,16 @@ public enum MessageType {
         public Delegate delegateFrom(DataInputStream in) throws IOException {
             long objectId= in.readLong();
             String methodName= in.readUTF();
-            Object[] arguments= new Object[] { };
-            return new CallDelegate(objectId, methodName, arguments);
+            String serialized= in.readUTF();
+            HashMap arguments= null;
+            
+            try {
+                arguments= (HashMap)Serializer.valueOf(serialized);
+            } catch (Exception e) {
+                throw new IOException("Serialized data corrupt: " + e.getMessage());
+            }
+
+            return new CallDelegate(objectId, methodName, arguments.values().toArray());
         }
     },
 

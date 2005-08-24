@@ -257,6 +257,7 @@ public class ServerTest {
                 public void writeTo(DataOutputStream out) throws IOException {
                     out.writeLong(1);
                     out.writeUTF("hello");
+                    out.writeUTF("a:1:{i:0;s:5:\"World\";}");
                 }
             }
         );
@@ -284,6 +285,7 @@ public class ServerTest {
                 public void writeTo(DataOutputStream out) throws IOException {
                     out.writeLong(1);
                     out.writeUTF("nonExistant");
+                    out.writeUTF("a:1:{i:0;s:5:\"World\";}");
                 }
             }
         );
