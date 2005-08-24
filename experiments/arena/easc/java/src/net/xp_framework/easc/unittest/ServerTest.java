@@ -71,21 +71,42 @@ public class ServerTest {
 
                     // Verify magic number
                     if (DEFAULT_MAGIC_NUMBER != requestHeader.getMagicNumber()) {
-                        out.writeUTF("-ERR MAGIC");
+                        new Header(
+                            Header.DEFAULT_MAGIC_NUMBER,
+                            (byte)1,
+                            (byte)0,
+                            MessageType.Error,
+                            true,
+                            0
+                        ).writeTo(out);
+                        out.writeUTF("Magic number mismatch");
                         out.close();
                         break;
                     }
 
                     System.out.print(requestHeader.getMessageType() + " => ");
                     Delegate delegate= requestHeader.getMessageType().delegateFrom(in);
-
+                    String serialized= null;
+                    MessageType response= null;
                     try {
-                        out.writeUTF("+OK " + delegate.getClass().getName() + ": " + Serializer.representationOf(delegate.invoke()));
+                        serialized= Serializer.representationOf(delegate.invoke());
+                        response= MessageType.Value;
                     } catch (Exception e) {
                         e.printStackTrace(System.err);
-                        out.writeUTF("-ERR " + e.getClass().getName());
+                        response= MessageType.Exception;
+                        serialized= Serializer.representationOf(e.getClass().getName());
                     }
 
+                    // Write response
+                    new Header(
+                        Header.DEFAULT_MAGIC_NUMBER,
+                        (byte)1,
+                        (byte)0,
+                        response,
+                        true,
+                        serialized.length()
+                    ).writeTo(out);
+                    out.writeUTF(serialized);
                     out.flush();
                 }
             }
@@ -129,28 +150,35 @@ public class ServerTest {
      * Helper method
      *
      * @access  protected
-     * @param   java.lang.String expected
+     * @param   net.xp_framework.easc.protocol.standard.MessageType expectedType
+     * @param   java.lang.String expectedData
      * @param   net.xp_framework.easc.protocol.standard.Header expected
      * @param   Writer writer
      */
-    protected void assertAnswer(String expected, Header header, Writer writer) throws Exception {
-        DataOutputStream out= new DataOutputStream(client.getOutputStream());
+    protected void assertAnswer(MessageType expectedType, String expectedData, Header header, Writer writer) throws Exception {
         
+        // Write request
+        DataOutputStream out= new DataOutputStream(client.getOutputStream());
         header.writeTo(out);
         if (null != writer) writer.writeTo(out);
         out.flush();
-        assertEquals(expected, (new DataInputStream(client.getInputStream())).readUTF());
+        
+        // Read response
+        DataInputStream in= new DataInputStream(client.getInputStream());
+        assertEquals(expectedType, Header.readFrom(in).getMessageType());
+        if (null != expectedData) assertEquals(expectedData, in.readUTF());
     }
 
     /**
      * Helper method
      *
      * @access  protected
-     * @param   java.lang.String expected
-     * @param   net.xp_framework.easc.protocol.standard.Header expected
+     * @param   net.xp_framework.easc.protocol.standard.MessageType expectedType
+     * @param   java.lang.String expectedData
+     * @param   net.xp_framework.easc.protocol.standard.Header header
      */
-    protected void assertAnswer(String expected, Header header) throws Exception {
-        assertAnswer(expected, header, null);
+    protected void assertAnswer(MessageType expectedType, String expectedData, Header header) throws Exception {
+        assertAnswer(expectedType, expectedData, header, null);
     }
 
     /**
@@ -160,14 +188,18 @@ public class ServerTest {
      * @throws  java.lang.Exception
      */
     @Test public void initializeMessage() throws Exception {
-        assertAnswer("+OK net.xp_framework.easc.server.InitializationDelegate: b:1;", new Header(
-            Header.DEFAULT_MAGIC_NUMBER,
-            (byte)1,
-            (byte)0,
-            MessageType.Initialize,
-            true,
-            0
-        ));
+        assertAnswer(
+            MessageType.Value,
+            "b:1;", 
+            new Header(
+                Header.DEFAULT_MAGIC_NUMBER,
+                (byte)1,
+                (byte)0,
+                MessageType.Initialize,
+                true,
+                0
+            )
+        );
     }
 
     /**
@@ -178,7 +210,8 @@ public class ServerTest {
      */
     @Test public void lookupDate() throws Exception {
         assertAnswer(
-            "+OK net.xp_framework.easc.server.LookupDelegate: T:1123681953;", 
+            MessageType.Value,
+            "T:1123681953;", 
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,
@@ -204,7 +237,8 @@ public class ServerTest {
      */
     @Test public void lookupPerson() throws Exception {
         assertAnswer(
-            "+OK net.xp_framework.easc.server.LookupDelegate: O:37:\"net.xp_framework.easc.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}", 
+            MessageType.Value,
+            "O:37:\"net.xp_framework.easc.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}", 
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,
@@ -229,7 +263,8 @@ public class ServerTest {
      */
     @Test public void lookupProxy() throws Exception {
         assertAnswer(
-            "+OK net.xp_framework.easc.server.LookupDelegate: P:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";s:52:\"net.xp_framework.easc.unittest.NullInvocationHandler\";}", 
+            MessageType.Value,
+            "P:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";s:52:\"net.xp_framework.easc.unittest.NullInvocationHandler\";}", 
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,
@@ -256,13 +291,17 @@ public class ServerTest {
      * @throws  java.lang.Exception
      */
     @Test public void wrongMagicNumber() throws Exception {
-        assertAnswer("-ERR MAGIC", new Header(
-            -1,
-            (byte)1,
-            (byte)0,
-            MessageType.Lookup,
-            true,
-            0
-        ));
+        assertAnswer(
+            MessageType.Error,
+            "Magic number mismatch", 
+            new Header(
+                -1,
+                (byte)1,
+                (byte)0,
+                MessageType.Lookup,
+                true,
+                0
+            )
+        );
     }
 }
