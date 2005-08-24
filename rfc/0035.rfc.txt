@@ -55,6 +55,8 @@ Example (abbreviated):
   );
   
   // Add an interceptor for the base "/check/only/in/this/path", idea #3
+  // In this example, we'd only check between 3 AM and 4 AM (maybe because
+  // we have an extensive indexer search or backup running)
   $storage->addInterceptorFor(
     array(new PathCondition('/check/only/in/this/path'), new TimeCondition('03:00', '04:00')),
     new DeleteInterceptor()
