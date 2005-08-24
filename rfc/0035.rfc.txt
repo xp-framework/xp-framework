@@ -21,12 +21,21 @@ Functionality
 An interceptor can throw an exception to indicate that processing with
 this command is not acceptable.
 
+Interceptable actions
+~~~~~~~~~~~~~~~~~~~~~
+- Creating an entry (collection or element)
+- Reading an element
+- Modifying an element
+- Renaming an entry (collection or element)
+- Deleting an entry (collection or element)
+- Changing an entry (collection or element)'s permissions
+- Changing a directory
+
 Example (abbreviated):
 <?php
-  class DeleteInterceptor extends Object {
+  class DeleteInterceptor extends DefaultInterceptor {
     
-    #[@intercepts(commands= array('delete'))[
-    function checkAssociation($command, &$element, $args= array()) {
+    function onDelete(&$entry) {
       if ($this->conn->query('...')) return throw(new IllegalStateException('...'));
 
       return TRUE;
@@ -36,6 +45,10 @@ Example (abbreviated):
   $storage->addInterceptor(new DeleteInterceptor());
   $storage->addInterceptorFor('/check/only/in/this/path', new DeleteInterceptor());
 ?>
+
+Note: The DefaultInterceptor class implements the peer.ftp.server.Interceptor 
+interface and returns TRUE to all methods so that subclasses need not redefine
+them if they desire no actions.
 
 Security considerations
 -----------------------
