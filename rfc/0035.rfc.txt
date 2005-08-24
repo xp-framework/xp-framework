@@ -63,7 +63,10 @@ Example (abbreviated):
   );
 ?>
 
-Note: The DefaultInterceptor class implements the peer.ftp.server.intercept.Interceptor 
+Note: The DefaultInterceptor class implements the 
+
+  peer.ftp.server.intercept.StorageActionInterceptor 
+  
 interface and returns TRUE to all methods so that subclasses need not redefine
 them if they desire no actions.
 
