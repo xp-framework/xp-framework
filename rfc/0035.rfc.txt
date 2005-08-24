@@ -21,6 +21,22 @@ Functionality
 An interceptor can throw an exception to indicate that processing with
 this command is not acceptable.
 
+Example (abbreviated):
+<?php
+  class DeleteInterceptor extends Object {
+    
+    #[@intercepts(commands= array('delete'))[
+    function checkAssociation($command, &$element, $args= array()) {
+      if ($this->conn->query('...')) return throw(new IllegalStateException('...'));
+
+      return TRUE;
+    }
+  }
+  
+  $storage->addInterceptor(new DeleteInterceptor());
+  $storage->addInterceptorFor('/check/only/in/this/path', new DeleteInterceptor());
+?>
+
 Security considerations
 -----------------------
 n/a
