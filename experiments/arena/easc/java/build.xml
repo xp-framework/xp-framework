@@ -64,6 +64,9 @@
 - test.header
   Runs net.xp_framework.easc.unittest.HeaderTest
 
+- test.invocationhandlers
+  Runs net.xp_framework.easc.unittest.InvocationHandlerTest
+  
 - test.server
   Runs net.xp_framework.easc.unittest.ServerTest
 
@@ -110,7 +113,16 @@
       <classpath refid="classpath.run"/>
     </java>
   </target>
-  
+
+  <!-- Invocation handlers -->
+  <target name="test.invocationhandlers" depends="compile">
+    <echo>===&gt; Testing invocation handlers</echo>
+    <java classname="org.junit.runner.JUnitCore">
+      <arg value="net.xp_framework.easc.unittest.InvocationHandlerTest"/>
+      <classpath refid="classpath.run"/>
+    </java>
+  </target>
+    
   <!-- Server -->
   <target name="test.server" depends="compile">
     <echo>===&gt; Testing server integration</echo>
@@ -119,7 +131,7 @@
       <classpath refid="classpath.run"/>
     </java>
   </target>
-  
+
   <!-- All of the above in one -->
   <target name="test" depends="compile">
     <echo>===&gt; Running all tests</echo>
@@ -128,6 +140,7 @@
       <arg value="net.xp_framework.easc.unittest.MethodMatcherTest"/>
       <arg value="net.xp_framework.easc.unittest.TypeTest"/>
       <arg value="net.xp_framework.easc.unittest.HeaderTest"/>
+      <arg value="net.xp_framework.easc.unittest.InvocationHandlerTest"/>
       <arg value="net.xp_framework.easc.unittest.ServerTest"/>
       <classpath refid="classpath.run"/>
     </java>
