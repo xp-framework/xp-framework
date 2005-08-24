@@ -42,11 +42,26 @@ Example (abbreviated):
     }
   }
   
+  // Add a global interceptor (applies to entire storage)
   $storage->addInterceptor(new DeleteInterceptor());
+  
+  // Add an interceptor for the base "/check/only/in/this/path", idea #1
   $storage->addInterceptorFor('/check/only/in/this/path', new DeleteInterceptor());
+  
+  // Add an interceptor for the base "/check/only/in/this/path", idea #2
+  $storage->addInterceptorFor(
+    new PathCondition('/check/only/in/this/path'),
+    new DeleteInterceptor()
+  );
+  
+  // Add an interceptor for the base "/check/only/in/this/path", idea #3
+  $storage->addInterceptorFor(
+    array(new PathCondition('/check/only/in/this/path'), new TimeCondition('03:00', '04:00')),
+    new DeleteInterceptor()
+  );
 ?>
 
-Note: The DefaultInterceptor class implements the peer.ftp.server.Interceptor 
+Note: The DefaultInterceptor class implements the peer.ftp.server.intercept.Interceptor 
 interface and returns TRUE to all methods so that subclasses need not redefine
 them if they desire no actions.
 
