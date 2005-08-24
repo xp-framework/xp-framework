@@ -14,12 +14,20 @@ interceptors that can "veto" FTP commands.
 
 Rationale
 ---------
-Example: Prohibit deletion of a file that is referenced elsewhere.
+In some cases, especially when working with more systems to set up a
+FTP storage (e.g. filesystem and database), it's necessary to do
+additional checks when modifying the storage (e.g. renaming a file,
+uploading/replacing a file).
+Further this can be used to do some permission checks using other
+systems (e.g. LDAP or databases).
 
 Functionality
 -------------
 An interceptor can throw an exception to indicate that processing with
-this command is not acceptable.
+this command is not acceptable and the command will be aborted. When
+throwing an exception an additional error message can be passed to the
+FTP server which sends it to the client to clarify what the problem is
+and why the command has been aborted.
 
 Interceptable actions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -33,6 +41,27 @@ Interceptable actions
 
 Example (abbreviated):
 <?php
+
+  // Interface class
+  class StorageActionInterceptor extends Interface {
+  
+    function onDelete(&$entry) { }
+  
+    function onCreate(&$entry) { }
+    
+    ...
+  }
+  
+  // Default interceptor which implements all functions returning TRUE
+  class DefaultInterceptor {
+  
+    function onCreate() { return TRUE; }
+    
+    ...
+    
+  } implements('peer.ftp.server.intercept.StorageActionInterceptor'); 
+
+  // Special interceptor for delete command
   class DeleteInterceptor extends DefaultInterceptor {
     
     function onDelete(&$entry) {
@@ -69,6 +98,18 @@ Note: The DefaultInterceptor class implements the
   
 interface and returns TRUE to all methods so that subclasses need not redefine
 them if they desire no actions.
+
+Interceptor priority
+~~~~~~~~~~~~~~~~~~~~
+
+It's possible to add more than one interceptors to a storage. They'll be
+invoked in the same order as added to the storage. If an interceptor
+returns FALSE - indicating the command should be aborted - the following
+interceptors will not be invoked!
+
+Conditional interceptors are only invoked, when all the conditions match
+or returns TRUE. If any of the condition fails the interceptor will not
+be invoked.
 
 Security considerations
 -----------------------
