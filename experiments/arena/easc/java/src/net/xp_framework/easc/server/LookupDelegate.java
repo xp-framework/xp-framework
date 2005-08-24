@@ -6,9 +6,10 @@
 package net.xp_framework.easc.server;
 
 import net.xp_framework.easc.server.Delegate;
-import javax.naming.Context;
+import java.lang.reflect.Proxy;
 import javax.naming.InitialContext;
-import java.util.Properties;
+import net.xp_framework.easc.server.ProxyMap;
+import net.xp_framework.easc.server.ProxyWrapper;
 
 public class LookupDelegate implements Delegate {
     String jndiName;
@@ -17,7 +18,14 @@ public class LookupDelegate implements Delegate {
         this.jndiName= jndiName;
     }
 
-    public Object invoke() throws Exception {
-        return (new InitialContext()).lookup(this.jndiName);
+    public Object invoke(ProxyMap map) throws Exception {
+        Object o= (new InitialContext()).lookup(this.jndiName);
+        
+        if (Proxy.isProxyClass(o.getClass())) {
+            long identifier= map.put(this.jndiName, o);
+            return new ProxyWrapper(identifier, o);
+        }
+        
+        return o;
     }
 }

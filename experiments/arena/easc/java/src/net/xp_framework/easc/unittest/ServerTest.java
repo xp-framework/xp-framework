@@ -218,7 +218,7 @@ public class ServerTest {
     @Test public void lookupProxy() throws Exception {
         assertAnswer(
             MessageType.Value,
-            "P:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";s:52:\"net.xp_framework.easc.unittest.NullInvocationHandler\";}", 
+            "I:1:P:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";s:52:\"net.xp_framework.easc.unittest.NullInvocationHandler\";}", 
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,
@@ -230,6 +230,60 @@ public class ServerTest {
             new Writer() {
                 public void writeTo(DataOutputStream out) throws IOException {
                     out.writeUTF("test/Interface");
+                }
+            }
+        );
+    }
+
+    /**
+     * Tests method call on object id #1 (has been "created" by lookupProxy() before).
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void helloMethodCall() throws Exception {
+        assertAnswer(
+            MessageType.Value,
+            "N;",
+            new Header(
+                Header.DEFAULT_MAGIC_NUMBER,
+                (byte)1,
+                (byte)0,
+                MessageType.Call,
+                true,
+                0
+            ),
+            new Writer() {
+                public void writeTo(DataOutputStream out) throws IOException {
+                    out.writeLong(1);
+                    out.writeUTF("hello");
+                }
+            }
+        );
+    }
+
+    /**
+     * Tests method call on object id #1 (has been "created" by lookupProxy() before).
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void nonExistantMethodCall() throws Exception {
+        assertAnswer(
+            MessageType.Exception,
+            "O:31:\"java.lang.NoSuchMethodException\":0:{}",
+            new Header(
+                Header.DEFAULT_MAGIC_NUMBER,
+                (byte)1,
+                (byte)0,
+                MessageType.Call,
+                true,
+                0
+            ),
+            new Writer() {
+                public void writeTo(DataOutputStream out) throws IOException {
+                    out.writeLong(1);
+                    out.writeUTF("nonExistant");
                 }
             }
         );

@@ -97,7 +97,10 @@ public enum MessageType {
     
     Call {
         public Delegate delegateFrom(DataInputStream in) throws IOException {
-            return new CallDelegate();
+            long objectId= in.readLong();
+            String methodName= in.readUTF();
+            Object[] arguments= new Object[] { };
+            return new CallDelegate(objectId, methodName, arguments);
         }
     },
 

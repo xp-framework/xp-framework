@@ -12,6 +12,8 @@ import net.xp_framework.easc.server.Handler;
 import net.xp_framework.easc.protocol.standard.MessageType;
 import net.xp_framework.easc.server.Delegate;
 import net.xp_framework.easc.protocol.standard.Header;
+import net.xp_framework.easc.server.ProxyMap;
+import net.xp_framework.easc.server.ProxyWrapper;
 
 import static net.xp_framework.easc.protocol.standard.Header.DEFAULT_MAGIC_NUMBER;
 
@@ -31,6 +33,13 @@ public class ServerHandler implements Handler {
     }
 
     public void handle(DataInputStream in, DataOutputStream out) throws IOException {
+        ProxyMap map= new ProxyMap();
+        Serializer.registerMapping(ProxyWrapper.class, new Invokeable<String, ProxyWrapper>() {
+            public String invoke(ProxyWrapper wrapper) throws Exception {
+                return "I:" + wrapper.identifier + ":" + Serializer.representationOf(wrapper.object);
+            }
+        });
+
         while (true) {
             Header requestHeader= Header.readFrom(in);
 
@@ -46,9 +55,10 @@ public class ServerHandler implements Handler {
 
             // Invoke the message
             try {
-                result= delegate.invoke();
+                result= delegate.invoke(map);
                 response= MessageType.Value;
             } catch (Exception e) {
+                e.printStackTrace();
                 result= e;
                 response= MessageType.Exception;
             }
@@ -58,6 +68,7 @@ public class ServerHandler implements Handler {
             try {
                 buffer= Serializer.representationOf(result);
             } catch (Exception e) {
+                e.printStackTrace();
                 buffer= e.getMessage();
                 response= MessageType.Error;
             }
