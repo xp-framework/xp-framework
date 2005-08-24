@@ -40,7 +40,7 @@ public class InvocationHandlerTest {
     }
 
     /**
-     * Tests 
+     * Tests NullInvocationHandler
      *
      * @access  public
      * @throws  java.lang.Exception
@@ -53,7 +53,7 @@ public class InvocationHandlerTest {
     }
 
     /**
-     * Tests 
+     * Tests DebugInvocationHandler
      *
      * @access  public
      * @throws  java.lang.Exception
