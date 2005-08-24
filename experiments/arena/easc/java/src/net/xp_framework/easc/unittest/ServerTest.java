@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Date;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationHandler;
 import net.xp_framework.easc.server.ServerThread;
 import net.xp_framework.easc.protocol.standard.ServerHandler;
 import net.xp_framework.easc.protocol.standard.Header;
@@ -28,7 +26,7 @@ import net.xp_framework.easc.unittest.MockContextFactory;
 import net.xp_framework.easc.unittest.Person;
 import net.xp_framework.easc.unittest.ITest;
 import net.xp_framework.easc.server.Delegate;
-import net.xp_framework.easc.unittest.NullInvocationHandler;
+import net.xp_framework.easc.unittest.DebugInvocationHandler;
 import javax.naming.InitialContext;
 import javax.naming.spi.NamingManager;
 import javax.naming.spi.InitialContextFactoryBuilder;
@@ -84,7 +82,7 @@ public class ServerTest {
         ctx.bind("test/Interface", Proxy.newProxyInstance(
             ITest.class.getClassLoader(),
             new Class[] { ITest.class },
-            new NullInvocationHandler()
+            new DebugInvocationHandler()
         ));
         
     }
@@ -218,7 +216,7 @@ public class ServerTest {
     @Test public void lookupProxy() throws Exception {
         assertAnswer(
             MessageType.Value,
-            "I:1:P:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";s:52:\"net.xp_framework.easc.unittest.NullInvocationHandler\";}", 
+            "I:1:P:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";s:53:\"net.xp_framework.easc.unittest.DebugInvocationHandler\";}", 
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,
@@ -244,7 +242,7 @@ public class ServerTest {
     @Test public void helloMethodCall() throws Exception {
         assertAnswer(
             MessageType.Value,
-            "N;",               // because of the NullInvocationHandler
+            "s:127:\"Invoked method public abstract java.lang.Object net.xp_framework.easc.unittest.ITest.hello(java.lang.String) with 1 argument(s)\";",
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,
