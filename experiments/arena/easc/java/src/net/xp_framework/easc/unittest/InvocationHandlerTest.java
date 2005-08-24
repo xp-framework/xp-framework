@@ -50,6 +50,10 @@ public class InvocationHandlerTest {
             null, 
             this.createTestProxy(new NullInvocationHandler()).hello()
         );
+        assertEquals(
+            null, 
+            this.createTestProxy(new NullInvocationHandler()).hello("World")
+        );
     }
 
     /**
