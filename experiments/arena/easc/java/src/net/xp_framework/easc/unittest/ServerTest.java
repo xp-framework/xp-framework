@@ -244,7 +244,7 @@ public class ServerTest {
     @Test public void helloMethodCall() throws Exception {
         assertAnswer(
             MessageType.Value,
-            "N;",
+            "N;",               // because of the NullInvocationHandler
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,
@@ -285,7 +285,7 @@ public class ServerTest {
                 public void writeTo(DataOutputStream out) throws IOException {
                     out.writeLong(1);
                     out.writeUTF("nonExistant");
-                    out.writeUTF("a:1:{i:0;s:5:\"World\";}");
+                    out.writeUTF("a:0:{}");
                 }
             }
         );
