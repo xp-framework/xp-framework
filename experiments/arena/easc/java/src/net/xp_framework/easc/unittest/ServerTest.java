@@ -20,7 +20,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
 import net.xp_framework.easc.server.ServerThread;
-import net.xp_framework.easc.server.Handler;
+import net.xp_framework.easc.protocol.standard.ServerHandler;
 import net.xp_framework.easc.protocol.standard.Header;
 import net.xp_framework.easc.protocol.standard.MessageType;
 import net.xp_framework.easc.protocol.standard.Serializer;
@@ -64,55 +64,7 @@ public class ServerTest {
 
         // Create server, set handler and start it!
         server= new ServerThread(new ServerSocket(TEST_PORT, 1, addr));
-        server.setHandler(new Handler() {
-            public void handle(DataInputStream in, DataOutputStream out) throws IOException {
-                while (true) {
-                    Header requestHeader= Header.readFrom(in);
-
-                    // Verify magic number
-                    if (DEFAULT_MAGIC_NUMBER != requestHeader.getMagicNumber()) {
-                        new Header(
-                            Header.DEFAULT_MAGIC_NUMBER,
-                            (byte)1,
-                            (byte)0,
-                            MessageType.Error,
-                            true,
-                            0
-                        ).writeTo(out);
-                        out.writeUTF("Magic number mismatch");
-                        break;
-                    }
-
-                    System.out.print(requestHeader.getMessageType() + " => ");
-                    Delegate delegate= requestHeader.getMessageType().delegateFrom(in);
-                    String serialized= null;
-                    MessageType response= null;
-                    try {
-                        serialized= Serializer.representationOf(delegate.invoke());
-                        response= MessageType.Value;
-                    } catch (Exception e) {
-                        e.printStackTrace(System.err);
-                        response= MessageType.Exception;
-                        serialized= Serializer.representationOf(e.getClass().getName());
-                    }
-
-                    // Write response
-                    new Header(
-                        Header.DEFAULT_MAGIC_NUMBER,
-                        (byte)1,
-                        (byte)0,
-                        response,
-                        true,
-                        serialized.length()
-                    ).writeTo(out);
-                    out.writeUTF(serialized);
-                    out.flush();
-                }
-                
-                out.close();
-                in.close();
-            }
-        });
+        server.setHandler(new ServerHandler());
         server.start();
         
         // Set up client socket
