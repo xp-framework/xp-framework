@@ -1,0 +1,44 @@
+RFC 0035: Interceptors for FTP storage
+========================================================================
+$Id$
+
+@authors: friebe, gelli, olli
+@created: Wed Aug 24 12:40:35 CEST 2005
+@status: draft
+@category: peer.ftp.server
+
+Scope of Change
+---------------
+An API will be added to the peer.ftp.server package to allow attaching
+interceptors that can "veto" FTP commands.
+
+Rationale
+---------
+Example: Prohibit deletion of a file that is referenced elsewhere.
+
+Functionality
+-------------
+An interceptor can throw an exception to indicate that processing with
+this command is not acceptable.
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+Makes FTP server a bit slower, but only when interceptors are added.
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+n/a
+
+Comments
+--------
+(empty)
+
+<EOF>
