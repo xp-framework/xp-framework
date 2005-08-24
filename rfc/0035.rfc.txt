@@ -85,6 +85,7 @@ n/a
 
 Comments
 --------
-(empty)
+- friebe, Wed Aug 24 13:33:30 CEST 2005
+  Maybe addConditionalInterceptor() is a better name for addInterceptorFor()?
 
 <EOF>
