@@ -171,23 +171,6 @@ public class ServerTest {
     }
 
     /**
-     * Tests the Status message
-     *
-     * @access  public
-     * @throws  java.lang.Exception
-     */
-    @Test public void statusMessage() throws Exception {
-        assertAnswer("+OK net.xp_framework.easc.server.StatusDelegate: N;", new Header(
-            Header.DEFAULT_MAGIC_NUMBER,
-            (byte)1,
-            (byte)0,
-            MessageType.Status,
-            true,
-            0
-        ));
-    }
-
-    /**
      * Tests lookup of a java.util.Date object
      *
      * @access  public
@@ -274,7 +257,7 @@ public class ServerTest {
             -1,
             (byte)1,
             (byte)0,
-            MessageType.Status,
+            MessageType.Lookup,
             true,
             0
         ));
