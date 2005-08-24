@@ -80,7 +80,6 @@ public class ServerTest {
                             0
                         ).writeTo(out);
                         out.writeUTF("Magic number mismatch");
-                        out.close();
                         break;
                     }
 
@@ -109,6 +108,9 @@ public class ServerTest {
                     out.writeUTF(serialized);
                     out.flush();
                 }
+                
+                out.close();
+                in.close();
             }
         });
         server.start();
