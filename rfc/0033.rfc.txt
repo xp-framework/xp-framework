@@ -60,6 +60,12 @@ Related documents
 
 - http://xp-framework.net/downloads/0033.rfc.diff
   Implementing patch
+  
+- http://xp-framework.net/downloads/ReflectionTest.class.phps
+  Test case
+
+- http://xp-framework.net/downloads/TestClass.class.phps
+  Test class for above test case
 
 Comments
 --------
