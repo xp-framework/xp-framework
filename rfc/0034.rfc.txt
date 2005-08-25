@@ -38,27 +38,41 @@ I also created a patch for the new DateUtil functionality:
 
 http://satansoft.de/xp/DateUtil.class.php-rfc0034.patch
 
-
-7c7
-<   uses ('util.Date');
----
->   uses ('util.Date', 'util.TimeSpan');
-186a187,201
-> 
->     /**
->      * returns a TimeSpan representing the difference 
->      * between the two given Date objects
->      *
->      * @model   static
->      * @access  public
->      * @param   &util.Date d1
->      * @param   &util.Date d2
->      * @return  &util.TimeSpan
->      */
->     function &diff(&$d1, &$d2) {
->       return new TimeSpan($d1->getTime()-$d2->getTime());  
->     }
-> 
+<pre>
+Index: util/DateUtil.class.php
+===================================================================
+--- util/DateUtil.class.php     (revision 5626)
++++ util/DateUtil.class.php     (working copy)
+@@ -4,7 +4,7 @@
+  * $Id$
+  */
+ 
+-  uses ('util.Date');
++  uses ('util.Date', 'util.TimeSpan');
+   
+   /**
+    * DateUtil is a helper class to handle Date objects and 
+@@ -184,5 +184,19 @@
+         $date->getYear()
+       ));
+     }
++    
++     /**
++      * Returns a TimeSpan representing the difference between the two 
++      * given Date objects
++      *
++      * @model   static
++      * @access  public
++      * @param   &util.Date d1
++      * @param   &util.Date d2
++      * @return  &util.TimeSpan
++      */
++     function &timespanBetween(&$d1, &$d2) {
++       return new TimeSpan($d1->getTime()-$d2->getTime());  
++     }
+   }
+ ?>
+</pre> 
 
 
 Security considerations
