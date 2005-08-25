@@ -132,4 +132,8 @@ Comments
 - friebe, Wed Aug 24 13:33:30 CEST 2005
   Maybe addConditionalInterceptor() is a better name for addInterceptorFor()?
 
+- olli, Thu Aug 25 08:51:21 CEST 2005
+  We should add a second parameter to the interceptor functions to pass a
+  context (e.g. the FtpSession)
+
 <EOF>
