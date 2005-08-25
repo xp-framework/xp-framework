@@ -136,4 +136,8 @@ Comments
   We should add a second parameter to the interceptor functions to pass a
   context (e.g. the FtpSession)
 
+- olli, Thu Aug 25 09:42:45 CEST 2005
+  Should we also add support to intercept reading a directory and rename
+  "Reading an element" to "Reading an entry (collection or element)"?
+
 <EOF>
