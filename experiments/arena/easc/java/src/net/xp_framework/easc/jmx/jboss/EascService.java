@@ -7,6 +7,8 @@ package net.xp_framework.easc.jmx.jboss;
 
 import org.jboss.system.ServiceMBeanSupport;
 import net.xp_framework.easc.server.ServerThread;
+import net.xp_framework.easc.protocol.standard.ServerHandler;
+import net.xp_framework.easc.jmx.jboss.EascServiceMBean;
 import java.net.ServerSocket;
 
 /**
@@ -14,7 +16,7 @@ import java.net.ServerSocket;
  *
  * @see   org.jboss.system.ServiceMBeanSupport
  */
-public class EascService extends ServiceMBeanSupport implements EascMBean {
+public class EascService extends ServiceMBeanSupport implements EascServiceMBean {
     private int port= 4446;
     private ServerThread server = null;
     
@@ -47,6 +49,8 @@ public class EascService extends ServiceMBeanSupport implements EascMBean {
      */
     protected void startService() throws Exception {
         this.server= new ServerThread(new ServerSocket(this.port));
+        this.server.setHandler(new ServerHandler());
+        this.server.start();
     }
     
     /**

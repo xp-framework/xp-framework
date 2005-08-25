@@ -1,19 +1,18 @@
 /* This class is part of the XP framework's EAS connectivity
  *
- * $Id$
+ * $Id: EascMBean.java 5613 2005-08-24 15:12:57Z friebe $
  */
 
 package net.xp_framework.easc.jmx.jboss;
 
 import org.jboss.system.ServiceMBean;
-import net.xp_framework.easc.server.ServerThread;
 
 /**
  * EASC service managed bean interface
  *
  * @see   org.jboss.system.ServiceMBean
  */
-public interface EascMBean extends ServiceMBean {
+public interface EascServiceMBean extends ServiceMBean {
     
     /**
      * Sets the port the server thread will listen on
