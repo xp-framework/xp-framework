@@ -1,4 +1,4 @@
-RFC XXXX: 
+RFC 0034: New util.TimeSpan class
 ========================================================================
 $Id$
 
@@ -9,17 +9,16 @@ $Id$
 
 Scope of Change
 ---------------
-Add a new class "TimeSpan" to package util,
-add new method "diff(&util.Date, &util.Date)" to util.DateUtil.
-This will enable users to describe spans of time
-in a more comfortable way than using unix timestamps, and will
-provide a simple way to compare Date objects.
+Add a new class "TimeSpan" to package util, add new method 
+"diff(&util.Date, &util.Date)" to util.DateUtil.
+This will enable users to describe spans of time in a more comfortable 
+way than using unix timestamps, and willprovide a simple way to compare 
+Date objects.
 
 Rationale
 ---------
-Often instances of util.Date need to be 
-compared, until now users have to diff the unix timestamps the
-util.Date class should hide manually.
+Often instances of util.Date need to be compared, until now users have 
+to diff the unix timestamps the util.Date class should hide manually.
 
 Functionality
 -------------
