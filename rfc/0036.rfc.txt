@@ -1,0 +1,70 @@
+RFC 0036: Add timezone offset to date object
+========================================================================
+$Id$
+
+@authors: hinckel, kiesel
+@created: Thu Aug 25 13:22:10 CEST 2005
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+Add the timezone offset against GMT to the util.Date class.
+
+Rationale
+---------
+This is required to be able to calculate the GMT representation 
+from a given date object. This information is required to properly
+calculate time differences between date objects in different time-
+zones.
+
+Functionality
+-------------
+A new member $tz will be added to the util.Date class that contains
+the offset of the timezone of the date object against GMT in seconds.
+Negative offsets indicate timezones west of GMT, positive ones indicate
+timezones east of GMT.
+
+If constructing a date object without explicitely defining a timezone,
+the hosts default timezone will be used.
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+This change adds a member variable and various getters and setters to the
+util.Date class, which is a core class. This change will decrease speed and
+increase the classes memory footprint. Speed deterioration should not be
+measureable; the additional memory required is an acceptable trade-off.
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+- Patch against svn trunk (TBI)
+  n/a
+
+Comments
+--------
+- kiesel, Thu Aug 25 13:31:50 CEST 2005
+  rdbms systems like Sybase ASE and MySQL (and probably others) do not store
+  any timezone information with their date types. This is usually handled by
+  assigning the database a timezone which is then known to all systems accessing
+  that database.
+  To be able to correctly extract a date column from a database, we might need
+  to supply this information to the rdbms.DBConnection-derived classes. This
+  could happen by extending the DSN format and add a new parameter. Example:
+  "sybase://wurst:brot@SERVER/database?autoconnect=1&defaulttz=CET
+
+- kiesel, Thu Aug 25 13:34:30 CEST 2005
+  LDAP servers do store timezone information, the peer.ldap package thus is
+  only slightly affected by this change.
+
+- kiesel, Thu Aug 25 13:59:56 CEST 2005
+  Should util.TimeZone become part of <core>?
+
+<EOF>
