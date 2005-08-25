@@ -1,6 +1,6 @@
 RFC XXXX: 
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: bayer
 @created: Tue Aug 23 17:09:27 CEST 2005
@@ -85,5 +85,8 @@ none
 
 Comments
 --------
+- friebe, Thu Aug 25 13:48:01 CEST 2005
+  I don't like the method name diff() - how about timespanBetween()? More 
+  verbose but describes what will be returned (a TimeSpan object).
 
 <EOF>
