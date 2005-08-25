@@ -140,4 +140,18 @@ Comments
   Should we also add support to intercept reading a directory and rename
   "Reading an element" to "Reading an entry (collection or element)"?
 
+- olli, Thu Aug 25 15:35:34 CEST 2005
+  The following commands need to be mapped to an interceptor function:
+    onList      => onRead    // directory listing should also be interceptable
+    onNlst      => onRead
+    onMdtm      => onRead
+    onSize      => onRead
+    onMkd       => onCreate
+    onRmd       => onDelete
+    onRetr      => onRead
+    onStor      => onCreate  // distinguish creating and overwriting?
+    onDele      => onDelete
+    onRnto      => onRename
+    onSiteChmod => onChangePermission
+
 <EOF>
