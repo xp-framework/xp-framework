@@ -68,11 +68,23 @@ Comments
   Should util.TimeZone become part of <core>?
 
 - george, Thu Aug 25, 13:00 GMT 2005
-  I think it would speare the server the burden of knowing where it is -- also would make the database geographically portable -- to store all times in GMT on the server and additionally store TimeZone, maybe like "CEST", "EEST", "GMT", etc.
-  Then, the util.Date object can get himself in GMT form and restore the time whatever timezone is asked of him. I think util.Date should be able to reproduce times in different timezones, thus carry such a parameter...
+  I think it would speare the server the burden of knowing where it is -- also
+  would make the database geographically portable -- to store all times in GMT
+  on the server and additionally store TimeZone, maybe like "CEST", "EEST",
+  "GMT", etc.
+  Then, the util.Date object can get himself in GMT form and restore the time
+  whatever timezone is asked of him. I think util.Date should be able to reproduce 
+  times in different timezones, thus carry such a parameter...
 
-  Also, an important factor to this is DST. DST (Daylight Saving Time) is a mechanism which offsets by a certain amount of time (1 hour mostly, but there are cases where this time is just 30 mins or even more situations) the time in a certain region. This mechanism is not the same around the world, and it is in no way syncronised with GMT.
+  Also, an important factor to this is DST. DST (Daylight Saving Time) is a 
+  mechanism which offsets by a certain amount of time (1 hour mostly, but there 
+  are cases where this time is just 30 mins or even more situations) the time 
+  in a certain region. This mechanism is not the same around the world, and it 
+  is in no way syncronised with GMT.
 
- So an answer to this might be to store, the TimeZone and the actual offset relative to GMT that existed at the time de date was inserted. (19:00 CEST is GMT + 1 or GMT + 2, so we just say 19:00 CEST (+2), and this way we know exactly the timezone and the actual offset relative to GMT.)
+  So an answer to this might be to store, the TimeZone and the actual offset 
+  relative to GMT that existed at the time de date was inserted. (19:00 CEST is
+  GMT + 1 or GMT + 2, so we just say 19:00 CEST (+2), and this way we know 
+  exactly the timezone and the actual offset relative to GMT.)
 
 <EOF>
