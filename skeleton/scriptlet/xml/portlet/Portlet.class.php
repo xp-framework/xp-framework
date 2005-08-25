@@ -34,9 +34,9 @@
      * Initialize portlet
      *
      * @access  public
-     * @return  &util.Properties properties
+     * @param   &util.Properties properties
      */
-    function &init(&$properties) { }
+    function init(&$properties) { }
     
     /**
      * Set an attribut by name
