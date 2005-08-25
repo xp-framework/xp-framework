@@ -70,6 +70,7 @@
      * Initialize portlet
      *
      * @access  public
+     * @param   &util.Properties properties
      */
     function init(&$properties) { 
       $this->properties= &$properties;
