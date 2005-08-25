@@ -62,7 +62,7 @@ Related documents
   Implementing patch
   
 - http://xp-framework.net/downloads/ReflectionTest.class.phps
-  Test case
+  Test case (NOTE: requires RFC #0032 and RFC #0033 patches to work!)
 
 - http://xp-framework.net/downloads/TestClass.class.phps
   Test class for above test case
