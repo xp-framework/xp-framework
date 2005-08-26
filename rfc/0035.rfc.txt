@@ -45,9 +45,9 @@ Example (abbreviated):
   // Interface class
   class StorageActionInterceptor extends Interface {
   
-    function onDelete(&$entry) { }
+    function onDelete(&$session, &$entry) { }
   
-    function onCreate(&$entry) { }
+    function onCreate(&$session, &$entry) { }
     
     ...
   }
@@ -55,7 +55,7 @@ Example (abbreviated):
   // Default interceptor which implements all functions returning TRUE
   class DefaultInterceptor {
   
-    function onCreate() { return TRUE; }
+    function onCreate(&$session, &$event) { return TRUE; }
     
     ...
     
@@ -64,7 +64,7 @@ Example (abbreviated):
   // Special interceptor for delete command
   class DeleteInterceptor extends DefaultInterceptor {
     
-    function onDelete(&$entry) {
+    function onDelete(&$session, &$entry) {
       if ($this->conn->query('...')) return throw(new IllegalStateException('...'));
 
       return TRUE;
@@ -76,7 +76,32 @@ Example (abbreviated):
   
   // Add an interceptor for the base "/check/only/in/this/path", idea #1
   $storage->addInterceptorFor('/check/only/in/this/path', new DeleteInterceptor());
+
+?>
+
+Extended implementation (abbreviated):
+<?php
+
+  class InterceptorCondition extends Interface {
+    
+    function check(&$session, $event) { }
+  }
   
+  class PathCondition extends Object {
+  
+    var
+      $path= NULL;
+  
+    function __construct($path) {
+      $this->path= $path;
+    }
+  
+    function check(&$session, $event) {
+      return substr($event->getPath(), 0, strlen($this->path)) == $this->path;
+    }
+  
+  } implements(__FILE__, 'peer.ftp.server.interceptor.InterceptorCondition');
+
   // Add an interceptor for the base "/check/only/in/this/path", idea #2
   $storage->addInterceptorFor(
     new PathCondition('/check/only/in/this/path'),
@@ -159,5 +184,8 @@ Comments
   temporarily and adds them to the Storage as soon as the Storage is
   instantiated. We have no Storage instance which could be used to add the
   interceptors before the server starts.
+
+- olli, Fri Aug 26 15:04:44 CEST 2005
+  Should InterceptorCondition be an interface or just a simple class?
 
 <EOF>
