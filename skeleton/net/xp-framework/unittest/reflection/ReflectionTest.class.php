@@ -148,6 +148,32 @@
         $this->assertTrue($this->class->equals($field->getDeclaringClass()));
       }
     }
+
+    /**
+     * Tests retrieving the "date" field's value
+     *
+     * @see     xp://lang.reflect.Field#get
+     * @access  public
+     */
+    #[@test]
+    function dateFieldValue() {
+      if ($field= &$this->class->getField('date')) {
+        $this->assertClass($field->get($this->class->newInstance()), 'util.Date');
+      }
+    }
+
+    /**
+     * Tests retrieving the "date" field's value on a wrong object
+     *
+     * @see     xp://lang.reflect.Field#get
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function dateFieldValueOnWrongObject() {
+      if ($field= &$this->class->getField('date')) {
+        $field->get(new Object());
+      }
+    }
     
     /**
      * Tests the method reflection
