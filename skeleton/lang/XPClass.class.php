@@ -223,12 +223,12 @@
      */
     function getFields() {
       $f= array();
-      foreach ((is_object($this->_objref) 
+      foreach (array_keys(is_object($this->_objref) 
         ? get_object_vars($this->_objref) 
         : get_class_vars($this->_objref)
-      ) as $field => $value) {
+      ) as $field) {
         if ('__id' == $field) continue;
-        $f[]= &new Field($this->_objref, $field, $value);
+        $f[]= &new Field($this->_objref, $field);
       }
       return $f;
     }
@@ -244,7 +244,7 @@
     function &getField($name) {
       if (!$this->hasField($name)) return NULL;
 
-      return new Field($this->_objref, $name, $this->{$name});
+      return new Field($this->_objref, $name);
     }
     
     /**
