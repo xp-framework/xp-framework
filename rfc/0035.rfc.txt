@@ -154,4 +154,10 @@ Comments
     onRnto      => onRename
     onSiteChmod => onChangePermission
 
+- olli, Fri Aug 26 07:56:21 CEST 2005
+  The interceptors have to be added to the FtpThead, which holds them
+  temporarily and adds them to the Storage as soon as the Storage is
+  instantiated. We have no Storage instance which could be used to add the
+  interceptors before the server starts.
+
 <EOF>
