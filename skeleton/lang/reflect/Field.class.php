@@ -13,8 +13,7 @@
   class Field extends Object {
     var
       $_ref   = NULL,
-      $name   = '',
-      $value  = NULL;
+      $name   = '';
 
     /**
      * Constructor
@@ -23,10 +22,9 @@
      * @param   &mixed ref
      * @param   string name
      */    
-    function __construct(&$ref, $name, &$value) {
+    function __construct(&$ref, $name) {
       $this->_ref= is_object($ref) ? get_class($ref) : $ref;
       $this->name= $name;
-      $this->value= $value;
     }
 
     /**
@@ -68,5 +66,25 @@
       return xp::null();
     }
     
+    /**
+     * Returns the value of the field represented by this Field, on the 
+     * specified object.
+     *
+     * @access  public
+     * @param   &lang.Object instance
+     * @return  &mixed  
+     * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
+     */
+    function &get(&$instance) {
+      if (!is(xp::nameOf($this->_ref), $instance)) {
+        return throw(new IllegalArgumentException(sprintf(
+          'Passed argument is not a %s class (%s)',
+          xp::nameOf($this->_ref),
+          xp::nameOf($instance)
+        )));
+      }
+
+      return $instance->{$this->name};
+    }
   }
 ?>
