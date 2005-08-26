@@ -4,7 +4,7 @@ $Id$
 
 @authors: bayer
 @created: Tue Aug 23 17:09:27 CEST 2005
-@status: discussion, ends at Fri Aug 26 15:00:15 CEST 2005
+@status: implemented, Fri Aug 26 13:52:35 CEST 2005
 @category: util
 
 Scope of Change
@@ -101,5 +101,9 @@ Comments
 - friebe, Thu Aug 25 13:48:01 CEST 2005
   I don't like the method name diff() - how about timespanBetween()? More 
   verbose but describes what will be returned (a TimeSpan object).
+
+- bayer, Fri Aug 26
+  I updated the methodname according to the above comment
+  discussion closed, setting status to implemented, committing changes
 
 <EOF>
