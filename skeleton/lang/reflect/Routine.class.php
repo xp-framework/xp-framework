@@ -34,7 +34,7 @@
      */    
     function __construct(&$ref, $name) {
       $this->_ref= is_object($ref) ? get_class($ref) : $ref;
-      $this->name= $name;
+      $this->name= strtolower($name);
     }
 
     /**
@@ -127,7 +127,18 @@
      */
     function getReturnType() {
       if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
-      return $details[DETAIL_RETURNS];
+      return ltrim($details[DETAIL_RETURNS], '&');
+    }
+
+    /**
+     * Retrieve whether this method returns a reference
+     *
+     * @access  public
+     * @return  string
+     */
+    function returnsReference() {
+      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
+      return '&' == $details[DETAIL_RETURNS]{0};
     }
     
     /**
@@ -165,7 +176,7 @@
     function &getDeclaringClass() {
       $class= $this->_ref;
       while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
-        if (isset($details[$this->name])) return new XPClass($class);
+        if (isset($details[1][$this->name])) return new XPClass($class);
         $class= get_parent_class($class);
       }
       return xp::null();

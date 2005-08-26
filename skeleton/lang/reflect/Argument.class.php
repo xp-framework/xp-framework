@@ -50,7 +50,17 @@
      * @return  string
      */
     function getType() {
-      return $this->type;
+      return ltrim($this->type, '&');
+    }
+
+    /**
+     * Returns whether this argument is passed by reference
+     *
+     * @access  public
+     * @return  string
+     */
+    function isPassedByReference() {
+      return '&' == $this->type{0};
     }
 
     /**

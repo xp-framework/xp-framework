@@ -6,6 +6,7 @@
 
   uses(
     'lang.reflect.Method',
+    'lang.reflect.Field',
     'lang.reflect.Constructor'
   );
 
@@ -215,18 +216,51 @@
     }
     
     /**
-     * Retrieve a list of all declared member variables
+     * Retrieve a list of all member variables
      *
      * @access  public
-     * @return  string[] member names
+     * @return  lang.reflect.Field[] array of field objects
      */
     function getFields() {
-      return (is_object($this->_objref) 
+      $f= array();
+      foreach ((is_object($this->_objref) 
+        ? get_object_vars($this->_objref) 
+        : get_class_vars($this->_objref)
+      ) as $field => $value) {
+        if ('__id' == $field) continue;
+        $f[]= &new Field($this->_objref, $field, $value);
+      }
+      return $f;
+    }
+    
+    /**
+     * Retrieve a field by a specified name. Returns NULL if the specified
+     * field does not exist
+     *
+     * @access  public
+     * @param   string name
+     * @return  &lang.reflect.Field
+     */
+    function &getField($name) {
+      if (!$this->hasField($name)) return NULL;
+
+      return new Field($this->_objref, $name, $this->{$name});
+    }
+    
+    /**
+     * Checks whether this class has a field named "$field" or not.
+     *
+     * @access  public
+     * @param   string field the fields's name
+     * @return  bool TRUE if field exists
+     */
+    function hasField($field) {
+      return '__id' == $field ? FALSE : array_key_exists($field, is_object($this->_objref) 
         ? get_object_vars($this->_objref) 
         : get_class_vars($this->_objref)
       );
     }
-    
+
     /**
      * Retrieve the parent class's class object. Returns NULL if there
      * is no parent class.
@@ -382,7 +416,7 @@
       if (!$class) return NULL;        // Border case
       if (isset($details[$class])) return $details[$class];
 
-      $details[$class]= array();
+      $details[$class]= array(array(), array());
       $name= strtr($class, '.', DIRECTORY_SEPARATOR);
       $l= strlen($name);
 
@@ -391,7 +425,8 @@
 
         // Found the class, now get API documentation
         $annotations= array();
-        $comment= NULL;          
+        $comment= NULL;
+        $members= TRUE;
         $tokens= token_get_all(file_get_contents($file));
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
           switch ($tokens[$i][0]) {
@@ -426,12 +461,24 @@
               );
               $annotations= array();
               $comment= NULL;
-              break;                
-
+              break;
+            
+            case T_VARIABLE:
+              if (!$members) break;
+              
+              // Have a member variable
+              $name= substr($tokens[$i][1], 1);
+              $details[$class][0][$name]= array(
+                DETAIL_ANNOTATIONS => $annotations
+              );
+              $annotations= array();
+              break;
+            
             case T_FUNCTION:
+              $members= FALSE;
               while (T_STRING !== $tokens[$i][0]) $i++;
               $m= strtolower($tokens[$i][1]);
-              $details[$class][$m]= array(
+              $details[$class][1][$m]= array(
                 DETAIL_MODIFIERS    => 0,
                 DETAIL_ARGUMENTS    => array(),
                 DETAIL_RETURNS      => 'void',
@@ -457,11 +504,11 @@
                 switch ($match[1]) {
                   case 'access':
                   case 'model':
-                    $details[$class][$m][DETAIL_MODIFIERS] |= constant('MODIFIER_'.strtoupper($match[2]));
+                    $details[$class][1][$m][DETAIL_MODIFIERS] |= constant('MODIFIER_'.strtoupper($match[2]));
                     break;
 
                   case 'param':
-                    $details[$class][$m][DETAIL_ARGUMENTS][]= &new Argument(
+                    $details[$class][1][$m][DETAIL_ARGUMENTS][]= &new Argument(
                       isset($match[3]) ? $match[3] : 'param',
                       $match[2],
                       isset($match[4]),
@@ -470,11 +517,11 @@
                     break;
 
                   case 'return':
-                    $details[$class][$m][DETAIL_RETURNS]= $match[2];
+                    $details[$class][1][$m][DETAIL_RETURNS]= $match[2];
                     break;
 
                   case 'throws': 
-                    $details[$class][$m][DETAIL_THROWS][]= $match[2];
+                    $details[$class][1][$m][DETAIL_THROWS][]= $match[2];
                     break;
                 }
               }
@@ -494,7 +541,7 @@
     }
 
     /**
-     * Retrieve details for a specified class and methid. Note: Results 
+     * Retrieve details for a specified class and method. Note: Results 
      * from this method are cached!
      *
      * @model   static
@@ -506,7 +553,26 @@
     function detailsForMethod($class, $method) {
       $method= strtolower($method);
       while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
-        if (isset($details[$method])) return $details[$method];
+        if (isset($details[1][$method])) return $details[1][$method];
+        $class= get_parent_class($class);
+      }
+      return NULL;
+    }
+
+    /**
+     * Retrieve details for a specified class and field. Note: Results 
+     * from this method are cached!
+     *
+     * @model   static
+     * @access  public
+     * @param   string class unqualified class name
+     * @param   string method
+     * @return  array
+     */
+    function detailsForField($class, $field) {
+      $field= strtolower($field);
+      while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
+        if (isset($details[0][$field])) return $details[0][$field];
         $class= get_parent_class($class);
       }
       return NULL;
