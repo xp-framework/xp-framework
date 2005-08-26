@@ -36,7 +36,9 @@ public class ServerHandler implements Handler {
         ProxyMap map= new ProxyMap();
         Serializer.registerMapping(ProxyWrapper.class, new Invokeable<String, ProxyWrapper>() {
             public String invoke(ProxyWrapper wrapper) throws Exception {
-                return "I:" + wrapper.identifier + ":" + Serializer.representationOf(wrapper.object);
+                return "I:" + wrapper.identifier + ":{" + Serializer.representationOf(
+                    wrapper.object.getClass().getInterfaces()[0].getName()
+                ) + "}";
             }
         });
 
