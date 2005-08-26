@@ -359,6 +359,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(String s) {
+        if (null == s) return "N;";
         return "s:" + s.length() + ":\"" + s + "\";";
     } 
 
@@ -375,6 +376,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Character c) {
+        if (null == c) return "N;";
         return "s:1:\"" + c + "\";";
     }
 
@@ -391,6 +393,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Byte b) {
+        if (null == b) return "N;";
         return "B:" + b + ";";
     }
 
@@ -407,6 +410,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Short s) {
+        if (null == s) return "N;";
         return "S:" + s + ";";
     }
 
@@ -423,6 +427,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Integer i) {
+        if (null == i) return "N;";
         return "i:" + i + ";";
     }
 
@@ -439,6 +444,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Long l) {
+        if (null == l) return "N;";
         return "l:" + l + ";";
     }
 
@@ -455,6 +461,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Double d) {
+        if (null == d) return "N;";
         return "d:" + d + ";";
     }
 
@@ -471,6 +478,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Float f) {
+        if (null == f) return "N;";
         return "f:" + f + ";";
     }
 
@@ -487,10 +495,12 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Boolean b) {
+        if (null == b) return "N;";
         return "b:" + (b ? 1 : 0) + ";";
     }
 
     @Handler public static String representationOf(HashMap h) throws Exception {
+        if (null == h) return "N;";
         StringBuffer buffer= new StringBuffer("a:" + h.size() + ":{");
         
         for (Iterator it= h.keySet().iterator(); it.hasNext(); ) {
@@ -506,6 +516,7 @@ public class Serializer {
     }
 
     @Handler public static String representationOf(Date d) throws Exception {
+        if (null == d) return "N;";
         return "T:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
     }
     
@@ -523,6 +534,7 @@ public class Serializer {
     
     
     @Handler public static String representationOf(Proxy p) throws Exception {
+        if (null == p) return "N;";
         StringBuffer serialized= new StringBuffer();
         int numInterfaces= 0;
 
@@ -538,6 +550,42 @@ public class Serializer {
         return "P:" + numInterfaces + ":{" + serialized + "}";
     }
     
+    @Handler public static String representationOf(StackTraceElement e) throws Exception {
+        if (null == e) return "N;";
+        StringBuffer buffer= new StringBuffer();
+        Class c= e.getClass();
+        String name;
+        
+        buffer.append("O:").append(c.getName().length()).append(":\"").append(c.getName()).append("\":5:{");
+        buffer.append("s:4:\"file\";").append(representationOf(e.getFileName()));
+        buffer.append("s:4:\"class\";").append(representationOf(e.getClassName()));
+        buffer.append("s:5:\"method\";").append(representationOf(e.getMethodName()));
+        buffer.append("s:4:\"line\";").append(representationOf(e.getLineNumber()));
+        buffer.append("}");
+
+        return buffer.toString();        
+    }
+
+    @Handler public static String representationOf(Throwable e) throws Exception {
+        if (null == e) return "N;";
+        StringBuffer buffer= new StringBuffer();
+        Class c= e.getClass();
+        StackTraceElement[] trace= e.getStackTrace();
+        
+        buffer.append("O:").append(c.getName().length()).append(":\"").append(c.getName()).append("\":2:{");
+        buffer.append("s:7:\"message\";");
+        buffer.append(representationOf(e.getMessage()));
+        buffer.append("s:5:\"trace\";a:").append(trace.length).append(":{");
+
+        int offset= 0;
+        for (StackTraceElement element: trace) {
+            buffer.append("i:").append(offset++).append(';').append(representationOf(element));
+        }
+
+        buffer.append("}}");
+        return buffer.toString();        
+    }
+        
     /**
      * Fall-back method for default serialization. Not a handler since this 
      * would lead to an infinite loop in the invokeableFor() method.
