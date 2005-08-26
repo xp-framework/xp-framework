@@ -87,4 +87,16 @@ Comments
   GMT + 1 or GMT + 2, so we just say 19:00 CEST (+2), and this way we know 
   exactly the timezone and the actual offset relative to GMT.)
 
+- kiesel, Fri Aug 26 14:27:20 CEST 2005
+  The database stuff will be decided upon in another rfc, since the whole issue
+  is affected by this, but does not belong into this rfc.
+
+- kiesel, Fri Aug 26 14:27:20 CEST 2005
+  It seems not to be sufficient to store the GMT offset with in a date object, because
+  when adding - say - half a year to a certain date for a timezone has uses DST,
+  the timezone itself must change.
+  By looking at the timezone offset, you cannot tell whether to move the timezone
+  for DST or not (fe. +0100 can be CET =`Central European time` - winter -  or 
+  BST `British Summer Time` - summer).
+
 <EOF>
