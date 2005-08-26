@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses ('util.Date');
+  uses ('util.Date', 'util.TimeSpan');
   
   /**
    * DateUtil is a helper class to handle Date objects and 
@@ -184,5 +184,20 @@
         $date->getYear()
       ));
     }
+
+    /**
+     * returns a TimeSpan representing the difference 
+     * between the two given Date objects
+     *
+     * @model   static
+     * @access  public
+     * @param   &util.Date d1
+     * @param   &util.Date d2
+     * @return  &util.TimeSpan
+     */
+    function &timeSpanBetween(&$d1, &$d2) {
+      return new TimeSpan($d1->getTime()-$d2->getTime());  
+    }
+
   }
 ?>
