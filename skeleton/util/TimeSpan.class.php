@@ -65,7 +65,7 @@
      * @return  int
      */
     function getMinutes() {
-      return floor($this->_seconds/60);
+      return floor($this->_seconds / 60);
     }
     
     /**
@@ -76,7 +76,7 @@
      * @return  float
      */
     function getMinutesFloat() {
-      return $this->_seconds/60;
+      return $this->_seconds / 60;
     }
 
     /**
@@ -90,7 +90,7 @@
       $ts = &new TimeSpan();
       $ts->addDays($this->getWholeDays());
       $ts->addHours($this->getWholeHours());
-      return floor(($this->_seconds-$ts->getSeconds())/60);
+      return floor(($this->_seconds- $ts->getSeconds()) / 60);
     }
     
     /**
@@ -100,7 +100,7 @@
      * @param   int mins
      */
     function addMinutes($mins) {
-      $this->_seconds+= $mins*60;
+      $this->_seconds+= $mins * 60;
     }
 
     /**
@@ -111,7 +111,7 @@
      * @return  int
      */
     function getHours() {
-      return floor($this->_seconds/3600);
+      return floor($this->_seconds / 3600);
     }
     
     /**
@@ -122,7 +122,7 @@
      * @return  float
      */
     function getHoursFloat() {
-      return $this->_seconds/3600;
+      return $this->_seconds / 3600;
     }
 
     /**
@@ -133,9 +133,9 @@
      * @return  int
      */
     function getWholeHours() {
-      $ts = &new TimeSpan();
+      $ts= &new TimeSpan();
       $ts->addDays($this->getWholeDays());
-      return floor(($this->_seconds-$ts->getSeconds())/3600);
+      return floor(($this->_seconds- $ts->getSeconds()) / 3600);
     }
     
     /**
@@ -145,7 +145,7 @@
      * @param   int hours
      */
     function addHours($hours) {
-      $this->_seconds+= $hours*3600;
+      $this->_seconds+= $hours * 3600;
     }
 
     /**
@@ -156,7 +156,7 @@
      * @return  int
      */
     function getDays() {
-      return floor($this->_seconds/86400);
+      return floor($this->_seconds / 86400);
     }
     
     /**
@@ -167,7 +167,7 @@
      * @return  float
      */
     function getDaysFloat() {
-      return $this->_seconds/86400;
+      return $this->_seconds / 86400;
     }
 
     /**
@@ -188,7 +188,7 @@
      * @param   int days
      */
     function addDays($days) {
-      $this->_seconds+= $days*86400;
+      $this->_seconds+= $days * 86400;
     }
 
     /**
