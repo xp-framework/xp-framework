@@ -6,9 +6,9 @@
 
 
   /**
-   * the class TimeSpan represents a span of time
+   * Represents a span of time
    *
-   * @purpose represents a span of time
+   * @purpose  Time and date
    */
   class TimeSpan extends Object {
     var
@@ -20,16 +20,16 @@
      *
      * @access  public
      * @param   int secs - an amount of seconds, absolute value is used
-     * @throws  lang.IllegalArgumentException in case the value given is not an int
+     * @throws  lang.IllegalArgumentException in case the value given is not numeric
      */
     function __construct($secs= 0) {
-      if (!is_int($secs)) {
-        throw(new IllegalArgumentException(
-          sprintf('Given argument is not an integer: %s', $secs)
+      if (!is_numeric($secs)) {
+        throw (new IllegalArgumentException(
+          'Given argument is not an integer: '.xp::stringOf($secs)
         ));
-      } else {
-        $this->_seconds= intval(abs($secs));
+        return;
       }
+      $this->_seconds= (int)abs($secs);
     }
 
     /**
@@ -50,11 +50,11 @@
      * @return  int
      */
     function getWholeSeconds() {
-      $ts = &new TimeSpan();
+      $ts= &new TimeSpan();
       $ts->addDays($this->getWholeDays());
       $ts->addHours($this->getWholeHours());
       $ts->addMinutes($this->getWholeMinutes());
-      return $this->_seconds-$ts->getSeconds();
+      return $this->_seconds- $ts->getSeconds();
     }
     
     /**
