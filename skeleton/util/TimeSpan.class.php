@@ -1,13 +1,13 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id:  $ 
+ * $Id$
  */
-
 
   /**
    * Represents a span of time
    *
+   * @see      xp://util.DateUtil#timespanBetween
    * @purpose  Time and date
    */
   class TimeSpan extends Object {
