@@ -274,7 +274,5 @@
     function toString($format= '%ed, %yh, %jm, %ws') {
       return $this->format($format);
     }
-
   }
-
 ?>
