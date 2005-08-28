@@ -59,17 +59,26 @@
      * @return  &img.Image
      */
     function resampleTo(&$origin, $horizontal, $dimensions) {
-      $aspect= $origin->getWidth() / $origin->getHeight();
-      if ($aspect > 1.0 && !$horizontal) {
-        $this->cat && $this->cat->warn('Image is vertically oriented but its dimensions suggest otherwise');
-        $d= array($dimensions[0], $dimensions[1]);
-      } else {
-        $d= ($horizontal 
-          ? array($dimensions[0], $dimensions[1])
-          : array($dimensions[1], $dimensions[0])
-        );
-      }
+    
+      // Check whether the picture is landscape or portrait
+      if ($origin->getWidth() < $origin->getHeight()) {
       
+        // This is portrait, so flip dimensions to reflect that
+        $dimensions= array_reverse($dimensions);
+      }
+    
+      // Find out the maximum divider required, it is used
+      // for both dimensions to keep aspect ratio.
+      $div= max(
+        $origin->getWidth()  / $dimensions[0],
+        $origin->getHeight() / $dimensions[1]
+      );
+      
+      $d= array(
+        $origin->getWidth()  / $div,
+        $origin->getHeight() / $div
+      );
+    
       $this->cat && $this->cat->infof(
         'Resampling %s image to %d x %d', 
         $horizontal ? 'horizontal' : 'vertical',
@@ -195,7 +204,7 @@
           // Save
           $this->cat && $this->cat->debug('Saving to', $destination->getURI());
           try(); {
-            $transformed->saveTo(new JpegStreamWriter($destination));
+            $transformed->saveTo(new JpegStreamWriter($destination, 90));
           } if (catch('ImagingException', $e)) {
             $this->cat && $this->cat->error($e);
             delete($transformed);
