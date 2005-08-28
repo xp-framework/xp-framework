@@ -26,6 +26,7 @@
     var
       $outputFolder     = NULL,
       $cat              = NULL,
+      $quality          = 90,
       $thumbDimensions  = array(150, 113),
       $fullDimensions   = array(640, 480);
 
@@ -47,6 +48,26 @@
      */
     function &getOutputFolder() {
       return $this->outputFolder;
+    }
+    
+    /**
+     * Set quality (defaults to 90)
+     *
+     * @access  public
+     * @param   int quality A quality value in percent
+     */
+    function setQuality($quality) {
+      $this->quality= $quality;
+    }
+
+    /**
+     * Get quality
+     *
+     * @access  public
+     * @return  int
+     */
+    function getQuality() {
+      return $this->quality;
     }
     
     /**
@@ -204,7 +225,7 @@
           // Save
           $this->cat && $this->cat->debug('Saving to', $destination->getURI());
           try(); {
-            $transformed->saveTo(new JpegStreamWriter($destination, 90));
+            $transformed->saveTo(new JpegStreamWriter($destination, $this->quality));
           } if (catch('ImagingException', $e)) {
             $this->cat && $this->cat->error($e);
             delete($transformed);
