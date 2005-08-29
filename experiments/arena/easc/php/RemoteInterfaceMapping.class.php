@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('lang.reflect.Proxy');
+
   /**
    * (Insert class' description here)
    *
