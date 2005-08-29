@@ -14,16 +14,23 @@
    */
   class ExifData extends Object {
     var
-      $height       = 0,
-      $width        = 0,
-      $make         = '',
-      $model        = '',
-      $flash        = 0,
-      $orientation  = 0,
-      $fileName     = '',
-      $fileSize     = 0,
-      $mimeType     = '',
-      $dateTime     = NULL;
+      $height           = 0,
+      $width            = 0,
+      $make             = '',
+      $model            = '',
+      $flash            = 0,
+      $orientation      = 0,
+      $fileName         = '',
+      $fileSize         = 0,
+      $mimeType         = '',
+      $dateTime         = NULL,
+      $apertureFNumber  = '',
+      $software         = '',
+      $exposureTime     = '',
+      $exposureProgram  = 0,
+      $whitebalance     = 0,
+      $meteringMode     = 0,
+      $isoSpeedRatings  = 0;
 
     /**
      * Read from a file
@@ -59,6 +66,13 @@
         $e->setFileName($info['FileName']);
         $e->setFileSize($info['FileSize']);
         $e->setMimeType($info['MimeType']);
+        $e->setApertureFNumber($info['COMPUTED']['apertureFNumber']);
+        $e->setSoftware($info['software']);
+        $e->setExposureTime($info['ExposureTime']);
+        $e->setExposureProgram($info['ExposureProgram']);
+        $e->setMeteringMode($info['MeteringMode']);
+        $e->setWhiteBalance($info['WhiteBalance']);
+        $e->setIsoSpeedRatings($info['ISOSpeedRatings']);
         
         // Find date and time
         foreach (array('DateTime', 'DateTimeOriginal') as $key) {
@@ -358,6 +372,197 @@
       return isset($degree[$this->orientation]) ? $degree[$this->orientation] : 0;
     }
     
+
+    /**
+     * Set ApertureFNumber
+     *
+     * @access  public
+     * @param   string apertureFNumber
+     */
+    function setApertureFNumber($apertureFNumber) {
+      $this->apertureFNumber= $apertureFNumber;
+    }
+
+    /**
+     * Get ApertureFNumber
+     *
+     * @access  public
+     * @return  string
+     */
+    function getApertureFNumber() {
+      return $this->apertureFNumber;
+    }
+
+    /**
+     * Set Software
+     *
+     * @access  public
+     * @param   string software
+     */
+    function setSoftware($software) {
+      $this->software= $software;
+    }
+
+    /**
+     * Get Software
+     *
+     * @access  public
+     * @return  string
+     */
+    function getSoftware() {
+      return $this->software;
+    }
+
+    /**
+     * Set ExposureTime
+     *
+     * @access  public
+     * @param   string exposureTime
+     */
+    function setExposureTime($exposureTime) {
+      $this->exposureTime= $exposureTime;
+    }
+
+    /**
+     * Get ExposureTime
+     *
+     * @access  public
+     * @return  string
+     */
+    function getExposureTime() {
+      return $this->exposureTime;
+    }
+
+    /**
+     * Set ExposureProgram
+     *
+     * @access  public
+     * @param   int exposureProgram
+     */
+    function setExposureProgram($exposureProgram) {
+      $this->exposureProgram= $exposureProgram;
+    }
+
+    /**
+     * Get ExposureProgram
+     *
+     * @access  public
+     * @return  int
+     */
+    function getExposureProgram() {
+      return $this->exposureProgram;
+    }
+    
+    /**
+     * Get String describing exposureProgram value.
+     *
+     * @access  public
+     * @return  string
+     */
+    function getExposureProgramString() {
+      static $ep= array(
+        0 => 'not defined',
+        1 => 'manual',
+        2 => 'normal program',
+        3 => 'aperture priority',
+        4 => 'shutter priority',
+        5 => 'creative program',    // (biased toward depth of field)
+        6 => 'action program',      // (biased toward fast shutter speed)
+        7 => 'portrait mode',       // (for closeup photos with the background out of focus)
+        8 => 'landscape mode',      // (for landscape photos with the background in the focus)
+      );
+      
+      return (isset($ep[$this->exposureProgram])
+        ? $ep[$this->exposureProgram]
+        : 'n/a'
+      );
+    }    
+
+    /**
+     * Set MeteringMode
+     *
+     * @access  public
+     * @param   int meteringMode
+     */
+    function setMeteringMode($meteringMode) {
+      $this->meteringMode= $meteringMode;
+    }
+
+    /**
+     * Get MeteringMode
+     *
+     * @access  public
+     * @return  int
+     */
+    function getMeteringMode() {
+      return $this->meteringMode;
+    }
+    
+    /**
+     * Get string describing meteringMode value.
+     *
+     * @access  public
+     * @return  string
+     */
+    function getMeteringModeString() {
+      static $mm= array(
+        0   => 'unknown',                 
+        1   => 'average',                 
+        2   => 'center weighted average', 
+        3   => 'spot',                    
+        4   => 'multispot',               
+        5   => 'pattern',                 
+        6   => 'partial',                 
+        255 => 'other'
+      );
+      
+      return (isset($mm[$this->meteringMode])
+        ? $mm[$this->meteringMode]
+        : 'n/a'
+      );
+    }
+
+    /**
+     * Set Whitebalance
+     *
+     * @access  public
+     * @param   int whitebalance
+     */
+    function setWhitebalance($whitebalance) {
+      $this->whitebalance= $whitebalance;
+    }
+
+    /**
+     * Get Whitebalance.
+     * Values are 0 = auto white balance, 1 = manual white balance.
+     *
+     * @access  public
+     * @return  int
+     */
+    function getWhitebalance() {
+      return $this->whitebalance;
+    }
+
+    /**
+     * Set IsoSpeedRatings
+     *
+     * @access  public
+     * @param   int isoSpeedRatings
+     */
+    function setIsoSpeedRatings($isoSpeedRatings) {
+      $this->isoSpeedRatings= $isoSpeedRatings;
+    }
+
+    /**
+     * Get IsoSpeedRatings
+     *
+     * @access  public
+     * @return  int
+     */
+    function getIsoSpeedRatings() {
+      return $this->isoSpeedRatings;
+    }
+
     /**
      * Retrieve a string representation
      *
@@ -367,12 +572,19 @@
     function toString() {
       return sprintf(
         "%s(%d x %d %s)@{\n".
-        "  [file         ] %s (%d bytes)\n".
-        "  [make         ] %s\n".
-        "  [model        ] %s\n".
-        "  [flash        ] %d (%s)\n".
-        "  [orientation  ] %s (%s, %s)\n".
-        "  [dateTime     ] %s\n".
+        "  [file            ] %s (%d bytes)\n".
+        "  [make            ] %s\n".
+        "  [model           ] %s\n".
+        "  [software        ] %s\n".
+        "  [flash           ] %d (%s)\n".
+        "  [orientation     ] %s (%s, %s)\n".
+        "  [dateTime        ] %s\n".
+        "  [apertureFNumber ] %s\n".
+        "  [exposureTime    ] %s\n".
+        "  [exposureProgram ] %s (%s)\n".
+        "  [meteringMode    ] %s (%s)\n".
+        "  [whitebalance    ] %s\n".
+        "  [isoSpeedRatings ] %s\n".
         "}",
         $this->getClassName(),
         $this->width,
@@ -382,12 +594,21 @@
         $this->fileSize,
         $this->make,
         $this->model,
+        $this->software,
         $this->flash, 
         $this->flashUsed() ? 'on' : 'off',
         $this->orientation,
         $this->isHorizontal() ? 'horizontal' : 'vertical',
         $this->getOrientationString(),
-        $this->dateTime->toString('r')
+        $this->dateTime->toString('r'),
+        $this->apertureFNumber,
+        $this->exposureTime,
+        $this->exposureProgram,
+        $this->getExposureProgramString(),
+        $this->meteringMode,
+        $this->getMeteringModeString(),
+        $this->whitebalance,
+        $this->isoSpeedRatings
       );
     }
   }
