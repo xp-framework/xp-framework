@@ -26,9 +26,12 @@ public class ServerHandler implements Handler {
             (byte)0,
             type,
             false,
-            0
+            buffer.length()
         ).writeTo(out);
         out.writeUTF(buffer);
+        
+        // System.out.println("SEND " + type + " ('" + buffer + "')");
+        
         out.flush();
     }
 
@@ -50,6 +53,8 @@ public class ServerHandler implements Handler {
                 this.writeResponse(out, MessageType.Error, "Magic number mismatch");
                 break;
             }
+
+            // System.out.println("GOT " + requestHeader.getMessageType());
 
             Delegate delegate= requestHeader.getMessageType().delegateFrom(in);
             Object result= null;
