@@ -375,7 +375,7 @@ public class SerializerTest {
         );
         int offset= serialized.indexOf(':', 71)+ 2;
         assertEquals(
-            "i:0;t:5:{s:4:\"file\";s:19:\"SerializerTest.java\";s:4:\"class\";s:45:\"net.xp_framework.easc.unittest.SerializerTest\";s:5:\"method\";s:19:\"representationOfNPE\";s:4:\"line\";i:",
+            "i:0;t:5:{s:4:\"file\";s:19:\"SerializerTest.java\";s:5:\"class\";s:45:\"net.xp_framework.easc.unittest.SerializerTest\";s:6:\"method\";s:19:\"representationOfNPE\";s:4:\"line\";i:",
             serialized.substring(offset, offset+ 165)
         );
     }

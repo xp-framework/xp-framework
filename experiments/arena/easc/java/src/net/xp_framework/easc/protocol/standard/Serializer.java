@@ -558,8 +558,8 @@ public class Serializer {
         
         buffer.append("t:5:{");
         buffer.append("s:4:\"file\";").append(representationOf(e.getFileName()));
-        buffer.append("s:4:\"class\";").append(representationOf(e.getClassName()));
-        buffer.append("s:5:\"method\";").append(representationOf(e.getMethodName()));
+        buffer.append("s:5:\"class\";").append(representationOf(e.getClassName()));
+        buffer.append("s:6:\"method\";").append(representationOf(e.getMethodName()));
         buffer.append("s:4:\"line\";").append(representationOf(e.getLineNumber()));
         buffer.append("}");
 
