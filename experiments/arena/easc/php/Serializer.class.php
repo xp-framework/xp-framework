@@ -92,6 +92,26 @@
       if (NULL !== $mapping) $mappings[$token]= &$mapping;
       return $mappings[$token];
     }
+    
+    /**
+     * Register or retrieve a mapping for a token
+     *
+     * @access  public
+     * @param   string token
+     * @param   string exception fully qualified class name
+     * @return  string 
+     */
+    function exceptionName($name, $exception= NULL) {
+      static $exceptions= array(
+        'IllegalArgument'   => 'lang.IllegalArgumentException',
+        'IllegalAccess'     => 'lang.IllegalAccessException',
+        'ClassNotFound'     => 'lang.ClassNotFoundException',
+        'NullPointer'       => 'lang.NullPointertException',
+      );
+
+      if (NULL !== $exception) $exceptions[$name]= $exception;
+      return $exceptions[$name];
+    }
   
     /**
      * Retrieve serialized representation of a variable
@@ -148,7 +168,28 @@
           return $a;
         }
 
-        case 'E': {     // exceptions
+        case 'e': {     // known exceptions
+          $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
+          try(); {
+            $class= &XPClass::forName(Serializer::exceptionName(substr($serialized, 2+ strlen($len)+ 2, $len)));
+          } if (catch('ClassNotFoundException', $e)) {
+            return throw($e);
+          }
+          $instance= &$class->newInstance();
+          $offset= 2 + 2 + strlen($len)+ $len + 2;
+          $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
+          $offset+= strlen($size)+ 2;
+          for ($i= 0; $i < $size; $i++) {
+            $member= Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $offset+= $len;
+            $instance->{$member}= &Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $offset+= $len;
+          }
+          $length= $offset+ 1;
+          return $instance;
+        }
+
+        case 'E': {     // generic exceptions
           $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
           $instance= &new Exception(NULL);
           $instance->classname= substr($serialized, 2+ strlen($len)+ 2, $len);
