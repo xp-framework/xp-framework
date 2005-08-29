@@ -9,7 +9,20 @@
   /**
    * (Insert class' description here)
    *
-   * @ext      extension
+   * Example:
+   * <code>
+   *   try(); {
+   *     $remote= &Remote::forName('xp://localhost:4448/');
+   *     $remote && $calculator= &$remote->lookup($jndiName);
+   *   } if (catch('RemoteException', $e)) {
+   *     $e->printStackTrace();
+   *     exit(-1);
+   *   }
+   *   
+   *   Console::writeLine('1 + 1 = ', xp::stringOf($calculator->add(1, 1)));
+   *   Console::writeLine('1 - 1 = ', xp::stringOf($calculator->subtract(1, 1)));
+   * </code>
+   * 
    * @see      reference
    * @purpose  purpose
    */
