@@ -288,6 +288,7 @@ public class Serializer {
     }
 
     private static HashMap<Class, Invokeable<?, ?>> typeMap= new HashMap<Class, Invokeable<?, ?>>();
+    private static HashMap<Class, String> exceptionMap= new HashMap<Class, String>();
     
     static {
         
@@ -297,6 +298,15 @@ public class Serializer {
             
             registerMapping(m.getParameterTypes()[0], new MethodTarget<String, Object>(m));
         }
+        
+        registerExceptionName(IllegalArgumentException.class, "IllegalArgument");
+        registerExceptionName(IllegalAccessException.class, "IllegalAccess");
+        registerExceptionName(ClassNotFoundException.class, "ClassNotFound");
+        registerExceptionName(NullPointerException.class, "NullPointer");
+    }
+    
+    public static void registerExceptionName(Class c, String name) {
+        exceptionMap.put(c, name);
     }
     
     public static void registerMapping(Class c, Invokeable<?, ?> i) {
@@ -571,9 +581,14 @@ public class Serializer {
         StringBuffer buffer= new StringBuffer();
         Class c= e.getClass();
         StackTraceElement[] trace= e.getStackTrace();
+        String alias= null;
         
-        buffer.append("E:").append(c.getName().length()).append(":\"").append(c.getName()).append("\":2:{");
-        buffer.append("s:7:\"message\";");
+        if (null != (alias= exceptionMap.get(c))) {
+            buffer.append("e:").append(alias.length()).append(":\"").append(alias);
+        } else {
+            buffer.append("E:").append(c.getName().length()).append(":\"").append(c.getName());
+        }
+        buffer.append("\":2:{s:7:\"message\";");
         buffer.append(representationOf(e.getMessage()));
         buffer.append("s:5:\"trace\";a:").append(trace.length).append(":{");
 

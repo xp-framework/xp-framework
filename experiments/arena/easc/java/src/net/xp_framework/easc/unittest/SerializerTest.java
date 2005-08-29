@@ -370,16 +370,34 @@ public class SerializerTest {
         String serialized= representationOf(new NullPointerException());
 
         assertEquals(
-            "E:30:\"java.lang.NullPointerException\":2:{s:7:\"message\";N;s:5:\"trace\";a:",
-            serialized.substring(0, 71)
+            "e:11:\"NullPointer\":2:{s:7:\"message\";N;s:5:\"trace\";a:",
+            serialized.substring(0, 52)
         );
-        int offset= serialized.indexOf(':', 71)+ 2;
+        int offset= serialized.indexOf(':', 52)+ 2;
         assertEquals(
             "i:0;t:4:{s:4:\"file\";s:19:\"SerializerTest.java\";s:5:\"class\";s:45:\"net.xp_framework.easc.unittest.SerializerTest\";s:6:\"method\";s:19:\"representationOfNPE\";s:4:\"line\";i:",
             serialized.substring(offset, offset+ 165)
         );
     }
-    
+
+    /**
+     * Tests serialization of a generic Exception object
+     *
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOfException() throws Exception {
+        String serialized= representationOf(new Exception());
+
+        assertEquals(
+            "E:19:\"java.lang.Exception\":2:{s:7:\"message\";N;s:5:\"trace\";a:",
+            serialized.substring(0, 60)
+        );
+        int offset= serialized.indexOf(':', 60)+ 2;
+        assertEquals(
+            "i:0;t:4:{s:4:\"file\";s:19:\"SerializerTest.java\";s:5:\"class\";s:45:\"net.xp_framework.easc.unittest.SerializerTest\";s:6:\"method\";s:25:\"representationOfException\";s:4:\"line\";i:",
+            serialized.substring(offset, offset+ 171)
+        );
+    }    
     
     /**
      * Tests serialization of null
