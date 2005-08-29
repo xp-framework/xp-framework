@@ -556,7 +556,7 @@ public class Serializer {
         Class c= e.getClass();
         String name;
         
-        buffer.append("t:5:{");
+        buffer.append("t:4:{");
         buffer.append("s:4:\"file\";").append(representationOf(e.getFileName()));
         buffer.append("s:5:\"class\";").append(representationOf(e.getClassName()));
         buffer.append("s:6:\"method\";").append(representationOf(e.getMethodName()));
