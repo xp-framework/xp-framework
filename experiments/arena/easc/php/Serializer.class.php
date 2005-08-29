@@ -150,8 +150,8 @@
 
         case 'E': {     // exceptions
           $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-          $classname= substr($serialized, 2+ strlen($len)+ 2, $len);
           $instance= &new Exception(NULL);
+          $instance->classname= substr($serialized, 2+ strlen($len)+ 2, $len);
           $offset= 2 + 2 + strlen($len)+ $len + 2;
           $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
           $offset+= strlen($size)+ 2;
@@ -161,7 +161,6 @@
             $instance->{$member}= &Serializer::valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
           }
-          $instance->message= $classname.': '.$instance->message;
           $length= $offset+ 1;
           return $instance;
         }
