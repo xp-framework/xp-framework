@@ -370,13 +370,13 @@ public class SerializerTest {
         String serialized= representationOf(new NullPointerException());
 
         assertEquals(
-            "O:30:\"java.lang.NullPointerException\":2:{s:7:\"message\";N;s:5:\"trace\";a:",
+            "E:30:\"java.lang.NullPointerException\":2:{s:7:\"message\";N;s:5:\"trace\";a:",
             serialized.substring(0, 71)
         );
         int offset= serialized.indexOf(':', 71)+ 2;
         assertEquals(
-            "i:0;O:27:\"java.lang.StackTraceElement\":5:{s:4:\"file\";s:19:\"SerializerTest.java\";s:4:\"class\";s:45:\"net.xp_framework.easc.unittest.SerializerTest\";s:5:\"method\";s:19:\"representationOfNPE\";s:4:\"line\";i:",
-            serialized.substring(offset, offset+ 198)
+            "i:0;t:5:{s:4:\"file\";s:19:\"SerializerTest.java\";s:4:\"class\";s:45:\"net.xp_framework.easc.unittest.SerializerTest\";s:5:\"method\";s:19:\"representationOfNPE\";s:4:\"line\";i:",
+            serialized.substring(offset, offset+ 165)
         );
     }
     

@@ -556,7 +556,7 @@ public class Serializer {
         Class c= e.getClass();
         String name;
         
-        buffer.append("O:").append(c.getName().length()).append(":\"").append(c.getName()).append("\":5:{");
+        buffer.append("t:5:{");
         buffer.append("s:4:\"file\";").append(representationOf(e.getFileName()));
         buffer.append("s:4:\"class\";").append(representationOf(e.getClassName()));
         buffer.append("s:5:\"method\";").append(representationOf(e.getMethodName()));
@@ -572,7 +572,7 @@ public class Serializer {
         Class c= e.getClass();
         StackTraceElement[] trace= e.getStackTrace();
         
-        buffer.append("O:").append(c.getName().length()).append(":\"").append(c.getName()).append("\":2:{");
+        buffer.append("E:").append(c.getName().length()).append(":\"").append(c.getName()).append("\":2:{");
         buffer.append("s:7:\"message\";");
         buffer.append(representationOf(e.getMessage()));
         buffer.append("s:5:\"trace\";a:").append(trace.length).append(":{");
