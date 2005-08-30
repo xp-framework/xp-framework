@@ -4,6 +4,13 @@
  * $Id$
  */
 
+  uses(
+    'wrapper.Long',
+    'wrapper.Double',
+    'wrapper.Short',
+    'wrapper.Byte'
+  );
+
   /**
    * Class that reimplements PHP's builtin serialization format.
    *
@@ -152,6 +159,12 @@
           $strlen= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
           $length= 2 + strlen($strlen) + 2 + $strlen + 2;
           return substr($serialized, 2+ strlen($strlen)+ 2, $strlen);
+        }
+
+        case 'S': {     // shorts
+          $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
+          $length= strlen($v)+ 3;
+          return new Short($v);
         }
 
         case 'a': {     // arrays
