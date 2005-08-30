@@ -233,6 +233,7 @@
      * @return  bool
      */
     function assertEquals($a, $b, $error= 'notequal') {
+      if (is_a($a, 'Object')) return assert('$this->_test($a->equals($b), $error, $a, $b)');
       return assert('$this->_test($a === $b, $error, $a, $b)');
     }
     
@@ -378,12 +379,44 @@
      * @throws  lang.MethodNotImplementedException
      */
     function &run() {
-      if (!method_exists($this, $this->name)) {
+      $class= &$this->getClass();
+      $method= &$class->getMethod($this->name);
+
+      if (!$method) {
         return throw(new MethodNotImplementedException(
           'Method does not exist', $this->name
         ));
       }
-      return call_user_func(array(&$this, $this->name));
+      
+      $expected= NULL;
+      if ($method->hasAnnotation('expect')) {
+        try(); {
+          $expected= &XPClass::forName($method->getAnnotation('expect'));
+        } if (catch('Exception', $e)) {
+          return throw($e);
+        }
+      }
+      
+      try(); {
+        $res= $method->invoke($this, NULL);
+      } if (catch('Exception', $e)) {
+        
+        // Was that an expected exception?
+        if ($expected && $expected->isInstance($e)) {
+          return TRUE;
+        }
+        
+        return throw($e);
+      }
+      
+      if ($expected) return $this->fail(
+        'Expected exception not caught',
+        'failedexpect',
+        $expected->getClassName(),
+        NULL
+      );
+      
+      return $res;
     }
   }
 ?>
