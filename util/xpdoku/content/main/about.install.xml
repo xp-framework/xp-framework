@@ -76,6 +76,18 @@ magic_quotes_sybase = Off
           (As a rough rule: you need all the files directly in skeleton/lang, and lang.base.php).
         </text>
       </para>
+      <para>
+        <caption>Needed directories (hier)</caption>
+        <text>
+          Some projects/ports might require a special filesystem setup, for logfiles and 
+          runtime information storage. Currently, we list these directories as required:
+          <ul>
+            <li><b>/var/log/xp</b><br/>here go logfiles</li>
+            <li><b>/var/run/xp</b><br/>here go runtime files</li>
+          </ul>
+          Note: small scripts/programs usually do not require these directories, but projects do.
+        </text>
+      </para>
     </content>
     <references>
       <ref link="about">Introduction</ref>
