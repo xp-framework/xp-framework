@@ -9,10 +9,6 @@
     'util.Date',
     'util.Hashmap',
     'Serializer',
-    'wrapper.Long',
-    'wrapper.Double',
-    'wrapper.Short',
-    'wrapper.Byte',
     'Person'
   );
 
@@ -203,6 +199,34 @@
       $this->assertEquals(
         'O:6:"Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}',
         Serializer::representationOf(new Person())
+      );
+    }
+
+    /**
+     * Test deserialization of an integer
+     *
+     * @access  public
+     * @see     xp://Person
+     */
+    #[@test]
+    function valueOfInt() {
+      $this->assertEquals(
+        1,
+        Serializer::valueOf('i:1;')
+      );
+    }
+
+    /**
+     * Test deserialization of an integer
+     *
+     * @access  public
+     * @see     xp://Person
+     */
+    #[@test]
+    function valueOfShorts() {
+      $this->assertEquals(
+        new Short(1),
+        Serializer::valueOf('S:1;')
       );
     }
   }
