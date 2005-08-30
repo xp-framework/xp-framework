@@ -55,5 +55,16 @@
     function toString() {
       return $this->getClassName().'('.$this->value.')';
     }
+    
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     *
+     * @access  public
+     * @param   &lang.Object cmp
+     * @return  bool TRUE if the compared object is equal to this object
+     */
+    function equals(&$cmp) {
+      return is_a($cmp, get_class($this)) && $this->value === $cmp->value;
+    }
   }
 ?>
