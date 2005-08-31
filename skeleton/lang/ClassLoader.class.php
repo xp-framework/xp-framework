@@ -20,8 +20,7 @@
      * Constructor. 
      *
      * The path argument is optional and lets you define where to search for
-     * classes (it will be prefixed to the class name if the class name is not
-     * fully qualified).
+     * classes (it will be prefixed to the class name)
      *
      * @access  public
      * @param   string path default '' classpath
@@ -74,7 +73,7 @@
       $name= xp::reflect($class);
 
       if (!class_exists($name)) {
-        $qname= strpos($class, '.') ? $class : $this->classpath.$class;
+        $qname= $this->classpath.$class;
         if (!include_once(strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php')) {
           return throw(new ClassNotFoundException('Class "'.$qname.'" not found'));
         }
@@ -97,7 +96,7 @@
       $name= xp::reflect($class);
 
       if (!class_exists($name)) {
-        $qname= strpos($class, '.') ? $class : $this->classpath.$class;
+        $qname= $this->classpath.$class;
         if (FALSE === eval($bytes)) {
           return throw(new FormatException('Cannot define class "'.$qname.'"'));
         }
