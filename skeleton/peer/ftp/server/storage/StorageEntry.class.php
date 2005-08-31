@@ -38,6 +38,14 @@
     function rename($target) { }
 
     /**
+     * Returns the filename including the path (relative to storage root)
+     *
+     * @access public
+     * @return string
+     */
+    function getFilename() { }
+
+    /**
      * Retrieves the (short) name of a storage entry
      *
      * @access  public
