@@ -30,7 +30,8 @@
       $cat              = NULL,
       $authenticator    = NULL,
       $storage          = NULL,
-      $datasock         = array();
+      $datasock         = array(),
+      $interceptors     = array();
 
     /**
      * Constructor
@@ -52,6 +53,41 @@
      */
     function setTrace(&$cat) { 
       $this->cat= &$cat;
+    }
+    
+    /**
+     * Check all interceptors
+     *
+     * @access private
+     * @param peer.server.ConnectionEvent event The connection event
+     * @param perr.server.ftp.server.StorageEntry entry The storage entry
+     * @param string params The parameter string from request
+     * @param string method Interceptor method to invoke
+     * @return bool
+     */
+    function checkInterceptors(&$event, &$entry, $method) {
+      if (!$this->interceptors) return TRUE;
+    
+      // Check each interceptors an it's conditions
+      foreach ($this->interceptors as $intercept) {
+        foreach ($intercept[0] as $condition) {
+          if (!$condition->check($this->sessions[$event->stream->hashCode()], $entry)) {
+            return TRUE;
+          }
+        }
+        
+        // Invoke interceptor method
+        try(); {
+          $intercept[1]->{$method}(
+            $this->sessions[$event->stream->hashCode()],
+            $entry
+          );
+        } if (catch('Exception', $e)) {
+          $this->answer($event->stream, 550, 'Intercepted: '.$e->getMessage());
+          return FALSE;
+        }
+      }
+      return TRUE;
     }
     
     /**
@@ -390,6 +426,12 @@
         return;
       }
       
+      // Invoke interceptor
+      if (!$this->checkInterceptors($event, $entry, 'onRead')) {
+        $socket->close();
+        return;
+      }
+
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for filelist',
         $this->sessions[$event->stream->hashCode()]->typeName()
@@ -438,6 +480,12 @@
         return;
       }
       
+      // Invoke interceptor
+      if (!$this->checkInterceptors($event, $entry, 'onRead')) {
+        $socket->close();
+        return;
+      }
+
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for filelist',
         $this->sessions[$event->stream->hashCode()]->typeName()
@@ -475,6 +523,9 @@
         return;
       }
       
+      // Invoke interceptor
+      if (!$this->checkInterceptors($event, $entry, 'onRead')) return;
+
       $this->answer($event->stream, 213, date('YmdHis', $entry->getModifiedStamp()));
     }
 
@@ -494,6 +545,9 @@
         return;
       }
       
+      // Invoke interceptor
+      if (!$this->checkInterceptors($event, $entry, 'onRead')) return;
+
       $this->answer($event->stream, 213, $entry->getSize());
     }
 
@@ -513,6 +567,9 @@
         return;
       }
       
+      // Invoke interceptor
+      if (!$this->checkInterceptors($event, $entry, 'onCreate')) return;
+
       // Create the element
       try(); {
         $this->storage->create($event->stream->hashCode(), $params, ST_COLLECTION);
@@ -539,6 +596,9 @@
         return;
       }
       
+      // Invoke interceptor
+      if (!$this->checkInterceptors($event, $element, 'onDelete')) return;
+
       // Delete the element
       try(); {
         $element->delete();
@@ -573,6 +633,12 @@
         return;
       }
       
+      // Invoke interceptor
+      if (!$this->checkInterceptors($event, $entry, 'onRead')) {
+        $socket->close();
+        return;
+      }
+
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for %s (%d bytes)',
         $this->sessions[$event->stream->hashCode()]->getType(),
@@ -618,6 +684,12 @@
         return;
       }
       
+      // Invoke interceptor
+      if (!$this->checkInterceptors($event, $entry, 'onCreate')) {
+        $socket->close();
+        return;
+      }
+
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for %s',
         $this->sessions[$event->stream->hashCode()]->getType(),
@@ -655,6 +727,9 @@
         return;
       }
       
+      // Invoke interceptor
+      if (!$this->checkInterceptors($event, $entry, 'onDelete')) return;
+
       try(); {
         $entry->delete();
       } if (catch('IOException', $e)) {
@@ -696,6 +771,9 @@
         return;
       }
       
+      // Invoke interceptor
+      if (!$this->checkInterceptors($event, $entry, 'onRename')) return;
+
       try(); {
         $entry->rename($params);
         $this->cat->debug($params);
