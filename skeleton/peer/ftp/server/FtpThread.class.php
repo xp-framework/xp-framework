@@ -23,7 +23,8 @@
       $terminate              = FALSE,
       $cat                    = NULL,
       $authenticatorHandler   = NULL,
-      $storageHandler         = NULL;
+      $storageHandler         = NULL,
+      $interceptors           = array();
 
     /**
      * Constructor
@@ -76,6 +77,27 @@
     }
 
     /**
+     * Adds an conditional interceptor
+     *
+     * @access public
+     * @param peer.ftp.server.interceptor.InterceptorCondition
+     * @param peer.ftp.server.interceptor.StorageActionInterceptor
+     */
+    function addInterceptorFor($conditions, &$interceptor) {
+      $this->interceptors[]= array($conditions, $interceptor);
+    }
+    
+    /**
+     * Adds a new interceptor
+     *
+     * @access public
+     * @param peer.ftp.server.interceptor.StorageActionInterceptor
+     */
+    function addInterceptor(&$interceptor) {
+      $this->addInterceptorFor(array(), $interceptor);
+    }
+    
+    /**
      * Retrieve an instance of this thread
      *
      * @model   static
@@ -103,8 +125,8 @@
         with ($class= &XPClass::forName(LISTENER_CLASS), $cl= &ClassLoader::getDefault()); {
         
           // Add listener
-          $listener= &$this->server->addListener($class->newInstance(
-            Proxy::newProxyInstance(
+          $this->server->addListener($listener= &$class->newInstance(
+            $storage= &Proxy::newProxyInstance(
               $cl,
               array(XPClass::forName('peer.ftp.server.storage.Storage')),
               $this->storageHandler
@@ -116,6 +138,9 @@
             )
           ));
         }
+        
+        // Copy interceptors to connection listener
+        $listener->interceptors= $this->interceptors;
 
         // Enable debugging      
         if ($this->cat) {
