@@ -137,9 +137,9 @@
       if (!file_exists($path= $this->realname($clientId, $uri))) return NULL;
       
       if (is_dir($path)) {
-        return new FilesystemStorageCollection($path);
+        return new FilesystemStorageCollection(substr($path, strlen($this->root)), $this->root);
       } else {
-        return new FilesystemStorageElement($path);
+        return new FilesystemStorageElement(substr($path, strlen($this->root)), $this->root);
       }
     }
   }
