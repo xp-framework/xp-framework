@@ -14,6 +14,7 @@
    */
   class FilesystemStorageElement extends Object {
     var
+      $path = NULL,
       $f    = NULL,
       $st   = array();
 
@@ -21,10 +22,13 @@
      * Constructor
      *
      * @access  public
+     * @param string path The path to resource (including file's name)
+     * @param string root The FTP root directory
      * @return  string uri
      */
-    function __construct($uri) { 
-      $this->f= &new File($uri);
+    function __construct($path, $root) { 
+      $this->path= $path;
+      $this->f= &new File($root.$path);
       $this->st= stat($this->f->getURI());
       $this->st['pwuid']= posix_getpwuid($this->st['uid']);
       $this->st['grgid']= posix_getgrgid($this->st['gid']);
@@ -54,6 +58,16 @@
       ).$target;
             
       return $this->f->move($path);
+    }
+    
+    /**
+     * Returns the filename including the path (relative to storage root)
+     *
+     * @access public
+     * @return string
+     */
+    function getFilename() {
+      return $this->path;
     }
 
     /**

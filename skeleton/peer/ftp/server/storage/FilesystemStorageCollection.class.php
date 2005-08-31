@@ -14,6 +14,7 @@
    */
   class FilesystemStorageCollection extends Object {
     var
+      $path = NULL,
       $f    = NULL,
       $name = '';
 
@@ -21,9 +22,13 @@
      * Constructor
      *
      * @access  public
+     * @param string path The path to resource (including directory's name)
+     * @param string root The FTP root directory
      * @return  string uri
      */
-    function __construct($uri) {
+    function __construct($path, $root) {
+      $this->path= $path;
+      $uri= $root.$path;
       if ('..' == substr($uri, -2)) {
         $this->name= '..';
       } elseif ('.' == substr($uri, -1)) {
@@ -63,6 +68,17 @@
       return $this->f->move($path);
     }
 
+    /**
+     * Returns the filename including the path (relative to storage root)
+     *
+     * @access public
+     * @return string
+     */
+    function getFilename() {
+      return $this->path;
+    }
+
+    
     /**
      * Retrieves the (short) name of a storage entry
      *
