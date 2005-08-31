@@ -13,7 +13,8 @@
   class Field extends Object {
     var
       $_ref   = NULL,
-      $name   = '';
+      $name   = '',
+      $type   = NULL;
 
     /**
      * Constructor
@@ -21,10 +22,12 @@
      * @access  private
      * @param   &mixed ref
      * @param   string name
+     * @param   string type default NULL
      */    
-    function __construct(&$ref, $name) {
+    function __construct(&$ref, $name, $type= NULL) {
       $this->_ref= is_object($ref) ? get_class($ref) : $ref;
       $this->name= $name;
+      $this->type= $type;
     }
 
     /**
@@ -44,10 +47,11 @@
      * @return  string
      */
     function getType() {
+      if (isset($this->type)) return $this->type;
       if ($details= XPClass::detailsForField($this->_ref, $this->name)) {
         if (isset($details[DETAIL_ANNOTATIONS]['type'])) return $details[DETAIL_ANNOTATIONS]['type'];
       }
-      return gettype($this->value);
+      return NULL;
     }
     
     /**
