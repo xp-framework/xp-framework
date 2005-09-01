@@ -7,17 +7,25 @@
   uses('XpProtocolHandler');
 
   /**
-   * (Insert class' description here)
+   * Handler factory implementation
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://XpProtocolHandler
+   * @purpose  Factory
    */
   class HandlerFactory extends Object {
   
+    /**
+     * Retrieve a handler for a given scheme
+     *
+     * @model   static
+     * @access  public
+     * @param   string scheme
+     * @return  &ProtocolHandler
+     */
     function &handlerFor($scheme) {
-      switch ($scheme) {
-        case 'xp': return new XpProtocolHandler();
+      sscanf($scheme, '%[^+]+%s', $type, $option);
+      switch ($type) {
+        case 'xp': return new XpProtocolHandler($option);
         default: return xp::null();
       }
     }
