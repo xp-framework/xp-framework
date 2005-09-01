@@ -18,12 +18,12 @@
       // Check for fatal errors
       if (FALSE !== ($p= strpos($buf, EPREPEND_IDENTIFIER))) {
         $e= &new Error(str_replace(EPREPEND_IDENTIFIER, '', substr($buf, $p)));
-        return 'Uncaught error: '.$e->toString();
+        fputs(STDERR, $e->toString());
       }
 
       // Check for uncaught exceptions
       if ($exceptions= &xp::registry('exceptions')) {
-        return 'Uncaught exception: '.$exceptions[key($exceptions)]->toString();
+        fputs(STDERR, $exceptions[key($exceptions)]->toString());
       }
 
       return $buf;
