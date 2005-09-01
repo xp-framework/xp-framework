@@ -28,11 +28,10 @@
   define('REMOTE_MSG_ERROR',     0x0006);
 
   /**
-   * (Insert class' description here)
+   * Handles the "XP" protocol
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://ProtocolHandler
+   * @purpose  Protocol Handler
    */
   class XpProtocolHandler extends Object {
     var
@@ -42,6 +41,12 @@
     var
       $_sock= NULL;  
 
+    /**
+     * Initialize this protocol handler
+     *
+     * @access  public
+     * @param   &peer.URL proxy
+     */
     function initialize(&$proxy) {
       sscanf(
         $proxy->getParam('version', '1.0'), 
@@ -54,10 +59,27 @@
       $this->sendPacket(REMOTE_MSG_INIT);
     }
     
+    /**
+     * Look up an object by its name
+     *
+     * @access  public
+     * @param   string name
+     * @param   &lang.Object
+     */
     function &lookup($name) {
       return $this->sendPacket(REMOTE_MSG_LOOKUP, UTF::encode($name));
     }
 
+    /**
+     * Invoke a method on a given object id with given method name
+     * and given arguments
+     *
+     * @access  public
+     * @param   int oid
+     * @param   string method
+     * @param   mixed[] args
+     * @return  &mixed
+     */
     function &invoke($oid, $method, $args) {
       return $this->sendPacket(REMOTE_MSG_CALL, pack(
         'NNa*a*',
