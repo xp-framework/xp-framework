@@ -68,10 +68,15 @@ Related documents
 -----------------
 - JUnit 4 overview
   http://www.beust.com/weblog/archives/000292.html
+
 - JUnit 4.0 (german)
   http://www.frankwestphal.de/JUnit4.0.html
+
 - Patch against util.profiling.unittest.TestCase
   http://xp-framework.net/downloads/rfc0032.diff
+
+- XP Unit testing introduction
+  http://xp-framework.info/xml/xp.en_US/news/view?67
 
 Comments
 --------
