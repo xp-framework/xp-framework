@@ -7,7 +7,7 @@
   uses('peer.URL', 'HandlerFactory', 'RemoteInterfaceMapping');
 
   /**
-   * (Insert class' description here)
+   * Entry class for all remote operations
    *
    * Example:
    * <code>
@@ -23,8 +23,8 @@
    *   Console::writeLine('1 - 1 = ', xp::stringOf($calculator->subtract(1, 1)));
    * </code>
    * 
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://HandlerFactory
+   * @purpose  RMI
    */
   class Remote extends Object {
     var
@@ -42,33 +42,42 @@
      * @param   &peer.URL proxy
      */
     function __construct(&$proxy) {
-      $this->_handler= &HandlerFactory::handlerFor($proxy->getScheme());
+      try(); {
+        $this->_handler= &HandlerFactory::handlerFor($proxy->getScheme());
+      } if (catch('NullPointerException', $e)) {
+        return throw($e);
+      }
       $this->_handler->initialize($proxy);
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve remote instance for 
      *
      * @model   static
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string dsn
+     * @return  &Remote
      */
     function &forName($dsn) {
       static $instances= array();
       
       if (!isset($instances[$dsn])) {
-        $instances[$dsn]= new Remote(new URL($dsn));
+        try(); {
+          $instance= new Remote(new URL($dsn));
+        } if (catch('NullPointerException', $e)) {
+          return throw($e);
+        }
+        $instances[$dsn]= &$instance;
       }
       return $instances[$dsn];
     }
     
     /**
-     * (Insert method's description here)
+     * Look up an object by its name
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string name
+     * @return  &lang.Object
      */
     function &lookup($name) {
       return $this->_handler->lookup($name);
