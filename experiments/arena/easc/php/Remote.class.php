@@ -30,6 +30,12 @@
     var
       $_handler       = NULL;
 
+    /**
+     * Static initializer. Sets up serializer.
+     *
+     * @model   static
+     * @access  public
+     */
     function __static() {
       Serializer::mapping('I', new RemoteInterfaceMapping());
       Serializer::exceptionName('naming/NameNotFound', 'lang.MethodNotImplementedException');
