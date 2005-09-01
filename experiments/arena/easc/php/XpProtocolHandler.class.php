@@ -143,5 +143,6 @@
       }
       return $return;
     }
-  }
+
+  } implements(__FILE__, 'ProtocolHandler');
 ?>
