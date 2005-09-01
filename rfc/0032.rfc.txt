@@ -94,6 +94,8 @@ Comments
   classname of the exception class.
   kiesel, Sun Aug 21 12:17:27 CEST 2005
 
-  
+- The @expect annotation was implemented. If @timeout makes sense (and 
+  because it doesn't work under Windows) we can implement it later.
+  friebe, Thu Sep  1 10:40:45 CEST 2005
 
 <EOF>
