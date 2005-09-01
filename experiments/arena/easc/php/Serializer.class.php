@@ -54,14 +54,14 @@
             case is_a($var, 'Double'): {
               return 'd:'.$var->value.';';
             }
+            case is_a($var, 'Integer'): {
+              return 'i:'.$var->value.';';
+            }
             case is_a($var, 'Byte'): {
               return 'B:'.$var->value.';';
             }
             case is_a($var, 'Short'): {
               return 'S:'.$var->value.';';
-            }
-            case is_a($var, 'Integer'): {
-              return 'i:'.$var->value.';';
             }
             case is_a($var, 'Float'): {
               return 'f:'.$var->value.';';
@@ -161,10 +161,28 @@
           return substr($serialized, 2+ strlen($strlen)+ 2, $strlen);
         }
 
+        case 'B': {     // bytes
+          $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
+          $length= strlen($v)+ 3;
+          return new Byte($v);
+        }
+
         case 'S': {     // shorts
           $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
           $length= strlen($v)+ 3;
           return new Short($v);
+        }
+
+        case 'f': {     // floats
+          $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
+          $length= strlen($v)+ 3;
+          return new Float($v);
+        }
+
+        case 'l': {     // longs
+          $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
+          $length= strlen($v)+ 3;
+          return new Long($v);
         }
 
         case 'a': {     // arrays
