@@ -8,6 +8,7 @@
    * Invocation handler for client stubs
    *
    * @see      xp://lang.reflect.InvocationHandler
+   * @see      xp://RemoteInterfaceMapping
    * @purpose  InvocationHandler
    */
   class RemoteInvocationHandler extends Object {
