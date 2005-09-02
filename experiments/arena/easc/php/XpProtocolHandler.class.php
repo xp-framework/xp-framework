@@ -112,7 +112,6 @@
         strlen($data),
         $data
       );
-      // Console::writeLine('>>> ', $packet);
       $this->_sock->write($packet);
       
       // Read response header
@@ -120,7 +119,6 @@
         'Nmagic/cvmajor/cvminor/ctype/ccompressed/Nlength', 
         $this->readBytes(12)
       );
-      // Console::writeLine('<<< ', xp::stringOf($header));
       
       if (DEFAULT_PROTOCOL_MAGIC_NUMBER != $header['magic']) {
         $this->_sock->close();
