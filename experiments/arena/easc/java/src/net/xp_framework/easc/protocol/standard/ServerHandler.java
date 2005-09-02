@@ -19,6 +19,17 @@ import static net.xp_framework.easc.protocol.standard.Header.DEFAULT_MAGIC_NUMBE
 
 public class ServerHandler implements Handler {
 
+    static {
+        Serializer.registerMapping(ProxyWrapper.class, new Invokeable<String, ProxyWrapper>() {
+            public String invoke(ProxyWrapper wrapper) throws Exception {
+                return "I:" + wrapper.identifier + ":{" + Serializer.representationOf(
+                    wrapper.object.getClass().getInterfaces()[0].getName()
+                ) + "}";
+            }
+        });
+        Serializer.registerExceptionName(javax.naming.NameNotFoundException.class, "naming/NameNotFound");
+    }
+
     protected void writeResponse(DataOutputStream out, MessageType type, String buffer) throws IOException {
         new Header(
             DEFAULT_MAGIC_NUMBER,
@@ -37,13 +48,6 @@ public class ServerHandler implements Handler {
 
     public void handle(DataInputStream in, DataOutputStream out) throws IOException {
         ProxyMap map= new ProxyMap();
-        Serializer.registerMapping(ProxyWrapper.class, new Invokeable<String, ProxyWrapper>() {
-            public String invoke(ProxyWrapper wrapper) throws Exception {
-                return "I:" + wrapper.identifier + ":{" + Serializer.representationOf(
-                    wrapper.object.getClass().getInterfaces()[0].getName()
-                ) + "}";
-            }
-        });
 
         while (true) {
             Header requestHeader= Header.readFrom(in);
