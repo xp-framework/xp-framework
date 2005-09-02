@@ -8,7 +8,8 @@
     'wrapper.Long',
     'wrapper.Double',
     'wrapper.Short',
-    'wrapper.Byte'
+    'wrapper.Byte',
+    'util.Date'
   );
 
   /**
@@ -263,6 +264,12 @@
             array(),
             array()
           );
+        }
+        
+        case 'T': {     // timestamp
+          $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
+          $length= strlen($v)+ 3;
+          return new Date((int)$v);
         }
 
         case 'O': {     // generic objects
