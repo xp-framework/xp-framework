@@ -1,0 +1,74 @@
+RFC 0037: Ability to fully qualify class names
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Fri Sep  2 18:00:18 CEST 2005
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+Classes can be optionally declared with their fully qualified name. Class 
+loading and reflection semantics will not change, though.
+
+Rationale
+---------
+Avoid name clashes.
+
+Functionality
+-------------
+A new "keyword" "package" is introduced. It declares a class a being 
+within a package and thus declared using its fully qualified name.
+
+Example
+~~~~~~~
+<?php
+  uses('util.Date');
+
+  package('info.binford6100');
+
+  class info·binford6100·Date extends Date {
+  
+    function toString() {
+      return 'More Power: '.parent::toString();
+    }
+  }
+?>
+
+Notes
+~~~~~
+<pre>
+- For existing classes, nothing will change
+
+- Fully qualified classes can only be referenced by their fully qualified
+  name, non-fully-qualified classes can only be referenced by their non-
+  qualified name
+</pre>
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+Core will become a bit slower because it will need to distinguish between
+the two cases:
+
+1) A class is declared with its fully qualified name
+2) A class is declared non-fully qualified
+
+Dependencies
+------------
+A new keyword "package".
+
+Related documents
+-----------------
+- http://xp-framework.net/downloads/rfc0037.diff
+  Patch implementing this RFC
+
+Comments
+--------
+n/a
+
+<EOF>
