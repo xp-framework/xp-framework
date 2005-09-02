@@ -7,20 +7,23 @@
   uses('lang.reflect.Proxy');
 
   /**
-   * (Insert class' description here)
+   * Maps serialized representation of remote interface to a Proxy 
+   * instance.
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://RemoteInvocationHandler
+   * @see      xp://Serializer
+   * @purpose  Serializer mapping
    */
   class RemoteInterfaceMapping extends Object {
   
     /**
-     * (Insert method's description here)
+     * Returns a value for the given serialized string
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string serialized
+     * @param   &int length
+     * @param   array<string, mixed> context default array()
+     * @return  &mixed
      */
     function &valueOf($serialized, &$length, $context= array()) {
       $oid= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
@@ -41,5 +44,6 @@
       $length= $offset+ 1;
       return $instance;
     }
-  }
+
+  } implements(__FILE__, 'SerializerMapping');
 ?>
