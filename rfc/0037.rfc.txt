@@ -21,8 +21,8 @@ Functionality
 A new "keyword" "package" is introduced. It declares a class a being 
 within a package and thus declared using its fully qualified name.
 
-Example
-~~~~~~~
+Example (Declaration)
+~~~~~~~~~~~~~~~~~~~~~
 <?php
   uses('util.Date');
 
@@ -35,6 +35,21 @@ Example
     }
   }
 ?>
+
+Example (Usage)
+~~~~~~~~~~~~~~~
+<?php
+  require('lang.base.php');
+  uses('info.binford6100.Date');
+  
+  echo xp::stringOf(new info·binford6100·Date()), "\n";
+?>
+
+Output of above example
+~~~~~~~~~~~~~~~~~~~~~~~
+<pre>
+  More Power: Fri, 02 Sep 2005 17:59:44 +0200
+</pre>
 
 Notes
 ~~~~~
