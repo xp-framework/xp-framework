@@ -90,13 +90,20 @@
      *
      * @access  public
      * @param   string token
-     * @param   &Mapping mapping
-     * @return  &Mapping mapping
+     * @param   &SerializerMapping mapping
+     * @return  &SerializerMapping mapping
+     * @throws  lang.IllegalArgumentException if the given argument is not a SerializerMapping
      */
     function &mapping($token, &$mapping) {
       static $mappings= array();
       
-      if (NULL !== $mapping) $mappings[$token]= &$mapping;
+      if (NULL !== $mapping) {
+        if (!is('SerializerMapping', $mapping)) return throw(new IllegalArgumentException(
+          'Given argument is not a SerializerMapping ('.xp::typeOf($mapping).')'
+        ));
+
+        $mappings[$token]= &$mapping;
+      }
       return $mappings[$token];
     }
     
