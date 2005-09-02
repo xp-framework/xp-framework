@@ -5,27 +5,31 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Invocation handler for client stubs
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://lang.reflect.InvocationHandler
+   * @purpose  InvocationHandler
    */
   class RemoteInvocationHandler extends Object {
     var
-      $oid= NULL;
+      $oid      = NULL,
+      $handler  = NULL;
 
     /**
-     * (Insert method's description here)
+     * Retrieve a new instance 
      *
-     * @access  
-     * @param   
-     * @return  
+     * @model   static
+     * @access  public
+     * @param   string oid
+     * @param   &ProtocolHandler handler
+     * @return  &RemoteInvocationHandler
      */
     function &newInstance($oid, &$handler) {
-      $i= &new RemoteInvocationHandler();
-      $i->oid= $oid;
-      $i->handler= &$handler;
+      with ($i= &new RemoteInvocationHandler()); {
+        $i->oid= $oid;
+        $i->handler= &$handler;
+      }
+
       return $i;
     }
     
