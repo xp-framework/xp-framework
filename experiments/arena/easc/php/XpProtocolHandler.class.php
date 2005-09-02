@@ -91,13 +91,13 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Sends a packet, reads and evaluates the response
      *
      * @access  protected
      * @param   int type
      * @param   string data default ''
      * @return  &mixed
-     * @throws  rmi.RemoteException
+     * @throws  io.IOException in case of I/O errors
      */
     function sendPacket($type, $data= '') {
     
@@ -108,24 +108,30 @@
         $this->versionMajor,
         $this->versionMinor,
         $type,
-        FALSE,                  // compressed
+        FALSE,                  // compressed, not used at the moment
         strlen($data),
         $data
       );
-      $this->_sock->write($packet);
-      
-      // Read response header
-      $header= unpack(
-        'Nmagic/cvmajor/cvminor/ctype/ccompressed/Nlength', 
-        $this->readBytes(12)
-      );
+      try(); {
+        $this->_sock->write($packet);
+        $header= unpack(
+          'Nmagic/cvmajor/cvminor/ctype/ccompressed/Nlength', 
+          $this->readBytes(12)
+        );
+      } if (catch('IOException', $e)) {
+        return throw($e);
+      }
       
       if (DEFAULT_PROTOCOL_MAGIC_NUMBER != $header['magic']) {
         $this->_sock->close();
         return throw(new Error('Magic number mismatch (have: '.$header['magic'].' expect: '.DEFAULT_PROTOCOL_MAGIC_NUMBER));
       }
       
-      $data= $this->readBytes($header['length']+ 2);
+      try(); {
+        $data= $this->readBytes($header['length']+ 2);
+      } if (catch('IOException', $e)) {
+        return throw($e);
+      }
       $ctx= array('handler' => &$this);
 
       // Perform actions based on response type
@@ -148,10 +154,9 @@
     }
     
     /**
-     * Read a specified number of byte from the given socket
+     * Read a specified number of bytes
      *
      * @access  protected
-     * @param   &peer.Socket sock
      * @param   int num
      * @return  string 
      */
