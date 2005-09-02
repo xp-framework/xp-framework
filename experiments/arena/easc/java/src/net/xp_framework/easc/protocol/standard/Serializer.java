@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.AbstractCollection;
 import java.util.Date;
 import java.util.Iterator;
 import net.xp_framework.easc.protocol.standard.Handler;
@@ -345,6 +346,7 @@ public class Serializer {
 
     private static String representationOf(Object o, Invokeable i) throws Exception {
         if (i != null) return (String)i.invoke(o);
+        if (null == o) return "N;";
 
         // Default object serialization
         StringBuffer buffer= new StringBuffer();
@@ -523,6 +525,11 @@ public class Serializer {
         
         buffer.append("}");
         return buffer.toString();
+    }
+
+    @Handler public static String representationOf(AbstractCollection c) throws Exception {
+        if (null == c) return "N;";
+        return representationOf(c.toArray());
     }
 
     @Handler public static String representationOf(Date d) throws Exception {
