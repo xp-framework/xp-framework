@@ -69,6 +69,8 @@ Related documents
 
 Comments
 --------
-n/a
+- friebe, Fri Sep  2 18:08:18 CEST 2005
+  The patch still needs quite some work. All the array_search() / 
+  in_array() calls to look up class names are slow.
 
 <EOF>
