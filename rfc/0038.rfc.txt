@@ -1,0 +1,67 @@
+RFC 0038: Type wrappers
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Sep  4 12:26:52     2005
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+Wrapper types for all primitive types will be created and added to the
+new package lang.type.
+
+Rationale
+---------
+Wrapper types are needed not only in the new Enterprise Application Server
+Connectivity API (EASC) but also in SOAP (SOAPLong), especially for those
+types that cannot be mapped to PHP types (e.g. int vs. long or byte and 
+short).
+
+Functionality
+-------------
+The following wrapper classes will be created:
+<pre>
+  lang.Object
+  |
+  +-- lang.type.Number
+  |   |
+  |   +-- lang.type.Integer
+  |   |
+  |   +-- lang.type.Long
+  |   |
+  |   +-- lang.type.Float
+  |   |
+  |   +-- lang.type.Double
+  |   |
+  |   +-- lang.type.Short
+  |   |
+  |   +-- lang.type.Byte
+  |
+  +-- lang.type.Boolean
+</pre>
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+These classes will not be loaded by default and will explicetly need to
+be added to uses() clauses where required.
+
+Dependencies
+------------
+- http://xp-framework.net/downloads/Number.class.phps
+  Number class
+
+Related documents
+-----------------
+n/a
+
+Comments
+--------
+n/a
+
+<EOF>
