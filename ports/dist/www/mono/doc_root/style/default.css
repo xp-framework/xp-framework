@@ -1,0 +1,63 @@
+/* This stylesheet is part of the mono port
+ *
+ * $Id$ 
+ */
+
+body {
+  background-color: white;
+  color: #000000;
+  font-family: Tahoma,Arial,Helvetica;
+  font-size: 10pt;
+  padding: 0px;
+  margin: 0 auto;
+
+}
+
+p {
+}
+
+#container {
+  position: relative;
+  padding: 0px;
+  margin: 0 auto;
+  text-align: left;
+  width: 800px;
+}
+
+#header {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  width: 800px;
+  height: 50px;
+  top: 0px;
+  left: 0px;
+}
+
+#header-nav {
+  text-align: right;
+}
+
+#picture-frame {
+  width: 800px;
+}
+
+#picture-inner-frame {
+  border: 1px solid #efefef;
+  text-align: center;
+}
+
+#picture {
+  position: relative;
+  padding: 0px;
+  margin: 0px;
+  border: 1px solid black;
+}
+
+#prev-next a {
+  text-align: right;
+  font-style: normal;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 8pt;
+}
