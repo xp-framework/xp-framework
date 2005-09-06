@@ -14,6 +14,7 @@
    */
   class FilesystemStorageCollection extends Object {
     var
+      $root = NULL,
       $path = NULL,
       $f    = NULL,
       $name = '';
@@ -28,6 +29,7 @@
      */
     function __construct($path, $root) {
       $this->path= $path;
+      $this->root= $root;
       $uri= $root.$path;
       if ('..' == substr($uri, -2)) {
         $this->name= '..';
@@ -169,16 +171,18 @@
      * @access  public
      * @return  &peer.ftp.server.storage.StorageEntry[]
      */
-    function &elements() { 
+    function &elements() {
+      $rpath= substr($this->f->getURI(), strlen($this->root));
+          
       $r= array();
-      $r[]= &new FilesystemStorageCollection($this->f->getURI().'.');
-      $r[]= &new FilesystemStorageCollection($this->f->getURI().'..');
+      $r[]= &new FilesystemStorageCollection($rpath.'.', $this->root);
+      $r[]= &new FilesystemStorageCollection($rpath.'..', $this->root);
       while ($entry= $this->f->getEntry()) {
-        $path= $this->f->getURI().$entry;
-        if (is_dir($path)) {
-          $r[]= &new FilesystemStorageCollection($path);
+        $path= $rpath.$entry;
+        if (is_dir($this->root.$path)) {
+          $r[]= &new FilesystemStorageCollection($path, $this->root);
         } else {
-          $r[]= &new FilesystemStorageElement($path);
+          $r[]= &new FilesystemStorageElement($path, $this->root);
         }
       }
       $this->f->rewind();
