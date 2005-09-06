@@ -216,7 +216,7 @@ public class ServerTest {
     @Test public void lookupProxy() throws Exception {
         assertAnswer(
             MessageType.Value,
-            "I:1:P:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";s:53:\"net.xp_framework.easc.unittest.DebugInvocationHandler\";}", 
+            "I:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";}", 
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,
@@ -270,7 +270,7 @@ public class ServerTest {
     @Test public void nonExistantMethodCall() throws Exception {
         assertAnswer(
             MessageType.Exception,
-            "O:31:\"java.lang.NoSuchMethodException\":0:{}",
+            null,
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,
