@@ -99,6 +99,27 @@
     }
     
     /**
+     * Creates a new StorageElement or StorageCollection (depending on
+     * type)
+     *
+     * @access public
+     * @param string clientId
+     * @param string uri
+     * @param int type
+     */
+    function createEntry($clientId, $uri, $type) {
+      $path= substr($this->realname($clientId, $uri), strlen($this->root));
+      switch ($type) {
+        case ST_ELEMENT:
+          return new FilesystemStorageElement($path, $this->root);
+          
+        case ST_COLLECTION:
+          return new FilesystemStorageCollection($path, $this->root);
+      }
+      return xp::null();
+    }
+    
+    /**
      * Creates a new StorageEntry and return it
      *
      * @access  public
@@ -114,15 +135,13 @@
           if (FALSE === touch($path)) {
             return throw(new IOException('File '.$path.' could not be created'));
           }
-          return new FilesystemStorageElement(substr($path, strlen($this->root)), $this->root);
         
         case ST_COLLECTION:
           if (FALSE === mkdir($path)) {
             return throw(new IOException($path.' could not be created'));
           }
-          return new FilesystemStorageCollection(substr($path, strlen($this->root)), $this->root);
       }
-      return xp::null();
+      return $this->createEntry($clientId, $uri, $type);
     }
 
     /**
@@ -136,11 +155,7 @@
     function &lookup($clientId, $uri) {
       if (!file_exists($path= $this->realname($clientId, $uri))) return NULL;
       
-      if (is_dir($path)) {
-        return new FilesystemStorageCollection(substr($path, strlen($this->root)), $this->root);
-      } else {
-        return new FilesystemStorageElement(substr($path, strlen($this->root)), $this->root);
-      }
+      return $this->createEntry($clientId, $uri, is_dir($path) ? ST_COLLECTION : ST_ELEMENT);
     }
   }
 ?>
