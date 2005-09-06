@@ -49,6 +49,17 @@
      * Creates a new StorageEntry and return it
      *
      * @access  public
+     * @param   string clientId
+     * @param   string uri
+     * @param   int type one of the ST_* constants
+     * @return  &peer.ftp.server.storage.StorageEntry
+     */
+    function &createEntry($clientId, $uri, $type) { }
+    
+    /**
+     * Creates a new StorageEntry and return it
+     *
+     * @access  public
      * @param   int clientId
      * @param   string uri
      * @param   int type one of the ST_* constants
