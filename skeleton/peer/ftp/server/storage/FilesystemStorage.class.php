@@ -106,8 +106,9 @@
      * @param string clientId
      * @param string uri
      * @param int type
+     * @return &peer.ftp.server.storage.StorageEntry
      */
-    function createEntry($clientId, $uri, $type) {
+    function &createEntry($clientId, $uri, $type) {
       $path= substr($this->realname($clientId, $uri), strlen($this->root));
       switch ($type) {
         case ST_ELEMENT:
