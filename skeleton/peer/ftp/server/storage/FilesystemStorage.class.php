@@ -136,11 +136,13 @@
           if (FALSE === touch($path)) {
             return throw(new IOException('File '.$path.' could not be created'));
           }
+          break;
         
         case ST_COLLECTION:
           if (FALSE === mkdir($path)) {
             return throw(new IOException($path.' could not be created'));
           }
+          break;
       }
       return $this->createEntry($clientId, $uri, $type);
     }
