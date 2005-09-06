@@ -568,6 +568,7 @@
       }
       
       // Invoke interceptor
+      $entry= &$this->storage->createEntry($event->stream->hashCode(), $params, ST_COLLECTION);
       if (!$this->checkInterceptors($event, $entry, 'onCreate')) return;
 
       // Create the element
@@ -671,6 +672,14 @@
       if (!$socket= &$this->openDatasock($event)) return;
       
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
+
+        // Invoke interceptor
+        $entry= &$this->storage->createEntry($event->stream->hashCode(), $params, ST_ELEMENT);
+        if (!$this->checkInterceptors($event, $entry, 'onCreate')) {
+          $socket->close();
+          return;
+        }
+
         try(); {
           $entry= &$this->storage->create($event->stream->hashCode(), $params, ST_ELEMENT);
         } if (catch('Exception', $e)) {
@@ -684,12 +693,6 @@
         return;
       }
       
-      // Invoke interceptor
-      if (!$this->checkInterceptors($event, $entry, 'onCreate')) {
-        $socket->close();
-        return;
-      }
-
       $this->answer($event->stream, 150, sprintf(
         'Opening %s mode data connection for %s',
         $this->sessions[$event->stream->hashCode()]->getType(),
