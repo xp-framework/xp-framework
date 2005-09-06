@@ -13,6 +13,9 @@
    */
   class EntrynameInterceptor extends DefaultInterceptor {
   
+    var
+      $regexp= NULL;
+  
     /**
      * Constructor
      *
