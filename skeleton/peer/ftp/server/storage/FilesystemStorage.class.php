@@ -114,13 +114,13 @@
           if (FALSE === touch($path)) {
             return throw(new IOException('File '.$path.' could not be created'));
           }
-          return new FilesystemStorageElement($path);
+          return new FilesystemStorageElement(substr($path, strlen($this->root)), $this->root);
         
         case ST_COLLECTION:
           if (FALSE === mkdir($path)) {
             return throw(new IOException($path.' could not be created'));
           }
-          return new FilesystemStorageCollection($path);
+          return new FilesystemStorageCollection(substr($path, strlen($this->root)), $this->root);
       }
       return xp::null();
     }
