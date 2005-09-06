@@ -115,6 +115,12 @@ Extended implementation (abbreviated):
     array(new PathCondition('/check/only/in/this/path'), new TimeCondition('03:00', '04:00')),
     new DeleteInterceptor()
   );
+  
+  // Add interceptor to allow only specific filename extensions
+  $storage->addIntercetporFor(
+    array(new PathCondition('/only/gif-and-jpg/dir')),
+    new EntrynameInterceptor('/\.(gif|jpg)$/')
+  );
 ?>
 
 Note: The DefaultInterceptor class implements the 
@@ -187,5 +193,9 @@ Comments
 
 - olli, Fri Aug 26 15:04:44 CEST 2005
   Should InterceptorCondition be an interface or just a simple class?
+
+- olli, Tue Sep  6 15:36:29 CEST 2005
+  I added an EntrynameInterceptor which can be used to force client to
+  upload only special files with specific extensions (e.g. jpg or .gif)
 
 <EOF>
