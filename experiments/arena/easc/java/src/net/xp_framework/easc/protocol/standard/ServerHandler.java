@@ -68,9 +68,9 @@ public class ServerHandler implements Handler {
             try {
                 result= delegate.invoke(map);
                 response= MessageType.Value;
-            } catch (Exception e) {
-                e.printStackTrace();
-                result= e;
+            } catch (Throwable t) {
+                t.printStackTrace();
+                result= t;
                 response= MessageType.Exception;
             }
             
