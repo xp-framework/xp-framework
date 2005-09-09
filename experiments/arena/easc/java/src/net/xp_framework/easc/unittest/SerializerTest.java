@@ -392,7 +392,7 @@ public class SerializerTest {
         Object o= null;
         assertEquals("N;", representationOf(o));
     }
-   
+
     /**
      * Tests deserialization of null (identified by "N" token)
      *
@@ -527,5 +527,16 @@ public class SerializerTest {
             new Date(1122369782000L), 
             valueOf("T:1122369782;")
         );
+    }
+    
+    /**
+     * Tests deserialization of strictly numeric arrays (identified by "A" token)
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void valueOfArray() throws Exception {
+        Object[] result= (Object[])valueOf("A:2:{O:37:\"net.xp_framework.easc.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}");
+        assertEquals(new Object[] { new Person(), new String("World") }, result);
     }
 }
