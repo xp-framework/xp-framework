@@ -28,6 +28,7 @@ public class ServerHandler implements Handler {
             }
         });
         Serializer.registerExceptionName(javax.naming.NameNotFoundException.class, "naming/NameNotFound");
+        Serializer.registerExceptionName(java.lang.reflect.InvocationTargetException.class, "invoke/Exception");
     }
 
     protected void writeResponse(DataOutputStream out, MessageType type, String buffer) throws IOException {
@@ -41,14 +42,13 @@ public class ServerHandler implements Handler {
         ).writeTo(out);
         out.writeUTF(buffer);
         
-        // System.out.println("SEND " + type + " ('" + buffer + "')");
+        // DEBUG System.out.println("[EASC] SEND " + type + " ('" + buffer + "')");
         
         out.flush();
     }
 
     public void handle(DataInputStream in, DataOutputStream out) throws IOException {
         ProxyMap map= new ProxyMap();
-
         while (true) {
             Header requestHeader= Header.readFrom(in);
 
@@ -58,11 +58,21 @@ public class ServerHandler implements Handler {
                 break;
             }
 
-            // System.out.println("GOT " + requestHeader.getMessageType());
+            // DEBUG System.out.println("[EASC] GOT " + requestHeader.getMessageType());
 
-            Delegate delegate= requestHeader.getMessageType().delegateFrom(in);
+            Delegate delegate= null;
+            try {
+                delegate= requestHeader.getMessageType().delegateFrom(in);
+            } catch (Throwable t) {
+                t.printStackTrace();
+                this.writeResponse(out, MessageType.Error, "Delegation error: " + t.getMessage());
+                continue;
+            }
+                
             Object result= null;
             MessageType response= null;
+            
+            // DEBUG System.out.println("[EASC] DELEGATE = " + delegate);
 
             // Invoke the message
             try {
@@ -84,7 +94,7 @@ public class ServerHandler implements Handler {
                 response= MessageType.Error;
             }
             
-            writeResponse(out, response, buffer);
+            this.writeResponse(out, response, buffer);
         }
         
         // Close streams
