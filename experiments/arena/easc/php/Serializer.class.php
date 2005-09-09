@@ -9,6 +9,7 @@
     'wrapper.Double',
     'wrapper.Short',
     'wrapper.Byte',
+    'wrapper.ArrayList',
     'util.Date'
   );
 
@@ -29,7 +30,7 @@
      * @throws  lang.FormatException if an error is encountered in the format 
      */  
     function representationOf(&$var) {
-      switch (gettype($var)) {
+      switch ($type ? $type : gettype($var)) {
         case 'NULL':    return 'N;';
         case 'boolean': return 'b:'.($var ? 1 : 0).';';
         case 'integer': return 'i:'.$var.';';
@@ -45,6 +46,13 @@
           switch (1) {
             case is_a($var, 'Date'): {
               return 'T:'.$var->getTime().';';
+            }
+            case is_a($var, 'ArrayList'): {
+              $s= 'A:'.sizeof($var->values).':{';
+              foreach (array_keys($var->values) as $key) {
+                $s.= Serializer::representationOf($var->values[$key]);
+              }
+              return $s.'}';
             }
             case is_a($var, 'HashMap'): {
               return Serializer::representationOf($var->_hash);
@@ -75,7 +83,6 @@
               foreach (array_keys($props) as $name) {
                 $s.= serialize($name).Serializer::representationOf($var->{$name});
               }
-              unset($r);
               return $s.'}';
             }
           }
