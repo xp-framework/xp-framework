@@ -215,6 +215,7 @@ public class Serializer {
                     }
                 }
 
+                length.value= offset + 1;
                 return instance;
             }
         },
