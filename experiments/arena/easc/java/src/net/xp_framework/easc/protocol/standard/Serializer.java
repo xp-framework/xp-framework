@@ -133,7 +133,7 @@ public class Serializer {
                 int parsed= Integer.parseInt(arraylength);
                 int offset= arraylength.length() + 2 + 2;
                 HashMap h= new HashMap(parsed);
-                
+
                 for (int i= 0; i < parsed; i++) {
                     Object key= Serializer.valueOf(serialized.substring(offset), length);
                     offset+= length.value;
