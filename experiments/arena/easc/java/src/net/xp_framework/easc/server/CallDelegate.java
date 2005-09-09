@@ -40,4 +40,20 @@ public class CallDelegate implements Delegate {
 
         return result;
     }
+    
+    /**
+     * Creates a string representation of this delegate
+     *
+     * @access  public
+     * @return  java.lang.String
+     */
+    @Override public String toString() {
+        return (
+            this.getClass().getName() + 
+            "@(oid= " + this.objectId +
+            ", method= " + this.methodName + 
+            ", #args= " + this.arguments.length + 
+            "))"
+        );
+    }
 }
