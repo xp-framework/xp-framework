@@ -30,7 +30,7 @@
      * @throws  lang.FormatException if an error is encountered in the format 
      */  
     function representationOf(&$var) {
-      switch ($type ? $type : gettype($var)) {
+      switch (gettype($var)) {
         case 'NULL':    return 'N;';
         case 'boolean': return 'b:'.($var ? 1 : 0).';';
         case 'integer': return 'i:'.$var.';';
