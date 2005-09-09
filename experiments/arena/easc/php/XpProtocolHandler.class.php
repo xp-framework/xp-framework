@@ -112,6 +112,8 @@
         strlen($data),
         $data
       );
+      // DEBUG Console::writeLine('>>>', addcslashes($packet, "\0..\37!@\177..\377"));
+
       try(); {
         $this->_sock->write($packet);
         $header= unpack(
@@ -121,6 +123,8 @@
       } if (catch('IOException', $e)) {
         return throw($e);
       }
+      
+      // DEBUG Console::writeLine('<<<', xp::stringOf($header));
       
       if (DEFAULT_PROTOCOL_MAGIC_NUMBER != $header['magic']) {
         $this->_sock->close();
@@ -132,6 +136,9 @@
       } if (catch('IOException', $e)) {
         return throw($e);
       }
+
+      // DEBUG Console::writeLine('<<<', addcslashes($data, "\0..\37!@\177..\377"));
+
       $ctx= array('handler' => &$this);
 
       // Perform actions based on response type
