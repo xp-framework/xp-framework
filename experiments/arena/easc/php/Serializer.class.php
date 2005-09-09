@@ -213,6 +213,18 @@
           $length= $offset+ 1;
           return $a;
         }
+        
+        case 'A': {     // strictly numeric arrays
+          $a= &new ArrayList();
+          $size= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
+          $offset= strlen($size)+ 2+ 2;
+          for ($i= 0; $i < $size; $i++) {
+            $a->values[$i]= &Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $offset+= $len;
+          }
+          $length= $offset+ 1;
+          return $a;
+        }
 
         case 'e': {     // known exceptions
           $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
