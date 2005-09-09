@@ -39,6 +39,7 @@
     function __static() {
       Serializer::mapping('I', new RemoteInterfaceMapping());
       Serializer::exceptionName('naming/NameNotFound', 'lang.MethodNotImplementedException');
+      Serializer::exceptionName('invoke/Exception', 'InvocationException');
     }
     
     /**
