@@ -27,18 +27,13 @@ public class CallDelegate implements Delegate {
     public Object invoke(ProxyMap map) throws Exception {
         Object instance= map.getObject(this.objectId);
         
-        HashMap hash= null;
+        Object arguments[]= null;
         try {
-            hash= (HashMap)Serializer.valueOf(this.serializedArguments, instance.getClass().getClassLoader());
+            arguments= (Object[])Serializer.valueOf(this.serializedArguments, instance.getClass().getClassLoader());
         } catch (Exception e) {
             throw new Exception("Serialized data corrupt: " + e.getMessage());
         }
         
-        Object arguments[]= new Object[hash.size()];
-        for (int i= 0; i < hash.size(); i++) {
-            arguments[i]= hash.get(i);
-        }
-
         Method method= methodFor(instance.getClass(), this.methodName, arguments);
         
         if (null == method) {

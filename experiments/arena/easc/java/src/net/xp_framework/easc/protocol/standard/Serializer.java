@@ -127,7 +127,7 @@ public class Serializer {
             }
         },
 
-        T_ARRAY {
+        T_HASH {
             public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
                 String arraylength= serialized.substring(2, serialized.indexOf(':', 2));
                 int parsed= Integer.parseInt(arraylength);
@@ -147,38 +147,24 @@ public class Serializer {
                 return h;
             }
         },
-        
-        T_PROXY {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception {
-                String interfaceslength= serialized.substring(2, serialized.indexOf(':', 2));
-                int parsed= Integer.parseInt(interfaceslength);
-                int offset= interfaceslength.length() + 2 + 2;
-                Class[] interfaces= new Class[parsed];
-                Class invocationHandlerClass= null;
-    
-                try {
-                    // Load interfaces
-                    for (int i= 0; i < parsed; i++) {
-                        interfaces[i]= loader.loadClass((String)Serializer.valueOf(serialized.substring(offset), length, loader)); 
-                        offset+= length.value;
-                    }
-                
-                    // Load invocationhandler
-                    invocationHandlerClass= loader.loadClass((String)Serializer.valueOf(serialized.substring(offset), length, loader));
+
+        T_ARRAY {
+            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+                String arraylength= serialized.substring(2, serialized.indexOf(':', 2));
+                int parsed= Integer.parseInt(arraylength);
+                int offset= arraylength.length() + 2 + 2;
+                Object[] array= new Object[parsed];
+
+                for (int i= 0; i < parsed; i++) {
+                    array[i]= Serializer.valueOf(serialized.substring(offset), length, loader);
                     offset+= length.value;
-                } catch (ClassNotFoundException e) {
-                    throw new SerializationException(loader + ": " + e.getMessage());
                 }
-                
+
                 length.value= offset + 1;
-                return Proxy.newProxyInstance(
-                    loader, 
-                    interfaces, 
-                    (InvocationHandler)invocationHandlerClass.newInstance()
-                );
+                return array;
             }
         },
-
+        
         T_OBJECT {
             public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
                 String classnamelength= serialized.substring(2, serialized.indexOf(':', 2));
@@ -270,12 +256,12 @@ public class Serializer {
             map.put('f', T_FLOAT);
             map.put('d', T_DOUBLE);
             map.put('s', T_STRING);
-            map.put('a', T_ARRAY);
+            map.put('a', T_HASH);
+            map.put('A', T_ARRAY);
             map.put('O', T_OBJECT);
             map.put('T', T_DATE);
             map.put('B', T_BYTE);
             map.put('S', T_SHORT);
-            map.put('P', T_PROXY);
         }
       
         public static Token valueOf(char c) throws Exception {
@@ -549,23 +535,6 @@ public class Serializer {
         return buffer.toString();
     }
     
-    
-    @Handler public static String representationOf(Proxy p) throws Exception {
-        if (null == p) return "N;";
-        StringBuffer serialized= new StringBuffer();
-        int numInterfaces= 0;
-
-        // Create list of all interfaces this proxy implements
-        for (Class i: p.getClass().getInterfaces()) {
-            serialized.append(representationOf(i.getName()));
-            numInterfaces++;
-        }
-        
-        // Append invocationhandler's class name
-        serialized.append(representationOf(Proxy.getInvocationHandler(p).getClass().getName()));
-
-        return "P:" + numInterfaces + ":{" + serialized + "}";
-    }
     
     @Handler public static String representationOf(StackTraceElement e) throws Exception {
         if (null == e) return "N;";

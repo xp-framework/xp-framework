@@ -345,23 +345,6 @@ public class SerializerTest {
     }
 
     /**
-     * Tests serialization of a proxy instance
-     *
-     * @access  public
-     * @throws  java.lang.Exception
-     */
-    @Test public void representationOfProxy() throws Exception {
-        assertEquals(
-            "P:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";s:52:\"net.xp_framework.easc.unittest.NullInvocationHandler\";}",
-            representationOf(Proxy.newProxyInstance(
-                ITest.class.getClassLoader(),
-                new Class[] { ITest.class },
-                new NullInvocationHandler()
-            ))
-        );
-    }
-
-    /**
      * Tests serialization of a NPE (NullPointerException)
      *
      * @throws  java.lang.Exception
@@ -544,17 +527,5 @@ public class SerializerTest {
             new Date(1122369782000L), 
             valueOf("T:1122369782;")
         );
-    }
-
-    /**
-     * Tests deserialization of a proxy instance (identified by "P" token)
-     *
-     * @access  public
-     * @throws  java.lang.Exception
-     */
-    @Test public void valueOfProxy() throws Exception {
-        Proxy p= (Proxy)valueOf("P:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";s:52:\"net.xp_framework.easc.unittest.NullInvocationHandler\";}");
-        assertEquals(p.getClass().getInterfaces()[0], ITest.class);
-        assertEquals(Proxy.getInvocationHandler(p).getClass(), NullInvocationHandler.class);
     }
 }
