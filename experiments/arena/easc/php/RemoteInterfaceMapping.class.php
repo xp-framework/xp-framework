@@ -28,7 +28,7 @@
     function &valueOf($serialized, &$length, $context= array()) {
       $oid= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
       $offset= 2 + 2 + strlen($oid);
-      $interface= Serializer::valueOf(substr($serialized, $offset), $len, $handler);
+      $interface= Serializer::valueOf(substr($serialized, $offset), $len, $context);
 
       $cl= &ClassLoader::getDefault();
       try(); {
