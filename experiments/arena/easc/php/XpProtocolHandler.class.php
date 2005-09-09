@@ -86,7 +86,7 @@
         0,
         $oid,
         UTF::encode($method),
-        UTF::encode(Serializer::representationOf($args))
+        UTF::encode(Serializer::representationOf(new ArrayList($args)))
       ));
     }
 
