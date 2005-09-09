@@ -9,28 +9,43 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Method;
 import net.xp_framework.easc.server.Delegate;
 import net.xp_framework.easc.server.ProxyMap;
+import net.xp_framework.easc.protocol.standard.Serializer;
+import java.util.HashMap;
 import static net.xp_framework.easc.util.MethodMatcher.methodFor;
 
 public class CallDelegate implements Delegate {
     private long objectId;
     private String methodName;
-    private Object[] arguments;
+    private String serializedArguments;
 
-    public CallDelegate(long objectId, String methodName, Object[] arguments) {
+    public CallDelegate(long objectId, String methodName, String serializedArguments) {
         this.objectId= objectId;
         this.methodName= methodName;
-        this.arguments= arguments;
+        this.serializedArguments= serializedArguments;
     }
 
     public Object invoke(ProxyMap map) throws Exception {
         Object instance= map.getObject(this.objectId);
-        Method method= methodFor(instance.getClass(), this.methodName, this.arguments);
+        
+        HashMap hash= null;
+        try {
+            hash= (HashMap)Serializer.valueOf(this.serializedArguments, instance.getClass().getClassLoader());
+        } catch (Exception e) {
+            throw new Exception("Serialized data corrupt: " + e.getMessage());
+        }
+        
+        Object arguments[]= new Object[hash.size()];
+        for (int i= 0; i < hash.size(); i++) {
+            arguments[i]= hash.get(i);
+        }
+
+        Method method= methodFor(instance.getClass(), this.methodName, arguments);
         
         if (null == method) {
             throw new NoSuchMethodException("Method '" + this.methodName + "' not found");
         }
         
-        Object result= method.invoke(instance, this.arguments);
+        Object result= method.invoke(instance, arguments);
         
         // If the result is a reference to a proxy, add it to our proxy list
         if (null != result && Proxy.isProxyClass(result.getClass())) {
@@ -52,7 +67,7 @@ public class CallDelegate implements Delegate {
             this.getClass().getName() + 
             "@(oid= " + this.objectId +
             ", method= " + this.methodName + 
-            ", #args= " + this.arguments.length + 
+            ", args= " + this.serializedArguments + 
             "))"
         );
     }

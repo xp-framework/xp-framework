@@ -100,15 +100,8 @@ public enum MessageType {
             long objectId= in.readLong();
             String methodName= in.readUTF();
             String serialized= in.readUTF();
-            HashMap arguments= null;
-            
-            try {
-                arguments= (HashMap)Serializer.valueOf(serialized);
-            } catch (Exception e) {
-                throw new IOException("Serialized data corrupt: " + e.getMessage());
-            }
 
-            return new CallDelegate(objectId, methodName, arguments.values().toArray());
+            return new CallDelegate(objectId, methodName, serialized);
         }
     },
 
