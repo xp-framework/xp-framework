@@ -30,12 +30,19 @@ public class MethodMatcher {
     private static boolean signatureMatchesArguments(Class[] signature, Object[] arguments) {
 
         // Check argument length against signature length            
-        if (signature.length != arguments.length) return false;
-
+        if (signature.length != arguments.length) {
+            // DEBUG System.out.println("[MethodMatcher] signature.length(" + signature.length + ") != arguments.length(" + arguments.length + ")");
+            return false;
+        }
+        
         // Check argument types vs. signature types
         int offset= 0;
         for (Class c : signature) {
-            if (!((c.isPrimitive() ? wrapperTypes.get(c) : c).isAssignableFrom(arguments[offset++].getClass()))) return false;
+            if (!((c.isPrimitive() ? wrapperTypes.get(c) : c).isAssignableFrom(arguments[offset].getClass()))) {
+                // DEBUG System.out.println("[MethodMatcher] signature argument #" + offset + ": " + c.getName() + " is not assignable from " + arguments[offset].getClass().getName());
+                return false;
+            }
+            offset++;
         }
         
         return true;
@@ -48,6 +55,7 @@ public class MethodMatcher {
             if (!name.equals(m.getName())) continue;
 
             // Check signatures vs. arguments
+            // DEBUG System.out.println("[MethodMatcher] checking " + m);
             if (!signatureMatchesArguments(m.getParameterTypes(), arguments)) continue;
             
             // Now we have a candidate!
