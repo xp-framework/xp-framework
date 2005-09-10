@@ -10,7 +10,8 @@
     'scriptlet.xml.workflow.casters.ToDate',
     'scriptlet.xml.workflow.casters.ToInteger',
     'scriptlet.xml.workflow.casters.ToTrimmedString',
-    'scriptlet.xml.workflow.checkers.LengthChecker'    
+    'scriptlet.xml.workflow.checkers.LengthChecker',
+    'scriptlet.xml.workflow.checkers.RegexpChecker'    
   );
 
   /**
@@ -77,11 +78,27 @@
         NULL
       );
       $this->registerParamInfo(
-        'deadline',
+        'target_time',
+        OCCURRENCE_UNDEFINED,
+        NULL,
+        NULL,
+        array('scriptlet.xml.workflow.checkers.RegexpChecker', '/^\d{1,2}[:\.\-]\d{1,2}$/'),
+        NULL
+      );
+      $this->registerParamInfo(
+        'deadline_date',
         OCCURRENCE_OPTIONAL,
         NULL,
         array('scriptlet.xml.workflow.casters.ToDate'),
         NULL,
+        NULL
+      );
+      $this->registerParamInfo(
+        'deadline_time',
+        OCCURRENCE_OPTIONAL,
+        NULL,
+        NULL,
+        array('scriptlet.xml.workflow.checkers.RegexpChecker', '/^\d{1,2}[:\.\-]\d{1,2}$/'),
         NULL
       );
       $this->registerParamInfo(
@@ -171,13 +188,33 @@
     }
 
     /**
-     * Returns the value of the parameter deadline
+     * Returns the value of the parameter target_time
      *
      * @access  public
      * @return  string
      */
-    function getDeadline() {
-      return $this->getValue('deadline');
+    function getTarget_time() {
+      return $this->getValue('target_time');
+    }
+
+    /**
+     * Returns the value of the parameter deadline_date
+     *
+     * @access  public
+     * @return  string
+     */
+    function getDeadline_date() {
+      return $this->getValue('deadline_date');
+    }
+
+    /**
+     * Returns the value of the parameter deadline_time
+     *
+     * @access  public
+     * @return  string
+     */
+    function getDeadline_time() {
+      return $this->getValue('deadline_time');
     }
 
     /**

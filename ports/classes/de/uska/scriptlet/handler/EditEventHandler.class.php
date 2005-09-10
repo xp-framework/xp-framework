@@ -36,7 +36,7 @@
      * @return  string
      */
     function identifierFor(&$request, &$context) {
-      $id= (intVal($request->getEnvValue('QUERY_STRING')) ? intVal($request->getEnvValue('QUERY_STRING')) : 'new');
+      $id= (intVal($request->getQueryString()) ? intVal($request->getQueryString()) : 'new');
       return $this->name.'.'.$id;
     }
 
@@ -50,8 +50,8 @@
      */
     function setup(&$request, &$context) {
       if (
-        strlen($request->getEnvValue('QUERY_STRING')) &&
-        ($event= &Event::getByEvent_id($request->getEnvValue('QUERY_STRING')))
+        strlen($request->getQueryString()) &&
+        ($event= &Event::getByEvent_id($request->getQueryString()))
       ) {
         $this->setFormValue('event_id', $event->getEvent_id());
         $this->setFormValue('event_type', $event->getEvent_type());
@@ -71,6 +71,13 @@
 
         $this->setValue('mode', 'update');
       } else {
+      
+        // New event, set some default values...
+        $date= &Date::now();
+        $this->setFormValue('target_date', $date->toString('d.m.Y'));
+        $this->setFormValue('target_time', '18:30');
+        $this->setFormValue('guests', 1);
+        
         $this->setValue('mode', 'create');
       }
       
@@ -129,19 +136,43 @@
       $event->setChangedby($context->user->getUsername());
       $event->setLastchange(Date::now());
       
+      $targetdate= &$this->wrapper->getTarget_date();
+      $deadline= &$this->wrapper->getDeadline_date();
+      
+      list($th, $tm)= preg_split('/[:\.\-]/', $this->wrapper->getTarget_time(), 2);
+      $targetdate= &new Date(Date::mktime(
+        $th,
+        $tm,
+        0,
+        $targetdate->getMonth(),
+        $targetdate->getDay(),
+        $targetdate->getYear()
+      ));
+      
+      if ($deadline) {
+        list($dh, $dm)= preg_split('/[:\.\-]/', $this->wrapper->getDeadline_time(), 2);
+        $deadline= &new Date(Date::mktime(
+          $dh,
+          $dm,
+          0,
+          $deadline->getMonth(),
+          $deadline->getDay(),
+          $deadline->getYear()
+        ));
+      }
+      
       // Check order of dates. Now < deadline < target_date
       with ($now= &Date::now()); {
-        if ($now->isAfter($this->wrapper->getTarget_date())) {
+        if ($now->isAfter($targetdate)) {
           $this->addError('order', 'target_date');
           $sane= FALSE;
         }
         
-        $tdate= &$this->wrapper->getTarget_date();
         if (
-          NULL !== $this->wrapper->getDeadline() &&
-          $tdate->isBefore($this->wrapper->getDeadline())
+          $deadline &&
+          $targetdate->isBefore($deadline)
         ) {
-          $this->addError('order', 'deadline');
+          $this->addError('order', 'deadline_date');
           $sane= FALSE;
         }
       }
@@ -153,8 +184,8 @@
         $sane= FALSE;
       }
       
-      $event->setTarget_date($this->wrapper->getTarget_date());
-      $event->setDeadline($this->wrapper->getDeadline());
+      $event->setTarget_date($targetdate);
+      $event->setDeadline($daedline);
       
       $event->setMax_attendees($this->wrapper->getMax());
       $event->setReq_attendees($this->wrapper->getReq());
