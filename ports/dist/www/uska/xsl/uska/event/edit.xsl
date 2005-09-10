@@ -33,7 +33,7 @@
         <legend>Termin-Daten</legend>
         <table width="600">
           <!-- Event name -->
-          <xsl:copy-of select="func:wizard_row_input('name', 40)"/>
+          <xsl:copy-of select="func:wizard_row_input('editeventhandler', 'name', 40)"/>
 
           <!-- Team selection -->
           <xsl:variable name="teams">
@@ -41,7 +41,7 @@
               <option id="{team_id}"><xsl:value-of select="name"/></option>
             </xsl:for-each>
           </xsl:variable>
-          <xsl:copy-of select="func:wizard_row_select('team', $teams, 0)"/>
+          <xsl:copy-of select="func:wizard_row_select('editeventhandler', 'team', $teams, 0)"/>
 
           <!-- Event type -->
           <xsl:variable name="eventtypes">
@@ -49,10 +49,10 @@
               <option id="{@id}"><xsl:value-of select="."/></option>
             </xsl:for-each>
           </xsl:variable>
-          <xsl:copy-of select="func:wizard_row_select('event_type', $eventtypes)"/>
+          <xsl:copy-of select="func:wizard_row_select('editeventhandler', 'event_type', $eventtypes)"/>
 
           <!-- Description -->
-          <xsl:copy-of select="func:wizard_row_textarea('description', 40, 4)"/>
+          <xsl:copy-of select="func:wizard_row_textarea('editeventhandler', 'description', 40, 4)"/>
         </table>
         </fieldset>
         
@@ -61,10 +61,10 @@
           <table width="600">
 
             <!-- Target date and deadline -->
-            <xsl:copy-of select="func:wizard_row_input('target_date', 12)"/>
-            <xsl:copy-of select="func:wizard_row_input('target_time', 12)"/>
-            <xsl:copy-of select="func:wizard_row_input('deadline_date', 12)"/>
-            <xsl:copy-of select="func:wizard_row_input('deadline_time', 12)"/>
+            <xsl:copy-of select="func:wizard_row_input('editeventhandler', 'target_date', 12)"/>
+            <xsl:copy-of select="func:wizard_row_input('editeventhandler', 'target_time', 12)"/>
+            <xsl:copy-of select="func:wizard_row_input('editeventhandler', 'deadline_date', 12)"/>
+            <xsl:copy-of select="func:wizard_row_input('editeventhandler', 'deadline_time', 12)"/>
           </table>
         </fieldset>
         
@@ -73,9 +73,9 @@
           <table width="600">
 
             <!-- Max, req and guests -->
-            <xsl:copy-of select="func:wizard_row_input('max', 4)"/>
-            <xsl:copy-of select="func:wizard_row_input('req', 4)"/>
-            <xsl:copy-of select="func:wizard_row_checkbox('guests')"/>
+            <xsl:copy-of select="func:wizard_row_input('editeventhandler', 'max', 4)"/>
+            <xsl:copy-of select="func:wizard_row_input('editeventhandler', 'req', 4)"/>
+            <xsl:copy-of select="func:wizard_row_checkbox('editeventhandler', 'guests')"/>
           </table>
         </fieldset>
         
