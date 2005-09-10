@@ -59,7 +59,7 @@
         NULL,
         array('scriptlet.xml.workflow.casters.ToTrimmedString'),
         NULL,
-        array('scriptlet.xml.workflow.checkers.LengthChecker', 4)
+        array('scriptlet.xml.workflow.checkers.LengthChecker', 4, 40)
       );
       $this->registerParamInfo(
         'description',
@@ -67,7 +67,7 @@
         NULL,
         array('scriptlet.xml.workflow.casters.ToTrimmedString'),
         NULL,
-        array('scriptlet.xml.workflow.checkers.LengthChecker', 15)
+        array('scriptlet.xml.workflow.checkers.LengthChecker', 15, 200)
       );
       $this->registerParamInfo(
         'target_date',

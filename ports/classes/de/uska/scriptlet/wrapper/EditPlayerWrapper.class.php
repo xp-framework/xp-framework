@@ -91,14 +91,6 @@
         NULL,
         NULL
       );
-      $this->registerParamInfo(
-        'sex',
-        OCCURRENCE_UNDEFINED,
-        NULL,
-        NULL,
-        NULL,
-        NULL
-      );
     }
 
     /**
@@ -179,16 +171,6 @@
      */
     function getPosition() {
       return $this->getValue('position');
-    }
-
-    /**
-     * Returns the value of the parameter sex
-     *
-     * @access  public
-     * @return  int
-     */
-    function getSex() {
-      return $this->getValue('sex');
     }
 
   }
