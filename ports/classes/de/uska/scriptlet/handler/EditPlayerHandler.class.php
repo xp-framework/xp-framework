@@ -53,6 +53,15 @@
         ($player= &Player::getByPlayer_id($request->getParam('player_id')))
       ) {
       
+        // Check for admin permission, if not editing himself
+        if (
+          $player->getPlayer_id() != $context->user->getPlayer_id() &&
+          !$context->hasPermission('create_player')
+        ) {
+          $this->addError('edit', 'permission_denied');
+          return FALSE;
+        }
+      
         // Fetch team
         $this->setFormValue('team_id', $player->getTeam_id());
         $this->setFormValue('player_id', $player->getPlayer_id());
@@ -61,7 +70,7 @@
         $this->setFormValue('username', $player->getUsername());
         $this->setFormValue('email', $player->getEmail());
         $this->setFormValue('position', $player->getPosition());
-        $this->setFormValue('sex', $player->getSex());
+        $this->setFormValue('team_id', $player->getTeam_id());
         $this->setValue('mode', 'update');
       } else {
         $this->setValue('mode', 'create');
@@ -128,7 +137,9 @@
       $email= &$this->wrapper->getEmail();
       $player->setEmail($email->localpart.'@'.$email->domain);
       $player->setPosition($this->wrapper->getPosition());
-      $player->setTeam_id($this->wrapper->getTeam_id());
+      if (NULL === $player->getTeam_id()) {
+        $player->setTeam_id($this->wrapper->getTeam_id());
+      }
       
       if (NULL === $player->getCreated_by()) {
         $player->setCreated_by($context->user->getPlayer_id());

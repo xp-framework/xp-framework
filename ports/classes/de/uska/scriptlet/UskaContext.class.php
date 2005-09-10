@@ -30,8 +30,12 @@
       
       $this->eventtypes= array();
       try(); {
-        $q= $db->query('select event_type_id, name from uska.event_type');
-        while ($q && $r= $q->next()) { $this->eventtypes[$r['event_type_id']]= $r['name']; }
+        $q= $db->query('select event_type_id, name, description from uska.event_type');
+        while ($q && $r= $q->next()) { $this->eventtypes[$r['event_type_id']]= array(
+          'type'  => $r['name'],
+          'name'  => $r['description']
+          );
+        }
       } if (catch('SQLException', $e)) {
         return throw($e);
       }
@@ -50,8 +54,11 @@
       }
       
       $enode= &$response->addFormResult(new node('eventtypes'));
-      foreach ($this->eventtypes as $id => $description) {
-        $enode->addChild(new Node('type', $description, array('id' => $id)));
+      foreach ($this->eventtypes as $id => $desc) {
+        $enode->addChild(new Node('type', $desc['name'], array(
+          'id' => $id,
+          'type' => $desc['type']
+        )));
       }
     }
     
