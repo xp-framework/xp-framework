@@ -44,9 +44,10 @@
      * Retrieve parent category's ID
      *
      * @access  public
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @return  int
      */
-    function getParentCategory() {
+    function getParentCategory(&$request) {
       return 0;
     }
     
@@ -78,7 +79,7 @@
         $n= &$response->addFormResult(new Node('categories'));
         $q= &$db->query(
           'select categoryid, category_name from serendipity_category where parentid= %d',
-          $this->getParentCategory()
+          $this->getParentCategory($request)
         );
         while ($record= $q->next()) {
           $n->addChild(new Node('category', $record['category_name'], array(
@@ -124,7 +125,7 @@
           $entry[$record['id']]->addChild(new Node('extended_length', $record['extended_length']));
           $entry[$record['id']]->addChild(new Node('num_comments', $record['num_comments']));
           $entry[$record['id']]->addChild(Node::fromObject(new Date($record['timestamp']), 'date'));
-          $entry[$record['id']]->addChild(new Node('body', $record['body']));
+          $entry[$record['id']]->addChild(new Node('body', new PCData($record['body'])));
         }
         
         // Add categories
