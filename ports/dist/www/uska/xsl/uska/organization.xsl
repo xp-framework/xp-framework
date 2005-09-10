@@ -19,12 +19,25 @@
   <xsl:template name="context">
     <xsl:call-template name="default_subnavigation">
       <xsl:with-param name="items">
-        <xsl:if test="func:hasPermission('create_news') != ''">
+        <xsl:if test="'' != func:hasPermission('create_news')">
           <item href="http://cms.uska.de">Artikel-Editor öffnen</item>
+        </xsl:if>
+      
+        <xsl:if test="'' != func:hasPermission('create_player')">
           <item href="{func:link('player/edit')}">Spieler anlegen</item>
+        </xsl:if>
+        
+        <xsl:if test="'' != func:hasPermission('create_event')">
           <item href="{func:link('event/edit')}">Termin anlegen</item>
         </xsl:if>
+        
+        <xsl:if test="/formresult/user">
+          <item href="{func:link(concat('player/edit?player_id=', /formresult/user/player_id))}">Eigenes Profil</item>
+        </xsl:if>
+        
         <item href="{func:link('organization?application')}">Anträge...</item>
+        <item href="{func:link('organization?contact')}">Kontakt</item>
+        <item href="{func:link('organization?impressum')}">Impressum</item>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
