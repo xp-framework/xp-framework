@@ -140,13 +140,13 @@
     
     <!-- Calendar -->
     <div id="calendar_container">
-      <table id="calendar">
+      <table>
         <tr>
           <th>
             &#xab;
           </th>
           <th colspan="5">
-            <a class="calendar" href="bydate?{exsl:node-set($month)/@year},{$current}">
+            <a href="bydate?{exsl:node-set($month)/@year},{$current}">
               <xsl:value-of select="concat(
                 exsl:node-set($months)/month[@id = $current], ' ',
                 exsl:node-set($month)/@year

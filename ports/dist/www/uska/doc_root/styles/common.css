@@ -321,19 +321,20 @@
   width: 180px;
 }
 
-#calendar table {
+#calendar_container table {
   width: 100%;
   border-style: dotted;
   border-width: 1px;
+  font-size: 90%;
 }
 
-#calendar th {
+#calendar_container th {
   background-color: #efefef;
   font-size: 90%;
   font-weight: bold;
 }
 
-#calendar td {
+#calendar_container td {
   font-size: 90%;
 }
 
@@ -425,6 +426,39 @@ td {
 	color: #333344;
 	background-color:#fbfaf1;
 	padding: 3px 2px 3px 2px;
+}
+
+#form table {
+  border: 0px;
+}
+
+#form tr {
+  font-size: 90%;
+  vertical-align: top;
+}
+
+table.box_success {
+  background-color: #e8ffed; 
+  color: #10471f; 
+  border: 1px solid #67af79; 
+  font-size: 90%;
+  /* width: 100%; */
+}
+
+table.box_hint {
+  background-color: #dfe5ff; 
+  color: #525279; 
+  border: 1px solid #aaaedc; 
+  font-size: 90%;
+  /* width: 100%; */
+}
+
+table.box_error {
+  background-color: #f9eded; 
+  color: #660000; 
+  border: 1px solid #bc2929; 
+  font-size: 90%;
+  /* width: 100%; */
 }
 
 /*--- forms ----------------------------------------------------------------*/

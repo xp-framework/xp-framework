@@ -17,7 +17,7 @@
     <xsl:param name="text"/>
     
     <func:result>
-      <table border="0" class="{$style}" cellspacing="0" cellpadding="4">
+      <table border="0" class="box_{$style}" cellspacing="0" cellpadding="4">
         <tr>
           <td width="1%">
             <img src="/image/icons/wiz_{$style}.png"/>
