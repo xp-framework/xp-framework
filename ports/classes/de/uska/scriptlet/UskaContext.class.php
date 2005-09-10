@@ -14,8 +14,29 @@
   class UskaContext extends Context {
     var
       $user=          NULL,
-      $permissions=   NULL;
+      $permissions=   NULL,
+      $eventtypes=    array();
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function setup(&$request) {
+      $cm= &ConnectionManager::getInstance();
+      $db= &$cm->getByHost('uska', 0);
+      
+      $this->eventtypes= array();
+      try(); {
+        $q= $db->query('select event_type_id, name from uska.event_type');
+        while ($q && $r= $q->next()) { $this->eventtypes[$r['event_type_id']]= $r['name']; }
+      } if (catch('SQLException', $e)) {
+        return throw($e);
+      }
+    }
+
     /**
      * Insert status information to result tree
      *
@@ -26,6 +47,11 @@
       if ($this->user) {
         $n= &$response->addFormResult(Node::fromObject($this->user, 'user'));
         $n->addChild(Node::fromArray(array_keys($this->permissions), 'permissions'));
+      }
+      
+      $enode= &$response->addFormResult(new node('eventtypes'));
+      foreach ($this->eventtypes as $id => $description) {
+        $enode->addChild(new Node('type', $description, array('id' => $id)));
       }
     }
     
