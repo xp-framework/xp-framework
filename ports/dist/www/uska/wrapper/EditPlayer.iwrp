@@ -44,5 +44,4 @@
   
   <param name="team_id" type="int"/>
   <param name="position" type="int"/>
-  <param name="sex" type="int"/>
 </interface>

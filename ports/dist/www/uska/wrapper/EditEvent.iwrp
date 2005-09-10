@@ -44,7 +44,7 @@
 
   <param name="target_time" type="string">
     <precheck class="scriptlet.xml.workflow.checkers.RegexpChecker">
-      <cparam xsi:type="xsd:string">'/^\d{1,2}[:\.\-]\d{1,2}$/'</cparam>
+      <cparam xsi:type="xsd:string">/^\d{1,2}[:\.\-]\d{1,2}$/</cparam>
     </precheck>
   </param>
   
@@ -54,7 +54,7 @@
 
   <param name="deadline_time" type="string" occurrence="optional">
     <precheck class="scriptlet.xml.workflow.checkers.RegexpChecker">
-      <cparam xsi:type="xsd:string">'/^\d{1,2}[:\.\-]\d{1,2}$/'</cparam>
+      <cparam xsi:type="xsd:string">/^\d{1,2}[:\.\-]\d{1,2}$/</cparam>
     </precheck>
   </param>
   
