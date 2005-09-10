@@ -24,16 +24,19 @@
      * @param   &scriptlet.xml.Context context
      */
     function process(&$request, &$response, &$context) {
+      // FIXME: Put into ini-file?
       static $types= array(
         'training'    => 1,
         'tournament'  => 2,
-        'misc'        => 3
+        'misc'        => 3,
+        'enbw'        => 4
       );
       parent::process($request, $response, $context);
       
       try(); {
         $team= FALSE;
         $type= FALSE;
+        $all=  FALSE;
         with ($env= $request->getQueryString()); {
           if (strlen($env)) @list($type, $all, $team)= explode(',', $env);
         }
@@ -58,7 +61,8 @@
           where t.team_id= e.team_id
             %c
             %c
-            %c',
+            %c
+          order by e.target_date asc',
           ($team ? $this->db->prepare('and e.team_id= %d', $team) : ''),
           ($type ? $this->db->prepare('and e.event_type_id= %d', $types[$type]) : ''),
           ($all  ? '' : $this->db->prepare('and e.target_date > now()'))
