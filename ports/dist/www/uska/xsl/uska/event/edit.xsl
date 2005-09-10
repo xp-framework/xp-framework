@@ -19,8 +19,6 @@
   </xsl:template>
   
   <xsl:template name="content">
-    <h3><xsl:value-of select="func:get_text('editeventhandler#newevent')"/></h3>
-    
     <form method="post" action="{func:link($__state)}">
     <input type="hidden" name="__handler" value="{/formresult/handlers/handler[@name= 'editeventhandler']/@id}"/>
     <xsl:variable name="status" select="/formresult/handlers/handler[@name= 'editeventhandler']/@status"/>
@@ -30,47 +28,65 @@
     <xsl:copy-of select="func:display_wizard_reload('editeventhandler')"/>
     
     <xsl:if test="$status = 'initialized' or $status = 'setup' or $status = 'errors'">
-      <table class="form" width="600" border="0">
+    <div id="form">
+      <fieldset>
+        <legend>Termin-Daten</legend>
+        <table width="600">
+          <!-- Event name -->
+          <xsl:copy-of select="func:wizard_row_input('name', 40)"/>
 
-        <!-- Event name -->
-        <xsl:copy-of select="func:wizard_row_input('name', 40)"/>
+          <!-- Team selection -->
+          <xsl:variable name="teams">
+            <xsl:for-each select="/formresult/handlers/handler[@name= 'editeventhandler']/values/teams/team">
+              <option id="{team_id}"><xsl:value-of select="name"/></option>
+            </xsl:for-each>
+          </xsl:variable>
+          <xsl:copy-of select="func:wizard_row_select('team', $teams, 0)"/>
+
+          <!-- Event type -->
+          <xsl:variable name="eventtypes">
+            <xsl:for-each select="/formresult/eventtypes/type">
+              <option id="{@id}"><xsl:value-of select="."/></option>
+            </xsl:for-each>
+          </xsl:variable>
+          <xsl:copy-of select="func:wizard_row_select('event_type', $eventtypes)"/>
+
+          <!-- Description -->
+          <xsl:copy-of select="func:wizard_row_textarea('description', 40, 4)"/>
+        </table>
+        </fieldset>
         
-        <!-- Team selection -->
-        <xsl:variable name="teams">
-          <xsl:for-each select="/formresult/handlers/handler[@name= 'editeventhandler']/values/teams/team">
-            <option id="{team_id}"><xsl:value-of select="name"/></option>
-          </xsl:for-each>
-        </xsl:variable>
-        <xsl:copy-of select="func:wizard_row_select('team', $teams, 0)"/>
+        <fieldset>
+          <legend>Uhrzeit und Datum</legend>
+          <table width="600">
 
-        <!-- Event type -->
-        <xsl:variable name="eventtypes">
-          <option id="1">training</option>
-          <option id="2">tournament</option>
-          <option id="3">misc</option>
-        </xsl:variable>
-        <xsl:copy-of select="func:wizard_row_select('event_type', $eventtypes)"/>
+            <!-- Target date and deadline -->
+            <xsl:copy-of select="func:wizard_row_input('target_date', 12)"/>
+            <xsl:copy-of select="func:wizard_row_input('target_time', 12)"/>
+            <xsl:copy-of select="func:wizard_row_input('deadline_date', 12)"/>
+            <xsl:copy-of select="func:wizard_row_input('deadline_time', 12)"/>
+          </table>
+        </fieldset>
+        
+        <fieldset>
+          <legend>Teilnehmer</legend>
+          <table width="600">
 
-        <!-- Description -->
-        <xsl:copy-of select="func:wizard_row_textarea('description', 72, 4)"/>
-
-        <!-- Target date and deadline -->
-        <xsl:copy-of select="func:wizard_separator('dates')"/>
-        <xsl:copy-of select="func:wizard_row_input('target_date', 12)"/>
-        <xsl:copy-of select="func:wizard_row_input('deadline', 12)"/>
-
-        <!-- Max, req and guests -->
-        <xsl:copy-of select="func:wizard_separator('attendees')"/>
-        <xsl:copy-of select="func:wizard_row_input('max', 4)"/>
-        <xsl:copy-of select="func:wizard_row_input('req', 4)"/>
-        <xsl:copy-of select="func:wizard_row_checkbox('guests')"/>
-
+            <!-- Max, req and guests -->
+            <xsl:copy-of select="func:wizard_row_input('max', 4)"/>
+            <xsl:copy-of select="func:wizard_row_input('req', 4)"/>
+            <xsl:copy-of select="func:wizard_row_checkbox('guests')"/>
+          </table>
+        </fieldset>
+        
+        <table width="600">
         <tr>
           <td colspan="3" align="right">
             <input type="submit" name="submit" value="Termin eintragen"/>
           </td>
         </tr>
       </table>
+    </div>
     </xsl:if>
     </form>
   </xsl:template>

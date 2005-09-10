@@ -26,6 +26,7 @@
     <caster class="scriptlet.xml.workflow.casters.ToTrimmedString"/>
     <postcheck class="scriptlet.xml.workflow.checkers.LengthChecker">
       <cparam xsi:type="xsd:int">4</cparam>
+      <cparam xsi:type="xsd:int">40</cparam>
     </postcheck>
   </param>
   
@@ -33,15 +34,28 @@
     <caster class="scriptlet.xml.workflow.casters.ToTrimmedString"/>
     <postcheck class="scriptlet.xml.workflow.checkers.LengthChecker">
       <cparam xsi:type="xsd:int">15</cparam>
+      <cparam xsi:type="xsd:int">200</cparam>
     </postcheck>
   </param>
   
   <param name="target_date" type="string">
     <caster class="scriptlet.xml.workflow.casters.ToDate"/>
   </param>
+
+  <param name="target_time" type="string">
+    <precheck class="scriptlet.xml.workflow.checkers.RegexpChecker">
+      <cparam xsi:type="xsd:string">'/^\d{1,2}[:\.\-]\d{1,2}$/'</cparam>
+    </precheck>
+  </param>
   
-  <param name="deadline" type="string" occurrence="optional">
+  <param name="deadline_date" type="string" occurrence="optional">
     <caster class="scriptlet.xml.workflow.casters.ToDate"/>
+  </param>
+
+  <param name="deadline_time" type="string" occurrence="optional">
+    <precheck class="scriptlet.xml.workflow.checkers.RegexpChecker">
+      <cparam xsi:type="xsd:string">'/^\d{1,2}[:\.\-]\d{1,2}$/'</cparam>
+    </precheck>
   </param>
   
   <!-- Maximum attendees and required attendees -->

@@ -24,9 +24,7 @@
     <xsl:if test="'' != func:hasPermission('create_event')">
       <xsl:call-template name="default_subnavigation">
         <xsl:with-param name="items">
-          <items>
-            <item href="{func:link('event/edit')}">Neuen Termin eintragen</item>
-          </items>
+          <item href="{func:link('event/edit')}">Neuen Termin eintragen</item>
         </xsl:with-param>
       </xsl:call-template>
     </xsl:if>

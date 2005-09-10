@@ -34,6 +34,7 @@
   <text for="pagecaption#organization-home">Organisationisches</text>
   <text for="pagecaption#about-home">Über die USKA</text>
   <text for="pagecaption#login-home">Login</text>
+  <text for="pagecaption#event/edit-home">Termin-Editor</text>
   
   <text for="error#text.xml.XMLParser-XMLFormatException">Der Artikel enthält XML-Fehler und kann daher nicht dargestellt werden. Fehlermeldung:</text>
               
@@ -58,14 +59,18 @@
   <text for="attendee#guestof">Gast von</text>
   
   <text for="editeventhandler#newevent">Termin-Editor</text>
+  <text for="editeventhandler#form-error">Es sind Fehler aufgetreten:</text>
+  <text for="editeventhandler#event_type-scriptlet.xml.workflow.casters.ToInteger.invalidcast">Ungültiger Wert für Terminart</text>
+  <text for="editeventhandler#name-missing">Sie müssen eine Bezeichnung für den Termin eingeben (z.B. "Training").</text>
+
   <text for="wizard#name">Name</text>
   <text for="wizard#team">Team</text>
   <text for="wizard#event_type">Art des Termin</text>
   <text for="wizard#description">Kurzbeschreibung</text>
-  <text for="separator#dates">Daten</text>
-  <text for="wizard#target_date">Startdatum + Uhrzeit (z.B. 12.7.2005 18:30)</text>
-  <text for="wizard#deadline">Anmeldeschluss</text>
-  <text for="separator#attendees">Teilnehmer</text>
+  <text for="wizard#target_date">Startdatum</text>
+  <text for="wizard#target_time">Startdatum</text>
+  <text for="wizard#deadline_date">Anmeldeschluss</text>
+  <text for="wizard#deadline_time">Anmeldeschluss</text>
   <text for="wizard#max">Maximal:</text>
   <text for="wizard#req">Minimal erforderlich:</text>
   <text for="wizard#guests">Gäste zulassen?</text>
