@@ -314,6 +314,29 @@
 	color: #a5b6d8;
 }
 
+/*----------------------------------------------------------------------------
+  calendar styles
+----------------------------------------------------------------------------*/
+#calendar_container {
+  width: 180px;
+}
+
+#calendar table {
+  width: 100%;
+  border-style: dotted;
+  border-width: 1px;
+}
+
+#calendar th {
+  background-color: #efefef;
+  font-size: 90%;
+  font-weight: bold;
+}
+
+#calendar td {
+  font-size: 90%;
+}
+
 
 /*----------------------------------------------------------------------------
   default-styles for html-elements
@@ -392,13 +415,13 @@ td {
 	padding: 3px 2px 3px 2px;
 }
 
-#content_container tr.odd {
+#content_container tr.list_1 {
 	color: #333344;
 	background-color:#f6f3df;
 	padding: 3px 2px 3px 2px;
 }
 
-#content_container tr.even {
+#content_container tr.list_0 {
 	color: #333344;
 	background-color:#fbfaf1;
 	padding: 3px 2px 3px 2px;

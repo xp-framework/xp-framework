@@ -45,9 +45,9 @@
       <small><xsl:value-of select="func:get_text('event#createdby')"/>&#160;<xsl:value-of select="changedby"/> at <xsl:value-of select="func:datetime(lastchange)"/></small>
     </p>
     
-    <table border="0" cellpadding="3" cellspacing="1" class="list" width="600">
+    <table>
       <tr>
-        <th>Spieler</th>
+        <th width="300">Spieler</th>
         <th>Teilnahme</th>
         <th>Fahrerinfo</th>
       </tr>

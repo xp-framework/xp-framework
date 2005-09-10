@@ -24,6 +24,17 @@
   <text for="common#weekday#6">Samstag</text>
   <text for="common#weekday#7">Sonntag</text>
   
+  <text for="common#next-training">Nächstes Training...</text>
+  <text for="common#next-tournament">Nächstes Turnier...</text>
+  <text for="common#next-misc">Veranstaltungen...</text>
+  <text for="common#next-enbw">EnBW-Spiele...</text>
+  
+  <text for="pagecaption#news-home">News um die USKA</text>
+  <text for="pagecaption#events-home">Die nächsten Termine</text>
+  <text for="pagecaption#organization-home">Organisationisches</text>
+  <text for="pagecaption#about-home">Über die USKA</text>
+  <text for="pagecaption#login-home">Login</text>
+  
   <text for="error#text.xml.XMLParser-XMLFormatException">Der Artikel enthält XML-Fehler und kann daher nicht dargestellt werden. Fehlermeldung:</text>
               
   <text for="events#no-events">Es liegen momentan noch keine Termine vor.</text>

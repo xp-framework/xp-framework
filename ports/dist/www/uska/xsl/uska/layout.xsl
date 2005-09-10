@@ -58,7 +58,7 @@
     
     <div id="sub_nav_container">
       <ul id="sub_nav_list">
-        <xsl:for-each select="exsl:node-set($items)/items/item">
+        <xsl:for-each select="exsl:node-set($items)/item">
           <li><a class="sub_nav_item" href="{@href}"><span class="sub_nav_item_text"><xsl:value-of select="."/></span></a></li>
         </xsl:for-each>
       </ul>

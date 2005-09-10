@@ -139,33 +139,35 @@
     <xsl:variable name="current" select="exsl:node-set($month)/@num"/>
     
     <!-- Calendar -->
-    <table class="calendar" cellpadding="3" cellspacing="0" width="180">
-      <tr>
-        <th>
-          &#xab;
-        </th>
-        <th colspan="5">
-          <a class="calendar" href="bydate?{exsl:node-set($month)/@year},{$current}">
-            <xsl:value-of select="concat(
-              exsl:node-set($months)/month[@id = $current], ' ',
-              exsl:node-set($month)/@year
-            )"/>
-          </a>
-        </th>
-        <th>
-          &#xbb;
-        </th>
-      </tr>
-      <tr>
-        <td class="header">M</td>
-        <td class="header">Tu</td>
-        <td class="header">W</td>
-        <td class="header">Th</td>
-        <td class="header">F</td>
-        <td class="header">Sa</td>
-        <td class="header">Su</td>
-      </tr>
-      <xsl:copy-of select="func:weeks($month)"/>
-    </table>
+    <div id="calendar_container">
+      <table id="calendar">
+        <tr>
+          <th>
+            &#xab;
+          </th>
+          <th colspan="5">
+            <a class="calendar" href="bydate?{exsl:node-set($month)/@year},{$current}">
+              <xsl:value-of select="concat(
+                exsl:node-set($months)/month[@id = $current], ' ',
+                exsl:node-set($month)/@year
+              )"/>
+            </a>
+          </th>
+          <th>
+            &#xbb;
+          </th>
+        </tr>
+        <tr>
+          <td class="header">M</td>
+          <td class="header">Tu</td>
+          <td class="header">W</td>
+          <td class="header">Th</td>
+          <td class="header">F</td>
+          <td class="header">Sa</td>
+          <td class="header">Su</td>
+        </tr>
+        <xsl:copy-of select="func:weeks($month)"/>
+      </table>
+    </div>
   </xsl:template>
 </xsl:stylesheet>

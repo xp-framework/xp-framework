@@ -81,10 +81,24 @@
     <img>
       <xsl:copy-of select="@*"/>
       <xsl:attribute name="src"><xsl:value-of select="concat(
-        'http://blog.xp-framework.net',
+        'http://cms.uska.de',
         @src
       )"/></xsl:attribute>
     </img>
+  </xsl:template>
+  
+  <!--
+   ! Template for a
+   ! @purpose  Migration of links
+   !-->  
+  <xsl:template match="a">
+    <xsl:variable name="link">
+      <xsl:choose>
+        <xsl:when test="contains(@href, '://')"><xsl:value-of select="@href"/></xsl:when>
+        <xsl:otherwise><xsl:value-of select="concat('http://cms.uska.de', @href)"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <a href="/deref/?{$link}"><xsl:apply-templates/></a>
   </xsl:template>
 
   <!--

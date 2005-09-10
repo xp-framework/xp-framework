@@ -27,9 +27,9 @@
   </xsl:template>
   
   <xsl:template name="content">
-    <h1>
+    <h2>
       <a href="{func:link('news')}">News</a> &#xbb; Eintrag #<xsl:value-of select="/formresult/entry/@id"/>
-    </h1>
+    </h2>
     <div class="entry">
       <h3>
         <a href="{func:link(concat('news/view?', /formresult/entry/@id))}">

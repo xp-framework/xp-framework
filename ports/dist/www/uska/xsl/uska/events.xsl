@@ -21,18 +21,18 @@
     </xsl:call-template>
     <br/>
     
-    <xsl:if test="func:hasPermission('create_event') != ''">
-      <table class="sidebar" cellpadding="0" cellspacing="0" width="170">
-        <tr><td class="sidebar_head">Aktionen</td></tr>
-        <tr><td><a href="{func:link('event/edit')}">Neuen Termin eintragen</a></td></tr>
-      </table>
+    <xsl:if test="'' != func:hasPermission('create_event')">
+      <xsl:call-template name="default_subnavigation">
+        <xsl:with-param name="items">
+          <items>
+            <item href="{func:link('event/edit')}">Neuen Termin eintragen</item>
+          </items>
+        </xsl:with-param>
+      </xsl:call-template>
     </xsl:if>
-    
   </xsl:template>
   
   <xsl:template name="content">
-    <h1>Die nächsten Events:</h1>
-    
     <xsl:variable name="events" select="/formresult/events"/>
     
     <!-- Display message when no events exist -->

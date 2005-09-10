@@ -16,14 +16,21 @@
   <xsl:include href="../wizard.inc.xsl"/>
   
   <xsl:template name="context">
+    <xsl:if test="/formresult/user">
+      <xsl:call-template name="default_subnavigation">
+        <xsl:with-param name="items">
+          <xsl:for-each select="/formresult/eventtypes/type">
+            <item href="{func:link(concat('events?', ., ',0,', /formresult/user/team_id))}"><xsl:value-of select="func:get_text(concat('common#next-', .))"/></item>
+          </xsl:for-each>
+        </xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
   </xsl:template>
   
   <xsl:template name="content">
-    <h3>Anmeldung</h3>
-    
     <xsl:choose>
       <xsl:when test="/formresult/user">
-        <xsl:copy-of select="func:box('success', 'Du bist schon angemeldet. Du hast jetzt Zugriff auf alle
+        <xsl:copy-of select="func:box('success', 'Du bist jetzt angemeldet. Du hast jetzt Zugriff auf alle
           geschützten Bereiche der Webseite.')"/>
         
         <br/>
@@ -36,23 +43,22 @@
         </p>
 
         <form method="post" action="{$__state}">
-        <input type="hidden" name="__handler" value="{/formresult/handlers/handler[@name= 'loginhandler']/@id}"/>
-
-        <table width="400" cellpadding="0" cellspacing="5" class="login">
-          <tr>
-            <td align="right">Username:</td>
-            <td><input type="text" name="username" value="{/formresult/formvalues/param[@name= 'username']}" size="20"/></td>
-          </tr>
-          <tr>
-            <td align="right">Passwort:</td>
-            <td><input type="password" name="password" value="{/formresult/formvalues/param[@name= 'password']}" size="20"/></td>
-          </tr>
-          <tr>
-            <td colspan="2" align="right">
-              <input type="submit" name="submit" value="Anmelden"/>
-            </td>
-          </tr>
-        </table>
+          <input type="hidden" name="__handler" value="{/formresult/handlers/handler[@name= 'loginhandler']/@id}"/>
+          
+          <table>
+            <tr>
+              <td>Username:</td>
+              <td><input type="text" name="username" value="{/formresult/formvalues/param[@name= 'username']}" size="20"/></td>
+            </tr>
+            <tr>
+              <td>Passwort:</td>
+              <td><input type="password" name="password" value="{/formresult/formvalues/param[@name= 'password']}" size="20"/></td>
+            </tr>
+            <tr>
+              <td>&#160;</td>
+              <td><input type="submit" name="submit" value="Anmelden"/></td>
+            </tr>
+          </table>
         </form>
       </xsl:otherwise>
     </xsl:choose>

@@ -249,11 +249,15 @@ html>body #content_container {
 	width: 100%;
 }
 
-#content_container tr.odd {
+#content_container tr.list_1 {
 	font-size: 90%;
 }
 
-#content_container tr.even {
+#content_container tr.list_0 {
+	font-size: 90%;
+}
+
+#content_container tr.list_compute {
 	font-size: 90%;
 }
 
@@ -318,7 +322,7 @@ body {
 	font-family: Tahoma,Verdana, Arial, sans-serif;
 	font-size: x-small; /* IE5 Win */
 	font-size: small;
-	text-align: center;
+	text-align: left;
 }
 
 /*--- paragraph ------------------------------------------------------------*/
