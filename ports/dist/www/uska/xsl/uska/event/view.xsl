@@ -15,14 +15,15 @@
   <xsl:include href="../layout.xsl"/>
 
   <xsl:template name="context">
-    <table class="sidebar" cellpadding="0" cellspacing="0" width="170">
-      <tr><td class="sidebar_head">Aktionen</td></tr>
-      <tr><td><a href="{func:link(concat('event/attend?event_id=', /formresult/event/event_id))}">Anmelden</a></td></tr>
-      
-      <xsl:if test="/formresult/event/allow_guests = 1">
-        <tr><td><a hreF="{func:link(concat('event/attend?guest=add&amp;event_id=', /formresult/event/event_id))}">Gast anmelden</a></td></tr>
-      </xsl:if>
-    </table>
+    <xsl:call-template name="default_subnavigation">
+      <xsl:with-param name="items">
+        <item href="{func:link(concat('event/attend?event_id=', /formresult/event/event_id))}">Anmelden</item>
+        
+        <xsl:if test="/formresult/event/allow_guests = 1">
+          <item href="{func:link(concat('event/attend?guest=add&amp;event_id=', /formresult/event/event_id))}">Gast anmelden</item>
+        </xsl:if>
+      </xsl:with-param>
+    </xsl:call-template>
   </xsl:template>
 
   <xsl:template name="content">

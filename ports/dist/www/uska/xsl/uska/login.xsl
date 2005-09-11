@@ -30,7 +30,7 @@
   <xsl:template name="content">
     <xsl:choose>
       <xsl:when test="/formresult/user">
-        <xsl:copy-of select="func:box('success', 'Du bist jetzt angemeldet. Du hast jetzt Zugriff auf alle
+        <xsl:copy-of select="func:box('success', 'Du bist angemeldet und hast Zugriff auf alle
           geschützten Bereiche der Webseite.')"/>
         
         <br/>

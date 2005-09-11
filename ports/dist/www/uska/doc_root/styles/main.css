@@ -409,3 +409,62 @@ button {
 }
 
 /*--------------------------------------------------------------------------*/
+
+/*--- a container for the "about me" box -----------------------------------*/
+
+#about_user_container {
+	margin: 25px 0 0 0;
+	padding-bottom:10px;
+	background: transparent url(/image/styles/weblog_bg.gif) bottom left no-repeat;
+}
+
+#user {
+	margin: 5px 0 0 0;
+	text-align: left;
+}
+
+/*--- short description of the weblog owner --------------------------------*/
+
+#user_abstract {
+	font-size: 85%;
+	padding:10px;
+}
+
+/*--- link to the profile of the weblog owner ------------------------------*/
+
+#user_link {
+	margin-right: 10px;
+	font-size: 85%;
+	text-align: right;
+	background: transparent url(/image/styles/link_profile.gif) top left no-repeat;
+}
+
+#user_link a {
+	text-decoration: none;
+	padding-left:20px;
+}
+
+#user_link a:link {
+	text-decoration: none;
+}
+
+#user_link a:hover {
+	text-decoration: underline;
+}
+
+#user_link a:visited {
+	text-decoration: none;
+}
+
+/*--- about me -------------------------------------------------------------*/
+#about_user_container h1 {
+	margin: 0px;
+	font-size: 125%;
+	padding-left:8px;
+	height: 33px;
+	line-height: 33px;
+	background: transparent url(/image/styles/weblog_head2.gif) top left no-repeat;
+	color:#ffffff;
+}
+
+
