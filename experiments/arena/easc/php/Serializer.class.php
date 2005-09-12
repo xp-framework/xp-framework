@@ -128,7 +128,7 @@
         'IllegalArgument'   => 'lang.IllegalArgumentException',
         'IllegalAccess'     => 'lang.IllegalAccessException',
         'ClassNotFound'     => 'lang.ClassNotFoundException',
-        'NullPointer'       => 'lang.NullPointertException',
+        'NullPointer'       => 'lang.NullPointerException',
       );
 
       if (NULL !== $exception) $exceptions[$name]= $exception;
