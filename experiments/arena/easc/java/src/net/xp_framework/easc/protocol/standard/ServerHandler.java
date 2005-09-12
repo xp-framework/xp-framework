@@ -61,37 +61,22 @@ public class ServerHandler implements Handler {
             // DEBUG System.out.println("[EASC] GOT " + requestHeader.getMessageType());
 
             Delegate delegate= null;
-            try {
-                delegate= requestHeader.getMessageType().delegateFrom(in);
-            } catch (Throwable t) {
-                t.printStackTrace();
-                this.writeResponse(out, MessageType.Error, "Delegation error: " + t.getMessage());
-                continue;
-            }
-                
             Object result= null;
             MessageType response= null;
-            
-            // DEBUG System.out.println("[EASC] DELEGATE = " + delegate);
-
-            // Invoke the message
-            try {
-                result= delegate.invoke(map);
-                response= MessageType.Value;
-            } catch (Throwable t) {
-                t.printStackTrace();
-                result= t;
-                response= MessageType.Exception;
-            }
-            
-            // Serialize
             String buffer= null;
             try {
+                delegate= requestHeader.getMessageType().delegateFrom(in, map);
+
+                // DEBUG System.out.println("[EASC] DELEGATE = " + delegate);
+
+                result= delegate.invoke(map);
+                response= MessageType.Value;
+
                 buffer= Serializer.representationOf(result);
-            } catch (Exception e) {
-                e.printStackTrace();
-                buffer= e.getMessage();
-                response= MessageType.Error;
+            } catch (Throwable t) {
+                t.printStackTrace();
+                buffer= t.getMessage();
+                response= MessageType.Exception;
             }
             
             this.writeResponse(out, response, buffer);

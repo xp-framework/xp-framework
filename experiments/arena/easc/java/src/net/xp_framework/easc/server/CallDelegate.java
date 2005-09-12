@@ -9,38 +9,20 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Method;
 import net.xp_framework.easc.server.Delegate;
 import net.xp_framework.easc.server.ProxyMap;
-import net.xp_framework.easc.protocol.standard.Serializer;
-import java.util.HashMap;
-import static net.xp_framework.easc.util.MethodMatcher.methodFor;
 
 public class CallDelegate implements Delegate {
-    private long objectId;
-    private String methodName;
-    private String serializedArguments;
+    private Object instance;
+    private Method method;
+    private Object[] arguments;
 
-    public CallDelegate(long objectId, String methodName, String serializedArguments) {
-        this.objectId= objectId;
-        this.methodName= methodName;
-        this.serializedArguments= serializedArguments;
+    public CallDelegate(Object instance, Method method, Object[] arguments) {
+        this.instance= instance;
+        this.method= method;
+        this.arguments= arguments;
     }
 
     public Object invoke(ProxyMap map) throws Exception {
-        Object instance= map.getObject(this.objectId);
-        
-        Object arguments[]= null;
-        try {
-            arguments= (Object[])Serializer.valueOf(this.serializedArguments, instance.getClass().getClassLoader());
-        } catch (Exception e) {
-            throw new Exception("Serialized data corrupt: " + e.getMessage());
-        }
-        
-        Method method= methodFor(instance.getClass(), this.methodName, arguments);
-        
-        if (null == method) {
-            throw new NoSuchMethodException("Method '" + this.methodName + "' not found");
-        }
-        
-        Object result= method.invoke(instance, arguments);
+        Object result= this.method.invoke(this.instance, this.arguments);
         
         // If the result is a reference to a proxy, add it to our proxy list
         if (null != result && Proxy.isProxyClass(result.getClass())) {
@@ -60,9 +42,9 @@ public class CallDelegate implements Delegate {
     @Override public String toString() {
         return (
             this.getClass().getName() + 
-            "@(oid= " + this.objectId +
-            ", method= " + this.methodName + 
-            ", args= " + this.serializedArguments + 
+            "@(instance= " + this.instance +
+            ", method= " + this.method + 
+            ", args= " + this.arguments.length + 
             "))"
         );
     }
