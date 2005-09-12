@@ -75,6 +75,13 @@ public class MethodMatcherTest {
         );
     }
 
+    @Test public void oneArgMethodWithNullArg() throws Exception {
+        assertEquals(
+            "void setName:1(java.lang.String)", 
+            methodString(methodFor(Person.class, "setName", new Object[] { null }))
+        );
+    }
+
     @Test public void onePrimitiveArgMethod() throws Exception {
         assertEquals(
             "void setId:1(int)", 
