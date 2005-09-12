@@ -88,4 +88,8 @@ Comments
   The patch still needs quite some work. All the array_search() / 
   in_array() calls to look up class names are slow.
 
+- friebe, Mon Sep 12 10:17:23 CEST 2005
+  The patch does not work correctly for situations in which class A
+  uses() B and B uses() A, producing an endless loop.
+  
 <EOF>
