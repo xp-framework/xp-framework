@@ -69,7 +69,7 @@
       $to= '';
       for ($i= 0, $s= sizeof($message->to); $i < $s; $i++) {
         if (!is_a($message->to[$i], 'InternetAddress')) continue; // Ignore!
-        $to.= $message->to[$i]->toString().', ';
+        $to.= $message->to[$i]->toString($message->getCharset()).', ';
       }
       if (empty($to)) {
         return throw(new TransportException(
@@ -86,7 +86,7 @@
       
       if (FALSE === mail(
         substr($to, 0, -2),
-        QuotedPrintable::encode($message->getSubject()),
+        QuotedPrintable::encode($message->getSubject(), $message->getCharset()),
         strtr($message->getBody(), array(
           "\r\n" => "\n",
           "\r"   => "\n"

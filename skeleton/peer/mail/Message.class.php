@@ -608,7 +608,7 @@
       $l= '';
       for ($i= 0, $s= sizeof($addrs); $i < $s; $i++) {
         if (!is_a($addrs[$i], 'InternetAddress')) continue; // Ignore!
-        $l.= $addrs[$i]->toString().",\n\t";
+        $l.= $addrs[$i]->toString($this->getCharset()).",\n\t";
       }
       return empty($l) ? '' : $t.': '.substr($l, 0, -3)."\n";
     }
@@ -630,7 +630,8 @@
         $n= TRUE;
         break;
       }
-      return $n ? QuotedPrintable::encode($str) : $str;
+      
+      return $n ? QuotedPrintable::encode($str, $this->getCharset()) : $str;
     }
     
     /**
