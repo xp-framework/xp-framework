@@ -610,23 +610,54 @@ public class Serializer {
     /**
      * Private helper method for public valueOf()
      *
+     * @static
      * @access  private
      * @param   java.lang.String serialized
      * @param   Length length
+     * @param   java.lang.ClassLoader loader
      * @return  java.lang.Object
      */
     private static Object valueOf(String serialized, Length length, ClassLoader loader) throws Exception {
         return Token.valueOf(serialized.charAt(0)).handle(serialized, length, loader);
     }
 
+    /**
+     * Private helper method for public valueOf()
+     *
+     * @static
+     * @access  private
+     * @param   java.lang.String serialized
+     * @param   Length length
+     * @param   Length length
+     * @return  java.lang.Object
+     */
     private static Object valueOf(String serialized, Length length) throws Exception {
         return Token.valueOf(serialized.charAt(0)).handle(serialized, length, Serializer.class.getClassLoader());
     }
 
+    /**
+     * Deserialize a string
+     *
+     * @static
+     * @access  public
+     * @param   java.lang.String serialized
+     * @param   Length length
+     * @return  java.lang.Object
+     */
     public static Object valueOf(String serialized) throws Exception {
         return valueOf(serialized, new Length(0));
     }
     
+    /**
+     * Deserialize a string using the specified classloader
+     *
+     * @static
+     * @access  public
+     * @param   java.lang.String serialized
+     * @param   Length length
+     * @param   java.lang.ClassLoader loader
+     * @return  java.lang.Object
+     */
     public static Object valueOf(String serialized, ClassLoader loader) throws Exception {
         return valueOf(serialized, new Length(0), loader);
     }
