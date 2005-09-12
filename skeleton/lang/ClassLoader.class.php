@@ -74,7 +74,7 @@
 
       if (!class_exists($name)) {
         $qname= $this->classpath.$class;
-        if (!include(strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+        if (FALSE === include(strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php')) {
           return throw(new ClassNotFoundException('Class "'.$qname.'" not found'));
         }
         xp::registry('class.'.$name, $qname);
