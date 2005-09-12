@@ -38,7 +38,10 @@ public class MethodMatcher {
         // Check argument types vs. signature types
         int offset= 0;
         for (Class c : signature) {
-            if (!((c.isPrimitive() ? wrapperTypes.get(c) : c).isAssignableFrom(arguments[offset].getClass()))) {
+            if (!
+                (null == arguments[offset] || 
+                ((c.isPrimitive() ? wrapperTypes.get(c) : c).isAssignableFrom(arguments[offset].getClass())))
+            ) {
                 // DEBUG System.out.println("[MethodMatcher] signature argument #" + offset + ": " + c.getName() + " is not assignable from " + arguments[offset].getClass().getName());
                 return false;
             }
