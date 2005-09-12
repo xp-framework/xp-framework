@@ -75,8 +75,13 @@ public class ServerHandler implements Handler {
                 buffer= Serializer.representationOf(result);
             } catch (Throwable t) {
                 t.printStackTrace();
-                buffer= Serializer.representationOf(t);
-                response= MessageType.Exception;
+                try {
+                    buffer= Serializer.representationOf(t);
+                    response= MessageType.Exception;
+                } catch (Exception e) {
+                    buffer= e.getMessage();
+                    response= MessageType.Error;
+                }
             }
             
             this.writeResponse(out, response, buffer);
