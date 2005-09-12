@@ -16,7 +16,6 @@ import java.util.AbstractCollection;
 import java.util.Date;
 import java.util.Iterator;
 import net.xp_framework.easc.protocol.standard.Handler;
-import net.xp_framework.easc.protocol.standard.ArraySerializer;
 import net.xp_framework.easc.protocol.standard.Invokeable;
 import net.xp_framework.easc.protocol.standard.SerializationException;
 
@@ -366,12 +365,14 @@ public class Serializer {
         return "s:1:\"" + c + "\";";
     }
     
-    @Handler public static String representationOf(final char[] array) throws Exception {
-        return new ArraySerializer() {
-            public void yield(int i) {
-                this.buffer.append(representationOf(array[i]));
-            }
-        }.run(array.length);
+    @Handler public static String representationOf(char[] array) throws Exception {
+        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+        for (int i= 0; i < array.length; i++) {
+            buffer.append("i:" + i + ";");
+            buffer.append("s:1:\"" + array[i] + "\";");
+        }
+        buffer.append('}');
+        return buffer.toString();
     }
 
     @Handler public static String representationOf(Character c) {
@@ -383,12 +384,14 @@ public class Serializer {
         return "B:" + b + ";";
     }
     
-    @Handler public static String representationOf(final byte[] array) throws Exception {
-        return new ArraySerializer() {
-            public void yield(int i) {
-                this.buffer.append(representationOf(array[i]));
-            }
-        }.run(array.length);
+    @Handler public static String representationOf(byte[] array) throws Exception {
+        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+        for (int i= 0; i < array.length; i++) {
+            buffer.append("i:" + i + ";");
+            buffer.append("B:" + array[i] + ";");
+        }
+        buffer.append('}');
+        return buffer.toString();
     }
 
     @Handler public static String representationOf(Byte b) {
@@ -400,12 +403,14 @@ public class Serializer {
         return "S:" + s + ";";
     }
     
-    @Handler public static String representationOf(final short[] array) throws Exception {
-        return new ArraySerializer() {
-            public void yield(int i) {
-                this.buffer.append(representationOf(array[i]));
-            }
-        }.run(array.length);
+    @Handler public static String representationOf(short[] array) throws Exception {
+        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+        for (int i= 0; i < array.length; i++) {
+            buffer.append("i:" + i + ";");
+            buffer.append("S:" + array[i] + ";");
+        }
+        buffer.append('}');
+        return buffer.toString();
     }
 
     @Handler public static String representationOf(Short s) {
@@ -417,12 +422,14 @@ public class Serializer {
         return "i:" + i + ";";
     }
 
-    @Handler public static String representationOf(final int[] array) throws Exception {
-        return new ArraySerializer() {
-            public void yield(int i) {
-                this.buffer.append(representationOf(array[i]));
-            }
-        }.run(array.length);
+    @Handler public static String representationOf(int[] array) throws Exception {
+        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+        for (int i= 0; i < array.length; i++) {
+            buffer.append("i:" + i + ";");
+            buffer.append("i:" + array[i] + ";");
+        }
+        buffer.append('}');
+        return buffer.toString();
     }
 
     @Handler public static String representationOf(Integer i) {
@@ -434,12 +441,14 @@ public class Serializer {
         return "l:" + l + ";";
     }
 
-    @Handler public static String representationOf(final long[] array) throws Exception {
-        return new ArraySerializer() {
-            public void yield(int i) {
-                this.buffer.append(representationOf(array[i]));
-            }
-        }.run(array.length);
+    @Handler public static String representationOf(long[] array) throws Exception {
+        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+        for (int i= 0; i < array.length; i++) {
+            buffer.append("i:" + i + ";");
+            buffer.append("l:" + array[i] + ";");
+        }
+        buffer.append('}');
+        return buffer.toString();
     }
 
     @Handler public static String representationOf(Long l) {
@@ -451,12 +460,14 @@ public class Serializer {
         return "d:" + d + ";";
     }
     
-    @Handler public static String representationOf(final double[] array) throws Exception {
-        return new ArraySerializer() {
-            public void yield(int i) {
-                this.buffer.append(representationOf(array[i]));
-            }
-        }.run(array.length);
+    @Handler public static String representationOf(double[] array) throws Exception {
+        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+        for (int i= 0; i < array.length; i++) {
+            buffer.append("i:" + i + ";");
+            buffer.append("d:" + array[i] + ";");
+        }
+        buffer.append('}');
+        return buffer.toString();
     }
 
     @Handler public static String representationOf(Double d) {
@@ -468,12 +479,14 @@ public class Serializer {
         return "f:" + f + ";";
     }
     
-    @Handler public static String representationOf(final float[] array) throws Exception {
-        return new ArraySerializer() {
-            public void yield(int i) {
-                this.buffer.append(representationOf(array[i]));
-            }
-        }.run(array.length);
+    @Handler public static String representationOf(float[] array) throws Exception {
+        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+        for (int i= 0; i < array.length; i++) {
+            buffer.append("i:" + i + ";");
+            buffer.append("f" + array[i] + ";");
+        }
+        buffer.append('}');
+        return buffer.toString();
     }
 
     @Handler public static String representationOf(Float f) {
@@ -485,12 +498,14 @@ public class Serializer {
         return "b:" + (b ? 1 : 0) + ";";
     }
 
-    @Handler public static String representationOf(final boolean[] array) throws Exception {
-        return new ArraySerializer() {
-            public void yield(int i) {
-                this.buffer.append(representationOf(array[i]));
-            }
-        }.run(array.length);
+    @Handler public static String representationOf(boolean[] array) throws Exception {
+        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+        for (int i= 0; i < array.length; i++) {
+            buffer.append("i:" + i + ";");
+            buffer.append("b:" + (array[i] ? 1 : 0) + ";");
+        }
+        buffer.append('}');
+        return buffer.toString();
     }
 
     @Handler public static String representationOf(Boolean b) {
