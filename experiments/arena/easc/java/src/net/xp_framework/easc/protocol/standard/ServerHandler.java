@@ -75,7 +75,7 @@ public class ServerHandler implements Handler {
                 buffer= Serializer.representationOf(result);
             } catch (Throwable t) {
                 t.printStackTrace();
-                buffer= t.getMessage();
+                buffer= Serializer.representationOf(t);
                 response= MessageType.Exception;
             }
             
