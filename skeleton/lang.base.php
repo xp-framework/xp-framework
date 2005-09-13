@@ -100,11 +100,11 @@
     // }}}
 
     // {{{ internal void error(string message)
-    //     Throws a fatal error and exits with exitcode 127
+    //     Throws a fatal error and exits with exitcode 61
     function error($message) {
       restore_error_handler();
       trigger_error($message, E_USER_ERROR);
-      exit(0x7f);
+      exit(0x3d);
     }
   }
   // }}}
