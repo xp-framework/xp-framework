@@ -27,7 +27,7 @@
      * @return  string root
      */
     function __construct($root) {
-      $this->root= rtrim($root, DIRECTORY_SEPARATOR);
+      $this->root= realpath(rtrim($root, DIRECTORY_SEPARATOR));
     }
     
     /**
