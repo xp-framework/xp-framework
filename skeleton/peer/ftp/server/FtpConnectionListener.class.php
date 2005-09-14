@@ -188,7 +188,7 @@
 
         // Did the authentication succeed?
         if (!$r) {
-          $this->answer($event->stream, 530, 'Autentication failed for '.$user);
+          $this->answer($event->stream, 530, 'Authentication failed for '.$user);
           return;
         }
         $this->answer($event->stream, 230, 'User '.$user.' logged in');
