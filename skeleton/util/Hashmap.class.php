@@ -323,6 +323,16 @@
     }
     
     /**
+     * Returns an array representation of this hashmap
+     *
+     * @access  public
+     * @return  array<mixed, mixed>
+     */
+    function toArray() {
+      return $this->_hash;
+    }
+    
+    /**
      * Create string representation
      * 
      * Example:
