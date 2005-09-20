@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('il+xp://de.thekid.util.Comparator');
+  uses('fq+xp://de.thekid.util.Comparator');
 
   class de·thekid·List extends Object {
   
