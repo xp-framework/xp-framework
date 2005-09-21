@@ -57,7 +57,10 @@ Setup #1
 
 * Average startup w/o archive:
   49 milliseconds
-  
+
+* Performance improvement:
+  24 ms (~ 49%)
+
 Setup #2
 ~~~~~~~~
 * Environment
@@ -68,6 +71,9 @@ Setup #2
 
 * Average startup w/o archive:
   12 milliseconds
+
+* Performance improvement:
+  4 ms (~ 67%)
 
 Notes
 -----
