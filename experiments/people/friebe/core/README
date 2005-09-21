@@ -75,6 +75,20 @@ Setup #2
 * Performance improvement:
   4 ms (~ 1.5 times)
 
+Setup #3
+~~~~~~~~
+* Environment
+  FreeBSD 5.4-RELEASEp1, PHP 4.3.11, PIII-1000, 1 GB RAM
+
+* Average startup time w/ archive:
+  17 milliseconds 
+
+* Average startup w/o archive:
+  25 milliseconds
+
+* Performance improvement:
+  8 ms (~ 1.5 times)
+
 Notes
 -----
 - Stacktraces resulting from exceptions thrown in the core will include
