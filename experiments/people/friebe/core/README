@@ -59,7 +59,7 @@ Setup #1
   49 milliseconds
 
 * Performance improvement:
-  24 ms (~ 49%)
+  24 ms (~ 2 times)
 
 Setup #2
 ~~~~~~~~
@@ -73,7 +73,7 @@ Setup #2
   12 milliseconds
 
 * Performance improvement:
-  4 ms (~ 67%)
+  4 ms (~ 1.5 times)
 
 Notes
 -----
