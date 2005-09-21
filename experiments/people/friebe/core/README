@@ -57,6 +57,17 @@ Setup #1
 
 * Average startup w/o archive:
   49 milliseconds
+  
+Setup #2
+~~~~~~~~
+* Environment
+  FreeBSD 5.1-RELEASE, PHP 4.3.11, AMD Athlon XP 2200+, 512 MB RAM
+
+* Average startup time w/ archive:
+  8 milliseconds 
+
+* Average startup w/o archive:
+  12 milliseconds
 
 Notes
 -----
