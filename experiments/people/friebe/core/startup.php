@@ -16,7 +16,7 @@
   $core_classes= XPClass::getClasses();
   
   $load_start= _microtime();
-  uses('util.Binford', 'util.Date', 'de.thekid.dialog.Album');
+  uses('util.Binford', 'util.Date', 'util.HashMap');
   $load_stop= _microtime();
   
   printf("Startup time: %.3f seconds\n", $startup_stop - $startup_start);
