@@ -24,7 +24,11 @@
       $cat                    = NULL,
       $authenticatorHandler   = NULL,
       $storageHandler         = NULL,
-      $interceptors           = array();
+      $interceptors           = array(),
+      
+      $processOwner           = NULL,
+      $processGroup           = NULL;
+
 
     /**
      * Constructor
@@ -80,8 +84,8 @@
      * Adds an conditional interceptor
      *
      * @access public
-     * @param peer.ftp.server.interceptor.InterceptorCondition
-     * @param peer.ftp.server.interceptor.StorageActionInterceptor
+     * @param peer.ftp.server.interceptor.InterceptorCondition Condition
+     * @param peer.ftp.server.interceptor.StorageActionInterceptor Interceptor
      */
     function addInterceptorFor($conditions, &$interceptor) {
       $this->interceptors[]= array($conditions, $interceptor);
@@ -91,7 +95,7 @@
      * Adds a new interceptor
      *
      * @access public
-     * @param peer.ftp.server.interceptor.StorageActionInterceptor
+     * @param peer.ftp.server.interceptor.StorageActionInterceptor Interceptor
      */
     function addInterceptor(&$interceptor) {
       $this->addInterceptorFor(array(), $interceptor);
@@ -110,7 +114,47 @@
       if (!$instance) $instance= new FtpThread();
       return $instance;
     }
-    
+
+    /**
+     * Set ProcessOwner
+     *
+     * @access  public
+     * @param   String processOwner
+     */
+    function setProcessOwner($processOwner) {
+      $this->processOwner= $processOwner;
+    }
+
+    /**
+     * Get ProcessOwner
+     *
+     * @access  public
+     * @return  String
+     */
+    function getProcessOwner() {
+      return $this->processOwner;
+    }
+
+    /**
+     * Set ProcessGroup
+     *
+     * @access  public
+     * @param   String processGroup
+     */
+    function setProcessGroup($processGroup) {
+      $this->processGroup= $processGroup;
+    }
+
+    /**
+     * Get ProcessGroup
+     *
+     * @access  public
+     * @return  String
+     */
+    function getProcessGroup() {
+      return $this->processGroup;
+    }
+
     /**
      * Runs the server. Loads the listener using XPClass::forName()
      * so that the class is loaded within the thread's process space
@@ -153,6 +197,27 @@
       } if (catch('Exception', $e)) {
         $this->server->shutdown();
         return throw($e);
+      }
+      
+      // Check if we should run child processes
+      // with another uid/pid
+      if (isset($this->processGroup)) {
+        $group= posix_getgrnam($this->processGroup);
+        $this->cat && $this->cat->debugf('Setting group to: %s (GID: %d)',
+          $group['name'],
+          $group['uid']
+        );
+
+        if (!posix_setgid($group['gid'])) return throw(new SystemException('Could not set GID'));
+      }
+
+      if (isset($this->processOwner)) {
+        $user= posix_getpwnam($this->processOwner);
+        $this->cat && $this->cat->debugf('Setting user to: %s (UID: %d)',
+          $user['name'],
+          $user['uid']
+        );
+        if (!posix_setuid($user['uid'])) return throw(new SystemException('Could not set UID'));
       }
 
       $this->server->service();
