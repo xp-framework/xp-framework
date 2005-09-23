@@ -39,7 +39,8 @@
         //
         // Add an attribute indicating the next item (if existant):
         // - For highlights, the navigation goes from the first one of
-        //   them to the last, ending there.
+        //   them to the last, wrapping to the first image of the first
+        //   chapter if existant, ending there otherwise.
         // - For images contained in chapters, wrap around to the first
         //   image of the next chapter (if existant)
         //
@@ -54,6 +55,8 @@
             $selected= &$response->addFormResult(Node::fromObject($album->highlightAt($id), 'selected'));
             if ($id < $album->numHighlights() - 1) {
               $next= sprintf('h,0,%d', $id+ 1);
+            } else if (($album->numChapters() > 0) && ($album->chapters[0]->numImages() > 0)) {
+              $next= 'i,0,0';
             }
             if ($id > 0) {
               $prev= sprintf('h,0,%d', $id- 1);
