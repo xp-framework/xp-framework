@@ -12,7 +12,6 @@
  extension-element-prefixes="func"
 >
   <xsl:include href="../master.xsl"/>
-  <xsl:include href="calendar.inc.xsl"/>
   
   <xsl:variable name="navigation">
     <nav name="news" area="news"/>
@@ -96,16 +95,14 @@
               
               <!-- Show logged in user info -->
               <xsl:if test="/formresult/user">
-                <div id="about_user_container">
-                  <h1>Eingeloggt</h1>
-                  <div id="user">Username: 
+                <div id="sub_container1">
+                  <div id="about_user_container">
+                    <h1>Eingeloggt</h1>
+                    <div id="user_abstract">Username: <xsl:value-of select="/formresult/user/username"/></div>
                     <div id="user_link">
-                      <a href="{func:link(concat('player/edit?player_id=', /formresult/user/player_id))}">
-                        <xsl:value-of select="/formresult/user/username"/>
-                      </a>
+                      <a href="{func:link(concat('player/edit?player_id=', /formresult/user/player_id))}">Profil ändern</a>
                     </div>
                   </div>
-                  <div id="user_abstract">Echter Name: <xsl:value-of select="concat(/formresult/user/firstname, ' ', /formresult/user/lastname)"/></div>
                 </div>
               </xsl:if>
               

@@ -433,15 +433,15 @@ button {
 /*--- link to the profile of the weblog owner ------------------------------*/
 
 #user_link {
-	margin-right: 10px;
+	margin-right: 15px;
 	font-size: 85%;
 	text-align: right;
-	background: transparent url(/image/styles/link_profile.gif) top left no-repeat;
 }
 
 #user_link a {
 	text-decoration: none;
 	padding-left:20px;
+	background: transparent url(/image/styles/link_profile.gif) top left no-repeat;
 }
 
 #user_link a:link {

@@ -38,6 +38,7 @@
   <text for="pagecaption#player/edit-home">Profil-Editor</text>
   <text for="pagecaption#event/view-home">Anmeldungsliste</text>
   <text for="pagecaption#event/attend-home">Anmeldung</text>
+  <text for="pagecaption#news/view-home">News</text>
   
   <text for="error#text.xml.XMLParser-XMLFormatException">Der Artikel enthält XML-Fehler und kann daher nicht dargestellt werden. Fehlermeldung:</text>
               
