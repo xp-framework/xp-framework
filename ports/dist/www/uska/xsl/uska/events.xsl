@@ -16,11 +16,6 @@
   <xsl:include href="../wizard.inc.xsl"/>
   
   <xsl:template name="context">
-    <xsl:call-template name="calendar">
-      <xsl:with-param name="month" select="/formresult/month"/>
-    </xsl:call-template>
-    <br/>
-    
     <xsl:if test="'' != func:hasPermission('create_event')">
       <xsl:call-template name="default_subnavigation">
         <xsl:with-param name="items">
