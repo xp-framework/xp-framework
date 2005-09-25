@@ -49,7 +49,7 @@
               <option id="{@id}"><xsl:value-of select="."/></option>
             </xsl:for-each>
           </xsl:variable>
-          <xsl:copy-of select="func:wizard_row_select('editeventhandler', 'event_type', $eventtypes)"/>
+          <xsl:copy-of select="func:wizard_row_select('editeventhandler', 'event_type', $eventtypes, 0)"/>
 
           <!-- Description -->
           <xsl:copy-of select="func:wizard_row_textarea('editeventhandler', 'description', 40, 4)"/>

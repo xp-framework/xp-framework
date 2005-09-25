@@ -36,6 +36,26 @@
     </func:result>
   </func:function>
 
+  <func:function name="func:wizard_error_text">
+    <xsl:param name="name"/>
+    <xsl:param name="field"/>
+    <xsl:param name="type"/>
+    
+    <func:result>
+      <xsl:copy-of select="func:get_text(concat($name, '#error-', @field, '-', @type))"/>
+    </func:result>
+    
+    <!--
+      <xsl:choose>
+        <xsl:when test="func:exists_text(concat($name, '#error-', @field, '-', @type)) = '*'"><xsl:copy-of select="func:get_text(concat($name, '#error-', @field, '-', @type))"/></xsl:when>
+        <xsl:when test="func:exists_text(concat($name, '#error-', @field)) != '-'"><xsl:copy-of select="func:get_text(concat($name, '#error-', @field))"/></xsl:when>
+        <xsl:when test="func:exists_text(concat($name, '#error')) != '-'"><xsl:copy-of select="func:get_text(concat($name, '#error'))"/></xsl:when>
+        <xsl:otherwise>Ein Fehler ist im Feld "<xsl:value-of select="@field"/>" aufgetreten, s.u.</xsl:otherwise>
+      </xsl:choose>
+    </func:result>
+    -->
+  </func:function>
+
   <func:function name="func:display_wizard_error">
     <xsl:param name="name"/>
     
@@ -45,7 +65,7 @@
           <xsl:copy-of select="func:get_text(concat($name, '#form-error'))"/>
           <ul>
             <xsl:for-each select="/formresult/formerrors/error[@checker = $name]">
-              <li><xsl:copy-of select="func:get_text(concat($name, '#', @field, '-', @type))"/></li>
+              <li><xsl:value-of select="func:wizard_error_text($name, @field, @type)"/></li>
             </xsl:for-each>
           </ul>
         </xsl:variable>
