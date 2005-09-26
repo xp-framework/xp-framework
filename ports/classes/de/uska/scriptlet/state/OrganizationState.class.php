@@ -23,6 +23,8 @@
     function getParentCategory(&$request) {
       switch ($request->getQueryString()) {
         case 'applications': return 3;
+        case 'imprint': return 5;
+        case 'contact': return 6;
         default: return 4;
       }
     }
