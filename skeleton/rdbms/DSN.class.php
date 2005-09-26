@@ -148,21 +148,26 @@
     }
 
     /**
-     * Return complete DSN string (optional argument can be set to TRUE
-     * to print password in "*****").
+     * Returns a string representation of this object
      *
-     * @access public
-     * @param bool safe Don't print password in plain, use "********"
-     * @return string
+     * @access  public
+     * @return  string
      */
-    function toString($safe= FALSE) {
+    function toString() {
       return sprintf(
-        '%s://%s:%s@%s%s%s',
-        $this->getDriver(),
-        $this->getUser(),
-        $safe ? '********' : $this->getPassword(),
-        $this->getHost(),
-        $this->getDatabase() ? '/'.$this->getDatabase() : '',
+        '%s@(%s://%s%s%s/%s%s)',
+        $this->getClassName(),
+        $this->parts['scheme'],
+        (isset($this->parts['user']) 
+          ? $this->parts['user'].(isset($this->parts['pass']) ? ':'.str_repeat('*', strlen($this->parts['pass'])) : '').'@'
+          : ''
+        ),
+        $this->parts['host'],
+        (isset($this->parts['port'])
+          ? ':'.$this->parts['port']
+          : ''
+        ),
+        $this->getDatabase() ? $this->getDatabase() : '',
         $this->parts['query'] ? '?'.$this->parts['query'] : ''
       );
     }
