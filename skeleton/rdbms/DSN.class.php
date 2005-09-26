@@ -152,15 +152,15 @@
      * to print password in "*****").
      *
      * @access public
-     * @param bool save Don't print password in plain, use "********"
+     * @param bool safe Don't print password in plain, use "********"
      * @return string
      */
-    function toString($save= FALSE) {
+    function toString($safe= FALSE) {
       return sprintf(
         '%s://%s:%s@%s%s%s',
         $this->getDriver(),
         $this->getUser(),
-        $save ? '********' : $this->getPassword(),
+        $safe ? '********' : $this->getPassword(),
         $this->getHost(),
         $this->getDatabase() ? '/'.$this->getDatabase() : '',
         $this->parts['query'] ? '?'.$this->parts['query'] : ''
