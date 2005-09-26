@@ -41,6 +41,8 @@
           Der angeforderte Bereich der Seite ist nur nach erfolgreicher Anmeldung zugänglich.<br/>
           Bitte gib hier deinen Usernamen und Passwort ein, um dich anzumelden:
         </p>
+        
+        <xsl:copy-of select="func:display_wizard_error('loginhandler')"/>
 
         <form method="post" action="{$__state}">
           <input type="hidden" name="__handler" value="{/formresult/handlers/handler[@name= 'loginhandler']/@id}"/>

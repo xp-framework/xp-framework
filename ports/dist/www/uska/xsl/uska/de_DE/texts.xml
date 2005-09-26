@@ -40,6 +40,10 @@
   <text for="pagecaption#event/attend-home">Anmeldung</text>
   <text for="pagecaption#news/view-home">News</text>
   
+  <text for="loginhandler#form-error">Login-Fehler</text>
+  <text for="loginhandler#error-password-scriptlet.xml.workflow.checkers.RegexpChecker.nomatch">Ungültiges Passwort</text>
+  <text for="loginhandler#error-*-mismatch">Passwort oder Username falsch</text>
+  
   <text for="error#text.xml.XMLParser-XMLFormatException">Der Artikel enthält XML-Fehler und kann daher nicht dargestellt werden. Fehlermeldung:</text>
               
   <text for="events#no-events">Es liegen momentan noch keine Termine vor.</text>
