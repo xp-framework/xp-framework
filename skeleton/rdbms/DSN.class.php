@@ -147,5 +147,24 @@
       return isset($this->parts['pass']) ? $this->parts['pass'] : $default;
     }
 
+    /**
+     * Return complete DSN string (optional argument can be set to TRUE
+     * to print password in "*****").
+     *
+     * @access public
+     * @param bool save Don't print password in plain, use "********"
+     * @return string
+     */
+    function toString($save= FALSE) {
+      return sprintf(
+        '%s://%s:%s@%s%s%s',
+        $this->getDriver(),
+        $this->getUser(),
+        $save ? '********' : $this->getPassword(),
+        $this->getHost(),
+        $this->getDatabase() ? '/'.$this->getDatabase() : '',
+        $this->parts['query'] ? '?'.$this->parts['query'] : ''
+      );
+    }
   }
 ?>
