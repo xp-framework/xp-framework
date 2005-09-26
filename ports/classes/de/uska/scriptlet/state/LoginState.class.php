@@ -37,6 +37,17 @@
      */
     function setup(&$request, &$response, &$context) {
       parent::setup($request, $response, $context);
+      
+      if ($request->hasParam('logout')) {
+        $context->setUser($n= NULL);
+      
+        $uri= $request->getURI();
+        $response->sendRedirect(sprintf('%s://%s/xml/uska.de_DE/login',
+          $uri['scheme'],
+          $uri['host']
+        ));
+        return FALSE;
+      }
     }
   }
 ?>
