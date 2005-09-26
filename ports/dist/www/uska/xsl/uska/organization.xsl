@@ -37,7 +37,7 @@
         
         <item href="{func:link('organization?application')}">Anträge...</item>
         <item href="{func:link('organization?contact')}">Kontakt</item>
-        <item href="{func:link('organization?impressum')}">Impressum</item>
+        <item href="{func:link('organization?imprint')}">Impressum</item>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
