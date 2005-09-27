@@ -414,6 +414,7 @@ td {
 	color: #ffffff;
 	background-color:#ded389;
 	padding: 3px 2px 3px 2px;
+    font-size: 85%
 }
 
 #content_container tr.list_1 {
@@ -426,6 +427,10 @@ td {
 	color: #333344;
 	background-color:#fbfaf1;
 	padding: 3px 2px 3px 2px;
+}
+
+#content_container td {
+    font-size: 80%
 }
 
 #form table {
