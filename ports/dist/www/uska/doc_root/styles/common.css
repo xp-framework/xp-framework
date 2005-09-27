@@ -430,7 +430,8 @@ td {
 }
 
 #content_container td {
-    font-size: 80%
+    font-size: 80%;
+    vertical-align: top;
 }
 
 #form table {

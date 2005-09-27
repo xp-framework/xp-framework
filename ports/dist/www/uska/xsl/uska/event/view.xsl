@@ -48,7 +48,7 @@
     
     <table>
       <tr>
-        <th width="300">Spieler</th>
+        <th width="200">Spieler</th>
         <th>Teilnahme</th>
         <th>Fahrerinfo</th>
       </tr>
