@@ -67,6 +67,8 @@
           where p.player_id= a.player_id
             and p.player_type_id= 2
             and a.event_id= %1$d
+          order by
+            lastname, firstname
           ',
           $event->getEvent_id()
         );
