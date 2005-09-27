@@ -51,5 +51,25 @@
         $this->dsn['mysql']->toString()
       );
     }
+    
+    /**
+     * Tests the getFlags() method on a DSN without flags
+     *
+     * @access  public
+     */
+    #[@test]
+    function noFlags() {
+      $this->assertEquals(0, $this->dsn['mysql']->getFlags());
+    }
+
+    /**
+     * Tests the getFlags() method on a DSN with flags
+     *
+     * @access  public
+     */
+    #[@test]
+    function definedFlags() {
+      $this->assertEquals(DB_AUTOCONNECT, $this->dsn['sybase']->getFlags());
+    }
   }
 ?>
