@@ -71,6 +71,7 @@
   <text for="attendeventhandler-attend#no">Nein, besser nicht</text>
   <text for="attendeventhandler#needs_seat">Brauche Mitfahrgelegenheit</text>
   <text for="attendeventhandler#offers_seats">Habe soviele Plätze frei</text>
+  <text for="attendeventhandler#form-success">Deine Teilnahmedaten wurden gespeichert.</text>
   
   <text for="editeventhandler#newevent">Termin-Editor</text>
   <text for="editeventhandler#form-error">Es sind Fehler aufgetreten:</text>

@@ -11,7 +11,7 @@
  xmlns:func="http://exslt.org/functions"
  extension-element-prefixes="func"
 >
-  <xsl:output method="html" encoding="iso-8859-1" indent="no"/>
+  <xsl:output method="html" encoding="iso-8859-1" indent="yes"/>
   <xsl:include href="snippets.inc.xsl"/>
   <xsl:include href="date.inc.xsl"/>
   

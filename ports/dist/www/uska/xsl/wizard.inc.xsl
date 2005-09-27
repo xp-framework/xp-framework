@@ -88,7 +88,7 @@
     <xsl:param name="name"/>
     <func:result>
       <xsl:if test="/formresult/handlers/handler[@name= $name]/@status = 'reloaded'">
-        <xsl:copy-of select="func:box('error', func:get_text(concat($name, '#form-reloaded')))"/>
+        <xsl:copy-of select="func:box('success', func:get_text(concat($name, '#form-success')))"/>
       </xsl:if>
     </func:result>
   </func:function>

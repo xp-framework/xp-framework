@@ -38,8 +38,8 @@
       <nav name="admin/createevent" area="organization"/>
     </nav>
     
-    <nav name="about"/>
-    <nav name="login"/>
+    <nav name="about" area="about"/>
+    <nav name="login" area="login"/>
   </xsl:variable>
   
   <xsl:variable name="area" select="substring-before(concat($__state, '/'), '/')"/>
@@ -64,7 +64,7 @@
   <xsl:template match="/">
     <html>
       <head>
-        <title>United Schlund Karlsruhe eV.</title>
+        <title><xsl:value-of select="func:get_text(concat('pagecaption#', $__state, '-', $__page))"/> - United Schlund Karlsruhe eV.</title>
         <link rel="stylesheet" href="/styles/main.css"/>
         <link rel="stylesheet" href="/styles/common.css"/>
       </head>
