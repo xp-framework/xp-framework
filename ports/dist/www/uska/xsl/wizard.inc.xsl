@@ -236,7 +236,7 @@
         <xsl:copy-of select="func:_wizard_row_start($wizard, $name)"/>
         <td>
           <textarea name="{$name}" rows="{$rows}" cols="{$cols}" wrap="virtual">
-            <xsl:value-of select="/formresult/formvalue/param[@name= $name]"/>
+            <xsl:value-of select="/formresult/formvalues/param[@name= $name]"/>
           </textarea>
         </td>
       </tr>
