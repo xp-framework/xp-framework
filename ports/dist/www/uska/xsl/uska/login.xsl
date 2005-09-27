@@ -20,7 +20,7 @@
       <xsl:call-template name="default_subnavigation">
         <xsl:with-param name="items">
           <xsl:for-each select="/formresult/eventtypes/type">
-            <item href="{func:link(concat('events?', ., ',0,', /formresult/user/team_id))}"><xsl:value-of select="func:get_text(concat('common#next-', @type))"/></item>
+            <item href="{func:link(concat('events?', @type, ',0,', /formresult/user/team_id))}"><xsl:value-of select="func:get_text(concat('common#next-', @type))"/></item>
           </xsl:for-each>
         </xsl:with-param>
       </xsl:call-template>
