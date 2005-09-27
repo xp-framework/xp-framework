@@ -233,7 +233,7 @@
      * @return  bool
      */
     function assertTrue($var, $error= 'nottrue') {
-      if (TRUE === $var) {
+      if (TRUE !== $var) {
         return $this->fail($error, TRUE, $var);
       }
       return TRUE;
@@ -248,7 +248,7 @@
      * @return  bool
      */
     function assertFalse($var, $error= 'notfalse') {
-      if (FALSE === $var) {
+      if (FALSE !== $var) {
         return $this->fail($error, FALSE, $var);
       }
       return TRUE;
