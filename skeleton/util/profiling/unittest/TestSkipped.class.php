@@ -35,9 +35,10 @@
      * @return  string
      */
     function toString() {
-      return $this->getClassName().', reason '.(is_a($this->reason, 'Object') 
-        ? $this->reason->toString() 
-        : var_export($this->reason, 1)
+      return (
+        $this->getClassName().'(test= '.$this->test->getName().") {\n  ".
+        str_replace("\n", "\n  ", xp::stringOf($this->reason))."\n".
+        ' }'
       );
     }
   }

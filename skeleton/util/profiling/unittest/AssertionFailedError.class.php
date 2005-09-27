@@ -12,8 +12,7 @@
   class AssertionFailedError extends Exception {
     var
       $actual       = NULL,
-      $expect       = NULL,
-      $errorcode    = '';
+      $expect       = NULL;
       
     /**
      * Constructor
@@ -24,13 +23,12 @@
      * @param   mixed actual default NULL
      * @param   mixed expect default NULL
      */
-    function __construct($message, $errorcode, $actual= NULL, $expect= NULL) {
+    function __construct($message, $actual= NULL, $expect= NULL) {
       parent::__construct($message);
-      $this->errorcode= $errorcode;
       $this->actual= $actual;
       $this->expect= $expect;
     }
-    
+
     /**
      * Set errorcode
      *
@@ -59,20 +57,19 @@
      */
     function toString() {
       $s= sprintf(
-        "Exception %s (%s) {\n".
-        "    errorcode:   %s\n".
-        "    have:   [%s] %s\n".
-        "    expect: [%s] %s\n".
-        "  }\n",
+        "%s (%s) { expected: [%s] but was: [%s] }\n",
         $this->getClassName(),
         $this->message,
-        $this->errorcode,
-        xp::typeOf($this->actual),
-        var_export($this->actual, 1),
-        xp::typeOf($this->expect),
-        var_export($this->expect, 1)
+        xp::stringOf($this->actual),
+        xp::stringOf($this->expect)
       );
-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
+      
+      // Slice the first four trace elements, they contain the
+      // traces of assert() callbacks which aren't really interesting
+      //
+      // Also don't show the arguments
+      for ($i= 3, $t= sizeof($this->trace); $i < $t; $i++) {
+        $this->trace[$i]->args= NULL;
         $s.= $this->trace[$i]->toString();
       }
       return $s;

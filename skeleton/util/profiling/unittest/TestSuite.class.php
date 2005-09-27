@@ -105,14 +105,14 @@
       }
 
       try(); {
-        $r= &$test->run();
+        $test->run();
       } if (catch('Exception', $e)) {
         $result->setFailed($test, $e);
         $test->tearDown();
         return FALSE;
       }
 
-      $result->setSucceeded($test, $r);
+      $result->setSucceeded($test);
       $test->tearDown();
       return TRUE;
     }

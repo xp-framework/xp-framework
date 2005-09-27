@@ -12,7 +12,6 @@
    */
   class TestSuccess extends Object {
     var
-      $result   = NULL,
       $test     = NULL;
       
     /**
@@ -22,9 +21,8 @@
      * @param   &util.profiling.unittest.TestCase test
      * @param   &mixed result
      */
-    function __construct(&$test, &$result) {
+    function __construct(&$test) {
       $this->test= &$test;
-      $this->result= &$result;
       
     }
     
@@ -35,10 +33,7 @@
      * @return  string
      */
     function toString() {
-      return $this->getClassName().', result '.(is_a($this->result, 'Object') 
-        ? $this->result->toString() 
-        : var_export($this->result, 1)
-      );
+      return $this->getClassName().'(test= '.$this->test->getName().')';
     }
   }
 ?>

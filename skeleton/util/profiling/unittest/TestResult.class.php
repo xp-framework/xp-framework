@@ -27,10 +27,9 @@
      *
      * @access  public
      * @param   &util.profiling.unittest.TestCase test
-     * @param   mixed value
      */
-    function setSucceeded(&$test, $value) {
-      $this->succeeded[$test->hashCode()]= &new TestSuccess($test, $value);
+    function setSucceeded(&$test) {
+      $this->succeeded[$test->hashCode()]= &new TestSuccess($test);
     }
     
     /**
@@ -123,47 +122,18 @@
         $this->skipCount()
       );
       
-      // Configuration summary
-      $str.= $div."\n".sprintf(
-        "Operating system:  %s\n".
-        "PHP Version:       %s\n".
-        "Zend Version:      %s\n".
-        "SAPI:              %s\n".
-        "Loaded extensions: %s\n",
-        PHP_OS,
-        phpversion(),
-        zend_version(),
-        php_sapi_name(),
-        wordwrap(implode(', ', get_loaded_extensions()), 52, "\n                   ")
-      ).$div;
-      
       // Details
       $str.= "\n- Succeeded tests details:\n";
       foreach (array_keys($this->succeeded) as $key) {
-        $str.= sprintf(
-          "  * %s::%s\n    returned: %s\n",
-          $this->succeeded[$key]->test->getClassName(),
-          $this->succeeded[$key]->test->getName(),
-          $this->succeeded[$key]->toString()
-        );
-      }
-      $str.= "\n- Failed tests details:\n";
-      foreach (array_keys($this->failed) as $key) {
-        $str.= sprintf(
-          "  * %s::%s\n    returned: %s\n",
-          $this->failed[$key]->test->getClassName(),
-          $this->failed[$key]->test->getName(),
-          $this->failed[$key]->toString()
-        );
+        $str.= '  * '.$this->succeeded[$key]->toString()."\n";
       }
       $str.= "\n- Skipped tests details:\n";
       foreach (array_keys($this->skipped) as $key) {
-        $str.= sprintf(
-          "  * %s::%s\n    returned: %s\n",
-          $this->skipped[$key]->test->getClassName(),
-          $this->skipped[$key]->test->getName(),
-          $this->skipped[$key]->toString()
-        );
+        $str.= '  * '.$this->skipped[$key]->toString()."\n";
+      }
+      $str.= "\n- Failed tests details:\n";
+      foreach (array_keys($this->failed) as $key) {
+        $str.= '  * '.$this->failed[$key]->toString()."\n";
       }
       
       return $str.$div."\n";
