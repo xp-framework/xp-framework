@@ -54,20 +54,26 @@
         ($event= &Event::getByEvent_id($request->getQueryString()))
       ) {
         $this->setFormValue('event_id', $event->getEvent_id());
-        $this->setFormValue('event_type', $event->getEvent_type());
+        $this->setFormValue('event_type', $event->getEvent_type_id());
         $this->setFormValue('team', $event->getTeam_id());
         $this->setFormValue('name', $event->getName());
         $this->setFormValue('description', $event->getDescription());
 
         $tdate= &$event->getTarget_date();
-        if ($tdate) $this->setFormValue('target_date', $tdate->toString('d.m.Y'));
+        if ($tdate) {
+          $this->setFormValue('target_date', $tdate->toString('d.m.Y'));
+          $this->setFormValue('target_time', $tdate->toString('H:i'));
+        }
 
         $ddate= &$event->getDeadline();
-        if ($ddate) $this->setFormValue('deadline', $ddate->toString('d.m.Y'));
+        if ($ddate) {
+          $this->setFormValue('deadline_date', $ddate->toString('d.m.Y'));
+          $this->setFormValue('deadline_time', $ddate->toString('H:i'));
+        }
 
         $this->setFormValue('max', $event->getMax_attendees());
         $this->setFormValue('req', $event->getReq_attendees());
-        $this->setFormValue('guests', $event->getGuests_allowed());
+        $this->setFormValue('guests', $event->getAllow_guests());
 
         $this->setValue('mode', 'update');
       } else {
