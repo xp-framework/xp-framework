@@ -60,6 +60,9 @@
               <br/>
               (<xsl:value-of select="concat(func:get_text('attendee#guestof'), ' ', creator/firstname, ' ', creator/lastname)"/>)
             </xsl:if>
+            <xsl:if test="'' != func:hasPermission('create_event')">
+              &#160;<a href="{func:link(concat('event/attend?event_id=', /formresult/event/event_id, '&amp;player_id=', @player_id))}">Ändern</a>
+            </xsl:if>
           </td>
           <td>
             <xsl:value-of select="func:get_text(concat('attendee#status-', @attend))"/>
