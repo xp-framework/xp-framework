@@ -4,7 +4,9 @@
  * $Id$ 
  */
 
-  uses('fq+xp://de.thekid.util.Comparator');
+  $package= 'de.thekid';
+
+  uses('de.thekid.util.Comparator');
 
   class de·thekid·List extends Object {
   

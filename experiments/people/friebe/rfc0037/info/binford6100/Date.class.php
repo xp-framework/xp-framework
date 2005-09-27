@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  $package= 'info.binford6100';
+
   uses('util.Date');
 
   class info·binford6100·Date extends Date {
