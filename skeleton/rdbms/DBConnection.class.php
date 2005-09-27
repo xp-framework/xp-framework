@@ -16,11 +16,6 @@
     'util.Observable'
   );
   
-  define('DB_STORE_RESULT',     0x0001);
-  define('DB_UNBUFFERED',       0x0002);
-  define('DB_AUTOCONNECT',      0x0004);
-  define('DB_PERSISTENT',       0x0008);
-  
   /**
    * Provide an interface from which all other database connection
    * classes extend.
