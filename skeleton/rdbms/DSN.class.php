@@ -31,11 +31,22 @@
      * @param   string str
      */
     function __construct($str) {
+      $this->parts['dsn']= $str;
       foreach (parse_url($str) as $key => $value) {
         $this->parts[$key]= urldecode($value);
       }
-      
-      $this->parts['dsn']= $str;
+
+      $this->parts['flags']= 0;
+      if (isset($this->parts['query'])) {
+        parse_str($this->parts['query'], $config);
+        foreach ($config as $key => $value) {
+          if (defined('DB_'.strtoupper ($key))) {
+            if ($value) $this->parts['flags']= $this->parts['flags'] | constant('DB_'.strtoupper($key));
+          } else {
+            $this->prop[$key]= $value;
+          }
+        }
+      }
     }
     
     /**
@@ -45,18 +56,7 @@
      * @return  int flags
      */
     function getFlags() {
-      if (!isset($this->parts['query'])) return 0;
-      
-      $flags= 0;
-      parse_str($this->parts['query'], $config);
-      foreach ($config as $key => $value) {
-        if (defined('DB_'.strtoupper ($key))) {
-          if ($value) $flags= $flags | constant('DB_'.strtoupper($key));
-        } else {
-          $this->prop[$key]= $value;
-        }
-      }
-      return $flags;
+      return $this->parts['flags'];
     }
     
     /**
