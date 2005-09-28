@@ -49,6 +49,54 @@ public class CalculatorBean implements SessionBean {
     }
 
     /**
+     * Subtracts two floating point numbers 
+     *
+     * @ejb.interface-method view-type = "both"
+     * @param   float a
+     * @param   float b
+     * @return  float the result of the subtraction of the given parameters a and b
+     */
+    public float subtract(float a, float b) {
+        return a - b;
+    }
+
+    /**
+     * Adds two integers
+     Subtracts
+     * @ejb.interface-method view-type = "both"
+     * @param   int a
+     * @param   int b
+     * @return  int the result of the subtraction of the given parameters a and b
+     */
+    public int subtract(int a, int b) {
+        return a - b;
+    }
+
+    /**
+     * Multiplies two floating point numbers 
+     *
+     * @ejb.interface-method view-type = "both"
+     * @param   float a
+     * @param   float b
+     * @return  float the product of the given parameters a and b
+     */
+    public float multiply(float a, float b) {
+        return a * b;
+    }
+
+    /**
+     * Multiplies two integers
+     *
+     * @ejb.interface-method view-type = "both"
+     * @param   int a
+     * @param   int b
+     * @return  int the product of the given parameters a and b
+     */
+    public int multiply(int a, int b) {
+        return a * b;
+    }
+
+    /**
      * Activate method
      *
      * @access  public
