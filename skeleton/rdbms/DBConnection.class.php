@@ -41,8 +41,8 @@
       $this->setTimeout($dsn->getProperty('timeout', 0));   // 0 means no timeout
       
       // Keep this for BC reasons
-      $obs= $this->dsn->getValue('observer', array());
-      if (NULL !== ($cat= $this->dsn->getValue('log'))) { 
+      $obs= $dsn->getProperty('observer', array());
+      if (NULL !== ($cat= $dsn->getProperty('log'))) { 
         $obs['util.log.LogObserver']= $cat; 
       }
       
