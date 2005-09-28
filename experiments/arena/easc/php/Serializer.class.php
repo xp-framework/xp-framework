@@ -9,6 +9,7 @@
     'wrapper.Double',
     'wrapper.Short',
     'wrapper.Byte',
+    'wrapper.Float',
     'wrapper.ArrayList',
     'util.Date'
   );
