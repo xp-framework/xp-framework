@@ -229,5 +229,10 @@
         Serializer::valueOf('S:1;')
       );
     }
+    
+    #[@test]
+    function valueOfArrayList() {
+      return Serializer::valueOf("A:2:{O:6:\"Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}");
+    }
   }
 ?>
