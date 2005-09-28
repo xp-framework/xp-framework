@@ -4,7 +4,7 @@ $Id$
 
 @authors: gellweiler
 @created: Thu Jul 6 12:14:18  2005
-@status: discussion, ends at Fri Sep 16 11:57:31 CEST 2005
+@status: implemented, Wed Sep 28 11:45:15 CEST 2005
 @category: lang.reflect
 
 Scope of Change
