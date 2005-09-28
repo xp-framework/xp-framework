@@ -53,22 +53,22 @@
   <target name="usage">
     <echo>Targets:
 - test.serializer
-  Runs net.xp_framework.easc.unittest.SerializerTest 
+  Runs net.xp_framework.unittest.SerializerTest 
 
 - test.methodmatcher
-  Runs net.xp_framework.easc.unittest.MethodMatcherTest
+  Runs net.xp_framework.unittest.MethodMatcherTest
 
 - test.types
-  Runs net.xp_framework.easc.unittest.TypeTest
+  Runs net.xp_framework.unittest.TypeTest
 
 - test.header
-  Runs net.xp_framework.easc.unittest.HeaderTest
+  Runs net.xp_framework.unittest.HeaderTest
 
 - test.invocationhandlers
-  Runs net.xp_framework.easc.unittest.InvocationHandlerTest
+  Runs net.xp_framework.unittest.InvocationHandlerTest
   
 - test.server
-  Runs net.xp_framework.easc.unittest.ServerTest
+  Runs net.xp_framework.unittest.ServerTest
 
 - test
   Runs all tests
@@ -82,7 +82,7 @@
   <target name="test.serializer" depends="compile">
     <echo>===&gt; Testing serializer</echo>
     <java classname="org.junit.runner.JUnitCore">
-      <arg value="net.xp_framework.easc.unittest.SerializerTest"/>
+      <arg value="net.xp_framework.unittest.SerializerTest"/>
       <classpath refid="classpath.run"/>
     </java>
   </target>
@@ -91,7 +91,7 @@
   <target name="test.methodmatcher" depends="compile">
     <echo>===&gt; Testing methodmatcher</echo>
     <java classname="org.junit.runner.JUnitCore">
-      <arg value="net.xp_framework.easc.unittest.MethodMatcherTest"/>
+      <arg value="net.xp_framework.unittest.MethodMatcherTest"/>
       <classpath refid="classpath.run"/>
     </java>
   </target>
@@ -100,7 +100,7 @@
   <target name="test.types" depends="compile">
     <echo>===&gt; Testing types enumeration</echo>
     <java classname="org.junit.runner.JUnitCore">
-      <arg value="net.xp_framework.easc.unittest.TypeTest"/>
+      <arg value="net.xp_framework.unittest.TypeTest"/>
       <classpath refid="classpath.run"/>
     </java>
   </target>
@@ -109,7 +109,7 @@
   <target name="test.header" depends="compile">
     <echo>===&gt; Testing header class</echo>
     <java classname="org.junit.runner.JUnitCore">
-      <arg value="net.xp_framework.easc.unittest.HeaderTest"/>
+      <arg value="net.xp_framework.unittest.HeaderTest"/>
       <classpath refid="classpath.run"/>
     </java>
   </target>
@@ -118,7 +118,7 @@
   <target name="test.invocationhandlers" depends="compile">
     <echo>===&gt; Testing invocation handlers</echo>
     <java classname="org.junit.runner.JUnitCore">
-      <arg value="net.xp_framework.easc.unittest.InvocationHandlerTest"/>
+      <arg value="net.xp_framework.unittest.InvocationHandlerTest"/>
       <classpath refid="classpath.run"/>
     </java>
   </target>
@@ -127,7 +127,7 @@
   <target name="test.server" depends="compile">
     <echo>===&gt; Testing server integration</echo>
     <java classname="org.junit.runner.JUnitCore">
-      <arg value="net.xp_framework.easc.unittest.ServerTest"/>
+      <arg value="net.xp_framework.unittest.ServerTest"/>
       <classpath refid="classpath.run"/>
     </java>
   </target>
@@ -136,12 +136,12 @@
   <target name="test" depends="compile">
     <echo>===&gt; Running all tests</echo>
     <java classname="org.junit.runner.JUnitCore">
-      <arg value="net.xp_framework.easc.unittest.SerializerTest"/>
-      <arg value="net.xp_framework.easc.unittest.MethodMatcherTest"/>
-      <arg value="net.xp_framework.easc.unittest.TypeTest"/>
-      <arg value="net.xp_framework.easc.unittest.HeaderTest"/>
-      <arg value="net.xp_framework.easc.unittest.InvocationHandlerTest"/>
-      <arg value="net.xp_framework.easc.unittest.ServerTest"/>
+      <arg value="net.xp_framework.unittest.SerializerTest"/>
+      <arg value="net.xp_framework.unittest.MethodMatcherTest"/>
+      <arg value="net.xp_framework.unittest.TypeTest"/>
+      <arg value="net.xp_framework.unittest.HeaderTest"/>
+      <arg value="net.xp_framework.unittest.InvocationHandlerTest"/>
+      <arg value="net.xp_framework.unittest.ServerTest"/>
       <classpath refid="classpath.run"/>
     </java>
   </target>
