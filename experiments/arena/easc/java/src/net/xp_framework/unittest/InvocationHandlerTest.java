@@ -3,12 +3,12 @@
  * $Id$
  */
 
-package net.xp_framework.easc.unittest;
+package net.xp_framework.unittest;
 
 import org.junit.Test;
-import net.xp_framework.easc.unittest.NullInvocationHandler;
-import net.xp_framework.easc.unittest.DebugInvocationHandler;
-import net.xp_framework.easc.unittest.ITest;
+import net.xp_framework.unittest.NullInvocationHandler;
+import net.xp_framework.unittest.DebugInvocationHandler;
+import net.xp_framework.unittest.ITest;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 
@@ -19,8 +19,8 @@ import static org.junit.Assert.*;
  *
  * Note: This is a JUnit 4 testcase!
  *
- * @see   net.xp_framework.easc.unittest.NullInvocationHandler
- * @see   net.xp_framework.easc.unittest.DebugInvocationHandler
+ * @see   net.xp_framework.unittest.NullInvocationHandler
+ * @see   net.xp_framework.unittest.DebugInvocationHandler
  */
 public class InvocationHandlerTest {
 
@@ -29,7 +29,7 @@ public class InvocationHandlerTest {
      *
      * @access  protected
      * @param   java.lang.reflect.InvocationHandler handler
-     * @return  net.xp_framework.easc.unittest.ITest proxy
+     * @return  net.xp_framework.unittest.ITest proxy
      */
     protected ITest createTestProxy(InvocationHandler handler) {
         return (ITest)Proxy.newProxyInstance(
@@ -65,11 +65,11 @@ public class InvocationHandlerTest {
     @Test public void debugHandlerInvokeHello() throws Exception {
         ITest proxy= this.createTestProxy(new DebugInvocationHandler());
         assertEquals(
-            "Invoked method public abstract java.lang.Object net.xp_framework.easc.unittest.ITest.hello() with 0 argument(s)", 
+            "Invoked method public abstract java.lang.Object net.xp_framework.unittest.ITest.hello() with 0 argument(s)", 
             proxy.hello()
         );
         assertEquals(
-            "Invoked method public abstract java.lang.Object net.xp_framework.easc.unittest.ITest.hello(java.lang.String) with 1 argument(s)", 
+            "Invoked method public abstract java.lang.Object net.xp_framework.unittest.ITest.hello(java.lang.String) with 1 argument(s)", 
             proxy.hello("World")
         );
     }

@@ -3,7 +3,7 @@
  * $Id$
  */
 
-package net.xp_framework.easc.unittest;
+package net.xp_framework.unittest;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 /**
  * Invocation handler that returns a debug message for any method called on it
  * 
- * @see   net.xp_framework.easc.unittest.ServerTest
+ * @see   net.xp_framework.unittest.ServerTest
  */
 public class DebugInvocationHandler implements InvocationHandler {
     

@@ -3,7 +3,7 @@
  * $Id$
  */
 
-package net.xp_framework.easc.unittest;
+package net.xp_framework.unittest;
 
 import org.junit.Test;
 import net.xp_framework.easc.protocol.standard.MessageType;

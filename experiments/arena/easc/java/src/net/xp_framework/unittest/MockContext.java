@@ -3,7 +3,7 @@
  * $Id$
  */
 
-package net.xp_framework.easc.unittest;
+package net.xp_framework.unittest;
 
 import javax.naming.NamingException;
 import javax.naming.Context;

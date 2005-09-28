@@ -3,10 +3,10 @@
  * $Id$
  */
 
-package net.xp_framework.easc.unittest;
+package net.xp_framework.unittest;
 
 import org.junit.Test;
-import net.xp_framework.easc.unittest.Person;
+import net.xp_framework.unittest.Person;
 import java.lang.reflect.Method;
 
 import static net.xp_framework.easc.util.MethodMatcher.methodFor;

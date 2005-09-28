@@ -3,7 +3,7 @@
  * $Id$
  */
 
-package net.xp_framework.easc.unittest;
+package net.xp_framework.unittest;
 
 import org.junit.Test;
 import org.junit.Ignore;
@@ -23,11 +23,11 @@ import net.xp_framework.easc.protocol.standard.ServerHandler;
 import net.xp_framework.easc.protocol.standard.Header;
 import net.xp_framework.easc.protocol.standard.MessageType;
 import net.xp_framework.easc.protocol.standard.Serializer;
-import net.xp_framework.easc.unittest.MockContextFactory;
-import net.xp_framework.easc.unittest.Person;
-import net.xp_framework.easc.unittest.ITest;
+import net.xp_framework.unittest.MockContextFactory;
+import net.xp_framework.unittest.Person;
+import net.xp_framework.unittest.ITest;
 import net.xp_framework.easc.server.Delegate;
-import net.xp_framework.easc.unittest.DebugInvocationHandler;
+import net.xp_framework.unittest.DebugInvocationHandler;
 import javax.naming.InitialContext;
 import javax.naming.spi.NamingManager;
 import javax.naming.spi.InitialContextFactoryBuilder;
@@ -184,14 +184,14 @@ public class ServerTest {
     /**
      * Tests lookup of a value object
      *
-     * @see     net.xp_framework.easc.unittest.Person
+     * @see     net.xp_framework.unittest.Person
      * @access  public
      * @throws  java.lang.Exception
      */
     @Test public void lookupPerson() throws Exception {
         assertAnswer(
             MessageType.Value,
-            "O:37:\"net.xp_framework.easc.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}", 
+            "O:32:\"net.xp_framework.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}", 
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,
@@ -217,7 +217,7 @@ public class ServerTest {
     @Test public void lookupProxy() throws Exception {
         assertAnswer(
             MessageType.Value,
-            "I:1:{s:36:\"net.xp_framework.easc.unittest.ITest\";}", 
+            "I:1:{s:31:\"net.xp_framework.unittest.ITest\";}", 
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,
@@ -243,7 +243,7 @@ public class ServerTest {
     @Test public void helloMethodCall() throws Exception {
         assertAnswer(
             MessageType.Value,
-            "s:127:\"Invoked method public abstract java.lang.Object net.xp_framework.easc.unittest.ITest.hello(java.lang.String) with 1 argument(s)\";",
+            "s:122:\"Invoked method public abstract java.lang.Object net.xp_framework.unittest.ITest.hello(java.lang.String) with 1 argument(s)\";",
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,

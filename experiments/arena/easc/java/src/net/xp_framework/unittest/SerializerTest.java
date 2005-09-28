@@ -3,13 +3,13 @@
  * $Id$ 
  */
 
-package net.xp_framework.easc.unittest;
+package net.xp_framework.unittest;
 
 import org.junit.Test;
 import org.junit.Ignore;
-import net.xp_framework.easc.unittest.Person;
-import net.xp_framework.easc.unittest.ITest;
-import net.xp_framework.easc.unittest.NullInvocationHandler;
+import net.xp_framework.unittest.Person;
+import net.xp_framework.unittest.ITest;
+import net.xp_framework.unittest.NullInvocationHandler;
 import net.xp_framework.easc.protocol.standard.Invokeable;
 import java.util.HashMap;
 import java.util.Date;
@@ -239,13 +239,13 @@ public class SerializerTest {
     /**
      * Tests serialization of a value object
      *
-     * @see     net.xp_framework.easc.unittest.Person
+     * @see     net.xp_framework.unittest.Person
      * @access  public
      * @throws  java.lang.Exception
      */
     @Test public void representationOfValueObject() throws Exception {
         assertEquals(
-            "O:37:\"net.xp_framework.easc.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}", 
+            "O:32:\"net.xp_framework.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}", 
             representationOf(new Person())
         );
     }
@@ -358,8 +358,8 @@ public class SerializerTest {
         );
         int offset= serialized.indexOf(':', 52)+ 2;
         assertEquals(
-            "i:0;t:4:{s:4:\"file\";s:19:\"SerializerTest.java\";s:5:\"class\";s:45:\"net.xp_framework.easc.unittest.SerializerTest\";s:6:\"method\";s:19:\"representationOfNPE\";s:4:\"line\";i:",
-            serialized.substring(offset, offset+ 165)
+            "i:0;t:4:{s:4:\"file\";s:19:\"SerializerTest.java\";s:5:\"class\";s:40:\"net.xp_framework.unittest.SerializerTest\";s:6:\"method\";s:19:\"representationOfNPE\";s:4:\"line\";i:",
+            serialized.substring(offset, offset+ 160)
         );
     }
 
@@ -377,8 +377,8 @@ public class SerializerTest {
         );
         int offset= serialized.indexOf(':', 60)+ 2;
         assertEquals(
-            "i:0;t:4:{s:4:\"file\";s:19:\"SerializerTest.java\";s:5:\"class\";s:45:\"net.xp_framework.easc.unittest.SerializerTest\";s:6:\"method\";s:25:\"representationOfException\";s:4:\"line\";i:",
-            serialized.substring(offset, offset+ 171)
+            "i:0;t:4:{s:4:\"file\";s:19:\"SerializerTest.java\";s:5:\"class\";s:40:\"net.xp_framework.unittest.SerializerTest\";s:6:\"method\";s:25:\"representationOfException\";s:4:\"line\";i:",
+            serialized.substring(offset, offset+ 166)
         );
     }    
     
@@ -507,12 +507,12 @@ public class SerializerTest {
      *
      * @access  public
      * @throws  java.lang.Exception
-     * @see     net.xp_framework.easc.unittest.Person
+     * @see     net.xp_framework.unittest.Person
      */
     @Test public void valueOfPersonObject() throws Exception {
         assertEquals(
             new Person(), 
-            valueOf("O:37:\"net.xp_framework.easc.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}")
+            valueOf("O:32:\"net.xp_framework.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}")
         );
     }
 
@@ -536,7 +536,7 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void valueOfArray() throws Exception {
-        Object[] result= (Object[])valueOf("A:2:{O:37:\"net.xp_framework.easc.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}");
+        Object[] result= (Object[])valueOf("A:2:{O:32:\"net.xp_framework.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}");
         assertEquals(new Object[] { new Person(), new String("World") }, result);
     }
 }

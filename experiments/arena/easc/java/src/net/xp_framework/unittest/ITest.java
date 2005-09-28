@@ -3,7 +3,7 @@
  * $Id$
  */
 
-package net.xp_framework.easc.unittest;
+package net.xp_framework.unittest;
 
 /**
  * Test interface

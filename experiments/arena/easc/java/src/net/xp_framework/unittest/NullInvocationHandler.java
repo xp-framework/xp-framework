@@ -3,7 +3,7 @@
  * $Id$
  */
 
-package net.xp_framework.easc.unittest;
+package net.xp_framework.unittest;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 /**
  * Invocation handler that returns "NULL" for any method called on it
  * 
- * @see   net.xp_framework.easc.unittest.SerializerTest#representationOfProxy
+ * @see   net.xp_framework.unittest.SerializerTest#representationOfProxy
  */
 public class NullInvocationHandler implements InvocationHandler {
 

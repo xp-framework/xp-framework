@@ -3,17 +3,17 @@
  * $Id$
  */
 
-package net.xp_framework.easc.unittest;
+package net.xp_framework.unittest;
 
 import java.util.Hashtable;
 import javax.naming.Context;
 import javax.naming.spi.InitialContextFactory;
-import net.xp_framework.easc.unittest.MockContext;
+import net.xp_framework.unittest.MockContext;
 
 /**
  * Mock context factory. Returns a MockContext
  *
- * @see   net.xp_framework.easc.unittest.ServerTest
+ * @see   net.xp_framework.unittest.ServerTest
  */
 public class MockContextFactory implements InitialContextFactory {
 
