@@ -10,6 +10,8 @@ import javax.ejb.SessionBean;
 import javax.ejb.SessionContext;
 import java.rmi.RemoteException;
 
+import net.xp_framework.beans.common.Complex;
+
 /**
  * Calculator demonstration
  *
@@ -49,6 +51,18 @@ public class CalculatorBean implements SessionBean {
     }
 
     /**
+     * Adds two complex numbers
+     *
+     * @ejb.interface-method view-type = "both"
+     * @param   net.xp_framework.beans.common.Complex a
+     * @param   net.xp_framework.beans.common.Complex b
+     * @return  net.xp_framework.beans.common.Complex
+     */
+    public Complex add(Complex a, Complex b) {
+        return Complex.add(a, b);
+    }
+
+    /**
      * Subtracts two floating point numbers 
      *
      * @ejb.interface-method view-type = "both"
@@ -61,8 +75,8 @@ public class CalculatorBean implements SessionBean {
     }
 
     /**
-     * Adds two integers
-     Subtracts
+     * Subtracts two integers
+     *
      * @ejb.interface-method view-type = "both"
      * @param   int a
      * @param   int b
