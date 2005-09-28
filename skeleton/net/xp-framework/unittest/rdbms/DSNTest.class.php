@@ -23,7 +23,7 @@
      */
     function setUp() {
       $this->dsn['sybase']= &new DSN('sybase://sa:password@localhost:1999/CAFFEINE?autoconnect=1');
-      $this->dsn['mysql']= &new DSN('mysql://root@localhost/');
+      $this->dsn['mysql']= &new DSN('mysql://root@localhost/?log=default');
     }
 
     /**
@@ -47,7 +47,7 @@
     #[@test]
     function stringRepresentationWithoutPassword() {
       $this->assertEquals(
-        'rdbms.DSN@(mysql://root@localhost/)',
+        'rdbms.DSN@(mysql://root@localhost/?log=default)',
         $this->dsn['mysql']->toString()
       );
     }
@@ -70,6 +70,16 @@
     #[@test]
     function definedFlags() {
       $this->assertEquals(DB_AUTOCONNECT, $this->dsn['sybase']->getFlags());
+    }
+    
+    /**
+     * Tests the getProperty() method
+     *
+     * @access  public
+     */
+    #[@test]
+    function propertyValue() {
+      $this->assertEquals('default', $this->dsn['mysql']->getProperty('log'));
     }
   }
 ?>
