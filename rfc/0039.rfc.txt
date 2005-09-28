@@ -1,0 +1,88 @@
+RFC 0039: Decode username/password when using parse_url() in framework
+========================================================================
+$Id$
+
+@authors: oliver
+@created: Wed Sep 28 09:12:55 CEST 2005
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+The XP framework use the PHP function parse_url() in several classes to
+get the different parts of an URI. This URI can include a username and
+password part to for specifing access data to special resource. Problem
+is, that the username or password can have special chars (like %) which
+has to be encoded in the URI string to make it "binary safe".
+
+Rationale
+---------
+Usernames or passwords with special characters will not work correctly.
+E.g. passwords using "@" sign doesn't work at the moment because
+parse_url() assumes everything after "@" sign as host name.
+
+Example:
+<?php
+  var_dump(parse_url('ftp://username:passwordwith@sign@hostname/'));
+?>
+
+This example will output the following array:
+<pre>
+array(5) {
+  ["scheme"]=>
+  string(3) "ftp"
+  ["host"]=>
+  string(13) "sign@hostname"
+  ["user"]=>
+  string(8) "username"
+  ["pass"]=>
+  string(12) "passwordwith"
+  ["path"]=>
+  string(1) "/"
+}
+</pre>
+
+Functionality
+-------------
+Instead of parse_url() the URL class should be used. This URL class has
+to be changed to support special characters in username or password
+strings which means that the username and password strings has to be
+decoded using PHP's rawurldecode() function.
+Further each URI string passed to URL class constructor has to encode
+the username and password using rawurlencode() to make it "binary safe".
+
+The following list contains all classes which use parse_url() currently:
+<pre>
+- peer/mail/transport/SmtpTransport.class.php
+- peer/mail/store/CclientStore.class.php
+- peer/ftp/FtpConnection.class.php
+- peer/URL.class.php
+- rdbms/DSN.class.php
+- scriptlet/HttpScriptlet.class.php
+- scriptlet/HttpScriptletRequest.class.php
+- text/apidoc/Reference.class.php
+</pre>
+
+Security considerations
+-----------------------
+(n/a)
+
+Speed impact
+------------
+URL class has to be included in the classes using parse_url() which will
+slight increase the speed of parsing/compiling the source code.
+
+Dependencies
+------------
+
+Related documents
+-----------------
+- RFC3986: Uiform Resource Identifier (URI): Generic Syntax
+  ftp://ftp.rfc-editor.org/in-notes/rfc3986.txt
+
+Comments
+--------
+- oliver, Wed Sep 28 09:35:34 CEST 2005
+  Should we really use URL in each class using parse_url()?
+
+<EOF>
