@@ -40,7 +40,7 @@
       if (isset($this->parts['query'])) {
         parse_str($this->parts['query'], $config);
         foreach ($config as $key => $value) {
-          if (defined('DB_'.strtoupper ($key))) {
+          if (defined('DB_'.strtoupper($key))) {
             if ($value) $this->parts['flags']= $this->parts['flags'] | constant('DB_'.strtoupper($key));
           } else {
             $this->prop[$key]= $value;
@@ -78,7 +78,8 @@
      * @param   string key
      * @param   string defaullt default NULL
      * @return  string value
-     */    
+     */
+    #[@deprecated('Duplicates getProperty()')]
     function getValue($key, $default= NULL) {
       if (!isset($this->parts['query'])) return $default;
       
