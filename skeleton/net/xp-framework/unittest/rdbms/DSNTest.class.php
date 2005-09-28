@@ -24,6 +24,7 @@
     function setUp() {
       $this->dsn['sybase']= &new DSN('sybase://sa:password@localhost:1999/CAFFEINE?autoconnect=1');
       $this->dsn['mysql']= &new DSN('mysql://root@localhost/?log=default');
+      $this->dsn['pgsql']= &new DSN('pgsql://postgres:1433/db?observer[util.log.LogObserver]=default');
     }
 
     /**
@@ -78,8 +79,18 @@
      * @access  public
      */
     #[@test]
-    function propertyValue() {
+    function stringPropertyValue() {
       $this->assertEquals('default', $this->dsn['mysql']->getProperty('log'));
+    }
+
+    /**
+     * Tests the getProperty() method
+     *
+     * @access  public
+     */
+    #[@test]
+    function arrayPropertyValue() {
+      $this->assertEquals(array('util.log.LogObserver' => 'default'), $this->dsn['pgsql']->getProperty('observer'));
     }
   }
 ?>
