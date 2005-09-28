@@ -400,7 +400,7 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void valueOfNull() throws Exception {
-        assertEquals(null, valueOf("N;"));
+        assertNull(valueOf("N;"));
     }
 
     /**
@@ -421,8 +421,8 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void valueOfInteger() throws Exception {
-        assertEquals(6100, (Integer)valueOf("i:6100;"));
-        assertEquals(-6100, (Integer)valueOf("i:-6100;"));
+        assertEquals(Integer.valueOf(6100), (Integer)valueOf("i:6100;"));
+        assertEquals(Integer.valueOf(-6100), (Integer)valueOf("i:-6100;"));
     }
 
     /**
@@ -432,8 +432,8 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void valueOfLong() throws Exception {
-        assertEquals(6100L, (Long)valueOf("l:6100;"));
-        assertEquals(-6100L, (Long)valueOf("l:-6100;"));
+        assertEquals(Long.valueOf(6100L), (Long)valueOf("l:6100;"));
+        assertEquals(Long.valueOf(-6100L), (Long)valueOf("l:-6100;"));
     }
 
     /**
@@ -443,8 +443,8 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void valueOfFloat() throws Exception {
-        assertEquals(0.1f, (Float)valueOf("f:0.1;"), 0.0001);
-        assertEquals(-0.1f, (Float)valueOf("f:-0.1;"), 0.0001);
+        assertEquals(Float.valueOf(0.1f), (Float)valueOf("f:0.1;"), 0.0001);
+        assertEquals(Float.valueOf(-0.1f), (Float)valueOf("f:-0.1;"), 0.0001);
     }
 
     /**
@@ -454,8 +454,8 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void valueOfDouble() throws Exception {
-        assertEquals(0.1d, (Double)valueOf("d:0.1;"), 0.0001);
-        assertEquals(-0.1d, (Double)valueOf("d:-0.1;"), 0.0001);
+        assertEquals(Double.valueOf(0.1d), (Double)valueOf("d:0.1;"), 0.0001);
+        assertEquals(Double.valueOf(-0.1d), (Double)valueOf("d:-0.1;"), 0.0001);
     }
 
     /**
