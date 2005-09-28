@@ -16,7 +16,9 @@ public class Complex implements Serializable {
     protected int imag;
 
     /**
-     * No-arg constructor
+     * No-arg constructor. This must exist for the serializer to be able 
+     * to deserialize objects of this class (Class.forName(....).newInstance()
+     * will throw a java.lang.InstantiationException otherwise).
      *
      * @access  public
      */
