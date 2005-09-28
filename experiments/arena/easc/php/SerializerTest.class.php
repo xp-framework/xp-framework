@@ -230,9 +230,19 @@
       );
     }
     
+    /**
+     * Test deserialization of an integer
+     *
+     * @access  public
+     * @see     xp://Person
+     */
     #[@test]
     function valueOfArrayList() {
-      return Serializer::valueOf("A:2:{O:6:\"Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}");
+      $return= &Serializer::valueOf("A:2:{O:6:\"Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}");
+      $this->assertClass($return, 'wrapper.ArrayList');
+      $this->assertEquals(2, sizeof($return->values));
+      $this->assertEquals(new Person(), $return->values[0]);
+      $this->assertEquals('World', $return->values[1]);
     }
   }
 ?>
