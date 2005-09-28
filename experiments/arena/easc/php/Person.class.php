@@ -54,5 +54,16 @@
     function getName() {
       return $this->name;
     }
+    
+    /**
+     * Checks whether a given object is equal to this person.
+     *
+     * @access  public
+     * @param   &lang.Object cmp
+     * @return  bool
+     */
+    function equals(&$cmp) {
+      return is_a($cmp, 'Person') && $cmp->name == $this->name && $cmp->id == $this->id;
+    }
   }
 ?>
