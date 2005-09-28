@@ -123,19 +123,24 @@
       );
       
       // Details
-      $str.= "\n- Succeeded tests details:\n";
-      foreach (array_keys($this->succeeded) as $key) {
-        $str.= '  * '.$this->succeeded[$key]->toString()."\n";
+      if (!empty($this->succeeded)) {
+        $str.= "\n- Succeeded tests details:\n";
+        foreach (array_keys($this->succeeded) as $key) {
+          $str.= '  * '.$this->succeeded[$key]->toString()."\n";
+        }
       }
-      $str.= "\n- Skipped tests details:\n";
-      foreach (array_keys($this->skipped) as $key) {
-        $str.= '  * '.$this->skipped[$key]->toString()."\n";
+      if (!empty($this->skipped)) {
+        $str.= "\n- Skipped tests details:\n";
+        foreach (array_keys($this->skipped) as $key) {
+          $str.= '  * '.$this->skipped[$key]->toString()."\n";
+        }
       }
-      $str.= "\n- Failed tests details:\n";
-      foreach (array_keys($this->failed) as $key) {
-        $str.= '  * '.$this->failed[$key]->toString()."\n";
+      if (!empty($this->failed)) {
+        $str.= "\n- Failed tests details:\n";
+        foreach (array_keys($this->failed) as $key) {
+          $str.= '  * '.$this->failed[$key]->toString()."\n";
+        }
       }
-      
       return $str.$div."\n";
     }
   }
