@@ -19,10 +19,9 @@ import net.xp_framework.beans.common.Complex;
  *      name="Calculator"
  *      type="Stateless"
  *      view-type="both"
- *      jndi-name="xp/Calculator"
- *		display-name="Calculator Demo"
- * @ejb.util
- *      generate="physical"
+ *      local-jndi-name="xp/demo/Calculator"
+ *      jndi-name="xp/demo/Calculator"
+ *      display-name="Calculator Demo"
  */
 public class CalculatorBean implements SessionBean {
 
