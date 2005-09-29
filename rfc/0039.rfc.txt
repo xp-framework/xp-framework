@@ -69,7 +69,9 @@ listed above):
 - peer/mail/store/Pop3Store.class.php
 - peer/mail/store/MboxStore.class.php
 - peer/mail/store/ImapStore.class.php
+- net/xp-framework/scriptlet/state/LookupState.class.php
 - org/webdav/WebdavScriptlet.class.php
+- scriptlet/xml/XMLScriptlet.class.php
 </pre>
 
 Security considerations
