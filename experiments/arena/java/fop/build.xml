@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ! Buildfile for ant
+ !
+ ! $Id$
+ !-->
+<project default="usage">
+  <property name="build.srcdir" value="src"/>
+  <property name="build.destdir" value="build"/>
+  <property name="build.compiler" value="javac1.5"/>
+
+  <property name="dist.dir" value="dist"/>
+  <property name="dist.resourcesdir" value="resources"/>
+  <property name="dist.name" value="xp-fop"/>
+  <property name="dist.version" value="1.0"/>
+  
+  <path id="classpath.build">
+    <pathelement path="${classpath}"/>
+    <fileset dir="lib">
+      <include name="junit.jar"/>
+      <include name="fop.jar"/>
+      <include name="avalon-framework-cvs-20020806.jar"/>
+    </fileset>
+  </path>
+
+  <path id="classpath.run">
+    <pathelement path="${classpath}"/>
+    <pathelement path="${build.destdir}"/>
+    <fileset dir="lib">
+      <include name="junit.jar"/>
+      <include name="fop.jar"/>
+      <include name="avalon-framework-cvs-20020806.jar"/>
+      <include name="xercesImpl-2.2.1.jar"/>
+    </fileset>
+  </path>
+  
+  <target name="prepare">
+    <mkdir dir="${build.destdir}"/>
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac 
+      srcdir="${build.srcdir}"
+      destdir="${build.destdir}"
+      classpath="${build.classpath}"
+      debug="true"
+    >
+      <classpath refid="classpath.build"/>
+    </javac>
+  </target>
+  
+  <target name="clean">
+    <delete dir="${build.destdir}"/>
+  </target>
+  
+  <target name="usage">
+    <echo>Targets:
+- test
+  Runs all tests
+    </echo>
+  </target>
+
+
+  <!-- All of the above in one -->
+  <target name="test" depends="compile">
+    <echo>===&gt; Running all tests</echo>
+    <java classname="org.junit.runner.JUnitCore">
+      <arg value="net.xp_framework.unittest.PDFCreatorTest"/>
+      <classpath refid="classpath.run"/>
+    </java>
+  </target>
+</project>
