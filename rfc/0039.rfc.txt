@@ -63,6 +63,15 @@ The following list contains all classes which use parse_url() currently:
 - text/apidoc/Reference.class.php
 </pre>
 
+These additional files has to be changed too (depending on the file
+listed above):
+<pre>
+- peer/mail/store/Pop3Store.class.php
+- peer/mail/store/MboxStore.class.php
+- peer/mail/store/ImapStore.class.php
+- org/webdav/WebdavScriptlet.class.php
+</pre>
+
 Security considerations
 -----------------------
 (n/a)
