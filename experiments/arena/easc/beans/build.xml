@@ -11,8 +11,9 @@
   <property name="build.distdir" value="dist"/>
   <property name="build.libdir" value="lib"/>
   <property name="build.compiler" value="javac1.5"/>
-  <property name="xdoclet.dir" location="lib/xdoclet"/>
-
+  <property name="xdoclet.dir" value="lib/xdoclet"/>
+  <property name="jboss.version" value="4.0"/>
+  
   <path id="classpath.build">
     <pathelement path="${classpath}"/>
     <fileset dir="${build.libdir}">
@@ -62,13 +63,19 @@
       <remoteinterface />
       <session/>
       <deploymentdescriptor
-        xmlencoding="ISO-8859-1"
-        destdir="${build.destdir}/META-INF"
-        validatexml="true"
+       xmlencoding="ISO-8859-1"
+       destdir="${build.destdir}/META-INF"
+       validatexml="true"
+      />
+      <jboss 
+       xmlencoding="ISO-8859-1"
+       destdir="${build.destdir}/META-INF" 
+       version="${jboss.version}"
+       validatexml="true"
       />
     </ejbdoclet>
-
     <echo>---&gt; EJB XML file at ${build.destdir}/META-INF/ejb-jar.xml ...</echo>
+    <echo>---&gt; JBoss XML file at ${build.destdir}/META-INF/jboss.xml ...</echo>
   </target>
   
   <target name="compile" depends="generate">
