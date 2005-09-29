@@ -5,7 +5,7 @@
  */
   require('lang.base.php');
   xp::sapi('cli');
-  ini_set('include_path', ini_get('include_path').PATH_SEPARATOR.'../php/');
+  ini_set('include_path', ini_get('include_path').PATH_SEPARATOR.'../php/'.PATH_SEPARATOR.'.');
   uses('Remote', 'util.cmd.ParamString');
 
   // {{{ main
