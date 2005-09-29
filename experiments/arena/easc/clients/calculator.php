@@ -25,7 +25,7 @@ $ php calculator.php <hostname> [-p <port> ] [-j <jndi_name> ]
   * port is the port the XP-MBean is listening on. It defaults to 6448.
   
   * jndi_name is the name of the bean in JNDI. It defaults to 
-    "Calculator"
+    "xp/demo/Calculator"
 __
     );
     exit(1);
@@ -33,7 +33,7 @@ __
   
   try(); {
     $remote= &Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6448).'/');
-    $remote && $home= &$remote->lookup($p->value('jndi', 'j', 'Calculator'));
+    $remote && $home= &$remote->lookup($p->value('jndi', 'j', 'xp/demo/Calculator'));
     $home && $calculator= &$home->create();
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
