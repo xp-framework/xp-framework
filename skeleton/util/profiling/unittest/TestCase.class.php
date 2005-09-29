@@ -319,7 +319,7 @@
       if (!is_a($var, 'Object')) {
         return $this->fail($error, $pattern, $var);
       }
-      if (is($name, $var)) {
+      if (!is($name, $var)) {
         return $this->fail($error, $name, $var->getClassName());
       }
       return TRUE;
