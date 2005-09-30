@@ -72,6 +72,8 @@
   <text for="attendeventhandler#needs_seat">Brauche Mitfahrgelegenheit</text>
   <text for="attendeventhandler#offers_seats">Habe soviele Plätze frei</text>
   <text for="attendeventhandler#form-success">Deine Teilnahmedaten wurden gespeichert.</text>
+  <text for="attendeventhandler#firstname">Vorname</text>
+  <text for="attendeventhandler#lastname">Nachname</text>
   
   <text for="editeventhandler#newevent">Termin-Editor</text>
   <text for="editeventhandler#form-error">Es sind Fehler aufgetreten:</text>
@@ -84,9 +86,9 @@
   <text for="editeventhandler#event_type">Art des Termin</text>
   <text for="editeventhandler#description">Kurzbeschreibung</text>
   <text for="editeventhandler#target_date">Startdatum</text>
-  <text for="editeventhandler#target_time">Startdatum</text>
+  <text for="editeventhandler#target_time">Startdatum (Uhrzeit)</text>
   <text for="editeventhandler#deadline_date">Anmeldeschluss</text>
-  <text for="editeventhandler#deadline_time">Anmeldeschluss</text>
+  <text for="editeventhandler#deadline_time">Anmeldeschluss (Uhrzeit)</text>
   <text for="editeventhandler#max">Maximal:</text>
   <text for="editeventhandler#req">Minimal erforderlich:</text>
   <text for="editeventhandler#guests">Gäste zulassen?</text>
