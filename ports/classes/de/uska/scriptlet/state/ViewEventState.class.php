@@ -68,7 +68,7 @@
             and p.player_type_id= 2
             and a.event_id= %1$d
           order by
-            lastname, firstname
+            player_type_id, lastname, firstname
           ',
           $event->getEvent_id()
         );
