@@ -49,7 +49,7 @@
      */
     function setup(&$request, &$context) {
       if (
-        0 < $this->wrapper->getEvent_id() && ($event= &Event::getByEvent_id($t)
+        $request->hasParam('event_id', 'new') && ($event= &Event::getByEvent_id($request->getParam('event_id')))
       ) {
         $this->setFormValue('event_id', $event->getEvent_id());
         $this->setFormValue('event_type', $event->getEvent_type_id());
@@ -118,9 +118,6 @@
      * @return  boolean
      */
     function handleSubmittedData(&$request, &$context) {
-      $log= &Logger::getInstance();
-      $cat= &$log->getCategory();
-      
       $sane= TRUE;
       switch ($this->getValue('mode')) {
         case 'update':
@@ -136,7 +133,7 @@
           $event= &new Event();
           break;
       }
-      $cat->debug($event);
+
       $event->setName($this->wrapper->getName());
       $event->setDescription($this->wrapper->getDescription());
       $event->setTeam_id($this->wrapper->getTeam());
