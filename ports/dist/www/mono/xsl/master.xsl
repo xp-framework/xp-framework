@@ -14,7 +14,7 @@
   <xsl:output
    method="html"
    encoding="utf-8"
-   indent="no"
+   indent="yes"
   />
   <xsl:param name="__page"/>
   <xsl:param name="__frame"/>

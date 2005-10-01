@@ -27,14 +27,15 @@
       <div id="picture-frame">
         <xsl:call-template name="view-prev-next"/>
         <div id="picture-inner-frame">
-          <xsl:if test="/formresult/navigation/@previous-id != ''">
-            <a href="{func:link(concat('view?', /formresult/navigation/@previous-id))}">
+          <xsl:choose>
+            <xsl:when test="/formresult/navigation/@previous-id != ''">
+              <a href="{func:link(concat('view?', /formresult/navigation/@previous-id))}">
+              </a>
+            </xsl:when>
+            <xsl:otherwise>
               <xsl:call-template name="view-picture"/>
-            </a>
-          </xsl:if>
-          <xsl:if test="/formresult/navigation/@previous-id = ''">
-            <xsl:call-template name="view-picture"/>
-          </xsl:if>
+            </xsl:otherwise>
+          </xsl:choose>
         </div>
         <p id="picture-description">
           <xsl:if test="not(/formresult/description)">
@@ -56,7 +57,7 @@
   <xsl:template name="view-picture">
     <img
      id="picture"
-     src="/shots/{/formresult/navigation/@current-id}/{/formresult/picture/filename}"
+     src="/shots/{/formresult/navigation/@currentid}/{/formresult/picture/filename}"
      width="{/formresult/picture/width}"
      height="{/formresult/picture/height}"
      title="..."

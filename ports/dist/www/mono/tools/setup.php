@@ -10,8 +10,7 @@
     'io.Folder',
     'io.File',
     'io.FileUtil',
-    'de.document-root.mono.MonoCatalog',
-    'de.document-root.mono.MonoNameCatalog'
+    'de.document-root.mono.MonoCatalog'
   );
   
   /// {{{ main
@@ -26,27 +25,18 @@
   
   // Create data folder if not existing
   $folder= &new Folder($datadir);
-  if (!$folder->exists($datadir)) { 
+  if (!$folder->exists($datadir)) {
     Console::writeLine('---> create data folder "'.$datadir.'"');
     $folder->create(); 
   }
   
   // Create index file if not existing
-  $f= &new File($datadir.'/general.idx');
+  $f= &new File($datadir.'/dates.idx');
   if (!$f->exists()) {
     Console::writeLine('---> create index file "'.$f->getURI().'"');
     FileUtil::setContents(
       $f,
       serialize(new MonoCatalog())
-    );
-  }
-  
-  $f= &new File($datadir.'/names.idx');
-  if (!$f->exists()) {
-    Console::writeLine('---> create index file "'.$f->getURI().'"');
-    FileUtil::setContents(
-      $f,
-      serialize(new MonoNameCatalog())
     );
   }
   /// }}}

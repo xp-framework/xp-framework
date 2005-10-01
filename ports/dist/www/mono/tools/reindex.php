@@ -29,10 +29,7 @@
     : dirname(__FILE__).'/../data'
   );
   
-  $catalog= unserialize(FileUtil::getContents(new File($datadir.'/general.idx')));
-  
   $f= &new Folder($shotdir);
-  
   while ($entry= $f->getEntry()) {
     if (
       '.' == $entry{0} ||
@@ -40,8 +37,9 @@
       !is_dir($f->getURI().'/'.$entry)
     ) continue;
     
-    if ($catalog->containsId($entry))
-      continue;
+    // Skip if picture is already indexed
+    $idxfile= &new File($f->getUri().'/'.$entry.'/picture.idx');
+    if ($idxfile->exists()) continue;
     
     // Add picture to index
     try(); {
@@ -58,18 +56,10 @@
       continue;
     }
     
-    $catalog->appendShot($entry);
-    
     // Store MonoPicture in the current directory
     FileUtil::setContents(
-      new File($f->getURI().'/'.$entry.'/picture.idx'),
+      $idxfile,
       serialize($pic)
-    );
-    
-    // Store catalog
-    FileUtil::setContents(
-      new File($datadir.'/general.idx'),
-      serialize($catalog)
     );
     
     Console::writeLine('===> Picture index for directory '.$entry.' created.');

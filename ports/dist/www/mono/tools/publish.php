@@ -9,8 +9,7 @@
     'io.File',
     'io.FileUtil',
     'util.PropertyManager',
-    'de.document-root.mono.MonoCatalog',
-    'de.document-root.mono.MonoPictureScanner'
+    'de.document-root.mono.MonoCatalog'
   );
   
   /// {{{ main
@@ -29,7 +28,12 @@
     : dirname(__FILE__).'/../data'
   );
   
-  $cFile= &new File($datadir.'/general.idx');
+  $date= ($p->exists('date') 
+    ? $p->value('date') 
+    : date('Y/m/d')
+  );
+  
+  $cFile= &new File($datadir.'/dates.idx');
   try(); {
    $cFile->open(FILE_MODE_READWRITE);
    $cFile->lockExclusive();
@@ -40,30 +44,50 @@
   
   $catalog= unserialize($cFile->read($cFile->size()));
 
-  // Find out "next" item to publish
-  $id= $catalog->getLast_id() + 1;
+  if (!is('de.document-root.mono.MonoCatalog', $catalog)) {
+    Console::writeLine('!==> Index file corrupt.');
+    exit(-1);
+  }
 
-  // If that one has already been published, try to find next
-  // Is that a good idea not to rely on our index?
+  // Find out "next" item to publish
+  $id= $catalog->getCurrent_id();
+  $id && Console::writeLine('---> Current shot is #'.$id.' ('.$catalog->dateFor($id).')');
+  
+  // Begin with first picture...
+  $id= 1;
+
+  // If that one has not been indexed, try to find next
   while (
-    $pFile= &new File($shotdir.'/'.$id.'/published') &&
-    $pFile->exists()
+    ($pFile= &new File($shotdir.'/'.$id.'/picture.idx')) &&
+    (!$pFile->exists() || $catalog->hasId($id))
   ) {
-    Console::writeLine('!--> Picture '.$id.' already published, fetching next.');
+    if (!$pFile->exists()) { Console::writeLine('!--> Shot #'.$id.' not yet indexed, skipping.'); }
+    if ($catalog->hasId($id)) { Console::writeLine('---> Shot #'.$id.' already published, skipping'); }
     $id++;
+  }
+  
+  if (!$pFile->exists()) {
+    Console::writeLine('!--> No new publishable shots found.');
+    exit(0);
   }
   
   // Perform check
   try(); {
     $pic= unserialize(FileUtil::getContents(new File($shotdir.'/'.$id.'/picture.idx')));
   } if (catch('IOException', $e)) {
-    Console::writeLine('!==> Picture '.$id.' has not been indexed, yet.');
+    Console::writeLine('!==> Shot #'.$id.' has not been indexed, yet.');
     exit(-1);
   }
   
   // Checks ok, increase counter and "publish" directory.
-  $catalog->setLast_id($id);
-  $pFile->touch();
+  try(); {
+    Console::writeLine('===> Adding shot #'.$id.' with date '.$date);
+    $catalog->addShot($id, $date);
+    $catalog->setCurrent_id($id);
+  } if (catch('Exception', $e)) {
+    $e->printStackTrace();
+    exit(-1);
+  }
   
   try(); {
     $cFile->truncate();
