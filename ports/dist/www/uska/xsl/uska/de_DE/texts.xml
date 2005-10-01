@@ -80,6 +80,7 @@
   <text for="editeventhandler#error-event_type-scriptlet.xml.workflow.casters.ToInteger.invalidcast">Ungültiger Wert für Terminart</text>
   <text for="editeventhandler#error-name-scriptlet.xml.workflow.checkers.LengthChecker.tooshort">Die Bezeichnung des Termins muss länger sein.</text>
   <text for="editeventhandler#error-name-missing">Sie müssen eine Bezeichnung für den Termin eingeben (z.B. "Training").</text>
+  <text for="editeventhandler#form-success">Der Termin wurde erfolgreich angelegt.</text>
 
   <text for="editeventhandler#name">Name</text>
   <text for="editeventhandler#team">Team</text>

@@ -36,8 +36,7 @@
      * @return  string
      */
     function identifierFor(&$request, &$context) {
-      $id= (intVal($request->getQueryString()) ? intVal($request->getQueryString()) : 'new');
-      return $this->name.'.'.$id;
+      return $this->name.'.'.$request->getParam('event_id', 'new');
     }
 
     /**
@@ -50,8 +49,7 @@
      */
     function setup(&$request, &$context) {
       if (
-        strlen($request->getQueryString()) &&
-        ($event= &Event::getByEvent_id($request->getQueryString()))
+        0 < $this->wrapper->getEvent_id() && ($event= &Event::getByEvent_id($t)
       ) {
         $this->setFormValue('event_id', $event->getEvent_id());
         $this->setFormValue('event_type', $event->getEvent_type_id());
@@ -120,6 +118,9 @@
      * @return  boolean
      */
     function handleSubmittedData(&$request, &$context) {
+      $log= &Logger::getInstance();
+      $cat= &$log->getCategory();
+      
       $sane= TRUE;
       switch ($this->getValue('mode')) {
         case 'update':
@@ -135,6 +136,7 @@
           $event= &new Event();
           break;
       }
+      $cat->debug($event);
       $event->setName($this->wrapper->getName());
       $event->setDescription($this->wrapper->getDescription());
       $event->setTeam_id($this->wrapper->getTeam());
@@ -201,10 +203,17 @@
       if (!$sane) return FALSE;
       
       try(); {
-        if ($event->getEvent_id() > 0) { 
-          $event->update(); 
-        } else {
-          $event->insert();
+        switch ($this->getValue('mode')) {
+          case 'update': {
+            $event->update();
+            break;
+          }
+          
+          case 'create':
+          default: {
+            $event->insert();
+            break;
+          }
         }
       } if (catch('SQLException', $e)) {
         return throw($e);

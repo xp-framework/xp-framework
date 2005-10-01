@@ -44,7 +44,7 @@
         <h3>
           <a href="{func:link(concat('event/view?', event_id))}"><xsl:value-of select="name"/> (<xsl:value-of select="func:time(target_date)"/>)</a>
           <xsl:if test="'' != func:hasPermission('create_event')">
-            - <a href="{func:link(concat('event/edit?', event_id))}">(editieren)</a>
+            - <a href="{func:link(concat('event/edit?event_id=', event_id))}">(editieren)</a>
           </xsl:if>
         </h3>
         <xsl:if test="description != ''"><xsl:value-of select="description"/><br/></xsl:if>

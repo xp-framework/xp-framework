@@ -21,6 +21,7 @@
   <xsl:template name="content">
     <form method="post" action="{func:link($__state)}">
     <input type="hidden" name="__handler" value="{/formresult/handlers/handler[@name= 'editeventhandler']/@id}"/>
+    <input type="hidden" name="event_id" value="{/formresult/formvalues/param[@name= 'event_id']}"/>
     <xsl:variable name="status" select="/formresult/handlers/handler[@name= 'editeventhandler']/@status"/>
 
     <xsl:copy-of select="func:display_wizard_error('editeventhandler')"/>
