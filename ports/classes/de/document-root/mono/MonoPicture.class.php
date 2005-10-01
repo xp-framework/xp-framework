@@ -22,7 +22,7 @@
       $exif             = NULL,
       $width            = 0,
       $height           = 0,
-      $publishedAt      = NULL;
+      $title            = '';
 
     /**
      * Set Filename
@@ -42,6 +42,26 @@
      */
     function getFilename() {
       return $this->filename;
+    }
+
+    /**
+     * Set Title
+     *
+     * @access  public
+     * @param   string title
+     */
+    function setTitle($title) {
+      $this->title= $title;
+    }
+
+    /**
+     * Get Title
+     *
+     * @access  public
+     * @return  string
+     */
+    function getTitle() {
+      return $this->title;
     }
 
     /**
@@ -103,26 +123,5 @@
     function getHeight() {
       return $this->height;
     }
-
-    /**
-     * Set PublishedAt
-     *
-     * @access  public
-     * @param   &lang.Object publishedAt
-     */
-    function setPublishedAt(&$publishedAt) {
-      $this->publishedAt= &$publishedAt;
-    }
-
-    /**
-     * Get PublishedAt
-     *
-     * @access  public
-     * @return  &lang.Object
-     */
-    function &getPublishedAt() {
-      return $this->publishedAt;
-    }
-
   }
 ?>

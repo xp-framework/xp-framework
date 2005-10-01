@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('lang.ElementNotFoundException');
+
   /**
    * (Insert class' description here)
    *
@@ -13,70 +15,10 @@
    */
   class MonoCatalog extends Object {
     var
-      $creator      = '',
-      $name         = '',
-      $sequence     = array(),
-      $last_id      = 0;
-
-    /**
-     * Set Creator
-     *
-     * @access  public
-     * @param   string creator
-     */
-    function setCreator($creator) {
-      $this->creator= $creator;
-    }
-
-    /**
-     * Get Creator
-     *
-     * @access  public
-     * @return  string
-     */
-    function getCreator() {
-      return $this->creator;
-    }
-
-    /**
-     * Set Name
-     *
-     * @access  public
-     * @param   string name
-     */
-    function setName($name) {
-      $this->name= $name;
-    }
-
-    /**
-     * Get Name
-     *
-     * @access  public
-     * @return  string
-     */
-    function getName() {
-      return $this->name;
-    }
-
-    /**
-     * Set Sequence
-     *
-     * @access  public
-     * @param   mixed[] sequence
-     */
-    function setSequence($sequence) {
-      $this->sequence= $sequence;
-    }
-
-    /**
-     * Get Sequence
-     *
-     * @access  public
-     * @return  mixed[]
-     */
-    function getSequence() {
-      return $this->sequence;
-    }
+      $current_id       = NULL,
+      $last_id          = NULL,
+      $sequence         = array(),
+      $sequenceReverse  = array();      
 
     /**
      * Set Last_id
@@ -86,6 +28,26 @@
      */
     function setLast_id($last_id) {
       $this->last_id= $last_id;
+    }
+
+    /**
+     * Set Current_id
+     *
+     * @access  public
+     * @param   &lang.Object current_id
+     */
+    function setCurrent_id(&$current_id) {
+      $this->current_id= &$current_id;
+    }
+
+    /**
+     * Get Current_id
+     *
+     * @access  public
+     * @return  &lang.Object
+     */
+    function &getCurrent_id() {
+      return $this->current_id;
     }
 
     /**
@@ -105,8 +67,8 @@
      * @param   
      * @return  
      */
-    function containsId($id) {
-      return in_array($id, $this->sequence);
+    function hasId($id) {
+      return isset($this->sequence[$id]);
     }
     
     /**
@@ -116,14 +78,78 @@
      * @param   
      * @return  
      */
-    function appendShot($id) {
-      if ($this->containsId($id)) {
+    function dateExists($date) {
+      return isset($this->sequenceReverse[$date]);
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function idFor($date) {
+      if (isset($this->sequenceReverse[$date])) return $this->sequenceReverse[$date];
+      return throw(new ElementNotFoundException('No shot for date '.$date));
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function dateFor($id) {
+      if (isset($this->sequence[$id])) return $this->sequence[$id];
+      return throw(new ElementNotFoundException('No such id: '.$id));
+    }    
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function getPredecessorDate() {
+      // XXX TBI
+    }    
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function getSuccessorDate() {
+      // XXX TBI
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function addShot($id, $date) {
+      if ($this->dateExists($date) || $this->hasId($id)) {
         return throw(new IllegalStateException(
-          'Shot '.$id.' already registered in this album.'
+          'Shot '.$id.' or date '.$date.' already registered in this album.'
+        ));
+      }
+      
+      if (3 != sscanf($date, '%4d/%2d/%2d', $year, $month, $day)) {
+        return throw(new IllegalArgumentException(
+          'Invalid date format, format must be yyyy/mm/dd.'
         ));
       }
 
-      $this->sequence[]= $id;
+      $this->sequence[$id]= $date;
+      $this->sequenceReverse[$date]= $id;
     }
   }
 ?>

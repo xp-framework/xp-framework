@@ -9,7 +9,6 @@
     'io.FileUtil',
     'util.Date',
     'de.document-root.mono.MonoCatalog',
-    'de.document-root.mono.MonoNameCatalog',
     'de.document-root.mono.MonoPicture'
   );
 
@@ -47,7 +46,7 @@
       if (NULL === $catalog) {
         try(); {
           $catalog= unserialize(FileUtil::getContents(
-            new File(sprintf('%s/../data/general.idx', 
+            new File(sprintf('%s/../data/dates.idx', 
               rtrim($_SERVER['DOCUMENT_ROOT'], '/'))
           )));
         } if (catch('IOException', $e)) {
@@ -65,33 +64,9 @@
      * @param   
      * @return  
      */
-    function &_getNameCatalog() {
-      static $namecatalog= NULL;
-      
-      if (NULL === $namecatalog) {
-        try(); {
-          $namecatalog= unserialize(FileUtil::getContents(
-            new File(sprintf('%s/../data/names.idx', 
-              rtrim($_SERVER['DOCUMENT_ROOT'], '/'))
-          )));
-        } if (catch('IOException', $e)) {
-          return throw($e);
-        }
-      }
-      
-      return $namecatalog;
-    }
-
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
     function getLast_id() {
       $catalog= &$this->_getCatalog();
-      return $catalog->getLast_id();
+      return $catalog->getCurrent_id();
     }
     
     /**
@@ -114,20 +89,6 @@
       
       return $picture;
     }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function isPublished($id) {
-      return file_exists(sprintf('%s/shots/%d/published',
-        rtrim($_SERVER['DOCUMENT_ROOT'], '/'),
-        $id
-      ));
-    }    
     
     /**
      * (Insert method's description here)

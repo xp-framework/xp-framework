@@ -14,6 +14,32 @@
    * @purpose  purpose
    */
   class ViewState extends AbstractMonoState {
+    var
+      $date=    '',
+      $id=      0;
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function fetchShotRequest(&$request) {
+    
+      // Get date from environment
+      $this->date= $request->getEnvValue('IMAGEDATE');
+      if (3 != sscanf($this->date, '%4d/%2d/%2d', $y, $m, $d)) {
+        return throw(new IllegalArgumentException(
+          'Non well-formed date given.'
+        ));
+      }
+      
+      // Fetch ID for this date
+      $catalog= &$this->_getCatalog();
+      $this->id= $catalog->getCurrent_id();
+      if ($catalog->dateExists($this->date)) $this->id= $catalog->idFor($this->date);
+    }
 
     /**
      * (Insert method's description here)
@@ -24,19 +50,15 @@
      */
     function process(&$request, &$response, &$context) {
       parent::process($request, $response, $context);
-      
-      // Find out which still to show
-      if (1 != sscanf($request->getQueryString(), '%d', $id)) {
-        $id= $this->getLast_id();
-      }
-      
+      $this->fetchShotRequest($request);
+
       // Prevent adding nonexistant or non-published pictures
-      if (!$id || !$this->isPublished($id)) { return TRUE; }
+      if (!$this->id ) { return TRUE; }
       
       try(); {
-        $picture= &$this->getPictureById($id);
-        $description= &$this->getPictureDescriptionById($id);
-        $comments= &$this->getPictureCommentsById($id);
+        $picture= &$this->getPictureById($this->id);
+        $description= &$this->getPictureDescriptionById($this->id);
+        $comments= &$this->getPictureCommentsById($this->id);
       } if (catch('Exception', $e)) {
         return throw($e);
       }
@@ -46,9 +68,10 @@
       $comments && $response->addFormResult(Node::fromArray($comments, 'comments'));
       
       $response->addFormResult(new Node('navigation', NULL, array(
-        'current-id'  => $id,
-        'previous-id' => ($id > 1 ? $id - 1 : ''),
-        'next-id'     => ($this->isPublished($id + 1) ? $id + 1 : '')
+        'current'   => $this->date,
+        'currentid' => $this->id,
+        'nextdate'  => '',
+        'prevdate'  => ''
       )));
 
       
