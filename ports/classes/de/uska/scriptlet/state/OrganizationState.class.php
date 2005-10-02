@@ -22,7 +22,7 @@
      */
     function getParentCategory(&$request) {
       switch ($request->getQueryString()) {
-        case 'applications': return 3;
+        case 'application': return 3;
         case 'imprint': return 5;
         case 'contact': return 6;
         default: return 4;
@@ -54,7 +54,7 @@
           serendipity_entrycat matrix,
           serendipity_category category
         where
-          (category.parentid = %1$d or category.categoryid = %1$d)
+          category.categoryid = %1$d
           and entry.isdraft = "false"
           and entry.id = matrix.entryid
           and matrix.categoryid = category.categoryid
