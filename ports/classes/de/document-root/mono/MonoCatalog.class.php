@@ -113,9 +113,14 @@
      * @param   
      * @return  
      */
-    function getPredecessorDate() {
-      // XXX TBI
-    }    
+    function getPredecessorDate($date) {
+      if (!$this->dateExists($date)) return FALSE;
+      
+      end($this->sequence);
+      while (current($this->sequence) != $date) prev($this->sequence);
+      prev($this->sequence);
+      return current($this->sequence);
+    }
     
     /**
      * (Insert method's description here)
@@ -124,9 +129,29 @@
      * @param   
      * @return  
      */
-    function getSuccessorDate() {
-      // XXX TBI
+    function getSuccessorDate($date) {
+      if (!$this->dateExists($date)) return FALSE;
+      
+      end($this->sequence);
+      
+      // Bordercase: given date is the last one
+      if (current($this->sequence) == $date) return FALSE;
+      
+      while (current($this->sequence) != $date) prev($this->sequence);
+      next($this->sequence);
+      return current($this->sequence);
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function getLatestDate() {
+      return $this->dateFor($this->getCurrent_id());
+    }    
     
     /**
      * (Insert method's description here)

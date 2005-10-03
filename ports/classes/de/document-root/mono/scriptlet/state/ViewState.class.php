@@ -26,9 +26,14 @@
      * @return  
      */
     function fetchShotRequest(&$request) {
+      $catalog= &$this->_getCatalog();
     
+      // Initialize to latest shot by default
+      $this->date= $catalog->getLatestDate();
+      $this->id= $catalog->getCurrent_id();
+
       // Get date from environment
-      $this->date= $request->getEnvValue('IMAGEDATE');
+      strlen($request->getEnvValue('IMAGEDATE')) && $this->date= $request->getEnvValue('IMAGEDATE');
       if (3 != sscanf($this->date, '%4d/%2d/%2d', $y, $m, $d)) {
         return throw(new IllegalArgumentException(
           'Non well-formed date given.'
@@ -36,8 +41,6 @@
       }
       
       // Fetch ID for this date
-      $catalog= &$this->_getCatalog();
-      $this->id= $catalog->getCurrent_id();
       if ($catalog->dateExists($this->date)) $this->id= $catalog->idFor($this->date);
     }
 
@@ -63,15 +66,18 @@
         return throw($e);
       }
       
+      $catalog= &$this->_getCatalog();
+      
       $response->addFormResult(Node::fromObject($picture, 'picture'));
       $description && $response->addFormResult(new Node('description', new PCData($description)));
       $comments && $response->addFormResult(Node::fromArray($comments, 'comments'));
       
       $response->addFormResult(new Node('navigation', NULL, array(
-        'current'   => $this->date,
-        'currentid' => $this->id,
-        'nextdate'  => '',
-        'prevdate'  => ''
+        'current'     => $this->date,
+        'currentid'   => $this->id,
+        'latestdate'  => $catalog->getLatestDate(),
+        'nextdate'    => $catalog->getSuccessorDate($this->date),
+        'prevdate'    => $catalog->getPredecessorDate($this->date)
       )));
 
       
