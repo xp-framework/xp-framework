@@ -46,6 +46,9 @@
       $scanner= &new MonoPictureScanner();
       $scanner->setPath($f->getURI().'/'.$entry);
       $pic= &$scanner->create();
+    } if (catch('MonoPictureScannerException', $e)) {
+      Console::writeLine('Shot #'.$entry.': '.$e->getMessage());
+      continue;
     } if (catch('Exception', $e)) {
       $e->printStackTrace();
       exit(-1);
