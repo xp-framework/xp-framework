@@ -11,15 +11,21 @@
  xmlns:func="http://exslt.org/functions"
  extension-element-prefixes="func"
 >
-  <xsl:include href="layout.xsl"/>
+  <xsl:import href="layout.xsl"/>
+  <xsl:include href="../date.inc.xsl"/>
+
+  <xsl:template name="page-title">
+    <xsl:value-of select="/formresult/picture/title"/> - <xsl:value-of select="/formresult/config/general/site"/>
+  </xsl:template>
 
   <xsl:template name="contents">
     <div id="container">
       <div id="header">
         <!-- ... -->
         <div id="header-nav">
-          <a href="{func:link('view')}">today</a> |
+          <a href="/{/formresult/navigation/@latestdate}">latest</a> |
           <a href="{func:link('about')}">about</a> |
+          <a href="{func:link('search')}">search</a> |
           <a href="{func:link('links')}">links</a>
         </div>
       </div>
@@ -28,8 +34,9 @@
         <xsl:call-template name="view-prev-next"/>
         <div id="picture-inner-frame">
           <xsl:choose>
-            <xsl:when test="/formresult/navigation/@previous-id != ''">
-              <a href="{func:link(concat('view?', /formresult/navigation/@previous-id))}">
+            <xsl:when test="/formresult/navigation/@prevdate != ''">
+              <a href="/{/formresult/navigation/@prevdate}">
+                <xsl:call-template name="view-picture"/>
               </a>
             </xsl:when>
             <xsl:otherwise>
@@ -37,6 +44,9 @@
             </xsl:otherwise>
           </xsl:choose>
         </div>
+        <p id="picture-information">
+          <xsl:apply-templates select="/formresult/picture/exif"/>
+        </p>
         <p id="picture-description">
           <xsl:if test="not(/formresult/description)">
             There is no description for this picture
@@ -60,24 +70,32 @@
      src="/shots/{/formresult/navigation/@currentid}/{/formresult/picture/filename}"
      width="{/formresult/picture/width}"
      height="{/formresult/picture/height}"
-     title="..."
     />
+  </xsl:template>
+  
+  <xsl:template match="exif">
+    <xsl:value-of select="model"/> | 
+    <xsl:value-of select="apertureFNumber"/> |
+    <xsl:value-of select="exposureTime"/>s | 
+    iso <xsl:value-of select="isoSpeedRatings"/> |
+    <xsl:value-of select="func:datetime(dateTime)"/>
   </xsl:template>
   
   <xsl:template name="view-prev-next">
     <!-- Link to previous picture -->
     <div id="prev-next">
-      <xsl:if test="/formresult/navigation/@previous-id != ''">
-        <a href="{func:link(concat('view?', /formresult/navigation/@previous-id))}">
-          &lt;&lt; day before
-        </a>
-      </xsl:if>
+      <a>
+        <xsl:if test="/formresult/navigation/@prevdate = ''"><xsl:attribute name="class">link_disabled</xsl:attribute></xsl:if>
+        <xsl:if test="/formresult/navigation/@prevdate != ''"><xsl:attribute name="href">/<xsl:value-of select="/formresult/navigation/@prevdate"/></xsl:attribute></xsl:if>
+        &#171; day before
+      </a>
+      &#160;|&#160;
       <!-- Link to next picture -->
-      <xsl:if test="/formresult/navigation/@next-id != ''">
-        <a href="{func:link(concat('view?', /formresult/navigation/@next-id))}">
-         | day after &gt;&gt;
-        </a>
-      </xsl:if>
+      <a>
+        <xsl:if test="/formresult/navigation/@nextdate = ''"><xsl:attribute name="class">link_disabled</xsl:attribute></xsl:if>
+        <xsl:if test="/formresult/navigation/@nextdate != ''"><xsl:attribute name="href">/<xsl:value-of select="/formresult/navigation/@nextdate"/></xsl:attribute></xsl:if>
+        day after &#187;
+      </a>
     </div>
   </xsl:template>
 </xsl:stylesheet>

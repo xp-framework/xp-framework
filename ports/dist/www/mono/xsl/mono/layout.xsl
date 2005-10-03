@@ -17,10 +17,14 @@
   />
   <xsl:include href="../master.xsl"/>
 
+  <xsl:template name="page-title">
+    <xsl:value-of select="/formresult/config/general/site"/>  
+  </xsl:template>
+
   <xsl:template match="/">
     <html>
       <head>
-        <title><xsl:value-of select="/formresult/config/general/site"/></title>
+        <title><xsl:call-template name="page-title"/></title>
         <link rel="stylesheet" href="/style/{/formresult/config/general/style}.css"/>
       </head>
       <body>
