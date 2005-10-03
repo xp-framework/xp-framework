@@ -6,11 +6,10 @@
 body {
   background-color: white;
   color: #000000;
-  font-family: Tahoma,Arial,Helvetica;
+  font-family:verdana, arial, sans-serif;
   font-size: 10pt;
   padding: 0px;
   margin: 0 auto;
-
 }
 
 p {
@@ -43,7 +42,7 @@ p {
 }
 
 #picture-inner-frame {
-  border: 1px solid #efefef;
+  /* border: 1px solid #efefef; */
   text-align: center;
 }
 
@@ -54,10 +53,34 @@ p {
   border: 1px solid black;
 }
 
+#prev-next {
+  font-family:verdana, arial, sans-serif;
+  font-size: small;
+  margin-bottom: 15px;
+  border-top: 1px dashed black;
+}
+
 #prev-next a {
+  color: gray;
   text-align: right;
   font-style: normal;
   text-decoration: none;
   font-weight: bold;
   font-size: 8pt;
+}
+
+#prev-next a:visited {
+  color: gray;
+}
+
+#prev-next .link_disabled {
+  color: #cccccc;
+}
+
+#picture-description {
+  font-size: x-small;
+}
+
+#picture-information {
+  font-size: x-small;
 }
