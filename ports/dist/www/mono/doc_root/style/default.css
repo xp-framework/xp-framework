@@ -53,11 +53,24 @@ p {
   border: 1px solid black;
 }
 
-#prev-next {
+#picture-head {
+  border-top: 1px dashed black;
+}
+
+#picture-title {
+  float: right;
   font-family:verdana, arial, sans-serif;
   font-size: small;
+  font-weight: bold;
+  font-size: 8pt;
+  color: gray;
+}
+
+#prev-next {
+  font-family:verdana, arial, sans-serif;
+  font-size: x-small;
   margin-bottom: 15px;
-  border-top: 1px dashed black;
+  float: left;
 }
 
 #prev-next a {
@@ -75,6 +88,23 @@ p {
 
 #prev-next .link_disabled {
   color: #cccccc;
+}
+
+#picture-bottom {
+  border-top: 1px dashed black;
+}
+
+#picture-comment {
+  float: right;
+}
+
+#picture-comment a {
+  font-family:verdana, arial, sans-serif;
+  font-size: small;
+  font-weight: bold;
+  font-size: 8pt;
+  color: gray;
+
 }
 
 #picture-description {

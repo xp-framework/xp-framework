@@ -32,7 +32,12 @@
       </div>
       
       <div id="picture-frame">
-        <xsl:call-template name="view-prev-next"/>
+        <div id="picture-head">
+          <xsl:call-template name="view-prev-next"/>
+          <div id="picture-title">
+            <xsl:value-of select="/formresult/picture/title"/> | <xsl:value-of select="func:date(/formresult/navigation/date)"/>
+          </div>
+        </div>
         <div id="picture-inner-frame">
           <xsl:choose>
             <xsl:when test="/formresult/navigation/@prevdate != ''">
@@ -60,7 +65,12 @@
             />
           </xsl:if>
         </p>
-        <xsl:call-template name="view-prev-next"/>
+        <div id="picture-bottom">
+          <xsl:call-template name="view-prev-next"/>
+          <div id="picture-comment">
+            <a href="{func:link(concat('comment/add?shot=', /formresult/navigation/@currentid))}">comments</a>
+          </div>
+        </div>
       </div>
     </div>
   </xsl:template>
