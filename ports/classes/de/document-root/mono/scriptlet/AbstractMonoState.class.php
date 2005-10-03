@@ -97,29 +97,6 @@
      * @param   
      * @return  
      */
-    function &getPictureDescriptionById($id) {
-      $f= &new File(sprintf('%s/shots/%d/description.txt',
-        rtrim($_SERVER['DOCUMENT_ROOT'], '/'),
-        $id
-      ));
-      if (!$f->exists()) return NULL;
-
-      try(); {
-        $description= FileUtil::getContents($f);
-      } if (catch('IOException', $e)) {
-        return throw($e);
-      }
-      
-      return $description;
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
     function &getPictureCommentsById($id) {
       $f= &new File(sprintf('%s/../data/%d/comments.dat',
         rtrim($_SERVER['DOCUMENT_ROOT'], '/'),

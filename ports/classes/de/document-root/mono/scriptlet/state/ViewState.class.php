@@ -60,7 +60,6 @@
       
       try(); {
         $picture= &$this->getPictureById($this->id);
-        $description= &$this->getPictureDescriptionById($this->id);
         $comments= &$this->getPictureCommentsById($this->id);
       } if (catch('Exception', $e)) {
         return throw($e);
@@ -70,16 +69,16 @@
       
       // $response->addFormResult(Node::fromObject($picture, 'picture'));
       $response->addFormResult($picture->toXML());
-      $description && $response->addFormResult(new Node('description', new PCData($description)));
       $comments && $response->addFormResult(Node::fromArray($comments, 'comments'));
       
-      $response->addFormResult(new Node('navigation', NULL, array(
+      $n= &$response->addFormResult(new Node('navigation', NULL, array(
         'current'     => $this->date,
         'currentid'   => $this->id,
         'latestdate'  => $catalog->getLatestDate(),
         'nextdate'    => $catalog->getSuccessorDate($this->date),
         'prevdate'    => $catalog->getPredecessorDate($this->date)
       )));
+      $n->addChild(Node::fromObject(new Date($this->date), 'date'));
 
       
       return TRUE;
