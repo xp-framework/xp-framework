@@ -10,11 +10,9 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Represent a mono picture.
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Mono Picture
    */
   class MonoPicture extends Object {
     var
@@ -151,7 +149,7 @@
      * @access  public
      * @return  &xml.Node
      */
-    function toXML() {
+    function &toXML() {
       with ($n= &new Node('picture')); {
         $n->addChild(new Node('width', $this->width));
         $n->addChild(new Node('height', $this->height));

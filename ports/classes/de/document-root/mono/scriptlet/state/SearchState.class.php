@@ -7,20 +7,19 @@
   uses('de.document-root.mono.scriptlet.AbstractMonoState');
 
   /**
-   * (Insert class' description here)
+   * Search state.
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Search the site.
    */
   class SearchState extends AbstractMonoState {
 
     /**
-     * (Insert method's description here)
+     * Process this state.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @param   &scriptlet.xml.Context context
      */
     function process(&$request, &$response, &$context) {
       parent::process($request, $response, $context);

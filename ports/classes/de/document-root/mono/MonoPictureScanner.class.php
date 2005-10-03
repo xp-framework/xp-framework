@@ -14,33 +14,34 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Scan a directory for a mono shot and create a
+   * MonoPicture object for it.
    *
-   * @ext      extension
-   * @see      reference
+   * @see      xp://de.document-root.mono.MonoPicture
    * @purpose  purpose
    */
   class MonoPictureScanner extends Object {
     
     /**
-     * (Insert method's description here)
+     * Sets the path to scan
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string path
      */
     function setPath($path) {
       $this->path= $path;
     }
 
     /**
-     * (Insert method's description here)
+     * Create a MonoPicture object from the directory. Performs all
+     * necessary validity checks and refuses to build object if one
+     * check fails.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  &de.document-root.mono.MonoPicture
+     * @throws  &de.document-root.mono.MonoPictureScannerException if any check fails
      */
-    function create() {
+    function &create() {
       $shotf= &new Folder($this->path);
 
       $filename= NULL;

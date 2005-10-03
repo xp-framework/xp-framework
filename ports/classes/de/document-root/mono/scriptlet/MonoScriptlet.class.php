@@ -12,7 +12,7 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Mono Scriptlet.
    *
    * @ext      extension
    * @see      reference
@@ -21,11 +21,10 @@
   class MonoScriptlet extends AbstractXMLScriptlet {
 
     /**
-     * (Insert method's description here)
+     * Create processor object
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @return  &xml.DomXSLProcessor
      */
     function &_processor() {
       $p= &new DomXSLProcessor();
@@ -33,11 +32,11 @@
     }
       
     /**
-     * (Insert method's description here)
+     * Sets the stylesheet path.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   &scriptlet.xml.XMLScriptletRequest request
+     * @param   &scriptlet.xml.XMLScriptletResponse response
      */
     function _setStylesheet(&$request, &$response) {
       $response->setStylesheet(sprintf(
@@ -48,11 +47,14 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Handles the doCreate()-request. This request will only
+     * occur when the site is being opened without the rewrite
+     * rule for default access.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &scriptlet.xml.XMLScriptletRequest request
+     * @param   &scriptlet.xml.XMLScriptletResponse response
+     * @return  bool
      */
     function doCreate(&$request, &$response) {
     

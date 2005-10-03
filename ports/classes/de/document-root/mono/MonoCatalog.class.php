@@ -7,11 +7,10 @@
   uses('lang.ElementNotFoundException');
 
   /**
-   * (Insert class' description here)
+   * Represent a catalog of MonoPictures and their
+   * associated dates and ids.
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Catalog
    */
   class MonoCatalog extends Object {
     var
@@ -61,33 +60,34 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Checks whether a shot for the id exists.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   int it
+     * @return  bool
      */
     function hasId($id) {
       return isset($this->sequence[$id]);
     }
     
     /**
-     * (Insert method's description here)
+     * Checks whether a shot for the date exists.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string date
+     * @return  bool
      */
     function dateExists($date) {
       return isset($this->sequenceReverse[$date]);
     }
     
     /**
-     * (Insert method's description here)
+     * Get id for date.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string date
+     * @return  int id
+     * @throws  lang.ElementNotFoundException if no such date exists
      */
     function idFor($date) {
       if (isset($this->sequenceReverse[$date])) return $this->sequenceReverse[$date];
@@ -95,11 +95,12 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Get date for id.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   int id
+     * @return  string date
+     * @throws  lang.ElementNotFoundException if no such date exists
      */
     function dateFor($id) {
       if (isset($this->sequence[$id])) return $this->sequence[$id];
@@ -107,11 +108,11 @@
     }    
     
     /**
-     * (Insert method's description here)
+     * Get previous date for the date
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string date
+     * @return  string date
      */
     function getPredecessorDate($date) {
       if (!$this->dateExists($date)) return FALSE;
@@ -123,11 +124,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Get next date for the date
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string date
+     * @return  string date
      */
     function getSuccessorDate($date) {
       if (!$this->dateExists($date)) return FALSE;
@@ -143,22 +144,23 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Get latest date.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string date
      */
     function getLatestDate() {
       return $this->dateFor($this->getCurrent_id());
     }    
     
     /**
-     * (Insert method's description here)
+     * Add a new shot to the catalog for a specified date.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   int id
+     * @param   string date
+     * @throws  lang.IllegalStateException if date or id already used
+     * @throws  lang.IllegalArgumentException if date is invalid
      */
     function addShot($id, $date) {
       if ($this->dateExists($date) || $this->hasId($id)) {

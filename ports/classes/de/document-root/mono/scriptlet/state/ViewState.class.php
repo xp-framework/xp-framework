@@ -7,11 +7,9 @@
   uses('de.document-root.mono.scriptlet.AbstractMonoState');
 
   /**
-   * (Insert class' description here)
+   * State to view a single picture.
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  View picture
    */
   class ViewState extends AbstractMonoState {
     var
@@ -19,11 +17,13 @@
       $id=      0;
     
     /**
-     * (Insert method's description here)
+     * Fetch shot information from request. Falls back to the
+     * latest picture if no or invalid request data i
+     * encountered.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @throws  lang.IllegalArgumentException if a non well-formed date has been submitted
      */
     function fetchShotRequest(&$request) {
       $catalog= &$this->_getCatalog();
@@ -45,11 +45,12 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Process this state.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @param   &scriptlet.xml.Context context
      */
     function process(&$request, &$response, &$context) {
       parent::process($request, $response, $context);
@@ -80,7 +81,6 @@
       )));
       $n->addChild(Node::fromObject(new Date($this->date), 'date'));
 
-      
       return TRUE;
     }
   }

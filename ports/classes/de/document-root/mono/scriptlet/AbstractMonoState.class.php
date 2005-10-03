@@ -13,20 +13,16 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Base class for all mono states.
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Mono base state
    */
   class AbstractMonoState extends AbstractState {
 
     /**
-     * (Insert method's description here)
+     * Constructor.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function __construct() {
       $pm= &PropertyManager::getInstance();
@@ -34,11 +30,11 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Load the catalog index from the file system. Caches
+     * it for repeated access.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  &de.document-root.mono.MonoCatalog
      */
     function &_getCatalog() {
       static $catalog= NULL;
@@ -58,11 +54,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve the latest shot id.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  int
      */
     function getLast_id() {
       $catalog= &$this->_getCatalog();
@@ -70,11 +65,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Loads the picture from the file system by its id.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   int id
+     * @return  &de.document-root.mono.MonoPicture
      */
     function &getPictureById($id) {
       try(); {
@@ -91,11 +86,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Loads the comments for the given shot from the filesystem.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   int id
+     * @return  &de.document.root.MonoPictureComments
      */
     function &getPictureCommentsById($id) {
       $f= &new File(sprintf('%s/../data/%d/comments.dat',
@@ -114,11 +109,13 @@
     }    
       
     /**
-     * (Insert method's description here)
+     * Process this state. Adds the default values from the configuration
+     * to the XML result tree.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @param   &scriptlet.xml.Context context
      */
     function process(&$request, &$response, &$context) {
     
