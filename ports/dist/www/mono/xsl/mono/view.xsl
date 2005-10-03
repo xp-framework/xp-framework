@@ -26,6 +26,7 @@
           <a href="/{/formresult/navigation/@latestdate}">latest</a> |
           <a href="{func:link('about')}">about</a> |
           <a href="{func:link('search')}">search</a> |
+          <a href="/rss2/">rss2</a> | 
           <a href="{func:link('links')}">links</a>
         </div>
       </div>
