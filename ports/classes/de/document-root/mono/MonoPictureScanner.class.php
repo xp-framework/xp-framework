@@ -6,9 +6,11 @@
 
   uses(
     'de.document-root.mono.MonoPicture',
+    'de.document-root.mono.MonoPictureScannerException',
     'io.Folder',
     'io.File',
-    'io.FileUtil'
+    'io.FileUtil',
+    'xml.parser.XMLParser'
   );
 
   /**
@@ -53,6 +55,31 @@
 
       $pic= &new MonoPicture();
       $pic->setFileName($filename);
+      
+      // Load title
+      $titlefile= &new File($shotf->getUri().'/title.txt');
+      if (!$titlefile->exists()) {
+        return throw(new MonoPictureScannerException('No title file found for shot #'.basename($shotf->getUri())));
+      }
+      
+      $descfile= &new File($shotf->getUri().'/description.txt');
+      if (!$descfile->exists()) {
+        return throw(new MonoPictureScannerException('!--> No description file found for shot #'.basename($shotf->getUri())));
+      }
+      
+      try(); {
+        $pic->setTitle(FileUtil::getContents($titlefile));
+        $pic->setDescription(FileUtil::getContents($descfile));
+      } if (catch('Exception', $e)) {
+        return throw($e);
+      }
+    
+      try(); {
+        $parser= &new XMLParser();
+        $parser->parse('<xml>'.$pic->getDescription().'</xml>');
+      } if (catch('XMLFormatException', $e)) {
+        return throw(new MonoPictureScannerException('Description contains invalid XML for shot #'.basename($shotf->getUri())));
+      }
 
       // Check for exif-data separately or extract them from the picture
       if (file_exists($exiffile= $shotf->getURI().'/'.basename($filename).'exif')) {

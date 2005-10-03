@@ -22,7 +22,8 @@
       $exif             = NULL,
       $width            = 0,
       $height           = 0,
-      $title            = '';
+      $title            = '',
+      $description      = '';
 
     /**
      * Set Filename
@@ -62,6 +63,26 @@
      */
     function getTitle() {
       return $this->title;
+    }
+
+    /**
+     * Set Description
+     *
+     * @access  public
+     * @param   string description
+     */
+    function setDescription($description) {
+      $this->description= $description;
+    }
+
+    /**
+     * Get Description
+     *
+     * @access  public
+     * @return  string
+     */
+    function getDescription() {
+      return $this->description;
     }
 
     /**
