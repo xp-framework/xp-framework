@@ -37,12 +37,12 @@
         $picture= $this->getPictureById($id);
         $date= $catalog->dateFor($id);
         
-        $pictures->addChild(Node::fromArray(array(
+        $n= &$pictures->addChild(Node::fromArray(array(
           'id'      => $id,
           'date'    => $date,
           'pubDate' => new Date($date),
-          'picture' => $picture
         ), 'picture'));
+        $n->addChild($picture->toXML());
         
         // Find previous picture
         $pdate= $catalog->getPredecessorDate($date);
@@ -53,7 +53,7 @@
         }
       }
       
-      
+      $response->setHeader('Content-Type', 'text/xml');
       return TRUE;
     }
   }

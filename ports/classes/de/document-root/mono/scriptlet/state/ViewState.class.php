@@ -68,7 +68,8 @@
       
       $catalog= &$this->_getCatalog();
       
-      $response->addFormResult(Node::fromObject($picture, 'picture'));
+      // $response->addFormResult(Node::fromObject($picture, 'picture'));
+      $response->addFormResult($picture->toXML());
       $description && $response->addFormResult(new Node('description', new PCData($description)));
       $comments && $response->addFormResult(Node::fromArray($comments, 'comments'));
       

@@ -144,5 +144,23 @@
     function getHeight() {
       return $this->height;
     }
+    
+    /**
+     * Build XML representation of this object.
+     *
+     * @access  public
+     * @return  &xml.Node
+     */
+    function toXML() {
+      with ($n= &new Node('picture')); {
+        $n->addChild(new Node('width', $this->width));
+        $n->addChild(new Node('height', $this->height));
+        $n->addChild(new Node('filename', $this->filename));
+        $n->addChild(Node::fromObject($this->exif, 'exif'));
+        $n->addChild(new Node('title', $this->title));
+        $n->addChild(new Node('description', new PCData($this->description)));
+      }
+      return $n;
+    }    
   }
 ?>
