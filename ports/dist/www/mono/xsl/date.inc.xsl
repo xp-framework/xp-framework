@@ -138,4 +138,55 @@
       </xsl:if>
     </func:result>
   </func:function>
+  
+  <!--
+   ! Function to display a isodate
+   !
+   ! @param   node-set date
+   ! @return  string
+   !-->
+  <func:function name="func:isodate">
+    <xsl:param name="date"/>
+    <xsl:variable name="days">
+      <name nr="0">Sun</name>
+      <name nr="1">Mon</name>
+      <name nr="2">Tue</name>
+      <name nr="3">Wed</name>
+      <name nr="4">Thu</name>
+      <name nr="5">Fri</name>
+      <name nr="6">Sat</name>
+      <name nr="7">Sun</name>
+    </xsl:variable>
+    <xsl:variable name="months">
+      <name nr="1">Jan</name>
+      <name nr="2">Feb</name>
+      <name nr="3">Mar</name>
+      <name nr="4">Apr</name>
+      <name nr="5">May</name>
+      <name nr="6">Jun</name>
+      <name nr="7">Jul</name>
+      <name nr="8">Aug</name>
+      <name nr="9">Sep</name>
+      <name nr="10">Oct</name>
+      <name nr="11">Nov</name>
+      <name nr="12">Dec</name>
+    </xsl:variable>
+    <xsl:variable name="tz">
+      <xsl:if test="/formresult/@tz &gt;= 0">+</xsl:if>
+      <xsl:value-of select="format-number(/formresult/@tz div 36, '0000')"/>
+    </xsl:variable>
+    
+    <func:result>
+      <xsl:value-of select="concat(
+        exsl:node-set($days)/name[@nr= $date/wday], ', ',
+        format-number($date/mday, '00'), ' ',
+        exsl:node-set($months)/name[@nr= $date/mon], ' ',
+        $date/year, ' ',
+        format-number($date/hours, '00'), ':',
+        format-number($date/minutes, '00'), ':',
+        format-number($date/seconds, '00'), ' ',
+        $tz
+      )"/>
+    </func:result>
+  </func:function>
 </xsl:stylesheet>
