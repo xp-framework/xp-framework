@@ -52,7 +52,7 @@
         /formresult/uri/host, '/',
         date)"/>
       </guid>
-      <description><xsl:copy-of select="picture/description"/></description>
+      <xsl:copy-of select="picture/description"/>
       <category>general</category>
       
     </item>

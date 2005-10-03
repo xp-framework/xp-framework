@@ -4,7 +4,7 @@
  * $Id: index.php 5717 2005-09-04 09:18:28Z kiesel $ 
  */
   require('lang.base.php');
-  xp::sapi('scriptlet.development');
+  xp::sapi('scriptlet.production');
   uses(
     'util.PropertyManager',
     'util.log.Logger',
