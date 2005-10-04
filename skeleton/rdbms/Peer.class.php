@@ -11,7 +11,7 @@
    *
    * <code>
    *   // Retrieve Peer object for the specified dataset class
-   *   $peer= &Peer::forName('net.xp-framework.db.caffeine.XPNews');
+   *   $peer= &Peer::forName('net.xp_framework.db.caffeine.XPNews');
    *   
    *   // select * from news where news_id < 100
    *   $news= $peer->doSelect(new Criteria(array('news_id', 100, LESS_THAN)));

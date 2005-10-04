@@ -16,7 +16,7 @@
    * <code>
    *   uses(
    *     'util.profiling.unittest.TestSuite', 
-   *     'net.xp-framework.unittest.rdbms.DBTest'
+   *     'net.xp_framework.unittest.rdbms.DBTest'
    *   );
    *   
    *   $dsn= 'sybase://user:password@host/?autoconnect=1';
