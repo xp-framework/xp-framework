@@ -13,7 +13,22 @@ import java.rmi.RemoteException;
 import net.xp_framework.fop.PDFCreator;
 import net.xp_framework.fop.JarTemplateLoader;
 
+/**
+ * Calculator demonstration
+ *
+ * @ejb.bean
+ *      name="PDFCreator"
+ *      type="Stateless"
+ *      view-type="both"
+ *      local-jndi-name="xp/test/PDFCreator"
+ *      jndi-name="xp/test/PDFCreator"
+ *      display-name="PDF Creator Test Bean"
+ */
 public class PDFCreatorBean implements SessionBean {
+
+    public String ping() {
+        return "PONG!";
+    }
 
     /**
      * Transform an XML tree to a PDF.

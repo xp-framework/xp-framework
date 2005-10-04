@@ -14,6 +14,7 @@
   
   <property name="xdoclet.dir" value="lib/xdoclet"/>
   <property name="jboss.version" value="4.0"/>
+  <property name="jboss.deploydir" value="/usr/local/jboss4/server/default/deploy"/>
 
   <property name="dist.name" value="xp-fop"/>
   <property name="dist.version" value="1.0"/>
@@ -88,11 +89,12 @@
 
   <target name="compile" depends="generate">
     <javac 
-      srcdir="${build.srcdir}"
       destdir="${build.destdir}"
       classpath="${build.classpath}"
       debug="true"
     >
+      <src path="${build.srcdir}"/>
+      <src path="${build.gendir}"/>
       <classpath refid="classpath.build"/>
     </javac>
   </target>
@@ -120,5 +122,13 @@
     <jar destfile="${build.distdir}/${dist.name}-${dist.version}.jar">
       <fileset dir="${build.destdir}"/>
     </jar>
+  </target>
+  
+  <target name="deploy" depends="ejb-jar">
+    <copy file="${build.distdir}/${dist.name}-${dist.version}.jar" todir="${jboss.deploydir}"/>
+  </target>
+  
+  <target name="undeploy">
+    <delete file="${jboss.deploydir}/${dist.name}-${dist.version}.jar"/>
   </target>
 </project>
