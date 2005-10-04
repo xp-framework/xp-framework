@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Wed Jul  6 09:57:52     2005
-@status: draft
+@status: discussion, ends at Fri Oct  7 12:52:48     2005
 @category: scriptlet.xml
 
 Scope of Change
