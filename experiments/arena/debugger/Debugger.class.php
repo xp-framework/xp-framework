@@ -76,22 +76,26 @@
      */
     function trace() {
       $t= debug_backtrace();
-      array_shift($t);
-      for ($i= sizeof($t)- 1; $i >= 0; $i--) {
-        fputs(STDERR, (1 == $i ? "\x1b[01;44;36m" : '').str_pad(sprintf(
-          '>>> [%d] %s%s(%s) at %s:%d', 
-          $i,
-          isset($t[$i]['class']) ? xp::nameOf($t[$i]['class']).$t[$i]['type'] : '<main>::',
-          $t[$i]['function'],
-          isset($t[$i]['args']) ? implode(', ', $this->export($t[$i]['args'])) : '',
-          isset($t[$i]['file']) ? basename($t[$i]['file']) : '<main>', 
-          isset($t[$i]['line']) ? $t[$i]['line'] : 0
-        ), 140)."\x1b[0m\n");
-        
-        if ('throw' == $t[$i]['function']) {
-          fputs(STDERR, '[Press any key to continue]'); fread(STDIN, 1);
-        }
+      
+      if (!isset($t[2]['function'])) {
+        fputs(STDERR, sprintf(
+          "\x1b[01;41;37m- <main> in %s:%d\x1b[0m\n",
+          basename($t[1]['file']),
+          $t[1]['line']
+        ));
+        return;
       }
+
+      fputs(STDERR, sprintf(
+        "  %s %d, %s%s(%s) in %s:%d\n",
+        str_repeat(' ', sizeof($t)),
+        sizeof($t),
+        isset($t[2]['class']) ? xp::nameOf($t[2]['class']).$t[2]['type'] : '<main>::',
+        $t[2]['function'],
+        implode(', ', $this->export($t[2]['args'])),
+        basename($t[1]['file']),
+        $t[1]['line']
+      ));
     }
   }
 ?>

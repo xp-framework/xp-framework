@@ -25,7 +25,7 @@
   }
 
   $i= &$class->newInstance();
-  Console::write($i->toString());
+  Console::writeLine($i->toString());
   
   $d->stop();
 ?>
