@@ -500,7 +500,7 @@
           The connection manager, once set up, is globally available; its instance can be 
           retrieved by using the <ref type="api:class" link="rdbms.ConnectionManager#getInstance"/>
           method.<br/><br/>
-          For an example, have a look at the <ref type="api:class" link="net.xp-framework.db.caffeine.XPNews"/>
+          For an example, have a look at the <ref type="api:class" link="net.xp_framework.db.caffeine.XPNews"/>
           class.
         </text>
         <advanced>

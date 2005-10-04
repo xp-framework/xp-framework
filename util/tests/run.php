@@ -64,11 +64,11 @@ Usage:
      
      -- Sample ------------------------------------------------------
      [dict]
-     class="net.xp-framework.unittest.peer.DictTest"
+     class="net.xp_framework.unittest.peer.DictTest"
      args="test.dict.org|2628"
 
      [ldap]
-     class="net.xp-framework.unittest.peer.LDAPTest"
+     class="net.xp_framework.unittest.peer.LDAPTest"
      ----------------------------------------------------------------
      
      The args line is optional.

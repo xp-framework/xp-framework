@@ -9,7 +9,7 @@
     'xml.rdf.RDFNewsFeed',
     'util.Properties',
     'rdbms.ConnectionManager',
-    'net.xp-framework.db.caffeine.XPNews'
+    'net.xp_framework.db.caffeine.XPNews'
   );
   
   // {{{ main

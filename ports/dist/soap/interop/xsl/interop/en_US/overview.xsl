@@ -47,7 +47,7 @@
     </func:result>
   </func:function>
 
-  <xsl:template match="error[@checker = 'net.xp-framework.scriptlet.interop.state.OverviewState']">
+  <xsl:template match="error[@checker = 'net.xp_framework.scriptlet.interop.state.OverviewState']">
     <table class="error" width="100%">
       <tr>
         <td>

@@ -328,7 +328,7 @@ peer.ldap.LDAPEntry@DN(uid=kurt,ou=People,dc=OpenLDAP,dc=Org){
     'xml.rdf.RDFNewsFeed',
     'rdbms.DriverManager',
     'rdbms.ConnectionManager',
-    'net.xp-framework.db.caffeine.XPNews'
+    'net.xp_framework.db.caffeine.XPNews'
   );
 
   $p= &new ParamString();

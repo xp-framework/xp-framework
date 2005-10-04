@@ -18,7 +18,7 @@
   $log= &Logger::getInstance();
   $log->configure($pm->getProperties('log'));
   
-  $s= &new SoapRpcRouter(new ClassLoader('net.xp-framework.webservices.interop'));
+  $s= &new SoapRpcRouter(new ClassLoader('net.xp_framework.webservices.interop'));
   try(); {
     $s->init();
     $response= &$s->process();

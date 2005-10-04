@@ -39,7 +39,7 @@
    * XML-RPC request, splits it at the '.' and takes the first part as the class name,
    * the second part as the method name. A request on a server with the setup given above
    * and a requested methodName of 'XmlRpcTest.runTest' would try to instanciate class
-   * net.xp-framework.webservices.xmlrpc.XmlRpcTestHandler and run methon 'runTest'
+   * net.xp_framework.webservices.xmlrpc.XmlRpcTestHandler and run methon 'runTest'
    * on it.
    *
    * @ext      xml

@@ -25,7 +25,7 @@ cvs rm -f'ed.
   Old location New location
   ------------ -----------------------
   lang.cca     io.cca
-  lang.apidoc  net.xp-framework.apidoc
+  lang.apidoc  net.xp_framework.apidoc
 </pre>
 
 Dependencies

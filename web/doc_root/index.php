@@ -6,7 +6,7 @@
   require('lang.base.php');
   xp::sapi('scriptlet.production');
   uses(
-    'net.xp-framework.scriptlet.WebsiteScriptlet',
+    'net.xp_framework.scriptlet.WebsiteScriptlet',
     'util.PropertyManager',
     'rdbms.ConnectionManager',
     'util.log.Logger'
@@ -24,7 +24,7 @@
   $cm->configure($pm->getProperties('database'));
 
   scriptlet::run(new WebsiteScriptlet(
-    new ClassLoader('net.xp-framework.scriptlet'), 
+    new ClassLoader('net.xp_framework.scriptlet'), 
     '../xsl/'
   ));
   // }}}  

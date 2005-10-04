@@ -1,7 +1,7 @@
 <?php
   require('lang.base.php');
   xp::sapi('gui.gtk');
-  uses('net.xp-framework.unittest.runner.gtk.UnitTestUI');
+  uses('net.xp_framework.unittest.runner.gtk.UnitTestUI');
   
   try(); {
     $app= &new UnitTestUI(new ParamString());
