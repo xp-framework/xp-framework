@@ -26,6 +26,12 @@ import net.xp_framework.fop.JarTemplateLoader;
  */
 public class PDFCreatorBean implements SessionBean {
 
+    /**
+     * Returns a pong.
+     *
+     * @ejb.interface-method view-type = "both"
+     * @return  string
+     */
     public String ping() {
         return "PONG!";
     }
@@ -33,7 +39,7 @@ public class PDFCreatorBean implements SessionBean {
     /**
      * Transform an XML tree to a PDF.
      *
-     * @access  public
+     * @ejb.interface-method view-type = "both"
      * @return  byte[]
      */
     public byte[] xmlToPDF(String template, String xml) throws Exception {
