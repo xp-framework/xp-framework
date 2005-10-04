@@ -90,6 +90,9 @@ Related documents
 -----------------
 - RFC3986: Uiform Resource Identifier (URI): Generic Syntax
   ftp://ftp.rfc-editor.org/in-notes/rfc3986.txt
+  
+- http://xp-framework.net/downloads/rfc0039.public.patch
+  Patch (by Olli) implementing this RFC
 
 Comments
 --------
