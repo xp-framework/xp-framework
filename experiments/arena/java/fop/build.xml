@@ -118,9 +118,15 @@
   
   <!-- Pack together ejb-jar -->
   <target name="ejb-jar" depends="compile">
-    <echo>===&gt; Creating EJB-Jar ${build.distdir}/beans.jar ...</echo>
+    <echo>===&gt; Creating EJB-Jar ${build.distdir}/${dist.name}-${dist.version}.jar ...</echo>
     <jar destfile="${build.distdir}/${dist.name}-${dist.version}.jar">
       <fileset dir="${build.destdir}"/>
+      <fileset dir="lib">
+        <include name="fop.jar"/>
+        <include name="avalon-framework-cvs-20020806.jar"/>
+        <include name="xercesImpl-2.2.1.jar"/>
+        <include name="batik.jar"/>
+      </fileset>
     </jar>
   </target>
   
