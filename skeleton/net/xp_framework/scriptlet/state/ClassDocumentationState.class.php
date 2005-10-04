@@ -6,7 +6,7 @@
 
   uses(
     'scriptlet.xml.workflow.AbstractState',
-    'net.xp-framework.util.markup.FormresultHelper',
+    'net.xp_framework.util.markup.FormresultHelper',
     'io.FileUtil',
     'io.File',
     'text.apidoc.FileComment',

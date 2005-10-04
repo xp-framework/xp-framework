@@ -6,7 +6,7 @@
 
   uses(
     'scriptlet.xml.workflow.AbstractState',
-    'net.xp-framework.db.caffeine.XPNews'
+    'net.xp_framework.db.caffeine.XPNews'
   );
 
   /**

@@ -6,7 +6,7 @@
 
   uses(
     'util.profiling.unittest.TestCase',
-    'net.xp-framework.unittest.reflection.TestClass'
+    'net.xp_framework.unittest.reflection.TestClass'
   );
 
   /**
@@ -25,7 +25,7 @@
      * @access  public
      */
     function setUp() {
-      $this->class= &XPClass::forName('net.xp-framework.unittest.reflection.TestClass');
+      $this->class= &XPClass::forName('net.xp_framework.unittest.reflection.TestClass');
     }
  
     /**
@@ -37,7 +37,7 @@
     #[@test]
     function name() {
       $this->assertEquals(
-        'net.xp-framework.unittest.reflection.TestClass', 
+        'net.xp_framework.unittest.reflection.TestClass', 
         $this->class->getName()
       );
     }
@@ -52,7 +52,7 @@
     function instanciation() {
       $instance= &$this->class->newInstance(1);
       $this->assertObject($instance);
-      $this->assertClass($instance, 'net.xp-framework.unittest.reflection.TestClass');
+      $this->assertClass($instance, 'net.xp_framework.unittest.reflection.TestClass');
       $this->assertTrue($this->class->isInstance($instance));
     }
     
@@ -66,7 +66,7 @@
     function subClass() {
       $this->assertTrue($this->class->isSubclassOf('lang.Object'));
       $this->assertFalse($this->class->isSubclassOf('util.Date'));
-      $this->assertFalse($this->class->isSubclassOf('net.xp-framework.unittest.reflection.TestClass'));
+      $this->assertFalse($this->class->isSubclassOf('net.xp_framework.unittest.reflection.TestClass'));
     }
    
     /**

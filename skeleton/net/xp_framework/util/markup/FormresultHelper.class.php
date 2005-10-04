@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('net.xp-framework.util.markup.MarkupBuilder');
+  uses('net.xp_framework.util.markup.MarkupBuilder');
 
   /**
    * Helper class that provides an easy way to retrieve an xml.Node

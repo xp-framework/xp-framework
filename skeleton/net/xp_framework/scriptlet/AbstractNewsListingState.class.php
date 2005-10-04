@@ -5,7 +5,7 @@
  */
 
   uses(
-    'net.xp-framework.util.markup.FormresultHelper',
+    'net.xp_framework.util.markup.FormresultHelper',
     'scriptlet.xml.workflow.AbstractState',
     'rdbms.ConnectionManager',
     'util.Date'

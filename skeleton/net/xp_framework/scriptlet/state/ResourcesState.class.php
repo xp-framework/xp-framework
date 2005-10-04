@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('net.xp-framework.scriptlet.AbstractNewsListingState');
+  uses('net.xp_framework.scriptlet.AbstractNewsListingState');
 
   /**
    * Handles /xml/news

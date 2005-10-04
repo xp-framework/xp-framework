@@ -6,9 +6,9 @@
 
   uses(
     'text.StringTokenizer',
-    'net.xp-framework.util.markup.DefaultProcessor',
-    'net.xp-framework.util.markup.CopyProcessor',
-    'net.xp-framework.util.markup.CodeProcessor'
+    'net.xp_framework.util.markup.DefaultProcessor',
+    'net.xp_framework.util.markup.CopyProcessor',
+    'net.xp_framework.util.markup.CodeProcessor'
   );
 
   /**
@@ -24,8 +24,8 @@
      * Push a processor onto stack
      *
      * @access  protected
-     * @param   &net.xp-framework.util.markup.MarkupProcessor proc
-     * @return  &net.xp-framework.util.markup.MarkupProcessor
+     * @param   &net.xp_framework.util.markup.MarkupProcessor proc
+     * @return  &net.xp_framework.util.markup.MarkupProcessor
      */
     function &pushProcessor(&$proc) {
       array_unshift($this->stack, $proc);
@@ -36,7 +36,7 @@
      * Pop processor off stack
      *
      * @access  protected
-     * @return  &net.xp-framework.util.markup.MarkupProcessor
+     * @return  &net.xp_framework.util.markup.MarkupProcessor
      */
     function &popProcessor() {
       array_shift($this->stack);

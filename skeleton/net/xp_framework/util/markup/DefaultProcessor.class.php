@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('net.xp-framework.util.markup.MarkupProcessor');
+  uses('net.xp_framework.util.markup.MarkupProcessor');
 
   /**
    * Default processor for text not contained within any special

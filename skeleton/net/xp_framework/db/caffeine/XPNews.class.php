@@ -68,7 +68,7 @@
      * @model   static
      * @access  public
      * @param   int news_id
-     * @return  &net.xp-framework.db.caffeine.XPNews object
+     * @return  &net.xp_framework.db.caffeine.XPNews object
      * @throws  rdbms.SQLException in case an error occurs
      */
     function &getByNews_id($news_id) {
@@ -82,7 +82,7 @@
      * @model   static
      * @access  public
      * @param   int bz_id
-     * @return  net.xp-framework.db.caffeine.XPNews[] objects
+     * @return  net.xp_framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function getByBz_id($bz_id) {
@@ -97,7 +97,7 @@
      * @model   static
      * @access  public
      * @param   int max default 0 maximum number of rows to get)
-     * @return  net.xp-framework.db.caffeine.XPNews[] objects
+     * @return  net.xp_framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     function getByDateOrdered($max= 0) {

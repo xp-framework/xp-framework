@@ -9,7 +9,7 @@
   /**
    * Test class
    *
-   * @see      xp://net.xp-framework.unittest.reflection.XPClassTest
+   * @see      xp://net.xp_framework.unittest.reflection.XPClassTest
    * @purpose  Test class
    */
   #[@test('Annotation')]

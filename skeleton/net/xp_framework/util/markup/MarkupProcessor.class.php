@@ -7,7 +7,7 @@
   /**
    * Markup processor
    *
-   * @see      xp://net.xp-framework.util.markup.MarkupBuilder
+   * @see      xp://net.xp_framework.util.markup.MarkupBuilder
    * @purpose  Base class
    */
   class MarkupProcessor extends Object {
