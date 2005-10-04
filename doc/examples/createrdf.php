@@ -13,7 +13,7 @@
     'util.Properties',
     'rdbms.DriverManager',
     'rdbms.ConnectionManager',
-    'net.xp-framework.db.caffeine.XPNews'
+    'net.xp_framework.db.caffeine.XPNews'
   );
   
   // {{{ main

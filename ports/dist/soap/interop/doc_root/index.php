@@ -6,7 +6,7 @@
   require('lang.base.php');
   xp::sapi('scriptlet.development');
   uses(
-    'net.xp-framework.scriptlet.interop.InteropScriptlet',
+    'net.xp_framework.scriptlet.interop.InteropScriptlet',
     'util.PropertyManager',
     'rdbms.ConnectionManager',
     'util.log.Logger'
@@ -21,7 +21,7 @@
   $cat= &$log->getCategory();
 
   scriptlet::run(new InteropScriptlet(
-    new ClassLoader('net.xp-framework.scriptlet.interop'), 
+    new ClassLoader('net.xp_framework.scriptlet.interop'), 
     '../xsl/'
   ));
 ?>
