@@ -22,9 +22,9 @@
      * Constructor
      *
      * @access  public
-     * @param   mixed in
+     * @param   mixed in default NULL
      */
-    function __construct($in) {
+    function __construct($in= NULL) {
       $this->date= &new Date($in);
     }
     
