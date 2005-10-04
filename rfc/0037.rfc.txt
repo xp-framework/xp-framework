@@ -60,6 +60,18 @@ Notes
 - Fully qualified classes can only be referenced by their fully qualified
   name, non-fully-qualified classes can only be referenced by their non-
   qualified name
+
+- The implements() syntax will change for fully qualified classes but 
+  will be backwards-compatible for non-fully qualified ones:
+  
+  // Works only in non-fully qualified classes
+  implements(__FILE__, 'util.log.Traceable');
+  
+  // Works in fully qualified classes:
+  implements('info·binford6100·TraceableObject', 'util.log.Traceable');
+  
+  // ...and in non-fully qualified ones:
+  implements('TraceableObject', 'util.log.Traceable');
 </pre>
 
 Security considerations
@@ -96,4 +108,9 @@ Comments
 - friebe, Tue Oct  4 23:48:42     2005
   Fixed the patch - net.xp_framework.unittest.reflection.ReflectionTest
   unittest now works
+
+- friebe, Tue Oct  4 23:59:54     2005
+  Maybe implements() should not be backwards compatible? BC causes
+  performance problems here... or should it warn about usage of the 
+  old syntax and give note that we'll deprecate sooner or later?
 <EOF>
