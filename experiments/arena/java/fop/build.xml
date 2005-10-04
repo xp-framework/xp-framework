@@ -7,10 +7,14 @@
 <project default="usage">
   <property name="build.srcdir" value="src"/>
   <property name="build.destdir" value="build"/>
+  <property name="build.distdir" value="dist"/>
+  <property name="build.gendir" value="gen"/>
+  <property name="build.libdir" value="lib"/>
   <property name="build.compiler" value="javac1.5"/>
+  
+  <property name="xdoclet.dir" value="lib/xdoclet"/>
+  <property name="jboss.version" value="4.0"/>
 
-  <property name="dist.dir" value="dist"/>
-  <property name="dist.resourcesdir" value="resources"/>
   <property name="dist.name" value="xp-fop"/>
   <property name="dist.version" value="1.0"/>
   
@@ -20,6 +24,7 @@
       <include name="junit.jar"/>
       <include name="fop.jar"/>
       <include name="avalon-framework-cvs-20020806.jar"/>
+      <include name="jboss-j2ee.jar"/>
     </fileset>
   </path>
 
@@ -36,9 +41,52 @@
   
   <target name="prepare">
     <mkdir dir="${build.destdir}"/>
+    <mkdir dir="${build.gendir}"/>
+    <mkdir dir="${build.distdir}"/>
   </target>
 
-  <target name="compile" depends="prepare">
+  <target name="clean">
+    <delete dir="${build.destdir}"/>
+    <delete dir="${build.gendir}"/>
+    <delete dir="${build.distdir}"/>
+  </target>
+  
+  <target name="generate" depends="prepare">
+    <echo>===&gt; Generating files to ${build.gendir}/ ...</echo>
+    <taskdef name="ejbdoclet" classname="xdoclet.modules.ejb.EjbDocletTask">
+      <classpath>
+        <fileset dir="${xdoclet.dir}" includes="*.jar"/>
+        <fileset dir="${build.libdir}" includes="jboss-j2ee.jar"/>
+      </classpath>
+    </taskdef>
+    
+    <ejbdoclet destdir="${build.gendir}" ejbspec="2.0">
+      <fileset dir="${build.srcdir}">
+        <include name="**/*Bean.java"/>
+      </fileset>
+      <utilobject kind="physical" includeGUID="false"/>
+      <localinterface/>
+      <localhomeinterface/>
+      <homeinterface/>
+      <remoteinterface />
+      <session/>
+      <deploymentdescriptor
+       xmlencoding="ISO-8859-1"
+       destdir="${build.destdir}/META-INF"
+       validatexml="true"
+      />
+      <jboss 
+       xmlencoding="ISO-8859-1"
+       destdir="${build.destdir}/META-INF" 
+       version="${jboss.version}"
+       validatexml="true"
+      />
+    </ejbdoclet>
+    <echo>---&gt; EJB XML file at ${build.destdir}/META-INF/ejb-jar.xml ...</echo>
+    <echo>---&gt; JBoss XML file at ${build.destdir}/META-INF/jboss.xml ...</echo>
+  </target>
+
+  <target name="compile" depends="generate">
     <javac 
       srcdir="${build.srcdir}"
       destdir="${build.destdir}"
@@ -49,10 +97,6 @@
     </javac>
   </target>
   
-  <target name="clean">
-    <delete dir="${build.destdir}"/>
-  </target>
-  
   <target name="usage">
     <echo>Targets:
 - test
@@ -60,13 +104,21 @@
     </echo>
   </target>
 
-
   <!-- All of the above in one -->
   <target name="test" depends="compile">
     <echo>===&gt; Running all tests</echo>
     <java classname="org.junit.runner.JUnitCore">
       <arg value="net.xp_framework.unittest.PDFCreatorTest"/>
+      <arg value="net.xp_framework.unittest.TemplateLoaderTest"/>
       <classpath refid="classpath.run"/>
     </java>
+  </target>
+  
+  <!-- Pack together ejb-jar -->
+  <target name="ejb-jar" depends="compile">
+    <echo>===&gt; Creating EJB-Jar ${build.distdir}/beans.jar ...</echo>
+    <jar destfile="${build.distdir}/${dist.name}-${dist.version}.jar">
+      <fileset dir="${build.destdir}"/>
+    </jar>
   </target>
 </project>

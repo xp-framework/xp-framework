@@ -104,4 +104,8 @@ public class PDFCreator {
     public OutputStream getOutputStream() {
         return this.output;
     }
+    
+    public String getOutput() {
+        return this.output.toString();
+    }
 }

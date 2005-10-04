@@ -70,5 +70,6 @@ public class PDFCreatorTest {
         pdf.setTemplate(xslt);
         
         pdf.xmlToPDF();
+        String out= pdf.getOutput();
     }
 }
