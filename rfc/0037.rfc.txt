@@ -18,15 +18,16 @@ Avoid name clashes.
 
 Functionality
 -------------
-A new "keyword" "package" is introduced. It declares a class a being 
-within a package and thus declared using its fully qualified name.
+A class declares being within a package by setting the variable $package
+and by supplying its classname in fully-qualified notation, using the 
+middle dot (·) as separator.
 
 Example (Declaration)
 ~~~~~~~~~~~~~~~~~~~~~
 <?php
   uses('util.Date');
 
-  package('info.binford6100');
+  $package= 'info.binford6100';
 
   class info·binford6100·Date extends Date {
   
@@ -75,7 +76,7 @@ the two cases:
 
 Dependencies
 ------------
-A new keyword "package".
+n/a
 
 Related documents
 -----------------
