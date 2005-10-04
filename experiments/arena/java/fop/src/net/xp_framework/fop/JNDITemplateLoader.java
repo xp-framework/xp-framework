@@ -6,7 +6,7 @@
 package net.xp_framework.fop;
 
 public class JNDITemplateLoader extends TemplateLoader {
-    public String templateFor(String abs) {
+    public String templateFor(String abs)  throws Exception {
         // XXX TBI
         return "";
     }

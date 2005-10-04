@@ -14,5 +14,5 @@ public class TemplateLoader {
         return name;
     }
     
-    public String templateFor(String abs) { return null; }
+    public String templateFor(String abs) throws Exception { return null; }
 }

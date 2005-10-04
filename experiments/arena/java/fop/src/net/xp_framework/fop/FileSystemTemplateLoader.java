@@ -6,7 +6,7 @@
 package net.xp_framework.fop;
 
 public class FileSystemTemplateLoader extends TemplateLoader {
-    public String templateFor(String abs) {
+    public String templateFor(String abs) throws Exception {
         return null;
     }
 }

@@ -54,6 +54,23 @@ public class PDFCreatorBean implements SessionBean {
         
         return pdf.getOutput().getBytes();
     }
+    
+    /**
+     * Retrieve a PDF from an source FO file.
+     *
+     * @ejb.interface-method view-type = "both"
+     * @return  byte[]
+     */
+    public byte[] foToPDF(String template) throws Exception {
+        PDFCreator pdf= new PDFCreator();
+        JarTemplateLoader loader= new JarTemplateLoader();
+        
+        String xslt= loader.templateFor(template);
+        pdf.setInput(xslt);
+        pdf.foToPDF();
+        
+        return pdf.getOutput().getBytes();
+    }    
 
     /**
      * Activate method
