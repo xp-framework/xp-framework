@@ -11,6 +11,7 @@
   <property name="build.gendir" value="gen"/>
   <property name="build.libdir" value="lib"/>
   <property name="build.compiler" value="javac1.5"/>
+  <property name="build.resources" value="resources"/>
   
   <property name="xdoclet.dir" value="lib/xdoclet"/>
   <property name="jboss.version" value="4.0"/>
@@ -127,6 +128,7 @@
         <include name="xercesImpl-2.2.1.jar"/>
         <include name="batik.jar"/>
       </fileset>
+      <fileset dir="${build.resources}" includes="*/*.fo"/>
     </jar>
   </target>
   
