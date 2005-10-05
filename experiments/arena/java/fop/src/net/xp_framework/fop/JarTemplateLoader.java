@@ -10,21 +10,27 @@ import java.io.InputStream;
 public class JarTemplateLoader extends TemplateLoader {
 
     public String nameFor(String abs) {
-        String name= super.nameFor(abs);
-        String template= "templates/" + name + ".fo";
-        System.out.println("Loading template from '" + template + "'");
-        return template;
+        return "/templates/" + super.nameFor(abs) + ".fo";
     }
 
     public String templateFor(String abs) throws Exception {
-        InputStream stream= 
-            this.getClass().getClassLoader().getResourceAsStream(this.nameFor(abs));
+        InputStream stream= this.getClass().getResourceAsStream(this.nameFor(abs));
         
-        byte buf[]= new byte[stream.available()];
-        stream.read(buf, stream.available(), 0);
+        // Check if template could be found...
+        if (null == stream) {
+            throw (new IllegalArgumentException("No such template: '" + abs + "'"));
+        }
         
-        System.out.println("Got content for template: " + new String(buf));
-
-        return new String(buf);
+        // Create a StringBuffer to fill it
+        StringBuffer ret= new StringBuffer(stream.available());
+        
+        byte buf[]= new byte[2048];
+        int read= 0;
+        do {
+          read= stream.read(buf);
+          if (0 < read) ret.append(new String(buf, 0, read));
+        } while (read > -1);
+        
+        return ret.toString();
     }
 }
