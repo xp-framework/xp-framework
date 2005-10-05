@@ -41,7 +41,7 @@ public class PDFCreator {
         this.driver= new Driver();
         
         // Setup logger
-        Logger logger= new ConsoleLogger(ConsoleLogger.LEVEL_INFO);
+        Logger logger= new ConsoleLogger(ConsoleLogger.LEVEL_ERROR);
         this.driver.setLogger(logger);
         MessageHandler.setScreenLogger(logger);
 
