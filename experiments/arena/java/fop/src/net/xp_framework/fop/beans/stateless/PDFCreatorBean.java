@@ -27,23 +27,14 @@ import net.xp_framework.fop.JarTemplateLoader;
 public class PDFCreatorBean implements SessionBean {
 
     /**
-     * Returns a pong.
-     *
-     * @ejb.interface-method view-type = "both"
-     * @return  string
-     */
-    public String ping() {
-        return "PONG!";
-    }
-
-    /**
      * Transform an XML tree to a PDF.
      *
      * @ejb.interface-method view-type = "both"
      * @return  byte[]
      */
-    public byte[] xmlToPDF(String template, String xml) throws Exception {
-    
+    public String xmlToPDF(String template, String xml) throws Exception {
+        System.out.println("PDFCreatorBean::xmlToPDF(" + template + ", xml) invoked.");
+
         PDFCreator pdf= new PDFCreator();
         JarTemplateLoader loader= new JarTemplateLoader();
         
@@ -52,7 +43,8 @@ public class PDFCreatorBean implements SessionBean {
         pdf.setInput(xml);
         pdf.xmlToPDF();
         
-        return pdf.getOutput().getBytes();
+        System.out.println("Returning " + pdf.getOutput().length() + " chars");
+        return pdf.getOutput();
     }
     
     /**
@@ -61,7 +53,9 @@ public class PDFCreatorBean implements SessionBean {
      * @ejb.interface-method view-type = "both"
      * @return  byte[]
      */
-    public byte[] foToPDF(String template) throws Exception {
+    public String foToPDF(String template) throws Exception {
+        System.out.println("PDFCreatorBean::foToPDF(" + template + ") invoked.");
+
         PDFCreator pdf= new PDFCreator();
         JarTemplateLoader loader= new JarTemplateLoader();
         
@@ -69,8 +63,9 @@ public class PDFCreatorBean implements SessionBean {
         pdf.setInput(xslt);
         pdf.foToPDF();
         
-        return pdf.getOutput().getBytes();
-    }    
+        System.out.println("Returning " + pdf.getOutput().length() + " chars");
+        return pdf.getOutput();
+    }
 
     /**
      * Activate method
