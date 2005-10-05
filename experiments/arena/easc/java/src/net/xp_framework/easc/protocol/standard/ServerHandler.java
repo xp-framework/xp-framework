@@ -30,6 +30,26 @@ public class ServerHandler implements Handler {
         Serializer.registerExceptionName(javax.naming.NameNotFoundException.class, "naming/NameNotFound");
         Serializer.registerExceptionName(java.lang.reflect.InvocationTargetException.class, "invoke/Exception");
     }
+    
+    protected int utfLength(String buffer) {
+        int utflen= 0;
+        int c= 0;
+        int strlen= buffer.length();
+
+        // Figure out UTF-encoded length
+        for (int i= 0; i < strlen; i++) {
+            c= buffer.charAt(i);
+            if ((c >= 0x0001) && (c <= 0x007F)) {
+                utflen++;
+            } else if (c > 0x07FF) {
+                utflen += 3;
+            } else {
+                utflen += 2;
+            }
+        }
+        
+        return utflen;
+    }
 
     protected void writeResponse(DataOutputStream out, MessageType type, String buffer) throws IOException {
         new Header(
@@ -38,7 +58,7 @@ public class ServerHandler implements Handler {
             (byte)0,
             type,
             false,
-            buffer.length()
+            this.utfLength(buffer)
         ).writeTo(out);
         out.writeUTF(buffer);
         
