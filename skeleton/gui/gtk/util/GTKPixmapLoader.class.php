@@ -16,6 +16,9 @@
    * </pre>
    *
    * Transparent color will default to black (RGB {0, 0, 0})
+   *
+   * @test     xp://net.xp_framework.unittest.runner.gtk.UnitTestUI
+   * @purpose  Pixmap loader
    */
   class GTKPixmapLoader extends Object {
     var 

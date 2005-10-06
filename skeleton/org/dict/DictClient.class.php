@@ -38,6 +38,7 @@
    * @see      http://luetzschena-stahmeln.de/dictd/index.php
    * @see      http://www.freedict.de/
    * @see      rfc://2229
+   * @test     xp://net.xp_framework.unittest.peer.DictTest
    * @purpose  Implement DICT
    */
   class DictClient extends Object {

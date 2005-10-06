@@ -17,6 +17,7 @@
    *   driver://[username[:password]]@host[:port][/database][?flag=value[&flag2=value2]]
    * </pre>
    *
+   * @test     xp://net.xp_framework.unittest.rdbms.DSNTest
    * @purpose  Unified connect string
    */
   class DSN extends Object {

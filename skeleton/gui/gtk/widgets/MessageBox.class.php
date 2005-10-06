@@ -50,6 +50,7 @@
    *   $pressed= MessageBox::display('Hello world');
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.runner.gtk.UnitTestUI
    * @purpose  Widget
    */
   class MessageBox extends GtkGladeDialogWindow {

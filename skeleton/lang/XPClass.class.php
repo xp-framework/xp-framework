@@ -43,6 +43,7 @@
    * </code>
    *
    * @see      xp://lang.Object#getClass()
+   * @test     xp://net.xp_framework.unittest.reflection.ReflectionTest
    * @purpose  Reflection
    */
   class XPClass extends Object {

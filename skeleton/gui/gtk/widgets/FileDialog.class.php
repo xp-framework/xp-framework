@@ -21,7 +21,8 @@
    *   }
    * </code>
    *
-   * @purpose Provide a widget for file dialogs
+   * @test     xp://net.xp_framework.unittest.runner.gtk.UnitTestUI
+   * @purpose  Provide a widget for file dialogs
    */
   class FileDialog extends GtkGladeDialogWindow {
     var

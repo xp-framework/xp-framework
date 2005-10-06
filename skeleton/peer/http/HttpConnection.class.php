@@ -36,6 +36,7 @@
    * </code>
    *
    * @see      rfc://2616
+   * @test     xp://net.xp_framework.unittest.peer.HttpTest
    * @purpose  Provide
    */
   class HttpConnection extends Object {

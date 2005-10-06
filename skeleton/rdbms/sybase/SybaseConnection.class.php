@@ -15,6 +15,8 @@
    *
    * @see      http://sybase.com/
    * @ext      sybase_ct
+   * @test     xp://net.xp_framework.unittest.rdbms.TokenizerTest
+   * @test     xp://net.xp_framework.unittest.rdbms.DBTest
    * @purpose  Database connection
    */
   class SybaseConnection extends DBConnection {

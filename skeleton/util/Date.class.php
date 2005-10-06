@@ -21,6 +21,7 @@
    * month      - Month name, long, e.g. "January"
    * </pre>
    *
+   * @test     xp://net.xp_framework.unittest.DateTest
    * @purpose  Represent a date
    */
   class Date extends Object {

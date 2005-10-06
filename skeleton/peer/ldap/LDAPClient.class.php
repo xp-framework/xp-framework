@@ -61,6 +61,7 @@
    * @see      rfc://2255
    * @see      rfc://2256
    * @ext      ldap
+   * @test     xp://net.xp_framework.unittest.peer.LDAPTest
    * @purpose  LDAP client
    */
   class LDAPClient extends Object {

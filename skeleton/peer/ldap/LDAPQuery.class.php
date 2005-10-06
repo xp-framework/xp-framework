@@ -11,6 +11,7 @@
    *
    * @see     xp://peer.ldap.LDAPClient
    * @see     rfc://2254
+   * @test    xp://net.xp_framework.unittest.peer.LDAPQueryTest
    * @purpose Wrap LDAP queries
    */
   class LDAPQuery extends Object {

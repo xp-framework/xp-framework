@@ -17,6 +17,7 @@
    * Calendar class
    *
    * @model    static
+   * @test     xp://net.xp_framework.unittest.DateTest
    * @purpose  Utility functions for date calculations
    */
   class Calendar extends Object {

@@ -42,6 +42,7 @@
    * </pre>
    *
    * @see      xp://xml.Tree
+   * @test     xp://net.xp_framework.unittest.soap.SoapTest
    * @purpose  Represent SOAP Message
    */
   class SOAPMessage extends Tree {

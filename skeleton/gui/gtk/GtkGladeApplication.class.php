@@ -13,6 +13,7 @@
    * @ext      gtk.glade
    * @see      xp://gui.gtk.GtkApplication
    * @see      http://glade.gnome.org/
+   * @test     xp://net.xp_framework.unittest.runner.gtk.UnitTestUI
    * @purpose  Base class
    */  
   class GtkGladeApplication extends GtkApplication {

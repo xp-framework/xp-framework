@@ -10,6 +10,7 @@
    * DateUtil is a helper class to handle Date objects and 
    * calculate date- and timestamps.
    *
+   * @test    xp://util.DateUtil
    * @purpose Utils to calculate with Date objects
    */
   class DateUtil extends Object {
