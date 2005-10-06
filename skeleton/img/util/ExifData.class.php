@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Date', 'img.ImagingException');
+  uses('util.Date', 'img.ImagingException', 'img.Image', 'img.io.StreamReader', 'io.Stream');
 
   /**
    * Reads the EXIF headers from JPEG or TIFF
@@ -562,6 +562,19 @@
     function getIsoSpeedRatings() {
       return $this->isoSpeedRatings;
     }
+
+    /**
+     * Get Thumbnail
+     *
+     * @access  public
+     * @return  &img.Image  
+     */
+    function getThumbnail() {
+      $s= new Stream();
+      $s->write(exif_thumbnail($this->getFilename()));
+      $s->rewind();
+      return Image::loadFrom(new StreamReader($s));
+    } 
 
     /**
      * Retrieve a string representation
