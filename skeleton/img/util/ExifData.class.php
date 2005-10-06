@@ -66,7 +66,7 @@
         $e->setFileName($info['FileName']);
         $e->setFileSize($info['FileSize']);
         $e->setMimeType($info['MimeType']);
-        $e->setApertureFNumber($info['COMPUTED']['apertureFNumber']);
+        $e->setApertureFNumber($info['COMPUTED']['ApertureFNumber']);
         $e->setSoftware($info['software']);
         $e->setExposureTime($info['ExposureTime']);
         $e->setExposureProgram($info['ExposureProgram']);
