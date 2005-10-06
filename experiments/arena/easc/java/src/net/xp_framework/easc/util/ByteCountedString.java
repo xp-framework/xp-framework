@@ -117,41 +117,4 @@ public class ByteCountedString {
     public void writeTo(DataOutput out) throws IOException {
         this.writeTo(out, DEFAULT_CHUNK_SIZE);
     }
-
-    /**
-     * Retrieve bytes
-     *
-     * @access  public
-     * @param   int chunkSize
-     * @return  java.lang.String
-     */
-    @Deprecated public String getBytes(int chunkSize) {
-        int length= this.string.length();
-        int offset= 0;
-
-        StringBuffer buf= new StringBuffer(this.length(chunkSize));
-        do {
-            int chunk= length > chunkSize ? chunkSize : length;
-
-            buf.append((char)((chunk >>> 8) & 0xFF));
-            buf.append((char)((chunk >>> 0) & 0xFF));
-            buf.append((char)(length- chunk > 0 ? 1 : 0));
-            buf.append(this.string.substring(offset, offset+ chunk));
-
-            offset+= chunk;
-            length-= chunk;
-        } while (length > 0);
-        
-        return buf.toString();
-    }
-
-    /**
-     * Retrieve chunks using the DEFAULT_CHUNK_SIZE
-     *
-     * @access  public
-     * @return  java.lang.String
-     */
-    public String getBytes() {
-        return this.getBytes(DEFAULT_CHUNK_SIZE);
-    }
 }
