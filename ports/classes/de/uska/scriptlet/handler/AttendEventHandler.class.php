@@ -51,6 +51,7 @@
      */
     function setup(&$request, &$context) {
       $this->setFormValue('offers_seats', 0);
+      if ($request->hasParam('guest')) $this->setValue('mode', 'addguest');
       
       $player_id= $context->user->getPlayer_id();
       if ($request->hasParam('player_id') && $request->getParam('player_id') != $player_id) {
@@ -71,12 +72,14 @@
         $this->setFormValue('attend', $attendee->getAttend());
         $this->setFormValue('offers_seats', $attendee->getOffers_seats());
         $this->setFormValue('needs_seat', $attendee->getNeeds_driver());
-        $this->setFormvalue('firstname', $player->getFirstname());
-        $this->setFormValue('lastname', $player->getLastname());
+        
+        if ($this->getvalue('mode') != 'addguest') {
+          $this->setFormvalue('firstname', $player->getFirstname());
+          $this->setFormValue('lastname', $player->getLastname());
+        }
       }
       
       $this->setValue('player_id', $player_id);
-      if ($request->hasParam('guest')) $this->setValue('mode', 'addguest');
       
       return TRUE;
     }
