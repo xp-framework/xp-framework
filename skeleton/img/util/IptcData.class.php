@@ -17,7 +17,7 @@
    *
    * @ext      iptc
    * @purpose  Utility
-   * @see 	   http://www.controlledvocabulary.com/pdf/IPTC_mapped_fields.pdf
+   * @see     http://www.controlledvocabulary.com/pdf/IPTC_mapped_fields.pdf
    */
   class IptcData extends Object {
     var
@@ -29,8 +29,8 @@
       $author          = '',
       $authorPosition  = '',
       $city            = '',
-      $state 		   = '',
-      $country 	       = '',
+      $state           = '',
+      $country         = '',
       $headline        = '',
       $credit          = '',
       $source          = '',
