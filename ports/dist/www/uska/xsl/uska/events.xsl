@@ -16,13 +16,18 @@
   <xsl:include href="../wizard.inc.xsl"/>
   
   <xsl:template name="context">
-    <xsl:if test="'' != func:hasPermission('create_event')">
-      <xsl:call-template name="default_subnavigation">
-        <xsl:with-param name="items">
+    <xsl:call-template name="default_subnavigation">
+      <xsl:with-param name="items">
+        <xsl:if test="'' != func:hasPermission('create_event')">
           <item href="{func:link('event/edit')}">Neuer Termin</item>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:if>
+        </xsl:if>
+        <item href="{func:link('events?training,0,2')}">Trainings Mädels</item>
+        <item href="{func:link('events?training,0,1')}">Trainings Jungs</item>
+        <item href="{func:link('events?tournament')}">Turniere</item>
+        <item href="{func:link('events?enbw')}">Enbw-Liga</item>
+        <item href="{func:link('events?misc')}">Sonstiges</item>
+      </xsl:with-param>
+    </xsl:call-template>
   </xsl:template>
   
   <xsl:template name="content">
