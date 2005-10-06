@@ -5,6 +5,9 @@
 
 package net.xp_framework.easc.util;
 
+import java.io.DataOutput;
+import java.io.DataInput;
+import java.io.IOException;
 import static java.lang.Math.ceil;
 
 /**
@@ -81,13 +84,48 @@ public class ByteCountedString {
     }
 
     /**
+     * Writes this string to a specified DataOutput instance using 
+     * a specified chunk size
+     *
+     * @access  public
+     * @param   java.io.DataOutput out
+     */
+    public void writeTo(DataOutput out, int chunkSize) throws IOException {
+        int length= this.string.length();
+        int offset= 0;
+
+        do {
+            int chunk= length > chunkSize ? chunkSize : length;
+
+            out.writeByte((int)((chunk >>> 8) & 0xFF));
+            out.writeByte((int)((chunk >>> 0) & 0xFF));
+            out.writeByte(length- chunk > 0 ? 1 : 0);
+            out.writeBytes(this.string.substring(offset, offset+ chunk));
+
+            offset+= chunk;
+            length-= chunk;
+        } while (length > 0);
+    }
+
+    /**
+     * Writes this string to a specified DataOutput instance using 
+     * the DEFAULT_CHUNK_SIZE
+     *
+     * @access  public
+     * @param   java.io.DataOutput out
+     */
+    public void writeTo(DataOutput out) throws IOException {
+        this.writeTo(out, DEFAULT_CHUNK_SIZE);
+    }
+
+    /**
      * Retrieve bytes
      *
      * @access  public
      * @param   int chunkSize
      * @return  java.lang.String
      */
-    public String getBytes(int chunkSize) {
+    @Deprecated public String getBytes(int chunkSize) {
         int length= this.string.length();
         int offset= 0;
 
