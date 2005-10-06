@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.junit.Before;
 import net.xp_framework.easc.util.ByteCountedString;
 import junit.framework.ComparisonFailure;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 
 import static org.junit.Assert.*;
 
@@ -89,10 +91,13 @@ public class ByteCountedStringTest {
      * @throws  java.lang.Exception
      */
     @Test public void defaultChunks() throws Exception {
+        ByteArrayOutputStream out= new ByteArrayOutputStream();
+
+        this.string.writeTo(new DataOutputStream(out));
         assertEquals(46, this.string.length());
         assertString(
             "\u0000\u002b\u0000This is a test text, used for this unittest",
-            this.string.getBytes()
+            out.toString()
         );
     }
 
