@@ -5,6 +5,8 @@
 
 package net.xp_framework.easc.util;
 
+import static java.lang.Math.ceil;
+
 /**
  * Byte counted string. The layout is the following:
  *
@@ -56,6 +58,27 @@ public class ByteCountedString {
     public ByteCountedString(StringBuffer buffer) {
         this.string= buffer.toString();
     }
+    
+    /**
+     * Return length of encoded string based on specified chunksize
+     *
+     * @access  public
+     * @param   int chunkSize
+     * @return  int
+     */
+    public int length(int chunkSize) {
+        return this.string.length() + 3 * (int)ceil((double)this.string.length() / (double)chunkSize);
+    }
+
+    /**
+     * Return length of encoded string based on the default chunksize
+     *
+     * @access  public
+     * @return  int
+     */
+    public int length() {
+        return this.length(DEFAULT_CHUNK_SIZE);
+    }
 
     /**
      * Retrieve bytes
@@ -68,7 +91,7 @@ public class ByteCountedString {
         int length= this.string.length();
         int offset= 0;
 
-        StringBuffer buf= new StringBuffer(length + 2);
+        StringBuffer buf= new StringBuffer(this.length(chunkSize));
         do {
             int chunk= length > chunkSize ? chunkSize : length;
 
