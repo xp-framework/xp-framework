@@ -108,10 +108,13 @@ public class ByteCountedStringTest {
      * @throws  java.lang.Exception
      */
     @Test public void smallChunks() throws Exception {
+        ByteArrayOutputStream out= new ByteArrayOutputStream();
+
+        this.string.writeTo(new DataOutputStream(out), 20);
         assertEquals(52, this.string.length(20));
         assertString(
             "\u0000\u0014\u0001This is a test text,\u0000\u0014\u0001 used for this unitt\u0000\u0003\u0000est",
-            this.string.getBytes(20)
+            out.toString()
         );
     }
 
@@ -123,10 +126,13 @@ public class ByteCountedStringTest {
      * @throws  java.lang.Exception
      */
     @Test public void stringLengthChunks() throws Exception {
+        ByteArrayOutputStream out= new ByteArrayOutputStream();
+
+        this.string.writeTo(new DataOutputStream(out), 43);
         assertEquals(46, this.string.length(43));
         assertString(
             "\u0000\u002b\u0000This is a test text, used for this unittest",
-            this.string.getBytes(43)
+            out.toString()
         );
     }
 
@@ -145,7 +151,9 @@ public class ByteCountedStringTest {
         }
         
         ByteCountedString bcs= new ByteCountedString(s);
-        String bytes= bcs.getBytes();
+        ByteArrayOutputStream out= new ByteArrayOutputStream();
+        bcs.writeTo(new DataOutputStream(out));
+        String bytes= out.toString();
 
         assertEquals(65538, bcs.length());
         assertEquals(65538, bytes.length());
@@ -166,7 +174,9 @@ public class ByteCountedStringTest {
         }
         
         ByteCountedString bcs= new ByteCountedString(s);
-        String bytes= bcs.getBytes();
+        ByteArrayOutputStream out= new ByteArrayOutputStream();
+        bcs.writeTo(new DataOutputStream(out));
+        String bytes= out.toString();
 
         assertEquals(65542, bcs.length());
         assertEquals(65542, bytes.length());    // 65536 + 2 * 3 control bytes
