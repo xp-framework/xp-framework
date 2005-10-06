@@ -107,13 +107,15 @@ function putEnv($name, $var) {
               @doc    trycatch.php
               @doc    http://foo.bar/baz.php
          
+@test         Contains a fully qualified class name of an XP class that is a
+              testcase for this class. More than one @test tag is possible.
+              This tag uses the same "protocol" information like the @see tag -
+              for tested classes usually with the xp:// - prefix.
+
 @purpose      Purpose of use (short description)
               Syntax: <purpose>
          
               @purpose Encapsulates operations of an IMAP-server.
-
-@test         Contains a fully qualified class name of an XP class that is a
-              testcase for this class. More than one @test tag is possible.
 
 @deprecated   Indicates this class is deprecated. Usage is discouraged, though
               it remains in the framework for backwards compatibility.
