@@ -50,18 +50,27 @@ function putEnv($name, $var) {
       <para>
         <caption>Method keywords</caption>
         <text>
-          <pre><![CDATA[@access  Defines the access priviliges for a method
-         Allowed values are "public" and "private". 
+          Class keywords should be written in the order below.<br/>
+          <pre><![CDATA[@model   Defines an abstract "model" of the method.
+         Allowed values are "abstract", "static", "final". If it is 
+         a "normal" method, this tag is omitted.
+         
+         @model  abstract
+         
+@access  Defines the access priviliges for a method
+         Allowed values are "public", "protected" and "private". 
          
          @access public
 
 @param   Documents a parameter
-         Syntax: <typ> <name> [default <default>] <description>
+         Syntax: <type> <name> [default <default>] <description>
          
          @param  string $str default '' The given string
          @param  int $i Number of results to return
          @param  lang.Exception $e An exception
          @param  mixed $var A string or an integer
+         
+         If no parameter is given, any @param tag must be omitted.
          
 @return  Documents the return value
          Syntax: <typ> <description>
@@ -69,11 +78,20 @@ function putEnv($name, $var) {
          @return bool Success
          @return array Array of domainnames
          
-@throws  Documents that this method throws an exception.
-         Syntax <typ>[, <condition>]
+         If the method returns no value, the @return tag must be omitted.
          
-         @throws IOException
-         @throws IllegalStateException, if file is not open.
+@throws  Documents that this method throws an exception.
+         Syntax <type>[, <condition>]
+         
+         @throws io.IOException
+         @throws lang.IllegalStateException, if file is not open.
+         
+         The exception classes should be annotated with their FQDN.
+         A generic rule which exception should be written there: 
+         Exceptions that this method originally throws should be 
+         added; Exceptions that might occur here, but were issued by 
+         another method in another method, should not be noted here 
+         (this would be redundant and error prone).
 ]]></pre></text>
       </para>              
       <para>
@@ -94,8 +112,11 @@ function putEnv($name, $var) {
          
               @purpose Encapsulates operations of an IMAP-server.
 
+@test         Contains a fully qualified class name of an XP class that is a
+              testcase for this class. More than one @test tag is possible.
+
 @deprecated   Indicates this class is deprecated. Usage is discouraged, though
-              it remains in the framework for backwardds compatibility.
+              it remains in the framework for backwards compatibility.
 
 @experimental Indicates this class is experimental. The API may still change
               or disappear completely.
