@@ -569,7 +569,7 @@
      * @access  public
      * @return  &img.Image  
      */
-    function getThumbnail() {
+    function &getThumbnail() {
       $s= new Stream();
       $s->write(exif_thumbnail($this->getFilename()));
       $s->rewind();
