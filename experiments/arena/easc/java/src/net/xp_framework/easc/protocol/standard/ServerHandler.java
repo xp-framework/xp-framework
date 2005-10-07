@@ -10,6 +10,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import net.xp_framework.easc.server.Handler;
 import net.xp_framework.easc.protocol.standard.MessageType;
+import net.xp_framework.easc.util.ByteCountedString;
 import net.xp_framework.easc.server.Delegate;
 import net.xp_framework.easc.protocol.standard.Header;
 import net.xp_framework.easc.server.ProxyMap;
@@ -31,36 +32,21 @@ public class ServerHandler implements Handler {
         Serializer.registerExceptionName(java.lang.reflect.InvocationTargetException.class, "invoke/Exception");
     }
     
-    protected int utfLength(String buffer) {
-        int utflen= 0;
-        int c= 0;
-        int strlen= buffer.length();
-
-        // Figure out UTF-encoded length
-        for (int i= 0; i < strlen; i++) {
-            c= buffer.charAt(i);
-            if ((c >= 0x0001) && (c <= 0x007F)) {
-                utflen++;
-            } else if (c > 0x07FF) {
-                utflen += 3;
-            } else {
-                utflen += 2;
-            }
-        }
-        
-        return utflen;
-    }
-
     protected void writeResponse(DataOutputStream out, MessageType type, String buffer) throws IOException {
+        ByteCountedString bytes= new ByteCountedString(buffer);
+
+        // Write header
         new Header(
             DEFAULT_MAGIC_NUMBER,
             (byte)1,
             (byte)0,
             type,
             false,
-            this.utfLength(buffer)
+            bytes.length()
         ).writeTo(out);
-        out.writeUTF(buffer);
+
+        // Write length bytes
+        bytes.writeTo(out);
         
         // DEBUG System.out.println("[EASC] SEND " + type + " ('" + buffer + "')");
         

@@ -15,6 +15,7 @@ import net.xp_framework.easc.server.LookupDelegate;
 import net.xp_framework.easc.server.InitializationDelegate;
 import net.xp_framework.easc.server.CallDelegate;
 import net.xp_framework.easc.server.FinalizeDelegate;
+import net.xp_framework.easc.util.ByteCountedString;
 
 import static net.xp_framework.easc.util.MethodMatcher.methodFor;
 
@@ -93,7 +94,7 @@ public enum MessageType {
     
     Lookup {
         public Delegate delegateFrom(DataInputStream in, ProxyMap map) throws IOException {
-            String jndiName= in.readUTF();
+            String jndiName= ByteCountedString.readFrom(in);
             return new LookupDelegate(jndiName);
         }
     }, 
@@ -101,8 +102,8 @@ public enum MessageType {
     Call {
         public Delegate delegateFrom(DataInputStream in, ProxyMap map) throws IOException {
             long objectId= in.readLong();
-            String methodName= in.readUTF();
-            String serialized= in.readUTF();
+            String methodName= ByteCountedString.readFrom(in);
+            String serialized= ByteCountedString.readFrom(in);
             
             Object instance= map.getObject(objectId);
             Object arguments[]= null;

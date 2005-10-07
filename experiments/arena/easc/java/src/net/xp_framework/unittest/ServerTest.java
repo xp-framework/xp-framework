@@ -23,6 +23,7 @@ import net.xp_framework.easc.protocol.standard.ServerHandler;
 import net.xp_framework.easc.protocol.standard.Header;
 import net.xp_framework.easc.protocol.standard.MessageType;
 import net.xp_framework.easc.protocol.standard.Serializer;
+import net.xp_framework.easc.util.ByteCountedString;
 import net.xp_framework.unittest.MockContextFactory;
 import net.xp_framework.unittest.Person;
 import net.xp_framework.unittest.ITest;
@@ -119,7 +120,7 @@ public class ServerTest {
         // Read response
         DataInputStream in= new DataInputStream(client.getInputStream());
         assertEquals(expectedType, Header.readFrom(in).getMessageType());
-        if (null != expectedData) assertEquals(expectedData, in.readUTF());
+        if (null != expectedData) assertEquals(expectedData, ByteCountedString.readFrom(in));
     }
 
     /**
@@ -175,7 +176,7 @@ public class ServerTest {
             ),
             new Writer() {
                 public void writeTo(DataOutputStream out) throws IOException {
-                    out.writeUTF("test/DateObject");
+                    new ByteCountedString("test/DateObject").writeTo(out);
                 }
             }
         );
@@ -202,7 +203,7 @@ public class ServerTest {
             ),
             new Writer() {
                 public void writeTo(DataOutputStream out) throws IOException {
-                    out.writeUTF("test/PersonObject");
+                    new ByteCountedString("test/PersonObject").writeTo(out);
                 }
             }
         );
@@ -228,7 +229,7 @@ public class ServerTest {
             ),
             new Writer() {
                 public void writeTo(DataOutputStream out) throws IOException {
-                    out.writeUTF("test/Interface");
+                    new ByteCountedString("test/Interface").writeTo(out);
                 }
             }
         );
@@ -255,8 +256,8 @@ public class ServerTest {
             new Writer() {
                 public void writeTo(DataOutputStream out) throws IOException {
                     out.writeLong(1);
-                    out.writeUTF("hello");
-                    out.writeUTF("A:1:{s:5:\"World\";}");
+                    new ByteCountedString("hello").writeTo(out);
+                    new ByteCountedString("A:1:{s:5:\"World\";}").writeTo(out);
                 }
             }
         );
@@ -283,8 +284,8 @@ public class ServerTest {
             new Writer() {
                 public void writeTo(DataOutputStream out) throws IOException {
                     out.writeLong(1);
-                    out.writeUTF("nonExistant");
-                    out.writeUTF("A:0:{}");
+                    new ByteCountedString("nonExistant").writeTo(out);
+                    new ByteCountedString("A:0:{}").writeTo(out);
                 }
             }
         );
