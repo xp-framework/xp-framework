@@ -54,7 +54,7 @@
         $this->versionMajor, 
         $this->versionMinor
       );
-      $this->_sock= &new Socket($proxy->getHost('localhost'), $proxy->getPort(4448));
+      $this->_sock= &new Socket($proxy->getHost('localhost'), $proxy->getPort(6448));
       $this->_sock->connect();
       $this->sendPacket(REMOTE_MSG_INIT);
     }
