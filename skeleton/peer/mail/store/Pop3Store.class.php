@@ -24,14 +24,14 @@
      * </pre>
      *
      * @access  protected
-     * @param   array u
+     * @param   peer.URL
      * @param   &array attr
      * @param   &int port
      * @return  bool
      * @throws  IllegalArgumentException
      */
     function _supports($u, &$attr) {
-      switch (strtolower($u['scheme'])) {
+      switch (strtolower($u->getScheme())) {
         case 'pop3': 
           $attr['proto']= 'pop3'; 
           $attr['port']= 110; 

@@ -5,6 +5,7 @@
  */
 
   uses(
+    'peer.URL',
     'peer.http.HttpConstants',
     'scriptlet.HttpScriptletRequest',
     'scriptlet.HttpScriptletResponse',
@@ -287,17 +288,17 @@
      * @throws  Exception to indicate failure
      */
     function doCreateSession(&$request, &$response) {
-      $uri= $request->getURI();
+      $uri= &$request->getURL();
       $response->sendRedirect(sprintf(
         $this->sessionURIFormat,
-        $uri['scheme'],
-        $uri['host'],
-        $uri['path'],
-        dirname($uri['path']),
-        basename($uri['path']),
-        $uri['query'],
+        $uri->getScheme(),
+        $uri->getHost(),
+        $uri->getPath(),
+        dirname($uri->getPath()),
+        basename($uri->getPath()),
+        $uri->getQuery(),
         $request->session->getId(),
-        $uri['fraction']
+        $uri->getFragment()
       ));
       return FALSE;
     }
@@ -336,7 +337,7 @@
       $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
       $request->method= getenv('REQUEST_METHOD');
       $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
-      $request->setURI(parse_url(
+      $request->setURI(new URL(
         ('on' == getenv('HTTPS') ? 'https' : 'http').'://'.
         getenv('HTTP_HOST').
         getenv('REQUEST_URI')

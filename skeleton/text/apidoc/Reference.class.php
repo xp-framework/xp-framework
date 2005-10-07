@@ -85,18 +85,22 @@
      * @throws  FormatException in case the scheme is'nt recognized
      */
     function fromString($str) {
-      if (FALSE !== ($p= strpos($str, ' '))) {
-        $this->link= parse_url(substr($str, 0, $p));
-        $this->link['description']= substr($str, $p+ 1);
-      } else {
-        $this->link= parse_url($str);
-        $this->link['description']= NULL;
-      }
+      $u= new URL(FALSE !== ($p= strpos($str, ' '))
+        ? substr($str, 0, $p)
+        : $str
+      );
+      $this->link= array(
+        'scheme'   => $u->getScheme('xp'),  // Links without scheme are internal
+        'user'     => $u->getUser(),
+        'pass'     => $u->getPassword(),
+        'host'     => $u->getHost(),
+        'port'     => $u->getPort(),
+        'path'     => $u->getPath(),
+        'query'    => $u->getQuery()
+        'fragment' => $u->getFragment()
+        'description' => $p !== FALSE ? substr($str, $p+ 1) : NULL
+      );
       
-      // Links without scheme are internal
-      if (empty($this->link['scheme'])) {
-        $this->link['scheme']= 'xp';
-      }
       
       if (in_array($this->link['scheme'], Reference::getValidSchemes())) return;
       throw(new FormatException('Scheme '.$this->link['scheme'].' not recognized'));

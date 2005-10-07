@@ -23,14 +23,14 @@
      * </pre>
      *
      * @access  protected
-     * @param   array u
+     * @param   peer.URL u
      * @param   &array attr
      * @param   &int port
      * @return  bool
      * @throws  IllegalArgumentException
      */
-    function _supports($u, &$attr) {
-      switch (strtolower($u['scheme'])) {
+    function _supports(&$u, &$attr) {
+      switch (strtolower($u->getScheme())) {
         case 'mbox': 
           $attr['mbx']= '/'.$u['host'].$u['path'];
           $attr['open']= TRUE;

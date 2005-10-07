@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('peer.mail.transport.Transport', 'peer.Socket');
+  uses('peer.URL', 'peer.mail.transport.Transport', 'peer.Socket');
   
   // Authentication methods
   define('SMTP_AUTH_PLAIN', 'plain');
@@ -176,13 +176,13 @@
     function _parsedsn($dsn) {
       if (NULL === $dsn) return TRUE;
       
-      $u= parse_url($dsn);
-      if (!isset($u['host'])) {
+      $u= &new URL($dsn);
+      if (!$u->getHost()) {
         return throw(new IllegalArgumentException('DSN parsing failed ["'.$dsn.'"]'));
       }
       
       // Scheme
-      switch (strtoupper($u['scheme'])) {
+      switch (strtoupper($u->getScheme())) {
         case 'ESMTP':
           $this->ext= TRUE;
           break;
@@ -192,23 +192,20 @@
           break;
           
         default: 
-          return throw(new IllegalArgumentException('Scheme "'.$u['scheme'].'" not supported'));
+          return throw(new IllegalArgumentException('Scheme "'.$u->getScheme().'" not supported'));
       }
       
       // Copy host and port
-      $this->host= $u['host'];
-      $this->port= isset($u['port']) ? $u['port'] : 25;
+      $this->host= $u->getHost();
+      $this->port= $u->getPort() ? $u->getPort() : 25;
       
       // Extra attributes
-      if (isset($u['query'])) {
-        parse_str($u['query'], $attr);
-        $this->auth= isset($attr['auth']) ? $attr['auth'] : SMTP_AUTH_PLAIN;
-      }
+      $this->auth= $u->getParam('auth') ? $u->getParam('auth') : SMTP_AUTH_PLAIN;
 
       // User & password
-      if (isset($u['user'])) {
-        $this->user= $u['user'];
-        $this->pass= $u['pass'];
+      if ($u->getUser()) {
+        $this->user= $u->getUser();
+        $this->pass= $u->getPassword();
       }
     }
     

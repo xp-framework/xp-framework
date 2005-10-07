@@ -5,6 +5,7 @@
  */
 
   uses(
+    'peer.URL',
     'peer.ftp.FtpDir', 
     'peer.SocketException', 
     'peer.ConnectException', 
@@ -82,12 +83,12 @@
     function _dsn($dsn) {
     
       // URL and defaults
-      $this->url= parse_url($dsn);
-      $this->url['host']= empty($this->url['host']) ? 'localhost' : $this->url['host'];
-      $this->url['port']= empty($this->url['port']) ? 21 : $this->url['port'];
+      $this->url= &new URL($dsn);
+      $this->url->getHost() || $this->url->_info['host']= 'localhost';
+      $this->url->getPort() || $this->url->_info['port']= 21;
       
       // Options and defaults
-      if (!empty($this->url['query'])) parse_str($this->url['query'], $this->opt);
+      $this->opt= $this->url->getParams();
       $this->opt['timeout']= empty($this->opt['timeout']) ? 4 : $this->opt['timeout'];
     }
 
@@ -100,19 +101,19 @@
      * @throws  peer.AuthenticationException when authentication fails
      */
     function connect() {
-      switch ($this->url['scheme']) {
+      switch ($this->url->getScheme()) {
         case 'ftp':
           $this->_hdl= ftp_connect(
-            $this->url['host'], 
-            $this->url['port'], 
+            $this->url->getHost(), 
+            $this->url->getPort(), 
             $this->opt['timeout']
           );
           break;
 
         case 'ftps':
           $this->_hdl= ftp_ssl_connect(
-            $this->url['host'], 
-            $this->url['port'], 
+            $this->url->getHost(), 
+            $this->url->getPort(), 
             $this->opt['timeout']
           );
           break;
@@ -121,17 +122,17 @@
       if (!is_resource($this->_hdl)) {
         return throw(new ConnectException(sprintf(
           'Could not connect to %s:%d within %d seconds',
-          $this->url['host'], $this->url['port'], $this->opt['timeout']
+          $this->url->getHost(), $this->url->getPort(), $this->opt['timeout']
         )));
       }
       
       // User & password
-      if (empty($this->url['user'])) return TRUE;
+      if (!$this->url->getUser()) return TRUE;
       
-      if (FALSE === ftp_login($this->_hdl, $this->url['user'], $this->url['pass'])) {
+      if (FALSE === ftp_login($this->_hdl, $this->url->getUser(), $this->url->getPassword())) {
         return throw(new AuthenticationException(sprintf(
           'Authentication failed for %s@%s (using password: %s)',
-          $this->url['user'], $this->url['host'], empty($this->url['pass']) ? 'no' : 'yes'
+          $this->url->getUser(), $this->url->getHost(), $this->url->getPassword() ? 'no' : 'yes'
         )));
       }
       

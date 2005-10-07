@@ -255,6 +255,8 @@
      */
     function setURL($str) {
       $this->_info= parse_url($str);
+      if (isset($this->_info['user'])) $this->_info['user']= rawurldecode($this->_info['user']);
+      if (isset($this->_info['pass'])) $this->_info['pass']= rawurldecode($this->_info['pass']);
       if (isset($this->_info['query'])) {
         parse_str($this->_info['query'], $this->_info['params']);
       } else {

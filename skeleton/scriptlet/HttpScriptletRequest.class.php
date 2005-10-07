@@ -175,22 +175,30 @@
      * Sets request's URI
      *
      * @access  public
-     * @param   uri URI a uri parsed by parse_url()
-     * @see     php://parse_url
+     * @param   peer.URL uri a uri representated by peer.URL
      */
-    function setURI($uri) {
-      $this->uri= $uri;
+    function setURI(&$uri) {
+      $this->uri= &$uri;
     }
     
     /**
-     * Retrieves the requests absolute URI as an uri (which consists
-     * of one or more of the following attributes: scheme, host, port,
-     * user, pass, path, query and fragment).
+     * Retrieves the requests absolute URI as an URL object
      *
      * @access  public
-     * @return  uri URI
+     * @return  string
      */
+    #[@deprecated]
     function getURI() {
+      return $this->uri->_info;     // HACK
+    }
+
+    /**
+     * Retrieves the requests absolute URI as an URL object
+     *
+     * @access  public
+     * @return  peer.URL
+     */
+    function &getURL() {
       return $this->uri;
     }
     

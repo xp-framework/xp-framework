@@ -122,7 +122,7 @@
      * @return  bool
      */
     function doRedirect(&$request, &$response, $sessionId= NULL) {
-      $uri= $request->getURI();
+      $uri= &$request->getURL();
 
       // Get product, language and statename from the environment if 
       // necessary. Their default values are "site" (product), 
@@ -140,14 +140,14 @@
       // Send redirect
       $response->sendRedirect(sprintf(
         '%s://%s/xml/%s.%s%s/%s%s%s', 
-        $uri['scheme'],
-        $uri['host'],          
+        $uri->getScheme(),
+        $uri->getHost(),
         $product,
         $language,
         empty($sessionId) ? '' : '.psessionid='.$sessionId,
         $stateName,
-        empty($uri['query']) ? '' : '?'.$uri['query'],
-        empty($uri['fraction']) ? '' : '#'.$uri['fraction']        
+        $uri->getQuery() ? '?'.$uri->getQuery() : '',
+        $uri->getFragment() ? '#'.$uri->getFragment() : ''
       ));
       
       return FALSE; // Indicate no further processing is to be done

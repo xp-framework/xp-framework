@@ -768,19 +768,19 @@
       // Select implementation
       $this->handlingImpl= NULL;
       foreach (array_keys($this->impl) as $pattern) {
-        if (0 !== strpos(rtrim($request->uri['path'], '/').'/', $pattern)) continue;
+        if (0 !== strpos(rtrim($request->uri->getPath(), '/').'/', $pattern)) continue;
         
         // Set the root URL (e.g. http://wedav.host.com/dav/)
         $request->setRootURL($rootURL= &new URL(sprintf(
           '%s://%s%s',
-          $request->uri['scheme'],
-          $request->uri['host'],
+          $request->uri->getScheme(),
+          $request->uri->Host(),
           $pattern
         )));
         
         // Set request path (e.g. /directory/file)
         $request->setPath($request->decodePath(substr(
-          $request->uri['path'], 
+          $request->uri->getPath(), 
           strlen($pattern)
         )));
         
@@ -793,7 +793,7 @@
       
       // Implementation not found
       if (NULL === $this->handlingImpl) {
-        return throw(new HttpScriptlet('Cannot handle requests to '.$request->uri['path']));
+        return throw(new HttpScriptlet('Cannot handle requests to '.$request->uri->getPath()));
       }
 
       // determine Useragent

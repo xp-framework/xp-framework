@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('peer.mail.store.MailStore');
+  uses('peer.URL', 'peer.mail.store.MailStore');
  
   /**
    * Mail store
@@ -35,14 +35,14 @@
      * Protected method to check whether this DSN is supported
      *
      * @access  protected
-     * @param   array u
+     * @param   &peer.URL u
      * @param   &array attr
      * @param   &int port
      * @return  bool
      * @throws  IllegalArgumentException
      */
-    function _supports($u, &$attr) {
-      return throw(new IllegalArgumentException('Scheme "'.$u['scheme'].'" not recognized'));
+    function _supports(&$u, &$attr) {
+      return throw(new IllegalArgumentException('Scheme "'.$u->getScheme().'" not recognized'));
     }
     
     /**
@@ -60,28 +60,27 @@
       $flags= OP_HALFOPEN;
 
       // Parse DSN
-      $u= parse_url($dsn);
-      if (isset($u['query'])) parse_str($u['query'], $attr);
+      $u= &new URL($dsn);
       
       
       // DSN supported?
-      if (FALSE === $this->_supports($u, $attr)) return FALSE;
+      if (FALSE === $this->_supports($u, $u->getParams())) return FALSE;
 
       // Read-only?
-      if (!empty($attr['open'])) $flags ^= OP_HALFOPEN;
-      if (!empty($attr['read-only'])) $flags |= OP_READONLY;
+      if ($u->getParam('open')) $flags ^= OP_HALFOPEN;
+      if ($u->getParam('read-only')) $flags |= OP_READONLY;
       
-      $mbx= isset($attr['mbx']) ? $attr['mbx'] : sprintf(
+      $mbx= $u->getParam('mbx') ? $u->getParam('mbx') : sprintf(
         '{%s:%d/%s}',
-        $u['host'],
-        isset($u['port']) ? $u['port'] : $attr['port'],
-        $attr['proto']
+        $u->getHost(),
+        $u->getPort() ? $u->getPort() : $u->getParam('port'),
+        $u->getParam('proto')
       );
       
       // Connect
-      if (FALSE === ($conn= imap_open($mbx, @$u['user'], @$u['pass'], $flags))) {
+      if (FALSE === ($conn= imap_open($mbx, @$u->getUser(), @$u->getPassword(), $flags))) {
         return throw(new MessagingException(
-          'Connect to "'.$u['user'].'@'.$mbx.'" failed',
+          'Connect to "'.$u->getUser().'@'.$mbx.'" failed',
           $this->_errors()
         ));
       }
