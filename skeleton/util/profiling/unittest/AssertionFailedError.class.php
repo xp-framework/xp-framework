@@ -60,8 +60,8 @@
         "%s (%s) { expected: [%s] but was: [%s] }\n",
         $this->getClassName(),
         $this->message,
-        xp::stringOf($this->actual),
-        xp::stringOf($this->expect)
+        xp::stringOf($this->expect),
+        xp::stringOf($this->actual)
       );
       
       // Slice the first four trace elements, they contain the

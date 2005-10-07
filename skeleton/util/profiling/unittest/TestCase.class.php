@@ -206,7 +206,7 @@
      */
     function assertEquals($expected, $actual, $error= 'notequal') {
       if (!(is_a($expected, 'Object') ? $expected->equals($actual) : $expected === $actual)) {
-        return $this->fail($error, $expected, $actual);
+        return $this->fail($error, $actual, $expected);
       }
       return TRUE;
     }
