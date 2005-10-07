@@ -10,7 +10,9 @@ import org.junit.Before;
 import net.xp_framework.easc.util.ByteCountedString;
 import junit.framework.ComparisonFailure;
 import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
+import java.io.DataInputStream;
 
 import static org.junit.Assert.*;
 
@@ -85,12 +87,12 @@ public class ByteCountedStringTest {
     }
     
     /**
-     * Tests the getChunks() method without arguments
+     * Tests the writeTo() method without arguments
      *
      * @access  public
      * @throws  java.lang.Exception
      */
-    @Test public void defaultChunks() throws Exception {
+    @Test public void writeDefaultChunks() throws Exception {
         ByteArrayOutputStream out= new ByteArrayOutputStream();
 
         this.string.writeTo(new DataOutputStream(out));
@@ -102,12 +104,12 @@ public class ByteCountedStringTest {
     }
 
     /**
-     * Tests the getChunks() method without a chunk size of 20
+     * Tests the writeTo() method without a chunk size of 20
      *
      * @access  public
      * @throws  java.lang.Exception
      */
-    @Test public void smallChunks() throws Exception {
+    @Test public void writeSmallChunks() throws Exception {
         ByteArrayOutputStream out= new ByteArrayOutputStream();
 
         this.string.writeTo(new DataOutputStream(out), 20);
@@ -119,13 +121,13 @@ public class ByteCountedStringTest {
     }
 
     /**
-     * Tests the getChunks() method without a chunk size of 43
+     * Tests the writeTo() method without a chunk size of 43
      * (the exact length of the test string)
      *
      * @access  public
      * @throws  java.lang.Exception
      */
-    @Test public void stringLengthChunks() throws Exception {
+    @Test public void writeStringLengthChunks() throws Exception {
         ByteArrayOutputStream out= new ByteArrayOutputStream();
 
         this.string.writeTo(new DataOutputStream(out), 43);
@@ -137,14 +139,14 @@ public class ByteCountedStringTest {
     }
 
     /**
-     * Tests the getChunks() method without arguments on a string 
+     * Tests the writeTo() method without arguments on a string 
      * with exactly 65535 bytes (which is the maximum length that
      * can be encoded in two bytes.
      *
      * @access  public
      * @throws  java.lang.Exception
      */
-    @Test public void maximumLengthChunks() throws Exception {
+    @Test public void writeMaximumLengthChunks() throws Exception {
         StringBuffer s= new StringBuffer(65535);
         for (int i= 0; i < 65535; i++) {
             s.append('c');
@@ -161,13 +163,13 @@ public class ByteCountedStringTest {
     }
 
     /**
-     * Tests the getChunks() method without arguments on a string 
+     * Tests the writeTo() method without arguments on a string 
      * with more than 65535 bytes (exactly one more).
      *
      * @access  public
      * @throws  java.lang.Exception
      */
-    @Test public void maximumLengthExceededChunks() throws Exception {
+    @Test public void writeMaximumLengthExceededChunks() throws Exception {
         StringBuffer s= new StringBuffer(65536);
         for (int i= 0; i < 65536; i++) {
             s.append('c');
@@ -183,4 +185,21 @@ public class ByteCountedStringTest {
         assertString("\u00FF\u00FF\u0001ccccccc", bytes.substring(0, 10));
         assertString("\u0000\u0001\u0000c", bytes.substring(65538, 65542));
     }
+    
+    /**
+     * Tests the readFrom() method without arguments on a string 
+     * with more than 65535 bytes (exactly one more).
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void readDefaultChunks() throws Exception {
+        ByteArrayInputStream in= new ByteArrayInputStream(
+            (byte[])"\u0000\u002b\u0000This is a test text, used for this unittest".getBytes()
+        );
+        String read= ByteCountedString.readFrom(new DataInputStream(in));
+        
+        assertEquals(43, read.length());
+        assertEquals("This is a test text, used for this unittest", read);
+    }    
 }
