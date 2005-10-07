@@ -56,7 +56,15 @@
       );
       $this->_sock= &new Socket($proxy->getHost('localhost'), $proxy->getPort(6448));
       $this->_sock->connect();
-      $this->sendPacket(REMOTE_MSG_INIT);
+      
+      if ($user= $proxy->getUser()) {
+        $this->sendPacket(REMOTE_MSG_INIT, "\1", array(
+          new ByteCountedString($proxy->getUser()),
+          new ByteCountedString($proxy->getPassword())
+        ));
+      } else {
+        $this->sendPacket(REMOTE_MSG_INIT, "\0");
+      }
     }
     
     /**
