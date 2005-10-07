@@ -6,7 +6,7 @@
 
   uses(
     'peer.Socket',
-    'com.sun.UTF', 
+    'ByteCountedString', 
     'Serializer', 
     'RemoteInvocationHandler', 
     'RemoteInterfaceMapping',
@@ -67,7 +67,7 @@
      * @param   &lang.Object
      */
     function &lookup($name) {
-      return $this->sendPacket(REMOTE_MSG_LOOKUP, UTF::encode($name));
+      return $this->sendPacket(REMOTE_MSG_LOOKUP, '', array(new ByteCountedString($name)));
     }
 
     /**
@@ -81,13 +81,14 @@
      * @return  &mixed
      */
     function &invoke($oid, $method, $args) {
-      return $this->sendPacket(REMOTE_MSG_CALL, pack(
-        'NNa*a*',
-        0,
-        $oid,
-        UTF::encode($method),
-        UTF::encode(Serializer::representationOf(new ArrayList($args)))
-      ));
+      return $this->sendPacket(
+        REMOTE_MSG_CALL, 
+        pack('NN', 0, $oid),
+        array(
+          new ByteCountedString($method),
+          new ByteCountedString(Serializer::representationOf(new ArrayList($args)))
+        )
+      );
     }
 
     /**
@@ -99,8 +100,15 @@
      * @return  &mixed
      * @throws  io.IOException in case of I/O errors
      */
-    function sendPacket($type, $data= '') {
-    
+    function sendPacket($type, $data= '', $bytes= array()) {
+      $bsize= sizeof($bytes);
+      
+      // Calculate packet length
+      $length= strlen($data);
+      for ($i= 0; $i < $bsize; $i++) {
+        $length+= $bytes[$i]->length();
+      }
+      
       // Write packet
       $packet= pack(
         'Nc4Na*', 
@@ -109,13 +117,16 @@
         $this->versionMinor,
         $type,
         FALSE,                  // compressed, not used at the moment
-        strlen($data),
+        $length,
         $data
       );
       // DEBUG Console::writeLine('>>>', addcslashes($packet, "\0..\37!@\177..\377"));
 
       try(); {
         $this->_sock->write($packet);
+        for ($i= 0; $i < $bsize; $i++) {
+          $bytes[$i]->writeTo($this->_sock);
+        }
         $header= unpack(
           'Nmagic/cvmajor/cvminor/ctype/ccompressed/Nlength', 
           $this->readBytes(12)
@@ -131,32 +142,32 @@
         return throw(new Error('Magic number mismatch (have: '.$header['magic'].' expect: '.DEFAULT_PROTOCOL_MAGIC_NUMBER));
       }
       
-      try(); {
-        $data= $this->readBytes($header['length']+ 2);
-      } if (catch('IOException', $e)) {
-        return throw($e);
-      }
-
       // DEBUG Console::writeLine('<<<', addcslashes($data, "\0..\37!@\177..\377"));
 
       $ctx= array('handler' => &$this);
 
       // Perform actions based on response type
-      switch ($header['type']) {
-        case REMOTE_MSG_VALUE:
-          return Serializer::valueOf(UTF::decode($data), $length= 0, $ctx);
-        
-        case REMOTE_MSG_EXCEPTION:
-          $e= &Serializer::valueOf(UTF::decode($data), $length= 0, $ctx);
-          return throw(new RemoteException($e->classname, $e));
-        
-        case REMOTE_MSG_ERROR:
-          $this->_sock->close();
-          return throw(new Error(UTF::decode($data), $length= 0, $ctx));
-        
-        default:
-          $this->_sock->close();
-          return throw(new Error('Unknown message type'));
+      try(); {
+        switch ($header['type']) {
+          case REMOTE_MSG_VALUE:
+            return Serializer::valueOf(ByteCountedString::readFrom($this->_sock), $length= 0, $ctx);
+
+          case REMOTE_MSG_EXCEPTION:
+            $e= &Serializer::valueOf(ByteCountedString::readFrom($this->_sock), $length= 0, $ctx);
+            return throw(new RemoteException($e->classname, $e));
+
+          case REMOTE_MSG_ERROR:
+            $message= ByteCountedString::readFrom($this->_sock);
+            $this->_sock->close();
+            return throw(new Error($message, $length= 0, $ctx));
+
+          default:
+            $this->_sock->readBytes($header['length']);   // Read all left-over bytes
+            $this->_sock->close();
+            return throw(new Error('Unknown message type'));
+        }
+      } if (catch('IOException', $e)) {
+        return throw($e);
       }
     }
     
