@@ -29,8 +29,9 @@ import static net.xp_framework.easc.util.MethodMatcher.methodFor;
  * ==========
  * - Request
  *   This is the first message the client sends on the socket after connecting
- *   to the EASC server. It contains a hashmap with 0 .. n key-value-pairs for 
- *   the environment.
+ *   to the EASC server. It contains a boolean indicating whether authorization
+ *   information is passed (and if so, a string containing the username and one
+ *   containing the password).
  *
  * Lookup
  * ======
@@ -88,6 +89,13 @@ public enum MessageType {
 
     Initialize {
         public Delegate delegateFrom(DataInputStream in, ProxyMap map) throws IOException {
+            if (in.readBoolean()) {
+                return new InitializationDelegate(
+                    ByteCountedString.readFrom(in),   // username
+                    ByteCountedString.readFrom(in)    // password
+
+                );
+            }
             return new InitializationDelegate();
         }
     }, 

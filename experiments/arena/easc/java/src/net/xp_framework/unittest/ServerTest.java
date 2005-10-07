@@ -152,7 +152,12 @@ public class ServerTest {
                 MessageType.Initialize,
                 true,
                 0
-            )
+            ),
+            new Writer() {
+                public void writeTo(DataOutputStream out) throws IOException {
+                    out.writeBoolean(false);    // No authorization
+                }
+            }
         );
     }
 
