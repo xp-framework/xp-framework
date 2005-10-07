@@ -570,7 +570,8 @@
      * @return  &img.Image  
      */
     function &getThumbnail() {
-      $s= new Stream();
+      $s= &new Stream();
+      $s->open(STREAM_MODE_WRITE);
       $s->write(exif_thumbnail($this->getFilename()));
       $s->rewind();
       return Image::loadFrom(new StreamReader($s));
