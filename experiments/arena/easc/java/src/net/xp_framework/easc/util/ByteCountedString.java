@@ -117,4 +117,29 @@ public class ByteCountedString {
     public void writeTo(DataOutput out) throws IOException {
         this.writeTo(out, DEFAULT_CHUNK_SIZE);
     }
+    
+    /**
+     * Reads from a specfied DataInput source
+     *
+     * @access  public
+     * @param   java.io.DataInput in
+     * @return  java.lang.String
+     */
+    public static String readFrom(DataInput in) throws IOException {
+        int length;
+        boolean next;
+        
+        StringBuffer s= new StringBuffer();
+        do {
+            length= in.readUnsignedShort();
+            next= (1 == in.readUnsignedByte());
+            
+            byte[] buffer= new byte[length];
+            in.readFully(buffer);
+            
+            s.append(new String(buffer));
+        } while (next);
+        
+        return s.toString();
+    }
 }
