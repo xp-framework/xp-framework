@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('org.cvshome.CVSInterface');
+
   /**
    * CVS directory
    *

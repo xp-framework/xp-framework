@@ -3,6 +3,8 @@
  *
  * $Id$ 
  */
+  
+  uses('util.ChainedException');
 
   /**
    * DeferredInitialization Exception

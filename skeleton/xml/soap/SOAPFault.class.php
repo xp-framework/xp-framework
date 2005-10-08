@@ -3,6 +3,8 @@
  *
  * $Id$ 
  */
+  
+  uses('xml.XML');
 
   /**
    * SOAP fault
