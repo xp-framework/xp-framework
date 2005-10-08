@@ -10,12 +10,13 @@
   );
 
   // Modes of operation
-  define('PHPPARSER_MODE_UNDEF',            0x0000);
-  define('PHPPARSER_MODE_GET_FUNC_NAME',    0x0001);
-  define('PHPPARSER_MODE_GET_CLASS_NAME',   0x0002);
-  define('PHPPARSER_MODE_GET_USES',         0x0003);
-  define('PHPPARSER_MODE_GET_REQUIRE',      0x0004);
-  define('PHPPARSER_MODE_GET_SAPIS',        0x0005);
+  define('PHPPARSER_MODE_UNDEF',              0x0000);
+  define('PHPPARSER_MODE_GET_FUNC_NAME',      0x0001);
+  define('PHPPARSER_MODE_GET_CLASS_NAME',     0x0002);
+  define('PHPPARSER_MODE_GET_USES',           0x0003);
+  define('PHPPARSER_MODE_GET_REQUIRE',        0x0004);
+  define('PHPPARSER_MODE_GET_SAPIS',          0x0005);
+  define('PHPPARSER_MODE_GET_CLASS_EXTENDS',  0x0006);
 
   /**
    * Class to parse PHP files. Parsing tries to extract informations
@@ -139,6 +140,10 @@
                 $mode= PHPPARSER_MODE_GET_CLASS_NAME;
                 break;
               
+              case T_EXTENDS:
+                $mode= PHPPARSER_MODE_GET_CLASS_EXTENDS;
+                break;
+              
               default:
                 break;
             }
@@ -197,6 +202,22 @@
                 break;
             }
             break;
+          
+          case PHPPARSER_MODE_GET_CLASS_EXTENDS:
+            switch ($tokenId) {
+              case T_EXTENDS;
+              case T_WHITESPACE:
+                break;
+              
+              case T_STRING:
+                $this->log && $this->log->info ('extends', $data, 'at line', $lineno);
+                
+                // Get last found class from stack
+                $c= &$currentClass[sizeof($currentClass) - 1];
+                $c->extends= $data;
+                $mode= PHPPARSER_MODE_UNDEF;
+                break;
+            }
         }
       }
       
