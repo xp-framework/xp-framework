@@ -15,7 +15,7 @@
   // {{{ void recurse(&xml.Tree tree, string base, string prefix= '', string uri= '') throws lang.IllegalArgumentException
   //     Recurse a folder an build a sub-tree
   function recurse(&$tree, $base, $prefix= '', $uri= '') {
-    static $except= array('META-INF', 'CVS');
+    static $except= array('META-INF', 'CVS', '.svn');
     static $include= array('class', 'sapi');
     
     $f= &new Folder($base.DIRECTORY_SEPARATOR.$uri);

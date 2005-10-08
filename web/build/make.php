@@ -47,7 +47,7 @@
   // {{{ void recurse(&util.Hashmap list, string name, string base, string prefix= '', string uri= '') throws lang.IllegalArgumentException
   //     Recurse a folder an build a sub-tree
   function recurse(&$list, $name, $base, $prefix= '', $uri= '') {
-    static $except= array('META-INF', 'CVS');
+    static $except= array('META-INF', 'CVS', '.svn');
     static $include= array('class', 'sapi');
     static $output= array();
     
