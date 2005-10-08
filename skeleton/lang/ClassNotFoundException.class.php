@@ -5,7 +5,7 @@
  */
  
   /**
-   * Kapselt die ClassNotFoundException
+   * Encapsulates ClassNotFoundException
    *
    * @see Exception
    */

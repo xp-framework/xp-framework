@@ -5,7 +5,7 @@
  */
  
   /**
-   * Kapselt die FormatException
+   * Encapsulates FormatException
    *
    * @see   xp://lang.Exception
    */

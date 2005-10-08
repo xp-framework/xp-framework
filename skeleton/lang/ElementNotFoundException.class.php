@@ -5,7 +5,7 @@
  */
  
   /**
-   * Kapselt die ElementNotFoundException
+   * Encapsulates ElementNotFoundException
    *
    * @see Exception
    */
