@@ -119,7 +119,7 @@
       </table>
       <br clear="all"/>
     </xsl:if>
-
+    
     <!-- References -->
     <xsl:if test="count(/formresult/apidoc/comments/class/references/reference) &gt; 0">
       <b>See also:</b>
@@ -144,6 +144,15 @@
         </xsl:for-each>
       </ul>
     </xsl:if>
+
+    <!-- Inheritance -->
+    <h3>Inheritance tree</h3>
+    <xsl:variable name="fqcn" select="concat($current/@package, '.', $current/@class)"/>
+    <xsl:variable name="inheritance" select="document('../../../../build/inheritance.xml')/inheritance//class[@name= $fqcn]"/>
+    
+    <xsl:call-template name="show-inheritance">
+      <xsl:with-param name="class" select="$fqcn"/>
+    </xsl:call-template>
     
     <!-- Method summary -->
     <h3>
@@ -172,6 +181,14 @@
         </tr>
       </xsl:for-each>
     </table>
+    
+    <!-- Inherited methods -->
+    <xsl:if test="$inheritance/@extends != ''">
+      <h3>Inherited methods</h3>
+      <xsl:call-template name="show-inherited-methods">
+        <xsl:with-param name="class" select="$inheritance/@extends"/>
+      </xsl:call-template>
+    </xsl:if>
     
     <!-- Method detail -->
     <xsl:if test="count(/formresult/apidoc/comments/method) &gt; 0">
@@ -251,4 +268,40 @@
     </xsl:if>
   </xsl:template>
   
+  <xsl:template name="show-inheritance">
+    <xsl:param name="class"/>
+    <xsl:variable name="tree" select="document('../../../../build/inheritance.xml')/inheritance//class[@name= $class]"/>
+    
+    <xsl:if test="$tree/@extends != ''">
+      <xsl:call-template name="show-inheritance">
+        <xsl:with-param name="tree" select="$tree"/>
+        <xsl:with-param name="class" select="$tree/@extends"/>
+      </xsl:call-template>
+    </xsl:if>
+    
+    <div>
+      <xsl:if test="$tree/@extends != ''">^- </xsl:if>
+      <xsl:value-of select="$tree/@name"/>
+    </div>
+  </xsl:template>
+  
+  <xsl:template name="show-inherited-methods">
+    <xsl:param name="class"/>
+    <xsl:variable name="tree" select="document('../../../../build/inheritance.xml')/inheritance//class[@name= $class]"/>
+    
+    <div style="border: 1px solid black; padding: 2px; margin-bottom: 5px;">
+      <b>Methods inherited from <a href="{func:link(concat('lookup?', $tree/@name))}"><xsl:value-of select="$tree/@name"/></a></b>:<br/>
+      <xsl:for-each select="$tree/methods/method">
+        <xsl:sort select="."/>
+        <a href="{func:link(concat('lookup?', $tree/@name, '#', .))}"><xsl:value-of select="."/></a>
+        <xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if>
+      </xsl:for-each>
+    </div>
+    
+    <xsl:if test="$tree/@extends != ''">
+      <xsl:call-template name="show-inherited-methods">
+        <xsl:with-param name="class" select="$tree/@extends"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
 </xsl:stylesheet>
