@@ -18,3 +18,6 @@ parse: cache
 
 collections:
 	$(PHP) collections.php $(collections) > collections.xml
+
+inheritance:
+	$(PHP) inheritance.php $(collections) > inheritance.xml
