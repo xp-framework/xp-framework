@@ -154,6 +154,17 @@
       <xsl:with-param name="class" select="$fqcn"/>
     </xsl:call-template>
     
+    <xsl:variable name="derived" select="document('../../../../build/inheritance.xml')/inheritance//class[@extends= $fqcn]"/>
+    <xsl:if test="count($derived) &gt; 0">
+      <br/>
+      <b>Direct known subclasses:</b><br/>
+      <xsl:for-each select="$derived">
+        <xsl:sort select="substring(@name, string-length(@package) + 2)"/>
+        <a href="{func:link(concat('lookup?', @name))}"><xsl:value-of select="substring(@name, string-length(@package) + 2)"/></a>
+        <xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if>
+      </xsl:for-each>
+    </xsl:if>
+    
     <!-- Method summary -->
     <h3>
       Method summary (<xsl:value-of select="count(/formresult/apidoc/comments/method)"/>)
@@ -281,7 +292,7 @@
     
     <div>
       <xsl:if test="$tree/@extends != ''">^- </xsl:if>
-      <xsl:value-of select="$tree/@name"/>
+      <a href="{func:link(concat('lookup?', $tree/@name))}"><xsl:value-of select="$tree/@name"/></a>
     </div>
   </xsl:template>
   
