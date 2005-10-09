@@ -22,19 +22,15 @@
   <xsl:template name="context">
 
     <!-- cvs -->
-    <h4 class="context">CVS activity</h4>
+    <h4 class="context">Repository</h4>
     <ul class="context">
       <li>
-        <em>2003-12-11 17:08</em>:<br/>
-        <a href="#apidoc/classes/ch/ecma/StliConnection">StliConnection</a> (friebe)
+        <em>svn-web</em>:<br/>
+        <a href="#">(not yet available)</a>
       </li>
       <li>
-        <em>2003-12-11 17:08</em>:<br/>
-        <a href="#apidoc/classes/ch/ecma/StliConnection">TelephonyAddress</a> (friebe)
-      </li>
-      <li>
-        <em>2003-09-27 15:30:00</em>:<br/>
-        <a href="#apidoc/classes/com/sun/webstart/JnlpDocument">JnlpDocument</a> (friebe)
+        <em>Inheritance tree</em>:<br/>
+        <a href="{func:link('documentation/inheritance')}">click here</a>
       </li>
     </ul>
 
