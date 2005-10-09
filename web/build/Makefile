@@ -8,7 +8,7 @@ collections=../etc/make/collections.ini
 
 .PHONY: cache
 
-all: parse collections
+all: parse collections inheritance
 
 cache:
 	test -e cache || mkdir cache
