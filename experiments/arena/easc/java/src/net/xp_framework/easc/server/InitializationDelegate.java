@@ -21,21 +21,7 @@ public class InitializationDelegate implements Delegate {
     }
 
     public InitializationDelegate(final String username, final String password) {
-        try {
-            (new LoginContext("easc", (CallbackHandler) new CallbackHandler() {
-                public void handle(Callback[] callbacks) throws UnsupportedCallbackException {
-                    for (int i= 0; i < callbacks.length; i++) {
-                        if (callbacks[i] instanceof NameCallback) {
-                            ((NameCallback)callbacks[i]).setName(username);
-                        } else if (callbacks[i] instanceof PasswordCallback) {
-                            ((PasswordCallback)callbacks[i]).setPassword(password.toCharArray());
-                        }
-                    }
-                }
-            })).login();
-        } catch (LoginException e) {
-            System.out.println(e);
-        }
+        // FIXME: Not yet implemented
     }
 
     public Object invoke(ProxyMap map) throws Exception {
