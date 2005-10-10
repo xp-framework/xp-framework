@@ -20,8 +20,8 @@
       $uc= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
       // TODO: split special characters into printable/non-printable?
       // are all special characters allowed in database?
-      // $sc= '_-=+!?#@$%^&*()[]|\/{}"\':;.><,',
-      $sc= '_-=+!?#@$%^&*()[]{}/\:;.,<>', // don't allow single or double quotes
+      // $sc= '_-=+!?#@$%^&*()[]|/{}:;.><,',
+      $sc= '_-=+!?#@$%^&*()[]{}/:;.,<>', // don't allow single, double quotes, and backslashes
       $nc= '0123456789',
       $chars= '',
       $length= 8;
