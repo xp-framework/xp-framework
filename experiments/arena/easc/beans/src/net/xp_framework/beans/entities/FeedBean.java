@@ -24,19 +24,19 @@ import java.rmi.RemoteException;
  *      local-jndi-name="xp/planet/Feed"
  *      jndi-name="xp/planet/Feed"
  *      display-name="Planet XP Feed"
- *         primkey-field="feed_id"
+ *      primkey-field="feed_id"
  * @ejb.persistence
  *      table-name="feed"
  * @ejb.pk
- *        class="java.lang.Long"
- *        generate="false"
+ *      class="java.lang.Long"
+ *      generate="false"
  * @ejb.transaction
  *      type="Supports"
  * @ejb.finder
- *        signature="Feed findByPrimaryKey(java.lang.Long primaryKey)"
+ *      signature="Feed findByPrimaryKey(java.lang.Long primaryKey)"
  * @ejb.finder
- *        signature="Collection findAll()"
- *         query="SELECT OBJECT(o) FROM Feed AS o WHERE o.bz_id = 500
+ *      signature="Collection findAll()"
+ *      query="SELECT OBJECT(o) FROM Feed AS o WHERE o.bz_id = 500
  * @jboss.create-table "false"
  * @jboss.remove-table "false"
  */
