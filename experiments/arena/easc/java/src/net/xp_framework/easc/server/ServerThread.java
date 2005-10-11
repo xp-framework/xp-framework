@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.io.IOException;
 import net.xp_framework.easc.server.Handler;
 import net.xp_framework.easc.server.HandlerThread;
+import net.xp_framework.easc.server.ServerContext;
 
 /**
  * Server thread
@@ -62,6 +63,7 @@ public class ServerThread extends Thread {
     @Override public void run() {
         this.stopped= false;   // We're running:)
         
+        ServerContext ctx= new ServerContext();
         while (!this.stopped) {
             Socket accepted= null;
              
@@ -69,7 +71,7 @@ public class ServerThread extends Thread {
                 accepted= this.socket.accept();
 
                 // Create a new thread that will handle this client
-                (new HandlerThread(this.handler, accepted)).start();
+                (new HandlerThread(this.handler, accepted, ctx)).start();
             } catch (IOException ignored) { }
         }
     }

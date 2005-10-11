@@ -22,14 +22,7 @@ public class CallDelegate implements Delegate {
     }
 
     public Object invoke(ServerContext ctx) throws Exception {
-        Object result= this.method.invoke(this.instance, this.arguments);
-        
-        // If the result is a reference to a proxy, add it to our proxy list
-        if (null != result && Proxy.isProxyClass(result.getClass())) {
-            ctx.put(result.hashCode(), result);
-        }
-
-        return result;
+        return this.method.invoke(this.instance, this.arguments);
     }
     
     /**

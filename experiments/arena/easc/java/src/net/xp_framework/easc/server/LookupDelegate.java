@@ -18,13 +18,6 @@ public class LookupDelegate implements Delegate {
     }
 
     public Object invoke(ServerContext ctx) throws Exception {
-        Object o= (new InitialContext()).lookup(this.jndiName);
-        
-        // If the result is a reference to a proxy, add it to our proxy list
-        if (Proxy.isProxyClass(o.getClass())) {
-            ctx.put(o.hashCode(), o);
-        }
-        
-        return o;
+        return (new InitialContext()).lookup(this.jndiName);
     }
 }
