@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import net.xp_framework.easc.server.ProxyMap;
+import net.xp_framework.easc.server.ServerContext;
 import net.xp_framework.easc.server.Delegate;
 import net.xp_framework.easc.server.LookupDelegate;
 import net.xp_framework.easc.server.InitializationDelegate;
@@ -88,7 +88,7 @@ import static net.xp_framework.easc.util.MethodMatcher.methodFor;
 public enum MessageType {
 
     Initialize {
-        public Delegate delegateFrom(DataInputStream in, ProxyMap map) throws IOException {
+        public Delegate delegateFrom(DataInputStream in, ServerContext ctx) throws IOException {
             if (in.readBoolean()) {
                 return new InitializationDelegate(
                     ByteCountedString.readFrom(in),   // username
@@ -101,19 +101,26 @@ public enum MessageType {
     }, 
     
     Lookup {
-        public Delegate delegateFrom(DataInputStream in, ProxyMap map) throws IOException {
+        public Delegate delegateFrom(DataInputStream in, ServerContext ctx) throws IOException {
             String jndiName= ByteCountedString.readFrom(in);
             return new LookupDelegate(jndiName);
         }
     }, 
     
     Call {
-        public Delegate delegateFrom(DataInputStream in, ProxyMap map) throws IOException {
-            long objectId= in.readLong();
+        public Delegate delegateFrom(DataInputStream in, ServerContext ctx) throws IOException {
+            Long objectId= new Long(in.readLong());
             String methodName= ByteCountedString.readFrom(in);
             String serialized= ByteCountedString.readFrom(in);
             
-            Object instance= map.getObject(objectId);
+            Object instance= ctx.get(objectId.intValue());
+            
+            // Sanity check object
+            if (null == instance) {
+                throw new IOException("Cannot find object: " + objectId + " in server context");
+            }
+            
+            // Deserialize arguments
             Object arguments[]= null;
             try {
                 arguments= (Object[])Serializer.valueOf(serialized, instance.getClass().getClassLoader());
@@ -121,6 +128,8 @@ public enum MessageType {
                 e.printStackTrace();
                 throw new IOException("Cannot deserialize arguments: " + e.getMessage());
             }
+            
+            // Find method
             Method method= methodFor(instance.getClass(), methodName, arguments);
             if (null == method) {
                 throw new IOException("Method '" + methodName + "' not found");
@@ -131,25 +140,25 @@ public enum MessageType {
     },
 
     Finalize {
-        public Delegate delegateFrom(DataInputStream in, ProxyMap map) throws IOException {
+        public Delegate delegateFrom(DataInputStream in, ServerContext ctx) throws IOException {
             return new FinalizeDelegate();
         }
     },
     
     Value {
-        public Delegate delegateFrom(DataInputStream in, ProxyMap map) throws IOException {
+        public Delegate delegateFrom(DataInputStream in, ServerContext ctx) throws IOException {
             return null;
         }
     },
     
     Exception {
-        public Delegate delegateFrom(DataInputStream in, ProxyMap map) throws IOException {
+        public Delegate delegateFrom(DataInputStream in, ServerContext ctx) throws IOException {
             return null;
         }
     },
     
     Error {
-        public Delegate delegateFrom(DataInputStream in, ProxyMap map) throws IOException {
+        public Delegate delegateFrom(DataInputStream in, ServerContext ctx) throws IOException {
             return null;
         }
     };
@@ -163,7 +172,7 @@ public enum MessageType {
         }
     }
 
-    abstract public Delegate delegateFrom(DataInputStream in, ProxyMap map) throws IOException;
+    abstract public Delegate delegateFrom(DataInputStream in, ServerContext ctx) throws IOException;
     
     /**
      * Get a type for a given message type identifier

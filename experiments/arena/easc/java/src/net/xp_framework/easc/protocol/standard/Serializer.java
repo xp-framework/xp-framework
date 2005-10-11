@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.AbstractCollection;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import net.xp_framework.easc.protocol.standard.Handler;
@@ -44,6 +44,10 @@ public class Serializer {
         
         MethodTarget(Method m) {
             this.method= m;    
+        }
+        
+        public String toString() {
+            return this.method.toString();
         }
         
         public Return invoke(Parameter p) throws Exception {
@@ -331,8 +335,8 @@ public class Serializer {
     }
 
     private static String representationOf(Object o, Invokeable i) throws Exception {
-        if (i != null) return (String)i.invoke(o);
         if (null == o) return "N;";
+        if (i != null) return (String)i.invoke(o);
 
         // Default object serialization
         StringBuffer buffer= new StringBuffer();
@@ -524,14 +528,14 @@ public class Serializer {
             buffer.append(representationOf(key, invokeableFor(key.getClass())));
             buffer.append(representationOf(value, invokeableFor(value.getClass())));
         }
-        
+
         buffer.append("}");
         return buffer.toString();
     }
 
-    @Handler public static String representationOf(AbstractCollection c) throws Exception {
+    @Handler public static String representationOf(Collection c) throws Exception {
         if (null == c) return "N;";
-        return representationOf(c.toArray());
+        return representationOf(c.toArray(), invokeableFor(Object[].class));
     }
 
     @Handler public static String representationOf(Date d) throws Exception {

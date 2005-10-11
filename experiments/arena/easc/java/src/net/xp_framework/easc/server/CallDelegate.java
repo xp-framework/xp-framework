@@ -8,7 +8,7 @@ package net.xp_framework.easc.server;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Method;
 import net.xp_framework.easc.server.Delegate;
-import net.xp_framework.easc.server.ProxyMap;
+import net.xp_framework.easc.server.ServerContext;
 
 public class CallDelegate implements Delegate {
     private Object instance;
@@ -21,13 +21,12 @@ public class CallDelegate implements Delegate {
         this.arguments= arguments;
     }
 
-    public Object invoke(ProxyMap map) throws Exception {
+    public Object invoke(ServerContext ctx) throws Exception {
         Object result= this.method.invoke(this.instance, this.arguments);
         
         // If the result is a reference to a proxy, add it to our proxy list
         if (null != result && Proxy.isProxyClass(result.getClass())) {
-            long identifier= map.put("(null)", result);
-            return new ProxyWrapper(identifier, result);
+            ctx.put(result.hashCode(), result);
         }
 
         return result;

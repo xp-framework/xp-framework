@@ -8,23 +8,23 @@ package net.xp_framework.easc.protocol.standard;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Proxy;
 import net.xp_framework.easc.server.Handler;
 import net.xp_framework.easc.protocol.standard.MessageType;
 import net.xp_framework.easc.util.ByteCountedString;
 import net.xp_framework.easc.server.Delegate;
 import net.xp_framework.easc.protocol.standard.Header;
-import net.xp_framework.easc.server.ProxyMap;
-import net.xp_framework.easc.server.ProxyWrapper;
+import net.xp_framework.easc.server.ServerContext;
 
 import static net.xp_framework.easc.protocol.standard.Header.DEFAULT_MAGIC_NUMBER;
 
 public class ServerHandler implements Handler {
 
     static {
-        Serializer.registerMapping(ProxyWrapper.class, new Invokeable<String, ProxyWrapper>() {
-            public String invoke(ProxyWrapper wrapper) throws Exception {
-                return "I:" + wrapper.identifier + ":{" + Serializer.representationOf(
-                    wrapper.object.getClass().getInterfaces()[0].getName()
+        Serializer.registerMapping(Proxy.class, new Invokeable<String, Proxy>() {
+            public String invoke(Proxy p) throws Exception {
+                return "I:" + p.hashCode() + ":{" + Serializer.representationOf(
+                    p.getClass().getInterfaces()[0].getName()
                 ) + "}";
             }
         });
@@ -54,7 +54,7 @@ public class ServerHandler implements Handler {
     }
 
     public void handle(DataInputStream in, DataOutputStream out) throws IOException {
-        ProxyMap map= new ProxyMap();
+        ServerContext ctx= new ServerContext();
         while (true) {
             Header requestHeader= Header.readFrom(in);
 
@@ -71,11 +71,11 @@ public class ServerHandler implements Handler {
             MessageType response= null;
             String buffer= null;
             try {
-                delegate= requestHeader.getMessageType().delegateFrom(in, map);
+                delegate= requestHeader.getMessageType().delegateFrom(in, ctx);
 
                 // DEBUG System.out.println("[EASC] DELEGATE = " + delegate);
 
-                result= delegate.invoke(map);
+                result= delegate.invoke(ctx);
                 response= MessageType.Value;
 
                 buffer= Serializer.representationOf(result);

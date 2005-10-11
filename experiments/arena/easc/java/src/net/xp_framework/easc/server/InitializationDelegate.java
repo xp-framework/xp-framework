@@ -6,7 +6,7 @@
 package net.xp_framework.easc.server;
 
 import net.xp_framework.easc.server.Delegate;
-import net.xp_framework.easc.server.ProxyMap;
+import net.xp_framework.easc.server.ServerContext;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
@@ -24,7 +24,7 @@ public class InitializationDelegate implements Delegate {
         // FIXME: Not yet implemented
     }
 
-    public Object invoke(ProxyMap map) throws Exception {
+    public Object invoke(ServerContext ctx) throws Exception {
         return true;
     }
 }

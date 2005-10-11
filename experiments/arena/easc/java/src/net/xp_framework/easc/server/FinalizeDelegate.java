@@ -6,14 +6,14 @@
 package net.xp_framework.easc.server;
 
 import net.xp_framework.easc.server.Delegate;
-import net.xp_framework.easc.server.ProxyMap;
+import net.xp_framework.easc.server.ServerContext;
 
 public class FinalizeDelegate implements Delegate {
 
     public FinalizeDelegate() {
     }
 
-    public Object invoke(ProxyMap map) throws Exception {
+    public Object invoke(ServerContext ctx) throws Exception {
         return true;
     }
 }
