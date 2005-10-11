@@ -19,7 +19,7 @@ Usage
 $ php feed.php <hostname> [<feed_id>] [-p <port> ] [-j <jndi_name> ]
   
   * hostname is the host name (or IP) that your JBoss + XP-MBean server 
-    is running on. The calculator bean (from the easc/beans directory) 
+    is running on. The feed entity bean (from the easc/beans directory) 
     is expected to be deployed.
   
   * feed_id represents the id of the feed to get. If omitted, all feeds
@@ -28,7 +28,7 @@ $ php feed.php <hostname> [<feed_id>] [-p <port> ] [-j <jndi_name> ]
   * port is the port the XP-MBean is listening on. It defaults to 6448.
   
   * jndi_name is the name of the bean in JNDI. It defaults to 
-    "xp/demo/Calculator"
+    "xp/planet/Feed"
 __
     );
     exit(1);
@@ -45,6 +45,7 @@ __
   if ($p->exists(2)) {
     $feed= &$home->findByPrimaryKey(new Long($p->value(2)));
     Console::writeLine('Title/URL: ', $feed->getTitle(), ' / ', $feed->getURL());
+    Console::writeLine(xp::stringOf($feed->getFeedValue()));
     exit();
   }
   

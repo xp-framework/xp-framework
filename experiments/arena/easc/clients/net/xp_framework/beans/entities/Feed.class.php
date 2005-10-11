@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('net.xp_framework.beans.entities.FeedValue');
+
   /**
    * Feed remote interface
    *
@@ -11,6 +13,14 @@
    */
   class Feed extends Interface {
   
+    /**
+     * Gets value object
+     *
+     * @access  public
+     * @return  &net.xp_framework.beans.entities.FeedValue
+     */  
+    function &getFeedValue() { }
+    
     /**
      * Gets feed's id (primary key)
      *
