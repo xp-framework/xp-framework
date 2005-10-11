@@ -143,34 +143,6 @@ public abstract class FeedBean implements EntityBean {
     public abstract void setBz_id(Long bz_id);
 
     /**
-     * Public no-arg constructor
-     *
-     * @access  public
-     */
-    public FeedBean() {}
-
-    /**
-     * EJB create method
-     *
-     * @access  public
-     * @param   java.lang.Long feed_id
-     * @return  java.lang.Long
-     */
-    public Long ejbCreate(Long feed_id) throws CreateException {
-        this.setFeed_id(feed_id);
-        return null;
-    }
-
-    /**
-     * EJB post-create method
-     *
-     * @access  public
-     * @param   java.lang.Long feed_id
-     */
-    public void ejbPostCreate(Long feed_id) {
-    }
-
-    /**
      * EJB activate method
      *
      * @access  public
@@ -226,6 +198,6 @@ public abstract class FeedBean implements EntityBean {
      * @access  public
      */
     public void unsetEntityContext() throws EJBException, RemoteException {
-        context= null;
+        this.context= null;
     }
 }
