@@ -35,8 +35,11 @@ import java.rmi.RemoteException;
  * @ejb.finder
  *      signature="Feed findByPrimaryKey(java.lang.Long primaryKey)"
  * @ejb.finder
+ *      signature="Collection findActive()"
+ *      query="SELECT OBJECT(o) FROM Feed AS o WHERE o.bz_id = 500"
+ * @ejb.finder
  *      signature="Collection findAll()"
- *      query="SELECT OBJECT(o) FROM Feed AS o WHERE o.bz_id = 500
+ *      query="SELECT OBJECT(o) FROM Feed AS o"
  * @jboss.create-table "false"
  * @jboss.remove-table "false"
  */
@@ -119,6 +122,25 @@ public abstract class FeedBean implements EntityBean {
      * @param   java.lang.String lastchange
      */
     public abstract void setLastchange(Timestamp lastchange);
+
+    /**
+     * Gets feed's bz_id (status: 500 = active, 30000 = deactivated)
+     *
+     * @ejb.interface-method
+     * @ejb.persistence column-name="bz_id"
+     * @access  public
+     * @return  java.lang.Long
+     */
+    public abstract Long getBz_id();
+
+    /**
+     * Sets the feed's bz_id
+     *
+     * @ejb.interface-method
+     * @access  public
+     * @param   java.lang.Long bz_id
+     */
+    public abstract void setBz_id(Long bz_id);
 
     /**
      * Public no-arg constructor
