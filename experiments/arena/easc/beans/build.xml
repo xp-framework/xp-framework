@@ -62,6 +62,7 @@
       <homeinterface/>
       <remoteinterface />
       <session/>
+      <entitypk/>
       <deploymentdescriptor
        xmlencoding="ISO-8859-1"
        destdir="${build.destdir}/META-INF"
@@ -70,6 +71,8 @@
       <jboss 
        xmlencoding="ISO-8859-1"
        destdir="${build.destdir}/META-INF" 
+       datasource="java:/jdbc/XPSyndicateDS"
+       datasourcemapping="mySQL"
        version="${jboss.version}"
        validatexml="true"
       />
