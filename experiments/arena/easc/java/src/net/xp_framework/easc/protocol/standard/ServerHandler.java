@@ -49,7 +49,7 @@ public class ServerHandler implements Handler {
     public void handle(DataInputStream in, DataOutputStream out, final ServerContext ctx) throws IOException {        
         Serializer.registerMapping(Proxy.class, new Invokeable<String, Proxy>() {
             public String invoke(Proxy p) throws Exception {
-                ctx.put(p.hashCode(), p);
+                ctx.objects.put(p.hashCode(), p);
                 return "I:" + p.hashCode() + ":{" + Serializer.representationOf(
                     p.getClass().getInterfaces()[0].getName()
                 ) + "}";

@@ -113,7 +113,7 @@ public enum MessageType {
             String methodName= ByteCountedString.readFrom(in);
             String serialized= ByteCountedString.readFrom(in);
             
-            Object instance= ctx.get(objectId.intValue());
+            Object instance= ctx.objects.get(objectId.intValue());
             
             // Sanity check object
             if (null == instance) {

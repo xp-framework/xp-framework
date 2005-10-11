@@ -7,5 +7,6 @@ package net.xp_framework.easc.server;
 
 import java.util.HashMap;
 
-public class ServerContext extends HashMap<Integer, Object> {
+public class ServerContext {
+    public HashMap<Integer, Object> objects= new HashMap<Integer, Object>();
 }
