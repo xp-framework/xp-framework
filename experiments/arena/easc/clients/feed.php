@@ -16,14 +16,15 @@ EASC entity bean demo application
 
 Usage
 -----
-$ php feed.php <hostname> [<feed_id>] [-p <port> ] [-j <jndi_name> ]
+$ php feed.php <hostname> [<command> [<arguments>]] [-p <port> ] [-j <jndi_name> ]
   
   * hostname is the host name (or IP) that your JBoss + XP-MBean server 
     is running on. The feed entity bean (from the easc/beans directory) 
     is expected to be deployed.
   
-  * feed_id represents the id of the feed to get. If omitted, all feeds
-    will be listed
+  * command is one of the following:
+    - list    Lists all fields (default if not supplied)
+    - get     Gets a feed by a supplied feed id
 
   * port is the port the XP-MBean is listening on. It defaults to 6448.
   
@@ -42,15 +43,18 @@ __
     exit(-1);
   }
 
-  if ($p->exists(2)) {
-    $feed= &$home->findByPrimaryKey(new Long($p->value(2)));
-    Console::writeLine('Title/URL: ', $feed->getTitle(), ' / ', $feed->getURL());
-    Console::writeLine(xp::stringOf($feed->getFeedValue()));
-    exit();
-  }
-  
-  foreach ($home->findAll() as $i => $feed) {
-    Console::writeLine($i, '] Title/URL: ', $feed->getTitle(), ' / ', $feed->getURL());
+  switch ($p->value(2, NULL, 'list')) {
+    case 'get':
+      $feed= &$home->findByPrimaryKey(new Long($p->value(3)));
+      Console::writeLine(xp::stringOf($feed->getFeedValue()));
+      break;
+    
+    case 'list':
+    default:
+      foreach ($home->findAll() as $i => $feed) {
+        Console::writeLinef('%3d] %s', $i, xp::stringOf($feed->getFeedValue()));
+      }
+      break;
   }
   // }}}
 ?>
