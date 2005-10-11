@@ -26,6 +26,10 @@ public class DebugInvocationHandler implements InvocationHandler {
      * @return  java.lang.Object
      */
     public Object invoke(Object proxy, Method method, Object[] args) {
+        if ("hashCode".equals(method.getName())) {
+            return 1;
+        }
+
         return (
             "Invoked method " + method.toString() + 
             " with " + (null == args ? 0 : args.length) + " argument(s)"
