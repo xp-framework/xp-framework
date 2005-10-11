@@ -63,6 +63,8 @@
       <remoteinterface />
       <session/>
       <entitypk/>
+      <entitycmp/>
+      <valueobject/>
       <deploymentdescriptor
        xmlencoding="ISO-8859-1"
        destdir="${build.destdir}/META-INF"
