@@ -196,25 +196,39 @@ public class Serializer {
                     Object value= Serializer.valueOf(serialized.substring(offset), length, loader);
                     offset+= length.value;
                     
-                    f.setAccessible(true);
-                    if (f.getType() == char.class) {
-                        f.setChar(instance, ((String)value).charAt(0));
-                    } else if (f.getType() == byte.class) {
-                        f.setByte(instance, ((Byte)value).byteValue());
-                    } else if (f.getType() == short.class) {
-                        f.setShort(instance, ((Short)value).shortValue());
-                    } else if (f.getType() == int.class) {
-                        f.setInt(instance, ((Integer)value).intValue());
-                    } else if (f.getType() == long.class) {
-                        f.setLong(instance, ((Long)value).longValue());
-                    } else if (f.getType() == double.class) {
-                        f.setDouble(instance, ((Double)value).doubleValue());
-                    } else if (f.getType() == float.class) {
-                        f.setFloat(instance, ((Float)value).floatValue());
-                    } else if (f.getType() == boolean.class) {
-                        f.setBoolean(instance, ((Boolean)value).booleanValue());
-                    } else {
-                        f.set(instance, value);
+                    try {
+                        f.setAccessible(true);
+                        if (f.getType() == char.class) {
+                            f.setChar(instance, ((String)value).charAt(0));
+                        } else if (f.getType() == byte.class) {
+                            f.setByte(instance, ((Byte)value).byteValue());
+                        } else if (f.getType() == short.class) {
+                            f.setShort(instance, ((Short)value).shortValue());
+                        } else if (f.getType() == int.class) {
+                            f.setInt(instance, ((Integer)value).intValue());
+                        } else if (f.getType() == long.class) {
+                            f.setLong(instance, ((Long)value).longValue());
+                        } else if (f.getType() == double.class) {
+                            f.setDouble(instance, ((Double)value).doubleValue());
+                        } else if (f.getType() == float.class) {
+                            f.setFloat(instance, ((Float)value).floatValue());
+                        } else if (f.getType() == boolean.class) {
+                            f.setBoolean(instance, ((Boolean)value).booleanValue());
+                        } else {
+                            f.set(instance, value);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        throw new SerializationException(
+                            "Illegal argument while setting " + c.getName() + "." + f + " to " + 
+                            (null == value ? "(null)" : value.getClass().getName()) + ": " + 
+                            e.getMessage()
+                        );
+                    } catch (IllegalAccessException e) {
+                        throw new SerializationException(
+                            "Access violation while setting " + c.getName() + "." + f + " to " + 
+                            (null == value ? "(null)" : value.getClass().getName()) + ": " + 
+                            e.getMessage()
+                        );
                     }
                 }
 
