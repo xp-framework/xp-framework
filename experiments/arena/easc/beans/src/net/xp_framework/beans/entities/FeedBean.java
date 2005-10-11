@@ -13,6 +13,8 @@ import javax.ejb.EntityBean;
 import javax.ejb.EntityContext;
 import java.rmi.RemoteException;
 
+import net.xp_framework.beans.entities.FeedValue;
+
 /**
  * Planet XP Feed bean
  *
@@ -30,6 +32,9 @@ import java.rmi.RemoteException;
  * @ejb.pk
  *      class="java.lang.Long"
  *      generate="false"
+ * @ejb.value-object
+ *      name="Feed"
+ *      match="*"
  * @ejb.transaction
  *      type="Supports"
  * @ejb.finder
@@ -45,7 +50,7 @@ import java.rmi.RemoteException;
  */
 public abstract class FeedBean implements EntityBean {
     transient private EntityContext context= null;
-    
+
     /**
      * Gets feed's id (primary key)
      *
@@ -143,44 +148,23 @@ public abstract class FeedBean implements EntityBean {
     public abstract void setBz_id(Long bz_id);
 
     /**
-     * EJB activate method
+     * Gets value object
      *
+     * @ejb.interface-method
      * @access  public
+     * @return  net.xp_framework.beans.entities.FeedValue value
      */
-    public void ejbActivate() {
-    }
+    public abstract FeedValue getFeedValue();
 
     /**
-     * EJB passivate method
+     * Sets value object
      *
+     * @ejb.interface-method
      * @access  public
+     * @param   net.xp_framework.beans.entities.FeedValue value
      */
-    public void ejbPassivate() {
-    }
-
-    /**
-     * EJB load method
-     *
-     * @access  public
-     */
-    public void ejbLoad() {
-    }
-
-    /**
-     * EJB store method
-     *
-     * @access  public
-     */
-    public void ejbStore() {
-    }
-
-    /**
-     * EJB remove method
-     *
-     * @access  public
-     */
-    public void ejbRemove() {
-    }
+    public abstract void setFeedValue(FeedValue value);
+    
 
     /**
      * Set entity context
