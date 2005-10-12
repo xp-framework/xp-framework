@@ -45,6 +45,7 @@ import net.xp_framework.beans.entities.FeedValue;
  * @ejb.finder
  *      signature="Collection findAll()"
  *      query="SELECT OBJECT(o) FROM Feed AS o"
+ * @jboss.entity-command name = "mysql-get-generated-keys"
  * @jboss.create-table "false"
  * @jboss.remove-table "false"
  */
