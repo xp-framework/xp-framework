@@ -4,12 +4,23 @@
  * $Id$
  */
 
+  uses('net.xp_framework.beans.entities.FeedValue');
+
   /**
    * Feed remote home interface
    *
    * @purpose  Demo class  
    */
   class FeedHome extends Interface {
+
+    /**
+     * Create method
+     *
+     * @access  public
+     * @param   &net.xp_framework.beans.entities.FeedValue data
+     * @return  &net.xp_framework.beans.entities.Feed
+     */  
+    function &create(&$data) { }
   
     /**
      * Finder method
