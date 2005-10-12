@@ -184,4 +184,32 @@ public abstract class FeedBean implements EntityBean {
     public void unsetEntityContext() throws EJBException, RemoteException {
         this.context= null;
     }
+    
+    /**
+     * EJB create method
+     *
+     * You might be wondering why here, even though the return type of the ejbCreate() 
+     * method should be an entity bean's primary key class instance, a null value is
+     * returned. This is not a programming mistake -- in fact, in the case of container-
+     * managed persistence, the container knows this and actually ignores the null 
+     * value.
+     * 
+     * @ejb.create-method
+     * @access  public
+     * @param   net.xp_framework.beans.entities.FeedValue data
+     * @return  java.lang.Object
+     */
+    public Long ejbCreate(FeedValue data) throws CreateException {
+        this.setFeedValue(data);
+        return null;
+    }
+
+    /**
+     * EJB post-create method
+     * 
+     * @access  public
+     * @param   net.xp_framework.beans.entities.FeedValue value
+     */
+    public void ejbPostCreate(FeedValue value) throws CreateException {
+    }
 }
