@@ -12,7 +12,23 @@
    * @purpose  Demo class  
    */
   class Feed extends Interface {
-  
+
+    /**
+     * Set Bz_id
+     *
+     * @access  public
+     * @param   int bz_id
+     */
+    function setBz_id($bz_id) { }
+
+    /**
+     * Get Bz_id
+     *
+     * @access  public
+     * @return  int
+     */
+    function getBz_id() { }
+
     /**
      * Gets value object
      *
