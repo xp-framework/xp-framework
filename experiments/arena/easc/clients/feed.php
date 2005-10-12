@@ -23,8 +23,14 @@ $ php feed.php <hostname> [<command> [<arguments>]] [-p <port> ] [-j <jndi_name>
     is expected to be deployed.
   
   * command is one of the following:
-    - list    Lists all fields (default if not supplied)
-    - get     Gets a feed by a supplied feed id
+    - list
+      Lists all fields (default if not supplied)
+
+    - get <id>
+      Gets a feed by a supplied feed id
+
+    - create <title> <url> [<bz_id>]
+      Creates a new feed
 
   * port is the port the XP-MBean is listening on. It defaults to 6448.
   
@@ -47,6 +53,23 @@ __
     case 'get':
       $feed= &$home->findByPrimaryKey(new Long($p->value(3)));
       Console::writeLine(xp::stringOf($feed->getFeedValue()));
+      break;
+    
+    case 'create':
+      if (!$p->exists(3) || !$p->exists(4)) {
+        Console::writeLine('*** Not enough parameters');
+        exit(1);
+      }
+      with ($value= &new FeedValue()); {
+        $value->feed_id= &new Long(-1);
+        $value->title= $p->value(3);
+        $value->url= $p->value(4);
+        $value->bz_id= &new Long($p->value(5, NULL, 500));
+        $value->lastchange= &Date::now();
+        
+        $instance= &$home->create($value);
+        Console::writeLine(xp::stringOf($instance->getFeedValue()));
+      }
       break;
     
     case 'list':
