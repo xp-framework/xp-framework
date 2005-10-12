@@ -69,21 +69,21 @@ public class Serializer {
     
     private static enum Token {
         T_NULL {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
                 length.value= 2;
                 return null;
             }
         },
 
         T_BOOLEAN {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
                 length.value= 4; 
                 return ('1' == serialized.charAt(2));
             }
         },
 
         T_INTEGER {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
                String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                length.value= value.length() + 3;
@@ -92,7 +92,7 @@ public class Serializer {
         },
 
         T_LONG {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
                String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                length.value= value.length() + 3;
@@ -101,7 +101,7 @@ public class Serializer {
         },
 
         T_FLOAT {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
                 String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                 length.value= value.length() + 3;
@@ -110,7 +110,7 @@ public class Serializer {
         },
 
         T_DOUBLE {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
                 String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                 length.value= value.length() + 3;
@@ -119,7 +119,7 @@ public class Serializer {
         },
 
         T_STRING {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
                 String strlength= serialized.substring(2, serialized.indexOf(':', 2));
                 int offset= 2 + strlength.length() + 2;
                 int parsed= Integer.parseInt(strlength);
@@ -131,16 +131,16 @@ public class Serializer {
         },
 
         T_HASH {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
                 String arraylength= serialized.substring(2, serialized.indexOf(':', 2));
                 int parsed= Integer.parseInt(arraylength);
                 int offset= arraylength.length() + 2 + 2;
                 HashMap h= new HashMap(parsed);
 
                 for (int i= 0; i < parsed; i++) {
-                    Object key= Serializer.valueOf(serialized.substring(offset), length, loader);
+                    Object key= Serializer.valueOf(serialized.substring(offset), length, loader, null);
                     offset+= length.value;
-                    Object value= Serializer.valueOf(serialized.substring(offset), length, loader);
+                    Object value= Serializer.valueOf(serialized.substring(offset), length, loader, null);
                     offset+= length.value;
                     
                     h.put(key, value);
@@ -152,14 +152,14 @@ public class Serializer {
         },
 
         T_ARRAY {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
                 String arraylength= serialized.substring(2, serialized.indexOf(':', 2));
                 int parsed= Integer.parseInt(arraylength);
                 int offset= arraylength.length() + 2 + 2;
                 Object[] array= new Object[parsed];
 
                 for (int i= 0; i < parsed; i++) {
-                    array[i]= Serializer.valueOf(serialized.substring(offset), length, loader);
+                    array[i]= Serializer.valueOf(serialized.substring(offset), length, loader, null);
                     offset+= length.value;
                 }
 
@@ -169,7 +169,7 @@ public class Serializer {
         },
         
         T_OBJECT {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
                 String classnamelength= serialized.substring(2, serialized.indexOf(':', 2));
                 int offset= classnamelength.length() + 2 + 2;
                 int parsed= Integer.parseInt(classnamelength);
@@ -191,9 +191,9 @@ public class Serializer {
                 
                 // Set field values
                 for (int i= 0; i < Integer.parseInt(objectlength); i++) {
-                    Field f= c.getDeclaredField((String)Serializer.valueOf(serialized.substring(offset), length, loader));
+                    Field f= c.getDeclaredField((String)Serializer.valueOf(serialized.substring(offset), length, loader, null));
                     offset+= length.value;
-                    Object value= Serializer.valueOf(serialized.substring(offset), length, loader);
+                    Object value= Serializer.valueOf(serialized.substring(offset), length, loader, f.getType());
                     offset+= length.value;
                     
                     try {
@@ -238,16 +238,20 @@ public class Serializer {
         },
 
         T_DATE {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
                String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                length.value= value.length() + 3;
-               return new Date(Long.parseLong(value) * 1000);
+               if (null == clazz) {
+                  return new Date(Long.parseLong(value) * 1000);
+               } else {
+                  return clazz.getConstructor(long.class).newInstance(Long.parseLong(value) * 1000);
+               }
             }
         },
 
         T_BYTE {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
                 String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                 length.value= value.length() + 3;
@@ -256,7 +260,7 @@ public class Serializer {
         },
 
         T_SHORT {
-            public Object handle(String serialized, Length length, ClassLoader loader) throws Exception { 
+            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
                 String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                 length.value= value.length() + 3;
@@ -289,7 +293,7 @@ public class Serializer {
             return map.get(c);
         }
       
-        abstract public Object handle(String serialized, Length length, ClassLoader loader) throws Exception;
+        abstract public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception;
     }
 
     private static HashMap<Class, Invokeable<?, ?>> typeMap= new HashMap<Class, Invokeable<?, ?>>();
@@ -633,24 +637,11 @@ public class Serializer {
      * @param   java.lang.String serialized
      * @param   Length length
      * @param   java.lang.ClassLoader loader
+     * @param   java.lang.Class clazz
      * @return  java.lang.Object
      */
-    private static Object valueOf(String serialized, Length length, ClassLoader loader) throws Exception {
-        return Token.valueOf(serialized.charAt(0)).handle(serialized, length, loader);
-    }
-
-    /**
-     * Private helper method for public valueOf()
-     *
-     * @static
-     * @access  private
-     * @param   java.lang.String serialized
-     * @param   Length length
-     * @param   Length length
-     * @return  java.lang.Object
-     */
-    private static Object valueOf(String serialized, Length length) throws Exception {
-        return Token.valueOf(serialized.charAt(0)).handle(serialized, length, Serializer.class.getClassLoader());
+    private static Object valueOf(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception {
+        return Token.valueOf(serialized.charAt(0)).handle(serialized, length, loader, clazz);
     }
 
     /**
@@ -663,7 +654,21 @@ public class Serializer {
      * @return  java.lang.Object
      */
     public static Object valueOf(String serialized) throws Exception {
-        return valueOf(serialized, new Length(0));
+        return valueOf(serialized, new Length(0), Serializer.class.getClassLoader(), null);
+    }
+
+    /**
+     * Deserialize a string to a specific class
+     *
+     * @static
+     * @access  public
+     * @param   java.lang.String serialized
+     * @param   java.lang.Class clazz
+     * @param   Length length
+     * @return  java.lang.Object
+     */
+    public static Object valueOf(String serialized, Class clazz) throws Exception {
+        return valueOf(serialized, new Length(0), Serializer.class.getClassLoader(), clazz);
     }
     
     /**
@@ -677,6 +682,21 @@ public class Serializer {
      * @return  java.lang.Object
      */
     public static Object valueOf(String serialized, ClassLoader loader) throws Exception {
-        return valueOf(serialized, new Length(0), loader);
+        return valueOf(serialized, new Length(0), loader, null);
+    }
+
+    /**
+     * Deserialize a string using the specified classloader
+     *
+     * @static
+     * @access  public
+     * @param   java.lang.String serialized
+     * @param   Length length
+     * @param   java.lang.ClassLoader loader
+     * @param   java.lang.Class clazz
+     * @return  java.lang.Object
+     */
+    public static Object valueOf(String serialized, ClassLoader loader, Class clazz) throws Exception {
+        return valueOf(serialized, new Length(0), loader, clazz);
     }
 }
