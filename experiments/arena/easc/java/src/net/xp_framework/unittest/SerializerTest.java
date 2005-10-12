@@ -8,6 +8,7 @@ package net.xp_framework.unittest;
 import org.junit.Test;
 import org.junit.Ignore;
 import net.xp_framework.unittest.Person;
+import net.xp_framework.unittest.Item;
 import net.xp_framework.unittest.ITest;
 import net.xp_framework.unittest.NullInvocationHandler;
 import net.xp_framework.easc.protocol.standard.Invokeable;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.Arrays;
 import java.lang.reflect.Proxy;
+import java.sql.Timestamp;
 
 import static org.junit.Assert.*;
 import static net.xp_framework.easc.protocol.standard.Serializer.representationOf;
@@ -526,6 +528,33 @@ public class SerializerTest {
         assertEquals(
             new Date(1122369782000L), 
             valueOf("T:1122369782;")
+        );
+    }
+
+    /**
+     * Tests deserialization of a date (identified by "D" token) given a
+     * java.sql.Timestamp object
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void valueOfTimestamp() throws Exception {
+        assertEquals(
+            new Timestamp(1122369782000L), 
+            valueOf("T:1122369782;", Timestamp.class)
+        );
+    }
+
+    /**
+     * Tests deserialization of an Item value object
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void valueOfItem() throws Exception {
+        assertEquals(
+            new Item(), 
+            valueOf("O:30:\"net.xp_framework.unittest.Item\":2:{s:2:\"id\";i:6100;s:9:\"createdAt\";T:1122369782;}")
         );
     }
     
