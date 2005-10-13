@@ -40,7 +40,7 @@
           <xsl:copy-of select="func:wizard_row_input('editeventhandler', 'lastname')"/>
           
           <xsl:choose>
-            <xsl:when test="/formresult/handler/values/mode = 'create'">
+            <xsl:when test="/formresult/handler/values/mode = 'create' or '' != func:hasPermission('create_player')">
               <xsl:copy-of select="func:wizard_row_input('editeventhandler', 'username')"/>
             </xsl:when>
             <xsl:otherwise>
