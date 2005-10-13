@@ -61,6 +61,12 @@ public class MethodMatcherTest {
         return buf.append(')').toString();
     }
 
+    /**
+     * Ensures getId() will be found when search for no-arg version
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
     @Test public void noArgMethod() throws Exception {
         assertEquals(
             "int getId:0()", 
@@ -68,6 +74,13 @@ public class MethodMatcherTest {
         );
     }
 
+    /**
+     * Ensures setName() will not be found when supplying a 
+     * java.lang.String as sole argument.
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
     @Test public void oneArgMethod() throws Exception {
         assertEquals(
             "void setName:1(java.lang.String)", 
@@ -75,6 +88,12 @@ public class MethodMatcherTest {
         );
     }
 
+    /**
+     * Ensures setName() will also be found when supplying null
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
     @Test public void oneArgMethodWithNullArg() throws Exception {
         assertEquals(
             "void setName:1(java.lang.String)", 
@@ -82,6 +101,12 @@ public class MethodMatcherTest {
         );
     }
 
+    /**
+     * Ensures setId() will be found when supplying a java.lang.Integer
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
     @Test public void onePrimitiveArgMethod() throws Exception {
         assertEquals(
             "void setId:1(int)", 
@@ -89,6 +114,13 @@ public class MethodMatcherTest {
         );
     }
 
+    /**
+     * Ensures no method will be found when supplying a non-existant
+     * method name.
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
     @Test public void methodNotFound() throws Exception {
         assertEquals(
             "(null)", 
@@ -96,6 +128,13 @@ public class MethodMatcherTest {
         );
     }
 
+    /**
+     * Ensures setName() will not be found when supplying a java.lang.Integer
+     * instead of a java.lang.String
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
     @Test public void argumentsMismatch() throws Exception {
         assertEquals(
             "(null)", 
@@ -103,6 +142,12 @@ public class MethodMatcherTest {
         );
     }
 
+    /**
+     * Ensures setId() will not be found when supplying a java.lang.Long
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
     @Test public void primitiveArgumentsMismatch() throws Exception {
         assertEquals(
             "(null)", 
