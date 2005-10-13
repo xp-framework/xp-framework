@@ -6,7 +6,6 @@
 package net.xp_framework.unittest;
 
 import org.junit.Test;
-import org.junit.Ignore;
 import org.junit.BeforeClass;
 import org.junit.AfterClass;
 import java.net.InetAddress;
@@ -120,7 +119,8 @@ public class ServerTest {
         // Read response
         DataInputStream in= new DataInputStream(client.getInputStream());
         assertEquals(expectedType, Header.readFrom(in).getMessageType());
-        if (null != expectedData) assertEquals(expectedData, ByteCountedString.readFrom(in));
+        String actualData= ByteCountedString.readFrom(in);
+        if (null != expectedData) assertEquals(expectedData, actualData);
     }
 
     /**
@@ -297,6 +297,34 @@ public class ServerTest {
     }
 
     /**
+     * Tests method call on object id #1 (has been "created" by lookupProxy() before).
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void methodCallWithArgumentMismatch() throws Exception {
+        assertAnswer(
+            MessageType.Exception,
+            null,
+            new Header(
+                Header.DEFAULT_MAGIC_NUMBER,
+                (byte)1,
+                (byte)0,
+                MessageType.Call,
+                true,
+                0
+            ),
+            new Writer() {
+                public void writeTo(DataOutputStream out) throws IOException {
+                    out.writeLong(1);
+                    new ByteCountedString("hello").writeTo(out);
+                    new ByteCountedString("A:1:{i:1;}").writeTo(out);
+                }
+            }
+        );
+    }
+
+    /**
      * Test that sending a wrong magic number will return an error. 
      *
      * Note: Must be the last test in this class for the server will 
@@ -305,7 +333,7 @@ public class ServerTest {
      * @access  public
      * @throws  java.lang.Exception
      */
-    @Test @Ignore("Throws NPE") public void wrongMagicNumber() throws Exception {
+    @Test public void wrongMagicNumber() throws Exception {
         assertAnswer(
             MessageType.Error,
             "Magic number mismatch", 
