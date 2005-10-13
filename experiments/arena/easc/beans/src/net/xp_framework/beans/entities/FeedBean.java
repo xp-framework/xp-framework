@@ -48,6 +48,7 @@ import net.xp_framework.beans.entities.FeedValue;
  * @jboss.entity-command name = "mysql-get-generated-keys"
  * @jboss.create-table "false"
  * @jboss.remove-table "false"
+ * @jboss.persistence datasource="java:/jdbc/XPSyndicateDS" datasource-mapping="mySQL"
  */
 public abstract class FeedBean implements EntityBean {
     transient private EntityContext context= null;
