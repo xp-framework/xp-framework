@@ -82,6 +82,16 @@ public class ByteCountedString {
     public int length() {
         return this.length(DEFAULT_CHUNK_SIZE);
     }
+    
+    /**
+     * Creates a string representation of this object
+     *
+     * @access  public
+     * @return  java.lang.String
+     */
+    @Override public String toString() {
+        return "[BCS(" + this.string.length() + ")= '" + this.string + "']";
+    }
 
     /**
      * Writes this string to a specified DataOutput instance using 
