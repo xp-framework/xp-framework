@@ -38,11 +38,8 @@ public class ServerHandler implements Handler {
             bytes.length()
         ).writeTo(out);
 
-        // Write length bytes
+        // Write data and flush
         bytes.writeTo(out);
-        
-        // DEBUG System.out.println("[EASC] SEND " + type + " ('" + buffer + "')");
-        
         out.flush();
     }
 
@@ -65,20 +62,13 @@ public class ServerHandler implements Handler {
                 break;
             }
 
-            // DEBUG System.out.println("[EASC] GOT " + requestHeader.getMessageType());
-
-            Delegate delegate= null;
+            // Execute using delegate
             Object result= null;
             MessageType response= null;
             String buffer= null;
             try {
-                delegate= requestHeader.getMessageType().delegateFrom(in, ctx);
-
-                // DEBUG System.out.println("[EASC] DELEGATE = " + delegate);
-
-                result= delegate.invoke(ctx);
+                result= requestHeader.getMessageType().delegateFrom(in, ctx).invoke(ctx);
                 response= MessageType.Value;
-
                 buffer= Serializer.representationOf(result);
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -91,6 +81,7 @@ public class ServerHandler implements Handler {
                 }
             }
             
+            // Write result
             this.writeResponse(out, response, buffer);
         }
         
