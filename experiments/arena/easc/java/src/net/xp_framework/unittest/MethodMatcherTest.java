@@ -51,10 +51,10 @@ public class MethodMatcherTest {
             .append("(");
         
         // Append parameter types
-        for (Class c: parameters) {
-            buf.append(c.getName()).append(", ");
-        }
         if (parameters.length > 0) {  
+            for (Class c: parameters) {
+                buf.append(c.getName()).append(", ");
+            }
             buf.delete(buf.length() - 2, buf.length());
         }
         
