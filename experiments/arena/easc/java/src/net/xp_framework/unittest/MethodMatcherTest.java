@@ -154,5 +154,26 @@ public class MethodMatcherTest {
             methodString(methodFor(Person.class, "setId", new Object[] { new Long(1) }))
         );
     }
-    
+
+    /**
+     * Checks for varargs method (System.out.printf())
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */    
+    @Test public void varargsMethod() {
+        Class c= System.out.getClass();
+        assertEquals(
+            "java.io.PrintStream printf:2(java.lang.String, [Ljava.lang.Object;)",
+            methodString(methodFor(c, "printf", new Object[] { "More %s", new Object[] { "Power" }}))
+        );
+        assertEquals(
+            "java.io.PrintStream printf:2(java.lang.String, [Ljava.lang.Object;)",
+            methodString(methodFor(c, "printf", new Object[] { "%s bytes", new Object[] { 1 }}))
+        );
+        assertEquals(
+            "java.io.PrintStream printf:2(java.lang.String, [Ljava.lang.Object;)",
+            methodString(methodFor(c, "printf", new Object[] { "Nothing to see here", new Object[] { }}))
+        );
+    }
 }
