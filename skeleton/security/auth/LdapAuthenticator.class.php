@@ -43,9 +43,16 @@
       try(); {
         $r= $this->lc->search($this->basedn, '(uid='.$user.')');
       } if (catch('LDAPException', $e)) {
-        return throw(new AuthenticatorException('Authentication failed ("'.$e->getMessage().'")', $e));
+        return throw(new AuthenticatorException(sprintf(
+          'Authentication failed (#%d: "%s")', 
+          $e->getErrorCode(),
+          $e->getMessage()
+        ), $e));
       } if (catch('ConnectException', $e)) {
-        return throw(new AuthenticatorException('Authentication failed ("'.$e->getMessage().'")', $e));
+        return throw(new AuthenticatorException(sprintf(
+          'Authentication failed (<connect>: "%s")', 
+          $e->getMessage()
+        ), $e));
       }
       
       // Check return, we must find a distinct user
