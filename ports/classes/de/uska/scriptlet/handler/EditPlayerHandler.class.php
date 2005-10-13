@@ -73,6 +73,7 @@
         $this->setFormValue('team_id', $player->getTeam_id());
         $this->setValue('mode', 'update');
       } else {
+        $this->setFormValue('player_id', 'new');
         $this->setValue('mode', 'create');
       }
       
@@ -121,13 +122,21 @@
         case 'create':
         default:
           $player= &new Player();
+          $player->setPlayer_type_id(1);  // Normal player
           break;
       }
       
       // Take over new values
       $player->setFirstName($this->wrapper->getFirstname());
       $player->setLastName($this->wrapper->getLastname());
-      $player->setUsername($this->wrapper->getUsername());
+      
+      // Only admins may change usernames
+      if (
+        strlen($this->wrapper->getUsername()) &&
+        $context->hasPermission('create_player')
+      ) {
+        $player->setUsername($this->wrapper->getUsername());
+      }
       
       // Update password only if new one is given
       if (strlen ($this->wrapper->getPassword())) {
@@ -137,7 +146,7 @@
       $email= &$this->wrapper->getEmail();
       $player->setEmail($email->localpart.'@'.$email->domain);
       $player->setPosition($this->wrapper->getPosition());
-      if (NULL === $player->getTeam_id()) {
+      if (!$player->getTeam_id()) {
         $player->setTeam_id($this->wrapper->getTeam_id());
       }
       
@@ -156,7 +165,7 @@
         $cm= &ConnectionManager::getInstance();
         $db= &$cm->getByHost($peer->connection, 0);
         
-        if ($player->getPlayer_id() > 0) {
+        if ($this->getValue('mode') == 'update') {
           $player->update();
         } else {
           $player->insert();
@@ -164,7 +173,8 @@
         
       } if (catch('SQLException', $e)) {
         $transaction->rollback();
-        return throw($e);
+        $this->addError('dberror', '*', $e->getMessage());
+        return FALSE;
       }
       
       $transaction->commit();
