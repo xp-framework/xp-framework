@@ -93,7 +93,6 @@ public enum MessageType {
                 return new InitializationDelegate(
                     ByteCountedString.readFrom(in),   // username
                     ByteCountedString.readFrom(in)    // password
-
                 );
             }
             return new InitializationDelegate();
@@ -131,11 +130,41 @@ public enum MessageType {
             
             // Find method
             Method method= methodFor(instance.getClass(), methodName, arguments);
-            if (null == method) {
-                throw new IOException("Method '" + methodName + "' not found");
-            }
+            if (null != method) return new CallDelegate(instance, method, arguments);
+            
+            // Could not find method. Create verbose error message containing:
+            //
+            // * Interface name of first interface this proxy implements
+            //   We can safely assume the class object is a proxy instance
+            //   because only such instances get put into the ServerContext's
+            //   object lookup map
+            //
+            // * The method name
+            //
+            // * The passed argument's classes names
+            //
+            // Examples:
+            //   "Method net.xp_framework.unittest.ITest.nonExistant() not found"
+            //   "
+            //
+            // This makes it easier to find type-related problems (e.g. calling 
+            // a method declared as void setId(long id) { } with an int as
+            // argument).
+            StringBuffer s= new StringBuffer()
+                .append("Method ")
+                .append(instance.getClass().getInterfaces()[0].getName())
+                .append('.')
+                .append(methodName)
+                .append('(');
 
-            return new CallDelegate(instance, method, arguments);
+            if (arguments.length > 0) {
+                for (Object a: arguments) {
+                    s.append(null == a ? "null" : a.getClass().getName()).append(", ");
+                }
+                s.delete(s.length() - 2, s.length());
+            }
+            s.append(") not found");
+            throw new IOException(s.toString());
         }
     },
 
