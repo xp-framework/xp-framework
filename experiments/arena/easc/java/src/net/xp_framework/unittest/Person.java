@@ -76,6 +76,6 @@ public class Person {
      * @param   int id
      */
     public void setId(int i) {
-        this.id = id;
+        this.id= id;
     }
 }
