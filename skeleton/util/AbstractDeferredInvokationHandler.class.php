@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.DeferredInitializationException');
+
   /**
    * Lazy initializable InvokationHandler 
    *
