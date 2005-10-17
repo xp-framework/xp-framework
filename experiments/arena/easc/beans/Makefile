@@ -7,7 +7,7 @@
 targets?=
 
 # Local deployment
-deploy?=
+to?=
 
 all:
 	@echo "Remote Deployer"
@@ -18,12 +18,12 @@ all:
 	@echo "  - targets defaults to $(targets)"
 	@echo ""
 	@echo "* Local deployment:"
-	@echo "  $(MAKE) deploy [deploy=/path/to/deploy/]"
-	@echo "  - deploy defaults to $(deploy)"
+	@echo "  $(MAKE) deploy [to=/path/to/deploy/]"
+	@echo "  - deploy defaults to $(to)"
 	@echo "======================================================================"
 
 deploy:		dist/beans.jar
-	cp dist/beans.jar $(deploy)
+	cp dist/beans.jar $(to)
 
 rdeploy:	dist/beans.jar
 	@for item in $(targets) ; do \
