@@ -1,0 +1,115 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+ 
+  uses(
+    'util.profiling.unittest.TestCase',
+    'xml.Node'
+  );
+
+  /**
+   * Test framework code
+   *
+   * @purpose  Unit Test
+   */
+  class NodeTest extends TestCase {
+    
+    /**
+     * Helper method which returns the XML representation of a Node object,
+     * trimmed of trailing \ns.
+     *
+     * @access  protected
+     * @param   &xml.Node node
+     * @return  string
+     */
+    function sourceOf(&$node) {
+      return rtrim($node->getSource(INDENT_DEFAULT), "\n");
+    }
+    
+    /**
+     * Tests attribute accessors
+     *
+     * @see     xp://xml.Node#setAttribute
+     * @see     xp://xml.Node#getAttribute
+     * @access  public
+     */
+    #[@test]
+    function attributeAccessors() {
+      $n= &new Node();
+      $n->setAttribute('id', 1);
+      $this->assertTrue($n->hasAttribute('id'));
+      $this->assertFalse($n->hasAttribute('href'));
+      $this->assertEquals(1, $n->getAttribute('id'));
+    }
+
+    /**
+     * Tests content accessors
+     *
+     * @see     xp://xml.Node#setContent
+     * @see     xp://xml.Node#getContent
+     * @access  public
+     */
+    #[@test]
+    function contentAccessors() {
+      $content= '"This is interesting", Tom\'s friend said. "It\'s > 4 but < 2!"';
+      $n= &new Node();
+      $n->setContent($content);
+      $this->assertEquals($content, $n->getContent());
+    }
+    
+    /**
+     * Tests name accessors
+     *
+     * @see     xp://xml.Node#setName
+     * @see     xp://xml.Node#getName
+     * @access  public
+     */
+    #[@test]
+    function nameAccessors() {
+      $n= &new Node();
+      $n->setName('name');
+      $this->assertEquals('name', $n->getName());
+    }
+    
+    /**
+     * Tests a node without attributes or content
+     *
+     * @access  public
+     */
+    #[@test]
+    function sourceOfEmptyNode() {
+      $this->assertEquals(
+        '<node/>', 
+        $this->sourceOf(new Node('node'))
+      );
+    }
+
+    /**
+     * Tests a node with one attribute
+     *
+     * @access  public
+     */
+    #[@test]
+    function sourceOfNodeWithOneAttribute() {
+      $this->assertEquals(
+        '<node id="1"/>', 
+        $this->sourceOf(new Node('node', NULL, array('id' => 1)))
+      );
+    }
+
+    /**
+     * Tests a node with two attributes
+     *
+     * @access  public
+     */
+    #[@test]
+    function sourceOfNodeWithTwoAttributes() {
+      $this->assertEquals(
+        '<node id="2" name="XML"/>', 
+        $this->sourceOf(new Node('node', NULL, array('id' => 2, 'name' => 'XML')))
+      );
+    }
+  }
+?>
