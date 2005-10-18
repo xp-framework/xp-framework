@@ -177,5 +177,18 @@
         $this->sourceOf(new Node('text', new CData('Special characters: <>"\'&')))
       );
     }
+
+    /**
+     * Tests a node with PCDATA content. 
+     *
+     * @access  public
+     */
+    #[@test]
+    function sourceOfNodeWithPCData() {
+      $this->assertEquals(
+        '<text>A <a href="http://xp-framework.net/">link</a> to click on</text>', 
+        $this->sourceOf(new Node('text', new PCData('A <a href="http://xp-framework.net/">link</a> to click on')))
+      );
+    }
   }
 ?>
