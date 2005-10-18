@@ -164,5 +164,18 @@
         $this->sourceOf(new Node('expr', 'eval(\'1 <> 2 && \') == "Parse Error"'))
       );
     }
+
+    /**
+     * Tests a node with CDATA content. 
+     *
+     * @access  public
+     */
+    #[@test]
+    function sourceOfNodeWithCData() {
+      $this->assertEquals(
+        '<text><![CDATA[Special characters: <>"\'&]]></text>', 
+        $this->sourceOf(new Node('text', new CData('Special characters: <>"\'&')))
+      );
+    }
   }
 ?>
