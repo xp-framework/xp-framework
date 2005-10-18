@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('peer.URL');
+
   /**
    * References are what you declare with the @see Keyword.
    * These may be written in the following form:
@@ -85,7 +87,7 @@
      * @throws  FormatException in case the scheme is'nt recognized
      */
     function fromString($str) {
-      $u= new URL(FALSE !== ($p= strpos($str, ' '))
+      $u= &new URL(FALSE !== ($p= strpos($str, ' '))
         ? substr($str, 0, $p)
         : $str
       );
@@ -96,8 +98,8 @@
         'host'     => $u->getHost(),
         'port'     => $u->getPort(),
         'path'     => $u->getPath(),
-        'query'    => $u->getQuery()
-        'fragment' => $u->getFragment()
+        'query'    => $u->getQuery(),
+        'fragment' => $u->getFragment(),
         'description' => $p !== FALSE ? substr($str, $p+ 1) : NULL
       );
       
