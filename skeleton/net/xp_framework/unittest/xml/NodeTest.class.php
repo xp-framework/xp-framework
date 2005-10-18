@@ -87,6 +87,32 @@
     }
     
     /**
+     * Tests that addChild() will throw an IllegalArgumentException in case the 
+     * passed argument is not a node object
+     *
+     * @see     xp://xml.Node#addChild
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function addingNullChild() {
+      $n= &new Node();
+      $n->addChild($child= NULL);
+    }
+
+    /**
+     * Tests that addChild() will return the child added
+     *
+     * @see     xp://xml.Node#addChild
+     * @access  public
+     */
+    #[@test]
+    function addingReturnsChild() {
+      $n= &new Node();
+      $child= &new Node();
+      $this->assertEquals($child, $n->addChild($child));
+    }
+    
+    /**
      * Tests a node without attributes or content
      *
      * @access  public
