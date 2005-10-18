@@ -74,6 +74,19 @@
     }
     
     /**
+     * Tests that setContent() will throw an XMLFormatException in case the 
+     * content contains illegal characters
+     *
+     * @see     xp://xml.Node#setContent
+     * @access  public
+     */
+    #[@test, @expect('xml.XMLFormatException')]
+    function illegalContent() {
+      $n= &new Node();
+      $n->setContent("\0");
+    }
+    
+    /**
      * Tests a node without attributes or content
      *
      * @access  public
