@@ -17,6 +17,7 @@
    * Represents a node
    *
    * @see   xp://xml.Tree#addChild
+   * @test  xp://net.xp_framework.unittest.xml.NodeTest
    */
   class Node extends Object {
     var 
