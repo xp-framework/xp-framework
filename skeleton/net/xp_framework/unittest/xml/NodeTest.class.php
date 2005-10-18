@@ -120,8 +120,22 @@
     #[@test]
     function sourceOfNodeWithTwoAttributes() {
       $this->assertEquals(
-        '<node id="2" name="XML"/>', 
-        $this->sourceOf(new Node('node', NULL, array('id' => 2, 'name' => 'XML')))
+        '<node id="2" name="&amp;XML"/>', 
+        $this->sourceOf(new Node('node', NULL, array('id' => 2, 'name' => '&XML')))
+      );
+    }
+
+    /**
+     * Tests a node with content. Makes sure escaping of special characters
+     * is performed as necessary.
+     *
+     * @access  public
+     */
+    #[@test]
+    function sourceOfNodeWithContent() {
+      $this->assertEquals(
+        '<expr>eval(\'1 &lt;&gt; 2 &amp;&amp; \') == &quot;Parse Error&quot;</expr>', 
+        $this->sourceOf(new Node('expr', 'eval(\'1 <> 2 && \') == "Parse Error"'))
       );
     }
   }
