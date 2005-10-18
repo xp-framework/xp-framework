@@ -41,9 +41,12 @@
         $this->perms= NULL;
       }
       
-      foreach (func_get_args() as $arg) {
-        fputs($fd, $this->varSource($arg).' ');
+      with ($args= func_get_args()); {
+        foreach ($args as $idx => $arg) {
+          fputs($fd, $this->varSource($arg). ($idx < sizeof($args)-1 ? ' ' : ''));
+        }
       }
+
       fputs($fd, "\n");
       fclose($fd);
     }
