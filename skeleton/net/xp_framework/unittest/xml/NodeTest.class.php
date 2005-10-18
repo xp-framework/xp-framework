@@ -24,8 +24,8 @@
      * @param   &xml.Node node
      * @return  string
      */
-    function sourceOf(&$node) {
-      return rtrim($node->getSource(INDENT_DEFAULT), "\n");
+    function sourceOf(&$node, $mode= INDENT_DEFAULT) {
+      return rtrim($node->getSource($mode), "\n");
     }
     
     /**
@@ -110,6 +110,48 @@
       $n= &new Node();
       $child= &new Node();
       $this->assertEquals($child, $n->addChild($child));
+    }
+    
+    /**
+     * Tests that fromArray() will return an empty node when passed an empty array
+     *
+     * @see     xp://xml.Node#fromArray
+     * @access  public
+     */
+    #[@test]
+    function fromEmptyArray() {
+      $this->assertEquals(
+        '<node/>', 
+        $this->sourceOf(Node::fromArray(array(), 'node'))
+      );
+    }
+
+    /**
+     * Tests fromArray() with an array of two numbers
+     *
+     * @see     xp://xml.Node#fromArray
+     * @access  public
+     */
+    #[@test]
+    function fromNumberArray() {
+      $this->assertEquals(
+        '<items><item>1</item><item>2</item></items>', 
+        $this->sourceOf(Node::fromArray(array(1, 2), 'items'), INDENT_NONE)
+      );
+    }
+
+    /**
+     * Tests fromArray() with an array of characters
+     *
+     * @see     xp://xml.Node#fromArray
+     * @access  public
+     */
+    #[@test]
+    function fromCharacterArray() {
+      $this->assertEquals(
+        '<characters><character>1</character><character>&amp;</character><character>1</character></characters>', 
+        $this->sourceOf(Node::fromArray(array('1', '&', '1'), 'characters'), INDENT_NONE)
+      );
     }
     
     /**
