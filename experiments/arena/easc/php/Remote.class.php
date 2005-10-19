@@ -58,6 +58,16 @@
     }
     
     /**
+     * Returns a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return $this->getClassName().'(handler= '.$this->_handler->toString().')';
+    }
+    
+    /**
      * Retrieve remote instance for 
      *
      * @model   static

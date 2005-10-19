@@ -68,6 +68,16 @@
     }
     
     /**
+     * Returns a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return $this->getClassName().'(->'.$this->_sock->host.':'.$this->_sock->port.')';
+    }
+    
+    /**
      * Look up an object by its name
      *
      * @access  public
