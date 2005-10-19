@@ -118,9 +118,9 @@
         </SOAP-ENV:Envelope>
       ');
       
-      $headers= $msg->getHeader();
-      $this->assertNotEquals($msg->getHeader(), FALSE);
-      $this->assertEquals(sizeof ($headers), 1);
+      $headers= $msg->getHeaders();
+      $this->assertNotEquals(NULL, $msg->getHeaders());
+      $this->assertEquals(1, sizeof ($headers));
       foreach ($headers as $h) { $this->assertSubclass($h, 'xml.soap.SOAPHeaderElement'); }
     }
   }
