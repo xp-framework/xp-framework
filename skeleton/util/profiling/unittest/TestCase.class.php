@@ -221,7 +221,11 @@
      * @return  bool
      */
     function assertNotEquals($expected, $actual, $error= 'equal') {
-      return !$this->assertEquals($expected, $actual, $error);
+      if ((is_a($expected, 'Object') ? $expected->equals($actual) : $expected === $actual)) {
+        return $this->fail($error, $actual, $expect);
+      }
+      
+      return TRUE;
     }
 
     /**
