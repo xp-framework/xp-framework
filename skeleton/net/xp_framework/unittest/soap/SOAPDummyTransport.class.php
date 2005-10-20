@@ -14,7 +14,39 @@
    */
   class SOAPDummyTransport extends SOAPTransport {
     var
-      $answer=    '';
+      $answer=    '',
+      $request=   NULL;
+
+    /**
+     * Set Request
+     *
+     * @access  public
+     * @param   &xml.soap.SOAPMessage request
+     */
+    function setRequest(&$request) {
+      $this->request= &$request;
+    }
+
+    /**
+     * Get Request
+     *
+     * @access  public
+     * @return  &xml.soap.SOAPMessage
+     */
+    function &getRequest() {
+      return $this->request;
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function getRequestString() {
+      return $this->request->getSource(0);
+    }
 
     /**
      * Set Answer
@@ -43,6 +75,7 @@
      * @param   &xml.soap.SOAPMessage message
      */
     function send(&$message) {
+      $this->request= $message; // Intentional copy
       return TRUE;
     }    
       

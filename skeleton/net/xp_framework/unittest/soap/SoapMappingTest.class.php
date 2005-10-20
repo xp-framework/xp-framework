@@ -53,5 +53,47 @@
       $this->assertEquals('Test-String', $res->getString());
       $this->assertEquals(12345, $res->getInteger());
     }
+    
+    /**
+     * Test serialization of registered type into a correct
+     * soap encoding with it's representing node being in the
+     * correct namespace (and not in the default XP namespace).
+     *
+     * This is a bit ugly, because the test is a white-box-test,
+     * knows alot about the result and even violates the
+     * access restrictions (_bodyElement).
+     *
+     * @access  public
+     */
+    #[@test]
+    function testSerialization() {
+      $transport= &new SOAPDummyTransport();
+      $client= &new SOAPClient($transport, 'urn://test');
+      
+      // Re-set transport as constructor created a copy of it!
+      $client->transport= &$transport;
+      
+      $client->registerMapping(
+        new QName('http://net.xp_framework/soap/types', 'SoapTestType'),
+        XPClass::forName('net.xp_framework.unittest.soap.SoapMappingTestTarget')
+      );
+      
+      try(); {
+        $client->invoke('foo', new SoapMappingTestTarget('Teststring', 12345));
+      } if (catch('XMLFormatException', $ignored)) {
+        // We don't receive a "real" answer, which will cause an exception
+      }
+      
+      $msg= &$transport->getRequest();
+      $body= &$msg->_bodyElement();
+      $this->assertEquals(
+        'http://net.xp_framework/soap/types', 
+        $body->children[0]->children[0]->attribute['xmlns:ns1']
+      );
+      $this->assertEquals(
+        'ns1:SoapTestType', 
+        $body->children[0]->children[0]->attribute['xsi:type']
+      );
+    }
   }
 ?>

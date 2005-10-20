@@ -17,6 +17,18 @@
       $integer    = 0;  
 
     /**
+     * Constructor.
+     *
+     * @access  public
+     * @param   string string default ''
+     * @param   integer integer default 0
+     */
+    function __construct($string= '', $integer= 0) {
+      $this->string= $string;
+      $this->integer= $integer;
+    }
+
+    /**
      * Set String
      *
      * @access  public
