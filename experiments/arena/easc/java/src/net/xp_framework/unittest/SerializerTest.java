@@ -413,6 +413,26 @@ public class SerializerTest {
             representationOf(a)
         );
     }
+    
+    /**
+     * Tests serialization of a java.util.ArrayList consisting of multiple
+     * different types (String, Long, Timestamp).
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOMixedfArrayList() throws Exception {
+        ArrayList<Object> a= new ArrayList<Object>();
+
+        a.add("Binford");
+        a.add(6100);
+        a.add(new Timestamp(1122369782000L));
+
+        assertEquals(
+            "a:3:{i:0;s:7:\"Binford\";i:1;i:6100;i:2;T:1122369782;}", 
+            representationOf(a)
+        );
+    }
 
     /**
      * Tests serialization of a java.util.ArrayList of ArrayLists
