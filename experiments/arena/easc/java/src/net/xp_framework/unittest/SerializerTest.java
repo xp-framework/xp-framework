@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Date;
 import java.util.UUID;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.lang.reflect.Proxy;
 import java.sql.Timestamp;
 
@@ -393,6 +394,22 @@ public class SerializerTest {
     @Test public void representationOfNull() throws Exception {
         Object o= null;
         assertEquals("N;", representationOf(o));
+    }
+    
+    /**
+     * Tests serialization of a java.util.ArrayList
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOfArrayList() throws Exception {
+        ArrayList<String> a= new ArrayList<String>();
+        a.add("Binford");
+        a.add("Tools");
+        assertEquals(
+            "a:2:{i:0;s:7:\"Binford\";i:1;s:5:\"Tools\";}", 
+            representationOf(a)
+        );
     }
 
     /**
