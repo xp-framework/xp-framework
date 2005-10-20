@@ -404,11 +404,35 @@ public class SerializerTest {
      */
     @Test public void representationOfArrayList() throws Exception {
         ArrayList<String> a= new ArrayList<String>();
+
         a.add("Binford");
         a.add("Tools");
+
         assertEquals(
             "a:2:{i:0;s:7:\"Binford\";i:1;s:5:\"Tools\";}", 
             representationOf(a)
+        );
+    }
+
+    /**
+     * Tests serialization of a java.util.ArrayList of ArrayLists
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOfNestedArrayList() throws Exception {
+        ArrayList<ArrayList<String>> n= new ArrayList<ArrayList<String>>();
+        ArrayList<String> a1= new ArrayList<String>();
+        ArrayList<String> a2= new ArrayList<String>();
+
+        a1.add("Binford");
+        a2.add("Tools");
+        n.add(a1);
+        n.add(a2);
+
+        assertEquals(
+            "a:2:{i:0;a:1:{i:0;s:7:\"Binford\";}i:1;a:1:{i:0;s:5:\"Tools\";}}", 
+            representationOf(n)
         );
     }
 
