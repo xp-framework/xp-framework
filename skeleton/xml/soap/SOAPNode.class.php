@@ -220,7 +220,7 @@
      * @access  protected
      * @param   &xml.Node e element to add array to
      * @param   array a
-     * @param   &xml.soap.SOAPMapping
+     * @param   &xml.soap.SOAPMapping mapping
      */
     function _recurse(&$e, $a, &$mapping) {
       foreach (array_keys($a) as $field) {
