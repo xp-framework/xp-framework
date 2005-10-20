@@ -7,7 +7,17 @@
   /**
    * Qualified name
    *
-   * @purpose  Wrapper
+   * Example:
+   * <code>
+   *   new QName('http://schemas.xmlsoap.org/ws/2003/03/addressing', 'To', 'wsa');
+   * </code>
+   *
+   * Result:
+   * <pre>
+   *   <wsa:To xmlns:wsa="http://schemas.xmlsoap.org/ws/2003/03/addressing"/>
+   * </pre>
+   *
+   * @purpose  XML Namespaces
    */
   class QName extends Object {
     var
