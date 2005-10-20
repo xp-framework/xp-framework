@@ -587,6 +587,22 @@ public class SerializerTest {
     }
 
     /**
+     * Tests deserialization of a date (identified by "D" token) given a
+     * java.sql.Date object
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void valueOfNullSqlDate() throws Exception {
+        java.sql.Date nullDate= null;
+
+        assertEquals(
+            nullDate, 
+            valueOf("N;", java.sql.Date.class)
+        );
+    }
+
+    /**
      * Tests deserialization of an Item value object
      *
      * @access  public
