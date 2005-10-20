@@ -263,9 +263,10 @@ public class SerializerTest {
         HashMap<String, String> h= new HashMap<String, String>();
         h.put("key", "value");
         h.put("number", "6100");
+        h.put("null", null);
         
         assertEquals(
-            "a:2:{s:3:\"key\";s:5:\"value\";s:6:\"number\";s:4:\"6100\";}", 
+            "a:3:{s:3:\"key\";s:5:\"value\";s:4:\"null\";N;s:6:\"number\";s:4:\"6100\";}",
             representationOf(h)
         );
     }
