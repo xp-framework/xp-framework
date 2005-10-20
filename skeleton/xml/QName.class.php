@@ -12,7 +12,8 @@
   class QName extends Object {
     var
       $namespace    = '',
-      $localpart    = '';
+      $localpart    = '',
+      $prefix       = '';
     
     /**
      * Constructor
@@ -21,10 +22,10 @@
      * @param   string namespace
      * @param   string localpart
      */
-    function __construct($namespace, $localpart) {
-      
+    function __construct($namespace, $localpart, $prefix= NULL) {
       $this->namespace= $namespace;
       $this->localpart= $localpart;
+      $this->prefix= $prefix;
     }
     
     /**
