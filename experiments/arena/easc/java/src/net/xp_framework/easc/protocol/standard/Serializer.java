@@ -544,7 +544,10 @@ public class Serializer {
             Object value= h.get(key);
 
             buffer.append(representationOf(key, invokeableFor(key.getClass())));
-            buffer.append(representationOf(value, invokeableFor(value.getClass())));
+            buffer.append(null == value 
+                ? "N;" 
+                : representationOf(value, invokeableFor(value.getClass()))
+            );
         }
 
         buffer.append("}");
