@@ -29,13 +29,13 @@
      * @param   &array ns current namespaces from SOAP message
      * @return  &xml.soap.SOAPHeaderElement
      */
-    function &fromNode(&$node, $ns) {
+    function &fromNode(&$node, $ns, $encoding) {
       $header= &new SOAPHeaderElement();
       $header->name= $node->getName();
       $header->mustUnderstand= (bool)$node->getAttribute($ns[XMLNS_SOAPENV].':mustUnderstand');
       $header->actor= $node->getAttribute($ns[XMLNS_SOAPENV].':actor');
       $header->encodingStyle= $node->getAttribute($ns[XMLNS_SOAPENV].':encodingStyle');
-      $header->value= trim($node->getContent());
+      $header->value= trim($node->getContent($encoding, $ns));
       
       return $header;
     }

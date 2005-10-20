@@ -120,8 +120,9 @@
      * @access  private
      * @param   &xml.soap.SOAPNode child
      * @param   mixed value
+     * @param   &xml.soap.SOAPMapping mapping
      */
-    function _marshall(&$child, $value) {
+    function _marshall(&$child, $value, &$mapping) {
       static $ns= 0;
       
       if (is_scalar($value)) {          // Scalar
@@ -143,13 +144,13 @@
           $child->attribute['xsi:type']= 'xsd:struct';
           if (empty($value)) $child->attribute['xsi:nil']= 'true';
         }
-        $this->_recurse($child, $value);
+        $this->_recurse($child, $value, $mapping);
         return;
       }
 
       if (is_a($value, 'Parameter')) {  // Named parameter
         $child->name= $value->name;
-        $this->_marshall($child, $value->value);
+        $this->_marshall($child, $value->value, $mapping);
         return;
       }
       
@@ -165,7 +166,7 @@
       
       if (is_a($value, 'SoapType')) {   // Special SoapTypes
         if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
-        $this->_marshall($child, $value->toString());
+        $this->_marshall($child, $value->toString(), $mapping);
         
         // Specified type
         if (NULL !== ($t= $value->getType())) $child->attribute['xsi:type']= $t;
@@ -178,18 +179,27 @@
         return;
       }
       
+      if (NULL !== ($qname= $mapping->qnameFor($value->getClass()))) {
+        $ns++;
+        $child->attribute['xmlns:ns'.$ns]= $qname->namespace;
+        $child->attribute['xsi:type']= 'ns'.$ns.':'.$qname->localpart;
+        
+        $this->_recurse($child, get_object_vars($value), $mapping);
+        return;
+      }
+      
       if (is_a($value, 'Collection')) { // XP collection
         $child->attribute['xsi:type']= 'SOAP-ENC:Array';
         $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
         $child->attribute['SOAP-ENC:arrayType']= 'xp:'.$value->getElementClassName().'['.$value->size().']';
-        $this->_recurse($child, $value->values());
+        $this->_recurse($child, $value->values(), $mapping);
         return;
       }
       
       if (is_a($value, 'Object')) {     // XP objects
         $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
         $child->attribute['xsi:type']= 'xp:'.$value->getClassName();
-        $this->_recurse($child, get_object_vars($value));
+        $this->_recurse($child, get_object_vars($value), $mapping);
         return;
       }
       
@@ -197,7 +207,7 @@
         $ns++;
         $child->attribute['xmlns:ns'.$ns]= 'http://xp-framework.net/xmlns/php';
         $child->attribute['xsi:type']= 'ns'.$ns.':'.get_class($value);
-        $this->_recurse($child, get_object_vars($value));
+        $this->_recurse($child, get_object_vars($value), $mapping);
         return;        
       }
       
@@ -210,13 +220,15 @@
      * @access  protected
      * @param   &xml.Node e element to add array to
      * @param   array a
+     * @param   &xml.soap.SOAPMapping
      */
-    function _recurse(&$e, $a) {
+    function _recurse(&$e, $a, &$mapping) {
       foreach (array_keys($a) as $field) {
         if ('_' == $field{0}) continue;
         $this->_marshall(
           $e->addChild(new SOAPNode(is_numeric($field) ? 'item' : $field)),
-          $a[$field]
+          $a[$field],
+          $mapping
         );
       }
     }
@@ -233,11 +245,12 @@
      * @access  public
      * @param   array arr
      * @param   string name default 'array'
+     * @param   &xml.soap.SOAPMapping mapping
      * @return  &xml.Node
      */
-    function &fromArray($arr, $name= 'array') {
+    function &fromArray($arr, $name= 'array', $mapping) {
       $n= &new SOAPNode($name);
-      $n->_recurse($n, $arr);
+      $n->_recurse($n, $arr, $mapping);
       return $n;  
     }
     
@@ -254,12 +267,14 @@
      * @access  public
      * @param   object obj
      * @param   string name default NULL
+     * @param   &xml.soap.SOAPMapping mapping
      * @return  &xml.Node
      */
-    function &fromObject($obj, $name= NULL) {
+    function &fromObject($obj, $name= NULL, $mapping) {
       return SOAPNode::fromArray(
         get_object_vars($obj), 
-        (NULL === $name) ? get_class($obj) : $name
+        (NULL === $name) ? get_class($obj) : $name,
+        $mapping
       );
     }
   }

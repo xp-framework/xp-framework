@@ -93,9 +93,10 @@
      *
      * @access  public
      * @param   array arr
+     * @param   array mapping default array() list of declared namespaces
      */
-    function setData($arr) {
-      $node= &SOAPNode::fromArray($arr, 'item');
+    function setData($arr, $mapping= NULL) {
+      $node= &SOAPNode::fromArray($arr, 'item', $mapping);
       $node->namespace= $this->namespace;
       if (empty($node->children)) return;
       
@@ -111,7 +112,7 @@
      * @access  private
      * @param   &xml.Node child
      * @param   string context default NULL
-     * @param   array mapping
+     * @param   &xml.soap.SOAPMapping mapping
      * @return  &mixed result
      */
     function &unmarshall(&$child, $context= NULL, $mapping) {
@@ -243,9 +244,9 @@
             }
 
             // Check for mapping
-            $qname= strtolower(array_search($regs[1], $this->namespaces).'/'.$regs[2]);
-            if (isset($mapping[$qname])) {
-              $result= &$mapping[$qname]->newInstance();
+            $qname= &new QName(array_search($regs[1], $this->namespaces), $regs[2]);
+            if (NULL !== ($xpclass= &$mapping->classFor($qname))) {
+              $result= &$xpclass->newInstance();
             } else {
               $result= &new Object();
               $result->qname= $qname;
@@ -437,7 +438,7 @@
      * @return  &mixed data
      * @throws  lang.FormatException in case no XMLNS_SOAPENV:Body was found
      */
-    function &getData($context= 'ENUM', $mapping= array()) {
+    function &getData($context= 'ENUM', $mapping) {
       if ($body= &$this->_bodyElement()) {
         return $this->_recurseData($body->children[0], FALSE, $context, $mapping);
       }
@@ -455,7 +456,11 @@
       // Go through all children
       $headers= array();
       foreach (array_keys($h->children) as $idx) {
-        $headers[]= &SOAPHeaderElement::fromNode($h->children[$idx], $this->namespaces);
+        $headers[]= &SOAPHeaderElement::fromNode(
+          $h->children[$idx], 
+          $this->namespaces,
+          $this->encoding
+        );
       }
       
       return $headers;

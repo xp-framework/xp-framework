@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.soap.SOAPMessage', 'xml.QName', 'xml.soap.Parameter');
+  uses('xml.soap.SOAPMessage', 'xml.QName', 'xml.soap.Parameter', 'xml.soap.SOAPMapping');
   
   /**
    * Basic SOAP-Client
@@ -29,7 +29,7 @@
       $transport          = NULL,
       $action             = '',
       $targetNamespace    = NULL,
-      $mapping            = array();
+      $mapping            = NULL;
     
     /**
      * Constructor
@@ -43,6 +43,7 @@
       $this->transport= &$transport;
       $this->action= $action;
       $this->targetNamespace= $targetNamespace;
+      $this->mapping= &new SOAPMapping();
     }
 
     /**
@@ -81,15 +82,9 @@
      * @access  public
      * @param   &xml.QName qname
      * @param   &lang.XPClass class
-     * @throws  lang.IllegalArgumentException
      */
     function registerMapping(&$qname, &$class) {
-      if (!is('XPClass', $class)) {
-        return throw(new IllegalArgumentException(
-          'Argument class is not an XPClass (given: '.xp::typeOf($class).')'
-        ));
-      }
-      $this->mapping[strtolower($qname->toString())]= &$class;
+      $this->mapping->registerMapping($qname, $class);
     }
     
     /**
@@ -112,7 +107,7 @@
       $message= &new SOAPMessage();
       $message->setEncoding($this->encoding);
       $message->create($this->action, array_shift($args), $this->targetNamespace);
-      $message->setData($args);
+      $message->setData($args, $this->mapping);
 
       // Send
       if (FALSE == ($response= &$this->transport->send($message))) return FALSE;
