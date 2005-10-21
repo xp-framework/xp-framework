@@ -297,8 +297,8 @@ public class SerializerTest {
      */
     @Test public void representationOfStringArray() throws Exception {
         assertEquals(
-            "a:2:{i:0;s:5:\"First\";i:1;s:6:\"Second\";}", 
-            representationOf(new String[] { "First", "Second" })
+            "a:3:{i:0;s:5:\"First\";i:1;s:6:\"Second\";i:2;N;}", 
+            representationOf(new String[] { "First", "Second", null })
         );
     }
 
