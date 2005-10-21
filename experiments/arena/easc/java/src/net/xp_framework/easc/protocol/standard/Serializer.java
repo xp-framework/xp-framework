@@ -569,7 +569,10 @@ public class Serializer {
 
         for (int i= 0; i < a.length; i++) {
             buffer.append("i:" + i + ";");
-            buffer.append(representationOf(a[i], invokeableFor(a[i].getClass())));
+            buffer.append(null == a[i]
+                ? "N;"
+                : representationOf(a[i], invokeableFor(a[i].getClass()))
+            );
         }
 
         buffer.append("}");
