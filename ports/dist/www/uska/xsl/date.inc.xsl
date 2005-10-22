@@ -163,7 +163,7 @@
         <xsl:when test="$diff = 0"><xsl:value-of select="func:get_text('common#today')"/></xsl:when>
         <xsl:when test="$diff = 1"><xsl:value-of select="func:get_text('common#yesterday')"/></xsl:when>
         <xsl:when test="$diff &lt;= 7"><xsl:value-of select="func:get_text(concat('common#weekday#', $date/wday))"/></xsl:when>
-        <xsl:when test="$diff &lt;= 14">Last <xsl:value-of select="$date/weekday"/></xsl:when>
+        <xsl:when test="$diff &lt;= 14">Letzten <xsl:value-of select="func:get_text(concat('common#weekday#', $date/wday))"/></xsl:when>
         <xsl:otherwise><xsl:value-of select="func:date(exsl:node-set($date))"/></xsl:otherwise>
       </xsl:choose>
     </func:result>
