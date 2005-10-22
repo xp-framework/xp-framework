@@ -146,9 +146,7 @@
       $email= &$this->wrapper->getEmail();
       $player->setEmail($email->localpart.'@'.$email->domain);
       $player->setPosition($this->wrapper->getPosition());
-      if (!$player->getTeam_id()) {
-        $player->setTeam_id($this->wrapper->getTeam_id());
-      }
+      $player->setTeam_id($this->wrapper->getTeam_id());
       
       if (NULL === $player->getCreated_by()) {
         $player->setCreated_by($context->user->getPlayer_id());
