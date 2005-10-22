@@ -4,9 +4,20 @@
  * $Id$
  */
 
+create table progress (
+  bz_id                       int primary key,
+  description                 varchar(255) not null
+) Type=InnoDB
+insert into progress values (10000, "Init")
+insert into progress values (20000, "Done")
+insert into progress values (20001, "Update")
+insert into progress values (30000, "Locked")
+insert into progress values (30001, "Delete")
+insert into progress values (40000, "Deleted")
+
 create table team (
   team_id                     int auto_increment primary key,
-  name                        varchar(255) not null
+  name                        varchar(255) not null,
 ) Type=InnoDB
 
 create table player (
@@ -24,16 +35,20 @@ create table player (
   position                    int null,
   created_by                  int null,
   
+  bz_id                       int not null,
   lastchange                  datetime not null,
   changedby                   varchar(50) not null
 ) Type=InnoDB
 alter table player add unique index (username)
+alter table player add unique index (email)
 alter table player add foreign key (created_by) references player(player_id)
 alter table player add foreign key (team_id) references team(team_id)
+alter table player add foreign key (bz_id) references progress(bz_id)
 
 create table event_type (
   event_type_id               int primary key,
-  description                 varchar(50) not null
+  description                 varchar(50) not null,
+  feature                     int null
 ) Type=InnoDB
 insert into event_type values (1, "Training")
 insert into event_type values (2, "Turnier")
@@ -60,6 +75,16 @@ create table event (
 alter table event add index (target_date)
 alter table event add foreign key (team_id) references team(team_id)
 alter table event add foreign key (event_type_id) references event_type(event_type_id)
+
+create table event_type_acl (
+  player_id                   int not null,
+  event_type_id               int not null,
+  
+  lastchange                  datetime not null,
+  changedby                   varchar(50) not null
+) Type=InnoDB
+alter table event_type_acl add foreign key (player_id) references player(player_id)
+alter table event_type_acl add foreign key (event_type_id) references event(event_type_id)
 
 create table event_attendee (
   event_id                    int not null,
@@ -104,3 +129,14 @@ alter table plain_right_matrix add index (player_id)
 alter table plain_right_matrix add unique index (permission_id, player_id)
 alter table plain_right_matrix add foreign key (permission_id) references permission(permission_id)
 alter table plain_right_matrix add foreign key (player_id) references player(player_id)
+
+create table mailinglist (
+  mailinglist_id              int auto_increment primary key,
+  name                        varchar(255) not null,
+  
+  bz_id                       int not null default 20000,
+  lastchange                  datetime not null,
+  changedby                   varchar(50) not null
+) Type=InnoDB
+alter table mailinglist add foreign key (bz_id) references progress(bz_id)
+
