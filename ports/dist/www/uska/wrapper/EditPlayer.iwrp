@@ -44,4 +44,5 @@
   
   <param name="team_id" type="int"/>
   <param name="position" type="int"/>
+  <param name="mailinglist" type="int" occurrence="multiple,optional"/>
 </interface>
