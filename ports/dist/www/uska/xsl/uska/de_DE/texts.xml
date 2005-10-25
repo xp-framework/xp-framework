@@ -95,6 +95,7 @@
   <text for="editeventhandler#guests">Gäste zulassen?</text>
   
   <text for="editplayerhandler#form-error">Es sind Fehler aufgetreten:</text>
+  <text for="editplayerhandler#form-success">Die neuen Daten wurden erfolgreich gespeichert.</text>
   <text for="editeventhandler#firstname">Vorname</text>
   <text for="editeventhandler#lastname">Nachname</text>
   <text for="editeventhandler#username">Username</text>
