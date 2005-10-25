@@ -7,7 +7,8 @@
   uses(
     'scriptlet.xml.workflow.Handler',
     'de.uska.scriptlet.wrapper.EditPlayerWrapper',
-    'de.uska.db.Player'
+    'de.uska.db.Player',
+    'de.uska.EzmlmSqlUtil'
   );
 
   /**
@@ -95,8 +96,35 @@
       } if (catch('SQLException', $e)) {
         return throw($e);
       }
-      
       $this->setValue('teams', $teams);
+      
+      // Select mailinglists
+      try(); {
+        $mls= $db->select('
+            m.mailinglist_id,
+            m.name,
+            m.address,
+            mpm.player_id as subscribed
+          from
+            mailinglist as m
+              left outer join mailinglist_player_matrix as mpm
+            on
+              m.mailinglist_id= mpm.mailinglist_id
+              and mpm.player_id= %d
+          ',
+          $player->getPlayer_id()
+        );
+      } if (catch('SQLException', $e)) {
+        return throw($e);
+      }
+      
+      foreach ($mls as $m) {
+        $this->setFormValue(
+          'mailinglist[ml_'.$m['mailinglist_id'].']',
+          $m['subscribed']
+        );
+      }
+      $this->setValue('mailinglists', $mls);
 
       return TRUE;
     }
@@ -110,6 +138,9 @@
      * @return  boolean
      */
     function handleSubmittedData(&$request, &$context) {
+      $log= &Logger::getInstance();
+      $cat= &$log->getCategory();
+      
       switch ($this->getValue('mode')) {
         case 'update':
           try(); {
@@ -143,7 +174,10 @@
         $player->setPassword(md5($this->wrapper->getPassword()));
       }
       
+      // update email, remember old one for ezmlm updates
       $email= &$this->wrapper->getEmail();
+      $oldemail= NULL;
+      if ($player->getEmail() != $email->localpart.'@'.$email->domain) $oldemail= $player->getEmail();
       $player->setEmail($email->localpart.'@'.$email->domain);
       $player->setPosition($this->wrapper->getPosition());
       $player->setTeam_id($this->wrapper->getTeam_id());
@@ -167,6 +201,70 @@
           $player->update();
         } else {
           $player->insert();
+        }
+        
+        // If email was changed, update all mailinglists
+        $mls= $this->getValue('mailinglists');
+        if ($oldemail) {
+          foreach ($mls as $mailinglist) {
+            $ezmlm= &new EzmlmSqlUtil('ezmlm', $mailinglist['name']);
+            $ezmlm->setConnection($db);
+            $ezmlm->alterAddress($oldemail, $player->getEmail());
+          }
+        }
+        
+        // Mailinglist management
+        if ($context->hasPermission('create_player')) {
+          $newml= $this->wrapper->getMailinglist();
+          foreach ($mls as $mailinglist) {
+
+            if (!empty($newml['ml_'.$mailinglist['mailinglist_id']])) {
+              $found= FALSE;
+              try(); {
+                $db->insert('into mailinglist_player_matrix (
+                    mailinglist_id,
+                    player_id,
+                    lastchange,
+                    changedby
+                  ) values (
+                    %d,
+                    %d,
+                    %s,
+                    %s
+                  )',
+                  $mailinglist['mailinglist_id'],
+                  $player->getPlayer_id(),
+                  Date::now(),
+                  $context->user->getUsername()
+                );
+              } if (catch('SQLStatementFailedException', $ignored)) {
+                // already there, ok...
+                $found= TRUE;
+              }
+
+              if (!$found) {
+                $ezmlm= &new EzmlmSqlUtil('ezmlm', $mailinglist['name']);
+                $ezmlm->setConnection($db);
+                $ezmlm->addSubscriber($player->getEmail());
+              }
+            } else {
+              $cnt= $db->delete('
+                from 
+                  mailinglist_player_matrix
+                where player_id= %d
+                  and mailinglist_id= %d
+                ',
+                $player->getPlayer_id(),
+                $mailinglist['mailinglist_id']
+              );
+
+              if ($cnt) {
+                $ezmlm= &new EzmlmSqlUtil('ezmlm', $mailinglist['name']);
+                $ezmlm->setConnection($db);
+                $ezmlm->removeSubscriber($player->getEmail());
+              }
+            }
+          }
         }
         
       } if (catch('SQLException', $e)) {

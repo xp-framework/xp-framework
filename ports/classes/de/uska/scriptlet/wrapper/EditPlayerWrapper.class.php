@@ -91,6 +91,14 @@
         NULL,
         NULL
       );
+      $this->registerParamInfo(
+        'mailinglist',
+        OCCURRENCE_MULTIPLE | OCCURRENCE_OPTIONAL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+      );
     }
 
     /**
@@ -171,6 +179,16 @@
      */
     function getPosition() {
       return $this->getValue('position');
+    }
+
+    /**
+     * Returns the value of the parameter mailinglist
+     *
+     * @access  public
+     * @return  int[]
+     */
+    function getMailinglist() {
+      return $this->getValue('mailinglist');
     }
 
   }
