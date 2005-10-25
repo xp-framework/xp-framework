@@ -19,7 +19,7 @@
    */
   class EzmlmSqlUtil extends Object {
     var
-      $db=          NULL;
+      $db=          NULL,
       $database=    '',
       $mailinglist= '';
       
@@ -61,7 +61,8 @@
           and hash between 1 and 52
         ',
         $this->database,
-        $this->mailinglist
+        $this->mailinglist,
+        $address
       );
       
       return (bool)sizeof($s);
@@ -109,7 +110,7 @@
         (int)rand(1, 52),
         $address
       );
-      $this->writeLog($to, '', EZMLM_ADD);
+      $this->writeLog($address, '', EZMLM_ADD);
     }
     
     /**
@@ -141,7 +142,8 @@
      * @param   string to
      * @return  int count
      */
-    function alterAdress($from, $to) {
+    function alterAddress($from, $to) {
+      if (!$this->isSubscribed($from)) return FALSE;
       $cnt= $this->db->update('
         %c.%c
         set
@@ -172,7 +174,7 @@
           tai,
           address,
           fromline,
-          edit,
+          edir,
           etype
         ) values (
           now(),
