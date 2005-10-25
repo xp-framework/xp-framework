@@ -133,10 +133,23 @@ alter table plain_right_matrix add foreign key (player_id) references player(pla
 create table mailinglist (
   mailinglist_id              int auto_increment primary key,
   name                        varchar(255) not null,
+  address                     varchar(255) not null,
   
   bz_id                       int not null default 20000,
   lastchange                  datetime not null,
   changedby                   varchar(50) not null
 ) Type=InnoDB
 alter table mailinglist add foreign key (bz_id) references progress(bz_id)
+alter table mailinglist add unique index (name)
+alter table mailinglist add unique index (address)
 
+create table mailinglist_player_matrix (
+  player_id                   int not null,
+  mailinglist_id              int not null,
+  
+  lastchange                  datetime not null,
+  changedby                   varchar(50) not null
+) Type=InnoDB
+alter table mailinglist_player_matrix add foreign key (player_id) references player(player_id)
+alter table mailinglist_player_matrix add foreign key (mailinglist_id) references mailinglist(mailinglist_id)
+alter table mailinglist_player_matrix add unique index (player_id, mailinglist_id)
