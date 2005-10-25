@@ -19,7 +19,7 @@
   </xsl:template>
   
   <xsl:template name="content">
-    <form method="post" action="{func:link($__state)}">
+    <form method="post" action="{func:link($__state)}" autocomplete="off">
     <input type="hidden" name="__handler" value="{/formresult/handlers/handler[@name= 'editplayerhandler']/@id}"/>
     <input type="hidden" name="player_id" value="{/formresult/formvalues/param[@name= 'player_id']}"/>
     
@@ -72,6 +72,29 @@
               <option id="4">Sturm</option>
             </xsl:variable>
             <xsl:copy-of select="func:wizard_row_select('editeventhandler', 'position', $positions, 0)"/>
+          </table>
+        </fieldset>
+        
+        <!-- Mailinglist settings -->
+        <fieldset>
+          <legend>Mailinglisten</legend>
+          
+          <table>
+            <xsl:for-each select="/formresult/handlers/handler[@name= 'editplayerhandler']/values/mailinglists/mailinglist">
+              <tr>
+                <td><xsl:value-of select="address"/></td>
+                <td>
+                  <xsl:variable name="name" select="concat('mailinglist[ml_', mailinglist_id, ']')"/>
+                  <input type="checkbox" name="mailinglist[ml_{mailinglist_id}]" value="1">
+                    <xsl:if test="/formresult/formvalues/param[@name= $name] != ''">
+                      <xsl:attribute name="checked">checked</xsl:attribute>
+                    </xsl:if>
+                    <xsl:if test="'' = func:hasPermission('create_player')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
+                  </input>
+                  angemeldet
+                </td>
+              </tr>
+            </xsl:for-each>
           </table>
         </fieldset>
         
