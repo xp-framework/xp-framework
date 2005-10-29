@@ -227,6 +227,35 @@
     }
     
     /**
+     * Forward to another state (optionally with query string and fraction)
+     *
+     * @access  public
+     * @param   string state
+     * @param   string query default NULL the query string without the leading "?"
+     * @param   string fraction default NULL the fraction without the leading "#"
+     */
+    function forwardTo($state, $query= NULL, $fraction= NULL) {
+      sscanf(
+        getenv('REQUEST_URI'), 
+        '/xml/%[^.].%[^./].psessionid=%[^/]', 
+        $product,
+        $language,
+        $sessionId
+      );
+      $this->redirect(sprintf(
+        '%s://%s/xml/%s.%s%s/%s%s%s', 
+        ('on' == getenv('HTTPS') ? 'https' : 'http'),
+        getenv('HTTP_HOST'),          
+        $product,
+        $language,
+        ('' == (string)$sessionId) ? '' : '.psessionid='.$sessionId,
+        $state,
+        ('' == (string)$query) ? '' : '?'.$query,
+        ('' == (string)$fraction) ? '' : '#'.$fraction        
+      ));
+    }
+    
+    /**
      * Transforms the OutputDocument's XML and the stylesheet
      *
      * @throws  lang.IllegalStateException if no stylesheet is set
