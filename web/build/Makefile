@@ -3,7 +3,7 @@
 # 
 # $Id$
 
-PHP=php
+PHP=php -dinclude_path=../../skeleton
 collections=../etc/make/collections.ini
 
 .PHONY: cache
@@ -17,7 +17,9 @@ parse: cache
 	$(PHP) make.php $(collections)
 
 collections:
-	$(PHP) collections.php $(collections) > collections.xml
+	$(PHP) collections.php $(collections) > collections.tmp.xml
+	mv collections.tmp.xml collections.xml
 
 inheritance:
-	$(PHP) inheritance.php $(collections) > inheritance.xml
+	$(PHP) inheritance.php $(collections) > inheritance.tmp.xml
+	mv inheritance.tmp.xml inheritance.xml
