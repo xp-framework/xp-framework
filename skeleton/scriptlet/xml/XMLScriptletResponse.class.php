@@ -242,7 +242,7 @@
         $language,
         $sessionId
       );
-      $this->redirect(sprintf(
+      $this->sendRedirect(sprintf(
         '%s://%s/xml/%s.%s%s/%s%s%s', 
         ('on' == getenv('HTTPS') ? 'https' : 'http'),
         getenv('HTTP_HOST'),          
