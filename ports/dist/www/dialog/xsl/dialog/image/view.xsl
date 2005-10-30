@@ -86,13 +86,24 @@
       Originally taken on <xsl:value-of select="func:datetime(/formresult/selected/exifData/dateTime)"/>
       with <xsl:value-of select="/formresult/selected/exifData/make"/>'s
       <xsl:value-of select="/formresult/selected/exifData/model"/>.
+
+      (<small>
+      <xsl:if test="/formresult/selected/exifData/apertureFNumber != ''">
+        <xsl:value-of select="/formresult/selected/exifData/apertureFNumber"/>
+      </xsl:if>
+      <xsl:if test="/formresult/selected/exifData/exposureTime != ''">
+        <xsl:text>, </xsl:text>
+        <xsl:value-of select="/formresult/selected/exifData/exposureTime"/> sec.
+      </xsl:if>  
+      <xsl:if test="/formresult/selected/exifData/isoSpeedRatings != ''">
+        <xsl:text>, ISO </xsl:text>
+        <xsl:value-of select="/formresult/selected/exifData/isoSpeedRatings"/>
+      </xsl:if>  
+      <xsl:if test="(/formresult/selected/exifData/flash mod 8) = 1">
+        <xsl:text>, flash fired</xsl:text>
+      </xsl:if>
+      </small>)
     </p>
-    
-    <!--
-    <xmp>
-      <xsl:copy-of select="/formresult/selected"/>
-    </xmp>
-    -->
   </xsl:template>
   
 </xsl:stylesheet>
