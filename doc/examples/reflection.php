@@ -57,6 +57,12 @@
     for ($c= 0, $i= $class->getInterfaces(), $s= sizeof($i); $c < $s; $c++) {
       $implements.= ', '.$i[$c]->getName();
     }
+    
+    // Retrieve fields
+    $fields= '';
+    for ($c= 0, $f= $class->getFields(), $s= sizeof($f); $c < $s; $c++) {
+      $fields.= '$'.$f[$c]->getName()."\n    ";
+    }
 
     // Create a new instance
     $instance= &$class->newInstance();
@@ -65,7 +71,7 @@
       "Class '%s' (extends %s) %s\n".
       "* Constructor: %s\n".
       "* Methods:\n%s\n".
-      "* Fields:\n  - \$%s\n\n".
+      "* Fields:\n  - %s\n\n".
       "* Has method 'toString': %s\n\n".
       "* Instance toString() output: %s\n\n",
       $class->getName(),
@@ -76,7 +82,7 @@
         : '(none)'
       ),
       $methods,
-      implode("\n  - \$", array_keys($class->getFields())),
+      $fields,
       var_export($class->hasMethod('toString'), 1),
       $instance->toString()
     );
