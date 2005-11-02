@@ -179,5 +179,18 @@
       $date= &Date::fromString('May 28 1580 12:00PM');
       $this->assertEquals((int)$date->getHours(), 12, '12:00PM != 12h');
     }
+    
+    /**
+     * Test mktime function
+     *
+     * @access  public
+     */    
+    #[@test]
+    function testMktime() {
+      
+      // Test with a date before 1971
+      $stamp= &Date::mktime(0, 0, 0, '08', '02', 1968);
+      $this->assertEquals($stamp, -44668800, 'Wrong timestamp');
+    }
   }
 ?>
