@@ -28,7 +28,7 @@
         if ('' == ltrim($v, ' +-0')) {
           $return[$k]= 0.0;
         } else {
-          $return[$k]= floatval($v);
+          $return[$k]= floatval(strtr($v, ',', '.'));
         }
       }
 
