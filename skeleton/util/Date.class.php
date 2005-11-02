@@ -197,7 +197,7 @@
         $days+= array_sum(array_slice($month_table[$leap], $month + 1, 12));
         
         // Subtract day
-        $days+= $month_table[$leap][$month]- $day;
+        $days+= $month_table[$leap][intval($month)]- $day;
         
         // Calculate stamp
         $stamp= - ($days * 86400 + (86400 - ($hour * 3600 + $minute * 60 + $second)) - $gmt);
