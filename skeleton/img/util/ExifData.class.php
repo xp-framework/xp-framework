@@ -614,7 +614,7 @@
         $this->orientation,
         $this->isHorizontal() ? 'horizontal' : 'vertical',
         $this->getOrientationString(),
-        $this->dateTime->toString('r'),
+        xp::stringOf($this->dateTime),
         $this->apertureFNumber,
         $this->exposureTime,
         $this->exposureProgram,
