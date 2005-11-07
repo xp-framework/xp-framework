@@ -37,8 +37,7 @@
      * Constructor
      *
      * @access  protected
-     * @param   int width default
-     * @param   int height
+     * @param   resource handle
      */
     function __construct($handle) {
       $this->handle= $handle;
