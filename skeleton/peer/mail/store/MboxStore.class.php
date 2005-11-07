@@ -23,16 +23,15 @@
      * </pre>
      *
      * @access  protected
-     * @param   peer.URL u
+     * @param   &peer.URL u
      * @param   &array attr
-     * @param   &int port
      * @return  bool
-     * @throws  IllegalArgumentException
+     * @throws  lang.IllegalArgumentException
      */
     function _supports(&$u, &$attr) {
       switch (strtolower($u->getScheme())) {
         case 'mbox': 
-          $attr['mbx']= '/'.$u['host'].$u['path'];
+          $attr['mbx']= '/'.$u->getHost().$u->getPath();
           $attr['open']= TRUE;
           break;
           
@@ -49,7 +48,7 @@
      * @access  public
      * @param   string name
      * @return  &peer.mail.MailFolder
-     * @throws  MessagingException
+     * @throws  peer.mail.MessagingException
      */  
     function &getFolder() {
       return parent::getFolder('*');
