@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('xml.XPathException');
+  uses('xml.XPathException', 'xml.XMLFormatException');
 
   /**
    * XPath class
@@ -42,11 +42,21 @@
      * @access  public
      * @param   mixed arg
      * @throws  lang.IllegalArgumentException
+     * @throws  xml.XMLFormatException in case the argument is a string and not valid XML
      */
     function __construct($arg) {
       switch (xp::typeOf($arg)) {
         case 'string':
-          $this->context= &xpath_new_context(domxml_open_mem($arg));
+          if (!($dom= &domxml_open_mem($arg, DOMXML_LOAD_PARSING, $error))) {
+            return throw(new XMLFormatException(
+              rtrim($error[0]['errormessage']), 
+              XML_ERROR_SYNTAX, 
+              NULL,
+              $error[0]['line'], 
+              $error[0]['col']
+            ));
+          }
+          $this->context= &xpath_new_context($dom);
           break;
         
         case 'php.domdocument':
