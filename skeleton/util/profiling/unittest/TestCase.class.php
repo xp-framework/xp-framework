@@ -396,6 +396,7 @@
         
         // Was that an expected exception?
         if ($expected && $expected->isInstance($e)) {
+          xp::gc();
           return TRUE;
         }
         
