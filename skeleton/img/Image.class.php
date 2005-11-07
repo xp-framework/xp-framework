@@ -3,12 +3,12 @@
  *
  * $Id$
  */
- 
+
   uses('img.ImagingException', 'img.Color', 'lang.CloneNotSupportedException');
-  
+
   define('IMG_PALETTE',   0x0000);
   define('IMG_TRUECOLOR', 0x0001);
-  
+
   /**
    * Base class for images
    *
@@ -27,17 +27,17 @@
    * @see php://image
    */
   class Image extends Object {
-    var 
+    var
       $width    = 0,
       $height   = 0,
       $palette  = array(),
       $handle   = NULL;
-    
+
     /**
      * Constructor
      *
      * @access  protected
-     * @param   int width default 
+     * @param   int width default
      * @param   int height
      */
     function __construct($handle) {
@@ -45,7 +45,7 @@
       $this->width= imagesx($handle);
       $this->height= imagesy($handle);
     }
-    
+
     /**
      * Destructor
      *
@@ -55,14 +55,14 @@
       if (is_resource($this->handle)) imagedestroy($this->handle);
       parent::__destruct();
     }
-    
+
     /**
      * Clone method
      *
      * @access  public
-     */    
+     */
     function __clone() {
-      if (!is_resource($handle= (imageistruecolor($this->handle) 
+      if (!is_resource($handle= (imageistruecolor($this->handle)
         ? imagecreatetruecolor($this->width, $this->height)
         : imagecreate($this->width, $this->height)
       ))) {
@@ -71,7 +71,7 @@
       imagecopy($handle, $this->handle, 0, 0, 0, 0, $this->width, $this->height);
       $this->handle= $handle;
     }
-    
+
     /**
      * Creates a new blank image in memory
      *
@@ -86,7 +86,7 @@
      */
     function &create($w, $h, $type= IMG_PALETTE, $class= __CLASS__) {
       switch ($type) {
-        case IMG_PALETTE: 
+        case IMG_PALETTE:
           $handle= imagecreate($w, $h);
           break;
 
@@ -115,7 +115,7 @@
     function &loadFrom(&$reader) {
       return new Image($reader->getResource());
     }
-    
+
     /**
      * Saves an image to a writer
      *
@@ -125,7 +125,7 @@
     function saveTo(&$writer) {
       $writer->setResource($this->handle);
     }
-    
+
     /**
      * Convert an image using a given converter
      *
@@ -146,7 +146,7 @@
     function getWidth() {
       return $this->width;
     }
-    
+
     /**
      * Returns height of image
      *
@@ -156,7 +156,7 @@
     function getHeight() {
       return $this->height;
     }
-    
+
     /**
      * Returns dimensions of image
      *
@@ -181,21 +181,21 @@
      * @return  bool
      */
     function copyFrom(
-      &$img, 
-      $dst_x= 0, 
-      $dst_y= 0, 
-      $src_x= 0, 
-      $src_y= 0, 
-      $src_w= -1, 
+      &$img,
+      $dst_x= 0,
+      $dst_y= 0,
+      $src_x= 0,
+      $src_y= 0,
+      $src_w= -1,
       $src_h= -1,
     ) {
       return imagecopy(
-        $this->handle, 
-        $img->handle, 
-        $dst_x, 
-        $dst_y, 
-        $src_x, 
-        $src_y, 
+        $this->handle,
+        $img->handle,
+        $dst_x,
+        $dst_y,
+        $src_x,
+        $src_y,
         ($src_w < 0) ? $this->width : $src_w,
         ($src_h < 0) ? $this->height : $src_h
       );
@@ -218,23 +218,23 @@
      * @return  bool
      */
     function resizeFrom(
-      &$img, 
-      $dst_x= 0, 
-      $dst_y= 0, 
-      $src_x= 0, 
+      &$img,
+      $dst_x= 0,
+      $dst_y= 0,
+      $src_x= 0,
       $src_y= 0,
-      $dst_w= -1, 
-      $dst_h= -1, 
-      $src_w= -1, 
+      $dst_w= -1,
+      $dst_h= -1,
+      $src_w= -1,
       $src_h= -1
     ) {
       return imagecopyresized(
-        $this->handle, 
-        $img->handle, 
-        $dst_x, 
-        $dst_y, 
-        $src_x, 
-        $src_y, 
+        $this->handle,
+        $img->handle,
+        $dst_x,
+        $dst_y,
+        $src_x,
+        $src_y,
         ($dst_w < 0) ? $this->width : $dst_w,
         ($dst_h < 0) ? $this->height : $dst_h,
         ($src_w < 0) ? $img->width : $src_w,
@@ -259,33 +259,33 @@
      * @return  bool
      */
     function resampleFrom(
-      &$img, 
-      $dst_x= 0, 
-      $dst_y= 0, 
-      $src_x= 0, 
+      &$img,
+      $dst_x= 0,
+      $dst_y= 0,
+      $src_x= 0,
       $src_y= 0,
-      $dst_w= -1, 
-      $dst_h= -1, 
-      $src_w= -1, 
+      $dst_w= -1,
+      $dst_h= -1,
+      $src_w= -1,
       $src_h= -1
     ) {
       return imagecopyresampled(
-        $this->handle, 
-        $img->handle, 
-        $dst_x, 
-        $dst_y, 
-        $src_x, 
-        $src_y, 
+        $this->handle,
+        $img->handle,
+        $dst_x,
+        $dst_y,
+        $src_x,
+        $src_y,
         ($dst_w < 0) ? $this->width : $dst_w,
         ($dst_h < 0) ? $this->height : $dst_h,
         ($src_w < 0) ? $img->width : $src_w,
         ($src_h < 0) ? $img->height : $src_h
       );
     }
-    
+
     /**
      * Copies an area from another image into this image
-     * The two images will be merged according to pct which can range from 0 to 100. When pct = 0, 
+     * The two images will be merged according to pct which can range from 0 to 100. When pct = 0,
      * no action is taken, when 100 this function behaves identically to copy()
      *
      * @see     xp://img.Image#copyFrom
@@ -301,28 +301,28 @@
      * @return  bool
      */
     function mergeFrom(
-      &$img, 
-      $pct= 50, 
-      $dst_x= 0, 
-      $dst_y= 0, 
-      $src_x= 0, 
-      $src_y= 0, 
-      $src_w= -1, 
+      &$img,
+      $pct= 50,
+      $dst_x= 0,
+      $dst_y= 0,
+      $src_x= 0,
+      $src_y= 0,
+      $src_w= -1,
       $src_h= -1
     ) {
       return imagecopymerge(
-        $this->handle, 
-        $img->handle, 
-        $dst_x, 
-        $dst_y, 
-        $src_x, 
-        $src_y, 
+        $this->handle,
+        $img->handle,
+        $dst_x,
+        $dst_y,
+        $src_x,
+        $src_y,
         ($src_w < 0) ? $img->width : $src_w,
         ($src_h < 0) ? $img->height : $src_h,
         $pct
       );
     }
-    
+
     /**
      * Allocate a color
      *
@@ -332,7 +332,7 @@
      */
     function &allocate(&$color) {
       $color->handle= imagecolorallocate(
-        $this->handle, 
+        $this->handle,
         $color->red,
         $color->green,
         $color->blue
@@ -340,7 +340,7 @@
       $this->palette[$color->handle]= &$color;
       return $color;
     }
-    
+
     /**
      * Sets a style
      *
@@ -377,7 +377,7 @@
       imagesetbrush($this->handle, $brush->image->handle);
       return $brush;
     }
-    
+
     /**
      * Get color index by x, y
      *
@@ -388,27 +388,27 @@
      */
     function &colorAt($x, $y) {
       if (FALSE === ($idx= imagecolorat($this->handle, $x, $y))) return NULL;
-      
+
       // See if we have this in our palette
       if (!isset($this->palette[$idx])) {
         if (imageistruecolor($this->handle)) {
           $this->palette[$idx]= &new Color(
-            ($idx >> 16) & 0xFF, 
-            ($idx >> 8) & 0xFF, 
+            ($idx >> 16) & 0xFF,
+            ($idx >> 8) & 0xFF,
             $idx & 0xFF
           );
         } else {
           $i= imagecolorsforindex($this->handle, $idx);
           $this->palette[$idx]= &new Color(
-            $i['red'], 
-            $i['green'], 
+            $i['red'],
+            $i['green'],
             $i['blue']
           );
         }
       }
       return $this->palette[$idx];
     }
-    
+
     /**
      * Apply gamma correction to this image
      *
@@ -420,13 +420,13 @@
     function correctGamma($in, $out) {
       return imagegammacorrect($this->handle, $in, $out);
     }
-    
+
     /**
      * Fills the image with a specified color at the coordinates
      * defined by x and y
      *
      * @access  public
-     * @param   &mixed col (either an img.Color[] consisting of the flood color and the 
+     * @param   &mixed col (either an img.Color[] consisting of the flood color and the
      *          border color) or a simple img.Color defining the flood color
      * @param   int x default 0
      * @param   int y default 0
@@ -440,12 +440,12 @@
         imagefill($this->handle, $x, $y, $col->handle);
       }
     }
-    
+
     /**
      * Sets interlacing on or off.
      *
-     * If the interlace bit is set and the image is used as a JPEG image, the image 
-     * is created as a progressive JPEG. 
+     * If the interlace bit is set and the image is used as a JPEG image, the image
+     * is created as a progressive JPEG.
      *
      * @access  public
      * @param   bool on interlace on (TRUE) or off (FALSE)
@@ -454,14 +454,14 @@
     function setInterlace($on) {
       return imageinterlace($this->handle, $on);
     }
-    
+
     /**
      * Define a color as transparent
      *
-     * The transparent color is a property of the image, transparency is not a 
-     * property of the color. Once you have a set a color to be the transparent 
-     * color, any regions of the image in that color that were drawn previously 
-     * will be transparent. 
+     * The transparent color is a property of the image, transparency is not a
+     * property of the color. Once you have a set a color to be the transparent
+     * color, any regions of the image in that color that were drawn previously
+     * will be transparent.
      *
      * @access  public
      * @param   &img.Color color
@@ -469,7 +469,7 @@
     function setTransparency(&$col) {
       imagecolortransparent($this->handle, $col->handle);
     }
-    
+
     /**
      * Retrieve the color which is defined as transparent
      *
@@ -480,7 +480,7 @@
       if (-1 == ($t= imagecolortransparent($this->handle))) return NULL;
       return $this->palette[$t];
     }
-    
+
     /**
      * Draws a drawable object onto this image
      *
@@ -491,7 +491,7 @@
     function draw(&$drawable) {
       return $drawable->draw($this);
     }
-    
+
     /**
      * Returns a hashcode for this connection
      *
@@ -506,7 +506,7 @@
     function hashCode() {
       return get_resource_type($this->handle).' #'.(int)$this->handle;
     }
-    
+
     /**
      * Retrieve string representation
      *
