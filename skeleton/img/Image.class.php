@@ -204,8 +204,9 @@
     }
 
     /**
-     * Copies an area from another image into this image, resizing if it necessary
+     * Copies an area from another image into this image, resizing it if necessary
      *
+     * @see     php://imagecopyresized
      * @access  public
      * @param   &img.Image img Image object
      * @param   int dst_x default 0 x coordinate within this image
@@ -244,8 +245,9 @@
     }
 
     /**
-     * Copies an area from another image into this image, resizing if it necessary
+     * Copies an area from another image into this image, resizing it if necessary.
      *
+     * @see     php://imagecopyresampled
      * @access  public
      * @param   &img.Image img Image object
      * @param   int dst_x default 0 x coordinate within this image
