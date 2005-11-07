@@ -45,11 +45,11 @@
      *
      * @access  public
      * @param   &lang.Object obj
-     * @param   mixed[] args 
+     * @param   mixed[] args default array()
      * @return  &mixed
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      */
-    function &invoke(&$obj, $args) {
+    function &invoke(&$obj, $args= array()) {
       if (is_null($obj)) {
         return call_user_func_array(array($this->_ref, $this->name), $args);
       }
