@@ -106,10 +106,9 @@
     function &add(&$element) {
       if (!is_a($element, $this->_name)) {
         return throw(new IllegalArgumentException(sprintf(
-          'Element %d is not a %s (but %s)',
-          $i,
+          'Element is not a %s (but %s)',
           $this->class,
-          xp::typeOf($array[$i])
+          xp::typeOf($element)
         )));
       }
       $this->list[]= &$element;
@@ -127,10 +126,9 @@
     function &prepend(&$element) {
       if (!is_a($element, $this->_name)) {
         return throw(new IllegalArgumentException(sprintf(
-          'Element %d is not a %s (but %s)',
-          $i,
+          'Element is not a %s (but %s)',
           $this->class,
-          xp::typeOf($array[$i])
+          xp::typeOf($element)
         )));
       }
       array_unshift($this->list, $element);
