@@ -258,7 +258,19 @@
      * @return  int offset where the element was found or FALSE
      */
     function indexOf(&$element) {
-      return array_search($element, $this->list, TRUE);
+    
+      // Note: array_search() does NOT work for objects:
+      //
+      // <snip from="ext/standard/array.c">
+      // if (Z_TYPE_PP(value) == IS_OBJECT) {
+      //     php_error_docref(NULL TSRMLS_CC, E_WARNING, "Wrong datatype for first argument");
+      //     RETURN_FALSE;
+      // }
+      // </snip>
+      for ($i= 0, $s= sizeof($this->list); $i < $s; $i++) {
+        if ($this->list[$i]->__id == $element->__id) return $i;
+      }
+      return FALSE;
     }
 
     /**
