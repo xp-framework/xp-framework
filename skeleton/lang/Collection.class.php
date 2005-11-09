@@ -18,6 +18,7 @@
    *   $coll->add(1);                               // Fails
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.core.CollectionTest
    * @purpose  "Type-safe" array
    */
   class Collection extends Object {
