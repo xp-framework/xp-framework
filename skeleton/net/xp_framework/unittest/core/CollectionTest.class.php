@@ -19,6 +19,21 @@
    * @purpose  Testcase
    */
   class CollectionTest extends TestCase {
+    var
+      $child= NULL;
+  
+    /**
+     * Setup method
+     *
+     * @access  
+     */
+    function setUp() {
+      $cl= &ClassLoader::getDefault();
+      $this->child= &$cl->defineClass(
+        'net.xp_framework.unittest.core.MorePower', 
+        'class MorePower extends Binford { }'
+      );
+    }
 
     /**
      * Tests that a collection cannot be created for non-existant classes
@@ -63,8 +78,9 @@
     function addElement() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $collection->add(new Binford());
+      $collection->add($this->child->newInstance());
       $this->assertFalse($collection->isEmpty());
-      $this->assertEquals(1, $collection->size());
+      $this->assertEquals(2, $collection->size());
     }
 
     /**
@@ -87,8 +103,9 @@
     function prependElement() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $collection->prepend(new Binford());
+      $collection->prepend($this->child->newInstance());
       $this->assertFalse($collection->isEmpty());
-      $this->assertEquals(1, $collection->size());
+      $this->assertEquals(2, $collection->size());
     }
 
     /**
