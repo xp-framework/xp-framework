@@ -138,7 +138,7 @@
 
         // Call handler
         $return= &$this->callReflectHandler($msg);
-        $answer->setData(array($return));
+        $answer->setData(array($return), $this->mapping);
 
       } if (catch('ServiceException', $e)) {
       
