@@ -7,7 +7,8 @@
     'scriptlet.HttpScriptlet',
     'xml.soap.rpc.SoapRpcRequest',
     'xml.soap.rpc.SoapRpcResponse',
-    'xml.soap.SOAPMessage'
+    'xml.soap.SOAPMessage',
+    'xml.soap.SOAPMapping'
   );
 
   /**
@@ -45,7 +46,8 @@
    */
   class SoapRpcRouter extends HttpScriptlet {
     var
-      $classloader= NULL;
+      $classloader = NULL,
+      $mapping     = NULL;
 
     /**
      * Constructor
@@ -55,8 +57,9 @@
      */
     function __construct(&$classloader) {
       $this->classloader= &$classloader;
+      $this->mapping= &new SOAPMapping();
     }
-
+    
     /**
      * Create a request object.
      *
@@ -195,7 +198,7 @@
         }
 
         // Create instance and invoke method
-        return $method->invoke($class->newInstance(), $msg->getData(NULL));
+        return $method->invoke($class->newInstance(), $msg->getData(NULL, $this->mapping));
       }
     }
   }
