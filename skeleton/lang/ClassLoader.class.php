@@ -10,6 +10,7 @@
    * Loads a class
    * 
    * @purpose  Load classes
+   * @test     xp://net.xp_framework.unittest.reflection.ClassLoaderTest
    * @see      xp://lang.XPClass#forName
    */
   class ClassLoader extends Object {
@@ -99,6 +100,9 @@
         $qname= $this->classpath.$class;
         if (FALSE === eval($bytes)) {
           return throw(new FormatException('Cannot define class "'.$qname.'"'));
+        }
+        if (!class_exists($name)) {
+          return throw(new FormatException('Class "'.$qname.'" not defined'));
         }
         xp::registry('class.'.$name, $qname);
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
