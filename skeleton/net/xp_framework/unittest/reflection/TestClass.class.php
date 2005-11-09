@@ -29,6 +29,30 @@
     }
     
     /**
+     * Static initializer
+     *
+     * @model   static
+     * @access  public
+     */
+    function __static() {
+      TestClass::initializerCalled(TRUE);
+    }
+    
+    /**
+     * Static variables simulation
+     *
+     * @model   static
+     * @access  public
+     * @param   bool value default NULL
+     * @return  bool
+     */
+    function initializerCalled($value= NULL) {
+      static $called;
+      if (NULL !== $value) $called= $value;
+      return $called;
+    }
+    
+    /**
      * Retrieve date
      *
      * @access  public
