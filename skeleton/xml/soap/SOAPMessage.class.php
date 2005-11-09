@@ -434,11 +434,11 @@
      *
      * @access  public
      * @param   string context default 'ENUM'
-     * @param   array mapping default array()
+     * @param   &xml.soap.SOAPMapping mapping
      * @return  &mixed data
      * @throws  lang.FormatException in case no XMLNS_SOAPENV:Body was found
      */
-    function &getData($context= 'ENUM', $mapping) {
+    function &getData($context= 'ENUM', &$mapping) {
       if ($body= &$this->_bodyElement()) {
         return $this->_recurseData($body->children[0], FALSE, $context, $mapping);
       }
