@@ -83,7 +83,7 @@
      * @return  string
      */
     function toString() {
-      return 'class '.$this->name;
+      return 'lang.XPClass<'.$this->name.'>';
     }
     
     /**
