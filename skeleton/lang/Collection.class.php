@@ -247,7 +247,10 @@
      * @return  bool
      */
     function contains(&$element) {
-      return in_array($element, $this->list, TRUE);
+      for ($i= 0, $s= sizeof($this->list); $i < $s; $i++) {
+        if ($this->list[$i]->__id == $element->__id) return TRUE;
+      }
+      return FALSE;
     }
     
     /**
@@ -281,7 +284,10 @@
      * @return  int offset where the element was found or FALSE
      */
     function lastIndexOf(&$element) {
-      return array_search($element, array_reverse($this->list), TRUE);
+      for ($i= sizeof($this->list)- 1; $i > -1; $i--) {
+        if ($this->list[$i]->__id == $element->__id) return $i;
+      }
+      return FALSE;
     }
   }
 ?>

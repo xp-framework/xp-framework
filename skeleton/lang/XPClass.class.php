@@ -77,6 +77,16 @@
     }
     
     /**
+     * Creates a string representation
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return 'class '.$this->name;
+    }
+    
+    /**
      * Retrieves the fully qualified class name for this class.
      * 
      * @access  public
