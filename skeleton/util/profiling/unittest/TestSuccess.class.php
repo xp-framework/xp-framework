@@ -33,7 +33,7 @@
      * @return  string
      */
     function toString() {
-      return $this->getClassName().'(test= '.$this->test->getName().')';
+      return $this->getClassName().'(test= '.$this->test->getClassName().'::'.$this->test->getName().')';
     }
   }
 ?>
