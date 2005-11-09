@@ -121,6 +121,7 @@
      * @param   &xml.soap.rpc.SoapRpcResponse response
      */
     function doPost(&$request, &$response) {
+      $hasFault= FALSE;
       try(); {
 
         // Get message
@@ -138,8 +139,6 @@
 
         // Call handler
         $return= &$this->callReflectHandler($msg);
-        $answer->setData(array($return), $this->mapping);
-
       } if (catch('ServiceException', $e)) {
       
         // Server methods may throw a ServerFaultException to have more
@@ -150,7 +149,7 @@
           $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
           $this->formatStackTrace($e->getStackTrace())
         );
-
+        $hasFault= TRUE;
       } if (catch('Exception', $e)) {
         $answer->setFault(
           HTTP_INTERNAL_SERVER_ERROR,
@@ -158,7 +157,10 @@
           $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
           $this->formatStackTrace($e->getStackTrace())
         );
+        $hasFault= TRUE;
       }
+      
+      $hasFault || $answer->setData(array($return), $this->mapping);
 
       // Set message
       $response->setHeader('Content-type', 'text/xml; charset='.$answer->encoding);
