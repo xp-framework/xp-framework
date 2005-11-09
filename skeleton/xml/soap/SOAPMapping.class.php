@@ -55,7 +55,7 @@
      * @return  &mixed xml.QName or NULL if no mapping exists
      */
     function &qnameFor(&$class) {
-      if (!isset($this->_c2q[$class->getName()])) return NULL;
+      if (!is('lang.XPClass', $class) || !isset($this->_c2q[$class->getName()])) return NULL;
       return $this->_qnames[$this->_c2q[$class->getName()]];
     }
     
@@ -67,7 +67,7 @@
      * @return  &mixed lang.XPClass or NULL if no mapping exists
      */
     function &classFor(&$qname) {
-      if (!isset($this->_q2c[$qname->toString()])) return NULL;
+      if (!is('xml.QName', $qname) || !isset($this->_q2c[$qname->toString()])) return NULL;
       return $this->_classes[$this->_q2c[$qname->toString()]];
     }
   }
