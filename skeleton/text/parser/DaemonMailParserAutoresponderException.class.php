@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('text.parser.DaemonMailParserException');
+
   /**
    * Generic DaemonMailParser exception
    *
