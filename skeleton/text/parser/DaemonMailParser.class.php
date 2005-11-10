@@ -4,7 +4,12 @@
  * $Id$ 
  */
 
-  uses('peer.mail.Message', 'text.parser.DaemonMessage');
+  uses(
+    'peer.mail.Message', 
+    'text.parser.DaemonMessage', 
+    'text.parser.DaemonMailParserException',
+    'text.parser.DaemonMailParserAutoresponderException'
+  );
   
   define('DMP_SEARCH',   0x0000);
   define('DMP_ORIGMSG',  0x0001);
@@ -172,9 +177,10 @@
       // "In-Reply-To": These are stupid autoresponders or people replying 
       // to an address they shouldn't be.
       if (NULL !== ($irt= $message->getHeader('In-Reply-To'))) {
-        trigger_error('Message is in reply to: '.$irt, E_USER_NOTICE);
-        trigger_error('Subject: '.$message->getSubject(), E_USER_NOTICE);
-        return throw(new FormatException('Message has In-Reply-To header, Mailer Daemons do not set these [hint: Lame autoresponders do]'));
+        return throw(new DaemonMailParserAutoresponderException(
+          'Message has In-Reply-To header, Mailer Daemons do not set these [hint: Lame autoresponders do]',
+          $message
+        ));
       }
       
       // Set up daemon mail object
@@ -421,6 +427,7 @@
       }
       
       // Loop through tokens
+      $v= '';
       do {
         switch ($state) {
           case DMP_ORIGMSG:
@@ -430,14 +437,15 @@
             ) {
               $state= DMP_FINISH;
               break;
-            }   
+            }
             
             if ("\t" == $t{0}) {
               $v.= ' '.chop($t);
             } else {
-              list($k, $v)= explode(': ', chop($t), 2);
+              list($k, $v)= explode(':', $t, 2);
             }
             
+            if (empty($k)) continue;
             foreach ($this->_hcb as $defines) {
               if (0 != strcasecmp($k, $defines[0])) continue;
               
@@ -513,7 +521,7 @@
             //   some time, and this warning may be repeated at intervals if the message
             //   remains undelivered. Eventually the mail delivery software will give up,
             //   and when that happens, the message will be returned to you.
-            if ('This message was created automatically by mail delivery software' == substr($t, 0, 64)) {
+            if ('This message was created automatically by mail delivery software (Exim).' == substr($t, 0, 72)) {
               $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_EXIM;
               
               $state= DMP_FINISH;
@@ -653,13 +661,71 @@
               continue;
             }
             
+            // Nemesis? (Schlund+Partner mail system)
+            //
+            // This message was created automatically by mail delivery software.
+            // 
+            // A message that you sent could not be delivered to one or more of
+            // its recipients. The following addresses failed:
+            // 
+            //   <info@example.com>
+            // 
+            // SMTP error from remote server after RCPT command:
+            // host mx00.1and1.com[217.222.222.222]:
+            // 550 <info@example.com>: invalid address
+            // 
+            // 
+            // --- The header of the original message is following. ---
+            if (0 == strncmp('This message was created automatically by mail delivery software.', $t, 65)) {
+              $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_EXIM;
+
+              // Find first line starting with with an email address
+              do {
+                if (FALSE === $t) { return throw(new DaemonMailParserException('Cannot parse message', $message)); }
+                if (FALSE !== strpos($t, '@')) break;
+              } while ($t= strtok("\n"));
+              
+              try(); {
+                $daemonmessage->setFailedRecipient(InternetAddress::fromString(trim($t, "\n\r<>: ")));
+              } if (catch('Exception', $e)) {
+                return throw($e);
+              }
+              
+              // Next line
+              $t= strtok("\n");
+
+              // Read until next empty line, the last one contains the error message
+              do {
+                if ('' == trim($t)) break;
+                $daemonmessage->setReason($daemonmessage->getReason()."\n".trim($t));
+              } while ($t= strtok("\n"));
+
+              // Read until "--- The header of the ..." or an equivalent
+              while (
+                0 != strncmp('--- The header of the original message is following. ---', $t, 56) &&
+                0 != strncmp('------ This is a copy of the message, including all the headers. ------', $t, 71) &&
+                0 != strncmp('-----------------------------------------------------------------', $t, 65)
+              ) {
+                if (FALSE === $t) { return throw(new DaemonMailParserException('Cannot parse message', $message)); }
+                $t= strtok("\n");
+              }
+              
+              // Swallow next two lines
+              $t= strtok("\n");
+              $t= strtok("\n");
+              
+              $state= DMP_ORIGMSG;
+              continue;
+            }
+            
+            
             break;
           
           case DMP_FINISH:
             break 2;
           
           default: 
-            return throw(new FormatException('Unknown state '.var_export($state, 1)));
+            return throw(new DaemonMailParserException('Unknown state '.var_export($state, 1), $message));
         }
         
       } while ($t= strtok("\n"));
