@@ -110,4 +110,10 @@ Comments
 - friebe, Thu Nov 10 11:56:43 CET 2005
   What's a good package name for this new API?
 
+- friebe, Thu Nov 10 12:04:04 CET 2005
+  How about "meta". http://en.wikipedia.org/wiki/Meta says: 'Meta (Greek: 
+  "about," "beyond"), is a common English prefix, used to indicate a 
+  concept which is an abstraction from another concept, used to analyze 
+  the latter.'
+  
 <EOF>
