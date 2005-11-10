@@ -4,18 +4,18 @@ $Id$
 
 @authors: friebe
 @created: Thu Oct 20 17:31:22 CEST 2005
-@status: draft
+@status: discussion, ends Thu Nov 10 13:56:18 CET 2005
 @category: xml
 
 Scope of Change
 ---------------
 A new API will be created to map XML to objects (and vice versa) by means
-of annotations.
+of annotations. Also, the package "xml.xp" will be deprecated.
 
 
 Rationale
 ---------
-Be able to deserialize any XML document.
+Be able to deserialize any XML document and serialize objects to any XML.
 
 
 Functionality
@@ -107,7 +107,7 @@ Related documents
 
 Comments
 --------
-n/a
-
+- friebe, Thu Nov 10 11:56:43 CET 2005
+  What's a good package name for this new API?
 
 <EOF>
