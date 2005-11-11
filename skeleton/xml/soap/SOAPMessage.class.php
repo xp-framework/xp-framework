@@ -9,7 +9,8 @@
     'xml.Node',
     'xml.soap.SOAPNode',
     'xml.soap.SOAPHeaderElement',
-    'xml.soap.SOAPFault'
+    'xml.soap.SOAPFault',
+    'lang.Collection'
   );
   
   define('XMLNS_SOAPENV',       'http://schemas.xmlsoap.org/soap/envelope/');
@@ -142,34 +143,10 @@
       }
       
       // Update namespaces list
-      $xpns= NULL;
       foreach ($child->attribute as $key => $val) {
-        if (0 != strncmp('xmlns:', $key, 6)) continue;
-        $this->namespaces[$val]= substr($key, 6);
-
-        // Recognize XP objects
-        if (0 == strncmp(XMLNS_XP, $val, 32)) {
-          $xpns= substr($child->attribute[$this->namespaces[XMLNS_XSI].':type'], strlen($key) - 5);
-        }
+        if (0 == strncmp('xmlns:', $key, 6)) $this->namespaces[$val]= substr($key, 6);
       }
       
-      if ($xpns) {
-        try(); {
-          $class= &XPClass::forName($xpns);
-        } if (catch('ClassNotFoundException', $e)) {
-
-          // Handle this gracefully
-          $class= &XPClass::forName('lang.Object');
-        }
-
-        $result= &$class->newInstance();
-        foreach ($this->_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
-          $result->$key= $val;
-        }
-
-        return $result;          
-      }
-
       // Type dependant
       if (!isset($child->attribute[$this->namespaces[XMLNS_XSI].':type']) || !preg_match(
         '#^([^:]+):([^\[]+)(\[[0-9+]\])?$#', 
@@ -182,16 +159,44 @@
 
       // SOAP-ENC:arrayType="xsd:anyType[4]"
       if (isset($child->attribute[$this->namespaces[XMLNS_SOAPENC].':arrayType'])) {
+        $regs[1]= $child->attribute[$this->namespaces[XMLNS_SOAPENC].':arrayType'];
         $regs[2]= 'Array';
       }
 
       switch (strtolower($regs[2])) {
         case 'array':
           
-          // Check for specific type information (e.g.: SOAP-ENC:arrayType="xsd:int[4]")
-          list($ns, $typeSpec)= explode(':', $child->attribute[$this->namespaces[XMLNS_SOAPENC].':arrayType']);
+          // Check for specific type information
+          list($ns, $typeSpec)= explode(':', $regs[1]);
           if (2 == sscanf($typeSpec, '%[^[][%d]', $childType, $length) && 'anyType' != $childType) {
-            for ($i= 0; $i < $length; ++$i) {
+
+            // Arrays of XP objects
+            // ~~~~~~~~~~~~~~~~~~~~
+            // <item
+            //  xsi:type="SOAP-ENC:Array"
+            //  xmlns:xp="http://xp-framework.net/xmlns/xp"
+            //  SOAP-ENC:arrayType="xp:de.schlund.db.irc.IrcChannel[2]"
+            // >
+            // 
+            // vs.
+            //
+            // Arrays of other types
+            // ~~~~~~~~~~~~~~~~~~~~~
+            // <item SOAP-ENC:arrayType="xsd:int[4]"/>
+            if ('xp' == $ns) {
+              try(); {
+                $c= &XPClass::forName($childType);
+                $c && $result= &Collection::forClass($c->getName());
+              } if (catch('ClassNotFoundException', $e)) {
+                $result= &Collection::forClass('lang.Object');
+                $result->__qname= $childType;
+              }
+              
+              foreach ($this->_recurseData($child, FALSE, 'ARRAY', $mapping) as $val) {
+                $result->add($val);
+              }
+              break;
+            } else for ($i= 0; $i < $length; ++$i) {
               $child->children[$i]->setAttribute($this->namespaces[XMLNS_XSI].':type', $ns.':'.$childType);
             }
           }
@@ -225,15 +230,7 @@
         case 'soapstruct':
         case 'struct':      
         case 'ur-type':
-          if ('xsd' == $regs[1]) {
-            $result= $this->_recurseData($child, TRUE, 'HASHMAP', $mapping);
-            break;
-          }
-
-          $result= &new Object();
-          foreach ($this->_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
-            $result->$key= $val;
-          }
+          $result= $this->_recurseData($child, TRUE, 'HASHMAP', $mapping);
           break;
           
         default:
@@ -244,12 +241,27 @@
             }
 
             // Check for mapping
-            $qname= &new QName(array_search($regs[1], $this->namespaces), $regs[2]);
-            if (NULL !== ($xpclass= &$mapping->classFor($qname))) {
+            //
+            // XP objects
+            // ~~~~~~~~~~
+            // <item xmlns:xp="http://xp-framework.net/xmlns/xp" xsi:type="xp:de.schlund.db.irc.IrcChannel"/>        
+            //
+            // For other objects, check SOAPMapping registry
+            if ('xp' == $regs[1]) {
+              try(); {
+                $xpclass= &XPClass::forName($regs[2]);
+              } if (catch('ClassNotFoundException', $e)) {
+                $xpclass= NULL;
+              }
+            } else {
+              $xpclass= &$mapping->classFor(new QName(array_search($regs[1], $this->namespaces), $regs[2]));
+            }
+            
+            if ($xpclass) {
               $result= &$xpclass->newInstance();
             } else {
               $result= &new Object();
-              $result->qname= $qname;
+              $result->__qname= $regs[2];
             }
             foreach ($this->_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
               $result->$key= $val;
