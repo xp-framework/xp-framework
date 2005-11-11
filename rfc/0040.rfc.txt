@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Thu Oct 20 17:31:22 CEST 2005
-@status: discussion, ends Thu Nov 10 13:56:18 CET 2005
+@status: implemented, Fri Nov 11 10:52:07 CET 2005
 @category: xml
 
 Scope of Change
