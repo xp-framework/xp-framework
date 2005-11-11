@@ -38,6 +38,12 @@
      * @return  bool
      */
     function hasNext() {
+
+      // Check to see if we have fetched a record previously. In this case,
+      // short-cuircuit this to prevent hasNext() from forwarding the result
+      // pointer every time we call it.
+      if ($this->_record) return TRUE;
+
       $this->_record= &$this->_rs->next();
       return !empty($this->_record);
     }
@@ -50,11 +56,19 @@
      * @throws  util.NoSuchElementException when there are no more elements
      */
     function &next() {
-      if (empty($this->_record)) {
+      if (NULL === $this->_record) {
+        $this->_record= &$this->_rs->next();
+        // Fall through
+      }
+      if (FALSE === $this->_record) {
         return throw(new NoSuchElementException('No more elements'));
       }
       
-      return new $this->_identifier($this->_record);
+      // Create an instance and set the _record member to NULL so that
+      // hasNext() will fetch the next record.
+      $instance= &new $this->_identifier($this->_record);
+      $this->_record= NULL;
+      return $instance;
     }
   } implements(__FILE__, 'util.Iterator');
 ?>
