@@ -14,7 +14,18 @@
    */
   class Binford extends Object { 
     var 
-      $poweredBy= 6100;
+      $poweredBy= 0;
+
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   int power default 6100
+     * @throws  lang.IllegalArgumentException in case power contains an illegal value
+     */
+    function __construct($poweredBy= 6100) {
+      $this->setPoweredBy($poweredBy);
+    }
     
     /**
      * Set the power
