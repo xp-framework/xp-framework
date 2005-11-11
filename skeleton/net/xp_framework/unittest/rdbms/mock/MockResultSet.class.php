@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('rdbms.ResultSet');
+
   /**
    * Result set
    *
