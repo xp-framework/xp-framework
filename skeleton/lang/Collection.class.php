@@ -36,7 +36,6 @@
      * @param   string class
      */
     function __construct($class) {
-      
       $this->class= $class;
       $this->_name= xp::reflect($class);
     }
@@ -289,6 +288,20 @@
         if ($this->list[$i]->__id == $element->__id) return $i;
       }
       return FALSE;
+    }
+    
+    /**
+     * Creates a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      $r= $this->getClassName().'<'.$this->class.">@{\n";
+      for ($i= 0, $s= sizeof($this->list); $i < $s; $i++) {
+        $r.= '  '.str_replace("\n", "\n  ", xp::stringOf($this->list[$i]))."\n";
+      } 
+      return $r.'}';
     }
   }
 ?>
