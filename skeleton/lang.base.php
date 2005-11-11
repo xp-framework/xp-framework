@@ -187,8 +187,10 @@
         $str= substr($str, strrpos($str, '/')+ 1);
         $class= xp::reflect($str);
       } else {
-        if (FALSE === include(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+        if (FALSE === ($r= include_once(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php'))) {
           xp::error(xp::stringOf(new Error('Cannot include '.$str)));
+        } else if (TRUE === $r) {
+          continue;
         }
       }
       
