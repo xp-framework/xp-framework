@@ -299,7 +299,7 @@
     function toString() {
       $r= $this->getClassName().'<'.$this->class.">@{\n";
       for ($i= 0, $s= sizeof($this->list); $i < $s; $i++) {
-        $r.= '  '.str_replace("\n", "\n  ", xp::stringOf($this->list[$i]))."\n";
+        $r.= '  '.$i.': '.str_replace("\n", "\n  ", xp::stringOf($this->list[$i]))."\n";
       } 
       return $r.'}';
     }
