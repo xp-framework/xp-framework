@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('scriptlet.xml.workflow.Context');
+  uses(
+    'scriptlet.xml.workflow.Context',
+    'de.uska.db.Player'
+  );
 
   /**
    * Provide context information for uska.
