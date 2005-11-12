@@ -13,6 +13,7 @@
 >
 
   <xsl:include href="layout.xsl"/>
+  <xsl:include href="../news.inc.xsl"/>
   <xsl:include href="../wizard.inc.xsl"/>
   
   <xsl:template name="context">
@@ -52,7 +53,9 @@
             - <a href="{func:link(concat('event/edit?event_id=', event_id))}">(editieren)</a>
           </xsl:if>
         </h3>
-        <xsl:if test="description != ''"><xsl:value-of select="description"/><br/></xsl:if>
+        <xsl:if test="description != ''">
+          <xsl:apply-templates select="description"/><br/>
+        </xsl:if>
         <xsl:value-of select="func:get_text('event#max')"/>: <b><xsl:value-of select="max_attendees"/></b> / 
         <xsl:value-of select="func:get_text('event#req')"/>: <b><xsl:value-of select="req_attendees"/></b> /
         <xsl:value-of select="func:get_text(concat('event#guests_allowed-', allow_guests))"/>

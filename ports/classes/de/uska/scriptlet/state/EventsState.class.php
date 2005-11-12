@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('de.uska.scriptlet.state.UskaState');
+  uses(
+    'de.uska.scriptlet.state.UskaState',
+    'de.uska.markup.FormresultHelper'
+  );
 
   /**
    * (Insert class' description here)
@@ -41,7 +44,8 @@
           if (strlen($env)) @list($type, $all, $team)= explode(',', $env);
         }
         
-        $events= $this->db->select('
+        $q= $this->db->query('
+          select
             e.event_id,
             e.team_id,
             t.name as teamname,
@@ -71,8 +75,16 @@
         return throw($e);
       }
       
+      $events= &$response->addFormResult(new Node('events'));
+      while ($q && $record= $q->next()) {
+        $description= $record['description'];
+        unset($record['description']);
+        
+        $n= &$events->addChild(Node::fromArray($record, 'event'));
+        $n->addChild(FormresultHelper::markupNodeFor('description', $description));
+      }
+      
       $this->insertEventCalendar($request, $response, $team);
-      $response->addFormResult(Node::fromArray($events, 'events'));
     }
   }
 ?>

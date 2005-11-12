@@ -12,6 +12,7 @@
  extension-element-prefixes="func"
 >
 
+  <xsl:include href="../../news.inc.xsl"/>
   <xsl:include href="../layout.xsl"/>
 
   <xsl:template name="context">
@@ -37,7 +38,9 @@
     </h3>
     
     <p>
-      <xsl:if test="description != ''"><xsl:value-of select="description"/><br/></xsl:if>
+      <xsl:if test="description != ''">
+        <xsl:apply-templates select="description"/><br/><br/>
+      </xsl:if>
       <xsl:value-of select="func:get_text('event#max')"/>: <b><xsl:value-of select="max_attendees"/></b> / 
       <xsl:value-of select="func:get_text('event#req')"/>: <b><xsl:value-of select="req_attendees"/></b> /
       <xsl:value-of select="func:get_text(concat('event#guests_allowed-', allow_guests))"/>

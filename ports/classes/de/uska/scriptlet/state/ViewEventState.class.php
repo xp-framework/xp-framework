@@ -6,6 +6,7 @@
 
   uses(
     'de.uska.scriptlet.state.UskaState',
+    'de.uska.markup.FormresultHelper',
     'de.uska.db.Event',
     'de.uska.db.Player'
   );
@@ -67,8 +68,10 @@
           where p.player_id= a.player_id
             and p.player_type_id= 2
             and a.event_id= %1$d
+            and a.attend= 1
+            
           order by
-            player_type_id, lastname, firstname
+            attend desc, player_type_id, lastname, firstname
           ',
           $event->getEvent_id()
         );
@@ -76,7 +79,14 @@
         return throw($e);
       }
       
-      $node= &$response->addFormResult(Node::fromObject($event, 'event'));
+      // Convert event object into array, so we can add it without
+      // the description member (which needs markup processing)
+      $eventarr= (array)$event;
+      unset($eventarr['description']);
+      
+      $node= &$response->addFormResult(Node::fromArray($eventarr, 'event'));
+      $node->addChild(FormresultHelper::markupNodeFor('description', $event->getDescription()));
+      
       $n= &$node->addChild(new Node('attendeeinfo'));
       while ($query && $record= &$query->next()) {
         $t= &$n->addChild(new Node('player', NULL, $record));
