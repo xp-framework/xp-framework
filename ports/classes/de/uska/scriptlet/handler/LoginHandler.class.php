@@ -79,6 +79,7 @@
       $cperms= array();
       foreach ($perms as $p) { $cperms[$p['name']]= TRUE; }
       $context->setPermissions($cperms);
+      
       return TRUE;
     }
     
@@ -91,6 +92,10 @@
      * @param   &scriptlet.xml.Context context
      */
     function finalize(&$request, &$response, &$context) {
+
+      // Set a cookie
+      $response->setCookie(new Cookie('uska-user', $context->user->getUsername()));
+
       $return= $request->session->getValue('authreturn');
 
       if ($return) {
