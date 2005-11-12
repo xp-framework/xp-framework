@@ -57,9 +57,6 @@
           $cat->warn('User', $this->user->getUsername(), 'has exposed his session id to user', $cookie);
           $cat->warn('Destroying session', $request->getSessionId());
           
-          // Destroy current session (might be hijacked), forward to same page without session
-          $request->session->invalidate();
-          
           // Build URL we have to forward to...
           $uri= $request->getUri();
           $pathinfo= sscanf($uri['path'], '/xml/%[^.].%[^./].psessionid=%[^/]/%s');
@@ -86,6 +83,8 @@
      */
     function insertStatus(&$response) {
       if (isset($this->_forwardTo)) {
+
+        // Forward to same page without session (session hijacking)
         $response->sendRedirect($this->_forwardTo);
         return;
       }
