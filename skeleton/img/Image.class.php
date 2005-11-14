@@ -186,7 +186,7 @@
       $src_x= 0,
       $src_y= 0,
       $src_w= -1,
-      $src_h= -1,
+      $src_h= -1
     ) {
       return imagecopy(
         $this->handle,
