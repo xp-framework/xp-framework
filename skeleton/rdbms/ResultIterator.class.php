@@ -7,6 +7,7 @@
   /**
    * Iterator over a resultset
    *
+   * @test     xp://net.xp_framework.unittest.rdbms.DataSetTest
    * @see      xp://rdbms.Peer
    * @purpose  Iterator
    */

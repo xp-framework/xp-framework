@@ -17,6 +17,7 @@
    *   $news= $peer->doSelect(new Criteria(array('news_id', 100, LESS_THAN)));
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.rdbms.DataSetTest
    * @see      xp://rdbms.DataSet
    * @purpose  Part of DataSet model
    */

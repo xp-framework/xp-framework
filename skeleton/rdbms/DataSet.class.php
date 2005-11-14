@@ -73,6 +73,7 @@
    *
    * Note: Fields are created as public members (aka "implicit public").
    *
+   * @test     xp://net.xp_framework.unittest.rdbms.DataSetTest
    * @see      xp://rdbms.Peer
    * @see      xp://rdbms.ConnectionManager
    * @purpose  Base class
