@@ -9,14 +9,15 @@
   /**
    * Test class
    *
-   * @see      xp://net.xp_framework.unittest.reflection.XPClassTest
+   * @see      xp://net.xp_framework.unittest.reflection.ReflectionTest
    * @purpose  Test class
    */
   #[@test('Annotation')]
   class TestClass extends Object {
     var
       #[@type('util.Date')]
-      $date= NULL;
+      $date= NULL,
+      $map = array();
 
     /**
      * Constructor
@@ -92,6 +93,29 @@
      */
     function setTrace(&$cat) {
       return throw(new IllegalStateException('Not debuggable yet'));
+    }
+
+      
+    /**
+     * Retrieve map as a PHP hashmap
+     *
+     * @access  public
+     * @return  array<string, &lang.Object>
+     */
+    function getMap() {
+      return $this->map;
+    }
+    
+    /**
+     * Retrieve values
+     *
+     * @access  public
+     * @return  &lang.Collection<lang.Object>
+     */
+    function &mapValues() {
+      $c= &Collection::forClass('lang.Object');
+      $c->addAll(array_values($this->map));
+      return $c;
     }
 
   } implements(__FILE__, 'util.log.Traceable');
