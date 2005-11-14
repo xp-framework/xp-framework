@@ -9,8 +9,8 @@ $Id$
 
 Scope of Change
 ---------------
-Any XP application will die at startup when any of the magic_quotes_gpc
-is enabled. Runtime quotes will be disabled at startup.
+Any XP application will die at startup when magic_quotes_gpc is enabled. 
+Runtime quotes will be disabled at startup.
 
 
 Rationale
