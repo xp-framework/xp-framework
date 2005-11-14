@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.profiling.unittest.TestCase');
+
   define('APIDOC_TAG',        0x0001);
   define('APIDOC_VALUE',      0x0002);
 
