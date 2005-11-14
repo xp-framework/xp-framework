@@ -37,7 +37,7 @@
      * Mock: Set ResultSet
      *
      * @access  public
-     * @param   &rdbms.ResultSet resultSet
+     * @param   &net.xp_framework.unittest.rdbms.mock.MockResultSet resultSet
      */
     function setResultSet(&$resultSet) {
       $this->queryError= array();
@@ -48,7 +48,7 @@
      * Mock: Get ResultSet
      *
      * @access  public
-     * @return  &rdbms.ResultSet
+     * @return  &net.xp_framework.unittest.rdbms.mock.MockResultSet
      */
     function &getResultSet() {
       return $this->resultSet;
