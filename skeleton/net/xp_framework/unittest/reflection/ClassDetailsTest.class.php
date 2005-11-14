@@ -21,17 +21,25 @@
      * @access  protected
      * @param   string comment
      * @return  array<string[]> matches
+     * @throws  util.profiling.unittest.AssertionFailedError
      */
     function parseComment($comment) {
       $comment= trim($comment);
-      preg_match_all(
-        '/@([a-z]+)\s*([^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/', 
+      if (!preg_match_all(
+        '/@([a-z]+)\s*([^<]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/', 
         $comment,
         $matches, 
         PREG_SET_ORDER
-      );
+      )) {
+        $this->fail('Could not parse comment', $actual= FALSE, $expect= TRUE);
+        return;
+      }
 
+      // Set these to empty values
       $annotations= array();
+      $name= NULL;  
+      
+      // Initialize details array
       $details= array(
         DETAIL_MODIFIERS    => 0,
         DETAIL_ARGUMENTS    => array(),
@@ -43,7 +51,7 @@
           strpos($comment, '* @')- 2      // position of first details token
         ))),
         DETAIL_ANNOTATIONS  => $annotations,
-        DETAIL_NAME         => $tokens[$i][1]
+        DETAIL_NAME         => $name
       );
       foreach ($matches as $match) {
         switch ($match[1]) {
@@ -70,6 +78,8 @@
             break;
         }
       }
+      
+      // var_dump($details);
       return $details;
     }
     
@@ -83,7 +93,7 @@
      * @throws  util.profiling.unittest.AssertionFailedError
      */
     function assertAccessFlags($modifiers, $comment) {
-      $details= $this->parseComment($comment);
+      if (!($details= $this->parseComment($comment))) return;
       return $this->assertEquals($modifiers, $details[DETAIL_MODIFIERS]);
     }
     
@@ -208,10 +218,12 @@
          * @param   string param1
          */
       ');
-      $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
-      $this->assertEquals('string', $details[DETAIL_ARGUMENTS][0]->getType());
-      $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isOptional());
-      $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
+      if ($details[DETAIL_ARGUMENTS][0]) {
+        $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
+        $this->assertEquals('string', $details[DETAIL_ARGUMENTS][0]->getType());
+        $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isOptional());
+        $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
+      }
     }
 
     /**
@@ -229,10 +241,12 @@
          * @param   string[] param1
          */
       ');
-      $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
-      $this->assertEquals('string[]', $details[DETAIL_ARGUMENTS][0]->getType());
-      $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isOptional());
-      $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
+      if ($details[DETAIL_ARGUMENTS][0]) {
+        $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
+        $this->assertEquals('string[]', $details[DETAIL_ARGUMENTS][0]->getType());
+        $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isOptional());
+        $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
+      }
     }
 
     /**
@@ -250,10 +264,12 @@
          * @param   &util.Date param1
          */
       ');
-      $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
-      $this->assertEquals('util.Date', $details[DETAIL_ARGUMENTS][0]->getType());
-      $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isOptional());
-      $this->assertTrue($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
+      if ($details[DETAIL_ARGUMENTS][0]) {
+        $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
+        $this->assertEquals('util.Date', $details[DETAIL_ARGUMENTS][0]->getType());
+        $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isOptional());
+        $this->assertTrue($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
+      }
     }
 
     /**
@@ -271,11 +287,37 @@
          * @param   int param1 default 1
          */
       ');
-      $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
-      $this->assertEquals('int', $details[DETAIL_ARGUMENTS][0]->getType());
-      $this->assertTrue($details[DETAIL_ARGUMENTS][0]->isOptional());
-      $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
-      $this->assertEquals('1', $details[DETAIL_ARGUMENTS][0]->getDefault());
+      if ($details[DETAIL_ARGUMENTS][0]) {
+        $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
+        $this->assertEquals('int', $details[DETAIL_ARGUMENTS][0]->getType());
+        $this->assertTrue($details[DETAIL_ARGUMENTS][0]->isOptional());
+        $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
+        $this->assertEquals('1', $details[DETAIL_ARGUMENTS][0]->getDefault());
+      }
+    }
+    
+    /**
+     * Tests parsing of the "param" tag with an generic parameter
+     *
+     * @access  public
+     */
+    #[@test]
+    function genericArrayParameter() {
+      $details= $this->parseComment('
+        /**
+         * Final protected method
+         *
+         * @model   final
+         * @access  protected
+         * @param   array<string, string> map
+         */
+      ');
+      if ($details[DETAIL_ARGUMENTS][0]) {
+        $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
+        $this->assertEquals('array<string, string>', $details[DETAIL_ARGUMENTS][0]->getType());
+        $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isOptional());
+        $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
+      }
     }
   }
 ?>
