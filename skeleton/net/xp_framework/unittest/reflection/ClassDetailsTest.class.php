@@ -79,7 +79,6 @@
         }
       }
       
-      // var_dump($details);
       return $details;
     }
     
@@ -218,7 +217,7 @@
          * @param   string param1
          */
       ');
-      if ($details[DETAIL_ARGUMENTS][0]) {
+      if ($this->assertClass($details[DETAIL_ARGUMENTS][0], 'lang.reflect.Argument')) {
         $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
         $this->assertEquals('string', $details[DETAIL_ARGUMENTS][0]->getType());
         $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isOptional());
@@ -241,7 +240,7 @@
          * @param   string[] param1
          */
       ');
-      if ($details[DETAIL_ARGUMENTS][0]) {
+      if ($this->assertClass($details[DETAIL_ARGUMENTS][0], 'lang.reflect.Argument')) {
         $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
         $this->assertEquals('string[]', $details[DETAIL_ARGUMENTS][0]->getType());
         $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isOptional());
@@ -264,7 +263,7 @@
          * @param   &util.Date param1
          */
       ');
-      if ($details[DETAIL_ARGUMENTS][0]) {
+      if ($this->assertClass($details[DETAIL_ARGUMENTS][0], 'lang.reflect.Argument')) {
         $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
         $this->assertEquals('util.Date', $details[DETAIL_ARGUMENTS][0]->getType());
         $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isOptional());
@@ -287,7 +286,7 @@
          * @param   int param1 default 1
          */
       ');
-      if ($details[DETAIL_ARGUMENTS][0]) {
+      if ($this->assertClass($details[DETAIL_ARGUMENTS][0], 'lang.reflect.Argument')) {
         $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
         $this->assertEquals('int', $details[DETAIL_ARGUMENTS][0]->getType());
         $this->assertTrue($details[DETAIL_ARGUMENTS][0]->isOptional());
@@ -312,9 +311,33 @@
          * @param   array<string, string> map
          */
       ');
-      if ($details[DETAIL_ARGUMENTS][0]) {
-        $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
+      if ($this->assertClass($details[DETAIL_ARGUMENTS][0], 'lang.reflect.Argument')) {
+        $this->assertEquals('map', $details[DETAIL_ARGUMENTS][0]->getName());
         $this->assertEquals('array<string, string>', $details[DETAIL_ARGUMENTS][0]->getType());
+        $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isOptional());
+        $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
+      }
+    }
+
+    /**
+     * Tests parsing of the "param" tag with an generic parameter
+     *
+     * @access  public
+     */
+    #[@test]
+    function genericObjectParameter() {
+      $details= $this->parseComment('
+        /**
+         * Abstract protected method
+         *
+         * @model   abstract
+         * @access  protected
+         * @param   &lang.Collection<&lang.Object> param1
+         */
+      ');
+      if ($this->assertClass($details[DETAIL_ARGUMENTS][0], 'lang.reflect.Argument')) {
+        $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
+        $this->assertEquals('lang.Collection<&lang.Object>', $details[DETAIL_ARGUMENTS][0]->getType());
         $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isOptional());
         $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
       }
