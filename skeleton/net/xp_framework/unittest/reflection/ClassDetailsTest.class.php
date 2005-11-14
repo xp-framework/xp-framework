@@ -88,7 +88,7 @@
     }
     
     /**
-     * Tests separation of the comment from the 
+     * Tests separation of the comment from the "tags part".
      *
      * @access  public
      */
@@ -106,6 +106,24 @@
       ');
       $this->assertEquals(
         "A protected method\n\nNote: Not compatible with PHP 4.1.2!",
+        $details[DETAIL_COMMENT]
+      );
+    }
+
+    /**
+     * Tests comment is empty when no comment is available in apidoc
+     *
+     * @access  public
+     */
+    #[@test]
+    function noCommentString() {
+      $details= $this->parseComment('
+        /**
+         * @access  protected
+         */
+      ');
+      $this->assertEquals(
+        '',
         $details[DETAIL_COMMENT]
       );
     }
