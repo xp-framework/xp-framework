@@ -278,7 +278,7 @@
     }
     
     /**
-     * Tests that the iteratorFor() method with criteria
+     * Tests the iteratorFor() method with criteria
      *
      * @access  public
      */
@@ -323,7 +323,40 @@
     }
 
     /**
-     * Tests that the iteratorFor() method with statement
+     * Tests that ResultIterator::next() can be called without previously having
+     * called hasMext()
+     *
+     * @access  public
+     */
+    #[@test]
+    function nextCallWithoutHasNext() {
+      $this->setResults(new MockResultSet(array(
+        0 => array(
+          'job_id'      => 654,
+          'title'       => 'Java Unit tester',
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        ),
+        1 => array(
+          'job_id'      => 329,
+          'title'       => 'C# programmer',
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        )
+      )));
+
+      $peer= &Job::getPeer();
+      $iterator= &$peer->iteratorFor(new Criteria(array('expire_at', NULL, EQUAL)));
+
+      $job= &$iterator->next();
+      $this->assertClass($job, 'net.xp_framework.unittest.rdbms.dataset.Job');
+      $this->assertEquals(654, $job->getJob_id());
+
+      $this->assertTrue($iterator->hasNext());
+    }
+
+    /**
+     * Tests the iteratorFor() method with statement
      *
      * @access  public
      */
