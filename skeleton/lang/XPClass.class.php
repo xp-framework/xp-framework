@@ -44,6 +44,7 @@
    *
    * @see      xp://lang.Object#getClass()
    * @test     xp://net.xp_framework.unittest.reflection.ReflectionTest
+   * @test     xp://net.xp_framework.unittest.reflection.ClassDetailsTest
    * @purpose  Reflection
    */
   class XPClass extends Object {
@@ -508,7 +509,7 @@
               );
               $matches= NULL;
               preg_match_all(
-                '/@([a-z]+)\s*([^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/', 
+                '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/',
                 $comment, 
                 $matches, 
                 PREG_SET_ORDER
