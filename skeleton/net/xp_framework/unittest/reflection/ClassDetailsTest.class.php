@@ -26,7 +26,7 @@
     function parseComment($comment) {
       $comment= trim($comment);
       if (!preg_match_all(
-        '/@([a-z]+)\s*([^<]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/', 
+        '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/', 
         $comment,
         $matches, 
         PREG_SET_ORDER
@@ -53,6 +53,7 @@
         DETAIL_ANNOTATIONS  => $annotations,
         DETAIL_NAME         => $name
       );
+      
       foreach ($matches as $match) {
         switch ($match[1]) {
           case 'access':
@@ -339,7 +340,7 @@
         $this->assertEquals('param1', $details[DETAIL_ARGUMENTS][0]->getName());
         $this->assertEquals('lang.Collection<&lang.Object>', $details[DETAIL_ARGUMENTS][0]->getType());
         $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isOptional());
-        $this->assertFalse($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
+        $this->assertTrue($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
       }
     }
   }
