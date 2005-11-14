@@ -1,0 +1,58 @@
+RFC 0041: Bail when magic quotes are enabled
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon Nov 14 15:15:15 CET 2005
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+Any XP application will die at startup when any of the magic quotes 
+settings in PHP is enabled.
+
+
+Rationale
+---------
+Magic quotes causes too much confusion and problems.
+
+
+Functionality
+-------------
+The following will be added to lang.base.php:
+<?php
+  // Get rid of magic quotes 
+  ini_get('magic_quotes_gpc') && xp::error('[xp::core] magic_quotes_gpc enabled');
+  ini_set('magic_quotes_runtime', FALSE);
+  ini_set('magic_quotes_sybase', FALSE);
+?>
+
+
+Security considerations
+-----------------------
+None. Magic quotes don't make PHP more secure, they just mess up input data.
+
+
+Speed impact
+------------
+Three more method calls in lang.base.php, almost neglible.
+
+
+Dependencies
+------------
+None.
+
+
+Related documents
+-----------------
+None.
+
+Comments
+--------
+- friebe, Mon Nov 14 15:27:16 CET 2005
+  Of course you can work around magic_quotes_gpc by stripslash()ing all
+  GET, POST and COOKIUE parameters, but that is a workaround. People should
+  just configure their PHP correctly.
+
+<EOF>
