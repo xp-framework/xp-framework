@@ -288,7 +288,7 @@
     /**
      * Tests dynamic class loading via forName()
      *
-     * @see     xp://lang.XPClass#forName()
+     * @see     xp://lang.XPClass#forName
      * @access  public
      */
     #[@test]
@@ -303,12 +303,24 @@
      * passed with the name of a nonexistant class
      *
      * @see     xp://lang.ClassNotFoundException
-     * @see     xp://lang.XPClass#forName()
+     * @see     xp://lang.XPClass#forName
      * @access  public
      */
     #[@test, @expect('lang.ClassNotFoundException')]
     function nonExistantforName() {
       $class= &XPClass::forName('class.does.not.Exist');
+    }
+    
+    /**
+     * Tests generic return value
+     *
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#getMap
+     * @access  public
+     */
+    #[@test]
+    function genericReturnValue() {
+      $method= &$this->class->getMethod('getMap');
+      $this->assertEquals('array<string, &lang.Object>', $method->getReturnType());
     }
   }
 ?>
