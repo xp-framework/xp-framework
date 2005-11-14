@@ -356,6 +356,43 @@
     }
 
     /**
+     * Tests that ResultIterator::next() will throw an exception in case it
+     * is called on an empty resultset.
+     *
+     * @access  public
+     */
+    #[@test, @expect('util.NoSuchElementException')]
+    function nextCallOnEmptyResultSet() {
+      $this->setResults(new MockResultSet());
+      $peer= &Job::getPeer();
+      $iterator= &$peer->iteratorFor(new Criteria(array('expire_at', NULL, EQUAL)));
+      $iterator->next();
+    }
+
+    /**
+     * Tests that ResultIterator::next() will throw an exception in case it
+     * has iterated past the end of a resultset.
+     *
+     * @access  public
+     */
+    #[@test, @expect('util.NoSuchElementException')]
+    function nextCallPastEndOfResultSet() {
+      $this->setResults(new MockResultSet(array(
+        0 => array(
+          'job_id'      => 654,
+          'title'       => 'Java Unit tester',
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        )
+      )));
+
+      $peer= &Job::getPeer();
+      $iterator= &$peer->iteratorFor(new Criteria(array('expire_at', NULL, EQUAL)));
+      $iterator->next();
+      $iterator->next();
+    }
+    
+    /**
      * Tests the iteratorFor() method with statement
      *
      * @access  public
