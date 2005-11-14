@@ -159,6 +159,23 @@
     }
 
     /**
+     * Tests parsing of the "access" tag
+     *
+     * @access  public
+     */
+    #[@test]
+    function staticAccess() {
+      $this->assertAccessFlags(MODIFIER_PUBLIC | MODIFIER_STATIC, '
+        /**
+         * A public method
+         *
+         * @model   static
+         * @access  public
+         */
+      ');
+    }
+
+    /**
      * Tests parsing of the "param" tag with a scalar parameter
      *
      * @access  public
