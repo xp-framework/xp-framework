@@ -115,5 +115,23 @@
       $this->assertEquals($s->tell(), 10);
       $this->assertEquals($s->buffer, 'This is a ');
     }
+    
+    /**
+     * Test that the file pointer is rewound when a stream is closed
+     * and reopened
+     *
+     * @access  public
+     */
+    #[@test]
+    function positionAfterReOpen() {
+      $s= &new Stream();
+      $s->open(STREAM_MODE_WRITE);
+      $s->write('GIF89a');
+      $s->close();
+      $s->open(STREAM_MODE_READ);
+      $this->assertEquals(0, $s->tell());
+      $this->assertEquals('GIF89a', $s->read());
+      $s->close();
+    }
   }
 ?>
