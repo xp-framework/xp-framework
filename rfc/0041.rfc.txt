@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Mon Nov 14 15:15:15 CET 2005
-@status: draft
+@status: discussion, ends at Thu Nov 17 12:37:32 CET 2005
 @category: <core>
 
 Scope of Change
