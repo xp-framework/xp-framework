@@ -34,6 +34,8 @@
      * @param   string mode default STREAM_MODE_READ one of the STREAM_MODE_* constants
      */
     function open($mode= STREAM_MODE_READ) {
+      $this->offset= 0;
+
       switch ($mode) {
         case STREAM_MODE_READWRITE:
           $this->flags= STREAM_WRITE;
