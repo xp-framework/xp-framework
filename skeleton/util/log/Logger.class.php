@@ -124,7 +124,13 @@
       $section= $prop->getFirstSection();
       do {
         // Create new
-        $this->category[$section]= &new LogCategory(
+        try(); {
+          $catclass= &XPClass::forName($prop->readString($section, 'category', 'util.log.LogCategory'));
+        }if (catch('ClassNotFoundException', $e)) {
+          return throw($e);
+        }
+
+        $this->category[$section]= &$catclass->newInstance(
           $this->defaultIdentifier,
           $prop->readString($section, 'format', $this->defaultFormat),
           $prop->readString($section, 'date.format', $this->defaultDateformat),
