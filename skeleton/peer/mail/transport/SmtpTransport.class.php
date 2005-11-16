@@ -48,7 +48,8 @@
       $pass  = '',
       $ext   = FALSE,
       $opt   = array(),
-      $port  = 25;
+      $port  = 25,
+      $auth  = NULL;
       
     var
       $_sock = NULL;
@@ -199,11 +200,9 @@
       $this->host= $u->getHost();
       $this->port= $u->getPort() ? $u->getPort() : 25;
       
-      // Extra attributes
-      $this->auth= $u->getParam('auth') ? $u->getParam('auth') : SMTP_AUTH_PLAIN;
-
       // User & password
       if ($u->getUser()) {
+        $this->auth= $u->getParam('auth', SMTP_AUTH_PLAIN);
         $this->user= $u->getUser();
         $this->pass= $u->getPassword();
       }
