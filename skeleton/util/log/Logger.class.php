@@ -123,10 +123,9 @@
       // Read all other properties
       $section= $prop->getFirstSection();
       do {
-        // Create new
         try(); {
           $catclass= &XPClass::forName($prop->readString($section, 'category', 'util.log.LogCategory'));
-        }if (catch('ClassNotFoundException', $e)) {
+        } if (catch('ClassNotFoundException', $e)) {
           return throw($e);
         }
 
