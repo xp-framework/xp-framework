@@ -40,6 +40,40 @@ A new interface named xml.soap.SOAPHeader will be created:
 
 Custom SOAP headers must implement this interface.
 
+Example:
+<?php
+
+  class EbayRequesterCredentialsHeader extends Object {
+    var
+      $token     = '',
+      $appid     = '',
+      $devid     = '',
+      $authcert  = '';
+
+    function __construct($token, $appid, $devid, $authcert) {
+      $this->token= $token;
+      $this->appid= $appid;
+      $this->devid= $devid;
+      $this->authcert= $authcert;
+    }
+
+    function &getNode($ns) {
+      $n= &new Node('RequesterCredentials', NULL, array(
+       'xmlns'        => 'urn:ebay:apis:eBLBaseComponents', 
+       'xmlns:tns'    => 'urn:ebay:apis:eBLBaseComponents', 
+       'xmlns:xsi'    => 'http://www.w3.org/2001/XMLSchema-instance', 
+       'xsi:type'     => 'tns:CustomSecurityHeaderType',
+      ));
+      $n->addChild(new Node('eBayAuthToken', $this->token));
+      with ($credentials= &$n->addChild(new Node('Credentials'))); {
+        $credentials->addChild(new Node('AppId', $this->appid));
+        $credentials->addChild(new Node('DevId', $this->devid));
+        $credentials->addChild(new Node('AuthCert', $this->authcert));
+      }
+      return $n;
+    }
+  } implements (__FILE__, 'xml.soap.SOAPHeader');
+?>
 
 Security considerations
 -----------------------
