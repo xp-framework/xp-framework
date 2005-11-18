@@ -1,0 +1,70 @@
+RFC 0042: SOAP Headers API
+========================================================================
+$Id$
+
+@authors: friebe, strobel
+@created: Fri Nov 18 13:01:03 CET 2005
+@status: draft
+@category: xml.soap
+
+Scope of Change
+---------------
+The SOAPClient class will provide a method to set headers for the SOAP
+request.
+
+
+Rationale
+---------
+Implementation of clients for SOAP services that require request headers,
+e.g. EBay.
+
+
+Functionality
+-------------
+A new interface named xml.soap.SOAPHeader will be created:
+
+<?php
+  class SOAPHeader extends Interface {
+
+    /**
+     * Retrieve XML representation of this header for use in a SOAP
+     * message.
+     *
+     * @access  public
+     * @param   array<string, string> ns list of namespaces
+     * @return  &xml.Node
+     */
+    function &getNode($ns) { }
+  }
+?>
+
+Custom SOAP headers must implement this class.
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+SOAPHeader interface
+
+
+Related documents
+-----------------
+- Patch implementing this RFC
+  http://xp-framework.net/downloads/soap-headers.diff
+
+
+Comments
+--------
+n/a
+
+
+<EOF>
