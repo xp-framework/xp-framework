@@ -38,7 +38,7 @@ A new interface named xml.soap.SOAPHeader will be created:
   }
 ?>
 
-Custom SOAP headers must implement this class.
+Custom SOAP headers must implement this interface.
 
 
 Security considerations
