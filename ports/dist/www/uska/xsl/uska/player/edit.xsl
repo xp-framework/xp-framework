@@ -89,7 +89,6 @@
                     <xsl:if test="/formresult/formvalues/param[@name= $name] != ''">
                       <xsl:attribute name="checked">checked</xsl:attribute>
                     </xsl:if>
-                    <xsl:if test="'' = func:hasPermission('create_player')"><xsl:attribute name="disabled">disabled</xsl:attribute></xsl:if>
                   </input>
                   angemeldet
                 </td>
