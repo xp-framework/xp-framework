@@ -3,6 +3,8 @@
  *
  * $Id$ 
  */
+ 
+  uses('img.ImagingException');
 
   /**
    * Image information
