@@ -112,7 +112,7 @@
               m.mailinglist_id= mpm.mailinglist_id
               and mpm.player_id= %d
           ',
-          $player->getPlayer_id()
+          $request->getParam('player_id', NULL)
         );
       } if (catch('SQLException', $e)) {
         return throw($e);
