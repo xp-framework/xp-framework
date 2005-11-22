@@ -38,7 +38,7 @@
      * @return  string
      */
     function identifierFor(&$request, &$context) {
-      return $this->name.'.'.$request->getParam('event_id', 'guest');
+      return $this->name.'.'.$request->getParam('event_id');
     }
     
     /**
@@ -53,6 +53,7 @@
       $this->setFormValue('offers_seats', 0);
       if ($request->hasParam('guest')) $this->setValue('mode', 'addguest');
       
+
       $player_id= $context->user->getPlayer_id();
       if ($request->hasParam('player_id') && $request->getParam('player_id') != $player_id) {
         
@@ -78,7 +79,8 @@
           $this->setFormValue('lastname', $player->getLastname());
         }
       }
-      
+
+      $this->setValue('event_id', $request->getParam('event_id'));
       $this->setValue('player_id', $player_id);
       
       return TRUE;
@@ -170,6 +172,18 @@
       
       $transaction->commit();
       return TRUE;
+    }
+    
+    /**
+     * In case of success, redirect the user to the event's page.
+     *
+     * @access  public
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @param   &scriptlet.xml.Context context
+     */
+    function finalize(&$request, &$response, &$context) {
+      $response->forwardTo('event/view', $this->getValue('event_id'));
     }
   }
 ?>
