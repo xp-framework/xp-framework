@@ -6,12 +6,6 @@
 
   uses('img.chart.Chart');
 
-  // Distance
-  define('DISTANCE_AUTO',     -1);
-  
-  // Ranges
-  define('RANGE_AUTO',        -1);
-  
   /**
    * Line chart
    *

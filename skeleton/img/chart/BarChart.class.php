@@ -10,12 +10,6 @@
   define('CHART_HORIZONTAL',  0x0000);
   define('CHART_VERTICAL',    0x0001);
   
-  // Distance
-  define('DISTANCE_AUTO',     -1);
-  
-  // Ranges
-  define('RANGE_AUTO',        -1);
-  
   /**
    * Bar chart
    *
