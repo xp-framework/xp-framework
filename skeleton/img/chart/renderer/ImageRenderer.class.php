@@ -311,7 +311,7 @@
 
       // Figure out the distance between the bars
       if (DISTANCE_AUTO == ($distance= $bc->getDistance())) {
-        $distance= round($innerWidth / $count);
+        $distance= $innerWidth / $count;
       }
 
       // Create image
@@ -436,7 +436,7 @@
 
       // Figure out the distance between the bars
       if (DISTANCE_AUTO == ($distance= $lc->getDistance())) {
-        $distance= round($innerWidth / $count);
+        $distance= $innerWidth / $count;
       }
 
       // Create image
