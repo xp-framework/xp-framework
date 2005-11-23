@@ -480,7 +480,7 @@
         $x= $y= $py= array();
         for ($i= 0; $i < $count; $i++) {
           for ($j= 0; $j < $seriesCount; $j++) {
-            $offset= $leftBorder + ($i + 0.5) * $distance - $width / 2;
+            $offset= $leftBorder + ($i + 0.5) * $distance;
             $h= ($lc->series[$j]->values[$i] / ($upper - $lower) * $innerHeight);
             $xp= $i > 0 ? $x[$j][$i - 1] : $offset;
             $yp= $i > 0 ? $y[$j][$i - 1] : $py[$i] + $h;
