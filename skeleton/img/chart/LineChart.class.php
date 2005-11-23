@@ -45,7 +45,7 @@
     function min() {
       if ($this->getAccumulated()) return parent::min();
 
-      $min= array();
+      $min= array_fill(0, sizeof($this->series), 0);
       for ($i= 0, $s= sizeof($this->series); $i < $s; $i++) {
         for ($j= 0, $c= sizeof($this->series[$i]->values); $j < $c; $j++) {
           $min[$j] += $this->series[$i]->values[$j];
