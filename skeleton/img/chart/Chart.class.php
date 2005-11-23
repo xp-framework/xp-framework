@@ -6,6 +6,12 @@
 
   uses('img.Color', 'img.chart.Series');
 
+  // Distance
+  define('DISTANCE_AUTO',     -1);
+  
+  // Ranges
+  define('RANGE_AUTO',        -1);
+  
   /**
    * Chart
    *
@@ -157,7 +163,7 @@
      * @return bool
      */
     function getDisplayValues() {
-      return $this->disval;
+      return $this->dispval;
     }
     
     /**
@@ -167,7 +173,7 @@
      * @param bool bool The flag
      */
     function setDisplayValues($bool) {
-      $this->disval= $bool;
+      $this->dispval= $bool;
     }
     
     /**
