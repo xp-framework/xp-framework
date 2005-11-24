@@ -17,11 +17,9 @@
   class LoginState extends UskaState {
 
     /**
-     * (Insert method's description here)
+     * Constructor.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function __construct() {
       $this->addHandler(new LoginHandler());
