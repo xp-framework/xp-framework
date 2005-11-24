@@ -483,7 +483,7 @@
             $offset= $leftBorder + ($i + 0.5) * $distance;
             $h= ($lc->series[$j]->values[$i] / ($upper - $lower) * $innerHeight);
             $xp= $i > 0 ? $x[$j][$i - 1] : $offset;
-            $yp= $i > 0 ? $y[$j][$i - 1] : $py[$i] + $h;
+            $yp= $i > 0 ? $y[$j][$i - 1] : @$py[$i] + $h;
             if ($lc->getAccumulated()) {
               if (!isset($py[$i])) $py[$i]= 0;
               imageline(
