@@ -476,7 +476,7 @@
           'sampleColor'     => $colors
         ), $img);
         
-        // Draw bars
+        // Draw lines
         $x= $y= $py= array();
         for ($i= 0; $i < $count; $i++) {
           for ($j= 0; $j < $seriesCount; $j++) {
@@ -521,7 +521,7 @@
                 imagestring(
                   $img->handle,
                   $font,
-                  $offset + ($barWidth - $fontw * strlen($bc->series[$j]->values[$i])) / 2,
+                  $offset + ($fontw * strlen($lc->series[$j]->values[$i])) / 2,
                   $zero - $h - $fonth - 5,
                   $lc->series[$j]->values[$i],
                   $axisColor->handle
