@@ -36,7 +36,7 @@
       $max= array();
       for ($i= 0, $s= sizeof($this->series); $i < $s; $i++) {
         for ($j= 0, $c= sizeof($this->series[$i]->values); $j < $c; $j++) {
-          $max[$j] += $this->series[$i]->values[$j];
+          @$max[$j] += $this->series[$i]->values[$j];
         }
       }
       return max($max);
@@ -54,7 +54,7 @@
       $min= array();
       for ($i= 0, $s= sizeof($this->series); $i < $s; $i++) {
         for ($j= 0, $c= sizeof($this->series[$i]->values); $j < $c; $j++) {
-          $min[$j] += $this->series[$i]->values[$j];
+          @$min[$j] += $this->series[$i]->values[$j];
         }
       }
       return min($min) < 0 ? min($min) : 0;
