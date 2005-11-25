@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.URL', 'HandlerFactory', 'RemoteInterfaceMapping');
+  uses('peer.URL', 'HandlerFactory', 'RemoteInterfaceMapping', 'UserTransaction');
 
   /**
    * Entry class for all remote operations
@@ -98,6 +98,41 @@
      */
     function &lookup($name) {
       return $this->_handler->lookup($name);
+    }
+
+    /**
+     * Begin a transaction
+     *
+     * @access  public
+     * @param   &UserTransaction tran
+     * @return  &UserTransaction
+     */
+    function &begin(&$tran) {
+      $this->_handler->begin($tran);
+      $tran->_remote= &$this;
+      return $tran;
+    }
+
+    /**
+     * Rollback a transaction
+     *
+     * @access  package
+     * @param   UserTransaction tran
+     * @param   bool
+     */
+    function rollbackTransaction(&$tran) {
+      return $this->_handler->rollback($tran);
+    }
+
+    /**
+     * Commit a transaction
+     *
+     * @access  package
+     * @param   UserTransaction tran
+     * @param   bool
+     */
+    function commitTransaction(&$tran) {
+      return $this->_handler->commit($tran);
     }
   }
 ?>

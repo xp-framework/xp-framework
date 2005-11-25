@@ -15,6 +15,7 @@ import net.xp_framework.easc.server.LookupDelegate;
 import net.xp_framework.easc.server.InitializationDelegate;
 import net.xp_framework.easc.server.CallDelegate;
 import net.xp_framework.easc.server.FinalizeDelegate;
+import net.xp_framework.easc.server.TransactionDelegate;
 import net.xp_framework.easc.util.ByteCountedString;
 
 import static net.xp_framework.easc.util.MethodMatcher.methodFor;
@@ -105,7 +106,7 @@ public enum MessageType {
             return new LookupDelegate(jndiName);
         }
     }, 
-    
+
     Call {
         public Delegate delegateFrom(DataInputStream in, ServerContext ctx) throws IOException {
             Long objectId= new Long(in.readLong());
@@ -173,7 +174,14 @@ public enum MessageType {
             return new FinalizeDelegate();
         }
     },
-    
+
+    Transaction {
+        public Delegate delegateFrom(DataInputStream in, ServerContext ctx) throws IOException {
+            int operation= in.readInt();
+            return new TransactionDelegate(operation);
+        }
+    }, 
+        
     Value {
         public Delegate delegateFrom(DataInputStream in, ServerContext ctx) throws IOException {
             return null;

@@ -20,6 +20,7 @@
       <include name="junit.jar"/>
       <include name="jboss-system.jar"/>
       <include name="jboss-jmx.jar"/>
+      <include name="jboss-j2ee.jar"/>
     </fileset>
   </path>
 

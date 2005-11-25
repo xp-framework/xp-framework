@@ -94,6 +94,7 @@ __
         Console::write('(Already deactivated): ');
       } else {
         Console::write('Deactivating: ');
+
         $feed->setBz_id(new Long(30000));
       }
       Console::writeLine(xp::stringOf($feed->getFeedValue()));

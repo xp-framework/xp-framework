@@ -13,7 +13,6 @@
     'RemoteException'
   );
 
-
   define('DEFAULT_PROTOCOL_MAGIC_NUMBER', 0x3c872747);
 
   // Request messages
@@ -21,11 +20,18 @@
   define('REMOTE_MSG_LOOKUP',    0x0001);
   define('REMOTE_MSG_CALL',      0x0002);
   define('REMOTE_MSG_FINALIZE',  0x0003);
+  define('REMOTE_MSG_TRAN_OP',   0x0004);
   
   // Response messages
-  define('REMOTE_MSG_VALUE',     0x0004);
-  define('REMOTE_MSG_EXCEPTION', 0x0005);
-  define('REMOTE_MSG_ERROR',     0x0006);
+  define('REMOTE_MSG_VALUE',     0x0005);
+  define('REMOTE_MSG_EXCEPTION', 0x0006);
+  define('REMOTE_MSG_ERROR',     0x0007);
+  
+  // Transaction message types
+  define('REMOTE_TRAN_BEGIN',    0x0001);
+  define('REMOTE_TRAN_STATE',    0x0002);
+  define('REMOTE_TRAN_COMMIT',   0x0003);
+  define('REMOTE_TRAN_ROLLBACK', 0x0004);
 
   /**
    * Handles the "XP" protocol
@@ -86,6 +92,39 @@
      */
     function &lookup($name) {
       return $this->sendPacket(REMOTE_MSG_LOOKUP, '', array(new ByteCountedString($name)));
+    }
+
+    /**
+     * Begin a transaction
+     *
+     * @access  public
+     * @param   UserTransaction tran
+     * @param   bool
+     */
+    function begin(&$tran) {
+      return $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_BEGIN));
+    }
+
+    /**
+     * Rollback a transaction
+     *
+     * @access  public
+     * @param   UserTransaction tran
+     * @param   bool
+     */
+    function rollback(&$tran) {
+      return $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_ROLLBACK));
+    }
+
+    /**
+     * Commit a transaction
+     *
+     * @access  public
+     * @param   UserTransaction tran
+     * @param   bool
+     */
+    function commit(&$tran) {
+      return $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_COMMIT));
     }
 
     /**

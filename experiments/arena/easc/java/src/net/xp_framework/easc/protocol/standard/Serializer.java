@@ -354,6 +354,11 @@ public class Serializer {
 
     private static String representationOf(Object o, Invokeable i) throws Exception {
         if (null == o) return "N;";
+
+        if (!(o instanceof java.io.Serializable)) {
+            throw new SerializationException("Trying to serialize non-serializable object " + o + " via " + i);
+        }
+
         if (i != null) return (String)i.invoke(o);
 
         // Default object serialization
