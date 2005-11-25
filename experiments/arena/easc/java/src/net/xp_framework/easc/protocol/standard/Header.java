@@ -30,7 +30,7 @@ import java.io.IOException;
  *     The message type, as one byte
  *   </li>
  *   <li>
- *     If the data is compressed, as one byte (TRUE or FALSE)
+ *     Whether a transaction is active (TRUE or FALSE)
  *   </li>
  *   <li>
  *     The data length packed into 4 bytes using pack("N", $length)
@@ -49,7 +49,7 @@ public class Header {
     private byte versionMajor;
     private byte versionMinor;
     private MessageType messageType;
-    private boolean compressed;
+    private boolean transactionActive;
     private int dataLength;
 
     /**
@@ -60,7 +60,7 @@ public class Header {
      * @param   byte version major
      * @param   byte version minor
      * @param   net.xp_framework.easc.protocol.standard.MessageType message type
-     * @param   boolean compressed
+     * @param   boolean transactionActive
      * @param   int data length
      * @throws  java.lang.NullPointerException if messageType is null
      */
@@ -69,7 +69,7 @@ public class Header {
         byte versionMajor, 
         byte versionMinor, 
         MessageType messageType, 
-        boolean compressed, 
+        boolean transactionActive, 
         int dataLength
     ) throws NullPointerException {
         if (null == (this.messageType= messageType)) {
@@ -78,7 +78,7 @@ public class Header {
         this.magicNumber= magicNumber;
         this.versionMajor= versionMajor;
         this.versionMinor= versionMinor;
-        this.compressed= compressed;
+        this.transactionActive= transactionActive;
         this.dataLength= dataLength;
     }
     
@@ -117,7 +117,7 @@ public class Header {
 	    out.writeByte(this.versionMajor);
 	    out.writeByte(this.versionMinor);
 	    out.writeByte(this.messageType.ordinal());
-	    out.writeBoolean(this.compressed);
+	    out.writeBoolean(this.transactionActive);
 	    out.writeInt(this.dataLength);
 
         return out.size() - written;
@@ -132,11 +132,11 @@ public class Header {
     @Override public String toString() {
         return (
             this.getClass().getName() + "[" + this.magicNumber + "]@{\n" +
-            "  [Version.Major   ] " + this.versionMajor + "\n" +
-            "  [Version.Minor   ] " + this.versionMinor + "\n" +
-            "  [Message.Type    ] " + this.messageType + "\n" +
-            "  [Data.Compressed ] " + this.compressed + "\n" +
-            "  [Data.Length     ] " + this.dataLength + "\n" +
+            "  [Version.Major          ] " + this.versionMajor + "\n" +
+            "  [Version.Minor          ] " + this.versionMinor + "\n" +
+            "  [Message.Type           ] " + this.messageType + "\n" +
+            "  [Data.transactionActive ] " + this.transactionActive + "\n" +
+            "  [Data.Length            ] " + this.dataLength + "\n" +
             "}"
         );
     }
@@ -158,7 +158,7 @@ public class Header {
             (this.versionMajor == h.versionMajor) &&
             (this.versionMinor == h.versionMinor) &&
             (this.messageType.equals(h.messageType)) &&
-            (this.compressed == h.compressed) &&
+            (this.transactionActive == h.transactionActive) &&
             (this.dataLength == h.dataLength)
         );
     }
@@ -204,13 +204,13 @@ public class Header {
     }
 
     /**
-     * Set compressed flag
+     * Set transactionActive flag
      *
      * @access  public
-     * @param   boolean compressed
+     * @param   boolean transactionActive
      */
-    public void setCompressed(boolean compressed) {
-        this.compressed= compressed;
+    public void settransactionActive(boolean transactionActive) {
+        this.transactionActive= transactionActive;
     }
 
     /**
@@ -274,12 +274,12 @@ public class Header {
     }
 
     /**
-     * Return compressed flag
+     * Return transactionActive flag
      *
      * @access  public
-     * @return  boolean compressed
+     * @return  boolean transactionActive
      */
-    public boolean getCompressed() {
-        return this.compressed;
+    public boolean isTransactionActive() {
+        return this.transactionActive;
     }
 }

@@ -134,7 +134,7 @@
         $this->versionMajor,
         $this->versionMinor,
         $type,
-        FALSE,                  // compressed, not used at the moment
+        FALSE,                  // TBI: Transactions
         $length,
         $data
       );
@@ -146,7 +146,7 @@
           $bytes[$i]->writeTo($this->_sock);
         }
         $header= unpack(
-          'Nmagic/cvmajor/cvminor/ctype/ccompressed/Nlength', 
+          'Nmagic/cvmajor/cvminor/ctype/ctran/Nlength', 
           $this->readBytes(12)
         );
       } if (catch('IOException', $e)) {
