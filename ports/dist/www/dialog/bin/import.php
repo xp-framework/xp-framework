@@ -17,7 +17,8 @@
     'de.thekid.dialog.io.FilteredFolderIterator',
     'de.thekid.dialog.io.ImageProcessor',
     'de.thekid.dialog.io.IndexCreator',
-    'de.thekid.dialog.GroupByHourStrategy'
+    'de.thekid.dialog.GroupByHourStrategy',
+    'img.filter.SharpenFilter'
   );
   
   define('DESCRIPTION_FILE',  'description.txt');
@@ -75,6 +76,7 @@ __
   
   // Set up processor
   $processor= &new ImageProcessor();
+  $processor->addFilter(new SharpenFilter());
   $processor->setOutputFolder($destination);
   
   // Check if debugging output is wanted

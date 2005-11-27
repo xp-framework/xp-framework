@@ -14,7 +14,8 @@
     'util.log.ConsoleAppender', 
     'de.thekid.dialog.SingleShot',
     'de.thekid.dialog.io.ShotProcessor',
-    'de.thekid.dialog.io.IndexCreator'
+    'de.thekid.dialog.io.IndexCreator',
+    'img.filter.SharpenFilter'
   );
 
   define('ENTRIES_PER_PAGE',  5);
@@ -69,6 +70,7 @@ __
 
   // Set up processor
   $processor= &new ShotProcessor();
+  $processor->addFilter(new SharpenFilter());
   $processor->setOutputFolder($destination);
   
   // Check if debugging output is wanted
