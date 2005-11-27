@@ -26,6 +26,7 @@
     var
       $outputFolder     = NULL,
       $cat              = NULL,
+      $filters          = array(),
       $quality          = 90,
       $thumbDimensions  = array(150, 113),
       $fullDimensions   = array(640, 480);
@@ -38,6 +39,19 @@
      */
     function setOutputFolder(&$outputFolder) {
       $this->outputFolder= &$outputFolder;
+    }
+    
+    /**
+     * Add a filter. The filters will be applied in the order added on 
+     * an image after processing it.
+     *
+     * @access  public
+     * @param   &img.filter.ImageFilter filter
+     * @return  &img.filter.ImageFilter filter
+     */
+    function &addFilter(&$filter) {
+      $this->filters[]= &$filter;
+      return $filter;
     }
 
     /**
@@ -221,6 +235,17 @@
           
           // Transform
           $transformed= &$this->{$target->getMethod()}($origin, $image->exifData);
+          
+          // Apply post-transform filters
+          for ($i= 0, $s= sizeof($this->filters); $i < $s; $i++) {
+            $this->cat && $this->cat->debugf(
+              'Applying filter %d of %d (%s)', 
+              $i, 
+              $s, 
+              $this->filter[$i]->toString()
+            );
+            $transformed->apply($this->filter[$i]);
+          }
           
           // Save
           $this->cat && $this->cat->debug('Saving to', $destination->getURI());
