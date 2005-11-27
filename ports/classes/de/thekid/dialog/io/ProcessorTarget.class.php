@@ -13,7 +13,7 @@
   class ProcessorTarget extends Object {
     var
       $method       = '',
-      $destination  = '';
+      $destination  = '',
       $applyFilters = TRUE;
 
     /**
