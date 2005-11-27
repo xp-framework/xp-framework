@@ -23,6 +23,11 @@
         <xsl:if test="/formresult/event/allow_guests = 1">
           <item href="{func:link(concat('event/attend?guest=add&amp;event_id=', /formresult/event/event_id))}">Gast anmelden</item>
         </xsl:if>
+        
+        <item href="{func:link(concat('event/viewpoints?team_id=', /formresult/event/team_id))}">Punktetabelle</item>
+        <xsl:if test="/formresult/event/event_type_id= 1 and '' != func:hasPermission('edit_points')">
+          <item href="{func:link(concat('event/account?event_id=', /formresult/event/event_id))}">Punkte vergeben</item>
+        </xsl:if>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>

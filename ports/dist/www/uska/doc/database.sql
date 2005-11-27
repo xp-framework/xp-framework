@@ -90,7 +90,7 @@ create table event_attendee (
   event_id                    int not null,
   player_id                   int not null,
   
-  attends                     int not null,
+  attend                      int not null,
   offers_seats                int not null,
   needs_driver                int not null,
   
@@ -107,7 +107,10 @@ create table event_points (
   event_id                    int not null,
   player_id                   int not null,
   
-  points                      int null
+  points                      int null,
+  
+  lastchange                  datetime not null,
+  changedby                   varchar(50) not null
 ) Type=InnoDB
 alter table event_points add foreign key (event_id) references event(event_id)
 alter table event_points add foreign key (player_id) references player(player_id)
@@ -120,6 +123,7 @@ create table permission (
 insert into permission values (1, "create_player")
 insert into permission values (2, "create_event")
 insert into permission values (3, "create_news")
+insert into permission values (4, "edit_points")
 
 create table plain_right_matrix (
   permission_id               int not null,
