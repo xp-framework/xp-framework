@@ -184,8 +184,8 @@
      */
     function targetsFor(&$in) {
       return array(
-        new ProcessorTarget('thumbImageFor', 'thumb.'.$in->getFilename()),
-        new ProcessorTarget('fullImageFor', $in->getFilename())
+        new ProcessorTarget('thumbImageFor', 'thumb.'.$in->getFilename(), FALSE),
+        new ProcessorTarget('fullImageFor', $in->getFilename(), TRUE)
       );
     }
           
@@ -236,15 +236,17 @@
           // Transform
           $transformed= &$this->{$target->getMethod()}($origin, $image->exifData);
           
-          // Apply post-transform filters
-          for ($i= 0, $s= sizeof($this->filters); $i < $s; $i++) {
-            $this->cat && $this->cat->debugf(
-              'Applying filter %d of %d (%s)', 
-              $i, 
-              $s, 
-              $this->filters[$i]->toString()
-            );
-            $transformed->apply($this->filters[$i]);
+          // Apply post-transform filters if specified by the target
+          if ($target->getApplyFilters()) {
+            for ($i= 0, $s= sizeof($this->filters); $i < $s; $i++) {
+              $this->cat && $this->cat->debugf(
+                'Applying filter %d of %d (%s)', 
+                $i, 
+                $s, 
+                $this->filters[$i]->toString()
+              );
+              $transformed->apply($this->filters[$i]);
+            }
           }
           
           // Save
