@@ -242,9 +242,9 @@
               'Applying filter %d of %d (%s)', 
               $i, 
               $s, 
-              $this->filter[$i]->toString()
+              $this->filters[$i]->toString()
             );
-            $transformed->apply($this->filter[$i]);
+            $transformed->apply($this->filters[$i]);
           }
           
           // Save
