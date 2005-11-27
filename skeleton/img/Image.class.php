@@ -126,14 +126,37 @@
     }
 
     /**
-     * Convert an image using a given converter
+     * Convert this image using a given converter
      *
      * @access  public
      * @param   &img.convert.ImageConverter converter
      * @return  bool
+     * @throws  lang.IllegalArgumentException if converter is not a img.convert.ImageConverter
      */
     function convertTo(&$converter) {
+      if (!is('img.convert.ImageConverter', $converter)) {
+        return throw(new IllegalArgumentException(
+          'Given argument is not a img.convert.ImageConverter object ('.xp::typeOf($converter).')'
+        ));
+      }
       return $converter->convert($this);
+    }
+    
+    /**
+     * Apply a given filter to this image
+     *
+     * @access  public
+     * @param   &img.filter.ImageFilter filter
+     * @return  bool
+     * @throws  lang.IllegalArgumentException if filter is not a img.filter.ImageFilter
+     */
+    function apply(&$filter) {
+      if (!is('img.filter.ImageFilter', $filter)) {
+        return throw(new IllegalArgumentException(
+          'Given argument is not a img.filter.ImageFilter object ('.xp::typeOf($filter).')'
+        ));
+      }
+      return $filter->applyOn($this);
     }
 
     /**
