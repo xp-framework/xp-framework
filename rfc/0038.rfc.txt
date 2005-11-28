@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Sep  4 12:26:52     2005
-@status: draft
+@status: discussion, ends Tze Nov 28 15:44:33 CET 2005
 @category: <core>
 
 Scope of Change
@@ -48,7 +48,7 @@ n/a
 
 Speed impact
 ------------
-These classes will not be loaded by default and will explicetly need to
+These classes will not be loaded by default and will explicitely need to
 be added to uses() clauses where required.
 
 Dependencies
