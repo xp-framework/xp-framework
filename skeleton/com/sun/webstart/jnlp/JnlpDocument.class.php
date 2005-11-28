@@ -39,7 +39,7 @@
      * @param   string href
      * @param   string spec default JNLP_SPEC_1_PLUS
      */
-    function __construct($codebase, $href, $spec= JNLP_SPEC_1_PLUS) {
+    function __construct($codebase= NULL, $href= NULL, $spec= JNLP_SPEC_1_PLUS) {
       parent::__construct('jnlp');
       $this->root->setAttribute('spec', $spec);
       $this->root->setAttribute('codebase', $codebase);
@@ -109,6 +109,10 @@
               $this->information->setIcon(
                 $this->_nodes['information']->children[$i]->getAttribute('href')
               );
+              break;
+
+            case 'offline-allowed':
+              $this->information->setOfflineAllowed(TRUE);
               break;
 
             default:

@@ -16,11 +16,32 @@
    */
   class JnlpInformation extends Object {
     var
-      $title        = '',
-      $vendor       = '',
-      $homepage     = '',
-      $icon         = '',
-      $description  = array();
+      $title          = '',
+      $vendor         = '',
+      $homepage       = '',
+      $icon           = '',
+      $description    = array(),
+      $offlineAllowed = FALSE;
+
+    /**
+     * Set OfflineAllowed
+     *
+     * @access  public
+     * @param   bool offlineAllowed
+     */
+    function setOfflineAllowed($offlineAllowed) {
+      $this->offlineAllowed= $offlineAllowed;
+    }
+
+    /**
+     * Get OfflineAllowed
+     *
+     * @access  public
+     * @return  bool
+     */
+    function getOfflineAllowed() {
+      return $this->offlineAllowed;
+    }
 
     /**
      * Set Title
