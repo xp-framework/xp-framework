@@ -85,7 +85,7 @@
   );
   
   // Create an application directory
-  $folder= &new Folder(basename($j->getCodebase()));
+  $folder= &new Folder(strtr(basename($j->getCodebase()), PATH_SEPARATOR, '_'));
   try(); {
     if (!$folder->exists()) $folder->create();
   } if (catch('Exception', $e)) {
@@ -105,7 +105,7 @@
       case 'com.sun.webstart.jnlp.JnlpJarResource':
         $href= &new URL(makeLink($codebase, $resource->getHref()));
         
-        $classpath.= ':'.rtrim($folder->getURI(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$href->getPath();
+        $classpath.= PATH_SEPARATOR.rtrim($folder->getURI(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$href->getPath();
         try(); {
           $params= array();
 
