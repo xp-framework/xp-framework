@@ -39,14 +39,17 @@ magic_quotes_sybase = Off
         <caption>Minimum requirements</caption>
         <text>
           PHP should be available in an up-to-date version, anything above
-          version 4.3.0 should work. Older versions do not support e.g.
+          version 4.3.0 in the PHP 4 line should work. Older versions do not support e.g.
           the new superglobal variables $_*, do now know the 
           array(&amp;$this, 'method') notation for call_user_func[_array]()
           or have problems with "parent" 
           (see <ref type="ext" link="http://bugs.php.net/bug.php?id=12313">PHP Bug #12313</ref>).
           The latest change incorporates <tt>debug_backtrace</tt> to supply even
           more detailled exception information, thus requiring at least
-          PHP 4.3.0.
+          PHP 4.3.0.<br/>
+          Due to some changes from PHP4 to PHP5, the XP framework currently does not run on
+          PHP 5, and maybe never will, as we're currently more focussed on bringing XP to
+          PHP 6.
         </text>
       </para>
       <para>
