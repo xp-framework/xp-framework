@@ -171,6 +171,11 @@ __
           $e->printStackTrace();
           exit(-2);
         }
+
+        if (!$highlight->exifData->dateTime) {
+          $highlight->exifData->dateTime= &$album->getDate();
+        }
+
         $album->addHighlight($highlight);
         Console::writeLine('     >> Added highlight ', $highlight->getName(), ' to album ', $albumname);
       }
@@ -186,6 +191,11 @@ __
         $e->printStackTrace();
         exit(-2);
       }
+
+      if (!$image->exifData->dateTime) {
+        $image->exifData->dateTime= &$album->getDate();
+      }
+
       $images[]= &$image;
       Console::writeLine('     >> Added image ', $image->getName(), ' to album ', $albumname);
 

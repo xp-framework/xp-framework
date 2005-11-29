@@ -102,6 +102,10 @@ __
       $e->printStackTrace();
       exit(-2);
     }
+
+    if (!$image->exifData->dateTime) {
+      $image->exifData->dateTime= &$shot->getDate();
+    }
     
     $shot->setImage($image);
   }
