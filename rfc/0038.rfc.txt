@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Sep  4 12:26:52     2005
-@status: discussion, ends Tze Nov 28 15:44:33 CET 2005
+@status: discussion, ends Tue Nov 28 15:44:33 CET 2005
 @category: <core>
 
 Scope of Change
@@ -39,7 +39,7 @@ The following wrapper classes will be created:
   |   |
   |   +-- lang.types.Byte
   |
-  +-- lang.type.Boolean
+  +-- lang.types.Boolean
 </pre>
 
 Security considerations
