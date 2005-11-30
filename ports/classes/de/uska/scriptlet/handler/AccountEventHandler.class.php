@@ -67,6 +67,7 @@
               on a.player_id= e.player_id
               and a.event_id= e.event_id
           where p.player_id= a.player_id
+            and p.player_type_id= 1
             and a.attend= 1
             and a.event_id= %d
           order by p.lastname, p.firstname
@@ -138,6 +139,18 @@
       
       $transaction->commit();
       return TRUE;
+    }
+    
+    /**
+     * In case of success, redirect the user to the event's point page.
+     *
+     * @access  public
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @param   &scriptlet.xml.Context context
+     */
+    function finalize(&$request, &$response, &$context) {
+      $response->forwardTo('event/viewpoints', 'event_id='.$this->getValue('event_id'));
     }
   }
 ?>

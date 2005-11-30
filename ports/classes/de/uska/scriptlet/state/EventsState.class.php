@@ -40,8 +40,9 @@
         $team= FALSE;
         $type= FALSE;
         $all=  FALSE;
+        $year= $month= $day= FALSE;
         with ($env= $request->getQueryString()); {
-          if (strlen($env)) @list($type, $all, $team)= explode(',', $env);
+          if (strlen($env)) @list($type, $all, $team, $year, $month, $day)= explode(',', $env);
         }
         
         $q= $this->db->query('
@@ -66,16 +67,29 @@
             %c
             %c
             %c
+            %c
+            %c
+            %c
           order by e.target_date asc',
           ($team ? $this->db->prepare('and e.team_id= %d', $team) : ''),
-          ($type ? $this->db->prepare('and e.event_type_id= %d', $types[$type]) : ''),
-          ($all  ? '' : $this->db->prepare('and e.target_date > now()'))
+          ($type && isset($types[$type]) ? $this->db->prepare('and e.event_type_id= %d', $types[$type]) : ''),
+          ($all  ? '' : $this->db->prepare('and e.target_date > now()')),
+          ($year ? $this->db->prepare('and year(e.target_date)= %d', $year) : ''),
+          ($month ? $this->db->prepare('and month(e.target_date)= %d', $month) : ''),
+          ($day  ? $this->db->prepare('and day(e.target_date)= %d', $day) : '')
         );
       } if (catch('SQLException', $e)) {
         return throw($e);
       }
       
-      $events= &$response->addFormResult(new Node('events'));
+      $events= &$response->addFormResult(new Node('events', NULL, array(
+        'team'  => intval($team),
+        'type'  => ($type ? $type : '0'),
+        'all'   => intval($all),
+        'year'  => intval($year),
+        'month' => intval($month),
+        'day'   => intval($day)
+      )));
       while ($q && $record= $q->next()) {
         $description= $record['description'];
         unset($record['description']);
@@ -84,7 +98,17 @@
         $n->addChild(FormresultHelper::markupNodeFor('description', $description));
       }
       
-      $this->insertEventCalendar($request, $response, $team);
+      // Create context date
+      $date= NULL;
+      if ($year && $month) {
+        $date= &Date::fromString(sprintf('%d-%d-%d',
+          $year,
+          $month,
+          $day ? $day : 1
+        ));
+      }
+      
+      $this->insertEventCalendar($request, $response, $team, $date);
     }
   }
 ?>

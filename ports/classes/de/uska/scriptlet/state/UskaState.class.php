@@ -104,11 +104,12 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      */
-    function insertEventCalendar(&$request, &$response, $team= NULL) {
+    function insertEventCalendar(&$request, &$response, $team= NULL, $contextDate= NULL) {
       $pm= &PropertyManager::getInstance();
       $prop= &$pm->getProperties('product');
       
-      $contextDate= &Date::now();
+      if (!$contextDate) $contextDate= &Date::now();
+      
       $month= &$response->addFormResult(new Node('month', NULL, array(
         'num'   => $contextDate->getMonth(),    // Month number, e.g. 4 = April
         'year'  => $contextDate->getYear(),     // Year
@@ -131,7 +132,7 @@
           group by day',
           $contextDate->getYear(),
           $contextDate->getMonth(),
-          (NULL != $team ? $this->db->prepare('and team_id= %d', $team) : '')
+          ($team ? $this->db->prepare('and team_id= %d', $team) : '')
         );
       } if (catch('SQLException', $e)) {
         return throw($e);
