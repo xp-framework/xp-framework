@@ -15,6 +15,7 @@
   <xsl:include href="layout.xsl"/>
   <xsl:include href="../news.inc.xsl"/>
   <xsl:include href="../wizard.inc.xsl"/>
+  <xsl:include href="calendar.inc.xsl"/>
   
   <xsl:template name="context">
     <xsl:call-template name="default_subnavigation">
@@ -28,6 +29,11 @@
         <item href="{func:link('events?enbw')}">Enbw-Liga</item>
         <item href="{func:link('events?misc')}">Sonstiges</item>
       </xsl:with-param>
+    </xsl:call-template>
+
+    <xsl:call-template name="calendar">
+      <xsl:with-param name="month" select="/formresult/month"/>
+      <xsl:with-param name="prefix" select="func:link(concat('events?', /formresult/events/@team, ',1,1,'))"/>
     </xsl:call-template>
   </xsl:template>
   
@@ -61,7 +67,7 @@
         <xsl:value-of select="func:get_text(concat('event#guests_allowed-', allow_guests))"/>
         <br/><br/>
         
-        <small><xsl:value-of select="func:get_text('event#createdby')"/>&#160;<xsl:value-of select="changedby"/> at <xsl:value-of select="func:datetime(lastchange)"/></small>
+        <small><xsl:value-of select="func:get_text('event#createdby')"/>&#160;<xsl:value-of select="changedby"/> am <xsl:value-of select="func:datetime(lastchange)"/></small>
       </div>
     </xsl:for-each>
   </xsl:template>

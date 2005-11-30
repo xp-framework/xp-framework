@@ -27,14 +27,6 @@
           <item href="{func:link('player/edit')}">Spieler anlegen</item>
         </xsl:if>
         
-        <xsl:if test="'' != func:hasPermission('create_event')">
-          <item href="{func:link('event/edit')}">Termin anlegen</item>
-        </xsl:if>
-        
-        <xsl:if test="/formresult/user">
-          <item href="{func:link(concat('player/edit?player_id=', /formresult/user/player_id))}">Eigenes Profil</item>
-        </xsl:if>
-        
         <item href="{func:link('organization?application')}">Anträge...</item>
         <item href="{func:link('organization?contact')}">Kontakt</item>
         <item href="{func:link('organization?imprint')}">Impressum</item>

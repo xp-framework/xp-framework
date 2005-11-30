@@ -17,18 +17,19 @@
     <month id="2">Feb</month>
     <month id="3">Mar</month>
     <month id="4">Apr</month>
-    <month id="5">May</month>
+    <month id="5">Mai</month>
     <month id="6">Jun</month>
     <month id="7">Jul</month>
     <month id="8">Aug</month>
     <month id="9">Sep</month>
-    <month id="10">Oct</month>
+    <month id="10">Okt</month>
     <month id="11">Nov</month>
-    <month id="12">Dec</month>
+    <month id="12">Dez</month>
   </xsl:variable>
   
   <func:function name="func:days">
     <xsl:param name="month"/>
+    <xsl:param name="prefix"/>
     <xsl:param name="number" select="1"/>
     <xsl:param name="i" select="1"/>
     <xsl:variable name="day" select="($number - 1) * 7 + $i - exsl:node-set($month)/@start"/>
@@ -42,37 +43,33 @@
             </xsl:if>
             &#160;
           </td>
-          <xsl:copy-of select="func:days($month, $number, $i + 1)"/>
+          <xsl:copy-of select="func:days($month, $prefix, $number, $i + 1)"/>
         </xsl:when>
         <xsl:when test="$i &lt;= 7">
           <td>
             <xsl:choose>
               <xsl:when test="exsl:node-set($month)/entries[@day = $day]">
                 <xsl:attribute name="class">entries</xsl:attribute>
-                <xsl:attribute name="title"><xsl:value-of select="exsl:node-set($month)/entries[@day = $day]"/> entries</xsl:attribute>
+                <xsl:attribute name="title"><xsl:value-of select="exsl:node-set($month)/entries[@day = $day]"/> Einträge</xsl:attribute>
               </xsl:when>
               <xsl:when test="$i &gt; 5">
                 <xsl:attribute name="class">weekend</xsl:attribute>
               </xsl:when>
             </xsl:choose>
             
-            <!-- TBI: ByDate-State -->
-              
-            <!-- <a>
+            <a>
               <xsl:if test="exsl:node-set($month)/entries[@day = $day]">
                 <xsl:attribute name="href"><xsl:value-of select="concat(
-                  'bydate?',
+                  $prefix,
                   exsl:node-set($month)/@year, ',',
                   exsl:node-set($month)/@num, ',',
                   $day
                 )"/></xsl:attribute>
               </xsl:if>
-              -->
               <xsl:value-of select="$day"/>
-              <!--
-            </a>-->
+            </a>
           </td>
-          <xsl:copy-of select="func:days($month, $number, $i + 1)"/>
+          <xsl:copy-of select="func:days($month, $prefix, $number, $i + 1)"/>
         </xsl:when>
       </xsl:choose>
     </func:result>
@@ -80,12 +77,13 @@
   
   <func:function name="func:weeks">
     <xsl:param name="month"/>
+    <xsl:param name="prefix"/>
     <xsl:param name="i" select="1"/>
     
     <func:result>
-      <tr><xsl:copy-of select="func:days($month, $i)"/></tr>
+      <tr><xsl:copy-of select="func:days($month, $prefix, $i)"/></tr>
       <xsl:if test="$i &lt; (exsl:node-set($month)/@days + exsl:node-set($month)/@start - 1) div 7">
-        <xsl:copy-of select="func:weeks($month, $i + 1)"/>
+        <xsl:copy-of select="func:weeks($month, $prefix, $i + 1)"/>
       </xsl:if>
     </func:result>
   </func:function>
@@ -136,38 +134,39 @@
    !-->
   <xsl:template name="calendar">
     <xsl:param name="month"/>
+    <xsl:param name="prefix" select="'bydate?'"/>
     <xsl:variable name="current" select="exsl:node-set($month)/@num"/>
     
     <!-- Calendar -->
-    <div id="calendar_container">
+    <div id="sub_container1">
+      <div id="calendar_container">
+        <div id="calendar_container_headline">
+          <h1>
+          <xsl:variable name="previous_month" select="func:previous_month(exsl:node-set($month))"/>
+          <a href="{$prefix}{exsl:node-set($previous_month)/month/@year},{exsl:node-set($previous_month)/month/@num}">&#xab;</a>
+          &#160;
+          <xsl:value-of select="concat(
+            exsl:node-set($months)/month[@id = $current], ' ',
+            exsl:node-set($month)/@year
+          )"/>
+          &#160;
+          <xsl:variable name="next_month" select="func:next_month(exsl:node-set($month))"/>
+          <a href="{$prefix}{exsl:node-set($next_month)/month/@year},{exsl:node-set($next_month)/month/@num}">&#xbb;</a>
+          </h1>
+        </div>
       <table>
         <tr>
-          <th>
-            &#xab;
-          </th>
-          <th colspan="5">
-            <a href="bydate?{exsl:node-set($month)/@year},{$current}">
-              <xsl:value-of select="concat(
-                exsl:node-set($months)/month[@id = $current], ' ',
-                exsl:node-set($month)/@year
-              )"/>
-            </a>
-          </th>
-          <th>
-            &#xbb;
-          </th>
+          <th class="header">Mo</th>
+          <th class="header">Di</th>
+          <th class="header">Mi</th>
+          <th class="header">Do</th>
+          <th class="header">Fr</th>
+          <th class="header">Sa</th>
+          <th class="header">So</th>
         </tr>
-        <tr>
-          <td class="header">M</td>
-          <td class="header">Tu</td>
-          <td class="header">W</td>
-          <td class="header">Th</td>
-          <td class="header">F</td>
-          <td class="header">Sa</td>
-          <td class="header">Su</td>
-        </tr>
-        <xsl:copy-of select="func:weeks($month)"/>
+        <xsl:copy-of select="func:weeks($month, $prefix)"/>
       </table>
+      </div>
     </div>
   </xsl:template>
 </xsl:stylesheet>

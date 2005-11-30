@@ -74,8 +74,10 @@
           </td>
           <td>
             <xsl:value-of select="func:get_text(concat('attendee#status-', @attend))"/>
-            <xsl:if test="/formresult/user and ((@player_type_id = 1 and @player_id = /formresult/user/player_id) or (@player_type_id= 2 and @created_by = /formresult/user/player_id))">
-              &#160;(<a href="{func:link(concat('event/attend?event_id=', /formresult/event/event_id, '&amp;player_id=', @player_id))}">Ändern</a>)
+            <xsl:if test="/formresult/event/deadline_date = '' or /formresult/event/deadline_date &gt; /formresult/@serial">
+              <xsl:if test="/formresult/event/target_date/_utime &gt; /formresult/@serial and /formresult/user and ((@player_type_id = 1 and @player_id = /formresult/user/player_id) or (@player_type_id= 2 and @created_by = /formresult/user/player_id))">
+                &#160;(<a href="{func:link(concat('event/attend?event_id=', /formresult/event/event_id, '&amp;player_id=', @player_id))}">Ändern</a>)
+              </xsl:if>
             </xsl:if>
           </td>
           <td>

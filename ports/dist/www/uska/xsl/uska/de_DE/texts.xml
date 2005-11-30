@@ -39,6 +39,8 @@
   <text for="pagecaption#event/view-home">Anmeldungsliste</text>
   <text for="pagecaption#event/attend-home">Anmeldung</text>
   <text for="pagecaption#news/view-home">News</text>
+  <text for="pagecaption#event/account-home">Punktevergabe</text>
+  <text for="pagecaption#event/viewpoints-home">Punktetabelle</text>
   
   <text for="loginhandler#form-error">Login-Fehler</text>
   <text for="loginhandler#error-password-scriptlet.xml.workflow.checkers.RegexpChecker.nomatch">Ungültiges Passwort</text>
@@ -103,4 +105,6 @@
   <text for="editeventhandler#email">Email</text>
   <text for="editeventhandler#team_id">Spiel im Team:</text>
   <text for="editeventhandler#position">Auf Position:</text>
+  
+  <text for="accounteventhandler#form-success">Die Punkte wurden gespeichert.</text>
 </texts>

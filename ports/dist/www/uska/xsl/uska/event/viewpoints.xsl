@@ -20,6 +20,7 @@
       <xsl:with-param name="items">
         <xsl:if test="/formresult/event">
           <item href="{func:link(concat('event/viewpoints?team_id=', /formresult/event/team_id))}">Gesamtpunkte</item>
+          <item href="{func:link(concat('event/account?event_id=', /formresult/event/event_id))}">Punkte ändern</item>
         </xsl:if>
       </xsl:with-param>
     </xsl:call-template>

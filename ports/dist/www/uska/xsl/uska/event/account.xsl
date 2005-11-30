@@ -45,7 +45,7 @@
           
           <xsl:for-each select="/formresult/handlers/handler[@name= 'accounteventhandler']/values/players/player">
             <xsl:variable name="name" select="concat('points[player_', player_id, ']')"/>
-            <tr>
+            <tr class="list_{position() mod 2}">
               <td><xsl:value-of select="concat(firstname, ' ', lastname)"/></td>
               <td>&#160;</td>
               <td>
