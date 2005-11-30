@@ -90,7 +90,7 @@
         delete($data);
       }
       $this->folder->close();
-      krsort($entries);
+      krsort($entries, SORT_NUMERIC);
 
       // ...by pages. The index "page_0" can be used for the home page
       for ($i= 0, $s= sizeof($entries); $i < $s; $i+= $this->entriesPerPage) {
