@@ -249,36 +249,6 @@ th.formsection {
   background-repeat: no-repeat;
 }
 
-/* Calendar */
-table.calendar {
-  width: 180px;
-  font: 8pt "Verdana"; 
-  border: 1px solid #999999;
-}
-.calendar td {
-  font: 8pt "Verdana"; 
-  color: #666666;
-}
-.calendar td.entries {
-  background-color: #fff4be;
-  color: #444444;
-}
-.calendar td.weekend {
-  background-color: #efefef;
-}
-.calendar td.header {
-  font-weight: bold;
-  background-color: #cedbf7;
-}
-.calendar th {
-  background-color: white;
-}
-a.calendar {
-  color: #666666;
-  text-decoration: none;
-}
-
-
 /* Syntax */
 code {
   font: 12px "Courier New", courier;
@@ -303,74 +273,4 @@ code .comment {
 }
 pre {
   white-space: normal;
-}
-
-/* Examples */
-div.example {
-  border: 1px solid #cecece;
-  border-left: 3px solid #cecece;
-  padding: 2px;
-}
-div.cvsver {
-  font: 12px "Courier New", courier;
-  border: 1px solid #cecece;
-  padding: 2px;  
-}
-
-/* Sidebar navigation */
-table.sidebar {
-  border: 1px solid #999999;
-  border-bottom: none;
-}
-table.sidebar td.sidebar_head {
-  text-align: left;
-  background-color: #eff3ff;
-  font: 8pt Arial, Helvetica;
-  border-bottom: 1px solid #999999;
-  font-weight: bold;
-  text-decoration: none;
-  display: block;
-  padding: 3px;
-}
-table.sidebar td {
-  font: 8pt Arial, Helvetica;
-  border-bottom: 1px dotted #999999;
-}
-table.sidebar td a, table.sidebar th a {
-  text-decoration: none;
-  display: block;
-  padding: 3px;
-}
-table.sidebar td a:hover, table.sidebar th a:hover {
-  text-decoration: none;
-  background-color: #fff4be;
-}
-
-/* Normal table */
-table.list {
-  
-}
-
-table.list th {
-  color: #000044; 
-  border-bottom: 1px solid #2f0c7f; 
-  font-size: 13px; 
-  font-style: bold; 
-  text-align: left;
-}
-
-tr.list_0 {
-  background-color: #ffffff; 
-}
-
-tr.list_1 {
-  background-color: #e2ebf2;
-}
-
-tr.list_compute td {
-  color: #000044; 
-  border-top: 1px solid #2f0c7f; 
-  font-size: 13px; 
-  font-style: bold; 
-  text-align: left;
 }
