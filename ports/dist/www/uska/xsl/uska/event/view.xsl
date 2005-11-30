@@ -18,13 +18,20 @@
   <xsl:template name="context">
     <xsl:call-template name="default_subnavigation">
       <xsl:with-param name="items">
-        <item href="{func:link(concat('event/attend?event_id=', /formresult/event/event_id))}">Anmelden</item>
-        
-        <xsl:if test="/formresult/event/allow_guests = 1">
-          <item href="{func:link(concat('event/attend?guest=add&amp;event_id=', /formresult/event/event_id))}">Gast anmelden</item>
+        <!-- If still subscribeable, display subscription links -->
+        <xsl:if test="/formresult/event/subscribeable = 1">
+          <item href="{func:link(concat('event/attend?event_id=', /formresult/event/event_id))}">Anmelden</item>
+          
+          <xsl:if test="/formresult/event/allow_guests = 1">
+            <item href="{func:link(concat('event/attend?guest=add&amp;event_id=', /formresult/event/event_id))}">Gast anmelden</item>
+          </xsl:if>
         </xsl:if>
         
-        <item href="{func:link(concat('event/viewpoints?team_id=', /formresult/event/team_id))}">Punktetabelle</item>
+        <!-- Display points / table for trainings -->
+        <xsl:if test="/formresult/event/event_type_id = 1">
+          <item href="{func:link(concat('event/viewpoints?event_id=', /formresult/event/event_id))}">Punkte</item>
+          <item href="{func:link(concat('event/viewpoints?team_id=', /formresult/event/team_id))}">Punktetabelle</item>
+        </xsl:if>
         <xsl:if test="/formresult/event/event_type_id= 1 and '' != func:hasPermission('edit_points')">
           <item href="{func:link(concat('event/account?event_id=', /formresult/event/event_id))}">Punkte vergeben</item>
         </xsl:if>
@@ -74,10 +81,8 @@
           </td>
           <td>
             <xsl:value-of select="func:get_text(concat('attendee#status-', @attend))"/>
-            <xsl:if test="/formresult/event/deadline_date = '' or /formresult/event/deadline_date &gt; /formresult/@serial">
-              <xsl:if test="/formresult/event/target_date/_utime &gt; /formresult/@serial and /formresult/user and ((@player_type_id = 1 and @player_id = /formresult/user/player_id) or (@player_type_id= 2 and @created_by = /formresult/user/player_id))">
-                &#160;(<a href="{func:link(concat('event/attend?event_id=', /formresult/event/event_id, '&amp;player_id=', @player_id))}">Ändern</a>)
-              </xsl:if>
+            <xsl:if test="/formresult/event/subscribeable != 0 and /formresult/user and ((@player_type_id = 1 and @player_id = /formresult/user/player_id) or (@player_type_id= 2 and @created_by = /formresult/user/player_id))">
+              &#160;(<a href="{func:link(concat('event/attend?event_id=', /formresult/event/event_id, '&amp;player_id=', @player_id))}">Ändern</a>)
             </xsl:if>
           </td>
           <td>

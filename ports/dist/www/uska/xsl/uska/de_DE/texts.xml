@@ -76,6 +76,8 @@
   <text for="attendeventhandler#form-success">Deine Teilnahmedaten wurden gespeichert.</text>
   <text for="attendeventhandler#firstname">Vorname</text>
   <text for="attendeventhandler#lastname">Nachname</text>
+  <text for="attendeventhandler#form-error">Ein Fehler ist aufgetreten:</text>
+  <text for="attendeventhandler#error-*-date_expired">Für diesen Termin kann man sich nicht mehr anmelden</text>
   
   <text for="editeventhandler#newevent">Termin-Editor</text>
   <text for="editeventhandler#form-error">Es sind Fehler aufgetreten:</text>
