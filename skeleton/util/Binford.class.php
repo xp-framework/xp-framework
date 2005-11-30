@@ -52,6 +52,16 @@
     }
     
     /**
+     * Retrieve string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return $this->getClassName().'('.$this->poweredBy.')';
+    }
+
+    /**
      * Retrieve header suited for HTTP/Mail
      *
      * Example:
