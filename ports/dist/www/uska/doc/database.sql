@@ -104,8 +104,8 @@ alter table event_attendee add index (player_id)
 alter table event_attendee add unique index (event_id, player_id)
 
 create table event_points (
-  event_id                    int not null,
-  player_id                   int not null,
+  event_id                    int not null primary key,
+  player_id                   int not null primary key,
   
   points                      int null,
   
