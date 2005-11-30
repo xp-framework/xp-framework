@@ -27,53 +27,61 @@
     <month id="12">Dez</month>
   </xsl:variable>
   
-  <func:function name="func:days">
+  <xsl:template name="days">
     <xsl:param name="month"/>
     <xsl:param name="prefix"/>
     <xsl:param name="number" select="1"/>
     <xsl:param name="i" select="1"/>
     <xsl:variable name="day" select="($number - 1) * 7 + $i - exsl:node-set($month)/@start"/>
     
-    <func:result>
-      <xsl:choose>
-        <xsl:when test="($day &lt; 1) or ($day &gt; exsl:node-set($month)/@days and $i &lt;= 7)">
-          <td>
-            <xsl:if test="$i &gt; 5">
+    <xsl:choose>
+      <xsl:when test="($day &lt; 1) or ($day &gt; exsl:node-set($month)/@days and $i &lt;= 7)">
+        <td>
+          <xsl:if test="$i &gt; 5">
+            <xsl:attribute name="class">weekend</xsl:attribute>
+          </xsl:if>
+          &#160;
+        </td>
+        <xsl:call-template name="days">
+	  <xsl:with-param name="month" select="$month"/>
+	  <xsl:with-param name="prefix" select="$prefix"/>
+	  <xsl:with-param name="number" select="$number"/>
+	  <xsl:with-param name="i" select="$i + 1"/>
+	</xsl:call-template>
+      </xsl:when>
+      <xsl:when test="$i &lt;= 7">
+        <td>
+          <xsl:choose>
+            <xsl:when test="exsl:node-set($month)/entries[@day = $day]">
+              <xsl:attribute name="class">entries</xsl:attribute>
+              <xsl:attribute name="title"><xsl:value-of select="exsl:node-set($month)/entries[@day = $day]"/> Einträge</xsl:attribute>
+            </xsl:when>
+            <xsl:when test="$i &gt; 5">
               <xsl:attribute name="class">weekend</xsl:attribute>
+            </xsl:when>
+          </xsl:choose>
+
+          <a>
+            <xsl:if test="exsl:node-set($month)/entries[@day = $day]">
+              <xsl:attribute name="href"><xsl:value-of select="concat(
+                $prefix,
+                exsl:node-set($month)/@year, ',',
+                exsl:node-set($month)/@num, ',',
+                $day
+              )"/></xsl:attribute>
             </xsl:if>
-            &#160;
-          </td>
-          <xsl:copy-of select="func:days($month, $prefix, $number, $i + 1)"/>
-        </xsl:when>
-        <xsl:when test="$i &lt;= 7">
-          <td>
-            <xsl:choose>
-              <xsl:when test="exsl:node-set($month)/entries[@day = $day]">
-                <xsl:attribute name="class">entries</xsl:attribute>
-                <xsl:attribute name="title"><xsl:value-of select="exsl:node-set($month)/entries[@day = $day]"/> Einträge</xsl:attribute>
-              </xsl:when>
-              <xsl:when test="$i &gt; 5">
-                <xsl:attribute name="class">weekend</xsl:attribute>
-              </xsl:when>
-            </xsl:choose>
-            
-            <a>
-              <xsl:if test="exsl:node-set($month)/entries[@day = $day]">
-                <xsl:attribute name="href"><xsl:value-of select="concat(
-                  $prefix,
-                  exsl:node-set($month)/@year, ',',
-                  exsl:node-set($month)/@num, ',',
-                  $day
-                )"/></xsl:attribute>
-              </xsl:if>
-              <xsl:value-of select="$day"/>
-            </a>
-          </td>
-          <xsl:copy-of select="func:days($month, $prefix, $number, $i + 1)"/>
-        </xsl:when>
-      </xsl:choose>
-    </func:result>
-  </func:function>
+            <xsl:value-of select="$day"/>
+          </a>
+        </td>
+        <xsl:call-template name="days">
+          <xsl:with-param name="month" select="$month"/>
+          <xsl:with-param name="prefix" select="$prefix"/>
+          <xsl:with-param name="number" select="$number"/>
+          <xsl:with-param name="i" select="$i + 1"/>
+        </xsl:call-template>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
   
   <func:function name="func:weeks">
     <xsl:param name="month"/>
@@ -81,7 +89,13 @@
     <xsl:param name="i" select="1"/>
     
     <func:result>
-      <tr><xsl:copy-of select="func:days($month, $prefix, $i)"/></tr>
+      <tr>
+        <xsl:call-template name="days">
+          <xsl:with-param name="month" select="$month"/>
+          <xsl:with-param name="prefix" select="$prefix"/>
+          <xsl:with-param name="number" select="$i"/>
+        </xsl:call-template>
+      </tr>
       <xsl:if test="$i &lt; (exsl:node-set($month)/@days + exsl:node-set($month)/@start - 1) div 7">
         <xsl:copy-of select="func:weeks($month, $prefix, $i + 1)"/>
       </xsl:if>
