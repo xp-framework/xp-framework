@@ -83,6 +83,14 @@
       // the description member (which needs markup processing)
       $eventarr= (array)$event;
       unset($eventarr['description']);
+      $deadline= &$event->getDeadline();
+      $target= &$event->getTarget_date();
+      
+      // Check whether this event is still subscribeable
+      $eventarr['subscribeable']= (int)
+        ((!$deadline || $deadline->isAfter(Date::now())) && 
+        $target->isAfter(Date::now())
+      );
       
       $node= &$response->addFormResult(Node::fromArray($eventarr, 'event'));
       $node->addChild(FormresultHelper::markupNodeFor('description', $event->getDescription()));

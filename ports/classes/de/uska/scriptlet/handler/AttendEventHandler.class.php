@@ -79,6 +79,16 @@
           $this->setFormValue('lastname', $player->getLastname());
         }
       }
+      
+      // Check that this event is still in the future. If not, only admins may change
+      // the attending status
+      $event= &Event::getByEvent_id($request->getParam('event_id'));
+      $deadline_date= &$event->getDeadline();
+      $target_date= &$event->getTarget_date();
+      if ((($daedline_date && $deadline_date->isBefore(Date::now())) || $target_date->isBefore(Date::now())) && !$context->hasPermission('create_event')) {
+        $this->addError('date_expired', '*');
+        return FALSE;
+      }
 
       $this->setValue('event_id', $request->getParam('event_id'));
       $this->setValue('player_id', $player_id);
