@@ -86,11 +86,11 @@
           $entry,
           xp::stringOf($date)
         );
-        $entries[$date->getTime().basename($entry)]= basename($entry, '.dat');
+        $entries[$date->toString('YmdHis').basename($entry)]= basename($entry, '.dat');
         delete($data);
       }
       $this->folder->close();
-      krsort($entries, SORT_NUMERIC);
+      krsort($entries);
 
       // ...by pages. The index "page_0" can be used for the home page
       for ($i= 0, $s= sizeof($entries); $i < $s; $i+= $this->entriesPerPage) {
