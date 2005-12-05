@@ -403,10 +403,12 @@
       // status code 500 ("Internal Server Error") being thrown.
       $response= &$this->_response();
       try(); {
-        if (FALSE !== call_user_func_array(
+        $r= call_user_func_array(
           array(&$this, $method), 
           array(&$request, &$response)
-        )) {
+        );
+        
+        if (FALSE !== $r && !is(NULL, $r)) {
           $response->process();
         }
       } if (catch('HttpScriptletException', $e)) {
