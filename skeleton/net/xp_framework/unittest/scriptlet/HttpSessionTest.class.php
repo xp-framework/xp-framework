@@ -3,7 +3,7 @@
  *
  * $Id$
  */
-  uses('scriptlet.HttpSession');
+  uses('scriptlet.HttpSession', 'util.profiling.unittest.TestCase');
 
   /**
    * TestCase for scriptlet.HttpSession class.
