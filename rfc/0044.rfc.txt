@@ -1,0 +1,83 @@
+RFC 0044: New save() method in DataSet
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Dec  6 16:53:23     2005
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+The rdbms.DataSet class will be added a save().
+
+
+Rationale
+---------
+Replace the "insert for new objects and update for existing ones"-
+boilerplate code piece.
+
+
+Functionality
+-------------
+
+Current example:
+~~~~~~~~~~~~~~~~
+<?php
+  $new= FALSE;
+  if (!($ds= &DataSetSubClass::getByPk($id))) {
+    $ds= &new DataSetSubClass();
+    $new= TRUE;
+  }
+  
+  $ds->setName($name);
+  
+  // Begin boilerplate
+  if ($new) {
+    $ds->insert();
+  } else {
+    $ds->update();
+  }
+?>
+
+New example:
+~~~~~~~~~~~~
+<?php
+  $new= FALSE;
+  if (!($ds= &DataSetSubClass::getByPk($id))) {
+    $ds= &new DataSetSubClass();
+    $new= TRUE;
+  }
+  
+  $ds->setName($name);
+  
+  // Begin new code
+  $ds->save();
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Two new methods and one new member in rdbms.DataSet -> almost none.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+n/a
+
+<EOF>
