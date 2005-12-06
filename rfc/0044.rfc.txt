@@ -73,7 +73,8 @@ n/a
 
 Related documents
 -----------------
-n/a
+- http://xp-framework.net/downloads/0044.rfc.diff
+  Patch implementing this RFC
 
 
 Comments
