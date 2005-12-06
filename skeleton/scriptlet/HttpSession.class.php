@@ -44,11 +44,12 @@
    * Please have a look into "Sessions and security" on PHP's session 
    * documentation page.
    *
-   * @see      php://session
-   * @see      xp://scriptlet.HttpScriptlet
-   * @see      http://httpd.apache.org/docs/mod/mod_rewrite.html#RewriteRule
-   * @see      http://www.engelschall.com/pw/apache/rewriteguide/
-   * @purpose  Session
+   * @test    xp://net.xp_framework.unittest.scriptlet.HttpSessionTest
+   * @see     php://session                                                 
+   * @see     xp://scriptlet.HttpScriptlet                                  
+   * @see     http://httpd.apache.org/docs/mod/mod_rewrite.html#RewriteRule 
+   * @see     http://www.engelschall.com/pw/apache/rewriteguide/            
+   * @purpose Session                                                       
    */
   class HttpSession extends Object {
     var 
@@ -70,7 +71,7 @@
      *
      * @access  public
      * @param   string id session id
-     * @throws  lang.IllegalStateException when session is invalid
+     * @return  bool
      */
     function initialize($id) {
       if (!empty($id)) {
@@ -78,7 +79,7 @@
         session_id($this->id);
         session_start();
         
-        if (!$this->getCreationTime()) return FALSE;
+        if (!isset($_SESSION[SESS_CREATE])) return FALSE;
         
         // OK
         return TRUE;
@@ -137,14 +138,18 @@
     }
     
     /**
-     * Resets the session and deletes all variables 
+     * Resets the session and deletes all variables. The number of deleted
+     * session variables is being returned
      *
      * @access  public
+     * @return  int
      * @throws  lang.IllegalStateException when session is invalid
      */
     function reset() {
       if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
+      $size= sizeof($_SESSION) - 1;
       $_SESSION= array(SESS_CREATE => $_SESSION[SESS_CREATE]);
+      return $size;
     }
     
 
@@ -212,8 +217,8 @@
     function &getValueNames() {
       if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
       $names= array_keys($_SESSION);
-      unset($names[SESS_CREATE]);
-      return $names;
+      unset($names[array_search(SESS_CREATE, $names)]);
+      return array_values($names);
     }
     
     /**
