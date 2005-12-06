@@ -9,7 +9,7 @@ $Id$
 
 Scope of Change
 ---------------
-The rdbms.DataSet class will be added a save().
+The rdbms.DataSet class will be added a save() method.
 
 
 Rationale
