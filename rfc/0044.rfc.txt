@@ -43,10 +43,8 @@ Current example:
 New example:
 ~~~~~~~~~~~~
 <?php
-  $new= FALSE;
   if (!($ds= &DataSetSubClass::getByPk($id))) {
     $ds= &new DataSetSubClass();
-    $new= TRUE;
   }
   
   $ds->setName($name);
