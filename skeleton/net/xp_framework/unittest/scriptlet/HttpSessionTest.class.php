@@ -135,7 +135,7 @@
      */
     #[@test]
     function testIllegalConstruct() {
-      $this->assertFalse($this->session->initialize('IDoNotExist'));
+      $this->assertFalse($this->session->initialize('ILLEGALSESSIONID'));
     }
     
     /**
@@ -145,7 +145,7 @@
      */
     #[@test, @expect('lang.IllegalStateException')]
     function testIllegalSessionAccess() {
-      $this->session->initialize('IStillDoNotExist');
+      $this->session->initialize('ILLEGALSESSIONID');
       $this->session->putValue('foo', $f= 3);
     }
   }
