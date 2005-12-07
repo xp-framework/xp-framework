@@ -9,7 +9,8 @@ import javax.ejb.EJBException;
 import javax.ejb.SessionBean;
 import javax.ejb.SessionContext;
 import java.rmi.RemoteException;
-
+import java.util.HashMap;
+import java.util.Iterator;
 import javax.jms.*;
 import javax.naming.InitialContext;
 
@@ -45,6 +46,32 @@ public class MessageSenderBean implements SessionBean {
       TextMessage message= queueSession.createTextMessage();
       
       message.setText(text);
+      queueSender.send(message);
+    }
+
+    /**
+     * Send a map mesage
+     *
+     * @ejb.interface-method view-type = "both"
+     * @access  public
+     * @param   String queueName
+     * @param   java.util.HashMap values
+     */
+    public void sendMapMessage(String queueName, HashMap values) throws Exception { 
+      InitialContext ctx= new InitialContext();
+
+      QueueConnectionFactory queueConnectionFactory = (QueueConnectionFactory)ctx.lookup("ConnectionFactory");
+      Queue queue= (Queue) ctx.lookup(queueName);
+      QueueConnection queueConnection= queueConnectionFactory.createQueueConnection();
+      QueueSession queueSession= queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+      QueueSender queueSender= queueSession.createSender(queue);
+      MapMessage message= queueSession.createMapMessage();
+      
+      for (Iterator i= values.keySet().iterator(); i.hasNext(); ) {
+          Object key= i.next(); 
+          message.setObject(key.toString(), values.get(key));
+      }
+      
       queueSender.send(message);
     }
     
