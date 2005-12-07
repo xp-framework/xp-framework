@@ -25,8 +25,6 @@
       $cl->defineClass(
         'net.xp_framework.unittest.core.AnonymousSingleton', 
         'class AnonymousSingleton extends Object {
-           var $identifier= "";
-
            function &getInstance() {
              static $instance= NULL;
              
@@ -40,8 +38,6 @@
       $cl->defineClass(
         'net.xp_framework.unittest.core.AnonymousList', 
         'class AnonymousList extends Object {
-           var $identifier= "";
-
            function __construct() {
              ReferencesTest::registry("list", $this);
            }
@@ -55,6 +51,20 @@
           }
         }'
       );
+    }
+
+    /**
+     * Helper method that asserts to objects are references to each other
+     *
+     * @access  protected
+     * @param   &lang.Object a
+     * @param   &lang.Object b
+     * @throws  util.profiling.unittest.AssertionFailedError
+     */
+    function assertReference(&$a, &$b) {
+      $this->assertEquals($a->__id, $b->__id);
+      $a->__id= 'R:'.$a->__id;
+      $this->assertEquals($a->__id, $b->__id);
     }
 
     /**
@@ -75,9 +85,8 @@
     function singletonInstance() {
       $s1= &AnonymousSingleton::getInstance();
       $s2= &AnonymousSingleton::getInstance();
-      $this->assertEquals($s1->identifier, $s2->identifier);
-      $s1->identifier= 'singleton';
-      $this->assertEquals($s1->identifier, $s2->identifier);
+      
+      $this->assertReference($s1, $s2);
     }
     
     /**
@@ -105,9 +114,7 @@
       $object= &AnonymousFactory::factory();
       $value= &ReferencesTest::registry('list', $r= NULL);
       
-      $this->assertEquals($object->identifier, $value->identifier);
-      $object->identifier= 'reference';
-      $this->assertEquals($object->identifier, $value->identifier);
+      $this->assertReference($object, $value);
     }    
 
     /**
@@ -121,10 +128,8 @@
       $factory= &$class->getMethod('factory');
       $object= &$factory->invoke($instance= NULL);
       $value= &ReferencesTest::registry('list', $r= NULL);
-      
-      $this->assertEquals($object->identifier, $value->identifier);
-      $object->identifier= 'reference';
-      $this->assertEquals($object->identifier, $value->identifier);
+
+      $this->assertReference($object, $value);
     }    
   }
 ?>
