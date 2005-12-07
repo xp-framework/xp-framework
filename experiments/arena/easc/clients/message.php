@@ -1,7 +1,7 @@
 <?php
 /* This file is part of the XP framework's EASC API
  *
- * $Id: calculator.php 6205 2005-12-02 12:34:53Z friebe $ 
+ * $Id$ 
  */
   require('lang.base.php');
   xp::sapi('cli');
@@ -15,16 +15,20 @@ EASC message sender demo application
 
 Usage
 -----
-$ php calculator.php <hostname> [-p <port> ] [-j <jndi_name> ]
+$ php message.php <hostname> [-p <port> ] [-j <jndi_name> ] [-q <queue_name>] [-t <text>]
   
   * hostname is the host name (or IP) that your JBoss + XP-MBean server 
-    is running on. The calculator bean (from the easc/beans directory) 
+    is running on. The MessageSender bean (from the easc/beans directory) 
     is expected to be deployed.
 
   * port is the port the XP-MBean is listening on. It defaults to 6448.
   
   * jndi_name is the name of the bean in JNDI. It defaults to 
-    "xp/demo/Calculator"
+    "xp/demo/MessageSender"
+  
+  * queue_name is the name of the queue the message is being sent to
+  
+  * text is the text of the message to be sent
 __
     );
     exit(1);
