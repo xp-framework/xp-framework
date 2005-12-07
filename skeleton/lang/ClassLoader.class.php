@@ -81,7 +81,9 @@
         xp::registry('class.'.$name, $qname);
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
-      return new XPClass($name);
+
+      $class= &new XPClass($name);
+      return $class;
     }
 
     /**
@@ -107,7 +109,8 @@
         xp::registry('class.'.$name, $qname);
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }      
-      return new XPClass($name);
+      $class= &new XPClass($name);
+      return $class;
     }
   }
 ?>
