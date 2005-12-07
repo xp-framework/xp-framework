@@ -126,13 +126,12 @@
      * @return  &lang.Object 
      */
     function &newInstance() {
-      $paramstr= '';
-      $args= func_get_args();
-      for ($i= 0, $m= func_num_args(); $i < $m; $i++) {
+      for ($args= func_get_args(), $paramstr= '', $i= 0, $m= sizeof($args); $i < $m; $i++) {
         $paramstr.= ', $args['.$i.']';
       }
       
-      return eval('return new '.xp::reflect($this->name).'('.substr($paramstr, 2).');');
+      eval('$instance= &new '.xp::reflect($this->name).'('.substr($paramstr, 2).');');
+      return $instance;
     }
     
     /**
@@ -184,7 +183,8 @@
     function &getMethod($name) {
       if (!$this->hasMethod($name)) return NULL;
 
-      return new Method($this->_objref, $name); 
+      $m= &new Method($this->_objref, $name); 
+      return $m;
     }
     
     /**
