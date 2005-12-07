@@ -12,13 +12,22 @@
   class MessageSender extends Interface {
   
     /**
-     * Adds the two given arguments
+     * Sends a text message
      *
      * @access  public
      * @param   string queueName
      * @param   string text
      */
     function sendTextMessage($queueName, $text) { }
+
+    /**
+     * Sends a map message
+     *
+     * @access  public
+     * @param   string queueName
+     * @param   array<string, mixed> map
+     */
+    function sendMapMessage($queueName, $map) { }
   
   }
 ?>
