@@ -128,12 +128,12 @@
     }    
 
     /**
-     * Tests "return new XXX()" still works.
+     * Tests "return $method->invoke()" still works.
      *
      * @access  public
      */
     #[@test]
-    function returnNewObjectViaReflection() {
+    function returnNewObjectViaMethodInvoke() {
       $class= &XPClass::forName('net.xp_framework.unittest.core.AnonymousFactory');
       $factory= &$class->getMethod('factory');
       $object= &$factory->invoke($instance= NULL);
