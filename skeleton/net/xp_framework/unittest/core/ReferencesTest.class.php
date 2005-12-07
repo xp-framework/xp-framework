@@ -52,6 +52,15 @@
           }
         }'
       );
+      $cl->defineClass(
+        'net.xp_framework.unittest.core.AnonymousNewInstanceFactory', 
+        'class AnonymousNewInstanceFactory extends Object {
+          function &factory() {
+            $class= &XPClass::forName("net.xp_framework.unittest.core.AnonymousList");
+            return $class->newInstance();
+          }
+        }'
+      );
     }
 
     /**
@@ -131,6 +140,19 @@
       $value= &ReferencesTest::registry('list', $r= NULL);
 
       $this->assertReference($object, $value);
-    }    
+    }
+    
+    /**
+     * Tests "return $class->newInstance()" still works.
+     *
+     * @access  public
+     */
+    #[@test]
+    function returnNewObjectViaNewInstance() {
+      $object= &AnonymousNewInstanceFactory::factory();
+      $value= &ReferencesTest::registry('list', $r= NULL);
+      
+      $this->assertReference($object, $value);
+    }
   }
 ?>
