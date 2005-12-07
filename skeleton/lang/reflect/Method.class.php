@@ -50,19 +50,25 @@
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      */
     function &invoke(&$obj, $args= array()) {
-      if (is_null($obj)) {
-        return call_user_func_array(array($this->_ref, $this->name), $args);
+      if (NULL !== $obj) {
+        if (!is(xp::nameOf($this->_ref), $obj)) {
+          return throw(new IllegalArgumentException(sprintf(
+            'Passed argument is not a %s class (%s)',
+            xp::nameOf($this->_ref),
+            xp::typeOf($obj)
+          )));
+        }
+        $invocation= '$obj->'.$this->name;
+      } else {
+        $invocation= $this->_ref.'::'.$this->name;
       }
-      
-      if (!is(xp::nameOf($this->_ref), $obj)) {
-        return throw(new IllegalArgumentException(sprintf(
-          'Passed argument is not a %s class (%s)',
-          xp::nameOf($this->_ref),
-          xp::nameOf($obj)
-        )));
+
+      for ($paramstr= '', $i= 0, $m= sizeof($args); $i < $m; $i++) {
+        $paramstr.= ', $args['.$i.']';
       }
-      
-      return call_user_func_array(array(&$obj, $this->name), $args);
+
+      eval('$result= &'.$invocation.'('.substr($paramstr, 2).');');
+      return $result;
     }
   }
 ?>
