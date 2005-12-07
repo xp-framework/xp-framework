@@ -47,7 +47,8 @@
         'net.xp_framework.unittest.core.AnonymousFactory', 
         'class AnonymousFactory extends Object {
           function &factory() {
-            return new AnonymousList();
+            $list= &new AnonymousList();
+            return $list;
           }
         }'
       );
