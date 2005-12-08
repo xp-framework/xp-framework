@@ -1,0 +1,80 @@
+RFC 0045: Unique multiple occurrences of errors
+========================================================================
+$Id$
+
+@authors: friebe, kiesel
+@created: Thu Dec  8 23:48:50     2005
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+In case the same PHP error occurs multiple times, it will no longer be 
+added to the error registry on each occurence. Instead, a counter will 
+keep track how many times this error has occured.
+
+
+Rationale
+---------
+Prevent running out of memory in a situation where a loop is causing
+an error in each of its iterations.
+
+
+Functionality
+-------------
+
+Take the following script:
+<?php
+  for ($i= 0; $i < 1000; $i++) {
+    $a.= '';    // E_NOTICE: Undefined variable:  a
+    unset($a);
+  }
+?>
+
+At the moment of writing this RFC, this will cause 1000 new elements to
+be added to the xp error registry. When the changes this RFC suggests
+are implemented, this will result in 1 element being added to the error
+registry and its occurrence counter being equal to 1000.
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+- Possible slight decrease in error handler
+
+But:
+- Memory footprint decrease in error handler at the same time
+
+- Performance increase in xp::errorAt() for the case file *and* line
+  number are passed in
+
+- Performance increase in lang.StackTraceElement's toString() method
+
+Over all, this should be slightly faster for the general case.
+
+
+Dependencies
+------------
+This introduces a small BC break in lang.StackTraceElement: The member
+$messages (an array) is replaced by a member $message (a string).
+
+
+Related documents
+-----------------
+- http://xp-framework.net/class/net.xp_framework.unittest.core.ErrorsTest
+  Unittest that ensures new behaviour doesn't introduce any other 
+  unwanted changes or side-effects
+
+- http://xp-framework.net/downloads/rfc0045.diff
+  Patch implementing this RFC
+
+
+Comments
+--------
+n/a
+
+<EOF>
