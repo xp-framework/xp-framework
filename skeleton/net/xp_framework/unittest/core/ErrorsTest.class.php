@@ -46,6 +46,29 @@
     }
 
     /**
+     * Tests xp::errorAt() finds errors have occured in this file
+     *
+     * @access  public
+     */
+    #[@test]
+    function errorAtFile() {
+      $a.= '';    // E_NOTICE: Undefined variable:  a
+      $this->assertTrue(xp::errorAt(__FILE__));
+    }
+
+    /**
+     * Tests xp::errorAt() finds errors have occured in this file *and*
+     * and at the specified line.
+     *
+     * @access  public
+     */
+    #[@test]
+    function errorAtFileAndLine() {
+      $a.= '';    // E_NOTICE: Undefined variable:  a
+      $this->assertTrue(xp::errorAt(__FILE__, __LINE__ - 1));
+    }
+
+    /**
      * Tests that PHP errormessages get appended to the xp error registry
      *
      * @access  public
@@ -53,22 +76,24 @@
     #[@test]
     function errorsAppearInStackTrace() {
       $a.= '';    // E_NOTICE: Undefined variable:  a
-      $line= __LINE__;
+      $line= __LINE__ - 1;
 
       try(); {
         throw(new Exception(''));
       } if (catch('Exception', $e)) {
         $self= get_class($this);
         foreach ($e->getStackTrace() as $element) {
-          if ($element->class != $self || $element->line != $line - 1) continue;
+          if ($element->class != $self || $element->line != $line) continue;
           
           // We've found the stack trace element we're looking for
           // TBI: Check more detailed if this really is the correct one?
           return;
         }
 
-        // Fall through
+        $this->fail('Error not in stacktrace', NULL, 'lang.StackTraceElement');
+        return;
       }
+
       $this->fail('Exception not caught', NULL, 'lang.Exception');
     }
   }
