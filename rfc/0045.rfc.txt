@@ -36,6 +36,32 @@ be added to the xp error registry. When the changes this RFC suggests
 are implemented, this will result in 1 element being added to the error
 registry and its occurrence counter being equal to 1000.
 
+Now if an exception is thrown from somewhere in this block, you'd get a 
+really long stacktrace containing all the E_NOTICEs from the loop:
+<pre>
+Exception lang.Exception ()
+  at lang.Exception::__construct((0x0)'') [line 87 of StackTraceElement.class.php] 
+  at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a
+  at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a
+  at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a
+  at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a
+  at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a
+  at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a
+  at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a
+  at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a
+  at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a
+  at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a
+</pre>
+
+With this patch, the stacktrace will look like this:
+<pre>
+Exception lang.Exception ()
+  at lang.Exception::__construct((0x0)'') [line 0 of StackTraceElement.class.php] 
+  at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a (... 9 more)
+</pre>
+
+Please note the "... 9 more" indicating this error has occured a total of 10 
+times.
 
 Security considerations
 -----------------------
