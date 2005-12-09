@@ -102,6 +102,9 @@
       } if (catch('PrerequisitesNotMetError', $e)) {
         $result->setSkipped($test, $e);
         return FALSE;
+      } if (catch('AssertionFailedError', $e)) {
+        $result->setFailed($test, $e);
+        return FALSE;
       }
 
       try(); {
