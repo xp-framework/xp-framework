@@ -143,7 +143,7 @@
      * @return  bool
      */    
     function isNew() {
-      return !empty($this->_new);
+      return $this->_new;
     }
     
     /**
