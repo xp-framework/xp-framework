@@ -52,15 +52,15 @@ Exception lang.Exception ()
   at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a
   at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a
 </pre>
+(shortened for brevity)
 
 With this patch, the stacktrace will look like this:
 <pre>
 Exception lang.Exception ()
   at lang.Exception::__construct((0x0)'') [line 0 of StackTraceElement.class.php] 
-  at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a (... 9 more)
+  at php.<main>::<main>() [line 5 of st.php] Undefined variable:  a (... 999 more)
 </pre>
-
-Please note the "... 9 more" indicating this error has occured a total of 10 
+Please note the "... 999 more" indicating this error has occured a total of 1000 
 times.
 
 Security considerations
