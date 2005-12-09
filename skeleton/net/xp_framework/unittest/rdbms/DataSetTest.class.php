@@ -115,6 +115,54 @@
       $this->assertEquals($now, $job->getValid_from());
       $this->assertNull($job->getExpire_at());
     }
+    
+    /**
+     * Tests the isNew() method when creating a job object by means of new()
+     *
+     * @access  public
+     */
+    #[@test]
+    function newObject() {
+      $j= &new Job();
+      $this->assertTrue($j->isNew());
+    }
+
+    /**
+     * Tests the isNew() method when fetching the object by getByJob_id()
+     *
+     * @access  public
+     */
+    #[@test]
+    function existingObject() {
+      $this->setResults(new MockResultSet(array(
+        0 => array(   // First row
+          'job_id'      => 1,
+          'title'       => 'Unit tester',
+          'valid_from'  => $now,
+          'expire_at'   => NULL
+        )
+      )));
+      
+      $job= &Job::getByJob_id(1);
+      $this->assertFalse($job->isNew());
+    }
+
+    /**
+     * Tests the isNew() method after saving an object
+     *
+     * @access  public
+     */
+    #[@test]
+    function noLongerNewAfterSave() {
+      $j= &new Job();
+      $j->setTitle('New job');
+      $j->setValid_from(Date::now());
+      $j->setExpire_at(NULL);
+      
+      $this->assertTrue($j->isNew());
+      $j->save();
+      $this->assertFalse($j->isNew());
+    }
 
     /**
      * Tests that getByJob_id() method returns NULL if nothing is found
@@ -159,6 +207,48 @@
 
       $id= $j->insert();
       $this->assertEquals(14121977, $id);
+    }
+    
+    /**
+     * Tests that the save() method will return the identity value
+     *
+     * @see     xp://rdbms.DataSet#insert
+     * @access  public
+     */
+    #[@test]
+    function saveReturnsIdentityForInserts() {
+      $mock= &$this->getConnection();
+      $mock->setIdentityValue(14121977);
+
+      $j= &new Job();
+      $j->setTitle('New job');
+      $j->setValid_from(Date::now());
+      $j->setExpire_at(NULL);
+
+      $id= $j->save();
+      $this->assertEquals(14121977, $id);
+    }
+
+    /**
+     * Tests that the save() method will return the identity value
+     *
+     * @see     xp://rdbms.DataSet#insert
+     * @access  public
+     */
+    #[@test]
+    function saveReturnsIdentityForUpdates() {
+      $this->setResults(new MockResultSet(array(
+        0 => array(   // First row
+          'job_id'      => 1,
+          'title'       => 'Unit tester',
+          'valid_from'  => $now,
+          'expire_at'   => NULL
+        )
+      )));
+      
+      $job= &Job::getByJob_id(1);
+      $id= $job->save();
+      $this->assertEquals(1, $id);
     }
     
     /**
