@@ -80,6 +80,7 @@
    */
   class DataSet extends Object {
     var
+      $_new         = TRUE,
       $_changed     = array();
     
     /**
@@ -91,9 +92,12 @@
      * @param   array params default NULL
      */
     function __construct($params= NULL) {
-      if (is_array($params)) foreach (array_keys($params) as $key) {
-        $k= substr(strrchr('#'.$key, '#'), 1);
-        $this->{$k}= &$params[$key];
+      if (is_array($params)) {
+        foreach (array_keys($params) as $key) {
+          $k= substr(strrchr('#'.$key, '#'), 1);
+          $this->{$k}= &$params[$key];
+        }
+        $this->_new= FALSE;
       }
     }
     
@@ -130,6 +134,16 @@
      */
     function changes() {
       return $this->_changed;
+    }
+
+    /**
+     * Returns whether this record is new
+     *
+     * @access  public
+     * @return  bool
+     */    
+    function isNew() {
+      return !empty($this->_new);
     }
     
     /**
@@ -243,7 +257,13 @@
      * @throws  rdbms.SQLException
      */
     function insert() {
-      return $this->doInsert();
+      try(); {
+        $identity= $this->doInsert();
+      } if (catch('SQLException', $e)) {
+        return throw($e);
+      }
+      $this->_new= FALSE;
+      return $identity;
     }
 
     /**
@@ -266,6 +286,27 @@
       $affected= $peer->doUpdate($this->_changed, $criteria);
       $this->_changed= array();
       return $affected;
+    }
+    
+    /**
+     * Save this dataset. Inserts if this dataset is new (that means: Has been
+     * created by new DataSetName()) and updates if it has been retrieved by
+     * the database (by means of doSelect(), getBy...() or iterators).
+     *
+     * @access  public
+     * @return  mixed identity value if applicable, else NULL
+     * @throws  rdbms.SQLException
+     */
+    function save() {
+      $peer= &$this->getPeer();
+      
+      try(); {
+        $this->_new ? $this->insert() : $this->update();
+      } if (catch('SQLException', $e)) {
+        return throw($e);
+      }
+
+      return $this->{$peer->identity};
     }
 
     /**
