@@ -29,7 +29,8 @@
       $transport          = NULL,
       $action             = '',
       $targetNamespace    = NULL,
-      $mapping            = NULL;
+      $mapping            = NULL,
+      $headers            = array();
     
     /**
      * Constructor
@@ -88,6 +89,18 @@
     }
     
     /**
+     * Add a header
+     *
+     * @access  public
+     * @param   &xml.soap.SOAPHeader header
+     * @return  &xml.soap.SOAPHeader the header added
+     */
+    function &addHeader(&$header) {
+      $this->headers[]= &$header;
+      return $header;
+    }
+    
+    /**
      * Invoke method call
      *
      * @access  public
@@ -106,7 +119,7 @@
       
       $message= &new SOAPMessage();
       $message->setEncoding($this->encoding);
-      $message->create($this->action, array_shift($args), $this->targetNamespace);
+      $message->create($this->action, array_shift($args), $this->targetNamespace, $this->headers);
       $message->setData($args, $this->mapping);
 
       // Send
