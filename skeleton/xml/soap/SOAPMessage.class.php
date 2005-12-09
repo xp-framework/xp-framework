@@ -48,7 +48,7 @@
    */
   class SOAPMessage extends Tree {
     var 
-      $body         = '',
+      $body         = NULL,
       $namespace    = 'ctl',
       $encoding     = 'iso-8859-1',
       $nodeType     = 'SOAPNode',
@@ -71,8 +71,9 @@
      * @param   string action
      * @param   string method
      * @param   string targetNamespace default NULL
+     * @param   xml.soap.SOAPHeader[] headers default array()
      */
-    function create($action, $method, $targetNamespace= NULL) {
+    function create($action, $method, $targetNamespace= NULL, $headers= array()) {
       $this->action= $action;
       $this->method= $method;
 
@@ -85,8 +86,16 @@
         'SOAP-ENV:encodingStyle'      => XMLNS_SOAPENC,
         'xmlns:'.$this->namespace     => (NULL !== $targetNamespace ? $targetNamespace : $this->action)
       ));
-      $this->root->addChild(new Node('SOAP-ENV:Body'));
-      $this->root->children[0]->addChild(new Node($this->namespace.':'.$this->method));
+      
+      if (!empty($headers)) {
+        $header= &$this->root->addChild(new Node('SOAP-ENV:Header'));
+        for ($i= 0, $s= sizeof($headers); $i < $s; $i++) {
+          $header->addChild($headers[$i]->getNode($this->namespaces));
+        }
+      }
+      
+      $this->body= &$this->root->addChild(new Node('SOAP-ENV:Body'));
+      $this->body->addChild(new Node($this->namespace.':'.$this->method));
     }
     
     /**
@@ -103,7 +112,7 @@
       
       // Copy all of node's children to root element
       foreach (array_keys($node->children) as $i) {
-        $this->root->children[0]->children[0]->addChild($node->children[$i]);
+        $this->body->children[0]->addChild($node->children[$i]);
       }
     }
 
