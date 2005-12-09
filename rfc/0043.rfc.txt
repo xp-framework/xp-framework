@@ -1,0 +1,41 @@
+RFC 0043: UnknownRemoteObject
+========================================================================
+$Id$
+
+@authors: friebe, gelli
+@created: Tue Nov 29 15:34:52 CET 2005
+@status: draft
+@category: remote
+
+Scope of Change
+---------------
+A new class called remote.UnknownRemoteObject will be added. In case the
+deserializer detects a class that is unknown an object of this class will
+be constructed instead of throwing a lang.ClassNotFoundException.
+
+
+Rationale
+---------
+This procedure will ease rapid prototyping of EASC service clients.
+
+
+Functionality
+-------------
+
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
