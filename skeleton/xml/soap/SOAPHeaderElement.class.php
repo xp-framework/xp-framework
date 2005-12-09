@@ -173,5 +173,5 @@
       return $s.'}';
     }
     
-  }
+  } implements(__FILE__, 'xml.soap.SOAPHeader');
 ?>
