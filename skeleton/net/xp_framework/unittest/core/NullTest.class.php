@@ -7,7 +7,8 @@
   uses('util.profiling.unittest.TestCase');
 
   /**
-   * Tests the "NULL-safe" xp::null
+   * Tests the "NULL-safe" xp::null. Requires the overload extension to
+   * be enabled.
    *
    * @purpose  Testcase
    */
