@@ -114,7 +114,11 @@
 
     // {{{ public object null(void)
     //     Constructor to avoid magic __call invokation
-    function null() { }
+    function null() {
+      if (NULL !== xp::registry('null')) {
+        throw(new IllegalAccessException('Cannot create new instances of xp::null()'));
+      }
+    }
     // }}}
     
     // {{{ magic bool __call(string name, mixed[] args, &mixed return)
@@ -359,6 +363,9 @@
   // {{{ proto lang.Object &clone(lang.Object object) throws CloneNotSupportedException
   //     Clones an object
   function &clone($object) {
+    if (is(NULL, $object)) return throw(new NullPointerException('Cannot clone NULLs'));
+    if (!is_a($object, 'Object')) return raise('lang.CloneNotSupportedException', 'Cannot clone non-objects');
+
     $object->__id= microtime();
     if (is_callable(array(&$object, '__clone'))) {
       try(); {
