@@ -16,48 +16,21 @@
    */
   class TokenizerTest extends TestCase {
     var
-      $conn = NULL,
-      $dsn  = '';
+      $conn = array();
       
     /**
      * Constructor
      *
      * @access  public
      * @param   string name
-     * @param   string dsn
      */
-    function __construct($name, $dsn) {
-      $this->dsn= $dsn;
+    function __construct($name) {
       parent::__construct($name);
+      $this->conn['sybase']= &DriverManager::getConnection('sybase://localhost:1999/');
+      $this->conn['mysql']= &DriverManager::getConnection('mysql://localhost/');
+      $this->conn['pgsql']= &DriverManager::getConnection('pgsql://localhost/');
     }
       
-    /**
-     * Setup function
-     *
-     * @access  public
-     * @throws  rdbms.DriverNotSupportedException
-     */
-    function setUp() {
-      try(); {
-        $this->conn= &DriverManager::getConnection($this->dsn);
-      } if (catch('DriverNotSupportedException', $e)) {
-        throw (new PrerequisitesNotMetError(
-          PREREQUISITE_INITFAILED,
-          $e,
-          $dsn
-        ));
-      }
-    }
-    
-    /**
-     * Tear down function
-     *
-     * @access  public
-     */
-    function tearDown() {
-      $this->conn->close();
-    }
-
     /**
      * Test percent token
      *
@@ -65,9 +38,10 @@
      */
     #[@test]
     function testPercentToken() {
-      $this->assertEquals(
-        $this->conn->prepare('select * from test where name like "%%.de"', 1),
-        'select * from test where name like "%.de"'
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $value->prepare('select * from test where name like "%%.de"', 1),
+        'select * from test where name like "%.de"',
+        $key
       );
     }
 
@@ -78,9 +52,10 @@
      */
     #[@test]
     function testUnknownToken() {
-      $this->assertEquals(
-        $this->conn->prepare('select * from test where name like "%X"', 1),
-        'select * from test where name like "%X"'
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $value->prepare('select * from test where name like "%X"', 1),
+        'select * from test where name like "%X"',
+        $key
       );
     }
     
@@ -91,9 +66,10 @@
      */
     #[@test]
     function testIntegerToken() {
-      $this->assertEquals(
-        $this->conn->prepare('select %d as intval', 1),
-        'select 1 as intval'
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $value->prepare('select %d as intval', 1),
+        'select 1 as intval',
+        $key
       );
     }
 
@@ -104,8 +80,8 @@
      */
     #[@test]
     function testFloatToken() {
-      $this->assertEquals(
-        $this->conn->prepare('select %f as floatval', 6.1),
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $value->prepare('select %f as floatval', 6.1),
         'select 6.1 as floatval'
       );
     }
@@ -123,9 +99,10 @@
         // TBD: Other built-in rdbms engines
       );
       
-      $this->assertEquals(
-        $this->conn->prepare('select %s as strval', '"Hello", Tom\'s friend said'),
-        $expect[substr($this->dsn, 0, strpos($this->dsn, '://'))]
+      foreach ($expect as $key => $value) $this->assertEquals(
+        $this->conn[$key]->prepare('select %s as strval', '"Hello", Tom\'s friend said'),
+        $value,
+        $key
       );
     }
 
@@ -142,9 +119,10 @@
         // TBD: Other built-in rdbms engines
       );
       
-      $this->assertEquals(
-        $this->conn->prepare('select %s as strval', 'Hello \\ '),
-        $expect[substr($this->dsn, 0, strpos($this->dsn, '://'))]
+      foreach ($expect as $key => $value) $this->assertEquals(
+        $this->conn[$key]->prepare('select %s as strval', 'Hello \\ '),
+        $value,
+        $key
       );
     }
     
@@ -155,14 +133,18 @@
      */
     #[@test]
     function testIntegerArrayToken() {
-      $this->assertEquals(
-        $this->conn->prepare('select * from news where news_id in (%d)', array()),
-        'select * from news where news_id in ()'
-      );
-      $this->assertEquals(
-        $this->conn->prepare('select * from news where news_id in (%d)', array(1, 2, 3)),
-        'select * from news where news_id in (1, 2, 3)'
-      );
+      foreach ($this->conn as $key => $value) {
+        $this->assertEquals(
+          $value->prepare('select * from news where news_id in (%d)', array()),
+          'select * from news where news_id in ()',
+          $key
+        );
+        $this->assertEquals(
+          $value->prepare('select * from news where news_id in (%d)', array(1, 2, 3)),
+          'select * from news where news_id in (1, 2, 3)',
+          $key
+        );
+      }
     }
     
     /**
@@ -172,9 +154,10 @@
      */
     #[@test]
     function testLeadingToken() {
-      $this->assertEquals(
-        $this->conn->prepare('%c', 'select 1'),
-        'select 1'
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $value->prepare('%c', 'select 1'),
+        'select 1',
+        $key
       );
     } 
   }
