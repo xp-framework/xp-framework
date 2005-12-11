@@ -13,7 +13,8 @@
   class TestFailure extends Object {
     var
       $result   = NULL,
-      $test     = NULL;
+      $test     = NULL,
+      $elapsed  = 0.0;
       
     /**
      * Constructor
@@ -21,11 +22,12 @@
      * @access  public
      * @param   &util.profiling.unittest.TestCase test
      * @param   &mixed reason
+     * @param   float elapsed
      */
-    function __construct(&$test, &$reason) {
+    function __construct(&$test, &$reason, $elapsed) {
       $this->test= &$test;
       $this->reason= &$reason;
-      
+      $this->elapsed= $elapsed;
     }
 
     /**
@@ -36,7 +38,9 @@
      */
     function toString() {
       return (
-        $this->getClassName().'(test= '.$this->test->getClassName().'::'.$this->test->getName().") {\n  ".
+        $this->getClassName().
+        '(test= '.$this->test->getClassName().'::'.$this->test->getName().
+        sprintf(', time= %.3f seconds', $this->elapsed).") {\n  ".
         str_replace("\n", "\n  ", xp::stringOf($this->reason))."\n".
         ' }'
       );
