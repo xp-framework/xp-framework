@@ -393,7 +393,6 @@
       try(); {
         $method->invoke($this, NULL);
       } if (catch('Exception', $e)) {
-        $timer->stop();
         
         // Was that an expected exception?
         if ($expected && $expected->isInstance($e)) {
