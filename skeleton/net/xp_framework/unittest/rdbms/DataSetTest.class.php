@@ -511,5 +511,34 @@
 
       $this->assertFalse($iterator->hasNext());
     }
+
+    /**
+     * Tests that update doesn't do anything when the object is unchanged
+     *
+     * @access  public
+     */
+    #[@test]
+    function updateUnchangedObject() {
+
+      // First, retrieve an object
+      $this->setResults(new MockResultSet(array(
+        0 => array(
+          'job_id'      => 654,
+          'title'       => 'Java Unit tester',
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        )
+      )));
+      $job= &Job::getByJob_id(1);
+
+      // Second, update the job. Make the next query fail on this 
+      // connection to ensure that nothing is actually done.
+      $mock= &$this->getConnection();
+      $mock->makeQueryFail(1326, 'Syntax error');
+      $job->update();
+
+      // Make next query return empty results (not fail)
+      $this->setResults(new MockResultSet());
+    }
   }
 ?>
