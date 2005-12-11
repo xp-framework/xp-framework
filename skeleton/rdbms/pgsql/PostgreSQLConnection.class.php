@@ -82,60 +82,6 @@
         'Cannot select database, not implemented in PostgreSQL'
       ));
     }
-    
-    /**
-     * Protected helper methid
-     *
-     * @access  protected
-     * @param   array args
-     * @return  string
-     */
-    function _prepare($args) {
-      $sql= $args[0];
-      if (sizeof($args) <= 1) return $sql;
-
-      $i= 0;    
-      
-      // This fixes strtok for cases where '%' is the first character
-      $sql= $tok= strtok(' '.$sql, '%');
-      while (++$i && $tok= strtok('%')) {
-      
-        // Support %1$s syntax
-        if (is_numeric($tok{0})) {
-          sscanf($tok, '%d$', $ofs);
-          $mod= strlen($ofs) + 1;
-        } else {
-          $ofs= $i;
-          $mod= 0;
-        }
-
-        // Type-based conversion
-        if (is_a($args[$ofs], 'Date')) {
-          $tok{$mod}= 's';
-          $a= array($args[$ofs]->toString('Y-m-d H:i:s'));
-        } elseif (is_a($args[$ofs], 'Object')) {
-          $a= array($args[$ofs]->toString());
-        } elseif (is_array($args[$ofs])) {
-          $a= $args[$ofs];
-        } else {
-          $a= array($args[$ofs]);
-        }
-        
-        foreach ($a as $arg) {
-          switch ($tok{0 + $mod}) {
-            case 'd': $r= is_null($arg) ? 'NULL' : sprintf('%.0f', $arg); break;
-            case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
-            case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
-            case 's': $r= is_null($arg) ? 'NULL' : "'".pg_escape_string($arg)."'"; break;
-            case 'u': $r= is_null($arg) ? 'NULL' : "'".date('Y-m-d H:i:s', $arg)."'"; break;
-            default: $r= '%'; $mod= -1; $i--; continue;
-          }
-          $sql.= $r.', ';
-        }
-        $sql= rtrim($sql, ', ').substr($tok, 1 + $mod);
-      }
-      return substr($sql, 1);
-    }
 
     /**
      * Prepare an SQL statement
@@ -145,8 +91,19 @@
      * @return  string
      */
     function prepare() {
+      static $formatter= NULL;
       $args= func_get_args();
-      return $this->_prepare($args);    
+      
+      if (1 == sizeof($args)) return array_shift($args);
+      
+      if (NULL === $formatter) {
+        $formatter= new StatementFormatter();
+        $formatter->setEscapeRules(array(
+          '\''  => '\'\''
+        ));
+        $formatter->setDateFormat('Y-m-d H:i:s');
+      }
+      return $formatter->format(array_shift($args), $args);
     }
     
     /**
