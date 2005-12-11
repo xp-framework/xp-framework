@@ -53,8 +53,8 @@
     #[@test]
     function testUnknownToken() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
-        $value->prepare('select * from test where name like "%X"', 1),
         'select * from test where name like "%X"',
+        $value->prepare('select * from test where name like "%X"', 1),
         $key
       );
     }
@@ -67,8 +67,8 @@
     #[@test]
     function testIntegerToken() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
-        $value->prepare('select %d as intval', 1),
         'select 1 as intval',
+        $value->prepare('select %d as intval', 1),
         $key
       );
     }
@@ -81,8 +81,9 @@
     #[@test]
     function testFloatToken() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
+        'select 6.1 as floatval',
         $value->prepare('select %f as floatval', 6.1),
-        'select 6.1 as floatval'
+        $key
       );
     }
 
@@ -100,8 +101,8 @@
       );
       
       foreach ($expect as $key => $value) $this->assertEquals(
-        $this->conn[$key]->prepare('select %s as strval', '"Hello", Tom\'s friend said'),
         $value,
+        $this->conn[$key]->prepare('select %s as strval', '"Hello", Tom\'s friend said'),
         $key
       );
     }
@@ -120,8 +121,8 @@
       );
       
       foreach ($expect as $key => $value) $this->assertEquals(
-        $this->conn[$key]->prepare('select %s as strval', 'Hello \\ '),
         $value,
+        $this->conn[$key]->prepare('select %s as strval', 'Hello \\ '),
         $key
       );
     }
@@ -135,13 +136,13 @@
     function testIntegerArrayToken() {
       foreach ($this->conn as $key => $value) {
         $this->assertEquals(
-          $value->prepare('select * from news where news_id in (%d)', array()),
           'select * from news where news_id in ()',
+          $value->prepare('select * from news where news_id in (%d)', array()),
           $key
         );
         $this->assertEquals(
-          $value->prepare('select * from news where news_id in (%d)', array(1, 2, 3)),
           'select * from news where news_id in (1, 2, 3)',
+          $value->prepare('select * from news where news_id in (%d)', array(1, 2, 3)),
           $key
         );
       }
@@ -155,10 +156,53 @@
     #[@test]
     function testLeadingToken() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
-        $value->prepare('%c', 'select 1'),
         'select 1',
+        $value->prepare('%c', 'select 1'),
         $key
       );
-    } 
+    }
+    
+    /**
+     * Test random argument access
+     *
+     * @access  public
+     */
+    #[@test]
+    function testRandomAccess() {
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        'select column from table',
+        $value->prepare('select %2$c from %1$c', 'table', 'column'),
+        $key
+      );
+    }
+    
+    /**
+     * Test passing null values
+     *
+     * @access  public
+     */
+    #[@test]
+    function testPassNullValues() {
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        'select NULL from NULL',
+        $value->prepare('select %2$c from %1$c', NULL, NULL),
+        $key
+      );
+    }
+    
+    /**
+     * Test accessing non-passed values (eg. values a higher
+     * ordinal than available).
+     *
+     * @access  public
+     */
+    #[@test]
+    function testAccessNonexistant() {
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        'NULL',
+        $value->prepare('%2$c', NULL),
+        $key
+      );
+    }
   }
 ?>
