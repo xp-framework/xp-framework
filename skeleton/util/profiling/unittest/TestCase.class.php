@@ -368,10 +368,10 @@
      * Run this test case.
      *
      * @access  public
-     * @return  &mixed return value of test method
+     * @return  bool success
      * @throws  lang.MethodNotImplementedException
      */
-    function &run() {
+    function run() {
       $class= &$this->getClass();
       $method= &$class->getMethod($this->name);
 
@@ -391,8 +391,9 @@
       }
       
       try(); {
-        $res= $method->invoke($this, NULL);
+        $method->invoke($this, NULL);
       } if (catch('Exception', $e)) {
+        $timer->stop();
         
         // Was that an expected exception?
         if ($expected && $expected->isInstance($e)) {
@@ -402,7 +403,7 @@
         
         return throw($e);
       }
-      
+
       if ($expected) return $this->fail(
         'Expected exception not caught',
         'failedexpect',
@@ -410,7 +411,7 @@
         NULL
       );
       
-      return $res;
+      return TRUE;
     }
   }
 ?>
