@@ -64,7 +64,7 @@ Defining a class needs an object from the Resource Pool
   class MyClass extends Object {
   
     function __construct() {
-      ResourcePool::bind($this);
+      ResourcePool::injectFor($this);
     }
   
     #[@inject(name = 'xp://env/rdbms/orders')]
@@ -79,7 +79,7 @@ Example #1: Registering the database connection to the "orders" database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <?php
   $pool= &ResourcePool::getInstance();
-  $pool->register(
+  $pool->bind(
     'xp://env/rdbms/orders', 
     DriverManager::getConnection('mysql://...')
   );
