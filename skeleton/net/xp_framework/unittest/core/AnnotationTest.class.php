@@ -1,0 +1,158 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+  uses('util.profiling.unittest.TestCase', 'net.xp_framework.unittest.core.AnnotatedClass');
+
+  /**
+   * Tests the XP Framework's annotations
+   *
+   * @see      rfc://0016
+   * @purpose  Testcase
+   */
+  class AnnotationTest extends TestCase {
+    var
+      $class = NULL;
+
+    /**
+     * Setup method. .
+     *
+     * @access  public
+     */
+    function setUp() {
+      $this->class= &XPClass::forName('net.xp_framework.unittest.core.AnnotatedClass');
+    }
+
+    /**
+     * Helper method to return whether a specified annotation exists
+     *
+     * @access  protected
+     * @param   string method
+     * @param   string annotation
+     * @return  bool
+     */
+    function annotationExists($method, $annotation) {
+      $method= &$this->class->getMethod($method);
+      return $method->hasAnnotation($annotation);
+    }
+
+    /**
+     * Helper method to get an annotation of a specified method
+     *
+     * @access  protected
+     * @param   string method
+     * @param   string annotation
+     * @return  mixed annotation value
+     */
+    function methodAnnotation($method, $annotation) {
+      $method= &$this->class->getMethod($method);
+      return $method->getAnnotation($annotation);
+    }
+
+    /**
+     * Tests method with a simple annotation without a value exists
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#simple
+     * @access  public
+     */
+    #[@test]
+    function simpleAnnotationExists() {
+      $this->assertTrue($this->annotationExists('simple', 'simple'));
+    }
+    
+    /**
+     * Tests getAnnotation() returns NULL for simple annotations without
+     * any value.,
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#simple
+     * @access  public
+     */
+    #[@test]
+    function simpleAnnotationValue() {
+      $this->assertEquals(NULL, $this->methodAnnotation('simple', 'simple'));
+    }
+
+    /**
+     * Tests method with multiple annotations
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#multiple
+     * @access  public
+     */
+    #[@test]
+    function multipleAnnotationsExist() {
+      foreach (array('one', 'two', 'three') as $annotation) {
+        $this->assertTrue($this->annotationExists('multiple', $annotation), $annotation);
+      }
+    }
+
+    /**
+     * Tests method with multiple annotations
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#multiple
+     * @access  public
+     */
+    #[@test]
+    function multipleAnnotationsReturnedAsList() {
+      $method= &$this->class->getMethod('multiple');
+      $this->assertEquals(
+        array('one' => NULL, 'two' => NULL, 'three' => NULL),
+        $method->getAnnotations()
+      );
+    }
+
+    /**
+     * Tests getAnnotation() returns the string associated with the 
+     * annotation.
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#stringValue
+     * @access  public
+     */
+    #[@test]
+    function stringAnnotationValue() {
+      $this->assertEquals('String value', $this->methodAnnotation('stringValue', 'strval'));
+    }
+
+    /**
+     * Tests getAnnotation() returns the string associated with the 
+     * annotation.
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#keyValuePair
+     * @access  public
+     */
+    #[@test]
+    function keyValuePairAnnotationValue() {
+      $this->assertEquals(array('key' => 'value'), $this->methodAnnotation('keyValuePair', 'config'));
+    }
+
+    /**
+     * Tests getAnnotation() returns the string associated with the 
+     * annotation.
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#keyValuePairs
+     * @access  public
+     */
+    #[@test]
+    function keyValuePairsAnnotationValue() {
+      $this->assertEquals(
+        array('key' => 'value', 'times' => 5, 'disabled' => FALSE, 'null' => NULL, 'list' => array(1, 2)), 
+        $this->methodAnnotation('keyValuePairs', 'config')
+      );
+    }
+
+    /**
+     * Tests multi-line annotations
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#multiLine
+     * @access  public
+     */
+    #[@test]
+    function multiLineAnnotation() {
+      $this->assertEquals(array('classes' => array(
+        'net.xp_framework.unittest.core.FirstInterceptor',
+        'net.xp_framework.unittest.core.SecondInterceptor',
+      )), $this->methodAnnotation('multiLine', 'interceptors'));
+    }
+  }
+?>
