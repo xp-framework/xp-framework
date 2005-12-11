@@ -275,6 +275,8 @@
      * @throws  rdbms.SQLException
      */
     function update() {
+      if (empty($this->_changed)) return 0;
+
       $peer= &$this->getPeer();
       if (empty($peer->primary)) {
         return throw(new SQLStateException('No primary key'));
