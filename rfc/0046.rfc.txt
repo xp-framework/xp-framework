@@ -1,0 +1,73 @@
+RFC 0046: Make core errors catchable
+========================================================================
+$Id$
+
+@authors: friebe, kiesel
+@created: Sun Dec 11 01:29:07     2005
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+Certain core errors should be catchable in userland.
+
+
+Rationale
+---------
+When using ClassLoader::defineClass(), an error in the class definition
+should not cause the script to exit. Instead, an exception should be
+thrown.
+
+
+Functionality
+-------------
+This functionality will be implemented by changing places that use 
+xp::error() to trigger_error() with the error level "E_USER_ERROR". In
+the default error handler implementation, this will terminate the 
+script.
+
+In places where there is a need to be able to catch these errors, 
+the error handler can be changed by means of set_error_handler().
+
+Example
+~~~~~~~
+<?php
+  function myErrorHandler($code, $msg, $file, $line) {
+    if (E_USER_ERROR != $code) {
+    
+      // Delegate to default error handler
+      __error($code, $msg, $file, $line);
+      return;
+    }
+
+    // Handle the otherwise fatal error
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Small speed impact in error handler
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+n/a
+
+
+<EOF>
