@@ -5,6 +5,7 @@
  */
 
   uses(
+    'util.profiling.Timer',
     'util.profiling.unittest.TestCase',
     'util.profiling.unittest.TestResult'
   );
@@ -97,25 +98,31 @@
      * @return  bool success
      */
     function runTest(&$test, &$result) {
+      $timer= &new Timer();
+      $timer->start();
+
       try(); {
         $test->setUp();
       } if (catch('PrerequisitesNotMetError', $e)) {
-        $result->setSkipped($test, $e);
+        $timer->stop();
+        $result->setSkipped($test, $e, $timer->elapsedTime());
         return FALSE;
       } if (catch('AssertionFailedError', $e)) {
-        $result->setFailed($test, $e);
+        $timer->stop();
+        $result->setFailed($test, $e, $timer->elapsedTime());
         return FALSE;
       }
 
       try(); {
         $test->run();
       } if (catch('Exception', $e)) {
-        $result->setFailed($test, $e);
         $test->tearDown();
+        $timer->stop();
+        $result->setFailed($test, $e, $timer->elapsedTime());
         return FALSE;
       }
-
-      $result->setSucceeded($test);
+      $timer->stop();
+      $result->setSucceeded($test, $timer->elapsedTime());
       $test->tearDown();
       return TRUE;
     }
