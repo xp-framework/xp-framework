@@ -203,7 +203,7 @@
      */
     function &query() { 
       $args= func_get_args();
-      $sql= $this->_prepare($args);
+      $sql= call_user_func_array(array(&$this, 'prepare'), $args);
 
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) return throw(new SQLStateException('Not connected'));

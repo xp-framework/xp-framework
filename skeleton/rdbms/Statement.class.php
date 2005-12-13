@@ -62,7 +62,7 @@
         '$1.'.implode(', $1.', array_keys($peer->types)),
         $this->arguments[0]
       );
-      return $conn->query($conn->_prepare($this->arguments));
+      return $conn->query(call_user_func_array(array(&$conn, 'prepare'), $this->arguments));
     }
 
   } implements(__FILE__, 'rdbms.SQLExpression');
