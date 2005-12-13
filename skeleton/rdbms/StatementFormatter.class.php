@@ -129,4 +129,4 @@
       $this->escapeRules= $rules;
     }
   }
-?>   
+?>
