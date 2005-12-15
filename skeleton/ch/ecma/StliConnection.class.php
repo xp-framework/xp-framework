@@ -12,6 +12,8 @@
   define('STLI_MON_START_RESPONSE', 'error_ind SUCCESS MonitorStart');
   define('STLI_MON_STOP_RESPONSE',  'error_ind SUCCESS MonitorStop');
   define('STLI_MAKECALL_RESPONSE',  'error_ind SUCCESS MakeCall');
+  define('STLI_MON_CALL_INITIATED', 'Initiated %d makeCall %s %s');
+  define('STLI_MON_CALL_DEVICEINFO','DeviceInformation %d %d (%s)');
   
   // Supported protocol versions
   define('STLI_VERSION_2',      2);
@@ -63,6 +65,29 @@
     }
     
     /**
+     * Writes data to the socket.
+     *
+     * @access  protected
+     * @param   string buf
+     */
+    function _write($buf) {
+      $this->trace('>>>', $buf);
+      $this->sock->write($buf."\n");
+    }
+    
+    /**
+     * Reads data from the socket
+     *
+     * @access  protected
+     * @return  string
+     */
+    function _read() {
+      $read= chop($this->sock->read());
+      $this->trace('<<<', $read);
+      return $read;
+    }
+    
+    /**
      * Set the protocol version. This can only be done *prior* to connecting to
      * the server!
      *
@@ -87,13 +112,10 @@
       $write= vsprintf($args[0], array_slice($args, 1));
       
       // Write command
-      $this->trace('>>>', $write);
-      $this->sock->write($write."\n");
+      $this->_write($write);
       
       // Read response
-      $read= chop($this->sock->read());
-      $this->trace('<<<', $read);
-      
+      $read= $this->_read();
       return $read;
     }
     
@@ -108,6 +130,26 @@
           'Protocol error: Expecting "%s", have "%s"', $expect, $have
         )));
         return FALSE;
+      }
+      
+      return $have;
+    }
+
+    /**
+     * Private helper function
+     *
+     * @access  private
+     */
+    function _expectf($expect, $have) {
+      $res= sscanf($have, $expect);
+
+      foreach ($res as $val) {
+        if (is_null($val)) {
+          throw(new TelephonyException(sprintf(
+            'Protocol error: Expecting "%s", have "%s"', $expect, $have
+          )));
+          return FALSE;
+        }
       }
       
       return $have;
@@ -161,7 +203,13 @@
           $terminal->getAttachedNumber(), 
           $destination->getNumber()
       ))) return NULL;
-      
+
+      if ($this->observed) {
+        if (
+          !$this->_expectf(STLI_MON_CALL_INITIATED, $this->_read()) ||
+          !$this->_expectf(STLI_MON_CALL_DEVICEINFO, $this->_read())
+        ) return NULL;
+      }
       return new TelephonyCall($terminal->address, $destination);
     }
     
@@ -189,12 +237,14 @@
         $success= $this->_expect(
           STLI_MON_START_RESPONSE,
           $this->_sockcmd('MonitorStart %s', $terminal->getAttachedNumber())
-        );      
+        );
+        $success && $this->observed= TRUE;
       } else {
         $success= $this->_expect(
           STLI_MON_STOP_RESPONSE,
           $this->_sockcmd('MonitorStop %s', $terminal->getAttachedNumber())
         );
+        $success && $this->observed= FALSE;
       }
       return $success;
     }
