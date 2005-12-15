@@ -10,7 +10,8 @@
    */
   class TelephonyTerminal extends Object {
     var 
-      $address= NULL;
+      $address  = NULL,
+      $observed = FALSE;
       
     /**
      * Constructor
@@ -31,6 +32,26 @@
      */
     function getAttachedNumber() {
       return $this->address->getNumber();
+    }
+
+    /**
+     * Set Observed
+     *
+     * @access  public
+     * @param   bool observed
+     */
+    function setObserved($observed) {
+      $this->observed= $observed;
+    }
+
+    /**
+     * Get Observed state
+     *
+     * @access  public
+     * @return  bool
+     */
+    function isObserved() {
+      return $this->observed;
     }
   }
 ?>

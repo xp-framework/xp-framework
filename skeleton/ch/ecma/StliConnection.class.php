@@ -115,8 +115,7 @@
       $this->_write($write);
       
       // Read response
-      $read= $this->_read();
-      return $read;
+      return $this->_read();
     }
     
     /**
@@ -204,7 +203,7 @@
           $destination->getNumber()
       ))) return NULL;
 
-      if ($this->observed) {
+      if ($terminal->isObserved()) {
         if (
           !$this->_expectf(STLI_MON_CALL_INITIATED, $this->_read()) ||
           !$this->_expectf(STLI_MON_CALL_DEVICEINFO, $this->_read())
@@ -238,13 +237,13 @@
           STLI_MON_START_RESPONSE,
           $this->_sockcmd('MonitorStart %s', $terminal->getAttachedNumber())
         );
-        $success && $this->observed= TRUE;
+        $success && $terminal->setObserved(TRUE);
       } else {
         $success= $this->_expect(
           STLI_MON_STOP_RESPONSE,
           $this->_sockcmd('MonitorStop %s', $terminal->getAttachedNumber())
         );
-        $success && $this->observed= FALSE;
+        $success && $terminal->setObserved(FALSE);
       }
       return $success;
     }
