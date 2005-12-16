@@ -30,7 +30,8 @@ n/a
 
 Speed impact
 ------------
-n/a
+The ESDL should not be used at runtime but to generate classes once and 
+then use those.
 
 
 Dependencies
