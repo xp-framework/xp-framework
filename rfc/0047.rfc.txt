@@ -1,0 +1,71 @@
+RFC 0047: Guaranteed destructors
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: kiesel, friebe
+@created: Fri Dec 16 15:58:03 CET 2005
+@status:  draft
+@category: <core>
+
+Scope of Change
+---------------
+Remove destruction mechanism in lang.base.php. Destruction methods will
+be registered for each object by the method Object::Object() if a
+__destruct method is declared for that object.
+
+Rationale
+---------
+The current destruction mechanism built into XP's core relies on the
+$GLOBALS array: for each object in $GLOBALS that is a child of 
+lang.Object, the destructor will be called.
+
+Thus, every object inherits a default "dummy" destructor that will 
+be called, no matter if it's overridden and actually does something
+or not.
+
+Also, not every object is in $GLOBALS, so not every destructor will be
+actually called - at least, one may not rely on it.
+
+Functionality
+-------------
+The __destroy() method in lang.base.php will be removed, as well as
+the default __destruct() method in lang.Object.
+
+At the same time, Object::Object() will be changed to register a 
+class instance's __destruct() method as a shutdown function via 
+the  register_shutdown_function, if the class implements one.
+
+Because lang.Object does no longer have a __destruct() method, those
+classes currently defining a __destruct() method must be changed, so
+they won't call the parent::__destruct() any more; this is a small
+BC breakage!
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+There are some effects that have to be taken into account:
+- lang.Object does no longer have a dummy destructor that
+  gets called unnecessarily (faster)
+- formerly, not all destructors would really be called, while
+  now they will. (slower)
+- lang.base.php will shrink and it's destroy() method no longer
+  be called. (faster)
+
+Overall, the speed could be marginally slower, with the benefit of
+having the security of guaranteed destructors.
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+n/a
+
+Comments
+--------
+
+<EOF>
