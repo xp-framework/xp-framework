@@ -387,7 +387,7 @@
   error_reporting(E_ALL);
   
   // Get rid of magic quotes 
-  ini_get('magic_quotes_gpc') && xp::error('[xp::core] magic_quotes_gpc enabled');
+  get_magic_quotes_gpc() && xp::error('[xp::core] magic_quotes_gpc enabled');
   ini_set('magic_quotes_runtime', FALSE);
   
   // Constants
