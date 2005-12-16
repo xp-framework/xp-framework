@@ -22,10 +22,44 @@ Functionality
 -------------
 Short: Like WSDL, only not in XML.
 
+The ESDL will be realized via a new MBean so it is separated from the 
+invocation API. The TCP/IP server will also run on a different port to 
+make it easily divideable (both availability- and accessibility-wise)
+from the invocation server.
+
+The entry point class (remote.Remote) will remain the same, though.
+
+Example
+~~~~~~~
+<?php
+  $remote= &Remote::forName('xp://localhost:6449/');
+  $services= &$remote->lookup('Services');
+  
+  // 1. List all Enterprise Beans available
+  foreach ($services->beans() as $bean) {
+    // ...
+  }
+
+  // 2. Acquire information about a certain service by passing
+  //    its JNDI name
+  $bean= &$services->bean('Calculator');
+?>
+
+The bean object
+~~~~~~~~~~~~~~~
+Contains information about a single Enterprise Java Bean.
+* Type (Session / Entity)
+* Name (remote JNDI-name for use in Remote::lookup())
+* Remote methods
+  - Arguments and their types if available
+  - Return value if available
+  - Transaction types (Required, RequiresNew, ...)
+
 
 Security considerations
 -----------------------
-n/a
+The description will only describe remote methods. No internals about the
+Bean are revealed.
 
 
 Speed impact
