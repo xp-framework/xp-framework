@@ -20,6 +20,9 @@ With this new API, Enterprise Bean client logic can be auto-generated.
 
 Functionality
 -------------
+
+A) Client Side
+~~~~~~~~~~~~~~
 Short: Like WSDL, only not in XML.
 
 The ESDL will be realized via a new MBean so it is separated from the 
@@ -54,6 +57,12 @@ Contains information about a single Enterprise Java Bean.
   - Arguments and their types if available
   - Return value if available
   - Transaction types (Required, RequiresNew, ...)
+
+
+B) Server Side
+~~~~~~~~~~~~~~
+Short: Same as EASC MBean but deploys some helper services at startup.
+
 
 
 Security considerations
