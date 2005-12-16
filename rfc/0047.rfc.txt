@@ -1,10 +1,10 @@
-RFC 0047: Guaranteed destructors
+RFC 0047: Guaranteed destructor calls
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: kiesel, friebe
 @created: Fri Dec 16 15:58:03 CET 2005
-@status:  draft
+@status: draft
 @category: <core>
 
 Scope of Change
