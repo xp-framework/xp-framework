@@ -1,0 +1,49 @@
+RFC 0048: ESDL - Enterprise Service Description Language
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Fri Dec 16 15:56:44 CET 2005
+@status: draft
+@category: remote
+
+Scope of Change
+---------------
+A new API will be added to programmatically discover an Enterprise Bean's 
+functionality.
+
+
+Rationale
+---------
+With this new API, Enterprise Bean client logic can be auto-generated.
+
+
+Functionality
+-------------
+Short: Like WSDL, only not in XML.
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
