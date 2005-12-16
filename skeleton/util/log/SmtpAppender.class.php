@@ -43,17 +43,17 @@
      */
     function append() {
       $body= '';
-      for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
-        $arg= &func_get_arg($i);
-        $body.= sprintf("[%08x] %s\n", $i, $this->varSource($arg));
+      
+      with ($args= func_get_args()); {
+        foreach ($args as $idx => $arg) {
+          $body.= $this->varSource($arg).($idx < sizeof($args)-1 ? ' ' : '');
+        }
       }
-
-      if ($this->sync) { 
-        $arg= func_get_arg(0);
-        mail($this->email, $this->prefix.$arg, $body);
+      
+      if ($this->sync) {
+        mail($this->email, $this->prefix, $body);
       } else {
-        $arg= func_get_arg(0);
-        $this->_data[]= array($arg, $body);
+        $this->_data[]= $body;
       }
     }
     
@@ -67,15 +67,11 @@
       if ($this->sync) return;
       
       $body= '';
-      for ($i= 1, $s= sizeof($this->_data); $i < $s; $i++) {
-        $body.= (
-          str_pad($this->_data[$i][0], 72, '-', STR_PAD_BOTH).
-          "\n".
-          $this->_data[$i][1]
-        );
+      foreach ($this->_data as $line) {
+        $body.= $line."\n";
       }
 
-      mail($this->email, $this->prefix.$this->_data[0][0].' [+'.$s.']', $body);
+      mail($this->email, $this->prefix.' ['.(sizeof($this->_data)).' entries]', $body);
     }
   }
 ?>
