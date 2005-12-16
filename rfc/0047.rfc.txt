@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel, friebe
 @created: Fri Dec 16 15:58:03 CET 2005
-@status: draft
+@status: discussion, ends Mon Dec 20 11:00:00 CET 2005
 @category: <core>
 
 Scope of Change
@@ -63,9 +63,14 @@ n/a
 
 Related documents
 -----------------
-n/a
+- http://xp-framework.net/downloads/rfc0047.diff
+  Patch implementing this RFC
 
 Comments
 --------
+- kiesel, Fri Dec 16 17:34:28 CET 2005
+  Destructors don't work this way with objects that are assigned to
+  static variables, as they are commonly used in singletons.
+
 
 <EOF>
