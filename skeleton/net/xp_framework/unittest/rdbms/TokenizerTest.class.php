@@ -95,8 +95,9 @@
     #[@test]
     function testStringToken() {
       static $expect= array(
-        'sybase' => 'select """Hello"", Tom\'s friend said" as strval',
-        'mysql'  => 'select "\"Hello\", Tom\'s friend said" as strval',
+        'sybase'  => 'select """Hello"", Tom\'s friend said" as strval',
+        'mysql'   => 'select "\"Hello\", Tom\'s friend said" as strval',
+        'pgsql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
         // TBD: Other built-in rdbms engines
       );
       
@@ -115,8 +116,9 @@
     #[@test]
     function testBackslash() {
       static $expect= array(
-        'sybase' => 'select "Hello \\ " as strval',     // one backslash
-        'mysql'  => 'select "Hello \\\\ " as strval',   // two backslashes
+        'sybase'  => 'select "Hello \\ " as strval',    // one backslash
+        'mysql'   => 'select "Hello \\\\ " as strval',  // two backslashes
+        'pgsql'   => 'select \'Hello \\ \' as strval',    // one backslash
         // TBD: Other built-in rdbms engines
       );
       
@@ -191,7 +193,7 @@
     }
     
     /**
-     * Test accessing non-passed values (eg. values a higher
+     * Test accessing non-passed values (eg. values with a higher
      * ordinal than available).
      *
      * @access  public
