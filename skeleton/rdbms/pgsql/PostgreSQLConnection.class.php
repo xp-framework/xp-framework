@@ -98,9 +98,8 @@
       
       if (NULL === $formatter) {
         $formatter= new StatementFormatter();
-        $formatter->setEscapeRules(array(
-          '\''  => '\'\''
-        ));
+        $formatter->setEscape("'");
+        $formatter->setEscapeRules(array('\''  => '\'\''));
         $formatter->setDateFormat('Y-m-d H:i:s');
       }
       return $formatter->format(array_shift($args), $args);

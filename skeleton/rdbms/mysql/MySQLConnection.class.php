@@ -105,6 +105,7 @@
       
       if (NULL === $formatter) {
         $formatter= new StatementFormatter();
+        $formatter->setEscape('"');
         $formatter->setEscapeRules(array(
           '"'   => '\"',
           '\\'  => '\\\\'

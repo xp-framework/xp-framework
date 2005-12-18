@@ -115,10 +115,8 @@
       
       if (NULL === $formatter) {
         $formatter= new StatementFormatter();
-        $formatter->setEscapeRules(array(
-          '"'   => '""',
-          '\\'  => '\\'
-        ));
+        $formatter->setEscape('"');
+        $formatter->setEscapeRules(array('"'   => '""'));
         $formatter->setDateFormat('Y-m-d h:iA');
       }
       

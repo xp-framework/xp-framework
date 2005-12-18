@@ -12,7 +12,7 @@
    *   $formatter= &new StatementFormatter();
    *   $formatter->setEscapeRules(array(
    *     '"'   => '""',
-   *     '\\'  => '\\'
+   *     '\\'  => '\\\\'
    *   ));
    *   $formatter->setDateFormat('Y-m-d h:iA');
    *   $formatter->format('select foo from table where id= %d', 123);
@@ -26,11 +26,9 @@
    */
   class StatementFormatter extends Object {
     var
-      $escapeRules    = array(
-        '"'   => '""',
-        '\\'  => '\\'
-      ),
-      $dateFormat=      'Y-m-d h:iA';
+      $escape       = '"',
+      $escapeRules  = array('"'   => '""'),
+      $dateFormat   = 'Y-m-d h:iA';
   
   
     /**
@@ -95,11 +93,11 @@
       foreach ($a as $arg) {
         if (NULL === $arg) { $r.= 'NULL, '; continue; }
         switch ($type) {
-          case 's': $r.= '"'.strtr($arg, $this->escapeRules).'"'; break;
+          case 's': $r.= $this->escape.strtr($arg, $this->escapeRules).$this->escape; break;
           case 'd': $r.= sprintf('%.0f', $arg); break;
           case 'c': $r.= $arg; break;
           case 'f': $r.= floatval($arg); break;
-          case 'u': $r.= '"'.date($this->dateFormat, $arg).'"'; break;
+          case 'u': $r.= $this->escape.date($this->dateFormat, $arg).$this->escape; break;
           case '%': $r.= '%'; break;
           default: $r.= '%'.$type;
         }
@@ -127,6 +125,16 @@
      */
     function setEscapeRules($rules) {
       $this->escapeRules= $rules;
+    }
+    
+    /**
+     * Sets the escaping character.
+     *
+     * @access  public
+     * @param   string escape
+     */
+    function setEscape($escape) {
+      $this->escape= $escape;
     }
   }
 ?>
