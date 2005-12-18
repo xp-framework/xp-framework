@@ -51,19 +51,11 @@
     function errorAt($file, $line= -1) {
       $errors= &xp::registry('errors');
       
-      // If no line is requested, this is O(n)
+      // If no line is given, check for an error in the file
       if ($line < 0) return !empty($errors[$file]);
       
-      // Else, we'll have to search...
-      if (isset($errors[$file])) for (
-        $i= 0, $s= sizeof($errors[$file]); 
-        $i < $s; 
-        $i++
-      ) {
-        if ($line == $errors[$file][$i][2]) return TRUE;
-      }
-      
-      return FALSE;
+      // Otherwise, check for an error in the file on a certain line
+      return !empty($errors[$file][$line]);
     }
     // }}}
     
@@ -153,7 +145,7 @@
     if (0 == error_reporting() || is_null($file)) return;
 
     $errors= &xp::registry('errors');
-    $errors[$file][]= array($code, $msg, $line);
+    @$errors[$file][$line][$msg]++;
     xp::registry('errors', $errors);
   }
   // }}}

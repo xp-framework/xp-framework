@@ -26,25 +26,27 @@
      */
     function __construct($message) {
       static $except= array(
-        'call_user_func_array', 'call_user_func', 'object', '__call', '__set', '__get'
+        'call_user_func_array'  => 1, 
+        'call_user_func'        => 1, 
+        'object'                => 1
       );
       $this->message= $message;
       
       $errors= xp::registry('errors');
-      foreach (debug_backtrace() as $trace) {
-        if (!isset($trace['function']) || in_array($trace['function'], $except)) continue;
+      foreach (debug_backtrace() as $no => $trace) {
+        if (!isset($trace['function']) || isset($except[$trace['function']])) continue;
 
         // Pop error messages off the copied error stack
         if (isset($trace['file']) && isset($errors[$trace['file']])) {
           $messages= $errors[$trace['file']];
           unset($errors[$trace['file']]);
         } else {
-          $messages= array();
+          $messages= array(array('' => 1));
         }
 
         // Not all of these are always set: debug_backtrace() should
         // initialize these - at least - to NULL, IMO => Workaround.
-        $this->trace[]= &new StackTraceElement(
+        $this->addStackTraceFor(
           isset($trace['file']) ? $trace['file'] : NULL,
           isset($trace['class']) ? $trace['class'] : NULL,
           isset($trace['function']) ? $trace['function'] : NULL,
@@ -60,16 +62,44 @@
           ? strtolower(substr(basename($key), 0, -10))
           : '<main>'
         );
-        for ($i= 0, $s= sizeof($errors[$key]); $i < $s; $i++) { 
-          $this->trace[]= &new StackTraceElement(
-            $key,
+        
+        foreach ($errors as $file => $list) {
+          $this->addStackTraceFor(
+            $file,
             $class,
             NULL,
-            $errors[$key][$i][2],
+            NULL,
             array(),
-            array($errors[$key][$i])
+            $list
           );
         }
+      }
+    }
+    
+    /**
+     * Adds new stacktrace elements to the internal list of stacktrace
+     * elements, each for one error.
+     *
+     * @access  protected
+     * @param   string file
+     * @param   string class
+     * @param   string function
+     * @param   int originalline
+     * @param   mixed[] args
+     * @param   mixed[] errors
+     */
+    function addStackTraceFor($file, $class, $function, $originalline, $args, $errors) {
+      foreach ($errors as $line => $errormsg) {
+        foreach ($errormsg as $message => $amount) {
+          $this->trace[]= &new StackTraceElement(
+            $file,
+            $class,
+            $function,
+            $originalline ? $originalline : $line,
+            $args,
+            $message.($amount > 1 ? ' (... '.($amount - 1).' more)' : '')
+          );
+        }   
       }
     }
 
@@ -128,7 +158,7 @@
         $this->message
       );
       for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
-        $s.= $this->trace[$i]->toString();
+        $s.= $this->trace[$i]->toString(); 
       }
       return $s;
     }

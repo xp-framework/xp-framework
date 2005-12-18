@@ -18,7 +18,7 @@
       $method   = '',
       $line     = 0,
       $args     = array(),
-      $messages = array();
+      $message  = '';
       
     /**
      * Constructor
@@ -29,15 +29,15 @@
      * @param   string method
      * @param   int line
      * @param   array args
-     * @param   array messages
+     * @param   string message
      */
-    function __construct($file, $class, $method, $line, $args, $messages) {
+    function __construct($file, $class, $method, $line, $args, $message) {
       $this->file     = $file;  
       $this->class    = $class; 
       $this->method   = $method;
       $this->line     = $line;
       $this->args     = $args;
-      $this->messages = $messages;
+      $this->message  = $message;
     }
     
     /**
@@ -71,29 +71,15 @@
           }
         }
       }
-      $fmt= sprintf(
-        "  at %s::%s(%s) [line %%3\$d of %s] %%2\$s\n",
+      return sprintf(
+        "  at %s::%s(%s) [line %d of %s] %s\n",
         isset($this->class) ? xp::nameOf($this->class) : '<main>',
         isset($this->method) ? $this->method : '<main>',
         implode(', ', $args),
-        basename(isset($this->file) ? $this->file : __FILE__)
+        $this->line,
+        basename(isset($this->file) ? $this->file : __FILE__),
+        $this->message
       );
-      
-      if (!$this->messages) {
-        return sprintf(
-          $fmt, 
-          E_USER_NOTICE, 
-          '', 
-          isset($this->line) ? $this->line : __LINE__
-        );
-      }
-      
-      $str= '';
-      for ($i= 0, $s= sizeof($this->messages); $i < $s; $i++) {
-        $str.= rtrim(vsprintf($fmt, $this->messages[$i]))."\n";
-      }
-      return $str;
     }
-  
   }
 ?>
