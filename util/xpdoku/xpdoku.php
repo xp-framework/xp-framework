@@ -155,7 +155,7 @@
               '<pre>$1</pre>',
               '<tt>$1</tt>',
               '<quote>$1</quote>',
-              'highlightPHPSource(stripslashes(\'$1\'))',
+              'highlightPHPSource(\'$1\')',
               '<ul>$1</ul>',
               '<ol>$1</ol>',
               '<$1>',
