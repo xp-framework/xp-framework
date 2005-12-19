@@ -238,7 +238,6 @@
         $n && $n->unlink_node($n);
       }}
       $this->document= NULL;
-      parent::__destruct();
     }
   }
 ?>

@@ -76,7 +76,6 @@
      */
     function __destruct() {
       delete($this->_conn);
-      parent::__destruct();
     }
     
     /**

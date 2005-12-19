@@ -234,7 +234,6 @@
      */
     function __destruct() {
       if (is_resource($this->_res)) openssl_x509_free($this->_res);
-      parent::__destruct();
     }  
   }
 ?>

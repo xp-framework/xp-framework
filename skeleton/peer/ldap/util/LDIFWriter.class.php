@@ -67,16 +67,6 @@
     }
     
     /**
-     * Destructor
-     *
-     * @access  public
-     */
-    function __destruct() {
-      $this->finish();
-      parent::__destruct();
-    }
-    
-    /**
      * Write an entry
      *
      * @access  public
@@ -97,18 +87,6 @@
         }
       }
       $this->stream->write("\n");
-    }
-    
-    /**
-     * Finish off writing, close and destroy stream
-     *
-     * @access  public
-     */
-    function finish() {
-      if (!$this->stream) return;
-      $this->stream->close();
-      $this->stream->__destruct();
-      $this->stream= NULL;
     }
   }
 ?>

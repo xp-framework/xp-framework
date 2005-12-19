@@ -190,16 +190,6 @@
     }
     
     /**
-     * Destructor. Makes sure Logger::finalize() is called.
-     *
-     * @access  public
-     */
-    function __destruct() {
-      $this->finalize();
-      parent::__destruct();
-    }
-  
-    /**
      * Returns an instance of this class
      *
      * @access  public

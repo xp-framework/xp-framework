@@ -49,7 +49,6 @@
      */
     function __destruct() {
       $this->close();
-      parent::__destruct();
     }
     
     /**

@@ -47,7 +47,6 @@
      */
     function __destruct() {
       unset($this->_hash);
-      parent::__destruct();
     }
 
     /**

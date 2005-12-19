@@ -94,7 +94,6 @@
     function __destruct() {
       com_release($this->h);
       $this->h= NULL;
-      parent::__destruct();
     }
   } overload('COMObject');
 ?>

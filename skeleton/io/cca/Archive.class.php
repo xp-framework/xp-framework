@@ -294,7 +294,6 @@
      */
     function __destruct() {
       if ($this->isOpen()) $this->close();
-      parent::__destruct();
     }
   }
 ?>

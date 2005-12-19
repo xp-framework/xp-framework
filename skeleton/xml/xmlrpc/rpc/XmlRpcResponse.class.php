@@ -54,15 +54,5 @@
       
       $this->cat && $this->cat->debug('>>> ', $this->content);
     }
-    
-    /**
-     * Destructor
-     *
-     * @access  public
-     */
-    function __destruct() {
-      if (is_a($this->message, 'Object')) $this->message->__destruct();
-      parent::__destruct();
-    }
   }
 ?>

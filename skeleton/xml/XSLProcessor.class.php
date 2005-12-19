@@ -220,7 +220,6 @@
         xslt_free($this->processor);
         $this->processor= NULL;
       }
-      parent::__destruct();
     }
   }
 ?>

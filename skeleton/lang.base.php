@@ -150,17 +150,6 @@
   }
   // }}}
 
-  // {{{ internal void __destroy(void)
-  //     Shutdown function
-  function __destroy() {
-    foreach (array_keys($GLOBALS) as $k) {
-      if (is_a($GLOBALS[$k], 'Object')) {
-        $GLOBALS[$k]->__destruct();
-      }
-    }
-  }
-  // }}}
-
   // {{{ void uses (string* args)
   //     Uses one or more classes
   function uses() {
@@ -347,7 +336,7 @@
   // {{{ proto void delete(&lang.Object object)
   //     Destroys an object
   function delete(&$object) {
-    is_a($object, 'Object') && $object->__destruct();
+    is_a($object, 'Object') && method_exists($object, '__destruct') && $object->__destruct();
     $object= NULL;
   }
   // }}}
@@ -393,7 +382,6 @@
   define('LONG_MIN', -LONG_MAX - 1);
 
   // Hooks
-  register_shutdown_function('__destroy');
   extension_loaded('overload') && overload('null');
   set_error_handler('__error');
   

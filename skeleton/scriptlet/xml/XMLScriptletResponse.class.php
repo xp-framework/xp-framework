@@ -309,7 +309,6 @@
     function __destruct() {
       delete($this->document);
       delete($this->processor);
-      parent::__destruct();
     }
   }
 ?>

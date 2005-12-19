@@ -14,7 +14,16 @@
    * @purpose  Appender
    */  
   class SyslogAppender extends LogAppender {
-    
+
+    /**
+     * Destructor.
+     *
+     * @access  protected
+     */
+    function __destruct() {
+      $this->finalize();
+    }
+        
     /**
      * Constructor
      *
@@ -44,7 +53,6 @@
       }
       syslog($buf);
     }
-    
     
     /**
      * Finalize this appender - is called when the logger shuts down

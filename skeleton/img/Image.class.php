@@ -52,7 +52,6 @@
      */
     function __destruct() {
       if (is_resource($this->handle)) imagedestroy($this->handle);
-      parent::__destruct();
     }
 
     /**

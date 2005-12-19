@@ -36,6 +36,15 @@
     }
     
     /**
+     * Destructor
+     *
+     * @access  protected
+     */
+    function __destruct() {
+      $this->finalize();
+    }
+    
+    /**
      * Sends log data to the specified email address
      *
      * @access  public

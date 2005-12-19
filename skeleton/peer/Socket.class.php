@@ -285,7 +285,6 @@
      */
     function __destruct() {
       if ($this->isConnected()) $this->close();
-      parent::__destruct();
     }
   }
 ?>

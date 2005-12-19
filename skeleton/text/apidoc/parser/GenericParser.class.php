@@ -47,7 +47,6 @@
       $this->file->__destruct();
       $this->tokenizer->__destruct();
       $this->prop->__destruct();
-      parent::__destruct();
     }
     
     /**

@@ -46,16 +46,6 @@
     }
     
     /**
-     * Destructor
-     * 
-     * @access  public
-     */
-    function __destruct() {
-      $this->archive->close();
-      parent::__destruct();
-    }
-    
-    /**
      * Load the class by the specified name
      *
      * @access  public

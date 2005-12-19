@@ -20,6 +20,8 @@
      */
     function Object() {
       $this->__id= microtime();
+      if (method_exists($this, '__destruct'))
+        register_shutdown_function(array(&$this, '__destruct'));
       if (!method_exists($this, '__construct')) return;
       $args= func_get_args();
       call_user_func_array(array(&$this, '__construct'), $args);
@@ -44,15 +46,6 @@
      */
     function equals(&$cmp) {
       return $this === $cmp;
-    }
-    
-    /**
-     * Destructor
-     *
-     * @access  public
-     */
-    function __destruct() {
-      unset($this);
     }
     
     /** 
