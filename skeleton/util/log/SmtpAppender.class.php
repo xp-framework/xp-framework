@@ -73,7 +73,7 @@
      * @access  public 
      */
     function finalize() {
-      if ($this->sync) return;
+      if ($this->sync || 0 == sizeof($this->_data)) return;
       
       $body= '';
       foreach ($this->_data as $line) {
