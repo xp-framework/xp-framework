@@ -11,6 +11,18 @@ import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 import net.xp_framework.easc.server.ServerContext;
 
+/**
+ * Handles transactions
+ *
+ * <ul>
+ *   <li>1 - Begin a transaction</li>
+ *   <li>2 - Retrieve transaction state</li>
+ *   <li>3 - Commit transaction</li>
+ *   <li>4 - Rollback transaction</li>
+ * </ul>
+ *
+ * @see   net.xp_framework.easc.server.Delegate
+ */
 public class TransactionDelegate implements Delegate {
     int operation;
 
@@ -28,6 +40,7 @@ public class TransactionDelegate implements Delegate {
             }
             case 2: {
                 // TBI
+                break;
             }
             case 3: {
                 // System.out.println("Committing " + ctx.transaction);
