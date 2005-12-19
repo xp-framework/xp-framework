@@ -131,5 +131,5 @@
   } if (catch('IOException', $e)) {
     $e->printStackTrace();
   }
-  $prop->__destruct();
+  delete($prop);
 ?>

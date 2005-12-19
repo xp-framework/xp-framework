@@ -44,9 +44,9 @@
      * @access  public
      */
     function __destruct() {
-      $this->file->__destruct();
-      $this->tokenizer->__destruct();
-      $this->prop->__destruct();
+      delete($this->file);
+      delete($this->tokenizer);
+      delete($this->prop);
     }
     
     /**
