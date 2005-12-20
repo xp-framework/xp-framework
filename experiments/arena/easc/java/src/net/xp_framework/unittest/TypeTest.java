@@ -31,6 +31,7 @@ public class TypeTest {
         assertEquals(MessageType.Lookup, MessageType.valueOf(1));
         assertEquals(MessageType.Call, MessageType.valueOf(2));
         assertEquals(MessageType.Finalize, MessageType.valueOf(3));
+        assertEquals(MessageType.Transaction, MessageType.valueOf(4));
     }
     
     /**
@@ -41,9 +42,9 @@ public class TypeTest {
      * @throws  java.lang.Exception
      */
     @Test public void responseMessages() throws Exception {
-        assertEquals(MessageType.Value, MessageType.valueOf(4));
-        assertEquals(MessageType.Exception, MessageType.valueOf(5));
-        assertEquals(MessageType.Error, MessageType.valueOf(6));
+        assertEquals(MessageType.Value, MessageType.valueOf(5));
+        assertEquals(MessageType.Exception, MessageType.valueOf(6));
+        assertEquals(MessageType.Error, MessageType.valueOf(7));
     }
 
     /**

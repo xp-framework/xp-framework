@@ -10,7 +10,7 @@ package net.xp_framework.unittest;
  *
  * @purpose Value object for SerializerTest
  */
-public class Person {
+public class Person implements java.io.Serializable {
     public int id = 1549;
     public String name = "Timm Friebe";
     
