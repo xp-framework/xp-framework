@@ -9,6 +9,7 @@ import net.xp_framework.easc.reflect.TransactionTypeDescription;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.security.Principal;
 
 /**
  * Describes an EJB method
@@ -18,6 +19,7 @@ public class MethodDescription implements Serializable {
     public String name;
     public String returnType;
     public ArrayList<String> parameterTypes= new ArrayList<String>();
+    public ArrayList<String> roles= new ArrayList<String>();
     public TransactionTypeDescription transactionType= null;
     
     /**
@@ -117,14 +119,43 @@ public class MethodDescription implements Serializable {
     }
 
     /**
+     * Add role
+     *
+     * @access  public
+     * @param   java.lang.String role
+     */
+    public void addRole(String role) {
+        this.roles.add(role);
+    }
+
+    /**
+     * Add role
+     *
+     * @access  public
+     * @param   java.security.Principal role
+     */
+    public void addRole(Principal role) {
+        this.roles.add(role.getName());
+    }
+
+    /**
      * Creates a string representation of this object
      *
      * @access  public
      * @return  java.lang.String
      */
     @Override public String toString() {
-        StringBuffer s= new StringBuffer(this.getClass().getName());
-        s.append("@{ ").append("@Transaction(").append(this.transactionType).append(") ");
+        StringBuffer s= new StringBuffer(this.getClass().getName()).append("@{ ");
+        
+        // Prepend transaction information
+        s.append("@Transaction(type= ").append(this.transactionType).append(") ");
+        
+        // Prepend security role information
+        if (this.roles.size() > 0) {
+            s.append("@Security(roles= ").append(this.roles).append(") ");
+        }
+        
+        // Create method signature
         s.append(this.returnType).append(' ').append(this.name).append('(');
 
         // Append parameter types separated by commas

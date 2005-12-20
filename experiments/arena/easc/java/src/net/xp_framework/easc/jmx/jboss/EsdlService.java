@@ -102,7 +102,7 @@ public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean
             // Check for method permissions
             if (meta.hasMethodPermission(m.getName(), m.getParameterTypes(), type)) {
                 for (Principal principal: (Set<Principal>)meta.getMethodPermissions(m.getName(), m.getParameterTypes(), type)) {
-                    // TBI
+                    description.addRole(principal);
                 }
             }
             
