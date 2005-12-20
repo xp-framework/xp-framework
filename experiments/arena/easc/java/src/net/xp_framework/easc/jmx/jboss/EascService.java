@@ -54,7 +54,7 @@ public class EascService extends ServiceMBeanSupport implements EascServiceMBean
     }
     
     /**
-     * Starts EASC service
+     * Stops EASC service
      *
      * @access  protected
      * @throws  java.lang.Exception
