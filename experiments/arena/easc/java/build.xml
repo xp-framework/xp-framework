@@ -21,6 +21,7 @@
       <include name="jboss-system.jar"/>
       <include name="jboss-jmx.jar"/>
       <include name="jboss-j2ee.jar"/>
+      <include name="jboss.jar"/>
     </fileset>
   </path>
 
