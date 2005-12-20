@@ -17,8 +17,8 @@ import java.net.ServerSocket;
  * @see   org.jboss.system.ServiceMBeanSupport
  */
 public class EascService extends ServiceMBeanSupport implements EascServiceMBean {
-    private int port= 4446;
-    private ServerThread server = null;
+    private int port= 0;
+    private ServerThread serverThread= null;
     
     /**
      * Sets the port the server thread will listen on
@@ -48,9 +48,9 @@ public class EascService extends ServiceMBeanSupport implements EascServiceMBean
      * @see     org.jboss.system.ServiceMBeanSupport#startService
      */
     protected void startService() throws Exception {
-        this.server= new ServerThread(new ServerSocket(this.port));
-        this.server.setHandler(new ServerHandler());
-        this.server.start();
+        this.serverThread= new ServerThread(new ServerSocket(this.port));
+        this.serverThread.setHandler(new ServerHandler());
+        this.serverThread.start();
     }
     
     /**
@@ -61,6 +61,6 @@ public class EascService extends ServiceMBeanSupport implements EascServiceMBean
      * @see     org.jboss.system.ServiceMBeanSupport#stopService
      */
     protected void stopService() throws Exception {
-        this.server.shutdown();
+        this.serverThread.shutdown();
     }
 }
