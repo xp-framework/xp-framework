@@ -3,7 +3,7 @@
 # 
 # $Id$
 
-PHP=php -dinclude_path=../../skeleton
+PHP=php -dinclude_path=../../skeleton -dmemory_limit=16M
 collections=../etc/make/collections.ini
 
 .PHONY: cache
@@ -12,6 +12,10 @@ all: parse collections inheritance
 
 cache:
 	test -e cache || mkdir cache
+    
+clean:
+	@rm collections.xml inheritance.xml
+	@rm -rf cache
 
 parse: cache
 	$(PHP) make.php $(collections)
