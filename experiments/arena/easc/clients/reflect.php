@@ -15,7 +15,7 @@ ESDL demo application
 
 Usage
 -----
-$ php feed.php <hostname> [-p <port> ]
+$ php reflect.php <hostname> [-p <port> ]
   
   * hostname is the host name (or IP) that your JBoss + XP-MBean server 
     is running on. The feed entity bean (from the easc/beans directory) 
