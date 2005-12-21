@@ -1,10 +1,10 @@
-RFC 0012: RMI
+RFC 0012: EJB access API
 ========================================================================
 $Id$
 
 @authors: friebe
 @created: Tue Jan  4 11:31:11 CET 2005
-@status: draft
+@status: implemented, Wed Dec 21 15:28:17 CET 2005
 @category: rmi
 
 Scope of Change
@@ -398,5 +398,8 @@ Comments
 - friebe, Mon Mar 14 11:26:01 CET 2005
   The "compressed" field is reserved for future use. At the moment, it will
   always contain 0.
+
+- friebe, Wed Dec 21 15:28:28 CET 2005
+  This RFC has now been implemented (a bit different than suggested here).
 
 <EOF>
