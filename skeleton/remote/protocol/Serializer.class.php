@@ -12,7 +12,8 @@
     'lang.types.Float',
     'lang.types.ArrayList',
     'util.Date',
-    'remote.UnknownRemoteObject'
+    'remote.UnknownRemoteObject',
+    'remote.ExceptionReference'
   );
 
   /**
@@ -251,8 +252,7 @@
 
         case 'E': {     // generic exceptions
           $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-          $instance= &new Exception(NULL);
-          $instance->classname= substr($serialized, 2+ strlen($len)+ 2, $len);
+          $instance= &new ExceptionReference(substr($serialized, 2+ strlen($len)+ 2, $len));
           $offset= 2 + 2 + strlen($len)+ $len + 2;
           $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
           $offset+= strlen($size)+ 2;
