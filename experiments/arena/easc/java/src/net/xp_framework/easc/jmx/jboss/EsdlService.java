@@ -173,7 +173,7 @@ public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean
                         }
                     }
                     
-                    System.out.println(description);
+                    // DEBUG System.out.println(description);
                     this.descriptions.put(meta.getJndiName(), description);
                }
             }
