@@ -205,6 +205,7 @@
         $this->assertEquals('getDate', $method->getName(TRUE));
         $this->assertTrue($this->class->equals($method->getDeclaringClass()));
         $this->assertEquals('util.Date', $method->getReturnType());
+        $this->assertEquals(XPClass::forName('util.Date'), $method->getReturnClass());
         $this->assertTrue($method->returnsReference());
       }
     }
