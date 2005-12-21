@@ -625,6 +625,11 @@ public class Serializer {
         buffer.append("}}");
         return buffer.toString();        
     }
+    
+    @Handler public static String representationOf(Enum e) throws Exception {
+        if (null == e) return "N;";
+        return "i:" + e.ordinal() + ";";
+    }
         
     /**
      * Fall-back method for default serialization. Not a handler since this 
