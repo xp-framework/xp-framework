@@ -13,7 +13,8 @@ import org.jboss.invocation.InvocationType;
 import org.jboss.deployment.SubDeployer;
 
 import net.xp_framework.easc.server.ServerThread;
-import net.xp_framework.easc.protocol.standard.ServerHandler;
+import net.xp_framework.easc.server.ReflectionServerContext;
+import net.xp_framework.easc.protocol.standard.ReflectionServerHandler;
 import net.xp_framework.easc.jmx.jboss.EsdlServiceMBean;
 import net.xp_framework.easc.reflect.BeanDescription;
 import net.xp_framework.easc.reflect.InterfaceDescription;
@@ -39,6 +40,9 @@ import javax.management.NotificationFilter;
  * @see   org.jboss.system.ServiceMBeanSupport
  */
 public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean, NotificationListener {
+    private ServerThread serverThread= null;
+    private HashMap<String, BeanDescription> descriptions= new HashMap<String, BeanDescription>();
+
     protected int port= 0;
     protected ObjectName deployerName= null;
 
@@ -138,6 +142,8 @@ public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean
                 new Object[] { }, 
                 new String[] { }
             );
+            
+            this.descriptions.clear();
             while (deployments.hasNext()) {
                 DeploymentInfo info= deployments.next();
                 
@@ -165,8 +171,10 @@ public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean
                         for (MethodDescription m: this.methodsOf(meta, Class.forName(meta.getRemote()), InvocationType.REMOTE)) {
                             i.addMethodDescription(m);
                         }
-                    }                    
+                    }
+                    
                     System.out.println(description);
+                    this.descriptions.put(meta.getJndiName(), description);
                }
             }
         } catch (Exception ignored) { 
@@ -210,6 +218,11 @@ public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean
      * @see     org.jboss.system.ServiceMBeanSupport#startService
      */
     protected void startService() throws Exception {
+        this.serverThread= new ServerThread(new ServerSocket(this.port));
+        this.serverThread.setHandler(new ReflectionServerHandler());
+        this.serverThread.setContext(new ReflectionServerContext(this.descriptions));
+        this.serverThread.start();
+
         this.deployerName= new ObjectName(EJB_DEPLOYER_JMX_NAME);
         this.updateDeploymentsFrom(this.deployerName);
 
@@ -226,5 +239,7 @@ public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean
      */
     protected void stopService() throws Exception {
         this.server.removeNotificationListener(this.deployerName, this);
+
+        this.serverThread.shutdown();
     }
 }

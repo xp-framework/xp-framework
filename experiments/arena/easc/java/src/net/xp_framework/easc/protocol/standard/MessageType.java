@@ -102,8 +102,7 @@ public enum MessageType {
     
     Lookup {
         public Delegate delegateFrom(DataInputStream in, ServerContext ctx) throws IOException {
-            String jndiName= ByteCountedString.readFrom(in);
-            return new LookupDelegate(jndiName);
+            return ctx.lookup(ByteCountedString.readFrom(in));
         }
     }, 
 
@@ -117,7 +116,7 @@ public enum MessageType {
             
             // Sanity check object
             if (null == instance) {
-                throw new IOException("Cannot find object: " + objectId + " in server context");
+                throw new IOException("Cannot find object: " + objectId + " in server context " + ctx);
             }
             
             // Deserialize arguments

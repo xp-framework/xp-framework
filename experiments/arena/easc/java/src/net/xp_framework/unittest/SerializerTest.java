@@ -12,6 +12,7 @@ import net.xp_framework.unittest.Item;
 import net.xp_framework.unittest.ITest;
 import net.xp_framework.unittest.NullInvocationHandler;
 import net.xp_framework.easc.protocol.standard.Invokeable;
+import net.xp_framework.easc.reflect.*;
 import java.util.HashMap;
 import java.util.Date;
 import java.util.UUID;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.lang.reflect.Proxy;
 import java.sql.Timestamp;
+import java.security.Principal;
 
 import static org.junit.Assert.*;
 import static net.xp_framework.easc.protocol.standard.Serializer.representationOf;
@@ -422,7 +424,7 @@ public class SerializerTest {
      * @access  public
      * @throws  java.lang.Exception
      */
-    @Test public void representationOMixedfArrayList() throws Exception {
+    @Test public void representationOfMixedfArrayList() throws Exception {
         ArrayList<Object> a= new ArrayList<Object>();
 
         a.add("Binford");
@@ -432,6 +434,19 @@ public class SerializerTest {
         assertEquals(
             "a:3:{i:0;s:7:\"Binford\";i:1;i:6100;i:2;T:1122369782;}", 
             representationOf(a)
+        );
+    }
+    
+    /**
+     * Tests serialization of a enums
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOfEnums() throws Exception {
+        assertEquals(
+            "i:6;",
+            representationOf(TransactionTypeDescription.UNKNOWN)
         );
     }
 
@@ -456,6 +471,63 @@ public class SerializerTest {
             representationOf(n)
         );
     }
+
+    /**
+     * Tests serialization of bean description objects
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOfBeanDescription() throws Exception {
+        BeanDescription description= new BeanDescription();
+        description.setJndiName("xp/test/Bean");
+        
+        assertEquals(
+            "O:45:\"net.xp_framework.easc.reflect.BeanDescription\":2:{s:8:\"jndiName\";s:12:\"xp/test/Bean\";s:10:\"interfaces\";a:2:{i:0;N;i:1;N;}}",
+            representationOf(description)
+        );
+    }
+
+    /**
+     * Tests serialization of interface description objects
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOfInterfaceDescription() throws Exception {
+        InterfaceDescription description= new InterfaceDescription();
+        description.setClassName("net.xp_framework.beans.BeanHome");
+        
+        assertEquals(
+            "O:50:\"net.xp_framework.easc.reflect.InterfaceDescription\":2:{s:9:\"className\";s:31:\"net.xp_framework.beans.BeanHome\";s:7:\"methods\";a:0:{}}",
+            representationOf(description)
+        );
+    }
+
+    /**
+     * Tests serialization of method description objects
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOfMethodDescription() throws Exception {
+        MethodDescription description= new MethodDescription();
+        description.setName("helloWorld");
+        description.setReturnType(String.class);
+        description.addRole(new Principal() {
+            public boolean equals(Object cmp) { return false; }
+            public int hashCode() { return 1; }
+            public String getName() { return "mock"; }
+            public String toString() { return "MockPrincipal"; }
+        });
+        description.setTransactionType(TransactionTypeDescription.UNKNOWN);
+        
+        assertEquals(
+            "O:47:\"net.xp_framework.easc.reflect.MethodDescription\":5:{s:4:\"name\";s:10:\"helloWorld\";s:10:\"returnType\";s:16:\"java.lang.String\";s:14:\"parameterTypes\";a:0:{}s:5:\"roles\";a:1:{i:0;s:4:\"mock\";}s:15:\"transactionType\";i:6;}",
+            representationOf(description)
+        );
+    }
+
 
     /**
      * Tests deserialization of null (identified by "N" token)

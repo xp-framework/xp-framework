@@ -7,23 +7,39 @@ package net.xp_framework.easc.server;
 
 import net.xp_framework.easc.server.Delegate;
 import net.xp_framework.easc.server.ServerContext;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
-import javax.security.auth.login.LoginContext;
-import javax.security.auth.login.LoginException;
 
+/**
+ * Handles initialization
+ *
+ */
 public class InitializationDelegate implements Delegate {
 
+    /**
+     * No-arg constructor
+     *
+     * @access  public
+     */
     public InitializationDelegate() {
     }
 
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   java.lang.String username
+     * @param   java.lang.String password
+     */
     public InitializationDelegate(final String username, final String password) {
         // FIXME: Not yet implemented
     }
 
+    /**
+     * Invocation handler
+     *
+     * @access  public
+     * @param   net.xp_framework.easc.server.ServerContext ctx
+     * @return  lang.Object
+     */
     public Object invoke(ServerContext ctx) throws Exception {
         return true;
     }

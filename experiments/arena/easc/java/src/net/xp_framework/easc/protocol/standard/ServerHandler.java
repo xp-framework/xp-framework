@@ -8,7 +8,6 @@ package net.xp_framework.easc.protocol.standard;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Proxy;
 import net.xp_framework.easc.server.Handler;
 import net.xp_framework.easc.protocol.standard.MessageType;
 import net.xp_framework.easc.util.ByteCountedString;
@@ -18,14 +17,8 @@ import net.xp_framework.easc.server.ServerContext;
 
 import static net.xp_framework.easc.protocol.standard.Header.DEFAULT_MAGIC_NUMBER;
 
-public class ServerHandler implements Handler {
+abstract public class ServerHandler implements Handler {
 
-    // Set up serializer mappings
-    static {
-        Serializer.registerExceptionName(javax.naming.NameNotFoundException.class, "naming/NameNotFound");
-        Serializer.registerExceptionName(java.lang.reflect.InvocationTargetException.class, "invoke/Exception");
-    }
-    
     /**
      * Write response
      *
@@ -61,15 +54,6 @@ public class ServerHandler implements Handler {
      * @param   net.xp_framework.easc.server.ServerContext ctx
      */
     public void handle(DataInputStream in, DataOutputStream out, final ServerContext ctx) throws IOException {        
-        Serializer.registerMapping(Proxy.class, new Invokeable<String, Proxy>() {
-            public String invoke(Proxy p) throws Exception {
-                ctx.objects.put(p.hashCode(), p);
-                return "I:" + p.hashCode() + ":{" + Serializer.representationOf(
-                    p.getClass().getInterfaces()[0].getName()
-                ) + "}";
-            }
-        });
-
         boolean done= false;
         while (!done) {
             try {
@@ -90,6 +74,7 @@ public class ServerHandler implements Handler {
                     response= MessageType.Value;
                     buffer= Serializer.representationOf(result);
                 } catch (Throwable t) {
+                    t.printStackTrace();
                     try {
                         buffer= Serializer.representationOf(t);
                         response= MessageType.Exception;

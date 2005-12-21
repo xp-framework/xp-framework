@@ -33,6 +33,7 @@ public class ServerThread extends Thread {
     private boolean stopped= true;
     private ServerSocket socket= null;
     private Handler handler= null;
+    private ServerContext context= null;
     
     /**
      * Constructor
@@ -49,10 +50,20 @@ public class ServerThread extends Thread {
      * Set handler for accepted connections
      *
      * @access  public
-     * @param   net.xp_framework.easc.Handler handler
+     * @param   net.xp_framework.easc.server.Handler handler
      */
     public void setHandler(Handler handler) {
         this.handler= handler;
+    }
+
+    /**
+     * Set handler for accepted connections
+     *
+     * @access  public
+     * @param   net.xp_framework.easc.server.ServerContext context
+     */
+    public void setContext(ServerContext context) {
+        this.context= context;
     }
 
     /**
@@ -63,7 +74,10 @@ public class ServerThread extends Thread {
     @Override public void run() {
         this.stopped= false;   // We're running:)
         
-        ServerContext ctx= new ServerContext();
+        // Setup handler
+        this.handler.setup(this.context);
+        
+        // Loop until stopped, accepting incoming connections
         while (!this.stopped) {
             Socket accepted= null;
              
@@ -71,7 +85,7 @@ public class ServerThread extends Thread {
                 accepted= this.socket.accept();
 
                 // Create a new thread that will handle this client
-                (new HandlerThread(this.handler, accepted, ctx)).start();
+                (new HandlerThread(this.handler, accepted, this.context)).start();
             } catch (IOException ignored) { }
         }
     }

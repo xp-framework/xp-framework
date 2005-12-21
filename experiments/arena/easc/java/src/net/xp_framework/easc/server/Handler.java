@@ -17,6 +17,14 @@ import net.xp_framework.easc.server.ServerContext;
 public interface Handler {
 
     /**
+     * Setup this handler
+     *
+     * @access  public
+     * @param   net.xp_framework.easc.server.ServerContext ctx
+     */
+    public void setup(final ServerContext ctx);
+
+    /**
      * Handle client
      *
      * @access  public
