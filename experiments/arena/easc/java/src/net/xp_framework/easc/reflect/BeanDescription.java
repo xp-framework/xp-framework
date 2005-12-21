@@ -17,8 +17,8 @@ public class BeanDescription implements Serializable {
     public String jndiName;
     public InterfaceDescription[] interfaces= new InterfaceDescription[2];
     
-    public static final byte HOME   = 0;
-    public static final byte REMOTE = 1;
+    public transient static final byte HOME   = 0;
+    public transient static final byte REMOTE = 1;
     
     /**
      * Get JNDI name
