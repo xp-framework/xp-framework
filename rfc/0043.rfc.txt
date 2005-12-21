@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, gelli
 @created: Tue Nov 29 15:34:52 CET 2005
-@status: draft
+@status: implemented, Fri, 02 Dec 2005 13:33:24 +0100
 @category: remote
 
 Scope of Change
@@ -21,21 +21,37 @@ This procedure will ease rapid prototyping of EASC service clients.
 
 Functionality
 -------------
+The UnknownRemoteObject is an overloaded class that can only be displayed
+(via its toString() method) but not programmatically accessed. Any member
+access or method invocation will cause an IllegalAccessException to be
+thrown.
 
 
 Security considerations
 -----------------------
+n/a
+
 
 Speed impact
 ------------
+For the case that a class cannot be found by the deserializer, a 
+ClassNotFoundException will be caught and the UnknownRemoteObject will
+be constructed. In this case, of course, it makes everything slower.
+This should only occur during development, though.
+
 
 Dependencies
 ------------
+overload extension
+
 
 Related documents
 -----------------
+n/a
+
 
 Comments
 --------
+n/a
 
 <EOF>
