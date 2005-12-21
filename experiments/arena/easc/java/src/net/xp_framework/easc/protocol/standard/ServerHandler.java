@@ -70,36 +70,41 @@ public class ServerHandler implements Handler {
             }
         });
 
-        while (true) {
-            Header requestHeader= Header.readFrom(in);
-
-            // Verify magic number
-            if (DEFAULT_MAGIC_NUMBER != requestHeader.getMagicNumber()) {
-                this.writeResponse(out, MessageType.Error, "Magic number mismatch");
-                break;
-            }
-
-            // Execute using delegate
-            Object result= null;
-            MessageType response= null;
-            String buffer= null;
+        boolean done= false;
+        while (!done) {
             try {
-                result= requestHeader.getMessageType().delegateFrom(in, ctx).invoke(ctx);
-                response= MessageType.Value;
-                buffer= Serializer.representationOf(result);
-            } catch (Throwable t) {
-                t.printStackTrace();
-                try {
-                    buffer= Serializer.representationOf(t);
-                    response= MessageType.Exception;
-                } catch (Exception e) {
-                    buffer= e.getMessage();
-                    response= MessageType.Error;
+                Header requestHeader= Header.readFrom(in);
+
+                // Verify magic number
+                if (DEFAULT_MAGIC_NUMBER != requestHeader.getMagicNumber()) {
+                    this.writeResponse(out, MessageType.Error, "Magic number mismatch");
+                    break;
                 }
+
+                // Execute using delegate
+                Object result= null;
+                MessageType response= null;
+                String buffer= null;
+                try {
+                    result= requestHeader.getMessageType().delegateFrom(in, ctx).invoke(ctx);
+                    response= MessageType.Value;
+                    buffer= Serializer.representationOf(result);
+                } catch (Throwable t) {
+                    try {
+                        buffer= Serializer.representationOf(t);
+                        response= MessageType.Exception;
+                    } catch (Exception e) {
+                        buffer= e.getMessage();
+                        response= MessageType.Error;
+                    }
+                }
+
+                // Write result
+                this.writeResponse(out, response, buffer);
+            } catch (IOException e) {
+                // Presumably, the client has closed the connection
+                done= true;
             }
-            
-            // Write result
-            this.writeResponse(out, response, buffer);
         }
         
         // Close streams
