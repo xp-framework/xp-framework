@@ -16,6 +16,7 @@ import net.xp_framework.easc.server.ServerThread;
 import net.xp_framework.easc.server.ReflectionServerContext;
 import net.xp_framework.easc.protocol.standard.ReflectionServerHandler;
 import net.xp_framework.easc.jmx.jboss.EsdlServiceMBean;
+import net.xp_framework.easc.reflect.DescriptionList;
 import net.xp_framework.easc.reflect.BeanDescription;
 import net.xp_framework.easc.reflect.InterfaceDescription;
 import net.xp_framework.easc.reflect.MethodDescription;
@@ -41,7 +42,7 @@ import javax.management.NotificationFilter;
  */
 public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean, NotificationListener {
     private ServerThread serverThread= null;
-    private HashMap<String, BeanDescription> descriptions= new HashMap<String, BeanDescription>();
+    private DescriptionList descriptions= new DescriptionList();
 
     protected int port= 0;
     protected ObjectName deployerName= null;
@@ -143,7 +144,7 @@ public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean
                 new String[] { }
             );
             
-            this.descriptions.clear();
+            this.descriptions.lock();
             while (deployments.hasNext()) {
                 DeploymentInfo info= deployments.next();
                 
@@ -174,9 +175,10 @@ public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean
                     }
                     
                     // DEBUG System.out.println(description);
-                    this.descriptions.put(meta.getJndiName(), description);
+                    this.descriptions.add(meta.getJndiName(), description);
                }
             }
+            this.descriptions.unlock();
         } catch (Exception ignored) { 
             ignored.printStackTrace();
         }

@@ -10,22 +10,22 @@ import javax.naming.NameNotFoundException;
 
 import net.xp_framework.easc.server.ServerContext;
 import net.xp_framework.easc.server.Delegate;
-import net.xp_framework.easc.reflect.BeanDescription;
+import net.xp_framework.easc.reflect.DescriptionList;
 
 /**
  * Server context for the invocation server (EASC mbean)
  *
  */
 public class ReflectionServerContext extends ServerContext {
-    public HashMap<String, BeanDescription> descriptions;
+    public DescriptionList descriptions;
     
     /**
      * Constructor
      *
      * @access  public
-     * @param   java.util.HashMap<java.lang.String, net.xp_framework.easc.reflect.BeanDescription> descriptions
+     * @param   net.xp_framework.easc.reflect.DescriptionList descriptions
      */
-    public ReflectionServerContext(HashMap<String, BeanDescription> descriptions) {
+    public ReflectionServerContext(DescriptionList descriptions) {
         this.descriptions= descriptions;
     }
 
