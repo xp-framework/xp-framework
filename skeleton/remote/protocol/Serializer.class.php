@@ -127,17 +127,27 @@
      * @return  string 
      */
     function exceptionName($name, $exception= NULL) {
-      static $exceptions= array(
-        'IllegalArgument'   => 'lang.IllegalArgumentException',
-        'IllegalAccess'     => 'lang.IllegalAccessException',
-        'ClassNotFound'     => 'lang.ClassNotFoundException',
-        'NullPointer'       => 'lang.NullPointerException',
-      );
+      static $exceptions= array();
 
       if (NULL !== $exception) $exceptions[$name]= $exception;
       return $exceptions[$name];
     }
   
+    /**
+     * Register or retrieve a mapping for a package
+     *
+     * @access  public
+     * @param   string token
+     * @param   string class fully qualified class name
+     * @return  string fully qualified class name
+     */
+    function packageMapping($name, $replace= NULL) {
+      static $packages= array();
+
+      if (NULL !== $replace) $packages[$name]= $replace;
+      return strtr($name, $packages);
+    }
+
     /**
      * Retrieve serialized representation of a variable
      *
@@ -295,7 +305,7 @@
 
         case 'O': {     // generic objects
           $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-          $name= substr($serialized, 2+ strlen($len)+ 2, $len);
+          $name= Serializer::packageMapping(substr($serialized, 2+ strlen($len)+ 2, $len));
           try(); {
             $class= &XPClass::forName($name);
           } if (catch('ClassNotFoundException', $e)) {
