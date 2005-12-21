@@ -45,6 +45,7 @@
       Serializer::mapping('I', new RemoteInterfaceMapping());
       Serializer::exceptionName('naming/NameNotFound', 'lang.MethodNotImplementedException');
       Serializer::exceptionName('invoke/Exception', 'remote.InvocationException');
+      Serializer::packageMapping('net.xp_framework.easc.reflect', 'remote.reflect');
     }
     
     /**
