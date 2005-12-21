@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, strobel
 @created: Fri Nov 18 13:01:03 CET 2005
-@status: draft
+@status: implemented, 2005-12-09 13:38:24
 @category: xml.soap
 
 Scope of Change
