@@ -18,7 +18,8 @@ import java.util.Hashtable;
 import java.util.Date;
 import java.lang.reflect.Proxy;
 import net.xp_framework.easc.server.ServerThread;
-import net.xp_framework.easc.protocol.standard.ServerHandler;
+import net.xp_framework.easc.server.InvocationServerContext;
+import net.xp_framework.easc.protocol.standard.InvocationServerHandler;
 import net.xp_framework.easc.protocol.standard.Header;
 import net.xp_framework.easc.protocol.standard.MessageType;
 import net.xp_framework.easc.protocol.standard.Serializer;
@@ -63,7 +64,8 @@ public class ServerTest {
 
         // Create server, set handler and start it!
         server= new ServerThread(new ServerSocket(TEST_PORT, 1, addr));
-        server.setHandler(new ServerHandler());
+        server.setHandler(new InvocationServerHandler());
+        server.setContext(new InvocationServerContext());
         server.start();
         
         // Set up client socket
