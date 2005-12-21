@@ -11,7 +11,7 @@
   $p= &new ParamString();
   if (!$p->exists(1)) {
     Console::writeLine(<<<__
-EASC entity bean demo application
+ESDL demo application
 
 Usage
 -----
