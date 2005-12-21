@@ -20,11 +20,20 @@ import static net.xp_framework.easc.protocol.standard.Header.DEFAULT_MAGIC_NUMBE
 
 public class ServerHandler implements Handler {
 
+    // Set up serializer mappings
     static {
         Serializer.registerExceptionName(javax.naming.NameNotFoundException.class, "naming/NameNotFound");
         Serializer.registerExceptionName(java.lang.reflect.InvocationTargetException.class, "invoke/Exception");
     }
     
+    /**
+     * Write response
+     *
+     * @access  protected
+     * @param   java.io.DataOutputStream out
+     * @param   net.xp_framework.easc.protocol.standard.MessageType type
+     * @param   java.lang.String buffer the encoded data
+     */
     protected void writeResponse(DataOutputStream out, MessageType type, String buffer) throws IOException {
         ByteCountedString bytes= new ByteCountedString(buffer);
 
