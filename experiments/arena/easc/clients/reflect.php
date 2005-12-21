@@ -36,7 +36,7 @@ __
     exit(-1);
   }
 
-  foreach ($services as $name => $description) {
+  foreach ($services->beans() as $description) {
     Console::writeLine(xp::stringOf($description));
   }
   // }}}
