@@ -11,7 +11,8 @@
     'lang.types.Byte',
     'lang.types.Float',
     'lang.types.ArrayList',
-    'util.Date'
+    'util.Date',
+    'remote.UnknownRemoteObject'
   );
 
   /**
@@ -282,7 +283,7 @@
             $details['method'],
             $details['line'],
             array(),
-            array()
+            NULL
           );
         }
         
@@ -302,13 +303,15 @@
             $offset= 2 + 2 + strlen($len)+ $len + 2;
             $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
             $offset+= strlen($size)+ 2;
+            $members= array();
             for ($i= 0; $i < $size; $i++) {
               $member= Serializer::valueOf(substr($serialized, $offset), $len, $context);
               $offset+= $len;
-              $instance->__members[$member]= &Serializer::valueOf(substr($serialized, $offset), $len, $context);
+              $members[$member]= &Serializer::valueOf(substr($serialized, $offset), $len, $context);
               $offset+= $len;
             }
             $length= $offset+ 1;
+            $instance->__members= $members;
             return $instance;
           }
 
