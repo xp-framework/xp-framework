@@ -144,7 +144,7 @@
       );
 
       return sprintf(
-        '%s@{ @Transaction(type= %s) %s%s(%s) }',
+        '%s@{ @Transaction(type= %s) %s%s %s(%s) }',
         $this->getClassName(),
         $transactionTypes[$this->transactionType],
         $this->roles ? '@Security(roles= ['.implode(', ', $this->roles).']) ' : '',
