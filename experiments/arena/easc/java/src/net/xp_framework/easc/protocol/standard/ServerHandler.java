@@ -52,6 +52,14 @@ public class ServerHandler implements Handler {
         out.flush();
     }
 
+    /**
+     * Handle client connection
+     *
+     * @access  public
+     * @param   java.io.DataInputStream in
+     * @param   java.io.DataOutputStream out
+     * @param   net.xp_framework.easc.server.ServerContext ctx
+     */
     public void handle(DataInputStream in, DataOutputStream out, final ServerContext ctx) throws IOException {        
         Serializer.registerMapping(Proxy.class, new Invokeable<String, Proxy>() {
             public String invoke(Proxy p) throws Exception {
