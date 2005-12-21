@@ -210,7 +210,7 @@
 
           case REMOTE_MSG_EXCEPTION:
             $reference= &Serializer::valueOf(ByteCountedString::readFrom($this->_sock), $length= 0, $ctx);
-            return throw(new RemoteException($reference->getClassName(), $e));
+            return throw(new RemoteException($reference->getClassName(), $reference));
 
           case REMOTE_MSG_ERROR:
             $message= ByteCountedString::readFrom($this->_sock);
