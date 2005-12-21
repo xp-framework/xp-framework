@@ -200,9 +200,8 @@ public enum MessageType {
         }
     };
     
-
+    // Set up ordinal -> enum instance mapping
     private static HashMap<Integer, MessageType> map= new HashMap<Integer, MessageType>(); 
-
     static {
         for (MessageType t : MessageType.values()) {
             map.put(t.ordinal(), t);
