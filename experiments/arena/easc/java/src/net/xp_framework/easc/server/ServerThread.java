@@ -83,6 +83,7 @@ public class ServerThread extends Thread {
              
             try {
                 accepted= this.socket.accept();
+                accepted.setTcpNoDelay(true);
 
                 // Create a new thread that will handle this client
                 (new HandlerThread(this.handler, accepted, this.context)).start();
