@@ -5,6 +5,8 @@
  */
 
   uses('peer.Socket');
+  
+  define('TCP_NODELAY',   1);
 
   /**
    * BSDSocket implementation
@@ -19,7 +21,8 @@
       $_eof     = FALSE,
       $domain   = AF_INET,
       $type     = SOCK_STREAM,
-      $protocol = SOL_TCP;
+      $protocol = SOL_TCP,
+      $options  = array();
 
     /**
      * Set Domain
@@ -105,6 +108,19 @@
     }
     
     /**
+     * Set socket option
+     *
+     * @access  public
+     * @param   int level
+     * @param   int name
+     * @param   mixed value
+     * @see     php://socket_set_option
+     */
+    function setOption($level, $name, $value) {
+      $this->options[$level][$name]= $value;
+    }
+    
+    /**
      * Connect
      *
      * @access  public
@@ -136,6 +152,13 @@
           $e= socket_last_error(), 
           socket_strerror($e)
         )));
+      }
+      
+      // Set options
+      foreach ($this->options as $level => $pairs) {
+        foreach ($pairs as $name => $value) {
+          socket_set_option($this->_sock, $level, $name, $value);
+        }
       }
       
       // ...and connect it
