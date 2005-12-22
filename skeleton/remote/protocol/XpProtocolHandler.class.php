@@ -5,7 +5,7 @@
  */
 
   uses(
-    'peer.Socket',
+    'peer.BSDSocket',
     'remote.RemoteInvocationHandler', 
     'remote.protocol.ByteCountedString', 
     'remote.protocol.Serializer', 
@@ -59,7 +59,8 @@
         $this->versionMajor, 
         $this->versionMinor
       );
-      $this->_sock= &new Socket($proxy->getHost('localhost'), $proxy->getPort(6448));
+      $this->_sock= &new BSDSocket($proxy->getHost('localhost'), $proxy->getPort(6448));
+      $this->_sock->setOption(getprotobyname('tcp'), TCP_NODELAY, TRUE);
       $this->_sock->connect();
       
       if ($user= $proxy->getUser()) {
@@ -172,7 +173,7 @@
         $this->versionMajor,
         $this->versionMinor,
         $type,
-        FALSE,                  // TBI: Transactions
+        FALSE,
         $length,
         $data
       );
