@@ -1,4 +1,4 @@
-RFC 0009: Typesafe enumerations
+RFC 0009: Typesafe enumerations (PHP5)
 ========================================================================
 $Id$
 
