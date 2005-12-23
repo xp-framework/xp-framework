@@ -340,8 +340,8 @@
      */
     function assertIn($list, $var, $error= 'notinlist') {
       if (is_a($var, 'Object')) {
-        array_filter($list, array(&$var, 'equals'));
-        $contained= !empty($list);
+        $result= array_filter($list, array(&$var, 'equals'));
+        $contained= !empty($result);
       } else {
         $contained= in_array($var, $list, TRUE);
       }
