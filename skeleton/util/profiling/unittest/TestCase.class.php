@@ -352,10 +352,6 @@
       return TRUE;
     }
     
-    function isEqual(&$a, &$b) {
-    
-    }
-
     /**
      * Set up this test. Overwrite in subclasses. Throw a 
      * PrerequisitesNotMetError to indicate this case should be
