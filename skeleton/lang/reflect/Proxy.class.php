@@ -18,6 +18,16 @@
   class Proxy extends Object {
     var
       $_h= NULL;
+
+    /**
+     * Constructor
+     *
+     * @access  protected
+     * @param   &lang.reflect.InvocationHandler handler
+     */
+    function __construct(&$handler) {
+      $this->_h= &$handler;
+    }
     
     /**
      * Returns the XPClass object for a proxy class given a class loader 
@@ -137,7 +147,7 @@
      */
     function &newProxyInstance(&$classloader, $interfaces, &$handler) {
       if (!($class= &Proxy::getProxyClass($classloader, $interfaces))) return $class;
-      $instance= &$class->newInstance();
+      $instance= &$class->newInstance($dummy= NULL);
       $instance->_h= &$handler;
       return $instance;
     }
