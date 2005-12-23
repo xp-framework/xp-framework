@@ -333,16 +333,27 @@
      * Assert that a value is contained in a list
      *
      * @access  public
-     * @param   mixed var
      * @param   array list
+     * @param   mixed var
      * @param   string error default 'notinlist'
      * @return  bool
      */
-    function assertIn($var, $list, $error= 'notinlist') {
-      if (in_array($var, $list, TRUE)) {
-        return $this->fail($error, $pattern, $var);
+    function assertIn($list, $var, $error= 'notinlist') {
+      if (is_a($var, 'Object')) {
+        array_filter($list, array(&$var, 'equals'));
+        $contained= !empty($list);
+      } else {
+        $contained= in_array($var, $list, TRUE);
+      }
+      
+      if (!$contained) {
+        return $this->fail($error, $list, $var);
       }
       return TRUE;
+    }
+    
+    function isEqual(&$a, &$b) {
+    
     }
 
     /**
