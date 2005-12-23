@@ -96,8 +96,8 @@
       $c2= &$this->proxyClassFor(array($this->iteratorClass));
       $c3= &$this->proxyClassFor(array($this->iteratorClass, XPClass::forName('util.Observer')));
 
-      $this->assertEquals($c1->getName(), $c2->getName());
-      $this->assertNotEquals($c1->getName(), $c3->getName());
+      $this->assertEquals($c1, $c2);
+      $this->assertNotEquals($c1, $c3);
     }
 
     /**
