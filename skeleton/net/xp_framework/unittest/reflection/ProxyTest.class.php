@@ -15,7 +15,8 @@
   class ProxyTest extends TestCase {
     var
       $handler       = NULL,
-      $iteratorClass = NULL;
+      $iteratorClass = NULL,
+      $observerClass = NULL;
 
     /**
      * Setup method 
@@ -36,6 +37,7 @@
       );
       $this->handler= &$class->newInstance();
       $this->iteratorClass= &XPClass::forName('util.Iterator');
+      $this->observerClass= &XPClass::forName('util.Observer');
     }
 
     /**
@@ -94,7 +96,7 @@
     function classesEqualForSameInterfaceList() {
       $c1= &$this->proxyClassFor(array($this->iteratorClass));
       $c2= &$this->proxyClassFor(array($this->iteratorClass));
-      $c3= &$this->proxyClassFor(array($this->iteratorClass, XPClass::forName('util.Observer')));
+      $c3= &$this->proxyClassFor(array($this->iteratorClass, $this->observerClass));
 
       $this->assertEquals($c1, $c2);
       $this->assertNotEquals($c1, $c3);
@@ -111,6 +113,20 @@
       $interfaces= $class->getInterfaces();
       $this->assertEquals(1, sizeof($interfaces));
       $this->assertEquals($this->iteratorClass, $interfaces[0]);
+    }
+
+    /**
+     * Tests Proxy implements the interface(s) passed
+     *
+     * @access  public
+     */
+    #[@test]
+    function allInterfacesAreImplemented() {
+      $class= &$this->proxyClassFor(array($this->iteratorClass, $this->observerClass));
+      $interfaces= $class->getInterfaces();
+      $this->assertEquals(2, sizeof($interfaces));
+      $this->assertIn($interfaces, $this->iteratorClass);
+      $this->assertIn($interfaces, $this->observerClass);
     }
 
     /**
