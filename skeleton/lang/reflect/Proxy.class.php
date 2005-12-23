@@ -19,16 +19,6 @@
       $_h= NULL;
     
     /**
-     * Constructor
-     *
-     * @access  protected
-     * @param   &lang.reflect.InvocationHandler handler
-     */
-    function __construct(&$handler) {
-      $this->_h= &$handler;
-    }
-  
-    /**
      * Returns the XPClass object for a proxy class given a class loader 
      * and an array of interfaces.  The proxy class will be defined by the 
      * specified class loader and will implement all of the supplied 
@@ -146,7 +136,9 @@
      */
     function &newProxyInstance(&$classloader, $interfaces, &$handler) {
       if (!($class= &Proxy::getProxyClass($classloader, $interfaces))) return $class;
-      return $class->newInstance($handler);
+      $instance= &$class->newInstance();
+      $instance->_h= &$handler;
+      return $instance;
     }
   }
 ?>
