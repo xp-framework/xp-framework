@@ -63,7 +63,54 @@ B) Server Side
 ~~~~~~~~~~~~~~
 Short: Same as EASC MBean but deploys some helper services at startup.
 
+Uses JMX operations to find out about an EJB's metadata.
 
+Discovering the deployed applications
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Notes:
+* mbeanServer is an instance of the javax.management.MBeanServer class
+* deployments is a Iterator<org.jboss.deployment.DeploymentInfo> 
+
+<code>
+  deployments= mbeanServer.invoke(
+      deployer, 
+      "listDeployedApplications", 
+      new Object[] { }, 
+      new String[] { }
+  );
+</code>
+
+The DeploymentInfo objects contain a list of mbeans that are deployed
+in the ejb-jar it represents. By iterating over those, instances of
+org.jboss.metadata.BeanMetaData can be retrieved by querying their 
+"BeanMetaData" attribute (also via JMX). The metadata objects contain
+everything we want to know on the beans.
+
+
+Notification-driven
+~~~~~~~~~~~~~~~~~~~
+The list of deployed applications is not read whenever a client requests
+this information but whenever it is necessary to update this list, that
+is, when an ejb-jar is deployed or undeployed.
+
+<code>
+  filter= new NotificationFilter() {
+      public boolean isNotificationEnabled(Notification notification) {
+          return (
+              (SubDeployer.START_NOTIFICATION.equals(notification.getType())) ||
+              (SubDeployer.DESTROY_NOTIFICATION.equals(notification.getType()))
+          );
+      }
+  };
+
+  deployer= new ObjectName("jboss.ejb:service=EJBDeployer");
+  mbeanServer.addNotificationListener(
+      deployer,      // Listen on
+      this,          // Handler, must implement NotificationListener
+      filter         // Filter notifications irrelevant for us
+      null           // Handback object (user data)
+  );
+</code>
 
 Security considerations
 -----------------------
