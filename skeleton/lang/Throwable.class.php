@@ -57,23 +57,24 @@
       }
       
       // Remaining error messages
-      foreach (array_keys($errors) as $key) {
-        $class= ('.class.php' == substr($key, -10)
-          ? strtolower(substr(basename($key), 0, -10))
+      foreach ($errors as $file => $list) {
+        $class= ('.class.php' == substr($file, -10)
+          ? strtolower(substr(basename($file), 0, -10))
           : '<main>'
         );
         
-        foreach ($errors as $file => $list) {
-          $this->addStackTraceFor(
-            $file,
-            $class,
-            NULL,
-            NULL,
-            array(),
-            $list
-          );
-        }
+        $this->addStackTraceFor(
+          $file,
+          $class,
+          NULL,
+          NULL,
+          array(),
+          $list
+        );
       }
+      
+      // Store remaining errors back to xp::registry()
+      xp::registry('errors', $errors);
     }
     
     /**
