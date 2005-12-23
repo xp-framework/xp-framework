@@ -11,6 +11,7 @@
    * classes and instances, and it is also the superclass of all
    * dynamic proxy classes created by those methods.
    *
+   * @test     xp://net.xp_framework.unittest.reflection.ProxyTest
    * @purpose  Dynamically create classes
    * @see      http://java.sun.com/j2se/1.4.2/docs/api/java/lang/reflect/Proxy.html
    */
