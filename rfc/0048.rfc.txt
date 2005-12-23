@@ -131,7 +131,9 @@ n/a
 
 Related documents
 -----------------
-n/a
+- Client classes code generator experiment
+  http://xp-framework.net/downloads/stubclassesfor.phps
+  http://xp-framework.net/downloads/xp.xsl
 
 
 Comments
