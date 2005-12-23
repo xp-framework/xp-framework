@@ -1,0 +1,80 @@
+RFC 0049: XP "on rails"
+========================================================================
+$Id$
+
+@authors: friebe, kiesel, alexp
+@created: Fri Dec 23 12:42:28 CET 2005
+@status: draft
+@category: scriptlet.xml
+
+Scope of Change
+---------------
+A new API will be introduced that will make creating data manipulation
+frontends (list, new, edit, delete, search) easier.
+
+
+Rationale
+---------
+Remove boilerplate operations (EditHandler / EditWrapper / EditState, 
+CreateHandler / CreateWrapper / CreateState, ...).
+
+
+Functionality
+-------------
+
+Database-driven
+~~~~~~~~~~~~~~~
+Works on rdms.DataSet / rdbms.Peer objects:
+<?php
+  class NewsFacade extends DBFacade {
+    var 
+      $peer= 'net.xp_framework.db.news.Entry';
+    
+    #[@facade-operation('list')]
+    function getList(&$peer, &$rundata) {
+      return $peer->iteratorFor(new Criteria(array('bz_id', 20000, EQUALS)));
+    }
+
+    #[@facade-operation('item')]
+    function retrieveItem(&$dataset, &$handler, &$rundata) {
+      $c= &Category::getPeer();
+      $handler->setFormValue(
+        'categories', 
+        $c->doSelect(new Criteria(array('bz_id', 20000, EQUALS)))
+      );
+    }
+
+    #[@facade-operation('save')]
+    function onSave(&$dataset, &$rundata) {
+      return $dataset->save();
+    }
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+A bit slower than directly implementing the classes because most of the
+functionality will work at runtime to further ease development and to
+eliminate the step of generator runs.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- Ruby on Rails
+  http://www.rubyonrails.org/
+
+Comments
+--------
+
+<EOF>
