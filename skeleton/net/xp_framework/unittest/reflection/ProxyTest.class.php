@@ -85,6 +85,22 @@
     }
 
     /**
+     * Tests calling getProxyClass() twice with the same interface list
+     * will result in the same proxy class
+     *
+     * @access  public
+     */
+    #[@test]
+    function classesEqualForSameInterfaceList() {
+      $c1= &$this->proxyClassFor(array($this->iteratorClass));
+      $c2= &$this->proxyClassFor(array($this->iteratorClass));
+      $c3= &$this->proxyClassFor(array($this->iteratorClass, XPClass::forName('util.Observer')));
+
+      $this->assertEquals($c1->getName(), $c2->getName());
+      $this->assertNotEquals($c1->getName(), $c3->getName());
+    }
+
+    /**
      * Tests Proxy implements the interface(s) passed
      *
      * @access  public
