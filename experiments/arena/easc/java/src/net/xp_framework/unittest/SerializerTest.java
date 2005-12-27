@@ -12,6 +12,7 @@ import net.xp_framework.unittest.Item;
 import net.xp_framework.unittest.ITest;
 import net.xp_framework.unittest.NullInvocationHandler;
 import net.xp_framework.easc.protocol.standard.Invokeable;
+import net.xp_framework.easc.protocol.standard.MethodTarget;
 import net.xp_framework.easc.reflect.*;
 import java.util.HashMap;
 import java.util.Date;
@@ -23,6 +24,7 @@ import java.sql.Timestamp;
 import java.security.Principal;
 
 import static org.junit.Assert.*;
+import static net.xp_framework.easc.protocol.standard.Serializer.invokeableFor;
 import static net.xp_framework.easc.protocol.standard.Serializer.representationOf;
 import static net.xp_framework.easc.protocol.standard.Serializer.valueOf;
 import static net.xp_framework.easc.protocol.standard.Serializer.registerMapping;
@@ -717,5 +719,25 @@ public class SerializerTest {
     @Test public void valueOfArray() throws Exception {
         Object[] result= (Object[])valueOf("A:2:{O:32:\"net.xp_framework.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}");
         assertEquals(new Object[] { new Person(), new String("World") }, result);
+    }
+
+    /**
+     * Tests class name mappings
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void invokeableForString() throws Exception {
+        assertEquals('s', ((MethodTarget<?, ?>)invokeableFor(String.class)).token());
+    }
+
+    /**
+     * Tests class name mappings
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void invokeableForObject() throws Exception {
+        assertNull(invokeableFor(Object.class));
     }
 }

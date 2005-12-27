@@ -18,6 +18,7 @@ import java.util.Iterator;
 import net.xp_framework.easc.protocol.standard.Handler;
 import net.xp_framework.easc.protocol.standard.Invokeable;
 import net.xp_framework.easc.protocol.standard.SerializationException;
+import net.xp_framework.easc.protocol.standard.MethodTarget;
 
 /**
  * Serializer / unserializer for PHP serialized data
@@ -39,22 +40,6 @@ import net.xp_framework.easc.protocol.standard.SerializationException;
  */
 public class Serializer {
     
-    private static class MethodTarget<Return, Parameter> implements Invokeable<Return, Parameter> {
-        private Method method = null;
-        
-        MethodTarget(Method m) {
-            this.method= m;    
-        }
-        
-        public String toString() {
-            return this.method.toString();
-        }
-        
-        public Return invoke(Parameter p) throws Exception {
-            return (Return)this.method.invoke(null, new Object[] { p });
-        }
-    }
-
     private static class Length {
         public int value = 0;
 
@@ -305,7 +290,7 @@ public class Serializer {
         for (Method m : Serializer.class.getDeclaredMethods()) {
             if (!m.isAnnotationPresent(Handler.class)) continue;
             
-            registerMapping(m.getParameterTypes()[0], new MethodTarget<String, Object>(m));
+            registerMapping(m.getParameterTypes()[0], new MethodTarget<String, Object>(m, m.getAnnotation(Handler.class).value()));
         }
         
         registerExceptionName(IllegalArgumentException.class, "IllegalArgument");
@@ -383,16 +368,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler public static String representationOf(String s) {
+    @Handler('s') public static String representationOf(String s) {
         if (null == s) return "N;";
         return "s:" + s.length() + ":\"" + s + "\";";
     } 
 
-    @Handler public static String representationOf(char c) {
+    @Handler('s') public static String representationOf(char c) {
         return "s:1:\"" + c + "\";";
     }
     
-    @Handler public static String representationOf(char[] array) throws Exception {
+    @Handler('a') public static String representationOf(char[] array) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -402,16 +387,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler public static String representationOf(Character c) {
+    @Handler('s') public static String representationOf(Character c) {
         if (null == c) return "N;";
         return "s:1:\"" + c + "\";";
     }
 
-    @Handler public static String representationOf(byte b) {
+    @Handler('B') public static String representationOf(byte b) {
         return "B:" + b + ";";
     }
     
-    @Handler public static String representationOf(byte[] array) throws Exception {
+    @Handler('a') public static String representationOf(byte[] array) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -421,16 +406,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler public static String representationOf(Byte b) {
+    @Handler('B') public static String representationOf(Byte b) {
         if (null == b) return "N;";
         return "B:" + b + ";";
     }
 
-    @Handler public static String representationOf(short s) {
+    @Handler('S') public static String representationOf(short s) {
         return "S:" + s + ";";
     }
     
-    @Handler public static String representationOf(short[] array) throws Exception {
+    @Handler('a') public static String representationOf(short[] array) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -440,16 +425,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler public static String representationOf(Short s) {
+    @Handler('s') public static String representationOf(Short s) {
         if (null == s) return "N;";
         return "S:" + s + ";";
     }
 
-    @Handler public static String representationOf(int i) {
+    @Handler('i') public static String representationOf(int i) {
         return "i:" + i + ";";
     }
 
-    @Handler public static String representationOf(int[] array) throws Exception {
+    @Handler('a') public static String representationOf(int[] array) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -459,16 +444,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler public static String representationOf(Integer i) {
+    @Handler('i') public static String representationOf(Integer i) {
         if (null == i) return "N;";
         return "i:" + i + ";";
     }
 
-    @Handler public static String representationOf(long l) {
+    @Handler('l') public static String representationOf(long l) {
         return "l:" + l + ";";
     }
 
-    @Handler public static String representationOf(long[] array) throws Exception {
+    @Handler('a') public static String representationOf(long[] array) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -478,16 +463,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler public static String representationOf(Long l) {
+    @Handler('l') public static String representationOf(Long l) {
         if (null == l) return "N;";
         return "l:" + l + ";";
     }
 
-    @Handler public static String representationOf(double d) {
+    @Handler('d') public static String representationOf(double d) {
         return "d:" + d + ";";
     }
     
-    @Handler public static String representationOf(double[] array) throws Exception {
+    @Handler('a') public static String representationOf(double[] array) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -497,16 +482,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler public static String representationOf(Double d) {
+    @Handler('d') public static String representationOf(Double d) {
         if (null == d) return "N;";
         return "d:" + d + ";";
     }
 
-    @Handler public static String representationOf(float f) {
+    @Handler('f') public static String representationOf(float f) {
         return "f:" + f + ";";
     }
     
-    @Handler public static String representationOf(float[] array) throws Exception {
+    @Handler('a') public static String representationOf(float[] array) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -516,16 +501,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler public static String representationOf(Float f) {
+    @Handler('f') public static String representationOf(Float f) {
         if (null == f) return "N;";
         return "f:" + f + ";";
     }
 
-    @Handler public static String representationOf(boolean b) {
+    @Handler('b') public static String representationOf(boolean b) {
         return "b:" + (b ? 1 : 0) + ";";
     }
 
-    @Handler public static String representationOf(boolean[] array) throws Exception {
+    @Handler('a') public static String representationOf(boolean[] array) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -535,12 +520,12 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler public static String representationOf(Boolean b) {
+    @Handler('b') public static String representationOf(Boolean b) {
         if (null == b) return "N;";
         return "b:" + (b ? 1 : 0) + ";";
     }
 
-    @Handler public static String representationOf(HashMap h) throws Exception {
+    @Handler('a') public static String representationOf(HashMap h) throws Exception {
         if (null == h) return "N;";
         StringBuffer buffer= new StringBuffer("a:" + h.size() + ":{");
         
@@ -559,17 +544,17 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler public static String representationOf(Collection c) throws Exception {
+    @Handler('a') public static String representationOf(Collection c) throws Exception {
         if (null == c) return "N;";
         return representationOf(c.toArray(), invokeableFor(Object[].class));
     }
 
-    @Handler public static String representationOf(Date d) throws Exception {
+    @Handler('T') public static String representationOf(Date d) throws Exception {
         if (null == d) return "N;";
         return "T:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
     }
     
-    @Handler public static String representationOf(Object[] a) throws Exception {
+    @Handler('a') public static String representationOf(Object[] a) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + a.length + ":{");
 
         for (int i= 0; i < a.length; i++) {
@@ -585,7 +570,7 @@ public class Serializer {
     }
     
     
-    @Handler public static String representationOf(StackTraceElement e) throws Exception {
+    @Handler('t') public static String representationOf(StackTraceElement e) throws Exception {
         if (null == e) return "N;";
         StringBuffer buffer= new StringBuffer();
         Class c= e.getClass();
@@ -601,7 +586,7 @@ public class Serializer {
         return buffer.toString();        
     }
 
-    @Handler public static String representationOf(Throwable e) throws Exception {
+    @Handler('e') public static String representationOf(Throwable e) throws Exception {
         if (null == e) return "N;";
         StringBuffer buffer= new StringBuffer();
         Class c= e.getClass();
@@ -626,7 +611,7 @@ public class Serializer {
         return buffer.toString();        
     }
     
-    @Handler public static String representationOf(Enum e) throws Exception {
+    @Handler('i') public static String representationOf(Enum e) throws Exception {
         if (null == e) return "N;";
         return "i:" + e.ordinal() + ";";
     }
