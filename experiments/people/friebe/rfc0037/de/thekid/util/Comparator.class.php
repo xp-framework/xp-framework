@@ -9,13 +9,21 @@
   uses('de.thekid.List');
 
   /**
-   * (Insert class' description here)
+   * Comparator interface
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Interface
    */
   class de·thekid·util·Comparator extends Interface {
+  
+    /**
+     * Compare two objects
+     *
+     * @access  public
+     * @param   mixed a
+     * @param   mixed b
+     * @return  bool
+     */
+    function compare($a, $b) { }
   
   }
 ?>
