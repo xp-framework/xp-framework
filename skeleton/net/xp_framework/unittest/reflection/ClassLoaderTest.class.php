@@ -61,14 +61,14 @@
      */
     #[@test]
     function initializerCalled() {
-      $name= 'net.xp_framework.unittest.reflection.TestClass';
+      $name= 'net.xp_framework.unittest.reflection.LoaderTestClass';
       if (class_exists(xp::reflect($name))) {
         return $this->fail('Class "'.$name.'" may not exist!');
       }
 
       $class= &$this->classLoader->loadClass($name);
       $this->assertXPClass($name, $class);
-      $this->assertTrue(TestClass::initializerCalled());
+      $this->assertTrue(LoaderTestClass::initializerCalled());
     }
 
     /**
