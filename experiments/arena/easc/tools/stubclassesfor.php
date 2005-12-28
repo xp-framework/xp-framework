@@ -14,15 +14,17 @@
     'util.cmd.ParamString'
   );
   
-  // {{{ string process(remote.reflect.BeanDescription description, string purpose [, string language= 'xp'])
+  // {{{ string process(remote.reflect.BeanDescription description, string purpose, string language [, bool showXml= FALSE])
   //     Transforms a bean description and returns the sourcecode
-  function process(&$description, $purpose, $language= 'xp') {
+  function process(&$description, $purpose, $language, $showXml= FALSE) {
     $node= &Node::fromObject($description, 'description');
     $node->setAttribute('purpose', $purpose);
 
     $proc= &new DomXSLProcessor();
     $proc->setXSLFile(dirname(__FILE__).DIRECTORY_SEPARATOR.$language.'.xsl');
     $proc->setXMLBuf($node->getSource(INDENT_NONE));
+    
+    $showXml && Console::writeLine($purpose, ' => ', $node->getSource(INDENT_DEFAULT));
 
     try(); {
       $proc->run();
@@ -66,7 +68,7 @@ Generates stub classes by using the ESDL service
 
 Usage
 -----
-$ php stubclassesfor.php <hostname> <jndiname> [-p <port>] [-o <outputpath>]
+$ php stubclassesfor.php <hostname> <jndiname> [-p <port>] [-o <outputpath>] [-x]
   
   * hostname is the host name (or IP) that your JBoss + XP-MBean server 
     is running on. The feed entity bean (from the easc/beans directory) 
@@ -78,6 +80,8 @@ $ php stubclassesfor.php <hostname> <jndiname> [-p <port>] [-o <outputpath>]
   
   * outputpath is the path the files should be written to. It defaults
     to SKELETON_PATH, that is, where lang.base.php resides.
+  
+  * The "-x" switch shows the XML before it is transformed
 __
     );
     exit(1);
@@ -97,7 +101,16 @@ __
   }
   
   $path= $p->value('output', 'o', SKELETON_PATH);
-  writeTo($path, $description->interfaces[HOME_INTERFACE]->getClassName(), process($description, 'home'));
-  writeTo($path, $description->interfaces[REMOTE_INTERFACE]->getClassName(), process($description, 'remote'));
+  $showXml= $p->exists('xml');
+  writeTo(
+    $path, 
+    $description->interfaces[HOME_INTERFACE]->getClassName(), 
+    process($description, 'home', 'xp', $showXml)
+  );
+  writeTo(
+    $path, 
+    $description->interfaces[REMOTE_INTERFACE]->getClassName(), 
+    process($description, 'remote', 'xp', $showXml)
+  );
   // }}}
 ?>
