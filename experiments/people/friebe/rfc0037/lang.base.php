@@ -291,7 +291,8 @@
   // {{{ proto void implements(string file, string interface [, string interface [, ...]]) 
   //     Defines that the class this is called in implements certain interface(s)
   function implements() {
-    $class= strtolower(substr(basename(func_get_arg(0)), 0, -10));
+    $basename= basename(func_get_arg(0));
+    $class= strpos($basename, '.php') ? strtolower(substr($basename, 0, -10)) : strtolower($basename);
     $signature= array_flip(get_class_methods($class));
     $implements= xp::registry('implements');
     
@@ -318,7 +319,6 @@
         }
       }
     }
-    
     xp::registry('implements', $implements);
   }
   // }}}
