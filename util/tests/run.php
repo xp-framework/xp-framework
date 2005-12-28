@@ -35,7 +35,6 @@
       }
       
       // Add test method
-      Console::writeLinef('     >> Adding test %s::%s', $class->getName(), $methods[$i]->getName(TRUE));
       $suite->addTest(call_user_func_array(array(&$class, 'newInstance'), array_merge(
         (array)$methods[$i]->getName(TRUE),
         $arguments
@@ -112,7 +111,7 @@ __
       Console::writeLinef('---> Adding all tests');
       $section= $config->getFirstSection();
       do {
-        $tests[0]= array(
+        $tests[]= array(
           $config->readString($section, 'class'),
           $config->readArray($section, 'args')
         );
