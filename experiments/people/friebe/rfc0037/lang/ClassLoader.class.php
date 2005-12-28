@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  * 
- * $Id: ClassLoader.class.php 5772 2005-09-12 08:06:39Z friebe $
+ * $Id: ClassLoader.class.php 6225 2005-12-07 12:28:55Z friebe $
  */
  
   uses('lang.ClassNotFoundException');
@@ -10,6 +10,7 @@
    * Loads a class
    * 
    * @purpose  Load classes
+   * @test     xp://net.xp_framework.unittest.reflection.ClassLoaderTest
    * @see      xp://lang.XPClass#forName
    */
   class ClassLoader extends Object {
@@ -70,21 +71,24 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     function &loadClass($class) {
+      $name= xp::reflect($class);
       $qname= $this->classpath.$class;
-      
-      if (!defined($qname)) {
-        $package= '';
-        if (FALSE === include(strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+      if (!defined('class.'.$qname)) {
+        $package= NULL;
+
+        if (FALSE === ($r= include_once(strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php'))) {
           return throw(new ClassNotFoundException('Class "'.$qname.'" not found'));
+        } else if (TRUE !== $r) {
+          $package && $name= strtr($package, '.', '·').'·'.$name;
+
+          define('class.'.$name, $qname);
+          define('class.'.$qname, $name);
+          is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
         }
-        
-        $class= ($package ? strtr($package, '.', '·').'·' : '').xp::reflect($class);
-        xp::registry('class.'.$class, $qname);
-        is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
-      } else {
-        $class= constant($qname);
       }
-      return new XPClass($class);
+
+      $class= &new XPClass($name);
+      return $class;
     }
 
     /**
@@ -99,15 +103,26 @@
     function &defineClass($class, $bytes) {
       $name= xp::reflect($class);
 
-      if (!class_exists($name)) {
-        $qname= $this->classpath.$class;
-        if (FALSE === eval($bytes)) {
-          return throw(new FormatException('Cannot define class "'.$qname.'"'));
+      $qname= $this->classpath.$class;
+      if (!defined('class.'.$qname)) {
+        if (!class_exists($name)) {
+          $package= NULL;
+
+          if (FALSE === eval($bytes)) {
+            return throw(new FormatException('Cannot define class "'.$qname.'"'));
+          }
+          if (!class_exists($name)) {
+            return throw(new FormatException('Class "'.$qname.'" not defined'));
+          }
+
+          $package && $name= strtr($package, '.', '·').'·'.$name;
+          define('class.'.$name, $qname);
+          define('class.'.$qname, $name);
+          is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
         }
-        xp::registry('class.'.$name, $qname);
-        is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }      
-      return new XPClass($name);
+      $class= &new XPClass($name);
+      return $class;
     }
   }
 ?>

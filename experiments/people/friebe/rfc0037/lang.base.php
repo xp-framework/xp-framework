@@ -1,7 +1,7 @@
 <?php
 /* This file provides the core for the XP framework
  * 
- * $Id: lang.base.php 5786 2005-09-13 08:29:22Z kiesel $
+ * $Id: lang.base.php 6291 2005-12-19 09:57:38Z kiesel $
  */
 
   // {{{ final class xp
@@ -10,7 +10,7 @@
     // {{{ public string nameOf(string name)
     //     Returns the fully qualified name
     function nameOf($name) {
-      if (!($n= xp::registry('class.'.$name))) {
+      if (!($n= constant('class.'.$name))) {
         return $name ? 'php.'.$name : NULL;
       }
       return $n;
@@ -51,19 +51,11 @@
     function errorAt($file, $line= -1) {
       $errors= &xp::registry('errors');
       
-      // If no line is requested, this is O(n)
+      // If no line is given, check for an error in the file
       if ($line < 0) return !empty($errors[$file]);
       
-      // Else, we'll have to search...
-      if (isset($errors[$file])) for (
-        $i= 0, $s= sizeof($errors[$file]); 
-        $i < $s; 
-        $i++
-      ) {
-        if ($line == $errors[$file][$i][2]) return TRUE;
-      }
-      
-      return FALSE;
+      // Otherwise, check for an error in the file on a certain line
+      return !empty($errors[$file][$line]);
     }
     // }}}
     
@@ -95,6 +87,7 @@
     // {{{ internal string reflect(string str)
     //     Retrieve PHP conformant name for fqcn
     function reflect($str) {
+      if (defined('class.'.$str)) return constant('class.'.$str);
       return strtolower(substr($str, (FALSE === $p= strrpos($str, '.')) ? 0 : $p+ 1));
     }
     // }}}
@@ -114,7 +107,11 @@
 
     // {{{ public object null(void)
     //     Constructor to avoid magic __call invokation
-    function null() { }
+    function null() {
+      if (NULL !== xp::registry('null')) {
+        throw(new IllegalAccessException('Cannot create new instances of xp::null()'));
+      }
+    }
     // }}}
     
     // {{{ magic bool __call(string name, mixed[] args, &mixed return)
@@ -149,19 +146,8 @@
     if (0 == error_reporting() || is_null($file)) return;
 
     $errors= &xp::registry('errors');
-    $errors[$file][]= array($code, $msg, $line);
+    @$errors[$file][$line][$msg]++;
     xp::registry('errors', $errors);
-  }
-  // }}}
-
-  // {{{ internal void __destroy(void)
-  //     Shutdown function
-  function __destroy() {
-    foreach (array_keys($GLOBALS) as $k) {
-      if (is_a($GLOBALS[$k], 'Object')) {
-        $GLOBALS[$k]->__destruct();
-      }
-    }
   }
   // }}}
 
@@ -169,9 +155,10 @@
   //     Uses one or more classes
   function uses() {
     foreach (func_get_args() as $str) {
-      if (defined($str)) continue;
+      $class= xp::reflect($str);
+      if (defined('class.'.$str)) continue;
 
-      $package= '';
+      $package= NULL;
       if ($p= strpos($str, '+xp://')) {
         $type= substr($str, 0, $p);
         
@@ -186,17 +173,21 @@
           xp::error(xp::stringOf(new Error('Cannot include '.$str)));
         }
         $str= substr($str, strrpos($str, '/')+ 1);
+        $class= xp::reflect($str);
       } else {
         if (FALSE === ($r= include_once(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php'))) {
           xp::error(xp::stringOf(new Error('Cannot include '.$str)));
-        } else if (TRUE === $r) continue;
+        } else if (TRUE === $r) {
+          continue;
+        }
       }
       
       // Register class name and call static initializer if available
-      $class= ($package ? strtr($package, '.', '·').'·' : '').xp::reflect($str);
-      xp::registry('class.'.$class, $str);
+      $package && $class= strtr($package, '.', '·').'·'.$class;
+      define('class.'.$str, $class);
+      define('class.'.$class, $str);
+      
       is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
-      define($str, $class);
     }
   }
   // }}}
@@ -351,7 +342,7 @@
   // {{{ proto void delete(&lang.Object object)
   //     Destroys an object
   function delete(&$object) {
-    is_a($object, 'Object') && $object->__destruct();
+    is_a($object, 'Object') && method_exists($object, '__destruct') && $object->__destruct();
     $object= NULL;
   }
   // }}}
@@ -359,6 +350,9 @@
   // {{{ proto lang.Object &clone(lang.Object object) throws CloneNotSupportedException
   //     Clones an object
   function &clone($object) {
+    if (is(NULL, $object)) return throw(new NullPointerException('Cannot clone NULLs'));
+    if (!is_a($object, 'Object')) return raise('lang.CloneNotSupportedException', 'Cannot clone non-objects');
+
     $object->__id= microtime();
     if (is_callable(array(&$object, '__clone'))) {
       try(); {
@@ -378,25 +372,33 @@
 
   // {{{ initialization
   error_reporting(E_ALL);
-  if (!defined('PATH_SEPARATOR')) {
-    define('PATH_SEPARATOR',  0 == strncasecmp('WIN', PHP_OS, 3) ? ';' : ':');    
-  }
+  
+  // Get rid of magic quotes 
+  get_magic_quotes_gpc() && xp::error('[xp::core] magic_quotes_gpc enabled');
+  ini_set('magic_quotes_runtime', FALSE);
+  
+  // Constants
+  defined('PATH_SEPARATOR') || define('PATH_SEPARATOR',  0 == strncasecmp('WIN', PHP_OS, 3) ? ';' : ':');
   define('SKELETON_PATH', (getenv('SKELETON_PATH')
     ? getenv('SKELETON_PATH')
     : dirname(__FILE__).DIRECTORY_SEPARATOR
   ));
+  ini_set('include_path', SKELETON_PATH.PATH_SEPARATOR.ini_get('include_path'));
   define('LONG_MAX', is_int(2147483648) ? 9223372036854775807 : 2147483647);
   define('LONG_MIN', -LONG_MAX - 1);
-  ini_set('include_path', SKELETON_PATH.PATH_SEPARATOR.ini_get('include_path'));
-  register_shutdown_function('__destroy');
-  if (extension_loaded('overload')) overload('null');
+
+  // Hooks
+  extension_loaded('overload') && overload('null');
+  set_error_handler('__error');
+  
+  // Registry initialization
   xp::registry('null', new null());
   xp::registry('errors', array());
   xp::registry('exceptions', array());
-  xp::registry('class.xp', '<xp>');
-  xp::registry('class.null', '<null>');
-  set_error_handler('__error');
+  define('class.xp', '<xp>');
+  define('class.null', '<null>');
 
+  // Omnipresent classes
   uses(
     'lang.Object',
     'lang.Error',
@@ -410,6 +412,5 @@
     'lang.FormatException',
     'lang.ClassLoader'
   );
-  
   // }}}
 ?>
