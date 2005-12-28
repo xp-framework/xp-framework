@@ -45,5 +45,19 @@
       $uc= &XPClass::forName('util.Date');
       $this->assertNotEquals($bc, $uc);
     }
+
+    /**
+     * Tests that XPClass::forName() loads fully qualified classes 
+     * correctly.
+     *
+     * @access  public
+     */
+    #[@test]
+    function dynamicallyLoaded() {
+      $class= &XPClass::forName('de.thekid.List');
+      $this->assertEquals('de.thekid.List', $class->getName());
+      $instance= &$class->newInstance();
+      $this->assertEquals('de.thekid.List@{}', $instance->toString());
+    }
   }
 ?>
