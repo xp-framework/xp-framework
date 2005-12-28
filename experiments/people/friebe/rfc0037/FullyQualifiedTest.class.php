@@ -7,7 +7,8 @@
   uses(
     'util.profiling.unittest.TestCase',
     'util.Date',
-    'info.binford6100.Date'
+    'info.binford6100.Date',
+    'de.thekid.util.ObjectComparator'
   );
 
   /**
@@ -58,6 +59,20 @@
       $this->assertEquals('de.thekid.List', $class->getName());
       $instance= &$class->newInstance();
       $this->assertEquals('de.thekid.List@{}', $instance->toString());
+    }
+
+    /**
+     * Tests that XPClass::forName() loads fully qualified classes 
+     * correctly.
+     *
+     * @access  public
+     */
+    #[@test]
+    function interfaceImplemented() {
+      $class= &XPClass::forName('de.thekid.util.ObjectComparator');
+      $interfaces= $class->getInterfaces();
+      $this->assertEquals(1, sizeof($interfaces)) &&
+      $this->assertEquals('de.thekid.util.Comparator', $interfaces[0]->getName());
     }
   }
 ?>
