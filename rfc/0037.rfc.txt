@@ -113,4 +113,10 @@ Comments
   Maybe implements() should not be backwards compatible? BC causes
   performance problems here... or should it warn about usage of the 
   old syntax and give note that we'll deprecate sooner or later?
+
+- friebe, Wed Dec 28 16:10:19 CET 2005
+  Revamped lang.base.php and lang/ClassLoader.class.php committed to 
+  experiments/people/friebe/rfc0037. All tests in util/test/core.ini
+  pass.
+
 <EOF>
