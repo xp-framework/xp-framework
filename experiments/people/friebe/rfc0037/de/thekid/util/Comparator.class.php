@@ -6,8 +6,6 @@
 
   $package= 'de.thekid.util';
   
-  uses('de.thekid.List');
-
   /**
    * Comparator interface
    *
