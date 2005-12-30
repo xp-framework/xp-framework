@@ -123,8 +123,13 @@
         isset($this->list[$pos]) && 
         strncmp('--'.$long, $this->list[$pos], strlen($long) + 2) == 0
       ) {
-        sscanf($this->list[$pos], '--'.$long.'=%s', $val);
-        return $val;
+      
+        // Usage with value (eg.: '--with-foo=bar')
+        if ('=' === $this->list[$pos]{strlen($long) + 2})
+          return substr($this->list[$pos], strlen($long) + 3);  // Return string after `--{option}=`
+          
+        // Usage as switch (eg.: '--enable-foo')
+        return NULL;
       }
       
       // Usage in short (eg.: '-v' or '-f /foo/bar')
