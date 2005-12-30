@@ -28,8 +28,6 @@
 
       $this->assertTrue($p->exists('k'));
       $this->assertNull($p->value('k'));
-
-      delete($p);
     }
 
     /**
@@ -42,9 +40,7 @@
       $p= &new ParamString(array('-d', 'sql'));
 
       $this->assertTrue($p->exists('d'));
-      $this->assertEquals($p->value('d'), 'sql');
-      
-      delete($p);
+      $this->assertEquals('sql', $p->value('d'));
     }
 
     /**
@@ -58,8 +54,6 @@
 
       $this->assertTrue($p->exists('verbose'));
       $this->assertNull($p->value('verbose'));
-
-      delete($p);
     }
 
     /**
@@ -72,9 +66,20 @@
       $p= &new ParamString(array('--level=3'));
 
       $this->assertTrue($p->exists('level'));
-      $this->assertEquals($p->value('level'), '3');
-
-      delete($p);
+      $this->assertEquals('3', $p->value('level'));
+    }
+    
+    /**
+     * Test long option with whitespace in value
+     *
+     * @access  public
+     */
+    #[@test]
+    function whitespaceInParameter() {
+      $p= &new ParamString(array('--realm=That is a realm'));
+      
+      $this->assertTrue($p->exists('realm'));
+      $this->assertEquals('That is a realm', $p->value('realm'));
     }
   }
 ?>
