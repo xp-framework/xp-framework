@@ -228,6 +228,15 @@ public class Generator {
             }
             System.out.println("}");
 
+            // Remote home interface
+            System.out.println("\n===========================================\n");
+
+            System.out.println("package " + doc.containingPackage().name() + ";\n");
+            System.out.println("/**\n * Remote home interface\n */");
+            System.out.println("public interface " + simpleName +  "Home extends javax.ejb.EJBHome {");
+            System.out.println("    public " + simpleName + " create() throws javax.ejb.CreateException, java.rmi.RemoteException;");
+            System.out.println("}");
+
             // Local interface
             System.out.println("\n===========================================\n");
 
@@ -237,6 +246,15 @@ public class Generator {
             for (MethodDoc m: (ArrayList<MethodDoc>)localMethodFilter.filter(interfaceMethods)) {
                 System.out.println("    " + methodDeclarationOf(m) + ";");
             }
+            System.out.println("}");
+
+            // Local home interface
+            System.out.println("\n===========================================\n");
+
+            System.out.println("package " + doc.containingPackage().name() + ";\n");
+            System.out.println("/**\n * Local home interface\n */");
+            System.out.println("public interface " + simpleName +  "LocalHome extends javax.ejb.EJBLocalHome {");
+            System.out.println("    public " + simpleName + "Local create() throws javax.ejb.CreateException;");
             System.out.println("}");
             
             // Session Facade
