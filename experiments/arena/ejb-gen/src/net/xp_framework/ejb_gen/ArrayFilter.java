@@ -17,7 +17,7 @@ import java.util.ArrayList;
  *   // Set up filter as anonymous class
  *   ArrayFilter<Method> webmethods= new ArrayFilter<Method>() {
  *       protected boolean yield(Method method) {
- *           return method.isAnnotationPresent(element, WebMethod.class);
+ *           return method.isAnnotationPresent(method, WebMethod.class);
  *       }
  *   };
  *
