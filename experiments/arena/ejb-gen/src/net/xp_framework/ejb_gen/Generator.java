@@ -245,7 +245,16 @@ public class Generator {
             System.out.println("/**\n * Session facade\n */");
             System.out.println("public class " + simpleName +  "Session implements javax.ejb.SessionBean {");
             
-            for (MethodDoc m: interfaceMethods) {
+            // Add all fields
+            for (FieldDoc f: doc.fields()) {
+                System.out.print("    " + f.modifiers() + " " + f.type() + " " + f.name());
+                String constant= f.constantValueExpression();
+                if (null != constant) System.out.print("= " + constant);
+                System.out.println(";");
+            }
+            
+            // Add all methods
+            for (MethodDoc m: doc.methods()) {
                 System.out.println("    " + methodDeclarationOf(m) + " { " + sourceCodeOf(m) + "}");
             }
             
