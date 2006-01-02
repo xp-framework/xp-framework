@@ -149,15 +149,37 @@ public class Generator {
     }
     
     /**
-     * Find a method by name
+     * Find a method by its name and signature
+     *
+     * The signature is the arguments list and the brackets as follows:
+     * <ul>
+     *   <li>No arguments: "()"</li>
+     *   <li>One argument: "(java.lang.String)"</li>
+     *   <li>More arguments: "(float, java.lang.Object)"</li>
+     * </ul>
      *
      * @param   com.sun.javadoc.ClassDoc doc
-     * @param   java.lang.String the method's name
+     * @param   java.lang.String[] signature
      * @return  com.sun.javadoc.MethodDoc the found method or NULL
      */
-    protected static MethodDoc findMethod(ClassDoc doc, String name) {
+    protected static MethodDoc findMethod(ClassDoc doc, String signature[]) throws IllegalArgumentException {
+        String match;
+
+        switch (signature.length) {
+            case 0: throw new IllegalArgumentException("No signature given!");
+            case 1: match= signature[0] + "()"; break;
+            default: {
+                StringBuffer s= new StringBuffer(signature[0]).append('(');
+                for (int i= 1; i < signature.length; i+= 2) {
+                    s.append(signature[i]);
+                    if (i < signature.length - 2) s.append(", ");
+                }
+                match= s.append(')').toString();
+            }
+        }
+
         for (MethodDoc m: doc.methods()) {
-            if (m.name().equals(name)) return m;
+            if ((m.name() + m.signature()).equals(match)) return m;
         }
         return null;
     }
@@ -228,12 +250,25 @@ public class Generator {
             }
             
             // Generate ejb* methods if not present
-            for (String ejbMethod: new String[] { "ejbActivate", "ejbPassivate", "ejbRemove", "ejbCreate" }) {
+            for (String[] ejbMethod: new String[][] { 
+                new String[] { "ejbActivate" },
+                new String[] { "ejbPassivate" },
+                new String[] { "ejbRemove" },
+                new String[] { "ejbCreate" },
+                new String[] { "setSessionContext", "javax.ejb.SessionContext", "ctx" },
+                new String[] { "unsetSessionContext" }
+            }) {
                 MethodDoc m= null;
                 if (null != (m= findMethod(doc, ejbMethod))) {
                     System.out.println("    " + methodDeclarationOf(m) + " { " + sourceCodeOf(m) + "}");
                 } else {
-                    System.out.println("    public void " + ejbMethod + "() throws javax.ejb.EJBException, java.rmi.RemoteException { }");
+                    StringBuffer signature= new StringBuffer("(");
+                    for (int i= 1; i < ejbMethod.length; i+= 2) {
+                        signature.append(ejbMethod[i]).append(' ').append(ejbMethod[i + 1]);
+                        if (i < ejbMethod.length - 2) signature.append(", ");
+                    }
+                    signature.append(')');
+                    System.out.println("    public void " + ejbMethod[0] + signature + " throws javax.ejb.EJBException, java.rmi.RemoteException { }");
                 }
             }            
             System.out.println("}");
