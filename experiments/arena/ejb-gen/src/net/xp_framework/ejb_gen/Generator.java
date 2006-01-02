@@ -149,6 +149,20 @@ public class Generator {
     }
     
     /**
+     * Find a method by name
+     *
+     * @param   com.sun.javadoc.ClassDoc doc
+     * @param   java.lang.String the method's name
+     * @return  com.sun.javadoc.MethodDoc the found method or NULL
+     */
+    protected static MethodDoc findMethod(ClassDoc doc, String name) {
+        for (MethodDoc m: doc.methods()) {
+            if (m.name().equals(name)) return m;
+        }
+        return null;
+    }
+    
+    /**
      * Main method
      *
      * @param   com.sun.javadoc.RootDoc root
@@ -212,6 +226,16 @@ public class Generator {
             for (MethodDoc m: interfaceMethods) {
                 System.out.println("    " + methodDeclarationOf(m) + " { " + sourceCodeOf(m) + "}");
             }
+            
+            // Generate ejb* methods if not present
+            for (String ejbMethod: new String[] { "ejbActivate", "ejbPassivate", "ejbRemove", "ejbCreate" }) {
+                MethodDoc m= null;
+                if (null != (m= findMethod(doc, ejbMethod))) {
+                    System.out.println("    " + methodDeclarationOf(m) + " { " + sourceCodeOf(m) + "}");
+                } else {
+                    System.out.println("    public void " + ejbMethod + "() throws javax.ejb.EJBException, java.rmi.RemoteException { }");
+                }
+            }            
             System.out.println("}");
             
         }
