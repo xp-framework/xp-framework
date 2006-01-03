@@ -12,8 +12,9 @@
   );
 
   /**
-   * Test rdbms tokenizer
+   * Test criteria class
    *
+   * @see      xp://rdbms.Criteria
    * @purpose  Unit Test
    */
   class CriteriaTest extends TestCase {
@@ -92,7 +93,9 @@
         $c->addOrderBy('valid_from');
       }
 
-      // Note we're relying on the connection to be a sybase connection!
+      // Note we're relying on the connection to be a sybase connection -
+      // otherwise, quoting and date representation may change and make
+      // this test fail.
       $this->assertSql(
         'where job_id = 1 and valid_from >= "2006-01-01 12:00AM" and title like "Hello%" order by valid_from asc', 
         $c
