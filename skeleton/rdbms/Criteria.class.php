@@ -23,6 +23,7 @@
   /**
    * Criteria
    *
+   * @test     xp://net.xp_framework.unittest.rdbms.CriteriaTest
    * @see      xp://rdbms.DataSet
    * @purpose  purpose
    */
@@ -158,12 +159,12 @@
 
       // Process group by
       if (!empty($this->groupings)) {
-        $sql.= $db->prepare(' group by %c', $this->groupings);
+        $sql= rtrim($sql, ' ').$db->prepare(' group by %c', $this->groupings);
       }
 
       // Process order by
       if (!empty($this->orderings)) {
-        $sql.= ' order by ';
+        $sql= rtrim($sql, ' ').' order by ';
         foreach ($this->orderings as $order) {
           if (!isset($types[$order[0]])) {
             return throw(new SQLStateException('Field "'.$order[0].'" unknown'));
