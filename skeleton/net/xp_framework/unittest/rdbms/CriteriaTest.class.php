@@ -35,7 +35,8 @@
     }
     
     /**
-     * Test 
+     * Helper method that will call toSQL() on the passed criteria and
+     * compare the resulting string to the expected string.
      *
      * @access  protected
      * @param   string sql
