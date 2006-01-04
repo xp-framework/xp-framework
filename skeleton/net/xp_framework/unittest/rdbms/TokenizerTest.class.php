@@ -206,5 +206,25 @@
         $key
       );
     }
-  }
+
+    /**
+     * Test percent char within a string
+     *
+     * @access  public
+     */
+    #[@test]
+    function testPercentWithinString() {
+      static $expect= array(
+        'sybase'  => 'insert into table values ("value", "str%&ing", "value")',
+        'mysql'   => 'insert into table values ("value", "str%&ing", "value")',
+        'pgsql'   => 'insert into table values (\'value\', "str%&ing", \'value\')'
+      );
+      
+      foreach ($expect as $key => $value) $this->assertEquals(
+        $value,
+        $this->conn[$key]->prepare('insert into table values (%s, "str%&ing", %s)', 'value', 'value'),
+        $key
+      );
+    }
+ }
 ?>
