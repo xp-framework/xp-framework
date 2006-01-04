@@ -134,7 +134,7 @@
      * Retrieve a string representation of this object
      *
      * @access  public
-     * @return  strig
+     * @return  string
      */
     function toString() {
       $s= sprintf("%s@DN(%s){\n", $this->getClassName(), $this->getDN());
