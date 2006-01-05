@@ -48,7 +48,7 @@
      <meta name="description" content="XP is an object-oriented PHP framework"/>
      <meta name="keywords" content="PHP,PHP5,OOP,ZE2,object-oriented,framework,class collection"/>
      <meta name="author" content="The XP team"/>
-     <meta name="copyright" content="2002-2005"/>
+     <meta name="copyright" content="2002-2006"/>
     </head>
 
     <body
