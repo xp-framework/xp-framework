@@ -1,0 +1,137 @@
+RFC 0050: RDBMS Criteria API enhancement
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Thu Jan  5 15:43:13     2006
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+The rdbms.Criteria::add() method will be changed to accept either the 
+current list of arguments (string key, mixed value, const comparison)
+or a new and more flexible Criterion instance.
+
+
+Rationale
+---------
+The current way does not permit construction of complex SQL queries.
+
+
+Functionality
+-------------
+
+1) Simple criteria
+~~~~~~~~~~~~~~~~~~
+SQL:
+<pre>
+  select ... where domainname = "thekid.de"
+</pre>
+
+Current (and still valid) functionality:
+<?php
+  new Criteria(array('domainname', 'thekid.de', EQUAL));
+?>
+
+New functionality, using the Restrictions factory:
+<?php
+  new Criteria(Restrictions::equal('domainname', 'thekid.de'));
+?>
+
+New functionality, using the Property object:
+<?php
+  $domainname= &Property::forName('domainname');
+  new Criteria($domainname->equal('thekid.de'));
+?>
+
+
+2) Using OR
+~~~~~~~~~~~
+SQL:
+<pre>
+  select ... where expire_at > "2006-01-05" or deleted = 1
+</pre>
+
+Current (and still valid) functionality:
+<?php
+  // Not feasible with Criteria's old API, need to use hardcoded SQL
+  new Statement(
+    'select ... where expire_at > %s or deleted = %d',
+    Date::now(),
+    TRUE
+  );
+?>
+
+New functionality, using the Restrictions factory:
+<?php
+  new Criteria(Restrictions::eitherOf(
+    Restrictions::greaterThan('expire_at', Date::now()),
+    Restrictions::equal('deleted', TRUE)
+  ));
+?>
+
+New functionality, using the Property object:
+<?php
+  $expire_at= &Property::forName('expire_at');
+  $deleted= &Property::forName('deleted');
+
+  new Criteria(Restrictions::eitherOf(
+    $expire_at->greaterThan(Date::now()),
+    $deleted->equals(TRUE)
+  ));
+?>
+
+Implementation
+~~~~~~~~~~~~~~
+There are two variants:
+
+1) Patch Criteria minimally to support the Criterion instances.
+
+2) Change Criteria to use the SimpleExpression class for the
+   current API.
+
+See below for diffs.
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+- Variant #1: An instance check in add() and one for every condition
+  added in the toSQL() loop.
+
+- Variant #2: One instance check in add(), but uses of objects 
+  instead of simple arrays in Criteria's member conditions.
+
+
+Dependencies
+------------
+- For variant #2, the SimpleExpression would need to be added to
+  Criteria's uses() list.
+
+
+Related documents
+-----------------
+- http://www.hibernate.org/
+  Relational Persistence for Java and .NET
+
+- http://www.hibernate.org/hib_docs/v3/api/org/hibernate/criterion/package-summary.html
+  Package org.hibernate.criterion (a framework for defining restriction 
+  criteria and order criteria).
+
+- http://xp-framework.net/downloads/rfc0050-1.diff
+  Implementation variant #1
+
+- http://xp-framework.net/downloads/rfc0050-2.diff
+  Implementation variant #2
+
+Comments
+--------
+n/a
+
+
+<EOF>
