@@ -39,8 +39,8 @@
     #[@test]
     function testPercentToken() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
-        $value->prepare('select * from test where name like "%%.de"', 1),
         'select * from test where name like "%.de"',
+        $value->prepare('select * from test where name like "%%.de"', 1),
         $key
       );
     }
