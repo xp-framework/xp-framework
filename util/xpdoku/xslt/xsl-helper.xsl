@@ -204,7 +204,7 @@
       <tr valign="top" bgcolor="#f0f0f0">
         <td><small>
           <a href="http://schlund.com/"><img title="Hosted by Schlund+Partner" alt="Schlund+Partner logo" src="/image/schlund.gif" width="110" height="20" border="0" align="left"/></a>      
-	      <!--<a href="/copyright.html">-->Copyright 2001-2005 XP-Team<!--</a>--><br/>
+	      <!--<a href="/copyright.html">-->Copyright 2001-2006 XP-Team<!--</a>--><br/>
           All rights reserved.<br/>
           </small>
         </td>
