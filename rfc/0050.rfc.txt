@@ -78,7 +78,7 @@ New functionality, using the Property object:
 
   new Criteria(Restrictions::eitherOf(
     $expire_at->greaterThan(Date::now()),
-    $deleted->equals(TRUE)
+    $deleted->equal(TRUE)
   ));
 ?>
 
@@ -110,7 +110,7 @@ Speed impact
 
 Dependencies
 ------------
-- For variant #2, the SimpleExpression would need to be added to
+- For variant #2, the SimpleExpression class would need to be added to
   Criteria's uses() list.
 
 
