@@ -1,0 +1,128 @@
+RFC 0051: RDBMS Views API
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Fri Jan  6 19:13:54     2006
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+A new API will be created that will implement run-time views (views as 
+in those known from relational databases).
+
+
+Rationale
+---------
+For many purposes, we don't need an entire dataset objects but only
+one of their fields. Common case: A "news" table contains an author_id 
+field pointing to the "author" table. Now for list display, we don't 
+need *all* fields from the author table but only the first- and 
+lastname (and maybe the email address).
+
+
+Functionality
+-------------
+
+Current
+~~~~~~~
+<?php
+  $peer= &News::getPeer();
+
+  $criteria= &new Criteria();
+  $criteria->addOrderBy('created_at', DESCENDING);
+
+  for ($i= &$peer->iteratorFor($criteria); $i->hasNext(); ) {
+    $entry= &$iterator->next();   // News object
+    $author= &Author::getByAuthor_id($entry->getAuthor_id());
+
+    // ...
+  }
+?>
+Problems: 
+- For n entries returned by the iterator, this will issue n + 1 SQL 
+  queries.
+
+
+SQL View
+~~~~~~~~
+<pre>
+  create view "entries_with_authors" as select
+    n.title,
+    n.body,
+    n.created_at,
+    n.author_id,
+    a.firstname,
+    a.lastname
+  from
+    news n,
+    author a
+  where
+    n.author_id = a.author_id
+</pre>
+Problems:
+- Not all RDBMS support views
+- Dynamically creating views (and DataSet / Peer classes for them)
+  hurts performance and may not be permitted due to access 
+  limitations the DBO has set up.
+
+
+Proposed
+~~~~~~~~
+<?php
+  with ($view= &new DynamicView('entries_with_authors')); {
+    $news= &$view->add(News::getPeer(), array(
+      'title',
+      'body',
+      'created_at',
+      'author_id',
+    ));
+    $author= &$view->add(Author::getPeer(), array(
+      'firstname',
+      'lastname',
+    ));
+
+    $view->join($news->column('author_id'), $author->column('author_id'));
+  }
+  
+  $peer= &$view->getPeer();
+
+  $criteria= &new Criteria();
+  $criteria->addOrderBy('created_at', DESCENDING);
+
+  for ($i= &$peer->iteratorFor($criteria); $i->hasNext(); ) {
+    $entry= &$iterator->next();   // DynamicView object
+  } 
+?>
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://wiki.rubyonrails.com/rails/pages/HowtoUseJoinsWithFindAll
+  Describes same problem
+
+
+Comments
+--------
+- friebe, Fri Jan  6 20:16:04     2006
+  I'm not too happy with the proposed functionality yet. Should this
+  be part of the Criteria API? Should it support relationships like
+  one-to-one, one-to-many, many-to-many or would this be going too
+  far?
+
+<EOF>
