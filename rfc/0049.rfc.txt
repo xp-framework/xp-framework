@@ -37,6 +37,18 @@ Examples:
 - User administration frontend
 - Mailbox display in a webmail application
 
+RDBMS based implementation
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+The most common practice here would be to implement this based on records
+from a database table, but we don't want to be limited to that.
+
+<pre>
+Note: An implementation based on rdbms.DataSet could use rdbms.Criteria to 
+easily list, find, change, create and modify items. We need a way to create 
+specialized "facade" objects that serve the sole purpose of being displayed, 
+e.g. a news entry with a attributes "author.realname" and "comments.count".
+</pre>
+
 <pre>
 Note: Simply selecting all fields from one database table and displaying 
 them row-wise in a table is not sufficient. This may work well for flat 
@@ -48,6 +60,26 @@ Also, we can't always join on everything, e.g. in a listing of news
 entries we don't want all comments associated with an entry but rather
 only how many exist.
 </pre>  
+
+<pre>
+Note: After a record is modified, some further action may need to be
+taken, e.g. sending an email, triggering a SOAP service, fireing a UDP
+trigger, ...
+</pr>
+
+Other implementations
+~~~~~~~~~~~~~~~~~~~~~
+Beyond database access, the entries could come from and would need to
+be saved to other datasources, e.g.:
+
+- Application Server (remote API)
+- LDAP
+- Filesystem
+
+<pre>
+Note: These cases seem rare to me at the moment, but I think we should
+take this into account...
+</pre>
 
 
 Use case #2: Search and results
@@ -96,15 +128,6 @@ comment entries.
 Examples:
 - Weblog
 - Photoblog
-
-
-RDBMS based implementation
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-An implementation based on rdbms.DataSet could use rdbms.Criteria to easily 
-list, find, change, create and modify items. Especially for use cases #1 and
-#5, we'd need a way to create specialized "facade" objects that serve the 
-sole purpose of being displayed, e.g. a news entry with a attributes 
-"author.realname" and "comments.count".
 
 
 Security considerations
