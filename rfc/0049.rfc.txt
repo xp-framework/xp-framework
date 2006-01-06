@@ -48,7 +48,6 @@ easily list, find, change, create and modify items. We need a way to create
 specialized "facade" objects that serve the sole purpose of being displayed, 
 e.g. a news entry with a attributes "author.realname" and "comments.count".
 </pre>
-
 <pre>
 Note: Simply selecting all fields from one database table and displaying 
 them row-wise in a table is not sufficient. This may work well for flat 
@@ -60,12 +59,11 @@ Also, we can't always join on everything, e.g. in a listing of news
 entries we don't want all comments associated with an entry but rather
 only how many exist.
 </pre>  
-
 <pre>
 Note: After a record is modified, some further action may need to be
 taken, e.g. sending an email, triggering a SOAP service, fireing a UDP
 trigger, ...
-</pr>
+</pre>
 
 Other implementations
 ~~~~~~~~~~~~~~~~~~~~~
