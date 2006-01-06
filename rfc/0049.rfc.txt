@@ -59,6 +59,11 @@ Examples:
 - Site search
 - List search on list from use case #1
 
+<pre>
+Note: Search results may need to be filtered before being able to
+display them based on a user's settings and/or access permissions.
+</pre>
+
 
 Use case #3: Configurable portal page
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
