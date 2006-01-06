@@ -98,6 +98,15 @@ Examples:
 - Photoblog
 
 
+RDBMS based implementation
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+An implementation based on rdbms.DataSet could use rdbms.Criteria to easily 
+list, find, change, create and modify items. Especially for use cases #1 and
+#5, we'd need a way to create specialized "facade" objects that serve the 
+sole purpose of being displayed, e.g. a news entry with a attributes 
+"author.realname" and "comments.count".
+
+
 Security considerations
 -----------------------
 n/a
