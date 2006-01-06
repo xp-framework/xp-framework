@@ -1,4 +1,4 @@
-RFC 0049: XP "on rails"
+RFC 0049: Scriptlet Facades
 ========================================================================
 $Id$
 
@@ -9,47 +9,76 @@ $Id$
 
 Scope of Change
 ---------------
-A new API will be introduced that will make creating data manipulation
-frontends (list, new, edit, delete, search) easier.
+A new API will be introduced that will provide a base for common use-cases 
+of scriptlets - e.g. data manipulation frontends (list, new, edit, delete),
+search form and paged result sets, signup processes, user-configurable 
+portal pages, news aggregation frontends and more.
 
 
 Rationale
 ---------
-Remove boilerplate operations (EditHandler / EditWrapper / EditState, 
-CreateHandler / CreateWrapper / CreateState, ...).
+Remove the need for reinventing the wheel in many places and for boilerplate
+code (EditHandler / EditWrapper / EditState, CreateHandler / CreateWrapper / 
+CreateState, ...).
 
 
 Functionality
 -------------
+A "Facade" groups and provided functionality of multiple states and associated
+handlers and wrappers together.
 
-Database-driven
-~~~~~~~~~~~~~~~
-Works on rdms.DataSet / rdbms.Peer objects:
-<?php
-  class NewsFacade extends DBFacade {
-    var 
-      $peer= 'net.xp_framework.db.news.Entry';
-    
-    #[@facade-operation('list')]
-    function getList(&$peer, &$rundata) {
-      return $peer->iteratorFor(new Criteria(array('bz_id', 20000, EQUALS)));
-    }
+Use case #1: Data manipulation frontend
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Shows a list of items, provides means to add new items, delete and edit 
+existing ones.
 
-    #[@facade-operation('item')]
-    function retrieveItem(&$dataset, &$handler, &$rundata) {
-      $c= &Category::getPeer();
-      $handler->setFormValue(
-        'categories', 
-        $c->doSelect(new Criteria(array('bz_id', 20000, EQUALS)))
-      );
-    }
+Examples:
+- List of orders in a webshop administration frontend
+- User administration frontend
+- Mailbox display in a webmail application
 
-    #[@facade-operation('save')]
-    function onSave(&$dataset, &$rundata) {
-      return $dataset->save();
-    }
-  }
-?>
+
+Use case #2: Search and results
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Provides a simple entry box and a more complicated one for extended 
+searches. Shows search results ordered best first and paged.
+
+Examples:
+- Site search
+- List search on list from use case #1
+
+
+Use case #3: Configurable portal page
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Shows a list of selected portlets in a user-defined order per page. 
+Offers a way to configure the shown portlets and to administer the
+list.
+
+Examples:
+- Intranet portal page
+
+
+Use case #4: Ordering / signup process
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Guides the user through the process, showing forms dependant on data 
+currently needed (e.g., if the user is an existing user, no credit card
+or bank data needs to be queried) and lets the user hop back and forth
+within the process.
+
+Examples:
+- Order a webhosting package
+- Signup for a blogging account
+
+
+Use case #5: News aggregation frontend
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Shows entries ordered by date, newest first, with a means to show them
+grouped by topic and/or date, to browse the topics and to view and 
+comment entries.
+
+Examples:
+- Weblog
+- Photoblog
 
 
 Security considerations
@@ -76,5 +105,8 @@ Related documents
 
 Comments
 --------
+- friebe, Fri Jan  6 17:44:21     2006: Went away completely from the 
+  idea of providing a facade only for use case #1, instead currently
+  focussing on gathering use cases.
 
 <EOF>
