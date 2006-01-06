@@ -37,6 +37,19 @@ Examples:
 - User administration frontend
 - Mailbox display in a webmail application
 
+Note:
+<pre>
+  Simply selecting all fields from one database table and displaying them  
+  row-wise in a table is not sufficient. This may work well for flat 
+  database  structures, but will fail if we normalize. For example, a "news" 
+  table would contain an author_id field pointing to the "author" table. 
+  Now for list display, we probably don't need *all* fields from the author
+  table but only the first- and lastname (and maybe the email address).
+  Also, we can't always join on everything, e.g. in a listing of news
+  entries we don't want all comments associated with an entry but rather
+  only how many exist.
+</pre>  
+
 
 Use case #2: Search and results
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
