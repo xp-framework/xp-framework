@@ -26,9 +26,9 @@
    */
   class StatementFormatter extends Object {
     var
-      $escape       = '"',
-      $escapeRules  = array('"'   => '""'),
-      $dateFormat   = 'Y-m-d h:iA';
+      $escape       = '',
+      $escapeRules  = array(),
+      $dateFormat   = '';
   
   
     /**
@@ -40,6 +40,7 @@
      * @return  string
      */
     function format($fmt, $args) {
+      static $tokens= 'sdcfu';
       $statement= '';
       
       $argumentOffset= 0;
@@ -48,20 +49,36 @@
         // Find next token (or end of string)
         $offset= strcspn($fmt, '%');
         $statement.= substr($fmt, 0, $offset);
-        
+
         // If offset == length, it was the last token, so return
         if ($offset == strlen($fmt)) return $statement;
         
         if (is_numeric($fmt{$offset + 1})) {
+        
+          // Numeric argument type specifier, e.g. %1$s
           sscanf(substr($fmt, $offset), '%%%d$', $overrideOffset);
           $type= $fmt{$offset + strlen($overrideOffset) + 2};
           $fmt= substr($fmt, $offset + strlen($overrideOffset) + 3);
           $argument= isset($args[$overrideOffset - 1]) ? $args[$overrideOffset - 1] : NULL;
-        } else {
+        } else if (FALSE !== strpos($tokens, $fmt{$offset + 1})) {
+        
+          // Known tokens
           $type= $fmt{$offset + 1};
           $fmt= substr($fmt, $offset + 2);
           $argument= isset($args[$argumentOffset]) ? $args[$argumentOffset] : NULL;
           $argumentOffset++;
+        } else if ('%' == $fmt{$offset + 1}) {
+        
+          // Escape sign
+          $statement.= '%';
+          $fmt= substr($fmt, $offset + 2);
+          continue;
+        } else {
+        
+          // Unknown tokens
+          $statement.= '%'.$fmt{$offset + 1};
+          $fmt= substr($fmt, $offset + 2);
+          continue;
         }
         
         $statement.= $this->prepare($type, $argument);
@@ -98,8 +115,6 @@
           case 'c': $r.= $arg; break;
           case 'f': $r.= floatval($arg); break;
           case 'u': $r.= $this->escape.date($this->dateFormat, $arg).$this->escape; break;
-          case '%': $r.= '%'; break;
-          default: $r.= '%'.$type;
         }
         $r.= ', ';
       }

@@ -111,8 +111,6 @@
       static $formatter= NULL;
       $args= func_get_args();
       
-      if (1 == sizeof($args)) return array_shift($args);
-      
       if (NULL === $formatter) {
         $formatter= new StatementFormatter();
         $formatter->setEscape('"');
