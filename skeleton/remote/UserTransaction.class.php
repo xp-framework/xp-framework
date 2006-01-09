@@ -20,7 +20,7 @@
      * @access  public
      */
     function commit() {
-      $this->_handler->commitTransaction($this);
+      $this->_handler->commit($this);
     }
     
     /**
@@ -29,7 +29,7 @@
      * @access  public
      */
     function rollback() {
-      $this->_handler->rollbackTransaction($this);
+      $this->_handler->rollback($this);
     }  
   }
 ?>
