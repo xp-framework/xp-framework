@@ -29,5 +29,5 @@ public interface Invokeable<Return, Parameter> {
      * @return  <Return> 
      * @throws  lang.Exception
      */
-    public Return invoke(Parameter p) throws Exception;
+    public Return invoke(Parameter p, Object arg) throws Exception;
 }

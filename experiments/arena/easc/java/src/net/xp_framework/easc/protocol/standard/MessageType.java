@@ -17,6 +17,7 @@ import net.xp_framework.easc.server.CallDelegate;
 import net.xp_framework.easc.server.FinalizeDelegate;
 import net.xp_framework.easc.server.TransactionDelegate;
 import net.xp_framework.easc.util.ByteCountedString;
+import net.xp_framework.easc.protocol.standard.SerializerContext;
 
 import static net.xp_framework.easc.util.MethodMatcher.methodFor;
 
@@ -122,7 +123,7 @@ public enum MessageType {
             // Deserialize arguments
             Object arguments[]= null;
             try {
-                arguments= (Object[])Serializer.valueOf(serialized, instance.getClass().getClassLoader());
+                arguments= (Object[])Serializer.valueOf(serialized, new SerializerContext(instance.getClass().getClassLoader()));
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new IOException("Cannot deserialize arguments: " + e.getMessage());

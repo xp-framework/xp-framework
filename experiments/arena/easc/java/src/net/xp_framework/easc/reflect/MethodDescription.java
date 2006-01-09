@@ -17,8 +17,8 @@ import java.security.Principal;
  */
 public class MethodDescription implements Serializable {
     public String name;
-    public String returnType;
-    public ArrayList<String> parameterTypes= new ArrayList<String>();
+    public Class returnType;
+    public ArrayList<Class> parameterTypes= new ArrayList<Class>();
     public ArrayList<String> roles= new ArrayList<String>();
     public TransactionTypeDescription transactionType= null;
     
@@ -66,9 +66,9 @@ public class MethodDescription implements Serializable {
      * Get return type of this method
      *
      * @access  public
-     * @return  java.lang.String
+     * @return  java.lang.Class
      */
-    public String getReturnType() {
+    public Class getReturnType() {
         return this.returnType;
     }
     
@@ -76,35 +76,12 @@ public class MethodDescription implements Serializable {
      * Set return type of this method
      *
      * @access  public
-     * @param   java.lang.String returnType
-     */
-    public void setReturnType(String returnType) {
-        this.returnType= returnType;
-    }
-
-    /**
-     * Set return type of this method
-     *
-     * @access  public
      * @param   java.lang.Class returnType
      */
     public void setReturnType(Class returnType) {
-        this.returnType= (returnType.isArray() 
-            ? returnType.getComponentType() + "[]" 
-            : returnType.getName()
-        );
+        this.returnType= returnType;
     }
     
-    /**
-     * Add parameter type
-     *
-     * @access  public
-     * @param   java.lang.String parameterType
-     */
-    public void addParameter(String parameterType) {
-        this.parameterTypes.add(parameterType);
-    }
-
     /**
      * Add parameter type
      *
@@ -112,10 +89,7 @@ public class MethodDescription implements Serializable {
      * @param   java.lang.Class parameterType
      */
     public void addParameter(Class parameterType) {
-        this.parameterTypes.add((parameterType.isArray() 
-            ? parameterType.getComponentType() + "[]" 
-            : parameterType.getName()
-        ));
+        this.parameterTypes.add(parameterType);
     }
 
     /**
@@ -156,11 +130,11 @@ public class MethodDescription implements Serializable {
         }
         
         // Create method signature
-        s.append(this.returnType).append(' ').append(this.name).append('(');
+        s.append(this.returnType.getCanonicalName()).append(' ').append(this.name).append('(');
 
         // Append parameter types separated by commas
-        for (String parameter: this.parameterTypes) {
-            s.append(parameter).append(", ");
+        for (Class parameter: this.parameterTypes) {
+            s.append(parameter.getCanonicalName()).append(", ");
         }
         if (this.parameterTypes.size() > 0) s.delete(s.length() - 2, s.length());
         

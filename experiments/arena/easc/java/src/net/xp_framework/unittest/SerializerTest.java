@@ -341,7 +341,7 @@ public class SerializerTest {
      */
     @Test public void representationOfUserType() throws Exception {
         registerMapping(UUID.class, new Invokeable<String, UUID>() {
-            public String invoke(UUID u) throws Exception {
+            public String invoke(UUID u, Object arg) throws Exception {
                 return "U:" + u + ";";
             }
         });
@@ -525,11 +525,36 @@ public class SerializerTest {
         description.setTransactionType(TransactionTypeDescription.UNKNOWN);
         
         assertEquals(
-            "O:47:\"net.xp_framework.easc.reflect.MethodDescription\":5:{s:4:\"name\";s:10:\"helloWorld\";s:10:\"returnType\";s:16:\"java.lang.String\";s:14:\"parameterTypes\";a:0:{}s:5:\"roles\";a:1:{i:0;s:4:\"mock\";}s:15:\"transactionType\";i:6;}",
+            "O:47:\"net.xp_framework.easc.reflect.MethodDescription\":5:{s:4:\"name\";s:10:\"helloWorld\";s:10:\"returnType\";c:s;s:14:\"parameterTypes\";a:0:{}s:5:\"roles\";a:1:{i:0;s:4:\"mock\";}s:15:\"transactionType\";i:6;}",
             representationOf(description)
         );
     }
 
+    /**
+     * Tests serialization of the Person class (not the object)
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOfPersonClass() throws Exception {
+        assertEquals(
+            "C:32:\"net.xp_framework.unittest.Person\";",
+            representationOf(Person.class)
+        );
+    }
+
+    /**
+     * Tests serialization of the String class
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOfStringClass() throws Exception {
+        assertEquals(
+            "c:s;",
+            representationOf(String.class)
+        );
+    }
 
     /**
      * Tests deserialization of null (identified by "N" token)
@@ -719,25 +744,5 @@ public class SerializerTest {
     @Test public void valueOfArray() throws Exception {
         Object[] result= (Object[])valueOf("A:2:{O:32:\"net.xp_framework.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}");
         assertEquals(new Object[] { new Person(), new String("World") }, result);
-    }
-
-    /**
-     * Tests class name mappings
-     *
-     * @access  public
-     * @throws  java.lang.Exception
-     */
-    @Test public void invokeableForString() throws Exception {
-        assertEquals('s', ((MethodTarget<?, ?>)invokeableFor(String.class)).token());
-    }
-
-    /**
-     * Tests class name mappings
-     *
-     * @access  public
-     * @throws  java.lang.Exception
-     */
-    @Test public void invokeableForObject() throws Exception {
-        assertNull(invokeableFor(Object.class));
     }
 }

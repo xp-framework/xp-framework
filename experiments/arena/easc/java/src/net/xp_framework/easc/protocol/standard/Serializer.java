@@ -19,6 +19,7 @@ import net.xp_framework.easc.protocol.standard.Handler;
 import net.xp_framework.easc.protocol.standard.Invokeable;
 import net.xp_framework.easc.protocol.standard.SerializationException;
 import net.xp_framework.easc.protocol.standard.MethodTarget;
+import net.xp_framework.easc.protocol.standard.SerializerContext;
 
 /**
  * Serializer / unserializer for PHP serialized data
@@ -54,21 +55,21 @@ public class Serializer {
     
     private static enum Token {
         T_NULL {
-            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                 length.value= 2;
                 return null;
             }
         },
 
         T_BOOLEAN {
-            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                 length.value= 4; 
                 return ('1' == serialized.charAt(2));
             }
         },
 
         T_INTEGER {
-            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                length.value= value.length() + 3;
@@ -77,7 +78,7 @@ public class Serializer {
         },
 
         T_LONG {
-            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                length.value= value.length() + 3;
@@ -86,7 +87,7 @@ public class Serializer {
         },
 
         T_FLOAT {
-            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                 String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                 length.value= value.length() + 3;
@@ -95,7 +96,7 @@ public class Serializer {
         },
 
         T_DOUBLE {
-            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                 String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                 length.value= value.length() + 3;
@@ -104,7 +105,7 @@ public class Serializer {
         },
 
         T_STRING {
-            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                 String strlength= serialized.substring(2, serialized.indexOf(':', 2));
                 int offset= 2 + strlength.length() + 2;
                 int parsed= Integer.parseInt(strlength);
@@ -116,16 +117,16 @@ public class Serializer {
         },
 
         T_HASH {
-            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                 String arraylength= serialized.substring(2, serialized.indexOf(':', 2));
                 int parsed= Integer.parseInt(arraylength);
                 int offset= arraylength.length() + 2 + 2;
                 HashMap h= new HashMap(parsed);
 
                 for (int i= 0; i < parsed; i++) {
-                    Object key= Serializer.valueOf(serialized.substring(offset), length, loader, null);
+                    Object key= Serializer.valueOf(serialized.substring(offset), length, context, null);
                     offset+= length.value;
-                    Object value= Serializer.valueOf(serialized.substring(offset), length, loader, null);
+                    Object value= Serializer.valueOf(serialized.substring(offset), length, context, null);
                     offset+= length.value;
                     
                     h.put(key, value);
@@ -137,14 +138,14 @@ public class Serializer {
         },
 
         T_ARRAY {
-            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                 String arraylength= serialized.substring(2, serialized.indexOf(':', 2));
                 int parsed= Integer.parseInt(arraylength);
                 int offset= arraylength.length() + 2 + 2;
                 Object[] array= new Object[parsed];
 
                 for (int i= 0; i < parsed; i++) {
-                    array[i]= Serializer.valueOf(serialized.substring(offset), length, loader, null);
+                    array[i]= Serializer.valueOf(serialized.substring(offset), length, context, null);
                     offset+= length.value;
                 }
 
@@ -154,7 +155,7 @@ public class Serializer {
         },
         
         T_OBJECT {
-            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                 String classnamelength= serialized.substring(2, serialized.indexOf(':', 2));
                 int offset= classnamelength.length() + 2 + 2;
                 int parsed= Integer.parseInt(classnamelength);
@@ -163,9 +164,9 @@ public class Serializer {
 
                 // Load class
                 try {
-                    c= loader.loadClass(serialized.substring(offset, parsed+ offset)); 
+                    c= context.classLoader.loadClass(serialized.substring(offset, parsed+ offset)); 
                 } catch (ClassNotFoundException e) {
-                    throw new SerializationException(loader + ": " + e.getMessage());
+                    throw new SerializationException(context.classLoader + ": " + e.getMessage());
                 }
                 
                 // Instanciate
@@ -176,9 +177,9 @@ public class Serializer {
                 
                 // Set field values
                 for (int i= 0; i < Integer.parseInt(objectlength); i++) {
-                    Field f= c.getDeclaredField((String)Serializer.valueOf(serialized.substring(offset), length, loader, null));
+                    Field f= c.getDeclaredField((String)Serializer.valueOf(serialized.substring(offset), length, context, null));
                     offset+= length.value;
-                    Object value= Serializer.valueOf(serialized.substring(offset), length, loader, f.getType());
+                    Object value= Serializer.valueOf(serialized.substring(offset), length, context, f.getType());
                     offset+= length.value;
                     
                     try {
@@ -223,7 +224,7 @@ public class Serializer {
         },
 
         T_DATE {
-            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                length.value= value.length() + 3;
@@ -236,7 +237,7 @@ public class Serializer {
         },
 
         T_BYTE {
-            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                 String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                 length.value= value.length() + 3;
@@ -245,7 +246,7 @@ public class Serializer {
         },
 
         T_SHORT {
-            public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception { 
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                 String value= serialized.substring(2, serialized.indexOf(';', 2));
 
                 length.value= value.length() + 3;
@@ -278,7 +279,7 @@ public class Serializer {
             return map.get(c);
         }
       
-        abstract public Object handle(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception;
+        abstract public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception;
     }
 
     private static HashMap<Class, Invokeable<?, ?>> typeMap= new HashMap<Class, Invokeable<?, ?>>();
@@ -337,14 +338,14 @@ public class Serializer {
         return list;
     }
 
-    private static String representationOf(Object o, Invokeable i) throws Exception {
+    private static String representationOf(Object o, Invokeable i, SerializerContext context) throws Exception {
         if (null == o) return "N;";
 
         if (!(o instanceof java.io.Serializable)) {
             throw new SerializationException("Trying to serialize non-serializable object " + o + " via " + i);
         }
 
-        if (i != null) return (String)i.invoke(o);
+        if (i != null) return (String)i.invoke(o, context);
 
         // Default object serialization
         StringBuffer buffer= new StringBuffer();
@@ -359,7 +360,7 @@ public class Serializer {
             buffer.append("\";");
 
             f.setAccessible(true);
-            buffer.append(representationOf(f.get(o), invokeableFor(f.getType())));
+            buffer.append(representationOf(f.get(o), invokeableFor(f.getType()), context));
             numFields++;
         }
 
@@ -368,16 +369,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler('s') public static String representationOf(String s) {
+    @Handler('s') protected static String representationOf(String s, SerializerContext context) {
         if (null == s) return "N;";
         return "s:" + s.length() + ":\"" + s + "\";";
     } 
 
-    @Handler('s') public static String representationOf(char c) {
+    @Handler('s') protected static String representationOf(char c, SerializerContext context) {
         return "s:1:\"" + c + "\";";
     }
     
-    @Handler('a') public static String representationOf(char[] array) throws Exception {
+    @Handler('a') protected static String representationOf(char[] array, SerializerContext context) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -387,16 +388,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler('s') public static String representationOf(Character c) {
+    @Handler('s') protected static String representationOf(Character c, SerializerContext context) {
         if (null == c) return "N;";
         return "s:1:\"" + c + "\";";
     }
 
-    @Handler('B') public static String representationOf(byte b) {
+    @Handler('B') protected static String representationOf(byte b, SerializerContext context) {
         return "B:" + b + ";";
     }
     
-    @Handler('a') public static String representationOf(byte[] array) throws Exception {
+    @Handler('a') protected static String representationOf(byte[] array, SerializerContext context) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -406,16 +407,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler('B') public static String representationOf(Byte b) {
+    @Handler('B') protected static String representationOf(Byte b, SerializerContext context) {
         if (null == b) return "N;";
         return "B:" + b + ";";
     }
 
-    @Handler('S') public static String representationOf(short s) {
+    @Handler('S') protected static String representationOf(short s, SerializerContext context) {
         return "S:" + s + ";";
     }
     
-    @Handler('a') public static String representationOf(short[] array) throws Exception {
+    @Handler('a') protected static String representationOf(short[] array, SerializerContext context) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -425,16 +426,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler('s') public static String representationOf(Short s) {
+    @Handler('s') protected static String representationOf(Short s, SerializerContext context) {
         if (null == s) return "N;";
         return "S:" + s + ";";
     }
 
-    @Handler('i') public static String representationOf(int i) {
+    @Handler('i') protected static String representationOf(int i, SerializerContext context) {
         return "i:" + i + ";";
     }
 
-    @Handler('a') public static String representationOf(int[] array) throws Exception {
+    @Handler('a') protected static String representationOf(int[] array, SerializerContext context) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -444,16 +445,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler('i') public static String representationOf(Integer i) {
+    @Handler('i') protected static String representationOf(Integer i, SerializerContext context) {
         if (null == i) return "N;";
         return "i:" + i + ";";
     }
 
-    @Handler('l') public static String representationOf(long l) {
+    @Handler('l') protected static String representationOf(long l, SerializerContext context) {
         return "l:" + l + ";";
     }
 
-    @Handler('a') public static String representationOf(long[] array) throws Exception {
+    @Handler('a') protected static String representationOf(long[] array, SerializerContext context) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -463,16 +464,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler('l') public static String representationOf(Long l) {
+    @Handler('l') protected static String representationOf(Long l, SerializerContext context) {
         if (null == l) return "N;";
         return "l:" + l + ";";
     }
 
-    @Handler('d') public static String representationOf(double d) {
+    @Handler('d') protected static String representationOf(double d, SerializerContext context) {
         return "d:" + d + ";";
     }
     
-    @Handler('a') public static String representationOf(double[] array) throws Exception {
+    @Handler('a') protected static String representationOf(double[] array, SerializerContext context) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -482,16 +483,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler('d') public static String representationOf(Double d) {
+    @Handler('d') protected static String representationOf(Double d, SerializerContext context) {
         if (null == d) return "N;";
         return "d:" + d + ";";
     }
 
-    @Handler('f') public static String representationOf(float f) {
+    @Handler('f') protected static String representationOf(float f, SerializerContext context) {
         return "f:" + f + ";";
     }
     
-    @Handler('a') public static String representationOf(float[] array) throws Exception {
+    @Handler('a') protected static String representationOf(float[] array, SerializerContext context) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -501,16 +502,16 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler('f') public static String representationOf(Float f) {
+    @Handler('f') protected static String representationOf(Float f, SerializerContext context) {
         if (null == f) return "N;";
         return "f:" + f + ";";
     }
 
-    @Handler('b') public static String representationOf(boolean b) {
+    @Handler('b') protected static String representationOf(boolean b, SerializerContext context) {
         return "b:" + (b ? 1 : 0) + ";";
     }
 
-    @Handler('a') public static String representationOf(boolean[] array) throws Exception {
+    @Handler('a') protected static String representationOf(boolean[] array, SerializerContext context) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
             buffer.append("i:" + i + ";");
@@ -520,12 +521,12 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler('b') public static String representationOf(Boolean b) {
+    @Handler('b') protected static String representationOf(Boolean b, SerializerContext context) {
         if (null == b) return "N;";
         return "b:" + (b ? 1 : 0) + ";";
     }
 
-    @Handler('a') public static String representationOf(HashMap h) throws Exception {
+    @Handler('a') protected static String representationOf(HashMap h, SerializerContext context) throws Exception {
         if (null == h) return "N;";
         StringBuffer buffer= new StringBuffer("a:" + h.size() + ":{");
         
@@ -533,10 +534,10 @@ public class Serializer {
             Object key= it.next();
             Object value= h.get(key);
 
-            buffer.append(representationOf(key, invokeableFor(key.getClass())));
+            buffer.append(representationOf(key, invokeableFor(key.getClass()), context));
             buffer.append(null == value 
                 ? "N;" 
-                : representationOf(value, invokeableFor(value.getClass()))
+                : representationOf(value, invokeableFor(value.getClass()), context)
             );
         }
 
@@ -544,24 +545,24 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler('a') public static String representationOf(Collection c) throws Exception {
+    @Handler('a') protected static String representationOf(Collection c, SerializerContext context) throws Exception {
         if (null == c) return "N;";
-        return representationOf(c.toArray(), invokeableFor(Object[].class));
+        return representationOf(c.toArray(), invokeableFor(Object[].class), context);
     }
 
-    @Handler('T') public static String representationOf(Date d) throws Exception {
+    @Handler('T') protected static String representationOf(Date d, SerializerContext context) throws Exception {
         if (null == d) return "N;";
         return "T:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
     }
     
-    @Handler('a') public static String representationOf(Object[] a) throws Exception {
+    @Handler('a') protected static String representationOf(Object[] a, SerializerContext context) throws Exception {
         StringBuffer buffer= new StringBuffer("a:" + a.length + ":{");
 
         for (int i= 0; i < a.length; i++) {
             buffer.append("i:" + i + ";");
             buffer.append(null == a[i]
                 ? "N;"
-                : representationOf(a[i], invokeableFor(a[i].getClass()))
+                : representationOf(a[i], invokeableFor(a[i].getClass()), context)
             );
         }
 
@@ -570,23 +571,23 @@ public class Serializer {
     }
     
     
-    @Handler('t') public static String representationOf(StackTraceElement e) throws Exception {
+    @Handler('t') protected static String representationOf(StackTraceElement e, SerializerContext context) throws Exception {
         if (null == e) return "N;";
         StringBuffer buffer= new StringBuffer();
         Class c= e.getClass();
         String name;
         
         buffer.append("t:4:{");
-        buffer.append("s:4:\"file\";").append(representationOf(e.getFileName()));
-        buffer.append("s:5:\"class\";").append(representationOf(e.getClassName()));
-        buffer.append("s:6:\"method\";").append(representationOf(e.getMethodName()));
-        buffer.append("s:4:\"line\";").append(representationOf(e.getLineNumber()));
+        buffer.append("s:4:\"file\";").append(representationOf(e.getFileName(), context));
+        buffer.append("s:5:\"class\";").append(representationOf(e.getClassName(), context));
+        buffer.append("s:6:\"method\";").append(representationOf(e.getMethodName(), context));
+        buffer.append("s:4:\"line\";").append(representationOf(e.getLineNumber(), context));
         buffer.append("}");
 
         return buffer.toString();        
     }
 
-    @Handler('e') public static String representationOf(Throwable e) throws Exception {
+    @Handler('e') protected static String representationOf(Throwable e, SerializerContext context) throws Exception {
         if (null == e) return "N;";
         StringBuffer buffer= new StringBuffer();
         Class c= e.getClass();
@@ -599,21 +600,44 @@ public class Serializer {
             buffer.append("E:").append(c.getName().length()).append(":\"").append(c.getName());
         }
         buffer.append("\":2:{s:7:\"message\";");
-        buffer.append(representationOf(e.getMessage()));
+        buffer.append(representationOf(e.getMessage(), context));
         buffer.append("s:5:\"trace\";a:").append(trace.length).append(":{");
 
         int offset= 0;
         for (StackTraceElement element: trace) {
-            buffer.append("i:").append(offset++).append(';').append(representationOf(element));
+            buffer.append("i:").append(offset++).append(';').append(representationOf(element, context));
         }
 
         buffer.append("}}");
         return buffer.toString();        
     }
     
-    @Handler('i') public static String representationOf(Enum e) throws Exception {
+    @Handler('i') protected static String representationOf(Enum e, SerializerContext context) throws Exception {
         if (null == e) return "N;";
         return "i:" + e.ordinal() + ";";
+    }
+
+    /**
+     * Serializes Class objects.
+     *
+     * @static
+     * @access  public
+     * @param   java.lang.Class c
+     * @return  java.lang.String
+     */
+    @Handler('C') protected static String representationOf(Class c, SerializerContext context) throws Exception {
+        if (null == c) return "N;";
+        if (void.class.equals(c)) return "N;";
+
+        // See if we know this type
+        MethodTarget<?, ?> t= (MethodTarget<?, ?>)invokeableFor(c);
+        if (null != t) {
+            return "c:" + t.token() + ";";
+        }
+        
+        // Fall back to generic class representation
+        context.addClass(c);
+        return "C:" + c.getName().length() + ":\"" + c.getName() + "\";";
     }
         
     /**
@@ -623,11 +647,25 @@ public class Serializer {
      * @static
      * @access  public
      * @param   java.lang.Object o
+     * @param   net.xp_framework.easc.protocol.standard.SerializerContext context
+     * @return  java.lang.String
+     */
+    public static String representationOf(Object o, SerializerContext context) throws Exception {
+        if (null == o) return "N;";
+        return representationOf(o, invokeableFor(o.getClass()), context);
+    }
+
+    /**
+     * Fall-back method for default serialization.
+     *
+     * @static
+     * @access  public
+     * @param   java.lang.Object o
      * @return  java.lang.String
      */
     public static String representationOf(Object o) throws Exception {
         if (null == o) return "N;";
-        return representationOf(o, invokeableFor(o.getClass()));
+        return representationOf(o, invokeableFor(o.getClass()), new SerializerContext(Serializer.class.getClassLoader()));
     }
     
     /**
@@ -637,12 +675,12 @@ public class Serializer {
      * @access  private
      * @param   java.lang.String serialized
      * @param   Length length
-     * @param   java.lang.ClassLoader loader
+     * @param   net.xp_framework.easc.protocol.standard.SerializerContext context
      * @param   java.lang.Class clazz
      * @return  java.lang.Object
      */
-    private static Object valueOf(String serialized, Length length, ClassLoader loader, Class clazz) throws Exception {
-        return Token.valueOf(serialized.charAt(0)).handle(serialized, length, loader, clazz);
+    private static Object valueOf(String serialized, Length length, SerializerContext context, Class clazz) throws Exception {
+        return Token.valueOf(serialized.charAt(0)).handle(serialized, length, context, clazz);
     }
 
     /**
@@ -655,7 +693,7 @@ public class Serializer {
      * @return  java.lang.Object
      */
     public static Object valueOf(String serialized) throws Exception {
-        return valueOf(serialized, new Length(0), Serializer.class.getClassLoader(), null);
+        return valueOf(serialized, new Length(0), new SerializerContext(Serializer.class.getClassLoader()), null);
     }
 
     /**
@@ -669,35 +707,35 @@ public class Serializer {
      * @return  java.lang.Object
      */
     public static Object valueOf(String serialized, Class clazz) throws Exception {
-        return valueOf(serialized, new Length(0), Serializer.class.getClassLoader(), clazz);
+        return valueOf(serialized, new Length(0), new SerializerContext(Serializer.class.getClassLoader()), clazz);
     }
     
     /**
-     * Deserialize a string using the specified classloader
+     * Deserialize a string using the specified context
      *
      * @static
      * @access  public
      * @param   java.lang.String serialized
      * @param   Length length
-     * @param   java.lang.ClassLoader loader
+     * @param   net.xp_framework.easc.protocol.standard.SerializerContext context
      * @return  java.lang.Object
      */
-    public static Object valueOf(String serialized, ClassLoader loader) throws Exception {
-        return valueOf(serialized, new Length(0), loader, null);
+    public static Object valueOf(String serialized, SerializerContext context) throws Exception {
+        return valueOf(serialized, new Length(0), context, null);
     }
 
     /**
-     * Deserialize a string using the specified classloader
+     * Deserialize a string using the specified context
      *
      * @static
      * @access  public
      * @param   java.lang.String serialized
      * @param   Length length
-     * @param   java.lang.ClassLoader loader
+     * @param   net.xp_framework.easc.protocol.standard.SerializerContext context
      * @param   java.lang.Class clazz
      * @return  java.lang.Object
      */
-    public static Object valueOf(String serialized, ClassLoader loader, Class clazz) throws Exception {
-        return valueOf(serialized, new Length(0), loader, clazz);
+    public static Object valueOf(String serialized, SerializerContext context, Class clazz) throws Exception {
+        return valueOf(serialized, new Length(0), context, clazz);
     }
 }
