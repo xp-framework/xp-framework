@@ -131,7 +131,13 @@ Related documents
 
 Comments
 --------
-n/a
+- friebe, Tue Jan 10 17:19:32 CET 2006
+  The methods Restrictions::eitherOf() and Restrictions::bothOf() have 
+  funny-sounding names. Maybe we can come up with better ones?
 
+- friebe, Tue Jan 10 17:20:06 CET 2006
+  The methods in the Restrictions and Property classes generally have 
+  quite long names. Hibernate uses ge() instead of greaterThanOrEqualTo(). 
+  Should we abbreviate this far?
 
 <EOF>
