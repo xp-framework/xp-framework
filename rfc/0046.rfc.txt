@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel
 @created: Sun Dec 11 01:29:07     2005
-@status: draft
+@status: rejected, see comments
 @category: <core>
 
 Scope of Change
@@ -67,7 +67,9 @@ n/a
 
 Comments
 --------
-n/a
-
+- friebe, Thu Jan 12 12:06:45 CET 2006
+  If we make errors from implement() catchable, we will still have the
+  class loaded, but it won't implement the interfaces. This will lead
+  to inconsistencies, therefore discarding this RFC.
 
 <EOF>
