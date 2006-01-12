@@ -219,6 +219,7 @@ Comments
   I'm not sure this is right :) But this query will give you the person
   which has the largest salary in each departament.
 
+<pre>
   SELECT headDept.name, emp.name FROM
     departament headDept, employee emp
   WHERE
@@ -229,7 +230,9 @@ Comments
         employee max
       WHERE max.departament=headDept.id
     )
+</pre>
 
+<?php
   $hotShots= &new Query();
   $subquery= &new Query();
   
@@ -253,5 +256,6 @@ Comments
       $emp->salary->in(new Expression($subquery))
     )
   );
+?>
   
 <EOF>
