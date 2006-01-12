@@ -65,7 +65,7 @@ Current (and still valid) functionality:
 
 New functionality, using the Restrictions factory:
 <?php
-  new Criteria(Restrictions::eitherOf(
+  new Criteria(Restrictions::anyOf(
     Restrictions::greaterThan('expire_at', Date::now()),
     Restrictions::equal('deleted', TRUE)
   ));
@@ -76,7 +76,7 @@ New functionality, using the Property object:
   $expire_at= &Property::forName('expire_at');
   $deleted= &Property::forName('deleted');
 
-  new Criteria(Restrictions::eitherOf(
+  new Criteria(Restrictions::anyOf(
     $expire_at->greaterThan(Date::now()),
     $deleted->equal(TRUE)
   ));
@@ -144,5 +144,9 @@ Comments
   I think we should just rename eitherOf() to anyOf() and then support
   two *or more* arguments, and bothOf() to allOf(), doing the same
   to the argument list.
+
+- friebe, Thu Jan 12 12:44:40 CET 2006
+  Implementation variant #1 patch is out-of-date, the changes suggested
+  in the previous comment are only available in the patch for #2.
 
 <EOF>
