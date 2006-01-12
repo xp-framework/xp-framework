@@ -58,45 +58,6 @@ public class Generator {
     }
     
     /**
-     * Retrieves sourcecode between the start of a declaration and the 
-     * end of it (delimited by curly braces)
-     *
-     * @param   com.sun.javadoc.Doc doc
-     * @return  java.lang.String name
-     */
-    protected static String sourceCodeOf(Doc doc) throws IOException {
-        StringBuffer source= new StringBuffer();
-        SourcePosition pos= doc.position();
-        BufferedReader reader= new BufferedReader(new FileReader(pos.file()));
-        
-        // Forward until source position has been reached
-        for (int i= 0; i < pos.line()- 1; i++) {
-            reader.readLine();
-        }
-        for (int i= 0; i < pos.column(); i++) {
-            reader.read();
-        }
-        
-        // Find opening bracket
-        while ('{' != reader.read());
-        
-        // Find corresponding closing bracket
-        int brackets= 1;
-        do {
-            char c= (char)reader.read();
-            if ('{' == c) brackets++;
-            if ('}' == c) brackets--;
-            source.append(c);
-        } while (brackets > 0);
-        
-        // Close reader
-        reader.close();
-        
-        // Trim off the last bracket and return sourcecode
-        return source.deleteCharAt(source.length() - 1).toString();
-    }
-    
-    /**
      * Retrieve method declaration
      *
      * @param   com.sun.javadoc.MethodDoc doc
@@ -261,20 +222,7 @@ public class Generator {
             System.out.println("\n===========================================\n");
             System.out.println("package " + doc.containingPackage().name() + ";\n");
             System.out.println("/**\n * Session facade\n */");
-            System.out.println("public class " + simpleName +  "Session implements javax.ejb.SessionBean {");
-            
-            // Add all fields
-            for (FieldDoc f: doc.fields()) {
-                System.out.print("    " + f.modifiers() + " " + f.type() + " " + f.name());
-                String constant= f.constantValueExpression();
-                if (null != constant) System.out.print("= " + constant);
-                System.out.println(";");
-            }
-            
-            // Add all methods
-            for (MethodDoc m: doc.methods()) {
-                System.out.println("    " + methodDeclarationOf(m) + " { " + sourceCodeOf(m) + "}");
-            }
+            System.out.println("public class " + simpleName +  "Session extends " + doc.name() + " implements javax.ejb.SessionBean {");
             
             // Generate ejb* methods if not present
             for (String[] ejbMethod: new String[][] { 
@@ -286,9 +234,7 @@ public class Generator {
                 new String[] { "unsetSessionContext" }
             }) {
                 MethodDoc m= null;
-                if (null != (m= findMethod(doc, ejbMethod))) {
-                    System.out.println("    " + methodDeclarationOf(m) + " { " + sourceCodeOf(m) + "}");
-                } else {
+                if (null == findMethod(doc, ejbMethod)) {
                     StringBuffer signature= new StringBuffer("(");
                     for (int i= 1; i < ejbMethod.length; i+= 2) {
                         signature.append(ejbMethod[i]).append(' ').append(ejbMethod[i + 1]);
