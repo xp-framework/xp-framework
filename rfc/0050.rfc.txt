@@ -149,4 +149,109 @@ Comments
   Implementation variant #1 patch is out-of-date, the changes suggested
   in the previous comment are only available in the patch for #2.
 
+- george, Thu Jan 12 14:30:00 EET 2006
+  Intoducing a formal, language independent representation of sql queries
+  should not overlook its many features and try to include into it as many as
+  humanly possible.
+
+  Having this in mind, I will refer to subqueries, and to yet a more sensitive
+  subject, linked subqueries. (as in when the subquery uses a field from the
+  parent subquery). One may say "NO WAY" can we represent this, but I stand to
+  think it's not that complicated, given a proper starting point.
+
+  Also, I will try to depict a form of the same formal representation that
+  could be used in representing JOINS across tables.
+
+  Representing database entities as objects and classes is definitely not new,
+  and for sure what I'm going to say here has already been said a few times,
+  but saying it again is never a bad ideea...
+
+  Say we see a table as a container, instance of a TABLE class, namely a
+  container of columns. So each little column is a instance of the COLUMN class
+  and it can tell which table it's from and what type it bears.
+
+  SELECT
+  Then, we see a query as an instance of the QUERY class. Each query has a from
+  part. The from part is always composed of tables. So we need to keep a
+  collection of all the tables the query is on. COLLECTION QUERY.FROM<TABLE>
+
+  On the data side, a select holds a set of expressions which are calculated by
+  the query. So we need to keep a collection of all the expressions that are to
+  be selected. COLLECTION QUERY.FIELDS<EXPRESSION>.
+
+  EXPRESSION should be a class, that should be composable out of other
+  expressions and together with OPERATORS. So an operator, together with a set
+  of expressions should form another expression. There also should be simple
+  expressions, that are formed of just one column EXPRESSION(COLUMN). Also,
+  there should be simple expressions that are formed with literals, or that
+  represent function calls EXPRESSION.SUM(COLUMN)
+  EXPRESSION('literal'); EXPRESSION(6100);
+
+  To build expressions with operators, we may use static factories of the
+  EXPRESSION class. EXPRESSION.SUMOF(EXPRESSION, EXPRESSION, ..). Also, because
+  columns are usually part of expressions, they should be able to generate
+  expressions with themselves. COLUMN.ADDWITH(EXPRESSION). COLUMN.DIVIDEBY(
+  EXPRESSION). etc.
+
+  And because expression would be such a big thing... why not have it in the
+  WHERE clause aswell? After all... those are expressions too!
+
+  So like, COLUMN.GREATERTHAN(EXPRESSION), COLUMN.EQUALS(EXPRESSION);
+  And to link with logical operators, something like above.
+  EXPRESSION.ANYOF(EXPRESSION, EXPRESSION, ...);
+  
+  You said something about joins...
+  Yes, here it is. Because joins can be written in an equivalent way with join
+  clauses in the FROM section, or with conditions in the WHERE section, you
+  could easily write a query that contains in the where clause, something like
+  COLUMN.INNERJOIN(COLUMN) or COLUMN.LEFTJOIN(COLUMN).
+
+  Table Aliases?
+  You could build regular tables with new TABLE() or aliases with TABLE(
+  'alias').
+
+  Subqueries?
+  An expression should support to have as a rightvalue an QUERY object.
+  EXPRESSION(QUERY). And if in that query you used a column for an alias that
+  is also used in the parent query, you just got a linked subquery.
+
+  Example:
+  I'm not sure this is right :) But this query will give you the person
+  which has the largest salary in each departament.
+
+  SELECT headDept.name, emp.name FROM
+    departament headDept, employee emp
+  WHERE
+    emp.departament=headDept.id
+    AND
+    emp.salary IN (
+      SELECT MAX(salary) FROM
+        employee max
+      WHERE max.departament=headDept.id
+    )
+
+  $hotShots= &new Query();
+  $subquery= &new Query();
+  
+  $headDept= &$hotShots->from(new DepartamentTable('headDept'));
+  $emp= &$hotShots->from(new EmployeeTable('emp'));
+  $max= &$hotShots->from(new EmployeeTable('max'));
+
+  $subquery->from($max);
+  $subquery->select(Expression::max($max->salary));
+  $subquery->where(
+      $max->departament->equals($headDept->id);
+    )
+  );
+  
+  $hotShots->select($headDept->name);
+  $hotShots->select($emp->name);
+  
+  $hotShots->where(
+    Expression::allOf(
+      $emp->departament->innerJoin($headDep->id),
+      $emp->salary->in(new Expression($subquery))
+    )
+  );
+  
 <EOF>
