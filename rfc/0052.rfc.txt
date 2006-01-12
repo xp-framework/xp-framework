@@ -1,0 +1,47 @@
+RFC 0052: Make XP its own (compiled) language
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Thu Jan 12 12:09:13 CET 2006
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+XP will become its own language, that is, PHP with syntax additions, some
+of which have been described in RFC #0008. (JIT-)Compilers will be created 
+to create PHP4, PHP5 and PHP6 sourcecode from the new language.
+
+
+Rationale
+---------
+- Independence from PHP development process and its sometimes idiotic
+  decisions (like having to extend built-in Exception for everything
+  that should be throwable or decision to throw fatal errors in places
+  it's not really required).
+- PHP5/PHP6 migration
+- Namespaces
+- No more syntax cludges
+- Rapid development
+
+
+Functionality
+-------------
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
