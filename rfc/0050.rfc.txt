@@ -140,4 +140,9 @@ Comments
   quite long names. Hibernate uses ge() instead of greaterThanOrEqualTo(). 
   Should we abbreviate this far?
 
+- friebe, Thu Jan 12 12:31:18 CET 2006
+  I think we should just rename eitherOf() to anyOf() and then support
+  two *or more* arguments, and bothOf() to allOf(), doing the same
+  to the argument list.
+
 <EOF>
