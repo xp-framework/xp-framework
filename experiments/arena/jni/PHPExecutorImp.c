@@ -179,20 +179,18 @@ JNIEXPORT jobject JNICALL Java_PHPExecutor_eval(JNIEnv* env, jobject object, jst
 		EG(error_reporting)= E_ALL;
         
         /* Execute */
+        const char *str= (*env)->GetStringUTFChars(env, source, 0);
         {
-            const char *str= (*env)->GetStringUTFChars(env, source, 0);
             char *eval= (char*) emalloc(strlen(str)+ 1);
             strncpy(eval, str, strlen(str));
             eval[strlen(str)]= '\0';
-            (*env)->ReleaseStringUTFChars(env, source, str);
-
-            printf("SOURCE = '%s'\n", eval);
 
             if (FAILURE == zend_eval_string(eval, NULL, "(jni)" TSRMLS_CC)) {
                 throw(env, "java/lang/IllegalArgumentException", "zend_eval_string()");
             }
             efree(eval);
         }
+        (*env)->ReleaseStringUTFChars(env, source, str);
 
         /* Shutdown request */
 		efree(SG(server_context));
