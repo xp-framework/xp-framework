@@ -1,3 +1,3 @@
 #!/bin/sh
 
-LD_LIBRARY_PATH=. java -Djava.library.path=. -classpath . PHPExecutor $*
+LD_LIBRARY_PATH=. java -Djava.library.path=. -classpath . PHPExecutor "$*"
