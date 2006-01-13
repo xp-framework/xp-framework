@@ -198,6 +198,7 @@ JNIEXPORT jobject JNICALL Java_PHPExecutor_eval(JNIEnv* env, jobject object, jst
 		efree(SG(server_context));
 		SG(server_context)= 0;
         
+        zend_llist_destroy(&global_vars);
         php_request_shutdown((void *) 0);
     } zend_catch {
         throw(env, "java/lang/IllegalArgumentException", "Bailout");
