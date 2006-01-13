@@ -160,12 +160,8 @@ JNIEXPORT jobject JNICALL Java_PHPExecutor_eval(JNIEnv* env, jobject object, jst
 	TSRMLS_FETCH();
 
     zend_first_try {
-        
-        /* Initialize request */
-        if (SUCCESS != php_request_startup(TSRMLS_C)) {
-            fprintf(stderr, "Cannot startup request\n");
-            return;
-        }
+        zend_llist global_vars;
+        zend_llist_init(&global_vars, sizeof(char *), NULL, 0);
 
         SG(server_context)= emalloc(sizeof(executor_context));
         ((executor_context*)SG(server_context))->env= env;
@@ -177,6 +173,12 @@ JNIEXPORT jobject JNICALL Java_PHPExecutor_eval(JNIEnv* env, jobject object, jst
         CG(interactive)= 0;
 		EG(uninitialized_zval_ptr)= NULL;
 		EG(error_reporting)= E_ALL;
+
+        /* Initialize request */
+        if (SUCCESS != php_request_startup(TSRMLS_C)) {
+            fprintf(stderr, "Cannot startup request\n");
+            return;
+        }
         
         /* Execute */
         const char *str= (*env)->GetStringUTFChars(env, source, 0);
