@@ -1,3 +1,8 @@
+/* This file is part of the XP framework's experiment "JNI"
+ *
+ * $Id$
+ */
+
 public class PHPExecutor {
 
     static {
