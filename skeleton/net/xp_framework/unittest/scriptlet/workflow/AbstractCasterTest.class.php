@@ -42,11 +42,11 @@
      * @access  protected
      * @param   mixed value
      * @return  mixed
-     * @throws  util.profiling.unittest.AssertionFailedError in case the caster fails
+     * @throws  lang.IllegalArgumentException in case the caster fails
      */
     function castValue($value) {
       if (!is_array($casted= call_user_func(array(&$this->caster, 'castValue'), array((string)$value)))) {
-        return $this->fail('Cast failed', array(), $value);
+        return throw(new IllegalArgumentException('Cannot cast '.$value));
       }
       return array_pop($casted);
     }
