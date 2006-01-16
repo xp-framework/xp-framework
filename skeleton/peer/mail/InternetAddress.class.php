@@ -46,6 +46,20 @@
     }
     
     /**
+     * Retrieve whether another object is equal to this
+     *
+     * @access  public
+     * @param   &lang.Object cmp
+     * @return  bool
+     */
+    function equals(&$cmp) {
+      return (
+        is_a($cmp, 'InternetAddress') and 
+        $this->personal.$this->localpart.$this->domain === $cmp->personal.$cmp->localpart.$cmp->domain
+      );
+    }
+    
+    /**
      * Create an InternetAddress object from a string
      *
      * Recognizes:
