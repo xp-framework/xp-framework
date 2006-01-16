@@ -6,6 +6,8 @@
  
   uses(
     'rdbms.Criteria', 
+    'rdbms.criterion.Restrictions', 
+    'rdbms.criterion.Property', 
     'rdbms.DriverManager',
     'net.xp_framework.unittest.rdbms.dataset.Job',
     'util.profiling.unittest.TestCase'
@@ -13,6 +15,10 @@
 
   /**
    * Test criteria class
+   *
+   * Note we're relying on the connection to be a sybase connection -
+   * otherwise, quoting and date representation may change and make
+   * this testcase fail.
    *
    * @see      xp://rdbms.Criteria
    * @purpose  Unit Test
@@ -94,11 +100,32 @@
         $c->addOrderBy('valid_from');
       }
 
-      // Note we're relying on the connection to be a sybase connection -
-      // otherwise, quoting and date representation may change and make
-      // this test fail.
       $this->assertSql(
         'where job_id = 1 and valid_from >= "2006-01-01 12:00AM" and title like "Hello%" order by valid_from asc', 
+        $c
+      );
+    }
+    
+    /**
+     * Tests the rdbms.criterion API
+     *
+     * @see     xp://rdbms.criterion.Property
+     * @see     xp://rdbms.criterion.Restrictions
+     * @access  public
+     */
+    #[@test]
+    function restrictionsFactory() {
+      $job_id= &Property::forName('job_id');
+      $c= &new Criteria(Restrictions::anyOf(
+        Restrictions::not($job_id->in(array(1, 2, 3))),
+        Restrictions::allOf(
+          Restrictions::like('title', 'Hello%'),
+          Restrictions::greaterThan('valid_from', new Date('2006-01-01'))
+        )
+      ));
+
+      $this->assertSql(
+        'where (not (job_id in (1, 2, 3)) or (title like "Hello%" and valid_from > "2006-01-01 12:00AM"))',
         $c
       );
     }
