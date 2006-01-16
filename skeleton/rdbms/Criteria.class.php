@@ -4,18 +4,7 @@
  * $Id$ 
  */
 
-  define('IN',              'in (?)');
-  define('NOT_IN',          'not in (?)');
-  define('IS',              'is ?');
-  define('IS_NOT',          'is not ?');
-  define('LIKE',            'like ?');
-  define('EQUAL',           '= ?');
-  define('NOT_EQUAL',       '!= ?');
-  define('LESS_THAN',       '< ?');
-  define('GREATER_THAN',    '> ?');
-  define('LESS_EQUAL',      '<= ?');
-  define('GREATER_EQUAL',   '>= ?');
-  define('BIT_AND',         ' & ? = ?');
+  uses('rdbms.criterion.SimpleExpression');
   
   define('ASCENDING',       'asc');
   define('DESCENDING',      'desc');
@@ -36,45 +25,55 @@
     /**
      * Constructor
      *
+     * Example:
+     * <code>
+     *   new Criteria(Restrictions::equal('domainname', 'xp-framework.net'));
+     * </code>
+     *
+     * Alternative API example:
+     * <code>
+     *   new Criteria(array('domainname', 'xp-framework.net', EQUAL));
+     * </code>
+     *
      * @access  public
-     * @param   array* conditions
+     * @param   rdbms.criterion.Criterion condition
      */
-    function __construct() {
-      $this->conditions= func_get_args();
+    function __construct($criterion) {
+      if (is('rdbms.criterion.Criterion', $criterion)) {
+        $this->conditions[]= &$criterion;
+      } else if (is_array($criterion)) {
+        $this->conditions[]= &new SimpleExpression($criterion[0], $criterion[1], $criterion[2]);
+      }
     }
     
     /**
      * Add a condition
      *
-     * The order parameter may be one of the following constants:
-     * <ul>
-     *   <li>IN</li>
-     *   <li>NOT_IN</li>
-     *   <li>LIKE</li>
-     *   <li>EQUAL</li>
-     *   <li>NOT_EQUAL</li>
-     *   <li>LESS_THAN</li>
-     *   <li>GREATER_THAN</li>
-     *   <li>LESS_EQUAL</li>
-     *   <li>GREATER_EQUAL</li>
-     * </ul>
+     * Example:
+     * <code>
+     *   with ($c= &new Criteria()); {
+     *     $c->add(Restrictions::equal('bz_id', 500));
+     *     $c->add(Restrictions::in('author', array(1549, 1552)));
+     *   }
+     * </code>
+     *
+     * Alternative API example:
+     * <code>
+     *   with ($c= &new Criteria()); {
+     *     $c->add('bz_id', 500, EQUAL);
+     *     $c->add('author', array(1549, 1552), IN);
+     *   }
+     * </code>
      *
      * @access  public
-     * @param   string key
-     * @param   mixed value
-     * @param   string comparison default EQUAL
+     * @param   rdbms.criterion.Criterion criterion
      */
-    function add($key, $value, $comparison= EQUAL) {
-      static $nullMapping= array(
-        EQUAL     => IS,
-        NOT_EQUAL => IS_NOT
-      );
-      
-      // Automatically convert '= NULL' to 'is NULL', former is not valid ANSI-SQL
-      if (NULL === $value && isset($nullMapping[$comparison]))
-        $comparison= $nullMapping[$comparison];
-          
-      $this->conditions[]= array($key, $value, $comparison);
+    function add($criterion, $value= NULL, $comparison= EQUAL) {
+      if (is('rdbms.criterion.Criterion', $criterion)) {
+        $this->conditions[]= &$criterion;
+      } else {
+        $this->conditions[]= &new SimpleExpression($criterion, $value, $comparison);        
+      }
     }
 
     /**
@@ -82,8 +81,8 @@
      *
      * <code>
      *   with ($c= &new Criteria()); {
-     *     $this->add('bz_id', 500, EQUAL);
-     *     $this->addOrderBy('created_at', DESCENDING);
+     *     $c->add(Restriction::equal('bz_id', 500));
+     *     $c->addOrderBy('created_at', DESCENDING);
      *   }
      * </code>
      *
@@ -120,11 +119,7 @@
     function toString() {
       $s= $this->getClassName()."@{\n";
       foreach ($this->conditions as $condition) {
-        $s.= sprintf(
-          "  [%s %s]\n",
-          $condition[0],
-          str_replace('?', xp::stringOf($condition[1]), $condition[2])
-        );
+        $s.= '  '.xp::stringOf($condition);
       }
       return $s.'}';
     }
@@ -145,14 +140,7 @@
       if (!empty($this->conditions)) {
         $sql.= ' where ';
         foreach ($this->conditions as $condition) {
-          if (!isset($types[$condition[0]])) {
-            return throw(new SQLStateException('Field "'.$condition[0].'" unknown'));
-          }
-          
-          $sql.= $condition[0].' '.$db->prepare(
-            str_replace('?', $types[$condition[0]], $condition[2]).' and ', 
-            $condition[1]
-          );
+          $sql.= $condition->asSql($db, $types).' and ';
         }
         $sql= substr($sql, 0, -4);
       }
