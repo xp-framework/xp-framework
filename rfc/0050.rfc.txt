@@ -257,5 +257,12 @@ Comments
     )
   );
 ?>
+
+  - friebe, Mon Jan 16 11:11:26 CET 2006
+    Before continuing development and including subqueries, joins, 
+    projections and everything else, I'd like to start with what
+    was proposed in the "functionality" section of this document.
+    Let's keep the query / table / column API from the previous
+    comment for another RFC.
   
 <EOF>
