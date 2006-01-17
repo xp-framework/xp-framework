@@ -12,11 +12,8 @@ PHPExecutor.class:  PHPExecutor.java
 PHPExecutor.h: 	  PHPExecutor.class
 	javah -classpath .  -jni PHPExecutor
 
-libphp.so:  PHPExecutor.h PHPExecutorImp.c libphp4.so
-	gcc $(INCLUDES) $(PHP_INCLUDES) -shared -o libphp.so libphp4.so PHPExecutorImp.c
-
-#libphp.so:  PHPExecutor.h PHPExecutorImp.c libphp4ts.so
-#	gcc $(CFLAGS) -DZTS -shared -o libphp.so libphp4ts.so PHPExecutorImp.c
+libphp.so:  PHPExecutor.h PHPExecutorImp.c executor_sapi.h executor_sapi.c libphp4.so
+	gcc $(INCLUDES) $(PHP_INCLUDES) -shared -o libphp.so libphp4.so executor_sapi.c PHPExecutorImp.c
 
 compile: libphp.so
 
