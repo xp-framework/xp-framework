@@ -1,7 +1,6 @@
 #ifndef EXECUTOR_SAPI_H
 #define EXECUTOR_SAPI_H
 
-#include <stdio.h>
 #include <main/php.h>
 #include <main/SAPI.h>
 #include <main/php_main.h>
