@@ -38,7 +38,7 @@
      * @param   string string default ''
      */
     function __construct($string= '') {
-      $this->string= $string;
+      $this->string= utf8_encode($string);
     }
     
     /**
@@ -106,7 +106,7 @@
         $s.= ByteCountedString::readFully($stream, $ctl['length']);
       } while ($ctl['next']);
       
-      return $s;
+      return utf8_decode($s);
     }
   }
 ?>
