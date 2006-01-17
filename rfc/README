@@ -2,5 +2,216 @@ XP: RFC README
 ========================================================================
 $Id$
 
+This document describes the RFC procedure.
 
-This is the location where RFCs reside.
+What is an RFC?
+~~~~~~~~~~~~~~~
+RFC stands for Request For Comments, but you knew that:)
+
+
+Why do we have RFCs?
+~~~~~~~~~~~~~~~~~~~~
+One of the major deficiencies of PHP development (including the development
+of PHP and the Zend Engine itself, PEAR, and PECL) is that there is no
+roadmap or strategy available other than in the developer's heads. Changes
+are made and then discussed, not the other way around. That's the way it
+usually works, one nice exception was the initial development of the
+Reflection API
+(http://sitten-polizei.de/php/reflection_api/rfc/reflection.txt by Andrei
+Zmievski and http://sitten-polizei.de/php/reflection_api/rfc/reflection.png
+by Sebastian Bergmann).
+
+Decisions in the PHP development are made by the developers, who assume they
+always know what is good and what is not. Userland developers do not
+participate in this discussion (or rarely do) nor would it make any
+difference as their vote only counts if they are "hardcore developers". Or,
+in short: My opinion doesn't count there, either, altough I maintain
+ext/sybase_ct *and* wrote 90% of the Reflection API, a core part of the PHP5
+distribution.
+
+In contrary, Sun has JSRs (Java Specification Requests) at http://jcp.org/.
+This way, userland developers can follow the development of Java or even
+decide to discuss it. The process is transparent (JSRs are publicly
+downloadable) and creates a touch of professionalism, something developers
+(and, maybe even more important for the reputation of a language: CTOs) will
+definitely be impressed of. JSRs are also used to describe new language
+features such as the ones introduced in JDK 1.5 (Metadata, Enums, Generics,
+... I've pointed you to that before).
+
+Microsoft also has specifications available, for example here:
+http://msdn.microsoft.com/vcsharp/team/language/default.aspx for C# 2.0
+(draft), Python has so-called PEPs (Python Enhancement Proposals) at
+http://www.python.org/peps/
+
+
+When is a RFC needed?
+~~~~~~~~~~~~~~~~~~~~~
+An RFC is needed when changes are made that affect one of the following:
+
+* Core functionality in lang.base.php
+* Classes in lang and util
+* Sapis
+* Wherever it affects a lot of places, e.g. xml.Node
+* When BC (backwards compatibility) is broken
+
+Changes include any type of change except for QA work or bug fixes.
+
+Who can write RFCs?
+~~~~~~~~~~~~~~~~~~~
+Short answer: Anybody. 
+
+* People with accounts may commit them directly to CVS (in the rfc/ 
+  top-level directory).
+
+* Users without CVS accounts should send an email with the RFC attached 
+  to the XP framework's mailinglist, xp@php3.de
+
+
+What does an RFC look like?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+An RFC is a text file, committed to xp/rfc, with the file format derived
+from the file template.txt (in the same directory).
+
+Here's the details:
+> RFC XXXX: 
+
+This is the header, made up of the RFC, a four-digit number padded to the
+left with zeroes and the RFC title.
+
+> ========================================================================
+> $Id$
+
+The CVS Id-Tag, self-explanatory.
+
+> @authors: 
+
+This tag contains a comma-separated list of authors (equals the php3.de
+login name).
+Example: @authors: friebe, kiesel
+
+> @created: 
+
+Date and time this RFC was created.
+
+> @status: draft
+
+Status. Initially always *draft*. Possible other values: discussion,
+implemented, obsoleted.
+
+* draft: The RFC is being worked on.
+
+* discussion: The RFC is to be discussed. Followed by a date when the 
+  discussion ends
+
+* implemented: This RFC has been implemented. Followed by a date when
+  the RFC was implemented.
+
+* deferred: The RFC has been deferred, which means no work is being 
+  made on it.
+
+* rejected: This RFC has been rejected.
+
+* accepted: This RFC has been accepted but is not yet implemented.
+
+> @category: 
+
+The category. If it affects anything in lang.base.php, use the string
+<core>. For anything else, use the package name (e.g. rdbms or
+util.profiling.unittest)
+
+> Scope of Change
+> ---------------
+
+Describe briefly what will change.
+
+> Rationale
+> ---------
+
+Describe briefly why this change is needed.
+
+> Functionality
+> -------------
+
+Describe how your new functionality will work. Sourcecode examples are most
+welcome.
+
+> Security considerations
+> -----------------------
+
+If there are any security issues, put them here.
+
+> Speed impact
+> ------------
+
+If the implementation of this RFC introduces a performance penalty, put it
+here.
+
+> Dependencies
+> ------------
+
+If this RFC depends on one of the following:
+
+* PHP Version 
+* Zend Engine Version (official, xp)
+* Other RFCs
+
+..., then write them down into this section
+
+> Related documents
+> -----------------
+
+Put links to any of the following documents here:
+
+* Patches implementing the RFC
+* Related information
+* Example sourcecode (prefer .phps, no .tar.gz downloads, if possible)
+
+> Comments
+> --------
+
+Any comments go here, with username and date. This section is mainly used to
+discuss open questions.
+
+
+What is the RFC procedure?
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+The workflow is as follows (reflected in all states into the @status
+attribute):
+
+
+          .-> Obsoleted   .-------------------.
+          |       ^       |                   |
+          |       |       |                   v
+   Draft -+-> Discussion -+-> Accepted -> Implemented
+   ^      |       |               |
+   |      .---<---+--->---.---<---´
+   |      |               |
+   |      v               v
+   |    Rejected       Deferred
+   |                      |
+   `----------------------´ 
+
+
+* An RFC is always created in the status "draft".
+
+* When the authors decide they are content with it so far, the status
+  is changed to "discussion". During this phase, the core developers
+  will discuss the RFC with the authors. Anybody may join this 
+  discussion. The RFC may be changed during this time in agreement 
+  with the people involved.
+
+* An RFC can be deferred, meaning that nobody is working on the draft
+  and no decision has been found in the discussion phase. A deferred
+  RFC may be reset to draft status in case work should start again.
+
+* An RFC can be rejected, either directly after the draft state or
+  during the discussion.
+
+* An RFC can be obsoleted during its draft or discussion state, meaning 
+  it is no longer needed. In this case, a new RFC replaces this RFC.
+
+* After an RFC has been discussed and not rejected or deferred, its
+  status goes to "accepted" if it cannot be immediately implemented.
+
+* After the RFC has been implemented and the necessary files committed,
+  its status goes to "implemented".
