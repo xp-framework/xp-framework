@@ -147,7 +147,8 @@ public class ByteCountedString {
             byte[] buffer= new byte[length];
             in.readFully(buffer);
             
-            s.append(new String(buffer));
+            // Use ISO-8859-1 encoding, see http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html
+            s.append(new String(buffer, "ISO8859_1"));
         } while (next);
         
         return s.toString();
