@@ -8,6 +8,7 @@ package net.xp_framework.easc.util;
 import java.io.DataOutput;
 import java.io.DataInput;
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import static java.lang.Math.ceil;
 
 /**
@@ -139,7 +140,7 @@ public class ByteCountedString {
         int length;
         boolean next;
         
-        StringBuffer s= new StringBuffer();
+        ByteArrayOutputStream out= new ByteArrayOutputStream();
         do {
             length= in.readUnsignedShort();
             next= (1 == in.readUnsignedByte());
@@ -147,10 +148,10 @@ public class ByteCountedString {
             byte[] buffer= new byte[length];
             in.readFully(buffer);
             
-            // Use ISO-8859-1 encoding, see http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html
-            s.append(new String(buffer, "ISO8859_1"));
+            out.write(buffer);
         } while (next);
         
-        return s.toString();
+        // See http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html
+        return out.toString("UTF8");
     }
 }
