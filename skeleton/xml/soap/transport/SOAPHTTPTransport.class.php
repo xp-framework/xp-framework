@@ -59,6 +59,23 @@
     }
     
     /**
+     * Adds a header. If this header is already set, it will
+     * be overwritten.
+     *
+     * Example:
+     * <code>
+     *   $transport->setHeader('X-Binford', '6100 (more power)');
+     * </code>
+     *
+     * @access  public
+     * @param   string name header name
+     * @param   string value header value
+     */
+    function setHeader($name, $value) {
+      $this->_headers[$name]= $value;
+    }
+
+    /**
      * Retrieve the current timeout setting.
      * Note: this is the read-timeout.
      *
