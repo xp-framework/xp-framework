@@ -162,8 +162,7 @@
       
       $request= $this->getRequestString();
       try(); {
-        $s->connect();
-        $s->write($request);
+        $s->connect() && $s->write($request);
       } if (catch('Exception', $e)) {
         return throw($e);
       }
