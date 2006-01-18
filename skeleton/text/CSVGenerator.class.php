@@ -22,6 +22,7 @@
       
     var
       $colDelim= '|',
+      $lineDelim = "\n",  // on unix-based systems we expect an \n as delimiter
       $escape= '"';
     
     var
@@ -31,14 +32,6 @@
       $headerWritten= false,
       $delimWritten= true;
     
-    /**
-     * Construct a CSVGenerator
-     *
-     * @access public
-     */
-    function __construct() {
-    }
-
     /**
      * Set the output stream. The stream must be writeable. If the
      * stream is not open, it will be opened.
@@ -65,6 +58,19 @@
      */
     function setColDelimiter($delim) {
       $this->colDelim= $delim{0};
+    }
+    
+    /**
+     * Sets another line delimiter (standard is "\n")
+     * 
+     * if we want to generate files for other oses as unix, we need to change the delimiter
+     * e.g. windows: "\r\n"
+     *
+     * @access public 
+     * @param  string delim 
+     */
+    function setLineDelimiter($delim) {
+      $this->lineDelim= $delim; // could be more than one character
     }
 
     /**
@@ -96,9 +102,11 @@
      * @access  private
      */    
     function _writeHeader() {
-      $this->stream->writeLine (
+      $this->stream->write(
         implode ($this->colDelim, array_values ($this->colName))
       );
+      // Insert Newline
+      $this->stream->write($this->lineDelim);
       $this->headerWritten= true;
     }
 
@@ -152,7 +160,8 @@
           $this->_writeColumn('');
       }
       
-      $this->stream->writeLine('');
+      // Insert Newline
+      $this->stream->write($this->lineDelim);
       $this->delimWritten= true;
     }
   
