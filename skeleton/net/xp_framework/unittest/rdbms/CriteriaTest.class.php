@@ -129,5 +129,18 @@
         $c
       );
     }
+    
+    /**
+     * Tests Criteria constructor for varargs support
+     *
+     * @access  public
+     */
+    #[@test]
+    function constructorAcceptsVarArgArrays() {
+      $this->assertSql(
+        'where job_id = 1 and title = "Hello"', 
+        new Criteria(array('job_id', 1, EQUAL), array('title', 'Hello', EQUAL))
+      );
+    }
   }
 ?>
