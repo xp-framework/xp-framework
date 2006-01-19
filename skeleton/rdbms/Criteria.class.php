@@ -43,6 +43,10 @@
         $this->conditions[]= &$criterion;
       } else if (is_array($criterion)) {
         $this->conditions[]= &new SimpleExpression($criterion[0], $criterion[1], $criterion[2]);
+        for ($i= 1, $n= func_num_args(); $i < $n; $i++) {
+          $criterion= func_get_arg($i);
+          $this->conditions[]= &new SimpleExpression($criterion[0], $criterion[1], $criterion[2]);
+        }
       }
     }
     
