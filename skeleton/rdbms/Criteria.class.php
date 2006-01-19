@@ -36,9 +36,9 @@
      * </code>
      *
      * @access  public
-     * @param   rdbms.criterion.Criterion condition
+     * @param   rdbms.criterion.Criterion condition default NULL
      */
-    function __construct($criterion) {
+    function __construct($criterion= NULL) {
       if (is('rdbms.criterion.Criterion', $criterion)) {
         $this->conditions[]= &$criterion;
       } else if (is_array($criterion)) {
