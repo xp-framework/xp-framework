@@ -120,7 +120,8 @@ n/a
 
 Related documents
 -----------------
-n/a
+- http://xp-framework.net/downloads/rfc0053.rfc.diff
+  Patch implementing this RFC
 
 
 Comments
