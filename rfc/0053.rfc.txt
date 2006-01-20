@@ -94,6 +94,12 @@ The type name consists of a namespace and a name, separated by
 a colon. The "core" namespace is reserved and should not be used
 by user extensions.
 
+Extension example:
+
+* com.1and1.intranet:person
+  Would be mapped to a "person selector" widget the 1&1 Intranet
+  uses internally. It offers autocompletion realized via AJAX.
+
 
 Security considerations
 -----------------------
