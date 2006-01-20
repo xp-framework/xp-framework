@@ -1,0 +1,102 @@
+RFC 0053: Formresult information about a wrapper
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Fri Jan 20 12:27:14 CET 2006
+@status: draft
+@category: scriptlet.xml.workflow
+
+Scope of Change
+---------------
+Information about the handler's wrapper (if present) will be added to
+the respective formresult node.
+
+
+Rationale
+---------
+Be able to write XSL templates for generic forms.
+
+
+Functionality
+-------------
+The wrapper's parameter list (obtained from the paraminfo array) will be
+included beneath the "handler" node.
+
+Current
+~~~~~~~
+The current formresult representation of a handler includes the handler's:
+* ID
+* Name
+* Status
+* Values
+The wrapper is not represented in any way.
+
+Example:
+<pre>
+  <handlers>
+    <handler 
+     id="handler.request.formrequestwrapper" 
+     name="formrequesthandler" 
+     status="initialized"
+    > 
+      <values/>
+    </handler>
+  </handlers>
+</pre>
+
+
+New
+~~~
+In addition to the current representation, the following information
+about a wrapper will be added:
+* Name
+* Occurrence
+* Type
+
+Example:
+<pre>
+  <handlers>
+    <handler 
+     id="handler.request.formrequestwrapper" 
+     name="formrequesthandler" 
+     status="initialized"
+    > 
+      <values/>
+      <wrapper>
+        <param name="client" type="string" occurrence="0" />
+        <param name="date" type="date" occurrence="0" />
+        <param name="requirements" type="string" occurrence="0" />
+      </wrapper>
+    </handler>
+  </handlers>
+</pre>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Makes every handler slower. Maybe wrapper information should only be 
+added to the formresult if the corresponding wrapper implements an
+interface named "ExposedInFormresult" or "RepresentedInFormresult"?
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+n/a
+
+<EOF>
