@@ -8,7 +8,8 @@
     'de.uska.scriptlet.state.UskaState',
     'de.uska.markup.FormresultHelper',
     'de.uska.db.Event',
-    'de.uska.db.Player'
+    'de.uska.db.Player',
+    'util.DateUtil'
   );
 
   /**
@@ -30,7 +31,7 @@
     function process(&$request, &$response, &$context) {
       parent::process($request, $response, $context);
       
-      $eventid= intval($request->getEnvValue('QUERY_STRING'));
+      $eventid= intval($request->getQueryString());
       if (!$eventid) return FALSE;
       
       try(); {
@@ -85,17 +86,9 @@
       unset($eventarr['description']);
       $deadline= &$event->getDeadline();
       $target= &$event->getTarget_date();
+      $attendeesCount= 0;
       
-      // Check whether this event is still subscribeable
-      $eventarr['subscribeable']= (int)
-        ((!$deadline || $deadline->isAfter(Date::now())) && 
-        $target->isAfter(Date::now())
-      );
-      
-      $node= &$response->addFormResult(Node::fromArray($eventarr, 'event'));
-      $node->addChild(FormresultHelper::markupNodeFor('description', $event->getDescription()));
-      
-      $n= &$node->addChild(new Node('attendeeinfo'));
+      $n= &new Node('attendeeinfo');
       while ($query && $record= &$query->next()) {
         $t= &$n->addChild(new Node('player', NULL, $record));
         
@@ -104,7 +97,22 @@
           $creator= &Player::getByPlayer_id($record['created_by']);
           $t->addChild(Node::fromObject($creator, 'creator'));
         }
+        
+        // Count attendees
+        if ($record['attend']) $attendeesCount++;
       }
+      
+      // Check whether this event is still subscribeable
+      $eventarr['subscribeable']= (int)
+        ((!$deadline || $deadline->isAfter(Date::now())) && 
+        $target->isAfter(Date::now()) &&
+        $target->isBefore(DateUtil::addDays(Date::now(), 30)) &&
+        $attendeesCount < $event->getMax_attendees()
+      );
+      
+      $node= &$response->addFormResult(Node::fromArray($eventarr, 'event'));
+      $node->addChild(FormresultHelper::markupNodeFor('description', $event->getDescription()));
+      $node->addChild($n);
     }
   }
 ?>

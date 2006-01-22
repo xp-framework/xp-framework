@@ -55,9 +55,11 @@
       
 
       $player_id= $context->user->getPlayer_id();
-      if ($request->hasParam('player_id') && $request->getParam('player_id') != $player_id) {
-        
-        // TBI: Checks for administrator (may he edit that user?)
+      if (
+        $request->hasParam('player_id') && 
+        $request->getParam('player_id') != $player_id &&
+        $context->hasPermission('create_player')
+      ) {
         $player_id= $request->getParam('player_id');
       }
       
@@ -128,7 +130,6 @@
         $db= &$cm->getByHost('uskadb', 0);
         $transaction= &$db->begin(new Transaction('attend'));
         
-        
         // Check if this is a guest attendee
         if ('addguest' == $this->getValue('mode')) {
 
@@ -175,9 +176,32 @@
         } else {
           $eventattend->update();
         }
+        
+        // Check on current number of attendees
+        $event= &Event::getByEvent_id($this->wrapper->getEvent_id());
+        $count= array_shift($db->select('
+          count(*) as attendees
+          from
+            event as e,
+            event_attendee as a
+          where e.event_id= %d
+            and e.event_id= a.event_id
+            and a.attend= 1
+          ',
+          $event->getEvent_id()
+        ));
       } if (catch('SQLException', $e)) {
         $transaction->rollback();
         return throw($e);
+      }
+      
+      if (
+        $count['attendees'] > $event->getMax_attendees() &&
+        !$this->context->hasPermission('create_event')
+      ) {
+        $this->addError('too_many_attendees', '*');
+        $transaction->rollback();
+        return FALSE;
       }
       
       $transaction->commit();
