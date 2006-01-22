@@ -45,6 +45,8 @@
   <text for="loginhandler#form-error">Login-Fehler</text>
   <text for="loginhandler#error-password-scriptlet.xml.workflow.checkers.RegexpChecker.nomatch">Ungültiges Passwort</text>
   <text for="loginhandler#error-*-mismatch">Passwort oder Username falsch</text>
+  <text for="loginhandler#error-username-missing">Du musst einen Usernamen angeben.</text>
+  <text for="loginhandler#error-password-missing">Du musst einen Passwort angeben.</text>
   
   <text for="error#text.xml.XMLParser-XMLFormatException">Der Artikel enthält XML-Fehler und kann daher nicht dargestellt werden. Fehlermeldung:</text>
               
