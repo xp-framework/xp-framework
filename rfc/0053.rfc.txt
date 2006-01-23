@@ -79,12 +79,19 @@ The param nodes' type attribute is one of the following:
 * core:enum
   Could be mapped to select, together with multiple occurence,
   select multiple
-  
+
+* core:number
+  Could be mapped to input type="text", maybe with some JavaScript
+  handling of non-numeric characters.
+
 * core:bool
   Could be mapped to a checkbox
   
 * core:text
   Could be mapped to a textarea
+
+* core:file
+  Could be mapped to a file-upload
   
 * core:date
   Could be mapped to input type="text" or a more sophisticated
