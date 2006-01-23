@@ -25,56 +25,59 @@ Functionality
 adding custom labels works like that:
 
 <?php
-  $values = array (2,3);
-  $vlabels = array ('value 1','value 2', 'value 3');
+  $values= array(2, 3);
+  $vlabels= array('value 1', 'value 2', 'value 3');
 
-  $chart->add(new Series('Pie', $values,$vlabels));
+  $chart->add(new Series('Pie', $values, $vlabels));
   $chart->setDisplayValues(TRUE);
   $chart->setDisplayCustomValues(TRUE);
 ?>
 
- Existing code should not be affected, because the parameter $vlabels is
- optional and default is _not_ to display custom values.
- 
- the ImageRenderer Class does the following in the renderPieChart method
- to print out the label for each value if requested:
- 
- <?php
- imagestring (
-   ...
-   $pc->series[0]->values[$i]
- ?>
- 
- Better would be
- 
- <?php
-   $pc->GetDisplayValue(0, $i)
- ?>
- 
- which does following:
+Existing code should not be affected, because the parameter $vlabels is
+optional and default is _not_ to display custom values.
 
- <?php
-  $this->getDisplayCustomValues() ? 
-  $this->series[$j]->labels[$i] : $this->series[$j]->values[$i];
- ?>
- 
- labels is an array as a property of the Series class.
- 
- It's better to retrieve values from the Chart class via method calls rather then directly accessing it, and
- the suggested implementation should return exactly the same, as the previous direct access.
+the ImageRenderer Class does the following in the renderPieChart method
+to print out the label for each value if requested:
+
+<?php
+  imagestring(..., $pc->series[0]->values[$i]);
+?>
+
+Better would be
+<?php
+  $pc->getDisplayValue(0, $i)
+?>
+
+which does following:
+
+<?php
+ ($this->getDisplayCustomValues() 
+   ? $this->series[$j]->labels[$i]
+   : $this->series[$j]->values[$i]
+ );
+?>
+
+$labels is an array as a property of the Series class.
+
+It's better to retrieve values from the Chart class via method calls 
+rather then directly accessing it, and the suggested implementation 
+should return exactly the same, as the previous direct access.
 
 Security considerations
 -----------------------
+n/a
+
 
 Speed impact
 ------------
+Slightly slower
 
 Dependencies
 ------------
 
 Related documents
 -----------------
- http://sperber.info/xp/img.chart.diff
+- http://sperber.info/xp/img.chart.diff
  
 Comments
 --------
