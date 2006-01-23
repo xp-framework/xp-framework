@@ -72,14 +72,24 @@ Speed impact
 ------------
 Slightly slower
 
+
 Dependencies
 ------------
+n/a
+
 
 Related documents
 -----------------
 - http://sperber.info/xp/img.chart.diff
- 
+  Patch implementing this RFC
+
 Comments
 --------
+- friebe, Mon Jan 23 10:50:13 CET 2006
+  This patch only implements custom labels for piecharts. A final version
+  of this RFC should implement this for every class.
+
+- friebe, Mon Jan 23 10:51:35 CET 2006
+  I think displayValueOf() would be a better name for getDisplayValue().
 
 <EOF>
