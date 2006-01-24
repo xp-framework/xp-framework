@@ -83,6 +83,9 @@ Related documents
 - http://sperber.info/xp/img.chart.diff
   Patch implementing this RFC
 
+- http://xp-framework.net/downloads/rfc0054.diff
+  Revised patch implementing custom labels for all chart types.
+
 Comments
 --------
 - friebe, Mon Jan 23 10:50:13 CET 2006
