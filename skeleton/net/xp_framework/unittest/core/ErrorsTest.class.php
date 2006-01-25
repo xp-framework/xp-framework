@@ -22,6 +22,7 @@
      */
     function setUp() {
       $this->assertEquals(E_ALL, error_reporting(), 'Error reporting level not E_ALL');
+      xp::registry('errors', array());
       $this->assertEmpty(xp::registry('errors'), 'Error registry initially not empty');
     }
 
