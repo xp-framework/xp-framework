@@ -412,9 +412,8 @@
 
       if ($expected) return $this->fail(
         'Expected exception not caught',
-        'failedexpect',
-        $expected->getClassName(),
-        NULL
+        ($e ? $e->getClassName() : NULL),
+        $method->getAnnotation('expect')
       );
       
       return TRUE;
