@@ -149,7 +149,7 @@ Related documents
   http://xp-framework.net/rfc/0008.rfc.html
 
 - PHP5 patch
-  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5
+  http://experiments.xp-framework.net/?arena,php5
   
 - The patch showcase: Mapping Objects to XML Files using Annotations
   http://xp-framework.info/xml/xp.en_US/news/view?10

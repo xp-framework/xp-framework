@@ -61,6 +61,6 @@ Zend Engine / extension functionality?
 Related documents
 -----------------
 http://java.sun.com/products/hotspot/docs/whitepaper/Java_Hotspot_v1.4.1/Java_HSpot_WP_v1.4.1_1002_3.html#hot
-http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/people/friebe/classversioning
+http://experiments.xp-framework.net/?people,friebe,classversioning
 
 <EOF>
