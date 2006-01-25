@@ -92,7 +92,7 @@ Details
   exceptions.
   
   For details, see
-  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/exceptions
+  http://experiments.xp-framework.net/?arena,php5,exceptions
   
 * A catch-all-exceptions mechanism:
   Catch-all is realized by ommitting the exception type from the 
@@ -136,7 +136,7 @@ Details
   Name clashes cause a Fatal (Compile-Time) Error.
 
   For details, see 
-  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/packages
+  http://experiments.xp-framework.net/?arena,php5,packages
 
 * A package access level:
   The package keyword may also be prefixed to a method to declare its
@@ -181,7 +181,7 @@ Details
   The Reflection API offers a way to retrieve these annotations.
 
   For details, see 
-  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/syntax
+  http://experiments.xp-framework.net/?arena,php5,syntax
   
 * Finally:
   A new keyword finally is introduced which is called regardless of 
@@ -286,7 +286,7 @@ Details
 
 + Operator overloading
   For details, see 
-  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/operator_overloading
+  http://experiments.xp-framework.net/?arena,php5,operator_overloading
 
 + "self" reflects runtime class
   This would make the following possible:
@@ -303,7 +303,7 @@ Details
   ?>
 
   For details, see
-  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/syntax
+  http://experiments.xp-framework.net/?arena,php5,syntax
 
 * No implementation check during inheritance
   The following would not be checked upon (not even in strict mode):
@@ -325,7 +325,7 @@ Details
   Userland classes would have to implement it.
 
   For details, see
-  http://cvs.xp-framework.net/horde/chora/cvs.php/experiments/arena/php5/exceptions
+  http://experiments.xp-framework.net/?arena,php5,exceptions
   
 * Magic quotes would completely disappear
   Magic quotes are a big nuisance and don't protect you from 
