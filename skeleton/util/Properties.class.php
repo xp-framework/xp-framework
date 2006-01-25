@@ -22,7 +22,8 @@
    * key=value
    * </pre>
    *
-   * @purpose  Wrapper around parse_ini_file
+   * @test      xp://net.xp_framework.unittest.PropertiesTest
+   * @purpose   Wrapper around parse_ini_file
    */
   class Properties extends Object {
     var
@@ -209,7 +210,7 @@
      */
     function getNextSection() {
       $this->_load();
-      if (!next($this->_data)) return FALSE;
+      if (FALSE === next($this->_data)) return FALSE;
 
       return key($this->_data);
     }
