@@ -309,16 +309,11 @@
      * Compares two hashmaps and returns TRUE when equal.
      *
      * @access  public
-     * @param   &util.Hashmap hashmap to compare with
-     * @return  boolean isequal
-     * @throws  lang.IllegalArgumentException in case cmp is not a Hashmap
+     * @param   &mixed object to compare with
+     * @return  boolean
      */
-    function isEqual(&$cmp) {
-      if (!is('util.Hashmap', $cmp)) {
-        return throw(new IllegalArgumentException('Argument is not a util.Hashmap'));
-      }
-        
-      return ($this->_hash === $cmp->_hash);
+    function equals(&$cmp) {
+      return is('util.Hashmap', $cmp) && ($this->_hash === $cmp->_hash);
     }
     
     /**
