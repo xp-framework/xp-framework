@@ -24,13 +24,34 @@
     }
 
     /**
-     * A test that is skipped
+     * A test that is ignored
      *
      * @access  public
      */
-    #[@test, @ignore('Skipped')]
+    #[@test, @ignore('Ignored')]
+    function ignored() {
+      $this->fail('Ignored test executed', 'executed', 'ignored');
+    }
+
+    /**
+     * Setup method
+     *
+     * @access  public
+     */
+    function setUp() {
+      if (0 == strcasecmp('alwaysSkipped', $this->name)) {
+        throw(new PrerequisitesNotMetError('Skipping', $this->name));
+      }
+    }
+
+    /**
+     * A test that is skipped due to not met prerequisites.
+     *
+     * @access  public
+     */
+    #[@test]
     function alwaysSkipped() {
-      $this->fail('Ignored test executed', 'executed', 'skipped');
+      $this->fail('Skipped test executed', 'executed', 'skipped');
     }
 
     /**
