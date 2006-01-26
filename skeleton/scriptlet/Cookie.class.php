@@ -40,7 +40,7 @@
      * @access  public
      * @param   string name cookie name
      * @param   string value default ''
-     * @param   int expires default 0 the UNIX timestamp on which this cookie expires de
+     * @param   mixed expires default 0 the UNIX timestamp on which this cookie expires de
      * @param   string path default ''
      * @param   string domain default ''
      * @param   bool secure default FALSE
@@ -50,6 +50,10 @@
       $this->name= $name;
       $this->value= $value;
       $this->expires= $expires;
+      $this->expires= (is('util.Date', $expires)
+        ? $expires->getTime()
+        : $expires
+      );
       $this->path= $path;
       $this->domain= $domain;
       $this->secure= $secure;
@@ -168,7 +172,10 @@
      * @param   int expires
      */
     function setExpires($expires) {
-      $this->expires= $expires;
+      $this->expires= (is('util.Date', $expires)
+        ? $expires->getTime()
+        : $expires
+      );
     }
 
     /**
@@ -197,6 +204,32 @@
         ($this->path !== '' ? '; path='.$this->path : '').
         ($this->domain !== '' ? '; domain='.$this->domain : '').
         ($this->secure ? '; secure' : '')
+      );
+    }
+    
+    /**
+     * Create string representation
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return sprintf(
+        "%s@{\n".
+        "  [name    ] %s\n".
+        "  [value   ] %s\n".
+        "  [domain  ] %s\n".
+        "  [path    ] %s\n".
+        "  [expires ] %s\n".
+        "  [secure  ] %s\n".
+        "}",
+        $this->getClassName(),
+        $this->name,
+        $this->value,
+        $this->domain,
+        $this->path,
+        date('r', $this->expires),
+        $this->secure ? 'TRUE' : 'FALSE'
       );
     }
   }
