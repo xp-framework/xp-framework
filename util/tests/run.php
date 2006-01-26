@@ -62,6 +62,9 @@ Usage:
      The configuration file is expected to have the following format:
      
      -- Sample ------------------------------------------------------
+     [this]
+     description="Peer integration tests"
+
      [dict]
      class="net.xp_framework.unittest.peer.DictTest"
      args="test.dict.org|2628"
@@ -108,9 +111,11 @@ __
         $config->readArray($section, 'args')
       );
     } else {
-      Console::writeLinef('---> Adding all tests');
+      Console::writeLine('---> Adding "', $config->readString('this', 'description'), '"');
       $section= $config->getFirstSection();
       do {
+        if ('this' == $section) continue;   // Ignore special section
+
         $tests[]= array(
           $config->readString($section, 'class'),
           $config->readArray($section, 'args')
