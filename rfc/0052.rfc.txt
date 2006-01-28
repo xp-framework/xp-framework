@@ -28,18 +28,47 @@ Rationale
 
 Functionality
 -------------
+The suggested functionality includes:
+
+A) Namespaces
+~~~~~~~~~~~~~
+Namespaces can be simulated by string operations. This has been shown
+by our "The patch" [1] and by Jessie Hernandez' namespaces implementation
+for PHP-CVS [2].
+
+B) For PHP4: Compile-time resolved "self" keyword
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A self keyword that works identical to the one used in PHP5.
+
+
+c) For PHP4: Interfaces
+~~~~~~~~~~~~~~~~~~~~~~~
+An interface keyword that works identical to the one used in PHP5.
+
 
 Security considerations
 -----------------------
+n/a
+
 
 Speed impact
 ------------
+Slower
+
 
 Dependencies
 ------------
+auto_prepend_file directive
 
 Related documents
 -----------------
+URLs
+~~~~
+- [1] http://experiments.xp-framework.net/?arena,php5,packages
+- [2] http://phpnamespaces.org/
+  
+Other resources
+~~~~~~~~~~~~~~~
 - http://experiments.xp-framework.net/?people,friebe,rfc0052
   Experiment with auto_prepend_file
 
