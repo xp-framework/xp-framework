@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Nov 16 19:06:40 CET 2003
-@status: draft
+@status: rejected, see comments
 @category: <core>
 
 Scope of Change
@@ -62,5 +62,16 @@ Related documents
 -----------------
 http://java.sun.com/products/hotspot/docs/whitepaper/Java_Hotspot_v1.4.1/Java_HSpot_WP_v1.4.1_1002_3.html#hot
 http://experiments.xp-framework.net/?people,friebe,classversioning
+
+Comments
+--------
+- friebe, Sat Jan 28 17:28:27     2006
+  Cannot become core because this won't work on Windows, convincing the 
+  PHP group of this seems unrealistic (similar requests have been 
+  rejected) and an extension seems to be obsoleted by the PECL runkit
+  extension (http://php3.de/runkit_import)
+
+  In cases where we need this we have been using fork() and can live
+  with the UN*X system restrictions.
 
 <EOF>
