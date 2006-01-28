@@ -117,7 +117,7 @@ Speed impact
 ------------
 Makes every handler slower. Maybe wrapper information should only be 
 added to the formresult if the corresponding wrapper implements an
-interface named "ExposedInFormresult" or "RepresentedInFormresult"?
+interface named "IFormresultFragment"?
 
 
 Dependencies
