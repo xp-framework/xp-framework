@@ -4,7 +4,7 @@ $Id$
 
 @authors: gellweiler
 @created: Wed Jul 13  18:21:15  2005
-@status: discussion ends at Wed Jul 20 15:59:59 CEST 2005
+@status: implemented, Wed 20 Jul   16:10:17  2005
 @category: util
 
 Scope of Change
