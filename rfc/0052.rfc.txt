@@ -36,6 +36,23 @@ Namespaces can be simulated by string operations. This has been shown
 by our "The patch" [1] and by Jessie Hernandez' namespaces implementation
 for PHP-CVS [2].
 
+Class declaration in a package:
+<?php
+  package util·cmd {
+    class Console {
+      // ...
+    }
+  }  
+?>
+
+Importing a class from a package:
+<?php
+  import util·cmd·Console;
+  
+  Console::writeLine('Hello');
+?>
+
+
 B) For PHP4: Compile-time resolved "self" keyword
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A self keyword that works identical to the one used in PHP5.
