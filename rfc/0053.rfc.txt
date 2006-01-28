@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Fri Jan 20 12:27:14 CET 2006
-@status: draft
+@status: discussion, ends Tue Jan 31 12:00:00     2006
 @category: scriptlet.xml.workflow
 
 Scope of Change
@@ -130,6 +130,8 @@ Related documents
 - http://xp-framework.net/downloads/rfc0053.rfc.diff
   Patch implementing this RFC
 
+- http://xp-framework.net/downloads/rfc0053.2.diff
+  Patch with IFormresultAggregate interface
 
 Comments
 --------
