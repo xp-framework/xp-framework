@@ -43,5 +43,7 @@ Related documents
 
 Comments
 --------
-
+- friebe, Sat Jan 28 18:21:05     2006
+  Experiment shows this could be done via auto_prepend_file.
+  
 <EOF>
