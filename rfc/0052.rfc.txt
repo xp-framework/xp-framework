@@ -40,6 +40,8 @@ Dependencies
 
 Related documents
 -----------------
+- http://experiments.xp-framework.net/?people,friebe,rfc0052
+  Experiment with auto_prepend_file
 
 Comments
 --------
