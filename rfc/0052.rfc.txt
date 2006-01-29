@@ -58,6 +58,11 @@ Part 1: Syntax changes
   Console::writeLine('Hello');
 ?>
 
+  What happens technically:
+<pre>
+  Names are resolved at compile time and prefixed by their namespace.
+</pre>
+
 * For PHP4: Compile-time resolved "self" keyword
   A self keyword that works identical to the one used in PHP5.
 
@@ -76,6 +81,54 @@ Part 1: Syntax changes
     }
   }
 ?>
+
+  What happens technically:
+<pre>
+  Self is resolved at compile time and replaced by the current class' name.
+</pre>
+
+* Annotations
+  Annotations as described in RFC #0016 but without the #-sign, see
+  http://experiments.xp-framework.net/?arena,php5,syntax/metadata.php
+  
+  Declaring annotations:
+<?php
+  class CalculatorService {
+  
+    [@webmethod]
+    public function add($a, $b) {
+      return $a + $b;
+    }
+  }
+?>
+
+  Annotations can be retrieved via the reflection API.
+
+  What happens technically:
+<pre>
+  Annotations are stored in the xp registry. The reflection API will 
+  retrieve them from there instead of having to parse the class files
+  at runtime.
+</pre>
+
+* Anonymous class creation
+  See http://experiments.xp-framework.net/?arena,php5,syntax/instance_creation.php
+  for details.
+  
+  Usage:
+<?php
+  $list->sort(new Comparator() {
+    public function compare($a, $b) {
+      return strnatcmp($a, $b);
+    }
+  });
+?>
+
+  What happens technically:
+<pre>
+  This is recompiled to the userland version shown at "Instance creation
+  expression in PHP4" (http://xp-framework.info/xml/xp.en_US/news/view?60)
+</pre>
 
 * For PHP4: Interfaces
   An interface keyword that works identical to the one used in PHP5.
@@ -97,6 +150,12 @@ Part 1: Syntax changes
     }
   }
 ?>
+  What happens technically:
+<pre>
+  For PHP4, the current XP sourcecode with "extends Interface" and
+  "implements(__FILE__, 'Comparable'))" is generated. For PHP5 and
+  above, this is essentially a no-op.
+</pre>
 
 * For PHP4: instanceof
   An instanceof keyword that works identical to the one used in PHP5.
@@ -106,6 +165,11 @@ Part 1: Syntax changes
     $instance->compareTo($cmp);
   }
 ?>
+  What happens technically:
+<pre>
+  For PHP4, we rewrite this to is('Comparable', $instance). For PHP5 and
+  above, the sourcecode is left untouched.
+</pre>
 
 
 Security considerations
