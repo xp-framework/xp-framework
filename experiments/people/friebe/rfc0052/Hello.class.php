@@ -7,6 +7,7 @@ import util·cmd·Console;
 
 public class Hello {
 
+  [@usage]
   public static function usage() {
     Console::writeLine(
       "Usage: php -dauto_prepend_file=xp.php Hello.class.php <Name>\n".
