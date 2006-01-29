@@ -128,6 +128,14 @@
             $this->buffer.= 'function';
             break;
           }
+
+          case T_OBJECT_OPERATOR:
+            if (T_VARIABLE != $tokens[$i- 1][0]) {
+              // TBI: Search backwards until end of expression
+            }
+            $this->buffer.= '->';
+            
+            break;
           
           case T_STATIC: {
             if ($inFunction) {
@@ -202,6 +210,13 @@
   stream_register_wrapper('xp', 'uwrp·compiler');
   $main= substr($_SERVER['PHP_SELF'], 0, -10);
   include('xp://'.$main);
-  exit(call_user_func(array($main, 'main'), $argv));
+  
+  try(); {
+    $r= call_user_func(array($main, 'main'), $argv);
+  } if (catch('Throwable', $e)) {
+    xp::error('[xp::unhandled] '.xp::stringOf($e));
+    // Bails out
+  }
+  exit((int)$r);
   // }}}
 ?>
