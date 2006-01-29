@@ -278,7 +278,7 @@ Comments
 - friebe, Sun Jan 29 02:11:23     2006
   Maybe static imports would also be a worth a try?
 <?php
-  import util·cmd·Console·writeLine;
+  import static util·cmd·Console·writeLine;
   
   writeLine('Hello');
 ?>
