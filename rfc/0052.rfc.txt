@@ -57,10 +57,44 @@ B) For PHP4: Compile-time resolved "self" keyword
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A self keyword that works identical to the one used in PHP5.
 
+Example:
+<?php
+  class Hello {
+    public static function usage() {
+      // ...
+    }
+    
+    public static function main($args) {
+      if ('-?' == $args[1]) {
+        self::usage();
+        return;
+      }
+    }
+  }
+?>
+
 
 c) For PHP4: Interfaces
 ~~~~~~~~~~~~~~~~~~~~~~~
 An interface keyword that works identical to the one used in PHP5.
+
+Interface declaration:
+<?php
+  interface Comparable {
+    public function compareTo($cmp);
+  }
+?>
+
+Implementing an interface:
+<?php
+  class Date implements Comparable {
+    // ...
+
+    public function compareTo($cmp) {
+      return $this->utime == $cmp->utime;
+    }
+  }
+?>
 
 
 Security considerations
