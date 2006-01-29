@@ -173,6 +173,15 @@
             $this->buffer.= '}';
             break;
 
+          case '[':
+            if (!$inFunction) {   // Where else would we allow "["?
+              // DEBUG echo $class.'::ANNOTATION!', "\n";
+              $this->buffer.= '#[';
+            } else {
+              $this->buffer.= '[';
+            }
+            break;
+
           default:
             $this->buffer.= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i];
         }
