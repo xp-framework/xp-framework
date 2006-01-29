@@ -150,6 +150,26 @@ sourcecode:
 ?>
 
 
+Throws clause
+~~~~~~~~~~~~~
+Methods will be allowed to have a declarative throws-clause. Unlike the
+throws-clause in Java, blocks executing a function or method with a 
+throws clause and not handling the list of contained exception will not
+lead to a compile-time error. 
+
+Declaration:
+<?php
+  public function connect() throws IOException, ConnectException {
+    // ...
+  }
+?>
+The thrown exceptions can be retrieved by means of the reflection API.
+
+What happens technically:
+The thrown exceptions will be stored in the xp registry. The reflection
+API can retrieve them from there.
+
+
 For PHP4: Dereferencing
 ~~~~~~~~~~~~~~~~~~~~~~~
 Method calls will be allowed to be chained as follows:
