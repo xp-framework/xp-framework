@@ -37,8 +37,10 @@
       $package= NULL;
       $inFunction= FALSE;
       $implements= array();
+      $reflection= array();
       $imports= array();
       $modifiers= 0;
+
       for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
         switch ($tokens[$i][0]) {
           case T_STRING: {
@@ -62,9 +64,25 @@
               
               case 'interface': {
                 $class= ltrim($package.NAMESPACE_SEPARATOR.$tokens[$i+ 2][1], NAMESPACE_SEPARATOR);
+                $reflection= array(
+                  'modifiers' => $modifiers,
+                  'methods'   => array()
+                );
+                $modifiers= array();
                 xp::registry('class.'.strtolower($class), strtr($class, NAMESPACE_SEPARATOR, '.'));
                 $this->buffer.= 'class '.$class.('extends' == $tokens[$i+ 4][1] ? '' : ' extends Interface');
                 $i+= 2;
+                break;
+              }
+
+              case 'throws': {
+                $i++;
+                do {
+                  if (T_STRING == $tokens[$i][0]) {
+                    $reflection['methods'][$inFunction]['throws'][]= strtr($this->resolveClass($tokens[$i][1], $class, $imports), NAMESPACE_SEPARATOR, '.');
+                  }
+                } while ('{' != $tokens[$i++][0]);
+                $i-= 2;
                 break;
               }
               
@@ -121,9 +139,13 @@
             break;
           
           case T_FUNCTION: {
-            $inFunction= TRUE;
-            // DEBUG echo $class.'::'.$tokens[$i+ 2][1].' => '.$modifiers."\n";
+            $inFunction= $tokens[$i+ 2][1];
+            $reflection['methods'][$inFunction]= array(
+              'modifiers' => $modifiers,
+              'throws'    => array()
+            );
             $modifiers= 0;
+            $throws= array();
             $functionBrackets= 0;
             $this->buffer.= 'function';
             break;
@@ -149,6 +171,10 @@
           
           case T_CLASS: {
             $class= ltrim($package.NAMESPACE_SEPARATOR.$tokens[$i+ 2][1], NAMESPACE_SEPARATOR);
+            $reflection= array(
+              'modifiers' => $modifiers,
+              'methods'   => array()
+            );
             xp::registry('class.'.strtolower($class), strtr($class, NAMESPACE_SEPARATOR, '.'));
             $this->buffer.= 'class '.$class;
             $i+= 2;
@@ -191,7 +217,7 @@
         $this->buffer.= '  implements(\''.$class.'.class.php\', \''.implode('\', ', $implements).'\');'."\n".'?>';
       }
       
-      // DEBUG echo $url['host'], ' => '; var_dump($this->buffer);
+      // DEBUG echo $url['host'], ' => '; var_dump($this->buffer, $reflection);
 
       return TRUE;
     }  

@@ -7,7 +7,7 @@ import util·cmd·Console;
 
 public class Instanciate {
 
-  public static function main($args) {
+  public static function main($args) throws Exception {
     try {
       $class= XPClass::forName($args[1]);
     } catch (ClassNotFoundException $e) {
