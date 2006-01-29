@@ -83,6 +83,7 @@ Example:
 
 What happens technically:
 Self is resolved at compile time and replaced by the current class' name.
+For PHP5, the self keyword is left as-is.
 
 
 Annotations
@@ -126,6 +127,59 @@ Usage:
 What happens technically:
 This is recompiled to the userland version shown at "Instance creation
 expression in PHP4" (http://xp-framework.info/xml/xp.en_US/news/view?60)
+
+
+With syntactic sugar
+~~~~~~~~~~~~~~~~~~~~
+A keyword "with" is added.
+
+Usage:
+<?php
+  with ($tree->addChild(new Node('tagname')) as $node) {
+    $node->setAttribute('attribute', 'value');
+  }
+?>
+
+What happens technically:
+The with statement, essentialy a no-op, is resolved to the following 
+sourcecode:
+<?php
+  $node= &$tree->addChild(new Node('tagname')); {
+    $node->setAttribute('attribute', 'value');
+  }
+?>
+
+
+For PHP4: Dereferencing
+~~~~~~~~~~~~~~~~~~~~~~~
+Method calls will be allowed to be chained as follows:
+<?php
+  $date= XPClass::forName('util.Date')->newInstance();
+?>
+
+What happens technically:
+For PHP4, temporary variables are created as follows:
+<?php
+  $__chain1= &XPClass::forName('util.Date'); $date= &$__chain1->newInstance();
+?>
+For PHP5 and above, nothing needs to be done.
+
+
+For PHP4: Try/catch syntax
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+The try/catch syntax will be changed to allow the following:
+<?php
+  try {
+    $class= XPClass::forName($name);
+  } catch (ClassNotFoundException $e) {
+    // ...
+  }
+?>
+
+What happens technically:
+For PHP4, try is rewritten to try(); and catch (...) to if (catch(...)). 
+For PHP versions with real exception support, the above sourcecode can
+remain as-is.
 
 
 For PHP4: Interfaces
