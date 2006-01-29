@@ -28,7 +28,7 @@ Rationale
 
 Functionality
 -------------
-The suggested functionality includes is divided into the following parts:
+The suggested functionality is divided into the following parts:
 <pre>
 1) Syntax changes
 2) ... TODO ...
@@ -274,5 +274,14 @@ Comments
 --------
 - friebe, Sat Jan 28 18:21:05     2006
   Experiment shows this could be done via auto_prepend_file.
+
+- friebe, Sun Jan 29 02:11:23     2006
+  Maybe static imports would also be a worth a try?
+<?php
+  import util·cmd·Console·writeLine;
   
+  writeLine('Hello');
+?>
+
+
 <EOF>
