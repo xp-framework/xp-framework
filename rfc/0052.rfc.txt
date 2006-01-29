@@ -28,15 +28,21 @@ Rationale
 
 Functionality
 -------------
-The suggested functionality includes:
+The suggested functionality includes is divided into the following parts:
+<pre>
+1) Syntax changes
+2) ... TODO ...
+</pre>
 
-A) Namespaces
-~~~~~~~~~~~~~
-Namespaces can be simulated by string operations. This has been shown
-by our "The patch" [1] and by Jessie Hernandez' namespaces implementation
-for PHP-CVS [2].
+Part 1: Syntax changes
+~~~~~~~~~~~~~~~~~~~~~~
 
-Class declaration in a package:
+* Namespaces
+  Namespaces can be simulated by string operations. This has been shown
+  by our "The patch" [1] and by Jessie Hernandez' namespaces implementation
+  for PHP-CVS [2].
+
+  Class declaration in a package:
 <?php
   package util·cmd {
     class Console {
@@ -45,19 +51,17 @@ Class declaration in a package:
   }  
 ?>
 
-Importing a class from a package:
+  Importing a class from a package:
 <?php
   import util·cmd·Console;
   
   Console::writeLine('Hello');
 ?>
 
+* For PHP4: Compile-time resolved "self" keyword
+  A self keyword that works identical to the one used in PHP5.
 
-B) For PHP4: Compile-time resolved "self" keyword
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-A self keyword that works identical to the one used in PHP5.
-
-Example:
+  Example:
 <?php
   class Hello {
     public static function usage() {
@@ -73,19 +77,17 @@ Example:
   }
 ?>
 
+* For PHP4: Interfaces
+  An interface keyword that works identical to the one used in PHP5.
 
-c) For PHP4: Interfaces
-~~~~~~~~~~~~~~~~~~~~~~~
-An interface keyword that works identical to the one used in PHP5.
-
-Interface declaration:
+  Interface declaration:
 <?php
   interface Comparable {
     public function compareTo($cmp);
   }
 ?>
 
-Implementing an interface:
+  Implementing an interface:
 <?php
   class Date implements Comparable {
     // ...
@@ -93,6 +95,15 @@ Implementing an interface:
     public function compareTo($cmp) {
       return $this->utime == $cmp->utime;
     }
+  }
+?>
+
+* For PHP4: instanceof
+  An instanceof keyword that works identical to the one used in PHP5.
+  
+<?php
+  if ($instance instanceof Comparable) {
+    $instance->compareTo($cmp);
   }
 ?>
 
