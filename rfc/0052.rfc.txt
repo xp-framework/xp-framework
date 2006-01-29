@@ -34,15 +34,14 @@ The suggested functionality includes is divided into the following parts:
 2) ... TODO ...
 </pre>
 
-Part 1: Syntax changes
-~~~~~~~~~~~~~~~~~~~~~~
 
-* Namespaces
-  Namespaces can be simulated by string operations. This has been shown
-  by our "The patch" [1] and by Jessie Hernandez' namespaces implementation
-  for PHP-CVS [2].
+Namespaces
+~~~~~~~~~~
+Namespaces can be simulated by string operations. This has been shown
+by our "The patch" [1] and by Jessie Hernandez' namespaces implementation
+for PHP-CVS [2].
 
-  Class declaration in a package:
+Class declaration in a package:
 <?php
   package util·cmd {
     class Console {
@@ -51,22 +50,22 @@ Part 1: Syntax changes
   }  
 ?>
 
-  Importing a class from a package:
+Importing a class from a package:
 <?php
   import util·cmd·Console;
   
   Console::writeLine('Hello');
 ?>
 
-  What happens technically:
-<pre>
-  Names are resolved at compile time and prefixed by their namespace.
-</pre>
+What happens technically:
+Names are resolved at compile time and prefixed by their namespace.
 
-* For PHP4: Compile-time resolved "self" keyword
-  A self keyword that works identical to the one used in PHP5.
 
-  Example:
+For PHP4: Compile-time resolved "self" keyword
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A self keyword that works identical to the one used in PHP5.
+
+Example:
 <?php
   class Hello {
     public static function usage() {
@@ -82,16 +81,16 @@ Part 1: Syntax changes
   }
 ?>
 
-  What happens technically:
-<pre>
-  Self is resolved at compile time and replaced by the current class' name.
-</pre>
+What happens technically:
+Self is resolved at compile time and replaced by the current class' name.
 
-* Annotations
-  Annotations as described in RFC #0016 but without the #-sign, see
-  http://experiments.xp-framework.net/?arena,php5,syntax/metadata.php
+
+Annotations
+~~~~~~~~~~~
+Annotations as described in RFC #0016 but without the #-sign, see
+http://experiments.xp-framework.net/?arena,php5,syntax/metadata.php
   
-  Declaring annotations:
+Declaring annotations:
 <?php
   class CalculatorService {
   
@@ -102,20 +101,20 @@ Part 1: Syntax changes
   }
 ?>
 
-  Annotations can be retrieved via the reflection API.
+Annotations can be retrieved via the reflection API.
 
-  What happens technically:
-<pre>
-  Annotations are stored in the xp registry. The reflection API will 
-  retrieve them from there instead of having to parse the class files
-  at runtime.
-</pre>
+What happens technically:
+Annotations are stored in the xp registry. The reflection API will 
+retrieve them from there instead of having to parse the class files
+at runtime.
 
-* Anonymous class creation
-  See http://experiments.xp-framework.net/?arena,php5,syntax/instance_creation.php
-  for details.
+
+Anonymous class creation
+~~~~~~~~~~~~~~~~~~~~~~~~
+See http://experiments.xp-framework.net/?arena,php5,syntax/instance_creation.php
+for details.
   
-  Usage:
+Usage:
 <?php
   $list->sort(new Comparator() {
     public function compare($a, $b) {
@@ -124,23 +123,23 @@ Part 1: Syntax changes
   });
 ?>
 
-  What happens technically:
-<pre>
-  This is recompiled to the userland version shown at "Instance creation
-  expression in PHP4" (http://xp-framework.info/xml/xp.en_US/news/view?60)
-</pre>
+What happens technically:
+This is recompiled to the userland version shown at "Instance creation
+expression in PHP4" (http://xp-framework.info/xml/xp.en_US/news/view?60)
 
-* For PHP4: Interfaces
-  An interface keyword that works identical to the one used in PHP5.
 
-  Interface declaration:
+For PHP4: Interfaces
+~~~~~~~~~~~~~~~~~~~~
+An interface keyword that works identical to the one used in PHP5.
+
+Interface declaration:
 <?php
   interface Comparable {
     public function compareTo($cmp);
   }
 ?>
 
-  Implementing an interface:
+Implementing an interface:
 <?php
   class Date implements Comparable {
     // ...
@@ -150,26 +149,25 @@ Part 1: Syntax changes
     }
   }
 ?>
-  What happens technically:
-<pre>
-  For PHP4, the current XP sourcecode with "extends Interface" and
-  "implements(__FILE__, 'Comparable'))" is generated. For PHP5 and
-  above, this is essentially a no-op.
-</pre>
+What happens technically:
+For PHP4, the current XP sourcecode with "extends Interface" and
+"implements(__FILE__, 'Comparable'))" is generated, see
+http://xp-framework.net/content/about.html#10
+For PHP5 and above, this is essentially a no-op.
 
-* For PHP4: instanceof
-  An instanceof keyword that works identical to the one used in PHP5.
+
+For PHP4: instanceof
+~~~~~~~~~~~~~~~~~~~
+An instanceof keyword that works identical to the one used in PHP5.
   
 <?php
   if ($instance instanceof Comparable) {
     $instance->compareTo($cmp);
   }
 ?>
-  What happens technically:
-<pre>
-  For PHP4, we rewrite this to is('Comparable', $instance). For PHP5 and
-  above, the sourcecode is left untouched.
-</pre>
+What happens technically:
+For PHP4, we rewrite this to is('Comparable', $instance). For PHP5 and
+above, the sourcecode is left untouched.
 
 
 Security considerations
