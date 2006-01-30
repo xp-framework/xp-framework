@@ -113,6 +113,7 @@
      * @param   string[] caster default NULL
      * @param   string[] precheck default NULL
      * @param   string[] postcheck default NULL
+     * @param   string type default 'core:string'
      */
     function registerParamInfo(
       $name, 
@@ -120,14 +121,16 @@
       $default= NULL,
       $caster= NULL, 
       $precheck= NULL, 
-      $postcheck= NULL
+      $postcheck= NULL,
+      $type= 'core:string'
     ) {
       $this->paraminfo[$name]= array(
         'occurrence' => $occurrence,
         'default'    => $default,
         'precheck'   => $this->checkerInstanceFor($precheck),
         'caster'     => $this->checkerInstanceFor($caster),
-        'postcheck'  => $this->checkerInstanceFor($postcheck)
+        'postcheck'  => $this->checkerInstanceFor($postcheck),
+        'type'       => $type
       );
     }
     

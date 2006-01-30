@@ -40,6 +40,42 @@
     }
     
     /**
+     * Helper method used by setup(). Adds information about the handler (and 
+     * about the handler's wrapper, if existant and IFormResultAggregate'd)
+     * to the formresult
+     *
+     * @access  protected
+     * @param   &scriptlet.xml.workflow.Handler handler the handler to add
+     * @param   &xml.Node node the node to add the handler representation to
+     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     */
+    function addHandlerToFormresult(&$handler, &$node, &$request) {
+      $node->addChild(Node::fromArray($handler->values[HVAL_PERSISTENT], 'values'));
+      foreach (array_keys($handler->values[HVAL_FORMPARAM]) as $key) {
+
+        // Skip parameters which were set via setFormValue() and which were
+        // posted via request to avoid duplicate parameters. We do not need
+        // to use $response->addFormValue() because this is done in
+        // XMLScriptlet::processRequest() called in XMLScriptlet::doGet().
+        if (isset($request->params[$key])) continue;
+        $request->params[$key]= $handler->values[HVAL_FORMPARAM][$key];
+      }
+      
+      // Add wrapper parameter representation if the handler has a wrapper
+      // and this wrapper implements the IFormResultAggregate interface
+      if ($handler->hasWrapper() && is('IFormResultAggregate', $handler->wrapper)) {
+        $wrapper= &$node->addChild(new Node('wrapper'));
+        foreach (array_keys($handler->wrapper->paraminfo) as $name) {
+          $wrapper->addChild(new Node('param', NULL, array(
+            'name'       => $name,
+            'type'       => $handler->wrapper->paraminfo[$name]['type'],
+            'occurrence' => $handler->wrapper->paraminfo[$name]['occurrence'],
+          )));
+        }
+      }
+    }
+    
+    /**
      * Set up this state
      *
      * @access  public
@@ -107,29 +143,16 @@
               }
 
               // Handler was successfully set up, register to session
-              $node->setAttribute('status', HANDLER_SETUP);
               $request->session->putValue($this->handlers[$i]->identifier, $this->handlers[$i]->values);
-              $node->addChild(Node::fromArray($this->handlers[$i]->values[HVAL_PERSISTENT], 'values'));
-              foreach (array_keys($this->handlers[$i]->values[HVAL_FORMPARAM]) as $key) {
-                $response->addFormValue($key, $this->handlers[$i]->values[HVAL_FORMPARAM][$key]);
-              }
-              
+              $node->setAttribute('status', HANDLER_SETUP);
+              $this->addHandlerToFormresult($this->handlers[$i], $node, $request);
               continue;
             }
 
             // Load handler values from session
             $this->handlers[$i]->values= $request->session->getValue($this->handlers[$i]->identifier);
             $node->setAttribute('status', HANDLER_INITIALIZED);
-            $node->addChild(Node::fromArray($this->handlers[$i]->values[HVAL_PERSISTENT], 'values'));
-            foreach (array_keys($this->handlers[$i]->values[HVAL_FORMPARAM]) as $key) {
-            
-              // Skip parameters which were set via setFormValue() and which were
-              // posted via request to avoid duplicate parameters. We do not need
-              // to use $response->addFormValue() because this is done in
-              // XMLScriptlet::processRequest() called in XMLScriptlet::doGet().
-              if (isset($request->params[$key])) continue;
-              $request->params[$key]= $this->handlers[$i]->values[HVAL_FORMPARAM][$key];
-            }
+            $this->addHandlerToFormresult($this->handlers[$i], $node, $request);
 
             // If the handler is not active, ask the next handler
             if (!$this->handlers[$i]->isActive($request, $context)) continue;
