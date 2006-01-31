@@ -231,7 +231,7 @@ For PHP5 and above, this is essentially a no-op.
 
 
 For PHP4: instanceof
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 An instanceof keyword that works identical to the one used in PHP5.
   
 <?php
@@ -242,6 +242,18 @@ An instanceof keyword that works identical to the one used in PHP5.
 What happens technically:
 For PHP4, we rewrite this to is('Comparable', $instance). For PHP5 and
 above, the sourcecode is left untouched.
+
+For PHP4: Type hints
+~~~~~~~~~~~~~~~~~~~~
+The type hints that were introduced with PHP5 could be emulated, possibly even
+improved (by throwing an exception instead of a fatal error, and by allowing
+NULL values).
+
+<?php
+  public function setTrace(LogCategory &$cat) {
+    $this->cat= &$cat;
+  }
+?>
 
 
 Security considerations
@@ -282,6 +294,19 @@ Comments
   
   writeLine('Hello');
 ?>
+
+- kiesel, Tue Jan 31 15:38:38 CET 2006
+  The meta-compiler should take care of keeping the current line numbers
+  consistent across files. One will be able to associate an error with a
+  code line.
+  (My) experience shows, this is an important feature.
+
+- kiesel, Tue Jan 31 15:40:24 CET 2006
+  One may think about creating multiple compilers - or, one compiler with
+  multiple modes: eg. debugging, release. The debug compiler would add
+  more checks on type hints or return types while the release compiler
+  would skip those in favor of speed.
+
 
 
 <EOF>
