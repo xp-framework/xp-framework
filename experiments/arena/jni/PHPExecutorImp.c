@@ -41,8 +41,69 @@ JNIEXPORT void JNICALL Java_PHPExecutor_shutDown(JNIEnv *env, jobject object) {
 }
 /* }}} */
 
+/* {{{ CompiledScript compile(String source) */
+JNIEXPORT jobject JNICALL Java_PHPExecutor_compile(JNIEnv *env, jobject object, jstring source) {
+	TSRMLS_FETCH();
+
+    zend_first_try {
+        zend_llist global_vars;
+        zend_llist_init(&global_vars, sizeof(char *), NULL, 0);
+
+        SG(server_context)= emalloc(sizeof(executor_context));
+        ((executor_context*)SG(server_context))->env= env;
+        ((executor_context*)SG(server_context))->object= object;
+
+        zend_error_cb= phpexecutor_error_cb;
+		zend_uv.html_errors= 0;
+		CG(in_compilation)= 0;
+        CG(interactive)= 0;
+		EG(uninitialized_zval_ptr)= NULL;
+		EG(error_reporting)= E_ALL;
+
+        /* Initialize request */
+        if (SUCCESS != php_request_startup(TSRMLS_C)) {
+            fprintf(stderr, "Cannot startup request\n");
+            return;
+        }
+        
+        /* Execute */
+        const char *str= (*env)->GetStringUTFChars(env, source, 0);
+        {
+            zval eval;
+            zend_op_array *compiled_op_array= NULL;
+            char *eval_desc = zend_make_compiled_string_description("jni compile()'d code" TSRMLS_CC);
+
+            eval.value.str.val= (char*) emalloc(strlen(str)+ 1);
+            eval.value.str.len= strlen(str);
+            strncpy(eval.value.str.val, str, eval.value.str.len);
+            eval.value.str.val[eval.value.str.len]= '\0';
+            eval.type= IS_STRING;
+            
+            compiled_op_array= compile_string(&eval, eval_desc TSRMLS_CC);
+
+            efree(eval_desc);
+            zval_dtor(&eval);
+        }
+        (*env)->ReleaseStringUTFChars(env, source, str);
+
+        /* Shutdown request */
+		efree(SG(server_context));
+		SG(server_context)= 0;
+        
+        zend_llist_destroy(&global_vars);
+        php_request_shutdown((void *) 0);
+    } zend_catch {
+        throw(env, "java/lang/IllegalArgumentException", "Bailout");
+    } zend_end_try();
+
+    /* Create CompiledString object and return it */
+    jclass compiledScriptClass= (*env)->FindClass(env, "CompiledScript");
+    jobject compiledScriptObject= (*env)->AllocObject(env, compiledScriptClass);
+    return compiledScriptObject;
+}
+
 /* {{{ Object eval(String source) */
-JNIEXPORT jobject JNICALL Java_PHPExecutor_eval(JNIEnv* env, jobject object, jstring source) {
+JNIEXPORT jobject JNICALL Java_PHPExecutor_eval(JNIEnv *env, jobject object, jstring source) {
 	TSRMLS_FETCH();
 
     zend_first_try {

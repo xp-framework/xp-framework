@@ -3,6 +3,8 @@
  * $Id$
  */
 
+import static java.lang.System.out;
+
 public class PHPExecutor {
 
     static {
@@ -28,19 +30,37 @@ public class PHPExecutor {
     protected static native void shutDown();
 
     /**
+     * Compiles a piece of PHP sourcecode
+     *
+     */
+    public native CompiledScript compile(String s);
+
+    /**
      * Evaluates a piece of PHP sourcecode
      *
      */
     public native Object eval(String s);
     
+    public static void usage() {
+        out.println("Usage: PHPExecutor <method> [arguments]");
+    }
+    
     public static void main(String[] args) throws Exception {
+        if (args.length < 2) {
+            usage();
+            return;
+        }
+
         PHPExecutor executor= new PHPExecutor();
         
-        for (int i= 0; i < args.length; i++) {
-            System.out.println("============ Executing #" + i + " ============");
-            executor.eval(args[i]);
+        // Switch on argument
+        if ("eval".equals(args[0])) {
+            executor.eval(args[1]);
+        } else if ("compile".equals(args[0])) {
+            CompiledScript compiled= executor.compile(args[1]);
+            compiled.call(null, args[2], new Object[] { });
         }
         
-        System.out.println("===> Done, executed " + args.length + " snippets");
+        out.println("===> Done");
     }
 }

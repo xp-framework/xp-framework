@@ -25,6 +25,14 @@ JNIEXPORT void JNICALL Java_PHPExecutor_shutDown
 
 /*
  * Class:     PHPExecutor
+ * Method:    compile
+ * Signature: (Ljava/lang/String;)LCompiledScript;
+ */
+JNIEXPORT jobject JNICALL Java_PHPExecutor_compile
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     PHPExecutor
  * Method:    eval
  * Signature: (Ljava/lang/String;)Ljava/lang/Object;
  */
