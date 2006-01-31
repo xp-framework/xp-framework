@@ -254,7 +254,10 @@ NULL values).
     $this->cat= &$cat;
   }
 ?>
-
+What happens technically:
+An is() call is being inserted right after the function has been entered
+and the passed value is being checked. If the type does not match the
+required one, throw an lang.IllegalArgumentException (for example).
 
 Security considerations
 -----------------------
