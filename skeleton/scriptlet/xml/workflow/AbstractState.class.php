@@ -66,11 +66,19 @@
       if ($handler->hasWrapper() && is('IFormResultAggregate', $handler->wrapper)) {
         $wrapper= &$node->addChild(new Node('wrapper'));
         foreach (array_keys($handler->wrapper->paraminfo) as $name) {
-          $wrapper->addChild(new Node('param', NULL, array(
+          $param= &$wrapper->addChild(new Node('param', NULL, array(
             'name'       => $name,
             'type'       => $handler->wrapper->paraminfo[$name]['type'],
             'occurrence' => $handler->wrapper->paraminfo[$name]['occurrence'],
           )));
+          if ($handler->wrapper->paraminfo[$name]['values']) {
+            foreach ($handler->wrapper->paraminfo[$name]['values'] as $key => $value) {
+              $param->addChild(new Node('value', $value, array('name' => $key)));
+            }
+          }
+          if ($handler->wrapper->paraminfo[$name]['default']) {
+            $param->addChild(new Node('default', $handler->wrapper->paraminfo[$name]['default']));
+          }
         }
       }
     }
