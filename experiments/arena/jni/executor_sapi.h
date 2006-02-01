@@ -11,6 +11,8 @@
 #include <zend_compile.h>
 #include <zend_execute.h>
 
+#include "util.h"
+
 /* {{{ PHP module functions */
 char* phpexecutor_read_cookies(TSRMLS_D);
 int phpexecutor_deactivate(TSRMLS_D);

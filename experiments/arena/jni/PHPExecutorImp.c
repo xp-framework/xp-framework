@@ -7,13 +7,6 @@
 #include "PHPExecutor.h"
 #include "executor_sapi.h"
 
-static void throw(JNIEnv* env, const char *classname, const char* message) {
-    jclass exception = (*env)->FindClass(env, classname);
-    if (exception != 0) {
-        (*env)->ThrowNew(env, exception, message);
-    }
-}
-
 typedef struct {
 	JNIEnv *env;
 	jobject object;
@@ -45,6 +38,8 @@ JNIEXPORT void JNICALL Java_PHPExecutor_shutDown(JNIEnv *env, jobject object) {
 JNIEXPORT jobject JNICALL Java_PHPExecutor_compile(JNIEnv *env, jobject object, jstring source) {
 	TSRMLS_FETCH();
 
+    zend_op_array *compiled_op_array= NULL;
+
     zend_first_try {
         zend_llist global_vars;
         zend_llist_init(&global_vars, sizeof(char *), NULL, 0);
@@ -70,7 +65,6 @@ JNIEXPORT jobject JNICALL Java_PHPExecutor_compile(JNIEnv *env, jobject object, 
         const char *str= (*env)->GetStringUTFChars(env, source, 0);
         {
             zval eval;
-            zend_op_array *compiled_op_array= NULL;
             char *eval_desc = zend_make_compiled_string_description("jni compile()'d code" TSRMLS_CC);
 
             eval.value.str.val= (char*) emalloc(strlen(str)+ 1);
@@ -80,27 +74,44 @@ JNIEXPORT jobject JNICALL Java_PHPExecutor_compile(JNIEnv *env, jobject object, 
             eval.type= IS_STRING;
             
             compiled_op_array= compile_string(&eval, eval_desc TSRMLS_CC);
-
+  
             efree(eval_desc);
             zval_dtor(&eval);
+
+            /* DEBUG printf("PHPExecutor.compile('%s') op_array= %p\n", str, compiled_op_array); */
         }
         (*env)->ReleaseStringUTFChars(env, source, str);
+
 
         /* Shutdown request */
 		efree(SG(server_context));
 		SG(server_context)= 0;
         
         zend_llist_destroy(&global_vars);
-        php_request_shutdown((void *) 0);
     } zend_catch {
         throw(env, "java/lang/IllegalArgumentException", "Bailout");
     } zend_end_try();
 
+    /* Check if compilation worked */
+    if (!compiled_op_array) {
+        throw(env, "java/lang/IllegalArgumentException", "Compile error");
+        return;
+    }
+
     /* Create CompiledString object and return it */
     jclass compiledScriptClass= (*env)->FindClass(env, "CompiledScript");
     jobject compiledScriptObject= (*env)->AllocObject(env, compiledScriptClass);
+
+    jfieldID oparrayField= (*env)->GetFieldID(env, compiledScriptClass, "oparrayptr", "Ljava/nio/ByteBuffer;");
+    (*env)->SetObjectField(
+        env, 
+        compiledScriptObject, 
+        oparrayField, 
+        (*env)->NewDirectByteBuffer(env, compiled_op_array, sizeof(compiled_op_array)) 
+    );
+
     return compiledScriptObject;
-}
+} 
 
 /* {{{ Object eval(String source) */
 JNIEXPORT jobject JNICALL Java_PHPExecutor_eval(JNIEnv *env, jobject object, jstring source) {

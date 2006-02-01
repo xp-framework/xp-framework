@@ -57,8 +57,19 @@ public class PHPExecutor {
         if ("eval".equals(args[0])) {
             executor.eval(args[1]);
         } else if ("compile".equals(args[0])) {
+            /*
             CompiledScript compiled= executor.compile(args[1]);
             compiled.call(null, args[2], new Object[] { });
+            */
+            
+            CompiledScript compiled= executor.compile(
+                "class Foo { function a() { var_dump($this, 'Foo::a();'); } } " +
+                "function create($class) { $GLOBALS[$class]= new $class(); } " +
+                "function invoke($class, $method) { call_user_func(array($GLOBALS[$class], $method)); }"
+            );
+            compiled.call(null, "create", new Object[] { "Foo" });
+            compiled.call(null, "invoke", new Object[] { "Foo", "a" });
+            compiled.call(null, "invoke", new Object[] { "Foo", "b" });
         }
         
         out.println("===> Done");
