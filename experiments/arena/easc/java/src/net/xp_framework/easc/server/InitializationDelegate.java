@@ -7,6 +7,8 @@ package net.xp_framework.easc.server;
 
 import net.xp_framework.easc.server.Delegate;
 import net.xp_framework.easc.server.ServerContext;
+import org.jboss.security.SecurityAssociation;
+import java.security.Principal;
 
 /**
  * Handles initialization
@@ -30,7 +32,35 @@ public class InitializationDelegate implements Delegate {
      * @param   java.lang.String password
      */
     public InitializationDelegate(final String username, final String password) {
-        // FIXME: Not yet implemented
+    
+        // FIXME: This should really be using the JAAS API. For some reason,
+        // this doesn't work, the username gets lost somewhere inbetween,
+        // resulting in a Security exception "Bad password for username=null".
+        //
+        // The implementation below uses a hard-coded version of what the 
+        // JAAS api does, namely attaching them to the current thread (and
+        // reading them from there at the time it needs them).
+        // 
+        // Problem here is we use a JBoss-specific version of this mechanism
+        // - see above imports for SecurityAssociation
+        SecurityAssociation.setPrincipal(new Principal() {
+            public boolean equals(Object cmp) { 
+                return cmp instanceof Principal && this.getName().equals(((Principal)cmp).getName()); 
+            }
+
+            public String getName() { 
+                return username; 
+            }
+
+            public int hashCode() { 
+                return username.hashCode(); 
+            }
+
+            public String toString() { 
+                return "Principal(" + username + ")"; 
+            }
+        });
+        SecurityAssociation.setCredential(password.toCharArray());
     }
 
     /**
