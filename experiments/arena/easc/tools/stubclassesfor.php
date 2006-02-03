@@ -62,7 +62,7 @@
   
   // {{{ main
   $p= &new ParamString();
-  if (!$p->exists(1)) {
+  if (!$p->exists(1) || $p->exists('help', '?')) {
     Console::writeLine(<<<__
 Generates stub classes by using the ESDL service
 
