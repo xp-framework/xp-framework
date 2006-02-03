@@ -13,7 +13,8 @@
     'lang.types.ArrayList',
     'util.Date',
     'remote.UnknownRemoteObject',
-    'remote.ExceptionReference'
+    'remote.ExceptionReference',
+    'remote.ClassReference'
   );
 
   /**
@@ -160,6 +161,23 @@
      * @throws  lang.FormatException if an error is encountered in the format 
      */  
     function &valueOf($serialized, &$length, $context= array()) {
+      static $types= NULL;
+      
+      if (!$types) $types= array(
+        'N'   => 'void',
+        'b'   => 'boolean',
+        'i'   => 'integer',
+        'd'   => 'float',
+        's'   => 'string',
+        'B'   => new ClassReference('lang.types.Byte'),
+        'S'   => new ClassReference('lang.types.Short'),
+        'f'   => new ClassReference('lang.types.Float'),
+        'l'   => new ClassReference('lang.types.Long'),
+        'a'   => 'array',
+        'A'   => new ClassReference('lang.types.ArrayList'),
+        'T'   => new ClassReference('util.Date')
+      );
+
       switch ($serialized{0}) {
         case 'N': {     // null
           $length= 2; 
@@ -337,6 +355,21 @@
           }
           $length= $offset+ 1;
           return $instance;
+        }
+
+        case 'c': {     // builtin classes
+          $length= 4;
+          $token= substr($serialized, 2, strpos($serialized, ';', 2)- 2);
+          if (!isset($types[$token])) {
+            return throw(new FormatException('Unknown token "'.$token.'"'));
+          }
+          return $types[$token];
+        }
+        
+        case 'C': {     // generic classes
+          $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
+          $length= 2 + strlen($len) + 2 + $len + 2;
+          return new ClassReference(Serializer::packageMapping(substr($serialized, 2+ strlen($len)+ 2, $len)));
         }
 
         default: {      // default, check if we have a mapping

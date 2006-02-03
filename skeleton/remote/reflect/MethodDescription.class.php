@@ -127,6 +127,17 @@
     }
     
     /**
+     * Returns a string representation of a type argument
+     *
+     * @access  protected
+     * @param   mixed arg
+     * @return  string
+     */
+    function typeString($arg) {
+      return NULL === $arg ? 'void' : (is_a($arg, 'ClassReference') ? $arg->referencedName() : $arg);
+    }
+    
+    /**
      * Creates a string representation of this object
      *
      * @access  public
@@ -148,9 +159,9 @@
         $this->getClassName(),
         $transactionTypes[$this->transactionType],
         $this->roles ? '@Security(roles= ['.implode(', ', $this->roles).']) ' : '',
-        $this->returnType,
+        $this->typeString($this->returnType),
         $this->name,
-        implode(', ', $this->parameterTypes)
+        implode(', ', array_map(array(&$this, 'typeString'), $this->parameterTypes))
       );
     }
   }
