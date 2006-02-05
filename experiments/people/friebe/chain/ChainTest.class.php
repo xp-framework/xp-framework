@@ -6,7 +6,8 @@
 
   uses(
     'util.profiling.unittest.TestCase',
-    'util.log.Logger'
+    'util.log.Logger',
+    'Expectancy'
   );
   include('chain-function.php');
 
@@ -81,6 +82,23 @@
       $i= 0;
       $cat= &chain($this->getCategories(), '[', $i, ']');
       $this->assertClass($cat, 'util.log.LogCategory');
+    }
+
+    /**
+     * Tests fluent interface of Expectancy class
+     *
+     * new Expectancy()->method('sayHello')->isInvoked(1)->with(array('World'))
+     *
+     * @access  public
+     * @see     xp://Expectancy
+     */
+    #[@test]
+    function fluentInterface() {
+      $expectancy= &chain(new Expectancy(), 'method("sayHello")', 'isInvoked(1)', 'with(array("World"))');
+      $this->assertEquals(
+        'Expectancy(method sayHello invoked 1 times with [\'World\'] as arguments)',
+        $expectancy->toString()
+      );
     }
 
     /**
