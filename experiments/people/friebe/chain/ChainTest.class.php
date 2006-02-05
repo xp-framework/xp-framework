@@ -16,7 +16,17 @@
    * @purpose  TestCase
    */
   class ChainTest extends TestCase {
-  
+
+    /**
+     * Helper method that returns two logcategories in an array
+     *
+     * @access  protected
+     * @return  util.log.LogCategory[2]
+     */
+    function getCategories() {
+      return array(new LogCategory(), new LogCategory());
+    }
+      
     /**
      * Tests Logger::getInstance()->getCategory();
      *
@@ -47,6 +57,29 @@
     #[@test]
     function classLoggerCategory() {
       $cat= &chain(Logger::getInstance(), 'getCategory(', $this->getClassName(), ')');
+      $this->assertClass($cat, 'util.log.LogCategory');
+    }
+
+    /**
+     * Tests $this->getCategories()[1]
+     *
+     * @access  public
+     */
+    #[@test]
+    function constantArrayOffset() {
+      $cat= &chain($this->getCategories(), '[1]');
+      $this->assertClass($cat, 'util.log.LogCategory');
+    }
+
+    /**
+     * Tests $this->getCategories()[1]
+     *
+     * @access  public
+     */
+    #[@test]
+    function dynamicArrayOffset() {
+      $i= 0;
+      $cat= &chain($this->getCategories(), '[', $i, ']');
       $this->assertClass($cat, 'util.log.LogCategory');
     }
 
