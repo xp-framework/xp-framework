@@ -7,7 +7,7 @@
   function &chain(&$begin) {
   
     // Border case #1: Exception already thrown at entry
-    if ($e= xp::registry('exceptions')) return throw($e[key($e)]);
+    if (xp::registry('exceptions')) return xp::null();
     
     // Iterate over chain
     for ($i= 1; $i < func_num_args(); $i++) {
