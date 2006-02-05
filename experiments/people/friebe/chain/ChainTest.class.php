@@ -104,5 +104,16 @@
     function nullThrowsNPE() {
       chain($instance= NULL, 'toString()');
     }
+
+    /**
+     * Tests xp::null() doesn't cause problems (e.g. $instance->toString()
+     * where $instance is xp::null())
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.NullPointerException')]
+    function xpNullThrowsNPE() {
+      chain(xp::null(), 'toString()');
+    }
   }
 ?>
