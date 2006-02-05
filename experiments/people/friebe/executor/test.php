@@ -96,7 +96,7 @@
       for ($i= $context["O"]->offset; $i < $context["O"]->size; $i++) {
         if ("OP_CATCH" != $context["O"]->opcodes[$i][0]) continue;
         
-        // FIXME: Use instanceof
+        // Check whether exception was caught by the found opcode
         if (!is($context["O"]->opcodes[$i][1][0], $exception)) continue;
         
         // We have found the correct opcode
