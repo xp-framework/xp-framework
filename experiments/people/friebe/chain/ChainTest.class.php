@@ -29,6 +29,17 @@
     }
 
     /**
+     * Tests Logger::getInstance()->getCategory()->getClass()->getName()
+     *
+     * @access  public
+     */
+    #[@test]
+    function defaultLoggerCategoryClassName() {
+      $name= chain(Logger::getInstance(), 'getCategory()', 'getClass()', 'getName()');
+      $this->assertEquals($name, 'util.log.LogCategory');
+    }
+
+    /**
      * Tests Logger::getInstance()->getCategory($this->getClassName());
      *
      * @access  public
