@@ -72,7 +72,7 @@
     }
 
     /**
-     * Tests $this->getCategories()[1]
+     * Tests $this->getCategories()[$i]
      *
      * @access  public
      */
