@@ -24,7 +24,13 @@ A "chain" function takes care of the work. The "parts" of the chains are
 passed to it as arguments and are evaluated by the function, returning
 the result of the chain and breaking execution if an error occurs.
 
-See chain-function.php for more details.
+* See chain-function.php for more details on the internal workings.
+* See ChainTest for how to translate chains to chain function calls.
+
+
+Why this experiment was created
+-------------------------------
+Investigate possibility of implementing method chaining for RFC #0052.
 
 
 Related information
