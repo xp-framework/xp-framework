@@ -51,7 +51,7 @@
   }');
   $handlers['OP_PRINT']= &newinstance('OpcodeHandler', '{
     function handle(&$context, $args) {
-      echo xp::stringOf($context["symbols"][$args[0]]), "\n";
+      Console::writeLine(xp::stringOf($context["symbols"][$args[0]]));
     }
   }');
   $handlers['OP_INVOKE']= &newinstance('OpcodeHandler', '{
@@ -64,10 +64,27 @@
   }');
   $handlers['OP_TRY']= &newinstance('OpcodeHandler', '{
     function handle(&$context, $args) {
+      $context["E"]= NULL;
     }
   }');
   $handlers['OP_CATCH']= &newinstance('OpcodeHandler', '{
     function handle(&$context, $args) {
+      if (!$context["E"]) {
+
+        // Search for end catch opcode
+        for ($i= $context["O"]->offset; $i < $context["O"]->size; $i++) {
+          if ("OP_END_CATCH" != $context["O"]->opcodes[$i][0]) continue;
+          $context["O"]->offset= $i- 1;
+          return;
+        }
+      }
+      
+      $context["symbols"][$args[1]]= &$context["E"];
+    }
+  }');
+  $handlers['OP_END_CATCH']= &newinstance('OpcodeHandler', '{
+    function handle(&$context, $args) {
+      $context["E"]= NULL;
     }
   }');
   $handlers['OP_THROW']= &newinstance('OpcodeHandler', '{
@@ -83,7 +100,8 @@
         if (!is($context["O"]->opcodes[$i][1][0], $exception)) continue;
         
         // We have found the correct opcode
-        $context["O"]->offset= $i;
+        $context["E"]= &$exception;
+        $context["O"]->offset= $i- 1;
         return;
       }
       
@@ -106,7 +124,9 @@
   $opcodes->add('OP_TRY', array());
   $opcodes->add('OP_THROW', array('lang.IllegalArgumentException'));
   $opcodes->add('OP_EXIT', array());  // Should not be executed
-  $opcodes->add('OP_CATCH', array('lang.IllegalArgumentException'));
+  $opcodes->add('OP_CATCH', array('lang.IllegalArgumentException', 'e'));
+  $opcodes->add('OP_PRINT', array('e'));
+  $opcodes->add('OP_END_CATCH', array());
   $opcodes->add('OP_PRINT', array('string'));
   // }}}
   
