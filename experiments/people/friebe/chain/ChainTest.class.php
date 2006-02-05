@@ -23,8 +23,19 @@
      * @access  public
      */
     #[@test]
-    function loggerCategory() {
+    function defaultLoggerCategory() {
       $cat= &chain(Logger::getInstance(), 'getCategory()');
+      $this->assertClass($cat, 'util.log.LogCategory');
+    }
+
+    /**
+     * Tests Logger::getInstance()->getCategory($this->getClassName());
+     *
+     * @access  public
+     */
+    #[@test]
+    function classLoggerCategory() {
+      $cat= &chain(Logger::getInstance(), 'getCategory(', $this->getClassName(), ')');
       $this->assertClass($cat, 'util.log.LogCategory');
     }
 
