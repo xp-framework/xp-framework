@@ -30,10 +30,36 @@ Functionality
 -------------
 The suggested functionality is divided into the following parts:
 <pre>
-1) Syntax changes
-2) ... TODO ...
+1) Execution changes
+2) Syntax changes
 </pre>
 
+1) Execution changes
+~~~~~~~~~~~~~~~~~~~~
+Scripts written in the XP language can no longer be run by PHP directly
+but will require a preprocessor (the JIT-compiler):
+
+Current:
+<pre>
+$ php script.php
+</pre>
+
+New:
+<pre>
+$ php -dauto_prepend_file=xp.php script.php
+</pre>
+
+Of course, an alias could be created, so one could type:
+<pre>
+$ xp script.php
+</pre>
+
+When PHP is executed from within a webserver, the auto_prepend_file could
+be set by the virtual host's configuration or per directory.
+
+
+2) Syntax changes
+~~~~~~~~~~~~~~~~~
 
 Namespaces
 ~~~~~~~~~~
