@@ -49,7 +49,7 @@
       $context["symbols"][$args[0]]= &$context["T"];
     }
   }');
-  $handlers['OP_PRINT']= &newinstance('OpcodeHandler', '{
+  $handlers['OP_PRINTLN']= &newinstance('OpcodeHandler', '{
     function handle(&$context, $args) {
       Console::writeLine(xp::stringOf($context["symbols"][$args[0]]));
     }
@@ -110,12 +110,28 @@
   }');
   $handlers['OP_EXIT']= &newinstance('OpcodeHandler', '{
     function handle(&$context, $args) {
-      exit();
+      exit(isset($args[0]) ? $args[0] : 0);
     }
   }');
   // }}}
   
   // {{{ opcodes
+  // Translated from:
+  //
+  // <code>
+  //   $date= new xp·util·Date();
+  //   $string= $date->toString();
+  //
+  //   try {
+  //     throw new xp·lang·IllegalArgumentException();
+  //     exit();  // Should not be executed
+  //   } catch (xp·lang·IllegalArgumentException $e) {
+  //     println $e;
+  //   }
+  //
+  //   println $string;
+  // </code>
+  
   $opcodes= &new OpcodeArray();
   $opcodes->add('OP_NEW', array('util.Date'));
   $opcodes->add('OP_ASSIGN', array('date'));
@@ -125,9 +141,9 @@
   $opcodes->add('OP_THROW', array('lang.IllegalArgumentException'));
   $opcodes->add('OP_EXIT', array());  // Should not be executed
   $opcodes->add('OP_CATCH', array('lang.IllegalArgumentException', 'e'));
-  $opcodes->add('OP_PRINT', array('e'));
+  $opcodes->add('OP_PRINTLN', array('e'));
   $opcodes->add('OP_END_CATCH', array());
-  $opcodes->add('OP_PRINT', array('string'));
+  $opcodes->add('OP_PRINTLN', array('string'));
   // }}}
   
   // {{{ execute
