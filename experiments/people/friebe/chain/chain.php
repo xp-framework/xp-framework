@@ -41,7 +41,7 @@
   try(); {
     chain(XPClass::forName('@@NOTEXISTANTCLASS@@'), 'newInstance()', 'toString()');
   } if (catch('lang.Throwable', $e)) {
-    echo '#2] Chain broken with ', $e->getMessage(), "\n";
+    echo '#2] Chain broken with ', $e->getClassName(), ': ', $e->getMessage(), "\n";
     $caught= TRUE;
   }
   if (!$caught) xp::error(xp::stringOf(new Error('#2] Chain continued!')));
@@ -50,8 +50,8 @@
   $caught= FALSE;
   try(); {
     chain($instance= NULL, 'newInstance()', 'toString()');
-  } if (catch('llang.NullPointerException', $e)) {
-    echo '#3] Chain broken with ', $e->getMessage(), "\n";
+  } if (catch('lang.NullPointerException', $e)) {
+    echo '#3] Chain broken with ', $e->getClassName(), ': ', $e->getMessage(), "\n";
     $caught= TRUE;
   }
   if (!$caught) xp::error(xp::stringOf(new Error('#3] Chain continued!')));
