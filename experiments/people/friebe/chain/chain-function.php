@@ -47,7 +47,6 @@
         }
 
         try(); {
-          // DEBUG print("Evaluating ".$eval.";\n");
           eval('$begin= &$begin->'.$arg.';');
         } if (catch('Throwable', $e)) {
           return throw($e);
