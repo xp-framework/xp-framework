@@ -12,31 +12,48 @@
     // Iterate over chain
     for ($i= 1; $i < func_num_args(); $i++) {
       
-      // Make sure $begin is an object
-      if (!is_object($begin)) {
-        return throw(new NullPointerException('Call to method '.func_get_arg($i).' on '.xp::typeOf($begin)));
-      }
-      
-      // Check what we're getting:
+      // Derive context
       $arg= func_get_arg($i);
-      if ('(' == $arg[strlen($arg) - 1]) {
-        // * Method call with argument: "getCategory(", $arg, ")"
-        $args= array();
-        $j= 0;
-        while (')' != func_get_arg(++$i)) {
-          $args[]= func_get_arg($i);
-          $arg.= '$args['.$j++.'], ';
-        }
-        $arg= substr($arg, 0, -2).')';
-      } else {
-        // * Method call without arguments: "toString()"
-      }
+      if (is_array($begin)) {
 
-      try(); {
-        // DEBUG print("Evaluating \$begin->".$arg.";\n");
-        eval('$begin= &$begin->'.$arg.';');
-      } if (catch('Throwable', $e)) {
-        return throw($e);
+        // Check what we're getting:
+        if ('[' == $arg{0} and ']' == $arg{strlen($arg) - 1}) {
+
+          // * Constant array offset: "[1]"
+          $key= substr($arg, 1, -1);
+        } else {
+        
+          // * Dynamic array offset: "[", $offset, "]"
+          $key= func_get_arg(++$i);
+          $i++;
+        }
+        $begin= &$begin[$key];
+      } else if (is_object($begin)) {
+
+        // Check what we're getting:
+        if ('(' == $arg[strlen($arg) - 1]) {
+
+          // * Method call with argument: "getCategory(", $arg, ")"
+          $args= array();
+          $j= 0;
+          while (')' != func_get_arg(++$i)) {
+            $args[]= func_get_arg($i);
+            $arg.= '$args['.$j++.'], ';
+          }
+          $arg= substr($arg, 0, -2).')';
+        } else {
+          // * Method call without arguments: "toString()" OR
+          // * Member read: "value"
+        }
+
+        try(); {
+          // DEBUG print("Evaluating ".$eval.";\n");
+          eval('$begin= &$begin->'.$arg.';');
+        } if (catch('Throwable', $e)) {
+          return throw($e);
+        }
+      } else {
+        return throw(new NullPointerException('Call to method '.$arg.' on '.xp::typeOf($begin)));
       }
     }
 
