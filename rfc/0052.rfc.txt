@@ -204,12 +204,7 @@ Method calls will be allowed to be chained as follows:
 ?>
 
 What happens technically:
-For PHP4, temporary variables are created as follows:
-<?php
-  $__chain1= &XPClass::forName('util.Date'); $date= &$__chain1->newInstance();
-?>
-For PHP5 and above, nothing needs to be done.
-
+See http://experiments.xp-framework.net/?people,friebe,chain
 
 For PHP4: Try/catch syntax
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
