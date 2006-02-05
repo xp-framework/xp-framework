@@ -6,6 +6,8 @@
   require('lang.base.php');
   xp::sapi('cli');
 
+  define('OUTPUT_FORMAT', '%3d [%-26s] "%s"');
+
   // {{{ main
   $p= &new ParamString();
   if (!$p->exists(1) || $p->exists('help', '?')) {
@@ -25,9 +27,9 @@ __
   $tokens= token_get_all('<?php '.trim($p->value(1)).' ?>');
   for ($i= 1, $s= sizeof($tokens); $i < $s - 2; $i++) {
     if (is_array($tokens[$i])) {
-      printf("%3d [%-26s] '%s'\n", $i, token_name($tokens[$i][0]), $tokens[$i][1]);
+      Console::writeLinef(OUTPUT_FORMAT, $i, token_name($tokens[$i][0]), $tokens[$i][1]);
     } else {
-      printf("%3d [%-26s] '%s'\n", $i, '', $tokens[$i]);
+      Console::writeLinef(OUTPUT_FORMAT, $i, '', $tokens[$i]);
     }
   }
   // }}}
