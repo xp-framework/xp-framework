@@ -12,6 +12,7 @@
    *   new Expectancy()->method('sayHello')->isInvoked(1)->with(array('World'));
    * </code>
    *
+   * @see      http://martinfowler.com/bliki/FluentInterface.html
    * @see      xp://ChainTest
    * @purpose  Utility class for testcase
    */
