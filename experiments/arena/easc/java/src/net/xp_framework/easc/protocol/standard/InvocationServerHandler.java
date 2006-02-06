@@ -9,8 +9,8 @@ import net.xp_framework.easc.protocol.standard.ServerHandler;
 import net.xp_framework.easc.server.ServerContext;
 import net.xp_framework.easc.protocol.standard.Serializer;
 import net.xp_framework.easc.protocol.standard.SerializerContext;
-
-import java.lang.reflect.Proxy;
+import javax.ejb.EJBHome;
+import javax.ejb.EJBObject;
 
 public class InvocationServerHandler extends ServerHandler {
     
@@ -24,11 +24,40 @@ public class InvocationServerHandler extends ServerHandler {
         Serializer.registerExceptionName(javax.naming.NameNotFoundException.class, "naming/NameNotFound");
         Serializer.registerExceptionName(java.lang.reflect.InvocationTargetException.class, "invoke/Exception");
 
-        Serializer.registerMapping(Proxy.class, new Invokeable<String, Proxy>() {
-            public String invoke(Proxy p, Object arg) throws Exception {
+        Serializer.registerMapping(EJBHome.class, new Invokeable<String, EJBHome>() {
+            public String invoke(EJBHome p, Object arg) throws Exception {
                 ctx.objects.put(p.hashCode(), p);
+                
+                // Find out the correct interface
+                Class ejbInterface= null;
+                for (Class iface: p.getClass().getInterfaces()) {
+                    if (EJBHome.class.isAssignableFrom(iface)) {
+                        ejbInterface= iface;
+                        break;
+                    }
+                }
+
                 return "I:" + p.hashCode() + ":{" + Serializer.representationOf(
-                    p.getClass().getInterfaces()[0].getName(),
+                    ejbInterface.getName(),
+                    (SerializerContext)arg
+                ) + "}";
+            }
+        });
+        Serializer.registerMapping(EJBObject.class, new Invokeable<String, EJBObject>() {
+            public String invoke(EJBObject p, Object arg) throws Exception {
+                ctx.objects.put(p.hashCode(), p);
+                
+                // Find out the correct interface
+                Class ejbInterface= null;
+                for (Class iface: p.getClass().getInterfaces()) {
+                    if (EJBObject.class.isAssignableFrom(iface)) {
+                        ejbInterface= iface;
+                        break;
+                    }
+                }
+
+                return "I:" + p.hashCode() + ":{" + Serializer.representationOf(
+                    ejbInterface.getName(),
                     (SerializerContext)arg
                 ) + "}";
             }
