@@ -8,6 +8,7 @@ package net.xp_framework.unittest;
 import org.junit.Test;
 import org.junit.Ignore;
 import net.xp_framework.unittest.Person;
+import net.xp_framework.unittest.Employee;
 import net.xp_framework.unittest.Item;
 import net.xp_framework.unittest.ITest;
 import net.xp_framework.unittest.NullInvocationHandler;
@@ -244,16 +245,30 @@ public class SerializerTest {
     }
 
     /**
-     * Tests serialization of a value object
+     * Tests serialization of a Person value object
      *
      * @see     net.xp_framework.unittest.Person
      * @access  public
      * @throws  java.lang.Exception
      */
-    @Test public void representationOfValueObject() throws Exception {
+    @Test public void representationOfPersonValueObject() throws Exception {
         assertEquals(
             "O:32:\"net.xp_framework.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}", 
             representationOf(new Person())
+        );
+    }
+
+    /**
+     * Tests serialization of an Employee value object
+     *
+     * @see     net.xp_framework.unittest.Employee
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOfEmployeeValueObject() throws Exception {
+        assertEquals(
+            "O:34:\"net.xp_framework.unittest.Employee\":3:{s:15:\"personellNumber\";i:1375;s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}", 
+            representationOf(new Employee(1375))
         );
     }
 
@@ -676,6 +691,20 @@ public class SerializerTest {
         assertEquals(
             new Person(), 
             valueOf("O:32:\"net.xp_framework.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}")
+        );
+    }
+
+    /**
+     * Tests deserialization an object (identified by "O" token)
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     * @see     net.xp_framework.unittest.Employee
+     */
+    @Test public void valueOfEmployeeObject() throws Exception {
+        assertEquals(
+            new Employee(1375), 
+            valueOf("O:34:\"net.xp_framework.unittest.Employee\":3:{s:15:\"personellNumber\";i:1375;s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}")
         );
     }
 
