@@ -5,16 +5,20 @@
 
 package net.xp_framework.easc.protocol.standard;
 
+import sun.reflect.ReflectionFactory;
+import java.security.AccessController;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.io.Serializable;
 import net.xp_framework.easc.protocol.standard.Handler;
 import net.xp_framework.easc.protocol.standard.Invokeable;
 import net.xp_framework.easc.protocol.standard.SerializationException;
@@ -51,6 +55,63 @@ public class Serializer {
         @Override public String toString() {
             return "Length(" + this.value + ")";
         }
+    }
+    
+    private static String getPackageName(Class cl) {
+        String s = cl.getName();
+        int i = s.lastIndexOf('[');
+        if (i >= 0) {
+            s = s.substring(i + 2);
+        }
+        i = s.lastIndexOf('.');
+        return (i >= 0) ? s.substring(0, i) : "";
+    }
+
+    private static boolean packageEquals(Class cl1, Class cl2) {
+        return (cl1.getClassLoader() == cl2.getClassLoader() &&
+                getPackageName(cl1).equals(getPackageName(cl2)));
+    }
+
+    private static Constructor getSerializableConstructor(Class cl) {
+        Class initCl= cl;
+
+        while (Serializable.class.isAssignableFrom(initCl)) {
+            if ((initCl = initCl.getSuperclass()) == null) {
+                return null;
+            }
+        }
+        try {
+            Constructor cons = initCl.getDeclaredConstructor(new Class[0]);
+            int mods = cons.getModifiers();
+            if ((mods & Modifier.PRIVATE) != 0 ||
+                ((mods & (Modifier.PUBLIC | Modifier.PROTECTED)) == 0 &&
+                 !packageEquals(cl, initCl)))
+            {
+                return null;
+            }
+            
+            ReflectionFactory reflFactory= (ReflectionFactory)AccessController.doPrivileged(
+                new ReflectionFactory.GetReflectionFactoryAction()
+            );
+
+            cons = reflFactory.newConstructorForSerialization(cl, cons);
+            cons.setAccessible(true);
+            return cons;
+        } catch (NoSuchMethodException ex) {
+            return null;
+        }
+    }
+
+    private static Field getFieldAddressOf(Class cl, String fieldName) throws NoSuchFieldException {
+        Class initCl= cl;
+
+        do {
+            for (Field f: cl.getDeclaredFields()) {
+                if (f.getName().equals(fieldName)) return f;
+            }
+        } while (null != (cl= cl.getSuperclass()));
+        
+        throw new NoSuchFieldException("Field " + fieldName + " not found in " + initCl.getName() + " (or any superclasses)");
     }
     
     private static enum Token {
@@ -170,14 +231,15 @@ public class Serializer {
                 }
                 
                 // Instanciate
-                instance= c.newInstance();
+                Constructor ctor= Serializer.getSerializableConstructor(c);
+                instance= (null == ctor) ? c.newInstance() : ctor.newInstance();
                 
                 String objectlength= serialized.substring(parsed+ offset+ 2, serialized.indexOf(':', parsed+ offset+ 2));
                 offset+= parsed+ 2 + objectlength.length() + 2;
                 
                 // Set field values
                 for (int i= 0; i < Integer.parseInt(objectlength); i++) {
-                    Field f= c.getDeclaredField((String)Serializer.valueOf(serialized.substring(offset), length, context, null));
+                    Field f= Serializer.getFieldAddressOf(c, (String)Serializer.valueOf(serialized.substring(offset), length, context, null));
                     offset+= length.value;
                     Object value= Serializer.valueOf(serialized.substring(offset), length, context, f.getType());
                     offset+= length.value;
@@ -330,10 +392,12 @@ public class Serializer {
     private static ArrayList<Field> classFields(Class c) {
         ArrayList<Field> list= new ArrayList<Field>();
         
-        for (Field f : c.getDeclaredFields()) {
-            if (Modifier.isTransient(f.getModifiers())) continue;
-            list.add(f);
-        }
+        do {
+            for (Field f : c.getDeclaredFields()) {
+                if (Modifier.isTransient(f.getModifiers())) continue;
+                list.add(f);
+            }
+        } while (null != (c= c.getSuperclass()));
         
         return list;
     }
@@ -341,7 +405,7 @@ public class Serializer {
     private static String representationOf(Object o, Invokeable i, SerializerContext context) throws Exception {
         if (null == o) return "N;";
 
-        if (!(o instanceof java.io.Serializable)) {
+        if (!(o instanceof Serializable)) {
             throw new SerializationException("Trying to serialize non-serializable object " + o + " via " + i);
         }
 
