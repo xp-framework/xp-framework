@@ -136,6 +136,16 @@
         'values'     => $values
       );
     }
+
+    /**
+     * Retrieve parameter names
+     *
+     * @access  public
+     * @return  string[]
+     */
+    function getParamNames() {
+      return array_keys($this->paraminfo);
+    }
     
     /**
      * Retrieve a value by its name
