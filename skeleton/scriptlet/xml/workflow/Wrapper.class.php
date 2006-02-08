@@ -8,6 +8,14 @@
   define('OCCURRENCE_OPTIONAL',     0x0001);
   define('OCCURRENCE_MULTIPLE',     0x0002);
   define('OCCURRENCE_PASSBEHIND',   0x0004);
+  
+  define('PARAM_OCCURRENCE', 'occurrence');
+  define('PARAM_DEFAULT',    'default');   
+  define('PARAM_PRECHECK',   'precheck');  
+  define('PARAM_CASTER',     'caster');    
+  define('PARAM_POSTCHECK',  'postcheck'); 
+  define('PARAM_TYPE',       'type');      
+  define('PARAM_VALUES',     'values');    
 
   /**
    * Wrapper
@@ -127,13 +135,13 @@
       $values= array()
     ) {
       $this->paraminfo[$name]= array(
-        'occurrence' => $occurrence,
-        'default'    => $default,
-        'precheck'   => $this->checkerInstanceFor($precheck),
-        'caster'     => $this->checkerInstanceFor($caster),
-        'postcheck'  => $this->checkerInstanceFor($postcheck),
-        'type'       => $type,
-        'values'     => $values
+        PARAM_OCCURRENCE => $occurrence,
+        PARAM_DEFAULT    => $default,
+        PARAM_PRECHECK   => $this->checkerInstanceFor($precheck),
+        PARAM_CASTER     => $this->checkerInstanceFor($caster),
+        PARAM_POSTCHECK  => $this->checkerInstanceFor($postcheck),
+        PARAM_TYPE       => $type,
+        PARAM_VALUES     => $values
       );
     }
 
@@ -145,6 +153,18 @@
      */
     function getParamNames() {
       return array_keys($this->paraminfo);
+    }
+
+    /**
+     * Retrieve parameter info
+     *
+     * @access  public
+     * @param   string name
+     * @param   string type one of of the PARAM_* constants
+     * @return  mixed
+     */
+    function getParamInfo($name, $type) {
+      return $this->paraminfo[$name][$type];
     }
     
     /**
@@ -171,7 +191,7 @@
 
         // Retrieve the parameter's value from the request (or from the
         // handler's values, if it is passed behind the scenes).
-        if ($definitions['occurrence'] & OCCURRENCE_PASSBEHIND) {
+        if ($definitions[PARAM_OCCURRENCE] & OCCURRENCE_PASSBEHIND) {
           $value= (array)$handler->getValue($name, '');
         } else {
           $value= (array)$request->getParam($name, '');
@@ -192,13 +212,13 @@
         // first element will be copied to the values hash, thus making 
         // accessibility easy.
         if (0 == strlen($value[key($value)])) {
-          if (!($definitions['occurrence'] & OCCURRENCE_OPTIONAL)) {
+          if (!($definitions[PARAM_OCCURRENCE] & OCCURRENCE_OPTIONAL)) {
             $handler->addError('missing', $name);
             continue;
           }
           
           // Set it to the default value
-          if ($definitions['default']) $value[key($value)]= $definitions['default'];
+          if ($definitions[PARAM_DEFAULT]) $value[key($value)]= $definitions[PARAM_DEFAULT];
         } else {
  
           // Run the precheck. This can be utilized for assertion-style checks
@@ -207,9 +227,9 @@
           // object as it doesn't even contain the "@".
           //
           // Pre- and postchecks return an error code or NULL if they are content
-          if ($definitions['precheck']) {
-            if (NULL !== ($code= call_user_func(array(&$definitions['precheck'], 'check'), $value))) {
-              $handler->addError($definitions['precheck']->getClassName().'.'.$code, $name);
+          if ($definitions[PARAM_PRECHECK]) {
+            if (NULL !== ($code= call_user_func(array(&$definitions[PARAM_PRECHECK], 'check'), $value))) {
+              $handler->addError($definitions[PARAM_PRECHECK]->getClassName().'.'.$code, $name);
               continue;
             }
           }
@@ -218,18 +238,18 @@
           // on it. The casters return an array in case it succeeds. Any other
           // type indicates an error and will be used as informational data
           // for the form error (an exception message, for instance).
-          if ($definitions['caster']) {
-            if (!is_array($value= call_user_func(array(&$definitions['caster'], 'castValue'), $value))) {
-              $handler->addError($definitions['caster']->getClassName().'.invalidcast', $name, $value);
+          if ($definitions[PARAM_CASTER]) {
+            if (!is_array($value= call_user_func(array(&$definitions[PARAM_CASTER], 'castValue'), $value))) {
+              $handler->addError($definitions[PARAM_CASTER]->getClassName().'.invalidcast', $name, $value);
               continue;
             }
           }
 
           // Now, run the postcheck. The postcheck receives the already casted
           // values.
-          if ($definitions['postcheck']) {
-            if (NULL !== ($code= call_user_func(array(&$definitions['postcheck'], 'check'), $value))) {
-              $handler->addError($definitions['postcheck']->getClassName().'.'.$code, $name);
+          if ($definitions[PARAM_POSTCHECK]) {
+            if (NULL !== ($code= call_user_func(array(&$definitions[PARAM_POSTCHECK], 'check'), $value))) {
+              $handler->addError($definitions[PARAM_POSTCHECK]->getClassName().'.'.$code, $name);
               continue;
             }
           }
@@ -237,7 +257,7 @@
         
         // If we get here, the parameter is validated. Copy the value into
         // the values hash which is publicly accessible.
-        if ($definitions['occurrence'] & OCCURRENCE_MULTIPLE) {
+        if ($definitions[PARAM_OCCURRENCE] & OCCURRENCE_MULTIPLE) {
           $this->values[$name]= $value;
         } elseif (isset($value[key($value)])) {
           $this->values[$name]= $value[key($value)];
