@@ -376,6 +376,7 @@ public class Serializer {
     
     public static Invokeable<?, ?> invokeableFor(Class c) {
         Invokeable<?, ?> i= null;
+        if (c.isInterface()) return null;
         if (null != (i= typeMap.get(c))) return i;    // Direct hit
         
         // Search for classes the specified class is assignable from
