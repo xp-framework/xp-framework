@@ -11,6 +11,8 @@ import org.jboss.metadata.BeanMetaData;
 import org.jboss.metadata.MetaData;
 import org.jboss.invocation.InvocationType;
 import org.jboss.deployment.SubDeployer;
+import org.jboss.ejb.EjbModule;
+import org.jboss.ejb.Container;
 
 import net.xp_framework.easc.server.ServerThread;
 import net.xp_framework.easc.server.ReflectionServerContext;
@@ -49,6 +51,7 @@ public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean
 
     private static final String LIST_DEPLOYED_APPLICATIONS = "listDeployedApplications";
     private static final String BEAN_METADATA_ATTRIBUTE = "BeanMetaData";
+    private static final String BEAN_EJBMODULE_ATTRIBUTE = "EjbModule";
     private static final String EJB_DEPLOYER_JMX_NAME = "jboss.ejb:service=EJBDeployer";
 
     // Set up mapping of MetaData => TransactionTypeDescription transaction types
@@ -154,6 +157,11 @@ public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean
                     // Ignore beans w/o remote interface
                     if (null == meta.getRemote()) continue;
 
+                    EjbModule module= (EjbModule)this.server.getAttribute(ejb, BEAN_EJBMODULE_ATTRIBUTE);
+                    ClassLoader loader= module.getContainer(meta.getEjbName()).getClassLoader();
+                    
+                    // DEBUG System.out.println("* " + ejb + " module " + module + " ejbname " + meta.getEjbName() + " container " + container + " loader " + loader);
+                    
                     BeanDescription description= new BeanDescription();
                     description.setJndiName(meta.getJndiName());
 
@@ -161,7 +169,7 @@ public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean
                         InterfaceDescription i= description.setInterfaceDescription(BeanDescription.HOME, new InterfaceDescription());
                         i.setClassName(meta.getHome());
 
-                        for (MethodDescription m: this.methodsOf(meta, Class.forName(meta.getHome()), InvocationType.HOME)) {
+                        for (MethodDescription m: this.methodsOf(meta, loader.loadClass(meta.getHome()), InvocationType.HOME)) {
                             i.addMethodDescription(m);
                         }
                     }                    
@@ -169,7 +177,7 @@ public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean
                     if (null != meta.getRemote()) {
                         InterfaceDescription i= description.setInterfaceDescription(BeanDescription.REMOTE, new InterfaceDescription());
                         i.setClassName(meta.getRemote());
-                        for (MethodDescription m: this.methodsOf(meta, Class.forName(meta.getRemote()), InvocationType.REMOTE)) {
+                        for (MethodDescription m: this.methodsOf(meta, loader.loadClass(meta.getRemote()), InvocationType.REMOTE)) {
                             i.addMethodDescription(m);
                         }
                     }
