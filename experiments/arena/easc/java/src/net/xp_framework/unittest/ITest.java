@@ -10,7 +10,7 @@ package net.xp_framework.unittest;
  *
  * @purpose Base for Proxy generator
  */
-public interface ITest {
+public interface ITest extends javax.ejb.EJBHome {
     public Object hello();
     public Object hello(String name);
 }
