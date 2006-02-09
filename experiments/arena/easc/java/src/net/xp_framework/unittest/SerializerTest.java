@@ -23,12 +23,14 @@ import java.util.ArrayList;
 import java.lang.reflect.Proxy;
 import java.sql.Timestamp;
 import java.security.Principal;
+import javax.ejb.EJBHome;
 
 import static org.junit.Assert.*;
 import static net.xp_framework.easc.protocol.standard.Serializer.invokeableFor;
 import static net.xp_framework.easc.protocol.standard.Serializer.representationOf;
 import static net.xp_framework.easc.protocol.standard.Serializer.valueOf;
 import static net.xp_framework.easc.protocol.standard.Serializer.registerMapping;
+import static net.xp_framework.easc.protocol.standard.Serializer.unregisterMapping;
 
 /**
  * Test the serialization / deserialization functionality
@@ -578,6 +580,34 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void representationOfInterface() throws Exception {
+        unregisterMapping(EJBHome.class);
+        assertEquals(
+            "C:31:\"net.xp_framework.unittest.ITest\";",
+            representationOf(ITest.class)
+        );
+    }
+
+    /**
+     * Tests serialization of the ITest interface
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test @Ignore("Causes InvocationTargetException") public void representationOfInterfaceWithSuperInterfaceRegistered() throws Exception {
+        registerMapping(EJBHome.class, new Invokeable<String, EJBHome>() {
+            public String invoke(EJBHome p, Object arg) throws Exception {
+                Class ejbInterface= null;
+                for (Class iface: p.getClass().getInterfaces()) {
+                    if (EJBHome.class.isAssignableFrom(iface)) {
+                        ejbInterface= iface;
+                        break;
+                    }
+                }
+
+                return "I:" + p.hashCode() + ":{" + representationOf(ejbInterface.getName()) + "}";
+            }
+        });
+
         assertEquals(
             "C:31:\"net.xp_framework.unittest.ITest\";",
             representationOf(ITest.class)
