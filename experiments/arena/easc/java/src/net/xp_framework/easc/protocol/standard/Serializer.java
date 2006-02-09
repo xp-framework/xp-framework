@@ -369,6 +369,10 @@ public class Serializer {
     public static void registerMapping(Class c, Invokeable<?, ?> i) {
         typeMap.put(c, i);
     }
+
+    public static void unregisterMapping(Class c) {
+        typeMap.remove(c);
+    }
     
     public static Invokeable<?, ?> invokeableFor(Class c) {
         Invokeable<?, ?> i= null;
