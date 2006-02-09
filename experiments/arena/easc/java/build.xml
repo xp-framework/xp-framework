@@ -30,6 +30,7 @@
     <pathelement path="${build.destdir}"/>
     <fileset dir="lib">
       <include name="junit.jar"/>
+      <include name="jboss-j2ee.jar"/>
     </fileset>
   </path>
   
