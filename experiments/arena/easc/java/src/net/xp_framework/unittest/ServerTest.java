@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Date;
 import java.lang.reflect.Proxy;
@@ -84,7 +85,7 @@ public class ServerTest {
         ctx.bind("test/PersonObject", new Person());
         ctx.bind("test/Interface", Proxy.newProxyInstance(
             ITest.class.getClassLoader(),
-            new Class[] { ITest.class },
+            new Class[] { ITest.class, Serializable.class },
             new DebugInvocationHandler()
         ));
         
