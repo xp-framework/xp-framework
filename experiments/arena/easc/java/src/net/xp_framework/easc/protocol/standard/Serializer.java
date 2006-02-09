@@ -394,7 +394,8 @@ public class Serializer {
         
         do {
             for (Field f : c.getDeclaredFields()) {
-                if (Modifier.isTransient(f.getModifiers())) continue;
+                int modifiers= f.getModifiers();
+                if (Modifier.isTransient(modifiers) || Modifier.isStatic(modifiers)) continue;
                 list.add(f);
             }
         } while (null != (c= c.getSuperclass()));
@@ -408,6 +409,8 @@ public class Serializer {
         if (!(o instanceof Serializable)) {
             throw new SerializationException("Trying to serialize non-serializable object " + o + " via " + i);
         }
+        
+        // System.out.println("Serializing " + o.getClass().getName());
 
         if (i != null) return (String)i.invoke(o, context);
 
@@ -417,6 +420,8 @@ public class Serializer {
         long numFields = 0;
 
         for (Field f : classFields(c)) {
+
+            // DEBUG System.out.println(">> field " + f);
             buffer.append("s:");
             buffer.append(f.getName().length());
             buffer.append(":\"");
