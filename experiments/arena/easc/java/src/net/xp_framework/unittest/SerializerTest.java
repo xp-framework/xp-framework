@@ -593,7 +593,7 @@ public class SerializerTest {
      * @access  public
      * @throws  java.lang.Exception
      */
-    @Test @Ignore("Causes InvocationTargetException") public void representationOfInterfaceWithSuperInterfaceRegistered() throws Exception {
+    @Test public void representationOfInterfaceWithSuperInterfaceRegistered() throws Exception {
         registerMapping(EJBHome.class, new Invokeable<String, EJBHome>() {
             public String invoke(EJBHome p, Object arg) throws Exception {
                 Class ejbInterface= null;
