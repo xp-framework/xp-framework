@@ -26,39 +26,88 @@ The PHP function var_export() can cause fatal errors in certain situations:
 
 Functionality
 -------------
-Here's the concrete implementation:
-<?php
-  // {{{ public string stringOf(&mixed arg [, bool callToString= TRUE])
-  //     Returns a string representation of the given argument
-  function stringOf(&$arg, $callToString= TRUE) {
-    if (is_string($arg)) {
-      return '"'.$arg.'"';
-    } else if (is_bool($arg)) {
-      return $arg ? 'true' : 'false';
-    } else if (is_null($arg) || is_a($arg, 'null')) {
-      return 'null';
-    } else if (is_int($arg) || is_float($arg)) {
-      return (string)$arg;
-    } else if (is_a($arg, 'Object') && $callToString) {
-      return $arg->toString();
-    } else if (is_array($arg)) {
-      $r= "[\n";
-      foreach (array_keys($arg) as $key) {
-        $r.= '  '.$key.' => '.xp::stringOf($arg[$key])."\n";
-      }
-      return $r.']';
-    } else if (is_object($arg)) {
-      $r= xp::nameOf(get_class($arg))." {\n";
-      foreach (array_keys(get_object_vars($arg)) as $key) {
-        $r.= '  '.$key.' => '.xp::stringOf($arg->{$key})."\n";
-      }
-      return $r.'}';
-    } else if (is_resource($arg)) {
-      return 'resource(type= '.get_resource_type($arg).', id='.(int)$arg.')';
-    }
+The xp::stringOf() utility will return a string representation of a given
+argument depending on its type:
+
+Strings
+~~~~~~~
+The value is returned with enclosing double quotes:
+<pre>
+  "String"
+</pre>
+
+Booleans
+~~~~~~~~
+The value returned represents the two states of a boolean, TRUE and FALSE,
+as follows:
+<pre>
+  true
+  false
+</pre>
+
+Null and xp::null()
+~~~~~~~~~~~~~~~~~~~
+The representation of both of these null references is always:
+<pre>
+  null
+</pre>
+
+Numerics
+~~~~~~~~
+For both int and float values, the PHP string representation of these is
+returned:
+<pre>
+  1.4
+  -1.2
+  -10
+  6100
+</pre>
+
+Objects
+~~~~~~~
+An instance of any class extending lang.Object will have its toString()
+method called. The results therefore depend on the implementation.
+
+In case the optional callToString argument is set to default, the
+representation will be the same as for any other object (e.g. stdClass).
+The member variables are printed directly whereas the values 
+associated with them are printed using xp::stringOf():
+<pre>
+  fully.qualified.ClassName {
+    __id => "0.82536100 1139511047"
+    value => "String"
+    length => 6
+    offset => 1
   }
-  // }}}
-?>
+</pre>
+
+Arrays
+~~~~~~
+An array is represented by its key/value pairs. As there is no way to
+separated "numeric arrays" [ 1, 2, 3] from hashmaps [ a => b, b => c ]
+all arrays are treated as hashmaps, its keys being directly printed,
+its values applied via xp::stringOf():
+<pre>
+  [
+    0 => 1
+    1 => 2
+    2 => 3
+  ]
+  
+  [
+    foo => "bar"
+    bar => 2,
+    baz => TestString(6) { String }
+  ]
+</pre>
+
+Resources
+~~~~~~~~~
+A resource is represented by its type and id:
+<pre>
+  resource(type= stream, id= 24)
+</pre>
+
 
 Security considerations
 -----------------------
