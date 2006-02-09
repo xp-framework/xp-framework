@@ -572,6 +572,19 @@ public class SerializerTest {
     }
 
     /**
+     * Tests serialization of the ITest interface
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void representationOfInterface() throws Exception {
+        assertEquals(
+            "C:31:\"net.xp_framework.unittest.ITest\";",
+            representationOf(ITest.class)
+        );
+    }
+
+    /**
      * Tests deserialization of null (identified by "N" token)
      *
      * @access  public
