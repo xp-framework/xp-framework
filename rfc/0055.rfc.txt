@@ -1,0 +1,56 @@
+RFC 0055: Make xp::stringOf() fatal error safe
+========================================================================
+$Id$
+
+@authors: friebe, muc
+@created: Thu Feb  9 19:05:34 CET 2006
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+The xp::stringOf() core utility will be rewritten no longer to use 
+var_export().
+
+
+Rationale
+---------
+The PHP function var_export() can cause fatal errors in certain situations:
+<pre>
+  Fatal error: var_export(): Cannot use output buffering in output
+  buffering display handlers
+  in [...]/skeleton/util/log/LogAppender.class.php
+  on line 41
+</pre>
+
+
+Functionality
+-------------
+TBD
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slower, because userland code will be used.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+n/a
+
+<EOF>
