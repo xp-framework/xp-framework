@@ -126,8 +126,11 @@ n/a
 
 Related documents
 -----------------
-n/a
+- http://xp-framework.net/downloads/rfc0055.diff
+  Patch against lang.base.php
 
+- http://xp-framework.net/downloads/StringOfTest.class.phps
+  Testcase
 
 Comments
 --------
