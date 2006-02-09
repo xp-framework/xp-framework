@@ -5,12 +5,14 @@
 
 package net.xp_framework.unittest;
 
+import javax.ejb.EJBHome;
+
 /**
  * Test interface
  *
  * @purpose Base for Proxy generator
  */
-public interface ITest extends javax.ejb.EJBHome {
+public interface ITest extends EJBHome {
     public Object hello();
     public Object hello(String name);
 }
