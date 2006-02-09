@@ -41,7 +41,9 @@ __
   if ($p->exists('bean')) {
     Console::writeLine(xp::stringOf($services->bean($p->value('bean'))));
   } else {
-    foreach ($services->beans() as $description) {
+    $beans= $services->beans();
+    Console::writeLinef('# Beans found= %d', $beans);
+    foreach ($beans as $description) {
       Console::writeLine(xp::stringOf($description));
     }
   }
