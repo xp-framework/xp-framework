@@ -193,21 +193,19 @@
       }
       
       // DEBUG Console::writeLine('<<<', xp::stringOf($header));
-      
       if (DEFAULT_PROTOCOL_MAGIC_NUMBER != $header['magic']) {
         $this->_sock->close();
         return throw(new Error('Magic number mismatch (have: '.$header['magic'].' expect: '.DEFAULT_PROTOCOL_MAGIC_NUMBER));
       }
-      
-      // DEBUG Console::writeLine('<<<', addcslashes($data, "\0..\37!@\177..\377"));
-
-      $ctx= array('handler' => &$this);
 
       // Perform actions based on response type
+      $ctx= array('handler' => &$this);
       try(); {
         switch ($header['type']) {
           case REMOTE_MSG_VALUE:
-            return Serializer::valueOf(ByteCountedString::readFrom($this->_sock), $length= 0, $ctx);
+            $data= &ByteCountedString::readFrom($this->_sock);
+            // Console::writeLine('<<<', addcslashes($data, "\0..\37!@\177..\377"));
+            return Serializer::valueOf($data, $length= 0, $ctx);
 
           case REMOTE_MSG_EXCEPTION:
             $reference= &Serializer::valueOf(ByteCountedString::readFrom($this->_sock), $length= 0, $ctx);
