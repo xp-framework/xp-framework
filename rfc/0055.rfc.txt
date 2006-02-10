@@ -126,11 +126,48 @@ n/a
 
 Related documents
 -----------------
+
+Implementation
+~~~~~~~~~~~~~~
 - http://xp-framework.net/downloads/rfc0055.diff
   Patch against lang.base.php
 
 - http://xp-framework.net/downloads/StringOfTest.class.phps
   Testcase
+
+Places where var_export() is used
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<pre>
+   # classname
+  -- ------------------------------------------------
+   3 text.parser.DaemonMailParser
+   3 com.google.soap.search.GoogleSearchResult
+   2 xml.soap.interop.Round2BaseClient
+   2 xml.soap.SOAPMessage
+   2 net.xp_framework.webservices.interop.Round2Handler
+   2 com.microsoft.format.chm.CHMFile
+   1 xml.uddi.BusinessList
+   1 xml.soap.SOAPFaultException
+   1 xml.soap.Parameter
+   1 xml.XMLFormatException
+   1 util.log.LogCategory
+   1 util.log.LogAppender
+   1 util.Hashmap
+   1 text.StringUtil
+   1 text.PHPTokenizer
+   1 security.cert.X509Certificate
+   1 rdbms.Peer
+   1 rdbms.DataSet
+   1 rdbms.DBEvent
+   1 peer.sieve.SieveClient
+   1 peer.mail.Message
+   1 peer.irc.IRCConnection
+   1 org.htdig.HtdigResultset
+   1 org.htdig.HtdigEntry
+   1 org.gnu.readline.ReadLine
+   1 lang.Thread
+   1 lang.Object
+</pre>
 
 Comments
 --------
