@@ -12,8 +12,7 @@
    */
   class ClassReference extends Object {
     var 
-      $classname = '',
-      $fields    = array();
+      $classname = '';
 
     /**
      * Constructor
