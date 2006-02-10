@@ -25,6 +25,16 @@
     }
 
     /**
+     * Returns number of beans
+     *
+     * @access  public
+     * @return  int
+     */
+    function size() {
+      return sizeof($this->beans);
+    }
+
+    /**
      * Retrieve a single bean
      *
      * @access  public
