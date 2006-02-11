@@ -37,6 +37,17 @@ public class DescriptionList implements Serializable {
     public void add(String name, BeanDescription description) {
         this.copy.put(name, description);
     }
+
+    /**
+     * Get a description for a specified name
+     * 
+     * @access  public
+     * @param   java.lang.String name
+     * @return  net.xp_framework.easc.reflect.BeanDescription description
+     */
+    public BeanDescription of(String name) {
+        return this.beans.get(name);
+    }
     
     /**
      * Creates a string representation of this object
