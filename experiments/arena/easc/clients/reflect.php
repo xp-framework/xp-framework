@@ -32,20 +32,21 @@ __
   
   try(); {
     $remote= &Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6449).'/');
-    $remote && $services= &$remote->lookup('Services');
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
     exit(-1);
   }
 
   if ($p->exists('bean')) {
-    Console::writeLine(xp::stringOf($services->bean($p->value('bean'))));
+    $bean= &$remote->lookup('Services:'.$p->value('bean'));
+    Console::writeLine(xp::stringOf($bean));
   } else {
-    $beans= $services->beans();
-    Console::writeLinef('# Beans found= %d', $beans);
-    foreach ($beans as $description) {
+    $services= &$remote->lookup('Services');
+    Console::writeLinef('# Beans found= %d', $services->size());
+    foreach ($services->beans() as $description) {
       Console::writeLine(xp::stringOf($description));
     }
   }
+  
   // }}}
 ?>
