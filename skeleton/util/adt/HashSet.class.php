@@ -110,7 +110,7 @@
      * @return  lang.Object[] objects
      */
     function toArray() { 
-      return array_values($this->_elements[$h]);
+      return array_values($this->_elements);
     }
 
   } implements(__FILE__, 'util.adt.Set');
