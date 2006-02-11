@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.adt.HashSet');
+
   /**
    * Describes an EJB interface
    *
@@ -53,6 +55,20 @@
      */
     function getMethods() {
       return $this->methods;
+    }
+
+    /**
+     * Retrieve a set of classes used in this interface
+     *
+     * @access  public
+     * @return  remote.ClassReference[]
+     */
+    function classSet() {
+      $set= &new HashSet(); 
+      for ($i= 0, $s= sizeof($this->methods); $i < $s; $i++) {
+        $set->addAll($this->methods[$i]->classSet()); 
+      }
+      return $set->toArray();
     }
 
     /**

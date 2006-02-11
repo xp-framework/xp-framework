@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.adt.HashSet');
+
   define('TX_NOT_SUPPORTED',  0);
   define('TX_REQUIRED',       1);
   define('TX_SUPPORTS',       2);
@@ -135,6 +137,21 @@
      */
     function typeString($arg) {
       return NULL === $arg ? 'void' : (is_a($arg, 'ClassReference') ? $arg->referencedName() : $arg);
+    }
+
+    /**
+     * Retrieve a set of classes used in this interface
+     *
+     * @access  public
+     * @return  remote.ClassReference[]
+     */
+    function classSet() {
+      $set= &new HashSet(); 
+      if (is_a($this->returnType, 'ClassReference')) $set->add($this->returnType);
+      for ($i= 0, $s= sizeof($this->parameterTypes); $i < $s; $i++) {
+        if (is_a($this->parameterTypes[$i], 'ClassReference')) $set->add($this->parameterTypes[$i]);
+      }
+      return $set->toArray();
     }
     
     /**
