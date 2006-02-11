@@ -44,5 +44,15 @@
     function &referencedClass($cl= NULL) {
       return XPClass::forName($this->classname, $cl);
     }
+
+    /**
+     * Returns the hash code for this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function hashCode() {
+      return md5($this->classname);
+    }
   }
 ?>
