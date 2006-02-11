@@ -394,7 +394,7 @@ public class Serializer {
         return null;
     }
 
-    private static ArrayList<Field> classFields(Class c) {
+    public static ArrayList<Field> classFields(Class c) {
         ArrayList<Field> list= new ArrayList<Field>();
         
         do {
@@ -710,7 +710,6 @@ public class Serializer {
         }
         
         // Fall back to generic class representation
-        context.addClass(c);
         return "C:" + c.getName().length() + ":\"" + c.getName() + "\";";
     }
         
