@@ -93,7 +93,7 @@
      */
     function addAll($objects) { 
       $result= FALSE;
-      for ($i= 0; $s= sizeof($objects); $i < $s; $i++) {
+      for ($i= 0, $s= sizeof($objects); $i < $s; $i++) {
         $h= $object[$i]->hashCode();
         if (isset($this->_elements[$h])) continue;
         
