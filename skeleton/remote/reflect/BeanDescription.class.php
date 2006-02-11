@@ -42,7 +42,7 @@
      * Set Interfaces
      *
      * @access  public
-     * @param   mixed[] interfaces
+     * @param   remote.reflect.InterfaceDescription[] interfaces
      */
     function setInterfaces($interfaces) {
       $this->interfaces= $interfaces;
@@ -52,7 +52,7 @@
      * Get Interfaces
      *
      * @access  public
-     * @return  mixed[]
+     * @return  remote.reflect.InterfaceDescription[]
      */
     function getInterfaces() {
       return $this->interfaces;
