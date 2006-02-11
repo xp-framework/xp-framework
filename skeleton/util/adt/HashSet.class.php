@@ -94,11 +94,11 @@
     function addAll($objects) { 
       $result= FALSE;
       for ($i= 0, $s= sizeof($objects); $i < $s; $i++) {
-        $h= $object[$i]->hashCode();
+        $h= $objects[$i]->hashCode();
         if (isset($this->_elements[$h])) continue;
         
         $result= TRUE;
-        $this->_elements[$h]= &$object;
+        $this->_elements[$h]= &$objects[$i];
       }
       return $result;
     }
