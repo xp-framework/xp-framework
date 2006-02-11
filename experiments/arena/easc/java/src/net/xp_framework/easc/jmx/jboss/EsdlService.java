@@ -164,6 +164,7 @@ public class EsdlService extends ServiceMBeanSupport implements EsdlServiceMBean
                     
                     BeanDescription description= new BeanDescription();
                     description.setJndiName(meta.getJndiName());
+                    description.setClassLoader(loader);
 
                     if (null != meta.getHome()) {
                         InterfaceDescription i= description.setInterfaceDescription(BeanDescription.HOME, new InterfaceDescription());
