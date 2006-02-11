@@ -16,7 +16,8 @@ import java.io.Serializable;
 public class BeanDescription implements Serializable {
     public String jndiName;
     public InterfaceDescription[] interfaces= new InterfaceDescription[2];
-    
+
+    public transient ClassLoader classLoader= null;
     public transient static final byte HOME   = 0;
     public transient static final byte REMOTE = 1;
     
@@ -38,6 +39,26 @@ public class BeanDescription implements Serializable {
      */
     public void setJndiName(String jndiName) {
         this.jndiName= jndiName;
+    }
+
+    /**
+     * Get ClassLoader
+     *
+     * @access  public
+     * @return  java.lang.ClassLoader
+     */
+    public ClassLoader getClassLoader() {
+        return this.classLoader;
+    }
+    
+    /**
+     * Set ClassLoader
+     *
+     * @access  public
+     * @param   java.lang.ClassLoader classLoader
+     */
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader= classLoader;
     }
     
     /**
