@@ -63,7 +63,7 @@
       ));
       
       $this->_conn->request->setHeader('Content-Type', 'text/xml; charset='.$message->getEncoding());
-      $this->_conn->request->setHeader('User-Agent', 'XP Framework XML-RPC CLient (http://xp-framework.net)');
+      $this->_conn->request->setHeader('User-Agent', 'XP Framework XML-RPC Client (http://xp-framework.net)');
 
       // Add custom headers
       $this->_conn->request->addHeaders($this->_headers);
