@@ -1,0 +1,88 @@
+I<?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+  uses(
+    'scriptlet.xml.workflow.checkers.ParamChecker',
+    'text.parser.DateParser'
+  );
+
+  /**
+   * Checks whether given values are within an date range
+   *
+   * Error codes returned are:
+   * <ul>
+   *   <li>tooearly - if the given value exceeds the lower boundary</li>
+   *   <li>toolate - if the given value exceeds the upper boundary</li>
+   * </ul>
+   *
+   * @purpose  Checker
+   */
+  class DateRangeChecker extends ParamChecker {
+    var
+      $minValue  = NULL,
+      $maxValue  = NULL;
+    
+    /**
+     * Constructor
+     *
+     * For both min and max values, accepts one of the following:
+     * <ul>
+     *   <li>The special value "__FUTURE__" - the date must be in the future</li>
+     *   <li>The special value "__UNLIMITED__" - no limit</li>
+     *   <li>Anything parseable by DateParser</li>
+     * </ul>
+     *
+     * @access  public
+     * @param   string min
+     * @param   string max
+     */
+    function __construct($min, $max) {
+      $this->minValue= &$this->parseDate($min);
+      $this->maxValue= &$this->parseDate($max);
+    }
+    
+    /**
+     * Helper method
+     *
+     * @access  protected
+     * @param   string input
+     * @return  &util.Date
+     */
+    function &parseDate($input) {
+      switch ($input) {
+        case '__FUTURE__': 
+          $r= &Date::now(); 
+          break;
+
+        case '__UNLIMITED__': 
+          $r= NULL;
+          break;
+        
+        default:
+          $r= &DateParser::parse($input);
+      }
+      
+      return $r;
+    }
+    
+    /**
+     * Check a given value
+     *
+     * @access  public
+     * @param   array value
+     * @return  string error or NULL on success
+     */
+    function check($value) {
+      foreach ($value as $v) {
+        if ($this->minValue && $v->isBefore($this->minValue)) {
+          return 'tooearly';
+        } elseif ($this->maxValue && $v->isAfter($this->maxValue)) {
+          return 'toolate';
+        }
+      }    
+    }
+  }
+?>
