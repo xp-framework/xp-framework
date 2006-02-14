@@ -89,17 +89,17 @@ __
   
   try(); {
     $remote= &Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6449).'/');
-    $remote && $services= &$remote->lookup('Services');
+    $remote && $description= &$remote->lookup('Services:'.$p->value(2));
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
     exit(-1);
   }
   
-  if (!($description= &$services->bean($p->value(2)))) {
+  if (!$description) {
     Console::writeLine('Bean '.$p->value(2).' not found');
     exit(1);
   }
-  
+
   $path= $p->value('output', 'o', SKELETON_PATH);
   $showXml= $p->exists('xml');
   writeTo(
