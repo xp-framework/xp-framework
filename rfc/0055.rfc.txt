@@ -180,4 +180,22 @@ Comments
   I'd vote for removing the $callToString parameter and have toString()
   called always - keeping current behavior.
 
+- friebe, Wed Feb 15 17:38:53 CET 2006
+  The $callToString argument was added to endless prevent recursion in 
+  the following case:
+<?php
+  class FooBar extends Object {
+    function toString() {
+      return xp::stringOf($this);
+    }
+  }
+  
+  echo xp::stringOf(new FooBar());
+?>
+
+- friebe, Wed Feb 15 17:40:09 CET 2006
+  The function is generally not recursion-protected, 
+  xp::stringOf($GLOBALS) will lead to an endless loop.
+  
+
 <EOF>
