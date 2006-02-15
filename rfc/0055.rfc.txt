@@ -171,6 +171,13 @@ Places where var_export() is used
 
 Comments
 --------
-n/a
+- kiesel, Wed Feb 15 12:33:34 CET 2006
+  I think null and xp::null should be distinguishable as they do not
+  behave the same way
+
+- kiesel, Wed Feb 15 12:34:47 CET 2006
+  Changing the signature of the xp::stringOf() method is not preferrable. 
+  I'd vote for removing the $callToString parameter and have toString()
+  called always - keeping current behavior.
 
 <EOF>
