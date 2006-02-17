@@ -172,7 +172,10 @@
      * @return  bool success
      */
     function close() {
-      return $this->isConnected() ? ldap_unbind($this->_hdl) : TRUE;
+      if (!$this->isConnected()) return TRUE;
+      
+      ldap_unbind($this->_hdl);
+      $this->_hdl= NULL;
     }
     
     /**
