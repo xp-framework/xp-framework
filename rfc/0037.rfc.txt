@@ -18,16 +18,14 @@ Avoid name clashes.
 
 Functionality
 -------------
-A class declares being within a package by setting the variable $package
-and by supplying its classname in fully-qualified notation, using the 
-middle dot (·) as separator.
+A class declares being within a package by calling package().
 
 Example (Declaration)
 ~~~~~~~~~~~~~~~~~~~~~
 <?php
   uses('util.Date');
 
-  $package= 'info.binford6100';
+  package(__FILE__, 'info.binford6100');
 
   class info·binford6100·Date extends Date {
   
@@ -118,5 +116,8 @@ Comments
   Revamped lang.base.php and lang/ClassLoader.class.php committed to 
   experiments/people/friebe/rfc0037. All tests in util/test/core.ini
   pass.
+
+- friebe, Mon Feb 20 13:05:21 CET 2006
+  New patch available at above location. Also passes all tests.
 
 <EOF>
