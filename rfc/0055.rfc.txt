@@ -196,6 +196,14 @@ Comments
 - friebe, Wed Feb 15 17:40:09 CET 2006
   The function is generally not recursion-protected, 
   xp::stringOf($GLOBALS) will lead to an endless loop.
-  
+
+- kiesel, Mon Feb 20 11:48:25 CET 2006
+  xp::stringOf() should not be able (allowed) to introspect an objects
+  internal structure - this is a violation to the member access rules.
+  Instead it should only call toString(), which in return does not rely
+  on xp::stringOf() knowing anything about it. It is responsible for
+  converting its own representation to a string. xp::stringOf may be used 
+  within toString() for non-object values.
+
 
 <EOF>
