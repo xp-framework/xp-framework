@@ -205,5 +205,10 @@ Comments
   converting its own representation to a string. xp::stringOf may be used 
   within toString() for non-object values.
 
+- friebe, Mon Feb 20 13:01:51 CET 2006
+  I think it should be able to find out about private and protected 
+  members just like var_export() and var_dump() in PHP 5 are able to.
+  xp::stringOf() is intended to be an alternative to the above 
+  functions.
 
 <EOF>
