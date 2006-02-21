@@ -107,7 +107,7 @@
             //   is passed the node's tag name if no "pass" key is available.
             //   In case it is, call the factory method with the arguments 
             //   constructed from the "pass" key.
-            if ($method->getAnnotation('xmlmapping', 'pass')) {
+            if ($method->hasAnnotation('xmlmapping', 'pass')) {
               $factoryArgs= array();
               foreach ($method->getAnnotation('xmlmapping', 'pass') as $pass) {
                 $factoryArgs[]= Unmarshaller::contentOf($xpath->query($pass, $node));
