@@ -211,4 +211,7 @@ Comments
   xp::stringOf() is intended to be an alternative to the above 
   functions.
 
+- friebe, Tue Feb 21 12:16:39 CET 2006
+  Recursion-protection patch and adjusted testcase available at above
+  locations.
 <EOF>
