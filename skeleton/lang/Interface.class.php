@@ -17,7 +17,7 @@
      * @access  private
      */
     function Interface() {
-      xp::error('Interfaces cannot be instantiated');
+      xp::error('Interfaces cannot be instantiated ('.get_class($this).')');
     }
   }
 ?>
