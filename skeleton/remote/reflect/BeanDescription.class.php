@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.adt.HashSet');
+
   define('HOME_INTERFACE',    0);
   define('REMOTE_INTERFACE',  1);
 
@@ -56,6 +58,20 @@
      */
     function getInterfaces() {
       return $this->interfaces;
+    }
+    
+    /**
+     * Return a unique list of all classes used in this bean's interfaces
+     *
+     * @access  public
+     * @return  remote.ClassReference[]
+     */
+    function classSet() {
+      $set= &new HashSet();
+      foreach (array_keys($this->interfaces) as $kind) {
+        $set->addAll($this->interfaces[$kind]->classSet());
+      }
+      return $set->toArray();
     }
 
     /**
