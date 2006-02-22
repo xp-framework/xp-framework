@@ -9,10 +9,11 @@
   /**
    * Internet address
    *
-   * @see      http://www.cs.tut.fi/~jkorpela/rfc/822addr.html
-   * @see      rfc://2822
-   * @see      rfc://2822#3.4.1
-   * @purpose  Wrap
+   * @test      xp://net.xp-framework.unittest.peer.InternetAddressTest
+   * @see       http://www.cs.tut.fi/~jkorpela/rfc/822addr.html
+   * @see       rfc://2822
+   * @see       rfc://2822#3.4.1
+   * @purpose   Represents an Internet address
    */
   class InternetAddress extends Object {
     var 
