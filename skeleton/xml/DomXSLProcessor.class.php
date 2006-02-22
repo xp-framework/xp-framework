@@ -37,7 +37,8 @@
       $output       = '';
 
     var
-      $_base        = '';
+      $_base        = '',
+      $_errors      = array();
       
     /**
      * Constructor
@@ -143,6 +144,17 @@
     function setParam($name, $val) {
       $this->params[$name]= $val;
     }
+    
+    /**
+     * Retrieve XSL transformation parameter
+     *
+     * @access  public
+     * @param   string name
+     * @return  string value
+     */
+    function getParam($name) {
+      return $this->params[$name];
+    }    
 
     /**
      * Error handler callback
@@ -155,12 +167,13 @@
      * @see     php://set_error_handler
      */
     function _traperror($code, $msg, $file, $line) {
-      if (in_array(strtok($msg, ':'), array(
+      @list($method, $message)= explode(':', trim($msg), 2);
+      if (in_array($method, array(
         'domxml_xslt_stylesheet()', 
         'domxml_xslt_stylesheet_file()',
         'process()',
       ))) {
-        $this->_errors[]= trim(strtok("\r\n"));
+        $message && $this->_errors[]= trim($message);
         return;
       }
 
@@ -174,7 +187,7 @@
      * @return  string[]
      */
     function getMessages() {
-      return $this->errors;
+      return $this->_errors;
     }
 
     /**
@@ -249,5 +262,5 @@
       }}
       $this->document= NULL;
     }
-  }
+  } implements(__FILE__, 'xml.IXSLProcessor');
 ?>

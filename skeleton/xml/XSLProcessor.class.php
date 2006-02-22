@@ -171,6 +171,17 @@
     }
     
     /**
+     * Retrieve XSL transformation parameter
+     *
+     * @access  public
+     * @param   string name
+     * @return  string value
+     */
+    function getParam($name) {
+      return $this->params[$name];
+    }    
+
+    /**
      * Set XSL transformation parameter
      *
      * @access  public
@@ -231,5 +242,5 @@
         $this->processor= NULL;
       }
     }
-  }
+  } implements(__FILE__, 'xml.IXSLProcessor');
 ?>
