@@ -160,11 +160,21 @@
         'domxml_xslt_stylesheet_file()',
         'process()',
       ))) {
-        $this->_errors[]= strtok("\r\n");
+        $this->_errors[]= trim(strtok("\r\n"));
         return;
       }
 
       __error($code, $msg, $file, $line);
+    }
+    
+    /**
+     * Retrieve messages generate during processing.
+     *
+     * @access  public
+     * @return  string[]
+     */
+    function getMessages() {
+      return $this->errors;
     }
 
     /**

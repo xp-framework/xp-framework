@@ -76,6 +76,16 @@
     }
 
     /**
+     * Retrieve messages generate during processing.
+     *
+     * @access  public
+     * @return  string[]
+     */
+    function getMessages() {
+      return array();   // TBI
+    }
+
+    /**
      * Set a scheme handler
      *
      * @access  public
