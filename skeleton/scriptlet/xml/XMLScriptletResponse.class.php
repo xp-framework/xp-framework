@@ -38,13 +38,33 @@
      * Constructor
      *
      * @access  public
-     * @param   &xml.XSLProcessor processor
+     * @param   xml.XSLProcessor processor
      */
-    function __construct(&$processor) {
+    function __construct($processor= NULL) {
       $this->processor= &$processor;
       $this->document= &new OutputDocument();
     }
-    
+
+    /**
+     * Set Processor
+     *
+     * @access  public
+     * @param   &xml.IXSLProcessor processor
+     */
+    function setProcessor(&$processor) {
+      $this->processor= &$processor;
+    }
+
+    /**
+     * Get Processor
+     *
+     * @access  public
+     * @return  &xml.IXSLProcessor processor
+     */
+    function &getProcessor() {
+      return $this->processor;
+    }
+
     /**
      * Set whether this document needs to be processed
      *
@@ -298,6 +318,7 @@
       }
       
       $this->content= &$this->processor->output();
+      
       return TRUE;
     }
     
