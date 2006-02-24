@@ -159,6 +159,11 @@ __
   
   // Create all classes
   foreach (classSetOf($jndi, $remote, $description->classSet()) as $classwrapper) {
+    if ((
+      $classwrapper->getName() == $description->interfaces[HOME_INTERFACE]->getClassName() ||
+      $classwrapper->getName() == $description->interfaces[REMOTE_INTERFACE]->getClassName()
+    )) continue;
+
     try(); {
       writeTo(
         $path, 
