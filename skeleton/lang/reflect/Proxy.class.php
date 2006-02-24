@@ -68,21 +68,21 @@
         
         // Implement all the interface's methods
         for ($i= 0, $methods= $if->getMethods(), $s= sizeof($methods); $i < $s; $i++) {
-        
+
           // Build signature and argument list
           if ($methods[$i]->hasAnnotation('overloaded')) {
             $signatures= $methods[$i]->getAnnotation('overloaded', 'signatures');
             $max= 0;
             $cases= array();
             foreach ($signatures as $signature) {
-              $s= sizeof($signature);
-              $max= max($max, $s- 1);
-              if (isset($cases[$s])) continue;
+              $args= sizeof($signature);
+              $max= max($max, $args- 1);
+              if (isset($cases[$args])) continue;
               
               $cases[$s]= (
-                'case '.$s.': '.
+                'case '.$args.': '.
                 'return $this->_h->invoke($this, \''.$methods[$i]->getName(TRUE).'\', array('.
-                ($s ? '$_'.implode(', $_', range(0, $s- 1)) : '').'));'
+                ($args ? '$_'.implode(', $_', range(0, $args- 1)) : '').'));'
               );
             }
 
