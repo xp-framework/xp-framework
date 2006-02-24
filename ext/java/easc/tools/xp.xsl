@@ -137,6 +137,64 @@
       <xsl:with-param name="interface" select="interfaces/interface[2]"/>
     </xsl:call-template>
   </xsl:template>
+
+  <xsl:template match="class">
+    <xsl:text><![CDATA[<?php
+/* This file is part of the XP framework
+ *
+ * $Id]]>&#36;<![CDATA[
+ */
+
+  /**
+   * Generated class
+   *
+   * @purpose  Wrapper class
+   */
+  class ]]></xsl:text><xsl:value-of select="func:shortname(@name)"/><xsl:text><![CDATA[ extends Object {
+    var
+]]></xsl:text>
+
+    <!-- Member variable declarations -->
+    <xsl:for-each select="field">
+      <xsl:value-of select="concat('      $', @name)"/>
+      <xsl:if test="position() &lt; last()">,&#10;</xsl:if>
+    </xsl:for-each>
+    <xsl:text>;&#10;</xsl:text>
+
+    <!-- Create getters and setters -->
+    <xsl:for-each select="field">
+      <xsl:text>
+    /**
+     * Retrieves </xsl:text><xsl:value-of select="@name"/><xsl:text>
+     *
+     * @access  public
+     * @return  </xsl:text><xsl:if test="contains(@type, '.')">&amp;</xsl:if><xsl:value-of select="@type"/><xsl:text>
+     */
+    function </xsl:text>
+    <xsl:if test="contains(@type, '.')">&amp;</xsl:if>
+    <xsl:text>get</xsl:text><xsl:value-of select="func:ucfirst(@name)"/><xsl:text>() {
+      return $this-></xsl:text><xsl:value-of select="@name"/><xsl:text>;
+    }
+      </xsl:text>
+    
+      <xsl:text>
+    /**
+     * Sets </xsl:text><xsl:value-of select="@name"/><xsl:text>
+     *
+     * @access  public
+     * @param   </xsl:text><xsl:if test="contains(@type, '.')">&amp;</xsl:if><xsl:value-of select="concat(@type, ' ', @name)"/><xsl:text>
+     */
+    function set</xsl:text><xsl:value-of select="func:ucfirst(@name)"/>
+      <xsl:text>(</xsl:text><xsl:if test="contains(@type, '.')">&amp;</xsl:if>$<xsl:value-of select="@name"/><xsl:text>) {
+      $this-></xsl:text><xsl:value-of select="@name"/>= <xsl:if test="contains(@type, '.')">&amp;</xsl:if>$<xsl:value-of select="@name"/><xsl:text>;
+    }&#10;</xsl:text>
+  </xsl:for-each>
+  
+  <!-- Close class declaration -->
+<xsl:text><![CDATA[
+  }
+?>]]></xsl:text>
+  </xsl:template>
   
   <xsl:template match="/">
     <xsl:apply-templates/>
