@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('util.adt.HashSet');
+
   /**
    * Describes a class 
    *
@@ -14,6 +16,32 @@
     var 
       $className   = '',
       $fields      = array(); 
+
+    /**
+     * Retrieve a set of classes used in this interface
+     *
+     * @access  public
+     * @return  remote.ClassReference[]
+     */
+    function classSet() {
+      $set= &new HashSet();
+      foreach (array_keys($this->fields) as $name) {
+        if (!is_a($this->fields[$name], 'ClassReference')) continue;
+        
+        $set->add($this->fields[$name]);
+      }
+      return $set->toArray();
+    }
+
+    /**
+     * Get ClassName
+     *
+     * @access  public
+     * @return  string
+     */
+    function getName() {
+      return $this->className;
+    }
 
     /**
      * Creates a string representation of this object
