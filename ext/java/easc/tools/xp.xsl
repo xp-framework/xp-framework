@@ -46,6 +46,22 @@
     </func:result>
   </func:function>  
 
+  <!--
+   ! Function that returns a type name
+   !
+   ! @param   node-set node
+   ! @return  string
+   !-->
+  <func:function name="func:typeOf">
+    <xsl:param name="node"/>
+    <func:result>
+      <xsl:choose>
+        <xsl:when test="exsl:node-set($node)/classname"><xsl:value-of select="exsl:node-set($node)/classname"/></xsl:when>
+        <xsl:otherwise><xsl:value-of select="exsl:node-set($node)/text()"/></xsl:otherwise>
+      </xsl:choose>
+    </func:result>
+  </func:function>  
+
   <xsl:template name="interface">
     <xsl:param name="description"/>
     <xsl:param name="interface"/>
@@ -80,10 +96,10 @@
 ]]></xsl:text>
           <xsl:for-each select="$methods[1]/parameterTypes/parameterType">
             <xsl:text>     * @param   </xsl:text>
-            <xsl:value-of select="concat(., ' arg', position())"/>
+            <xsl:value-of select="concat(func:typeOf(.), ' arg', position())"/>
             <xsl:text>&#10;</xsl:text>
           </xsl:for-each>
-          <xsl:text><![CDATA[     * @return  ]]></xsl:text><xsl:value-of select="$methods[1]/returnType"/><xsl:text><![CDATA[
+          <xsl:text><![CDATA[     * @return  ]]></xsl:text><xsl:value-of select="func:typeOf($methods[1]/returnType)"/><xsl:text><![CDATA[
      */
     function ]]></xsl:text><xsl:value-of select="$name"/><xsl:text>(</xsl:text>
           <xsl:for-each select="$methods[1]/parameterTypes/parameterType">
@@ -107,7 +123,7 @@
         <xsl:for-each select="$methods">
           <xsl:text>    #  array('</xsl:text>
           <xsl:for-each select="parameterTypes/parameterType">
-            <xsl:value-of select="."/>
+            <xsl:value-of select="func:typeOf(.)"/>
             <xsl:if test="position() &lt; last()">', '</xsl:if>
           </xsl:for-each>
           <xsl:text>')</xsl:text>
