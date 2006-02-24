@@ -72,16 +72,20 @@
       DIRECTORY_SEPARATOR.
       strtr($classname, '.', DIRECTORY_SEPARATOR).'.class.php'
     );
-    Console::writeLine('---> ', $classname);
-    try(); {
-      $dir= &new Folder($file->getPath());
-      if (!$dir->exists()) $dir->create();
+    if ($file->exists()) {
+      Console::writeLine('---> Class ', $classname, ' already exists, skipping');
+    } else {
+      Console::writeLine('---> Generating ', $classname);
+      try(); {
+        $dir= &new Folder($file->getPath());
+        if (!$dir->exists()) $dir->create();
 
-      $file->open(FILE_MODE_WRITE);
-      $file->write($source);
-      $file->close();
-    } if (catch('io.IOException', $e)) {
-      return throw($e);
+        $file->open(FILE_MODE_WRITE);
+        $file->write($source);
+        $file->close();
+      } if (catch('io.IOException', $e)) {
+        return throw($e);
+      }
     }
     
     Console::writeLine('     >> ', str_replace(dirname(__FILE__), '.', $file->getURI()));
