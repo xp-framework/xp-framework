@@ -92,20 +92,21 @@
   }
   // }}}
   
-  // {{{ void createClasses(string jndi, &lang.ClassLoader cl, &remote.Remote remote, &remote.reflect.ClassReference[] set)
+  // {{{ void createClasses(string jndi, &remote.Remote remote, &remote.reflect.ClassReference[] set)
   //     Create classes
-  function classSetOf($jndi, &$cl, &$remote, &$references) {
+  function classSetOf($jndi, &$remote, &$references) {
     $set= &new HashSet();
     foreach ($references as $classref) {
       try(); {
         $class= &$remote->lookup('Class:'.$jndi.':'.$classref->referencedName());
       } if (catch('Exception', $e)) {
         Console::writeLine('*** ', $classref->referencedName(), ' ~ ', $e->toString());
+        xp::gc();
         continue;
       }
       
       $set->add($class);
-      $set->addAll(classSetOf($jndi, $cl, $remote, $class->classSet()));
+      $set->addAll(classSetOf($jndi, $remote, $class->classSet()));
     }
 
     return $set->toArray();
@@ -157,7 +158,7 @@ __
   $showXml= $p->exists('xml');
   
   // Create all classes
-  foreach (classSetOf($jndi, ClassLoader::getDefault(), $remote, $description->classSet()) as $classwrapper) {
+  foreach (classSetOf($jndi, $remote, $description->classSet()) as $classwrapper) {
     try(); {
       writeTo(
         $path, 
