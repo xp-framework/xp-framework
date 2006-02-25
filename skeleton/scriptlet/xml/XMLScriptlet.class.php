@@ -40,11 +40,11 @@
    *   __query     the query string
    * </pre>
    * 
-   * @see      xp://scriptlet.xml.XMLSriptletRequest
-   * @see      xp://scriptlet.xml.XMLSriptletResponse
-   * @see      xp://scriptlet.xml.XMLSriptletResponse#addFormValue
-   * @see      xp://scriptlet.xml.XMLSriptletResponse#addFormError
-   * @see      xp://scriptlet.xml.XMLSriptletResponse#addFormResult
+   * @see      xp://scriptlet.xml.XMLScriptletRequest
+   * @see      xp://scriptlet.xml.XMLScriptletResponse
+   * @see      xp://scriptlet.xml.XMLScriptletResponse#addFormValue
+   * @see      xp://scriptlet.xml.XMLScriptletResponse#addFormError
+   * @see      xp://scriptlet.xml.XMLScriptletResponse#addFormResult
    * @purpose  Base class for websites using XML/XSL to render their output
    */
   class XMLScriptlet extends HttpScriptlet {
