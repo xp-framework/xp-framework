@@ -86,7 +86,7 @@
           $entry,
           xp::stringOf($date)
         );
-        $entries[$date->toString('YmdHis').basename($entry)]= basename($entry, '.dat');
+        $entries[$date->toString('YmdHis-').basename($entry)]= basename($entry, '.dat');
         delete($data);
       }
       $this->folder->close();
