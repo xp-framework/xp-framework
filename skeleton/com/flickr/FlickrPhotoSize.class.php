@@ -124,5 +124,20 @@
     function &getSource() {
       return $this->source;
     }
+
+    /**
+     * Builds the string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return sprintf('%s (%dx%d) @ %s',
+        $this->label,
+        $this->width,
+        $this->height,
+        $this->source->getURL()
+      );
+    }
   }
 ?>

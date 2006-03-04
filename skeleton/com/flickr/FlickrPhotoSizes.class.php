@@ -37,10 +37,6 @@
      * @param   &com.flickr.xmlrpc.FlickrClient client
      */
     function setClient(&$client) {
-      for ($i= 0; $i < $this->sizes->size(); $i++) {
-        $s= &$this->sizes->get($i);
-        $s->setClient($client);
-      }
     }
       
     /**

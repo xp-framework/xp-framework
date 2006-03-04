@@ -243,7 +243,7 @@
         
         $s.= sprintf('  [%10s] %s', $key, $value)."\n";
       }
-      return $s."}\n";
+      return $s.'}';
     }    
   }
 ?>
