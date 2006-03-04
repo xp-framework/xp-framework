@@ -10,18 +10,17 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Container with all sizes of a picture.
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://com.flickr.FlickrPhotoSize
+   * @purpose  Container
    */
   class FlickrPhotoSizes extends Object {
     var
       $sizes  = NULL;
-      
+    
     /**
-     * (Insert method's description here)
+     * Constructor
      *
      * @access  
      * @param   
@@ -32,11 +31,23 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Set Client
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &com.flickr.xmlrpc.FlickrClient client
+     */
+    function setClient(&$client) {
+      for ($i= 0; $i < $this->sizes->size(); $i++) {
+        $s= &$this->sizes->get($i);
+        $s->setClient($client);
+      }
+    }
+      
+    /**
+     * Add new size
+     *
+     * @access  public
+     * @param   &lang.Object size
      */
     #[@xmlmapping(element= 'size', class= 'com.flickr.FlickrPhotoSize')]
     function addSize(&$size) {

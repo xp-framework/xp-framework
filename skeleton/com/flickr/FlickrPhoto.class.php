@@ -19,6 +19,19 @@
       $isPublic = TRUE,
       $isFriend = TRUE,
       $isFamily = TRUE;
+    
+    var
+      $_client   = NULL;
+
+    /**
+     * Set Client
+     *
+     * @access  public
+     * @param   &com.flickr.xmlrpc.FlickrClient client
+     */
+    function setClient(&$client) {
+      $this->_client= &$client;
+    }
 
     /**
      * Set Id
@@ -206,16 +219,31 @@
     /**
      * Fetch available sizes of this picture
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  com.flickr.FlicksPhotoSizes
      */
-    function getSizes(&$client) {
-      return $client->invokeExpecting(
+    function getSizes() {
+      return $this->_client->invokeExpecting(
         'flickr.photos.getSizes',
         array('photo_id'  => $this->getId()),
         'com.flickr.FlickrPhotoSizes'
       );
+    }
+    
+    /**
+     * Builds the string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      $s= $this->getClassName().'@('.$this->__id.") {\n";
+      foreach (get_object_vars($this) as $key => $value) {
+        if ('_' == $key{0}) continue;
+        
+        $s.= sprintf('  [%10s] %s', $key, $value)."\n";
+      }
+      return $s."}\n";
     }    
   }
 ?>

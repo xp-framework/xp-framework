@@ -7,11 +7,10 @@
   uses('peer.URL');
 
   /**
-   * (Insert class' description here)
+   * Class containing information about sizes
+   * of a FlickrPhoto
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Represent dimension information
    */
   class FlickrPhotoSize extends Object {
     var
@@ -20,6 +19,7 @@
       $height   = 0,
       $url      = NULL,
       $source   = NULL;
+
     /**
      * Set Label
      *

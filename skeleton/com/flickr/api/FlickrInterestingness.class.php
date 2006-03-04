@@ -35,7 +35,7 @@
       $extras || $extras= 'license,date_upload,date_taken,owner_name,icon_server,original_format,last_update';
       $arguments['extras']= $extras;
       
-      return $client->invokeExpecting(
+      return $this->client->invokeExpecting(
         'flickr.interestingness.getList', 
         $arguments,
         'com.flickr.FlickrPhotoCollection'

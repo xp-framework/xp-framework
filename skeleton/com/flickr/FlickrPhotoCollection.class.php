@@ -21,7 +21,23 @@
       $pages    = 1,
       $perPage  = 1,
       $total    = 1;
+    
+    var
+      $_client   = NULL;
 
+    /**
+     * Set Client
+     *
+     * @access  public
+     * @param   &com.flickr.xmlrpc.FlickrClient client
+     */
+    function setClient(&$client) {
+      $this->_client= &$client;
+      for ($i= 0; $i < $this->photos->size(); $i++) {
+        $p= &$this->photos->get($i);
+        $p->setClient($client);
+      }
+    }
 
     /**
      * Constructor
