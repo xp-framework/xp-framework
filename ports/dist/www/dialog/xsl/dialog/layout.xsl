@@ -32,7 +32,6 @@
 
             switch (event.keyCode) {
               case 37:  // Left arrow
-              case 8:   // Backspace
                 if (
                   (element= document.getElementById('previous')) &&
                   (element.href)
@@ -43,7 +42,6 @@
                 break;
               
               case 39:  // Right arrow
-              case 32:  // Space
                 if (
                   (element= document.getElementById('next')) &&
                   (element.href)
