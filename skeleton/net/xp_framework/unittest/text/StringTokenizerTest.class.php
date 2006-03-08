@@ -68,6 +68,7 @@
       $this->assertEquals(' ', $t->nextToken());
       $this->assertEquals("\n", $t->nextToken());
       $this->assertEquals('World!', $t->nextToken());
+      $this->assertFalse($t->hasMoreTokens());
     }
   }
 ?>
