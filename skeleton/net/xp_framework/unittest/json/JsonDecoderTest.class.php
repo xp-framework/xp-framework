@@ -95,7 +95,7 @@
      * @access  public
      */
     #[@test]
-    function enocdeObject() {
+    function encodeObject() {
       $this->assertEquals(
         '{ "foo" : "bar" , "bar" : "baz" }',
         $this->decoder->encode((object)array('foo' => 'bar', 'bar' => 'baz'))
@@ -224,5 +224,23 @@
         $this->decoder->decode('[ { "foo" : 1 } , { "bar" : "baz" } ]')
       );
     }
+    
+    /**
+     * Test nested object decoding
+     *
+     * @access  public
+     */
+    #[@test]
+    function decodeNestedObject() {
+      $stdclass1= &new StdClass();
+      $stdclass2= &new StdClass();
+      $stdclass2->foo= "bar";
+      $stdclass1->ref= $stdclass2;
+      
+      $this->assertEquals(
+        $stdclass1,
+        $this->decoder->decode('{ "ref" : { "foo" : "bar" } }')
+      );
+    }  
   }
 ?>
