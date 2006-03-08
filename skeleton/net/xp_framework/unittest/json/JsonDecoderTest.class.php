@@ -95,11 +95,134 @@
      * @access  public
      */
     #[@test]
-    function testObject() {
+    function enocdeObject() {
       $this->assertEquals(
         '{ "foo" : "bar" , "bar" : "baz" }',
         $this->decoder->encode((object)array('foo' => 'bar', 'bar' => 'baz'))
       );
-    }    
+    }
+    
+    /**
+     * Test array decoding
+     *
+     * @access  public
+     */
+    #[@test]
+    function decodeArray() {
+      $this->assertEquals(
+        array(TRUE, FALSE, NULL),
+        $this->decoder->decode('[ true , false, null ]')
+      );
+    }
+    
+    /**
+     * Test string decoding
+     *
+     * @access  public
+     */
+    #[@test]
+    function decodeString() {
+      $this->assertEquals(
+        'foobar',
+        $this->decoder->decode('"foobar"')
+      );
+      $this->assertEquals(
+        'foo\\bar',
+        $this->decoder->decode('"foo\\\\bar"')
+      );
+      $this->assertEquals(
+        'foo"bar',
+        $this->decoder->decode('"foo\\"bar"')
+      );
+      $this->assertEquals(
+        'foobar\"',
+        $this->decoder->decode('"foobar\\\\\""')
+      );
+      $this->assertEquals(
+        "foobar\t",
+        $this->decoder->decode('"foobar\\t"')
+      );
+      $this->assertEquals(
+        'foobar'."\t".'\"',
+        $this->decoder->decode('"foobar\\t\\\\\""')
+      );
+    }
+    
+    /**
+     * Test number decoding
+     *
+     * @access  public
+     */
+    #[@test]
+    function decodeNumber() {
+      $this->assertEquals(
+        1,
+        $this->decoder->decode('1')
+      );
+      $this->assertEquals(
+        1.1,
+        $this->decoder->decode('1.1')
+      );
+      $this->assertEquals(
+        -1.1,
+        $this->decoder->decode('-1.1')
+      );
+      $this->assertEquals(
+        0.1,
+        $this->decoder->decode('1E-1')
+      );
+      $this->assertEquals(
+        -0.1,
+        $this->decoder->decode('-1E-1')
+      );
+    }
+    
+    /**
+     * Test string array decoding
+     *
+     * @access  public
+     */
+    #[@test]
+    function decodeStringArray() {
+      $this->assertEquals(
+        array('foo', 'bar'),
+        $this->decoder->decode('[ "foo" , "bar" ]')
+      );
+    }
+    
+    /**
+     * Test object decoding
+     *
+     * @access  public
+     */
+    #[@test]
+    function decodeObject() {
+      $expect= &new StdClass();
+      $expect->foo= "bar";
+      $expect->bar= "baz";
+      $this->assertEquals(
+        $expect,
+        $this->decoder->decode('{ "foo" : "bar", "bar" : "baz" }')
+      );
+    }
+    
+    /**
+     * Test object array decoding
+     *
+     * @access  public
+     */
+    #[@test]
+    function decodeObjectArray() {
+      $stdclass1= &new StdClass();
+      $stdclass1->foo= 1;
+      
+      $stdclass2= &new StdClass();
+      $stdclass2->bar= 'baz';
+      
+      $this->assertEquals(
+        array($stdclass1, $stdclass2),
+        $this->decoder->decode('[ { "foo" : 1 } , { "bar" : "baz" } ]')
+      );
+    }
   }
 ?>
