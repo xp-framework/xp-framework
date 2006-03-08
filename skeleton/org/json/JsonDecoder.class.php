@@ -4,8 +4,9 @@
  * $Id$ 
  */
  
-  uses('text.StringTokenizer');
+  uses('io.Stream', 'text.StringTokenizer', 'org.json.JsonException');
 
+  // Defines for the tokenizer
   define('JSON_TOKEN_LBRACE',     0x0000);
   define('JSON_TOKEN_RBRACE',     0x0001);
   define('JSON_TOKEN_LBRACKET',   0x0002);
@@ -17,11 +18,15 @@
   /**
    * JSON decoder and encoder
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      http://json.org
+   * @purpose  JSON en- and decoder
    */
   class JsonDecoder extends Object {
+    var
+      $stream     = NULL;
+    
+    var
+      $_tokenValue  = NULL;
   
     /**
      * Encode PHP data into 
@@ -29,10 +34,11 @@
      * @access  public
      * @param   mixed data
      * @return  string
+     * @throws  org.json.JsonException if the data could not be serialized
      */
     function encode($data) {
       static $controlChars= array(
-        '"' => '\\"', 
+        '"'   => '\\"', 
         '\\'  => '\\\\', 
         '/'   => '\\/', 
         "\b"  => '\\b',
@@ -77,7 +83,7 @@
         }
         
         default: {
-          return throw(new IllegalArgumentException('Cannot encode data of type '.gettype($data)));
+          return throw(new JsonException('Cannot encode data of type '.gettype($data)));
         }
       }
     }
@@ -150,11 +156,13 @@
         $token= $this->_getNextToken();
         switch ($token) {
           case JSON_TOKEN_LBRACKET: {
-            $array[]= $this->_decodeArray();
+            $obj->{$key}= $this->_decodeArray();
+            unset($key);
             break;
           }
           case JSON_TOKEN_LBRACE: {
-            $array[]= $this->_decodeObject();
+            $obj->{$key}= $this->_decodeObject();
+            unset($key);
             break;
           }
           case JSON_TOKEN_VALUE: {
@@ -259,6 +267,7 @@
      *
      * @access  protected
      * @return  string
+     * @throws  org.json.JsonException if the string could not be parsed
      */
     function _readString() {
       do {
@@ -306,6 +315,7 @@
           }
         }
       } while (!$this->stream->eof());
+      return throw(new JsonException('String not well-formed.'));
     }
     
     /**

@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('org.json.JsonDecoder');
+
   /**
    * Json decoder factory. Use this class to get instances
    * of decoders.
