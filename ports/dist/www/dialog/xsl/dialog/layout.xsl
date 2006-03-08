@@ -26,6 +26,7 @@
           <xsl:value-of select="/formresult/config/title"/>
         </title>
         <link rel="stylesheet" href="/{/formresult/config/style}.css"/>
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss/"/>
         <script language="JavaScript"><![CDATA[
           function handleKey(event) {
             if (event.ctrlKey || event.altKey || event.shiftKey) return false;
