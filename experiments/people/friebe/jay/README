@@ -1,0 +1,33 @@
+JAY compiler generator experiment
+========================================================================
+$Id$
+
+
+What's this?
+------------
+Here's an overview.
+* phpJay: Compiler generator
+* compile.php: Compiler and executor
+* XP2.jay: Grammar
+* test.php: Testfile for compiler
+
+
+Getting started
+---------------
+* Compile phpJay using "make"
+* Run "/bin/sh generate_parser.sh"
+* Run "php compile.php test.php"
+
+
+Related information
+-------------------
+* http://www.informatik.uni-osnabrueck.de/alumni/bernd/jay/
+  Yacc for Java
+
+* http://akbkhome.com/svn/BinaryPHP/
+  Inspirational material
+
+* http://cvs.phpdoc.org/browse.php/phpJay/
+  PHPJay
+
+<EOF>
