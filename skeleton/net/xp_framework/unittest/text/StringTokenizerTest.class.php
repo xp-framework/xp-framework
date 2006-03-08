@@ -63,6 +63,20 @@
      */
     #[@test]
     function repetetiveDelimiters() {
+      $t= &new StringTokenizer("Hello \nWorld!", " \n");
+      $this->assertEquals('Hello', $t->nextToken());
+      $this->assertEquals('', $t->nextToken());
+      $this->assertEquals('World!', $t->nextToken());
+      $this->assertFalse($t->hasMoreTokens());
+    }
+
+    /**
+     * Test string tokenizing
+     *
+     * @access  public
+     */
+    #[@test]
+    function repetetiveDelimitersWithDelims() {
       $t= &new StringTokenizer("Hello \nWorld!", " \n", TRUE);
       $this->assertEquals('Hello', $t->nextToken());
       $this->assertEquals(' ', $t->nextToken());
