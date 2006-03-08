@@ -26,7 +26,8 @@
    *   - example
    * </pre>
    *
-   * @see php://strtok
+   * @test  xp://net.xp_framework.unittest.text.StringTokenizerTest
+   * @see   php://strtok
    */
   class StringTokenizer extends Object {
     var 
@@ -71,7 +72,7 @@
     function nextToken($delimiters= NULL) {
       if (empty($this->_stack)) {
         $offset= strcspn($this->_str, $delimiters ? $delimiters : $this->delimiters);
-        $this->_stack[]= substr($this->_str, 0, $offset);
+        if (!$this->returnDelims || $offset > 0) $this->_stack[]= substr($this->_str, 0, $offset);
         if ($this->returnDelims && $offset < strlen($this->_str)) {
           $this->_stack[]= $this->_str{$offset};
         }
