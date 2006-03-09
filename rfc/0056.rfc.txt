@@ -1,0 +1,61 @@
+RFC 0056: Grand unified RPC api
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Thu Mar  9 13:22:00 CET 2006
+@status: draft
+@category: scriptlet
+
+Scope of Change
+---------------
+Change all known RPC apis to be based on a common structure.
+
+Rationale
+---------
+All apis are influenced by each other, all looking pretty similar, 
+with some differences only in details related to the underlying 
+protocol.
+
+With a common base hierarchy, all apis could be shrinked, only protocol 
+specifics would remain. This would make developing new apis easier and
+remove "code duplication" code smell.
+
+Functionality
+-------------
+A base package scriptlet.rpc would be introduced, containing the
+following classes:
+ * class AbstractRpcRouter
+ * class AbstractRpcRequest
+ * class AbstractRpcResponse
+ * interface AbstractRpcMessage
+
+APIs to migrate to this new base are:
+ * xml.soap.rpc
+ * xml.xmlrpc.rpc
+ * org.json.rpc (does not yet exist)
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+n/a
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+n/a
+
+Comments
+--------
+- kiesel, Thu Mar  9 13:30:10 CET 2006
+  We should probably begin creating this API when creating the new
+  JsonRpc package.
+
+
+<EOF>
