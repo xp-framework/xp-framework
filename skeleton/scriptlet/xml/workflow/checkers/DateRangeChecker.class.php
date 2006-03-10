@@ -6,7 +6,8 @@
 
   uses(
     'scriptlet.xml.workflow.checkers.ParamChecker',
-    'text.parser.DateParser'
+    'text.parser.DateParser',
+    'util.DateUtil'
   );
 
   /**
@@ -30,6 +31,7 @@
      *
      * For both min and max values, accepts one of the following:
      * <ul>
+     *   <li>The special value "__NOW__" - the date must be today</li>
      *   <li>The special value "__FUTURE__" - the date must be in the future</li>
      *   <li>The special value "__UNLIMITED__" - no limit</li>
      *   <li>Anything parseable by DateParser</li>
@@ -40,8 +42,8 @@
      * @param   string max
      */
     function __construct($min, $max) {
-      $this->minValue= &$this->parseDate($min);
-      $this->maxValue= &$this->parseDate($max);
+      $this->minValue= &$this->parseDate($min, TRUE);
+      $this->maxValue= &$this->parseDate($max, FALSE);
     }
     
     /**
@@ -49,10 +51,19 @@
      *
      * @access  protected
      * @param   string input
+     * @param   bool lower whether this is the lower boundary
      * @return  &util.Date
      */
-    function &parseDate($input) {
+    function &parseDate($input, $lower) {
       switch ($input) {
+        case '__NOW__': 
+          if ($lower) {
+            $r= &DateUtil::getMidnight(new Date('now'));
+          } else {
+            $r= &DateUtil::getMidnight(new Date('tomorrow'));
+          }
+          break;
+
         case '__FUTURE__': 
           $r= &Date::now(); 
           break;
