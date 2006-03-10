@@ -110,23 +110,24 @@
   define('DATALOCATION',  $prop->readString('data', 'location', dirname(__FILE__).'/../../data/'));
   
   // Load index of first two pages
+  $index= array();
   try(); {
-    $index= getIndexFor(0);
-    $entries= $index['entries'];
+    $index[0]= getIndexFor(0);
+    $index[0] && $entries= $index[0]['entries'];
   } if (catch('IOException', $e)) {
     echo $e->getMessage();
     exit(1);
   }
-  
+
   try(); {
-    $index= getIndexFor(1);
-    $index && $entries= array_merge($entries, $index['entries']);
+    $index[1]= getIndexFor(1);
+    $index[1] && $entries= array_merge($entries, $index[1]['entries']);
   } if (catch('IOException', $ignored)) {
   }
 
   // Find date of newest entry
-  $lastChange= Date::now();
-  $entry= &getEntryFor(current($index['entries']));
+  $lastChange= &Date::now();
+  $entry= &getEntryFor(current($index[0]['entries']));
   $lastChange= &$entry->getDate();
   
   $rdf= &new RDFNewsFeed();
