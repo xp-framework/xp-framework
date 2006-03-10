@@ -89,7 +89,7 @@
      * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
-     * @param   &scriptlet.xml.Context context
+     * @param   &scriptlet.xml.workflow.Context context
      */
     function setup(&$request, &$response, &$context) {
       $this->cat && $this->cat->debug($this->getClassName().'::setup');
@@ -127,7 +127,7 @@
                 // In case a wrapper is defined, call its setup() method. This 
                 // method is not allowed to fail.
                 if ($this->handlers[$i]->hasWrapper()) {
-                  $this->handlers[$i]->wrapper->setup($request, $this->handlers[$i]);
+                  $this->handlers[$i]->wrapper->setup($request, $this->handlers[$i], $context);
                 }
 
                 $result= $this->handlers[$i]->setup($request, $context);

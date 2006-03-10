@@ -35,8 +35,9 @@
      * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.workflow.Handler handler
+     * @param   &scriptlet.xml.workflow.Context context
      */
-    function setup(&$request, &$handler) {
+    function setup(&$request, &$handler, &$context) {
       foreach ($this->paraminfo as $name => $definitions) {
         
         // Pre-fill form value if a default is defined and the request
