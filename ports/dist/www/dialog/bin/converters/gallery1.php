@@ -186,6 +186,10 @@ __
         $e->printStackTrace();
         exit(-1);
       }
+      
+      // We will regenerate these from scratch...
+      $album->highlights= $album->chapters= array();
+
     } else {
       Console::writeLine('---> Creating new album...');
       $album= &new Album();
@@ -247,6 +251,7 @@ __
     
     // Step #6: Import the images
     Console::writeLine('---> Importing images');
+    $images= array();
     for ($i= 0; $i < $s; $i++) {
       if ($photoData[$i]->highlight) continue;
       
