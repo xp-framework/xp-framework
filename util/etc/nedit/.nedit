@@ -2,15 +2,15 @@
 !
 ! This file is overwritten by the "Save Defaults..." command in NEdit 
 ! and serves only the interactively settable options presented in the NEdit
-! "Preferences" menu.  To modify other options, such as background colors
-! and key bindings, use the .Xdefaults file in your home directory (or
-! the X resource specification method appropriate to your system).  The
-! contents of this file can be moved into an X resource file, but since
-! resources in this file override their corresponding X resources, either
-! this file should be deleted or individual resource lines in the file
-! should be deleted for the moved lines to take effect.
+! "Preferences" menu.  To modify other options, such as key bindings, use 
+! the .Xdefaults file in your home directory (or the X resource 
+! specification method appropriate to your system).  The contents of this 
+! file can be moved into an X resource file, but since resources in this file
+! override their corresponding X resources, either this file should be 
+! deleted or individual resource lines in the file should be deleted for the
+! moved lines to take effect.
 
-nedit.fileVersion: 5.3
+nedit.fileVersion: 5.5
 nedit.shellCommands: \
 	spell:Alt+B:s:EX:\n\
 		cat>spellTmp; xterm -e ispell -x spellTmp; cat spellTmp; rm spellTmp\n\
@@ -34,8 +34,8 @@ nedit.shellCommands: \
 		$HOME/bin/xpci --header\n\
 	Create XP class:Shift+Alt+C:::\n\
 		$HOME/bin/xpci --class\n\
-        Create XP cli script:Shift+Alt+F:::\n\
-                $HOME/bin/xpci --cmdfile\n\
+	Create XP cli script:Shift+Alt+F:::\n\
+		$HOME/bin/xpci --cmdfile\n\
 	Check file syntax:Alt+C:C:DS:\n\
 		$HOME/bin/neditlint.sh %\n\
 	PHP contextsensitive help:F1::ID:\n\
@@ -48,10 +48,10 @@ nedit.shellCommands: \
 		php -q $HOME/bin/mkaccessor.php\n\
 	Check XP Coding standards:Alt+V::ADS:\n\
 		$HOME/bin/xpcsc.pl %\n\
-  CVS Diff:Shift+Alt+V:C:DS:\n\
-    php -q $HOME/bin/cvsdiff.php %\n\
+	CVS Diff:Shift+Alt+V:C:DS:\n\
+		php -q $HOME/bin/cvsdiff.php %\n\
 	Open XP class:Shift+Ctrl+O::ID:\n\
-		/bin/sh -c 'CLASS=`php $HOME/bin/findclass.php`; if [ 0 = $? ]; then nedit $CLASS 1>/dev/null 2>/dev/null & else echo "Class not found."; fi'\n\
+		/bin/sh -c 'CLASS=`php $HOME/bin/findclass.php`; if [ 0 = $? ]; then nedit $CLASS 1>/dev/null 2>/dev/null & else echo "Class not found."; fi'\n
 nedit.macroCommands: \
 	Complete Word:Alt+D::: {\n\
 		# Tuning parameters\n\
@@ -105,7 +105,7 @@ nedit.macroCommands: \
 		\n\
 		# Ask the user what character to fill with\n\
 		fillChar = string_dialog("Fill selection with what character?", "OK", "Cancel")\n\
-		if ($string_dialog_button == 2)\n\
+		if ($string_dialog_button == 2 || $string_dialog_button == 0)\n\
 		    return\n\
 		\n\
 		# Count the number of lines in the selection\n\
@@ -160,37 +160,61 @@ nedit.macroCommands: \
 		else\n\
 		    replace_in_selection("(^\\\\> )(.*)$", "\\\\2", "regex")\n\
 	}\n\
-	C Comments>Comment Out Sel.:::R: {\n\
+	Comments>/* Comment */@C@C++@Java@CSS@JavaScript@Lex:::R: {\n\
 		selStart = $selection_start\n\
 		selEnd = $selection_end\n\
 		replace_range(selStart, selEnd, "/* " get_selection() " */")\n\
 		select(selStart, selEnd + 6)\n\
 	}\n\
-	C Comments>C Uncomment Sel.:::R: {\n\
+	Comments>/* Uncomment */@C@C++@Java@CSS@JavaScript@Lex:::R: {\n\
 		sel = get_selection()\n\
 		selStart = $selection_start\n\
 		selEnd = $selection_end\n\
 		commentStart = search_string(sel, "/*", 0)\n\
-		if (substring(sel, commentStart+2, commentStart+3) == " ")\n\
+		if (substring(sel, commentStart + 2, commentStart + 3) == " ")\n\
 		    keepStart = commentStart + 3\n\
 		else\n\
 		    keepStart = commentStart + 2\n\
 		keepEnd = search_string(sel, "*/", length(sel), "backward")\n\
 		commentEnd = keepEnd + 2\n\
-		if (substring(sel, keepEnd - 1, keepEnd == " "))\n\
+		if (substring(sel, keepEnd - 1, keepEnd) == " ")\n\
 		    keepEnd = keepEnd - 1\n\
 		replace_range(selStart + commentStart, selStart + commentEnd, \\\n\
 			substring(sel, keepStart, keepEnd))\n\
 		select(selStart, selEnd - (keepStart-commentStart) - \\\n\
 			(commentEnd - keepEnd))\n\
 	}\n\
-	C Comments>+ C++ Comment:::R: {\n\
+	Comments>// Comment@C@C++@Java@JavaScript:::R: {\n\
 		replace_in_selection("^.*$", "// &", "regex")\n\
 	}\n\
-	C Comments>- C++ Comment:::R: {\n\
+	Comments>// Uncomment@C@C++@Java@JavaScript:::R: {\n\
 		replace_in_selection("(^[ \\\\t]*// ?)(.*)$", "\\\\2", "regex")\n\
 	}\n\
-	C Comments>+ C Bar Comment 1:Alt+Numbersign::R: {\n\
+	Comments># Comment@Perl@Sh Ksh Bash@NEdit Macro@Makefile@Awk@Csh@Python@Tcl:::R: {\n\
+		replace_in_selection("^.*$", "#&", "regex")\n\
+	}\n\
+	Comments># Uncomment@Perl@Sh Ksh Bash@NEdit Macro@Makefile@Awk@Csh@Python@Tcl:::R: {\n\
+		replace_in_selection("(^[ \\\\t]*#)(.*)$", "\\\\2", "regex")\n\
+	}\n\
+	Comments>-- Comment@SQL:::R: {\n\
+		replace_in_selection("^.*$", "--&", "regex")\n\
+	}\n\
+	Comments>-- Uncomment@SQL:::R: {\n\
+		replace_in_selection("(^[ \\\\t]*--)(.*)$", "\\\\2", "regex")\n\
+	}\n\
+	Comments>! Comment@X Resources:::R: {\n\
+		replace_in_selection("^.*$", "!&", "regex")\n\
+	}\n\
+	Comments>! Uncomment@X Resources:::R: {\n\
+		replace_in_selection("(^[ \\\\t]*!)(.*)$", "\\\\2", "regex")\n\
+	}\n\
+	Comments>% Comment@LaTeX:::R: {\n\
+		                replace_in_selection("^.*$", "%&", "regex")\n\
+		                }\n\
+	Comments>% Uncomment@LaTeX:::R: {\n\
+		                replace_in_selection("(^[ \\\\t]*%)(.*)$", "\\\\2", "regex")\n\
+		                }\n\
+	Comments>Bar Comment@C:::R: {\n\
 		if ($selection_left != -1) {\n\
 		    dialog("Selection must not be rectangular")\n\
 		    return\n\
@@ -203,7 +227,7 @@ nedit.macroCommands: \
 		replace_selection(newText)\n\
 		select(start, start + length(newText))\n\
 	}\n\
-	C Comments>- C Bar Comment 1:::R: {\n\
+	Comments>Bar Uncomment@C:::R: {\n\
 		selStart = $selection_start\n\
 		selEnd = $selection_end\n\
 		newText = get_range(selStart+3, selEnd-4)\n\
@@ -226,7 +250,7 @@ nedit.macroCommands: \
 		staticPrototypes = ""\n\
 		for (;;) {\n\
 		    headerStart = search_string(string, \\\n\
-			    "^[a-zA-Z]([^;#\\"'{}=><!/]|\\n)*\\\\)[ \\t]*\\n?[ \\t]*{", \\\n\
+			    "^[a-zA-Z]([^;#\\"'{}=><!/]|\\n)*\\\\)[ \\t]*\\n?[ \\t]*\\\\{", \\\n\
 			    searchPos, "regex")\n\
 		    if (headerStart == -1)\n\
 			break\n\
@@ -246,21 +270,6 @@ nedit.macroCommands: \
 		new()\n\
 		focus_window("last")\n\
 		replace_range(0, 0, prototypes staticPrototypes)\n\
-	}\n\
-	Tabs - use real, size 4:::: {\n\
-		set_tab_dist("4")\n\
-		set_em_tab_dist("0")\n\
-		set_use_tabs("1")\n\
-	}\n\
-	Tabs - use real, size 8:::: {\n\
-		set_tab_dist("8")\n\
-		set_em_tab_dist("0")\n\
-		set_use_tabs("1")\n\
-	}\n\
-	Tabs - emulate, size 4, spacing 2:::: {\n\
-		set_tab_dist("4")\n\
-		set_em_tab_dist("2")\n\
-		set_use_tabs("0")\n\
 	}\n
 nedit.bgMenuCommands: \
 	Undo:::: {\n\
@@ -511,38 +520,38 @@ nedit.highlightPatterns: C:1:0{\n\
 		function:"[a-zA-Z0-9_]+\\(\\)":::Keyword::\n\
 		keywords:"<NEWS|MFP|MFB|BFN|MFH|CS|WS>":::Identifier::\n\
 	}
-nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~"\n\
-	C++:.cc .hh .C .H .i .cpp .cs::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~"\n\
-	Java:.java::::::\n\
-	JavaScript:.js::::::\n\
-	Ada:.ada .ad .ads .adb .a::::::\n\
-	Fortran:.f .f77 .for::::::\n\
-	Pascal:.pas .p .int::::::\n\
-	Yacc:.y::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~"\n\
-	Perl:.pl .pm .p5 .PL:"^[ \\t]*#[ \\t]*!.*perl":Auto:None:::".,/\\\\`'!$@#%^&*()-=+{}[]"":;<>?~|"\n\
-	Python:.py:"^#!.*python":Auto:None:::\n\
-	Tcl:.tcl .tk .itcl .itk::Smart:None:::\n\
-	Awk:.awk::::::\n\
-	Sh Ksh Bash:.sh .bash .ksh .profile .bashrc .bash_logout .bash_login .bash_profile:"^[ \\t]*#[ \\t]*![ \\t]*/.*bin/(sh|ksh|bash)":::::\n\
-	Csh:.csh .cshrc .login .logout:"^[ \\t]*#[ \\t]*![ \\t]*/bin/csh":::::\n\
-	Makefile:Makefile makefile .mk::::::\n\
-	SGML HTML:.sgml .sgm .html .htm .xslt .xsl .xml::::::\n\
-	LaTeX:.tex .sty .cls .dtx .ins::::::\n\
-	PostScript:.ps .PS .eps .EPS .epsf .epsi::::::\n\
-	Lex:.lex::::::\n\
-	SQL:.sql::::::\n\
-	Matlab:..m .oct .sci::::::\n\
-	VHDL:.vhd .vhdl .vdl::::::\n\
-	Verilog:.v::::::\n\
-	X Resources:.Xresources .Xdefaults .nedit:"^[!#].*([Aa]pp|[Xx]).*[Dd]efaults":::::\n\
-	NEdit Macro:.nm .neditmacro::::::\n\
-	PHP:.php .php3 .phtml .php4 .inc .ciml:"\\<\\?php":::::\n\
-	CSS:css::Auto:None:::".,/\\`'!|@#%^&*()=+{}[]"":;<>?~"\n\
-	Regex:.reg .regex:"\\(\\?[:#=!iInN].+\\)":None:Continuous:::\n\
-	XML:.xml .xsl .dtd:"\\<(?i\\?xml|!doctype)"::None:::"<>/=""'()+*?|"\n\
-	Ini-Files:.ini:::None:::\n\
-	Unified diff:.diff:"Index:":::::\n\
-	ChangeLog:ChangeLog::::::
+nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
+	C++:.cc .hh .C .H .i .cpp .cs::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
+	Java:.java:::::::\n\
+	JavaScript:.js:::::::\n\
+	Ada:.ada .ad .ads .adb .a:::::::\n\
+	Fortran:.f .f77 .for:::::::\n\
+	Pascal:.pas .p .int:::::::\n\
+	Yacc:.y::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
+	Perl:.pl .pm .p5 .PL:"^[ \\t]*#[ \\t]*!.*perl":Auto:None:::".,/\\\\`'!$@#%^&*()-=+{}[]"":;<>?~|":\n\
+	Python:.py:"^#!.*python":Auto:None:::"!""#$%&'()*+,-./:;<=>?@[\\\\]^`{|}~":\n\
+	Tcl:.tcl .tk .itcl .itk::Smart:None::::\n\
+	Awk:.awk:::::::\n\
+	Sh Ksh Bash:.sh .bash .ksh .profile .bashrc .bash_logout .bash_login .bash_profile:"^[ \\t]*#[ \\t]*![ \\t]*/.*bin/(sh|ksh|bash)"::::::\n\
+	Csh:.csh .cshrc .login .logout:"^[ \\t]*#[ \\t]*![ \\t]*/bin/csh"::::::\n\
+	Makefile:Makefile makefile .mk:::::::\n\
+	SGML HTML:.sgml .sgm .html .htm .xslt .xsl .xml:::::::\n\
+	LaTeX:.tex .sty .cls .dtx .ins:::::::\n\
+	PostScript:.ps .PS .eps .EPS .epsf .epsi:::::::\n\
+	Lex:.lex:::::::\n\
+	SQL:.sql:::::::\n\
+	Matlab:..m .oct .sci:::::::\n\
+	VHDL:.vhd .vhdl .vdl:::::::\n\
+	Verilog:.v:::::::\n\
+	X Resources:.Xresources .Xdefaults .nedit nedit.rc:"^[!#].*([Aa]pp|[Xx]).*[Dd]efaults"::::::\n\
+	NEdit Macro:.nm .neditmacro:::::::\n\
+	PHP:.php .php3 .phtml .php4 .inc .ciml:"\\<\\?php"::::::\n\
+	CSS:css::Auto:None:::".,/\\`'!|@#%^&*()=+{}[]"":;<>?~":\n\
+	Regex:.reg .regex:"\\(\\?[:#=!iInN].+\\)":None:Continuous::::\n\
+	XML:.xml .xsl .dtd:"\\<(?i\\?xml|!doctype)"::None:::"<>/=""'()+*?|":\n\
+	Ini-Files:.ini:::None::::\n\
+	Unified diff:.diff:"Index:"::::::\n\
+	ChangeLog:ChangeLog:::::::
 nedit.styles: 	Plain:black:Plain\n\
 	Comment:gray40:Plain\n\
 	Keyword:darkRed:Bold\n\
@@ -557,6 +566,7 @@ nedit.styles: 	Plain:black:Plain\n\
 	Numeric Const:darkGreen:Plain\n\
 	Identifier:Royalblue:Plain\n\
 	Identifier1:Gray20:Plain\n\
+	Identifier2:SteelBlue:Plain\n\
 	Subroutine:brown:Plain\n\
 	Subroutine1:Gray50:Plain\n\
 	Ada Attributes:plum:Bold\n\
@@ -582,23 +592,32 @@ nedit.autoWrap: None
 nedit.wrapMargin: 0
 nedit.autoIndent: Auto
 nedit.autoSave: True
+nedit.openInTab: True
 nedit.saveOldVersion: False
 nedit.showMatching: Delimiter
 nedit.matchSyntaxBased: True
 nedit.highlightSyntax: True
+nedit.backlightChars: False
 nedit.searchDialogs: False
 nedit.beepOnSearchWrap: False
 nedit.retainSearchDialogs: True
 nedit.searchWraps: True
 nedit.stickyCaseSenseButton: True
 nedit.repositionDialogs: True
+nedit.autoScroll: False
 nedit.appendLF: True
 nedit.sortOpenPrevMenu: True
 nedit.statisticsLine: True
 nedit.iSearchLine: True
+nedit.sortTabs: False
+nedit.tabBar: True
+nedit.tabBarHideOne: True
+nedit.toolTips: True
+nedit.globalTabNavigate: False
 nedit.lineNumbers: True
 nedit.pathInWindowsMenu: True
 nedit.warnFileMods: True
+nedit.warnRealFileMods: True
 nedit.warnExit: True
 nedit.searchMethod: Literal
 nedit.textRows: 40
@@ -610,6 +629,14 @@ nedit.textFont: -adobe-courier-medium-r-normal--12-120-75-75-m-70-iso8859-1
 nedit.boldHighlightFont: -adobe-courier-bold-r-normal--12-120-75-75-m-70-iso8859-1
 nedit.italicHighlightFont: -adobe-courier-medium-i-normal--12-120-75-75-m-0-iso8859-1
 nedit.boldItalicHighlightFont: -adobe-courier-bold-i-normal--12-120-75-75-m-0-iso8859-1
+nedit.textFgColor: black
+nedit.textBgColor: white
+nedit.selectFgColor: #222222
+nedit.selectBgColor: #cccccc
+nedit.hiliteFgColor: white
+nedit.hiliteBgColor: red
+nedit.lineNoFgColor: black
+nedit.cursorFgColor: black
 nedit.smartTags: True
 nedit.prefFileRead: True
 nedit.titleFormat: {%c} [%s] %f (%S) - %d
