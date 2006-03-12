@@ -22,6 +22,7 @@
    *   var_dump($h->containsValue($c= 5));
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.util.HashmapTest
    * @see      php://array
    * @purpose  Associative array wrapper class
    */
@@ -215,10 +216,10 @@
      * @access public
      * @param  &mixed val
      * @param  bool strict default FALSE use strict checking.
-     * @return mixed value TRUE if value exists, its key otherwise
+     * @return bool TRUE if value exists, FALSE otherwise
      */     
     function containsValue(&$val, $strict= FALSE) {
-      return array_search($val, $this->_hash, $strict);
+      return in_array($val, $this->_hash, $strict);
     }
     
     /**
