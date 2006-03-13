@@ -68,6 +68,7 @@
   define('MIME_TEXT_XML',                       'text/xml');
   define('MIME_TEXT_RICHTEXT',                  'text/richtext');
   define('MIME_TEXT_TAB_SEPARATED_VALUES',      'text/tab-separated-values');
+  define('MIME_TEXT_COMMA_SEPARATED_VALUES',    'text/comma-separated-values');
   define('MIME_TEXT_X_SETEXT',                  'text/x-setext');
   define('MIME_VIDEO_DL',                       'video/dl');
   define('MIME_VIDEO_FLI',                      'video/fli');
