@@ -38,10 +38,10 @@ nedit.shellCommands: \
 		$HOME/bin/xpci --cmdfile\n\
 	Check file syntax:Alt+C:C:DS:\n\
 		$HOME/bin/neditlint.sh %\n\
-	PHP contextsensitive help:F1::ID:\n\
-		$HOME/bin/phphelp\n\
+	Contextsensitive help:F1::ID:\n\
+		$HOME/bin/xphelp %\n\
 	XP contextsensitive help:Alt+F1::ID:\n\
-		$HOME/bin/phphelp --xp \n\
+		$HOME/bin/xphelp % --xp \n\
 	Execute PHP script:F9::AD:\n\
 		php -q\n\
 	Make accessors:Shift+Alt+A::I:\n\
