@@ -36,7 +36,6 @@
      * @param   string initial default ''
      */
     function __construct($initial= '') {
-      
       $this->buffer= $initial;
     }
     
@@ -596,6 +595,17 @@
         return new String(implode('', $arg));
       }
       return new String(strval($arg));
+    }
+
+    /**
+     * Returns a string representation of this string.
+     *
+     * @see     xp://text.String#getBuffer
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return $this->buffer;
     }
   }
 ?>
