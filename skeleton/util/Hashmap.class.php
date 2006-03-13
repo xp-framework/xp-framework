@@ -148,7 +148,7 @@
      * @throws  lang.FormatException in case this hash contains non-scalar values
      */
     function flip() {
-      $h= &array_flip($this->_hash);
+      $h= array_flip($this->_hash);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
         return throw(new FormatException('hash contains values which are not scalar'));
       }
