@@ -108,13 +108,37 @@
     }
 
     /**
+     * Returns a hashcode for this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function hashCode() {
+      return md5($this->buffer);
+    }
+
+    /**
+     * Returns true if this string equals another string
+     *
+     * @access  public
+     * @param   &lang.Object value
+     * @return  bool
+     */
+    function equals(&$cmp) {
+      return (
+        is_a($cmp, 'String') && 
+        ($this->buffer === $cmp->buffer)
+      );
+    }
+
+    /**
      * Returns true if the specified string matches this string.
      *
      * @access  public
      * @param   string str
      * @return  bool
      */
-    function equals($str, $cs= TRUE) {
+    function isEqualTo($str, $cs= TRUE) {
       return 0 == ($cs 
         ? strcmp($str, $this->buffer) 
         : strcasecmp($str, $this->buffer)
