@@ -263,7 +263,15 @@
                 $xpclass= NULL;
               }
             } else {
-              $xpclass= &$mapping->classFor(new QName(array_search($regs[1], $this->namespaces), $regs[2]));
+            
+              // TBD: Fix mapping passing when SOAPMessage was build from
+              // SOAPTransport::retrieve() function which currently doesn't
+              // care about mapping and $mapping is just an empty array.
+              if ($mapping) {
+                $xpclass= &$mapping->classFor(new QName(array_search($regs[1], $this->namespaces), $regs[2]));
+              } else {
+                $xpclass= NULL;
+              }
             }
             
             if ($xpclass) {
