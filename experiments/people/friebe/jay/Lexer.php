@@ -124,6 +124,7 @@ class AspectTokenizer extends Object {
 				case TOKEN_T_CLOSE_TAG:
 				case TOKEN_T_WHITESPACE:
 				case TOKEN_T_ENCAPSED_AND_WHITESPACE:
+                case TOKEN_T_COMMENT:
                     $this->setLine($this->line + substr_count($this->tokens[$this->pos][1], "\n"));
                     $this->pos++;
 					continue;
