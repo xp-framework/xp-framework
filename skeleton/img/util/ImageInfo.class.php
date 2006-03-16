@@ -14,12 +14,13 @@
    */
   class ImageInfo extends Object {
     var
-      $width    = 0,
-      $height   = 0,
-      $type     = 0,
-      $mime     = '',
-      $bits     = NULL,
-      $channels = NULL;
+      $width      = 0,
+      $height     = 0,
+      $type       = 0,
+      $mime       = '',
+      $bits       = NULL,
+      $channels   = NULL,
+      $segments   = array();
 
     /**
      * Retrieve an ImageInfo object from a file
@@ -31,7 +32,7 @@
      * @throws  img.ImagingExceptio
      */
     function &fromFile(&$file) {
-      if (FALSE === ($data= getimagesize($file->getURI()))) {
+      if (FALSE === ($data= getimagesize($file->getURI(), $segments))) {
         return throw(new ImagingException(
           'Cannot load image information from '.$file->getURI()
         ));
@@ -44,6 +45,7 @@
         $i->mime= image_type_to_mime_type($data[2]);
         isset($data['bits']) && $i->bits= $data['bits'];
         isset($data['channels']) && $i->channels= $data['channels'];
+        $i->segments= $segments;
       }
       return $i;
     }
@@ -57,9 +59,10 @@
     function toString() {
       return sprintf(
         "%s(%d x %d %s)@{\n".
-        "  [type    ] %d\n".
-        "  [channels] %s\n".
-        "  [bits    ] %s\n".
+        "  [type       ] %d\n".
+        "  [channels   ] %s\n".
+        "  [bits       ] %s\n".
+        "  [segments   ] %s\n".
         "}",
         $this->getClassName(),
         $this->width,
@@ -67,7 +70,8 @@
         $this->mime,
         $this->type,
         NULL === $this->channels ? '(unknown)' : $this->channels,
-        NULL === $this->bits ? '(unknown)' : $this->bits
+        NULL === $this->bits ? '(unknown)' : $this->bits,
+        implode(', ', array_keys($this->segments))
       );
     }
 
@@ -189,6 +193,44 @@
      */
     function getMime() {
       return $this->mime;
-    }      
+    }
+    
+    /**
+     * Retrieve whether a specified segment is available
+     *
+     * @see     http://www.ozhiker.com/electronics/pjmt/jpeg_info/app_segments.html
+     * @access  public
+     * @param   string id the segment's name
+     * @return  bool
+     */    
+    function hasSegment($id) {
+      return isset($this->segments[$id]);
+    }
+
+    /**
+     * Retrieve all segment names
+     *
+     * @access  public
+     * @return  string[]
+     */    
+    function getSegmentNames() {
+      return array_keys($this->segments);
+    }
+
+    /**
+     * Retrieve segment data for a specified segment.
+     *
+     * @access  public
+     * @param   string id the segment's name
+     * @return  bool
+     * @throws  img.ImagingException when the specified segment is not available
+     */    
+    function getSegment($id) {
+      if (!isset($this->segments[$id])) return throw(new ImagingException(
+        'Segment "'.$id.'" not available'
+      ));
+
+      return $this->segments[$id];
+    }
   }
 ?>
