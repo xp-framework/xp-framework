@@ -16,8 +16,8 @@
       $offset  = 0,
       $size    = 0;
 
-    function add($opcode, $arguments) {
-      $this->opcodes[]= array($opcode, $arguments);
+    function add($opcode, &$arguments) {
+      $this->opcodes[]= array($opcode, &$arguments);
       $this->size++;
     }
     
