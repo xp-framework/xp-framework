@@ -23,7 +23,7 @@
       protected $foo= -1;
       public static $instance= NULL;
 
-      protected function __construct() { }
+      protected __construct() { }
 
       public static function getInstance() {
         if (!isset(self::$instance)) {
