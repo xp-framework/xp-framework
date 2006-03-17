@@ -29,6 +29,10 @@
 .     */
 .     var $debug = false;
 .
+.
+ tables			## tables for rules, default reduction, and action calls
+ debug			## tables for debugging
+
 .    /**
 .     * (syntax) error message.
 .     * Can be overwritten to control message format.
@@ -56,9 +60,8 @@
 .     * @return token name or [illegal] or [unknown].
 .     */
 .    function yyname ($token) {
-.        $yyName= &$GLOBALS[$this->yyGlobalName]['yyName'];
-.        if ($token < 0 || $token >  count($yyName)) return "[illegal]";
-.        if (($name = $yyName[$token]) != null) return $name;
+.        if ($token < 0 || $token >  count($this->yyName)) return "[illegal]";
+.        if (($name = $this->yyName[$token]) != null) return $name;
 .        return "[unknown]";
 .    }
 .
@@ -71,32 +74,28 @@
 .        $len = 0;
 .        $ok = array();//new boolean[YyNameClass.yyName.length];
 .
-.        foreach (array_keys($GLOBALS[$this->yyGlobalName]) as $name) {
-.          $$name= &$GLOBALS[$this->yyGlobalName][$name];
-.        }
-.
-.        if (($n =  $yySindex[$state]) != 0) {
+.        if (($n =  $this->yySindex[$state]) != 0) {
 .            $start = $n;
 .            if ($start < 0) { $start = 0; }       
 .            for ($token = $start;
-.                $token < count($yyName) && 
-.                        $n+$token < count($yyTable); $token++) {
-.                if (@$yyCheck[$n+$token] == $token && !@$ok[$token] && 
-.                        $yyName[$token] != null) {
+.                $token < count($this->yyName) && 
+.                        $n+$token < count($this->yyTable); $token++) {
+.                if (@$this->yyCheck[$n+$token] == $token && !@$ok[$token] && 
+.                        $this->yyName[$token] != null) {
 .                    $len++;
 .                    $ok[$token] = true;
 .                }
 .            } // end for
 .        }
-.        if (($n = $yyRindex[$state]) != 0) {
+.        if (($n = $this->yyRindex[$state]) != 0) {
 .            $start = $n;
 .            if ($start < 0) { $start = 0; }       
 .            for ($token = $start;
-.                     $token < count($yyName)  && 
-.                     $n+$token <  count($yyTable); $token++) 
+.                     $token < count($this->yyName)  && 
+.                     $n+$token <  count($this->yyTable); $token++) 
 .            {
-.               if (@$yyCheck[$n+$token] == $token && !@$ok[$token] 
-.                          && @$yyName[$token] != null) {
+.               if (@$this->yyCheck[$n+$token] == $token && !@$ok[$token] 
+.                          && @$this->yyName[$token] != null) {
 .                    $len++;
 .                    $ok[$token] = true;
 .               }
@@ -104,7 +103,7 @@
 .        }
 .        $result = array();
 .        for ($n = $token = 0; $n < $len;  $token++) {
-.            if (@$ok[$token]) { $result[$n++] =$yyName[$token]; }
+.            if (@$ok[$token]) { $result[$n++] =$this->yyName[$token]; }
 .        }
 .        return $result;
 .    }
@@ -138,22 +137,16 @@
 .    function yyparse (&$yyLex) {
 t        $this->debug = true;
 .        $this->yyLex = &$yyLex;
-.        if (!$this->yyGlobalName) {
-.            echo "\n\nYou must define \$this->yyGlobalName to match the build option -g _XXXXX \n\n";
-.            exit;
-.        }
-.        foreach (array_keys($GLOBALS[$this->yyGlobalName]) as $name) {
-.          $$name= &$GLOBALS[$this->yyGlobalName][$name];
-.        }
+.
 .        if ($this->debug)
 .           echo "\tStarting jay:yyparse";
 .        //error_reporting(E_ALL);
 .        if ($this->yyMax <= 0) $this->yyMax = 256;			// initial size
-.        $this->yyState = 0;
-.        $this->yyStates = array();
-.        $this->yyVal = null;
-.        $this->yyVals = array();
-.        $yyTableCount = count($yyTable);
+.        $yyState = 0;
+.        $yyStates = array();
+.        $yyVal = null;
+.        $yyVals = array();
+.        $this->yyTableCount = count($this->yyTable);
 .        $yyToken = -1;                 // current input
 .        $yyErrorFlag = 0;              // #tks to shift
 .        $tloop = 0;
@@ -165,15 +158,15 @@ t        $this->debug = true;
 .            //if ($this->debug) echo "\tyyLoop:\n";
 .            for ($yyTop = 0;; $yyTop++) {
 .                //if ($this->debug) echo ($tloop++) .">>>>>>yyLoop:yTop = {$yyTop}\n";
-.                $this->yyStates[$yyTop] = $this->yyState;
-.                $this->yyVals[$yyTop] = $this->yyVal;
+.                $yyStates[$yyTop] = $yyState;
+.                $yyVals[$yyTop] = $yyVal;
 .
 .                //yyDiscarded: 
 .                for (;;) {	// discarding a token does not change stack
 .                    //echo "yyDiscarded\n";
-.                    if ($this->debug) echo "\tIn main loop : State = {$this->yyState}\n";
-.                    if ($this->debug) echo "\tyydefred = {$yyDefRed[$this->yyState]}\n";
-.                    if (($yyN = $yyDefRed[$this->yyState]) == 0) {	
+.                    if ($this->debug) echo "\tIn main loop : State = {$yyState}\n";
+.                    if ($this->debug) echo "\tyydefred = {$this->yyDefRed[$yyState]}\n";
+.                    if (($yyN = $this->yyDefRed[$yyState]) == 0) {	
 .                        // else [default] reduce (yyN)
 .                        //if ($this->debug) echo "\tA:token is $yyToken\n";
 .                        if ($yyToken < 0) {
@@ -187,17 +180,17 @@ t        $this->debug = true;
 .                        }
 .                        if ($this->debug) {
 .                            echo "\tA:token is now " .
-.                            "{$yyName[$yyToken]} " .token_name($yyToken).  "\n";
+.                            "{$this->yyName[$yyToken]} " .token_name($yyToken).  "\n";
 .                            var_dump($yyToken);
 .                        }
 .                        //if ($this->debug) echo "GOT TOKEN $yyToken";
-.                        //if ($this->debug) echo "Sindex:  {$yySindex[$this->yyState]}\n";
+.                        //if ($this->debug) echo "Sindex:  {$this->yySindex[$yyState]}\n";
 .
-.                        if (($yyN = $yySindex[$this->yyState]) != 0
+.                        if (($yyN = $this->yySindex[$yyState]) != 0
 .                                  && ($yyN += $yyToken) >= 0
-.                                  && $yyN < $yyTableCount && $yyCheck[$yyN] == $yyToken) {
-.                            $this->yyState = $yyTable[$yyN];		// shift to yyN
-.                            $this->yyVal = $yyLex->value;
+.                                  && $yyN < $this->yyTableCount && $this->yyCheck[$yyN] == $yyToken) {
+.                            $yyState = $this->yyTable[$yyN];		// shift to yyN
+.                            $yyVal = $yyLex->value;
 .                            $yyToken = -1;
 .                            if ($yyErrorFlag > 0) $yyErrorFlag--;
 .                            continue 2; // goto!!yyLoop;
@@ -205,10 +198,10 @@ t        $this->debug = true;
 . 
 .                       
 .              
-.                        if (($yyN = $yyRindex[$this->yyState]) != 0
+.                        if (($yyN = $this->yyRindex[$yyState]) != 0
 .                                && ($yyN += $yyToken) >= 0
-.                                && $yyN < $yyTableCount && $yyCheck[$yyN] == $yyToken) {
-.                            $yyN = $yyTable[$yyN];			// reduce (yyN)
+.                                && $yyN < $this->yyTableCount && $this->yyCheck[$yyN] == $yyToken) {
+.                            $yyN = $this->yyTable[$yyN];			// reduce (yyN)
 .                        } else {
 .                            switch ($yyErrorFlag) {
 .    
@@ -216,17 +209,17 @@ t        $this->debug = true;
 .                                    $info = $yyLex->parseError();
 .                                    $info .= ', Unexpected '.$this->yyName($yyToken).',';
 .                                    return $this->raiseError("$info syntax error",
-.                                                $this->yyExpecting($this->yyState));
+.                                                $this->yyExpecting($yyState));
 .                                
 .                                case 1: case 2:
 .                                    $yyErrorFlag = 3;
 .                                    do { 
-.                                        if (($yyN = @$yySindex
-.                                                [$this->yyStates[$yyTop]]) != 0
-.                                                && ($yyN += $this->yyErrorCode) >= 0 && $yyN < $yyTableCount
-.                                                && $yyCheck[$yyN] == $this->yyErrorCode) {
-.                                            $this->yyState = $yyTable[$yyN];
-.                                            $this->yyVal = $yyLex->value;
+.                                        if (($yyN = @$this->yySindex
+.                                                [$yyStates[$yyTop]]) != 0
+.                                                && ($yyN += $this->yyErrorCode) >= 0 && $yyN < $this->yyTableCount
+.                                                && $this->yyCheck[$yyN] == $this->yyErrorCode) {
+.                                            $yyState = $this->yyTable[$yyN];
+.                                            $yyVal = $yyLex->value;
 .                                            //vi /echo "goto yyLoop?\n";
 .                                            break 3; //continue yyLoop;
 .                                        }
@@ -245,30 +238,30 @@ t        $this->debug = true;
 .                            }
 .                        }
 .                    }    
-.                    $yyV = $yyTop + 1-$yyLen[$yyN];
+.                    $yyV = $yyTop + 1-$this->yyLen[$yyN];
 .                    //if ($this->debug) echo "\tyyV is $yyV\n";
-.                    $yyVal = $yyV > $yyTop ? null : $this->yyVals[$yyV];
-.                    //if ($this->debug) echo "\tyyVal is ". serialize($yyVal) ."\n";
+.                    $yyVal = $yyV > $yyTop ? null : $yyVals[$yyV];
+.                    // echo "\tyyVal is ". serialize($yyVal) ."\n";
 .                    if ($this->debug) echo "\tswitch($yyN)\n";
 .                   
-.                    $method = '_' .$yyN;
-.                    if (method_exists($this,$method)) {
-.                         $this->$method($yyTop);
-.
-.                    }
+. switch ($yyN) {
+
+ actions		## code from the actions within the grammar
+
+.  }
 .                   
 .                    //if ($this->debug) echo "\tDONE switch\n";if ($this->debug) echo "\t--------------\n";
-.                    $yyTop -= $yyLen[$yyN];
+.                    $yyTop -= $this->yyLen[$yyN];
 .                    //if ($this->debug) echo "\tyyTop is $yyTop\n";
-.                    $this->yyState = $this->yyStates[$yyTop];
-.                    //if ($this->debug) echo "\tyyState is {$this->yyState}\n";
-.                    $yyM = $yyLhs[$yyN];
+.                    $yyState = $yyStates[$yyTop];
+.                    //if ($this->debug) echo "\tyyState is {$yyState}\n";
+.                    $yyM = $this->yyLhs[$yyN];
 .                    //if ($this->debug) echo "\tyyM is now $yyM\n";
 .
 .
 .
-.                    if ($this->yyState == 0 && $yyM == 0) {
-.                        $this->yyState = $yyFinal;
+.                    if ($yyState == 0 && $yyM == 0) {
+.                        $yyState = $yyFinal;
 .                        if ($yyToken < 0) {
 .                            $yyToken =0;
 .                            if ($yyLex->advance()) {
@@ -282,13 +275,13 @@ t        $this->debug = true;
 .                        //if ($this->debug) echo "\t>>>>> yyLoop(A)?\n";
 .                        continue 2; //continue yyLoop;
 .                    }
-.                    if (($yyN = $yyGindex[$yyM]) != 0 && ($yyN += $this->yyState) >= 0
-.                            && $yyN < $yyTableCount && $yyCheck[$yyN] == $this->yyState) {
+.                    if (($yyN = $this->yyGindex[$yyM]) != 0 && ($yyN += $yyState) >= 0
+.                            && $yyN < $this->yyTableCount && $this->yyCheck[$yyN] == $yyState) {
 .                        //if ($this->debug) echo "\tyyState: using yyTable\n";
-.                        $this->yyState = $yyTable[$yyN];
+.                        $yyState = $this->yyTable[$yyN];
 .                    } else {
 .                        //if ($this->debug) echo "\tyyState: using yyDgoto\n";
-.                        $this->yyState = $yyDgoto[$yyM];
+.                        $yyState = $this->yyDgoto[$yyM];
 .                    }  
 .                    //if ($this->debug) echo "\t>>>>> yyLoop(B)?\n";
 .                    continue 2;//continue yyLoop;
@@ -297,11 +290,8 @@ t        $this->debug = true;
 .        }
 .    }
 .
- actions		## code from the actions within the grammar
 .
  epilog			## text following second %%
 .
- tables			## tables for rules, default reduction, and action calls
 .
- debug			## tables for debugging support
 . ?>
