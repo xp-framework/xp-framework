@@ -1106,7 +1106,7 @@ copy_action()
 	insert_empty_rule();
     last_was_action = 1;
 
-    fprintf(f, "\n    function _%d($yyTop)  ", nrules - 2);
+    fprintf(f, "\n    case %d:  ", nrules - 2);
     fprintf(f, line_format, lineno, input_file_name);
     if (*cptr == '=') {
         fprintf(f, "    {\n    ", 1);
@@ -1137,8 +1137,8 @@ loop:
 	    c = *cptr;
 	    if (c == '$')
 	    {   if (tag && strcmp(tag, "Object"))
-					fprintf(f, "($this->yyVal)", tag);
-		else fprintf(f, "$this->yyVal");
+					fprintf(f, "($yyVal)", tag);
+		else fprintf(f, "$yyVal");
 		++cptr;
 		FREE(d_line);
 		goto loop;
@@ -1148,8 +1148,8 @@ loop:
 		i = get_number();
 		if (i > n) dollar_warning(d_lineno, i);
 		if (tag && strcmp(tag, "Object"))
-			fprintf(f, "($this->yyVals[%d+$yyTop])", tag, i - n);
-		else fprintf(f, "$this->yyVals[%d+$yyTop]", i - n);
+			fprintf(f, "($yyVals[%d+$yyTop])", tag, i - n);
+		else fprintf(f, "$yyVals[%d+$yyTop]", i - n);
 		FREE(d_line);
 		goto loop;
 	    }
@@ -1158,8 +1158,8 @@ loop:
 		++cptr;
 		i = -get_number() - n;
 		if (tag && strcmp(tag, "Object"))
-			fprintf(f, "($this->yyVals[%d+$yyTop])", tag, i);
-		else fprintf(f, "$this->yyVals[%d+$yyTop]", tag, i);
+			fprintf(f, "($yyVals[%d+$yyTop])", tag, i);
+		else fprintf(f, "$yyVals[%d+$yyTop]", tag, i);
 		FREE(d_line);
 		goto loop;
 	    }
@@ -1170,7 +1170,7 @@ loop:
 	{
 	    //if (ntags && plhs[nrules]->tag == 0)
 		 
-	    fprintf(f, "$this->yyVal");
+	    fprintf(f, "$yyVal");
 	    cptr += 2;
 	    goto loop;
 	}
@@ -1184,17 +1184,17 @@ loop:
 		    unknown_rhs(i);
 		tag = pitem[nitems + i - n - 1]->tag;
 		if (tag == 0)
-		    fprintf(f, "$this->yyVals[%d+$yyTop]", i - n); 
+		    fprintf(f, "$yyVals[%d+$yyTop]", i - n); 
 		else if (strcmp(tag, "Object"))
-		    fprintf(f, "( $this->yyVals[%d+$yyTop])", tag, i - n);
+		    fprintf(f, "( $yyVals[%d+$yyTop])", tag, i - n);
 		else
-		    fprintf(f, "$this->yyVals[%d+$yyTop]", i - n);
+		    fprintf(f, "$yyVals[%d+$yyTop]", i - n);
 	    }
 	    else
 	    {
 		if (i > n)
 		    dollar_warning(lineno, i);
-		fprintf(f, "$this->yyVals[%d+$yyTop]", i - n);
+		fprintf(f, "$yyVals[%d+$yyTop]", i - n);
 	    }
 	    goto loop;
 	}
@@ -1204,7 +1204,7 @@ loop:
 	    i = get_number();
 	    if (ntags)
 		unknown_rhs(-i);
-	    fprintf(f, "$this->yyVals[%d+$yyTop]", -i - n);
+	    fprintf(f, "$yyVals[%d+$yyTop]", -i - n);
 	    goto loop;
 	}
     }
@@ -1238,7 +1238,7 @@ loop:
 
     case '}':
 	if (--depth > 0) goto loop;
-	fprintf(f, "\n"); //    }\n");
+	fprintf(f, " break;\n"); //    }\n");
 	return;
 
     case '\'':

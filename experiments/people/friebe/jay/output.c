@@ -59,9 +59,6 @@ static int high;
 extern int csharp;
 extern int outputDefines;
 
-extern char *globals_name;
-
-
 output () {
   int lno = 0;
   char buf [128];
@@ -108,9 +105,7 @@ output_rule_data()
     register int j;
 
 
-    printf("  $GLOBALS['%s']['yyLhs']  = array(%16d,",
-	    globals_name,
-	    symbol_value[start_symbol]);
+    printf("  var $yyLhs  = array(%16d,", symbol_value[start_symbol]);
 
     j = 10;
     for (i = 3; i < nrules; i++)
@@ -129,9 +124,7 @@ output_rule_data()
     outline += 2;
     printf("\n  );\n");
 
-    printf("  $GLOBALS['%s']['yyLen'] = array(%12d,",
-	  globals_name,
-	   2);
+    printf("  var $yyLen = array(%12d,", 2);
 
     j = 10;
     for (i = 3; i < nrules; i++)
@@ -156,9 +149,7 @@ output_yydefred()
 {
     register int i, j;
 
-    printf("  $GLOBALS['%s']['yyDefRed'] = array(%13d,",
-	      globals_name,
-	    (defred[0] ? defred[0] - 2 : 0));
+    printf("  var $yyDefRed = array(%13d,", (defred[0] ? defred[0] - 2 : 0));
 
     j = 10;
     for (i = 1; i < nstates; i++)
@@ -299,7 +290,7 @@ goto_actions()
     state_count = NEW2(nstates, short);
 
     k = default_goto(start_symbol + 1);
-    printf("  $GLOBALS['%s']['yyDgoto']  = array(%14d,", globals_name,k);
+    printf("  var $yyDgoto  = array(%14d,", k);
     save_column(start_symbol + 1, k);
 
     j = 10;
@@ -623,7 +614,7 @@ output_base()
 {
     register int i, j;
 
-    printf("  $GLOBALS['%s']['yySindex'] = array(%13d,",  globals_name, base[0]);
+    printf("  var $yySindex = array(%13d,", base[0]);
 
     j = 10;
     for (i = 1; i < nstates; i++)
@@ -641,9 +632,7 @@ output_base()
     }
 
     outline += 2;
-    printf("\n  );\n  $GLOBALS['%s']['yyRindex'] = array(%13d,", globals_name,
-	   
-	    base[nstates]);
+    printf("\n  );\n  var $yyRindex= array(%13d,", base[nstates]);
 
     j = 10;
     for (i = nstates + 1; i < 2*nstates; i++)
@@ -661,8 +650,7 @@ output_base()
     }
 
     outline += 2;
-    printf("\n  );\n  $GLOBALS['%s']['yyGindex'] = array(%13d,", globals_name,
-	    base[2*nstates]);
+    printf("\n  );\n  var $yyGindex = array(%13d,", base[2*nstates]);
 
     j = 10;
     for (i = 2*nstates + 1; i < nvectors - 1; i++)
@@ -691,7 +679,7 @@ output_table()
     register int i;
     register int j;
 
-    printf("  $GLOBALS['%s']['yyTable'] = array(%14d,",  globals_name, table[0]);
+    printf("  var $yyTable = array(%14d,", table[0]);
 
     j = 10;
     for (i = 1; i <= high; i++)
@@ -720,9 +708,7 @@ output_check()
     register int i;
     register int j;
 
-    printf(" $GLOBALS['%s']['yyCheck'] = array(%14d,", globals_name,
-	 
-	    check[0]);
+    printf(" var $yyCheck = array(%14d,", check[0]);
 
     j = 10;
     for (i = 1; i <= high; i++)
@@ -885,10 +871,10 @@ output_debug()
     char * prefix = tflag ? "" : "//t";
 
     ++outline;
-    printf("  $GLOBALS['%s']['yyFinal'] = %d;\n",  globals_name, final_state);
+    printf("  var $yyFinal = %d;\n",  final_state);
 
       ++outline;
-      printf( "%s$GLOBALS['%s']['yyRule'] = array(\n", prefix, globals_name);
+      printf( "%svar $yyRule = array(\n", prefix);
       for (i = 2; i < nrules; ++i)
       {
 	  
@@ -968,7 +954,7 @@ output_debug()
 
 	/* need yyName for yyExpecting() */
 
-      printf("  $GLOBALS['%s']['yyName'] =array(",globals_name);
+      printf("  var $yyName= array(");
       symnam = (char **) MALLOC((max+1)*sizeof(char *));
       if (symnam == 0) no_space();
   
