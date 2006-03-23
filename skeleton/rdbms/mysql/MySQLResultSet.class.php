@@ -82,6 +82,7 @@
             }
               
           case 'datetime':
+          case 'date':          
             $row[$key]= &Date::fromString($row[$key]);
             break;
             
