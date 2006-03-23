@@ -77,8 +77,9 @@
       $this->response= &new HttpScriptletResponse();
       $this->response->setStatus($statusCode);
       $this->response->setContent(sprintf(
-        "<h1>HTTP/1.1 %d Internal Server Error</h1>\n<xmp>\n%s</xmp>\n",
+        "<h1>HTTP/1.1 %d %s</h1>\n<xmp>\n%s</xmp>\n",
         $statusCode,
+        $this->message,
         $this->toString()
       ));
     }
