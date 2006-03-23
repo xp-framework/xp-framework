@@ -4,9 +4,7 @@
  * $Id$
  */
  
-  uses (
-    'io.Stream'
-  );
+  uses ('io.Stream');
 
   /**
    * This class can be used to easily create correct csv-files.
@@ -29,8 +27,8 @@
       $colName;
       
     var
-      $headerWritten= false,
-      $delimWritten= true;
+      $headerWritten= FALSE,
+      $delimWritten= TRUE;
     
     /**
      * Set the output stream. The stream must be writeable. If the
@@ -83,7 +81,7 @@
      */    
     function setHeader($array) {
       $this->colName= $array;
-      $this->headerWritten= false;
+      $this->headerWritten= FALSE;
     }
 
     /**
@@ -107,7 +105,7 @@
       );
       // Insert Newline
       $this->stream->write($this->lineDelim);
-      $this->headerWritten= true;
+      $this->headerWritten= TRUE;
     }
 
     /**
@@ -119,16 +117,16 @@
      */    
     function _writeColumn($data= '') {
       if (!$this->delimWritten) $this->stream->write ($this->colDelim);
-      $this->delimWritten= false;
+      $this->delimWritten= FALSE;
 
       if (0 == strlen ($data)) {
         return;
       }
       
       $mustQuote= false;
-      if (false !== strstr ($data, $this->colDelim)) $mustQuote= true;
-      if (false !== strstr ($data, $this->escape)) $mustQuote= true;
-      if (false !== strstr ($data, "\n")) $mustQuote= true;
+      if (FALSE !== strstr ($data, $this->colDelim)) $mustQuote= true;
+      if (FALSE !== strstr ($data, $this->escape)) $mustQuote= true;
+      if (FALSE !== strstr ($data, "\n")) $mustQuote= true;
       
       if ($mustQuote) {
         $data= '"'.str_replace ($this->escape, $this->escape.$this->escape, $data).'"';
@@ -162,7 +160,7 @@
       
       // Insert Newline
       $this->stream->write($this->lineDelim);
-      $this->delimWritten= true;
+      $this->delimWritten= TRUE;
     }
   
   
