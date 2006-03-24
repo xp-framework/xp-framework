@@ -38,7 +38,7 @@
         case 'NULL':    return 'N;';
         case 'boolean': return 'b:'.($var ? 1 : 0).';';
         case 'integer': return 'i:'.$var.';';
-        case 'double':  return 'f:'.$var.';';
+        case 'double':  return 'd:'.$var.';';
         case 'string':  return 's:'.strlen($var).':"'.$var.'";';
         case 'array':
           $s= 'a:'.sizeof($var).':{';
@@ -167,7 +167,7 @@
         'N'   => 'void',
         'b'   => 'boolean',
         'i'   => 'integer',
-        'd'   => 'float',
+        'd'   => 'double',
         's'   => 'string',
         'B'   => new ClassReference('lang.types.Byte'),
         'S'   => new ClassReference('lang.types.Short'),
