@@ -1283,8 +1283,12 @@ base_variable:
 ;
 	
 reference_variable:
-		reference_variable '[' dim_offset ']'	{ compiler::call('fetch_array_dim', array($$, $1, $3 )); }
-	|	reference_variable '{' expr '}'		{ compiler::call('fetch_string_offset', array($$, $1, $3 )); }
+		reference_variable '[' dim_offset ']' { 
+          $$->args[]= array('arrayoffset' => $3);
+        }
+	|	reference_variable '{' expr '}' {
+          $$->args[]= array('stringoffset' => $3);
+        }
 	|	compound_variable			{ $$= $1; }
 ;
 	
