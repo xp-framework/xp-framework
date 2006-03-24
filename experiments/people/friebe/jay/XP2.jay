@@ -237,7 +237,7 @@ statement:
 ;
 
 unticked_statement:
-		'{' inner_statement_list '}'
+		'{' inner_statement_list '}' { $$= $2; }
 	|	T_IF '(' expr ')' statement elseif_list else_single { 
           $$= &PNode::create('If', array(&$3, &$5, &$6, &$7));
         }
@@ -854,7 +854,7 @@ class_constant_declaration:
 ;
 
 echo_expr_list:	
-		echo_expr_list ',' expr { $$[]= &$3; }
+		echo_expr_list ',' expr { $$[]= $3; }
 	|	expr					{ $$= array($1); }
 ;
 
