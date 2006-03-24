@@ -415,7 +415,7 @@ public class Serializer {
             throw new SerializationException("Trying to serialize non-serializable object " + o + " via " + i);
         }
         
-        // System.out.println("Serializing " + o.getClass().getName());
+        // DEBUG System.out.println("Serializing " + o.getClass().getName() + " using " + i);
 
         if (i != null) return (String)i.invoke(o, context);
 
@@ -434,7 +434,12 @@ public class Serializer {
             buffer.append("\";");
 
             f.setAccessible(true);
-            buffer.append(representationOf(f.get(o), invokeableFor(f.getType()), context));
+            Object fieldValue= f.get(o);
+            buffer.append(null == fieldValue ? "N;" : representationOf(
+                fieldValue, 
+                invokeableFor(fieldValue.getClass()), 
+                context
+            ));
             numFields++;
         }
 
