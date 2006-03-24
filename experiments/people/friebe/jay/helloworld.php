@@ -1,3 +1,3 @@
 <?php
-  echo 'Hello, World!', "\n";
+  echo 'Hello, ', $argv[1], "\n";
 ?>
