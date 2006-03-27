@@ -21,6 +21,25 @@
       $cat      = NULL;
     
     /**
+     * Constructor
+     *
+     * @access  public
+     */
+    function __construct() {
+      $this->setHeader('Server', 'Abstract RPC 1.0#/PHP'.phpversion().'/ XP Framework');
+    }
+    
+    /**
+     * Sets SOAP message
+     *
+     * @access  public
+     * @param   scriptlet.rpc.AbstractRpcMessage msg
+     */
+    function setMessage($msg) {
+      $this->message= &$msg;
+    }
+    
+    /**
      * Set trace for debugging
      *
      * @access  public
@@ -28,15 +47,6 @@
      */
     function setTrace(&$cat) {
       $this->cat= &$cat;
-    }
-    
-    /**
-     * Constructor
-     *
-     * @access  public
-     */
-    function __construct() {
-      $this->setHeader('Server', 'Abstract RPC 1.0#/PHP'.phpversion().'/ XP Framework');
     }
   } implements(__FILE__, 'util.log.Traceable');
 ?>

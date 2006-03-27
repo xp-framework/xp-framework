@@ -7,11 +7,11 @@
   uses('scriptlet.rpc.AbstractRpcResponse');
   
   /**
-   * Wraps SOAP response
+   * Wraps XML-RPC response
    *
    * @see scriptlet.HttpScriptletResponse  
    */
-  class SoapRpcResponse extends AbstractRpcResponse {
+  class XmlRpcResponse extends AbstractRpcResponse {
     
     /**
      * Make sure a fault is passed as "500 Internal Server Error"
@@ -26,11 +26,12 @@
       if (NULL !== $this->message->getFault()) {
         $this->setStatus(HTTP_INTERNAL_SERVER_ERROR);
       }
-      
       $this->content= (
         $this->message->getDeclaration()."\n".
         $this->message->getSource(0)
       );
+      
+      $this->cat && $this->cat->debug('>>> ', $this->content);
     }
   }
 ?>
