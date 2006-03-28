@@ -36,12 +36,10 @@ nedit.shellCommands: \
 		$HOME/bin/xpci --class\n\
 	Create XP cli script:Shift+Alt+F:::\n\
 		$HOME/bin/xpci --cmdfile\n\
-	Check file syntax:Alt+C:C:DS:\n\
-		$HOME/bin/neditlint.sh %\n\
-	Contextsensitive help:F1::ID:\n\
-		$HOME/bin/xphelp %\n\
+	PHP contextsensitive help:F1::ID:\n\
+		$HOME/bin/phphelp\n\
 	XP contextsensitive help:Alt+F1::ID:\n\
-		$HOME/bin/xphelp % --xp \n\
+		$HOME/bin/phphelp --xp \n\
 	Execute PHP script:F9::AD:\n\
 		php -q\n\
 	Make accessors:Shift+Alt+A::I:\n\
@@ -270,6 +268,37 @@ nedit.macroCommands: \
 		new()\n\
 		focus_window("last")\n\
 		replace_range(0, 0, prototypes staticPrototypes)\n\
+	}\n\
+	Syntaxcheck@PHP:::: {\n\
+		    res = shell_command("php $HOME/bin/lintphp.php", get_range(0,$text_length))\n\
+		    if (res != "" ) {\n\
+		        pt = search_string(res, "\\n", 0)\n\
+		        er_line = substring(res, 0, pt)\n\
+		        pt = pt + 1\n\
+		        pt2 = search_string(res, "\\n", pt)\n\
+		        er_name = substring(res, pt, pt2)\n\
+		        goto_line_number(er_line)\n\
+		        end = search("$", $cursor, "regex")\n\
+		        select($cursor, end)\n\
+		        calltip(er_name, end, "tipText")\n\
+		    }\n\
+	}\n\
+	Syntaxcheck@XML:Alt+C::: {\n\
+		    res = shell_command("xmllint -noout -", get_range(0,$text_length))\n\
+		    if (res != "" ) {\n\
+		        pt = search_string(res, ":", 0)\n\
+		        er_file= substring(res, 0, pt)\n\
+		        pt = pt + 1\n\
+		        pt2 = search_string(res, ":", pt)\n\
+		        er_line = substring(res, pt, pt2)\n\
+		        pt = pt2 + 1\n\
+		        pt2 = search_string(res, "\\n", pt)\n\
+		        er_text = substring(res, pt, pt2)\n\
+		        goto_line_number(er_line)\n\
+		        end = search("$", $cursor, "regex")\n\
+		        select($cursor, end)\n\
+		        calltip(er_text, end, "tipText")\n\
+		    }\n\
 	}\n
 nedit.bgMenuCommands: \
 	Undo:::: {\n\
