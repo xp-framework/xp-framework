@@ -45,11 +45,7 @@ nedit.shellCommands: \
 	Make accessors:Shift+Alt+A::I:\n\
 		php -q $HOME/bin/mkaccessor.php\n\
 	Check XP Coding standards:Alt+V::ADS:\n\
-		$HOME/bin/xpcsc.pl %\n\
-	CVS Diff:Shift+Alt+V:C:DS:\n\
-		php -q $HOME/bin/cvsdiff.php %\n\
-	Open XP class:Shift+Ctrl+O::ID:\n\
-		/bin/sh -c 'CLASS=`php $HOME/bin/findclass.php`; if [ 0 = $? ]; then nedit $CLASS 1>/dev/null 2>/dev/null & else echo "Class not found."; fi'\n
+		$HOME/bin/xpcsc.pl %\n
 nedit.macroCommands: \
 	Complete Word:Alt+D::: {\n\
 		# Tuning parameters\n\
@@ -270,35 +266,13 @@ nedit.macroCommands: \
 		replace_range(0, 0, prototypes staticPrototypes)\n\
 	}\n\
 	Syntaxcheck@PHP:::: {\n\
-		    res = shell_command("php $HOME/bin/lintphp.php", get_range(0,$text_length))\n\
-		    if (res != "" ) {\n\
-		        pt = search_string(res, "\\n", 0)\n\
-		        er_line = substring(res, 0, pt)\n\
-		        pt = pt + 1\n\
-		        pt2 = search_string(res, "\\n", pt)\n\
-		        er_name = substring(res, pt, pt2)\n\
-		        goto_line_number(er_line)\n\
-		        end = search("$", $cursor, "regex")\n\
-		        select($cursor, end)\n\
-		        calltip(er_name, end, "tipText")\n\
-		    }\n\
+		syntaxcheck_php()\n\
 	}\n\
 	Syntaxcheck@XML:Alt+C::: {\n\
-		    res = shell_command("xmllint -noout -", get_range(0,$text_length))\n\
-		    if (res != "" ) {\n\
-		        pt = search_string(res, ":", 0)\n\
-		        er_file= substring(res, 0, pt)\n\
-		        pt = pt + 1\n\
-		        pt2 = search_string(res, ":", pt)\n\
-		        er_line = substring(res, pt, pt2)\n\
-		        pt = pt2 + 1\n\
-		        pt2 = search_string(res, "\\n", pt)\n\
-		        er_text = substring(res, pt, pt2)\n\
-		        goto_line_number(er_line)\n\
-		        end = search("$", $cursor, "regex")\n\
-		        select($cursor, end)\n\
-		        calltip(er_text, end, "tipText")\n\
-		    }\n\
+		syntaxcheck_xml()\n\
+	}\n\
+	Open XP class by FQCN@PHP:Shift+Ctrl+O::R: {\n\
+		open_file_xpclass()\n\
 	}\n
 nedit.bgMenuCommands: \
 	Undo:::: {\n\
