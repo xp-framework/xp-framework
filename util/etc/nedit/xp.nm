@@ -1,0 +1,49 @@
+# XP Framework Macro file for Nedit
+#
+# $Id$
+#
+
+# Copy this file to $HOME/.nedit/xp.nm
+
+define syntaxcheck_php {
+  res = shell_command("php $HOME/bin/lintphp.php", get_range(0,$text_length))
+  if (res != "" ) {
+     pt = search_string(res, "\n", 0)
+     er_line = substring(res, 0, pt)
+     pt = pt + 1
+     pt2 = search_string(res, "\n", pt)
+     er_name = substring(res, pt, pt2)
+     goto_line_number(er_line)
+     end = search("$", $cursor, "regex")
+     select($cursor, end)
+     calltip(er_name, end, "tipText")
+  }
+}
+
+define syntaxcheck_xml {
+  res = shell_command("xmllint -noout -", get_range(0,$text_length))
+  if (res != "" ) {
+     pt = search_string(res, ":", 0)
+     er_file= substring(res, 0, pt)
+     pt = pt + 1
+     pt2 = search_string(res, ":", pt)
+     er_line = substring(res, pt, pt2)
+     pt = pt2 + 1
+     pt2 = search_string(res, "\n", pt)
+     er_text = substring(res, pt, pt2)
+     goto_line_number(er_line)
+     end = search("$", $cursor, "regex")
+     select($cursor, end)
+     calltip(er_text, end, "tipText")
+  }
+}
+
+define open_file_xpclass {
+  res= shell_command("php $HOME/bin/findclass.php " get_selection(), "")
+  if ("Class/sapi" != substring(res, 0, 10)) {
+    filename= split(res, "\n")
+    open(filename[0])
+  } else {
+    calltip(res, -1, "tipText")
+  }
+}
