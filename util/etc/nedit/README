@@ -8,7 +8,8 @@ This directory contains the following files:
 
 <pre>
 .Xresources.in    Make NEdit look nicer
-.nedit            NEdit configuration
+nedit.rc          NEdit configuration (put into $HOME/.nedit/)
+xp.nm             Macros for use with the XP framework (put into $HOME/.nedit/)
 README            This file
 </pre>
 
