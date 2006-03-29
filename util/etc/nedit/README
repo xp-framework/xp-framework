@@ -25,15 +25,20 @@ NEdit configuration containing the following goodies:
 . Modified syntax highlighting scheme for XP, PHP5
 
 . Shortcuts: 
-  Alt+C       - check script syntax
+  Alt+C       - check syntax (for PHP, XML)
   F9          - execute script
   Alt+#       - add bar comment around selection
-  F1          - PHP documentation for selection
+  F1          - documentation for selection (PHP, XP, Java)
+
     
 . XP extensions (see util/bin/xpci)  
   Shift+Alt+D - insert class file header
   Shift+Alt+C - insert class template
   Alt+D       - insert method documentation
   Alt+F1      - XP api doc for class (from selection)
+
+. right mouse click popup-menu support for
+  - documentation for selection (PHP, XP, Java)
+  - open XP class
 
 <EOF>

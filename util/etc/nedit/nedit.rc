@@ -36,10 +36,6 @@ nedit.shellCommands: \
 		$HOME/bin/xpci --class\n\
 	Create XP cli script:Shift+Alt+F:::\n\
 		$HOME/bin/xpci --cmdfile\n\
-	PHP contextsensitive help:F1::ID:\n\
-		$HOME/bin/phphelp\n\
-	XP contextsensitive help:Alt+F1::ID:\n\
-		$HOME/bin/phphelp --xp \n\
 	Execute PHP script:F9::AD:\n\
 		php -q\n\
 	Make accessors:Shift+Alt+A::I:\n\
@@ -265,7 +261,7 @@ nedit.macroCommands: \
 		focus_window("last")\n\
 		replace_range(0, 0, prototypes staticPrototypes)\n\
 	}\n\
-	Syntaxcheck@PHP:::: {\n\
+	Syntaxcheck@PHP:Alt+C::: {\n\
 		syntaxcheck_php()\n\
 	}\n\
 	Syntaxcheck@XML:Alt+C::: {\n\
@@ -273,22 +269,28 @@ nedit.macroCommands: \
 	}\n\
 	Open XP class by FQCN@PHP:Shift+Ctrl+O::R: {\n\
 		open_file_xpclass()\n\
+	}\n\
+	Apidoc PHP@PHP:F1::R: {\n\
+		browse_help_php(get_selection())\n\
+	}\n\
+	Apidoc XP@PHP:Alt+F1::R: {\n\
+		browse_help_xp(get_selection())\n\
+	}\n\
+	Apidoc Java@Java:F1::R: {\n\
+		browse_help_java(get_selection())\n\
 	}\n
 nedit.bgMenuCommands: \
-	Undo:::: {\n\
-		undo()\n\
+	Apidoc PHP@PHP:::R: {\n\
+		browse_help_php(get_selection())\n\
 	}\n\
-	Redo:::: {\n\
-		redo()\n\
+	Apidoc XP@PHP:::R: {\n\
+		browse_help_xp(get_selection())\n\
 	}\n\
-	Cut:::R: {\n\
-		cut_clipboard()\n\
+	Apidoc Java@Java:::R: {\n\
+		browse_help_java(get_selection())\n\
 	}\n\
-	Copy:::R: {\n\
-		copy_clipboard()\n\
-	}\n\
-	Paste:::: {\n\
-		paste_clipboard()\n\
+	Open XP class by FQCN@PHP:::R: {\n\
+		open_file_xpclass()\n\
 	}\n
 nedit.highlightPatterns: C:1:0{\n\
 		comment:"/\\*":"\\*/"::Comment::\n\

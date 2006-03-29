@@ -47,3 +47,27 @@ define open_file_xpclass {
     calltip(res, -1, "tipText")
   }
 }
+
+define open_browser {
+  url= $1
+  
+  browser= getenv("BROWSER")
+  if (length(browser) == 0) {
+    browser= "firefox"
+  }
+  
+  res= shell_command(browser " '" url "'", "")
+  if (res != "") dialog("Executing results: " res)
+}
+
+define browse_help_php {
+  open_browser("http://php3.de/" $1)
+}
+
+define browse_help_xp {
+  open_browser("http://xp-framework.net/search.php?keyword=" $1)
+}
+
+define browse_help_java {
+  open_browser("http://javadoc.xp-framework.net/search/?pattern=" $1 "&selected=c&results=10&go=Go")
+}
