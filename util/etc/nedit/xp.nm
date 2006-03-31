@@ -41,14 +41,13 @@ define syntaxcheck_xml {
 define syntaxcheck_sh {
   tmpfile= shell_command("mktemp -t nedit", "")
   shell_command("cat - > " tmpfile, get_range(0, $text_length))
-  shell_command("rm " tmpfile)
   res= shell_command("/bin/sh -n " tmpfile, "")
+  shell_command("rm " tmpfile, "")
   
   if (res != "") {
     pt= search_string(res, ":", 0) + 1
     pt2= search_string(res, ":", pt)
     err_line= substring(res, pt, pt2)
-    dialog(err_line)
     pt= pt2 + 1
     pt2= search_string(res, "\n", pt)
     err_text= substring(res, pt, pt2)
