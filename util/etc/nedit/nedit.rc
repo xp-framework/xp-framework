@@ -276,8 +276,20 @@ nedit.macroCommands: \
 	Apidoc XP@PHP:Alt+F1::R: {\n\
 		browse_help_xp(get_selection())\n\
 	}\n\
+	Syntaxcheck@Sh Ksh Bash:Alt+C::: {\n\
+		syntaxcheck_sh()\n\
+	}\n\
 	Apidoc Java@Java:F1::R: {\n\
 		browse_help_java(get_selection())\n\
+	}\n\
+	Grep:::: {\n\
+		if (-1 == $selection_start)\n\
+		{\n\
+		    nGrep()\n\
+		} else\n\
+		{\n\
+		    nGrep(get_selection())\n\
+		}\n\
 	}\n
 nedit.bgMenuCommands: \
 	Apidoc PHP@PHP:::R: {\n\
