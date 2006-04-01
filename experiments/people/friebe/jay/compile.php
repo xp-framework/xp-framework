@@ -5,19 +5,6 @@
 
   uses('OpcodeHandler', 'OpcodeArray', 'PNode', 'util.cmd.Console');
   
-  class Variable extends Object {
-    var 
-      $name   = '';
-
-    function __construct($name) {
-      $this->name= $name;
-    }
-
-    function toString() {
-      return 'php.Variable('.$this->__id.')@['.$this->name.']';
-    }
-  }
-
   // {{{ &lang.Object newinstance(string class, string bytes)
   //     Instance creation "expression"
   function &newinstance($class, $bytes) {
