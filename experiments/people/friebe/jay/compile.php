@@ -76,7 +76,7 @@
   function set(&$var, $value, &$context) {
     if ('ObjectReference' == $var->type) {
       $pointer= &value($var->args[0], $context);
-      Console::writeLine('MEMBER ', $pointer->id, '->', $var->args[1], ' := ', PNode::stringOf($value));
+      // DEBUG Console::writeLine('MEMBER ', $pointer->id, '->', $var->args[1], ' := ', PNode::stringOf($value));
       $GLOBALS['objects'][$pointer->id]['members'][$var->args[1]]= $value;
     } else {
       // DEBUG Console::writeLine('VAR ', $var->args[0], ' := ', PNode::stringOf($value));
