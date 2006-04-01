@@ -18,14 +18,14 @@ Details: .Xresources.in
 Add this to your .Xresources file. Use $ xrdb .Xresources to 
 reload .Xresources' contents.
 
-Details: .nedit
+Details: nedit.rc
 ---------------
 NEdit configuration containing the following goodies:
 
 . Modified syntax highlighting scheme for XP, PHP5
 
 . Shortcuts: 
-  Alt+C       - check syntax (for PHP, XML)
+  Alt+C       - check syntax (for PHP, XML, Shell)
   F9          - execute script
   Alt+#       - add bar comment around selection
   F1          - documentation for selection (PHP, XP, Java)
@@ -40,5 +40,26 @@ NEdit configuration containing the following goodies:
 . right mouse click popup-menu support for
   - documentation for selection (PHP, XP, Java)
   - open XP class
+
+Details: xp.nm
+--------------
+Marcos used by Menu commands in nedit.rc; here are the routines
+for opening the browser and executing syntaxchecks.
+
+Installation instructions
+-------------------------
+
+Install nedit.rc into the directory ~/.nedit/ (by copying or -
+to always stay up-to-date symlinking it to the version in the
+repository).
+
+Copy - or symlink - xp.nm into that folder as well and create a
+autoload.nm if it does not yet exist.
+Put the line
+
+load_macro_file(getenv("HOME") "/.nedit/xp.nm")
+
+into it, so our macros will automatically be loaded.
+That's it.
 
 <EOF>
