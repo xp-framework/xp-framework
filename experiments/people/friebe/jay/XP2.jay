@@ -194,7 +194,7 @@ class Parser {
 %% /* Rules */
 
 start:
-	top_statement_list  { echo PNode::stringOf($$); }
+	top_statement_list  { /* echo PNode::stringOf($$); */ }
 ;
 
 top_statement_list:
@@ -1289,7 +1289,9 @@ reference_variable:
 	|	reference_variable '{' expr '}' {
           $$->args[]= array('stringoffset' => $3);
         }
-	|	compound_variable			{ $$= $1; }
+	|	compound_variable { 
+          $$= $1; 
+        }
 ;
 	
 
@@ -1365,7 +1367,9 @@ encaps_list:
 	|	encaps_list '{'		{ $2->u_constant_value_lval = '{'; compiler::call('zend_do_add_char', array($$, $1, $2 )); }
 	|	encaps_list '}'		{ $2->u_constant_value_lval = '}'; compiler::call('zend_do_add_char', array($$, $1, $2 )); }
 	|	encaps_list T_OBJECT_OPERATOR  {  $2->u_constant_value_lval = '-';  compiler::call('zend_do_add_char', array($tmp, $1, $2 ));  $2->u_constant_value_lval = '>'; compiler::call('zend_do_add_char', array($$, $tmp, $2 )); }
-	|	/* empty */			{ compiler::call('zend_do_init_string', array($$ )); }
+	|	/* empty */	{ 
+          $$= ''; 
+        }
 
 ;
 

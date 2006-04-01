@@ -1,3 +1,5 @@
 <?php
-  echo 'Hello, ', $argv[1], "\n";
+  $name= $argv[1];
+  echo 'Hello, ', $name, "!\n";
+  exit(0);
 ?>

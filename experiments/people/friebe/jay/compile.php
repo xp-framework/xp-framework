@@ -3,7 +3,15 @@
   require('Parser.php');
   require('Lexer.php');
 
-  uses('OpcodeHandler', 'OpcodeArray', 'PNode', 'util.cmd.Console');
+  uses('OpcodeHandler', 'PNode', 'util.cmd.Console');
+  
+  class ObjectInstance extends Object {
+    var $id= NULL;
+    
+    function __construct($id) {
+      $this->id= $id;
+    }
+  }
   
   // {{{ &lang.Object newinstance(string class, string bytes)
   //     Instance creation "expression"
@@ -38,66 +46,217 @@
   //     Creates an opcode handler
   function &opcode($bytes) {
     return newinstance('OpcodeHandler', '{
-      function handle(&$context, &$args) {
+      function handle(&$context, &$node) {
         '.$bytes.'
       }
     }');
   }
   // }}}
+  
+  function fetchfrom($storage, $id, $name, &$context) {
+    if (!array_key_exists($id, $storage)) {
+      compiler::error(E_NOTICE, 'Undefined '.$name.' '.$id.' in '.$context['__name']);
+      return NULL;
+    }
+    
+    return $storage[$id];
+  }
+  
+  function fetch(&$var, &$context) {
+    $value= fetchfrom($context['variables'], $var->args[0], 'variable', $context);
+          
+    // Lookup variable contents
+    if ($var->args[1]['arrayoffset']) {
+      return $value[$var->args[1]['arrayoffset']];
+    } else {
+      return $value;
+    }
+  }
+  
+  function set(&$var, $value, &$context) {
+    if ('ObjectReference' == $var->type) {
+      $pointer= &value($var->args[0], $context);
+      Console::writeLine('MEMBER ', $pointer->id, '->', $var->args[1], ' := ', PNode::stringOf($value));
+      $GLOBALS['objects'][$pointer->id]['members'][$var->args[1]]= $value;
+    } else {
+      // DEBUG Console::writeLine('VAR ', $var->args[0], ' := ', PNode::stringOf($value));
+      $context['variables'][$var->args[0]]= $value;
+    }
+  }
+  
+  function methodcall(&$method, &$context) {
+
+    // Find method declaration
+    $static= is_scalar($method->args[0]);
+    if ($static) {
+      $class= $method->args[0];
+      // DEBUG Console::writeLine('INVOKE: ', $class.'::'.$method->args[1]);
+    } else {
+      $pointer= &value($method->args[0], $context);
+      $class= $GLOBALS['objects'][$pointer->id]['name'];
+      // DEBUG Console::writeLine('INVOKE: ', $class.'->'.$method->args[1]);
+    }
+
+    foreach ($context['classes'][$class]->args[5] as $decl) {
+      if ($decl->type != 'MethodDeclaration' || $decl->args[4] != $method->args[1]) continue;
+      
+      // We've found the method declaration, now:
+      // - Build argument list
+      $callcontext= $context;
+      $callcontext['variables']= array();
+      for ($i= 0, $s= sizeof($method->args[2]); $i < $s; $i++) {
+        $argumentName= $decl->args[5][$i]->args[2];
+        $callcontext['variables'][$argumentName]= value($method->args[2][$i], $context);
+      }
+      
+      // DEBUG var_dump($method->args[0].'::'.$method->args[1], $callcontext['variables']);
+      
+      // - Execute
+      $context['__name']= $class.($static ? '::' : '->').$method->args[1];
+      if (!$static) $callcontext['variables']['$this']= &$pointer;
+      return execute($decl->args[7], $callcontext);
+    }
+    
+    // Undefined method
+    compiler::error(E_ERROR, 'Call to undefined method '.$method->toString());
+  }
+
+  function builtincall(&$function, &$context) {
+    $arguments= array();
+    for ($i= 0, $s= sizeof($function->args[1]); $i < $s; $i++) {
+      $arguments[]= value($function->args[1][$i], $context);
+    }
+    
+    return call_user_func_array($function->args[0], $arguments);
+  }
+  
+  function createobject(&$object, &$context) {
+    $id= microtime();
+    $classname= $object->args[0]->args[0];
+    if (!isset($context['classes'][$classname])) {
+      compiler::error(E_ERROR, 'Unknown class '.$classname);
+    }
+
+    // Register to object storage    
+    $GLOBALS['objects'][$id]= array(
+      'name'    => $classname,
+      'members' => array()
+    );
+    $pointer= &new ObjectInstance($id); 
+    
+    // Call constructor if existant
+    foreach ($context['classes'][$classname]->args[5] as $decl) {
+      if ($decl->type != 'ConstructorDeclaration') continue;
+      
+      // Found a constructor, invoke it!
+      $callcontext= $context;
+      $callcontext['variables']= array();
+      for ($i= 0, $s= sizeof($object->args[1]); $i < $s; $i++) {
+        $argumentName= $decl->args[2][$i]->args[2];
+        $callcontext['variables'][$argumentName]= value($object->args[1][$i], $context);
+      }
+      
+      // - Execute, discarding return values (constructors cannot return anything!)
+      $callcontext['variables']['$this']= &$pointer;
+      $callcontext['__name']= 'new '.$classname;
+      execute($decl->args[4], $callcontext);
+    }
+
+    // Return pointer to storage
+    return $pointer;
+  }
+  
+  function value(&$node, &$context) {
+    if (is_a($node, 'PNode')) {
+      switch ($node->type) {
+        case 'Variable':
+          return fetch($node, $context);
+          break;
+         
+        case 'MethodCall':
+          return methodcall($node, $context);
+          break;
+
+        case 'New':
+          return createobject($node, $context);
+          break;
+        
+        case 'ObjectReference':
+          $pointer= &value($node->args[0], $context);
+
+          return fetchfrom(
+            $GLOBALS['objects'][$pointer->id]['members'], 
+            $node->args[1], 
+            'member of '.$pointer->id, 
+            $context
+          );
+          break;
+
+        case 'FunctionCall':
+          if (function_exists($node->args[0])) {
+            return builtincall($node, $context);
+          }
+          // TBI
+          break;
+
+        default:
+          compiler::error(E_ERROR, 'Cannot retrieve value representation of '.$node->toString());
+          // Bails
+      }
+    } else if ('"' == $node{0}) { // Double-quoted string
+      $value= '';
+      for ($i= 1, $s= strlen($node)- 1; $i < $s; $i++) {
+        if ('\\' == $node{$i}) {
+          switch ($node{$i+ 1}) {
+            case 'r': $value.= "\r"; break;
+            case 'n': $value.= "\n"; break;
+            case 't': $value.= "\b"; break;
+          }
+          $i++;
+        } else {
+          $value.= $node{$i};
+        }
+      }
+      return $value;
+    } else if ("'" == $node{0}) { // Single-quoted string
+      return substr($node, 1, -1);
+    }
+
+    return $node;
+  }
 
   // {{{ handlers
   $handlers= array();
-  $handlers['zend_do_try']= &opcode('
-    $context["E"]= NULL;
+  $handlers['Assign']= &opcode('
+    set($node->args[0], value($node->args[1], $context), $context);
   ');
-  $handlers['zend_do_begin_catch']= &opcode('
-    if (!$context["E"]) {
-
-      // Search for end catch opcode
-      for ($i= $context["O"]->offset; $i < $context["O"]->size; $i++) {
-        if ("zend_do_end_catch" != $context["O"]->opcodes[$i][0]) continue;
-        $context["O"]->offset= $i- 1;
-        return;
+  $handlers['Echo']= &opcode('
+    foreach ($node->args[0] as $arg) {
+      $value= value($arg, $context);
+      
+      if (is_scalar($value)) {
+        echo $value;
+      } else if (is_array($value)) {
+        echo "Array";
+      } else if (is_object($value)) {
+        if (method_exists($value, "toString")) echo $value->toString(); else echo "Object";
       }
     }
-
-    $context["symbols"][$args[2]]= &$context["E"];
   ');
-  $handlers['zend_do_end_catch']= &opcode('
-    $context["E"]= NULL;
-  ');
-  $handlers['zend_do_throw']= &opcode('
-    $exception= &$context["T"];
-
-    // Search for catch opcode
-    for ($i= $context["O"]->offset; $i < $context["O"]->size; $i++) {
-      if ("zend_do_begin_catch" != $context["O"]->opcodes[$i][0]) continue;
-
-      // Check whether exception was caught by the found opcode
-      if (!is($context["O"]->opcodes[$i][1][1], $exception)) continue;
-
-      // We have found the correct opcode
-      $context["E"]= &$exception;
-      $context["O"]->offset= $i- 1;
-      return;
+  $handlers['Exit']= &opcode('
+    if (isset($node->args[0])) {
+      $context["exitcode"]= value($node->args[0], $context);
     }
-
-    xp::error("Uncaught exception ".$exception->toString());
+    $context["offset"]= $context["end"];
   ');
-  $handlers['zend_do_begin_new_object']= &opcode('
-    $classname= xp::reflect($args[1]);
-    if (!class_exists($classname)) return;
-    $context["T"]= new $classname();
+  $handlers['Return']= &opcode('
+    if (isset($node->args[0])) {
+      $context["return"]= value($node->args[0], $context);
+    }
+    $context["offset"]= $context["end"];
   ');
-  $handlers['zend_do_begin_class_member_function_call']= &opcode('
-    execute($GLOBALS["opcodes"][$args[0]."::".$args[1]]);
-  ');
-  $handlers['zend_do_echo']= &opcode('
-    echo xp::stringOf($args[0]);
-  ');
-  $handlers['do_assign']= &opcode('
-    Console::writeLine("-> Setting ", $args[0]->name, " to ", xp::stringOf($args[1]));
-    $context["symbols"][$args[0]->name]= $args[1];
+  $handlers['ClassDeclaration']= &opcode('
+    $context["classes"][$node->args[2]]= $node;
   ');
   // }}}
   
@@ -122,41 +281,50 @@
     return 1;
   }
   
-  function execute(&$opcodes) {
-    global $handlers;
+  function execute($nodes, $context) {
+    
+    $i= 0;
+    $context['offset']= &$i;
+    $context['return']= 0;
+    $context['end']= sizeof($nodes);
 
-    Console::writeLine('+++ Executing ', $opcodes->hashCode());
-    $context= array('O' => &$opcodes);
-    for ($opcodes->offset= 0; $opcodes->offset < $opcodes->size; $opcodes->offset++) {
-      $opcodes->dump($opcodes->offset);
-
-      $id= $opcodes->opcodes[$opcodes->offset][0];
-      if (!isset($handlers[$id])) {
-        // DEBUG Console::writeLinef('Unknown opcode "%s"', $id);
+    // DEBUG Console::writeLine(PNode::stringOf($context), '>>>');
+    
+    for ($i= 0, $s= $context['end']; $i < $s; $i++) {
+      $id= $nodes[$i]->type;
+      if (!isset($context['handlers'][$id])) {
+        compiler::error(E_NOTICE, 'Unknown node '.$id);
         continue;
       }
-      $handlers[$id]->handle(
-        $context, 
-        $opcodes->opcodes[$opcodes->offset][1]
-      );
 
-      // $opcodes->dump($opcodes->offset);
+      // DEBUG echo $context['__name'], ' *** ', $nodes[$i]->toString(), ' ***', "\n";
+      $context['handlers'][$id]->handle(
+        $context, 
+        $nodes[$i]
+      );
     }
-    Console::writeLine('--- Done executing ', $opcodes->hashCode());
+
+    // Console::writeLine('>>> returned ', xp::stringOf($context['return']));
+    
+    return $context['return'];
   }
   
   // {{{ compile
-  $CG['package']= NULL;
-  $CG['class']= NULL;
-  $CG['imports']= array();
-  $opcodes[NULL]= &new OpcodeArray();
   $parser= &new Parser();
   $parser->debug= FALSE;
-  $parser->yyparse(new AspectTokenizer(file_get_contents($argv[1]), $argv[1]));
+  $nodes= $parser->yyparse(new AspectTokenizer(file_get_contents($argv[1]), $argv[1]));
   xp::gc();
   // }}}
   
   // {{{ execute
-  // execute($opcodes[NULL]);
+  $context= array();
+  $context['__name']= '<main>';
+  $context['handlers']= $handlers;
+  array_shift($argv);
+  $context['variables']= array();
+  $context['variables']['$argc']= $argc;
+  $context['variables']['$argv']= $argv;
+  
+  execute($nodes, $context);
   // }}}
 ?>

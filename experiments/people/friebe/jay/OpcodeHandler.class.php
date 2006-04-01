@@ -16,9 +16,10 @@
      * Handle this opcode
      *
      * @access  public
-     * @param   mixed[] args
+     * @param   &mixed context
+     * @param   &PNode node
      */
-    function handle($args) { }
+    function handle(&$context, &$node) { }
   
   }
 ?>
