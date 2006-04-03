@@ -55,6 +55,10 @@
       return $n;
     }
     
+    function __sleep() {
+      return array('type', 'args');
+    }
+    
     function toString() {
       return (
         $this->type.'Node('.implode(', ', array_map(array(&$this, 'stringOf'), $this->args)).')'
