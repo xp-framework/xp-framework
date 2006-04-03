@@ -5,5 +5,5 @@ for ($a = 0, $i = 010; $i++ <= $damnLargeNumberWithDamnLargeName; $i++) {
     trap that people like to test against */
     And so i gave it a try \"
     ";
-  echo $i;
+  echo $i, "\n";
 }
