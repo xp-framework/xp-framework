@@ -149,7 +149,7 @@ class AspectTokenizer extends Object {
 	}
 
 	function tokenGetAll($source){
-		$tokens= token_get_all($source);
+		$tokens= token_get_all('<?php '.$source.' ?>');
         $return= array();
         $offset= 0;
         for ($id= 0, $s= sizeof($tokens); $id < $s; $id++) {
