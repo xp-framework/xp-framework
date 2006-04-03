@@ -50,9 +50,20 @@
   }
   // }}}
   
+  function error($level, $message) {
+    switch ($level) {
+      case E_ERROR:
+      case E_CORE_ERROR:
+      case E_COMPILE_ERROR:
+        xp::error($message);
+        // Bails out
+    }
+    echo '*** ', $message, "\n";
+  }
+  
   function fetchfrom($storage, $id, $name, &$context) {
     if (!array_key_exists($id, $storage)) {
-      compiler::error(E_NOTICE, 'Undefined '.$name.' '.$id.' in '.$context['__name']);
+      error(E_NOTICE, 'Undefined '.$name.' '.$id.' in '.$context['__name']);
       return NULL;
     }
     
@@ -115,7 +126,7 @@
     }
     
     // Undefined method
-    compiler::error(E_ERROR, 'Call to undefined method '.$method->toString());
+    error(E_ERROR, 'Call to undefined method '.$method->toString());
   }
 
   function builtincall(&$function, &$context) {
@@ -131,7 +142,7 @@
     $id= microtime();
     $classname= $object->args[0]->args[0];
     if (!isset($context['classes'][$classname])) {
-      compiler::error(E_ERROR, 'Unknown class '.$classname);
+      error(E_ERROR, 'Unknown class '.$classname);
     }
 
     // Register to object storage    
@@ -197,7 +208,7 @@
           break;
 
         default:
-          compiler::error(E_ERROR, 'Cannot retrieve value representation of '.$node->toString());
+          error(E_ERROR, 'Cannot retrieve value representation of '.$node->toString());
           // Bails
       }
     } else if ('"' == $node{0}) { // Double-quoted string
@@ -235,7 +246,7 @@
     for ($i= 0, $s= $context['end']; $i < $s; $i++) {
       $id= $nodes[$i]->type;
       if (!isset($context['handlers'][$id])) {
-        compiler::error(E_NOTICE, 'Unknown node '.$id);
+        error(E_NOTICE, 'Unknown node '.$id);
         continue;
       }
 
