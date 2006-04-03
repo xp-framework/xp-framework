@@ -14,9 +14,7 @@
   class PNode extends Object {
     var
       $type= '',
-      // $parent= NULL,
-      $args= array(),
-      $indent= '';
+      $args= array();
     
     function stringOf($a, $indent= '') {
       if (is_array($a)) {
