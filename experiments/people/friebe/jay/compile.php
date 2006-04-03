@@ -34,6 +34,8 @@
   $nodes= $parser->yyparse(new AspectTokenizer(file_get_contents($argv[1]), $argv[1]));
   xp::gc();
   
+  isset($argv[2]) && Console::writeLine(PNode::stringOf($nodes));
+  
   $out= &new File($argv[1].'c');
   try(); {
     FileUtil::setContents($out, serialize($nodes));
