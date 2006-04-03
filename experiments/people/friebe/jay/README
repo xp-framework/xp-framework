@@ -15,14 +15,21 @@ Here's an overview.
 Getting started
 ---------------
 * Compile phpJay using "make"
+
 * Run "./generate_parser" for *nix like OS 
   or "/bin/sh generate_parser.sh" from Cygwin.
-* Run "php compile.php test.php"
+
+* Run "php compile.php helloworld.php"
+
+* Run "php execute.php helloworld.phpc NAME"
+  (replace NAME by your name)
+
+
 NOTE:
-for a clean compile use gcc version 3.3
-on my system before make I did:
-export CC=/usr/bin/gcc-3.3.6
-gcc 4.0.3 will also work but will generate some warnings.
+  For a clean compile use gcc version 3.3 on my system before make I did:
+  $ export CC=/usr/bin/gcc-3.3.6
+  gcc 4.0.3 will also work but will generate some warnings.
+
 
 Related information
 -------------------
