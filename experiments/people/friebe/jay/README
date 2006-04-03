@@ -19,9 +19,9 @@ Getting started
 * Run "./generate_parser" for *nix like OS 
   or "/bin/sh generate_parser.sh" from Cygwin.
 
-* Run "php compile.php helloworld.php"
+* Run "php compile.php helloworld.xp"
 
-* Run "php execute.php helloworld.phpc NAME"
+* Run "php execute.php helloworld.xpc NAME"
   (replace NAME by your name)
 
 

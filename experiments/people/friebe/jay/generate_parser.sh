@@ -1,4 +1,4 @@
 #!/bin/sh
 # $Id$
-./phpJay.exe -cv -g _PHP_PARSER < skeleton.xp XP2.jay > Parser.php
+./phpJay.exe -cv -g _PHP_PARSER < xp-skeleton.in XP2.jay > Parser.php
 
