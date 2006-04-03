@@ -175,6 +175,8 @@
   }
   
   function value(&$node, &$context) {
+    if (!$context) xp::error('value() invoked outside of context');
+    
     if (is_a($node, 'PNode')) {
       switch ($node->type) {
         case 'Variable':
@@ -207,6 +209,24 @@
           // TBI
           break;
 
+        case 'Binary':
+          switch ($node->args[2]) {
+            case '<=':
+              return value($node->args[0], $context) <= value($node->args[1], $context);
+              break;
+            
+            default:
+              error(E_ERROR, 'Unsupported binary operator '.$node->args[2]);
+              // Bails
+          }
+          break;
+        
+        case 'PreInc':
+          $new= value($node->args[0], $context)+ 1;
+          set($node->args[0], $new, $context);
+          return $new;
+          break;
+        
         default:
           error(E_ERROR, 'Cannot retrieve value representation of '.$node->toString());
           // Bails
@@ -244,28 +264,54 @@
     // DEBUG Console::writeLine(PNode::stringOf($context), '>>>');
     
     for ($i= 0, $s= $context['end']; $i < $s; $i++) {
-      $id= $nodes[$i]->type;
-      if (!isset($context['handlers'][$id])) {
-        error(E_NOTICE, 'Unknown node '.$id);
-        continue;
-      }
-
-      // DEBUG echo $context['__name'], ' *** ', $nodes[$i]->toString(), ' ***', "\n";
-      $context['handlers'][$id]->handle(
-        $context, 
-        $nodes[$i]
-      );
+      handle($nodes[$i], $context);
     }
 
     // Console::writeLine('>>> returned ', xp::stringOf($context['return']));
     
     return $context['return'];
   }
+  
+  function handle(&$node, &$context) {
+    $id= $node->type;
+    if (!isset($context['handlers'][$id])) {
+      error(E_NOTICE, 'Unknown node '.$id);
+      return;
+    }
+
+    // echo $context['__name'], ' *** ', $node->toString(), ' ***', "\n";
+    $context['handlers'][$id]->handle(
+      $context, 
+      $node
+    );
+  }
 
   // {{{ handlers
   $handlers= array();
   $handlers['Assign']= &opcode('
     set($node->args[0], value($node->args[1], $context), $context);
+  ');
+  $handlers['PreInc']= &opcode('
+    $new= value($node->args[0], $context)+ 1;
+    set($node->args[0], $new, $context);
+  ');
+  $handlers['For']= &opcode('
+    // for (init; condition; loop) { statements }
+    // init
+    foreach ($node->args[0] as $arg) {
+      handle($arg, $context);
+    }
+    
+    while (value($node->args[1][0], $context)) {  // condition
+    
+      // statements 
+      foreach ($node->args[3] as $arg) {
+        handle($arg, $context);
+      }
+      
+      // loop
+      handle($node->args[2][0], $context);
+    }
   ');
   $handlers['Echo']= &opcode('
     foreach ($node->args[0] as $arg) {
