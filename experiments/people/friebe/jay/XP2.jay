@@ -865,8 +865,8 @@ for_expr:
 ;
 
 non_empty_for_expr:
-		non_empty_for_expr ',' expr { $$[]= &$3; }
-	|	expr					    { $$= array(&$1); }
+		non_empty_for_expr ',' expr { $$[]= $3; }
+	|	expr					    { $$= array($1); }
 ;
 
 expr_without_variable:	
