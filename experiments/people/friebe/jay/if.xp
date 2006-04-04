@@ -1,0 +1,11 @@
+function greet($name) {
+  printf("Hello %s\n", $name);
+}
+
+if (!$argv[1]) {
+  greet('unknown');
+} elseif ('-u' == $argv[1]) {
+  greet(getenv('USER'));
+} else {
+  greet($argv[1]);
+}
