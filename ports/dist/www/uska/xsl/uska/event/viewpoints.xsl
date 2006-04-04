@@ -49,7 +49,7 @@
         <th>Durchschnitt</th>
       </tr>
       <xsl:for-each select="player">
-        <xsl:sort select="@points" order="descending"/>
+        <xsl:sort select="@points" order="descending" data-type="number"/>
         <tr class="list_{position() mod 2}">
           <td>
             <xsl:value-of select="concat(@firstname, ' ', @lastname)"/>
