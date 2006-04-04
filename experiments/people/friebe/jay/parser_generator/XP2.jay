@@ -250,7 +250,7 @@ unticked_statement:
 	|	T_DO statement T_WHILE '(' expr ')' ';' {
           $$= &PNode::create('DoWhile', array(&$2, &$5));
         }
-	|	T_FOR '(' for_expr ';' for_expr ';' for_expr ')' for_statement {
+	|	T_FOR '(' for_expr ';' for_expr ';' for_expr ')' statement {
           $$= &PNode::create('For', array(&$3, &$5, &$7, &$9));
         }
 	|	T_SWITCH '(' expr ')' switch_case_list {
@@ -293,11 +293,11 @@ unticked_statement:
 	|	T_FOREACH '(' variable { compiler::call('zend_do_foreach_begin', array($1, $2, $3, 1 )); } T_AS 
 		{ compiler::call('zend_do_foreach_fetch', array($1, $2, $5 )); } 
 		foreach_variable foreach_optional_arg ')' { compiler::call('zend_do_foreach_cont', array($1, $5, $7, $8 )); } 
-		foreach_statement { compiler::call('zend_do_foreach_end', array($1, $5 )); }
+		statement { compiler::call('zend_do_foreach_end', array($1, $5 )); }
 	|	T_FOREACH '(' expr_without_variable { compiler::call('zend_do_foreach_begin', array($1, $2, $3, 0 )); } T_AS 
 		{ compiler::call('zend_do_foreach_fetch', array($1, $2, $5 )); } 
 		w_variable foreach_optional_arg ')' { compiler::call('zend_do_foreach_cont', array($1, $5, $7, $8 )); } 
-		foreach_statement { compiler::call('zend_do_foreach_end', array($1, $5 )); }
+		statement { compiler::call('zend_do_foreach_end', array($1, $5 )); }
 	|	T_DECLARE { $1->u_opline_num = get_next_op_number($CG['active_op_array']); compiler::call('zend_do_declare_begin'); } '(' declare_list ')' declare_statement { compiler::call('zend_do_declare_end', array($1 )); }
 	|	';'		/* empty statement */
 	|	T_TRY '{' inner_statement_list '}' T_CATCH '(' fully_qualified_class_name T_VARIABLE ')' '{' inner_statement_list '}' additional_catches {
