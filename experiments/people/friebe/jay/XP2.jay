@@ -425,8 +425,9 @@ is_reference:
 
 
 unticked_function_declaration_statement:
-		T_FUNCTION { $1->u_opline_num = $CG['zend_lineno']; } is_reference T_STRING { compiler::call('zend_do_begin_function_declaration', array($1, $4, 0, $3, NULL )); }
-			'(' parameter_list ')' '{' inner_statement_list '}' { compiler::call('zend_do_end_function_declaration', array($1 )); }
+		T_FUNCTION is_reference T_STRING '(' parameter_list ')' '{' inner_statement_list '}' { 
+          $$= &PNode::create('FunctionDeclaration', array($2, $3, $5, $8));
+        }
 ;
 
 optional_annotation_list:
@@ -596,7 +597,9 @@ new_elseif_list:
 
 else_single:
 		/* empty */
-	|	T_ELSE statement
+	|	T_ELSE statement {
+          $$= $2;
+        }
 ;
 
 new_else_single:
@@ -987,10 +990,10 @@ expr_without_variable:
           $$= &PNode::create('Binary', array(NULL, &$2, '-'));
         }
 	|	'!' expr {
-          $$= &PNode::create('Unary', array(NULL, &$2, '!'));
+          $$= &PNode::create('Not', array(&$2));
         }
 	|	'~' expr {
-          $$= &PNode::create('Unary', array(NULL, &$2, '~'));
+          $$= &PNode::create('Unary', array(&$2, '~'));
         }
 	|	expr T_IS_IDENTICAL expr {
           $$= &PNode::create('Binary', array(&$1, &$3, '==='));
