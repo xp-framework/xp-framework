@@ -16,8 +16,7 @@ Getting started
 ---------------
 * Compile phpJay using "make"
 
-* Run "./generate_parser" for *nix like OS 
-  or "/bin/sh generate_parser.sh" from Cygwin.
+* Run "sh generate_parser.sh" 
 
 * Run "php compile.php helloworld.xp"
 
