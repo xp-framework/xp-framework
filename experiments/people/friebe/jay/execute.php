@@ -92,6 +92,10 @@
     }
   }
   
+  function except(&$throwable, &$context) {
+    $context['E']= &$throwable;
+  }
+  
   function methodcall(&$method, &$context) {
 
     // Find method declaration
@@ -101,6 +105,12 @@
       // DEBUG Console::writeLine('INVOKE: ', $class.'::'.$method->args[1]);
     } else {
       $pointer= &value($method->args[0], $context);
+      
+      // Check for NPE
+      if (!is_a($pointer, 'ObjectInstance')) {
+        except(new NullPointerException(xp::stringOf($pointer).'->'.$method->args[1]), $context);
+        return;
+      }
       $class= $GLOBALS['objects'][$pointer->id]['name'];
       // DEBUG Console::writeLine('INVOKE: ', $class.'->'.$method->args[1]);
     }
@@ -283,7 +293,7 @@
   }
 
 
-  function execute($nodes, $context) {
+  function execute($nodes, &$context) {
     
     $i= 0;
     $context['offset']= &$i;
@@ -294,6 +304,7 @@
     
     for ($i= 0, $s= $context['end']; $i < $s; $i++) {
       handle($nodes[$i], $context);
+      if ($context['E']) break;
     }
 
     // Console::writeLine('>>> returned ', xp::stringOf($context['return']));
@@ -403,12 +414,16 @@
       : functioncall($node, $context)
     ;
   ');
+  $handlers['MethodCall']= &opcode('
+    methodcall($node, $context);
+  ');
   // }}}
 
   // {{{ main
   $nodes= unserialize(FileUtil::getContents(new File($argv[1])));
   
   $context= array();
+  $context['E']= NULL;
   $context['__name']= '<main>';
   $context['handlers']= $handlers;
   array_shift($argv);
@@ -417,5 +432,7 @@
   $context['variables']['$argv']= $argv;
   
   execute($nodes, $context);
+  
+  $context['E'] && error(E_ERROR, '*** Uncaught '.$context['E']->toString());
   // }}}
 ?>
