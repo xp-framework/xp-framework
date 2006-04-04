@@ -3,10 +3,17 @@
 
 SYSTEM=`env | grep OS | grep -i WINDOWS | wc -l`
 
-JAY_BIN=./phpJay
+JAY_BIN=./parser_generator/phpJay
 
 [ 0 -lt $SYSTEM ] && {
-  JAY_BIN=./phpJay.exe
+  JAY_BIN=./parser_generator/phpJay.exe
 }
-$JAY_BIN -cv -g _PHP_PARSER < xp-skeleton.in XP2.jay > Parser.php
+
+[ ! -x $JAY_BIN ] && {
+  echo "Jay binary not found, be sure to have it created.";
+  echo "Example: cd parser_generator && make && cd ..";
+  exit 1;
+}
+
+$JAY_BIN -cv -g _PHP_PARSER < parser_generator/xp-skeleton.in parser_generator/XP2.jay > Parser.php
 
