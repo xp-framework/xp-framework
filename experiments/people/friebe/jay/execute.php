@@ -129,6 +129,27 @@
     error(E_ERROR, 'Call to undefined method '.$method->toString());
   }
 
+  function functioncall(&$function, &$context) {
+    if (!isset($context['functions'][$function->args[0]])) {
+      error(E_ERROR, 'Call to undefined function '.$function->toString());
+      // bails
+    }
+    
+    $callcontext= $context;
+    $callcontext['variables']= array();
+    $decl= &$context['functions'][$function->args[0]];
+    for ($i= 0, $s= sizeof($function->args[1]); $i < $s; $i++) {
+      $argumentName= $decl->args[2][$i]->args[2];
+      $callcontext['variables'][$argumentName]= value($function->args[1][$i], $context);
+    }
+
+    // DEBUG var_dump($function->args[0], $callcontext['variables']);
+
+    // - Execute
+    $context['__name']= $function->args[0];
+    return execute($decl->args[3], $callcontext);
+  }
+
   function builtincall(&$function, &$context) {
     $arguments= array();
     for ($i= 0, $s= sizeof($function->args[1]); $i < $s; $i++) {
@@ -203,10 +224,10 @@
           break;
 
         case 'FunctionCall':
-          if (function_exists($node->args[0])) {
-            return builtincall($node, $context);
-          }
-          // TBI
+          return function_exists($node->args[0]) 
+            ? builtincall($node, $context)
+            : functioncall($node, $context)
+          ;
           break;
 
         case 'Binary':
@@ -215,10 +236,18 @@
               return value($node->args[0], $context) <= value($node->args[1], $context);
               break;
             
+            case '==':
+              return value($node->args[0], $context) == value($node->args[1], $context);
+              break;
+            
             default:
               error(E_ERROR, 'Unsupported binary operator '.$node->args[2]);
               // Bails
           }
+          break;
+
+        case 'Not':
+          return !value($node->args[0], $context);
           break;
         
         case 'PreInc':
@@ -275,7 +304,7 @@
   function handle(&$node, &$context) {
     $id= $node->type;
     if (!isset($context['handlers'][$id])) {
-      error(E_NOTICE, 'Unknown node '.$id);
+      error(E_NOTICE, 'Unknown node '.PNode::stringOf($node));
       return;
     }
 
@@ -294,6 +323,30 @@
   $handlers['PreInc']= &opcode('
     $new= value($node->args[0], $context)+ 1;
     set($node->args[0], $new, $context);
+  ');
+  $handlers['If']= &opcode('
+    // if (condition) { if-statements } [ elseif { elseif-statements }] [ else { else-statements }]
+    if (value($node->args[0], $context)) {
+
+      // condition: true
+      $block= &$node->args[1];
+    } else if ($node->args[2]) {
+
+      // condition: false, else if
+      if (value($node->args[2]->args[0], $context)) {
+        $block= &$node->args[2]->args[1];
+      } else {
+        $block= &$node->args[3];
+      }
+    } else if ($node->args[3]) {
+
+      // condition: false, else
+      $block= &$node->args[3];
+    }
+
+    foreach ($block as $arg) {
+      handle($arg, $context);
+    }
   ');
   $handlers['For']= &opcode('
     // for (init; condition; loop) { statements }
@@ -340,6 +393,15 @@
   ');
   $handlers['ClassDeclaration']= &opcode('
     $context["classes"][$node->args[2]]= $node;
+  ');
+  $handlers['FunctionDeclaration']= &opcode('
+    $context["functions"][$node->args[1]]= $node;
+  ');
+  $handlers['FunctionCall']= &opcode('
+    function_exists($node->args[0]) 
+      ? builtincall($node, $context)
+      : functioncall($node, $context)
+    ;
   ');
   // }}}
 
