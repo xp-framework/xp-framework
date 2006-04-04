@@ -14,7 +14,7 @@ Here's an overview.
 
 Getting started
 ---------------
-* Compile phpJay using "make"
+* Compile phpJay using "cd parser_generator && make && cd .."
 
 * Run "sh generate_parser.sh" 
 
