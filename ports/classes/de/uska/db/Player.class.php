@@ -16,6 +16,7 @@
     var
       $player_id          = 0,
       $player_type_id     = 0,
+      $bz_id              = 0,
       $firstname          = '',
       $lastname           = '',
       $username           = NULL,
@@ -42,6 +43,7 @@
         $peer->setTypes(array(
           'player_id'           => '%d',
           'player_type_id'      => '%d',
+          'bz_id'               => '%d',
           'firstname'           => '%s',
           'lastname'            => '%s',
           'username'            => '%s',
@@ -158,6 +160,27 @@
      */
     function setPlayer_type_id($player_type_id) {
       return $this->_change('player_type_id', $player_type_id);
+    }
+
+    /**
+     * Retrieves bz_id
+     *
+     * @access  public
+     * @return  int
+     */
+    function getBz_id() {
+      return $this->bz_id;
+    }
+      
+    /**
+     * Sets bz_id
+     *
+     * @access  public
+     * @param   int bz_id
+     * @return  int the previous value
+     */
+    function setBz_id($bz_id) {
+      return $this->_change('bz_id', $bz_id);
     }
 
     /**
@@ -284,27 +307,6 @@
      */
     function setPosition($position) {
       return $this->_change('position', $position);
-    }
-
-    /**
-     * Retrieves sex
-     *
-     * @access  public
-     * @return  int
-     */
-    function getSex() {
-      return $this->sex;
-    }
-      
-    /**
-     * Sets sex
-     *
-     * @access  public
-     * @param   int sex
-     * @return  int the previous value
-     */
-    function setSex($sex) {
-      return $this->_change('sex', $sex);
     }
 
     /**
