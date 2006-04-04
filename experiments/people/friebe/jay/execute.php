@@ -381,6 +381,11 @@
       handle($node->args[2][0], $context);
     }
   ');
+  $handlers['Foreach']= &opcode('
+    // foreach ($var as [$key =>] $val) { statements }
+    var_dump($node);
+    
+  ');
   $handlers['Echo']= &opcode('
     foreach ($node->args[0] as $arg) {
       $value= value($arg, $context);
@@ -432,6 +437,11 @@
     // the ids).
     if (NULL !== $node->args[2] && $context["E"] && $oE->id === $context["E"]->id) {
       execute($node->args[2], $context);
+    }
+    
+    // Execute finally
+    if (NULL !== $node->args[2]) {
+      execute($node->args[2]->args[0], $context);
     }
   ');
   $handlers['Catch']= &opcode('

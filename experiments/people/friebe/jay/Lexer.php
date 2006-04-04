@@ -76,7 +76,8 @@ class AspectTokenizer extends Object {
         TOKEN_T_ENUM        => 'enum',  
         TOKEN_T_OPERATOR    => 'operator',   
         TOKEN_T_VOID        => 'void',   
-        TOKEN_T_CONSTRUCT   => '__construct',   
+        TOKEN_T_CONSTRUCT   => '__construct',
+        TOKEN_T_FINALLY     => 'finally',
     );
 
 	function __construct($tokens, $fileName){

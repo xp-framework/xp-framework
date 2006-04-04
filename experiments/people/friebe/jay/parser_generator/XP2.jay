@@ -190,6 +190,7 @@ class Parser {
 %token T_IMPORT 382
 %token T_VOID 383
 %token T_CONSTRUCT 384
+%token T_FINALLY 385
 
 %% /* Rules */
 
@@ -297,8 +298,8 @@ unticked_statement:
 		statement { compiler::call('zend_do_foreach_end', array($1, $5 )); }
 	|	T_DECLARE { $1->u_opline_num = get_next_op_number($CG['active_op_array']); compiler::call('zend_do_declare_begin'); } '(' declare_list ')' declare_statement { compiler::call('zend_do_declare_end', array($1 )); }
 	|	';'		/* empty statement */
-	|	T_TRY '{' inner_statement_list '}' T_CATCH '(' fully_qualified_class_name T_VARIABLE ')' '{' inner_statement_list '}' additional_catches {
-          $$= &PNode::create('Try', array(&$3, PNode::create('Catch', array($7, &$8, &$11, &$13))));
+	|	T_TRY '{' inner_statement_list '}' T_CATCH '(' fully_qualified_class_name T_VARIABLE ')' '{' inner_statement_list '}' additional_catches optional_finally {
+          $$= &PNode::create('Try', array(&$3, PNode::create('Catch', array($7, &$8, &$11, &$13)), &$14));
         }
 	|	T_THROW expr ';' { 
           $$= &PNode::create('Throw', array(&$2));
@@ -344,6 +345,15 @@ non_empty_additional_catches:
         }
 	|	non_empty_additional_catches additional_catch { 
           $$[]= $2; 
+        }
+;
+
+optional_finally:
+		T_FINALLY '{' inner_statement_list '}' {
+          $$= &PNode::create('Finally', array($3));
+        }
+	|	/* empty */ { 
+          $$= NULL; 
         }
 ;
 
