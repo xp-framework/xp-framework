@@ -1,0 +1,41 @@
+class Exception {
+  protected $msg;
+  
+  public __construct($msg) {
+    $this->msg= $msg;
+  }
+  
+  public string toString() {
+    return 'Exception '.$this->msg;
+  }
+}
+
+class IllegalException {
+  protected $msg;
+  
+  public __construct($msg) {
+    $this->msg= $msg;
+  }
+  
+  public string toString() {
+    return 'Exception '.$this->msg;
+  }
+}
+
+
+try {
+try {
+  echo "Before exception.\n";
+  throw new Exception("Foo");
+  echo "Not reached.\n";
+} catch (Exception $e) {
+  throw(new IllegalException("Do not catch me"));
+  echo $e->toString(), "\n";
+} catch (IllegalException $e) {
+  echo "Caught not-to-catch exception.\n";
+  echo $e->toString(), "\n";
+}
+} catch(IllegalException $e) {
+  echo "Ok.\n";
+  echo $e->toString();
+}

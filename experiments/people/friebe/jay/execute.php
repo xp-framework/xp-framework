@@ -250,6 +250,10 @@
               return value($node->args[0], $context) == value($node->args[1], $context);
               break;
             
+            case '.':
+              return value($node->args[0], $context).value($node->args[1], $context);
+              break;
+            
             default:
               error(E_ERROR, 'Unsupported binary operator '.$node->args[2]);
               // Bails
@@ -417,6 +421,32 @@
   $handlers['MethodCall']= &opcode('
     methodcall($node, $context);
   ');
+  $handlers['Try']= &opcode('
+    execute($node->args[0], $context);
+    $oE= &$context["E"];
+    $context["E"] && handle($node->args[1], $context);
+    
+    // If Exception was not caught by `catch`, pass it to the
+    // next catch (if available).
+    // Do not pass a newly thrown exception to these catches (thus comparing
+    // the ids).
+    if (NULL !== $node->args[2] && $context["E"] && $oE->id === $context["E"]->id) {
+      execute($node->args[2], $context);
+    }
+  ');
+  $handlers['Catch']= &opcode('
+    $pointer= &$context["E"];
+    $class= $GLOBALS["objects"][$pointer->id]["name"];
+    
+    if ($node->args[0] == $class) {
+      $context["variables"][$node->args[1]]= &value($context["E"], $context);
+      unset($context["E"]);
+      execute($node->args[2], $context);
+    }
+  ');
+  $handlers['Throw']= &opcode('
+    except(value($node->args[0], $context), $context);
+  ');
   // }}}
 
   // {{{ main
@@ -433,6 +463,6 @@
   
   execute($nodes, $context);
   
-  $context['E'] && error(E_ERROR, '*** Uncaught '.$context['E']->toString());
+  $context['E'] && error(E_ERROR, '*** Uncaught '.$context['E']->toString().' ('.$GLOBALS["objects"][$context["E"]->id]["name"].')');
   // }}}
 ?>
