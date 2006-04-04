@@ -120,8 +120,8 @@
           <!-- Footer -->
           <div id="footer"> 
             <div id="footer_text">
-              (c) Copyright USKA 2005 | 
-              <a href="http://xp-framework.net"><img src="/image/powered_by_xp.png" width="80" height="15" border="0" align="top"/></a>
+              (c) Copyright USKA 2006 | 
+              <a href="/deref/?http://xp-framework.net"><img src="/image/powered_by_xp.png" width="80" height="15" border="0" align="top"/></a>
             </div>
           </div>
         </div>
