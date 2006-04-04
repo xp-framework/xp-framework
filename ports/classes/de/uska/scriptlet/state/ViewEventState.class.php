@@ -52,6 +52,7 @@
             player as p left outer join event_attendee as a on p.player_id= a.player_id and a.event_id= e.event_id
           where p.player_type_id= 1
             and p.team_id= e.team_id
+            and p.bz_id= 20000
             and e.event_id= %1$d
           
           union select

@@ -54,6 +54,11 @@
         return FALSE;
       }
       
+      if (20000 != $player->getBz_id()) {
+        $this->addError('mismatch');
+        return FALSE;
+      }
+      
       if (md5($wrapper->getPassword()) != $player->getPassword()) {
         $this->addError('mismatch');
         return FALSE;
