@@ -536,6 +536,20 @@ nedit.highlightPatterns: C:1:0{\n\
 		bug:"([bB]ug|[fF]ix).{0,5}\\s?#\\s?[0-9]+":::Pointer::\n\
 		function:"[a-zA-Z0-9_]+\\(\\)":::Keyword::\n\
 		keywords:"<NEWS|MFP|MFB|BFN|MFH|CS|WS>":::Identifier::\n\
+	}\n\
+	XP:1:0{\n\
+		keywords:"<(isset|const|with|not|enum|instanceof|namespace|package|import|interface|package|implements|instanceof|try|catch|throw|finally|cast|unset|extends|uses|operator|error_reporting|class|switch|include|case|default|throws|define|array|var|global|list|function|new|if|until|while|elseif|else|eval|for|foreach|continue|exit|die|return|require|not|const|\\|\\||\\&\\&|and|or|!==?|===?)>":::Keyword::\n\
+		classkeywords:"<(public|private|protected|static|abstract|final|__destruct|__construct|__call|__set|__get|parent|self|this)>":::Text Escape::\n\
+		variables:"(::)?[$](\\{[^}]*}|[^a-zA-Z0-9_\\r/\\t\\n\\.,\\\\[\\\\{\\\\(]|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)?":::Text Arg::\n\
+		braces and parens:"[\\[\\]{}\\(\\)]":::Subroutine::\n\
+		single quote strings:"'":"'"::String::\n\
+		annotation:"@([a-zA-Z]+)(\\('[^']+'\\))?":::Text Comment::\n\
+		constants:"(NULL|FALSE|TRUE|<[A-Z_]+>)":::Ada Attributes::\n\
+		doccomment:"/\\*\\*":"\\*/"::Comment::\n\
+		doccommenttag:"@(access|return|throws|see|model|purpose|deprecated|ext|platform|param)":::Plain:doccomment:\n\
+		comment:"/\\*":"\\*/"::Text Arg2::\n\
+		inlinecomment:"//	":"$"::Comment::\n\
+		number:"<-?[0-9]+>":::Preprocessor1::\n\
 	}
 nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
 	C++:.cc .hh .C .H .i .cpp .cs::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
@@ -563,6 +577,7 @@ nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
 	X Resources:.Xresources .Xdefaults .nedit nedit.rc:"^[!#].*([Aa]pp|[Xx]).*[Dd]efaults"::::::\n\
 	NEdit Macro:.nm .neditmacro:::::::\n\
 	PHP:.php .php3 .phtml .php4 .inc .ciml:"\\<\\?php"::::::\n\
+	XP:.xp:::::::\n\
 	CSS:css::Auto:None:::".,/\\`'!|@#%^&*()=+{}[]"":;<>?~":\n\
 	Regex:.reg .regex:"\\(\\?[:#=!iInN].+\\)":None:Continuous::::\n\
 	XML:.xml .xsl .dtd:"\\<(?i\\?xml|!doctype)"::None:::"<>/=""'()+*?|":\n\
