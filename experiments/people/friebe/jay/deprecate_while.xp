@@ -1,0 +1,10 @@
+
+// Supported syntax
+while ($i) {
+  // Noop
+}
+
+// Deprecated syntax
+while ($i):
+  // Noop
+endwhile;

@@ -1,0 +1,10 @@
+
+// Supported syntax
+foreach ($array as $key => $value) {
+  // Noop
+}
+
+// Deprecated syntax
+foreach ($array as $key => $value):
+  // Noop
+endforeach

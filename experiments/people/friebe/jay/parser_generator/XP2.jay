@@ -244,7 +244,7 @@ unticked_statement:
 	|	T_IF '(' expr ')' ':' inner_statement_list new_elseif_list new_else_single T_ENDIF ';' { 
           $$= &PNode::create('If', array(&$3, &$5, &$6, &$7));
         }
-	|	T_WHILE '(' expr ')' while_statement {
+	|	T_WHILE '(' expr ')' statement {
           $$= &PNode::create('While', array(&$3, &$4));
         }
 	|	T_DO statement T_WHILE '(' expr ')' ';' {
@@ -523,18 +523,6 @@ foreach_variable:
 	|	'&' w_variable		{ $$= $2; }
 ;
 
-for_statement:
-		statement
-	|	':' inner_statement_list T_ENDFOR ';'
-;
-
-
-foreach_statement:
-		statement
-	|	':' inner_statement_list T_ENDFOREACH ';'
-;
-
-
 declare_statement:
 		statement
 	|	':' inner_statement_list T_ENDDECLARE ';'
@@ -554,8 +542,6 @@ declare_list:
 switch_case_list:
 		'{' case_list '}'					{ $$= $2; }
 	|	'{' ';' case_list '}'				{ $$= $3; }
-	|	':' case_list T_ENDSWITCH ';'		{ $$= $2; }
-	|	':' ';' case_list T_ENDSWITCH ';'	{ $$= $3; }
 ;
 
 
@@ -574,11 +560,6 @@ case_list:
 case_separator:
 		':'
 	|	';'
-;
-
-while_statement:
-		statement
-	|	':' inner_statement_list T_ENDWHILE ';'
 ;
 
 elseif_list:
@@ -1117,10 +1098,7 @@ exit_expr:
 
 
 ctor_arguments:
-		/* empty */ { 
-          $$= NULL; 
-        }
-	|	'(' function_call_parameter_list ')' { 
+		'(' function_call_parameter_list ')' { 
           $$= $2; 
         }
 	|	'(' function_call_parameter_list ')' '{' class_statement_list '}' { 

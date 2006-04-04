@@ -1,0 +1,14 @@
+
+// Supported syntax
+switch ($foo) {
+  case 'a':
+  case 'b':
+  default: break;
+}
+
+// Deprecated syntax
+switch ($foo):
+  case 'a':
+  case 'b':
+  default: break;
+endswitch;
