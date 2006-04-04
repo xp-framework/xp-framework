@@ -44,7 +44,7 @@
             p.player_id,
             p.firstname,
             p.lastname,
-            t.points,
+            sum(t.points) as points,
             count(*) as attendcount
           from
            player as p,
