@@ -859,7 +859,7 @@ expr_without_variable:
           $$= &PNode::create('Assign', array($1, &$3, TRUE));
         }
 	|	variable '=' '&' T_NEW class_name_reference ctor_arguments { 
-          $$= &PNode::create('New', array(&$2, &$3));
+          $$= &PNode::create('New', array(&$4, &$5));
           compiler::error(E_STRICT, 'Assigning the return value of new by reference is deprecated');
         }          
 	|	T_NEW class_name_reference ctor_arguments {
