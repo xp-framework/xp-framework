@@ -23,13 +23,14 @@ class IllegalException {
 }
 
 try {
+
   try {
     echo "Before exception.\n";
     throw new Exception("Foo");
     echo "May not be reached.\n";
   } catch (Exception $e) {
     echo "Caught first Exception.\n";
-    throw(new IllegalException("Thrown in catch."));
+    throw(new IllegalException("Thrown in catch.\n"));
     echo $e->toString(), "\n";
   } catch (IllegalException $e) {
     echo "May not be called.\n";
@@ -37,9 +38,23 @@ try {
   } finally {
     echo "Finally executed in inner try/catch.\n";
   }
+  
 } catch(IllegalException $e) {
   echo "Ok, caught exception generated in catch.\n";
   echo $e->toString();
 } finally {
   echo "Finally executed in outer try/catch\n";
+}
+
+echo "\n\n";
+
+try {
+  echo "Throwing new exception.\n";
+  throw new Exception("Exception.");
+} catch(IllegalException $e) {
+  echo "Caught wrong exception!\n";
+} catch(Exception $e) {
+  echo "Caught correct exception.\n";
+} finally {
+  echo "Finally executed.\n";
 }
