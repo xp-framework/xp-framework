@@ -205,6 +205,29 @@
     return $pointer;
   }
   
+  function overloaded($op, &$l, &$r, &$out, &$context) {
+    if (!is_a($l, 'ObjectInstance')) return FALSE;    // Short-cuircuit
+
+    $class= $GLOBALS['objects'][$l->id]['name'];
+    foreach ($context['classes'][$class]->args[5] as $decl) {
+      if (!('OperatorDeclaration' == $decl->type && $decl->args[3] == $op)) continue;
+
+      // Found overloaded operator
+      $callcontext= $context;
+      $callcontext['variables'][$decl->args[4][0]->args[2]]= &$l;
+      $callcontext['variables'][$decl->args[4][1]->args[2]]= &$r;
+
+      // DEBUG var_dump($class.'::operator'.$op, $callcontext['variables']);
+
+      $callcontext['__name']= $class.'::operator'.$op;
+      $out= execute($decl->args[6], $callcontext);
+      return TRUE;
+    }
+
+    // Couldn't find an overloaded operator, fall through
+    return FALSE;
+  }
+  
   function value(&$node, &$context) {
     if (!$context) xp::error('value() invoked outside of context');
     
@@ -274,28 +297,47 @@
               return value($node->args[0], $context) !== value($node->args[1], $context);
               break;
             
+            // Overloadable operators
             case '.':
-              return value($node->args[0], $context).value($node->args[1], $context);
+              $l= value($node->args[0], $context);
+              $r= value($node->args[1], $context);
+              
+              return overloaded('.', $l, $r, $v, $context) ? $v : $l.$r;
               break;
 
             case '+':
-              return value($node->args[0], $context) + value($node->args[1], $context);
+              $l= value($node->args[0], $context);
+              $r= value($node->args[1], $context);
+              
+              return overloaded('+', $l, $r, $v, $context) ? $v : $l + $r;
               break;
 
             case '-':
-              return value($node->args[0], $context) - value($node->args[1], $context);
+              $l= value($node->args[0], $context);
+              $r= value($node->args[1], $context);
+              
+              return overloaded('-', $l, $r, $v, $context) ? $v : $l - $r;
               break;
 
             case '*':
-              return value($node->args[0], $context) * value($node->args[1], $context);
+              $l= value($node->args[0], $context);
+              $r= value($node->args[1], $context);
+              
+              return overloaded('*', $l, $r, $v, $context) ? $v : $l * $r;
               break;
 
             case '/':
-              return value($node->args[0], $context) / value($node->args[1], $context);
+              $l= value($node->args[0], $context);
+              $r= value($node->args[1], $context);
+              
+              return overloaded('/', $l, $r, $v, $context) ? $v : $l / $r;
               break;
 
             case '%':
-              return value($node->args[0], $context) % value($node->args[1], $context);
+              $l= value($node->args[0], $context);
+              $r= value($node->args[1], $context);
+              
+              return overloaded('%', $l, $r, $v, $context) ? $v : $l % $r;
               break;
             
             default:
