@@ -242,16 +242,60 @@
 
         case 'Binary':
           switch ($node->args[2]) {
+            case '<':
+              return value($node->args[0], $context) < value($node->args[1], $context);
+              break;
+
             case '<=':
               return value($node->args[0], $context) <= value($node->args[1], $context);
+              break;
+
+            case '>':
+              return value($node->args[0], $context) > value($node->args[1], $context);
+              break;
+
+            case '>=':
+              return value($node->args[0], $context) >= value($node->args[1], $context);
               break;
             
             case '==':
               return value($node->args[0], $context) == value($node->args[1], $context);
               break;
+
+            case '===':
+              return value($node->args[0], $context) === value($node->args[1], $context);
+              break;
+
+            case '!=':
+              return value($node->args[0], $context) != value($node->args[1], $context);
+              break;
+
+            case '!==':
+              return value($node->args[0], $context) !== value($node->args[1], $context);
+              break;
             
             case '.':
               return value($node->args[0], $context).value($node->args[1], $context);
+              break;
+
+            case '+':
+              return value($node->args[0], $context) + value($node->args[1], $context);
+              break;
+
+            case '-':
+              return value($node->args[0], $context) - value($node->args[1], $context);
+              break;
+
+            case '*':
+              return value($node->args[0], $context) * value($node->args[1], $context);
+              break;
+
+            case '/':
+              return value($node->args[0], $context) / value($node->args[1], $context);
+              break;
+
+            case '%':
+              return value($node->args[0], $context) % value($node->args[1], $context);
               break;
             
             default:
