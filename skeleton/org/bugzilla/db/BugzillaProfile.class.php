@@ -20,7 +20,6 @@
       $realname           = NULL,
       $disabledtext       = '',
       $mybugslink         = 0,
-      $emailflags         = NULL,
       $person_id          = NULL,
       $refreshed_when     = NULL;
 
@@ -43,7 +42,6 @@
           'realname'            => '%s',
           'disabledtext'        => '%s',
           'mybugslink'          => '%d',
-          'emailflags'          => '%s',
           'person_id'           => '%d',
           'refreshed_when'      => '%s'
         ));
@@ -223,27 +221,6 @@
      */
     function setMybugslink($mybugslink) {
       return $this->_change('mybugslink', $mybugslink);
-    }
-
-    /**
-     * Retrieves emailflags
-     *
-     * @access  public
-     * @return  string
-     */
-    function getEmailflags() {
-      return $this->emailflags;
-    }
-      
-    /**
-     * Sets emailflags
-     *
-     * @access  public
-     * @param   string emailflags
-     * @return  string the previous value
-     */
-    function setEmailflags($emailflags) {
-      return $this->_change('emailflags', $emailflags);
     }
 
     /**
