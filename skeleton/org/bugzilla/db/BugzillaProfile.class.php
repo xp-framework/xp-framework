@@ -21,7 +21,8 @@
       $disabledtext       = '',
       $mybugslink         = 0,
       $person_id          = NULL,
-      $refreshed_when     = NULL;
+      $refreshed_when     = NULL,
+      $extern_id          = NULL;
 
     /**
      * Static initializer
@@ -263,6 +264,27 @@
      */
     function &setRefreshed_when(&$refreshed_when) {
       return $this->_change('refreshed_when', $refreshed_when);
+    }
+
+   /**
+     * Set Extern_id
+     *
+     * @access  public
+     * @param   string extern_id
+     * @return  string the previous value
+     */
+    function setExtern_id($extern_id) {
+      return $this->_change('extern_id', $extern_id);
+    }
+
+    /**
+     * Get Extern_id
+     *
+     * @access  public
+     * @return  string
+     */
+    function getExtern_id() {
+      return $this->extern_id;
     }
   }
 ?>
