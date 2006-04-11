@@ -17,6 +17,8 @@ define syntaxcheck_php {
      end = search("$", $cursor, "regex")
      select($cursor, end)
      calltip(er_name, end, "tipText")
+  } else {
+    kill_calltip()
   }
 }
 
@@ -35,6 +37,8 @@ define syntaxcheck_xml {
      end = search("$", $cursor, "regex")
      select($cursor, end)
      calltip(er_text, end, "tipText")
+  } else {
+    kill_calltip()
   }
 }
 
@@ -55,6 +59,8 @@ define syntaxcheck_sh {
     end= search("$", $cursor, "regex")
     select($cursor, end)
     calltip(err_text, end, "tipText")
+  } else {
+    kill_calltip()
   }
 }
 
