@@ -356,9 +356,27 @@
           return !value($node->args[0], $context);
           break;
         
-        case 'PreInc':
+        case 'PreInc':  // ++$i
           $new= value($node->args[0], $context)+ 1;
           set($node->args[0], $new, $context);
+          return $new;
+          break;
+
+        case 'PostInc': // $i++
+          $new= value($node->args[0], $context);
+          set($node->args[0], $new+ 1, $context);
+          return $new;
+          break;
+
+        case 'PreDec':  // --$i
+          $new= value($node->args[0], $context)- 1;
+          set($node->args[0], $new, $context);
+          return $new;
+          break;
+
+        case 'PostDec': // $i--
+          $new= value($node->args[0], $context);
+          set($node->args[0], $new- 1, $context);
           return $new;
           break;
         
@@ -471,6 +489,16 @@
       
       // loop
       handle($node->args[2][0], $context);
+    }
+  ');
+  $handlers['While']= &opcode('
+    // while (condition) { statements }
+    while (value($node->args[0], $context)) {  // condition
+
+      // statements 
+      foreach ($node->args[1] as $arg) {
+        handle($arg, $context);
+      }
     }
   ');
   $handlers['BinaryAssign']= &opcode('
