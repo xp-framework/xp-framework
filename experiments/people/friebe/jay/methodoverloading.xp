@@ -1,0 +1,20 @@
+class Date {
+  protected $stamp;
+
+  public __construct(integer $value) {
+    $this->stamp= $value;
+  }
+
+  public __construct(string $value) {
+    $this->stamp= strtotime($value);
+  }
+  
+  public string toString() {
+    return date('r', $this->stamp);
+  }
+}
+
+$d1= new Date(1144792800);
+$d2= new Date('2006-04-12');
+
+echo $d1->toString(), ' vs. ', $d2->toString(), "\n";
