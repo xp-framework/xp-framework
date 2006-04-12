@@ -98,6 +98,51 @@
     $context['E']= &$throwable;
   }
   
+  function &method($class, $type, $name, $arguments, &$context) {
+    static $declargoffset= array(
+     'ConstructorDeclaration' => 2,
+     'MethodDeclaration'      => 5,
+     'OperatorDeclaration'    => 4,
+    );
+    static $nameoffset= array(
+     'MethodDeclaration'      => 4,
+     'OperatorDeclaration'    => 3,
+    );
+        
+    // DEBUG Console::writeLine('Looking for ', $class, '::', $type, '(', $name, ') ', PNode::stringOf($arguments));
+    $fallback= NULL;
+    $n= $nameoffset[$type];
+    foreach ($context['classes'][$class]->args[5] as $decl) {
+      if ($decl->type != $type || ($name && $decl->args[$n] != $name)) continue;
+      
+      $fallback= $decl;
+
+      // Found a possible candidate, now compare signatures
+      // DEBUG Console::writeLine(' -> candidate ', PNode::stringOf($decl));
+      $offset= $declargoffset[$type];
+      for ($i= 0, $s= sizeof($decl->args[$offset]); $i < $s; $i++) {
+        $decltype= $decl->args[$offset][$i]->args[0];
+        // DEBUG Console::writeLine('    declares arg #', $i, ' as ', $decltype);
+
+        $v= value($arguments[$i], $context);
+        $argtype= gettype($v);
+        // DEBUG Console::writeLine('    argument #', $i, ' is ', $argtype, ': ', PNode::stringOf($v));
+        
+        // Compare types XXX FIXME XXX inheritance / scalar / ...
+        if ($argtype != $decltype) {
+          // DEBUG Console::writeLine('    *** mismatch, continuing search');
+          continue 2;
+        }
+      }
+
+      // DEBUG Console::writeLine(' -> using ', PNode::stringOf($decl));
+      return $decl;
+    }
+
+    // DEBUG Console::writeLine(' -> using ', PNode::stringOf($fallback));
+    return $fallback;
+  }
+  
   function methodcall(&$method, &$context) {
 
     // Find method declaration
@@ -117,8 +162,7 @@
       // DEBUG Console::writeLine('INVOKE: ', $class.'->'.$method->args[1]);
     }
 
-    foreach ($context['classes'][$class]->args[5] as $decl) {
-      if ($decl->type != 'MethodDeclaration' || $decl->args[4] != $method->args[1]) continue;
+    if ($decl= &method($class, 'MethodDeclaration', $method->args[1], $method->args[2], $context)) {
       
       // We've found the method declaration, now:
       // - Build argument list
@@ -186,8 +230,7 @@
     $pointer= &new ObjectInstance($id); 
     
     // Call constructor if existant
-    foreach ($context['classes'][$classname]->args[5] as $decl) {
-      if ($decl->type != 'ConstructorDeclaration') continue;
+    if ($decl= &method($classname, 'ConstructorDeclaration', NULL, $object->args[1], $context)) {
       
       // Found a constructor, invoke it!
       $callcontext= $context;
@@ -211,8 +254,7 @@
     if (!is_a($l, 'ObjectInstance')) return FALSE;    // Short-cuircuit
 
     $class= $GLOBALS['objects'][$l->id]['name'];
-    foreach ($context['classes'][$class]->args[5] as $decl) {
-      if (!('OperatorDeclaration' == $decl->type && $decl->args[3] == $op)) continue;
+    if ($decl= &method($class, 'OperatorDeclaration', $op, $decl->args[4], $context)) {
 
       // Found overloaded operator
       $callcontext= $context;
