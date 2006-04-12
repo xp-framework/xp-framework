@@ -86,9 +86,11 @@
       $pointer= &value($var->args[0], $context);
       // DEBUG Console::writeLine('MEMBER ', $pointer->id, '->', $var->args[1], ' := ', PNode::stringOf($value));
       $GLOBALS['objects'][$pointer->id]['members'][$var->args[1]]= $value;
-    } else {
-      // DEBUG Console::writeLine('VAR ', $var->args[0], ' := ', PNode::stringOf($value));
+    } else if ('Variable' == $var->type) {
+      // Console::writeLine('VAR ', $var->args[0], ' := ', PNode::stringOf($value));
       $context['variables'][$var->args[0]]= $value;
+    } else {
+      error(E_ERROR, 'Cannot assign to '.PNode::stringOf($var));
     }
   }
   
@@ -228,6 +230,89 @@
     return FALSE;
   }
   
+  function binaryop($op, &$l, &$r, &$context) {
+    switch ($op) {
+      case '<':
+        return value($l, $context) < value($r, $context);
+        break;
+
+      case '<=':
+        return value($l, $context) <= value($r, $context);
+        break;
+
+      case '>':
+        return value($l, $context) > value($r, $context);
+        break;
+
+      case '>=':
+        return value($l, $context) >= value($r, $context);
+        break;
+
+      case '==':
+        return value($l, $context) == value($r, $context);
+        break;
+
+      case '===':
+        return value($l, $context) === value($r, $context);
+        break;
+
+      case '!=':
+        return value($l, $context) != value($r, $context);
+        break;
+
+      case '!==':
+        return value($l, $context) !== value($r, $context);
+        break;
+
+      // Overloadable operators
+      case '.':
+        $left= value($l, $context);
+        $right= value($r, $context);
+
+        return overloaded('.', $left, $right, $v, $context) ? $v : $left.$right;
+        break;
+
+      case '+':
+        $left= value($l, $context);
+        $right= value($r, $context);
+
+        return overloaded('+', $left, $right, $v, $context) ? $v : $left + $right;
+        break;
+
+      case '-':
+        $left= value($l, $context);
+        $right= value($r, $context);
+
+        return overloaded('-', $left, $right, $v, $context) ? $v : $left - $right;
+        break;
+
+      case '*':
+        $left= value($l, $context);
+        $right= value($r, $context);
+
+        return overloaded('*', $left, $right, $v, $context) ? $v : $left * $right;
+        break;
+
+      case '/':
+        $left= value($l, $context);
+        $right= value($r, $context);
+
+        return overloaded('/', $left, $right, $v, $context) ? $v : $left / $right;
+        break;
+
+      case '%':
+        $left= value($l, $context);
+        $right= value($r, $context);
+
+        return overloaded('%', $left, $right, $v, $context) ? $v : $left % $right;
+        break;
+
+      default:
+        error(E_ERROR, 'Unsupported binary operator '.$node->args[2]);
+        // Bails
+    }
+  }
+  
   function value(&$node, &$context) {
     if (!$context) xp::error('value() invoked outside of context');
     
@@ -264,86 +349,7 @@
           break;
 
         case 'Binary':
-          switch ($node->args[2]) {
-            case '<':
-              return value($node->args[0], $context) < value($node->args[1], $context);
-              break;
-
-            case '<=':
-              return value($node->args[0], $context) <= value($node->args[1], $context);
-              break;
-
-            case '>':
-              return value($node->args[0], $context) > value($node->args[1], $context);
-              break;
-
-            case '>=':
-              return value($node->args[0], $context) >= value($node->args[1], $context);
-              break;
-            
-            case '==':
-              return value($node->args[0], $context) == value($node->args[1], $context);
-              break;
-
-            case '===':
-              return value($node->args[0], $context) === value($node->args[1], $context);
-              break;
-
-            case '!=':
-              return value($node->args[0], $context) != value($node->args[1], $context);
-              break;
-
-            case '!==':
-              return value($node->args[0], $context) !== value($node->args[1], $context);
-              break;
-            
-            // Overloadable operators
-            case '.':
-              $l= value($node->args[0], $context);
-              $r= value($node->args[1], $context);
-              
-              return overloaded('.', $l, $r, $v, $context) ? $v : $l.$r;
-              break;
-
-            case '+':
-              $l= value($node->args[0], $context);
-              $r= value($node->args[1], $context);
-              
-              return overloaded('+', $l, $r, $v, $context) ? $v : $l + $r;
-              break;
-
-            case '-':
-              $l= value($node->args[0], $context);
-              $r= value($node->args[1], $context);
-              
-              return overloaded('-', $l, $r, $v, $context) ? $v : $l - $r;
-              break;
-
-            case '*':
-              $l= value($node->args[0], $context);
-              $r= value($node->args[1], $context);
-              
-              return overloaded('*', $l, $r, $v, $context) ? $v : $l * $r;
-              break;
-
-            case '/':
-              $l= value($node->args[0], $context);
-              $r= value($node->args[1], $context);
-              
-              return overloaded('/', $l, $r, $v, $context) ? $v : $l / $r;
-              break;
-
-            case '%':
-              $l= value($node->args[0], $context);
-              $r= value($node->args[1], $context);
-              
-              return overloaded('%', $l, $r, $v, $context) ? $v : $l % $r;
-              break;
-            
-            default:
-              error(E_ERROR, 'Unsupported binary operator '.$node->args[2]);
-              // Bails
-          }
+          return binaryop($node->args[2], $node->args[0], $node->args[1], $context);
           break;
 
         case 'Not':
@@ -467,6 +473,9 @@
       handle($node->args[2][0], $context);
     }
   ');
+  $handlers['BinaryAssign']= &opcode('
+    set($node->args[0], binaryop($node->args[2], $node->args[0], $node->args[1], $context), $context);
+  ');
   $handlers['Echo']= &opcode('
     foreach ($node->args[0] as $arg) {
       $value= value($arg, $context);
@@ -475,8 +484,8 @@
         echo $value;
       } else if (is_array($value)) {
         echo "Array";
-      } else if (is_object($value)) {
-        if (method_exists($value, "toString")) echo $value->toString(); else echo "Object";
+      } else if (is_a($value, "ObjectInstance")) {
+        echo "Object (".$GLOBALS["objects"][$value->id]["name"].")";
       }
     }
   ');
