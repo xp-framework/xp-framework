@@ -1,0 +1,21 @@
+class String {
+  protected $buffer;
+
+  public __construct($initial= '') {
+    $this->buffer= $initial;
+  }
+  
+  public static operator . (String $s, string $add) {
+    return new String($s->buffer.$add);
+  }
+  
+  public string toString() {
+    return $this->buffer;
+  }
+}
+
+
+$s= new String('Hello');
+$s.= ' World';
+
+echo $s->toString(), "\n";
