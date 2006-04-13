@@ -1,9 +1,13 @@
 <?php
   require('lang.base.php');
-  require('Parser.php');
-  require('Lexer.php');
-
-  uses('OpcodeHandler', 'PNode', 'util.cmd.Console', 'io.File', 'io.FileUtil');
+  uses(
+    'net.xp_framework.tools.vm.Parser',
+    'net.xp_framework.tools.vm.Lexer',
+    'net.xp_framework.tools.vm.PNode', 
+    'util.cmd.Console', 
+    'io.File', 
+    'io.FileUtil'
+  );
   
   class compiler {
     function error($level, $message) {
@@ -31,7 +35,7 @@
   // {{{ compile
   $parser= &new Parser();
   $parser->debug= FALSE;
-  $nodes= $parser->yyparse(new AspectTokenizer(file_get_contents($argv[1]), $argv[1]));
+  $nodes= $parser->yyparse(new Lexer(file_get_contents($argv[1]), $argv[1]));
   xp::gc();
   
   isset($argv[2]) && Console::writeLine(PNode::stringOf($nodes));

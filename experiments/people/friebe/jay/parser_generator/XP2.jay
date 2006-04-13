@@ -30,9 +30,7 @@
  * 
  */
 
-class Parser {
-  var $_options = array();
-  var $yyGlobalName = '_PHP_PARSER';
+class Parser extends Object {
 %}
  
 %left T_INCLUDE T_INCLUDE_ONCE T_EVAL T_REQUIRE T_REQUIRE_ONCE

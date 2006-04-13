@@ -1,6 +1,12 @@
 <?php
   require('lang.base.php');
-  uses('OpcodeHandler', 'PNode', 'util.cmd.Console', 'io.File', 'io.FileUtil');
+  uses(
+    'net.xp_framework.tools.vm.OpcodeHandler', 
+    'net.xp_framework.tools.vm.PNode', 
+    'util.cmd.Console', 
+    'io.File', 
+    'io.FileUtil'
+  );
 
   class ObjectInstance extends Object {
     var $id= NULL;

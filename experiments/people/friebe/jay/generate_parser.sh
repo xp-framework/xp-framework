@@ -15,5 +15,5 @@ JAY_BIN=./parser_generator/phpJay
   exit 1;
 }
 
-$JAY_BIN -cv -g _PHP_PARSER < parser_generator/xp-skeleton.in parser_generator/XP2.jay > Parser.php
+$JAY_BIN -cv -g _PHP_PARSER < parser_generator/xp-skeleton.in parser_generator/XP2.jay > net/xp_framework/tools/vm/Parser.class.php
 
