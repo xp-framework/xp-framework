@@ -3,6 +3,7 @@
   uses(
     'net.xp_framework.tools.vm.OpcodeHandler', 
     'net.xp_framework.tools.vm.PNode', 
+    'net.xp_framework.tools.vm.VNode', 
     'util.cmd.Console', 
     'io.File', 
     'io.FileUtil'
@@ -475,9 +476,10 @@
   }
   
   function handle(&$node, &$context) {
-    $id= $node->type;
+    $id= is_a($node, 'PNode') ? strtolower($node->type) : substr(get_class($node), 0, -4);
+
     if (!isset($context['handlers'][$id])) {
-      error(E_NOTICE, 'Unknown node '.PNode::stringOf($node));
+      error(E_NOTICE, 'Unknown '.$id.' node '.PNode::stringOf($node));
       return;
     }
 
@@ -490,14 +492,14 @@
 
   // {{{ handlers
   $handlers= array();
-  $handlers['Assign']= &opcode('
+  $handlers['assign']= &opcode('
     set($node->args[0], value($node->args[1], $context), $context);
   ');
-  $handlers['PreInc']= &opcode('
+  $handlers['preinc']= &opcode('
     $new= value($node->args[0], $context)+ 1;
     set($node->args[0], $new, $context);
   ');
-  $handlers['If']= &opcode('
+  $handlers['if']= &opcode('
     // if (condition) { if-statements } [ elseif { elseif-statements }] [ else { else-statements }]
     if (value($node->args[0], $context)) {
 
@@ -521,7 +523,7 @@
       handle($arg, $context);
     }
   ');
-  $handlers['For']= &opcode('
+  $handlers['for']= &opcode('
     // for (init; condition; loop) { statements }
     // init
     foreach ($node->args[0] as $arg) {
@@ -539,7 +541,7 @@
       handle($node->args[2][0], $context);
     }
   ');
-  $handlers['While']= &opcode('
+  $handlers['while']= &opcode('
     // while (condition) { statements }
     while (value($node->args[0], $context)) {  // condition
 
@@ -549,11 +551,11 @@
       }
     }
   ');
-  $handlers['BinaryAssign']= &opcode('
+  $handlers['binaryassign']= &opcode('
     set($node->args[0], binaryop($node->args[2], $node->args[0], $node->args[1], $context), $context);
   ');
-  $handlers['Echo']= &opcode('
-    foreach ($node->args[0] as $arg) {
+  $handlers['echo']= &opcode('
+    foreach ($node->args as $arg) {
       $value= value($arg, $context);
       
       if (is_scalar($value)) {
@@ -565,34 +567,34 @@
       }
     }
   ');
-  $handlers['Exit']= &opcode('
+  $handlers['exit']= &opcode('
     if (isset($node->args[0])) {
       $context["exitcode"]= value($node->args[0], $context);
     }
     $context["offset"]= $context["end"];
   ');
-  $handlers['Return']= &opcode('
+  $handlers['return']= &opcode('
     if (isset($node->args[0])) {
       $context["return"]= value($node->args[0], $context);
     }
     $context["offset"]= $context["end"];
   ');
-  $handlers['ClassDeclaration']= &opcode('
+  $handlers['classdeclaration']= &opcode('
     $context["classes"][$node->args[2]]= $node;
   ');
-  $handlers['FunctionDeclaration']= &opcode('
+  $handlers['functiondeclaration']= &opcode('
     $context["functions"][$node->args[1]]= $node;
   ');
-  $handlers['FunctionCall']= &opcode('
+  $handlers['functioncall']= &opcode('
     function_exists($node->args[0]) 
       ? builtincall($node, $context)
       : functioncall($node, $context)
     ;
   ');
-  $handlers['MethodCall']= &opcode('
+  $handlers['methodcall']= &opcode('
     methodcall($node, $context);
   ');
-  $handlers['Try']= &opcode('
+  $handlers['try']= &opcode('
     execute($node->args[0], $context);
     $oE= &$context["E"];
     $context["E"] && handle($node->args[1], $context);
@@ -610,7 +612,7 @@
       execute($node->args[2]->args[0], $context);
     }
   ');
-  $handlers['Catch']= &opcode('
+  $handlers['catch']= &opcode('
     $pointer= &$context["E"];
     $class= $GLOBALS["objects"][$pointer->id]["name"];
     
@@ -620,7 +622,7 @@
       execute($node->args[2], $context);
     }
   ');
-  $handlers['Throw']= &opcode('
+  $handlers['throw']= &opcode('
     except(value($node->args[0], $context), $context);
   ');
   // }}}
