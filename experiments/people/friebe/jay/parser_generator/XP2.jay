@@ -35,6 +35,7 @@
  */
 
   class Parser extends Object {
+
     function error($level, $message) {
       switch ($level) {
         case E_ERROR:
