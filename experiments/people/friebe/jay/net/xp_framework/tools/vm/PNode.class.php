@@ -39,16 +39,59 @@
     }
     
     function &create($type, $args) {
+    
+      // Create specific node class if not existant
+      $out= &new File(dirname(__FILE__).'/nodes/'.$type.'Node.class.php');
+      if (!$out->exists()) {
+        $assignments= $members= $arguments= '';
+        for ($i= 0; $i < sizeof($args); $i++) {
+          $name= 'arg'.$i;
+          $assignments.= '      $this->'.$name.'= $'.$name.";\n";
+          $arguments.= '$'.$name.', ';
+          $members.= '      $'.$name.",\n";
+          $apidoc.= '     * @param   mixed '.$name."\n";
+        }
+        $src= sprintf('<?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+  uses(\'net.xp_framework.tools.vm.VNode\');
+
+  /**
+   * %1$s
+   *
+   * @see   xp://net.xp_framework.tools.vm.nodes.VNode
+   */ 
+  class %1$sNode extends VNode {
+    %2$s;
+      
+    /**
+     * Constructor
+     *
+     * @access  public%3$s
+     */
+    function __construct(%4$s) {
+%5$s
+    }  
+  }
+?>',
+          $type,
+          $members ? "var\n".rtrim($members, ",\n") : '',
+          $apidoc ? "\n".rtrim($apidoc, "\n") : '',
+          rtrim($arguments, ', '),
+          rtrim($assignments, "\n")
+        );
+        
+        FileUtil::setContents($out, $src);
+      }
+      
+      // Instantiate
       $n= &new PNode();
       $n->type= $type;
-      
-      for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
-        if (is_a($args[$i], 'PNode')) {
-          // $args[$i]->parent= $n;
-          $n->args[$i]= $args[$i];
-        } else {
-          $n->args[$i]= $args[$i];
-        }
+      foreach ($args as $arg) {
+        $n->args[]= $arg;
       }
 
       // Console::writeLine('+ '.$n->toString());
