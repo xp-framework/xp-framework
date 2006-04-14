@@ -13,16 +13,16 @@
    */ 
   class ReturnNode extends VNode {
     var
-      $arg0;
+      $value;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
+     * @param   mixed value
      */
-    function __construct($arg0) {
-      $this->arg0= $arg0;
+    function __construct($value) {
+      $this->value= $value;
     }  
   }
 ?>

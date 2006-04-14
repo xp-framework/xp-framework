@@ -278,13 +278,13 @@ unticked_statement:
           $$= &PNode::create('Break', array(&$2));
         }
 	|	T_RETURN ';' { 
-          $$= &PNode::create('Return', array(NULL)); 
+          $$= &new ReturnNode(NULL);
         }
 	|	T_RETURN expr_without_variable ';' { 
-          $$= &PNode::create('Return', array($2));
+          $$= &new ReturnNode($2);
         }
 	|	T_RETURN variable ';' {
-          $$= &PNode::create('Return', array($2));
+          $$= &new ReturnNode($2);
         }
 	|	T_STATIC static_var_list ';'
 	|	T_ECHO echo_expr_list ';' { 

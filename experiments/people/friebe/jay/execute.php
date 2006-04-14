@@ -574,8 +574,8 @@
     $context["offset"]= $context["end"];
   ');
   $handlers['return']= &opcode('
-    if (isset($node->args[0])) {
-      $context["return"]= value($node->args[0], $context);
+    if (isset($node->value)) {
+      $context["return"]= value($node->value, $context);
     }
     $context["offset"]= $context["end"];
   ');
