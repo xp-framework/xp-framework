@@ -13,22 +13,19 @@
    */ 
   class AssignNode extends VNode {
     var
-      $arg0,
-      $arg1,
-      $arg2;
+      $variable,
+      $expression;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
-     * @param   mixed arg2
+     * @param   mixed variable
+     * @param   mixed expression
      */
-    function __construct($arg0, $arg1, $arg2) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
-      $this->arg2= $arg2;
+    function __construct($variable, $expression) {
+      $this->variable= $variable;
+      $this->expression= $expression;
     }  
   }
 ?>

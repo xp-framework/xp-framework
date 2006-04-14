@@ -493,7 +493,7 @@
   // {{{ handlers
   $handlers= array();
   $handlers['assign']= &opcode('
-    set($node->args[0], value($node->args[1], $context), $context);
+    set($node->variable, value($node->expression, $context), $context);
   ');
   $handlers['preinc']= &opcode('
     $new= value($node->args[0], $context)+ 1;

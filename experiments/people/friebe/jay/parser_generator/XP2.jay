@@ -843,10 +843,7 @@ expr_without_variable:
           $$= &PNode::create('ListAssign', array($3, &$6));
         }
 	|	variable '=' expr {
-          $$= &PNode::create('Assign', array(&$1, &$3, TRUE));
-        }
-	|	variable '=' '&' variable { 
-          $$= &PNode::create('Assign', array($1, &$3, TRUE));
+          $$= &new AssignNode($1, $3);
         }
 	|	T_NEW class_name_reference ctor_arguments {
           $$= &PNode::create('New', array(&$2, &$3));
