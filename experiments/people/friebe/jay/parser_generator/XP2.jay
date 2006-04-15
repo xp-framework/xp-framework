@@ -962,7 +962,7 @@ expr_without_variable:
 	|	T_BOOL_CAST expr	{ /* TBI compiler::call('zend_do_cast', array($$, $2, IS_BOOL )); */ }
 	|	T_UNSET_CAST expr	{ /* TBI compiler::call('zend_do_cast', array($$, $2, IS_NULL )); */ }
 	|	T_EXIT exit_expr {
-          $$= &PNode::create('Exit', $2);
+          $$= &new ExitNode($2);
         }
 	|	'@' expr { 
           /* TBI compiler::call('zend_do_begin_silence', array($1)); } expr { compiler::call('zend_do_end_silence', array($1 )); $$ = $3; */ 

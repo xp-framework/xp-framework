@@ -587,8 +587,8 @@
     }
   ');
   $handlers['exit']= &opcode('
-    if (isset($node->args[0])) {
-      $context["exitcode"]= value($node->args[0], $context);
+    if (isset($node->expression)) {
+      $context["exitcode"]= value($node->expression, $context);
     }
     $context["offset"]= $context["end"];
   ');

@@ -13,16 +13,16 @@
    */ 
   class ExitNode extends VNode {
     var
-      $arg0;
+      $expression;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
+     * @param   mixed expression
      */
-    function __construct($arg0) {
-      $this->arg0= $arg0;
+    function __construct($expression) {
+      $this->expression= $expression;
     }  
   }
 ?>
