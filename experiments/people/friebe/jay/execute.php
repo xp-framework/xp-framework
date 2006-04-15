@@ -94,7 +94,7 @@
       // DEBUG Console::writeLine('MEMBER ', $pointer->id, '->', $var->member, ' := ', PNode::stringOf($value));
       $GLOBALS['objects'][$pointer->id]['members'][$var->member]= $value;
     } else if (is_a($var, 'VariableNode')) {
-      // DEBUG onsole::writeLine('VAR ', $var->args[0], ' := ', PNode::stringOf($value));
+      // DEBUG onsole::writeLine('VAR ', $var->name, ' := ', PNode::stringOf($value));
       $context['variables'][$var->name]= $value;
     } else {
       error(E_ERROR, 'Cannot assign to '.PNode::stringOf($var));
@@ -154,7 +154,7 @@
     $static= is_scalar($method->class);
     if ($static) {
       $class= $method->class;
-      // DEBUG Console::writeLine('INVOKE: ', $class.'::'.$method->args[1]);
+      // DEBUG Console::writeLine('INVOKE: ', $class.'::'.$method->name);
     } else {
       $pointer= &value($method->class, $context);
       
@@ -164,7 +164,7 @@
         return;
       }
       $class= $GLOBALS['objects'][$pointer->id]['name'];
-      // DEBUG Console::writeLine('INVOKE: ', $class.'->'.$method->args[1]);
+      // DEBUG Console::writeLine('INVOKE: ', $class.'->'.$method->name);
     }
 
     if ($decl= &method($class, 'MethodDeclarationNode', $method->name, $method->arguments, $context)) {
@@ -349,7 +349,7 @@
         break;
 
       default:
-        error(E_ERROR, 'Unsupported binary operator '.$node->args[2]);
+        error(E_ERROR, 'Unsupported binary operator '.$op);
         // Bails
     }
   }
@@ -407,26 +407,26 @@
           break;
         
         case 'preinc':  // ++$i
-          $new= value($node->args[0], $context)+ 1;
-          set($node->args[0], $new, $context);
+          $new= value($node->expression, $context)+ 1;
+          set($node->expression, $new, $context);
           return $new;
           break;
 
         case 'postinc': // $i++
-          $new= value($node->args[0], $context);
-          set($node->args[0], $new+ 1, $context);
+          $new= value($node->expression, $context);
+          set($node->expression, $new+ 1, $context);
           return $new;
           break;
 
         case 'predec':  // --$i
-          $new= value($node->args[0], $context)- 1;
-          set($node->args[0], $new, $context);
+          $new= value($node->expression, $context)- 1;
+          set($node->expression, $new, $context);
           return $new;
           break;
 
         case 'postdec': // $i--
-          $new= value($node->args[0], $context);
-          set($node->args[0], $new- 1, $context);
+          $new= value($node->expression, $context);
+          set($node->expression, $new- 1, $context);
           return $new;
           break;
         
@@ -497,12 +497,12 @@
     set($node->variable, value($node->expression, $context), $context);
   ');
   $handlers['preinc']= &opcode('
-    $new= value($node->args[0], $context)+ 1;
-    set($node->args[0], $new, $context);
+    $new= value($node->expression, $context)+ 1;
+    set($node->expression, $new, $context);
   ');
   $handlers['postinc']= &opcode('
-    $new= value($node->args[0], $context);
-    set($node->args[0], $new+ 1, $context);
+    $new= value($node->expression, $context);
+    set($node->expression, $new+ 1, $context);
   ');
   $handlers['if']= &opcode('
     // if (condition) { if-statements } [ elseif { elseif-statements }] [ else { else-statements }]
