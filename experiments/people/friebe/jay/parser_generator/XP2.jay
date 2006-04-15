@@ -620,7 +620,7 @@ class_statement_list:
 ;
 
 class_statement:
-		variable_modifiers class_variable_declaration ';' {
+		non_empty_member_modifiers class_variable_declaration ';' {
           $$= &PNode::create('MemberDeclarationList', array($1, &$2)); 
         }
 	|	class_constant_declaration ';' {
@@ -740,11 +740,6 @@ operator_token:
 method_body:
 		';' /* abstract method */		{ $$= NULL; }
 	|	'{' inner_statement_list '}'	{ $$= $2; }
-;
-
-variable_modifiers:
-		non_empty_member_modifiers		{ $$= $1; }
-	|	T_VAR							{ $$= MODIFIER_PUBLIC; $this->error(E_STRICT, '[E_STRICT] '."var: Deprecated. Please use the public/private/protected modifiers"); }
 ;
 
 method_modifiers:

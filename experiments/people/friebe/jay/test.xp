@@ -13,10 +13,6 @@ package bar {
     penny(1), nickel(5), dime(10), quarter(25);
   }
 
-  class Legacy {
-    var $old;
-  }
-
   class Foo extends xp~lang~Object implements Serializable {
     public $id= 0;
     protected $foo= -1;
