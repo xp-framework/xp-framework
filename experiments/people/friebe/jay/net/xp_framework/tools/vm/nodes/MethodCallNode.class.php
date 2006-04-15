@@ -13,25 +13,25 @@
    */ 
   class MethodCallNode extends VNode {
     var
-      $arg0,
-      $arg1,
-      $arg2,
-      $arg3;
+      $class,
+      $method,
+      $arguments,
+      $chain;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
-     * @param   mixed arg2
-     * @param   mixed arg3
+     * @param   mixed class
+     * @param   mixed method
+     * @param   mixed arguments
+     * @param   mixed chain
      */
-    function __construct($arg0, $arg1, $arg2, $arg3) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
-      $this->arg2= $arg2;
-      $this->arg3= $arg3;
+    function __construct($class, $method, $arguments, $chain) {
+      $this->class= $class;
+      $this->method= $method;
+      $this->arguments= $arguments;
+      $this->chain= $chain;
     }  
   }
 ?>

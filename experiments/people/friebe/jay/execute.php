@@ -89,12 +89,12 @@
   }
   
   function set(&$var, $value, &$context) {
-    if ('ObjectReference' == $var->type) {
-      $pointer= &value($var->args[0], $context);
-      // DEBUG Console::writeLine('MEMBER ', $pointer->id, '->', $var->args[1], ' := ', PNode::stringOf($value));
-      $GLOBALS['objects'][$pointer->id]['members'][$var->args[1]]= $value;
+    if (is_a($var, 'ObjectReferenceNode')) {
+      $pointer= &value($var->class, $context);
+      // DEBUG Console::writeLine('MEMBER ', $pointer->id, '->', $var->member, ' := ', PNode::stringOf($value));
+      $GLOBALS['objects'][$pointer->id]['members'][$var->member]= $value;
     } else if ('Variable' == $var->type) {
-      // Console::writeLine('VAR ', $var->args[0], ' := ', PNode::stringOf($value));
+      // CDEBUG onsole::writeLine('VAR ', $var->args[0], ' := ', PNode::stringOf($value));
       $context['variables'][$var->args[0]]= $value;
     } else {
       error(E_ERROR, 'Cannot assign to '.PNode::stringOf($var));
@@ -139,41 +139,57 @@
     return $fallback;
   }
   
+  function callcontext(&$decl, &$arguments, &$context) {
+    $callcontext= $context;
+    $callcontext['variables']= array();
+    for ($i= 0, $s= sizeof($arguments); $i < $s; $i++) {
+      $callcontext['variables'][$decl->parameters[$i]->name]= value($arguments[$i], $context);
+    }
+    return $callcontext;
+  }
+  
   function methodcall(&$method, &$context) {
 
     // Find method declaration
-    $static= is_scalar($method->args[0]);
+    $static= is_scalar($method->class);
     if ($static) {
-      $class= $method->args[0];
+      $class= $method->class;
       // DEBUG Console::writeLine('INVOKE: ', $class.'::'.$method->args[1]);
     } else {
-      $pointer= &value($method->args[0], $context);
+      $pointer= &value($method->class, $context);
       
       // Check for NPE
       if (!is_a($pointer, 'ObjectInstance')) {
-        except(new NullPointerException(xp::stringOf($pointer).'->'.$method->args[1]), $context);
+        except(new NullPointerException(xp::stringOf($pointer).'->'.$method->name), $context);
         return;
       }
       $class= $GLOBALS['objects'][$pointer->id]['name'];
       // DEBUG Console::writeLine('INVOKE: ', $class.'->'.$method->args[1]);
     }
 
-    if ($decl= &method($class, 'MethodDeclarationNode', $method->args[1], $method->args[2], $context)) {
+    if ($decl= &method($class, 'MethodDeclarationNode', $method->name, $method->arguments, $context)) {
       
       // We've found the method declaration, now:
       // - Build argument list
-      $callcontext= $context;
-      $callcontext['variables']= array();
-      for ($i= 0, $s= sizeof($method->args[2]); $i < $s; $i++) {
-        $callcontext['variables'][$decl->parameters[$i]->name]= value($method->args[2][$i], $context);
-      }
-      
-      // DEBUG var_dump($method->args[0].'::'.$method->args[1], $callcontext['variables']);
+      $callcontext= callcontext($decl, $method->arguments, $context);
       
       // - Execute
       $context['__name']= $class.($static ? '::' : '->').$method->args[1];
       if (!$static) $callcontext['variables']['$this']= &$pointer;
-      return execute($decl->statements, $callcontext);
+      
+      $return= execute($decl->statements, $callcontext);
+      
+      // $buf->append(' ')->append('World');
+      if (NULL === $context['E'] && NULL !== $method->chain) {
+        foreach ($method->chain as $reference) {
+          $reference->class= $return;
+          $return= value($reference, $context);
+
+          if ($context['E']) break;
+        }
+      }
+      
+      return $return;
     }
     
     // Undefined method
@@ -181,32 +197,29 @@
   }
 
   function functioncall(&$function, &$context) {
-    if (!isset($context['functions'][$function->args[0]])) {
+    if (!isset($context['functions'][$function->name])) {
       error(E_ERROR, 'Call to undefined function '.$function->toString());
       // bails
     }
     
-    $callcontext= $context;
-    $callcontext['variables']= array();
-    $decl= &$context['functions'][$function->args[0]];
-    for ($i= 0, $s= sizeof($function->args[1]); $i < $s; $i++) {
-      $callcontext['variables'][$decl->parameters[$i]->name]= value($function->args[1][$i], $context);
-    }
-
-    // DEBUG var_dump($function->args[0], $callcontext['variables']);
-
     // - Execute
-    $context['__name']= $function->args[0];
-    return execute($decl->statements, $callcontext);
+    $context['__name']= $function->name;
+    $decl= &$context['functions'][$function->name];
+    
+    return execute($decl->statements, callcontext(
+      $decl,
+      $function->arguments,
+      $context
+    ));
   }
 
   function builtincall(&$function, &$context) {
     $arguments= array();
-    for ($i= 0, $s= sizeof($function->args[1]); $i < $s; $i++) {
-      $arguments[]= value($function->args[1][$i], $context);
+    for ($i= 0, $s= sizeof($function->arguments); $i < $s; $i++) {
+      $arguments[]= value($function->arguments[$i], $context);
     }
     
-    return call_user_func_array($function->args[0], $arguments);
+    return call_user_func_array($function->name, $arguments);
   }
   
   function createobject(&$object, &$context) {
@@ -227,11 +240,7 @@
     if ($decl= &method($classname, 'ConstructorDeclarationNode', NULL, $object->arguments, $context)) {
       
       // Found a constructor, invoke it!
-      $callcontext= $context;
-      $callcontext['variables']= array();
-      for ($i= 0, $s= sizeof($object->arguments); $i < $s; $i++) {
-        $callcontext['variables'][$decl->parameters[$i]->name]= value($object->arguments[$i], $context);
-      }
+      $callcontext= callcontext($decl, $object->arguments, $context);
       
       // - Execute, discarding return values (constructors cannot return anything!)
       $callcontext['variables']['$this']= &$pointer;
@@ -247,14 +256,11 @@
     if (!is_a($l, 'ObjectInstance')) return FALSE;    // Short-cuircuit
 
     $class= $GLOBALS['objects'][$l->id]['name'];
-    if ($decl= &method($class, 'OperatorDeclarationNode', $op, array(&$l, &$r), $context)) {
+    $args= array(&$l, &$r);
+    if ($decl= &method($class, 'OperatorDeclarationNode', $op, $args, $context)) {
 
       // Found overloaded operator
-      $callcontext= $context;
-      $callcontext['variables'][$decl->parameters[0]->name]= &$l;
-      $callcontext['variables'][$decl->parameters[1]->name]= &$r;
-
-      // DEBUG var_dump($class.'::operator'.$op, $callcontext['variables']);
+      $callcontext= callcontext($decl, $args, $context);
 
       $callcontext['__name']= $class.'::operator'.$op;
       $out= execute($decl->statements, $callcontext);
@@ -368,18 +374,18 @@
           break;
         
         case 'objectreference':
-          $pointer= &value($node->args[0], $context);
+          $pointer= &value($node->class, $context);
 
           return fetchfrom(
             $GLOBALS['objects'][$pointer->id]['members'], 
-            $node->args[1], 
+            $node->member, 
             'member of '.$pointer->id, 
             $context
           );
           break;
 
         case 'functioncall':
-          return function_exists($node->args[0]) 
+          return function_exists($node->name) 
             ? builtincall($node, $context)
             : functioncall($node, $context)
           ;
@@ -578,7 +584,7 @@
     $context["functions"][$node->name]= $node;
   ');
   $handlers['functioncall']= &opcode('
-    function_exists($node->args[0]) 
+    function_exists($node->name) 
       ? builtincall($node, $context)
       : functioncall($node, $context)
     ;

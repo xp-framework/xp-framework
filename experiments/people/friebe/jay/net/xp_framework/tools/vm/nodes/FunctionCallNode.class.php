@@ -13,19 +13,19 @@
    */ 
   class FunctionCallNode extends VNode {
     var
-      $arg0,
-      $arg1;
+      $name,
+      $arguments;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
+     * @param   mixed name
+     * @param   mixed arguments
      */
-    function __construct($arg0, $arg1) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
+    function __construct($name, $arguments) {
+      $this->name= $name;
+      $this->arguments= $arguments;
     }  
   }
 ?>

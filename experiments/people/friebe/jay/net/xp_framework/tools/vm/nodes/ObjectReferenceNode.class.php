@@ -13,25 +13,22 @@
    */ 
   class ObjectReferenceNode extends VNode {
     var
-      $arg0,
-      $arg1,
-      $arg2,
-      $arg3;
+      $class,
+      $member,
+      $chain;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
-     * @param   mixed arg2
-     * @param   mixed arg3
+     * @param   mixed class
+     * @param   mixed member
+     * @param   mixed chain
      */
-    function __construct($arg0, $arg1, $arg2, $arg3) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
-      $this->arg2= $arg2;
-      $this->arg3= $arg3;
+    function __construct($class, $member, $chain) {
+      $this->class= $class;
+      $this->member= $member;
+      $this->chain= $chain;
     }  
   }
 ?>
