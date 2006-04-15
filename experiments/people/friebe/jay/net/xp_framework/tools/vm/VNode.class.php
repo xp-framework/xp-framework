@@ -65,5 +65,55 @@
    *
    */
   class VNode extends Object {
+
+    /**
+     * Creates a string representation of any
+     *
+     * @model   static
+     * @access  public
+     * @param   mixed a
+     * @param   string indent default ''
+     * @return  string
+     */
+    function stringOf($a, $indent= '') {
+      if (is_array($a)) {
+        if (is_int(key($a))) {    // Numeric arrays
+          $s= "[\n";
+          foreach ($a as $v) {
+            $s.= $indent.'  - '.VNode::stringOf($v, $indent.'  ').",\n";
+          }
+          return $s.$indent.']';
+        } else {                  // Hash maps
+          $s= "{\n";
+          foreach ($a as $k => $v) {
+           $s.= $indent.'  - '.$k.' => '.VNode::stringOf($v, $indent.'  ').",\n";
+         }
+          return $s.$indent.'}';
+        }
+      } elseif (is_a($a, 'VNode')) {
+        $s= $a->getClassName()."@{\n";
+        foreach (array_keys(get_class_vars(get_class($a))) as $key) {
+          if ('_' != $key{0}) $s.= sprintf(
+            "%s  [%-20s] %s\n", 
+            $indent, 
+            $key, 
+            VNode::stringOf($a->{$key}, '  '.$indent)
+          );
+        }
+        return $s.$indent.'}';
+      } else {
+        return xp::stringOf($a);
+      }
+    }
+
+    /**
+     * Creates a string representation of this node
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return VNode::stringOf($this);
+    }
   }
 ?>
