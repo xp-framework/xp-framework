@@ -204,6 +204,7 @@
 %token T_VOID 383
 %token T_CONSTRUCT 384
 %token T_FINALLY 385
+%token T_DESTRUCT 386
 
 %% /* Rules */
 
@@ -640,6 +641,12 @@ method_declaration:
         }
 	|	annotation_list method_modifiers T_CONSTRUCT '(' parameter_list ')' throws method_body {
           $$= &new ConstructorDeclarationNode($5, $8, $2, $1, $7);
+        }
+	| 	method_modifiers T_DESTRUCT '(' ')' throws method_body {
+          $$= &new DestructorDeclarationNode($6, $1, NULL, $5);
+        }
+	|	annotation_list method_modifiers T_DESTRUCT '(' ')' throws method_body {
+          $$= &new DestructorDeclarationNode($7, $2, $1, $6);
         }
 	|	method_modifiers return_type_name T_STRING '(' parameter_list ')' throws method_body {
           $$= &new MethodDeclarationNode($3, $5, $2, $8, $1, NULL, $7);

@@ -29,6 +29,7 @@
         TOKEN_T_OPERATOR    => 'operator',   
         TOKEN_T_VOID        => 'void',   
         TOKEN_T_CONSTRUCT   => '__construct',
+        TOKEN_T_DESTRUCT    => '__destruct',
         TOKEN_T_FINALLY     => 'finally',
       );
 

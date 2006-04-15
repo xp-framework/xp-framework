@@ -19,6 +19,7 @@
     'net.xp_framework.tools.vm.nodes.ClassReferenceNode',
     'net.xp_framework.tools.vm.nodes.ConstantReferenceNode',
     'net.xp_framework.tools.vm.nodes.ConstructorDeclarationNode',
+    'net.xp_framework.tools.vm.nodes.DestructorDeclarationNode',
     'net.xp_framework.tools.vm.nodes.DoWhileNode',
     'net.xp_framework.tools.vm.nodes.EchoNode',
     'net.xp_framework.tools.vm.nodes.ElseIfNode',
