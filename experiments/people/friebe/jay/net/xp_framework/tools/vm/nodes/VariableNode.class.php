@@ -13,16 +13,17 @@
    */ 
   class VariableNode extends VNode {
     var
-      $arg0;
+      $name,
+      $offset;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
+     * @param   mixed name
      */
-    function __construct($arg0) {
-      $this->arg0= $arg0;
+    function __construct($name) {
+      $this->name= $name;
     }  
   }
 ?>

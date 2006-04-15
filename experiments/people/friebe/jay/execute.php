@@ -78,11 +78,11 @@
   }
   
   function fetch(&$var, &$context) {
-    $value= fetchfrom($context['variables'], $var->args[0], 'variable', $context);
+    $value= fetchfrom($context['variables'], $var->name, 'variable', $context);
           
     // Lookup variable contents
-    if ($var->args[1]['arrayoffset']) {
-      return $value[$var->args[1]['arrayoffset']];
+    if ($var->offset) {
+      return $value[$var->offset];
     } else {
       return $value;
     }
@@ -93,9 +93,9 @@
       $pointer= &value($var->class, $context);
       // DEBUG Console::writeLine('MEMBER ', $pointer->id, '->', $var->member, ' := ', PNode::stringOf($value));
       $GLOBALS['objects'][$pointer->id]['members'][$var->member]= $value;
-    } else if ('Variable' == $var->type) {
-      // CDEBUG onsole::writeLine('VAR ', $var->args[0], ' := ', PNode::stringOf($value));
-      $context['variables'][$var->args[0]]= $value;
+    } else if (is_a($var, 'VariableNode')) {
+      // DEBUG onsole::writeLine('VAR ', $var->args[0], ' := ', PNode::stringOf($value));
+      $context['variables'][$var->name]= $value;
     } else {
       error(E_ERROR, 'Cannot assign to '.PNode::stringOf($var));
     }
@@ -174,7 +174,7 @@
       $callcontext= callcontext($decl, $method->arguments, $context);
       
       // - Execute
-      $context['__name']= $class.($static ? '::' : '->').$method->args[1];
+      $context['__name']= $class.($static ? '::' : '->').$method->name;
       if (!$static) $callcontext['variables']['$this']= &$pointer;
       
       $return= execute($decl->statements, $callcontext);
