@@ -109,7 +109,7 @@
         
     // DEBUG Console::writeLine('Looking for ', $class, '::', $type, '(', $name, ') ', PNode::stringOf($arguments));
     $fallback= NULL;
-    foreach ($context['classes'][$class]->args[5] as $decl) {
+    foreach ($context['classes'][$class]->statements as $decl) {
       if (!is_a($decl, $type) || ($name && $decl->name != $name)) continue;
       
       $fallback= $decl;
@@ -578,7 +578,7 @@
     $context["offset"]= $context["end"];
   ');
   $handlers['classdeclaration']= &opcode('
-    $context["classes"][$node->args[2]]= $node;
+    $context["classes"][$node->name]= $node;
   ');
   $handlers['functiondeclaration']= &opcode('
     $context["functions"][$node->name]= $node;

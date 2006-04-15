@@ -448,10 +448,10 @@ optional_annotation_list:
 
 unticked_class_declaration_statement:
 		optional_annotation_list class_entry_type T_STRING extends_from implements_list '{' class_statement_list '}' {
-          $$= &PNode::create('ClassDeclaration', array($1, $2, $3, $4, $5, $7));
+          $$= &new ClassDeclarationNode($3, $4, $5, $7, $2, $1);
         }
 	|	optional_annotation_list interface_entry T_STRING interface_extends_list '{' class_statement_list '}' {
-          $$= &PNode::create('ClassDeclaration', array($1, $2, $3, $4, NULL, $6));
+          $$= &new InterfaceDeclarationNode($3, $4, $5, $7, $2, $1);
         }
 ;
 
@@ -637,7 +637,7 @@ static_var_list:
 
 class_statement_list:
 		class_statement_list class_statement    { $$[]= $2; }
-	|	/* empty */                             { $$= NULL; }
+	|	/* empty */                             { $$= array(); }
 ;
 
 class_statement:
