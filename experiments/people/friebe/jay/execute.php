@@ -117,7 +117,7 @@
       // Found a possible candidate, now compare signatures
       // DEBUG Console::writeLine(' -> candidate ', PNode::stringOf($decl));
       for ($i= 0, $s= sizeof($decl->parameters); $i < $s; $i++) {
-        $decltype= $decl->parameters[$i]->args[0];
+        $decltype= $decl->parameters[$i]->type;
         // DEBUG Console::writeLine('    declares arg #', $i, ' as ', $decltype);
 
         $v= value($arguments[$i], $context);
@@ -165,8 +165,7 @@
       $callcontext= $context;
       $callcontext['variables']= array();
       for ($i= 0, $s= sizeof($method->args[2]); $i < $s; $i++) {
-        $argumentName= $decl->parameters[$i]->args[2];
-        $callcontext['variables'][$argumentName]= value($method->args[2][$i], $context);
+        $callcontext['variables'][$decl->parameters[$i]->name]= value($method->args[2][$i], $context);
       }
       
       // DEBUG var_dump($method->args[0].'::'.$method->args[1], $callcontext['variables']);
@@ -191,8 +190,7 @@
     $callcontext['variables']= array();
     $decl= &$context['functions'][$function->args[0]];
     for ($i= 0, $s= sizeof($function->args[1]); $i < $s; $i++) {
-      $argumentName= $decl->parameters[$i]->args[2];
-      $callcontext['variables'][$argumentName]= value($function->args[1][$i], $context);
+      $callcontext['variables'][$decl->parameters[$i]->name]= value($function->args[1][$i], $context);
     }
 
     // DEBUG var_dump($function->args[0], $callcontext['variables']);
@@ -232,8 +230,7 @@
       $callcontext= $context;
       $callcontext['variables']= array();
       for ($i= 0, $s= sizeof($object->arguments); $i < $s; $i++) {
-        $argumentName= $decl->parameters[$i]->args[2];
-        $callcontext['variables'][$argumentName]= value($object->arguments[$i], $context);
+        $callcontext['variables'][$decl->parameters[$i]->name]= value($object->arguments[$i], $context);
       }
       
       // - Execute, discarding return values (constructors cannot return anything!)
@@ -254,8 +251,8 @@
 
       // Found overloaded operator
       $callcontext= $context;
-      $callcontext['variables'][$decl->parameters[0]->args[2]]= &$l;
-      $callcontext['variables'][$decl->parameters[1]->args[2]]= &$r;
+      $callcontext['variables'][$decl->parameters[0]->name]= &$l;
+      $callcontext['variables'][$decl->parameters[1]->name]= &$r;
 
       // DEBUG var_dump($class.'::operator'.$op, $callcontext['variables']);
 

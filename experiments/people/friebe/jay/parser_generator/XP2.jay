@@ -584,28 +584,16 @@ parameter_list:
 
 non_empty_parameter_list:
 		optional_class_type T_VARIABLE {
-          $$= array(PNode::create('Parameter', array($1, FALSE, $2, NULL)));
-        }
-	|	optional_class_type '&' T_VARIABLE {
-          $$= array(PNode::create('Parameter', array($1, TRUE, $3, NULL)));
-        }
-	|	optional_class_type '&' T_VARIABLE '=' static_scalar {
-          $$= array(PNode::create('Parameter', array($1, TRUE, $3, $5)));
+          $$= array(new ParameterNode($2, $1, NULL));
         }
 	|	optional_class_type T_VARIABLE '=' static_scalar {
-          $$= array(PNode::create('Parameter', array($1, FALSE, $2, $4)));
+          $$= array(new ParameterNode($2, $1, $4));
         }
 	|	non_empty_parameter_list ',' optional_class_type T_VARIABLE {
-          $$[]= &PNode::create('Parameter', array($3, FALSE, $4, NULL));
-        }
-	|	non_empty_parameter_list ',' optional_class_type '&' T_VARIABLE	{
-          $$[]= &PNode::create('Parameter', array($3, TRUE, $4, NULL));
-        }
-	|	non_empty_parameter_list ',' optional_class_type '&' T_VARIABLE	 '=' static_scalar {
-          $$[]= &PNode::create('Parameter', array($3, TRUE, $4, $5));
+          $$[]= &new ParameterNode($4, $3, NULL);
         }
 	|	non_empty_parameter_list ',' optional_class_type T_VARIABLE '=' static_scalar {
-          $$[]= &PNode::create('Parameter', array($3, FALSE, $4, $5));
+          $$[]= &new ParameterNode($4, $3, $6);
         }
 ;
 
