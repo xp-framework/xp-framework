@@ -7,7 +7,7 @@
   uses('net.xp_framework.tools.vm.VNode');
 
   /**
-   * ClassDeclaration
+   * InterfaceDeclaration
    *
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
