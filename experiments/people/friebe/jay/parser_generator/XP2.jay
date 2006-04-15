@@ -846,7 +846,7 @@ expr_without_variable:
           $$= &new AssignNode($1, $3);
         }
 	|	T_NEW class_name_reference ctor_arguments {
-          $$= &PNode::create('New', array(&$2, &$3));
+          $$= &new NewNode($2, $3);
         }
 	|	T_CLONE expr { 
           $$= &PNode::create('Clone', array(&$2));

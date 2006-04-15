@@ -13,19 +13,19 @@
    */ 
   class NewNode extends VNode {
     var
-      $arg0,
-      $arg1;
+      $class,
+      $arguments;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
+     * @param   mixed class
+     * @param   mixed arguments
      */
-    function __construct($arg0, $arg1) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
+    function __construct($class, $arguments) {
+      $this->class= $class;
+      $this->arguments= $arguments;
     }  
   }
 ?>
