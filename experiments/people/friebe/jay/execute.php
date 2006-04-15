@@ -223,10 +223,20 @@
   }
   
   function createobject(&$object, &$context) {
+    static $anonymous= 0;
+
     $id= microtime();
     $classname= $object->class->args[0];
     if (!isset($context['classes'][$classname])) {
       error(E_ERROR, 'Unknown class '.$classname);
+    }
+    
+    // Handle anonymous class creation
+    // FIXME: Use inheritance
+    if ($object->instanciation->declaration) {
+      $classname.= '$'.$anonymous++;
+      $context['classes'][$classname]= $context['classes'][$classname];
+      $context['classes'][$classname]->statements= $object->instanciation->declaration;
     }
 
     // Register to object storage    
@@ -237,15 +247,24 @@
     $pointer= &new ObjectInstance($id); 
     
     // Call constructor if existant
-    if ($decl= &method($classname, 'ConstructorDeclarationNode', NULL, $object->arguments, $context)) {
+    if ($decl= &method($classname, 'ConstructorDeclarationNode', NULL, $object->instanciation->arguments, $context)) {
       
       // Found a constructor, invoke it!
-      $callcontext= callcontext($decl, $object->arguments, $context);
+      $callcontext= callcontext($decl, $object->instanciation->arguments, $context);
       
       // - Execute, discarding return values (constructors cannot return anything!)
       $callcontext['variables']['$this']= &$pointer;
       $callcontext['__name']= 'new '.$classname;
       execute($decl->statements, $callcontext);
+      
+      if ($object->instanciation->chain) {
+        foreach ($object->instanciation->chain as $reference) {
+          $reference->class= $pointer;
+          $pointer= value($reference, $context);
+
+          if ($context['E']) break;
+        }
+      }
     }
 
     // Return pointer to storage

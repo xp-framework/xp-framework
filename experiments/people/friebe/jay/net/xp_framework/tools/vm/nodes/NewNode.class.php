@@ -14,18 +14,18 @@
   class NewNode extends VNode {
     var
       $class,
-      $arguments;
+      $instanciation;
       
     /**
      * Constructor
      *
      * @access  public
      * @param   mixed class
-     * @param   mixed arguments
+     * @param   net.xp_framework.tools.vm.NewClassNode instanciation
      */
-    function __construct($class, $arguments) {
+    function __construct($class, $instanciation) {
       $this->class= $class;
-      $this->arguments= $arguments;
+      $this->instanciation= $instanciation;
     }  
   }
 ?>

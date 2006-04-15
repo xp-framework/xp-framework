@@ -1040,11 +1040,11 @@ exit_expr:
 ;
 
 ctor_arguments:
-		'(' function_call_parameter_list ')' { 
-          $$= $2; 
+		'(' function_call_parameter_list ')' variable_properties { 
+          $$= &new NewClassNode($2, NULL, $4);
         }
-	|	'(' function_call_parameter_list ')' '{' class_statement_list '}' { 
-          $$= &PNode::create('NewClass', array($2, &$5));
+	|	'(' function_call_parameter_list ')' '{' class_statement_list '}' variable_properties { 
+          $$= &new NewClassNode($2, $5, $7);
         }
 ;
 

@@ -15,7 +15,6 @@ class StringBuffer {
   }
 }
 
-$s= new StringBuffer('Hello');
-$s->append(' ')->append('World')->append('!');
+$s= new StringBuffer('Hello')->append(' ')->append('World')->append('!');
 
 echo $s->toString(), "\n";
