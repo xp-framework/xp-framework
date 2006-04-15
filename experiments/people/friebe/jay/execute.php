@@ -398,11 +398,11 @@
           break;
 
         case 'Binary':
-          return binaryop($node->args[2], $node->args[0], $node->args[1], $context);
+          return binaryop($node->operator, $node->left, $node->right, $context);
           break;
 
         case 'Not':
-          return !value($node->args[0], $context);
+          return !value($node->expression, $context);
           break;
         
         case 'PreInc':  // ++$i
