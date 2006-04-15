@@ -306,10 +306,10 @@ unticked_statement:
 	|	T_DECLARE { /* TBI */ }
 	|	';'		/* empty statement */
 	|	T_TRY '{' inner_statement_list '}' T_CATCH '(' fully_qualified_class_name T_VARIABLE ')' '{' inner_statement_list '}' additional_catches optional_finally {
-          $$= &PNode::create('Try', array(&$3, PNode::create('Catch', array($7, &$8, &$11, &$13)), &$14));
+          $$= &new TryNode($3, new CatchNode($7, $8, $11, $13), $14);
         }
 	|	T_THROW expr ';' { 
-          $$= &PNode::create('Throw', array(&$2));
+          $$= &new ThrowNode($2);
         }
 	|	T_IMPORT import_list ';' { 
           $$= &PNode::create('ImportList', array(&$2));
@@ -357,7 +357,7 @@ non_empty_additional_catches:
 
 optional_finally:
 		T_FINALLY '{' inner_statement_list '}' {
-          $$= &PNode::create('Finally', array($3));
+          $$= &new FinallyNode($3);
         }
 	|	/* empty */ { 
           $$= NULL; 
@@ -366,7 +366,7 @@ optional_finally:
 
 additional_catch:
 	T_CATCH '(' fully_qualified_class_name T_VARIABLE ')' '{' inner_statement_list '}' {
-      $$= &PNode::create('Catch', array($3, &$4, &$7));
+      $$= &new CatchNode($3, $4, $7, NULL);
     }
 ;
 

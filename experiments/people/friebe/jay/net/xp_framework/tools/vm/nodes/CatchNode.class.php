@@ -13,22 +13,25 @@
    */ 
   class CatchNode extends VNode {
     var
-      $arg0,
-      $arg1,
-      $arg2;
+      $class,
+      $variable,
+      $statements,
+      $catches;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
-     * @param   mixed arg2
+     * @param   mixed class
+     * @param   mixed variable
+     * @param   mixed statements
+     * @param   mixed catches
      */
-    function __construct($arg0, $arg1, $arg2) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
-      $this->arg2= $arg2;
+    function __construct($class, $variable, $statements, $catches) {
+      $this->class= $class;
+      $this->variable= $variable;
+      $this->statements= $statements;
+      $this->catches= $catches;
     }  
   }
 ?>

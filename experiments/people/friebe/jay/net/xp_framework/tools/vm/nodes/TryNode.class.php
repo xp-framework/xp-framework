@@ -13,22 +13,22 @@
    */ 
   class TryNode extends VNode {
     var
-      $arg0,
-      $arg1,
-      $arg2;
+      $statements,
+      $catch,
+      $finally;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
-     * @param   mixed arg2
+     * @param   mixed $statements
+     * @param   mixed $catch
+     * @param   mixed $catches
      */
-    function __construct($arg0, $arg1, $arg2) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
-      $this->arg2= $arg2;
+    function __construct($statements, $catch, $finally) {
+      $this->statements= $statements;
+      $this->catch= $catch;
+      $this->finally= $finally;
     }  
   }
 ?>

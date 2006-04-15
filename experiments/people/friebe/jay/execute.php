@@ -607,35 +607,35 @@
     methodcall($node, $context);
   ');
   $handlers['try']= &opcode('
-    execute($node->args[0], $context);
+    execute($node->statements, $context);
     $oE= &$context["E"];
-    $context["E"] && handle($node->args[1], $context);
+    $context["E"] && handle($node->catch, $context);
     
     // If Exception was not caught by `catch`, pass it to the
     // next catch (if available).
     // Do not pass a newly thrown exception to these catches (thus comparing
     // the ids).
-    if (NULL !== $node->args[1]->args[3] && $context["E"] && $oE->id === $context["E"]->id) {
-      execute($node->args[1]->args[3], $context);
+    if (NULL !== $node->catch->catches && $context["E"] && $oE->id === $context["E"]->id) {
+      execute($node->catch->catches, $context);
     }
     
     // Execute finally
-    if (NULL !== $node->args[2]) {
-      execute($node->args[2]->args[0], $context);
+    if (NULL !== $node->finally) {
+      execute($node->finally->statements, $context);
     }
   ');
   $handlers['catch']= &opcode('
     $pointer= &$context["E"];
     $class= $GLOBALS["objects"][$pointer->id]["name"];
     
-    if ($node->args[0] == $class) {
-      $context["variables"][$node->args[1]]= &value($context["E"], $context);
+    if ($node->class == $class) {   // FIXME: Use Instance
+      $context["variables"][$node->variable]= &value($context["E"], $context);
       unset($context["E"]);
-      execute($node->args[2], $context);
+      execute($node->statements, $context);
     }
   ');
   $handlers['throw']= &opcode('
-    except(value($node->args[0], $context), $context);
+    except(value($node->value, $context), $context);
   ');
   // }}}
 

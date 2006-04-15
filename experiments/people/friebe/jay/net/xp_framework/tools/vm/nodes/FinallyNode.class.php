@@ -13,16 +13,16 @@
    */ 
   class FinallyNode extends VNode {
     var
-      $arg0;
+      $statements;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
+     * @param   mixed statements
      */
-    function __construct($arg0) {
-      $this->arg0= $arg0;
+    function __construct($statements) {
+      $this->statements= $statements;
     }  
   }
 ?>
