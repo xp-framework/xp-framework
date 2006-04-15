@@ -68,6 +68,38 @@
     echo '*** ', $message, "\n";
   }
   
+  function memberhash(&$statements) {
+    $hash= array();
+    
+    // Members
+    // !!! TBI !!!
+    
+    // Methods
+    foreach ($statements as $statement) {
+      if (!is_a($statement, 'InvokeableDeclarationNode')) continue;
+      
+      $hash[$statement->name]= &$statement;   // FIXME: Overloading
+    }
+    return $hash;
+  }
+  
+  function inherit(&$node, &$context) {
+    if (!$node->extends) return;
+    
+    if (!$context['classes'][$node->extends]) {
+      error(E_ERROR, 'Cannot inherit '.$node->name.' from non-existant class '.$node->extends);
+      // Bails
+    }
+    
+    // Member inheritance
+    $hash= memberhash($context['classes'][$node->name]->statements);
+    foreach (memberhash($context['classes'][$node->extends]->statements) as $key => $declaration) {
+      if (isset($hash[$key])) continue;   // Overwritten
+      
+      $context['classes'][$node->name]->statements[]= &$declaration;
+    }
+  }
+  
   function fetchfrom($storage, $id, $name, &$context) {
     if (!array_key_exists($id, $storage)) {
       error(E_NOTICE, 'Undefined '.$name.' '.$id.' in '.$context['__name']);
@@ -232,11 +264,17 @@
     }
     
     // Handle anonymous class creation
-    // FIXME: Use inheritance
     if ($object->instanciation->declaration) {
+      $hash= memberhash($context['classes'][$classname]);
       $classname.= '$'.$anonymous++;
-      $context['classes'][$classname]= $context['classes'][$classname];
-      $context['classes'][$classname]->statements= $object->instanciation->declaration;
+
+      // Member inheritance
+      $context['classes'][$classname]->statements= array();
+      foreach (memberhash($object->instanciation->declaration) as $key => $declaration) {
+        if (isset($hash[$key])) continue;   // Overwritten
+
+        $context['classes'][$classname]->statements[]= &$declaration;
+      }
     }
 
     // Register to object storage    
@@ -619,6 +657,7 @@
   ');
   $handlers['classdeclaration']= &opcode('
     $context["classes"][$node->name]= $node;
+    inherit($node, $context);
   ');
   $handlers['functiondeclaration']= &opcode('
     $context["functions"][$node->name]= $node;
