@@ -549,6 +549,16 @@
       }
     }
   ');
+  $handlers['dowhile']= &opcode('
+    // do { statements } while (condition)
+    do {
+
+      // statements 
+      foreach ($node->statements as $arg) {
+        handle($arg, $context);
+      }
+    } while (value($node->condition, $context));
+  ');
   $handlers['binaryassign']= &opcode('
     set(
       $node->variable, 

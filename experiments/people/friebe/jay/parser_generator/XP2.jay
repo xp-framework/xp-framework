@@ -257,7 +257,7 @@ unticked_statement:
           $$= &new WhileNode($3, $5);
         }
 	|	T_DO statement T_WHILE '(' expr ')' ';' {
-          $$= &PNode::create('DoWhile', array(&$2, &$5));
+          $$= &new DoWhileNode($3, $5);
         }
 	|	T_FOR '(' for_expr ';' for_expr ';' for_expr ')' statement {
           $$= &new ForNode($3, $5, $7, $9);
