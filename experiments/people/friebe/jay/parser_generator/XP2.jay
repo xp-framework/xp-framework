@@ -435,14 +435,9 @@ package_declaration_statement:
 		unticked_package_declaration_statement  { /* compiler::call('zend_do_ticks'); */ }
 ;
 
-is_reference:
-		/* empty */	{ $$= FALSE; }
-	|	'&'			{ $$= TRUE; }
-;
-
 unticked_function_declaration_statement:
-		T_FUNCTION is_reference T_STRING '(' parameter_list ')' '{' inner_statement_list '}' { 
-          $$= &PNode::create('FunctionDeclaration', array($2, $3, $5, $8));
+		T_FUNCTION T_STRING '(' parameter_list ')' '{' inner_statement_list '}' { 
+          $$= &new FunctionDeclarationNode($2, $4, $7);
         }
 ;
 
@@ -664,27 +659,27 @@ class_statement:
 	|	class_constant_declaration ';' {
           $$= &PNode::create('ClassConstantDeclarationList', array($1, $2)); 
         }
-	|	method_modifiers T_OPERATOR is_reference operator_token '(' parameter_list ')' throws method_body {
-          $$= &PNode::create('OperatorDeclaration', array(NULL, $1, $3, $4, $6, $8, $9));
+	|	method_modifiers T_OPERATOR operator_token '(' parameter_list ')' throws method_body {
+          $$= &new OperatorDeclarationNode($3, $5, $8, $1, NULL, $7);
         }
-	|	annotation_list method_modifiers T_OPERATOR is_reference operator_token '(' parameter_list ')' throws method_body {
-          $$= &PNode::create('OperatorDeclaration', array($1, $2, $4, $5, $7, $9, $10));
+	|	annotation_list method_modifiers T_OPERATOR operator_token '(' parameter_list ')' throws method_body {
+          $$= &new OperatorDeclarationNode($4, $6, $9, $2, $1, $8);
         }
     |   method_declaration
 ;
 
 method_declaration:
 	 	method_modifiers T_CONSTRUCT '(' parameter_list ')' throws method_body {
-          $$= &PNode::create('ConstructorDeclaration', array(NULL, $1, $4, $6, $7));
+          $$= &new ConstructorDeclarationNode($4, $7, $1, NULL, $6);
         }
 	|	annotation_list method_modifiers T_CONSTRUCT '(' parameter_list ')' throws method_body {
-          $$= &PNode::create('ConstructorDeclaration', array($1, $2, $5, $7, $8));
+          $$= &new ConstructorDeclarationNode($5, $8, $2, $1, $7);
         }
-	|	method_modifiers return_type_name is_reference T_STRING '(' parameter_list ')' throws method_body {
-          $$= &PNode::create('MethodDeclaration', array(NULL, $1, $2, $3, $4, $6, $8, $9));
+	|	method_modifiers return_type_name T_STRING '(' parameter_list ')' throws method_body {
+          $$= &new MethodDeclarationNode($3, $5, $2, $8, $1, NULL, $7);
         }
-	|	annotation_list method_modifiers return_type_name is_reference T_STRING '(' parameter_list ')' throws method_body {
-          $$= &PNode::create('MethodDeclaration', array($1, $2, $3, $4, $5, $7, $9, $10));
+	|	annotation_list method_modifiers return_type_name T_STRING '(' parameter_list ')' throws method_body {
+          $$= &new MethodDeclarationNode($4, $6, $3, $9, $2, $1, $8);
         }
 ;
 

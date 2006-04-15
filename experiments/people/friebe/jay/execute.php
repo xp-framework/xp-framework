@@ -106,29 +106,18 @@
   }
   
   function &method($class, $type, $name, $arguments, &$context) {
-    static $declargoffset= array(
-     'ConstructorDeclaration' => 2,
-     'MethodDeclaration'      => 5,
-     'OperatorDeclaration'    => 4,
-    );
-    static $nameoffset= array(
-     'MethodDeclaration'      => 4,
-     'OperatorDeclaration'    => 3,
-    );
         
     // DEBUG Console::writeLine('Looking for ', $class, '::', $type, '(', $name, ') ', PNode::stringOf($arguments));
     $fallback= NULL;
-    $n= $nameoffset[$type];
     foreach ($context['classes'][$class]->args[5] as $decl) {
-      if ($decl->type != $type || ($name && $decl->args[$n] != $name)) continue;
+      if (!is_a($decl, $type) || ($name && $decl->name != $name)) continue;
       
       $fallback= $decl;
 
       // Found a possible candidate, now compare signatures
       // DEBUG Console::writeLine(' -> candidate ', PNode::stringOf($decl));
-      $offset= $declargoffset[$type];
-      for ($i= 0, $s= sizeof($decl->args[$offset]); $i < $s; $i++) {
-        $decltype= $decl->args[$offset][$i]->args[0];
+      for ($i= 0, $s= sizeof($decl->parameters); $i < $s; $i++) {
+        $decltype= $decl->parameters[$i]->args[0];
         // DEBUG Console::writeLine('    declares arg #', $i, ' as ', $decltype);
 
         $v= value($arguments[$i], $context);
@@ -169,14 +158,14 @@
       // DEBUG Console::writeLine('INVOKE: ', $class.'->'.$method->args[1]);
     }
 
-    if ($decl= &method($class, 'MethodDeclaration', $method->args[1], $method->args[2], $context)) {
+    if ($decl= &method($class, 'MethodDeclarationNode', $method->args[1], $method->args[2], $context)) {
       
       // We've found the method declaration, now:
       // - Build argument list
       $callcontext= $context;
       $callcontext['variables']= array();
       for ($i= 0, $s= sizeof($method->args[2]); $i < $s; $i++) {
-        $argumentName= $decl->args[5][$i]->args[2];
+        $argumentName= $decl->parameters[$i]->args[2];
         $callcontext['variables'][$argumentName]= value($method->args[2][$i], $context);
       }
       
@@ -185,7 +174,7 @@
       // - Execute
       $context['__name']= $class.($static ? '::' : '->').$method->args[1];
       if (!$static) $callcontext['variables']['$this']= &$pointer;
-      return execute($decl->args[7], $callcontext);
+      return execute($decl->statements, $callcontext);
     }
     
     // Undefined method
@@ -202,7 +191,7 @@
     $callcontext['variables']= array();
     $decl= &$context['functions'][$function->args[0]];
     for ($i= 0, $s= sizeof($function->args[1]); $i < $s; $i++) {
-      $argumentName= $decl->args[2][$i]->args[2];
+      $argumentName= $decl->parameters[$i]->args[2];
       $callcontext['variables'][$argumentName]= value($function->args[1][$i], $context);
     }
 
@@ -210,7 +199,7 @@
 
     // - Execute
     $context['__name']= $function->args[0];
-    return execute($decl->args[3], $callcontext);
+    return execute($decl->statements, $callcontext);
   }
 
   function builtincall(&$function, &$context) {
@@ -237,20 +226,20 @@
     $pointer= &new ObjectInstance($id); 
     
     // Call constructor if existant
-    if ($decl= &method($classname, 'ConstructorDeclaration', NULL, $object->arguments, $context)) {
+    if ($decl= &method($classname, 'ConstructorDeclarationNode', NULL, $object->arguments, $context)) {
       
       // Found a constructor, invoke it!
       $callcontext= $context;
       $callcontext['variables']= array();
       for ($i= 0, $s= sizeof($object->arguments); $i < $s; $i++) {
-        $argumentName= $decl->args[2][$i]->args[2];
+        $argumentName= $decl->parameters[$i]->args[2];
         $callcontext['variables'][$argumentName]= value($object->arguments[$i], $context);
       }
       
       // - Execute, discarding return values (constructors cannot return anything!)
       $callcontext['variables']['$this']= &$pointer;
       $callcontext['__name']= 'new '.$classname;
-      execute($decl->args[4], $callcontext);
+      execute($decl->statements, $callcontext);
     }
 
     // Return pointer to storage
@@ -261,17 +250,17 @@
     if (!is_a($l, 'ObjectInstance')) return FALSE;    // Short-cuircuit
 
     $class= $GLOBALS['objects'][$l->id]['name'];
-    if ($decl= &method($class, 'OperatorDeclaration', $op, $decl->args[4], $context)) {
+    if ($decl= &method($class, 'OperatorDeclarationNode', $op, array(&$l, &$r), $context)) {
 
       // Found overloaded operator
       $callcontext= $context;
-      $callcontext['variables'][$decl->args[4][0]->args[2]]= &$l;
-      $callcontext['variables'][$decl->args[4][1]->args[2]]= &$r;
+      $callcontext['variables'][$decl->parameters[0]->args[2]]= &$l;
+      $callcontext['variables'][$decl->parameters[1]->args[2]]= &$r;
 
       // DEBUG var_dump($class.'::operator'.$op, $callcontext['variables']);
 
       $callcontext['__name']= $class.'::operator'.$op;
-      $out= execute($decl->args[6], $callcontext);
+      $out= execute($decl->statements, $callcontext);
       return TRUE;
     }
 
@@ -589,7 +578,7 @@
     $context["classes"][$node->args[2]]= $node;
   ');
   $handlers['functiondeclaration']= &opcode('
-    $context["functions"][$node->args[1]]= $node;
+    $context["functions"][$node->name]= $node;
   ');
   $handlers['functioncall']= &opcode('
     function_exists($node->args[0]) 

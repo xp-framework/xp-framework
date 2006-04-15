@@ -4,37 +4,35 @@
  * $Id$
  */
 
-  uses('net.xp_framework.tools.vm.VNode');
+  uses('net.xp_framework.tools.vm.InvokeableDeclarationNode');
 
   /**
    * ConstructorDeclaration
    *
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
-  class ConstructorDeclarationNode extends VNode {
-    var
-      $arg0,
-      $arg1,
-      $arg2,
-      $arg3,
-      $arg4;
+  class ConstructorDeclarationNode extends InvokeableDeclarationNode {
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
-     * @param   mixed arg2
-     * @param   mixed arg3
-     * @param   mixed arg4
+     * @param   mixed parameters
+     * @param   mixed statements
+     * @param   mixed modifiers
+     * @param   mixed annotations
+     * @param   mixed throws
      */
-    function __construct($arg0, $arg1, $arg2, $arg3, $arg4) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
-      $this->arg2= $arg2;
-      $this->arg3= $arg3;
-      $this->arg4= $arg4;
+    function __construct($parameters, $statements, $modifiers, $annotations, $throws) {
+      parent::__construct(
+        '<construct>', 
+        $parameters, 
+        NULL, 
+        $statements, 
+        $modifiers, 
+        $annotations, 
+        $throws
+      );
     }  
   }
 ?>

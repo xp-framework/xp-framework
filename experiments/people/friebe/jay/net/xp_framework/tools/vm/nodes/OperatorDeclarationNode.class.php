@@ -4,43 +4,36 @@
  * $Id$
  */
 
-  uses('net.xp_framework.tools.vm.VNode');
+  uses('net.xp_framework.tools.vm.InvokeableDeclarationNode');
 
   /**
    * OperatorDeclaration
    *
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
-  class OperatorDeclarationNode extends VNode {
-    var
-      $arg0,
-      $arg1,
-      $arg2,
-      $arg3,
-      $arg4,
-      $arg5,
-      $arg6;
+  class OperatorDeclarationNode extends InvokeableDeclarationNode {
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
-     * @param   mixed arg2
-     * @param   mixed arg3
-     * @param   mixed arg4
-     * @param   mixed arg5
-     * @param   mixed arg6
+     * @param   string name the operator, e.g. "+", "-", etc.
+     * @param   mixed parameters
+     * @param   mixed statements
+     * @param   mixed modifiers
+     * @param   mixed annotations
+     * @param   mixed throws
      */
-    function __construct($arg0, $arg1, $arg2, $arg3, $arg4, $arg5, $arg6) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
-      $this->arg2= $arg2;
-      $this->arg3= $arg3;
-      $this->arg4= $arg4;
-      $this->arg5= $arg5;
-      $this->arg6= $arg6;
+    function __construct($name, $parameters, $statements, $modifiers, $annotations, $throws) {
+      parent::__construct(
+        $name, 
+        $parameters, 
+        NULL, 
+        $statements, 
+        $modifiers, 
+        $annotations, 
+        $throws
+      );
     }  
   }
 ?>

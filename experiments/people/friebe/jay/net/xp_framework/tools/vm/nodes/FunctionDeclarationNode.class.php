@@ -13,25 +13,22 @@
    */ 
   class FunctionDeclarationNode extends VNode {
     var
-      $arg0,
-      $arg1,
-      $arg2,
-      $arg3;
+      $name,
+      $parameters,
+      $statements;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
-     * @param   mixed arg2
-     * @param   mixed arg3
+     * @param   string name
+     * @param   mixed parameters
+     * @param   mixed statements
      */
-    function __construct($arg0, $arg1, $arg2, $arg3) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
-      $this->arg2= $arg2;
-      $this->arg3= $arg3;
+    function __construct($name, $parameters, $statements) {
+      $this->name= $name;
+      $this->parameters= $parameters;
+      $this->statements= $statements;
     }  
   }
 ?>
