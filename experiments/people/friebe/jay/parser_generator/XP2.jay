@@ -493,7 +493,7 @@ interface_list:
 
 unticked_enum_declaration_statement:
 		optional_annotation_list T_ENUM T_STRING '{' enum_inner_statement_list '}' {
-          $$= &PNode::create('ClassDeclaration', array($1, 0, $3, NULL, NULL, &$5));
+          $$= &new EnumDeclarationNode($3, $5, $1);
         }
 ;
 

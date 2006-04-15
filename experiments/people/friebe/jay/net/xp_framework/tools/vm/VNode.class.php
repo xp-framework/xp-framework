@@ -22,6 +22,7 @@
     'net.xp_framework.tools.vm.nodes.DoWhileNode',
     'net.xp_framework.tools.vm.nodes.EchoNode',
     'net.xp_framework.tools.vm.nodes.ElseIfNode',
+    'net.xp_framework.tools.vm.nodes.EnumDeclarationNode',
     'net.xp_framework.tools.vm.nodes.EnumMemberNode',
     'net.xp_framework.tools.vm.nodes.ExitNode',
     'net.xp_framework.tools.vm.nodes.FinallyNode',
