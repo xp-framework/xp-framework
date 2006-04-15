@@ -1,0 +1,21 @@
+class StringBuffer {
+  protected $intern= '';
+  
+  public __construct($initial= '') {
+    $this->intern= $initial;
+  }
+  
+  public self append(string $s) {
+    $this->intern.= $s;
+    return $this;
+  }
+
+  public string toString() {
+    return $this->intern;
+  }
+}
+
+$s= new StringBuffer('Hello');
+$s->append(' ')->append('World')->append('!');
+
+echo $s->toString(), "\n";
