@@ -13,25 +13,25 @@
    */ 
   class IfNode extends VNode {
     var
-      $arg0,
-      $arg1,
-      $arg2,
-      $arg3;
+      $condition,
+      $statements,
+      $elseif,
+      $else;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
-     * @param   mixed arg2
-     * @param   mixed arg3
+     * @param   mixed condition
+     * @param   mixed statements
+     * @param   mixed elseif
+     * @param   mixed else
      */
-    function __construct($arg0, $arg1, $arg2, $arg3) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
-      $this->arg2= $arg2;
-      $this->arg3= $arg3;
+    function __construct($condition, $statements, $elseif, $else) {
+      $this->condition= $condition;
+      $this->statements= $statements;
+      $this->elseif= $elseif;
+      $this->else= $else;
     }  
   }
 ?>

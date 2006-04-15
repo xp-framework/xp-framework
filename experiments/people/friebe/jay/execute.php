@@ -493,24 +493,28 @@
     $new= value($node->args[0], $context)+ 1;
     set($node->args[0], $new, $context);
   ');
+  $handlers['postinc']= &opcode('
+    $new= value($node->args[0], $context);
+    set($node->args[0], $new+ 1, $context);
+  ');
   $handlers['if']= &opcode('
     // if (condition) { if-statements } [ elseif { elseif-statements }] [ else { else-statements }]
-    if (value($node->args[0], $context)) {
+    if (value($node->condition, $context)) {
 
       // condition: true
-      $block= &$node->args[1];
-    } else if ($node->args[2]) {
+      $block= &$node->statements;
+    } else if ($node->elseif) {
 
       // condition: false, else if
-      if (value($node->args[2]->args[0], $context)) {
-        $block= &$node->args[2]->args[1];
+      if (value($node->elseif->args[0], $context)) {
+        $block= &$node->elseif->args[1];
       } else {
-        $block= &$node->args[3];
+        $block= &$node->else;
       }
-    } else if ($node->args[3]) {
+    } else if ($node->else) {
 
       // condition: false, else
-      $block= &$node->args[3];
+      $block= &$node->else;
     }
 
     foreach ($block as $arg) {
@@ -520,27 +524,27 @@
   $handlers['for']= &opcode('
     // for (init; condition; loop) { statements }
     // init
-    foreach ($node->args[0] as $arg) {
+    foreach ($node->init as $arg) {
       handle($arg, $context);
     }
     
-    while (value($node->args[1][0], $context)) {  // condition
+    while (value($node->condition[0], $context)) {  // condition
     
       // statements 
-      foreach ($node->args[3] as $arg) {
+      foreach ($node->statements as $arg) {
         handle($arg, $context);
       }
       
       // loop
-      handle($node->args[2][0], $context);
+      handle($node->loop[0], $context);
     }
   ');
   $handlers['while']= &opcode('
     // while (condition) { statements }
-    while (value($node->args[0], $context)) {  // condition
+    while (value($node->condition, $context)) {  // condition
 
       // statements 
-      foreach ($node->args[1] as $arg) {
+      foreach ($node->statements as $arg) {
         handle($arg, $context);
       }
     }

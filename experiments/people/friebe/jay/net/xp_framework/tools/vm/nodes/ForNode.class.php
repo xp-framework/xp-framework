@@ -13,25 +13,25 @@
    */ 
   class ForNode extends VNode {
     var
-      $arg0,
-      $arg1,
-      $arg2,
-      $arg3;
+      $init,
+      $condition,
+      $loop,
+      $statements;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
-     * @param   mixed arg2
-     * @param   mixed arg3
+     * @param   mixed init
+     * @param   mixed condition
+     * @param   mixed loop
+     * @param   mixed statements
      */
-    function __construct($arg0, $arg1, $arg2, $arg3) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
-      $this->arg2= $arg2;
-      $this->arg3= $arg3;
+    function __construct($init, $condition, $loop, $statements) {
+      $this->init= $init;
+      $this->condition= $condition;
+      $this->loop= $loop;
+      $this->statements= $statements;
     }  
   }
 ?>

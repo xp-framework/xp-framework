@@ -251,16 +251,16 @@ statement:
 unticked_statement:
 		'{' inner_statement_list '}' { $$= $2; }
 	|	T_IF '(' expr ')' statement elseif_list else_single { 
-          $$= &PNode::create('If', array(&$3, &$5, &$6, &$7));
+          $$= &new IfNode($3, $5, $6, $7);
         }
 	|	T_WHILE '(' expr ')' statement {
-          $$= &PNode::create('While', array(&$3, &$5));
+          $$= &new WhileNode($3, $5);
         }
 	|	T_DO statement T_WHILE '(' expr ')' ';' {
           $$= &PNode::create('DoWhile', array(&$2, &$5));
         }
 	|	T_FOR '(' for_expr ';' for_expr ';' for_expr ')' statement {
-          $$= &PNode::create('For', array(&$3, &$5, &$7, &$9));
+          $$= &new ForNode($3, $5, $7, $9);
         }
 	|	T_SWITCH '(' expr ')' switch_case_list {
           $$= &PNode::create('Switch', array(&$3, &$5));
