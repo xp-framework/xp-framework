@@ -14,7 +14,7 @@
   $nodes= $parser->yyparse(new Lexer(file_get_contents($argv[1]), $argv[1]));
   
   // Dump AST if specified
-  isset($argv[2]) && Console::writeLine(PNode::stringOf($nodes));
+  isset($argv[2]) && Console::writeLine(VNode::stringOf($nodes));
   
   // Write to file
   $out= &new File($argv[1].'c');
