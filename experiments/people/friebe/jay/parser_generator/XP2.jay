@@ -973,7 +973,7 @@ expr_without_variable:
           $$= &$2; 
         }
 	|	expr '?' expr ':' expr	{
-          $$= &PNode::create('Ternary', array(&$1, &$3, &$5));
+          $$= &new TernaryNode($1, $3, $5);
         }
 	|	internal_functions_in_yacc { $$ = $1; }
 	|	T_INT_CAST expr 	{ /* TBI compiler::call('zend_do_cast', array($$, $2, IS_LONG )); */ }

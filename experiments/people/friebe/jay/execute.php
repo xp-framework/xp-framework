@@ -354,7 +354,7 @@
     }
   }
   
-  function value(&$node, &$context) {
+  function &value(&$node, &$context) {
     if (!$context) xp::error('value() invoked outside of context');
     
     if (is_a($node, 'PNode') || is_a($node, 'VNode')) {
@@ -381,6 +381,13 @@
             $node->member, 
             'member of '.$pointer->id, 
             $context
+          );
+          break;
+        
+        case 'ternary':
+          return (value($node->condition, $context) 
+            ? value($node->expression, $context) 
+            : value($node->conditional, $context)
           );
           break;
 
@@ -648,7 +655,7 @@
   $context['handlers']= $handlers;
   array_shift($argv);
   $context['variables']= array();
-  $context['variables']['$argc']= $argc;
+  $context['variables']['$argc']= $argc- 1;
   $context['variables']['$argv']= $argv;
   
   execute($nodes, $context);

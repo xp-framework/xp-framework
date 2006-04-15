@@ -48,6 +48,7 @@
     'net.xp_framework.tools.vm.nodes.ReturnNode',
     'net.xp_framework.tools.vm.nodes.StaticMemberNode',
     'net.xp_framework.tools.vm.nodes.SwitchNode',
+    'net.xp_framework.tools.vm.nodes.TernaryNode',
     'net.xp_framework.tools.vm.nodes.ThrowNode',
     'net.xp_framework.tools.vm.nodes.TryNode',
     'net.xp_framework.tools.vm.nodes.VariableNode',
