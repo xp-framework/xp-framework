@@ -256,14 +256,14 @@
       $callcontext['variables']['$this']= &$pointer;
       $callcontext['__name']= 'new '.$classname;
       execute($decl->statements, $callcontext);
-      
-      if ($object->instanciation->chain) {
-        foreach ($object->instanciation->chain as $reference) {
-          $reference->class= $pointer;
-          $pointer= value($reference, $context);
+    }
 
-          if ($context['E']) break;
-        }
+    if ($object->instanciation->chain) {
+      foreach ($object->instanciation->chain as $reference) {
+        $reference->class= $pointer;
+        $pointer= value($reference, $context);
+
+        if ($context['E']) break;
       }
     }
 
