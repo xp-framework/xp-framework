@@ -75,7 +75,7 @@
      * @access  public
      * @param   &mixed arr
      */
-    function setData(&$arr) {
+    function setData($arr) {
       $params= &$this->root->addChild(new Node('params'));
       if (sizeof($arr)) foreach (array_keys($arr) as $idx) {
         $this->_marshall($params->addChild(new Node('param')), $arr[$idx]);
