@@ -552,7 +552,11 @@
     }
   ');
   $handlers['binaryassign']= &opcode('
-    set($node->args[0], binaryop($node->args[2], $node->args[0], $node->args[1], $context), $context);
+    set(
+      $node->variable, 
+      binaryop($node->operator, $node->variable, $node->expression, $context), 
+      $context
+    );
   ');
   $handlers['echo']= &opcode('
     foreach ($node->args as $arg) {
