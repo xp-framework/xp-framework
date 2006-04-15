@@ -996,9 +996,6 @@ expr_without_variable:
 	|	'`' encaps_list '`'	{
           $$= &PNode::create('Execute', $2);
         }
-	|	T_PRINT expr {
-          $$= &PNode::create('Echo', array(&$2)); 
-        }
 ;
 
 function_call:
