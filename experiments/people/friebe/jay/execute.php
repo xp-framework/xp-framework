@@ -224,7 +224,7 @@
   
   function createobject(&$object, &$context) {
     $id= microtime();
-    $classname= $object->args[0]->args[0];
+    $classname= $object->class->args[0];
     if (!isset($context['classes'][$classname])) {
       error(E_ERROR, 'Unknown class '.$classname);
     }
@@ -237,14 +237,14 @@
     $pointer= &new ObjectInstance($id); 
     
     // Call constructor if existant
-    if ($decl= &method($classname, 'ConstructorDeclaration', NULL, $object->args[1], $context)) {
+    if ($decl= &method($classname, 'ConstructorDeclaration', NULL, $object->arguments, $context)) {
       
       // Found a constructor, invoke it!
       $callcontext= $context;
       $callcontext['variables']= array();
-      for ($i= 0, $s= sizeof($object->args[1]); $i < $s; $i++) {
+      for ($i= 0, $s= sizeof($object->arguments); $i < $s; $i++) {
         $argumentName= $decl->args[2][$i]->args[2];
-        $callcontext['variables'][$argumentName]= value($object->args[1][$i], $context);
+        $callcontext['variables'][$argumentName]= value($object->arguments[$i], $context);
       }
       
       // - Execute, discarding return values (constructors cannot return anything!)
@@ -365,21 +365,23 @@
   function value(&$node, &$context) {
     if (!$context) xp::error('value() invoked outside of context');
     
-    if (is_a($node, 'PNode')) {
-      switch ($node->type) {
-        case 'Variable':
+    if (is_a($node, 'PNode') || is_a($node, 'VNode')) {
+      $id= is_a($node, 'PNode') ? strtolower($node->type) : substr(get_class($node), 0, -4);
+      
+      switch ($id) {
+        case 'variable':
           return fetch($node, $context);
           break;
          
-        case 'MethodCall':
+        case 'methodcall':
           return methodcall($node, $context);
           break;
 
-        case 'New':
+        case 'new':
           return createobject($node, $context);
           break;
         
-        case 'ObjectReference':
+        case 'objectreference':
           $pointer= &value($node->args[0], $context);
 
           return fetchfrom(
@@ -390,40 +392,40 @@
           );
           break;
 
-        case 'FunctionCall':
+        case 'functioncall':
           return function_exists($node->args[0]) 
             ? builtincall($node, $context)
             : functioncall($node, $context)
           ;
           break;
 
-        case 'Binary':
+        case 'binary':
           return binaryop($node->operator, $node->left, $node->right, $context);
           break;
 
-        case 'Not':
+        case 'not':
           return !value($node->expression, $context);
           break;
         
-        case 'PreInc':  // ++$i
+        case 'preinc':  // ++$i
           $new= value($node->args[0], $context)+ 1;
           set($node->args[0], $new, $context);
           return $new;
           break;
 
-        case 'PostInc': // $i++
+        case 'postinc': // $i++
           $new= value($node->args[0], $context);
           set($node->args[0], $new+ 1, $context);
           return $new;
           break;
 
-        case 'PreDec':  // --$i
+        case 'predec':  // --$i
           $new= value($node->args[0], $context)- 1;
           set($node->args[0], $new, $context);
           return $new;
           break;
 
-        case 'PostDec': // $i--
+        case 'postdec': // $i--
           $new= value($node->args[0], $context);
           set($node->args[0], $new- 1, $context);
           return $new;
