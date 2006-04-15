@@ -33,12 +33,19 @@
         TOKEN_T_FINALLY     => 'finally',
       );
 
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   string[] tokens
+     * @param   string fileName
+     */
     function __construct($tokens, $fileName){
-      $this->tokens = $this->tokenGetAll($tokens);
-      $this->N = count($this->tokens);
-      $this->pos = -1;
-      $this->line = 1;
-      $this->fileName = $fileName;
+      $this->tokens= $this->tokenGetAll($tokens);
+      $this->N= count($this->tokens);
+      $this->pos= -1;
+      $this->line= 1;
+      $this->fileName= $fileName;
     }
 
     function setLine($line){
