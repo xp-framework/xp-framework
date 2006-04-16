@@ -307,7 +307,10 @@
      * @return  &mixed data
      */    
     function &_recurseData(&$node, $names= FALSE, $context= NULL, $mapping) {
-      if (empty($node->children)) return array();
+      if (empty($node->children)) {
+        $a= array();
+        return $a;
+      }
 
       foreach ($node->attribute as $key => $val) {
         if (0 != strncmp('xmlns:', $key, 6)) continue;
@@ -472,7 +475,11 @@
      * @throws  lang.FormatException in case no XMLNS_SOAPENV:Body was found
      */
     function &getData($context= 'ENUM', &$mapping) {
+      // FIXME: Mapping should not be required
       if ($body= &$this->_bodyElement()) {
+        if ($body->children[0]->getName() == $this->namespaces[XMLNS_SOAPENV].':Fault') {
+          $n= NULL; return $n;
+        }
         return $this->_recurseData($body->children[0], FALSE, $context, $mapping);
       }
     }

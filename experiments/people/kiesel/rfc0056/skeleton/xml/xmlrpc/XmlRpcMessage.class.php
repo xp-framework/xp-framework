@@ -222,24 +222,24 @@
         
         case 'int':
         case 'i4':
-          return (int)$node->children[0]->getContent();
-          break;
+          $i= (int)$node->children[0]->getContent();
+          return $i;
         
         case 'double':
-          return (double)$node->children[0]->getContent();
-          break;
+          $d= (double)$node->children[0]->getContent();
+          return $d;
         
         case 'boolean':
-          return (bool)$node->children[0]->getContent();
-          break;
+          $b= (bool)$node->children[0]->getContent();
+          return $b;
         
         case 'string':
-          return (string)$node->children[0]->getContent();
-          break;
+          $s= (string)$node->children[0]->getContent();
+          return $s;
         
         case 'dateTime.iso8601':
-          return Date::fromString($node->children[0]->getContent());
-          break;
+          $d= &Date::fromString($node->children[0]->getContent());
+          return $d;
           
         default:
           return throw(new IllegalArgumentException('Could not decode node as it\'s type is not supported: '.$node->children[0]->getName()));
@@ -281,7 +281,8 @@
       }
       
       $data= &$this->_unmarshall($this->root->children[0]->children[0]);
-      return new XmlRpcFault($data['faultCode'], $data['faultString']);
+      $f= &new XmlRpcFault($data['faultCode'], $data['faultString']);
+      return $f;
     }
     
     /**
