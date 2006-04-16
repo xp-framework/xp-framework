@@ -83,6 +83,25 @@
     }
     
     /**
+     * Retrieve string representation of message as used in the
+     * protocol.
+     *
+     * @access  public
+     * @return  string
+     */
+    function serializeData() {
+      return $this->root->getDeclaration()."\n".$this->root->getSource(0);
+    }
+    
+    /**
+     * Retrieve Content-type for requests.
+     *
+     * @access  public
+     * @return  string
+     */
+    function getContentType() { return 'text/xml'; }    
+    
+    /**
      * Recursivly serialize data to the given node.
      *
      * Scalar values are natively supported by the protocol, so we just encode

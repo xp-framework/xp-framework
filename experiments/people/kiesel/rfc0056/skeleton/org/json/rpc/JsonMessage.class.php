@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('scriptlet.rpc.AbstractRpcMessage');
+  uses(
+    'scriptlet.rpc.AbstractRpcMessage',
+    'org.json.JsonFactory'
+  );
 
   /**
    * (Insert class' description here)
@@ -42,8 +45,20 @@
      * @param   
      * @return  
      */
-    function create() {
+    function create($method) {
+      $this->encoding= 'iso-8859-1';
+      $this->method= $method;
+    }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function getContentType() {
+      return 'application/json';
     }    
 
     /**
@@ -106,6 +121,22 @@
       return $this->data;
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function serializeData() {
+      $decoder= &JsonFactory::create();
+      $data= array(
+        'method'  => $this->getMethod(),
+        'params'  => $this->data,
+        'id'      => $this->hashCode()
+      );
+      return $decoder->encode((object)$data);
+    }
     
     /**
      * Set Class
@@ -145,7 +176,6 @@
      * @return  
      */
     function getFault() {
-    
     }        
   } implements(__FILE__, 'scriptlet.rpc.AbstractRpcMessage');
 ?>

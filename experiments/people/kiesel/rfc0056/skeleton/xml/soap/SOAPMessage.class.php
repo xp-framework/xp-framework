@@ -121,6 +121,14 @@
     }
 
     /**
+     * Retrieve Content-type for requests.
+     *
+     * @access  public
+     * @return  string
+     */
+    function getContentType() { return 'text/xml'; }    
+
+    /**
      * Deserialize a single node
      *
      * @access  private
@@ -482,6 +490,17 @@
         }
         return $this->_recurseData($body->children[0], FALSE, $context, $mapping);
       }
+    }
+    
+    /**
+     * Retrieve string representation of message as used in the
+     * protocol.
+     *
+     * @access  public
+     * @return  string
+     */
+    function serializeData() {
+      return $this->root->getDeclaration()."\n".$this->root->getSource(0);
     }
     
     /**

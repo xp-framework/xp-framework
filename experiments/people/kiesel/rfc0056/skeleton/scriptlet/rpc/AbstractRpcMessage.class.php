@@ -45,6 +45,14 @@
     function getEncoding() {}
     
     /**
+     * Retrieve Content-type for requests
+     *
+     * @access  public
+     * @return  string
+     */
+    function getContentType() {}    
+    
+    /**
      * Set Data
      *
      * @access  public
@@ -59,6 +67,15 @@
      * @return  &lang.Object
      */
     function &getData() {}
+    
+    /**
+     * Retrieve string representation of message as used in the
+     * protocol.
+     *
+     * @access  public
+     * @return  string
+     */
+    function serializeData() {}
     
     /**
      * Set Class
