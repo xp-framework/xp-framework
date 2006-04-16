@@ -18,8 +18,9 @@
   /**
    * JSON decoder and encoder
    *
-   * @see      http://json.org
-   * @purpose  JSON en- and decoder
+   * @test      xp://net.xp_framework.unittest.json.JsonDecoderTest
+   * @see       http://json.org
+   * @purpose   JSON en- and decoder
    */
   class JsonDecoder extends Object {
     var
@@ -65,6 +66,9 @@
         }
         
         case 'array': {
+          // Bail out early on bordercase
+          if (0 == sizeof($data)) return '[ ]';
+          
           $ret= '[ ';
           foreach ($data as $value) {
             $ret.= $this->encode($value).' , ';
@@ -75,10 +79,15 @@
         
         case 'object': {
           $ret= '{ ';
-          foreach (get_object_vars($data) as $key => $value) {
+          $arr= get_object_vars($data);
+          
+          // Bail out early on bordercase
+          if (0 == sizeof($arr)) return '{ }';
+          
+          foreach ($arr as $key => $value) {
             $ret.= $this->encode((string)$key).' : '.$this->encode($value).' , ';
           }
-          
+
           return substr($ret, 0, -2).'}';
         }
         

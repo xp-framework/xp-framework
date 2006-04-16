@@ -79,6 +79,11 @@
     #[@test]
     function encodeArray() {
       $this->assertEquals(
+        '[ ]',
+        $this->decoder->encode(array())
+      );
+      
+      $this->assertEquals(
         '[ 1 , 2 , 3 ]',
         $this->decoder->encode(array(1, 2, 3))
       );
@@ -96,6 +101,11 @@
      */
     #[@test]
     function encodeObject() {
+      $this->assertEquals(
+        '{ }',
+        $this->decoder->encode((object)array())
+      );
+      
       $this->assertEquals(
         '{ "foo" : "bar" , "bar" : "baz" }',
         $this->decoder->encode((object)array('foo' => 'bar', 'bar' => 'baz'))
