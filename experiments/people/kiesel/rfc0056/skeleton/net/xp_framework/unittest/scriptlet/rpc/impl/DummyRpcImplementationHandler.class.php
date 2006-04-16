@@ -21,5 +21,26 @@
     function getImplementationName() {
       return $this->getClassName();
     }
+    
+    /**
+     * Non-web-invokeable method.
+     *
+     * @access  public
+     * @return  bool
+     */    
+    function methodExistsButIsNotAWebmethod() {
+      return TRUE;
+    }
+
+    /**
+     * Dummy method
+     *
+     * @access  public
+     * @return  string
+     */
+    #[@webmethod]
+    function giveMeFault() {
+      return throw(new ServiceException(403, 'This is a intentionally caused exception.'));
+    }
   }
 ?>

@@ -6,7 +6,7 @@
 
   uses(
     'util.profiling.unittest.TestCase',
-    'net.xp_framework.unittest.scriptlet.rpc.XmlRpcRouterMock'
+    'net.xp_framework.unittest.scriptlet.rpc.SoapRpcRouterMock'
   );
 
   /**
@@ -16,7 +16,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class XmlRpcRouterTest extends TestCase {
+  class SoapRpcRouterTest extends TestCase {
     
     /**
      * (Insert method's description here)
@@ -27,13 +27,26 @@
      */
     function setUp() {
       xp::gc();
-      $this->router= &new XmlRpcRouterMock(new ClassLoader('net.xp_framework.unittest.scriptlet.rpc.impl'));
+      $this->router= &new SoapRpcRouterMock(new ClassLoader('net.xp_framework.unittest.scriptlet.rpc.impl'));
       $this->router->setMockMethod(HTTP_POST);
+      $this->router->setMockHeaders(array(
+        'SOAPAction'    => 'DummyRpcImplementation#getImplementationName',
+        'Content-Type'  => 'text/xml; charset=iso-8859-1'
+      ));
       $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
-        <methodCall>
-          <methodName>DummyRpcImplementation.getImplementationName</methodName>
-          <params/>
-        </methodCall>
+        <SOAP-ENV:Envelope
+         xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:si="http://soapinterop.org/xsd"
+         SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:ctl="DummyRpcImplementation"
+        >
+          <SOAP-ENV:Body>  
+            <ctl:foo/>
+          </SOAP-ENV:Body>
+        </SOAP-ENV:Envelope>
       ');
     }
     
@@ -48,7 +61,6 @@
     function basicPostRequest() {
       $this->router->init();
       $response= &$this->router->process();
-      
       $this->assertEquals(200, $response->statusCode);
     }
 
@@ -75,12 +87,10 @@
      */
     #[@test]
     function callNonexistingClass() {
-      $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
-        <methodCall>
-          <methodName>ClassDoesNotExist.getImplementationName</methodName>
-          <params/>
-        </methodCall>
-      ');
+      $this->router->setMockHeaders(array(
+        'SOAPAction'    => 'NonExistingClass#getImplementationName',
+        'Content-Type'  => 'text/xml; charset=iso-8859-1'
+      ));
       
       $this->router->init();
       $response= &$this->router->process();
@@ -97,13 +107,10 @@
      */
     #[@test]
     function callNonexistingMethod() {
-      $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
-        <methodCall>
-          <methodName>DummyRpcImplementation.methodDoesNotExist</methodName>
-          <params/>
-        </methodCall>
-      ');
-      
+      $this->router->setMockHeaders(array(
+        'SOAPAction'    => 'DummyRpcImplementation#nonExistingMethod',
+        'Content-Type'  => 'text/xml; charset=iso-8859-1'
+      ));
       $this->router->init();
       $response= &$this->router->process();
       
@@ -119,13 +126,10 @@
      */
     #[@test]
     function callNonWebmethodMethod() {
-      $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
-        <methodCall>
-          <methodName>DummyRpcImplementation.methodExistsButIsNotAWebmethod</methodName>
-          <params/>
-        </methodCall>
-      ');
-      
+      $this->router->setMockHeaders(array(
+        'SOAPAction'    => 'DummyRpcImplementation#methodExistsButIsNotAWebmethod',
+        'Content-Type'  => 'text/xml; charset=iso-8859-1'
+      ));
       $this->router->init();
       $response= &$this->router->process();
       
@@ -141,21 +145,18 @@
      */
     #[@test]
     function callFailingMethod() {
-      $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
-        <methodCall>
-          <methodName>DummyRpcImplementation.giveMeFault</methodName>
-          <params/>
-        </methodCall>
-      ');
-      
+      $this->router->setMockHeaders(array(
+        'SOAPAction'    => 'DummyRpcImplementation#giveMeFault',
+        'Content-Type'  => 'text/xml; charset=iso-8859-1'
+      ));
       $this->router->init();
       $response= &$this->router->process();
       $this->assertEquals(500, $response->statusCode);
-
-      // Check for correct fault code
-      $message= &XmlRpcMessage::fromString($response->getContent());
+      
+      $message= &SOAPMessage::fromString($response->getContent());
       $fault= &$message->getFault();
-      $this->assertEquals(403, $fault->getFaultcode());
+      $this->assertEquals(403, $fault->getFaultCode());
+      $this->assertEquals('This is a intentionally caused exception.', $fault->getFaultString());
     }
   }
 ?>
