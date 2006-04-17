@@ -282,7 +282,7 @@
     static $anonymous= 0;
 
     $id= microtime();
-    $classname= $object->class->args[0];
+    $classname= $object->class->name;
     if (!isset($context['classes'][$classname])) {
       error(E_ERROR, 'Unknown class '.$classname);
     }
@@ -535,7 +535,7 @@
         case 'instanceof':
           return isinstance(
             value($node->object, $context), 
-            $node->type->args[0],
+            $node->type->name,
             $context
           );
           break;

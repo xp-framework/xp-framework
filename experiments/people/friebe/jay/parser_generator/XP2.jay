@@ -999,32 +999,10 @@ fully_qualified_class_name:
 ;
 
 class_name_reference:
-		T_STRING				      { $$= &PNode::create('ClassReference', array($1, NULL)); }
-//	|	T_STRING '<' T_STRING '>'     { $$= &PNode::create('ClassReference', array($1, $3)); }
-	|	T_CLASSNAME				      { $$= &PNode::create('ClassReference', array($1, NULL)); }
-//	|	T_CLASSNAME '<' T_STRING '>'  { $$= &PNode::create('ClassReference', array($1, $3)); }
-	|	dynamic_class_name_reference  { $$= &PNode::create('ClassReference', array($1, NULL)); }
-;
-
-dynamic_class_name_reference:
-		base_variable T_OBJECT_OPERATOR object_property dynamic_class_name_variable_properties {
-          $$= &PNode::create('ObjectReference', array(&$1, &$3, &$4));
-        }
-	|	base_variable { 
-          $$ = $1; 
-        }
-;
-
-dynamic_class_name_variable_properties:
-		dynamic_class_name_variable_properties dynamic_class_name_variable_property
-	|	/* empty */
-;
-
-
-dynamic_class_name_variable_property:
-		T_OBJECT_OPERATOR object_property { 
-          $$= &PNode::create('PropertyReference', array(&$2));
-        }
+		T_STRING				      { $$= &new ClassReferenceNode($1, NULL); }
+//	|	T_STRING '<' T_STRING '>'     { $$= &new ClassReferenceNode($1, $3); }
+	|	T_CLASSNAME				      { $$= &new ClassReferenceNode($1, NULL); }
+//	|	T_CLASSNAME '<' T_STRING '>'  { $$= &new ClassReferenceNode($1, $3); }
 ;
 
 exit_expr:
