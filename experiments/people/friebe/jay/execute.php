@@ -435,6 +435,22 @@
     }
   }
   
+  function isinstance(&$pointer, $type, &$context) {
+    $classname= $GLOBALS['objects'][$pointer->id]['name'];
+    
+    // Short-cuircuit name equality, e.g. "new Object() instanceof Object"
+    if ($classname == $type) return TRUE;
+    
+    // Search parent classes and interfaces upwards-recursive
+    do {
+      $decl= &$context['classes'][$classname];
+      
+      if ($decl->extends == $type || in_array($type, $decl->implements)) return TRUE;
+    } while ($classname= $decl->extends);
+    
+    return FALSE;
+  }
+  
   function &value(&$node, &$context) {
     if (!$context) xp::error('value() invoked outside of context');
     
@@ -455,7 +471,6 @@
           return methodcall($node, $context);
           break;
 
-          
         case 'new':
           return createobject($node, $context);
           break;
@@ -515,6 +530,14 @@
           $new= value($node->expression, $context);
           set($node->expression, $new- 1, $context);
           return $new;
+          break;
+        
+        case 'instanceof':
+          return isinstance(
+            value($node->object, $context), 
+            $node->type->args[0],
+            $context
+          );
           break;
         
         default:
@@ -721,10 +744,7 @@
     }
   ');
   $handlers['catch']= &opcode('
-    $pointer= &$context["E"];
-    $class= $GLOBALS["objects"][$pointer->id]["name"];
-    
-    if ($node->class == $class) {   // FIXME: Use Instance
+    if (isinstance($context["E"], $node->class, $context)) {
       $context["variables"][$node->variable]= &value($context["E"], $context);
       unset($context["E"]);
       execute($node->statements, $context);

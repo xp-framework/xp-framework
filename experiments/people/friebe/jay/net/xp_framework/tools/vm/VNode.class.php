@@ -32,6 +32,7 @@
     'net.xp_framework.tools.vm.nodes.FunctionCallNode',
     'net.xp_framework.tools.vm.nodes.FunctionDeclarationNode',
     'net.xp_framework.tools.vm.nodes.IfNode',
+    'net.xp_framework.tools.vm.nodes.InstanceOfNode',
     'net.xp_framework.tools.vm.nodes.InterfaceDeclarationNode',
     'net.xp_framework.tools.vm.nodes.ImportListNode',
     'net.xp_framework.tools.vm.nodes.ImportNode',

@@ -31,6 +31,7 @@
         TOKEN_T_CONSTRUCT   => '__construct',
         TOKEN_T_DESTRUCT    => '__destruct',
         TOKEN_T_FINALLY     => 'finally',
+        TOKEN_T_INSTANCEOF  => 'instanceof',
       );
 
     /**

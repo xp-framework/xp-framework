@@ -947,7 +947,7 @@ expr_without_variable:
           $$= &new BinaryNode($1, $3, '<=>');
         }
 	|	expr T_INSTANCEOF class_name_reference { 
-          $$= &PNode::create('InstanceOf', array(&$1, $3));
+          $$= &new InstanceOfNode($1, $3);
         }
 	|	'(' expr ')' { 
           $$= &$2; 
