@@ -551,7 +551,7 @@
           switch ($node{$i+ 1}) {
             case 'r': $value.= "\r"; break;
             case 'n': $value.= "\n"; break;
-            case 't': $value.= "\b"; break;
+            case 't': $value.= "\t"; break;
           }
           $i++;
         } else {
