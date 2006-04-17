@@ -205,12 +205,23 @@
   
   function methodcall(&$method, &$context) {
     
-    // Find method declaration
-    $static= is_scalar($method->class);
-    if ($static) {
-      $class= $method->class;
+    // Static vs. dynamic method calls
+    if (is_scalar($method->class)) {
+      switch ($method->class) {
+        case 'parent':            // Will not work for static methods!
+          $pointer= fetchfrom($context['variables'], '$this', 'variable', $context);
+          $class= $context['classes'][$GLOBALS['objects'][$pointer->id]['name']]->extends;
+          $static= FALSE;
+          break;
+          
+        default:
+          $static= TRUE;
+          $class= $method->class;
+      }
+    
       // DEBUG Console::writeLine('INVOKE: ', $class.'::'.$method->method);
     } else {
+      $static= FALSE;
       $pointer= &value($method->class, $context);
       
       // Check for NPE
@@ -752,6 +763,9 @@
   ');
   $handlers['throw']= &opcode('
     except(value($node->value, $context), $context);
+  ');
+  $handlers['new']= &opcode('
+    createobject($node, $context);
   ');
   // }}}
   
