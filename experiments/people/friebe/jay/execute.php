@@ -78,7 +78,7 @@
     foreach ($statements as $statement) {
       if (!is_a($statement, 'InvokeableDeclarationNode')) continue;
       
-      $hash[$statement->name]= &$statement;   // FIXME: Overloading
+      $hash[$statement->name]= $statement;   // FIXME: Overloading
     }
     return $hash;
   }
@@ -93,10 +93,12 @@
     
     // Member inheritance
     $hash= memberhash($context['classes'][$node->name]->statements);
-    foreach (memberhash($context['classes'][$node->extends]->statements) as $key => $declaration) {
+    $phash= memberhash($context['classes'][$node->extends]->statements);
+    foreach ($phash as $key => $declaration) {
       if (isset($hash[$key])) continue;   // Overwritten
       
-      $context['classes'][$node->name]->statements[]= &$declaration;
+      // DEBUG Console::writeLine('Inherit ', $node->extends, '::', $declaration->toString(), ' to ', $node->name);
+      $context['classes'][$node->name]->statements[]= $declaration;
     }
   }
   
@@ -175,47 +177,48 @@
     $callcontext= $context;
     $callcontext['variables']= array();
     for ($i= 0, $s= sizeof($arguments); $i < $s; $i++) {
-      $callcontext['variables'][$decl->parameters[$i]->name]= value($arguments[$i], $context);
+      $callcontext['variables'][$decl->parameters[$i]->name]= &value($arguments[$i], $context);
     }
     return $callcontext;
   }
   
   function methodcall(&$method, &$context) {
-
+    
     // Find method declaration
     $static= is_scalar($method->class);
     if ($static) {
       $class= $method->class;
-      // DEBUG Console::writeLine('INVOKE: ', $class.'::'.$method->name);
+      // DEBUG Console::writeLine('INVOKE: ', $class.'::'.$method->method);
     } else {
       $pointer= &value($method->class, $context);
       
       // Check for NPE
       if (!is_a($pointer, 'ObjectInstance')) {
-        except(new NullPointerException(xp::stringOf($pointer).'->'.$method->name), $context);
+        except(new NullPointerException(xp::stringOf($pointer).'->'.$method->method), $context);
         return;
       }
       $class= $GLOBALS['objects'][$pointer->id]['name'];
-      // DEBUG Console::writeLine('INVOKE: ', $class.'->'.$method->name);
+      // DEBUG Console::writeLine('INVOKE: ', $class.'->'.$method->method);
     }
 
-    if ($decl= &method($class, 'MethodDeclarationNode', $method->name, $method->arguments, $context)) {
+    if ($decl= &method($class, 'MethodDeclarationNode', $method->method, $method->arguments, $context)) {
       
       // We've found the method declaration, now:
       // - Build argument list
       $callcontext= callcontext($decl, $method->arguments, $context);
       
       // - Execute
-      $context['__name']= $class.($static ? '::' : '->').$method->name;
+      $context['__name']= $class.($static ? '::' : '->').$method->method;
       if (!$static) $callcontext['variables']['$this']= &$pointer;
       
+      // DEBUG Console::writeLine('Executing ', $context['__name'], '::', VNode::stringOf($decl->statements));
       $return= execute($decl->statements, $callcontext);
       
       // $buf->append(' ')->append('World');
       if (NULL === $context['E'] && NULL !== $method->chain) {
         foreach ($method->chain as $reference) {
           $reference->class= $return;
-          $return= value($reference, $context);
+          $return= &value($reference, $context);
 
           if ($context['E']) break;
         }
@@ -248,7 +251,7 @@
   function builtincall(&$function, &$context) {
     $arguments= array();
     for ($i= 0, $s= sizeof($function->arguments); $i < $s; $i++) {
-      $arguments[]= value($function->arguments[$i], $context);
+      $arguments[]= &value($function->arguments[$i], $context);
     }
     
     return call_user_func_array($function->name, $arguments);
@@ -299,7 +302,7 @@
     if ($object->instanciation->chain) {
       foreach ($object->instanciation->chain as $reference) {
         $reference->class= $pointer;
-        $pointer= value($reference, $context);
+        $pointer= &value($reference, $context);
 
         if ($context['E']) break;
       }
@@ -418,6 +421,11 @@
       $id= is_a($node, 'PNode') ? strtolower($node->type) : substr(get_class($node), 0, -4);
       
       switch ($id) {
+        case 'vclassname':  // builtin
+          $pointer= fetchfrom($context['variables'], '$this', 'variable', $context);
+          return $GLOBALS['objects'][$pointer->id]['name'];
+          break;
+
         case 'variable':
           return fetch($node, $context);
           break;
@@ -426,6 +434,7 @@
           return methodcall($node, $context);
           break;
 
+          
         case 'new':
           return createobject($node, $context);
           break;
@@ -515,7 +524,6 @@
 
 
   function execute($nodes, &$context) {
-    
     $i= 0;
     $context['offset']= &$i;
     $context['return']= 0;
@@ -651,7 +659,7 @@
   ');
   $handlers['return']= &opcode('
     if (isset($node->value)) {
-      $context["return"]= value($node->value, $context);
+      $context["return"]= &value($node->value, $context);
     }
     $context["offset"]= $context["end"];
   ');
@@ -703,7 +711,7 @@
     except(value($node->value, $context), $context);
   ');
   // }}}
-
+  
   // {{{ main
   $nodes= unserialize(FileUtil::getContents(new File($argv[1])));
   
@@ -711,13 +719,41 @@
   $context['E']= NULL;
   $context['__name']= '<main>';
   $context['handlers']= $handlers;
+  
+  // Register builtin variables
   array_shift($argv);
   $context['variables']= array();
   $context['variables']['$argc']= $argc- 1;
   $context['variables']['$argv']= $argv;
+
+  // Register builtin classes
+  class VClassNameNode extends VNode { }
   
+  $context['classes']['xp~lang~Object']= &new ClassDeclarationNode(
+    'xp~lang~Object',
+    NULL,
+    NULL,
+    array(
+      new MethodDeclarationNode(
+        'getClassName',
+        array(),
+        'string',
+        array(
+          new ReturnNode(new VClassNameNode())
+        ),
+        MODIFIER_PUBLIC,
+        array(),
+        array()
+      )
+    ),
+    MODIFIER_PUBLIC,
+    array()
+  );
+  
+  // Execute
   execute($nodes, $context);
   
+  // Check for unhandled exceptions
   $context['E'] && error(E_ERROR, '*** Uncaught '.$context['E']->toString().' ('.$GLOBALS["objects"][$context["E"]->id]["name"].')');
   // }}}
 ?>
