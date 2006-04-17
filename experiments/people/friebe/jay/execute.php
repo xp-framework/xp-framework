@@ -76,29 +76,50 @@
     
     // Methods
     foreach ($statements as $statement) {
-      if (!is_a($statement, 'InvokeableDeclarationNode')) continue;
+      // if (!is_a($statement, 'InvokeableDeclarationNode')) continue;
       
       $hash[$statement->name]= $statement;   // FIXME: Overloading
     }
     return $hash;
   }
   
-  function inherit(&$node, &$context) {
-    if (!$node->extends) return;
-    
-    if (!$context['classes'][$node->extends]) {
-      error(E_ERROR, 'Cannot inherit '.$node->name.' from non-existant class '.$node->extends);
-      // Bails
+  function declareclass(&$node, &$context) {
+    if (isset($context['classes'][$node->name])) {
+      error(E_ERROR, 'Cannot redeclare class '.$node->name);
     }
     
-    // Member inheritance
-    $hash= memberhash($context['classes'][$node->name]->statements);
-    $phash= memberhash($context['classes'][$node->extends]->statements);
-    foreach ($phash as $key => $declaration) {
-      if (isset($hash[$key])) continue;   // Overwritten
-      
-      // DEBUG Console::writeLine('Inherit ', $node->extends, '::', $declaration->toString(), ' to ', $node->name);
-      $context['classes'][$node->name]->statements[]= $declaration;
+    $context['classes'][$node->name]= &$node;
+    
+    if ($node->extends) {
+      if (!$context['classes'][$node->extends]) {
+        error(E_ERROR, 'Cannot inherit '.$node->name.' from non-existant class '.$node->extends);
+        // Bails
+      }
+
+      // Member inheritance
+      $hash= memberhash($context['classes'][$node->name]->statements);
+      $phash= memberhash($context['classes'][$node->extends]->statements);
+      foreach ($phash as $key => $declaration) {
+        if (isset($hash[$key])) continue;   // Overwritten
+
+        // DEBUG Console::writeLine('Inherit ', $node->extends, '::', $declaration->toString(), ' to ', $node->name);
+        $context['classes'][$node->name]->statements[]= $declaration;
+      }
+    }
+    
+    if (!empty($node->implements)) foreach ($node->implements as $iface) {
+      if (!$context['classes'][$iface]) {
+        error(E_ERROR, 'Class '.$node->name.' cannot implement non-existant class '.$iface);
+        // Bails
+      }
+    
+      $hash= memberhash($context['classes'][$node->name]->statements);
+      $ihash= memberhash($context['classes'][$iface]->statements);
+      foreach ($ihash as $key => $declaration) {
+        if (!isset($hash[$key])) error(E_ERROR, $declaration->toString().' not implemented by '.$node->name);
+
+        // DEBUG Console::writeLine($node->name, ' implements ', $declaration->toString());
+      }
     }
   }
   
@@ -276,7 +297,7 @@
       foreach (memberhash($object->instanciation->declaration) as $key => $declaration) {
         if (isset($hash[$key])) continue;   // Overwritten
 
-        $context['classes'][$classname]->statements[]= &$declaration;
+        $context['classes'][$classname]->statements[]= $declaration;
       }
     }
 
@@ -664,8 +685,10 @@
     $context["offset"]= $context["end"];
   ');
   $handlers['classdeclaration']= &opcode('
+    declareclass($node, $context);
+  ');
+  $handlers['interfacedeclaration']= &opcode('
     $context["classes"][$node->name]= $node;
-    inherit($node, $context);
   ');
   $handlers['functiondeclaration']= &opcode('
     $context["functions"][$node->name]= $node;

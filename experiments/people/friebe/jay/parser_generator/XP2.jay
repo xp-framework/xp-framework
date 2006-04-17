@@ -430,7 +430,7 @@ class_declaration_statement:
           $$= &new ClassDeclarationNode($3, $4, $5, $7, $2, $1);
         }
 	|	optional_annotation_list interface_entry T_STRING interface_extends_list '{' class_statement_list '}' {
-          $$= &new InterfaceDeclarationNode($3, $4, $5, $7, $2, $1);
+          $$= &new InterfaceDeclarationNode($3, $4, $6, $2, $1);
         }
 ;
 
