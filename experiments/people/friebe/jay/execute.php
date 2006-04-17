@@ -83,6 +83,7 @@
     return $hash;
   }
   
+  // FIXME: Compile-time?
   function declareclass(&$node, &$context) {
     if (isset($context['classes'][$node->name])) {
       error(E_ERROR, 'Cannot redeclare class '.$node->name);
