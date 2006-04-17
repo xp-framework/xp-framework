@@ -208,7 +208,7 @@
     // Static vs. dynamic method calls
     if (is_scalar($method->class)) {
       switch ($method->class) {
-        case 'parent':            // Will not work for static methods!
+        case 'parent':            // FIXME: Will not work for static methods! FIXME: Compile-time!
           $pointer= fetchfrom($context['variables'], '$this', 'variable', $context);
           $class= $context['classes'][$GLOBALS['objects'][$pointer->id]['name']]->extends;
           $static= FALSE;
@@ -798,7 +798,7 @@
         array(
           new ReturnNode(new VClassNameNode())
         ),
-        MODIFIER_PUBLIC,
+        MODIFIER_PUBLIC, // | MODIFIER_NATIVE
         array(),
         array()
       )
