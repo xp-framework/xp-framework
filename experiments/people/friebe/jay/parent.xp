@@ -1,0 +1,14 @@
+class Base {
+  void println() {
+    echo "Base::print\n";
+  }
+}
+
+class Child extends Base {
+  void println() {
+    parent::println();
+    echo "Child::print\n";
+  }
+}
+
+new Child()->println();
