@@ -69,14 +69,21 @@
         $e= &new FtpEntry($filename, $this->_hdl);
       }
       with ($e); {
+        $d= &new Date($month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date));
+        
+        // Check for "recent" file which are specified "HH:MM" instead
+        // of year for the last 6 month (as specified in coreutils/src/ls.c)
+        if (strstr($date, ':')) {
+          $now= &Date::now();
+          if ($d->getMonth() > $now->getMonth()) $d->year--;
+        }
+        
         $e->setPermissions(substr($permissions, 1));
         $e->setNumlinks($numlinks);
         $e->setUser($user);
         $e->setGroup($group);
         $e->setSize($size);
-        $e->setDate(new Date(strtotime(
-          $month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date))
-        ));
+        $e->setDate($d);
       }
       return $e;
     }
