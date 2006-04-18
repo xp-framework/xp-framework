@@ -45,6 +45,10 @@
       $response= &$this->router->process();
       
       $this->assertEquals(200, $response->statusCode);
+      $this->assertEquals(
+        '{ "result" : "net.xp_framework.unittest.scriptlet.rpc.impl.DummyRpcImplementationHandler" , "error" : null , "id" : 1 }',
+        $response->getContent()
+      );
     }
 
     /**

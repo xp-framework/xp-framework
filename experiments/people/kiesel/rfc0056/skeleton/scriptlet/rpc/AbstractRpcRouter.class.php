@@ -118,7 +118,7 @@
 
         // Create answer
         $answer= &$this->_message();
-        $answer->create();
+        $answer->create($msg);
 
         // Call handler
         $return= &$this->callReflectHandler($msg);
@@ -146,7 +146,7 @@
         $hasFault= TRUE;
       }
       
-      $hasFault || $answer->setData((array)$return);
+      $hasFault || $answer->setData($return);
       
       // Set message
       $response->setHeader('Content-type', $answer->getContentType().'; charset='.$answer->getEncoding());

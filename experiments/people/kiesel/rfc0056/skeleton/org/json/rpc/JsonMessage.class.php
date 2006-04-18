@@ -36,6 +36,7 @@
       $decoder= &JsonFactory::create();
       $msg= &new JsonMessage();
       $msg->data= $decoder->decode($string);
+      $msg->id= $msg->data->id;
       return $msg;
     }
     
@@ -49,6 +50,7 @@
     function create($msg) {
       $this->method= NULL;
       $this->encoding= 'iso-8859-1';
+      $this->id= $msg->getId();
     }
     
     /**
@@ -131,7 +133,11 @@
         return;
       }
           
-      $this->data= $data;
+      $this->data= (object)array(
+        'result'    => $data,
+        'error'     => NULL,
+        'id'        => $this->id
+      );
     }
 
     /**
@@ -208,5 +214,25 @@
         $this->data->error->faultString
       );
     }        
+
+    /**
+     * Set Id
+     *
+     * @access  public
+     * @param   string id
+     */
+    function setId($id) {
+      $this->id= $id;
+    }
+
+    /**
+     * Get Id
+     *
+     * @access  public
+     * @return  string
+     */
+    function getId() {
+      return $this->id;
+    }
   } implements(__FILE__, 'scriptlet.rpc.AbstractRpcMessage');
 ?>
