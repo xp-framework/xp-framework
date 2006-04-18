@@ -27,7 +27,8 @@
       $this->cat && $this->cat->debug('<<< ', $this->getData());
       $m= &JsonMessage::fromString($this->getData());
       
-      list($class, $method)= explode('.', $this->getQueryString());
+      $data= $m->getData();
+      list($class, $method)= explode('.', $data->method);
       $m->setClass($class);
       $m->setMethod($method);
       

@@ -78,9 +78,5 @@
     function &_message() {
       return new JsonMessage();
     }
-    
-    function doGet(&$request, &$response) {
-      return $this->doPost($request, $response);
-    }
   }
 ?>

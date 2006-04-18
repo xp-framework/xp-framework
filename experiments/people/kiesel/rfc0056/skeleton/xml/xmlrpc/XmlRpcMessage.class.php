@@ -99,7 +99,7 @@
      * @access  public
      * @return  string
      */
-    function getContentType() { return 'text/xml'; }    
+    function getContentType() { return 'text/xml'; }
     
     /**
      * Recursivly serialize data to the given node.

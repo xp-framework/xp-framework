@@ -6,7 +6,8 @@
 
   uses(
     'scriptlet.HttpScriptlet',
-    'util.ServiceException'
+    'util.ServiceException',
+    'scriptlet.rpc.RpcFault'
   );
 
   /**
@@ -148,7 +149,7 @@
       $hasFault || $answer->setData((array)$return);
       
       // Set message
-      $response->setHeader('Content-type', 'text/xml; charset='.$answer->getEncoding());
+      $response->setHeader('Content-type', $answer->getContentType().'; charset='.$answer->getEncoding());
       $response->setMessage($answer);
     }
     
@@ -162,6 +163,11 @@
      * @throws  lang.IllegalAccessException for non-public methods
      */
     function &callReflectHandler(&$msg) {
+    
+      // Check on valid params
+      if (0 == strlen($msg->getMethod())) {
+        return throw(new IllegalArgumentException('No method name passed.'));
+      }
 
       // Create message from request data
       try(); {

@@ -12,13 +12,14 @@
   /**
    * (Insert class' description here)
    *
-   * @ext      extension
+   * @see       http://json-rpc.org/wiki/specification
    * @see      reference
    * @purpose  purpose
    */
   class JsonMessage extends Object {
     var
       $method   = '',
+      $id       = '',
       $encoding = '',
       $data     = NULL,
       $class    = '',
@@ -34,7 +35,7 @@
     function &fromString($string) {
       $decoder= &JsonFactory::create();
       $msg= &new JsonMessage();
-      $msg->setData($decoder->decode($string));
+      $msg->data= $decoder->decode($string);
       return $msg;
     }
     
@@ -45,10 +46,23 @@
      * @param   
      * @return  
      */
-    function create($method) {
+    function create($msg) {
+      $this->method= NULL;
+      $this->encoding= 'iso-8859-1';
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function createCall($method, $id) {
       $this->encoding= 'iso-8859-1';
       $this->method= $method;
-    }
+      $this->id= $id;
+    }    
     
     /**
      * (Insert method's description here)
@@ -107,8 +121,17 @@
      * @access  public
      * @param   &lang.Object data
      */
-    function setData(&$data) {
-      $this->data= &$data;
+    function setData($data) {
+      if (NULL !== $this->method) {
+        $this->data= (object)array(
+          'method'  => $this->method,
+          'params'  => (array)$data,
+          'id'      => $this->id
+        );
+        return;
+      }
+          
+      $this->data= $data;
     }
 
     /**
@@ -130,12 +153,7 @@
      */
     function serializeData() {
       $decoder= &JsonFactory::create();
-      $data= array(
-        'method'  => $this->getMethod(),
-        'params'  => $this->data,
-        'id'      => $this->hashCode()
-      );
-      return $decoder->encode((object)$data);
+      return $decoder->encode($this->data);
     }
     
     /**
@@ -165,7 +183,15 @@
      * @param   
      * @return  
      */
-    function setFault() {
+    function setFault($faultcode, $faultstring) {
+      $this->data= (object)array(
+        'result'  => FALSE,
+        'error'   => (object)array(
+          'faultCode'   => $faultcode,
+          'faultString' => $faultString
+        ),
+        'id'      => NULL
+      );
     }
     
     /**
@@ -175,7 +201,12 @@
      * @param   
      * @return  
      */
-    function getFault() {
+    function &getFault() {
+      if (empty($this->data->error)) return NULL;
+      return new RpcFault(
+        $this->data->error->faultCode,
+        $this->data->error->faultString
+      );
     }        
   } implements(__FILE__, 'scriptlet.rpc.AbstractRpcMessage');
 ?>

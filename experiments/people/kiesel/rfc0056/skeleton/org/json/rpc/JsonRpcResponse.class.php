@@ -32,7 +32,6 @@
     function process() {
       if (!$this->message) return;
 
-      $this->setHeader('Content-type', 'text/xml');
       if (NULL !== $this->message->getFault()) {
         $this->setStatus(HTTP_INTERNAL_SERVER_ERROR);
       }

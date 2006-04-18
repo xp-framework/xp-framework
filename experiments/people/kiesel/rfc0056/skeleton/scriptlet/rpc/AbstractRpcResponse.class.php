@@ -26,7 +26,7 @@
      * @access  public
      */
     function __construct() {
-      $this->setHeader('Server', 'Abstract RPC 1.0#/PHP'.phpversion().'/ XP Framework');
+      $this->setHeader('Server', 'Abstract RPC 1.0 / PHP'.phpversion().' / XP Framework');
     }
     
     /**
