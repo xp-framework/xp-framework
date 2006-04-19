@@ -27,10 +27,7 @@
         $this->setStatus(HTTP_INTERNAL_SERVER_ERROR);
       }
       
-      $this->content= (
-        $this->message->getDeclaration()."\n".
-        $this->message->getSource(0)
-      );
+      $this->content= $this->message->serializeData();
     }
   }
 ?>

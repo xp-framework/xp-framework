@@ -500,7 +500,7 @@
      * @return  string
      */
     function serializeData() {
-      return $this->root->getDeclaration()."\n".$this->root->getSource(0);
+      return $this->getDeclaration()."\n".$this->getSource(0);
     }
     
     /**
