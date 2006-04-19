@@ -7,6 +7,7 @@
     'io.File', 
     'io.FileUtil'
   );
+  define('MODIFIER_NATIVE', 8);   // See lang.XPClass
   
   // {{{ compile
   $parser= &new Parser();

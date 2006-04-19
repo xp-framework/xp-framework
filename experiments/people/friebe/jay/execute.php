@@ -8,6 +8,7 @@
     'io.File', 
     'io.FileUtil'
   );
+  define('MODIFIER_NATIVE', 8);   // See lang.XPClass
 
   class ObjectInstance extends Object {
     var $id= NULL;
@@ -75,12 +76,17 @@
     // !!! TBI !!!
     
     // Methods
-    foreach ($statements as $statement) {
-      // if (!is_a($statement, 'InvokeableDeclarationNode')) continue;
-      
-      $hash[$statement->name]= $statement;   // FIXME: Overloading
+    for ($i= 0, $s= sizeof($statements); $i < $s; $i++) {
+      $hash[$statements[$i]->name]= &$statements[$i];   // FIXME: Overloading
     }
     return $hash;
+  }
+  
+  function loadclass($name, &$context) {
+    // FIXME: Use classpath instead of hardcoding dirname(__FILE__)/rte/
+    $filename= dirname(__FILE__).'/rte/'.strtr($name, '~', DIRECTORY_SEPARATOR).'.xpc';
+    $nodes= unserialize(FileUtil::getContents(new File($filename)));
+    execute($nodes, $context);
   }
   
   // FIXME: Compile-time?
@@ -100,11 +106,17 @@
       // Member inheritance
       $hash= memberhash($context['classes'][$node->name]->statements);
       $phash= memberhash($context['classes'][$node->extends]->statements);
-      foreach ($phash as $key => $declaration) {
+      foreach (array_keys($phash) as $key) {
         if (isset($hash[$key])) continue;   // Overwritten
 
+        // Generate declaring class member: FIXME: Needs to be done for all members,
+        // not only inherited ones!
+        $declaration= &$phash[$key];
+        if (!isset($declaration->declaring)) {
+          $declaration->declaring= $node->extends;
+        }
         // DEBUG Console::writeLine('Inherit ', $node->extends, '::', $declaration->toString(), ' to ', $node->name);
-        $context['classes'][$node->name]->statements[]= $declaration;
+        $context['classes'][$node->name]->statements[]= &$declaration;
       }
     }
     
@@ -220,19 +232,23 @@
           $class= $method->class;
       }
     
-      // DEBUG Console::writeLine('INVOKE: ', $class.'::'.$method->method);
     } else {
       $static= FALSE;
       $pointer= &value($method->class, $context);
       
       // Check for NPE
       if (!is_a($pointer, 'ObjectInstance')) {
-        except(new NullPointerException(xp::stringOf($pointer).'->'.$method->method), $context);
+        except(createobject(new NewNode(
+          new ClassReferenceNode('xp~lang~NullPointerException'),
+          new NewClassNode(array(
+            '\''.xp::stringOf($pointer).'->'.$method->method.'\''
+          ))
+        ), $context), $context);
         return;
       }
       $class= $GLOBALS['objects'][$pointer->id]['name'];
-      // DEBUG Console::writeLine('INVOKE: ', $class.'->'.$method->method);
     }
+    // DEBUG Console::writeLine('INVOKE: ', $class.'::'.$method->method);
 
     if ($decl= &method($class, 'MethodDeclarationNode', $method->method, $method->arguments, $context)) {
       
@@ -244,8 +260,17 @@
       $context['__name']= $class.($static ? '::' : '->').$method->method;
       if (!$static) $callcontext['variables']['$this']= &$pointer;
       
-      // DEBUG Console::writeLine('Executing ', $context['__name'], '::', VNode::stringOf($decl->statements));
-      $return= execute($decl->statements, $callcontext);
+      // Native methods
+      if ($decl->modifiers & MODIFIER_NATIVE) {
+        $return= call_user_func(
+          strtr($decl->declaring, '~', '_').'_'.$decl->name, 
+          $callcontext
+        );
+      } else {
+      
+        // DEBUG Console::writeLine('Executing ', $context['__name'], '::', VNode::stringOf($decl->statements));
+        $return= execute($decl->statements, $callcontext);
+      }
       
       // $buf->append(' ')->append('World');
       if (NULL === $context['E'] && NULL !== $method->chain) {
@@ -291,9 +316,9 @@
   }
   
   function createobject(&$object, &$context) {
-    static $anonymous= 0;
+    static $id= 0;
 
-    $id= microtime();
+    $id++;
     $classname= $object->class->name;
     if (!isset($context['classes'][$classname])) {
       error(E_ERROR, 'Unknown class '.$classname);
@@ -302,12 +327,14 @@
     // Handle anonymous class creation
     if ($object->instanciation->declaration) {
       $hash= memberhash($context['classes'][$classname]);
-      $classname.= '$'.$anonymous++;
+      $classname.= '$'.$id++;
 
       // Member inheritance
       $context['classes'][$classname]->statements= array();
       foreach (memberhash($object->instanciation->declaration) as $key => $declaration) {
         if (isset($hash[$key])) continue;   // Overwritten
+
+        // FIXME: Set declaring class member
 
         $context['classes'][$classname]->statements[]= $declaration;
       }
@@ -611,6 +638,18 @@
       $node
     );
   }
+  
+  // NATIVE method xp~lang~Object::getClassName()
+  function xp_lang_Object_getClassName(&$context) {
+    $pointer= fetchfrom($context['variables'], '$this', 'variable', $context);
+    return $GLOBALS['objects'][$pointer->id]['name'];
+  }
+
+  // NATIVE method xp~lang~Object::hashCode()
+  function xp_lang_Object_hashCode(&$context) {
+    $pointer= fetchfrom($context['variables'], '$this', 'variable', $context);
+    return $pointer->id;
+  }
 
   // {{{ handlers
   $handlers= array();
@@ -645,9 +684,9 @@
       $block= &$node->else;
     }
 
-    foreach ($block as $arg) {
+    if (is_array($block)) foreach ($block as $arg) {
       handle($arg, $context);
-    }
+    } else handle($block, $context);
   ');
   $handlers['for']= &opcode('
     // for (init; condition; loop) { statements }
@@ -755,6 +794,12 @@
       execute($node->finally->statements, $context);
     }
   ');
+  $handlers['packagedeclaration']= &opcode('    // FIXME: Compile-time!
+    foreach ($node->statements as $statement) { // FIXME: Only nodes with ->name and only ->name affected
+      $statement->name= $node->name."~".$statement->name;
+      handle($statement, $context);
+    }
+  ');
   $handlers['catch']= &opcode('
     if (isinstance($context["E"], $node->class, $context)) {
       $context["variables"][$node->variable]= &value($context["E"], $context);
@@ -785,33 +830,22 @@
   $context['variables']['$argv']= $argv;
 
   // Register builtin classes
-  class VClassNameNode extends VNode { }
-  
-  $context['classes']['xp~lang~Object']= &new ClassDeclarationNode(
-    'xp~lang~Object',
-    NULL,
-    NULL,
-    array(
-      new MethodDeclarationNode(
-        'getClassName',
-        array(),
-        'string',
-        array(
-          new ReturnNode(new VClassNameNode())
-        ),
-        MODIFIER_PUBLIC, // | MODIFIER_NATIVE
-        array(),
-        array()
-      )
-    ),
-    MODIFIER_PUBLIC,
-    array()
-  );
+  loadclass('xp~lang~Object', $context);
+  loadclass('xp~lang~Exception', $context);
+  loadclass('xp~lang~NullPointerException', $context);
   
   // Execute
   execute($nodes, $context);
   
   // Check for unhandled exceptions
-  $context['E'] && error(E_ERROR, '*** Uncaught '.$context['E']->toString().' ('.$GLOBALS["objects"][$context["E"]->id]["name"].')');
+  if ($context['E']) {
+    $string= methodcall(new MethodCallNode(
+      $context['E'],
+      'toString',
+      array(),
+      NULL
+    ), $context);
+    error(E_ERROR, '*** Uncaught '.$string.' ('.$GLOBALS["objects"][$context["E"]->id]["name"].')');
+  }
   // }}}
 ?>

@@ -13,19 +13,19 @@
    */ 
   class MemberDeclarationListNode extends VNode {
     var
-      $arg0,
-      $arg1;
+      $modifiers,
+      $members;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
+     * @param   int modifiers
+     * @param   net.xp_framework.tools.vm.nodes.MemberDeclarationNode[] members
      */
-    function __construct($arg0, $arg1) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
+    function __construct($modifiers, $members) {
+      $this->modifiers= $modifiers;
+      $this->members= $members;
     }  
   }
 ?>

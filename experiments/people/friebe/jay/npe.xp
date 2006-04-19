@@ -1,3 +1,7 @@
 $s= NULL;
-$s->invoke();
-echo 'Alive'; // Can't be reached
+try {
+  $s->invoke();
+} catch (xp~lang~NullPointerException $e) {
+  echo 'Caught ', $e->toString(), "\n";
+}
+echo 'Alive';

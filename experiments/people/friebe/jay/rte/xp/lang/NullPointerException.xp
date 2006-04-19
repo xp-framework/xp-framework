@@ -1,0 +1,4 @@
+package xp~lang {
+  class NullPointerException extends xp~lang~Exception {
+  }
+}

@@ -17,6 +17,7 @@
         TOKEN_T_PROTECTED   => 'protected',
         TOKEN_T_ABSTRACT    => 'abstract',
         TOKEN_T_FINAL       => 'final',
+        TOKEN_T_NATIVE      => 'native',
         TOKEN_T_IMPLEMENTS  => 'implements',
         TOKEN_T_INTERFACE   => 'interface',
         TOKEN_T_TRY         => 'try',

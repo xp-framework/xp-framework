@@ -205,6 +205,7 @@
 %token T_CONSTRUCT 384
 %token T_FINALLY 385
 %token T_DESTRUCT 386
+%token T_NATIVE 387
 
 %% /* Rules */
 
@@ -217,7 +218,6 @@ top_statement_list:
 	|	/* empty */
 ;
 
-
 top_statement:
 		statement                       
 	|	function_declaration_statement
@@ -225,7 +225,6 @@ top_statement:
 	|	package_declaration_statement
 	|	enum_declaration_statement
 ;
-
 
 inner_statement_list:
 		inner_statement_list inner_statement {
@@ -236,14 +235,12 @@ inner_statement_list:
         }
 ;
 
-
 inner_statement:
 		statement
 	|	function_declaration_statement
 	|	class_declaration_statement
 	|	package_declaration_statement
 ;
-
 
 statement:
 		'{' inner_statement_list '}' { $$= $2; }
@@ -436,7 +433,7 @@ class_declaration_statement:
 
 package_declaration_statement:
 		T_PACKAGE fully_qualified_class_name '{' package_inner_statement_list '}' {
-          $$= &PNode::create('PackageDeclaration', array($2, &$4));
+          $$= &new PackageDeclarationNode($2, $4);
         }
 ;
 
@@ -759,6 +756,7 @@ member_modifier:
 	|	T_STATIC				{ $$= MODIFIER_STATIC; }
 	|	T_ABSTRACT				{ $$= MODIFIER_ABSTRACT; }
 	|	T_FINAL					{ $$= MODIFIER_FINAL; }
+	|	T_NATIVE				{ $$= MODIFIER_NATIVE; }
 ;
 
 class_variable_declaration:
