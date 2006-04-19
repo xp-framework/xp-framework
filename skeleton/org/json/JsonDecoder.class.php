@@ -247,6 +247,9 @@
           $this->_tokenValue= $this->_readNumber();
           return JSON_TOKEN_VALUE;
         }
+        
+        default: 
+          return throw(new JsonException('Invalid character: "'.token.'" at position '.$this->stream->tell()));
       }
     }
     

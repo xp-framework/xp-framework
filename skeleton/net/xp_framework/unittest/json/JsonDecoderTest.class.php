@@ -251,6 +251,16 @@
         $stdclass1,
         $this->decoder->decode('{ "ref" : { "foo" : "bar" } }')
       );
-    }  
+    }
+    
+    /**
+     * Decoding non-json data should result in an exception
+     *
+     * @access  public
+     */
+    #[@test,@expect('org.json.JsonException')]
+    function decodeInvalidData() {
+      $this->decoder->decode('<xml version="1.0" encoding="iso-8859-1"?><document/>');
+    }    
   }
 ?>
