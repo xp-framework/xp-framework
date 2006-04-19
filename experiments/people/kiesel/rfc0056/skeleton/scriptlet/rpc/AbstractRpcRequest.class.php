@@ -7,11 +7,10 @@
   uses('scriptlet.HttpScriptletRequest');
 
   /**
-   * (Insert class' description here)
+   * RPC request
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://scriptlet.rpc.AbstractRpcRouter
+   * @purpose  Rquest
    */
   class AbstractRpcRequest extends HttpScriptletRequest {
     var

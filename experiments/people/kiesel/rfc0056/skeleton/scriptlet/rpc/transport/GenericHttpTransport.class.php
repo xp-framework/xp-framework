@@ -7,7 +7,7 @@
   uses('peer.http.HttpConnection');
 
   /**
-   * Transport for XmlRpc requests over HTTP.
+   * Transport for generic RPC requests over HTTP.
    *
    * @purpose  HTTP Transport for RPC clients
    */
@@ -39,21 +39,20 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Sets the message class which will retrieve the answer
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &lang.XPClass c
      */
     function setMessageClass(&$c) {
       $this->messageClass= &$c;
     }    
 
     /**
-     * Send XML-RPC message
+     * Send RPC message
      *
      * @access  public
-     * @param   &xml.xmlrpc.XmlRpcMessage message
+     * @param   &scriptlet.rpc.AbstractRpcMessage message
      * @return  &scriptlet.HttpScriptletResponse
      */
     function &send(&$message) {
@@ -82,11 +81,11 @@
     }
     
     /**
-     * Retrieve a XML-RPC message.
+     * Retrieve a RPC message.
      *
      * @access  public
      * @param   &scriptlet.HttpScriptletResponse response
-     * @return  &xml.xmlrpc.XmlRpcMessage
+     * @return  &scriptlet.rpc.AbstractRpcMessage
      */
     function &retrieve(&$response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());

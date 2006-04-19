@@ -7,11 +7,9 @@
   uses('xml.xmlrpc.rpc.XmlRpcRouter');
 
   /**
-   * (Insert class' description here)
+   * Mock class
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Mock
    */
   class XmlRpcRouterMock extends XmlRpcRouter {
     var
@@ -21,11 +19,10 @@
       $data=    '';
       
     /**
-     * (Insert method's description here)
+     * Set the request from the environment.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   &scriptlet.HttpRequest request
      */
     function _setupRequest(&$request) {
       $request->headers= array_change_key_case($this->headers, CASE_LOWER);
@@ -35,11 +32,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Handle method.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &scriptlet.HttpRequest request
+     * @return  string
      */
     function handleMethod(&$request) {
       switch ($request->method) {
@@ -66,49 +63,53 @@
     }    
     
     /**
-     * (Insert method's description here)
+     * Get Params
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  mixed[]
+     */
+    function getParams() {
+      return $this->params;
+    }
+
+    /**
+     * Set Headers
+     *
+     * @access  public
+     * @param   mixed[] headers
      */
     function setMockHeaders($h) {
       $this->headers= $h;
     }
     
     /**
-     * (Insert method's description here)
+     * Set method
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string m
      */
     function setMockMethod($m) {
       $this->method= $m;
     }
     
     /**
-     * (Insert method's description here)
+     * Set Params
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   mixed[] params
      */
     function setMockParams($p) {
       $this->params= $p;
     }
     
     /**
-     * (Insert method's description here)
+     * Set Data
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string data
      */
-    function setMockData($d) {
-      $this->data= $d;
+    function setMockData($data) {
+      $this->data= $data;
     }
-    
-    
   }
 ?>

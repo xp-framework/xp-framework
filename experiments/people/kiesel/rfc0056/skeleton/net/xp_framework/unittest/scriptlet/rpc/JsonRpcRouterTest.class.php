@@ -10,20 +10,17 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Test case for JsonRpcRpcRouter
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://org.json.rpc.JsonRpcRouter
+   * @purpose  Testcase
    */
   class JsonRpcRouterTest extends TestCase {
     
     /**
-     * (Insert method's description here)
+     * Setup test fixture
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function setUp() {
       xp::gc();
@@ -33,11 +30,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Test
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     #[@test]
     function basicPostRequest() {
@@ -52,11 +47,9 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Test
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     #[@test,@expect('scriptlet.HttpScriptletException')]
     function basicGetRequest() {
@@ -66,11 +59,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Test
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     #[@test]
     function callNonexistingClass() {
@@ -82,11 +73,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Test
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     #[@test]
     function callNonexistingMethod() {
@@ -98,11 +87,9 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Test
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     #[@test]
     function callNonWebmethodMethod() {
@@ -114,11 +101,9 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Test
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     #[@test]
     function callFailingMethod() {

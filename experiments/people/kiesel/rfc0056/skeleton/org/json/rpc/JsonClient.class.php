@@ -7,28 +7,7 @@
   uses('org.json.rpc.JsonMessage');
 
   /**
-   * This is a XML-RPC client; XML-RPC is a remote procedure call
-   * protocol that uses XML as the message format.
-   *
-   * It has the same origins like SOAP, but has been developed to cure
-   * some of the problems, SOAP has: it not nearly as complex as SOAP is
-   * and does not have all those (mostly unneccessary) features SOAP does.
-   * The spec is short and precise, unlike SOAP's - thus, the various
-   * implementations really understand themselves.
-   *
-   * <code>
-   *   uses('xml.xmlrpc.XmlRpcClient', 'xml.xmlrpc.transport.XmlRpcHttpTransport');
-   *   $c= &new XmlRpcClient(new XMLRPCHTTPTransport('http://xmlrpc.xp-framework.net'));
-   *   
-   *   try(); {
-   *     $res= $c->invoke('sumAndDifference', 5, 3);
-   *   } if (catch('XmlRpcFaultException', $e)) {
-   *     $e->printStackTrace();
-   *     exit(-1);
-   *   }
-   *
-   *   echo $res;
-   * </code>
+   * This is a Json-RPC client
    *
    * @see       http://json-rpc.org/wiki/specification
    * @see       http://json.org/

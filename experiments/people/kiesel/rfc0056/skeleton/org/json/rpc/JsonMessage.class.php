@@ -10,11 +10,10 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Json Message
    *
    * @see       http://json-rpc.org/wiki/specification
-   * @see      reference
-   * @purpose  purpose
+   * @purpose   Contains the Json message
    */
   class JsonMessage extends Object {
     var
@@ -26,11 +25,12 @@
       $method   = '';
 
     /**
-     * (Insert method's description here)
+     * Create message from string representation
      *
-     * @access  
-     * @param   
-     * @return  
+     * @model   static
+     * @access  public
+     * @param   string string
+     * @return  &org.json.rpc.JsonMessage
      */
     function &fromString($string) {
       $decoder= &JsonFactory::create();
@@ -41,11 +41,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Create message 
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   org.json.rpc.JsonMessage msg
      */
     function create($msg) {
       $this->method= NULL;
@@ -54,11 +53,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Create message for a request
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string method
+     * @param   int id
      */
     function createCall($method, $id) {
       $this->encoding= 'iso-8859-1';
@@ -67,11 +66,10 @@
     }    
     
     /**
-     * (Insert method's description here)
+     * Retrieve content type for request
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string
      */
     function getContentType() {
       return 'application/json';

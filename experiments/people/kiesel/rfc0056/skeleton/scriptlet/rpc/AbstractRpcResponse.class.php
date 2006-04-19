@@ -7,11 +7,10 @@
   uses('scriptlet.HttpScriptletResponse');
 
   /**
-   * (Insert class' description here)
+   * RPC response object
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://scriptlet.rpc.AbstractRpcRouter
+   * @purpose  Response
    */
   class AbstractRpcResponse extends HttpScriptletResponse {
     var
@@ -30,7 +29,7 @@
     }
     
     /**
-     * Sets SOAP message
+     * Sets message object
      *
      * @access  public
      * @param   scriptlet.rpc.AbstractRpcMessage msg

@@ -12,40 +12,11 @@
   );
 
   /**
-   * XML-RPC Router class. You can use this class to implement
-   * a XML-RPC webservice.
+   * JSON RPC Router class. You can use this class to implement
+   * a JSON webservice.
    *
-   * <code>
-   *   require('lang.base.php');
-   *   xp::sapi('xmlrpc.service');
-   * 
-   *   $s= &new XmlRpcRouter(new ClassLoader('net.xp_framework.webservices.xmlrpc'));
-   * 
-   *   try(); {
-   *     $s->init();
-   *     $response= &$s->process();
-   *   } if (catch('HttpScriptletException', $e)) {
-   * 
-   *     // Retrieve standard "Internal Server Error"-Document
-   *     $response= &$e->getResponse();
-   *   }
-   * 
-   *   $response->sendHeaders();
-   *   $response->sendContent();
-   * 
-   *   $s->finalize();
-   * </code>
-   *
-   * The default implementation of the XmlRpcRouter takes the given methodName from the
-   * XML-RPC request, splits it at the '.' and takes the first part as the class name,
-   * the second part as the method name. A request on a server with the setup given above
-   * and a requested methodName of 'XmlRpcTest.runTest' would try to instanciate class
-   * net.xp_framework.webservices.xmlrpc.XmlRpcTestHandler and run methon 'runTest'
-   * on it.
-   *
-   * @ext      xml
-   * @see      xp://xml.xmlrpc.XmlRpcClient
-   * @purpose  XML-RPC-Service
+   * @see      xp://org.json.JsonClient
+   * @purpose  JSON-RPC-Service
    */
   class JsonRpcRouter extends AbstractRpcRouter {
 

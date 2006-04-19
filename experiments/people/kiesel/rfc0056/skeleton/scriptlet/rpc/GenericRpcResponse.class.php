@@ -7,11 +7,15 @@
   uses('scriptlet.rpc.AbstractRpcResponse');
 
   /**
-   * (Insert class' description here)
+   * Generic RPC response.
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * Instead of deriving the AbstractRpcResponse in every new
+   * implementation, you can use this generic RPC response which
+   * must be given a callback class (usually the RpcRouter) which
+   * then can execute the actions.
+   *
+   * @see      xp://scriptlet.rpc.AbstractRpcRouter
+   * @purpose  Generic RPC response
    */
   class GenericRpcResponse extends AbstractRpcResponse {
     var

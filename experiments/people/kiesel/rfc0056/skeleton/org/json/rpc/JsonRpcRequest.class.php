@@ -10,15 +10,14 @@
   );
   
   /**
-   * Wraps XMl-RPC Rpc Router request
+   * Wraps Json Rpc Router request
    *
-   * @see xml.xmlrpc.rpc.XmlRpcRouter
-   * @see scriptlet.HttpScriptletRequest
+   * @see xp://scriptlet.rpc.AbstractRpcRequest
    */
   class JsonRpcRequest extends AbstractRpcRequest {
   
     /**
-     * Retrieve XML-RPC message from request
+     * Retrieve Json message from request
      *
      * @access  public
      * @return  &xml.xmlrpc.XmlRpcMessage message object

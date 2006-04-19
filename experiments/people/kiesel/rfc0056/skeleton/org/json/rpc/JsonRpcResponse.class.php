@@ -14,10 +14,10 @@
   class JsonRpcResponse extends AbstractRpcResponse {
     
     /**
-     * Sets XML-RPC message
+     * Sets JSON message
      *
      * @access  public
-     * @param   &xml.xmlrpc.XmlRpcMessage msg XmlRpcMessage object
+     * @param   &org.json.rpc.JsonRpcMessage msg
      */
     function setMessage(&$msg) {
       $this->message= &$msg;
