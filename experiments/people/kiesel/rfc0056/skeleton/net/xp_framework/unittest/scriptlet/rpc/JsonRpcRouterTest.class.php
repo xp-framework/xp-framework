@@ -44,6 +44,7 @@
         '{ "result" : "net.xp_framework.unittest.scriptlet.rpc.impl.DummyRpcImplementationHandler" , "error" : null , "id" : 1 }',
         $response->getContent()
       );
+      $this->assertIn($response->headers, 'Content-type: application/json; charset=iso-8859-1');
     }
 
     /**
