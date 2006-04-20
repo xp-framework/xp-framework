@@ -56,7 +56,6 @@
     
       $this->transport->setMessageClass(XPClass::forName('org.json.rpc.JsonMessage'));
       $args= func_get_args();
-      $method= 
       
       $this->message= &new JsonMessage();
       $this->message->createCall(array_shift($args), time().(++$serial));
