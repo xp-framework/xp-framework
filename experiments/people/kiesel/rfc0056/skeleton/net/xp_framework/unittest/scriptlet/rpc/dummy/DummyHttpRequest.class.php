@@ -38,6 +38,10 @@
      * @return  &peer.http.HttpResponse response object
      */
     function &send($timeout= 60) {
+    
+      // FIXME: This is a hack: an io.Stream does actually have nothing
+      // in common with peer.Socket - only most of the methods are named
+      // same.
       $s= &new Stream();
       $s->open(STREAM_MODE_READWRITE);
       $s->write($this->_response);
