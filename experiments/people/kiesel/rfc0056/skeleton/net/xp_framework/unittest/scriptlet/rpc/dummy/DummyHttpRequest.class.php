@@ -6,7 +6,7 @@
 
   uses(
     'peer.http.HttpRequest',
-    'io.Stream'
+    'net.xp_framework.unittest.scriptlet.rpc.dummy.DummySocket'
   );
 
   /**
@@ -38,17 +38,7 @@
      * @return  &peer.http.HttpResponse response object
      */
     function &send($timeout= 60) {
-    
-      // FIXME: This is a hack: an io.Stream does actually have nothing
-      // in common with peer.Socket - only most of the methods are named
-      // same.
-      $s= &new Stream();
-      $s->open(STREAM_MODE_READWRITE);
-      $s->write($this->_response);
-      $s->rewind();
-      
-      return new HttpResponse($s);
+      return new HttpResponse(new DummySocket($this->_response));
     }
-  
   }
 ?>

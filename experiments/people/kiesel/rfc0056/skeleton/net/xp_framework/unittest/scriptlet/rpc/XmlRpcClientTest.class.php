@@ -29,10 +29,22 @@
     function simpleRequest() {
       $client= &new XmlRpcClient(new DummyRpcTransport('http://localhost:12345/'));
       $conn= &$client->transport->getConnection();
-      $conn->request->setResponse('HTTP/1.0 200 OK
+      $conn->request->setResponse('HTTP/1.1 200 Ok
+Content-type: text/xml
+X-Server: PHP
 
-Foo');
-      var_dump($client->invoke('foo'));
+<?xml version="1.0" encoding="iso-8859-1"?>
+<methodResponse>
+  <params>
+    <param>
+      <value>
+        <string>foobar</string>
+      </value>
+    </param>
+  </params>
+</methodResponse>');
+      
+      $this->assertEquals(array('foobar'), $client->invoke('Foo'));
     }
   }
 ?>
