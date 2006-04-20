@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Thu Mar  9 13:22:00 CET 2006
-@status: draft
+@status: discussion, ends Mon Apr 24 08:39:17 CEST 2006
 @category: scriptlet
 
 Scope of Change
@@ -49,13 +49,13 @@ n/a
 
 Related documents
 -----------------
-n/a
+- Current implementation for SVN HEAD can be found at
+  http://experiments.xp-framework.net/?people,kiesel,rfc0056
 
 Comments
 --------
 - kiesel, Thu Mar  9 13:30:10 CET 2006
   We should probably begin creating this API when creating the new
   JsonRpc package.
-
 
 <EOF>
