@@ -53,9 +53,6 @@
       $encoding     = 'iso-8859-1',
       $nodeType     = 'SOAPNode',
       $action       = '',
-      $method       = '';
-    
-    var
       $class        = '',
       $method       = '';
 
@@ -77,9 +74,40 @@
      * @param   string targetNamespace default NULL
      * @param   xml.soap.SOAPHeader[] headers default array()
      */
-    function create($action, $method, $targetNamespace= NULL, $headers= array()) {
+    function createCall($action, $method, $targetNamespace= NULL, $headers= array()) {
       $this->action= $action;
       $this->method= $method;
+
+      $this->root= &new Node('SOAP-ENV:Envelope', NULL, array(
+        'xmlns:SOAP-ENV'              => XMLNS_SOAPENV,
+        'xmlns:xsd'                   => XMLNS_XSD,
+        'xmlns:xsi'                   => XMLNS_XSI,
+        'xmlns:SOAP-ENC'              => XMLNS_SOAPENC,
+        'xmlns:si'                    => XMLNS_SOAPINTEROP,
+        'SOAP-ENV:encodingStyle'      => XMLNS_SOAPENC,
+        'xmlns:'.$this->namespace     => (NULL !== $targetNamespace ? $targetNamespace : $this->action)
+      ));
+      
+      if (!empty($headers)) {
+        $header= &$this->root->addChild(new Node('SOAP-ENV:Header'));
+        for ($i= 0, $s= sizeof($headers); $i < $s; $i++) {
+          $header->addChild($headers[$i]->getNode($this->namespaces));
+        }
+      }
+      
+      $this->body= &$this->root->addChild(new Node('SOAP-ENV:Body'));
+      $this->body->addChild(new Node($this->namespace.':'.$this->method));
+    }
+    
+    /**
+     * Create a message
+     *
+     * @access  public
+     * @param   xml.soap.SOAPMessage msg
+     */
+    function create($msg) {
+      $this->action= $msg->action;
+      $this->method= $msg->method;
 
       $this->root= &new Node('SOAP-ENV:Envelope', NULL, array(
         'xmlns:SOAP-ENV'              => XMLNS_SOAPENV,

@@ -119,7 +119,7 @@
       
       $message= &new SOAPMessage();
       $message->setEncoding($this->encoding);
-      $message->create($this->action, array_shift($args), $this->targetNamespace, $this->headers);
+      $message->createCall($this->action, array_shift($args), $this->targetNamespace, $this->headers);
       $message->setData($args, $this->mapping);
 
       // Send

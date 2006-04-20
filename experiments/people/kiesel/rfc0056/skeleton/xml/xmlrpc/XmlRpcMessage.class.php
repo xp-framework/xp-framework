@@ -34,10 +34,9 @@
      * Create a XmlRpcMessage object
      *
      * @access  public
-     * @param   string type
-     * @param   string methodName default NULL
+     * @param   scriptlet.rpc.AbstractRpcMessage msg
      */
-    function create() {
+    function create($msg) {
       $this->root= &new Node(XMLRPC_RESPONSE);
     }
 
