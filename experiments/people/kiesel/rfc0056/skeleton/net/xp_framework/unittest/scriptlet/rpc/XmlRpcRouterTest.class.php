@@ -6,7 +6,7 @@
 
   uses(
     'util.profiling.unittest.TestCase',
-    'net.xp_framework.unittest.scriptlet.rpc.XmlRpcRouterMock'
+    'net.xp_framework.unittest.scriptlet.rpc.mock.XmlRpcRouterMock'
   );
 
   /**

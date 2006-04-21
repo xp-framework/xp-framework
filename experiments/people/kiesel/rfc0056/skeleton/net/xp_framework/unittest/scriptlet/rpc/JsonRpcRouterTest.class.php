@@ -6,7 +6,7 @@
 
   uses(
     'util.profiling.unittest.TestCase',
-    'net.xp_framework.unittest.scriptlet.rpc.JsonRpcRouterMock',
+    'net.xp_framework.unittest.scriptlet.rpc.mock.JsonRpcRouterMock',
     'org.json.JsonFactory'
   );
 
