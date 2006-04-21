@@ -66,29 +66,28 @@
         }
         
         case 'array': {
-          // Bail out early on bordercase
-          if (0 == sizeof($data)) return '[ ]';
-          
-          $ret= '[ ';
-          foreach ($data as $value) {
-            $ret.= $this->encode($value).' , ';
-          }
-          
-          return substr($ret, 0, -2).']';
-        }
-        
-        case 'object': {
-          $ret= '{ ';
-          $arr= get_object_vars($data);
-          
-          // Bail out early on bordercase
-          if (0 == sizeof($arr)) return '{ }';
-          
-          foreach ($arr as $key => $value) {
-            $ret.= $this->encode((string)$key).' : '.$this->encode($value).' , ';
-          }
+          if ($this->_isVector($data)) {
+            // Bail out early on bordercase
+            if (0 == sizeof($data)) return '[ ]';
 
-          return substr($ret, 0, -2).'}';
+            $ret= '[ ';
+            foreach ($data as $value) {
+              $ret.= $this->encode($value).' , ';
+            }
+
+            return substr($ret, 0, -2).']';
+          } else {
+            $ret= '{ ';
+
+            // Bail out early on bordercase
+            if (0 == sizeof($data)) return '{ }';
+
+            foreach ($data as $key => $value) {
+              $ret.= $this->encode((string)$key).' : '.$this->encode($value).' , ';
+            }
+
+            return substr($ret, 0, -2).'}';
+          }
         }
         
         default: {
@@ -160,17 +159,17 @@
      * @return  &stdclass
      */
     function _decodeObject() {
-      $obj= &new StdClass();
+      $array= array();
       do {
         $token= $this->_getNextToken();
         switch ($token) {
           case JSON_TOKEN_LBRACKET: {
-            $obj->{$key}= $this->_decodeArray();
+            $array[$key]= $this->_decodeArray();
             unset($key);
             break;
           }
           case JSON_TOKEN_LBRACE: {
-            $obj->{$key}= $this->_decodeObject();
+            $array[$key]= $this->_decodeObject();
             unset($key);
             break;
           }
@@ -178,7 +177,7 @@
             if (empty($key)) {
               $key= $this->_getTokenValue();
             } else {
-              $obj->{$key}= $this->_getTokenValue();
+              $array[$key]= $this->_getTokenValue();
               unset($key);
             }
             break;
@@ -186,7 +185,7 @@
         }
       } while ($token != JSON_TOKEN_RBRACE);
 
-      return $obj;
+      return $array;
     }    
     
     /**
@@ -349,6 +348,23 @@
       }
       
       return intval($nstr);
+    }
+    
+    /**
+     * Checks whether an array is a numerically indexed array
+     * (a vector) or a key/value hashmap.
+     *
+     * @access  protected
+     * @param   array data
+     * @return  bool
+     */
+    function _isVector($data) {
+      $start= 0;
+      foreach (array_keys($data) as $key) {
+        if ($key !== $start++) return FALSE;
+      }
+      
+      return TRUE;
     }
   } implements(__FILE__, 'org.json.IJsonDecoder');
 ?>

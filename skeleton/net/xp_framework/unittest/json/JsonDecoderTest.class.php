@@ -100,15 +100,10 @@
      * @access  public
      */
     #[@test]
-    function encodeObject() {
-      $this->assertEquals(
-        '{ }',
-        $this->decoder->encode((object)array())
-      );
-      
+    function encodeHashmap() {
       $this->assertEquals(
         '{ "foo" : "bar" , "bar" : "baz" }',
-        $this->decoder->encode((object)array('foo' => 'bar', 'bar' => 'baz'))
+        $this->decoder->encode(array('foo' => 'bar', 'bar' => 'baz'))
       );
     }
     
@@ -206,12 +201,9 @@
      * @access  public
      */
     #[@test]
-    function decodeObject() {
-      $expect= &new StdClass();
-      $expect->foo= "bar";
-      $expect->bar= "baz";
+    function decodeHashmap() {
       $this->assertEquals(
-        $expect,
+        array('foo' => 'bar', 'bar' => 'baz'),
         $this->decoder->decode('{ "foo" : "bar", "bar" : "baz" }')
       );
     }
@@ -223,14 +215,8 @@
      */
     #[@test]
     function decodeObjectArray() {
-      $stdclass1= &new StdClass();
-      $stdclass1->foo= 1;
-      
-      $stdclass2= &new StdClass();
-      $stdclass2->bar= 'baz';
-      
       $this->assertEquals(
-        array($stdclass1, $stdclass2),
+        array(array('foo' => 1), array('bar' => 'baz')),
         $this->decoder->decode('[ { "foo" : 1 } , { "bar" : "baz" } ]')
       );
     }
@@ -242,13 +228,8 @@
      */
     #[@test]
     function decodeNestedObject() {
-      $stdclass1= &new StdClass();
-      $stdclass2= &new StdClass();
-      $stdclass2->foo= "bar";
-      $stdclass1->ref= $stdclass2;
-      
       $this->assertEquals(
-        $stdclass1,
+        array('ref' => array('foo' => 'bar')),
         $this->decoder->decode('{ "ref" : { "foo" : "bar" } }')
       );
     }
@@ -261,6 +242,16 @@
     #[@test,@expect('org.json.JsonException')]
     function decodeInvalidData() {
       $this->decoder->decode('<xml version="1.0" encoding="iso-8859-1"?><document/>');
+    }
+    
+    /**
+     * Test decoding of unsupported datatype
+     *
+     * @access  public
+     */
+    #[@test,@expect('org.json.JsonException')]
+    function encodeObject() {
+      $this->decoder->encode(new StdClass());
     }    
   }
 ?>
