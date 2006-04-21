@@ -6,7 +6,8 @@
 
   uses(
     'util.profiling.unittest.TestCase',
-    'net.xp_framework.unittest.scriptlet.rpc.JsonRpcRouterMock'
+    'net.xp_framework.unittest.scriptlet.rpc.JsonRpcRouterMock',
+    'org.json.JsonFactory'
   );
 
   /**
@@ -46,6 +47,26 @@
       );
       $this->assertIn($response->headers, 'Content-type: application/json; charset=iso-8859-1');
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    #[@test]
+    function basicEchoTest() {
+      $this->router->setMockData('{ "method" : "DummyRpcImplementation.passBackMethod", "params" : [ "string" , 1 , { "object" : "object" } , [ 1, 2, 3, 4, 5 ] ] , "id" : 1 }');
+      $this->router->init();
+      $response= &$this->router->process();
+      
+      $this->assertEquals(200, $response->statusCode);
+      $str= $response->getContent();
+      
+      $decoder= &JsonFactory::create();
+      $data= $decoder->decode($str);
+    }    
 
     /**
      * Test

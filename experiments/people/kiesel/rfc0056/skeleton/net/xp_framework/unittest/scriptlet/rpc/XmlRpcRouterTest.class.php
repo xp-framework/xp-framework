@@ -45,6 +45,9 @@
       $response= &$this->router->process();
       $this->assertEquals(200, $response->statusCode);
       $this->assertIn($response->headers, 'Content-type: text/xml; charset=iso-8859-1');
+      
+      $msg= &XmlRpcResponseMessage::fromString($response->getContent());
+      $this->assertEquals('net.xp_framework.unittest.scriptlet.rpc.impl.DummyRpcImplementationHandler', $msg->getData());
     }
 
     /**
@@ -138,9 +141,73 @@
       $this->assertEquals(500, $response->statusCode);
 
       // Check for correct fault code
-      $message= &XmlRpcMessage::fromString($response->getContent());
+      $message= &XmlRpcResponseMessage::fromString($response->getContent());
       $fault= &$message->getFault();
       $this->assertEquals(403, $fault->getFaultcode());
+    }
+    
+    /**
+     * Test
+     *
+     * @access  public
+     */
+    #[@test]
+    function multipleParameters() {
+      $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
+        <methodCall>
+          <methodName>DummyRpcImplementation.checkMultipleParameters</methodName>
+          <params>
+            <param>
+              <value>
+                <string>Lalala</string>
+              </value>
+            </param>
+            <param>
+              <value>
+                <int>1</int>
+              </value>
+            </param>
+            <param>
+              <value>
+                <array>
+                  <data>
+                    <value><i4>12</i4></value>
+                    <value><string>Egypt</string></value>
+                    <value><boolean>0</boolean></value>
+                    <value><i4>-31</i4></value>
+                  </data>
+                </array>
+              </value>
+            </param>
+            <param>
+              <value>
+                <struct>
+                  <member>
+                    <name>lowerBound</name>
+                    <value><i4>18</i4></value>
+                  </member>
+                  <member>
+                    <name>upperBound</name>
+                    <value><i4>139</i4></value>
+                  </member>
+                </struct>
+              </value>
+            </param>
+          </params>
+        </methodCall>
+      ');
+      
+      $this->router->init();
+      $response= &$this->router->process();
+      $this->assertIn($response->headers, 'Content-type: text/xml; charset=iso-8859-1');
+      $this->assertEquals(200, $response->statusCode);
+      
+      $msg= &XmlRpcResponseMessage::fromString($response->getContent());
+      $data= $msg->getData();
+      $this->assertEquals('Lalala', $data[0]);
+      $this->assertEquals(1, $data[1]);
+      $this->assertEquals(array(12, 'Egypt', FALSE, -31), $data[2]);
+      $this->assertEquals(array('lowerBound' => 18, 'upperBound' => 139), $data[3]);
     }
   }
 ?>

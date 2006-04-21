@@ -44,7 +44,7 @@ X-Server: PHP
   </params>
 </methodResponse>');
       
-      $this->assertEquals(array('foobar'), $client->invoke('Foo'));
+      $this->assertEquals('foobar', $client->invoke('Foo'));
     }
   }
 ?>
