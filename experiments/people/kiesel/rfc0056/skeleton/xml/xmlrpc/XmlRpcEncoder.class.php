@@ -60,7 +60,7 @@
           break;
           
         case 'boolean':
-          $value->addChild(new Node('boolean', $data));
+          $value->addChild(new Node('boolean', (string)(int)$data));
           break;
           
         case 'double':
