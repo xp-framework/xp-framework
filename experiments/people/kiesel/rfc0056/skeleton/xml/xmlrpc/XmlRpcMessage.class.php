@@ -38,28 +38,14 @@
   class XmlRpcMessage extends Object {
     var
       $tree = NULL;
-      
-    /**
-     * Create a XmlRpcMessage object
-     *
-     * @access  public
-     * @param   scriptlet.rpc.AbstractRpcMessage msg
-     */
-    function create($msg) {
-      $this->tree= &new Tree(XMLRPC_RESPONSE);
-    }
 
     /**
-     * Create a XmlRpcMessage object
+     * Create a message
      *
+     * @model   abstract
      * @access  public
-     * @param   string type
-     * @param   string methodName default NULL
      */
-    function createCall($method) {
-      $this->tree= &new Tree(XMLRPC_METHODCALL);
-      $this->tree->root->addChild(new Node('methodName', $method));
-    }
+    function create() { }
     
     /**
      * Construct a XML-RPC message from a string
@@ -68,16 +54,12 @@
      *   $msg= &XmlRpcMessage::fromString('<methodCall>...</methodCall>');
      * </code>
      *
-     * @model   static
+     * @model   abstract
      * @access  public
      * @param   string string
      * @return  &xml.xmlrpc.XmlRpcMessage
      */
-    function &fromString($string) {
-      $msg= &new XmlRpcMessage();
-      $msg->tree= &Tree::fromString($string);
-      return $msg;
-    }
+    function &fromString($string) { }
     
     /**
      * Set encoding

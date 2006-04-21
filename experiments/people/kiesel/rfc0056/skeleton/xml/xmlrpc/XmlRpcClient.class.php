@@ -76,8 +76,8 @@
     
       $args= func_get_args();
       
-      $this->message= &new XmlRpcMessage();
-      $this->message->create(XMLRPC_METHODCALL, array_shift($args));
+      $this->message= &new XmlRpcRequestMessage();
+      $this->message->create(array_shift($args));
       $this->message->setData($args);
       
       // Send

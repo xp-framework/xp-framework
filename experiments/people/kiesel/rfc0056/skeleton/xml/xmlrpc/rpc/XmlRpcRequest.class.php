@@ -6,7 +6,7 @@
  
   uses(
     'scriptlet.rpc.AbstractRpcRequest',
-    'xml.xmlrpc.XmlRpcMessage'
+    'xml.xmlrpc.XmlRpcRequestMessage'
   );
   
   /**
@@ -25,13 +25,7 @@
      */
     function &getMessage() {
       $this->cat && $this->cat->debug('<<< ', $this->getData());
-      $m= &XmlRpcMessage::fromString($this->getData());
-      
-      // Determine class- and method-name
-      $node= $m->tree->root->children[0]->getContent();
-      $m->setClass(substr($node, 0, strpos($node, '.')));
-      $m->setMethod(substr($node, strpos($node, '.') + 1));
-      
+      $m= &XmlRpcRequestMessage::fromString($this->getData());
       return $m;
     }
   }

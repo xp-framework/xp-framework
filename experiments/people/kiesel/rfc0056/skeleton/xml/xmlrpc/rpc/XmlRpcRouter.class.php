@@ -7,6 +7,7 @@
   uses(
     'xml.xmlrpc.rpc.XmlRpcRequest',
     'xml.xmlrpc.rpc.XmlRpcResponse',
+    'xml.xmlrpc.XmlRpcResponseMessage',
     'scriptlet.rpc.AbstractRpcRouter'
   );
 
@@ -72,10 +73,10 @@
      * Create a message object.
      *
      * @access  protected
-     * @return  &xml.xmlrpc.XmlRpcMessage
+     * @return  &xml.xmlrpc.XmlRpcResponseMessage
      */
     function &_message() {
-      return new XmlRpcMessage();
+      return new XmlRpcResponseMessage();
     }
   }
 ?>
