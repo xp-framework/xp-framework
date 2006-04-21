@@ -22,15 +22,10 @@
     function process() {
       if (!$this->message) return;
 
-      $this->setHeader('Content-type', 'text/xml');      
       if (NULL !== $this->message->getFault()) {
         $this->setStatus(HTTP_INTERNAL_SERVER_ERROR);
       }
-      $this->content= (
-        $this->message->getDeclaration()."\n".
-        $this->message->getSource(0)
-      );
-      
+      $this->content= $this->message->serializeData();
       $this->cat && $this->cat->debug('>>> ', $this->content);
     }
   }

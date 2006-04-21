@@ -28,7 +28,7 @@
       $m= &XmlRpcMessage::fromString($this->getData());
       
       // Determine class- and method-name
-      $node= $m->root->children[0]->getContent();
+      $node= $m->tree->root->children[0]->getContent();
       $m->setClass(substr($node, 0, strpos($node, '.')));
       $m->setMethod(substr($node, strpos($node, '.') + 1));
       

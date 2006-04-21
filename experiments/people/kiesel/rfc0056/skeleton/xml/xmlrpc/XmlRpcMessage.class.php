@@ -4,7 +4,14 @@
  * $Id$ 
  */
   
-  uses('xml.Tree', 'xml.Node', 'xml.xmlrpc.XmlRpcFault', 'util.Date');
+  uses(
+    'xml.Tree', 
+    'xml.Node', 
+    'xml.xmlrpc.XmlRpcFault', 
+    'util.Date', 
+    'xml.xmlrpc.XmlRpcEncoder',
+    'xml.xmlrpc.XmlRpcDecoder'
+  );
 
   // Message-types
   define('XMLRPC_METHODCALL', 'methodCall');
@@ -28,8 +35,10 @@
    * @see      xp://xml.xmlrpc.XmlRpcClient
    * @purpose  Represent message
    */
-  class XmlRpcMessage extends Tree {
-
+  class XmlRpcMessage extends Object {
+    var
+      $tree = NULL;
+      
     /**
      * Create a XmlRpcMessage object
      *
@@ -37,7 +46,7 @@
      * @param   scriptlet.rpc.AbstractRpcMessage msg
      */
     function create($msg) {
-      $this->root= &new Node(XMLRPC_RESPONSE);
+      $this->tree= &new Tree(XMLRPC_RESPONSE);
     }
 
     /**
@@ -48,8 +57,8 @@
      * @param   string methodName default NULL
      */
     function createCall($method) {
-      $this->root= &new Node(XMLRPC_METHODCALL);
-      $this->root->addChild(new Node('methodName', $method));
+      $this->tree= &new Tree(XMLRPC_METHODCALL);
+      $this->tree->root->addChild(new Node('methodName', $method));
     }
     
     /**
@@ -65,31 +74,27 @@
      * @return  &xml.xmlrpc.XmlRpcMessage
      */
     function &fromString($string) {
-      return parent::fromString($string, 'XmlRpcMessage');
+      $msg= &new XmlRpcMessage();
+      $msg->tree= &Tree::fromString($string);
+      return $msg;
     }
     
     /**
-     * Set the data for the message.
+     * Set encoding
      *
      * @access  public
-     * @param   &mixed arr
+     * @param   string encoding
      */
-    function setData($arr) {
-      $params= &$this->root->addChild(new Node('params'));
-      if (sizeof($arr)) foreach (array_keys($arr) as $idx) {
-        $this->_marshall($params->addChild(new Node('param')), $arr[$idx]);
-      }
-    }
+    function setEncoding($encoding) { }
     
     /**
-     * Retrieve string representation of message as used in the
-     * protocol.
+     * Retrieve encoding
      *
      * @access  public
      * @return  string
      */
-    function serializeData() {
-      return $this->root->getDeclaration()."\n".$this->root->getSource(0);
+    function getEncoding() {
+      return 'iso-8859-1';
     }
     
     /**
@@ -101,67 +106,30 @@
     function getContentType() { return 'text/xml'; }
     
     /**
-     * Recursivly serialize data to the given node.
+     * Set the data for the message.
      *
-     * Scalar values are natively supported by the protocol, so we just encode
-     * them as the spec tells us. As arrays and structs / hashes are the same
-     * in PHP, and structs are the more powerful construct, we're always encoding 
-     * arrays as structs.
-     * 
-     * XP objects are encoded as structs, having their FQDN stored in the member
-     * __xp_class.
-     *
-     * @access  protected
-     * @param   &xml.Node node
-     * @param   mixed data
-     * @throws  lang.IllegalArgumentException in case the data could not be serialized.
+     * @access  public
+     * @param   &mixed arr
      */
-    function &_marshall(&$node, $data) {
-      $value= &$node->addChild(new Node('value'));
-      
-      if (is_a($data, 'Object')) {
-        if (is('util.Date', $data)) {
-          return $value->addChild(new Node('dateTime.iso8601', $data->toString('Ymd\TH:i:s')));
-        }
-        
-        // Provide a standard-way to serialize Object-derived classes
-        $cname= xp::typeOf($data);
-        $data= (array)$data;
-        $data['__xp_class']= $cname;
+    function setData($arr) {
+      $encoder= &new XmlRpcEncoder();
+
+      $params= &$this->tree->root->addChild(new Node('params'));
+      if (sizeof($arr)) foreach (array_keys($arr) as $idx) {
+        $n= &$params->addChild(new Node('param'));
+        $n->addChild($encoder->encode($arr[$idx]));
       }
-      
-      switch (xp::typeOf($data)) {
-        case 'integer':
-          return $value->addChild(new Node('int', $data));
-          break;
-          
-        case 'boolean':
-          return $value->addChild(new Node('boolean', $data));
-          break;
-          
-        case 'double':
-        case 'float':
-          return $value->addChild(new Node('double', $data));
-          break;
-        
-        case 'array':
-          $struct= &$value->addChild(new Node('struct'));
-          if (sizeof($data)) foreach (array_keys($data) as $idx) {
-            $member= &$struct->addChild(new Node('member'));
-            $member->addChild(new Node('name', $idx));
-            $this->_marshall($member, $data[$idx]);
-          }
-          return $struct;
-          break;
-        
-        case 'string':
-          return $value->addChild(new Node('string', $data));
-          break;
-        
-        default:
-          return throw(new IllegalArgumentException('Cannot serialize data of type "'.xp::typeOf($data).'"'));
-          break;
-      }
+    }
+    
+    /**
+     * Retrieve string representation of message as used in the
+     * protocol.
+     *
+     * @access  public
+     * @return  string
+     */
+    function serializeData() {
+      return $this->tree->getDeclaration()."\n".$this->tree->getSource(0);
     }
     
     /**
@@ -172,97 +140,20 @@
      */
     function &getData() {
       $ret= array();
-      foreach (array_keys($this->root->children) as $idx) {
-        if ('params' != $this->root->children[$idx]->getName())
+      foreach (array_keys($this->tree->root->children) as $idx) {
+        if ('params' != $this->tree->root->children[$idx]->getName())
           continue;
         
         // Process params node
-        foreach (array_keys($this->root->children[$idx]->children) as $params) {
-          $ret[]= &$this->_unmarshall($this->root->children[$idx]->children[$params]->children[0]);
+        $decoder= &new XmlRpcDecoder();
+        foreach (array_keys($this->tree->root->children[$idx]->children) as $params) {
+          $ret[]= &$decoder->decode($this->tree->root->children[$idx]->children[$params]->children[0]);
         }
         
         return $ret;
       }
       
       return throw(new IllegalStateException('No node "params" found.'));
-    }
-    
-    /**
-     * Recursively deserialize data for the given node.
-     *
-     * @access  protected
-     * @param   &xml.Node node
-     * @return  &mixed
-     * @throws  lang.IllegalArgumentException if the data cannot be deserialized
-     * @throws  lang.ClassNotFoundException in case a XP object's class could not be loaded
-     */
-    function &_unmarshall(&$node) {
-      if (!is('xml.Node', $node->children[0]))
-        return throw(new XMLFormatException('Tried to access nonexistant node.'));
-        
-      switch ($node->children[0]->getName()) {
-        case 'struct':
-          $ret= array();
-          foreach (array_keys($node->children[0]->children) as $idx) {
-            $data= array();
-            $data[$node->children[0]->children[$idx]->children[0]->getName()]= &$node->children[0]->children[$idx]->children[0];
-            $data[$node->children[0]->children[$idx]->children[1]->getName()]= &$node->children[0]->children[$idx]->children[1];
-            $ret[$data['name']->getContent()]= &$this->_unmarshall($data['value']);
-            unset($data);
-          }
-          
-          // Check whether this is a XP object
-          if (isset($ret['__xp_class'])) {
-            $cname= $ret['__xp_class'];
-            
-            // Load the class definition
-            try(); {
-              XPClass::forName($cname);
-            } if (catch('ClassNotFoundException', $e)) {
-              return throw($e);
-            }
-            
-            // Cast the object to the class
-            unset($ret['__xp_class']);
-            $ret= &cast($ret, xp::reflect($cname));
-          }
-          
-          return $ret;
-          break;
-          
-        case 'array':
-          $ret= array();
-          foreach (array_keys($node->children[0]->children[0]->children) as $idx) {
-            $ret[]= &$this->_unmarshall($node->children[0]->children[0]->children[$idx]);
-          }
-          return $ret;
-          break;
-        
-        case 'int':
-        case 'i4':
-          $i= (int)$node->children[0]->getContent();
-          return $i;
-        
-        case 'double':
-          $d= (double)$node->children[0]->getContent();
-          return $d;
-        
-        case 'boolean':
-          $b= (bool)$node->children[0]->getContent();
-          return $b;
-        
-        case 'string':
-          $s= (string)$node->children[0]->getContent();
-          return $s;
-        
-        case 'dateTime.iso8601':
-          $d= &Date::fromString($node->children[0]->getContent());
-          return $d;
-          
-        default:
-          return throw(new IllegalArgumentException('Could not decode node as it\'s type is not supported: '.$node->children[0]->getName()));
-          break;
-      }
     }
     
     /**
@@ -274,12 +165,13 @@
      * @param   string faultstring
      */
     function setFault($faultcode, $faultstring) {
-      $this->root->children[0]= &new Node('fault');
+      $encoder= &new XmlRpcEncoder();
       
-      $this->_marshall($this->root->children[0], $f= array(
+      $this->tree->root->children[0]= &new Node('fault');
+      $this->tree->root->children[0]->addChild($encoder->encode(array(
         'faultCode'   => $faultcode,
         'faultString' => $faultstring
-      ));
+      )));
     }
     
     /**
@@ -292,13 +184,14 @@
 
       // First check whether the fault-node exists
       if (
-        !is('xml.Node', $this->root->children[0]) ||
-        'fault' != $this->root->children[0]->getName()
+        !is('xml.Node', $this->tree->root->children[0]) ||
+        'fault' != $this->tree->root->children[0]->getName()
       ) {
         return NULL;
       }
       
-      $data= &$this->_unmarshall($this->root->children[0]->children[0]);
+      $decoder= &new XmlRpcDecoder();
+      $data= &$decoder->decode($this->tree->root->children[0]->children[0]);
       $f= &new XmlRpcFault($data['faultCode'], $data['faultString']);
       return $f;
     }
