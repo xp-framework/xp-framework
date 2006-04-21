@@ -19,7 +19,7 @@
     var
       $method   = '',
       $id       = '',
-      $encoding = '',
+      $encoding = 'iso-8859-1',
       $data     = NULL,
       $class    = '',
       $method   = '';
@@ -27,43 +27,21 @@
     /**
      * Create message from string representation
      *
-     * @model   static
+     * @model   abstract
      * @access  public
      * @param   string string
      * @return  &org.json.rpc.JsonMessage
      */
-    function &fromString($string) {
-      $decoder= &JsonFactory::create();
-      $msg= &new JsonMessage();
-      $msg->data= $decoder->decode($string);
-      $msg->id= $msg->data->id;
-      return $msg;
-    }
+    function &fromString($string) { }
     
     /**
      * Create message 
      *
+     * @model   abstract
      * @access  public
      * @param   org.json.rpc.JsonMessage msg
      */
-    function create($msg) {
-      $this->method= NULL;
-      $this->encoding= 'iso-8859-1';
-      $this->id= $msg->getId();
-    }
-    
-    /**
-     * Create message for a request
-     *
-     * @access  public
-     * @param   string method
-     * @param   int id
-     */
-    function createCall($method, $id) {
-      $this->encoding= 'iso-8859-1';
-      $this->method= $method;
-      $this->id= $id;
-    }    
+    function create() { }
     
     /**
      * Retrieve content type for request
@@ -121,22 +99,7 @@
      * @access  public
      * @param   &lang.Object data
      */
-    function setData($data) {
-      if (NULL !== $this->method) {
-        $this->data= (object)array(
-          'method'  => $this->method,
-          'params'  => (array)$data,
-          'id'      => $this->id
-        );
-        return;
-      }
-          
-      $this->data= (object)array(
-        'result'    => $data,
-        'error'     => NULL,
-        'id'        => $this->id
-      );
-    }
+    function setData($data) { }
 
     /**
      * Get Data

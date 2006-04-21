@@ -136,9 +136,32 @@
       $this->assertEquals(500, $response->statusCode);
 
       // Check for correct fault code
-      $message= &JsonMessage::fromString($response->getContent());
+      $message= &JsonResponseMessage::fromString($response->getContent());
       $fault= &$message->getFault();
       $this->assertEquals(403, $fault->getFaultcode());
+    }
+    
+    
+    /**
+     * Test
+     *
+     * @access  public
+     */
+    #[@test]
+    function multipleParameters() {
+      $this->router->setMockData('{ "method" : "DummyRpcImplementation.checkMultipleParameters", "params" : [ "Lalala", 1, [ 12, "Egypt", false, 31 ], { "lowerBound" : 18, "upperBound" : 139 } ], "id" : 12 }');
+      $this->router->init();
+      $response= &$this->router->process();
+      $this->assertIn($response->headers, 'Content-type: text/xml; charset=iso-8859-1');
+      $this->assertEquals(200, $response->statusCode);
+      
+      $msg= &JsonResponseMessage::fromString($response->getContent());
+      $data= $msg->getData();
+      var_dump($data);
+      $this->assertEquals('Lalala', $data[0]);
+      $this->assertEquals(1, $data[1]);
+      $this->assertEquals(array(12, 'Egypt', FALSE, -31), $data[2]);
+      $this->assertEquals((object)array('lowerBound' => 18, 'upperBound' => 139), $data[3]);
     }
   }
 ?>

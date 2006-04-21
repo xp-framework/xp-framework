@@ -7,7 +7,7 @@
   uses(
     'org.json.rpc.JsonRpcRequest',
     'org.json.rpc.JsonRpcResponse',
-    'org.json.rpc.JsonMessage',
+    'org.json.rpc.JsonResponseMessage',
     'scriptlet.rpc.AbstractRpcRouter'
   );
 
@@ -47,7 +47,7 @@
      * @return  &org.json.rpc.JsonMessage
      */
     function &_message() {
-      return new JsonMessage();
+      return new JsonResponseMessage();
     }
   }
 ?>

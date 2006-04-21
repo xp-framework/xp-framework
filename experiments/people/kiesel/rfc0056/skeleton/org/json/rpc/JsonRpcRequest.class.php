@@ -6,7 +6,7 @@
  
   uses(
     'scriptlet.rpc.AbstractRpcRequest',
-    'org.json.rpc.JsonMessage'
+    'org.json.rpc.JsonRequestMessage'
   );
   
   /**
@@ -24,13 +24,7 @@
      */
     function &getMessage() {
       $this->cat && $this->cat->debug('<<< ', $this->getData());
-      $m= &JsonMessage::fromString($this->getData());
-      
-      $data= $m->getData();
-      list($class, $method)= explode('.', $data->method);
-      $m->setClass($class);
-      $m->setMethod($method);
-      
+      $m= &JsonRequestMessage::fromString($this->getData());
       return $m;
     }
   }
