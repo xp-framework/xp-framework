@@ -29,9 +29,9 @@
       $data= $decoder->decode($string);
 
       $msg->data= $data;
-      $msg->id= $data->id;
+      $msg->id= $data['id'];
       
-      list($msg->class, $msg->method)= explode('.', $data->method);
+      list($msg->class, $msg->method)= explode('.', $data['method']);
       return $msg;
     }
     
@@ -54,7 +54,7 @@
      * @param   mixed data
      */
     function setData($data) {
-      $this->data= (object)array(
+      $this->data= array(
         'method'  => $this->method,
         'params'  => (array)$data,
         'id'      => $this->id
@@ -68,7 +68,7 @@
      * @return  mixed
      */
     function getData() {
-      return $this->data->params;
+      return $this->data['params'];
     }    
   }
 ?>

@@ -151,9 +151,9 @@
      * @return  
      */
     function setFault($faultcode, $faultstring) {
-      $this->data= (object)array(
+      $this->data= array(
         'result'  => FALSE,
-        'error'   => (object)array(
+        'error'   => array(
           'faultCode'   => $faultcode,
           'faultString' => $faultString
         ),
@@ -169,10 +169,10 @@
      * @return  
      */
     function &getFault() {
-      if (empty($this->data->error)) return NULL;
+      if (empty($this->data['error'])) return NULL;
       return new RpcFault(
-        $this->data->error->faultCode,
-        $this->data->error->faultString
+        $this->data['error']['faultCode'],
+        $this->data['error']['faultString']
       );
     }        
 

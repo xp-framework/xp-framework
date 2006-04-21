@@ -29,7 +29,7 @@
       $data= $decoder->decode($string);
 
       $msg->data= $data;
-      $msg->id= $data->id;
+      $msg->id= $data['id'];
       return $msg;
     }
     
@@ -51,12 +51,23 @@
      * @param   mixed data
      */
     function setData($data) {
-      $this->data= (object)array(
+      $this->data= array(
         'result'  => $data,
         'error'   => NULL,
         'id'      => $this->id
       );
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function getData() {
+      return $this->data['result'];
+    }    
     
     /**
      * Set a fault for the message
@@ -66,9 +77,9 @@
      * @param   string faultString
      */
     function setFault($faultCode, $faultString) {
-      $this->data= (object)array(
+      $this->data= array(
         'result'  => FALSE,
-        'error'   => (object)array(
+        'error'   => array(
           'faultCode'   => $faultCode,
           'faultString' => $faultString
         ),

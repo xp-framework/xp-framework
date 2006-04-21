@@ -36,8 +36,7 @@
         $this->setStatus(HTTP_INTERNAL_SERVER_ERROR);
       }
       
-      $json= &JsonFactory::create();
-      $this->content= $json->encode($this->message->getData());
+      $this->content= $this->message->serializeData();
       $this->cat && $this->cat->debug('>>> ', $this->content);
     }
   }
