@@ -120,7 +120,8 @@
       $message= &new SOAPMessage();
       $message->setEncoding($this->encoding);
       $message->createCall($this->action, array_shift($args), $this->targetNamespace, $this->headers);
-      $message->setData($args, $this->mapping);
+      $message->setMapping($this->mapping);
+      $message->setData($args);
 
       // Send
       if (FALSE == ($response= &$this->transport->send($message))) return FALSE;

@@ -132,6 +132,16 @@
       $this->body->addChild(new Node($this->namespace.':'.$this->method));
       $this->mapping= &new SOAPMapping();
     }
+
+    /**
+     * Set Mapping
+     *
+     * @access  public
+     * @param   &xml.soap.SOAPMapping mapping
+     */
+    function setMapping(&$mapping) {
+      $this->mapping= &$mapping;
+    }
     
     /**
      * Set data
