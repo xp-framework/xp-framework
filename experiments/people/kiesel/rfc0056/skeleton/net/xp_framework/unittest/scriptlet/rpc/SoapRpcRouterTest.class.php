@@ -168,19 +168,17 @@
 >
   <SOAP-ENV:Body>  
     <ctl:checkMultipleParameters>    
-      <item xsi:type="SOAP-ENC:Array" SOAP-ENC:arrayType="xsd:anyType[4]">      
-        <item xsi:type="xsd:string">Lalala</item>
-        <item xsi:type="xsd:int">1</item>
-        <item xsi:type="SOAP-ENC:Array" SOAP-ENC:arrayType="xsd:anyType[4]">        
-          <item xsi:type="xsd:int">12</item>
-          <item xsi:type="xsd:string">Egypt</item>
-          <item xsi:type="xsd:boolean">false</item>
-          <item xsi:type="xsd:int">-31</item>
-        </item>
-        <item xsi:type="xsd:struct">        
-          <lowerBound xsi:type="xsd:int">18</lowerBound>
-          <upperBound xsi:type="xsd:int">139</upperBound>
-        </item>
+      <item xsi:type="xsd:string">Lalala</item>
+      <item xsi:type="xsd:int">1</item>
+      <item xsi:type="SOAP-ENC:Array" SOAP-ENC:arrayType="xsd:anyType[4]">        
+        <item xsi:type="xsd:int">12</item>
+        <item xsi:type="xsd:string">Egypt</item>
+        <item xsi:type="xsd:boolean">false</item>
+        <item xsi:type="xsd:int">-31</item>
+      </item>
+      <item xsi:type="xsd:struct">        
+        <lowerBound xsi:type="xsd:int">18</lowerBound>
+        <upperBound xsi:type="xsd:int">139</upperBound>
       </item>
     </ctl:checkMultipleParameters>
   </SOAP-ENV:Body>
@@ -188,14 +186,14 @@
       ');
       $this->router->init();
       $response= &$this->router->process();
-      $this->assertEquals(500, $response->statusCode);
-      
-      var_dump($response->getContent());
-      return;
-      $message= &SOAPMessage::fromString($response->getContent());
-      $fault= &$message->getFault();
-      $this->assertEquals(403, $fault->getFaultCode());
-      $this->assertEquals('This is a intentionally caused exception.', $fault->getFaultString());
+      $this->assertEquals(200, $response->statusCode);
+
+      $msg= &SOAPMessage::fromString($response->getContent());
+      $data= $msg->getData();
+      $this->assertEquals('Lalala', $data[0]);
+      $this->assertEquals(1, $data[1]);
+      $this->assertEquals(array(12, 'Egypt', FALSE, -31), $data[2]);
+      $this->assertEquals(array('lowerBound' => 18, 'upperBound' => 139), $data[3]);
     }
   }
 ?>
