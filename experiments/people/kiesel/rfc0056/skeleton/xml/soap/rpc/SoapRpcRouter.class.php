@@ -91,18 +91,5 @@
     function _message() {
       return new SOAPMessage();
     }    
-
-    /**
-     * Handle GET requests. Since SOAP over HTTP is defined via
-     * HTTP POST, throw an exception. We could also provide a usage
-     * example, but this may be going too far.
-     *
-     * @access  public
-     * @param   &xml.soap.rpc.SoapRpcRequest request
-     * @param   &xml.soap.rpc.SoapRpcResponse response
-     */
-    function doGet(&$request, &$response) {
-      return throw(new IllegalAccessException('GET is not supported'));
-    }
   }
 ?>
