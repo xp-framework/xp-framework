@@ -142,7 +142,12 @@
           }
           
           case T_NEW: {
-            $this->buffer.= 'new '.$this->resolveClass($tokens[$i+ 2][1], $class, $imports);
+            $name= $tokens[$i+ 2][1];
+            while ('~' == $tokens[$i+ 3]) {
+              $name.= '·'.$tokens[++$i+ 3][1];
+              $i++;
+            }
+            $this->buffer.= 'new '.$this->resolveClass($name, $class, $imports);
             $i+= 2;
             break;
           }
