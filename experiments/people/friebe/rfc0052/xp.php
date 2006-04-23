@@ -116,7 +116,16 @@
 
               case 'public':
               case 'private':
-              case 'protected':
+              case 'protected': {
+                if (T_VARIABLE == $tokens[$i+ 2][0]) {
+                  $this->buffer.= 'var '.$tokens[$i+ 1][1];
+                } else {
+                  $modifiers |= constant('MODIFIER_'.strtoupper($tokens[$i][1]));
+                }
+                $i++;
+                break;
+              }
+                 
               case 'final':
               case 'abstract': {
                 $modifiers |= constant('MODIFIER_'.strtoupper($tokens[$i][1]));
