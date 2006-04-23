@@ -113,6 +113,7 @@
                 $this->buffer.= 'return throw';
                 break;
               }
+
               case 'public':
               case 'private':
               case 'protected':
