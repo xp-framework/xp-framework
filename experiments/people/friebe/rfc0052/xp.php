@@ -88,6 +88,10 @@
               
               case 'import': {
                 $name= $tokens[$i+ 2][1];
+                while ('~' == $tokens[$i+ 3]) {
+                  $name.= '·'.$tokens[++$i+ 3][1];
+                  $i++;
+                }
                 $imports[substr($name, strrpos($name, NAMESPACE_SEPARATOR)+ 1)]= $name;
                 $i+= 3;
                 $this->buffer.= 'include(\'xp://'.strtr($name, NAMESPACE_SEPARATOR, '.').'\');';
@@ -125,6 +129,17 @@
             break;
           }
           
+          case T_EXTENDS: {
+            $extends= $tokens[$i+ 2][1];
+            while ('~' == $tokens[$i+ 3]) {
+              $extends.= '·'.$tokens[++$i+ 3][1];
+              $i++;
+            }
+            $this->buffer.= 'extends '.$this->resolveClass($extends, $class, $imports);
+            $i+= 2;
+            break;
+          }
+          
           case T_NEW: {
             $this->buffer.= 'new '.$this->resolveClass($tokens[$i+ 2][1], $class, $imports);
             $i+= 2;
@@ -139,7 +154,8 @@
             break;
           
           case T_FUNCTION: {
-            $inFunction= $tokens[$i+ 2][1];
+            $reference= '&' == $tokens[$i+ 2];
+            $inFunction= $tokens[$i+ 2+ $reference][1];
             $reflection['methods'][$inFunction]= array(
               'modifiers' => $modifiers,
               'throws'    => array()

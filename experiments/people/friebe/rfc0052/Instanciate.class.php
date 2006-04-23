@@ -3,7 +3,7 @@
  * $Id$ <?php
  */
 
-import util·cmd·Console;
+import util~cmd~Console;
 
 public class Instanciate {
 
