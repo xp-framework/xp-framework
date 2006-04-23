@@ -243,11 +243,14 @@
 
   // {{{ main
   stream_register_wrapper('xp', 'uwrp·compiler');
-  $main= substr($_SERVER['PHP_SELF'], 0, -10);
+  $main= strtr(substr($_SERVER['PHP_SELF'], 0, -10), array(
+    '/'   => '.',
+    '\\'  => '.'
+  ));
   include('xp://'.$main);
   
   try(); {
-    $r= call_user_func(array($main, 'main'), $argv);
+    $r= call_user_func(array(strtr($main, '.', NAMESPACE_SEPARATOR), 'main'), $argv);
   } if (catch('Throwable', $e)) {
     xp::error('[xp::unhandled] '.xp::stringOf($e));
     // Bails out
