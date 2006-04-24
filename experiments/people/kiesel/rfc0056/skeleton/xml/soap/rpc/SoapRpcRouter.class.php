@@ -71,8 +71,7 @@
     }
 
     /**
-     * Create a response object. Override this method to define
-     * your own response object
+     * Create a response object.
      *
      * @access  protected
      * @return  &xml.soap.rpc.SoapRpcResponse
@@ -82,13 +81,12 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Create message object.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @return  &xml.soap.SOAPMessage
      */
-    function _message() {
+    function &_message() {
       return new SOAPMessage();
     }    
   }

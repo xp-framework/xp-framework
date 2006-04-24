@@ -19,7 +19,7 @@
      * @param   string string
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    function fromString($string) {}
+    function &fromString($string) {}
     
     /**
      * Create message
@@ -110,21 +110,18 @@
     function getMethod() {}
     
     /**
-     * (Insert method's description here)
+     * Set fault
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function setFault() {}
     
     /**
-     * (Insert method's description here)
+     * Get fault
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  &scriptlet.rpc.RpcFault
      */
-    function getFault() {}        
+    function &getFault() {}        
   }
 ?>

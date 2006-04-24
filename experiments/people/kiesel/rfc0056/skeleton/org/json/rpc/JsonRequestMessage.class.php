@@ -22,7 +22,7 @@
      * @param   string string
      * @return  &org.json.rpc.JsonRequestMessage
      */
-    function fromString($string) {
+    function &fromString($string) {
       $decoder= &JsonFactory::create();
 
       $msg= &new JsonRequestMessage();

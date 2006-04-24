@@ -19,7 +19,7 @@
      * Create a response message for the given request
      *
      * @access  public
-     * @param   &xml.xmlrpc.XmlRpcRequestMessage
+     * @param   xml.xmlrpc.XmlRpcRequestMessage reqmsg
      */
     function create($reqmsg) {
       $this->tree= &new Tree(XMLRPC_RESPONSE);

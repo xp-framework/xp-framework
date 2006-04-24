@@ -22,7 +22,7 @@
      * @param   string string
      * @return  &org.json.rpc.JsonResponseMessage
      */
-    function fromString($string) {
+    function &fromString($string) {
       $decoder= &JsonFactory::create();
 
       $msg= &new JsonResponseMessage();
@@ -59,11 +59,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Get data
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  mixed
      */
     function getData() {
       return $this->data['result'];

@@ -25,7 +25,7 @@
      * Set callback object.
      *
      * @access  public
-     * @param   &mixed
+     * @param   &mixed object
      */
     function setCallback(&$object) {
       $this->_cb= &$object;

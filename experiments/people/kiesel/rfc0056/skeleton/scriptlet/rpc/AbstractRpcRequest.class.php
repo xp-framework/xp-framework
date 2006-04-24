@@ -33,7 +33,7 @@
      * @access  public
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    function getMessage() {
+    function &getMessage() {
       // Override this. You must set the 'class' and 'method' members of
       // the respective RpcMessage class.
     }

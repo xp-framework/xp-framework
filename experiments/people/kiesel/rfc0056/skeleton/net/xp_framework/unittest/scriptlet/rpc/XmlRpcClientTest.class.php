@@ -19,11 +19,9 @@
   class XmlRpcClientTest extends TestCase {
   
     /**
-     * (Insert method's description here)
+     * Test
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     #[@test]
     function simpleRequest() {

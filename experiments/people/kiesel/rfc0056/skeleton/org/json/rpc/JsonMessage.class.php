@@ -112,11 +112,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve serialized representation
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string
      */
     function serializeData() {
       $decoder= &JsonFactory::create();
@@ -144,17 +143,17 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Set fault
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string faultCode
+     * @param   string faultString
      */
-    function setFault($faultcode, $faultstring) {
+    function setFault($faultCode, $faultString) {
       $this->data= array(
         'result'  => FALSE,
         'error'   => array(
-          'faultCode'   => $faultcode,
+          'faultCode'   => $faultCode,
           'faultString' => $faultString
         ),
         'id'      => NULL
@@ -162,11 +161,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Get fault
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  &scriptlet.rpc.RpcFault
      */
     function &getFault() {
       if (empty($this->data['error'])) return NULL;
