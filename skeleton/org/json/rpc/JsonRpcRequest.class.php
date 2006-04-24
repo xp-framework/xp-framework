@@ -6,26 +6,25 @@
  
   uses(
     'scriptlet.rpc.AbstractRpcRequest',
-    'xml.xmlrpc.XmlRpcRequestMessage'
+    'org.json.rpc.JsonRequestMessage'
   );
   
   /**
-   * Wraps XMl-RPC Rpc Router request
+   * Wraps Json Rpc Router request
    *
-   * @see xml.xmlrpc.rpc.XmlRpcRouter
-   * @see scriptlet.HttpScriptletRequest
+   * @see xp://scriptlet.rpc.AbstractRpcRequest
    */
-  class XmlRpcRequest extends AbstractRpcRequest {
+  class JsonRpcRequest extends AbstractRpcRequest {
   
     /**
-     * Retrieve XML-RPC message from request
+     * Retrieve Json message from request
      *
      * @access  public
      * @return  &xml.xmlrpc.XmlRpcMessage message object
      */
     function &getMessage() {
       $this->cat && $this->cat->debug('<<< ', $this->getData());
-      $m= &XmlRpcRequestMessage::fromString($this->getData());
+      $m= &JsonRequestMessage::fromString($this->getData());
       return $m;
     }
   }

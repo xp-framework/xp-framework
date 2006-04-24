@@ -4,7 +4,7 @@
  * $Id$
  */
   uses(
-    'scriptlet.HttpScriptlet',
+    'scriptlet.rpc.AbstractRpcRouter',
     'xml.soap.rpc.SoapRpcRequest',
     'xml.soap.rpc.SoapRpcResponse',
     'xml.soap.SOAPMessage',
@@ -44,7 +44,7 @@
    *
    * @see scriptlet.HttpScriptlet
    */
-  class SoapRpcRouter extends HttpScriptlet {
+  class SoapRpcRouter extends AbstractRpcRouter {
     var
       $classloader = NULL,
       $mapping     = NULL;
@@ -71,8 +71,7 @@
     }
 
     /**
-     * Create a response object. Override this method to define
-     * your own response object
+     * Create a response object.
      *
      * @access  protected
      * @return  &xml.soap.rpc.SoapRpcResponse
@@ -80,128 +79,15 @@
     function &_response() {
       return new SoapRpcResponse();
     }
-
-    /**
-     * Handle GET requests. Since SOAP over HTTP is defined via
-     * HTTP POST, throw an exception. We could also provide a usage
-     * example, but this may be going too far.
-     *
-     * @access  public
-     * @param   &xml.soap.rpc.SoapRpcRequest request
-     * @param   &xml.soap.rpc.SoapRpcResponse response
-     */
-    function doGet(&$request, &$response) {
-      return throw(new IllegalAccessException('GET is not supported'));
-    }
     
     /**
-     * Formats stack trace to be used in SOAP fault messages. Makes sure
-     * the stack trace elements' string representation is XML-safe (unsafe 
-     * characters are replaced with the character ¿ (ASCII #191)).
+     * Create message object.
      *
      * @access  protected
-     * @param   lang.StackTraceElement[] elements
-     * @return  string[]
+     * @return  &xml.soap.SOAPMessage
      */
-    function formatStackTrace($elements) {
-      $stacktrace= array();
-      $replace= str_repeat('¿', strlen(XML_ILLEGAL_CHARS));
-      for ($i= 0, $s= sizeof($elements); $i < $s; $i++) {
-        $stacktrace[]= strtr($elements[$i]->toString(), XML_ILLEGAL_CHARS, $replace); 
-      }
-      return $stacktrace;
-    }
-
-    /**
-     * Handle POST requests. The complete POST data consits of the SOAP
-     * XML message.
-     *
-     * @access  public
-     * @param   &xml.soap.rpc.SoapRpcRequest request
-     * @param   &xml.soap.rpc.SoapRpcResponse response
-     */
-    function doPost(&$request, &$response) {
-      $hasFault= FALSE;
-      try(); {
-
-        // Get message
-        $msg= &$request->getMessage();
-
-        // Figure out encoding if given
-        $type= $request->getHeader('Content-type');
-        if (FALSE !== ($pos= strpos($type, 'charset='))) {
-          $msg->setEncoding(substr($type, $pos+ 8));
-        }
-
-        // Create answer
-        $answer= &new SOAPMessage();
-        $answer->create($msg->action, $msg->method.'Response');
-
-        // Call handler
-        $return= &$this->callReflectHandler($msg);
-      } if (catch('ServiceException', $e)) {
-      
-        // Server methods may throw a ServerFaultException to have more
-        // conveniant control over the faultcode which is returned to the client.
-        $answer->setFault(
-          $e->getFaultcode(),
-          $e->getMessage(),
-          $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
-          $this->formatStackTrace($e->getStackTrace())
-        );
-        $hasFault= TRUE;
-      } if (catch('Exception', $e)) {
-        $answer->setFault(
-          HTTP_INTERNAL_SERVER_ERROR,
-          $e->message,
-          $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
-          $this->formatStackTrace($e->getStackTrace())
-        );
-        $hasFault= TRUE;
-      }
-      
-      $hasFault || $answer->setData(array($return), $this->mapping);
-
-      // Set message
-      $response->setHeader('Content-type', 'text/xml; charset='.$answer->encoding);
-      $response->setMessage($answer);
-    }
-
-    /**
-     * Calls the handler that the action reflects to
-     *
-     * @access  protected
-     * @param   &xml.soap.SOAPMessage message object (from request)
-     * @return  &mixed result of method call
-     * @throws  lang.IllegalArgumentException if there is no such method
-     * @throws  lang.IllegalAccessException for non-public methods
-     */
-    function &callReflectHandler(&$msg) {
-
-      // Create message from request data
-      try(); {
-        $class= &$this->classloader->loadClass($msg->action.'Handler');
-      } if (catch('ClassNotFoundException', $e)) {
-        return throw($e);
-      }
-
-      // Check if method can be handled
-      if (!$class->hasMethod($msg->method)) {
-        return throw(new IllegalArgumentException(
-          $class->getName().' cannot handle method '.$msg->method
-        ));
-      }
-
-      with ($method= &$class->getMethod($msg->method)); {
-      
-        // Check if this method is a webmethod
-        if (!$method->hasAnnotation('webmethod')) {
-          return throw(new IllegalAccessException('Cannot access non-web method '.$msg->method));
-        }
-
-        // Create instance and invoke method
-        return $method->invoke($class->newInstance(), $msg->getData(NULL, $this->mapping));
-      }
-    }
+    function &_message() {
+      return new SOAPMessage();
+    }    
   }
 ?>

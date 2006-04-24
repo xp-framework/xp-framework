@@ -5,7 +5,7 @@
  */
  
   uses(
-    'scriptlet.HttpScriptletRequest',
+    'scriptlet.rpc.AbstractRpcRequest',
     'xml.soap.SOAPMessage'
   );
   
@@ -15,8 +15,8 @@
    * @see xml.soap.rpc.SoapRpcRouter
    * @see scriptlet.HttpScriptletRequest
    */
-  class SoapRpcRequest extends HttpScriptletRequest {
-  
+  class SoapRpcRequest extends AbstractRpcRequest {
+
     /**
      * Retrieve SOAP message from request
      *
@@ -24,15 +24,14 @@
      * @return  &xml.soap.SOAPMessage message object
      */
     function &getMessage() {
-      static $m;
+      $m= &SOAPMessage::fromString($this->getData());
+      list(
+        $class, 
+        $method
+      )= explode('#', str_replace('"', '', $this->getHeader('SOAPAction')));
       
-      if (!isset($m)) {
-        $m= &SOAPMessage::fromString($this->getData());
-        list(
-          $m->action, 
-          $m->method
-        )= explode('#', str_replace('"', '', $this->getHeader('SOAPAction')));
-      }
+      $m->setClass($class);
+      $m->setMethod($method);
       return $m;
     }
   }

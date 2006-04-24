@@ -7,7 +7,8 @@
   uses(
     'xml.xmlrpc.rpc.XmlRpcRequest',
     'xml.xmlrpc.rpc.XmlRpcResponse',
-    'scriptlet.HttpScriptlet'
+    'xml.xmlrpc.XmlRpcResponseMessage',
+    'scriptlet.rpc.AbstractRpcRouter'
   );
 
   /**
@@ -46,21 +47,8 @@
    * @see      xp://xml.xmlrpc.XmlRpcClient
    * @purpose  XML-RPC-Service
    */
-  class XmlRpcRouter extends HttpScriptlet {
-    var
-      $classloader  = NULL,
-      $cat          = NULL;
-    
-    /**
-     * Constructor
-     *
-     * @access  public
-     * @param   &lang.ClassLoader classloader
-     */
-    function __construct(&$classloader) {
-      $this->classloader= &$classloader;
-    }
-    
+  class XmlRpcRouter extends AbstractRpcRouter {
+
     /**
      * Create a request object.
      *
@@ -82,107 +70,13 @@
     }
     
     /**
-     * Set trace for debugging
-     *
-     * @access  public
-     * @param   &util.log.LogCategory cat
-     */
-    function setTrace(&$cat) {
-      $this->cat= &$cat;
-    }
-    
-    /**
-     * Handle GET requests. XML-RPC requests are only sent via HTTP POST,
-     * so GET isn't supported.
-     *
-     * @access  public
-     * @param   &xml.xmlrpc.rpc.XmlRpcRequest request
-     * @param   &xml.xmlrpc.rpc.XmlRpcResponse response
-     */
-    function doGet(&$request, &$response) {
-      return throw(new IllegalAccessException('GET is not supported'));
-    }
-
-    /**
-     * Handle POST requests. The POST data carries the XML-RPC
-     * request.
-     *
-     * @access  public
-     * @param   &xml.xmlrpc.rpc.XmlRpcRequest request
-     * @param   &xml.xmlrpc.rpc.XmlRpcResponse response
-     */
-    function doPost(&$request, &$response) {
-      try(); {
-
-        // Get message
-        $msg= &$request->getMessage();
-
-        // Figure out encoding if given
-        $type= $request->getHeader('Content-type');
-        if (FALSE !== ($pos= strpos($type, 'charset='))) {
-          $msg->setEncoding(substr($type, $pos+ 8));
-        }
-
-        // Create answer
-        $answer= &new XmlRpcMessage();
-        $answer->create(XMLRPC_RESPONSE);
-
-        // Call handler
-        $return= &$this->callReflectHandler($msg);
-        $answer->setData($return);
-
-      } if (catch('Exception', $e)) {
-      
-        // An exception occured
-        $answer->setFault(HTTP_INTERNAL_SERVER_ERROR, $e->toString());
-      }
-      
-      // Set message
-      $response->setHeader('Content-type', 'text/xml; charset='.$answer->encoding);
-      $response->setMessage($answer);
-    }
-
-    /**
-     * Calls the handler that the action reflects to
+     * Create a message object.
      *
      * @access  protected
-     * @param   &xml.xmlrpc.XmlRpcMessage message object (from request)
-     * @return  &mixed result of method call
-     * @throws  lang.IllegalArgumentException if there is no such method
-     * @throws  lang.IllegalAccessException for non-public methods
+     * @return  &xml.xmlrpc.XmlRpcResponseMessage
      */
-    function &callReflectHandler(&$msg) {
-    
-      // Determine requested class and method
-      if (FALSE === strpos($msg->method, '.'))
-        return throw(new IllegalArgumentException('Malformed method: "'.$msg->method.'"'));
-        
-      list($className, $methodName)= explode('.', $msg->method, 2);
-    
-      // Create message from request data
-      try(); {
-        $class= &$this->classloader->loadClass(ucfirst($className).'Handler');
-      } if (catch('ClassNotFoundException', $e)) {
-        return throw($e);
-      }
-
-      // Check if method can be handled
-      if (!$class->hasMethod($methodName)) {
-        return throw(new IllegalArgumentException(
-          $class->getName().' cannot handle method '.$methodName
-        ));
-      }
-
-      with ($method= &$class->getMethod($methodName)); {
-
-        // Check if this method is a webmethod
-        if (!$method->hasAnnotation('webmethod')) {
-          return throw(new IllegalAccessException('Cannot access non-web method '.$msg->method));
-        }
-
-        // Create instance and invoke method
-        return $method->invoke($class->newInstance(), $msg->getData());
-      }
+    function &_message() {
+      return new XmlRpcResponseMessage();
     }
   }
 ?>

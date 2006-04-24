@@ -10,6 +10,7 @@
     'xml.soap.SOAPNode',
     'xml.soap.SOAPHeaderElement',
     'xml.soap.SOAPFault',
+    'xml.soap.SOAPMapping',
     'lang.Collection'
   );
   
@@ -51,8 +52,10 @@
       $body         = NULL,
       $namespace    = 'ctl',
       $encoding     = 'iso-8859-1',
+      $mapping      = NULL,
       $nodeType     = 'SOAPNode',
       $action       = '',
+      $class        = '',
       $method       = '';
 
     var 
@@ -73,7 +76,7 @@
      * @param   string targetNamespace default NULL
      * @param   xml.soap.SOAPHeader[] headers default array()
      */
-    function create($action, $method, $targetNamespace= NULL, $headers= array()) {
+    function createCall($action, $method, $targetNamespace= NULL, $headers= array()) {
       $this->action= $action;
       $this->method= $method;
 
@@ -99,14 +102,56 @@
     }
     
     /**
+     * Create a message
+     *
+     * @access  public
+     * @param   xml.soap.SOAPMessage msg
+     */
+    function create($msg) {
+      $this->action= $msg->action;
+      $this->method= $msg->method;
+
+      $this->root= &new Node('SOAP-ENV:Envelope', NULL, array(
+        'xmlns:SOAP-ENV'              => XMLNS_SOAPENV,
+        'xmlns:xsd'                   => XMLNS_XSD,
+        'xmlns:xsi'                   => XMLNS_XSI,
+        'xmlns:SOAP-ENC'              => XMLNS_SOAPENC,
+        'xmlns:si'                    => XMLNS_SOAPINTEROP,
+        'SOAP-ENV:encodingStyle'      => XMLNS_SOAPENC,
+        'xmlns:'.$this->namespace     => (NULL !== $msg->namespace ? $msg->namespace : $this->action)
+      ));
+      
+      if (!empty($headers)) {
+        $header= &$this->root->addChild(new Node('SOAP-ENV:Header'));
+        for ($i= 0, $s= sizeof($headers); $i < $s; $i++) {
+          $header->addChild($headers[$i]->getNode($this->namespaces));
+        }
+      }
+      
+      $this->body= &$this->root->addChild(new Node('SOAP-ENV:Body'));
+      $this->body->addChild(new Node($this->namespace.':'.$this->method));
+      $this->mapping= &new SOAPMapping();
+    }
+
+    /**
+     * Set Mapping
+     *
+     * @access  public
+     * @param   &xml.soap.SOAPMapping mapping
+     */
+    function setMapping(&$mapping) {
+      $this->mapping= &$mapping;
+    }
+    
+    /**
      * Set data
      *
      * @access  public
      * @param   array arr
      * @param   array mapping default array() list of declared namespaces
      */
-    function setData($arr, $mapping= NULL) {
-      $node= &SOAPNode::fromArray($arr, 'item', $mapping);
+    function setData($arr) {
+      $node= &SOAPNode::fromArray($arr, 'item', $this->mapping);
       $node->namespace= $this->namespace;
       if (empty($node->children)) return;
       
@@ -117,6 +162,14 @@
     }
 
     /**
+     * Retrieve Content-type for requests.
+     *
+     * @access  public
+     * @return  string
+     */
+    function getContentType() { return 'text/xml'; }    
+
+    /**
      * Deserialize a single node
      *
      * @access  private
@@ -125,7 +178,7 @@
      * @param   &xml.soap.SOAPMapping mapping
      * @return  &mixed result
      */
-    function &unmarshall(&$child, $context= NULL, $mapping) {
+    function &unmarshall(&$child, $context= NULL) {
       // DEBUG Console::writeLine('Unmarshalling ', $child->name, ' (', var_export($child->attribute, 1), ') >>> ', $child->content, '<<<', "\n"); // DEBUG
       if (
         isset($child->attribute[$this->namespaces[XMLNS_XSI].':null']) or       // Java
@@ -146,7 +199,7 @@
           // Create a copy and pass name to it
           $c= $body->children[$idx];
           $c->name= $child->name;
-          return $this->unmarshall($c, $context, $mapping);
+          return $this->unmarshall($c, $context);
           break;
         }
       }
@@ -201,7 +254,7 @@
                 $result->__qname= $childType;
               }
               
-              foreach ($this->_recurseData($child, FALSE, 'ARRAY', $mapping) as $val) {
+              foreach ($this->_recurseData($child, FALSE, 'ARRAY') as $val) {
                 $result->add($val);
               }
               break;
@@ -212,7 +265,7 @@
           
           // Break missing intentionally
         case 'vector':
-          $result= $this->_recurseData($child, FALSE, 'ARRAY', $mapping);
+          $result= $this->_recurseData($child, FALSE, 'ARRAY');
           break;
 
         case 'map':
@@ -231,7 +284,7 @@
             $key= $item->children[0]->getContent($this->getEncoding(), $this->namespaces);
             $result[$key]= ((empty($item->children[1]->children) && !isset($item->children[1]->attribute['href']))
               ? $item->children[1]->getContent($this->getEncoding(), $this->namespaces)
-              : $this->unmarshall($item->children[1], 'MAP', $mapping)
+              : $this->unmarshall($item->children[1], 'MAP')
             );
           }
           break;
@@ -239,13 +292,13 @@
         case 'soapstruct':
         case 'struct':      
         case 'ur-type':
-          $result= $this->_recurseData($child, TRUE, 'HASHMAP', $mapping);
+          $result= $this->_recurseData($child, TRUE, 'HASHMAP');
           break;
           
         default:
           if (!empty($child->children)) {
             if ($this->namespaces[XMLNS_XSD] == $regs[1]) {
-              $result= $this->_recurseData($child, TRUE, 'STRUCT', $mapping);
+              $result= $this->_recurseData($child, TRUE, 'STRUCT');
               break;
             }
 
@@ -267,8 +320,8 @@
               // TBD: Fix mapping passing when SOAPMessage was build from
               // SOAPTransport::retrieve() function which currently doesn't
               // care about mapping and $mapping is just an empty array.
-              if ($mapping) {
-                $xpclass= &$mapping->classFor(new QName(array_search($regs[1], $this->namespaces), $regs[2]));
+              if ($this->mapping) {
+                $xpclass= &$this->mapping->classFor(new QName(array_search($regs[1], $this->namespaces), $regs[2]));
               } else {
                 $xpclass= NULL;
               }
@@ -280,7 +333,7 @@
               $result= &new Object();
               $result->__qname= $regs[2];
             }
-            foreach ($this->_recurseData($child, TRUE, 'OBJECT', $mapping) as $key => $val) {
+            foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key => $val) {
               $result->$key= $val;
             }
             break;
@@ -302,8 +355,11 @@
      * @param   array mapping
      * @return  &mixed data
      */    
-    function &_recurseData(&$node, $names= FALSE, $context= NULL, $mapping) {
-      if (empty($node->children)) return array();
+    function &_recurseData(&$node, $names= FALSE, $context= NULL) {
+      if (empty($node->children)) {
+        $a= array();
+        return $a;
+      }
 
       foreach ($node->attribute as $key => $val) {
         if (0 != strncmp('xmlns:', $key, 6)) continue;
@@ -314,8 +370,7 @@
       for ($i= 0, $s= sizeof($node->children); $i < $s; $i++) {
         $results[$names ? array_pop(explode(':', $node->children[$i]->name)) : $i]= $this->unmarshall(
           $node->children[$i], 
-          $context,
-          $mapping
+          $context
         );
       }
       return $results;
@@ -467,10 +522,24 @@
      * @return  &mixed data
      * @throws  lang.FormatException in case no XMLNS_SOAPENV:Body was found
      */
-    function &getData($context= 'ENUM', &$mapping) {
+    function &getData($context= 'ENUM') {
       if ($body= &$this->_bodyElement()) {
-        return $this->_recurseData($body->children[0], FALSE, $context, $mapping);
+        if ($body->children[0]->getName() == $this->namespaces[XMLNS_SOAPENV].':Fault') {
+          $n= NULL; return $n;
+        }
+        return $this->_recurseData($body->children[0], FALSE, $context, $this->mapping);
       }
+    }
+    
+    /**
+     * Retrieve string representation of message as used in the
+     * protocol.
+     *
+     * @access  public
+     * @return  string
+     */
+    function serializeData() {
+      return $this->getDeclaration()."\n".$this->getSource(0);
     }
     
     /**
@@ -494,5 +563,45 @@
       
       return $headers;
     }
-  }
+
+    /**
+     * Set Class
+     *
+     * @access  public
+     * @param   string class
+     */
+    function setClass($class) {
+      $this->class= $class;
+    }
+
+    /**
+     * Get Class
+     *
+     * @access  public
+     * @return  string
+     */
+    function getClass() {
+      return $this->class;
+    }
+
+    /**
+     * Set Method
+     *
+     * @access  public
+     * @param   string method
+     */
+    function setMethod($method) {
+      $this->method= $method;
+    }
+
+    /**
+     * Get Method
+     *
+     * @access  public
+     * @return  string
+     */
+    function getMethod() {
+      return $this->method;
+    }
+  } implements(__FILE__, 'scriptlet.rpc.AbstractRpcMessage');
 ?>

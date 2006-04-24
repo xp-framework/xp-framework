@@ -1,21 +1,17 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: XmlRpcHttpTransport.class.php 6599 2006-02-13 18:37:10Z kiesel $ 
  */
 
-  uses(
-    'xml.xmlrpc.transport.XmlRpcTransport',
-    'peer.http.HttpConnection'
-  );
+  uses('peer.http.HttpConnection');
 
   /**
-   * Transport for XmlRpc requests over HTTP.
+   * Transport for generic RPC requests over HTTP.
    *
-   * @see      xp://xml.xmlrpc.XmlRpcClient
-   * @purpose  HTTP Transport for XML-RPC
+   * @purpose  HTTP Transport for RPC clients
    */
-  class XmlRpcHttpTransport extends XmlRpcTransport {
+  class GenericHttpTransport extends Object {
     var
       $_conn    = NULL,
       $_headers = array();
@@ -41,25 +37,35 @@
     function toString() {
       return sprintf('%s { %s }', $this->getClassName(), $this->_conn->request->url->_info['url']);
     }
-
+    
     /**
-     * Send XML-RPC message
+     * Sets the message class which will retrieve the answer
      *
      * @access  public
-     * @param   &xml.xmlrpc.XmlRpcMessage message
+     * @param   &lang.XPClass c
+     */
+    function setMessageClass(&$c) {
+      $this->messageClass= &$c;
+    }    
+
+    /**
+     * Send RPC message
+     *
+     * @access  public
+     * @param   &scriptlet.rpc.AbstractRpcMessage message
      * @return  &scriptlet.HttpScriptletResponse
      */
     function &send(&$message) {
       
-      if (!is('xml.xmlrpc.XmlRpcMessage', $message)) return throw(new IllegalArgumentException(
-        'parameter "message" must be a xml.xmlrpc.XmlRpcMessage'
+      if (!is('scriptlet.rpc.AbstractRpcMessage', $message)) return throw(new IllegalArgumentException(
+        'parameter "message" must be a scriptlet.rpc.AbstractRpcMessage'
       ));
       
       // Send XML
       $this->_conn->request->setMethod(HTTP_POST);
       $this->_conn->request->setParameters(new RequestData($message->serializeData()));
-      $this->_conn->request->setHeader('Content-Type', 'text/xml; charset='.$message->getEncoding());
-      $this->_conn->request->setHeader('User-Agent', 'XP Framework XML-RPC Client (http://xp-framework.net)');
+      $this->_conn->request->setHeader('Content-Type', $message->getContentType().'; charset='.$message->getEncoding());
+      $this->_conn->request->setHeader('User-Agent', 'XP Framework Client (http://xp-framework.net)');
 
       // Add custom headers
       $this->_conn->request->addHeaders($this->_headers);
@@ -75,15 +81,15 @@
     }
     
     /**
-     * Retrieve a XML-RPC message.
+     * Retrieve a RPC message.
      *
      * @access  public
      * @param   &scriptlet.HttpScriptletResponse response
-     * @return  &xml.xmlrpc.XmlRpcMessage
+     * @return  &scriptlet.rpc.AbstractRpcMessage
      */
     function &retrieve(&$response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());
-
+      
       try(); {
         $code= $response->getStatusCode();
       } if (catch('SocketException', $e)) {
@@ -98,7 +104,9 @@
             while ($buf= $response->readData()) $xml.= $buf;
 
             $this->cat && $this->cat->debug('<<<', $xml);
-            if ($answer= &XmlRpcResponseMessage::fromString($xml)) {
+            $m= &$this->messageClass->getMethod('fromString');
+            $answer= &$m->invoke(NULL, array($xml));
+            if ($answer) {
 
               // Check encoding
               if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
@@ -112,7 +120,7 @@
 
           // Fault?
           if (NULL !== ($fault= $answer->getFault())) {
-            return throw(new XmlRpcFaultException($fault));
+            return throw(new RpcFaultException($fault));
           }
           
           return $answer;
