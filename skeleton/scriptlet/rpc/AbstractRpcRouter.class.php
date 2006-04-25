@@ -189,9 +189,11 @@
         if (!$method->hasAnnotation('webmethod')) {
           return throw(new IllegalAccessException('Cannot access non-web method '.$msg->getMethod()));
         }
-
+        
         // Create instance and invoke method
-        return $method->invoke($class->newInstance(), $msg->getData());
+        $inst= &$class->newInstance();
+        if ($this->cat && is('util.log.Traceable', $inst)) $inst->setTrace($this->cat);
+        return $method->invoke($inst, $msg->getData());
       }
     }
   } implements(__FILE__, 'util.log.Traceable');
