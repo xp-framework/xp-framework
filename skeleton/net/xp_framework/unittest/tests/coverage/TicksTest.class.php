@@ -394,6 +394,35 @@
         $line+ 2 => 1,
       ));
     }
+    
+    /**
+     * Helper method for returnStatement() test. A return statement
+     * does not create a tick, whereas the assignment will!
+     *
+     * @access  protected
+     * @return  int the line creating a tick within this method
+     */
+    function returnSomething() {
+      declare(ticks= 1) {
+        $line= __LINE__;    // tick
+        return $line;
+      }
+    }
+
+    /**
+     * Tests return
+     *
+     * @see     php://eval
+     * @access  public
+     */
+    #[@test]
+    function returnStatement() {
+      $line= $this->returnSomething();
+
+      $this->assertTicks(__FILE__, array(
+        $line    => 1
+      ));
+    }
 
     /**
      * Tests eval() when the to-be-evaluated code spans multiple lines
