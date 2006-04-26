@@ -66,12 +66,14 @@
     function assertTicks($file, $frequencies) {
       $ticks= $this->ticks[basename($file)];
       
-      // Ticks work differently in PHP 4.3 compared to PHP 4.4. First of all,
-      // the register_tick_function() call will produce a tick in 4.3, whereas
-      // it won't in PHP 4.4. Second, the tick function will tick twice at
-      // the end of the declare block instead of once. Third, 4.3 will continue 
-      // to tick even after the declare-block is closed for exactly *one* more 
-      // time (TODO: Figure out why sometimes it doesn't!??)
+      // Ticks work differently in PHP 4.3.11+ compared to PHP 4.4 (or PHP <= 4.3.10). 
+      //
+      // First of all, the register_tick_function() call will produce a tick in the 
+      // buggy versions, whereas it won't in ones without this bug. Second, the tick 
+      // function will tick twice at the end of the declare block instead of once. 
+      // Third (and last), buggy PHP versions will continue to tick even after the 
+      // declare-block is closed for exactly *one* more time (TODO: Figure out why 
+      // sometimes it doesn't!?? <-- seems if the ticks array is <= 2 in size...)
       $phpversion= phpversion();
       if (
         version_compare($phpversion, '4.3.11', '>=') && version_compare($phpversion, '4.4', '<')
