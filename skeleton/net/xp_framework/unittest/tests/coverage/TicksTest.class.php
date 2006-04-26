@@ -503,9 +503,31 @@
         $line+ 3 => 1
       ));
     }
+    
+    /**
+     * Tests a code block declared inline (by simply opening curly braces
+     * and closing them again) will trigger a tick.
+     *
+     * @access  public
+     */
+    #[@test]
+    function codeBlock() {
+      declare(ticks= 1) {
+        $line= __LINE__;                            // tick
+        {
+        }                                           // tick
+      }                                             // tick
+
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 2 => 1,
+        $line+ 3 => 1
+      ));
+    }
 
     /**
-     * Tests exceptions
+     * Tests exceptions. The "if (catch(...))" line produces a tick because
+     * of the closing } (see the codeBlock() test).
      *
      * @access  public
      */
@@ -516,7 +538,7 @@
         $message= NULL;                             // tick
         try(); {                                    // tick
           throw(new Exception('*Boom*'));           // tick
-        } if (catch('Exception', $e)) {             // tick?
+        } if (catch('Exception', $e)) {             // tick
           $message= $e->getMessage();               // tick
         }                                           // tick
       }                                             // tick (2?)
