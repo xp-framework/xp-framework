@@ -16,6 +16,17 @@
   class TicksTest extends TestCase {
     var
       $ticks= array();
+
+    /**
+     * Static initializer block. Resets (global) ticks declaration to zero 
+     * so they will not interfere with ours.
+     *
+     * @model   static
+     * @access  public
+     */
+    function __static() {
+      declare(ticks= 0);
+    }
     
     /**
      * Setup method. Sets up tick handling
@@ -55,8 +66,12 @@
         return;
       }
       
-      // Delegate to default error handler otherwise
-      __error($level, $message, $file, $line);
+      // Default error handler otherwise
+      $e= error_reporting(0);
+      $errors= xp::registry('errors');
+      $errors[$file][$line][$msg]++;
+      xp::registry('errors', $errors);
+      error_reporing($e);
     }
     
     /**
