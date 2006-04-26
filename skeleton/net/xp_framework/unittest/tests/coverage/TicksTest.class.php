@@ -489,14 +489,18 @@
       declare(ticks= 1) {
         $line= __LINE__;                            // tick
         $one= 1; $two= 2;                           // tick (2)
+        $three= $drei= 3;                           // tick
       }                                             // tick
 
       $this->assertEquals(1, $one);
       $this->assertEquals(2, $two);
+      $this->assertEquals(3, $three);
+      $this->assertEquals($three, $drei);
       $this->assertTicks(__FILE__, array(
         $line    => 1,
         $line+ 1 => 2,
-        $line+ 2 => 1
+        $line+ 2 => 1,
+        $line+ 3 => 1
       ));
     }
 
