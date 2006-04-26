@@ -204,5 +204,56 @@
         $line+ 5 => 1
       ));
     }
+
+    /**
+     * Tests a while loop
+     *
+     * @access  public
+     */
+    #[@test]
+    function whileLoop() {
+      declare(ticks= 1) {
+        $line= __LINE__;      // tick
+        $executed= 0;         // tick
+        $i= 0;                // tick
+        while ($i++ < 5) {
+          $executed++;        // tick (5)
+        }                     // tick (6)            
+      }                       // tick
+
+      $this->assertEquals(5, $executed);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 1 => 1,
+        $line+ 2 => 1,
+        $line+ 4 => 5,
+        $line+ 5 => 6,
+        $line+ 6 => 1
+      ));
+    }
+
+    /**
+     * Tests a while loop that is not executed
+     *
+     * @access  public
+     */
+    #[@test]
+    function notExecutedWhileLoop() {
+      declare(ticks= 1) {
+        $line= __LINE__;      // tick
+        $executed= 0;         // tick
+        while (0) {
+          $executed++;
+        }                     // tick
+      }                       // tick
+
+      $this->assertEquals(0, $executed);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 1 => 1,
+        $line+ 4 => 1,
+        $line+ 5 => 1
+      ));
+    }
   }
 ?>
