@@ -578,5 +578,26 @@
         $line+ 7 => 2,
       ));
     }
+
+    /**
+     * Tests define.
+     *
+     * @see     php://define
+     * @access  public
+     */
+    #[@test]
+    function definition() {
+      declare(ticks= 1) {
+        $line= __LINE__;                            // tick
+        define('DEFINITION_TEST', 'defined');       // tick
+      }                                             // tick
+
+      $this->assertEquals('defined', DEFINITION_TEST);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 1 => 1,
+        $line+ 2 => 1
+      ));
+    }
   }
 ?>
