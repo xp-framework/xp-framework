@@ -171,11 +171,36 @@
         }                     // tick (6)                
       }                       // tick
 
+      $this->assertEquals(5, $executed);
       $this->assertTicks(__FILE__, array(
         $line    => 1,
         $line+ 1 => 1,
         $line+ 3 => 5,
         $line+ 4 => 6,
+        $line+ 5 => 1
+      ));
+    }
+
+    /**
+     * Tests a for loop that is not executed
+     *
+     * @access  public
+     */
+    #[@test]
+    function notExecutedforLoop() {
+      declare(ticks= 1) {
+        $line= __LINE__;      // tick
+        $executed= 0;         // tick
+        for ($i= 0; $i < 0; $i++) {
+          $executed++;
+        }                     // tick             
+      }                       // tick
+
+      $this->assertEquals(0, $executed);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 1 => 1,
+        $line+ 4 => 1,
         $line+ 5 => 1
       ));
     }
