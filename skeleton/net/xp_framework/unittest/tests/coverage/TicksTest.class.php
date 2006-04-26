@@ -164,7 +164,7 @@
           $executed= TRUE;    
         } else {
           $executed= FALSE;   // tick
-        }                     // tick
+        }                     // tick (2)
       }                       // tick
 
       $this->assertFalse($executed);
@@ -173,6 +173,29 @@
         $line+ 4 => 1,
         $line+ 5 => 2,
         $line+ 6 => 1,
+      ));
+    }
+
+    /**
+     * Tests a for loop
+     *
+     * @access  public
+     */
+    #[@test]
+    function forLoop() {
+      declare(ticks= 1) {
+        $line= __LINE__;      // tick
+        $executed= 0;         // tick
+        for ($i= 0; $i < 5; $i++) {
+          $executed++;        // tick (5)
+        }                     // tick (5)                
+      }
+
+      $this->assertTicks(__FILE__, array(
+        $line    => 1, 
+        $line+ 1 => 1,
+        $line+ 3 => 5,
+        $line+ 4 => 5,
       ));
     }
   }
