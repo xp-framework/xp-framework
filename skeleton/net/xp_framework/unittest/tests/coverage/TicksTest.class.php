@@ -48,7 +48,10 @@
      */
     function tick($level, $message, $file, $line) {
       if (E_USER_NOTICE == $level) {
-        @$this->ticks[basename($file)][$line]++;
+        $key= basename($file);
+        if (!isset($this->ticks[$key])) $this->ticks[$key]= array();
+        if (!isset($this->ticks[$key][$line])) $this->ticks[$key][$line]= 0;
+        $this->ticks[$key][$line]++;
         return;
       }
       
@@ -64,32 +67,9 @@
      * @param   array<int, int> frequencies keys are line numbers, values are frequency
      */
     function assertTicks($file, $frequencies) {
-      $ticks= $this->ticks[basename($file)];
-      
-      // Ticks work differently in PHP 4.3.11+ compared to PHP 4.4 (or PHP <= 4.3.10). 
-      //
-      // First of all, the register_tick_function() call will produce a tick in the 
-      // buggy versions, whereas it won't in ones without this bug. Second, the tick 
-      // function will tick twice at the end of the declare block instead of once. 
-      // Third (and last), buggy PHP versions will continue to tick even after the 
-      // declare-block is closed for exactly *one* more time (TODO: Figure out why 
-      // sometimes it doesn't!?? <-- seems if the ticks array is <= 2 in size...)
-      $phpversion= phpversion();
-      if (
-        version_compare($phpversion, '4.3.11', '>=') && version_compare($phpversion, '4.4', '<')
-      ) {
-        unset($ticks[key($ticks)]);
-        if (sizeof($ticks) > 2) {
-          end($ticks);
-          unset($ticks[key($ticks)]);
-        }
-        end($ticks);
-        $ticks[key($ticks)]--;
-      }      
-      
       $this->assertEquals(
         $frequencies,
-        $ticks
+        $this->ticks[basename($file)]
       );      
     }
     
@@ -188,14 +168,15 @@
         $executed= 0;         // tick
         for ($i= 0; $i < 5; $i++) {
           $executed++;        // tick (5)
-        }                     // tick (5)                
-      }
+        }                     // tick (6)                
+      }                       // tick
 
       $this->assertTicks(__FILE__, array(
-        $line    => 1, 
+        $line    => 1,
         $line+ 1 => 1,
         $line+ 3 => 5,
-        $line+ 4 => 5,
+        $line+ 4 => 6,
+        $line+ 5 => 1
       ));
     }
   }
