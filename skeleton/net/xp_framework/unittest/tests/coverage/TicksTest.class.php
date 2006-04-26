@@ -7,7 +7,7 @@
   uses('util.profiling.unittest.TestCase');
 
   /**
-   * Tests ticks
+   * Tests ticks which we will use for code coverage.
    *
    * @see      php://register_tick_function
    * @see      php://unregister_tick_function
@@ -64,9 +64,27 @@
      * @param   array<int, int> frequencies keys are line numbers, values are frequency
      */
     function assertTicks($file, $frequencies) {
+      $ticks= $this->ticks[basename($file)];
+      
+      // Ticks work differently in PHP 4.3 compared to PHP 4.4. First of all,
+      // the register_tick_function() call will produce a tick in 4.3, whereas
+      // it won't in PHP 4.4. Second, the tick function will tick twice at
+      // the end of the declare block instead of once. Third, 4.3 will continue 
+      // to tick even after the declare-block is closed for exactly *one* more 
+      // time (TODO: Figure out why sometimes it doesn't!??)
+      if (version_compare(phpversion(), '4.4', '<')) {
+        unset($ticks[key($ticks)]);
+        if (sizeof($ticks) > 2) {
+          end($ticks);
+          unset($ticks[key($ticks)]);
+        }
+        end($ticks);
+        $ticks[key($ticks)]--;
+      }      
+      
       $this->assertEquals(
         $frequencies,
-        $this->ticks[basename($file)]
+        $ticks
       );      
     }
     
@@ -94,7 +112,6 @@
         $line= __LINE__;
       }
 
-      $this->assertEquals(1, sizeof($this->ticks));
       $this->assertTicks(__FILE__, array(
         $line    => 1, 
         $line+ 1 => 1
