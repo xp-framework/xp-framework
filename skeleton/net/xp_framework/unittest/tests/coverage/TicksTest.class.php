@@ -72,7 +72,10 @@
       // the end of the declare block instead of once. Third, 4.3 will continue 
       // to tick even after the declare-block is closed for exactly *one* more 
       // time (TODO: Figure out why sometimes it doesn't!??)
-      if (version_compare(phpversion(), '4.4', '<')) {
+      $phpversion= phpversion();
+      if (
+        version_compare($phpversion, '4.3.11', '>=') && version_compare($phpversion, '4.4', '<')
+      ) {
         unset($ticks[key($ticks)]);
         if (sizeof($ticks) > 2) {
           end($ticks);
