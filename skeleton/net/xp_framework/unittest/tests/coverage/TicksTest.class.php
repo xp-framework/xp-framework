@@ -375,6 +375,56 @@
     }
 
     /**
+     * Tests eval()
+     *
+     * @see     php://eval
+     * @access  public
+     */
+    #[@test]
+    function evaluation() {
+      declare(ticks= 1) {
+        $line= __LINE__;                            // tick
+        eval('$evaluated= TRUE;');                  // tick
+      }                                             // tick
+
+      $this->assertTrue($evaluated);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 1 => 1,
+        $line+ 2 => 1,
+      ));
+    }
+
+    /**
+     * Tests eval() when the to-be-evaluated code spans multiple lines
+     * The multiple lines inside the eval will not cause ticks for the
+     * same reason the methodCall() test's helper method sayHelloTo()
+     * states: Only the direct scope the declare statement (if used as
+     * a block) is related to "tick"s.
+     *
+     * @see     php://eval
+     * @access  public
+     */
+    #[@test]
+    function evaluationOfMultiLineCode() {
+      declare(ticks= 1) {
+        $line= __LINE__;                            // tick
+        eval('
+          $evaluated= 0;
+          $evaluated++;
+          $evaluated--;
+        ');                                         // tick
+      }                                             // tick
+
+      $this->assertEquals(0, $evaluated);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 5 => 1,
+        $line+ 6 => 1,
+      ));
+    }
+
+    /**
      * Tests exceptions
      *
      * @access  public
