@@ -425,7 +425,7 @@
      * @access  protected
      * @return  int the line creating a tick within this method
      */
-    function returnSomething() {
+    function tickedReturnSomething() {
       declare(ticks= 1) {
         $line= __LINE__;    // tick
         return $line;
@@ -440,7 +440,7 @@
      */
     #[@test]
     function returnStatement() {
-      $line= $this->returnSomething();
+      $line= $this->tickedReturnSomething();
 
       $this->assertTicks(__FILE__, array(
         $line    => 1
