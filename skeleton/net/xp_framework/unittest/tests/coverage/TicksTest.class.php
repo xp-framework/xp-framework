@@ -549,6 +549,36 @@
     }
 
     /**
+     * Tests nested code blocks
+     *
+     * @access  public
+     */
+    #[@test]
+    function nestedCodeBlocks() {
+      declare(ticks= 1) {
+        $line= __LINE__;                            // tick
+        $nestingLevel= 0;                           // tick
+        {
+          $nestingLevel++;                          // tick
+          {
+            $nestingLevel++;                        // tick
+          }                                         // tick
+        }                                           // tick
+      }                                             // tick
+
+      $this->assertEquals(2, $nestingLevel);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 1 => 1,
+        $line+ 3 => 1,
+        $line+ 5 => 1,
+        $line+ 6 => 1,
+        $line+ 7 => 1,
+        $line+ 8 => 1
+      ));
+    }
+
+    /**
      * Tests exceptions. The "if (catch(...))" line produces a tick because
      * of the closing } (see the codeBlock() test).
      *
