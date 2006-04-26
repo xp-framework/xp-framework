@@ -100,5 +100,58 @@
         $line+ 1 => 1
       ));
     }
+
+    /**
+     * Tests an if / else statement where the condition in if() 
+     * evaluates to true (thus the first block getting executed).
+     *
+     * @access  public
+     */
+    #[@test]
+    function ifCondition() {
+      declare(ticks= 1) {
+        $line= __LINE__;      // tick
+        if (TRUE) {
+          $executed= TRUE;    // tick
+        } else {              // tick
+          $executed= FALSE;
+        }                     // tick
+      }                       // tick
+
+      $this->assertTrue($executed);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1, 
+        $line+ 2 => 1,
+        $line+ 3 => 1,
+        $line+ 5 => 1,
+        $line+ 6 => 1,
+      ));
+    }
+
+    /**
+     * Tests an if / else statement where the condition in if() 
+     * evaluates to false (thus the second block getting executed).
+     *
+     * @access  public
+     */
+    #[@test]
+    function elseCondition() {
+      declare(ticks= 1) {
+        $line= __LINE__;      // tick
+        if (FALSE) {
+          $executed= TRUE;    
+        } else {
+          $executed= FALSE;   // tick
+        }                     // tick
+      }                       // tick
+
+      $this->assertFalse($executed);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1, 
+        $line+ 4 => 1,
+        $line+ 5 => 2,
+        $line+ 6 => 1,
+      ));
+    }
   }
 ?>
