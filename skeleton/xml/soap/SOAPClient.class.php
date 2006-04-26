@@ -129,7 +129,8 @@
       // Response
       if (FALSE == ($answer= &$this->transport->retrieve($response))) return FALSE;
       
-      $data= $answer->getData('ENUM', $this->mapping);
+      $answer->setMapping($this->mapping);
+      $data= $answer->getData('ENUM');
       return sizeof($data) == 1 ? $data[0] : $data;
     }
   } implements(__FILE__, 'util.log.Traceable');
