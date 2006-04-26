@@ -114,8 +114,8 @@
     #[@test]
     function mostBasicForm() {
       declare(ticks= 1) {
-        $line= __LINE__;
-      }
+        $line= __LINE__;      // tick
+      }                       // tick
 
       $this->assertTicks(__FILE__, array(
         $line    => 1, 
