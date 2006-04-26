@@ -452,6 +452,32 @@
         $line+ 6 => 1,
       ));
     }
+    
+    /**
+     * Tests run-time-created function
+     *
+     * @see     php://create_function
+     * @access  public
+     */
+    #[@test]
+    function runtimeCreatedFunction() {
+      declare(ticks= 1) {
+        $line= __LINE__;                            // tick
+        $strcmp= create_function(
+          '$a, $b', 
+          'return strcmp($a, $b);'
+        );                                          // tick
+        $result= $strcmp('A', 'A');                 // tick
+      }                                             // tick
+
+      $this->assertEquals(0, $result);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 4 => 1,
+        $line+ 5 => 1,
+        $line+ 6 => 1
+      ));
+    }
 
     /**
      * Tests exceptions
