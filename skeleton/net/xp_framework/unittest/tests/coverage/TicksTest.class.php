@@ -146,6 +146,29 @@
     }
 
     /**
+     * Tests an if statement without the optional block (e.g. if (1) return;
+     * instead of if (1) { return; }).
+     *
+     * @access  public
+     */
+    #[@test]
+    function ifConditionWithoutBlock() {
+      declare(ticks= 1) {
+        $line= __LINE__;                            // tick 
+        $executed= FALSE;                           // tick      
+        if (TRUE) $executed= TRUE;                  // tick
+      }                                             // tick (2?)
+
+      $this->assertTrue($executed);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1, 
+        $line+ 1 => 1,
+        $line+ 2 => 1,
+        $line+ 3 => 2
+      ));
+    }
+
+    /**
      * Tests an if / else statement where the condition in if() 
      * evaluates to false (thus the second block getting executed).
      *
