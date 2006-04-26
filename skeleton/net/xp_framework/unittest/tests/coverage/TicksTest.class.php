@@ -293,5 +293,39 @@
         $line+ 5 => 1
       ));
     }
+    
+    /**
+     * Helper method for methodCall() test. No ticks are produced
+     * in this method because only the code within the declare-
+     * block is "tick"ed.
+     *
+     * @access  protected
+     * @param   string who
+     * @return  string
+     */
+    function sayHelloTo($who) {
+      $length= strlen($who);
+      return 'Hello '.$who.' ('.$length.' bytes)';
+    }
+
+    /**
+     * Tests a method call
+     *
+     * @access  public
+     */
+    #[@test]
+    function methodCall() {
+      declare(ticks= 1) {
+        $line= __LINE__;                            // tick
+        $helloWorld= $this->sayHelloTo('World');    // tick
+      }                                             // tick
+
+      $this->assertEquals('Hello World (5 bytes)', $helloWorld);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 1 => 1,
+        $line+ 2 => 1
+      ));
+    }
   }
 ?>
