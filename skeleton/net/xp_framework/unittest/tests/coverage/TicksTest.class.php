@@ -329,6 +329,52 @@
     }
 
     /**
+     * Tests a switch statement where the case that is matched is empty.
+     *
+     * @access  public
+     */
+    #[@test]
+    function switchStatementWithEmptyCase() {
+      declare(ticks= 1) {
+        $line= __LINE__;                            // tick
+        switch (strlen('Hello')) {
+          case 5: break;
+          default: return throw(new PrerequisitesNotMetError('strlen() broken!'));
+        }                                           // tick
+      }                                             // tick
+
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 4 => 1,
+        $line+ 5 => 1
+      ));
+    }
+
+    /**
+     * Tests a switch statement
+     *
+     * @access  public
+     */
+    #[@test]
+    function switchStatement() {
+      declare(ticks= 1) {
+        $line= __LINE__;                            // tick
+        switch (strlen('Hello')) {
+          case 5: $result= TRUE; break;             // tick
+          default: return throw(new PrerequisitesNotMetError('strlen() broken!'));
+        }                                           // tick
+      }                                             // tick
+
+      $this->assertTrue($result);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 2 => 1,
+        $line+ 4 => 1,
+        $line+ 5 => 1
+      ));
+    }
+
+    /**
      * Tests exceptions
      *
      * @access  public
