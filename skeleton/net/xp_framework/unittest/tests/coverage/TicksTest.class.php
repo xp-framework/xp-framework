@@ -71,7 +71,7 @@
       $errors= xp::registry('errors');
       $errors[$file][$line][$msg]++;
       xp::registry('errors', $errors);
-      error_reporing($e);
+      error_reporting($e);
     }
     
     /**
