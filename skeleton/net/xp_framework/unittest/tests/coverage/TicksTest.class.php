@@ -255,5 +255,28 @@
         $line+ 5 => 1
       ));
     }
+
+    /**
+     * Tests a multi-line assignment via ternary operator
+     *
+     * @access  public
+     */
+    #[@test]
+    function multiLineStatement() {
+      declare(ticks= 1) {
+        $line= __LINE__;      // tick
+        $greeting= (strlen('Hello') == 5
+          ? 'Hello'
+          : 'Moto'
+        );                    // tick
+      }                       // tick
+
+      $this->assertEquals('Hello', $greeting);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 4 => 1,
+        $line+ 5 => 1
+      ));
+    }
   }
 ?>
