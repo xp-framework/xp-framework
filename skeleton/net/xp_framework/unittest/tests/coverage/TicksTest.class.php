@@ -327,5 +327,35 @@
         $line+ 2 => 1
       ));
     }
+
+    /**
+     * Tests exceptions
+     *
+     * @access  public
+     */
+    #[@test]
+    function exception() {
+      declare(ticks= 1) {
+        $line= __LINE__;                            // tick
+        $message= NULL;                             // tick
+        try(); {                                    // tick
+          throw(new Exception('*Boom*'));           // tick
+        } if (catch('Exception', $e)) {             // tick?
+          $message= $e->getMessage();               // tick
+        }                                           // tick
+      }                                             // tick (2?)
+
+      $this->assertEquals('*Boom*', $message);
+      $this->assertTicks(__FILE__, array(
+        $line    => 1,
+        $line+ 1 => 1,
+        $line+ 2 => 1,
+        $line+ 3 => 1,
+        $line+ 4 => 1,
+        $line+ 5 => 1,
+        $line+ 6 => 1,
+        $line+ 7 => 2,
+      ));
+    }
   }
 ?>
