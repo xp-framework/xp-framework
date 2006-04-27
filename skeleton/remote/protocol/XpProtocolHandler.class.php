@@ -138,7 +138,7 @@
      * @return  &mixed
      */
     function &invoke($oid, $method, $args) {
-      return $this->sendPacket(
+      $r= &$this->sendPacket(
         REMOTE_MSG_CALL, 
         pack('NN', 0, $oid),
         array(
@@ -146,6 +146,7 @@
           new ByteCountedString(Serializer::representationOf(new ArrayList($args)))
         )
       );
+      return $r;
     }
 
     /**
@@ -157,7 +158,7 @@
      * @return  &mixed
      * @throws  io.IOException in case of I/O errors
      */
-    function sendPacket($type, $data= '', $bytes= array()) {
+    function &sendPacket($type, $data= '', $bytes= array()) {
       $bsize= sizeof($bytes);
       
       // Calculate packet length
