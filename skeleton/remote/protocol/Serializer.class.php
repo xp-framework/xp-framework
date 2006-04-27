@@ -181,54 +181,63 @@
       switch ($serialized{0}) {
         case 'N': {     // null
           $length= 2; 
-          return NULL;
+          $value= NULL;
+          return $value;
         }
 
         case 'b': {     // booleans
           $length= 4; 
-          return (bool)substr($serialized, 2, strpos($serialized, ';', 2)- 2);
+          $value= (bool)substr($serialized, 2, strpos($serialized, ';', 2)- 2);
+          return $value;
         }
 
         case 'i': {     // integers
           $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
           $length= strlen($v)+ 3;
-          return (int)$v;
+          $value= (int)$v;
+          return $value;
         }
 
         case 'd': {     // decimals
           $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
           $length= strlen($v)+ 3;
-          return (float)$v;
+          $value= (float)$v;
+          return $value;
         }
 
         case 's': {     // strings
           $strlen= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
           $length= 2 + strlen($strlen) + 2 + $strlen + 2;
-          return substr($serialized, 2+ strlen($strlen)+ 2, $strlen);
+          $value= substr($serialized, 2+ strlen($strlen)+ 2, $strlen);
+          return $value;
         }
 
         case 'B': {     // bytes
           $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
           $length= strlen($v)+ 3;
-          return new Byte($v);
+          $value= &new Byte($v);
+          return $value;
         }
 
         case 'S': {     // shorts
           $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
           $length= strlen($v)+ 3;
-          return new Short($v);
+          $value= &new Short($v);
+          return $value;
         }
 
         case 'f': {     // floats
           $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
           $length= strlen($v)+ 3;
-          return new Float($v);
+          $value= &new Float($v);
+          return $value;
         }
 
         case 'l': {     // longs
           $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
           $length= strlen($v)+ 3;
-          return new Long($v);
+          $value= &new Long($v);
+          return $value;
         }
 
         case 'a': {     // arrays
@@ -305,7 +314,7 @@
             $offset+= $len;
           }
           $length= $offset+ 1;
-          return new StackTraceElement(
+          $value= &new StackTraceElement(
             $details['file'],
             $details['class'],
             $details['method'],
@@ -313,12 +322,14 @@
             array(),
             NULL
           );
+          return $value;
         }
         
         case 'T': {     // timestamp
           $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
           $length= strlen($v)+ 3;
-          return new Date((int)$v);
+          $value= &new Date((int)$v);
+          return $value;
         }
 
         case 'O': {     // generic objects
@@ -369,7 +380,8 @@
         case 'C': {     // generic classes
           $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
           $length= 2 + strlen($len) + 2 + $len + 2;
-          return new ClassReference(Serializer::packageMapping(substr($serialized, 2+ strlen($len)+ 2, $len)));
+          $value= &new ClassReference(Serializer::packageMapping(substr($serialized, 2+ strlen($len)+ 2, $len)));
+          return $value;
         }
 
         default: {      // default, check if we have a mapping
