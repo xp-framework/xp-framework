@@ -105,7 +105,7 @@
      * @throws  lang.IllegalArgumentException
      */
     function &add(&$element) {
-      if (!is_a($element, $this->_name)) {
+      if (!is($this->_name, $element)) {
         return throw(new IllegalArgumentException(sprintf(
           'Element is not a %s (but %s)',
           $this->class,
@@ -125,7 +125,7 @@
      * @throws  lang.IllegalArgumentException
      */
     function &prepend(&$element) {
-      if (!is_a($element, $this->_name)) {
+      if (!is($this->_name, $element)) {
         return throw(new IllegalArgumentException(sprintf(
           'Element is not a %s (but %s)',
           $this->class,
@@ -145,7 +145,7 @@
      */
     function addAll($array) {
       for ($i= 0, $s= sizeof($array); $i < $s; $i++) {
-        if (!is_a($array[$i], $this->_name)) {
+        if (!is($this->_name, $array[$i])) {
           return throw(new IllegalArgumentException(sprintf(
             'Element %d is not a %s (but %s)',
             $i,
@@ -166,7 +166,7 @@
      */
     function prependAll($array) {
       for ($i= 0, $s= sizeof($array); $i < $s; $i++) {
-        if (!is_a($array[$i], $this->_name)) {
+        if (!is($this->_name, $array[$i])) {
           return throw(new IllegalArgumentException(sprintf(
             'Element %d is not a %s (but %s)',
             $i,
