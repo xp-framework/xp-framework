@@ -63,11 +63,11 @@
      * @param   string code
      * @throws  util.profiling.unittest.AssertionFailedError
      */
-    function assertExpressions($chunks, $code) {
-      foreach ($this->expressionsOf($code) as $i => $chunk) {
-        if ($chunk->equals($chunks[$i])) continue;
+    function assertExpressions($fragments, $code) {
+      foreach ($this->expressionsOf($code) as $i => $fragment) {
+        if ($fragment->equals($fragments[$i])) continue;
 
-        return $this->fail('At offset #'.$i, $chunk, $chunks[$i]);
+        return $this->fail('At offset #'.$i, $fragment, $fragments[$i]);
       }
     }
 
