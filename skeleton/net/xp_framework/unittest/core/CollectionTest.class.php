@@ -187,5 +187,25 @@
       $this->assertEquals(1, $collection->indexOf($e2));
       $this->assertFalse($collection->indexOf(new Binford()));
     }
+
+    /**
+     * Tests the equals() method
+     *
+     * @access  public
+     */
+    #[@test]
+    function listEquality() {
+      $element= &new Binford();
+      $c1= &Collection::forClass(COLLECTION_CLASS_NAME);
+      $c1->add($element);
+
+      $c2= &Collection::forClass(COLLECTION_CLASS_NAME);
+      $c2->add($element);
+      
+      $c3= &Collection::forClass(COLLECTION_CLASS_NAME);
+
+      $this->assertTrue($c1->equals($c2));
+      $this->assertFalse($c1->equals($c3));
+    }
   }
 ?>
