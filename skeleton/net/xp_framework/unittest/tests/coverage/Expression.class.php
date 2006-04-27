@@ -51,5 +51,6 @@
     function toString() {
       return $this->getClassName().'@({'.$this->code.'} at line '.$this->line.')';
     }
-  }
+
+  } implements(__FILE__, 'net.xp_framework.unittest.tests.coverage.Fragment');
 ?>

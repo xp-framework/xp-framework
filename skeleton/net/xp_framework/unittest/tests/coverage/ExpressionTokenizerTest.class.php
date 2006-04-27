@@ -6,7 +6,9 @@
  
   uses(
     'util.profiling.unittest.TestCase',
-    'net.xp_framework.unittest.tests.coverage.Expression'
+    'lang.Collection',
+    'net.xp_framework.unittest.tests.coverage.Expression',
+    'net.xp_framework.unittest.tests.coverage.Block'
   );
 
   /**
@@ -22,20 +24,33 @@
      *
      * @access  protected
      * @param   string code
-     * @return  string[] expressions
+     * @return  net.xp_framework.unittest.tests.coverage.Fragment[] expressions
      */
     function expressionsOf($code) {
       $tokens= token_get_all('<?php '.trim($code).' ?>');
-      $expressions= array();
+      $expressions= &Collection::forClass('Fragment');
       $expression= '';
       $line= 1;
+      $level= 0;
+      $collections= array(&$expressions);
       
       // Iterate over tokens, starting from the T_OPEN_TAG and ending 
       // before the traling T_WHITESPACE and T_CLOSE_TAG tokens.
       for ($i= 1, $s= sizeof($tokens)- 2; $i < $s; $i++) {
         switch ($tokens[$i][0]) {
           case ';':           // EOE
-            $expressions[]= &new Expression(trim($expression).';', $line);
+            $collections[$level]->add(new Expression(trim($expression).';', $line));
+            $expression= '';
+            break;
+          
+          case '{':           // SOB
+            $block= &$expressions->add(new Block(array(), $line));
+            $collections[++$level]= &$block->expressions;
+            break;
+          
+          case '}':           // EOB
+            unset($collections[$level]);
+            $level--;
             $expression= '';
             break;
           
@@ -50,24 +65,37 @@
             $expression.= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i];
         }
       }
-      $expression && $expressions[]= &new Expression(trim($expression).';', $line);
       
-      return $expressions;
+      // Check for leftover tokens
+      if ($expression) {
+        $collections[$level]->add(new Expression(trim($expression).';', $line));
+      }
+      
+      return $expressions->values();
     }
     
     /**
      * Assert method
      *
      * @access  protected
-     * @param   net.xp_framework.unittest.tests.coverage.Expression[] chunks
+     * @param   net.xp_framework.unittest.tests.coverage.Fragment[] expected
      * @param   string code
      * @throws  util.profiling.unittest.AssertionFailedError
      */
-    function assertExpressions($fragments, $code) {
-      foreach ($this->expressionsOf($code) as $i => $fragment) {
-        if ($fragment->equals($fragments[$i])) continue;
+    function assertExpressions($expected, $code) {
+      $fragments= $this->expressionsOf($code);
 
-        return $this->fail('At offset #'.$i, $fragment, $fragments[$i]);
+      // Compare sizes
+      $s= sizeof($fragments);
+      if (sizeof($expected) != $s) {
+        return $this->fail('Different size', $expected, $fragments);
+      }
+      
+      // Check every element
+      for ($i= 0; $i < $s; $i++) {
+        if ($fragments[$i]->equals($expected[$i])) continue;
+
+        return $this->fail('At offset #'.$i.'/'.$s, $fragments[$i], $expected[$i]);
       }
     }
 
@@ -167,5 +195,18 @@
         new Expression('echo "A statement: statement_on_line_one();";', 1),
       ), 'echo "A statement: statement_on_line_one();";');
     }
+    
+    /**
+     * Tests a single block
+     *
+     * @access  public
+     */
+    #[@test]
+    function singleBlock() {
+      $this->assertExpressions(array(
+        new Block(array(new Expression('$a= 1;', 1)), 1),
+      ), '{ $a= 1; }');
+    }
+
   }
 ?>
