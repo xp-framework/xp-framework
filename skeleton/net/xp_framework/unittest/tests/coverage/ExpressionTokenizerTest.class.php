@@ -4,7 +4,10 @@
  * $Id$
  */
  
-  uses('util.profiling.unittest.TestCase');
+  uses(
+    'util.profiling.unittest.TestCase',
+    'net.xp_framework.unittest.tests.coverage.Expression'
+  );
 
   /**
    * Tests expression parsing
@@ -32,7 +35,7 @@
       for ($i= 1, $s= sizeof($tokens)- 2; $i < $s; $i++) {
         switch ($tokens[$i][0]) {
           case ';':           // EOE
-            $expressions[]= array(trim($expression).';', $line);
+            $expressions[]= &new Expression(trim($expression).';', $line);
             $expression= '';
             break;
           
@@ -47,9 +50,25 @@
             $expression.= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i];
         }
       }
-      $expression && $expressions[]= array(trim($expression).';', $line);
+      $expression && $expressions[]= &new Expression(trim($expression).';', $line);
       
       return $expressions;
+    }
+    
+    /**
+     * Assert method
+     *
+     * @access  protected
+     * @param   net.xp_framework.unittest.tests.coverage.Expression[] chunks
+     * @param   string code
+     * @throws  util.profiling.unittest.AssertionFailedError
+     */
+    function assertExpressions($chunks, $code) {
+      foreach ($this->expressionsOf($code) as $i => $chunk) {
+        if ($chunk->equals($chunks[$i])) continue;
+
+        return $this->fail('At offset #'.$i, $chunks[$i], $chunk);
+      }
     }
 
     /**
@@ -59,7 +78,7 @@
      */
     #[@test]
     function emptyInput() {
-      $this->assertEquals(array(), $this->expressionsOf(''));
+      $this->assertExpressions(array(), '');
     }
     
     /**
@@ -69,9 +88,9 @@
      */
     #[@test]
     function singleExpression() {
-      $this->assertEquals(array(
-        array('$a= 1;', 1),
-      ), $this->expressionsOf('$a= 1;'));
+      $this->assertExpressions(array(
+        new Expression('$a= 1;', 1),
+      ), '$a= 1;');
     }
 
     /**
@@ -82,9 +101,9 @@
      */
     #[@test]
     function missingTrailingSemicolon() {
-      $this->assertEquals(array(
-        array('$a= 1;', 1),
-      ), $this->expressionsOf('$a= 1'));
+      $this->assertExpressions(array(
+        new Expression('$a= 1;', 1),
+      ), '$a= 1');
     }
 
     /**
@@ -94,10 +113,10 @@
      */
     #[@test]
     function multipleExpressionsPerLine() {
-      $this->assertEquals(array(
-        array('$a= 1;', 1),
-        array('$b= 1;', 1),
-      ), $this->expressionsOf('$a= 1; $b= 1;'));
+      $this->assertExpressions(array(
+        new Expression('$a= 1;', 1),
+        new Expression('$b= 1;', 1),
+      ), '$a= 1; $b= 1;');
     }
 
     /**
@@ -107,17 +126,17 @@
      */
     #[@test]
     function multilineLineExpression() {
-      $this->assertEquals(array(
-        array('$a= (5 == strlen("Hello")
+      $this->assertExpressions(array(
+        new Expression('$a= (5 == strlen("Hello")
           ? "good"
           : "bad"
         );', 4),
-      ), $this->expressionsOf('
+      ), '
         $a= (5 == strlen("Hello")
           ? "good"
           : "bad"
         );
-      '));
+      ');
     }
 
     /**
@@ -127,13 +146,13 @@
      */
     #[@test]
     function twoExpressions() {
-      $this->assertEquals(array(
-        array('statement_on_line_one();', 1),
-        array('statement_on_line_two();', 2),
-      ), $this->expressionsOf('
+      $this->assertExpressions(array(
+        new Expression('statement_on_line_one();', 1),
+        new Expression('statement_on_line_two();', 2),
+      ), '
         statement_on_line_one(); 
         statement_on_line_two();
-      '));
+      ');
     }
 
     /**
@@ -144,9 +163,9 @@
      */
     #[@test]
     function stringsContainingExpressions() {
-      $this->assertEquals(array(
-        array('echo "A statement: statement_on_line_one();";', 1),
-      ), $this->expressionsOf('echo "A statement: statement_on_line_one();";'));
+      $this->assertExpressions(array(
+        new Expression('echo "A statement: statement_on_line_one();";', 1),
+      ), 'echo "A statement: statement_on_line_one();";');
     }
   }
 ?>
