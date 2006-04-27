@@ -44,8 +44,9 @@
             break;
           
           case '{':           // SOB
-            $block= &$expressions->add(new Block(array(), $line));
+            $block= &$expressions->add(new Block(trim($expression), array(), $line));
             $collections[++$level]= &$block->expressions;
+            $expression= '';
             break;
           
           case '}':           // EOB
@@ -204,8 +205,20 @@
     #[@test]
     function singleBlock() {
       $this->assertExpressions(array(
-        new Block(array(new Expression('$a= 1;', 1)), 1),
+        new Block(NULL, array(new Expression('$a= 1;', 1)), 1),
       ), '{ $a= 1; }');
+    }
+
+    /**
+     * Tests an if block
+     *
+     * @access  public
+     */
+    #[@test]
+    function ifBlock() {
+      $this->assertExpressions(array(
+        new Block('if (TRUE)', array(new Expression('exit;', 1)), 1),
+      ), 'if (TRUE) { exit; }');
     }
 
   }
