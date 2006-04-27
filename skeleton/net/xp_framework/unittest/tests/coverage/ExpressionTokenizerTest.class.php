@@ -67,7 +67,7 @@
       foreach ($this->expressionsOf($code) as $i => $chunk) {
         if ($chunk->equals($chunks[$i])) continue;
 
-        return $this->fail('At offset #'.$i, $chunks[$i], $chunk);
+        return $this->fail('At offset #'.$i, $chunk, $chunks[$i]);
       }
     }
 
