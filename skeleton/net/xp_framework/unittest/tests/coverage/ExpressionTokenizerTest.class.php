@@ -221,5 +221,23 @@
       ), 'if (TRUE) { exit; }');
     }
 
+    /**
+     * Tests an if / else block
+     *
+     * @access  public
+     */
+    #[@test]
+    function ifElseBlock() {
+      $this->assertExpressions(array(
+        new Block('if (TRUE)', array(new Expression('$i++;', 2)), 1),
+        new Block('else', array(new Expression('$i--;', 4)), 3),
+      ), '
+        if (TRUE) { 
+          $i++;
+        } else {
+          $i--;
+        }
+      ');
+    }
   }
 ?>
