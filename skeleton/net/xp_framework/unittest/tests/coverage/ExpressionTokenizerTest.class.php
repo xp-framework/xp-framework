@@ -101,6 +101,26 @@
     }
 
     /**
+     * Tests an expression spanning multiple lines
+     *
+     * @access  public
+     */
+    #[@test]
+    function multilineLineExpression() {
+      $this->assertEquals(array(
+        array('$a= (5 == strlen("Hello")
+          ? "good"
+          : "bad"
+        );', 4),
+      ), $this->expressionsOf('
+        $a= (5 == strlen("Hello")
+          ? "good"
+          : "bad"
+        );
+      '));
+    }
+
+    /**
      * Tests two expressions, each on a line by itself
      *
      * @access  public
