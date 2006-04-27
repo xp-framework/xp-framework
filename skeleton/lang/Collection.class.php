@@ -249,7 +249,7 @@
      */
     function contains(&$element) {
       for ($i= 0, $s= sizeof($this->list); $i < $s; $i++) {
-        if ($this->list[$i]->__id == $element->__id) return TRUE;
+        if ($this->list[$i]->equals($element)) return TRUE;
       }
       return FALSE;
     }
@@ -272,7 +272,7 @@
       // }
       // </snip>
       for ($i= 0, $s= sizeof($this->list); $i < $s; $i++) {
-        if ($this->list[$i]->__id == $element->__id) return $i;
+        if ($this->list[$i]->equals($element)) return $i;
       }
       return FALSE;
     }
@@ -286,7 +286,7 @@
      */
     function lastIndexOf(&$element) {
       for ($i= sizeof($this->list)- 1; $i > -1; $i--) {
-        if ($this->list[$i]->__id == $element->__id) return $i;
+        if ($this->list[$i]->equals($element)) return $i;
       }
       return FALSE;
     }
@@ -303,6 +303,27 @@
         $r.= '  '.$i.': '.str_replace("\n", "\n  ", xp::stringOf($this->list[$i]))."\n";
       } 
       return $r.'}';
+    }
+    
+    /**
+     * Checks if a specified object is equal to this object.
+     *
+     * @access  public
+     * @param   &lang.Object collection
+     * @return  bool
+     */
+    function equals(&$collection) {
+      if (
+        !is('Collection', $collection) || 
+        $this->size != $collection->size
+      ) return FALSE;
+      
+      // Compare element by element
+      for ($i= 0, $s= sizeof($this->list); $i < $s; $i++) {
+        if ($this->list[$i]->equals($collection->list[$i])) continue;
+        return FALSE;
+      }
+      return TRUE;
     }
   }
 ?>
