@@ -107,8 +107,7 @@
       $eventarr['subscribeable']= (int)
         ((!$deadline || $deadline->isAfter(Date::now())) && 
         $target->isAfter(Date::now()) &&
-        $target->isBefore(DateUtil::addDays(Date::now(), 30)) &&
-        $attendeesCount < $event->getMax_attendees()
+        (!$event->getMax_Attendees() || $attendeesCount < $event->getMax_attendees())
       );
       
       $node= &$response->addFormResult(Node::fromArray($eventarr, 'event'));
