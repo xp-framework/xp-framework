@@ -61,7 +61,8 @@ In this experiment, generics are imported by using the "generic" scheme:
   uses('generic+xp://fully.qualified.class.Name');
 ?>
 
-The modified import functionality is provided by the generic SAPI.
+The modified import functionality is provided by the generic uses 
+wrapper.
 
 
 Instantiating generic classes
@@ -74,5 +75,105 @@ create().
   $hash= &create('GenericHash<int, Object>', $arg1, $arg2);
 ?>
 
+
+The inner workings
+------------------
+
+Class loading
+~~~~~~~~~~~~~
+The generic uses wrapper (located in sapi/generic.uwrp.php) tokenizes
+the sourcecode of the class file and translates it into valid PHP(4)
+sourcecode. It also stores information about the tokens used in the
+generics declaration and associates them to the class it has parsed.
+
+When a class declaration is encountered and this token contains
+generics tokens, these tokens are parsed and stored. A member variable
+named __types is generated. This member will contain the runtime types
+of the generic object and will be set by the create() function.
+The generics declaration is omitted from the generated sourcecode.
+
+The following:
+<?php 
+  class SortedList<E> extends Object { } 
+?>
+
+will become:
+<?php 
+  class SortedList extends Object {
+    var $__types= array();
+  }
+?>
+
+and the registry for "List" will contains array(0 => "E").  
+
+When a method declaration is encountered, its argument list is parsed.
+If the argument list contains type hints, these are stored. The
+method's statement list is prepended with a verification mechanism
+that will check the arguments' types.
+
+The following:
+<?php 
+  class SortedList<E> extends Object { 
+  
+    function add(E $element) {
+      // ...
+    }
+  } 
+?>
+
+will become:
+<?php 
+  class SortedList extends Object {
+    var $__types= array();
+
+    function add($element) { 
+      if (!uwrp·generic::verify($this, 'add', array('E' => &$element))) return;
+      // ...
+    }
+  }
+?>
+This way, method invocation can be avoided in case incorrect types are
+passed.
+
+When a constructor declaration is encountered, its name is rewritten
+from __construct() to __generic(). This is necessary for create() to be
+able to assign the runtime types prior to any statements that would
+be executed in the constructor needing to know about these types.
+
+
+Instanciation
+~~~~~~~~~~~~~
+The create() function takes care of creating instances of generic classes.
+It parses the string given to it as first argument, which is expected to
+contain the name of the class to be instanciated and the component types.
+
+Example:
+<?php
+  $list= &create('SortedList<String>');         // #1
+  $hash= &create('IdentityMap<int, Object>');   // #2
+?>
+#1: Here, "SortedList" is the class name and "String" the component type.
+#2: Here, "IdentityMap" is the class name and "int" and "Object" are the
+    component types. 
+
+An instance of the class is created by means of the "new" operator.
+The runtime types are deferred and assigned to the created instance's
+__types member. For #1, the member would contain { "E" => "String" },
+for #2, it would be { "K" => "int", "V" => "Object" }.
+
+After creation, the __generic() method is called if existant (see notes
+on constructor declaration rewriting from above).
+
+
+Type verification
+~~~~~~~~~~~~~~~~~
+When a method that had type hints defined is called, the verification
+mechanism checks each of the arguments hinted against the runtime type
+information hash. In case the component type is one of ['int', 'float', 
+'string', 'null', 'bool', 'array'], the equivalent is_XXX() function 
+is used to check. For any other component type, the is() XP core 
+function is used to check the argument.
+
+In case the check fails, an IllegalArgumentException() is thrown.
 
 <EOF>
