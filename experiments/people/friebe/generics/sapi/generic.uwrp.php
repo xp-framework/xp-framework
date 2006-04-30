@@ -68,9 +68,14 @@
 
         if ($r) continue;
         
-        return throw(new IllegalArgumentException(
-          $object->getClassName().'::'.$method.': Wrong type for '.$token.' (was '.xp::typeOf($arguments[$token]).', expecting '.$object->__types[$token].')'
-        ));
+        return throw(new IllegalArgumentException(sprintf(
+          'Type mismatch for %s in %s::%s() (was: %s, expecting: %s)',
+          $token,
+          $object->getClassName(),
+          $method,
+          xp::typeOf($arguments[$token]),
+          $object->__types[$token]
+        )));
       }
       
       return TRUE;
