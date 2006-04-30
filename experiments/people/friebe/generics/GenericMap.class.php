@@ -32,7 +32,7 @@
      * @param   K key
      * @param   &V value
      */
-    function &put(K $key, V &$value) {
+    function put(K $key, V &$value) {
       $this->elements[$key]= &$value;
     }
 
