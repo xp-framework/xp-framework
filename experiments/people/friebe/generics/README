@@ -1,0 +1,60 @@
+Generics support experiment
+========================================================================
+$Id$
+
+
+What's this?
+------------
+This is an experiment to show how rudimentary generics support could be
+embedded into the XP framework.
+
+
+Generics
+--------
+Further reading:
+- http://www.dina.kvl.dk/~sestoft/gcsharp/index.html
+  Generic C# Sample Programs
+
+- http://java.sun.com/j2se/1.5.0/docs/guide/language/generics.html
+  Generics in Java
+
+- http://www.is.pku.edu.cn/~qzy/cpp/vc-stl/templates.htm
+  C++ Templates Tutorial
+
+
+Declaring generic classes
+-------------------------
+To declare a generic class, prepend (enclosed by < and >) the generic
+tokens.
+
+Example:
+<?php
+  class Name<K, V> extends Object {
+  
+  }
+?>
+
+
+Using generic classes
+---------------------
+In this experiment, generics are imported by using the "generic" scheme:
+
+<?php
+  uses('generic+xp://fully.qualified.class.Name');
+?>
+
+The modified import functionality is provided by the generic SAPI.
+
+
+Instantiating generic classes
+-----------------------------
+Generic classes are not instantiated by new but by a function called
+create().
+
+<?php
+  $hash= &create('GenericHash<int, Object>');
+  $hash= &create('GenericHash<int, Object>', $arg1, $arg2);
+?>
+
+
+<EOF>
