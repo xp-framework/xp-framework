@@ -9,9 +9,15 @@ This is an experiment to show how rudimentary generics support could be
 embedded into the XP framework.
 
 
-Generics
---------
-Further reading:
+Generics in general
+-------------------
+Think of generics as specifications of a type's component(s). For example,
+a List<string> is a list of strings, and a Map<string, Object> is a map
+of strings and Objects.
+
+
+Further reading
+---------------
 - http://www.dina.kvl.dk/~sestoft/gcsharp/index.html
   Generic C# Sample Programs
 
