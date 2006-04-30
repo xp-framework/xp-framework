@@ -82,7 +82,9 @@
     function stream_open($path, $mode, $options, &$open) {
       $url= parse_url($path);
       
-      $tokens= token_get_all(file_get_contents(strtr($url['host'], '.', DIRECTORY_SEPARATOR).'.class.php'));
+      $file= strtr($url['host'], '.', DIRECTORY_SEPARATOR).'.class.php';
+      $line= 0;
+      $tokens= token_get_all(file_get_contents($file));
       $state= GENERIC_PARSER_ST_INITIAL;
       $bracket= '';
       $this->buffer= '';
@@ -99,7 +101,7 @@
             break;
 
           case GENERIC_PARSER_ST_GENERICS.T_STRING:
-            $generics[]= $tokens[$i][1];
+            $generics[$tokens[$i][1]]= 1;
             break;
 
           case GENERIC_PARSER_ST_GENERICS.',':
@@ -135,6 +137,14 @@
 
           case GENERIC_PARSER_ST_METHOD_ARGS.T_STRING:
             $type= $tokens[$i][1];
+            isset($generics[$type]) || xp::error(sprintf(
+              'Unknown token "%s" in declaration of %s::%s(...) in %s on line %d',
+              $type,
+              $url['host'],
+              $method,
+              $file,
+              $line
+            ));
             $i++; // Swallow following whitespace
             break;
 
@@ -162,11 +172,16 @@
             break;
           
           default:
-            $this->buffer.= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i];
+            if (is_array($tokens[$i])) {
+              $line+= substr_count($tokens[$i][1], "\n");
+              $this->buffer.= $tokens[$i][1];
+            } else {
+              $this->buffer.= $tokens[$i];
+            }
         }
       }
       
-      uwrp·generic::tokens(xp::reflect($url['host']), $generics);
+      uwrp·generic::tokens(xp::reflect($url['host']), array_keys($generics));
       // DEBUG var_dump($url['host'], $generics, $this->buffer);
       return TRUE;
     }  
