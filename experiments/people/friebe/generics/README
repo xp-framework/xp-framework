@@ -31,16 +31,24 @@ Further reading
 Declaring generic classes
 -------------------------
 To declare a generic class, prepend (enclosed by < and >) the generic
-tokens.
+tokens. From thereon, these tokens can be used as type hints for a
+method's arguments (passing incorrect values to these will result in 
+an IllegalArgumentException at runtime).
 
 Examples:
 <?php
   class SortedList<E> extends Object {
-  
+
+    function add(E $item) {
+      // ... implementation
+    }
   }
   
   class IdentityMap<K, V> extends Object {
-  
+
+    function put(K $key, V $value) {
+      // ... implementation
+    }
   }
 ?>
 
