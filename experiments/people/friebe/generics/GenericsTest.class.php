@@ -59,5 +59,28 @@
       ), $hash);
       $this->assertEquals(new String('one'), $hash->get(1));
     }
+
+    /**
+     * Tests type hinting
+     *
+     * @access  public
+     */
+    #[@test]
+    function correctTypes() {
+      $hash= &create('GenericMap<int, String>');
+      $hash->put(1, new String('one'));
+      $this->assertEquals(new String('one'), $hash->get(1));
+    }
+
+    /**
+     * Tests type hinting
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function wrongTypes() {
+      $hash= &create('GenericMap<int, String>');
+      $hash->put(1, new Object());
+    }
   }
 ?>

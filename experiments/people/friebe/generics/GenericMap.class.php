@@ -20,7 +20,9 @@
      * @param   array<K, V> initial default array()
      */
     function __construct($initial= array()) {
-      $this->elements= $initial;
+      foreach ($initial as $key => $value) {
+        $this->put($key, $value);
+      }
     }
   
     /**
@@ -30,7 +32,7 @@
      * @param   K key
      * @param   &V value
      */
-    function &put($key, &$value) {
+    function &put(K $key, V &$value) {
       $this->elements[$key]= &$value;
     }
 
@@ -41,7 +43,7 @@
      * @param   K key
      * @return  &V value associated with the key
      */
-    function &get($key) {
+    function &get(K $key) {
       return $this->elements[$key];
     }
   }

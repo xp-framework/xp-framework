@@ -4,9 +4,12 @@
  * $Id$
  */
 
-  define('GENERIC_PARSER_ST_INITIAL',  'initial');
-  define('GENERIC_PARSER_ST_DECL',     'decl');
-  define('GENERIC_PARSER_ST_GENERICS', 'generics');
+  define('GENERIC_PARSER_ST_INITIAL',     'initial');
+  define('GENERIC_PARSER_ST_DECL',        'decl');
+  define('GENERIC_PARSER_ST_GENERICS',    'generics');
+  define('GENERIC_PARSER_ST_BODY',        'body');
+  define('GENERIC_PARSER_ST_METHOD_DECL', 'method');
+  define('GENERIC_PARSER_ST_METHOD_ARGS', 'method.args');
 
   // {{{ &lang.Object create(string spec)
   //     Creates a generic object
@@ -15,16 +18,17 @@
 
     $class= xp::reflect($classname);
     $tokens= uwrp·generic::tokens($class);
-
-    // Pass arguments and instanciate
-    for ($args= func_get_args(), $paramstr= '', $i= 1, $m= sizeof($args); $i < $m; $i++) {
-      $paramstr.= ', $args['.$i.']';
-    }
-    eval('$instance= &new '.$class.'('.substr($paramstr, 2).');');
+    $instance= &new $class();
 
     // Pass types
     foreach (explode(',', $types) as $i => $type) {
       $instance->__types[$tokens[$i]]= trim($type);
+    }
+    
+    // Call rewritten constructor if existant.
+    if (method_exists($instance, '__generic')) {
+      $a= func_get_args();
+      call_user_func_array(array(&$instance, '__generic'), array_slice($a, 1));
     }
     
     return $instance;
@@ -45,6 +49,31 @@
       
       if (!isset($tokens)) return $registry[$classname];
       $registry[$classname]= $tokens;
+    }
+    // }}}
+    
+    // {{{ bool verify(&lang.Object object, string method, array<string, mixed> arguments)
+    //     Verifies method arguments
+    function verify(&$object, $method, $arguments) {
+      foreach (array_keys($arguments) as $token) {
+        switch ($object->__types[$token]) {
+          case 'int': $r= is_int($arguments[$token]); break;
+          case 'float': $r= is_float($arguments[$token]); break;
+          case 'string': $r= is_string($arguments[$token]); break;
+          case 'null': $r= is_null($arguments[$token]); break;
+          case 'bool': $r= is_bool($arguments[$token]);
+          case 'array': $r= is_array($arguments[$token]); break;
+          default: $r= is($object->__types[$token], $arguments[$token]); break;
+        }
+
+        if ($r) continue;
+        
+        return throw(new IllegalArgumentException(
+          $object->getClassName().'::'.$method.': Wrong type for '.$token.' (was '.xp::typeOf($arguments[$token]).', expecting '.$object->__types[$token].')'
+        ));
+      }
+      
+      return TRUE;
     }
     // }}}
 
@@ -84,7 +113,52 @@
             
           case GENERIC_PARSER_ST_DECL.'{':
             $this->buffer.= "{\n    var \$__types= array();";
-            $state= GENERIC_PARSER_ST_INITIAL;
+            $state= GENERIC_PARSER_ST_BODY;
+            break;
+
+          case GENERIC_PARSER_ST_BODY.T_FUNCTION:
+            $this->buffer.= 'function';
+            $state= GENERIC_PARSER_ST_METHOD_DECL;
+            break;
+
+          case GENERIC_PARSER_ST_METHOD_DECL.T_STRING:
+            $method= $tokens[$i][1];
+            $this->buffer.= '__construct' == $method ? '__generic' : $method;
+            break;
+
+          case GENERIC_PARSER_ST_METHOD_DECL.'(':
+            $this->buffer.= '(';
+            $state= GENERIC_PARSER_ST_METHOD_ARGS;
+            $arguments= array();
+            $type= NULL;
+            break;
+
+          case GENERIC_PARSER_ST_METHOD_ARGS.T_STRING:
+            $type= $tokens[$i][1];
+            $i++; // Swallow following whitespace
+            break;
+
+          case GENERIC_PARSER_ST_METHOD_ARGS.T_VARIABLE:
+            $type && $arguments[$tokens[$i][1]]= $type;
+            $type= NULL;
+            $this->buffer.= $tokens[$i][1];
+            break;
+
+          case GENERIC_PARSER_ST_METHOD_ARGS.')':
+            $this->buffer.= ')';
+            $state= GENERIC_PARSER_ST_METHOD_DECL;
+            break;
+            
+          case GENERIC_PARSER_ST_METHOD_DECL.'{':
+            $this->buffer.= '{';
+            if (!empty($arguments)) {
+              $this->buffer.= ' if (!uwrp·generic::verify($this, \''.$method.'\', array(';
+              foreach ($arguments as $name => $token) {
+                $this->buffer.= "'".$token."' => &".$name.', ';
+              }
+              $this->buffer.= '))) return;';
+            }
+            $state= GENERIC_PARSER_ST_BODY;
             break;
           
           default:
