@@ -71,6 +71,13 @@ J. Bernstein, Times 33 with Addition) implemented in the class
 util.adt.DJBX33AHashImplementation.
 
 
+Interfaces
+~~~~~~~~~~
+The util.adt package comes with two interfaces, Set and Map, which
+define the behaviour of the HashSet and HashTable classes. Future 
+extensions such as a IdentityHashMap, a revised version of the current
+util.HashMap or IdentitySet should implement these interface.
+
 
 Security considerations
 -----------------------
@@ -92,6 +99,8 @@ Related documents
 - http://xp-framework.net/downloads/adt.diff
   Patch implementing this RFC
 
+- http://javadoc.xp-framework.net/guide/collections/index.html
+  The Java[TM] Collections Framework
 
 Comments
 --------
