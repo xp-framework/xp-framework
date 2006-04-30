@@ -115,4 +115,8 @@ Comments
   The patch contains a set of unit tests (in a new package named
   net.xp_framework.util.adt) to verify the classes' behaviour.
 
+- friebe, Sun Apr 30 13:08:22     2006
+  Maybe util.collections would be a better name for this package? It
+  would emphasize the package's contents.
+
 <EOF>
