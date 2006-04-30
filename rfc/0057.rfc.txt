@@ -102,6 +102,9 @@ Related documents
 - http://javadoc.xp-framework.net/guide/collections/index.html
   The Java[TM] Collections Framework
 
+- http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpref/html/frlrfsystemcollections.asp
+  .NET Framework Class Library / System.Collections Namespace
+
 Comments
 --------
 - friebe, Sun Apr 30 12:33:32     2006
