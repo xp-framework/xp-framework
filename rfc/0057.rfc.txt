@@ -99,4 +99,8 @@ Comments
   Maybe the lang.Collection and util.HashMap classes should be migrated
   here, too.
 
+- friebe, Sun Apr 30 12:48:02     2006
+  The patch contains a set of unit tests (in a new package named
+  net.xp_framework.util.adt) to verify the classes' behaviour.
+
 <EOF>
