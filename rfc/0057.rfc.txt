@@ -1,0 +1,72 @@
+RFC 0057: util.adt extensions
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Apr 30 12:24:40     2006
+@status: draft
+@category: util.adt
+
+Scope of Change
+---------------
+The package util.adt will be changed and extended to contain generic
+classes and interfaces to replace PHP's array-functions for objects.
+
+
+Rationale
+---------
+PHP's array-functionality doesn't deal with objects very well.
+Especially, object equality isn't redefineable.
+
+
+Functionality
+-------------
+
+Quick overview
+~~~~~~~~~~~~~~
+
+The following classes will be changed:
+* util.adt.Stack
+* util.adt.Set
+* util.adt.HashSet
+* util.adt.Queue
+* util.adt.LRUBuffer
+
+The following classes will be added:
+* util.adt.HashTable
+
+The following utility classes and interfaces will be added:
+* util.adt.HashImplementation
+* util.adt.DJBX33AHashImplementation
+* util.adt.HashProvider
+* util.adt.Map
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+- BC: The LRUBuffer class will no longer support primitives
+
+
+Related documents
+-----------------
+- http://xp-framework.net/downloads/adt.diff
+  Patch implementing this RFC
+
+
+Comments
+--------
+- friebe, Sun Apr 30 12:33:32     2006
+  Maybe the lang.Collection and util.HashMap classes should be migrated
+  here, too.
+
+<EOF>
