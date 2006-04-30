@@ -1,4 +1,4 @@
-RFC 0057: util.adt extensions
+RFC 0057: Collections framework
 ========================================================================
 $Id$
 
