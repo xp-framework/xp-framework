@@ -82,5 +82,16 @@
       $hash= &create('GenericMap<int, String>');
       $hash->put(1, new Object());
     }
+
+    /**
+     * Tests type hinting
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function wrongType() {
+      $hash= &create('GenericMap<int, String>');
+      $hash->get('string');
+    }
   }
 ?>
