@@ -88,7 +88,7 @@
       $url= parse_url($path);
       
       $file= strtr($url['host'], '.', DIRECTORY_SEPARATOR).'.class.php';
-      $line= 0;
+      $line= 1;
       $tokens= token_get_all(file_get_contents($file));
       $state= GENERIC_PARSER_ST_INITIAL;
       $bracket= '';
