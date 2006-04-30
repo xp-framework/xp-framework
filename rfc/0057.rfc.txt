@@ -42,6 +42,36 @@ The following utility classes and interfaces will be added:
 * util.adt.Map
 
 
+Extensions to existing classes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The classes util.adt.Stack, util.adt.HashSet and util.adt.Queue
+will be extended by hashCode() and equals() methods. 
+
+The interface util.adt.Set will be extended to contain the methods
+hashCode() and equals().
+
+
+Changes to existing classes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The class util.adt.LRUBuffer will be changed to work with objects
+instead of primitives. This results in a BC break but will make the
+class consistent with the rest of the classes in this package.
+
+
+New classes
+~~~~~~~~~~~
+The util.adt.HashTable class will be added. It is a hash table 
+consisting of non-null objects as keys and values and implements
+the new util.adt.Map interface.
+
+The util.adt.HashProvider class serves as the entry-level class for
+all classes using hashing. It is a singleton and knows about one
+single (changeable) implementation defaulting to "DJBX33A" (Daniel 
+J. Bernstein, Times 33 with Addition) implemented in the class
+util.adt.DJBX33AHashImplementation.
+
+
+
 Security considerations
 -----------------------
 n/a
