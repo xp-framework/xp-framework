@@ -6,6 +6,7 @@
 
   uses(
     'util.profiling.unittest.TestCase',
+    'text.String',
     'generic+xp://GenericMap'
   );
 
@@ -35,11 +36,11 @@
      */
     #[@test]
     function createFunction() {
-      $hash= &create('GenericMap<int, Object>');
+      $hash= &create('GenericMap<int, String>');
 
       $this->assertGenericTypes(array(
         'K' => 'int',
-        'V' => 'Object'
+        'V' => 'String'
       ), $hash);
     }
 
@@ -50,13 +51,13 @@
      */
     #[@test]
     function createFunctionWithArguments() {
-      $hash= &create('GenericMap<int, Object>', array(1 => 'one'));
+      $hash= &create('GenericMap<int, String>', array(1 => new String('one')));
 
       $this->assertGenericTypes(array(
         'K' => 'int',
-        'V' => 'Object'
+        'V' => 'String'
       ), $hash);
-      $this->assertEquals('one', $hash->get(1));
+      $this->assertEquals(new String('one'), $hash->get(1));
     }
   }
 ?>
