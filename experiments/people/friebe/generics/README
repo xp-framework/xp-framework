@@ -33,9 +33,13 @@ Declaring generic classes
 To declare a generic class, prepend (enclosed by < and >) the generic
 tokens.
 
-Example:
+Examples:
 <?php
-  class Name<K, V> extends Object {
+  class SortedList<E> extends Object {
+  
+  }
+  
+  class IdentityMap<K, V> extends Object {
   
   }
 ?>
