@@ -12,7 +12,8 @@
   /**
    * Test rdbms tokenizer
    *
-   * @purpose  Unit Test
+   * @see       xp://rdbms.StatementFormatter
+   * @purpose   Unit Test
    */
   class TokenizerTest extends TestCase {
     var
@@ -226,5 +227,69 @@
         $key
       );
     }
+    
+    /**
+     * Test huge numbers in %d token
+     *
+     * @see     bug://1
+     * @access  public
+     */
+    #[@test]
+    function testHugeIntegerNumber() {
+      foreach ($this->conn as $key => $value) {
+        $this->assertEquals(
+          'NULL',
+          $value->prepare('%d', 'Helo 123 Moto'),
+          $key
+        );
+        $this->assertEquals(
+          '0',
+          $value->prepare('%d', '0'),
+          $key
+        );
+        $this->assertEquals(
+          '999999999999999999999999999',
+          $value->prepare('%d', '999999999999999999999999999'),
+          $key
+        );
+        $this->assertEquals(
+          '-999999999999999999999999999',
+          $value->prepare('%d', '-999999999999999999999999999'),
+          $key
+        );
+      }
+    }
+    
+    /**
+     * Test huge numbers in %f token
+     *
+     * @see     bug://1
+     * @access  public
+     */
+    #[@test]
+    function testHugeFloatNumber() {
+      foreach ($this->conn as $key => $value) {
+        $this->assertEquals(
+          'NULL',
+          $value->prepare('%d', 'Helo 123 Moto'),
+          $key
+        );
+        $this->assertEquals(
+          '0.0',
+          $value->prepare('%d', '0.0'),
+          $key
+        );
+        $this->assertEquals(
+          '0.00000000000000234E03',
+          $value->prepare('%d', '0.00000000000000234E03'),
+          $key
+        );
+        $this->assertEquals(
+          '1232342354362.00000000000000234e-14',
+          $value->prepare('%d', '1232342354362.00000000000000234e-14'),
+          $key
+        );
+      }
+    }    
  }
 ?>
