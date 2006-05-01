@@ -111,9 +111,9 @@
         if (NULL === $arg) { $r.= 'NULL, '; continue; }
         switch ($type) {
           case 's': $r.= $this->escape.strtr($arg, $this->escapeRules).$this->escape; break;
-          case 'd': $r.= sprintf('%.0f', $arg); break;
+          case 'd': $r.= $this->numval($arg); break;
           case 'c': $r.= $arg; break;
-          case 'f': $r.= floatval($arg); break;
+          case 'f': $r.= $this->numval($arg); break;
           case 'u': $r.= $this->escape.date($this->dateFormat, $arg).$this->escape; break;
         }
         $r.= ', ';
@@ -150,6 +150,20 @@
      */
     function setEscape($escape) {
       $this->escape= $escape;
+    }
+    
+    /**
+     * Format a number
+     *
+     * @access  public
+     * @param   mixed arg
+     * @return  string
+     */
+    function numval($arg) {
+      if (0 == sscanf($arg, '%[0-9.+-]%[eE]%[0-9-]', $n, $s, $e))
+        return 'NULL';
+        
+      return ($n.($e ? $s.$e : ''));
     }
   }
 ?>
