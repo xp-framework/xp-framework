@@ -9,8 +9,9 @@ $Id$
 
 Scope of Change
 ---------------
-The package util.adt will be changed and extended to contain generic
-classes and interfaces to replace PHP's array-functions for objects.
+The package util.adt will be renamed to util.collections and in the same
+step changed and extended to contain generic classes and interfaces to 
+replace PHP's array-functions for objects.
 
 
 Rationale
@@ -25,54 +26,56 @@ Quick overview
 ~~~~~~~~~~~~~~
 
 The following classes will be changed:
-* util.adt.Stack
-* util.adt.Set
-* util.adt.HashSet
-* util.adt.Queue
-* util.adt.LRUBuffer
+* util.collections.Stack
+* util.collections.Set
+* util.collections.HashSet
+* util.collections.Queue
+* util.collections.LRUBuffer
 
 The following classes will be added:
-* util.adt.HashTable
+* util.collections.HashTable
 
 The following utility classes and interfaces will be added:
-* util.adt.HashImplementation
-* util.adt.DJBX33AHashImplementation
-* util.adt.HashProvider
-* util.adt.Map
+* util.collections.HashImplementation
+* util.collections.DJBX33AHashImplementation
+* util.collections.HashProvider
+* util.collections.Map
 
 
 Extensions to existing classes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The classes util.adt.Stack, util.adt.HashSet and util.adt.Queue
-will be extended by hashCode() and equals() methods. 
+The classes util.collections.Stack, util.collections.HashSet and 
+util.collections.Queue will be extended by hashCode() and equals() 
+methods. 
 
-The interface util.adt.Set will be extended to contain the methods
-hashCode() and equals().
+The interface util.collections.Set will be extended to contain the 
+methods hashCode() and equals().
 
 
 Changes to existing classes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The class util.adt.LRUBuffer will be changed to work with objects
-instead of primitives. This results in a BC break but will make the
-class consistent with the rest of the classes in this package.
+The class util.collections.LRUBuffer will be changed to work with 
+objects instead of primitives. This results in a BC break but will 
+make the class consistent with the rest of the classes in this 
+package.
 
 
 New classes
 ~~~~~~~~~~~
-The util.adt.HashTable class will be added. It is a hash table 
+The util.collections.HashTable class will be added. It is a hash table 
 consisting of non-null objects as keys and values and implements
-the new util.adt.Map interface.
+the new util.collections.Map interface.
 
-The util.adt.HashProvider class serves as the entry-level class for
-all classes using hashing. It is a singleton and knows about one
+The util.collections.HashProvider class serves as the entry-level class 
+for all classes using hashing. It is a singleton and knows about one
 single (changeable) implementation defaulting to "DJBX33A" (Daniel 
 J. Bernstein, Times 33 with Addition) implemented in the class
-util.adt.DJBX33AHashImplementation.
+util.collections.DJBX33AHashImplementation.
 
 
 Interfaces
 ~~~~~~~~~~
-The util.adt package comes with two interfaces, Set and Map, which
+The util.collections package comes with two interfaces, Set and Map, which
 define the behaviour of the HashSet and HashTable classes. Future 
 extensions such as a IdentityHashMap, a revised version of the current
 util.HashMap or IdentitySet should implement these interface.
