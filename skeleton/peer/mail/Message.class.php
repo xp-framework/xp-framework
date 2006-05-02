@@ -37,6 +37,7 @@
   define('HEADER_DATE',         'Date');
   define('HEADER_MIMEVER',      'Mime-Version');
   define('HEADER_MESSAGEID',    'Message-ID');
+  define('HEADER_RETURNPATH',   'Return-Path');
   
   /**
    * This class models an email message.
@@ -84,7 +85,8 @@
       $size             = 0,
       $mimever          = '1.0',
       $date             = NULL,
-      $message_id       = '';
+      $message_id       = '',
+      $returnpath       = '';
       
     var
       $_headerlookup    = NULL;
@@ -120,6 +122,27 @@
     function getMimeVersion() {
       return $this->mimever;
     }
+
+    /**
+     * Set Returnpath
+     *
+     * @access  public
+     * @param   string returnpath
+     */
+    function setReturnPath($returnpath) {
+      $this->returnpath= $returnpath;
+    }
+
+    /**
+     * Get Returnpath
+     *
+     * @access  public
+     * @return  string
+     */
+    function getReturnPath() {
+      return $this->returnpath;
+    }
+
     
     /**
      * Create string representation. Note: This is not suitable for sending mails,
@@ -663,7 +686,8 @@
         HEADER_ENCODING     => $this->encoding,
         HEADER_PRIORITY     => $this->priority.' ('.$priorities[$this->priority].')',
         HEADER_DATE         => $this->date->toString(),
-        HEADER_MESSAGEID    => $this->message_id
+        HEADER_MESSAGEID    => $this->message_id,
+        HEADER_RETURNPATH   => $this->returnpath
       )) as $key => $val) {
         if (!empty($val)) $h.= $key.': '.$val."\n";
       }
