@@ -355,7 +355,8 @@
      * @return  &util.Date
      */
     function &now() {
-      return new Date(NULL);
+      $d= &new Date(NULL);
+      return $d;
     }
     
     /**
@@ -373,7 +374,8 @@
      * @return  &util.Date
      */
     function &fromString($str) {
-      return new Date($str);
+      $d= &new Date($str);
+      return $d;
     }
     
     /**

@@ -25,7 +25,7 @@
      * @return  &util.Date
      */
     function &getMidnight(&$date) {
-      return new Date(Date::mktime (
+      $d= &new Date(Date::mktime (
         0,
         0,
         0,
@@ -33,6 +33,7 @@
         $date->getDay(),
         $date->getYear()
       ));
+      return $d;
     }
     
     /**
@@ -44,7 +45,7 @@
      * @return  &util.Date
      */
     function &getLastOfMonth(&$date) {
-      return new Date(Date::mktime (
+      $d= &new Date(Date::mktime (
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -52,6 +53,7 @@
         0,
         $date->getYear()
       ));
+      return $d;
     }
     
     /**
@@ -63,7 +65,7 @@
      * @return  &util.Date
      */
     function &getFirstOfMonth(&$date) {
-      return new Date(Date::mktime (
+      $d= &new Date(Date::mktime (
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -71,6 +73,7 @@
         1,
         $date->getYear()
       ));
+      return $d;
     }
     
     /**
@@ -83,7 +86,7 @@
      * @return  &util.Date
      */
     function &addMonths(&$date, $count= 1) {
-      return new Date(Date::mktime(
+      $d= &new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -91,6 +94,7 @@
         $date->getDay(),
         $date->getYear()
       ));
+      return $d;
     }
 
     /**
@@ -116,7 +120,7 @@
      * @return  &util.Date
      */
     function &addDays(&$date, $count= 1) {
-      return new Date(Date::mktime(
+      $d= &new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -124,6 +128,7 @@
         $date->getDay() + $count,
         $date->getYear()
       ));
+      return $d;
     }
     
     /**
@@ -136,7 +141,7 @@
      * @return  &util.Date
      */
     function &addHours(&$date, $count= 1) {
-      return new Date(Date::mktime(
+      $d= &new Date(Date::mktime(
         $date->getHours() + $count,
         $date->getMinutes(),
         $date->getSeconds(),
@@ -144,6 +149,7 @@
         $date->getDay(),
         $date->getYear()
       ));
+      return $d;
     }
     
     /**
@@ -156,7 +162,7 @@
      * @return  &util.Date
      */
     function &addMinutes(&$date, $count= 1) {
-      return new Date(Date::mktime(
+      $d= &new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes() + $count,
         $date->getSeconds(),
@@ -164,6 +170,7 @@
         $date->getDay(),
         $date->getYear()
       ));
+      return $d;
     }
 
     /**
@@ -176,7 +183,7 @@
      * @return  &util.Date
      */
     function &addSeconds(&$date, $count= 1) {
-      return new Date(Date::mktime(
+      $d= &new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds() + $count,
@@ -184,6 +191,7 @@
         $date->getDay(),
         $date->getYear()
       ));
+      return $d;
     }
 
     /**
@@ -197,7 +205,8 @@
      * @return  &util.TimeSpan
      */
     function &timeSpanBetween(&$d1, &$d2) {
-      return new TimeSpan($d1->getTime()-$d2->getTime());  
+      $t= &new TimeSpan($d1->getTime()-$d2->getTime());
+      return $t;
     }
 
   }
