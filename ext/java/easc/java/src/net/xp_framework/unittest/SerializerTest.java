@@ -817,4 +817,18 @@ public class SerializerTest {
         Object[] result= (Object[])valueOf("A:2:{O:32:\"net.xp_framework.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}");
         assertEquals(new Object[] { new Person(), new String("World") }, result);
     }
+
+    /**
+     * Tests deserialization of an object that has a readresolve method
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void valueOfObjectWithReadResolve() throws Exception {
+        Object result= valueOf("O:38:\"net.xp_framework.unittest.EMailAddress\":1:{s:4:\"data\";s:15:\"foo@example.com\";}");
+        assertEquals(
+            new EMailAddress("foo", "example.com"), 
+            result
+        );
+    }
 }
