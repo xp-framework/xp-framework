@@ -214,4 +214,11 @@ Comments
 - friebe, Tue Feb 21 12:16:39 CET 2006
   Recursion-protection patch and adjusted testcase available at above
   locations.
+
+- friebe, Wed May  3 17:16:20 CEST 2006
+  The malicious recursion generation by invoking xp::stringOf() within
+  toString() now results in the default object toString() mechanism
+  being used.
+  Updated patch and adjusted testcase available at above locations.
+ 
 <EOF>
