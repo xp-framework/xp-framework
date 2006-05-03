@@ -13,6 +13,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collection;
@@ -112,6 +113,19 @@ public class Serializer {
         } while (null != (cl= cl.getSuperclass()));
         
         throw new NoSuchFieldException("Field " + fieldName + " not found in " + initCl.getName() + " (or any superclasses)");
+    }
+    
+    /**
+     * Workaround for "missing" java.lang.Class.hasMethod()
+     *
+     */
+    private static Method findReadResolveMethod(Class c) {
+        for (Method m: classMethods(c)) {
+            if ("readResolve".equals(m.getName()) && 0 == m.getParameterTypes().length) {
+                return m;
+            }
+        }
+        return null;
     }
     
     private static enum Token {
@@ -281,6 +295,29 @@ public class Serializer {
                 }
 
                 length.value= offset + 1;
+                
+                // Check for a readResolve() method
+                Method readResolve= Serializer.findReadResolveMethod(c);
+                if (null != readResolve) {
+                    try {
+                        readResolve.setAccessible(true);
+                        return readResolve.invoke(instance, new Object[] { });
+                    } catch (IllegalAccessException e) {
+                        throw new SerializationException(
+                            e.getMessage() + " during call to " + c + ".readResolve()"
+                        );
+                    } catch (IllegalArgumentException e) {
+                        throw new SerializationException(
+                            e.getMessage() + " during call to " + c + ".readResolve()"
+                        );
+                    } catch (InvocationTargetException e) {
+                        throw new SerializationException(
+                            e.getMessage() + " during call to " + c + ".readResolve()"
+                        );
+                    }
+                }
+                
+                
                 return instance;
             }
         },
@@ -401,6 +438,20 @@ public class Serializer {
             for (Field f : c.getDeclaredFields()) {
                 int modifiers= f.getModifiers();
                 if (Modifier.isTransient(modifiers) || Modifier.isStatic(modifiers)) continue;
+                list.add(f);
+            }
+        } while (null != (c= c.getSuperclass()));
+        
+        return list;
+    }
+
+    public static ArrayList<Method> classMethods(Class c) {
+        ArrayList<Method> list= new ArrayList<Method>();
+        
+        do {
+            for (Method f : c.getDeclaredMethods()) {
+                int modifiers= f.getModifiers();
+                if (Modifier.isStatic(modifiers)) continue;
                 list.add(f);
             }
         } while (null != (c= c.getSuperclass()));
