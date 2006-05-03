@@ -30,7 +30,7 @@
       $tokens= token_get_all('<?php '.trim($code).' ?>');
       $expressions= &Collection::forClass('Fragment');
       $expression= '';
-      $line= 1;
+      $line= $last= 1;
       $level= 0;
       $collections= array(&$expressions);
       
@@ -39,37 +39,43 @@
       for ($i= 1, $s= sizeof($tokens)- 2; $i < $s; $i++) {
         switch ($tokens[$i][0]) {
           case ';':           // EOE
-            $collections[$level]->add(new Expression(trim($expression).';', $line));
+            $collections[$level]->add(new Expression(trim($expression).';', $last, $line));
             $expression= '';
+            $last= -1;
             break;
           
           case '{':           // SOB
-            $block= &$expressions->add(new Block(trim($expression), array(), $line));
+            $block= &$expressions->add(new Block(trim($expression), array(), $line, -1));
             $collections[++$level]= &$block->expressions;
             $expression= '';
+            $last= -1;
             break;
           
           case '}':           // EOB
             unset($collections[$level]);
+            $block->end= $line;
             $level--;
             $expression= '';
+            $last= -1;
             break;
           
           case T_COMMENT:
           case T_CONSTANT_ENCAPSED_STRING:
           case T_WHITESPACE:
             $line+= substr_count($tokens[$i][1], "\n");
+            $last == -1 && $last= $line;
             $expression.= $tokens[$i][1];
             break;
             
           default:
+            $last == -1 && $last= $line;
             $expression.= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i];
         }
       }
       
       // Check for leftover tokens
       if ($expression) {
-        $collections[$level]->add(new Expression(trim($expression).';', $line));
+        $collections[$level]->add(new Expression(trim($expression).';', $last, $line));
       }
       
       return $expressions->values();
@@ -118,7 +124,7 @@
     #[@test]
     function singleExpression() {
       $this->assertExpressions(array(
-        new Expression('$a= 1;', 1),
+        new Expression('$a= 1;', 1, 1),
       ), '$a= 1;');
     }
 
@@ -131,7 +137,7 @@
     #[@test]
     function missingTrailingSemicolon() {
       $this->assertExpressions(array(
-        new Expression('$a= 1;', 1),
+        new Expression('$a= 1;', 1, 1),
       ), '$a= 1');
     }
 
@@ -143,8 +149,8 @@
     #[@test]
     function multipleExpressionsPerLine() {
       $this->assertExpressions(array(
-        new Expression('$a= 1;', 1),
-        new Expression('$b= 1;', 1),
+        new Expression('$a= 1;', 1, 1),
+        new Expression('$b= 1;', 1, 1),
       ), '$a= 1; $b= 1;');
     }
 
@@ -159,7 +165,7 @@
         new Expression('$a= (5 == strlen("Hello")
           ? "good"
           : "bad"
-        );', 4),
+        );', 1, 4),
       ), '
         $a= (5 == strlen("Hello")
           ? "good"
@@ -176,8 +182,8 @@
     #[@test]
     function twoExpressions() {
       $this->assertExpressions(array(
-        new Expression('statement_on_line_one();', 1),
-        new Expression('statement_on_line_two();', 2),
+        new Expression('statement_on_line_one();', 1, 1),
+        new Expression('statement_on_line_two();', 2, 2),
       ), '
         statement_on_line_one(); 
         statement_on_line_two();
@@ -193,7 +199,7 @@
     #[@test]
     function stringsContainingExpressions() {
       $this->assertExpressions(array(
-        new Expression('echo "A statement: statement_on_line_one();";', 1),
+        new Expression('echo "A statement: statement_on_line_one();";', 1, 1),
       ), 'echo "A statement: statement_on_line_one();";');
     }
     
@@ -205,7 +211,7 @@
     #[@test]
     function singleBlock() {
       $this->assertExpressions(array(
-        new Block(NULL, array(new Expression('$a= 1;', 1)), 1),
+        new Block(NULL, array(new Expression('$a= 1;', 1, 1)), 1, 1),
       ), '{ $a= 1; }');
     }
 
@@ -217,7 +223,7 @@
     #[@test]
     function ifBlock() {
       $this->assertExpressions(array(
-        new Block('if (TRUE)', array(new Expression('exit;', 1)), 1),
+        new Block('if (TRUE)', array(new Expression('exit;', 1, 1)), 1, 1),
       ), 'if (TRUE) { exit; }');
     }
 
@@ -229,8 +235,8 @@
     #[@test]
     function ifElseBlock() {
       $this->assertExpressions(array(
-        new Block('if (TRUE)', array(new Expression('$i++;', 2)), 1),
-        new Block('else', array(new Expression('$i--;', 4)), 3),
+        new Block('if (TRUE)', array(new Expression('$i++;', 2, 2)), 1, 3),
+        new Block('else', array(new Expression('$i--;', 4, 4)), 3, 5),
       ), '
         if (TRUE) { 
           $i++;

@@ -12,19 +12,22 @@
    */
   class Expression extends Object {
     var
-      $code = '',
-      $line = 0;
+      $code   = '',
+      $start  = 0,
+      $end    = 0;
       
     /**
      * Constructor
      *
      * @access  public
      * @param   string code
-     * @param   int line
+     * @param   int start the first line
+     * @param   int end the last line
      */
-    function __construct($code, $line) {
+    function __construct($code, $start, $end) {
       $this->code= $code;
-      $this->line= $line;
+      $this->start= $start;
+      $this->end= $end;
     }
     
     /**
@@ -38,7 +41,8 @@
       return (
         is('Expression', $expr) && 
         $this->code == $expr->code &&
-        $this->line == $expr->line
+        $this->start == $expr->start &&
+        $this->end == $expr->end
       );
     }
 
@@ -49,7 +53,7 @@
      * @return  string
      */
     function toString() {
-      return $this->getClassName().'@({'.$this->code.'} at line '.$this->line.')';
+      return $this->getClassName().'@({'.$this->code.'} at lines '.$this->start.' - '.$this->end.')';
     }
 
   } implements(__FILE__, 'net.xp_framework.unittest.tests.coverage.Fragment');

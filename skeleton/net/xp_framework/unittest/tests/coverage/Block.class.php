@@ -15,7 +15,8 @@
   class Block extends Object {
     var
       $code        = '',
-      $line        = 0,
+      $start       = 0,
+      $end         = 0,
       $expressions = NULL;
       
     /**
@@ -23,11 +24,13 @@
      *
      * @access  public
      * @param   net.xp_framework.unittest.tests.coverage.Expression[] expressions
-     * @param   int line
+     * @param   int start the first line
+     * @param   int end the last line
      */
-    function __construct($code, $expressions, $line) {
+    function __construct($code, $expressions, $start, $end) {
       $this->code= $code;
-      $this->line= $line;
+      $this->start= $start;
+      $this->end= $end;
       $this->expressions= &Collection::forClass('Fragment');
       $this->expressions->addAll($expressions);
     }
@@ -42,7 +45,8 @@
     function equals(&$block) {
       return (
         is('Block', $block) && 
-        $this->line == $block->line &&
+        $this->start == $block->start &&
+        $this->end == $block->end &&
         $this->code == $block->code &&
         $this->expressions->equals($block->expressions)
       );
@@ -55,7 +59,7 @@
      * @return  string
      */
     function toString() {
-      return $this->getClassName().'@({'.$this->code.' {'.$this->expressions->toString().'}} at line '.$this->line.')';
+      return $this->getClassName().'@({'.$this->code.' {'.$this->expressions->toString().'}} at lines '.$this->start.' - '.$this->end.')';
     }
 
   } implements(__FILE__, 'net.xp_framework.unittest.tests.coverage.Fragment');
