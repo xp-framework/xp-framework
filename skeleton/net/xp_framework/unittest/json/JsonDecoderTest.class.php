@@ -256,7 +256,7 @@
       $o->prop= 'prop';
 
       $this->assertEquals(
-        '{ "__jsonclass__" : { "__id" : "<bogusid>" , "prop" : "prop" } , "__xpclass__" : "lang.Object" }',
+        '{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "lang.Object" , "__id" : "<bogusid>" , "prop" : "prop" }',
         $this->decoder->encode($o)
       );
     }    
@@ -274,7 +274,7 @@
 
       $this->assertEquals(
         $o,
-        $this->decoder->decode('{ "__jsonclass__" : { "__id" : "<bogusid>" , "prop" : "prop" } , "__xpclass__" : "lang.Object" }')
+        $this->decoder->decode('{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "lang.Object" , "__id" : "<bogusid>" , "prop" : "prop" }')
       );
     }    
   }

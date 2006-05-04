@@ -79,9 +79,12 @@
             }
             
             // __xpclass__ is an addition to the spec, I added to be able to pass the FQCN
-            $data= array(
-              '__jsonclass__' => $vars,
-              '__xpclass__'   => $data->getClassName()      
+            $data= array_merge(
+              array(
+                '__jsonclass__' => array('__construct()'),
+                '__xpclass__'   => $data->getClassName()
+              ),
+              $vars
             );
           } else {
             $data= (array)$data;
@@ -215,8 +218,8 @@
         $class= &XPClass::forName($array['__xpclass__']);
         $inst= &$class->newInstance();
         
-        foreach ($array['__jsonclass__'] as $key => $value) {
-          if ('constructor' == $key) continue;
+        foreach ($array as $key => $value) {
+          if (in_array($key, array('__jsonclass__', '__xpclass__'))) continue;
           $inst->{$key}= $value;
         }
         
