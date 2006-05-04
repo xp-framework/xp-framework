@@ -20,17 +20,34 @@
       $nowTime  = 0,
       $nowDate  = NULL,
       $refDate  = NULL;
-      
+    
+    var
+      $origTZ   = '';
+
     /**
      * Set up this test
      *
      * @access  public
      */
     function setUp() {
+      $this->origTZ= getenv('TZ');
+      putenv('TZ=GMT');
+      
       $this->nowTime= time();
       $this->nowDate= &new Date($this->nowTime);
       $this->refDate= &Date::fromString('1977-12-14 11:55');
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function tearDown() {
+      putenv('TZ='.$this->origTZ);
+    }    
     
     /**
      * Test date class
@@ -192,5 +209,24 @@
       $stamp= &Date::mktime(0, 0, 0, '08', '02', 1968);
       $this->assertEquals($stamp, -44668800, 'Wrong timestamp');
     }
+    
+    /**
+     * Test date parsing in different formats in
+     * pre 1970 epoch.
+     *
+     * @see     bug://13
+     * @access  public
+     */    
+    #[@test]
+    function pre1970() {
+      $d= &Date::fromString('01.02.1969');
+      $this->assertDateEquals($d, '1969-02-01 00:00:00');
+      
+      $d= &Date::fromString('1969-02-01');
+      $this->assertDateEquals($d, '1969-02-01 00:00:00');
+      
+      $d= Date::fromString('1969-02-01 00:00AM');
+      $this->assertDateEquals($d, '1969-02-01 00:00:00');
+    }    
   }
 ?>
