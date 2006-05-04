@@ -245,13 +245,37 @@
     }
     
     /**
-     * Test decoding of unsupported datatype
+     * Test encoding of object
      *
      * @access  public
      */
-    #[@test,@expect('org.json.JsonException')]
+    #[@test]
     function encodeObject() {
-      $this->decoder->encode(new StdClass());
+      $o= &new Object();
+      $o->__id= '<bogusid>';
+      $o->prop= 'prop';
+
+      $this->assertEquals(
+        '{ "__jsonclass__" : { "__id" : "<bogusid>" , "prop" : "prop" } , "__xpclass__" : "lang.Object" }',
+        $this->decoder->encode($o)
+      );
+    }    
+
+    /**
+     * Test decoding of object
+     *
+     * @access  public
+     */
+    #[@test]
+    function decodeObject() {
+      $o= &new Object();
+      $o->__id= '<bogusid>';
+      $o->prop= 'prop';
+
+      $this->assertEquals(
+        $o,
+        $this->decoder->decode('{ "__jsonclass__" : { "__id" : "<bogusid>" , "prop" : "prop" } , "__xpclass__" : "lang.Object" }')
+      );
     }    
   }
 ?>
