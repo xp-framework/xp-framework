@@ -65,6 +65,31 @@
           return 'null';
         }
         
+        case 'object': {
+          // Convert objects to arrays and store the classname with them as
+          // suggested by JSON-RPC
+          if (is('lang.Object', $data)) {
+            if (!method_exists($data, '__sleep')) {
+              $vars= get_object_vars($data);
+            } else {
+              $vars= array(
+                'constructor' => '__construct()'
+              );
+              foreach ($data->__sleep() as $var) $vars[$var]= &$data->{$var};
+            }
+            
+            // __xpclass__ is an addition to the spec, I added to be able to pass the FQCN
+            $data= array(
+              '__jsonclass__' => $vars,
+              '__xpclass__'   => $data->getClassName()      
+            );
+          } else {
+            $data= (array)$data;
+          }
+          
+          // Break missing intentially
+        }
+        
         case 'array': {
           if ($this->_isVector($data)) {
             // Bail out early on bordercase
@@ -184,6 +209,19 @@
           }
         }
       } while ($token != JSON_TOKEN_RBRACE);
+
+      // Introspect array to check if this is actually an object
+      if (!empty($array['__jsonclass__']) && !empty($array['__xpclass__'])) {
+        $class= &XPClass::forName($array['__xpclass__']);
+        $inst= &$class->newInstance();
+        
+        foreach ($array['__jsonclass__'] as $key => $value) {
+          if ('constructor' == $key) continue;
+          $inst->{$key}= $value;
+        }
+        
+        return $inst;
+      }
 
       return $array;
     }    
