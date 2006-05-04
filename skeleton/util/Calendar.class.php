@@ -42,7 +42,9 @@
         $w= date('w', $m= mktime(0, 0, 0, 4, $i, $year));
         $i+= $ofs;
       } while ($w > 0);
-      return new Date($m);
+
+      $d= &new Date($m);
+      return $d;
     }
   
     /**
@@ -60,7 +62,9 @@
       do {
         $w= date('w', $m= mktime(0, 0, 0, 11, $i--, $year));
       } while ($w > 0);
-      return new Date($m);
+
+      $d= &new Date($m);
+      return $d;
     }
     
     /**
@@ -122,7 +126,8 @@
      * @return  &util.Date
      */
     function &midnight(&$date) {
-      return new Date(mktime(0, 0, 0, $date->mon, $date->mday, $date->year));
+      $d= &new Date(mktime(0, 0, 0, $date->mon, $date->mday, $date->year));
+      return $d;
     }
     
     /**
@@ -135,7 +140,8 @@
      * @return  &util.Date
      */
     function &monthBegin(&$date) {
-      return new Date(mktime(0, 0, 0, $date->mon, 1, $date->year));
+      $d= &new Date(mktime(0, 0, 0, $date->mon, 1, $date->year));
+      return $d;
     }
 
     /**
@@ -148,7 +154,8 @@
      * @return  &util.Date
      */
     function &monthEnd(&$date) {
-      return new Date(mktime(23, 59, 59, $date->mon+ 1, 0, $date->year));
+      $d= &new Date(mktime(23, 59, 59, $date->mon+ 1, 0, $date->year));
+      return $d;
     }
 
     /**
@@ -202,7 +209,8 @@
         $s+= CAL_SEC_DAY;
       }
       
-      return new Date($s);
+      $d= &new Date($s);
+      return $d;
     }
     
     /**
@@ -228,7 +236,8 @@
       $m = 3 + (int)(($l + 40) / 44);
       $d = $l + 28 - 31 * ((int)($m / 4));
 
-      return new Date(mktime(0, 0, 0, $m, $d, $year));
+      $d= &new Date(mktime(0, 0, 0, $m, $d, $year));
+      return $d;
     }
     
     /**
