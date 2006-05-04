@@ -24,10 +24,49 @@
     }
     // }}}
 
-    // {{{ public string stringOf(&mixed arg)
+    // {{{ public string stringOf(&mixed arg [, string indent default ''])
     //     Returns a string representation of the given argument
-    function stringOf(&$arg) {
-      return is_a($arg, 'Object') ? $arg->toString() : var_export($arg, 1);
+    function stringOf(&$arg, $indent= '') {
+      static $protect= array();
+
+      if (is_string($arg)) {
+        return '"'.$arg.'"';
+      } else if (is_bool($arg)) {
+        return $arg ? 'true' : 'false';
+      } else if (is_null($arg)) {
+        return 'null';
+      } else if (is_a($arg, 'null')) {
+        return '<null>';
+      } else if (is_int($arg) || is_float($arg)) {
+        return (string)$arg;
+      } else if (is_a($arg, 'Object') && !isset($protect[$arg->__id])) {
+        $protect[$arg->__id]= TRUE;
+        $s= $arg->toString();
+        unset($protect[$arg->__id]);
+        return $s;
+      } else if (is_array($arg)) {
+        $ser= serialize($arg);
+        if (isset($protect[$ser])) return '->{:recursion:}';
+        $protect[$ser]= TRUE;
+        $r= "[\n";
+        foreach (array_keys($arg) as $key) {
+          $r.= $indent.'  '.$key.' => '.xp::stringOf($arg[$key], $indent.'  ')."\n";
+        }
+        unset($protect[$ser]);
+        return $r.$indent.']';
+      } else if (is_object($arg)) {
+        $ser= serialize($arg);
+        if (isset($protect[$ser])) return '->{:recursion:}';
+        $protect[$ser]= TRUE;
+        $r= xp::nameOf(get_class($arg))." {\n";
+        foreach (array_keys(get_object_vars($arg)) as $key) {
+          $r.= $indent.'  '.$key.' => '.xp::stringOf($arg->{$key}, $indent.'  ')."\n";
+        }
+        unset($protect[$ser]);
+        return $r.$indent.'}';
+      } else if (is_resource($arg)) {
+        return 'resource(type= '.get_resource_type($arg).', id= '.(int)$arg.')';
+      }
     }
     // }}}
 
