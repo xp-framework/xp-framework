@@ -39,11 +39,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Bring down testcase
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function tearDown() {
       putenv('TZ='.$this->origTZ);
