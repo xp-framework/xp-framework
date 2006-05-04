@@ -221,4 +221,8 @@ Comments
   being used.
   Updated patch and adjusted testcase available at above locations.
  
+- kiesel, Thu May  4 12:18:35 CEST 2006
+  Fixed recursion bug with repeated xp::stringOf invokations and added
+  one more test.
+
 <EOF>
