@@ -84,7 +84,7 @@
      */
     #[@test]
     function stringOf() {
-      $this->assertEquals("class null {\n}", xp::stringOf(xp::null()));
+      $this->assertEquals('<null>', xp::stringOf(xp::null()));
     }
     
     /**
