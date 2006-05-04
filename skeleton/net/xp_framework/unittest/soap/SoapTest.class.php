@@ -24,7 +24,7 @@
     #[@test]
     function testSerialization() {
       $msg= &new SOAPMessage();
-      $msg->create('Test', 'testSerialization');
+      $msg->createCall('Test', 'testSerialization');
       $this->assertEquals($msg->action, 'Test');
       $this->assertEquals($msg->method, 'testSerialization');
       $this->assertEquals($msg->root->name, 'SOAP-ENV:Envelope');
