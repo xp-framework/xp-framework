@@ -64,7 +64,7 @@
             $last= substr_count($tokens[$i][1], "\n");
             $collections[$level]->add(new Comment($tokens[$i][1], $line, $last+ $line));
             $expression= '';
-            $line= $last;
+            $line+= $last;
             $last= -1;
             break;
             
@@ -279,6 +279,26 @@
         array(new Comment($comment, 1, 4)),
         $comment
       );
+    }
+
+    /**
+     * Tests apidoc style comments
+     *
+     * @access  public
+     */
+    #[@test]
+    function methodWithApiDocComment() {
+      $comment= "/**\n * APIDOC\n * @return  Should return TRUE\n */";
+      $method= "function phrickeling() {\n  return TRUE;\n}";
+      $this->assertExpressions(array(
+        new Comment($comment, 1, 4),
+        new Block(
+          'function phrickeling()', 
+          array(new Expression('return TRUE;', 6, 6)),
+          5,
+          7
+        )
+      ), $comment."\n".$method);
     }
   }
 ?>
