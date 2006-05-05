@@ -276,7 +276,7 @@
     function apiDocComment() {
       $comment= "/**\n * APIDOC\n * @return  Should return TRUE\n */";
       $this->assertExpressions(
-        array(new Comment($comment, 1, 3)),
+        array(new Comment($comment, 1, 4)),
         $comment
       );
     }
