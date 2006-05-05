@@ -8,6 +8,7 @@
     'util.profiling.unittest.TestCase',
     'lang.Collection',
     'net.xp_framework.unittest.tests.coverage.Expression',
+    'net.xp_framework.unittest.tests.coverage.Comment',
     'net.xp_framework.unittest.tests.coverage.Block'
   );
 
@@ -60,6 +61,12 @@
             break;
           
           case T_COMMENT:
+            $collections[$level]->add(new Comment($tokens[$i][1], $last, $line));
+            $line+= substr_count($tokens[$i][1], "\n");
+            $expression= '';
+            $last= -1;
+            break;
+            
           case T_CONSTANT_ENCAPSED_STRING:
           case T_WHITESPACE:
             $line+= substr_count($tokens[$i][1], "\n");
@@ -244,6 +251,19 @@
           $i--;
         }
       ');
+    }
+
+    /**
+     * Tests C++ style comments
+     *
+     * @access  public
+     */
+    #[@test]
+    function cPlusPlusComment() {
+      $this->assertExpressions(
+        array(new Comment('/* Hello */', 1, 1)),
+        '/* Hello */'
+      );
     }
   }
 ?>
