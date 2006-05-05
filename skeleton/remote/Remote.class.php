@@ -7,7 +7,7 @@
   uses(
     'peer.URL', 
     'remote.HandlerFactory', 
-    'remote.RemoteInterfaceMapping', 
+    'remote.protocol.RemoteInterfaceMapping', 
     'remote.UserTransaction'
   );
 
