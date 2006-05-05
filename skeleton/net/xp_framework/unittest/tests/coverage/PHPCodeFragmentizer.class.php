@@ -46,7 +46,7 @@
             break;
           
           case '{':           // SOB
-            $block= &$expressions->add(new Block(trim($expression), array(), $line, -1));
+            $block= &$collections[$level]->add(new Block(trim($expression), array(), $line, -1));
             $collections[++$level]= &$block->expressions;
             $expression= '';
             $last= -1;
