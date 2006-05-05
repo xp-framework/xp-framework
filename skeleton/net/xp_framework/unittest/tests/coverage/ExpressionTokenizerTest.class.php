@@ -61,9 +61,10 @@
             break;
           
           case T_COMMENT:
-            $collections[$level]->add(new Comment($tokens[$i][1], $last, $line));
-            $line+= substr_count($tokens[$i][1], "\n");
+            $last= substr_count($tokens[$i][1], "\n");
+            $collections[$level]->add(new Comment($tokens[$i][1], $line, $last+ $line));
             $expression= '';
+            $line= $last;
             $last= -1;
             break;
             
@@ -263,6 +264,20 @@
       $this->assertExpressions(
         array(new Comment('/* Hello */', 1, 1)),
         '/* Hello */'
+      );
+    }
+
+    /**
+     * Tests apidoc style comments
+     *
+     * @access  public
+     */
+    #[@test]
+    function apiDocComment() {
+      $comment= "/**\n * APIDOC\n * @return  Should return TRUE\n */";
+      $this->assertExpressions(
+        array(new Comment($comment, 1, 3)),
+        $comment
       );
     }
   }
