@@ -195,11 +195,11 @@
     }
 
     /**
-     * Tests a nested blocks
+     * Tests nested blocks
      *
      * @access  public
      */
-    #[@test, @ignore('Outer block goes from lines 1 to -1')]
+    #[@test]
     function nestedBlocks() {
       $this->assertExpressions(array(
         new Block(NULL, array(new Block(NULL, array(new Expression('$a= 1;', 1, 1)), 1, 1)), 1, 1),

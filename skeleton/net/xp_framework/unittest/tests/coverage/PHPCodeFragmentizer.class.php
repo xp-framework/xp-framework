@@ -34,6 +34,7 @@
       $line= $last= 1;
       $level= 0;
       $collections= array(&$expressions);
+      $blocks= array();
       
       // Iterate over tokens, starting from the T_OPEN_TAG and ending 
       // before the traling T_WHITESPACE and T_CLOSE_TAG tokens.
@@ -46,16 +47,16 @@
             break;
           
           case '{':           // SOB
-            $block= &$collections[$level]->add(new Block(trim($expression), array(), $line, -1));
-            $collections[++$level]= &$block->expressions;
+            $blocks[$level]= &$collections[$level]->add(new Block(trim($expression), array(), $line, -1));
+            $collections[++$level]= &$blocks[$level- 1]->expressions;
             $expression= '';
             $last= -1;
             break;
           
           case '}':           // EOB
             unset($collections[$level]);
-            $block->end= $line;
             $level--;
+            $blocks[$level]->end= $line;
             $expression= '';
             $last= -1;
             break;
