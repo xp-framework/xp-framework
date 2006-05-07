@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.xmlrpc.XmlRpcMessage');
+  uses('xml.xmlrpc.XmlRpcResponseMessage', 'xml.xmlrpc.XmlRpcRequestMessage');
 
   /**
    * This is a XML-RPC client; XML-RPC is a remote procedure call
