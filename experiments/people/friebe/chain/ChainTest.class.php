@@ -96,7 +96,7 @@
     function fluentInterface() {
       $expectancy= &chain(new Expectancy(), 'method("sayHello")', 'isInvoked(1)', 'with(array("World"))');
       $this->assertEquals(
-        'Expectancy(method sayHello invoked 1 times with [\'World\'] as arguments)',
+        'Expectancy(method sayHello invoked 1 times with ["World"] as arguments)',
         $expectancy->toString()
       );
     }
