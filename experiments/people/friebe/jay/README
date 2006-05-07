@@ -7,7 +7,8 @@ What's this?
 ------------
 Here's an overview.
 * phpJay: Compiler generator
-* compile.php: Compiler and executor
+* compile.php: Compiler
+* execute.php: Executor
 * XP2.jay: Grammar
 * test.php: Testfile for compiler
 
