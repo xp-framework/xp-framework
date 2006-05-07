@@ -34,7 +34,7 @@
       $instance->__types[$tokens[$i]]= trim($type);
     }
     
-    // Call constructor if existant
+    // Call constructor
     $a= func_get_args();
     call_user_func_array(array(&$instance, 'Object'), array_slice($a, 1));
     
@@ -104,6 +104,7 @@
         switch ($state.$tokens[$i][0]) {
           case GENERIC_PARSER_ST_INITIAL.T_CLASS:
             $this->buffer.= 'class';
+            $class= $tokens[$i+ 2][1];
             $state= GENERIC_PARSER_ST_DECL;
             break;
           
@@ -126,7 +127,12 @@
             break;
             
           case GENERIC_PARSER_ST_DECL.'{':
-            $this->buffer.= "{\n    var \$__types= array();";
+            $this->buffer.= (
+              "{\n    var \$__types= array();".
+              "\n    function ".$class."() {".
+              "\n      throw(new InstantiationException('Cannot be instantiated directly'));".
+              "\n    }"
+            );
             $state= GENERIC_PARSER_ST_BODY;
             break;
 

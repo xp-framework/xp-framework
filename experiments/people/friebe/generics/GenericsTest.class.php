@@ -41,6 +41,16 @@
     }
 
     /**
+     * Tests generics cannot be constructed directly (by means of new).
+     *
+     * @access  public
+     */
+    #[@test, @expect('InstantiationException')]
+    function cannotBeConstructedDirectly() {
+      new GenericMap();
+    }
+
+    /**
      * Tests create()
      *
      * @access  public
