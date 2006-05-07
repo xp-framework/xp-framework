@@ -135,11 +135,6 @@ will become:
 This way, method invocation can be avoided in case incorrect types are
 passed.
 
-When a constructor declaration is encountered, its name is rewritten
-from __construct() to __generic(). This is necessary for create() to be
-able to assign the runtime types prior to any statements that would
-be executed in the constructor needing to know about these types.
-
 
 Instanciation
 ~~~~~~~~~~~~~
@@ -156,13 +151,12 @@ Example:
 #2: Here, "IdentityMap" is the class name and "int" and "Object" are the
     component types. 
 
-An instance of the class is created by means of the "new" operator.
+An instance of the class is created without invoking the constructor.
 The runtime types are deferred and assigned to the created instance's
 __types member. For #1, the member would contain { "E" => "String" },
 for #2, it would be { "K" => "int", "V" => "Object" }.
 
-After creation, the __generic() method is called if existant (see notes
-on constructor declaration rewriting from above).
+After creation, the constructor is called if existant.
 
 
 Type verification

@@ -18,17 +18,19 @@
 
     $class= xp::reflect($classname);
     $tokens= uwrp·generic::tokens($class);
-    $instance= &new $class();
+    
+    // Instanciate without invoking the constructor
+    $instance= unserialize('O:'.strlen($class).':"'.$class.'":0:{}');
 
     // Pass types
     foreach (explode(',', $types) as $i => $type) {
       $instance->__types[$tokens[$i]]= trim($type);
     }
     
-    // Call rewritten constructor if existant.
-    if (method_exists($instance, '__generic')) {
+    // Call constructor if existant
+    if (method_exists($instance, '__construct')) {
       $a= func_get_args();
-      call_user_func_array(array(&$instance, '__generic'), array_slice($a, 1));
+      call_user_func_array(array(&$instance, '__construct'), array_slice($a, 1));
     }
     
     return $instance;
@@ -130,7 +132,7 @@
 
           case GENERIC_PARSER_ST_METHOD_DECL.T_STRING:
             $method= $tokens[$i][1];
-            $this->buffer.= '__construct' == $method ? '__generic' : $method;
+            $this->buffer.= $method;
             break;
 
           case GENERIC_PARSER_ST_METHOD_DECL.'(':
