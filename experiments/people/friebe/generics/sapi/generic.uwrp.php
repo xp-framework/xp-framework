@@ -28,10 +28,8 @@
     }
     
     // Call constructor if existant
-    if (method_exists($instance, '__construct')) {
-      $a= func_get_args();
-      call_user_func_array(array(&$instance, '__construct'), array_slice($a, 1));
-    }
+    $a= func_get_args();
+    call_user_func_array(array(&$instance, 'Object'), array_slice($a, 1));
     
     return $instance;
   }
