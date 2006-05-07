@@ -10,8 +10,9 @@
   );
 
   /**
-   * Test framework code
+   * Test XML Node class
    *
+   * @see      xp://net.xp_framework.unittest.xml.TreeTest 
    * @purpose  Unit Test
    */
   class NodeTest extends TestCase {
