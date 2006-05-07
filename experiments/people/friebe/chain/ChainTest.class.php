@@ -25,7 +25,8 @@
      * @return  util.log.LogCategory[2]
      */
     function getCategories() {
-      return array(new LogCategory(), new LogCategory());
+      $l= &Logger::getInstance();
+      return array($l->getCategory('primary'), $l->getCategory('backup'));
     }
       
     /**
