@@ -78,7 +78,7 @@
       parent::__construct('rdf:RDF');
       $this->root->setAttribute('xmlns:rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
       $this->root->setAttribute('xmlns:dc',  'http://purl.org/dc/elements/1.1/');
-      $this->root->setAttribute('xmlns',     'http://my.netscape.com/rdf/simple/0.9/');
+      $this->root->setAttribute('xmlns',     'http://purl.org/rss/1.0/');
 
       $this->channel= &new stdClass();
       $this->image= &new stdClass();
@@ -108,7 +108,7 @@
       $publisher= '', 
       $rights= ''
     ) {
-      if (NULL === $date) $date= &new Date(time());
+      if (NULL === $date) $date= &Date::now();
       
       $this->channel->title= $title;
       $this->channel->link= $link;
@@ -118,7 +118,7 @@
       $this->channel->creator= $creator;
       $this->channel->publisher= $publisher;
       $this->channel->copyright= $rights;
-      
+     
       $node= &Node::fromArray(array(
         'title'         => $title,
         'link'          => $link,
@@ -129,8 +129,12 @@
         'dc:publisher'  => $publisher,
         'dc:rights'     => $rights
       ), 'channel');
-      if (!isset($this->channel->node)) $node= &$this->root->addChild($node);
+      $items= &$node->addChild(new Node('items'));
+
       $this->channel->node= &$node;
+      $this->channel->sequence= &$items->addChild(new Node('rdf:Seq'));
+
+      $this->root->children[0]= &$node;
     }
     
     /**
@@ -187,7 +191,7 @@
      * @param   string link
      * @param   string description default ''
      * @param   string util.Date default NULL date defaulting to current date/time
-     * @return  &php.stdclass the added item
+     * @return  object the added item
      */
     function &addItem($title, $link, $description= '', $date= NULL) {
       if (NULL === $date) {
@@ -205,8 +209,10 @@
         'description'   => $description,
         'dc:date'       => $date->toString('Y-m-d\TH:i:s')
       ), 'item');
+      $node->setAttribute('rdf:about', $link);
       $item->node= &$this->root->addChild($node);
       $this->items[]= &$item;
+      $this->channel->sequence->addChild(new Node('rdf:li', NULL, array('rdf:resource' => $link)));
       
       return $item;
     }
