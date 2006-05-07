@@ -252,5 +252,77 @@
         )
       ), $comment."\n".$method);
     }
+
+    /**
+     * Tests a class declaration
+     *
+     * @access  public
+     */
+    #[@test]
+    function classDeclaration() {
+      $declaration= '
+        /**
+         * Class api doc here
+         *
+         * @see   xp://util.profiling.unittest.TestCase
+         */
+        class StringBuffer extends Object {
+          var $buffer;
+
+          /**
+           * Constructor
+           *
+           * @access  public
+           * @param   string initial
+           */
+          function __construct($initial) {
+            $this->buffer= $initial;
+          }
+          
+          /**
+           * Find the string offset of the given search string within this
+           * string buffer.
+           *
+           * @access  public
+           * @param   string search
+           * @return  int offset or -1 if the search string was not found
+           */
+          function indexOf($search) {
+            return FALSE === $p= strpos($this->buffer, $search) ? -1 : $p;
+          }
+        }
+      ';
+
+      $this->assertExpressions(array(
+        new Comment('/**
+         * Class api doc here
+         *
+         * @see   xp://util.profiling.unittest.TestCase
+         */', 1, 5),
+        new Block('class StringBuffer extends Object', array(
+          new Expression('var $buffer;', 7, 7),
+          new Comment('/**
+           * Constructor
+           *
+           * @access  public
+           * @param   string initial
+           */', 9, 14),
+          new Block('function __construct($initial)', array(
+            new Expression('$this->buffer= $initial;', 16, 16),
+          ), 15, 17),
+          new Comment('/**
+           * Find the string offset of the given search string within this
+           * string buffer.
+           *
+           * @access  public
+           * @param   string search
+           * @return  int offset or -1 if the search string was not found
+           */', 19, 26),
+          new Block('function indexOf($search)', array(
+            new Expression('return FALSE === $p= strpos($this->buffer, $search) ? -1 : $p;', 28, 28)
+          ), 27, 29)
+        ), 6, 30)
+      ), $declaration);
+    }
   }
 ?>
