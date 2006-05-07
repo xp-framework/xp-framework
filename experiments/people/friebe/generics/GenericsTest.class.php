@@ -30,6 +30,17 @@
     }
 
     /**
+     * Tests create() calls Object constructor
+     *
+     * @access  public
+     */
+    #[@test]
+    function objectConstructorCalled() {
+      $hash= &create('GenericMap<int, String>');
+      $this->assertNotEmpty($hash->__id);
+    }
+
+    /**
      * Tests create()
      *
      * @access  public
