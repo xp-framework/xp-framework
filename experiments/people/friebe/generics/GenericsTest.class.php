@@ -72,6 +72,26 @@
     }
 
     /**
+     * Tests create() when passed not enough components
+     *
+     * @access  public
+     */
+    #[@test, @expect('InstantiationException')]
+    function notEnoughComponents() {
+      create('GenericMap<int>');
+    }
+
+    /**
+     * Tests create() when passed too many components
+     *
+     * @access  public
+     */
+    #[@test, @expect('InstantiationException')]
+    function tooManyComponents() {
+      create('GenericMap<int, int, int>');
+    }
+
+    /**
      * Tests type hinting
      *
      * @access  public
