@@ -91,7 +91,7 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     function wrongTypes() {
       $hash= &create('GenericMap<int, String>');
-      $hash->put(1, new Object());
+      $hash->put(1, new Object());    // value should be a String
     }
 
     /**
@@ -102,7 +102,7 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     function wrongType() {
       $hash= &create('GenericMap<int, String>');
-      $hash->get('string');
+      $hash->get('string');           // key should be an int
     }
   }
 ?>
