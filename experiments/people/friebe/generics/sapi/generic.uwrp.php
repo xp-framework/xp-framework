@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('InstantiationException');
+
   define('GENERIC_PARSER_ST_INITIAL',     'initial');
   define('GENERIC_PARSER_ST_DECL',        'decl');
   define('GENERIC_PARSER_ST_GENERICS',    'generics');
@@ -15,15 +17,20 @@
   //     Creates a generic object
   function &create($spec) {
     sscanf($spec, '%[^<]<%[^>]>', $classname, $types);
-
+    $components= explode(',', $types);
     $class= xp::reflect($classname);
     $tokens= uwrp·generic::tokens($class);
+    
+    // Sanity check components and tokens
+    if (sizeof($tokens) != sizeof($components)) {
+      return throw(new InstantiationException('Incorrect number of component types'));
+    }
     
     // Instanciate without invoking the constructor
     $instance= unserialize('O:'.strlen($class).':"'.$class.'":0:{}');
 
     // Pass types
-    foreach (explode(',', $types) as $i => $type) {
+    foreach ($components as $i => $type) {
       $instance->__types[$tokens[$i]]= trim($type);
     }
     
