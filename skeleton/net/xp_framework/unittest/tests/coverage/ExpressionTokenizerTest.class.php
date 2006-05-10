@@ -253,6 +253,20 @@
       ), $comment."\n".$method);
     }
 
+
+    /**
+     * Tests a class declaration
+     *
+     * @access  public
+     */
+    #[@test]
+    function hereDoc() {
+      $heredoc= "<<<__\nHereDOC\n__;";
+      $this->assertExpressions(array(
+        new Expression('$a= '.$heredoc, 1, 4),
+      ), '$a= '.$heredoc);
+    }
+
     /**
      * Tests a class declaration
      *
