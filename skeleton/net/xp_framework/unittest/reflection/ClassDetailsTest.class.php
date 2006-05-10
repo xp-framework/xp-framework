@@ -86,6 +86,16 @@
     }
     
     /**
+     * Tests the parseComment() helper
+     *
+     * @access  public
+     */
+    #[@test, @expect('util.profiling.unittest.AssertionFailedError')]
+    function testParseComment() {
+      $this->parseComment('NOT-A-COMMENT');
+    }
+    
+    /**
      * Protected helper method
      *
      * @access  protected
