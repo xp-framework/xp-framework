@@ -69,6 +69,18 @@
             $line+= $last;
             $last= -1;
             break;
+
+          case T_START_HEREDOC:
+            $heredoc= '';
+            do {
+              $heredoc.= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i];
+              $i++;
+            } while ($i < $s && T_END_HEREDOC != $tokens[$i][0]);
+            $heredoc.= $tokens[$i][1];
+            $line+= substr_count($heredoc, "\n")+ 1;
+            $last == -1 && $last= $line;
+            $expression.= $heredoc;
+            break;
             
           case T_CONSTANT_ENCAPSED_STRING:
           case T_WHITESPACE:
