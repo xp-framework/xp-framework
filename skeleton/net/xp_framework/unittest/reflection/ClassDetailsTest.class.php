@@ -355,5 +355,24 @@
         $this->assertTrue($details[DETAIL_ARGUMENTS][0]->isPassedByReference());
       }
     }
+    
+    /**
+     * Tests parsing of the "throws" tag
+     *
+     * @access  public
+     */
+    #[@test]
+    function throwsList() {
+      $details= $this->parseComment('
+        /**
+         * Test method
+         *
+         * @throws  lang.IllegalArgumentException
+         * @throws  lang.IllegalAccessException
+         */
+      ');
+      $this->assertEquals('lang.IllegalArgumentException', $details[DETAIL_THROWS][0]);
+      $this->assertEquals('lang.IllegalAccessException', $details[DETAIL_THROWS][1]);
+    }
   }
 ?>
