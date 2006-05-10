@@ -151,6 +151,12 @@
         'foobar'."\t".'\"',
         $this->decoder->decode('"foobar\\t\\\\\""')
       );
+      
+      // Real life example
+      $this->assertEquals(
+        "\nbbb ".'<span style="font-weight: bold;">tes</span>t " test'."\n",
+        $this->decoder->decode('"\nbbb <span style=\"font-weight: bold;\">tes</span>t \" test\n"')
+      );
     }
     
     /**
@@ -276,6 +282,6 @@
         $o,
         $this->decoder->decode('{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "lang.Object" , "__id" : "<bogusid>" , "prop" : "prop" }')
       );
-    }    
+    }
   }
 ?>
