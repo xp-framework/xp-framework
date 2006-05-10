@@ -374,5 +374,22 @@
       $this->assertEquals('lang.IllegalArgumentException', $details[DETAIL_THROWS][0]);
       $this->assertEquals('lang.IllegalAccessException', $details[DETAIL_THROWS][1]);
     }
-  }
+ 
+     /**
+     * Tests parsing of the "return" tag
+     *
+     * @access  public
+     */
+    #[@test]
+    function returnType() {
+      $details= $this->parseComment('
+        /**
+         * Test method
+         *
+         * @return  int
+         */
+      ');
+      $this->assertEquals('int', $details[DETAIL_RETURNS]);
+    }
+ }
 ?>
