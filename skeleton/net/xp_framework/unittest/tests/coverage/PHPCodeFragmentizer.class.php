@@ -37,7 +37,7 @@
       $blocks= array();
       
       // Iterate over tokens, starting from the T_OPEN_TAG and ending 
-      // before the traling T_WHITESPACE and T_CLOSE_TAG tokens.
+      // before the trailing T_WHITESPACE and T_CLOSE_TAG tokens.
       for ($i= 1, $s= sizeof($tokens)- 2; $i < $s; $i++) {
         switch ($tokens[$i][0]) {
           case ';':           // EOE
