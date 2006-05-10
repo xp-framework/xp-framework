@@ -330,15 +330,19 @@
       
         $esc= FALSE;
         $tokenizer= &new StringTokenizer($str, '\"', TRUE);
-        while ($tokenizer->hasMoreTokens()) {
-          $tok= $tokenizer->nextToken();
-          $offset+= strlen($tok);
+        while (strlen($tok) || $tokenizer->hasMoreTokens()) {
+          if (empty($tok)) {
+            $tok= $tokenizer->nextToken();
+            $offset+= strlen($tok);
+          }
           
-          if ($esc) { 
-            switch ($tok) {
+          if ($esc) {
+            $tmp= $tok{0};
+            $tok= substr($tok, 1);
+            switch ($tmp) {
               case '\\':
               case '"': 
-              case '/': $ret.= $tok; break;
+              case '/': $ret.= $tmp;  break;
               case 't': $ret.= "\t"; break;
               case 'n': $ret.= "\n"; break;
               case 'r': $ret.= "\r"; break;
@@ -349,6 +353,7 @@
             $esc= FALSE; 
             continue; 
           }
+          
           switch ($tok) {
             case '"': {
               $this->stream->seek($initpos + $offset);
@@ -357,11 +362,13 @@
             
             case '\\': {
               $esc= TRUE;
+              $tok= '';
               break;
             }
             
             default: {
               $ret.= $tok;
+              $tok= '';
               break;
             }
           }
