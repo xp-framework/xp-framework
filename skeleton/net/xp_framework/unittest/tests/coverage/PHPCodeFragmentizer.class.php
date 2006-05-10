@@ -31,7 +31,8 @@
       $tokens= token_get_all(trim($code));
       $expressions= &Collection::forClass('Fragment');
       $expression= '';
-      $line= $last= 1;
+      $line= 1 + substr_count($tokens[0][1], "\n");
+      $last= 1;
       $level= 0;
       $collections= array(&$expressions);
       $blocks= array();
