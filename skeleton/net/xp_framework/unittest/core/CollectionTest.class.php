@@ -95,6 +95,47 @@
     }
 
     /**
+     * Tests addAll() method
+     *
+     * @access  public
+     */
+    #[@test]
+    function addAll() {
+      $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
+      $collection->addAll(array(new Binford(), new Binford()));
+      $this->assertEquals(2, $collection->size());
+    }
+
+    /**
+     * Tests addAll() method when the array given contains an element of
+     * incorrect type.
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function addAllWithElementOfWrongClass() {
+      $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
+      $collection->addAll(array(new Binford(), new Object()));
+    }
+
+    /**
+     * Tests addAll() method
+     *
+     * @access  public
+     */
+    #[@test]
+    function addAllDoesNotModifyCollectionOnException() {
+      $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
+      try(); {
+        $collection->addAll(array(new Binford(), new Object())) &&
+        $this->fail('IllegalArgumentException expected');
+      } if (catch('IllegalArgumentException', $e)) {
+        // Expected behaviour
+      }
+      $this->assertEquals(0, $collection->size());
+    }
+
+    /**
      * Tests prepending an element
      *
      * @access  public
