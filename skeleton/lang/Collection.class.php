@@ -144,8 +144,10 @@
      * @throws  lang.IllegalArgumentException
      */
     function addAll($array) {
+      $original= $this->list;
       for ($i= 0, $s= sizeof($array); $i < $s; $i++) {
         if (!is($this->_name, $array[$i])) {
+          $this->list= $original;   // Rollback
           return throw(new IllegalArgumentException(sprintf(
             'Element %d is not a %s (but %s)',
             $i,
@@ -165,8 +167,10 @@
      * @throws  lang.IllegalArgumentException
      */
     function prependAll($array) {
+      $original= $this->list;
       for ($i= 0, $s= sizeof($array); $i < $s; $i++) {
         if (!is($this->_name, $array[$i])) {
+          $this->list= $original;   // Rollback
           return throw(new IllegalArgumentException(sprintf(
             'Element %d is not a %s (but %s)',
             $i,
