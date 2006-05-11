@@ -28,6 +28,8 @@
      * @return  net.xp_framework.unittest.tests.coverage.Fragment[] expressions
      */
     function fragmentsOf($code) {
+      static $delim= array(')', ';', ',', '=', '+', '-', '*', '/', '%');
+      
       $tokens= token_get_all(trim($code));
       $expressions= &Collection::forClass('Fragment');
       $expression= '';
@@ -45,6 +47,35 @@
             $collections[$level]->add(new Expression(trim($expression).';', $last, $line));
             $expression= '';
             $last= -1;
+            break;
+          
+          case T_VARIABLE:
+            $last == -1 && $last= $line;
+            
+            // Look ahead for string offsets
+            $var= '';
+            $j= $i;
+            $brackets= array(0, 0, 0);
+            do {
+              $var.= is_array($tokens[$j]) ? $tokens[$j][1] : $tokens[$j];
+              switch ($tokens[$j][0]) {
+                case '{': $brackets[0]++; break;
+                case '[': $brackets[1]++; break;
+                case '(': $brackets[2]++; break;
+                case '}': $brackets[0]--; break;
+                case ']': $brackets[1]--; break;
+                case ')': $brackets[2]--; break;
+              }
+              // DEBUG Console::writeLine('L* ', $i, '->', $j, ': ', is_array($tokens[$j]) ? $tokens[$j][1] : $tokens[$j]);
+              $j++;
+              
+              // Check for delimiter
+              if (0 == array_sum($brackets) && in_array($tokens[$j][0], $delim)) break;
+            } while ($j < $s);
+            // DEBUG Console::writeLine('L* ', $i, '->', $j, ': === ', $var, ' ===');
+            $expression.= $var;
+            $line+= substr_count($var, "\n");
+            $i= $j- 1;
             break;
           
           case '{':           // SOB

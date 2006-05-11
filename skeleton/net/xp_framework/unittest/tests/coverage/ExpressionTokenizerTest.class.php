@@ -164,6 +164,30 @@
     }
 
     /**
+     * Tests a string offset ($string{SCALAR})
+     *
+     * @access  public
+     */
+    #[@test]
+    function scalarStringOffset() {
+      $this->assertExpressions(array(
+        new Expression('echo $string{0};', 1, 1),
+      ), 'echo $string{0};');
+    }
+
+    /**
+     * Tests a string offset ($string{EXPRESSION})
+     *
+     * @access  public
+     */
+    #[@test]
+    function dynamicStringOffset() {
+      $this->assertExpressions(array(
+        new Expression('echo $string{strlen($var[0]{0})};', 1, 1),
+      ), 'echo $string{strlen($var[0]{0})};');
+    }
+
+    /**
      * Tests an if block
      *
      * @access  public
