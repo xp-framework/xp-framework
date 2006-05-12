@@ -64,6 +64,16 @@
     }
 
     /**
+     * Tests the findClass() method
+     *
+     * @access  public
+     */
+    #[@test]
+    function findNullClass() {
+      $this->assertFalse($this->classLoader->findClass(NULL));
+    }
+
+    /**
      * Loads a class that has *not* been loaded before. Makes sure the
      * static initializer is called.
      *
