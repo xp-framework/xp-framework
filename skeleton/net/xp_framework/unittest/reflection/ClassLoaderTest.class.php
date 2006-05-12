@@ -54,6 +54,16 @@
     }
 
     /**
+     * Tests the findClass() method
+     *
+     * @access  public
+     */
+    #[@test]
+    function findThisClass() {
+      $this->assertEquals(realpath(__FILE__), $this->classLoader->findClass($this->getClassName()));
+    }
+
+    /**
      * Loads a class that has *not* been loaded before. Makes sure the
      * static initializer is called.
      *
