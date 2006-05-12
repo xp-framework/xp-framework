@@ -26,7 +26,7 @@
      * @param   &lang.Object object
      */
     function onDestruction(&$object) {
-      $this->destroyed[$object->hashCode()]= TRUE;
+      $this->destroyed[$object->hashCode()]++;
     }
     
     /**
@@ -38,6 +38,7 @@
     function setUp() {
       $this->destroyable= &new Destroyable();
       $this->destroyable->setCallback($this);
+      $this->destroyed[$this->destroyable->hashCode()]= 0;
     }
 
     /**
@@ -50,8 +51,8 @@
       $hash= $this->destroyable->hashCode();
       delete($this->destroyable);
       $this->assertNull($this->destroyable);
-      $this->assertTrue($this->destroyed[$hash]);
+      $this->assertEquals(1, $this->destroyed[$hash]);
     }
-
+    
   } implements(__FILE__, 'net.xp_framework.unittest.core.DestructionCallback');
 ?>
