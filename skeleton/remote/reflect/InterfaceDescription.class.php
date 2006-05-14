@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.adt.HashSet');
+  uses('util.collections.HashSet');
 
   /**
    * Describes an EJB interface

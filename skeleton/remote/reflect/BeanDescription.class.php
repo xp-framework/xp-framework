@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.adt.HashSet');
+  uses('util.collections.HashSet');
 
   define('HOME_INTERFACE',    0);
   define('REMOTE_INTERFACE',  1);

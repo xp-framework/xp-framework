@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.adt.HashSet');
+  uses('util.collections.HashSet');
 
   define('TX_NOT_SUPPORTED',  0);
   define('TX_REQUIRED',       1);
