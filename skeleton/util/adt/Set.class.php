@@ -7,6 +7,7 @@
   /**
    * A set of objects
    *
+   * @deprecated by RFC #0057
    * @purpose  Interface
    */
   class Set extends Interface {

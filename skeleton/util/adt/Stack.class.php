@@ -30,6 +30,7 @@
    *   }
    * </code>
    *
+   * @deprecated by RFC #0057
    * @purpose  LIFO
    * @see      xp://util.adt.Queue
    * @see      http://www.faqs.org/docs/javap/c12/ex-12-1-answer.html

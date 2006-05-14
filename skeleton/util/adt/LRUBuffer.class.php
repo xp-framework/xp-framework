@@ -10,6 +10,7 @@
    * The last recently used (that is, the longest time unchanged) 
    * element will be deleted when calling add().
    *
+   * @deprecated by RFC #0057
    * @purpose  Abstract data type
    */
   class LRUBuffer extends Object {

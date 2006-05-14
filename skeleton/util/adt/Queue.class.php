@@ -30,6 +30,7 @@
    *   }
    * </code>
    *
+   * @deprecated by RFC #0057
    * @purpose  FIFO
    * @see      xp://util.adt.Stack
    * @see      http://www.faqs.org/docs/javap/c12/ex-12-1-answer.html
