@@ -6,7 +6,7 @@
  
   uses(
     'util.profiling.unittest.TestCase',
-    'net.xp_framework.unittest.tests.coverage.PHPCodeFragmentizer'
+    'util.profiling.unittest.coverage.PHPCodeFragmentizer'
   );
 
   /**
