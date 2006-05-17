@@ -3,6 +3,9 @@
  *
  * $Id$ 
  */
+ 
+  define('API_URL',     'https://api.del.icio.us');
+  define('API_VERSION', 'v1');
 
   uses(
     'peer.http.BasicAuthorization',
@@ -39,8 +42,8 @@
      * Constructor
      *
      * @access  public
-     * @param   string username from simpy
-     * @param   string password from simpy
+     * @param   string username from del.icio.us
+     * @param   string password from del.icio.us
      */
     function __construct(
       $username,
@@ -81,7 +84,7 @@
      */  
     function getDatesByTag($tag) {
       return $this->_doRequest(
-        'http://del.icio.us/api/posts/dates?',
+        sprintf('%s/%s/posts/dates?', API_URL, API_VERSION),
         array(
           'tag' => $tag
         )
@@ -96,7 +99,7 @@
      */  
     function getTags() {
       return $this->_doRequest(
-        'http://del.icio.us/api/tags/get?'
+        sprintf('%s/%s/tags/get?', API_URL, API_VERSION)
       );
     }
     
@@ -110,7 +113,7 @@
      */
     function getPostsByTag($tag, $date) {
       return $this->_doRequest(
-        'http://del.icio.us/api/posts/get?',
+        sprintf('%s/%s/posts/get?', API_URL, API_VERSION),
         array(
           'tag' => $tag,
           'dt'  => is_object($date) ? $date->format('%Y-%m-%d') : ''
@@ -128,7 +131,7 @@
      */
     function getRecentPosts($tag, $count) {
       return $this->_doRequest(
-        'http://del.icio.us/api/posts/recent?',
+        sprintf('%s/%s/posts/recent?', API_URL, API_VERSION),
         array(
           'tag'   => $tag,
           'count' => $count
@@ -145,7 +148,7 @@
      */
     function getAllPosts($tag) {
       return $this->_doRequest(
-        'http://del.icio.us/api/posts/all?',
+        sprintf('%s/%s/posts/all?', API_URL, API_VERSION),
         array(
           'tag' => $tag
         )
@@ -160,7 +163,7 @@
      */
     function getLastUpdateTime() {
       return $this->_doRequest(
-        'http://del.icio.us/api/posts/update?'
+        sprintf('%s/%s/posts/update?', API_URL, API_VERSION)
       );
     }
 
@@ -177,7 +180,7 @@
      */
     function addPost($url, $description, $extended, $tags, $dt) {
       return $this->_doRequest(
-        'http://del.icio.us/api/posts/add?',
+        sprintf('%s/%s/posts/add?', API_URL, API_VERSION),
         array(
           'url'         => $url,
           'description' => $description,
@@ -197,7 +200,7 @@
      */
     function deletePost($url) {
       return $this->_doRequest(
-        'http://del.icio.us/api/posts/delete?',
+        sprintf('%s/%s/posts/delete?', API_URL, API_VERSION),
         array(
           'url' => $url
         )
@@ -214,7 +217,7 @@
      */
     function renameTag($old, $new) {
       return $this->_doRequest(
-        'http://del.icio.us/api/tags/rename?',
+        sprintf('%s/%s/tags/rename?', API_URL, API_VERSION),
         array(
           'old' => $old,
           'new' => $new
@@ -230,7 +233,7 @@
      */
     function getAllBundles() {
       return $this->_doRequest(
-        'http://del.icio.us/api/tags/bundles/all?'
+        sprintf('%s/%s/tags/bundles/all?', API_URL, API_VERSION)
       );
     }
 
@@ -244,7 +247,7 @@
      */
     function setBundle($bundle, $tags) {
       return $this->_doRequest(
-        'http://del.icio.us/api/tags/bundles/set?',
+        sprintf('%s/%s/tags/bundles/set?', API_URL, API_VERSION),
         array(
           'bundle' => $bundle,
           'tags'   => $tags
@@ -261,7 +264,7 @@
      */
     function deleteBundle($bundle) {
       return $this->_doRequest(
-        'http://del.icio.us/api/tags/bundles/delete?',
+        sprintf('%s/%s/tags/bundles/delete?', API_URL, API_VERSION),
         array(
           'bundle' => $bundle
         )
