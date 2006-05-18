@@ -44,8 +44,8 @@ http://msdn.microsoft.com/vcsharp/team/language/default.aspx for C# 2.0
 http://www.python.org/peps/
 
 
-When is a RFC needed?
-~~~~~~~~~~~~~~~~~~~~~
+When is an RFC needed?
+~~~~~~~~~~~~~~~~~~~~~~
 An RFC is needed when changes are made that affect one of the following:
 
 * Core functionality in lang.base.php
