@@ -6,6 +6,7 @@
     'net.xp_framework.tools.vm.VNode', 
     'util.cmd.Console', 
     'io.File', 
+    'util.profiling.Timer',
     'io.FileUtil'
   );
   define('MODIFIER_NATIVE', 8);   // See lang.XPClass
@@ -156,11 +157,62 @@
     }
   }
   
+  function &member($class, $name, &$context) {
+    foreach ($context['classes'][$class]->statements as $decl) {
+      if ($decl->type != 'MemberDeclarationList') continue;
+
+      // TODO: Check visibility
+
+      // Find the member
+      foreach ($decl->args[1] as $member) {
+        if ($member->args[0] != '$'.$name) continue;
+        
+        return $member;
+      }
+    }
+    return NULL;
+  }
+  
   function set(&$var, $value, &$context) {
     if (is_a($var, 'ObjectReferenceNode')) {
       $pointer= &value($var->class, $context);
       // DEBUG Console::writeLine('MEMBER ', $pointer->id, '->', $var->member, ' := ', PNode::stringOf($value));
-      $GLOBALS['objects'][$pointer->id]['members'][$var->member]= $value;
+      
+      $o= &$GLOBALS['objects'][$pointer->id];
+      if (!($member= &member($o['name'], $var->member, $context))) {
+        error(E_ERROR, 'Cannot assign to non-existant member '.$o['name'].'::'.$var->member);
+      }
+      
+      // Check for setter
+      if (NULL !== $member->args[2]) {
+        switch (1) {
+          case !isset($member->args[2]['set']): {
+            except(createobject(new NewNode(
+              new ClassReferenceNode('xp~lang~IllegalAccessException'),
+              new NewClassNode(array(
+                $o['name'].'->'.$var->member.' not settable'
+              ))
+            ), $context), $context);
+            break;
+          }
+          
+          case '$' == $member->args[2]['set']{0}: {
+            $o['members'][substr($member->args[2]['set'], 1)]= $value;
+            break;
+          }
+
+          default: {
+            methodcall(new MethodCallNode(
+              $pointer,
+              $member->args[2]['set'],
+              array($value),
+              NULL
+            ), $context);
+          }
+        }
+      } else {
+        $o['members'][$var->member]= $value;
+      }
     } else if (is_a($var, 'VariableNode')) {
       // DEBUG onsole::writeLine('VAR ', $var->name, ' := ', PNode::stringOf($value));
       $context['variables'][$var->name]= $value;
@@ -516,13 +568,50 @@
         
         case 'objectreference':
           $pointer= &value($node->class, $context);
-
-          return fetchfrom(
-            $GLOBALS['objects'][$pointer->id]['members'], 
-            $node->member, 
-            'member of '.$pointer->id, 
-            $context
-          );
+          $o= &$GLOBALS['objects'][$pointer->id];
+          if (!($member= &member($o['name'], $node->member, $context))) {
+            error(E_ERROR, 'Cannot read non-existant member '.$o['name'].'::'.$node->member);
+          }
+          
+          // Check for getter
+          if (NULL !== $member->args[2]) {
+            switch (1) {
+              case !isset($member->args[2]['get']): {
+                except(createobject(new NewNode(
+                  new ClassReferenceNode('xp~lang~IllegalAccessException'),
+                  new NewClassNode(array(
+                    $o['name'].'->'.$node->member.' not gettable'
+                  ))
+                ), $context), $context);
+                return;
+              }
+              
+              case '$' == $member->args[2]['get']{0}: {
+                return fetchfrom(
+                  $o['members'], 
+                  substr($member->args[2]['get'], 1), 
+                  'member of '.$o['name'], 
+                  $context
+                );
+              }
+              
+              default: {
+                return methodcall(new MethodCallNode(
+                  $pointer,
+                  $member->args[2]['get'],
+                  array(),
+                  NULL
+                ), $context);
+              }
+            }
+          } else {
+            return fetchfrom(
+              $o['members'], 
+              $node->member, 
+              'member of '.$o['name'], 
+              $context
+            );
+          }
           break;
         
         case 'ternary':
@@ -816,7 +905,12 @@
   // }}}
   
   // {{{ main
-  $nodes= unserialize(FileUtil::getContents(new File($argv[1])));
+  $offset= 1;
+  $options= array();
+  while ('-' == $argv[$offset]{0} && $offset <= $argc) {
+    $options[substr($argv[$offset++], 1)]= TRUE;
+  }
+  $nodes= unserialize(FileUtil::getContents(new File($argv[$offset])));
   
   $context= array();
   $context['E']= NULL;
@@ -824,18 +918,25 @@
   $context['handlers']= $handlers;
   
   // Register builtin variables
-  array_shift($argv);
   $context['variables']= array();
-  $context['variables']['$argc']= $argc- 1;
-  $context['variables']['$argv']= $argv;
+  $context['variables']['$argc']= $argc- $offset;
+  $context['variables']['$argv']= array_slice($argv, $offset);
 
   // Register builtin classes
   loadclass('xp~lang~Object', $context);
   loadclass('xp~lang~Exception', $context);
   loadclass('xp~lang~NullPointerException', $context);
+  loadclass('xp~lang~IllegalAccessException', $context);
   
   // Execute
+  if (isset($options['t'])) {
+    $timer= &new Timer();
+    $timer->start();
+  }
   execute($nodes, $context);
+  if (isset($options['t'])) {
+    $timer->stop();
+  }
   
   // Check for unhandled exceptions
   if ($context['E']) {
@@ -846,6 +947,12 @@
       NULL
     ), $context);
     error(E_ERROR, '*** Uncaught '.$string.' ('.$GLOBALS["objects"][$context["E"]->id]["name"].')');
+  }
+
+  if (isset($options['t'])) {
+    Console::writeLine("\n\n========================================================");
+    Console::writeLinef('@VM@ Execution time= %.3f seconds', $timer->elapsedTime());
+    Console::writeLinef('@VM@ Objects created: %d', sizeof($GLOBALS['objects']));
   }
   // }}}
 ?>

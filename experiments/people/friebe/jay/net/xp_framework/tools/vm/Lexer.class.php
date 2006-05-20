@@ -15,6 +15,7 @@
         TOKEN_T_PUBLIC      => 'public',
         TOKEN_T_PRIVATE     => 'private',
         TOKEN_T_PROTECTED   => 'protected',
+        TOKEN_T_PROPERTY    => 'property',
         TOKEN_T_ABSTRACT    => 'abstract',
         TOKEN_T_FINAL       => 'final',
         TOKEN_T_NATIVE      => 'native',

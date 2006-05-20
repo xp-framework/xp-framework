@@ -1,0 +1,24 @@
+class String {
+  protected $_buf= '';
+  protected $_len= 0;
+
+  public property $buffer get $_buf set setBuffer();
+  public property $length get $_len set void;
+
+  public void setBuffer($b) {
+    $this->_buf= $b;
+    $this->_len= strlen($b);
+    echo '>>> setBuffer() called {_buf= "'.$this->_buf.'", _len= '.$this->_len."}\n";
+  }
+}
+
+$s= new String();
+$s->buffer= 'Hello';          // calls setBuffer() with 'Hello' as argument    
+echo "'".$s->buffer."'";      // reads member "_buf"
+echo ' ('.$s->length.')';     // reads member "_len"
+try {
+  $s->length++;
+} catch (xp~lang~IllegalAccessException $e) {
+  // Expected
+  echo ', caught expected ', $e->getClassName();
+}

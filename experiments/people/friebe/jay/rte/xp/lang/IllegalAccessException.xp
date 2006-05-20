@@ -1,0 +1,4 @@
+package xp~lang {
+  class IllegalAccessException extends xp~lang~Exception {
+  }
+}

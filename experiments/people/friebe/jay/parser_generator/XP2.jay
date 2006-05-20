@@ -206,6 +206,7 @@
 %token T_FINALLY 385
 %token T_DESTRUCT 386
 %token T_NATIVE 387
+%token T_PROPERTY 388
 
 %% /* Rules */
 
@@ -761,16 +762,34 @@ member_modifier:
 
 class_variable_declaration:
 		class_variable_declaration ',' T_VARIABLE {
-          $$[]= &PNode::create('MemberDeclaration', array($3, NULL));
+          $$[]= &PNode::create('MemberDeclaration', array($3, NULL, NULL));
         }
 	|	class_variable_declaration ',' T_VARIABLE '=' static_scalar	{ 
-          $$[]= &PNode::create('MemberDeclaration', array($3, $5));
+          $$[]= &PNode::create('MemberDeclaration', array($3, $5, NULL));
+        }
+	|	class_variable_declaration ',' T_PROPERTY T_VARIABLE get_or_set get_or_set { 
+          $$[]= &PNode::create('MemberDeclaration', array($4, NULL, array_merge($5, $6)));
         }
 	|	T_VARIABLE {
-          $$= array(PNode::create('MemberDeclaration', array($1, NULL)));
+          $$= array(PNode::create('MemberDeclaration', array($1, NULL, NULL)));
         }
 	|	T_VARIABLE '=' static_scalar {
-          $$= array(PNode::create('MemberDeclaration', array($1, $3)));
+          $$= array(PNode::create('MemberDeclaration', array($1, $3, NULL)));
+        }
+    |   T_PROPERTY T_VARIABLE get_or_set get_or_set {
+          $$= array(PNode::create('MemberDeclaration', array($2, NULL, array_merge($3, $4))));
+        }
+;
+
+get_or_set:
+        T_STRING T_STRING '(' ')' {
+         $1 == 'get' || $1 == 'set' ? $$= array($1 => $2) : $this->raiseError($1.' not supported');
+        }
+    |   T_STRING T_VARIABLE {
+         $1 == 'get' || $1 == 'set' ? $$= array($1 => $2) : $this->raiseError($1.' not supported');
+        }
+    |   T_STRING T_VOID {
+         $1 == 'get' || $1 == 'set' ? $$= array($1 => NULL) : $this->raiseError($1.' not supported');
         }
 ;
 
