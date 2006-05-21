@@ -11,7 +11,6 @@
   
   // {{{ compile
   $parser= &new Parser();
-  $parser->debug= FALSE;
   $nodes= $parser->yyparse(new Lexer(file_get_contents($argv[1]), $argv[1]));
   
   // Dump AST if specified
