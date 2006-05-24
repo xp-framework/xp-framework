@@ -65,5 +65,14 @@
      */
     function echoDate($arg1) { }
 
+    /**
+     * EchoHash method
+     *
+     * @access  public
+     * @param   array<mixed, mixed> arg1
+     * @return  array<mixed, mixed>
+     */
+    function echoHash($arg1) { }
+
   }
 ?>

@@ -11,6 +11,7 @@ import javax.ejb.SessionContext;
 import java.rmi.RemoteException;
 
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Roundtrip demonstration
@@ -89,6 +90,17 @@ public class RoundtripBean implements SessionBean {
      */
     public Date echoDate(Date d) {
         return d;
+    }
+
+    /**
+     * Echoes the given HashMap argument
+     *
+     * @ejb.interface-method view-type = "both"
+     * @param   java.util.HashMap d
+     * @return  java.util.HashMap given date
+     */
+    public HashMap echoHash(HashMap h) {
+        return h;
     }
 
     /**

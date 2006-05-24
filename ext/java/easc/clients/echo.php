@@ -33,6 +33,7 @@ $ php echo.php <hostname> <type>  [-p <port> ] [-j <jndi_name> ]
     - bool
     - null
     - date
+    - hash
 
   * port is the port the XP-MBean is listening on. It defaults to 6448.
   
@@ -81,6 +82,14 @@ __
     case 'date':
       $value= &Date::now();
       $method= 'echoDate';
+      break;
+
+    case 'hash':
+      $value= array(
+        'localpart'   => 'xp',
+        'domain'      => 'php3.de'
+      );
+      $method= 'echoHash';
       break;
 
     default:
