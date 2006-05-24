@@ -290,6 +290,22 @@
           $key
         );
       }
-    }    
- }
+    }
+
+    /**
+     * Tests empty string in %d token
+     *
+     * @access  public
+     */
+    #[@test]
+    function testEmptyStringAsNumber() {
+      foreach ($this->conn as $key => $value) {
+        $this->assertEquals(
+          'NULL',
+          $value->prepare('%d', ''),
+          $key
+        );
+      }
+    }
+  }
 ?>
