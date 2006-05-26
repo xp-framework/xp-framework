@@ -12,7 +12,6 @@
    *   $number= Base57::decode($b);
    * </code>
    *
-   * @see      rfc://2045#6.8
    * @purpose  Base 57 encoder/decoder
    */
   class Base57 extends Object {
