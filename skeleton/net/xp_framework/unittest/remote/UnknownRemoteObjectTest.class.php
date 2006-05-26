@@ -57,7 +57,7 @@
       $this->assertEquals(
         "remote.UnknownRemoteObject@(Test) {\n".
         "  [referenceId         ] 6100\n".
-        "  [topic               ] 'TestTopic'\n".
+        "  [topic               ] \"TestTopic\"\n".
         "  [power               ] util.Binford(61000)\n".
         "}", 
         xp::stringOf(new UnknownRemoteObject('Test', array(
