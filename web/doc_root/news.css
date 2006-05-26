@@ -37,15 +37,15 @@ h4.context {
   border-bottom: 1px solid #666666; 
 }
 em { 
-  font: 13px "Georgia", serif;; 
+  font: 13px "Georgia", serif;
 }
 a { 
   color: #1c375c; 
 }
 small {
-  font: 13px "Georgia", serif;; 
+  font: 13px "Georgia", serif;
 }
-quote {
+q {
   color: #245598;
 }
 ul {
