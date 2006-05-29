@@ -619,7 +619,7 @@ class_statement_list:
 
 class_statement:
 		non_empty_member_modifiers class_variable_declaration ';' {
-          $$= &PNode::create('MemberDeclarationList', array($1, &$2)); 
+          $$= &new MemberDeclarationListNode($1, $2); 
         }
 	|	class_constant_declaration ';' {
           $$= &PNode::create('ClassConstantDeclarationList', array($1, $2)); 
