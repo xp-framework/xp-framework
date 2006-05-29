@@ -1,14 +1,4 @@
 package xp~lang {
-  class Exception extends xp~lang~Object {
-    protected
-      $message;
-    
-    public __construct($message) {
-      $this->message= $message;
-    }
-    
-    public string toString() {
-      return $this->getClassName().': '.$this->message;
-    }
+  class Exception extends xp~lang~Throwable {
   }
 }
