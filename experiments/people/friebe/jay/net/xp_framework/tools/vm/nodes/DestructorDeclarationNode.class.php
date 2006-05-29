@@ -24,7 +24,7 @@
      */
     function __construct($statements, $modifiers, $annotations, $throws) {
       parent::__construct(
-        '<destruct>', 
+        '__destruct', 
         array(), 
         NULL, 
         $statements, 

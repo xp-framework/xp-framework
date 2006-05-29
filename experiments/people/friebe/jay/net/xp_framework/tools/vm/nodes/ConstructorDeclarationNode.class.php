@@ -25,7 +25,7 @@
      */
     function __construct($parameters, $statements, $modifiers, $annotations, $throws) {
       parent::__construct(
-        '<construct>', 
+        '__construct', 
         $parameters, 
         NULL, 
         $statements, 
