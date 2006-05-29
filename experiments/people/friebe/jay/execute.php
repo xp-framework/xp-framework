@@ -73,12 +73,14 @@
   function memberhash(&$statements) {
     $hash= array();
     
-    // Members
-    // !!! TBI !!!
-    
-    // Methods
     for ($i= 0, $s= sizeof($statements); $i < $s; $i++) {
-      $hash[$statements[$i]->name]= &$statements[$i];   // FIXME: Overloading
+      if (is_a($statements[$i], 'InvokeableDeclarationNode')) {
+        $hash[$statements[$i]->name]= &$statements[$i];   // FIXME: Overloading
+      } else if (is_a($statements[$i], 'MemberDeclarationListNode')) {
+        foreach ($statements[$i]->members as $member) {   // FIXME: Creating tons of lists here...
+          $hash['$'.$member->args[0]]= &new MemberDeclarationListNode($statements[$i]->modifiers, array(&$member));
+        }
+      }
     }
     return $hash;
   }
@@ -97,18 +99,21 @@
     }
     
     $context['classes'][$node->name]= &$node;
-    
+    // $DEBUG= $node->name == 'xp~lang~SystemExit';
     if ($node->extends) {
       if (!$context['classes'][$node->extends]) {
         error(E_ERROR, 'Cannot inherit '.$node->name.' from non-existant class '.$node->extends);
         // Bails
       }
 
-      // Member inheritance
       $hash= memberhash($context['classes'][$node->name]->statements);
       $phash= memberhash($context['classes'][$node->extends]->statements);
+      
+      // Method inheritance
       foreach (array_keys($phash) as $key) {
-        if (isset($hash[$key])) continue;   // Overwritten
+        if (isset($hash[$key])) {   // Overwritten
+          continue;   
+        }
 
         // Generate declaring class member: FIXME: Needs to be done for all members,
         // not only inherited ones!
@@ -159,12 +164,12 @@
   
   function &member($class, $name, &$context) {
     foreach ($context['classes'][$class]->statements as $decl) {
-      if ($decl->type != 'MemberDeclarationList') continue;
+      if (!is_a($decl, 'MemberDeclarationListNode')) continue;
 
       // TODO: Check visibility
 
       // Find the member
-      foreach ($decl->args[1] as $member) {
+      foreach ($decl->members as $member) {
         if ($member->args[0] != '$'.$name) continue;
         
         return $member;
@@ -240,6 +245,12 @@
         $decltype= $decl->parameters[$i]->type;
         // DEBUG Console::writeLine('    declares arg #', $i, ' as ', $decltype);
 
+        // Default for argument
+        if ($i >= sizeof($arguments) && $decl->parameters[$i]->default !== NULL) {
+          // DEBUG Console::writeLine('    argument #', $i, ' not existant, but parameter has default value ', $decl->parameters[$i]->default);
+          break;
+        }
+
         $v= value($arguments[$i], $context);
         $argtype= gettype($v);
         // DEBUG Console::writeLine('    argument #', $i, ' is ', $argtype, ': ', PNode::stringOf($v));
@@ -251,19 +262,23 @@
         }
       }
 
-      // DEBUG Console::writeLine(' -> using ', PNode::stringOf($decl));
+      // Console::writeLine(' -> using declared ', PNode::stringOf($decl));
       return $decl;
     }
 
-    // DEBUG Console::writeLine(' -> using ', PNode::stringOf($fallback));
+    // DEBUG Console::writeLine(' -> using fallback ', PNode::stringOf($fallback));
     return $fallback;
   }
   
   function callcontext(&$decl, &$arguments, &$context) {
     $callcontext= $context;
     $callcontext['variables']= array();
-    for ($i= 0, $s= sizeof($arguments); $i < $s; $i++) {
-      $callcontext['variables'][$decl->parameters[$i]->name]= &value($arguments[$i], $context);
+    for ($i= 0, $s= sizeof($decl->parameters), $a= sizeof($arguments); $i < $s; $i++) {
+      if ($i >= $a) {
+        $callcontext['variables'][$decl->parameters[$i]->name]= $decl->parameters[$i]->default;
+      } else {
+        $callcontext['variables'][$decl->parameters[$i]->name]= value($arguments[$i], $context);
+      }
     }
     return $callcontext;
   }
@@ -302,14 +317,14 @@
     }
     // DEBUG Console::writeLine('INVOKE: ', $class.'::'.$method->method);
 
-    if ($decl= &method($class, 'MethodDeclarationNode', $method->method, $method->arguments, $context)) {
+    if ($decl= &method($class, 'InvokeableDeclarationNode', $method->method, $method->arguments, $context)) {
       
       // We've found the method declaration, now:
       // - Build argument list
       $callcontext= callcontext($decl, $method->arguments, $context);
       
       // - Execute
-      $context['__name']= $class.($static ? '::' : '->').$method->method;
+      $context['__name']= $method->method;
       if (!$static) $callcontext['variables']['$this']= &$pointer;
       
       // Native methods
@@ -342,6 +357,12 @@
   }
 
   function functioncall(&$function, &$context) {
+    if ('parent' == $function->name) {    // FIXME: Should be done in compiler
+      return methodcall(
+        new MethodCallNode('parent', $context['__name'], $function->arguments, NULL), 
+        $context
+      );
+    }
     if (!isset($context['functions'][$function->name])) {
       error(E_ERROR, 'Call to undefined function '.$function->toString());
       // bails
@@ -407,7 +428,7 @@
       
       // - Execute, discarding return values (constructors cannot return anything!)
       $callcontext['variables']['$this']= &$pointer;
-      $callcontext['__name']= 'new '.$classname;
+      $callcontext['__name']= '__construct';
       execute($decl->statements, $callcontext);
     }
 
@@ -434,7 +455,7 @@
       // Found overloaded operator
       $callcontext= callcontext($decl, $args, $context);
 
-      $callcontext['__name']= $class.'::operator'.$op;
+      $callcontext['__name']= $op;
       $out= execute($decl->statements, $callcontext);
       return TRUE;
     }
@@ -836,10 +857,10 @@
     }
   ');
   $handlers['exit']= &opcode('
-    if (isset($node->expression)) {
-      $context["exitcode"]= value($node->expression, $context);
-    }
-    $context["offset"]= $context["end"];
+    except(createobject(new NewNode(
+      new ClassReferenceNode(\'xp~lang~SystemExit\'),
+      new NewClassNode((array)$node->expression, NULL, NULL)
+    ), $context), $context);
   ');
   $handlers['return']= &opcode('
     if (isset($node->value)) {
@@ -924,6 +945,8 @@
 
   // Register builtin classes
   loadclass('xp~lang~Object', $context);
+  loadclass('xp~lang~Throwable', $context);
+  loadclass('xp~lang~SystemExit', $context);
   loadclass('xp~lang~Exception', $context);
   loadclass('xp~lang~NullPointerException', $context);
   loadclass('xp~lang~IllegalAccessException', $context);
@@ -938,15 +961,26 @@
     $timer->stop();
   }
   
+  $exitcode= 0;
   // Check for unhandled exceptions
   if ($context['E']) {
-    $string= methodcall(new MethodCallNode(
-      $context['E'],
-      'toString',
-      array(),
-      NULL
-    ), $context);
-    error(E_ERROR, '*** Uncaught '.$string.' ('.$GLOBALS["objects"][$context["E"]->id]["name"].')');
+    if (isinstance($context['E'], 'xp~lang~SystemExit', $context)) {
+      $o= &$GLOBALS['objects'][$context['E']->id];
+      $exitcode= fetchfrom(
+        $o['members'], 
+        'code', 
+        'member', 
+        $context
+      );
+    } else {
+      echo '*** Uncaught ', methodcall(new MethodCallNode(
+        $context['E'],
+        'toString',
+        array(),
+        NULL
+      ), $context), "\n";
+      $exitcode= 127;
+    }
   }
 
   if (isset($options['t'])) {
@@ -954,5 +988,7 @@
     Console::writeLinef('@VM@ Execution time= %.3f seconds', $timer->elapsedTime());
     Console::writeLinef('@VM@ Objects created: %d', sizeof($GLOBALS['objects']));
   }
+  
+  exit($exitcode);
   // }}}
 ?>
