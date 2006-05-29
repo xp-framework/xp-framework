@@ -92,6 +92,11 @@ __
       $method= 'echoHash';
       break;
 
+    case 'array':
+      $value= &new ArrayList(array(1, 2, 3));
+      $method= 'echoArray';
+      break;
+
     default:
       throw(new IllegalArgumentException('Unknown type "'.$p->value(2).'"'));
       exit(-2);

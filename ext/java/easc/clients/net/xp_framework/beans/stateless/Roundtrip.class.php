@@ -74,5 +74,14 @@
      */
     function echoHash($arg1) { }
 
+    /**
+     * EchoArrayList method
+     *
+     * @access  public
+     * @param   lang.types.ArrayList arg1
+     * @return  lang.types.ArrayList
+     */
+    function echoArray($arg1) { }
+
   }
 ?>
