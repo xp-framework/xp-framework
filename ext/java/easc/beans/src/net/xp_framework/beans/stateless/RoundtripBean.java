@@ -96,11 +96,22 @@ public class RoundtripBean implements SessionBean {
      * Echoes the given HashMap argument
      *
      * @ejb.interface-method view-type = "both"
-     * @param   java.util.HashMap d
-     * @return  java.util.HashMap given date
+     * @param   java.util.HashMap h
+     * @return  java.util.HashMap given hash
      */
     public HashMap echoHash(HashMap h) {
         return h;
+    }
+
+    /**
+     * Echoes the given array argument
+     *
+     * @ejb.interface-method view-type = "both"
+     * @param   java.lang.Object[] l
+     * @return  java.lang.Object[] given list
+     */
+    public Object[] echoArray(Object[] l) {
+        return l;
     }
 
     /**
