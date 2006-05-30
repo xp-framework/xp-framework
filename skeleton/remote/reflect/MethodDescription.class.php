@@ -24,8 +24,8 @@
     var
       $name             = '',
       $returnType       = '',
-      $parameterTypes   = array(),
-      $roles            = array(),
+      $parameterTypes   = NULL,
+      $roles            = NULL,
       $transactionType  = 0;
 
     /**
@@ -72,19 +72,19 @@
      * Set ParameterTypes
      *
      * @access  public
-     * @param   mixed[] parameterTypes
+     * @param   lang.ArrayList<string> parameterTypes
      */
-    function setParameterTypes($parameterTypes) {
-      $this->parameterTypes= $parameterTypes;
+    function setParameterTypes(&$parameterTypes) {
+      $this->parameterTypes= &$parameterTypes;
     }
 
     /**
      * Get ParameterTypes
      *
      * @access  public
-     * @return  mixed[]
+     * @return  lang.ArrayList<string>
      */
-    function getParameterTypes() {
+    function &getParameterTypes() {
       return $this->parameterTypes;
     }
 
@@ -92,19 +92,19 @@
      * Set Roles
      *
      * @access  public
-     * @param   mixed[] roles
+     * @param   lang.ArrayList<string> roles
      */
-    function setRoles($roles) {
-      $this->roles= $roles;
+    function setRoles(&$roles) {
+      $this->roles= &$roles;
     }
 
     /**
      * Get Roles
      *
      * @access  public
-     * @return  mixed[]
+     * @return  lang.ArrayList<string>
      */
-    function getRoles() {
+    function &getRoles() {
       return $this->roles;
     }
 
@@ -148,8 +148,9 @@
     function classSet() {
       $set= &new HashSet(); 
       if (is_a($this->returnType, 'ClassReference')) $set->add($this->returnType);
-      for ($i= 0, $s= sizeof($this->parameterTypes); $i < $s; $i++) {
-        if (is_a($this->parameterTypes[$i], 'ClassReference')) $set->add($this->parameterTypes[$i]);
+      for ($i= 0, $s= sizeof($this->parameterTypes->values); $i < $s; $i++) {
+        if (!is_a($this->parameterTypes->values[$i], 'ClassReference')) continue;
+        $set->add($this->parameterTypes->values[$i]);
       }
       return $set->toArray();
     }
@@ -175,10 +176,10 @@
         '%s@{ @Transaction(type= %s) %s%s %s(%s) }',
         $this->getClassName(),
         $transactionTypes[$this->transactionType],
-        $this->roles ? '@Security(roles= ['.implode(', ', $this->roles).']) ' : '',
+        $this->roles->values ? '@Security(roles= ['.implode(', ', $this->roles->values).']) ' : '',
         $this->typeString($this->returnType),
         $this->name,
-        implode(', ', array_map(array(&$this, 'typeString'), $this->parameterTypes))
+        implode(', ', array_map(array(&$this, 'typeString'), $this->parameterTypes->values))
       );
     }
   }

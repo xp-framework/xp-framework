@@ -15,7 +15,7 @@
   class InterfaceDescription extends Object {
     var 
       $className = '',
-      $methods   = array();
+      $methods   = NULL;
 
     /**
      * Set ClassName
@@ -41,19 +41,19 @@
      * Set Methods
      *
      * @access  public
-     * @param   mixed[] methods
+     * @param   lang.ArrayList<remote.reflect.MethodDescription> methods
      */
-    function setMethods($methods) {
-      $this->methods= $methods;
+    function setMethods(&$methods) {
+      $this->methods= &$methods;
     }
 
     /**
      * Get Methods
      *
      * @access  public
-     * @return  mixed[]
+     * @return  lang.ArrayList<remote.reflect.MethodDescription>
      */
-    function getMethods() {
+    function &getMethods() {
       return $this->methods;
     }
 
@@ -65,8 +65,8 @@
      */
     function classSet() {
       $set= &new HashSet(); 
-      for ($i= 0, $s= sizeof($this->methods); $i < $s; $i++) {
-        $set->addAll($this->methods[$i]->classSet()); 
+      for ($i= 0, $s= sizeof($this->methods->values); $i < $s; $i++) {
+        $set->addAll($this->methods->values[$i]->classSet()); 
       }
       return $set->toArray();
     }
@@ -79,8 +79,8 @@
      */
     function toString() {
       $r= $this->getClassName().'@(class= '.$this->className.") {\n";
-      for ($i= 0, $s= sizeof($this->methods); $i < $s; $i++) {
-        $r.= '  - '.str_replace("\n", "\n  ", $this->methods[$i]->toString())."\n";
+      for ($i= 0, $s= sizeof($this->methods->values); $i < $s; $i++) {
+        $r.= '  - '.str_replace("\n", "\n  ", $this->methods->values[$i]->toString())."\n";
       }
       return $r.'}';
     }    

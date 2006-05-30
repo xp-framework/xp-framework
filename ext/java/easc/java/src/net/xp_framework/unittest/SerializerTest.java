@@ -318,7 +318,7 @@ public class SerializerTest {
      */
     @Test public void representationOfStringArray() throws Exception {
         assertEquals(
-            "a:3:{i:0;s:5:\"First\";i:1;s:6:\"Second\";i:2;N;}", 
+            "A:3:{s:5:\"First\";s:6:\"Second\";N;}", 
             representationOf(new String[] { "First", "Second", null })
         );
     }
@@ -331,7 +331,7 @@ public class SerializerTest {
      */
     @Test public void representationOfIntegerPrimitiveArray() throws Exception {
         assertEquals(
-            "a:2:{i:0;i:3;i:1;i:4;}", 
+            "A:2:{i:3;i:4;}", 
             representationOf(new int[] {3, 4})
         );
     }
@@ -431,7 +431,7 @@ public class SerializerTest {
         a.add("Tools");
 
         assertEquals(
-            "a:2:{i:0;s:7:\"Binford\";i:1;s:5:\"Tools\";}", 
+            "A:2:{s:7:\"Binford\";s:5:\"Tools\";}", 
             representationOf(a)
         );
     }
@@ -451,7 +451,7 @@ public class SerializerTest {
         a.add(new Timestamp(1122369782000L));
 
         assertEquals(
-            "a:3:{i:0;s:7:\"Binford\";i:1;i:6100;i:2;T:1122369782;}", 
+            "A:3:{s:7:\"Binford\";i:6100;T:1122369782;}", 
             representationOf(a)
         );
     }
@@ -486,7 +486,7 @@ public class SerializerTest {
         n.add(a2);
 
         assertEquals(
-            "a:2:{i:0;a:1:{i:0;s:7:\"Binford\";}i:1;a:1:{i:0;s:5:\"Tools\";}}", 
+            "A:2:{A:1:{s:7:\"Binford\";}A:1:{s:5:\"Tools\";}}", 
             representationOf(n)
         );
     }
@@ -502,7 +502,7 @@ public class SerializerTest {
         description.setJndiName("xp/test/Bean");
         
         assertEquals(
-            "O:45:\"net.xp_framework.easc.reflect.BeanDescription\":2:{s:8:\"jndiName\";s:12:\"xp/test/Bean\";s:10:\"interfaces\";a:2:{i:0;N;i:1;N;}}",
+            "O:45:\"net.xp_framework.easc.reflect.BeanDescription\":2:{s:8:\"jndiName\";s:12:\"xp/test/Bean\";s:10:\"interfaces\";A:2:{N;N;}}",
             representationOf(description)
         );
     }
@@ -518,7 +518,7 @@ public class SerializerTest {
         description.setClassName("net.xp_framework.beans.BeanHome");
         
         assertEquals(
-            "O:50:\"net.xp_framework.easc.reflect.InterfaceDescription\":2:{s:9:\"className\";s:31:\"net.xp_framework.beans.BeanHome\";s:7:\"methods\";a:0:{}}",
+            "O:50:\"net.xp_framework.easc.reflect.InterfaceDescription\":2:{s:9:\"className\";s:31:\"net.xp_framework.beans.BeanHome\";s:7:\"methods\";A:0:{}}",
             representationOf(description)
         );
     }
@@ -542,7 +542,7 @@ public class SerializerTest {
         description.setTransactionType(TransactionTypeDescription.UNKNOWN);
         
         assertEquals(
-            "O:47:\"net.xp_framework.easc.reflect.MethodDescription\":5:{s:4:\"name\";s:10:\"helloWorld\";s:10:\"returnType\";c:s;s:14:\"parameterTypes\";a:0:{}s:5:\"roles\";a:1:{i:0;s:4:\"mock\";}s:15:\"transactionType\";i:6;}",
+            "O:47:\"net.xp_framework.easc.reflect.MethodDescription\":5:{s:4:\"name\";s:10:\"helloWorld\";s:10:\"returnType\";c:s;s:14:\"parameterTypes\";A:0:{}s:5:\"roles\";A:1:{s:4:\"mock\";}s:15:\"transactionType\";i:6;}",
             representationOf(description)
         );
     }

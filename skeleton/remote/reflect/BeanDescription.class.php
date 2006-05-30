@@ -18,7 +18,7 @@
   class BeanDescription extends Object {
     var 
       $jndiName   = '',
-      $interfaces = array();
+      $interfaces = NULL;
 
     /**
      * Set JndiName
@@ -44,19 +44,19 @@
      * Set Interfaces
      *
      * @access  public
-     * @param   remote.reflect.InterfaceDescription[] interfaces
+     * @param   lang.ArrayList<remote.reflect.InterfaceDescription> interfaces
      */
-    function setInterfaces($interfaces) {
-      $this->interfaces= $interfaces;
+    function setInterfaces(&$interfaces) {
+      $this->interfaces= &$interfaces;
     }
 
     /**
      * Get Interfaces
      *
      * @access  public
-     * @return  remote.reflect.InterfaceDescription[]
+     * @return  lang.ArrayList<remote.reflect.InterfaceDescription>
      */
-    function getInterfaces() {
+    function &getInterfaces() {
       return $this->interfaces;
     }
     
@@ -68,8 +68,8 @@
      */
     function classSet() {
       $set= &new HashSet();
-      foreach (array_keys($this->interfaces) as $kind) {
-        $set->addAll($this->interfaces[$kind]->classSet());
+      foreach (array_keys($this->interfaces->values) as $kind) {
+        $set->addAll($this->interfaces->values[$kind]->classSet());
       }
       return $set->toArray();
     }
@@ -88,8 +88,8 @@
         "}",
         $this->getClassName(),
         $this->jndiName,
-        $this->interfaces[HOME_INTERFACE] ? str_replace("\n", "\n  ", $this->interfaces[HOME_INTERFACE]->toString()) : '(null)',
-        $this->interfaces[REMOTE_INTERFACE] ? str_replace("\n", "\n  ", $this->interfaces[REMOTE_INTERFACE]->toString()) : '(null)'        
+        xp::stringOf($this->interfaces->values[HOME_INTERFACE]),
+        xp::stringOf($this->interfaces->values[REMOTE_INTERFACE])
       );
     }
   }

@@ -508,10 +508,9 @@ public class Serializer {
         return "s:1:\"" + c + "\";";
     }
     
-    @Handler('a') protected static String representationOf(char[] array, SerializerContext context) throws Exception {
-        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+    @Handler('A') protected static String representationOf(char[] array, SerializerContext context) throws Exception {
+        StringBuffer buffer= new StringBuffer("A:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
-            buffer.append("i:" + i + ";");
             buffer.append("s:1:\"" + array[i] + "\";");
         }
         buffer.append('}');
@@ -527,10 +526,9 @@ public class Serializer {
         return "B:" + b + ";";
     }
     
-    @Handler('a') protected static String representationOf(byte[] array, SerializerContext context) throws Exception {
-        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+    @Handler('A') protected static String representationOf(byte[] array, SerializerContext context) throws Exception {
+        StringBuffer buffer= new StringBuffer("A:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
-            buffer.append("i:" + i + ";");
             buffer.append("B:" + array[i] + ";");
         }
         buffer.append('}');
@@ -546,10 +544,9 @@ public class Serializer {
         return "S:" + s + ";";
     }
     
-    @Handler('a') protected static String representationOf(short[] array, SerializerContext context) throws Exception {
-        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+    @Handler('A') protected static String representationOf(short[] array, SerializerContext context) throws Exception {
+        StringBuffer buffer= new StringBuffer("A:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
-            buffer.append("i:" + i + ";");
             buffer.append("S:" + array[i] + ";");
         }
         buffer.append('}');
@@ -565,10 +562,9 @@ public class Serializer {
         return "i:" + i + ";";
     }
 
-    @Handler('a') protected static String representationOf(int[] array, SerializerContext context) throws Exception {
-        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+    @Handler('A') protected static String representationOf(int[] array, SerializerContext context) throws Exception {
+        StringBuffer buffer= new StringBuffer("A:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
-            buffer.append("i:" + i + ";");
             buffer.append("i:" + array[i] + ";");
         }
         buffer.append('}');
@@ -584,10 +580,9 @@ public class Serializer {
         return "l:" + l + ";";
     }
 
-    @Handler('a') protected static String representationOf(long[] array, SerializerContext context) throws Exception {
-        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+    @Handler('A') protected static String representationOf(long[] array, SerializerContext context) throws Exception {
+        StringBuffer buffer= new StringBuffer("A:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
-            buffer.append("i:" + i + ";");
             buffer.append("l:" + array[i] + ";");
         }
         buffer.append('}');
@@ -603,10 +598,9 @@ public class Serializer {
         return "d:" + d + ";";
     }
     
-    @Handler('a') protected static String representationOf(double[] array, SerializerContext context) throws Exception {
-        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+    @Handler('A') protected static String representationOf(double[] array, SerializerContext context) throws Exception {
+        StringBuffer buffer= new StringBuffer("A:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
-            buffer.append("i:" + i + ";");
             buffer.append("d:" + array[i] + ";");
         }
         buffer.append('}');
@@ -622,10 +616,9 @@ public class Serializer {
         return "f:" + f + ";";
     }
     
-    @Handler('a') protected static String representationOf(float[] array, SerializerContext context) throws Exception {
-        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+    @Handler('A') protected static String representationOf(float[] array, SerializerContext context) throws Exception {
+        StringBuffer buffer= new StringBuffer("A:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
-            buffer.append("i:" + i + ";");
             buffer.append("f" + array[i] + ";");
         }
         buffer.append('}');
@@ -641,10 +634,9 @@ public class Serializer {
         return "b:" + (b ? 1 : 0) + ";";
     }
 
-    @Handler('a') protected static String representationOf(boolean[] array, SerializerContext context) throws Exception {
-        StringBuffer buffer= new StringBuffer("a:" + array.length + ":{");
+    @Handler('A') protected static String representationOf(boolean[] array, SerializerContext context) throws Exception {
+        StringBuffer buffer= new StringBuffer("A:" + array.length + ":{");
         for (int i= 0; i < array.length; i++) {
-            buffer.append("i:" + i + ";");
             buffer.append("b:" + (array[i] ? 1 : 0) + ";");
         }
         buffer.append('}');
@@ -675,7 +667,7 @@ public class Serializer {
         return buffer.toString();
     }
 
-    @Handler('a') protected static String representationOf(Collection c, SerializerContext context) throws Exception {
+    @Handler('A') protected static String representationOf(Collection c, SerializerContext context) throws Exception {
         if (null == c) return "N;";
         return representationOf(c.toArray(), invokeableFor(Object[].class), context);
     }
@@ -685,11 +677,10 @@ public class Serializer {
         return "T:" + d.getTime() / 1000 + ";";   // getTime() returns *milliseconds*
     }
     
-    @Handler('a') protected static String representationOf(Object[] a, SerializerContext context) throws Exception {
-        StringBuffer buffer= new StringBuffer("a:" + a.length + ":{");
+    @Handler('A') protected static String representationOf(Object[] a, SerializerContext context) throws Exception {
+        StringBuffer buffer= new StringBuffer("A:" + a.length + ":{");
 
         for (int i= 0; i < a.length; i++) {
-            buffer.append("i:" + i + ";");
             buffer.append(null == a[i]
                 ? "N;"
                 : representationOf(a[i], invokeableFor(a[i].getClass()), context)
