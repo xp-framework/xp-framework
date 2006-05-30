@@ -34,6 +34,7 @@ $ php echo.php <hostname> <type>  [-p <port> ] [-j <jndi_name> ]
     - null
     - date
     - hash
+    - array
 
   * port is the port the XP-MBean is listening on. It defaults to 6448.
   
