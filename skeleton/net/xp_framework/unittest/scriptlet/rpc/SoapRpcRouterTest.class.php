@@ -186,13 +186,14 @@
       ');
       $this->router->init();
       $response= &$this->router->process();
-      $this->assertEquals(200, $response->statusCode);
+      if (!$this->assertEquals(200, $response->statusCode)) return;
 
       $msg= &SOAPMessage::fromString($response->getContent());
-      $data= $msg->getData();
-      $this->assertEquals('Lalala', $data[0]);
-      $this->assertEquals(1, $data[1]);
-      $this->assertEquals(array(12, 'Egypt', FALSE, -31), $data[2]);
+      $data= array_shift($msg->getData());
+      
+      $this->assertEquals('Lalala', $data[0]) &&
+      $this->assertEquals(1, $data[1]) &&
+      $this->assertEquals(array(12, 'Egypt', FALSE, -31), $data[2]) &&
       $this->assertEquals(array('lowerBound' => 18, 'upperBound' => 139), $data[3]);
     }
   }
