@@ -130,8 +130,12 @@
       if (FALSE == ($answer= &$this->transport->retrieve($response))) return FALSE;
       
       $answer->setMapping($this->mapping);
-      $data= $answer->getData('ENUM');
-      return sizeof($data) == 1 ? $data[0] : $data;
+      $data= $answer->getData();
+      if (sizeof($data) == 1) return $data[0];
+
+      return throw(new IllegalArgumentException(
+        'Multiple return values not supported (have '.sizeof($data).')'
+      ));
     }
   } implements(__FILE__, 'util.log.Traceable');
 ?>
