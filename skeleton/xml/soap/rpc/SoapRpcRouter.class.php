@@ -89,5 +89,23 @@
     function &_message() {
       return new SOAPMessage();
     }    
+
+    /**
+     * Calls the handler that the action reflects to
+     *
+     * @access  protected
+     * @param   &xml.xmlrpc.XmlRpcMessage message object (from request)
+     * @return  &mixed result of method call
+     * @throws  lang.IllegalArgumentException if there is no such method
+     * @throws  lang.IllegalAccessException for non-public methods
+     */
+    function &callReflectHandler(&$msg) {
+      try(); {
+        $r= &parent::callReflectHandler($msg);
+      } if (catch('Throwable', $e)) {
+        return throw($e);   // catch/rethrow because of PHP4 limitations
+      }
+      return array(&$r);
+    }   
   }
 ?>
