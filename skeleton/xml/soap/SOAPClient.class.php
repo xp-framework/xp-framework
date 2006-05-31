@@ -21,6 +21,7 @@
    *   var_dump($return);
    * </code>
    * 
+   * @test     xp://net.xp_framework.unittest.soap.SoapClientTest
    * @purpose  Generic SOAP client base class
    */
   class SOAPClient extends Object {
