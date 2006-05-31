@@ -148,7 +148,6 @@
      *
      * @access  public
      * @param   array arr
-     * @param   array mapping default array() list of declared namespaces
      */
     function setData($arr) {
       $node= &SOAPNode::fromArray($arr, 'item', $this->mapping);
