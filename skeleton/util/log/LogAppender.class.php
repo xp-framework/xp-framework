@@ -37,8 +37,7 @@
      * @return  string
      */
     function varSource($var) {
-      if (is_a($var, 'Object')) return $var->toString();
-      return is_string($var) ? $var : var_export($var, 1);
+      return is_string($var) ? $var : xp::stringOf($var);
     }
   }
 ?>
