@@ -70,7 +70,7 @@ div#menu {
   margin: 0;
   padding: 0;
   width: 100%;
-  background: #dff4dd url(image/bg_topmenu_w.gif) repeat-x top left;
+  background: white url(image/bg_topmenu_w.gif) repeat-x top left;
   border-top: 1px solid #002372;
   border-bottom: 2px solid #88929a;
 }
@@ -93,8 +93,7 @@ div#menu li a {
   text-decoration: none;
 
   background: #dff4dd url(image/bg_topmenu.gif) repeat-x top left;
-  color: #1e441b;
-  border-right: 1px solid #6f946c;
+  border-right: 1px solid;
   border-top: 1px solid white;
   border-left: 1px solid white;
 }
