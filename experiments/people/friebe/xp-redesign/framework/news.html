@@ -29,16 +29,7 @@
     </div>
     <table id="main" cellpadding="0" cellspacing="10"><tr>
       <td id="content">
-        <h1>news</h1>
-
-        <h2><a href="news/view?94">exit() in Ruby</a></h2>
-        <em>
-          Further reading, 2006-05-26 10:41 PM (0 comments) 
-        </em>
-        <p>
-          While reading "Programming Ruby - The Pragmatic Programmer's Guide" I noticed the following:<br><blockquote>The method <tt>Kernel#exit</tt> terminates your program, returning a status value to the operating system. However, unlike some languages, exit doesn't just terminate the program immediately. <tt>Kernel#exit</tt> first raises a <tt>SystemExit</tt> exception, which you may catch, and then performs a number of cleanup actions, including running any registered <tt>at_exit</tt> methods and object finalizers.</blockquote><br>Imagine this:<br><pre class="code">&lt;?php<span> <br>  try </span><span class="bracket">{</span><span class="default"><br>    exit</span><span class="bracket">()</span><span class="default">;<br>  </span><span class="bracket">}</span><span class="default"> catch </span><span class="bracket">(</span><span class="default">xp~lang~SystemExit </span><span class="variable">$e</span><span class="bracket">)</span><span class="default"> </span><span class="bracket">{</span><span class="default"><br>    echo </span><span class="string">"Sourcecode tried to exit\n"</span><span class="default">;<br>  </span><span class="bracket">}</span><span class="default"><br></span>?&gt;</pre><img src="image/icons/regular_smile.gif" width="13" height="13" border="0" hspace="1" vspace="0" alt=":)"><br><br>For details and an example, see the <a href="http://www.rubycentral.com/book/ref_m_kernel.html#Kernel.exit">Kernel#exit documentation</a>.
-        </p>
-        <br/><br clear="all"/>
+        <h1>framework news</h1>
 
         <h2><a href="news/view?95">Fix for the fix - bug #1 revisited</a></h2>
         <em>
@@ -49,19 +40,10 @@
         </p>
         <br/><br clear="all"/>
 
-        <h2><a href="news/view?93">So You Wanna Write A Unit Test</a></h2>
-        <em>
-           Unittests &amp; Further reading, 2006-05-20 10:00 PM (0 comments)
-        </em>
-        <p>
-          Stumbled upon this while surfing around the blogosphere:<br><blockquote>Five things to keep in mind while you are trying to work up the ambition to write that test:<ol><li>Don't take all day</li><li>Silence, please</li><li>Skip catching exceptions</li><li>Don't write the <i>War And Peace</i> of test methods</li><li>Don't give up!</li></ol></blockquote>The original article is at <a href="http://jroller.com/page/rolsen?entry=so_you_wanna_write_a">Russ Olsen's Weblog</a>
-        </p>
-        <br/><br clear="all"/>
-
       </td>
       <td id="context">
         <h3>
-          <img align="right" src="image/feed.png"/>
+          <img align="right" src="../common/image/feed.png"/>
           Subscribe
         </h3>
         You can subscribe to the XP framework's news by using RSS syndication.
