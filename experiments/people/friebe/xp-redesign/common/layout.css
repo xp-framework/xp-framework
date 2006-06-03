@@ -1,9 +1,13 @@
+/* Layout stylesheet for XP websites
+ *
+ * $Id$
+ */
+
 body {
   font: 13px "Trebuchet MS", "Arial", sans-serif;
+  border-right: 1px solid;
+  border-left: 1px solid;
   margin: 0px 30px 0px 30px;
-  border-left: 1px solid #7e9a7c;
-  border-right: 1px solid #7e9a7c;
-  background-color: #065c00;
 }
 
 /* {{{ Headlines */
@@ -18,12 +22,9 @@ h2 {
   letter-spacing: 2px;
   font-variant: small-caps;
   margin-bottom: 1px;
-  color: #3165c5;
-  border-bottom: 1px solid #3165c5;
 }
 h2 a {
   text-decoration: none;
-  color: #3165c5;
   background: url(image/arrow.png);
   background-position: right center; 
   background-repeat: no-repeat;
@@ -32,7 +33,6 @@ h2 a {
 /* }}} */
 
 a {
-  color: #43a016;
 }
 
 /* {{{ Form elements */
@@ -48,24 +48,20 @@ input {
 /* {{{ Search */
 div#search {
   text-align: right;
-  background-color: #a3d0a0;
   padding: 1px;
-  border-bottom: 1px solid #7e9a7c;
+  border-bottom: 1px solid;
   font: 11px "Lucida Grande", "Trebuchet MS", "Arial", sans-serif;
 }
 
 div#search input {
   height: 13px;
-  border-color: #7e9a7c;
-  background-color: #dff4dd;
 }
 /* }}} */
 
 /* {{{ Logo */
 div#top {
-  background: url(image/logo.png) no-repeat top left;
+  background: white no-repeat top left;
   height: 60px;
-  background-color: white;
 }
 /* }}} */
 
@@ -188,14 +184,12 @@ pre.code .comment {
 
 /* {{{ Footer */
 div#footer {
-  background-color: #a3d0a0;
   padding: 1px;
-  border-top: 1px solid #7e9a7c;
+  border-top: 1px solid;
   font: 11px "Lucida Grande", "Trebuchet MS", "Arial", sans-serif;
   text-align: right;
 }
 
 div#footer a {
-  color: #004926;
 }
 /* }}} */
