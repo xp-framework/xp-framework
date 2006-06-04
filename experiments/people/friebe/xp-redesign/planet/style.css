@@ -6,28 +6,28 @@
 @import url("../common/layout.css");
 
 body {
-  border-color: #1d6583;
-  background-color: #014f6f;
+  border-color: #914456;
+  background-color: #8e2940;
 }
 div#top {
   background-image: url(image/logo.png);
 }
 div#search {
-  background-color: #87a9c6;
-  border-color: #3985c5;
+  background-color: #ffa293;
+  border-color: #b16e63;
 }
 div#menu li a {
-  background-color: #dff4dd;
+  background-color: #e5acb6;
   background-image: url(image/bg_topmenu.gif);
-  color: #324b74;
+  color: #6d042e;
   border-right-color: #8f99ab;
 }
 div#search input {
-  background-color: #d6f8fa;
-  border-color: #0aa8e7;
+  background-color: #fbe4e3;
+  border-color: #b16e63;
 }
 h1 {
-  color: #03374d;
+  color: #bc0c20;
 }
 h2 {
   color: #3165c5;
@@ -37,12 +37,12 @@ h2 a {
   color: #3165c5;
 }
 a {
-  color: #003f79;
+  color: #bc0c20;
 }
 div#footer {
-  background-color: #87a9c6;
-  border-color: #3985c5;
+  background-color: #ffa293;
+  border-color: #b16e63;
 }
 div#footer a {
-  color: #085596;
+  color: #a60725;
 }
