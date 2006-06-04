@@ -13,18 +13,18 @@ div#top {
   background-image: url(image/logo.png);
 }
 div#search {
-  background-color: #ffa82d;
-  border-color: #d32200;
+  background-color: #fbd477;
+  border-color: #cf960f;
 }
 div#menu li a {
-  background-color: #dff4dd;
+  background-color: #a4997f;
   background-image: url(image/bg_topmenu.gif);
   color: #611b05;
   border-right-color: #8e7661;
 }
 div#search input {
-  background-color: #f3d29e;
-  border-color: #c87f28;
+  background-color: #ffeec4;
+  border-color: #a4997f;
 }
 h1 {
   color: #912909;
@@ -37,12 +37,12 @@ h2 a {
   color: #3165c5;
 }
 a {
-  color: #be4624;
+  color: #912909;
 }
 div#footer {
-  background-color: #ffa82d;
-  border-color: #d32200;
+  background-color: #fbd477;
+  border-color: #d2b060;
 }
 div#footer a {
-  color: #cc2600;
+  color: #912909;
 }
