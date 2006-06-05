@@ -342,11 +342,7 @@
      * @return  string
      */
     function toString() {
-      return (
-        $this->getClassName().'@['.$this->size()."]{\n".
-        substr(var_export($this->_hash, 1), 8, -2).
-        "\n}"
-      );
+      return $this->getClassName().'('.$this->size().')@'.xp::stringOf($this->_hash);
     }
   }
 ?>
