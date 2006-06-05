@@ -6,28 +6,28 @@
 @import url("../common/layout.css");
 
 body {
-  border-color: #d32200;
-  background-color: #7e3b00;
+  border-color: #914456;
+  background-color: #8e2940;
 }
 div#top {
   background-image: url(image/logo.png);
 }
 div#search {
-  background-color: #fbd477;
-  border-color: #cf960f;
+  background-color: #ffa293;
+  border-color: #b16e63;
 }
 div#menu li a {
-  background-color: #a4997f;
+  background-color: #e5acb6;
   background-image: url(image/bg_topmenu.gif);
-  color: #611b05;
-  border-right-color: #8e7661;
+  color: #6d042e;
+  border-right-color: #8f99ab;
 }
 div#search input {
-  background-color: #ffeec4;
-  border-color: #a4997f;
+  background-color: #fbe4e3;
+  border-color: #b16e63;
 }
 h1 {
-  color: #912909;
+  color: #bc0c20;
 }
 h2 {
   color: #3165c5;
@@ -37,12 +37,12 @@ h2 a {
   color: #3165c5;
 }
 a {
-  color: #912909;
+  color: #bc0c20;
 }
 div#footer {
-  background-color: #fbd477;
-  border-color: #d2b060;
+  background-color: #ffa293;
+  border-color: #b16e63;
 }
 div#footer a {
-  color: #912909;
+  color: #a60725;
 }
