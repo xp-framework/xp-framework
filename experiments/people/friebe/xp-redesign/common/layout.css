@@ -140,6 +140,11 @@ table#main td#context h3 {
   margin-bottom: 1px;
   border-bottom: 1px solid #444444;
 }
+table#main td#context h3 a {
+  background: none;
+  padding-right: 0;
+  text-decoration: none;
+}
 table#main td#content {
   vertical-align: top;
   background-color: white;
