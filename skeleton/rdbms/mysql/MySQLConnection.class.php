@@ -21,6 +21,25 @@
    * @purpose  Database connection
    */
   class MySQLConnection extends DBConnection {
+    var
+      $formatter= NULL;
+
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   &rdbms.DSN dsn
+     */
+    function __construct(&$dsn) { 
+      parent::__construct($dsn);
+      $this->formatter= new StatementFormatter();
+      $this->formatter->setEscape('"');
+      $this->formatter->setEscapeRules(array(
+        '"'   => '\"',
+        '\\'  => '\\\\'
+      ));
+      $this->formatter->setDateFormat('Y-m-d H:i:s');
+    }
 
     /**
      * Connect
@@ -53,7 +72,24 @@
       if (!is_resource($this->handle)) {
         return throw(new SQLConnectException(mysql_error(), $this->dsn));
       }
+
+      // Figure out sql_mode and update formatter's escaperules accordingly
+      // - See: http://bugs.mysql.com/bug.php?id=10214
+      // - Possible values: http://dev.mysql.com/doc/refman/5.0/en/server-sql-mode.html
+      // "modes is a list of different modes separated by comma (,) characters."
+      $modes= array_flip(explode(',', array_pop(mysql_fetch_row(mysql_query(
+        'show variables like "sql_mode"', 
+        $this->handle
+      )))));
       
+      // NO_BACKSLASH_ESCAPES: Disable the use of the backslash character 
+      // (\) as an escape character within strings. With this mode enabled, 
+      // backslash becomes any ordinary character like any other. 
+      // (Implemented in MySQL 5.0.1)
+      isset($modes['NO_BACKSLASH_ESCAPES']) && $this->formatter->setEscapeRules(array(
+        '"'   => '""'
+      ));
+
       return parent::connect();
     }
     
@@ -98,19 +134,8 @@
      * @return  string
      */
     function prepare() {
-      static $formatter= NULL;
       $args= func_get_args();
-      
-      if (NULL === $formatter) {
-        $formatter= new StatementFormatter();
-        $formatter->setEscape('"');
-        $formatter->setEscapeRules(array(
-          '"'   => '\"',
-          '\\'  => '\\\\'
-        ));
-        $formatter->setDateFormat('Y-m-d H:i:s');
-      }
-      return $formatter->format(array_shift($args), $args);
+      return $this->formatter->format(array_shift($args), $args);
     }
     
     /**
