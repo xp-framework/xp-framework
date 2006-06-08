@@ -264,5 +264,16 @@
       }
       $this->_info['url']= $str;
     }
+    
+    /**
+     * Returns whether a given object is equal to this.
+     *
+     * @access  public
+     * @param   &lang.Object cmp
+     * @return  bool
+     */
+    function equals(&$cmp) {
+      return is('peer.URL', $cmp) && $this->getURL() == $cmp->getURL();
+    }
   }
 ?>
