@@ -255,6 +255,14 @@
      * @return  &string data
      */
     function &getData() {
+      if (NULL === $this->data) {
+        $fd= fopen('php://input', 'r');
+        $this->data= '';
+        while (!feof($fd)) {
+          $this->data.= fread($fd, 1024);
+        }
+        fclose($fd);
+      }
       return $this->data;
     }
     
