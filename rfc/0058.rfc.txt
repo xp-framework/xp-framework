@@ -1,0 +1,88 @@
+RFC 0058: New rdbms exception
+========================================================================
+$Id$
+
+@authors: gellweiler
+@created: Fri Jun  9 14:01:06 CEST 2006
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+A new exception will be added to the rdbms package indicating a connection
+loss during server query.
+
+Rationale
+---------
+Currently there is no determination which type of error caused an SQLException
+during query. Sometimes it's helpful to know if a connection has been closed by
+foreign host.
+
+
+Functionality
+-------------
+
+Changes to existing classes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The query() method of the dbms.Connection classes will be changed and in cases
+where the connection was lost during query a new Exception will be thrown. This
+exception extends rdbms.SQLStatementFailedException to avoid bc-breakes. Currently 
+a patch for rdms.mysql exists:
+
+<code>
+  if ($this->flags & DB_UNBUFFERED) {
+    $result= mysql_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
+  } else {
+    $result= mysql_query($sql, $this->handle);
+  }
+
+  if (FALSE === $result) {
+    switch ($e= mysql_errno($this->handle)) {
+      case 2013: // Lost connection to MySQL server during query
+        return throw(new SQLConnectException(
+          'Statement failed: '.mysql_error($this->handle), 
+          $sql, 
+          $e
+        ));
+        break;
+
+      default:  
+        return throw(new SQLStatementFailedException(
+          'Statement failed: '.mysql_error($this->handle), 
+          $sql, 
+          $e
+        ));
+    }
+  }
+</code>
+
+
+New Exceptions
+~~~~~~~~~~~~~~~
+A new exception rdbms.ConnectionClosedException will be added to the repository. This
+class extends rdbms.SQLStatementFailedException.
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+- http://xp-framework.net/downloads/rfc0058.diff
+  Patch implementing this RFC for rdbms.mysql
+
+Comments
+--------
+n/a
+
+<EOF>
