@@ -160,10 +160,12 @@
      * @return  string
      */
     function numval($arg) {
-      if (0 >= sscanf($arg, '%[0-9.+-]%[eE]%[0-9-]', $n, $s, $e))
-        return 'NULL';
+      if (
+        (0 >= sscanf($arg, '%[0-9.+-]%[eE]%[0-9-]', $n, $s, $e)) ||
+        !is_numeric($n)
+      ) return 'NULL';
         
-      return ($n.($e ? $s.$e : ''));
+      return $n.($e ? $s.$e : '');
     }
   }
 ?>
