@@ -307,5 +307,53 @@
         );
       }
     }
+
+    /**
+     * Tests dash ("-") in %d token
+     *
+     * @access  public
+     */
+    #[@test]
+    function testDashAsNumber() {
+      foreach ($this->conn as $key => $value) {
+        $this->assertEquals(
+          'NULL',
+          $value->prepare('%d', '-'),
+          $key
+        );
+      }
+    }
+
+    /**
+     * Tests dot (".") in %d token
+     *
+     * @access  public
+     */
+    #[@test]
+    function testDotAsNumber() {
+      foreach ($this->conn as $key => $value) {
+        $this->assertEquals(
+          'NULL',
+          $value->prepare('%d', '.'),
+          $key
+        );
+      }
+    }
+ 
+     /**
+     * Tests plus ("+") in %d token
+     *
+     * @access  public
+     */
+    #[@test]
+    function testPlusAsNumber() {
+      foreach ($this->conn as $key => $value) {
+        $this->assertEquals(
+          'NULL',
+          $value->prepare('%d', '+'),
+          $key
+        );
+      }
+    } 
   }
 ?>
