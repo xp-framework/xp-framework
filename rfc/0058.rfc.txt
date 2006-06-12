@@ -83,6 +83,14 @@ Related documents
 - http://xp-framework.net/downloads/rfc0058.diff
   Patch implementing this RFC for rdbms.mysql
 
+- http://xp-framework.net/downloads/rfc0058-sybase.diff
+  Patch implementing this RFC for rdbms.sybase
+
+- http://xp-framework.net/downloads/disconnect.phps
+  Test script. Start it, then shut down the RDBMS server while it's 
+  running and look at the exception to derive what criteria signals a 
+  connection loss.
+
 
 Comments
 --------
