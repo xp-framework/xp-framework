@@ -147,7 +147,7 @@
     function insert() { 
       $args= func_get_args();
       $args[0]= 'insert '.$args[0];
-      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -253,7 +253,7 @@
       
       if (TRUE === $result) {
         $this->_obs && $this->notifyObservers(new DBEvent('queryend', TRUE));
-        return TRUE;
+        return $result;
       }
       
       $resultset= &new SybaseResultSet($result);
