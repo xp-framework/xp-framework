@@ -6,8 +6,11 @@
  
   uses(
     'rdbms.DriverManager', 
-    'util.profiling.unittest.TestCase'
+    'util.profiling.unittest.TestCase',
+    'net.xp_framework.unittest.rdbms.mock.MockConnection'
   );
+
+  define('MOCK_CONNECTION_CLASS', 'net.xp_framework.unittest.rdbms.mock.MockConnection');
 
   /**
    * Test rdbms API
@@ -16,37 +19,26 @@
    */
   class DBTest extends TestCase {
     var
-      $conn = NULL,
-      $dsn  = '';
-      
-    /**
-     * Constructor
+      $conn = NULL;
+ 
+     /**
+     * Static initializer
      *
+     * @model   static
      * @access  public
-     * @param   string name
-     * @param   string dsn
-     */
-    function __construct($name, $dsn) {
-      $this->dsn= $dsn;
-      parent::__construct($name);
+     */  
+    function __static() {
+      DriverManager::register('mock', XPClass::forName(MOCK_CONNECTION_CLASS));
     }
-      
+     
     /**
      * Setup function
      *
      * @access  public
-     * @throws  rdbms.DriverNotSupportedException
      */
     function setUp() {
-      try(); {
-        $this->conn= &DriverManager::getConnection($this->dsn);
-      } if (catch('DriverNotSupportedException', $e)) {
-        throw (new PrerequisitesNotMetError(
-          PREREQUISITE_INITFAILED,
-          $e,
-          array(substr($this->dsn, 0, strpos($this->dsn, '://')))
-        ));
-      }
+      $this->conn= &DriverManager::getConnection('mock://mock/MOCKDB');
+      $this->assertEquals(0, $this->conn->flags & DB_AUTOCONNECT);
     }
     
     /**
@@ -57,16 +49,43 @@
     function tearDown() {
       $this->conn->close();
     }
-    
+
+    /**
+     * Asserts a query works
+     *
+     * @access  protected
+     * @throws  util.profiling.AssertionFailedError
+     */
+    function assertQuery() {
+      $version= '$Revision$';
+      $this->conn->setResultSet(new MockResultSet(array(array('version' => $version))));
+      if (
+        ($r= &$this->conn->query('select %s as version', $version)) &&
+        ($this->assertSubclass($r, 'rdbms.ResultSet')) && 
+        ($field= $r->next('version'))
+      ) $this->assertEquals($field, $version);
+    }
+
     /**
      * Test database connect
      *
      * @access  public
      */
     #[@test]
-    function testConnect() {
+    function connect() {
       $result= $this->conn->connect();
       $this->assertTrue($result);
+    }
+
+    /**
+     * Test database connect throws an SQLConnectException in case it fails
+     *
+     * @access  public
+     */
+    #[@test, @expect('rdbms.SQLConnectException')]
+    function connectFailure() {
+      $this->conn->makeConnectFail('Unknown server');
+      $this->conn->connect();
     }
     
     /**
@@ -75,14 +94,63 @@
      * @access  public
      */
     #[@test]
-    function testSelect() {
-      $r= &$this->conn->query('select %s as version', '$Revision$');
-      if ($this->assertSubclass($r, 'rdbms.ResultSet')) {
-        $version= $r->next('version');
-        $this->assertNotEmpty($version);
-        $this->assertEquals($version, '$Revision$');
-        return $version;
-      }
+    function select() {
+      $this->conn->connect();
+      $this->assertQuery();
+    }
+
+    /**
+     * Test an SQLStateException is thrown if a query is performed on a
+     * not yet connect()ed connection object.
+     *
+     * @access  public
+     */
+    #[@test, @expect('rdbms.SQLStateException')]
+    function queryOnUnConnected() {
+      $this->conn->query('select 1');   // Not connected
+    }
+
+    /**
+     * Test an SQLStateException is thrown if a query is performed on a
+     * disconnect()ed connection object.
+     *
+     * @access  public
+     */
+    #[@test, @expect('rdbms.SQLStateException')]
+    function queryOnDisConnected() {
+      $this->conn->connect();
+      $this->assertQuery();
+      $this->conn->close();
+      $this->conn->query('select 1');   // Not connected
+    }
+
+
+    /**
+     * Test an SQLStateException is thrown if a query is performed on a
+     * connection thas is not connected due to connect() failure.
+     *
+     * @access  public
+     */
+    #[@test, @expect('rdbms.SQLStateException')]
+    function queryOnFailedConnection() {
+      $this->conn->makeConnectFail('Access denied');
+      try(); {
+        $this->conn->connect();
+      } if (catch('SQLConnectException', $ignored)) { }
+
+      $this->conn->query('select 1');   // Previously failed to connect
+    }
+
+    /**
+     * Test an SQLStatementFailedException is thrown when a query fails.
+     *
+     * @access  public
+     */
+    #[@test, @expect('rdbms.SQLStatementFailedException')]
+    function statementFailed() {
+      $this->conn->connect();
+      $this->conn->makeQueryFail('Deadlock', 1205);
+      $this->conn->query('select 1');
     }
   }
 ?>
