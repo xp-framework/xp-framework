@@ -23,7 +23,7 @@
       try(); {
         // Nothing
       } if (catch('Exception', $caught)) {
-        return $this->fail('Caught an exception but non where thrown', $caught);
+        return $this->fail('Caught an exception but none where thrown', $caught);
       }
     }
 
@@ -40,6 +40,27 @@
         $this->assertSubclass($caught, 'Exception');
         unset($caught);
         return TRUE;
+      }
+
+      $this->fail('Thrown Exception not caught');
+    }
+
+    /**
+     * Basics: Tests thrown exception is caught in the correct catch
+     * block.
+     *
+     * @access  public
+     */
+    #[@test]
+    function multipleCatches() {
+      try(); {
+        throw(new Exception('Test'));
+      } if (catch('IllegalArgumentException', $caught)) {
+        return $this->fail('Exception should have been caught in Exception block', 'IllegalArgumentException');
+      } if (catch('Exception', $caught)) {
+        return TRUE;
+      } if (catch('Throwable', $caught)) {
+        return $this->fail('Exception should have been caught in Exception block', 'Throwable');
       }
 
       $this->fail('Thrown Exception not caught');
