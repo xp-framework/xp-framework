@@ -92,6 +92,10 @@ Related documents
   running and look at the exception to derive what criteria signals a 
   connection loss.
 
+- http://xp-framework.net/downloads/rfc0058-unittests.diff
+  Patch against net/xp_framework/unittest/rdbms implementing tests for
+  this new behaviour.
+
 
 Comments
 --------
