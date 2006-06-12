@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Fri Dec 16 15:56:44 CET 2005
-@status: draft
+@status: implemented, 2005-12-21 15:08:18
 @category: remote
 
 Scope of Change
