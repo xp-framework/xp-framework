@@ -127,6 +127,7 @@
      * @return  bool success
      */
     function close() {
+      $this->_connected= FALSE;
       return TRUE;
     }
 
