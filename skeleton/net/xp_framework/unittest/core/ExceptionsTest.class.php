@@ -38,7 +38,26 @@
         throw(new Exception('Test'));
       } if (catch('Exception', $caught)) {
         $this->assertSubclass($caught, 'Exception');
-        unset($caught);
+        delete($caught);
+        return TRUE;
+      }
+
+      $this->fail('Thrown Exception not caught');
+    }
+
+    /**
+     * Basics: Tests thrown exception is caught by fully qualified 
+     * class name ("FQCN")
+     *
+     * @access  public
+     */
+    #[@test]
+    function thrownExceptionCaughtByFqCn() {
+      try(); {
+        throw(new Exception('Test'));
+      } if (catch('lang.Exception', $caught)) {
+        $this->assertSubclass($caught, 'Exception');
+        delete($caught);
         return TRUE;
       }
 
