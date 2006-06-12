@@ -39,7 +39,7 @@ a patch for rdms.mysql exists:
   if (FALSE === $result) {
     switch ($e= mysql_errno($this->handle)) {
       case 2013: // Lost connection to MySQL server during query
-        return throw(new SQLConnectException(
+        return throw(new ConnectionClosedException(
           'Statement failed: '.mysql_error($this->handle), 
           $sql, 
           $e
