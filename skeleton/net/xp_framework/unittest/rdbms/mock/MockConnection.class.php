@@ -17,7 +17,8 @@
       $affectedRows   = 1,
       $identityValue  = 1,
       $resultSet      = NULL,
-      $queryError     = array();
+      $queryError     = array(),
+      $connectError   = NULL;
 
     var
       $_connected     = FALSE;
@@ -63,6 +64,16 @@
      */
     function makeQueryFail($errNo, $errMsg) {
       $this->queryError= array($errNo, $errMsg);
+    }
+
+    /**
+     * Mock: Make connect fail
+     *
+     * @access  public
+     * @param   int errMsg
+     */
+    function makeConnectFail($errMsg) {
+      $this->connectError= $errMsg;
     }
 
     /**
@@ -114,8 +125,12 @@
      * @throws  rdbms.SQLConnectException
      */
     function connect($reconnect= FALSE) {
-      if ($this->_connected) return TRUE;
+      if ($this->_connected && !$reconnect) return TRUE;
       
+      if ($this->connectError) {
+        $this->_connected= FALSE;
+        return throw(new SQLConnectException($this->connectError, $this->dsn));
+      }
       $this->_connected= TRUE;
       return TRUE;
     }
