@@ -24,11 +24,11 @@ Functionality
 
 Changes to existing classes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The query() method of the dbms.Connection classes will be changed and in cases
+The query() method of the rdbms.DBConnection subclasses will be changed and in cases
 where the connection was lost during query a new Exception will be thrown. This
-exception extends rdbms.SQLStatementFailedException to avoid bc-breakes. Currently 
-a patch for rdms.mysql exists:
+exception extends rdbms.SQLStatementFailedException to avoid bc-breakes. 
 
+Example patch excerpt for rdms.mysql:
 <code>
   if ($this->flags & DB_UNBUFFERED) {
     $result= mysql_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
@@ -39,7 +39,7 @@ a patch for rdms.mysql exists:
   if (FALSE === $result) {
     switch ($e= mysql_errno($this->handle)) {
       case 2013: // Lost connection to MySQL server during query
-        return throw(new ConnectionClosedException(
+        return throw(new SQLConnectionClosedException(
           'Statement failed: '.mysql_error($this->handle), 
           $sql, 
           $e
@@ -75,7 +75,8 @@ n/a
 
 Dependencies
 ------------
-- New class ConnectionClosedException
+- New class SQLConnectionClosedException
+  Will be added to uses() in rdbms.DBConnection
 
 
 Related documents
@@ -100,5 +101,8 @@ Comments
 - friebe, Mon Jun 12 11:24:55 CEST 2006
   Maybe ConnectionClosedException should be SQLConnectionClosedException? - 
   just to be consistent with the rest of the SQL* exceptions...
+
+- friebe, Mon Jun 12 11:48:38 CEST 2006
+  Discussion with RFC author - SQLConnectionClosedException is OK.
 
 <EOF>
