@@ -59,7 +59,7 @@ Example patch excerpt for rdms.mysql:
 
 New Exceptions
 ~~~~~~~~~~~~~~~
-A new exception rdbms.ConnectionClosedException will be added to the repository. This
+A new exception rdbms.SQLConnectionClosedException will be added to the repository. This
 class extends rdbms.SQLStatementFailedException.
 
 
