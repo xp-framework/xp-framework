@@ -67,6 +67,15 @@
     }
 
     /**
+     * Mock: Let server disconnect. This will make query() thrown
+     *
+     * @access  public
+     */
+    function letServerDisconnect() {
+      $this->queryError= array(2013);
+    }
+
+    /**
      * Mock: Make connect fail
      *
      * @access  public
@@ -326,14 +335,29 @@
         if (FALSE === $c) return throw(new SQLStateException('Previously failed to connect.'));
       }
 
-      if (!empty($this->queryError)) {
-        $error= $this->queryError;
-        $this->queryError= array();       // Reset so next query succeeds again
-        return throw(new SQLStatementFailedException(
-          'Statement failed: '.$error[1],
-          $sql, 
-          $error[0]
-        ));
+      switch (sizeof($this->queryError)) {
+        case 0: {
+          return $this->resultSet;
+        }
+
+        case 1: {   // letServerDisconnect() sets this
+          $this->queryError= array();
+          $this->_connected= FALSE;
+          return throw(new SQLConnectionClosedException(
+            'Statement failed: Read from server failed',
+            $sql
+          ));
+        }
+        
+        case 2: {   // makeQueryFail() sets this
+          $error= $this->queryError;
+          $this->queryError= array();       // Reset so next query succeeds again
+          return throw(new SQLStatementFailedException(
+            'Statement failed: '.$error[1],
+            $sql, 
+            $error[0]
+          ));
+        }
       }
       
       return $this->resultSet;

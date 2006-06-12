@@ -124,6 +124,20 @@
       $this->conn->query('select 1');   // Not connected
     }
 
+    /**
+     * Test an SQLConnectionClosedException is thrown if the connection
+     * has been lost.
+     *
+     * @see     rfc://0058
+     * @access  public
+     */
+    #[@test, @expect('rdbms.SQLConnectionClosedException')]
+    function connectionLost() {
+      $this->conn->connect();
+      $this->assertQuery();
+      $this->conn->letServerDisconnect();
+      $this->conn->query('select 1');   // Not connected
+    }
 
     /**
      * Test an SQLStateException is thrown if a query is performed on a

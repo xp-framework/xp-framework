@@ -9,6 +9,7 @@
     'rdbms.SQLConnectException',
     'rdbms.SQLStateException',
     'rdbms.SQLStatementFailedException',
+    'rdbms.SQLConnectionClosedException',
     'rdbms.DBEvent',
     'rdbms.DSN',
     'rdbms.ResultSet',

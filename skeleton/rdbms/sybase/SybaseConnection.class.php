@@ -244,10 +244,25 @@
       }
 
       if (FALSE === $result) {
+        if (!is_resource($error= sybase_query('select @@error', $this->handle))) {
+        
+          // The only case selecting @@error should fail is if we receive a
+          // disconnect. We could also check on the warnings stack if we can
+          // find the following:
+          //
+          // Sybase:  Client message:  Read from SQL server failed. (severity 78)
+          //
+          // but that seems a bit errorprone. 
+          return throw(new SQLConnectionClosedException(
+            'Statement failed: '.trim(sybase_get_last_message()), 
+            $sql
+          ));
+        }
+
         return throw(new SQLStatementFailedException(
           'Statement failed: '.trim(sybase_get_last_message()), 
           $sql,
-          array_pop(sybase_fetch_row(sybase_query('select @@error', $this->handle)))
+          array_pop(sybase_fetch_row($error))
         ));
       }
       
