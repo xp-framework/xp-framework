@@ -327,11 +327,12 @@
       }
 
       if (!empty($this->queryError)) {
+        $error= $this->queryError;
         $this->queryError= array();       // Reset so next query succeeds again
         return throw(new SQLStatementFailedException(
-          'Statement failed: '.$this->queryError[1],
+          'Statement failed: '.$error[1],
           $sql, 
-          $this->queryError[0]
+          $error[0]
         ));
       }
       
