@@ -89,4 +89,8 @@ Comments
 - friebe, Mon Jun 12 11:02:08 CEST 2006
   Need to test this for Sybase and PostgreSQL, too.
 
+- friebe, Mon Jun 12 11:24:55 CEST 2006
+  Maybe ConnectionClosedException should be SQLConnectionClosedException? - 
+  just to be consistent with the rest of the SQL* exceptions...
+
 <EOF>
