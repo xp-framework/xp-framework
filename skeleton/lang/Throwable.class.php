@@ -11,6 +11,7 @@
    *
    * @see      xp://lang.Error
    * @see      xp://lang.Exception
+   * @test     xp://net.xp_framework.unittest.core.ExceptionsTest
    * @purpose  Base class
    */
   class Throwable extends Object {
