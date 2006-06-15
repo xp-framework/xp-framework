@@ -31,6 +31,15 @@
       <td id="content">
         <h1>framework news</h1>
 
+        <h2><a href="news/view?99">Connection closed?</a></h2>
+        <em>
+          Examples, 2006-06-12 10:10 PM (0 comments) 
+        </em>
+        <p>
+          If you work with MySQL a lot, you've probably already seen the message <tt>"Lost connection to MySQL server during query"</tt>. This occurs when for example the server is shut down (or otherwise exits) while a client is querying the database or when a (server-configurable) timeout has been reached.<br><br>The XP framework now transforms this error to a specialized exception, the <tt>SQLConnectionClosedException</tt>. For details, see <a href="http://xp-framework.net/rfc/0058">RFC #0058</a>
+        </p>
+        <br/><br clear="all"/>
+
         <h2><a href="news/view?95">Fix for the fix - bug #1 revisited</a></h2>
         <em>
           General, 2006-05-24 02:14 PM (0 comments) 
