@@ -25,7 +25,7 @@ Functionality
 -------------
 A test can be annotated with the @timeout annotation as follows:
 
-<code>
+<?php
   class LdapIntegrationTest extends TestCase {
   
     #[@test, @timeout(1.0)]
@@ -33,7 +33,7 @@ A test can be annotated with the @timeout annotation as follows:
       // ...
     }
   }
-</code>
+?>
 
 
 Security considerations
