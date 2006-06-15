@@ -57,6 +57,12 @@ Related documents
   but later on decided not to be implemented (see comments). It had
   a different meaning there, though.
 
+- http://xp-framework.net/downloads/rfc0059.diff
+  Patch implementing this RFC. Also contains some refactoring which
+  could go into the util.profiling.unittest classes regardless if
+  this RFC is implemented or not (TestCase::run() now is where the
+  action is, TestSuite::runTest() only calls it...).
+
 
 Comments
 --------
