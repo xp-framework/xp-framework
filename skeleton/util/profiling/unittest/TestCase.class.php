@@ -357,7 +357,6 @@
      * PrerequisitesNotMetError to indicate this case should be
      * skipped.
      *
-     * @model   abstract
      * @access  public
      * @throws  util.profiling.unittest.PrerequisitesNotMetError
      */
@@ -366,7 +365,6 @@
     /**
      * Tear down this test case. Overwrite in subclasses.
      *
-     * @model   abstract
      * @access  public
      */
     function tearDown() { }
