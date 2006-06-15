@@ -1,0 +1,64 @@
+RFC 0059: @timeout for unit tests
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Thu Jun 15 22:01:52     2006
+@status: draft
+@category: util.profiling.unittest
+
+Scope of Change
+---------------
+A timeout facility will be added to unit tests. When a test runs longer
+than the time span defined by the timeout facility, the test will be 
+marked as timeouted.
+
+
+Rationale
+---------
+Integration tests that test certain system parts such as an LDAP server
+might want to test not only that accessing the server works but also 
+that a query succeeds in a certain time.
+
+
+Functionality
+-------------
+A test can be annotated with the @timeout annotation as follows:
+
+<code>
+  class LdapIntegrationTest extends TestCase {
+  
+    #[@test, @timeout(1.0)]
+    function lookup() {
+      // ...
+    }
+  }
+</code>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Minimal overhead for checking the existance of the @timeout annotation.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- RFC #0032 - This is where the annotation was originally suggested,
+  but later on decided not to be implemented (see comments). It had
+  a different meaning there, though.
+
+
+Comments
+--------
+
+<EOF>
