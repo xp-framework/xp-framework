@@ -35,6 +35,12 @@ A test can be annotated with the @timeout annotation as follows:
   }
 ?>
 
+Test failure message:
+<code>
+  util.profiling.unittest.AssertionFailedError (Timeout) { 
+    expected: ["0.100"] but was: ["0.201"] 
+  }
+</code>
 
 Security considerations
 -----------------------
@@ -62,6 +68,11 @@ Related documents
   could go into the util.profiling.unittest classes regardless if
   this RFC is implemented or not (TestCase::run() now is where the
   action is, TestSuite::runTest() only calls it...).
+
+- http://xp-framework.net/downloads/rfc0059-demotest-patch.diff
+  Patch for net.xp_framework.unittest.DemoTest. The author is fully
+  aware of the existance of the usleep() function but uses Windows
+  at home:)
 
 
 Comments
