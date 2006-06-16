@@ -121,7 +121,7 @@ Generates stub classes by using the ESDL service
 
 Usage
 -----
-$ php stubclassesfor.php <hostname> <jndiname> [-p <port>] [-o <outputpath>] [-x]
+$ php stubclassesfor.php <hostname> <jndiname> [-p <port>] [-o <outputpath>] [-x] [-c classlist]
   
   * hostname is the host name (or IP) that your JBoss + XP-MBean server 
     is running on. The feed entity bean (from the easc/beans directory) 
@@ -130,6 +130,9 @@ $ php stubclassesfor.php <hostname> <jndiname> [-p <port>] [-o <outputpath>] [-x
   * jndiname is the name of the bean.
 
   * port is the port the ESDL-MBean is listening on. It defaults to 6449.
+
+  * classlist is expected to be a comma-separated list of (fully qualified)
+    classnames. If they are omitted, all classes will be generated.
   
   * outputpath is the path the files should be written to. It defaults
     to SKELETON_PATH, that is, where lang.base.php resides.
@@ -157,7 +160,25 @@ __
   $path= $p->value('output', 'o', SKELETON_PATH);
   $showXml= $p->exists('xml');
   
-  // Create all classes
+  // If class names are passed, process them
+  if ($p->exists('classes')) {
+    foreach (explode(',', $p->value('classes', 'c', '')) as $name) {
+      try(); {
+        $class= &$remote->lookup('Class:'.$jndi.':'.$name);
+        $class && writeTo(
+          $path, 
+          $class->getName(), 
+          processClass($class, 'xp', $showXml)
+        );
+      } if (catch('Exception', $e)) {
+        $e->printStackTrace();
+        continue;
+      }
+    }
+    exit(0);
+  }
+  
+  // Otherwise, create all classes
   foreach (classSetOf($jndi, $remote, $description->classSet()) as $classwrapper) {
     if ((
       $classwrapper->getName() == $description->interfaces[HOME_INTERFACE]->getClassName() ||
