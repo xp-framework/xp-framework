@@ -179,6 +179,17 @@
     function getValue($name, $default= NULL) {
       return isset($this->values[$name]) ? $this->values[$name] : $default;
     }
+
+    /**
+     * Set a value by its name
+     *
+     * @access  public
+     * @param   string name
+     * @param   mixed value
+     */
+    function setValue($name, $value) {
+      $this->values[$name]= $value;
+    }
     
     /**
      * Load request values from request data
