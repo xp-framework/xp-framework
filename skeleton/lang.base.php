@@ -59,8 +59,9 @@
         if (isset($protect[$ser])) return '->{:recursion:}';
         $protect[$ser]= TRUE;
         $r= xp::nameOf(get_class($arg))." {\n";
-        foreach (array_keys(get_object_vars($arg)) as $key) {
-          $r.= $indent.'  '.$key.' => '.xp::stringOf($arg->{$key}, $indent.'  ')."\n";
+        $vars= (array)$arg;
+        foreach (array_keys($vars) as $key) {
+          $r.= $indent.'  '.$key.' => '.xp::stringOf($vars[$key], $indent.'  ')."\n";
         }
         unset($protect[$ser]);
         return $r.$indent.'}';
