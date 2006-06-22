@@ -42,9 +42,9 @@
      */
     function initialize() {
       parent::initialize();
-      $this->product= getenv('PRODUCT');
-      $this->stateName= getenv('STATE');
-      $this->language= getenv('LANGUAGE');
+      $this->product= $this->getEnvValue('PRODUCT');
+      $this->stateName= $this->getEnvValue('STATE');
+      $this->language= $this->getEnvValue('LANGUAGE');
       $this->page= isset($_REQUEST['__page']) ? $_REQUEST['__page'] : 'home';
     }
 
