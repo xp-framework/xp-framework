@@ -1,0 +1,65 @@
+RFC 0060: LDAPEntry::isA()
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Fri Jun 23 16:19:11 CEST 2006
+@status: draft
+@category: peer.ldap
+
+Scope of Change
+---------------
+A means to check whether an LDAPEntry object is an instance of a given
+objectClass will be added.
+
+
+Rationale
+---------
+Easier access to the objectClass attribute.
+
+
+Functionality
+-------------
+Current
+~~~~~~~
+<?php
+  if (in_array('OpenLDAPperson', $entry->getAttribute('objectclass'))) {
+    // ...
+  }
+?>
+
+Proposed
+~~~~~~~~
+<?php
+  if ($entry->isA('OpenLDAPperson')) {
+    // ...
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+- One new method in peer.ldap.LDAPEntry
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+- friebe, Fri Jun 23 16:22:18 CEST 2006
+  Is isA() a good name?
+
+<EOF>
