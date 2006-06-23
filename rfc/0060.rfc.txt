@@ -54,7 +54,8 @@ n/a
 
 Related documents
 -----------------
-n/a
+- http://xp-framework.net/downloads/rfc0060.patch
+  Patch implementing this RFC
 
 
 Comments
