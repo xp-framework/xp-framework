@@ -71,7 +71,7 @@
     }
     
     /**
-     * Set this entrie's DN (distinct name)
+     * Set this entry's DN (distinct name)
      *
      * @access  public
      * @param   string dn
@@ -81,7 +81,7 @@
     }
     
     /**
-     * Retrieve this entries' DN (distinct name)
+     * Retrieve this entry's DN (distinct name)
      *
      * @access  public
      * @return  string DN
