@@ -16,11 +16,11 @@
   $p= &new ParamString();
   if (!$p->exists(1)) {
     Console::writeLine(<<<__
-EASC echo bean demo application
+EASC iterator bean demo application. Iterates on $argv of this program.
 
 Usage
 -----
-$ php iterate.php <hostname> <type>  [-p <port> ] [-j <jndi_name> ]
+$ php iterate.php <hostname> [-p <port> ] [-j <jndi_name>]
   
   * hostname is the host name (or IP) that your JBoss + XP-MBean server 
     is running on. The feed entity bean (from the easc/beans directory) 
