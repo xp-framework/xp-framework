@@ -37,7 +37,7 @@ public abstract class IteratorDemoBean implements SessionBean {
      * @return  RemoteIterator
      */
     public RemoteIterator iterateOn(Object[] objects) throws Exception {
-        return iteratorHome.create((java.util.List)Arrays.asList(objects));
+        return iteratorHome.create(Arrays.asList(objects).iterator());
     }
     
     /**
