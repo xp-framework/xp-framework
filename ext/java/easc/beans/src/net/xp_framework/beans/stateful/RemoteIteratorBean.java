@@ -60,6 +60,17 @@ public class RemoteIteratorBean implements SessionBean {
     }
     
     /**
+     * Create method
+     *
+     * @ejb.create-method
+     * @access  public
+     * @param   Iterator iterator
+     */
+    public void ejbCreate(Iterator iterator) {
+        this.iterator= iterator;
+    }
+
+    /**
      * Activate method
      *
      * @access  public
