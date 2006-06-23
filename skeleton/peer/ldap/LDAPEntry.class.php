@@ -10,6 +10,7 @@
    * @purpose  Represent a single entry
    * @see      xp://peer.ldap.LDAPSearchResult
    * @see      xp://peer.ldap.LDAPClient
+   * @test     xp://net.xp_framework.unittest.peer.LDAPEntryTest
    */
   class LDAPEntry extends Object {
     var
@@ -54,7 +55,6 @@
      */
     function &fromData(&$data) {
       $e= &new LDAPEntry($data['dn']);
-      
       unset($data['dn']);
       foreach (array_keys($data) as $key) {
         if ('count' == $key || is_int($key)) continue;
@@ -66,7 +66,7 @@
         }
         unset($e->attributes[$key]['count']);
       }
-      
+
       return $e;
     }
     
@@ -89,7 +89,7 @@
     function getDN() {
       return $this->dn;
     }
-    
+
     /**
      * Set attribute
      *
