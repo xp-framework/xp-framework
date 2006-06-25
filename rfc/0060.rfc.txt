@@ -65,5 +65,9 @@ Comments
 --------
 - friebe, Fri Jun 23 16:22:18 CEST 2006
   Is isA() a good name?
+  
+- friebe, Sun Jun 25 17:58:41     2006
+  How about instanceOf()? Or would this be just another reason keeping
+  us from migrating to PHP5 (keywords can't be method names...)?
 
 <EOF>
