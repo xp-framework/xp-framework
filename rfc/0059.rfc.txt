@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Thu Jun 15 22:01:52     2006
-@status: draft
+@status: discussion, ends at Wed Jun 28 12:00:00 CEST 2006
 @category: util.profiling.unittest
 
 Scope of Change
@@ -80,4 +80,10 @@ Comments
 - friebe, Tue Jun 20 16:27:39 CEST 2006
   Maybe for timeout we should not have TestFailure as result but
   TestTimeout to be able to distinguish?
+
+- friebe, Mon Jun 26 16:23:00 CEST 2006
+  Based on discussion with the PHP-Dev team and Frank Kleine of 
+  Schlund+Partner, we decided to name the annotation @limit which
+  is a more generic name for this and may be enhanced in the future
+  to support @limit(memory= ...) etc.
 <EOF>
