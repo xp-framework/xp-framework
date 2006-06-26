@@ -1,0 +1,44 @@
+RFC 0062: HA-JNDI
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon Jun 26 10:14:18 CEST 2006
+@status: draft
+@category: remote
+
+Scope of Change
+---------------
+The ability to pass a list of servers to the Remote API will be added.
+
+
+Rationale
+---------
+Load balancing and failover.
+
+
+Functionality
+-------------
+
+
+Security considerations
+-----------------------
+
+
+Speed impact
+------------
+
+
+Dependencies
+------------
+
+
+Related documents
+-----------------
+
+
+Comments
+--------
+
+
+<EOF>
