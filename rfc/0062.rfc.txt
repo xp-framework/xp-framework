@@ -37,6 +37,15 @@ Proposed
   // ...
 ?>
 
+Notes
+~~~~~
+* Initially, a random value is used to determine which one of the given
+  servers the connection should be made to. This is not real load-
+  balancing!
+
+* If connecting to jboss01 fails, jboss02 will be used (the other way
+  around respectively).
+
 
 Security considerations
 -----------------------
@@ -68,5 +77,13 @@ Comments
   Remote::forName('xp+ha://jboss01.example.com,jboss02.example.com');
   Remote::forName('xp://[jboss01.example.com,jboss02.example.com]');
 ?>
+
+- friebe, Mon Jun 26 11:19:24 CEST 2006
+  Maybe an extra flag could be added as follows:
+<?php
+  Remote::forName('xp://jboss01.example.com/?master', 'xp://jboss02.example.com/?failover');
+?>
+  In this case, no random value would be used - rather, the connection would always
+  go to jboss01, and only if that fails, jboss02 would be used.
 
 <EOF>
