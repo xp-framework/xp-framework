@@ -19,22 +19,43 @@ Load balancing and failover.
 
 Functionality
 -------------
+Current
+~~~~~~~
+<?php
+  $remote= &Remote::forName('xp://jboss01.example.com/');
+  $home= &$remote->lookup('xp/demo/IteratorDemo');
+  
+  // ...
+?>
+
+Proposed
+~~~~~~~~
+<?php
+  $remote= &Remote::forName('xp://jboss01.example.com/,xp://jboss02.example.com/');
+  $home= &$remote->lookup('xp/demo/IteratorDemo');
+  
+  // ...
+?>
 
 
 Security considerations
 -----------------------
+n/a
 
 
 Speed impact
 ------------
+- Minimalistic for round-robbing load balancing
 
 
 Dependencies
 ------------
+n/a
 
 
 Related documents
 -----------------
+n/a
 
 
 Comments
