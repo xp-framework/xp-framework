@@ -6,6 +6,8 @@
 
   uses(
     'util.profiling.unittest.TestCase',
+    'net.xp_framework.beans.stateless.Roundtrip',
+    'net.xp_framework.beans.stateless.RoundtripHome',
     'remote.Remote'
   );
 
