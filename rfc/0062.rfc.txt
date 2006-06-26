@@ -19,23 +19,48 @@ Load balancing and failover.
 
 Functionality
 -------------
+
 Current
 ~~~~~~~
+The suggested functionality can be implemented currently as follows:
 <?php
-  $remote= &Remote::forName('xp://jboss01.example.com/');
-  $home= &$remote->lookup('xp/demo/IteratorDemo');
+  $remotespecs= array('xp://jboss01.example.com/', 'xp://jboss02.example.com/');
+  shuffle($remotespecs);
+  foreach ($remotespecs as $remotespec) {
+    try(); {
+      $remote= &Remote::forName($remotespec);
+    } if (catch('RemoteException', $e)) {
+      continue;
+    }
+
+    $e= NULL;
+    break;
+  }
   
-  // ...
+  if ($e) {
+    $e->printStackTrace();
+    exit(1);
+  }
+  
+  $home= &$remote->lookup('xp/demo/IteratorDemo');
 ?>
+
 
 Proposed
 ~~~~~~~~
+The new functionality would make this transparent, so one would not have
+to differ whether there are one or many remoting servers:
 <?php
-  $remote= &Remote::forName('xp://jboss01.example.com/,xp://jboss02.example.com/');
+  try(); {
+    $remote= &Remote::forName('xp://jboss01.example.com/,xp://jboss02.example.com/');
+  } if (catch('RemoteException', $e)) {
+    $e->printStackTrace();
+    exit(1);
+  }
+
   $home= &$remote->lookup('xp/demo/IteratorDemo');
-  
-  // ...
 ?>
+
 
 Notes
 ~~~~~
