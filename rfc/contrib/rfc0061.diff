@@ -1,0 +1,64 @@
+Index: scriptlet/HttpScriptlet.class.php
+===================================================================
+--- scriptlet/HttpScriptlet.class.php	(revision 7155)
++++ scriptlet/HttpScriptlet.class.php	(working copy)
+@@ -177,12 +177,12 @@
+           break;
+           
+         case HTTP_GET:
+-          $request->setData(getenv('QUERY_STRING'));
++          $request->setData($request->getEnvValue('QUERY_STRING'));
+           $m= 'doGet';
+           break;
+           
+         case HTTP_HEAD:
+-          $request->setData(getenv('QUERY_STRING'));
++          $request->setData($request->getEnvValue('QUERY_STRING'));
+           $m= 'doHead';
+           break;        
+           
+@@ -330,15 +330,15 @@
+      * @param   &scriptlet.HttpRequest request
+      */
+     function _setupRequest(&$request) {
+-      $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
+-      $request->method= getenv('REQUEST_METHOD');
+-      $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
++      // $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
++      $request->method= $request->getEnvValue('REQUEST_METHOD');
++      // $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
+       $request->setURI(new URL(
+-        ('on' == getenv('HTTPS') ? 'https' : 'http').'://'.
+-        getenv('HTTP_HOST').
+-        getenv('REQUEST_URI')
++        ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
++        $request->getEnvValue('HTTP_HOST').
++        $request->getEnvValue('REQUEST_URI')
+       ));
+-    }    
++    }
+     
+     /**
+      * This method is called to process any request and dispatches
+Index: scriptlet/HttpScriptletRequest.class.php
+===================================================================
+--- scriptlet/HttpScriptletRequest.class.php	(revision 7155)
++++ scriptlet/HttpScriptletRequest.class.php	(working copy)
+@@ -31,6 +31,8 @@
+      * @access  public
+      */
+     function initialize() {
++      $this->headers= array_change_key_case(getallheaders(), CASE_LOWER);
++      $this->params= array_change_key_case($_REQUEST, CASE_LOWER);
+     }
+     
+     /**
+@@ -274,7 +276,7 @@
+      * @return  string
+      */
+     function getQueryString() {
+-      return urldecode(getenv('QUERY_STRING'));
++      return urldecode($this->getEnvValue('QUERY_STRING'));
+     }
+     
+     /**

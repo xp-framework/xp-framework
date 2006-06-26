@@ -59,10 +59,17 @@ n/a
 
 Related documents
 -----------------
+- http://xp-framework.net/rfc/contrib/rfc0061.diff
+  Patch for scriptlet API to make conformant to this RFC
 
 Comments
 --------
 - kiesel, Fri Jun 23 16:53:52 CEST 2006
   should $_SERVER also be restricted?
-  
+
+- kiesel, Mon Jun 26 11:23:37 CEST 2006
+  scriptlet.xml.XmlScriptletResponse::forwardTo() uses getenv('REQUEST_URI')
+  but does not have request object, so this case cannot be fixed without
+  changing the API.
+
 <EOF>
