@@ -60,6 +60,13 @@ n/a
 
 Comments
 --------
-
+- friebe, Mon Jun 26 10:33:49 CEST 2006
+  More ideas using Remote::forName():
+<?php
+  Remote::forName(array('xp://jboss01.example.com/', 'xp://jboss02.example.com/'));
+  Remote::forName('xp://jboss01.example.com/', 'xp://jboss02.example.com/');
+  Remote::forName('xp+ha://jboss01.example.com,jboss02.example.com');
+  Remote::forName('xp://[jboss01.example.com,jboss02.example.com]');
+?>
 
 <EOF>
