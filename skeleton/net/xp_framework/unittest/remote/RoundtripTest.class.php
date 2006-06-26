@@ -152,5 +152,16 @@
     function echoArray() {
       $this->assertRoundtrip(__FUNCTION__, new ArrayList(array(1, 2, 3)));
     }
+
+    /**
+     * Test passing a string to the echoArray() method, this should throw
+     * a RemoteException.
+     *
+     * @access  public
+     */
+    #[@test, @expect('remote.RemoteException')]
+    function incorrectArgumentsToArrayMethod() {
+      $this->instance->echoArray('A STRING, MAN!');
+    }
   }
 ?>
