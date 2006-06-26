@@ -1,4 +1,4 @@
-RFC 0059: @timeout for unit tests
+RFC 0059: Timeouts for unit tests
 ========================================================================
 $Id$
 
@@ -23,12 +23,12 @@ that a query succeeds in a certain time.
 
 Functionality
 -------------
-A test can be annotated with the @timeout annotation as follows:
+A test can be annotated with the @limit annotation as follows:
 
 <?php
   class LdapIntegrationTest extends TestCase {
   
-    #[@test, @timeout(1.0)]
+    #[@test, @limit(time= 1.0)]
     function lookup() {
       // ...
     }
@@ -49,7 +49,7 @@ n/a
 
 Speed impact
 ------------
-Minimal overhead for checking the existance of the @timeout annotation.
+Minimal overhead for checking the existance of the @limit annotation.
 
 
 Dependencies
