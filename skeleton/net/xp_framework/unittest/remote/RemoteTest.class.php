@@ -54,12 +54,23 @@
     }
 
     /**
-     * Test forName() method throws an IOException in case connecting
+     * Test forName() method throws a RemoteException in case the
+     * protocol is unknown.
+     *
+     * @access  public
+     */
+    #[@test, @expect('remote.RemoteException')]
+    function forNameFailsForUnknownProtocol() {
+      Remote::forName('unknown://irrelevant');
+    }
+
+    /**
+     * Test forName() method throws a RemoteException in case connecting
      * to the remote side fails
      *
      * @access  public
      */
-    #[@test, @expect('io.IOException')]
+    #[@test, @expect('remote.RemoteException')]
     function forNameFailsToConnect() {
       Remote::forName('mock://no.host.needed?failto=connect');
     }
