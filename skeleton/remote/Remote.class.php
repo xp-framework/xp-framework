@@ -66,7 +66,7 @@
      * @access  public
      * @param   string dsn
      * @return  &remote.Remote
-     * @throws  lang.Exception in case 
+     * @throws  remote.RemoteException in case of setup failure
      */
     function &forName($dsn) {
       static $instances= array();
@@ -77,8 +77,10 @@
           $self= &new Remote();
           $self->_handler= &HandlerFactory::handlerFor($url->getScheme());
           $self->_handler && $self->_handler->initialize($url);
-        } if (catch('Exception', $e)) {
+        } if (catch('RemoteException', $e)) {
           return throw($e);
+        } if (catch('Exception', $e)) {
+          return throw(new RemoteException($e->getMessage(), $e));
         }
         $instances[$dsn]= &$self;
       }
