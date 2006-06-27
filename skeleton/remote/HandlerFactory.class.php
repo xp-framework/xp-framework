@@ -35,6 +35,7 @@
     /**
      * Retrieve the HandlerFactory instance
      *
+     * @model   static
      * @access  public
      * @return  &remote.HandlerFactory
      */
