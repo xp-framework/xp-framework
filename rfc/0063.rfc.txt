@@ -1,0 +1,86 @@
+RFC 0063: Unit test API cleanup
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Jun 27 23:04:01     2006
+@status: draft
+@category: util.profiling.unittest
+
+Scope of Change
+---------------
+1) Scalar type assertion methods will be removed from the TestCase class.
+2) Assertion methods not commonly used will be removed from the TestCase class.
+
+
+Rationale
+---------
+Simpler API, less points of failure.
+
+
+Functionality
+-------------
+Here's a list of methods that will be removed:
+* assertBoolean
+* assertFloat
+* assertInteger
+* assertString
+* assertIn
+* assertMatches
+* assertContains
+
+They can be simulated by using:
+<?php
+  // assertBoolean()
+  $this->assertTrue($value);
+  $this->assertFalse($value);
+
+  // assertInteger()
+  $this->assertTrue(is_int($value));
+  $this->assertEquals('integer', xp::typeOf($value));
+  
+  // assertFloat()
+  $this->assertTrue(is_double($value));
+  $this->assertEquals('double', xp::typeOf($value));
+
+  // assertString()
+  $this->assertTrue(is_string($value));
+  $this->assertEquals('string', xp::typeOf($value));
+  
+  // assertIn()
+  $this->assertTrue(in_array($value, $list));
+  
+  // assertContains()
+  $this->assertTrue(FALSE !== strpos($string, $value));
+
+  // assertMatches()
+  $this->assertTrue((bool)preg_match($pattern, $value));
+?>
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+None, it will actually make things faster(!)
+
+
+Dependencies
+------------
+- BC break for the TestCase class
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+- friebe, Tue Jun 27 23:18:47     2006
+  Some of our own unittest use these methods. These can easily be 
+  migrated.
+
+<EOF>
