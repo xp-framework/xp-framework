@@ -27,7 +27,8 @@
      * @access  public
      */
     function __static() {
-      HandlerFactory::protocol('mock', XPClass::forName('net.xp_framework.unittest.remote.MockProtocolHandler'));
+      $hf= &HandlerFactory::getInstance();
+      $hf->register('mock', XPClass::forName('net.xp_framework.unittest.remote.MockProtocolHandler'));
     }
 
     /**
