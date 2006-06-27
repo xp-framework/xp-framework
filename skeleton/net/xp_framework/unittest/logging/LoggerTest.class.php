@@ -87,6 +87,7 @@ __
       ));
       
       with ($cat= &$this->logger->getCategory('sql')); {
+        $this->assertFalse($cat === $this->logger->getCategory());
         $this->assertClass($cat, 'util.log.LogCategory');
         $this->assertTrue($cat->hasAppenders());
       }
