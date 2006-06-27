@@ -31,6 +31,18 @@
     }
 
     /**
+     * Test forName() returns the same Remote instance when invoked
+     * twice with the same DSN.
+     *
+     * @access  public
+     */
+    #[@test]
+    function forNameSameInstance() {
+      $this->assertTrue(Remote::forName('mock://a') === Remote::forName('mock://a'), 'a != a');
+      $this->assertTrue(Remote::forName('mock://a') !== Remote::forName('mock://b'), 'a == b');
+    }
+
+    /**
      * Test forName() returns a Remote instance.
      *
      * @access  public
