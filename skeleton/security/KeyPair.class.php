@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('security.OpenSslUtil');
+  uses(
+    'security.OpenSslUtil',
+    'security.crypto.PublicKey',
+    'security.crypto.PrivateKey'
+  );
 
   /**
    * Key pair
@@ -81,6 +85,16 @@
       }
       
       return $out;
+    }
+    
+    /**
+     * Retrieves the private key associated with this keypair
+     *
+     * @access  public
+     * @return  &security.crypto.PrivateKey
+     */
+    function &getPrivateKey() {
+      return new PrivateKey(openssl_pkey_get_private($this->export(NULL)));
     }
   }
 ?>

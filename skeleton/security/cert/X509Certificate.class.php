@@ -226,6 +226,29 @@
       
       return new X509Certificate($_info, $_res);
     }
+    
+    /**
+     * Check whether the given private key corresponds
+     * to this certificate.
+     *
+     * @access  public
+     * @param   &security.crypto.PrivateKey privatekey
+     * @return  bool
+     */
+    function checkPrivateKey(&$privatekey) {
+      return openssl_x509_check_private_key($this->_res, $privatekey->getHandle());
+    }
+    
+    /**
+     * Retrieve the public key associated with this
+     * certificate
+     *
+     * @access  public
+     * @return  &security.crypto.PublicKey
+     */
+    function &getPublicKey() {
+      return PublicKey::fromString($this->export());
+    }
   
     /**
      * Destructor
