@@ -6,6 +6,7 @@
 
   uses(
     'remote.protocol.ProtocolHandler',
+    'remote.protocol.UnknownProtocolException',
     'remote.protocol.XpProtocolHandler'
   );
 
@@ -51,11 +52,14 @@
      * @access  public
      * @param   string scheme
      * @return  &remote.protocol.ProtocolHandler
+     * @throws  remote.protocol.UnknownProtocolException
      */
     function &handlerFor($scheme) {
       sscanf($scheme, '%[^+]+%s', $type, $option);
       
-      $handler= &HandlerFactory::protocol($type, $handler= NULL);
+      if (!($handler= &HandlerFactory::protocol($type, $handler= NULL))) {
+        return throw(new UnknownProtocolException($type));
+      }
       return $handler->newInstance($option);
     }
   }
