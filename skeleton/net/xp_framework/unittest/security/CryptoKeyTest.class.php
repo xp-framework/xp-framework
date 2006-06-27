@@ -34,7 +34,7 @@
      */
     function setUp() {
       if (!extension_loaded('openssl')) {
-        throw(new PrerequisitesNotMetError(
+        return throw(new PrerequisitesNotMetError(
           PREREQUISITE_LIBRARYMISSING, 
           $cause= NULL, 
           array('openssl')
