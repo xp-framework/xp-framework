@@ -109,7 +109,7 @@
      * @throws  security.crypto.CryptoException if the operation fails
      */
     function seal($data) {
-      if (FALSE === openssl_seal($data, &$sealed, &$keys, array($this->_hdl))) {
+      if (FALSE === openssl_seal($data, $sealed, $keys, array($this->_hdl))) {
         return throw(new CryptoException(
           'Could not seal data', OpenSslUtil::getErrors()
         ));
