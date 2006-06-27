@@ -259,11 +259,22 @@
       }
       
       if (FALSE === $result) {
-        return throw(new SQLStatementFailedException(
-          'Statement failed: '.mysql_error($this->handle), 
-          $sql, 
-          mysql_errno($this->handle)
-        ));
+        switch ($e= mysql_errno($this->handle)) {
+          case 2013: // Lost connection to MySQL server during query
+            return throw(new SQLConnectionClosedException(
+              'Statement failed: '.mysql_error($this->handle), 
+              $sql, 
+              $e
+            ));
+            break;
+          
+          default:  
+            return throw(new SQLStatementFailedException(
+              'Statement failed: '.mysql_error($this->handle), 
+              $sql, 
+              $e
+            ));
+        }
       }
       
       if (TRUE === $result) {
