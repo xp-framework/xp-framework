@@ -49,21 +49,6 @@
     }
     
     /**
-     * Constructor
-     *
-     * @access  protected
-     * @param   &peer.URL proxy
-     */
-    function __construct(&$proxy) {
-      try(); {
-        $this->_handler= &HandlerFactory::handlerFor($proxy->getScheme());
-      } if (catch('NullPointerException', $e)) {
-        return throw($e);
-      }
-      $this->_handler->initialize($proxy);
-    }
-    
-    /**
      * Returns a string representation of this object
      *
      * @access  public
@@ -74,23 +59,28 @@
     }
     
     /**
-     * Retrieve remote instance for 
+     * Retrieve remote instance for a given DSN. Invoking this method
+     * twice with the same dsn will result in the same instance.
      *
      * @model   static
      * @access  public
      * @param   string dsn
      * @return  &remote.Remote
+     * @throws  lang.Exception in case 
      */
     function &forName($dsn) {
       static $instances= array();
       
       if (!isset($instances[$dsn])) {
+        $url= &new URL($dsn);
         try(); {
-          $instance= new Remote(new URL($dsn));
-        } if (catch('NullPointerException', $e)) {
+          $self= &new Remote();
+          $self->_handler= &HandlerFactory::handlerFor($url->getScheme());
+          $self->_handler && $self->_handler->initialize($url);
+        } if (catch('Exception', $e)) {
           return throw($e);
         }
-        $instances[$dsn]= &$instance;
+        $instances[$dsn]= &$self;
       }
       return $instances[$dsn];
     }
