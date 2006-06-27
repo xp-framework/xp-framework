@@ -17,7 +17,9 @@
    * @purpose  Factory
    */
   class HandlerFactory extends Object {
-  
+    var
+      $handlers= array();
+
     /**
      * Static initializer. Registers the default protocol "xp" with this
      * factory.
@@ -26,23 +28,34 @@
      * @access  public
      */
     function __static() {
-      HandlerFactory::protocol('xp', XPClass::forName('remote.protocol.XpProtocolHandler'));
+      $self= &HandlerFactory::getInstance();
+      $self->register('xp', XPClass::forName('remote.protocol.XpProtocolHandler'));
     }
     
     /**
-     * Register or retrieve protocol handlers for/by a specified type
+     * Retrieve the HandlerFactory instance
      *
-     * @access  protected
+     * @access  public
+     * @return  &remote.HandlerFactory
+     */
+    function &getInstance() {
+      static $instance= NULL;
+      
+      if (!isset($instance)) $instance= new HandlerFactory();
+      return $instance;
+    }
+
+    /**
+     * Registers protocol handler for a specified type
+     *
+     * @access  public
      * @param   string type
      * @param   &lang.XPClass<remote.protocol.ProtocolHandler> handler class
      * @return  &lang.XPClass<remote.protocol.ProtocolHandler>
      */
-    function &protocol($type, &$handler) {
-      static $handlers= array();
-      
-      if (NULL !== $handler) $handlers[$type]= &$handler;
-      if (!isset($handlers[$type])) return xp::null();
-      return $handlers[$type];
+    function &register($type, &$handler) {
+      $this->handlers[$type]= &$handler;
+      return $handler;
     }
   
     /**
@@ -57,10 +70,11 @@
     function &handlerFor($scheme) {
       sscanf($scheme, '%[^+]+%s', $type, $option);
       
-      if (!($handler= &HandlerFactory::protocol($type, $handler= NULL))) {
+      $self= &HandlerFactory::getInstance();
+      if (!isset($self->handlers[$type])) {
         return throw(new UnknownProtocolException($type));
       }
-      return $handler->newInstance($option);
+      return $self->handlers[$type]->newInstance($option);
     }
   }
 ?>
