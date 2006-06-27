@@ -28,6 +28,7 @@
    *   Console::writeLine('1 - 1 = ', xp::stringOf($calculator->subtract(1, 1)));
    * </code>
    * 
+   * @test     xp://net.xp_framework.unittest.remote.RemoteTest
    * @see      xp://remote.HandlerFactory
    * @purpose  RMI
    */

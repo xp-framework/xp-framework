@@ -21,6 +21,7 @@
    * Class that reimplements PHP's builtin serialization format.
    *
    * @see      php://serialize
+   * @test     xp://net.xp_framework.unittest.remote.SerializerTest
    * @purpose  Serializer
    */
   class Serializer extends Object {
