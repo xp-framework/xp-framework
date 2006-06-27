@@ -75,7 +75,11 @@
         $url= &new URL($dsn);
         try(); {
           $self= &new Remote();
-          $self->_handler= &HandlerFactory::handlerFor($url->getScheme());
+
+          // Setup handler          
+          sscanf($url->getScheme(), '%[^+]+%s', $type, $option);
+          $class= &HandlerFactory::handlerFor($type);
+          $class && $self->_handler= &$class->newInstance($option);
           $self->_handler && $self->_handler->initialize($url);
         } if (catch('RemoteException', $e)) {
           return throw($e);

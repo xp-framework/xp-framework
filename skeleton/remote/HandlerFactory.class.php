@@ -64,18 +64,16 @@
      *
      * @model   static
      * @access  public
-     * @param   string scheme
-     * @return  &remote.protocol.ProtocolHandler
+     * @param   string type
+     * @return  &lang.XPClass<remote.protocol.ProtocolHandler>
      * @throws  remote.protocol.UnknownProtocolException
      */
-    function &handlerFor($scheme) {
-      sscanf($scheme, '%[^+]+%s', $type, $option);
-      
+    function &handlerFor($type) {
       $self= &HandlerFactory::getInstance();
       if (!isset($self->handlers[$type])) {
         return throw(new UnknownProtocolException($type));
       }
-      return $self->handlers[$type]->newInstance($option);
+      return $self->handlers[$type];
     }
   }
 ?>
