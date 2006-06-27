@@ -76,6 +76,7 @@
    * </pre>
    *
    * @model    singleton
+   * @test     xp://net.xp_framework.unittest.logging.LoggerTest
    * @purpose  Singleton logger
    */
   class Logger extends Object {
@@ -142,7 +143,7 @@
           $appenders= $this->defaultAppenders;
           $param_section= LOG_DEFINES_DEFAULT;
         }
-        
+
         // Go through all of the appenders, loading classes as necessary
         foreach ($appenders as $appender) {
           if (!isset($class[$appender])) {

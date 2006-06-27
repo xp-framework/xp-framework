@@ -35,6 +35,7 @@
    *   }
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.logging.LogCategoryTest
    * @purpose  Base class
    */
   class LogCategory extends Object {
