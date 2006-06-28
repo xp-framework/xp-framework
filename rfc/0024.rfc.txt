@@ -114,7 +114,10 @@ Related documents
   http://www.caucho.com/resin-3.0/ejb3/bean-ann.xtp#@Inject
 
 - Initial implementation
-  svn://experiments/people/friebe/resourcepool
+  http://experiments.xp-framework.net/?people,friebe,resourcepool
+
+- Inversion of Control Containers and the Dependency Injection pattern
+  http://www.martinfowler.com/articles/injection.html 
 
 Comments
 --------
