@@ -1,0 +1,45 @@
+RFC 0064: DailyFileAppender
+========================================================================
+$Id$
+
+@authors: friebe, gellweiler
+@created: Wed Jun 28 11:39:08 CEST 2006
+@status: draft
+@category: util.log
+
+Scope of Change
+---------------
+A specialized file appender that continuously updates its filename will be
+added.
+
+
+Rationale
+---------
+For long running applications, the logfile's name will stay the same even
+if the day changes. It should be recalculated transparently.
+
+
+Functionality
+-------------
+Subclass of util.log.FileAppender.
+
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+- friebe, Wed Jun 28 11:40:49 CEST 2006
+  "Daily" is a bit unflexible, because we'd need "Hourly", "Yearly", 
+  "Monthly" (and so on) at some time. Maybe "IntervalBased"?
+  
+<EOF>
