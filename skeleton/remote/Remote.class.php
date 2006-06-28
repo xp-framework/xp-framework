@@ -44,7 +44,7 @@
      */
     function __static() {
       Serializer::mapping('I', new RemoteInterfaceMapping());
-      Serializer::exceptionName('naming/NameNotFound', 'lang.MethodNotImplementedException');
+      Serializer::exceptionName('naming/NameNotFound', 'remote.NameNotFoundException');
       Serializer::exceptionName('invoke/Exception', 'remote.InvocationException');
       Serializer::packageMapping('net.xp_framework.easc.reflect', 'remote.reflect');
     }
@@ -98,6 +98,8 @@
      * @access  public
      * @param   string name
      * @return  &lang.Object
+     * @throws  remote.NameNotFoundException in case the given name could not be found
+     * @throws  remote.RemoteException for any other error
      */
     function &lookup($name) {
       return $this->_handler->lookup($name);
