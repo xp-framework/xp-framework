@@ -9,6 +9,7 @@
     'net.xp_framework.unittest.remote.MockProtocolHandler',
     'net.xp_framework.unittest.remote.Person',
     'remote.Remote',
+    'remote.HandlerInstancePool',
     'remote.HandlerFactory'
   );
 
@@ -31,7 +32,7 @@
       $hf= &HandlerFactory::getInstance();
       $hf->register('mock', XPClass::forName('net.xp_framework.unittest.remote.MockProtocolHandler'));
     }
-
+    
     /**
      * Test forName() returns the same Remote instance when invoked
      * twice with the same DSN.
@@ -84,11 +85,14 @@
      */
     #[@test]
     function lookup() {
-      $r= &Remote::forName('mock://no.host.needed');
+      $spec= 'mock://no.host.needed';
+      $pool= &HandlerInstancePool::getInstance();
+      $handler= &$pool->acquire(new URL($spec));
+      $r= &Remote::forName($spec);
       
       // Bind a person object
       $person= &new Person();
-      $r->_handler->ctx['xp/demo/Person']= &$person;  // HACK
+      $handler->ctx['xp/demo/Person']= &$person;  // HACK
 
       // Lookup the person object
       $lookup= &$r->lookup('xp/demo/Person');
