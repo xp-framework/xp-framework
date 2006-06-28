@@ -6,7 +6,7 @@
 
   uses(
     'peer.URL', 
-    'remote.HandlerFactory', 
+    'remote.HandlerInstancePool', 
     'remote.protocol.RemoteInterfaceMapping', 
     'remote.UserTransaction'
   );
@@ -73,14 +73,11 @@
       static $instances= array();
       
       if (!isset($instances[$dsn])) {
+        $pool= &HandlerInstancePool::getInstance();
         $url= &new URL($dsn);
         try(); {
           $self= &new Remote();
-
-          // Setup handler          
-          sscanf($url->getScheme(), '%[^+]+%s', $type, $option);
-          $class= &HandlerFactory::handlerFor($type);
-          $class && $self->_handler= &$class->newInstance($option);
+          $self->_handler= &$pool->acquire($url);
           $self->_handler && $self->_handler->initialize($url);
         } if (catch('RemoteException', $e)) {
           return throw($e);
