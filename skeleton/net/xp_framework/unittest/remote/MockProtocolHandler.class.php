@@ -11,6 +11,8 @@
    * @purpose  Protocol Handler
    */
   class MockProtocolHandler extends Object {
+    var
+      $ctx= NULL;
 
     /**
      * Initialize this protocol handler
@@ -32,8 +34,15 @@
      * @access  public
      * @param   string name
      * @param   &lang.Object
+     * @throws  remote.NameNotFoundException in case the given name could not be found
+     * @throws  remote.RemoteException for any other error
      */
     function &lookup($name) {
+      if (!isset($this->ctx[$name])) {
+        return throw(new NameNotFoundException($name.' not bound'));
+      }
+      
+      return $this->ctx[$name];
     }
 
     /**

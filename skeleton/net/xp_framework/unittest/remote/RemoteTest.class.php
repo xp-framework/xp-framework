@@ -7,6 +7,7 @@
   uses(
     'util.profiling.unittest.TestCase',
     'net.xp_framework.unittest.remote.MockProtocolHandler',
+    'net.xp_framework.unittest.remote.Person',
     'remote.Remote',
     'remote.HandlerFactory'
   );
@@ -74,6 +75,35 @@
     #[@test, @expect('remote.RemoteException')]
     function forNameFailsToConnect() {
       Remote::forName('mock://no.host.needed?failto=connect');
+    }
+
+    /**
+     * Test lookup() method
+     *
+     * @access  public
+     */
+    #[@test]
+    function lookup() {
+      $r= &Remote::forName('mock://no.host.needed');
+      
+      // Bind a person object
+      $person= &new Person();
+      $r->_handler->ctx['xp/demo/Person']= &$person;  // HACK
+
+      // Lookup the person object
+      $lookup= &$r->lookup('xp/demo/Person');
+      $this->assertEquals($person, $lookup);
+    }
+
+    /**
+     * Test lookup() method
+     *
+     * @access  public
+     */
+    #[@test, @expect('remote.NameNotFoundException')]
+    function lookupNonExistantName() {
+      $r= &Remote::forName('mock://no.host.needed');
+      $r->lookup('does/not/Exist');
     }
   }
 ?>
