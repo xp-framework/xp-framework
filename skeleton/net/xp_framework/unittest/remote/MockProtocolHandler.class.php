@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('remote.NameNotFoundException');
+
   /**
    * Handles the "mock" protocol
    *
