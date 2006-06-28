@@ -134,4 +134,8 @@ Comments
   Static initializer won't work because we're initializing instance 
   variables. We need to invoke bind() in the constructor.
 
+- friebe, Wed Jun 28 12:10:04 CEST 2006
+  Maybe ResourcePool::attachTo($this); is better than 
+  ResourcePool::injectFor($this);?
+
 <EOF>
