@@ -156,7 +156,8 @@
      * @param   int type
      * @param   string data default ''
      * @return  &mixed
-     * @throws  io.IOException in case of I/O errors
+     * @throws  remote.RemoteException for server errors
+     * @throws  lang.Error for unrecoverable errors
      */
     function &sendPacket($type, $data= '', $bytes= array()) {
       $bsize= sizeof($bytes);
@@ -190,7 +191,7 @@
           $this->readBytes(12)
         );
       } if (catch('IOException', $e)) {
-        return throw($e);
+        return throw(new RemoteException($e->getMessage(), $e));
       }
       
       // DEBUG Console::writeLine('<<<', xp::stringOf($header));
@@ -210,12 +211,16 @@
 
           case REMOTE_MSG_EXCEPTION:
             $reference= &Serializer::valueOf(ByteCountedString::readFrom($this->_sock), $length= 0, $ctx);
-            return throw(new RemoteException($reference->getClassName(), $reference));
+            if (is('RemoteException', $reference)) {
+              return throw($reference);
+            } else {
+              return throw(new RemoteException($reference->getClassName(), $reference));
+            }
 
           case REMOTE_MSG_ERROR:
-            $message= ByteCountedString::readFrom($this->_sock);
+            $message= ByteCountedString::readFrom($this->_sock);    // Not serialized!
             $this->_sock->close();
-            return throw(new Error($message, $length= 0, $ctx));
+            return throw(new RemoteException($message, new Error($message)));
 
           default:
             $this->readBytes($header['length']);   // Read all left-over bytes
@@ -223,7 +228,7 @@
             return throw(new Error('Unknown message type'));
         }
       } if (catch('IOException', $e)) {
-        return throw($e);
+        return throw(new RemoteException($e->getMessage(), $e));
       }
     }
     
