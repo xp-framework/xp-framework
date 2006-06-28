@@ -264,6 +264,16 @@
       }
       $this->_info['url']= $str;
     }
+
+    /**
+     * Returns a hashcode for this URL
+     *
+     * @access  public
+     * @return  string
+     */
+    function hashCode() {
+      return md5($this->_info['url']);
+    }
     
     /**
      * Returns whether a given object is equal to this.
