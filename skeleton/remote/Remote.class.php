@@ -77,7 +77,7 @@
       $pool= &HandlerInstancePool::getInstance();
       foreach (explode(',', $dsn) as $spec) {
         $url= &new URL($spec);
-        $e= NULL;
+        $e= $instance= NULL;
         try(); {
           $instance= &new Remote();
           $instance->_handler= &$pool->acquire($url);
@@ -91,7 +91,7 @@
 
         // Success, cache instance and return
         $instances[$dsn]= &$instance;
-        return $self;
+        return $instance;
       }
 
       // No more active hosts
