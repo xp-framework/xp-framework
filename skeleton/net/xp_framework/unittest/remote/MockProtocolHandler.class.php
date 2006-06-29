@@ -14,7 +14,7 @@
    */
   class MockProtocolHandler extends Object {
     var
-      $ctx= NULL;
+      $server= array();
 
     /**
      * Initialize this protocol handler
@@ -23,10 +23,8 @@
      * @param   &peer.URL proxy
      */
     function initialize(&$proxy) {
-    
-      // Simulate connect failure if specified
-      if ($message= $proxy->getParam('failto')) {
-        return throw(new IOException($message));
+      if (!in_array($proxy->getHost(), $this->server['hosts'])) {
+        return throw(new IOException('Cannot connect to '.$proxy->getHost()));
       }
     }
     
@@ -40,11 +38,11 @@
      * @throws  remote.RemoteException for any other error
      */
     function &lookup($name) {
-      if (!isset($this->ctx[$name])) {
+      if (!isset($this->server['ctx'][$name])) {
         return throw(new NameNotFoundException($name.' not bound'));
       }
       
-      return $this->ctx[$name];
+      return $this->server['ctx'][$name];
     }
 
     /**

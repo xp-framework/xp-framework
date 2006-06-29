@@ -13,7 +13,9 @@
     'remote.HandlerFactory'
   );
 
-  define('REMOTE_SPEC', 'mock://remote.host');
+  define('REMOTE_SPEC_ONE',   'mock://remote.host1');
+  define('REMOTE_SPEC_TWO',   'mock://remote.host2');
+  define('REMOTE_SPEC_OTHER', 'mock://other.host');
 
   /**
    * Unit test for Remote (entry-point) class
@@ -44,7 +46,11 @@
      */
     function setUp() {
       $pool= &HandlerInstancePool::getInstance();
-      $this->handler= &$pool->acquire(new URL(REMOTE_SPEC));
+      $this->handler= &$pool->acquire(new URL(REMOTE_SPEC_ONE));
+      $pool->pool(new URL(REMOTE_SPEC_TWO), $this->handler);
+      $this->handler->server['hosts']= array('remote.host1', 'remote.host2');
+      $other= &$pool->acquire(new URL(REMOTE_SPEC_OTHER));
+      $other->server['hosts']= array('other.host');
     }
     
     /**
@@ -64,7 +70,7 @@
      */
     #[@test]
     function forNameSucceeds() {
-      $this->assertClass(Remote::forName(REMOTE_SPEC), 'remote.Remote');
+      Remote::forName(REMOTE_SPEC_ONE);
     }
 
     /**
@@ -75,8 +81,8 @@
      */
     #[@test]
     function forNameSameInstance() {
-      $this->assertTrue(Remote::forName('mock://a') === Remote::forName('mock://a'), 'a != a');
-      $this->assertTrue(Remote::forName('mock://a') !== Remote::forName('mock://b'), 'a == b');
+      $this->assertTrue(Remote::forName(REMOTE_SPEC_ONE) === Remote::forName(REMOTE_SPEC_ONE), 'a != a');
+      $this->assertTrue(Remote::forName(REMOTE_SPEC_ONE) !== Remote::forName(REMOTE_SPEC_OTHER), 'a == b');
     }
 
     /**
@@ -98,7 +104,7 @@
      */
     #[@test, @expect('remote.RemoteException')]
     function forNameFailsToConnect() {
-      Remote::forName('mock://no.host.needed?failto=connect');
+      Remote::forName('mock://unknown.host');
     }
 
     /**
@@ -108,11 +114,11 @@
      */
     #[@test]
     function lookup() {
-      $r= &Remote::forName(REMOTE_SPEC);
+      $r= &Remote::forName(REMOTE_SPEC_ONE);
       
       // Bind a person object
       $person= &new Person();
-      $this->handler->ctx['xp/demo/Person']= &$person;  // HACK
+      $this->handler->server['ctx']['xp/demo/Person']= &$person;
 
       // Lookup the person object
       $lookup= &$r->lookup('xp/demo/Person');
@@ -126,7 +132,7 @@
      */
     #[@test, @expect('remote.NameNotFoundException')]
     function lookupNonExistantName() {
-      $r= &Remote::forName(REMOTE_SPEC);
+      $r= &Remote::forName(REMOTE_SPEC_ONE);
       $r->lookup('does/not/Exist');
     }
   }
