@@ -14,7 +14,7 @@
    */
   class MockProtocolHandler extends Object {
     var
-      $server= array();
+      $server= array('initialized' => FALSE);
 
     /**
      * Initialize this protocol handler
@@ -27,6 +27,10 @@
       if (!$this->server['available']) {
         return throw(new IOException('Cannot connect to '.$proxy->getHost()));
       }
+      if ($this->server['initialized']) {
+        return throw(new IOException('Already initialized'));
+      }
+      $this->server['initialized']= TRUE;
     }
     
     /**
