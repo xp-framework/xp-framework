@@ -184,7 +184,7 @@
           } else if (
             ('(' === $expect{0} && $p= strpos($expect, ')')) &&
             (token_name($token) === substr($expect, 1, $p- 1)) &&
-            (preg_match('/'.substr($expect, $p+ 2, -1).'/', $cdata))
+            (preg_match('/^'.substr($expect, $p+ 2, -1).'$/', $cdata))
           ) {
           
             // Matches token and cdata
