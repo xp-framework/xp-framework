@@ -24,7 +24,7 @@
      * @throws  io.IOException in case connecting fails
      */
     function initialize(&$proxy) {
-      if (!in_array($proxy->getHost(), $this->server['hosts'])) {
+      if (!$this->server['available']) {
         return throw(new IOException('Cannot connect to '.$proxy->getHost()));
       }
     }

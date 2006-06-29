@@ -25,7 +25,7 @@
    */
   class RemoteTest extends TestCase {
     var
-      $handler= NULL;
+      $handler= array();
 
     /**
      * Static initializer. Registers the protocol "mock" with the
@@ -46,11 +46,15 @@
      */
     function setUp() {
       $pool= &HandlerInstancePool::getInstance();
-      $this->handler= &$pool->acquire(new URL(REMOTE_SPEC_ONE));
-      $pool->pool(new URL(REMOTE_SPEC_TWO), $this->handler);
-      $this->handler->server['hosts']= array('remote.host1', 'remote.host2');
-      $other= &$pool->acquire(new URL(REMOTE_SPEC_OTHER));
-      $other->server['hosts']= array('other.host');
+      
+      foreach (array(
+        REMOTE_SPEC_ONE     => TRUE,    // Cluster machine #1
+        REMOTE_SPEC_TWO     => FALSE,   // Cluster machine #2
+        REMOTE_SPEC_OTHER   => TRUE     // Other machine
+      ) as $spec => $avail) {
+        $this->handler[$spec]= &$pool->acquire(new URL($spec));
+        $this->handler[$spec]->server['available']= $avail;
+      }
     }
     
     /**
@@ -60,7 +64,9 @@
      */
     #[@test]
     function mockHandler() {
-      $this->assertClass($this->handler, 'net.xp_framework.unittest.remote.MockProtocolHandler');
+      foreach ($this->handler as $handler) {
+        $this->assertClass($handler, 'net.xp_framework.unittest.remote.MockProtocolHandler');
+      }
     }
     
     /**
@@ -71,6 +77,29 @@
     #[@test]
     function forNameSucceeds() {
       Remote::forName(REMOTE_SPEC_ONE);
+    }
+
+    /**
+     * Test forName() method throws a RemoteException in case connecting
+     * to the remote side fails
+     *
+     * @access  public
+     */
+    #[@test, @expect('remote.RemoteException')]
+    function forNameFailsToConnect() {
+      Remote::forName(REMOTE_SPEC_TWO);
+    }
+
+    /**
+     * Test forName() method succeeds for a cluster with one machine 
+     * down and one running (either way around)
+     *
+     * @access  public
+     */
+    #[@test]
+    function forNameSucceedsForCluster() {
+      Remote::forName(REMOTE_SPEC_TWO.','.REMOTE_SPEC_ONE);
+      Remote::forName(REMOTE_SPEC_ONE.','.REMOTE_SPEC_TWO);
     }
 
     /**
@@ -97,17 +126,6 @@
     }
 
     /**
-     * Test forName() method throws a RemoteException in case connecting
-     * to the remote side fails
-     *
-     * @access  public
-     */
-    #[@test, @expect('remote.RemoteException')]
-    function forNameFailsToConnect() {
-      Remote::forName('mock://unknown.host');
-    }
-
-    /**
      * Test lookup() method
      *
      * @access  public
@@ -118,7 +136,7 @@
       
       // Bind a person object
       $person= &new Person();
-      $this->handler->server['ctx']['xp/demo/Person']= &$person;
+      $this->handler[REMOTE_SPEC_ONE]->server['ctx']['xp/demo/Person']= &$person;
 
       // Lookup the person object
       $lookup= &$r->lookup('xp/demo/Person');
