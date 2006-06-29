@@ -70,7 +70,8 @@
         return throw($e);
       }
 
-      return $this->pool($url, $class->newInstance($option));
+      $instance= &$this->pool($url, $class->newInstance($option));
+      return $instance;
     }
   }
 ?>
