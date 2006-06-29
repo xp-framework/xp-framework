@@ -21,6 +21,7 @@
      *
      * @access  public
      * @param   &peer.URL proxy
+     * @throws  io.IOException in case connecting fails
      */
     function initialize(&$proxy) {
       if (!in_array($proxy->getHost(), $this->server['hosts'])) {
