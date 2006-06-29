@@ -60,7 +60,7 @@
     }
     
     /**
-     * Test handler member is a MockProtocolHandler
+     * Test handler member is an array of MockProtocolHandlers
      *
      * @access  public
      */
