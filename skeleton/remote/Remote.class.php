@@ -72,21 +72,30 @@
     function &forName($dsn) {
       static $instances= array();
       
-      if (!isset($instances[$dsn])) {
-        $pool= &HandlerInstancePool::getInstance();
-        $url= &new URL($dsn);
+      if (isset($instances[$dsn])) return $instances[$dsn];
+
+      $pool= &HandlerInstancePool::getInstance();
+      foreach (explode(',', $dsn) as $spec) {
+        $url= &new URL($spec);
+        $e= NULL;
         try(); {
-          $self= &new Remote();
-          $self->_handler= &$pool->acquire($url);
-          $self->_handler && $self->_handler->initialize($url);
+          $instance= &new Remote();
+          $instance->_handler= &$pool->acquire($url);
+          $instance->_handler && $instance->_handler->initialize($url);
         } if (catch('RemoteException', $e)) {
-          return throw($e);
+          continue;   // try next
         } if (catch('Exception', $e)) {
-          return throw(new RemoteException($e->getMessage(), $e));
+          $e= &new RemoteException($e->getMessage(), $e);
+          continue;   // try next
         }
-        $instances[$dsn]= &$self;
+
+        // Success, cache instance and return
+        $instances[$dsn]= &$instance;
+        return $self;
       }
-      return $instances[$dsn];
+
+      // No more active hosts
+      return throw($e);
     }
     
     /**
