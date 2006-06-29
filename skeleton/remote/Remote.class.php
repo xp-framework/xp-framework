@@ -72,11 +72,14 @@
     function &forName($dsn) {
       static $instances= array();
       
-      if (isset($instances[$dsn])) return $instances[$dsn];
-
       $pool= &HandlerInstancePool::getInstance();
-      foreach (explode(',', $dsn) as $spec) {
-        $url= &new URL($spec);
+      $list= explode(',', $dsn);
+      shuffle($list);
+      foreach ($list as $key) {
+        if (isset($instances[$key])) return $instances[$key];
+
+        // No instance yet, so get it
+        $url= &new URL($key);
         $e= $instance= NULL;
         try(); {
           $instance= &new Remote();
@@ -90,7 +93,7 @@
         }
 
         // Success, cache instance and return
-        $instances[$dsn]= &$instance;
+        $instances[$key]= &$instance;
         return $instance;
       }
 
