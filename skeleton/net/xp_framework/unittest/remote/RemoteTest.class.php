@@ -15,6 +15,7 @@
 
   define('REMOTE_SPEC_ONE',   'mock://remote.host1');
   define('REMOTE_SPEC_TWO',   'mock://remote.host2');
+  define('REMOTE_SPEC_THREE', 'mock://remote.host3');
   define('REMOTE_SPEC_OTHER', 'mock://other.host');
 
   /**
@@ -50,6 +51,7 @@
       foreach (array(
         REMOTE_SPEC_ONE     => TRUE,    // Cluster machine #1
         REMOTE_SPEC_TWO     => FALSE,   // Cluster machine #2
+        REMOTE_SPEC_THREE   => FALSE,   // Cluster machine #3
         REMOTE_SPEC_OTHER   => TRUE     // Other machine
       ) as $spec => $avail) {
         $this->handler[$spec]= &$pool->acquire(new URL($spec));
@@ -100,6 +102,18 @@
     function forNameSucceedsForCluster() {
       Remote::forName(REMOTE_SPEC_TWO.','.REMOTE_SPEC_ONE);
       Remote::forName(REMOTE_SPEC_ONE.','.REMOTE_SPEC_TWO);
+    }
+
+    /**
+     * Test forName() method succeeds for a cluster with all machines
+     * down.
+     *
+     * @access  public
+     */
+    #[@test, @expect('remote.RemoteException')]
+    function forNameFailsToConnectCluster() {
+      Remote::forName(REMOTE_SPEC_TWO.','.REMOTE_SPEC_THREE);
+      Remote::forName(REMOTE_SPEC_THREE.','.REMOTE_SPEC_TWO);
     }
 
     /**
