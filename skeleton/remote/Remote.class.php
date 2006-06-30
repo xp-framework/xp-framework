@@ -27,6 +27,12 @@
    *   Console::writeLine('1 + 1 = ', xp::stringOf($calculator->add(1, 1)));
    *   Console::writeLine('1 - 1 = ', xp::stringOf($calculator->subtract(1, 1)));
    * </code>
+   *
+   * To use clustering and fail-over, supply a comma-separated list of
+   * remote names as follows:
+   * <code>
+   *   $remote= &Remote::forName('xp://remote1,xp://remote2');
+   * </code>
    * 
    * @test     xp://net.xp_framework.unittest.remote.RemoteTest
    * @see      xp://remote.HandlerFactory
