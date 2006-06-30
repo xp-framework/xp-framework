@@ -71,6 +71,9 @@ Related documents
   aware of the existance of the usleep() function but uses Windows
   at home:)
 
+- http://unittests.xp-framework.net/?net.xp_framework.unittest.tests.LimitTest
+  Verifies the limit functionality works
+
 
 Comments
 --------
