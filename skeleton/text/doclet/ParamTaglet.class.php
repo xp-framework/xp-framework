@@ -24,7 +24,8 @@
      * @return  &Tag
      */ 
     function &tagFrom(&$holder, $kind, $text) {
-      return new ParamTag($kind, $text);
+      list($type, $name, $text)= explode(' ', $text, 2);
+      return new ParamTag($type, $name, $text);
     }
 
   } implements(__FILE__, 'text.doclet.Taglet');
