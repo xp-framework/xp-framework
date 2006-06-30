@@ -24,6 +24,20 @@
     function __construct() {
       $this->pool= &new HashTable();
     }
+    
+    /**
+     * Creates a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      $s= $this->getClassName().'(size= '.$this->pool->size().")@{\n";
+      foreach ($this->pool->keys() as $url) {
+        $s.= '  '.$url->getURL().' => '.xp::stringOf($this->pool->get($url))."\n";
+      }
+      return $s.'}';
+    }
 
     /**
      * Retrieve the HandlerInstancePool instance
