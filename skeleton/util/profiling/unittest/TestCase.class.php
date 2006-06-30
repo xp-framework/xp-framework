@@ -205,7 +205,7 @@
      */
     function _compare(&$a, &$b) {
       if (is_array($a)) {
-        if (sizeof($a) != sizeof($b)) return FALSE;
+        if (!is_array($b) || sizeof($a) != sizeof($b)) return FALSE;
 
         foreach (array_keys($a) as $key) {
           if (!$this->_compare($a[$key], $b[$key])) return FALSE;
