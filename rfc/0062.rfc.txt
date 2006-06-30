@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Mon Jun 26 10:14:18 CEST 2006
-@status: draft
+@status: discussion, ends at Sun Jul 02 09:49:03     2006
 @category: remote
 
 Scope of Change
@@ -110,5 +110,9 @@ Comments
 ?>
   In this case, no random value would be used - rather, the connection would always
   go to jboss01, and only if that fails, jboss02 would be used.
+
+- friebe, Fri Jun 30 09:48:25     2006
+  Initial implementation comitted, needs further testing but should be
+  available soon.
 
 <EOF>
