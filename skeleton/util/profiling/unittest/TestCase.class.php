@@ -194,6 +194,27 @@
       }
       return TRUE;
     }
+    
+    /**
+     * Compare two values
+     *
+     * @access  public
+     * @param   &mixed a
+     * @param   &mixed b
+     * @return  bool
+     */
+    function _compare(&$a, &$b) {
+      if (is_array($a)) {
+        if (sizeof($a) != sizeof($b)) return FALSE;
+
+        foreach (array_keys($a) as $key) {
+          if (!$this->_compare($a[$key], $b[$key])) return FALSE;
+        }
+        return TRUE;
+      } 
+      
+      return is_a($a, 'Object') ? $a->equals($b) : $a === $b;
+    }
 
     /**
      * Assert that two values are equal
@@ -205,7 +226,7 @@
      * @return  bool
      */
     function assertEquals($expected, $actual, $error= 'notequal') {
-      if (!(is_a($expected, 'Object') ? $expected->equals($actual) : $expected === $actual)) {
+      if (!$this->_compare($expected, $actual)) {
         return $this->fail($error, $actual, $expected);
       }
       return TRUE;
@@ -221,10 +242,9 @@
      * @return  bool
      */
     function assertNotEquals($expected, $actual, $error= 'equal') {
-      if ((is_a($expected, 'Object') ? $expected->equals($actual) : $expected === $actual)) {
-        return $this->fail($error, $actual, $expect);
+      if ($this->_compare($expected, $actual)) {
+        return $this->fail($error, $actual, $expected);
       }
-      
       return TRUE;
     }
 
@@ -373,10 +393,11 @@
      * Run this test case.
      *
      * @access  public
+     * @param   &util.profiling.unittest.TestResult result
      * @return  bool success
      * @throws  lang.MethodNotImplementedException
      */
-    function run() {
+    function run(&$result) {
       $class= &$this->getClass();
       $method= &$class->getMethod($this->name);
 
@@ -385,7 +406,8 @@
           'Method does not exist', $this->name
         ));
       }
-      
+
+      // Check for @expect
       $expected= NULL;
       if ($method->hasAnnotation('expect')) {
         try(); {
@@ -395,26 +417,57 @@
         }
       }
       
+      $timer= &new Timer();
+      $timer->start();
+
+      // Setup test
+      try(); {
+        $this->setUp();
+      } if (catch('PrerequisitesNotMetError', $e)) {
+        $timer->stop();
+        $result->setSkipped($this, $e, $timer->elapsedTime());
+        return FALSE;
+      } if (catch('AssertionFailedError', $e)) {
+        $timer->stop();
+        $result->setFailed($this, $e, $timer->elapsedTime());
+        return FALSE;
+      }
+
+      // Run test
       try(); {
         $method->invoke($this, NULL);
       } if (catch('Exception', $e)) {
-        
+        $timer->stop();
+
         // Was that an expected exception?
         if ($expected && $expected->isInstance($e)) {
+          $result->setSucceeded($this, $timer->elapsedTime());
+          $this->tearDown();
           xp::gc();
-          return TRUE;
+          return $r;
         }
-        
-        return throw($e);
+
+        $result->setFailed($this, $e, $timer->elapsedTime());
+        $this->tearDown();
+        return FALSE;
       }
 
-      if ($expected) return $this->fail(
-        'Expected exception not caught',
-        ($e ? $e->getClassName() : NULL),
-        $method->getAnnotation('expect')
-      );
+      $timer->stop();
+      $this->tearDown();
+
+      // Check expected exception
+      if ($expected) {
+        $e= &new AssertionFailedError(
+          'Expected exception not caught',
+          ($e ? $e->getClassName() : NULL),
+          $method->getAnnotation('expect')
+        );
+        $result->setFailed($this, $e, $timer->elapsedTime());
+        return FALSE;
+      }
       
-      return TRUE;
+      $r= $result->setSucceeded($this, $timer->elapsedTime());
+      return $r;
     }
   }
 ?>

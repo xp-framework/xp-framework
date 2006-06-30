@@ -94,37 +94,12 @@
      *
      * @access  public
      * @param   &util.profiling.unittest.TestCase test
-     * @param   &util.profiling.unittest.TestResult result
-     * @return  bool success
+     * @return  &util.profiling.unittest.TestResult
      */
-    function runTest(&$test, &$result) {
-      $timer= &new Timer();
-      $timer->start();
-
-      try(); {
-        $test->setUp();
-      } if (catch('PrerequisitesNotMetError', $e)) {
-        $timer->stop();
-        $result->setSkipped($test, $e, $timer->elapsedTime());
-        return FALSE;
-      } if (catch('AssertionFailedError', $e)) {
-        $timer->stop();
-        $result->setFailed($test, $e, $timer->elapsedTime());
-        return FALSE;
-      }
-
-      try(); {
-        $test->run();
-      } if (catch('Exception', $e)) {
-        $test->tearDown();
-        $timer->stop();
-        $result->setFailed($test, $e, $timer->elapsedTime());
-        return FALSE;
-      }
-      $timer->stop();
-      $result->setSucceeded($test, $timer->elapsedTime());
-      $test->tearDown();
-      return TRUE;
+    function runTest(&$test) {
+      $result= &new TestResult();
+      $test->run($result);
+      return $result;
     }
     
     /**
@@ -136,7 +111,7 @@
     function &run() {
       $result= &new TestResult();
       for ($i= 0, $s= sizeof($this->tests); $i < $s; $i++) {
-        $this->runTest($this->tests[$i], $result);
+        $this->tests[$i]->run($result);
       }
 
       return $result;
