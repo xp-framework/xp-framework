@@ -8,8 +8,7 @@
     'rdbms.DBConnection', 
     'rdbms.mysql.MySQLResultSet',
     'rdbms.Transaction',
-    'rdbms.StatementFormatter',
-    'rdms.SQLConnectionClosedException'
+    'rdbms.StatementFormatter'
   );
 
   /**
