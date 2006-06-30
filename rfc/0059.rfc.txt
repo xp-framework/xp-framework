@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Thu Jun 15 22:01:52     2006
-@status: discussion, ends at Wed Jun 28 12:00:00 CEST 2006
+@status: implemented
 @category: util.profiling.unittest
 
 Scope of Change
@@ -64,10 +64,7 @@ Related documents
   a different meaning there, though.
 
 - http://xp-framework.net/downloads/rfc0059.diff
-  Patch implementing this RFC. Also contains some refactoring which
-  could go into the util.profiling.unittest classes regardless if
-  this RFC is implemented or not (TestCase::run() now is where the
-  action is, TestSuite::runTest() only calls it...).
+  Patch implementing this RFC. 
 
 - http://xp-framework.net/downloads/rfc0059-unittests.diff
   Patch for XP framework unittest. The author is fully
