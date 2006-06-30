@@ -200,6 +200,9 @@ __;
                 // Calculate modifier, defaulting to "public"
                 $access= $method->tags('access');
                 $modifiers= $access ? $access[0]->text : 'public';
+                if ($model= $method->tags('model')) {
+                  $modifiers.= ' '.$model[0]->text;
+                }
                 
                 $t[1]= $modifiers.' '.$type.$t[1];
                 break 2;
