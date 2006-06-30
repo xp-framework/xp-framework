@@ -155,6 +155,20 @@
     }
     
     /**
+     * Returns an array of keys
+     *
+     * @access  public
+     * @return  &lang.Object[]
+     */
+    function keys() {
+      $keys= array();
+      foreach (array_keys($this->_buckets) as $key) {
+        $keys[]= &$this->_buckets[$key][0];
+      }
+      return $keys;
+    }
+    
+    /**
      * Returns a string representation of this map
      *
      * @access  public
