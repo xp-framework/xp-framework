@@ -417,6 +417,12 @@
         }
       }
       
+      // Check for @limit
+      $eta= 0;
+      if ($method->hasAnnotation('limit')) {
+        $eta= $method->getAnnotation('limit', 'time');
+      }
+
       $timer= &new Timer();
       $timer->start();
 
@@ -441,7 +447,10 @@
 
         // Was that an expected exception?
         if ($expected && $expected->isInstance($e)) {
-          $result->setSucceeded($this, $timer->elapsedTime());
+          $r= (!$eta || $timer->elapsedTime() <= $eta 
+            ? $result->setSucceeded($this, $timer->elapsedTime())
+            : $result->setFailed($this, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime())
+          );
           $this->tearDown();
           xp::gc();
           return $r;
@@ -466,7 +475,10 @@
         return FALSE;
       }
       
-      $r= $result->setSucceeded($this, $timer->elapsedTime());
+      $r= (!$eta || $timer->elapsedTime() <= $eta 
+        ? $result->setSucceeded($this, $timer->elapsedTime())
+        : $result->setFailed($this, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime())
+      );
       return $r;
     }
   }
