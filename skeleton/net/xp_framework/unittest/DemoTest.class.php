@@ -74,5 +74,19 @@
     function expectedExceptionNotThrown() {
       TRUE;
     }
+
+    /**
+     * A test that timeouts
+     *
+     * @access  public
+     */
+    #[@test, @limit(time= 0.1)]
+    function timeouts() {
+      $start= gettimeofday();
+      $end= (1000000 * $start['sec']) + $start['usec'] + 1000 * 200;    // 0.2 seconds
+      do {
+        $now= gettimeofday();
+      } while ((1000000 * $now['sec']) + $now['usec'] < $end);
+    }
   }
 ?>
