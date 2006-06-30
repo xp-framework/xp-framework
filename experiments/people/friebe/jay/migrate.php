@@ -210,6 +210,8 @@ __;
             case ST_FUNCTION.'(':
               array_unshift($states, ST_FUNCTION_ARGS);
               $brackets= 1;
+              $offset= 0;
+              $arguments= $method->tags('param');
               break;
 
             case ST_FUNCTION_ARGS.'(':
@@ -218,6 +220,15 @@ __;
 
             case ST_FUNCTION_ARGS.'&':
               $t= '';
+              break;
+
+            case ST_FUNCTION_ARGS.T_VARIABLE:
+              $type= ($arguments[$offset]->type
+                ? ltrim(strtr($arguments[$offset]->type, '.', '~'), '&')
+                : 'auto'
+              );
+              $t[1]= $type.' '.$t[1];
+              $offset++;
               break;
 
             case ST_FUNCTION_ARGS.')':
