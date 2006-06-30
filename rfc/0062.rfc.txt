@@ -89,7 +89,8 @@ n/a
 
 Related documents
 -----------------
-n/a
+- http://unittests.xp-framework.net/?net.xp_framework.unittest.remote.RemoteTest
+  Unittest verifying new functionality
 
 
 Comments
