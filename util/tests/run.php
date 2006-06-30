@@ -27,8 +27,8 @@
       Console::writeLinef(
         '     >> Ignoring %s::%s (%s)', 
         $class->getName(TRUE), 
-        $ignored->getName(),
-        $ignored->getAnnotation('ignore')
+        $method->getName(),
+        $method->getAnnotation('ignore')
       );
     }
   }
