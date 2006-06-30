@@ -5,19 +5,40 @@
     'net.xp_framework.tools.vm.Lexer',
     'util.cmd.Console', 
     'io.File', 
-    'io.FileUtil'
+    'io.FileUtil',
+    'util.cmd.ParamString'
   );
   define('MODIFIER_NATIVE', 8);   // See lang.XPClass
   
   // {{{ compile
-  $parser= &new Parser();
-  $nodes= $parser->yyparse(new Lexer(file_get_contents($argv[1]), $argv[1]));
+  $p= &new ParamString();
+  $in= $p->value(1);
+  
+  // "-" means compile STDIN
+  if ('-' == $in) {
+    $c= '';
+    while ($buf= fgets(STDIN, 1024)) {
+      $c.= $buf;
+    }
+    $lexer= &new Lexer($c, '<standard input>');
+    $out= NULL;
+  } else {
+    $lexer= &new Lexer(file_get_contents($in), $in);
+    $out= &new File($in.'c');
+  }
+  
+  $parser= &new Parser($lexer);
+  $nodes= $parser->yyparse($lexer);
   
   // Dump AST if specified
-  isset($argv[2]) && Console::writeLine(VNode::stringOf($nodes));
+  $p->exists('ast') && Console::writeLine(VNode::stringOf($nodes));
   
   // Write to file
-  $out= &new File($argv[1].'c');
+  if (!$out) {
+    Console::writeLine('---> Done');
+    exit(0);
+  }
+  
   try(); {
     FileUtil::setContents($out, serialize($nodes));
   } if (catch('IOException', $e)) {
