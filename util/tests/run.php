@@ -10,41 +10,26 @@
     'util.Properties'
   );
   
-  // {{{ proto void addTest(&util.profiling.unittest.TestSuite suite, &lang.XPClass class [, array arguments])
+  // {{{ proto void addTestClass(&util.profiling.unittest.TestSuite suite, &lang.XPClass class [, array arguments])
   //     Adds a test
-  function addTest(&$suite, &$class, $arguments= array()) {
-  
-    // Sanity check
-    if (!$class->isSubclassOf('util.profiling.unittest.TestCase')) {
-      Console::writeLine('*** Error: ', $class->getName(), ' is not a TestCase');
+  function addTestClass(&$suite, &$class, $arguments= array()) {
+    try(); {
+      $ignored= $suite->addTestClass($class, $arguments);
+    } if (catch('NoSuchElementException', $e)) {
+      Console::writeLine('*** Warning: ', $e->getMessage());
+      exit(-4);
+    } if (catch('IllegalArgumentException', $e)) {
+      Console::writeLine('*** Error: ', $e->getMessage());
       exit(-3);
     }
-
-    // Iterate over methods, adding all method annotated with @test (but not @ignore)
-    for ($methods= $class->getMethods(), $i= 0, $s= sizeof($methods); $i < $s; $i++) {
-      if (!$methods[$i]->hasAnnotation('test')) continue;
-      
-      if ($methods[$i]->hasAnnotation('ignore')) {
-        Console::writeLinef(
-          '     >> Ignoring %s::%s (%s)', 
-          $class->getName(TRUE), 
-          $methods[$i]->getName(),
-          $methods[$i]->getAnnotation('ignore')
-        );
-        continue;
-      }
-      
-      // Add test method
-      $suite->addTest(call_user_func_array(array(&$class, 'newInstance'), array_merge(
-        (array)$methods[$i]->getName(TRUE),
-        $arguments
-      )));
-    }
-
-    // Print warning and exit if no test are found
-    if (0 == $suite->numTests()) {
-      Console::writeLine('*** Warning: No tests found in ', $class->getName());
-      exit(-4);
+    
+    foreach ($ignored as $method) {
+      Console::writeLinef(
+        '     >> Ignoring %s::%s (%s)', 
+        $class->getName(TRUE), 
+        $ignored->getName(),
+        $ignored->getAnnotation('ignore')
+      );
     }
   }
   // }}}
@@ -134,7 +119,7 @@ __
       exit(-2);
     }
     
-    addTest($suite, $class, $test[1]);
+    addTestClass($suite, $class, $test[1]);
   }
 
   Console::writeLine('===> Running test suite');

@@ -57,6 +57,30 @@
     }    
 
     /**
+     * Tests adding a test class
+     *
+     * @access  public
+     */    
+    #[@test]
+    function addingATestClass() {
+      $ignored= $this->suite->addTestClass(XPClass::forName('SimpleTestCase'));
+      $this->assertEmpty($ignored);
+      for ($i= 0, $s= $this->suite->numTests(); $i < $s; $i++) {
+        $this->assertSubclass($this->suite->testAt($i), 'util.profiling.unittest.TestCase');
+      }
+    }    
+
+    /**
+     * Tests adding a test class
+     *
+     * @access  public
+     */    
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function addingANonTestClass() {
+      $this->suite->addTestClass(XPClass::forName('Object'));
+    }    
+
+    /**
      * Tests clearing tests
      *
      * @access  public

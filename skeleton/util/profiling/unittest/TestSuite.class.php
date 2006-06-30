@@ -7,7 +7,8 @@
   uses(
     'util.profiling.Timer',
     'util.profiling.unittest.TestCase',
-    'util.profiling.unittest.TestResult'
+    'util.profiling.unittest.TestResult',
+    'util.NoSuchElementException'
   );
 
   /**
@@ -41,7 +42,7 @@
      * @access  public
      * @param   &util.profiling.unittest.TestCase test
      * @return  &util.profiling.unittest.TestCase
-     * @throws  lang.IllegalArgumentException
+     * @throws  lang.IllegalArgumentException in case given argument is not a testcase
      */
     function &addTest(&$test) {
       if (!is_a($test, 'TestCase')) {
@@ -49,6 +50,43 @@
       }
       $this->tests[]= &$test;
       return $test;
+    }
+
+    /**
+     * Add a test class
+     *
+     * @access  public
+     * @param   &lang.XPClass<util.profiling.unittest.TestCase> class
+     * @return  lang.reflect.Method[] ignored test methods
+     * @throws  lang.IllegalArgumentException in case given argument is not a testcase class
+     * @throws  util.NoSuchElementException in case given testcase class does not contain any tests
+     */
+    function addTestClass(&$class, $arguments= array()) {
+      if (!$class->isSubclassOf('TestCase')) {
+        return throw(new IllegalArgumentException('Given argument is not a TestCase class ('.xp::stringOf($class).')'));
+      }
+
+      $ignored= array();
+      for ($methods= $class->getMethods(), $i= 0, $s= sizeof($methods); $i < $s; $i++) {
+        if (!$methods[$i]->hasAnnotation('test')) continue;
+
+        if ($methods[$i]->hasAnnotation('ignore')) {
+          $ignored[]= &$methods[$i];
+          continue;
+        }
+
+        // Add test method
+        $this->addTest(call_user_func_array(array(&$class, 'newInstance'), array_merge(
+          (array)$methods[$i]->getName(TRUE),
+          $arguments
+        )));
+      }
+
+      if (0 == $this->numTests()) {
+        return throw(new NoSuchElementException('No tests found in ', $class->getName()));
+      }
+
+      return $ignored;
     }
     
     /**
