@@ -183,6 +183,17 @@
     }
 
     /**
+     * Tests keys() method
+     *
+     * @access  public
+     */
+    #[@test, @ignore('assertEquals() broken for arrays')]
+    function keys() {
+      $this->map->put(new String('key'), new String('value'));
+      $this->assertEquals(array(new String('key')), $this->map->keys());
+    }
+
+    /**
      * Tests toString() method
      *
      * @access  public
