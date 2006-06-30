@@ -20,11 +20,9 @@
    *     'net.xp_framework.unittest.rdbms.DBTest'
    *   );
    *   
-   *   $dsn= 'sybase://user:password@host/?autoconnect=1';
-   *
    *   $suite= &new TestSuite();
-   *   $suite->addTest(new DBTest('testConnect', $dsn));
-   *   $suite->addTest(new DBTest('testSelect', $dsn));
+   *   $suite->addTest(new DBTest('testConnect'));
+   *   $suite->addTest(new DBTest('testSelect'));
    *   
    *   $result= &$suite->run();
    *   echo $result->toString();
