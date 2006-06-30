@@ -43,8 +43,12 @@
      * @access  public
      * @param   &util.profiling.unittest.TestCase test
      * @return  &util.profiling.unittest.TestCase
+     * @throws  lang.IllegalArgumentException
      */
     function &addTest(&$test) {
+      if (!is_a($test, 'TestCase')) {
+        return throw(new IllegalArgumentException('Given argument is not a TestCase ('.xp::typeOf($test).')'));
+      }
       $this->tests[]= &$test;
       return $test;
     }
@@ -96,7 +100,7 @@
      * @param   &util.profiling.unittest.TestCase test
      * @return  &util.profiling.unittest.TestResult
      */
-    function runTest(&$test) {
+    function &runTest(&$test) {
       $result= &new TestResult();
       $test->run($result);
       return $result;
