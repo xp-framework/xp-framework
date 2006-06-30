@@ -25,7 +25,7 @@
     /**
      * Constructor
      *
-     * @access  publuc
+     * @access  public
      * @param   string name
      * @param   string endpoint
      */
