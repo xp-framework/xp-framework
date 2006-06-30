@@ -127,6 +127,25 @@
     }
 
     /**
+     * Tests unittest annotations
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#testMethod
+     * @access  public
+     */
+    #[@test]
+    function testMethod() {
+      $m= &$this->class->getMethod('testMethod');
+      $this->assertTrue($m->hasAnnotation('test'));
+      $this->assertTrue($m->hasAnnotation('ignore'));
+      $this->assertEquals(0.1, $m->getAnnotation('limit', 'time'));
+      $this->assertEquals(100, $m->getAnnotation('limit', 'memory'));
+      $this->assertEquals(
+        array('time' => 0.1, 'memory' => 100), 
+        $m->getAnnotation('limit')
+      );
+    }
+
+    /**
      * Tests getAnnotation() returns the string associated with the 
      * annotation.
      *

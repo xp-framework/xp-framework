@@ -46,6 +46,14 @@
     function keyValuePair() { }
 
     /**
+     * Unittest method annotated with @test, @ignore and @limit
+     *
+     * @access  public
+     */
+    #[@test, @ignore, @limit(time = 0.1, memory = 100)]
+    function testMethod() { }
+
+    /**
      * Method annotated with an annotation with a hash value containing 
      * multiple key/value pairs
      *
