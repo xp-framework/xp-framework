@@ -4,4 +4,4 @@ try {
 } catch (xp~lang~NullPointerException $e) {
   echo 'Caught ', $e->toString(), "\n";
 }
-echo 'Alive';
+echo 'Alive', "\n";
