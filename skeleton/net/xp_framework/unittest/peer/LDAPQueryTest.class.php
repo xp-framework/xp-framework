@@ -90,7 +90,7 @@
      *
      * @access public 
      */
-    #[@test, @expect('IllegalArgumentException'), @ignore]
+    #[@test, @expect('IllegalArgumentException')]
     function testNonScalarInput() {
       $q= &new LDAPQuery('c=DE', '(%d)', array(1,2));
     }
