@@ -132,7 +132,9 @@
       
       $answer->setMapping($this->mapping);
       $data= $answer->getData();
+      
       if (sizeof($data) == 1) return $data[0];
+      if (sizeof($data) == 0) return NULL;
 
       return throw(new IllegalArgumentException(
         'Multiple return values not supported (have '.sizeof($data).')'
