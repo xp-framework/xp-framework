@@ -9,6 +9,12 @@ import java.io.DataOutput;
 import java.io.DataInput;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
+
+import java.nio.charset.Charset;
+import java.nio.CharBuffer;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+
 import static java.lang.Math.ceil;
 
 /**
@@ -31,7 +37,8 @@ import static java.lang.Math.ceil;
  * The rest of the bytes contains the string.
  */
 public class ByteCountedString {
-    protected String string;
+    protected ByteBuffer buffer;
+    protected int length;
     protected final static int DEFAULT_CHUNK_SIZE= 0xFFFF;
 
     /**
@@ -40,7 +47,8 @@ public class ByteCountedString {
      * @access  public
      */
     public ByteCountedString() {
-        this.string= new String();
+        this.buffer= ByteBuffer.allocate(0);
+        this.length= 0;
     }
 
     /**
@@ -50,7 +58,12 @@ public class ByteCountedString {
      * @param   java.lang.String string
      */
     public ByteCountedString(String string) {
-        this.string= string;
+      try {
+          this.buffer= Charset.forName("UTF-8").newEncoder().encode(CharBuffer.wrap(string));
+          this.buffer.rewind();
+      } catch (CharacterCodingException ignored) {
+      }
+      this.length= this.buffer.remaining();
     }
 
     /**
@@ -60,7 +73,7 @@ public class ByteCountedString {
      * @param   java.lang.StringBuffer buffer
      */
     public ByteCountedString(StringBuffer buffer) {
-        this.string= buffer.toString();
+        this(buffer.toString());
     }
     
     /**
@@ -71,7 +84,7 @@ public class ByteCountedString {
      * @return  int
      */
     public int length(int chunkSize) {
-        return this.string.length() + 3 * (int)ceil((double)this.string.length() / (double)chunkSize);
+        return this.length + 3 * (int)ceil((double)this.length / (double)chunkSize);
     }
 
     /**
@@ -91,7 +104,7 @@ public class ByteCountedString {
      * @return  java.lang.String
      */
     @Override public String toString() {
-        return "[BCS(" + this.string.length() + ")= '" + this.string + "']";
+        return "[BCS(" + this.length + ")= '" + this.buffer + "']";
     }
 
     /**
@@ -102,20 +115,18 @@ public class ByteCountedString {
      * @param   java.io.DataOutput out
      */
     public void writeTo(DataOutput out, int chunkSize) throws IOException {
-        int length= this.string.length();
-        int offset= 0;
-
         do {
+            int length= this.buffer.remaining();
             int chunk= length > chunkSize ? chunkSize : length;
 
             out.writeByte((int)((chunk >>> 8) & 0xFF));
             out.writeByte((int)((chunk >>> 0) & 0xFF));
             out.writeByte(length- chunk > 0 ? 1 : 0);
-            out.writeBytes(this.string.substring(offset, offset+ chunk));
-
-            offset+= chunk;
-            length-= chunk;
-        } while (length > 0);
+            
+            byte[] dst= new byte[chunk];
+            this.buffer.get(dst, 0, chunk);
+            out.write(dst);
+        } while (this.buffer.hasRemaining());
     }
 
     /**
