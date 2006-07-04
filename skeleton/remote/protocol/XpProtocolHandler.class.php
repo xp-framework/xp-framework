@@ -213,8 +213,10 @@
             $reference= &Serializer::valueOf(ByteCountedString::readFrom($this->_sock), $length= 0, $ctx);
             if (is('RemoteException', $reference)) {
               return throw($reference);
-            } else {
+            } else if (is('ClassReference', $reference)) {
               return throw(new RemoteException($reference->getClassName(), $reference));
+            } else {
+              return throw(new RemoteException('lang.Exception', new Exception(xp::stringOf($reference))));
             }
 
           case REMOTE_MSG_ERROR:
