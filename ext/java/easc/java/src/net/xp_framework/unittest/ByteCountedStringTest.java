@@ -185,6 +185,21 @@ public class ByteCountedStringTest {
         assertString("\u00FF\u00FF\u0001ccccccc", bytes.substring(0, 10));
         assertString("\u0000\u0001\u0000c", bytes.substring(65538, 65542));
     }
+
+    /**
+     * Tests the writeTo() method returns UTF-8
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void writeReturnsUtf8() throws Exception {
+        ByteCountedString bcs= new ByteCountedString("ü");
+        ByteArrayOutputStream out= new ByteArrayOutputStream();
+        bcs.writeTo(new DataOutputStream(out));
+        String bytes= out.toString();
+        
+        assertString("\u0000\u0002\u0000Ã¼", bytes);
+    }
     
     /**
      * Tests the readFrom() method without arguments on a string 
@@ -202,4 +217,5 @@ public class ByteCountedStringTest {
         assertEquals(43, read.length());
         assertEquals("This is a test text, used for this unittest", read);
     }    
+
 }
