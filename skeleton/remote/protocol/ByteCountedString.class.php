@@ -106,7 +106,7 @@
         $s.= ByteCountedString::readFully($stream, $ctl['length']);
       } while ($ctl['next']);
       
-      return $s; // utf8_decode($s);
+      return utf8_decode($s);
     }
   }
 ?>
