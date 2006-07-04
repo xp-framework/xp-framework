@@ -195,7 +195,7 @@
   }
   
   // {{{ main
-  with ($server= &new Server('banane.i.schlund.de', 6448)); {
+  with ($server= &new Server($argv[1], 6448)); {
     $server->addListener(new RemoteInvocationListener());
     $server->init();
     $server->service();
