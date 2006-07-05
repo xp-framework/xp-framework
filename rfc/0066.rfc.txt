@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, gelli
 @created: Wed Jul  5 17:32:58 CEST 2006
-@status: draft
+@status: discussion, ends at Thu Jul  6 12:00:00 CEST 2006
 @category: peer.server
 
 Scope of Change
@@ -59,5 +59,7 @@ Related documents
 
 Comments
 --------
+- friebe, Wed Jul  5 17:43:22 CEST 2006
+  No BC break, so I think we can commit this almost right ahead
 
 <EOF>
