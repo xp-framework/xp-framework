@@ -118,6 +118,10 @@
      */
     function setOption($level, $name, $value) {
       $this->options[$level][$name]= $value;
+
+      if ($this->isConnected()) {
+        socket_set_option($this->_sock, $level, $name, $value);
+      }
     }
     
     /**
@@ -332,6 +336,5 @@
       }
       return $bytesWritten;
     }
-
   }
 ?>
