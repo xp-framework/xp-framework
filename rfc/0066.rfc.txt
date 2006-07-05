@@ -1,0 +1,50 @@
+RFC 0066: TCP_NODELAY server option
+========================================================================
+$Id$
+
+@authors: friebe, gelli
+@created: Wed Jul  5 17:32:58 CEST 2006
+@status: draft
+@category: peer.server
+
+Scope of Change
+---------------
+A new method called setTcpNoDelay() on the peer.server.*Server classes 
+will be added.
+
+
+Rationale
+---------
+Performance.
+
+
+Functionality
+-------------
+A member variable will indicate that socket_setopt() with the option 
+TCP_NODELAY should be called on the accept()'ed socket.
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+When set to TRUE (non-default for BC reasons), faster.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
