@@ -23,6 +23,18 @@ Functionality
 A member variable will indicate that socket_setopt() with the option 
 TCP_NODELAY should be called on the accept()'ed socket.
 
+Example
+~~~~~~~
+<?php
+  with ($server= &new Server($argv[1], 6448)); {
+    $server->setTcpNoDelay(TRUE);
+    $server->addListener(new RemoteInvocationListener());
+    $server->init();
+    $server->service();
+    $server->shutdown();
+  }
+?>
+
 
 Security considerations
 -----------------------
@@ -41,7 +53,8 @@ n/a
 
 Related documents
 -----------------
-n/a
+- http://xp-framework.net/downloads/rfc0066.diff
+  Implementing patch
 
 
 Comments
