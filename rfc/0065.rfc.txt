@@ -1,0 +1,60 @@
+RFC 0065: Server Socket Reader API
+========================================================================
+$Id$
+
+@authors: friebe, gelli
+@created: Wed Jul  5 17:28:01 CEST 2006
+@status: draft
+@category: peer.server
+
+Scope of Change
+---------------
+Reading the data off an accept()'ed socket in the server APIs will be made
+overrideable by supplying a reader implementation.
+
+
+Rationale
+---------
+Performance improvement and flexibility.
+
+
+Functionality
+-------------
+The following code in the three server implementations:
+<?php
+  $m= &$socket->accept();
+  // ...
+  $data= $m->readBinary();
+?>
+will be replaced by
+<?php
+  $m= &$socket->accept();
+  // ...
+  $data= $this->reader->readFrom($m);
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Minimalistic.
+
+
+Dependencies
+------------
+New Reader interface.
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
