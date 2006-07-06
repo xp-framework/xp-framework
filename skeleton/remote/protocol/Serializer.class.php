@@ -29,7 +29,7 @@
     /**
      * Retrieve serialized representation of a variable
      *
-     * @access  protected
+     * @access  public
      * @param   &mixed var
      * @return  string
      * @throws  lang.FormatException if an error is encountered in the format 
@@ -153,7 +153,7 @@
     /**
      * Retrieve serialized representation of a variable
      *
-     * @access  protected
+     * @access  public
      * @param   string serialized
      * @param   &int length
      * @param   array context default array()
