@@ -15,12 +15,13 @@
      * Returns a value for the given serialized string
      *
      * @access  public
+     * @param   &server.protocol.Serializer serializer
      * @param   string serialized
      * @param   &int length
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    function &valueOf($serialized, &$length, $context= array()) { }
+    function &valueOf(&$serializer, $serialized, &$length, $context= array()) { }
   
   }
 ?>
