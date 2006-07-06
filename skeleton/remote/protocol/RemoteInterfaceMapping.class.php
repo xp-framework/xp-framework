@@ -23,15 +23,16 @@
      * Returns a value for the given serialized string
      *
      * @access  public
+     * @param   &remote.protocol.Serializer serializer
      * @param   string serialized
      * @param   &int length
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    function &valueOf($serialized, &$length, $context= array()) {
+    function &valueOf(&$serializer, $serialized, &$length, $context= array()) {
       $oid= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
       $offset= 2 + 2 + strlen($oid);
-      $interface= Serializer::valueOf(substr($serialized, $offset), $len, $context);
+      $interface= $serializer->valueOf(substr($serialized, $offset), $len, $context);
       $offset+= $len;
 
       $cl= &ClassLoader::getDefault();

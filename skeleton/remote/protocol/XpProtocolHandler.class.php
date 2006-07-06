@@ -9,28 +9,9 @@
     'remote.RemoteInvocationHandler', 
     'remote.protocol.ByteCountedString', 
     'remote.protocol.Serializer', 
-    'remote.protocol.RemoteInterfaceMapping'
+    'remote.protocol.RemoteInterfaceMapping',
+    'remote.protocol.XpProtocolConstants'
   );
-
-  define('DEFAULT_PROTOCOL_MAGIC_NUMBER', 0x3c872747);
-
-  // Request messages
-  define('REMOTE_MSG_INIT',      0x0000);
-  define('REMOTE_MSG_LOOKUP',    0x0001);
-  define('REMOTE_MSG_CALL',      0x0002);
-  define('REMOTE_MSG_FINALIZE',  0x0003);
-  define('REMOTE_MSG_TRAN_OP',   0x0004);
-  
-  // Response messages
-  define('REMOTE_MSG_VALUE',     0x0005);
-  define('REMOTE_MSG_EXCEPTION', 0x0006);
-  define('REMOTE_MSG_ERROR',     0x0007);
-  
-  // Transaction message types
-  define('REMOTE_TRAN_BEGIN',    0x0001);
-  define('REMOTE_TRAN_STATE',    0x0002);
-  define('REMOTE_TRAN_COMMIT',   0x0003);
-  define('REMOTE_TRAN_ROLLBACK', 0x0004);
 
   /**
    * Handles the "XP" protocol
@@ -41,10 +22,28 @@
   class XpProtocolHandler extends Object {
     var
       $versionMajor   = 0,
-      $versionMinor   = 0;
+      $versionMinor   = 0,
+      $serializer     = NULL;
     
     var
       $_sock= NULL;  
+
+    /**
+     * Constructor
+     *
+     * @access  public
+     */
+    function __construct() {
+    
+      // Create a serializer for this protocol handler
+      $this->serializer= &new Serializer();
+      
+      // Register default mappings / exceptions / packages
+      $this->serializer->mapping('I', new RemoteInterfaceMapping());
+      $this->serializer->exceptionName('naming/NameNotFound', 'remote.NameNotFoundException');
+      $this->serializer->exceptionName('invoke/Exception', 'remote.InvocationException');
+      $this->serializer->packageMapping('net.xp_framework.easc.reflect', 'remote.reflect');
+    }
 
     /**
      * Initialize this protocol handler
@@ -143,7 +142,7 @@
         pack('NN', 0, $oid),
         array(
           new ByteCountedString($method),
-          new ByteCountedString(Serializer::representationOf(new ArrayList($args)))
+          new ByteCountedString($this->serializer->representationOf(new ArrayList($args)))
         )
       );
       return $r;
@@ -207,10 +206,10 @@
           case REMOTE_MSG_VALUE:
             $data= &ByteCountedString::readFrom($this->_sock);
             // Console::writeLine('<<<', addcslashes($data, "\0..\37!@\177..\377"));
-            return Serializer::valueOf($data, $length= 0, $ctx);
+            return $this->serializer->valueOf($data, $length= 0, $ctx);
 
           case REMOTE_MSG_EXCEPTION:
-            $reference= &Serializer::valueOf(ByteCountedString::readFrom($this->_sock), $length= 0, $ctx);
+            $reference= &$this->serializer->valueOf(ByteCountedString::readFrom($this->_sock), $length= 0, $ctx);
             if (is('RemoteException', $reference)) {
               return throw($reference);
             } else if (is('ClassReference', $reference)) {

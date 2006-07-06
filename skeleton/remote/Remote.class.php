@@ -43,19 +43,6 @@
       $_handler       = NULL;
 
     /**
-     * Static initializer. Sets up serializer.
-     *
-     * @model   static
-     * @access  public
-     */
-    function __static() {
-      Serializer::mapping('I', new RemoteInterfaceMapping());
-      Serializer::exceptionName('naming/NameNotFound', 'remote.NameNotFoundException');
-      Serializer::exceptionName('invoke/Exception', 'remote.InvocationException');
-      Serializer::packageMapping('net.xp_framework.easc.reflect', 'remote.reflect');
-    }
-    
-    /**
      * Returns a string representation of this object
      *
      * @access  public

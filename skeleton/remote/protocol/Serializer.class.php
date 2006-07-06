@@ -25,6 +25,10 @@
    * @purpose  Serializer
    */
   class Serializer extends Object {
+    var
+      $mappings   = array(),
+      $packages   = array(),
+      $exceptions = array();
 
     /**
      * Retrieve serialized representation of a variable
@@ -44,7 +48,7 @@
         case 'array':
           $s= 'a:'.sizeof($var).':{';
           foreach (array_keys($var) as $key) {
-            $s.= serialize($key).Serializer::representationOf($var[$key]);
+            $s.= serialize($key).$this->representationOf($var[$key]);
           }
           return $s.'}';
         case 'object':
@@ -55,12 +59,12 @@
             case is_a($var, 'ArrayList'): {
               $s= 'A:'.sizeof($var->values).':{';
               foreach (array_keys($var->values) as $key) {
-                $s.= Serializer::representationOf($var->values[$key]);
+                $s.= $this->representationOf($var->values[$key]);
               }
               return $s.'}';
             }
             case is_a($var, 'HashMap'): {
-              return Serializer::representationOf($var->_hash);
+              return $this->representationOf($var->_hash);
             }
             case is_a($var, 'Long'): {
               return 'l:'.$var->value.';';
@@ -86,7 +90,7 @@
               unset($props['__id']);
               $s= 'O:'.strlen($name).':"'.$name.'":'.sizeof($props).':{';
               foreach (array_keys($props) as $name) {
-                $s.= serialize($name).Serializer::representationOf($var->{$name});
+                $s.= serialize($name).$this->representationOf($var->{$name});
               }
               return $s.'}';
             }
@@ -108,16 +112,15 @@
      * @throws  lang.IllegalArgumentException if the given argument is not a SerializerMapping
      */
     function &mapping($token, &$mapping) {
-      static $mappings= array();
-      
       if (NULL !== $mapping) {
         if (!is('SerializerMapping', $mapping)) return throw(new IllegalArgumentException(
           'Given argument is not a SerializerMapping ('.xp::typeOf($mapping).')'
         ));
 
-        $mappings[$token]= &$mapping;
+        $this->mappings[$token]= &$mapping;
       }
-      return $mappings[$token];
+      
+      return $this->mappings[$token];
     }
     
     /**
@@ -129,10 +132,8 @@
      * @return  string 
      */
     function exceptionName($name, $exception= NULL) {
-      static $exceptions= array();
-
-      if (NULL !== $exception) $exceptions[$name]= $exception;
-      return $exceptions[$name];
+      if (NULL !== $exception) $this->exceptions[$name]= $exception;
+      return $this->exceptions[$name];
     }
   
     /**
@@ -144,10 +145,8 @@
      * @return  string fully qualified class name
      */
     function packageMapping($name, $replace= NULL) {
-      static $packages= array();
-
-      if (NULL !== $replace) $packages[$name]= $replace;
-      return strtr($name, $packages);
+      if (NULL !== $replace) $this->packages[$name]= $replace;
+      return strtr($name, $this->packages);
     }
 
     /**
@@ -246,9 +245,9 @@
           $size= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
           $offset= strlen($size)+ 2+ 2;
           for ($i= 0; $i < $size; $i++) {
-            $key= Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $key= $this->valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
-            $a[$key]= &Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $a[$key]= &$this->valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
           }
           $length= $offset+ 1;
@@ -260,7 +259,7 @@
           $size= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
           $offset= strlen($size)+ 2+ 2;
           for ($i= 0; $i < $size; $i++) {
-            $a->values[$i]= &Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $a->values[$i]= &$this->valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
           }
           $length= $offset+ 1;
@@ -270,7 +269,7 @@
         case 'e': {     // known exceptions
           $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
           try(); {
-            $class= &XPClass::forName(Serializer::exceptionName(substr($serialized, 2+ strlen($len)+ 2, $len)));
+            $class= &XPClass::forName($this->exceptionName(substr($serialized, 2+ strlen($len)+ 2, $len)));
           } if (catch('ClassNotFoundException', $e)) {
             return throw($e);
           }
@@ -279,9 +278,9 @@
           $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
           $offset+= strlen($size)+ 2;
           for ($i= 0; $i < $size; $i++) {
-            $member= Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $member= $this->valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
-            $instance->{$member}= &Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $instance->{$member}= &$this->valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
           }
           $length= $offset+ 1;
@@ -295,9 +294,9 @@
           $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
           $offset+= strlen($size)+ 2;
           for ($i= 0; $i < $size; $i++) {
-            $member= Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $member= $this->valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
-            $instance->{$member}= &Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $instance->{$member}= &$this->valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
           }
           $length= $offset+ 1;
@@ -309,9 +308,9 @@
           $offset= strlen($size)+ 2+ 2;
           $details= array();
           for ($i= 0; $i < $size; $i++) {
-            $detail= Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $detail= $this->valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
-            $details[$detail]= Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $details[$detail]= $this->valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
           }
           $length= $offset+ 1;
@@ -335,7 +334,7 @@
 
         case 'O': {     // generic objects
           $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-          $name= Serializer::packageMapping(substr($serialized, 2+ strlen($len)+ 2, $len));
+          $name= $this->packageMapping(substr($serialized, 2+ strlen($len)+ 2, $len));
           try(); {
             $class= &XPClass::forName($name);
           } if (catch('ClassNotFoundException', $e)) {
@@ -345,9 +344,9 @@
             $offset+= strlen($size)+ 2;
             $members= array();
             for ($i= 0; $i < $size; $i++) {
-              $member= Serializer::valueOf(substr($serialized, $offset), $len, $context);
+              $member= $this->valueOf(substr($serialized, $offset), $len, $context);
               $offset+= $len;
-              $members[$member]= &Serializer::valueOf(substr($serialized, $offset), $len, $context);
+              $members[$member]= &$this->valueOf(substr($serialized, $offset), $len, $context);
               $offset+= $len;
             }
             $length= $offset+ 1;
@@ -360,9 +359,9 @@
           $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
           $offset+= strlen($size)+ 2;
           for ($i= 0; $i < $size; $i++) {
-            $member= Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $member= $this->valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
-            $instance->{$member}= &Serializer::valueOf(substr($serialized, $offset), $len, $context);
+            $instance->{$member}= &$this->valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
           }
           $length= $offset+ 1;
@@ -381,18 +380,18 @@
         case 'C': {     // generic classes
           $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
           $length= 2 + strlen($len) + 2 + $len + 2;
-          $value= &new ClassReference(Serializer::packageMapping(substr($serialized, 2+ strlen($len)+ 2, $len)));
+          $value= &new ClassReference($this->packageMapping(substr($serialized, 2+ strlen($len)+ 2, $len)));
           return $value;
         }
 
         default: {      // default, check if we have a mapping
-          if (!($mapping= &Serializer::mapping($serialized{0}, $m= NULL))) {
+          if (!($mapping= &$this->mapping($serialized{0}, $m= NULL))) {
             return throw(new FormatException(
               'Cannot deserialize unknown type "'.$serialized{0}.'" ('.$serialized.')'
             ));
           }
 
-          return $mapping->valueOf($serialized, $length, $context);
+          return $mapping->valueOf($this, $serialized, $length, $context);
         }
       }
     }
