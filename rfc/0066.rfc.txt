@@ -20,6 +20,27 @@ Performance.
 
 Functionality
 -------------
+
+Preface
+~~~~~~~
+The setTcpNoDelay() method does not set non-blocking mode on the
+socket. All I/O in Java is always blocking. Instead, as indicated in the
+obscure comment in the javadoc, this method turns on or off "Nagle's
+algorithm". This is a performance hint to the kernel about whether or not
+to wait for a fraction of a second before sending the data out on the
+network in case more data is sent in the immediate future. This is to avoid
+sending lots of tiny packets on the network when applications do dumb
+things like write data to a TCP stream using an unbuffered output stream
+and therefore write a single byte at a time over the network. By default,
+Nagle's delay algorithm is therefore usually turned on. However, if you
+know that you will buffer writes up and then won't send any for awhile such
+as with a request/reply protocol like HTTP it can be a significant
+performance win to turn of Nagle's algorithm by calling setTcpNoDelay(true)
+so that the kernel will send your data on the network immediately without
+wasting time waiting for further data to be written.
+
+Internal implementation note
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A member variable will indicate that socket_setopt() with the option 
 TCP_NODELAY should be called on the accept()'ed socket.
 
