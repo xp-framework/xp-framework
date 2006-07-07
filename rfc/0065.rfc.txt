@@ -20,6 +20,9 @@ Performance improvement and flexibility.
 
 Functionality
 -------------
+
+Server implementation changes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following code in the three server implementations:
 <?php
   $m= &$socket->accept();
@@ -33,7 +36,48 @@ will be replaced by
   $data= $this->reader->readFrom($m);
 ?>
 
-The default behaviour (readBinary()) will be kept by a new class.
+Note: The default behaviour (readBinary()) will be kept by a new class.
+
+Example
+~~~~~~~
+
+Implementing a reader:
+<?php
+  class EascReader extends Object {
+
+    function readBytes(&$sock, $num) {
+      $return= '';
+      while (strlen($return) < $num) {
+        if (0 == strlen($buf= $sock->readBinary($num - strlen($return)))) return;
+        $return.= $buf;
+      }
+      return $return;
+    }
+  
+    function readFrom(&$sock) {
+      $header= unpack(
+        'Nmagic/cvmajor/cvminor/ctype/ctran/Nlength', 
+        $this->readBytes($sock, 12)
+      );
+
+      // ... abbreviated ...
+
+      return ServerDelegate::delegateFor($header['type'], $sock);
+    }
+
+  } implements(__FILE__, 'peer.server.ServerDataReader');
+?>
+
+Setting the reader implementation:
+<?php
+  with ($server= &new Server($argv[1], 6448)); {
+    $server->setReader(new EascReader());
+    $server->addListener(new RemoteInvocationListener());
+    $server->init();
+    $server->service();
+    $server->shutdown();
+  }
+?>
 
 
 Security considerations
