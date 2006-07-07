@@ -107,5 +107,12 @@ Comments
   Not sure about the name of this reader. SocketReader seems a bit too
   generic. ServerDataReader? And with dataFrom() or readDataFrom() 
   instead of readData()?
+
+- gelli, Fri Jul  7 11:58:40 CEST 2006
+  As of the current state, which is that this new api will always read from
+  sockets, i think SocketReader as interface name is not too generic but 
+  ServerDataReader is. Addressing the methods name i'd prefer readFrom($socket)
+  as it's literally a little bit more "readable"
+
   
 <EOF>
