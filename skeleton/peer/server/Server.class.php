@@ -35,7 +35,8 @@
   class Server extends Object {
     var
       $socket     = NULL,
-      $terminate  = FALSE;
+      $terminate  = FALSE,
+      $tcpnodelay = FALSE;
       
     /**
      * Constructor
@@ -82,6 +83,26 @@
       $this->listeners[]= &$listener;
       return $listener;
     }
+
+    /**
+     * Set TCP_NODELAY
+     *
+     * @access  public
+     * @param   bool tcpnodelay
+     */
+    function setTcpnodelay($tcpnodelay) {
+      $this->tcpnodelay= $tcpnodelay;
+    }
+
+    /**
+     * Get TCP_NODELAY
+     *
+     * @access  public
+     * @return  bool
+     */
+    function getTcpnodelay() {
+      return $this->tcpnodelay;
+    }
     
     /**
      * Notify listeners
@@ -108,6 +129,7 @@
       $accepting= $this->socket->getHandle();
       
       // Loop
+      $tcp= getprotobyname('tcp');
       while (!$this->terminate) {
         xp::gc();
 
@@ -142,6 +164,7 @@
               return throw(new SocketException('Call to accept() failed'));
             }
             
+            $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);
             $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
             $handles[(int)$m->getHandle()]= &$m;
             continue;

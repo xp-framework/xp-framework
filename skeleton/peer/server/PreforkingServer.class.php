@@ -64,6 +64,7 @@
 
       $children= array();
       $i= 0;
+      $tcp= getprotobyname('tcp');
       while (!$this->terminate && ($i <= $this->count)) {
         $this->cat && $this->cat->debugf('Server #%d: Forking child %d', getmypid(), $i);
         $pid= pcntl_fork();
@@ -83,7 +84,7 @@
               exit(-1);
             }
             if (!$m) continue;
-
+            $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);
             $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
 
             // Loop

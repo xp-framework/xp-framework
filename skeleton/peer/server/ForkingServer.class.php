@@ -23,6 +23,7 @@
     function service() {
       if (!$this->socket->isConnected()) return FALSE;
       
+      $tcp= getprotobyname('tcp');
       while (!$this->terminate) {
         try(); {
           $m= &$this->socket->accept();
@@ -45,6 +46,7 @@
           // Use waitpid w/ NOHANG to avoid zombies hanging around
           while (pcntl_waitpid(-1, $status, WNOHANG)) { }
         } else {                // Child
+          $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);
           $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
 
           // Loop
