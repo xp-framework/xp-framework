@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, gelli
 @created: Wed Jul  5 17:32:58 CEST 2006
-@status: discussion, ends at Thu Jul  6 12:00:00 CEST 2006
+@status: implemented, Fri Jul  7 11:25:05 CEST 2006
 @category: peer.server
 
 Scope of Change
