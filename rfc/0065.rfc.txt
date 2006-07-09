@@ -114,5 +114,11 @@ Comments
   ServerDataReader is. Addressing the methods name i'd prefer readFrom($socket)
   as it's literally a little bit more "readable"
 
-  
+- friebe, Sun Jul  9 10:11:24     2006
+  More thoughts on naming:
+  * Reads data from client => ClientDataReader::readFrom($sock)  
+  * Extracts data from socket => DataExtractor::dataFrom($sock)
+  * Interprets data from socket => DataInterpreter::dataFrom($sock)
+  * Implements reading => (Server)(Data)Read(ing|er)Implementation::readFrom($sock)
+
 <EOF>
