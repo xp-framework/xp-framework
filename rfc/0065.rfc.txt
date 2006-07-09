@@ -121,4 +121,16 @@ Comments
   * Interprets data from socket => DataInterpreter::dataFrom($sock)
   * Implements reading => (Server)(Data)Read(ing|er)Implementation::readFrom($sock)
 
+- friebe, Sun Jul  9 11:41:46     2006
+  readFrom() and writeTo() are also used in ByteCountedString. The generic
+  approach would be:
+<?php
+  interface io~Externalizable<T> {
+
+    T readFrom($stream);
+
+    writeTo($stream);
+  }
+?>
+
 <EOF>
