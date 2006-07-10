@@ -52,7 +52,17 @@
      */
     function invoke($name, $args= array()) {
       $method= &$this->fixture->getMethod($name);
-      foreach ($method->getArguments() as $pos => $arg) {
+      $arguments= $method->getArguments();
+      
+      // Check number of arguments
+      if (sizeof($arguments) != sizeof($args)) {
+        return throw(new IllegalArgumentException(
+          'Incorrect number of arguments (expected: '.sizeof($arguments).', have: '.sizeof($args).')'
+        ));
+      }
+      
+      // Check types
+      foreach ($arguments as $pos => $arg) {
         if ($this->verifyType($arg->getType(), $args[$pos])) continue;
 
         return throw(new IllegalArgumentException(
@@ -134,13 +144,43 @@
     }
 
     /**
-     * Tests invoking TestClass::add() with two floats
+     * Tests invoking TestClass::add() with two objects
      *
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     function addWithObjects() {
       $this->invoke('add', array(new Date(), new Object()));
+    }
+
+    /**
+     * Tests invoking TestClass::add() with NULLs
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function addWithNulls() {
+      $this->invoke('add', array(NULL, NULL));
+    }
+
+    /**
+     * Tests invoking TestClass::add() with only argument
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function addWithOnlyOneArgument() {
+      $this->invoke('add', array(1));
+    }
+
+    /**
+     * Tests invoking TestClass::add() with too many arguments
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function addWithTooManyArguments() {
+      $this->invoke('add', array(1, 2, 3));
     }
   }
 ?>
