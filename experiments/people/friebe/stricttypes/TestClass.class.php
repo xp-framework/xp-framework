@@ -24,6 +24,22 @@
     }
 
     /**
+     * Method with a typed-hash argument
+     *
+     * @access  public
+     * @param   array<string, &util.Date> hash
+     * @param   string operation one of 'isAfter' / 'isBefore'
+     * @param   &util.Date compare
+     * @return  array<string, &util.Date> filtered hash
+     */
+    function filter($hash, $operation, &$compare) {
+      foreach (array_keys($hash) as $key) {
+        if ($hash[$key]->{$operation}($compare)) unset($hash[$key]);
+      }
+      return $hash;
+    }
+
+    /**
      * Method with two primitive arguments
      *
      * @access  public

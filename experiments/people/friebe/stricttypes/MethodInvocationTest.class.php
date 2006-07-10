@@ -4,7 +4,12 @@
  * $Id$
  */
  
-  uses('util.profiling.unittest.TestCase', 'TestClass');
+  uses(
+    'util.profiling.unittest.TestCase', 
+    'util.Date',
+    'util.DateUtil',
+    'TestClass'
+  );
 
   /**
    * Tests method invocations
@@ -39,6 +44,16 @@
         $componentType= substr($type, 0, -2);
         for ($i= 0, $s= sizeof($arg); $i < $s; $i++) {
           if (!$this->verifyType($componentType, $arg[$i])) return FALSE;
+        }
+        return TRUE;
+      }
+      
+      // Handle generic arrays
+      if (1 == sscanf($type, 'array<%[^>]>', $componentsDeclaration)) {
+        $componentTypes= explode(', ', str_replace('&', '', $componentsDeclaration));
+        foreach (array_keys($arg) as $k) {
+          if (!$this->verifyType($componentTypes[0], $k)) return FALSE;
+          if (!$this->verifyType($componentTypes[1], $arg[$k])) return FALSE;
         }
         return TRUE;
       }
@@ -232,6 +247,24 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     function setNamesWithAssociativeArray() {
       $this->invoke('setNames', array(array('name' => 'Timm', 'lastname' => 'Friebe')));
+    }
+
+    /**
+     * Tests invoking TestClass::filter() with an hash
+     *
+     * @access  public
+     */
+    #[@test]
+    function filterWithStringDateHash() {
+      $this->invoke('filter', array(
+        array(
+          'now'       => Date::now(),
+          'tomorrow'  => DateUtil::addDays(Date::now(), 1),
+          'yesterday' => DateUtil::addDays(Date::now(), -1)
+        ),
+        'isBefore',
+        Date::now()
+      ));
     }
   }
 ?>
