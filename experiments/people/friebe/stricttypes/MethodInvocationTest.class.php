@@ -25,6 +25,25 @@
     }
     
     /**
+     * Verify type / argument match
+     *
+     * @access  protected
+     * @param   string type
+     * @param   &mixed arg
+     * @return  bool
+     */
+    function verifyType($type, &$arg) {
+      switch ($type) {
+        case 'int': return is_int($arg);
+        case 'bool': return is_bool($arg);
+        case 'float': return is_float($arg);
+        case 'string': return is_string($arg);
+        case 'array': return is_array($args);
+        default: return NULL === $arg || is($type, $arg);
+      }
+    }
+    
+    /**
      * Helper method
      *
      * @access  protected
@@ -34,16 +53,8 @@
     function invoke($name, $args= array()) {
       $method= &$this->fixture->getMethod($name);
       foreach ($method->getArguments() as $pos => $arg) {
-        if (
-          ('int' == $arg->getType() && is_int($args[$pos])) ||
-          ('bool' == $arg->getType() && is_bool($args[$pos])) ||
-          ('float' == $arg->getType() && is_float($args[$pos])) ||
-          ('string' == $arg->getType() && is_string($args[$pos])) ||
-          ('array' == $arg->getType() && is_array($args[$pos])) ||
-          (is($arg->getType(), $args[$pos])) ||
-          (NULL === $args[$pos])
-        ) continue;
-        
+        if ($this->verifyType($arg->getType(), $args[$pos])) continue;
+
         return throw(new IllegalArgumentException(
           'Argument #'.$pos.': '.xp::typeOf($args[$pos]).' does not match '.$arg->getType()
         ));
@@ -110,6 +121,16 @@
     #[@test]
     function addWithInts() {
       $this->invoke('add', array(1, 2));
+    }
+
+    /**
+     * Tests invoking TestClass::add() with two floats
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function addWithFloats() {
+      $this->invoke('add', array(1.0, 2.0));
     }
   }
 ?>
