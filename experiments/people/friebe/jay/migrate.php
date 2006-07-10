@@ -260,6 +260,10 @@ __;
               $brackets++;
               break;
 
+            case ST_FUNCTION_BODY.'&':
+              $t= '';
+              break;
+
             case ST_FUNCTION_BODY.'}':
               $brackets--;
               if (0 == $brackets) {
