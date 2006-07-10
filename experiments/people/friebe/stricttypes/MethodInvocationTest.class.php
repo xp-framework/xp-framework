@@ -132,5 +132,15 @@
     function addWithFloats() {
       $this->invoke('add', array(1.0, 2.0));
     }
+
+    /**
+     * Tests invoking TestClass::add() with two floats
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function addWithObjects() {
+      $this->invoke('add', array(new Date(), new Object()));
+    }
   }
 ?>
