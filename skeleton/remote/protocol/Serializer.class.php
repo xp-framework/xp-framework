@@ -55,7 +55,7 @@
           }
           return $s.'}';
         case 'object':
-          if (FALSE !== ($m= $this->getMappingFor($var))) {
+          if (FALSE !== ($m= &$this->mappingFor($var))) {
             return $m->representationOf($this, $var, $ctx);
           }
           
@@ -116,7 +116,7 @@
      * @param   &lang.Object var
      * @return  mixed FALSE in case no mapper could be found, &remote.protocol.SerializerMapping otherwise
      */
-    function &getMappingFor(&$var) {
+    function &mappingFor(&$var) {
       if (!is('lang.Object', $var)) return FALSE;
       
       // Check the mapping-cache for an entry for this object's class
