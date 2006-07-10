@@ -85,20 +85,19 @@
       
       // Check how many arguments are required
       $required= sizeof($arguments);
-      $varargs= FALSE;
+      $numargs= sizeof($args);
+      $success= $required == $numargs;
       foreach ($arguments as $pos => $arg) {
         if ('*' == substr($arg->getType(), -1)) {
-          $varargs= TRUE;
-          $required= $pos;
+          $success= $numargs >= $pos;
           break;
         }
       }
       
       // Check number of arguments
-      $numargs= sizeof($args);
-      if ($numargs < $required || $numargs > sizeof($arguments) && !$varargs) {
+      if (!$success) {
         return throw(new IllegalArgumentException(
-          'Incorrect number of arguments (required: '.$required.', have: '.$numargs.')'
+          'Incorrect number of arguments'
         ));
       }
       
