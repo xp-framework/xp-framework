@@ -205,13 +205,33 @@
     }
 
     /**
+     * Tests invoking TestClass::setNames() with an empty array
+     *
+     * @access  public
+     */
+    #[@test]
+    function setNamesWithEmptyArray() {
+      $this->invoke('setNames', array(array()));
+    }
+
+    /**
      * Tests invoking TestClass::setNames() with a mixed array
      *
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     function setNamesWithMixedArray() {
-      $this->invoke('setNames', array(array('Timm', FALSE, 1)));
+      $this->invoke('setNames', array(array('Timm', FALSE)));
+    }
+
+    /**
+     * Tests invoking TestClass::setNames() with an associative array
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function setNamesWithAssociativeArray() {
+      $this->invoke('setNames', array(array('name' => 'Timm', 'lastname' => 'Friebe')));
     }
   }
 ?>
