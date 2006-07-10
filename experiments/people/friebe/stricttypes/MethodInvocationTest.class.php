@@ -33,6 +33,17 @@
      * @return  bool
      */
     function verifyType($type, &$arg) {
+    
+      // Handle types arrays
+      if ('[]' == substr($type, -2)) {
+        $componentType= substr($type, 0, -2);
+        for ($i= 0, $s= sizeof($arg); $i < $s; $i++) {
+          if (!$this->verifyType($componentType, $arg[$i])) return FALSE;
+        }
+        return TRUE;
+      }
+      
+      // Handle other types
       switch ($type) {
         case 'int': return is_int($arg);
         case 'bool': return is_bool($arg);
@@ -181,6 +192,26 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     function addWithTooManyArguments() {
       $this->invoke('add', array(1, 2, 3));
+    }
+    
+    /**
+     * Tests invoking TestClass::setNames() with an array of strings
+     *
+     * @access  public
+     */
+    #[@test]
+    function setNamesWithStringArray() {
+      $this->invoke('setNames', array(array('Timm', 'Alex')));
+    }
+
+    /**
+     * Tests invoking TestClass::setNames() with a mixed array
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function setNamesWithMixedArray() {
+      $this->invoke('setNames', array(array('Timm', FALSE, 1)));
     }
   }
 ?>
