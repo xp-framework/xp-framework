@@ -255,6 +255,20 @@
      * @access  public
      */
     #[@test]
+    function filterWithEmptyHash() {
+      $this->invoke('filter', array(
+        array(),
+        'isBefore',
+        Date::now()
+      ));
+    }
+
+    /**
+     * Tests invoking TestClass::filter() with an hash
+     *
+     * @access  public
+     */
+    #[@test]
     function filterWithStringDateHash() {
       $this->invoke('filter', array(
         array(
