@@ -14,11 +14,22 @@
   class TestClass extends Object {
 
     /**
+     * Method with one typed-array argument
+     *
+     * @access  public
+     * @param   string[] names
+     */
+    function setNames($names) {
+      $this->names= $names;
+    }
+
+    /**
      * Method with two primitive arguments
      *
      * @access  public
      * @param   int a
      * @param   int b
+     * @return  int
      */
     function add($a, $b) {
       return $a + $b;
