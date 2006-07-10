@@ -266,5 +266,22 @@
         Date::now()
       ));
     }
+
+    /**
+     * Tests invoking TestClass::filter() with an hash
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function filterWithMixedHash() {
+      $this->invoke('filter', array(
+        array(
+          'now'       => Date::now(),
+          'tomorrow'  => FALSE
+        ),
+        'isBefore',
+        Date::now()
+      ));
+    }
   }
 ?>
