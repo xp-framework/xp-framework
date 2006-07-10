@@ -12,6 +12,17 @@
    * @purpose  Fixture for MethodInvocationTest
    */
   class TestClass extends Object {
+
+    /**
+     * Method with two primitive arguments
+     *
+     * @access  public
+     * @param   int a
+     * @param   int b
+     */
+    function add($a, $b) {
+      return $a + $b;
+    }
   
     /**
      * Method with one argument
