@@ -19,6 +19,7 @@
      * @access  public
      * @param   string statement
      * @param   mixed* args
+     * @return  string
      */
     function format($statement) {
       $args= func_get_args();
