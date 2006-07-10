@@ -97,7 +97,7 @@
       // Check number of arguments
       if (!$success) {
         return throw(new IllegalArgumentException(
-          'Incorrect number of arguments'
+          'Incorrect number of arguments to '.$name.'(): '.$numargs
         ));
       }
       
@@ -121,6 +121,16 @@
     #[@test]
     function noArgsMethod() {
       $this->invoke('toString');
+    }
+
+    /**
+     * Tests invoking a method without arguments
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function noArgsMethodWithArgument() {
+      $this->invoke('toString', array('arg0'));
     }
 
     /**
