@@ -29,6 +29,9 @@
       $mappings   = array(),
       $packages   = array(),
       $exceptions = array();
+    
+    var
+      $_classMapping  = array();
 
     /**
      * Retrieve serialized representation of a variable
@@ -38,7 +41,7 @@
      * @return  string
      * @throws  lang.FormatException if an error is encountered in the format 
      */  
-    function representationOf(&$var) {
+    function representationOf(&$var, $ctx= array()) {
       switch (gettype($var)) {
         case 'NULL':    return 'N;';
         case 'boolean': return 'b:'.($var ? 1 : 0).';';
@@ -48,10 +51,14 @@
         case 'array':
           $s= 'a:'.sizeof($var).':{';
           foreach (array_keys($var) as $key) {
-            $s.= serialize($key).$this->representationOf($var[$key]);
+            $s.= serialize($key).$this->representationOf($var[$key], $ctx);
           }
           return $s.'}';
         case 'object':
+          if (FALSE !== ($m= $this->getMappingFor($var))) {
+            return $m->representationOf($this, $var, $ctx);
+          }
+          
           switch (1) {
             case is_a($var, 'Date'): {
               return 'T:'.$var->getTime().';';
@@ -59,12 +66,12 @@
             case is_a($var, 'ArrayList'): {
               $s= 'A:'.sizeof($var->values).':{';
               foreach (array_keys($var->values) as $key) {
-                $s.= $this->representationOf($var->values[$key]);
+                $s.= $this->representationOf($var->values[$key], $ctx);
               }
               return $s.'}';
             }
             case is_a($var, 'HashMap'): {
-              return $this->representationOf($var->_hash);
+              return $this->representationOf($var->_hash, $ctx);
             }
             case is_a($var, 'Long'): {
               return 'l:'.$var->value.';';
@@ -90,7 +97,7 @@
               unset($props['__id']);
               $s= 'O:'.strlen($name).':"'.$name.'":'.sizeof($props).':{';
               foreach (array_keys($props) as $name) {
-                $s.= serialize($name).$this->representationOf($var->{$name});
+                $s.= serialize($name).$this->representationOf($var->{$name}, $ctx);
               }
               return $s.'}';
             }
@@ -103,12 +110,60 @@
     }
     
     /**
+     * Fetch best fitted mapper for the given object
+     *
+     * @access  protected
+     * @param   &lang.Object var
+     * @return  mixed FALSE in case no mapper could be found, &remote.protocol.SerializerMapping otherwise
+     */
+    function &getMappingFor(&$var) {
+      if (!is('lang.Object', $var)) return FALSE;
+      
+      // Check the mapping-cache for an entry for this object's class
+      if (isset($this->_classMapping[$var->getClassName()])) {
+        return $this->_classMapping[$var->getClassName()];
+      }
+      
+      // Find most suitable mapping by calculating the distance in the inheritance
+      // tree of the object's class to the class being handled by the mapping.
+      $cinfo= array();
+      foreach (array_keys($this->mappings) as $token) {
+        $class= &$this->mappings[$token]->handledClass();
+        if (!is($class->getName(), $var)) continue;
+
+        $distance= 0;
+        do {
+
+          // Check for direct match
+          if ($class->getName() != $var->getClassName()) $distance++;
+        } while (0 < $distance && NULL !== ($class= &$class->getParentclass()));
+
+        // Register distance to object's class in cinfo
+        $cinfo[$distance]= &$this->mappings[$token];
+
+        if (isset($cinfo[0])) break;
+      }
+      
+      // No handlers found...
+      if (0 == sizeof($cinfo)) return FALSE;
+
+      ksort($cinfo, SORT_NUMERIC);
+      
+      // First class is best class
+      $handlerClass= &$cinfo[key($cinfo)];
+
+      // Remember this, so we can take shortcut next time
+      $this->_classMapping[$var->getClassName()]= &$cinfo[key($cinfo)];
+      return $this->_classMapping[$var->getClassName()];
+    }
+
+    /**
      * Register or retrieve a mapping for a token
      *
      * @access  public
      * @param   string token
-     * @param   &SerializerMapping mapping
-     * @return  &SerializerMapping mapping
+     * @param   &remote.protocol.SerializerMapping mapping
+     * @return  &remote.protocol.SerializerMapping mapping
      * @throws  lang.IllegalArgumentException if the given argument is not a SerializerMapping
      */
     function &mapping($token, &$mapping) {
@@ -118,6 +173,7 @@
         ));
 
         $this->mappings[$token]= &$mapping;
+        $this->_classMapping= array();
       }
       
       return $this->mappings[$token];
