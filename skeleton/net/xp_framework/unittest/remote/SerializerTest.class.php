@@ -273,6 +273,43 @@
           ))
         ))
       ));
-    }  
+    }
+    
+    /**
+     * Check serialization through custom class mappings. Check that the serialization
+     * is always carried through by the best matching serializer mapping.
+     *
+     * @access  public
+     */
+    #[@test]
+    function bestMapping() {
+      $cl= &ClassLoader::getDefault();
+      $fooClass= &$cl->defineClass('net.xp_framework.unittest.remote.FooClass', 'class FooClass extends Object { }');
+      $barClass= &$cl->defineClass('net.xp_framework.unittest.remote.BarClass', 'class BarClass extends FooClass { }');
+      
+      $fooHandler= &$cl->defineClass('net.xp_framework.unittest.remote.FooHandler', 'class FooHandler extends Object {
+        function &handledClass() { return XPClass::forName("net.xp_framework.unittest.remote.FooClass"); }
+        function representationOf(&$serializer, &$var, $ctx) { return "FOO:"; }
+        function &valueOf(&$serializer, $serialized, &$length, $context) { return NULL; }
+      } implements("net/xp_framework/unittest/remote/FooHandler.class.php", "remote.protocol.SerializerMapping");');
+      
+      $barHandler= &$cl->defineClass('net.xp_framework.unittest.remote.BarHandler', 'class BarHandler extends Object {
+        function &handledClass() { return XPClass::forName("net.xp_framework.unittest.remote.BarClass"); }
+        function representationOf(&$serializer, &$var, $ctx) { return "BAR:"; }
+        function &valueOf(&$serializer, $serialized, &$length, $context) { return NULL; }
+      } implements("net/xp_framework/unittest/remote/BarHandler.class.php", "remote.protocol.SerializerMapping");');
+      
+      
+      // Both must be serialized with the FOO mapping, because both are Foo or Foo-derived objects.
+      $this->serializer->mapping('FOO', $fooHandler->newInstance());
+      $this->assertEquals('FOO:', $this->serializer->representationOf(new FooClass()));
+      $this->assertEquals('FOO:', $this->serializer->representationOf(new BarClass()));
+      
+      // Add more concrete mapping for BAR. Foo must still be serialized with FOO, but the BarClass-object
+      // has a better matching mapping.
+      $this->serializer->mapping('BAR', $barHandler->newInstance());
+      $this->assertEquals('FOO:', $this->serializer->representationOf(new FooClass()));
+      $this->assertEquals('BAR:', $this->serializer->representationOf(new BarClass()));
+    }
   }
 ?>
