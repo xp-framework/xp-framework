@@ -39,6 +39,9 @@
      */
     function verifyType($type, &$arg) {
     
+      // Handle "mixed"
+      if (0 == strncmp('mixed', $type, 5)) return TRUE;
+    
       // Handle types arrays
       if ('[]' == substr($type, -2)) {
         $componentType= substr($type, 0, -2);
@@ -80,10 +83,22 @@
       $method= &$this->fixture->getMethod($name);
       $arguments= $method->getArguments();
       
+      // Check how many arguments are required
+      $required= sizeof($arguments);
+      $varargs= FALSE;
+      foreach ($arguments as $pos => $arg) {
+        if ('*' == substr($arg->getType(), -1)) {
+          $varargs= TRUE;
+          $required= $pos;
+          break;
+        }
+      }
+      
       // Check number of arguments
-      if (sizeof($arguments) != sizeof($args)) {
+      $numargs= sizeof($args);
+      if ($numargs < $required || $numargs > sizeof($arguments) && !$varargs) {
         return throw(new IllegalArgumentException(
-          'Incorrect number of arguments (expected: '.sizeof($arguments).', have: '.sizeof($args).')'
+          'Incorrect number of arguments (required: '.$required.', have: '.$numargs.')'
         ));
       }
       
@@ -297,5 +312,46 @@
         Date::now()
       ));
     }
+    
+    /**
+     * Tests invoking TestClass::format() with only one argument
+     *
+     * @access  public
+     */
+    #[@test]
+    function formatWithOneArgument() {
+      $this->invoke('format', array('Needs no formatting'));
+    }
+
+    /**
+     * Tests invoking TestClass::format() with two arguments
+     *
+     * @access  public
+     */
+    #[@test]
+    function formatWithTwoArguments() {
+      $this->invoke('format', array('Hello %s', 'World'));
+    }
+
+    /**
+     * Tests invoking TestClass::format() with only one argument
+     *
+     * @access  public
+     */
+    #[@test]
+    function formatWithLotsArguments() {
+      $this->invoke('format', array('%s: %s %d %s', 'Hello', 'Timm', 42, 'is the answer'));
+    }
+
+    /**
+     * Tests invoking TestClass::format() with no arguments
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function formatWithNoArguments() {
+      $this->invoke('format');
+    }
+
   }
 ?>

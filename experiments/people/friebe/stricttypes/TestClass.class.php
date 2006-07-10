@@ -14,6 +14,18 @@
   class TestClass extends Object {
 
     /**
+     * Method with var-args
+     *
+     * @access  public
+     * @param   string statement
+     * @param   mixed* args
+     */
+    function format($statement) {
+      $args= func_get_args();
+      return vsprintf($statement, array_slice($args, 1));
+    }
+
+    /**
      * Method with one typed-array argument
      *
      * @access  public
