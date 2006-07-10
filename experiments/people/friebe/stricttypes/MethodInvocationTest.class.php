@@ -55,23 +55,33 @@
     }
 
     /**
-     * Tests invoking a method with correct type
+     * Tests invoking TestClass::setDate() with a Date instance
      *
      * @access  public
      */
     #[@test]
-    function oneArgCorrectType() {
+    function setDateWithDateInstance() {
       $this->invoke('setDate', array(new Date()));
     }
 
     /**
-     * Tests invoking a method with correct type
+     * Tests invoking TestClass::setDate() with an Object instance
      *
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function oneArgIncorrectType() {
+    function setDateWithObjectInstance() {
       $this->invoke('setDate', array(new Object()));
+    }
+
+    /**
+     * Tests invoking TestClass::setDate() with a primitive
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    function setDateWithPrimitive() {
+      $this->invoke('setDate', array('2007-07-07'));
     }
   }
 ?>
