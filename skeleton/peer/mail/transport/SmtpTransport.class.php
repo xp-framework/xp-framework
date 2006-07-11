@@ -260,7 +260,7 @@
      *
      * @access  public
      * @param   &peer.mail.Message message the Message object to send
-     * @throws  TransportException to indicate an error occured
+     * @throws  peer.mail.transport.TransportException to indicate an error occured
      * @return  bool TRUE in case of success
      */
     function send(&$message) {
