@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.Date');
+
   /**
    * Time zone
    *
