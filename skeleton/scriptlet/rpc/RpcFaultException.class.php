@@ -11,7 +11,7 @@
    *
    * @purpose  Exception
    */
-  class FaultException extends Exception {
+  class RpcFaultException extends Exception {
     var
       $fault  = NULL;
     
