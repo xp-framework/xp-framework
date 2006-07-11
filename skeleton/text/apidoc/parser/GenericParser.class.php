@@ -35,7 +35,6 @@
       if (NULL !== $filename) {
         $this->setFile(new File($filename));
       }
-      
     }
     
     /**
@@ -64,7 +63,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  Exception
+     * @throws  lang.Exception
      */
     function configure() {
       try(); {
