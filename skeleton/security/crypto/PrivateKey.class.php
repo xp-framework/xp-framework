@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('security.crypto.CryptoKey');
+  uses('security.crypto.CryptoKey', 'security.OpenSslUtil');
 
   /**
    * Private key
