@@ -187,7 +187,7 @@
      * @access  public
      * @param   string id
      * @return  &string content
-     * @throws  ElementNotFoundException in case the specified id does not exist
+     * @throws  lang.ElementNotFoundException in case the specified id does not exist
      */
     function &extract($id) {
       if (!$this->contains($id)) {
