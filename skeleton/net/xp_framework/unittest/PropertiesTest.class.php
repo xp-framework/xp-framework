@@ -152,11 +152,9 @@ float4=-5.0
     }
     
     /**
-     * (Insert method's description here)
+     * Tests reading of a boolean
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     #[@test]
     function readBool() {
