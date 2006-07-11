@@ -44,7 +44,6 @@
      */
     function __construct($identifier) {
       $this->identifier= $identifier;
-      
     }
     
     /**
@@ -114,7 +113,7 @@
      * @access  public 
      * @param   &io.Stream stream
      * @return  bool success
-     * @throws  FormatException
+     * @throws  lang.FormatException
      */
     function parse(&$stream) {
       $stream->open(STREAM_MODE_READ);
