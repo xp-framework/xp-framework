@@ -59,7 +59,7 @@
      * @param   array<string, mixed> context default array()
      * @return  string
      */
-    function representationOf(&$serializer, &$value, $context= array()) { 
+    function representationOf(&$serializer, &$value, $context= array()) {
       // TODO: Implementation
     }
     
@@ -69,9 +69,8 @@
      * @access  public
      * @return  &lang.XPClass
      */
-    function &handledClass() { 
-      // TODO: Implementation
+    function &handledClass() {
+      return XPClass::forName('lang.reflect.Proxy');
     }
-
   } implements(__FILE__, 'remote.protocol.SerializerMapping');
 ?>
