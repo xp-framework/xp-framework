@@ -77,7 +77,7 @@
      * @access  protected
      * @param   string method
      * @param   mixed[] args default ["Argument"]
-     * @throws  util.profiling.AssertionFailedError
+     * @throws  util.profiling.unittest.AssertionFailedError
      */
     function assertLogf($method, $args= array('Argument')) {
       $app= &$this->cat->addAppender(new MockAppender());
