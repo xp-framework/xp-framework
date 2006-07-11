@@ -123,7 +123,7 @@
      * @access  public
      * @param   string abbrev
      * @return  &util.TimeZone
-     * @throws  IllegalArgumentException if timezone is unknown
+     * @throws  lang.IllegalArgumentException if timezone is unknown
      */    
     function &getByName($abbrev) {
       if (FALSE === ($offset= TimeZone::getOffsetByTimeZoneString($abbrev))) {
