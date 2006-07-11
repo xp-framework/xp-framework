@@ -143,7 +143,7 @@
      * Headers spanning multiple lines will be transformed to confirm
      *
      * @access  public
-     * @throws  IllegalStateException
+     * @throws  lang.IllegalStateException if headers have already been sent
      */  
     function sendHeaders() {
       if (headers_sent($file, $line))
