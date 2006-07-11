@@ -49,11 +49,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Tests echo method
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     #[@test]
     function basicEchoTest() {
