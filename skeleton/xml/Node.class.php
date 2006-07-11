@@ -5,7 +5,7 @@
  *
  */
 
-  uses('xml.PCData', 'xml.CData');
+  uses('xml.PCData', 'xml.CData', 'xml.XMLFormatException');
   
   define('INDENT_DEFAULT',    0);
   define('INDENT_WRAPPED',    1);
