@@ -351,7 +351,7 @@
      *
      * @access  public
      * @return  &org.htdig.HtdigResultset
-     * @throws  lang.IOException in case the invocation of htdig failed
+     * @throws  io.IOException in case the invocation of htdig failed
      * @throws  lang.IllegalArgumentException in case search entry was invalid
      */
     function &invoke() {
