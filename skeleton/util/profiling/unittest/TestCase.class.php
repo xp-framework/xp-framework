@@ -5,6 +5,7 @@
  */
 
   uses(
+    'util.profiling.Timer',
     'util.profiling.unittest.AssertionFailedError',
     'util.profiling.unittest.PrerequisitesNotMetError',
     'lang.MethodNotImplementedException'
