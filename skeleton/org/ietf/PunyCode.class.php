@@ -339,7 +339,7 @@
      * @access  static
      * @param   string str The Punycode string
      * @return  bool
-     * @throws  Exception from _decode()
+     * @throws  lang.Exception from _decode()
      */
     function decodeString($str, $charset= 'ISO-8859-1') {
       try(); {
@@ -364,7 +364,7 @@
      * @access  static
      * @param   string str The ASCII string
      * @return  bool
-     * @throws  Exception from _encode()
+     * @throws  lang.Exception from _encode()
      */
     function encodeString($str) {
       try(); {
