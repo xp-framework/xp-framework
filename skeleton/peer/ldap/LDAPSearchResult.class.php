@@ -57,7 +57,7 @@
      * @access  public
      * @param   int offset
      * @return  &mixed entry or FALSE if none exists by this offset
-     * @throws  IllegalStateException in case no search has been performed before
+     * @throws  lang.IllegalStateException in case no search has been performed before
      */
     function &getEntry($offset) {
       if (NULL == $this->data) {
