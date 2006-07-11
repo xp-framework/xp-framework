@@ -17,6 +17,7 @@
 
   uses (
     'lang.System',
+    'util.log.Logger',
     'org.tigris.subversion.SVNInterfaceException'
   );
   
@@ -34,9 +35,9 @@
      * Execute a SVN command
      *
      * @access  private
-     * @param   int cvsCmd Command to execute
+     * @param   int svnCmd Command to execute
      * @return  array output
-     * @throws  CVSInterfaceException, if cvs fails
+     * @throws  org.tigris.subversion.SVNInterfaceException if svn fails
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC115
      */
     function _execute($svnCmd, $params= '') {
