@@ -4,7 +4,11 @@
  * $Id$ 
  */
  
-  uses('util.profiling.unittest.TestCase', 'net.xp_framework.unittest.tests.SimpleTestCase');
+  uses(
+    'util.profiling.unittest.TestCase', 
+    'util.profiling.unittest.TestSuite', 
+    'net.xp_framework.unittest.tests.SimpleTestCase'
+  );
 
   /**
    * Test TestSuite class methods
