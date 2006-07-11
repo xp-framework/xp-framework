@@ -38,11 +38,10 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Retrieve request string
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string
      */
     function getRequestString() {
       return $this->request->getSource(0);
