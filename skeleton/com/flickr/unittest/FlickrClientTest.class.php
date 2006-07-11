@@ -6,35 +6,31 @@
 
   uses(
     'util.profiling.unittest.TestCase',
-    'com.flickr.FlickrClient'
+    'com.flickr.xmlrpc.FlickrClient'
   );
 
   /**
-   * (Insert class' description here)
+   * FlickR client test
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Testcase
    */
   class FlickrClientTest extends TestCase {
+    var 
+      $client= NULL;
 
     /**
-     * (Insert method's description here)
+     * Setup method. Creates client member
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function setUp() {
       $this->client= &new FlickrClient(new XmlRpcHttpTransport(FLICKR_XMLRPC_ENDPOINT));
     }
     
     /**
-     * (Insert method's description here)
+     * Test deserialization of a scalar
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     #[@test]
     function unserializeScalar() {
@@ -45,11 +41,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Test deserialization of a hash
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     #[@test]
     function unserializeArray() {
@@ -60,11 +54,9 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Test deserialization of a complex (hash of hashes)
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     #[@test]
     function unserializeComplex() {
@@ -75,11 +67,9 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Test deserialization of attributes
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     #[@test]
     function unserializeAttributes() {
