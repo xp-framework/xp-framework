@@ -5,7 +5,6 @@
  */
 
   uses(
-    'util.profiling.Timer',
     'util.profiling.unittest.TestCase',
     'util.profiling.unittest.TestResult',
     'util.NoSuchElementException'
