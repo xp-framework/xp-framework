@@ -172,7 +172,7 @@
      * @access  public
      * @param   array keys
      * @param   mixed value
-     * @throws  FormatException
+     * @throws  lang.FormatException
      */
     function addProperty($keys, $value) {
       static $context= array();
