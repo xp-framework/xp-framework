@@ -10,33 +10,28 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Response to Interestingness query
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Value object
    */
   class FlickrInterestingnessResponse extends Object {
     var
       $photos   =  NULL;
     
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function __construct() {
       $this->photos= &Collection::forClass('com.flickr.FlickrPhoto');
     }
     
     /**
-     * (Insert method's description here)
+     * Add a photo
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &com.flickr.FlickrPhoto photo
      */
     #[@xmlmapping(element= 'photo', class= 'com.flickr.FlickrPhoto')]
     function addPhoto(&$photo) {
