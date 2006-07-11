@@ -170,7 +170,7 @@
      * @access  public
      * @param   &mixed map an array or another Hashmap
      * @param   bool recursive default FALSE Merge hashmaps recursively
-     * @throws  IllegalArgumentException in case the parameter is neither an array nor a Hashmap
+     * @throws  lang.IllegalArgumentException in case the parameter is neither an array nor a Hashmap
      */
     function merge(&$map, $recursive= FALSE) {
       if (is_a($map, 'Hashmap')) {
