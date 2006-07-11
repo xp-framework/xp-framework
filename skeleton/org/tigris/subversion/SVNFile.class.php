@@ -26,7 +26,7 @@
      *
      * @access  public
      * @param   string filename
-     * @throws  io.FileNotFoundException, if filename is not a file
+     * @throws  io.FileNotFoundException if filename is not a file
      */
     function __construct($filename) {
       $this->filename= realpath($filename);
