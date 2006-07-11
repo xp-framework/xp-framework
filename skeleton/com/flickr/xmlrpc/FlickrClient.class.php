@@ -7,6 +7,7 @@
   uses(
     'xml.xmlrpc.XmlRpcClient',
     'xml.xmlrpc.transport.XmlRpcHttpTransport',
+    'com.flickr.api.FlickrInterestingness',
     'xml.meta.Unmarshaller'
   );
   
