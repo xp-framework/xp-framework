@@ -7,6 +7,7 @@
   uses(
     'security.cert.Certificate', 
     'security.Principal', 
+    'security.crypto.PublicKey',
     'security.OpenSslUtil',
     'util.Date'
   );
