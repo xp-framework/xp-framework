@@ -68,9 +68,10 @@ __;
 
     function qualifiedNameOf($short) {
       $key= strtolower($short);
-      if (!isset($this->mapping[$key])) return throw(new IllegalArgumentException(
-        'Mapping for "'.$short.'" not found'
-      ));
+      if (!isset($this->mapping[$key])) {
+        Console::writeLine('*** Mapping for "'.$short.'" not found');
+        return $short;
+      }
       
       return ($this->current->qualifiedName() == $this->mapping[$key] 
         ? 'self' 
