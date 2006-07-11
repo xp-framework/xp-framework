@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.uddi.BusinessList');
+  uses('xml.uddi.BusinessList', 'xml.Node');
 
   /**
    * Find businesses
