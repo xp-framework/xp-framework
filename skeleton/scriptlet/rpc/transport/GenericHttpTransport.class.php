@@ -4,7 +4,7 @@
  * $Id: XmlRpcHttpTransport.class.php 6599 2006-02-13 18:37:10Z kiesel $ 
  */
 
-  uses('peer.http.HttpConnection');
+  uses('peer.http.HttpConnection', 'scriptlet.rpc.RpcFaultException');
 
   /**
    * Transport for generic RPC requests over HTTP.
