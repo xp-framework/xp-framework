@@ -6,6 +6,7 @@
 
   uses(
     'xml.wddx.transport.WddxTransport',
+    'xml.wddx.WddxMessage',
     'peer.http.HttpConnection'
   );
 
