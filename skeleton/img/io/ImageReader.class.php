@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('img.ImagingException');
+
   /**
    * Read images
    *
