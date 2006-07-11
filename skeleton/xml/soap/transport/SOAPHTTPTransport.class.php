@@ -111,7 +111,7 @@
      * @access  public
      * @param   &xml.soap.SOAPMessage message
      * @return  &peer.http.HttpResponse
-     * @throws  IllegalArgumentException in case the given parameter is not a xml.soap.SOAPMessage
+     * @throws  lang.IllegalArgumentException in case the given parameter is not a xml.soap.SOAPMessage
      */
     function &send(&$message) {
     
