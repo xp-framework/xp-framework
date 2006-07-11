@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('rdbms.ResultIterator');
+  uses('rdbms.ResultIterator', 'rdbms.ConnectionManager');
 
   /**
    * Peer
