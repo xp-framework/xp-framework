@@ -4,7 +4,7 @@
  * $Id$ 
  */
  
-  uses('peer.Socket');
+  uses('peer.Socket', 'lang.ElementNotFoundException');
 
   /**
    * Remote Storage client implementation of key/vales pairs
@@ -105,6 +105,7 @@
      * @access  public
      * @param   string key
      * @return  &mixed
+     * @throws  lang.ElementNotFoundException in case the key does not exist
      */
     function &get($key) {
       if (FALSE === ($return= $this->_cmd('GET %s/%s', $this->namespace, urlencode($key)))) {
