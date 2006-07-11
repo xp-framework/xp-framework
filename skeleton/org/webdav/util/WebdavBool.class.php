@@ -7,7 +7,6 @@
   /**
    * Boolean
    *
-   * @model    Static
    * @purpose  Transform string representation of boolean values to bool vice versa
    */
   class WebdavBool extends Object {
@@ -19,7 +18,7 @@
      * @access  public
      * @param   string s
      * @return  bool
-     * @throws  IllegalArgumentException
+     * @throws  lang.IllegalArgumentException
      */
     function fromString($s) {
       switch ($s) {
