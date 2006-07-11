@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('util.Date');
+
   /**
    * VDate
    *
@@ -22,7 +24,6 @@
      * @param   &mixed arg
      */    
     function __construct(&$arg) {
-      
       if (is_object($arg)) {
         $this->date= &new Date (VFormatParser::decodeDate($arg->_value));
         $this->timezone= $arg->tzid;
