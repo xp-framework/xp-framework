@@ -50,5 +50,28 @@
       return $instance;
     }
 
+    /**
+     * Returns an on-the-wire representation of the given value
+     *
+     * @access  public
+     * @param   &server.protocol.Serializer serializer
+     * @param   &lang.Object value
+     * @param   array<string, mixed> context default array()
+     * @return  string
+     */
+    function representationOf(&$serializer, &$value, $context= array()) { 
+      // TODO: Implementation
+    }
+    
+    /**
+     * Return XPClass object of class supported by this mapping
+     *
+     * @access  public
+     * @return  &lang.XPClass
+     */
+    function &handledClass() { 
+      // TODO: Implementation
+    }
+
   } implements(__FILE__, 'remote.protocol.SerializerMapping');
 ?>
