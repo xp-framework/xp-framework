@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('rdbms.DBTable');
+  uses('rdbms.DBTable', 'rdbms.SQLException');
 
   /**
    * Abstract base class for a database adapter for DBTable operations
@@ -19,7 +19,7 @@
      * Constructor
      *
      * @access  public
-     * @param   &Object a database connection
+     * @param   &rdbms.DBConnection conn a database connection
      */
     function __construct(&$conn) {
       $this->conn= &$conn;
