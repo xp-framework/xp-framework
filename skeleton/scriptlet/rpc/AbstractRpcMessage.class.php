@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('scriptlet.rpc.RpcFault');
+
   /**
    * Rpc Message interface
    *
