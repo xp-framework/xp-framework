@@ -140,7 +140,7 @@
      *
      * @access  public
      * @param   array data
-     * @throws  Exception e if any error occurs
+     * @throws  lang.Exception e if any error occurs
      */    
     function writeRecord($data) {
       if ($this->_hasHeader() && !$this->headerWritten)
