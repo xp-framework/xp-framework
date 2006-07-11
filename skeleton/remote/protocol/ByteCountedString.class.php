@@ -76,7 +76,7 @@
     /**
      * Read a specified number of bytes from a given stream
      *
-     * @static
+     * @model   static
      * @access  protected
      * @param   &io.Stream stream
      * @param   int length
@@ -94,7 +94,7 @@
     /**
      * Read from a stream
      *
-     * @static
+     * @model   static
      * @access  public
      * @param   &io.Stream stream
      * @return  string
