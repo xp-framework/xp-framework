@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('org.webdav.WebdavScriptletRequest');
+  uses(
+    'org.webdav.WebdavScriptletRequest',
+    'org.webdav.WebdavProperty'
+  );
 
   /**
    * PropFind request XML
