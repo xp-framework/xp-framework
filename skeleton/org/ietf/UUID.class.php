@@ -91,7 +91,7 @@
      * @access  public
      * @param   string str
      * @return  &org.ietf.UUID
-     * @throws  FormatException in case str is not a valid UUID string
+     * @throws  lang.FormatException in case str is not a valid UUID string
      */
     function &fromString($str) {
       $uuid= &new UUID();
