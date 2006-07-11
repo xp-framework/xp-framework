@@ -75,8 +75,8 @@
      * Write object
      *
      * @access  public
-     * @param   &Object o
-     * @throws  Exception in case write/format fails
+     * @param   &lang.Object o
+     * @throws  io.IOException in case write/format fails
      */
     function writeObject(&$o) {
     

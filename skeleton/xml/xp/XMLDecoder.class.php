@@ -77,7 +77,7 @@
      * @access  public
      * @param   bool trim default FALSE whether to trim whitespace
      * @return  &lang.Object object
-     * @throws  Exception in case read/format fails
+     * @throws  lang.Exception in case read/format fails
      */
     function &readObject($trim= FALSE) {
       try(); {
