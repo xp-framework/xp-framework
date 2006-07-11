@@ -33,7 +33,7 @@
      * @param   mixed fmt
      * @param   &mixed argument
      * @return  string
-     * @throws  FormatException
+     * @throws  lang.FormatException
      */
     function apply($fmt, &$argument) {
       if (!is_numeric($argument)) {

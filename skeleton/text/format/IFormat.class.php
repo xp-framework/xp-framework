@@ -23,7 +23,6 @@
      */
     function __construct($f= NULL) {
       $this->formatString= $f;
-      
     }
 
     /**
@@ -46,7 +45,7 @@
      * @param   mixed fmt
      * @param   &mixed argument
      * @return  string
-     * @throws  IllegalAccessException
+     * @throws  lang.IllegalAccessException
      */
     function apply($fmt, &$argument) { 
       return throw(new IllegalAccessException('Calling apply method of base class text.format.Format'));
@@ -57,7 +56,7 @@
      *
      * @access  public
      * @param   mixed* args
-     * @throws  FormatException
+     * @throws  lang.FormatException
      */
     function format() {
       $a= func_get_args();

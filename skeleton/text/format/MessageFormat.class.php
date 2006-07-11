@@ -93,7 +93,7 @@
      * @param   string alias
      * @param   &text.format.PrintfFormat formatter
      * @return  &text.format.PrintfFormat formatter
-     * @throws  IllegalArgumentException 
+     * @throws  lang.IllegalArgumentException 
      */
     function &setFormatter($alias, &$formatter) {
       if (!is_a($formatter, 'IFormat')) {
