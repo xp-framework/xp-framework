@@ -10,20 +10,17 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Dummy HTTP connection
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Unittesting dummy
    */
   class DummyHttpConnection extends HttpConnection {
   
     /**
-     * (Insert method's description here)
+     * Create request
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   &peer.URL url
      */
     function _createRequest(&$url) {
       $this->request= &new DummyHttpRequest($url);

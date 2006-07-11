@@ -6,26 +6,24 @@
 
   uses(
     'peer.http.HttpRequest',
+    'peer.http.HttpResponse',
     'net.xp_framework.unittest.scriptlet.rpc.dummy.DummySocket'
   );
 
   /**
-   * (Insert class' description here)
+   * Dummy HTTP request
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Unittesting dummy
    */
   class DummyHttpRequest extends HttpRequest {
     var
       $_response= '';
       
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string data
      */
     function setResponse($data) {
       $this->_response= $data;

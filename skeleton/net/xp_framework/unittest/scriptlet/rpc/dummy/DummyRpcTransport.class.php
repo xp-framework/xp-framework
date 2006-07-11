@@ -5,7 +5,6 @@
  */
 
   uses(
-    //'scriptlet.rpc.transport.GenericHttpTransport',
     'xml.xmlrpc.transport.XmlRpcHttpTransport',
     'net.xp_framework.unittest.scriptlet.rpc.dummy.DummyHttpConnection'
   );
@@ -13,18 +12,16 @@
   /**
    * Dummy Transport
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Unittesting dummy
    */
   class DummyRpcTransport extends XmlRpcHttpTransport {
   
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string url
+     * @param   array headers default array
      */
     function __construct($url, $headers= array()) {
       $this->_conn= &new DummyHttpConnection($url);
@@ -32,11 +29,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve connection
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  &peer.http.HttpConnection
      */
     function &getConnection() {
       return $this->_conn;

@@ -7,43 +7,40 @@
   uses('peer.Socket');
 
   /**
-   * (Insert class' description here)
+   * Dummy socket
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Unittesting dummy
    */
   class DummySocket extends Socket {
     var
       $isConnected  = FALSE;
+
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string string
      */
     function __construct($string) {
       $this->_data= explode("\n", $string);
     }
     
     /**
-     * (Insert method's description here)
+     * Returns whether this socket is connected
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  bool
      */
     function isConnected() {
       return $this->isConnected;
     }    
     
     /**
-     * (Insert method's description here)
+     * Connect
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   float timeout default 2.0
+     * @return  bool
      */
     function connect($timeout= 2.0) {
       $this->isConnected= TRUE;
@@ -51,11 +48,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Close
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  bool
      */
     function close() {
       $this->isConnected= FALSE;
@@ -63,42 +59,39 @@
     } 
     
     /**
-     * (Insert method's description here)
+     * Set timeout
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   float timeout default 2.0
      */
-    function setTimeout() {
+    function setTimeout($timeout= 2.0) {
       $this->_timeout= $timeout;
     }
     
     /**
-     * (Insert method's description here)
+     * Set blocking (NOOP)
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   bool blockMode
      */
     function setBlocking($blockMode) {}
     
     /**
-     * (Insert method's description here)
+     * Check whether data is available
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  bool
      */
     function canRead() {
       return 0 < sizeof($this->_data);
     }
     
     /**
-     * (Insert method's description here)
+     * Read
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   int len default 4096
+     * @return  string
      */
     function read($len= 4096) {
       if (0 == sizeof($this->_data)) return NULL;
@@ -106,31 +99,29 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Read a line
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   int len
+     * @return  string
      */
     function readLine($len) {
       return $this->read($len);
     }
     
     /**
-     * (Insert method's description here)
+     * Read binary (NOOP)
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string
      */
     function readBinary() {}
     
     /**
-     * (Insert method's description here)
+     * Returns whether we're at the end of the data
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  bool
      */
     function eof() {
       return 0 == sizeof($this->_data);
