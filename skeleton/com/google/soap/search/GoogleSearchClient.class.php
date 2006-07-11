@@ -85,7 +85,7 @@
      * @return  xml.soap.types.SOAPBase64Binary
      * @throws  xml.soap.SOAPFaultException in case a fault occurs
      * @throws  io.IOException in case an I/O error occurs
-     * @throws  xml.FormatException in case not-well-formed XML is returned
+     * @throws  xml.XMLFormatException in case not-well-formed XML is returned
      */
     function doGetCachedPage($key, $url) {
       return $this->invoke(
@@ -104,7 +104,7 @@
      * @return  string
      * @throws  xml.soap.SOAPFaultException in case a fault occurs
      * @throws  io.IOException in case an I/O error occurs
-     * @throws  xml.FormatException in case not-well-formed XML is returned
+     * @throws  xml.XMLFormatException in case not-well-formed XML is returned
      */
     function doSpellingSuggestion($key, $phrase) {
       return $this->invoke(
@@ -131,7 +131,7 @@
      * @return  &com.google.soap.search.GoogleSearchResult
      * @throws  xml.soap.SOAPFaultException in case a fault occurs
      * @throws  io.IOException in case an I/O error occurs
-     * @throws  xml.FormatException in case not-well-formed XML is returned
+     * @throws  xml.XMLFormatException in case not-well-formed XML is returned
      * @see     http://www.google.com/apis/reference.html#searchrequest Search Parameters 
      */
     function &doGoogleSearch($key, $q, $start, $maxResults, $filter, $restrict, $safeSearch, $lr, $ie, $oe) {
