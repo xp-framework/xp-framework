@@ -217,8 +217,8 @@
      * @access  public
      * @param   int mode default ARCHIVE_READ one of ARCHIVE_READ | ARCHIVE_CREATE
      * @return  bool success
-     * @throws  IllegalArgumentException in case an illegal mode was specified
-     * @throws  FormatException in case the header is malformed
+     * @throws  lang.IllegalArgumentException in case an illegal mode was specified
+     * @throws  lang.FormatException in case the header is malformed
      */
     function open($mode) {
       switch ($mode) {
