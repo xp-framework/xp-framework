@@ -39,7 +39,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException if there are permission problems
+     * @throws  io.IOException if there are permission problems
      */    
     function open() {
       try(); {
@@ -68,7 +68,7 @@
      * @access  public
      * @param   string abstract default NULL
      * @return  &io.File opened spool file
-     * @throws  IOException if file could not be created
+     * @throws  io.IOException if file could not be created
      */    
     function &createSpoolEntry($abstract= NULL) {
       if (NULL === $abstract)
