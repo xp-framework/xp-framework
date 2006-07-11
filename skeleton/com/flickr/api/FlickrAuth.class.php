@@ -7,11 +7,9 @@
   uses('peer.URL');
 
   /**
-   * (Insert class' description here)
+   * FlickR authentication
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Authentication
    */
   class FlickrAuth extends Object {
     var
@@ -59,11 +57,10 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Get FROB
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &lang.Object client
      */
     function getFrob(&$client) {
       $res= $client->invoke('flickr.auth.getFrob', array(
@@ -73,11 +70,11 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Get FROB URL
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &lang.Object client
+     * @return  string url
      */
     function getFrobURL(&$client) {
       $arguments= array(
@@ -93,11 +90,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Get token
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &lang.Object client
+     * @return  mixed
      */
     function getToken(&$client) {
       $res= $client->invoke('flickr.auth.getToken', array(
