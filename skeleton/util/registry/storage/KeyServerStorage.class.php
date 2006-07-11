@@ -60,7 +60,7 @@
      * @access  private
      * @param   mixed* vars Arguments to sprintf
      * @return  string Stored Value
-     * @throws  FormatException in case of an error
+     * @throws  lang.FormatException in case of an error
      */
     function _cmd() {
       $args= func_get_args();
