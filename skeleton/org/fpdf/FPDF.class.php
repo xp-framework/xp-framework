@@ -352,7 +352,6 @@
      * Compression is possible if PHP is compiled with zlib and the
      * function gzcompress() is available.
      *
-     * @ext     zlib
      * @see     php://gzcompress
      * @access  public
      * @param   bool compress
