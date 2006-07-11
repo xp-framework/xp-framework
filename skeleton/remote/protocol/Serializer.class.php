@@ -5,13 +5,15 @@
  */
 
   uses(
-    'lang.types.Long',
-    'lang.types.Double',
-    'lang.types.Short',
-    'lang.types.Byte',
-    'lang.types.Float',
-    'lang.types.ArrayList',
-    'util.Date',
+    'remote.protocol.DateMapping',
+    'remote.protocol.LongMapping',
+    'remote.protocol.ByteMapping',
+    'remote.protocol.ShortMapping',
+    'remote.protocol.FloatMapping',
+    'remote.protocol.DoubleMapping',
+    'remote.protocol.IntegerMapping',
+    'remote.protocol.HashmapMapping',
+    'remote.protocol.ArrayListMapping',
     'remote.UnknownRemoteObject',
     'remote.ExceptionReference',
     'remote.ClassReference'
@@ -34,6 +36,23 @@
       $_classMapping  = array();
 
     /**
+     * Constructor. Initializes the default mappings
+     *
+     * @access  public
+     */
+    function __construct() {
+      $this->mapping('T', $m= &new DateMapping());
+      $this->mapping('l', $m= &new LongMapping());
+      $this->mapping('B', $m= &new ByteMapping());
+      $this->mapping('S', $m= &new ShortMapping());
+      $this->mapping('f', $m= &new FloatMapping());
+      $this->mapping('d', $m= &new DoubleMapping());
+      $this->mapping('i', $m= &new IntegerMapping());
+      $this->mapping('A', $m= &new ArrayListMapping());
+      $this->mapping('HASHMAP', $m= &new HashmapMapping());
+    }
+
+    /**
      * Retrieve serialized representation of a variable
      *
      * @access  public
@@ -54,54 +73,21 @@
             $s.= serialize($key).$this->representationOf($var[$key], $ctx);
           }
           return $s.'}';
-        case 'object':
+        case 'object': {
           if (FALSE !== ($m= &$this->mappingFor($var))) {
             return $m->representationOf($this, $var, $ctx);
           }
           
-          switch (1) {
-            case is_a($var, 'Date'): {
-              return 'T:'.$var->getTime().';';
-            }
-            case is_a($var, 'ArrayList'): {
-              $s= 'A:'.sizeof($var->values).':{';
-              foreach (array_keys($var->values) as $key) {
-                $s.= $this->representationOf($var->values[$key], $ctx);
-              }
-              return $s.'}';
-            }
-            case is_a($var, 'HashMap'): {
-              return $this->representationOf($var->_hash, $ctx);
-            }
-            case is_a($var, 'Long'): {
-              return 'l:'.$var->value.';';
-            }
-            case is_a($var, 'Double'): {
-              return 'd:'.$var->value.';';
-            }
-            case is_a($var, 'Integer'): {
-              return 'i:'.$var->value.';';
-            }
-            case is_a($var, 'Byte'): {
-              return 'B:'.$var->value.';';
-            }
-            case is_a($var, 'Short'): {
-              return 'S:'.$var->value.';';
-            }
-            case is_a($var, 'Float'): {
-              return 'f:'.$var->value.';';
-            }
-            default: {
-              $name= xp::typeOf($var);
-              $props= get_object_vars($var);
-              unset($props['__id']);
-              $s= 'O:'.strlen($name).':"'.$name.'":'.sizeof($props).':{';
-              foreach (array_keys($props) as $name) {
-                $s.= serialize($name).$this->representationOf($var->{$name}, $ctx);
-              }
-              return $s.'}';
-            }
+          // Default object serializing
+          $name= xp::typeOf($var);
+          $props= get_object_vars($var);
+          unset($props['__id']);
+          $s= 'O:'.strlen($name).':"'.$name.'":'.sizeof($props).':{';
+          foreach (array_keys($props) as $name) {
+            $s.= serialize($name).$this->representationOf($var->{$name}, $ctx);
           }
+          return $s.'}';
+        }
         case 'resource': return ''; // Ignore (resources can't be serialized)
         default: throw(new FormatException(
           'Cannot serialize unknown type '.xp::typeOf($var)
@@ -114,7 +100,7 @@
      *
      * @access  protected
      * @param   &lang.Object var
-     * @return  mixed FALSE in case no mapper could be found, &remote.protocol.SerializerMapping otherwise
+     * @return  &mixed FALSE in case no mapper could be found, &remote.protocol.SerializerMapping otherwise
      */
     function &mappingFor(&$var) {
       if (!is('lang.Object', $var)) return FALSE;
@@ -268,34 +254,6 @@
           return $value;
         }
 
-        case 'B': {     // bytes
-          $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
-          $length= strlen($v)+ 3;
-          $value= &new Byte($v);
-          return $value;
-        }
-
-        case 'S': {     // shorts
-          $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
-          $length= strlen($v)+ 3;
-          $value= &new Short($v);
-          return $value;
-        }
-
-        case 'f': {     // floats
-          $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
-          $length= strlen($v)+ 3;
-          $value= &new Float($v);
-          return $value;
-        }
-
-        case 'l': {     // longs
-          $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
-          $length= strlen($v)+ 3;
-          $value= &new Long($v);
-          return $value;
-        }
-
         case 'a': {     // arrays
           $a= array();
           $size= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
@@ -304,18 +262,6 @@
             $key= $this->valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
             $a[$key]= &$this->valueOf(substr($serialized, $offset), $len, $context);
-            $offset+= $len;
-          }
-          $length= $offset+ 1;
-          return $a;
-        }
-        
-        case 'A': {     // strictly numeric arrays
-          $a= &new ArrayList();
-          $size= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-          $offset= strlen($size)+ 2+ 2;
-          for ($i= 0; $i < $size; $i++) {
-            $a->values[$i]= &$this->valueOf(substr($serialized, $offset), $len, $context);
             $offset+= $len;
           }
           $length= $offset+ 1;
@@ -381,13 +327,6 @@
           return $value;
         }
         
-        case 'T': {     // timestamp
-          $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
-          $length= strlen($v)+ 3;
-          $value= &new Date((int)$v);
-          return $value;
-        }
-
         case 'O': {     // generic objects
           $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
           $name= $this->packageMapping(substr($serialized, 2+ strlen($len)+ 2, $len));
