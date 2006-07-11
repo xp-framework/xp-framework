@@ -99,8 +99,8 @@
      * Add a comment
      *
      * @access  public
-     * @throws  IllegalArgumentException
-     * @throws  SQLException
+     * @throws  lang.IllegalArgumentException
+     * @throws  rdbms.SQLException
      * @return  bool
      */
     function add() {
