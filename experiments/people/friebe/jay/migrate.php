@@ -5,7 +5,7 @@
  */
   require('lang.base.php');
   xp::sapi('cli');
-  uses('text.doclet.Doclet');
+  uses('text.doclet.Doclet', 'io.File', 'io.Folder', 'io.FileUtil');
   
   $help= <<<__
 Subjective: Migrate PHP4 classes and scripts using XP to PHP
@@ -33,6 +33,7 @@ __;
   define('ST_LOOKING_FOR_THROW',          'looking:throw');
   define('ST_LOOKING_FOR_INTERFACES_END', 'looking:iface_end');
   define('ST_LOOKING_FOR_CATCH',          'looking:catch');
+  define('ST_FUNCTION_ARGS',              'function-args');
 
   define('T_TRY',                0x2000);
   define('T_CATCH',              0x2001);
@@ -96,8 +97,12 @@ __;
         if (0 != strncmp('class.', $key, 6)) continue;
         $this->mapping[xp::reflect($key)]= xp::registry($key);
       }
-      
+
       $debug= $root->option('debug');
+      if ($output= $root->option('output')) {
+        Console::writeLine('---> Writing to ', $output);
+        $base= &new Folder($output);
+      }
       
       // Hardcode some keywords
       $this->mapping['xp']= 'xp';
@@ -143,7 +148,7 @@ __;
             case ST_INITIAL.T_CLASS:
               $qualified= strtr($this->current->qualifiedName(), '.', '~');
               $out.= (
-                "package ".
+                'package '.
                 substr($qualified, 0, strrpos($qualified, '~')).
                 ' { '
               );
@@ -361,12 +366,27 @@ __;
           $skip || $out.= is_array($t) ? $t[1] : $t;
         }
         
-        Console::write($out);
+        if ($output) {
+          try(); {
+            $target= &new File($base->getURI().strtr($this->current->qualifiedName(), '.', DIRECTORY_SEPARATOR).'.xp');
+            $f= &new Folder($target->getPath());
+            $f->exists() || $f->create();
+            FileUtil::setContents($target, $out);
+          } if (catch('IOException', $e)) {
+            return throw($e);
+          }
+          Console::writeLine('---> Wrote ', $target->getURI());
+        } else {
+          Console::write($out);
+        }
       }
     }
     
     function validOptions() {
-      return array('debug' => OPTION_ONLY);
+      return array(
+        'debug'   => OPTION_ONLY,
+        'output'  => HAS_VALUE
+      );
     }
   }
   // }}}
