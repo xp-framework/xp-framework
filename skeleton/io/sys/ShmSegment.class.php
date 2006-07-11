@@ -74,7 +74,7 @@
      *
      * @access  public
      * @return  &mixed data
-     * @throws  IOException in case an error occurs
+     * @throws  io.IOException in case an error occurs
      */
     function &get() {
       if (FALSE === ($data= $this->_get())) {
@@ -91,7 +91,7 @@
      * @param   &mixed data
      * @param   int permissions default 0666 permissions
      * @return  bool success
-     * @throws  IOException in case an error occurs
+     * @throws  io.IOException in case an error occurs
      */
     function put(&$val, $permissions= 0666) {
       $v= array($val);
@@ -110,7 +110,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException in case an error occurs
+     * @throws  io.IOException in case an error occurs
      */
     function remove() {
       $h= shm_attach($this->spot);
