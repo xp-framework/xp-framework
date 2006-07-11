@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.log.Logger');
+
   /**
    * Observer class to observe a SybaseConnections IO
    * optimizer plan
