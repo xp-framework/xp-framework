@@ -220,7 +220,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
-     * @throws  Exception to indicate failure
+     * @throws  lang.Exception to indicate failure
      */
     function doGet(&$request, &$response) {
     }
@@ -233,7 +233,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
-     * @throws  Exception to indicate failure
+     * @throws  lang.Exception to indicate failure
      */
     function doPost(&$request, &$response) {
     }
@@ -256,7 +256,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
-     * @throws  Exception to indicate failure
+     * @throws  lang.Exception to indicate failure
      */
     function doHead(&$request, &$response) {
     }
@@ -285,7 +285,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
-     * @throws  Exception to indicate failure
+     * @throws  lang.Exception to indicate failure
      */
     function doCreateSession(&$request, &$response) {
       $uri= &$request->getURL();
