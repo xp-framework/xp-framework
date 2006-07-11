@@ -300,7 +300,8 @@
      * @access  public
      * @param   string phonenumber
      * @return  &TelephonyAddress obj
-     * @throws  FormatException, if number is malformed
+     * @throws  lang.FormatException if number is malformed
+     * @throws  lang.IllegalStateException in case no default number has been set
      */
     function &parseNumber($number) {
       // Check current state
