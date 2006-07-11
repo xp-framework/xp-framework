@@ -22,9 +22,7 @@
     /**
      * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function __construct() {
       $this->sizes= &Collection::forClass('com.flickr.FlickrPhotoSize');
