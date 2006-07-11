@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('xml.XMLFormatException');
+
   /**
    * XML-RPC decoder
    *
@@ -34,6 +36,7 @@
      * @return  &mixed
      * @throws  lang.IllegalArgumentException if the data cannot be deserialized
      * @throws  lang.ClassNotFoundException in case a XP object's class could not be loaded
+     * @throws  xml.XMLFormatException
      */
     function &_unmarshall(&$node) {
       if (!is('xml.Node', $node->children[0]))
