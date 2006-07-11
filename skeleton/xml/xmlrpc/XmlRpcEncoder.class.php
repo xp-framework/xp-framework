@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('xml.Node');
+
   /**
    * Encoder for data structures into XML-RPC format
    *
