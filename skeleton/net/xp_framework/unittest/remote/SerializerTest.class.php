@@ -215,13 +215,64 @@
      * Test deserialization of an integer
      *
      * @access  public
-     * @see     xp://Person
      */
     #[@test]
     function valueOfInt() {
       $this->assertEquals(
         1,
         $this->serializer->valueOf('i:1;')
+      );
+    }
+
+    /**
+     * Test deserialization of a byte
+     *
+     * @access  public
+     */
+    #[@test]
+    function valueOfByte() {
+      $this->assertEquals(
+        new Byte(1),
+        $this->serializer->valueOf('B:1;')
+      );
+    }
+
+    /**
+     * Test deserialization of a long
+     *
+     * @access  public
+     */
+    #[@test]
+    function valueOfLong() {
+      $this->assertEquals(
+        new Long(12345),
+        $this->serializer->valueOf('l:12345;')
+      );
+    }
+
+    /**
+     * Test deserialization of a float
+     *
+     * @access  public
+     */
+    #[@test]
+    function valueOfFloat() {
+      $this->assertEquals(
+        new Float(1.5),
+        $this->serializer->valueOf('f:1.5;')
+      );
+    }
+
+    /**
+     * Test deserialization of a double
+     *
+     * @access  public
+     */
+    #[@test]
+    function valueOfDouble() {
+      $this->assertEquals(
+        1.5,
+        $this->serializer->valueOf('d:1.5;')
       );
     }
 
@@ -239,6 +290,19 @@
       );
     }
     
+    /**
+     * Test deserialization of a date
+     *
+     * @access  public
+     */
+    #[@test]
+    function valueOfDates() {
+      $this->assertEquals(
+        new Date(328312800),
+        $this->serializer->valueOf('T:328312800;')
+      );
+    }
+
     /**
      * Test deserialization of an integer
      *
