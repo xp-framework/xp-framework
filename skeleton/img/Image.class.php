@@ -369,7 +369,7 @@
      * @access  public
      * @param   &img.ImgStyle style
      * @return  &img.ImgStyle the new style object
-     * @throws  IllegalArgumentException if style is not an ImgStyle object
+     * @throws  lang.IllegalArgumentException if style is not an ImgStyle object
      */
     function &setStyle(&$style) {
       if (!is_a($style, 'ImgStyle')) {
@@ -386,7 +386,7 @@
      * @access  public
      * @param   &img.ImgBrush brush
      * @return  &img.ImgBrush the new style object
-     * @throws  IllegalArgumentException if style is not an ImgBrush object
+     * @throws  lang.IllegalArgumentException if style is not an ImgBrush object
      */
     function &setBrush(&$brush) {
       if (!is_a($brush, 'ImgBrush')) {
