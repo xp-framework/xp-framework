@@ -6,6 +6,7 @@
 
   uses(
     'util.log.Traceable',
+    'xml.xmlrpc.XmlRpcMessage',
     'xml.xmlrpc.XmlRpcFaultException'
   );
 
@@ -45,5 +46,6 @@
      * @return  &xml.xmlrpc.XmlRpcMessage
      */
     function &retrieve(&$response) { }    
+
   } implements(__FILE__, 'util.log.Traceable');
 ?>
