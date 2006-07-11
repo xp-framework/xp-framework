@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Date');
+  uses('util.Date', 'rdbms.SQLException');
 
   /**
    * Result set as returned from the DBConnection::query method
