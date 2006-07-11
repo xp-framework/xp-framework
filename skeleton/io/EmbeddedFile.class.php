@@ -6,7 +6,8 @@
 
   uses (
     'io.File',
-    'io.Stream'
+    'io.Stream',
+    'util.io.VirtualFileManager'
   );
   
   /**
