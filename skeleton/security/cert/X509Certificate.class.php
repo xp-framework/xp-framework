@@ -176,12 +176,12 @@
      * Gets a boolean array representing bits of the KeyUsage extension
      *
      * @access  public
-     * @return  object
+     * @return  array<string, bool>
      */
     function getKeyUsage() {
-      $usage= &new stdClass();
+      $usage= array();
       foreach ($this->_info['purposes'] as $v) {
-        $usage->{$v[2]}= $v[1];
+        $usage[$v[2]]= $v[1];
       }
       return $usage;
     }
