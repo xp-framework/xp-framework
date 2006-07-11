@@ -29,7 +29,7 @@
      * @access  public
      * @param   &io.File file
      * @return  &img.util.ImageInfo
-     * @throws  img.ImagingExceptio
+     * @throws  img.ImagingException in case extracting information from image file fails
      */
     function &fromFile(&$file) {
       if (FALSE === ($data= getimagesize($file->getURI(), $segments))) {
