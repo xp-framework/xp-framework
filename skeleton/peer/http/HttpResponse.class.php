@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('peer.SocketException');
+
   /**
    * HTTP response
    *
