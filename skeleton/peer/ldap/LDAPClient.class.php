@@ -279,7 +279,7 @@
      * @access  public
      * @param   &peer.ldap.LDAPEntry entry specifying the dn
      * @return  &peer.ldap.LDAPEntry entry
-     * @throws  IllegalArgumentException
+     * @throws  lang.IllegalArgumentException
      * @throws  peer.ldap.LDAPException
      */
     function &read(&$entry) {
