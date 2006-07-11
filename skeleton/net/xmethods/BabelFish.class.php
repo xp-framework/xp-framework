@@ -70,8 +70,8 @@
     function &translate($sourcedata, $src_lang, $target_lang) {
       $translated= $this->invoke(
         'BabelFish',
-        new SOAPNamedItem('translationmode', sprintf('%s_%s', $src_lang, $target_lang)),
-        new SOAPNamedItem('sourcedata', $sourcedata)
+        new Parameter('translationmode', sprintf('%s_%s', $src_lang, $target_lang)),
+        new Parameter('sourcedata', $sourcedata)
       );
       
       return $translated;
