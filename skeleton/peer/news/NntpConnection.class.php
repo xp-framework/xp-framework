@@ -6,6 +6,7 @@
  
   uses(
     'peer.Socket',
+    'peer.ProtocolException',
     'peer.URL',
     'peer.news.NntpReply',
     'peer.news.Newsgroup',
@@ -73,7 +74,7 @@
      * @param   string format
      * @param   mixed* args
      * @return  bool success
-     * @throws  ProtocolException in case the command is too long
+     * @throws  peer.ProtocolException in case the command is too long
      */
     function _sendcmd() {
       if (!$this->_sock->isConnected()) return FALSE;
