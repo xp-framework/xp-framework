@@ -32,7 +32,7 @@
      * @param   mixed fmt
      * @param   &mixed argument
      * @return  string
-     * @throws  FormatException
+     * @throws  lang.FormatException
      */
     function apply($fmt, &$argument) {
       switch (gettype($argument)) {
