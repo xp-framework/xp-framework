@@ -84,7 +84,7 @@
      *
      * @access  public
      * @param   string str The string to parse from
-     * @throws  FormatException in case the scheme is'nt recognized
+     * @throws  lang.FormatException in case the scheme is'nt recognized
      */
     function fromString($str) {
       $u= &new URL(FALSE !== ($p= strpos($str, ' '))
