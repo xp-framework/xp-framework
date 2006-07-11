@@ -57,11 +57,12 @@
     }
     
     /**
-     * Connect
+     * Connect. Overwritten method from BSDSocket that will always throw
+     * an exception because connect() doesn't make sense here!
      *
      * @access  public
      * @return  bool success
-     * @throws  IllegalAccessException
+     * @throws  lang.IllegalAccessException
      */
     function connect() {
       return throw(new IllegalAccessException('Connect cannot be used on a ServerSocket'));
