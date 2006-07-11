@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('xml.soap.SOAPNode');
+
   /**
    * Represent a SOAP header element.
    *
