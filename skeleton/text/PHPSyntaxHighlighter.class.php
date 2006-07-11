@@ -124,7 +124,7 @@
      *
      * @access  public
      * @param   io.File file
-     * @throws  IOException
+     * @throws  io.IOException
      */    
     function setFile(&$file) {
       $file->open(FILE_MODE_READ);
