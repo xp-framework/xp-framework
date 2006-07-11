@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('org.webdav.util.WebdavBool');
+  uses('org.webdav.util.WebdavBool', 'org.webdav.WebdavProperty');
 
   /**
    * Webdav Object
