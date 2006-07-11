@@ -60,7 +60,7 @@
      * Get FROB
      *
      * @access  public
-     * @param   &lang.Object client
+     * @param   &com.flickr.xmlrpc.Client client
      */
     function getFrob(&$client) {
       $res= $client->invoke('flickr.auth.getFrob', array(
@@ -73,7 +73,7 @@
      * Get FROB URL
      *
      * @access  public
-     * @param   &lang.Object client
+     * @param   &com.flickr.xmlrpc.Client client
      * @return  string url
      */
     function getFrobURL(&$client) {
@@ -93,7 +93,7 @@
      * Get token
      *
      * @access  public
-     * @param   &lang.Object client
+     * @param   &com.flickr.xmlrpc.Client client
      * @return  mixed
      */
     function getToken(&$client) {
