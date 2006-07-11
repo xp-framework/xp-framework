@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('peer.server.ConnectionListener', 'peer.ftp.server.FtpSession');
+  uses(
+    'peer.server.ConnectionListener', 
+    'peer.ftp.server.FtpSession',
+    'peer.SocketException'
+  );
   
   define('DATA_PASSIVE',    0x0001);
   define('DATA_ACTIVE',     0x0002);
