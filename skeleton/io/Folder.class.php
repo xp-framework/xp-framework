@@ -168,7 +168,7 @@
      * @access  public
      * @return  bool success
      * @throws  io.IOException in case of an error (e.g., lack of permissions)
-     * @throws  IllegalStateException in case the directory is still open
+     * @throws  lang.IllegalStateException in case the directory is still open
      */
     function move($target) {
       if (is_resource($this->_hdir)) {
