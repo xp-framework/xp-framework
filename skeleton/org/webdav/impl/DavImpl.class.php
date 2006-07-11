@@ -5,6 +5,7 @@
  */
  
   uses(
+    'lang.ElementNotFoundException',
     'lang.MethodNotImplementedException',
     'org.webdav.OperationFailedException',
     'org.webdav.OperationNotAllowedException',
@@ -160,8 +161,8 @@
      * @access  public
      * @param   &org.webdav.xml.WebdavLockRequest       request
      * @param   &org.webdav.xml.WebdavScriptletResponse response
-     * @throws  OperationNotAllowedException
-     * @throws  OperationFailedException
+     * @throws  org.webdav.OperationNotAllowedException
+     * @throws  org.webdav.OperationFailedException
      */
     function &lock(&$request, &$response) {
       preg_match_all('/<[^>]*> \(<([^>]*)>\)/', $request->getHeader('If'), $ifmatches);
@@ -179,7 +180,7 @@
      * @access  public
      * @param   &org.webdav.xml.WebdavLockRequest       request
      * @param   &org.webdav.xml.WebdavScriptletResponse response
-     * @throws  OperationNotAllowedException
+     * @throws  org.webdav.OperationNotAllowedException
      */
     function &unlock(&$request, &$response) {
       try();{
@@ -202,15 +203,13 @@
 
       if ($lock->getLockToken()) $response->setHeader('Lock-Token', $request->getHeader('Lock-Token'));
     }
-
-    
     
     /**
      * Retrieve lock information
      *
      * @access  public
      * @param   string uri  The URI
-     * @return  org.webdav.WebdavLock
+     * @return  &org.webdav.WebdavLock
      */
     function &getLockInfo($uri) {
       $lock= &$this->propStorage->getLock($uri);
@@ -236,7 +235,7 @@
      * @param   &org.webdav.WebdavLock lock   The lock object
      * @param   string[]               tokens Optional lock-tokens to overwrite lock
      * @return  &org.webdav.WebdavLock
-     * @throws  OperationNotAllowedException
+     * @throws  org.webdav.OperationNotAllowedException
      */
     function &setLockInfo(&$lock, $tokens= array()) { 
       $lockinfo= $this->getLockInfo($lock->getURI());
@@ -276,7 +275,7 @@
      * @access  public
      * @param   string filename
      * @return  bool
-     * @throws  ElementNotFoundException
+     * @throws  lang.ElementNotFoundException
      */
     function VersionControl($path, &$version) {
 
