@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('io.sys.ShmSegment');
+  uses('io.sys.ShmSegment', 'lang.ElementNotFoundException');
   
   /**
    * Shared Memory storage
