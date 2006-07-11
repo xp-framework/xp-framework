@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('peer.URL');
+
   /**
    * Flickr photo
    *
