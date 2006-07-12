@@ -121,5 +121,10 @@ Comments
   * Interprets data from socket => DataInterpreter::dataFrom($sock)
   * Implements reading => (Server)(Data)Read(ing|er)Implementation::readFrom($sock)
 
+- kiesel, Wed Jul 12 11:42:10 CEST 2006
+  To fully implement a client/server protocol, we also need a writer,
+  so this proposal is only half of the "work".
+
+
 
 <EOF>
