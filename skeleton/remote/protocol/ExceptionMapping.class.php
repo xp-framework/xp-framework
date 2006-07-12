@@ -49,7 +49,6 @@
         $instance->{$name}= &$member;
       }
 
-      Console::writeline($instance->toString());
       return $instance;
     }
 
