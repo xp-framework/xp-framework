@@ -111,7 +111,6 @@
      */
     #[@remote]
     function echoArray($arg1) {
-      Console::writeLine(xp::stringOf($arg1));
       if (!is('lang.types.ArrayList', $arg1)) return throw(new IllegalArgumentException(
         'arg1 is not an array.'
       ));
