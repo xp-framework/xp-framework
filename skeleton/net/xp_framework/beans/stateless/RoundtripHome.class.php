@@ -4,20 +4,21 @@
  * $Id$
  */
 
+  uses('remote.beans.HomeInterface');
+
   /**
    * Home interface for xp/demo/Roundtrip
    *
    * @purpose  EASC Client stub
    */
-  class RoundtripHome extends Interface {
+  class RoundtripHome extends HomeInterface {
 
     /**
      * Create method
      *
      * @access  public
-     * @return  net.xp_framework.beans.stateless.Roundtrip
+     * @return  &net.xp_framework.beans.stateless.Roundtrip
      */
-    function create() { }
-
+    function &create() { }
   }
 ?>

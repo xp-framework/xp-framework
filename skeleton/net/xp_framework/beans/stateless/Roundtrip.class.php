@@ -4,12 +4,14 @@
  * $Id$
  */
 
+  uses('remote.beans.RemoteInterface');
+
   /**
    * Remote interface for xp/demo/Roundtrip
    *
    * @purpose  EASC Client stub
    */
-  class Roundtrip extends Interface {
+  class Roundtrip extends RemoteInterface {
 
     /**
      * EchoString method
