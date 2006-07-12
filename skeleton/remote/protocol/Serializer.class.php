@@ -49,6 +49,10 @@
       $this->mapping('d', $m= &new DoubleMapping());
       $this->mapping('i', $m= &new IntegerMapping());
       $this->mapping('A', $m= &new ArrayListMapping());
+      
+      // A hashmap doesn't have its own token, because it'll be serialized
+      // as an array. We use HASHMAP as the token, so it will never match
+      // another one (can only be one char). This is a little bit hackish.
       $this->mapping('HASHMAP', $m= &new HashmapMapping());
     }
 

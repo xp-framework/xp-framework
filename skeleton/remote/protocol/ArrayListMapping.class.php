@@ -48,7 +48,7 @@
     function representationOf(&$serializer, &$value, $context= array()) {
       $s= 'A:'.sizeof($value->values).':{';
       foreach (array_keys($value->values) as $key) {
-        $s.= $serializer->representationOf($var->values[$key], $ctx);
+        $s.= $serializer->representationOf($var->values[$key], $context);
       }
       return $s.'}';
     }
