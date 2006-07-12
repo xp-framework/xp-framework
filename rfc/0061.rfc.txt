@@ -72,4 +72,17 @@ Comments
   but does not have request object, so this case cannot be fixed without
   changing the API.
 
+- kiesel, Mon Jun 26 13:25:46 CEST 2006
+  Should methods accessing those "protected" variables or methods need
+  to set a certain indicator (eg. a special annotation)?
+  
+  Example:
+  
+  #[@requestEnvironment('getenv()', '$_REQUEST')]
+  function getEnvValue($name, $default= NULL) {
+    // ...
+  }
+
+  Maybe there's a better name for the annotation...
+
 <EOF>
