@@ -14,6 +14,8 @@
     'remote.protocol.IntegerMapping',
     'remote.protocol.HashmapMapping',
     'remote.protocol.ArrayListMapping',
+    'remote.protocol.ExceptionMapping',
+    'remote.protocol.StackTraceElementMapping',
     'remote.UnknownRemoteObject',
     'remote.ExceptionReference',
     'remote.ClassReference'
@@ -49,11 +51,19 @@
       $this->mapping('d', $m= &new DoubleMapping());
       $this->mapping('i', $m= &new IntegerMapping());
       $this->mapping('A', $m= &new ArrayListMapping());
+      $this->mapping('e', $m= &new ExceptionMapping());
+      $this->mapping('t', $m= &new StackTraceElementMapping());
       
       // A hashmap doesn't have its own token, because it'll be serialized
       // as an array. We use HASHMAP as the token, so it will never match
       // another one (can only be one char). This is a little bit hackish.
       $this->mapping('HASHMAP', $m= &new HashmapMapping());
+      
+      // Setup default exceptions
+      $this->exceptionName('IllegalArgument', 'lang.IllegalArgumentException');
+      $this->exceptionName('IllegalAccess',   'lang.IllegalAccessException');
+      $this->exceptionName('ClassNotFound',   'lang.ClassNotFoundException');
+      $this->exceptionName('NullPointer',     'lang.NullPointerException');
     }
 
     /**
@@ -272,27 +282,6 @@
           return $a;
         }
 
-        case 'e': {     // known exceptions
-          $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-          try(); {
-            $class= &XPClass::forName($this->exceptionName(substr($serialized, 2+ strlen($len)+ 2, $len)));
-          } if (catch('ClassNotFoundException', $e)) {
-            return throw($e);
-          }
-          $instance= &$class->newInstance();
-          $offset= 2 + 2 + strlen($len)+ $len + 2;
-          $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
-          $offset+= strlen($size)+ 2;
-          for ($i= 0; $i < $size; $i++) {
-            $member= $this->valueOf(substr($serialized, $offset), $len, $context);
-            $offset+= $len;
-            $instance->{$member}= &$this->valueOf(substr($serialized, $offset), $len, $context);
-            $offset+= $len;
-          }
-          $length= $offset+ 1;
-          return $instance;
-        }
-
         case 'E': {     // generic exceptions
           $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
           $instance= &new ExceptionReference(substr($serialized, 2+ strlen($len)+ 2, $len));
@@ -307,28 +296,6 @@
           }
           $length= $offset+ 1;
           return $instance;
-        }
-        
-        case 't': {     // stack trace elements
-          $size= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-          $offset= strlen($size)+ 2+ 2;
-          $details= array();
-          for ($i= 0; $i < $size; $i++) {
-            $detail= $this->valueOf(substr($serialized, $offset), $len, $context);
-            $offset+= $len;
-            $details[$detail]= $this->valueOf(substr($serialized, $offset), $len, $context);
-            $offset+= $len;
-          }
-          $length= $offset+ 1;
-          $value= &new StackTraceElement(
-            $details['file'],
-            $details['class'],
-            $details['method'],
-            $details['line'],
-            array(),
-            NULL
-          );
-          return $value;
         }
         
         case 'O': {     // generic objects
