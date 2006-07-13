@@ -107,15 +107,13 @@
      */
     function readData($size= 8192, $binary= FALSE) {
       if (!$this->_readhead()) return FALSE;        // Read head if not done before
-      if ($this->stream->eof()) {                   // EOF, return FALSE to indicate end
-        $this->stream->close();
-        delete($this->stream);
-        return FALSE;
-      }
+      if ($this->stream->eof()) return $this->closeStream();
       
       if (!$this->chunked) {
         $func= $binary ? 'readBinary' : 'read';
-        if (!($buf= $this->stream->$func($size))) return FALSE;
+        if (!($buf= $this->stream->$func($size))) {
+          return $this->closeStream();
+        }
 
         return $buf;
       }
@@ -129,18 +127,18 @@
       // any chunk extensions. We ignore the size and boolean parameters
       // to this method completely to ensure functionality. For more 
       // details, see RFC 2616, section 3.6.1
-      if (!($buf= $this->stream->read(1024))) return FALSE;
+      if (!($buf= $this->stream->read(1024))) return $this->closeStream();
       if (!(sscanf($buf, "%x%s\r\n", $chunksize, $extension))) {
         throw(new IOException(sprintf(
           'Chunked transfer encoding: Indicator line "%s" invalid', 
           addcslashes($buf, "\0..\17")
         )));
-        return FALSE;
+        return $this->closeStream();
       }
 
       // A chunk of size 0 means we're at the end of the document. We 
       // ignore any trailers.
-      if (0 == $chunksize) return FALSE;
+      if (0 == $chunksize) return $this->closeStream();
 
       // A chunk is terminated by \r\n, so add 2 to the chunksize. We will
       // trim these characters off later.
@@ -149,11 +147,25 @@
       // Read up until end of chunk
       $buf= '';
       do {
-        if (!($data= $this->stream->readBinary($chunksize- strlen($buf)))) return FALSE;
+        if (!($data= $this->stream->readBinary($chunksize- strlen($buf)))) return $this->closeStream();
         $buf.= $data;
       } while (strlen($buf) < $chunksize);
 
       return rtrim($buf, "\r\n");
+    }
+    
+    /**
+     * Closes the stream if it's at EOF
+     *
+     * @access  protected
+     * @return  boolean 
+     */
+    function closeStream() {
+      if ($this->stream->eof()) {
+        $this->stream->close();
+      }
+      
+      return FALSE;
     }
     
     /**
