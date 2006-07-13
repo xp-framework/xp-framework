@@ -1,78 +1,31 @@
-RFC 0065: Server Socket Reader API
+RFC 0065: Server Protocol API
 ========================================================================
 $Id$
 
-@authors: friebe, gelli
+@authors: friebe, gelli, kiesel
 @created: Wed Jul  5 17:28:01 CEST 2006
 @status: draft
 @category: peer.server
 
 Scope of Change
 ---------------
-Reading the data off an accept()'ed socket in the server APIs will be made
-overrideable by supplying a reader implementation.
+A server will have a protocol implementation which will take care of
+reading and writing data from and to the accept()'ed sockets.
 
 
 Rationale
 ---------
-Performance improvement and flexibility.
+Flexibility.
 
 
 Functionality
 -------------
 
-Server implementation changes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The following code in the three server implementations:
-<?php
-  $m= &$socket->accept();
-  // ...
-  $data= $m->readBinary();
-?>
-will be replaced by
-<?php
-  $m= &$socket->accept();
-  // ...
-  $data= $this->reader->readFrom($m);
-?>
-
-Note: The default behaviour (readBinary()) will be kept by a new class.
-
-Example
-~~~~~~~
-
-Implementing a reader:
-<?php
-  class EascReader extends Object {
-
-    function readBytes(&$sock, $num) {
-      $return= '';
-      while (strlen($return) < $num) {
-        if (0 == strlen($buf= $sock->readBinary($num - strlen($return)))) return;
-        $return.= $buf;
-      }
-      return $return;
-    }
-  
-    function readFrom(&$sock) {
-      $header= unpack(
-        'Nmagic/cvmajor/cvminor/ctype/ctran/Nlength', 
-        $this->readBytes($sock, 12)
-      );
-
-      // ... abbreviated ...
-
-      return ServerDelegate::delegateFor($header['type'], $sock);
-    }
-
-  } implements(__FILE__, 'peer.server.ServerDataReader');
-?>
-
-Setting the reader implementation:
+Setting the protocol implementation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <?php
   with ($server= &new Server($argv[1], 6448)); {
-    $server->setReader(new EascReader());
-    $server->addListener(new RemoteInvocationListener());
+    $server->setProtocol(new EascProtocol());
     $server->init();
     $server->service();
     $server->shutdown();
@@ -87,13 +40,13 @@ n/a
 
 Speed impact
 ------------
-Minimalistic.
+n/a
 
 
 Dependencies
 ------------
-- New Reader interface.
-- New Reader default behaviour implementation
+- New Protocol interface.
+- Some BC protocol implementation
 
 
 Related documents
@@ -125,6 +78,7 @@ Comments
   To fully implement a client/server protocol, we also need a writer,
   so this proposal is only half of the "work".
 
-
+- friebe, Thu Jul 13 17:02:47 CEST 2006
+  Revamped this completely!
 
 <EOF>
