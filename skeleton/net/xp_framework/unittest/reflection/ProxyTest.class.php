@@ -175,5 +175,24 @@
     function cannotCreateProxiesForClasses() {
       $this->proxyInstanceFor(array(XPClass::forName('lang.Object')));
     }
+    
+    /**
+     * Check that implementing two interfaces that declare a common
+     * method does not issue a fatal error.
+     *
+     * @access  public
+     */
+    #[@test]
+    function allowDoubledInterfaceMethod() {
+      $cl= &ClassLoader::getDefault();
+      $newIteratorClass= &$cl->defineClass('util.NewIterator', 'class NewIterator extends Iterator {
+        function next() { }
+      }');
+      
+      $this->proxyInstanceFor(array(
+        XPClass::forName('util.Iterator'),
+        XPClass::forName('util.NewIterator')
+      ));
+    }
   }
 ?>
