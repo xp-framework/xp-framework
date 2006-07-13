@@ -57,6 +57,7 @@
       $name= PROXY_PREFIX.($num++);
       $implements= xp::registry('implements');
       $bytes= 'class '.$name.' extends Proxy { ';
+      $added= array();
 
       for ($j= 0, $t= sizeof($interfaces); $j < $t; $j++) {
         $if= &$interfaces[$j];
@@ -68,6 +69,10 @@
         
         // Implement all the interface's methods
         for ($i= 0, $methods= $if->getMethods(), $s= sizeof($methods); $i < $s; $i++) {
+        
+          // Check for already declared methods, do not redeclare them
+          if (isset($added[$methods[$i]->getName()])) continue;
+          $added[$methods[$i]->getName()]= TRUE;
 
           // Build signature and argument list
           if ($methods[$i]->hasAnnotation('overloaded')) {
