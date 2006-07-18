@@ -579,5 +579,29 @@
       }
       return TRUE;
     }
+    
+    /**
+     * Change permissions for the file
+     *
+     * @see     php://chmod
+     * @access  public
+     * @param   mixed mode
+     * @return  bool success
+     */
+    function setPermissions($mode) {
+      return chmod($this->uri, $mode);
+    }
+    
+    /**
+     * Get permission mask of the file
+     *
+     * @see     php://stat
+     * @access  public
+     * @return  int
+     */
+    function getPermissions() {
+      $stat= stat($this->uri);
+      return $stat['mode'];
+    }
   }
 ?>
