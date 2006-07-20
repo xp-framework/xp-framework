@@ -21,8 +21,7 @@
       $id       = '',
       $encoding = 'iso-8859-1',
       $data     = NULL,
-      $class    = '',
-      $method   = '';
+      $class    = '';
 
     /**
      * Create message from string representation
