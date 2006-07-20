@@ -397,6 +397,7 @@
     }
     return $object;
   }
+  // }}}
 
   // {{{ proto void with(expr)
   //     Syntactic sugar. Intentionally empty
