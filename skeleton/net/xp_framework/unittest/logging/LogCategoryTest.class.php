@@ -82,7 +82,7 @@
     function assertLogf($method, $args= array('Argument')) {
       $app= &$this->cat->addAppender(new MockAppender());
       call_user_func_array(array(&$this->cat, $method), $args);
-      $this->assertEquals(array(array_merge((array)substr($method, 0, -1), vsprintf(array_shift($args), $args))), $app->messages);
+      $this->assertEquals(array(array_merge((array)substr($method, 0, -1), (array)vsprintf(array_shift($args), $args))), $app->messages);
     }
     
     /**
