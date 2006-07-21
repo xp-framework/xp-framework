@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Date');
+  uses('util.Date', 'util.log.Traceable');
 
   /**
    * Test class

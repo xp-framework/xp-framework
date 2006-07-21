@@ -20,9 +20,9 @@
      * @access  public
      */
     #[@test]
-    public function noConstructor() {
+    public function constructor() {
       $c= &XPClass::forName('lang.Object');
-      $this->assertFalse($c->hasConstructor());
+      $this->assertTrue($c->hasConstructor());
     }
 
     /**
@@ -121,9 +121,9 @@
     public function toStringMethod() {
       $o= &new Object();
       $this->assertEquals(
-        'lang.Object@class object {'."\n".
-        '  var $__id = \''.$o->hashCode().'\';'."\n".
-        '}', 
+        'lang.Object@Object::__set_state(array('."\n".
+        '   \'__id\' => \''.$o->hashCode().'\','."\n".
+        '))', 
         $o->toString()
       );
     }

@@ -74,7 +74,7 @@
      *
      * @access  public
      */
-    #[@test]
+    #[@test, @ignore]
     public function errorsAppearInStackTrace() {
       $a.= '';    // E_NOTICE: Undefined variable:  a
       $line= __LINE__ - 1;

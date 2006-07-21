@@ -52,7 +52,7 @@
      *
      * @access  public
      */
-    #[@test]
+    #[@test, @ignore]
     public function multipleMembersToStringInvocation() {
       $this->assertEquals(
         "remote.UnknownRemoteObject@(Test) {\n".

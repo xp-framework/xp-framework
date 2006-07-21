@@ -6,7 +6,8 @@
 
   uses(
     'util.profiling.unittest.TestCase',
-    'net.xp_framework.unittest.core.Destroyable'
+    'net.xp_framework.unittest.core.Destroyable',
+    'net.xp_framework.unittest.core.DestructionCallback'
   );
 
   /**

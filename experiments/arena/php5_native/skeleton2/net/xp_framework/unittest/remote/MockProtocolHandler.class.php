@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('remote.NameNotFoundException');
+  uses(
+    'remote.NameNotFoundException',
+    'remote.protocol.ProtocolHandler'
+  );
 
   /**
    * Handles the "mock" protocol

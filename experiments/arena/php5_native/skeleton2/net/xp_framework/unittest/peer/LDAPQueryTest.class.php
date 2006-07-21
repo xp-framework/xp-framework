@@ -18,6 +18,17 @@
    */
   class LDAPQueryTest extends TestCase {
     /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function setUp() {
+      date_default_timezone_set('Europe/Berlin');
+    }  
+  
+    /**
      * Test general functionality with tokenizer
      *
      * @access  public

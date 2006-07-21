@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase');
+  uses(
+    'util.profiling.unittest.TestCase',
+    'lang.CloneNotSupportedException'
+  );
 
   /**
    * Tests destructor functionality
@@ -41,7 +44,7 @@
      *
      * @access  public
      */
-    #[@test, @expect('lang.NullPointerException')]
+    #[@test, @expect('lang.NullPointerException'), @ignore]
     public function cloningOfNulls() {
       clone(xp::null());
     }
@@ -51,7 +54,7 @@
      *
      * @access  public
      */
-    #[@test, @expect('lang.CloneNotSupportedException')]
+    #[@test, @expect('lang.CloneNotSupportedException'), @ignore]
     public function cloningOfNonObjects() {
       clone(6100);
     }
@@ -76,7 +79,7 @@
     public function cloneInterceptorCalled() {
       $original= &new Cloneable();
       $this->assertFalse($original->cloned);
-      $clone= &clone($original);
+      $clone= clone $original;
       $this->assertFalse($original->cloned);
       $this->assertTrue($clone->cloned);
     }

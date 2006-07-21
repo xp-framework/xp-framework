@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase');
+  uses(
+    'util.profiling.unittest.TestCase',
+    'net.xp_framework.unittest.core.DestructionCallback'
+  );
 
   /**
    * Tests the is() core functionality
@@ -65,11 +68,11 @@
       $cl= &ClassLoader::getDefault();
       $cl->defineClass(
         'DestructionCallbackImpl', 
-        'class DestructionCallbackImpl extends Object {
+        'class DestructionCallbackImpl extends Object implements DestructionCallback {
           function onDestruction(&$object) { 
             // ... Implementation here
           }
-        } implements("DestructionCallbackImpl.class.php", "net.xp_framework.unittest.core.DestructionCallback");'
+        }'
       );
       $cl->defineClass(
         'DestructionCallbackImplEx', 

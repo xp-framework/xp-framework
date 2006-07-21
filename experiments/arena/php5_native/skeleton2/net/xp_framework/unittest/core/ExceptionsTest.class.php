@@ -55,7 +55,7 @@
     public function thrownExceptionCaughtByFqCn() {
       try {
         throw(new Exception('Test'));
-      } catch (lang.Exception $caught) {
+      } catch (Exception $caught) {
         $this->assertSubclass($caught, 'Exception');
         delete($caught);
         return TRUE;
