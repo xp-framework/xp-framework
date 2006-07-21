@@ -127,7 +127,7 @@
      * @access  public
      * @param   string class
      */
-    public function setHandlerClass($class) {
+    public function setClass($class) {
       $this->class= $class;
     }
 
@@ -137,7 +137,7 @@
      * @access  public
      * @return  string
      */
-    public function getHandlerClass() {
+    public function getClass() {
       return $this->class;
     }
     

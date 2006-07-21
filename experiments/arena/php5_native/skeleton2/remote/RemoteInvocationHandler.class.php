@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('lang.reflect.InvocationHandler');
+  
   /**
    * Invocation handler for client stubs
    *

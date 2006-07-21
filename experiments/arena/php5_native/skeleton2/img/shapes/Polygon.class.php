@@ -58,13 +58,13 @@
      * @param   &img.Image image
      * @return  mixed
      */
-    public function draw(&$image) { }
+    public function draw(&$image) {
       if ($this->fill) return imagefilledpolygon(
         $image->handle,
         $this->points,
         sizeof($this->points) / 2,
         $this->col->handle
-      ); else return imagepolygon(
+      ) else return imagepolygon(
         $image->handle,
         $this->points,
         sizeof($this->points) / 2,

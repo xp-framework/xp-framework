@@ -85,7 +85,7 @@
      * @access  public
      * @param   string class
      */
-    public function setHandlerClass($class);
+    public function setClass($class);
 
     /**
      * Get Class
@@ -93,7 +93,7 @@
      * @access  public
      * @return  string
      */
-    public function getHandlerClass();
+    public function getClass();
 
     /**
      * Set Method

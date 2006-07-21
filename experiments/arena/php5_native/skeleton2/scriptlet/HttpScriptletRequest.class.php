@@ -31,6 +31,8 @@
      * @access  public
      */
     public function initialize() {
+      $this->headers= array_change_key_case(getallheaders(), CASE_LOWER);
+      $this->params= array_change_key_case($_REQUEST, CASE_LOWER);
     }
     
     /**
@@ -274,7 +276,7 @@
      * @return  string
      */
     public function getQueryString() {
-      return urldecode(getenv('QUERY_STRING'));
+      return urldecode($this->getEnvValue('QUERY_STRING'));
     }
     
     /**

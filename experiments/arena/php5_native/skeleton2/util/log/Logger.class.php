@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('util.log.LogCategory');
+  uses(
+    'util.log.LogCategory',
+    'util.Configurable'
+  );
   
   define('LOG_DEFINES_DEFAULT', 'default');
   
@@ -196,7 +199,7 @@
      * @access  public
      * @return  &util.log.Logger a logger object
      */
-    public function &getInstance() {
+    public static function &getInstance() {
       static $instance;
   
       if (!isset($instance)) {

@@ -6,7 +6,8 @@
 
   uses(
     'lang.reflect.Proxy',
-    'remote.RemoteInvocationHandler'
+    'remote.RemoteInvocationHandler',
+    'remote.protocol.SerializerMapping'
   );
 
   // Defines for context keys

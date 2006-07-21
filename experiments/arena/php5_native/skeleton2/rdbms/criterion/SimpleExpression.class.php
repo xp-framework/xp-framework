@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('rdbms.criterion.Criterion');
+
   define('IN',              'in (?)');
   define('NOT_IN',          'not in (?)');
   define('IS',              'is ?');

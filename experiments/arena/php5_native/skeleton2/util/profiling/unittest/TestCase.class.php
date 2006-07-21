@@ -28,6 +28,7 @@
      * @param   string name
      */
     public function __construct($name) {
+      parent::__construct();
       $this->name= $name;
     }
 
@@ -341,7 +342,7 @@
      * @return  bool
      */
     public function assertSubclass(&$var, $name, $error= 'notsubclass') {
-      if (!is_a($var, 'Object')) {
+      if (!$var instanceOf XObject && !$var instanceOf Exception) {
         return $this->fail($error, $pattern, $var);
       }
       if (!is($name, $var)) {
@@ -401,7 +402,7 @@
     public function run(&$result) {
       $class= &$this->getClass();
       $method= &$class->getMethod($this->name);
-
+      
       if (!$method) {
         throw(new MethodNotImplementedException(
           'Method does not exist', $this->name
@@ -411,11 +412,7 @@
       // Check for @expect
       $expected= NULL;
       if ($method->hasAnnotation('expect')) {
-        try {
-          $expected= &XPClass::forName($method->getAnnotation('expect'));
-        } catch (Exception $e) {
-          throw($e);
-        }
+        $expected= &XPClass::forName($method->getAnnotation('expect'));
       }
       
       // Check for @limit

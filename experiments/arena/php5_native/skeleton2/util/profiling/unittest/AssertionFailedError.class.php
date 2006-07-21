@@ -9,7 +9,7 @@
    *
    * @purpose  Exception
    */
-  class AssertionFailedError extends Exception {
+  class AssertionFailedError extends XException {
     public
       $actual       = NULL,
       $expect       = NULL;

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Date');
+  uses('util.Date', 'remote.protocol.SerializerMapping');
 
   /**
    * Mapping for util.Date

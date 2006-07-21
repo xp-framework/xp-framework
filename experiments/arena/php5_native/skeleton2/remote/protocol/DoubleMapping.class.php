@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.types.Double');
+  uses('lang.types.Double', 'remote.protocol.SerializerMapping');
 
   /**
    * Mapping for lang.types.Double

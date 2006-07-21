@@ -71,5 +71,10 @@
       $this->_record= NULL;
       return $instance;
     }
+    
+    function current() { }
+    function key() { }
+    function valid() { }
+    function rewind() { }
   } 
 ?>

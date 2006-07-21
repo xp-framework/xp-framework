@@ -80,7 +80,7 @@
           $arguments
         )));
       }
-
+      
       if (0 == $this->numTests()) {
         throw(new NoSuchElementException('No tests found in ', $class->getName()));
       }

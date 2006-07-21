@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.types.ArrayList');
+  uses('lang.types.ArrayList', 'remote.protocol.SerializerMapping');
 
   /**
    * Mapping for strictly numeric arrays

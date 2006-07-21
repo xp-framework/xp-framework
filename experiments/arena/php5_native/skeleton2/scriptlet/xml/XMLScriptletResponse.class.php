@@ -198,7 +198,7 @@
         ('formerrors' == $node->name) ||
         ('formvalues' == $node->name)
       ) {
-        return throw(new IllegalArgumentException($node->name.' not allowed here'));
+        throw(new IllegalArgumentException($node->name.' not allowed here'));
       }
       return $this->document->formresult->addChild($node);
     }

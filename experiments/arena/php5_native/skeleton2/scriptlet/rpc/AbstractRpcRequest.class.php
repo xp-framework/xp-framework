@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('scriptlet.HttpScriptletRequest');
+  uses(
+    'scriptlet.HttpScriptletRequest',
+    'util.log.Traceable'
+  );
 
   /**
    * RPC request

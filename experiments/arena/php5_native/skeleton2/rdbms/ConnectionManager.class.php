@@ -4,7 +4,11 @@
  * $Id$ 
  */
   
-  uses('rdbms.ConnectionNotRegisteredException', 'rdbms.DriverManager');
+  uses(
+    'rdbms.ConnectionNotRegisteredException', 
+    'rdbms.DriverManager',
+    'util.Configurable'
+  );
   
   /**
    * ConnectionManager
@@ -22,7 +26,7 @@
      * @access  public
      * @return  &rdbms.ConnectionManager
      */
-    public function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
       
       if (!$instance) $instance= new ConnectionManager();

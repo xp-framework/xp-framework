@@ -96,7 +96,7 @@
      * @param   string in
      * @return  int
      */
-    public function _strtotime($in) {
+    public static function _strtotime($in) {
       static $month_names= array(
         'Jan' => 1,
         'Feb' => 2,
@@ -154,7 +154,7 @@
      * @param   int is_dst default -1
      * @return  int stamp
      */
-    public function mktime($hour= 0, $minute= 0, $second= 0, $month= 0, $day= 0, $year= 0, $is_dst= -1) {
+    public static function mktime($hour= 0, $minute= 0, $second= 0, $month= 0, $day= 0, $year= 0, $is_dst= -1) {
       static $month_table= array(
         array(NULL, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
         array(NULL, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) // Leap years
@@ -229,7 +229,7 @@
      * @param   int stamp
      * @return  array
      */
-    public function _getdate($stamp, $isGMT= FALSE) {
+    public static function _getdate($stamp, $isGMT= FALSE) {
       static $month_table= array(
         array(NULL, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
         array(NULL, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) // Leap years
@@ -359,8 +359,8 @@
      * @access  public
      * @return  &util.Date
      */
-    public function &now() {
-      $d= &new Date(NULL);
+    public static function &now() {
+      $d= new Date(NULL);
       return $d;
     }
     
@@ -378,7 +378,7 @@
      * @param   string str
      * @return  &util.Date
      */
-    public function &fromString($str) {
+    public static function &fromString($str) {
       $d= &new Date($str);
       return $d;
     }

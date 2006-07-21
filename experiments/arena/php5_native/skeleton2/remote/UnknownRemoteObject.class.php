@@ -66,7 +66,6 @@
      */
     public function __set($name, $value) {
       throw(new IllegalAccessException('Access to undefined member "'.$name.'"'));
-      return FALSE;
     }
     
     /**
@@ -77,9 +76,8 @@
      * @param   &mixed value
      * @return  bool TRUE on success
      */
-    public function __get($name, &$value) {
+    public function __get($name) {
       throw(new IllegalAccessException('Access to undefined member "'.$name.'"'));
-      return FALSE;
     }
   
     /**
@@ -92,10 +90,10 @@
      * @return  bool TRUE on success
      * @throws  lang.IllegalAccessException
      */
-    public function __call($name, $args, &$return) {
+    public function __call($name, $args) {
       throw(new IllegalAccessException('Cannot call method "'.$name.'" on an unknown remote object'));
       return FALSE;
     }
 
-  } overload('UnknownRemoteObject');
+  }
 ?>

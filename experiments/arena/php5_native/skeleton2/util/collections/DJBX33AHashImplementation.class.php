@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.collections.HashImplementation');
+
   /**
    * DJBX33A (Daniel J. Bernstein, Times 33 with Addition)
    *

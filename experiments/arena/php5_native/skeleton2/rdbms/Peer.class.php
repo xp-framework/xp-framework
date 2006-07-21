@@ -38,6 +38,7 @@
      * @param   string identifier
      */
     public function __construct($identifier) {
+      parent::__construct();
       $this->identifier= $identifier;
     }
 
@@ -118,7 +119,7 @@
      * @param   string identifier
      * @return  &rdbms.Peer
      */
-    public function &getInstance($identifier) {
+    public static function &getInstance($identifier) {
       static $instance= array();
       
       if (!isset($instance[$identifier])) {
@@ -134,7 +135,7 @@
      * @param   string fully qualified class name
      * @return  &rdbms.Peer
      */
-    public function &forName($classname) {
+    public static function &forName($classname) {
       return Peer::getInstance(xp::reflect($classname));
     }
 
@@ -145,7 +146,7 @@
      * @param   &lang.Object instance
      * @return  &rdbms.Peer
      */
-    public function &forInstance(&$instance) {
+    public static function &forInstance(&$instance) {
       return Peer::getInstance(get_class($instance));
     }
     

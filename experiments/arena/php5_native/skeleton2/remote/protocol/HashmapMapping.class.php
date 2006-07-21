@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Hashmap');
+  uses('util.Hashmap', 'remote.protocol.SerializerMapping');
 
   /**
    * Mapping for Hashmaps

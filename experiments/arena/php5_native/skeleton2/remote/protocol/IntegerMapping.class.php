@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.types.Integer');
+  uses('lang.types.Integer', 'remote.protocol.SerializerMapping');
 
   /**
    * Mapping for lang.types.Integer

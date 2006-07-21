@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('remote.protocol.SerializerMapping');
+  
   /**
    * Interface for serializer mappings
    *

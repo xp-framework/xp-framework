@@ -26,7 +26,7 @@
      * @model   static
      * @access  public
      */
-    public function flush() {
+    public static function flush() {
       fflush(STDOUT);
     }
 
@@ -37,7 +37,7 @@
      * @access  public
      * @param   mixed* args
      */
-    public function write() {
+    public static function write() {
       $a= func_get_args();
       fwrite(STDOUT, implode('', $a));
     }
@@ -49,7 +49,7 @@
      * @access  public
      * @param   mixed* args
      */
-    public function writeLine() {
+    public static function writeLine() {
       $a= func_get_args();
       fwrite(STDOUT, implode('', $a)."\n");
     }
@@ -63,7 +63,7 @@
      * @param   mixed* args
      * @see     php://printf
      */
-    public function writef() {
+    public static function writef() {
       $a= func_get_args();
       fwrite(STDOUT, vsprintf(array_shift($a), $a));
     }
@@ -76,7 +76,7 @@
      * @param   string format
      * @param   mixed* args
      */
-    public function writeLinef() {
+    public static function writeLinef() {
       $a= func_get_args();
       fwrite(STDOUT, vsprintf(array_shift($a), $a)."\n");
     }
@@ -89,7 +89,7 @@
      * @param   string prompt = NULL
      * @return  string
      */    
-    public function readLine($prompt= NULL) {
+    public static function readLine($prompt= NULL) {
       $prompt && Console::write($prompt.' ');
       $r= '';
       while ($bytes= fgets(STDIN, 0x20)) {
@@ -106,7 +106,7 @@
      * @param   string prompt = NULL
      * @return  string
      */    
-    public function read($prompt= NULL) {
+    public static function read($prompt= NULL) {
       $prompt && Console::write($prompt.' ');
       return fgetc(STDIN);
     }

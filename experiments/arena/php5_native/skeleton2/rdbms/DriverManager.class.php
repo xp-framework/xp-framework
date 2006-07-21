@@ -37,7 +37,7 @@
      * @access  public
      * @return  &rdbms.DriverManager
      */
-    public function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
       
       if (!$instance) $instance= new DriverManager();
@@ -59,7 +59,7 @@
      * @param   string name identifier
      * @param   &lang.XPClass class
      */
-    public function register($name, &$class) {
+    public static function register($name, &$class) {
       $i= &DriverManager::getInstance();
       $i->drivers[$name]= &$class;
     }
@@ -73,7 +73,7 @@
      * @return  &rdbms.DBConnection
      * @throws  rdbms.DriverNotSupportedException
      */
-    public function &getConnection($str) {
+    public static function &getConnection($str) {
       static $builtin= array(
         'sybase'   => 'rdbms.sybase.SybaseConnection',
         'mysql'    => 'rdbms.mysql.MySQLConnection',

@@ -63,5 +63,10 @@
       next($this->_hash);
       return $this->_key;
     }
+    
+    public function current() { return NULL; }
+    public function key() { return NULL; }
+    public function valid() { return NULL; }
+    public function rewind() { return NULL; }
   } 
 ?>

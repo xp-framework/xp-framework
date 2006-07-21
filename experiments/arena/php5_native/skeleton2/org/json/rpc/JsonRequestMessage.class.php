@@ -31,10 +31,7 @@
       $msg->data= $data;
       $msg->id= $data['id'];
       
-      list($cn, $method)= explode('.', $data['method']);
-      $msg->setHandlerClass($cn);
-      $msg->setMethod($method);
-      
+      list($msg->class, $msg->method)= explode('.', $data['method']);
       return $msg;
     }
     

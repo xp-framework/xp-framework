@@ -4,7 +4,12 @@
  * $Id$ 
  */
  
-  uses('io.Stream', 'text.StringTokenizer', 'org.json.JsonException');
+  uses(
+    'io.Stream', 
+    'text.StringTokenizer', 
+    'org.json.JsonException',
+    'org.json.IJsonDecoder'
+  );
 
   // Defines for the tokenizer
   define('JSON_TOKEN_LBRACE',     0x0000);

@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.collections.Map');
+
   /**
    * Hash table consisting of non-null objects as keys and values
    *

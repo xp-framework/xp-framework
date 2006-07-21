@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('rdbms.criterion.SimpleExpression');
+  uses(
+    'rdbms.criterion.SimpleExpression',
+    'rdbms.SQLExpression'
+  );
   
   define('ASCENDING',       'asc');
   define('DESCENDING',      'desc');

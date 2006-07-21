@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.types.Byte');
+  uses('lang.types.Byte', 'remote.protocol.SerializerMapping');
 
   /**
    * Mapping for lang.types.Byte

@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('xml.XML', 'xml.parser.XMLParser', 'xml.Node');
+  uses('xml.XML', 'xml.parser.XMLParser', 'xml.Node', 'xml.parser.ParserCallback');
  
   /**
    * The Tree class represents a tree which can be exported

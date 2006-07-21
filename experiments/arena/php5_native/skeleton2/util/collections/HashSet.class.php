@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('util.collections.HashProvider');
+  uses(
+    'util.collections.HashProvider',
+    'util.collections.Set'
+  );
 
   /**
    * A set of objects

@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('remote.protocol.SerializerMapping');
+  
   /**
    * Mapping for lang.StackTraceElement
    *

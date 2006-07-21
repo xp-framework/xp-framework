@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.types.Float');
+  uses('lang.types.Float', 'remote.protocol.SerializerMapping');
 
   /**
    * Mapping for lang.types.Float
