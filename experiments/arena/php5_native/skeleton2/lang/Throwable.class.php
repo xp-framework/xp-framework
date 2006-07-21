@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.StackTraceElement');
+  uses('lang.AnyObject', 'lang.StackTraceElement');
 
   /**
    * Throwable
@@ -14,7 +14,7 @@
    * @test     xp://net.xp_framework.unittest.core.ExceptionsTest
    * @purpose  Base class
    */
-  class Throwable extends Object {
+  class Throwable extends Exception implements AnyObject {
     public 
       $message  = '',
       $trace    = array();
@@ -31,6 +31,7 @@
         'call_user_func'        => 1, 
         'object'                => 1
       );
+      $this->__id= microtime();
       $this->message= $message;
       
       $errors= xp::registry('errors');
@@ -60,7 +61,7 @@
       // Remaining error messages
       foreach ($errors as $file => $list) {
         $class= ('.class.php' == substr($file, -10)
-          ? strtolower(substr(basename($file), 0, -10))
+          ? substr(basename($file), 0, -10)
           : '<main>'
         );
         
@@ -103,16 +104,6 @@
           );
         }   
       }
-    }
-
-    /**
-     * Get Message
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getMessage() {
-      return $this->message;
     }
 
     /**
@@ -163,6 +154,50 @@
         $s.= $this->trace[$i]->toString(); 
       }
       return $s;
+    }
+
+    /**
+     * Returns a hashcode for this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function hashCode() {
+      return $this->__id;
+    }
+    
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     *
+     * @access  public
+     * @param   &lang.Object cmp
+     * @return  bool TRUE if the compared object is equal to this object
+     */
+    function equals(&$cmp) {
+      return $this === $cmp;
+    }
+    
+    /** 
+     * Returns the fully qualified class name for this class 
+     * (e.g. "io.File")
+     * 
+     * @access  public
+     * @return  string fully qualified class name
+     */
+    function getClassName() {
+      return xp::nameOf(get_class($this));
+    }
+
+    /**
+     * Returns the runtime class of an object.
+     *
+     * @access  public
+     * @return  &lang.XPClass runtime class
+     * @see     xp://lang.XPClass
+     */
+    function &getClass() {
+      $c= &new XPClass($this);
+      return $c;
     }
   }
 ?>

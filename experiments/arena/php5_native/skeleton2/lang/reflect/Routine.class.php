@@ -33,8 +33,9 @@
      * @param   string name
      */    
     public function __construct(&$ref, $name) {
+      parent::__construct();
       $this->_ref= is_object($ref) ? get_class($ref) : $ref;
-      $this->name= strtolower($name);
+      $this->name= $name;
     }
 
     /**

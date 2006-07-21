@@ -4,41 +4,21 @@
  * $Id$
  */
  
-  uses('lang.AnyObject');
-
   /**
    * Class Object is the root of the class hierarchy. Every class has 
    * Object as a superclass. 
    *
    * @purpose  Base class for all others
    */
-  class Object implements AnyObject {
-    public $__id;
+  interface AnyObject {
     
-    /**
-     * Constructor wrapper 
-     * 
-     * @access  private
-     */
-    public function __construct() {
-      $this->__id= microtime();
-      if (method_exists($this, '__destruct'))
-        register_shutdown_function(array(&$this, '__destruct'));
-    }
-    
-    public function __clone() {
-      $this->__construct();
-    }
-
     /**
      * Returns a hashcode for this object
      *
      * @access  public
      * @return  string
      */
-    public function hashCode() {
-      return $this->__id;
-    }
+    public function hashCode();
     
     /**
      * Indicates whether some other object is "equal to" this one.
@@ -47,9 +27,7 @@
      * @param   &lang.Object cmp
      * @return  bool TRUE if the compared object is equal to this object
      */
-    public function equals(&$cmp) {
-      return $this === $cmp;
-    }
+    public function equals(&$cmp);
     
     /** 
      * Returns the fully qualified class name for this class 
@@ -58,9 +36,7 @@
      * @access  public
      * @return  string fully qualified class name
      */
-    public function getClassName() {
-      return xp::nameOf(get_class($this));
-    }
+    public function getClassName();
 
     /**
      * Returns the runtime class of an object.
@@ -69,10 +45,7 @@
      * @return  &lang.XPClass runtime class
      * @see     xp://lang.XPClass
      */
-    public function &getClass() {
-      $c= &new XPClass($this);
-      return $c;
-    }
+    public function &getClass();
 
     /**
      * Creates a string representation of this object. In general, the toString 
@@ -95,8 +68,6 @@
      * @access  public
      * @return  string
      */
-    public function toString() {
-      return $this->getClassName().'@'.var_export($this, 1);
-    }
+    public function toString();
   }
 ?>

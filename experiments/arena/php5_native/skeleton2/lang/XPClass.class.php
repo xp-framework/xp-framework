@@ -59,6 +59,7 @@
      * @param   &mixed ref either a class name or an object
      */
     public function __construct(&$ref) {
+      parent::__construct();
       $this->_objref= &$ref;
       $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
     }
@@ -71,7 +72,7 @@
      * @return  bool
      */
     public function equals(&$cmp) {
-      return (is_a($cmp, 'XPClass') 
+      return (is('XPClass', $cmp) 
         ? 0 == strcmp($this->getName(), $cmp->getName())
         : FALSE
       );
@@ -143,7 +144,7 @@
      */
     public function _methods() {
       $methods= array_flip(get_class_methods($this->_objref));
-      
+
       // Well-known methods
       unset($methods['__construct']);
       unset($methods['__destruct']);
@@ -199,7 +200,7 @@
      * @return  bool TRUE if method exists
      */
     public function hasMethod($method) {
-      return in_array(strtolower($method), $this->_methods());
+      return in_array($method, $this->_methods());
     }
     
     /**
@@ -300,7 +301,7 @@
       $cmp= xp::reflect($this->name);
       $name= xp::reflect($name);
       while ($cmp= get_parent_class($cmp)) {
-        if ($cmp == $name) return TRUE;
+        if (0 == strcasecmp($cmp, $name)) return TRUE;
       }
       return FALSE;
     }
@@ -333,7 +334,8 @@
      * @return  bool
      */
     public function isInterface() {
-      return $this->isSubclassOf('lang.Interface');
+      $rc= &new ReflectionClass(xp::reflect($this->getName()));
+      return $rc->isInterface();
     }
     
     /**
@@ -426,7 +428,7 @@
      * @param   string class fully qualified class name
      * @return  array or NULL to indicate no details are available
      */
-    public function detailsForClass($class) {
+    public static function detailsForClass($class) {
       static $details= array();
 
       if (!$class) return NULL;        // Border case
@@ -443,9 +445,10 @@
         $annotations= array();
         $comment= NULL;
         $members= TRUE;
-        $tokens= token_get_all(file_get_contents($file));
+        $tokens= token_get_all($str= file_get_contents($file));
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
           switch ($tokens[$i][0]) {
+            case T_DOC_COMMENT:
             case T_COMMENT:
               // Apidoc comment
               if (strncmp('/**', $tokens[$i][1], 3) == 0) {
@@ -493,7 +496,7 @@
             case T_FUNCTION:
               $members= FALSE;
               while (T_STRING !== $tokens[$i][0]) $i++;
-              $m= strtolower($tokens[$i][1]);
+              $m= $tokens[$i][1];
               $details[$class][1][$m]= array(
                 DETAIL_MODIFIERS    => 0,
                 DETAIL_ARGUMENTS    => array(),
@@ -566,8 +569,7 @@
      * @param   string method
      * @return  array
      */
-    public function detailsForMethod($class, $method) {
-      $method= strtolower($method);
+    public static function detailsForMethod($class, $method) {
       while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
         if (isset($details[1][$method])) return $details[1][$method];
         $class= get_parent_class($class);
@@ -585,8 +587,7 @@
      * @param   string method
      * @return  array
      */
-    public function detailsForField($class, $field) {
-      $field= strtolower($field);
+    public static function detailsForField($class, $field) {
       while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
         if (isset($details[0][$field])) return $details[0][$field];
         $class= get_parent_class($class);
@@ -605,7 +606,7 @@
      * @return  &lang.XPClass class object
      * @throws  lang.ClassNotFoundException when there is no such class
      */
-    public function &forName($name, $classloader= NULL) {
+    public static function &forName($name, $classloader= NULL) {
       if (NULL === $classloader) {
         $classloader= &ClassLoader::getDefault();
       }
@@ -621,7 +622,7 @@
      * @access  public
      * @return  &lang.XPClass[] class objects
      */
-    public function &getClasses() {
+    public static function &getClasses() {
       $ret= array();
       foreach (get_declared_classes() as $name) {
         if (xp::registry('class.'.$name)) $ret[]= &new XPClass($name);

@@ -26,6 +26,7 @@
      * @param   &lang.reflect.InvocationHandler handler
      */
     public function __construct(&$handler) {
+      parent::__construct();
       $this->_h= &$handler;
     }
     

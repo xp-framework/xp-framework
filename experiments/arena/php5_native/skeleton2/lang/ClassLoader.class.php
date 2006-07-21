@@ -37,7 +37,7 @@
      * @access  public
      * @return  &lang.ClassLoader
      */
-    public function &getDefault() {
+    public static function &getDefault() {
       static $instance= NULL;
       
       if (!$instance) $instance= new ClassLoader();
@@ -73,7 +73,7 @@
     public function &loadClass($class) {
       $name= xp::reflect($class);
 
-      if (!class_exists($name)) {
+      if (!class_exists($name) && !interface_exists($name)) {
         $qname= $this->classpath.$class;
         if (FALSE === include(strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php')) {
           throw(new ClassNotFoundException('Class "'.$qname.'" not found'));
@@ -98,7 +98,7 @@
     public function &defineClass($class, $bytes) {
       $name= xp::reflect($class);
 
-      if (!class_exists($name)) {
+      if (!class_exists($name) && !interface_exists($name)) {
         $qname= $this->classpath.$class;
         if (FALSE === eval($bytes)) {
           throw(new FormatException('Cannot define class "'.$qname.'"'));
