@@ -30,7 +30,7 @@
         $method
       )= explode('#', str_replace('"', '', $this->getHeader('SOAPAction')));
       
-      $m->setClass($class);
+      $m->setHandlerClass($class);
       $m->setMethod($method);
       return $m;
     }

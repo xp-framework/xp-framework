@@ -171,7 +171,7 @@
 
       // Create message from request data
       try(); {
-        $class= &$this->classloader->loadClass(ucfirst($msg->getClass()).'Handler');
+        $class= &$this->classloader->loadClass(ucfirst($msg->getHandlerClass()).'Handler');
       } if (catch('ClassNotFoundException', $e)) {
         return throw($e);
       }
