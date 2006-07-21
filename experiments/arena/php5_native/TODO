@@ -1,0 +1,15 @@
+$Id$
+
+List of TODOs
+=============
+* rewrite xml package to no longer use DOMXML
+
+* fix migrate.php to put the interface's class name into
+  the uses() clause
+  
+* automatically rewrite Exception -> XException
+
+* agree on new class names:
+  . interface AnyObject
+  . class Object
+  . class XException extends Exception

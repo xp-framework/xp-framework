@@ -1,0 +1,34 @@
+$Id$
+
+Status of unittests packages:
+=============================
+
+These packages reference the collections in trunk/util/tests/.
+
+Fully working unittests:
+------------------------
+- cli (5 tests, 5 succeeded, 0 failed, 0 skipped)
+- collections (64 tests, 64 succeeded, 0 failed, 0 skipped)
+- imaging (6 tests, 6 succeeded, 0 failed, 0 skipped)
+- io (6 tests, 6 succeeded, 0 failed, 0 skipped)
+- ldap (12 tests, 12 succeeded, 0 failed, 0 skipped)
+- logging (14 tests, 14 succeeded, 0 failed, 0 skipped)
+- security (1 tests, 1 succeeded, 0 failed, 0 skipped)
+- string (4 tests, 4 succeeded, 0 failed, 0 skipped)
+- util (34 tests, 34 succeeded, 0 failed, 0 skipped)
+- workflow-casters (11 tests, 11 succeeded, 0 failed, 0 skipped)
+
+Partially working unittests:
+----------------------------
+- date (14 tests, 11 succeeded, 3 failed, 0 skipped)
+- core (114 tests, 111 succeeded, 3 failed, 0 skipped) + 8 ignored
+- isbn (5 tests, 4 succeeded, 1 failed, 0 skipped)
+- rdbms (59 tests, 56 succeeded, 3 failed, 0 skipped)
+- remote (39 tests, 37 succeeded, 2 failed, 0 skipped) + 1 ignored
+- types (8 tests, 2 succeeded, 6 failed, 0 skipped)
+- unittest (29 tests, 28 succeeded, 1 failed, 0 skipped)
+
+Non-working unittests:
+----------------------
+- xml (uses DOMXML, not available in PHP5)
+- webservices (Interface violated)
