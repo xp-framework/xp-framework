@@ -342,7 +342,7 @@
      * @return  bool
      */
     public function assertSubclass(&$var, $name, $error= 'notsubclass') {
-      if (!$var instanceOf XObject && !$var instanceOf Exception) {
+      if (!$var instanceOf AnyObject && !$var instanceOf Exception) {
         return $this->fail($error, $pattern, $var);
       }
       if (!is($name, $var)) {
