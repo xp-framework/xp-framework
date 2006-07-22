@@ -27,7 +27,7 @@
     }
     
     public function __clone() {
-      $this->__construct();
+      $this->__id= microtime();
     }
 
     /**
