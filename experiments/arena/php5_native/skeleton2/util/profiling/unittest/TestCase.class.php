@@ -215,7 +215,7 @@
         return TRUE;
       } 
       
-      return is_a($a, 'Object') ? $a->equals($b) : $a === $b;
+      return $a instanceOf AnyObject ? $a->equals($b) : $a === $b;
     }
 
     /**
