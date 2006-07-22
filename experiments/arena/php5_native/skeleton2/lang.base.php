@@ -39,7 +39,7 @@
         return '<null>';
       } else if (is_int($arg) || is_float($arg)) {
         return (string)$arg;
-      } else if ($arg instanceOf XObject && !isset($protect[$arg->__id])) {
+      } else if ($arg instanceOf AnyObject && !isset($protect[$arg->__id])) {
         $protect[$arg->__id]= TRUE;
         $s= $arg->toString();
         unset($protect[$arg->__id]);
