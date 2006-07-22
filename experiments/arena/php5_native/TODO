@@ -11,5 +11,5 @@ List of TODOs
 
 * agree on new class names:
   . interface AnyObject
-  . class Object
-  . class XException extends Exception
+  . class Object implements AnyObject
+  . class XException extends Exception implements AnyObject

@@ -17,16 +17,16 @@ Fully working unittests:
 - string (4 tests, 4 succeeded, 0 failed, 0 skipped)
 - util (34 tests, 34 succeeded, 0 failed, 0 skipped)
 - workflow-casters (11 tests, 11 succeeded, 0 failed, 0 skipped)
+- date (14 tests, 14 succeeded, 0 failed, 0 skipped)
+- isbn (5 tests, 5 succeeded, 0 failed, 0 skipped)
+- core (114 tests, 114 succeeded, 0 failed, 0 skipped) + 8 ignored
+- remote (39 tests, 39 succeeded, 0 failed, 0 skipped) + 1 ignored
+- unittest (29 tests, 29 succeeded, 0 failed, 0 skipped)
+- rdbms (59 tests, 59 succeeded, 0 failed, 0 skipped)
+- types (8 tests, 8 succeeded, 0 failed, 0 skipped)
 
 Partially working unittests:
 ----------------------------
-- date (14 tests, 11 succeeded, 3 failed, 0 skipped)
-- core (114 tests, 111 succeeded, 3 failed, 0 skipped) + 8 ignored
-- isbn (5 tests, 4 succeeded, 1 failed, 0 skipped)
-- rdbms (59 tests, 56 succeeded, 3 failed, 0 skipped)
-- remote (39 tests, 37 succeeded, 2 failed, 0 skipped) + 1 ignored
-- types (8 tests, 2 succeeded, 6 failed, 0 skipped)
-- unittest (29 tests, 28 succeeded, 1 failed, 0 skipped)
 
 Non-working unittests:
 ----------------------
