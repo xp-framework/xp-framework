@@ -23,6 +23,7 @@
      * @param   string value
      */
     public function __construct($value) {
+      parent::__construct();
       $this->value= (string)$value;
     }
     
