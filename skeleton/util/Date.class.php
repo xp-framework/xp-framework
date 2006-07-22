@@ -113,7 +113,7 @@
       );
       
       // Try to use builtin function strtotime()
-      if (-1 != ($stamp= strtotime($in))) return $stamp;
+      if (-1 != ($stamp= strtotime($in)) && FALSE !== $stamp) return $stamp;
       
       // European date format (dd.mm.yyyy hh:mm:ss). At least two values
       // need to be found
