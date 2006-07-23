@@ -23,7 +23,7 @@
     function compare($a, $b); 
   }
   
-  echo xp::instance('Comparator', '{
+  echo xp::instance('Comparator', array(), '{
     function compare($a, $b) { 
       return strcmp($a, $b); 
     }
