@@ -8,6 +8,10 @@
   class XPException extends Exception {
     public $cause= NULL;
     public static $instance= NULL;
+
+    function __toString() { 
+      return $this->cause->toString(); 
+    }
   }
 
   final class null {
@@ -45,11 +49,19 @@
       $c= new ReflectionClass($name);
       return $c->getConstructor() ? $c->newInstanceArgs($args) : $c->newInstance();
     }
+    
+    public static function handleexception($e) {
+      if ($e instanceof XPException && $e->cause instanceof xp·lang·SystemExit) {
+        exit($e->cause->message);
+      }
+      echo $e;
+    }
   }
   
   // {{{ Init
   xp::$null= new null();
   XPException::$instance= new XPException();
+  set_exception_handler(array('xp', 'handleexception'));
   // }}}
   
   // {{{ Builtin classes
