@@ -9,7 +9,13 @@
   class Php5Emitter extends Emitter {
     var
       $bytes   = '',
-      $context = array();
+      $context = array(),
+      $operators= array(
+        '*' => 'times',
+        '+' => 'plus',
+        '-' => 'minus',
+        '/' => 'divide'
+      );
       
     function __construct() {
       $this->bytes= "<?php\n  require('php5-emit/__xp__.php');\n  ";
@@ -32,6 +38,15 @@
     
     function qualifiedName($class) {
       return strtr((strstr($class, '~') ? '' : $this->context['package']).$class , '~', '·');
+    }
+    
+    function typeOf(&$node) {
+      if (is_a($node, 'NewNode')) {
+        return $node->class->name;
+      } else if (is_a($node, 'VariableNode')) {
+        return $this->context['types'][$node->name];
+      }
+      return NULL;  // Unknown
     }
 
     function emitAll($nodes) {
@@ -123,8 +138,10 @@
 
     function emitClassDeclaration(&$node) {
       $this->context['properties']= array();
+      $this->context['class']= $this->qualifiedName($node->name);
+      $this->context['operators'][$this->context['class']]= array();
       
-      $this->bytes.= 'class '.$this->qualifiedName($node->name).' extends ';
+      $this->bytes.= 'class '.$this->context['class'].' extends ';
       $this->bytes.= $this->qualifiedName($node->extends ? $node->extends : 'xp~lang~Object');
       $this->bytes.= '{';
       foreach ($node->statements as $node) {
@@ -212,7 +229,19 @@
       $this->bytes.= '->'.$node->member;
     }
 
-    function emitBinary(&$node) { 
+    function emitBinary(&$node) {
+      $type= $this->typeOf($node->left);
+      
+      // Check for operator overloading
+      if (isset($this->context['operators'][$type][$node->operator])) {
+        return $this->emitMethodCall(new MethodCallNode(
+          $type, 
+          '__operator'.$this->operators[$node->operator],
+          array($node->left, $node->right)
+        ));
+      }
+      
+      // Regular operator
       $this->emit($node->left);
       $this->bytes.= $node->operator;
       $this->emit($node->right);
@@ -231,6 +260,8 @@
       $this->emit($node->variable);
       $this->bytes.= '= ';
       $this->emit($node->expression);
+
+      $this->context['types'][$node->variable->name]= $this->typeOf($node->expression);
     }
 
     function emitBinaryAssign(&$node) { 
@@ -369,6 +400,23 @@
         }
       }
       $members && $this->bytes.= implode(' ', $this->modifierNames($node->modifiers)).' '.substr($members, 0, -2).';';
+    }
+
+    function emitOperatorDeclaration(&$node) {       
+      $this->context['operators'][$this->context['class']][$node->name]= TRUE;
+      $this->bytes.= 'function __operator'.$this->operators[$node->name].'(';
+      foreach ($node->parameters as $param) {
+        $this->bytes.= $param->name;
+        if ($param->default) {
+          $this->bytes.= '= ';
+          $this->emit($param->default);
+        }
+        $this->bytes.= ', ';
+      }
+      $node->parameters && $this->bytes= substr($this->bytes, 0, -2);
+      $this->bytes.= ') {';
+      $this->emitAll($node->statements);
+      $this->bytes.= '}';
     }
   }
 ?>

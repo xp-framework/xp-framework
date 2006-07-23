@@ -108,5 +108,7 @@
     function emitPostInc(&$node) { }
     
     function emitMemberDeclarationList(&$node) { }
+    
+    function emitOperatorDeclaration(&$node) { }
   }
 ?>
