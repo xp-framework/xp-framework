@@ -24,6 +24,10 @@
      */
     function __construct($name) {
       $this->name= $name;
-    }  
+    }
+    
+    function hashCode() {
+      return $this->name;
+    }
   }
 ?>
