@@ -91,6 +91,11 @@
   }
 
   class xp·lang·Exception extends xp·lang·Throwable { }
+  class xp·lang·SystemExit extends xp·lang·Throwable { 
+    public function __construct($message= 0) {
+      parent::__construct($message);
+    }
+  }
   class xp·lang·IllegalAccessException extends xp·lang·Exception { }
   class xp·lang·NullPointerException extends xp·lang·Exception { }
   class xp·io·IOException extends xp·lang·Exception { }
