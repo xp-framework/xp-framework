@@ -263,16 +263,35 @@
     }
 
     function emitNew(&$node) {
-      $node->instanciation->chain && $this->bytes.= 'xp::create(';
-      $this->bytes.= 'new '.$this->qualifiedName($node->class->name).'(';
-      foreach ($node->instanciation->arguments as $arg) {
-        $this->emit($arg);
-        $this->bytes.= ', ';
+      if ($node->instanciation->declaration) {
+        $this->bytes.= 'xp::instance(\''.$this->qualifiedName($node->class->name).'\', array(';
+        foreach ($node->instanciation->arguments as $arg) {
+          $this->emit($arg);
+          $this->bytes.= ', ';
+        }
+        $node->instanciation->arguments && $this->bytes= substr($this->bytes, 0, -2);
+        $this->bytes.= '), \'{';
+        $b= $this->bytes;
+
+        $this->bytes= '';
+        foreach ($node->instanciation->declaration as $decl) {
+          $this->emit($decl);
+        }
+
+        $this->bytes= $b.str_replace('\'', '\\\'', $this->bytes).'}\'';
+        $node->instanciation->chain || $this->bytes.= ')';
+      } else {
+        $node->instanciation->chain && $this->bytes.= 'xp::create(';
+        $this->bytes.= 'new '.$this->qualifiedName($node->class->name).'(';
+        foreach ($node->instanciation->arguments as $arg) {
+          $this->emit($arg);
+          $this->bytes.= ', ';
+        }
+        $node->instanciation->arguments && $this->bytes= substr($this->bytes, 0, -2);
+        $this->bytes.= ')';
       }
-      $node->instanciation->arguments && $this->bytes= substr($this->bytes, 0, -2);
-      $this->bytes.= ')';
+
       if (!$node->instanciation->chain) return;
-      
       $this->bytes.= ')';
       foreach ($node->instanciation->chain as $node) {
         $this->emit($node);
