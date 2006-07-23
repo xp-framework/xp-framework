@@ -1,0 +1,8 @@
+package de~thekid~dialog {
+
+  class Album extends xp~lang~Object {
+  
+  }
+}
+
+echo new de~thekid~dialog~Album()->toString();
