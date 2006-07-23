@@ -278,21 +278,6 @@
       $this->bytes.= '}';
     }
 
-    function emitCatch(&$node) { 
-      $this->bytes.= '} catch (XPException $__e) { ';
-      $this->bytes.= 'if ($__e->cause instanceof '.$this->qualifiedName($node->class).') { ';
-      $this->bytes.= $node->variable.'= $__e->cause; ';
-      $this->emitAll($node->statements);
-      
-      foreach ($node->catches as $catch) {
-        $this->bytes.= '} else if ($__e->cause instanceof '.$this->qualifiedName($node->class).') { ';
-        $this->bytes.= $catch->variable.'= $__e->cause; ';
-        $this->emitAll($catch->statements);
-      }
-      
-      $this->bytes.= '} else { throw $__e; } }';
-    }
-
     function emitExit(&$node) { 
       $this->bytes.= 'throw xp::exception(new xp·lang·SystemExit(';
       $node->expression && $this->emit($node->expression);
@@ -337,8 +322,30 @@
 
     function emitTry(&$node) { 
       $this->bytes.= "try {\n  ";
-      $this->emitAll($node->statements);
-      $this->emit($node->catch);
+      $this->emitAll($node->statements);      
+
+      $this->bytes.= '} catch (XPException $__e) { ';
+      $this->bytes.= 'if ($__e->cause instanceof '.$this->qualifiedName($node->catch->class).') { ';
+      $this->bytes.= $node->catch->variable.'= $__e->cause; ';
+      
+      foreach ($node->catch->statements as $stmt) {
+        if (is_a($stmt, 'ReturnNode') || is_a($stmt, 'ThrowNode')) {
+          $node->finally && $this->emitAll($node->finally->statements);
+        }
+      
+        $this->emit($stmt);
+        $this->bytes.= ';';
+      }
+      
+      foreach ($node->catch->catches as $catch) {
+        $this->bytes.= '} else if ($__e->cause instanceof '.$this->qualifiedName($catch->class).') { ';
+        $this->bytes.= $catch->variable.'= $__e->cause; ';
+        $this->emitAll($catch->statements);
+      }
+      
+      $this->bytes.= '} else { throw $__e; } }';
+      
+      $node->finally && $this->emitAll($node->finally->statements);
     }
 
     function emitEcho(&$node) {
