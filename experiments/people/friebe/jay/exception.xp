@@ -1,5 +1,5 @@
 package test {
-  class Exception {
+  class Exception extends xp~lang~Exception {
     protected $msg;
 
     public __construct($msg) {
@@ -11,7 +11,7 @@ package test {
     }
   }
 
-  class IllegalException {
+  class IllegalException extends xp~lang~Exception {
     protected $msg;
 
     public __construct($msg) {
