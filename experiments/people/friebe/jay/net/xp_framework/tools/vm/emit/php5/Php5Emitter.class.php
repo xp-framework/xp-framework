@@ -283,8 +283,14 @@
       $this->bytes.= 'if ($__e->cause instanceof '.$this->qualifiedName($node->class).') { ';
       $this->bytes.= $node->variable.'= $__e->cause; ';
       $this->emitAll($node->statements);
+      
+      foreach ($node->catches as $catch) {
+        $this->bytes.= '} else if ($__e->cause instanceof '.$this->qualifiedName($node->class).') { ';
+        $this->bytes.= $catch->variable.'= $__e->cause; ';
+        $this->emitAll($catch->statements);
+      }
+      
       $this->bytes.= '} else { throw $__e; } }';
-      // TODO more catches
     }
 
     function emitExit(&$node) { 
@@ -417,6 +423,12 @@
       $this->bytes.= ') {';
       $this->emitAll($node->statements);
       $this->bytes.= '}';
+    }
+
+    function emitThrow(&$node) {       
+      $this->bytes.= 'throw xp::exception(';
+      $this->emit($node->value);
+      $this->bytes.= ')';
     }
   }
 ?>

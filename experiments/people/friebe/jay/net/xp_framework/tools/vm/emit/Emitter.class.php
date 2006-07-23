@@ -110,5 +110,7 @@
     function emitMemberDeclarationList(&$node) { }
     
     function emitOperatorDeclaration(&$node) { }
+
+    function emitThrow(&$node) { }   
   }
 ?>
