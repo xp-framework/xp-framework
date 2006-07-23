@@ -36,12 +36,14 @@
       return $o; 
     }
 
-    public static function instance($class, $bytes) { 
+    public static function instance($class, $args, $bytes) { 
       static $c= 0;
       
       $name= $class.($c++);
       eval('class '.$name.(interface_exists($class) ? ' extends xp·lang·Object implements ' : ' extends ').$class.$bytes);
-      return new $name();
+
+      $c= new ReflectionClass($name);
+      return $c->getConstructor() ? $c->newInstanceArgs($args) : $c->newInstance();
     }
   }
   
