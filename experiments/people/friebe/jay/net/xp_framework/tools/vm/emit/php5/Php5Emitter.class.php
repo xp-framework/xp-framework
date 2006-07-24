@@ -204,9 +204,9 @@
       if ($this->context['properties']) {
         $this->bytes.= "\n".'static $__properties= array(';
         foreach ($this->context['properties'] as $property) {
-          $this->bytes.= "\n  '".substr($property->args[0], 1)."' => array(".
-            ($property->args[2]['get'] ? "'".$property->args[2]['get']."'" : 'NULL').', '.
-            ($property->args[2]['set'] ? "'".$property->args[2]['set']."'" : 'NULL').
+          $this->bytes.= "\n  '".substr($property->name, 1)."' => array(".
+            ($property->accessors['get'] ? "'".$property->accessors['get']."'" : 'NULL').', '.
+            ($property->accessors['set'] ? "'".$property->accessors['set']."'" : 'NULL').
           '),';
         }
         $this->bytes.= ');';
@@ -497,10 +497,10 @@
     function emitMemberDeclarationList(&$node) { 
       $members= '';
       foreach ($node->members as $member) {
-        if ($member->args[2]) {
+        if (is_a($member, 'PropertyDeclarationNode')) {
           $this->context['properties'][]= $member;
         } else {
-          $members.= $member->args[0].', ';   // FIXME: Still a PNode
+          $members.= $member->name.', ';
           $m++;
         }
       }

@@ -58,7 +58,8 @@
     'net.xp_framework.tools.vm.nodes.ThrowNode',
     'net.xp_framework.tools.vm.nodes.TryNode',
     'net.xp_framework.tools.vm.nodes.VariableNode',
-    'net.xp_framework.tools.vm.nodes.WhileNode'
+    'net.xp_framework.tools.vm.nodes.WhileNode',
+    'net.xp_framework.tools.vm.nodes.PropertyDeclarationNode'
   );
   
   /**
