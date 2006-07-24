@@ -761,15 +761,11 @@ member_modifier:
 ;
 
 class_variable_declaration:
-		class_variable_declaration ',' T_VARIABLE {
-          $$[]= &PNode::create('MemberDeclaration', array($3, NULL, NULL));
-        }
-	|	class_variable_declaration ',' T_VARIABLE '=' static_scalar	{ 
-          $$[]= &PNode::create('MemberDeclaration', array($3, $5, NULL));
-        }
-	|	class_variable_declaration ',' T_PROPERTY T_VARIABLE get_or_set get_or_set { 
-          $$[]= &PNode::create('MemberDeclaration', array($4, NULL, array_merge($5, $6)));
-        }
+        class_variable_declaration ', ' class_variable
+    |   class_variable
+;
+
+class_variable:
 	|	T_VARIABLE {
           $$= array(PNode::create('MemberDeclaration', array($1, NULL, NULL)));
         }
