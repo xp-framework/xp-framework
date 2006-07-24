@@ -312,7 +312,7 @@
       
       // Check for operator overloading
       if (isset($this->context['operators'][$type][$node->operator])) {
-        return $this->emitMethodCall(new MethodCallNode(
+        return $this->emit(new MethodCallNode(
           $type, 
           '__operator'.$this->operators[$node->operator],
           array($node->left, $node->right)
@@ -349,7 +349,7 @@
       // Check for operator overloading
       if (isset($this->context['operators'][$type][$node->operator])) {
         $this->bytes.= '= ';
-        return $this->emitMethodCall(new MethodCallNode(
+        return $this->emit(new MethodCallNode(
           $type, 
           '__operator'.$this->operators[$node->operator],
           array($node->variable, $node->expression)
