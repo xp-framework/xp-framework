@@ -335,11 +335,12 @@
     }
 
     function emitBinary(&$node) {
-      
+      $type= $this->typeOf($node->left);
+
       // Check for operator overloading
       if (isset($this->context['operators'][$type][$node->operator])) {
         return $this->emit(new MethodCallNode(
-          $this->typeOf($node->left), 
+          $type, 
           '__operator'.$this->operators[$node->operator],
           array($node->left, $node->right)
         ));
