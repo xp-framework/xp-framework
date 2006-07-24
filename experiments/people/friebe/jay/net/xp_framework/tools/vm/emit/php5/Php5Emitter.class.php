@@ -54,7 +54,7 @@
       if (is_a($node, 'NewNode')) {
         return $node->class->name;
       } else if (is_a($node, 'VariableNode')) {
-        return $this->context['types'][$node->name];
+        return $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->name];
       } else if (is_a($node, 'MethodCallNode')) {
         return $this->context['types'][$node->class.'::'.$node->method];
       } else if (is_a($node, 'ParameterNode')) {
@@ -159,10 +159,13 @@
     }
 
     function emitMethodDeclaration(&$node) {
-      $this->context['types'][$this->context['class'].'::'.$node->name]= $node->return;
+      $method= $this->methodName($node);
+      $this->context['types'][$this->context['class'].'::'.$method]= $node->return;
+      $this->context['method']= $method;
+      $this->bytes.= 'function '.$method.'(';
 
-      $this->bytes.= 'function '.$this->methodName($node).'(';
       foreach ($node->parameters as $param) {
+        $this->context['types'][$this->context['class'].'::'.$method.$param->name]= $param->type;
         $this->bytes.= $param->name;
         if ($param->default) {
           $this->bytes.= '= ';
@@ -172,6 +175,7 @@
       }
       $node->parameters && $this->bytes= substr($this->bytes, 0, -2);
       $this->bytes.= ')';
+
       if ($node->statements) {
         $this->bytes.= '{';
         $this->emitAll($node->statements);
@@ -179,11 +183,17 @@
       } else {
         $this->bytes.= ';';
       }
+
+      $this->context['method']= '<main>';
     }
 
     function emitConstructorDeclaration(&$node) { 
-      $this->bytes.= 'function '.$this->methodName($node).'(';
+      $method= $this->methodName($node);
+      $this->context['method']= $method;
+      $this->bytes.= 'function '.$method.'(';
+
       foreach ($node->parameters as $param) {
+        $this->context['types'][$this->context['class'].'::'.$method.$param->name]= $param->type;
         $this->bytes.= $param->name;
         if ($param->default) {
           $this->bytes.= '= ';
@@ -192,9 +202,17 @@
         $this->bytes.= ', ';
       }
       $node->parameters && $this->bytes= substr($this->bytes, 0, -2);
-      $this->bytes.= ') {';
-      $this->emitAll($node->statements);
-      $this->bytes.= '}';
+      $this->bytes.= ')';
+
+      if ($node->statements) {
+        $this->bytes.= '{';
+        $this->emitAll($node->statements);
+        $this->bytes.= '}';
+      } else {
+        $this->bytes.= ';';
+      }
+
+      $this->context['method']= '<main>';
     }
 
     function emitClassDeclaration(&$node) {
@@ -252,6 +270,7 @@
       }
 
       $this->bytes.= '}';
+      $this->context['class']= '<main>';
     }
 
     function emitFunctionCall(&$node) { 
@@ -338,7 +357,8 @@
       $this->bytes.= '= ';
       $this->emit($node->expression);
 
-      $this->context['types'][$node->variable->name]= $this->typeOf($node->expression);
+      // TODO: Handle ObjectReferenceNode ($this->buffer) instead of VariableNode ($name)
+      $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->variable->name]= $this->typeOf($node->expression);
     }
 
     function emitBinaryAssign(&$node) { 
@@ -354,7 +374,7 @@
           array($node->variable, $node->expression)
         );
 
-        $this->context['types'][$node->variable->name]= $this->typeOf($m);
+        $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->variable->name]= $this->typeOf($m);
         return $this->emit($m);
       }
 
@@ -362,7 +382,7 @@
       $this->bytes.= $node->operator.'= ';
       $this->emit($node->expression);
 
-      $this->context['types'][$node->variable->name]= 'string';   // FIXME!
+      $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->variable->name]= 'string';   // FIXME!
     }
 
     function emitIf(&$node) { 
@@ -533,6 +553,7 @@
     function emitMemberDeclarationList(&$node) { 
       $members= '';
       foreach ($node->members as $member) {
+        $this->context['types'][$this->context['class'].'::'.$member->name]= $node->type;
         if (is_a($member, 'PropertyDeclarationNode')) {
           $this->context['properties'][]= $member;
         } else {
@@ -544,10 +565,12 @@
     }
 
     function emitOperatorDeclaration(&$node) {       
+      $method= '__operator'.$this->operators[$node->name];
+      $this->context['method']= $method;
+      $this->context['types'][$this->context['class'].'::'.$method]= $this->context['class'];
       $this->context['operators'][$this->context['class']][$node->name]= TRUE;
-      $this->context['types'][$this->context['class'].'::__operator'.$this->operators[$node->name]]= $this->context['class'];
 
-      $this->bytes.= 'function __operator'.$this->operators[$node->name].'(';
+      $this->bytes.= 'function '.$method.'(';
       foreach ($node->parameters as $param) {
         $this->bytes.= $param->name;
         if ($param->default) {
