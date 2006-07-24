@@ -20,6 +20,7 @@
     function __construct() {
       $this->bytes= "<?php\n  require('php5-emit/__xp__.php');\n  ";
       $this->context['package']= '';
+      $this->contect['overloaded']= array();
     }
 
     function modifierNames($m) {
@@ -47,16 +48,48 @@
         return $this->context['types'][$node->name];
       } else if (is_a($node, 'MethodCallNode')) {
         return $this->context['types'][$node->class.'::'.$node->method];
+      } else if (is_a($node, 'ParameterNode')) {
+        return $node->type;
       } else if (is_a($node, 'BinaryNode')) {
         // TODO: Check operator overloading
         return NULL;
       } else if (is_a($node, 'ObjectReferenceNode')) {
         // TODO: Check class member type
         return NULL;
+      } else if ('"' == $node{0}) { // Double-quoted string
+        return 'string';
+      } else if ("'" == $node{0}) { // Single-quoted string
+        return 'string';
+      } else if (is_int($node)) {
+        return 'integer';
+      } else if (is_float($node)) {
+        return 'double';
+      } else switch (strtolower($node)) {
+        case 'true': return 'bool';
+        case 'false': return 'bool';
+        case 'null': return 'object';
       }
       
       Console::writeLine('*** Cannot defer type from ', xp::stringOf($node));
       return NULL;  // Unknown
+    }
+    
+    function hasAnnotation(&$node, $name) {
+      foreach ($node->annotations as $annotation) {       // FIXME: PNode[]
+        if ($annotation->args[0] == $name) return TRUE;
+      }
+      return FALSE;
+    }
+    
+    function methodName(&$node) {
+      if (!$this->hasAnnotation($node, 'overloaded')) return $node->name;
+
+      $this->contect['overloaded'][$this->context['class'].'::'.$node->name]= TRUE;
+      $name= $node->name;
+      foreach ($node->parameters as $param) {
+        $name.= $this->typeOf($param);
+      }
+      return $name;
     }
 
     function emitAll($nodes) {
@@ -117,7 +150,7 @@
     function emitMethodDeclaration(&$node) {
       $this->context['types'][$this->context['class'].'::'.$node->name]= $node->return;
 
-      $this->bytes.= 'function '.$node->name.'(';
+      $this->bytes.= 'function '.$this->methodName($node).'(';
       foreach ($node->parameters as $param) {
         $this->bytes.= $param->name;
         if ($param->default) {
@@ -133,7 +166,7 @@
     }
 
     function emitConstructorDeclaration(&$node) { 
-      $this->bytes.= 'function __construct(';
+      $this->bytes.= 'function '.$this->methodName($node).'(';
       foreach ($node->parameters as $param) {
         $this->bytes.= $param->name;
         if ($param->default) {
@@ -316,13 +349,28 @@
         $node->instanciation->chain || $this->bytes.= ')';
       } else {
         $node->instanciation->chain && $this->bytes.= 'xp::create(';
-        $this->bytes.= 'new '.$this->qualifiedName($node->class->name).'(';
-        foreach ($node->instanciation->arguments as $arg) {
-          $this->emit($arg);
-          $this->bytes.= ', ';
+        
+        if ($this->contect['overloaded'][$node->class->name.'::__construct']) {
+          $ctor= '__construct';
+          foreach ($node->instanciation->arguments as $arg) {
+            $ctor.= $this->typeOf($arg);
+          }
+          $this->bytes.= 'xp::spawn(\''.$this->qualifiedName($node->class->name).'\', \''.$ctor.'\', array(';
+          foreach ($node->instanciation->arguments as $arg) {
+            $this->emit($arg);
+            $this->bytes.= ', ';
+          }
+          $node->instanciation->arguments && $this->bytes= substr($this->bytes, 0, -2);
+          $this->bytes.= '))';
+        } else {
+          $this->bytes.= 'new '.$this->qualifiedName($node->class->name).'(';
+          foreach ($node->instanciation->arguments as $arg) {
+            $this->emit($arg);
+            $this->bytes.= ', ';
+          }
+          $node->instanciation->arguments && $this->bytes= substr($this->bytes, 0, -2);
+          $this->bytes.= ')';
         }
-        $node->instanciation->arguments && $this->bytes= substr($this->bytes, 0, -2);
-        $this->bytes.= ')';
       }
 
       if (!$node->instanciation->chain) return;

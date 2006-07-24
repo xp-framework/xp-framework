@@ -36,7 +36,9 @@
       return XPException::$instance;
     }
 
-    public static function create(xp·lang·Object $o) { 
+    public static function spawn($class, $ctor, $args) { 
+      $o= unserialize('O:'.strlen($class).':"'.$class.'":0:{}');
+      call_user_func_array(array($o, $ctor), $args);
       return $o; 
     }
 

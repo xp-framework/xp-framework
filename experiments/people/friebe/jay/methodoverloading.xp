@@ -1,16 +1,19 @@
 class Date {
   protected $stamp;
+  protected $source;
 
-  public __construct(integer $value) {
+  [@overloaded] public __construct(integer $value) {
+    $this->source= 'integer';
     $this->stamp= $value;
   }
 
-  public __construct(string $value) {
+  [@overloaded] public __construct(string $value) {
+    $this->source= 'string';
     $this->stamp= strtotime($value);
   }
   
   public string toString() {
-    return date('r', $this->stamp);
+    return '('.$this->source.')-> '.date('r', $this->stamp);
   }
 }
 
