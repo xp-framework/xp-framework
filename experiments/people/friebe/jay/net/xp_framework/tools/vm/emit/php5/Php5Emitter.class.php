@@ -45,7 +45,17 @@
         return $node->class->name;
       } else if (is_a($node, 'VariableNode')) {
         return $this->context['types'][$node->name];
+      } else if (is_a($node, 'MethodCallNode')) {
+        return $this->context['types'][$node->class.'::'.$node->method];
+      } else if (is_a($node, 'BinaryNode')) {
+        // TODO: Check operator overloading
+        return NULL;
+      } else if (is_a($node, 'ObjectReferenceNode')) {
+        // TODO: Check class member type
+        return NULL;
       }
+      
+      Console::writeLine('*** Cannot defer type from ', xp::stringOf($node));
       return NULL;  // Unknown
     }
 
@@ -105,6 +115,8 @@
     }
 
     function emitMethodDeclaration(&$node) {
+      $this->context['types'][$this->context['class'].'::'.$node->name]= $node->return;
+
       $this->bytes.= 'function '.$node->name.'(';
       foreach ($node->parameters as $param) {
         $this->bytes.= $param->name;
