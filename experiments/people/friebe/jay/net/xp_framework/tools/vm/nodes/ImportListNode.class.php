@@ -13,7 +13,7 @@
    */ 
   class ImportListNode extends VNode {
     var
-      $list;
+      $list = array();
       
     /**
      * Constructor
@@ -22,7 +22,7 @@
      * @param   mixed list
      */
     function __construct($list) {
-      $this->list= $list;
+      $this->list[]= $list;
     }  
   }
 ?>

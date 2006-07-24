@@ -20,7 +20,8 @@
     function __construct() {
       $this->bytes= "<?php\n  require('php5-emit/__xp__.php');\n  ";
       $this->context['package']= '';
-      $this->contect['overloaded']= array();
+      $this->context['imports']= array();
+      $this->context['overloaded']= array();
     }
 
     function modifierNames($m) {
@@ -135,6 +136,8 @@
       foreach ($node->statements as $node) {
         $this->emit($node);
       }
+      
+      unset($this->context['imports'][$this->context['package']]);
       $this->context['package']= NULL;
     }
 
@@ -398,18 +401,24 @@
     }
     
     function emitImportList(&$node) {
-      $this->emit($node->list);
+      foreach ($node->list as $import) { $this->emit($import); }
     }
     
     function emitImport(&$node) {
+      var_dump($node);
+      
+      $source= $node->source;
+      if (is_a($node->source, 'ClassReferenceNode')) $source= $node->source->name;
+      
+      $destination= $node->destination;
     
       // Calculate destination name if none was supplied
-      if (NULL === $node->destination) {
-        $node->destination= substr($node->source, strrpos($node->source, '~')+ 1);
+      if (!$destination) {
+        $destination= substr($source, strrpos($source, '~')+ 1);
       }
       
       // Register import
-      $this->context['imports'][$this->context['package']][$node->destination]= $node->source;
+      $this->context['imports'][$this->context['package']][$destination]= $source;
     }
 
     function emitTry(&$node) { 

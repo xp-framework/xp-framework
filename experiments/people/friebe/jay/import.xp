@@ -8,4 +8,14 @@ package de~thekid~dialog {
   
   class Foo extends Date { }
   class Bar extends DateTime { }
+  
+  class Baz {
+  
+    public void foo() {
+      $d= new Date();
+    }
+  }
 }
+
+import net~xp_framework~util~Date;
+$d= new Date();
