@@ -12,6 +12,14 @@ class Date {
     $this->stamp= strtotime($value);
   }
   
+  [@overloaded] public bool isBefore(string $value) {
+    return $this->stamp < strtotime($value);
+  }
+
+  [@overloaded] public bool isBefore(Date $value) {
+    return $this->stamp < $value->stamp;
+  }
+  
   public string toString() {
     return '('.$this->source.')-> '.date('r', $this->stamp);
   }
@@ -20,4 +28,6 @@ class Date {
 $d1= new Date(1144792800);
 $d2= new Date('2006-04-12');
 
-echo $d1->toString(), ' vs. ', $d2->toString(), "\n";
+echo '$d1= ', $d1->toString(), ' vs. $d2= ', $d2->toString(), "\n";
+echo '$d1->isBefore($d2) -> '; var_dump($d1->isBefore($d2));
+echo '$d1->isBefore(2006-04-13) -> '; var_dump($d1->isBefore('2006-04-13'));

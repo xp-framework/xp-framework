@@ -244,14 +244,23 @@
     function emitMethodCall(&$node) {
       if (is_string($node->class)) {      // Static
         $this->bytes.= $node->class.'::';
+        $type= $node->class;
       } else if ($node->class) {          // Instance
         $this->emit($node->class);    
+        $type= $this->typeOf($node->class);
         $this->bytes.= '->';
       } else {                            // Chains
+        $type= $this->typeOf(NULL); // ???
         $this->bytes.= '->';
       }
  
-      $this->bytes.= $node->method.'(';
+      $method= $node->method;
+      if ($this->contect['overloaded'][$type.'::'.$node->method]) {
+        foreach ($node->arguments as $arg) {
+          $method.= $this->typeOf($arg);
+        }
+      }
+      $this->bytes.= $method.'(';
       foreach ($node->arguments as $arg) {
         $this->emit($arg);
         $this->bytes.= ', ';
