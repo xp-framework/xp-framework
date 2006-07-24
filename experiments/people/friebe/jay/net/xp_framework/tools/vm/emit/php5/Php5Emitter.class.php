@@ -614,9 +614,17 @@
       $this->bytes.= 'interface '.$this->context['class'];
       $this->bytes.= $this->qualifiedName($node->extends ? ' extends '.$node->extends : '');
       $this->bytes.= '{';
-      foreach ($node->statements as $node) {
-        $this->emit($node);
+      foreach ($node->statements as $stmt) {
+        $this->emit($stmt);
       }
+      $this->bytes.= '}';
+    }
+
+    function emitWhile(&$node) { 
+      $this->bytes.= 'while (';
+      $this->emit($node->condition);
+      $this->bytes.= ') {';
+      $this->emitAll($node->statements);
       $this->bytes.= '}';
     }
   }

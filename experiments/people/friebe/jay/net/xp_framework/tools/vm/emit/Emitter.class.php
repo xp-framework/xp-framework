@@ -120,5 +120,7 @@
     function emitClassReference(&$node) { }
 
     function emitInterfaceDeclaration(&$node) { }
+
+    function emitWhile(&$node) { }
   }
 ?>
