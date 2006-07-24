@@ -162,7 +162,9 @@
       $method= $this->methodName($node);
       $this->context['types'][$this->context['class'].'::'.$method]= $node->return;
       $this->context['method']= $method;
-      $this->bytes.= 'function '.$method.'(';
+      
+      
+      $this->bytes.= implode(' ', $this->modifierNames($node->modifiers)).' function '.$method.'(';
 
       foreach ($node->parameters as $param) {
         $this->context['types'][$this->context['class'].'::'.$method.$param->name]= $param->type;
@@ -190,7 +192,8 @@
     function emitConstructorDeclaration(&$node) { 
       $method= $this->methodName($node);
       $this->context['method']= $method;
-      $this->bytes.= 'function '.$method.'(';
+
+      $this->bytes.= implode(' ', $this->modifierNames($node->modifiers)).' function '.$method.'(';
 
       foreach ($node->parameters as $param) {
         $this->context['types'][$this->context['class'].'::'.$method.$param->name]= $param->type;
@@ -220,6 +223,9 @@
       $this->context['class']= $this->qualifiedName($node->name);
       $this->context['operators'][$this->context['class']]= array();
       
+      $node->modifiers & MODIFIER_ABSTRACT && $this->bytes.= 'abstract ';
+      $node->modifiers & MODIFIER_FINAL && $this->bytes.= 'final ';
+
       $this->bytes.= 'class '.$this->context['class'].' extends ';
       $this->bytes.= $this->qualifiedName($node->extends ? $node->extends : 'xp~lang~Object');
       if ($node->implements) {
