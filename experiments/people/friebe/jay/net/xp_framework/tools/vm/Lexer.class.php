@@ -141,12 +141,20 @@
           $tokens[$id-1][0] != TOKEN_T_OBJECT_OPERATOR && 
           $tokens[$id-1][0] != TOKEN_T_DOUBLE_COLON
         ) {
-          if ('~' == $tokens[$i= $id+ 1][0]) {
+
+          if (
+            '~' == $tokens[$i= $id+ 1][0] ||
+            '.' == $tokens[$i][0]
+          ) {
             $classname= '';
-            while ('~' == $tokens[$i][0]) {
+            while (
+              '~' == $tokens[$i][0] ||
+              '.' == $tokens[$i][0]
+            ) {
               $classname.= $tokens[$i- 1][1].'~';
               $i+= 2;
             }
+
             $return[$offset]= array(TOKEN_T_CLASSNAME, $classname.$tokens[$i- 1][1]);
             $id= $i- 1;  // Skip tokens
           } else if ($key = array_search(strtolower($token[1]), $this->tokenMap)) {
