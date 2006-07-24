@@ -14,7 +14,8 @@
         '*' => 'times',
         '+' => 'plus',
         '-' => 'minus',
-        '/' => 'divide'
+        '/' => 'divide',
+        '.' => 'concat'
       );
       
     function __construct() {
@@ -342,8 +343,21 @@
     }
 
     function emitBinaryAssign(&$node) { 
+      $type= $this->typeOf($node->variable);
       $this->emit($node->variable);
-      $this->bytes.= $node->operator.'=';
+      
+      // Check for operator overloading
+      if (isset($this->context['operators'][$type][$node->operator])) {
+        $this->bytes.= '= ';
+        return $this->emitMethodCall(new MethodCallNode(
+          $type, 
+          '__operator'.$this->operators[$node->operator],
+          array($node->variable, $node->expression)
+        ));
+      }
+
+      $this->emit($node->variable);
+      $this->bytes.= $node->operator.'= ';
       $this->emit($node->expression);
     }
 
