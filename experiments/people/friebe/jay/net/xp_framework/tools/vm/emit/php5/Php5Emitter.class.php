@@ -38,7 +38,14 @@
     }
     
     function qualifiedName($class) {
-      return strtr((strstr($class, '~') ? '' : $this->context['package']).$class , '~', '·');
+      return strtr((strstr($class, '~') ? $class : $this->prefixedClassnameFor($class)), '~', '·');
+    }
+    
+    function prefixedClassnameFor($class) {
+      if (isset($this->context['imports'][$this->context['package']][$class]))
+        return $this->context['imports'][$this->context['package']][$class];
+        
+      return $this->context['package'].$class;
     }
     
     function typeOf(&$node) {
@@ -388,6 +395,21 @@
       foreach ($node->instanciation->chain as $node) {
         $this->emit($node);
       }
+    }
+    
+    function emitImportList(&$node) {
+      $this->emit($node->list);
+    }
+    
+    function emitImport(&$node) {
+    
+      // Calculate destination name if none was supplied
+      if (NULL === $node->destination) {
+        $node->destination= substr($node->source, strrpos($node->source, '~')+ 1);
+      }
+      
+      // Register import
+      $this->context['imports'][$this->context['package']][$node->destination]= $node->source;
     }
 
     function emitTry(&$node) { 

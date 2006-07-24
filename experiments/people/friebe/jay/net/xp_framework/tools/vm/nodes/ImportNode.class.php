@@ -13,19 +13,19 @@
    */ 
   class ImportNode extends VNode {
     var
-      $arg0,
-      $arg1;
+      $source,
+      $destination;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
+     * @param   mixed source
+     * @param   mixed destincation
      */
-    function __construct($arg0, $arg1) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
+    function __construct($source, $destination) {
+      $this->source= $source;
+      $this->destination= $destination;
     }  
   }
 ?>

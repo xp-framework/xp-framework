@@ -13,16 +13,16 @@
    */ 
   class ImportListNode extends VNode {
     var
-      $arg0;
+      $list;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
+     * @param   mixed list
      */
-    function __construct($arg0) {
-      $this->arg0= $arg0;
+    function __construct($list) {
+      $this->list= $list;
     }  
   }
 ?>

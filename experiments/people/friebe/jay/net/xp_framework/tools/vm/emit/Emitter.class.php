@@ -112,5 +112,7 @@
     function emitOperatorDeclaration(&$node) { }
 
     function emitThrow(&$node) { }   
+    
+    function emitImport(&$node) { }
   }
 ?>
