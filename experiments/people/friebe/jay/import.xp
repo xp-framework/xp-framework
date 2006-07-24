@@ -1,0 +1,11 @@
+package net~xp_framework~util {
+  class Date { }
+}
+
+package de~thekid~dialog {
+  import net~xp_framework~util~Date;
+  import net~xp_framework~util~Date as DateTime;
+  
+  class Foo extends Date { }
+  class Bar extends DateTime { }
+}
