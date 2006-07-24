@@ -308,12 +308,11 @@
     }
 
     function emitBinary(&$node) {
-      $type= $this->typeOf($node->left);
       
       // Check for operator overloading
       if (isset($this->context['operators'][$type][$node->operator])) {
         return $this->emit(new MethodCallNode(
-          $type, 
+          $this->typeOf($node->left), 
           '__operator'.$this->operators[$node->operator],
           array($node->left, $node->right)
         ));
@@ -345,20 +344,25 @@
     function emitBinaryAssign(&$node) { 
       $type= $this->typeOf($node->variable);
       $this->emit($node->variable);
-      
+
       // Check for operator overloading
       if (isset($this->context['operators'][$type][$node->operator])) {
         $this->bytes.= '= ';
-        return $this->emit(new MethodCallNode(
+        $m= &new MethodCallNode(
           $type, 
           '__operator'.$this->operators[$node->operator],
           array($node->variable, $node->expression)
-        ));
+        );
+
+        $this->context['types'][$node->variable->name]= $this->typeOf($m);
+        return $this->emit($m);
       }
 
       $this->emit($node->variable);
       $this->bytes.= $node->operator.'= ';
       $this->emit($node->expression);
+
+      $this->context['types'][$node->variable->name]= 'string';   // FIXME!
     }
 
     function emitIf(&$node) { 
@@ -431,9 +435,6 @@
     }
     
     function emitImport(&$node) {
-      var_dump($node);
-      
-      $source= $node->source;
       if (is_a($node->source, 'ClassReferenceNode')) $source= $node->source->name;
       
       $destination= $node->destination;
@@ -544,6 +545,8 @@
 
     function emitOperatorDeclaration(&$node) {       
       $this->context['operators'][$this->context['class']][$node->name]= TRUE;
+      $this->context['types'][$this->context['class'].'::__operator'.$this->operators[$node->name]]= $this->context['class'];
+
       $this->bytes.= 'function __operator'.$this->operators[$node->name].'(';
       foreach ($node->parameters as $param) {
         $this->bytes.= $param->name;

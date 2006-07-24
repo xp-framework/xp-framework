@@ -1,7 +1,7 @@
 class String {
-  protected $buffer;
+  protected string $buffer;
 
-  public __construct($initial= '') {
+  public __construct(string $initial= '') {
     $this->buffer= $initial;
   }
   
