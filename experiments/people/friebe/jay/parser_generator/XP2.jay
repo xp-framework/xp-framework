@@ -307,7 +307,7 @@ statement:
           $$= &new ThrowNode($2);
         }
 	|	T_IMPORT import_list ';' { 
-          $$= &PNode::create('ImportList', array(&$2));
+          $$= &new ImportListNode($2);
         }
 ;
 
@@ -322,13 +322,13 @@ import_list:
 
 import:
 		class_name_reference { 
-          $$= &PNode::create('Import', array(&$1, NULL)); 
+          $$= &new ImportNode($1, NULL); 
         }
 	|	class_name_reference T_AS T_STRING { 
-          $$= &PNode::create('Import', array(&$1, $3)); 
+          $$= &new ImportNode($1, $3); 
         }
 	|	class_name_reference T_AS r_variable { 
-          $$= &PNode::create('Import', array(&$1, $3)); 
+          $$= &new ImportNode($1, $3); 
         }
 ;
 
@@ -394,7 +394,7 @@ package_inner_statement:
 		class_declaration_statement
 	|	enum_declaration_statement
 	|	T_IMPORT package_import_list ';' {
-          $$= PNode::create('ImportList', array(&$2));
+          $$= &new ImportListNode($2);
         }
 ;
 
@@ -405,10 +405,10 @@ package_import_list:
 
 package_import:
 		T_CLASSNAME {
-          $$= &PNode::create('ClassImport', array($1, NULL));
+          $$= &new ImportNode($1, NULL);
         }
 	|	T_CLASSNAME T_AS T_STRING {
-          $$= &PNode::create('ClassImport', array($1, $3));
+          $$= &new ImportNode($1, $3);
         }
 ;
 
