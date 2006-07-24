@@ -4,14 +4,37 @@
  * $Id$
  */
  
+  /**
+   * Emitter
+   *
+   * @purpose  Abstract base class
+   */
   class Emitter extends Object {
 
+    /**
+     * Emits an array of nodes
+     *
+     * @access  public
+     * @param   net.xp_framework.tools.vm.VNode[] nodes
+     */
     function emitAll($nodes) {
       foreach ($nodes as $node) $this->emit($node);
     }
     
+    /**
+     * Retrieves result 
+     *
+     * @access  public
+     * @return  string
+     */
     function getResult() { }
 
+    /**
+     * Emits a single node
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emit(&$node) {
       if (is_a($node, 'VNode')) {
         $func= 'emit'.ucfirst(substr(get_class($node), 0, -4));
@@ -51,76 +74,291 @@
       }
     }
     
+    /**
+     * Emits a string
+     *
+     * @access  public
+     * @param   string string
+     */
     function emitString($string) { }
 
+    /**
+     * Emits an integer
+     *
+     * @access  public
+     * @param   int integer
+     */
     function emitInteger($integer) { }
 
-    function emitDouble($double) { }
- 
+    /**
+     * Emits a double
+     *
+     * @access  public
+     * @param   double double
+     */
+    function emitDouble($double) {  }
+    
+    /**
+     * Emits a boolean
+     *
+     * @access  public
+     * @param   bool bool
+     */
     function emitBoolean($bool) { }
 
+    /**
+     * Emits a null
+     *
+     * @access  public
+     */
     function emitNull() { }
 
+    /**
+     * Emits PackageDeclarations
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitPackageDeclaration(&$node) { }
 
+    /**
+     * Emits FunctionDeclarations
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitFunctionDeclaration(&$node) { }
 
+    /**
+     * Emits MethodDeclarations
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitMethodDeclaration(&$node) { }
 
+    /**
+     * Emits ConstructorDeclarations
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitConstructorDeclaration(&$node) { }
 
+    /**
+     * Emits ClassDeclarations
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitClassDeclaration(&$node) { }
 
+    /**
+     * Emits FunctionCalls
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitFunctionCall(&$node) { }
 
+    /**
+     * Emits MethodCalls
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitMethodCall(&$node) { }
 
+    /**
+     * Emits Nots
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitNot(&$node) { }
 
+    /**
+     * Emits ObjectReferences
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitObjectReference(&$node) { }
 
+    /**
+     * Emits Binarys
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitBinary(&$node) { }
 
+    /**
+     * Emits Variables
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitVariable(&$node) { }
 
+    /**
+     * Emits Assigns
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitAssign(&$node) { }
 
+    /**
+     * Emits BinaryAssigns
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitBinaryAssign(&$node) { }
 
+    /**
+     * Emits Ifs
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitIf(&$node) { }
 
+    /**
+     * Emits Catchs
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitCatch(&$node) { }
 
+    /**
+     * Emits Exits
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitExit(&$node) { }
 
+    /**
+     * Emits News
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitNew(&$node) { }
 
+    /**
+     * Emits Trys
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitTry(&$node) { }
 
+    /**
+     * Emits Echos
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitEcho(&$node) { }
 
+    /**
+     * Emits Returns
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitReturn(&$node) { }
 
+    /**
+     * Emits Ternarys
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitTernary(&$node) { }
     
+    /**
+     * Emits Fors
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitFor(&$node) { }
 
+    /**
+     * Emits PostIncs
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitPostInc(&$node) { }
     
+    /**
+     * Emits MemberDeclarationLists
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitMemberDeclarationList(&$node) { }
     
+    /**
+     * Emits OperatorDeclarations
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitOperatorDeclaration(&$node) { }
 
+    /**
+     * Emits Throws
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitThrow(&$node) { }   
     
+    /**
+     * Emits Imports
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitImport(&$node) { }
 
+    /**
+     * Emits InstanceOfs
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitInstanceOf(&$node) { }
 
+    /**
+     * Emits ClassReferences
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitClassReference(&$node) { }
 
+    /**
+     * Emits InterfaceDeclarations
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitInterfaceDeclaration(&$node) { }
 
+    /**
+     * Emits Whiles
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
     function emitWhile(&$node) { }
   }
 ?>
