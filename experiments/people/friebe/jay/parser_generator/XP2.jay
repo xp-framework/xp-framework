@@ -618,38 +618,38 @@ class_statement_list:
 ;
 
 class_statement:
-		non_empty_member_modifiers class_variable_declaration ';' {
+		non_empty_member_modifiers optional_class_type class_variable_declaration ';' {
           $$= &new MemberDeclarationListNode($1, $2); 
         }
 	|	class_constant_declaration ';' {
           $$= &PNode::create('ClassConstantDeclarationList', array($1, $2)); 
         }
-	|	method_modifiers T_OPERATOR operator_token '(' parameter_list ')' throws method_body {
+	|	non_empty_member_modifiers T_OPERATOR operator_token '(' parameter_list ')' throws method_body {
           $$= &new OperatorDeclarationNode($3, $5, $8, $1, NULL, $7);
         }
-	|	annotation_list method_modifiers T_OPERATOR operator_token '(' parameter_list ')' throws method_body {
+	|	annotation_list non_empty_member_modifiers T_OPERATOR operator_token '(' parameter_list ')' throws method_body {
           $$= &new OperatorDeclarationNode($4, $6, $9, $2, $1, $8);
         }
     |   method_declaration
 ;
 
 method_declaration:
-	 	method_modifiers T_CONSTRUCT '(' parameter_list ')' throws method_body {
+	 	non_empty_member_modifiers T_CONSTRUCT '(' parameter_list ')' throws method_body {
           $$= &new ConstructorDeclarationNode($4, $7, $1, NULL, $6);
         }
-	|	annotation_list method_modifiers T_CONSTRUCT '(' parameter_list ')' throws method_body {
+	|	annotation_list non_empty_member_modifiers T_CONSTRUCT '(' parameter_list ')' throws method_body {
           $$= &new ConstructorDeclarationNode($5, $8, $2, $1, $7);
         }
-	| 	method_modifiers T_DESTRUCT '(' ')' throws method_body {
+	| 	non_empty_member_modifiers T_DESTRUCT '(' ')' throws method_body {
           $$= &new DestructorDeclarationNode($6, $1, NULL, $5);
         }
-	|	annotation_list method_modifiers T_DESTRUCT '(' ')' throws method_body {
+	|	annotation_list non_empty_member_modifiers T_DESTRUCT '(' ')' throws method_body {
           $$= &new DestructorDeclarationNode($7, $2, $1, $6);
         }
-	|	method_modifiers return_type_name T_STRING '(' parameter_list ')' throws method_body {
+	|	non_empty_member_modifiers return_type_name T_STRING '(' parameter_list ')' throws method_body {
           $$= &new MethodDeclarationNode($3, $5, $2, $8, $1, NULL, $7);
         }
-	|	annotation_list method_modifiers return_type_name T_STRING '(' parameter_list ')' throws method_body {
+	|	annotation_list non_empty_member_modifiers return_type_name T_STRING '(' parameter_list ')' throws method_body {
           $$= &new MethodDeclarationNode($4, $6, $3, $9, $2, $1, $8);
         }
 ;
@@ -738,11 +738,6 @@ operator_token:
 method_body:
 		';' /* abstract method */		{ $$= NULL; }
 	|	'{' inner_statement_list '}'	{ $$= $2; }
-;
-
-method_modifiers:
-		/* empty */							{ $$= MODIFIER_PUBLIC; }
-	|	non_empty_member_modifiers			{ $$= $1; }
 ;
 
 non_empty_member_modifiers:

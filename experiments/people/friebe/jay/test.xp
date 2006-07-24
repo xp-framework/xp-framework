@@ -2,7 +2,7 @@ package io {
   interface Serializable { 
     const SERIALVERSIONUID= -32423020;
 
-    function getId();
+    public function getId();
   }
 }
 
