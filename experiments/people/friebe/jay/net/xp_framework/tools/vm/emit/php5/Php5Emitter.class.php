@@ -330,8 +330,6 @@
     function emitObjectReference(&$node) { 
       $this->emit($node->class);
       $this->bytes.= '->'.$node->member;
-      
-      // TODO: Chains
     }
 
     function emitBinary(&$node) {
