@@ -250,7 +250,7 @@
         $type= $this->typeOf($node->class);
         $this->bytes.= '->';
       } else {                            // Chains
-        $type= $this->typeOf(NULL); // ???
+        $type= $this->typeOf($this->context['chain_prev']);
         $this->bytes.= '->';
       }
  
@@ -269,6 +269,7 @@
       $this->bytes.= ')';
  
       foreach ($node->chain as $node) {
+        $this->context['chain_prev']= $node;
         $this->emit($node);
       }
     }

@@ -42,6 +42,10 @@
       return $o; 
     }
 
+    public static function create(xp·lang·Object $o) { 
+      return $o; 
+    }
+
     public static function instance($class, $args, $bytes) { 
       static $c= 0;
       
