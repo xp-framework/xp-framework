@@ -114,5 +114,11 @@
     function emitThrow(&$node) { }   
     
     function emitImport(&$node) { }
+
+    function emitInstanceOf(&$node) { }
+
+    function emitClassReference(&$node) { }
+
+    function emitInterfaceDeclaration(&$node) { }
   }
 ?>

@@ -1,5 +1,5 @@
 interface Traceable {
-  void setTrace(Category $cat);
+  public void setTrace(Category $cat);
 }
 
 class SoapClient implements Traceable {

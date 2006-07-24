@@ -170,9 +170,14 @@
         $this->bytes.= ', ';
       }
       $node->parameters && $this->bytes= substr($this->bytes, 0, -2);
-      $this->bytes.= ') {';
-      $this->emitAll($node->statements);
-      $this->bytes.= '}';
+      $this->bytes.= ')';
+      if ($node->statements) {
+        $this->bytes.= '{';
+        $this->emitAll($node->statements);
+        $this->bytes.= '}';
+      } else {
+        $this->bytes.= ';';
+      }
     }
 
     function emitConstructorDeclaration(&$node) { 
@@ -198,6 +203,13 @@
       
       $this->bytes.= 'class '.$this->context['class'].' extends ';
       $this->bytes.= $this->qualifiedName($node->extends ? $node->extends : 'xp~lang~Object');
+      if ($node->implements) {
+        $this->bytes.= ' implements ';
+        foreach ($node->implements as $interface) {
+          $this->bytes.= $interface.', ';
+        }
+        $this->bytes= substr($this->bytes, 0, -2);
+      }
       $this->bytes.= '{';
       foreach ($node->statements as $node) {
         $this->emit($node);
@@ -537,6 +549,27 @@
       $this->bytes.= 'throw xp::exception(';
       $this->emit($node->value);
       $this->bytes.= ')';
+    }
+
+    function emitInstanceOf(&$node) {
+      $this->emit($node->object);
+      $this->bytes.= ' instanceof ';
+      $this->emit($node->type);
+    }
+
+    function emitClassReference(&$node) {
+      $this->bytes.= $node->name;
+    }
+
+    function emitInterfaceDeclaration(&$node) {
+      $this->context['class']= $this->qualifiedName($node->name);
+      $this->bytes.= 'interface '.$this->context['class'];
+      $this->bytes.= $this->qualifiedName($node->extends ? ' extends '.$node->extends : '');
+      $this->bytes.= '{';
+      foreach ($node->statements as $node) {
+        $this->emit($node);
+      }
+      $this->bytes.= '}';
     }
   }
 ?>
