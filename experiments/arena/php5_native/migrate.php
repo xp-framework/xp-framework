@@ -84,7 +84,7 @@ __;
     function mappedName($name) {
       switch (strtolower($name)) {
         case 'exception': return 'XException';
-        case 'interface': return 'XInterface';
+        default: return $name;
       }
     }
     
@@ -326,6 +326,7 @@ __;
 
             case ST_LOOKING_FOR_CLASS.T_STRING:
               /*$t[1]= $this->packagedNameOf($t[1]);*/
+              $t[1]= $this->mappedName($t[1]);
               array_shift($states);
               break;
 

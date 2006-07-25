@@ -9,12 +9,11 @@ for i in `find /home/alex/devel/xp.public/trunk/skeleton -name '*.class.php' ! -
   
   CLASSNAME=`echo $i | sed -e 's#^.*/skeleton/##g' | sed -e 's#\.class\.php##' | tr / .`
   
-  echo "$CLASSNAME => skeleton2/$RELPATH/$RELNAME"
-  
   if [ -f skeleton2/$RELPATH/$RELNAME ]; then
     continue;
   fi
   mkdir -p skeleton2/$RELPATH
+  echo "$CLASSNAME => skeleton2/$RELPATH/$RELNAME"
   
   php migrate.php $CLASSNAME > skeleton2/$RELPATH/$RELNAME
   if [ 0 -ne $? ]; then 
