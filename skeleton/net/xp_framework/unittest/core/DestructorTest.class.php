@@ -47,7 +47,7 @@
      * @access  public
      */
     #[@test]
-    function deleteCallsConstructor() {
+    function deleteCallsDestructor() {
       $hash= $this->destroyable->hashCode();
       delete($this->destroyable);
       $this->assertNull($this->destroyable);
