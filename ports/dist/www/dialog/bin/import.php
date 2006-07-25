@@ -18,6 +18,7 @@
     'de.thekid.dialog.io.ImageProcessor',
     'de.thekid.dialog.io.IndexCreator',
     'de.thekid.dialog.GroupByHourStrategy',
+    'de.thekid.dialog.GroupByDayStrategy',
     'img.filter.SharpenFilter'
   );
   
@@ -45,11 +46,21 @@ Options:
   --date, -D      Set album date (default: origin directory's creation date)
   --update, -u    Set text for update (default: do not create update)
   --newdate, -N   Set date of update (default: now)
+  --group, -g     Use grouping strategy (hour, day, default: hour)
 __
     );
     exit(1);
   }
 
+  // Figure out how to group images
+  switch ($groupBy= $param->value('group', 'g', 'hour')) {
+    case 'hour': $strategy= &new GroupByHourStrategy(); break;
+    case 'day': $strategy= &new GroupByDayStrategy(); break;
+    default: 
+      Console::writeLine('Unknown grouping method "'.$groupBy.'"');
+      exit(2);
+  }
+  
   // Check origin folder
   $origin= &new Folder($param->value(1));
   if (!$origin->exists()) {
@@ -192,8 +203,6 @@ __
     'return $b->exifData->dateTime->compareTo($a->exifData->dateTime);'
   ));
   
-  // Divide up into chapters by hour
-  $strategy= &new GroupByHourStrategy();
   for ($i= 0, $s= sizeof($images); $i < $s; $i++) {
     $key= $strategy->groupFor($images[$i]);
     if (!isset($chapter[$key])) {
