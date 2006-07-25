@@ -22,8 +22,9 @@
    */
   class Routine extends Object {
     public
-      $_ref = NULL,
-      $name = '';
+      $_ref     = NULL,
+      $name     = '',
+      $_reflect = NULL;
 
     /**
      * Constructor
@@ -36,8 +37,9 @@
       parent::__construct();
       $this->_ref= is_object($ref) ? get_class($ref) : $ref;
       $this->name= $name;
+      $this->_reflect= new ReflectionMethod($this->_ref, $this->name);
     }
-
+    
     /**
      * Get method's name. If the optional parameter "asDeclared" is set to TRUE,
      * the name will be parsed from the sourcecode, thus preserving case.
@@ -138,8 +140,7 @@
      * @return  string
      */
     public function returnsReference() {
-      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
-      return '&' == $details[DETAIL_RETURNS]{0};
+      return $this->_reflect->returnsReference();
     }
     
     /**

@@ -50,7 +50,8 @@
   class XPClass extends Object {
     public 
       $_objref  = NULL,
-      $name     = '';
+      $name     = '',
+      $_reflect = NULL;
       
     /**
      * Constructor
@@ -62,8 +63,9 @@
       parent::__construct();
       $this->_objref= &$ref;
       $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
+      $this->_reflect= new ReflectionClass($ref);
     }
-
+    
     /**
      * Return whether an object equals this class
      *
@@ -127,12 +129,8 @@
      * @return  &lang.Object 
      */
     public function &newInstance() {
-      for ($args= func_get_args(), $paramstr= '', $i= 0, $m= sizeof($args); $i < $m; $i++) {
-        $paramstr.= ', $args['.$i.']';
-      }
-      
-      eval('$instance= &new '.xp::reflect($this->name).'('.substr($paramstr, 2).');');
-      return $instance;
+      $args= func_get_args();
+      return $this->_reflect->newInstanceArgs($args);
     }
     
     /**
@@ -286,8 +284,9 @@
      * @return  &lang.XPClass class object
      */
     public function &getParentclass() {
-      if (!($p= get_parent_class($this->_objref))) return NULL;
-      return new XPClass($p);
+      $parent= $this->_reflect->getParentClass();
+      if (!$parent) return NULL;
+      return new XPClass($parent->getName());
     }
     
     /**
@@ -298,12 +297,9 @@
      * @return  bool
      */
     public function isSubclassOf($name) {
-      $cmp= xp::reflect($this->name);
-      $name= xp::reflect($name);
-      while ($cmp= get_parent_class($cmp)) {
-        if (0 == strcasecmp($cmp, $name)) return TRUE;
-      }
-      return FALSE;
+      // Catch bordercase (ZE bug?)
+      if ($name == $this->name) return FALSE;
+      return $this->_reflect->isSubclassOf(new ReflectionClass(xp::reflect($name)));
     }
     
     /**
@@ -334,8 +330,7 @@
      * @return  bool
      */
     public function isInterface() {
-      $rc= &new ReflectionClass(xp::reflect($this->getName()));
-      return $rc->isInterface();
+      return $this->_reflect->isInterface();
     }
     
     /**
@@ -346,10 +341,8 @@
      */
     public function getInterfaces() {
       $r= array();
-      $c= xp::reflect($this->name);
-      $implements= xp::registry('implements');
-      if (isset($implements[$c])) foreach (array_keys($implements[$c]) as $iface) {
-        $r[]= &new XPClass($iface);
+      foreach ($this->_reflect->getInterfaces() as $iface) {
+        $r[]= &new XPClass($iface->getName());
       }
       return $r;
     }

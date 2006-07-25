@@ -276,7 +276,6 @@
   // {{{ proto void delete(&lang.Object object)
   //     Destroys an object
   function delete(&$object) {
-    is_a($object, 'Object') && method_exists($object, '__destruct') && $object->__destruct();
     $object= NULL;
   }
   // }}}

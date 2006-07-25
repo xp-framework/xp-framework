@@ -22,8 +22,6 @@
      */
     public function __construct() {
       $this->__id= microtime();
-      if (method_exists($this, '__destruct'))
-        register_shutdown_function(array(&$this, '__destruct'));
     }
     
     public function __clone() {
