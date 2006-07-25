@@ -54,7 +54,7 @@
      * Asserts a query works
      *
      * @access  protected
-     * @throws  util.profiling.AssertionFailedError
+     * @throws  util.profiling.unittest.AssertionFailedError
      */
     function assertQuery() {
       $version= '$Revision$';
