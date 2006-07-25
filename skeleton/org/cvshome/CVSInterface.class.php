@@ -37,7 +37,7 @@
      * @access  private
      * @param   int cvsCmd Command to execute
      * @return  array output
-     * @throws  CVSInterfaceException, if cvs fails
+     * @throws  org.cvshome.CVSInterfaceException if cvs fails
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC115
      */
     function _execute($cvsCmd, $object= '') {
@@ -88,7 +88,7 @@
      * @access  public
      * @param   string statusString
      * @return  int statusCode
-     * @throws  CVSInterfaceException
+     * @throws  org.cvshome.CVSInterfaceException
      */
     function getCVSStatusFromString($statusCode) {
       switch ($statusCode) {
@@ -110,7 +110,7 @@
      * @access  public
      * @param   char statusCode
      * @return  int statusCode
-     * @throws  CVSInterfaceException
+     * @throws  org.cvshome.CVSInterfaceException
      */
     function getCVSStatus($statusCode) {
       switch ($statusCode) {
