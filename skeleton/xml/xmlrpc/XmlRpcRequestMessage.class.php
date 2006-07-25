@@ -21,7 +21,7 @@
      * @access  public
      * @param   string method
      */
-    function create($method) {
+    function create($method= NULL) {
       $this->tree= &new Tree(XMLRPC_METHODCALL);
       $this->tree->root->addChild(new Node('methodName', $method));
     }

@@ -107,7 +107,7 @@
      * @access  public
      * @param   xml.soap.SOAPMessage msg
      */
-    function create($msg) {
+    function create($msg= NULL) {
       $this->action= $msg->action;
       $this->method= $msg->method;
 

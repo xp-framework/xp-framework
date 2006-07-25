@@ -45,7 +45,7 @@
      * @param   string method
      * @param   int id
      */
-    function create($method, $id) {
+    function create($method= NULL, $id= NULL) {
       $this->method= $method;
       $this->id= $id;
     }
@@ -70,7 +70,7 @@
      * @access  public 
      * @return  mixed
      */
-    function getData() {
+    function &getData() {
       return $this->data['params'];
     }    
   }

@@ -40,7 +40,7 @@
      * @param   string method
      * @param   int id
      */
-    function create($msg) {
+    function create($msg= NULL) {
       $this->id= $msg->getId();
     }
     
@@ -64,7 +64,7 @@
      * @access  public
      * @return  mixed
      */
-    function getData() {
+    function &getData() {
       return $this->data['result'];
     }    
     

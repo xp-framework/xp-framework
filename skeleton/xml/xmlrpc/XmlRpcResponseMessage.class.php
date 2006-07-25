@@ -21,7 +21,7 @@
      * @access  public
      * @param   xml.xmlrpc.XmlRpcRequestMessage reqmsg
      */
-    function create($reqmsg) {
+    function create($reqmsg= NULL) {
       $this->tree= &new Tree(XMLRPC_RESPONSE);
     }
     

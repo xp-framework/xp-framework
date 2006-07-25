@@ -60,7 +60,7 @@
      * @access  public
      * @param   &lang.Object data
      */
-    function setData(&$data) {}
+    function setData($data) {}
 
     /**
      * Get Data
@@ -116,7 +116,7 @@
      *
      * @access  public
      */
-    function setFault() {}
+    function setFault($faultCode, $faultString) {}
     
     /**
      * Get fault

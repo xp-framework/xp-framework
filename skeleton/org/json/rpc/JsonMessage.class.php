@@ -26,7 +26,7 @@
     /**
      * Create message from string representation
      *
-     * @model   abstract
+     * @model   static
      * @access  public
      * @param   string string
      * @return  &org.json.rpc.JsonMessage

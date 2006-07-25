@@ -42,10 +42,9 @@
     /**
      * Create a message
      *
-     * @model   abstract
      * @access  public
      */
-    function create() { }
+    function create($reqmsg= NULL) { }
     
     /**
      * Construct a XML-RPC message from a string
@@ -54,7 +53,7 @@
      *   $msg= &XmlRpcMessage::fromString('<methodCall>...</methodCall>');
      * </code>
      *
-     * @model   abstract
+     * @model   static
      * @access  public
      * @param   string string
      * @return  &xml.xmlrpc.XmlRpcMessage
