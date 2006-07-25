@@ -140,7 +140,7 @@
      *
      * @access  protected
      * @return  bool success
-     * @throws  IllegalArgumentException in case authentication method is not supported
+     * @throws  lang.IllegalArgumentException in case authentication method is not supported
      */
     function _login() {
       if (empty($this->auth)) return TRUE;
@@ -260,8 +260,8 @@
      *
      * @access  public
      * @param   &peer.mail.Message message the Message object to send
-     * @throws  peer.mail.transport.TransportException to indicate an error occured
      * @return  bool TRUE in case of success
+     * @throws  peer.mail.transport.TransportException to indicate an error occured
      */
     function send(&$message) {
       try(); {

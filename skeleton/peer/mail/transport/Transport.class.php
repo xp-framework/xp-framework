@@ -35,7 +35,7 @@
      *
      * @access  abstract
      * @param   &peer.mail.Message message the Message object to send
-     * @throws  TransportException to indicate an error occured
+     * @throws  peer.mail.transport.TransportException to indicate an error occured
      */
     function send(&$message) { }
     

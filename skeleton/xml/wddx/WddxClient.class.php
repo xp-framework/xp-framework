@@ -62,7 +62,6 @@
      * @param   mixed vars
      * @return  mixed answer
      * @throws  lang.IllegalArgumentException
-     * @throws  xml.wddx.WddxFaultException
      */
     function invoke() {
       if (!is('xml.wddx.transport.WddxTransport', $this->transport))

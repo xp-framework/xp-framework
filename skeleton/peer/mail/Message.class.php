@@ -394,7 +394,7 @@
      * @access  public
      * @param   string header
      * @param   string value
-     * @throws  IllegalArgumentException if one of From, To, Cc or Bcc is specfied as header
+     * @throws  lang.IllegalArgumentException if one of From, To, Cc or Bcc is specfied as header
      */
     function setHeader($header, $value) {
       if (FALSE === $this->_setHeader($header, $value)) return throw(

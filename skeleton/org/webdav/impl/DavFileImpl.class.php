@@ -54,7 +54,7 @@
      * @access  private
      * @param   string path
      * @param   int maxdepth
-     * @throws  ElementNotFoundException
+     * @throws  lang.ElementNotFoundException
      */
     function _recurse(&$request, &$response, $path, $maxdepth) {
       $path= rtrim($path, '/');
@@ -237,7 +237,7 @@
      * @access  public
      * @param   string filename
      * @return  bool success
-     * @throws  ElementNotFoundException
+     * @throws  lang.ElementNotFoundException
      * @throws  org.webdav.OperationFailedException
      * @throws  org.webdav.OperationNotAllowedException
      */
@@ -291,7 +291,7 @@
      * @param   string resourcetype, default NULL
      * @return  bool new
      * @throws  org.webdav.OperationNotAllowedException
-     * @throws  org.webdav.OperationFailedExcpetion
+     * @throws  org.webdav.OperationFailedException
      */
     function put($filename, &$data, $resourcetype= NULL) {
       
@@ -349,7 +349,7 @@
      * @access  public
      * @param   string filename
      * @return  &org.webdav.WebdavObject
-     * @throws  ElementNotFoundException
+     * @throws  lang.ElementNotFoundException
      * @throws  org.webdav.OperationNotAllowedException
      */
     function &get($filename, $token= NULL) {
@@ -568,7 +568,7 @@
      * @access  public
      * @param   string path
      * @param   &io.File file
-     * @throws  &lang.ElementNotFoundException 
+     * @throws  lang.ElementNotFoundException 
      */
     function &VersionControl($path, &$file) {
       $realpath= $this->base.$path;
@@ -598,7 +598,7 @@
      * @access  public  
      * @param   &org.webdav.xml.WebdavPropFindRequest
      * @param   &org.webdav.xml.WebdavMultistatusResponse
-     * @throws  ElementNotFoundException
+     * @throws  lang.ElementNotFoundException
      */
     function &report(&$request, &$response) {
       $realpath= $this->base.$request->getPath();

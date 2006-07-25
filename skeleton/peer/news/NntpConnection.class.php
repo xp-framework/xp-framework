@@ -138,7 +138,7 @@
      * @access  public  
      * @param   float timeout default 2.0
      * @return  bool success
-     * @throws  ConnectException in case there's an error during connecting
+     * @throws  peer.ConnectException in case there's an error during connecting
      */
     function connect($auth= FALSE) {
       try(); {
@@ -162,7 +162,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException in case there's an error during disconnecting
+     * @throws  io.IOException in case there's an error during disconnecting
      */
     function close() {
       if (!$this->_sock->isConnected()) return TRUE;
@@ -181,7 +181,7 @@
      * @access  public
      * @param   string authmode
      * @return  bool success
-     * @throws  AuthenticationException in case authentication failed
+     * @throws  peer.AuthenticationException in case authentication failed
      */  
     function authenticate() {
       try(); {
@@ -258,7 +258,7 @@
      * @access  public
      * @param   mixed Id eighter a messageId or an articleId
      * @return  &peer.news.Article
-     * @throws  IOException in case article could not be retrieved
+     * @throws  io.IOException in case article could not be retrieved
      */
     function &getArticle($id= NULL) {
       $status= $this->_sendcmd('ARTICLE', $id);
@@ -294,7 +294,7 @@
      *
      * @access  public
      * @return  array articleId
-     * @throws  IOException in case article list could not be retrieved
+     * @throws  io.IOException in case article list could not be retrieved
      */
     function getArticleList() {
       $status= $this->_sendcmd('LISTGROUP');
@@ -312,7 +312,7 @@
      * @access  public  
      * @param   mixed Id eighter a messageId or an articleId default NULL 
      * @return  string body
-     * @throws  IOException in case body could not be retrieved
+     * @throws  io.IOException in case body could not be retrieved
      */
     function getBody($id= NULL) {
       $status= $this->_sendcmd('BODY', $id);
@@ -330,7 +330,7 @@
      * @access  public  
      * @param   mixed Id eighter a messageId or an articleId default NULL
      * @return  array headers
-     * @throws  IOException in case headers could not be retrieved
+     * @throws  io.IOException in case headers could not be retrieved
      */
     function getHeaders($id= NULL) {
       $status= $this->_sendcmd('HEAD', $id);
@@ -351,7 +351,7 @@
      *
      * @access  public
      * @return  &peer.news.Article
-     * @throws  IOException in case article could not be retrieved
+     * @throws  io.IOException in case article could not be retrieved
      */
     function &getNextArticle() {
       $status= $this->_sendcmd('NEXT');
@@ -366,7 +366,7 @@
      *
      * @access  public
      * @return  &peer.news.Article
-     * @throws  IOException in case article could not be retrieved
+     * @throws  io.IOException in case article could not be retrieved
      */
     function &getLastArticle() {
       $status= $this->_sendcmd('LAST');
@@ -381,7 +381,7 @@
      *
      * @access  public
      * @return  array fields
-     * @throws  IOException in case format could not be retrieved
+     * @throws  io.IOException in case format could not be retrieved
      */    
     function getOverviewFormat() {
       $status= $this->_sendcmd('LIST OVERVIEW.FMT');

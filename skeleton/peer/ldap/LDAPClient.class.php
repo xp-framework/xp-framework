@@ -350,7 +350,7 @@
      * @access  public
      * @param   &peer.ldap.LDAPEntry entry
      * @return  bool success
-     * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
+     * @throws  lang.IllegalArgumentException when entry parameter is not an LDAPEntry object
      * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
     function add(&$entry) {
@@ -379,7 +379,7 @@
      * @access  public
      * @param   &peer.ldap.LDAPEntry entry
      * @return  bool success
-     * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
+     * @throws  lang.IllegalArgumentException when entry parameter is not an LDAPEntry object
      * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
     function modify(&$entry) {
@@ -404,7 +404,7 @@
      * @access  public
      * @param   &peer.ldap.LDAPEntry entry
      * @return  bool success
-     * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
+     * @throws  lang.IllegalArgumentException when entry parameter is not an LDAPEntry object
      * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
     function delete(&$entry) {

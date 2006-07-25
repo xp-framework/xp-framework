@@ -135,8 +135,8 @@
      * @param   &peer.mail.MailFolder folder
      * @param   boolean readonly default FALSE
      * @return  boolean success
-     * @throws  IllegalAccessException if another folder is still open
-     * @throws  IOException if folder cannot be opened
+     * @throws  lang.IllegalAccessException if another folder is still open
+     * @throws  io.IOException if folder cannot be opened
      */
     function openFolder(&$f, $readonly= FALSE) {
       // Is it already open?
@@ -171,7 +171,7 @@
      * @access  public
      * @param   &peer.mail.MailFolder folder
      * @return  boolean success
-     * @throws  IllegalArgumentException if folder is not opened folder
+     * @throws  lang.IllegalArgumentException if folder is not opened folder
      */    
     function closeFolder(&$f) {
       // Is it already open?
@@ -266,7 +266,7 @@
      * @access  private
      * @param   string filename
      * @return  &peer.mail.Message
-     * @throws  IOException if file cannot be read
+     * @throws  io.IOException if file cannot be read
      */    
     function &_readMessageRaw($filename) {
       $header= '';
