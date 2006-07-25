@@ -80,6 +80,24 @@ __;
     function packagedNameOf($short) {
       return strtr($this->qualifiedNameOf($short), '.', '~');
     }
+    
+    function mappedName($name) {
+      switch (strtolower($name)) {
+        case 'exception': return 'XException';
+        case 'interface': return 'XInterface';
+      }
+    }
+    
+    function printUses($usesList, $multiline= FALSE) {
+      $out= '';
+      if (sizeof($usesList) >= 3) $multiline= TRUE;
+
+      $out.= 'uses(';
+      ($multiline ? $out.= "\n    '" : $out.= "'");
+      $out.= implode(($multiline ? "',\n    '" : "', '"), $usesList);
+      ($multiline ? $out.= "'\n  );" : $out.= "');");
+      return $out;
+    }
 
     function start(&$root) {
       static $map= array(
@@ -116,6 +134,7 @@ __;
         $states= array(ST_INITIAL);
         $skip= FALSE;
         $brackets= 0;
+        $printedUses= FALSE;
         
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
           $t= $tokens[$i];
@@ -129,9 +148,39 @@ __;
               Console::writeLinef('%-20s: %-30s %s', $states[0], 'T_NONE', $tokens[$i]);
             }
           }
-
+          
           // State-based actions
           switch ($states[0].$t[0]) {
+            case ST_INITIAL.T_COMMENT:
+              if ('/**' == substr($t[1], 0, 3)) {
+                if (!$printedUses && !empty($this->current->interfaces->classes)) {
+                  $out.= $this->printUses(array_keys($this->current->interfaces->classes))."\n\n  ";
+                }
+              }
+              
+              break;
+            case ST_INITIAL.T_USES:
+              $usesList= array();
+              $multiline= FALSE;
+              
+              for ($j= $i; $j < sizeof($tokens); $j++) {
+                if (')' == $tokens[$j]) break;
+                if (T_WHITESPACE == $tokens[$j][0] && FALSE !== strpos($tokens[$j][1], "\n")) $multiline= TRUE;
+                if (T_CONSTANT_ENCAPSED_STRING != $tokens[$j][0]) continue;
+                $usesList[trim($tokens[$j][1], '\'"')]= TRUE;
+              }
+              
+              foreach ($this->current->interfaces->classes as $iface => $dummy) {
+                $usesList[$iface]= TRUE;
+              }
+              
+              $out.= $this->printUses(array_keys($usesList), $multiline);
+              $printedUses= TRUE;
+              
+              $i= $j+ 1;
+              $t= '';
+              break;
+            
             case ST_INITIAL.T_CLASS:
               $qualified= strtr($this->current->qualifiedName(), '.', '~');
               /*$out.= (
@@ -265,6 +314,14 @@ __;
 
             case ST_CLASS.T_IMPLEMENTS:
               $skip= TRUE;
+              
+              $interfaces= array();
+              for ($j= $i; $j < sizeof($tokens); $j++) {
+                if ($tokens[$j] == ')') break;
+                if ($tokens[$j][0] != T_CONSTANT_ENCAPSED_STRING) continue;
+                $interfaces[]= trim($tokens[$j][1], '\'"');
+              }
+              
               array_unshift($states, ST_LOOKING_FOR_INTERFACES_END);
               break;
             
