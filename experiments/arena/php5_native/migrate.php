@@ -211,7 +211,28 @@ __;
               break;
 
             case ST_CLASS_BODY.T_FUNCTION:
-              $t[1]= 'public '.$t[1];           // Make all methods public
+              $function= NULL;
+              
+              // Find functionname
+              for ($j= $i; $j < sizeof($tokens); $j++) {
+                if ('(' == $tokens[$j]) break;
+                if (T_STRING == $tokens[$j][0]) { $function= $tokens[$j][1]; break; }
+              }
+              
+              $static= FALSE;
+              if ($function) {
+                foreach ($this->current->methods as $m) {
+                  if ($m->name == $function) {
+                  
+                    // There may only be one "model" tag
+                    $tag= array_shift($m->tags('model'));
+                    $static= $tag && $tag->text() == 'static';
+                    break;
+                  }
+                }
+              }
+            
+              $t[1]= 'public '.($static ? 'static ' : '').$t[1];           // Make all methods public
               array_unshift($states, ST_FUNCTION);
               break;
 
