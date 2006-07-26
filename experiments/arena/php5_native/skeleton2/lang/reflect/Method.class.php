@@ -50,7 +50,6 @@
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      */
     public function &invoke(&$obj, $args= array()) {
-      $reflection= new ReflectionMethod($this->_ref, $this->name);
       if (NULL !== $obj) {
         if (!is(xp::nameOf($this->_ref), $obj)) {
           throw(new IllegalArgumentException(sprintf(
@@ -61,7 +60,8 @@
         }
       }
       try {
-        $result= $reflection->invokeArgs($obj, (array)$args);
+        if (!is_array($args)) $args= (array)$args;
+        $result= $this->_reflect->invokeArgs($obj, $args);
         return $result;
       } catch(ReflectionException $e) {
         throw(new XException($e->getMessage()));
