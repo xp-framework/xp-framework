@@ -83,7 +83,9 @@ __;
     
     function mappedName($name) {
       switch (strtolower($name)) {
-        case 'exception': return 'XException';
+        case 'exception': return 'XPException';
+        case 'iterator':  return 'XPIterator';
+        case 'lang.object': return 'lang.Generic';
         default: return $name;
       }
     }
@@ -194,7 +196,7 @@ __;
             
             case ST_CLASS.'{':
               empty($this->current->interfaces->classes) || $out.= 'implements '.implode(
-                ', ', array_map(create_function('$a', 'return substr($a, strrpos($a, ".")+ 1);'), array_keys($this->current->interfaces->classes))
+                ', ', array_map(create_function('$a', 'return MigrationDoclet::mappedName(substr($a, strrpos($a, ".")+ 1));'), array_keys($this->current->interfaces->classes))
               ).' ';
               $skip= FALSE;
               array_unshift($states, ST_CLASS_BODY);
@@ -238,6 +240,11 @@ __;
 
             case ST_INITIAL.T_FUNCTION:
               array_unshift($states, ST_FUNCTION);
+              break;
+            
+            case ST_FUNCTION_BODY.'&':
+              // Convert &new to new
+              if (T_NEW == $tokens[$i+ 1][0]) $t= '';
               break;
             
             case ST_FUNCTION.'{':
@@ -299,6 +306,12 @@ __;
             
             case ST_INITIAL.T_STRING:
             case ST_FUNCTION_BODY.T_STRING:
+              // Convert is('lang.Object', $o) into the respective lang.Generic
+              if ('is' === $t[1]) {
+                $class= trim($tokens[$i+ 2][1], '\'"');
+                $tokens[$i+ 2][1]= "'".$this->mappedName($class)."'";
+                break;
+              }
               /*if (T_DOUBLE_COLON == $tokens[$i+ 1][0]) {    // Look ahead
                 $t[1]= $this->packagedNameOf($t[1]);
               }*/
