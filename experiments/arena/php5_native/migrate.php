@@ -33,6 +33,8 @@ __;
   define('ST_LOOKING_FOR_THROW',          'looking:throw');
   define('ST_LOOKING_FOR_INTERFACES_END', 'looking:iface_end');
   define('ST_LOOKING_FOR_CATCH',          'looking:catch');
+  define('ST_LOOKING_FOR_IS_A_END',       'looking:isa_end');
+  define('ST_LOOKING_FOR_IS_END',         'looking:is_end');
 
   define('T_TRY',                0x2000);
   define('T_CATCH',              0x2001);
@@ -87,6 +89,7 @@ __;
         case 'iterator':  return 'XPIterator';
         case 'util.iterator': return 'util.XPIterator';
         case 'lang.object': return 'lang.Generic';
+        case 'object': return 'Generic';
         default: return $name;
       }
     }
@@ -317,17 +320,57 @@ __;
             
             case ST_INITIAL.T_STRING:
             case ST_FUNCTION_BODY.T_STRING:
-              // Convert is('lang.Object', $o) into the respective lang.Generic
-              if ('is' === $t[1]) {
-                $class= trim($tokens[$i+ 2][1], '\'"');
-                $tokens[$i+ 2][1]= "'".$this->mappedName($class)."'";
+            
+              // Replace is_a() with is() calls
+              if ('is_a' === $t[1]) {
+                array_unshift($states, ST_LOOKING_FOR_IS_A_END);
+                $t= '';
                 break;
               }
+              
+              // Convert is('lang.Object', $o) into the respective lang.Generic
+              if ('is' === $t[1]) {
+                array_unshift($states, ST_LOOKING_FOR_IS_END);
+                break;
+              }
+              
               /*if (T_DOUBLE_COLON == $tokens[$i+ 1][0]) {    // Look ahead
                 $t[1]= $this->packagedNameOf($t[1]);
               }*/
               break;
+            
+            case ST_LOOKING_FOR_IS_END.T_CONSTANT_ENCAPSED_STRING:
+              if ("'" == $t[1]{0} || '"' == $t[1]{0}) {
+                $t[1]= "'".$this->mappedName(trim($t[1], '\'"'))."'";
+              }
+              break;
+            
+            case ST_LOOKING_FOR_IS_END.')':
+              array_shift($states);
+              break;
+            
+            case ST_LOOKING_FOR_IS_A_END.T_VARIABLE:
+              $isAobjectToken= $t;
+              $t= '';
+              break;
+            
+            case ST_LOOKING_FOR_IS_A_END.T_WHITESPACE:
+            case ST_LOOKING_FOR_IS_A_END.',':
+            case ST_LOOKING_FOR_IS_A_END.'(':
+              $t= '';
+              break;
+            
+            case ST_LOOKING_FOR_IS_A_END.')';
+              $out.= 'is(\''.$this->mappedName(trim($isAclassToken[1], '\'"')).'\', '.$isAobjectToken[1].')';
+              $t= '';
+              array_shift($states); // Popp off ST_ISA_BODY
+              break;
 
+            case ST_LOOKING_FOR_IS_A_END.T_CONSTANT_ENCAPSED_STRING:
+              $isAclassToken= $t;
+              $t= '';
+              break;
+            
             case ST_INITIAL.T_IF:
             case ST_FUNCTION_BODY.T_IF:
               if ('catch' == $tokens[$i+ 3][1]) {           // Look ahead
