@@ -85,18 +85,28 @@ __;
       switch (strtolower($name)) {
         case 'exception': return 'XPException';
         case 'iterator':  return 'XPIterator';
+        case 'util.iterator': return 'util.XPIterator';
         case 'lang.object': return 'lang.Generic';
         default: return $name;
       }
     }
     
     function printUses($usesList, $multiline= FALSE) {
+      $uses= array();
+      
+      // Unique again and use mapped names
+      foreach ($usesList as $u) {
+        $uses[$this->mappedName($u)]= TRUE;
+      }
+      
+      $uses= array_keys($uses);
+      
       $out= '';
-      if (sizeof($usesList) >= 3) $multiline= TRUE;
+      if (sizeof($uses) >= 3) $multiline= TRUE;
 
       $out.= 'uses(';
       ($multiline ? $out.= "\n    '" : $out.= "'");
-      $out.= implode(($multiline ? "',\n    '" : "', '"), $usesList);
+      $out.= implode(($multiline ? "',\n    '" : "', '"), $uses);
       ($multiline ? $out.= "'\n  );" : $out.= "');");
       return $out;
     }
@@ -191,6 +201,7 @@ __;
                 ' { '
               );*/
               array_unshift($states, ST_CLASS);
+              array_unshift($states, ST_LOOKING_FOR_CLASS); // Search classname and perform mapping replacement
               $this->current->isInterface() && $t[1]= 'interface';
               break;
             
