@@ -74,6 +74,18 @@ define open_file_xpclass {
   }
 }
 
+define create_xp_class {
+  include_file( getenv("HOME") "/.nedit/xpclass.tmpl")
+  set_language_mode("PHP")
+  goto_line_number(14)
+}
+
+define create_xp_cli {
+  include_file( getenv("HOME") "/.nedit/xpcli.tmpl")
+  set_language_mode("PHP")
+  goto_line_number(24)
+}
+
 define open_browser {
   url= $1
   

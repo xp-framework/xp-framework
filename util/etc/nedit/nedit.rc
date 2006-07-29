@@ -32,10 +32,6 @@ nedit.shellCommands: \
 		$HOME/bin/xpci --comment\n\
 	Insert class header:Shift+Alt+D:::\n\
 		$HOME/bin/xpci --header\n\
-	Create XP class:Shift+Alt+C:::\n\
-		$HOME/bin/xpci --class\n\
-	Create XP cli script:Shift+Alt+F:::\n\
-		$HOME/bin/xpci --cmdfile\n\
 	Execute PHP script:F9::AD:\n\
 		php -q\n\
 	Make accessors:Shift+Alt+A::I:\n\
@@ -290,6 +286,12 @@ nedit.macroCommands: \
 		{\n\
 		    nGrep(get_selection())\n\
 		}\n\
+	}\n\
+	Create XP class:Shift+Alt+C::: {\n\
+		create_xp_class()\n\
+	}\n\
+	Create XP CLI script:Shift+Alt+F::: {\n\
+		create_xp_cli()\n\
 	}\n
 nedit.bgMenuCommands: \
 	Apidoc PHP@PHP:::R: {\n\
