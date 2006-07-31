@@ -30,7 +30,7 @@
            var $invocations= array();
 
            function invoke(&$proxy, $method, $args) { 
-             $this->invocations[$method]= $args;
+             $this->invocations[$method."_".sizeof($args)]= $args;
            }
         } implements("DebugInvocationHandler.class.php", "lang.reflect.InvocationHandler");
         '
@@ -163,7 +163,7 @@
     function iteratorNextInvoked() {
       $proxy= &$this->proxyInstanceFor(array($this->iteratorClass));
       $proxy->next();
-      $this->assertEquals(array(), $this->handler->invocations['next']);
+      $this->assertEquals(array(), $this->handler->invocations['next_0']);
     }
     
     /**
@@ -194,5 +194,19 @@
         XPClass::forName('util.NewIterator')
       ));
     }
+    
+    /**
+     * Check that overloaded methods are correctly built.
+     *
+     * @access  public
+     */
+    #[@test]
+    function overloadedMethod() {
+      $proxy= &$this->proxyInstanceFor(array(XPClass::forName('net.xp_framework.unittest.reflection.OverloadedInterface')));
+      $proxy->overloaded('foo');
+      $proxy->overloaded('foo', 'bar');
+      $this->assertEquals(array('foo'), $this->handler->invocations['overloaded_1']);
+      $this->assertEquals(array('foo', 'bar'), $this->handler->invocations['overloaded_2']);
+    }    
   }
 ?>

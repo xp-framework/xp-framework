@@ -84,7 +84,7 @@
               $max= max($max, $args- 1);
               if (isset($cases[$args])) continue;
               
-              $cases[$s]= (
+              $cases[$args]= (
                 'case '.$args.': '.
                 'return $this->_h->invoke($this, \''.$methods[$i]->getName(TRUE).'\', array('.
                 ($args ? '$_'.implode(', $_', range(0, $args- 1)) : '').'));'
