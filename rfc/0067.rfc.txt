@@ -13,12 +13,14 @@ A new function setTrace() will be added to the class remote.Remote which
 can be used to specify a util.LogCategory for logging requests and
 responses.
 
+
 Rationale
 ---------
 Currently it's very hard to debug the requests/responses between PHP
 client and EASC server. To ease the debugging process, it should be
 possible to set a LogCategory which is used for logging all requests
 and responses.
+
 
 Functionality
 -------------
@@ -55,22 +57,27 @@ Example logged output:
 The string representation of the passed parameters and the represenation
 of the reponse is generated using xp::stringOf() function.
 
+
 Security considerations
 -----------------------
 n/a
+
 
 Speed impact
 ------------
 Slight performance issues while setting and checking the LogCategory and
 while logging stuff.
 
+
 Dependencies
 ------------
 n/a
 
+
 Related documents
 -----------------
 n/a
+
 
 Comments
 --------
