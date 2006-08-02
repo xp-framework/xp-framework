@@ -98,6 +98,6 @@ Comments
 
 - ohinckel, Weg Aug  2 08:09:41 CEST 2006
   First initial testing patch:
-  http://xp-framework.net/downloads/rfc0067.diff
+  http://xp-framework.net/rfc/contrib/rfc0067.diff
 
 <EOF>
