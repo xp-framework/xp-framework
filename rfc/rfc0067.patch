@@ -1,0 +1,77 @@
+Index: remote/protocol/XpProtocolHandler.class.php
+===================================================================
+--- remote/protocol/XpProtocolHandler.class.php	(revision 7524)
++++ remote/protocol/XpProtocolHandler.class.php	(working copy)
+@@ -23,7 +23,8 @@
+     var
+       $versionMajor   = 0,
+       $versionMinor   = 0,
+-      $serializer     = NULL;
++      $serializer     = NULL,
++      $cat            = NULL;
+     
+     var
+       $_sock= NULL;  
+@@ -137,6 +138,14 @@
+      * @return  &mixed
+      */
+     function &invoke($oid, $method, $args) {
++      $this->cat && $this->cat->debugf(
++        '>>> %s(%s:%d) %s() {%s}',
++        $this->getClassName(),
++        $this->_sock->host,
++        $this->_sock->port,
++        $method,
++        xp::stringOf($args)
++      );
+       $r= &$this->sendPacket(
+         REMOTE_MSG_CALL, 
+         pack('NN', 0, $oid),
+@@ -145,6 +154,7 @@
+           new ByteCountedString($this->serializer->representationOf(new ArrayList($args)))
+         )
+       );
++      $this->cat && $this->cat->debugf('<<< %s', xp::stringOf($r));
+       return $r;
+     }
+ 
+@@ -249,5 +259,15 @@
+       return $return;
+     }
+ 
+-  } implements(__FILE__, 'remote.protocol.ProtocolHandler');
++    /**
++     * Set trace
++     *
++     * @accessp public
++     * @param &util.log.LogCategory cat
++     */
++    function setTrace(&$cat) {
++      $this->cat= &$cat;
++    }
++
++  } implements(__FILE__, 'remote.protocol.ProtocolHandler', 'util.log.Traceable');
+ ?>
+Index: remote/Remote.class.php
+===================================================================
+--- remote/Remote.class.php	(revision 7524)
++++ remote/Remote.class.php	(working copy)
+@@ -95,6 +95,18 @@
+     }
+     
+     /**
++     * Set trace
++     *
++     * @access public
++     * @param &util.log.LogCategory log
++     */
++    function setTrace(&$cat) {
++      if (!is('util.log.Traceable', $this->_handler)) return FALSE;
++      $this->_handler->setTrace($cat);
++      return TRUE;
++    }
++    
++    /**
+      * Look up an object by its name
+      *
+      * @access  public

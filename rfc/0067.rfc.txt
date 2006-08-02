@@ -1,0 +1,96 @@
+RFC 0067: Add debug logging to remote API
+========================================================================
+$Id$
+
+@authors: ohinckel
+@created: Tue Aug  1 14:12:13 CEST 2006
+@status: draft
+@category: remote
+
+Scope of Change
+---------------
+A new function setTrace() will be added to the class remote.Remote which
+can be used to specify a util.LogCategory for logging requests and
+responses.
+
+Rationale
+---------
+Currently it's very hard to debug the requests/responses between PHP
+client and EASC server. To ease the debugging process, it should be
+possible to set a LogCategory which is used for logging all requests
+and responses.
+
+Functionality
+-------------
+Setting a trace for remote.Remote class should go like this:
+<?php
+  try(); {
+    $l= &Logger::getCategory();
+    $c= &$l->getCategory();
+    
+    $remote= &Remote::forName('xp://jboss01.example.com/') &&
+    $remote->setTrace($c);
+  } if (catch('RemoteException', $e)) {
+    return throw($e);
+  }
+  
+  // Proceed with invoking some stuff
+  ...
+?>
+
+Example logged output:
+<code>
+[08:02:49 22132 debug] >>> remote.protocol.XpProtocolHandler(pimperator4.schlund.de:6448) echoHash() {[
+  0 => [
+    localpart => "xp"
+    domain => "php3.de"
+  ]
+]}
+[08:02:49 22132 debug] <<< [
+  localpart => "xp"
+  domain => "php3.de"
+]
+</code>
+
+The string representation of the passed parameters and the represenation
+of the reponse is generated using xp::stringOf() function.
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+Slight performance issues while setting and checking the LogCategory and
+while logging stuff.
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+n/a
+
+Comments
+--------
+- ohinckel, Tue Aug  1 14:23:04 CEST 2006
+  Which requests do we need to log? I think it would be enough to only
+  log requests made by invoke(). Other requests, like begin(), end(),
+  rollback(), could be ignored in the first step.
+
+- ohinckel, Tue Aug  1 14:26:27 CEST 2006
+  Should setTrace() return TRUE or FALSE in case a ProtocolHandler
+  implements util.log.Traceable? Maybe it should always return TRUE to
+  be able to use constructs like this:
+<?php
+  $remote= &Remote::forName('xp://jboss01.example.com/') &&
+  $remote->setTrace($cat) &&
+  $remote->invokeThisFunction($args);
+?>
+
+- ohinckel, Weg Aug  2 08:09:41 CEST 2006
+  First initial testing patch:
+  http://xp-framework.net/downloads/rfc0067.diff
+
+<EOF>
