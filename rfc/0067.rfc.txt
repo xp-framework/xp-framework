@@ -4,7 +4,7 @@ $Id$
 
 @authors: ohinckel
 @created: Tue Aug  1 14:12:13 CEST 2006
-@status: draft
+@status: discussion, ends at Mon Aug 14 14:00:00 CEST 2005
 @category: remote
 
 Scope of Change
@@ -42,13 +42,13 @@ Setting a trace for remote.Remote class should go like this:
 
 Example logged output:
 <code>
-[08:02:49 22132 debug] >>> remote.protocol.XpProtocolHandler(pimperator4.schlund.de:6448) echoHash() {[
+[10:48:40 32525 debug] >>> remote.protocol.XpProtocolHandler(pimperator4.schlund.de:6448) echoHash([
   0 => [
     localpart => "xp"
     domain => "php3.de"
   ]
-]}
-[08:02:49 22132 debug] <<< [
+])
+[10:48:40 32525 debug] <<< [
   localpart => "xp"
   domain => "php3.de"
 ]
@@ -99,5 +99,14 @@ Comments
 - ohinckel, Weg Aug  2 08:09:41 CEST 2006
   First initial testing patch:
   http://xp-framework.net/rfc/contrib/rfc0067.diff
+
+- ohinckel, Thu Aug  3 09:55:30 CEST 2006
+  Maybe it would also be nice to have the JNDI name of the current bean
+  which is used to invoke a function.
+
+- ohinckel, Thu Aug  3 10:50:49 CEST 2006
+  I modified the patch to include a better string representation for the
+  lang.reflect.Proxy class (to avoid bloat in the logging) and to log
+  also begin(), rollback(), commit(), initialize() and lookup().
 
 <EOF>
