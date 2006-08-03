@@ -1,3 +1,32 @@
+Index: lang/reflect/Proxy.class.php
+===================================================================
+--- lang/reflect/Proxy.class.php	(revision 7524)
++++ lang/reflect/Proxy.class.php	(working copy)
+@@ -84,7 +84,7 @@
+               $max= max($max, $args- 1);
+               if (isset($cases[$args])) continue;
+               
+-              $cases[$s]= (
++              $cases[$args]= (
+                 'case '.$args.': '.
+                 'return $this->_h->invoke($this, \''.$methods[$i]->getName(TRUE).'\', array('.
+                 ($args ? '$_'.implode(', $_', range(0, $args- 1)) : '').'));'
+@@ -156,5 +156,15 @@
+       $instance->_h= &$handler;
+       return $instance;
+     }
++    
++    /**
++     * Returns string representation
++     *
++     * @access public
++     * @return string
++     */
++    function toString() {
++      return $this->getClassName().'(handler= '.$this->_h->getClassName().')';
++    }
+   }
+ ?>
 Index: remote/protocol/XpProtocolHandler.class.php
 ===================================================================
 --- remote/protocol/XpProtocolHandler.class.php	(revision 7524)
@@ -12,12 +41,114 @@ Index: remote/protocol/XpProtocolHandler.class.php
      
      var
        $_sock= NULL;  
-@@ -137,6 +138,14 @@
+@@ -63,13 +64,27 @@
+       $this->_sock->connect();
+       
+       if ($user= $proxy->getUser()) {
+-        $this->sendPacket(REMOTE_MSG_INIT, "\1", array(
++        $this->cat && $this->cat->debugf(
++          '>>> %s(%s:%d) INITIALIZE %s',
++          $this->getClassName(),
++          $this->_sock->host,
++          $this->_sock->port,
++          $user
++        );
++        $r= $this->sendPacket(REMOTE_MSG_INIT, "\1", array(
+           new ByteCountedString($proxy->getUser()),
+           new ByteCountedString($proxy->getPassword())
+         ));
+       } else {
+-        $this->sendPacket(REMOTE_MSG_INIT, "\0");
++        $this->cat && $this->cat->debugf(
++          '>>> %s(%s:%d) INITIALIZE',
++          $this->getClassName(),
++          $this->_sock->host,
++          $this->_sock->port
++        );
++        $r= $this->sendPacket(REMOTE_MSG_INIT, "\0");
+       }
++      $this->cat && $this->cat->debugf('<<< %s', xp::stringOf($r));
+     }
+     
+     /**
+@@ -90,7 +105,16 @@
+      * @param   &lang.Object
+      */
+     function &lookup($name) {
+-      return $this->sendPacket(REMOTE_MSG_LOOKUP, '', array(new ByteCountedString($name)));
++      $this->cat && $this->cat->debugf(
++        '>>> %s(%s:%d) LOOKUP %s',
++        $this->getClassName(),
++        $this->_sock->host,
++        $this->_sock->port,
++        $name
++      );
++      $r= &$this->sendPacket(REMOTE_MSG_LOOKUP, '', array(new ByteCountedString($name)));
++      $this->cat && $this->cat->debugf('<<< %s', xp::stringOf($r));
++      return $r;
+     }
+ 
+     /**
+@@ -101,7 +125,16 @@
+      * @param   bool
+      */
+     function begin(&$tran) {
+-      return $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_BEGIN));
++      $this->cat && $this->cat->debugf(
++        '>>> %s(%s:%d) BEGIN %s',
++        $this->getClassName(),
++        $this->_sock->host,
++        $this->_sock->port,
++        xp::stringOf($tran)
++      );
++      $r= &$this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_BEGIN));
++      $this->cat && $this->cat->debugf('<<< %s', xp::stringOf($r));
++      return $r;
+     }
+ 
+     /**
+@@ -112,7 +145,16 @@
+      * @param   bool
+      */
+     function rollback(&$tran) {
+-      return $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_ROLLBACK));
++      $this->cat && $this->cat->debugf(
++        '>>> %s(%s:%d) ROLLBACK %s',
++        $this->getClassName(),
++        $this->_sock->host,
++        $this->_sock->port,
++        xp::stringOf($tran)
++      );
++      $r= &$this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_ROLLBACK));
++      $this->cat && $this->cat->debugf('<<< %s', xp::stringOf($r));
++      return $r;
+     }
+ 
+     /**
+@@ -123,7 +165,16 @@
+      * @param   bool
+      */
+     function commit(&$tran) {
+-      return $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_COMMIT));
++      $this->cat && $this->cat->debugf(
++        '>>> %s(%s:%d) COMMIT %s',
++        $this->getClassName(),
++        $this->_sock->host,
++        $this->_sock->port,
++        xp::stringOf($tran)
++      );
++      $r= &$this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_COMMIT));
++      $this->cat && $this->cat->debugf('<<< %s', xp::stringOf($r));
++      return $r;
+     }
+ 
+     /**
+@@ -137,6 +188,14 @@
       * @return  &mixed
       */
      function &invoke($oid, $method, $args) {
 +      $this->cat && $this->cat->debugf(
-+        '>>> %s(%s:%d) %s() {%s}',
++        '>>> %s(%s:%d) %s(%s)',
 +        $this->getClassName(),
 +        $this->_sock->host,
 +        $this->_sock->port,
@@ -27,7 +158,7 @@ Index: remote/protocol/XpProtocolHandler.class.php
        $r= &$this->sendPacket(
          REMOTE_MSG_CALL, 
          pack('NN', 0, $oid),
-@@ -145,6 +154,7 @@
+@@ -145,6 +204,7 @@
            new ByteCountedString($this->serializer->representationOf(new ArrayList($args)))
          )
        );
@@ -35,7 +166,7 @@ Index: remote/protocol/XpProtocolHandler.class.php
        return $r;
      }
  
-@@ -249,5 +259,15 @@
+@@ -249,5 +309,15 @@
        return $return;
      }
  
