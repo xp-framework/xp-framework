@@ -83,7 +83,7 @@
       );
       $arguments= $client->signArray($arguments);
       
-      $url= &new URL('http://flickr.com/services/auth');
+      $url= new URL('http://flickr.com/services/auth');
       $url->addParams($arguments);
       
       return $url->getURL();

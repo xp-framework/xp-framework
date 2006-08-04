@@ -5,8 +5,8 @@
  */
  
   uses(
-    'io.Stream', 
-    'text.StringTokenizer', 
+    'io.Stream',
+    'text.StringTokenizer',
     'org.json.JsonException',
     'org.json.IJsonDecoder'
   );
@@ -73,7 +73,7 @@
         case 'object': {
           // Convert objects to arrays and store the classname with them as
           // suggested by JSON-RPC
-          if (is('lang.Object', $data)) {
+          if (is('lang.Generic', $data)) {
             if (!method_exists($data, '__sleep')) {
               $vars= get_object_vars($data);
             } else {
@@ -137,7 +137,7 @@
      * @return  mixed
      */
     public function decode($string) {
-      $this->stream= &new Stream();
+      $this->stream= new Stream();
       $this->stream->open(STREAM_MODE_READWRITE);
       $this->stream->write($string);
       $this->stream->rewind();
@@ -334,7 +334,7 @@
         $ret= '';
       
         $esc= FALSE;
-        $tokenizer= &new StringTokenizer($str, '\"', TRUE);
+        $tokenizer= new StringTokenizer($str, '\"', TRUE);
         while (strlen($tok) || $tokenizer->hasMoreTokens()) {
           if (empty($tok)) {
             $tok= $tokenizer->nextToken();

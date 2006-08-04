@@ -53,8 +53,8 @@
      * @return  &security.sasl.DigestChallenge
      * @throws  lang.FormatException
      */
-    public function &fromString($s) {
-      with ($challenge= &new DigestChallenge()); {
+    public static function &fromString($s) {
+      with ($challenge= new DigestChallenge()); {
         $s.= ',';
         while ($p= strpos($s, '=')) {
           $key= substr($s, 0, $p);
@@ -127,7 +127,7 @@
         throw(new FormatException('Challenge does not contains DC_QOP_AUTH'));
       }
       
-      with ($r= &new DigestResponse(
+      with ($r= new DigestResponse(
         $this->getRealm(), 
         $this->getNonce(), 
         $qop

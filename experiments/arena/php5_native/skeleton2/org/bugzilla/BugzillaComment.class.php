@@ -113,7 +113,7 @@
       ) throw(new IllegalArgumentException('Too few arguments given'));
 
       try {
-        with ($desc= &new BugzillaLongDescs()); {
+        with ($desc= new BugzillaLongDescs()); {
           $desc->setBug_id($this->bug_id);
           $desc->setBug_when(Date::now());
           $desc->setThetext($this->comment);

@@ -28,7 +28,6 @@
      * @param   string name
      */
     public function __construct($name) {
-      parent::__construct();
       $this->name= $name;
     }
 
@@ -215,7 +214,7 @@
         return TRUE;
       } 
       
-      return $a instanceOf AnyObject ? $a->equals($b) : $a === $b;
+      return is('Generic', $a) ? $a->equals($b) : $a === $b;
     }
 
     /**
@@ -323,7 +322,7 @@
      * @return  bool
      */
     public function assertClass(&$var, $name, $error= 'notequal') {
-      if (!is_a($var, 'Object')) {
+      if (!is('Generic', $var)) {
         return $this->fail($error, $pattern, $var);
       }
       if ($var->getClassName() !== $name) {
@@ -342,7 +341,7 @@
      * @return  bool
      */
     public function assertSubclass(&$var, $name, $error= 'notsubclass') {
-      if (!$var instanceOf AnyObject && !$var instanceOf Exception) {
+      if (!is('Generic', $var)) {
         return $this->fail($error, $pattern, $var);
       }
       if (!is($name, $var)) {
@@ -361,7 +360,7 @@
      * @return  bool
      */
     public function assertIn($list, $var, $error= 'notinlist') {
-      if (is_a($var, 'Object')) {
+      if (is('Generic', $var)) {
         $result= array_filter($list, array(&$var, 'equals'));
         $contained= !empty($result);
       } else {
@@ -402,7 +401,7 @@
     public function run(&$result) {
       $class= &$this->getClass();
       $method= &$class->getMethod($this->name);
-      
+
       if (!$method) {
         throw(new MethodNotImplementedException(
           'Method does not exist', $this->name
@@ -412,7 +411,11 @@
       // Check for @expect
       $expected= NULL;
       if ($method->hasAnnotation('expect')) {
-        $expected= &XPClass::forName($method->getAnnotation('expect'));
+        try {
+          $expected= &XPClass::forName($method->getAnnotation('expect'));
+        } catch (Exception $e) {
+          throw($e);
+        }
       }
       
       // Check for @limit
@@ -421,7 +424,7 @@
         $eta= $method->getAnnotation('limit', 'time');
       }
 
-      $timer= &new Timer();
+      $timer= new Timer();
       $timer->start();
 
       // Setup test
@@ -464,7 +467,7 @@
 
       // Check expected exception
       if ($expected) {
-        $e= &new AssertionFailedError(
+        $e= new AssertionFailedError(
           'Expected exception not caught',
           ($e ? $e->getClassName() : NULL),
           $method->getAnnotation('expect')

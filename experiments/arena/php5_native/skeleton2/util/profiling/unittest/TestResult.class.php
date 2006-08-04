@@ -5,8 +5,8 @@
  */
 
   uses(
-    'util.profiling.unittest.TestFailure', 
-    'util.profiling.unittest.TestSuccess', 
+    'util.profiling.unittest.TestFailure',
+    'util.profiling.unittest.TestSuccess',
     'util.profiling.unittest.TestSkipped'
   );
 
@@ -30,7 +30,7 @@
      * @param   float elapsed
      */
     public function setSucceeded(&$test, $elapsed) {
-      $this->succeeded[$test->hashCode()]= &new TestSuccess($test, $elapsed);
+      $this->succeeded[$test->hashCode()]= new TestSuccess($test, $elapsed);
     }
     
     /**
@@ -42,7 +42,7 @@
      * @param   float elapsed
      */
     public function setFailed(&$test, $reason, $elapsed) {
-      $this->failed[$test->hashCode()]= &new TestFailure($test, $reason, $elapsed);
+      $this->failed[$test->hashCode()]= new TestFailure($test, $reason, $elapsed);
     }
 
     /**
@@ -54,7 +54,7 @@
      * @param   float elapsed
      */
     public function setSkipped(&$test, $reason, $elapsed) {
-      $this->skipped[$test->hashCode()]= &new TestSkipped($test, $reason, $elapsed);
+      $this->skipped[$test->hashCode()]= new TestSkipped($test, $reason, $elapsed);
     }
 
     /**

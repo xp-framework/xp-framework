@@ -42,11 +42,11 @@
      * @return  &io.sys.Semaphore a semaphore
      * @throws  io.IOException
      */
-    public function &get($key, $maxAquire= 1, $permissions= 0666) {
+    public static function &get($key, $maxAquire= 1, $permissions= 0666) {
       static $semaphores= array();
       
       if (!isset($semaphores[$key])) {
-        $s= &new Semaphore();
+        $s= new Semaphore();
         $s->key= $key;
         $s->maxAquire= $maxAquire;
         $s->permissions= $permissions;

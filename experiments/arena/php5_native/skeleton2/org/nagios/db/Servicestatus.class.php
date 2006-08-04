@@ -105,7 +105,7 @@
         
         $data= array();
         if ($q) while ($r= $q->next()) {
-          $data[]= &new Servicestatus($r);
+          $data[]= new Servicestatus($r);
         }
       } catch (SQLException $e) {
         throw($e);
@@ -173,7 +173,7 @@
         
         $data= array();
         if ($q) while ($r= $q->next()) {
-          $data[]= &new Servicestatus($r);
+          $data[]= new Servicestatus($r);
         }
       } catch (SQLException $e) {
         throw($e);
@@ -238,7 +238,7 @@
         
         $data= array();
         if ($q) while ($r= $q->next()) {
-          $data[]= &new Servicestatus($r);
+          $data[]= new Servicestatus($r);
         }
       } catch (SQLException $e) {
         throw($e);
@@ -302,7 +302,7 @@
         
         $data= array();
         if ($q) while ($r= $q->next()) {
-          $data[]= &new Servicestatus($r);
+          $data[]= new Servicestatus($r);
         }
       } catch (SQLException $e) {
         throw($e);

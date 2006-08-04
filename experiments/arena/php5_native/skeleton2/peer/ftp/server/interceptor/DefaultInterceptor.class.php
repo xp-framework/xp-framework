@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('peer.ftp.server.interceptor.StorageActionInterceptor');
+
   /**
    * Default implementation of a StorageActionInterceptor which just
    * returns TRUE in any case.

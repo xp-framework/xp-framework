@@ -5,7 +5,7 @@
  */
 
   uses(
-    'rdbms.DBConnection', 
+    'rdbms.DBConnection',
     'rdbms.Transaction',
     'rdbms.pgsql.PostgreSQLResultSet'
   );
@@ -231,7 +231,7 @@
         return TRUE;
       }
 
-      $resultset= &new PostgreSQLResultSet($result);
+      $resultset= new PostgreSQLResultSet($result);
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
       return $resultset;

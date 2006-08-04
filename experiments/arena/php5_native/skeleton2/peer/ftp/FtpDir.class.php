@@ -64,12 +64,12 @@
       );
       
       if ('d' == $permissions{0}) {
-        $e= &new FtpDir($filename, $this->_hdl);
+        $e= new FtpDir($filename, $this->_hdl);
       } else {
-        $e= &new FtpEntry($filename, $this->_hdl);
+        $e= new FtpEntry($filename, $this->_hdl);
       }
       with ($e); {
-        $d= &new Date($month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date));
+        $d= new Date($month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date));
         
         // Check for "recent" file which are specified "HH:MM" instead
         // of year for the last 6 month (as specified in coreutils/src/ls.c)

@@ -82,7 +82,7 @@
      * @param   int length
      * @return  string
      */
-    public function readFully(&$stream, $length) {
+    public static function readFully(&$stream, $length) {
       $return= '';
       while (strlen($return) < $length) {
         if (0 == strlen($buf= $stream->readBinary($length - strlen($return)))) return;
@@ -99,7 +99,7 @@
      * @param   &io.Stream stream
      * @return  string
      */
-    public function readFrom(&$stream) {
+    public static function readFrom(&$stream) {
       $s= '';
       do {
         if (FALSE === ($ctl= unpack('nlength/cnext', ByteCountedString::readFully($stream, 3)))) return;

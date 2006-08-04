@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('rdbms.DBTable', 'xml.Tree', 'lang.System');
+  uses(
+    'rdbms.DBTable',
+    'xml.Tree',
+    'lang.System'
+  );
   
   /**
    * Generate an XML representation of a database table
@@ -21,7 +25,7 @@
      * @access  public
      */
     public function __construct() {
-      $this->doc= &new Tree();
+      $this->doc= new Tree();
       
     }
 
@@ -35,12 +39,12 @@
      * @param   string database
      * @return  &rdbms.util.DBXmlGenerator object
      */    
-    public function &createFromTable(&$table, $dbhost, $database) {
-      if (!is_a($table, 'DBTable')) {
+    public static function &createFromTable(&$table, $dbhost, $database) {
+      if (!is('DBTable', $table)) {
         throw(new IllegalArgumentException('Argument table is not a DBTable object'));
       }
       
-      $g= &new DBXmlGenerator();
+      $g= new DBXmlGenerator();
       $g->doc->root->setAttribute('created_at', date('r'));
       $g->doc->root->setAttribute('created_by', System::getProperty('user.name'));
       

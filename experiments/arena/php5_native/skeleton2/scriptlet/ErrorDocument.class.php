@@ -79,7 +79,7 @@
      * @return  string content
      */
     public function getContent() {
-      $f= &new File($this->filename);
+      $f= new File($this->filename);
       try {
         $f->open(FILE_MODE_READ);
         $contents= $f->read($f->size());

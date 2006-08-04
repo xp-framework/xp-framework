@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses ('rdbms.mysql.MySQLConnection');
+  uses('rdbms.mysql.MySQLConnection');
 
   /**
    * Bugzilla MySQL connection. Automatically handles shadow db

@@ -44,7 +44,7 @@
      * @throws  lang.IllegalArgumentException in case given argument is not a testcase
      */
     public function &addTest(&$test) {
-      if (!is_a($test, 'TestCase')) {
+      if (!is('TestCase', $test)) {
         throw(new IllegalArgumentException('Given argument is not a TestCase ('.xp::typeOf($test).')'));
       }
       $this->tests[]= &$test;
@@ -80,7 +80,7 @@
           $arguments
         )));
       }
-      
+
       if (0 == $this->numTests()) {
         throw(new NoSuchElementException('No tests found in ', $class->getName()));
       }
@@ -126,7 +126,7 @@
      * @return  &util.profiling.unittest.TestResult
      */
     public function &runTest(&$test) {
-      $result= &new TestResult();
+      $result= new TestResult();
       $test->run($result);
       return $result;
     }
@@ -138,7 +138,7 @@
      * @return  &util.profiling.unittest.TestResult
      */
     public function &run() {
-      $result= &new TestResult();
+      $result= new TestResult();
       for ($i= 0, $s= sizeof($this->tests); $i < $s; $i++) {
         $this->tests[$i]->run($result);
       }

@@ -377,7 +377,7 @@
           break;
           
         case 'BDAY':
-          $this->birthday= &new Date($value);
+          $this->birthday= new Date($value);
           break;
         
         case 'EMAIL':
@@ -474,10 +474,10 @@
      * @param   &io.Stream stream
      * @return  &org.imc.VCard
      */
-    public function &fromStream(&$stream) {
-      $card= &new VCard();
+    public static function &fromStream(&$stream) {
+      $card= new VCard();
       
-      $p= &new VFormatParser(VCARD_ID);
+      $p= new VFormatParser(VCARD_ID);
       $p->setDefaultHandler(array(&$card, 'addProperty'));
       
       try {
@@ -570,7 +570,7 @@
         $this->_export('NICKNAME', $this->nick).
         $this->_export('ORG', $this->organization).
         $this->_export('URL', $this->url).
-        $this->_export('BDAY', is_a($this->birthday, 'Date') ? $this->birthday->toString('Y-m-d') : '').
+        $this->_export('BDAY', ->birthdayis('Date', $this) ? $this->birthday->toString('Y-m-d') : '').
         $phone.
         $email.
         $address.

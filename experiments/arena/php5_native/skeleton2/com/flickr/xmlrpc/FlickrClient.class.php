@@ -183,7 +183,7 @@
      * @return  &com.flickr.api.FlickrInterestingness
      */
     public function &getInterestingnessInterface() {
-      $if= &new FlickrInterestingness();
+      $if= new FlickrInterestingness();
       $if->setClient($this);
       return $if;
     }    

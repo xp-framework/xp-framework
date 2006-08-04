@@ -4,7 +4,12 @@
  * $Id$
  */
  
-  uses('xml.XML', 'xml.parser.XMLParser', 'xml.Node', 'xml.parser.ParserCallback');
+  uses(
+    'xml.XML',
+    'xml.parser.XMLParser',
+    'xml.Node',
+    'xml.parser.ParserCallback'
+  );
  
   /**
    * The Tree class represents a tree which can be exported
@@ -31,7 +36,7 @@
      * @param   string rootName default 'document'
      */
     public function __construct($rootName= 'document') {
-      $this->root= &new Node($rootName);
+      $this->root= new Node($rootName);
     }
     
     /**
@@ -73,9 +78,9 @@
      * @return  &xml.Tree
      * @throws  xml.XMLFormatException in case of a parser error
      */
-    public function &fromString($string, $c= __CLASS__) {
-      $parser= &new XMLParser();
-      $tree= &new $c();
+    public static function &fromString($string, $c= __CLASS__) {
+      $parser= new XMLParser();
+      $tree= new $c();
       try {
         $parser->setCallback($tree);
         $parser->parse($string, 1);
@@ -102,9 +107,9 @@
      * @throws  xml.XMLFormatException in case of a parser error
      * @throws  io.IOException in case reading the file fails
      */ 
-    public function &fromFile(&$file, $c= __CLASS__) {
-      $parser= &new XMLParser();
-      $tree= &new $c();
+    public static function &fromFile(&$file, $c= __CLASS__) {
+      $parser= new XMLParser();
+      $tree= new $c();
       
       try {
         $parser->setCallback($tree);
@@ -135,7 +140,7 @@
     public function onStartElement($parser, $name, $attrs) {
       $this->_cdata= '';
 
-      $element= &new $this->nodeType($name, NULL, $attrs);
+      $element= new $this->nodeType($name, NULL, $attrs);
       if (!isset($this->_cnt)) {
         $this->root= &$element;
         $this->_objs[1]= &$element;

@@ -62,7 +62,6 @@
      * @param   mixed vars
      * @return  mixed answer
      * @throws  lang.IllegalArgumentException
-     * @throws  xml.wddx.WddxFaultException
      */
     public function invoke() {
       if (!is('xml.wddx.transport.WddxTransport', $this->transport))
@@ -70,7 +69,7 @@
     
       $args= func_get_args();
       
-      $this->message= &new WddxMessage();
+      $this->message= new WddxMessage();
       $this->message->create();
       $this->message->setData($args);
       

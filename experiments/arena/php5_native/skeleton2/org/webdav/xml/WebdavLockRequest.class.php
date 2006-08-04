@@ -64,7 +64,7 @@
       $timeout,
       $depth) {
 
-      with ($lockprop= &new WebdavLock($filename)); {
+      with ($lockprop= new WebdavLock($filename)); {
         $lockprop->setOwner($owner);
         $lockprop->setLockType($lktype);
         $lockprop->setLockScope($lkscope);

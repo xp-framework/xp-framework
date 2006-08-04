@@ -33,7 +33,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() {
+    public static function __static() {
       with ($peer= &XPNews::getPeer()); {
         $peer->setTable('CAFFEINE..news');
         $peer->setConnection('caffeine');
@@ -71,7 +71,7 @@
      * @return  &net.xp_framework.db.caffeine.XPNews object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByNews_id($news_id) {
+    public static function &getByNews_id($news_id) {
       $peer= &XPNews::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('news_id', $news_id, EQUAL))));
     }
@@ -85,7 +85,7 @@
      * @return  net.xp_framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByBz_id($bz_id) {
+    public static function getByBz_id($bz_id) {
       $peer= &XPNews::getPeer();
       return $peer->doSelect(new Criteria(array('bz_id', $bz_id, EQUAL)));
     }
@@ -100,9 +100,9 @@
      * @return  net.xp_framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByDateOrdered($max= 0) {
+    public static function getByDateOrdered($max= 0) {
       $peer= &XPNews::getPeer();
-      with ($c= &new Criteria()); {
+      with ($c= new Criteria()); {
         $c->add('bz_id', 500, EQUAL);
         $c->addOrderBy('created_at', DESCENDING);
       }

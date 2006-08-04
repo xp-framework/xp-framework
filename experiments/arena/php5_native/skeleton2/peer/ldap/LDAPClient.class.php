@@ -283,7 +283,7 @@
      * @throws  peer.ldap.LDAPException
      */
     public function &read(&$entry) {
-      if (!is_a($entry, 'LDAPEntry')) {
+      if (!is('LDAPEntry', $entry)) {
         throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       }
       
@@ -308,7 +308,7 @@
      * @return  bool TRUE if the entry exists
      */
     public function exists(&$entry) {
-      if (!is_a($entry, 'LDAPEntry')) {
+      if (!is('LDAPEntry', $entry)) {
         throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       }
       
@@ -350,11 +350,11 @@
      * @access  public
      * @param   &peer.ldap.LDAPEntry entry
      * @return  bool success
-     * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
+     * @throws  lang.IllegalArgumentException when entry parameter is not an LDAPEntry object
      * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
     public function add(&$entry) {
-      if (!is_a($entry, 'LDAPEntry')) {
+      if (!is('LDAPEntry', $entry)) {
         throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       } 
       
@@ -379,11 +379,11 @@
      * @access  public
      * @param   &peer.ldap.LDAPEntry entry
      * @return  bool success
-     * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
+     * @throws  lang.IllegalArgumentException when entry parameter is not an LDAPEntry object
      * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
     public function modify(&$entry) {
-      if (!is_a($entry, 'LDAPEntry')) {
+      if (!is('LDAPEntry', $entry)) {
         throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       } 
       
@@ -404,11 +404,11 @@
      * @access  public
      * @param   &peer.ldap.LDAPEntry entry
      * @return  bool success
-     * @throws  IllegalArgumentException when entry parameter is not an LDAPEntry object
+     * @throws  lang.IllegalArgumentException when entry parameter is not an LDAPEntry object
      * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
     public function delete(&$entry) {
-      if (!is_a($entry, 'LDAPEntry')) {
+      if (!is('LDAPEntry', $entry)) {
         throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       } 
       

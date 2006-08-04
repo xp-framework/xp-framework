@@ -364,7 +364,7 @@
           strlen($this->getConfig()) ? '-c '.$this->getConfig() : '',
           "'".$this->_getQuery()."' 2>&1"
         );
-        $p= &new Process($cmdline);
+        $p= new Process($cmdline);
 
         // Read standard output
         $output= array();
@@ -373,7 +373,7 @@
         throw ($e);
       }
       
-      $result= &new HtdigResultset();
+      $result= new HtdigResultset();
       $metaresult= array();
       $hasCsv= FALSE;
 

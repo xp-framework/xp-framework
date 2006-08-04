@@ -8,7 +8,8 @@
     'peer.Socket',
     'text.encode.CvsPassword',
     'peer.ProtocolException',
-    'peer.AuthenticationException'
+    'peer.AuthenticationException',
+    'util.log.Traceable'
   );
 
   define('CVSR_EXPECT_NONE',     'none');  
@@ -44,7 +45,7 @@
      * @param   int port default 2401
      */  
     public function __construct($host, $port= 2401) {
-      $this->_sock= &new Socket($host, $port);
+      $this->_sock= new Socket($host, $port);
     }
     
     /**

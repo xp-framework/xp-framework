@@ -75,7 +75,7 @@
     public function export() {
       if (FALSE === openssl_csr_export($this->_res, $out)) {
         trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
-        throw(new Exception('Could not export CSR'));
+        throw(new XPException('Could not export CSR'));
       }
       
       return $out;

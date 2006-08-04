@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.File');
+  uses('io.File', 'peer.ftp.server.storage.StorageElement');
 
   /**
    * Implements the StorageElement via filesystem
@@ -28,7 +28,7 @@
      */
     public function __construct($path, $root) { 
       $this->path= $path;
-      $this->f= &new File($root.$path);
+      $this->f= new File($root.$path);
       $this->st= stat($this->f->getURI());
       $this->st['pwuid']= posix_getpwuid($this->st['uid']);
       $this->st['grgid']= posix_getgrgid($this->st['gid']);

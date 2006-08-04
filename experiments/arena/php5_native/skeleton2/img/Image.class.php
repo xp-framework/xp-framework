@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('img.ImagingException', 'img.Color', 'lang.CloneNotSupportedException');
+  uses(
+    'img.ImagingException',
+    'img.Color',
+    'lang.CloneNotSupportedException'
+  );
 
   define('IMG_PALETTE',   0x0000);
   define('IMG_TRUECOLOR', 0x0001);
@@ -82,7 +86,7 @@
      * @return  &img.Image
      * @throws  img.ImagingException in case the image could not be created
      */
-    public function &create($w, $h, $type= IMG_PALETTE, $class= __CLASS__) {
+    public static function &create($w, $h, $type= IMG_PALETTE, $class= __CLASS__) {
       switch ($type) {
         case IMG_PALETTE:
           $handle= imagecreate($w, $h);
@@ -110,7 +114,7 @@
      * @param   &img.io.ImageReader reader
      * @return  &img.Image
      */
-    public function &loadFrom(&$reader) {
+    public static function &loadFrom(&$reader) {
       return new Image($reader->getResource());
     }
 
@@ -372,7 +376,7 @@
      * @throws  lang.IllegalArgumentException if style is not an ImgStyle object
      */
     public function &setStyle(&$style) {
-      if (!is_a($style, 'ImgStyle')) {
+      if (!is('ImgStyle', $style)) {
         throw(new IllegalArgumentException('style parameter is not an ImgStyle object'));
       }
       imagesetstyle($this->handle, $style->getPixels());
@@ -389,7 +393,7 @@
      * @throws  lang.IllegalArgumentException if style is not an ImgBrush object
      */
     public function &setBrush(&$brush) {
-      if (!is_a($brush, 'ImgBrush')) {
+      if (!is('ImgBrush', $brush)) {
         throw(new IllegalArgumentException('brush parameter is not an ImgBrush object'));
       }
       if (NULL !== $brush->style) {
@@ -413,14 +417,14 @@
       // See if we have this in our palette
       if (!isset($this->palette[$idx])) {
         if (imageistruecolor($this->handle)) {
-          $this->palette[$idx]= &new Color(
+          $this->palette[$idx]= new Color(
             ($idx >> 16) & 0xFF,
             ($idx >> 8) & 0xFF,
             $idx & 0xFF
           );
         } else {
           $i= imagecolorsforindex($this->handle, $idx);
-          $this->palette[$idx]= &new Color(
+          $this->palette[$idx]= new Color(
             $i['red'],
             $i['green'],
             $i['blue']

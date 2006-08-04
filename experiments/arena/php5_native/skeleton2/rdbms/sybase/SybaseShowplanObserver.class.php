@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.log.Logger');
+  uses('util.log.Logger', 'rdbms.DBObserver');
 
   /**
    * Observer class to observe a SybaseConnections IO
@@ -65,7 +65,7 @@
      * @param   mixed argument
      * @return  &rdbms.sybase.SybaseIOObserver
      */
-    public function &instanceFor($arg) {
+    public static function &instanceFor($arg) {
       return new SybaseShowplanObserver($arg);
     }
     

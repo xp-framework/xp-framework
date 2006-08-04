@@ -31,14 +31,14 @@
      * @return  &img.util.ImageInfo
      * @throws  img.ImagingException in case extracting information from image file fails
      */
-    public function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       if (FALSE === ($data= getimagesize($file->getURI(), $segments))) {
         throw(new ImagingException(
           'Cannot load image information from '.$file->getURI()
         ));
       }
       
-      with ($i= &new ImageInfo()); {
+      with ($i= new ImageInfo()); {
         $i->width= $data[0];
         $i->height= $data[1];
         $i->type= $data[2];

@@ -7,7 +7,7 @@
   uses(
     'lang.MethodNotImplementedException',
     'peer.mail.util.FilesystemImageLoader',
-    'peer.mail.MimeMessage', 
+    'peer.mail.MimeMessage',
     'peer.URL'
   );
 

@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('peer.URL', 'peer.http.HttpRequest', 'peer.http.HttpsRequest');
+  uses(
+    'peer.URL',
+    'peer.http.HttpRequest',
+    'peer.http.HttpsRequest'
+  );
 
   /**
    * Request factory. Used internally by the HttpConnection class.

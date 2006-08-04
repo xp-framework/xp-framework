@@ -7,7 +7,8 @@
   uses(
     'scriptlet.HttpScriptlet',
     'util.ServiceException',
-    'scriptlet.rpc.RpcFault'
+    'scriptlet.rpc.RpcFault',
+    'util.log.Traceable'
   );
 
   /**
@@ -171,7 +172,7 @@
 
       // Create message from request data
       try {
-        $class= &$this->classloader->loadClass(ucfirst($msg->getClass()).'Handler');
+        $class= &$this->classloader->loadClass(ucfirst($msg->getHandlerClass()).'Handler');
       } catch (ClassNotFoundException $e) {
         throw($e);
       }

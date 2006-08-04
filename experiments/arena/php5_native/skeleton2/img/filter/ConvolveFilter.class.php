@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('img.filter.Kernel');
+  uses('img.filter.Kernel', 'img.filter.ImageFilter');
 
   /**
    * A filter which applies a convolution kernel to an image. 

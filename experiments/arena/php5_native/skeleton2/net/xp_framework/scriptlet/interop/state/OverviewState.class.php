@@ -29,7 +29,7 @@
       try {
 
         // Open log xml
-        $f= &new File($request->getEnvValue('DOCUMENT_ROOT').'/../log/servicetests.xml');
+        $f= new File($request->getEnvValue('DOCUMENT_ROOT').'/../log/servicetests.xml');
         if (!(
           $f->exists() &&
           $tree= &Tree::fromString(FileUtil::getContents($f))

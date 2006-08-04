@@ -127,14 +127,14 @@
      * @return  &util.TimeZone
      * @throws  lang.IllegalArgumentException if timezone is unknown
      */    
-    public function &getByName($abbrev) {
+    public static function &getByName($abbrev) {
       if (FALSE === ($offset= TimeZone::getOffsetByTimeZoneString($abbrev))) {
         throw (new IllegalArgumentException (
           'Unknown time zone abbreviation: '.$abbrev
         ));
       }
       
-      $tz= &new TimeZone($offset, $abbrev);
+      $tz= new TimeZone($offset, $abbrev);
       return $tz;
     }
     
@@ -145,7 +145,7 @@
      * @access  public
      * @return  &util.TimeZone
      */
-    public function &getLocal() {
+    public static function &getLocal() {
       return TimeZone::getByName(date('T'));
     }
 

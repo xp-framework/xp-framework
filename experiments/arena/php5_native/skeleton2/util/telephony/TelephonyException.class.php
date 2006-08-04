@@ -9,7 +9,7 @@
    *
    * @purpose  exception
    */
-  class TelephonyException extends Exception {
+  class TelephonyException extends XPException {
 
   }
 ?>

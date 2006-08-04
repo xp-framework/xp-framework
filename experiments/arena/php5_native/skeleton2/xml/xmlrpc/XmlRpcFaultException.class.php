@@ -11,7 +11,7 @@
    *
    * @purpose  Exception
    */
-  class XmlRpcFaultException extends Exception {
+  class XmlRpcFaultException extends XPException {
     public
       $fault  = NULL;
     

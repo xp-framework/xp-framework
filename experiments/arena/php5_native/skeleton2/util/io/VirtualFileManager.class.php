@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses ('io.Stream');
+  uses('io.Stream');
   
   /**
    * A file manager singleton to provide access to 
@@ -45,7 +45,7 @@
      * @param   &string data
      */
     public function addFile($path, &$data) {
-      $stream= &new Stream();
+      $stream= new Stream();
       $stream->open (STREAM_MODE_READWRITE);
       $stream->write ($data);
       $stream->rewind();

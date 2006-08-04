@@ -39,7 +39,7 @@
       try {
 
         // Open logfile
-        $f= &new File(sprintf('%s/%s.%s',
+        $f= new File(sprintf('%s/%s.%s',
           $request->getEnvValue('DOCUMENT_ROOT').'/../log/'.basename($service),
           basename(strtolower($method)),
           basename(strtolower($type))
@@ -50,7 +50,7 @@
           return;
         }
         
-        $contents= &new CData(FileUtil::getContents($f));
+        $contents= new CData(FileUtil::getContents($f));
       } catch (XMLFormatException $e) {
         $response->addFormError($this->getClassName(),'not-well-formed', 'details');
         return;

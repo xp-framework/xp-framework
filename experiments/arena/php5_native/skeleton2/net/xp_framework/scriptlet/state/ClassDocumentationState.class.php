@@ -55,7 +55,7 @@
       }
       
       // Read cached api docs
-      $stor= &new File('../build/cache/'.$collection.'/class/'.$fqcn);
+      $stor= new File('../build/cache/'.$collection.'/class/'.$fqcn);
       try {
         $apidoc= unserialize(FileUtil::getContents($stor));
       } catch (IOException $e) {

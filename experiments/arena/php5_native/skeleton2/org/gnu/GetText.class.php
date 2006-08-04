@@ -74,7 +74,7 @@
       
       $idx= $domain.'@'.$directory;
       if (!isset($g[$idx])) {
-        $g[$idx]= &new GetText();
+        $g[$idx]= new GetText();
         $g[$idx]->domain= $domain;
         $g[$idx]->directory= $directory;
         bindtextdomain($domain, $directory);

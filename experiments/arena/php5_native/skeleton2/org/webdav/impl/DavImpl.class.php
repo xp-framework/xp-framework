@@ -261,7 +261,7 @@
       }
       
       // Check token
-      if (empty($token)) $t= &new OpaqueLockTocken(UUID::create());
+      if (empty($token)) $t= new OpaqueLockTocken(UUID::create());
 
       // Set lock
       $lock->setLockToken($t->toString());
@@ -283,14 +283,14 @@
         $props= array();
  
         // Set versions as properties
-        with ($p= &new WebdavProperty('version', new WebdavVersionsContainer($version))); {
+        with ($p= new WebdavProperty('version', new WebdavVersionsContainer($version))); {
           $p->setNameSpaceName('DAV:');
           $p->setNameSpacePrefix('D:');
           $props[$p->getNameSpacePrefix().$p->getName()]= $p;
         }
  
         // Set checked-in property
-        with ($p= &new WebdavProperty('checked-in', '1.0')); {
+        with ($p= new WebdavProperty('checked-in', '1.0')); {
           $p->setNameSpaceName('DAV:');
           $p->setNameSpacePrefix('D:');
           $props[$p->getNameSpacePrefix().$p->getName()]= $p;

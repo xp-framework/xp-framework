@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('util.adt.Set');
+
   /**
    * A set of objects
    *

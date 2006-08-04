@@ -5,11 +5,12 @@
  */
 
   uses(
-    'util.telephony.TelephonyAddress', 
-    'util.telephony.TelephonyAddressParser',    
+    'util.telephony.TelephonyAddress',
+    'util.telephony.TelephonyAddressParser',
     'util.telephony.TelephonyTerminal',
     'util.telephony.TelephonyCall',
-    'util.telephony.TelephonyException'
+    'util.telephony.TelephonyException',
+    'util.log.Traceable'
   );
 
   /**

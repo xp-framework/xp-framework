@@ -771,7 +771,7 @@
         if (0 !== strpos(rtrim($request->uri->getPath(), '/').'/', $pattern)) continue;
         
         // Set the root URL (e.g. http://wedav.host.com/dav/)
-        $request->setRootURL($rootURL= &new URL(sprintf(
+        $request->setRootURL($rootURL= new URL(sprintf(
           '%s://%s%s',
           $request->uri->getScheme(),
           $request->uri->Host(),

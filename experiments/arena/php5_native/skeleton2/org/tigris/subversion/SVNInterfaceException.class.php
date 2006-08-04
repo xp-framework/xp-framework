@@ -10,6 +10,6 @@
    * @see xp://org.tigris.subversion.SVNInterface
    * @purpose Exceptions for class SVNInterface
    */
-  class SVNInterfaceException extends Exception {
+  class SVNInterfaceException extends XPException {
   }
 ?>

@@ -26,7 +26,7 @@
      * @return  &img.graph.Graph
      * @throws  img.ImagingException in case the image could not be created
      */
-    public function &create($w, $h, $type= IMG_PALETTE) {
+    public static function &create($w, $h, $type= IMG_PALETTE) {
       return parent::create($w, $h, $type, __CLASS__);
     }
   }

@@ -38,7 +38,6 @@
      * @param   string identifier
      */
     public function __construct($identifier) {
-      parent::__construct();
       $this->identifier= $identifier;
     }
 
@@ -119,11 +118,11 @@
      * @param   string identifier
      * @return  &rdbms.Peer
      */
-    public static function &getInstance($identifier) {
+    public function &getInstance($identifier) {
       static $instance= array();
       
       if (!isset($instance[$identifier])) {
-        $instance[$identifier]= &new Peer($identifier);
+        $instance[$identifier]= new Peer($identifier);
       }
       return $instance[$identifier];
     }
@@ -135,7 +134,7 @@
      * @param   string fully qualified class name
      * @return  &rdbms.Peer
      */
-    public static function &forName($classname) {
+    public function &forName($classname) {
       return Peer::getInstance(xp::reflect($classname));
     }
 
@@ -146,7 +145,7 @@
      * @param   &lang.Object instance
      * @return  &rdbms.Peer
      */
-    public static function &forInstance(&$instance) {
+    public function &forInstance(&$instance) {
       return Peer::getInstance(get_class($instance));
     }
     
@@ -202,7 +201,7 @@
       $r= array();
       for ($i= 1; $record= $q->next(); $i++) {
         if ($max && $i > $max) break;
-        $r[]= &new $this->identifier($record);
+        $r[]= new $this->identifier($record);
       }
       return $r;
     }
@@ -290,8 +289,8 @@
       for ($i= 1; $record= $q->next(); $i++) {
         if ($max && $i > $max) break;
         
-        $o= &new $this->identifier(array_slice($record, 0, sizeof($this->types)));
-        $o->{$peer->identifier}= &new $peer->identifier(array_slice($record, sizeof($this->types)));
+        $o= new $this->identifier(array_slice($record, 0, sizeof($this->types)));
+        $o->{$peer->identifier}= new $peer->identifier(array_slice($record, sizeof($this->types)));
         $r[]= &$o;
       }
       return $r;

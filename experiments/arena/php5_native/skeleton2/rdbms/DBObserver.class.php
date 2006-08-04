@@ -21,6 +21,6 @@
      * @param   mixed argument
      * @return  &rdbms.DBObserver
      */
-    public function &instanceFor($arg);
+    public static function &instanceFor($arg);
   }
 ?>

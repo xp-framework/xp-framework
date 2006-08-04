@@ -9,7 +9,7 @@
    *
    * @purpose  Exception
    */
-  class GuiException extends Exception {
+  class GuiException extends XPException {
   
   }
 ?>

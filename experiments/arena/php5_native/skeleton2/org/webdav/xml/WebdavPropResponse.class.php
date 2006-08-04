@@ -72,9 +72,9 @@
       $propsList= &$o->getProperties();         // properties available
       
       // Create the result nodes (for found and not found properties)
-      $found_stat= &new Node('D:propstat');
+      $found_stat= new Node('D:propstat');
       $found_props= &$found_stat->addChild(new Node('D:prop'));
-      $notfound_stat= &new Node('D:propstat');
+      $notfound_stat= new Node('D:propstat');
       $notfound_props= &$notfound_stat->addChild(new Node('D:prop'));
       
       $stdprops= array();

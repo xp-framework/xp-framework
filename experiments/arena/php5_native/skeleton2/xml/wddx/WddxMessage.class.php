@@ -34,7 +34,7 @@
      * @param   string string
      * @return  &xml.wddx.WddxMessage
      */
-    public function &fromString($string) {
+    public static function &fromString($string) {
       return parent::fromString($string, 'WddxMessage');
     }    
     
@@ -163,7 +163,7 @@
         case 'boolean': return ($node->getContent() == 'true' ? TRUE : FALSE);
         case 'string': return $node->getContent();
         case 'dateTime': 
-          $parser= &new DateParser();
+          $parser= new DateParser();
           return $parser->parse($node->getContent());
         
         case 'number':

@@ -80,7 +80,7 @@
      * @see     xp://scriptlet.HttpScriptlet#_response
      */
     public function &_response() {
-      $response= &new XMLScriptletResponse();
+      $response= new XMLScriptletResponse();
       $response->setProcessor($this->processor);
       return $response;
     }

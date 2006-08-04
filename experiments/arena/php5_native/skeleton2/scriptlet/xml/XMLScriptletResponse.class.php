@@ -42,7 +42,7 @@
      */
     public function __construct($processor= NULL) {
       $this->processor= &$processor;
-      $this->document= &new OutputDocument();
+      $this->document= new OutputDocument();
     }
 
     /**
@@ -140,7 +140,7 @@
         } elseif (is_object($val[$k])) {
           $c= &Node::fromObject($val[$k], 'param');
         } else {
-          $c= &new Node('param', $val[$k]);
+          $c= new Node('param', $val[$k]);
         }
         $c->attribute['name']= $name.(is_int($k) ? '' : "[{$k}]");
         $c->attribute['xsi:type']= 'xsd:'.gettype($val[$k]);
@@ -198,7 +198,7 @@
         ('formerrors' == $node->name) ||
         ('formvalues' == $node->name)
       ) {
-        throw(new IllegalArgumentException($node->name.' not allowed here'));
+        return throw(new IllegalArgumentException($node->name.' not allowed here'));
       }
       return $this->document->formresult->addChild($node);
     }

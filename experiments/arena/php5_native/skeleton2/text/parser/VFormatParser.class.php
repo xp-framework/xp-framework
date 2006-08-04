@@ -81,7 +81,7 @@
      * @param   string str
      * @return  string
      */
-    public function decodeString($str) {
+    public static function decodeString($str) {
       return strtr(utf8_decode($str), array(
         '\,'    => ',',
         '\N'    => "\n",
@@ -102,7 +102,7 @@
      * @param   string str
      * @return  int
      */
-    public function decodeDate($str) {
+    public static function decodeDate($str) {
       $parts= sscanf($str, '%4d%2d%2dT%2d%2d%2d');
       return mktime($parts[3], $parts[4], $parts[5], $parts[1], $parts[2], $parts[0]);
     }
@@ -204,7 +204,7 @@
         $props= explode(';', $key);
         $kargs= array (strtoupper (array_shift ($props)));
 
-        $val= &new stdClass();
+        $val= new stdClass();
         $val->_value= $value;
         foreach ($this->_parseProperties (implode(';', $props)) as $pname => $pvalue) {
           $val->{$pname}= $pvalue;

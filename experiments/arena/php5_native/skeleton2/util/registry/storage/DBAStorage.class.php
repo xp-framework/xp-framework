@@ -6,7 +6,8 @@
  
   uses(
     'lang.System',
-    'io.dba.DBAFile'
+    'io.dba.DBAFile',
+    'util.registry.RegistryStorageProvider'
   );
   
   /**
@@ -40,7 +41,7 @@
      * @param   string id
      */
     public function initialize($id) {
-      $this->_db= &new DBAFile(
+      $this->_db= new DBAFile(
         System::tempDir().DIRECTORY_SEPARATOR.$id.'.db', 
         $this->handler
       );

@@ -72,7 +72,7 @@
 
       foreach ($container->getVersions() as $version) {
 
-        $res= &new Node('D:response');
+        $res= new Node('D:response');
         $res->addChild(new Node('D:href', $version->getHref()));
         $propstat= &$res->addChild(new Node('D:propstat'));
 

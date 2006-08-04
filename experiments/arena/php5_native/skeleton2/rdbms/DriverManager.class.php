@@ -82,7 +82,7 @@
         // TBI: Oracle, ...
       );
       
-      $dsn= &new DSN($str);
+      $dsn= new DSN($str);
       $id= $dsn->getDriver();
       $i= &DriverManager::getInstance();
       

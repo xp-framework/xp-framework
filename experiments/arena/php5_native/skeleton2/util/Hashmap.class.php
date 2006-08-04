@@ -173,7 +173,7 @@
      * @throws  lang.IllegalArgumentException in case the parameter is neither an array nor a Hashmap
      */
     public function merge(&$map, $recursive= FALSE) {
-      if (is_a($map, 'Hashmap')) {
+      if (is('Hashmap', $map)) {
         $h= &$map->_hash;
       } elseif (is_array($map)) {
         $h= &$map;

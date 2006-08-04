@@ -24,7 +24,7 @@
      * @param   array headers
      */
     public function __construct($url, $headers= array()) {
-      $this->_conn= &new HttpConnection($url);
+      $this->_conn= new HttpConnection($url);
       $this->_headers= $headers;
     }
     

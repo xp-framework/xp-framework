@@ -195,7 +195,7 @@
       }
       
       // Create header
-      $this->header= &new CHMHeader(unpack(
+      $this->header= new CHMHeader(unpack(
         'a4identifier/Lversion/Llength/Lunknown/Ltime/Llang', 
         $id.$this->stream->read(0x14)
       ));
@@ -249,7 +249,7 @@
       }
       
       // Create directory object
-      $directory= &new CHMDirectory(unpack(
+      $directory= new CHMDirectory(unpack(
         'a4identifier/Lversion/Llength/Lunknown/Lchunk_size/Ldensity/Ldepth/Lrootindex_chunk/Lfirst_pmgl/Llast_pmgl/Lunknown/Lnum_chunks/Llang',
         $id.$this->stream->read(0x30)
       ));

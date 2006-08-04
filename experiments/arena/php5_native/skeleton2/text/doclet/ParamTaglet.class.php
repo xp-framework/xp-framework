@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.doclet.ParamTag');
+  uses('text.doclet.ParamTag', 'text.doclet.Taglet');
 
   /**
    * A taglet that represents the @param tag. 

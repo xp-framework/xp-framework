@@ -4,10 +4,7 @@
  * $Id$ 
  */
 
-  uses(
-    'util.log.LogCategory',
-    'util.Configurable'
-  );
+  uses('util.log.LogCategory', 'util.Configurable');
   
   define('LOG_DEFINES_DEFAULT', 'default');
   
@@ -196,6 +193,7 @@
     /**
      * Returns an instance of this class
      *
+     * @model   static
      * @access  public
      * @return  &util.log.Logger a logger object
      */
@@ -211,7 +209,7 @@
         $instance->defaultAppenders= array();
         
         // Create an empty LogCategory
-        $instance->category[LOG_DEFINES_DEFAULT]= &new LogCategory(
+        $instance->category[LOG_DEFINES_DEFAULT]= new LogCategory(
           $instance->defaultIdentifier,
           $instance->defaultFormat,
           $instance->defaultDateformat,

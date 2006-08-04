@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('img.io.ImageWriter');
+
   /**
    * Writes to a stream
    *

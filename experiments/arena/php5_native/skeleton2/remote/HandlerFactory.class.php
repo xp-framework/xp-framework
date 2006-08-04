@@ -27,7 +27,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() {
+    public static function __static() {
       $self= &HandlerFactory::getInstance();
       $self->register('xp', XPClass::forName('remote.protocol.XpProtocolHandler'));
     }
@@ -39,7 +39,7 @@
      * @access  public
      * @return  &remote.HandlerFactory
      */
-    public function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
       
       if (!isset($instance)) $instance= new HandlerFactory();
@@ -68,7 +68,7 @@
      * @return  &lang.XPClass<remote.protocol.ProtocolHandler>
      * @throws  remote.protocol.UnknownProtocolException
      */
-    public function &handlerFor($type) {
+    public static function &handlerFor($type) {
       $self= &HandlerFactory::getInstance();
       if (!isset($self->handlers[$type])) {
         throw(new UnknownProtocolException($type));

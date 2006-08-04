@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'util.Date',
     'peer.URL'
   );
@@ -117,10 +117,10 @@
       if (NULL === $value)
         return '';
         
-      if (is_a ($value, 'Date')) {
+      if (is('Date', $value)) {
         // Convert date into string
         $value= $value->toString ('Ymd').'T'.$value->toString ('His').'Z';
-      } else if (is_a ($value, 'URL')) {
+      } else if (is('URL', $value)) {
         // Convert URL to string
         $value= $value->toString();
       }

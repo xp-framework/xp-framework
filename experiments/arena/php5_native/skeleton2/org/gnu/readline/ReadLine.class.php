@@ -174,4 +174,13 @@
       return TRUE;
     }
   }
+  
+  {
+    public function __complete($string, $offset, $length) {
+      return call_user_func(
+        array(ReadLine::registry('completer'), 'complete'), 
+        $string, $offset, $length
+      );
+    }
+  }
 ?>

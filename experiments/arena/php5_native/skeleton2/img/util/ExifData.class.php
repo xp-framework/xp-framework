@@ -4,7 +4,13 @@
  * $Id$ 
  */
 
-  uses('util.Date', 'img.ImagingException', 'img.Image', 'img.io.StreamReader', 'io.Stream');
+  uses(
+    'util.Date',
+    'img.ImagingException',
+    'img.Image',
+    'img.io.StreamReader',
+    'io.Stream'
+  );
 
   /**
    * Reads the EXIF headers from JPEG or TIFF
@@ -41,7 +47,7 @@
      * @return  &img.util.ExifData
      * @throws  img.ImagingException in case extracting data fails
      */
-    public function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       if (!($info= exif_read_data($file->getURI()))) {
         throw(new ImagingException(
           'Cannot get EXIF information from '.$file->getURI()
@@ -56,7 +62,7 @@
         );
       }
       
-      with ($e= &new ExifData()); {
+      with ($e= new ExifData()); {
         $e->setWidth($info['COMPUTED']['Width']);
         $e->setHeight($info['COMPUTED']['Height']);
         $e->setMake($info['Make']);
@@ -570,7 +576,7 @@
      * @return  &img.Image  
      */
     public function &getThumbnail() {
-      $s= &new Stream();
+      $s= new Stream();
       $s->open(STREAM_MODE_WRITE);
       $s->write(exif_thumbnail($this->getFilename()));
       $s->rewind();

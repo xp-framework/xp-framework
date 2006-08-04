@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.Collection');
+  uses('lang.Collection', 'util.profiling.unittest.coverage.Fragment');
 
   /**
    * Represents an Block

@@ -5,12 +5,13 @@
  */
   
   uses(
-    'xml.Tree', 
-    'xml.Node', 
-    'xml.xmlrpc.XmlRpcFault', 
-    'util.Date', 
+    'xml.Tree',
+    'xml.Node',
+    'xml.xmlrpc.XmlRpcFault',
+    'util.Date',
     'xml.xmlrpc.XmlRpcEncoder',
-    'xml.xmlrpc.XmlRpcDecoder'
+    'xml.xmlrpc.XmlRpcDecoder',
+    'scriptlet.rpc.AbstractRpcMessage'
   );
 
   // Message-types
@@ -42,10 +43,9 @@
     /**
      * Create a message
      *
-     * @model   abstract
      * @access  public
      */
-    public function create() { }
+    public function create($reqmsg= NULL) { }
     
     /**
      * Construct a XML-RPC message from a string
@@ -54,12 +54,12 @@
      *   $msg= &XmlRpcMessage::fromString('<methodCall>...</methodCall>');
      * </code>
      *
-     * @model   abstract
+     * @model   static
      * @access  public
      * @param   string string
      * @return  &xml.xmlrpc.XmlRpcMessage
      */
-    public function &fromString($string) { }
+    public static function &fromString($string) { }
     
     /**
      * Set encoding
@@ -94,7 +94,7 @@
      * @param   &mixed arr
      */
     public function setData($arr) {
-      $encoder= &new XmlRpcEncoder();
+      $encoder= new XmlRpcEncoder();
 
       $params= &$this->tree->root->addChild(new Node('params'));
       if (sizeof($arr)) foreach (array_keys($arr) as $idx) {
@@ -127,7 +127,7 @@
           continue;
         
         // Process params node
-        $decoder= &new XmlRpcDecoder();
+        $decoder= new XmlRpcDecoder();
         foreach (array_keys($this->tree->root->children[$idx]->children) as $params) {
           $ret[]= &$decoder->decode($this->tree->root->children[$idx]->children[$params]->children[0]);
         }
@@ -147,9 +147,9 @@
      * @param   string faultstring
      */
     public function setFault($faultcode, $faultstring) {
-      $encoder= &new XmlRpcEncoder();
+      $encoder= new XmlRpcEncoder();
       
-      $this->tree->root->children[0]= &new Node('fault');
+      $this->tree->root->children[0]= new Node('fault');
       $this->tree->root->children[0]->addChild($encoder->encode(array(
         'faultCode'   => $faultcode,
         'faultString' => $faultstring
@@ -172,9 +172,9 @@
         return NULL;
       }
       
-      $decoder= &new XmlRpcDecoder();
+      $decoder= new XmlRpcDecoder();
       $data= &$decoder->decode($this->tree->root->children[0]->children[0]);
-      $f= &new XmlRpcFault($data['faultCode'], $data['faultString']);
+      $f= new XmlRpcFault($data['faultCode'], $data['faultString']);
       return $f;
     }
     
@@ -184,7 +184,7 @@
      * @access  public
      * @param   string class
      */
-    public function setClass($class) {
+    public function setHandlerClass($class) {
       $this->class= $class;
     }
 
@@ -194,7 +194,7 @@
      * @access  public
      * @return  string
      */
-    public function getClass() {
+    public function getHandlerClass() {
       return $this->class;
     }
 

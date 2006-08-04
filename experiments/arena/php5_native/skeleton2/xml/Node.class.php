@@ -5,7 +5,11 @@
  *
  */
 
-  uses('xml.PCData', 'xml.CData', 'xml.XMLFormatException');
+  uses(
+    'xml.PCData',
+    'xml.CData',
+    'xml.XMLFormatException'
+  );
   
   define('INDENT_DEFAULT',    0);
   define('INDENT_WRAPPED',    1);
@@ -61,8 +65,8 @@
      * @param   string name default 'array'
      * @return  &xml.Node
      */
-    public function &fromArray($a, $name= 'array') {
-      $n= &new Node($name);
+    public static function &fromArray($a, $name= 'array') {
+      $n= new Node($name);
       $sname= rtrim($name, 's');
       foreach (array_keys($a) as $field) {
         $nname= is_numeric($field) || '' == $field ? $sname : $field;
@@ -92,7 +96,7 @@
      * @param   string name default NULL
      * @return  &xml.Node
      */
-    public function &fromObject($obj, $name= NULL) {
+    public static function &fromObject($obj, $name= NULL) {
       if (!method_exists($obj, '__sleep')) {
         $vars= get_object_vars($obj);
       } else {
@@ -241,9 +245,9 @@
           break;
 
         case 'object':
-          if (is_a($this->content, 'PCData')) {
+          if (is('PCData', $this->content)) {
             $content= $this->content->pcdata;
-          } else if (is_a($this->content, 'CData')) {
+          } else if (is('CData', $this->content)) {
             $content= '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $this->content->cdata).']]>';
           }
           break;
@@ -314,7 +318,7 @@
      * @throws  lang.IllegalArgumentException
      */
     public function &addChild(&$child) {
-      if (!is_a($child, 'Node')) {
+      if (!is('Node', $child)) {
         throw(new IllegalArgumentException(
           'Parameter child must be an xml.Node (given: '.xp::typeOf($child).')'
         ));

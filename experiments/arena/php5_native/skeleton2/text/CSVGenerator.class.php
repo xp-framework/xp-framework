@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses ('io.Stream');
+  uses('io.Stream');
 
   /**
    * This class can be used to easily create correct csv-files.

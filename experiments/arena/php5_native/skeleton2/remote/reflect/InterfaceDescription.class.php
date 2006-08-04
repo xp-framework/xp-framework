@@ -64,7 +64,7 @@
      * @return  remote.ClassReference[]
      */
     public function classSet() {
-      $set= &new HashSet(); 
+      $set= new HashSet(); 
       for ($i= 0, $s= sizeof($this->methods->values); $i < $s; $i++) {
         $set->addAll($this->methods->values[$i]->classSet()); 
       }

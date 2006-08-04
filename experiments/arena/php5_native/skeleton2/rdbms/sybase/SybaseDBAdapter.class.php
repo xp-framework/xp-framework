@@ -115,7 +115,7 @@
         $pos= -1;
         while ($record= $q->next()) {
           if ($name != $record['table']) {
-            $t[]= &new Table($record['table']);
+            $t[]= new Table($record['table']);
             $pos++;
             $name= $record['table'];
           }
@@ -143,7 +143,7 @@
      * @return  rdbms.DBTable a DBTable object
      */
     public function getTable($table) {
-      $t= &new DBTable($table);
+      $t= new DBTable($table);
       try {
       
         // Get the table's attributes

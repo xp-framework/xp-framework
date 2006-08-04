@@ -88,7 +88,7 @@
         $beanContainer->setPeer($peerClass->newInstance());
         $beanContainer->setInvocationStrategy(new StatelessSessionInvocationStrategy());
 
-        $invocationHandler= &new ContainerInvocationHandler();
+        $invocationHandler= new ContainerInvocationHandler();
         $invocationHandler->setContainer($beanContainer);
         $invocationHandler->setType(INVOCATION_TYPE_HOME);
       } catch (Exception $e) {

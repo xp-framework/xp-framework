@@ -25,7 +25,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() { 
+    public static function __static() { 
       with ($peer= &BugzillaLongDescs::getPeer()); {
         $peer->setTable('longdescs');
         $peer->setConnection('bugzilla');

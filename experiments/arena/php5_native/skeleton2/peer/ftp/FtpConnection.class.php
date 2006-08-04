@@ -6,9 +6,9 @@
 
   uses(
     'peer.URL',
-    'peer.ftp.FtpDir', 
-    'peer.SocketException', 
-    'peer.ConnectException', 
+    'peer.ftp.FtpDir',
+    'peer.SocketException',
+    'peer.ConnectException',
     'peer.AuthenticationException'
   );
  
@@ -83,7 +83,7 @@
     public function _dsn($dsn) {
     
       // URL and defaults
-      $this->url= &new URL($dsn);
+      $this->url= new URL($dsn);
       $this->url->getHost() || $this->url->_info['host']= 'localhost';
       $this->url->getPort() || $this->url->_info['port']= 21;
       
@@ -204,7 +204,7 @@
      * @throws  peer.SocketException
      */
     public function put(&$arg, $remote= NULL, $mode= FTP_ASCII) {
-      if (is_a($arg, 'File')) {
+      if (is('File', $arg)) {
         $local= $arg->_fd;
         if (empty($remote)) $remote= basename ($arg->getUri());
         $f= 'ftp_fput';
@@ -234,7 +234,7 @@
      * @throws  peer.SocketException
      */
     public function get($remote, &$arg, $mode= FTP_ASCII) {
-      if (is_a($arg, 'File')) {
+      if (is('File', $arg)) {
         $local= $arg->_fd;
         $f= 'ftp_fget';
       } else {

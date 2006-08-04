@@ -56,7 +56,7 @@
         $this->_iotrace->info('Method', $method, 'returned', xp::typeOf($result), $result, var_export($result, 1));
       }
       
-      if (is('lang.Object', $cmp) && is('lang.Object', $result)) {
+      if (is('lang.Generic', $cmp) && is('lang.Generic', $result)) {
         return $cmp->equals($result);
       }
       

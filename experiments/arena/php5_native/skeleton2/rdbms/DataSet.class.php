@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('rdbms.ConnectionManager', 'rdbms.Peer', 'rdbms.Criteria');
+  uses(
+    'rdbms.ConnectionManager',
+    'rdbms.Peer',
+    'rdbms.Criteria'
+  );
 
   /**
    * A dataset represents a row of data selected from a database. Dataset 
@@ -187,7 +191,7 @@
           $key,
           (in_array($key, $peer->primary) ? 'PK' : ''), 
           ($key == $peer->identity ? ',I' : ''),
-          (is_a($this->$key, 'Object') 
+          (->is('Generic', $key) 
             ? $this->$key->toString()
             : var_export($this->$key, 1)
           )
@@ -281,7 +285,7 @@
       if (empty($peer->primary)) {
         throw(new SQLStateException('No primary key'));
       }
-      $criteria= &new Criteria();
+      $criteria= new Criteria();
       foreach ($peer->primary as $key) {
         $criteria->add($key, $this->{$key}, EQUAL);
       }
@@ -325,7 +329,7 @@
       if (empty($peer->primary)) {
         throw(new SQLStateException('No primary key'));
       }
-      $criteria= &new Criteria();
+      $criteria= new Criteria();
       foreach ($peer->primary as $key) {
         $criteria->add($key, $this->{$key}, EQUAL);
       }

@@ -5,10 +5,11 @@
  */
 
   uses(
-    'peer.Socket', 
-    'peer.sieve.SieveScript', 
+    'peer.Socket',
+    'peer.sieve.SieveScript',
     'security.checksum.HMAC_MD5',
-    'security.sasl.DigestChallenge'
+    'security.sasl.DigestChallenge',
+    'util.log.Traceable'
   );
 
   // Authentication methods
@@ -80,7 +81,7 @@
      * @param   int port default 2000
      */  
     public function __construct($host, $port= 2000) {
-      $this->_sock= &new Socket($host, $port);
+      $this->_sock= new Socket($host, $port);
     }
   
     /**
@@ -417,7 +418,7 @@
       //
       // The number on the first line indicates the length. We simply 
       // discard this information.
-      $s= &new SieveScript($name);
+      $s= new SieveScript($name);
       $s->setCode(implode("\n", array_slice($r, 1)));
       return $s;
     }

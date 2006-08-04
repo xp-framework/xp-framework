@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses ('util.profiling.Timer');
+  uses('util.profiling.Timer');
 
   /**
    * Class that implements a simple class profiler. Every call
@@ -49,7 +49,7 @@
      * @return  boolean success
      */    
     public function __call($method, $params, &$return) {
-      $t= &new Timer();
+      $t= new Timer();
       $t->start();
       if (!isset ($this->timer[$method]))
         $this->timer[$method]= 0;
@@ -138,7 +138,7 @@
     public function toString() {
       $vals= array_unique(array_merge(array_keys ($this->timer), array_keys ($this->calls)));
       $t= sprintf ("Profiling information for class %s\n", 
-        (is_a($this->_profilee, 'Object') 
+        (->_profileeis('Generic', $this) 
           ? $this->_profilee->getClassName() 
           : get_class ($this->_profilee)
       ));

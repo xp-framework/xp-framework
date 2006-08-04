@@ -27,7 +27,7 @@
      * @param   string code
      * @return  util.profiling.unittest.coverage.Fragment[] expressions
      */
-    public function fragmentsOf($code) {
+    public static function fragmentsOf($code) {
       static $delim= array(')', ';', ',', '=', '+', '-', '*', '/', '%');
       
       $tokens= token_get_all(trim($code));

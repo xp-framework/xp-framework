@@ -10,7 +10,7 @@
    * @see      xp://security.crypto.CryptoKey
    * @purpose  This exception indicates one of a variety of public/private key problems.
    */
-  class CryptoException extends Exception {
+  class CryptoException extends XPException {
     public
       $errors = array();
       

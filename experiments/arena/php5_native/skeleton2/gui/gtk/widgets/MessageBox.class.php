@@ -94,13 +94,13 @@
      * @param   array buttons default array() user defined buttons
      * @return  int
      */
-    public function display(
+    public static function display(
       $message, 
       $caption= 'Message', 
       $style= MB_DEFAULT, 
       $buttons= array()
     ) {
-      $m= &new MessageBox($message, $caption, $style, $buttons);
+      $m= new MessageBox($message, $caption, $style, $buttons);
       return $m->show();
     }
        
@@ -117,7 +117,7 @@
       
       // Icon
       $this->icon= &$this->widget('icon');
-      $loader= &new GTKPixmapLoader($this->window->window, dirname(__FILE__));
+      $loader= new GTKPixmapLoader($this->window->window, dirname(__FILE__));
       try {
         $this->pixmaps= $loader->load(array(
           'information',
@@ -162,7 +162,7 @@
       // Buttons
       foreach (array('OK', 'CANCEL', 'YES', 'NO', 'RETRY', 'IGNORE', 'ABORT') as $name) {
         if ($this->style & constant('MB_'.$name)) {
-          $b= &new GtkButton(ucfirst(strtolower($name)));    // TBD: Get via gettext?
+          $b= new GtkButton(ucfirst(strtolower($name)));    // TBD: Get via gettext?
           $b->set_name($name);
           $b->set_flags(GTK_CAN_DEFAULT);
           $b->show();

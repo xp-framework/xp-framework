@@ -5,9 +5,10 @@
  */
 
   uses(
-    'peer.server.ConnectionListener', 
+    'peer.server.ConnectionListener',
     'peer.ftp.server.FtpSession',
-    'peer.SocketException'
+    'peer.SocketException',
+    'util.log.Traceable'
   );
   
   define('DATA_PASSIVE',    0x0001);
@@ -891,7 +892,7 @@
       $this->cat && $this->cat->debug('+++ Host is ', $host);
       $this->cat && $this->cat->debug('+++ Port is ', $port);
 
-      $this->datasock[$event->stream->hashCode()]= &new BsdSocket($host, $port);
+      $this->datasock[$event->stream->hashCode()]= new BsdSocket($host, $port);
       $this->answer($event->stream, 200, 'PORT command successful');      
     }
 
@@ -926,7 +927,7 @@
         $port= $this->datasock[$event->stream->hashCode()]->port;   // Recycle it!
       } else {      
         $port= rand(1000, 65536);
-        $this->datasock[$event->stream->hashCode()]= &new ServerSocket($this->server->socket->host, $port);
+        $this->datasock[$event->stream->hashCode()]= new ServerSocket($this->server->socket->host, $port);
         try {
           $this->datasock[$event->stream->hashCode()]->create();
           $this->datasock[$event->stream->hashCode()]->bind();
@@ -952,7 +953,7 @@
       $this->cat && $this->cat->debugf('===> Client %s connected', $event->stream->host);
 
       // Create a new session object for this client
-      $this->sessions[$event->stream->hashCode()]= &new FtpSession();
+      $this->sessions[$event->stream->hashCode()]= new FtpSession();
       $this->answer($event->stream, 220, 'FTP server ready');
     }
     

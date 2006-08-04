@@ -26,7 +26,7 @@
      * @return  
      */
     public function __construct() {
-      $this->_pool= &new Hashmap();
+      $this->_pool= new Hashmap();
     }
       
     /**

@@ -25,7 +25,7 @@
      * @return  &mixed
      */
     public function &valueOf(&$serializer, $serialized, &$length, $context= array()) {
-      $a= &new ArrayList();
+      $a= new ArrayList();
       $size= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
       $offset= strlen($size)+ 2+ 2;
       for ($i= 0; $i < $size; $i++) {

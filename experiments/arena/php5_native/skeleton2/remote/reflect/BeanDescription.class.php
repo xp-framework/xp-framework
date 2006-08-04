@@ -67,7 +67,7 @@
      * @return  remote.ClassReference[]
      */
     public function classSet() {
-      $set= &new HashSet();
+      $set= new HashSet();
       foreach (array_keys($this->interfaces->values) as $kind) {
         $set->addAll($this->interfaces->values[$kind]->classSet());
       }

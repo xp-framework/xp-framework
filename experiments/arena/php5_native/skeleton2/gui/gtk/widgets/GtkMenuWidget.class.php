@@ -23,7 +23,7 @@
      * @access  public
      */
     public function __construct() {
-      $this->menu= &new GtkMenu();
+      $this->menu= new GtkMenu();
     }
 
     /**
@@ -35,7 +35,7 @@
      * @return  &GtkMenuItem
      */    
     public function &addMenuItem($string, $callback) {
-      $item= &new GtkMenuItem ($string);
+      $item= new GtkMenuItem ($string);
       $this->menu->append ($item);
       $item->connect ('button_press_event', $callback);
       return $item;

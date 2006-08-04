@@ -10,7 +10,7 @@
    * @see      xp://peer.http.HttpUtil
    * @purpose  Exception
    */
-  class UnexpectedResponseException extends Exception {
+  class UnexpectedResponseException extends XPException {
     public
       $statuscode = 0;
 

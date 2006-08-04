@@ -80,7 +80,7 @@
 
         $data= array();
         if ($q) while ($r= &$q->next()) {
-          $data[]= &new Hoststatus($r);
+          $data[]= new Hoststatus($r);
         }
       } catch (SQLException $e) {
         throw($e);
@@ -133,7 +133,7 @@
 
         $data= array();
         if ($q) while ($r= &$q->next()) {
-          $data[]= &new Hoststatus($r);
+          $data[]= new Hoststatus($r);
         }
       } catch (SQLException $e) {
         throw($e);
@@ -185,7 +185,7 @@
 
         $data= array();
         if ($q) while ($r= &$q->next()) {
-          $data[]= &new Hoststatus($r);
+          $data[]= new Hoststatus($r);
         }
       } catch (SQLException $e) {
         throw($e);

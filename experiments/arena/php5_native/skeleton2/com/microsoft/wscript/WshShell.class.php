@@ -32,7 +32,7 @@
      * @access  public
      * @return  &com.microsoft.wscript.WshShell
      */
-    public function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
       
       if (!$instance) $instance= new WshShell();

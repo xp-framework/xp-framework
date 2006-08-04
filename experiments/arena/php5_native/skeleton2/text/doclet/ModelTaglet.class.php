@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.doclet.ModelTag');
+  uses('text.doclet.ModelTag', 'text.doclet.Taglet');
 
   /**
    * A taglet that represents the @model tag. 

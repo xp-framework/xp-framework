@@ -38,7 +38,7 @@
      * @param   &php.DomElement element
      * @return  string
      */
-    public function contentOf(&$element) {
+    public static function contentOf(&$element) {
       switch ($element->type) {
         case 1:   // Nodeset
           return empty($element->nodeset) ? NULL : utf8_decode($element->nodeset[0]->get_content());
@@ -69,7 +69,7 @@
      * @throws  lang.ClassNotFoundException
      * @throws  xml.XPathException
      */
-    public function &recurse(&$xpath, &$context, $classname) {
+    public static function &recurse(&$xpath, &$context, $classname) {
       try {
         $class= &XPClass::forName($classname);
       } catch (ClassNotFoundException $e) {
@@ -164,7 +164,7 @@
      * @throws  lang.ClassNotFoundException
      * @throws  xml.XMLFormatException
      */
-    public function &unmarshal($xml, $classname) {
+    public static function &unmarshal($xml, $classname) {
       if (!($dom= &domxml_open_mem($xml, DOMXML_LOAD_PARSING, $error))) {
         throw(new XMLFormatException(xp::stringOf($error)));
       }

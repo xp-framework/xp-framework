@@ -50,7 +50,7 @@
      * @return  int
      */
     public function getWholeSeconds() {
-      $ts= &new TimeSpan();
+      $ts= new TimeSpan();
       $ts->addDays($this->getWholeDays());
       $ts->addHours($this->getWholeHours());
       $ts->addMinutes($this->getWholeMinutes());
@@ -87,7 +87,7 @@
      * @return  int
      */
     public function getWholeMinutes() {
-      $ts = &new TimeSpan();
+      $ts = new TimeSpan();
       $ts->addDays($this->getWholeDays());
       $ts->addHours($this->getWholeHours());
       return floor(($this->_seconds- $ts->getSeconds()) / 60);
@@ -133,7 +133,7 @@
      * @return  int
      */
     public function getWholeHours() {
-      $ts= &new TimeSpan();
+      $ts= new TimeSpan();
       $ts->addDays($this->getWholeDays());
       return floor(($this->_seconds- $ts->getSeconds()) / 3600);
     }

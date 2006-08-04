@@ -24,7 +24,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->client= &new FlickrClient(new XmlRpcHttpTransport(FLICKR_XMLRPC_ENDPOINT));
+      $this->client= new FlickrClient(new XmlRpcHttpTransport(FLICKR_XMLRPC_ENDPOINT));
     }
     
     /**

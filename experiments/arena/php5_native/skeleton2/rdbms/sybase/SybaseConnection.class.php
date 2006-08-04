@@ -5,7 +5,7 @@
  */
 
   uses(
-    'rdbms.DBConnection', 
+    'rdbms.DBConnection',
     'rdbms.sybase.SybaseResultSet',
     'rdbms.Transaction',
     'rdbms.StatementFormatter'
@@ -271,7 +271,7 @@
         return $result;
       }
       
-      $resultset= &new SybaseResultSet($result);
+      $resultset= new SybaseResultSet($result);
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
       return $resultset;

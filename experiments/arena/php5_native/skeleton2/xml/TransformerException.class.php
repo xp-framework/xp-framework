@@ -12,7 +12,7 @@
    * @see      xp://xml.XSLProcessor
    * @purpose  Indicate XSL transformation errors
    */
-  class TransformerException extends Exception {
+  class TransformerException extends XPException {
   
   }
 ?>

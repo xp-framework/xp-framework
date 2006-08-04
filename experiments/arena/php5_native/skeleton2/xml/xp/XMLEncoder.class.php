@@ -55,7 +55,7 @@
         
         switch (gettype($value[$key])) {
           case 'object':
-            if (is_a($value[$key], 'Object')) {
+            if ([]is('Generic', $key)) {
               $n->attribute['class']= $value[$key]->getClassName();
             }
             $this->_recurse($n, $o= get_object_vars($value[$key]), 'xp:property');
@@ -81,7 +81,7 @@
     public function writeObject(&$o) {
     
       // Create header
-      $tree= &new Tree('xp:object');
+      $tree= new Tree('xp:object');
       $tree->root->setAttribute('xmlns:xp', 'http://xp-framework.net/ns/');
       $tree->root->setAttribute('class',    $o->getClassName());
       

@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('peer.mail.transport.TransportException');
+  uses('peer.mail.transport.TransportException', 'util.log.Traceable');
   
   /**
    * Abstract base class for mail transport
@@ -35,7 +35,7 @@
      *
      * @access  abstract
      * @param   &peer.mail.Message message the Message object to send
-     * @throws  TransportException to indicate an error occured
+     * @throws  peer.mail.transport.TransportException to indicate an error occured
      */
     public function send(&$message) { }
     
@@ -49,7 +49,7 @@
      * @throws  lang.IllegalArgumentException in case a of a type mismatch
      */
     public function &setTrace(&$cat) {
-      if (NULL !== $cat && !is_a($cat, 'LogCategory')) {
+      if (NULL !== $cat && !is('LogCategory', $cat)) {
         throw(new IllegalArgumentException('Argument passed is not a LogCategory'));
       }
       

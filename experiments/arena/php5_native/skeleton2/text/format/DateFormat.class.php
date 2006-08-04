@@ -48,7 +48,7 @@
           break;
           
         case 'object':
-          if (is_a($argument, 'Date')) {
+          if (is('Date', $argument)) {
             $u= $argument->getTime();
             break;
           }

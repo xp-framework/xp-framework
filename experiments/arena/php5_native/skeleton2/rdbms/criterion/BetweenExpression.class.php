@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('rdbms.criterion.Criterion');
+
   /**
    * Between expression
    *

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.soap.SOAPNode');
+  uses('xml.soap.SOAPNode', 'xml.soap.SOAPHeader');
 
   /**
    * Represent a SOAP header element.
@@ -31,8 +31,8 @@
      * @param   &array ns current namespaces from SOAP message
      * @return  &xml.soap.SOAPHeaderElement
      */
-    public function &fromNode(&$node, $ns, $encoding) {
-      $header= &new SOAPHeaderElement();
+    public static function &fromNode(&$node, $ns, $encoding) {
+      $header= new SOAPHeaderElement();
       $header->name= $node->getName();
       $header->mustUnderstand= (bool)$node->getAttribute($ns[XMLNS_SOAPENV].':mustUnderstand');
       $header->actor= $node->getAttribute($ns[XMLNS_SOAPENV].':actor');

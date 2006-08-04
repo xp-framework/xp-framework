@@ -10,7 +10,7 @@
    * @see      xp://remote.Serializer
    * @purpose  Exception reference
    */
-  class ExceptionReference extends Exception {
+  class ExceptionReference extends XPException {
     public 
       $classname= '';
 

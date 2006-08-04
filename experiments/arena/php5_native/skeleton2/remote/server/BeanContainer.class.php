@@ -27,7 +27,7 @@
      * @return  
      */
     public function &forClass(&$class) {
-      $bc= &new BeanContainer();
+      $bc= new BeanContainer();
       $bc->instancePool= &Collection::forClass($class);
       return $bc;
     }

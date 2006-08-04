@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.log.Logger', 
+    'util.log.Logger',
     'util.log.FileAppender',
     'gui.WidgetNotFoundException'
   );
@@ -134,7 +134,7 @@
      * @access  protected
      */
     public function create() {
-      $this->window= &new GtkWindow();
+      $this->window= new GtkWindow();
     }
 
     /**

@@ -28,7 +28,7 @@
      * @param   &array attr
      * @param   &int port
      * @return  bool
-     * @throws  IllegalArgumentException
+     * @throws  lang.IllegalArgumentException
      */
     public function _supports($u, &$attr) {
       switch (strtolower($u->getScheme())) {

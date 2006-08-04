@@ -5,10 +5,11 @@
  */
 
   uses(
-    'xml.soap.SOAPMessage', 
+    'xml.soap.SOAPMessage',
     'xml.soap.SOAPFaultException',
-    'peer.http.HttpConnection', 
-    'xml.uddi.UDDIConstants'
+    'peer.http.HttpConnection',
+    'xml.uddi.UDDIConstants',
+    'util.log.Traceable'
   );
 
   /**
@@ -54,8 +55,8 @@
      * @param   int version default 2
      */
     public function __construct($inquiryUrl, $publishUrl, $version= 2) {
-      $this->conn['inquiry']= &new HttpConnection($inquiryUrl);
-      $this->conn['publish']= &new HttpConnection($publishUrl);
+      $this->conn['inquiry']= new HttpConnection($inquiryUrl);
+      $this->conn['publish']= new HttpConnection($publishUrl);
       $this->version= $version;
     }
 
@@ -102,9 +103,9 @@
       }
       
       // Create message
-      with ($m= &new SOAPMessage()); {
+      with ($m= new SOAPMessage()); {
         $m->encoding= 'utf-8';
-        $m->root= &new Node('soap:Envelope', NULL, array(
+        $m->root= new Node('soap:Envelope', NULL, array(
           'xmlns:soap' => 'http://schemas.xmlsoap.org/soap/envelope/'
         ));
         $body= &$m->root->addChild(new Node('soap:Body'));

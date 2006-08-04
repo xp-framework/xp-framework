@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.XPIterator');
+
   /**
    * Iterator over the keys of a DBA object
    *
@@ -21,7 +23,7 @@
    * @ext      dba
    * @purpose  Iterator
    */
-  class DBAIterator extends Object implements Iterator {
+  class DBAIterator extends Object implements XPIterator {
     public
       $_key     = NULL,
       $_fd      = NULL;

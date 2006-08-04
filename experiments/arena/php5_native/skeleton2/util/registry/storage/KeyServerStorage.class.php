@@ -4,7 +4,11 @@
  * $Id$ 
  */
  
-  uses('peer.Socket', 'lang.ElementNotFoundException');
+  uses(
+    'peer.Socket',
+    'lang.ElementNotFoundException',
+    'util.registry.RegistryStorageProvider'
+  );
 
   /**
    * Remote Storage client implementation of key/vales pairs
@@ -39,7 +43,7 @@
      * @param   int port default 6100 Port
      */
     public function __construct($host, $port= 6100) {
-      $this->_sock= &new Socket($host, $port);
+      $this->_sock= new Socket($host, $port);
     }
 
     /**

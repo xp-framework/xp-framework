@@ -5,7 +5,7 @@
  */
 
   uses(
-    'scriptlet.xml.workflow.AbstractXMLScriptlet', 
+    'scriptlet.xml.workflow.AbstractXMLScriptlet',
     'xml.DomXSLProcessor'
   );
 

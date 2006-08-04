@@ -210,7 +210,7 @@
      * @return  &peer.URL
      */
     public function &getURL() {
-      $url= &new URL(sprintf('http://static.flickr.com/%s/%s_%s_b.jpg',
+      $url= new URL(sprintf('http://static.flickr.com/%s/%s_%s_b.jpg',
         $this->getServer(),
         $this->getId(),
         $this->getSecret()

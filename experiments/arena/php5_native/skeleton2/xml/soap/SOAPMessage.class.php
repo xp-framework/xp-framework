@@ -11,7 +11,8 @@
     'xml.soap.SOAPHeaderElement',
     'xml.soap.SOAPFault',
     'xml.soap.SOAPMapping',
-    'lang.Collection'
+    'lang.Collection',
+    'scriptlet.rpc.AbstractRpcMessage'
   );
   
   define('XMLNS_SOAPENV',       'http://schemas.xmlsoap.org/soap/envelope/');
@@ -80,7 +81,7 @@
       $this->action= $action;
       $this->method= $method;
 
-      $this->root= &new Node('SOAP-ENV:Envelope', NULL, array(
+      $this->root= new Node('SOAP-ENV:Envelope', NULL, array(
         'xmlns:SOAP-ENV'              => XMLNS_SOAPENV,
         'xmlns:xsd'                   => XMLNS_XSD,
         'xmlns:xsi'                   => XMLNS_XSI,
@@ -107,11 +108,11 @@
      * @access  public
      * @param   xml.soap.SOAPMessage msg
      */
-    public function create($msg) {
+    public function create($msg= NULL) {
       $this->action= $msg->action;
       $this->method= $msg->method;
 
-      $this->root= &new Node('SOAP-ENV:Envelope', NULL, array(
+      $this->root= new Node('SOAP-ENV:Envelope', NULL, array(
         'xmlns:SOAP-ENV'              => XMLNS_SOAPENV,
         'xmlns:xsd'                   => XMLNS_XSD,
         'xmlns:xsi'                   => XMLNS_XSI,
@@ -130,7 +131,7 @@
       
       $this->body= &$this->root->addChild(new Node('SOAP-ENV:Body'));
       $this->body->addChild(new Node($this->namespace.':'.$this->method));
-      $this->mapping= &new SOAPMapping();
+      $this->mapping= new SOAPMapping();
     }
 
     /**
@@ -329,7 +330,7 @@
             if ($xpclass) {
               $result= &$xpclass->newInstance();
             } else {
-              $result= &new Object();
+              $result= new Object();
               $result->__qname= $regs[2];
             }
             foreach ($this->_recurseData($child, TRUE, 'OBJECT') as $key => $val) {
@@ -406,7 +407,7 @@
      * @param   string string
      * @return  &xml.Tree
      */
-    public function &fromString($string) {
+    public static function &fromString($string) {
       return parent::fromString($string, 'SOAPMessage');
     }
 
@@ -422,7 +423,7 @@
      * @param   &io.File file
      * @return  &xml.Tree
      */ 
-    public function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       return parent::fromFile($file, 'SOAPMessage');
     }
     
@@ -569,7 +570,7 @@
      * @access  public
      * @param   string class
      */
-    public function setClass($class) {
+    public function setHandlerClass($class) {
       $this->class= $class;
     }
 
@@ -579,7 +580,7 @@
      * @access  public
      * @return  string
      */
-    public function getClass() {
+    public function getHandlerClass() {
       return $this->class;
     }
 

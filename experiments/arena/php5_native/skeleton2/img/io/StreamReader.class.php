@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('img.io.ImageReader');
+
   /**
    * Read images from a stream
    *

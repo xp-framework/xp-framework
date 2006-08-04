@@ -9,7 +9,7 @@
    *
    * @purpose  Indicate a general messaging error has occured
    */
-  class MessagingException extends Exception {
+  class MessagingException extends XPException {
     public
       $detail = '';
       

@@ -5,8 +5,8 @@
  */
 
   uses(
-    'security.cert.Certificate', 
-    'security.Principal', 
+    'security.cert.Certificate',
+    'security.Principal',
     'security.crypto.PublicKey',
     'security.OpenSslUtil',
     'util.Date'
@@ -96,7 +96,7 @@
      * @return  bool TRUE if this certificate is valid for the given date
      */
     public function checkValidity($date= NULL) {
-      if (NULL === $date) $date= &new Date(time());
+      if (NULL === $date) $date= new Date(time());
       return (
         ($date->getTime() >= $this->_info['validFrom_time_t']) ||
         ($date->getTime() <= $this->_info['validTo_time_t'])
@@ -213,7 +213,7 @@
      * @return  &security.cert.X509Certificate
      * @throws  security.cert.CertificateException
      */
-    public function &fromString($str) {
+    public static function &fromString($str) {
       if (!is_resource($_res= openssl_x509_read($str))) {
         throw(new CertificateException(
           'Could not read certificate', OpenSslUtil::getErrors()

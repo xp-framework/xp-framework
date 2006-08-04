@@ -57,7 +57,7 @@
      */
     public function __construct(&$classloader) {
       $this->classloader= &$classloader;
-      $this->mapping= &new SOAPMapping();
+      $this->mapping= new SOAPMapping();
     }
     
     /**

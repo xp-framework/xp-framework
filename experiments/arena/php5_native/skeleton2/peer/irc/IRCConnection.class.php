@@ -5,10 +5,11 @@
  */
 
   uses(
-    'peer.Socket', 
+    'peer.Socket',
     'peer.irc.IRCConstants',
     'peer.irc.IRCUser',
-    'peer.irc.IRCConnectionListener'
+    'peer.irc.IRCConnectionListener',
+    'util.log.Traceable'
   );
 
   /**
@@ -61,7 +62,7 @@
      */
     public function __construct(&$user, $server, $port= 6667) {
       $this->user= &$user;
-      $this->sock= &new Socket($server, $port);
+      $this->sock= new Socket($server, $port);
     }
     
     /**

@@ -73,7 +73,7 @@
    * @ext      ldap
    * @see      http://developer.netscape.com/docs/manuals/dirsdk/jsdk40/Reference/netscape/ldap/LDAPException.html
    */
-  class LDAPException extends Exception {
+  class LDAPException extends XPException {
     public
       $errorcode = 0;
       

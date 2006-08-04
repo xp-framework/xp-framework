@@ -10,7 +10,7 @@
    * @see      xp://security.PolicyFile
    * @purpose  Indicate errors in policy
    */
-  class PolicyException extends XException {
+  class PolicyException extends XPException {
   
   }
 ?>

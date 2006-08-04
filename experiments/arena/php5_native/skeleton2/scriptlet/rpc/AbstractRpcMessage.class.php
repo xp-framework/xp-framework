@@ -21,7 +21,7 @@
      * @param   string string
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    public function &fromString($string);
+    public static function &fromString($string);
     
     /**
      * Create message
@@ -29,7 +29,7 @@
      * @access  public
      */
     public function create();
-
+    
     /**
      * Set Encoding
      *
@@ -60,7 +60,7 @@
      * @access  public
      * @param   &lang.Object data
      */
-    public function setData(&$data);
+    public function setData($data);
 
     /**
      * Get Data
@@ -85,7 +85,7 @@
      * @access  public
      * @param   string class
      */
-    public function setClass($class);
+    public function setHandlerClass($class);
 
     /**
      * Get Class
@@ -93,7 +93,7 @@
      * @access  public
      * @return  string
      */
-    public function getClass();
+    public function getHandlerClass();
 
     /**
      * Set Method
@@ -116,7 +116,7 @@
      *
      * @access  public
      */
-    public function setFault();
+    public function setFault($faultCode, $faultString);
     
     /**
      * Get fault

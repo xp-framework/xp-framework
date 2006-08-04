@@ -56,7 +56,7 @@
      * @return  
      */
     public function writeResponse(&$stream, $type, $buffer) {
-      $bcs= &new ByteCountedString($buffer);
+      $bcs= new ByteCountedString($buffer);
       
       $header= pack(
         'Nc4Na*',

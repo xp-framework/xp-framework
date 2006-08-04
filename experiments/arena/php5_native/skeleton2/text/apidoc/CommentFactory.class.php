@@ -40,19 +40,19 @@
     public function &factory($type) {
       switch ($type) {
         case APIDOC_COMMENT_FILE:
-          $obj= &new FileComment();
+          $obj= new FileComment();
           break;
           
         case APIDOC_COMMENT_FUNCTION:
-          $obj= &new FunctionComment();
+          $obj= new FunctionComment();
           break;
           
         case APIDOC_COMMENT_CLASS:
-          $obj= &new ClassComment();
+          $obj= new ClassComment();
           break;
           
         default:
-          $obj= &new Comment();
+          $obj= new Comment();
           break;
       }
       

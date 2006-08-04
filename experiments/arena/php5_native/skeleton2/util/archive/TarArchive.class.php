@@ -85,7 +85,7 @@
       if ('' == trim($data['filename'])) return FALSE;
       
       // TarArchiveEntry-Objekt erzeugen
-      $f= &new TarArchiveEntry(
+      $f= new TarArchiveEntry(
         $data, 
         $this->file->tell()
       );

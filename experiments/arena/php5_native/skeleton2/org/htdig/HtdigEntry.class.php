@@ -300,8 +300,8 @@
      * @return  &org.htdig.HtdigResult
      * @throws  lang.IllegalArgumentException when array is malformed
      */
-    public function &fromArray(&$arr) {
-      $entry= &new HtdigEntry();
+    public static function &fromArray(&$arr) {
+      $entry= new HtdigEntry();
       
       foreach (array_keys($arr) as $key) {
         if (!method_exists($entry, 'set'.$key))
@@ -336,7 +336,7 @@
       foreach (array_keys($vars) as $key) {
         if ('__id' == $key) continue;
 
-        $s.= sprintf($fmt, $key, is_a($this->$key, 'Object') 
+        $s.= sprintf($fmt, $key, ->is('Generic', $key) 
           ? $this->$key->toString()
           : var_export($this->$key, 1)
         )."\n";

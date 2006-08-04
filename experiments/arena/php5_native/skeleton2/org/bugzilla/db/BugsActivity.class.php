@@ -28,7 +28,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() { 
+    public static function __static() { 
       with ($peer= &BugsActivity::getPeer()); {
         $peer->setTable('bugs_activity');
         $peer->setConnection('bugzilla');

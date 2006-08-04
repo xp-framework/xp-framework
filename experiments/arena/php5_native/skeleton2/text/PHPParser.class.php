@@ -4,9 +4,10 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'io.File',
-    'io.FileUtil'
+    'io.FileUtil',
+    'util.log.Traceable'
   );
 
   // Modes of operation
@@ -158,7 +159,7 @@
                 $this->log && $this->log->info ('Function', $data, 'at line', $lineno);
                 
                 // Add new function, if currentClass exists add to that, otherwise to file
-                $f= &new StdClass();
+                $f= new StdClass();
                 $f->type= 'function';
                 $f->name= $data;
                 $f->line= $lineno;
@@ -187,7 +188,7 @@
                 $this->log && $this->log->info ('Class', $data, 'at line', $lineno);
                 
                 // Add new class object, and remember this as the active
-                $c= &new StdClass();
+                $c= new StdClass();
                 $c->type= 'class';
                 $c->name= $data;
                 $c->line= $lineno;

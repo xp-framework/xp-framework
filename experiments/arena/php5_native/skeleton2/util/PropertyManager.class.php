@@ -36,7 +36,7 @@
      * @access  public
      * @return  &util.PropertyManager
      */
-    public function &getInstance() {
+    public static function &getInstance() {
       static $instance;
       
       if (!isset($instance)) $instance= new PropertyManager();
@@ -62,7 +62,7 @@
      */
     public function &getProperties($name) {
       if (!isset($this->_prop[$this->_path.$name])) {
-        $this->_prop[$this->_path.$name]= &new Properties(
+        $this->_prop[$this->_path.$name]= new Properties(
           $this->_path.DIRECTORY_SEPARATOR.$name.'.ini'
         );
       }

@@ -20,7 +20,7 @@
    * @see      xp://scriptlet.HttpScriptlet#process
    * @purpose  Exception
    */  
-  class HttpScriptletException extends Exception {
+  class HttpScriptletException extends XPException {
     public
       $response     = NULL,
       $statusCode   = 0;
@@ -74,7 +74,7 @@
      * @param   int statusCode
      */
     public function _response($statusCode) {
-      $this->response= &new HttpScriptletResponse();
+      $this->response= new HttpScriptletResponse();
       $this->response->setStatus($statusCode);
       $this->response->setContent(sprintf(
         "<h1>HTTP/1.1 %d %s</h1>\n<xmp>\n%s</xmp>\n",

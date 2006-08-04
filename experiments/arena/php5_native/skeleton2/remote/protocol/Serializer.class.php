@@ -43,21 +43,21 @@
      * @access  public
      */
     public function __construct() {
-      $this->mapping('T', $m= &new DateMapping());
-      $this->mapping('l', $m= &new LongMapping());
-      $this->mapping('B', $m= &new ByteMapping());
-      $this->mapping('S', $m= &new ShortMapping());
-      $this->mapping('f', $m= &new FloatMapping());
-      $this->mapping('d', $m= &new DoubleMapping());
-      $this->mapping('i', $m= &new IntegerMapping());
-      $this->mapping('A', $m= &new ArrayListMapping());
-      $this->mapping('e', $m= &new ExceptionMapping());
-      $this->mapping('t', $m= &new StackTraceElementMapping());
+      $this->mapping('T', $m= new DateMapping());
+      $this->mapping('l', $m= new LongMapping());
+      $this->mapping('B', $m= new ByteMapping());
+      $this->mapping('S', $m= new ShortMapping());
+      $this->mapping('f', $m= new FloatMapping());
+      $this->mapping('d', $m= new DoubleMapping());
+      $this->mapping('i', $m= new IntegerMapping());
+      $this->mapping('A', $m= new ArrayListMapping());
+      $this->mapping('e', $m= new ExceptionMapping());
+      $this->mapping('t', $m= new StackTraceElementMapping());
       
       // A hashmap doesn't have its own token, because it'll be serialized
       // as an array. We use HASHMAP as the token, so it will never match
       // another one (can only be one char). This is a little bit hackish.
-      $this->mapping('HASHMAP', $m= &new HashmapMapping());
+      $this->mapping('HASHMAP', $m= new HashmapMapping());
       
       // Setup default exceptions
       $this->exceptionName('IllegalArgument', 'lang.IllegalArgumentException');
@@ -117,7 +117,7 @@
      * @return  &mixed FALSE in case no mapper could be found, &remote.protocol.SerializerMapping otherwise
      */
     public function &mappingFor(&$var) {
-      if (!is('lang.Object', $var)) return FALSE;
+      if (!is('lang.Generic', $var)) return FALSE;
       
       // Check the mapping-cache for an entry for this object's class
       if (isset($this->_classMapping[$var->getClassName()])) {
@@ -284,7 +284,7 @@
 
         case 'E': {     // generic exceptions
           $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-          $instance= &new ExceptionReference(substr($serialized, 2+ strlen($len)+ 2, $len));
+          $instance= new ExceptionReference(substr($serialized, 2+ strlen($len)+ 2, $len));
           $offset= 2 + 2 + strlen($len)+ $len + 2;
           $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
           $offset+= strlen($size)+ 2;
@@ -304,7 +304,7 @@
           try {
             $class= &XPClass::forName($name);
           } catch (ClassNotFoundException $e) {
-            $instance= &new UnknownRemoteObject($name);
+            $instance= new UnknownRemoteObject($name);
             $offset= 2 + 2 + strlen($len)+ $len + 2;
             $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
             $offset+= strlen($size)+ 2;
@@ -346,7 +346,7 @@
         case 'C': {     // generic classes
           $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
           $length= 2 + strlen($len) + 2 + $len + 2;
-          $value= &new ClassReference($this->packageMapping(substr($serialized, 2+ strlen($len)+ 2, $len)));
+          $value= new ClassReference($this->packageMapping(substr($serialized, 2+ strlen($len)+ 2, $len)));
           return $value;
         }
 

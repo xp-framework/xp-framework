@@ -4,7 +4,12 @@
  * $Id$
  */
 
-  uses('xml.XML', 'xml.TransformerException', 'io.FileNotFoundException');
+  uses(
+    'xml.XML',
+    'xml.TransformerException',
+    'io.FileNotFoundException',
+    'xml.IXSLProcessor'
+  );
   
   /**
    * XSL Processor using DomXML

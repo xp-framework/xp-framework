@@ -4,7 +4,11 @@
  * $Id$
  */
  
-  uses('img.shapes.Arc', 'img.graph.PieSlice');
+  uses(
+    'img.shapes.Arc',
+    'img.graph.PieSlice',
+    'img.Drawable'
+  );
   
   /**
    * Shape class representing a 3D Pie chart
@@ -54,7 +58,7 @@
      * @return  mixed
      */
     public function draw(&$image) {
-      $arc= &new Arc(
+      $arc= new Arc(
         NULL,
         $image->getWidth() / 2, 
         $image->getHeight() / 2, 

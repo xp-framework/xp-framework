@@ -22,16 +22,19 @@
      * @param   string string
      * @return  &org.json.rpc.JsonRequestMessage
      */
-    public function &fromString($string) {
+    public static function &fromString($string) {
       $decoder= &JsonFactory::create();
 
-      $msg= &new JsonRequestMessage();
+      $msg= new JsonRequestMessage();
       $data= $decoder->decode($string);
 
       $msg->data= $data;
       $msg->id= $data['id'];
       
-      list($msg->class, $msg->method)= explode('.', $data['method']);
+      list($cn, $method)= explode('.', $data['method']);
+      $msg->setHandlerClass($cn);
+      $msg->setMethod($method);
+      
       return $msg;
     }
     
@@ -42,7 +45,7 @@
      * @param   string method
      * @param   int id
      */
-    public function create($method, $id) {
+    public function create($method= NULL, $id= NULL) {
       $this->method= $method;
       $this->id= $id;
     }
@@ -67,7 +70,7 @@
      * @access  public 
      * @return  mixed
      */
-    public function getData() {
+    public function &getData() {
       return $this->data['params'];
     }    
   }

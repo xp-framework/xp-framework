@@ -24,7 +24,7 @@
      */
     public function __construct($path) {
       $this->path= $path;
-      $this->_folder= &new Folder ($path);
+      $this->_folder= new Folder ($path);
     }
     
     /**
@@ -76,7 +76,7 @@
     
         list ($state, $filename)= explode (' ', $r, 2);
         if (FALSE !== ($s= $this->getCVSStatus ($state))) {
-          $f= &new stdClass();
+          $f= new stdClass();
           $f->status= $s;
           $f->filename= $filename;
           $f->uri= $this->path.DIRECTORY_SEPARATOR.$filename;

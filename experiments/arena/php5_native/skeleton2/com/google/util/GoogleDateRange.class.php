@@ -55,8 +55,8 @@
      * @param   &util.Date end
      * @return  &com.google.util.GoogleDateRange
      */
-    public function &forDates(&$start, &$end) {
-      $range= &new GoogleDateRange();
+    public static function &forDates(&$start, &$end) {
+      $range= new GoogleDateRange();
       $range->setStart($start);
       $range->setEnd($end);
       return $range;
@@ -115,7 +115,7 @@
      * @param   &util.Date date
      * @return  int
      */
-    public function dateToJulian(&$date) {
+    public static function dateToJulian(&$date) {
       with ($iyear= $date->getYear(), $imonth= $date->getMonth(), $iday= $date->getDay()); {
       
         // Check for invalid dates

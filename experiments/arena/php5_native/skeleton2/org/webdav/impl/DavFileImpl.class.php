@@ -42,7 +42,7 @@
         WEBDAV_IMPL_PROPPATCH
       );
       
-      $this->propStorage= &new DBAFilePropertyStorage($this->base.'../Webdav.props');
+      $this->propStorage= new DBAFilePropertyStorage($this->base.'../Webdav.props');
       
       $l= &Logger::getInstance();
       $this->c= &$l->getCategory();
@@ -54,7 +54,7 @@
      * @access  private
      * @param   string path
      * @param   int maxdepth
-     * @throws  ElementNotFoundException
+     * @throws  lang.ElementNotFoundException
      */
     public function _recurse(&$request, &$response, $path, $maxdepth) {
       $path= rtrim($path, '/');
@@ -68,9 +68,9 @@
 
       // It's a directory:
       if (is_dir($realpath)) {
-        $f= &new Folder($realpath);
+        $f= new Folder($realpath);
         try {
-          $o= &new WebdavObject(
+          $o= new WebdavObject(
             $root.$path,
             WEBDAV_COLLECTION,
             0,
@@ -99,8 +99,8 @@
       }
       
       // It's a File
-      $f= &new File($realpath);
-      $o= &new WebdavObject(
+      $f= new File($realpath);
+      $o= new WebdavObject(
         $root.$path,
         NULL,
         filesize($realpath),
@@ -218,11 +218,11 @@
       }
           
       try {
-        $f= &new Folder($colname);
+        $f= new Folder($colname);
         $f->create(0755);
         
         // Create also backup directory
-        $b= &new Folder($this->_normalizePath($this->base.'../versions/'.$col));
+        $b= new Folder($this->_normalizePath($this->base.'../versions/'.$col));
         $b->create(0755);        
       } catch (IOException $e) {
         throw(new OperationFailedException($colname.' cannot be created ('.$e->message.')'));
@@ -237,7 +237,7 @@
      * @access  public
      * @param   string filename
      * @return  bool success
-     * @throws  ElementNotFoundException
+     * @throws  lang.ElementNotFoundException
      * @throws  org.webdav.OperationFailedException
      * @throws  org.webdav.OperationNotAllowedException
      */
@@ -291,7 +291,7 @@
      * @param   string resourcetype, default NULL
      * @return  bool new
      * @throws  org.webdav.OperationNotAllowedException
-     * @throws  org.webdav.OperationFailedExcpetion
+     * @throws  org.webdav.OperationFailedException
      */
     public function put($filename, &$data, $resourcetype= NULL) {
       
@@ -301,7 +301,7 @@
       }
       
       // Open file and write contents
-      $f= &new File($uri);
+      $f= new File($uri);
       
       // Check if VersionControl is activated
       if (($prop= $this->propStorage->getProperty($filename, 'D:version')) !== NULL) {
@@ -333,7 +333,7 @@
       if (($prop= $this->propStorage->getProperty($filename, 'D:resourcetype')) == NULL) {      
       
         // Set ResourceType
-        with ($p= &new WebdavProperty('resourcetype', $resourcetype)); {
+        with ($p= new WebdavProperty('resourcetype', $resourcetype)); {
           $p->setNameSpaceName('DAV:');
           $p->setNameSpacePrefix('D:');          
         }
@@ -349,7 +349,7 @@
      * @access  public
      * @param   string filename
      * @return  &org.webdav.WebdavObject
-     * @throws  ElementNotFoundException
+     * @throws  lang.ElementNotFoundException
      * @throws  org.webdav.OperationNotAllowedException
      */
     public function &get($filename, $token= NULL) {
@@ -371,7 +371,7 @@
       if (is_dir($this->base.$filename)) {
         $this->c->debug(get_class($this), '::GET Dir', $filename);
 
-        $f= &new Folder($this->base.$filename);
+        $f= new Folder($this->base.$filename);
         if (!$f->exists()) {
           throw(new ElementNotFoundException($filename.' not found'));
         }
@@ -407,7 +407,7 @@
         asort($flist[1]);
         $flist= $html.implode('', $flist[1]).'</table>'; 
 
-        $o= &new WebdavObject(
+        $o= new WebdavObject(
           $f->uri,
           NULL,
           strlen($flist),
@@ -430,7 +430,7 @@
         throw(new ElementNotFoundException($filename.' not found'));
 
 
-      $f= &new File($this->base.$filename);
+      $f= new File($this->base.$filename);
       $contentType= '';
       
       $this->c->debug(get_class($this), '::get ', $this->base.filename);
@@ -440,7 +440,7 @@
       if (empty($contentType))
         $contentType= MimeType::getByFilename($f->uri, 'text/plain');
 
-      $o= &new WebdavObject(
+      $o= new WebdavObject(
         $f->uri,
         NULL,
         $f->size(),
@@ -568,7 +568,7 @@
      * @access  public
      * @param   string path
      * @param   &io.File file
-     * @throws  &lang.ElementNotFoundException 
+     * @throws  lang.ElementNotFoundException 
      */
     public function &VersionControl($path, &$file) {
       $realpath= $this->base.$path;
@@ -581,7 +581,7 @@
       $fname= basename($realpath, '.'.$file->getExtension());
       
       // Create Version object 
-      with ($version= &new WebdavFileVersion($file->getFilename())); {
+      with ($version= new WebdavFileVersion($file->getFilename())); {
         $version->setVersionNumber('1.0');
         $version->setHref('../versions/'.dirname($path).'/'.$fname.'[1.0].'.$file->getExtension());
         $version->setVersionName($fname.'[1.0].'.$file->getExtension());
@@ -598,7 +598,7 @@
      * @access  public  
      * @param   &org.webdav.xml.WebdavPropFindRequest
      * @param   &org.webdav.xml.WebdavMultistatusResponse
-     * @throws  ElementNotFoundException
+     * @throws  lang.ElementNotFoundException
      */
     public function &report(&$request, &$response) {
       $realpath= $this->base.$request->getPath();

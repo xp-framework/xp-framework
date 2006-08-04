@@ -5,7 +5,7 @@
  */
   
   uses(
-    'rdbms.ConnectionNotRegisteredException', 
+    'rdbms.ConnectionNotRegisteredException',
     'rdbms.DriverManager',
     'util.Configurable'
   );

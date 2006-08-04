@@ -38,7 +38,7 @@
      * @param   int year
      * @return  int
      */
-    public function yearFor($year) {
+    public static function yearFor($year) {
       if (strlen((int)$year) <= 2) {
         return (int)floor(date('Y') / 100) * 100 + $year;
       }
@@ -54,7 +54,7 @@
      * @return  &util.Date
      * @throws  lang.FormatException in case the date could not be parsed
      */
-    public function &parse($s) {
+    public static function &parse($s) {
       if (empty($s)) {
       
         // Border case
@@ -86,7 +86,7 @@
         if (!empty($matches[7])) {
           try {
             if (
-              ($tz= &new TimeZone($matches[7])) &&
+              ($tz= new TimeZone($matches[7])) &&
               ($lc= &TimeZone::getLocal())
             ) {
             

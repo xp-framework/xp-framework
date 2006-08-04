@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('scriptlet.xml.workflow.Handler', 'xml.Node');
+  uses(
+    'scriptlet.xml.workflow.Handler',
+    'xml.Node',
+    'util.log.Traceable'
+  );
 
   /**
    * Represents a single state

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.doclet.Tag');
+  uses('text.doclet.Tag', 'text.doclet.Taglet');
 
   /**
    * A taglet that represents simple tags.

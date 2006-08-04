@@ -5,9 +5,9 @@
  */
 
   uses(
-    'peer.URL', 
-    'remote.HandlerInstancePool', 
-    'remote.protocol.RemoteInterfaceMapping', 
+    'peer.URL',
+    'remote.HandlerInstancePool',
+    'remote.protocol.RemoteInterfaceMapping',
     'remote.UserTransaction'
   );
 
@@ -62,7 +62,7 @@
      * @return  &remote.Remote
      * @throws  remote.RemoteException in case of setup failure
      */
-    public function &forName($dsn) {
+    public static function &forName($dsn) {
       static $instances= array();
       
       $pool= &HandlerInstancePool::getInstance();
@@ -72,16 +72,16 @@
         if (isset($instances[$key])) return $instances[$key];
 
         // No instance yet, so get it
-        $url= &new URL($key);
+        $url= new URL($key);
         $e= $instance= NULL;
         try {
-          $instance= &new Remote();
+          $instance= new Remote();
           $instance->_handler= &$pool->acquire($url);
           $instance->_handler && $instance->_handler->initialize($url);
         } catch (RemoteException $e) {
           continue;   // try next
         } catch (Exception $e) {
-          $e= &new RemoteException($e->getMessage(), $e);
+          $e= new RemoteException($e->getMessage(), $e);
           continue;   // try next
         }
 

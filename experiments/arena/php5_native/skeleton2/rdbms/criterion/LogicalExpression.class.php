@@ -7,6 +7,8 @@
   define('LOGICAL_AND', 'and');
   define('LOGICAL_OR',  'or');
 
+  uses('rdbms.criterion.Criterion');
+
   /**
    * Logical expression
    *

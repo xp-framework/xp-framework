@@ -24,7 +24,7 @@
      * @param   int len default 1
      * @return  string
      */
-    public function delete(&$string, $pos, $len= 1) {
+    public static function delete(&$string, $pos, $len= 1) {
       $string= substr($string, 0, $pos).substr($string, $pos+ 1);
       return $string;
     }
@@ -41,7 +41,7 @@
      * @param   char char
      * @return  string
      */
-    public function insert(&$string, $pos, $char) {
+    public static function insert(&$string, $pos, $char) {
       $string= substr($string, 0, $pos).$char.substr($string, $pos);
       return $string;
     }
@@ -58,7 +58,7 @@
      * @return  array parts
      * @throws  lang.IllegalArgumentException
      */
-    public function blocksplit($string, $length) {
+    public static function blocksplit($string, $length) {
 
       // Catch bordercase in which this would result in and endless loop
       if ($length <= 0) {

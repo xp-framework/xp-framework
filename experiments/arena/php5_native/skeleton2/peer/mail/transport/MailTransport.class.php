@@ -58,7 +58,7 @@
     public function send(&$message) { 
     
       // Sanity check: Is this a message?
-      if (!is_a($message, 'Message')) {
+      if (!is('Message', $message)) {
         throw(new TransportException(
           'Can only send messages (given: '.xp::typeOf($message).')',
           new IllegalArgumentException('Parameter message is not a Message object')
@@ -68,7 +68,7 @@
       // Sanity check: Do we have at least one recipient?
       $to= '';
       for ($i= 0, $s= sizeof($message->to); $i < $s; $i++) {
-        if (!is_a($message->to[$i], 'InternetAddress')) continue; // Ignore!
+        if (!->to[]is('InternetAddress', $i)) continue; // Ignore!
         $to.= $message->to[$i]->toString($message->getCharset()).', ';
       }
       if (empty($to)) {

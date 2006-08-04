@@ -10,7 +10,7 @@
    * @purpose  Indicate a certain operation is not allowed
    * @see      xp://lang.Exception
    */
-  class OperationNotAllowedException extends Exception {
+  class OperationNotAllowedException extends XPException {
   
   }
 ?>

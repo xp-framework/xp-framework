@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.log.Logger');
+  uses('util.log.Logger', 'rdbms.DBObserver');
 
   /**
    * Observer interface
@@ -28,7 +28,7 @@
       
       if (!isset ($inst[$arg])) {
         $log= &Logger::getInstance();
-        $inst[$arg]= &new LogObserver();
+        $inst[$arg]= new LogObserver();
         $inst[$arg]->cat= &$log->getCategory($arg);
       }
       

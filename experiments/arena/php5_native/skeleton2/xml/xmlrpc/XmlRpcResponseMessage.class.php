@@ -21,8 +21,8 @@
      * @access  public
      * @param   xml.xmlrpc.XmlRpcRequestMessage reqmsg
      */
-    public function create($reqmsg) {
-      $this->tree= &new Tree(XMLRPC_RESPONSE);
+    public function create($reqmsg= NULL) {
+      $this->tree= new Tree(XMLRPC_RESPONSE);
     }
     
     /**
@@ -37,8 +37,8 @@
      * @param   string string
      * @return  &xml.xmlrpc.XmlRpcResponse Message
      */
-    public function &fromString($string) {
-      $msg= &new XmlRpcResponseMessage();
+    public static function &fromString($string) {
+      $msg= new XmlRpcResponseMessage();
       $msg->tree= &Tree::fromString($string);
 
       // Set class and method members from XML structure
@@ -55,7 +55,7 @@
      * @param   &mixed arr
      */
     public function setData($value) {
-      $encoder= &new XmlRpcEncoder();
+      $encoder= new XmlRpcEncoder();
 
       $params= &$this->tree->root->addChild(new Node('params'));
       $param= &$params->addChild(new Node('param'));
@@ -79,7 +79,7 @@
       }
 
       // Process params node
-      $decoder= &new XmlRpcDecoder();
+      $decoder= new XmlRpcDecoder();
       
       // Access node /methodResponse/params/param/value node
       return $decoder->decode($this->tree->root->children[0]->children[0]->children[0]);

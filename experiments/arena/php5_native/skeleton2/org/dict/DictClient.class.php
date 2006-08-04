@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('peer.Socket', 'org.dict.DictDefinitionEntry');
+  uses(
+    'peer.Socket',
+    'org.dict.DictDefinitionEntry',
+    'util.log.Traceable'
+  );
 
   define('DICT_STRATEGY_SUBSTRING', 'substring');
   define('DICT_STRATEGY_EXACT',     'exact');
@@ -124,7 +128,7 @@
      * @throws  io.IOException
      */
     public function connect($server, $port= 2628) {
-      $this->_sock= &new Socket($server, $port);
+      $this->_sock= new Socket($server, $port);
       try {
         $this->_sock->connect();
         $this->_sockcmd(FALSE, 220); 
@@ -210,7 +214,7 @@
               $definition.= $buf;
             }
             
-            $def[]= &new DictDefinitionEntry(substr($ret, 4), $definition);
+            $def[]= new DictDefinitionEntry(substr($ret, 4), $definition);
           }
         }
       } catch (Exception $e) {

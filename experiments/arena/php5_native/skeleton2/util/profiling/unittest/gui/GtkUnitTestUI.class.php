@@ -47,10 +47,10 @@
      * @access  public
      */
     public function init() {
-      $this->suite= &new TestSuite();
+      $this->suite= new TestSuite();
       
       // File Open Dialog
-      $this->dialog= &new FileDialog(SKELETON_PATH.'/../util/tests');
+      $this->dialog= new FileDialog(SKELETON_PATH.'/../util/tests');
       $this->dialog->setFilter('ini$');
       $this->dialog->setModal(TRUE);
       
@@ -79,7 +79,7 @@
       $this->setStatusText('Select test suite configuration');
       
       // Pixmaps
-      $loader= &new GTKPixmapLoader($this->window->window, dirname(__FILE__));
+      $loader= new GTKPixmapLoader($this->window->window, dirname(__FILE__));
       $this->pixmaps= $loader->load(array(
         'suite', 
         'test', 
@@ -161,7 +161,7 @@
       
       // Update trace
       $this->trace->clear();
-      if (is_a($data, 'Throwable')) {
+      if (is('Throwable', $data)) {
         $type= 'exception';
         $caption= $data->getClassName().' ('.$data->getMessage().')';
         $trace= $data->getStackTrace();
@@ -227,7 +227,7 @@
     public function onRunClicked(&$widget) {
       $numtests= $this->suite->numTests();
       $this->progress->configure(0.0, 0.0, $numtests);
-      $result= &new TestResult();
+      $result= new TestResult();
 
       $this->setStatusText('Running suite, %d tests', $numtests);
       for ($i= 0; $i < $numtests; $i++) {
@@ -352,7 +352,7 @@
       }
       $this->loaded[$uri]= TRUE;
 
-      $config= &new Properties($uri);
+      $config= new Properties($uri);
       if ($section) {
         $this->addTestsFromSection($config, $section);
       } else {

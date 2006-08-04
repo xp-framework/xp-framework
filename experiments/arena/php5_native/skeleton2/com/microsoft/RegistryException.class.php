@@ -9,7 +9,7 @@
    *
    * @purpose  Exception
    */
-  class RegistryException extends Exception {
+  class RegistryException extends XPException {
   
   }
 ?>

@@ -58,14 +58,14 @@
       );
 
       if (!$processors) {
-        $processors['default']= &new DefaultProcessor();
-        $processors['copy']= &new CopyProcessor();
-        $processors['code']= &new CodeProcessor();
+        $processors['default']= new DefaultProcessor();
+        $processors['copy']= new CopyProcessor();
+        $processors['code']= new CodeProcessor();
       }
       
       $processor= &$this->pushProcessor($processors['default']);
 
-      $st= &new StringTokenizer($text, '<>', $returnDelims= TRUE);
+      $st= new StringTokenizer($text, '<>', $returnDelims= TRUE);
       $out= '';      
       while ($st->hasMoreTokens()) {
         if ('<' == ($token= $st->nextToken())) {

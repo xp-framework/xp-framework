@@ -4,7 +4,11 @@
  * $Id$
  */
  
-  uses('peer.URL', 'peer.mail.transport.Transport', 'peer.Socket');
+  uses(
+    'peer.URL',
+    'peer.mail.transport.Transport',
+    'peer.Socket'
+  );
   
   // Authentication methods
   define('SMTP_AUTH_PLAIN', 'plain');
@@ -140,7 +144,7 @@
      *
      * @access  protected
      * @return  bool success
-     * @throws  IllegalArgumentException in case authentication method is not supported
+     * @throws  lang.IllegalArgumentException in case authentication method is not supported
      */
     public function _login() {
       if (empty($this->auth)) return TRUE;
@@ -177,7 +181,7 @@
     public function _parsedsn($dsn) {
       if (NULL === $dsn) return TRUE;
       
-      $u= &new URL($dsn);
+      $u= new URL($dsn);
       if (!$u->getHost()) {
         throw(new IllegalArgumentException('DSN parsing failed ["'.$dsn.'"]'));
       }
@@ -225,7 +229,7 @@
     public function connect($dsn= NULL) { 
       if (FALSE === $this->_parsedsn($dsn)) return FALSE;
       
-      $this->_sock= &new Socket($this->host, $this->port);
+      $this->_sock= new Socket($this->host, $this->port);
       try {
         $this->_sock->connect();
         $this->_sockcmd(FALSE, 220);            // Read banner message
@@ -260,8 +264,8 @@
      *
      * @access  public
      * @param   &peer.mail.Message message the Message object to send
-     * @throws  peer.mail.transport.TransportException to indicate an error occured
      * @return  bool TRUE in case of success
+     * @throws  peer.mail.transport.TransportException to indicate an error occured
      */
     public function send(&$message) {
       try {

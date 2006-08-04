@@ -22,7 +22,7 @@
      * @access  protected
      */
     public function __construct() {
-      $this->pool= &new HashTable();
+      $this->pool= new HashTable();
     }
     
     /**
@@ -46,7 +46,7 @@
      * @access  public
      * @return  &remote.HandlerInstancePool
      */
-    public function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
       
       if (!isset($instance)) $instance= new HandlerInstancePool();

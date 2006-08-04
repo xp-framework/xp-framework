@@ -6,11 +6,12 @@
 
   uses(
     'peer.BSDSocket',
-    'remote.RemoteInvocationHandler', 
-    'remote.protocol.ByteCountedString', 
-    'remote.protocol.Serializer', 
+    'remote.RemoteInvocationHandler',
+    'remote.protocol.ByteCountedString',
+    'remote.protocol.Serializer',
     'remote.protocol.RemoteInterfaceMapping',
-    'remote.protocol.XpProtocolConstants'
+    'remote.protocol.XpProtocolConstants',
+    'remote.protocol.ProtocolHandler'
   );
 
   /**
@@ -36,7 +37,7 @@
     public function __construct() {
     
       // Create a serializer for this protocol handler
-      $this->serializer= &new Serializer();
+      $this->serializer= new Serializer();
       
       // Register default mappings / exceptions / packages
       $this->serializer->mapping('I', new RemoteInterfaceMapping());
@@ -58,7 +59,7 @@
         $this->versionMajor, 
         $this->versionMinor
       );
-      $this->_sock= &new BSDSocket($proxy->getHost('localhost'), $proxy->getPort(6448));
+      $this->_sock= new BSDSocket($proxy->getHost('localhost'), $proxy->getPort(6448));
       $this->_sock->setOption(getprotobyname('tcp'), TCP_NODELAY, TRUE);
       $this->_sock->connect();
       
@@ -178,7 +179,7 @@
         $length,
         $data
       );
-      // DEBUG Console::writeLine('>>>', addcslashes($packet, "\0..\37!@\177..\377"));
+      Console::writeLine('>>>', addcslashes($packet, "\0..\37!@\177..\377"));
 
       try {
         $this->_sock->write($packet);
@@ -193,7 +194,7 @@
         throw(new RemoteException($e->getMessage(), $e));
       }
       
-      // DEBUG Console::writeLine('<<<', xp::stringOf($header));
+      Console::writeLine('<<<', xp::stringOf($header));
       if (DEFAULT_PROTOCOL_MAGIC_NUMBER != $header['magic']) {
         $this->_sock->close();
         throw(new Error('Magic number mismatch (have: '.$header['magic'].' expect: '.DEFAULT_PROTOCOL_MAGIC_NUMBER));
@@ -205,7 +206,7 @@
         switch ($header['type']) {
           case REMOTE_MSG_VALUE:
             $data= &ByteCountedString::readFrom($this->_sock);
-            // Console::writeLine('<<<', addcslashes($data, "\0..\37!@\177..\377"));
+            Console::writeLine('<<<', addcslashes($data, "\0..\37!@\177..\377"));
             return $this->serializer->valueOf($data, $length= 0, $ctx);
 
           case REMOTE_MSG_EXCEPTION:
@@ -215,7 +216,7 @@
             } else if (is('ClassReference', $reference)) {
               throw(new RemoteException($reference->getClassName(), $reference));
             } else {
-              throw(new RemoteException('lang.Exception', new Exception(xp::stringOf($reference))));
+              throw(new RemoteException('lang.Exception', new XPException(xp::stringOf($reference))));
             }
 
           case REMOTE_MSG_ERROR:

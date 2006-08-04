@@ -28,7 +28,7 @@
       $this->name= $name;
       $this->type= $type;
       $this->size= $size;
-      $this->file= &new File($uri);
+      $this->file= new File($uri);
     }
 
     /**

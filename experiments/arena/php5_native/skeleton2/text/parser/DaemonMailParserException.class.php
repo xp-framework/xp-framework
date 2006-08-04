@@ -9,7 +9,7 @@
    *
    * @purpose  Exception in DaemonMailParser
    */
-  class DaemonMailParserException extends Exception {
+  class DaemonMailParserException extends XPException {
     public
       $sourceMessage  = NULL;
       

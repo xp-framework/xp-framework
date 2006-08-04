@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('img.filter.ImageFilter');
+
   /**
    * A filter which sharpens an image
    *

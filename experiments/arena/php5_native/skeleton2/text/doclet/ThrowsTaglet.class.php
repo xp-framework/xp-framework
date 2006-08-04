@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.doclet.ThrowsTag');
+  uses('text.doclet.ThrowsTag', 'text.doclet.Taglet');
 
   /**
    * A taglet that represents the @throws tag. 

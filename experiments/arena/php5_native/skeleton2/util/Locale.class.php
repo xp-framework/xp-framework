@@ -66,7 +66,7 @@
      * @access  public
      * @return  &util.Locale
      */
-    public function &getDefault() {
+    public static function &getDefault() {
       return new Locale(('C' == ($locale= setlocale(LC_ALL, NULL)) 
         ? 'en_US'
         : $locale
@@ -81,7 +81,7 @@
      * @param   &util.Locale locale
      * @throws  lang.IllegalArgumentException in case the locale is not available
      */
-    public function setDefault(&$locale) {
+    public static function setDefault(&$locale) {
       if (FALSE === setlocale(LC_ALL, $locale->toString())) {
         throw(new IllegalArgumentException(sprintf(
           'Locale [lang=%s,country=%s,variant=%s] not available',

@@ -11,7 +11,8 @@
     'peer.news.NntpReply',
     'peer.news.Newsgroup',
     'peer.news.Article',
-    'util.Date'
+    'util.Date',
+    'util.log.Traceable'
   );
   
   /**
@@ -51,7 +52,7 @@
      */
     public function __construct(&$url) {
       $this->url= &$url;
-      $this->_sock= &new Socket(
+      $this->_sock= new Socket(
         $this->url->getHost(),
         $this->url->getPort(119)
       );
@@ -138,7 +139,7 @@
      * @access  public  
      * @param   float timeout default 2.0
      * @return  bool success
-     * @throws  ConnectException in case there's an error during connecting
+     * @throws  peer.ConnectException in case there's an error during connecting
      */
     public function connect($auth= FALSE) {
       try {
@@ -162,7 +163,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  IOException in case there's an error during disconnecting
+     * @throws  io.IOException in case there's an error during disconnecting
      */
     public function close() {
       if (!$this->_sock->isConnected()) return TRUE;
@@ -181,7 +182,7 @@
      * @access  public
      * @param   string authmode
      * @return  bool success
-     * @throws  AuthenticationException in case authentication failed
+     * @throws  peer.AuthenticationException in case authentication failed
      */  
     public function authenticate() {
       try {
@@ -246,7 +247,7 @@
 
       while ($line= $this->_readData()) {
         $buf= explode(' ', $line);
-        $groups[]= &new Newsgroup($buf[0], (int)$buf[1], (int)$buf[2], $buf[3]);
+        $groups[]= new Newsgroup($buf[0], (int)$buf[1], (int)$buf[2], $buf[3]);
       }
 
       return $groups;
@@ -258,7 +259,7 @@
      * @access  public
      * @param   mixed Id eighter a messageId or an articleId
      * @return  &peer.news.Article
-     * @throws  IOException in case article could not be retrieved
+     * @throws  io.IOException in case article could not be retrieved
      */
     public function &getArticle($id= NULL) {
       $status= $this->_sendcmd('ARTICLE', $id);
@@ -266,7 +267,7 @@
         throw(new IOException('Could not get article'));
         
       with($args= explode(' ', $this->getResponse())); {
-        $article= &new Article($args[0], $args[1]);
+        $article= new Article($args[0], $args[1]);
       }
       
       // retrieve headers
@@ -294,7 +295,7 @@
      *
      * @access  public
      * @return  array articleId
-     * @throws  IOException in case article list could not be retrieved
+     * @throws  io.IOException in case article list could not be retrieved
      */
     public function getArticleList() {
       $status= $this->_sendcmd('LISTGROUP');
@@ -312,7 +313,7 @@
      * @access  public  
      * @param   mixed Id eighter a messageId or an articleId default NULL 
      * @return  string body
-     * @throws  IOException in case body could not be retrieved
+     * @throws  io.IOException in case body could not be retrieved
      */
     public function getBody($id= NULL) {
       $status= $this->_sendcmd('BODY', $id);
@@ -330,7 +331,7 @@
      * @access  public  
      * @param   mixed Id eighter a messageId or an articleId default NULL
      * @return  array headers
-     * @throws  IOException in case headers could not be retrieved
+     * @throws  io.IOException in case headers could not be retrieved
      */
     public function getHeaders($id= NULL) {
       $status= $this->_sendcmd('HEAD', $id);
@@ -351,7 +352,7 @@
      *
      * @access  public
      * @return  &peer.news.Article
-     * @throws  IOException in case article could not be retrieved
+     * @throws  io.IOException in case article could not be retrieved
      */
     public function &getNextArticle() {
       $status= $this->_sendcmd('NEXT');
@@ -366,7 +367,7 @@
      *
      * @access  public
      * @return  &peer.news.Article
-     * @throws  IOException in case article could not be retrieved
+     * @throws  io.IOException in case article could not be retrieved
      */
     public function &getLastArticle() {
       $status= $this->_sendcmd('LAST');
@@ -381,7 +382,7 @@
      *
      * @access  public
      * @return  array fields
-     * @throws  IOException in case format could not be retrieved
+     * @throws  io.IOException in case format could not be retrieved
      */    
     public function getOverviewFormat() {
       $status= $this->_sendcmd('LIST OVERVIEW.FMT');
@@ -454,7 +455,7 @@
         
       while ($line= $this->_readData()) {
         $buf= explode(' ', $line);
-        $groups[]= &new Newsgroup($buf[0], (int)$buf[1], (int)$buf[2], $buf[3]);
+        $groups[]= new Newsgroup($buf[0], (int)$buf[1], (int)$buf[2], $buf[3]);
       }
 
       return $groups;

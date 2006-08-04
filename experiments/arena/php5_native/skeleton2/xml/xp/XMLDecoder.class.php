@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('xml.Tree', 'io.File', 'io.FileUtil');
+  uses(
+    'xml.Tree',
+    'io.File',
+    'io.FileUtil'
+  );
 
   /**
    * XML Decoder

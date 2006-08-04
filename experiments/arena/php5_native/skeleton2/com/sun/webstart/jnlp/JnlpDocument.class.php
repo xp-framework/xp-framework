@@ -76,7 +76,7 @@
 
       // Extract information
       with ($this->_nodes['information']= &$this->findFirst($this->root, 'information')); {
-        $this->information= &new JnlpInformation();
+        $this->information= new JnlpInformation();
         for ($i= 0, $s= sizeof($this->_nodes['information']->children); $i < $s; $i++) {
           $name= $this->_nodes['information']->children[$i]->getName();
           switch ($name) {
@@ -130,7 +130,7 @@
           $node= &$this->_nodes['resources']->children[$i];
           switch ($name= $node->getName()) {
             case 'j2se':    // The Java2 version required
-              $this->resources[]= &new JnlpJ2seResource(
+              $this->resources[]= new JnlpJ2seResource(
                 $node->getAttribute('version'),
                 $node->getAttribute('href'),
                 $node->getAttribute('initial-heap-size'),
@@ -139,28 +139,28 @@
               break;
 
             case 'jar':     // A jar
-              $this->resources[]= &new JnlpJarResource(
+              $this->resources[]= new JnlpJarResource(
                 $node->getAttribute('href'),
                 $node->getAttribute('version')
               );
               break;
             
             case 'property':
-              $this->resources[]= &new JnlpPropertyResource(
+              $this->resources[]= new JnlpPropertyResource(
                 $node->getAttribute('name'),
                 $node->getAttribute('value')
               );
               break;
 
             case 'nativelib':
-              $this->resources[]= &new JnlpJarResource(
+              $this->resources[]= new JnlpJarResource(
                 $node->getAttribute('href'),
                 $node->getAttribute('version')
               );
               break;              
 
             case 'extension':
-              $this->resources[]= &new JnlpExtensionResource(
+              $this->resources[]= new JnlpExtensionResource(
                 $node->getAttribute('name'),
                 $node->getAttribute('href'),
                 $node->getAttribute('version')
@@ -175,7 +175,7 @@
 
       // Extract application description
       with ($this->_nodes['application-desc']= &$this->findFirst($this->root, 'application-desc')); {
-        $this->appdesc= &new JnlpApplicationDesc();
+        $this->appdesc= new JnlpApplicationDesc();
         $this->appdesc->setMain_class($this->_nodes['application-desc']->getAttribute('main-class'));
         
         for ($i= 0, $s= sizeof($this->_nodes['application-desc']->children); $i < $s; $i++) {
@@ -192,7 +192,7 @@
      * @param   string str
      * @return  &com.sun.webstart.JnlpDocument
      */
-    public function &fromString($str) {
+    public static function &fromString($str) {
       if ($j= &parent::fromString($str, __CLASS__)) {
         $j->extract();
       }
@@ -207,7 +207,7 @@
      * @param   &io.File file
      * @return  &com.sun.webstart.JnlpDocument
      */
-    public function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       if ($j= &parent::fromFile($file, __CLASS__)) {
         $j->extract();
       }

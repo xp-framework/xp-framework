@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('xml.Tree', 'xml.QName', 'xml.XMLFormatException');
+  uses(
+    'xml.Tree',
+    'xml.QName',
+    'xml.XMLFormatException'
+  );
 
   /**
    * Marshalls XML from objects by using annotations.
@@ -39,7 +43,7 @@
      * @param   &lang.XPClass class
      * @param   &xml.Node node
      */
-    public function recurse(&$instance, &$class, &$node) {
+    public static function recurse(&$instance, &$class, &$node) {
       foreach ($class->getMethods() as $method) {
         if (!$method->hasAnnotation('xmlfactory', 'element')) continue;
         
@@ -83,7 +87,7 @@
           foreach ($result->values() as $value) {
             Marshaller::recurse($value, $elementClass, $node->addChild(new Node($element)));
           }
-        } else if (is('lang.Object', $result)) {
+        } else if (is('lang.Generic', $result)) {
           Marshaller::recurse($result, $result->getClass(), $node->addChild(new Node($element)));
         }
       }
@@ -98,13 +102,13 @@
      * @param   xml.QName qname default NULL
      * @return  string xml
      */
-    public function marshal(&$instance, $qname= NULL) {
+    public static function marshal(&$instance, $qname= NULL) {
       $class= &$instance->getClass();
 
       // Create XML tree and root node. Use the information provided by the
       // qname argument if existant, use the class` non-qualified (and 
       // lowercased) name otherwise.
-      $tree= &new Tree();
+      $tree= new Tree();
       if ($qname) {
         $prefix= $qname->prefix ? $qname->prefix : $qname->localpart{0};
         $tree->root->setName($prefix.':'.$qname->localpart);

@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('rdbms.SQLExpression');
+
   /**
    * Represents an SQL statement
    *

@@ -4,8 +4,6 @@
  * $Id$ 
  */
 
-  uses('rdbms.criterion.Criterion');
-
   define('IN',              'in (?)');
   define('NOT_IN',          'not in (?)');
   define('IS',              'is ?');
@@ -18,6 +16,8 @@
   define('LESS_EQUAL',      '<= ?');
   define('GREATER_EQUAL',   '>= ?');
   define('BIT_AND',         ' & ? = ?');
+
+  uses('rdbms.criterion.Criterion');
 
   /**
    * Simple expression

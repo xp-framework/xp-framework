@@ -23,7 +23,7 @@
      * @param   string key default NULL
      * @return  string
      */
-    public function hash($str, $key= NULL) {
+    public static function hash($str, $key= NULL) {
       if (NULL === $key) return pack('H*', md5($str));
       
       $key= str_pad($key, 0x40, "\x00");

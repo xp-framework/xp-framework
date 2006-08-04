@@ -25,10 +25,10 @@
      */    
     public function __construct(&$arg) {
       if (is_object($arg)) {
-        $this->date= &new Date (VFormatParser::decodeDate($arg->_value));
+        $this->date= new Date (VFormatParser::decodeDate($arg->_value));
         $this->timezone= $arg->tzid;
       } else {
-        $this->date= &new Date (VFormatParser::decodeDate($arg));
+        $this->date= new Date (VFormatParser::decodeDate($arg));
       }
     }
     

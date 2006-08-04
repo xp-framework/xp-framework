@@ -24,7 +24,7 @@
      */
     public function __construct($params) {
       $this->_vector= &$params;
-      $this->item= &new SOAPNode('vec', NULL, array(
+      $this->item= new SOAPNode('vec', NULL, array(
         'xmlns:vec'   => 'http://xml.apache.org/xml-soap',
         'xsi:type'    => 'vec:Vector'
       ));

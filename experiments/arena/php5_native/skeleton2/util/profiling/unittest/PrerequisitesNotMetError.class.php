@@ -12,7 +12,7 @@
    *
    * @purpose  Exception
    */
-  class PrerequisitesNotMetError extends XException {
+  class PrerequisitesNotMetError extends XPException {
     public
       $cause           = NULL,
       $prerequisites   = array();

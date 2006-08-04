@@ -53,8 +53,8 @@
      * @param   &mixed data return value from ldap_* functions
      * @return  &peer.ldap.LDAPEntry object
      */
-    public function &fromData(&$data) {
-      $e= &new LDAPEntry($data['dn']);
+    public static function &fromData(&$data) {
+      $e= new LDAPEntry($data['dn']);
       unset($data['dn']);
       foreach (array_keys($data) as $key) {
         if ('count' == $key || is_int($key)) continue;

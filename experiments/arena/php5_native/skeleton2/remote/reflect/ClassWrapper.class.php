@@ -24,9 +24,9 @@
      * @return  remote.ClassReference[]
      */
     public function classSet() {
-      $set= &new HashSet();
+      $set= new HashSet();
       foreach (array_keys($this->fields) as $name) {
-        if (!is_a($this->fields[$name], 'ClassReference')) continue;
+        if (!->fields[]is('ClassReference', $name)) continue;
         
         $set->add($this->fields[$name]);
       }

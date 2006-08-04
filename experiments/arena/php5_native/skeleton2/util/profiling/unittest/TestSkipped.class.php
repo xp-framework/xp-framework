@@ -25,7 +25,6 @@
      * @param   float elapsed
      */
     public function __construct(&$test, &$reason, $elapsed) {
-      parent::__construct();
       $this->test= &$test;
       $this->reason= &$reason;
       $this->elapsed= $elapsed;

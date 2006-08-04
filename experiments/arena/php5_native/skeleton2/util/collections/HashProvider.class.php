@@ -35,7 +35,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() {
+    public static function __static() {
       $self= &HashProvider::getInstance();
       $self->setImplementation(new DJBX33AHashImplementation());
     }
@@ -47,7 +47,7 @@
      * @access  public
      * @return  &util.collections.HashProvider
      */
-    public function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
 
       if (!isset($instance)) {
@@ -68,7 +68,7 @@
      * @param   string str
      * @return  int
      */
-    public function hashOf($str) {
+    public static function hashOf($str) {
       $self= &HashProvider::getInstance();
       return $self->impl->hashOf($str);
     }

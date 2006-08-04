@@ -30,7 +30,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() { 
+    public static function __static() { 
       with ($peer= &BugzillaProfile::getPeer()); {
         $peer->setTable('profiles');
         $peer->setConnection('bugzilla');

@@ -22,14 +22,14 @@
      * @return  &security.crypto.PublicKey
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    public function &fromString($string) {
+    public static function &fromString($string) {
       if (!is_resource($_hdl= openssl_pkey_get_public($string))) {
         throw(new CryptoException(
           'Could not read public key', OpenSslUtil::getErrors()
         ));
       }
       
-      $pk= &new PublicKey($_hdl);
+      $pk= new PublicKey($_hdl);
       return $pk;
     }
     

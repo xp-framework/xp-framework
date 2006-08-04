@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.Hashmap');
+  uses('util.Hashmap', 'util.registry.RegistryStorageProvider');
  
   /**
    * Memory storage
@@ -22,7 +22,7 @@
      * @param   string id
      */
     public function initialize($id) {
-      $this->_hash= &new Hashmap();
+      $this->_hash= new Hashmap();
     }
 
     /**

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.dba.DBAFile');
+  uses('io.dba.DBAFile', 'org.webdav.propertystorage.PropertyStorageProvider');
 
   /**
    * WebDav property storage with DBA files

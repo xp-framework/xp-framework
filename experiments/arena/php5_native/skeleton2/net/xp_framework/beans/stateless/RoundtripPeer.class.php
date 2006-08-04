@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('net.xp_framework.beans.stateless.RoundtripBean');
+  uses('net.xp_framework.beans.stateless.RoundtripBean', 'net.xp_framework.beans.stateless.RoundtripHome');
 
   /**
    * Home interface for xp/demo/Roundtrip

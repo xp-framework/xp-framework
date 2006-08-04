@@ -76,7 +76,7 @@
      * @param   string str
      * @return  &peer.Header header object
      */
-    public function &fromString($str) {
+    public static function &fromString($str) {
       list($k, $v)= explode(': ', $str, 2);
       return new Header($k, $v);
     }

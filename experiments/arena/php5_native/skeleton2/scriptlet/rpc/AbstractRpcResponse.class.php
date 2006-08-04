@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('scriptlet.HttpScriptletResponse');
+  uses('scriptlet.HttpScriptletResponse', 'util.log.Traceable');
 
   /**
    * RPC response object

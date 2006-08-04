@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('xml.uddi.BusinessList', 'xml.Node');
+  uses(
+    'xml.uddi.BusinessList',
+    'xml.Node',
+    'xml.uddi.InquiryCommand'
+  );
 
   /**
    * Find businesses
@@ -78,12 +82,12 @@
       }
       
       // Create business list object from XML representation
-      with ($list= &new BusinessList(), $children= &$node->children[0]->children); {
+      with ($list= new BusinessList(), $children= &$node->children[0]->children); {
         $list->setOperator($node->getAttribute('operator'));
         $list->setTruncated(0 == strcasecmp('true', $node->getAttribute('truncated')));
         
         for ($i= 0, $s= sizeof($children); $i < $s; $i++) {
-          $b= &new Business($children[$i]->getAttribute('businessKey'));
+          $b= new Business($children[$i]->getAttribute('businessKey'));
           
           for ($j= 0, $t= sizeof($children[$i]->children); $j < $s; $j++) {
             switch ($children[$i]->children[$j]->name) {

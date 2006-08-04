@@ -5,8 +5,8 @@
  */
 
   uses(
-    'text.parser.VFormatParser', 
-    'org.imc.VEvent', 
+    'text.parser.VFormatParser',
+    'org.imc.VEvent',
     'org.imc.VTimezone',
     'util.Date'
   );
@@ -197,7 +197,7 @@
         case 'vevent':
           switch ($keys[0]) {
             case 'BEGIN':
-              $event= &new VEvent();
+              $event= new VEvent();
               break;
               
             case 'END':
@@ -205,15 +205,15 @@
               break;
             
             case 'DTSTAMP':     // DTSTAMP:20030220T101358Z
-              $event->date= &new Date(VFormatParser::decodeDate($value));
+              $event->date= new Date(VFormatParser::decodeDate($value));
               break;
               
             case 'DTSTART':
-              $event->starts= &new Date(VFormatParser::decodeDate($value));
+              $event->starts= new Date(VFormatParser::decodeDate($value));
               break;
 
             case 'DTEND':
-              $event->ends= &new Date(VFormatParser::decodeDate($value));
+              $event->ends= new Date(VFormatParser::decodeDate($value));
               break;
             
             case 'SUMMARY':
@@ -258,7 +258,7 @@
         case 'vtimezone':
           switch ($keys[0]) {
             case 'BEGIN':
-              $timezone= &new VTimezone();
+              $timezone= new VTimezone();
               break;
             
             case 'END':
@@ -288,7 +288,7 @@
               break;
             
             case 'DTSTART':
-              $timezone->{$type}['dtstart']= &new Date(VFormatParser::decodeDate($value));
+              $timezone->{$type}['dtstart']= new Date(VFormatParser::decodeDate($value));
               break;
             
             case 'TZOFFSETTO':
@@ -328,10 +328,10 @@
      * @param   &io.Stream stream
      * @return  &org.imc.VCard
      */
-    public function &fromStream(&$stream) {
-      $cal= &new VCalendar();
+    public static function &fromStream(&$stream) {
+      $cal= new VCalendar();
       
-      $p= &new VFormatParser(VCAL_ID);
+      $p= new VFormatParser(VCAL_ID);
       $p->setDefaultHandler(array(&$cal, 'addProperty'));
       
       try {
@@ -352,7 +352,7 @@
      * @return  string exported
      */    
     public function _export($key, $value) {
-      if (is_a ($value, 'Date')) {
+      if (is('Date', $value)) {
         // Convert date into string
         $value= $value->toString ('Ymd').'T'.$value->toString ('His').'Z';
       }

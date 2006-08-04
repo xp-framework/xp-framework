@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'util.telephony.TelephonyAddress',
     'lang.IllegalArgumentException'
   );
@@ -314,7 +314,7 @@
       }
 
       // Parsing
-      $a= &new TelephonyAddress();
+      $a= new TelephonyAddress();
       $a->setType (TEL_ADDRESS_INTERNATIONAL);
       
       $number= $this->_prepare ($number);

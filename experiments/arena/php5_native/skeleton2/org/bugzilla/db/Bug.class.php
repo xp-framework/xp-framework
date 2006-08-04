@@ -49,7 +49,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() { 
+    public static function __static() { 
       with ($peer= &Bug::getPeer()); {
         $peer->setTable('bugs');
         $peer->setConnection('bugzilla');

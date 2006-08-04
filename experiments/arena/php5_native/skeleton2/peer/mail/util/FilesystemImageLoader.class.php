@@ -4,7 +4,12 @@
  * $Id$ 
  */
 
-  uses('io.File', 'io.FileUtil', 'util.MimeType');
+  uses(
+    'io.File',
+    'io.FileUtil',
+    'util.MimeType',
+    'peer.mail.util.ImageLoader'
+  );
 
   /**
    * Loads images from the filesystem

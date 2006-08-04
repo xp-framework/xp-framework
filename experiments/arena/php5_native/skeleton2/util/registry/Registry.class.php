@@ -131,9 +131,9 @@
      * @param   &util.registry.RegistryStorageProvider storage
      * @return  &util.registry.Registry registry object
      */
-    public function &setup($name, &$storage) {
+    public static function &setup($name, &$storage) {
       $instances= &Registry::_instances();
-      $instances[$name]= &new Registry();
+      $instances[$name]= new Registry();
       $instances[$name]->storage= &$storage;
       $instances[$name]->storage->initialize($name);
 
@@ -151,7 +151,7 @@
      * @return  &util.registry.Registry registry object
      * @throws  lang.ElementNotFoundException if specified registry cannot be found
      */
-    public function &getInstance($name) {
+    public static function &getInstance($name) {
       $instances= &Registry::_instances();
       if (!isset($instances[$name])) {
         throw(new ElementNotFoundException('No setup for '.$name));

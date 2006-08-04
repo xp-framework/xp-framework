@@ -39,7 +39,7 @@
       $instance= &$container->instancePool->add($container->peer->{$method}());
       $oid= $container->instancePool->indexOf($instance);
       
-      $invocationHandler= &new ContainerInvocationHandler();
+      $invocationHandler= new ContainerInvocationHandler();
       $invocationHandler->setContainer($container);
       $invocationHandler->setType(INVOCATION_TYPE_BEAN);
       $invocationHandler->setOID($oid);
@@ -60,7 +60,7 @@
      */
     public function invoke($container, $oid, $method, $args) {
       $invokeable= &$container->instancePool->get($oid);
-      if (!is('lang.Object', $invokeable)) throw(new RemoteException(
+      if (!is('lang.Generic', $invokeable)) throw(new RemoteException(
         'No valid invokeable found for oid '.$oid
       ));
       

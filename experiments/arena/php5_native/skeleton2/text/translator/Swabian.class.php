@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('text.translator.Translator');
+
   /**
    * This class translates any word or sentence from de_DE to de_SW.
    *
@@ -27,7 +29,7 @@
      * @param   string sentence
      * @return  string translation
      */  
-    public function translate($string) {
+    public static function translate($string) {
       static $tr= array(    // Translations array (pattern => replacement)
         '/\b([Dd])a\b([^ß])/'    => '$1o$2',
         '/\bdann\b/'             => 'no',

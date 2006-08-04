@@ -30,7 +30,7 @@
         
         // Use cache directory
         $query= basename($query);
-        $folder= &new Folder('../build/cache/');
+        $folder= new Folder('../build/cache/');
         while ($entry= &$folder->getEntry()) {
           $fn= $folder->getURI().$entry.DIRECTORY_SEPARATOR;
 

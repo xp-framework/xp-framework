@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('peer.ftp.server.interceptor.InterceptorCondition');
+
   /**
    * Path condition for interceptors
    *

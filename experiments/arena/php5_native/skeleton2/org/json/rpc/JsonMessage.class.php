@@ -26,12 +26,12 @@
     /**
      * Create message from string representation
      *
-     * @model   abstract
+     * @model   static
      * @access  public
      * @param   string string
      * @return  &org.json.rpc.JsonMessage
      */
-    public function &fromString($string) { }
+    public static function &fromString($string) { }
     
     /**
      * Create message 
@@ -127,7 +127,7 @@
      * @access  public
      * @param   string class
      */
-    public function setClass($class) {
+    public function setHandlerClass($class) {
       $this->class= $class;
     }
 
@@ -137,7 +137,7 @@
      * @access  public
      * @return  string
      */
-    public function getClass() {
+    public function getHandlerClass() {
       return $this->class;
     }
     

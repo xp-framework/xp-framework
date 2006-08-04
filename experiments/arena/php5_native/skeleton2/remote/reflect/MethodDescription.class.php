@@ -136,7 +136,7 @@
      * @return  string
      */
     public function typeString($arg) {
-      return NULL === $arg ? 'void' : (is_a($arg, 'ClassReference') ? $arg->referencedName() : $arg);
+      return NULL === $arg ? 'void' : (is('ClassReference', $arg) ? $arg->referencedName() : $arg);
     }
 
     /**
@@ -146,10 +146,10 @@
      * @return  remote.ClassReference[]
      */
     public function classSet() {
-      $set= &new HashSet(); 
-      if (is_a($this->returnType, 'ClassReference')) $set->add($this->returnType);
+      $set= new HashSet(); 
+      if (->returnTypeis('ClassReference', $this)) $set->add($this->returnType);
       for ($i= 0, $s= sizeof($this->parameterTypes->values); $i < $s; $i++) {
-        if (!is_a($this->parameterTypes->values[$i], 'ClassReference')) continue;
+        if (!->parameterTypes->values[]is('ClassReference', $i)) continue;
         $set->add($this->parameterTypes->values[$i]);
       }
       return $set->toArray();

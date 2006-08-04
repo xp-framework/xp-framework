@@ -47,7 +47,7 @@
      * @param   int status
      * @return  string name
      */
-    public function nameOfStatus($status) {
+    public static function nameOfStatus($status) {
       static $map= array(
         NSCA_OK      => 'NSCA_OK',     
         NSCA_WARN    => 'NSCA_WARN',   

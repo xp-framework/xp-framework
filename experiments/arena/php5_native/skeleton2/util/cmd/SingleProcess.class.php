@@ -37,7 +37,7 @@
      */
     public function __construct($lockFileName= NULL) {
       if (NULL === $lockFileName) $lockFileName= $_SERVER['argv'][0].'.lck';
-      $this->lockfile= &new File($lockFileName);
+      $this->lockfile= new File($lockFileName);
     }
     
     /**

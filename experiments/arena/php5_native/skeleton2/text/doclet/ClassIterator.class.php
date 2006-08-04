@@ -4,12 +4,14 @@
  * $Id$
  */
  
+  uses('util.XPIterator');
+
   /**
    * Iterates over a collection of classes, parsing them as going along.
    *
    * @purpose  Iterator
    */
-  class ClassIterator extends Object implements Iterator {
+  class ClassIterator extends Object implements XPIterator {
     public
       $classes = array(),
       $root    = NULL,

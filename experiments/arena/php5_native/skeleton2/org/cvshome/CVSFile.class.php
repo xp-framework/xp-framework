@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'org.cvshome.CVSInterface',
     'io.File',
     'io.TempFile'
@@ -26,7 +26,7 @@
      *
      * @access  public
      * @param   string filename
-     * @throws  io.FileNotFoundException, if filename is not a file
+     * @throws  io.FileNotFoundException if filename is not a file
      */
     public function __construct($filename) {
       $this->filename= realpath($filename);
@@ -109,7 +109,7 @@
         ));
       }
 
-      $result= &new stdClass(); 
+      $result= new stdClass(); 
       $inTags= false;
       $result->tags= array();
       foreach ($output as $r) {
@@ -158,7 +158,7 @@
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC124
      */
     public function commit($comment) {
-      $f= &new TempFile();
+      $f= new TempFile();
       try {
         $f->open (FILE_MODE_WRITE);
         $f->writeLine ($comment);
@@ -183,7 +183,7 @@
      * @return  bool success
      */
     public function remove() {
-      $f= &new File ($this->filename);
+      $f= new File ($this->filename);
       try {
         $f->move ($this->filename.'.cvsremove');
       } catch (IOException $e) {

@@ -61,7 +61,7 @@
      * @param   &mixed url a string or a peer.URL object
      */
     public function _createRequest(&$url) {
-      $this->request= &new AjpRequest($url);
+      $this->request= new AjpRequest($url);
     }  
   }
 ?>

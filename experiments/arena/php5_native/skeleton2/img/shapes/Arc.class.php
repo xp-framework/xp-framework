@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('img.Drawable');
+
   /**
    * Shape class representing an arc
    *

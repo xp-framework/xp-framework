@@ -20,7 +20,7 @@
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
-    public function fromString($s) {
+    public static function fromString($s) {
       switch ($s) {
         case 't':
         case 'T':
@@ -44,7 +44,7 @@
      * @param   bool bool
      * @return  string
      */
-    public function fromBool($bool) {
+    public static function fromBool($bool) {
       return $bool ? 'T' : 'F';
     }
   }

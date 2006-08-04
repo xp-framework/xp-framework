@@ -7,6 +7,8 @@
   define('INVOCATION_TYPE_HOME',  'invokeHome');
   define('INVOCATION_TYPE_BEAN',  'invoke');
 
+  uses('lang.reflect.InvocationHandler');
+
   /**
    * (Insert class' description here)
    *

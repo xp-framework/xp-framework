@@ -128,7 +128,7 @@
      * @return  &text.apidoc.Reference
      */
     public function &addReference($see) {
-      $this->references[]= &new Reference($see);
+      $this->references[]= new Reference($see);
       return $this->references[sizeof($this->references)- 1];
     }
     

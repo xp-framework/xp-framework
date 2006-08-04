@@ -30,7 +30,7 @@
      * @return  
      */
     public function __construct() {
-      $this->_map= &new Hashmap();
+      $this->_map= new Hashmap();
       
       $log= &Logger::getInstance();
       $this->_cat= &$log->getCategory($this->getClassName());

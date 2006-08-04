@@ -5,7 +5,7 @@
  */
 
   uses(
-    'remote.protocol.ByteCountedString', 
+    'remote.protocol.ByteCountedString',
     'remote.protocol.Serializer',
     'remote.protocol.RemoteInterfaceMapping',
     'remote.server.deploy.Deployer',
@@ -33,17 +33,17 @@
      * @return  
      */
     public function __construct() {
-      $this->serializer= &new Serializer();
+      $this->serializer= new Serializer();
       $this->serializer->mapping('I', new RemoteInterfaceMapping());
       
-      $this->objects= &new Hashmap();
-      $this->objectOIDs= &new Hashmap();
+      $this->objects= new Hashmap();
+      $this->objectOIDs= new Hashmap();
       
       // Perform deployment
-      $this->containerManager= &new ContainerManager();
+      $this->containerManager= new ContainerManager();
       
       try {
-        $deployer= &new Deployer();
+        $deployer= new Deployer();
         $bc= &$deployer->deployBean(XPClass::forName('net.xp_framework.beans.stateless.RoundtripBean'), $this->containerManager);
       } catch (Exception $e) {
         throw($e);
@@ -163,7 +163,7 @@
      * @param   &peer.server.ConnectionEvent event
      */
     public function data(&$event) {
-      $impl= &new ServerHandler();
+      $impl= new ServerHandler();
       $impl->setSerializer($this->serializer);
       return $impl->handle($this, $event);
     }

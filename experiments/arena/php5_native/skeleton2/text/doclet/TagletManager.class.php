@@ -5,9 +5,9 @@
  */
 
   uses(
-    'text.doclet.SeeTaglet', 
-    'text.doclet.ParamTaglet', 
-    'text.doclet.ReturnTaglet', 
+    'text.doclet.SeeTaglet',
+    'text.doclet.ParamTaglet',
+    'text.doclet.ReturnTaglet',
     'text.doclet.ThrowsTaglet',
     'text.doclet.SimpleTaglet',
     'text.doclet.ModelTaglet'
@@ -28,16 +28,16 @@
      * @model   static
      * @access  public
      */
-    public function __static() {
+    public static function __static() {
       with ($self= &TagletManager::getInstance()); {
-        $self->taglets['see']= &new SeeTaglet();
-        $self->taglets['param']= &new ParamTaglet();
-        $self->taglets['return']= &new ReturnTaglet();
-        $self->taglets['throws']= &new ThrowsTaglet();
-        $self->taglets['model']= &new ModelTaglet;
+        $self->taglets['see']= new SeeTaglet();
+        $self->taglets['param']= new ParamTaglet();
+        $self->taglets['return']= new ReturnTaglet();
+        $self->taglets['throws']= new ThrowsTaglet();
+        $self->taglets['model']= new ModelTaglet;
         
         // Simple taglets
-        $s= &new SimpleTaglet();
+        $s= new SimpleTaglet();
         $self->taglets['purpose']= &$s;
         $self->taglets['access']= &$s;
         $self->taglets['deprecated']= &$s;
@@ -53,7 +53,7 @@
      * @access  public
      * @return  &TagletManager
      */
-    public function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
       
       if (!$instance) $instance= new TagletManager();

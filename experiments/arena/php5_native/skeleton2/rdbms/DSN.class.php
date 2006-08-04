@@ -36,7 +36,7 @@
      * @param   string str
      */
     public function __construct($str) {
-      $this->url= &new URL($str);
+      $this->url= new URL($str);
       $this->dsn= $str;
 
       if ($config= $this->url->getParams()) {

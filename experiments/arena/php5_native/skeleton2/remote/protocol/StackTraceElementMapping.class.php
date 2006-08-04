@@ -5,7 +5,7 @@
  */
 
   uses('remote.protocol.SerializerMapping');
-  
+
   /**
    * Mapping for lang.StackTraceElement
    *
@@ -36,7 +36,7 @@
       }
       $length= $offset+ 1;
       
-      $value= &new StackTraceElement(
+      $value= new StackTraceElement(
         $details['file'],
         $details['class'],
         $details['method'],

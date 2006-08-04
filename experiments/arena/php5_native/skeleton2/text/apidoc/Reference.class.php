@@ -39,7 +39,7 @@
      * @access  public
      * @return  string[] valid schemes
      */
-    public function getValidSchemes() {
+    public static function getValidSchemes() {
       return Reference::_schemes();
     }
 
@@ -51,7 +51,7 @@
      * @param   string scheme the scheme to register
      * @return  string[] new valid schemes (incl. newly registered scheme)
      */
-    public function registerScheme($scheme) {
+    public static function registerScheme($scheme) {
       return Reference::_schemes($scheme);
     }
     
@@ -87,7 +87,7 @@
      * @throws  lang.FormatException in case the scheme is'nt recognized
      */
     public function fromString($str) {
-      $u= &new URL(FALSE !== ($p= strpos($str, ' '))
+      $u= new URL(FALSE !== ($p= strpos($str, ' '))
         ? substr($str, 0, $p)
         : $str
       );

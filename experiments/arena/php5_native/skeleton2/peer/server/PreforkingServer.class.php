@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('peer.server.Server', 'lang.RuntimeError');
+  uses(
+    'peer.server.Server',
+    'lang.RuntimeError',
+    'util.log.Traceable'
+  );
 
   /**
    * Pre-Forking TCP/IP Server

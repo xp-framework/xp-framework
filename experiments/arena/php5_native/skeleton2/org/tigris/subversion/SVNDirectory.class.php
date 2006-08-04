@@ -27,7 +27,7 @@
      */
     public function __construct($path) {
       $this->path= $path;
-      $this->_folder= &new Folder($path);
+      $this->_folder= new Folder($path);
     }
     
     /**
@@ -72,7 +72,7 @@
      * @param   string comment
      */
     public function commit($comment) {
-      $f= &new TempFile();
+      $f= new TempFile();
       try {
         $f->open(FILE_MODE_WRITE);
         $f->writeLine($comment);

@@ -31,8 +31,6 @@
      * @access  public
      */
     public function initialize() {
-      $this->headers= array_change_key_case(getallheaders(), CASE_LOWER);
-      $this->params= array_change_key_case($_REQUEST, CASE_LOWER);
     }
     
     /**
@@ -87,7 +85,7 @@
     public function getCookies() {
       $r= array();
       foreach (array_keys($_COOKIE) as $name) {
-        $r[]= &new Cookie($name, $_COOKIE[$name]);
+        $r[]= new Cookie($name, $_COOKIE[$name]);
       }
       return $r;
     }
@@ -276,7 +274,7 @@
      * @return  string
      */
     public function getQueryString() {
-      return urldecode($this->getEnvValue('QUERY_STRING'));
+      return urldecode(getenv('QUERY_STRING'));
     }
     
     /**

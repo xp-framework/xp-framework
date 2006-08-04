@@ -345,14 +345,14 @@
       try {
         $out= '';
         $flags= array();
-        $p= &new PunyCode();
+        $p= new PunyCode();
         $p->decode($str, $out, $flags);
       } catch (Exception $e) {
         throw($e);
       }
       if ($charset != 'UCS-4') {
         if (($out= iconv('UCS-4', $charset, $out)) === FALSE) {
-          throw(new Exception('Can not convert string to requested encoding('.$charset.')'));
+          throw(new XPException('Can not convert string to requested encoding('.$charset.')'));
         }
       }
       return $out;
@@ -371,7 +371,7 @@
         $out= '';
         $flags= array_fill(0, strlen($str)+ 1, FALSE);
         array_pop($flags);
-        $p= &new PunyCode();
+        $p= new PunyCode();
         $p->encode($str, $out, $flags);
       } catch (Exception $e) {
         throw($e);

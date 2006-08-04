@@ -15,7 +15,7 @@
   define('SVN_UPTODATE', 0x0008);
   define('SVN_BROKEN',   0x0009);
 
-  uses (
+  uses(
     'lang.System',
     'util.log.Logger',
     'org.tigris.subversion.SVNInterfaceException'

@@ -7,7 +7,7 @@
   uses(
     'util.cmd.ParamString',
     'text.doclet.ClassIterator',
-    'text.doclet.ClassDoc', 
+    'text.doclet.ClassDoc',
     'text.doclet.MethodDoc'
   );
   
@@ -64,9 +64,9 @@
      * @param   &util.cmd.ParamString params
      * @return  bool
      */
-    public function start(&$doclet, &$params) {
+    public static function start(&$doclet, &$params) {
       $classes= array();
-      $root= &new RootDoc();
+      $root= new RootDoc();
       
       // Separate options from classes
       $valid= $doclet->validOptions();
@@ -98,7 +98,7 @@
       }
       
       // Set up class iterator
-      $root->classes= &new ClassIterator($classes);
+      $root->classes= new ClassIterator($classes);
       $root->classes->root= &$root;
 
       // Start the doclet
@@ -159,7 +159,7 @@
         throw(new IllegalArgumentException('Could not parse "'.$filename.'"'));
       }
 
-      with ($doc= &new ClassDoc(), $doc->setRoot($this)); {
+      with ($doc= new ClassDoc(), $doc->setRoot($this)); {
         $annotations= $comment= NULL;
         $state= ST_INITIAL;          
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
@@ -308,7 +308,7 @@
             case ST_CLASS_BODY.T_FUNCTION:
               while (T_STRING !== $tokens[$i][0] && $i < $s) $i++;
 
-              with ($method= &new MethodDoc(), $method->setRoot($this)); {
+              with ($method= new MethodDoc(), $method->setRoot($this)); {
                 $method->name= $tokens[$i][1];
                 $method->rawComment= $comment;
                 $method->annotations= $annotations;

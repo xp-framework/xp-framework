@@ -5,7 +5,7 @@
  */
 
   uses(
-    'scriptlet.xml.XMLScriptlet', 
+    'scriptlet.xml.XMLScriptlet',
     'scriptlet.xml.workflow.WorkflowScriptletRequest'
   );
 

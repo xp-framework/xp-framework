@@ -122,7 +122,7 @@
      * @return  string
      */
     public function getRelativePath($url) {
-      $url= &new URL($url);
+      $url= new URL($url);
       return $this->decodePath(substr(
         rawurldecode($url->getPath()),
         strlen($this->rootURL->getPath())

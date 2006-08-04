@@ -57,7 +57,7 @@
      */
     public function &run() {
       Console::writeLine('===> Invoking remote tests...');
-      $result= &new TestResult();
+      $result= new TestResult();
       return $result;
       for ($i= 0, $s= sizeof($this->tests); $i < $s; $i++) {
         $this->runTest($this->tests[$i], $result);

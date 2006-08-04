@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('security.auth.Authenticator');
+
   /**
    * Autenticates users against a property
    *

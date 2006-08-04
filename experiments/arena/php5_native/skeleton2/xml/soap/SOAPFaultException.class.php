@@ -9,7 +9,7 @@
    *
    * @purpose  Exception
    */
-  class SOAPFaultException extends Exception {
+  class SOAPFaultException extends XPException {
     public 
       $fault= NULL; 
 

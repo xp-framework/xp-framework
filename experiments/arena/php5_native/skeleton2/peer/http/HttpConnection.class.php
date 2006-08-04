@@ -55,7 +55,7 @@
      * @param   mixed url a string or a peer.URL object
      */
     public function __construct($url) {
-      if (!is_a($url, 'URL')) $url= &new URL($url);
+      if (!is('URL', $url)) $url= new URL($url);
       $this->_createRequest($url);
       
     }

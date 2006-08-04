@@ -27,7 +27,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() { 
+    public static function __static() { 
       with ($peer= &BugzillaComponents::getPeer()); {
         $peer->setTable('components');
         $peer->setConnection('bugzilla');

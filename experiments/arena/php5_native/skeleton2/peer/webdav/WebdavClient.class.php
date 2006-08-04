@@ -60,7 +60,7 @@
      * @param   mixed url either a string or a peer.URL object
      */
     public function __construct($url) {
-      if (!is_a($url, 'URL')) $this->url= &new URL($url); else $this->url= &$url;
+      if (!is('URL', $url)) $this->url= new URL($url); else $this->url= &$url;
     }
     
     /**
@@ -71,7 +71,7 @@
      * @return  &peer.webdav.WebdavConnection
      */
     public function &getConnection($uri= NULL) {
-      $url= &new URL($this->url->getURL().$this->path.($uri === NULL ? '' : '/'.$uri));
+      $url= new URL($this->url->getURL().$this->path.($uri === NULL ? '' : '/'.$uri));
       return new WebdavConnection($url);
     }
     

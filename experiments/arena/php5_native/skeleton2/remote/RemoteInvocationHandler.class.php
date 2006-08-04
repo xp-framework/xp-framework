@@ -5,7 +5,7 @@
  */
 
   uses('lang.reflect.InvocationHandler');
-  
+
   /**
    * Invocation handler for client stubs
    *
@@ -27,8 +27,8 @@
      * @param   &ProtocolHandler handler
      * @return  &RemoteInvocationHandler
      */
-    public function &newInstance($oid, &$handler) {
-      with ($i= &new RemoteInvocationHandler()); {
+    public static function &newInstance($oid, &$handler) {
+      with ($i= new RemoteInvocationHandler()); {
         $i->oid= $oid;
         $i->handler= &$handler;
       }

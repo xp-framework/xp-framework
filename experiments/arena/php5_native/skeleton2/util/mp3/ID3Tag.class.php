@@ -90,8 +90,8 @@
      * @param   string version one of the ID3_VERSION_* constants
      * @return  &util.mp3.ID3Tag a tag
      */
-    public function &fromString(&$buf, $version) {
-      $tag= &new ID3Tag();
+    public static function &fromString(&$buf, $version) {
+      $tag= new ID3Tag();
       
       switch ($version) {
         case ID3_VERSION_1:
@@ -116,7 +116,7 @@
       $tag->album=      $data['album'];
       $tag->year=       (int)$data['year'];
       $tag->comment=    $data['comment'];
-      $tag->genre=      &new ID3Genre((int)$data['genre']);
+      $tag->genre=      new ID3Genre((int)$data['genre']);
       return $tag;
     }
   }

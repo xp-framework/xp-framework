@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'io.File',
     'io.Folder'
   );
@@ -43,10 +43,10 @@
      */    
     public function open() {
       try {
-        $this->_hNew=   &new Folder ($this->root.DIRECTORY_SEPARATOR.'new');
-        $this->_hTodo=  &new Folder ($this->root.DIRECTORY_SEPARATOR.'todo');
-        $this->_hDone=  &new Folder ($this->root.DIRECTORY_SEPARATOR.'done');
-        $this->_hError= &new Folder ($this->root.DIRECTORY_SEPARATOR.'error');
+        $this->_hNew=   new Folder ($this->root.DIRECTORY_SEPARATOR.'new');
+        $this->_hTodo=  new Folder ($this->root.DIRECTORY_SEPARATOR.'todo');
+        $this->_hDone=  new Folder ($this->root.DIRECTORY_SEPARATOR.'done');
+        $this->_hError= new Folder ($this->root.DIRECTORY_SEPARATOR.'error');
 
         if (!$this->_hNew->exists())    $this->_hNew->create ();
         if (!$this->_hTodo->exists())   $this->_hTodo->create ();
@@ -77,7 +77,7 @@
         $abstract= date ('Y-m-d-H-i-s').'_'.$abstract;
       
       try {
-        $f= &new File ($this->_hNew->getURI().DIRECTORY_SEPARATOR.$abstract.'.spool');
+        $f= new File ($this->_hNew->getURI().DIRECTORY_SEPARATOR.$abstract.'.spool');
         $f->open (FILE_MODE_WRITE);
       } catch (IOException $e) {
         throw ($e);
@@ -115,7 +115,7 @@
     public function &getNextSpoolEntry() {
       try {
         if (FALSE !== ($entry= $this->_hTodo->getEntry())) {
-          $f= &new File ($this->_hTodo->getURI().DIRECTORY_SEPARATOR.$entry);
+          $f= new File ($this->_hTodo->getURI().DIRECTORY_SEPARATOR.$entry);
           $f->open (FILE_MODE_READWRITE);
         }
       } catch (IOException $e) {

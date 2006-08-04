@@ -5,7 +5,7 @@
  */
  
   uses(
-    'peer.mail.Message', 
+    'peer.mail.Message',
     'peer.mail.MimePart',
     'peer.mail.MultiPart'
   );
@@ -111,7 +111,7 @@
      * @throws  lang.IllegalArgumentException if part argument is not a peer.mail.MimePart
      */
     public function &addPart(&$part) {
-      if (!is_a($part, 'MimePart')) {
+      if (!is('MimePart', $part)) {
         throw(new IllegalArgumentException(
           'Parameter part is not a peer.mail.MimePart (given: '.xp::typeOf($part).')'
         ));
@@ -150,7 +150,7 @@
     public function getHeaderString() {
       if (1 == sizeof($this->parts) && $this->parts[0]->isInline()) {
         $this->setContenttype($this->parts[0]->getContenttype());
-        if (is_a($this->parts[0], 'MultiPart'))
+        if (->parts[0]is('MultiPart', $this))
           $this->setBoundary($this->parts[0]->getBoundary());
 
         $this->charset= $this->parts[0]->charset;
@@ -203,14 +203,14 @@
         $pid= sprintf('%s%d', $id, $i+ 1);
         
         if (empty($p[$i]->parts)) {
-          $part= &new MimePart(
+          $part= new MimePart(
             NULL,
             NULL,
             $this->_lookupattr(@$p[$i]->parameters, 'CHARSET'),
             $this->_lookupattr(@$p[$i]->dparameters, 'NAME')
           );
         } else {
-          $part= &new MultiPart();
+          $part= new MultiPart();
         }
         $part->setContentType($types[$p[$i]->type].'/'.strtolower($p[$i]->subtype));
         $part->setDisposition($p[$i]->ifdisposition 

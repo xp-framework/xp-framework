@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.XPIterator');
+
   /**
    * Iterator over the keys of a Hashmap object
    *
@@ -20,7 +22,7 @@
    * @see      xp://util.Hashmap
    * @purpose  Iterator
    */
-  class HashmapIterator extends Object implements Iterator {
+  class HashmapIterator extends Object implements XPIterator {
     public
       $_hash    = NULL,
       $_key     = FALSE;
@@ -63,10 +65,5 @@
       next($this->_hash);
       return $this->_key;
     }
-    
-    public function current() { return NULL; }
-    public function key() { return NULL; }
-    public function valid() { return NULL; }
-    public function rewind() { return NULL; }
   } 
 ?>

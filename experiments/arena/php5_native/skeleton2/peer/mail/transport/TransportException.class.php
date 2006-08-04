@@ -10,7 +10,7 @@
    * @see      xp://peer.mail.transport.Transport
    * @purpose  Indicate a transport error has occured
    */
-  class TransportException extends Exception {
+  class TransportException extends XPException {
     public
       $cause = NULL;
       
@@ -33,7 +33,7 @@
      * @return  string
      */
     public function toString() {
-      return parent::toString().(is_a($this->cause, 'Exception') 
+      return parent::toString().(->causeis('XPException', $this) 
         ? '  [caused by '.$this->cause->getClassName()."\n  (".$this->cause->message.")\n  ]"
         : '  [no cause]'
       );

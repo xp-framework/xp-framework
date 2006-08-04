@@ -22,7 +22,7 @@
      * @param   &lang.XPClass class
      * @return  &lang.XPClass[]
      */
-    public function getUniqueInterfacesFor(&$class) {
+    public static function getUniqueInterfacesFor(&$class) {
       $interfaces= &$class->getInterfaces();
       $out= array();
       

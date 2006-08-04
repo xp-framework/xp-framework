@@ -60,7 +60,7 @@
       $flags= OP_HALFOPEN;
 
       // Parse DSN
-      $u= &new URL($dsn);
+      $u= new URL($dsn);
       
       
       // DSN supported?
@@ -147,7 +147,7 @@
           ));      
         }
         
-        $folder= &new MailFolder($this, $name);
+        $folder= new MailFolder($this, $name);
         $this->cache->put(SKEY_FOLDER.$name, $folder);
       } else {
         $folder= &$this->cache->get(SKEY_FOLDER.$name);
@@ -178,7 +178,7 @@
         $f= array();
         $l= strlen($this->_hdl[1]);
         for ($i= 0; $i < $s; $i++) {
-          $f[]= &new MailFolder(
+          $f[]= new MailFolder(
             $this,
             imap_utf7_decode(substr($list[$i]->name, $l))
           );
@@ -383,7 +383,7 @@
           $header= $this->getMessagePart($f, $list[$i]->uid, '0');
           $class= stristr($header, 'Content-Type: multipart/') ? 'MimeMessage': 'Message';
           
-          $m= &new $class($list[$i]->uid);
+          $m= new $class($list[$i]->uid);
           $m->size= $list[$i]->size;
           $m->folder= &$f;
           $m->body= NULL;   // Indicate this needs to be fetched

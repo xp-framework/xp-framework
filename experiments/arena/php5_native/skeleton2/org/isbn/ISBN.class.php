@@ -53,7 +53,7 @@
      * @param   string isbn
      * @return  bool TRUE if the number is valid
      */
-    public function isValid($isbn) {      
+    public static function isValid($isbn) {      
       switch ($s= strlen($stripped= str_replace('-', '', $isbn))) {
         case 10: {      // ISBN10, until 01.01.2007
           for ($product= 0, $i= 0; $i < 9; $i++) {

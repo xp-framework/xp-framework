@@ -67,7 +67,7 @@
             $ns.= ':'.($nsprefix= substr($name, 0, $p));
             $name= substr($name, $p+1);
           }
-          $p= &new WebdavProperty($name);
+          $p= new WebdavProperty($name);
           if ($nsname= $node->getAttribute($ns)) {
             $p->setNamespaceName($nsname);
             if ($nsprefix) $p->setNamespacePrefix($nsprefix);

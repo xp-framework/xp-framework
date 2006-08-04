@@ -53,7 +53,7 @@
      * @return  &util.webdav.LockTocken
      * @throws  lang.FormatException in case the string is not a valid opaquelocktoken
      */
-    public function &fromString($str) {
+    public static function &fromString($str) {
       list($prefix, $uuidstr)= explode(':', $str, 2);
       if (
         (LOCKTOKEN_PREFIX !== $prefix) ||

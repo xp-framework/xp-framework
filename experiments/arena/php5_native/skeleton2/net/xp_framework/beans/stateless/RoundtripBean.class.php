@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('remote.beans.Bean');
+  uses('remote.beans.Bean', 'net.xp_framework.beans.stateless.Roundtrip');
 
   /**
    * (Insert class' description here)

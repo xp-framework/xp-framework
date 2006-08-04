@@ -8,7 +8,8 @@
     'lang.System',
     'io.File',
     'io.FileUtil',
-    'util.Hashmap'
+    'util.Hashmap',
+    'util.registry.RegistryStorageProvider'
   );
   
   /**
@@ -29,14 +30,14 @@
      * @param   string id
      */
     public function initialize($id) {
-      $this->_file= &new File(System::tempDir().DIRECTORY_SEPARATOR.$id.'.dat');
+      $this->_file= new File(System::tempDir().DIRECTORY_SEPARATOR.$id.'.dat');
       if ($this->_file->exists()) {
         $this->_hash= unserialize(FileUtil::getContents($this->_file));
       }
       
       if (!$this->_hash) {
         touch($this->_file->getURI());
-        $this->_hash= &new Hashmap();
+        $this->_hash= new Hashmap();
       }    
     }
     

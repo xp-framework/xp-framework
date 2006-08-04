@@ -6,7 +6,8 @@
 
   uses(
     'lang.Thread',
-    'lang.reflect.Proxy'
+    'lang.reflect.Proxy',
+    'util.log.Traceable'
   );
   
   define('LISTENER_CLASS',  'peer.ftp.server.FtpConnectionListener');
@@ -108,7 +109,7 @@
      * @access  protected
      * @return  &peer.ftp.server.FtpThread
      */
-    public function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
 
       if (!$instance) $instance= new FtpThread();

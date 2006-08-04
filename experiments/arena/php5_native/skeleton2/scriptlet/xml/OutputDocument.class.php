@@ -54,7 +54,7 @@
      */
     public function __construct() {
       parent::__construct();
-      $this->formresult= &new Node('formresult', NULL, array(
+      $this->formresult= new Node('formresult', NULL, array(
         'serial'    => time(),
         'tz'        => date('Z'),
         'xmlns:xsd' => 'http://www.w3.org/2001/XMLSchema', 

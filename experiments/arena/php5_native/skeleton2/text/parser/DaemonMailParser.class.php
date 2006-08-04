@@ -5,8 +5,8 @@
  */
 
   uses(
-    'peer.mail.Message', 
-    'text.parser.DaemonMessage', 
+    'peer.mail.Message',
+    'text.parser.DaemonMessage',
     'text.parser.DaemonMailParserException',
     'text.parser.DaemonMailParserAutoresponderException'
   );
@@ -165,7 +165,7 @@
         'Delay'                  => DAEMON_DELAYED,
       );
       
-      if (!is_a($message, 'Message')) {
+      if (!is('Message', $message)) {
         throw(new IllegalArgumentException(
           'Parameter message is not peer.mail.Message object (given: '.xp::typeOf($message).')'
         ));
@@ -184,7 +184,7 @@
       }
       
       // Set up daemon mail object
-      $daemonmessage= &new DaemonMessage();
+      $daemonmessage= new DaemonMessage();
       $daemonmessage->setFrom($message->getFrom());
       $daemonmessage->date= &$message->date;
       $daemonmessage->headers= $message->headers;
@@ -305,7 +305,7 @@
       // MIME-Version: 1.0
       // Content-Transfer-Encoding: 8bit
       // Date: Mon, 17 Feb 2003 10:05:35 +0100
-      if (is_a($message, 'MimeMessage')) {
+      if (is('MimeMessage', $message)) {
         $body= NULL;
         $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_MULTIPART;
         
@@ -733,7 +733,7 @@
       // No reason found?
       if (DMP_FINISH != $state) {
         trigger_error('Headers: '.var_export($message->headers, 1), E_USER_ERROR);
-        trigger_error('Body: '.(is_a($message, 'MimeMessage') 
+        trigger_error('Body: '.(is('MimeMessage', $message) 
           ? sizeof($message->parts).' parts'
           : strlen($message->body).' bytes'
         ), E_USER_ERROR);

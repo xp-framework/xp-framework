@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('org.fpdf.FPDFHook');
+
   /**
    * FPDFHook interface implementation that does nothing
    *

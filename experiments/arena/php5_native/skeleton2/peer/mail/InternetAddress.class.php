@@ -55,7 +55,7 @@
      */
     public function equals(&$cmp) {
       return (
-        is_a($cmp, 'InternetAddress') and 
+        is('InternetAddress', $cmp) and 
         $this->personal.$this->localpart.$this->domain === $cmp->personal.$cmp->localpart.$cmp->domain
       );
     }
@@ -79,7 +79,7 @@
      * @return  &peer.mail.InternetAddress address object
      * @throws  lang.FormatException in case the string could not be parsed into an address
      */
-    public function &fromString($str) {
+    public static function &fromString($str) {
       static $matches= array(
         '/^=\?([^\?])+\?([QB])\?([^\?]+)\?= <([^ @]+@[0-9a-z.-]+)>$/i' => 3,
         '/^<?([^ @]+@[0-9a-z.-]+)>?$/i'                                => 0,

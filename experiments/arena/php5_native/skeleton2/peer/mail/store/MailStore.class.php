@@ -5,7 +5,7 @@
  */
  
   uses(
-    'peer.mail.MessagingException', 
+    'peer.mail.MessagingException',
     'peer.mail.store.StoreCache',
     'peer.mail.MailFolder'
   );
@@ -54,7 +54,7 @@
      */ 
     public function __construct($cache= NULL) {
       if (NULL === $cache) {
-        $this->cache= &new StoreCache();
+        $this->cache= new StoreCache();
       } else {
         $this->cache= &$cache;
       }

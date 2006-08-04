@@ -6,7 +6,8 @@
 
   uses(
     'peer.ldap.LDAPClient',
-    'security.crypto.UnixCrypt'
+    'security.crypto.UnixCrypt',
+    'security.auth.Authenticator'
   );
 
   /**

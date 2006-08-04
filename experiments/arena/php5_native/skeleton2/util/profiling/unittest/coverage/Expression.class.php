@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.profiling.unittest.coverage.Fragment');
+
   /**
    * Represents an expression
    *

@@ -67,7 +67,7 @@
       try {
         $q= &$this->conn->query('show tables');
         while ($table= $q->next('table')) {
-          $t[]= &new DBTable($table);
+          $t[]= new DBTable($table);
         }
       } catch (SQLException $e) {
         throw($e);
@@ -84,7 +84,7 @@
      * @return  rdbms.DBTable a DBTable object
      */
     public function getTable($table) {
-      $t= &new DBTable($table);
+      $t= new DBTable($table);
       try {
       
         // Get the table's attributes

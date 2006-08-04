@@ -5,7 +5,7 @@
  */
 
   uses(
-    'peer.Socket', 
+    'peer.Socket',
     'security.checksum.CRC32',
     'org.nagios.nsca.NscaMessage',
     'lang.MethodNotImplementedException'
@@ -77,7 +77,7 @@
       $cryptmethod= NSCA_CRYPT_XOR
     ) {
       
-      $this->sock= &new Socket($host, $port);
+      $this->sock= new Socket($host, $port);
       $this->version= $version;
       $this->cryptmethod= $cryptmethod;
     }

@@ -99,7 +99,7 @@
      */
     public function __construct($uid= -1) {
       $this->uid= $uid;
-      $this->date= &new Date(time());
+      $this->date= new Date(time());
       
     }
     
@@ -216,7 +216,7 @@
       $vars= get_object_vars($this);
       foreach (array_keys($vars) as $var) {
         if ('_' == $var{0}) continue;
-        $s.= sprintf("  [%-12s] %s\n", $var, is_a($vars[$var], 'Object') 
+        $s.= sprintf("  [%-12s] %s\n", $var, []is('Generic', $var) 
           ? $vars[$var]->toString() 
           : str_replace("\n", "\n  ", var_export($vars[$var], 1))
         );
@@ -271,7 +271,7 @@
      * @param   mixed arg
      */
     public function setDate(&$arg) {
-      if (is_a($arg, 'Date')) $this->date= &$arg; else $this->date= &new Date($arg);
+      if (is('Date', $arg)) $this->date= &$arg; else $this->date= new Date($arg);
     }
     
     /**
@@ -394,7 +394,7 @@
      * @access  public
      * @param   string header
      * @param   string value
-     * @throws  IllegalArgumentException if one of From, To, Cc or Bcc is specfied as header
+     * @throws  lang.IllegalArgumentException if one of From, To, Cc or Bcc is specfied as header
      */
     public function setHeader($header, $value) {
       if (FALSE === $this->_setHeader($header, $value)) throw(

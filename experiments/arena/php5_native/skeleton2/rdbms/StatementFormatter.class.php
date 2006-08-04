@@ -95,10 +95,10 @@
      */
     public function prepare($type, $var) {
       // Type-based conversion
-      if (is_a($var, 'Date')) {
+      if (is('Date', $var)) {
         $type= 's';
         $a= array($var->toString($this->dateFormat));
-      } elseif (is_a($var, 'Object')) {
+      } elseif (is('Generic', $var)) {
         $a= array($var->toString());
       } elseif (is_array($var)) {
         $a= $var;

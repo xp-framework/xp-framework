@@ -4,10 +4,7 @@
  * $Id$ 
  */
 
-  uses(
-    'rdbms.criterion.SimpleExpression',
-    'rdbms.SQLExpression'
-  );
+  uses('rdbms.criterion.SimpleExpression', 'rdbms.SQLExpression');
   
   define('ASCENDING',       'asc');
   define('DESCENDING',      'desc');
@@ -45,10 +42,10 @@
       if (is('rdbms.criterion.Criterion', $criterion)) {
         $this->conditions[]= &$criterion;
       } else if (is_array($criterion)) {
-        $this->conditions[]= &new SimpleExpression($criterion[0], $criterion[1], $criterion[2]);
+        $this->conditions[]= new SimpleExpression($criterion[0], $criterion[1], $criterion[2]);
         for ($i= 1, $n= func_num_args(); $i < $n; $i++) {
           $criterion= func_get_arg($i);
-          $this->conditions[]= &new SimpleExpression($criterion[0], $criterion[1], $criterion[2]);
+          $this->conditions[]= new SimpleExpression($criterion[0], $criterion[1], $criterion[2]);
         }
       }
     }
@@ -79,7 +76,7 @@
       if (is('rdbms.criterion.Criterion', $criterion)) {
         $this->conditions[]= &$criterion;
       } else {
-        $this->conditions[]= &new SimpleExpression($criterion, $value, $comparison);        
+        $this->conditions[]= new SimpleExpression($criterion, $value, $comparison);        
       }
     }
 

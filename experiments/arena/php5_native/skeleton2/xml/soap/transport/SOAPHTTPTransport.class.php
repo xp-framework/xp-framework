@@ -5,8 +5,8 @@
  */
 
   uses(
-    'xml.soap.transport.SOAPTransport', 
-    'xml.soap.SOAPFaultException', 
+    'xml.soap.transport.SOAPTransport',
+    'xml.soap.SOAPFaultException',
     'peer.http.HttpConnection'
   );
   
@@ -39,7 +39,7 @@
      * @param   int actiontype
      */  
     public function __construct($url, $headers= array(), $actiontype= SOAP_ACTION_COMPUTE) {
-      $this->_conn= &new HttpConnection($url);
+      $this->_conn= new HttpConnection($url);
       $this->_headers= array_merge(
         array('User-Agent' => 'XP-Framework SOAP Client (http://xp-framework.net)'),
         $headers
@@ -116,7 +116,7 @@
     public function &send(&$message) {
     
       // Sanity checks
-      if (!is_a($message, 'SOAPMessage')) throw(new IllegalArgumentException(
+      if (!is('SOAPMessage', $message)) throw(new IllegalArgumentException(
         'parameter "message" must be a xml.soap.SOAPMessage'
       ));
       if (!$this->_conn->request) throw(new IllegalArgumentException(

@@ -84,7 +84,7 @@
      * @param   int year
      * @return  bool TRUE if the given year is a leap year
      */
-    public function _isLeapYear($year) {
+    public static function _isLeapYear($year) {
       return $year % 400 == 0 || ($year > 1582 && $year % 100 == 0 ? FALSE : $year % 4 == 0);
     }
     
@@ -379,7 +379,7 @@
      * @return  &util.Date
      */
     public static function &fromString($str) {
-      $d= &new Date($str);
+      $d= new Date($str);
       return $d;
     }
     

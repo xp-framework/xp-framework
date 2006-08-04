@@ -4,7 +4,13 @@
  * $Id$ 
  */
 
-  uses('xml.soap.SOAPMessage', 'xml.QName', 'xml.soap.Parameter', 'xml.soap.SOAPMapping');
+  uses(
+    'xml.soap.SOAPMessage',
+    'xml.QName',
+    'xml.soap.Parameter',
+    'xml.soap.SOAPMapping',
+    'util.log.Traceable'
+  );
   
   /**
    * Basic SOAP-Client
@@ -45,7 +51,7 @@
       $this->transport= &$transport;
       $this->action= $action;
       $this->targetNamespace= $targetNamespace;
-      $this->mapping= &new SOAPMapping();
+      $this->mapping= new SOAPMapping();
     }
 
     /**
@@ -112,13 +118,13 @@
      * @throws  xml.soap.SOAPFaultException
      */
     public function invoke() {
-      if (!is_a($this->transport, 'SOAPTransport')) throw(new IllegalArgumentException(
+      if (!is('SOAPTransport', $this->transport)) throw(new IllegalArgumentException(
         'Transport must be a xml.soap.transport.SOAPTransport'
       ));
       
       $args= func_get_args();
       
-      $message= &new SOAPMessage();
+      $message= new SOAPMessage();
       $message->setEncoding($this->encoding);
       $message->createCall($this->action, array_shift($args), $this->targetNamespace, $this->headers);
       $message->setMapping($this->mapping);

@@ -85,7 +85,7 @@
       $servlet= substr($path, $p+ 1);
       $zone= substr($path, 0, $p);
 
-      if (is_a($this->parameters, 'RequestData')) {
+      if (->parametersis('RequestData', $this)) {
         $query= "\x00".$this->parameters->getData();
       } else {
         $query= '';
@@ -127,10 +127,10 @@
           
           // Headers
           foreach ($this->headers as $k => $v) {
-            $name= is_a($v, 'Header') ? $v->getName() : $k;
+            $name= is('Header', $v) ? $v->getName() : $k;
             $idx= strtolower($name);
             $p.= isset($headermap[$idx]) ? $headermap[$idx] : $this->_encode($name);
-            $p.= $this->_encode(is_a($v, 'Header') ? $v->getValueRepresentation() : $v);
+            $p.= $this->_encode(is('Header', $v) ? $v->getValueRepresentation() : $v);
           }
           $p.= "\xFF";
           
@@ -178,7 +178,7 @@
           
           // Headers
           foreach ($this->headers as $k => $v) {
-            $p.= "\x03".(is_a($v, 'Header') 
+            $p.= "\x03".(is('Header', $v) 
               ? $this->_encode($v->getName()).$this->_encode($v->getValue())
               : $this->_encode($k).$this->_encode($v)
             );

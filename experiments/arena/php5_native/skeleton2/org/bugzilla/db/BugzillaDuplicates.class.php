@@ -23,7 +23,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() { 
+    public static function __static() { 
       with ($peer= &BugzillaDuplicates::getPeer()); {
         $peer->setTable('duplicates');
         $peer->setConnection('bugzilla');

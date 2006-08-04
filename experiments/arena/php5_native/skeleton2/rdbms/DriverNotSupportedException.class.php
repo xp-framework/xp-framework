@@ -9,7 +9,7 @@
    * 
    * @purpose  Exception
    */
-  class DriverNotSupportedException extends Exception {
+  class DriverNotSupportedException extends XPException {
 
   }
 ?>

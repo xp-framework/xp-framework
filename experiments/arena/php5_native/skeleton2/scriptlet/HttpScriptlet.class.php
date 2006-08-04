@@ -177,12 +177,12 @@
           break;
           
         case HTTP_GET:
-          $request->setData($request->getEnvValue('QUERY_STRING'));
+          $request->setData(getenv('QUERY_STRING'));
           $m= 'doGet';
           break;
           
         case HTTP_HEAD:
-          $request->setData($request->getEnvValue('QUERY_STRING'));
+          $request->setData(getenv('QUERY_STRING'));
           $m= 'doHead';
           break;        
           
@@ -330,15 +330,15 @@
      * @param   &scriptlet.HttpRequest request
      */
     public function _setupRequest(&$request) {
-      // $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
-      $request->method= $request->getEnvValue('REQUEST_METHOD');
-      // $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
+      $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
+      $request->method= getenv('REQUEST_METHOD');
+      $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
       $request->setURI(new URL(
-        ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
-        $request->getEnvValue('HTTP_HOST').
-        $request->getEnvValue('REQUEST_URI')
+        ('on' == getenv('HTTPS') ? 'https' : 'http').'://'.
+        getenv('HTTP_HOST').
+        getenv('REQUEST_URI')
       ));
-    }
+    }    
     
     /**
      * This method is called to process any request and dispatches

@@ -236,7 +236,7 @@
         
       ) as $name => $propDef) {
         if ($propDef['value'] === NULL) continue;
-        $p= &new WebdavProperty($name, $propDef['value']);
+        $p= new WebdavProperty($name, $propDef['value']);
         $p->setNamespaceName($propDef['ns']);
         $p->setProtected(TRUE);
         $this->addProperty($p);

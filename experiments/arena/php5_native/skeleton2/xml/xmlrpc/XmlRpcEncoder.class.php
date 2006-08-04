@@ -43,9 +43,9 @@
      * @throws  lang.IllegalArgumentException in case the data could not be serialized.
      */
     public function &_marshall($data) {
-      $value= &new Node('value');
+      $value= new Node('value');
       
-      if (is_a($data, 'Object')) {
+      if (is('Generic', $data)) {
         if (is('util.Date', $data)) {
           return $value->addChild(new Node('dateTime.iso8601', $data->toString('Ymd\TH:i:s')));
         }

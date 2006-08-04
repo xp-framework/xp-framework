@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('img.convert.ImageConverter');
+
   /**
    * Converts a truecolor image to a paletted image
    *

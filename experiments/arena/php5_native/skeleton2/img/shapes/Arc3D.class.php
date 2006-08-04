@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('img.shapes.Arc');
+  uses('img.shapes.Arc', 'img.Drawable');
   
   /**
    * Shape class representing a three-dimensional arc

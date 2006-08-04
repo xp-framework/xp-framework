@@ -25,7 +25,7 @@
     public function castValue($value) {
       $return= array();
       foreach ($value as $k => $v) {
-        $return[$k]= &new URL($v);
+        $return[$k]= new URL($v);
       }
 
       return $return;

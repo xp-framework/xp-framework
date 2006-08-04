@@ -35,7 +35,7 @@
      * @access  public
      * @return  int[]
      */
-    public function getCharsToEncode() {
+    public static function getCharsToEncode() {
       static $characters = NULL;
       
       if (!isset($characters)) {
@@ -54,7 +54,7 @@
      * @param   string charset default 'iso-8859-1'
      * @return  string
      */
-    public function encode($str, $charset= 'iso-8859-1') { 
+    public static function encode($str, $charset= 'iso-8859-1') { 
       $r= array(' ' => '_');
       foreach (QuotedPrintable::getCharsToEncode() as $i) {
         $r[chr($i)]= '='.strtoupper(dechex($i));
@@ -70,7 +70,7 @@
      * @param   string str
      * @return  string
      */
-    public function decode($str) { 
+    public static function decode($str) { 
       return strtr(quoted_printable_decode($str), '_', ' ');
     }
   }

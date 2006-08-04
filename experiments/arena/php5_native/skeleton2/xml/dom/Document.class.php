@@ -144,7 +144,7 @@
      * @param   string string
      * @return  &xml.dom.Document
      */
-    public function &fromString($string) {
+    public static function &fromString($string) {
       return parent::fromString($string, __CLASS__);
     }
 
@@ -157,7 +157,7 @@
      * @param   &xml.File file
      * @return  &xml.dom.Document
      */
-    public function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       return parent::fromFile($file, __CLASS__);
     }
   }

@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('scriptlet.xml.portlet.Portlet');
+
   /**
    * Abstract portlet
    *

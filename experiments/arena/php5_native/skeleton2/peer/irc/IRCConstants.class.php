@@ -151,7 +151,7 @@
      * @param   int code
      * @return  string name or NULL in case the code is unknown
      */
-    public function nameOf($code) {
+    public static function nameOf($code) {
       static $names= array(
         IRC_REPLY_NONE             =>'REPLY_NONE',
         IRC_REPLY_USERHOST         =>'REPLY_USERHOST',

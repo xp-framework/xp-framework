@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('io.Folder', 'peer.ftp.server.storage.FilesystemStorageElement');
+  uses(
+    'io.Folder',
+    'peer.ftp.server.storage.FilesystemStorageElement',
+    'peer.ftp.server.storage.StorageCollection'
+  );
 
   /**
    * Implements the StorageCollection via filesystem
@@ -38,7 +42,7 @@
       } else {
         $this->name= basename($uri);
       }
-      $this->f= &new Folder($uri);
+      $this->f= new Folder($uri);
       $this->st= stat($this->f->getURI());
       $this->st['pwuid']= posix_getpwuid($this->st['uid']);
       $this->st['grgid']= posix_getgrgid($this->st['gid']);
@@ -175,14 +179,14 @@
       $rpath= substr($this->f->getURI(), strlen($this->root));
           
       $r= array();
-      $r[]= &new FilesystemStorageCollection($rpath.'.', $this->root);
-      $r[]= &new FilesystemStorageCollection($rpath.'..', $this->root);
+      $r[]= new FilesystemStorageCollection($rpath.'.', $this->root);
+      $r[]= new FilesystemStorageCollection($rpath.'..', $this->root);
       while ($entry= $this->f->getEntry()) {
         $path= $rpath.$entry;
         if (is_dir($this->root.$path)) {
-          $r[]= &new FilesystemStorageCollection($path, $this->root);
+          $r[]= new FilesystemStorageCollection($path, $this->root);
         } else {
-          $r[]= &new FilesystemStorageElement($path, $this->root);
+          $r[]= new FilesystemStorageElement($path, $this->root);
         }
       }
       $this->f->rewind();

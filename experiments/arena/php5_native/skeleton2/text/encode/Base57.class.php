@@ -27,7 +27,7 @@
      * @param   int number
      * @return  string
      */
-    public function encode($number) {
+    public static function encode($number) {
       static $chars= BASE57_CHARTABLE;
 
       $length= ceil(log($number, exp(1)) / log(57, exp(1)));
@@ -47,7 +47,7 @@
      * @param   string str
      * @return  int
      */
-    public function decode($str) { 
+    public static function decode($str) { 
       static $chars= BASE57_CHARTABLE;
       
       $number= 0;

@@ -69,7 +69,7 @@
           case 'timestamp':
             if (strlen($row[$key]) == 14) {
               $time= sscanf ((string)$row[$key], '%04s%02s%02s%02s%02s%02s');
-              $row[$key]= &new Date(mktime(
+              $row[$key]= new Date(mktime(
                 $time[3],
                 $time[4],
                 $time[5],

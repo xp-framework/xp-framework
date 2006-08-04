@@ -74,7 +74,7 @@
      * @throws  lang.IllegalArgumentException in case the parameter is not an LDAPEntry object
      */
     public function write(&$entry) {
-      if (!is_a($entry, 'LDAPEntry')) {
+      if (!is('LDAPEntry', $entry)) {
         throw(new IllegalArgumentException(
           'Parameter entry is expected to be a peer.ldap.LDAPEntry object (given: '.xp::typeOf($entry).')'
         ));

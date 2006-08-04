@@ -5,7 +5,7 @@
  */
 
   uses('remote.protocol.SerializerMapping');
-  
+
   /**
    * Mapping for lang.Throwable
    *

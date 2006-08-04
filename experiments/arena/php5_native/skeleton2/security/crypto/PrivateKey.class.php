@@ -23,14 +23,14 @@
      * @return  &security.crypto.PrivateKey
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    public function &fromString($str, $passphrase= NULL) {
+    public static function &fromString($str, $passphrase= NULL) {
       if (!is_resource($_hdl= openssl_pkey_get_private($str, $passphrase))) {
         throw(new CryptoException(
           'Could not read private key', OpenSslUtil::getErrors()
         ));
       }
     
-      $pk= &new PrivateKey($_hdl);
+      $pk= new PrivateKey($_hdl);
       return $pk;
     }
     

@@ -174,7 +174,7 @@
           continue;
         }
 
-        $s.= sprintf($fmt, $key, is_a($this->$key, 'Object') 
+        $s.= sprintf($fmt, $key, ->is('Generic', $key) 
           ? $this->$key->toString()
           : var_export($this->$key, 1)
         )."\n";

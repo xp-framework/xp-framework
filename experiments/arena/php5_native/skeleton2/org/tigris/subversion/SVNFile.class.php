@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'org.tigris.subversion.SVNInterface',
     'io.File',
     'io.TempFile'
@@ -69,7 +69,7 @@
      * @param   string comment
      */
     public function commit($comment) {
-      $f= &new TempFile();
+      $f= new TempFile();
       try {
         $f->open (FILE_MODE_WRITE);
         $f->writeLine($comment);

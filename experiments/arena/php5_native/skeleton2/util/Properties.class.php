@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('io.IOException', 'io.File', 'util.Hashmap');
+  uses(
+    'io.IOException',
+    'io.File',
+    'util.Hashmap'
+  );
   
   /**
    * An interface to property-files (aka "ini-files")
@@ -60,7 +64,7 @@
      * @return  &util.Properties
      */
     public function &fromString($str) {
-      with ($prop= &new Properties(NULL)); {
+      with ($prop= new Properties(NULL)); {
         $section= NULL;
         $prop->_data= array();
         if ($t= strtok($str, "\r\n")) do {
@@ -105,7 +109,7 @@
      * @throws  io.IOException if the property file could not be created
      */
     public function create() {
-      $fd= &new File($this->_file);
+      $fd= new File($this->_file);
       $fd->open(FILE_MODE_WRITE);
       $fd->close();
     }
@@ -150,7 +154,7 @@
      * @throws  io.IOException if the property file could not be written
      */
     public function save() {
-      $fd= &new File($this->_file);
+      $fd= new File($this->_file);
       $fd->open(FILE_MODE_WRITE);
       
       foreach (array_keys($this->_data) as $section) {
@@ -160,7 +164,7 @@
           if (';' == $key{0}) {
             $fd->write(sprintf("\n; %s\n", $val)); 
           } else {
-            if (is_a($val, 'Hashmap')) {
+            if (is('Hashmap', $val)) {
               $str= '';
               foreach ($val->keys() as $k) {
                 $str.= '|'.$k.':'.$val->get($v);
@@ -464,10 +468,10 @@
     public function writeHash($section, $key, $value) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
-      if (is_a($value, 'Hashmap')) {
+      if (is('Hashmap', $value)) {
         $this->_data[$section][$key]= &$value;
       } else {
-        $this->_data[$section][$key]= &new Hashmap($value);
+        $this->_data[$section][$key]= new Hashmap($value);
       }
     }
     

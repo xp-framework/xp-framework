@@ -35,7 +35,7 @@
      * @param   int order
      * @return  string name
      */
-    public function nameOf($order) {
+    public static function nameOf($order) {
       switch ($order) {
         case BIG_ENDIAN: return 'BIG_ENDIAN';
         case LITTLE_ENDIAN: return 'LITTLE_ENDIAN';
@@ -51,7 +51,7 @@
      * @return  int either BIG_ENDIAN or LITTLE_ENDIAN
      * @throws  lang.FormatException in case the byte order cannot be determined
      */
-    public function nativeOrder() {
+    public static function nativeOrder() {
       switch (pack('d', 1)) {
         case "\0\0\0\0\0\0\360\77": return LITTLE_ENDIAN;
         case "\77\360\0\0\0\0\0\0": return BIG_ENDIAN;
@@ -68,7 +68,7 @@
      * @return  int network byte order
      * @see     http://www.hyperdictionary.com/computing/network+byte+order
      */
-    public function networkOrder() {
+    public static function networkOrder() {
       return BIG_ENDIAN;
     }
   }

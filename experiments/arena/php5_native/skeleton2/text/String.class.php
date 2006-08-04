@@ -125,7 +125,7 @@
      */
     public function equals(&$cmp) {
       return (
-        is_a($cmp, 'String') && 
+        is('String', $cmp) && 
         ($this->buffer === $cmp->buffer)
       );
     }
@@ -397,7 +397,7 @@
         $i < $s; 
         $i++
       ) {
-        $a[$i]= &new String($a[$i]);
+        $a[$i]= new String($a[$i]);
       }
       return $a;
     }
@@ -420,7 +420,7 @@
         $i < $s; 
         $i++
       ) {
-        $a[$i]= &new String($a[$i]);
+        $a[$i]= new String($a[$i]);
       }
       return $a;
     }
@@ -575,7 +575,7 @@
      * @param   string delim default ''
      * @return  &text.String string
      */
-    public function &fromArray($arr, $delim= '') {
+    public static function &fromArray($arr, $delim= '') {
       return new String(implode($delim, $arr));
     }
     
@@ -588,8 +588,8 @@
      * @param   mixed arg
      * @return  &text.String string
      */
-    public function &valueOf($arg) {
-      if (is_a($arg, 'Object')) {
+    public static function &valueOf($arg) {
+      if (is('Generic', $arg)) {
         return new String($arg->toString());
       } elseif (is_array($arg)) {
         return new String(implode('', $arg));

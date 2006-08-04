@@ -46,7 +46,7 @@
      * @return  string
      * @throws  peer.http.UnexpectedResponseException
      */
-    public function get(&$connection, $params= array(), $headers= array()) {
+    public static function get(&$connection, $params= array(), $headers= array()) {
       $redirected= 0;
       do {
         try {

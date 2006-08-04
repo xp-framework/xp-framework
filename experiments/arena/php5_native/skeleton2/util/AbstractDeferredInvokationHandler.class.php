@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.DeferredInitializationException');
+  uses('util.DeferredInitializationException', 'lang.reflect.InvocationHandler');
 
   /**
    * Lazy initializable InvokationHandler 

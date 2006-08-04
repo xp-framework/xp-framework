@@ -35,7 +35,7 @@
      * @return  &text.apidoc.Reference added reference
      */
     public function &addReference($see) {
-      $this->references[]= &new Reference($see);
+      $this->references[]= new Reference($see);
       return $this->references[sizeof($this->references)- 1];
     }
     
@@ -58,7 +58,7 @@
      * @return  &string description
      */
     public function &setReturn($type, $description) {
-      $this->return= &new stdClass();
+      $this->return= new stdClass();
       $this->return->type= $type;
       $this->return->description= $description;
       return $this->return->description;
@@ -93,7 +93,7 @@
      * @return  &stdClass added exception
      */
     public function &addThrows($exception, $condition) {
-      $t= &new stdClass();
+      $t= new stdClass();
       $t->exception= $exception;
       $t->condition= $condition;
       $this->throws[]= &$t;
@@ -111,7 +111,7 @@
      * @return  &stdClass added parameter
      */
     public function &addDefaultParam($type, $name, $default, $description) {
-      $p= &new stdClass();
+      $p= new stdClass();
       $p->type= $type;
       $p->name= $name;
       $p->default= $default;
@@ -130,7 +130,7 @@
      * @return  &stdClass added parameter
      */
     public function &addParam($type, $name, $description) {
-      $p= &new stdClass();
+      $p= new stdClass();
       $p->type= $type;
       $p->name= $name;
       $p->description= $description;

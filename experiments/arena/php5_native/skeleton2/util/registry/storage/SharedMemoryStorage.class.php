@@ -4,7 +4,11 @@
  * $Id$
  */
  
-  uses('io.sys.ShmSegment', 'lang.ElementNotFoundException');
+  uses(
+    'io.sys.ShmSegment',
+    'lang.ElementNotFoundException',
+    'util.registry.RegistryStorageProvider'
+  );
   
   /**
    * Shared Memory storage
@@ -26,7 +30,7 @@
      * @param   string id
      */
     public function initialize($id) {
-      $this->_seg= &new ShmSegment($id);
+      $this->_seg= new ShmSegment($id);
       if (!$this->_seg->isEmpty('segments')) {
         $this->segments= $this->_seg->get('segments');
       }
@@ -78,7 +82,7 @@
      */
     public function put($key, &$value, $permissions= 0666) {
       if (!isset($this->segments[$key])) {
-        $this->segments[$key]= &new ShmSegment($key);
+        $this->segments[$key]= new ShmSegment($key);
         $this->_seg->put($this->segments);
       }
       return $this->segments[$key]->put($value, $permissions);

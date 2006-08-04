@@ -61,7 +61,7 @@
      * @param   mixed p either a string, a PostData object or an associative array
      */
     public function setParameters($p) {
-      if (is_a($p, 'RequestData')) {
+      if (is('RequestData', $p)) {
         $this->parameters= &$p;
       } elseif (is_string($p)) {
         parse_str($p, $this->parameters); 
@@ -89,7 +89,7 @@
      */
     public function addHeaders($headers) {
       foreach ($headers as $key => $header) {
-        $this->headers[is_a($header, 'Header') ? $header->getName() : $key] = $header;
+        $this->headers[is('Header', $header) ? $header->getName() : $key] = $header;
       }
     }
     
@@ -100,7 +100,7 @@
      * @return  string
      */
     public function getRequestString() {
-      if (is_a($this->parameters, 'RequestData')) {
+      if (->parametersis('RequestData', $this)) {
         $query= "\0".$this->parameters->getData();
       } else {
         $query= '';
@@ -141,7 +141,7 @@
       
       // Add request headers
       foreach ($this->headers as $k => $v) {
-        $request.= (is_a($v, 'Header') 
+        $request.= (is('Header', $v) 
           ? $v->toString() 
           : $k.': '.$v
         )."\r\n";
@@ -157,7 +157,7 @@
      * @return  &peer.http.HttpResponse response object
      */
     public function &send($timeout= 60) {
-      $s= &new Socket($this->url->getHost(), $this->url->getPort(80));
+      $s= new Socket($this->url->getHost(), $this->url->getPort(80));
       $s->setTimeout($timeout);
       
       $request= $this->getRequestString();

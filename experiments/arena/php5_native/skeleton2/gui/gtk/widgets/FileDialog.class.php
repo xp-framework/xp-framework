@@ -5,9 +5,9 @@
  */
 
   uses(
-    'gui.gtk.GtkGladeDialogWindow', 
-    'gui.gtk.util.GTKPixmapLoader', 
-    'gui.gtk.util.GTKWidgetUtil', 
+    'gui.gtk.GtkGladeDialogWindow',
+    'gui.gtk.util.GTKPixmapLoader',
+    'gui.gtk.util.GTKWidgetUtil',
     'io.Folder',
     'lang.System'
   );
@@ -206,8 +206,8 @@
 
       // Load pixmaps
       $this->pixmaps= array();
-      $if= &new Folder(dirname(__FILE__).'/icons/');
-      $loader= &new GTKPixmapLoader($this->window->window, $if->uri);
+      $if= new Folder(dirname(__FILE__).'/icons/');
+      $loader= new GTKPixmapLoader($this->window->window, $if->uri);
       try {
         while ($entry= $if->getEntry()) {
           if ('.xpm' != substr($entry, -4)) continue;
@@ -337,7 +337,7 @@
      * @access  protected
      */  
     public function readFiles() {
-      $f= &new Folder($this->dir);
+      $f= new Folder($this->dir);
 
       // Disable Up button if we are at top
       $this->buttons['up']->set_sensitive(strlen($this->dir) > 1);

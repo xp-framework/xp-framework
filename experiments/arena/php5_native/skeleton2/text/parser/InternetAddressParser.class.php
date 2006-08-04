@@ -37,7 +37,7 @@
      */
     public function &parse($str) {
       $result= array();
-      $st= &new StringTokenizer($str, ',');
+      $st= new StringTokenizer($str, ',');
       
       $st->hasMoreTokens() && $tok= $st->nextToken();
       while ($tok) {

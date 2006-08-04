@@ -66,7 +66,7 @@
   define('PFDF_EVENT_ENDPAGE',      0x0000);
   
   uses(
-    'org.fpdf.FPDFFont', 
+    'org.fpdf.FPDFFont',
     'lang.IllegalArgumentException',
     'lang.MethodNotImplementedException'
   );
@@ -195,7 +195,7 @@
     public function loadFonts(&$prop) {
       $section= $prop->getFirstSection();
       do {
-        $f= &new FPDFFont($section);
+        $f= new FPDFFont($section);
         $f->configure($prop);
         $this->addFont($f);
       } while ($section= $prop->getNextSection());
@@ -702,7 +702,7 @@
      * @return  bool TRUE if the font was changed
      */
     public function setFont(&$font, $size= 0) {
-      if (!is_a($font, 'FPDFFont')) {
+      if (!is('FPDFFont', $font)) {
         throw(new IllegalArgumentException('Font is not a org.pdf.FPDFFont'));
       }
       

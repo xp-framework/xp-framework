@@ -5,8 +5,8 @@
  */
 
   uses(
-    'io.File', 
-    'util.Properties', 
+    'io.File',
+    'util.Properties',
     'text.PHPTokenizer'
   );
 
@@ -30,8 +30,8 @@
      * @param   string filename default NULL
      */
     public function __construct($filename= NULL) {
-      $this->tokenizer= &new PHPTokenizer();
-      $this->prop= &new Properties(dirname(__FILE__).'/parser.ini');
+      $this->tokenizer= new PHPTokenizer();
+      $this->prop= new Properties(dirname(__FILE__).'/parser.ini');
       if (NULL !== $filename) {
         $this->setFile(new File($filename));
       }

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.doclet.SeeTag');
+  uses('text.doclet.SeeTag', 'text.doclet.Taglet');
 
   /**
    * A taglet that represents the @see tag. 

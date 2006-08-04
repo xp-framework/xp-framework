@@ -21,7 +21,7 @@
      * @param   array params
      */
     public function __construct($params) {
-      $this->item= &new SOAPNode('hash', NULL, array(
+      $this->item= new SOAPNode('hash', NULL, array(
         'xmlns:hash'  => 'http://xml.apache.org/xml-soap',
         'xsi:type'    => 'hash:Map'
       ));

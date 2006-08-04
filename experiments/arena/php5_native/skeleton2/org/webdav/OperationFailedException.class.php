@@ -10,7 +10,7 @@
    * @purpose  Indicate a certain operation failed
    * @see      xp://lang.Exception
    */
-  class OperationFailedException extends Exception {
+  class OperationFailedException extends XPException {
   
   }
 ?>

@@ -27,7 +27,7 @@
      * @param   string str
      * @return  string
      */
-    public function encode($str) { 
+    public static function encode($str) { 
       return imap_utf7_encode($str);
     }
     
@@ -39,7 +39,7 @@
      * @param   string str
      * @return  string
      */
-    public function decode($str) { 
+    public static function decode($str) { 
       return imap_utf7_decode($str);
     }
   }

@@ -35,8 +35,8 @@
      * @access  public
      */
     public function __construct() {
-      $this->interfaces= &new ClassIterator();
-      $this->usedClasses= &new ClassIterator();
+      $this->interfaces= new ClassIterator();
+      $this->usedClasses= new ClassIterator();
     }
     
     /**

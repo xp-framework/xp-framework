@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('util.Properties', 'xml.Node', 'scriptlet.xml.portlet.RunData');
+  uses(
+    'util.Properties',
+    'xml.Node',
+    'scriptlet.xml.portlet.RunData'
+  );
 
   /**
    * A portlet is an implementation of a small control (rendered from its 

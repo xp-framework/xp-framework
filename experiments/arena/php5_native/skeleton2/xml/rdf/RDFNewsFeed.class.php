@@ -80,8 +80,8 @@
       $this->root->setAttribute('xmlns:dc',  'http://purl.org/dc/elements/1.1/');
       $this->root->setAttribute('xmlns',     'http://purl.org/rss/1.0/');
 
-      $this->channel= &new stdClass();
-      $this->image= &new stdClass();
+      $this->channel= new stdClass();
+      $this->image= new stdClass();
       $this->items= array();
     }
     
@@ -167,7 +167,7 @@
      * @param   string str
      * @return  &xml.rdf.RDFNewsfeed
      */
-    public function &fromString($str) {
+    public static function &fromString($str) {
       return parent::fromString($str, __CLASS__);
     }
 
@@ -179,7 +179,7 @@
      * @param   &io.File file
      * @return  &xml.rdf.RDFNewsfeed
      */
-    public function &fromFile($file) {
+    public static function &fromFile($file) {
       return parent::fromFile($file, __CLASS__);
     }
     
@@ -198,7 +198,7 @@
         $date= isset($this->channel->date) ? $this->channel->date : new Date(time());
       }
       
-      $item= &new stdClass();
+      $item= new stdClass();
       $item->title= $title;
       $item->link= $link;
       $item->description= $description;
@@ -264,7 +264,7 @@
           
         case '/rdf:rdf/item/': 
         case '/rss/channel/item/':
-          $this->items[]= &new stdClass();
+          $this->items[]= new stdClass();
           $this->items[sizeof($this->items)- 1]->node= &$this->_objs[$this->_cnt];
           break;
       }
@@ -317,12 +317,12 @@
           break;
 
         case 'channel/pubdate':         // 14 May 2002
-          $this->channel->date= &new Date($cdata);
+          $this->channel->date= new Date($cdata);
           break;
 
         case 'channel/dc:date':         // 2002-07-12T15:59 or 2003-12-19T12:26:00+01:00
           sscanf($cdata, '%4d-%2d-%2dT%2d:%2d', $year, $month, $day, $hour, $minute);
-          $this->channel->date= &new Date(mktime($hour, $minute, 0, $month, $day, $year));
+          $this->channel->date= new Date(mktime($hour, $minute, 0, $month, $day, $year));
           break;
 
         case 'channel/dc:publisher':
@@ -365,12 +365,12 @@
         
         case 'channel/item/date':         // 14 May 2002
         case 'channel/item/pubdate':
-          $this->items[sizeof($this->items)- 1]->date= &new Date($cdata);
+          $this->items[sizeof($this->items)- 1]->date= new Date($cdata);
           break;
         
         case 'channel/item/dc:date':  
           sscanf($cdata, '%4d-%2d-%2dT%2d:%2d', $year, $month, $day, $hour, $minute);
-          $this->items[sizeof($this->items)- 1]->date= &new Date(mktime($hour, $minute, 0, $month, $day, $year));
+          $this->items[sizeof($this->items)- 1]->date= new Date(mktime($hour, $minute, 0, $month, $day, $year));
           break;
 
         case 'channel/item/category':
@@ -391,7 +391,7 @@
 
         case 'item/dc:date':         // 2002-07-12T15:59 or 2003-12-19T12:26:00+01:00
           sscanf($cdata, '%4d-%2d-%2dT%2d:%2d', $year, $month, $day, $hour, $minute);
-          $this->items[sizeof($this->items)- 1]->date= &new Date(mktime($hour, $minute, 0, $month, $day, $year));
+          $this->items[sizeof($this->items)- 1]->date= new Date(mktime($hour, $minute, 0, $month, $day, $year));
           break;
 
 

@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'io.File',
     'io.Stream',
     'util.io.VirtualFileManager'
@@ -33,7 +33,7 @@
       if (FALSE !== ($s= &$vfm->getByFilename($filename))) {
         $this->_stream= &$s;
       } else {
-        $this->_stream= &new File();
+        $this->_stream= new File();
       }
     }
 

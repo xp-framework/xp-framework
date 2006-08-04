@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('io.File', 'security.crypto.UnixCrypt');
+  uses(
+    'io.File',
+    'security.crypto.UnixCrypt',
+    'security.auth.Authenticator'
+  );
 
   /**
    * Autenticates users against a .htpasswd file

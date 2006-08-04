@@ -50,7 +50,7 @@
      * @return  &img.util.IptcData
      * @throws  img.ImagingException in case extracting data fails
      */
-    public function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       getimagesize($file->getURI(), $info);
       if (!($info['APP13'])) {
         throw(new ImagingException(
@@ -59,7 +59,7 @@
       }
       $iptc= iptcparse($info['APP13']);
       
-      with ($i= &new IptcData()); {
+      with ($i= new IptcData()); {
         $i->setTitle($iptc['2#005'][0]);
         $i->setUrgency($iptc['2#010'][0]);
         $i->setCategory($iptc['2#015'][0]);

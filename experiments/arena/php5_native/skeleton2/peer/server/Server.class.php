@@ -5,7 +5,7 @@
  */
 
   uses(
-    'peer.ServerSocket', 
+    'peer.ServerSocket',
     'peer.server.DefaultReader',
     'peer.server.ConnectionEvent',
     'peer.server.ConnectionListener'
@@ -48,8 +48,8 @@
      * @param   int port
      */
     public function __construct($addr, $port) {
-      $this->socket= &new ServerSocket($addr, $port);
-      $this->reader= &new DefaultReader();
+      $this->socket= new ServerSocket($addr, $port);
+      $this->reader= new DefaultReader();
     }
     
     /**

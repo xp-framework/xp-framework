@@ -19,7 +19,7 @@
      * @access  public
      * @return  string[] error
      */
-    public function getErrors() {
+    public static function getErrors() {
       $e= array();
       while ($msg= openssl_error_string()) {
         $e[]= $msg;

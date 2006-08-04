@@ -10,6 +10,6 @@
    * @see      xp://org.json.JsonDecoder
    * @purpose  Exception for Json
    */
-  class JsonException extends Exception {
+  class JsonException extends XPException {
   }
 ?>

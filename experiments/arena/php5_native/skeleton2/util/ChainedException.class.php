@@ -11,7 +11,7 @@
    * @see      http://mindprod.com/jgloss/chainedexceptions.html
    * @see      http://www.jguru.com/faq/view.jsp?EID=1026405  
    */
-  class ChainedException extends Exception {
+  class ChainedException extends XPException {
     public
       $cause    = NULL;
 

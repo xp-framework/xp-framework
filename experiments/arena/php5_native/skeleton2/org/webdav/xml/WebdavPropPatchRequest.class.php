@@ -63,7 +63,7 @@
             $ns.= ':'.($nsprefix= substr($name, 0, $p));
             $name= substr($name, $p+1);
           }
-          $p= &new WebdavProperty(
+          $p= new WebdavProperty(
             $name,
             $this->decode($node->getContent())
           );

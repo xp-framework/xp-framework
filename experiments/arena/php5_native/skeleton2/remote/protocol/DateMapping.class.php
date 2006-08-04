@@ -27,7 +27,7 @@
     public function &valueOf(&$serializer, $serialized, &$length, $context= array()) {
       $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
       $length= strlen($v)+ 3;
-      $value= &new Date((int)$v);
+      $value= new Date((int)$v);
       return $value;
     }
 

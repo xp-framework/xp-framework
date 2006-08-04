@@ -33,11 +33,11 @@
      * @param   string name
      * @return  &rdbms.criterion.Property
      */
-    public function &forName($name) {
+    public static function &forName($name) {
       static $instances= array();
       
       if (!isset($instances[$name])) {
-        $instances[$name]= &new Property($name);
+        $instances[$name]= new Property($name);
       }
       return $instances[$name];
     }

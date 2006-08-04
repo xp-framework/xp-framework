@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses ('util.Date', 'util.TimeSpan');
+  uses('util.Date', 'util.TimeSpan');
   
   /**
    * DateUtil is a helper class to handle Date objects and 
@@ -24,8 +24,8 @@
      * @param   &util.Date date
      * @return  &util.Date
      */
-    public function &getMidnight(&$date) {
-      $d= &new Date(Date::mktime (
+    public static function &getMidnight(&$date) {
+      $d= new Date(Date::mktime (
         0,
         0,
         0,
@@ -44,8 +44,8 @@
      * @param   &util.Date date
      * @return  &util.Date
      */
-    public function &getLastOfMonth(&$date) {
-      $d= &new Date(Date::mktime (
+    public static function &getLastOfMonth(&$date) {
+      $d= new Date(Date::mktime (
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -64,8 +64,8 @@
      * @param   &util.Date date
      * @return  &util.Date
      */
-    public function &getFirstOfMonth(&$date) {
-      $d= &new Date(Date::mktime (
+    public static function &getFirstOfMonth(&$date) {
+      $d= new Date(Date::mktime (
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -85,8 +85,8 @@
      * @param   int count default 1
      * @return  &util.Date
      */
-    public function &addMonths(&$date, $count= 1) {
-      $d= &new Date(Date::mktime(
+    public static function &addMonths(&$date, $count= 1) {
+      $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -106,7 +106,7 @@
      * @param   int count default 1
      * @return  &util.Date
      */
-    public function &addWeeks(&$date, $count= 1) {
+    public static function &addWeeks(&$date, $count= 1) {
       return DateUtil::addDays($date, $count * 7);
     }
     
@@ -119,8 +119,8 @@
      * @param   int count default 1
      * @return  &util.Date
      */
-    public function &addDays(&$date, $count= 1) {
-      $d= &new Date(Date::mktime(
+    public static function &addDays(&$date, $count= 1) {
+      $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -140,8 +140,8 @@
      * @param   int count default 1
      * @return  &util.Date
      */
-    public function &addHours(&$date, $count= 1) {
-      $d= &new Date(Date::mktime(
+    public static function &addHours(&$date, $count= 1) {
+      $d= new Date(Date::mktime(
         $date->getHours() + $count,
         $date->getMinutes(),
         $date->getSeconds(),
@@ -161,8 +161,8 @@
      * @param   int count default 1
      * @return  &util.Date
      */
-    public function &addMinutes(&$date, $count= 1) {
-      $d= &new Date(Date::mktime(
+    public static function &addMinutes(&$date, $count= 1) {
+      $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes() + $count,
         $date->getSeconds(),
@@ -182,8 +182,8 @@
      * @param   int count default 1
      * @return  &util.Date
      */
-    public function &addSeconds(&$date, $count= 1) {
-      $d= &new Date(Date::mktime(
+    public static function &addSeconds(&$date, $count= 1) {
+      $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds() + $count,
@@ -204,8 +204,8 @@
      * @param   &util.Date d2
      * @return  &util.TimeSpan
      */
-    public function &timeSpanBetween(&$d1, &$d2) {
-      $t= &new TimeSpan($d1->getTime()-$d2->getTime());
+    public static function &timeSpanBetween(&$d1, &$d2) {
+      $t= new TimeSpan($d1->getTime()-$d2->getTime());
       return $t;
     }
 

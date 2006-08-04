@@ -5,8 +5,8 @@
  */
 
   uses(
-    'security.Policy', 
-    'security.PolicyException', 
+    'security.Policy',
+    'security.PolicyException',
     'security.Permission'
   );
   
@@ -71,7 +71,7 @@
      * @param   &io.Stream stream
      * @return  &security.Policy policy
      */
-    public function &fromFile(&$stream) {
+    public static function &fromFile(&$stream) {
       static $errors= array(
         PF_ST_EPARSE    => 'Parse error', 
         PF_ST_EGRANT    => 'Grant syntax error',
@@ -80,7 +80,7 @@
         PF_ST_EREFLECT  => 'Reflection error'
       );
       
-      $policy= &new Policy();
+      $policy= new Policy();
       
       $stream->open(FILE_MODE_READ);
       $state= PF_ST_INITIAL;

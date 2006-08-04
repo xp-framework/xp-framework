@@ -5,7 +5,7 @@
  */
 
   uses(
-    'rdbms.DBConnection', 
+    'rdbms.DBConnection',
     'rdbms.mysql.MySQLResultSet',
     'rdbms.Transaction',
     'rdbms.StatementFormatter'
@@ -282,7 +282,7 @@
         return $result;
       }
 
-      $resultset= &new MySQLResultSet($result);
+      $resultset= new MySQLResultSet($result);
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
       return $resultset;

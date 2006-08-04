@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.XPIterator');
+
   /**
    * Iterator over a resultset
    *
@@ -11,7 +13,7 @@
    * @see      xp://rdbms.Peer
    * @purpose  Iterator
    */
-  class ResultIterator extends Object implements Iterator {
+  class ResultIterator extends Object implements XPIterator {
     public
       $_rs         = NULL,
       $_identifier = '',
@@ -67,14 +69,9 @@
       
       // Create an instance and set the _record member to NULL so that
       // hasNext() will fetch the next record.
-      $instance= &new $this->_identifier($this->_record);
+      $instance= new $this->_identifier($this->_record);
       $this->_record= NULL;
       return $instance;
     }
-    
-    function current() { }
-    function key() { }
-    function valid() { }
-    function rewind() { }
   } 
 ?>

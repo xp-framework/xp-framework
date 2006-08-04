@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Locale');
+  uses('util.Locale', 'util.Comparator');
 
   /**
    * The Collator class performs locale-sensitive String comparison. 

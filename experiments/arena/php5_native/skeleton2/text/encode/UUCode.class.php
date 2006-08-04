@@ -33,7 +33,7 @@
      * @param   string str
      * @return  string
      */
-    public function encode($str) {
+    public static function encode($str) {
       $out= '';
       $offset= 0;
       while ($chunk= substr($str, $offset, 0x2D)) {
@@ -61,7 +61,7 @@
      * @param   string str
      * @return  string
      */
-    public function decode($str) {
+    public static function decode($str) {
       $chunk= strtok($str, "\n");
       $out= '';
       do {

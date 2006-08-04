@@ -10,7 +10,7 @@
    * @see      xp://security.cert.Certificate
    * @purpose  This exception indicates one of a variety of certificate problems.
    */
-  class CertificateException extends Exception {
+  class CertificateException extends XPException {
     public
       $errors = array();
       
