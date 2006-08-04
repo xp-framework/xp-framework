@@ -16,7 +16,7 @@
    * @see      http://www.artima.com/designtechniques/exceptions.html
    * @see      http://www.artima.com/designtechniques/desexcept.html
    */
-  class XException extends Throwable {
+  class XPException extends Throwable {
      
   }
 ?>

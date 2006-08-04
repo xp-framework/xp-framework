@@ -64,7 +64,7 @@
         $result= $this->_reflect->invokeArgs($obj, $args);
         return $result;
       } catch(ReflectionException $e) {
-        throw(new XException($e->getMessage()));
+        throw(new XPException($e->getMessage()));
       }
     }
   }

@@ -9,7 +9,7 @@
    *
    * @see   xp://lang.Exception
    */
-  class FormatException extends XException {
+  class FormatException extends XPException {
   
   }
 ?>

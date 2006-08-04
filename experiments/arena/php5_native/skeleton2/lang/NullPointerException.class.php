@@ -10,7 +10,7 @@
    *
    * @purpose  Exception
    */
-  class NullPointerException extends XException {
+  class NullPointerException extends XPException {
   
   }
 ?>

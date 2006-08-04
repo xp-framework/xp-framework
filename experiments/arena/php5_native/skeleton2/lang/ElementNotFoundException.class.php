@@ -9,7 +9,7 @@
    *
    * @see Exception
    */
-  class ElementNotFoundException extends XException {
+  class ElementNotFoundException extends XPException {
   
   }
 ?>

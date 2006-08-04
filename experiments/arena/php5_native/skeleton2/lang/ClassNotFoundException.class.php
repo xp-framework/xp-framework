@@ -9,7 +9,7 @@
    *
    * @see Exception
    */
-  class ClassNotFoundException extends XException {
+  class ClassNotFoundException extends XPException {
   
   }
 ?>

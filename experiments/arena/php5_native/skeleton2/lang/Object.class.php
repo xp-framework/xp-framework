@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('lang.AnyObject');
+  uses('lang.Generic');
 
   /**
    * Class Object is the root of the class hierarchy. Every class has 
@@ -12,7 +12,7 @@
    *
    * @purpose  Base class for all others
    */
-  class Object implements AnyObject {
+  class Object implements Generic {
     public $__id;
     
     /**
@@ -35,6 +35,7 @@
      * @return  string
      */
     public function hashCode() {
+      if (!$this->__id) $this->__id= microtime();
       return $this->__id;
     }
     

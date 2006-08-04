@@ -9,7 +9,7 @@
    *
    * @purpose  Exception
    */
-  class IllegalThreadStateException extends XException {
+  class IllegalThreadStateException extends XPException {
   
   }
 ?>

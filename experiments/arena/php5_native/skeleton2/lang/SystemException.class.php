@@ -10,7 +10,7 @@
    *
    * @see Exception
    */
-  class SystemException extends XException {
+  class SystemException extends XPException {
     public $code= 0;
     
     /**

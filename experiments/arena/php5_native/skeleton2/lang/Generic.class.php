@@ -10,7 +10,7 @@
    *
    * @purpose  Base class for all others
    */
-  interface AnyObject {
+  interface Generic {
     
     /**
      * Returns a hashcode for this object

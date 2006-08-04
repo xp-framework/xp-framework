@@ -10,7 +10,7 @@
    *
    * @purpose  Exception
    */
-  class IndexOutOfBoundsException extends XException {
+  class IndexOutOfBoundsException extends XPException {
   
   }
 ?>

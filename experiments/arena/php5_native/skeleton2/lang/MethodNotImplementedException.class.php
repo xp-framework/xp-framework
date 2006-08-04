@@ -10,7 +10,7 @@
    * This exception indicates a certain class method is not
    * implemented.
    */
-  class MethodNotImplementedException extends XException {
+  class MethodNotImplementedException extends XPException {
     public
       $method= '';
       

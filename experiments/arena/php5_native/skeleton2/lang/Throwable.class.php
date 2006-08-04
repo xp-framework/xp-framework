@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.AnyObject', 'lang.StackTraceElement');
+  uses('lang.Generic', 'lang.StackTraceElement');
 
   /**
    * Throwable
@@ -14,7 +14,7 @@
    * @test     xp://net.xp_framework.unittest.core.ExceptionsTest
    * @purpose  Base class
    */
-  class Throwable extends Exception implements AnyObject {
+  class Throwable extends Exception implements Generic {
     public 
       $message  = '',
       $trace    = array();

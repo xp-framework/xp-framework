@@ -14,6 +14,6 @@
    *
    * @purpose  Exception
    */
-  class CloneNotSupportedException extends XException {
+  class CloneNotSupportedException extends XPException {
   }
 ?>
