@@ -57,6 +57,39 @@ Example logged output:
 The string representation of the passed parameters and the represenation
 of the reponse is generated using xp::stringOf() function.
 
+A more detailed logging would also be possible which shows the RAW data
+sent between client and server:
+<code>
+[09:43:12 9089 debug] >>> remote.protocol.XpProtocolHandler(pimperator4.schlund.de:6448) LOOKUP xp/demo/Roundtrip
+[09:43:12 9089 debug] >>> Request: [
+  0 => xp/demo/Roundtrip
+]
+[09:43:12 9089 debug] <<< Response: I:3479658:{s:46:"net.xp_framework.beans.stateless.RoundtripHome";}
+[09:43:12 9089 debug] <<< Proxy·0(handler= remote.RemoteInvocationHandler)
+[09:43:12 9089 debug] >>> remote.protocol.XpProtocolHandler(pimperator4.schlund.de:6448) 3479658::create([
+])
+[09:43:12 9089 debug] >>> Request: [
+  0 => create
+  1 => A:0:{}
+]
+[09:43:12 9089 debug] <<< Response: I:1757497:{s:42:"net.xp_framework.beans.stateless.Roundtrip";}
+[09:43:12 9089 debug] <<< Proxy·1(handler= remote.RemoteInvocationHandler)
+[09:43:12 9089 debug] >>> remote.protocol.XpProtocolHandler(pimperator4.schlund.de:6448) 1757497::echoHash([
+  0 => [
+    localpart => "xp"
+    domain => "php3.de"
+  ]
+])
+[09:43:12 9089 debug] >>> Request: [
+  0 => echoHash
+  1 => A:1:{a:2:{s:9:"localpart";s:2:"xp";s:6:"domain";s:7:"php3.de";}}
+]
+[09:43:12 9089 debug] <<< Response: a:2:{s:9:"localpart";s:2:"xp";s:6:"domain";s:7:"php3.de";}
+[09:43:12 9089 debug] <<< [
+  localpart => "xp"
+  domain => "php3.de"
+]
+</code>
 
 Security considerations
 -----------------------
@@ -108,5 +141,11 @@ Comments
   I modified the patch to include a better string representation for the
   lang.reflect.Proxy class (to avoid bloat in the logging) and to log
   also begin(), rollback(), commit(), initialize() and lookup().
+
+- ohinckel, Fri Aug  4 09:41:20 CEST 2006
+  Added more logging to the patch which logs the RAW data sent between
+  client and server. This information also includes the object id (OID)
+  which can be used to identify the bean/interface (see commen #4). But
+  maybe this extended logging is a way to heavy.
 
 <EOF>
