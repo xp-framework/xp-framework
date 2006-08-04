@@ -1,16 +1,7 @@
 Index: lang/reflect/Proxy.class.php
 ===================================================================
---- lang/reflect/Proxy.class.php	(revision 7524)
+--- lang/reflect/Proxy.class.php	(revision 7532)
 +++ lang/reflect/Proxy.class.php	(working copy)
-@@ -84,7 +84,7 @@
-               $max= max($max, $args- 1);
-               if (isset($cases[$args])) continue;
-               
--              $cases[$s]= (
-+              $cases[$args]= (
-                 'case '.$args.': '.
-                 'return $this->_h->invoke($this, \''.$methods[$i]->getName(TRUE).'\', array('.
-                 ($args ? '$_'.implode(', $_', range(0, $args- 1)) : '').'));'
 @@ -156,5 +156,15 @@
        $instance->_h= &$handler;
        return $instance;
@@ -29,7 +20,7 @@ Index: lang/reflect/Proxy.class.php
  ?>
 Index: remote/protocol/XpProtocolHandler.class.php
 ===================================================================
---- remote/protocol/XpProtocolHandler.class.php	(revision 7524)
+--- remote/protocol/XpProtocolHandler.class.php	(revision 7532)
 +++ remote/protocol/XpProtocolHandler.class.php	(working copy)
 @@ -23,7 +23,8 @@
      var
@@ -185,7 +176,7 @@ Index: remote/protocol/XpProtocolHandler.class.php
  ?>
 Index: remote/Remote.class.php
 ===================================================================
---- remote/Remote.class.php	(revision 7524)
+--- remote/Remote.class.php	(revision 7532)
 +++ remote/Remote.class.php	(working copy)
 @@ -95,6 +95,18 @@
      }
