@@ -148,4 +148,9 @@ Comments
   which can be used to identify the bean/interface (see commen #4). But
   maybe this extended logging is a way to heavy.
 
+- kiesel, Fri Aug  4 10:57:13 CEST 2006
+  The JNDI name is not stored nor used anywhere besides the naming lookup
+  for EASC, so it probably not available in the proxy objects for
+  later logging.
+  
 <EOF>
