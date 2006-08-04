@@ -25,7 +25,7 @@
       $cl->defineClass(
         'net.xp_framework.unittest.core.AnonymousSingleton', 
         'class AnonymousSingleton extends Object {
-           function &getInstance() {
+           static function &getInstance() {
              static $instance= NULL;
              
              if (!isset($instance)) $instance= new AnonymousSingleton();
@@ -46,7 +46,7 @@
       $cl->defineClass(
         'net.xp_framework.unittest.core.AnonymousFactory', 
         'class AnonymousFactory extends Object {
-          function &factory() {
+          static function &factory() {
             $list= &new AnonymousList();
             return $list;
           }
@@ -55,7 +55,7 @@
       $cl->defineClass(
         'net.xp_framework.unittest.core.AnonymousNewInstanceFactory', 
         'class AnonymousNewInstanceFactory extends Object {
-          function &factory() {
+          static function &factory() {
             $class= &XPClass::forName("net.xp_framework.unittest.core.AnonymousList");
             return $class->newInstance();
           }

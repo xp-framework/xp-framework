@@ -100,7 +100,7 @@
      * @return  string
      */
     public function getRequestString() {
-      if (->parametersis('RequestData', $this)) {
+      if (is('RequestData', $this->parameters)) {
         $query= "\0".$this->parameters->getData();
       } else {
         $query= '';

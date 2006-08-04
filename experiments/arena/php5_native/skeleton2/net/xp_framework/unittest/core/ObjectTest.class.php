@@ -44,7 +44,7 @@
     #[@test]
     public function noInterfaces() {
       $c= &XPClass::forName('lang.Object');
-      $this->assertEmpty($c->getInterfaces());
+      $this->assertEquals(1, sizeof($c->getInterfaces()));
     }
 
     /**

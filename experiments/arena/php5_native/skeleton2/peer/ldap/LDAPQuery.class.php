@@ -73,10 +73,10 @@
         } 
         
         // Type-based conversion
-        if ([]is('Date', $ofs)) {
+        if (is('Date', $args[$ofs])) {
           $tok{$mod}= 's';
           $arg= $args[$ofs]->toString('YmdHi\\ZO');
-        } elseif ([]is('Generic', $ofs)) {
+        } elseif (is('Generic', $args[$ofs])) {
           $arg= $args[$ofs]->toString();
         } else {
           $arg= $args[$ofs];

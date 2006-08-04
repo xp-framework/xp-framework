@@ -35,9 +35,9 @@
     #[@test]
     public function thrownExceptionCaught() {
       try {
-        throw(new Exception('Test'));
-      } catch (Exception $caught) {
-        $this->assertSubclass($caught, 'Exception');
+        throw(new XPException('Test'));
+      } catch (XPException $caught) {
+        $this->assertSubclass($caught, 'XPException');
         delete($caught);
         return TRUE;
       }
@@ -54,9 +54,9 @@
     #[@test]
     public function thrownExceptionCaughtByFqCn() {
       try {
-        throw(new Exception('Test'));
-      } catch (Exception $caught) {
-        $this->assertSubclass($caught, 'Exception');
+        throw(new XPException('Test'));
+      } catch (XPException $caught) {
+        $this->assertSubclass($caught, 'XPException');
         delete($caught);
         return TRUE;
       }
