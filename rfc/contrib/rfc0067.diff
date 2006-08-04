@@ -134,22 +134,23 @@ Index: remote/protocol/XpProtocolHandler.class.php
      }
  
      /**
-@@ -137,6 +188,14 @@
+@@ -137,6 +188,15 @@
       * @return  &mixed
       */
      function &invoke($oid, $method, $args) {
 +      $this->cat && $this->cat->debugf(
-+        '>>> %s(%s:%d) %s(%s)',
++        '>>> %s(%s:%d) %d::%s(%s)',
 +        $this->getClassName(),
 +        $this->_sock->host,
 +        $this->_sock->port,
++        $oid,
 +        $method,
 +        xp::stringOf($args)
 +      );
        $r= &$this->sendPacket(
          REMOTE_MSG_CALL, 
          pack('NN', 0, $oid),
-@@ -145,6 +204,7 @@
+@@ -145,6 +205,7 @@
            new ByteCountedString($this->serializer->representationOf(new ArrayList($args)))
          )
        );
@@ -157,7 +158,58 @@ Index: remote/protocol/XpProtocolHandler.class.php
        return $r;
      }
  
-@@ -249,5 +309,15 @@
+@@ -178,10 +239,10 @@
+         $length,
+         $data
+       );
+-      // DEBUG Console::writeLine('>>>', addcslashes($packet, "\0..\37!@\177..\377"));
+ 
+       try(); {
+         $this->_sock->write($packet);
++        $this->cat && $this->cat->debug('>>> Request:', xp::stringOf($bytes));
+         for ($i= 0; $i < $bsize; $i++) {
+           $bytes[$i]->writeTo($this->_sock);
+         }
+@@ -193,7 +254,6 @@
+         return throw(new RemoteException($e->getMessage(), $e));
+       }
+       
+-      // DEBUG Console::writeLine('<<<', xp::stringOf($header));
+       if (DEFAULT_PROTOCOL_MAGIC_NUMBER != $header['magic']) {
+         $this->_sock->close();
+         return throw(new Error('Magic number mismatch (have: '.$header['magic'].' expect: '.DEFAULT_PROTOCOL_MAGIC_NUMBER));
+@@ -205,11 +265,13 @@
+         switch ($header['type']) {
+           case REMOTE_MSG_VALUE:
+             $data= &ByteCountedString::readFrom($this->_sock);
+-            // Console::writeLine('<<<', addcslashes($data, "\0..\37!@\177..\377"));
++            $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
+             return $this->serializer->valueOf($data, $length= 0, $ctx);
+ 
+           case REMOTE_MSG_EXCEPTION:
+-            $reference= &$this->serializer->valueOf(ByteCountedString::readFrom($this->_sock), $length= 0, $ctx);
++            $data= &ByteCountedString::readFrom($this->_sock);
++            $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
++            $reference= &$this->serializer->valueOf($data, $length= 0, $ctx);
+             if (is('RemoteException', $reference)) {
+               return throw($reference);
+             } else if (is('ClassReference', $reference)) {
+@@ -220,11 +282,13 @@
+ 
+           case REMOTE_MSG_ERROR:
+             $message= ByteCountedString::readFrom($this->_sock);    // Not serialized!
++            $this->cat && $this->cat->debug('<<< Response:', addcslashes($message, "\0..\37!@\177..\377"));
+             $this->_sock->close();
+             return throw(new RemoteException($message, new Error($message)));
+ 
+           default:
+-            $this->readBytes($header['length']);   // Read all left-over bytes
++            $data= &$this->readBytes($header['length']);   // Read all left-over bytes
++            $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
+             $this->_sock->close();
+             return throw(new Error('Unknown message type'));
+         }
+@@ -249,5 +313,15 @@
        return $return;
      }
  
@@ -197,3 +249,10 @@ Index: remote/Remote.class.php
       * Look up an object by its name
       *
       * @access  public
+@@ -119,5 +131,5 @@
+       $tran->_handler= &$this->_handler;
+       return $tran;
+     }
+-  }
++  } implements(__FILE__, 'util.log.Traceable');
+ ?>
