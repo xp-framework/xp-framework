@@ -83,13 +83,18 @@ __;
       return strtr($this->qualifiedNameOf($short), '.', '~');
     }
     
-    function mappedName($name) {
+    function mappedName($name, $extended= FALSE) {
       switch (strtolower($name)) {
         case 'exception': return 'XPException';
         case 'iterator':  return 'XPIterator';
         case 'util.iterator': return 'util.XPIterator';
         case 'lang.object': return 'lang.Generic';
-        case 'object': return 'Generic';
+        
+        case 'object':
+          // Only replace if extended = TRUE, can cause 
+          // `class Foo extends Generic` & `$foo= new Generic` otherwise
+          if ($extended) return 'Generic';
+          
         default: return $name;
       }
     }
@@ -341,7 +346,7 @@ __;
             
             case ST_LOOKING_FOR_IS_END.T_CONSTANT_ENCAPSED_STRING:
               if ("'" == $t[1]{0} || '"' == $t[1]{0}) {
-                $t[1]= "'".$this->mappedName(trim($t[1], '\'"'))."'";
+                $t[1]= "'".$this->mappedName(trim($t[1], '\'"'), TRUE)."'";
               }
               break;
             
@@ -361,7 +366,7 @@ __;
               break;
             
             case ST_LOOKING_FOR_IS_A_END.')';
-              $out.= 'is(\''.$this->mappedName(trim($isAclassToken[1], '\'"')).'\', '.$isAobjectToken[1].')';
+              $out.= 'is(\''.$this->mappedName(trim($isAclassToken[1], '\'"'), TRUE).'\', '.$isAobjectToken[1].')';
               $t= '';
               array_shift($states); // Popp off ST_ISA_BODY
               break;
