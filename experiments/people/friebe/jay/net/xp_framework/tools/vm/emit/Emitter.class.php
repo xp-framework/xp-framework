@@ -403,5 +403,13 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitDoWhile(&$node) { }
+
+    /**
+     * Emits Foreachs
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitForeach(&$node) { }
  }
 ?>

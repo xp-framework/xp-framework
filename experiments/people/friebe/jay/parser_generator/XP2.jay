@@ -333,10 +333,10 @@ statement:
         }
 	|	T_UNSET '(' unset_variables ')' ';'
 	|	T_FOREACH '(' variable T_AS foreach_variable foreach_optional_arg ')' statement {
-          $$= &PNode::create('Foreach', array($3, $5, $6, $7));
+          $$= &new ForeachNode($3, $5, $6, $8);
         }
 	|	T_FOREACH '(' expr_without_variable T_AS w_variable foreach_optional_arg ')' statement {
-          $$= &PNode::create('Foreach', array($3, $5, $6, $7));
+          $$= &new ForeachNode($3, $5, $6, $8);
         }
 	|	T_DECLARE { /* TBI */ }
 	|	';'		/* empty statement */

@@ -13,25 +13,25 @@
    */ 
   class ForeachNode extends VNode {
     var
-      $arg0,
-      $arg1,
-      $arg2,
-      $arg3;
+      $expression,
+      $key,
+      $value,
+      $statements;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
-     * @param   mixed arg2
-     * @param   mixed arg3
+     * @param   mixed expression
+     * @param   mixed key
+     * @param   mixed value
+     * @param   mixed statements
      */
-    function __construct($arg0, $arg1, $arg2, $arg3) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
-      $this->arg2= $arg2;
-      $this->arg3= $arg3;
+    function __construct($expression, $key, $value, $statements) {
+      $this->expression= $expression;
+      $this->key= $key;
+      $this->value= $value;
+      $this->statements= $statements;
     }  
   }
 ?>

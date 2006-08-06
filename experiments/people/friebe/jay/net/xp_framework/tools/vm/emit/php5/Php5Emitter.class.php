@@ -1037,5 +1037,25 @@
       $this->emit($node->condition);
       $this->bytes.= ')';
     }
+
+    /**
+     * Emits Foreachs
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitForeach(&$node) {
+      $this->bytes.= 'foreach (';
+      $this->emit($node->expression);
+      $this->bytes.= ' as ';
+      $this->emit($node->key);
+      if ($node->value) {
+        $this->bytes.= ' => ';
+        $this->emit($node->value);
+      }
+      $this->bytes.= ') {';
+      $this->emitAll($node->statements);
+      $this->bytes.= '}';
+    }
   }
 ?>
