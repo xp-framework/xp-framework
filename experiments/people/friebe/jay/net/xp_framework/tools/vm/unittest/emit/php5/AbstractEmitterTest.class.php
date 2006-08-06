@@ -26,12 +26,23 @@
      * @access  protected
      * @param   string source
      * @return  string
-     * @throws  lang.FormatException in case errors occur during emitAll()
+     * @throws  lang.FormatException in case errors occur during emitAll() or parse()
      */
     function &emit($source) {
       $parser= &new Parser();
+      $nodes= $parser->yyparse(new Lexer($source, '(string)'));
+      
+      if ($parser->hasErrors()) {
+        $message= 'Errors found: {';
+        foreach ($parser->getErrors() as $error) {
+          $message.= "\n  * ".$error->toString();
+        }
+        $message.= "\n}";
+        return throw(new FormatException($message));
+      }
+      
       $emitter= &new Php5Emitter();
-      $emitter->emitAll($parser->yyparse(new Lexer($source, '(string)')));
+      $emitter->emitAll($nodes);
       
       if ($emitter->hasErrors()) {
         $message= 'Errors found: {';
