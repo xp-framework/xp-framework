@@ -1023,5 +1023,19 @@
       $this->emitAll($node->statements);
       $this->bytes.= '}';
     }
+
+    /**
+     * Emits Do ... Whiles
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitDoWhile(&$node) {
+      $this->bytes.= 'do {';
+      $this->emitAll($node->statements);
+      $this->bytes.= '} while (';
+      $this->emit($node->condition);
+      $this->bytes.= ')';
+    }
   }
 ?>
