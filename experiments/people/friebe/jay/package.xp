@@ -6,12 +6,3 @@ package de~thekid~dialog {
 }
 
 echo new de~thekid~dialog~Album()->toString();
-
-package de.thekid.dialog {
-
-  class SingleShot extends xp.lang.Object {
-  
-  }
-}
-
-echo new de.thekid.dialog.SingleShot()->toString();
