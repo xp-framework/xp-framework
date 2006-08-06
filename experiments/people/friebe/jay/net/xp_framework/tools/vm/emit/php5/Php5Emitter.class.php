@@ -686,13 +686,20 @@
         $this->emitAll($node->statements);
         $this->bytes.= '}';
       } else {
+        $this->bytes.= ' ';
         $this->emit($node->statements);
       }
       
       if ($node->else) {
-        $this->bytes.= ' else {';
-        $this->emitAll($node->else);
-        $this->bytes.= '}';
+        $this->bytes.= ' else ';
+        if (is_array($node->else)) {
+          $this->bytes.= '{';
+          $this->emitAll($node->else);
+          $this->bytes.= '}';
+        } else {
+          $this->bytes.= ' ';
+          $this->emit($node->else);
+        }
       }
     }
 
@@ -1079,6 +1086,72 @@
       $this->bytes.= ') {';
       $this->emitAll($node->statements);
       $this->bytes.= '}';
+    }
+
+    /**
+     * Emits Switches
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitSwitch(&$node) {
+      $this->bytes.= 'switch (';
+      $this->emit($node->condition);
+      $this->bytes.= ') {';
+      $this->emitAll($node->cases);
+      $this->bytes.= '}';
+    }
+
+    /**
+     * Emits Cases
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitCase(&$node) {
+      $this->bytes.= 'case ';
+      $this->emit($node->expression);
+      $this->bytes.= ': ';
+      $this->emitAll($node->statements);
+    }
+
+    /**
+     * Emits Defaults
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitDefault(&$node) { 
+      $this->bytes.= 'default: ';
+      $this->emitAll($node->statements);
+    }
+
+    /**
+     * Emits Breaks
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitBreak(&$node) { 
+      $this->bytes.= 'break';
+      if ($node->expression) {
+        $this->bytes.= ' ';
+        $this->emit($node->expression);
+      }
+    }
+
+    /**
+     * Emits Continues
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitContinue(&$node) {
+      $this->bytes.= 'continue';
+      if ($node->expression) {
+        $this->bytes.= ' ';
+        $this->emit($node->expression);
+      }
     }
   }
 ?>
