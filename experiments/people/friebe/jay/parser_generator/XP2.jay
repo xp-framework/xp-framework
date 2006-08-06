@@ -292,7 +292,7 @@ statement:
           $$= &new WhileNode($3, $5);
         }
 	|	T_DO statement T_WHILE '(' expr ')' ';' {
-          $$= &new DoWhileNode($3, $5);
+          $$= &new DoWhileNode($5, $2);
         }
 	|	T_FOR '(' for_expr ';' for_expr ';' for_expr ')' statement {
           $$= &new ForNode($3, $5, $7, $9);
