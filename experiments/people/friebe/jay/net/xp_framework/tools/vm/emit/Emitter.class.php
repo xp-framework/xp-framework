@@ -44,7 +44,7 @@
         }
 
         Console::writeLine('+++ ', $func, '(', $node->getClassName(), ')');
-        $this->$func($node, $opcodes, $blocks, $symbols, $types);
+        $this->$func($node);
         return;
       } else if ('"' == $node{0}) { // Double-quoted string
         $value= '';
