@@ -175,5 +175,34 @@
         $this->emit('$s= NULL; $s->invoke();')
       );
     }
+
+    /**
+     * Tests try/catch block
+     *
+     * @access  public
+     */
+    #[@test]
+    function multipleCatches() {
+      $this->assertSourcecodeEquals(
+        preg_replace('/\n\s*/', '', 'try { 
+          echo 1; 
+        } catch (XPException $__e) { if ($__e->cause instanceof xp·lang·IllegalArgumentException) { 
+          $e= $__e->cause; 
+          $e->printStackTrace();
+        } else if ($__e->cause instanceof xp·lang·Exception) { 
+          $e= $__e->cause; 
+          $e->printStackTrace(); 
+        } else { 
+          throw $__e; 
+        } };'),
+        $this->emit('try {
+          echo 1;
+        } catch (xp~lang~IllegalArgumentException $e) {
+          $e->printStackTrace();
+        } catch (xp~lang~Exception $e) {
+          $e->printStackTrace();
+        }')
+      );
+    }
   }
 ?>
