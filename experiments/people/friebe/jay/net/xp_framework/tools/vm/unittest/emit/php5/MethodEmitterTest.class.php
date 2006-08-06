@@ -90,7 +90,7 @@
     function methodCall() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class Test extends xp·lang·Object{
-          public static function sayHello($names){
+          public function sayHello($names){
             foreach ($names as $name) {
               echo \'Hello\', $name, \' \'; 
             }; 
@@ -101,7 +101,7 @@
           }
        };'),
         $this->emit('class Test {
-          public static void sayHello(string[] $names) {
+          public void sayHello(string[] $names) {
             foreach ($names as $name) {
               echo "Hello", $name, " ";
             }
