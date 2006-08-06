@@ -13,6 +13,7 @@
    */
   class Php5Emitter extends Emitter {
     var
+      $cat     = NULL,
       $bytes   = '',
       $context = array(),
       $operators= array(
@@ -136,7 +137,7 @@
         case 'null': return 'object';
       }
       
-      Console::writeLine('*** Cannot defer type from ', xp::stringOf($node));
+      $this->cat && $this->cat->warn('Cannot defer type from', $node);
       return NULL;  // Unknown
     }
     
@@ -184,9 +185,11 @@
       foreach ($this->context['classes'][$interface] as $name => $decl) {
         if (isset($this->context['classes'][$class][$name])) continue;
         
-        Console::writeLine('!!! ', $class, ' does not implement ', $interface, '::', $name);
-        Console::writeLine('    ', $class, ' methods= ', xp::stringOf($this->context['classes'][$class]));
-        Console::writeLine('    ', $interface, ' methods= ', xp::stringOf($this->context['classes'][$interface]));
+        $this->cat && $this->cat->error(
+          $class, 'does not implement', $interface.'::'.$name,
+          $class, 'methods=', xp::stringOf($this->context['classes'][$class]),
+          $interface, ' methods=', xp::stringOf($this->context['classes'][$interface])
+        );
         
         $this->addError(new CompileError(2000, $class.' does not implement '.$interface.'::'.$name));
       }
@@ -414,8 +417,10 @@
 
       // Copy members from parent class
       if (!isset($this->context['classes'][$extends])) {
-        Console::writeLine('!!! Class: ', $extends, ' does not exist');
-        Console::writeLine('    Declared: ', implode(', ', array_keys($this->context['classes'])));
+        $this->cat && $this->cat->error(
+          'Class:', $extends, 'does not exist,',
+          'declared=', implode(', ', array_keys($this->context['classes']))
+        );
 
         $this->addError(new CompileError(1000, 'Class '.$extends.' does not exist'));
       }
@@ -427,8 +432,10 @@
         foreach ($node->implements as $name) {
           $interface= $this->qualifiedName($name);
           if (!isset($this->context['classes'][$interface])) {
-            Console::writeLine('!!! Interface: ', $interface, ' does not exist');
-            Console::writeLine('    Declared: ', implode(', ', array_keys($this->context['classes'])));
+            $this->cat && $this->cat->error(
+              'Interface:', $extends, 'does not exist,',
+              'declared=', implode(', ', array_keys($this->context['classes']))
+            );
 
             $this->addError(new CompileError(1001, 'Interface '.$interface.' does not exist'));
           }
@@ -1019,8 +1026,10 @@
           $extends= $this->qualifiedName($interface);
 
           if (!isset($this->context['classes'][$extends])) {
-            Console::writeLine('!!! Interface: ', $extends, ' does not exist');
-            Console::writeLine('    Declared: ', implode(', ', array_keys($this->context['classes'])));
+            $this->cat && $this->cat->error(
+              'Interface:', $extends, 'does not exist,',
+              'declared=', implode(', ', array_keys($this->context['classes']))
+            );
 
             $this->addError(new CompileError(1001, 'Interface '.$extends.' does not exist'));
           }

@@ -73,12 +73,12 @@
       if (is_a($node, 'VNode')) {
         $func= 'emit'.ucfirst(substr(get_class($node), 0, -4));
         if (!method_exists($this, $func)) {
-          Console::writeLine('*** Cannot handle ', $node->getClassName());
+          $this->cat && $this->cat->error('Cannot handle', $node);
           $this->addError(new CompileError(100, 'Cannot handle '.$node->getClassName()));
           return;
         }
 
-        Console::writeLine('+++ ', $func, '(', $node->getClassName(), ')');
+        $this->cat && $this->cat->debug($func, '(', $node->getClassName(), ')');
         $this->$func($node);
         return;
       } else if (is_array($node)) {
@@ -461,5 +461,16 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitContinue(&$node) { }
- }
+    
+    /**
+     * Set a logger category for debugging
+     *
+     * @access  public
+     * @param   util.log.LogCategory cat
+     */
+    function setTrace($cat) {
+      $this->cat= $cat;
+    }
+
+  } implements(__FILE__, 'util.log.Traceable');
 ?>
