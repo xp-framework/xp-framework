@@ -1045,10 +1045,10 @@ function_call:
           $$= &new FunctionCallNode($1, $3);
         }
 	|	fully_qualified_class_name T_DOUBLE_COLON T_STRING '(' function_call_parameter_list ')' {
-          $$= &new MethodCallNode($1, $3, $5, NULL);
+          $$= &new MethodCallNode($1, new MemberNode($3), $5, NULL);
         }
 	|   fully_qualified_class_name T_DOUBLE_COLON variable_without_objects '(' function_call_parameter_list ')' {
-          $$= &new MethodCallNode($1, $3, $5, NULL);
+          $$= &new MethodCallNode($1, new MemberNode($3), $5, NULL);
         }
 ;
 
@@ -1298,15 +1298,27 @@ assignment_list_element:
 
 
 array_pair_list:
-		/* empty */ { }
-	|	non_empty_array_pair_list possible_comma	{ $$ = $1; }
+		/* empty */ { 
+          $$= array();
+        }
+	|	non_empty_array_pair_list possible_comma	{ 
+          $$ = $1; 
+        }
 ;
 
 non_empty_array_pair_list:
-		non_empty_array_pair_list ',' expr T_DOUBLE_ARROW expr	{ /* TBI compiler::call('zend_do_add_array_element', array($$, $5, $3, 0 )); */ }
-	|	non_empty_array_pair_list ',' expr			{ /* TBI compiler::call('zend_do_add_array_element', array($$, $3, NULL, 0 )); */ }
-	|	expr T_DOUBLE_ARROW expr	{ /* TBI compiler::call('zend_do_init_array', array($$, $3, $1, 0 )); */ }
-	|	expr 				{ /* TBI compiler::call('zend_do_init_array', array($$, $1, NULL, 0 )); */ }
+		non_empty_array_pair_list ',' expr T_DOUBLE_ARROW expr {
+          $$[$3]= $5;
+        }
+	|	non_empty_array_pair_list ',' expr {
+          $$[]= $3;
+        }
+	|	expr T_DOUBLE_ARROW expr {
+          $$= array($1 => $3);
+        }
+	|	expr {
+          $$= array($1);
+        }
 	|	non_empty_array_pair_list ',' expr T_DOUBLE_ARROW '&' w_variable { /* TBI compiler::call('zend_do_add_array_element', array($$, $6, $3, 1 )); */ }
 	|	non_empty_array_pair_list ',' '&' w_variable { /* TBI compiler::call('zend_do_add_array_element', array($$, $4, NULL, 1 )); */ }
 	|	expr T_DOUBLE_ARROW '&' w_variable	{ /* TBI compiler::call('zend_do_init_array', array($$, $4, $1, 1 )); */ }
