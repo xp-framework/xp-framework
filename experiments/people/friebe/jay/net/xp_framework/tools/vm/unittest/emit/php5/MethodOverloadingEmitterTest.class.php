@@ -9,6 +9,7 @@
   /**
    * Tests PHP5 emitter
    *
+   * @see      xp://net.xp_framework.tools.vm.unittest.emit.php5.MethodEmitterTest
    * @purpose  Unit Test
    */
   class MethodOverloadingEmitterTest extends AbstractEmitterTest {
