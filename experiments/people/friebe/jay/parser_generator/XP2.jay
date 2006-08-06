@@ -34,10 +34,10 @@
  * - 1 shift/reduce conflict due to objects within encapsulated strings.  Solved by shift.
  * 
  */
-
   class Parser extends Object {
     var
-      $errors= array();
+      $cat    = NULL,
+      $errors = array();
 
     /**
      * Adds an error
@@ -84,7 +84,18 @@
           $this->addError(new CompileError($level, $message));
           // Fall-through intended
       }
-      echo '*** ', $message, "\n";
+      
+      $this->cat && $this->cat->error($message);
+    }
+
+    /**
+     * Set a logger category for debugging
+     *
+     * @access  public
+     * @param   util.log.LogCategory cat
+     */
+    function setTrace($cat) {
+      $this->cat= $cat;
     }
 %}
  
@@ -1380,4 +1391,4 @@ class_constant:
 ;
 
 %%
-}
+} implements(__FILE__, 'util.log.Traceable');
