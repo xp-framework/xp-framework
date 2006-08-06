@@ -33,7 +33,24 @@
       $this->context['package']= '';
       $this->context['imports']= array();
       $this->context['overloaded']= array();
-      $this->context['classes']= array();
+      
+      // Builtin classes
+      $this->context['classes']= array(
+        'xp·lang·Object'    => array(
+          'toString'        => TRUE,
+          'getClassName'    => TRUE,
+        ),
+        'xp·lang·Throwable' => array(
+          '__construct'     => TRUE,
+          'toString'        => TRUE,    // overwritten
+          'getClassName'    => TRUE,    // inherited
+        ),
+      );
+      $this->context['classes']['xp·lang·Exception']= $this->context['classes']['xp·lang·Throwable'];
+      $this->context['classes']['xp·lang·SystemExit']= $this->context['classes']['xp·lang·Throwable'];
+      $this->context['classes']['xp·lang·IllegalAccessException']= $this->context['classes']['xp·lang·Throwable'];
+      $this->context['classes']['xp·lang·NullPointerException']= $this->context['classes']['xp·lang·Throwable'];
+      $this->context['classes']['xp·io·IOException']= $this->context['classes']['xp·lang·Throwable'];
     }
 
     /**
@@ -169,6 +186,8 @@
         Console::writeLine('!!! ', $class, ' does not implement ', $interface, '::', $name);
         Console::writeLine('    ', $class, ' methods= ', xp::stringOf($this->context['classes'][$class]));
         Console::writeLine('    ', $interface, ' methods= ', xp::stringOf($this->context['classes'][$interface]));
+        
+        $this->addError(new CompileError(2000, $class.' does not implement '.$interface.'::'.$name));
       }
     }
 
@@ -366,6 +385,7 @@
     function emitClassDeclaration(&$node) {
       $this->context['properties']= array();
       $this->context['class']= $this->qualifiedName($node->name);
+      $this->context['classes'][$this->context['class']]= array();
       $this->context['operators'][$this->context['class']]= array();
       $extends= $this->qualifiedName($node->extends ? $node->extends : 'xp~lang~Object');
       
@@ -375,12 +395,25 @@
       $this->bytes.= 'class '.$this->context['class'].' extends '.$extends;
 
       // Copy members from parent class
+      if (!isset($this->context['classes'][$extends])) {
+        Console::writeLine('!!! Class: ', $extends, ' does not exist');
+        Console::writeLine('    Declared: ', implode(', ', array_keys($this->context['classes'])));
+
+        $this->addError(new CompileError(1000, 'Class '.$extends.' does not exist'));
+      }
       $this->context['classes'][$this->context['class']]= $this->context['classes'][$extends];
 
       // Interfaces
       if ($node->implements) {
         $this->bytes.= ' implements ';
-        foreach ($node->implements as $interface) {
+        foreach ($node->implements as $name) {
+          $interface= $this->qualifiedName($name);
+          if (!isset($this->context['classes'][$interface])) {
+            Console::writeLine('!!! Interface: ', $interface, ' does not exist');
+            Console::writeLine('    Declared: ', implode(', ', array_keys($this->context['classes'])));
+
+            $this->addError(new CompileError(1001, 'Interface '.$interface.' does not exist'));
+          }
           $this->bytes.= $interface.', ';
         }
         $this->bytes= substr($this->bytes, 0, -2);
@@ -945,6 +978,7 @@
      */
     function emitInterfaceDeclaration(&$node) {
       $this->context['class']= $this->qualifiedName($node->name);
+      $this->context['classes'][$this->context['class']]= array();
       $this->bytes.= 'interface '.$this->context['class'];
 
       // Handle interface inheritance
@@ -952,6 +986,14 @@
         $this->bytes.= ' extends ';
         foreach ($node->extends as $interface) {
           $extends= $this->qualifiedName($interface);
+
+          if (!isset($this->context['classes'][$extends])) {
+            Console::writeLine('!!! Interface: ', $extends, ' does not exist');
+            Console::writeLine('    Declared: ', implode(', ', array_keys($this->context['classes'])));
+
+            $this->addError(new CompileError(1001, 'Interface '.$extends.' does not exist'));
+          }
+
           $this->context['classes'][$this->context['class']]= $this->context['classes'][$extends];
           $this->bytes.= $extends.', ';
         }
