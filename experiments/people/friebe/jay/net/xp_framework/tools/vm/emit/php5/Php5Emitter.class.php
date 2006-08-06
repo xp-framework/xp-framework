@@ -33,6 +33,7 @@
       $this->context['package']= '';
       $this->context['imports']= array();
       $this->context['overloaded']= array();
+      $this->context['classes']= array();
     }
 
     /**
@@ -94,7 +95,7 @@
       } else if (is_a($node, 'VariableNode')) {
         return $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->name];
       } else if (is_a($node, 'MethodCallNode')) {
-        return $this->context['types'][$node->class.'::'.$node->method];
+        return $this->context['types'][$node->class.'::'.$node->method->name];
       } else if (is_a($node, 'ParameterNode')) {
         return $node->type;
       } else if (is_a($node, 'BinaryNode')) {
@@ -146,12 +147,29 @@
     function methodName(&$node) {
       if (!$this->hasAnnotation($node, 'overloaded')) return $node->name;
 
-      $this->contect['overloaded'][$this->context['class'].'::'.$node->name]= TRUE;
+      $this->context['overloaded'][$this->context['class'].'::'.$node->name]= TRUE;
       $name= $node->name;
       foreach ($node->parameters as $param) {
         $name.= $this->typeOf($param);
       }
       return $name;
+    }
+
+    /**
+     * Checks whether a class implements an interface
+     *
+     * @access  protected
+     * @param   string class
+     * @param   string interface
+     */
+    function checkImplementation($class, $interface) {
+      foreach ($this->context['classes'][$interface] as $name => $decl) {
+        if (isset($this->context['classes'][$class][$name])) continue;
+        
+        Console::writeLine('!!! ', $class, ' does not implement ', $interface, '::', $name);
+        Console::writeLine('    ', $class, ' methods= ', xp::stringOf($this->context['classes'][$class]));
+        Console::writeLine('    ', $interface, ' methods= ', xp::stringOf($this->context['classes'][$interface]));
+      }
     }
 
     /**
@@ -274,10 +292,11 @@
       $method= $this->methodName($node);
       $this->context['types'][$this->context['class'].'::'.$method]= $node->return;
       $this->context['method']= $method;
-      
+      $this->context['classes'][$this->context['class']][$method]= TRUE; // XXX DECL?
       
       $this->bytes.= implode(' ', $this->modifierNames($node->modifiers)).' function '.$method.'(';
 
+      // Method arguments
       foreach ($node->parameters as $param) {
         $this->context['types'][$this->context['class'].'::'.$method.$param->name]= $param->type;
         $this->bytes.= $param->name;
@@ -290,6 +309,7 @@
       $node->parameters && $this->bytes= substr($this->bytes, 0, -2);
       $this->bytes.= ')';
 
+      // Method body
       if ($node->statements) {
         $this->bytes.= '{';
         $this->emitAll($node->statements);
@@ -310,7 +330,8 @@
     function emitConstructorDeclaration(&$node) { 
       $method= $this->methodName($node);
       $this->context['method']= $method;
-
+      $this->context['types'][$this->context['class'].'::'.$method]= $this->context['class'];
+      
       $this->bytes.= implode(' ', $this->modifierNames($node->modifiers)).' function '.$method.'(';
 
       foreach ($node->parameters as $param) {
@@ -335,7 +356,7 @@
 
       $this->context['method']= '<main>';
     }
-
+    
     /**
      * Emits ClassDeclarations
      *
@@ -346,12 +367,17 @@
       $this->context['properties']= array();
       $this->context['class']= $this->qualifiedName($node->name);
       $this->context['operators'][$this->context['class']]= array();
+      $extends= $this->qualifiedName($node->extends ? $node->extends : 'xp~lang~Object');
       
       $node->modifiers & MODIFIER_ABSTRACT && $this->bytes.= 'abstract ';
       $node->modifiers & MODIFIER_FINAL && $this->bytes.= 'final ';
 
-      $this->bytes.= 'class '.$this->context['class'].' extends ';
-      $this->bytes.= $this->qualifiedName($node->extends ? $node->extends : 'xp~lang~Object');
+      $this->bytes.= 'class '.$this->context['class'].' extends '.$extends;
+
+      // Copy members from parent class
+      $this->context['classes'][$this->context['class']]= $this->context['classes'][$extends];
+
+      // Interfaces
       if ($node->implements) {
         $this->bytes.= ' implements ';
         foreach ($node->implements as $interface) {
@@ -359,9 +385,11 @@
         }
         $this->bytes= substr($this->bytes, 0, -2);
       }
+
+      // Class body
       $this->bytes.= '{';
-      foreach ($node->statements as $node) {
-        $this->emit($node);
+      foreach ($node->statements as $stmt) {
+        $this->emit($stmt);
       }
       
       // Property simulation via __get / __set
@@ -400,6 +428,11 @@
       }
 
       $this->bytes.= '}';
+      
+      // Check interface implementations
+      foreach ($node->implements as $interface) {
+        $this->checkImplementation($this->context['class'], $this->qualifiedName($interface));
+      }
       $this->context['class']= '<main>';
     }
 
@@ -420,6 +453,21 @@
     }
 
     /**
+     * Emits Members
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitMember(&$node) {
+      $this->bytes.= $node->name;
+      if ($node->offset) {
+        $this->bytes.= '[';
+        $this->emit($node->offset);
+        $this->bytes.= ']';
+      }
+    }
+
+    /**
      * Emits MethodCalls
      *
      * @access  public
@@ -437,9 +485,9 @@
         $type= $this->typeOf($this->context['chain_prev']);
         $this->bytes.= '->';
       }
- 
-      $method= $node->method;
-      if ($this->contect['overloaded'][$type.'::'.$node->method]) {
+
+      $method= $node->method->name;
+      if (isset($this->context['overloaded'][$type.'::'.$method])) {
         foreach ($node->arguments as $arg) {
           $method.= $this->typeOf($arg);
         }
@@ -452,7 +500,7 @@
       $node->arguments && $this->bytes= substr($this->bytes, 0, -2);
       $this->bytes.= ')';
  
-      foreach ($node->chain as $node) {
+      if ($node->chain) foreach ($node->chain as $node) {
         $this->context['chain_prev']= $node;
         $this->emit($node);
       }
@@ -477,7 +525,8 @@
      */
     function emitObjectReference(&$node) { 
       $this->emit($node->class);
-      $this->bytes.= '->'.$node->member;
+      $this->bytes.= '->';
+      $this->emit($node->member);
     }
 
     /**
@@ -493,7 +542,7 @@
       if (isset($this->context['operators'][$type][$node->operator])) {
         return $this->emit(new MethodCallNode(
           $type, 
-          '__operator'.$this->operators[$node->operator],
+          new MemberNode('__operator'.$this->operators[$node->operator]),
           array($node->left, $node->right)
         ));
       }
@@ -530,8 +579,13 @@
       $this->bytes.= '= ';
       $this->emit($node->expression);
 
-      // TODO: Handle ObjectReferenceNode ($this->buffer) instead of VariableNode ($name)
-      $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->variable->name]= $this->typeOf($node->expression);
+      // Handle ObjectReferenceNode ($this->buffer) vs. of VariableNode ($name)
+      if (is_a($node->variable, 'ObjectReferenceNode')) {
+        $scope= $node->variable->class.'::$'.$node->variable->member->name;   // FIXME :$this!
+      } else {
+        $scope= $this->context['class'].'::'.$this->context['method'].$node->variable->name;
+      }
+      $this->context['types'][$scope]= $this->typeOf($node->expression);
     }
 
     /**
@@ -549,7 +603,7 @@
         $this->bytes.= '= ';
         $m= &new MethodCallNode(
           $type, 
-          '__operator'.$this->operators[$node->operator],
+          new MemberNode('__operator'.$this->operators[$node->operator]),
           array($node->variable, $node->expression)
         );
 
@@ -572,9 +626,18 @@
     function emitIf(&$node) { 
       $this->bytes.= 'if (';
       $this->emit($node->condition);
-      $this->bytes.= ') {';
-      $this->emitAll($node->statements);
-      $this->bytes.= '}';
+      $this->bytes.= ')';
+      
+      // if (expr) single_statement;
+      // vs.
+      // if (expr) { statement_list }
+      if (is_array($node->statements)) {
+        $this->bytes.= '{';
+        $this->emitAll($node->statements);
+        $this->bytes.= '}';
+      } else {
+        $this->emit($node->statements);
+      }
     }
 
     /**
@@ -616,7 +679,7 @@
       } else {
         $node->instanciation->chain && $this->bytes.= 'xp::create(';
         
-        if ($this->contect['overloaded'][$node->class->name.'::__construct']) {
+        if (isset($this->context['overloaded'][$node->class->name.'::__construct'])) {
           $ctor= '__construct';
           foreach ($node->instanciation->arguments as $arg) {
             $ctor.= $this->typeOf($arg);
@@ -808,7 +871,6 @@
           $this->context['properties'][]= $member;
         } else {
           $members.= $member->name.', ';
-          $m++;
         }
       }
       $members && $this->bytes.= implode(' ', $this->modifierNames($node->modifiers)).' '.substr($members, 0, -2).';';
@@ -884,12 +946,26 @@
     function emitInterfaceDeclaration(&$node) {
       $this->context['class']= $this->qualifiedName($node->name);
       $this->bytes.= 'interface '.$this->context['class'];
-      $this->bytes.= $this->qualifiedName($node->extends ? ' extends '.$node->extends : '');
+
+      // Handle interface inheritance
+      if ($node->extends) {
+        $this->bytes.= ' extends ';
+        foreach ($node->extends as $interface) {
+          $extends= $this->qualifiedName($interface);
+          $this->context['classes'][$this->context['class']]= $this->context['classes'][$extends];
+          $this->bytes.= $extends.', ';
+        }
+        $this->bytes= substr($this->bytes, 0, -2);
+      } 
+
       $this->bytes.= '{';
       foreach ($node->statements as $stmt) {
-        $this->emit($stmt);
+        if (is_a($stmt, 'MethodDeclarationNode')) {
+          $this->context['classes'][$this->context['class']][$this->methodName($stmt)]= TRUE; // XXX DECL?
+        }
       }
       $this->bytes.= '}';
+      $this->context['class']= '<main>';
     }
 
     /**
