@@ -148,5 +148,32 @@
         }')
       );
     }
+    
+    /**
+     * Tests exit() gets transformed to a SystemExit exception
+     *
+     * @access  public
+     */
+    #[@test]
+    function systemExit() {
+      $this->assertSourcecodeEquals(
+        'throw xp::exception(new xp·lang·SystemExit(1));',
+        $this->emit('exit(1);')
+      );
+    }
+
+    /**
+     * Tests NULL will be wrapped into a xp::$null, which, on invocation
+     * will result in an NPE.
+     *
+     * @access  public
+     */
+    #[@test]
+    function nullPointer() {
+      $this->assertSourcecodeEquals(
+        '$s= xp::$null; $s->invoke();',
+        $this->emit('$s= NULL; $s->invoke();')
+      );
+    }
   }
 ?>
