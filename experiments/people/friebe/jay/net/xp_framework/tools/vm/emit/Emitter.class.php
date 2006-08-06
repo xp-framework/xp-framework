@@ -421,5 +421,45 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitForeach(&$node) { }
+
+    /**
+     * Emits Switches
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitSwitch(&$node) { }
+
+    /**
+     * Emits Cases
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitCase(&$node) { }
+
+    /**
+     * Emits Defaults
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitDefault(&$node) { }
+
+    /**
+     * Emits Breaks
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitBreak(&$node) { }
+
+    /**
+     * Emits Continues
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitContinue(&$node) { }
  }
 ?>
