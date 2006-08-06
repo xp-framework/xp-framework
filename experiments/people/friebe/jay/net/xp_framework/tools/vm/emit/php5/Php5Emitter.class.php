@@ -32,7 +32,9 @@
       $this->bytes= "<?php\n  require('php5-emit/__xp__.php');\n  ";
       $this->context['package']= '';
       $this->context['imports']= array();
+      $this->context['types']= array();
       $this->context['overloaded']= array();
+      $this->context['class']= $this->context['method']= '<main>';
       
       // Builtin classes
       $this->context['classes']= array(
@@ -129,7 +131,7 @@
         return 'integer';
       } else if (is_float($node)) {
         return 'double';
-      } else switch (strtolower($node)) {
+      } else if (is_string($node)) switch (strtolower($node)) {
         case 'true': return 'bool';
         case 'false': return 'bool';
         case 'null': return 'object';
