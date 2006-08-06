@@ -74,6 +74,7 @@
         $func= 'emit'.ucfirst(substr(get_class($node), 0, -4));
         if (!method_exists($this, $func)) {
           Console::writeLine('*** Cannot handle ', $node->getClassName());
+          $this->addError(new CompileError(100, 'Cannot handle '.$node->getClassName()));
           return;
         }
 
@@ -394,5 +395,13 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitWhile(&$node) { }
-  }
+ 
+    /**
+     * Emits Do ... Whiles
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitDoWhile(&$node) { }
+ }
 ?>
