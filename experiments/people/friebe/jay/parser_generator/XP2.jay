@@ -619,6 +619,8 @@ optional_class_type:
 	|	T_STRING		{ $$= $1; }
 	|	T_CLASSNAME     { $$= $1; }
 	|	T_ARRAY		    { $$= 'array'; }
+	|	T_STRING '[' ']' { $$= array($1); }
+	|	T_CLASSNAME '[' ']' { $$= array($1); }
 ;
 
 function_call_parameter_list:
@@ -695,8 +697,17 @@ method_declaration:
 ;
 
 return_type_name:
-	    fully_qualified_class_name { 
+	    T_STRING { 
           $$= $1; 
+        }
+	|   T_CLASSNAME { 
+          $$= $1; 
+        }
+	|   T_STRING '[' ']' { 
+          $$= array($1); 
+        }
+	|   T_CLASSNAME '[' ']' { 
+          $$= array($1); 
         }
     |   T_VOID      { 
           $$= NULL; 
