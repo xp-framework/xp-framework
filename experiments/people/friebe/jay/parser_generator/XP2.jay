@@ -298,19 +298,19 @@ statement:
           $$= &new ForNode($3, $5, $7, $9);
         }
 	|	T_SWITCH '(' expr ')' switch_case_list {
-          $$= &PNode::create('Switch', array(&$3, &$5));
+          $$= &new SwitchNode($3, $5);
         }
 	|	T_BREAK ';'				{ 
-          $$= &PNode::create('Break', array(NULL));
+          $$= &new BreakNode(NULL);
         }
 	|	T_BREAK expr ';' {
-          $$= &PNode::create('Break', array(&$2));
+          $$= &new BreakNode($2);
         }
 	|	T_CONTINUE ';' {
-          $$= &PNode::create('Contine', array(NULL));
+          $$= &new ContinueNode(NULL);
         }
 	|	T_CONTINUE expr ';' {
-          $$= &PNode::create('Break', array(&$2));
+          $$= &new ContinueNode($2);
         }
 	|	T_RETURN ';' { 
           $$= &new ReturnNode(NULL);
@@ -562,10 +562,10 @@ case_list:
           $$= array();
         }
 	|	case_list T_CASE expr case_separator inner_statement_list { 
-          $$[]= &PNode::create('Case', array(&$3, &$5));
+          $$[]= &new CaseNode($3, $5);
         }
 	|	case_list T_DEFAULT case_separator inner_statement_list {
-          $$[]= &PNode::create('Case', array(NULL, &$4));
+          $$[]= &new DefaultNode($4);
         }
 ;
 
