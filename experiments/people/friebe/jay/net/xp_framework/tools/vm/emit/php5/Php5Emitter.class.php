@@ -29,7 +29,6 @@
      * @access  public
      */
     function __construct() {
-      $this->bytes= "<?php\n  require('php5-emit/__xp__.php');\n  ";
       $this->context['package']= '';
       $this->context['imports']= array();
       $this->context['types']= array();
@@ -213,7 +212,7 @@
      * @return  string
      */
     function getResult() { 
-      return $this->bytes."\n?>";
+      return "<?php\n  require('php5-emit/__xp__.php');\n  ".$this->bytes."\n?>";
     }
 
     /**
