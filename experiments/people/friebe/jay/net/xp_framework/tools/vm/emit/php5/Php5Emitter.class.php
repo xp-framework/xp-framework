@@ -688,6 +688,12 @@
       } else {
         $this->emit($node->statements);
       }
+      
+      if ($node->else) {
+        $this->bytes.= ' else {';
+        $this->emitAll($node->else);
+        $this->bytes.= '}';
+      }
     }
 
     /**
