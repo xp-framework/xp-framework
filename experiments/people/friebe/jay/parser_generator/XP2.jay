@@ -2,7 +2,8 @@
 ?><?php
   uses(
     'net.xp_framework.tools.vm.PNode',
-    'net.xp_framework.tools.vm.VNode'
+    'net.xp_framework.tools.vm.VNode',
+    'net.xp_framework.tools.vm.CompileError'
   );
 /*
    +----------------------------------------------------------------------+
@@ -35,14 +36,53 @@
  */
 
   class Parser extends Object {
+    var
+      $errors= array();
 
+    /**
+     * Adds an error
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.CompileError error
+     */
+    function addError(&$error) {
+      $this->errors[]= &$error;
+    }
+    
+    /**
+     * Returns whether errors have occured
+     *
+     * @access  public
+     * @return  bool
+     */
+    function hasErrors() {
+      return !empty($this->errors);
+    }
+
+    /**
+     * Returns whether errors have occured
+     *
+     * @access  public
+     * @return  net.xp_framework.tools.vm.CompileError[]
+     */
+    function getErrors() {
+      return $this->errors;
+    }
+
+    /**
+     * Error handler
+     *
+     * @access  public
+     * @param   int level
+     * @param   string message
+     */
     function error($level, $message) {
       switch ($level) {
         case E_ERROR:
         case E_CORE_ERROR:
         case E_COMPILE_ERROR:
-          xp::error($message);
-          // Bails out
+          $this->addError(new CompileError($level, $message));
+          // Fall-through intended
       }
       echo '*** ', $message, "\n";
     }

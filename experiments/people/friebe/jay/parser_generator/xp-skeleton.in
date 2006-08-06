@@ -49,7 +49,7 @@
 .        } else {
 .            $m = $message;
 .        }
-.        return xp::error($message);  
+.        return $this->error(E_COMPILE_ERROR, $message);  
 .    }
 .
 .
