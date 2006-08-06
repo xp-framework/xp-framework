@@ -13,19 +13,19 @@
    */ 
   class SwitchNode extends VNode {
     var
-      $arg0,
-      $arg1;
+      $condition,
+      $cases;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
+     * @param   mixed condition
+     * @param   mixed cases
      */
-    function __construct($arg0, $arg1) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
+    function __construct($condition, $cases) {
+      $this->condition= $condition;
+      $this->cases= $cases;
     }  
   }
 ?>
