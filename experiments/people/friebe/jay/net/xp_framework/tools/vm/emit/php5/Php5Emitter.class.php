@@ -13,7 +13,6 @@
    */
   class Php5Emitter extends Emitter {
     var
-      $cat     = NULL,
       $bytes   = '',
       $context = array(),
       $operators= array(

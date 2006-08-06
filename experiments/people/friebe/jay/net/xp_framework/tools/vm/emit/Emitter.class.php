@@ -13,7 +13,8 @@
    */
   class Emitter extends Object {
     var
-      $errors= array();
+      $cat     = NULL,
+      $errors  = array();
 
     /**
      * Emits an array of nodes
