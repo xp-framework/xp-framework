@@ -4,12 +4,16 @@
  * $Id$
  */
  
+  uses('net.xp_framework.tools.vm.CompileError');
+ 
   /**
    * Emitter
    *
    * @purpose  Abstract base class
    */
   class Emitter extends Object {
+    var
+      $errors= array();
 
     /**
      * Emits an array of nodes
@@ -19,6 +23,36 @@
      */
     function emitAll($nodes) {
       foreach ($nodes as $node) $this->emit($node);
+    }
+    
+    /**
+     * Adds an error
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.CompileError error
+     */
+    function addError(&$error) {
+      $this->errors[]= &$error;
+    }
+    
+    /**
+     * Returns whether errors have occured
+     *
+     * @access  public
+     * @return  bool
+     */
+    function hasErrors() {
+      return !empty($this->errors);
+    }
+
+    /**
+     * Returns whether errors have occured
+     *
+     * @access  public
+     * @return  net.xp_framework.tools.vm.CompileError[]
+     */
+    function getErrors() {
+      return $this->errors;
     }
     
     /**
