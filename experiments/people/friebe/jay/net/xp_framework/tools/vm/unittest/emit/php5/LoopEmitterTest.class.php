@@ -64,5 +64,31 @@
         $this->emit('do { echo $i++; } while ($i < 10);')
       );
     }
+
+    /**
+     * Tests do-loop with a continue
+     *
+     * @access  public
+     */
+    #[@test]
+    function doLoopWithContinue() {
+      $this->assertSourcecodeEquals(
+        'do {echo $i++; if ($i==5) continue; } while ($i<10);',
+        $this->emit('do { echo $i++; if ($i == 5) continue; } while ($i < 10);')
+      );
+    }
+
+    /**
+     * Tests do-loop with a break
+     *
+     * @access  public
+     */
+    #[@test]
+    function doLoopWithBreak() {
+      $this->assertSourcecodeEquals(
+        'do {echo $i++; if ($i==5) break; } while ($i<10);',
+        $this->emit('do { echo $i++; if ($i == 5) break; } while ($i < 10);')
+      );
+    }
   }
 ?>
