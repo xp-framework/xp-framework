@@ -213,6 +213,23 @@
     function getResult() { 
       return $this->bytes."\n?>";
     }
+
+    /**
+     * Emits an array
+     *
+     * @access  public
+     * @param   array array
+     */
+    function emitArray($array) { 
+      $this->bytes.= 'array(';
+      foreach ($array as $key => $val) {
+        $this->emit($key);
+        $this->bytes.= ' => ';
+        $this->emit($val);
+        $this->bytes.= ', ';
+      }
+      $this->bytes.= ')';
+    }
     
     /**
      * Emits a string

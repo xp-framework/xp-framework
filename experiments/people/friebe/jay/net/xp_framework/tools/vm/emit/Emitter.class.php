@@ -81,6 +81,8 @@
         Console::writeLine('+++ ', $func, '(', $node->getClassName(), ')');
         $this->$func($node);
         return;
+      } else if (is_array($node)) {
+        $this->emitArray($node);
       } else if ('"' == $node{0}) { // Double-quoted string
         $value= '';
         for ($i= 1, $s= strlen($node)- 1; $i < $s; $i++) {
@@ -108,6 +110,14 @@
         case 'null': $this->emitNull(); break;
       }
     }
+
+    /**
+     * Emits an array
+     *
+     * @access  public
+     * @param   array array
+     */
+    function emitArray($array) { }
     
     /**
      * Emits a string
