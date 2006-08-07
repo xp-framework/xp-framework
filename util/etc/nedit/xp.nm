@@ -75,33 +75,33 @@ define open_file_xpclass {
 }
 
 define create_xp_class {
-  include_file( getenv("HOME") "/.nedit/xpclass.tmpl")
+  include_file( getenv("HOME") "/.nedit/templates/$1.tmpl")
   set_language_mode("PHP")
   goto_line_number(14)
 }
 
 define create_xp_cli {
-  include_file( getenv("HOME") "/.nedit/xpcli.tmpl")
+  include_file( getenv("HOME") "/.nedit/templates/$1.tmpl")
   set_language_mode("PHP")
   goto_line_number(24)
 }
 
 define create_xp_testcase {
-  include_file( getenv("HOME") "/.nedit/xptestcase.tmpl" )
+  include_file( getenv("HOME") "/.nedit/templates/$1.tmpl" )
   set_language_mode("PHP")
   goto_line_number(17)
 }
 
 define add_xp_methoddoc {
-  insert_string(read_file(getenv("HOME") "/.nedit/xpmethoddoc.tmpl"))
+  insert_string(read_file(getenv("HOME") "/.nedit/templates/$1.tmpl"))
 }
 
 define add_xp_classheader {
-  insert_string(read_file(getenv("HOME") "/.nedit/xpclassheader.tmpl"))
+  insert_string(read_file(getenv("HOME") "/.nedit/templates/$1.tmpl"))
 }
 
 define add_xp_testmethod {
-  insert_string(read_file(getenv("HOME") "/.nedit/xptestmethod.tmpl"))
+  insert_string(read_file(getenv("HOME") "/.nedit/templates/$1.tmpl"))
 }
 
 define execute_svn_diff {
