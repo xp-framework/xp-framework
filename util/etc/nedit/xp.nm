@@ -86,6 +86,52 @@ define create_xp_cli {
   goto_line_number(24)
 }
 
+define create_xp_testcase {
+  include_file( getenv("HOME") "/.nedit/xptestcase.tmpl" )
+  set_language_mode("PHP")
+  goto_line_number(17)
+}
+
+define add_xp_methoddoc {
+  insert_string(read_file(getenv("HOME") "/.nedit/xpmethoddoc.tmpl"))
+}
+
+define add_xp_classheader {
+  insert_string(read_file(getenv("HOME") "/.nedit/xpclassheader.tmpl"))
+}
+
+define add_xp_testmethod {
+  insert_string(read_file(getenv("HOME") "/.nedit/xptestmethod.tmpl"))
+}
+
+define execute_svn_diff {
+  result= shell_command("svn diff " $file_path "/" $file_name, "")
+  if ($shell_cmd_status != 0) {
+    dialog(result, "Ok")
+  } else {
+    new()
+    focus_window("last")
+    insert_string(result)
+    set_language_mode("Unified diff")
+  }
+}
+
+define execute_svn_ci {
+  result= string_dialog("Please specify the commit message:", "Ok", "Abort")
+  if ($string_dialog_button == 1) {
+    if (1 == write_file(result, "/tmp/nedit.svn-ci-msg.tmp")) {
+      cmdres= shell_command("svn ci -F /tmp/nedit.svn-ci-msg.tmp " $file_path "/" $file_name, "")
+      dialog(cmdres, "Ok")
+    } else {
+      dialog("Writing commit msg failed.", "Ok")
+    }
+  }
+}
+
+define open_shell_for_file {
+  shell_command(getenv("HOME") "/.nedit/runshell.sh", "")
+}
+
 define open_browser {
   url= $1
   

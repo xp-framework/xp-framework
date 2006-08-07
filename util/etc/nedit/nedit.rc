@@ -28,10 +28,6 @@ nedit.shellCommands: \
 		unexpand\n\
 	Print:::IDS:\n\
 		lpr %\n\
-	Insert method doc:Alt+D:::\n\
-		$HOME/bin/xpci --comment\n\
-	Insert class header:Shift+Alt+D:::\n\
-		$HOME/bin/xpci --header\n\
 	Execute PHP script:F9::AD:\n\
 		php -q\n\
 	Make accessors:Shift+Alt+A::I:\n\
@@ -39,7 +35,7 @@ nedit.shellCommands: \
 	Check XP Coding standards:Alt+V::ADS:\n\
 		$HOME/bin/xpcsc.pl %\n
 nedit.macroCommands: \
-	Complete Word:Alt+D::: {\n\
+	Complete Word:::: {\n\
 		# Tuning parameters\n\
 		ScanDistance = 200\n\
 		\n\
@@ -196,10 +192,12 @@ nedit.macroCommands: \
 	}\n\
 	Comments>% Comment@LaTeX:::R: {\n\
 		                replace_in_selection("^.*$", "%&", "regex")\n\
-		                }\n\
+		                \n\
+	}\n\
 	Comments>% Uncomment@LaTeX:::R: {\n\
 		                replace_in_selection("(^[ \\\\t]*%)(.*)$", "\\\\2", "regex")\n\
-		                }\n\
+		                \n\
+	}\n\
 	Comments>Bar Comment@C:::R: {\n\
 		if ($selection_left != -1) {\n\
 		    dialog("Selection must not be rectangular")\n\
@@ -287,11 +285,32 @@ nedit.macroCommands: \
 		    nGrep(get_selection())\n\
 		}\n\
 	}\n\
-	Create XP class:Shift+Alt+C::: {\n\
+	Create XP class@PHP:Shift+Alt+C::: {\n\
 		create_xp_class()\n\
 	}\n\
-	Create XP CLI script:Shift+Alt+F::: {\n\
+	Create XP CLI script@PHP:Shift+Alt+F::: {\n\
 		create_xp_cli()\n\
+	}\n\
+	Create XP testcase@PHP:Shift+Alt+R::: {\n\
+		create_xp_testcase()\n\
+	}\n\
+	Create XP testmethod@PHP:Alt+T::: {\n\
+		add_xp_testmethod()\n\
+	}\n\
+	Insert method doc@PHP:Alt+D::: {\n\
+		add_xp_methoddoc()\n\
+	}\n\
+	Insert class header@PHP:Shift+Alt+D::: {\n\
+		add_xp_classheader()\n\
+	}\n\
+	svn diff:::: {\n\
+		execute_svn_diff()\n\
+	}\n\
+	svn commit:::: {\n\
+		execute_svn_ci()\n\
+	}\n\
+	Open Shell:Shift+Alt+S::: {\n\
+		open_shell_for_file()\n\
 	}\n
 nedit.bgMenuCommands: \
 	Apidoc PHP@PHP:::R: {\n\
@@ -514,7 +533,8 @@ nedit.highlightPatterns: C:1:0{\n\
 		heredoc:"\\<\\<\\<__":"^__"::Text Key1:phptags:\n\
 		classname:"([A-Za-z_·:]+)?(::)([A-Za-z_]+)":::String1:phptags:\n\
 		classnameseperator:"\\2":""::Pointer:classname:C\n\
-		constants:"(NULL|FALSE|TRUE|<[A-Z_]+>)":::Ada Attributes:phptags:\n\
+		knownconstants:"(NULL|FALSE|TRUE)":::KnownConstant:phptags:\n\
+		constants:"(<[A-Z_]+>)":::Ada Attributes:phptags:\n\
 		annotation:"@([a-zA-Z]+)(\\('[^']+'\\))?":::Text Comment:phptags:\n\
 	}\n\
 	CSS:Default\n\
@@ -600,6 +620,7 @@ nedit.styles: 	Plain:black:Plain\n\
 	Preprocessor:RoyalBlue4:Plain\n\
 	Preprocessor1:blue:Plain\n\
 	Character Const:darkGreen:Plain\n\
+	KnownConstant:darkgreen:Plain\n\
 	Numeric Const:darkGreen:Plain\n\
 	Identifier:Royalblue:Plain\n\
 	Identifier1:Gray20:Plain\n\
