@@ -1175,7 +1175,7 @@
         $this->emit($static);
         $this->bytes.= ', ';
       }
-      $node->list && $this->bytes= substr($this->bytes, 0, -2);
+      $this->bytes= substr($this->bytes, 0, -2);
     }
 
     /**
@@ -1190,6 +1190,34 @@
         $this->bytes.= '= ';
         $this->emit($node->initial);
       }
+    }
+
+    /**
+     * Emits isset
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitIsset(&$node) {
+      $this->bytes.= 'isset(';
+      foreach ($node->list as $expr) {
+        $this->emit($expr);
+        $this->bytes.= ', ';
+      }
+      $this->bytes= substr($this->bytes, 0, -2);
+      $this->bytes.= ')';
+    }
+
+    /**
+     * Emits empty
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitEmpty(&$node) {
+      $this->bytes.= 'empty(';
+      $this->emit($node->expression);
+      $this->bytes.= ')';
     }
   }
 ?>

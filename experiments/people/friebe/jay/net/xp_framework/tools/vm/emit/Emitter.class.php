@@ -478,6 +478,23 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitStaticVariable(&$node) { }
+
+
+    /**
+     * Emits isset
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitIsset(&$node) { }
+
+    /**
+     * Emits empty
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitEmpty(&$node) { }
     
     /**
      * Set a logger category for debugging

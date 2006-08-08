@@ -23,6 +23,7 @@
     'net.xp_framework.tools.vm.nodes.DoWhileNode',
     'net.xp_framework.tools.vm.nodes.EchoNode',
     'net.xp_framework.tools.vm.nodes.ElseIfNode',
+    'net.xp_framework.tools.vm.nodes.EmptyNode',
     'net.xp_framework.tools.vm.nodes.EnumDeclarationNode',
     'net.xp_framework.tools.vm.nodes.EnumMemberNode',
     'net.xp_framework.tools.vm.nodes.ExitNode',
@@ -36,6 +37,7 @@
     'net.xp_framework.tools.vm.nodes.InterfaceDeclarationNode',
     'net.xp_framework.tools.vm.nodes.ImportListNode',
     'net.xp_framework.tools.vm.nodes.ImportNode',
+    'net.xp_framework.tools.vm.nodes.IssetNode',
     'net.xp_framework.tools.vm.nodes.MemberDeclarationListNode',
     'net.xp_framework.tools.vm.nodes.MemberDeclarationNode',
     'net.xp_framework.tools.vm.nodes.MethodCallNode',
@@ -1432,8 +1434,12 @@ encaps_var_offset:
 ;
 
 internal_functions_in_yacc:
-		T_ISSET '(' isset_variables ')' { $$ = $3; }
-	|	T_EMPTY '(' variable ')'	{ /* compiler::call('zend_do_isset_or_isempty', array(ZEND_ISEMPTY, $$, $3 )); */ }
+		T_ISSET '(' isset_variables ')' {
+          $$= &new IssetNode($3);
+        }
+	|	T_EMPTY '(' variable ')' {
+          $$= &new EmptyNode($3);
+        }
 	|	T_INCLUDE expr 			{ /* compiler::call('zend_do_include_or_eval', array(ZEND_INCLUDE, $$, $2 )); */ }
 	|	T_INCLUDE_ONCE expr 	{ /* compiler::call('zend_do_include_or_eval', array(ZEND_INCLUDE_ONCE, $$, $2 ));*/  }
 	|	T_EVAL '(' expr ')' 	{ /* compiler::call('zend_do_include_or_eval', array(ZEND_EVAL, $$, $3 )); */ }
@@ -1442,8 +1448,12 @@ internal_functions_in_yacc:
 ;
 
 isset_variables:
-		variable 				{ /* compiler::call('zend_do_isset_or_isempty', array(ZEND_ISSET, $$, $1 )); */ }
-	|	isset_variables ',' { /* compiler::call('zend_do_boolean_and_begin', array($1, $2 )); } variable { compiler::call('zend_do_isset_or_isempty', array(ZEND_ISSET, $tmp, $4 )); compiler::call('zend_do_boolean_and_end', array($$, $1, $tmp, $2 )); */ }
+		variable {
+          $$= array($1);
+        }
+	|	isset_variables ',' variable {
+          $$[]= array($3);
+        }
 ;	
 
 class_constant:
