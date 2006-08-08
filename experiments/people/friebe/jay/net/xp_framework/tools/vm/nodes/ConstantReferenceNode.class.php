@@ -13,19 +13,19 @@
    */ 
   class ConstantReferenceNode extends VNode {
     var
-      $arg0,
-      $arg1;
+      $class,
+      $name;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed arg0
-     * @param   mixed arg1
+     * @param   string class
+     * @param   string name
      */
-    function __construct($arg0, $arg1) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
+    function __construct($class, $name) {
+      $this->class= $class;
+      $this->name= $name;
     }  
   }
 ?>
