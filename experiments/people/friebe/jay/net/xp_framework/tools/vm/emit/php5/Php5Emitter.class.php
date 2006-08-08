@@ -532,7 +532,7 @@
      */
     function emitMethodCall(&$node) {
       if (is_string($node->class)) {      // Static
-        $this->bytes.= $node->class.'::';
+        $this->bytes.= $this->qualifiedName($node->class).'::';
         $type= $node->class;
       } else if ($node->class) {          // Instance
         $this->emit($node->class);    
