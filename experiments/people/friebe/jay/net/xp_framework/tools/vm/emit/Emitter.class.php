@@ -71,6 +71,14 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emit(&$node) {
+      if (is_a($node, 'ConstantReferenceNode') && !$node->class) {
+        switch (strtolower($node->name)) {
+          case 'true': $this->emitBoolean(TRUE); return;
+          case 'false': $this->emitBoolean(FALSE); return;
+          case 'null': $this->emitNull(); return;
+        }
+      }
+
       if (is_a($node, 'VNode')) {
         $func= 'emit'.ucfirst(substr(get_class($node), 0, -4));
         if (!method_exists($this, $func)) {
