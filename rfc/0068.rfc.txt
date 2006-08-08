@@ -1,0 +1,50 @@
+RFC 0068: EASC Protocol versioning
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Aug  8 12:11:59 CEST 2006
+@status: draft
+@category: remote
+
+Scope of Change
+---------------
+The EASC API will support - in a transparent manner - protocol versioning.
+
+
+Rationale
+---------
+Backwards compatibility.
+
+
+Functionality
+-------------
+TODO
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Protocol version negotation adds a bit of overhead for the first connection.
+
+
+Dependencies
+------------
+Changes to both client and server APIs. No changes to code using this API.
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+n/a
+
+
+<EOF>
