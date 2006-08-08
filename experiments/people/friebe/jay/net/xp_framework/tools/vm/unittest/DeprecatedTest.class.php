@@ -4,14 +4,42 @@
  * $Id$
  */
  
-  uses('net.xp_framework.tools.vm.unittest.emit.php5.AbstractEmitterTest');
+  uses(
+    'util.profiling.unittest.TestCase',
+    'net.xp_framework.tools.vm.Parser',
+    'net.xp_framework.tools.vm.Lexer'
+  );
 
   /**
-   * Tests PHP5 emitter
+   * Tests PHP5 parseter
    *
    * @purpose  Unit Test
    */
-  class DeprecatedEmitterTest extends AbstractEmitterTest {
+  class DeprecatedTest extends TestCase {
+
+    /**
+     * Parses a given string source into an AST.
+     *
+     * @access  protected
+     * @param   string source
+     * @return  net.xp_framework.tools.vm.VNode[]
+     * @throws  lang.FormatException in case errors occur during parse()
+     */
+    function &parse($source) {
+      $parser= &new Parser();
+      $nodes= $parser->yyparse(new Lexer($source, '(string)'));
+      
+      if ($parser->hasErrors()) {
+        $message= 'Errors found: {';
+        foreach ($parser->getErrors() as $error) {
+          $message.= "\n  * ".$error->toString();
+        }
+        $message.= "\n}";
+        return throw(new FormatException($message));
+      }
+      
+      return $nodes;
+    }
 
     /**
      * Tests old foreach: endforeach syntax is deprecated
@@ -20,7 +48,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     function deprecatedForeach() {
-      $this->emit('foreach ($array as $key => $value): endforeach');
+      $this->parse('foreach ($array as $key => $value): endforeach');
     }
 
     /**
@@ -30,7 +58,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     function deprecatedFor() {
-      $this->emit('for ($i= 0; $i < 10; $i++): endfor');
+      $this->parse('for ($i= 0; $i < 10; $i++): endfor');
     }
 
     /**
@@ -40,7 +68,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     function deprecatedIf() {
-      $this->emit('if ($i): endif');
+      $this->parse('if ($i): endif');
     }
 
     /**
@@ -50,7 +78,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     function deprecatedWhile() {
-      $this->emit('while ($i): endwhile');
+      $this->parse('while ($i): endwhile');
     }
 
     /**
@@ -60,7 +88,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     function deprecatedSwitch() {
-      $this->emit('switch ($foo):
+      $this->parse('switch ($foo):
         case 1:
         case 2:
         default: break;
@@ -75,7 +103,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     function deprecatedConstructorWithoutBraces() {
-      $this->emit('class Foo { } new Foo;');
+      $this->parse('class Foo { } new Foo;');
     }
   }
 ?>
