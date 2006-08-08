@@ -5,14 +5,20 @@
 
 PHP?=php
 
-parser_generator/phpJay.exe:
-	cd parser_generator && make && cd ..
+all: test
 
-net/xp_framework/tools/vm/Parser.class.php:
+net/xp_framework/tools/vm/Parser.class.php: parser_generator/XP2.jay
+	@echo "===> Generating Parser class from XP2.jay"
 	sh generate_parser.sh
 
-test: net/xp_framework/tools/vm/Parser.class.php parser_generator/phpJay.exe
+generator:
+	cd parser_generator && $(MAKE)
+
+test: generator net/xp_framework/tools/vm/Parser.class.php 
+	@echo "===> Running Unittests"
 	$(PHP) ../../../../util/tests/run.php php5-emit/unittest.ini
 
 clean:
-	rm parser_generator/phpJay.exe net/xp_framework/tools/vm/Parser.class.php
+	@echo "===> Cleaning"
+	cd parser_generator && $(MAKE) clean
+	rm net/xp_framework/tools/vm/Parser.class.php
