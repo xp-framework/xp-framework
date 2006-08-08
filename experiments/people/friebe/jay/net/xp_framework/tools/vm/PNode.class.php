@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('io.FileUtil', 'io.File');
+
   /**
    * (Insert class' description here)
    *
