@@ -15,7 +15,7 @@ generator:
 	cd parser_generator && $(MAKE)
 
 test: generator net/xp_framework/tools/vm/Parser.class.php 
-	@echo "===> Running Unittests"
+	$(PHP) ../../../../util/tests/run.php unittest.ini
 	$(PHP) ../../../../util/tests/run.php php5-emit/unittest.ini
 
 clean:
