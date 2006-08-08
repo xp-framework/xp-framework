@@ -8,6 +8,7 @@
     'net.xp_framework.tools.vm.nodes.BinaryAssignNode',
     'net.xp_framework.tools.vm.nodes.BinaryNode',
     'net.xp_framework.tools.vm.nodes.BreakNode',
+    'net.xp_framework.tools.vm.nodes.BooleanOperatorNode',
     'net.xp_framework.tools.vm.nodes.CaseNode',
     'net.xp_framework.tools.vm.nodes.CatchNode',
     'net.xp_framework.tools.vm.nodes.ClassConstantDeclarationListNode',
@@ -994,19 +995,19 @@ expr_without_variable:
           $$= &new PreDecNode($1);
         }
 	|	expr T_BOOLEAN_OR expr {
-          $$= &PNode::create('Boolean', array(&$1, &$3, '||'));
+          $$= &new BooleanOperatorNode($1, $3, '||');
         }
 	|	expr T_BOOLEAN_AND expr {
-          $$= &PNode::create('Boolean', array(&$1, &$3, '&&'));
+          $$= &new BooleanOperatorNode($1, $3, '&&');
         }
 	|	expr T_LOGICAL_OR expr {    // "or"
-          $$= &PNode::create('Boolean', array(&$1, &$3, '||'));
+          $$= &new BooleanOperatorNode($1, $3, '||');
         }
 	|	expr T_LOGICAL_AND expr {   // "and"
-          $$= &PNode::create('Boolean', array(&$1, &$3, '&&'));
+          $$= &new BooleanOperatorNode($1, $3, '&&');
         }
 	|	expr T_LOGICAL_XOR expr {   // "xor"
-          $$= &PNode::create('Boolean', array(&$1, &$3, '^^'));
+          $$= &new BooleanOperatorNode($1, $3, '^^');
         }
 	|	expr '|' expr {
           $$= &new BinaryNode($1, $3, '|');

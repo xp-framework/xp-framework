@@ -1229,5 +1229,17 @@
     function emitConstantReference(&$node) {
       $this->bytes.= ($node->class ? $node->class.'::' : '').$node->name;
     }
+
+    /**
+     * Emits constant references
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitBooleanOperator(&$node) {
+      $this->emit($node->left);
+      $this->bytes.= ' '.$node->operator.' ';
+      $this->emit($node->right);
+    }
   }
 ?>
