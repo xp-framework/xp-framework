@@ -152,5 +152,9 @@ Comments
   The JNDI name is not stored nor used anywhere besides the naming lookup
   for EASC, so it probably not available in the proxy objects for
   later logging.
-  
+
+- friebe, Tue Aug  8 12:04:35 CEST 2006
+  I think raw data logging should be separated (by loglevel) from the 
+  other events like invocation, lookup and transactions.
+
 <EOF>
