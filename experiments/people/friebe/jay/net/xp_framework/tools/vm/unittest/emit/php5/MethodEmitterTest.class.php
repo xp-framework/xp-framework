@@ -146,5 +146,30 @@
         }')
       );
     }
+    
+    /**
+     * Tests a method which contains a method-static variable
+     *
+     * @access  public
+     */
+    #[@test]
+    function methodWithStaticVariable() {
+      $this->assertSourcecodeEquals(
+        preg_replace('/\n\s*/', '', 'class Test extends xp·lang·Object{
+          public function sayHello(){
+            static $cache= array(); 
+            echo \'Hello\'; 
+          }
+        };'),
+        $this->emit('class Test {
+          public void sayHello() {
+            static $cache= array();
+
+            echo "Hello";
+          }
+        }')
+      );
+    }
+
   }
 ?>
