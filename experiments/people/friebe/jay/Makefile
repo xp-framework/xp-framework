@@ -14,7 +14,9 @@ net/xp_framework/tools/vm/Parser.class.php: parser_generator/XP2.jay
 generator:
 	cd parser_generator && $(MAKE)
 
-test: generator net/xp_framework/tools/vm/Parser.class.php 
+generate: generator net/xp_framework/tools/vm/Parser.class.php 
+
+test: generate
 	$(PHP) ../../../../util/tests/run.php unittest.ini
 	$(PHP) ../../../../util/tests/run.php php5-emit/unittest.ini
 
