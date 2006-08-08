@@ -21,6 +21,14 @@
   $parser= &new Parser($lexer);
   $nodes= $parser->yyparse($lexer);
   
+  if ($parser->hasErrors()) {
+    Console::writeLine('!!! Errors have occured');
+    foreach ($parser->getErrors() as $error) {
+      Console::writeLine('- ', $error->toString());
+    }
+    exit(1);
+  }
+  
   // Dump AST if specified
   $p->exists('ast') && Console::writeLine(VNode::stringOf($nodes));
   
