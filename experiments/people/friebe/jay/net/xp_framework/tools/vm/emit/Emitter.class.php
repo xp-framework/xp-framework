@@ -462,6 +462,22 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitContinue(&$node) { }
+
+    /**
+     * Emits static variables list
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitStaticVariableList(&$node) { }
+
+    /**
+     * Emits static variables
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitStaticVariable(&$node) { }
     
     /**
      * Set a logger category for debugging
