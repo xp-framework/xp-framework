@@ -1162,5 +1162,34 @@
         $this->emit($node->expression);
       }
     }
+
+    /**
+     * Emits static variables list
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitStaticVariableList(&$node) {
+      $this->bytes.= 'static ';
+      foreach ($node->list as $static) {
+        $this->emit($static);
+        $this->bytes.= ', ';
+      }
+      $node->list && $this->bytes= substr($this->bytes, 0, -2);
+    }
+
+    /**
+     * Emits static variables
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitStaticVariable(&$node) {
+      $this->bytes.= $node->name;
+      if (NULL !== $node->initial) {
+        $this->bytes.= '= ';
+        $this->emit($node->initial);
+      }
+    }
   }
 ?>
