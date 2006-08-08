@@ -82,8 +82,8 @@
       if (is_a($node, 'VNode')) {
         $func= 'emit'.ucfirst(substr(get_class($node), 0, -4));
         if (!method_exists($this, $func)) {
-          $this->cat && $this->cat->error('Cannot handle', $node);
-          $this->addError(new CompileError(100, 'Cannot handle '.$node->getClassName()));
+          $this->cat && $this->cat->error('No emitter for', $node);
+          $this->addError(new CompileError(100, 'No emitter for '.$node->getClassName()));
           return;
         }
 
@@ -92,6 +92,7 @@
         return;
       } else if (is_array($node)) {
         $this->emitArray($node);
+        return;
       } else if ('"' == $node{0}) { // Double-quoted string
         $value= '';
         for ($i= 1, $s= strlen($node)- 1; $i < $s; $i++) {
@@ -107,17 +108,19 @@
           }
         }
         $this->emitString($value);
+        return;
       } else if ("'" == $node{0}) { // Single-quoted string
         $this->emitString(substr($node, 1, -1));
+        return;
       } else if (is_int($node)) {
         $this->emitInteger($node);
+        return;
       } else if (is_float($node)) {
         $this->emitDouble($node);
-      } else switch (strtolower($node)) {
-        case 'true': $this->emitBoolean(TRUE); break;
-        case 'false': $this->emitBoolean(FALSE); break;
-        case 'null': $this->emitNull(); break;
+        return;
       }
+
+      $this->cat && $this->cat->error('Cannot handle', $node);
     }
 
     /**
