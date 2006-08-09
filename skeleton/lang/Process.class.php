@@ -106,7 +106,7 @@
      * Close this process
      *
      * @access  public
-     * @return  exit value of process
+     * @return  int exit value of process
      */
     function close() {
       $this->in->close();
