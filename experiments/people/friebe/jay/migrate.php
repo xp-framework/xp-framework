@@ -233,7 +233,7 @@ __;
 
             case ST_FUNCTION_ARGS.T_VARIABLE:
               $type= ($arguments[$offset]->type
-                ? ltrim(strtr($arguments[$offset]->type, '.', '~'), '&')
+                ? rtrim(ltrim(strtr($arguments[$offset]->type, '.', '~'), '&'), '*')
                 : 'auto'
               );
               $t[1]= $type.' '.$t[1];
