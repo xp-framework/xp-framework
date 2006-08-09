@@ -677,17 +677,26 @@ parameter_list:
 ;
 
 non_empty_parameter_list:
-		optional_class_type T_VARIABLE {
-          $$= array(new ParameterNode($2, $1, NULL));
+		optional_class_type parameter_var {
+          $$= array(new ParameterNode($2[0], $1, NULL, $2[1]));
         }
-	|	optional_class_type T_VARIABLE '=' static_scalar {
-          $$= array(new ParameterNode($2, $1, $4));
+	|	optional_class_type parameter_var '=' static_scalar {
+          $$= array(new ParameterNode($2[0], $1, $4, $2[1]));
         }
-	|	non_empty_parameter_list ',' optional_class_type T_VARIABLE {
-          $$[]= &new ParameterNode($4, $3, NULL);
+	|	non_empty_parameter_list ',' optional_class_type parameter_var {
+          $$[]= &new ParameterNode($4[0], $3, NULL, $4[1]);
         }
-	|	non_empty_parameter_list ',' optional_class_type T_VARIABLE '=' static_scalar {
-          $$[]= &new ParameterNode($4, $3, $6);
+	|	non_empty_parameter_list ',' optional_class_type parameter_var '=' static_scalar {
+          $$[]= &new ParameterNode($4[0], $3, $6, $4[1]);
+        }
+;
+
+parameter_var:
+		T_VARIABLE {
+          $$= array($1, FALSE);
+        }
+	|   T_VARIABLE '.''.''.' {
+          $$= array($1, TRUE);
         }
 ;
 
