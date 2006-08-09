@@ -197,8 +197,9 @@ __;
                 if ($method->name != $t[1]) continue;
 
                 // Calculate return type, defaulting to "void"
+                // No return types for con- and destructors!
                 $type= '';
-                if ('__construct' != $t[1]) {
+                if ('__construct' != $t[1] && '__destruct' != $t[1]) {
                   $return= $method->tags('return');
                   $type= $return ? ltrim(strtr($return[0]->type, '.', '~'), '&').' ' : 'void ';
                 }
