@@ -267,7 +267,9 @@ __;
               break;
 
             case ST_FUNCTION_BODY.'&':
-              $t= '';
+              if (T_WHITESPACE != $tokens[$i+ 1][0]) {  // Kill reference operator
+                $t= '';
+              }
               break;
 
             case ST_FUNCTION_BODY.'}':
