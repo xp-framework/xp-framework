@@ -232,7 +232,7 @@
       }
 
       // Strip trailing comma
-      $parameters && $this->bytes= substr($this->bytes, 0, -2);
+      $this->bytes= rtrim($this->bytes, ', ');
 
       return $embed;
     }
