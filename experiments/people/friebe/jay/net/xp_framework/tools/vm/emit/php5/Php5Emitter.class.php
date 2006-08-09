@@ -205,19 +205,17 @@
      * @return  string source source to embed inside method declaration
      */
     function emitParameters($parameters) {
-      $va= FALSE;
       $embed= '';
       foreach ($parameters as $i => $param) {
       
         // Vararg or not vararg
         if ($param->vararg) {
-          if ($va) {
-            return $this->addError(new CompileError(1210, 'Vararags parameters must be the last parameter'));
-          }
-          
-          $va= TRUE;
           $embed.= '$__a= func_get_args(); '.$param->name.'= array_slice($__a, '.$i.');';
           $this->context['types'][$this->context['class'].'::'.$this->context['method'].$param->name]= $param->type.'[]';
+          
+          if ($i != sizeof($parameters) - 1) {
+            return $this->addError(new CompileError(1210, 'Vararags parameters must be the last parameter'));
+          }
         } else {
           $this->context['types'][$this->context['class'].'::'.$this->context['method'].$param->name]= $param->type;
           $this->bytes.= $param->name;
