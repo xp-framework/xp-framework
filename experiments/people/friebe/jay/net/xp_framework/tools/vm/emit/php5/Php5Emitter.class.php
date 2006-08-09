@@ -198,6 +198,46 @@
     }
     
     /**
+     * Emits a list of parameters
+     *
+     * @access  protected
+     * @param   net.xp_framework.tools.vm.ParameterNode[] parameters
+     * @return  string source source to embed inside method declaration
+     */
+    function emitParameters($parameters) {
+      $va= FALSE;
+      $embed= '';
+      foreach ($parameters as $i => $param) {
+      
+        // Vararg or not vararg
+        if ($param->vararg) {
+          if ($va) {
+            return $this->addError(new CompileError(1210, 'Vararags parameters must be the last parameter'));
+          }
+          
+          $va= TRUE;
+          $embed.= '$__a= func_get_args(); '.$param->name.'= array_slice($__a, '.$i.');';
+          $this->context['types'][$this->context['class'].'::'.$this->context['method'].$param->name]= $param->type.'[]';
+        } else {
+          $this->context['types'][$this->context['class'].'::'.$this->context['method'].$param->name]= $param->type;
+          $this->bytes.= $param->name;
+        }
+        
+        // Parameter default value
+        if ($param->default) {
+          $this->bytes.= '= ';
+          $this->emit($param->default);
+        }
+        $this->bytes.= ', ';
+      }
+
+      // Strip trailing comma
+      $parameters && $this->bytes= substr($this->bytes, 0, -2);
+
+      return $embed;
+    }
+    
+    /**
      * Emits a single node
      *
      * @access  public
@@ -322,7 +362,7 @@
       unset($this->context['imports'][$this->context['package']]);
       $this->context['package']= NULL;
     }
-
+    
     /**
      * Emits FunctionDeclarations
      *
@@ -331,24 +371,8 @@
      */
     function emitFunctionDeclaration(&$node) { 
       $this->bytes.= 'function '.$node->name.'(';
-      $va= -1;
-      foreach ($node->parameters as $i => $param) {
-        $this->bytes.= $param->name;
-        if ($param->default) {
-          $this->bytes.= '= ';
-          $this->emit($param->default);
-        }
-        if ($param->vararg) {
-          if ($va > -1) return $this->addError(new CompileError(1210, 'Vararags parameters must be the last parameter'));
-          $va= $i;
-        }
-        $this->bytes.= ', ';
-      }
-      $node->parameters && $this->bytes= substr($this->bytes, 0, -2);
-      $this->bytes.= ') {';
-      
-      -1 != $va && $this->bytes.= '$__a= func_get_args(); '.$node->parameters[$va]->name.'= array_slice($__a, '.$va.');';
-      
+      $embed= $this->emitParameters($node->parameters);
+      $this->bytes.= ') {'.$embed;
       $this->emitAll($node->statements);
       $this->bytes.= '}';
     }
@@ -368,29 +392,12 @@
       $this->bytes.= implode(' ', $this->modifierNames($node->modifiers)).' function '.$method.'(';
 
       // Method arguments
-      $va= -1;
-      foreach ($node->parameters as $i => $param) {
-        $this->context['types'][$this->context['class'].'::'.$method.$param->name]= $param->type;
-        $this->bytes.= $param->name;
-        if ($param->default) {
-          $this->bytes.= '= ';
-          $this->emit($param->default);
-        }
-        if ($param->vararg) {
-          if ($va > -1) return $this->addError(new CompileError(1210, 'Vararags parameters must be the last parameter'));
-          $va= $i;
-        }
-        $this->bytes.= ', ';
-      }
-      $node->parameters && $this->bytes= substr($this->bytes, 0, -2);
+      $embed= $this->emitParameters($node->parameters);
       $this->bytes.= ')';
 
       // Method body
       if ($node->statements) {
-        $this->bytes.= '{';
-
-        -1 != $va && $this->bytes.= '$__a= func_get_args(); '.$node->parameters[$va]->name.'= array_slice($__a, '.$va.');';
-
+        $this->bytes.= '{'.$embed;
         $this->emitAll($node->statements);
         $this->bytes.= '}';
       } else {
@@ -412,29 +419,11 @@
       $this->context['types'][$this->context['class'].'::'.$method]= $this->context['class'];
       
       $this->bytes.= implode(' ', $this->modifierNames($node->modifiers)).' function '.$method.'(';
-
-      $va= -1;
-      foreach ($node->parameters as $i => $param) {
-        $this->context['types'][$this->context['class'].'::'.$method.$param->name]= $param->type;
-        $this->bytes.= $param->name;
-        if ($param->default) {
-          $this->bytes.= '= ';
-          $this->emit($param->default);
-        }
-        if ($param->vararg) {
-          if ($va > -1) return $this->addError(new CompileError(1210, 'Vararags parameters must be the last parameter'));
-          $va= $i;
-        }
-        $this->bytes.= ', ';
-      }
-      $node->parameters && $this->bytes= substr($this->bytes, 0, -2);
+      $embed= $this->emitParameters($node->parameters);
       $this->bytes.= ')';
 
       if ($node->statements) {
-        $this->bytes.= '{';
-
-        -1 != $va && $this->bytes.= '$__a= func_get_args(); '.$node->parameters[$va]->name.'= array_slice($__a, '.$va.');';
-
+        $this->bytes.= '{'.$embed;
         $this->emitAll($node->statements);
         $this->bytes.= '}';
       } else {
