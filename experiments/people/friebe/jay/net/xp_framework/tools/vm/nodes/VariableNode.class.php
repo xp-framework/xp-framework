@@ -26,6 +26,12 @@
       $this->name= $name;
     }
     
+    /**
+     * Returns a hashcode for this variable
+     *
+     * @access  public
+     * @return  string
+     */
     function hashCode() {
       return $this->name;
     }
