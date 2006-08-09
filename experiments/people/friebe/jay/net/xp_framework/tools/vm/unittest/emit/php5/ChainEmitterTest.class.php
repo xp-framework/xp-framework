@@ -62,7 +62,7 @@
     #[@test]
     function chainedArrayOffsetsAfterMethodCall() {
       $this->assertSourcecodeEquals(
-        'echo xp::wraparray(xp::create(new xp·lang·Object())->getClass()->getName())->backing[0]->backing[0];',
+        'echo xp::wraparray(xp::create(new xp·lang·Object())->getClass()->getName())->backing[0][0];',
         $this->emit('echo new xp~lang~Object()->getClass()->getName()[0][0];')
       );
     }

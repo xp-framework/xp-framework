@@ -1288,8 +1288,8 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitArrayOffset(&$node) {
-      $node->first && $this->bytes.= ')';
-      $this->bytes.= '->backing[';
+      $node->first && $this->bytes.= ')->backing';
+      $this->bytes.= '[';
       $this->emit($node->expression);
       $this->bytes.= ']';
     }
