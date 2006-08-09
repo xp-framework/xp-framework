@@ -4,6 +4,7 @@
     'net.xp_framework.tools.vm.PNode',
     'net.xp_framework.tools.vm.VNode',
     'net.xp_framework.tools.vm.nodes.AnnotationNode',
+    'net.xp_framework.tools.vm.nodes.ArrayOffsetNode',
     'net.xp_framework.tools.vm.nodes.AssignNode',
     'net.xp_framework.tools.vm.nodes.BinaryAssignNode',
     'net.xp_framework.tools.vm.nodes.BinaryNode',
@@ -1258,7 +1259,10 @@ variable:
 
 variable_properties:
 		variable_properties variable_property { 
-          $$[]= $2; 
+          $$[]= $2;
+        }
+	|	variable_properties '[' expr ']' { 
+          $$[]= &new ArrayOffsetNode($3);   // $this->getElements()[0]
         }
 	|	/* empty */ { 
           $$= NULL; 

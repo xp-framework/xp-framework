@@ -196,6 +196,27 @@
         $this->addError(new CompileError(2000, $class.' does not implement '.$interface.'::'.$name));
       }
     }
+    
+    /**
+     * Emits a single node
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emit(&$node) {
+      
+      // Check if we find an array offset somewhere, e.g. $x->getElements()[0]
+      // This will need to be translated to xp::element($x->getElements(), 0)
+      if (is_a($node, 'VNode') && $node->chain) foreach ($node->chain as $i => $expr) {
+        if (is_a($expr, 'ArrayOffsetNode')) {
+          $this->bytes.= 'xp::wraparray(';
+          $node->chain[$i]->first= TRUE;
+          break;
+        }
+      }
+      
+      parent::emit($node);
+    }
 
     /**
      * Emits an array of nodes
@@ -560,7 +581,10 @@
       $node->arguments && $this->bytes= substr($this->bytes, 0, -2);
       $this->bytes.= ')';
  
-      if ($node->chain) foreach ($node->chain as $node) {
+      // Chain: $x->getClass()->getName()
+      if (!$node->chain) return;
+      
+      foreach ($node->chain as $node) {
         $this->context['chain_prev']= $node;
         $this->emit($node);
       }
@@ -732,6 +756,17 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitNew(&$node) {
+
+      // Check if we find an array offset somewhere, e.g. new ArrayList()->getElements()[0]
+      // This will need to be translated to xp::element(new ArrayList(), 0)
+      if ($node->instanciation->chain) foreach ($node->instanciation->chain as $i => $expr) {
+        if (is_a($expr, 'ArrayOffsetNode')) {
+          $this->bytes.= 'xp::wraparray(';
+          $node->instanciation->chain[$i]->first= TRUE;
+          break;
+        }
+      }
+
       if ($node->instanciation->declaration) {
         $this->bytes.= 'xp::instance(\''.$this->qualifiedName($node->class->name).'\', array(';
         foreach ($node->instanciation->arguments as $arg) {
@@ -775,10 +810,11 @@
         }
       }
 
-      if (!$node->instanciation->chain) return;
-      $this->bytes.= ')';
-      foreach ($node->instanciation->chain as $node) {
-        $this->emit($node);
+      if ($node->instanciation->chain) {
+        $this->bytes.= ')';
+        foreach ($node->instanciation->chain as $node) {
+          $this->emit($node);
+        }
       }
     }
     
@@ -1243,6 +1279,19 @@
       $this->emit($node->left);
       $this->bytes.= ' '.$node->operator.' ';
       $this->emit($node->right);
+    }
+
+    /**
+     * Emits array offsets (used for getElements()[0])
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitArrayOffset(&$node) {
+      $node->first && $this->bytes.= ')';
+      $this->bytes.= '->backing[';
+      $this->emit($node->expression);
+      $this->bytes.= ']';
     }
   }
 ?>

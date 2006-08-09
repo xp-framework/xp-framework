@@ -42,6 +42,32 @@
     }
 
     /**
+     * Tests chaining method calls with array offsets
+     *
+     * @access  public
+     */
+    #[@test]
+    function chainedArrayOffsetAfterMethodCall() {
+      $this->assertSourcecodeEquals(
+        'echo xp::wraparray(xp::create(new xp·lang·Object())->getClass()->getName())->backing[0];',
+        $this->emit('echo new xp~lang~Object()->getClass()->getName()[0];')
+      );
+    }
+
+    /**
+     * Tests chaining method calls with array offsets
+     *
+     * @access  public
+     */
+    #[@test]
+    function chainedArrayOffsetsAfterMethodCall() {
+      $this->assertSourcecodeEquals(
+        'echo xp::wraparray(xp::create(new xp·lang·Object())->getClass()->getName())->backing[0]->backing[0];',
+        $this->emit('echo new xp~lang~Object()->getClass()->getName()[0][0];')
+      );
+    }
+
+    /**
      * Tests chaining members and methods, and after the constructor
      *
      * @access  public

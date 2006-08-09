@@ -27,9 +27,21 @@
       throw xp::exception(new xp·lang·NullPointerException('Invoke: '.$method));
     }
   }
+  
+  final class arraywrapper {
+    public $backing= array();
+    
+    public function __construct($array) {
+      $this->backing= $array;
+    }
+  }
 
   final class xp {
     public static $null;
+    
+    public static function wraparray($array) {
+      return new arraywrapper($array);
+    }
 
     public static function exception(xp·lang·Throwable $e) {
       XPException::$instance->cause= $e;
