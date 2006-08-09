@@ -171,5 +171,62 @@
       );
     }
 
+    /**
+     * Tests a method which contains a vararg argument
+     *
+     * @access  public
+     */
+    #[@test]
+    function methodWithVarArgs() {
+      $this->assertSourcecodeEquals(
+        preg_replace('/\n\s*/', '', 'class Test extends xp·lang·Object{
+          public function sayHello(){
+            $__a= func_get_args(); $names= array_slice($__a, 0);
+            echo \'Hello \', implode(\', \', $names); 
+          }
+        };'),
+        $this->emit('class Test {
+          public void sayHello(string $names...) {
+            echo "Hello ", implode(", ", $names);
+          }
+        }')
+      );
+    }
+
+    /**
+     * Tests a method which contains a vararg argument after a regular argument
+     *
+     * @access  public
+     */
+    #[@test]
+    function methodWithArgsAndVarArgs() {
+      $this->assertSourcecodeEquals(
+        preg_replace('/\n\s*/', '', 'class Test extends xp·lang·Object{
+          public function sprintf($format){
+            $__a= func_get_args(); $args= array_slice($__a, 1);
+            return vsprintf($format, $args); 
+          }
+        };'),
+        $this->emit('class Test {
+          public string sprintf(string $format, mixed $args...) {
+            return vsprintf($format, $args); 
+          }
+        }')
+      );
+    }
+
+    /**
+     * Tests a method which contains an arg after a vararg argument
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.FormatException')]
+    function varArgMustBeLastArg() {
+      $this->emit('class Test {
+        public string sprintf(string $format, mixed $args..., bool $return= FALSE) {
+          return vsprintf($format, $args); 
+        }
+      }');
+    }
   }
 ?>
