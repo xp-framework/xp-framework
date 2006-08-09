@@ -83,6 +83,9 @@
      * @return  string
      */
     function qualifiedName($class) {
+      static $special= array('parent', 'self');
+      
+      if (in_array($class, $special)) return $class;
       return strtr((strstr($class, '~') ? $class : $this->prefixedClassnameFor($class)), '~', '·');
     }
     
