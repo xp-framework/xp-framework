@@ -162,7 +162,9 @@ If this RFC depends on one of the following:
 
 Put links to any of the following documents here:
 
-* Patches implementing the RFC
+* Patches implementing the RFC. Patches should be put into the contrib
+  directory so they are in version control and changes to them are visible
+  to commit log readers.
 * Related information
 * Example sourcecode (prefer .phps, no .tar.gz downloads, if possible)
 
