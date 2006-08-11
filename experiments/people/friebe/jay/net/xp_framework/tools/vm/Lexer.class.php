@@ -58,6 +58,22 @@
     function advance(){
       $this->pos++;
       while ($this->pos < $this->N){
+
+        // Casts (T_STRING) or (T_CLASSNAME)
+        if (
+          '(' == $this->tokens[$this->pos][1] && 
+          (($this->tokens[$this->pos+ 1][0] == TOKEN_T_STRING) || ($this->tokens[$this->pos+ 1][0] == TOKEN_T_CLASSNAME))  && 
+          ')' == $this->tokens[$this->pos+ 2][1]
+        ) {
+          // echo 'CAST: '; var_dump($this->tokens[$this->pos], $this->tokens[$this->pos+ 1], $this->tokens[$this->pos+ 2]);
+          // echo "\n";
+          $this->tokens[$this->pos]= array(TOKEN_T_CAST, $this->tokens[$this->pos+ 1][1]);
+          $this->update();
+          $this->pos+= 2;
+          return TRUE;
+        }
+        
+
         if ($this->hereDoc === TRUE && $this->tokens[$this->pos][0] != T_END_HEREDOC){
           return $this->update();
         }
@@ -119,13 +135,16 @@
           $return[$offset] = array(ord($token), $token);
           $token = $return[$offset];
         } else {
-          $return[$offset]= array(
-            array_search(token_name($token[0]), $GLOBALS['_TOKEN_DEBUG']),
-            $token[1]
-          );
-          $token = $return[$offset];
+          if (in_array($token[0], array(T_INT_CAST, T_DOUBLE_CAST, T_STRING_CAST, T_ARRAY_CAST, T_OBJECT_CAST, T_BOOL_CAST, T_UNSET_CAST))) {
+            $return[$offset]= array(TOKEN_T_CAST, trim($token[1], '()'));
+          } else {
+            $return[$offset]= array(
+              array_search(token_name($token[0]), $GLOBALS['_TOKEN_DEBUG']),
+              $token[1]
+            );
+            $token = $return[$offset];
+          }
         }
-
 
         if($token[0] == TOKEN_T_START_HEREDOC && !$this->hereDoc){
           $this->hereDoc = true;
@@ -148,6 +167,7 @@
               $i+= 2;
             }
             $return[$offset]= array(TOKEN_T_CLASSNAME, $classname.$tokens[$i- 1][1]);
+            $token = $return[$offset];
             $id= $i- 1;  // Skip tokens
           } else if ($key = array_search(strtolower($token[1]), $this->tokenMap)) {
             $return[$offset]= array($key, $token[1]);
