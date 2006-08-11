@@ -7,10 +7,15 @@ package net.xp_framework.easc.jmx.jboss;
 
 import org.jboss.system.ServiceMBeanSupport;
 import net.xp_framework.easc.server.ServerThread;
+import net.xp_framework.easc.server.ServerContext;
 import net.xp_framework.easc.server.InvocationServerContext;
 import net.xp_framework.easc.protocol.standard.InvocationServerHandler;
 import net.xp_framework.easc.jmx.jboss.EascServiceMBean;
 import java.net.ServerSocket;
+import net.xp_framework.easc.protocol.standard.Serializer;
+import net.xp_framework.easc.protocol.standard.SerializerContext;
+import net.xp_framework.easc.protocol.standard.Invokeable;
+import javax.ejb.EJBObject;
 
 /**
  * EASC service managed bean
@@ -42,6 +47,43 @@ public class EascService extends ServiceMBeanSupport implements EascServiceMBean
     }
     
     /**
+     * Enable EJB3 support if available
+     *
+     * @access  protected
+     * @param   net.xp_framework.easc.server.ServerContext ctx
+     */
+    protected void setupEJB3Support(final ServerContext ctx) {
+        try {
+            Class jbossProxyClass= Class.forName("org.jboss.ejb3.JBossProxy");
+            System.out.println("EASC: Enabling JBoss-EJB3 support");
+            
+            Serializer.registerMapping(jbossProxyClass, new Invokeable<String, org.jboss.ejb3.JBossProxy>() {
+                public String invoke(org.jboss.ejb3.JBossProxy p, Object arg) throws Exception {
+                    ctx.objects.put(p.hashCode(), p);
+
+                    // Find out the correct interface
+                    Class ejbInterface= null;
+                    for (Class iface: p.getClass().getInterfaces()) {
+                        if (EJBObject.class.isAssignableFrom(iface) || org.jboss.ejb3.JBossProxy.class.isAssignableFrom(iface)) continue;
+
+                        // First interface implemented is the "real" interface
+                        ejbInterface= iface;
+                        break;
+                    }
+
+                    return "I:" + p.hashCode() + ":{" + Serializer.representationOf(
+                        ejbInterface.getName(),
+                        (SerializerContext)arg
+                    ) + "}";
+                }
+            });
+        } catch (ClassNotFoundException ignored) {
+          // No EJB3 deployment
+          System.out.println("EASC: No JBoss-EJB3 support enabled.");
+        }
+    }
+    
+    /**
      * Starts EASC service
      *
      * @access  protected
@@ -49,9 +91,11 @@ public class EascService extends ServiceMBeanSupport implements EascServiceMBean
      * @see     org.jboss.system.ServiceMBeanSupport#startService
      */
     protected void startService() throws Exception {
+        ServerContext ctx= new InvocationServerContext();
         this.serverThread= new ServerThread(new ServerSocket(this.port));
         this.serverThread.setHandler(new InvocationServerHandler());
-        this.serverThread.setContext(new InvocationServerContext());
+        this.serverThread.setContext(ctx);
+        this.setupEJB3Support(ctx);
         this.serverThread.start();
     }
     
