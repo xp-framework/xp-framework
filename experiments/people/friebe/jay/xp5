@@ -4,4 +4,4 @@ PHPFOUR=php
 PHPFIVE=php5
 TEMP=/tmp
 
-$PHPFOUR tophp5.php $1 -o $TEMP/t.php5 && $PHPFIVE $TEMP/t.php5
+$PHPFOUR tophp5.php $1 -o $TEMP/t.php5 && $PHPFIVE $TEMP/t.php5 $2 $3 $4 $5 $6 $7 $8 $9
