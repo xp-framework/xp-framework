@@ -34,6 +34,7 @@ __;
   define('ST_LOOKING_FOR_INTERFACES_END', 'looking:iface_end');
   define('ST_LOOKING_FOR_CATCH',          'looking:catch');
   define('ST_FUNCTION_ARGS',              'function-args');
+  define('ST_USES_LIST',                  'uses-list');
 
   define('T_TRY',                0x2000);
   define('T_CATCH',              0x2001);
@@ -46,11 +47,16 @@ __;
       $mapping = array(),
       $current = NULL;
 
+    function addMapping($name, $mapped) {
+      // DEBUG Console::writeLine('     > MAP ', $name, ' => ', $mapped);
+      $this->mapping[$name]= $mapped;
+    }
+
     function buildMapping(&$doc) {
       $key= strtolower($doc->name());
       if (isset($this->mapping[$key])) return;
       
-      $this->mapping[$key]= $doc->qualifiedName();
+      $this->addMapping($key, $doc->qualifiedName());
       
       // Build mapping for superclass if existant
       $doc->superclass && $this->buildMapping($doc->superclass);
@@ -79,8 +85,20 @@ __;
       );
     }
     
-    function packagedNameOf($short) {
-      return strtr($this->qualifiedNameOf($short), '.', '~');
+    function prefixFor($package) {
+      static $ports= array('com', 'net', 'ch', 'org', 'us');
+      
+      return (in_array(substr($package, 0, strpos($package, '.')), $ports) ? '' : 'xp~');
+    }
+    
+    function packagedNameOf($q) {
+      if (strstr($q, '.')) {
+        $packaged= $this->prefixFor($q).strtr($q, '.', '~');
+      } else {
+        $packaged= $q;
+      }
+      // DEBUG Console::writeLine('---> ', $q, ' -> ', $packaged);
+      return $packaged;
     }
 
     function start(&$root) {
@@ -92,14 +110,16 @@ __;
         'catch'       => T_CATCH,
         'throw'       => T_THROW
       );
-      
-      // Build mapping for built-in-classes
-      foreach (xp::registry() as $key => $val) {
-        if (0 != strncmp('class.', $key, 6)) continue;
-        $this->mapping[xp::reflect($key)]= xp::registry($key);
-      }
 
       $debug= $root->option('debug');
+      
+      // Build mapping for built-in-classes
+      Console::writeLine('===> Starting');
+      foreach (xp::registry() as $key => $val) {
+        if (0 != strncmp('class.', $key, 6)) continue;
+        $this->addMapping(xp::reflect($key), xp::registry($key));
+      }
+
       if ($output= $root->option('output')) {
         Console::writeLine('---> Writing to ', $output);
         $base= &new Folder($output);
@@ -108,6 +128,7 @@ __;
       // Hardcode some keywords
       $this->mapping['xp']= 'xp';
       $this->mapping['parent']= 'parent';
+      $this->mapping['self']= 'self';
 
       while ($root->classes->hasNext()) {
         $this->current= &$root->classes->next();
@@ -145,14 +166,46 @@ __;
             case ST_INITIAL.T_CLOSE_TAG:
               $t= '';
               break;
+            
+            case ST_INITIAL.T_USES:
+              $skip= TRUE;
+              array_unshift($states, ST_USES_LIST);
+              break;
+            
+            case ST_USES_LIST.';':
+              $skip= FALSE;
+              
+              $used= array();
+              $this->current->usedClasses->rewind();
+              while ($this->current->usedClasses->hasNext()) {
+                $class= $this->current->usedClasses->next();
+                $used[]= strtr($this->packagedNameOf($class->qualifiedName()), '~', '.');
+              }
+              
+              switch (sizeof($used)) {
+                case 0: $t= ''; break;
+                case 1: case 2: case 3: $t= 'uses(\''.implode('\', \'', $used).'\')'; break;
+                default: $t= "uses(\n  '".implode("',\n  '", $used)."'\n)"; break;
+              }
+              $out= rtrim($out)."\n\n".$t.';';
+              $t= '';
+              array_shift($states);
+              break;
+            
+            case ST_INITIAL.T_COMMENT:
+              if ('/**' == substr($t[1], 0, 3)) {           // Class apidoc
+                $qualified= strtr($this->current->qualifiedName(), '.', '~');
+                $package= substr($qualified, 0, strrpos($qualified, '~'));
+                $out= rtrim($out)."\n\npackage ".$this->prefixFor($package).$package." {\n\n  ";
+              }
+              break;
 
             case ST_INITIAL.T_CLASS:
-              $qualified= strtr($this->current->qualifiedName(), '.', '~');
-              $out.= (
-                'package '.
-                substr($qualified, 0, strrpos($qualified, '~')).
-                ' { '
-              );
+              if (!$package) {                              // Class apidoc was missing!
+                $qualified= strtr($this->current->qualifiedName(), '.', '~');
+                $package= substr($qualified, 0, strrpos($qualified, '~'));
+                $out= rtrim($out)."\n\npackage ".$this->prefixFor($package).$package." {\n\n  ";
+              }
               array_unshift($states, ST_CLASS);
               $this->current->isInterface() && $t[1]= 'interface';
               break;
@@ -170,7 +223,7 @@ __;
             
             case ST_CLASS_BODY.'}':
               array_shift($states);
-              $t.= '}'; // One extra for package statement
+              $t.= "\n}"; // One extra for package statement
               array_shift($states);
               break;
 
@@ -323,7 +376,7 @@ __;
             case ST_INITIAL.T_STRING:
             case ST_FUNCTION_BODY.T_STRING:
               if (T_DOUBLE_COLON == $tokens[$i+ 1][0]) {    // Look ahead
-                $t[1]= $this->packagedNameOf($t[1]);
+                $t[1]= $this->packagedNameOf($this->qualifiedNameOf($t[1]));
               }
               break;
 
@@ -338,7 +391,7 @@ __;
             case ST_LOOKING_FOR_CATCH.T_CATCH:
               $t[1]= sprintf(                               // Reassemble and advance
                 'catch (%s %s)',
-                $this->packagedNameOf(trim($tokens[$i+ 2][1], '\'"')),
+                $this->packagedNameOf($this->qualifiedNameOf(trim($tokens[$i+ 2][1], '\'"'))),
                 $tokens[$i+ 5][1]
               );
               $i+= 7;
@@ -347,7 +400,7 @@ __;
               break;
 
             case ST_LOOKING_FOR_CLASS.T_STRING:
-              $t[1]= $this->packagedNameOf($t[1]);
+              $t[1]= $this->packagedNameOf($this->qualifiedNameOf($t[1]));
               array_shift($states);
               break;
 
@@ -372,7 +425,7 @@ __;
         
         if ($output) {
           try(); {
-            $target= &new File($base->getURI().strtr($this->current->qualifiedName(), '.', DIRECTORY_SEPARATOR).'.xp');
+            $target= &new File($base->getURI().strtr($this->packagedNameOf($this->current->qualifiedName()), '~', DIRECTORY_SEPARATOR).'.xp');
             $f= &new Folder($target->getPath());
             $f->exists() || $f->create();
             FileUtil::setContents($target, $out);
