@@ -18,7 +18,7 @@
     /**
      * Constructor
      *
-     * @access  private
+     * @access  public
      * @param   &mixed ref
      */    
     function __construct(&$ref) {

@@ -55,7 +55,7 @@
     /**
      * Constructor
      *
-     * @access  package
+     * @access  public
      * @param   &mixed ref either a class name or an object
      */
     function __construct(&$ref) {

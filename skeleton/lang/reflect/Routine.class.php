@@ -28,7 +28,7 @@
     /**
      * Constructor
      *
-     * @access  private
+     * @access  public
      * @param   &mixed ref
      * @param   string name
      */    
