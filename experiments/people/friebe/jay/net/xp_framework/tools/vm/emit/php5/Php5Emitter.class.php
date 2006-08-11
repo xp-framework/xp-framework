@@ -1304,5 +1304,24 @@
       $this->emit($node->expression);
       $this->bytes.= ']';
     }
+
+    /**
+     * Emits expression casts
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitExpressionCast(&$node) {
+      static $supported= array('int', 'string', 'bool', 'double', 'array');
+      
+      if (in_array($node->type, $supported)) {
+        $this->bytes.= '('.$node->type.')';
+        $this->emit($node->expression);
+      } else {
+        $this->bytes.= 'xp::cast(\''.$node->type.'\', ';
+        $this->emit($node->expression);
+        $this->bytes.= ')';
+      }
+    }
   }
 ?>
