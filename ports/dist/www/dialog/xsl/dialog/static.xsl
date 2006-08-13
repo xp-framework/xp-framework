@@ -155,7 +155,9 @@
       <xsl:value-of select="created/year"/>
     </div>
     <h2>
-      Collection: <xsl:value-of select="@title"/>
+      <a href="{func:link(concat('collection/view?', @name))}">
+        Collection: <xsl:value-of select="@title"/>
+      </a>
     </h2>
     <p align="justify">
       <xsl:copy-of select="description"/>
