@@ -36,6 +36,16 @@
         $child->addChild(Node::fromObject($album->createdAt, 'created'));
         $child->addChild(Node::fromArray($album->highlights, 'highlights'));
         $child->addChild(Node::fromArray($album->chapters, 'chapters'));
+
+        // Check if an album is inside a collection
+        if (FALSE === ($p= strpos($name, '/'))) return; 
+
+        $parent= &$this->getEntryFor(substr($name, 0, $p));
+        $child->setAttribute('page', $this->getDisplayPageFor($parent->getName()));
+        $child->addChild(new Node('collection', NULL, array(
+          'name'         => $parent->getName(),
+          'title'        => $parent->getTitle()
+        )));
       }
     }
   }
