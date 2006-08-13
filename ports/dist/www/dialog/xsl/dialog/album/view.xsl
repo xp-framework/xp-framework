@@ -29,6 +29,13 @@
         </a>
         &#xbb;
       </xsl:if>
+     
+      <xsl:if test="/formresult/album/collection">
+        <a href="{func:link(concat('collection/view?', /formresult/album/collection/@name))}">
+          <xsl:value-of select="/formresult/album/collection/@title"/> Collection
+	</a>
+	 &#xbb;
+      </xsl:if>
       
       <a href="{func:link(concat('album/view?', /formresult/album/@name))}">
         <xsl:value-of select="/formresult/album/@title"/>
