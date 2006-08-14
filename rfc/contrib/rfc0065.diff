@@ -1,0 +1,402 @@
+Index: ConnectionListener.class.php
+===================================================================
+--- ConnectionListener.class.php	(revision 7647)
++++ ConnectionListener.class.php	(working copy)
+@@ -12,6 +12,7 @@
+   /**
+    * Connection listener
+    *
++   * @deprecated Implement peer.protocol.Protocol instead!
+    * @model    abstract
+    * @see      xp://peer.server.Server#notify
+    * @purpose  Abstract base class for listeners
+Index: ForkingServer.class.php
+===================================================================
+--- ForkingServer.class.php	(revision 7647)
++++ ForkingServer.class.php	(working copy)
+@@ -47,24 +47,21 @@
+           while (pcntl_waitpid(-1, $status, WNOHANG)) { }
+         } else {                // Child
+           $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);
+-          $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
++          $this->protocol->handleConnect($m);
+ 
+           // Loop
+           do {
+             try(); {
+-              if (NULL === ($data= $m->readBinary())) break;
++              $this->protocol->handleData($m);
+             } if (catch('IOException', $e)) {
+-              $this->notify(new ConnectionEvent(EVENT_ERROR, $m, $e));
++              $this->protocol->handleError($m, $e);
+               break;
+             }
+ 
+-            // Notify listeners
+-            $this->notify(new ConnectionEvent(EVENT_DATA, $m, $data));
+-
+           } while (!$m->eof());
+ 
++          $this->protocol->handleDisconnect($m);
+           $m->close();
+-          $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $m));
+ 
+           // Exit out of child
+           exit();
+Index: Server.class.php
+===================================================================
+--- Server.class.php	(revision 7647)
++++ Server.class.php	(working copy)
+@@ -4,11 +4,7 @@
+  * $Id$
+  */
+ 
+-  uses(
+-    'peer.ServerSocket', 
+-    'peer.server.ConnectionEvent',
+-    'peer.server.ConnectionListener'
+-  );
++  uses('peer.ServerSocket');
+ 
+   /**
+    * Basic TCP/IP Server
+@@ -17,7 +13,7 @@
+    *   uses('peer.server.Server');
+    *   
+    *   $server= &new Server('127.0.0.1', 6100);
+-   *   $server->addListener(new ConnectionListener());
++   *   $server->setProtocol(new MyProtocol());
+    *   try(); {
+    *     $server->init();
+    *     $server->service();
+@@ -34,6 +30,7 @@
+    */
+   class Server extends Object {
+     var
++      $protocol   = NULL,
+       $socket     = NULL,
+       $terminate  = FALSE,
+       $tcpnodelay = FALSE;
+@@ -72,19 +69,38 @@
+     }
+     
+     /**
+-     * Add a connection listener
++     * Add a connection listener. Provided for BC reasons.
+      *
++     * @deprecated Use setProtocol() instead!
+      * @access  public
+      * @param   &peer.server.ConnectionListener listener
+      * @return  &peer.server.ConnectionListener the added listener
+      */
+     function &addListener(&$listener) {
++      if (!$this->protocol) {
++        $c= &XPClass::forName('peer.server.protocol.ListenerWrapperProtocol');
++        $this->protocol= &$c->newInstance();
++      }
++
+       $listener->server= &$this;
+-      $this->listeners[]= &$listener;
++      $this->protocol->addListener($listener);
+       return $listener;
+     }
+ 
+     /**
++     * Sets this server's protocol
++     *
++     * @access  public
++     * @param   &peer.server.Protocol protocol
++     * @return  &peer.server.Protocol protocol
++     */
++    function &setProtocol(&$protocol) {
++      $protocol->server= &$this;
++      $this->protocol= &$protocol;
++      return $protocol;
++    }
++
++    /**
+      * Set TCP_NODELAY
+      *
+      * @access  public
+@@ -105,18 +121,6 @@
+     }
+     
+     /**
+-     * Notify listeners
+-     *
+-     * @access  protected
+-     * @param   &peer.server.ConnectionEvent event
+-     */
+-    function notify(&$event) {
+-      for ($i= 0, $s= sizeof($this->listeners); $i < $s; $i++) {
+-        $this->listeners[$i]->{$event->type}($event);
+-      }
+-    }
+-    
+-    /**
+      * Service
+      *
+      * @access  public
+@@ -139,7 +143,7 @@
+         $read= array($this->socket->_sock);
+         foreach (array_keys($handles) as $h) {
+           if (!$handles[$h]->isConnected()) {
+-            $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $handles[$h]));
++            $this->protocol->handleDisconnect($handles[$h]);
+             unset($handles[$h]);
+           } else {
+             $read[]= $handles[$h]->getHandle();
+@@ -165,19 +169,19 @@
+             }
+             
+             $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);
+-            $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
++            $this->protocol->handleConnect($m);
+             $handles[(int)$m->getHandle()]= &$m;
+             continue;
+           }
+           
+-          // Otherwise, a client is sending data: read it and notify the listeners.
+-          // In case of an I/O error, close the client socket and remove the client
+-          // from the list.
++          // Otherwise, a client is sending data. Let the protocol decide what do
++          // do with it. In case of an I/O error, close the client socket and remove 
++          // the client from the list.
+           $index= (int)$handle;
+           try(); {
+-            $data= $handles[$index]->readBinary();
++            $this->protocol->handleData($handles[$index]);
+           } if (catch('IOException', $e)) {
+-            $this->notify(new ConnectionEvent(EVENT_ERROR, $handles[$index], $e));
++            $this->protocol->handleError($handles[$index], $e);
+             $handles[$index]->close();
+             unset($handles[$index]);
+             continue;
+@@ -186,13 +190,10 @@
+           // Check if we got an EOF from the client - in this file the connection
+           // was gracefully closed.
+           if ($handles[$index]->eof()) {
+-            $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $handles[$h]));
++            $this->protocol->handleDisconnect($handles[$h]);
+             $handles[$index]->close();
+             unset($handles[$index]);
+-            continue;
+           }
+-          
+-          $this->notify(new ConnectionEvent(EVENT_DATA, $handles[$index], $data));
+         }
+       }
+     }
+Index: protocol/ListenerWrapperProtocol.class.php
+===================================================================
+--- protocol/ListenerWrapperProtocol.class.php	(revision 0)
++++ protocol/ListenerWrapperProtocol.class.php	(revision 0)
+@@ -0,0 +1,93 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'peer.server.ConnectionEvent',
++    'peer.server.ConnectionListener'
++  );
++
++  /**
++   * ConnectionListener wrapper protocol 
++   *
++   * @see      xp://peer.server.Server#addListener
++   * @purpose  BC Wrapper 
++   */
++  class ListenerWrapperProtocol extends Object {
++    var
++      $listeners= array();
++
++    /**
++     * Add a connection listener
++     *
++     * @access  public
++     * @param   &peer.server.ConnectionListener listener
++     */
++    function addListener(&$listener) {      
++      $this->listeners[]= &$listener;
++    }
++
++    /**
++     * Notify listeners
++     *
++     * @access  protected
++     * @param   &peer.server.ConnectionEvent event
++     */
++    function notify(&$event) {
++      for ($i= 0, $s= sizeof($this->listeners); $i < $s; $i++) {
++        $this->listeners[$i]->{$event->type}($event);
++      }
++    }
++
++    /**
++     * Handle client connect
++     *
++     * @access  public
++     * @param   &peer.Socket
++     */
++    function handleConnect(&$socket) {
++      $this->notify(new ConnectionEvent(EVENT_CONNECTED, $socket));
++    }
++
++    /**
++     * Handle client disconnect
++     *
++     * @access  public
++     * @param   &peer.Socket
++     */
++    function handleDisconnect(&$socket) {
++       $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $socket));
++     }
++  
++    /**
++     * Handle client data
++     *
++     * @access  public
++     * @param   &peer.Socket
++     * @return  mixed
++     */
++    function handleData(&$socket) { 
++      try(); {
++        if (NULL === ($data= $socket->readBinary())) throw(new IOException('EOF'));
++      } if (catch('IOException', $e)) {
++        return throw($e);
++      }
++
++      $this->notify(new ConnectionEvent(EVENT_DATA, $socket, $data));
++    }
++
++    /**
++     * Handle I/O error
++     *
++     * @access  public
++     * @param   &peer.Socket
++     * @param   &lang.Exception e
++     */
++    function handleError(&$socket, &$e) {
++      $this->notify(new ConnectionEvent(EVENT_ERROR, $socket, $e));
++    }
++
++  } implements(__FILE__, 'peer.server.Protocol');
++?>
+
+Property changes on: protocol/ListenerWrapperProtocol.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: PreforkingServer.class.php
+===================================================================
+--- PreforkingServer.class.php	(revision 7647)
++++ PreforkingServer.class.php	(working copy)
+@@ -85,24 +85,21 @@
+             }
+             if (!$m) continue;
+             $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);
+-            $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
++            $this->protocol->handleConnect($m);
+ 
+             // Loop
+             do {
+               try(); {
+-                if (NULL === ($data= $m->readBinary())) break;
++                $this->protocol->handleData($m);
+               } if (catch('IOException', $e)) {
+-                $this->notify(new ConnectionEvent(EVENT_ERROR, $m, $e));
++                $this->protocol->handleError($m, $e);
+                 break;
+               }
+ 
+-              // Notify listeners
+-              $this->notify(new ConnectionEvent(EVENT_DATA, $m, $data));
+-
+             } while (!$m->eof());
+ 
+             $m->close();
+-            $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $m));
++            $this->protocol->handleDisconnect($m);
+             $requests++;
+             $this->cat && $this->cat->debug(
+               'Child', getmypid(), 
+Index: ConnectionEvent.class.php
+===================================================================
+--- ConnectionEvent.class.php	(revision 7647)
++++ ConnectionEvent.class.php	(working copy)
+@@ -7,9 +7,9 @@
+   /**
+    * Connection event
+    *
++   * @deprecated Implement peer.protocol.Protocol instead!
+    * @see      xp://peer.server.Server#service
+    * @purpose  Event
+-   * @experimental
+    */
+   class ConnectionEvent extends Object {
+     var
+Index: Protocol.class.php
+===================================================================
+--- Protocol.class.php	(revision 0)
++++ Protocol.class.php	(revision 0)
+@@ -0,0 +1,50 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * Protocol
++   *
++   * @see      xp://peer.server.Server#setProtocol
++   * @purpose  Interface
++   */
++  class Protocol extends Interface {
++  
++    /**
++     * Handle client connect
++     *
++     * @access  public
++     * @param   &peer.Socket
++     */
++    function handleConnect(&$socket) { }
++
++    /**
++     * Handle client disconnect
++     *
++     * @access  public
++     * @param   &peer.Socket
++     */
++    function handleDisconnect(&$socket) { }
++  
++    /**
++     * Handle client data
++     *
++     * @access  public
++     * @param   &peer.Socket
++     * @return  mixed
++     */
++    function handleData(&$socket) { }
++
++    /**
++     * Handle I/O error
++     *
++     * @access  public
++     * @param   &peer.Socket
++     * @param   &lang.Exception e
++     */
++    function handleError(&$socket, &$e) { }
++  
++  }
++?>
+
+Property changes on: Protocol.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
