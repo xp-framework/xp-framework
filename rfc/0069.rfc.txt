@@ -1,0 +1,54 @@
+RFC 0069: EASC server in PHP
+========================================================================
+$Id$
+
+@authors: friebe, kiesel, gelli
+@created: Mon Aug 14 17:50:46 CEST 2006
+@status: draft
+@category: remote
+
+Scope of Change
+---------------
+An EASC server implementation will be written in userland PHP.
+
+
+Rationale
+---------
+Testing.
+
+
+Functionality
+-------------
+TODO
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+- RFC #0065
+
+
+Related documents
+-----------------
+- http://experiments.xp-framework.net/?arena,peking
+  Experiment
+
+
+Comments
+--------
+- friebe, Mon Aug 14 18:00:11 CEST 2006
+  The afforementioned experiment works only if the file
+  remote/protocol/RemoteInterfaceMapping.class.php from the experiments
+  directory is copied to skeleton/remote/protocol. Don't know why though
+  atm...
+
+<EOF>
