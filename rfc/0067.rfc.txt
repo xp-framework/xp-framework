@@ -157,4 +157,11 @@ Comments
   I think raw data logging should be separated (by loglevel) from the 
   other events like invocation, lookup and transactions.
 
+- friebe, Mon Aug 14 16:39:17 CEST 2006
+  Supplying a toString() method to lang.reflect.Proxy is not a good 
+  idea, it should be treated just as any other method and be proxied
+  to the invocation handler - I'd suggest to remove this from the 
+  patch and create a new RFC instead!
+
+  Same goes for hashCode() and equals(), btw...
 <EOF>
