@@ -75,6 +75,8 @@
               $prev= sprintf('i,%d,%d', $chapter, $id- 1);
             } elseif ($chapter > 0) {
               $prev= sprintf('i,%d,%d', $chapter- 1, $album->chapters[$chapter- 1]->numImages()- 1);
+            } else {
+              $prev= sprintf('h,0,%d', $album->numHighlights()- 1);
             }
             break;
           }
@@ -84,6 +86,16 @@
         $selected->setAttribute('chapter', $chapter);
         $next && $selected->setAttribute('next', $name.','.$next);
         $prev && $selected->setAttribute('prev', $name.','.$prev);
+
+        // Check if an album is inside a collection
+        if (FALSE === ($p= strpos($name, '/'))) return; 
+
+        $parent= &$this->getEntryFor(substr($name, 0, $p));
+        $child->setAttribute('page', $this->getDisplayPageFor($parent->getName()));
+        $child->addChild(new Node('collection', NULL, array(
+          'name'         => $parent->getName(),
+          'title'        => $parent->getTitle()
+        )));
       }
     }
   }
