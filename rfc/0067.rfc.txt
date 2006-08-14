@@ -26,12 +26,12 @@ Functionality
 -------------
 Setting a trace for remote.Remote class should go like this:
 <?php
+  $l= &Logger::getInstance();
+  $pool= &HandlerInstancePool::getInstance();
+  $pool->setTrace($l->getCategory());
+
   try(); {
-    $l= &Logger::getCategory();
-    $c= &$l->getCategory();
-    
-    $remote= &Remote::forName('xp://jboss01.example.com/') &&
-    $remote->setTrace($c);
+    $remote= &Remote::forName('xp://jboss01.example.com/');
   } if (catch('RemoteException', $e)) {
     return throw($e);
   }

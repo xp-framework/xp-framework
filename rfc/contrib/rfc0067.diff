@@ -1,26 +1,6 @@
-Index: lang/reflect/Proxy.class.php
-===================================================================
---- lang/reflect/Proxy.class.php	(revision 7532)
-+++ lang/reflect/Proxy.class.php	(working copy)
-@@ -156,5 +156,15 @@
-       $instance->_h= &$handler;
-       return $instance;
-     }
-+    
-+    /**
-+     * Returns string representation
-+     *
-+     * @access public
-+     * @return string
-+     */
-+    function toString() {
-+      return $this->getClassName().'(handler= '.$this->_h->getClassName().')';
-+    }
-   }
- ?>
 Index: remote/protocol/XpProtocolHandler.class.php
 ===================================================================
---- remote/protocol/XpProtocolHandler.class.php	(revision 7532)
+--- remote/protocol/XpProtocolHandler.class.php	(revision 7647)
 +++ remote/protocol/XpProtocolHandler.class.php	(working copy)
 @@ -23,7 +23,8 @@
      var
@@ -32,12 +12,39 @@ Index: remote/protocol/XpProtocolHandler.class.php
      
      var
        $_sock= NULL;  
-@@ -63,13 +64,27 @@
+@@ -44,6 +45,26 @@
+       $this->serializer->exceptionName('invoke/Exception', 'remote.InvocationException');
+       $this->serializer->packageMapping('net.xp_framework.easc.reflect', 'remote.reflect');
+     }
++    
++    /**
++     * Create a string representation of a given value
++     *
++     * @access  protected
++     * @param   &mixed value
++     * @return  string
++     */
++    function stringOf(&$value) {
++      if (is_a($value, 'Proxy')) {
++        $s= 'Proxy<';
++        $c= get_class($value);
++        $implements= xp::registry('implements');
++        foreach (array_keys($implements[$c]) as $iface) {
++          $s.= xp::nameOf($iface).', ';
++        }
++        return substr($s, 0, -2).'>';
++      }
++      return xp::stringOf($value);
++    }
+ 
+     /**
+      * Initialize this protocol handler
+@@ -63,13 +84,27 @@
        $this->_sock->connect();
        
        if ($user= $proxy->getUser()) {
 -        $this->sendPacket(REMOTE_MSG_INIT, "\1", array(
-+        $this->cat && $this->cat->debugf(
++        $this->cat && $this->cat->infof(
 +          '>>> %s(%s:%d) INITIALIZE %s',
 +          $this->getClassName(),
 +          $this->_sock->host,
@@ -50,7 +57,7 @@ Index: remote/protocol/XpProtocolHandler.class.php
          ));
        } else {
 -        $this->sendPacket(REMOTE_MSG_INIT, "\0");
-+        $this->cat && $this->cat->debugf(
++        $this->cat && $this->cat->infof(
 +          '>>> %s(%s:%d) INITIALIZE',
 +          $this->getClassName(),
 +          $this->_sock->host,
@@ -58,16 +65,16 @@ Index: remote/protocol/XpProtocolHandler.class.php
 +        );
 +        $r= $this->sendPacket(REMOTE_MSG_INIT, "\0");
        }
-+      $this->cat && $this->cat->debugf('<<< %s', xp::stringOf($r));
++      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
      }
      
      /**
-@@ -90,7 +105,16 @@
+@@ -90,7 +125,16 @@
       * @param   &lang.Object
       */
      function &lookup($name) {
 -      return $this->sendPacket(REMOTE_MSG_LOOKUP, '', array(new ByteCountedString($name)));
-+      $this->cat && $this->cat->debugf(
++      $this->cat && $this->cat->infof(
 +        '>>> %s(%s:%d) LOOKUP %s',
 +        $this->getClassName(),
 +        $this->_sock->host,
@@ -75,90 +82,90 @@ Index: remote/protocol/XpProtocolHandler.class.php
 +        $name
 +      );
 +      $r= &$this->sendPacket(REMOTE_MSG_LOOKUP, '', array(new ByteCountedString($name)));
-+      $this->cat && $this->cat->debugf('<<< %s', xp::stringOf($r));
++      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
 +      return $r;
      }
  
      /**
-@@ -101,7 +125,16 @@
+@@ -101,7 +145,16 @@
       * @param   bool
       */
      function begin(&$tran) {
 -      return $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_BEGIN));
-+      $this->cat && $this->cat->debugf(
++      $this->cat && $this->cat->infof(
 +        '>>> %s(%s:%d) BEGIN %s',
 +        $this->getClassName(),
 +        $this->_sock->host,
 +        $this->_sock->port,
-+        xp::stringOf($tran)
++        $this->stringOf($tran)
 +      );
 +      $r= &$this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_BEGIN));
-+      $this->cat && $this->cat->debugf('<<< %s', xp::stringOf($r));
++      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
 +      return $r;
      }
  
      /**
-@@ -112,7 +145,16 @@
+@@ -112,7 +165,16 @@
       * @param   bool
       */
      function rollback(&$tran) {
 -      return $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_ROLLBACK));
-+      $this->cat && $this->cat->debugf(
++      $this->cat && $this->cat->infof(
 +        '>>> %s(%s:%d) ROLLBACK %s',
 +        $this->getClassName(),
 +        $this->_sock->host,
 +        $this->_sock->port,
-+        xp::stringOf($tran)
++        $this->stringOf($tran)
 +      );
 +      $r= &$this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_ROLLBACK));
-+      $this->cat && $this->cat->debugf('<<< %s', xp::stringOf($r));
++      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
 +      return $r;
      }
  
      /**
-@@ -123,7 +165,16 @@
+@@ -123,7 +185,16 @@
       * @param   bool
       */
      function commit(&$tran) {
 -      return $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_COMMIT));
-+      $this->cat && $this->cat->debugf(
++      $this->cat && $this->cat->infof(
 +        '>>> %s(%s:%d) COMMIT %s',
 +        $this->getClassName(),
 +        $this->_sock->host,
 +        $this->_sock->port,
-+        xp::stringOf($tran)
++        $this->stringOf($tran)
 +      );
 +      $r= &$this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_COMMIT));
-+      $this->cat && $this->cat->debugf('<<< %s', xp::stringOf($r));
++      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
 +      return $r;
      }
  
      /**
-@@ -137,6 +188,15 @@
+@@ -137,6 +208,15 @@
       * @return  &mixed
       */
      function &invoke($oid, $method, $args) {
-+      $this->cat && $this->cat->debugf(
++      $this->cat && $this->cat->infof(
 +        '>>> %s(%s:%d) %d::%s(%s)',
 +        $this->getClassName(),
 +        $this->_sock->host,
 +        $this->_sock->port,
 +        $oid,
 +        $method,
-+        xp::stringOf($args)
++        $this->stringOf($args)
 +      );
        $r= &$this->sendPacket(
          REMOTE_MSG_CALL, 
          pack('NN', 0, $oid),
-@@ -145,6 +205,7 @@
+@@ -145,6 +225,7 @@
            new ByteCountedString($this->serializer->representationOf(new ArrayList($args)))
          )
        );
-+      $this->cat && $this->cat->debugf('<<< %s', xp::stringOf($r));
++      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
        return $r;
      }
  
-@@ -178,10 +239,10 @@
+@@ -178,10 +259,10 @@
          $length,
          $data
        );
@@ -166,11 +173,11 @@ Index: remote/protocol/XpProtocolHandler.class.php
  
        try(); {
          $this->_sock->write($packet);
-+        $this->cat && $this->cat->debug('>>> Request:', xp::stringOf($bytes));
++        $this->cat && $this->cat->debug('>>> Request:', $this->stringOf($bytes));
          for ($i= 0; $i < $bsize; $i++) {
            $bytes[$i]->writeTo($this->_sock);
          }
-@@ -193,7 +254,6 @@
+@@ -193,7 +274,6 @@
          return throw(new RemoteException($e->getMessage(), $e));
        }
        
@@ -178,7 +185,7 @@ Index: remote/protocol/XpProtocolHandler.class.php
        if (DEFAULT_PROTOCOL_MAGIC_NUMBER != $header['magic']) {
          $this->_sock->close();
          return throw(new Error('Magic number mismatch (have: '.$header['magic'].' expect: '.DEFAULT_PROTOCOL_MAGIC_NUMBER));
-@@ -205,11 +265,13 @@
+@@ -205,26 +285,30 @@
          switch ($header['type']) {
            case REMOTE_MSG_VALUE:
              $data= &ByteCountedString::readFrom($this->_sock);
@@ -194,7 +201,11 @@ Index: remote/protocol/XpProtocolHandler.class.php
              if (is('RemoteException', $reference)) {
                return throw($reference);
              } else if (is('ClassReference', $reference)) {
-@@ -220,11 +282,13 @@
+               return throw(new RemoteException($reference->getClassName(), $reference));
+             } else {
+-              return throw(new RemoteException('lang.Exception', new Exception(xp::stringOf($reference))));
++              return throw(new RemoteException('lang.Exception', new Exception($this->stringOf($reference))));
+             }
  
            case REMOTE_MSG_ERROR:
              $message= ByteCountedString::readFrom($this->_sock);    // Not serialized!
@@ -209,7 +220,7 @@ Index: remote/protocol/XpProtocolHandler.class.php
              $this->_sock->close();
              return throw(new Error('Unknown message type'));
          }
-@@ -249,5 +313,15 @@
+@@ -249,5 +333,15 @@
        return $return;
      }
  
@@ -226,33 +237,58 @@ Index: remote/protocol/XpProtocolHandler.class.php
 +
 +  } implements(__FILE__, 'remote.protocol.ProtocolHandler', 'util.log.Traceable');
  ?>
-Index: remote/Remote.class.php
+Index: remote/HandlerInstancePool.class.php
 ===================================================================
---- remote/Remote.class.php	(revision 7532)
-+++ remote/Remote.class.php	(working copy)
-@@ -95,6 +95,18 @@
-     }
-     
+--- remote/HandlerInstancePool.class.php	(revision 7647)
++++ remote/HandlerInstancePool.class.php	(working copy)
+@@ -14,7 +14,8 @@
+    */
+   class HandlerInstancePool extends HashTable {
+     var
+-      $pool= NULL;
++      $pool = NULL,
++      $cat  = NULL;
+ 
      /**
-+     * Set trace
-+     *
-+     * @access public
-+     * @param &util.log.LogCategory log
-+     */
-+    function setTrace(&$cat) {
-+      if (!is('util.log.Traceable', $this->_handler)) return FALSE;
-+      $this->_handler->setTrace($cat);
-+      return TRUE;
-+    }
-+    
-+    /**
-      * Look up an object by its name
-      *
-      * @access  public
-@@ -119,5 +131,5 @@
-       $tran->_handler= &$this->_handler;
-       return $tran;
+      * Constructor
+@@ -75,17 +76,32 @@
+      * @throws  remote.protocol.UnknownProtocolException
+      */
+     function &acquire(&$url) {
+-      if ($this->pool->containsKey($url)) return $this->pool->get($url);
++      if ($this->pool->containsKey($url)) {
++        $instance= &$this->pool->get($url);
++      } else {
++        sscanf($url->getScheme(), '%[^+]+%s', $type, $option);
++        try(); {
++          $class= &HandlerFactory::handlerFor($type);
++        } if (catch('Exception', $e)) {
++          return throw($e);
++        }
+ 
+-      sscanf($url->getScheme(), '%[^+]+%s', $type, $option);
+-      try(); {
+-        $class= &HandlerFactory::handlerFor($type);
+-      } if (catch('Exception', $e)) {
+-        return throw($e);
++        $instance= &$this->pool($url, $class->newInstance($option));
+       }
+ 
+-      $instance= &$this->pool($url, $class->newInstance($option));
++      $instance->cat= &$this->cat;
+       return $instance;
      }
 -  }
++
++    /**
++     * Set trace
++     *
++     * @access  public
++     * @param   &util.log.LogCategory cat
++     */
++    function setTrace(&$cat) {
++      $this->cat= &$cat;
++    }
++
 +  } implements(__FILE__, 'util.log.Traceable');
  ?>
