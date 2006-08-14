@@ -164,4 +164,8 @@ Comments
   patch and create a new RFC instead!
 
   Same goes for hashCode() and equals(), btw...
+
+- friebe, Mon Aug 14 17:01:03 CEST 2006
+  Logging in intialize() does not work! Reason is that when
+  $remote->setTrace($cat); is called it's already to late for this...
 <EOF>
