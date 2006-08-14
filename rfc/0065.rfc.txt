@@ -33,6 +33,30 @@ Setting the protocol implementation
 ?>
 
 
+Protocol interface
+~~~~~~~~~~~~~~~~~~
+Stripped of API-Doc for readability, see patch for details:
+<?php
+  class Protocol extends Interface {
+  
+    function handleConnect(&$socket) { }
+
+    function handleDisconnect(&$socket) { }
+  
+    function handleData(&$socket) { }
+
+    function handleError(&$socket, &$e) { }
+  
+  }
+?>
+
+
+BC
+~~
+For BC reasons, Server::addListener() is kept. It will create an instance 
+of ListenerWrapperProtocol which will simulate the old listener API.
+
+
 Security considerations
 -----------------------
 n/a
@@ -51,8 +75,9 @@ Dependencies
 
 Related documents
 -----------------
-n/a
-
+- http://xp-framework.net/rfc/contrib/rfc0065.diff
+  Patch implementing this RFC
+  
 
 Comments
 --------
