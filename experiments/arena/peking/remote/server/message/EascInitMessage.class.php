@@ -22,7 +22,7 @@
      * @param   
      * @return  
      */
-    function handle(&$listener, &$event) {
+    function handle(&$listener, $data) {
       $this->setValue($b= TRUE);
     }
   }

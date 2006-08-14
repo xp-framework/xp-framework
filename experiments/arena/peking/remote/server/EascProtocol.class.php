@@ -20,7 +20,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class ApplicationServerListener extends ConnectionListener {
+  class EascProtocol extends Object {
     var
       $serializer       = NULL,
       $containerManager =  NULL;
@@ -50,16 +50,6 @@
       }
     }      
 
-    /**
-     * Method to be triggered when a client connects
-     *
-     * @access  public
-     * @param   &peer.server.ConnectionEvent event
-     */
-    function connected(&$event) {
-      // debug Console::writeLine('Hello ', $event->toString());
-    }
-    
     /**
      * (Insert method's description here)
      *
@@ -155,35 +145,63 @@
         new ByteCountedString($this->serializer->representationOf($m->getValue(), $ctx))
       );
     }
+
+    function readBytes(&$sock, $num) {
+      $return= '';
+      while (strlen($return) < $num) {
+        if (0 == strlen($buf= $sock->readBinary($num - strlen($return)))) return;
+        $return.= $buf;
+      }
+      return $return;
+    }
     
     /**
-     * Method to be triggered when a client has sent data
+     * Handle client connect
      *
      * @access  public
-     * @param   &peer.server.ConnectionEvent event
+     * @param   &peer.Socket
      */
-    function data(&$event) {
+    function handleConnect(&$socket) { }
+
+    /**
+     * Handle client disconnect
+     *
+     * @access  public
+     * @param   &peer.Socket
+     */
+    function handleDisconnect(&$socket) { }
+  
+    /**
+     * Handle client data
+     *
+     * @access  public
+     * @param   &peer.Socket
+     * @return  mixed
+     */
+    function handleData(&$socket) {
+      $header= unpack(
+        'Nmagic/cvmajor/cvminor/ctype/ctran/Nlength', 
+        $this->readBytes($socket, 12)
+      );
+
+      if (0x3c872747 != $header['magic']) {
+        $this->answer($socket, 0x0007 /* REMOTE_MSG_ERROR */, 'Magic number mismatch');
+        return NULL;
+      }
+      
       $impl= &new ServerHandler();
       $impl->setSerializer($this->serializer);
-      return $impl->handle($this, $event);
+      return $impl->handle($socket, $this, $header['type'], $this->readBytes($socket, $header['length']));
     }
     
     /**
-     * Method to be triggered when a client disconnects
+     * Handle I/O error
      *
      * @access  public
-     * @param   &peer.server.ConnectionEvent event
+     * @param   &peer.Socket
+     * @param   &lang.Exception e
      */
-    function disconnected(&$event) { 
-    }
-    
-    /**
-     * Method to be triggered when a communication error occurs
-     *
-     * @access  public
-     * @param   &peer.server.ConnectionEvent event
-     */
-    function error(&$event) { 
-    }
-  }
+    function handleError(&$socket, &$e) { }
+
+  } implements(__FILE__, 'peer.server.Protocol');
 ?>

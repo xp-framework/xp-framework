@@ -21,11 +21,10 @@
      * @param   
      * @return  
      */
-    function handle(&$listener, &$event) {
+    function handle(&$listener, $data) {
       $log= &Logger::getInstance();
       $cat= &$log->getCategory($this->getClassName());
       
-      $data= $event->data[1];
       $ctx= array(
         RIH_OBJECTS_KEY => $listener->objects,
         RIH_OIDS_KEY    => $listener->objectOIDs

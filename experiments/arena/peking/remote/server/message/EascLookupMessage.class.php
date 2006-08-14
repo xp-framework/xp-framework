@@ -17,6 +17,7 @@
    * @purpose  purpose
    */
   class EascLookupMessage extends EascMessage {
+
     /**
      * (Insert method's description here)
      *
@@ -24,8 +25,7 @@
      * @param   
      * @return  
      */
-    function handle(&$listener, &$event) {
-      $data= $event->data[1];
+    function handle(&$listener, $data) {
       $offset= 0;
       $name= $this->readString($data, $offset);
 

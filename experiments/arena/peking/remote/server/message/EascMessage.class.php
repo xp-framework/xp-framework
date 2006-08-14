@@ -81,6 +81,6 @@
      * @param   
      * @return  
      */
-    function handle(&$event) { }
+    function handle(&$listener, $data) { }
   }
 ?>

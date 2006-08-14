@@ -5,8 +5,7 @@
     'util.log.Logger',
     'util.log.ColoredConsoleAppender',
     'peer.server.Server',
-    'remote.server.EascReader',
-    'remote.server.ApplicationServerListener'
+    'remote.server.EascProtocol'
   );
   
   // Set up loggin
@@ -16,8 +15,8 @@
   
   // {{{ main
   with ($server= &new Server($argv[1], 6448)); {
-    $server->reader= &new EascReader();
-    $server->addListener(new ApplicationServerListener());
+    $server->setProtocol(new EascProtocol());
+    $server->setTcpNodelay(TRUE);
     $server->init();
     $server->service();
     $server->shutdown();

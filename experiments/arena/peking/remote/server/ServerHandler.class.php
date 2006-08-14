@@ -80,13 +80,10 @@
      * @param   
      * @return  
      */
-    function handle(&$listener, &$event) {
-      $type= $event->data[0];
-      $data= $event->data[1];
-      
+    function handle(&$socket, &$protocol, $type, $data) {
       try(); {
         $handler= &EascMessageFactory::forType($type);
-        $handler->handle($listener, $event);
+        $handler->handle($protocol, $data);
 
         $response= &EascMessageFactory::forType(REMOTE_MSG_VALUE);
         $response->setValue($handler->getValue());
@@ -96,7 +93,7 @@
         $response->setValue($e);
       }
 
-      $listener->answerWithMessage($event->stream, $response);
+      $protocol->answerWithMessage($socket, $response);
       return;
     }
   }
