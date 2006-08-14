@@ -37,6 +37,16 @@
         $chapter->setAttribute('id', $id+ 1);
         $chapter->setAttribute('previous', $id == 0 ? NULL : $id - 1);
         $chapter->setAttribute('next', $id == $album->numChapters() - 1 ? NULL : $id + 1);
+
+        // Check if an album is inside a collection
+        if (FALSE === ($p= strpos($name, '/'))) return; 
+
+        $parent= &$this->getEntryFor(substr($name, 0, $p));
+        $child->setAttribute('page', $this->getDisplayPageFor($parent->getName()));
+        $child->addChild(new Node('collection', NULL, array(
+          'name'         => $parent->getName(),
+          'title'        => $parent->getTitle()
+        )));
       }
     }
   }
