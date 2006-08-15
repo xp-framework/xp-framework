@@ -4,6 +4,9 @@
  * $Id$ 
  */
   error_reporting(E_ALL);
+  
+  define('SKELETON_PATH', dirname(__FILE__).DIRECTORY_SEPARATOR.'skeleton'.DIRECTORY_SEPARATOR);
+  ini_set('include_path', '.'.PATH_SEPARATOR.SKELETON_PATH);
 
   class XPException extends Exception {
     public $cause= NULL;
@@ -21,7 +24,8 @@
       foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
         if (file_exists($path.DIRECTORY_SEPARATOR.$file.'.php5')) {
           if (filemtime($path.DIRECTORY_SEPARATOR.$file.'.php5') < filemtime($path.DIRECTORY_SEPARATOR.$file.'.xp')) {
-            // echo '*** PHP5 Version older than XP... ';
+            echo '*** PHP5 Version older than XP... ';
+            break;
           } else {
             // echo '*** Loading ', $file, "\n";
             require_once($file.'.php5');
@@ -31,14 +35,13 @@
       }
       
       // Could not find the file, compile
-      $cmd= 'php tophp5.php /home/thekid/devel/xp2/'.$file.'.xp';
-      // echo '*** Compiling ', $cmd, "\n";
+      $cmd= sprintf(getenv('COMPILE_CMD'), SKELETON_PATH.$file.'.xp');
+      echo '*** Compiling ', $file, ' using (', $cmd, ")\n";
       passthru($cmd);
       require_once($file.'.php5');
     }
   }
   
-  ini_set('include_path', '.:/home/thekid/devel/xp2/');
   
   final class null {
     public function __set($prop, $value) { 
@@ -122,8 +125,21 @@
       echo $e;
     }
   }
+
+  // {{{ internal void __error(int code, string msg, string file, int line)
+  //     Error callback
+  function __error($code, $msg, $file, $line) {
+    if (0 == error_reporting() || is_null($file)) return;
+
+    $errors= &xp::registry('errors');
+    @$errors[$file][$line][$msg]++;
+    xp::registry('errors', $errors);
+  }
+  // }}}
   
   // {{{ Init
+  error_reporting(E_ALL);
+  set_error_handler('__error');
   xp::$null= new null();
   xp::registry('errors', array());
   XPException::$instance= new XPException();
