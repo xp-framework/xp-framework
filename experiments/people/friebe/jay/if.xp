@@ -4,7 +4,7 @@ function greet($name) {
 
 if (!$argv[1]) {
   greet('unknown');
-} elseif ('-u' == $argv[1]) {
+} else if ('-u' == $argv[1]) {
   greet(getenv('USER'));
 } else {
   greet($argv[1]);
