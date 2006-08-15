@@ -66,7 +66,7 @@
      * @return  string
      */
     function qualifiedName($class) {
-      static $special= array('parent', 'self');
+      static $special= array('parent', 'self', 'xp');
       
       if (in_array($class, $special)) return $class;
       return strtr((strstr($class, '~') ? $class : $this->prefixedClassnameFor($class)), '~', '·');
@@ -283,7 +283,7 @@
      * @return  string
      */
     function getResult() { 
-      return "<?php\n  require('php5-emit/__xp__.php');\n  ".$this->bytes."\n?>";
+      return "<?php\n  ".$this->bytes."\n?>";
     }
 
     /**
@@ -559,11 +559,11 @@
      */
     function emitMember(&$node) {
       $this->bytes.= $node->name;
-      if ($node->offset) {
-        $this->bytes.= '[';
-        $this->emit($node->offset);
-        $this->bytes.= ']';
-      }
+      if (NULL === $node->offset) return;
+
+      $this->bytes.= '[';
+      $this->emit($node->offset);
+      $this->bytes.= ']';
     }
 
     /**
@@ -610,9 +610,9 @@
       // Chain: $x->getClass()->getName()
       if (!$node->chain) return;
       
-      foreach ($node->chain as $node) {
-        $this->context['chain_prev']= $node;
-        $this->emit($node);
+      foreach ($node->chain as $chain) {
+        $this->context['chain_prev']= $chain;
+        $this->emit($chain);
       }
     }
 
@@ -637,6 +637,13 @@
       $this->emit($node->class);
       $this->bytes.= '->';
       $this->emit($node->member);
+
+      if (!$node->chain) return;
+      
+      foreach ($node->chain as $chain) {
+        $this->context['chain_prev']= $chain;
+        $this->emit($chain);
+      }
     }
 
     /**
@@ -839,8 +846,8 @@
 
       if ($node->instanciation->chain) {
         $this->bytes.= ')';
-        foreach ($node->instanciation->chain as $node) {
-          $this->emit($node);
+        foreach ($node->instanciation->chain as $chain) {
+          $this->emit($chain);
         }
       }
     }
@@ -1339,5 +1346,28 @@
         $this->bytes.= ')';
       }
     }
-  }
+
+    /**
+     * Emits bracketed expressions ("(" expression ")")
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitBracketedExpression(&$node) {
+      $this->bytes.= '(';
+      $this->emit($node->expression);
+      $this->bytes.= ')';
+    }
+
+    /**
+     * Emits silenced expressions ("@" expression)
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitSilencedExpression(&$node) {
+      $this->bytes.= '@';
+      $this->emit($node->expression);
+    }
+ }
 ?>
