@@ -87,7 +87,7 @@
     function assertSourcecodeEquals($expected, $emitted) {
       if (!is_string($emitted)) return;
 
-      $expected= $this->normalizeSourcecode("<?php\n require('php5-emit/__xp__.php'); ".$expected.' ?>');
+      $expected= $this->normalizeSourcecode("<?php\n ".$expected.' ?>');
       $emitted= $this->normalizeSourcecode($emitted);
       $this->assertEquals($expected, $emitted);
     }
