@@ -1,7 +1,7 @@
-Index: remote/protocol/XpProtocolHandler.class.php
+Index: skeleton/remote/protocol/XpProtocolHandler.class.php
 ===================================================================
---- remote/protocol/XpProtocolHandler.class.php	(revision 7647)
-+++ remote/protocol/XpProtocolHandler.class.php	(working copy)
+--- skeleton/remote/protocol/XpProtocolHandler.class.php	(revision 7678)
++++ skeleton/remote/protocol/XpProtocolHandler.class.php	(working copy)
 @@ -23,7 +23,8 @@
      var
        $versionMajor   = 0,
@@ -237,13 +237,51 @@ Index: remote/protocol/XpProtocolHandler.class.php
 +
 +  } implements(__FILE__, 'remote.protocol.ProtocolHandler', 'util.log.Traceable');
  ?>
-Index: remote/HandlerInstancePool.class.php
+Index: skeleton/remote/Remote.class.php
 ===================================================================
---- remote/HandlerInstancePool.class.php	(revision 7647)
-+++ remote/HandlerInstancePool.class.php	(working copy)
-@@ -14,7 +14,8 @@
+--- skeleton/remote/Remote.class.php	(revision 7678)
++++ skeleton/remote/Remote.class.php	(working copy)
+@@ -5,7 +5,6 @@
+  */
+ 
+   uses(
+-    'peer.URL', 
+     'remote.HandlerInstancePool', 
+     'remote.protocol.RemoteInterfaceMapping', 
+     'remote.UserTransaction'
+@@ -72,12 +71,10 @@
+         if (isset($instances[$key])) return $instances[$key];
+ 
+         // No instance yet, so get it
+-        $url= &new URL($key);
+         $e= $instance= NULL;
+         try(); {
+           $instance= &new Remote();
+-          $instance->_handler= &$pool->acquire($url);
+-          $instance->_handler && $instance->_handler->initialize($url);
++          $instance->_handler= &$pool->acquire($key, TRUE);
+         } if (catch('RemoteException', $e)) {
+           continue;   // try next
+         } if (catch('Exception', $e)) {
+Index: skeleton/remote/HandlerInstancePool.class.php
+===================================================================
+--- skeleton/remote/HandlerInstancePool.class.php	(revision 7678)
++++ skeleton/remote/HandlerInstancePool.class.php	(working copy)
+@@ -4,7 +4,7 @@
+  * $Id$ 
+  */
+ 
+-  uses('remote.HandlerFactory', 'util.collections.HashTable');
++  uses('remote.HandlerFactory', 'util.collections.HashTable', 'peer.URL');
+ 
+   /**
+    * Pool of handler instances
+@@ -12,9 +12,10 @@
+    * @see      xp://remote.HandlerFactory
+    * @purpose  Pool
     */
-   class HandlerInstancePool extends HashTable {
+-  class HandlerInstancePool extends HashTable {
++  class HandlerInstancePool extends Object {
      var
 -      $pool= NULL;
 +      $pool = NULL,
@@ -251,11 +289,19 @@ Index: remote/HandlerInstancePool.class.php
  
      /**
       * Constructor
-@@ -75,17 +76,32 @@
+@@ -70,21 +71,26 @@
+      * Acquire a handler instance
+      *
+      * @access  public
+-     * @param   &peer.URL url
++     * @param   string key
+      * @return  &remote.protocol.ProtocolHandler
       * @throws  remote.protocol.UnknownProtocolException
       */
-     function &acquire(&$url) {
+-    function &acquire(&$url) {
 -      if ($this->pool->containsKey($url)) return $this->pool->get($url);
++    function &acquire($key, $initialize= FALSE) {
++      $url= &new URL($key);
 +      if ($this->pool->containsKey($url)) {
 +        $instance= &$this->pool->get($url);
 +      } else {
@@ -275,20 +321,94 @@ Index: remote/HandlerInstancePool.class.php
        }
  
 -      $instance= &$this->pool($url, $class->newInstance($option));
-+      $instance->cat= &$this->cat;
++      $initialize && $instance->initialize($url);
        return $instance;
      }
--  }
-+
-+    /**
-+     * Set trace
-+     *
-+     * @access  public
-+     * @param   &util.log.LogCategory cat
-+     */
-+    function setTrace(&$cat) {
-+      $this->cat= &$cat;
+   }
+Index: ext/java/easc/clients/echo.php
+===================================================================
+--- ext/java/easc/clients/echo.php	(revision 7678)
++++ ext/java/easc/clients/echo.php	(working copy)
+@@ -9,6 +9,8 @@
+     'remote.Remote', 
+     'util.cmd.ParamString', 
+     'util.profiling.Timer',
++    'util.log.Logger',
++    'util.log.ColoredConsoleAppender',
+     'util.profiling.unittest.AssertionFailedError'
+   );
+   
+@@ -20,7 +22,7 @@
+ 
+ Usage
+ -----
+-$ php echo.php <hostname> <type>  [-p <port> ] [-j <jndi_name> ]
++$ php echo.php <hostname> <type>  [-p <port> ] [-j <jndi_name> ] [-v level]
+   
+   * hostname is the host name (or IP) that your JBoss + XP-MBean server 
+     is running on. The feed entity bean (from the easc/beans directory) 
+@@ -40,13 +42,37 @@
+   
+   * jndi_name is the name of the bean in JNDI. It defaults to 
+     "xp/demo/Echo"
++  
++  * Level is the log level, defaulting to all, and may consist of one 
++    or more of debug, info, warn or error (separated by commas), which
++    would selectively activate the specified log level.
+ __
+     );
+     exit(1);
+   }
+   
++  $url= 'xp://'.$p->value(1).':'.$p->value('port', 'p', 6448).'/';
++  
++  // Debugging
++  $cat= NULL;
++  if ($p->exists('verbose')) {
++    $l= &Logger::getInstance();
++    $cat= &$l->getCategory();
++    $cat->addAppender(new ColoredConsoleAppender());
++    $pool= &HandlerInstancePool::getInstance();
++    $handler= &$pool->acquire($url);
++    $handler->setTrace($cat);
++    
++    if ($levels= $p->value('verbose')) {
++      foreach (explode(',', $levels) as $level) {
++        $flags= $flags | constant('LOGGER_FLAG_'.strtoupper($level));
++      }
++      $cat->setFlags($flags);
 +    }
-+
-+  } implements(__FILE__, 'util.log.Traceable');
- ?>
++  }
++  
+   try(); {
+-    $remote= &Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6448).'/');
++    $remote= &Remote::forName($url);
+     $remote && $home= &$remote->lookup($p->value('jndi', 'j', 'xp/demo/Roundtrip'));
+     $home && $instance= &$home->create();
+   } if (catch('Exception', $e)) {
+Index: skeleton/net/xp_framework/unittest/remote/RoundtripTest.class.php
+===================================================================
+--- skeleton/net/xp_framework/unittest/remote/RoundtripTest.class.php	(revision 7678)
++++ skeleton/net/xp_framework/unittest/remote/RoundtripTest.class.php	(working copy)
+@@ -159,7 +159,7 @@
+      *
+      * @access  public
+      */
+-    #[@test, @expect('remote.RemoteException')]
++    #[@ignore('Method overloading not supported by PHP'), @test, @expect('remote.RemoteException')]
+     function incorrectArgumentsToArrayMethod() {
+       $this->instance->echoArray('A STRING, MAN!');
+     }
+Index: skeleton/net/xp_framework/unittest/remote/RemoteTest.class.php
+===================================================================
+--- skeleton/net/xp_framework/unittest/remote/RemoteTest.class.php	(revision 7678)
++++ skeleton/net/xp_framework/unittest/remote/RemoteTest.class.php	(working copy)
+@@ -54,7 +54,7 @@
+         REMOTE_SPEC_THREE   => FALSE,   // Cluster machine #3
+         REMOTE_SPEC_OTHER   => TRUE     // Other machine
+       ) as $spec => $avail) {
+-        $this->handler[$spec]= &$pool->acquire(new URL($spec));
++        $this->handler[$spec]= &$pool->acquire($spec);
+         $this->handler[$spec]->server['available']= $avail;
+       }
+     }
