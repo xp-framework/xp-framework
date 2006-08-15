@@ -13,7 +13,33 @@
       return $this->cause->toString(); 
     }
   }
-
+  
+  function uses() {
+    foreach (func_get_args() as $class) {
+      $file= strtr($class, '.', DIRECTORY_SEPARATOR);
+      
+      foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
+        if (file_exists($path.DIRECTORY_SEPARATOR.$file.'.php5')) {
+          if (filemtime($path.DIRECTORY_SEPARATOR.$file.'.php5') < filemtime($path.DIRECTORY_SEPARATOR.$file.'.xp')) {
+            // echo '*** PHP5 Version older than XP... ';
+          } else {
+            // echo '*** Loading ', $file, "\n";
+            require_once($file.'.php5');
+            continue 2;
+          }
+        }
+      }
+      
+      // Could not find the file, compile
+      $cmd= 'php tophp5.php /home/thekid/devel/xp2/'.$file.'.xp';
+      // echo '*** Compiling ', $cmd, "\n";
+      passthru($cmd);
+      require_once($file.'.php5');
+    }
+  }
+  
+  ini_set('include_path', '.:/home/thekid/devel/xp2/');
+  
   final class null {
     public function __set($prop, $value) { 
       throw xp::exception(new xp·lang·NullPointerException('Set: '.$prop));
@@ -25,6 +51,10 @@
 
     public function __call($method, $args) { 
       throw xp::exception(new xp·lang·NullPointerException('Invoke: '.$method));
+    }
+    
+    public function __toString() {
+      return '<null>';
     }
   }
   
@@ -38,9 +68,26 @@
 
   final class xp {
     public static $null;
+    public static $registry= array();
     
     public static function wraparray($array) {
       return new arraywrapper($array);
+    }
+    
+    public static function reflect($n) {
+      return $n;
+    }
+
+    public static function nameOf($name) {
+      return strtr($name, '·', '.');
+    }
+
+    public static function registry($key= NULL, $value= NULL) {
+      switch (func_num_args()) {
+        case 0: return xp::$registry;
+        case 1: return xp::$registry[$key];
+        case 2: xp::$registry[$key]= $value;
+      }
     }
 
     public static function exception(xp·lang·Throwable $e) {
@@ -78,58 +125,24 @@
   
   // {{{ Init
   xp::$null= new null();
+  xp::registry('errors', array());
   XPException::$instance= new XPException();
   set_exception_handler(array('xp', 'handleexception'));
   // }}}
   
   // {{{ Builtin classes
-  class xp·lang·Object {
-  
-    function toString() {
-      return $this->getClassName().'@('.var_export($this, TRUE).')';
-    }
-    
-    function getClassName() {
-      return strtr(get_class($this), '·', '~');
-    }
-  }
-
-  class xp·lang·Throwable extends xp·lang·Object {
-    public $message;
-    public $trace;
-    
-    public function __construct($message) {
-      $this->message= $message;
-      $this->trace= debug_backtrace();
-    }
-    
-    function toString() {
-      $trace= '';
-      for ($i= 1, $s= sizeof($this->trace); $i < $s; $i++) {
-        $trace.= sprintf(
-          "  at %s%s({%d arg(s)}) (%s:%d)\n",
-          isset($this->trace[$i]['type']) ? ('->' == $this->trace[$i]['type'] 
-            ? get_class($this->trace[$i]['object']).'->'
-            : $this->trace[$i]['class'].'::'
-          ) : '<main>::',
-          $this->trace[$i]['function'],
-          sizeof($this->trace[$i]['args']),   // TBI: String representation!
-          basename(@$this->trace[$i]['file']),
-          @$this->trace[$i]['line']
-        );
-      }
-      return $this->getClassName().'@("'.$this->message."\") {\n".$trace.'}';
-    }
-  }
-
-  class xp·lang·Exception extends xp·lang·Throwable { }
-  class xp·lang·SystemExit extends xp·lang·Throwable { 
-    public function __construct($message= 0) {
-      parent::__construct($message);
-    }
-  }
-  class xp·lang·IllegalAccessException extends xp·lang·Exception { }
-  class xp·lang·NullPointerException extends xp·lang·Exception { }
-  class xp·io·IOException extends xp·lang·Exception { }
+  uses(
+    'xp.lang.Object',
+    'xp.lang.Error',
+    'xp.lang.Exception',
+    'xp.lang.XPClass',
+    'xp.lang.NullPointerException',
+    'xp.lang.IllegalAccessException',
+    'xp.lang.IllegalArgumentException',
+    'xp.lang.IllegalStateException',
+    'xp.lang.FormatException',
+    'xp.lang.ClassLoader',
+    'xp.lang.SystemExit'
+  );
   // }}}
 ?>
