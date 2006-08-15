@@ -1,9 +1,24 @@
 #!/bin/sh
 
-PHPFOUR=php
-PHPFIVE=php5
-TEMP=/tmp
+if [ $OS = "Windows_NT" ] ; then
+  # Cygwin
+
+  PHPFOUR="/cygdrive/d/Programme/php-4.3.11-Win32/php.exe"
+  PHPFIVE="/cygdrive/d/Programme/php-5.1.4-Win32/php.exe"
+  REALPATH="cygpath -w"
+  TEMP="."
+else 
+  # Unix
+
+  PHPFOUR="php"
+  PHPFIVE="php5"
+  TEMP="/tmp/"
+  REALPATH="realpath"
+fi
+
+export COMPILE_CMD="`$REALPATH $PHPFOUR` tophp5.php %s"
 
 $PHPFOUR tophp5.php $1 -o $TEMP/t.php5 1>/dev/null
 (echo "<?php require('php5-emit/__xp__.php'); ?>" ; cat $TEMP/t.php5) > $TEMP/x.php5
+
 $PHPFIVE $TEMP/x.php5 $2 $3 $4 $5 $6 $7 $8 $9
