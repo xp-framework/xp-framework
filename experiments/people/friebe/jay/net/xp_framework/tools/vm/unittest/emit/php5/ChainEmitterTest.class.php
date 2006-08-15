@@ -68,6 +68,19 @@
     }
 
     /**
+     * Tests chaining method calls after an array offset
+     *
+     * @access  public
+     */
+    #[@test]
+    function chainedMethodCallAfterArrayOffsets() {
+      $this->assertSourcecodeEquals(
+        'echo $this->trace[$i]->toString();',
+        $this->emit('echo $this->trace[$i]->toString();')
+      );
+    }
+
+    /**
      * Tests chaining members and methods, and after the constructor
      *
      * @access  public
