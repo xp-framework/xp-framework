@@ -353,6 +353,15 @@
     }
 
     /**
+     * Emits a constant
+     *
+     * @access  public
+     */
+    function emitConstant($name) {
+     $this->bytes.= $name;
+    }
+    
+    /**
      * Emits PackageDeclarations
      *
      * @access  public

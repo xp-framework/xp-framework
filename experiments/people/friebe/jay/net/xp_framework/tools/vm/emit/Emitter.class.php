@@ -118,6 +118,9 @@
       } else if (is_float($node)) {
         $this->emitDouble($node);
         return;
+      } else if (is_string($node)) {
+        $this->emitConstant($node);
+        return;
       }
 
       $this->cat && $this->cat->error('Cannot handle', $node);
@@ -169,6 +172,13 @@
      * @access  public
      */
     function emitNull() { }
+
+    /**
+     * Emits a constant
+     *
+     * @access  public
+     */
+    function emitConstant($name) { }
 
     /**
      * Emits PackageDeclarations
