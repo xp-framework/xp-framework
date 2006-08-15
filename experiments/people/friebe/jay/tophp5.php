@@ -34,6 +34,14 @@
   
   $emitter= &new Php5Emitter();
   $emitter->emitAll($nodes);
+
+  if ($emitter->hasErrors()) {
+    Console::writeLine('!!! Errors have occured');
+    foreach ($emitter->getErrors() as $error) {
+      Console::writeLine('- ', $error->toString());
+    }
+    exit(1);
+  }
   
   try(); {
     FileUtil::setContents($out, $emitter->getResult());
