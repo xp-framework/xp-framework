@@ -97,6 +97,7 @@
       if (is_a($node, 'NewNode')) {
         return $node->class->name;
       } else if (is_a($node, 'VariableNode')) {
+        if ('$this' == $node->name) return $this->context['class'];
         return $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->name];
       } else if (is_a($node, 'MethodCallNode')) {
         return $this->context['types'][$node->class.'::'.$node->method->name];
@@ -106,8 +107,8 @@
         // TODO: Check operator overloading
         return NULL;
       } else if (is_a($node, 'ObjectReferenceNode')) {
-        // TODO: Check class member type
-        return NULL;
+        $ctype= is_string($node->class) ? $node->class : $this->typeOf($node->class);
+        return $this->context['types'][$ctype.'::$'.$node->member->name];
       } else if ('"' == $node{0}) { // Double-quoted string
         return 'string';
       } else if ("'" == $node{0}) { // Single-quoted string
@@ -189,9 +190,10 @@
      * @return  string type
      */
     function checkedType(&$node, $type) {
+      // Console::writeLine($node->toString().'.TYPE('.$this->typeOf($node).') =? ', $type);
       
       // NULL indicates unknown, so no checks performed!
-      if (NULL === ($ntype= $this->typeOf($node))) return $type;  
+      if (NULL === $type || NULL === ($ntype= $this->typeOf($node))) return $type;  
 
       // FIXME: Inheritance/Cast?
       if ($ntype != $type) {
