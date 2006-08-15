@@ -1369,5 +1369,18 @@
       $this->bytes.= '@';
       $this->emit($node->expression);
     }
- }
+
+    /**
+     * Emits array access
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitArrayAccess(&$node) {
+      $this->emit($node->expression);
+      $this->bytes.= '[';
+      $this->emit($node->offset);
+      $this->bytes.= ']';
+    }
+  }
 ?>
