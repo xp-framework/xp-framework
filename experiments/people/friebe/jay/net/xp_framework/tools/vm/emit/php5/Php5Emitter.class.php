@@ -33,6 +33,7 @@
       $this->context['imports']= array();
       $this->context['types']= array();
       $this->context['overloaded']= array();
+      $this->context['default']= array();
       $this->context['class']= $this->context['method']= '<main>';
       
       // Builtin classes
@@ -206,6 +207,7 @@
      */
     function emitParameters($parameters) {
       $embed= '';
+      $this->context['default'][$this->context['class'].'::'.$this->context['method']]= array();
       foreach ($parameters as $i => $param) {
       
         // Vararg or not vararg
@@ -223,8 +225,7 @@
         
         // Parameter default value
         if ($param->default) {
-          $this->bytes.= '= ';
-          $this->emit($param->default);
+          $this->context['default'][$this->context['class'].'::'.$this->context['method']][$i]= &$param->default;
         }
         $this->bytes.= ', ';
       }
@@ -585,12 +586,20 @@
         }
       }
       $this->bytes.= $method.'(';
-      foreach ($node->arguments as $arg) {
-        $this->emit($arg);
+      for ($i= 0; $i < sizeof($node->arguments); $i++) {
+        $this->emit($node->arguments[$i]);
         $this->bytes.= ', ';
       }
-      $node->arguments && $this->bytes= substr($this->bytes, 0, -2);
-      $this->bytes.= ')';
+      
+      // Pass default args
+      if (!empty($this->context['default'][$type.'::'.$method])) {
+        for ($defaults= $this->context['default'][$type.'::'.$method]; $i <= max(array_keys($defaults)); $i++) {
+          $this->emit($defaults[$i]);
+          $this->bytes.= ', ';
+        }
+      }
+      
+      $this->bytes= rtrim($this->bytes, ', ').')';
  
       // Chain: $x->getClass()->getName()
       if (!$node->chain) return;
