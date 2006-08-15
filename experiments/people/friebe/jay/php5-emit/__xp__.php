@@ -77,8 +77,8 @@
       return new arraywrapper($array);
     }
     
-    public static function reflect($n) {
-      return $n;
+    public static function reflect($name) {
+      return strtr($name, '.', '·');
     }
 
     public static function nameOf($name) {
