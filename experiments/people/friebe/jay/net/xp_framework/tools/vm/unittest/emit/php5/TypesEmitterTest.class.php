@@ -44,5 +44,25 @@
     function typedArgumentMismatch() {
       $this->emit('class Test { public void test(string $bar) { $bar= 1; } }');
     }
+
+    /**
+     * Tests an untyped member
+     *
+     * @access  public
+     */
+    #[@test]
+    function untypedMember() {
+      $this->emit('class Test { private $bar; public void test() { $this->bar= 1; } }');
+    }
+
+    /**
+     * Tests a typed member
+     *
+     * @access  public
+     */
+    #[@test, @expect('lang.FormatException')]
+    function typedMemberMismatch() {
+      $this->emit('class Test { private string $bar; public void test() { $this->bar= 1; } }');
+    }
   }
 ?>
