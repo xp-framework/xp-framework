@@ -310,7 +310,7 @@
      * @param   string string
      */
     function emitString($string) { 
-      $this->bytes.= "'".str_replace('\'', '\\\'', $string)."'";
+      $this->bytes.= "'".str_replace('\'', '\\\\\'', $string)."'";
     }
 
     /**
