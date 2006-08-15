@@ -14,6 +14,32 @@
   class ArrayEmitterTest extends AbstractEmitterTest {
 
     /**
+     * Tests array access
+     *
+     * @access  public
+     */
+    #[@test]
+    function arrayAccess() {
+      $this->assertSourcecodeEquals(
+        '$a[$key]++;',
+        $this->emit('$a[$key]++;')
+      );
+    }
+
+    /**
+     * Tests array access
+     *
+     * @access  public
+     */
+    #[@test]
+    function nestedArrayAccess() {
+      $this->assertSourcecodeEquals(
+        '$a[$key][$subkey]++;',
+        $this->emit('$a[$key][$subkey]++;')
+      );
+    }
+
+    /**
      * Tests array append operator "[]"
      *
      * @access  public
@@ -23,6 +49,19 @@
       $this->assertSourcecodeEquals(
         '$a[]= 1;',
         $this->emit('$a[]= 1;')
+      );
+    }
+
+    /**
+     * Tests array append operator "[]"
+     *
+     * @access  public
+     */
+    #[@test]
+    function arrayAppendOperatorAfterArrayOffset() {
+      $this->assertSourcecodeEquals(
+        '$a[$key][]= 1;',
+        $this->emit('$a[$key][]= 1;')
       );
     }
   }
