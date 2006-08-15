@@ -168,4 +168,8 @@ Comments
 - friebe, Mon Aug 14 17:01:03 CEST 2006
   Logging in intialize() does not work! Reason is that when
   $remote->setTrace($cat); is called it's already to late for this...
+
+- friebe, Tue Aug 15 13:31:14 CEST 2006
+  New patch available, setting setTrace() is now done on HandlerInstancePool.
+
 <EOF>
