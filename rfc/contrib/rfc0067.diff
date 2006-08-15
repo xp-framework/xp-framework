@@ -386,19 +386,6 @@ Index: ext/java/easc/clients/echo.php
      $remote && $home= &$remote->lookup($p->value('jndi', 'j', 'xp/demo/Roundtrip'));
      $home && $instance= &$home->create();
    } if (catch('Exception', $e)) {
-Index: skeleton/net/xp_framework/unittest/remote/RoundtripTest.class.php
-===================================================================
---- skeleton/net/xp_framework/unittest/remote/RoundtripTest.class.php	(revision 7678)
-+++ skeleton/net/xp_framework/unittest/remote/RoundtripTest.class.php	(working copy)
-@@ -159,7 +159,7 @@
-      *
-      * @access  public
-      */
--    #[@test, @expect('remote.RemoteException')]
-+    #[@ignore('Method overloading not supported by PHP'), @test, @expect('remote.RemoteException')]
-     function incorrectArgumentsToArrayMethod() {
-       $this->instance->echoArray('A STRING, MAN!');
-     }
 Index: skeleton/net/xp_framework/unittest/remote/RemoteTest.class.php
 ===================================================================
 --- skeleton/net/xp_framework/unittest/remote/RemoteTest.class.php	(revision 7678)
