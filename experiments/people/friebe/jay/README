@@ -5,30 +5,30 @@ $Id$
 
 What's this?
 ------------
-Here's an overview.
-* phpJay: Compiler generator
-* compile.php: Compiler
-* execute.php: Executor
-* XP2.jay: Grammar
-* test.php: Testfile for compiler
+This is an experiment to show the feasibility of compiling XP sourcecode
+to PHP5.
 
 
 Getting started
 ---------------
-* Compile phpJay using "cd parser_generator && make && cd .."
-
-* Run "sh generate_parser.sh" 
-
-* Run "php compile.php helloworld.xp"
-
-* Run "php execute.php helloworld.xpc NAME"
-  (replace NAME by your name)
+* Run "make test"
 
 
-NOTE:
-  For a clean compile use gcc version 3.3 on my system before make I did:
+Note on make
+------------
+On Windows/Cygwin, the following command line works if "php" cannot be
+found in your path (example):
+  
+  $ PHP=/cygdrive/d/Programme/php-4.3.11-Win32/php.exe make test
+
+
+Note on compiling phpJay (the parser generator)
+-----------------------------------------------
+For a clean compile use gcc version 3.3 on my system before make I did:
+
   $ export CC=/usr/bin/gcc-3.3.6
-  gcc 4.0.3 will also work but will generate some warnings.
+
+gcc 4.0.3 will also work but will generate some warnings.
 
 
 Related information
