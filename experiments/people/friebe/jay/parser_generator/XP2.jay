@@ -1365,7 +1365,7 @@ compound_variable:
 ;
 
 dim_offset:
-		/* empty */		{ $$= NULL; }
+		/* empty */		{ $$= FALSE; }
 	|	expr			{ $$= $1; }
 ;
 
@@ -1471,11 +1471,21 @@ internal_functions_in_yacc:
 	|	T_EMPTY '(' variable ')' {
           $$= &new EmptyNode($3);
         }
-	|	T_INCLUDE expr 			{ /* compiler::call('zend_do_include_or_eval', array(ZEND_INCLUDE, $$, $2 )); */ }
-	|	T_INCLUDE_ONCE expr 	{ /* compiler::call('zend_do_include_or_eval', array(ZEND_INCLUDE_ONCE, $$, $2 ));*/  }
-	|	T_EVAL '(' expr ')' 	{ /* compiler::call('zend_do_include_or_eval', array(ZEND_EVAL, $$, $3 )); */ }
-	|	T_REQUIRE expr			{ /* compiler::call('zend_do_include_or_eval', array(ZEND_REQUIRE, $$, $2 )); */ }
-	|	T_REQUIRE_ONCE expr		{ /* compiler::call('zend_do_include_or_eval', array(ZEND_REQUIRE_ONCE, $$, $2 )); */ }
+	|	T_INCLUDE '(' expr ')' {
+          $$= &new FunctionCallNode('include', array($3));
+        }
+	|	T_INCLUDE_ONCE '(' expr ')' {
+          $$= &new FunctionCallNode('include_once', array($3));
+        }
+	|	T_EVAL '(' expr ')' {
+          $$= &new FunctionCallNode('eval', array($3));
+        }
+	|	T_REQUIRE '(' expr ')' {
+          $$= &new FunctionCallNode('require', array($3));
+        }
+	|	T_REQUIRE_ONCE '(' expr ')' {
+          $$= &new FunctionCallNode('require_once', array($3));
+        }
 ;
 
 isset_variables:
