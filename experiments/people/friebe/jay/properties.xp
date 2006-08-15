@@ -16,7 +16,7 @@ class String {
 
 $s= new String();
 $s->buffer= 'Hello';          // calls setBuffer() with 'Hello' as argument    
-echo "'".$s->buffer."'";      // reads member "_buf"
+echo '"'.$s->buffer.'"';      // reads member "_buf"
 echo ' ('.$s->length.')';     // reads member "_len"
 
 try {
