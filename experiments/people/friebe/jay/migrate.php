@@ -254,7 +254,14 @@ __;
                 $type= '';
                 if ('__construct' != $t[1] && '__destruct' != $t[1]) {
                   $return= $method->tags('return');
-                  $type= $return ? ltrim(strtr($return[0]->type, '.', '~'), '&').' ' : 'void ';
+                  
+                  if (empty($return)) {
+                    $type= 'void';
+                  } else if (strstr($return[0]->type, '.')) {   // qualify objects
+                    $type= $this->packagedNameOf($this->qualifiedNameOf(xp::reflect(trim($return[0]->type, '&[]'))));
+                  } else {
+                    $type= trim(strtr($return[0]->type, '.', '~'), '&[]');
+                  }
                 }
                 
                 // Calculate modifier, defaulting to "public"
@@ -264,7 +271,7 @@ __;
                   $modifiers.= ' '.$model[0]->text;
                 }
                 
-                $t[1]= $modifiers.' '.$type.$t[1];
+                $t[1]= $modifiers.' '.$type.' '.$t[1];
                 break 2;
               }
               $method= NULL;
