@@ -186,7 +186,7 @@
           }
         };'),
         $this->emit('class Test {
-          public void sayHello(string $names...) {
+          public void sayHello(string... $names) {
             echo "Hello ", implode(", ", $names);
           }
         }')
@@ -208,7 +208,7 @@
           }
         };'),
         $this->emit('class Test {
-          public string sprintf(string $format, mixed $args...) {
+          public string sprintf(string $format, mixed... $args) {
             return vsprintf($format, $args); 
           }
         }')

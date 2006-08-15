@@ -219,7 +219,7 @@
         // Vararg or not vararg
         if ($param->vararg) {
           $embed.= '$__a= func_get_args(); '.$param->name.'= array_slice($__a, '.$i.');';
-          $this->context['types'][$this->context['class'].'::'.$this->context['method'].$param->name]= $param->type.'[]';
+          $this->context['types'][$this->context['class'].'::'.$this->context['method'].$param->name]= array($param->type);
           
           if ($i != sizeof($parameters) - 1) {
             return $this->addError(new CompileError(1210, 'Vararags parameters must be the last parameter'));

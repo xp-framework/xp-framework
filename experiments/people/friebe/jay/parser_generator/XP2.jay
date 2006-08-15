@@ -686,36 +686,33 @@ parameter_list:
 ;
 
 non_empty_parameter_list:
-		optional_class_type parameter_var {
-          $$= array(new ParameterNode($2[0], $1, NULL, $2[1]));
+		optional_parameter_type T_VARIABLE {
+          $$= array(new ParameterNode($2, $1[0], NULL, $1[1]));
         }
-	|	optional_class_type parameter_var '=' static_scalar {
-          $$= array(new ParameterNode($2[0], $1, $4, $2[1]));
+	|	optional_parameter_type T_VARIABLE '=' static_scalar {
+          $$= array(new ParameterNode($2, $1[0], $4, $1[1]));
         }
-	|	non_empty_parameter_list ',' optional_class_type parameter_var {
-          $$[]= &new ParameterNode($4[0], $3, NULL, $4[1]);
+	|	non_empty_parameter_list ',' optional_parameter_type T_VARIABLE {
+          $$[]= &new ParameterNode($4, $3[0], NULL, $3[1]);
         }
-	|	non_empty_parameter_list ',' optional_class_type parameter_var '=' static_scalar {
-          $$[]= &new ParameterNode($4[0], $3, $6, $4[1]);
+	|	non_empty_parameter_list ',' optional_parameter_type T_VARIABLE '=' static_scalar {
+          $$[]= &new ParameterNode($4, $3[0], $6, $3[1]);
         }
 ;
 
-parameter_var:
-		T_VARIABLE {
-          $$= array($1, FALSE);
-        }
-	|   T_VARIABLE '.''.''.' {
-          $$= array($1, TRUE);
-        }
+optional_parameter_type:
+	    optional_class_type   { $$= array($1, FALSE); }
+	|	T_STRING '.''.''.'    { $$= array($1, TRUE); }
+	|	T_CLASSNAME '.''.''.' { $$= array($1, TRUE); }
 ;
 
 optional_class_type:
-		/* empty */		{ $$= NULL; }
-	|	T_STRING		{ $$= $1; }
-	|	T_CLASSNAME     { $$= $1; }
-	|	T_ARRAY		    { $$= 'array'; }
-	|	T_STRING '[' ']' { $$= array($1); }
-	|	T_CLASSNAME '[' ']' { $$= array($1); }
+		/* empty */		      { $$= NULL; }
+	|	T_STRING		      { $$= $1; }
+	|	T_CLASSNAME           { $$= $1; }
+	|	T_ARRAY		          { $$= 'array'; }
+	|	T_STRING '[' ']'      { $$= array($1); }
+	|	T_CLASSNAME '[' ']'   { $$= array($1); }
 ;
 
 function_call_parameter_list:
