@@ -179,6 +179,28 @@
         $this->addError(new CompileError(2000, $class.' does not implement '.$interface.'::'.$name));
       }
     }
+
+    /**
+     * Checks whether a given node is of a given type
+     *
+     * @access  protected
+     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   string type
+     * @return  string type
+     */
+    function checkedType(&$node, $type) {
+      
+      // NULL indicates unknown, so no checks performed!
+      if (NULL === ($ntype= $this->typeOf($node))) return $type;  
+
+      // FIXME: Inheritance/Cast?
+      if ($ntype != $type) {
+        $this->addError(new CompileError(3001, 'Type mismatch: '.$node->toString().'`s type ('.xp::stringOf($ntype).') != '.xp::stringOf($type)));
+        return NULL;
+      }
+
+      return $type;
+    }
     
     /**
      * Emits a list of parameters
@@ -660,7 +682,7 @@
      * @access  public
      * @param   &net.xp_framework.tools.vm.VNode node
      */
-    function emitAssign(&$node) { 
+    function emitAssign(&$node) {
       $this->emit($node->variable);
       $this->bytes.= '= ';
       $this->emit($node->expression);
@@ -671,7 +693,8 @@
       } else {
         $scope= $this->context['class'].'::'.$this->context['method'].$node->variable->name;
       }
-      $this->context['types'][$scope]= $this->typeOf($node->expression);
+
+      $this->context['types'][$scope]= $this->checkedType($node->variable, $this->typeOf($node->expression));
     }
 
     /**
