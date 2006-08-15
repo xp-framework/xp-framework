@@ -1382,5 +1382,16 @@
       $this->emit($node->offset);
       $this->bytes.= ']';
     }
+
+    /**
+     * Emits static members
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitStaticMember(&$node) {
+      $this->bytes.= $node->class.'::';
+      $this->emit($node->member);
+    }
   }
 ?>
