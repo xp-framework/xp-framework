@@ -40,7 +40,7 @@
           }
         };'),
         $this->emit('class Date {
-          protected int $stamp= 0;
+          protected integer $stamp= 0;
           
           [@overloaded] public bool isBefore(string $value) {
             return $this->stamp < strtotime($value);
@@ -84,7 +84,7 @@
           }
         };'),
         $this->emit('class Date {
-          protected int $stamp= 0;
+          protected integer $stamp= 0;
 
           [@overloaded] public __construct(string $in) {
             $this->stamp= strtotime($in);
