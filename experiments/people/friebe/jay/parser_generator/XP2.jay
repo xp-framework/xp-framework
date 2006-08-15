@@ -1325,7 +1325,7 @@ variable_without_objects:
 
 static_member:
 		fully_qualified_class_name T_DOUBLE_COLON variable_without_objects { 
-          $$= &PNode::create('StaticMember', array($1, &$3)); 
+          $$= &new StaticMemberNode($1, $3);
         }
 ;
 
