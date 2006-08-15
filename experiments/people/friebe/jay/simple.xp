@@ -37,7 +37,7 @@ package de~thekid {
   }
 
   interface Comparator {
-    bool compare($a, $b);
+    public bool compare($a, $b);
   }
 }
 
