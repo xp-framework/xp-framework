@@ -4,7 +4,10 @@
  * $Id$
  */
  
-  uses('net.xp_framework.tools.vm.emit.Emitter');
+  uses(
+    'net.xp_framework.tools.vm.emit.Emitter',
+    'net.xp_framework.tools.vm.util.Modifiers'
+  );
  
   /**
    * Emits PHP5 compatible sourcecode
@@ -55,27 +58,6 @@
       $this->context['classes']['xp·io·IOException']= $this->context['classes']['xp·lang·Throwable'];
     }
 
-    /**
-     * Retrieves modified names
-     *
-     * @access  protected
-     * @param   int m modifier bitfield
-     * @return  string[]
-     */
-    function modifierNames($m) {
-      $names= array();
-      if ($m & MODIFIER_ABSTRACT) $names[]= 'abstract';
-      if ($m & MODIFIER_FINAL) $names[]= 'final';
-      switch ($m & (MODIFIER_PUBLIC | MODIFIER_PROTECTED | MODIFIER_PRIVATE)) {
-        case MODIFIER_PRIVATE: $names[]= 'private'; break;
-        case MODIFIER_PROTECTED: $names[]= 'protected'; break;
-        case MODIFIER_PUBLIC:
-        default: $names[]= 'public'; break;
-      }
-      if ($m & MODIFIER_STATIC) $names[]= 'static';
-      return $names;
-    }
-    
     /**
      * Retrieves qualified class name for a given class name.
      *
@@ -388,7 +370,7 @@
       $this->context['method']= $method;
       $this->context['classes'][$this->context['class']][$method]= TRUE; // XXX DECL?
       
-      $this->bytes.= implode(' ', $this->modifierNames($node->modifiers)).' function '.$method.'(';
+      $this->bytes.= implode(' ', Modifiers::namesOf($node->modifiers)).' function '.$method.'(';
 
       // Method arguments
       $embed= $this->emitParameters($node->parameters);
@@ -417,7 +399,7 @@
       $this->context['method']= $method;
       $this->context['types'][$this->context['class'].'::'.$method]= $this->context['class'];
       
-      $this->bytes.= implode(' ', $this->modifierNames($node->modifiers)).' function '.$method.'(';
+      $this->bytes.= implode(' ', Modifiers::namesOf($node->modifiers)).' function '.$method.'(';
       $embed= $this->emitParameters($node->parameters);
       $this->bytes.= ')';
 
@@ -1002,7 +984,7 @@
           $members.= $member->name.', ';
         }
       }
-      $members && $this->bytes.= implode(' ', $this->modifierNames($node->modifiers)).' '.substr($members, 0, -2).';';
+      $members && $this->bytes.= implode(' ', Modifiers::namesOf($node->modifiers)).' '.substr($members, 0, -2).';';
     }
 
     /**
