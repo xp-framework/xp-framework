@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ $OS = "Windows_NT" ] ; then
+if [ "$OS" = "Windows_NT" ] ; then
   # Cygwin
 
   PHPFOUR="/cygdrive/d/Programme/php-4.3.11-Win32/php.exe"
@@ -10,8 +10,8 @@ if [ $OS = "Windows_NT" ] ; then
 else 
   # Unix
 
-  PHPFOUR="php"
-  PHPFIVE="php5"
+  PHPFOUR=`which php`
+  PHPFIVE=`which php5`
   TEMP="/tmp/"
   REALPATH="realpath"
 fi
