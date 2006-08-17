@@ -36,6 +36,42 @@
     }
 
     /**
+     * Tests empty method
+     *
+     * @access  public
+     */
+    #[@test]
+    function emptyMethod() {
+      $this->assertSourcecodeEquals(
+        preg_replace('/\n\s*/', '', 'class Test extends xp·lang·Object{
+          public function sayHello(){
+          }
+        };'),
+        $this->emit('class Test {
+          public void sayHello() {
+          }
+        }')
+      );
+    }
+
+    /**
+     * Tests abstract method
+     *
+     * @access  public
+     */
+    #[@test]
+    function abstractMethod() {
+      $this->assertSourcecodeEquals(
+        preg_replace('/\n\s*/', '', 'abstract class Test extends xp·lang·Object{
+          abstract public function sayHello();
+        };'),
+        $this->emit('abstract class Test {
+          abstract public void sayHello();
+        }')
+      );
+    }
+
+    /**
      * Tests a method with one string argument 
      *
      * @access  public
