@@ -97,6 +97,16 @@
      */
     #[@test]
     function xpPrefixForFramework() {
+      $this->assertEquals('xp~', $this->prefixFor('lang'));
+    }
+
+    /**
+     * Tests everything except (com.*, net.*, org.*, ch.*) gets prefixed with "xp"
+     *
+     * @access  public
+     */
+    #[@test]
+    function xpPrefixForFrameworkClass() {
       $this->assertEquals(
         'xp~lang~XPClass', 
         $this->packagedNameOf('lang.XPClass')
