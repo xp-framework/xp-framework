@@ -5,7 +5,8 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase'
+    'util.profiling.unittest.TestCase',
+    'net.xp_framework.tools.vm.util.NameMapping'
   );
 
   /**
@@ -14,65 +15,17 @@
    * @purpose  Unit Test
    */
   class ClassNamesTest extends TestCase {
-
-    /**
-     * Retrieves qualified name of a given short name
-     *
-     * @access  public
-     * @param   string
-     * @return  string
-     */
-    function qualifiedNameOf($short) {
-      $key= strtolower($short);
-      if (!isset($this->mapping[$key])) {
-        return throw(new IllegalArgumentException('Mapping for "'.$short.'" not found'));
-      }
+    var
+      $names= NULL;
       
-      return ($this->getClassName() == $this->mapping[$key] 
-        ? 'self' 
-        : $this->mapping[$key]
-      );
-    }
-
-    /**
-     * Retrieves prefix for a given package
-     *
-     * @access  public
-     * @param   string package
-     * @return  string
-     */
-    function prefixFor($package) {
-      static $ports= array('com', 'net', 'ch', 'org', 'us');
-      
-      return (in_array(substr($package, 0, strpos($package, '.')), $ports) ? '' : 'xp~');
-    }
-    
-    /**
-     * Retrieves packaged name of a given qualified name
-     *
-     * @access  public
-     * @param   string q qualified class name
-     * @return  string
-     */
-    function packagedNameOf($q) {
-      if (strstr($q, '.')) {
-        $packaged= $this->prefixFor($q).strtr($q, '.', '~');
-      } else {
-        $packaged= $q;
-      }
-      return $packaged;
-    }
-    
     /**
      * Setup method
      *
      * @access  public
      */
     function setUp() {
-      $this->mapping['xp']= 'xp';
-      $this->mapping['parent']= 'parent';
-      $this->mapping['self']= 'self';
-      $this->mapping['date']= 'util.Date';
+      $this->names= &new NameMapping();
+      $this->names->addMapping('date', 'util.Date');
     }
 
     /**
@@ -85,7 +38,7 @@
       foreach (array('xp', 'parent', 'self') as $short) {
         $this->assertEquals(
           $short, 
-          $this->packagedNameOf($this->qualifiedNameOf($short))
+          $this->names->packagedNameOf($this->names->qualifiedNameOf($short))
         );
       }
     }
@@ -97,7 +50,7 @@
      */
     #[@test]
     function xpPrefixForFramework() {
-      $this->assertEquals('xp~', $this->prefixFor('lang'));
+      $this->assertEquals('xp~', $this->names->prefixFor('lang'));
     }
 
     /**
@@ -109,7 +62,7 @@
     function xpPrefixForFrameworkClass() {
       $this->assertEquals(
         'xp~lang~XPClass', 
-        $this->packagedNameOf('lang.XPClass')
+        $this->names->packagedNameOf('lang.XPClass')
       );
     }
 
@@ -120,7 +73,7 @@
      */
     #[@test]
     function noPrefixForXpFrameworkPackage() {
-      $this->assertEquals('', $this->prefixFor('net.xp_framework.unittest'));
+      $this->assertEquals('', $this->names->prefixFor('net.xp_framework.unittest'));
     }
 
     /**
@@ -132,7 +85,7 @@
     function noPrefixForXpFrameworkClasses() {
       $this->assertEquals(
         'net~xp_framework~unittest~DemoTest', 
-        $this->packagedNameOf('net.xp_framework.unittest.DemoTest')
+        $this->names->packagedNameOf('net.xp_framework.unittest.DemoTest')
       );
     }
 
@@ -143,7 +96,7 @@
      */
     #[@test]
     function noPrefixForGoogleContributionPackage() {
-      $this->assertEquals('', $this->prefixFor('com.google.soap.search'));
+      $this->assertEquals('', $this->names->prefixFor('com.google.soap.search'));
     }
 
     /**
@@ -155,7 +108,7 @@
     function noPrefixForGoogleContributionClasses() {
       $this->assertEquals(
         'com~google~soap~search~GoogleSearchClient', 
-        $this->packagedNameOf('com.google.soap.search.GoogleSearchClient')
+        $this->names->packagedNameOf('com.google.soap.search.GoogleSearchClient')
       );
     }
 
@@ -168,7 +121,7 @@
     function nameOfDateClass() {
       $this->assertEquals(
         'xp~util~Date', 
-        $this->packagedNameOf($this->qualifiedNameOf('Date'))
+        $this->names->packagedNameOf($this->names->qualifiedNameOf('Date'))
       );
     }
 
@@ -179,7 +132,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     function unknownClass() {
-      $this->qualifiedNameOf('@@NON_EXISTANT_CLASS@@');
+      $this->names->qualifiedNameOf('@@NON_EXISTANT_CLASS@@');
     }
   }
 ?>
