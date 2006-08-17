@@ -850,7 +850,7 @@ annotation_elements:
 
 annotation:
 		'@' T_STRING { 
-          $$= &new AnnotationNode($2, NULL); 
+          $$= &new AnnotationNode($2, new ConstantReferenceNode(NULL, 'NULL')); 
         }
 	|	'@' T_STRING '(' common_scalar ')' { 
           $$= &new AnnotationNode($2, $4); 
