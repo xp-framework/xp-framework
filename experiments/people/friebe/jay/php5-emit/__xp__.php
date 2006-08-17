@@ -61,6 +61,17 @@
     }
   }
   
+  function is($name, $object) { 
+    $class= xp::reflect($name);
+    return $object instanceof $class; 
+  }
+
+  function raise($name, $message) { 
+    uses($name);
+    $class= xp::reflect($name);
+    throw xp::exception(new $class($message));
+  }
+  
   final class arraywrapper {
     public $backing= array();
     
@@ -83,6 +94,18 @@
 
     public static function nameOf($name) {
       return strtr($name, '·', '.');
+    }
+
+    public static function cast($var, $type) {
+      settype($var, $type);
+      return $var;
+    }
+
+    public static function stringOf($expr) {
+      if ($expr instanceof xp·lang·Object) {
+        return $expr->toString();
+      }
+      return var_export($expr, TRUE);
     }
 
     public static function registry($key= NULL, $value= NULL) {
