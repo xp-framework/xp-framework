@@ -2,8 +2,6 @@ $Id$
 
 List of TODOs
 =============
-* rewrite xml package to no longer use DOMXML
-
 * fix migrate.php to put the interface's class name into
   the uses() clause
   
