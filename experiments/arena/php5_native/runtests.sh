@@ -2,7 +2,7 @@
 
 PHPFIVE_BINARY=`which php5 || which php`
 PHPFIVE_ARGS="-dinclude_path=.:./skeleton2 -dmagic_quotes_gpc=0"
-PHPFIVE_MIN_VER="5.1.0"
+PHPFIVE_MIN_VER="5.1.4"
 
 $PHPFIVE_BINARY -r "version_compare(phpversion(), '$PHPFIVE_MIN_VER', 'ge') || exit(1);"
 if [ 0 != $? ] ; then
