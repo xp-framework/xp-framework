@@ -136,8 +136,8 @@
      * @return  bool
      */
     function hasAnnotation(&$node, $name) {
-      foreach ($node->annotations as $annotation) {       // FIXME: PNode[]
-        if ($annotation->args[0] == $name) return TRUE;
+      foreach ($node->annotations as $annotation) {
+        if ($annotation->type == $name) return TRUE;
       }
       return FALSE;
     }

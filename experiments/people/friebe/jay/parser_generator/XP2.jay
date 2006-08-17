@@ -850,13 +850,13 @@ annotation_elements:
 
 annotation:
 		'@' T_STRING { 
-          $$= &PNode::create('Annotation', array($2, NULL)); 
+          $$= &new AnnotationNode($2, NULL); 
         }
 	|	'@' T_STRING '(' common_scalar ')' { 
-          $$= &PNode::create('Annotation', array($2, $4)); 
+          $$= &new AnnotationNode($2, $4); 
         }
 	|	'@' T_STRING '(' annotation_defines ')' { 
-          $$= &PNode::create('Annotation', array($2, $4)); 
+          $$= &new AnnotationNode($2, $4); 
         }
 ;
 
