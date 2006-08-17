@@ -101,6 +101,7 @@
               case 'r': $value.= "\r"; break;
               case 'n': $value.= "\n"; break;
               case 't': $value.= "\t"; break;
+              case '"': $value.= '"'; break;
             }
             $i++;
           } else {
@@ -110,7 +111,7 @@
         $this->emitString($value);
         return;
       } else if ("'" == $node{0}) { // Single-quoted string
-        $this->emitString(substr($node, 1, -1));
+        $this->emitString(str_replace("\'", "'", substr($node, 1, -1)));
         return;
       } else if (is_int($node)) {
         $this->emitInteger($node);
