@@ -410,12 +410,12 @@
       $this->bytes.= ')';
 
       // Method body
-      if ($node->statements) {
+      if (NULL === $node->statements) {
+        $this->bytes.= ';';
+      } else {
         $this->bytes.= '{'.$embed;
         $this->emitAll($node->statements);
         $this->bytes.= '}';
-      } else {
-        $this->bytes.= ';';
       }
 
       $this->context['method']= '<main>';
