@@ -231,6 +231,8 @@
         
         // Parameter default value
         if ($param->default) {
+          $this->bytes.= '= ';
+          $this->emit($default);
           $this->context['default'][$this->context['class'].'::'.$this->context['method']][$i]= &$param->default;
         }
         $this->bytes.= ', ';
@@ -310,7 +312,7 @@
      * @param   string string
      */
     function emitString($string) { 
-      $this->bytes.= "'".str_replace('\'', '\\\\\'', $string)."'";
+      $this->bytes.= "'".str_replace("'", "\'", $string)."'";
     }
 
     /**
@@ -349,7 +351,7 @@
      * @access  public
      */
     function emitNull() { 
-      $this->bytes.= 'xp::$null';
+      $this->bytes.= 'NULL';
     }
 
     /**
@@ -358,7 +360,7 @@
      * @access  public
      */
     function emitConstant($name) {
-     $this->bytes.= $name;
+      $this->bytes.= $name;
     }
     
     /**
