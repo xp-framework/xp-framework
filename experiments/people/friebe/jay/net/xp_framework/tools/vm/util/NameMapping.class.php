@@ -28,6 +28,22 @@
     function addMapping($key, $value) {
       $this->mapping[$key]= $value;
     }
+
+    /**
+     * Retrieve a mapping
+     *
+     * @access  public
+     * @param   string key
+     * @return  string value
+     * @throws  lang.IllegalArgumentException in case not mapping can be found
+     */
+    function getMapping($key) {
+      if (!isset($this->mapping[$key])) {
+        return throw(new IllegalArgumentException('Mapping for "'.$key.'" not found'));
+      }
+      
+      return $this->mapping[$key];
+    }
     
     /**
      * Set current class
@@ -48,15 +64,8 @@
      * @throws  lang.IllegalArgumentException in case not mapping can be found
      */
     function qualifiedNameOf($short) {
-      $key= strtolower($short);
-      if (!isset($this->mapping[$key])) {
-        return throw(new IllegalArgumentException('Mapping for "'.$short.'" not found'));
-      }
-      
-      return ($this->current == $this->mapping[$key] 
-        ? 'self' 
-        : $this->mapping[$key]
-      );
+      $mapped= $this->getMapping(strtolower($short));      
+      return ($this->current == $mapped ? 'self' : $mapped);
     }
 
     /**
