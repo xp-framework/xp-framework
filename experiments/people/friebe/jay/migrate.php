@@ -193,29 +193,29 @@ __;
             
             case ST_INITIAL.T_COMMENT:
               if ('/**' == substr($t[1], 0, 3)) {           // Class apidoc
-                $qualified= strtr($this->current->qualifiedName(), '.', '~');
-                $package= substr($qualified, 0, strrpos($qualified, '~'));
+                $qualified= $this->current->qualifiedName();
+                $package= substr($qualified, 0, strrpos($qualified, '.'));
 
                 switch (sizeof($used)) {
                   case 0: $uses= ''; break;
                   case 1: case 2: case 3: $uses= 'uses(\''.implode('\', \'', $used).'\');'; break;
                   default: $uses.= "uses(\n  '".implode("',\n  '", $used)."'\n);"; break;
                 }
-                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->prefixFor($package).$package." {\n\n  ";
+                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->prefixFor($package).strtr($package, '.', '~')." {\n\n  ";
               }
               break;
 
             case ST_INITIAL.T_CLASS:
               if (!$package) {                              // Class apidoc was missing!
-                $qualified= strtr($this->current->qualifiedName(), '.', '~');
-                $package= substr($qualified, 0, strrpos($qualified, '~'));
+                $qualified= $this->current->qualifiedName();
+                $package= substr($qualified, 0, strrpos($qualified, '.'));
 
                 switch (sizeof($used)) {
                   case 0: $uses= ''; break;
                   case 1: case 2: case 3: $uses= 'uses(\''.implode('\', \'', $used).'\');'; break;
                   default: $uses.= "uses(\n  '".implode("',\n  '", $used)."'\n);"; break;
                 }
-                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->prefixFor($package).$package." {\n\n  ";
+                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->prefixFor($package).strtr($package, '.', '~')." {\n\n  ";
               }
               array_unshift($states, ST_CLASS);
               $this->current->isInterface() && $t[1]= 'interface';
