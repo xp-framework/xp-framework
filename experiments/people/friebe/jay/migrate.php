@@ -5,7 +5,7 @@
  */
   require('lang.base.php');
   xp::sapi('cli');
-  uses('text.doclet.Doclet', 'io.File', 'io.Folder', 'io.FileUtil');
+  uses('text.doclet.Doclet', 'io.File', 'io.Folder', 'io.FileUtil', 'net.xp_framework.tools.vm.util.NameMapping');
   
   $help= <<<__
 Subjective: Migrate PHP4 classes and scripts using XP to PHP
@@ -44,19 +44,14 @@ __;
   //     Migrates classes
   class MigrationDoclet extends Doclet {
     var
-      $mapping = array(),
+      $mapping = NULL,
       $current = NULL;
-
-    function addMapping($name, $mapped) {
-      // DEBUG Console::writeLine('     > MAP ', $name, ' => ', $mapped);
-      $this->mapping[$name]= $mapped;
-    }
 
     function buildMapping(&$doc) {
       $key= strtolower($doc->name());
       if (isset($this->mapping[$key])) return;
       
-      $this->addMapping($key, $doc->qualifiedName());
+      $this->names->addMapping($key, $doc->qualifiedName());
       
       // Build mapping for superclass if existant
       $doc->superclass && $this->buildMapping($doc->superclass);
@@ -72,35 +67,6 @@ __;
       }
     }
 
-    function qualifiedNameOf($short) {
-      $key= strtolower($short);
-      if (!isset($this->mapping[$key])) {
-        Console::writeLine('*** Mapping for "'.$short.'" not found');
-        return $short;
-      }
-      
-      return ($this->current->qualifiedName() == $this->mapping[$key] 
-        ? 'self' 
-        : $this->mapping[$key]
-      );
-    }
-    
-    function prefixFor($package) {
-      static $ports= array('com', 'net', 'ch', 'org', 'us');
-      
-      return (in_array(substr($package, 0, strpos($package, '.')), $ports) ? '' : 'xp~');
-    }
-    
-    function packagedNameOf($q) {
-      if (strstr($q, '.')) {
-        $packaged= $this->prefixFor($q).strtr($q, '.', '~');
-      } else {
-        $packaged= $q;
-      }
-      // DEBUG Console::writeLine('---> ', $q, ' -> ', $packaged);
-      return $packaged;
-    }
-
     function start(&$root) {
       static $map= array(
         'uses'        => T_USES, 
@@ -112,12 +78,13 @@ __;
       );
 
       $debug= $root->option('debug');
+      $this->names= &new NameMapping();
       
       // Build mapping for built-in-classes
       Console::writeLine('===> Starting');
       foreach (xp::registry() as $key => $val) {
         if (0 != strncmp('class.', $key, 6)) continue;
-        $this->addMapping(xp::reflect($key), xp::registry($key));
+        $this->names->addMapping(xp::reflect($key), xp::registry($key));
       }
 
       if ($output= $root->option('output')) {
@@ -125,11 +92,6 @@ __;
         $base= &new Folder($output);
       }
       
-      // Hardcode some keywords
-      $this->mapping['xp']= 'xp';
-      $this->mapping['parent']= 'parent';
-      $this->mapping['self']= 'self';
-
       while ($root->classes->hasNext()) {
         $this->current= &$root->classes->next();
         $debug && Console::writeLine('---> Processing ', $this->current->qualifiedName());
@@ -142,12 +104,12 @@ __;
         $this->current->usedClasses->rewind();
         while ($this->current->usedClasses->hasNext()) {
           $class= $this->current->usedClasses->next();
-          $used[]= strtr($this->packagedNameOf($class->qualifiedName()), '~', '.');
+          $used[]= strtr($this->names->packagedNameOf($class->qualifiedName()), '~', '.');
         }
         $this->current->interfaces->rewind();
         while ($this->current->interfaces->hasNext()) {
           $interface= $this->current->interfaces->next();
-          $used[]= strtr($this->packagedNameOf($interface->qualifiedName()), '~', '.');
+          $used[]= strtr($this->names->packagedNameOf($interface->qualifiedName()), '~', '.');
         }
         
         // Tokenize file
@@ -201,7 +163,7 @@ __;
                   case 1: case 2: case 3: $uses= 'uses(\''.implode('\', \'', $used).'\');'; break;
                   default: $uses.= "uses(\n  '".implode("',\n  '", $used)."'\n);"; break;
                 }
-                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->prefixFor($package).strtr($package, '.', '~')." {\n\n  ";
+                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->names->prefixFor($package).strtr($package, '.', '~')." {\n\n  ";
               }
               break;
 
@@ -215,7 +177,7 @@ __;
                   case 1: case 2: case 3: $uses= 'uses(\''.implode('\', \'', $used).'\');'; break;
                   default: $uses.= "uses(\n  '".implode("',\n  '", $used)."'\n);"; break;
                 }
-                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->prefixFor($package).strtr($package, '.', '~')." {\n\n  ";
+                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->names->prefixFor($package).strtr($package, '.', '~')." {\n\n  ";
               }
               array_unshift($states, ST_CLASS);
               $this->current->isInterface() && $t[1]= 'interface';
@@ -227,7 +189,7 @@ __;
                 $this->current->interfaces->rewind();
                 while ($this->current->interfaces->hasNext()) {
                   $interface= $this->current->interfaces->next();
-                  $out.= strtr($this->packagedNameOf($interface->qualifiedName()), '.', '~').', ';
+                  $out.= strtr($this->names->packagedNameOf($interface->qualifiedName()), '.', '~').', ';
                 }
                 $out= substr($out, 0, -2).' ';
               }
@@ -278,10 +240,8 @@ __;
                   
                   if (empty($return)) {
                     $type= 'void';
-                  } else if (strstr($return[0]->type, '.')) {   // qualify objects
-                    $type= $this->packagedNameOf($this->qualifiedNameOf(xp::reflect(trim($return[0]->type, '&[]'))));
                   } else {
-                    $type= trim(strtr($return[0]->type, '.', '~'), '&[]');
+                    $type= $this->names->forType($return->type[0]);
                   }
                 }
                 
@@ -315,10 +275,10 @@ __;
 
             case ST_FUNCTION_ARGS.T_VARIABLE:
               $type= ($arguments[$offset]->type
-                ? rtrim(ltrim(strtr($arguments[$offset]->type, '.', '~'), '&'), '*')
-                : 'auto'
+                ? $this->names->forType($arguments[$offset]->type, TRUE).' '
+                : ''
               );
-              $t[1]= $type.' '.$t[1];
+              $t[1]= $type.$t[1];
               $offset++;
               break;
 
@@ -404,7 +364,7 @@ __;
             case ST_INITIAL.T_STRING:
             case ST_FUNCTION_BODY.T_STRING:
               if (T_DOUBLE_COLON == $tokens[$i+ 1][0]) {    // Look ahead
-                $t[1]= $this->packagedNameOf($this->qualifiedNameOf($t[1]));
+                $t[1]= $this->names->packagedNameOf($this->names->qualifiedNameOf($t[1]));
               }
               break;
 
@@ -419,7 +379,7 @@ __;
             case ST_LOOKING_FOR_CATCH.T_CATCH:
               $t[1]= sprintf(                               // Reassemble and advance
                 'catch (%s %s)',
-                $this->packagedNameOf($this->qualifiedNameOf(trim($tokens[$i+ 2][1], '\'"'))),
+                $this->names->packagedNameOf($this->names->qualifiedNameOf(trim($tokens[$i+ 2][1], '\'"'))),
                 $tokens[$i+ 5][1]
               );
               $i+= 7;
@@ -428,7 +388,7 @@ __;
               break;
 
             case ST_LOOKING_FOR_CLASS.T_STRING:
-              $t[1]= $this->packagedNameOf($this->qualifiedNameOf($t[1]));
+              $t[1]= $this->names->packagedNameOf($this->names->qualifiedNameOf($t[1]));
               array_shift($states);
               break;
 
@@ -453,7 +413,7 @@ __;
         
         if ($output) {
           try(); {
-            $target= &new File($base->getURI().strtr($this->packagedNameOf($this->current->qualifiedName()), '~', DIRECTORY_SEPARATOR).'.xp');
+            $target= &new File($base->getURI().strtr($this->names->packagedNameOf($this->current->qualifiedName()), '~', DIRECTORY_SEPARATOR).'.xp');
             $f= &new Folder($target->getPath());
             $f->exists() || $f->create();
             FileUtil::setContents($target, $out);
