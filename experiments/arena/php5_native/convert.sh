@@ -20,3 +20,5 @@ for i in `find $SKELETON_PATH -name '*.class.php' ! -path '*.svn*'`; do
     exit; 
   fi
 done
+
+sh setup.sh
