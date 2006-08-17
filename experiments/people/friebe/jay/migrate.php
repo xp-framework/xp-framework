@@ -40,6 +40,23 @@ __;
   define('T_CATCH',              0x2001);
   define('T_THROW',              0x2002);
   
+  // {{{ MigrationNameMapping
+  //     Same as NameMapping, but
+  class MigrationNameMapping extends NameMapping {
+
+    function getMapping($key) {
+      try(); {
+        $m= parent::getMapping($key);
+      } if (catch('IllegalArgumentException', $e)) {
+        // DEBUG $e->printStackTrace();
+        Console::writeLine('*** ', $e->getMessage());
+        return $key;
+      }
+      
+      return $m;
+    }
+  }
+  
   // {{{ MigrationDoclet
   //     Migrates classes
   class MigrationDoclet extends Doclet {
@@ -78,7 +95,7 @@ __;
       );
 
       $debug= $root->option('debug');
-      $this->names= &new NameMapping();
+      $this->names= &new MigrationNameMapping();
       
       // Build mapping for built-in-classes
       Console::writeLine('===> Starting');
@@ -119,6 +136,7 @@ __;
         $states= array(ST_INITIAL);
         $skip= FALSE;
         $brackets= 0;
+        $classloader= &ClassLoader::getDefault();
         
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
           $t= $tokens[$i];
@@ -242,7 +260,7 @@ __;
                   if (empty($return)) {
                     $type= 'void';
                   } else {
-                    $type= $this->names->forType($return->type[0]);
+                    $type= $this->names->forType($return[0]->type);
                   }
                 }
                 
@@ -374,6 +392,15 @@ __;
               if ('catch' == $tokens[$i+ 3][1]) {           // Look ahead
                 $skip= TRUE;
                 array_unshift($states, ST_LOOKING_FOR_CATCH);
+              }
+              break;
+            
+            case ST_FUNCTION_BODY.T_CONSTANT_ENCAPSED_STRING:
+              if (preg_match('/^\'([a-z_\.]+)\.([A-Z][a-zA-Z]+)\'$/', $t[1], $matches)) {   // Looks like a fully-qualified XP class name
+                $qualified= $matches[1].'.'.$matches[2];
+                if ($classloader->findClass($qualified)) {
+                  $t[1]= "'".strtr($this->names->prefixFor($matches[1]), '~', '.').$qualified."'";
+                }
               }
               break;
 
