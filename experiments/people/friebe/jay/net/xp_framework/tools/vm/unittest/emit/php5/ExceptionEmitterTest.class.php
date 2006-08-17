@@ -168,7 +168,7 @@
      *
      * @access  public
      */
-    #[@test]
+    #[@test, @ignore('Rewriting NULL to xp::$null causes many side effects')]
     function nullPointer() {
       $this->assertSourcecodeEquals(
         '$s= xp::$null; $s->invoke();',
