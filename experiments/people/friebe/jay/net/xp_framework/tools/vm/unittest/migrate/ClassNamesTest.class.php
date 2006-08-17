@@ -104,16 +104,36 @@
     }
 
     /**
+     * Tests com.* package does not get prefixed
+     *
+     * @access  public
+     */
+    #[@test]
+    function noPrefixForXpFrameworkPackage() {
+      $this->assertEquals('', $this->prefixFor('net.xp_framework.unittest'));
+    }
+
+    /**
      * Tests net.* does not get prefixed
      *
      * @access  public
      */
     #[@test]
-    function noPrefixForXpFrameworkContributions() {
+    function noPrefixForXpFrameworkClasses() {
       $this->assertEquals(
         'net~xp_framework~unittest~DemoTest', 
         $this->packagedNameOf('net.xp_framework.unittest.DemoTest')
       );
+    }
+
+    /**
+     * Tests com.* package does not get prefixed
+     *
+     * @access  public
+     */
+    #[@test]
+    function noPrefixForGoogleContributionPackage() {
+      $this->assertEquals('', $this->prefixFor('com.google.soap.search'));
     }
 
     /**
@@ -122,7 +142,7 @@
      * @access  public
      */
     #[@test]
-    function noPrefixForGoogleContributions() {
+    function noPrefixForGoogleContributionClasses() {
       $this->assertEquals(
         'com~google~soap~search~GoogleSearchClient', 
         $this->packagedNameOf('com.google.soap.search.GoogleSearchClient')
