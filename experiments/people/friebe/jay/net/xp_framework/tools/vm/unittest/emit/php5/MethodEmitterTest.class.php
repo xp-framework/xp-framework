@@ -274,12 +274,12 @@
     function methodWithDefaultArgs() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class XPClass extends xp·lang·Object{
-          public static function forName($name, $cl){
-            if (xp::$null==$cl) $cl= ClassLoader::getDefault(); 
+          public static function forName($name, $cl= NULL){
+            if (NULL==$cl) $cl= ClassLoader::getDefault(); 
             return $cl->loadClass($name); 
           }
         }; 
-        var_dump(XPClass::forName(\'Test\', xp::$null));'),
+        var_dump(XPClass::forName(\'Test\', NULL));'),
         $this->emit('class XPClass {
           public static XPClass forName($name, $cl= NULL) throws ClassNotFoundException {
             if (NULL == $cl) $cl= ClassLoader::getDefault();
