@@ -136,6 +136,19 @@ __;
         
         // Build mapping short names => long names
         $this->buildMapping($this->current);
+
+        // Compile list of classes to be added to uses()
+        $used= array();
+        $this->current->usedClasses->rewind();
+        while ($this->current->usedClasses->hasNext()) {
+          $class= $this->current->usedClasses->next();
+          $used[]= strtr($this->packagedNameOf($class->qualifiedName()), '~', '.');
+        }
+        $this->current->interfaces->rewind();
+        while ($this->current->interfaces->hasNext()) {
+          $interface= $this->current->interfaces->next();
+          $used[]= strtr($this->packagedNameOf($interface->qualifiedName()), '~', '.');
+        }
         
         // Tokenize file
         $tokens= token_get_all(file_get_contents($root->findClass($this->current->qualifiedName())));
@@ -174,20 +187,6 @@ __;
             
             case ST_USES_LIST.';':
               $skip= FALSE;
-              
-              $used= array();
-              $this->current->usedClasses->rewind();
-              while ($this->current->usedClasses->hasNext()) {
-                $class= $this->current->usedClasses->next();
-                $used[]= strtr($this->packagedNameOf($class->qualifiedName()), '~', '.');
-              }
-              
-              switch (sizeof($used)) {
-                case 0: $t= ''; break;
-                case 1: case 2: case 3: $t= 'uses(\''.implode('\', \'', $used).'\')'; break;
-                default: $t= "uses(\n  '".implode("',\n  '", $used)."'\n)"; break;
-              }
-              $out= rtrim($out)."\n\n".$t.';';
               $t= '';
               array_shift($states);
               break;
@@ -196,7 +195,13 @@ __;
               if ('/**' == substr($t[1], 0, 3)) {           // Class apidoc
                 $qualified= strtr($this->current->qualifiedName(), '.', '~');
                 $package= substr($qualified, 0, strrpos($qualified, '~'));
-                $out= rtrim($out)."\n\npackage ".$this->prefixFor($package).$package." {\n\n  ";
+
+                switch (sizeof($used)) {
+                  case 0: $uses= ''; break;
+                  case 1: case 2: case 3: $uses= 'uses(\''.implode('\', \'', $used).'\');'; break;
+                  default: $uses.= "uses(\n  '".implode("',\n  '", $used)."'\n);"; break;
+                }
+                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->prefixFor($package).$package." {\n\n  ";
               }
               break;
 
@@ -204,18 +209,28 @@ __;
               if (!$package) {                              // Class apidoc was missing!
                 $qualified= strtr($this->current->qualifiedName(), '.', '~');
                 $package= substr($qualified, 0, strrpos($qualified, '~'));
-                $out= rtrim($out)."\n\npackage ".$this->prefixFor($package).$package." {\n\n  ";
+
+                switch (sizeof($used)) {
+                  case 0: $uses= ''; break;
+                  case 1: case 2: case 3: $uses= 'uses(\''.implode('\', \'', $used).'\');'; break;
+                  default: $uses.= "uses(\n  '".implode("',\n  '", $used)."'\n);"; break;
+                }
+                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->prefixFor($package).$package." {\n\n  ";
               }
               array_unshift($states, ST_CLASS);
               $this->current->isInterface() && $t[1]= 'interface';
               break;
             
             case ST_CLASS.'{':
-              empty($this->current->interfaces->classes) || $out.= 'implements '.strtr(
-                implode(', ', array_keys($this->current->interfaces->classes)),
-                '.',
-                '~'
-              ).' ';
+              if (!empty($this->current->interfaces->classes)) {
+                $out.= 'implements ';
+                $this->current->interfaces->rewind();
+                while ($this->current->interfaces->hasNext()) {
+                  $interface= $this->current->interfaces->next();
+                  $out.= strtr($this->packagedNameOf($interface->qualifiedName()), '.', '~').', ';
+                }
+                $out= substr($out, 0, -2).' ';
+              }
               $skip= FALSE;
               array_unshift($states, ST_CLASS_BODY);
               $brackets[ST_CLASS_BODY]= 1;
