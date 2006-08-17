@@ -2,7 +2,7 @@
 
 SKELETON_PATH=`realpath ../../../skeleton`
 
-for i in `find /home/alex/devel/xp.public/trunk/skeleton -name '*.class.php' ! -path '*.svn*'`; do
+for i in `find $SKELETON_PATH -name '*.class.php' ! -path '*.svn*'`; do
   RELATIVE=`echo $i | sed -e 's#^.*/skeleton/##g'`
   RELPATH=`dirname $RELATIVE`
   RELNAME=`basename $RELATIVE`
