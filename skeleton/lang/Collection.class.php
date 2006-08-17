@@ -43,6 +43,7 @@
     /**
      * Returns a new Collection object for a specified class
      *
+     * @model   static
      * @access  public
      * @param   string class the fully qualified class name
      * @return  &lang.Collection
