@@ -245,6 +245,12 @@ __;
             case ST_CLASS_BODY.T_VAR:
               $t[1]= 'public';                  // Make all members public
               break;
+            
+            case ST_CLASS_BODY.T_COMMENT:
+              if ('#[' == substr($t[1], 0, 2)) {    // Annotation!
+                $t[1]= substr($t[1], 1);
+              }
+              break;
 
             case ST_CLASS_BODY.T_FUNCTION:
               $skip= TRUE;
