@@ -101,7 +101,7 @@ __;
       Console::writeLine('===> Starting');
       foreach (xp::registry() as $key => $val) {
         if (0 != strncmp('class.', $key, 6)) continue;
-        $this->names->addMapping(xp::reflect($key), xp::registry($key));
+        $this->names->addMapping(xp::reflect($key), trim(xp::registry($key), '<>'));
       }
 
       if ($output= $root->option('output')) {
