@@ -15,7 +15,8 @@
         'xp' => 'xp',
         'parent' => 'parent',
         'self' => 'self',
-      );
+      ),
+      $current= '';
     
     /**
      * Add a mapping
@@ -26,6 +27,16 @@
      */
     function addMapping($key, $value) {
       $this->mapping[$key]= $value;
+    }
+    
+    /**
+     * Set current class
+     *
+     * @access  public
+     * @param   string c
+     */
+    function setCurrentClass($c) {
+      $this->current= $c;
     }
     
     /**
@@ -42,7 +53,7 @@
         return throw(new IllegalArgumentException('Mapping for "'.$short.'" not found'));
       }
       
-      return ($this->getClassName() == $this->mapping[$key] 
+      return ($this->current == $this->mapping[$key] 
         ? 'self' 
         : $this->mapping[$key]
       );
