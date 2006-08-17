@@ -36,6 +36,7 @@
       $this->context['imports']= array();
       $this->context['types']= array();
       $this->context['overloaded']= array();
+      $this->context['annotations']= array();
       $this->context['default']= array();
       $this->context['class']= $this->context['method']= '<main>';
       
@@ -243,6 +244,25 @@
 
       return $embed;
     }
+
+    /**
+     * Emits a list of annotations
+     *
+     * @access  protected
+     * @param   net.xp_framework.tools.vm.AnnotationNode[] parameters
+     */
+    function emitAnnotations($annotations) {
+      $list= array();
+      foreach ($annotations as $annotation) {
+        
+        // TODO: Generic compile-time-only annotations concept!
+        if ('overloaded' == $annotation->type) continue;
+
+        $list[$annotation->type]= $annotation->value;
+      }
+      
+      $list && $this->context['annotations'][$this->context['class']][$this->context['method']]= $list;
+    }
     
     /**
      * Emits a single node
@@ -405,8 +425,10 @@
       $this->context['method']= $method;
       $this->context['classes'][$this->context['class']][$method]= TRUE; // XXX DECL?
       
-      $this->bytes.= implode(' ', Modifiers::namesOf($node->modifiers)).' function '.$method.'(';
+      $this->emitAnnotations($node->annotations);
 
+      $this->bytes.= implode(' ', Modifiers::namesOf($node->modifiers)).' function '.$method.'(';
+      
       // Method arguments
       $embed= $this->emitParameters($node->parameters);
       $this->bytes.= ')';
@@ -486,7 +508,10 @@
       $this->context['class']= $this->qualifiedName($node->name);
       $this->context['classes'][$this->context['class']]= array();
       $this->context['operators'][$this->context['class']]= array();
+      $this->context['annotations'][$this->context['class']]= array();
       $extends= $this->qualifiedName($node->extends ? $node->extends : 'xp~lang~Object');
+
+      $this->emitAnnotations($node->annotations);
       
       $node->modifiers & MODIFIER_ABSTRACT && $this->bytes.= 'abstract ';
       $node->modifiers & MODIFIER_FINAL && $this->bytes.= 'final ';
@@ -569,6 +594,22 @@
       foreach ($node->implements as $interface) {
         $this->checkImplementation($this->context['class'], $this->qualifiedName($interface));
       }
+
+      // Annotations list
+      if (!empty($this->context['annotations'][$this->context['class']])) {
+        $this->bytes.= 'function __'.$this->context['class']."meta() { return array(\n";
+        foreach ($this->context['annotations'][$this->context['class']] as $scope => $list) {
+          $this->bytes.= "'".$scope."' => array(\n";
+          foreach ($list as $key => $value) {
+            $this->bytes.= "'".$key."' => ";
+            $this->emit($value);
+            $this->bytes.= ",\n";
+          }
+          $this->bytes.= "),\n";
+        }
+        $this->bytes.= ');}';
+      }
+
       $this->context['class']= '<main>';
     }
 
