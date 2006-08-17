@@ -232,7 +232,7 @@
         // Parameter default value
         if ($param->default) {
           $this->bytes.= '= ';
-          $this->emit($default);
+          $this->emit($param->default);
           $this->context['default'][$this->context['class'].'::'.$this->context['method']][$i]= &$param->default;
         }
         $this->bytes.= ', ';
@@ -793,7 +793,7 @@
       } else {
         $this->bytes.= ' ';
         $this->emit($node->statements);
-        $this->bytes.= ';';
+        if ($node->else) $this->bytes.= ';';
       }
       
       if ($node->else) {
