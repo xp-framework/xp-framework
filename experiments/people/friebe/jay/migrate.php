@@ -98,6 +98,7 @@ __;
         
         // Build mapping short names => long names
         $this->buildMapping($this->current);
+        $this->names->setCurrentClass($this->current->qualifiedName());
 
         // Compile list of classes to be added to uses()
         $used= array();
