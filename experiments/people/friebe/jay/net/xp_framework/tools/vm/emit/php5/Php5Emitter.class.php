@@ -446,7 +446,33 @@
 
       $this->context['method']= '<main>';
     }
-    
+
+    /**
+     * Emits DestructorDeclarations
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitDestructorDeclaration(&$node) { 
+      $method= '__destruct';
+      $this->context['method']= $method;
+      $this->context['types'][$this->context['class'].'::'.$method]= $this->context['class'];
+      
+      $this->bytes.= implode(' ', Modifiers::namesOf($node->modifiers)).' function '.$method.'(';
+      $embed= $this->emitParameters($node->parameters);
+      $this->bytes.= ')';
+
+      if ($node->statements) {
+        $this->bytes.= '{'.$embed;
+        $this->emitAll($node->statements);
+        $this->bytes.= '}';
+      } else {
+        $this->bytes.= ';';
+      }
+
+      $this->context['method']= '<main>';
+    }
+       
     /**
      * Emits ClassDeclarations
      *
@@ -765,6 +791,7 @@
       } else {
         $this->bytes.= ' ';
         $this->emit($node->statements);
+        $this->bytes.= ';';
       }
       
       if ($node->else) {
