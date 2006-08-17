@@ -4,6 +4,7 @@
 # $Id$
 
 PHP?=php
+SKELETON_PATH?=../../../../skeleton/
 
 all: test
 
@@ -24,3 +25,11 @@ clean:
 	@echo "===> Cleaning"
 	cd parser_generator && $(MAKE) clean
 	rm net/xp_framework/tools/vm/Parser.class.php
+
+php5-emit/skeleton:
+	mkdir php5-emit/skeleton
+
+convert:  php5-emit/skeleton
+	for i in `find $(SKELETON_PATH) -name '*.class.php' ! -path "*.svn*"` ; do \
+	  $(PHP) migrate.php `echo $$i | sed -e 's#$(SKELETON_PATH)##g' | sed -e 's#.class.php$$##g' | tr / .` --output=php5-emit/skeleton; \
+	done
