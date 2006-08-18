@@ -34,7 +34,7 @@
      * @return  string stacktrace
      */
     function toString() {
-      return parent::toString()."\n  [method: {$this->method}]\n";
+      return parent::toString()."\n  [method: ".$this->method."\n";
     }
   }
 ?>
