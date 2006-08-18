@@ -367,16 +367,16 @@ inner_statement:
 statement:
 		'{' inner_statement_list '}' { $$= $2; }
 	|	T_IF '(' expr ')' statement elseif_list else_single { 
-          $$= &new IfNode($3, $5, $6, $7);
+          $$= &new IfNode($3, is_array($5) ? $5 : array($5), $6, $7);
         }
 	|	T_WHILE '(' expr ')' statement {
-          $$= &new WhileNode($3, $5);
+          $$= &new WhileNode($3, is_array($5) ? $5 : array($5));
         }
 	|	T_DO statement T_WHILE '(' expr ')' ';' {
-          $$= &new DoWhileNode($5, $2);
+          $$= &new DoWhileNode($5, is_array($2) ? $2 : array($2));
         }
 	|	T_FOR '(' for_expr ';' for_expr ';' for_expr ')' statement {
-          $$= &new ForNode($3, $5, $7, $9);
+          $$= &new ForNode($3, $5, $7, is_array($9) ? $9 : array($9));
         }
 	|	T_SWITCH '(' expr ')' switch_case_list {
           $$= &new SwitchNode($3, $5);
@@ -421,10 +421,10 @@ statement:
           $$= &new FunctionCallNode('unset', $3);
         }
 	|	T_FOREACH '(' variable T_AS foreach_variable foreach_optional_arg ')' statement {
-          $$= &new ForeachNode($3, $5, $6, $8);
+          $$= &new ForeachNode($3, $5, $6, is_array($8) ? $8 : array($8));
         }
 	|	T_FOREACH '(' expr_without_variable T_AS w_variable foreach_optional_arg ')' statement {
-          $$= &new ForeachNode($3, $5, $6, $8);
+          $$= &new ForeachNode($3, $5, $6, is_array($8) ? $8 : array($8));
         }
 	|	T_DECLARE { /* TBI */ }
 	|	';'		/* empty statement */
