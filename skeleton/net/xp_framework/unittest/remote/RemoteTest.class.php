@@ -54,7 +54,7 @@
         REMOTE_SPEC_THREE   => FALSE,   // Cluster machine #3
         REMOTE_SPEC_OTHER   => TRUE     // Other machine
       ) as $spec => $avail) {
-        $this->handler[$spec]= &$pool->acquire(new URL($spec));
+        $this->handler[$spec]= &$pool->acquire($spec);
         $this->handler[$spec]->server['available']= $avail;
       }
     }
