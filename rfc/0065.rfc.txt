@@ -37,7 +37,7 @@ Protocol interface
 ~~~~~~~~~~~~~~~~~~
 Stripped of API-Doc for readability, see patch for details:
 <?php
-  class Protocol extends Interface {
+  class ServerProtocol extends Interface {
   
     function handleConnect(&$socket) { }
 
@@ -105,5 +105,9 @@ Comments
 
 - friebe, Thu Jul 13 17:02:47 CEST 2006
   Revamped this completely!
+  
+- friebe, Fri Aug 18 16:47:52 CEST 2006
+  Protocol -> ServerProtocol, Protocol is a very generic name I'd like 
+  to keep for other - future - purposes:)
 
 <EOF>
