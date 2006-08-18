@@ -23,7 +23,8 @@
     var
       $versionMajor   = 0,
       $versionMinor   = 0,
-      $serializer     = NULL;
+      $serializer     = NULL,
+      $cat            = NULL;
     
     var
       $_sock= NULL;  
@@ -44,6 +45,26 @@
       $this->serializer->exceptionName('invoke/Exception', 'remote.InvocationException');
       $this->serializer->packageMapping('net.xp_framework.easc.reflect', 'remote.reflect');
     }
+    
+    /**
+     * Create a string representation of a given value
+     *
+     * @access  protected
+     * @param   &mixed value
+     * @return  string
+     */
+    function stringOf(&$value) {
+      if (is_a($value, 'Proxy')) {
+        $s= 'Proxy<';
+        $c= get_class($value);
+        $implements= xp::registry('implements');
+        foreach (array_keys($implements[$c]) as $iface) {
+          $s.= xp::nameOf($iface).', ';
+        }
+        return substr($s, 0, -2).'>';
+      }
+      return xp::stringOf($value);
+    }
 
     /**
      * Initialize this protocol handler
@@ -63,13 +84,27 @@
       $this->_sock->connect();
       
       if ($user= $proxy->getUser()) {
-        $this->sendPacket(REMOTE_MSG_INIT, "\1", array(
+        $this->cat && $this->cat->infof(
+          '>>> %s(%s:%d) INITIALIZE %s',
+          $this->getClassName(),
+          $this->_sock->host,
+          $this->_sock->port,
+          $user
+        );
+        $r= $this->sendPacket(REMOTE_MSG_INIT, "\1", array(
           new ByteCountedString($proxy->getUser()),
           new ByteCountedString($proxy->getPassword())
         ));
       } else {
-        $this->sendPacket(REMOTE_MSG_INIT, "\0");
+        $this->cat && $this->cat->infof(
+          '>>> %s(%s:%d) INITIALIZE',
+          $this->getClassName(),
+          $this->_sock->host,
+          $this->_sock->port
+        );
+        $r= $this->sendPacket(REMOTE_MSG_INIT, "\0");
       }
+      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
     }
     
     /**
@@ -90,7 +125,16 @@
      * @param   &lang.Object
      */
     function &lookup($name) {
-      return $this->sendPacket(REMOTE_MSG_LOOKUP, '', array(new ByteCountedString($name)));
+      $this->cat && $this->cat->infof(
+        '>>> %s(%s:%d) LOOKUP %s',
+        $this->getClassName(),
+        $this->_sock->host,
+        $this->_sock->port,
+        $name
+      );
+      $r= &$this->sendPacket(REMOTE_MSG_LOOKUP, '', array(new ByteCountedString($name)));
+      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
+      return $r;
     }
 
     /**
@@ -101,7 +145,16 @@
      * @param   bool
      */
     function begin(&$tran) {
-      return $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_BEGIN));
+      $this->cat && $this->cat->infof(
+        '>>> %s(%s:%d) BEGIN %s',
+        $this->getClassName(),
+        $this->_sock->host,
+        $this->_sock->port,
+        $this->stringOf($tran)
+      );
+      $r= &$this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_BEGIN));
+      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
+      return $r;
     }
 
     /**
@@ -112,7 +165,16 @@
      * @param   bool
      */
     function rollback(&$tran) {
-      return $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_ROLLBACK));
+      $this->cat && $this->cat->infof(
+        '>>> %s(%s:%d) ROLLBACK %s',
+        $this->getClassName(),
+        $this->_sock->host,
+        $this->_sock->port,
+        $this->stringOf($tran)
+      );
+      $r= &$this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_ROLLBACK));
+      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
+      return $r;
     }
 
     /**
@@ -123,7 +185,16 @@
      * @param   bool
      */
     function commit(&$tran) {
-      return $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_COMMIT));
+      $this->cat && $this->cat->infof(
+        '>>> %s(%s:%d) COMMIT %s',
+        $this->getClassName(),
+        $this->_sock->host,
+        $this->_sock->port,
+        $this->stringOf($tran)
+      );
+      $r= &$this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_COMMIT));
+      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
+      return $r;
     }
 
     /**
@@ -137,6 +208,15 @@
      * @return  &mixed
      */
     function &invoke($oid, $method, $args) {
+      $this->cat && $this->cat->infof(
+        '>>> %s(%s:%d) %d::%s(%s)',
+        $this->getClassName(),
+        $this->_sock->host,
+        $this->_sock->port,
+        $oid,
+        $method,
+        $this->stringOf($args)
+      );
       $r= &$this->sendPacket(
         REMOTE_MSG_CALL, 
         pack('NN', 0, $oid),
@@ -145,6 +225,7 @@
           new ByteCountedString($this->serializer->representationOf(new ArrayList($args)))
         )
       );
+      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
       return $r;
     }
 
@@ -178,10 +259,10 @@
         $length,
         $data
       );
-      // DEBUG Console::writeLine('>>>', addcslashes($packet, "\0..\37!@\177..\377"));
 
       try(); {
         $this->_sock->write($packet);
+        $this->cat && $this->cat->debug('>>> Request:', $this->stringOf($bytes));
         for ($i= 0; $i < $bsize; $i++) {
           $bytes[$i]->writeTo($this->_sock);
         }
@@ -193,7 +274,6 @@
         return throw(new RemoteException($e->getMessage(), $e));
       }
       
-      // DEBUG Console::writeLine('<<<', xp::stringOf($header));
       if (DEFAULT_PROTOCOL_MAGIC_NUMBER != $header['magic']) {
         $this->_sock->close();
         return throw(new Error('Magic number mismatch (have: '.$header['magic'].' expect: '.DEFAULT_PROTOCOL_MAGIC_NUMBER));
@@ -205,26 +285,30 @@
         switch ($header['type']) {
           case REMOTE_MSG_VALUE:
             $data= &ByteCountedString::readFrom($this->_sock);
-            // Console::writeLine('<<<', addcslashes($data, "\0..\37!@\177..\377"));
+            $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
             return $this->serializer->valueOf($data, $length= 0, $ctx);
 
           case REMOTE_MSG_EXCEPTION:
-            $reference= &$this->serializer->valueOf(ByteCountedString::readFrom($this->_sock), $length= 0, $ctx);
+            $data= &ByteCountedString::readFrom($this->_sock);
+            $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
+            $reference= &$this->serializer->valueOf($data, $length= 0, $ctx);
             if (is('RemoteException', $reference)) {
               return throw($reference);
             } else if (is('ClassReference', $reference)) {
               return throw(new RemoteException($reference->getClassName(), $reference));
             } else {
-              return throw(new RemoteException('lang.Exception', new Exception(xp::stringOf($reference))));
+              return throw(new RemoteException('lang.Exception', new Exception($this->stringOf($reference))));
             }
 
           case REMOTE_MSG_ERROR:
             $message= ByteCountedString::readFrom($this->_sock);    // Not serialized!
+            $this->cat && $this->cat->debug('<<< Response:', addcslashes($message, "\0..\37!@\177..\377"));
             $this->_sock->close();
             return throw(new RemoteException($message, new Error($message)));
 
           default:
-            $this->readBytes($header['length']);   // Read all left-over bytes
+            $data= &$this->readBytes($header['length']);   // Read all left-over bytes
+            $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
             $this->_sock->close();
             return throw(new Error('Unknown message type'));
         }
@@ -249,5 +333,15 @@
       return $return;
     }
 
-  } implements(__FILE__, 'remote.protocol.ProtocolHandler');
+    /**
+     * Set trace
+     *
+     * @accessp public
+     * @param &util.log.LogCategory cat
+     */
+    function setTrace(&$cat) {
+      $this->cat= &$cat;
+    }
+
+  } implements(__FILE__, 'remote.protocol.ProtocolHandler', 'util.log.Traceable');
 ?>

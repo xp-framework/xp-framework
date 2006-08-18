@@ -5,7 +5,6 @@
  */
 
   uses(
-    'peer.URL', 
     'remote.HandlerInstancePool', 
     'remote.protocol.RemoteInterfaceMapping', 
     'remote.UserTransaction'
@@ -72,12 +71,10 @@
         if (isset($instances[$key])) return $instances[$key];
 
         // No instance yet, so get it
-        $url= &new URL($key);
         $e= $instance= NULL;
         try(); {
           $instance= &new Remote();
-          $instance->_handler= &$pool->acquire($url);
-          $instance->_handler && $instance->_handler->initialize($url);
+          $instance->_handler= &$pool->acquire($key, TRUE);
         } if (catch('RemoteException', $e)) {
           continue;   // try next
         } if (catch('Exception', $e)) {

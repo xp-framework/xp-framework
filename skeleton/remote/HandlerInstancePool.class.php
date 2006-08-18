@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('remote.HandlerFactory', 'util.collections.HashTable');
+  uses('remote.HandlerFactory', 'util.collections.HashTable', 'peer.URL');
 
   /**
    * Pool of handler instances
@@ -12,9 +12,10 @@
    * @see      xp://remote.HandlerFactory
    * @purpose  Pool
    */
-  class HandlerInstancePool extends HashTable {
+  class HandlerInstancePool extends Object {
     var
-      $pool= NULL;
+      $pool = NULL,
+      $cat  = NULL;
 
     /**
      * Constructor
@@ -70,21 +71,26 @@
      * Acquire a handler instance
      *
      * @access  public
-     * @param   &peer.URL url
+     * @param   string key
      * @return  &remote.protocol.ProtocolHandler
      * @throws  remote.protocol.UnknownProtocolException
      */
-    function &acquire(&$url) {
-      if ($this->pool->containsKey($url)) return $this->pool->get($url);
+    function &acquire($key, $initialize= FALSE) {
+      $url= &new URL($key);
+      if ($this->pool->containsKey($url)) {
+        $instance= &$this->pool->get($url);
+      } else {
+        sscanf($url->getScheme(), '%[^+]+%s', $type, $option);
+        try(); {
+          $class= &HandlerFactory::handlerFor($type);
+        } if (catch('Exception', $e)) {
+          return throw($e);
+        }
 
-      sscanf($url->getScheme(), '%[^+]+%s', $type, $option);
-      try(); {
-        $class= &HandlerFactory::handlerFor($type);
-      } if (catch('Exception', $e)) {
-        return throw($e);
+        $instance= &$this->pool($url, $class->newInstance($option));
       }
 
-      $instance= &$this->pool($url, $class->newInstance($option));
+      $initialize && $instance->initialize($url);
       return $instance;
     }
   }
