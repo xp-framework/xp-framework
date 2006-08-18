@@ -108,6 +108,13 @@
       return var_export($expr, TRUE);
     }
 
+    public static function typeOf($expr) {
+      if ($expr instanceof xp·lang·Object) {
+        return $expr->getClassName();
+      }
+      return gettype($expr);
+    }
+
     public static function registry($key= NULL, $value= NULL) {
       switch (func_num_args()) {
         case 0: return xp::$registry;
