@@ -40,6 +40,19 @@
     }
 
     /**
+     * Tests foreach-loop
+     *
+     * @access  public
+     */
+    #[@test]
+    function foreachLoopWithoutBraces() {
+      $this->assertSourcecodeEquals(
+        'foreach (range(1, 2, 3) as $i) {$j+= $i; };',
+        $this->emit('foreach (range(1, 2, 3) as $i) $j+= $i;')
+      );
+    }
+
+    /**
      * Tests while-loop
      *
      * @access  public
@@ -49,6 +62,19 @@
       $this->assertSourcecodeEquals(
         'while ($i<10) {echo $i++; };',
         $this->emit('while ($i < 10) { echo $i++; }')
+      );
+    }
+
+    /**
+     * Tests while-loop
+     *
+     * @access  public
+     */
+    #[@test]
+    function whileLoopWithoutBraces() {
+      $this->assertSourcecodeEquals(
+        'while ($i<10) {$i++; };',
+        $this->emit('while ($i < 10) $i++;')
       );
     }
 
@@ -73,7 +99,7 @@
     #[@test]
     function doLoopWithContinue() {
       $this->assertSourcecodeEquals(
-        'do {echo $i++; if ($i==5) continue; } while ($i<10);',
+        'do {echo $i++; if ($i==5){ continue; }; } while ($i<10);',
         $this->emit('do { echo $i++; if ($i == 5) continue; } while ($i < 10);')
       );
     }
@@ -86,7 +112,7 @@
     #[@test]
     function doLoopWithBreak() {
       $this->assertSourcecodeEquals(
-        'do {echo $i++; if ($i==5) break; } while ($i<10);',
+        'do {echo $i++; if ($i==5){ break; }; } while ($i<10);',
         $this->emit('do { echo $i++; if ($i == 5) break; } while ($i < 10);')
       );
     }

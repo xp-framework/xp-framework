@@ -21,7 +21,7 @@
     #[@test]
     function ifWithoutElse() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'if (1){
+        preg_replace('/\n\s*/', '', 'if (1){ 
           echo 1; 
         };'),
         $this->emit('if (1) {
@@ -38,7 +38,7 @@
     #[@test]
     function ifWithElse() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'if (1){
+        preg_replace('/\n\s*/', '', 'if (1){ 
           echo 1; 
         } else {
           echo \'The world is upside-down!\'; 
@@ -59,9 +59,9 @@
     #[@test]
     function ifWithElses() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'if ($argc==0){
+        preg_replace('/\n\s*/', '', 'if ($argc==0){ 
           echo 0; 
-        } else if  ($argc==1){
+        } else if  ($argc==1){ 
           echo 1; 
         } else {
           echo \'Incorrect # of args!\'; 

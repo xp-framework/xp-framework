@@ -275,7 +275,7 @@
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class XPClass extends xp·lang·Object{
           public static function forName($name, $cl= NULL){
-            if (NULL==$cl) $cl= ClassLoader::getDefault(); 
+            if (NULL==$cl){ $cl= ClassLoader::getDefault(); }; 
             return $cl->loadClass($name); 
           }
         }; 
