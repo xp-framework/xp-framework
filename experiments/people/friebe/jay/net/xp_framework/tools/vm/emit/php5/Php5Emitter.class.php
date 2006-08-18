@@ -70,6 +70,8 @@
       static $special= array('parent', 'self', 'xp');
       
       if (in_array($class, $special)) return $class;
+      if ('php~' == substr($class, 0, 4)) return substr($class, 4);
+
       return strtr((strstr($class, '~') ? $class : $this->prefixedClassnameFor($class)), '~', '·');
     }
     
