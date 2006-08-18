@@ -9,6 +9,8 @@
     'remote.Remote', 
     'util.cmd.ParamString', 
     'util.profiling.Timer',
+    'util.log.Logger',
+    'util.log.ColoredConsoleAppender',
     'util.profiling.unittest.AssertionFailedError'
   );
   
@@ -20,7 +22,7 @@ EASC echo bean demo application
 
 Usage
 -----
-$ php echo.php <hostname> <type>  [-p <port> ] [-j <jndi_name> ]
+$ php echo.php <hostname> <type>  [-p <port> ] [-j <jndi_name> ] [-v level]
   
   * hostname is the host name (or IP) that your JBoss + XP-MBean server 
     is running on. The feed entity bean (from the easc/beans directory) 
@@ -40,13 +42,37 @@ $ php echo.php <hostname> <type>  [-p <port> ] [-j <jndi_name> ]
   
   * jndi_name is the name of the bean in JNDI. It defaults to 
     "xp/demo/Echo"
+  
+  * Level is the log level, defaulting to all, and may consist of one 
+    or more of debug, info, warn or error (separated by commas), which
+    would selectively activate the specified log level.
 __
     );
     exit(1);
   }
   
+  $url= 'xp://'.$p->value(1).':'.$p->value('port', 'p', 6448).'/';
+  
+  // Debugging
+  $cat= NULL;
+  if ($p->exists('verbose')) {
+    $l= &Logger::getInstance();
+    $cat= &$l->getCategory();
+    $cat->addAppender(new ColoredConsoleAppender());
+    $pool= &HandlerInstancePool::getInstance();
+    $handler= &$pool->acquire($url);
+    $handler->setTrace($cat);
+    
+    if ($levels= $p->value('verbose')) {
+      foreach (explode(',', $levels) as $level) {
+        $flags= $flags | constant('LOGGER_FLAG_'.strtoupper($level));
+      }
+      $cat->setFlags($flags);
+    }
+  }
+  
   try(); {
-    $remote= &Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6448).'/');
+    $remote= &Remote::forName($url);
     $remote && $home= &$remote->lookup($p->value('jndi', 'j', 'xp/demo/Roundtrip'));
     $home && $instance= &$home->create();
   } if (catch('Exception', $e)) {
