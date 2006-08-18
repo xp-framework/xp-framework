@@ -824,18 +824,9 @@
       $this->emit($node->condition);
       $this->bytes.= ')';
       
-      // if (expr) single_statement;
-      // vs.
-      // if (expr) { statement_list }
-      if (is_array($node->statements)) {
-        $this->bytes.= '{';
-        $this->emitAll($node->statements);
-        $this->bytes.= '}';
-      } else {
-        $this->bytes.= ' ';
-        $this->emit($node->statements);
-        if ($node->else) $this->bytes.= ';';
-      }
+      $this->bytes.= '{ ';
+      $this->emitAll($node->statements);
+      $this->bytes.= '}';
       
       if ($node->else) {
         $this->bytes.= ' else ';
