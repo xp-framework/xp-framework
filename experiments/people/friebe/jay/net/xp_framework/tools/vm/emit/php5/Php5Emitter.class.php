@@ -556,6 +556,8 @@
       }
       
       // Property simulation via __get / __set
+      // FIXME: Combination of __get() and foreach is buggy, see
+      // http://derickrethans.nl/overloaded_properties_get.php
       if ($this->context['properties']) {
         $this->bytes.= "\n".'static $__properties= array(';
         foreach ($this->context['properties'] as $property) {
