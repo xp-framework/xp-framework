@@ -4,11 +4,7 @@
  * $Id$
  */
 
-  uses(
-    'peer.ServerSocket', 
-    'peer.server.ConnectionEvent',
-    'peer.server.ConnectionListener'
-  );
+  uses('peer.ServerSocket');
 
   /**
    * Basic TCP/IP Server
@@ -17,7 +13,7 @@
    *   uses('peer.server.Server');
    *   
    *   $server= &new Server('127.0.0.1', 6100);
-   *   $server->addListener(new ConnectionListener());
+   *   $server->setProtocol(new MyProtocol());
    *   try(); {
    *     $server->init();
    *     $server->service();
@@ -34,6 +30,7 @@
    */
   class Server extends Object {
     var
+      $protocol   = NULL,
       $socket     = NULL,
       $terminate  = FALSE,
       $tcpnodelay = FALSE;
@@ -72,16 +69,35 @@
     }
     
     /**
-     * Add a connection listener
+     * Add a connection listener. Provided for BC reasons.
      *
+     * @deprecated Use setProtocol() instead!
      * @access  public
      * @param   &peer.server.ConnectionListener listener
      * @return  &peer.server.ConnectionListener the added listener
      */
     function &addListener(&$listener) {
+      if (!$this->protocol) {
+        $c= &XPClass::forName('peer.server.protocol.ListenerWrapperProtocol');
+        $this->protocol= &$c->newInstance();
+      }
+
       $listener->server= &$this;
-      $this->listeners[]= &$listener;
+      $this->protocol->addListener($listener);
       return $listener;
+    }
+
+    /**
+     * Sets this server's protocol
+     *
+     * @access  public
+     * @param   &peer.server.ServerProtocol protocol
+     * @return  &peer.server.ServerProtocol protocol
+     */
+    function &setProtocol(&$protocol) {
+      $protocol->server= &$this;
+      $this->protocol= &$protocol;
+      return $protocol;
     }
 
     /**
@@ -102,18 +118,6 @@
      */
     function getTcpnodelay() {
       return $this->tcpnodelay;
-    }
-    
-    /**
-     * Notify listeners
-     *
-     * @access  protected
-     * @param   &peer.server.ConnectionEvent event
-     */
-    function notify(&$event) {
-      for ($i= 0, $s= sizeof($this->listeners); $i < $s; $i++) {
-        $this->listeners[$i]->{$event->type}($event);
-      }
     }
     
     /**
@@ -139,7 +143,7 @@
         $read= array($this->socket->_sock);
         foreach (array_keys($handles) as $h) {
           if (!$handles[$h]->isConnected()) {
-            $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $handles[$h]));
+            $this->protocol->handleDisconnect($handles[$h]);
             unset($handles[$h]);
           } else {
             $read[]= $handles[$h]->getHandle();
@@ -165,19 +169,19 @@
             }
             
             $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);
-            $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
+            $this->protocol->handleConnect($m);
             $handles[(int)$m->getHandle()]= &$m;
             continue;
           }
           
-          // Otherwise, a client is sending data: read it and notify the listeners.
-          // In case of an I/O error, close the client socket and remove the client
-          // from the list.
+          // Otherwise, a client is sending data. Let the protocol decide what do
+          // do with it. In case of an I/O error, close the client socket and remove 
+          // the client from the list.
           $index= (int)$handle;
           try(); {
-            $data= $handles[$index]->readBinary();
+            $this->protocol->handleData($handles[$index]);
           } if (catch('IOException', $e)) {
-            $this->notify(new ConnectionEvent(EVENT_ERROR, $handles[$index], $e));
+            $this->protocol->handleError($handles[$index], $e);
             $handles[$index]->close();
             unset($handles[$index]);
             continue;
@@ -186,13 +190,10 @@
           // Check if we got an EOF from the client - in this file the connection
           // was gracefully closed.
           if ($handles[$index]->eof()) {
-            $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $handles[$h]));
+            $this->protocol->handleDisconnect($handles[$h]);
             $handles[$index]->close();
             unset($handles[$index]);
-            continue;
           }
-          
-          $this->notify(new ConnectionEvent(EVENT_DATA, $handles[$index], $data));
         }
       }
     }

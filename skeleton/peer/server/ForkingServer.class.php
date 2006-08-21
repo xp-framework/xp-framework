@@ -47,24 +47,21 @@
           while (pcntl_waitpid(-1, $status, WNOHANG)) { }
         } else {                // Child
           $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);
-          $this->notify(new ConnectionEvent(EVENT_CONNECTED, $m));
+          $this->protocol->handleConnect($m);
 
           // Loop
           do {
             try(); {
-              if (NULL === ($data= $m->readBinary())) break;
+              $this->protocol->handleData($m);
             } if (catch('IOException', $e)) {
-              $this->notify(new ConnectionEvent(EVENT_ERROR, $m, $e));
+              $this->protocol->handleError($m, $e);
               break;
             }
 
-            // Notify listeners
-            $this->notify(new ConnectionEvent(EVENT_DATA, $m, $data));
-
           } while (!$m->eof());
 
+          $this->protocol->handleDisconnect($m);
           $m->close();
-          $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $m));
 
           // Exit out of child
           exit();
