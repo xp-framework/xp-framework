@@ -168,8 +168,8 @@
   // }}}
   
   // {{{ Init
-  error_reporting(E_ALL);
   set_error_handler('__error');
+  error_reporting(E_ALL | E_STRICT);
   xp::$null= new null();
   xp::registry('errors', array());
   XPException::$instance= new XPException();
@@ -178,7 +178,6 @@
   
   // {{{ Builtin classes
   uses(
-    'xp.lang.Object',
     'xp.lang.Error',
     'xp.lang.Exception',
     'xp.lang.XPClass',
@@ -190,5 +189,33 @@
     'xp.lang.ClassLoader',
     'xp.lang.SystemExit'
   );
+  
+  class xp·lang·Object {
+    public $__id;
+
+    public function hashCode() {
+      if (!isset($this->__id)) {
+        $this->__id= microtime();
+      }
+      return $this->__id;
+    }
+ 
+    public function equals(xp·lang·Object $cmp) {
+      return $this === $cmp;
+    }
+  
+    public function getClassName() {
+      return xp::nameOf(get_class($this));
+    }
+
+    public function getClass() {
+      $c= new xp·lang·XPClass($this);
+      return $c;
+    }
+ 
+     public function toString() {
+      return $this->getClassName().'@'.var_export($this, 1);
+    }
+  }
   // }}}
 ?>
