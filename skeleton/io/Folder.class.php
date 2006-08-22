@@ -273,5 +273,19 @@
       }
       return $mtime;
     }
+
+    /**
+     * Returns a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return sprintf(
+        '%s(uri= %s)',
+        $this->getClassName(),
+        $this->uri
+      );
+    }
   }
 ?>
