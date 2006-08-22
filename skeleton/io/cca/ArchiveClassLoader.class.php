@@ -42,7 +42,7 @@
     function __construct(&$archive) {
       parent::__construct();
       $this->archive= &$archive;
-      $this->archive->open(ARCHIVE_READ);
+      $this->archive->isOpen() || $this->archive->open(ARCHIVE_READ);
     }
     
     /**
@@ -67,7 +67,8 @@
           )));
         }
 
-        if (FALSE === eval('?>'.$data)) {
+        $src= str_replace('__FILE__', "'".strtr($class, '.', '/').'.class.php\'', $data);
+        if (FALSE === eval('?>'.$src)) {
           return throw(new FormatException('Cannot define class "'.$class.'"'));
         }
 
