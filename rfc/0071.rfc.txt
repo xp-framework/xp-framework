@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Tue Aug 22 16:58:16 CEST 2006
-@status: draft
+@status: discussion, ends at Wed Aug 23 12:00:00 CEST 2006
 @category: <core>
 
 Scope of Change
@@ -86,5 +86,8 @@ n/a
 
 Comments
 --------
+- friebe, Tue Aug 22 17:24:53 CEST 2006
+  Set status to discussion. Use a rather small time period as this
+  does not break anything.
 
 <EOF>
