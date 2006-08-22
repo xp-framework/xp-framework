@@ -81,8 +81,8 @@ n/a
 
 Related documents
 -----------------
-n/a
-
+- http://xp-framework.net/rfc/contrib/rfc0071.diff
+  Patch implementing this RFC
 
 Comments
 --------
