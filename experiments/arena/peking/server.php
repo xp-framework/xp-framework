@@ -27,13 +27,12 @@
     $cm= &new ContainerManager();
     $deployer= &new Deployer();
     foreach ($scanner->getDeployments() as $deployment) {
-      if (is('IncompleteDeployment', $deployment)) {
-        $cat->warn('Failed:', $deployment);
-        continue;
+      try(); {
+        $deployer->deployBean($deployment, $cm);
+      } if (catch('DeployException', $e)) {
+        $cat->warn($e);
+        // Fall through
       }
-
-      $cat->debug('Deploying', $deployment);
-      $deployer->deployBean($deployment->class, $cm);
     }
 
     $cat->info('Starting server');

@@ -29,23 +29,31 @@
   class Deployer extends Object {
   
     /**
-     * (Insert method's description here)
+     * Deploy
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   remote.server.deploy.Deployable deployment
+     * @param   remote.server.ContainerManager
+     * @param   remote.server.BeanContainer
      */
-    function deployBean(&$class, &$containerManager) {
+    function deployBean(&$deployment, &$containerManager) {
       $log= &Logger::getInstance();
       $cat= &$log->getCategory($this->getClassName());
-      
-      // Fetch naming directory
-      $directory= &NamingDirectory::getInstance();
-      
-      $cat->info($this->getClassName(), 'Begin deployment of', $class->getName());
-      
-      try(); {
 
+      if (is('IncompleteDeployment', $deployment)) {
+        return throw(new DeployException(
+          'Incomplete deployment originating from '.$deployment->origin, 
+          $deployment->cause
+        ));
+      }
+
+      $cat->info($this->getClassName(), 'Begin deployment of', $deployment);
+      try(); {
+        $class= &$deployment->class;
+
+        // Fetch naming directory
+        $directory= &NamingDirectory::getInstance();
+        
         // Load class' directory name
         if (!$class->hasAnnotation(DEPLOY_LOOKUP_KEY)) return $this->_deployException(
           'Cannot deploy class without @'.DEPLOY_LOOKUP_KEY.' annotation.'
