@@ -48,7 +48,7 @@
 
         // Load class' directory name
         if (!$class->hasAnnotation(DEPLOY_LOOKUP_KEY)) return $this->_deployException(
-          'Cannot deploy class without @directoryName annotation.'
+          'Cannot deploy class without @'.DEPLOY_LOOKUP_KEY.' annotation.'
         );
 
         $directoryName= $class->getAnnotation(DEPLOY_LOOKUP_KEY);
