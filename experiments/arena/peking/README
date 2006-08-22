@@ -1,0 +1,16 @@
+Peking Application Server Experiment: README
+========================================================================
+$Id$
+
+
+Getting started
+---------------
+Type the following command line:
+$ php server.php 127.0.0.1
+  
+This will start the peking application server.
+
+Now verify everything works by running:
+$ unittest -c net.xp_framework.unittest.remote.RoundtripTest -a 127.0.0.1
+
+<EOF>
