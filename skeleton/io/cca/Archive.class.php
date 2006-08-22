@@ -288,6 +288,22 @@
     }
     
     /**
+     * Returns a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return sprintf(
+        '%s(version= %s, index size= %d) { %s }',
+        $this->getClassName(),
+        $this->version,
+        sizeof($this->_index),
+        xp::stringOf($this->file)
+      );
+    }
+    
+    /**
      * Destructor
      *
      * @access  public
