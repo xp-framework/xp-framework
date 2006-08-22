@@ -8,8 +8,6 @@
     'remote.protocol.ByteCountedString', 
     'remote.protocol.Serializer',
     'remote.protocol.RemoteInterfaceMapping',
-    'remote.server.deploy.Deployer',
-    'remote.server.ContainerManager',
     'remote.server.ServerHandler'
   );
   
@@ -22,8 +20,7 @@
    */
   class EascProtocol extends Object {
     var
-      $serializer       = NULL,
-      $containerManager =  NULL;
+      $serializer       = NULL;
 
     /**
      * (Insert method's description here)
@@ -38,16 +35,6 @@
       
       $this->objects= &new Hashmap();
       $this->objectOIDs= &new Hashmap();
-      
-      // Perform deployment
-      $this->containerManager= &new ContainerManager();
-      
-      try(); {
-        $deployer= &new Deployer();
-        $bc= &$deployer->deployBean(XPClass::forName('net.xp_framework.beans.stateless.RoundtripBean'), $this->containerManager);
-      } if (catch('Exception', $e)) {
-        return throw($e);
-      }
     }      
 
     /**
