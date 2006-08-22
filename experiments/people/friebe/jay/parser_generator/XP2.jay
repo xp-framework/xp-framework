@@ -861,14 +861,14 @@ annotation:
 ;
 
 annotation_defines:
-		annotation_define
-	|	annotation_defines ',' annotation_define
+		T_STRING '=' static_scalar { 
+          $$= array("'".$1."'" => $3); 
+        }
+	|	annotation_defines ',' T_STRING '=' static_scalar {
+          $$["'".$3."'"]= $5;
+        }
 ;
 
-annotation_define:
-		T_STRING { /* TBI compiler::call('zend_do_annotation_define', array($1, NULL )); */ }
-	|	T_STRING '=' static_scalar  { /* TBI compiler::call('zend_do_annotation_define', array($1, $3)); */ }
-;
 
 operator_token:
 		'+'								{ $$= '+'; }
