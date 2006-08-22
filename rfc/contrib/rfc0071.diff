@@ -1,0 +1,328 @@
+Index: lang/XPClass.class.php
+===================================================================
+--- lang/XPClass.class.php	(revision 7788)
++++ lang/XPClass.class.php	(working copy)
+@@ -418,6 +418,19 @@
+     }
+     
+     /**
++     * Retrieve the class loader a class was loaded with
++     *
++     * @access  public
++     * @return  &lang.ClassLoader
++     */
++    function &getClassLoader() {
++      if (!($cl= &xp::registry('classloader.'.$this->name))) {
++        $cl= &ClassLoader::getDefault();
++      }
++      return $cl;
++    }
++    
++    /**
+      * Retrieve details for a specified class. Note: Results from this 
+      * method are cached!
+      *
+@@ -432,124 +445,121 @@
+       if (!$class) return NULL;        // Border case
+       if (isset($details[$class])) return $details[$class];
+ 
++      // Retrieve class' sourcecode
++      if (!($cl= &xp::registry('classloader.'.$class))) {
++        $cl= &ClassLoader::getDefault();
++      }
++      if (!($bytes= $cl->loadClassBytes($class))) return NULL;
++
++      // Found the class, now get API documentation
+       $details[$class]= array(array(), array());
+-      $name= strtr($class, '.', DIRECTORY_SEPARATOR);
+-      $l= strlen($name);
++      $annotations= array();
++      $comment= NULL;
++      $members= TRUE;
+ 
+-      foreach (get_included_files() as $file) {
+-        if ($name != substr($file, -10- $l, -10)) continue;
++      $tokens= token_get_all($bytes);
++      for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
++        switch ($tokens[$i][0]) {
++          case T_COMMENT:
++            // Apidoc comment
++            if (strncmp('/**', $tokens[$i][1], 3) == 0) {
++              $comment= $tokens[$i][1];
++              break;
++            }
+ 
+-        // Found the class, now get API documentation
+-        $annotations= array();
+-        $comment= NULL;
+-        $members= TRUE;
+-        $tokens= token_get_all(file_get_contents($file));
+-        for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
+-          switch ($tokens[$i][0]) {
+-            case T_COMMENT:
+-              // Apidoc comment
+-              if (strncmp('/**', $tokens[$i][1], 3) == 0) {
+-                $comment= $tokens[$i][1];
+-                break;
+-              }
++            // Annotations
++            if (strncmp('#[@', $tokens[$i][1], 3) == 0) {
++              $annotations[0]= substr($tokens[$i][1], 2);
++            } elseif (strncmp('#', $tokens[$i][1], 1) == 0) {
++              $annotations[0].= substr($tokens[$i][1], 1);
++            }
+ 
+-              // Annotations
+-              if (strncmp('#[@', $tokens[$i][1], 3) == 0) {
+-                $annotations[0]= substr($tokens[$i][1], 2);
+-              } elseif (strncmp('#', $tokens[$i][1], 1) == 0) {
+-                $annotations[0].= substr($tokens[$i][1], 1);
+-              }
++            // End of annotations
++            if (']' == substr(rtrim($tokens[$i][1]), -1)) {
++              $annotations= eval('return array('.preg_replace(
++                array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/i', '/@([a-z_]+)\(/i', '/([a-z_]+) *= */i'),
++                array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '\'$1\' => '),
++                trim($annotations[0], "[]# \t\n\r").','
++              ).');');
++            }
++            break;
+ 
+-              // End of annotations
+-              if (']' == substr(rtrim($tokens[$i][1]), -1)) {
+-                $annotations= eval('return array('.preg_replace(
+-                  array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/i', '/@([a-z_]+)\(/i', '/([a-z_]+) *= */i'),
+-                  array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '\'$1\' => '),
+-                  trim($annotations[0], "[]# \t\n\r").','
+-                ).');');
+-              }
+-              break;
++          case T_CLASS:
++            $details[$class]['class']= array(
++              DETAIL_COMMENT      => $comment,
++              DETAIL_ANNOTATIONS  => $annotations
++            );
++            $annotations= array();
++            $comment= NULL;
++            break;
+ 
+-            case T_CLASS:
+-              $details[$class]['class']= array(
+-                DETAIL_COMMENT      => $comment,
+-                DETAIL_ANNOTATIONS  => $annotations
+-              );
+-              $annotations= array();
+-              $comment= NULL;
+-              break;
+-            
+-            case T_VARIABLE:
+-              if (!$members) break;
+-              
+-              // Have a member variable
+-              $name= substr($tokens[$i][1], 1);
+-              $details[$class][0][$name]= array(
+-                DETAIL_ANNOTATIONS => $annotations
+-              );
+-              $annotations= array();
+-              break;
+-            
+-            case T_FUNCTION:
+-              $members= FALSE;
+-              while (T_STRING !== $tokens[$i][0]) $i++;
+-              $m= strtolower($tokens[$i][1]);
+-              $details[$class][1][$m]= array(
+-                DETAIL_MODIFIERS    => 0,
+-                DETAIL_ARGUMENTS    => array(),
+-                DETAIL_RETURNS      => 'void',
+-                DETAIL_THROWS       => array(),
+-                DETAIL_COMMENT      => preg_replace('/\n     \* ?/', "\n", "\n".substr(
+-                  $comment, 
+-                  4,                              // "/**\n"
+-                  strpos($comment, '* @')- 2      // position of first details token
+-                )),
+-                DETAIL_ANNOTATIONS  => $annotations,
+-                DETAIL_NAME         => $tokens[$i][1]
+-              );
+-              $matches= NULL;
+-              preg_match_all(
+-                '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/',
++          case T_VARIABLE:
++            if (!$members) break;
++
++            // Have a member variable
++            $name= substr($tokens[$i][1], 1);
++            $details[$class][0][$name]= array(
++              DETAIL_ANNOTATIONS => $annotations
++            );
++            $annotations= array();
++            break;
++
++          case T_FUNCTION:
++            $members= FALSE;
++            while (T_STRING !== $tokens[$i][0]) $i++;
++            $m= strtolower($tokens[$i][1]);
++            $details[$class][1][$m]= array(
++              DETAIL_MODIFIERS    => 0,
++              DETAIL_ARGUMENTS    => array(),
++              DETAIL_RETURNS      => 'void',
++              DETAIL_THROWS       => array(),
++              DETAIL_COMMENT      => preg_replace('/\n     \* ?/', "\n", "\n".substr(
+                 $comment, 
+-                $matches, 
+-                PREG_SET_ORDER
+-              );
+-              $annotations= array();
+-              $comment= NULL;
+-              foreach ($matches as $match) {
+-                switch ($match[1]) {
+-                  case 'access':
+-                  case 'model':
+-                    $details[$class][1][$m][DETAIL_MODIFIERS] |= constant('MODIFIER_'.strtoupper($match[2]));
+-                    break;
++                4,                              // "/**\n"
++                strpos($comment, '* @')- 2      // position of first details token
++              )),
++              DETAIL_ANNOTATIONS  => $annotations,
++              DETAIL_NAME         => $tokens[$i][1]
++            );
++            $matches= NULL;
++            preg_match_all(
++              '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/',
++              $comment, 
++              $matches, 
++              PREG_SET_ORDER
++            );
++            $annotations= array();
++            $comment= NULL;
++            foreach ($matches as $match) {
++              switch ($match[1]) {
++                case 'access':
++                case 'model':
++                  $details[$class][1][$m][DETAIL_MODIFIERS] |= constant('MODIFIER_'.strtoupper($match[2]));
++                  break;
+ 
+-                  case 'param':
+-                    $details[$class][1][$m][DETAIL_ARGUMENTS][]= &new Argument(
+-                      isset($match[3]) ? $match[3] : 'param',
+-                      $match[2],
+-                      isset($match[4]),
+-                      isset($match[4]) ? $match[5] : NULL
+-                    );
+-                    break;
++                case 'param':
++                  $details[$class][1][$m][DETAIL_ARGUMENTS][]= &new Argument(
++                    isset($match[3]) ? $match[3] : 'param',
++                    $match[2],
++                    isset($match[4]),
++                    isset($match[4]) ? $match[5] : NULL
++                  );
++                  break;
+ 
+-                  case 'return':
+-                    $details[$class][1][$m][DETAIL_RETURNS]= $match[2];
+-                    break;
++                case 'return':
++                  $details[$class][1][$m][DETAIL_RETURNS]= $match[2];
++                  break;
+ 
+-                  case 'throws': 
+-                    $details[$class][1][$m][DETAIL_THROWS][]= $match[2];
+-                    break;
+-                }
++                case 'throws': 
++                  $details[$class][1][$m][DETAIL_THROWS][]= $match[2];
++                  break;
+               }
+-              break;
++            }
++            break;
+ 
+-            default:
+-              // Empty
+-          }
++          default:
++            // Empty
+         }
+-
+-        // Break out of search loop
+-        break;
+       }
+       
+       // Return details for specified class
+Index: lang/ClassLoader.class.php
+===================================================================
+--- lang/ClassLoader.class.php	(revision 7788)
++++ lang/ClassLoader.class.php	(working copy)
+@@ -29,6 +29,17 @@
+     function __construct($path= '') {
+       if (!empty($path)) $this->classpath= $path.'.';
+     }
++
++    /**
++     * Load class bytes
++     *
++     * @access  public
++     * @param   string name fully qualified class name
++     * @return  string
++     */
++    function loadClassBytes($name) {
++      return file_get_contents($this->findClass($name));
++    }
+     
+     /**
+      * Retrieve the default class loader
+Index: io/cca/ArchiveClassLoader.class.php
+===================================================================
+--- io/cca/ArchiveClassLoader.class.php	(revision 7803)
++++ io/cca/ArchiveClassLoader.class.php	(working copy)
+@@ -46,6 +46,21 @@
+     }
+     
+     /**
++     * Load class bytes
++     *
++     * @access  public
++     * @param   string name fully qualified class name
++     * @return  string
++     */
++    function loadClassBytes($name) {
++      return str_replace(
++        '__FILE__', 
++        "'".strtr($name, '.', '/').'.class.php\'', 
++        $this->archive->extract($name)
++      );
++    }
++    
++    /**
+      * Load the class by the specified name
+      *
+      * @access  public
+@@ -58,7 +73,7 @@
+ 
+       if (!class_exists($name)) {
+         try(); {
+-          $data= &$this->archive->extract($class);
++          $src= $this->loadClassBytes($class);
+         } if (catch('Exception', $e)) {
+           return throw(new ClassNotFoundException(sprintf(
+             'Class "%s" not found: %s',
+@@ -67,16 +82,17 @@
+           )));
+         }
+ 
+-        $src= str_replace('__FILE__', "'".strtr($class, '.', '/').'.class.php\'', $data);
+         if (FALSE === eval('?>'.$src)) {
+           return throw(new FormatException('Cannot define class "'.$class.'"'));
+         }
+ 
+         xp::registry('class.'.$name, $class);
++        xp::registry('classloader.'.$class, $this);
+         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+       }
+ 
+-      return new XPClass($name);
++      $c= &new XPClass($name);
++      return $c;
+     }
+   }
+ ?>
