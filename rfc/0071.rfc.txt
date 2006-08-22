@@ -1,0 +1,90 @@
+RFC 0071: Class / Classloader associations
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Aug 22 16:58:16 CEST 2006
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+The XP framework's core will store class / classloader associations and
+provide reflective means of retrieving them.
+
+
+Rationale
+---------
+Annotations and other reflective means are broken when using the 
+io.cca.ArchiveClassLoader.
+
+
+Functionality
+-------------
+
+Mapping storage
+~~~~~~~~~~~~~~~
+The existance of a key by name "classloader.{fqcn}" in the XP-registry
+denotes a different classloader is used, its absence means the default
+class loader was used.
+
+
+lang.ClassLoader API extension
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A new method getClassBytes() will be added to lang.ClassLoader(). It
+will load a class' sourcecode when given a fully qualified classname.
+
+
+lang.XPClass::detailsForClass() changes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Instead of loading the class bytes by file_get_contents(), the 
+detailsForClass() method will use the class' classloader's loadClassBytes()
+method.
+
+
+Additions to lang.XPClass' interface
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A new method getClassLoader() will be added to lang.XPClass. It will
+return the ClassLoader instance the class was loaded with. 
+
+The XPClass::getClassLoader() method:
+<?php
+  /**
+   * Retrieve the class loader a class was loaded with
+   *
+   * @access  public
+   * @return  &lang.ClassLoader
+   */
+  function &getClassLoader() {
+    if (!($cl= &xp::registry('classloader.'.$this->name))) {
+      $cl= &ClassLoader::getDefault();
+    }
+    return $cl;
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slightly slower
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
