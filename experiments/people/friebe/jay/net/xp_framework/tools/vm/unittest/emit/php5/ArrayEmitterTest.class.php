@@ -14,6 +14,32 @@
   class ArrayEmitterTest extends AbstractEmitterTest {
 
     /**
+     * Tests array declaration
+     *
+     * @access  public
+     */
+    #[@test]
+    function numericArrayDeclaration() {
+      $this->assertSourcecodeEquals(
+        '$a= array(0 => 1, 1 => 2, 2 => 3, );',
+        $this->emit('$a= array(1, 2, 3);')
+      );
+    }
+
+    /**
+     * Tests array declaration
+     *
+     * @access  public
+     */
+    #[@test]
+    function associativeArrayDeclaration() {
+      $this->assertSourcecodeEquals(
+        '$a= array(\'Foo\' => \'Bar\', );',
+        $this->emit('$a= array("Foo" => "Bar");')
+      );
+    }
+
+    /**
      * Tests array access
      *
      * @access  public
