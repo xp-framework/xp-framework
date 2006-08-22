@@ -9,6 +9,10 @@
     'remote.RemoteInvocationHandler'
   );
 
+  // Defines for context keys
+  define('RIH_OBJECTS_KEY',       'objects');
+  define('RIH_OIDS_KEY',          'oids');
+
   /**
    * Maps serialized representation of remote interface to a Proxy 
    * instance.
@@ -18,7 +22,7 @@
    * @purpose  Serializer mapping
    */
   class RemoteInterfaceMapping extends Object {
-  
+
     /**
      * Returns a value for the given serialized string
      *
@@ -34,7 +38,7 @@
       $offset= 2 + 2 + strlen($oid);
       $interface= $serializer->valueOf(substr($serialized, $offset), $len, $context);
       $offset+= $len;
-
+      
       $cl= &ClassLoader::getDefault();
       try(); {
         $instance= &Proxy::newProxyInstance(
@@ -59,8 +63,33 @@
      * @param   array<string, mixed> context default array()
      * @return  string
      */
-    function representationOf(&$serializer, &$value, $context= array()) {
-      // TODO: Implementation
+    function representationOf(&$serializer, &$var, $context= array()) {
+      static $oid=  0;
+      
+      // Check if we've serialized this object before by looking it up
+      // through the hashCode() method. If not, remember that we did for
+      // the next run.
+      if (!$context[RIH_OIDS_KEY]->containsKey($var->hashCode())) {
+        $context[RIH_OBJECTS_KEY]->putref($oid, $var);
+        $context[RIH_OIDS_KEY]->put($var->hashCode(), $oid);
+        $oid++;
+      }
+      
+      // Fetch the stored "external" OID
+      $eoid= $context[RIH_OIDS_KEY]->get($var->hashCode());
+      
+      // Find home interface
+      $class= &$var->getClass();
+      $homeInterface= NULL;
+      
+      foreach (($interfaces= &$class->getInterfaces()) as $interface) {
+        if ($interface->isSubclassOf('remote.beans.BeanInterface')) {
+          $homeInterface= &$interface;
+          break;
+        }
+      }
+      
+      return 'I:'.$eoid.':{'.$serializer->representationOf($homeInterface->getName(), $context).'}';
     }
     
     /**
