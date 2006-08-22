@@ -6,6 +6,7 @@
     'util.log.ColoredConsoleAppender',
     'peer.server.Server',
     'remote.server.deploy.Deployer',
+    'remote.server.deploy.scan.FileSystemScanner',
     'remote.server.ContainerManager',
     'remote.server.EascProtocol'
   );
@@ -21,14 +22,21 @@
     $server->setTcpNodelay(TRUE);
     
     // Perform deployment
+    $scanner= &new FileSystemScanner(dirname(__FILE__).'/deploy');
+    $cat->info('Deploying all beans from', $scanner);
     $cm= &new ContainerManager();
-    try(); {
-      $deployer= &new Deployer();
-      $deployer->deployBean(XPClass::forName('net.xp_framework.beans.stateless.RoundtripBean'), $cm);
-    } if (catch('Exception', $e)) {
-      return throw($e);
+    $deployer= &new Deployer();
+    foreach ($scanner->getDeployments() as $deployment) {
+      if (is('IncompleteDeployment', $deployment)) {
+        $cat->warn('Failed:', $deployment);
+        continue;
+      }
+
+      $cat->debug('Deploying', $deployment);
+      $deployer->deployBean($deployment->class, $cm);
     }
 
+    $cat->info('Starting server');
     $server->init();
     $server->service();
     $server->shutdown();
