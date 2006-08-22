@@ -203,5 +203,5 @@
      */
     function handleError(&$socket, &$e) { }
 
-  } implements(__FILE__, 'peer.server.Protocol');
+  } implements(__FILE__, 'peer.server.ServerProtocol');
 ?>
