@@ -161,7 +161,7 @@
   function __error($code, $msg, $file, $line) {
     if (0 == error_reporting() || is_null($file)) return;
 
-    $errors= &xp::registry('errors');
+    $errors= xp::registry('errors');
     @$errors[$file][$line][$msg]++;
     xp::registry('errors', $errors);
   }
