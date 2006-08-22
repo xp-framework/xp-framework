@@ -24,7 +24,7 @@
     $cm= &new ContainerManager();
     try(); {
       $deployer= &new Deployer();
-      $bc= &$deployer->deployBean(XPClass::forName('net.xp_framework.beans.stateless.RoundtripBean'), $cm);
+      $deployer->deployBean(XPClass::forName('net.xp_framework.beans.stateless.RoundtripBean'), $cm);
     } if (catch('Exception', $e)) {
       return throw($e);
     }
