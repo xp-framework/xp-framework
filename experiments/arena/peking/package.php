@@ -6,15 +6,18 @@
     'io.File'
   );
   
-  // {{{ addClass
+  // {{{ void addClass(io.cca.Archive package, lang.ClassLoader classloader, lang.XPClass class
+  //     Adds specified class to package using the classloader
   function addClass(&$package, &$classloader, &$class) {
     Console::writeLine('---> Adding ', $class->toString());
-    return $package->add(
+    $package->add(
       new File($classloader->findClass($class->getName())), 
       $class->getName()
     );
   }
   // }}}
+  
+  
   
   // {{{ main
   $p= &new ParamString();
@@ -60,11 +63,21 @@ __
     exit(-1);
   }
   
+  // Create meta information  
+  $meta= &new Stream();
+  $meta->open(STREAM_MODE_WRITE);
+  $meta->write("[bean]\n");
+  $meta->write('class="'.$classname.'"');
+  $meta->close();
+  
   // Package it
   $a= &new Archive(new File($p->value('output', 'o', $classname.'.ear')));
   Console::writeLine('===> Packaging ', $classname, ' into ', $a->toString());
   try(); {
     $a->open(ARCHIVE_CREATE);
+    
+    // Add meta information
+    $a->add($meta, 'META-INF/bean.properties');
     
     // Add: Bean class, remote interface, and home interface
     addClass($a, $cl, $class);
