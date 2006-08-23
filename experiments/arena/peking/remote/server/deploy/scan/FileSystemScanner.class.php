@@ -27,8 +27,9 @@
      *
      * @access  public
      * @param   string dir
+     * @param   string pattern default ".xar$"
      */
-    function __construct($dir, $pattern= '.ear$') {
+    function __construct($dir, $pattern= '.xar$') {
       $this->folder= &new Folder($dir);
       $this->pattern= '/'.$pattern.'/';
     }

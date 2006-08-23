@@ -32,7 +32,7 @@ $ php package.php <class-name> [ -o <package-file>]
   to package
 
 * package-file is the package's filename and defaults to the
-  class name + ".ear"
+  class name + ".xar"
 __
     );
     exit(1);
@@ -71,7 +71,7 @@ __
   $meta->close();
   
   // Package it
-  $a= &new Archive(new File($p->value('output', 'o', $classname.'.ear')));
+  $a= &new Archive(new File($p->value('output', 'o', $classname.'.xar')));
   Console::writeLine('===> Packaging ', $classname, ' into ', $a->toString());
   try(); {
     $a->open(ARCHIVE_CREATE);
