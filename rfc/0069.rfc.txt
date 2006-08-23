@@ -19,6 +19,9 @@ Testing.
 
 Functionality
 -------------
+
+Featureset
+~~~~~~~~~~
 The following features will be included in the first release:
 <pre>
   * EJB3-style stateless session beans
@@ -34,6 +37,46 @@ The following features will not be included in the basic version:
   * Transactions
   * AOP / Interceptors
 </pre>
+
+
+Beans
+~~~~~
+Beans - that is: classes following a certain standard in order to be
+recognized by the application server as services - are plain XP classes
+(meaning they extend lang.Object) decorated with annotations.
+
+The following rules apply:
+<pre>
+* The class annotation @bean denotes this class is a bean class.
+* Any method that should be invokeable via remote method invocation
+  is decorated with the @remote annotation
+</pre>
+
+Example:
+<?php
+  #[@bean(type= STATELESS, name= 'xp/demo/Roundtrip')]
+  class RoundtripBean extends Object {
+  
+    #[@remote]
+    function echoString($str) {
+      return $str;
+    }
+  }
+?>
+
+
+XARs
+~~~~
+In order to deploy beans they will have to packaged by a packaging tool.
+This tool creates a XAR (XP Application Archive) which can then be
+deployed in the server.
+
+
+Deployment
+~~~~~~~~~~
+The server will support deployment by means of copying the XAR packages 
+to a "deploy" directory, which the server monitors by scanning for new
+or touched files periodically, deploying as needed.
 
 
 Security considerations
