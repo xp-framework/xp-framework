@@ -3,13 +3,6 @@ Peking Application Server Experiment: README
 $Id$
 
 
-Note
-----
-This experiments work only if the patches from RFC #0071 are applied!
-See http://xp-framework.net/rfc/0071 for details and to download the 
-patch!
-
-
 Getting started
 ---------------
 Type the following command line:
