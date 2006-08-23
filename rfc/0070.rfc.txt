@@ -32,7 +32,7 @@ Current
     function __construct() {
       // ...
     }
-  '} implements("ShortName.class.php", "Constructable");');
+  } implements("ShortName.class.php", "Constructable");');
 ?>
 
 New
@@ -42,7 +42,7 @@ New
     function __construct() {
       // ...
     }
-  '});
+  }');
 ?>
 
 Security considerations
