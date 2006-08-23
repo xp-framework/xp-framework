@@ -1,0 +1,157 @@
+Index: lang.base.php
+===================================================================
+--- lang.base.php	(revision 7647)
++++ lang.base.php	(working copy)
+@@ -70,7 +70,41 @@
+       }
+     }
+     // }}}
++    
++    // {{{ protected void implements(string class, string[] interfaces)
++    //     Checks the implementation of the class against the interfaces and registers the connection
++    function implements($class, $interfaces) {
++      $signature= array_flip(get_class_methods($class));
++      $implements= xp::registry('implements');
+ 
++      for ($i= 0, $s= sizeof($interfaces); $i < $s; $i++) {
++        $interface= $interfaces[$i];
++        uses($interface);
++        $name= xp::reflect($interface);
++        $methods= array_flip(get_class_methods($name));
++        
++        // Get rid of constructors
++        $c= $name;
++        do {
++          unset($methods[$c]);
++          $implements[$class][$c]= 1;
++        } while ($c= get_parent_class($c));
++  
++        // Pop off 'lang.Interface'
++        array_pop($implements[$class]);
++  
++        // Check implementation
++        foreach (array_keys($methods) as $method) {
++          if (!isset($signature[$method])) {
++            xp::error('Interface method '.$interface.'::'.$method.'() not implemented by class '.$class);
++          }
++        }
++      }
++      
++      xp::registry('implements', $implements);
++    }
++    // }}}
++
+     // {{{ public void gc()
+     //     Runs the garbage collector
+     function gc() {
+@@ -325,35 +359,10 @@
+   // {{{ proto void implements(string file, string interface [, string interface [, ...]]) 
+   //     Defines that the class this is called in implements certain interface(s)
+   function implements() {
+-    $class= strtolower(substr(basename(func_get_arg(0)), 0, -10));
+-    $signature= array_flip(get_class_methods($class));
+-    $implements= xp::registry('implements');
++    $args= func_get_args();
++    $class= strtolower(substr(basename(array_shift($args)), 0, -10));
+     
+-    for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
+-      $interface= func_get_arg($i);
+-      uses($interface);
+-      $name= xp::reflect($interface);
+-      $methods= array_flip(get_class_methods($name));
+-      
+-      // Get rid of constructors
+-      $c= $name;
+-      do {
+-        unset($methods[$c]);
+-        $implements[$class][$c]= 1;
+-      } while ($c= get_parent_class($c));
+-
+-      // Pop off 'lang.Interface'
+-      array_pop($implements[$class]);
+-
+-      // Check implementation
+-      foreach (array_keys($methods) as $method) {
+-        if (!isset($signature[$method])) {
+-          xp::error('Interface method '.$interface.'::'.$method.'() not implemented by class '.$class);
+-        }
+-      }
+-    }
+-    
+-    xp::registry('implements', $implements);
++    xp::implements($class, $args);
+   }
+   // }}}
+   
+@@ -366,6 +375,7 @@
+     if (is_a($object, $class)) return TRUE;
+     $implements= xp::registry('implements');
+     
++    
+     do {
+       if (isset($implements[$p][$class])) return TRUE;
+     } while ($p= get_parent_class($p));
+Index: lang/ClassLoader.class.php
+===================================================================
+--- lang/ClassLoader.class.php	(revision 7647)
++++ lang/ClassLoader.class.php	(working copy)
+@@ -37,7 +37,7 @@
+      * @access  public
+      * @return  &lang.ClassLoader
+      */
+-    function &getDefault() {
++     function &getDefault() {
+       static $instance= NULL;
+       
+       if (!$instance) $instance= new ClassLoader();
+@@ -92,10 +92,10 @@
+      * @access  public
+      * @param   string class fully qualified class name
+      * @param   string bytes sourcecode of the class
+-     * @return  &lang.XPClass
++     * @return  string[] implemented interfaces default array()
+      * @throws  lang.FormatException in case the class cannot be defined
+      */
+-    function &defineClass($class, $bytes) {
++    function &defineClass($class, $bytes, $interfaces= array()) {
+       $name= xp::reflect($class);
+ 
+       if (!class_exists($name)) {
+@@ -107,6 +107,7 @@
+           return throw(new FormatException('Class "'.$qname.'" not defined'));
+         }
+         xp::registry('class.'.$name, $qname);
++        if (sizeof($interfaces)) { xp::implements($name, $interfaces); }
+         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+       }      
+       $class= &new XPClass($name);
+Index: net/xp_framework/unittest/reflection/ClassLoaderTest.class.php
+===================================================================
+--- net/xp_framework/unittest/reflection/ClassLoaderTest.class.php	(revision 7647)
++++ net/xp_framework/unittest/reflection/ClassLoaderTest.class.php	(working copy)
+@@ -127,6 +127,25 @@
+     }
+     
+     /**
++     * Tests defineClass() with a given interface
++     *
++     * @access  public
++     */
++    #[@test]
++    function defineClassImplements() {
++      $name= 'net.xp_framework.unittest.reflection.RuntimeDefinedClassWithInterface';
++      $class= &$this->classLoader->defineClass($name, 'class RuntimeDefinedClassWithInterface extends Object {
++         function setTrace(&$cat) { }
++        }', 
++        array('util.log.Traceable')
++      );
++
++      $this->assertTrue(is('util.log.Traceable', $class->newInstance()));
++      $this->assertFalse(is('util.log.Observer', $class->newInstance()));
++    }
++     
++    
++    /**
+      * Tests the defineClass() method for the situtation where the bytes 
+      * argument failed to actually declare the class.
+      *
