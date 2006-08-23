@@ -24,7 +24,26 @@ interfaces easy.
 
 Functionality
 -------------
-n/a
+
+Current
+~~~~~~~
+<?php
+  $cl->defineClass($name, 'class ShortName extends Object {
+    function __construct() {
+      // ...
+    }
+  '} implements("ShortName.class.php", "Constructable");');
+?>
+
+New
+~~~
+<?php
+  $cl->defineClass($name, $parent, $interfaces, '{
+    function __construct() {
+      // ...
+    }
+  '});
+?>
 
 Security considerations
 -----------------------
@@ -45,5 +64,7 @@ Related documents
 
 Comments
 --------
+- friebe, Wed Aug 23 14:50:17 CEST 2006
+  Extends this RFC to include being able to pass classname and parent class
 
 <EOF>
