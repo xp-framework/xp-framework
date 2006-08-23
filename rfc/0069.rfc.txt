@@ -99,6 +99,8 @@ Related documents
 - http://experiments.xp-framework.net/?arena,peking
   Experiment
 
+- https://glassfish.dev.java.net/
+  Glassfish: Open Source Java EE 5 Application Server
 
 Comments
 --------
