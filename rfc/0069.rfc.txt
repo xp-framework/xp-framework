@@ -1,4 +1,4 @@
-RFC 0069: EASC server in PHP
+RFC 0069: Basic EASC server in PHP
 ========================================================================
 $Id$
 
@@ -19,7 +19,21 @@ Testing.
 
 Functionality
 -------------
-TODO
+The following features will be included in the first release:
+<pre>
+  * EJB3-style stateless session beans
+  * Hot deployment
+</pre>
+
+The following features will not be included in the basic version:
+<pre>
+  * Authentication and protection
+  * Resource management (rbms connections)
+  * Other bean types
+  * Messaging
+  * Transactions
+  * AOP / Interceptors
+</pre>
 
 
 Security considerations
@@ -45,10 +59,6 @@ Related documents
 
 Comments
 --------
-- friebe, Mon Aug 14 18:00:11 CEST 2006
-  The afforementioned experiment works only if the file
-  remote/protocol/RemoteInterfaceMapping.class.php from the experiments
-  directory is copied to skeleton/remote/protocol. Don't know why though
-  atm...
+n/a
 
 <EOF>
