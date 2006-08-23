@@ -102,6 +102,9 @@ Related documents
 
 Comments
 --------
-n/a
+- friebe, Wed Aug 23 18:09:21 CEST 2006
+  Side note: The @remote annotation could replace the @webmethod 
+  annotation for SOAP, XMLRPC, JSON, etc. But maybe we should
+  wait for the "super unified remote services RFC":)
 
 <EOF>
