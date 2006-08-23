@@ -65,8 +65,8 @@ Example:
 ?>
 
 
-XARs
-~~~~
+Packaging
+~~~~~~~~~
 In order to deploy beans they will have to packaged by a packaging tool.
 This tool creates a XAR (XP Application Archive) which can then be
 deployed in the server.
