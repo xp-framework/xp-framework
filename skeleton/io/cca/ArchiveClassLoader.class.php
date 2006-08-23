@@ -46,6 +46,21 @@
     }
     
     /**
+     * Load class bytes
+     *
+     * @access  public
+     * @param   string name fully qualified class name
+     * @return  string
+     */
+    function loadClassBytes($name) {
+      return str_replace(
+        '__FILE__', 
+        "'".strtr($name, '.', '/').'.class.php\'', 
+        $this->archive->extract($name)
+      );
+    }
+    
+    /**
      * Load the class by the specified name
      *
      * @access  public
@@ -58,7 +73,7 @@
 
       if (!class_exists($name)) {
         try(); {
-          $data= &$this->archive->extract($class);
+          $src= $this->loadClassBytes($class);
         } if (catch('Exception', $e)) {
           return throw(new ClassNotFoundException(sprintf(
             'Class "%s" not found: %s',
@@ -67,16 +82,17 @@
           )));
         }
 
-        $src= str_replace('__FILE__', "'".strtr($class, '.', '/').'.class.php\'', $data);
         if (FALSE === eval('?>'.$src)) {
           return throw(new FormatException('Cannot define class "'.$class.'"'));
         }
 
         xp::registry('class.'.$name, $class);
+        xp::registry('classloader.'.$class, $this);
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
 
-      return new XPClass($name);
+      $c= &new XPClass($name);
+      return $c;
     }
   }
 ?>

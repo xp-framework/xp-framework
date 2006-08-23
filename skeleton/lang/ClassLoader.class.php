@@ -29,6 +29,17 @@
     function __construct($path= '') {
       if (!empty($path)) $this->classpath= $path.'.';
     }
+
+    /**
+     * Load class bytes
+     *
+     * @access  public
+     * @param   string name fully qualified class name
+     * @return  string
+     */
+    function loadClassBytes($name) {
+      return file_get_contents($this->findClass($name));
+    }
     
     /**
      * Retrieve the default class loader
