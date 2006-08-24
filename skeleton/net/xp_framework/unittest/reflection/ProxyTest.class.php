@@ -24,7 +24,8 @@
      * @access  public
      */
     function setUp() {
-      $class= &ClassLoader::defineClass(
+      $cl= &ClassLoader::getDefault();
+      $class= &$cl->defineClass(
         'net.xp_framework.unittest.reflection.DebugInvocationHandler', 
         'class DebugInvocationHandler extends Object {
            var $invocations= array();
