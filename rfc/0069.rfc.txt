@@ -64,13 +64,45 @@ Example:
   }
 ?>
 
+The bean class does not need to implement any interfaces or extend any
+classes other than lang.Object.
+
 
 Packaging
 ~~~~~~~~~
 In order to deploy beans they will have to packaged by a packaging tool.
-This tool creates a XAR (XP Application Archive) which can then be
-deployed in the server.
+This tool creates the remote interface and a XAR (XP Application Archive) 
+the latter of which can then be deployed in the server.
 
+The XAR contains the following:
+
+* A property file
+  Contains the bean class' name, type and the name to which to bind it to.
+<pre>
+  class="net.xp_framework.beans.stateless.RoundtripBeanImpl"
+  type=STATELESS
+  lookup="xp/demo/Roundtrip"
+</pre>
+
+* The remote interface
+  An interface generated from the bean class, to be used by both client
+  and server (via proxies).
+
+  This name is derived by concatenating the bean class' package and the
+  bean name's basename (from @bean.name). 
+  
+  For the above example, assuming RoundtripBean's fqcn is 
+  net.xp_framework.beans.stateless.RoundtripBean, the remote
+  interface would be named net.xp_framework.beans.stateless.Roundtrip.
+
+* The bean class' implementation
+  A class that extends the bean class and implements the remote interface
+<?php
+  class RoundtripBeanImpl extends RoundtripBean {
+   
+  } implements(__FILE__, 'net.xp_framework.beans.stateless.Roundtrip');
+?>
+  
 
 Deployment
 ~~~~~~~~~~
