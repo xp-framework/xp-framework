@@ -527,7 +527,7 @@
           'declared=', implode(', ', array_keys($this->context['classes']))
         );
 
-        #$this->addError(new CompileError(1000, 'Class '.$extends.' does not exist'));
+        $this->addError(new CompileError(1000, 'Class '.$extends.' does not exist'));
       }
       $this->context['classes'][$this->context['class']]= $this->context['classes'][$extends];
 
