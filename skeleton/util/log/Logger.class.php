@@ -193,6 +193,7 @@
     /**
      * Returns an instance of this class
      *
+     * @model   static
      * @access  public
      * @return  &util.log.Logger a logger object
      */

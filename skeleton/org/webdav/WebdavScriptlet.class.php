@@ -840,7 +840,7 @@
         if (!$this->handlingAuth->isAuthorized(
           $this->handlingImpl->base.$request->getPath(),
           $request->getUser(),
-          &$request)
+          $request)
         ) {
           return 'doAuthorizationDeny';
         }

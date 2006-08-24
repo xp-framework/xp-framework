@@ -40,7 +40,7 @@
     /**
      * Create a key from its string representation
      *
-     * @model   abstract
+     * @model   static
      * @access  public
      * @param   string string
      * @return  &security.crypto.CryptoKey
