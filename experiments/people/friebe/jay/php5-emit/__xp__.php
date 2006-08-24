@@ -42,6 +42,9 @@
     }
   }
   
+  function delete($o) {
+    $o= NULL;
+  }
   
   final class null {
     public function __set($prop, $value) { 
