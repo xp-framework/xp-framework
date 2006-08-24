@@ -89,7 +89,8 @@
         }
       }
       
-      return 'I:'.$eoid.':{'.$serializer->representationOf($homeInterface->getName(), $context).'}';
+      $name= $homeInterface->getName();
+      return 'I:'.$eoid.':{'.$serializer->representationOf($name, $context).'}';
     }
     
     /**
