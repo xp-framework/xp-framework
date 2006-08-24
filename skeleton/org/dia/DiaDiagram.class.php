@@ -101,7 +101,7 @@
 
             case 'attribute':
               $fields= $class->getFields();
-              usort(&$fields, create_function('$a, $b', 'return strcmp($a->getName(), $b->getName());'));
+              usort($fields, create_function('$a, $b', 'return strcmp($a->getName(), $b->getName());'));
               foreach (array_keys($fields) as $key) {
                 if (0 == strncmp('__', $fields[$key]->getName(), 2)) continue;
                 if (!$class->equals($fields[$key]->getDeclaringClass())) continue;
@@ -111,7 +111,7 @@
 
             case 'method':
               $methods= $class->getMethods();
-              usort(&$methods, create_function('$a, $b', 'return strcmp($a->getName(), $b->getName());'));
+              usort($methods, create_function('$a, $b', 'return strcmp($a->getName(), $b->getName());'));
               foreach (array_keys($methods) as $key) {
                 if (0 == strncmp('__', $methods[$key]->getName(), 2)) continue;
                 if (!$class->equals($methods[$key]->getDeclaringClass())) continue;
