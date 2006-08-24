@@ -1,13 +1,13 @@
 Index: lang.base.php
 ===================================================================
---- lang.base.php	(revision 7647)
+--- lang.base.php	(revision 7818)
 +++ lang.base.php	(working copy)
 @@ -70,7 +70,41 @@
        }
      }
      // }}}
 +    
-+    // {{{ protected void implements(string class, string[] interfaces)
++    // {{{ public void implements(string class, string[] interfaces)
 +    //     Checks the implementation of the class against the interfaces and registers the connection
 +    function implements($class, $interfaces) {
 +      $signature= array_flip(get_class_methods($class));
@@ -93,9 +93,9 @@ Index: lang.base.php
      } while ($p= get_parent_class($p));
 Index: lang/ClassLoader.class.php
 ===================================================================
---- lang/ClassLoader.class.php	(revision 7647)
+--- lang/ClassLoader.class.php	(revision 7818)
 +++ lang/ClassLoader.class.php	(working copy)
-@@ -37,7 +37,7 @@
+@@ -48,7 +48,7 @@
       * @access  public
       * @return  &lang.ClassLoader
       */
@@ -104,32 +104,78 @@ Index: lang/ClassLoader.class.php
        static $instance= NULL;
        
        if (!$instance) $instance= new ClassLoader();
-@@ -92,10 +92,10 @@
-      * @access  public
+@@ -100,13 +100,12 @@
+     /**
+      * Define a class with a given name
+      *
+-     * @access  public
++     * @access  protected
       * @param   string class fully qualified class name
       * @param   string bytes sourcecode of the class
 -     * @return  &lang.XPClass
-+     * @return  string[] implemented interfaces default array()
       * @throws  lang.FormatException in case the class cannot be defined
       */
 -    function &defineClass($class, $bytes) {
-+    function &defineClass($class, $bytes, $interfaces= array()) {
++    function &_defineClassFromBytes($class, $bytes) {
        $name= xp::reflect($class);
  
        if (!class_exists($name)) {
-@@ -107,6 +107,7 @@
-           return throw(new FormatException('Class "'.$qname.'" not defined'));
-         }
-         xp::registry('class.'.$name, $qname);
+@@ -124,5 +123,50 @@
+       $c= &new XPClass($name);
+       return $c;
+     }
++    
++    /**
++     * Define a class with a given name
++     *
++     * @access  public
++     * @param   string class fully qualified class name
++     * @param   string parent either sourcecode of the class or FQCN of parent
++     * @param   string[] interfaces default NULL FQCNs of implemented interfaces
++     * @param   string bytes default NULL inner sourcecode of class (containing {}) 
++     * @throws  lang.FormatException in case the class cannot be defined
++     * @throws  lang.ClassNotFoundException if given parent class does not exist
++     */
++    function &defineClass($class, $parent, $interfaces= NULL, $bytes= NULL) {
++      
++      // If invoked with less than four arguments, old behaviour will be executed
++      if (NULL === $bytes) {
++        return $this->_defineClassFromSource($class, $parent);
++      }
++      
++      $name= xp::reflect($class);
++      if (!class_exists($name)) {
++        $qname= $this->classpath.$class;
++        $parentName= xp::reflect($parent);
++        
++        if (!class_exists($parentName)) {
++          return throw(new ClassNotFoundException('Parent class '.$parent.' does not exist.'));
++        }
++        
++        $newBytes= 'class '.$name.' extends '.$parentName.' '.$bytes;
++        if (FALSE === eval($newBytes)) {
++          return throw(new FormatException('Cannot define class "'.$qname.'"'));
++        }
++        
++        if (!class_exists($name)) {
++          return throw(new FormatException('Class "'.$qname.'" not defined'));
++        }
++        
++        xp::registry('class.'.$name, $qname);
 +        if (sizeof($interfaces)) { xp::implements($name, $interfaces); }
-         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
-       }      
-       $class= &new XPClass($name);
++        is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
++      }
++      
++      $c= &new XPClass($name);
++      return $c;
++    }
+   }
+ ?>
 Index: net/xp_framework/unittest/reflection/ClassLoaderTest.class.php
 ===================================================================
---- net/xp_framework/unittest/reflection/ClassLoaderTest.class.php	(revision 7647)
+--- net/xp_framework/unittest/reflection/ClassLoaderTest.class.php	(revision 7818)
 +++ net/xp_framework/unittest/reflection/ClassLoaderTest.class.php	(working copy)
-@@ -127,6 +127,25 @@
+@@ -127,6 +127,26 @@
      }
      
      /**
@@ -140,10 +186,11 @@ Index: net/xp_framework/unittest/reflection/ClassLoaderTest.class.php
 +    #[@test]
 +    function defineClassImplements() {
 +      $name= 'net.xp_framework.unittest.reflection.RuntimeDefinedClassWithInterface';
-+      $class= &$this->classLoader->defineClass($name, 'class RuntimeDefinedClassWithInterface extends Object {
-+         function setTrace(&$cat) { }
-+        }', 
-+        array('util.log.Traceable')
++      $class= &$this->classLoader->defineClass(
++        $name, 
++        'lang.Object',
++        array('util.log.Traceable'),
++        '{ function setTrace(&$cat) { } }'
 +      );
 +
 +      $this->assertTrue(is('util.log.Traceable', $class->newInstance()));

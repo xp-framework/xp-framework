@@ -4,14 +4,17 @@ $Id$
 
 @authors: kiesel
 @created: Tue Aug 22 16:47:06 CEST 2006
-@status: discussion, ends Tue Aug 29 16:00:00 CEST 2006
+@status: discussion, ends Fri Aug 25 12:00:00 CEST 2006
 @category: <core>
 
 Scope of Change
 ---------------
 Method ClassLoader::defineClass() will be extended to not only take a classname
-and the class implementation, but also as third optional parameter an array
-of XPClass-object of the implemented interfaces.
+and the class implementation, but also a third and forth argument, the parent
+class and a list of implemented interfaces.
+
+If defineClass() is invoked with two arguments, the current behaviour will be
+used, if invoked with four arguments instead, the new behaviour will be used.
 
 Rationale
 ---------
@@ -19,14 +22,15 @@ XP's implements() method takes a filename as first argument and the name
 of the implemented interface as second. The to-be-defined class does not have
 a separate filename, so one has to trick to make it work.
 
-Having a third optional parameter implies no BC-break but makes implementing
-interfaces easy.
-
 Functionality
 -------------
 
 Current
 ~~~~~~~
+The current implementation takes two arguments:
+  * string classname
+  * string bytes
+
 <?php
   $cl->defineClass($name, 'class ShortName extends Object {
     function __construct() {
@@ -37,6 +41,12 @@ Current
 
 New
 ~~~
+The new implementation takes four arguments
+  * string classname
+  * string parent
+  * string[] interfaces
+  * string bytes
+
 <?php
   $cl->defineClass($name, $parent, $interfaces, '{
     function __construct() {
@@ -44,6 +54,9 @@ New
     }
   }');
 ?>
+
+If only two arguments are passed, the old implementation will be executed.
+
 
 Security considerations
 -----------------------
@@ -67,4 +80,13 @@ Comments
 - friebe, Wed Aug 23 14:50:17 CEST 2006
   Extends this RFC to include being able to pass classname and parent class
 
+- kiesel, Thu Aug 24 16:17:46 CEST 2006
+  A more complex API to define classes at runtime will be added later through a
+  new RFC. Main focus for this RFC is to remove the need to mess with the
+  implements() function when defining a new class that implements an interface.
+
+- kiesel, Thu Aug 24 16:17:46 CEST 2006
+  Because this RFC is BC-break-free, I shortened the discussion period to
+  tomorrow noon.
+  
 <EOF>
