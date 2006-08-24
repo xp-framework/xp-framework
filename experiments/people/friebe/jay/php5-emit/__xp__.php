@@ -217,7 +217,7 @@
       return $this->__id;
     }
  
-    public function equals(xp·lang·Object $cmp) {
+    public function equals($cmp) {
       return $this === $cmp;
     }
   
