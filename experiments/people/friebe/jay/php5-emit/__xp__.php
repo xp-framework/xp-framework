@@ -117,6 +117,20 @@
       }
       return gettype($expr);
     }
+    
+    public static function gc() {
+      xp::$registry['errors']= array();
+    }
+
+    public static function errorAt($file, $line= -1) {
+      $errors= xp::$registry['errors'];
+      
+      // If no line is given, check for an error in the file
+      if ($line < 0) return !empty($errors[$file]);
+      
+      // Otherwise, check for an error in the file on a certain line
+      return !empty($errors[$file][$line]);
+    }
 
     public static function registry($key= NULL, $value= NULL) {
       switch (func_num_args()) {
@@ -172,7 +186,7 @@
   
   // {{{ Init
   set_error_handler('__error');
-  error_reporting(E_ALL | E_STRICT);
+  error_reporting(E_ALL);
   xp::$null= new null();
   xp::registry('errors', array());
   XPException::$instance= new XPException();
