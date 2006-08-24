@@ -77,9 +77,11 @@ the latter of which can then be deployed in the server.
 The XAR contains the following:
 
 * A property file
-  Contains the bean class' name, type and the name to which to bind it to.
+  Contains the bean class' name, type, remote interface and the name to 
+  which to bind it to.
 <pre>
   class="net.xp_framework.beans.stateless.RoundtripBeanImpl"
+  remote="net.xp_framework.beans.stateless.Roundtrip"
   type=STATELESS
   lookup="xp/demo/Roundtrip"
 </pre>
