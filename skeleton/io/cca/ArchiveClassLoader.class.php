@@ -111,7 +111,7 @@
         } if (catch('Exception', $e)) {
           return throw(new ClassNotFoundException(sprintf(
             'Class "%s" not found: %s',
-            $className,
+            $class,
             $e->getMessage()
           )));
         }
