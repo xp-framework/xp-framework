@@ -29,6 +29,7 @@
    * @purpose  Load classes from an archive
    * @see      xp://lang.ClassLoader
    * @see      xp://lang.cca.Archive
+   * @ext      tokenize
    */
   class ArchiveClassLoader extends ClassLoader {
     var
