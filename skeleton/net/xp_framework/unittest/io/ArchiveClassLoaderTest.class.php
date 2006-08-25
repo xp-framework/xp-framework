@@ -19,8 +19,9 @@
    */
   class ArchiveClassLoaderTest extends TestCase {
     var
-      $classloader = NULL,
-      $classname   = '';
+      $classloader     = NULL,
+      $classname       = '',
+      $interfacename   = '';
 
     /**
      * Returns class bytes as a stream
@@ -37,6 +38,22 @@
       
       return $cstr;
     }
+    
+    /**
+     * Creates a unique class name for the running test case
+     *
+     * @access  protected
+     * @param   string prefix default ''
+     * @return  string
+     * @throws  lang.IllegalStateException in case the generated class name already exists!
+     */
+    function testClassName($prefix= '') {
+      $classname= $prefix.'ClassUsedForArchiveClassLoader'.ucfirst($this->name).'Test';
+      if (class_exists($classname)) {
+        return throw(new IllegalStateException('Class '.$this->classname.' may not exist!'));
+      }
+      return $classname;
+    }
 
     /**
      * Sets up test case
@@ -44,17 +61,31 @@
      * @access  public
      */
     function setUp() {
-      $this->classname= 'ClassUsedForArchiveClassLoader'.ucfirst($this->name).'Test';
-      if (class_exists($this->classname)) {
-        return throw(new PrerequisitesNotMetError('Class '.$this->classname.' may not exist!'));
+      try(); {
+        $this->classname= $this->testClassName();
+        $this->interfacename= $this->testClassName('I');
+      } if (catch('IllegalStateException', $e)) {
+        return throw(new PrerequisitesNotMetError($e->getMessage()));
       }
 
       // Create an archive
       $archive= &new Archive(new Stream());
       $archive->open(ARCHIVE_CREATE);
       $archive->add(
-        $this->classStream('class '.$this->classname.' extends Object { }'), 
+        $this->classStream(
+          'class '.$this->classname.' extends Object { 
+          
+          } implements(__FILE__, "'.$this->interfacename.'");
+        '), 
         $this->classname
+      );
+      $archive->add(
+        $this->classStream(
+          'class '.$this->interfacename.' extends Interface { 
+        
+          }
+        '), 
+        $this->interfacename
       );
       $archive->create();
       
@@ -67,7 +98,7 @@
      *
      * @access  public
      */
-    #[@test]
+    #[@test, @ignore('implements() and uses() must be rewritten in ArchiveClassLoader')]
     function loadClass() {
       $class= &$this->classloader->loadClass($this->classname);
       $this->assertEquals($class->getName(), $this->classname);
