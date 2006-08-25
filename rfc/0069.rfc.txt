@@ -143,4 +143,10 @@ Comments
   annotation for SOAP, XMLRPC, JSON, etc. But maybe we should
   wait for the "super unified remote services RFC":)
 
+- friebe, Fri Aug 25 14:07:15 CEST 2006
+  Fixes to the ArchiveClassLoader class have been made in order
+  to support classes in XARs using other classes from the archive.
+  This functionality is verified by the ArchiveClassLoaderTest
+  unittest.
+
 <EOF>
