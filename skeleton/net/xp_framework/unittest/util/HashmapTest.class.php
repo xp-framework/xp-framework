@@ -342,7 +342,9 @@
       $this->map->put('one', 'One');
       $this->map->put('two', 'two');
       $this->map->put('eins', 'one');
-      $class= &ClassLoader::defineClass('net.xp_framework.unittest.util.StringCaseComparator', '
+
+      $cl= &ClassLoader::getDefault();
+      $class= &$cl->defineClass('net.xp_framework.unittest.util.StringCaseComparator', '
         class StringCaseComparator extends Object {
 
           function compare($a, $b) { 
