@@ -1,16 +1,21 @@
 <?php
+/*
+ *
+ * $Id:$
+ */
 
   uses(
     'org.dia.DiaElement'
   );
 
+  /**
+   * Represents a 'dia:color' node
+   */
   class DiaColor extends DiaElement {
 
     var
       $node_name= 'dia:color';
 
-    /************************* Parent Functions *************************/
-  
     /**
      * Return XML representation of DiaComposite
      *

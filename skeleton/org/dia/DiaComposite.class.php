@@ -1,4 +1,8 @@
 <?php
+/*
+ *
+ * $Id:$
+ */
 
   uses(
     'org.dia.DiaComponent',
@@ -16,6 +20,23 @@
       $type= NULL,
       $node_name= 'dia:composite';
 
+    /**
+     * Constructor for general composite elements in 'dia' diagrams
+     *
+     * Predefined types:
+     * <ul>
+     *  <li>paper</li>
+     *  <li>grid</li>
+     *  <li>guides</li>
+     *  <li>text</li>
+     *  <li>color</li>
+     *  <li>umlattribute</li>
+     *  <li>umloperation</li>
+     *  <li>umlparameter</li>
+     * </ul>
+     *
+     * @param   string type default NULL
+     */
     function __construct($type= NULL) {
       if (!isset($type)) return;
 
@@ -86,8 +107,6 @@
     function setType($type) {
       $this->type= $type;
     }
-
-    /************************* Parent Methods *************************/
 
     /**
      * Return XML representation of DiaComposite

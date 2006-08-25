@@ -1,15 +1,20 @@
 <?php
+/*
+ *
+ * $Id:$
+ */
 
   uses(
     'org.dia.DiaElement'
   );
 
+  /**
+   * Represents a 'dia:int' node
+   */
   class DiaInt extends DiaElement{
 
     var
       $node_name= 'dia:int';
-
-    /************************* Parent Functions *************************/
   
     /**
      * Return XML representation of DiaComposite

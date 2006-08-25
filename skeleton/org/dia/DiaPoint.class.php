@@ -1,9 +1,16 @@
 <?php
+/*
+ *
+ * $Id:$
+ */
 
   uses(
     'org.dia.DiaElement'
   );
 
+  /**
+   * Represents a 'dia:point' node
+   */
   class DiaPoint extends DiaElement {
 
     var
@@ -16,7 +23,7 @@
      * The size of the given coordinate-array must be zero or two!
      *
      * @access  protected
-     * @param   array coordinates default array()
+     * @param   array coords
      * @return  bool
      */
     function setValue($coords) {
@@ -26,8 +33,6 @@
       return TRUE;
     }
 
-    /************************* DiaComponent Functions *************************/
-        
     /**   
      * Return XML representation of DiaComposite
      *    

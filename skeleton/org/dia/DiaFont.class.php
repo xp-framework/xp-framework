@@ -1,9 +1,16 @@
 <?php
+/*
+ *
+ * $Id:$
+ */
 
   uses(
     'org.dia.DiaElement'
   );
 
+  /**
+   * Represents a 'dia:font' node
+   */
   class DiaFont extends DiaElement {
 
     var
@@ -84,8 +91,6 @@
       $this->name= $name;
     }
 
-    /************************* Parent Functions *************************/
-  
     /**
      * Return XML representation of DiaComposite
      *

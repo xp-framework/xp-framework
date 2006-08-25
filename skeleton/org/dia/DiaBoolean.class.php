@@ -1,16 +1,22 @@
 <?php
+/*
+ *
+ * $Id:$
+ */
 
   uses(
     'org.dia.DiaElement'
   );
 
+
+  /**
+   * Represents a 'dia:boolean' node
+   */
   class DiaBoolean extends DiaElement {
 
     var
       $node_name= 'dia:boolean';
 
-    /************************* Parent Functions *************************/
-  
     /**
      * Return XML representation of DiaComposite
      *

@@ -1,9 +1,16 @@
 <?php
+/*
+ *
+ * $Id:$
+ */
 
   uses(
     'org.dia.DiaCompound'
   );
 
+  /**
+   * Represents a 'dia:layer' node
+   */
   class DiaLayer extends DiaCompound {
 
     var
@@ -65,8 +72,6 @@
     function setVisibility($visible) {
       $this->visibility= $visible;
     }
-
-    /************************* Parent Functions *******************************/
 
     /**
      * Return XML representation of DiaComposite

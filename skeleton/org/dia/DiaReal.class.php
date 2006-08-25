@@ -1,16 +1,21 @@
 <?php
+/*
+ *
+ * $Id:$
+ */
 
   uses(
     'org.dia.DiaElement'
   );
 
+  /**
+   * Represents a 'dia:real' node
+   */
   class DiaReal extends DiaElement {
 
     var
       $node_name= 'dia:real';
 
-    /************************* Parent Functions *************************/
-  
     /**
      * Return XML representation of DiaComposite
      *

@@ -26,10 +26,14 @@
     /**
      * Constructor of an dia object
      *
+     * @param   string type
+     * @param   string version default NULL
+     * @param   string id default NULL
      */
-    function __construct($type= NULL, $version= NULL, $id= NULL) {
+    function __construct($type, $version= NULL, $id= NULL) {
       if (!isset($type)) return;
       $this->setType($type);
+
       if (isset($version)) $this->setVersion($version);
       if (isset($id)) {
         $this->setId($id);

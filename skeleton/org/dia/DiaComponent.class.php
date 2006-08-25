@@ -1,4 +1,8 @@
 <?php
+/*
+ *
+ * $Id:$
+ */
 
   uses(
     'lang.Interface'
@@ -6,6 +10,8 @@
 
   /**
    * Interface for all DiaElements and DiaCompounds
+   * 
+   * @purpose   Define a generic interface for all Dia* classes
    */
   class DiaComponent extends Interface {
 

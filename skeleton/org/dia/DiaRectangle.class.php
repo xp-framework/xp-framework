@@ -1,9 +1,16 @@
 <?php
+/*
+ *
+ * $Id:$
+ */
 
   uses(
     'org.dia.DiaElement'
   );
 
+  /**
+   * Represents a 'dia:rectangle' node
+   */
   class DiaRectangle extends DiaElement {
 
     var
@@ -30,8 +37,6 @@
       return TRUE;
     }
 
-    /************************* DiaComponent Functions *************************/
-        
     /**   
      * Return XML representation of DiaComposite
      *    
@@ -49,7 +54,7 @@
         sizeof($this->value[1]) === 2
       ) {
         $node->setAttribute(
-         'val', 
+          'val', 
           implode(',', $this->value[0]).';'.implode(',', $this->value[1])
         );
       }

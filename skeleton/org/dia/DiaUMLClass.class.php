@@ -1,4 +1,8 @@
 <?php
+/*
+ *
+ * $Id:$
+ */
 
   uses(
     'org.dia.DiaObject'
@@ -16,14 +20,19 @@
    */
   class DiaUMLClass extends DiaObject {
 
+    var
+      $int_color= '#1ec8ff',  // color of interfaces
+      $exc_color= '#3cc864',   // color of exceptions
+      $err_color= '#ff3c3c';   // color of errors
+
     /**
      * Constructor with $type an $version
      *
      * @param   string type default 'UML - Class'
-     * @param   int version default 0
-     *
+     * @param   int version default 1
      */
-    function __construct($type, $version) {
+    function __construct($type= 'UML - Class', $version= 1) {
+      // TODO: remove parameters!
       parent::__construct($type, $version);
 
       // positioning elements default to 0
@@ -34,15 +43,18 @@
       $this->add(new DiaAttribute('elem_height', '0.0', 'real'));
       
       // defaults
-      $this->add(new DiaAttribute('visible_attributes', TRUE, 'boolean'));
-      $this->add(new DiaAttribute('visible_operations', TRUE, 'boolean'));
+      $this->add(new DiaAttribute('visible_attributes', FALSE, 'boolean'));
+      $this->add(new DiaAttribute('visible_operations', FALSE, 'boolean'));
       $this->add(new DiaAttribute('visible_comments', FALSE, 'boolean'));
       $this->add(new DiaAttribute('suppress_attributes', FALSE, 'boolean'));
       $this->add(new DiaAttribute('suppress_operations', FALSE, 'boolean'));
     }
     
     /**
-     * Evaluates $name= $ClassDoc->name()
+     * Sets the name of the UML class
+     *
+     * @access  protected
+     * @param   string name
      */
     #[@fromClass(type = 'string', eval = '$ClassDoc->qualifiedName()')]
     function setName($name) {
@@ -50,7 +62,10 @@
     }
 
     /**
-     * Evaluates $ClassDoc->classType() and sets stereotype accordingly
+     * Sets the stereotype of the UML class
+     *
+     * @access  protected
+     * @param   string stereotype
      */
     #[@fromClass(type = 'string', eval = '$ClassDoc->classType()')]
     function setStereotype($stereotype) {
@@ -58,12 +73,18 @@
         case ORDINARY_CLASS: 
           return; // no stereotype
         case EXCEPTION_CLASS:
+          // exceptions are gree
+          $this->add(new DiaAttribute('fill_color', $this->exc_color, 'color'));
           $type= 'Exception';
           break;
         case ERROR_CLASS:
+          // errors are red
+          $this->add(new DiaAttribute('fill_color', $this->err_color, 'color'));
           $type= 'Error';
           break;
         case INTERFACE_CLASS: 
+          // interfaces are blue
+          $this->add(new DiaAttribute('fill_color', $this->int_color, 'color'));
           $type= 'Interface';
           break;
         default:
@@ -73,8 +94,10 @@
     }
 
     /**
-     * Evaluates '$ClassDoc->commentText()'
+     * Sets the comment of the UML class
      *
+     * @access  protected
+     * @param   string comment
      */
     #[@fromClass(type = 'string', eval = '$ClassDoc->commentText()')]
     function setComment($comment) {
@@ -82,8 +105,13 @@
     }
 
     /**
+     * Sets the 'abstract' attribute of the UML class
+     *
      * Evaluates 'in_array(\'abstract\', $ClassDoc->tags(\'model\'))'
      * ($ClassDoc->parseDetail('tags') && isset($ClassDoc->tags['model'][0]) && $ClassDoc->tags['model'][0]->text() === 'abstract'); 
+     *
+     * @access  protected
+     * @param   bool abstract
      */
     #[@fromClass(type = 'bool', eval = '$ClassDoc->parseDetail(\'tags\') && isset($ClassDoc->tags[\'model\'][0]) && $ClassDoc->tags[\'model\'][0]->text() === \'abstract\'')]
     function setAbstract($abstract) {
@@ -91,8 +119,11 @@
     }
 
     /**
+     * Adds an attribute to the UML class
+     *
      * $field= array($name => $value)
      *
+     * @access  protected
      * @param   array field
      */
     #[@fromClass(type = 'attribute')]
@@ -129,8 +160,10 @@
     }
 
     /**
+     * Adds a method to the UML class
      * 
-     * @param   text.doclet.MethodDoc
+     * @access  protected
+     * @param   &text.doclet.MethodDoc method
      */
     #[@fromClass(type = 'method')]
     function addMethod(&$method) {
@@ -145,10 +178,10 @@
       $comp= &new DiaComposite('umloperation');
       $comp->add(new DiaAttribute('name', $method->name(), 'string'));
 
+      // check @return tag
       $Tag_return= array_shift($method->tags('return'));
       if (isset($Tag_return)) {
-        $text= $Tag_return->text();
-        $type= xp::typeOf($text);
+        $type= $Tag_return->type;
       } else {
         $type= 'void';
       }
@@ -170,9 +203,11 @@
       $comp->add(new DiaAttribute('abstract', $abstract, 'boolean'));
 
       // default values:
+      // TODO: @model static!
       $comp->add(new DiaAttribute('stereotype', NULL, 'string'));
       $comp->add(new DiaAttribute('inheritance_type', 2, 'enum'));
       $comp->add(new DiaAttribute('query', FALSE, 'boolean'));
+      // TODO: @access ...
       $comp->add(new DiaAttribute('class_scope', FALSE, 'boolean'));
 
       // create parameters 'attribute'

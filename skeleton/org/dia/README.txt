@@ -52,3 +52,10 @@ DiaUMLClass : representation of an UML class in DIA (extends DiaObject)
 DiaDoclet : doclet which loops over the given classes (recursively) and
 generates an DIAgram representation for each class. Returns a DIAgram with all
 classes in it.
+
+FUTURE:
+=======
+* yet another REDESIGN: separate 'UML' notation stuff from 'dia' specific classes
+=> have XP classes which represent a UML diagram - independent of 'dia'
+=> have an 'Visitor' which goes through the UML diagram structure and creates a 'dia' diagram from it
+=> OR just use annotations?

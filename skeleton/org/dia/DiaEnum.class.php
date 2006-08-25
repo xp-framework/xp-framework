@@ -1,16 +1,21 @@
 <?php
+/*
+ *
+ * $Id:$
+ */
 
   uses(
     'org.dia.DiaElement'
   );
 
+  /**
+   * Represents a 'dia:enum' node
+   */
   class DiaEnum extends DiaElement {
 
     var
       $node_name= 'dia:enum';
 
-    /************************* Parent Functions *************************/
-  
     /**
      * Return XML representation of DiaComposite
      *

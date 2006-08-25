@@ -8,7 +8,8 @@
     'text.doclet.Doclet',
     'util.cmd.Console',
     'org.dia.DiaDiagram',
-    'org.dia.DiaMarshaller'
+    'org.dia.DiaMarshaller',
+    'org.dia.DiaUMLGeneralization'
   );
 
   /**
@@ -87,6 +88,7 @@
         if ($root->option('recurse')) {
           $Class= &$ClassDoc;
           while ($SuperClass= &$Class->superclass) {
+            $class_id= $Dia_umlclass->getId();
             Console::writeLine('Adding ', $SuperClass->qualifiedName(), '...');
             try (); {
               $Dia_umlclass= &DiaMarshaller::marshal($SuperClass);
@@ -95,6 +97,13 @@
               exit(-1);
             }
             $this->_layer->add($Dia_umlclass);
+            // add generalization
+            Console::writeLine('Adding generalization...');
+            $Gen= &new DiaUMLGeneralization();
+            $Gen->beginAt($class_id);
+            $Gen->endAt($Dia_umlclass->getId());
+            $this->_layer->add($Gen);
+            
             $Class= &$SuperClass;
           }
         }

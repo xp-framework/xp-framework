@@ -1,4 +1,8 @@
 <?php
+/*
+ *
+ * $Id:$
+ */
 
   uses(
     'xml.Tree',
@@ -10,7 +14,6 @@
   );
   
   /**
-   * TODO: use(doclet); (better than reflection api)
    * Represents a 'dia' diagram
    */
   class DiaDiagram extends DiaCompound {
@@ -19,26 +22,31 @@
       $ns= array('dia' => 'http://www.gnome.org/projects/dia/'),
       $node_name= 'dia:diagram';
 
-    /************************ Static Methods ****************************/
-
     /**
-     * Returns the next ID for an element (auto increment)
+     * Returns the next ID for an element (auto increment) with leading '0'
+     * 
      *
-     * @model static
+     * @model   static
+     * @return  int
      */
     function getId() {
       static $id= 0;
-      return sprintf('%02d', $id++);
+      return '0'.$id++;
+      // too complicated: return sprintf('%0'.(strlen($id)+1).'d', $id++);
     }
 
     /**
      * TODO: Generate class (structure - no code) from a DIAgram 
      *
+     * @deprecated
      */
-    function &buildFromDia($file) {
+    function buildFromDia($file) {
     }
 
-    function &createDiaFromClasses2($classnames, $recurse= 0) {
+    /**
+     * @deprecated
+     */
+    function createDiaFromClasses2($classnames, $recurse= 0) {
       // initialize DIAgram
       $dia= &new DiaDiagram();
       $dia->initialize();
@@ -60,9 +68,12 @@
     /**
      * Generate a DIAgram from classname(s)
      *
+     * @deprecated
      * @access  public
      * @model   static
-     * @param   array $classnames
+     * @param   array classnames Array with fqcn of classes
+     * @param   int recurse default 0 The recursion-level
+     * @return  &org.dia.DiaDiagram
      */
     function &createDiaFromClasses($classnames, $recurse= 0) {
       $dia= &new DiaDiagram();
@@ -135,21 +146,7 @@
       return $dia;
     }
 
-
     /************************ Class Methods *****************************/
-
-    /**
-     *
-     *
-     */
-    function addClass(&$classdoc) {
-
-    }
-
-    /**
-     * Write Dia diagram to given filename or STDOUT
-     */
-    function write($filename= NULL) {}
 
     /**
      * Initialize this DiaDiagram with DiaData and DiaLayer
@@ -174,6 +171,43 @@
       $this->ns[]= &$ns;
     }
 
+    /**
+     * Returns the full XML source of the 'dia' diagram
+     *
+     * @return  string XML representation of the DIAgramm
+     */
+    function getSource($indent= TRUE) {
+      $Node= &$this->getNode();
+      $Tree= &new Tree();
+      $Tree->root= &$Node;
+      return $Tree->getDeclaration()."\n".$Tree->getSource($indent);
+    }
+
+    /**
+     * @param   string filename Filename to save the DIAgramm to
+     * @param   boolean zip default TRUE Gzip the DIAgram file?
+     */
+    function saveTo($filename, $zip= TRUE) {
+      // open $File according to $zip
+      if ($zip) {
+        uses('io.ZipFile');
+        $File= &new ZipFile($filename);
+      } else {
+        uses('io.File');
+        $File= &new File($filename);
+      }
+
+      // try to write XML source to file
+      try (); {
+        $File->open(FILE_MODE_WRITE) && // default compression: 6
+        $File->write($this->getSource(FALSE)); // no indentation!
+        $File->close();
+      } if (catch('Exception', $e)) {
+        Console::writeLine('Fatal Exception: '.$e->toString());
+        exit(-1);
+      }
+    }
+
     /************************* Parent Functions *************************/
 
     /**
@@ -188,31 +222,6 @@
         $node->setAttribute('xmlns:'.$ns, $url);
       }
       return $node;
-    }
-
-    /**
-     * @return  string XML representation of the DIAgramm
-     */
-    function getSource($indent= TRUE) {
-      $Node= &$this->getNode();
-      $Tree= &new Tree();
-      $Tree->root= &$Node;
-      return $Tree->getDeclaration()."\n".$Tree->getSource($indent);
-    }
-
-    /**
-     * @param   string filename Filename to save the DIAgramm to
-     */
-    function saveTo($filename, $zip= FALSE) {
-      // TODO: catch exceptions!
-      uses('io.File');
-      $File= &new File($filename);
-      $File->open(FILE_MODE_WRITE);
-      $File->write($this->getSource(FALSE)); // no indentation!
-      $File->close();
-      if ($zip) {
-        system("gzip -f $filename && mv $filename.gz $filename");
-      }
     }
 
   }
