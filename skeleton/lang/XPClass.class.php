@@ -76,6 +76,16 @@
         : FALSE
       );
     }
+
+    /**
+     * Returns a hashcode for this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function hashCode() {
+      return $this->name;
+    }
     
     /**
      * Creates a string representation
