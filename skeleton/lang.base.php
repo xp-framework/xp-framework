@@ -70,6 +70,40 @@
       }
     }
     // }}}
+    
+    // {{{ public void implements(string class, string[] interfaces)
+    //     Checks the implementation of the class against the interfaces and registers the connection
+    function implements($class, $interfaces) {
+      $signature= array_flip(get_class_methods($class));
+      $implements= xp::registry('implements');
+
+      for ($i= 0, $s= sizeof($interfaces); $i < $s; $i++) {
+        $interface= $interfaces[$i];
+        uses($interface);
+        $name= xp::reflect($interface);
+        $methods= array_flip(get_class_methods($name));
+        
+        // Get rid of constructors
+        $c= $name;
+        do {
+          unset($methods[$c]);
+          $implements[$class][$c]= 1;
+        } while ($c= get_parent_class($c));
+  
+        // Pop off 'lang.Interface'
+        array_pop($implements[$class]);
+  
+        // Check implementation
+        foreach (array_keys($methods) as $method) {
+          if (!isset($signature[$method])) {
+            xp::error('Interface method '.$interface.'::'.$method.'() not implemented by class '.$class);
+          }
+        }
+      }
+      
+      xp::registry('implements', $implements);
+    }
+    // }}}
 
     // {{{ public void gc()
     //     Runs the garbage collector
@@ -325,35 +359,10 @@
   // {{{ proto void implements(string file, string interface [, string interface [, ...]]) 
   //     Defines that the class this is called in implements certain interface(s)
   function implements() {
-    $class= strtolower(substr(basename(func_get_arg(0)), 0, -10));
-    $signature= array_flip(get_class_methods($class));
-    $implements= xp::registry('implements');
+    $args= func_get_args();
+    $class= strtolower(substr(basename(array_shift($args)), 0, -10));
     
-    for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
-      $interface= func_get_arg($i);
-      uses($interface);
-      $name= xp::reflect($interface);
-      $methods= array_flip(get_class_methods($name));
-      
-      // Get rid of constructors
-      $c= $name;
-      do {
-        unset($methods[$c]);
-        $implements[$class][$c]= 1;
-      } while ($c= get_parent_class($c));
-
-      // Pop off 'lang.Interface'
-      array_pop($implements[$class]);
-
-      // Check implementation
-      foreach (array_keys($methods) as $method) {
-        if (!isset($signature[$method])) {
-          xp::error('Interface method '.$interface.'::'.$method.'() not implemented by class '.$class);
-        }
-      }
-    }
-    
-    xp::registry('implements', $implements);
+    xp::implements($class, $args);
   }
   // }}}
   
@@ -365,6 +374,7 @@
     $class= xp::reflect($class);
     if (is_a($object, $class)) return TRUE;
     $implements= xp::registry('implements');
+    
     
     do {
       if (isset($implements[$p][$class])) return TRUE;

@@ -100,13 +100,13 @@
     /**
      * Define a class with a given name
      *
-     * @access  public
+     * @access  protected
      * @param   string class fully qualified class name
      * @param   string bytes sourcecode of the class
      * @return  &lang.XPClass
      * @throws  lang.FormatException in case the class cannot be defined
      */
-    function &defineClass($class, $bytes) {
+    function &_defineClassFromBytes($class, $bytes) {
       $name= xp::reflect($class);
 
       if (!class_exists($name)) {
@@ -121,6 +121,52 @@
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }      
 
+      $c= &new XPClass($name);
+      return $c;
+    }
+    
+    /**
+     * Define a class with a given name
+     *
+     * @access  public
+     * @param   string class fully qualified class name
+     * @param   string parent either sourcecode of the class or FQCN of parent
+     * @param   string[] interfaces default NULL FQCNs of implemented interfaces
+     * @param   string bytes default NULL inner sourcecode of class (containing {}) 
+     * @return  &lang.XPClass
+     * @throws  lang.FormatException in case the class cannot be defined
+     * @throws  lang.ClassNotFoundException if given parent class does not exist
+     */
+    function &defineClass($class, $parent, $interfaces= NULL, $bytes= NULL) {
+      
+      // If invoked with less than four arguments, old behaviour will be executed
+      if (NULL === $bytes) {
+        return $this->_defineClassFromSource($class, $parent);
+      }
+      
+      $name= xp::reflect($class);
+      if (!class_exists($name)) {
+        $qname= $this->classpath.$class;
+        $parentName= xp::reflect($parent);
+        
+        if (!class_exists($parentName)) {
+          return throw(new ClassNotFoundException('Parent class '.$parent.' does not exist.'));
+        }
+        
+        $newBytes= 'class '.$name.' extends '.$parentName.' '.$bytes;
+        if (FALSE === eval($newBytes)) {
+          return throw(new FormatException('Cannot define class "'.$qname.'"'));
+        }
+        
+        if (!class_exists($name)) {
+          return throw(new FormatException('Class "'.$qname.'" not defined'));
+        }
+        
+        xp::registry('class.'.$name, $qname);
+        if (sizeof($interfaces)) { xp::implements($name, $interfaces); }
+        is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+      }
+      
       $c= &new XPClass($name);
       return $c;
     }
