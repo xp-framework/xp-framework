@@ -54,11 +54,43 @@
      * @return  string
      */
     function loadClassBytes($name) {
-      return str_replace(
-        '__FILE__', 
-        "'".strtr($name, '.', '/').'.class.php\'', 
-        $this->archive->extract($name)
-      );
+      $src= '';
+      $line= 0;
+      $tokens= token_get_all($this->archive->extract($name));
+      for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
+        switch ($tokens[$i][0]) {
+          case T_FILE: 
+            $tokens[$i][1]= "'".strtr($name, '.', '/').'.class.php\''; 
+            break;
+            
+          case T_LINE:
+            $tokens[$i][1]= $line;
+            break;
+
+          case T_STRING:
+            if ('uses' == $tokens[$i][1] || 'implements' == $tokens[$i][1]) {
+              $o= $i+ 1;
+              while (')' != $tokens[$o][0]) {
+                if (T_CONSTANT_ENCAPSED_STRING == $tokens[$o][0]) {
+                  $used= trim($tokens[$o][1], '"\'');
+                  $this->archive->contains($used) && $this->loadClass($used);
+                }
+                $o++;
+              }
+            }
+            break;
+        }
+
+        if (is_array($tokens[$i])) {
+          $src.= $tokens[$i][1];
+          $line+= substr_count($tokens[$i][1], "\n");
+        } else {
+          $src.= $tokens[$i];
+          $line+= substr_count($tokens[$i], "\n");
+        }
+      }
+      
+      return $src;
     }
     
     /**
