@@ -11,6 +11,6 @@ $ php server.php 127.0.0.1
 This will start the peking application server.
 
 Now verify everything works by running:
-$ unittest -c net.xp_framework.unittest.remote.RoundtripTest -a 127.0.0.1
+$ php unittest-remote.php 127.0.0.1 net.xp_framework.unittest.core.ObjectTest
 
 <EOF>
