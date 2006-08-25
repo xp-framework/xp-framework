@@ -289,7 +289,7 @@
         '%s %s %s(%s)%s',
         implode(' ', $this->getModifierNames()),
         $this->getReturnType(),
-        $this->getName(),
+        $this->getName(TRUE),
         substr($args, 2),
         $throws
       );
