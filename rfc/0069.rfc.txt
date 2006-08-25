@@ -126,6 +126,7 @@ n/a
 Dependencies
 ------------
 - RFC #0065
+  Server Protocol API (implemented)
 
 
 Related documents
