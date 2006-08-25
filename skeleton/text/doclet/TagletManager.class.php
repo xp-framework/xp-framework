@@ -43,6 +43,8 @@
         $self->taglets['deprecated']= &$s;
         $self->taglets['experimental']= &$s;
         $self->taglets['platform']= &$s;
+        $self->taglets['test']= &$s;
+        $self->taglets['doc']= &$s;
       }
     }
 
