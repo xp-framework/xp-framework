@@ -20,7 +20,8 @@
    */
   class EascProtocol extends Object {
     var
-      $serializer       = NULL;
+      $serializer  = NULL,
+      $context     = NULL;
 
     /**
      * (Insert method's description here)
@@ -32,9 +33,8 @@
     function __construct() {
       $this->serializer= &new Serializer();
       $this->serializer->mapping('I', new RemoteInterfaceMapping());
-      
-      $this->objects= &new Hashmap();
-      $this->objectOIDs= &new Hashmap();
+      $this->context[RIH_OBJECTS_KEY]= &new HashMap();
+      $this->context[RIH_OIDS_KEY]= &new HashMap();
     }      
 
     /**
@@ -95,7 +95,7 @@
       $this->answerWithBytes(
         $stream, 
         0x0005 /* REMOTE_MSG_VALUE */, 
-        new ByteCountedString($this->serializer->representationOf($value))
+        new ByteCountedString($this->serializer->representationOf($value, $this->context))
       );
     }
 
@@ -110,7 +110,7 @@
       $this->answerWithBytes(
         $stream, 
         0x0006 /* REMOTE_MSG_EXCEPTION */, 
-        new ByteCountedString($this->serializer->representationOf($value))
+        new ByteCountedString($this->serializer->representationOf($value, $this->context))
       );
     }
     
@@ -122,14 +122,10 @@
      * @return  
      */
     function answerWithMessage(&$stream, &$m) {
-      $ctx= array();
-      $ctx[RIH_OBJECTS_KEY]= &$this->objects;
-      $ctx[RIH_OIDS_KEY]= &$this->objectOIDs;
-      
       $this->answerWithBytes(
         $stream,
         $m->getType(),
-        new ByteCountedString($this->serializer->representationOf($m->getValue(), $ctx))
+        new ByteCountedString($this->serializer->representationOf($m->getValue(), $this->context))
       );
     }
 

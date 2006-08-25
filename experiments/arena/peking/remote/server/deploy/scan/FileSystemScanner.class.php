@@ -63,13 +63,13 @@
           continue;
         }
 
-        $cl= &new ArchiveClassLoader($ear);
-        try(); {
-          $class= &$cl->loadClass($beanclass);
-          $class && $deployments[]= &new Deployment($entry, $class);
-        } if (catch('Exception', $e)) {
-          $deployments[]= &new IncompleteDeployment($entry, $e);
-        }
+        $d= &new Deployment($entry);
+        $d->setClassLoader(new ArchiveClassLoader($ear));
+        $d->setImplementation($beanclass);
+        $d->setInterface($prop->readString('bean', 'remote'));
+        $d->setDirectoryName($prop->readString('bean', 'lookup'));
+        
+        $deployments[]= &$d;
       }
 
       return $deployments;

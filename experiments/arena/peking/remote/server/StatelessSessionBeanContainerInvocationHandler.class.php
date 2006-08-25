@@ -4,9 +4,6 @@
  * $Id$ 
  */
 
-  define('INVOCATION_TYPE_HOME',  'invokeHome');
-  define('INVOCATION_TYPE_BEAN',  'invoke');
-
   /**
    * (Insert class' description here)
    *
@@ -16,7 +13,6 @@
    */
   class StatelessSessionBeanContainerInvocationHandler extends Object {
     var
-      $oid        = NULL,
       $container  = NULL,
       $type       = NULL;
     
@@ -41,17 +37,6 @@
     function setType($type) {
       $this->type= $type;
     }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function setOID($oid) {
-      $this->oid= $oid;
-    }
 
     /**
      * Processes a method invocation on a proxy instance and returns
@@ -64,15 +49,8 @@
      * @return  mixed
      */
     function invoke(&$proxy, $method, $args) {
-      switch ($this->type) {
-        case INVOCATION_TYPE_HOME: {
-          return $this->container->{INVOCATION_TYPE_HOME}($method, $args);
-        }
-        
-        case INVOCATION_TYPE_BEAN: {
-          return $this->container->{INVOCATION_TYPE_BEAN}($this->oid, $method, $args);
-        }
-      }
+      return $this->container->invoke($method, $args);
     }
+
   } implements(__FILE__, 'lang.reflect.InvocationHandler');
 ?>

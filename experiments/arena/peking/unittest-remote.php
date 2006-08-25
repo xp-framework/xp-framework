@@ -9,12 +9,10 @@
 
   // {{{ main
   $p= &new ParamString();
-
   try(); {
     $r= &Remote::forName('xp://'.$p->value(1));
-    $r && $home= &$r->lookup('xp/test/UnittestRunner');
-    $home && $instance= &$home->create();
-    $instance && $results= $instance->runTestsFrom($p->value(2));
+    $r && $bean= &$r->lookup('xp/test/TestRunner');
+    $bean && $results= $bean->runTestClass($p->value(2));
   } if (catch('Exception', $e)) {
     Console::writeLine('*** ', $p->value(2).'@'.$p->value(1), ' ~ ', $e->toString());
     exit(-1);

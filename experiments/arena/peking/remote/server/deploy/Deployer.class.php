@@ -49,69 +49,34 @@
 
       $cat->info($this->getClassName(), 'Begin deployment of', $deployment);
       try(); {
-        $class= &$deployment->class;
-
+        $cl= &$deployment->getClassLoader();
+        $impl= &$cl->loadClass($deployment->getImplementation());
+        $interface= &$cl->loadClass($deployment->getInterface());
+        $directoryName= $deployment->getDirectoryName();
+        
         // Fetch naming directory
         $directory= &NamingDirectory::getInstance();
         
-        // Load class' directory name
-        if (!$class->hasAnnotation(DEPLOY_LOOKUP_KEY)) return $this->_deployException(
-          'Cannot deploy class without @'.DEPLOY_LOOKUP_KEY.' annotation.'
-        );
-
-        $directoryName= $class->getAnnotation(DEPLOY_LOOKUP_KEY);
-
-        // Fetch class' peer classname
-        if (
-          !$class->hasAnnotation(DEPLOY_PEERCLASS_KEY) && 
-          !$class->hasAnnotation(DEPLOY_HOMEINTERFACE_KEY)
-        ) return $this->_deployException(
-          'Peer class for "'.$class->getName().'" not found.'
-        );
-        
         // Create beanContainer
-        $beanContainer= &BeanContainer::forClass($class);
+        $beanContainer= &BeanContainer::forClass($impl);
+        $beanContainer->setInvocationStrategy(new StatelessSessionInvocationStrategy());
         $containerManager->register($beanContainer);
         
-        if ($class->hasAnnotation(DEPLOY_PEERCLASS_KEY)) {
-          $peerCN= &$class->getAnnotation(DEPLOY_PEERCLASS_KEY);
-          $peerClass= &XPClass::forName($peerCN);
-        } else {
-          $peerClass= &$this->generatePeerFor($class);
-        }
-        
-        $homeInterface= NULL;
-
-        foreach ($peerClass->getInterfaces() as $interface) {
-          if ($interface->isSubclassOf('remote.beans.HomeInterface')) {
-            $homeInterface= &$interface;
-            break;
-          }
-        }
-        
-        if (!$homeInterface) return $this->_deployException(
-          'HomeInterface for "'.$class->getName().'" not found.'
-        );
-        
-        $beanContainer->setPeer($peerClass->newInstance());
-        $beanContainer->setInvocationStrategy(new StatelessSessionInvocationStrategy());
-
+        // Create invocation handler
         $invocationHandler= &new ContainerInvocationHandler();
         $invocationHandler->setContainer($beanContainer);
-        $invocationHandler->setType(INVOCATION_TYPE_HOME);
       } if (catch('Exception', $e)) {
         return throw($e);
       }
-      
 
       // Now bind into directory
       $directory->bind($directoryName, Proxy::newProxyInstance(
-        ClassLoader::getDefault(),
-        InterfaceUtil::getUniqueInterfacesFor($peerClass),
+        $cl,
+        array($interface),
         $invocationHandler
       ));
      
-      $cat->info($this->getClassName(), 'End deployment of', $class->getName(), 'with ND entry', $directoryName);
+      $cat->info($this->getClassName(), 'End deployment of', $impl->getName(), 'with ND entry', $directoryName);
       return $beanContainer;
     }
     
@@ -127,46 +92,6 @@
       $cat= &$log->getCategory($this->getClassName());
       $cat->warn($this->getClassName(), $msg);
       return throw(new DeployException($msg));
-     }
-     
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function &generatePeerFor(&$class) {
-      static $peers= array();
-      
-      if (isset($peers[$class->getName()])) return $peers[$class->getName()];
-      
-      $peerFQCN= $class->getName().'Peer';
-      $peerCN= substr($peerFQCN, strrpos($peerFQCN, '.')+ 1);
-      
-      $cl= &ClassLoader::getDefault();
-      $home= &$cl->defineClass($peerCN, sprintf('class %s extends Object {
-          /**
-           * Create method
-           *
-           * @access  public
-           * @return  &%s
-           */
-          function create() {
-            $instance= &new %s();
-            return $instance;
-          }
-        } implements("%s", "%s");
-        ',
-        $peerCN,
-        $class->getName(),
-        xp::reflect($class->getName()),
-        strtr($peerFQCN, '.', '/').'.class.php',
-        $class->getAnnotation(DEPLOY_HOMEINTERFACE_KEY)
-      ));
-      
-      $peers[$class->getName()]= &$home;
-      return $home;
     }
   }
 ?>

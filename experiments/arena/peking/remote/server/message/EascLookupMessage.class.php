@@ -30,9 +30,7 @@
       $name= $this->readString($data, $offset);
 
       $directory= &NamingDirectory::getInstance();
-      $proxy= &$directory->lookup($name);
-      
-      $this->setValue($proxy);
+      $this->setValue($directory->lookup($name));
     }
   }
 ?>

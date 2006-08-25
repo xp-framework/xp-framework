@@ -15,7 +15,6 @@
    */
   class BeanContainer extends Object {
     var
-      $peer         = NULL,
       $container    = NULL,
       $strategy     = NULL;
 
@@ -28,7 +27,7 @@
      */
     function &forClass(&$class) {
       $bc= &new BeanContainer();
-      $bc->instancePool= &Collection::forClass($class);
+      $bc->instancePool= &Collection::forClass($class->getName());
       return $bc;
     }
     
@@ -50,17 +49,6 @@
      * @param   
      * @return  
      */
-    function setPeer(&$peer) {
-      $this->peer= &$peer;
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
     function setInvocationStrategy(&$strategy) {
       $this->strategy= &$strategy;
     }
@@ -72,19 +60,22 @@
      * @param   
      * @return  
      */
-    function invokeHome($method, $args) {
-      return $this->strategy->invokeHome($this, $method, $args);
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function invoke($oid, $method, $args) {
-      return $this->strategy->invoke($this, $oid, $method, $args);
+    function invoke(&$proxy, $method, $args) {
+      $class= &$this->instancePool->getElementClass();
+      if (!$this->instancePool->contains($oid)) {
+        $instance= &$class->newInstance();
+        $this->instancePool->add($instance);
+      } else {
+        $instance= &$this->instancePool->get($oid);
+      }
+
+      $m= &$class->getMethod($method);
+      
+      $log= &Logger::getInstance();
+      $cat= &$log->getCategory($this->getClassName());
+      $cat->debug('BeanContainer::invoke(', $oid, ') ', $m->toString(), '(', $args, ')');
+
+      return $m->invoke($instance, $args);
     }
   }
 ?>

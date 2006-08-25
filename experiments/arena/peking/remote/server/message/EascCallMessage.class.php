@@ -14,6 +14,7 @@
    * @purpose  purpose
    */
   class EascCallMessage extends EascMessage {
+
     /**
      * (Insert method's description here)
      *
@@ -22,24 +23,14 @@
      * @return  
      */
     function handle(&$listener, $data) {
-      $log= &Logger::getInstance();
-      $cat= &$log->getCategory($this->getClassName());
-      
-      $ctx= array(
-        RIH_OBJECTS_KEY => $listener->objects,
-        RIH_OIDS_KEY    => $listener->objectOIDs
-      );
-      
       $oid= unpack('Nzero/Noid', substr($data, 0, 8));
-      $p= &$listener->objects->get($oid['oid']);
+      $p= &$listener->context[RIH_OBJECTS_KEY]->get($oid['oid']);
       
       $offset= 8;
       $method= $this->readString($data, $offset);
       
       $offset+= 2;  // ?
-      $args= $listener->serializer->valueOf($this->readString($data, $offset), $ctx);
-      
-      $cat->info($this->getClassName(), 'Calling', $method, 'with', sizeof($args->values), 'argument(s) on', $p->hashCode());
+      $args= $listener->serializer->valueOf($this->readString($data, $offset), $l, $listener->context);
       try(); {
         $result= call_user_func_array(array(&$p, $method), $args->values);
         $this->setValue($result);
