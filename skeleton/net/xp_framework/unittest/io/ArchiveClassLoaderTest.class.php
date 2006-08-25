@@ -6,6 +6,7 @@
 
   uses(
     'util.profiling.unittest.TestCase',
+    'util.collections.HashSet',
     'io.cca.ArchiveClassLoader',
     'io.cca.Archive',
     'io.Stream'
@@ -101,7 +102,24 @@
     #[@test]
     function loadClass() {
       $class= &$this->classloader->loadClass($this->classname);
-      $this->assertEquals($class->getName(), $this->classname);
+      $class && $this->assertEquals($class->getName(), $this->classname);
+    }
+    
+    /**
+     * Test class implements the interface from the archive
+     *
+     * @access  public
+     */
+    #[@test]
+    function classImplementsInterface() {
+      if (
+        $class= &$this->classloader->loadClass($this->classname) &&
+        $interface= &$this->classloader->loadClass($this->interfacename)
+      ) {
+        $interfaces= &new HashSet();
+        $interfaces->addAll($class->getInterfaces());
+        $this->assertTrue($interfaces->contains($interface));
+      }
     }
   }
 ?>
