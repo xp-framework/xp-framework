@@ -238,7 +238,7 @@
               try (); {
                 $Method->invoke($UMLClass, array($value));
               } if (catch('Exception', $e)) {
-                Console::writeLine('Fatal Exception:', $e->toString());
+                Console::writeLine('Fatal: ', $e->toString());
                 exit(-1);
               }
             } else {

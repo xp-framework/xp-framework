@@ -2,9 +2,14 @@ How to use 'xp://org.dia.*'
 ===========================
 @author: Pascal Sick (sick@schlund.de)
 
+urgent TODOs:
+=============
+* if given lots of classes, some don't get recursed or only used as dependency
+* and not as parent class although generalization should take precedence!
+==> improve recusion!
+
 HOWTO: create DIAgrams:
 -----------------------
-
 > php doclet.php --doclet=org.dia.DiaDoclet --verbose --depend --gzipped --recurse=5 --directory=/diagrams --file=test.dia util.Date lang.XPClass [...]
 
 DiaDoclet options:

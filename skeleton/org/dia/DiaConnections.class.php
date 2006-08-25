@@ -32,7 +32,7 @@
      * @param   array connection
      * @throws  lang.IllegalArgumentException
      */
-    function __construct($connection) {
+    function __construct($connection= NULL) {
       if (!isset($connection) or empty($connection)) return;
 
       // $connection must be an array with 2 arrays in it
