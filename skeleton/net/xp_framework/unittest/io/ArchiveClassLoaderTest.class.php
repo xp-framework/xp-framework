@@ -98,7 +98,7 @@
      *
      * @access  public
      */
-    #[@test, @ignore('implements() and uses() must be rewritten in ArchiveClassLoader')]
+    #[@test]
     function loadClass() {
       $class= &$this->classloader->loadClass($this->classname);
       $this->assertEquals($class->getName(), $this->classname);
