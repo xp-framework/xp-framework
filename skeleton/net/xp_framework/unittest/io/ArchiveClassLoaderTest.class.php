@@ -75,8 +75,10 @@
       $archive->add(
         $this->classStream(
           'class '.$this->classname.' extends Object { 
-          
-          } implements(__FILE__, "'.$this->interfacename.'");
+            function compare($a, $b) {
+              return strcmp($a, $b);
+            }
+          } implements(__FILE__, "'.$this->interfacename.'", "util.Comparator");
         '), 
         $this->classname
       );
@@ -111,10 +113,27 @@
      * @access  public
      */
     #[@test]
-    function classImplementsInterface() {
+    function classImplementsArchivedInterface() {
       if (
         $class= &$this->classloader->loadClass($this->classname) &&
         $interface= &$this->classloader->loadClass($this->interfacename)
+      ) {
+        $interfaces= &new HashSet();
+        $interfaces->addAll($class->getInterfaces());
+        $this->assertTrue($interfaces->contains($interface));
+      }
+    }
+
+    /**
+     * Test class implements the interface from the archive
+     *
+     * @access  public
+     */
+    #[@test]
+    function classImplementsComparatorInterface() {
+      if (
+        $class= &$this->classloader->loadClass($this->classname) &&
+        $interface= &XPClass::forName('util.Comparator')
       ) {
         $interfaces= &new HashSet();
         $interfaces->addAll($class->getInterfaces());
