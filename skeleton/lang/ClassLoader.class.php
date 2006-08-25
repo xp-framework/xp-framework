@@ -141,7 +141,7 @@
       
       // If invoked with less than four arguments, old behaviour will be executed
       if (NULL === $bytes) {
-        return $this->_defineClassFromSource($class, $parent);
+        return $this->_defineClassFromBytes($class, $parent);
       }
       
       $name= xp::reflect($class);
