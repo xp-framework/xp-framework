@@ -5,18 +5,19 @@ How to use 'xp://org.dia.*'
 HOWTO: create DIAgrams:
 -----------------------
 
-> php doclet.php --doclet=org.dia.DiaDoclet --verbose --recurse --gzipped --directory=/diagrams --file=test.dia util.Date lang.XPClass [...]
+> php doclet.php --doclet=org.dia.DiaDoclet --verbose --depend --gzipped --recurse=5 --directory=/diagrams --file=test.dia util.Date lang.XPClass [...]
 
 DiaDoclet options:
 * --verbose
-* --recurse
 * --gzipped
+* --depend
+* --recurse=level
 * --directory=$DIR
 * --file=$FILE
 
 FILES:
 ======
-DiaMarshaller : create DiaUMLClass from XP class
+DiaMarshaller : create DiaDiagram from a list of classnames
 TODO: DiaUnmarshaller : create XP classes from DiaUMLClass as XML
 
 * interfaces:
@@ -47,11 +48,18 @@ DiaRectangle
 
 * specific elements:
 DiaUMLClass : representation of an UML class in DIA (extends DiaObject)
+DiaUMLConnection : base class for UML connection types (dependency,
+  realization, implementation, association, ...)
+DiaUML* : represent what their name sais ;)
 
 * Doclet
-DiaDoclet : doclet which loops over the given classes (recursively) and
-generates an DIAgram representation for each class. Returns a DIAgram with all
-classes in it.
+DiaDoclet : hands the given classes over to DiaMarshaller to generate a DiaDiagram
+
+TODOs:
+======
+* merge generated diagram with the positions from an already (manually) layouted diagram (tool)
+* update a diagram?
+* adjacent placement of objects (not overlapping)
 
 FUTURE:
 =======
@@ -59,3 +67,4 @@ FUTURE:
 => have XP classes which represent a UML diagram - independent of 'dia'
 => have an 'Visitor' which goes through the UML diagram structure and creates a 'dia' diagram from it
 => OR just use annotations?
+

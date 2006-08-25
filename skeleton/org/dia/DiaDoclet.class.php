@@ -14,43 +14,19 @@
 
   /**
    * Doclet that generated DIAgrams out of XP classes
+   * 
    *
    * Options:
    * <ul>
-   *  <li>verbose : boolean</li>
-   *  <li>recurse : boolean</li>
-   *  <li>gzipped : boolean</li>
-   *  <li>directory=$DIR : target directory</li>
-   *  <li>file=$FILE : output filename</li>
+   *  <li>verbose : boolean</li> default FALSE
+   *  <li>gzipped : boolean</li> default TRUE
+   *  <li>recurse : int</li> default 0
+   *  <li>directory=$DIR : target directory</li> default: './'
+   *  <li>file=$FILE : output filename</li> default: 'fqcn.dia'
    * </ul>
-   *
    *
    */
   class DiaDoclet extends Doclet {
-
-    var
-      $_options= array(
-        'verbose' => OPTION_ONLY,
-        'recurse' => OPTION_ONLY,
-        'gzipped' => OPTION_ONLY,
-        'directory'  => HAS_VALUE,
-        'file'  => HAS_VALUE
-      ),
-      $_recurse= FALSE,   // recurse or not
-      $_dia= NULL;        // the diagram class
-
-    /**
-     * Initialize DiaDoclet with some options
-     */
-    function __construct() {
-      // initialize DIAgram
-      $this->_dia= &new DiaDiagram();
-      $this->_dia->initialize();
-
-      // get reference to background layer
-      $Layers= &$this->_dia->getChildByType('DiaLayer');
-      $this->_layer= &$Layers[0];
-    }
 
     /**
      * Returns an array of valid options
@@ -59,55 +35,34 @@
      * @return  array
      */
     function validOptions() {
-      return $this->_options;
+      return array(
+        'verbose' => OPTION_ONLY,
+        'gzipped' => OPTION_ONLY,
+        'depend' => OPTION_ONLY,
+        'recurse' => HAS_VALUE,
+        'directory'  => HAS_VALUE,
+        'file'  => HAS_VALUE
+      );
     }
 
     /**
      * Run Doclet
      *
-     * - loop over classes (recursively) and add each class to the DIAgram
-     * - add dependencies to the DIAgram...
      */
     function start(&$root) {  
+      // test hasNext()?
+
       while ($root->classes->hasNext()) {
         $ClassDoc= &$root->classes->next();
-        if (!is('ClassDoc', $ClassDoc)) {
-          Console::writeLine('Fatal ERROR: Class is no "ClassDoc" instance: '.xp::stringOf($ClassDoc));
-          exit(-1);
-        }
-        Console::writeLine('Adding ', $ClassDoc->qualifiedName(), '...');
-        try (); {
-          $Dia_umlclass= &DiaMarshaller::marshal($ClassDoc);
-        } if (catch('Exception', $e)) {
-          Console::writeLine('Fatal Exception: ', $e->toString());
-          exit(-1);
-        }
-        $this->_layer->add($Dia_umlclass);
-
-        // recurse?
-        if ($root->option('recurse')) {
-          $Class= &$ClassDoc;
-          while ($SuperClass= &$Class->superclass) {
-            $class_id= $Dia_umlclass->getId();
-            Console::writeLine('Adding ', $SuperClass->qualifiedName(), '...');
-            try (); {
-              $Dia_umlclass= &DiaMarshaller::marshal($SuperClass);
-            } if (catch('Exception', $e)) {
-              Console::writeLine('Fatal Exception: ', $e->toString());
-              exit(-1);
-            }
-            $this->_layer->add($Dia_umlclass);
-            // add generalization
-            Console::writeLine('Adding generalization...');
-            $Gen= &new DiaUMLGeneralization();
-            $Gen->beginAt($class_id);
-            $Gen->endAt($Dia_umlclass->getId());
-            $this->_layer->add($Gen);
-            
-            $Class= &$SuperClass;
-          }
-        }
+        $classnames[]= $ClassDoc->qualifiedName();
       }
+
+      // generate diagram via DiaMarshaller
+      $Dia= &DiaMarshaller::marshal(
+        $classnames, 
+        $root->option('recurse', 0), 
+        $root->option('depend', FALSE)
+      );
 
       // default destination is the current directory
       $filename= $root->option('directory', '.').DIRECTORY_SEPARATOR;
@@ -116,7 +71,9 @@
       } else {
         $filename.= $ClassDoc->qualifiedName().'.dia';
       }
-      $this->_dia->saveTo($filename, $root->option('gzipped', FALSE));
+
+      // save diagram to file
+      $Dia->saveTo($filename, $root->option('gzipped', FALSE));
     }
   }
 ?>
