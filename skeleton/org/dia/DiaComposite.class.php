@@ -121,5 +121,5 @@
       return $node;
     }
 
-  } implements(__FILE__, 'DiaComponent');
+  } implements(__FILE__, 'org.dia.DiaComponent');
 ?>

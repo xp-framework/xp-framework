@@ -26,7 +26,7 @@
      * xmlmapping(xpath = '*', class = 'DiaElement')
      *
      * @access  protected
-     * @param   &DiaComponent component
+     * @param   &org.dia.DiaComponent component
      * @throws  lang.IllegalArgumentException
      */
     function add(&$component) {
@@ -41,7 +41,7 @@
      * Remove DiaComponent from this DiaCompound
      *
      * @access  protected
-     * @param   &DiaComponent component
+     * @param   &org.dia.DiaComponent component
      * @return  bool
      */
     function del(&$component) {
@@ -60,7 +60,7 @@
      *
      * @access  protected
      * @param   int hashCode
-     * @return  &DiaComponent
+     * @return  &org.dia.DiaComponent
      */
     function &getChild($hashCode) {
       return $this->children[$hashCode];
@@ -71,7 +71,7 @@
      *
      * @access  protected
      * @param   string type
-     * @return  &DiaComponent
+     * @return  &org.dia.DiaComponent
      */
     function &getChildByType($type) {
       $objs= array();
@@ -113,5 +113,5 @@
       return $node;
     }
 
-  } implements(__FILE__, 'DiaComponent');
+  } implements(__FILE__, 'org.dia.DiaComponent');
 ?>

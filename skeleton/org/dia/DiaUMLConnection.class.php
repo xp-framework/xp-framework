@@ -71,33 +71,27 @@
     /**
      * Set the ID of the object where the line begins
      *
-     * HINT: UML generalization 'begins' at the object depended-on
+     * HINT: UML generalization and realizes 'begins' at the object depended-on
      *
      * @param   string id
      * @param   int connpoint default 0
      */
     function beginAt($id, $connpoint= 0) {
       // TODO: check if already set!
-      if (is('DiaUMLGeneralization', $this) or is('DiaUMLRealizes', $this)) 
-        $handle=1;
-      else
-        $handle=0;
-      $this->connections->add(new DiaConnection("$handle, $id, $connpoint"));
+      $this->connections->add(new DiaConnection("0, $id, $connpoint"));
     }
 
     /**
      * Set the ID of the object where line ends
+     *
+     * HINT: UML generalization and realizes 'ends' at the depending object
      *
      * @param   string id
      * @param   int connpoint default 0
      */
     function endAt($id, $connpoint= 0) {
       // TODO: check if already set!
-      if (is('DiaUMLGeneralization', $this) or is('DiaUMLRealizes', $this))
-        $handle=0;
-      else
-        $handle=1;
-      $this->connections->add(new DiaConnection("$handle, $id, $connpoint"));
+      $this->connections->add(new DiaConnection("1, $id, $connpoint"));
     }
 
   }
