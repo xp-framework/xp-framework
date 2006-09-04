@@ -179,11 +179,11 @@
       $comp->add(new DiaAttribute('name', $method->name(), 'string'));
 
       // check @return tag
-      $Tag_return= array_shift($method->tags('return'));
-      if (isset($Tag_return)) {
-        $type= $Tag_return->type;
-      } else {
+      $return_tags= $method->tags('return');
+      if (empty($return_tags)) {
         $type= 'void';
+      } else {
+        $type= $return_tags[0]->type;
       }
       $comp->add(new DiaAttribute('type', $type, 'string'));
       if (0 == strncmp('_', $method->name(), 1)) {
@@ -194,11 +194,16 @@
       $comp->add(new DiaAttribute('visibility', $visibility, 'enum'));
       $comp->add(new DiaAttribute('comment', trim($method->commentText()), 'string'));
 
-      $Tag_model= array_shift($methods->tags['model']);
-      if (isset($Tag_model) and $Tag_model->text() === 'abstract') {
-        $abstract= TRUE;
-      } else {
-        $abstract= FALSE;
+      
+      $model_tags= $method->tags('model');
+      $abstract= FALSE;
+      if (!empty($model_tags)) {
+        foreach (array_keys($model_tags) as $key) {
+          if ($model_tags[$key]->text() === 'abstract') {
+            $abstract= TRUE;
+            break;
+          }
+        }
       }
       $comp->add(new DiaAttribute('abstract', $abstract, 'boolean'));
 
