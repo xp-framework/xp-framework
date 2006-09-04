@@ -32,10 +32,15 @@
   class DiaMarshaller extends Object {
 
     var
-      $root= NULL,        // RootDoc instance
-      $dia= NULL,         // DiaDiagram instance
-      $layer= NULL,       // DiaLayer instance
-      $classes= array();
+      $_root= NULL,        // RootDoc instance
+      $_dia= NULL,         // DiaDiagram instance
+      $_layer= NULL,       // DiaLayer instance
+      $_classnames= array(),  // all fully qualified classnames
+      $_classes= array(), // [$classname]= &$ClassDoc
+      $_deps= array(),    // [$from]= array($to, ) of all dependencies
+      $_imps= array(),    // [$from]= array($to, ) of all impl.
+      $_gens= array(),    // [$from]= $to of all gen.
+      $_class_ids= array(); // $fqcn => $DiaObjectId
 
     function &getInstance() {
       static $Instance= NULL;
@@ -58,150 +63,159 @@
     function &marshal($classnames, $recurse= 0, $depend= FALSE) {
       $I= &DiaMarshaller::getInstance();
       // initialize RootDoc
-      $I->root= &new RootDoc();
+      $I->_root= &new RootDoc();
 
       // initialize DiaDiagram
-      $I->dia= &new DiaDiagram();
-      $I->dia->initialize();
-      $Layers= $I->dia->getChildByType('DiaLayer');
-      $I->layer= &$Layers[0]; 
+      $I->_dia= &new DiaDiagram();
+      $I->_dia->initialize();
+      $Layers= $I->_dia->getChildByType('DiaLayer');
+      $I->_layer= &$Layers[0]; 
+
+      /*
+      method 1:
+      - loop over array of classnames
+      - add classnames during recursion...
+
+      method 2:
+      - loop over array of classnames
+      - recurse directly
+      */
+
+      // initialize variables
+      $I->_classes= array();
+      $I->_classnames= $classnames;
+      reset($I->_classnames); // reset array
 
       // process given classes
-      $I->classes= array();
-      foreach (array_values($classnames) as $name) {
-        $I->recurse($name, $recurse, $depend);
+      while ($name= current($I->_classnames)) {
+        $I->_recurse($name, $recurse, $depend);
+        next($I->_classnames);
+      }
+      /*foreach (array_values($I->_classnames) as $name) {
+        //if (isset($this->_classes[$name])) continue; // already processed
+        $I->_recurse($name, $recurse, $depend);
+      }*/
+
+      Console::writeLine('Classes: '.xp::stringOf(array_keys($I->_classes)));
+      Console::writeLine('Dependencies: '.xp::stringOf($I->_deps));
+      Console::writeLine('Implementations: '.xp::stringOf($I->_imps));
+      Console::writeLine('Generalizations: '.xp::stringOf($I->_gens));
+
+      // generate and add classes to DiaDiagram
+      foreach (array_keys($I->_classes) as $classname) {
+        $Dia_class= &$I->_genClass($I->_classes[$classname]);
+        // save dia object-id by classname
+        $I->_class_ids[$classname]= $Dia_class->getId();
+        // add to DiaDiagram
+        $I->_layer->add($Dia_class);
       }
 
-      return $I->dia;
+      //Console::writeLine('IDs: '.xp::stringOf($I->_class_ids));
+
+      // generate and add dependencies
+      foreach (array_keys($I->_deps) as $from) {
+        foreach ($I->_deps[$from] as $to) {
+          // skip if there exists also a generalization or implementation
+          if ($I->_gens[$from] === $to or in_array($to, $I->_imps[$from])) {
+            // Console::writeLine("Skipping dependency: $from -> $to");
+            continue;
+          }
+          // add to DiaDiagram
+          $I->_layer->add($I->_genDependency($from, $to));
+        }
+      }
+      // generate and add implementations
+      foreach (array_keys($I->_imps) as $from) {
+        foreach ($I->_imps[$from] as $to) {
+          // skip if there exists also a generalization?
+          if (in_array($to, $I->_gens[$from])) {
+            // Console::writeLine("Skipping implementation: $from -> $to");
+            continue;
+          }
+          // add to DiaDiagram
+          $I->_layer->add($I->_genImplemenation($from, $to));
+        }
+      }
+      // generate and add generalizations
+      foreach (array_keys($I->_gens) as $from) {
+        $to= $I->_gens[$from];
+        // Console::writeLine("Gen: $from -> $to...");
+        // add to DiaDiagram
+        $I->_layer->add($I->_genGeneralization($from, $to));
+      }
+
+      return $I->_dia;
     }
     
     /**
-     * Start the marshalling
-     * TODO: real recursion!
+     * Recursion method which collects all classnames, dependencies, interfaces
+     * and generalizations.
      *
-     * @param   string name Fully qualified class name
-     * @param   int recurse default 0 The level of recursion
-     * @param   bool depend default FALSE Include dependencies (uses())
-     * @return  bool?
+     * Calls itself for each additional class found
+     *
+     * @param   string classname Fully qualified class name
+     * @param   int recurse The level of recursion
+     * @param   bool depend Include dependencies (uses())
      */
-    function recurse($name, $recurse= 0, $depend= FALSE) {
-      // class already processed?
-      if (isset($this->classes[$name])) return;
-    
-      // get ClassDoc object by name
+    function _recurse($classname, $recurse, $depend) {
+      if (isset($this->_classes[$classname])) {
+        Console::writeLine("skipping $classname...");
+        return;
+      } else {
+        Console::writeLine("processing $classname (recurse=$recurse, depend=$depend)...");
+      }
+      // get ClassDoc
       try (); {
-        $Classdoc= &$this->root->classNamed($name);
+        $Classdoc= &$this->_root->classNamed($classname);
       } if (catch('IllegalArgumentException', $e)) {
-        Console::writeLine("Class not found: $name");
+        Console::writeLine("Class not found: $classname");
         exit(-1);
       } elseif (catch('Exception', $e)) {
         die('Unexpected exception: '.$e->toString());
       }
+      // add classname to $this->_classes
+      $this->_classes[$classname]= &$Classdoc;
 
-      // generate and add DiaUMLClass to DiaLayer
-      $Dia_topclass= &$this->_genClass($Classdoc);
-      $this->layer->add($Dia_topclass);
-      $this->classes[$name]= $Dia_topclass->getId();
-
-      // add implementations (interfaces) to diagram
-      while ($Classdoc->interfaces->hasNext()) {
-        $ImpClass= &$Classdoc->interfaces->next();
-        $imp_id= $this->classes[$ImpClass->qualifiedName()];
-
-        // create UML realization object
-        $Dia_imp= &new DiaUMLRealizes();
-        $Dia_imp->beginAt($Dia_topclass->getId());
-
-        if (isset($imp_id)) {
-          // just set endpoint of realization
-          $Dia_imp->endAt($imp_id);
-        } else {
-          // create and add class
-          $Dia_class= &$this->_genClass($ImpClass);
-          $this->layer->add($Dia_class);
-          $this->classes[$ImpClass->qualifiedName()]= $Dia_class->getId();
-          // set endpoint of realizes
-          $Dia_imp->endAt($Dia_class->getId());
-        }
-
-        // add realization object
-        $this->layer->add($Dia_imp);
-      }
-
-      // add dependencies to diagram
-      if ($depend) {
+      // add dependencies
+      if ($depend and $recurse >=0) {
         while ($Classdoc->usedClasses->hasNext()) {
-          // get depending class and name
-          $DepClass= &$Classdoc->usedClasses->next();
-          $dep_id= $this->classes[$DepClass->qualifiedName()];
-
-          // skip dependency if this is the parent class or implemented class! 
-          // (already has generalization line)
-          if ($DepClass->qualifiedName() === $Classdoc->superclass->qualifiedName()) continue;
-          if (array_key_exists($DepClass->qualifiedName(), $Classdoc->interfaces->classes)) continue;
-
-          // create UML dependency object
-          $Dia_dep= &new DiaUMLDependency();
-          $Dia_dep->beginAt($Dia_topclass->getId());
-          
-          if (isset($dep_id)) {
-            // just set endpoint of dependency
-            $Dia_dep->endAt($dep_id);
-          } else {
-            // generate and add class
-            $Dia_class= &$this->_genClass($DepClass);
-            $this->layer->add($Dia_class);
-            $this->classes[$DepClass->qualifiedName()]= $Dia_class->getId();
-            // set endpoint of dependency
-            $Dia_dep->endAt($Dia_class->getId());
-          }
-
-          // add dependency object
-          $this->layer->add($Dia_dep);
+          $Dependency= &$Classdoc->usedClasses->next();
+          // add dependency definition 
+          $this->_deps[$classname][]= $Dependency->qualifiedName();
+          // add dependency class
+          if (!array_key_exists($Dependency->qualifiedName(), $this->_classes))
+            $this->_recurse($Dependency->qualifiedName(), $recurse-1, $depend);
+          //  $this->_classnames[]= $Dependency->qualifiedName();
         }
       }
 
-      // process recursion
-      // reset variables
-      $Class= &$Classdoc;
-      $Dia_class= &$Dia_topclass;
-      while ($recurse > 0) {
-        // get super class if possible
-        if (
-          NULL === ($SuperClass= &$Class->superclass) or
-          $SuperClass->qualifiedName() === $Class->qualifiedName()
-        ) break;
+      // add implemenations
+      while ($Classdoc->interfaces->hasNext() and $recurse >=0 ) {
+        $Interface= &$Classdoc->interfaces->next();
+        // add interface definition
+        $this->_imps[$classname][]= $Interface->qualifiedName();
+        // add interface class
+        if (!array_key_exists($Interface->qualifiedName(), $this->_classes))
+          $this->_recurse($Interface->qualifiedName(), $recurse-1, $depend);
+        //   $this->_classnames[]= $Interface->qualifiedName();
+      }
 
-        // create UML generalization object
-        $Dia_gen= &new DiaUMLGeneralization();
-        $Dia_gen->beginAt($Dia_class->getId());
-
-        // check if superclass was already added
-        $super_id= $this->classes[$SuperClass->qualifiedName()];
-        if (isset($super_id)) {
-          // just set endpoint of UML generalization
-          $Dia_gen->endAt($super_id);
-        } else {
-          // generate and add class
-          $Dia_class= &$this->_genClass($SuperClass);
-          $this->layer->add($Dia_class);
-          $this->classes[$SuperClass->qualifiedName()]= $Dia_class->getId();
-          // set endpoint of UML generalization
-          $Dia_gen->endAt($Dia_class->getId());
+      // recurse
+      if ($recurse > 0 and NULL !== ($Superdoc= &$Classdoc->superclass)) {
+        // add generalization definition
+        $this->_gens[$classname]= $Superdoc->qualifiedName();
+        // recurse parent class, only if not already processed
+        if (!array_key_exists($Superdoc->qualifiedName(), $this->_classes)) {
+          $this->_recurse($Superdoc->qualifiedName(), $recurse-1, $depend);
+        //  $this->_classnames[]= $Superdoc->qualifiedName();
         }
-
-        // add generalization object
-        $this->layer->add($Dia_gen);
-        $Class= &$SuperClass;
-        $recurse--;
       }
     }
-
+    
     /**
      * Generates DiaUMLClass object for a single class - no recursion!
      *
-     * @model   static
-     * @param   &text.doclet.ClassDoc classdoc
+     * @param   &text.doclet.ClassDoc classdoc The ClassDoc instance of the class to generate
      * @return  &org.dia.DiaUMLClass
      * @throws  lang.IllegalArgumentException If argument is not usable
      */
@@ -213,7 +227,7 @@
       $ClassDoc= &$classdoc;
         
       // get DiaUMLClass
-      $UMLClass= &new DiaUMLClass('UML - Class', 0);
+      $UMLClass= &new DiaUMLClass();
       $DiaClass= &$UMLClass->getClass();
       $DiaMethods= $DiaClass->getMethods();
 
@@ -257,7 +271,7 @@
           case 'method':
             $methods= $ClassDoc->methods;
             for ($i= 0, $s= sizeof($methods); $i < $s; $i++) {
-              // skip magic methods
+              // skip magic methods?!? what about __construct() and __destruct()?
               if (0 == strncmp('__', $methods[$i]->name(), 2)) continue;
               // TODO: can we figure out in which class the method was defined?
               $Method->invoke($UMLClass, array($methods[$i]));
@@ -269,6 +283,61 @@
       }
 
       return $UMLClass;
+    }
+
+    /**
+     * Generates and returns a DiaUMLDependency $from class $to class
+     *
+     * @param   string from Fully qualified classname of the depending class
+     * @param   string from Fully qualified classname of the depended class
+     * @return  &org.dia.DiaUMLDependecy
+     */
+    function &_genDependency($from, $to) {
+      $Dia_dep= &new DiaUMLDependency();
+      $Dia_dep->beginAt($this->_getObjectId($from));
+      $Dia_dep->endAt($this->_getObjectId($to));
+      return $Dia_dep;
+    }
+
+    /**
+     * Generates and returns a DiaUMLRealizes $from class $to class
+     *
+     * @param   string from Fully qualified classname of the implementing class
+     * @param   string to Fully qualified classname of the interface class
+     * @return  &org.dia.DiaUMLRealizes
+     */
+    function &_genImplemenation($from, $to) {
+      $Dia_imp= &new DiaUMLRealizes();
+      $Dia_imp->beginAt($this->_getObjectId($from));
+      $Dia_imp->endAt($this->_getObjectId($to));
+      return $Dia_imp;
+    }
+
+    /**
+     * Generates and returns a DiaUMLGeneralization $from class $to class
+     *
+     * @param   string from Fully qualified classname of the child class
+     * @param   string to Fully qualified classname of the parent class
+     * @return  &org.dia.DiaUMLGeneralization
+     */
+    function &_genGeneralization($from, $to) {
+      $Dia_gen= &new DiaUMLGeneralization();
+      $Dia_gen->beginAt($this->_getObjectId($from));
+      $Dia_gen->endAt($this->_getObjectId($to));
+      return $Dia_gen;
+    }
+
+    /**
+     * Returns the DIAgram object ID of a fully qualified classname
+     *
+     * @param   string classname Fully qualified classname (i.e. 'util.Date')
+     * @return  string
+     */
+    function _getObjectId($classname) {
+      if (isset($this->_class_ids[$classname])) {
+        return $this->_class_ids[$classname];
+      }
+      return NULL;
     }
 
   }
