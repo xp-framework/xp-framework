@@ -63,7 +63,7 @@
      *
      * @return  string XML representation of the DIAgramm
      */
-    function getSource($indent= TRUE) {
+    function getSource($indent= INDENT_DEFAULT) {
       $Node= &$this->getNode();
       $Tree= &new Tree();
       $Tree->root= &$Node;
@@ -87,7 +87,7 @@
       // try to write XML source to file
       try (); {
         $File->open(FILE_MODE_WRITE) && // default compression: 6
-        $File->write($this->getSource(FALSE)); // no indentation!
+        $File->write($this->getSource(INDENT_DEFAULT)); // default indentation
         $File->close();
       } if (catch('Exception', $e)) {
         Console::writeLine('Fatal Exception: '.$e->toString());
