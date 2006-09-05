@@ -32,15 +32,15 @@
   class DiaMarshaller extends Object {
 
     var
-      $_root= NULL,        // RootDoc instance
-      $_dia= NULL,         // DiaDiagram instance
-      $_layer= NULL,       // DiaLayer instance
+      $_root= NULL,           // RootDoc instance
+      $_dia= NULL,            // DiaDiagram instance
+      $_layer= NULL,          // DiaLayer instance
       $_classnames= array(),  // all fully qualified classnames
-      $_classes= array(), // [$classname]= &$ClassDoc
-      $_deps= array(),    // [$from]= array($to, ) of all dependencies
-      $_imps= array(),    // [$from]= array($to, ) of all impl.
-      $_gens= array(),    // [$from]= $to of all gen.
-      $_class_ids= array(); // $fqcn => $DiaObjectId
+      $_classes= array(),     // hash classname to class object
+      $_deps= array(),        // hash of all dependencies 
+      $_imps= array(),        // hash of all implementations
+      $_gens= array(),        // hash of ... 
+      $_class_ids= array();   // hash of FQCN to dia object id 
 
     function &getInstance() {
       static $Instance= NULL;
