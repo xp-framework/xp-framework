@@ -45,6 +45,7 @@
         $self->taglets['platform']= &$s;
         $self->taglets['test']= &$s;
         $self->taglets['doc']= &$s;
+        $self->taglets['ext']= &$s;
       }
     }
 
