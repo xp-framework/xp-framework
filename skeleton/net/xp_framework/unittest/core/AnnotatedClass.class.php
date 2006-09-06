@@ -72,5 +72,20 @@
     #  'net.xp_framework.unittest.core.SecondInterceptor',
     #))]
     function multiLine() { }
+
+    /**
+     * Method annotated with a simple xpath expression
+     *
+     * @access  public
+     */
+    #[@fromXml(xpath= '/parent/child/@attribute')]
+    function simpleXPath() { }
+    /**
+     * Method annotated with a complex xpath expression
+     *
+     * @access  public
+     */
+    #[@fromXml(xpath= '/parent[@attr="value"]/child[@attr1="val1" and @attr2="val2"')]
+    function complexXPath() { }
   }
 ?>

@@ -173,5 +173,31 @@
         'net.xp_framework.unittest.core.SecondInterceptor',
       )), $this->methodAnnotation('multiLine', 'interceptors'));
     }
+
+    /**
+     * Tests simple xpath annotations
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#simpleXPath
+     * @access  public
+     */
+    #[@test]
+    function simpleXPathAnnotation() {
+      $this->assertEquals(array(
+        'xpath' => '/parent/child/@attribute'
+      ), $this->methodAnnotation('simpleXPath', 'fromXml'));
+    }
+
+    /**
+     * Tests complex xpath annotations
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#complexXPath
+     * @access  public
+     */
+    #[@test]
+    function complexXPathAnnotation() {
+      $this->assertEquals(array(
+        'xpath' => '/parent[@attr="value"]/child[@attr1="val1" and @attr2="val2"'
+      ), $this->methodAnnotation('complexXPath', 'fromXml'));
+    }
   }
 ?>
