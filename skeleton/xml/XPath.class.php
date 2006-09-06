@@ -92,5 +92,20 @@
       }
       return $r;
     }
+
+    /**
+     * Registers a namespace
+     *
+     * @access  public
+     * @see     php://xpath_register_ns
+     * @param   string prefix
+     * @param   string uri
+     * @return  bool
+     */
+    function registerNamespace($prefix, $uri) {
+      // xpath_register_ns_auto seem not to exist - but is documented
+      return $this->context->xpath_register_ns($prefix, $uri);
+      //return xpath_register_ns($this->context, $prefix, $uri);
+    }
   }
 ?>
