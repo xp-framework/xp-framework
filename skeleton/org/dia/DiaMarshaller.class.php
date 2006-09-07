@@ -270,6 +270,15 @@
               // TODO: can we figure out in which class the attribute was defined?
               $Method->invoke($UMLClass, array(array($name => $fields[$name])));
             }
+            /** TODO:
+            $Attrib= &new DiaUMLAttribute($name, $value, $type); parameters???
+            $Attrib->setName($name);
+            if (isset($fields[$name])) {
+              $Attrib->setValue($fields[$name]);
+              $Attrib->setType(xp::typeOf($fields[$name]));
+            }
+            $Method->invoke($UMLClass, array($Attrib));
+            */
             break;
           case 'method':
             $methods= $ClassDoc->methods;

@@ -31,6 +31,8 @@
       if (isset($visible)) $this->setVisibility($visible);
     }
 
+    // function initialize()
+
     /**
      * Get the name of this DiaLayer
      *
@@ -47,7 +49,7 @@
      * @access  protected
      * @param   string name
      */
-    #[@xmlmapping(xpath = '@name', type = 'string')]
+    #[@fromDia(xpath= '@name', value= 'string')]
     function setName($name) {
       $this->name= $name;
     }
@@ -68,9 +70,14 @@
      * @access  protected
      * @param   bool visible
      */
-    #[@xmlmapping(xpath = '@visible', type = 'bool')]
+    #[@fromDia(xpath= 'attribute::visible', value= 'boolean')]
     function setVisibility($visible) {
       $this->visibility= $visible;
+    }
+
+    #[@fromDia(xpath= 'dia:object[@type="UML - Class"]', class= 'org.dia.DiaUMLClass')]
+    function addClass($Class) {
+      $this->set($Class->getName(), $Class);
     }
 
     /**
@@ -80,12 +87,12 @@
      * @return  &xml.Node
      */ 
     function &getNode() {
-      $node= &parent::getNode(); 
+      $Node= &parent::getNode(); 
       if (isset($this->name))
-        $node->setAttribute('name', $this->name);
+        $Node->setAttribute('name', $this->name);
       if (isset($this->visibility))
-        $node->setAttribute('visible', $this->visibility ? 'true' : 'false');
-      return $node;
+        $Node->setAttribute('visible', $this->visibility ? 'true' : 'false');
+      return $Node;
     }    
   }
 ?>

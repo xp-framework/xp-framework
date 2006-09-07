@@ -3,7 +3,9 @@
   uses('text.doclet.RootDoc', 'util.cmd.Console');
 
   $P= &new ParamString();
-  if ($P->exists('doclet')) {
+  if (!$P->exists('doclet')) {
+    die('Parameter "--doclet" is required!');
+  } else {
     $doclet_name= $P->value('doclet');
     try (); {
       $Class= &XPClass::forName($doclet_name);
@@ -20,7 +22,5 @@
       $list[$key]= $val;
     }
     RootDoc::start($Instance, new ParamString($list));
-  } else {
-    die('Parameter "--doclet" is required!');
   }
 ?>

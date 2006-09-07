@@ -21,8 +21,9 @@
    *  <li>verbose : boolean</li> default FALSE
    *  <li>gzipped : boolean</li> default TRUE
    *  <li>recurse : int</li> default 0
+   *  <li>depend  : boolean</li> default FALSE
    *  <li>directory=$DIR : target directory</li> default: './'
-   *  <li>file=$FILE : output filename</li> default: 'fqcn.dia'
+   *  <li>diagram=$FILE : output diagram filename</li> default: 'fqcn.dia'
    * </ul>
    *
    */
@@ -41,7 +42,7 @@
         'depend' => OPTION_ONLY,
         'recurse' => HAS_VALUE,
         'directory'  => HAS_VALUE,
-        'file'  => HAS_VALUE
+        'diagram' => HAS_VALUE
       );
     }
 
@@ -66,8 +67,8 @@
 
       // default destination is the current directory
       $filename= $root->option('directory', '.').DIRECTORY_SEPARATOR;
-      if ($root->option('file', FALSE)) {
-        $filename.= $root->option('file');
+      if ($root->option('diagram', FALSE)) {
+        $filename.= $root->option('diagram');
       } else {
         $filename.= $ClassDoc->qualifiedName().'.dia';
       }

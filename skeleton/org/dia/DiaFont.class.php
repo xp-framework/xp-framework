@@ -23,12 +23,12 @@
      * Creates new instance of DiaFont
      *
      * @access  public
-     * @param   font font default NULL
+     * @param   array font default NULL
      */
-    function __construct($family= NULL, $style= NULL, $name= NULL) {
-      if (isset($family)) $this->setFamily($family);
-      if (isset($style)) $this->setStyle($style);
-      if (isset($name)) $this->setName($name);
+    function __construct($font= NULL) {
+      if (isset($font['family'])) $this->setFamily($font['family']);
+      if (isset($font['style'])) $this->setStyle($font['style']);
+      if (isset($font['name'])) $this->setName($font['name']);
     }
 
     /**

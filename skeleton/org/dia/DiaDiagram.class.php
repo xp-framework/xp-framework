@@ -25,8 +25,8 @@
     /**
      * Returns the next ID for an element (auto increment) with leading '0'
      * 
-     *
      * @model   static
+     * @access  public
      * @return  int
      */
     function getId() {
@@ -41,21 +41,42 @@
      * @access  protected
      */
     function initialize() {
+      //$this->set('data', new DiaData());
+      //$this->set('Background', new DiaLayer());
       $data= &new DiaData();
       $data->initialize();
-      $this->add($data);
-      $this->add(new DiaLayer('Background', TRUE));
+      $this->set('data', $data);
+      $this->set('layer', new DiaLayer('Background', TRUE));
     }
 
     /**
      * Add namespace declaration to root node
      *
      * @access  protected
-     * @param   array ns
+     * @param   array namespace Example: array($prefix => $url)
      */
-    #[@xmlmapping(xpath = '@xmlns', type = 'array')]
-    function addNamespace($ns) {
-      $this->ns[]= &$ns;
+    #[@fromDia(xpath= 'namespace::dia', value= 'namespace')]
+    function addNamespace($namespace) {
+      list($prefix, $uri)= each($namespace);
+      $this->ns[$prefix]= $uri;
+    }
+
+    /**
+     *
+     * @param   &org.dia.DiaData Data
+     */
+    #[@fromDia(xpath= 'dia:diagramdata', class= 'org.dia.DiaData')]
+    function setData(&$Data) {
+      $this->set('data', $Data);
+    }
+
+    /**
+     *
+     * @param   &org.dia.DiaLayer Layer
+     */
+    #[@fromDia(xpath= 'dia:layer', class= 'org.dia.DiaLayer')]
+    function addLayer(&$Layer) {
+      $this->set($Layer->getName(), $Layer);
     }
 
     /**

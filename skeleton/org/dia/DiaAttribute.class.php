@@ -54,15 +54,15 @@
       // set type if defined
       if (isset($type)) {
         switch ($type) {
-          case 'int':     $this->add(new DiaInt($value)); break;
-          case 'real':    $this->add(new DiaReal($value)); break;
-          case 'string':  $this->add(new DiaString($value)); break;
-          case 'boolean': $this->add(new DiaBoolean($value)); break;
-          case 'enum':    $this->add(new DiaEnum($value)); break;
-          case 'point':   $this->add(new DiaPoint($value)); break;
-          case 'rectangle': $this->add(new DiaRectangle($value)); break;
-          case 'font':    $this->add(new DiaFont($value)); break;
-          case 'color':   $this->add(new DiaColor($value)); break;
+          case 'int':     $this->set('value', new DiaInt($value)); break;
+          case 'real':    $this->set('value', new DiaReal($value)); break;
+          case 'string':  $this->set('value', new DiaString($value)); break;
+          case 'boolean': $this->set('value', new DiaBoolean($value)); break;
+          case 'enum':    $this->set('value', new DiaEnum($value)); break;
+          case 'point':   $this->set('value', new DiaPoint($value)); break;
+          case 'rectangle': $this->set('value', new DiaRectangle($value)); break;
+          case 'font':    $this->set('value', new DiaFont($value)); break;
+          case 'color':   $this->set('value', new DiaColor($value)); break;
   
           default:
             return throw(new IllegalArgumentException('Unkown type "'.$type.'"'));

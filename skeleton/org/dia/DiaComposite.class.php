@@ -11,8 +11,15 @@
   );
 
   /**
-   * Predefined DIA composite elements like 'paper', 'grid', ...
+   * Base class of all 'dia:composite' objects like 'paper', 'grid',
+   * 'umlattribute', ...
    *
+   * Implements the methods for getting/setting the following composite attributes
+   * <ul>
+   *  <li>@type</li>
+   *  <li>value</li>
+   *  <li>type</li>
+   * </ul>
    */
   class DiaComposite extends DiaCompound {
 
@@ -38,41 +45,30 @@
      * @param   string type default NULL
      */
     function __construct($type= NULL) {
-      if (!isset($type)) return;
+      if (isset($type)) $this->setNodeType($type);
+      $this->initialize();
+    }
 
-      $this->setType($type);
-      switch ($type) {
-        case 'paper':
-          $this->add(new DiaAttribute('name', 'A4', 'string'));
-          $this->add(new DiaAttribute('tmargin', 2.8222, 'real'));
-          $this->add(new DiaAttribute('bmargin', 2.8222, 'real'));
-          $this->add(new DiaAttribute('lmargin', 2.8222, 'real'));
-          $this->add(new DiaAttribute('rmargin', 2.8222, 'real'));
-          $this->add(new DiaAttribute('is_portrait', TRUE, 'boolean'));
-          $this->add(new DiaAttribute('scaling', 1, 'real'));
-          $this->add(new DiaAttribute('fitto', FALSE, 'boolean'));
-          break;
+    /**
+     * Initializes a generic 'composite' object
+     *
+     * @access  protected
+     */
+    function initialize() {
+      switch ($this->getNodeType()) {
 
-        case 'grid':
-          $this->add(new DiaAttribute('width_x', 1, 'float'));
-          $this->add(new DiaAttribute('width_y', 1, 'float'));
-          $this->add(new DiaAttribute('visible_x', 1, 'int'));
-          $this->add(new DiaAttribute('visible_y', 1, 'int'));
-          $this->add(new DiaComposite('color'));
-          break;
-          
         case 'guides':
-          $this->add(new DiaAttribute('hguides'));
-          $this->add(new DiaAttribute('vguides'));
+          $this->set('hguides', new DiaAttribute('hguides'));
+          $this->set('vguides', new DiaAttribute('vguides'));
           break;
 
         case 'text':
-          $this->add(new DiaAttribute('string', $value, 'string'));
-          $this->add(new DiaAttribute('font', array('sans', 0, 'Helvetica'), 'font'));
-          $this->add(new DiaAttribute('height', 0.8, 'real'));
-          $this->add(new DiaAttribute('pos', array(3, 4), 'point'));
-          $this->add(new DiaAttribute('color', '#000000', 'color'));
-          $this->add(new DiaAttribute('alignment', 0, 'enum'));
+          $this->set('string', new DiaAttribute('string', $value, 'string'));
+          $this->set('font', new DiaAttribute('font', array('family' => 'sans', 'style' => 0, 'name' => 'Helvetica'), 'font'));
+          $this->set('height', new DiaAttribute('height', 0.8, 'real'));
+          $this->set('pos', new DiaAttribute('pos', array(3, 4), 'point'));
+          $this->set('color', new DiaAttribute('color', '#000000', 'color'));
+          $this->set('alignment', new DiaAttribute('alignment', 0, 'enum'));
           break;
 
         case 'color':
@@ -91,10 +87,10 @@
     /**
      * Return the type of this DiaComposite
      *
-     * @access  public
+     * @access  protected
      * @return  int
      */
-    function getType() {
+    function getNodeType() {
       return $this->type;
     }
 
@@ -104,9 +100,56 @@
      * @access  protected
      * @param   string type
      */
-    function setType($type) {
+    #[@fromDia(xpath= '@type', value= 'string')]
+    function setNodeType($type) {
       $this->type= $type;
     }
+
+    /**
+     * Returns the value of the object
+     *
+     * @access  protected
+     * @return  string
+     */
+    function getValue() {
+      return $this->getChildValue('value');
+    }
+
+    /**
+     * Sets the value of the object
+     *
+     * @access  protected
+     * @param   string value
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="value"]/dia:string', value= 'string')]
+    function setValue($value) {
+      $this->setString('value', $value);
+    }
+
+    /**
+     * Returns the type of the object
+     *
+     * @access  protected
+     * @return  string
+     */
+    function getType() {
+      return $this->getChildValue('type');
+    }
+
+    /**
+     * Sets the type of the object
+     *
+     * @access  protected
+     * @param   string type
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="type"]/dia:string', type= 'string')]
+    function setType($type) {
+      $this->setString('type', $type);
+    }
+
+
+
+    /***************************** ******************************/
 
     /**
      * Return XML representation of DiaComposite
@@ -116,8 +159,11 @@
      */
     function &getNode() {
       $node= &parent::getNode();
-      if (isset($this->type))
+      if (isset($this->type)) {
         $node->setAttribute('type', $this->type);
+      } else {
+        Console::writeLine("Composite 'type' is not set!");
+      }
       return $node;
     }
 

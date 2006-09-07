@@ -21,31 +21,34 @@
       $connections= NULL;
 
     /**
-     * Constructor of an UML generalization
-     *
-     * @access  public
-     * @param   string type Typically 'UML - $conntype'
-     * @param   int version
+     * Initialize this UMLConnection with default values
+     * 
+     * @access  protected
      */
-    function __construct($type, $version) {
-      parent::__construct($type, $version);
+    function initialize() {
+      // default values
+      $this->setName('__noname__');
+      $this->setStereotype(NULL);
+      //$this->setDirection();
 
-      // positioning elements default to 0
-      $this->add(new DiaAttribute('obj_pos', array(0, 0), 'point'));
-      $this->add(new DiaAttribute('obj_bb', array(array(0, 0), array(0, 0)), 'rectangle'));
+      // add essencial nodes
+      $this->set('connections', new DiaAttribute('connections'));
+
+      // default flags
+
+      // positioning information defaults
+      $this->setPosition(array(0, 0));
+      $this->setBoundingBox(array(array(0, 0), array(1, 1)));
+      //$this->setOrthPoints(array(
+      //  array(0, 0), array(1, 1), array(2, 2), array(3, 3)
+      //));
       // TODO: orth_points: attribute containing multiple points
       // TODO: orth_orient also...
+      //$this->setOrthAutoroute(TRUE);
 
-      // defaults
-      $this->add(new DiaAttribute('orth_autoroute', TRUE, 'boolean'));
-      $this->add(new DiaAttribute('text_color', '#000000', 'color'));
-      $this->add(new DiaAttribute('line_color', '#000000', 'color'));
-      $this->setName();
-      $this->setStereotype();
-
-      // keep reference to 'connections' node
-      $this->connections= &new DiaConnections();
-      $this->add($this->connections);
+      // defaults colors and fonts
+      $this->setTextColor('#000000');
+      $this->setLineColor('#000000');
     }
 
     /**
@@ -55,7 +58,7 @@
      * @param   string name
      */
     function setName($name) {
-      $this->add(new DiaAttribute('name', $name, 'string'));
+      $this->set('name', new DiaAttribute('name', $name, 'string'));
     }
 
     /**
@@ -65,7 +68,7 @@
      * @param   string stereotype
      */
     function setStereotype($stereotype) {
-      $this->add(new DiaAttribute('stereotype', $stereotype, 'string'));
+      $this->set('stereotype', new DiaAttribute('stereotype', $stereotype, 'string'));
     }
 
     /**
@@ -77,8 +80,7 @@
      * @param   int connpoint default 0
      */
     function beginAt($id, $connpoint= 0) {
-      // TODO: check if already set!
-      $this->connections->add(new DiaConnection("0, $id, $connpoint"));
+      $this->connections->set('begin', new DiaConnection("0, $id, $connpoint"));
     }
 
     /**
@@ -90,8 +92,7 @@
      * @param   int connpoint default 0
      */
     function endAt($id, $connpoint= 0) {
-      // TODO: check if already set!
-      $this->connections->add(new DiaConnection("1, $id, $connpoint"));
+      $this->connections->set('end', new DiaConnection("1, $id, $connpoint"));
     }
 
   }

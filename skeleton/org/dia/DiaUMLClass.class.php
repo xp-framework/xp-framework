@@ -5,7 +5,9 @@
  */
 
   uses(
-    'org.dia.DiaObject'
+    'org.dia.DiaObject',
+    'org.dia.DiaUMLAttribute',
+    'org.dia.DiaUMLMethod'
   );
 
   /**
@@ -13,6 +15,39 @@
    *
    * Has annotations which allows automatic instantiation with a given $ClassDoc
    * (XPClass instance)
+   *
+   * Implements the methods for getting/setting the following object 'attributes':
+   * <ul>
+   *  <li>name</li> overwrites DiaCompound
+   *  <li>stereotype</li> overwrites DiaObject
+   *  <li>comment</li>
+   *  <li>abstract</li>
+   *  <li>suppress_attributes</li>
+   *  <li>suppress_operations</li>
+   *  <li>visible_attributes</li>
+   *  <li>visible_operations</li>
+   *  <li>visible_comments</li>
+   *  <li>wrap_operations</li>
+   *  <li>wrap_after_char</li>
+   *  <li>comment_line_length</li>
+   *  <li>comment_tagging</li>
+   *  <li>normal_font</li>
+   *  <li>abstract_font</li>
+   *  <li>polymorphic_font</li>
+   *  <li>classname_font</li>
+   *  <li>abstract_classname_font</li>
+   *  <li>comment_font</li>
+   *  <li>normal_font_height</li>
+   *  <li>abstract_font_height</li>
+   *  <li>polymorphic_font_height</li>
+   *  <li>classname_font_height</li>
+   *  <li>abstract_classname_font_height</li>
+   *  <li>comment_font_height</li>
+   *  <li>template</li>
+   *  <li>attributes</li>
+   *  <li>operations</li>
+   *  <li>templates</li>
+   * </ul>
    *
    * @see   xp://org.dia.DiaDiagram
    * 
@@ -26,39 +61,107 @@
       $err_color= '#ff3c3c';   // color of errors
 
     /**
-     * Constructor with $type an $version
+     * Constructor
      *
-     * @param   string type default 'UML - Class'
-     * @param   int version default 1
+     * @access  public
      */
-    function __construct($type= 'UML - Class', $version= 1) {
-      // TODO: remove parameters!
-      parent::__construct($type, $version);
+    function __construct() {
+      parent::__construct('UML - Class', 1);
 
-      // positioning elements default to 0
-      $this->add(new DiaAttribute('obj_pos', array(0, 0), 'point'));
-      $this->add(new DiaAttribute('obj_bb', array(array(0, 0), array(0, 0)), 'rectangle'));
-      $this->add(new DiaAttribute('elem_corner', array(0, 0), 'point'));
-      $this->add(new DiaAttribute('elem_width', '0.0', 'real'));
-      $this->add(new DiaAttribute('elem_height', '0.0', 'real'));
-      
-      // defaults
-      $this->add(new DiaAttribute('visible_attributes', FALSE, 'boolean'));
-      $this->add(new DiaAttribute('visible_operations', FALSE, 'boolean'));
-      $this->add(new DiaAttribute('visible_comments', FALSE, 'boolean'));
-      $this->add(new DiaAttribute('suppress_attributes', FALSE, 'boolean'));
-      $this->add(new DiaAttribute('suppress_operations', FALSE, 'boolean'));
+      // always initialize
+      $this->initialize();
     }
-    
+
     /**
-     * Sets the name of the UML class
+     * Initialize this UMLClass object with default values
+     *
+     * @access  protected
+     */
+    function initialize() {
+      // add default values
+      $this->setName('__noname__');
+      $this->setStereotype(NULL);
+      $this->setComment(NULL);
+
+      // add essential nodes
+      $this->set('attributes', new DiaAttribute('attributes'));
+      $this->set('operations', new DiaAttribute('operations'));
+      $this->set('templates', new DiaAttribute('templates'));
+
+      // default flags
+      $this->setAbstract(FALSE);
+      $this->setBoolean('visible_attributes', FALSE);
+      $this->setBoolean('visible_operations', FALSE);
+      $this->setBoolean('visible_comments', FALSE);
+      $this->setBoolean('suppress_attributes', FALSE);
+      $this->setBoolean('suppress_operations', FALSE);
+      $this->setBoolean('wrap_operations', FALSE);
+      $this->setInt('wrap_after_char', 40);
+      $this->setInt('comment_line_length', 40);
+      $this->setBoolean('comment_tagging', FALSE);
+
+      // positioning information defaults
+      $this->setPosition(array(0, 0));
+      $this->setBoundingBox(array(array(0, 0), array(1, 1)));
+      $this->setElementCorner(array(0, 0));
+      $this->setElementWidth(0.0);
+      $this->setElementHeight(0.0);
+ 
+      // default colors and fonts
+      $this->setColor('line_color', '#000000');
+      $this->setColor('fill_color', '#FFFFFF');
+      $this->setColor('text_color', '#000000');
+      $this->setFont('normal_font', array(
+        'family'  => 'monospace',
+        'style'   => 0,
+        'name'    => 'Courier'
+      ));
+      $this->setFont('abstract_font', array(
+        'family'  => 'monospace',
+        'style'   => 88,
+        'name'    => 'Courier-BoldOblique'
+      ));
+      $this->setFont('polymorphic_font', array(
+        'family'  => 'monospace',
+        'style'   => 8,
+        'name'    => 'Courier-Oblique'
+      ));
+      $this->setFont('classname_font', array(
+        'family'  => 'sans',
+        'style'   => 80,
+        'name'    => 'Helvetica-Bold'
+      ));
+      $this->setFont('abstract_classname_font', array(
+        'family'  => 'sans',
+        'style'   => 88,
+        'name'    => 'Helvetica-BoldOblique'
+      ));
+      $this->setFont('comment_font', array(
+        'family'  => 'sans',
+        'style'   => 8,
+        'name'    => 'Helvetica-Oblique'
+      ));
+
+      // default font sizes
+      $this->setReal('normal_font_height', 0.8);
+      $this->setReal('abstract_font_height', 0.8);
+      $this->setReal('polymorphic_font_height', 0.8);
+      $this->setReal('classname_font_height', 1);
+      $this->setReal('abstract_classname_font_height', 1);
+      $this->setReal('comment_font_height', 1);
+    }
+
+    /**
+     * Sets the name of the UML class (overwrites method from DiaCompound due
+     * to additional annotation!)
      *
      * @access  protected
      * @param   string name
      */
     #[@fromClass(type = 'string', eval = '$ClassDoc->qualifiedName()')]
+    #[@fromDia(xpath= 'dia:attribute[@name="name"]', value= 'string')]
     function setName($name) {
-      $this->add(new DiaAttribute('name', $name, 'string')); 
+      $this->setString('name', $name);
     }
 
     /**
@@ -68,29 +171,31 @@
      * @param   string stereotype
      */
     #[@fromClass(type = 'string', eval = '$ClassDoc->classType()')]
+    #[@fromDia(xpath= 'dia:attribute[@name="stereotype"]/dia:string', value= 'string')]
     function setStereotype($stereotype) {
       switch ($stereotype) {
         case ORDINARY_CLASS: 
           return; // no stereotype
         case EXCEPTION_CLASS:
           // exceptions are gree
-          $this->add(new DiaAttribute('fill_color', $this->exc_color, 'color'));
+          $this->set('fill_color', new DiaAttribute('fill_color', $this->exc_color, 'color'));
           $type= 'Exception';
           break;
         case ERROR_CLASS:
           // errors are red
-          $this->add(new DiaAttribute('fill_color', $this->err_color, 'color'));
+          $this->set('fill_color', new DiaAttribute('fill_color', $this->err_color, 'color'));
           $type= 'Error';
           break;
         case INTERFACE_CLASS: 
           // interfaces are blue
-          $this->add(new DiaAttribute('fill_color', $this->int_color, 'color'));
+          $this->set('fill_color', new DiaAttribute('fill_color', $this->int_color, 'color'));
           $type= 'Interface';
           break;
         default:
-          return throw(new IllegalArgumentException("Unknown class type: '$type'!"));
+          $type= $stereotype;
+          //return throw(new IllegalArgumentException("Unknown class type: '$type'!"));
       }
-      $this->add(new DiaAttribute('stereotype', $type, 'string'));
+      $this->setString('stereotype', $type);
     }
 
     /**
@@ -100,8 +205,9 @@
      * @param   string comment
      */
     #[@fromClass(type = 'string', eval = '$ClassDoc->commentText()')]
+    #[@fromDia(xpath= 'dia:attribute[@name="comment"]/dia:string', value= 'string')]
     function setComment($comment) {
-      $this->add(new DiaAttribute('comment', $comment, 'string'));
+      $this->setString('comment', $comment);
     }
 
     /**
@@ -113,9 +219,293 @@
      * @access  protected
      * @param   bool abstract
      */
-    #[@fromClass(type = 'bool', eval = '$ClassDoc->parseDetail(\'tags\') && isset($ClassDoc->tags[\'model\'][0]) && $ClassDoc->tags[\'model\'][0]->text() === \'abstract\'')]
+    #[@fromClass(type = 'bool', eval = 
+    #  '$ClassDoc->parseDetail("tags") && isset($ClassDoc->tags["model"][0]) && $ClassDoc->tags["model"][0]->text() === "abstract"'
+    #)]
+    #[@fromDia(xpath= 'dia:attribute[@name="abstract"]/dia:boolean/@val', value= 'boolean')]
     function setAbstract($abstract) {
-      $this->add(new DiaAttribute('abstract', $abstract, 'boolean'));
+      $this->setBoolean('abstract', $abstract);
+    }
+
+    /**
+     * Sets the 'suppress_attributes' attribute of the UML class
+     *
+     * @access  protected
+     * @param   bool suppress
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="suppress_attributes"]/dia:boolean/@val', value= 'boolean')]
+    function suppressAttributes($suppress) {
+      $this->setBoolean('suppress_attributes', $suppress);
+    }
+
+    /**
+     * Sets the 'suppress_operations' attribute of the UML class
+     *
+     * @access  protected
+     * @param   bool suppress
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="suppress_operations"]/dia:boolean/@val', value= 'boolean')]
+    function suppressOperations($suppress) {
+      $this->setBoolean('suppress_operations', $suppress);
+    }
+
+    /**
+     * Sets the 'visible_attributes' attribute of the UML class
+     *
+     * @access  protected
+     * @param   bool visible
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="visible_attributes"]/dia:boolean/@val', value= 'boolean')]
+    function showAttributes($visible) {
+      $this->setBoolean('visible_attributes', $visible);
+    }
+
+    /**
+     * Sets the 'visible_operations' attribute of the UML class
+     *
+     * @access  protected
+     * @param   bool visible
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="visible_operations"]/dia:boolean/@val', value= 'boolean')]
+    function showOperations($visible) {
+      $this->setBoolean('visible_operations', $visible);
+    }
+
+    /**
+     * Sets the 'visible_comments' attribute of the UML class
+     *
+     * @access  protected
+     * @param   bool visible
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="visible_comments"]/dia:boolean/@val', value= 'boolean')]
+    function showComments($visible) {
+      $this->setBoolean('visible_comments', $visible);
+    }
+
+    /**
+     * Sets the 'wrap_operatoins' attribute of the UML class
+     *
+     * @access  protected
+     * @param   bool wrap
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="wrap_operations"]/dia:boolean/@val', value= 'boolean')]
+    function wrapOperations($wrap) {
+      $this->setBoolean('wrap_operations', $wrap);
+    }
+
+    /**
+     * Sets the 'wrap_after_char' attribute of the UML class
+     *
+     * @access  protected
+     * @param   int char
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="wrap_after_char"]/dia:int/@val', value= 'int')]
+    function wrapAfterChar($char) {
+      $this->setInt('wrap_after_char', $char);
+    }
+
+    /**
+     * Sets the 'comment_line_length' attribute of the UML class
+     *
+     * @access  protected
+     * @param   int length
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="comment_line_length"]/dia:int/@val', value= 'int')]
+    function setCommentLineLength($length) {
+      $this->setInt('comment_line_length', $length);
+    }
+
+    /**
+     * Sets the 'comment_tagging' attribute of the UML class
+     *
+     * @access  protected
+     * @param   bool tagging
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="comment_tagging"]/dia:boolean/@val', value= 'boolean')]
+    function setCommentTagging($tagging) {
+      $this->setBoolean('comment_tagging', $tagging);
+    }
+
+    /**
+     * Sets the 'normal_font' attribute of the UML class
+     *
+     * @access  protected
+     * @param   array font
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="normal_font"]/dia:font', value= 'font')]
+    function setNormalFont($font) {
+      $this->setFont('normal_font', $font);
+    }
+
+    /**
+     * Sets the 'abstract_font' attribute of the UML class
+     *
+     * @access  protected
+     * @param   array font
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="abstract_font"]/dia:font', value= 'font')]
+    function setAbstractFont($font) {
+      $this->setFont('abstract_font', $font);
+    }
+
+    /**
+     * Sets the 'polymorphic_font' attribute of the UML class
+     *
+     * @access  protected
+     * @param   array font
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="polymorphic_font"]/dia:font', value= 'font')]
+    function setPolymorphicFont($font) {
+      $this->setFont('polymorphic_font', $font);
+    }
+
+    /**
+     * Sets the 'classname_font' attribute of the UML class
+     *
+     * @access  protected
+     * @param   array font
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="classname_font"]/dia:font', value= 'font')]
+    function setClassnameFont($font) {
+      $this->setFont('classname_font', $font);
+    }
+
+    /**
+     * Sets the 'abstract_classname_font' attribute of the UML class
+     *
+     * @access  protected
+     * @param   array font
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="abstract_classname_font"]/dia:font', value= 'font')]
+    function setAbstractClassnameFont($font) {
+      $this->setFont('abstract_classname_font', $font);
+    }
+
+    /**
+     * Sets the 'comment_font' attribute of the UML class
+     *
+     * @access  protected
+     * @param   array font
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="comment_font"]/dia:font', value= 'font')]
+    function setCommentFont($font) {
+      $this->setFont('comment_font', $font);
+    }
+
+    /**
+     * Sets the 'normal_font_height' attribute of the UML Class
+     *
+     * @access  protected
+     * @param   int height
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="normal_font_height"]/dia:real/@val', value= 'int')]
+    function setNormalFontHeight($height) {
+      $this->setInt('normal_font_height', $height);
+    }
+
+    /**
+     * Sets the 'abstract_font_height' attribute of the UML Class
+     *
+     * @access  protected
+     * @param   int height
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="abstract_font_height"]/dia:real/@val', value= 'int')]
+    function setAbstractFontHeight($height) {
+      $this->setInt('abstract_font_height', $height);
+    }
+
+    /**
+     * Sets the 'polymorphic_font_height' attribute of the UML Class
+     *
+     * @access  protected
+     * @param   int height
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="polymorphic_font_height"]/dia:real/@val', value= 'int')]
+    function setPolymorphicFontHeight($height) {
+      $this->setInt('polymorphic_font_height', $height);
+    }
+
+    /**
+     * Sets the 'classname_font_height' attribute of the UML Class
+     *
+     * @access  protected
+     * @param   int height
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="classname_font_height"]/dia:real/@val', value= 'int')]
+    function setClassnameFontHeight($height) {
+      $this->setInt('classname_font_height', $height);
+    }
+
+    /**
+     * Sets the 'abstract_classname_font_height' attribute of the UML Class
+     *
+     * @access  protected
+     * @param   int height
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="abstract_classname_font_height"]/dia:real/@val', value= 'int')]
+    function setAbstractClassnameFontHeight($height) {
+      $this->setInt('abstract_classname_font_height', $height);
+    }
+
+    /**
+     * Sets the 'comment_font_height' attribute of the UML Class
+     *
+     * @access  protected
+     * @param   int height
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="comment_font_height"]/dia:real/@val', value= 'int')]
+    function setCommentFontHeight($height) {
+      $this->setInt('comment_font_height', $height);
+    }
+
+    /**
+     * Sets the 'template' attribute of the UML class
+     *
+     * @access  protected
+     * @param   bool template
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="template"]/dia:boolean/@val', value= 'boolean')]
+    function setTemplate($template) {
+      $this->setBoolean('template', $template);
+    }
+
+    /************************* *************************/
+
+    /**
+     * Adds an UML attribute to the UML class
+     *
+     * @access  protected
+     * @param   &org.dia.DiaUMLAttribute Attribute
+     */
+    //TODO [@fromClass(type= 'attribute', class= 'org.dia.DiaUMLAttribute')]
+    #[@fromDia(xpath= 'dia:attribute[@name="attributes"]/*', class= 'org.dia.DiaUMLAttribute')]
+    function addUMLAttribute($Attribute) {
+      $Attributes= &$this->getChild('attributes');
+      $Attributes->set($Attribute->getName(), $Attribute);
+    }
+
+    /**
+     * Adds an UML method to the UML class
+     * 
+     * @access  protected
+     * @param   &org.dia.DiaUMLMethod Method
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="operations"]/*', class= 'org.dia.DiaUMLMethod')]
+    function addUMLMethod($Method) {
+      $Operations= &$this->getChild('operations');
+      $Operations->set($Method->getName(), $Method);
+    }
+
+    /**
+     * Adds an UML formal parameter to the UML class
+     *
+     * @access  protected
+     * @param   &org.dia.DiaUMLFormalParameter Parameter
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="templates"]/*', class= 'org.dia.DiaUMLFormalParameter')]
+    function addTemplate($Parameter) {
+      $Templates= &$this->getChild('templates');
+      $Templates->set($Parameter->getName(), $Parameter);
     }
 
     /**
@@ -128,121 +518,100 @@
      */
     #[@fromClass(type = 'attribute')]
     function addAttribute($field) {
-      // add element 'attributes' if it doesn't already exist
-      $attributes= &$this->getChildAttributeByName('attributes');
-      if (!isset($attributes)) {
-        $attributes= &new DiaAttribute('attributes');
-        $this->add($attributes);
-      }
+      $Attributes= &$this->getChild('attributes');
 
+      // create new UMLAttribute
       list($name, $value)= each($field);
+      $Attrib= &new DiaUMLAttribute();
+      $Attrib->setName($name);
+
+      // determine type if possible
       if (isset($value)) {
         $type= xp::typeOf(eval("return $value;"));
       } else {
-        $type= '';
+        $type= NULL;
         $value= 'NULL';
       }
-      
-      $comp= &new DiaComposite('umlattribute');
-      $comp->add(new DiaAttribute('name', $name, 'string'));
-      $comp->add(new DiaAttribute('type', $type, 'string'));
-      $comp->add(new DiaAttribute('value', $value, 'string'));
-      $comp->add(new DiaAttribute('comment', '', 'string'));
+      $Attrib->setValue($value);
+      if (isset($type)) $Attrib->setType($type);
+
+      // protected attribute?
       if (0 == strncmp('_', $name, 1)) {
-        $visibility= 2;
-      } else {
-        $visibility= 0;
+        $Attrib->setVisibility(2); // default: 0
       }
-      $comp->add(new DiaAttribute('visibility', $visibility, 'enum'));
-      $comp->add(new DiaAttribute('abstract', FALSE, 'boolean'));
-      $comp->add(new DiaAttribute('class_scope', FALSE, 'boolean'));
-      $attributes->add($comp);
+
+      // add to attributes node
+      $Attributes->set($Attrib->getName(), $Attrib);
     }
 
     /**
      * Adds a method to the UML class
      * 
      * @access  protected
-     * @param   &text.doclet.MethodDoc method
+     * @param   &text.doclet.MethodDoc Method
      */
     #[@fromClass(type = 'method')]
-    function addMethod(&$method) {
-      // add element 'operations' if it doesn't already exist
-      $operations= &$this->getChildAttributeByName('operations');
-      if (!isset($operations)) {
-        $operations= &new DiaAttribute('operations');
-        $this->add($operations);
-      }
+    function addMethod(&$Method) {
+      $Operations= &$this->getChild('operations');
 
-      // create method 'composite'
-      $comp= &new DiaComposite('umloperation');
-      $comp->add(new DiaAttribute('name', $method->name(), 'string'));
+      // create new UMLMethod
+      $Oper= &new DiaUMLMethod();
+      $Oper->setName($Method->name());
 
       // check @return tag
       $return_tags= $method->tags('return');
-      if (empty($return_tags)) {
-        $type= 'void';
-      } else {
+      if (!empty($return_tags)) {
         $type= $return_tags[0]->type;
       }
-      $comp->add(new DiaAttribute('type', $type, 'string'));
-      if (0 == strncmp('_', $method->name(), 1)) {
-        $visibility= 2;
-      } else {
-        $visibility= 0;
-      }
-      $comp->add(new DiaAttribute('visibility', $visibility, 'enum'));
-      $comp->add(new DiaAttribute('comment', trim($method->commentText()), 'string'));
+      $Oper->setType($type);
 
-      
+      // protected method?
+      if (0 == strncmp('_', $method->name(), 1)) {
+        $Oper->setVisibility(2);
+      }
+      $Oper->setComment($Method->commentText());
+
+      // check @model tags
       $model_tags= $method->tags('model');
-      $abstract= FALSE;
       if (!empty($model_tags)) {
         foreach (array_keys($model_tags) as $key) {
-          if ($model_tags[$key]->text() === 'abstract') {
-            $abstract= TRUE;
-            break;
+          switch ($model_tags[$key]->text()) {
+            case 'abstract': 
+              $Oper->setAbstract(TRUE); break;
+            case 'static':
+              $Oper->setClassScope(TRUE); break;
           }
         }
       }
-      $comp->add(new DiaAttribute('abstract', $abstract, 'boolean'));
 
-      // default values:
-      // TODO: @model static!
-      $comp->add(new DiaAttribute('stereotype', NULL, 'string'));
-      $comp->add(new DiaAttribute('inheritance_type', 2, 'enum'));
-      $comp->add(new DiaAttribute('query', FALSE, 'boolean'));
-      // TODO: @access ...
-      $comp->add(new DiaAttribute('class_scope', FALSE, 'boolean'));
+      // TODO? stereotype, inheritance_type, class_scope... (@access?)
 
       // create parameters 'attribute'
-      $params= &new DiaAttribute('parameters');
+      $Params= &$Oper->getChild('parameters');
 
       // loop over arguments
-      foreach (array_keys($method->arguments) as $name) {
+      foreach (array_keys($Method->arguments) as $name) {
         $value= $method->arguments[$name]; // always string!
-        $type= NULL;
         if (isset($value)) {
           $evalue= eval("return $value;");
           if (isset($evalue)) $type= xp::typeOf($evalue);
+        } else {
+          $type= NULL;
+          $value= NULL;
         }
 
         // create parameter 'composite'
-        $param= &new DiaComposite('umlparameter');
-        $param->add(new DiaAttribute('name', $name, 'string'));
-        $param->add(new DiaAttribute('type', $type, 'string'));
-        $param->add(new DiaAttribute('value', $value, 'string'));
-        $param->add(new DiaAttribute('comment', NULL, 'string'));
-        $param->add(new DiaAttribute('kind', 0, 'enum'));
-        $params->add($param);
+        $Param= &new DiaUMLMethodParameter();
+        $Param->setName($name);
+        $Param->setValue($value);
+        if (isset($type)) $Param->setType($type);
+
+        // add to parameters node
+        $Params->set($Param->getName(), $Param);
       }
 
-      // add parameter to method
-      $comp->add($params);
-
-      // add method to 'operations'
-      $operations->add($comp);
+      // add to operations node
+      $Operations->set($Oper->getName(), $Oper);
     }
-
   }
 ?>

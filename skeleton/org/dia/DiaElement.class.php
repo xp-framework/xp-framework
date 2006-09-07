@@ -60,5 +60,15 @@
       return $node;
     }
 
+    /**
+     * Accept a Visitor
+     *
+     * @access  protected
+     * @param   &lang.Visitor
+     */
+    function accept(&$Visitor) {
+      $Visitor->visit($this);
+    }
+
   } implements(__FILE__, 'org.dia.DiaComponent');
 ?>

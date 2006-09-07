@@ -10,6 +10,9 @@
 
   /**
    * Interface for all DiaElements and DiaCompounds
+   *
+   * Also defines methods, which make the object structure visitor-ready:
+   * 'accept(&$Visitor)'
    * 
    * @purpose   Define a generic interface for all Dia* classes
    */
@@ -24,6 +27,14 @@
      * @access  protected
      * @return  &xml.Node
      */
-    function &getNode() {}
+    function &getNode() { }
+
+    /**
+     * Accept a Visitor instance
+     *
+     * @access  protected
+     * @param   &lang.Visitor
+     */
+    function accept(&$Visitor) { }
   }
 ?>

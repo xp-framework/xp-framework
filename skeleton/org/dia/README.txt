@@ -2,15 +2,25 @@ How to use 'xp://org.dia.*'
 ===========================
 @author: Pascal Sick (sick@schlund.de)
 
-urgent TODOs:
-=============
+CONTENTS:
+=========
+* urgent TODOs
+* HOWTO
+* FILES
+* TODOs
+* FUTURE
+* The updating process (concept)
+* UML2 support for dia (thoughts)
+
+1) urgent TODOs:
+----------------
 * if given lots of classes, some don't get recursed or only used as dependency
 * and not as parent class although generalization should take precedence!
-==> improve recusion!
+==> improve recusion! done? check!
 
-HOWTO: create DIAgrams:
+2a) HOWTO: create DIAgrams:
 -----------------------
-> php doclet.php --doclet=org.dia.DiaDoclet --verbose --depend --gzipped --recurse=5 --directory=/diagrams --file=test.dia util.Date lang.XPClass [...]
+> php doclet.php --doclet=org.dia.DiaDoclet --verbose --depend --gzipped --recurse=5 --directory=/diagrams --diagram=test.dia util.Date lang.XPClass [...]
 
 DiaDoclet options:
 * --verbose
@@ -18,10 +28,13 @@ DiaDoclet options:
 * --depend
 * --recurse=level
 * --directory=$DIR
-* --file=$FILE
+* --diagram=$FILE
 
-FILES:
-======
+2b) HOWTO: update DIAgrams:
+> php update.php --diagram=test.dia --classes=lang.Object,util.Date
+
+3) FILES:
+---------
 DiaMarshaller : create DiaDiagram from a list of classnames
 TODO: DiaUnmarshaller : create XP classes from DiaUMLClass as XML
 
@@ -60,16 +73,55 @@ DiaUML* : represent what their name sais ;)
 * Doclet
 DiaDoclet : hands the given classes over to DiaMarshaller to generate a DiaDiagram
 
-TODOs:
-======
+4) TODOs:
+---------
 * merge generated diagram with the positions from an already (manually) layouted diagram (tool)
 * update a diagram?
 * adjacent placement of objects (not overlapping)
 
-FUTURE:
-=======
+5) FUTURE:
+----------
 * yet another REDESIGN: separate 'UML' notation stuff from 'dia' specific classes
 => have XP classes which represent a UML diagram - independent of 'dia'
 => have an 'Visitor' which goes through the UML diagram structure and creates a 'dia' diagram from it
 => OR just use annotations?
 
+6) The updating process: (concept)
+------------------------
+main priciples:
+* once a diagram is created it is useless unless up-to-date!
+* people tend to not have the time (tm) to update diagrams, instead they work 24/7 on the source code
+=> we assume here, that diagram are always more outdated than the source code
+=> it would be nice, if manually layouted diagrams would reflect the current (or versioned) source code
+* a class can only be uniquely identified in xml.dia by its classname, therefore classnames should never change
+* dependencies, implemenations and generalizations are more easily updated by hand! check them anyway?
+
+update.php --diagram=FILE --classes=my.class.Name[,another.Class,...]:
+-----------
+1. does the file exist? 
+  yes: update (parse the existing XML diagram)
+  no: generate new diagram containing the given classes
+2. does the given classname exist in diagram? 
+  no: add class to diagram (TODO)
+  yes: loop over class attributes and methods:
+    - update existing attributes and methods (with parameters)
+    - add missing attributes and methods (with parameters)
+    - delete additional attributes and methods
+3. write the diagram to file
+
+HINT: of course one can use diagrams to generate code, but I have experienced, 
+that this is done only at the very beginning of a project. So I won't
+work on anything updating code from diagrams.
+
+7) UMLv2 for dia? (thoughts)
+-----------------
+* research: UML2 support in dia?
+* inform: how get dia objects/shapes described/implemented?
+=> maybe it is possible to create UML2 objects/shapes for dia in a generic way
+   (description file) and use these description files to generate appropriate
+   classes to generate them as XML.
+
+i.e:
+define UML-object description
+=> generate dia UML shapes
+=> generate php|java|... classes representing such a dia shape
