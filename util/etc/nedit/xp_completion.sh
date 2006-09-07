@@ -27,8 +27,8 @@ _xpclasses() {
   for DIR in $PHP_INCLUDE_PATH; do
     IFS=" "
     RESULTS=$( \
-      find $DIR/$CP_PREFIX* -type d ! -path '*CVS*' ! -path '*.svn*' ! -name '.*' -mindepth 0 -maxdepth 1 -exec echo {}. \; 2>/dev/null; \
-      find $DIR/$CP_PREFIX* -type f -name '*.class.php' ! -path '*CVS*' ! -path '*.svn*' ! -name '.*' -mindepth 0 -maxdepth 1 2>/dev/null \
+      find $DIR/$CP_PREFIX* -type d ! -path '*CVS*' ! -path '*.svn*' ! -name '.*' -mindepth 0 -maxdepth 0 -exec echo {}. \; 2>/dev/null; \
+      find $DIR/$CP_PREFIX* -type f -name '*.class.php' ! -path '*CVS*' ! -path '*.svn*' ! -name '.*' -mindepth 0 -maxdepth 0 2>/dev/null \
     )
     
     # echo "===> RESULTS= $RESULTS"
