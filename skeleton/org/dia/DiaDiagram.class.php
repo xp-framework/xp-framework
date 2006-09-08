@@ -38,21 +38,17 @@
     /**
      * Initialize this DiaDiagram with DiaData and DiaLayer
      *
-     * @access  protected
+     * @access  public
      */
     function initialize() {
-      //$this->set('data', new DiaData());
-      //$this->set('Background', new DiaLayer());
-      $data= &new DiaData();
-      $data->initialize();
-      $this->set('data', $data);
-      $this->set('layer', new DiaLayer('Background', TRUE));
+      $this->set('data', new DiaData());
+      $this->addLayer(new DiaLayer('Background', TRUE));
     }
 
     /**
      * Add namespace declaration to root node
      *
-     * @access  protected
+     * @access  public
      * @param   array namespace Example: array($prefix => $url)
      */
     #[@fromDia(xpath= 'namespace::dia', value= 'namespace')]
@@ -62,7 +58,9 @@
     }
 
     /**
+     * Sets the DiaData object of the diagram
      *
+     * @access  public
      * @param   &org.dia.DiaData Data
      */
     #[@fromDia(xpath= 'dia:diagramdata', class= 'org.dia.DiaData')]
@@ -71,7 +69,9 @@
     }
 
     /**
+     * Adds a DiaLayer object to the diagram
      *
+     * @access  public
      * @param   &org.dia.DiaLayer Layer
      */
     #[@fromDia(xpath= 'dia:layer', class= 'org.dia.DiaLayer')]
@@ -82,6 +82,7 @@
     /**
      * Returns the full XML source of the 'dia' diagram
      *
+     * @access  public
      * @return  string XML representation of the DIAgramm
      */
     function getSource($indent= INDENT_DEFAULT) {
@@ -92,6 +93,9 @@
     }
 
     /**
+     * Writes the XML representation of this DiaDiagram to the given filename
+     *
+     * @access  public
      * @param   string filename Filename to save the DIAgramm to
      * @param   boolean zip default TRUE Gzip the DIAgram file?
      */
@@ -116,12 +120,12 @@
       }
     }
 
-    /************************* Parent Functions *************************/
+    /************************* interface methods *************************/
 
     /**
      * Return XML representation of DiaComposite
      *
-     * @access  protected
+     * @access  public
      * @return  &xml.Node
      */
     function &getNode() {
