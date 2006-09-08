@@ -5,7 +5,6 @@
  */
 
   uses(
-    'org.dia.DiaAttribute',
     'org.dia.DiaComposite'
   );
 
@@ -139,17 +138,5 @@
       $this->setInt('fitheight', $height);
     }
             
-    /**
-     * Get the 'dia:attribute name="paper"' node with the 'dia:composite' child
-     * node
-     *
-     * @return  &xml.Node
-     */
-    function &getNode() {
-      $Node= &new Node('dia:attribute');
-      $Node->setAttribute('name', 'paper');
-      $Node->addChild(parent::getNode());
-      return $Node;
-    }
   }
 ?>

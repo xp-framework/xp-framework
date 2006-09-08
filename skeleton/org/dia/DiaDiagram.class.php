@@ -9,12 +9,13 @@
     'org.dia.DiaCompound',
     'org.dia.DiaData',
     'org.dia.DiaLayer',
-    'org.dia.DiaObject',
-    'org.dia.DiaUMLClass'
   );
   
   /**
-   * Represents a 'dia' diagram
+   * Represents a 'dia' diagram as a whole. This is the root class where the
+   * (un-)marshalling of diagrams starts.
+   *
+   * @see   http://www.gnome.org/projects/dia/
    */
   class DiaDiagram extends DiaCompound {
 
