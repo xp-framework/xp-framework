@@ -9,7 +9,9 @@
   );
 
   /**
-   * Represents a 'dia:layer' node
+   * Representation of a 'dia:layer' node. Every diagram may have multiple
+   * layers, each containing objects (shapes) of the diagram.
+   *
    */
   class DiaLayer extends DiaCompound {
 
@@ -20,23 +22,27 @@
 
 
     /**
-     * Create new instance of DiaLayer
+     * Create new instance of DiaLayer with the given name.
      *
      * @access  public
-     * @param   string name default NULL
+     * @param   string name
      * @param   bool visible default NULL
+     * @throws  lang.IllegalArgumentException
      */
-    function __construct($name= NULL, $visible= NULL) {
-      if (isset($name)) $this->setName($name);
-      if (isset($visible)) $this->setVisibility($visible);
-    }
+    function __construct($name, $visible= NULL) {
+      if (!isset($name))
+        return throw(new IllegalArgumentException('Parameter "name" is required!'));
 
-    // function initialize()
+      $this->setName($name);
+      if (isset($visible)) $this->setVisibility($visible);
+
+      parent::__construct();
+    }
 
     /**
      * Get the name of this DiaLayer
      *
-     * @access  protected
+     * @access  public
      * @return  string
      */
     function getName() {
@@ -46,7 +52,7 @@
     /**
      * Set the name of this DiaLayer
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      */
     #[@fromDia(xpath= '@name', value= 'string')]
@@ -57,7 +63,7 @@
     /**
      * Get the visibility of this DiaLayer
      *
-     * @access  protected
+     * @access  public
      * @return  bool
      */
     function getVisibility() {
@@ -67,7 +73,7 @@
     /**
      * Set the visibility of this DiaLayer
      *
-     * @access  protected
+     * @access  public
      * @param   bool visible
      */
     #[@fromDia(xpath= 'attribute::visible', value= 'boolean')]
@@ -75,15 +81,32 @@
       $this->visibility= $visible;
     }
 
+    /**
+     * Adds a DiaUMLClass object to the layer
+     *
+     * @access  public
+     * @param   &org.dia.DiaUMLClass Class
+     */
     #[@fromDia(xpath= 'dia:object[@type="UML - Class"]', class= 'org.dia.DiaUMLClass')]
-    function addClass($Class) {
+    function addClass(&$Class) {
       $this->set($Class->getName(), $Class);
+    }
+
+    /**
+     * Adds a non-UML object to the layer
+     *
+     * @access  public
+     * @param   &org.dia.DiaObject Object
+     */
+    #[@fromDia(xpath= 'dia:object[not(starts-with(@type, "UML"))]', class= 'org.dia.DiaObject')]
+    function addObject(&$Object) {
+      $this->set($Object->getName(), $Object);
     }
 
     /**
      * Return XML representation of DiaComposite
      *    
-     * @access  protected
+     * @access  public
      * @return  &xml.Node
      */ 
     function &getNode() {
