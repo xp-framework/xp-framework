@@ -105,12 +105,13 @@
       case 'com.sun.webstart.jnlp.JnlpJarResource':
         $href= &new URL(makeLink($codebase, $resource->getHref()));
         
-        $classpath.= PATH_SEPARATOR.rtrim($folder->getURI(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$href->getPath();
+        $target= rtrim($folder->getURI(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $href->getPath());
+        $classpath.= PATH_SEPARATOR.$target;
         try(); {
           $params= array();
 
           // Create a new file instance
-          $jar= &new File($folder->getURI().DIRECTORY_SEPARATOR.$href->getPath());
+          $jar= &new File($target);
           if ($jar->exists()) {
             Console::writef('     >> Have %s... ', basename($jar->getURI()));
             $params['If-Modified-Since']= date('D, d M Y H:i:s \G\M\T', $jar->lastModified());
