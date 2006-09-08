@@ -106,7 +106,7 @@
         $href= &new URL(makeLink($codebase, $resource->getHref()));
         
         $target= rtrim($folder->getURI(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $href->getPath());
-        $classpath.= PATH_SEPARATOR.$target;
+        $classpath.= PATH_SEPARATOR.'"'.$target.'"';
         try(); {
           $params= array();
 
