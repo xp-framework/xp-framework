@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('name.kiesel.pxl.scriptlet.AbstractPxlState');
+  uses(
+    'name.kiesel.pxl.scriptlet.AbstractPxlState',
+    'name.kiesel.pxl.scriptlet.handler.NewPageHandler'
+  );
 
   /**
    * (Insert class' description here)
@@ -14,6 +17,17 @@
    * @purpose  purpose
    */
   class AdminState extends AbstractPxlState {
+  
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function __construct() {
+      $this->addHandler(new NewPageHandler());
+    }  
   
     /**
      * (Insert method's description here)
@@ -33,7 +47,8 @@
      * @param   
      * @return  
      */
-    function process(&$request, &$response) {
+    function process(&$request, &$response, &$context) {
+      
     }
   }
 ?>

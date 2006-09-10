@@ -10,9 +10,9 @@
   );
 
   /**
-   * Handler. <Add description>
+   * Login handler
    *
-   * @purpose  <Add purpose>
+   * @purpose  Provide login
    */
   class LoginHandler extends Handler {
 
@@ -27,38 +27,6 @@
     }
     
     /**
-     * Retrieve identifier.
-     *
-     * @access  public
-     * @param   &scriptlet.xml.XMLScriptletRequest request
-     * @param   &scriptlet.xml.workflow.Context context
-     * @return  string
-     */
-    function identifierFor(&$request, &$context) {
-    
-      // TODO: Implement this method, if a somehow unique identifier is required for this
-      //       handler. If not, remove the method.
-      
-      return $this->name;
-    }
-    
-    /**
-     * Setup handler.
-     *
-     * @access  public
-     * @param   &scriptlet.xml.XMLScriptletRequest request
-     * @param   &scriptlet.xml.workflow.Context context
-     * @return  boolean
-     */
-    function setup(&$request, &$context) {
-    
-      // TODO: Add code that is required to initially setup the handler
-      //       Set values with Handler::setFormValue() to make them accessible in the frontend.
-      
-      return TRUE;
-    }
-    
-    /**
      * Handle submitted data.
      *
      * @access  public
@@ -67,10 +35,14 @@
      * @return  boolean
      */
     function handleSubmittedData(&$request, &$context) {
+      $pm= &PropertyManager::getInstance();
+      $prop= &$pm->getProperties('site');
       
-      // TODO: Add code that handles the submitted values. The values have already
-      //       passed the Wrappers precheck/caster/postcheck routines.
+      $user= $prop->readSection('user::'.$this->wrapper->getUsername());
+      if (md5($this->wrapper->getPassword()) != $user['password'])
+        return FALSE;
       
+      $context->setUser($user);
       return TRUE;
     }
     
@@ -83,9 +55,17 @@
      * @param   &scriptlet.xml.Context context
      */
     function finalize(&$request, &$response, &$context) {
+      $return= $request->session->getValue('authreturn');
 
-      // TODO: Add code that is executed after success and on every reload of the handler.
-      //       Many handlers don't need this, so remove the complete function.
+      if ($return) {
+        // $request->session->removeValue('authreturn');
+        $response->sendRedirect(sprintf('%s://%s%s%s',
+          $return['scheme'],
+          $return['host'],
+          $return['path'],
+          $return['query'] ? '?'.$return['query']: ''
+        ));
+      }
     }
   }
 ?>

@@ -24,6 +24,8 @@
     var
       $storage  = NULL,
       $title    = '',
+      $description  = '',
+      $author       = '',
       $picturefiles = array(),
       $date     = NULL;
     

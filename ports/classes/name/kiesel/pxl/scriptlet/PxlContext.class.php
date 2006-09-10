@@ -13,8 +13,22 @@
    * @see      reference
    * @purpose  purpose
    */
-  class PxlAdminContext extends Context {
-  
+  class PxlContext extends Context {
+    var
+      $user   = NULL;
+      
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function setUser($u) {
+      $this->user= $u;
+      $this->setChanged();
+    }      
+      
     /**
      * (Insert method's description here)
      *
@@ -25,5 +39,16 @@
     function setup(&$request) {
       return TRUE;
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function insertStatus(&$response) {
+      $this->user && $response->addFormResult(Node::fromArray($this->user, 'user'));
+    }    
   }
 ?>

@@ -24,7 +24,8 @@
      * @return  &.xml.XSLProcessor
      */
     function &_processor() {
-      return new DomXSLProcessor();
+      $p= &new DomXSLProcessor();
+      return $p;
     }
     
     /**
@@ -35,7 +36,7 @@
      * @return  
      */
     function wantsContext(&$request) {
-      return ('PxlAdmin' == $request->getProduct());
+      return $this->needsSession($request) || $request->hasSession();
     }
 
     /**

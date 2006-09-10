@@ -6,7 +6,8 @@
 
   uses(
     'scriptlet.xml.workflow.Handler',
-    'name.kiesel.pxl.scriptlet.wrapper.NewPageWrapper'
+    'name.kiesel.pxl.scriptlet.wrapper.NewPageWrapper',
+    'name.kiesel.pxl.util.PageCreator'
   );
 
   /**
@@ -24,22 +25,6 @@
     function __construct() {
       parent::__construct();
       $this->setWrapper(new NewPageWrapper());
-    }
-    
-    /**
-     * Retrieve identifier.
-     *
-     * @access  public
-     * @param   &scriptlet.xml.XMLScriptletRequest request
-     * @param   &scriptlet.xml.workflow.Context context
-     * @return  string
-     */
-    function identifierFor(&$request, &$context) {
-    
-      // TODO: Implement this method, if a somehow unique identifier is required for this
-      //       handler. If not, remove the method.
-      
-      return $this->name;
     }
     
     /**
@@ -67,9 +52,19 @@
      * @return  boolean
      */
     function handleSubmittedData(&$request, &$context) {
+    
+      $s= &new FilesystemContainer($request->getEnvValue('DOCUMENT_ROOT').'/pages');
+      $filedata= &$this->wrapper->getFile();
+      $file= &$filedata->getFile();
       
-      // TODO: Add code that handles the submitted values. The values have already
-      //       passed the Wrappers precheck/caster/postcheck routines.
+      $pc= &new PageCreator(
+        $s,
+        $this->wrapper->getName(),
+        array($file->getURI())
+      );
+      $pc->setAuthor($context->user['username']);
+      $pc->setDescription($this->wrapper->getDescription());
+      $pc->addPage();
       
       return TRUE;
     }

@@ -59,7 +59,7 @@
       );
       $this->registerParamInfo(
         'tags',
-        OCCURRENCE_UNDEFINED,
+        OCCURRENCE_OPTIONAL,
         NULL,
         NULL,
         NULL,
