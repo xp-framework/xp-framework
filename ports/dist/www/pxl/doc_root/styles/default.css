@@ -1,0 +1,26 @@
+body {
+  border: 0px;
+  margin: 0px;
+  font-family: Tahoma,Arial,Helvetica;
+  font-size: 12px;
+}
+
+#header {
+  width:100%;
+  border-bottom: 1px solid black;;
+  margin-bottom: 10px;
+}
+
+#picturecontainer {
+  padding: 3px;
+  text-align: center;
+}
+
+#picture {
+  border: 1px solid #cccccc;
+  padding: 5px;
+}
+
+#picturedescription {
+  text-align: justify;
+}
