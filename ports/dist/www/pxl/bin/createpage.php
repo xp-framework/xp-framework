@@ -17,11 +17,11 @@
   $title= $p->value('title', 't');
   $picturefiles= array();
   for ($i= 1; $i < $p->count; $i++) {
-    if (preg_match('#\.(jpg|jpeg|png|gif)$#i', $p->value($i))) {
-      $picturesfiles[]= $p->value($i);
+    if (preg_match('/.*\.(jpg|jpeg|png|gif)$/', $p->value($i))) {
+      $picturefiles[]= $p->value($i);
     }
   }
-  
+
   $s= &new FilesystemContainer(dirname(__FILE__).'/../doc_root/pages/');
   $pc= &new PageCreator(
     $s, 

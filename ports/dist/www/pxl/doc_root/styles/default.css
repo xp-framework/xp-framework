@@ -1,7 +1,7 @@
 body {
   border: 0px;
   margin: 0px;
-  font-family: Tahoma,Arial,Helvetica;
+  font-family: Verdana,Arial,Helvetica;
   font-size: 12px;
 }
 
@@ -11,16 +11,44 @@ body {
   margin-bottom: 10px;
 }
 
-#picturecontainer {
-  padding: 3px;
-  text-align: center;
+#pager {
+  width:800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-#picture {
+#picturecontainer {
+  padding: 3px;
+}
+
+.picture {
+  margin-left: auto;
+  margin-right: auto;
   border: 1px solid #cccccc;
   padding: 5px;
 }
 
+.exif {
+  text-align: right;
+  font-size: 10px;
+}
+
 #picturedescription {
   text-align: justify;
+}
+
+.navigator {
+  font-weight: bold;
+}
+
+.navigator_disabled {
+  font-weight: bold;
+  color: #cccccc;
+  text-decoration: none;
+  
+}
+.description {
+  width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
