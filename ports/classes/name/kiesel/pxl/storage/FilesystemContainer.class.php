@@ -37,5 +37,9 @@
     function getRelative($path) {
       return new FilesystemContainer($base.'/'.$path);
     }
+    
+    function getBase() {
+      return $this->base;
+    }
   } implements(__FILE__, 'name.kiesel.pxl.storage.IStorage');
 ?>

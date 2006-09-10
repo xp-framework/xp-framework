@@ -56,7 +56,6 @@
         $response->addFormResult(Node::fromObject($next, 'next'));
       }
       
-      
       $response->addFormResult($page->toXml());
     }
   }

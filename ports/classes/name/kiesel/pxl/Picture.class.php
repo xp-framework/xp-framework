@@ -30,7 +30,18 @@
      */
     function setStorage(&$storage) {
       $this->storage= &$storage;
-    }    
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function wakeup($context) {
+      $this->setStorage($context['storage']);
+    }
     
     /**
      * (Insert method's description here)
@@ -65,6 +76,7 @@
      * @access  public
      * @return  string
      */
+    #[@xmlmapping(element= 'name')]
     function getName() {
       return $this->name;
     }
@@ -86,8 +98,10 @@
      * @access  public
      * @return  &lang.Object
      */
-    function &getDate() {
-      return $this->date;
+    #[@xmlfactory(element= 'date')]
+    function &serializeDate() {
+      if (!$this->date) return NULL;
+      return $this->date->toString('Y-m-d H:i:s');
     }
 
     /**
@@ -107,6 +121,7 @@
      * @access  public
      * @return  string
      */
+    #[@xmlfactory(element= 'author')]
     function getAuthor() {
       return $this->author;
     }
@@ -128,6 +143,7 @@
      * @access  public
      * @return  &lang.Object
      */
+    #[@xmlfactory(element= 'filename')]
     function &getFilename() {
       return $this->filename;
     }
@@ -140,16 +156,20 @@
      * @return  
      */
     function toXml() {
+      $filename= $this->storage->getBase().'/'.$this->getFilename();
       try(); {
-        $exif= &ExifData::fromFile($this->storage->getBase().'/'.$this->getFilename());
+        $exif= &ExifData::fromFile(new File($filename));
       } if (catch('ImagingException', $e)) {
         $exif= NULL;
       }
     
+      $dimensions= getimagesize($filename);
       $n= &new Node('picture', NULL, array(
         'author'  => $this->getAuthor(),
         'filename'  => $this->getFilename(),
-        'name'      => $this->getName()
+        'name'      => $this->getName(),
+        'width'     => $dimensions[0],
+        'height'    => $dimensions[1]
       ));
       $this->date && $n->addChild(Node::fromObject($this->date, 'date'));
       $exif && $n->addChild(Node::fromObject($exif, 'exif'));

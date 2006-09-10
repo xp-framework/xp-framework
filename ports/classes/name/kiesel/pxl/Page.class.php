@@ -15,6 +15,7 @@
    */
   class Page extends Object {
     var
+      $title        = '',
       $description  = '',
       $pictures     = NULL,
       $comments     = NULL,
@@ -30,6 +31,7 @@
     function __construct() {
       $this->pictures= &Collection::forClass('name.kiesel.pxl.Picture');
     }
+
 
     /**
      * Get Description
@@ -72,9 +74,22 @@
       $data= $storage->load('page');
       if (!$data) return NULL;
       
-      $page= &Unmarshaller::unmarshal($data, 'name.kiesel.pxl.Page');
+      $page= &Unmarshaller::unmarshal($data, 'name.kiesel.pxl.Page', array(
+        'storage' => &$storage
+      ));
       $page && $page->setStorage($storage);
       return $page;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function hibernate() {
+      return $this->storage->save('page', Marshaller::marshal($this));
     }
     
     /**
@@ -125,6 +140,28 @@
     }
     
     /**
+     * Set Title
+     *
+     * @access  public
+     * @param   string title
+     */
+    #[@xmlmapping(element= 'title')]
+    function setTitle($title) {
+      $this->title= $title;
+    }
+
+    /**
+     * Get Title
+     *
+     * @access  public
+     * @return  string
+     */
+    #[@xmlfactory(element= 'title')]
+    function getTitle() {
+      return $this->title;
+    }
+
+    /**
      * (Insert method's description here)
      *
      * @access  
@@ -135,6 +172,18 @@
     function addPicture(&$p) {
       $this->pictures->add($p);
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    #[@xmlfactory(element= 'picture')]
+    function getPictures() {
+      return $this->pictures;
+    }    
     
     /**
      * (Insert method's description here)
