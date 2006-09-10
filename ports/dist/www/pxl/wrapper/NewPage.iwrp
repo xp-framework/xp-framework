@@ -15,5 +15,5 @@
     <caster class="scriptlet.xml.workflow.casters.ToFileData"/>
   </param>  
   <param name="online" type="boolean"/>
-  <param name="tags" type="string"/>
+  <param name="tags" type="string" occurrence="optional"/>
 </interface>
