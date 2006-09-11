@@ -19,6 +19,6 @@
      * @access  public
      * @return  remote.server.deploy.Deployable[]
      */
-    function getDeployments() { }
+    function scanDeployments() { }
   }
 ?>
