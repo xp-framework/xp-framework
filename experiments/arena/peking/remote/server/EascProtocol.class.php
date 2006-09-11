@@ -12,7 +12,7 @@
   );
   
   /**
-   * (Insert class' description here)
+   * EASC protocol handler
    *
    * @ext      extension
    * @see      reference
@@ -21,28 +21,56 @@
   class EascProtocol extends Object {
     var
       $serializer  = NULL,
-      $context     = NULL;
+      $context     = NULL,
+      $scanner     = NULL;
 
     /**
-     * (Insert method's description here)
+     * Initialize protocol
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  bool
      */
-    function __construct() {
+    function initialize() {
+      Console::writeLine('init');
+      $cm= &new ContainerManager();
+      $deployer= &new Deployer();
+      $deployments= &$this->scanner->scanDeployments();
+      
+      if (FALSE === $deployments) return FALSE;
+
+      foreach ($deployments as $deployment) {
+        try(); {
+          $deployer->deployBean($deployment, $cm);
+        } if (catch('DeployException', $e)) {
+          $cat->warn($e);
+          // Fall through
+        }
+      }
+      
+      return TRUE;
+    }
+
+    /**
+     * Constructor
+     *
+     * @access  public
+     * @param   &remote.server.deploy.scan.FileSystemScanner scanner
+     */
+    function __construct($scanner) {
       $this->serializer= &new Serializer();
       $this->serializer->mapping('I', new RemoteInterfaceMapping());
       $this->context[RIH_OBJECTS_KEY]= &new HashMap();
       $this->context[RIH_OIDS_KEY]= &new HashMap();
+      $this->scanner= &$scanner;
     }      
 
     /**
-     * (Insert method's description here)
+     * Write answer
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &io.Stream stream
+     * @param   int type
+     * @param   mixed data
      */
     function answer(&$stream, $type, $data) {
       $length= strlen($data);
@@ -60,11 +88,12 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Write answer
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &io.Stream stream
+     * @param   int type
+     * @param   &remote.protocol.ByteCountedString[] bcs
      */
     function answerWithBytes(&$stream, $type, &$bcs) {
       $header= pack(
@@ -85,11 +114,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Write answer
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &io.Stream stream
+     * @param   mixed value
      */
     function answerWithValue(&$stream, $value) {
       $this->answerWithBytes(
@@ -100,26 +129,26 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Write answer
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &io.Stream stream
+     * @param   lang.Exception exception
      */
     function answerWithException(&$stream, $e) {
       $this->answerWithBytes(
         $stream, 
         0x0006 /* REMOTE_MSG_EXCEPTION */, 
-        new ByteCountedString($this->serializer->representationOf($value, $this->context))
+        new ByteCountedString($this->serializer->representationOf($e, $this->context))
       );
     }
     
     /**
-     * (Insert method's description here)
+     * Write answer
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &io.Stream stream
+     * @param   &remote.server.message.EascMessage message
      */
     function answerWithMessage(&$stream, &$m) {
       $this->answerWithBytes(
@@ -142,7 +171,7 @@
      * Handle client connect
      *
      * @access  public
-     * @param   &peer.Socket
+     * @param   &peer.Socket socket
      */
     function handleConnect(&$socket) { }
 
@@ -150,7 +179,7 @@
      * Handle client disconnect
      *
      * @access  public
-     * @param   &peer.Socket
+     * @param   &peer.Socket socket
      */
     function handleDisconnect(&$socket) { }
   
@@ -158,7 +187,7 @@
      * Handle client data
      *
      * @access  public
-     * @param   &peer.Socket
+     * @param   &peer.Socket socket
      * @return  mixed
      */
     function handleData(&$socket) {
@@ -181,7 +210,7 @@
      * Handle I/O error
      *
      * @access  public
-     * @param   &peer.Socket
+     * @param   &peer.Socket socket
      * @param   &lang.Exception e
      */
     function handleError(&$socket, &$e) { }
