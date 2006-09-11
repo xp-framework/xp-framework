@@ -20,7 +20,9 @@
   class FileSystemScanner extends Object {
     var
       $folder   = NULL,
-      $pattern  = '';
+      $pattern  = '',
+      $files    = array();
+      
       
     /**
      * Constructor
@@ -40,11 +42,25 @@
      * @access  public
      * @return  remote.server.deploy.Deployable[]
      */
-    function getDeployments() {
+    function scanDeployments() {
       $deployments= array();
 
       while ($entry= $this->folder->getEntry()) {
         if (!preg_match($this->pattern, $entry)) continue;
+        
+        $f= &new File($this->folder->getURI().$entry);
+        
+        if (isset($this->files[$f->getURI()]) && $f->lastModified() > $this->files[$f->getURI()]) {
+        
+          // Deployment changed. Server must be restarted
+          return  ;
+        }
+        
+        if (isset($this->files[$f->getURI()]) && $f->lastModified() <= $this->files[$f->getURI()]) {
+        
+          // File already deployed
+          continue;
+        }
 
         $ear= &new Archive(new File($this->folder->getURI().$entry));
         try(); {
@@ -70,6 +86,8 @@
         $d->setDirectoryName($prop->readString('bean', 'lookup'));
         
         $deployments[]= &$d;
+        
+        $this->files[$f->getURI()]= time();
       }
 
       return $deployments;
