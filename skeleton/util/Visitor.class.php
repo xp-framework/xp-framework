@@ -7,18 +7,18 @@
   /**
    * Visitor is an interface for classes implementing the visitor pattern.
    *
-   * @see       design pattern: visitor/compositum
+   * @see       xp://util.Composite
    * @purpose   Interface
    */
   class Visitor extends Interface {
 
     /**
-     * Visits the given Object and its children. Works on the visited objects
-     * as implemented. 
+     * Visits the given Component. Work on the visited objects
+     * is up to implementation :)
      *
      * @access  public
-     * @param   &lang.Object Object
+     * @param   &util.Component Component
      */
-    function visit(&$Object) { }
+    function visit(&$Component) { }
   }
 ?>
