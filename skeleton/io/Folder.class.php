@@ -221,7 +221,7 @@
       if (FALSE === $this->_hdir)
         return throw (new IOException ('Cannot rewind non-open folder.'));
       
-      rewinddir ($this->_hdir);
+      rewinddir ($this->_hdir->handle);
     }
 
     /**
@@ -286,6 +286,16 @@
         $this->getClassName(),
         $this->uri
       );
+    }
+
+    /**
+     * Return if the folder was already opened
+     *
+     * @access  public
+     * @return  bool
+     */
+    function isOpen() {
+      return is_resource($this->_hdir);
     }
   }
 ?>
