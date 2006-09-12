@@ -1,6 +1,6 @@
-RFC XXXX: 
+RFC 0072: Initialization and Interrupts of ServerProtocols
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: gellweiler
 @created: Tue Sep 12 15:27:01 CEST 2006
