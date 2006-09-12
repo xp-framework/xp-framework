@@ -44,16 +44,17 @@
      */
     function scanDeployments() {
       $deployments= array();
+      $this->folder->isOpen() && $this->folder->rewind();
 
       while ($entry= $this->folder->getEntry()) {
         if (!preg_match($this->pattern, $entry)) continue;
         
         $f= &new File($this->folder->getURI().$entry);
-        
+
         if (isset($this->files[$f->getURI()]) && $f->lastModified() > $this->files[$f->getURI()]) {
         
           // Deployment changed. Server must be restarted
-          return  ;
+          return  FALSE;
         }
         
         if (isset($this->files[$f->getURI()]) && $f->lastModified() <= $this->files[$f->getURI()]) {
@@ -66,7 +67,7 @@
         try(); {
           $ear->open(ARCHIVE_READ) &&
           $meta= $ear->extract('META-INF/bean.properties');
-        } if (catch('Exception', $e)) {  
+        } if (catch('Exception', $e)) {
           $deployments[]= &new IncompleteDeployment($entry, $e);
           continue;
         }
@@ -88,8 +89,11 @@
         $deployments[]= &$d;
         
         $this->files[$f->getURI()]= time();
+        
+        unset($f);
       }
-
+      
+      clearstatcache();
       return $deployments;
     }
     
