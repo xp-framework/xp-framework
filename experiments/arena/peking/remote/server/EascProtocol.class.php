@@ -31,23 +31,30 @@
      * @return  bool
      */
     function initialize() {
-      Console::writeLine('init');
-      $cm= &new ContainerManager();
-      $deployer= &new Deployer();
       $deployments= &$this->scanner->scanDeployments();
-      
       if (FALSE === $deployments) return FALSE;
 
       foreach ($deployments as $deployment) {
         try(); {
-          $deployer->deployBean($deployment, $cm);
+          $this->deployer->deployBean($deployment, $this->cm);
         } if (catch('DeployException', $e)) {
-          $cat->warn($e);
           // Fall through
         }
       }
       
       return TRUE;
+    }
+
+
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function idle() {
+      return $this->initialize();
     }
 
     /**
@@ -62,6 +69,9 @@
       $this->context[RIH_OBJECTS_KEY]= &new HashMap();
       $this->context[RIH_OIDS_KEY]= &new HashMap();
       $this->scanner= &$scanner;
+
+      $this->cm= &new ContainerManager();
+      $this->deployer= &new Deployer();
     }      
 
     /**
