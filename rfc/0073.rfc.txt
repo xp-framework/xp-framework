@@ -1,0 +1,62 @@
+RFC 0073: Change default implementation of toString() 
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Sep 13 13:55:14 CEST 2006
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+The default implementation of the toString() method will be changed to
+use xp::stringOf() instead of var_export().
+
+
+Rationale
+---------
+var_export() output has changed in PHP5 toward a increasingly unreadable
+form.
+
+
+Functionality
+-------------
+Basically, this is the change to lang.Object:
+
+(Unified diff):
+<code>
+     function toString() {
+-      return $this->getClassName().'@'.var_export($this, 1);
++      return xp::stringOf($this);
+     }
+</code>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slower.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://bugs.php.net/bug.php?id=29361
+  The bug leading to the changes.
+
+- http://derickrethans.nl/varexport_and_classes.php
+  The fix
+
+Comments
+--------
+n/a
+
+<EOF>
