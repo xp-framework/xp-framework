@@ -92,4 +92,12 @@ Comments
   an implementation for peer.server.PreforkingServer in
   http://experiments.xp-framework.net/?arena,peking,peer,server/PreforkingServer.class.php
 
+- friebe, Wed Sep 13 14:19:51 CEST 2006
+  initialize() is OK, though I think it should be complemented by a
+  finalize() method. In addition, I think it would be benefitial to
+  make these optional (e.g., by adding an additional interface called
+  Initializable).
+  I don't especially like the idle() method, which is called 
+  "sporadically" - non-deterministic, in other words.
+
 <EOF>
