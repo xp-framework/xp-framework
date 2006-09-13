@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Wed Sep 13 13:55:14 CEST 2006
-@status: draft
+@status: discussion, ends at Thu Sep 14 12:00:00 CEST 2006
 @category: <core>
 
 Scope of Change
@@ -15,7 +15,7 @@ use xp::stringOf() instead of var_export().
 
 Rationale
 ---------
-var_export() output has changed in PHP5 toward a increasingly unreadable
+var_export() output has changed in PHP5 toward an increasingly unreadable
 form.
 
 
@@ -54,6 +54,9 @@ Related documents
 
 - http://derickrethans.nl/varexport_and_classes.php
   The fix
+
+- http://xp-framework.net/rfc/contrib/rfc0071.diff
+  Patch implementing this RFC
 
 Comments
 --------
