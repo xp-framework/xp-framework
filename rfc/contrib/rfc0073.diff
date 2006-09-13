@@ -1,0 +1,46 @@
+Index: skeleton/lang/Object.class.php
+===================================================================
+--- skeleton/lang/Object.class.php	(revision 7907)
++++ skeleton/lang/Object.class.php	(working copy)
+@@ -79,21 +79,21 @@
+      * 
+      * Per default, this method returns:
+      * <xmp>
+-     *   [fully-qualified-class-name]@[serialized-object]
++     *   [fully-qualified-class-name] '{' [members-and-value-list] '}'
+      * </xmp>
+      * 
+      * Example:
+      * <xmp>
+-     * lang.Object@class object {
+-     *   var $__id = '0.06823200 1062749651';
+-     * }
++     *   lang.Object {
++     *     __id => "0.43080500 1158148350"
++     *   }
+      * </xmp>
+      *
+      * @access  public
+      * @return  string
+      */
+     function toString() {
+-      return $this->getClassName().'@'.var_export($this, 1);
++      return xp::stringOf($this);
+     }
+   }
+ ?>
+Index: skeleton/net/xp_framework/unittest/core/ObjectTest.class.php
+===================================================================
+--- skeleton/net/xp_framework/unittest/core/ObjectTest.class.php	(revision 7907)
++++ skeleton/net/xp_framework/unittest/core/ObjectTest.class.php	(working copy)
+@@ -121,8 +121,8 @@
+     function toStringMethod() {
+       $o= &new Object();
+       $this->assertEquals(
+-        'lang.Object@class object {'."\n".
+-        '  var $__id = \''.$o->hashCode().'\';'."\n".
++        'lang.Object {'."\n".
++        '  __id => "'.$o->hashCode().'"'."\n".
+         '}', 
+         $o->toString()
+       );
