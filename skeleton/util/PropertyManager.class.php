@@ -54,6 +54,17 @@
     }
     
     /**
+     * Register a certain property object to a specified name
+     *
+     * @access  public
+     * @param   string name
+     * @param   &util.Properties properties
+     */
+    function register($name, &$properties) {
+      $this->_prop[$this->_path.$name]= &$properties;
+    }
+    
+    /**
      * Return properties by name
      *
      * @access  public
