@@ -17,9 +17,9 @@
     var
       $cat          = NULL,
       $count        = 0,
-      $pid          = NULL,
       $sigs         = array(),
-      $timout       = 0;
+      $timout       = 0,
+      $restart      = FALSE;
 
     /**
      * Constructor
@@ -35,24 +35,8 @@
       $this->count= $count;
       $this->maxrequests= $maxrequests;
       $this->timeout= $timeout;
-      
-      // Get parent pid before forking
-      $this->pid= getmypid();
-      
     }
     
-
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function init() {
-      parent::init();
-      $this->socket->setBlocking(FALSE);
-    }
 
     /**
      * Set a trace for debugging
@@ -72,7 +56,30 @@
      */
     function handleSignal($sig) {
       $this->cat && $this->cat->infof('Received signal %d in pid %d', $sig, getmypid());
-      $this->terminate= TRUE;
+      
+      switch ($sig) {
+        case SIGINT: $this->terminate= TRUE; break;
+        case SIGHUP: $this->restart= TRUE; break;
+      }
+      
+    }
+
+    /**
+     * Terminate child processes
+     *
+     * @access  private
+     * @param   array children
+     */
+    function _killChildren(&$children) {
+      foreach ($children as $pid => $i) {
+        $this->cat && $this->cat->infof('Server #%d: Terminating child #%d with pid %d', getmypid(), $i, $pid);
+        posix_kill($pid, SIGINT);
+        pcntl_waitpid($pid, $status, WUNTRACED);
+        $this->cat && $this->cat->infof('Server #%d: Exitcode is %d', getmypid(), $status);
+        unset($children[$pid]);
+      }
+      
+      $this->restart= FALSE;
     }
 
     /**
@@ -81,19 +88,27 @@
      * @access  protected
      */
     function handleChild() {
+      $null= NULL;
 
       // Handle initialization of protocol. This
       // is called once for every new child created
-      if (FALSE === $this->protocol->initialize()) return;
-
+      if (is('peer.server.Initializable', $this->protocol)) {
+        $this->protocol->initialize();
+      }
+      
+      $read= array($this->socket->_sock);
       $requests= 0;
       while ($requests < $this->maxrequests) {
         try(); {
+          if (FALSE === socket_select($read, $null, $null, NULL)) {
+            $this->cat && $this->cat->warn('Child', getmypid(), 'in select ~', $e);
+            exit(-1);
+          }
         
-          $timeout= time() + $this->timeout;
-          while (time() < $timeout) {
-            $m= &$this->socket->accept();
-            usleep(1);
+          foreach ($read as $i => $handle) {
+            if ($handle === $this->socket->getHandle()) {
+              $m= &$this->socket->accept();
+            } 
           }
         } if (catch('IOException', $e)) {
           $this->cat && $this->cat->warn('Child', getmypid(), 'in accept ~', $e);
@@ -128,18 +143,10 @@
           'requests=', $requests, 'max= ', $this->maxrequests
         );
       }
-    }
-
-    /**
-     * Terminate forked children
-     *
-     * @access  private
-     * @param   int[] children
-     */
-    function _killChildren($children) {
-
       
-      $this->restart= FALSE;
+      if (is('peer.server.Initializable', $this->protocol)) {
+        $this->protocol->finalize();
+      }
     }
 
     /**
@@ -168,7 +175,7 @@
           // Exit out of child
           exit();
         }
-        if ($i < $this->count) continue;
+        if (sizeof($children) < $this->count) continue;
 
         // Set up signal handler so a kill -2 $pid (where $pid is the 
         // process id of the process we are running in) will cleanly shut
@@ -183,11 +190,19 @@
         // still be able to catch the shutdown signal in realtime.
         $this->cat && $this->cat->debug('Server #'.getmypid().': Starting main loop, children:', $children);
         while (!$this->terminate) { 
-          sleep(1);
+          usleep(1);
+          
+          // If we get SIGHUP restart child processess
+          if ($this->restart) {
+            $this->_killChildren($children);
+            break;
+          }
+
           if (($pid= pcntl_waitpid(-1, $status, WNOHANG)) <= 0) continue;
           
           // If, meanwhile, we've been interrupted, break out of both loops
           if ($this->terminate) break 2;
+
 
           // One of our children terminated, remove it from the process 
           // list and fork a new one
@@ -198,16 +213,12 @@
         
         // Reset signal handler so it doesn't get copied to child processes
         pcntl_signal(SIGINT, SIG_DFL);
+        pcntl_signal(SIGHUP, SIG_DFL);
         
       }
       
       // Terminate children
-      foreach ($children as $pid => $i) {
-        $this->cat && $this->cat->infof('Server #%d: Terminating child #%d with pid %d', getmypid(), $i, $pid);
-        posix_kill($pid, SIGINT);
-        pcntl_waitpid($pid, $status, WUNTRACED);
-        $this->cat && $this->cat->infof('Server #%d: Exitcode is %d', getmypid(), $status);
-      }
+      $this->_killChildren($children);
 
       // Shut down ourselves
       $this->shutdown();
