@@ -25,6 +25,7 @@
     $server->setTcpNodelay(TRUE);
     $server->setTrace($cat);
 
+    declare(ticks= 1);
     $cat->info('Starting server');
     $server->init();
     $server->service();
