@@ -8,7 +8,8 @@
     'remote.protocol.ByteCountedString', 
     'remote.protocol.Serializer',
     'remote.protocol.RemoteInterfaceMapping',
-    'remote.server.ServerHandler'
+    'remote.server.ServerHandler',
+    'io.sys.ShmSegment'
   );
   
   /**
@@ -31,20 +32,32 @@
      * @return  bool
      */
     function initialize() {
-      $deployments= &$this->scanner->scanDeployments();
-      if (FALSE === $deployments) return FALSE;
-
-      foreach ($deployments as $deployment) {
-        try(); {
-          $this->deployer->deployBean($deployment, $this->cm);
-        } if (catch('DeployException', $e)) {
-          // Fall through
+      $storage= &new ShmSegment(0x3c872747);
+      $deployments= &$storage->get();
+      
+      try(); {
+        foreach ($deployments as $deployment) {
+          try(); {
+            $this->deployer->deployBean($deployment, $this->cm);
+          } if (catch('DeployException', $e)) {
+            // Fall through
+          }
         }
+      } if (catch('Exception', $e)) {
+        return throw($e);
       }
       
-      return TRUE;
+      return TRUE; 
     }
 
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function finalize() { }
 
     /**
      * (Insert method's description here)
@@ -225,5 +238,5 @@
      */
     function handleError(&$socket, &$e) { }
 
-  } implements(__FILE__, 'peer.server.ServerProtocol');
+  } implements(__FILE__, 'peer.server.ServerProtocol', 'util.Initializable');
 ?>
