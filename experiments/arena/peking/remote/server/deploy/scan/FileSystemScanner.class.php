@@ -21,7 +21,8 @@
     var
       $folder   = NULL,
       $pattern  = '',
-      $files    = array();
+      $files    = array(),
+      $deployments= array();
       
       
     /**
@@ -43,32 +44,28 @@
      * @return  remote.server.deploy.Deployable[]
      */
     function scanDeployments() {
-      $deployments= array();
-      $this->folder->isOpen() && $this->folder->rewind();
+      clearstatcache();
+      $this->changed= FALSE;
 
       while ($entry= $this->folder->getEntry()) {
         if (!preg_match($this->pattern, $entry)) continue;
         
         $f= &new File($this->folder->getURI().$entry);
-
-        if (isset($this->files[$f->getURI()]) && $f->lastModified() > $this->files[$f->getURI()]) {
         
-          // Deployment changed. Server must be restarted
-          return  FALSE;
-        }
-        
-        if (isset($this->files[$f->getURI()]) && $f->lastModified() <= $this->files[$f->getURI()]) {
+        if (isset($this->files[$entry]) && $f->lastModified() <= $this->files[$entry]) {
         
           // File already deployed
           continue;
         }
+        
+        $this->changed= TRUE;
 
         $ear= &new Archive(new File($this->folder->getURI().$entry));
         try(); {
           $ear->open(ARCHIVE_READ) &&
           $meta= $ear->extract('META-INF/bean.properties');
         } if (catch('Exception', $e)) {
-          $deployments[]= &new IncompleteDeployment($entry, $e);
+          $this->deployments[$entry]= &new IncompleteDeployment($entry, $e);
           continue;
         }
         
@@ -76,7 +73,7 @@
         $beanclass= $prop->readString('bean', 'class');
         
         if (!$beanclass) {
-          $deployments[]= &new IncompleteDeployment($entry, new FormatException('bean.class property missing!'));
+          $this->deployments[$entry]= &new IncompleteDeployment($entry, new FormatException('bean.class property missing!'));
           continue;
         }
 
@@ -86,15 +83,38 @@
         $d->setInterface($prop->readString('bean', 'remote'));
         $d->setDirectoryName($prop->readString('bean', 'lookup'));
         
-        $deployments[]= &$d;
-        
-        $this->files[$f->getURI()]= time();
-        
-        unset($f);
+        $this->deployments[$entry]= &$d; 
+        $this->files[$entry]= time();
+
+        delete($f);
       }
       
-      clearstatcache();
-      return $deployments;
+      // Check existing deployments
+      foreach (array_keys($this->deployments) as $entry) {
+        
+        $f= &new File($this->folder->getURI().$entry);
+        if (!$f->exists()) {
+          unset($this->deployments[$entry], $this->files[$entry]);
+          
+          $this->changed= TRUE;
+        }
+
+        delete($f);
+      }
+
+      $this->folder->close();
+      return $this->changed;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function getDeployments() {
+      return $this->deployments;
     }
     
     /**
