@@ -19,7 +19,8 @@
       $count        = 0,
       $sigs         = array(),
       $timout       = 0,
-      $restart      = FALSE;
+      $restart      = FALSE,
+      $null         = NULL;
 
     /**
      * Constructor
@@ -30,7 +31,7 @@
      * @param   int count default 10 number of children to fork
      * @param   int maxrequests default 1000 maxmimum # of requests per child
      */
-    function __construct($addr, $port, $count= 10, $maxrequests= 1000, $timeout= 60) {
+    function __construct($addr, $port, $count= 1, $maxrequests= 1000, $timeout= 60) {
       parent::__construct($addr, $port);
       $this->count= $count;
       $this->maxrequests= $maxrequests;
@@ -61,7 +62,6 @@
         case SIGINT: $this->terminate= TRUE; break;
         case SIGHUP: $this->restart= TRUE; break;
       }
-      
     }
 
     /**
@@ -88,7 +88,9 @@
      * @access  protected
      */
     function handleChild() {
-      $null= NULL;
+      
+      // Install child signal handler
+      pcntl_signal(SIGINT, array(&$this, 'handleSignal'));
 
       // Handle initialization of protocol. This
       // is called once for every new child created
@@ -98,27 +100,22 @@
       
       $read= array($this->socket->_sock);
       $requests= 0;
-      while ($requests < $this->maxrequests) {
+      while (!$this->terminate && $requests < $this->maxrequests) {
         try(); {
-          if (FALSE === socket_select($read, $null, $null, NULL)) {
-            $this->cat && $this->cat->warn('Child', getmypid(), 'in select ~', $e);
-            exit(-1);
-          }
         
-          foreach ($read as $i => $handle) {
-            if ($handle === $this->socket->getHandle()) {
-              $m= &$this->socket->accept();
-            } 
+          // Wait for incoming data. This call can be interrupted
+          // by an incoming signal.
+          if (FALSE === socket_select($read, $this->null, $this->null, NULL)) {
+            $this->terminate || $this->cat && $this->cat->warn('Child', getmypid(), 'select failed');
+            return;
           }
+          
+          // There is data on the socket.
+          // Handle it!
+          $m= &$this->socket->accept();
         } if (catch('IOException', $e)) {
           $this->cat && $this->cat->warn('Child', getmypid(), 'in accept ~', $e);
-          exit(-1);
-        }
-        
-        // Handle idle loop of protocol.
-        if (!$m) {
-          if (FALSE === $this->protocol->idle()) return;
-          continue;
+          return;
         }
         
         $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);
@@ -132,7 +129,6 @@
             $this->protocol->handleError($m, $e);
             break;
           }
-
         } while (!$m->eof());
 
         $m->close();
@@ -214,7 +210,6 @@
         // Reset signal handler so it doesn't get copied to child processes
         pcntl_signal(SIGINT, SIG_DFL);
         pcntl_signal(SIGHUP, SIG_DFL);
-        
       }
       
       // Terminate children
