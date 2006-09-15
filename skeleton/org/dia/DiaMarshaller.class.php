@@ -8,6 +8,7 @@
     'util.cmd.Console',
     'text.doclet.RootDoc',
     'org.dia.DiaDiagram',
+    'org.dia.DiaUMLClass',
     'org.dia.DiaUMLGeneralization',
     'org.dia.DiaUMLDependency',
     'org.dia.DiaUMLRealizes'
@@ -110,7 +111,7 @@
         // save dia object-id by classname
         $I->_class_ids[$classname]= $Dia_class->getId();
         // add to DiaDiagram
-        $I->_layer->add($Dia_class);
+        $I->_layer->addObject($Dia_class);
       }
 
       //Console::writeLine('IDs: '.xp::stringOf($I->_class_ids));
@@ -124,7 +125,7 @@
             continue;
           }
           // add to DiaDiagram
-          $I->_layer->add($I->_genDependency($from, $to));
+          $I->_layer->addObject($I->_genDependency($from, $to));
         }
       }
       // generate and add implementations
@@ -136,7 +137,7 @@
             continue;
           }
           // add to DiaDiagram
-          $I->_layer->add($I->_genImplemenation($from, $to));
+          $I->_layer->addObject($I->_genImplemenation($from, $to));
         }
       }
       // generate and add generalizations
@@ -144,7 +145,7 @@
         $to= $I->_gens[$from];
         // Console::writeLine("Gen: $from -> $to...");
         // add to DiaDiagram
-        $I->_layer->add($I->_genGeneralization($from, $to));
+        $I->_layer->addObject($I->_genGeneralization($from, $to));
       }
 
       return $I->_dia;

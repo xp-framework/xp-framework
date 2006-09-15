@@ -19,13 +19,16 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @access  protected
+     * @access  public
      * @return  &xml.Node
      */
     function &getNode() {
       $node= &parent::getNode();
-      if (isset($this->value) and $this->value !== '') 
+      if (isset($this->value)) {
         $node->setContent('#'.$this->value.'#');
+      } else {
+        $node->setContent('##');
+      }
       return $node;
     }
 

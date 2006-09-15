@@ -20,7 +20,7 @@
     /**
      * Initializes this Paper object
      *
-     * @access  protected
+     * @access  public
      */
     function initialize() {
       // default values
@@ -39,10 +39,20 @@
     }
 
     /**
+     * Returns the top margin of the paper
+     *
+     * @access  public
+     * @return  float
+     */
+    function getTopMargin() {
+      return $this->getChildValue('tmargin');
+    }
+
+    /**
      * Sets the top margin of the Paper
      *
-     * @access  protected
-     * @param   real rmargin
+     * @access  public
+     * @param   float rmargin
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="tmargin"]/dia:real/@val', value= 'real')]
     function setTopMargin($tmargin) {
@@ -50,10 +60,20 @@
     }
 
     /**
+     * Returns the bottom margin of the paper
+     *
+     * @access  public
+     * @return  float
+     */
+    function getBottomMargin() {
+      return $this->getChildValue('bmargin');
+    }
+
+    /**
      * Sets the bottom margin of the Paper
      *
-     * @access  protected
-     * @param   real bmargin
+     * @access  public
+     * @param   float bmargin
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="bmargin"]/dia:real/@val', value= 'real')]
     function setBottomMargin($bmargin) {
@@ -61,10 +81,20 @@
     }
 
     /**
+     * Returns the left margin of the paper
+     *
+     * @access  public
+     * @return  float
+     */
+    function getLeftMargin() {
+      return $this->getChildValue('lmargin');
+    }
+
+    /**
      * Sets the left margin of the Paper
      *
-     * @access  protected
-     * @param   real lmargin
+     * @access  public
+     * @param   float lmargin
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="lmargin"]/dia:real/@val', value= 'real')]
     function setLeftMargin($lmargin) {
@@ -72,10 +102,20 @@
     }
 
     /**
+     * Returns the right margin of the paper
+     *
+     * @access  public
+     * @return  float
+     */
+    function getRightMargin() {
+      return $this->getChildValue('rmargin');
+    }
+
+    /**
      * Sets the right margin of the Paper
      *
-     * @access  protected
-     * @param   real rmargin
+     * @access  public
+     * @param   float rmargin
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="rmargin"]/dia:real/@val', value= 'real')]
     function setRightMargin($rmargin) {
@@ -83,9 +123,20 @@
     }
 
     /**
+     * Returns TRUE if the paper has 'portrait' orientation, FALSE means
+     * 'landscape'
+     *
+     * @access  public
+     * @return  boole
+     */
+    function getPortrait() {
+      return $this->getChildValue('is_portrait');
+    }
+
+    /**
      * Sets the 'is_portrait' attribute of the Paper object
      *
-     * @access  protected
+     * @access  public
      * @param   bool portrait
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="is_portrait"]/dia:boolean/@val', value= 'boolean')]
@@ -94,14 +145,35 @@
     }
 
     /**
+     * Returns the scaling of the paper
+     *
+     * @access  public
+     * @return  float
+     */
+    function getScaling() {
+      return $this->getChildValue('scaling');
+    }
+
+    /**
      * Sets the 'scaling' of the Paper object
      *
-     * @access  protected
-     * @param   real scaling
+     * @access  public
+     * @param   float scaling
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="scaling"]/dia:real/@val', value= 'real')]
     function setScaling($scaling) {
       $this->setReal('scaling', $scaling);
+    }
+
+    /**
+     * Returns TRUE if the paper is to be fittet onto a fixed numer of
+     * horizontal and vertical sheets
+     *
+     * @access  public
+     * @return  bool
+     */
+    function getFitTo() {
+      return $this->getChildValue('fitto');
     }
 
     /**
@@ -115,10 +187,20 @@
     }
 
     /**
+     * Returns the number of sheets the diagram should be fit to horizontally
+     *
+     * @access  public
+     * @return  int
+     */
+    function getFitWidth() {
+      return $this->getChildValue('fitwidth');
+    }
+
+    /**
      * Sets the 'fitwidth' of this Paper object: specifies on how many sheets
      * (horizontal) the diagram should be fitted if 'fitto' is TRUE
      *
-     * @access  protected
+     * @access  public
      * @param   int width
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="fitwidth"]/dia:int/@val', value= 'int')]
@@ -127,10 +209,20 @@
     }
 
     /**
+     * Returns the number of sheets the diagram should be fit to vertically
+     *
+     * @access  public
+     * @return  int
+     */
+    function getFitHeight() {
+      return $this->getChildValue('fitheight');
+    }
+
+    /**
      * Sets the 'fitheight' of this Paper object: specifies on how many sheets
      * (vertical) the diagram should be fitted if 'fitto' is TRUE
      *
-     * @access  protected
+     * @access  public
      * @param   int height
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="fitheight"]/dia:int/@val', value= 'int')]

@@ -8,7 +8,6 @@
     'org.dia.DiaElement'
   );
 
-
   /**
    * Represents a 'dia:boolean' node
    */
@@ -20,17 +19,21 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @access  protected
+     * @access  public
      * @return  &xml.Node
      */
     function &getNode() {
       $node= &parent::getNode();
-      if (isset($this->value)) 
+      // TODO: the value should always be 'boolean'!
+      if (isset($this->value)) {
         if (xp::typeOf($this->value) === 'boolean') {
           $node->setAttribute('val', $this->value ? 'true' : 'false');
         } else {
           $node->setAttribute('val', $this->value === 'true' ? 'true' : 'false');
         }
+      } else {
+        $node->setAttribute('val', 'false'); // default
+      }
       return $node;
     }
 

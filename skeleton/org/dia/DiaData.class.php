@@ -20,8 +20,16 @@
   class DiaData extends DiaCompound {
 
     var
-      $children= array(),
       $node_name= 'dia:diagramdata';
+
+    /**
+     * Constructor: simply calls 'initialize()'
+     *
+     * @access  public
+     */
+    function __construct() {
+      $this->initialize();
+    }
 
     /**
      * Initialize this Data object with default values
@@ -29,18 +37,29 @@
      * @access  public
      */
     function initialize() {
-      $this->setColor('background', '#FFFFFF');
-      $this->setColor('pagebreak', '#000099');
-      $this->setColor('color', '#d8e5e5');
+      // default values
+      $this->setBackgroundColor('#FFFFFF');
+      $this->setPagebreakColor('#000099');
+      $this->setGridColor('#d8e5e5');
       // add paper
       $this->set('paper', new DiaAttribute('paper'));
       $this->setPaper(new DiaPaper());
-      // grid
+      // add grid
       $this->set('grid', new DiaAttribute('grid'));
       $this->setGrid(new DiaGrid());
-      // guides
+      // add guides
       $this->set('guides', new DiaAttribute('guides'));
       $this->setGuides(new DiaGuides());
+    }
+
+    /**
+     * Returns the background color
+     *
+     * @access  public
+     * @return  string
+     */
+    function getBackgroundColor() {
+      return $this->getChildValue('background');
     }
 
     /**
@@ -50,8 +69,18 @@
      * @param   string color Example: '#FFFFFF'
      */
     #[@fromDia(xpath= 'dia:attribute[@name="background"]/dia:color/@val', value= 'string')] 
-    function setBackground($color) {
+    function setBackgroundColor($color) {
       $this->setColor('background', $color);
+    }
+
+    /**
+     * Returns the pagebreak color
+     *
+     * @access  public
+     * @return  string
+     */
+    function getPagebreakColor() {
+      return $this->getChildValue('pagebreak');
     }
 
     /**
@@ -61,8 +90,18 @@
      * @param   string color
      */
     #[@fromDia(xpath= 'dia:attribute[@name="pagebreak"]/dia:color/@val', value= 'string')]
-    function setPagebreak($color) {
-      $this->set('pagebreak', new DiaAttribute('pagebreak', $color, 'color'));
+    function setPagebreakColor($color) {
+      $this->setColor('pagebreak', $color);
+    }
+
+    /**
+     * Returns the grid color
+     *
+     * @access  public
+     * @return  string
+     */
+    function getGridColor() {
+      return $this->getChildValue('color');
     }
 
     /**
@@ -72,8 +111,18 @@
      * @param   string color
      */
     #[@fromDia(xpath= 'dia:attribute[@name="color"]/dia:color/@val', value= 'string')]
-    function setColor($color) {
-      $this->set('color', new DiaAttribute('color', $color, 'color'));
+    function setGridColor($color) {
+      $this->setColor('color', $color);
+    }
+
+    /**
+     * Returns the DiaPaper object
+     *
+     * @access  public
+     * @return  &org.dia.DiaPaper
+     */
+    function &getPaper() {
+      return $this->getChild('paper');
     }
 
     /**
@@ -89,6 +138,16 @@
     }
 
     /**
+     * Returns the DiaGrid object   
+     *
+     * @access  public
+     * @return  &org.dia.DiaGrid
+     */
+    function &getGrid() {
+      return $this->getChild('grid');
+    }
+
+    /**
      * Set the Grid node
      *
      * @access  public
@@ -98,6 +157,16 @@
     function setGrid(&$Grid) {
       $Grid_node= &$this->getChild('grid');
       $Grid_node->set('grid', $Grid);
+    }
+
+    /**
+     * Returns the DiaGuides object
+     *
+     * @access  public
+     * @return  &org.dia.DiaGuides
+     */
+    function &getGuides() {
+      return $this->getChild('guides');
     }
 
     /**

@@ -25,6 +25,8 @@
 
     var
       $name= NULL, 
+      $_type= NULL,
+      $_value= NULL,
       $node_name= 'dia:attribute';
 
     /**
@@ -40,20 +42,32 @@
     function __construct($name, $value= NULL, $type= NULL) {
       if (!isset($name)) 
         return throw(new IllegalArgumentException('Parameter "name" is required!'));
-      // set name
-      $this->setName($name);
 
-      // set value if given
-      if (isset($value)) {
-        if (!isset($type)) $type= xp::typeOf($value);
-        if ($type === 'integer') $type= 'int';
-        if (in_array($type, array('float', 'double'))) $type= 'real';
-        if ($type === 'bool') $type= 'boolean';
+      $this->setName($name);
+      if (isset($value)) $this->_value= $value;
+      if (isset($type)) $this->_type= $type;
+
+      $this->initialize();
+    }
+
+    /**
+     * Initializes the attribute with default values, depending on $type
+     *
+     * @access  public
+     */
+    function initialize() {
+      // determine type from value if type is not set
+      if (isset($this->_value)) {
+        if (!isset($this->_type)) $this->_type= xp::typeOf($this->_value);
+        if ($this->_type === 'integer') $this->_type= 'int';
+        if (in_array($this->_type, array('float', 'double'))) $this->_type= 'real';
+        if ($this->_type === 'bool') $this->_type= 'boolean';
+        $value= $this->_value;
       }
 
       // set type if defined
-      if (isset($type)) {
-        switch ($type) {
+      if (isset($this->_type)) {
+        switch ($this->_type) {
           case 'int':     $this->set('value', new DiaInt($value)); break;
           case 'real':    $this->set('value', new DiaReal($value)); break;
           case 'string':  $this->set('value', new DiaString($value)); break;
@@ -65,7 +79,7 @@
           case 'color':   $this->set('value', new DiaColor($value)); break;
   
           default:
-            return throw(new IllegalArgumentException('Unkown type "'.$type.'"'));
+            return throw(new IllegalArgumentException('Unkown type "'.$this->_type.'"'));
         }
       }
     }
@@ -73,7 +87,7 @@
     /**
      * Return the name of this DiaAttribute
      *
-     * @access  protected
+     * @access  public
      * @return  string
      */
     function getName() {
@@ -83,10 +97,9 @@
     /**
      * Set the name of this DiaAttribute
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      */
-    #[@xmlmapping(xpath = '@name', type = 'string')]
     function setName($name) {
       $this->name= $name;
     }
@@ -94,7 +107,7 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @access  protected
+     * @access  public
      * @return  &xml.Node
      */
     function &getNode() {

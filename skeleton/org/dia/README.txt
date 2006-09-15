@@ -17,9 +17,35 @@ CONTENTS:
 * if given lots of classes, some don't get recursed or only used as dependency
 * and not as parent class although generalization should take precedence!
 ==> improve recusion! done? check!
+* generate UNIQUE ids for all _children elements i.e. $element_name+$element_id?
 
 2a) HOWTO: create DIAgrams:
------------------------
+---------------------------
+HINT: at this stage of development, the easiest way of 'generating' a diagram
+is to create a new diagram by hand which includes all desired classes with fully
+qualified classname. After that you can use 'update_diagram.php' (see 2b) to
+automatically add all attributes and methods to the classes. 
+
+
+TODO: New way of generating diagrams:
+1) collect Classes, Dependencies, Generalizations etc...
+2) Generate and add (empty) DiaUML* objects to a new DiaDiagram
+3) run UpdateVisitor to update all objects in the DiaDiagram (adds attributes and methods)
+
+part1: (ObjectCollector)
+- collector: collect classes, dependencies, generalizations, implementations etc. 
+  -> can be controlled via options (recursion, dependencies, ...)
+  => generates a generic list of "objects" and their connections
+part2: (
+- given a list of "objects" generate appropriate DiaUML* objects which are
+  already connected to each other and add them to the given DiaDiagram
+  => returns DiaDiagram with added objects
+part3:
+- given a DiaDiagram and some options, UpdateVisitor updates the appropriate
+  objects in the DiaDiagram
+  => returns updated DiaDiagram
+
+OBSOLET:
 > php doclet.php --doclet=org.dia.DiaDoclet --verbose --depend --gzipped --recurse=5 --directory=/diagrams --diagram=test.dia util.Date lang.XPClass [...]
 
 DiaDoclet options:
@@ -31,6 +57,11 @@ DiaDoclet options:
 * --diagram=$FILE
 
 2b) HOWTO: update DIAgrams:
+---------------------------
+> php update_diagram.php DIAGRAM.DIA
+=> uses UpdateVisitor to update all classes found in the diagram
+
+OBSOLET:
 > php update.php --diagram=test.dia --classes=lang.Object,util.Date
 
 3) FILES:
@@ -73,6 +104,10 @@ DiaUML* : represent what their name sais ;)
 * Doclet
 DiaDoclet : hands the given classes over to DiaMarshaller to generate a DiaDiagram
 
+* Visitors
+UpdateVisitor : takes a DiaDiagram and updates the given (or all) classes in the diagram
+FUTURE: LayoutVisitor : tries to do some layouting?
+
 4) TODOs:
 ---------
 * merge generated diagram with the positions from an already (manually) layouted diagram (tool)
@@ -84,7 +119,14 @@ DiaDoclet : hands the given classes over to DiaMarshaller to generate a DiaDiagr
 * yet another REDESIGN: separate 'UML' notation stuff from 'dia' specific classes
 => have XP classes which represent a UML diagram - independent of 'dia'
 => have an 'Visitor' which goes through the UML diagram structure and creates a 'dia' diagram from it
-=> OR just use annotations?
+=> OR just use annotations? (done)
+
+* database diagrams:
+- use XML generated for 'DataSet' classes to generate DiaUMLClass objects?
+-OR-
+- use ClassDoc of 'DataSet' classes to generate the diagram, just like we do now? 
+  (NO, because: I think they have too many differences in interpreting 'class'
+  methods and attributes... i.e. UML ERD vs. UML Classdiagram)
 
 6) The updating process: (concept)
 ------------------------

@@ -8,7 +8,7 @@
     'xml.Tree',
     'org.dia.DiaCompound',
     'org.dia.DiaData',
-    'org.dia.DiaLayer',
+    'org.dia.DiaLayer'
   );
   
   /**
@@ -24,7 +24,17 @@
       $node_name= 'dia:diagram';
 
     /**
-     * Returns the next ID for an element (auto increment) with leading '0'
+     * Simple constructor
+     *
+     * @access  public
+     */
+    function __construct() {
+      $this->initialize();
+    }
+
+    /**
+     * Returns the next ID for an element (auto increment) with leading 'O'
+     * (capital 'o' not zero!)
      * 
      * @model   static
      * @access  public
@@ -32,7 +42,7 @@
      */
     function getId() {
       static $id= 0;
-      return '0'.$id++;
+      return 'O'.$id++;
       // too complicated: return sprintf('%0'.(strlen($id)+1).'d', $id++);
     }
 
@@ -44,6 +54,16 @@
     function initialize() {
       $this->set('data', new DiaData());
       $this->addLayer(new DiaLayer('Background', TRUE));
+    }
+
+    /**
+     * Returns the namespace with the given prefix
+     *
+     * @access  public
+     * @return  string uri The namespace URI
+     */
+    function getNamespace($prefix) {
+      return $this->ns[$prefix];
     }
 
     /**
@@ -59,6 +79,16 @@
     }
 
     /**
+     * Returns the DiaData object
+     *
+     * @access  public
+     * @return  &org.dia.DiaData
+     */
+    function &getData() {
+      return $this->getChild('data');
+    }
+
+    /**
      * Sets the DiaData object of the diagram
      *
      * @access  public
@@ -67,6 +97,20 @@
     #[@fromDia(xpath= 'dia:diagramdata', class= 'org.dia.DiaData')]
     function setData(&$Data) {
       $this->set('data', $Data);
+    }
+
+    /**
+     * Returns the DiaLayer object with the given name
+     *
+     * @access  public
+     * @param   string name default 'Background'
+     * @return  &org.dia.DiaLayer
+     */
+    function &getLayer($name= 'Background') {
+      $Child= &$this->getChild($name);
+      if (!is('org.dia.DiaLayer', $Child))
+        return throw(new IllegalArgumentException("The object with name='$name' is no DiaLayer!"));
+      return $Child;
     }
 
     /**
@@ -131,8 +175,8 @@
      */
     function &getNode() {
       $node= &parent::getNode();
-      while (list($ns, $url)= each($this->ns)) {
-        $node->setAttribute('xmlns:'.$ns, $url);
+      foreach (array_keys($this->ns) as $prefix) {
+        $node->setAttribute('xmlns:'.$prefix, $this->ns[$prefix]);
       }
       return $node;
     }

@@ -5,10 +5,10 @@
  */
 
   uses(
-    'xml.Node',
+    'lang.IllegalArgumentException',
     'org.dia.DiaComponent',
     'org.dia.DiaAttribute',
-    'lang.IllegalArgumentException'
+    'xml.Node'
   );
 
   /**
@@ -23,7 +23,7 @@
   class DiaCompound extends Object {
 
     var
-      $children= array();
+      $_children= array();
 
     /**
      * Set the DiaComponent object of the specified name
@@ -38,13 +38,13 @@
         if (is_object($Component)) $name= $Component->getClassName();
         return throw(new IllegalArgumentException("Wrong object type: $name"));
       }
-      $this->children[$name]= &$Component;
+      $this->_children[$name]= &$Component;
     }
 
     /**
      * Creates a new 'boolean' node and assigns it to $name
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      * @param   bool boolean
      */
@@ -55,7 +55,7 @@
     /**
      * Creates a new 'int' node and assigns it to $name
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      * @param   int int
      */
@@ -66,7 +66,7 @@
     /**
      * Creates a new 'real' node and assigns it to $name
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      * @param   float real
      */
@@ -77,7 +77,7 @@
     /**
      * Creates a new 'string' node and assigns it to $name
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      * @param   string string
      */
@@ -88,7 +88,7 @@
     /**
      * Creates a new 'enum' node and assigns it to $name
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      * @param   int enum
      */
@@ -99,7 +99,7 @@
     /**
      * Creates a new 'point' node and assigns it to $name
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      * @param   array point
      */
@@ -110,7 +110,7 @@
     /**
      * Creates a new 'rectangle' node and assigns it to $name
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      * @param   array points
      */
@@ -121,7 +121,7 @@
     /**
      * Creates a new 'color' node and assigns it to $name
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      * @param   string color
      */
@@ -132,7 +132,7 @@
     /**
      * Creates a new 'font' node and assigns it to $name
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      * @param   array font
      */
@@ -143,12 +143,12 @@
     /**
      * Returns DiaComponent child by the given name of the component
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      * @return  &org.dia.DiaComponent
      */
     function &getChild($name) {
-      return $this->children[$name];
+      return $this->_children[$name];
     }
 
     /**
@@ -166,15 +166,15 @@
     /**
      * Returns all DiaComponent children of given object-type
      *
-     * @access  protected
-     * @param   string type
-     * @return  &org.dia.DiaComponent
+     * @access  public
+     * @param   string type The object type
+     * @return  org.dia.DiaComponent[]
      */
-    function &getChildByType($type) {
+    function getChildByType($type) {
       $objs= array();
-      foreach (array_keys($this->children) as $key) {
-        if (is($type, $this->children[$key])) {
-          $objs[]= &$this->children[$key];
+      foreach (array_keys($this->_children) as $key) {
+        if (is($type, $this->_children[$key])) {
+          $objs[]= &$this->_children[$key];
         }
       }
       return $objs;
@@ -183,9 +183,10 @@
      * TODO: better?
      * childByType: getType() composite, object
      * childByName: getName() attribute, layer(, font)
+     * USE getChild($name)!
      */
     function &getChildAttributeByName($name) {
-      $attrs= &$this->getChildByType('DiaAttribute');
+      $attrs= &$this->getChildByType('org.dia.DiaAttribute');
       foreach (array_keys($attrs) as $key) {
         if ($attrs[$key]->getName() === $name) {
           return $attrs[$key];
@@ -199,7 +200,7 @@
     /**
      * Return the name of the object
      *
-     * @access  protected
+     * @access  public
      * @return  string
      */
     function getName() {
@@ -209,7 +210,7 @@
     /**
      * Set the name of the object
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      */
     #[@fromDia(xpath= 'dia:attribute[@name="name"]/dia:string', value= 'string')]
@@ -217,23 +218,24 @@
       $this->setString('name', $name);
     }
 
-    /********** Interface Methods *************/
+    /************************* interface methods ****************************/
 
     /**
      * Returns XML representation of this DiaCompound
      *
-     * @access  protected
+     * @access  public
      * @return  &xml.Node
      */
     function &getNode() {
       $node= &new Node($this->node_name);
-      foreach (array_keys($this->children) as $key) {
-        /*if (!is_object($this->children[$key])) {
+      $children= $this->getChildren();
+      foreach (array_keys($children) as $key) {
+        if (!is('org.dia.DiaComponent', $children[$key])) {
           Console::writeLine('Node: '.xp::stringOf($node));
-          Console::writeLine('NON-object: '.xp::stringOf($this->children));
-        } else { */
-          $node->addChild($this->children[$key]->getNode());
-        //}
+          Console::writeLine("NON-object: $key=".xp::stringOf($children[$key]));
+        } else {
+          $node->addChild($children[$key]->getNode());
+        }
       }
       return $node;
     }
@@ -241,18 +243,70 @@
     /**
      * Accepts a Visitor object
      * 
-     * @access  protected
+     * @access  public
      * @param   &lang.Visitor Visitor
      */
     function accept(&$Visitor) {
       $Visitor->visit($this);
-      foreach (array_keys($this->children) as $key) {
-        if (!is_object($this->children[$key])) {
-          Console::writeLine('NON-object: '.xp::stringOf($this->children[$key]));
+      $children= &$this->getChildren();
+      foreach (array_keys($children) as $key) {
+        if (!is_object($children[$key])) {
+          Console::writeLine("NON-object: $key=".xp::typeOf($children[$key]));
+          if (is_array($children[$key]))
+            Console::writeLine(xp::stringOf(array_keys($children[$key])));
+          Console::writeLine('Parent: '.$this->getName().'='.xp::typeOf($this));
         } else {
-          $this->children[$key]->accept($Visitor);
+          $children[$key]->accept($Visitor);
         }
       }
+    }
+
+    /**
+     * Adds a child component
+     *
+     * @access  public
+     * @param   &org.dia.DiaComponent Comp
+     * @throws  lang.IllegalArgumentException
+     */
+    function addChild(&$Comp) {
+      if (!is('org.dia.DiaComponent', $Comp))
+        return throw(new IllegalArgumentException('Given object is no "DiaComponent"!'));
+      // TODO: what if child exists?
+      if (method_exists($Comp, 'getName')) {
+        $this->_children[$Comp->getName()]= &$Comp;
+      } else {
+        $this->_children[]= &$Comp;
+      }
+    }
+
+    /**
+     * Removes the given child component if it exists
+     *
+     * @access  public
+     * @param   &org.dia.DiaComponent Comp
+     * @return  bool
+     */
+    function remChild(&$Comp) {
+      if (!is('org.dia.DiaComponent', $Comp))
+        return throw(new IllegalArgumentException('Given object is no "DiaComponent"!'));
+      // TODO: how do we uniquely identify components?
+      foreach (array_keys($this->_children) as $name) {
+        if ($Comp->getName() === $name) {
+          unset($this->_children[$name]);
+          return TRUE;
+        }
+      }
+      return FALSE;
+    }
+
+    /**
+     * Returns an array with all child components
+     *
+     * @access  public
+     * @return  &org.dia.DiaComponent[]
+     */
+    function getChildren() {
+      return $this->_children;
     }
 
   } implements(__FILE__, 'org.dia.DiaComponent');

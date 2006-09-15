@@ -28,7 +28,17 @@
       $this->setWidthY(1);
       $this->setVisibleX(1);
       $this->setVisibleY(1);
-      $this->setColor(new DiaComposite('color')); // TODO?
+      $this->setGridColor(new DiaComposite('color')); // TODO?
+    }
+
+    /**
+     * Returns the horizontal grid spacing
+     *
+     * @access  public
+     * @return  real
+     */
+    function getWidthX() {
+      return $this->getChildValue('width_x');
     }
 
     /**
@@ -43,6 +53,16 @@
     }
 
     /**
+     * Returns the vertical grid spacing
+     *
+     * @access  public
+     * @return  real
+     */
+    function getWidthY() {
+      return $this->getChildValue('width_y');
+    }
+
+    /**
      * Sets the vertical grid spacing
      *
      * @access  public
@@ -51,6 +71,16 @@
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="width_y"]/dia:real/@val', value= 'real')]
     function setWidthY($width) {
       $this->setReal('width_y', $width);
+    }
+
+    /**
+     * Returns the horizontal stepping of visible grid lines
+     *
+     * @access  public
+     * @return  real
+     */
+    function getVisibleX() {
+      return $this->getChildValue('visible_x');
     }
 
     /**
@@ -65,6 +95,16 @@
     }
 
     /**
+     * Returns the vertical stepping of visible grid lines
+     *
+     * @access  public
+     * @return  real
+     */
+    function getVisibleY() {
+      return $this->getChildValue('visible_y');
+    }
+
+    /**
      * Sets the vertical stepping of visible grid lines (show every line: 1)
      *
      * @access  public
@@ -76,13 +116,23 @@
     }
 
     /**
+     * Returns the grid color object
+     *
+     * @access  public
+     * @return  &org.dia.DiaComposite
+     */
+    function getGridColor() {
+      return $this->getChild('color');
+    }
+
+    /**
      * Sets the color of the grid (why is this a composite???? TODO!)
      *
      * @access  public
      * @param   &org.dia.DiaComposite Color
      */
     #[@fromDia(xpath= 'dia:composite/dia:composite[@type="color"]', class= 'org.dia.DiaComposite')]
-    function setColor(&$Color) {
+    function setGridColor(&$Color) {
       $this->set('color', $Color);
     }
 

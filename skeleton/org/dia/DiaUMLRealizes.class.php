@@ -7,6 +7,9 @@
   uses('org.dia.DiaUMLConnection');
 
   class DiaUMLRealizes extends DiaUMLConnection {
+
+    var
+      $conn_assoc= array(0 => 'end', 1 => 'begin');
     
     /**
      * Constructor of an UML realization
@@ -23,7 +26,7 @@
      * UML - Realizes somehow 'begins' at the interface class...
      *
      * @param   string id The diagram object ID
-     * @parma   int connpoint default 0 The connection point of the object
+     * @param   int connpoint default 0 The connection point of the object
      */
     function beginAt($id, $connpoint= 0) {
       parent::endAt($id, $connpoint);

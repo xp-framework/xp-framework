@@ -5,11 +5,13 @@
  */
 
   uses(
-    'org.dia.DiaComponent'
+    'org.dia.DiaComponent',
+    'xml.Node'
   );
 
   /**
-   * Base class for all simple DIAgram elements
+   * Base class for all simple (leaf) value DIAgram elements
+   *
    */
   class DiaElement extends Object {
     
@@ -29,7 +31,7 @@
     /**
      * Get value of this DiaElement
      *
-     * @access  protected
+     * @access  public
      * @return  mixed
      */
     function getValue() {
@@ -39,10 +41,11 @@
     /**
      * Set the value of this DiaElement
      *
-     * @access  protected
+     * @access  public
      * @param   mixed value
      */
-    #[@xmlmapping(xpath = '@val', type = 'string')]
+    // TODO: xpath will probably not work as expected!
+    #[@fromDia(xpath= 'text() | @val', value= 'string')]
     function setValue($value) {
       $this->value= $value;
     }
@@ -52,7 +55,7 @@
     /**
      * Return the XML represenation of this DiaElement
      *
-     * @access  protected
+     * @access  public
      * @return  &xml.Node
      */
     function &getNode() {
@@ -63,12 +66,30 @@
     /**
      * Accept a Visitor
      *
-     * @access  protected
-     * @param   &lang.Visitor
+     * @access  public
+     * @param   &util.Visitor
      */
     function accept(&$Visitor) {
       $Visitor->visit($this);
     }
+
+    /**
+     * DiaElement and its child-classes are 'leaf' elements which have no
+     * children
+     */
+    function addChild(&$Comp) { }
+
+    /**
+     * DiaElement and its child-classes are 'leaf' elements which have no
+     * children
+     */
+    function remChild(&$Comp) { }
+
+    /**
+     * DiaElement and its child-classes are 'leaf' elements which have no
+     * children
+     */
+    function getChildren() { }
 
   } implements(__FILE__, 'org.dia.DiaComponent');
 ?>

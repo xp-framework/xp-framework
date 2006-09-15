@@ -18,12 +18,12 @@
   class DiaUMLConnection extends DiaObject {
 
     var
-      $connections= NULL;
+      $conn_assoc= array(0 => 'begin', 1 => 'end');
 
     /**
      * Initialize this UMLConnection with default values
      * 
-     * @access  protected
+     * @access  public
      */
     function initialize() {
       // default values
@@ -32,43 +32,112 @@
       //$this->setDirection();
 
       // add essencial nodes
-      $this->set('connections', new DiaAttribute('connections'));
+      $this->set('connections', new DiaConnections());
+      $this->set('orth_points', new DiaAttribute('orth_points'));
+      $this->set('orth_orient', new DiaAttribute('orth_orient'));
 
       // default flags
 
       // positioning information defaults
       $this->setPosition(array(0, 0));
       $this->setBoundingBox(array(array(0, 0), array(1, 1)));
-      //$this->setOrthPoints(array(
-      //  array(0, 0), array(1, 1), array(2, 2), array(3, 3)
-      //));
-      // TODO: orth_points: attribute containing multiple points
-      // TODO: orth_orient also...
-      //$this->setOrthAutoroute(TRUE);
+      $this->setOrthAutoroute(TRUE);
 
-      // defaults colors and fonts
+      // default colors
       $this->setTextColor('#000000');
       $this->setLineColor('#000000');
     }
 
     /**
-     * Set the name of the UML generalization
+     * Returns the connection points of the connection
      *
-     * @access  protected
-     * @param   string name
+     * @access  public
+     * @return  org.dia.DiaConnection[]
      */
-    function setName($name) {
-      $this->set('name', new DiaAttribute('name', $name, 'string'));
+    function getConnections() {
+      $conns['begin']= $this->getChild('begin');
+      $conns['end']= $this->getChild('end');
+      return $conns;
     }
 
     /**
-     * Set the stereotype of the UML generalization
+     * Add either the 'begin' or 'end' connection
      *
-     * @access  protected
-     * @param   string stereotype
+     * @access  public
+     * @param   &org.dia.DiaConnection Conn
      */
-    function setStereotype($stereotype) {
-      $this->set('stereotype', new DiaAttribute('stereotype', $stereotype, 'string'));
+    #[@fromDia(xpath= 'dia:connections/dia:connection', class= 'org.dia.DiaConnection')]
+    function addConnection(&$Conn) {
+      $Conns= &$this->getChild('connections');
+      $Conns->set($this->conn_assoc[$Conn->getHandle()], $Conn);
+    }
+
+
+    /**
+     * Returns all corner points of the connection
+     *
+     * @access  public
+     * @return  org.dia.DiaPoint[]
+     */
+    function getOrthPoints() {
+      $Points= &$this->getChild('orth_points');
+      return $Points->getChildren();
+    }
+
+    /**
+     * Adds a connection corner point
+     *
+     * @access  public
+     * @param   array point
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="orth_points"]/dia:point/@val', value= 'array')]
+    function addOrthPoint($point) {
+      $Points= &$this->getChild('orth_points');
+      $Points->addChild(new DiaPoint($point));
+    }
+
+    /**
+     * Return all direction indicators of the connection
+     *
+     * @access  public
+     * @return  org.dia.DiaEnum[]
+     */
+    function getOrthOrients() {
+      $Orient= &$this->getChild('orth_orient');
+      return $Orient->getChildren();
+    }
+
+    /**
+     * Adds a connection direction indicator for corner points
+     *
+     * @access  public
+     * @param   int direction
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="orth_orient"]/dia:enum/@val', value= 'int')]
+    function addOrthOrient($direction) {
+      $Orient= &$this->getChild('orth_orient');
+      $Orient->addChild(new DiaEnum($direction));
+    }
+
+    /** 
+     * Get the autorouting flag of the connection
+     *
+     * @access  public
+     * @return  bool
+     */
+    function getOrthAutoroute() {
+      return $this->getChildValue('autoroute');
+    }
+
+    /**
+     * Sets the autorouting flag for the connection
+     *
+     * @access  public
+     * @param   bool autoroute
+     */
+    #[@fromDia(xpath= 'dia:attribute[@name="orth_autoroute"]/dia:boolean/@val', value= 'boolean')]
+    function setOrthAutoroute($autoroute) {
+      $this->setBoolean('autoroute', $autoroute);
     }
 
     /**
@@ -80,7 +149,8 @@
      * @param   int connpoint default 0
      */
     function beginAt($id, $connpoint= 0) {
-      $this->connections->set('begin', new DiaConnection("0, $id, $connpoint"));
+      $Conns= &$this->getChild('connections');
+      $Conns->set('begin', new DiaConnection("0, $id, $connpoint"));
     }
 
     /**
@@ -92,7 +162,8 @@
      * @param   int connpoint default 0
      */
     function endAt($id, $connpoint= 0) {
-      $this->connections->set('end', new DiaConnection("1, $id, $connpoint"));
+      $Conns= &$this->getChild('connections');
+      $Conns->set('end', new DiaConnection("1, $id, $connpoint"));
     }
 
   }

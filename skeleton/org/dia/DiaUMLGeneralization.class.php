@@ -11,6 +11,9 @@
    */
   class DiaUMLGeneralization extends DiaUMLConnection {
 
+    var
+      $conn_assoc= array(0 => 'end', 1 => 'begin');
+
     /**
      * Constructor of an UML generalization
      *

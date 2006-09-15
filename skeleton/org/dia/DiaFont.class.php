@@ -29,12 +29,22 @@
       if (isset($font['family'])) $this->setFamily($font['family']);
       if (isset($font['style'])) $this->setStyle($font['style']);
       if (isset($font['name'])) $this->setName($font['name']);
+      $this->initialize();
+    }
+
+    function initialize() {
+      if (!isset($this->family))
+        $this->family= 'monospace';
+      if (!isset($this->style)) 
+        $this->style= 0;
+      if (!isset($this->name))
+        $this->name= 'Courier';
     }
 
     /**
      * Get the font family of this DiaFont
      *
-     * @access  protected
+     * @access  public
      * @return  string
      */
     function getFamily() {
@@ -44,9 +54,10 @@
     /**
      * Set the font family of this DiaFont
      *
-     * @access  protected
+     * @access  public
      * @param   string family
      */
+    #[@fromDia(xpath= '@family', value= 'string')]
     function setFamily($family) {
       $this->family= $family;
     }
@@ -54,7 +65,7 @@
     /**
      * Get the font style of this DiaFont
      *
-     * @access  protected
+     * @access  public
      * @return  int
      */
     function getStyle() {
@@ -64,9 +75,10 @@
     /**
      * Set the font style of this DiaFont
      *
-     * @access  protected
+     * @access  public
      * @param   int style
      */
+    #[@fromDia(xpath= '@style', value= 'int')]
     function setStyle($style) {
       $this->style= $style;
     }
@@ -74,7 +86,7 @@
     /**
      * Get the font name of this DiaFont
      *
-     * @access  protected
+     * @access  public
      * @return  string
      */
     function getName() {
@@ -84,9 +96,10 @@
     /**
      * Set the font name of this DiaFont
      *
-     * @access  protected
+     * @access  public
      * @param   string name
      */
+    #[@fromDia(xpath = '@name', value= 'string')]
     function setName($name) {
       $this->name= $name;
     }
@@ -94,18 +107,15 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @access  protected
+     * @access  public
      * @return  &xml.Node
      */
     function &getNode() {
-      $node= &parent::getNode();
-      if (isset($this->family))
-        $node->setAttribute('family', $this->family);
-      if (isset($this->style))
-        $node->setAttribute('style', $this->style);
-      if (isset($this->name))
-        $node->setAttribute('name', $this->name);
-      return $node;
+      $Node= &parent::getNode();
+      $Node->setAttribute('family', $this->family);
+      $Node->setAttribute('style', $this->style);
+      $Node->setAttribute('name', $this->name);
+      return $Node;
     }
 
   }

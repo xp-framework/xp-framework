@@ -5,18 +5,18 @@
  */
 
   uses(
-    'lang.Interface'
+    'util.Component'
   );
 
   /**
    * Interface for all DiaElements and DiaCompounds
    *
-   * Also defines methods, which make the object structure visitor-ready:
-   * 'accept(&$Visitor)'
+   * Also extends interface 'Component' which makes the object structure visitor-ready:
+   * 'accept(&$Visitor)', 'addChild(&$Comp)', 'remChild(&$Comp)' and 'getChildren()'
    * 
    * @purpose   Define a generic interface for all Dia* classes
    */
-  class DiaComponent extends Interface {
+  class DiaComponent extends Component {
 
     var
       $node_name= NULL;
@@ -24,17 +24,10 @@
     /**
      * Return the XML representation of this object including the child objects
      *
-     * @access  protected
+     * @access  public
      * @return  &xml.Node
      */
     function &getNode() { }
 
-    /**
-     * Accept a Visitor instance
-     *
-     * @access  protected
-     * @param   &lang.Visitor
-     */
-    function accept(&$Visitor) { }
   }
 ?>

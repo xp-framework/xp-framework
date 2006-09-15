@@ -22,7 +22,7 @@
      *
      * The corners-array must contain two arrays with two integer values!
      *
-     * @access  protected
+     * @access  public
      * @param   array corners default array()
      * @return  bool
      */
@@ -40,7 +40,7 @@
     /**   
      * Return XML representation of DiaComposite
      *    
-     * @access  protected 
+     * @access  public 
      * @return  &xml.Node 
      */
     function &getNode() {

@@ -21,10 +21,25 @@
     }
 
     /**
+     * Initialize this UMLDependency with default values
+     *
+     * @access  public
+     */
+    function initialize() {
+      parent::initialize();
+      $this->drawArrow(TRUE);
+    }
+
+    #[@fromDia(xpath= 'dia:attribute[@name="draw_arrow"]/dia:boolean/@val', value= 'boolean')]
+    function drawArrow($bool) {
+      $this->setBoolean('draw_arrow', $bool);
+    }
+
+    /**
      * Set the ID and connection point of the object where the line begins
      *
      * @param   string id The diagram object ID
-     * @parma   int connpoint default 3 The connection point of the object
+     * @param   int connpoint default 3 The connection point of the object
      */
     function beginAt($id, $connpoint= 3) {
       parent::beginAt($id, $connpoint);

@@ -5,10 +5,11 @@
  */
 
   uses(
-    'org.dia.DiaComponent',
+    'lang.IllegalArgumentException',
     'org.dia.DiaCompound',
     'org.dia.DiaAttribute',
-    'org.dia.DiaComposite'
+    'org.dia.DiaComposite',
+    'org.dia.DiaDiagram'
   );
 
   /**
@@ -45,31 +46,50 @@
      * @param   string type
      * @param   string version default NULL
      * @param   string id default NULL
+     * @throws  lang.IllegalArgumentException
      */
     function __construct($type, $version= NULL, $id= NULL) {
-      if (!isset($type)) return;
-      $this->setNodeType($type);
+      if (!isset($type)) 
+        return throw(new IllegalArgumentException('Parameter "type" is required!'));
 
+      $this->setNodeType($type);
       if (isset($version)) $this->setVersion($version);
+
       // set ID or get a new unique ID
       if (isset($id)) {
         $this->setId($id);
       } else {
         $this->setId(DiaDiagram::getId());
       }
-      
-      return;
-      switch ($type) {
 
+      $this->initialize();
+    }
+
+    /**
+     * Initializes generic objects with default values. Child classes should
+     * overwrite this method with their own initialization.
+     *
+     * @access  public
+     */
+    function initialize() {
+      switch ($type= $this->getNodeType()) {
         default: 
-          return throw(new IllegalArgumentException('Undefined type "'.$type.'"'));
+          return throw(new IllegalArgumentException("Undefined object type: '$type'!"));
       }
+    }
+
+    /**
+     * This method must be overwritten by all DiaUML* classes!11elf
+     *
+     */
+    function getName() {
+      return "object_".$this->getId();
     }
 
     /**
      * Return the type of this node
      *
-     * @access  protected
+     * @access  publicg
      * @return  string
      */
     function getNodeType() {
@@ -79,7 +99,7 @@
     /**
      * Set the type of this node
      *
-     * @access  protected
+     * @access  publicg
      * @param   string type
      */
     #[@fromDia(xpath= '@type', value= 'string')]
@@ -90,7 +110,7 @@
     /**
      * Return the version of this Object
      *
-     * @access  protected
+     * @access  publicg
      * @return  string
      */
     function getVersion() {
@@ -100,7 +120,7 @@
     /**
      * Set the version string of this object
      *
-     * @access  protected
+     * @access  publicg
      * @param   string version
      */
     #[@fromDia(xpath= '@version', value= 'string')]
@@ -111,7 +131,7 @@
     /**
      * Return the ID of this object
      *
-     * @access  protected
+     * @access  publicg
      * @return  string
      */
     function getId() {
@@ -121,7 +141,7 @@
     /**
      * Set the ID of this object
      *
-     * @access  protected
+     * @access  publicg
      * @param   string id
      */
     #[@fromDia(xpath= '@id', value= 'string')]
@@ -132,7 +152,7 @@
     /**
      * Set the object position (x,y)
      *
-     * @access  protected
+     * @access  publicg
      * @param   array position The X and Y coordinates within the diagram
      */
     #[@fromDia(xpath= 'dia:attribute[@name="obj_pos"]/dia:point/@val', value= 'array')]
@@ -143,7 +163,7 @@
     /**
      * Set the object bounding box coordinates 
      *
-     * @access  protected
+     * @access  publicg
      * @param   array bbox The X and Y coordinates from the topleft and bottomright corners
      */
     #[@fromDia(xpath= 'dia:attribute[@name="obj_bb"]/dia:rectangle/@val', value= 'arrayarray')]
@@ -154,7 +174,7 @@
     /**
      * Set the object element corner coordinates
      *
-     * @access  protected
+     * @access  publicg
      * @param   array corner
      */
     #[@fromDia(xpath= 'dia:attribute[@name="elem_corner"]/dia:point/@val', value= 'array')]
@@ -165,7 +185,7 @@
     /**
      * Set the object element width 
      *
-     * @access  protected
+     * @access  publicg
      * @param   string width
      */
     #[@fromDia(xpath= 'dia:attribute[@name="elem_width"]/dia:real/@val', value= 'string')]
@@ -176,7 +196,7 @@
     /**
      * Set the object element height
      *
-     * @access  protected
+     * @access  publicg
      * @param   string height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="elem_height"]/dia:real/@val', value= 'string')]
@@ -187,40 +207,53 @@
     /**
      * Set the object line color
      *
-     * @access  protected
+     * @access  publicg
      * @param   string color
      */
     #[@fromDia(xpath= 'dia:attribute[@name="line_color"]/dia:color/@val', value= 'string')]
     function setLineColor($color) {
       $this->setColor('line_color', $color);
     }
+    // THIS IS FUCKED UP!
+    #[@fromDia(xpath= 'dia:attribute[@name="line_colour"]/dia:color/@val', value= 'string')]
+    function setLineColour($color) {
+      $this->setColor('line_colour', $color);
+    }
 
     /**
      * Set the object fill color
      *
-     * @access  protected
+     * @access  publicg
      * @param   string color
      */
     #[@fromDia(xpath= 'dia:attribute[@name="fill_color"]/dia:color/@val', value= 'string')]
     function setFillColor($color) {
       $this->setColor('fill_color', $color);
     }
+    #[@fromDia(xpath= 'dia:attribute[@name="fill_colour"]/dia:color/@val', value= 'string')]
+    function setFillColour($color) {
+      $this->setColor('fill_colour', $color);
+    }
 
     /**
      * Set the object text color
      *
-     * @access  protected
+     * @access  publicg
      * @param   string color
      */
     #[@fromDia(xpath= 'dia:attribute[@name="text_color"]/dia:color/@val', value= 'string')]
     function setTextColor($color) {
       $this->setColor('text_color', $color);
     }
+    #[@fromDia(xpath= 'dia:attribute[@name="text_colour"]/dia:color/@val', value= 'string')]
+    function setTextColour($color) {
+      $this->setColor('text_colour', $color);
+    }
 
     /**
      * Return the stereotype of the object
      *
-     * @access  protected
+     * @access  publicg
      * @return  string
      */
     function getStereotype() {
@@ -230,7 +263,7 @@
     /**
      * Sets the stereotype of the object
      *
-     * @access  protected
+     * @access  publicg
      * @param   string stereotype
      */
     #[@fromDia(xpath= 'dia:attribute[@name="stereotype"]/dia:string', value= 'string')]
@@ -241,25 +274,32 @@
     /**
      * Return the text of the object
      *
-     * @access  protected
+     * @access  publicg
      * @return  &org.dia.DiaText
      */
-    function getText() {
-      // TODO!???
-      return $this->getChildValue('text');
+    function &getText() {
+      $Text_node= &$this->getChild('text');
+      if (!isset($Text_node)) return NULL;
+      // 'text' node may only have one child!
+      $children= $Text_node->getChildren();
+      return $children[0];
     }
 
     /**
      * Sets the text of the object
      *
-     * @access  protected
+     * @access  publicg
      * @param   &org.dia.DiaText Text
      */
     #[@fromDia(xpath= 'dia:attribute[@name="text"]/*', class= 'org.dia.DiaText')]
-    function setText($Text) {
-      if (!isset($this->children['text']))
+    function setText(&$Text) {
+      // TODO
+      $Text_node= &$this->getChild('text');
+      if (!isset($Text_node)) {
         $this->set('text', new DiaAttribute('text'));
-      $this->children['text']->set($Text->getName(), $Text);
+        $Text_node= &$this->getChild('text');
+      }
+      $Text_node->set($Text->getName(), $Text);
     }
 
     /************************* Parent Methods *************************/
@@ -267,7 +307,7 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @access  protected
+     * @access  publicg
      * @return  &xml.Node
      */
     function &getNode() {
@@ -281,5 +321,5 @@
       return $node;
     }
 
-  } implements(__FILE__, 'org.dia.DiaComponent');
+  }
 ?>

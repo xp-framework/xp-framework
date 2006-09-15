@@ -30,7 +30,7 @@
     /**
      * Constructor for general composite elements in 'dia' diagrams
      *
-     * Predefined types:
+     * Predefined types: (TODO)
      * <ul>
      *  <li>paper</li>
      *  <li>grid</li>
@@ -52,10 +52,13 @@
     /**
      * Initializes a generic 'composite' object
      *
-     * @access  protected
+     * @access  public
      */
     function initialize() {
-      switch ($this->getNodeType()) {
+      $type= $this->getNodeType();
+      if (!isset($type)) return;
+
+      switch ($type) {
 
         case 'guides':
           $this->set('hguides', new DiaAttribute('hguides'));
@@ -87,7 +90,7 @@
     /**
      * Return the type of this DiaComposite
      *
-     * @access  protected
+     * @access  public
      * @return  int
      */
     function getNodeType() {
@@ -97,7 +100,7 @@
     /**
      * Set the type of this DiaComposite
      *
-     * @access  protected
+     * @access  public
      * @param   string type
      */
     #[@fromDia(xpath= '@type', value= 'string')]
@@ -108,7 +111,7 @@
     /**
      * Returns the value of the object
      *
-     * @access  protected
+     * @access  public
      * @return  string
      */
     function getValue() {
@@ -118,7 +121,7 @@
     /**
      * Sets the value of the object
      *
-     * @access  protected
+     * @access  public
      * @param   string value
      */
     #[@fromDia(xpath= 'dia:attribute[@name="value"]/dia:string', value= 'string')]
@@ -129,7 +132,7 @@
     /**
      * Returns the type of the object
      *
-     * @access  protected
+     * @access  public
      * @return  string
      */
     function getType() {
@@ -139,29 +142,28 @@
     /**
      * Sets the type of the object
      *
-     * @access  protected
+     * @access  public
      * @param   string type
      */
-    #[@fromDia(xpath= 'dia:attribute[@name="type"]/dia:string', type= 'string')]
+    #[@fromDia(xpath= 'dia:attribute[@name="type"]/dia:string', value= 'string')]
     function setType($type) {
       $this->setString('type', $type);
     }
-
-
 
     /***************************** ******************************/
 
     /**
      * Return XML representation of DiaComposite
      *
-     * @access  protected
+     * @access  public
      * @return  &xml.Node
      */
     function &getNode() {
       $node= &parent::getNode();
       if (isset($this->type)) {
         $node->setAttribute('type', $this->type);
-      } else {
+      } elseif (!is('org.dia.DiaRole', $this)) {
+        // DiaRole has no type...
         Console::writeLine("Composite 'type' is not set!");
       }
       return $node;

@@ -19,42 +19,45 @@
       $node_name= 'dia:connections';
 
     /**
-     *
-     * <code>
-     *   $connection= array(
-     *     0 => array('id' => $id, 'conn' => $conn), // start of connection
-     *     1 => array('id' => $id, 'conn' => $conn)  // end of connection
-     *   )
-     * </code>
-     * $id= object id attribute
-     * $conn= object connectionpoint number, starting: top-left
-     *
-     * @param   array connection
-     * @throws  lang.IllegalArgumentException
+     * Constructor: simply calls 'initialize()'
+     * 
+     * @access  public
      */
-    function __construct($connection= NULL) {
-      if (!isset($connection) or empty($connection)) return;
+    function __construct() {
+      $this->initialize();
+    }
 
-      // $connection must be an array with 2 arrays in it
-      if (
-        !is_array($connection) or
-        (!empty($connection) and sizeof($connection) !== 2) or
-        (!is_array($connection[0]) or !is_array($connection[1]))
-      ) return throw(new IllegalArgumentException(
-        'Given argument does not match specification: '.
-        xp::stringOf($connection)
-      ));
+    /**
+     * Initializes the connetions object with default values
+     *
+     * @access  public
+     */
+    function initialize() {
+      // TODO: Implements only has ONE connection point (begin)
+      //$this->set('begin', new DiaConnection(0));
+      //$this->set('end', new DiaConnection(1));
+    }
 
-      // new DiaConnection($handle, $to, $conn)
-      // handle=0: start, handle=1: end of line
-      // to='01' -> object ID
-      // connection -> connection point of object (start: topleft)
-      // i.e.: from obj='00' topleft to obj='00' next connection point:
+    /**
+     * Returns the DiaConnection object with the specified handle
+     *
+     * @access  public
+     * @param   int handle
+     * @return  &org.dia.DiaConnection
+     */
+    function &getConnection($handle) {
+      return $this->getChild($handle);
+    }
 
-      // add child objects
-      for ($i= 0; $i<1; $i++) {
-        $this->add(new DiaConnection($i, $connection[$i]['id'], $connection[$i]['conn']));
-      }
+    /**
+     * Adds a DiaConnection child
+     *
+     * @access  public
+     * @param   &org.dia.DiaConnection Conn
+     */
+    #[@fromDia(xpath= 'child::dia:connection, class= 'org.dia.DiaConnection')]
+    function addConnection($Conn) {
+      $this->set($Conn->getHandle(), $Conn);
     }
   }
 ?>
