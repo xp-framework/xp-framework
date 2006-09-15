@@ -31,7 +31,7 @@
      * @param   int count default 10 number of children to fork
      * @param   int maxrequests default 1000 maxmimum # of requests per child
      */
-    function __construct($addr, $port, $count= 1, $maxrequests= 1000, $timeout= 60) {
+    function __construct($addr, $port, $count= 10, $maxrequests= 1000, $timeout= 60) {
       parent::__construct($addr, $port);
       $this->count= $count;
       $this->maxrequests= $maxrequests;
@@ -56,7 +56,7 @@
      * @param   int sig
      */
     function handleSignal($sig) {
-      $this->cat && $this->cat->infof('Received signal %d in pid %d', $sig, getmypid());
+      $this->cat && $this->cat->debugf('Received signal %d in pid %d', $sig, getmypid());
       
       switch ($sig) {
         case SIGINT: $this->terminate= TRUE; break;
@@ -75,7 +75,7 @@
         $this->cat && $this->cat->infof('Server #%d: Terminating child #%d with pid %d', getmypid(), $i, $pid);
         posix_kill($pid, SIGINT);
         pcntl_waitpid($pid, $status, WUNTRACED);
-        $this->cat && $this->cat->infof('Server #%d: Exitcode is %d', getmypid(), $status);
+        $this->cat && $this->cat->debugf('Server #%d: Exitcode is %d', getmypid(), $status);
         unset($children[$pid]);
       }
       
