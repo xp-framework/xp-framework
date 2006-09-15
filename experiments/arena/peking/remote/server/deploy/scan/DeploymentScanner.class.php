@@ -14,11 +14,20 @@
   class DeploymentScanner extends Interface {
   
     /**
+     * Scan if deployments changed
+     *
+     * @access  public
+     * @return  bool 
+     */
+    function scanDeployments() { }
+
+    /**
      * Get a list of deployments
      *
      * @access  public
      * @return  remote.server.deploy.Deployable[]
      */
-    function scanDeployments() { }
+    function getDeployments() { }
+
   }
 ?>
