@@ -37,8 +37,6 @@
      * @param   remote.server.BeanContainer
      */
     function deployBean(&$deployment, &$containerManager) {
-      $log= &Logger::getInstance();
-      $cat= &$log->getCategory($this->getClassName());
 
       if (is('IncompleteDeployment', $deployment)) {
         return throw(new DeployException(
@@ -47,7 +45,7 @@
         ));
       }
 
-      $cat->info($this->getClassName(), 'Begin deployment of', $deployment);
+      $this->cat && $this->cat->info($this->getClassName(), 'Begin deployment of', $deployment);
       try(); {
         $cl= &$deployment->getClassLoader();
         $impl= &$cl->loadClass($deployment->getImplementation());
@@ -76,10 +74,20 @@
         $invocationHandler
       ));
      
-      $cat->info($this->getClassName(), 'End deployment of', $impl->getName(), 'with ND entry', $directoryName);
+      $this->cat && $this->cat->info($this->getClassName(), 'End deployment of', $impl->getName(), 'with ND entry', $directoryName);
       return $beanContainer;
     }
     
+    /**
+     * Set a trace for debugging
+     *
+     * @access  public
+     * @param   &util.log.LogCategory cat
+     */
+    function setTrace(&$cat) { 
+      $this->cat= &$cat;
+    }
+
     /**
      * (Insert method's description here)
      *
@@ -89,9 +97,9 @@
      */
     function _deployException($msg) {
       $log= &Logger::getInstance();
-      $cat= &$log->getCategory($this->getClassName());
-      $cat->warn($this->getClassName(), $msg);
+      $this->cat && $this->cat= &$log->getCategory($this->getClassName());
+      $this->cat && $this->cat->warn($this->getClassName(), $msg);
       return throw(new DeployException($msg));
     }
-  }
+  } implements (__FILE__, 'util.log.Traceable');
 ?>
