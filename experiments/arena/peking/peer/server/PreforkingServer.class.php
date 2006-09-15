@@ -94,7 +94,7 @@
 
       // Handle initialization of protocol. This
       // is called once for every new child created
-      if (is('peer.server.Initializable', $this->protocol)) {
+      if (is('util.Initializable', $this->protocol)) {
         $this->protocol->initialize();
       }
       
@@ -140,7 +140,7 @@
         );
       }
       
-      if (is('peer.server.Initializable', $this->protocol)) {
+      if (is('util.Initializable', $this->protocol)) {
         $this->protocol->finalize();
       }
     }
