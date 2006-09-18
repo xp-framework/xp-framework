@@ -115,7 +115,7 @@
       $bytes+= $stream->write("]\n");
 
       // Referenced file
-      $bytes+= $stream->write('/F ('.$this->_escape($this->pdf).")\n");
+      $bytes+= $stream->write('/F ('.$this->_escape($this->ruri).")\n");
       
       // End dictionary
       $bytes+= $stream->write(">>\n");
