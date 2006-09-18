@@ -226,7 +226,6 @@
      * @access  public
      * @param   &org.dia.DiaObject Object
      */
-    ///[@fromDia(xpath= 'dia:object[not(starts-with(string(@type), "UML"))]', class= 'org.dia.DiaObject')
     function addObject(&$Object) {
       $this->set($Object->getName(), $Object);
     }
