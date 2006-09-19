@@ -99,8 +99,8 @@ The new resource loading mechanism is:
       $class= &$this->getClass();
       $cl= &$class->getClassLoader();
       
-      // Resource path must reflect package name to conform with above
-      // example
+      // Resource path must reflect the package name to conform with
+      // above example
       $bytes= $cl->loadResource('net/xp_framework/rfc/META-INF/mysettings.ini');
       // ...
     }
@@ -139,5 +139,15 @@ Related documents
 
 Comments
 --------
+- kiesel, Tue Sep 19 11:53:28 CEST 2006
+  Currently, the classloader distinguished only between directories in the
+  path and files in the path. Files will be treated as archives. To keep the
+  option to have multiple different file formats later, we need to agree on
+  a "standard" XP archive filename extension. There are several proposals:
+    . .cca (as the package name)
+    . .xar (XP archive)
+    . .xpa (XP archive, proposed by George Aprozeanu)
+    . .xpm (XP module, proposed by George Aprozeanu)
+    . .xpar (XP Archive)
 
 <EOF>
