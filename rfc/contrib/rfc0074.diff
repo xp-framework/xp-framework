@@ -107,3 +107,99 @@ Index: lang.base.php
    define('LONG_MAX', is_int(2147483648) ? 9223372036854775807 : 2147483647);
    define('LONG_MIN', -LONG_MAX - 1);
  
+Index: io/cca/ArchiveClassLoader.class.php
+===================================================================
+--- io/cca/ArchiveClassLoader.class.php	(revision 7907)
++++ io/cca/ArchiveClassLoader.class.php	(working copy)
+@@ -55,43 +55,7 @@
+      * @return  string
+      */
+     function loadClassBytes($name) {
+-      $src= '';
+-      $line= 0;
+-      $tokens= token_get_all($this->archive->extract($name));
+-      for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
+-        switch ($tokens[$i][0]) {
+-          case T_FILE: 
+-            $tokens[$i][1]= "'".strtr($name, '.', '/').'.class.php\''; 
+-            break;
+-            
+-          case T_LINE:
+-            $tokens[$i][1]= $line;
+-            break;
+-
+-          case T_STRING:
+-            if ('uses' == $tokens[$i][1] || 'implements' == $tokens[$i][1]) {
+-              $o= $i+ 1;
+-              while (')' != $tokens[$o][0]) {
+-                if (T_CONSTANT_ENCAPSED_STRING == $tokens[$o][0]) {
+-                  $used= trim($tokens[$o][1], '"\'');
+-                  $this->archive->contains($used) && $this->loadClass($used);
+-                }
+-                $o++;
+-              }
+-            }
+-            break;
+-        }
+-
+-        if (is_array($tokens[$i])) {
+-          $src.= $tokens[$i][1];
+-          $line+= substr_count($tokens[$i][1], "\n");
+-        } else {
+-          $src.= $tokens[$i];
+-          $line+= substr_count($tokens[$i], "\n");
+-        }
+-      }
+-      
+-      return $src;
++      return $this->archive->extract($name);
+     }
+     
+     /**
+@@ -128,5 +92,16 @@
+       $c= &new XPClass($name);
+       return $c;
+     }
++    
++    /**
++     * Checks whether this loader can provide the requested class
++     *
++     * @access  public
++     * @param   string fqcn
++     * @return  bool
++     */
++    function providesClass($class) {
++      return $this->archive->contains($class);
++    }    
+   }
+ ?>
+Index: io/cca/Archive.class.php
+===================================================================
+--- io/cca/Archive.class.php	(revision 7907)
++++ io/cca/Archive.class.php	(working copy)
+@@ -97,6 +97,25 @@
+     }
+     
+     /**
++     * Add a file by its bytes
++     *
++     * @access  public
++     * @param   string id the id under which this entry will be located
++     * @param   string path
++     * @param   string filename
++     * @param   string bytes
++     */
++    function addFileBytes($id, $path, $filename, $bytes) {
++      $this->_index[$id]= array(
++        $filename,
++        $path,
++        strlen($bytes),
++        -1,                 // Will be calculated by create()
++        $bytes
++      );
++    }
++    
++    /**
+      * Create CCA archive
+      *
+      * @access  public
