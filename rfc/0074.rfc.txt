@@ -67,6 +67,46 @@ If one part cannot provide a class, the next include_path part is being
 checked. If all parts were unable to provide the class, a fatal error
 is raised.
 
+ClassLoaders
+~~~~~~~~~~~~
+A class which has been loaded by an ArchiveClassLoader will be associated
+with the loading classloader by the mechanism described in rfc://0071.
+
+Loading resources
+~~~~~~~~~~~~~~~~~
+Whenever a class loads other files "from the filesystem", relative to its
+own location, it must use its associated classloader to fetch it. Ignoring
+this rule cannot be detected but will lead to breakage of the class when
+used after being loaded out of an archive.
+
+The deprecated resource loading mechanism is:
+<code>
+  // Package net.xp_framework.rfc
+  class Foo extends Object {
+    function __construct() {
+      $file= &new File(dirname(__FILE__).'/META-INF/mysettings.ini');
+      $file->open(...);
+      // ...
+    }
+  }
+</code>
+
+The new resource loading mechanism is:
+<code>
+  // Package net.xp_framework.rfc
+  class Foo extends Object {
+    function __construct() {
+      $class= &$this->getClass();
+      $cl= &$class->getClassLoader();
+      
+      // Resource path must reflect package name to conform with above
+      // example
+      $bytes= $cl->loadResource('net/xp_framework/rfc/META-INF/mysettings.ini');
+      // ...
+    }
+  }
+</code>
+
 
 Security considerations
 -----------------------
