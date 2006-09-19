@@ -9,8 +9,38 @@
   uses(    
     'io.File',
     'io.Folder',
+    'io.FileUtil',
     'io.cca.Archive'
   );
+  
+  // {{{ function prepareForArchive()
+  function prepareForArchive($fqcn, $source) {
+    $src= '';
+    $line= 0;
+    $tokens= token_get_all($source);
+    for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
+      switch ($tokens[$i][0]) {
+        case T_FILE: 
+          $tokens[$i][1]= "'".strtr($fqcn, '.', '/').'.class.php\''; 
+          break;
+
+        case T_LINE:
+          $tokens[$i][1]= $line;
+          break;
+      }
+
+      if (is_array($tokens[$i])) {
+        $src.= $tokens[$i][1];
+        $line+= substr_count($tokens[$i][1], "\n");
+      } else {
+        $src.= $tokens[$i];
+        $line+= substr_count($tokens[$i], "\n");
+      }
+    }
+    
+    return $src;
+  }
+  // }}}
   
   // {{{ function recurse()
   function recurse(&$archive, $base, $path) {
@@ -43,7 +73,13 @@
         Console::writeLine('!!! Class '.$fqcn.' already in archive, skipping...');
         continue;
       }
-      $archive->add($file, $fqcn);
+      
+      $archive->addFileBytes(
+        $fqcn,
+        $file->getFilename(),
+        $file->getPath(),
+        prepareForArchive($fqcn, FileUtil::getContents($file))
+      );
     }
     
     $f->close();
