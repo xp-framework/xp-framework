@@ -136,6 +136,8 @@ n/a
 
 Related documents
 -----------------
+- http://xp-framework.net/rfc/contrib/rfc0074.diff
+  Patch implementing this RFC
 
 Comments
 --------
@@ -149,5 +151,9 @@ Comments
     . .xpa (XP archive, proposed by George Aprozeanu)
     . .xpm (XP module, proposed by George Aprozeanu)
     . .xpar (XP Archive)
+
+- kiesel, Tue Sep 19 13:35:06 CEST 2006
+  Initial patch made available, still containing a lot of debug.
+
 
 <EOF>

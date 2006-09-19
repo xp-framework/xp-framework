@@ -1,0 +1,109 @@
+Index: lang.base.php
+===================================================================
+--- lang.base.php	(revision 7907)
++++ lang.base.php	(working copy)
+@@ -227,6 +227,15 @@
+   // {{{ void uses (string* args)
+   //     Uses one or more classes
+   function uses() {
++    static $bootstrap= array();
++    static $h;
++    $include= &xp::registry('include_path');
++
++    if (0 == sizeof($include)) {
++      $include= array_flip(explode(':', ini_get('include_path')));
++      xp::registry('include_path', $include);
++    }
++    
+     foreach (func_get_args() as $str) {
+       if (class_exists($class= xp::reflect($str))) continue;
+ 
+@@ -245,14 +254,75 @@
+         }
+         $str= substr($str, strrpos($str, '/')+ 1);
+         $class= xp::reflect($str);
+-      } else {
+-        if (FALSE === ($r= include_once(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php'))) {
+-          xp::error(xp::stringOf(new Error('Cannot include '.$str)));
+-        } else if (TRUE === $r) {
+-          continue;
++      }
++
++      $t1= microtime();
++      foreach ($include as $path => $loader) {
++        $type= 'NONE';
++
++        // If path is a directory and the included file exists, load it
++        if (is_dir($path) && file_exists($f= realpath($path.DIRECTORY_SEPARATOR.strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php'))) {
++          if (FALSE === ($r= include_once($f))) {
++            xp::error(xp::stringOf(new Error('Cannot include '.$str)));
++          }
++          
++          $type= 'DIRLDR';
++          break;
++        } elseif (is_file($path) && class_exists('archiveclassloader') && class_exists('archive') && class_exists('file')) {
++
++          // Load via archive class loader
++          if (!is_object($include[$path])) {
++            $include[$path]= &new ArchiveClassLoader(new Archive(new File($path)));
++            xp::registry('include_path', $include);
++          }
++          
++          if (!$include[$path]->providesClass($str)) continue;
++          $class= &$include[$path]->loadClass($str);
++          
++          $type= 'ARCLDR';
++          break;
++        } elseif (is_file($path) && ('lang.' === substr($str, 0, 5) || 'io.' === substr($str, 0, 3))) {
++
++          // Bootstrap loading, only to be used for core classes.
++          if (!is_resource($h)) {
++            $h= fopen($path, 'rb');
++            $header= unpack('a3id/c1version/i1indexsize/a*reserved', fread($h, 0x0100));
++            for ($bootstrap[$path]= array(), $i= 0; $i < $header['indexsize']; $i++) {
++              $entry= unpack(
++                'a80id/a80filename/a80path/i1size/i1offset/a*reserved', 
++                fread($h, 0x0100)
++              );
++              $bootstrap[$path][$entry['id']]= array($entry['size'], $entry['offset']);
++            }
++          }
++          
++          if (!isset($bootstrap[$path][$str])) continue;
++          fseek($h, 0x0100 + sizeof($bootstrap[$path]) * 0x0100 + $bootstrap[$path][$str][1], SEEK_SET);
++          $bytes= fread($h, $bootstrap[$path][$str][0]);
++          if (FALSE === eval('?>'.$bytes)) {
++            xp::error('Bootstrap class loading failure at '.$str.' (file= '.$path.' / start= '.$bootstrap[$path][$str][1].', length= '.$bootstrap[$path][$str][0].')');
++          }
++          $type= 'BTSLDR';
++          break;
+         }
+       }
+       
++      $t2= microtime();
++      list($tm1, $ts1)= explode(' ', $t1);
++      list($tm2, $ts2)= explode(' ', $t2);
++      $diff= ($ts2- $ts1) + ($tm2 - $tm1);
++      
++      // DEBUG
++      0 && printf("Class loading via %s took %0.3fs class= %s\n",
++        $type,
++        $diff,
++        $str
++      );
++
++      if (!class_exists(xp::reflect($str))) {
++        xp::error('Cannot include '.$str);
++      }
++            
+       // Register class name and call static initializer if available
+       xp::registry('class.'.$class, $str);
+       is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
+@@ -428,7 +498,6 @@
+     ? getenv('SKELETON_PATH')
+     : dirname(__FILE__).DIRECTORY_SEPARATOR
+   ));
+-  ini_set('include_path', SKELETON_PATH.PATH_SEPARATOR.ini_get('include_path'));
+   define('LONG_MAX', is_int(2147483648) ? 9223372036854775807 : 2147483647);
+   define('LONG_MIN', -LONG_MAX - 1);
+ 
