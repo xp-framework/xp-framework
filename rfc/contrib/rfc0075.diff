@@ -206,7 +206,7 @@ Index: collections/iterate/FilteredIOCollectionIterator.class.php
 ===================================================================
 --- collections/iterate/FilteredIOCollectionIterator.class.php	(revision 0)
 +++ collections/iterate/FilteredIOCollectionIterator.class.php	(revision 0)
-@@ -0,0 +1,59 @@
+@@ -0,0 +1,61 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -223,13 +223,15 @@ Index: collections/iterate/FilteredIOCollectionIterator.class.php
 +   * <code>
 +   *   uses(
 +   *     'io.collections.FileCollection',
-+   *     'io.collection.iterate.FilteredIOCollectionIterator',
-+   *     'io.folder.iterate.RegexFilter'
++   *     'io.collections.iterate.FilteredIOCollectionIterator',
++   *     'io.collections.iterate.RegexFilter'
 +   *   );
 +   *
 +   *   $origin= &new FileCollection('/etc');
-+   *
-+   *   for ($i= &new IOCollectionIterator($origin, new RegexFilter('/\.jpe?g$/i')); $i->hasNext(); ) {
++   *   for (
++   *     $i= &new FilteredIOCollectionIterator($origin, new RegexFilter('/\.jpe?g$/i')); 
++   *     $i->hasNext(); 
++   *   ) {
 +   *     Console::writeLine('Element ', xp::stringOf($i->next()));
 +   *   }
 +   * </code>
@@ -291,7 +293,7 @@ Index: collections/iterate/IOCollectionIterator.class.php
 +   * <code>
 +   *   uses(
 +   *     'io.collections.FileCollection',
-+   *     'io.collection.iterate.IOCollectionIterator'
++   *     'io.collections.iterate.IOCollectionIterator'
 +   *   );
 +   *
 +   *   $origin= &new FileCollection('/etc');
