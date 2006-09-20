@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Wed Sep 13 13:55:14 CEST 2006
-@status: discussion, ends at Thu Sep 14 12:00:00 CEST 2006
+@status: implemented, Wed Sep 20 17:02:41 CEST 2006
 @category: <core>
 
 Scope of Change
@@ -55,7 +55,7 @@ Related documents
 - http://derickrethans.nl/varexport_and_classes.php
   The fix
 
-- http://xp-framework.net/rfc/contrib/rfc0071.diff
+- http://xp-framework.net/rfc/contrib/rfc0073.diff
   Patch implementing this RFC
 
 Comments
