@@ -121,8 +121,8 @@
     function toStringMethod() {
       $o= &new Object();
       $this->assertEquals(
-        'lang.Object@class object {'."\n".
-        '  var $__id = \''.$o->hashCode().'\';'."\n".
+        'lang.Object {'."\n".
+        '  __id => "'.$o->hashCode().'"'."\n".
         '}', 
         $o->toString()
       );
