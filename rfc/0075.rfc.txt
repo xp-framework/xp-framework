@@ -89,9 +89,19 @@ n/a
 
 Related documents
 -----------------
+- http://xp-framework.info/xml/xp.en_US/documentation/class?ports/de.thekid.dialog.io.FilteredFolderIterator
+  de.thekid.dialog.io.FilteredFolderIterator
+
 - http://xp-framework.net/rfc/contrib/rfc0075.diff
   Initial implementation
- 
+
+- http://www.xulplanet.com/references/xpcomref/ifaces/nsIDirectoryIterator.html
+  Mozilla's DirectoryIterator
+
+- http://wiki.cc/php/Iterator_Directory
+  SPL's DirectoryIterator
+
+
 Comments
 --------
 (empty)
