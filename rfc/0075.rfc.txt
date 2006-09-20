@@ -1,0 +1,77 @@
+RFC 0075: I/O Collections
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Sep 20 12:57:24 CEST 2006
+@status: draft
+@category: io
+
+Scope of Change
+---------------
+A new API io.collections will be added.
+
+
+Rationale
+---------
+Easier iteration of file system elements.
+
+
+Functionality
+-------------
+
+Interfaces
+~~~~~~~~~~
+<pre>
+  lang.Interface
+  |
+  +--+ io.collections.IOElement
+     |
+     +--+ io.collections.IOCollection
+</pre>
+
+
+Iteration
+~~~~~~~~~
+The IOCollectionIterator and FilteredIOCollectionIterator implement the
+util.Iterator interface:
+<?php
+  uses(
+    'io.collections.FileCollection',
+    'io.collection.iterate.FilteredIOCollectionIterator',
+    'io.folder.iterate.RegexFilter'
+  );
+
+  $origin= &new FileCollection('/etc');
+
+  for ($i= &new IOCollectionIterator($origin, new RegexFilter('/\.jpe?g$/i')); $i->hasNext(); ) {
+    Console::writeLine('Element ', xp::stringOf($i->next()));
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0075.diff
+  Initial implementation
+ 
+Comments
+--------
+(empty)
+
+<EOF>
