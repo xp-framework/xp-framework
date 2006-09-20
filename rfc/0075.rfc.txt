@@ -22,29 +22,51 @@ Functionality
 
 Interfaces
 ~~~~~~~~~~
+The following interfaces are defined by this new API:
 <pre>
   lang.Interface
   |
   +--+ io.collections.IOElement
-     |
-     +--+ io.collections.IOCollection
+  |  |
+  |  +--+ io.collections.IOCollection
+  |
+  +--+ io.collections.iterate.IterationFilter
 </pre>
 
 
-Iteration
-~~~~~~~~~
-The IOCollectionIterator and FilteredIOCollectionIterator implement the
-util.Iterator interface:
+Classes
+~~~~~~~
+The following classes are defined by this new API:
+<pre>
+  lang.Object
+  |
+  +--+ io.collections.FileElement -> io.collections.IOElement
+  |
+  +--+ io.collections.FileCollection -> io.collections.IOCollection
+  |
+  +--+ io.collections.iterate.RegexFilter -> io.collections.iterate.IterationFilter
+  |
+  +--+ io.collections.iterate.IOCollectionIterator -> util.Iterator
+     |
+     +--+ io.collections.iterate.FilteredIOCollectionIterator
+</pre>
+
+
+Example
+~~~~~~~
+Iterating a directory (non-recursively), finding all jpeg-files:
 <?php
   uses(
     'io.collections.FileCollection',
-    'io.collection.iterate.FilteredIOCollectionIterator',
-    'io.folder.iterate.RegexFilter'
+    'io.collections.iterate.FilteredIOCollectionIterator',
+    'io.collections.iterate.RegexFilter'
   );
 
-  $origin= &new FileCollection('/etc');
-
-  for ($i= &new IOCollectionIterator($origin, new RegexFilter('/\.jpe?g$/i')); $i->hasNext(); ) {
+  $origin= &new FileCollection('/home/thekid/multimedia');
+  for (
+    $i= &new FilteredIOCollectionIterator($origin, new RegexFilter('/\.jpe?g$/i')); 
+    $i->hasNext(); 
+  ) {
     Console::writeLine('Element ', xp::stringOf($i->next()));
   }
 ?>
