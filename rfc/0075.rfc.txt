@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Wed Sep 20 12:57:24 CEST 2006
-@status: draft
+@status: discussion, ends at Thu Sep 21 13:00:00 CEST 2006
 @category: io
 
 Scope of Change
@@ -104,6 +104,7 @@ Related documents
 
 Comments
 --------
-(empty)
+- friebe, Wed Sep 20 14:14:23 CEST 2006
+  New filters can be added in the future - RegexFilter is the only.
 
 <EOF>
