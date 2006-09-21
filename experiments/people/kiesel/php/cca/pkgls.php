@@ -8,7 +8,7 @@
   xp::sapi('cli');
   uses(    
     'io.File',
-    'io.cca.Archive'
+    'lang.archive.Archive'
   );
   
   // Params
@@ -16,7 +16,8 @@
   
   // Display help
   if ($p->exists('help', 'h')) {
-    Console::writeLinef('...');
+    Console::writeLinef('%s: <archive>', $p->value(0));
+    Console::writeLine('Shows the contents of an XP archive');
     exit();
   }
   
@@ -28,15 +29,15 @@
   while ($entry= $archive->getEntry()) {
     $cnt++;
     $size+= ($len= strlen($archive->extract($entry)));
-    Console::writeLinef(' `- %-50s %10s bytes',
-      $entry, 
-      number_format($len, 0, FALSE, '.')
+    Console::writeLinef('%10s %s',
+      number_format($len, 0, FALSE, '.'),
+      $entry
     );
   }
   
   Console::writeLine(str_repeat('=', 80));
-  Console::writeLinef('    %-50s %10s bytes', 
-    'Total '.$cnt.' files', 
-    number_format($size, 0, FALSE, '.')
+  Console::writeLinef('%10s %s',
+    number_format($size, 0, FALSE, '.'),
+    'Total '.$cnt.' files'
   );
 ?>

@@ -10,18 +10,26 @@
     'io.File',
     'io.Folder',
     'io.FileUtil',
-    'io.cca.Archive'
+    'lang.archive.Archive'
   );
   
   // {{{ function prepareForArchive()
-  function prepareForArchive($fqcn, $source) {
+  function prepareForArchive($filename, $source) {
+  
+    // Only rewrite PHP source
+    if ('.php' != substr($filename, -4)) return $source;
+    
     $src= '';
     $line= 0;
     $tokens= token_get_all($source);
+    if (xp::errorAt(__LINE__- 1)) {
+      xp::error('Error in file '.$filename);
+    }
+    
     for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
       switch ($tokens[$i][0]) {
         case T_FILE: 
-          $tokens[$i][1]= "'".strtr($fqcn, '.', '/').'.class.php\''; 
+          $tokens[$i][1]= "'".$filename."'"; 
           break;
 
         case T_LINE:
@@ -55,30 +63,28 @@
         continue;
       }
       
-      if ('.class.php' != substr($file->getURI(), -10)) continue;
+      // if ('.class.php' != substr($file->getURI(), -10)) continue;
       
       // Remove base
-      $fqcn= substr($file->getURI(), strlen($base));
+      $filename= ltrim(substr($file->getURI(), strlen($base)), '/');
       
-      // Remove .class.php
-      $fqcn= substr($fqcn, 0, -10);
+      if ($archive->contains($filename)) {
+        Console::writeLine('!!! File '.$filename.' already in archive, skipping...');
+        continue;
+      }
       
-      // Translate / into .
-      $fqcn= trim(strtr($fqcn, DIRECTORY_SEPARATOR, '.'), '.');
-      
-      // Add package
-      $fqcn= $fqcn;
-      
-      if ($archive->contains($fqcn)) {
-        Console::writeLine('!!! Class '.$fqcn.' already in archive, skipping...');
+      try(); {
+        $contents= FileUtil::getContents($file);
+      } if (catch('IOException', $e)) {
+        $e->printStackTrace();
         continue;
       }
       
       $archive->addFileBytes(
-        $fqcn,
+        $filename,
         $file->getFilename(),
         $file->getPath(),
-        prepareForArchive($fqcn, FileUtil::getContents($file))
+        prepareForArchive($filename, $contents)
       );
     }
     
@@ -91,7 +97,9 @@
   
   // Display help
   if ($p->exists('help', 'h')) {
-    Console::writeLinef('...');
+    Console::writeLinef('%s [--file=<filename>] [path] ...');
+    Console::writeLine('  --file=<filename>  Write archive into <filename>, default STDOUT');
+    Console::writeLine('  [path]              Adds all files in that path to the archive');
     exit();
   }
   
@@ -111,5 +119,5 @@
   }
   
   $archive->create();
-  Console::writeLinef('===> %d classes added', sizeof($archive->_index));
+  Console::writeLinef('===> %d files added', sizeof($archive->_index));
 ?>
