@@ -294,8 +294,8 @@
             $reference= &$this->serializer->valueOf($data, $length= 0, $ctx);
             if (is('RemoteException', $reference)) {
               return throw($reference);
-            } else if (is('ClassReference', $reference)) {
-              return throw(new RemoteException($reference->getClassName(), $reference));
+            } else if (is('ExceptionReference', $reference)) {
+              return throw(new RemoteException($reference->getMessage(), $reference));
             } else {
               return throw(new RemoteException('lang.Exception', new Exception($this->stringOf($reference))));
             }
