@@ -1,0 +1,114 @@
+Index: skeleton/remote/ExceptionReference.class.php
+===================================================================
+--- skeleton/remote/ExceptionReference.class.php	(revision 7946)
++++ skeleton/remote/ExceptionReference.class.php	(working copy)
+@@ -4,15 +4,17 @@
+  * $Id$ 
+  */
+ 
++  uses('util.ChainedException');
++
+   /**
+    * Holds a reference to an exception
+    *
+    * @see      xp://remote.Serializer
+    * @purpose  Exception reference
+    */
+-  class ExceptionReference extends Exception {
++  class ExceptionReference extends ChainedException {
+     var 
+-      $classname= '';
++      $referencedClassname= '';
+ 
+     /**
+      * Constructor
+@@ -21,17 +23,30 @@
+      * @param   string classname
+      */
+     function __construct($classname) {
+-      $this->classname= $classname;
++      parent::__construct('(null)', $cause= NULL);
++      $this->referencedClassname= $classname;
+     }
+-
++    
+     /**
+-     * Get Classname
++     * Return string representation of this exception
+      *
+      * @access  public
+      * @return  string
+      */
+-    function getClassname() {
+-      return $this->classname;
++    function toString() {
++      $s= sprintf(
++        "Exception %s<%s> (%s)\n",
++        $this->getClassName(),
++        $this->referencedClassname,
++        $this->message
++      );
++      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
++        $s.= $this->trace[$i]->toString(); 
++      }
++      return $s.($this->cause
++        ? 'Caused by '.$this->cause->toString() 
++        : ''
++      );;
+     }
+   }
+ ?>
+Index: ext/java/easc/java/src/net/xp_framework/unittest/SerializerTest.java
+===================================================================
+--- ext/java/easc/java/src/net/xp_framework/unittest/SerializerTest.java	(revision 7946)
++++ ext/java/easc/java/src/net/xp_framework/unittest/SerializerTest.java	(working copy)
+@@ -378,7 +378,7 @@
+         String serialized= representationOf(new NullPointerException());
+ 
+         assertEquals(
+-            "e:11:\"NullPointer\":2:{s:7:\"message\";N;s:5:\"trace\";a:",
++            "e:11:\"NullPointer\":3:{s:7:\"message\";N;s:5:\"trace\";a:",
+             serialized.substring(0, 52)
+         );
+         int offset= serialized.indexOf(':', 52)+ 2;
+@@ -397,7 +397,7 @@
+         String serialized= representationOf(new Exception());
+ 
+         assertEquals(
+-            "E:19:\"java.lang.Exception\":2:{s:7:\"message\";N;s:5:\"trace\";a:",
++            "E:19:\"java.lang.Exception\":3:{s:7:\"message\";N;s:5:\"trace\";a:",
+             serialized.substring(0, 60)
+         );
+         int offset= serialized.indexOf(':', 60)+ 2;
+Index: ext/java/easc/java/src/net/xp_framework/easc/protocol/standard/Serializer.java
+===================================================================
+--- ext/java/easc/java/src/net/xp_framework/easc/protocol/standard/Serializer.java	(revision 7946)
++++ ext/java/easc/java/src/net/xp_framework/easc/protocol/standard/Serializer.java	(working copy)
+@@ -720,17 +720,22 @@
+         } else {
+             buffer.append("E:").append(c.getName().length()).append(":\"").append(c.getName());
+         }
+-        buffer.append("\":2:{s:7:\"message\";");
++        
++        // Message
++        buffer.append("\":3:{s:7:\"message\";");
+         buffer.append(representationOf(e.getMessage(), context));
++        
++        // Stacktrace
++        int offset= 0;
+         buffer.append("s:5:\"trace\";a:").append(trace.length).append(":{");
+-
+-        int offset= 0;
+         for (StackTraceElement element: trace) {
+             buffer.append("i:").append(offset++).append(';').append(representationOf(element, context));
+         }
+ 
+-        buffer.append("}}");
+-        return buffer.toString();        
++        // Cause
++        buffer.append("}s:5:\"cause\";").append(representationOf(e.getCause()));
++        
++        return buffer.append("}").toString();        
+     }
+     
+     @Handler('i') protected static String representationOf(Enum e, SerializerContext context) throws Exception {
