@@ -45,8 +45,8 @@
       
       $instance= &$class->newInstance($data['message']);
       unset($data['message']);
-      foreach ($data as $name => $member) {
-        $instance->{$name}= &$member;
+      foreach (array_keys($data) as $name) {
+        $instance->{$name}= &$data[$name];
       }
 
       return $instance;
