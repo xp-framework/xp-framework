@@ -1,0 +1,111 @@
+RFC 0076: Transfer exception causes
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Fri Sep 22 13:57:14 CEST 2006
+@status: draft
+@category: remote
+
+Scope of Change
+---------------
+An exception's cause will be transferred via EASC to the client.
+
+
+Rationale
+---------
+The remote.InvocationException's stacktrace is not really helpful in 
+finding what may have caused a serverside exception.
+
+
+Functionality
+-------------
+
+PHP side
+~~~~~~~~
+The remote.ExceptionReference will extend util.ChainedException instead
+of lang.Exception
+
+
+Java side
+~~~~~~~~~
+Exception serialization will be changed to include a "cause" member 
+including the serialized representation of the exception's cause.
+Note: This may be NULL.
+
+
+Example
+~~~~~~~
+A complete stacktrace - without the patch, only the InvocationException's
+stracktrace will be shown. One wouldn't be able to see that this originated
+from a org.apache.lucene.queryParser.ParseException...
+<pre>
+Exception remote.InvocationException ()
+  at php.sun.reflect.GeneratedMethodAccessor4::invoke() [line -1 of StackTraceElement.class.php] 
+  at php.sun.reflect.DelegatingMethodAccessorImpl::invoke() [line 25 of DelegatingMethodAccessorImpl.java] 
+  at php.java.lang.reflect.Method::invoke() [line 585 of Method.java] 
+  at php.net.xp_framework.easc.server.CallDelegate::invoke() [line 25 of CallDelegate.java] 
+  at php.net.xp_framework.easc.protocol.standard.ServerHandler::handle() [line 73 of ServerHandler.java] 
+  at php.net.xp_framework.easc.server.HandlerThread::run() [line 50 of HandlerThread.java] 
+Caused by Exception remote.ExceptionReference<java.lang.reflect.UndeclaredThrowableException> ()
+  at php.$Proxy5::search() [line -1 of StackTraceElement.class.php] 
+  at php.sun.reflect.GeneratedMethodAccessor4::invoke() [line -1 of StackTraceElement.class.php] 
+  at php.sun.reflect.DelegatingMethodAccessorImpl::invoke() [line 25 of DelegatingMethodAccessorImpl.java] 
+  at php.java.lang.reflect.Method::invoke() [line 585 of Method.java] 
+  at php.net.xp_framework.easc.server.CallDelegate::invoke() [line 25 of CallDelegate.java] 
+  at php.net.xp_framework.easc.protocol.standard.ServerHandler::handle() [line 73 of ServerHandler.java] 
+  at php.net.xp_framework.easc.server.HandlerThread::run() [line 50 of HandlerThread.java] 
+Caused by Exception remote.InvocationException ()
+  at php.sun.reflect.GeneratedMethodAccessor5::invoke() [line -1 of StackTraceElement.class.php] 
+  at php.sun.reflect.DelegatingMethodAccessorImpl::invoke() [line 25 of DelegatingMethodAccessorImpl.java] 
+  at php.java.lang.reflect.Method::invoke() [line 585 of Method.java] 
+  at php.de.schlund.easc.standalone.EASCInvocationHandler::invoke() [line 31 of EASCInvocationHandler.java] 
+  at php.$Proxy5::search() [line -1 of StackTraceElement.class.php] 
+  at php.sun.reflect.GeneratedMethodAccessor4::invoke() [line -1 of StackTraceElement.class.php] 
+  at php.sun.reflect.DelegatingMethodAccessorImpl::invoke() [line 25 of DelegatingMethodAccessorImpl.java] 
+  at php.java.lang.reflect.Method::invoke() [line 585 of Method.java] 
+  at php.net.xp_framework.easc.server.CallDelegate::invoke() [line 25 of CallDelegate.java] 
+  at php.net.xp_framework.easc.protocol.standard.ServerHandler::handle() [line 73 of ServerHandler.java] 
+  at php.net.xp_framework.easc.server.HandlerThread::run() [line 50 of HandlerThread.java] 
+Caused by Exception remote.ExceptionReference<org.apache.lucene.queryParser.ParseException> (Lexical error at line 1, column 1.  Encountered: "*" (42), after : "")
+  at php.org.apache.lucene.queryParser.QueryParser::parse() [line 125 of QueryParser.java] 
+  at php.de.schlund.easc.standalone.LuceneSearchHandler::search() [line 67 of LuceneSearchHandler.java] 
+  at php.sun.reflect.GeneratedMethodAccessor5::invoke() [line -1 of StackTraceElement.class.php] 
+  at php.sun.reflect.DelegatingMethodAccessorImpl::invoke() [line 25 of DelegatingMethodAccessorImpl.java] 
+  at php.java.lang.reflect.Method::invoke() [line 585 of Method.java] 
+  at php.de.schlund.easc.standalone.EASCInvocationHandler::invoke() [line 31 of EASCInvocationHandler.java] 
+  at php.$Proxy5::search() [line -1 of StackTraceElement.class.php] 
+  at php.sun.reflect.GeneratedMethodAccessor4::invoke() [line -1 of StackTraceElement.class.php] 
+  at php.sun.reflect.DelegatingMethodAccessorImpl::invoke() [line 25 of DelegatingMethodAccessorImpl.java] 
+  at php.java.lang.reflect.Method::invoke() [line 585 of Method.java] 
+  at php.net.xp_framework.easc.server.CallDelegate::invoke() [line 25 of CallDelegate.java] 
+  at php.net.xp_framework.easc.protocol.standard.ServerHandler::handle() [line 73 of ServerHandler.java] 
+  at php.net.xp_framework.easc.server.HandlerThread::run() [line 50 of HandlerThread.java] 
+</pre>
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slower.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0076.diff
+  Patch
+
+
+Comments
+--------
+n/a
+
+<EOF>
