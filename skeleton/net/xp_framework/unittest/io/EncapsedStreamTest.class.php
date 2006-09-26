@@ -114,6 +114,11 @@
       $stream->writeLine('And there is a third one.');
       $stream->close();
       $stream->open(STREAM_MODE_READ);
+      
+      $this->s= &new EncapsedStream($stream, 5, $stream->size()- 35);
+      $this->assertEquals('is the first line.', $this->s->readLine());
+      $this->assertEquals('This is the second li', $this->s->readLine());
+      $this->assertEquals('', $this->s->readLine());
     }
     
   }
