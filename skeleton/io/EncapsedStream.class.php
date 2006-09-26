@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('io.Stream');
+
   /**
    * Encapsulated / embedded stream
    *
