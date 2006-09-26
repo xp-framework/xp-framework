@@ -6,7 +6,8 @@
 
   uses(
     'util.profiling.unittest.TestCase',
-    'io.EncapsedStream'
+    'io.EncapsedStream',
+    'io.Stream'
   );
 
   /**
@@ -97,6 +98,23 @@
       $this->assertFalse($this->s->eof());
       $this->s->seek(8);
       $this->assertTrue($this->s->eof());
-    }    
+    }
+    
+    /**
+     * Test
+     *
+     * @access  public
+     */
+    #[@test]
+    function testReadline() {
+      $stream= &new Stream();
+      $stream->open(STREAM_MODE_WRITE);
+      $stream->writeLine('This is the first line.');
+      $stream->writeLine('This is the second line.');
+      $stream->writeLine('And there is a third one.');
+      $stream->close();
+      $stream->open(STREAM_MODE_READ);
+    }
+    
   }
 ?>
