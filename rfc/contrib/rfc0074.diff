@@ -1,13 +1,68 @@
 Index: lang.base.php
 ===================================================================
---- lang.base.php	(revision 7907)
+--- lang.base.php	(revision 7946)
 +++ lang.base.php	(working copy)
-@@ -227,6 +227,15 @@
+@@ -137,7 +137,24 @@
+     //     Sets an SAPI
+     function sapi() {
+       foreach ($a= func_get_args() as $name) {
+-        require_once('sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php');
++        foreach (explode(':', ini_get('include_path')) as $path) {
++          $filename= 'sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php';
++          
++          if (is_dir($path)) {
++            if (file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
++              require_once($path.DIRECTORY_SEPARATOR.$filename);
++              break;  // Load next sapi
++            }
++          } elseif (is_file($path)) {
++            if (FALSE !== ($bytes= __xp_load_archive_bytes($path, $filename))) {
++              if (FALSE === eval('?>'.$bytes)) {
++                xp::error('Unable to load sapi '.$name.' from archive '.$path);
++              }
++              
++              break;  // Load next sapi
++            }
++          }
++        }
+       }
+       xp::registry('sapi', $a);
+     }
+@@ -223,10 +240,44 @@
+     xp::registry('errors', $errors);
+   }
+   // }}}
++  
++  // {{{ string __xp_load_archive_bytes(string archive, string filename)
++  //     Loads a file from an archive
++  function __xp_load_archive_bytes($archive, $filename) {
++    static $h= array();
++    static $bootstrap= array();
+ 
++    // Bootstrap loading, only to be used for core classes.
++    if (!is_resource($h[$archive])) {
++      $h[$archive]= fopen($archive, 'rb');
++      $header= unpack('a3id/c1version/i1indexsize/a*reserved', fread($h[$archive], 0x0100));
++      for ($bootstrap[$archive]= array(), $i= 0; $i < $header['indexsize']; $i++) {
++        $entry= unpack(
++          'a80id/a80filename/a80path/i1size/i1offset/a*reserved', 
++          fread($h[$archive], 0x0100)
++        );
++        $bootstrap[$archive][$entry['id']]= array($entry['size'], $entry['offset']);
++      }
++    }
++
++    if (!isset($bootstrap[$archive][$filename])) return FALSE;
++    fseek($h[$archive], 0x0100 + sizeof($bootstrap[$archive]) * 0x0100 + $bootstrap[$archive][$filename][1], SEEK_SET);
++    $bytes= fread($h[$archive], $bootstrap[$archive][$filename][0]);
++    return $bytes;
++  }
++  // }}}
++  
++
    // {{{ void uses (string* args)
    //     Uses one or more classes
    function uses() {
-+    static $bootstrap= array();
-+    static $h;
 +    $include= &xp::registry('include_path');
 +
 +    if (0 == sizeof($include)) {
@@ -18,7 +73,7 @@ Index: lang.base.php
      foreach (func_get_args() as $str) {
        if (class_exists($class= xp::reflect($str))) continue;
  
-@@ -245,14 +254,75 @@
+@@ -245,17 +296,55 @@
          }
          $str= substr($str, strrpos($str, '/')+ 1);
          $class= xp::reflect($str);
@@ -27,79 +82,62 @@ Index: lang.base.php
 -          xp::error(xp::stringOf(new Error('Cannot include '.$str)));
 -        } else if (TRUE === $r) {
 -          continue;
++        
++        continue;
 +      }
 +
-+      $t1= microtime();
 +      foreach ($include as $path => $loader) {
-+        $type= 'NONE';
 +
 +        // If path is a directory and the included file exists, load it
-+        if (is_dir($path) && file_exists($f= realpath($path.DIRECTORY_SEPARATOR.strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php'))) {
++        if (is_dir($path)) {
++          if (!file_exists($f= realpath($path.DIRECTORY_SEPARATOR.strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php'))) {
++            continue;
++          }
++          
 +          if (FALSE === ($r= include_once($f))) {
 +            xp::error(xp::stringOf(new Error('Cannot include '.$str)));
 +          }
 +          
-+          $type= 'DIRLDR';
 +          break;
-+        } elseif (is_file($path) && class_exists('archiveclassloader') && class_exists('archive') && class_exists('file')) {
++        } elseif (is_file($path) && class_exists('archiveclassloader') && class_exists('archivereader')) {
 +
 +          // Load via archive class loader
 +          if (!is_object($include[$path])) {
-+            $include[$path]= &new ArchiveClassLoader(new Archive(new File($path)));
++            $include[$path]= &new ArchiveClassLoader(new ArchiveReader($path));
 +            xp::registry('include_path', $include);
 +          }
-+          
++
 +          if (!$include[$path]->providesClass($str)) continue;
 +          $class= &$include[$path]->loadClass($str);
-+          
-+          $type= 'ARCLDR';
 +          break;
-+        } elseif (is_file($path) && ('lang.' === substr($str, 0, 5) || 'io.' === substr($str, 0, 3))) {
++        } elseif (is_file($path) && (0 == strncmp('lang.', $str, 5))) {
 +
-+          // Bootstrap loading, only to be used for core classes.
-+          if (!is_resource($h)) {
-+            $h= fopen($path, 'rb');
-+            $header= unpack('a3id/c1version/i1indexsize/a*reserved', fread($h, 0x0100));
-+            for ($bootstrap[$path]= array(), $i= 0; $i < $header['indexsize']; $i++) {
-+              $entry= unpack(
-+                'a80id/a80filename/a80path/i1size/i1offset/a*reserved', 
-+                fread($h, 0x0100)
-+              );
-+              $bootstrap[$path][$entry['id']]= array($entry['size'], $entry['offset']);
-+            }
-+          }
-+          
-+          if (!isset($bootstrap[$path][$str])) continue;
-+          fseek($h, 0x0100 + sizeof($bootstrap[$path]) * 0x0100 + $bootstrap[$path][$str][1], SEEK_SET);
-+          $bytes= fread($h, $bootstrap[$path][$str][0]);
++          // Load via bootstrap class loader
++          $bytes= __xp_load_archive_bytes($path, strtr($str, '.', '/').'.class.php');
 +          if (FALSE === eval('?>'.$bytes)) {
-+            xp::error('Bootstrap class loading failure at '.$str.' (file= '.$path.' / start= '.$bootstrap[$path][$str][1].', length= '.$bootstrap[$path][$str][0].')');
++            xp::error('Bootstrap class loading failure at '.$str.' (file= '.$path.')');
 +          }
-+          $type= 'BTSLDR';
 +          break;
          }
        }
        
-+      $t2= microtime();
-+      list($tm1, $ts1)= explode(' ', $t1);
-+      list($tm2, $ts2)= explode(' ', $t2);
-+      $diff= ($ts2- $ts1) + ($tm2 - $tm1);
-+      
-+      // DEBUG
-+      0 && printf("Class loading via %s took %0.3fs class= %s\n",
-+        $type,
-+        $diff,
-+        $str
-+      );
-+
+-      // Register class name and call static initializer if available
+-      xp::registry('class.'.$class, $str);
+-      is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
 +      if (!class_exists(xp::reflect($str))) {
 +        xp::error('Cannot include '.$str);
 +      }
 +            
-       // Register class name and call static initializer if available
-       xp::registry('class.'.$class, $str);
-       is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
-@@ -428,7 +498,6 @@
++      // Register class name and call static initializer if available and if it has not been
++      // done before (through an ArchiveClassLoader)
++      if (NULL === xp::registry('class.'.$class)) {
++        xp::registry('class.'.$class, $str);
++        is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
++      }
+     }
+   }
+   // }}}
+@@ -428,7 +517,6 @@
      ? getenv('SKELETON_PATH')
      : dirname(__FILE__).DIRECTORY_SEPARATOR
    ));
@@ -107,10 +145,30 @@ Index: lang.base.php
    define('LONG_MAX', is_int(2147483648) ? 9223372036854775807 : 2147483647);
    define('LONG_MIN', -LONG_MAX - 1);
  
-Index: io/cca/ArchiveClassLoader.class.php
+@@ -455,7 +543,9 @@
+     'lang.IllegalArgumentException',
+     'lang.IllegalStateException',
+     'lang.FormatException',
+-    'lang.ClassLoader'
++    'lang.ClassLoader',
++    'lang.archive.ArchiveReader',
++    'lang.archive.ArchiveClassLoader'
+   );
+   // }}}
+ ?>
+Index: lang/archive/ArchiveClassLoader.class.php
 ===================================================================
---- io/cca/ArchiveClassLoader.class.php	(revision 7907)
-+++ io/cca/ArchiveClassLoader.class.php	(working copy)
+--- lang/archive/ArchiveClassLoader.class.php	(revision 7907)
++++ lang/archive/ArchiveClassLoader.class.php	(working copy)
+@@ -4,7 +4,7 @@
+  * $Id$
+  */
+  
+-  uses('lang.ClassLoader', 'io.cca.Archive');
++  uses('lang.ClassLoader');
+   
+   /** 
+    * Loads XP classes from a CCA (Class Collection Archive)
 @@ -55,43 +55,7 @@
       * @return  string
       */
@@ -152,14 +210,36 @@ Index: io/cca/ArchiveClassLoader.class.php
 -      }
 -      
 -      return $src;
-+      return $this->archive->extract($name);
++      return $this->archive->extract(strtr($name, '.', '/').'.class.php');
      }
      
      /**
-@@ -128,5 +92,16 @@
+@@ -128,5 +92,38 @@
        $c= &new XPClass($name);
        return $c;
      }
++    
++    /**
++     * Loads a resource.
++     *
++     * @access  public
++     * @param   string string name of resource
++     * @return  string
++     */
++    function getResource($string) {
++      return $this->archive->extract($string);
++    }
++    
++    /**
++     * (Insert method's description here)
++     *
++     * @access  
++     * @param   
++     * @return  
++     */
++    function getResourceAsStream($string) {
++      return $this->archive->getStream($string);
++    }
 +    
 +    /**
 +     * Checks whether this loader can provide the requested class
@@ -173,10 +253,10 @@ Index: io/cca/ArchiveClassLoader.class.php
 +    }    
    }
  ?>
-Index: io/cca/Archive.class.php
+Index: lang/archive/Archive.class.php
 ===================================================================
---- io/cca/Archive.class.php	(revision 7907)
-+++ io/cca/Archive.class.php	(working copy)
+--- lang/archive/Archive.class.php	(revision 7907)
++++ lang/archive/Archive.class.php	(working copy)
 @@ -97,6 +97,25 @@
      }
      
@@ -203,3 +283,492 @@ Index: io/cca/Archive.class.php
       * Create CCA archive
       *
       * @access  public
+@@ -212,6 +231,31 @@
+     }
+     
+     /**
++     * Fetches a stream to the file in the archive
++     *
++     * @access  public
++     * @param   string id
++     * @return  &io.Stream
++     * @throws  lang.ElementNotFoundException in case the specified id does not exist
++     */
++    function &getStream($id) {
++      if (!$this->contains($id)) {
++        return throw(new ElementNotFoundException('Element "'.$id.'" not contained in this archive'));
++      }
++
++      // Calculate starting position      
++      $pos= (
++        ARCHIVE_HEADER_SIZE + 
++        sizeof(array_keys($this->_index)) * ARCHIVE_INDEX_ENTRY_SIZE +
++        $this->_index[$id][3]
++      );
++      
++      $class= &XPClass::forName('io.EnclosedStream');
++      $s= &$class->newInstance($this->file, $pos, $this->_index[$id][2]);
++      return $s;
++    }
++    
++    /**
+      * Open this archive
+      *
+      * @access  public
+Index: io/cca/ArchiveClassLoader.class.php
+===================================================================
+--- io/cca/ArchiveClassLoader.class.php	(revision 7907)
++++ io/cca/ArchiveClassLoader.class.php	(working copy)
+@@ -1,132 +0,0 @@
+-<?php
+-/* This class is part of the XP framework
+- * 
+- * $Id$
+- */
+- 
+-  uses('lang.ClassLoader', 'io.cca.Archive');
+-  
+-  /** 
+-   * Loads XP classes from a CCA (Class Collection Archive)
+-   * 
+-   * Note: The classes *must* be stored in the CCA with their fully 
+-   * qualified class names as key!
+-   *
+-   * Usage:
+-   * <code>
+-   *   $l= &new ArchiveClassLoader(new Archive(new File('soap.cca')));
+-   *   try(); {
+-   *     $class= &$l->loadClass($argv[1]);
+-   *   } if (catch('ClassNotFoundException', $e)) {
+-   *     $e->printStackTrace();
+-   *     exit(-1);
+-   *   }
+-   * 
+-   *   $obj= &$class->newInstance();
+-   * </code>
+-   *
+-   * @test     xp://net.xp_framework.unittest.io.ArchiveClassLoaderTest
+-   * @purpose  Load classes from an archive
+-   * @see      xp://lang.ClassLoader
+-   * @see      xp://lang.cca.Archive
+-   * @ext      tokenize
+-   */
+-  class ArchiveClassLoader extends ClassLoader {
+-    var
+-      $archive  = NULL;
+-    
+-    /**
+-     * Constructor
+-     * 
+-     * @access  public
+-     * @param   &lang.cca.Archive archive
+-     */
+-    function __construct(&$archive) {
+-      parent::__construct();
+-      $this->archive= &$archive;
+-      $this->archive->isOpen() || $this->archive->open(ARCHIVE_READ);
+-    }
+-    
+-    /**
+-     * Load class bytes
+-     *
+-     * @access  public
+-     * @param   string name fully qualified class name
+-     * @return  string
+-     */
+-    function loadClassBytes($name) {
+-      $src= '';
+-      $line= 0;
+-      $tokens= token_get_all($this->archive->extract($name));
+-      for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
+-        switch ($tokens[$i][0]) {
+-          case T_FILE: 
+-            $tokens[$i][1]= "'".strtr($name, '.', '/').'.class.php\''; 
+-            break;
+-            
+-          case T_LINE:
+-            $tokens[$i][1]= $line;
+-            break;
+-
+-          case T_STRING:
+-            if ('uses' == $tokens[$i][1] || 'implements' == $tokens[$i][1]) {
+-              $o= $i+ 1;
+-              while (')' != $tokens[$o][0]) {
+-                if (T_CONSTANT_ENCAPSED_STRING == $tokens[$o][0]) {
+-                  $used= trim($tokens[$o][1], '"\'');
+-                  $this->archive->contains($used) && $this->loadClass($used);
+-                }
+-                $o++;
+-              }
+-            }
+-            break;
+-        }
+-
+-        if (is_array($tokens[$i])) {
+-          $src.= $tokens[$i][1];
+-          $line+= substr_count($tokens[$i][1], "\n");
+-        } else {
+-          $src.= $tokens[$i];
+-          $line+= substr_count($tokens[$i], "\n");
+-        }
+-      }
+-      
+-      return $src;
+-    }
+-    
+-    /**
+-     * Load the class by the specified name
+-     *
+-     * @access  public
+-     * @param   string class fully qualified class name io.File
+-     * @return  &lang.XPClass
+-     * @throws  lang.ClassNotFoundException in case the class can not be found
+-     */
+-    function &loadClass($class) {
+-      $name= xp::reflect($class);
+-
+-      if (!class_exists($name)) {
+-        try(); {
+-          $src= $this->loadClassBytes($class);
+-        } if (catch('Exception', $e)) {
+-          return throw(new ClassNotFoundException(sprintf(
+-            'Class "%s" not found: %s',
+-            $class,
+-            $e->getMessage()
+-          )));
+-        }
+-
+-        if (FALSE === eval('?>'.$src)) {
+-          return throw(new FormatException('Cannot define class "'.$class.'"'));
+-        }
+-
+-        xp::registry('class.'.$name, $class);
+-        xp::registry('classloader.'.$class, $this);
+-        is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+-      }
+-
+-      $c= &new XPClass($name);
+-      return $c;
+-    }
+-  }
+-?>
+Index: io/cca/Archive.class.php
+===================================================================
+--- io/cca/Archive.class.php	(revision 7907)
++++ io/cca/Archive.class.php	(working copy)
+@@ -1,315 +0,0 @@
+-<?php
+-/* This class is part of the XP framework
+- *
+- * $Id$
+- */
+- 
+-  uses('lang.ElementNotFoundException');
+-
+-  define('ARCHIVE_READ',             0x0000);
+-  define('ARCHIVE_CREATE',           0x0001);
+-  define('ARCHIVE_HEADER_SIZE',      0x0100);
+-  define('ARCHIVE_INDEX_ENTRY_SIZE', 0x0100);
+-
+-  /**
+-   * Archives contain a collection of classes.
+-   *
+-   * Usage example (Creating):
+-   * <code>
+-   *   $a= &new Archive(new File('soap.cca'));
+-   *   try(); {
+-   *     $a->open(ARCHIVE_CREATE);
+-   *     $a->add(
+-   *       new File(SKELETON_PATH.'xml/soap/SOAPMessage.class.php'), 
+-   *       'xml.soap.SOAPMessage'
+-   *     );
+-   *     $a->add(
+-   *       new File(SKELETON_PATH.'xml/soap/SOAPClient.class.php'),
+-   *       'xml.soap.SOAPClient'
+-   *     );
+-   *     $a->create();
+-   *   } if (catch('Exception', $e)) {
+-   *     $e->printStackTrace();
+-   *   }
+-   * </code>
+-   *
+-   * Usage example (Extracting):
+-   * <code>
+-   *   $a= &new Archive(new File('soap.cca'));                               
+-   *   try(); {                                                              
+-   *     $a->open(ARCHIVE_READ);                                             
+-   *     $c= array(                                                          
+-   *       'xml.soap.SOAPMessage' => $a->extract('xml.soap.SOAPMessage'),    
+-   *       'xml.soap.SOAPClient'  => $a->extract('xml.soap.SOAPClient')      
+-   *     );                                                                  
+-   *   } if (catch('Exception', $e)) {                                       
+-   *     $e->printStackTrace();                                              
+-   *   }                                                                     
+-   *   var_dump($c);                                                         
+-   * </code>
+-   * 
+-   * @purpose  Provide an archiving
+-   * @see      http://java.sun.com/j2se/1.4/docs/api/java/util/jar/package-summary.html
+-   */
+-  class Archive extends Object {
+-    var
+-      $file     = NULL,
+-      $version  = 1;
+-    
+-    var
+-      $_index  = array();
+-        
+-    /**
+-     * Constructor
+-     *
+-     * @access  public
+-     * @param   &io.File file
+-     */
+-    function __construct(&$file) {
+-      $this->file= &$file;
+-      
+-    }
+-    
+-    /**
+-     * Add a file
+-     *
+-     * @access  public
+-     * @param   &io.File file
+-     * @param   string id the id under which this entry will be located
+-     * @return  bool success
+-     */
+-    function add(&$file, $id) {
+-      try(); {
+-        $file->open(FILE_MODE_READ);
+-        $data= $file->read($file->size());
+-        $file->close();
+-      } if (catch('Exception', $e)) {
+-        return throw($e);
+-      }
+-      $this->_index[$id]= array(
+-        $file->filename,
+-        $file->path,
+-        strlen($data),
+-        -1,                 // Will be calculated by create()
+-        $data
+-      );
+-      return TRUE;
+-    }
+-    
+-    /**
+-     * Create CCA archive
+-     *
+-     * @access  public
+-     * @return  bool success
+-     */
+-    function create() {
+-      try(); {
+-        $this->file->truncate();
+-        $this->file->write(pack(
+-          'a3c1i1a248', 
+-          'CCA',
+-          $this->version,
+-          sizeof(array_keys($this->_index)),
+-          "\0"                  // Reserved for future use
+-        ));
+-        
+-        // Write index
+-        $offset= 0;
+-        foreach (array_keys($this->_index) as $id) {
+-          $this->file->write(pack(
+-            'a80a80a80i1i1a8',
+-            $id,
+-            $this->_index[$id][0],
+-            $this->_index[$id][1],
+-            $this->_index[$id][2],
+-            $offset,
+-            "\0"                   // Reserved for future use
+-          ));
+-          $offset+= $this->_index[$id][2];
+-        }
+-        
+-        // Write files
+-        foreach (array_keys($this->_index) as $id) {
+-          $this->file->write($this->_index[$id][4]);
+-        }
+-        
+-        $this->file->close();
+-      } if (catch('Exception', $e)) {
+-        return throw($e);
+-      }
+-      
+-      return TRUE;
+-    }
+-    
+-    /**
+-     * Check whether a given element exists
+-     *
+-     * @access  public
+-     * @param   string id the element's id
+-     * @return  bool TRUE when the element exists
+-     */
+-    function contains($id) {
+-      return isset($this->_index[$id]);
+-    }
+-    
+-    /**
+-     * Get entry (iterative use)
+-     * <code>
+-     *   $a= &new Archive(new File('port.cca'));
+-     *   $a->open(ARCHIVE_READ);
+-     *   while ($id= $a->getEntry()) {
+-     *     var_dump($id);
+-     *   }
+-     *   $a->close();
+-     * </code>
+-     *
+-     * @access  public
+-     * @return  string id or FALSE to indicate the pointer is at the end of the list
+-     */
+-    function getEntry() {
+-      $key= key($this->_index);
+-      next($this->_index);
+-      return $key;
+-    }
+-
+-    /**
+-     * Rewind archive
+-     *
+-     * @access  public
+-     */
+-    function rewind() {
+-      reset($this->_index);
+-    }
+-    
+-    /**
+-     * Extract a file's contents
+-     *
+-     * @access  public
+-     * @param   string id
+-     * @return  &string content
+-     * @throws  lang.ElementNotFoundException in case the specified id does not exist
+-     */
+-    function &extract($id) {
+-      if (!$this->contains($id)) {
+-        return throw(new ElementNotFoundException('Element "'.$id.'" not contained in this archive'));
+-      }
+-
+-      // Calculate starting position      
+-      $pos= (
+-        ARCHIVE_HEADER_SIZE + 
+-        sizeof(array_keys($this->_index)) * ARCHIVE_INDEX_ENTRY_SIZE +
+-        $this->_index[$id][3]
+-      );
+-      
+-      try(); {
+-        $this->file->seek($pos, SEEK_SET);
+-        $data= $this->file->read($this->_index[$id][2]);
+-      } if (catch('Exception', $e)) {
+-        return throw($e);
+-      }
+-      
+-      return $data;
+-    }
+-    
+-    /**
+-     * Open this archive
+-     *
+-     * @access  public
+-     * @param   int mode default ARCHIVE_READ one of ARCHIVE_READ | ARCHIVE_CREATE
+-     * @return  bool success
+-     * @throws  lang.IllegalArgumentException in case an illegal mode was specified
+-     * @throws  lang.FormatException in case the header is malformed
+-     */
+-    function open($mode) {
+-      switch ($mode) {
+-        case ARCHIVE_READ:      // Load
+-          try(); {
+-            $this->file->open(FILE_MODE_READ);
+-            
+-            // Read header
+-            $header= $this->file->read(ARCHIVE_HEADER_SIZE);
+-            $data= unpack('a3id/c1version/i1indexsize/a*reserved', $header);
+-            
+-            // Check header integrity
+-            if ('CCA' !== $data['id']) throw(new FormatException(sprintf(
+-              'Header malformed: "CCA" expected, have "%s"', 
+-              substr($header, 0, 3)
+-            )));
+-          } if (catch('Exception', $e)) {
+-            return throw($e);
+-          }
+-          
+-          // Copy information
+-          $this->version = $data['version'];
+-          
+-          // Read index
+-          for ($i= 0; $i < $data['indexsize']; $i++) {
+-            $entry= unpack(
+-              'a80id/a80filename/a80path/i1size/i1offset/a*reserved', 
+-              $this->file->read(ARCHIVE_INDEX_ENTRY_SIZE)
+-            );
+-            $this->_index[$entry['id']]= array(
+-              $entry['filename'],
+-              $entry['path'],
+-              $entry['size'],
+-              $entry['offset'],
+-              NULL              // Will not be read, use extract()
+-            );
+-          }
+-          
+-          return TRUE;
+-          
+-        case ARCHIVE_CREATE:    // Create
+-          return $this->file->open(FILE_MODE_WRITE);
+-          
+-      }
+-      
+-      return throw(new IllegalArgumentException('Mode '.$mode.' not recognized'));
+-    }
+-    
+-    /**
+-     * Close this archive
+-     *
+-     * @access  public
+-     * @return  bool success
+-     */
+-    function close() {
+-      return $this->file->close();
+-    }
+-    
+-    /**
+-     * Checks whether this archive is open
+-     *
+-     * @access  public
+-     * @param   bool TRUE when the archive file is open
+-     */
+-    function isOpen() {
+-      return $this->file->isOpen();
+-    }
+-    
+-    /**
+-     * Returns a string representation of this object
+-     *
+-     * @access  public
+-     * @return  string
+-     */
+-    function toString() {
+-      return sprintf(
+-        '%s(version= %s, index size= %d) { %s }',
+-        $this->getClassName(),
+-        $this->version,
+-        sizeof($this->_index),
+-        xp::stringOf($this->file)
+-      );
+-    }
+-    
+-    /**
+-     * Destructor
+-     *
+-     * @access  public
+-     */
+-    function __destruct() {
+-      if ($this->isOpen()) $this->close();
+-    }
+-  }
+-?>
