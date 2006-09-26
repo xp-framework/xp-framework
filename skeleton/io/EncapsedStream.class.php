@@ -44,7 +44,24 @@
      */
     function _prepare() {
       $this->_super->seek($this->_offset + $this->offset);
-    }    
+      $this->_superOffset= $this->_super->tell();
+    }
+    
+    /**
+     * Keep track of moved stream pointers in the parent
+     * stream.
+     *
+     * Should be used internally to correctly calculate the offset
+     * for subsequent reads.
+     *
+     * @access  protected
+     * @param   mixed arg
+     * @return  mixed arg
+     */
+    function _track($arg) {
+      $this->offset+= ($this->_super->tell()- $this->_superOffset);
+      return $arg;
+    }
     
     /**
      * Open the stream. For EncapsedStream only reading is supported
@@ -104,7 +121,7 @@
      */
     function readLine($bytes= 4096) {
       $this->_prepare();
-      return $this->_super->readLine(min($bytes, $this->_size- $this->offset));
+      return $this->_track($this->_super->readLine(min($bytes, $this->_size- $this->offset)));
     }
     
     /**
@@ -115,8 +132,7 @@
      */
     function readChar() {
       $this->_prepare();
-      if ($this->eof()) return '';
-      return $this->_super->readChar();
+      return $this->_track($this->_super->readChar());
     }
     
     /**
@@ -131,7 +147,7 @@
      */
     function gets($bytes= 4096) {
       $this->_prepare();
-      return $this->_super->gets(min($bytes, $this->_size- $this->offset));
+      return $this->_track($this->_super->gets(min($bytes, $this->_size- $this->offset)));
     }
     
     /**
@@ -143,7 +159,7 @@
      */
     function read($bytes= 4096) {
       $this->_prepare();
-      return $this->_super->read(min($bytes, $this->_size- $this->offset));
+      return $this->_track($this->_super->read(min($bytes, $this->_size- $this->offset)));
     }
     
     /**
