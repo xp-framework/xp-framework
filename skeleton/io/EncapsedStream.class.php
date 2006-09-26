@@ -44,7 +44,6 @@
      */
     function _prepare() {
       $this->_super->seek($this->_offset + $this->offset);
-      $this->_superOffset= $this->_super->tell();
     }
     
     /**
@@ -59,7 +58,7 @@
      * @return  mixed arg
      */
     function _track($arg) {
-      $this->offset+= ($this->_super->tell()- $this->_superOffset);
+      $this->offset+= ($this->_super->tell()- ($this->_offset+ $this->offset));
       return $arg;
     }
     
