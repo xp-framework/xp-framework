@@ -11,8 +11,13 @@ Scope of Change
 ---------------
 Support for class loading and bootstrap class loading will be 
 added to the core.
+
 An application should be contained in a class archive so you only
 need to supply lang.base.php and the archive file.
+
+The package io.cca will be moved into the core package lang and be
+renamed to lang.archive. An ArchiveClassLoader will be available
+after bootstrapping has finished.
 
 Rationale
 ---------
@@ -29,7 +34,7 @@ version of Subversion installed on the system and network
 connectivity to the Subversion server.
 
 Tarball repository
-~~~~~~~~~~~~~~~~~~  
+~~~~~~~~~~~~~~~~~~
 Unpacking a tar archive from an XP framework release, creating a
 full source code tree in the target directory. While this reduces
 software requirements to a "tar" installation, no simple update
@@ -101,7 +106,7 @@ The new resource loading mechanism is:
       
       // Resource path must reflect the package name to conform with
       // above example
-      $bytes= $cl->loadResource('net/xp_framework/rfc/META-INF/mysettings.ini');
+      $bytes= $cl->getResource('net/xp_framework/rfc/META-INF/mysettings.ini');
       // ...
     }
   }
@@ -114,17 +119,20 @@ n/a
 
 Speed impact
 ------------
+This change implies both a speed loss and a speed gain. In addition to that
+at minimum two new classes will have to be added to the core of the framework
+and be loaded at every startup.
 
 Speed loss
 ~~~~~~~~~~
 Class archives start with a header which contains metadata information 
 about all contained files. As the header must be fully read to acquire
 information about the archive, and the header size grows for each added
-file, big archives will be slower than small archives.
+file, big archives will be slightly slower than small archives.
 
 Speed gain
 ~~~~~~~~~~
-As the archive file only needs to be opened once, some fstat() system calls
+As the archive file only needs to be opened once, several stat() system calls
 will vanish, speeding up the loading process as a trade-off for the initially
 mentioned speed loss.
 
@@ -138,6 +146,9 @@ Related documents
 -----------------
 - http://xp-framework.net/rfc/contrib/rfc0074.diff
   Patch implementing this RFC
+
+- http://experiments.xp-framework.net/?people,kiesel,php,cca/package.php
+  Package creation utility
 
 Comments
 --------
@@ -155,5 +166,8 @@ Comments
 - kiesel, Tue Sep 19 13:35:06 CEST 2006
   Initial patch made available, still containing a lot of debug.
 
+- kiesel, Tue Sep 19 14:45:49 CEST 2006
+  Should the include_path be resetted to an empty one after uses() has
+  initialized its paths? This could speed up include() calls.
 
 <EOF>
