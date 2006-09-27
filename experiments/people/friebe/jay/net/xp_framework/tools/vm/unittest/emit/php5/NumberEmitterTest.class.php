@@ -50,9 +50,9 @@
      */
     #[@test]
     function hexNumbers() {
-      foreach (array('0x1', '0x0') as $declared) {
+      foreach (array('0x1', '0x0', '-0x5') as $declared) {
         $this->assertSourcecodeEquals(
-          '$x= '.hexdec($declared).';',
+          '$x= '.eval('return '.$declared.';').';',
           $this->emit('$x= '.$declared.';')
         );
       }

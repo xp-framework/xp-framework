@@ -1225,7 +1225,7 @@ static_scalar: /* compile-time evaluated scalars */
 		common_scalar				{ $$= $1; }
 	|	T_STRING 					{ $$= &new ConstantReferenceNode(NULL, $1); }
 	|	'+' static_scalar			{ $$= $2; }
-	|	'-' static_scalar			{ $$= -1 * $2; } 
+	|	'-' static_scalar			{ $$= -1 * $2->value; } 
 	|	T_ARRAY '(' static_array_pair_list ')' { $$= $3; }
 	|	class_constant 		        { $$ = $1; }
 ;
