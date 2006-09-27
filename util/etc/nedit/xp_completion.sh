@@ -22,6 +22,7 @@ _xpclasses() {
   COMPREPLY=()
 
   CUR=${COMP_WORDS[$COMP_CWORD]}
+  ORIG_IFS=$IFS
   local IFS=':'
   CP_PREFIX=`echo $CUR | tr . /`
   for DIR in $PHP_INCLUDE_PATH; do
@@ -34,7 +35,7 @@ _xpclasses() {
     # echo "===> RESULTS= $RESULTS"
     FILTERED=$( echo $RESULTS | $SED_CMD -r "s#$DIR/?##g" | $SED_CMD -r "s#\.class\.php\$##g" | tr / . )
     
-    unset IFS
+    IFS=$ORIG_IFS
     for ROW in ${FILTERED}; do
       if [ -n "$ROW" ]; then
         COMPREPLY[${#COMPREPLY[@]}]=$ROW
