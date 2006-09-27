@@ -214,7 +214,7 @@
       if ($e instanceof XPException && $e->cause instanceof xp·lang·SystemExit) {
         exit($e->cause->message);
       }
-      echo $e;
+      echo 'Unhandled ', $e;
     }
   }
 
