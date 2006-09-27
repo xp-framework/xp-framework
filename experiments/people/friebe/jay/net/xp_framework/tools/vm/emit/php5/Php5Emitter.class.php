@@ -560,7 +560,7 @@
       $this->bytes.= 'class '.$this->context['class'].' extends '.$extends;
 
       // Copy members from parent class
-      if (!($parent= $this->lookupClass($extends))) {
+      if (NULL === ($parent= $this->lookupClass($extends))) {
         $this->addError(new CompileError(1000, 'Parent class of '.$node->name.' ('.$extends.') does not exist'));
       }
       $this->context['classes'][$this->context['class']]= $parent;
@@ -571,13 +571,13 @@
         foreach ($node->implements as $name) {
           $interface= $this->qualifiedName($name);
           
-          if (!$this->lookupClass($interface)) {
+          if (NULL === $this->lookupClass($interface)) {
             $this->cat && $this->cat->error(
               'Interface:', $extends, 'does not exist,',
               'declared=', implode(', ', array_keys($this->context['classes']))
             );
 
-            $this->addError(new CompileError(1001, 'Interface '.$interface.' does not exist'));
+            $this->addError(new CompileError(1001, 'Interface '.$interface.' implemented by '.$node->name.' does not exist'));
           }
           $this->bytes.= $interface.', ';
         }
