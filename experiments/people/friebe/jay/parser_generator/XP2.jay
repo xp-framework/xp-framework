@@ -1395,8 +1395,8 @@ object_property:
 ;
 
 object_dim_list:
-		object_dim_list '[' dim_offset ']' { $$->offset= $3; }
-	|	object_dim_list '{' expr '}' { $$->offset= $3; }
+		object_dim_list '[' dim_offset ']' { $$= &new ArrayAccessNode($1, $3); }
+	|	object_dim_list '{' expr '}' { $$= &new ArrayAccessNode($1, $3); }
 	|	variable_name { $$= &new MemberNode($1); }
 ;
 
