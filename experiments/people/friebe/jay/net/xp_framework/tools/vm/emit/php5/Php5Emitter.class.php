@@ -326,7 +326,17 @@
       }
       $this->bytes.= ')';
     }
-    
+
+    /**
+     * Emits an integer
+     *
+     * @access  public
+     * @param   int integer
+     */
+    function emitInteger($integer) { 
+      $this->bytes.= $integer;
+    }
+
     /**
      * Emits a string
      *
