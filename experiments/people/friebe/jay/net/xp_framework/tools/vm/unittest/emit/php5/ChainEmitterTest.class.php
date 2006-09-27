@@ -91,7 +91,7 @@
         preg_replace('/\n\s*/', '', 'class Long extends xp·lang·Object{
           public $number;
 
-          public function __construct($initial){
+          public function __construct($initial= 0){
             $this->number= $initial; 
           }
 
