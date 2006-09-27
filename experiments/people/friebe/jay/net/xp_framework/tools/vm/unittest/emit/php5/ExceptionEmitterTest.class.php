@@ -64,6 +64,7 @@
           $e= $__e->cause; 
           $e->printStackTrace();
         } else { 
+          echo 2; 
           throw $__e; 
         } }
         echo 2; ;'),
@@ -112,6 +113,7 @@
             $f->close(); 
             return FALSE;
           } else { 
+            $f->close(); 
             throw $__e; 
           } }
           $f->close(); ; 

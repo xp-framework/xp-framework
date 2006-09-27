@@ -1001,6 +1001,7 @@
       $this->bytes.= "try {\n  ";
       $this->emitAll($node->statements);      
 
+      // Catch-all XPExceptions
       $this->bytes.= '} catch (XPException $__e) { ';
       $this->bytes.= 'if ($__e->cause instanceof '.$this->qualifiedName($node->catch->class).') { ';
       $this->bytes.= $node->catch->variable.'= $__e->cause; ';
@@ -1020,7 +1021,10 @@
         $this->emitAll($catch->statements);
       }
       
-      $this->bytes.= '} else { throw $__e; } }';
+      // Rethrow unhandled exceptions
+      $this->bytes.= '} else { ';
+      $node->finally && $this->emitAll($node->finally->statements);
+      $this->bytes.= ' throw $__e; } }';
       
       $node->finally && $this->emitAll($node->finally->statements);
     }
