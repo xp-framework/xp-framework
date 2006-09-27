@@ -66,6 +66,19 @@
     }
 
     /**
+     * Tests array access
+     *
+     * @access  public
+     */
+    #[@test]
+    function nestedMemberArrayAccess() {
+      $this->assertSourcecodeEquals(
+        '$this->a[$key][$subkey]++;',
+        $this->emit('$this->a[$key][$subkey]++;')
+      );
+    }
+
+    /**
      * Tests array append operator "[]"
      *
      * @access  public
