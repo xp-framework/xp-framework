@@ -116,9 +116,9 @@
         return 'string';
       } else if ("'" == $node{0}) { // Single-quoted string
         return 'string';
-      } else if (is_int($node)) {
+      } else if (is_int($node) || is_a($node, 'LongNumberNode')) {
         return 'integer';
-      } else if (is_float($node)) {
+      } else if (is_float($node) || is_a($node, 'DoubleNumberNode')) {
         return 'double';
       } else if (is_string($node)) switch (strtolower($node)) {
         case 'true': return 'bool';
