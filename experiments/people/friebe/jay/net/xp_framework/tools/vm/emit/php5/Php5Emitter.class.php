@@ -570,7 +570,8 @@
         $this->bytes.= ' implements ';
         foreach ($node->implements as $name) {
           $interface= $this->qualifiedName($name);
-          if (!isset($this->context['classes'][$interface])) {
+          
+          if (!$this->lookupClass($interface)) {
             $this->cat && $this->cat->error(
               'Interface:', $extends, 'does not exist,',
               'declared=', implode(', ', array_keys($this->context['classes']))
@@ -1098,6 +1099,17 @@
     }
     
     /**
+     * Emits PreIncs
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitPreInc(&$node) {
+      $this->bytes.= '++';
+      $this->emit($node->expression);
+    }
+
+    /**
      * Emits PostIncs
      *
      * @access  public
@@ -1106,6 +1118,17 @@
     function emitPostInc(&$node) {
       $this->emit($node->expression);
       $this->bytes.= '++';
+    }
+
+    /**
+     * Emits PreDecs
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitPreDec(&$node) {
+      $this->bytes.= '--';
+      $this->emit($node->expression);
     }
 
     /**
