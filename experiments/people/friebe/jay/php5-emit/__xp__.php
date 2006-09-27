@@ -91,6 +91,10 @@
       return new arraywrapper($array);
     }
     
+    public static function null() {
+      return xp::$null;
+    }
+    
     public static function reflect($name) {
       return strtr($name, '.', '·');
     }
@@ -104,11 +108,48 @@
       return $var;
     }
 
-    public static function stringOf($expr) {
-      if ($expr instanceof xp·lang·Object) {
-        return $expr->toString();
+    public static function stringOf($arg, $indent= '') {
+      static $protect= array();
+
+      if (is_string($arg)) {
+        return '"'.$arg.'"';
+      } else if (is_bool($arg)) {
+        return $arg ? 'true' : 'false';
+      } else if (is_null($arg)) {
+        return 'null';
+      } else if (is_a($arg, 'null')) {
+        return '<null>';
+      } else if (is_int($arg) || is_float($arg)) {
+        return (string)$arg;
+      } else if ($args instanceof xp·lang·Object && !isset($protect[$arg->__id])) {
+        $protect[$arg->__id]= TRUE;
+        $s= $arg->toString();
+        unset($protect[$arg->__id]);
+        return $s;
+      } else if (is_array($arg)) {
+        $ser= serialize($arg);
+        if (isset($protect[$ser])) return '->{:recursion:}';
+        $protect[$ser]= TRUE;
+        $r= "[\n";
+        foreach (array_keys($arg) as $key) {
+          $r.= $indent.'  '.$key.' => '.xp::stringOf($arg[$key], $indent.'  ')."\n";
+        }
+        unset($protect[$ser]);
+        return $r.$indent.']';
+      } else if (is_object($arg)) {
+        $ser= serialize($arg);
+        if (isset($protect[$ser])) return '->{:recursion:}';
+        $protect[$ser]= TRUE;
+        $r= xp::nameOf(get_class($arg))." {\n";
+        $vars= (array)$arg;
+        foreach (array_keys($vars) as $key) {
+          $r.= $indent.'  '.$key.' => '.xp::stringOf($vars[$key], $indent.'  ')."\n";
+        }
+        unset($protect[$ser]);
+        return $r.$indent.'}';
+      } else if (is_resource($arg)) {
+        return 'resource(type= '.get_resource_type($arg).', id= '.(int)$arg.')';
       }
-      return var_export($expr, TRUE);
     }
 
     public static function typeOf($expr) {
