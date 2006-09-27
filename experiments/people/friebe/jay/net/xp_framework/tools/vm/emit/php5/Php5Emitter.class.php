@@ -1520,7 +1520,6 @@
      */
     function emitListAssign(&$node) {
       $this->bytes.= 'list(';
-      echo xp::stringOf($node);
       foreach ($node->assignments as $expr) {
         $this->emit($expr);
         $this->bytes.= ', ';
