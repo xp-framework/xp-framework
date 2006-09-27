@@ -1132,6 +1132,9 @@ expr_without_variable:
 	|	T_ARRAY '(' array_pair_list ')' { 
           $$= $3; 
         }
+	|	T_ARRAY T_CAST { 
+          $$= array($2);
+        }
 	|	'`' encaps_list '`'	{
           $$= &PNode::create('Execute', $2);
         }
