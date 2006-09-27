@@ -58,6 +58,10 @@
     public function __call($method, $args) { 
       throw xp::exception(new xp·lang·NullPointerException('Invoke: '.$method));
     }
+
+    public function __clone() { 
+      throw xp::exception(new xp·lang·NullPointerException('Clone: '.$method));
+    }
     
     public function __toString() {
       return '<null>';
