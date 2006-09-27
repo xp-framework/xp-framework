@@ -1109,6 +1109,17 @@
     }
 
     /**
+     * Emits PostDecs
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitPostDec(&$node) {
+      $this->emit($node->expression);
+      $this->bytes.= '--';
+    }
+
+    /**
      * Emits MemberDeclarationLists
      *
      * @access  public
