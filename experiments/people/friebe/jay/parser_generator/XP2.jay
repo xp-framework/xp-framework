@@ -45,6 +45,7 @@
     'net.xp_framework.tools.vm.nodes.ImportNode',
     'net.xp_framework.tools.vm.nodes.IssetNode',
     'net.xp_framework.tools.vm.nodes.ListAssignNode',
+    'net.xp_framework.tools.vm.nodes.LongNumberNode',
     'net.xp_framework.tools.vm.nodes.MemberDeclarationListNode',
     'net.xp_framework.tools.vm.nodes.MemberDeclarationNode',
     'net.xp_framework.tools.vm.nodes.MethodCallNode',
@@ -1206,8 +1207,12 @@ ctor_arguments:
 ;
 
 common_scalar:
-		T_LNUMBER 					{ $$= (int)$1; }
-	|	T_DNUMBER 					{ $$= &new DoubleNumberNode($1); }
+		T_LNUMBER {
+          $$= &new LongNumberNode($1);
+        }
+	|	T_DNUMBER { 
+          $$= &new DoubleNumberNode($1); 
+        }
 	|	T_CONSTANT_ENCAPSED_STRING	{ $$= $1; }
 	|	T_LINE 						{ $$= (int)$1; }
 	|	T_FILE 						{ $$= $1; }

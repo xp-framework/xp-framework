@@ -338,16 +338,6 @@
     }
 
     /**
-     * Emits an integer
-     *
-     * @access  public
-     * @param   int integer
-     */
-    function emitInteger($integer) { 
-      $this->bytes.= $integer;
-    }
-
-    /**
      * Emits a boolean
      *
      * @access  public
@@ -1525,6 +1515,16 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitDoubleNumber(&$node) {
+      $this->bytes.= $node->value;
+    }
+
+    /**
+     * Emits a long number
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitLongNumber(&$node) {
       $this->bytes.= $node->value;
     }
   }
