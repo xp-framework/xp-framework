@@ -1535,7 +1535,11 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitLongNumber(&$node) {
-      $this->bytes.= $node->value;
+      if ('0x' == substr($node->value, 0, 2)) {
+        $this->bytes.= hexdec($node->value);
+      } else {
+        $this->bytes.= $node->value;
+      }
     }
   }
 ?>

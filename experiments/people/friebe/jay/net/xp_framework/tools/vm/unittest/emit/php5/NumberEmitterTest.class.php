@@ -52,7 +52,7 @@
     function hexNumbers() {
       foreach (array('0x1', '0x0') as $declared) {
         $this->assertSourcecodeEquals(
-          '$x= '.$declared.';',
+          '$x= '.hexdec($declared).';',
           $this->emit('$x= '.$declared.';')
         );
       }
