@@ -348,16 +348,6 @@
     }
 
     /**
-     * Emits a double
-     *
-     * @access  public
-     * @param   double double
-     */
-    function emitDouble($double) {
-      $this->bytes.= $double;
-    }
-    
-    /**
      * Emits a boolean
      *
      * @access  public
@@ -1526,6 +1516,16 @@
       }
       $this->bytes.= ')= ';
       $this->emit($node->expression);
+    }
+    
+    /**
+     * Emits a double number
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitDoubleNumber(&$node) {
+      $this->bytes.= $node->value;
     }
   }
 ?>

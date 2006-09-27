@@ -24,6 +24,7 @@
     'net.xp_framework.tools.vm.nodes.ContinueNode',
     'net.xp_framework.tools.vm.nodes.DefaultNode',
     'net.xp_framework.tools.vm.nodes.DestructorDeclarationNode',
+    'net.xp_framework.tools.vm.nodes.DoubleNumberNode',
     'net.xp_framework.tools.vm.nodes.DoWhileNode',
     'net.xp_framework.tools.vm.nodes.EchoNode',
     'net.xp_framework.tools.vm.nodes.ElseIfNode',
@@ -1206,7 +1207,7 @@ ctor_arguments:
 
 common_scalar:
 		T_LNUMBER 					{ $$= (int)$1; }
-	|	T_DNUMBER 					{ $$= (float)$1; }
+	|	T_DNUMBER 					{ $$= &new DoubleNumberNode($1); }
 	|	T_CONSTANT_ENCAPSED_STRING	{ $$= $1; }
 	|	T_LINE 						{ $$= (int)$1; }
 	|	T_FILE 						{ $$= $1; }

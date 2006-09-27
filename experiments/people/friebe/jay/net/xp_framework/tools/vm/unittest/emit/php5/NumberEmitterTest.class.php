@@ -20,7 +20,7 @@
      */
     #[@test]
     function floatNumbers() {
-      foreach (array('1.0', '0.0', '0.5', '-5') as $declared) {
+      foreach (array('1.0', '0.0', '0.5', '-5.0', '+5.0') as $declared) {
         $this->assertSourcecodeEquals(
           '$x= '.$declared.';',
           $this->emit('$x= '.$declared.';')
@@ -35,7 +35,7 @@
      */
     #[@test]
     function intNumbers() {
-      foreach (array('1', '0', '-5') as $declared) {
+      foreach (array('1', '0', '-5', '+5') as $declared) {
         $this->assertSourcecodeEquals(
           '$x= '.$declared.';',
           $this->emit('$x= '.$declared.';')
