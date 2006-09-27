@@ -498,6 +498,55 @@
 
       $this->context['method']= '<main>';
     }
+    
+    /**
+     * Lookup a class by its qualified name
+     *
+     * @access  protected
+     * @param   string q qualified name
+     * @return  array or NULL if the class wasn't found
+     */
+    function lookupClass($q) {
+      if (!isset($this->context['classes'][$q])) {
+      
+        // Search classpath
+        $filename= strtr($q, '·', DIRECTORY_SEPARATOR);
+        foreach (explode(PATH_SEPARATOR, CLASSPATH) as $node) {
+          $in= $node.DIRECTORY_SEPARATOR.$filename.'.xp';
+          if (!file_exists($in)) continue;
+          
+          // Found the file, tokenize, parse and emit it.
+          $lexer= &new Lexer(file_get_contents($in), $in);
+          $out= &new File(str_replace('.xp', '.php5', $in));
+
+          // XXX TODO XXX Error handling
+          $parser= &new Parser($lexer);
+          $nodes= $parser->yyparse($lexer);
+          
+          // XXX TODO XXX Error handling
+          $emitter= &new Php5Emitter();
+          $emitter->emitAll($nodes);
+          
+          // XXX TODO XXX Error handling
+          FileUtil::setContents($out, $emitter->getResult());
+
+          // XXX TODO XXX Merge rest of context with ours...
+          $this->context['classes'][$q]= $emitter->context['classes'][$q];
+          
+          $this->cat && $this->cat->info('Compiled ', $q);
+          return $this->context['classes'][$q];
+        }
+      
+        // Could not find the class in CLASSPATH
+        $this->cat && $this->cat->error(
+          'Class:', $q, 'does not exist,',
+          'declared=', implode(', ', array_keys($this->context['classes']))
+        );
+        return NULL;
+      }
+      
+      return $this->context['classes'][$q];
+    }
        
     /**
      * Emits ClassDeclarations
@@ -521,15 +570,10 @@
       $this->bytes.= 'class '.$this->context['class'].' extends '.$extends;
 
       // Copy members from parent class
-      if (!isset($this->context['classes'][$extends])) {
-        $this->cat && $this->cat->error(
-          'Class:', $extends, 'does not exist,',
-          'declared=', implode(', ', array_keys($this->context['classes']))
-        );
-
-        $this->addError(new CompileError(1000, 'Class '.$extends.' does not exist'));
+      if (!($parent= $this->lookupClass($extends))) {
+        $this->addError(new CompileError(1000, 'Parent class of '.$node->name.' ('.$extends.') does not exist'));
       }
-      $this->context['classes'][$this->context['class']]= $this->context['classes'][$extends];
+      $this->context['classes'][$this->context['class']]= $parent;
 
       // Interfaces
       if ($node->implements) {
@@ -1466,6 +1510,23 @@
     function emitStaticMember(&$node) {
       $this->bytes.= $node->class.'::';
       $this->emit($node->member);
+    }
+
+    /**
+     * Emits list()-assignment
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitListAssign(&$node) {
+      $this->bytes.= 'list(';
+      echo xp::stringOf($node);
+      foreach ($node->assignments as $expr) {
+        $this->emit($expr);
+        $this->bytes.= ', ';
+      }
+      $this->bytes.= ')= ';
+      $this->emit($node->expression);
     }
   }
 ?>
