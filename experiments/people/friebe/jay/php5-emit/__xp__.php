@@ -276,7 +276,7 @@
     }
  
      public function toString() {
-      return $this->getClassName().'@'.var_export($this, 1);
+      return xp::stringOf($this);
     }
   }
   // }}}
