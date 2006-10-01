@@ -225,6 +225,8 @@
       echo 'Unhandled ', $e;
     }
   }
+  
+  function with() { }
 
   // {{{ internal void __error(int code, string msg, string file, int line)
   //     Error callback
