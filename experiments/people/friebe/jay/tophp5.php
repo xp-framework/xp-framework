@@ -14,7 +14,10 @@
   
   // {{{ compile
   $p= &new ParamString();
-  $in= $p->value(1);
+  if (!$p->exists(1) || !is_file($in= $p->value(1))) {
+    Console::writeLine('- Could not find "'.$in.'"');
+    exit(1);
+  }
   
   $lexer= &new Lexer(file_get_contents($in), $in);
   $out= &new File($p->value('out', 'o', str_replace('.xp', '.php5', $in)));
