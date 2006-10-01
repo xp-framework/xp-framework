@@ -3,8 +3,8 @@
 if [ "$OS" = "Windows_NT" ] ; then
   # Cygwin
 
-  PHPFOUR="/cygdrive/d/Programme/php-4.3.11-Win32/php.exe"
-  PHPFIVE="/cygdrive/d/Programme/php-5.1.4-Win32/php.exe"
+  PHPFOUR="/cygdrive/c/Programme/php-4.4.2-Win32/php.exe"
+  PHPFIVE="/cygdrive/c/Programme/php-5.1.4-Win32/php.exe"
   REALPATH="cygpath -w"
   TEMP="."
 else 
@@ -25,6 +25,7 @@ if [ $? != 0 ] ; then
   exit
 fi
 
-(echo "<?php require('php5-emit/__xp__.php'); ?>" ; cat $TEMP/t.php5) > $TEMP/x.php5
+$PHPFIVE -d auto_prepend_file=php5-emit/__xp__.php $TEMP/t.php5 $2 $3 $4 $5 $6 $7 $8 $9
 
-$PHPFIVE $TEMP/x.php5 $2 $3 $4 $5 $6 $7 $8 $9
+# Cleanup
+rm $TEMP/errors $TEMP/t.php5
