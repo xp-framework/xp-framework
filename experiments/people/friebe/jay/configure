@@ -103,20 +103,13 @@ fi
 
 # Download skeleton
 echo "===> Checking for skeleton"
-if [ ! -e php5-emit/skeleton ] ; then
-  SKELETON_TAR_LOCAL=`basename $SKELETON_TAR`
-  echo "---> Not found, downloading from $SKELETON_TAR"
-  if [ -e $SKELETON_TAR ] ; then rm $SKELETON_TAR ; fi
+SKELETON_TAR_LOCAL=`basename $SKELETON_TAR`
+echo "---> Downloading from $SKELETON_TAR"
 
-  wget $SKELETON_TAR -O $SKELETON_TAR_LOCAL
+wget -N $SKELETON_TAR
 
-  echo "---> Extracting from $SKELETON_TAR_LOCAL"
-  tar xfz $SKELETON_TAR_LOCAL
-  rm $SKELETON_TAR_LOCAL
-else
-  echo "---> Exists, leaving untouched"
-  ls -ald php5-emit/skeleton/
-fi
+echo "---> Extracting from $SKELETON_TAR_LOCAL"
+tar xfz $SKELETON_TAR_LOCAL
 
 # Create runner
 echo "===> Creating runner"
