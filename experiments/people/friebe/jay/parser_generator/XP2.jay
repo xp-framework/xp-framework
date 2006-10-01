@@ -376,6 +376,9 @@ statement:
 	|	T_WHILE '(' expr ')' statement {
           $$= &new WhileNode($3, is_array($5) ? $5 : array($5));
         }
+	|	T_WHILE T_CAST statement {
+          $$= &new WhileNode(new ConstantReferenceNode(NULL, $2), is_array($3) ? $3 : array($3));
+        }
 	|	T_DO statement T_WHILE '(' expr ')' ';' {
           $$= &new DoWhileNode($5, is_array($2) ? $2 : array($2));
         }
