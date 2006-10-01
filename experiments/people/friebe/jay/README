@@ -16,6 +16,8 @@ Getting started
   "./configure -4 <path-to-php4-cli-binary> -5 <path-to-php5-cli-binary>"
   
 * Run "make test"
+  Note: If you're using BSD, you'll have to use "gmake" instead of
+  "make". Thanks for understanding:)
 
 
 Note on compiling phpJay (the parser generator)
