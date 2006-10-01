@@ -34,13 +34,17 @@ checkPhpBinary() {
 # {{{ main
 PHPFOUR=""
 PHPFIVE=""
+SKELETON_TAR="http://xp-framework.net/downloads/xp-skeleton.tar.gz"
 
-while getopts '?h4:5:' COMMAND_LINE_ARGUMENT ; do
+while getopts '4:5:s:h?' COMMAND_LINE_ARGUMENT ; do
   case "$COMMAND_LINE_ARGUMENT" in
     4) PHPFOUR=$OPTARG ;;
     5) PHPFIVE=$OPTARG ;;
+    s) SKELETON_TAR=$OPTARG ;;
     *)
       echo "== Configures JAY experiment =="
+      echo "* Usage: ./configure [-4 php4] [-5 php5] [-s skeleton-tar] [-h|-?]"
+      echo ""    
       echo "* Example: ./configure"
       echo "  Will guess php4 and php5 cli binaries by using 'which'"
       echo ""    
@@ -95,6 +99,23 @@ done
 if [ "" = "$TEMPDIR" ] ; then
   echo "---> Could not find any tempdir, using tempdir=."
   RUN_TEMP="./t.php5"
+fi
+
+# Download skeleton
+echo "===> Checking for skeleton"
+if [ ! -e php5-emit/skeleton ] ; then
+  SKELETON_TAR_LOCAL=`basename $SKELETON_TAR`
+  echo "---> Not found, downloading from $SKELETON_TAR"
+  if [ -e $SKELETON_TAR ] ; then rm $SKELETON_TAR ; fi
+
+  wget $SKELETON_TAR -O $SKELETON_TAR_LOCAL
+
+  echo "---> Extracting from $SKELETON_TAR_LOCAL"
+  tar xfz $SKELETON_TAR_LOCAL
+  rm $SKELETON_TAR_LOCAL
+else
+  echo "---> Exists, leaving untouched"
+  ls -ald php5-emit/skeleton/
 fi
 
 # Create runner
