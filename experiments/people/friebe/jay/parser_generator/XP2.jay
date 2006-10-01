@@ -1010,13 +1010,13 @@ expr_without_variable:
           $$= &new PostIncNode($1);
         }
 	|	T_INC rw_variable {
-          $$= &new PreIncNode($1);
+          $$= &new PreIncNode($2);
         }
 	|	rw_variable T_DEC {
           $$= &new PostDecNode($1);
         }
 	|	T_DEC rw_variable {
-          $$= &new PreDecNode($1);
+          $$= &new PreDecNode($2);
         }
 	|	expr T_BOOLEAN_OR expr {
           $$= &new BooleanOperatorNode($1, $3, '||');
