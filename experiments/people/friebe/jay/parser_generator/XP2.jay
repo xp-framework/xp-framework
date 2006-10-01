@@ -951,7 +951,7 @@ echo_expr_list:
 
 
 for_expr:
-		/* empty */			        { $$= TRUE; }
+		/* empty */			        { $$= NULL; }
 	|	non_empty_for_expr	        { $$= $1; }
 ;
 
