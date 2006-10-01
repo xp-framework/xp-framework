@@ -187,4 +187,4 @@
       return $token < 374 ? $GLOBALS['_TOKEN_DEBUG'][$token] : $this->tokenMap[$token];
     }
   }
-?> 
+?>
