@@ -41,11 +41,25 @@ while getopts '?h4:5:' COMMAND_LINE_ARGUMENT ; do
     5) PHPFIVE=$OPTARG ;;
     *)
       echo "== Configures JAY experiment =="
-      echo "Example: ./configure -4 /usr/local/bin/php4 -5 /usr/local/bin/php5"
+      echo "* Example: ./configure"
+      echo "  Will guess php4 and php5 cli binaries by using 'which'"
+      echo ""    
+      echo "* Example: ./configure -4 /usr/local/bin/php4 -5 /usr/local/bin/php5"
+      echo "  Will set /usr/local/bin/php4 as PHP4 binary, /usr/local/bin/php5 for PHP5"
+      echo ""    
       exit
   esac
 done
 shift `expr $OPTIND - 1`
+
+if [ "" = "$PHPFOUR" ] ; then 
+  echo "===> Guessing php4 binary"
+  PHPFOUR=`which php4 || which php`
+fi
+if [ "" = "$PHPFIVE" ] ; then 
+  echo "===> Guessing php5 binary"
+  PHPFIVE=`which php5`
+fi
 
 # Sanity check
 echo "===> Performing checks"
