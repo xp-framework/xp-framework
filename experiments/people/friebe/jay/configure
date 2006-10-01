@@ -1,0 +1,60 @@
+#!/bin/sh
+
+##
+# Configure
+#
+# $Id$
+
+checkPhpBinary() {
+  EXE=$1  
+  VERSION=$2
+
+  echo "---> Checking $EXE"
+  if [ ! -e $EXE ] ; then
+    echo "*** Does not exist"
+    return 1;
+  fi
+
+  if [ ! -x $EXE ] ; then
+    echo "*** Not executable"
+    return 1;
+  fi
+  
+  $EXE -r 'exit(intval(PHP_SAPI != "cli" || !version_compare(phpversion(), "'$VERSION'", "ge")));'
+  
+  if [ 0 != $? ] ; then
+    echo "*** Prerequisites not met (CLI sapi, >= $VERSION)"
+    return 1;
+  fi
+  
+  $EXE -v
+  return 0;
+}
+
+# {{{ main
+PHPFOUR=""
+PHPFIVE=""
+
+while getopts '4:5:' COMMAND_LINE_ARGUMENT ; do
+  case "$COMMAND_LINE_ARGUMENT" in
+    4)  PHPFOUR=$OPTARG ;;
+    5)  PHPFIVE=$OPTARG ;;
+    ?)  exit
+  esac
+done
+shift `expr $OPTIND - 1`
+
+# Sanity check
+echo "===> Performing checks"
+checkPhpBinary $PHPFOUR 4.3.11 || exit
+checkPhpBinary $PHPFIVE 5.1.4 || exit
+
+# Create config
+echo "===> Creating environment"
+echo "# Environment generated @ `date` by $0" > .environment
+echo "php4=$PHPFOUR" >> .environment
+echo "php5=$PHPFIVE" >> .environment
+
+# Finalize
+echo "===> Done"
+# }}}
