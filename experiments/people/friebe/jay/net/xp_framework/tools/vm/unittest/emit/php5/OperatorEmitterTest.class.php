@@ -64,5 +64,83 @@
         $this->emit('--$i;')
       );
     }
+
+    /**
+     * Tests equality operator
+     *
+     * @access  public
+     */
+    #[@test]
+    function equality() {
+      $this->assertSourcecodeEquals(
+        '$a==$b;',
+        $this->emit('$a == $b;')
+      );
+    }
+
+    /**
+     * Tests identity operator
+     *
+     * @access  public
+     */
+    #[@test]
+    function identity() {
+      $this->assertSourcecodeEquals(
+        '$a===$b;',
+        $this->emit('$a === $b;')
+      );
+    }
+
+    /**
+     * Tests greater-than operator
+     *
+     * @access  public
+     */
+    #[@test]
+    function greaterThan() {
+      $this->assertSourcecodeEquals(
+        '$a>=$b;',
+        $this->emit('$a >= $b;')
+      );
+    }
+
+    /**
+     * Tests greater operator
+     *
+     * @access  public
+     */
+    #[@test]
+    function greater() {
+      $this->assertSourcecodeEquals(
+        '$a>$b;',
+        $this->emit('$a > $b;')
+      );
+    }
+
+    /**
+     * Tests less-than operator
+     *
+     * @access  public
+     */
+    #[@test]
+    function lessThan() {
+      $this->assertSourcecodeEquals(
+        '$a<=$b;',
+        $this->emit('$a <= $b;')
+      );
+    }
+
+    /**
+     * Tests less operator
+     *
+     * @access  public
+     */
+    #[@test]
+    function less() {
+      $this->assertSourcecodeEquals(
+        '$a<$b;',
+        $this->emit('$a < $b;')
+      );
+    }
   }
 ?>
