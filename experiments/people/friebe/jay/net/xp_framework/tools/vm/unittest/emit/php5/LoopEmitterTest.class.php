@@ -27,6 +27,32 @@
     }
 
     /**
+     * Tests for-loop with missing loop statement
+     *
+     * @access  public
+     */
+    #[@test]
+    function forLoopWithMissingLoop() {
+      $this->assertSourcecodeEquals(
+        'for ($i= 0;$i<10;) {$i++; };',
+        $this->emit('for ($i= 0; $i < 10; ) {  $i++; }')
+      );
+    }
+
+    /**
+     * Tests for-loop with multiple init-statements
+     *
+     * @access  public
+     */
+    #[@test]
+    function forLoopWithMultipleInits() {
+      $this->assertSourcecodeEquals(
+        'for ($i= 0, $s= sizeof($list);$i<$s;$i++) {echo $i; };',
+        $this->emit('for ($i= 0, $s= sizeof($list); $i < $s; $i++) { echo $i; }')
+      );
+    }
+
+    /**
      * Tests foreach-loop
      *
      * @access  public
