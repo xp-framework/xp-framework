@@ -78,7 +78,7 @@ if [ 0 = $? ] ; then
 fi
 echo "---> Using `$WGET --version | head -1`"
 
-checkPhpBinary $PHPFOUR 4.3.11 || exit
+checkPhpBinary $PHPFOUR 4.3.1 || exit
 checkPhpBinary $PHPFIVE 5.1.4 || exit
 
 # Create config
