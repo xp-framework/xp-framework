@@ -22,20 +22,20 @@
     #[@test]
     function overloadedMethod() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class Date extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Date extends xp·lang·Object{
           protected $stamp;
 
           public function isBeforestring($value){
             return $this->stamp<strtotime($value); 
           }
 
-          public function isBeforeDate($value){
+          public function isBeforemain·Date($value){
             return $this->stamp<$value->stamp; 
           }
 
           public static function main(){
-            $d= new Date(); 
-            var_dump($d->isBeforeDate(new Date(1))); 
+            $d= new main·Date(); 
+            var_dump($d->isBeforemain·Date(new main·Date(1))); 
             var_dump($d->isBeforestring(\'1977-12-14\')); 
           }
         };'),
@@ -67,7 +67,7 @@
     #[@test]
     function overloadedConstructor() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class Date extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Date extends xp·lang·Object{
           protected $stamp;
 
           public function __constructstring($in){
@@ -79,11 +79,11 @@
           }
 
           public static function main(){
-            xp::spawn(\'Date\', \'__constructinteger\', array(1)); 
-            xp::spawn(\'Date\', \'__constructstring\', array(\'1977-12-14\')); 
+            xp::spawn(\'main·Date\', \'__constructinteger\', array(1)); 
+            xp::spawn(\'main·Date\', \'__constructstring\', array(\'1977-12-14\')); 
           }
         };'),
-        $this->emit('class Date {
+        $this->emit('class main·Date {
           protected integer $stamp= 0;
 
           [@overloaded] public __construct(string $in) {

@@ -21,12 +21,12 @@
     #[@test]
     function classWithWebserviceAnnotation() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
           public function sayHello(){
             echo \'Hello\'; 
           }
         }
-        function __Testmeta() { 
+        function __main·Testmeta() { 
           return array( 
             \'<main>\' => array( \'webservice\' => NULL, ), 
           );
@@ -46,12 +46,12 @@
     #[@test]
     function methodWithTestAnnotation() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
           public function sayHello(){
             echo \'Hello\'; 
           }
         }
-        function __Testmeta() { 
+        function __main·Testmeta() { 
           return array( 
             \'sayHello\' => array( \'test\' => NULL, ), 
           );
@@ -72,12 +72,12 @@
     #[@test]
     function methodWithTestAndIgnoreAnnotations() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
           public function sayHello(){
             echo \'Hello\'; 
           }
         }
-        function __Testmeta() { 
+        function __main·Testmeta() { 
           return array( 
             \'sayHello\' => array( \'test\' => NULL, \'ignore\' => NULL, ), 
           );

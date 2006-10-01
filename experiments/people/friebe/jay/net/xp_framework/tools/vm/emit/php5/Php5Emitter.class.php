@@ -8,6 +8,8 @@
     'net.xp_framework.tools.vm.emit.Emitter',
     'net.xp_framework.tools.vm.util.Modifiers'
   );
+  
+  define('DEFAULT_PACKAGE', 'main~');
  
   /**
    * Emits PHP5 compatible sourcecode
@@ -32,7 +34,7 @@
      * @access  public
      */
     function __construct() {
-      $this->context['package']= '';
+      $this->context['package']= DEFAULT_PACKAGE;
       $this->context['imports']= array();
       $this->context['types']= array();
       $this->context['overloaded']= array();
@@ -60,19 +62,33 @@
     }
 
     /**
+     * Retrieves qualified type name for a given type.
+     *
+     * @access  protected
+     * @param   string type
+     * @return  string
+     */
+    function typeName($type) {
+      static $primitives= array('integer', 'int', 'string', 'double', 'boolean', 'bool', NULL);
+      
+      return in_array($type, $primitives) ? $type : $this->qualifiedName($type);
+    }
+
+    /**
      * Retrieves qualified class name for a given class name.
      *
      * @access  protected
      * @param   string class
      * @return  string
      */
-    function qualifiedName($class) {
+    function qualifiedName($class, $imports= TRUE) {
       static $special= array('parent', 'self', 'xp');
       
       if (in_array($class, $special)) return $class;
       if ('php~' == substr($class, 0, 4)) return substr($class, 4);
+      if (strstr($class, '·')) return $class; // Already qualified!
 
-      return strtr((strstr($class, '~') ? $class : $this->prefixedClassnameFor($class)), '~', '·');
+      return strtr((strstr($class, '~') ? $class : $this->prefixedClassnameFor($class, $imports)), '~', '·');
     }
     
     /**
@@ -82,8 +98,8 @@
      * @param   string class
      * @return   string
      */
-    function prefixedClassnameFor($class) {
-      if (isset($this->context['imports'][$this->context['package']][$class]))
+    function prefixedClassnameFor($class, $imports= TRUE) {
+      if ($imports && isset($this->context['imports'][$this->context['package']][$class]))
         return $this->context['imports'][$this->context['package']][$class];
         
       return $this->context['package'].$class;
@@ -96,21 +112,21 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      * @return  string
      */
-    function typeOf(&$node) {
+    function typeOf(&$node) {      
       if (is_a($node, 'NewNode')) {
-        return $node->class->name;
+        return $this->qualifiedName($node->class->name);
       } else if (is_a($node, 'VariableNode')) {
         if ('$this' == $node->name) return $this->context['class'];
         return $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->name];
       } else if (is_a($node, 'MethodCallNode')) {
-        return $this->context['types'][$node->class.'::'.$node->method->name];
+        return $this->context['types'][$this->qualifiedName($node->class).'::'.$node->method->name];
       } else if (is_a($node, 'ParameterNode')) {
-        return $node->type;
+        return $this->typeName($node->type);
       } else if (is_a($node, 'BinaryNode')) {
         // TODO: Check operator overloading
         return NULL;
       } else if (is_a($node, 'ObjectReferenceNode')) {
-        $ctype= is_string($node->class) ? $node->class : $this->typeOf($node->class);
+        $ctype= is_string($node->class) ? $this->qualifiedName($node->class) : $this->typeOf($node->class);
         return $this->context['types'][$ctype.'::$'.$node->member->name];
       } else if ('"' == $node{0}) { // Double-quoted string
         return 'string';
@@ -383,7 +399,7 @@
       }
       
       unset($this->context['imports'][$this->context['package']]);
-      $this->context['package']= NULL;
+      $this->context['package']= DEFAULT_PACKAGE;
     }
     
     /**
@@ -541,7 +557,7 @@
      */
     function emitClassDeclaration(&$node) {
       $this->context['properties']= array();
-      $this->context['class']= $this->qualifiedName($node->name);
+      $this->context['class']= $this->qualifiedName($node->name, FALSE);
       $this->context['classes'][$this->context['class']]= array();
       $this->context['operators'][$this->context['class']]= array();
       $this->context['annotations'][$this->context['class']]= array();
@@ -687,7 +703,7 @@
     function emitMethodCall(&$node) {
       if (is_string($node->class)) {      // Static
         $this->bytes.= $this->qualifiedName($node->class).'::';
-        $type= $node->class;
+        $type= $this->qualifiedName($node->class);
       } else if ($node->class) {          // Instance
         $this->emit($node->class);    
         $type= $this->typeOf($node->class);
@@ -810,7 +826,7 @@
 
       // Handle ObjectReferenceNode ($this->buffer) vs. of VariableNode ($name)
       if (is_a($node->variable, 'ObjectReferenceNode')) {
-        $scope= $node->variable->class.'::$'.$node->variable->member->name;   // FIXME :$this!
+        $scope= $this->qualifiedName($node->variable->class).'::$'.$node->variable->member->name;   // FIXME :$this!
       } else {
         $scope= $this->context['class'].'::'.$this->context['method'].$node->variable->name;
       }
@@ -925,7 +941,7 @@
       } else {
         $node->instanciation->chain && $this->bytes.= 'xp::create(';
         
-        if (isset($this->context['overloaded'][$node->class->name.'::__construct'])) {
+        if (isset($this->context['overloaded'][$this->qualifiedName($node->class->name).'::__construct'])) {
           $ctor= '__construct';
           foreach ($node->instanciation->arguments as $arg) {
             $ctor.= $this->typeOf($arg);
@@ -1150,7 +1166,7 @@
     function emitMemberDeclarationList(&$node) { 
       $members= '';
       foreach ($node->members as $member) {
-        $this->context['types'][$this->context['class'].'::'.$member->name]= $node->type;
+        $this->context['types'][$this->context['class'].'::'.$member->name]= $this->typeName($node->type);
         if (is_a($member, 'PropertyDeclarationNode')) {
           $this->context['properties'][]= $member;
         } else {
@@ -1228,7 +1244,7 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitInterfaceDeclaration(&$node) {
-      $this->context['class']= $this->qualifiedName($node->name);
+      $this->context['class']= $this->qualifiedName($node->name, FALSE);
       $this->context['classes'][$this->context['class']]= array();
       $this->bytes.= 'interface '.$this->context['class'];
 

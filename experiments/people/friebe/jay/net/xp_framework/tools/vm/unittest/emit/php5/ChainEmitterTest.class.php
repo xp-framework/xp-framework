@@ -88,7 +88,7 @@
     #[@test]
     function chainedMethodsAndMembers() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class Long extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Long extends xp·lang·Object{
           public $number;
 
           public function __construct($initial= 0){
@@ -100,23 +100,23 @@
           }
         }; 
 
-        class Date extends xp·lang·Object{
+        class main·Date extends xp·lang·Object{
           public $stamp;
 
           public function __construct(){
-            $this->stamp= new Long(time()); 
+            $this->stamp= new main·Long(time()); 
           }
         }; 
 
-        class News extends xp·lang·Object{
+        class main·News extends xp·lang·Object{
           public $date;
 
           public function __construct(){
-            $this->date= new Date(); 
+            $this->date= new main·Date(); 
           }
         }; 
 
-        echo date(\'r\', xp::create(new News())->date->stamp->intValue());
+        echo date(\'r\', xp::create(new main·News())->date->stamp->intValue());
         '),
         $this->emit('class Long {
           public int $number;

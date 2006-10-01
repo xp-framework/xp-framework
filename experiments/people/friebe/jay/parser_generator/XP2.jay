@@ -368,6 +368,15 @@ inner_statement:
 	|	package_declaration_statement
 ;
 
+name_and_keywords:
+		T_STRING
+    |	T_LIST
+    |   T_PROPERTY
+    |   T_FUNCTION
+    |   T_PACKAGE
+;   
+
+
 statement:
 		'{' inner_statement_list '}' { $$= $2; }
 	|	T_IF '(' expr ')' statement elseif_list else_single { 
@@ -559,10 +568,10 @@ optional_annotation_list:
 ;
 
 class_declaration_statement:
-		optional_annotation_list class_entry_type T_STRING extends_from implements_list '{' class_statement_list '}' {
+		optional_annotation_list class_entry_type name_and_keywords extends_from implements_list '{' class_statement_list '}' {
           $$= &new ClassDeclarationNode($3, $4, $5, $7, $2, $1);
         }
-	|	optional_annotation_list interface_entry T_STRING interface_extends_list '{' class_statement_list '}' {
+	|	optional_annotation_list interface_entry name_and_keywords interface_extends_list '{' class_statement_list '}' {
           $$= &new InterfaceDeclarationNode($3, $4, $6, $2, $1);
         }
 ;
@@ -604,7 +613,7 @@ interface_list:
 ;
 
 enum_declaration_statement:
-		optional_annotation_list T_ENUM T_STRING '{' enum_inner_statement_list '}' {
+		optional_annotation_list T_ENUM name_and_keywords '{' enum_inner_statement_list '}' {
           $$= &new EnumDeclarationNode($3, $5, $1);
         }
 ;
@@ -1178,12 +1187,12 @@ method_name:
 ;
 
 fully_qualified_class_name:
-		T_STRING    { $$= $1; }
+		name_and_keywords    { $$= $1; }
 	|	T_CLASSNAME { $$= $1; }
 ;
 
 class_name_reference:
-		T_STRING				      { $$= &new ClassReferenceNode($1, NULL); }
+		name_and_keywords			  { $$= &new ClassReferenceNode($1, NULL); }
 //	|	T_STRING '<' T_STRING '>'     { $$= &new ClassReferenceNode($1, $3); }
 	|	T_CLASSNAME				      { $$= &new ClassReferenceNode($1, NULL); }
 //	|	T_CLASSNAME '<' T_STRING '>'  { $$= &new ClassReferenceNode($1, $3); }

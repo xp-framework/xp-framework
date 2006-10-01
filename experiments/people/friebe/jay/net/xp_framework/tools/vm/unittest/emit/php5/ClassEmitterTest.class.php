@@ -21,7 +21,7 @@
     #[@test]
     function classWithoutPackage() {
       $this->assertSourcecodeEquals(
-        'class Test extends xp·lang·Object{};',
+        'class main·Test extends xp·lang·Object{};',
         $this->emit('class Test { }')
       );
     }
@@ -47,7 +47,7 @@
     #[@test]
     function classWithParent() {
       $this->assertSourcecodeEquals(
-        'class Base extends xp·lang·Object{}; class Test extends Base{};',
+        'class main·Base extends xp·lang·Object{}; class main·Test extends main·Base{};',
         $this->emit('class Base { } class Test extends Base { }')
       );
     }
@@ -70,7 +70,7 @@
     #[@test]
     function implementedInterface() {
       $this->assertSourcecodeEquals(
-        'interface A{}; class Test extends xp·lang·Object implements A{public function a(){echo \'A\'; }};',
+        'interface main·A{}; class main·Test extends xp·lang·Object implements main·A{public function a(){echo \'A\'; }};',
         $this->emit('interface A { public void a(); } class Test implements A { public void a() { echo \'A\'; } }')
       );
     }
@@ -93,7 +93,7 @@
     #[@test]
     function classImplementingInterface() {
       $this->assertSourcecodeEquals(
-        'interface Traceable{}; class Test extends xp·lang·Object implements Traceable{};',
+        'interface main·Traceable{}; class main·Test extends xp·lang·Object implements main·Traceable{};',
         $this->emit('interface Traceable { } class Test implements Traceable { }')
       );
     }
@@ -105,7 +105,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     function classImplementingNonExistantInterface() {
-      $this->emit('class Test implements Traceable { }');
+      $this->emit('class main·Test implements Traceable { }');
     }
 
     /**
@@ -116,7 +116,7 @@
     #[@test]
     function classImplementingInterfaces() {
       $this->assertSourcecodeEquals(
-        'interface A{}; interface B{}; class Test extends xp·lang·Object implements A, B{};',
+        'interface main·A{}; interface main·B{}; class main·Test extends xp·lang·Object implements main·A, main·B{};',
         $this->emit('interface A { } interface B { } class Test implements A, B { }')
       );
     }

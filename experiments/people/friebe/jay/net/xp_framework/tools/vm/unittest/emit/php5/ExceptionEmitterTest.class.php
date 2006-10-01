@@ -86,7 +86,7 @@
     #[@test]
     function finallyAfterCatchWithReturn() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class FileReader extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·FileReader extends xp·lang·Object{
           protected $_f;
           protected $file;
           
@@ -104,7 +104,7 @@
         }; 
         
         function openFile($file) {
-          $f= new FileReader($file); 
+          $f= new main·FileReader($file); 
           try { 
             $f->open(); 
           } catch (XPException $__e) { if ($__e->cause instanceof xp·lang·Exception) { 

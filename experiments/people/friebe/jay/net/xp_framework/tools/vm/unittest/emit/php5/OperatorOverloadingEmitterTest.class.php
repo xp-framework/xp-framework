@@ -21,15 +21,15 @@
     #[@test]
     function concatOperator() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class String extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·String extends xp·lang·Object{
           protected $buffer;
 
           function __operatorconcat($a, $b) {
-            return new String($a->buffer.$b); 
+            return new main·String($a->buffer.$b); 
           }
 
           public static function main(){
-            echo String::__operatorconcat(new String(\'Hello\'), \'!\'); 
+            echo main·String::__operatorconcat(new main·String(\'Hello\'), \'!\'); 
           }
         };'),
         $this->emit('class String { 
@@ -54,27 +54,27 @@
     #[@test]
     function binaryOperators() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class Integer extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Integer extends xp·lang·Object{
           protected $value;
 
           function __operatorplus($a, $b) {
-            return new Integer($a->value+$b->value); 
+            return new main·Integer($a->value+$b->value); 
           }
 
           function __operatorminus($a, $b) {
-            return new Integer($a->value-$b->value); 
+            return new main·Integer($a->value-$b->value); 
           }
 
           function __operatortimes($a, $b) {
-            return new Integer($a->value*$b->value); 
+            return new main·Integer($a->value*$b->value); 
           }
 
           function __operatordivide($a, $b) {
-            return new Integer($a->value/$b->value); 
+            return new main·Integer($a->value/$b->value); 
           }
           
           public static function main(){
-            echo Integer::__operatorplus(new Integer(1), new Integer(2)); 
+            echo main·Integer::__operatorplus(new main·Integer(1), new main·Integer(2)); 
           }
         };'),
         $this->emit('class Integer {

@@ -21,7 +21,7 @@
     #[@test]
     function interfaceWithoutPackage() {
       $this->assertSourcecodeEquals(
-        'interface Traceable{};',
+        'interface main·Traceable{};',
         $this->emit('interface Traceable { }')
       );
     }
@@ -60,7 +60,7 @@
     #[@test]
     function interfaceWithParent() {
       $this->assertSourcecodeEquals(
-        'interface Base{}; interface Child extends Base{};',
+        'interface main·Base{}; interface main·Child extends main·Base{};',
         $this->emit('interface Base { } interface Child extends Base { }')
       );
     }
@@ -73,7 +73,7 @@
     #[@test]
     function interfaceWithParents() {
       $this->assertSourcecodeEquals(
-        'interface Base{}; interface Being{}; interface Child extends Base, Being{};',
+        'interface main·Base{}; interface main·Being{}; interface main·Child extends main·Base, main·Being{};',
         $this->emit('interface Base { } interface Being { } interface Child extends Base, Being { }')
       );
     }
