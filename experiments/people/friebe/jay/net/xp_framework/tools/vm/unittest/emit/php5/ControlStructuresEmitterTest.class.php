@@ -111,6 +111,27 @@
     }
 
     /**
+     * Tests an switch-statement with a case that uses a block
+     *
+     * @access  public
+     */
+    #[@test]
+    function switchWithCaseUsingBlocks() {
+      $this->assertSourcecodeEquals(
+        preg_replace('/\n\s*/', '', 'switch ($argc) {
+          case 0: {$block= TRUE; }; break; ; 
+          case 1: echo 1; break; ; 
+          default: echo \'Incorrect # of args!\'; ; 
+        };'),
+        $this->emit('switch ($argc) {
+          case 0: { $block= TRUE; } break;
+          case 1: echo 1; break;
+          default: echo "Incorrect # of args!";
+        }')
+      );
+    }
+
+    /**
      * Tests an switch-statement with a default
      *
      * @access  public
