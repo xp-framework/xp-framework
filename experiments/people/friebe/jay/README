@@ -11,15 +11,8 @@ to PHP5.
 
 Getting started
 ---------------
+* Run "configure -4 <path-to-php4-cli-binary> -5 <path-to-php5-cli-binary>"
 * Run "make test"
-
-
-Note on make
-------------
-On Windows/Cygwin, the following command line works if "php" cannot be
-found in your path (example):
-  
-  $ PHP=/cygdrive/d/Programme/php-4.3.11-Win32/php.exe make test
 
 
 Note on compiling phpJay (the parser generator)
