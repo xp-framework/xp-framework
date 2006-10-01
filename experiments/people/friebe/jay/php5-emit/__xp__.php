@@ -47,6 +47,10 @@
   }
   
   final class null {
+    public function __construct() { 
+      if (xp::$null) throw xp::exception(new xp·lang·IllegalAccessException('New'));
+    }
+
     public function __set($prop, $value) { 
       throw xp::exception(new xp·lang·NullPointerException('Set: '.$prop));
     }
@@ -69,6 +73,8 @@
   }
   
   function is($name, $object) { 
+    if (NULL === $name && $object instanceof null) return TRUE;
+
     $class= xp::reflect($name);
     return $object instanceof $class; 
   }
@@ -159,6 +165,8 @@
     public static function typeOf($expr) {
       if ($expr instanceof xp·lang·Object) {
         return $expr->getClassName();
+      } else if ($expr instanceof null) {
+        return '<null>';
       }
       return gettype($expr);
     }
