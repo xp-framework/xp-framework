@@ -35,11 +35,13 @@ checkPhpBinary() {
 PHPFOUR=""
 PHPFIVE=""
 
-while getopts '4:5:' COMMAND_LINE_ARGUMENT ; do
+while getopts '?h4:5:' COMMAND_LINE_ARGUMENT ; do
   case "$COMMAND_LINE_ARGUMENT" in
-    4)  PHPFOUR=$OPTARG ;;
-    5)  PHPFIVE=$OPTARG ;;
-    ?)  exit
+    4) PHPFOUR=$OPTARG ;;
+    5) PHPFIVE=$OPTARG ;;
+    *)
+      echo "Usage: configure -4 <path-to-php4-cli-binary> -5 <path-to-php5-cli-binary>"
+      exit
   esac
 done
 shift `expr $OPTIND - 1`
