@@ -11,7 +11,10 @@ to PHP5.
 
 Getting started
 ---------------
-* Run "configure -4 <path-to-php4-cli-binary> -5 <path-to-php5-cli-binary>"
+* Run "./configure"
+  If PHP4 and PHP5 cli binaries cannot be found automatically, try
+  "./configure -4 <path-to-php4-cli-binary> -5 <path-to-php5-cli-binary>"
+  
 * Run "make test"
 
 
