@@ -3,10 +3,14 @@
 #
 # $Id$
 
-PHP?=php
+PHP=$(shell grep ^php4= .environment | cut -d '=' -f 2)
 SKELETON_PATH?=../../../../skeleton/
 
 all: usage
+
+.environment:
+	@echo "*** Please run configure to create the environment!"
+	@exit 1
 
 usage:
 	@echo "- $(MAKE) test"
@@ -21,7 +25,7 @@ generator:
 
 generate: generator net/xp_framework/tools/vm/Parser.class.php 
 
-test: generate
+test: generate .environment
 	$(PHP) ../../../../util/tests/run.php unittest.ini
 	$(PHP) ../../../../util/tests/run.php php5-emit/unittest.ini
 
@@ -33,10 +37,10 @@ clean:
 php5-emit/skeleton:
 	mkdir php5-emit/skeleton
 
-xpclass:
+xpclass: .environment
 	@-$(PHP) migrate.php `echo $(name) | sed -e 's#$(SKELETON_PATH)##g' | sed -e 's#.class.php$$##g' | tr / .` --output=php5-emit/skeleton;
 
-convert:  php5-emit/skeleton
+convert:  php5-emit/skeleton 
 	for i in `find $(SKELETON_PATH) -name '*.class.php' ! -path "*.svn*"` ; do \
 	  $(MAKE) xpclass name=$$i; \
 	done
