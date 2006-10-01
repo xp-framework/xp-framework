@@ -142,5 +142,18 @@
         $this->emit('$a < $b;')
       );
     }
+
+    /**
+     * Tests greater-than operator in conjunction with a pre-dec operator
+     *
+     * @access  public
+     */
+    #[@test]
+    function greaterThanWithPreDec() {
+      $this->assertSourcecodeEquals(
+        '--$year>=0;',
+        $this->emit('--$year >= 0;')
+      );
+    }
   }
 ?>
