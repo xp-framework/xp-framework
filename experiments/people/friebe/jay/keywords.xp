@@ -8,6 +8,7 @@ class Property { }
 class Function { }
 class List { }
 class Package { }
+class Clone { }
 
 package test {
   class Property { }
@@ -20,6 +21,7 @@ echo new main~Property()->toString(); // Resolve ambiguous name Property
 echo new Function()->toString();
 echo new List()->toString();
 echo new Package()->toString();
+echo new Clone()->toString();
 
 echo new test~Property()->toString();
 echo new test~Function()->toString();
