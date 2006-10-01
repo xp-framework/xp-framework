@@ -133,7 +133,7 @@ fi
 # Create runner
 echo "===> Creating runner"
 echo "#!/bin/sh" > xp
-echo "export COMPILE_CMD='$PHPFOUR tophp5.php %s'" >> xp
+echo "export COMPILE_CMD='`$REALPATH $PHPFOUR` tophp5.php %s'" >> xp
 echo "$PHPFOUR tophp5.php \$1 -o $RUN_TEMP -q && shift 1 && $PHPFIVE -d auto_prepend_file=php5-emit/__xp__.php $RUN_TEMP \$*" >> xp
 echo "rm $RUN_TEMP" >> xp
 chmod 700 xp
