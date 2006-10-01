@@ -72,6 +72,39 @@ echo "# Environment generated @ `date` by $0" > .environment
 echo "php4=$PHPFOUR" >> .environment
 echo "php5=$PHPFIVE" >> .environment
 
+# Check for tempdir
+echo "===> Checking for temp dir"
+if [ "$OS" = "Windows_NT" ] ; then
+  REALPATH="cygpath -w"
+  LIST="$TEMP /tmp /cygdrive/c/Temp `cygpath -W`/Temp"
+else
+  REALPATH="realpath"
+  LIST="$TEMP $HOME/tmp /tmp"
+fi
+
+TEMPDIR=""
+for t in $LIST ; do 
+  echo "---> Checking $t"
+  if [ -d $t ] ; then
+    TEMPDIR="'"`$REALPATH $t`"'"
+    RUN_TEMP="$TEMPDIR/t.php5"
+    echo "---> Using tempdir=$TEMPDIR"
+    break
+  fi
+done
+if [ "" = "$TEMPDIR" ] ; then
+  echo "---> Could not find any tempdir, using tempdir=."
+  RUN_TEMP="./t.php5"
+fi
+
+# Create runner
+echo "===> Creating runner"
+echo "#!/bin/sh" > xp
+echo "export COMPILE_CMD='$PHPFOUR tophp5.php %s'" >> xp
+echo "$PHPFOUR tophp5.php \$1 -o $RUN_TEMP -q && shift 1 && $PHPFIVE -d auto_prepend_file=php5-emit/__xp__.php $RUN_TEMP \$*" >> xp
+echo "rm $RUN_TEMP" >> xp
+chmod 700 xp
+
 # Finalize
 echo "===> Done"
 # }}}
