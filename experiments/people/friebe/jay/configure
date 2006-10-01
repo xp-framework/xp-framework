@@ -40,7 +40,8 @@ while getopts '?h4:5:' COMMAND_LINE_ARGUMENT ; do
     4) PHPFOUR=$OPTARG ;;
     5) PHPFIVE=$OPTARG ;;
     *)
-      echo "Usage: configure -4 <path-to-php4-cli-binary> -5 <path-to-php5-cli-binary>"
+      echo "== Configures JAY experiment =="
+      echo "Example: ./configure -4 /usr/local/bin/php4 -5 /usr/local/bin/php5"
       exit
   esac
 done
