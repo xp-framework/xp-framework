@@ -51,6 +51,7 @@
     exit(-1);
   }
   
-  Console::writeLine('---> ', $out->getURI());
+  $p->exists('quiet') || Console::writeLine('---> ', $out->getURI());
+  exit(0);
   // }}}
 ?>
