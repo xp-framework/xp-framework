@@ -989,8 +989,7 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitImport(&$node) {
-      if (is_a($node->source, 'ClassReferenceNode')) $source= $node->source->name;
-      
+      $source= is_a($node->source, 'ClassReferenceNode') ? $node->source->name : $node->source;
       $destination= $node->destination;
     
       // Calculate destination name if none was supplied
