@@ -67,6 +67,17 @@ fi
 
 # Sanity check
 echo "===> Performing checks"
+WGET=`which wget`
+if [ -z $WGET ] ; then
+  exit 1
+fi
+$WGET -N 2>&1 | grep 'unknown option'
+if [ 0 = $? ] ; then
+  echo "*** $WGET does not support the -N flag!"
+  exit 1
+fi
+echo "---> Using `$WGET --version | head -1`"
+
 checkPhpBinary $PHPFOUR 4.3.11 || exit
 checkPhpBinary $PHPFIVE 5.1.4 || exit
 
@@ -110,7 +121,7 @@ SKELETON_TAR_CMP=""
 if [ -e $SKELETON_TAR_LOCAL ] ; then
   SKELETON_TAR_CMP=`ls -l $SKELETON_TAR_LOCAL`
 fi
-wget -N $SKELETON_TAR
+$WGET -N $SKELETON_TAR
 
 if [ "$SKELETON_TAR_CMP" != "`ls -l $SKELETON_TAR_LOCAL`" ] ; then
   echo "---> Extracting from $SKELETON_TAR_LOCAL"
