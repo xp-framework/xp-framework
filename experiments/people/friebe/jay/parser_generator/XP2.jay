@@ -4,6 +4,7 @@
     'net.xp_framework.tools.vm.PNode',
     'net.xp_framework.tools.vm.VNode',
     'net.xp_framework.tools.vm.nodes.AnnotationNode',
+    'net.xp_framework.tools.vm.nodes.ArrayDeclarationNode',
     'net.xp_framework.tools.vm.nodes.ArrayOffsetNode',
     'net.xp_framework.tools.vm.nodes.ArrayAccessNode',
     'net.xp_framework.tools.vm.nodes.AssignNode',
@@ -1130,10 +1131,10 @@ expr_without_variable:
           $$= $1; 
         }
 	|	T_ARRAY '(' array_pair_list ')' { 
-          $$= $3; 
+          $$= &new ArrayDeclarationNode($3); 
         }
 	|	T_ARRAY T_CAST { 
-          $$= array($2);
+          $$= &new ArrayDeclarationNode(array($2));
         }
 	|	'`' encaps_list '`'	{
           $$= &PNode::create('Execute', $2);
@@ -1229,7 +1230,7 @@ static_scalar: /* compile-time evaluated scalars */
 	|	T_STRING 					{ $$= &new ConstantReferenceNode(NULL, $1); }
 	|	'+' static_scalar			{ $$= $2; }
 	|	'-' static_scalar			{ $$= -1 * $2->value; } 
-	|	T_ARRAY '(' static_array_pair_list ')' { $$= $3; }
+	|	T_ARRAY '(' static_array_pair_list ')' { $$= &new ArrayDeclarationNode($3); }
 	|	class_constant 		        { $$ = $1; }
 ;
 

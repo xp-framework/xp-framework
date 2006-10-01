@@ -299,6 +299,18 @@
         $this->bytes.= ";\n  ";
       }
     }
+
+    /**
+     * Emits a block
+     *
+     * @access  public
+     * @param   net.xp_framework.tools.vm.VNode[] nodes
+     */
+    function emitBlock($nodes) { 
+      $this->bytes.= '{';
+      $this->emitAll($nodes);
+      $this->bytes.= '}';
+    }
     
     /**
      * Retrieves result 
@@ -308,23 +320,6 @@
      */
     function getResult() { 
       return "<?php\n  ".$this->bytes."\n?>";
-    }
-
-    /**
-     * Emits an array
-     *
-     * @access  public
-     * @param   array array
-     */
-    function emitArray($array) { 
-      $this->bytes.= 'array(';
-      foreach ($array as $key => $val) {
-        $this->emit($key);
-        $this->bytes.= ' => ';
-        $this->emit($val);
-        $this->bytes.= ', ';
-      }
-      $this->bytes.= ')';
     }
 
     /**
@@ -1090,7 +1085,7 @@
       }
       $node->condition && $this->bytes= substr($this->bytes, 0, -2);
       $this->bytes.= ';';
- 
+
       foreach ($node->loop as $expr) {
         $this->emit($expr);
         $this->bytes.= ', ';
@@ -1578,6 +1573,23 @@
       } else {
         $this->bytes.= $node->value;
       }
+    }
+
+    /**
+     * Emits an array declaration
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitArrayDeclaration(&$node) { 
+      $this->bytes.= 'array(';
+      foreach ($node->elements as $key => $val) {
+        $this->emit($key);
+        $this->bytes.= ' => ';
+        $this->emit($val);
+        $this->bytes.= ', ';
+      }
+      $this->bytes.= ')';
     }
   }
 ?>

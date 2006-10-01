@@ -91,8 +91,10 @@
         $this->$func($node);
         return;
       } else if (is_array($node)) {
-        $this->emitArray($node);
+        $this->emitBlock($node);
         return;
+        
+      // -- FIXME: These should all be nodes! --------------------------------------------
       } else if ('"' == $node{0}) { // Double-quoted string
         $value= '';
         for ($i= 1, $s= strlen($node)- 1; $i < $s; $i++) {
@@ -128,58 +130,12 @@
     }
 
     /**
-     * Emits an array
+     * Emits a block
      *
      * @access  public
-     * @param   array array
+     * @param   net.xp_framework.tools.vm.VNode[] nodes
      */
-    function emitArray($array) { }
-    
-    /**
-     * Emits a string
-     *
-     * @access  public
-     * @param   string string
-     */
-    function emitString($string) { }
-
-    /**
-     * Emits an integer
-     *
-     * @access  public
-     * @param   int integer
-     */
-    function emitInteger($integer) { }
-
-    /**
-     * Emits a double
-     *
-     * @access  public
-     * @param   double double
-     */
-    function emitDouble($double) {  }
-    
-    /**
-     * Emits a boolean
-     *
-     * @access  public
-     * @param   bool bool
-     */
-    function emitBoolean($bool) { }
-
-    /**
-     * Emits a null
-     *
-     * @access  public
-     */
-    function emitNull() { }
-
-    /**
-     * Emits a constant
-     *
-     * @access  public
-     */
-    function emitConstant($name) { }
+    function emitBlock($nodes) { }
 
     /**
      * Emits PackageDeclarations
