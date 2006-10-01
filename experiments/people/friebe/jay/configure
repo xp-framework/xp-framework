@@ -106,10 +106,18 @@ echo "===> Checking for skeleton"
 SKELETON_TAR_LOCAL=`basename $SKELETON_TAR`
 echo "---> Downloading from $SKELETON_TAR"
 
+SKELETON_TAR_CMP=""
+if [ -e $SKELETON_TAR_LOCAL ] ; then
+  SKELETON_TAR_CMP=`ls -l $SKELETON_TAR_LOCAL`
+fi
 wget -N $SKELETON_TAR
 
-echo "---> Extracting from $SKELETON_TAR_LOCAL"
-tar xfz $SKELETON_TAR_LOCAL
+if [ "$SKELETON_TAR_CMP" != "`ls -l $SKELETON_TAR_LOCAL`" ] ; then
+  echo "---> Extracting from $SKELETON_TAR_LOCAL"
+  tar xfz $SKELETON_TAR_LOCAL
+else
+  echo "---> $SKELETON_TAR_LOCAL unchanged, not extracting"
+fi
 
 # Create runner
 echo "===> Creating runner"
