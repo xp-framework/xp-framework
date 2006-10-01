@@ -1,4 +1,4 @@
-$s= NULL;
+$s= xp::$null;
 try {
   $s->invoke();
 } catch (xp~lang~NullPointerException $e) {
