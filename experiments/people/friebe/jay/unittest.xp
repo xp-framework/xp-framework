@@ -92,7 +92,7 @@ if ($p->exists('class')) {        // Class based
 
     $tests[]= array(
       $config->readString($section, 'class'),
-      $config->readArray($section, 'args')
+      $config->readArray($section, 'args', array())
     );
   } else {
     Console::writeLine('---> Adding "', $config->readString('this', 'description'), '"');
@@ -102,7 +102,7 @@ if ($p->exists('class')) {        // Class based
 
       $tests[]= array(
         $config->readString($section, 'class'),
-        $config->readArray($section, 'args')
+        $config->readArray($section, 'args', array())
       );
     } while ($section= $config->getNextSection());
   }
