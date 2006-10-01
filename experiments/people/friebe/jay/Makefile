@@ -6,7 +6,11 @@
 PHP?=php
 SKELETON_PATH?=../../../../skeleton/
 
-all: test
+all: usage
+
+usage:
+	@echo "- $(MAKE) test"
+	@echo "  Runs all tests from unittest.ini and php5-emit/unittest.ini"
 
 net/xp_framework/tools/vm/Parser.class.php: parser_generator/XP2.jay
 	@echo "===> Generating Parser class from XP2.jay"
