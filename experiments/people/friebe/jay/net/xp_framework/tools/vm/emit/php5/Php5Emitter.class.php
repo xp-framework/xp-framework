@@ -792,6 +792,8 @@
         ));
       }
       
+      // XXX Optimization possibility: $i = 1 + 2 can be optimized to $i = 3;
+      
       // Regular operator
       $this->emit($node->left);
       $this->bytes.= $node->operator;
