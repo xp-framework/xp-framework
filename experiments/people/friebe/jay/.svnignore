@@ -1,6 +1,3 @@
 .environment
 xp
-net/xp_framework/tools/vm/Parser.class.php
-parser_generator/phpJay.exe
-php5-emit/skeleton
 y.output
