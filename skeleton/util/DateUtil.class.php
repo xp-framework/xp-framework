@@ -209,5 +209,23 @@
       return $t;
     }
 
+    /**
+     * Comparator method for two Date objects
+     * <br/>
+     * Returns -1 if a < b, 1 if a > b and 0 if both dates are equal
+     *
+     * @model   static
+     * @access  public
+     * @param   &util.Date a
+     * @param   &util.Date b
+     * @return  int
+     */
+    function compare(&$a, &$b) {
+      if ($a->isBefore($b)) return -1;
+      if ($a->isAfter($b)) return 1;
+      if ($a->equals($b)) return 0;
+      return 0;
+    }
+
   }
 ?>
