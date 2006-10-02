@@ -211,8 +211,11 @@
 
     /**
      * Comparator method for two Date objects
-     * <br/>
+     *
      * Returns -1 if a < b, 1 if a > b and 0 if both dates are equal
+     * <code>
+     * usort($Datelist, array('DateUtil', 'compare'))
+     * </code>
      *
      * @model   static
      * @access  public
@@ -227,5 +230,5 @@
       return 0;
     }
 
-  }
+  } implements(__FILE__, 'util.Comparator');
 ?>
