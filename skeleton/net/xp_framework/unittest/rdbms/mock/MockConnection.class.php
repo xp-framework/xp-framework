@@ -370,7 +370,10 @@
      * @param   &rdbms.DBTransaction transaction
      * @return  &rdbms.DBTransaction
      */
-    function &begin(&$transaction) { }
+    function &begin(&$transaction) {
+      $transaction->db= &$this;
+      return $transaction;
+    }
     
     /**
      * Retrieve transaction state
