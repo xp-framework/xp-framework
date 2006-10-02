@@ -212,9 +212,12 @@
     /**
      * Comparator method for two Date objects
      *
-     * Returns -1 if a < b, 1 if a > b and 0 if both dates are equal
+     * Returns a negative number if a < b, a positive number if a > b 
+     * and 0 if both dates are equal
+     *
+     * Example usage with usort():
      * <code>
-     * usort($Datelist, array('DateUtil', 'compare'))
+     *   usort($datelist, array('DateUtil', 'compare'))
      * </code>
      *
      * @model   static
@@ -224,10 +227,7 @@
      * @return  int
      */
     function compare(&$a, &$b) {
-      if ($a->isBefore($b)) return -1;
-      if ($a->isAfter($b)) return 1;
-      if ($a->equals($b)) return 0;
-      return 0;
+      return $b->compareTo($a);
     }
 
   } implements(__FILE__, 'util.Comparator');
