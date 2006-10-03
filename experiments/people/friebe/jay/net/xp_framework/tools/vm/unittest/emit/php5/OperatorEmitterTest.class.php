@@ -66,6 +66,162 @@
     }
 
     /**
+     * Tests concat operator (.)
+     *
+     * @access  public
+     */
+    #[@test]
+    function concat() {
+      $this->assertSourcecodeEquals(
+        '$a.$b;',
+        $this->emit('$a.$b;')
+      );
+    }
+
+    /**
+     * Tests addition operator (+)
+     *
+     * @access  public
+     */
+    #[@test]
+    function addition() {
+      $this->assertSourcecodeEquals(
+        '$a+$b;',
+        $this->emit('$a + $b;')
+      );
+    }
+
+    /**
+     * Tests addition operator (-)
+     *
+     * @access  public
+     */
+    #[@test]
+    function subtraction() {
+      $this->assertSourcecodeEquals(
+        '$a-$b;',
+        $this->emit('$a - $b;')
+      );
+    }
+
+    /**
+     * Tests multiplication operator (*)
+     *
+     * @access  public
+     */
+    #[@test]
+    function multiplication() {
+      $this->assertSourcecodeEquals(
+        '$a*$b;',
+        $this->emit('$a * $b;')
+      );
+    }
+
+    /**
+     * Tests division operator (/)
+     *
+     * @access  public
+     */
+    #[@test]
+    function division() {
+      $this->assertSourcecodeEquals(
+        '$a/$b;',
+        $this->emit('$a / $b;')
+      );
+    }
+
+    /**
+     * Tests modulo operator (%)
+     *
+     * @access  public
+     */
+    #[@test]
+    function modulo() {
+      $this->assertSourcecodeEquals(
+        '$a%$b;',
+        $this->emit('$a % $b;')
+      );
+    }
+
+    /**
+     * Tests concat operator (.)
+     *
+     * @access  public
+     */
+    #[@test]
+    function concatAssign() {
+      $this->assertSourcecodeEquals(
+        '$a.= $b;',
+        $this->emit('$a.= $b;')
+      );
+    }
+
+    /**
+     * Tests addition operator (+)
+     *
+     * @access  public
+     */
+    #[@test]
+    function additionAssign() {
+      $this->assertSourcecodeEquals(
+        '$a+= $b;',
+        $this->emit('$a+= $b;')
+      );
+    }
+
+    /**
+     * Tests addition operator (-)
+     *
+     * @access  public
+     */
+    #[@test]
+    function subtractionAssign() {
+      $this->assertSourcecodeEquals(
+        '$a-= $b;',
+        $this->emit('$a-= $b;')
+      );
+    }
+
+    /**
+     * Tests multiplication operator (*)
+     *
+     * @access  public
+     */
+    #[@test]
+    function multiplicationAssign() {
+      $this->assertSourcecodeEquals(
+        '$a*= $b;',
+        $this->emit('$a*= $b;')
+      );
+    }
+
+    /**
+     * Tests division operator (/)
+     *
+     * @access  public
+     */
+    #[@test]
+    function divisionAssign() {
+      $this->assertSourcecodeEquals(
+        '$a/= $b;',
+        $this->emit('$a/= $b;')
+      );
+    }
+
+    /**
+     * Tests modulo operator (%)
+     *
+     * @access  public
+     */
+    #[@test]
+    function moduloAssign() {
+      $this->assertSourcecodeEquals(
+        '$a%= $b;',
+        $this->emit('$a%= $b;')
+      );
+    }
+
+    /**
      * Tests equality operator
      *
      * @access  public
