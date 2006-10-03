@@ -29,6 +29,9 @@ test: generate .environment
 	$(PHP) ../../../../util/tests/run.php unittest.ini
 	$(PHP) ../../../../util/tests/run.php php5-emit/unittest.ini
 
+xp-test: generate .environment
+	@for i in `ls -1 php5-emit/xp-test/*.ini` ; do ./xp unittest.xp $$i ; done
+
 clean:
 	@echo "===> Cleaning"
 	cd parser_generator && $(MAKE) clean
