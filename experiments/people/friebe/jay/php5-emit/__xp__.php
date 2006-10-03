@@ -20,6 +20,9 @@
   function uses() {
     foreach (func_get_args() as $class) {
       $file= strtr($class, '.', DIRECTORY_SEPARATOR);
+      $fqcn= strtr($class, '.', '·');
+      
+      if (class_exists($fqcn)) continue;
       
       foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
         if (file_exists($path.DIRECTORY_SEPARATOR.$file.'.php5')) {
@@ -29,6 +32,7 @@
           } else {
             // echo '*** Loading ', $file, "\n";
             require_once($file.'.php5');
+            is_callable(array($fqcn, '__static')) && call_user_func(array($fqcn, '__static'));
             continue 2;
           }
         }
@@ -39,6 +43,8 @@
       echo '*** Compiling ', $file, ' using (', $cmd, ")\n";
       passthru($cmd);
       require_once($file.'.php5');
+      
+      is_callable(array($fqcn, '__static')) && call_user_func(array($fqcn, '__static'));
     }
   }
   
