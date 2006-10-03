@@ -1235,7 +1235,7 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitClassReference(&$node) {
-      $this->bytes.= $node->name;
+      $this->bytes.= $this->qualifiedName($node->name);
     }
 
     /**
