@@ -1548,7 +1548,7 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitStaticMember(&$node) {
-      $this->bytes.= $node->class.'::';
+      $this->bytes.= $this->qualifiedName($node->class).'::';
       $this->emit($node->member);
     }
 
