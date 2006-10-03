@@ -42,7 +42,7 @@
     }
   }
   
-  function delete($o) {
+  function delete(&$o) {
     $o= NULL;
   }
   
@@ -214,8 +214,8 @@
       $name= $class.($c++);
       eval('class '.$name.(interface_exists($class) ? ' extends xp·lang·Object implements ' : ' extends ').$class.$bytes);
 
-      $c= new ReflectionClass($name);
-      return $c->getConstructor() ? $c->newInstanceArgs($args) : $c->newInstance();
+      $class= new ReflectionClass($name);
+      return $class->getConstructor() ? $class->newInstanceArgs($args) : $class->newInstance();
     }
     
     public static function handleexception($e) {
