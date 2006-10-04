@@ -52,7 +52,12 @@ public class HandlerThread extends Thread {
                 new DataOutputStream(this.socket.getOutputStream()),
                 this.ctx
             );
-            this.socket.close();
-        } catch (IOException ignored) { }
+        } catch (IOException ignored) { 
+        } finally {
+            try {
+                this.socket.close();
+            } catch (IOException ignored) {
+            }
+        }
     }
 }
