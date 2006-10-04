@@ -136,8 +136,6 @@ As the archive file only needs to be opened once, several stat() system calls
 will vanish, speeding up the loading process as a trade-off for the initially
 mentioned speed loss.
 
-[ TBD: Add benchmarks ]
-
 Dependencies
 ------------
 n/a
@@ -169,5 +167,45 @@ Comments
 - kiesel, Tue Sep 19 14:45:49 CEST 2006
   Should the include_path be resetted to an empty one after uses() has
   initialized its paths? This could speed up include() calls.
+
+- kiesel, Wed Oct  4 14:34:49 CEST 2006
+  These are some timings from a testrun (all tests were run multiple times to make
+  cache play less a role):
+  
+  Run #1: Old lang.base.php behaviour
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <pre>
+  alex@lost:~/devel/xp.clean# time php -dinclude_path=.:/home/alex/devel/xp.clean/ ../../uses.php 
+  21 classes loaded.
+  111 classes loaded.
+
+  real    0m0.199s
+  user    0m0.128s
+  sys     0m0.051s
+  </pre>
+  
+  Run #2: New implementation with only directory-includes
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <pre>
+  alex@lost:~/devel/xp.public/trunk/skeleton# time php -dinclude_path=.:/home/alex/devel/xp.public/trunk/skeleton ~/uses.php 
+  21 classes loaded.
+  113 classes loaded.
+
+  real    0m0.209s
+  user    0m0.150s
+  sys     0m0.038s
+  </pre>
+  
+  Run #3: New implementation, all classes loaded from archive
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <pre>
+  alex@lost:~/devel/xp.public/trunk/experiments/people/kiesel/php/cca# time php -dinclude_path=public.xar:. ~/uses.php 
+  21 classes loaded.
+  113 classes loaded.
+
+  real    0m0.224s
+  user    0m0.177s
+  sys     0m0.025s
+  </pre>
 
 <EOF>
