@@ -23,7 +23,7 @@
     function overloadedMethod() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Date extends xp·lang·Object{
-          protected $stamp;
+          protected $stamp= 0;
 
           public function isBeforestring($value){
             return $this->stamp<strtotime($value); 
@@ -68,7 +68,7 @@
     function overloadedConstructor() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Date extends xp·lang·Object{
-          protected $stamp;
+          protected $stamp= 0;
 
           public function __constructstring($in){
             $this->stamp= strtotime($in); 

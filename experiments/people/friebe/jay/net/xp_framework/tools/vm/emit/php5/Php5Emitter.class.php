@@ -1165,16 +1165,22 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitMemberDeclarationList(&$node) { 
-      $members= '';
+      $bytes= $this->bytes;
+      $this->bytes= '';
+
+      $members= FALSE;
       foreach ($node->members as $member) {
         $this->context['types'][$this->context['class'].'::'.$member->name]= $this->typeName($node->type);
         if (is_a($member, 'PropertyDeclarationNode')) {
           $this->context['properties'][]= $member;
         } else {
-          $members.= $member->name.', ';
+          $this->bytes.= $member->name.'= ';
+          $member->initial === NULL ? $this->bytes.= 'NULL' : $this->emit($member->initial);
+          $this->bytes.= ', ';
+          $members= TRUE;
         }
       }
-      $members && $this->bytes.= implode(' ', Modifiers::namesOf($node->modifiers)).' '.substr($members, 0, -2).';';
+      $this->bytes= $bytes.($members ? implode(' ', Modifiers::namesOf($node->modifiers)).' '.substr($this->bytes, 0, -2).';' : '');
     }
 
     /**

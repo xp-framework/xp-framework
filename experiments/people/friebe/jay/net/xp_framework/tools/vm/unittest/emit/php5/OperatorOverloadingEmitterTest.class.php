@@ -22,7 +22,7 @@
     function concatOperator() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·String extends xp·lang·Object{
-          protected $buffer;
+          protected $buffer= NULL;
 
           function __operatorconcat($a, $b) {
             return new main·String($a->buffer.$b); 
@@ -55,7 +55,7 @@
     function binaryOperators() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Integer extends xp·lang·Object{
-          protected $value;
+          protected $value= NULL;
 
           function __operatorplus($a, $b) {
             return new main·Integer($a->value+$b->value); 

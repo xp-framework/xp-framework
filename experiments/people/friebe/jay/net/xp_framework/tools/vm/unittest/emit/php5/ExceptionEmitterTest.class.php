@@ -87,8 +87,8 @@
     function finallyAfterCatchWithReturn() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·FileReader extends xp·lang·Object{
-          protected $_f;
-          protected $file;
+          protected $_f= NULL;
+          protected $file= NULL;
           
           public function __construct($file){
             $this->file= $file; 
