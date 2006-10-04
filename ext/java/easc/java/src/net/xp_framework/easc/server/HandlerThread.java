@@ -47,11 +47,15 @@ public class HandlerThread extends Thread {
      */
     @Override public void run() {
         try {
-            this.handler.handle(
-                new DataInputStream(this.socket.getInputStream()),
-                new DataOutputStream(this.socket.getOutputStream()),
-                this.ctx
-            );
+            DataInputStream in= new DataInputStream(this.socket.getInputStream());
+            DataOutputStream out= new DataOutputStream(this.socket.getOutputStream());
+            
+            // Run handler loop
+            this.handler.handle(in, out, this.ctx);
+
+            // Close streams
+            in.close();
+            out.close();
         } catch (IOException ignored) { 
         } finally {
             try {
