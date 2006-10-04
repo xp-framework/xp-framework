@@ -28,7 +28,7 @@ Index: lang.base.php
        }
        xp::registry('sapi', $a);
      }
-@@ -223,10 +240,55 @@
+@@ -223,10 +240,48 @@
      xp::registry('errors', $errors);
    }
    // }}}
@@ -70,21 +70,14 @@ Index: lang.base.php
 +    $include= &xp::registry('include_path');
 +
 +    if (0 == sizeof($include)) {
-+      $include= array();
-+      /*foreach (array_flip(explode(':', ini_get('include_path'))) as $part => $dummy) {
-+        if (FALSE !== ($p= realpath($part))) {
-+          $include[$p]= FALSE;
-+        }
-+      }*/
 +      $include= array_flip(explode(':', ini_get('include_path')));
-+      
 +      xp::registry('include_path', $include);
 +    }
 +    
      foreach (func_get_args() as $str) {
        if (class_exists($class= xp::reflect($str))) continue;
  
-@@ -245,17 +307,46 @@
+@@ -245,17 +300,51 @@
          }
          $str= substr($str, strrpos($str, '/')+ 1);
          $class= xp::reflect($str);
@@ -96,6 +89,7 @@ Index: lang.base.php
 +        
 +        continue;
 +      }
++
 +
 +      foreach ($include as $path => $loader) {
 +
@@ -112,8 +106,12 @@ Index: lang.base.php
 +          break;
 +        } elseif (is_file($path)) {
 +
-+          // Load via bootstrap class loader
-+          $bytes= __xp_load_archive_bytes($path, strtr($str, '.', '/').'.class.php');
++          // To to load via bootstrap class loader, if the file cannot provide the class-to-load
++          // skip to the next include_path part
++          if (FALSE === ($bytes= __xp_load_archive_bytes($path, strtr($str, '.', '/').'.class.php'))) {
++            continue;
++          }
++          
 +          if (FALSE === eval('?>'.$bytes)) {
 +            xp::error('Bootstrap class loading failure at '.$str.' (file= '.$path.')');
 +          }
@@ -139,7 +137,7 @@ Index: lang.base.php
      }
    }
    // }}}
-@@ -428,7 +519,6 @@
+@@ -428,7 +517,6 @@
      ? getenv('SKELETON_PATH')
      : dirname(__FILE__).DIRECTORY_SEPARATOR
    ));
@@ -147,7 +145,7 @@ Index: lang.base.php
    define('LONG_MAX', is_int(2147483648) ? 9223372036854775807 : 2147483647);
    define('LONG_MIN', -LONG_MAX - 1);
  
-@@ -455,7 +545,9 @@
+@@ -455,7 +543,9 @@
      'lang.IllegalArgumentException',
      'lang.IllegalStateException',
      'lang.FormatException',
@@ -425,6 +423,24 @@ Index: lang/XPClass.class.php
        return $cl;
      }
      
+@@ -627,7 +644,16 @@
+      */
+     function &forName($name, $classloader= NULL) {
+       if (NULL === $classloader) {
+-        $classloader= &ClassLoader::getDefault();
++      
++        // Retrieve classloader via debug_backtrace() or fall back to
++        // the default classloader
++        $d= debug_backtrace();
++        if (isset($d[1]['class'])) {
++          $xpclass= &new XPClass(xp::nameOf($d[1]['class']));
++          $classloader= &$xpclass->getClassLoader();
++        } else {
++          $classloader= &ClassLoader::getDefault();
++        }
+       }
+     
+       return $classloader->loadClass($name);
 Index: io/cca/ArchiveClassLoader.class.php
 ===================================================================
 --- io/cca/ArchiveClassLoader.class.php	(revision 8050)
