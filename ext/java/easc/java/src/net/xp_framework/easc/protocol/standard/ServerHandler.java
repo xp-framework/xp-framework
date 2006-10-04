@@ -53,7 +53,7 @@ abstract public class ServerHandler implements Handler {
      * @param   java.io.DataOutputStream out
      * @param   net.xp_framework.easc.server.ServerContext ctx
      */
-    public void handle(DataInputStream in, DataOutputStream out, final ServerContext ctx) throws IOException {        
+    public void handle(DataInputStream in, DataOutputStream out, final ServerContext ctx) {        
         boolean done= false;
         while (!done) {
             try {
@@ -91,9 +91,5 @@ abstract public class ServerHandler implements Handler {
                 done= true;
             }
         }
-        
-        // Close streams
-        in.close();
-        out.close();
     }
 }
