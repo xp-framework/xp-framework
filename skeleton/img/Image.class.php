@@ -349,15 +349,26 @@
      *
      * @access  public
      * @param   &img.Color color
+     * @param   int alpha default -1 alpha value (0= opaque - 127= transparent)
      * @return  &img.Color color the color put in
      */
-    function &allocate(&$color) {
-      $color->handle= imagecolorallocate(
-        $this->handle,
-        $color->red,
-        $color->green,
-        $color->blue
-      );
+    function &allocate(&$color, $alpha= -1) {
+      if ($alpha > -1) {
+        $color->handle= imagecolorallocatealpha(
+          $this->handle,
+          $color->red,
+          $color->green,
+          $color->blue,
+          $alpha
+        );
+      } else {
+        $color->handle= imagecolorallocate(
+          $this->handle,
+          $color->red,
+          $color->green,
+          $color->blue
+        );
+      }
       $this->palette[$color->handle]= &$color;
       return $color;
     }
