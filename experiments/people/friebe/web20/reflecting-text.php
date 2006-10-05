@@ -9,7 +9,6 @@
     'io.File',
     'img.Image',
     'img.shapes.Line',
-    'img.io.PngStreamReader',
     'img.io.PngStreamWriter',
     'img.fonts.TrueTypeFont'
   );
