@@ -41,7 +41,7 @@ __
   $bgcolor= $p->value('bg', 'b', '#ffffff');
   
   // First, calculate boundaries
-  // Note: There should probably be a TrueTypeFont::calculateDimenstions()
+  // Note: There should probably be a TrueTypeFont::calculateDimensions()
   // method or something - we'll need an RFC for this:)
   $font= &new TrueTypeFont($name, $size, 0);
   $boundaries= imagettfbbox($font->size, $font->angle, $font->name, $text);
