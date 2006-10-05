@@ -30,7 +30,7 @@ __
   
   $text= $p->value(1);
   $name= $p->value('font', 'f', 'c:\\windows\\fonts\\trebuc.ttf');
-  $size= max($p->value('size', 's', 30), 30);
+  $size= $p->value('size', 's', 30);
   $color= $p->value('color', 'c', '#990000');
   
   // First, calculate boundaries
