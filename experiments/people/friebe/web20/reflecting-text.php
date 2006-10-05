@@ -21,12 +21,13 @@
 Creates "Web 2.0"-style reflecting text
 
 Usage:
-$ php reflecting-text.php "Text" [-f font] [-s size] [-c color] [-o output-file]
+$ php reflecting-text.php "Text" [-f font] [-s size] [-c color] [-b bgcolor] [-o output-file]
 
 Parameters:
   * Font is a TrueType[TM] font file (default: c:\\windows\\fonts\\trebuc.ttf)
   * Size is the font size (default: 30)
-  * Color is a hex color - as in HTML (default: #990000)
+  * Color (font color) is a hex color - as in HTML (default: #990000)
+  * BgColor (background color) is a hex color - as in HTML (default: #ffffff)
   * Output-file is the filename to output to (default: out.png)
 __
     );
@@ -80,7 +81,8 @@ __
   }
 
   // Save
-  $img->saveTo(new PngStreamWriter(new File($p->value('out', 'o', 'out.png'))));
+  $out= &new File($p->value('out', 'o', 'out.png'));
+  $img->saveTo(new PngStreamWriter($out));
+  Console::writeLine('Results written to ', $out->getURI());
   // }}}
 ?>
-  
