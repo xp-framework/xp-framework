@@ -48,7 +48,7 @@ __
   $height= abs($boundaries[5] - $boundaries[1]);
   
   // Create an image
-  $img= &Image::create($width+ $padding * 2, $height * 2 + $padding * 2, IMG_TRUECOLOR);
+  $img= &Image::create($width+ $padding * 2, $height * 2 + $padding, IMG_TRUECOLOR);
   $bg= &new Color($bgcolor);
   $img->fill($img->allocate($bg), 0, 0);
   
@@ -63,7 +63,11 @@ __
   );
 
   // Flip text
-  for ($i= 0, $transparent= 0, $step= floor((127 - $transparent) / $font->size); $i <= $font->size; $i++) {
+  for (
+    $i= 0, $transparent= 0, $step= max(1, floor((127 - $transparent) / $font->size)); 
+    $i <= $font->size; 
+    $i++
+  ) {
     $y= $baseline + $font->size - $i;
     $img->copyFrom(
       $img, 
@@ -77,7 +81,7 @@ __
     
     // Overlay fading
     $img->draw(new Line($img->allocate($bg, $transparent), $padding, $y, $padding+ $width, $y));
-    $transparent <= 127 && $transparent+= $step;
+    $transparent < 127 && $transparent+= $step;
   }
 
   // Save
