@@ -51,7 +51,7 @@
      * @param   &img.Image image
      * @return  mixed
      */
-    function draw(&$image) { }
+    function draw(&$image) {
       return imageline(
         $image->handle,
         $this->x1,
