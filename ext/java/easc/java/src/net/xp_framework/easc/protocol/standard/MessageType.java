@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.lang.ref.Reference;
 import net.xp_framework.easc.server.ServerContext;
 import net.xp_framework.easc.server.Delegate;
 import net.xp_framework.easc.server.LookupDelegate;
@@ -113,11 +114,16 @@ public enum MessageType {
             String methodName= ByteCountedString.readFrom(in);
             String serialized= ByteCountedString.readFrom(in);
             
-            Object instance= ctx.objects.get(objectId.intValue());
+            Reference ref= ctx.objects.get(objectId.intValue());
+            if (null == ref) {
+                throw new IOException("Cannot find object referenced by  " + objectId + " in server context " + ctx);
+            }
+
+            Object instance= ref.get();
             
             // Sanity check object
             if (null == instance) {
-                throw new IOException("Cannot find object: " + objectId + " in server context " + ctx);
+                throw new IOException("Object referenced by " + objectId + " has been destroyed " + ctx);
             }
             
             // Deserialize arguments

@@ -8,9 +8,10 @@ package net.xp_framework.easc.server;
 import java.util.HashMap;
 import javax.transaction.UserTransaction;
 import net.xp_framework.easc.server.Delegate;
+import java.lang.ref.WeakReference;
 
 abstract public class ServerContext {
-    public HashMap<Integer, Object> objects= new HashMap<Integer, Object>();
+    public HashMap<Integer, WeakReference> objects= new HashMap<Integer, WeakReference>();
     public UserTransaction transaction= null;
     
     /**

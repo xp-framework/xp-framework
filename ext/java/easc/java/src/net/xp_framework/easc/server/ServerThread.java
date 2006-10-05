@@ -8,6 +8,9 @@ package net.xp_framework.easc.server;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.lang.ref.WeakReference;
 import net.xp_framework.easc.server.Handler;
 import net.xp_framework.easc.server.HandlerThread;
 import net.xp_framework.easc.server.ServerContext;
@@ -34,6 +37,7 @@ public class ServerThread extends Thread {
     private ServerSocket socket= null;
     private Handler handler= null;
     private ServerContext context= null;
+    private Thread referenceCleaner= null;
     
     /**
      * Constructor
@@ -44,6 +48,42 @@ public class ServerThread extends Thread {
     public ServerThread(ServerSocket socket) {
         super("ServerThread@{" + socket.getInetAddress().toString() + ":" + socket.getLocalPort() + "}");
         this.socket= socket;
+    }
+    
+    static class ReferenceCleaner extends Thread {
+        protected HashMap<Integer, WeakReference> list;
+        
+        public ReferenceCleaner(HashMap<Integer, WeakReference> list) {
+            this.list= list;
+        }
+
+        @Override public void run() {
+            ArrayList<Integer> candidates= new ArrayList<Integer>();
+            do {
+                try {
+                    this.sleep(10000);
+                } catch (InterruptedException e) {
+                    // Shutdown this thread
+                    return;
+                }
+
+                // Find possible candidates for removal
+                candidates.clear();
+                for (Integer hashCode: this.list.keySet()) {
+                    if (this.list.get(hashCode).get() == null) {
+                        candidates.add(hashCode);
+                    }
+                }
+                
+                // Remove candidates
+                if (candidates.isEmpty()) continue;
+                
+                System.out.println("[EASC] Removing references " + candidates);
+                for (Integer hashCode: candidates) {
+                    this.list.remove(hashCode);
+                }
+            } while (true);
+        }   
     }
 
     /**
@@ -77,6 +117,8 @@ public class ServerThread extends Thread {
         // Setup handler
         this.handler.setup(this.context);
         
+        this.referenceCleaner= new ReferenceCleaner(this.context.objects).start();
+        
         // Loop until stopped, accepting incoming connections
         while (!this.stopped) {
             Socket accepted= null;
@@ -99,6 +141,7 @@ public class ServerThread extends Thread {
      * @return  
      */
     public synchronized void shutdown() throws IOException {
+        this.referenceCleaner.stop();
         this.socket.close();
         this.stopped= true;
     }
