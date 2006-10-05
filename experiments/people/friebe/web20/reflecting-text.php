@@ -64,11 +64,11 @@ __
 
   // Flip text
   for (
-    $i= 0, $transparent= 0, $step= max(1, floor((127 - $transparent) / $font->size)); 
+    $i= 0, $transparent= 0, $step= 100 / $font->size; 
     $i <= $font->size; 
     $i++
   ) {
-    $y= $baseline + $font->size - $i;
+    $y= $baseline + $font->size - $i+ 1;
     $img->copyFrom(
       $img, 
       $padding,                      // dst_x
@@ -80,8 +80,8 @@ __
     );
     
     // Overlay fading
-    $img->draw(new Line($img->allocate($bg, $transparent), $padding, $y, $padding+ $width, $y));
-    $transparent < 127 && $transparent+= $step;
+    $img->draw(new Line($img->allocate($bg, floor($transparent)), $padding, $y, $padding+ $width, $y));
+    $transparent= min($transparent+ $step, 127);
   }
 
   // Save
