@@ -48,7 +48,7 @@ __
   $height= abs($boundaries[5] - $boundaries[1]);
   
   // Create an image
-  $img= &Image::create($width+ $padding * 2, $height * 2 + $padding, IMG_TRUECOLOR);
+  $img= &Image::create($width+ $padding * 2, $height * 2 + $padding * 2, IMG_TRUECOLOR);
   $bg= &new Color($bgcolor);
   $img->fill($img->allocate($bg), 0, 0);
   
