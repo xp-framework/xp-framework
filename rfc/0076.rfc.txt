@@ -5,7 +5,7 @@ $Id$
 @authors: friebe
 @created: Fri Sep 22 13:57:14 CEST 2006
 @status: draft
-@category: remote
+@category: discussion, ends at Fri Oct  5 12:00:00 CEST 2006
 
 Scope of Change
 ---------------
@@ -34,8 +34,8 @@ including the serialized representation of the exception's cause.
 Note: This may be NULL.
 
 
-Example
-~~~~~~~
+Example #1
+~~~~~~~~~~
 A complete stacktrace - without the patch, only the InvocationException's
 stracktrace will be shown. One wouldn't be able to see that this originated
 from a org.apache.lucene.queryParser.ParseException...
@@ -82,6 +82,45 @@ Caused by Exception remote.ExceptionReference<org.apache.lucene.queryParser.Pars
   at php.net.xp_framework.easc.protocol.standard.ServerHandler::handle() [line 73 of ServerHandler.java] 
   at php.net.xp_framework.easc.server.HandlerThread::run() [line 50 of HandlerThread.java] 
 </pre>
+
+Example #2
+~~~~~~~~~~
+Without patch:
+<pre>
+Exception remote.InvocationException ()
+  at php.sun.reflect.NativeMethodAccessorImpl::invoke0() [line -2 of NativeMethodAccessorImpl.java] 
+  at php.sun.reflect.NativeMethodAccessorImpl::invoke() [line 39 of NativeMethodAccessorImpl.java] 
+  at php.sun.reflect.DelegatingMethodAccessorImpl::invoke() [line 25 of DelegatingMethodAccessorImpl.java] 
+  at php.java.lang.reflect.Method::invoke() [line 585 of Method.java] 
+  at php.net.xp_framework.easc.server.CallDelegate::invoke() [line 25 of CallDelegate.java] 
+  at php.net.xp_framework.easc.protocol.standard.ServerHandler::handle() [line 73 of ServerHandler.java] 
+  at php.net.xp_framework.easc.server.HandlerThread::run() [line 54 of HandlerThread.java] 
+</pre>
+
+With patch:
+<pre>
+Exception remote.InvocationException ()
+  at php.sun.reflect.NativeMethodAccessorImpl::invoke0() [line -2 of NativeMethodAccessorImpl.java] 
+  at php.sun.reflect.NativeMethodAccessorImpl::invoke() [line 39 of NativeMethodAccessorImpl.java] 
+  at php.sun.reflect.DelegatingMethodAccessorImpl::invoke() [line 25 of DelegatingMethodAccessorImpl.java] 
+  at php.java.lang.reflect.Method::invoke() [line 585 of Method.java] 
+  at php.net.xp_framework.easc.server.CallDelegate::invoke() [line 25 of CallDelegate.java] 
+  at php.net.xp_framework.easc.protocol.standard.ServerHandler::handle() [line 73 of ServerHandler.java] 
+  at php.net.xp_framework.easc.server.HandlerThread::run() [line 54 of HandlerThread.java] 
+Caused by Exception remote.ExceptionReference<java.rmi.ServerException> (EJBException:; nested exception is: 
+        javax.ejb.EJBException: Store failed; CausedByException is:
+        Syntax error or access violation message from server: "UPDATE command denied to user 'jboss'@'p4723e3d4.np.schlund.de' for table 'feed'")
+  at php.org.jboss.ejb.plugins.LogInterceptor::handleException() [line 352 of LogInterceptor.java] 
+  at php.org.jboss.ejb.plugins.LogInterceptor::invoke() [line 196 of LogInterceptor.java] 
+  at php.org.jboss.ejb.plugins.ProxyFactoryFinderInterceptor::invoke() [line 122 of ProxyFactoryFinderInterceptor.java] 
+  at php.org.jboss.ejb.EntityContainer::internalInvoke() [line 514 of EntityContainer.java] 
+  at php.org.jboss.ejb.Container::invoke() [line 873 of Container.java] 
+  at php.sun.reflect.GeneratedMethodAccessor78::invoke() [line -1 of StackTraceElement.class.php] 
+  at php.sun.reflect.DelegatingMethodAccessorImpl::invoke() [line 25 of DelegatingMethodAccessorImpl.java] 
+  at php.java.lang.reflect.Method::invoke() [line 585 of Method.java] thekid@banane:~/devel/xp.public/trunk/ext/java/easc/clients > 
+</pre>
+It is now clear what has caused the problem (a missing update-permission).
+
 
 Security considerations
 -----------------------
