@@ -112,7 +112,8 @@ __
     
     case 'list':
     default:
-      foreach ($home->findAll() as $i => $feed) {
+      $list= &$home->findAll();
+      foreach ($list->values as $i => $feed) {
         Console::writeLinef('%3d] %s', $i, xp::stringOf($feed->getFeedValue()));
       }
       break;
