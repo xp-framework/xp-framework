@@ -8,6 +8,7 @@
   uses(
     'io.File',
     'img.Image',
+    'img.shapes.Line',
     'img.io.PngStreamReader',
     'img.io.PngStreamWriter',
     'img.fonts.TrueTypeFont'
@@ -36,6 +37,7 @@ __
   $name= $p->value('font', 'f', 'c:\\windows\\fonts\\trebuc.ttf');
   $size= $p->value('size', 's', 30);
   $color= $p->value('color', 'c', '#990000');
+  $bgcolor= $p->value('bg', 'b', '#ffffff');
   
   // First, calculate boundaries
   $font= &new TrueTypeFont($name, $size, 0);
@@ -46,7 +48,8 @@ __
   
   // Create an image
   $img= &Image::create($width+ $padding * 2, $height * 2 + $padding * 2, IMG_TRUECOLOR);
-  $img->fill($img->allocate(new Color('#ffffff')), 0, 0);
+  $bg= &new Color($bgcolor);
+  $img->fill($img->allocate($bg), 0, 0);
   
   // Draw text onto it
   $baseline= $padding + $font->size;
@@ -59,28 +62,22 @@ __
   );
 
   // Flip text
-  for ($i= 0; $i <= $font->size; $i++) {
+  for ($i= 0, $transparent= 0, $step= floor((127 - $transparent) / $font->size); $i <= $font->size; $i++) {
+    $y= $baseline + $font->size - $i;
     $img->copyFrom(
       $img, 
       $padding,                      // dst_x
-      $baseline + $font->size - $i,  // dst_y
+      $y,                            // dst_y
       $padding,                      // src_x
       $padding + $i,                 // src_y
       $width,                        // src_w
       1                              // src_h
     );
+    
+    // Overlay fading
+    $img->draw(new Line($img->allocate($bg, $transparent), $padding, $y, $padding+ $width, $y));
+    $transparent <= 127 && $transparent+= $step;
   }
-
-  // Overlay fading
-  $img->copyFrom(
-    Image::loadFrom(new PngStreamReader(new File(dirname(__FILE__).DIRECTORY_SEPARATOR.'fade.png'))),
-    $padding,
-    $baseline,
-    0,
-    0,
-    $width,
-    30        // height of fade.png
-  );
 
   // Save
   $img->saveTo(new PngStreamWriter(new File($p->value('out', 'o', 'out.png'))));
