@@ -16,6 +16,7 @@ import net.xp_framework.easc.protocol.standard.Serializer;
 import net.xp_framework.easc.protocol.standard.SerializerContext;
 import net.xp_framework.easc.protocol.standard.Invokeable;
 import javax.ejb.EJBObject;
+import java.lang.ref.WeakReference;
 
 /**
  * EASC service managed bean
@@ -59,7 +60,7 @@ public class EascService extends ServiceMBeanSupport implements EascServiceMBean
             
             Serializer.registerMapping(jbossProxyClass, new Invokeable<String, org.jboss.ejb3.JBossProxy>() {
                 public String invoke(org.jboss.ejb3.JBossProxy p, Object arg) throws Exception {
-                    ctx.objects.put(p.hashCode(), p);
+                    ctx.objects.put(p.hashCode(), new WeakReference(p));
 
                     // Find out the correct interface
                     Class ejbInterface= null;
