@@ -117,7 +117,8 @@ public class ServerThread extends Thread {
         // Setup handler
         this.handler.setup(this.context);
         
-        this.referenceCleaner= new ReferenceCleaner(this.context.objects).start();
+        this.referenceCleaner= new ReferenceCleaner(this.context.objects);
+        this.referenceCleaner.start();
         
         // Loop until stopped, accepting incoming connections
         while (!this.stopped) {
