@@ -4,8 +4,8 @@ $Id$
 
 @authors: friebe
 @created: Fri Sep 22 13:57:14 CEST 2006
-@status: draft
-@category: discussion, ends at Fri Oct  6 12:00:00 CEST 2006
+@status: discussion, ends at Fri Oct  6 12:00:00 CEST 2006
+@category: remote
 
 Scope of Change
 ---------------
