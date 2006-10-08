@@ -379,6 +379,11 @@ name_and_keywords:
 //    |   T_CLASS (adds 10 shift/reduce conflicts)
 ;   
 
+name_and_all_keywords:
+        name_and_keywords
+    |   T_INTERFACE
+    |   T_CLASS
+;   
 
 statement:
 		'{' inner_statement_list '}' { $$= $2; }
@@ -864,22 +869,22 @@ annotation_elements:
 ;
 
 annotation:
-		'@' T_STRING { 
+		'@' name_and_all_keywords { 
           $$= &new AnnotationNode($2, new ConstantReferenceNode(NULL, 'NULL')); 
         }
-	|	'@' T_STRING '(' common_scalar ')' { 
+	|	'@' name_and_all_keywords '(' common_scalar ')' { 
           $$= &new AnnotationNode($2, $4); 
         }
-	|	'@' T_STRING '(' annotation_defines ')' { 
-          $$= &new AnnotationNode($2, $4); 
+	|	'@' name_and_all_keywords '(' annotation_defines ')' { 
+          $$= &new AnnotationNode($2, new ArrayDeclarationNode($4)); 
         }
 ;
 
 annotation_defines:
-		T_STRING '=' static_scalar { 
+		name_and_all_keywords '=' static_scalar { 
           $$= array("'".$1."'" => $3); 
         }
-	|	annotation_defines ',' T_STRING '=' static_scalar {
+	|	annotation_defines ',' name_and_all_keywords '=' static_scalar {
           $$["'".$3."'"]= $5;
         }
 ;
