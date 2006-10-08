@@ -110,6 +110,20 @@
                 $i+= 2;
                 break;
               }
+              
+              case '0':     // \[0-7]{1,3}
+              case '1':
+              case '2':
+              case '3':
+              case '4':
+              case '5':
+              case '6':
+              case '7': {
+                $length= strspn($node, '01234567', $i+ 1);
+                $value.= chr(octdec(substr($node, $i+ 1, $length)));
+                $i+= $length- 1;
+                break;
+              }
             }
             $i++;
           } else {

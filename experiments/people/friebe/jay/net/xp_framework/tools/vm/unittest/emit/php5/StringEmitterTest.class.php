@@ -92,15 +92,15 @@
     }
 
     /**
-     * Tests a hex-escape (\x[0-9A-Fa-f]{2})
+     * Tests an octal escape (\[0-7]{1,3})
      *
      * @access  public
      */
     #[@test]
-    function hexEscape() {
+    function octalEscape() {
       $this->assertSourcecodeEquals(
         'echo \'ga\';',
-        $this->emit('echo "\x67a";')
+        $this->emit('echo "\147a";')
       );
     }
   }
