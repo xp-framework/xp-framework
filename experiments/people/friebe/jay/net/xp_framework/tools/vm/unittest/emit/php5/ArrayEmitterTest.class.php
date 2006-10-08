@@ -40,6 +40,19 @@
     }
 
     /**
+     * Tests array declaration
+     *
+     * @access  public
+     */
+    #[@test]
+    function mixedTypeAssociativeArrayDeclaration() {
+      $this->assertSourcecodeEquals(
+        '$a= array(\'Foo\' => \'Bar\', \'Second\' => 2, 3 => \'Three\', );',
+        $this->emit('$a= array("Foo" => "Bar", "Second" => 2, 3 => "Three");')
+      );
+    }
+
+    /**
      * Tests array access
      *
      * @access  public
