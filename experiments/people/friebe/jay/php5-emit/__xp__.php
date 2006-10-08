@@ -256,6 +256,10 @@
   xp::registry('errors', array());
   XPException::$instance= new XPException();
   set_exception_handler(array('xp', 'handleexception'));
+  
+  define('LONG_MAX', is_int(2147483648) ? 9223372036854775807 : 2147483647);
+  define('LONG_MIN', -LONG_MAX - 1);
+  
   // }}}
   
   // {{{ Builtin classes
