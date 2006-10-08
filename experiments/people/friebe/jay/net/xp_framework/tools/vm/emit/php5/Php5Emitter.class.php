@@ -104,6 +104,18 @@
         
       return $this->context['package'].$class;
     }
+
+    /**
+     * Sets type for a given hash
+     *
+     * @access  protected
+     * @param   string hash
+     * @return  mixed type
+     */
+    function setType($hash, $type) {
+      $this->context['types'][$hash]= $type;
+      // DEBUG Console::writeLine($hash, ' => ', xp::stringOf($type));
+    }
     
     /**
      * Retrieves type for a given node
@@ -238,13 +250,13 @@
         // Vararg or not vararg
         if ($param->vararg) {
           $embed.= '$__a= func_get_args(); '.$param->name.'= array_slice($__a, '.$i.');';
-          $this->context['types'][$this->context['class'].'::'.$this->context['method'].$param->name]= array($param->type);
+          $this->setType($this->context['class'].'::'.$this->context['method'].$param->name, array($param->type));
           
           if ($i != sizeof($parameters) - 1) {
             return $this->addError(new CompileError(1210, 'Vararags parameters must be the last parameter'));
           }
         } else {
-          $this->context['types'][$this->context['class'].'::'.$this->context['method'].$param->name]= $param->type;
+          $this->setType($this->context['class'].'::'.$this->context['method'].$param->name, $param->type);
           $this->bytes.= $param->name;
         }
         
@@ -424,7 +436,7 @@
      */
     function emitMethodDeclaration(&$node) {
       $method= $this->methodName($node);
-      $this->context['types'][$this->context['class'].'::'.$method]= $node->return;
+      $this->setType($this->context['class'].'::'.$method, $node->return);
       $this->context['method']= $method;
       $this->context['classes'][$this->context['class']][$method]= TRUE; // XXX DECL?
       
@@ -457,7 +469,7 @@
     function emitConstructorDeclaration(&$node) { 
       $method= $this->methodName($node);
       $this->context['method']= $method;
-      $this->context['types'][$this->context['class'].'::'.$method]= $this->context['class'];
+      $this->setType($this->context['class'].'::'.$method, $this->context['class']);
       
       $this->bytes.= implode(' ', Modifiers::namesOf($node->modifiers)).' function '.$method.'(';
       $embed= $this->emitParameters($node->parameters);
@@ -483,7 +495,7 @@
     function emitDestructorDeclaration(&$node) { 
       $method= '__destruct';
       $this->context['method']= $method;
-      $this->context['types'][$this->context['class'].'::'.$method]= $this->context['class'];
+      $this->setType($this->context['class'].'::'.$method, $this->context['class']);
       
       $this->bytes.= implode(' ', Modifiers::namesOf($node->modifiers)).' function '.$method.'(';
       $embed= $this->emitParameters($node->parameters);
@@ -814,7 +826,7 @@
       $this->emit($node->offset);
       $this->bytes.= ']';
     }
-
+    
     /**
      * Emits Assigns
      *
@@ -833,7 +845,7 @@
         $scope= $this->context['class'].'::'.$this->context['method'].$node->variable->name;
       }
 
-      $this->context['types'][$scope]= $this->checkedType($node->variable, $this->typeOf($node->expression));
+      $this->setType($scope, $this->checkedType($node->variable, $this->typeOf($node->expression)));
     }
 
     /**
@@ -855,14 +867,14 @@
           array($node->variable, $node->expression)
         );
 
-        $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->variable->name]= $this->typeOf($m);
+        $this->setType($this->context['class'].'::'.$this->context['method'].$node->variable->name, $this->typeOf($m));
         return $this->emit($m);
       }
 
       $this->bytes.= $node->operator.'= ';
       $this->emit($node->expression);
 
-      $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->variable->name]= 'string';   // FIXME!
+      $this->setType($this->context['class'].'::'.$this->context['method'].$node->variable->name, $this->typeOf($node->expression));
     }
 
     /**
@@ -1170,7 +1182,7 @@
 
       $members= FALSE;
       foreach ($node->members as $member) {
-        $this->context['types'][$this->context['class'].'::'.$member->name]= $this->typeName($node->type);
+        $this->setType($this->context['class'].'::'.$member->name, $this->typeName($node->type));
         if (is_a($member, 'PropertyDeclarationNode')) {
           $this->context['properties'][]= $member;
         } else {
@@ -1192,7 +1204,7 @@
     function emitOperatorDeclaration(&$node) {       
       $method= '__operator'.$this->operators[$node->name];
       $this->context['method']= $method;
-      $this->context['types'][$this->context['class'].'::'.$method]= $this->context['class'];
+      $this->setType($this->context['class'].'::'.$method, $this->context['class']);
       $this->context['operators'][$this->context['class']][$node->name]= TRUE;
 
       $this->bytes.= 'function '.$method.'(';
