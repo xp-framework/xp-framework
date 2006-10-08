@@ -85,10 +85,17 @@
      */
     #[@test]
     function hexEscape() {
-      $this->assertSourcecodeEquals(
-        'echo \'ga\';',
-        $this->emit('echo "\x67a";')
-      );
+      foreach (array(
+        '\x67a'   => 'ga',
+        'a\x67a'  => 'aga',
+        'a\x67'   => 'ag',
+      ) as $src => $emitted) {
+        $this->assertSourcecodeEquals(
+          'echo \''.$emitted.'\';',
+          $this->emit('echo "'.$src.'";'),
+          $src
+        );
+      }
     }
 
     /**
@@ -98,10 +105,17 @@
      */
     #[@test]
     function octalEscape() {
-      $this->assertSourcecodeEquals(
-        'echo \'ga\';',
-        $this->emit('echo "\147a";')
-      );
+      foreach (array(
+        '\147a'   => 'ga',
+        'a\147a'  => 'aga',
+        'a\147'   => 'ag',
+      ) as $src => $emitted) {
+        $this->assertSourcecodeEquals(
+          'echo \''.$emitted.'\';',
+          $this->emit('echo "'.$src.'";'),
+          $src
+        );
+      }
     }
   }
 ?>
