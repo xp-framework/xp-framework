@@ -64,5 +64,15 @@
     function typedMemberMismatch() {
       $this->emit('class Test { private string $bar; public void test() { $this->bar= 1; } }');
     }
+
+    /**
+     * Tests binary assignment
+     *
+     * @access  public
+     */
+    #[@test]
+    function binaryAssign() {
+      $this->emit('$product= 0; $product+= 3;');
+    }
   }
 ?>
