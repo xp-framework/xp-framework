@@ -86,6 +86,8 @@
     #[@test]
     function hexEscape() {
       foreach (array(
+        '\x0'     => chr(0),
+        '\x00'    => chr(0),
         '\x67a'   => 'ga',
         'a\x67a'  => 'aga',
         'a\x67'   => 'ag',
@@ -106,6 +108,9 @@
     #[@test]
     function octalEscape() {
       foreach (array(
+        '\0'      => chr(0),
+        '\00'     => chr(0),
+        '\000'    => chr(0),
         '\147a'   => 'ga',
         'a\147a'  => 'aga',
         'a\147'   => 'ag',
