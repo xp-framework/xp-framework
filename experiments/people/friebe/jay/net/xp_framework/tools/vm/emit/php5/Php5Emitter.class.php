@@ -124,7 +124,7 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      * @return  string
      */
-    function typeOf(&$node) {      
+    function typeOf(&$node) {
       if (is_a($node, 'NewNode')) {
         return $this->qualifiedName($node->class->name);
       } else if (is_a($node, 'VariableNode')) {
@@ -250,13 +250,13 @@
         // Vararg or not vararg
         if ($param->vararg) {
           $embed.= '$__a= func_get_args(); '.$param->name.'= array_slice($__a, '.$i.');';
-          $this->setType($this->context['class'].'::'.$this->context['method'].$param->name, array($param->type));
+          $this->setType($this->context['class'].'::'.$this->context['method'].$param->name, array($this->typeName($param->type)));
           
           if ($i != sizeof($parameters) - 1) {
             return $this->addError(new CompileError(1210, 'Vararags parameters must be the last parameter'));
           }
         } else {
-          $this->setType($this->context['class'].'::'.$this->context['method'].$param->name, $param->type);
+          $this->setType($this->context['class'].'::'.$this->context['method'].$param->name, $this->typeName($param->type));
           $this->bytes.= $param->name;
         }
         
