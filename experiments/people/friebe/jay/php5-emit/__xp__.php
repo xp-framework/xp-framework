@@ -127,6 +127,10 @@
     public static function stringOf($arg, $indent= '') {
       static $protect= array();
 
+      if ($arg instanceof xp·lang·Object && !isset($arg->__id)) {
+        $arg->__id= microtime();
+      }
+      
       if (is_string($arg)) {
         return '"'.$arg.'"';
       } else if (is_bool($arg)) {
@@ -137,7 +141,7 @@
         return '<null>';
       } else if (is_int($arg) || is_float($arg)) {
         return (string)$arg;
-      } else if ($args instanceof xp·lang·Object && !isset($protect[$arg->__id])) {
+      } else if ($arg instanceof xp·lang·Object && !isset($protect[$arg->__id])) {
         $protect[$arg->__id]= TRUE;
         $s= $arg->toString();
         unset($protect[$arg->__id]);
