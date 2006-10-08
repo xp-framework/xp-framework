@@ -72,5 +72,20 @@
         );
       }
     }
+
+    /**
+     * Tests octal numbers
+     *
+     * @access  public
+     */
+    #[@test]
+    function exponentNumbers() {
+      foreach (array('1e3', '1.2e3', '-1E4', '-1E+4') as $declared) {
+        $this->assertSourcecodeEquals(
+          '$x= '.$declared.';',
+          $this->emit('$x= '.$declared.';')
+        );
+      }
+    }
   }
 ?>
