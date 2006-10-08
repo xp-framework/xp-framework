@@ -77,5 +77,31 @@
         $this->emit('echo "He\'s lazy";')
       );
     }
+
+    /**
+     * Tests a hex-escape (\x[0-9A-Fa-f]{1,2})
+     *
+     * @access  public
+     */
+    #[@test]
+    function hexEscape() {
+      $this->assertSourcecodeEquals(
+        'echo \'ga\';',
+        $this->emit('echo "\x67a";')
+      );
+    }
+
+    /**
+     * Tests a hex-escape (\x[0-9A-Fa-f]{2})
+     *
+     * @access  public
+     */
+    #[@test]
+    function hexEscape() {
+      $this->assertSourcecodeEquals(
+        'echo \'ga\';',
+        $this->emit('echo "\x67a";')
+      );
+    }
   }
 ?>

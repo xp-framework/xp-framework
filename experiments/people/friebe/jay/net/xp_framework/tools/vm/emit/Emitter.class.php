@@ -104,6 +104,12 @@
               case 'n': $value.= "\n"; break;
               case 't': $value.= "\t"; break;
               case '"': $value.= '"'; break;
+
+              case 'x': {   // \x[0-9A-Fa-f]{2}, TBD: Checks needed? \xGG will break...
+                $value.= chr(hexdec(substr($node, $i+ 2, 2)));
+                $i+= 2;
+                break;
+              }
             }
             $i++;
           } else {
