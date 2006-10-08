@@ -50,7 +50,22 @@
      */
     #[@test]
     function hexNumbers() {
-      foreach (array('0x1', '0x0', '-0x5') as $declared) {
+      foreach (array('0x1', '0x0', '-0x5', '0xFFFF') as $declared) {
+        $this->assertSourcecodeEquals(
+          '$x= '.eval('return '.$declared.';').';',
+          $this->emit('$x= '.$declared.';')
+        );
+      }
+    }
+
+    /**
+     * Tests octal numbers
+     *
+     * @access  public
+     */
+    #[@test]
+    function octalNumbers() {
+      foreach (array('01', '0123') as $declared) {
         $this->assertSourcecodeEquals(
           '$x= '.eval('return '.$declared.';').';',
           $this->emit('$x= '.$declared.';')
