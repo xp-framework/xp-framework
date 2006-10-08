@@ -105,9 +105,10 @@
               case 't': $value.= "\t"; break;
               case '"': $value.= '"'; break;
 
-              case 'x': {   // \x[0-9A-Fa-f]{2}, TBD: Checks needed? \xGG will break...
-                $value.= chr(hexdec(substr($node, $i+ 2, 2)));
-                $i+= 2;
+              case 'x': {   // \x[0-9A-Fa-f]{1,2}, TBD: Checks needed? \xGG will break...
+                $length= min(strspn($node, '0123456789abdefABCDEF', $i+ 2), 2);
+                $value.= chr(hexdec(substr($node, $i+ 2, $length)));
+                $i+= $length;
                 break;
               }
               
@@ -119,7 +120,7 @@
               case '5':
               case '6':
               case '7': {
-                $length= strspn($node, '01234567', $i+ 1);
+                $length= min(strspn($node, '01234567', $i+ 1), 3);
                 $value.= chr(octdec(substr($node, $i+ 1, $length)));
                 $i+= $length- 1;
                 break;
