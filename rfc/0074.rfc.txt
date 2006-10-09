@@ -209,4 +209,11 @@ Comments
   sys     0m0.025s
   </pre>
 
+- kiesel, Mon Oct  9 16:41:10 CEST 2006
+  Loading classes/resources would be done by checking the invocation path of the current
+  scope (with debug_backtrace()) and then using the associated classloader of the class.
+  Shouldn't the resource loading just iterator over the default include_path and use the
+  appropriate loader?
+
+
 <EOF>
