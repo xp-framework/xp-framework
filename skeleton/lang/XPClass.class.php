@@ -435,8 +435,25 @@
      */
     function &getClassLoader() {
       if (!($cl= &xp::registry('classloader.'.$this->name))) {
-        $cl= &ClassLoader::getDefault();
+        return ClassLoader::getDefault();
       }
+
+      // The class loader information can be a string identifying the responsible
+      // classloader for the class. In that case, fetch it's class and get an
+      // instance through the instanceFor() method.
+      if (is_string($cl)) {
+        list($className, $argument)= sscanf($cl, '%[^:]://%s');
+        $class= &XPClass::forName($className);
+        $method= &$class->getMethod('instanceFor');
+
+        $dummy= NULL;
+        $cl= &$method->invoke($dummy, array($argument));
+        
+        // Replace the "symbolic" representation of the classloader with a reference
+        // to an instance.
+        xp::registry('classloader.'.$this->name, $cl);
+      }
+      
       return $cl;
     }
     
@@ -627,7 +644,16 @@
      */
     function &forName($name, $classloader= NULL) {
       if (NULL === $classloader) {
-        $classloader= &ClassLoader::getDefault();
+      
+        // Retrieve classloader via debug_backtrace() or fall back to
+        // the default classloader
+        $d= debug_backtrace();
+        if (isset($d[1]['class'])) {
+          $xpclass= &new XPClass(xp::nameOf($d[1]['class']));
+          $classloader= &$xpclass->getClassLoader();
+        } else {
+          $classloader= &ClassLoader::getDefault();
+        }
       }
     
       return $classloader->loadClass($name);

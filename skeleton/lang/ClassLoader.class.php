@@ -170,5 +170,37 @@
       $c= &new XPClass($name);
       return $c;
     }
+    
+    /**
+     * Loads a resource.
+     *
+     * @access  public
+     * @param   string string name of resource
+     * @return  string
+     */
+    function getResource($string) {
+      foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
+        if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
+        return file_get_contents($dir.DIRECTORY_SEPARATOR.$filename);
+      }
+    
+      return throw(new ElementNotFoundException('Could not load resource '.$string));
+    }
+    
+    /**
+     * Retrieve a stream to the resource
+     *
+     * @access  public
+     * @param   string string name of resource
+     * @return  &io.File
+     */
+    function getResourceAsStream($string) {
+      foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
+        if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
+        return new File($filename);
+      }
+    
+      return throw(new ElementNotFoundException('Could not load resource '.$string));
+    }
   }
 ?>

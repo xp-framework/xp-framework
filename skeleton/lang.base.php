@@ -137,7 +137,24 @@
     //     Sets an SAPI
     function sapi() {
       foreach ($a= func_get_args() as $name) {
-        require_once('sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php');
+        foreach (explode(':', ini_get('include_path')) as $path) {
+          $filename= 'sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php';
+          
+          if (is_dir($path)) {
+            if (file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
+              require_once($path.DIRECTORY_SEPARATOR.$filename);
+              break;  // Load next sapi
+            }
+          } elseif (is_file($path)) {
+            if (FALSE !== ($bytes= __xp_load_archive_bytes($path, $filename))) {
+              if (FALSE === eval('?>'.$bytes)) {
+                xp::error('Unable to load sapi '.$name.' from archive '.$path);
+              }
+              
+              break;  // Load next sapi
+            }
+          }
+        }
       }
       xp::registry('sapi', $a);
     }
@@ -223,10 +240,48 @@
     xp::registry('errors', $errors);
   }
   // }}}
+  
+  // {{{ string __xp_load_archive_bytes(string archive, string filename)
+  //     Loads a file from an archive
+  function __xp_load_archive_bytes($archivePath, $filename) {
+    static $archive= array();
+    
+    if (!isset($archive[$archivePath])) {
+      $archive[$archivePath]= array();
+      $current= &$archive[$archivePath];
+
+      // Bootstrap loading, only to be used for core classes.
+      $current['handle']= fopen($archivePath, 'rb');
+      $header= unpack('a3id/c1version/i1indexsize/a*reserved', fread($current['handle'], 0x0100));
+      for ($current['index']= array(), $i= 0; $i < $header['indexsize']; $i++) {
+        $entry= unpack(
+          'a80id/a80filename/a80path/i1size/i1offset/a*reserved', 
+          fread($current['handle'], 0x0100)
+        );
+        $current['index'][$entry['id']]= array($entry['size'], $entry['offset']);
+      }
+    }
+    
+    $current= &$archive[$archivePath];
+
+    if (!isset($current['index'][$filename])) return FALSE;
+    fseek($current['handle'], 0x0100 + sizeof($current['index']) * 0x0100 + $current['index'][$filename][1], SEEK_SET);
+    $bytes= fread($current['handle'], $current['index'][$filename][0]);
+    return $bytes;
+  }
+  // }}}
+  
 
   // {{{ void uses (string* args)
   //     Uses one or more classes
   function uses() {
+    $include= &xp::registry('include_path');
+
+    if (0 == sizeof($include)) {
+      $include= array_flip(explode(':', ini_get('include_path')));
+      xp::registry('include_path', $include);
+    }
+    
     foreach (func_get_args() as $str) {
       if (class_exists($class= xp::reflect($str))) continue;
 
@@ -245,17 +300,51 @@
         }
         $str= substr($str, strrpos($str, '/')+ 1);
         $class= xp::reflect($str);
-      } else {
-        if (FALSE === ($r= include_once(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php'))) {
-          xp::error(xp::stringOf(new Error('Cannot include '.$str)));
-        } else if (TRUE === $r) {
-          continue;
+        
+        continue;
+      }
+
+
+      foreach ($include as $path => $loader) {
+
+        // If path is a directory and the included file exists, load it
+        if (is_dir($path)) {
+          if (!file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+            continue;
+          }
+          
+          if (FALSE === ($r= include_once($f))) {
+            xp::error(xp::stringOf(new Error('Cannot include '.$str)));
+          }
+          
+          break;
+        } elseif (is_file($path)) {
+
+          // To to load via bootstrap class loader, if the file cannot provide the class-to-load
+          // skip to the next include_path part
+          if (FALSE === ($bytes= __xp_load_archive_bytes($path, strtr($str, '.', '/').'.class.php'))) {
+            continue;
+          }
+          
+          if (FALSE === eval('?>'.$bytes)) {
+            xp::error('Bootstrap class loading failure at '.$str.' (file= '.$path.')');
+          }
+          
+          xp::registry('classloader.'.$str, 'lang.archive.ArchiveClassLoader://'.$path);
+          break;
         }
       }
       
-      // Register class name and call static initializer if available
-      xp::registry('class.'.$class, $str);
-      is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
+      if (!class_exists(xp::reflect($str))) {
+        xp::error('Cannot include '.$str);
+      }
+            
+      // Register class name and call static initializer if available and if it has not been
+      // done before (through an ArchiveClassLoader)
+      if (NULL === xp::registry('class.'.$class)) {
+        xp::registry('class.'.$class, $str);
+        is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
+      }
     }
   }
   // }}}
@@ -428,7 +517,6 @@
     ? getenv('SKELETON_PATH')
     : dirname(__FILE__).DIRECTORY_SEPARATOR
   ));
-  ini_set('include_path', SKELETON_PATH.PATH_SEPARATOR.ini_get('include_path'));
   define('LONG_MAX', is_int(2147483648) ? 9223372036854775807 : 2147483647);
   define('LONG_MIN', -LONG_MAX - 1);
 
@@ -455,7 +543,9 @@
     'lang.IllegalArgumentException',
     'lang.IllegalStateException',
     'lang.FormatException',
-    'lang.ClassLoader'
+    'lang.ClassLoader',
+    'lang.archive.ArchiveReader',
+    'lang.archive.ArchiveClassLoader'
   );
   // }}}
 ?>
