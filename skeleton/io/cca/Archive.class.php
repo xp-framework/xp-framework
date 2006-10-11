@@ -48,6 +48,7 @@
    *   var_dump($c);                                                         
    * </code>
    * 
+   * @deprecated
    * @purpose  Provide an archiving
    * @see      http://java.sun.com/j2se/1.4/docs/api/java/util/jar/package-summary.html
    */

@@ -25,6 +25,7 @@
    *   $obj= &$class->newInstance();
    * </code>
    *
+   * @deprecated
    * @test     xp://net.xp_framework.unittest.io.ArchiveClassLoaderTest
    * @purpose  Load classes from an archive
    * @see      xp://lang.ClassLoader
