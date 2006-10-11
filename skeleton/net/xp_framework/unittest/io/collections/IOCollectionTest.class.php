@@ -56,5 +56,44 @@
       $this->assertNull($this->fixture->next());
       $this->fixture->close();
     }
+
+    /**
+     * Test consecutive iteration works
+     *
+     * @access  public
+     */
+    #[@test]
+    function consecutiveIteration() {
+      for ($i= 0; $i < 2; $i++) {
+        $elements= 0;
+        $this->fixture->open();
+        while ($this->fixture->next()) { 
+          $elements++;
+        }
+        $this->assertNull($this->fixture->next());
+        $this->assertEquals($this->sizes[$this->fixture->getURI()], $elements, 'Iteration #'.$i);
+        $this->fixture->close();
+      }
+    }
+
+    /**
+     * Test consecutive iteration works
+     *
+     * @access  public
+     */
+    #[@test]
+    function consecutiveIterationWithRewind() {
+      $this->fixture->open();
+      for ($i= 0; $i < 2; $i++) {
+        $elements= 0;
+        $this->fixture->rewind();
+        while ($this->fixture->next()) { 
+          $elements++;
+        }
+        $this->assertNull($this->fixture->next());
+        $this->assertEquals($this->sizes[$this->fixture->getURI()], $elements, 'Iteration #'.$i);
+      }
+      $this->fixture->close();
+    }
   }
 ?>
