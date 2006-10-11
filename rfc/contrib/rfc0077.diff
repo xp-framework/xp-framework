@@ -1,0 +1,1477 @@
+Index: io/collections/FileElement.class.php
+===================================================================
+--- io/collections/FileElement.class.php	(revision 8135)
++++ io/collections/FileElement.class.php	(working copy)
+@@ -7,7 +7,7 @@
+   /**
+    * Represents a file element
+    *
+-   * @see      xp://io.collections.FolderCollection
++   * @see      xp://io.collections.FileCollection
+    * @purpose  Interface
+    */
+   class FileElement extends Object {
+@@ -35,6 +35,46 @@
+     }
+ 
+     /**
++     * Retrieve this element's size in bytes
++     *
++     * @access  public
++     * @return  int
++     */
++    function getSize() { 
++      return filesize($this->uri);
++    }
++
++    /**
++     * Retrieve this element's created date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &createdAt() {
++      return new Date(filectime($this->uri));
++    }
++
++    /**
++     * Retrieve this element's last-accessed date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &lastAccessed() {
++      return new Date(fileatime($this->uri));
++    }
++
++    /**
++     * Retrieve this element's last-modified date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &lastModified() {
++      return new Date(filemtime($this->uri));
++    }
++    
++    /**
+      * Creates a string representation of this object
+      *
+      * @access  public
+Index: io/collections/FileCollection.class.php
+===================================================================
+--- io/collections/FileCollection.class.php	(revision 8135)
++++ io/collections/FileCollection.class.php	(working copy)
+@@ -88,6 +88,46 @@
+     }
+ 
+     /**
++     * Retrieve this element's size in bytes
++     *
++     * @access  public
++     * @return  int
++     */
++    function getSize() { 
++      return filesize($this->uri);
++    }
++
++    /**
++     * Retrieve this element's created date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &createdAt() {
++      return new Date(filectime($this->uri));
++    }
++
++    /**
++     * Retrieve this element's last-accessed date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &lastAccessed() {
++      return new Date(fileatime($this->uri));
++    }
++
++    /**
++     * Retrieve this element's last-modified date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &lastModified() {
++      return new Date(filemtime($this->uri));
++    }
++
++    /**
+      * Creates a string representation of this object
+      *
+      * @access  public
+Index: io/collections/IOElement.class.php
+===================================================================
+--- io/collections/IOElement.class.php	(revision 8135)
++++ io/collections/IOElement.class.php	(working copy)
+@@ -4,6 +4,8 @@
+  * $Id$ 
+  */
+ 
++  uses('util.Date');
++
+   /**
+    * IO Element
+    *
+@@ -18,5 +20,38 @@
+      * @return  string
+      */
+     function getURI() { }
++    
++    /**
++     * Retrieve this element's size in bytes
++     *
++     * @access  public
++     * @return  int
++     */
++    function getSize() { }
++
++    /**
++     * Retrieve this element's created date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &createdAt() { }
++
++    /**
++     * Retrieve this element's last-accessed date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &lastAccessed() { }
++
++    /**
++     * Retrieve this element's last-modified date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &lastModified() { }
++
+   }
+ ?>
+Index: io/collections/iterate/SizeEqualsFilter.class.php
+===================================================================
+--- io/collections/iterate/SizeEqualsFilter.class.php	(revision 0)
++++ io/collections/iterate/SizeEqualsFilter.class.php	(revision 0)
+@@ -0,0 +1,27 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('io.collections.iterate.AbstractSizeComparisonFilter');
++
++  /**
++   * Size comparison filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class SizeEqualsFilter extends AbstractSizeComparisonFilter {
++
++    /**
++     * Accepts an element
++     *
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) {
++      return $element->getSize() == $this->size;
++    }
++  }
++?>
+
+Property changes on: io/collections/iterate/SizeEqualsFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/NameMatchesFilter.class.php
+===================================================================
+--- io/collections/iterate/NameMatchesFilter.class.php	(revision 0)
++++ io/collections/iterate/NameMatchesFilter.class.php	(revision 0)
+@@ -0,0 +1,39 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  /**
++   * Name filter
++   *
++   * @see      php://preg_match
++   * @purpose  Iteration Filter
++   */
++  class NameMatchesFilter extends Object {
++    var
++      $pattern= '';
++      
++    /**
++     * Constructor
++     *
++     * @access  public
++     * @param   string pattern a Perl-compatible regular expression
++     */
++    function __construct($pattern) {
++      $this->pattern= $pattern;
++    }
++  
++    /**
++     * Accepts an element
++     *
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) {
++      return (bool)preg_match($this->pattern, basename($element->getURI()));
++    }
++  
++  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
++?>
+
+Property changes on: io/collections/iterate/NameMatchesFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/ExtensionEqualsFilter.class.php
+===================================================================
+--- io/collections/iterate/ExtensionEqualsFilter.class.php	(revision 0)
++++ io/collections/iterate/ExtensionEqualsFilter.class.php	(revision 0)
+@@ -0,0 +1,38 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  /**
++   * Extension filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class ExtensionEqualsFilter extends Object {
++    var
++      $extension= '';
++      
++    /**
++     * Constructor
++     *
++     * @access  public
++     * @param   string extension the file extension to compare to
++     */
++    function __construct($extension) {
++      $this->extension= '.'.ltrim($extension, '.');
++    }
++  
++    /**
++     * Accepts an element
++     *
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) {
++      return $this->extension == substr($element->getURI(), -1 * strlen($this->extension));
++    }
++  
++  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
++?>
+
+Property changes on: io/collections/iterate/ExtensionEqualsFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/AbstractSizeComparisonFilter.class.php
+===================================================================
+--- io/collections/iterate/AbstractSizeComparisonFilter.class.php	(revision 0)
++++ io/collections/iterate/AbstractSizeComparisonFilter.class.php	(revision 0)
+@@ -0,0 +1,37 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  /**
++   * Size comparison filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class AbstractSizeComparisonFilter extends Object {
++    var
++      $size= 0;
++      
++    /**
++     * Constructor
++     *
++     * @access  public
++     * @param   int size the size to compare to in bytes
++     */
++    function __construct($size) {
++      $this->size= $size;
++    }
++  
++    /**
++     * Accepts an element
++     *
++     * @model   abstract
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) { }
++  
++  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
++?>
+
+Property changes on: io/collections/iterate/AbstractSizeComparisonFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/CreatedAfterFilter.class.php
+===================================================================
+--- io/collections/iterate/CreatedAfterFilter.class.php	(revision 0)
++++ io/collections/iterate/CreatedAfterFilter.class.php	(revision 0)
+@@ -0,0 +1,27 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('io.collections.iterate.AbstractDateComparisonFilter');
++
++  /**
++   * Date comparison filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class CreatedAfterFilter extends AbstractDateComparisonFilter {
++
++    /**
++     * Accepts an element
++     *
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) { 
++      return ($cmp= &$element->createdAt()) && $cmp->isAfter($this->date);
++    }
++  }
++?>
+
+Property changes on: io/collections/iterate/CreatedAfterFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/CreatedBeforeFilter.class.php
+===================================================================
+--- io/collections/iterate/CreatedBeforeFilter.class.php	(revision 0)
++++ io/collections/iterate/CreatedBeforeFilter.class.php	(revision 0)
+@@ -0,0 +1,27 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('io.collections.iterate.AbstractDateComparisonFilter');
++
++  /**
++   * Date comparison filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class CreatedBeforeFilter extends AbstractDateComparisonFilter {
++
++    /**
++     * Accepts an element
++     *
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) { 
++      return ($cmp= &$element->createdAt()) && $cmp->isBefore($this->date);
++    }
++  }
++?>
+
+Property changes on: io/collections/iterate/CreatedBeforeFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/NameEqualsFilter.class.php
+===================================================================
+--- io/collections/iterate/NameEqualsFilter.class.php	(revision 0)
++++ io/collections/iterate/NameEqualsFilter.class.php	(revision 0)
+@@ -0,0 +1,38 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  /**
++   * Name filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class NameEqualsFilter extends Object {
++    var
++      $compare= '';
++      
++    /**
++     * Constructor
++     *
++     * @access  public
++     * @param   string compare the filename to compare to
++     */
++    function __construct($compare) {
++      $this->compare= $compare;
++    }
++  
++    /**
++     * Accepts an element
++     *
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) {
++      return $this->compare == basename($element->getURI());
++    }
++  
++  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
++?>
+
+Property changes on: io/collections/iterate/NameEqualsFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/AccessedAfterFilter.class.php
+===================================================================
+--- io/collections/iterate/AccessedAfterFilter.class.php	(revision 0)
++++ io/collections/iterate/AccessedAfterFilter.class.php	(revision 0)
+@@ -0,0 +1,27 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('io.collections.iterate.AbstractDateComparisonFilter');
++
++  /**
++   * Date comparison filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class AccessedAfterFilter extends AbstractDateComparisonFilter {
++
++    /**
++     * Accepts an element
++     *
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) { 
++      return ($cmp= &$element->lastAccessed()) && $cmp->isAfter($this->date);
++    }
++  }
++?>
+
+Property changes on: io/collections/iterate/AccessedAfterFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/AbstractDateComparisonFilter.class.php
+===================================================================
+--- io/collections/iterate/AbstractDateComparisonFilter.class.php	(revision 0)
++++ io/collections/iterate/AbstractDateComparisonFilter.class.php	(revision 0)
+@@ -0,0 +1,37 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  /**
++   * Date comparison iteration filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class AbstractDateComparisonFilter extends Object {
++    var
++      $date= NULL;
++      
++    /**
++     * Constructor
++     *
++     * @access  public
++     * @param   &util.Date date
++     */
++    function __construct(&$date) {
++      $this->date= &$date;
++    }
++    
++    /**
++     * Accepts an element
++     *
++     * @model  abstract
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) { }
++  
++  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
++?>
+
+Property changes on: io/collections/iterate/AbstractDateComparisonFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/AccessedBeforeFilter.class.php
+===================================================================
+--- io/collections/iterate/AccessedBeforeFilter.class.php	(revision 0)
++++ io/collections/iterate/AccessedBeforeFilter.class.php	(revision 0)
+@@ -0,0 +1,27 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('io.collections.iterate.AbstractDateComparisonFilter');
++
++  /**
++   * Date comparison filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class AccessedBeforeFilter extends AbstractDateComparisonFilter {
++
++    /**
++     * Accepts an element
++     *
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) { 
++      return ($cmp= &$element->lastAccessed()) && $cmp->isBefore($this->date);
++    }
++  }
++?>
+
+Property changes on: io/collections/iterate/AccessedBeforeFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/AllOfFilter.class.php
+===================================================================
+--- io/collections/iterate/AllOfFilter.class.php	(revision 0)
++++ io/collections/iterate/AllOfFilter.class.php	(revision 0)
+@@ -0,0 +1,46 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('io.collections.iterate.AbstractCombinedFilter');
++
++  /**
++   * Combined filter that accepts an element if all of its filters
++   * accept the element.
++   *
++   * This filter:
++   * <code>
++   *   $filter= &new AllOfFilter(array(
++   *     new ModifiedBeforeFilter(new Date('Dec 14  2004')),
++   *     new ExtensionEqualsFilter('jpg')
++   *   ));
++   * </code>
++   * will accept all elements modified before Dec 14  2004 AND whose
++   * extension is ".jpg"
++   *
++   * @purpose  Iteration Filter
++   */
++  class AllOfFilter extends AbstractCombinedFilter {
++    
++    /**
++     * Accepts an element
++     *
++     * @model  abstract
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) {
++      for ($i= 0; $i < $this->_size; $i++) {
++      
++        // The first filter that does not accept the element => we won't accept the element
++        if (!$this->list[$i]->accept($element)) return FALSE;
++      }
++      
++      // All filters have accepted the element, so we accept it
++      return TRUE;
++    }
++  }
++?>
+
+Property changes on: io/collections/iterate/AllOfFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/ModifiedAfterFilter.class.php
+===================================================================
+--- io/collections/iterate/ModifiedAfterFilter.class.php	(revision 0)
++++ io/collections/iterate/ModifiedAfterFilter.class.php	(revision 0)
+@@ -0,0 +1,27 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('io.collections.iterate.AbstractDateComparisonFilter');
++
++  /**
++   * Date comparison filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class ModifiedAfterFilter extends AbstractDateComparisonFilter {
++
++    /**
++     * Accepts an element
++     *
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) { 
++      return ($cmp= &$element->lastModified()) && $cmp->isAfter($this->date);
++    }
++  }
++?>
+
+Property changes on: io/collections/iterate/ModifiedAfterFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/ModifiedBeforeFilter.class.php
+===================================================================
+--- io/collections/iterate/ModifiedBeforeFilter.class.php	(revision 0)
++++ io/collections/iterate/ModifiedBeforeFilter.class.php	(revision 0)
+@@ -0,0 +1,27 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('io.collections.iterate.AbstractDateComparisonFilter');
++
++  /**
++   * Date comparison filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class ModifiedBeforeFilter extends AbstractDateComparisonFilter {
++
++    /**
++     * Accepts an element
++     *
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) { 
++      return ($cmp= &$element->lastModified()) && $cmp->isBefore($this->date);
++    }
++  }
++?>
+
+Property changes on: io/collections/iterate/ModifiedBeforeFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/AbstractCombinedFilter.class.php
+===================================================================
+--- io/collections/iterate/AbstractCombinedFilter.class.php	(revision 0)
++++ io/collections/iterate/AbstractCombinedFilter.class.php	(revision 0)
+@@ -0,0 +1,41 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  /**
++   * Combined filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class AbstractCombinedFilter extends Object {
++    var
++      $list  = array();
++
++    var
++      $_size = 0;
++      
++    /**
++     * Constructor
++     *
++     * @access  public
++     * @param   io.collections.iterate.IterationFilter[] list
++     */
++    function __construct($list) {
++      $this->list= $list;
++      $this->_size= sizeof($list);
++    }
++    
++    /**
++     * Accepts an element
++     *
++     * @model  abstract
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) { }
++  
++  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
++?>
+
+Property changes on: io/collections/iterate/AbstractCombinedFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/SizeSmallerThanFilter.class.php
+===================================================================
+--- io/collections/iterate/SizeSmallerThanFilter.class.php	(revision 0)
++++ io/collections/iterate/SizeSmallerThanFilter.class.php	(revision 0)
+@@ -0,0 +1,27 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('io.collections.iterate.AbstractSizeComparisonFilter');
++
++  /**
++   * Size comparison filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class SizeSmallerThanFilter extends AbstractSizeComparisonFilter {
++
++    /**
++     * Accepts an element
++     *
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) {
++      return $element->getSize() < $this->size;
++    }
++  }
++?>
+
+Property changes on: io/collections/iterate/SizeSmallerThanFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/SizeBiggerThanFilter.class.php
+===================================================================
+--- io/collections/iterate/SizeBiggerThanFilter.class.php	(revision 0)
++++ io/collections/iterate/SizeBiggerThanFilter.class.php	(revision 0)
+@@ -0,0 +1,27 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('io.collections.iterate.AbstractSizeComparisonFilter');
++
++  /**
++   * Size comparison filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class SizeBiggerThanFilter extends AbstractSizeComparisonFilter {
++
++    /**
++     * Accepts an element
++     *
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) {
++      return $element->getSize() > $this->size;
++    }
++  }
++?>
+
+Property changes on: io/collections/iterate/SizeBiggerThanFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/RegexFilter.class.php
+===================================================================
+--- io/collections/iterate/RegexFilter.class.php	(revision 8135)
++++ io/collections/iterate/RegexFilter.class.php	(working copy)
+@@ -7,6 +7,7 @@
+   /**
+    * Regular expression iteration filter
+    *
++   * @deprecated  Use NameMatchesFilter instead
+    * @see      php://preg_match
+    * @purpose  Iteration Filter
+    */
+Index: io/collections/iterate/AnyOfFilter.class.php
+===================================================================
+--- io/collections/iterate/AnyOfFilter.class.php	(revision 0)
++++ io/collections/iterate/AnyOfFilter.class.php	(revision 0)
+@@ -0,0 +1,46 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('io.collections.iterate.AbstractCombinedFilter');
++
++  /**
++   * Combined filter that accepts an element if any of its filters
++   * accept the element.
++   *
++   * This filter:
++   * <code>
++   *   $filter= &new AnyOfFilter(array(
++   *     new SizeSmallerThanFilter(500),
++   *     new ExtensionEqualsFilter('txt')
++   *   ));
++   * </code>
++   * will accept any elements smaller than 500 bytes or with a
++   * ".txt"-extension.
++   *
++   * @purpose  Iteration Filter
++   */
++  class AnyOfFilter extends AbstractCombinedFilter {
++    
++    /**
++     * Accepts an element
++     *
++     * @model  abstract
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) {
++      for ($i= 0; $i < $this->_size; $i++) {
++      
++        // The first filter that accepts the element => we accept the element
++        if ($this->list[$i]->accept($element)) return TRUE;
++      }
++      
++      // None of the filters have accepted the element, so we won't accept it
++      return FALSE;
++    }
++  }
++?>
+
+Property changes on: io/collections/iterate/AnyOfFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: net/xp_framework/unittest/io/collections/MockCollection.class.php
+===================================================================
+--- net/xp_framework/unittest/io/collections/MockCollection.class.php	(revision 8135)
++++ net/xp_framework/unittest/io/collections/MockCollection.class.php	(working copy)
+@@ -91,6 +91,46 @@
+     }
+ 
+     /**
++     * Retrieve this element's size in bytes
++     *
++     * @access  public
++     * @return  int
++     */
++    function getSize() { 
++      return 512;
++    }
++
++    /**
++     * Retrieve this element's created date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &createdAt() {
++      return NULL;
++    }
++
++    /**
++     * Retrieve this element's last-accessed date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &lastAccessed() {
++      return NULL;
++    }
++
++    /**
++     * Retrieve this element's last-modified date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &lastModified() {
++      return NULL;
++    }
++
++    /**
+      * Creates a string representation of this object
+      *
+      * @access  public
+Index: net/xp_framework/unittest/io/collections/IOCollectionIteratorTest.class.php
+===================================================================
+--- net/xp_framework/unittest/io/collections/IOCollectionIteratorTest.class.php	(revision 8135)
++++ net/xp_framework/unittest/io/collections/IOCollectionIteratorTest.class.php	(working copy)
+@@ -8,7 +8,23 @@
+     'net.xp_framework.unittest.io.collections.AbstractCollectionTest',
+     'net.xp_framework.unittest.io.collections.NullFilter',
+     'io.collections.iterate.IOCollectionIterator',
+-    'io.collections.iterate.FilteredIOCollectionIterator'
++    'io.collections.iterate.FilteredIOCollectionIterator',
++    'io.collections.iterate.AccessedAfterFilter',
++    'io.collections.iterate.AccessedBeforeFilter',
++    'io.collections.iterate.CreatedAfterFilter',
++    'io.collections.iterate.CreatedBeforeFilter',
++    'io.collections.iterate.FilteredIOCollectionIterator',
++    'io.collections.iterate.IterationFilter',
++    'io.collections.iterate.ModifiedAfterFilter',
++    'io.collections.iterate.ModifiedBeforeFilter',
++    'io.collections.iterate.NameMatchesFilter',
++    'io.collections.iterate.NameEqualsFilter',
++    'io.collections.iterate.ExtensionEqualsFilter',
++    'io.collections.iterate.SizeBiggerThanFilter',
++    'io.collections.iterate.SizeEqualsFilter',
++    'io.collections.iterate.SizeSmallerThanFilter',
++    'io.collections.iterate.AllOfFilter',
++    'io.collections.iterate.AnyOfFilter'
+   );
+ 
+   /**
+@@ -45,20 +61,40 @@
+         $this->assertTrue(is('io.collections.IOElement', $e));
+       }
+       $this->assertEquals($this->total, $i);
+-    }    
++    }
+ 
+     /**
++     * Helper method
++     *
++     * @access  protected
++     * @param   io.collections.iterate.Filter filter
++     * @param   bool recursive default FALSE
++     * @return  string[] an array of the elements' URIs
++     */
++    function filterFixtureWith(&$filter, $recursive= FALSE) {
++      $elements= array();
++      for (
++        $it= &new FilteredIOCollectionIterator($this->fixture, $filter, $recursive);
++        $it->hasNext(); 
++      ) {
++        $e= &$it->next();
++        $this->assertTrue(is('io.collections.IOElement', $e));
++        $elements[]= $e->getURI();
++      }
++      return $elements;
++    }
++
++    /**
+      * Test FilteredIOCollectionIterator
+      *
+      * @access  public
+      */
+     #[@test]
+     function filteredIteration() {
+-      for ($it= &new FilteredIOCollectionIterator($this->fixture, new NullFilter()), $i= 0; $it->hasNext(); $i++) {
+-        $e= &$it->next();
+-        $this->assertTrue(is('io.collections.IOElement', $e));
+-      }
+-      $this->assertEquals($this->sizes[$this->fixture->getURI()], $i);
++      $this->assertEquals(
++        $this->sizes[$this->fixture->getURI()],
++        sizeof($this->filterFixtureWith(new NullFilter(), FALSE))
++      );
+     }
+ 
+     /**
+@@ -68,11 +104,254 @@
+      */
+     #[@test]
+     function filteredRecursiveIteration() {
+-      for ($it= &new FilteredIOCollectionIterator($this->fixture, new NullFilter(), TRUE), $i= 0; $it->hasNext(); $i++) {
+-        $e= &$it->next();
+-        $this->assertTrue(is('io.collections.IOElement', $e));
+-      }
+-      $this->assertEquals($this->total, $i);
+-    }    
++      $this->assertEquals(
++        $this->total,
++        sizeof($this->filterFixtureWith(new NullFilter(), TRUE))
++      );
++    }
++
++    /**
++     * Test NameMatchesFilter
++     *
++     * @see     xp://io.collections.iterate.NameMatchesFilter
++     * @access  public
++     */
++    #[@test]
++    function nameMatches() {
++      $this->assertEquals(
++        array('first.txt', 'second.txt'), 
++        $this->filterFixtureWith(new NameMatchesFilter('/\.txt$/'), FALSE)
++      );
++    }
++
++    /**
++     * Test NameMatchesFilter
++     *
++     * @see     xp://io.collections.iterate.NameMatchesFilter
++     * @access  public
++     */
++    #[@test]
++    function nameMatchesRecursive() {
++      $this->assertEquals(
++        array('first.txt', 'second.txt', 'sub/IMG_6100.txt'), 
++        $this->filterFixtureWith(new NameMatchesFilter('/\.txt$/'), TRUE)
++      );
++    }
++
++    /**
++     * Test NameEqualsFilter
++     *
++     * @see     xp://io.collections.iterate.NameMatchesFilter
++     * @access  public
++     */
++    #[@test]
++    function nameEquals() {
++      $this->assertEquals(
++        array(), 
++        $this->filterFixtureWith(new NameEqualsFilter('__xp__.php'), FALSE)
++      );
++    }
++
++    /**
++     * Test NameEqualsFilter
++     *
++     * @see     xp://io.collections.iterate.NameMatchesFilter
++     * @access  public
++     */
++    #[@test]
++    function nameEqualsRecursive() {
++      $this->assertEquals(
++        array('sub/sec/__xp__.php'), 
++        $this->filterFixtureWith(new NameEqualsFilter('__xp__.php'), TRUE)
++      );
++    }
++
++    /**
++     * Test extensionEqualsFilter
++     *
++     * @see     xp://io.collections.iterate.extensionMatchesFilter
++     * @access  public
++     */
++    #[@test]
++    function extensionEquals() {
++      $this->assertEquals(
++        array(), 
++        $this->filterFixtureWith(new ExtensionEqualsFilter('.php'), FALSE)
++      );
++    }
++
++    /**
++     * Test extensionEqualsFilter
++     *
++     * @see     xp://io.collections.iterate.extensionMatchesFilter
++     * @access  public
++     */
++    #[@test]
++    function extensionEqualsRecursive() {
++      $this->assertEquals(
++        array('sub/sec/lang.base.php', 'sub/sec/__xp__.php'), 
++        $this->filterFixtureWith(new extensionEqualsFilter('.php'), TRUE)
++      );
++    }
++    
++    /**
++     * Test SizeEqualsFilter
++     *
++     * @see     xp://io.collections.iterate.SizeEqualsFilter
++     * @access  public
++     */
++    #[@test]
++    function zeroBytes() {
++      $this->assertEquals(
++        array('zerobytes.png'), 
++        $this->filterFixtureWith(new SizeEqualsFilter(0), FALSE)
++      );
++    }
++
++    /**
++     * Test SizeBiggerThanFilter
++     *
++     * @see     xp://io.collections.iterate.SizeBiggerThanFilter
++     * @access  public
++     */
++    #[@test]
++    function bigFiles() {
++      $this->assertEquals(
++        array('sub/IMG_6100.jpg'), 
++        $this->filterFixtureWith(new SizeBiggerThanFilter(500000), TRUE)
++      );
++    }
++
++    /**
++     * Test SizeBiggerThanFilter
++     *
++     * @see     xp://io.collections.iterate.SizeBiggerThanFilter
++     * @access  public
++     */
++    #[@test]
++    function smallFiles() {
++      $this->assertEquals(
++        array('second.txt', 'zerobytes.png'), 
++        $this->filterFixtureWith(new SizeSmallerThanFilter(500), TRUE)
++      );
++    }
++
++    /**
++     * Test AccessedAfterFilter
++     *
++     * @see     xp://io.collections.iterate.AccessedAfterFilter
++     * @access  public
++     */
++    #[@test]
++    function accessedAfter() {
++      $this->assertEquals(
++        array('first.txt', 'second.txt', 'sub/sec/lang.base.php', 'sub/sec/__xp__.php'), 
++        $this->filterFixtureWith(new AccessedAfterFilter(new Date('Oct  1  2006')), TRUE)
++      );
++    }
++
++    /**
++     * Test AccessedBeforeFilter
++     *
++     * @see     xp://io.collections.iterate.AccessedBeforeFilter
++     * @access  public
++     */
++    #[@test]
++    function accessedBefore() {
++      $this->assertEquals(
++        array('third.jpg', 'zerobytes.png'), 
++        $this->filterFixtureWith(new AccessedBeforeFilter(new Date('Dec 14  2004')), TRUE)
++      );
++    }
++
++    /**
++     * Test ModifiedAfterFilter
++     *
++     * @see     xp://io.collections.iterate.ModifiedAfterFilter
++     * @access  public
++     */
++    #[@test]
++    function modifiedAfter() {
++      $this->assertEquals(
++        array('sub/sec/lang.base.php', 'sub/sec/__xp__.php'), 
++        $this->filterFixtureWith(new ModifiedAfterFilter(new Date('Oct  7  2006')), TRUE)
++      );
++    }
++
++    /**
++     * Test ModifiedBeforeFilter
++     *
++     * @see     xp://io.collections.iterate.ModifiedBeforeFilter
++     * @access  public
++     */
++    #[@test]
++    function modifiedBefore() {
++      $this->assertEquals(
++        array('third.jpg', 'zerobytes.png'), 
++        $this->filterFixtureWith(new ModifiedBeforeFilter(new Date('Dec 14  2004')), TRUE)
++      );
++    }
++
++    /**
++     * Test CreatedAfterFilter
++     *
++     * @see     xp://io.collections.iterate.CreatedAfterFilter
++     * @access  public
++     */
++    #[@test]
++    function createdAfter() {
++      $this->assertEquals(
++        array('sub/sec/__xp__.php'), 
++        $this->filterFixtureWith(new CreatedAfterFilter(new Date('Jul  1  2006')), TRUE)
++      );
++    }
++
++    /**
++     * Test CreatedBeforeFilter
++     *
++     * @see     xp://io.collections.iterate.CreatedBeforeFilter
++     * @access  public
++     */
++    #[@test]
++    function createdBefore() {
++      $this->assertEquals(
++        array('sub/sec/lang.base.php'), 
++        $this->filterFixtureWith(new CreatedBeforeFilter(new Date('Feb 22  2002')), TRUE)
++      );
++    }
++
++    /**
++     * Test AllOfFilter
++     *
++     * @see     xp://io.collections.iterate.AllOfFilter
++     * @access  public
++     */
++    #[@test]
++    function allOf() {
++      $this->assertEquals(
++        array('third.jpg'), 
++        $this->filterFixtureWith(new AllOfFilter(array(
++          new ModifiedBeforeFilter(new Date('Dec 14  2004')),
++          new ExtensionEqualsFilter('jpg')
++        )), TRUE)
++      );
++    }
++
++    /**
++     * Test AnyOfFilter
++     *
++     * @see     xp://io.collections.iterate.AnyOfFilter
++     * @access  public
++     */
++    #[@test]
++    function anyOf() {
++      $this->assertEquals(
++        array('first.txt', 'second.txt', 'zerobytes.png', 'sub/IMG_6100.txt'), 
++        $this->filterFixtureWith(new AnyOfFilter(array(
++          new SizeSmallerThanFilter(500),
++          new ExtensionEqualsFilter('txt')
++        )), TRUE)
++      );
++    }
+   }
+ ?>
+Index: net/xp_framework/unittest/io/collections/AbstractCollectionTest.class.php
+===================================================================
+--- net/xp_framework/unittest/io/collections/AbstractCollectionTest.class.php	(revision 8135)
++++ net/xp_framework/unittest/io/collections/AbstractCollectionTest.class.php	(working copy)
+@@ -46,17 +46,68 @@
+      */
+     function setUp() {
+       $this->fixture= &new MockCollection('.');
+-      $this->addElement($this->fixture, new MockElement('first.txt'));
+-      $this->addElement($this->fixture, new MockElement('second.txt'));
+-      $this->addElement($this->fixture, new MockElement('third.jpg'));
++      
++      // Warning: Changing this list will make some tests fail!
++      $this->addElement($this->fixture, new MockElement(
++        'first.txt', 
++        1200, 
++        Date::fromString('Oct 10  2006'), // accessed
++        Date::fromString('Dec 14  2005'), // modified
++        Date::fromString('Oct 30  2005')  // created
++      ));
++      $this->addElement($this->fixture, new MockElement(
++        'second.txt', 
++        333, 
++        Date::fromString('Oct 10  2006'), // accessed
++        Date::fromString('Dec 24  2005'), // modified
++        Date::fromString('Oct 30  2005')  // created
++      ));
++      $this->addElement($this->fixture, new MockElement(
++        'third.jpg', 
++        18882, 
++        Date::fromString('Dec 11  2003'), // accessed
++        Date::fromString('Dec 10  2003'), // modified
++        Date::fromString('Dec 10  2003')  // created
++      ));
++      $this->addElement($this->fixture, new MockElement(
++        'zerobytes.png', 
++        0, 
++        Date::fromString('Dec 11  2003'), // accessed
++        Date::fromString('Dec 10  2003'), // modified
++        Date::fromString('Dec 10  2003')  // created
++      ));
+ 
+       with ($sub= &$this->addElement($this->fixture, new MockCollection('sub'))); {
+-        $this->addElement($sub, new MockElement('sub/IMG_6100.jpg'));
+-        $this->addElement($sub, new MockElement('sub/IMG_6100.txt'));
++        $this->addElement($sub, new MockElement(
++          'sub/IMG_6100.jpg', 
++          531718, 
++          Date::fromString('Mar  9  2006'), // accessed
++          Date::fromString('Mar  9  2006'), // modified
++          Date::fromString('Mar  9  2006')  // created
++        ));
++        $this->addElement($sub, new MockElement(
++          'sub/IMG_6100.txt', 
++          5932, 
++          Date::fromString('Mar 13  2006'), // accessed
++          Date::fromString('Mar 13  2006'), // modified
++          Date::fromString('Mar 13  2006')  // created
++        ));
+ 
+         with ($sec= &$this->addElement($this->fixture, new MockCollection('sub/sec'))); {
+-          $this->addElement($sec, new MockElement('sub/sec/lang.base.php'));
+-          $this->addElement($sec, new MockElement('sub/sec/__xp__.php'));
++          $this->addElement($sec, new MockElement(
++            'sub/sec/lang.base.php', 
++            16739, 
++            Date::fromString('Oct 11  2006'), // accessed
++            Date::fromString('Oct 11  2006'), // modified
++            Date::fromString('Feb 21  2002')  // created
++          ));
++          $this->addElement($sec, new MockElement(
++            'sub/sec/__xp__.php', 
++            8589, 
++            Date::fromString('Oct  8  2006'), // accessed
++            Date::fromString('Oct  8  2006'), // modified
++            Date::fromString('Jul 23  2006')  // created
++          ));
+         }
+       }
+       
+Index: net/xp_framework/unittest/io/collections/MockElement.class.php
+===================================================================
+--- net/xp_framework/unittest/io/collections/MockElement.class.php	(revision 8135)
++++ net/xp_framework/unittest/io/collections/MockElement.class.php	(working copy)
+@@ -12,16 +12,28 @@
+    */
+   class MockElement extends Object {
+     var
+-      $uri= '';
++      $uri    = '',
++      $size   = 0,
++      $adate  = NULL,
++      $mdate  = NULL,
++      $cdate  = NULL;
+ 
+     /**
+      * Constructor
+      *
+      * @access  publid
+      * @param   string uri
++     * @param   int size default 0
++     * @param   util.Date adate default NULL
++     * @param   util.Date adate default NULL
++     * @param   util.Date cdate default NULL
+      */
+-    function __construct($uri) {
++    function __construct($uri, $size= 0, $adate= NULL, $mdate= NULL, $cdate= NULL) {
+       $this->uri= $uri;
++      $this->size= $size;
++      $this->adate= &$adate;
++      $this->mdate= &$mdate;
++      $this->cdate= &$cdate;
+     }
+ 
+     /**
+@@ -35,6 +47,46 @@
+     }
+ 
+     /**
++     * Retrieve this element's size in bytes
++     *
++     * @access  public
++     * @return  int
++     */
++    function getSize() { 
++      return $this->size;
++    }
++
++    /**
++     * Retrieve this element's created date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &createdAt() {
++      return $this->cdate;
++    }
++
++    /**
++     * Retrieve this element's last-accessed date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &lastAccessed() {
++      return $this->adate;
++    }
++
++    /**
++     * Retrieve this element's last-modified date and time
++     *
++     * @access  public
++     * @return  &util.Date
++     */
++    function &lastModified() {
++      return $this->mdate;
++    }
++
++    /**
+      * Creates a string representation of this object
+      *
+      * @access  public

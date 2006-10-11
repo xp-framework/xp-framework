@@ -1,0 +1,70 @@
+RFC 0077: I/O Collections Extensions
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Oct 11 17:53:18 CEST 2006
+@status: draft
+@category: io.collections
+
+Scope of Change
+---------------
+New filters will be added to io.collections.iterate.
+
+
+Rationale
+---------
+Flexibility.
+
+
+Functionality
+-------------
+These are the new filter classes:
+<pre>
+  io.collections.iterate.AccessedAfterFilter
+  io.collections.iterate.AccessedBeforeFilter
+  io.collections.iterate.CreatedAfterFilter
+  io.collections.iterate.CreatedBeforeFilter
+  io.collections.iterate.FilteredIOCollectionIterator
+  io.collections.iterate.IterationFilter
+  io.collections.iterate.ModifiedAfterFilter
+  io.collections.iterate.ModifiedBeforeFilter
+  io.collections.iterate.NameMatchesFilter
+  io.collections.iterate.NameEqualsFilter
+  io.collections.iterate.ExtensionEqualsFilter
+  io.collections.iterate.SizeBiggerThanFilter
+  io.collections.iterate.SizeEqualsFilter
+  io.collections.iterate.SizeSmallerThanFilter
+  io.collections.iterate.AllOfFilter
+  io.collections.iterate.AnyOfFilter
+</pre>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+Access to an IOElement's size, creation, last modified and last 
+accessed dates will be added to the IOElement interface.
+
+
+Related documents
+-----------------
+- RFC #0075
+  Original I/O Collections RFC
+
+- http://xp-framework.net/rfc/contrib/rfc0077.diff
+  Patch
+
+Comments
+--------
+
+<EOF>
