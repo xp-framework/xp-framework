@@ -1,0 +1,53 @@
+RFC 0079: Preferences API
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Thu Oct 12 11:44:36 CEST 2006
+@status: draft
+@category: util
+
+Scope of Change
+---------------
+Type-safe preferences with exchangeable backing storages will be added
+as a new API.
+
+
+Rationale
+---------
+- util.Properties is not type-safe and not checked. Mistakes can easily 
+  go unnoticed.
+- Because util.Properties does not provide information about the values
+  we cannot easily create a generic property editor (without having to
+  have properties defining the layout of each and every property file).
+
+
+Functionality
+-------------
+TODO
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
