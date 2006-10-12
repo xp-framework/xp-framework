@@ -108,6 +108,29 @@ Find all files that either end with ".txt" or are smaller than 500 bytes:
   ));
 ?>
 
+Print a list of all logfiles modified at least one hour ago, but exclude 
+errorlogs:
+<?php
+  $collection= &new FileCollection($p->value(1));
+  $before= &DateUtil::addHours(Date::now(), -1);
+  
+  Console::writeLine('Working on ', $collection->toString(), ' for ', $before->toString());
+  
+  for (
+    $it= &new FilteredIOCollectionIterator($collection, new AllOfFilter(array(
+      new ModifiedBeforeFilter($before),
+      new ExtensionEqualsFilter('log'),
+      new NegationOfFilter(new NameMatchesFilter('/^error/'))
+    )));
+    $it->hasNext();
+  ) {
+    $e= &$it->next();
+    $file= &new File($e->getURI());
+    
+    Console::writeLine('- ', xp::stringOf($file));
+  }
+?>
+
 
 Security considerations
 -----------------------
