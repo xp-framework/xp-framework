@@ -1,6 +1,6 @@
 Index: io/collections/FileElement.class.php
 ===================================================================
---- io/collections/FileElement.class.php	(revision 8135)
+--- io/collections/FileElement.class.php	(revision 8140)
 +++ io/collections/FileElement.class.php	(working copy)
 @@ -7,7 +7,7 @@
    /**
@@ -60,7 +60,7 @@ Index: io/collections/FileElement.class.php
       * @access  public
 Index: io/collections/FileCollection.class.php
 ===================================================================
---- io/collections/FileCollection.class.php	(revision 8135)
+--- io/collections/FileCollection.class.php	(revision 8140)
 +++ io/collections/FileCollection.class.php	(working copy)
 @@ -88,6 +88,46 @@
      }
@@ -111,7 +111,7 @@ Index: io/collections/FileCollection.class.php
       * @access  public
 Index: io/collections/IOElement.class.php
 ===================================================================
---- io/collections/IOElement.class.php	(revision 8135)
+--- io/collections/IOElement.class.php	(revision 8140)
 +++ io/collections/IOElement.class.php	(working copy)
 @@ -4,6 +4,8 @@
   * $Id$ 
@@ -294,6 +294,55 @@ Index: io/collections/iterate/ExtensionEqualsFilter.class.php
 +?>
 
 Property changes on: io/collections/iterate/ExtensionEqualsFilter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: io/collections/iterate/NegationOfFilter.class.php
+===================================================================
+--- io/collections/iterate/NegationOfFilter.class.php	(revision 0)
++++ io/collections/iterate/NegationOfFilter.class.php	(revision 0)
+@@ -0,0 +1,38 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  /**
++   * Negation filter
++   *
++   * @purpose  Iteration Filter
++   */
++  class NegationOfFilter extends Object {
++    var
++      $filter= NULL;
++      
++    /**
++     * Constructor
++     *
++     * @access  public
++     * @param   io.collections.iterate.IterationFilter filter
++     */
++    function __construct(&$filter) {
++      $this->filter= $filter;
++    }
++  
++    /**
++     * Accepts an element
++     *
++     * @access  public
++     * @param   &io.collections.IOElement element
++     * @return  bool
++     */
++    function accept(&$element) {
++      return !$this->filter->accept($element);
++    }
++  
++  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
++?>
+
+Property changes on: io/collections/iterate/NegationOfFilter.class.php
 ___________________________________________________________________
 Name: svn:keywords
    + Id
@@ -858,7 +907,7 @@ Name: svn:keywords
 
 Index: io/collections/iterate/RegexFilter.class.php
 ===================================================================
---- io/collections/iterate/RegexFilter.class.php	(revision 8135)
+--- io/collections/iterate/RegexFilter.class.php	(revision 8140)
 +++ io/collections/iterate/RegexFilter.class.php	(working copy)
 @@ -7,6 +7,7 @@
    /**
@@ -927,7 +976,7 @@ Name: svn:keywords
 
 Index: net/xp_framework/unittest/io/collections/MockCollection.class.php
 ===================================================================
---- net/xp_framework/unittest/io/collections/MockCollection.class.php	(revision 8135)
+--- net/xp_framework/unittest/io/collections/MockCollection.class.php	(revision 8140)
 +++ net/xp_framework/unittest/io/collections/MockCollection.class.php	(working copy)
 @@ -91,6 +91,46 @@
      }
@@ -978,7 +1027,7 @@ Index: net/xp_framework/unittest/io/collections/MockCollection.class.php
       * @access  public
 Index: net/xp_framework/unittest/io/collections/IOCollectionIteratorTest.class.php
 ===================================================================
---- net/xp_framework/unittest/io/collections/IOCollectionIteratorTest.class.php	(revision 8135)
+--- net/xp_framework/unittest/io/collections/IOCollectionIteratorTest.class.php	(revision 8140)
 +++ net/xp_framework/unittest/io/collections/IOCollectionIteratorTest.class.php	(working copy)
 @@ -8,7 +8,23 @@
      'net.xp_framework.unittest.io.collections.AbstractCollectionTest',
@@ -1315,7 +1364,7 @@ Index: net/xp_framework/unittest/io/collections/IOCollectionIteratorTest.class.p
  ?>
 Index: net/xp_framework/unittest/io/collections/AbstractCollectionTest.class.php
 ===================================================================
---- net/xp_framework/unittest/io/collections/AbstractCollectionTest.class.php	(revision 8135)
+--- net/xp_framework/unittest/io/collections/AbstractCollectionTest.class.php	(revision 8140)
 +++ net/xp_framework/unittest/io/collections/AbstractCollectionTest.class.php	(working copy)
 @@ -46,17 +46,68 @@
       */
@@ -1395,7 +1444,7 @@ Index: net/xp_framework/unittest/io/collections/AbstractCollectionTest.class.php
        
 Index: net/xp_framework/unittest/io/collections/MockElement.class.php
 ===================================================================
---- net/xp_framework/unittest/io/collections/MockElement.class.php	(revision 8135)
+--- net/xp_framework/unittest/io/collections/MockElement.class.php	(revision 8140)
 +++ net/xp_framework/unittest/io/collections/MockElement.class.php	(working copy)
 @@ -12,16 +12,28 @@
     */

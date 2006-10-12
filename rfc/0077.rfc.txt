@@ -31,23 +31,21 @@ Date-based:
   io.collections.iterate.ModifiedAfterFilter
   io.collections.iterate.ModifiedBeforeFilter
 </pre>
-
 Name-based:
 <pre>
   io.collections.iterate.NameMatchesFilter
   io.collections.iterate.NameEqualsFilter
   io.collections.iterate.ExtensionEqualsFilter
 </pre>
-
 Size-based:
 <pre>
   io.collections.iterate.SizeBiggerThanFilter
   io.collections.iterate.SizeEqualsFilter
   io.collections.iterate.SizeSmallerThanFilter
 </pre>
-
 Combinations:
 <pre>
+  io.collections.iterate.NegationOfFilter
   io.collections.iterate.AllOfFilter
   io.collections.iterate.AnyOfFilter
 </pre>
