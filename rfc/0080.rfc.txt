@@ -1,0 +1,50 @@
+RFC 0080: Anonymous class creation
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Thu Oct 12 13:58:35 CEST 2006
+@status: draft
+@category: core
+
+Scope of Change
+---------------
+A way to create anonymous instances of interfaces and abstract classes will
+be provided.
+
+
+Rationale
+---------
+Throw-away classes / migration.
+
+
+Functionality
+-------------
+TODO
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slower than declaring real classes.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://experiments.xp-framework.net/?people,friebe,newinstance
+  Experiment
+
+
+Comments
+--------
+
+<EOF>
