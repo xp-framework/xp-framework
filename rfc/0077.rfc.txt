@@ -19,14 +19,16 @@ Flexibility.
 
 Functionality
 -------------
-These are the new filter classes:
+
+New filter classes
+~~~~~~~~~~~~~~~~~~
+These new IterationFilter implementations will be added:
 <pre>
   io.collections.iterate.AccessedAfterFilter
   io.collections.iterate.AccessedBeforeFilter
   io.collections.iterate.CreatedAfterFilter
   io.collections.iterate.CreatedBeforeFilter
   io.collections.iterate.FilteredIOCollectionIterator
-  io.collections.iterate.IterationFilter
   io.collections.iterate.ModifiedAfterFilter
   io.collections.iterate.ModifiedBeforeFilter
   io.collections.iterate.NameMatchesFilter
@@ -38,6 +40,63 @@ These are the new filter classes:
   io.collections.iterate.AllOfFilter
   io.collections.iterate.AnyOfFilter
 </pre>
+
+IOElement interface changes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Access to an IOElement's size, creation, last modified and last 
+accessed dates will be added to the IOElement interface.
+<?php
+  /**
+   * Retrieve this element's size in bytes
+   *
+   * @access  public
+   * @return  int
+   */
+  function getSize() { }
+
+  /**
+   * Retrieve this element's created date and time
+   *
+   * @access  public
+   * @return  &util.Date
+   */
+  function &createdAt() { }
+
+  /**
+   * Retrieve this element's last-accessed date and time
+   *
+   * @access  public
+   * @return  &util.Date
+   */
+  function &lastAccessed() { }
+
+  /**
+   * Retrieve this element's last-modified date and time
+   *
+   * @access  public
+   * @return  &util.Date
+   */
+  function &lastModified() { }
+?>
+
+
+Examples
+~~~~~~~~
+Find all JPEG images that have been modified before Dec 14, 2004:
+<?php
+  $filter= &new AllOfFilter(array(
+    new ModifiedBeforeFilter(new Date('Dec 14  2004')),
+    new ExtensionEqualsFilter('jpg')
+  ));
+?>
+
+Find all files that either end with ".txt" or are smaller than 500 bytes:
+<?php
+  $filter= &new AnyOfFilter(array(
+    new SizeSmallerThanFilter(500),
+    new ExtensionEqualsFilter('txt')
+  ));
+?>
 
 
 Security considerations
@@ -52,8 +111,8 @@ n/a
 
 Dependencies
 ------------
-Access to an IOElement's size, creation, last modified and last 
-accessed dates will be added to the IOElement interface.
+- io.collections.IOElement additional methods:
+  getSize(), createdAt(), lastAccessed(), lastModified()
 
 
 Related documents
