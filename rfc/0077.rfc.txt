@@ -20,26 +20,38 @@ Flexibility.
 Functionality
 -------------
 
-New filter classes
-~~~~~~~~~~~~~~~~~~
-These new IterationFilter implementations will be added:
+New IterationFilter implementations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Date-based:
 <pre>
   io.collections.iterate.AccessedAfterFilter
   io.collections.iterate.AccessedBeforeFilter
   io.collections.iterate.CreatedAfterFilter
   io.collections.iterate.CreatedBeforeFilter
-  io.collections.iterate.FilteredIOCollectionIterator
   io.collections.iterate.ModifiedAfterFilter
   io.collections.iterate.ModifiedBeforeFilter
+</pre>
+
+Name-based:
+<pre>
   io.collections.iterate.NameMatchesFilter
   io.collections.iterate.NameEqualsFilter
   io.collections.iterate.ExtensionEqualsFilter
+</pre>
+
+Size-based:
+<pre>
   io.collections.iterate.SizeBiggerThanFilter
   io.collections.iterate.SizeEqualsFilter
   io.collections.iterate.SizeSmallerThanFilter
+</pre>
+
+Combinations:
+<pre>
   io.collections.iterate.AllOfFilter
   io.collections.iterate.AnyOfFilter
 </pre>
+
 
 IOElement interface changes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
