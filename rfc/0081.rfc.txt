@@ -20,6 +20,9 @@ Create easy closure-like anonymous classes in conjunction with newinstance().
 
 Functionality
 -------------
+
+Interface lang.Runnable declaration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <?php
   /**
    * Denotes instances of implementing classes are runnable by 
@@ -36,6 +39,38 @@ Functionality
      */
     function run() { }
   }
+?>
+
+Example
+~~~~~~~
+<?php
+  class Processor extends Object {
+    var $finalizer= NULL;
+    
+    function __construct(&$finalizer) {
+      $this->finalizer= &$finalizer;
+    }
+    
+    function doWork($payload) {
+      // ...TODO...
+    }
+    
+    function process($payload) {
+      try(); {
+        $this->doWork($payload);
+      } if (catch('Exception', $e)) {
+        $e->printStackTrace();
+      } finally(); {
+        $this->finalizer->run();
+        if ($e) return throw($e);
+      }
+    }
+  }
+  
+  $p= &new Processor(newinstance('lang.Runnable', array(), '{
+    function run() { Console::writeLine('Done!'); }
+  }'));
+  $p->process($payload);
 ?>
 
 
