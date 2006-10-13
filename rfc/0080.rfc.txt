@@ -53,17 +53,17 @@ Creating an anonymous instance will bail with an error...
 Creating an anonymous instance of an interface:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <?php
-  $filter= &newinstance('io.collections.iterate.IterationFilter', array($properties), '{
+  $filter= &newinstance('io.collections.iterate.IterationFilter', array(&$properties), '{
     var
       $properties= NULL;
       
-    function __construct($properties) {
+    function __construct(&$properties) {
       $this->properties= &$properties;
     }
     
     function accept(&$element) {
       return (
-        4 == sscanf(basename($element->getURI()), "%s-%d-%d-%d.log", $type, $y, $m, $d) &&
+        4 == sscanf(basename($element->getURI()), "%[^-]-%d-%d-%d.log", $type, $y, $m, $d) &&
         $this->properties->hasSection($type)
       );
     }
