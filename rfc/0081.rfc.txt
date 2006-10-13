@@ -1,0 +1,66 @@
+RFC 0081: Runnable interface 
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Fri Oct 13 18:41:51 CEST 2006
+@status: draft
+@category: lang
+
+Scope of Change
+---------------
+An interface "Runnable" will be added to the lang package. The class 
+lang.Thread will implement this interface.
+
+
+Rationale
+---------
+Create easy closure-like anonymous classes in conjunction with newinstance().
+
+
+Functionality
+-------------
+<?php
+  /**
+   * Denotes instances of implementing classes are runnable by 
+   * invoking the run() method.
+   *
+   * @purpose  Interface
+   */
+  class Runnable extends Interface {
+  
+    /**
+     * Runs this object
+     *
+     * @access  public
+     */
+    function run() { }
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Makes lang.Thread a little bit slower.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Runnable.html
+  Java Runnable interface
+
+
+Comments
+--------
+
+<EOF>
