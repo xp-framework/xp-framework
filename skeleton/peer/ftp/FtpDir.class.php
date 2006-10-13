@@ -9,6 +9,7 @@
   /**
    * FTP directory
    *
+   * @test     xp://net.xp_framework.unittest.peer.FtpRawListTest
    * @see      xp://peer.ftp.FtpConnection
    * @purpose  Represent an FTP directory
    */
