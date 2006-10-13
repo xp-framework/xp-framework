@@ -41,6 +41,21 @@ Interface lang.Runnable declaration
   }
 ?>
 
+Shutdown hooks
+~~~~~~~~~~~~~~
+<?php
+  System::addShutdownHook(newinstance('lang.Runnable', array(&$transaction), '{
+    var $transaction= NULL;
+
+    function __construct(&$transaction) {
+      $this->transaction= &$transaction;
+    }
+    function run() { 
+      $this->transaction->isOpen() && $this->transaction->rollback(); 
+    }
+  }'));
+?>
+
 Example
 ~~~~~~~
 <?php
