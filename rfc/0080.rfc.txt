@@ -25,12 +25,13 @@ newinstance() declaration
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 <pre>
   &lang.Object newinstance(
-    string baseclass, 
+    string classname, 
     mixed[] args,
-    string source 
-  ) throws lang.ClassNotFoundException
+    string bytes 
+  )
 </pre> 
 
+Arguments:
 - baseclass is the fully qualified class name of the interface to 
   implement or the abstract class to inherit from.
 
@@ -38,6 +39,15 @@ newinstance() declaration
 
 - source is the class' sourcecode, including a leading "{" and a 
   trailing "}"
+
+Creating an anonymous instance will bail with an error...
+- ...in case the class "classname" cannot be found.
+
+- ...in case the source code specified by the bytes argument doesn't 
+  parse.
+
+- ...in case classname refers to an interface and the declared class 
+  fails to implement the interface.
 
 
 Creating an anonymous instance of an interface:
@@ -83,6 +93,9 @@ Related documents
 
 - http://experiments.xp-framework.net/?people,friebe,jay,demo/newinstance.xp
   XP language equivalent
+
+- http://xp-framework.net/rfc/contrib/rfc0080.diff
+  Patch
 
 Comments
 --------
