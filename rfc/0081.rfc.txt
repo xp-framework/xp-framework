@@ -101,7 +101,7 @@ Makes lang.Thread a little bit slower.
 
 Dependencies
 ------------
-n/a
+- RFC #0080 ("Anonymous class creation")
 
 
 Related documents
