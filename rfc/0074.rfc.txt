@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Fri Sep 15 10:11:39 CEST 2006
-@status: discussion, ends Wed Oct  11 12:00:00 CEST 2006
+@status: implemented, Fri Oct 13 19:23:21 CEST 2006
 
 @category: <core>
 
