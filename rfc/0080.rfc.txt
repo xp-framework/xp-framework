@@ -20,7 +20,45 @@ Throw-away classes / migration.
 
 Functionality
 -------------
-TODO
+
+newinstance() declaration
+~~~~~~~~~~~~~~~~~~~~~~~~~
+<pre>
+  &lang.Object newinstance(
+    string baseclass, 
+    mixed[] args,
+    string source 
+  ) throws lang.ClassNotFoundException
+</pre> 
+
+- baseclass is the fully qualified class name of the interface to 
+  implement or the abstract class to inherit from.
+
+- args are the constructor arguments
+
+- source is the class' sourcecode, including a leading "{" and a 
+  trailing "}"
+
+
+Creating an anonymous instance of an interface:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $filter= &newinstance('io.collections.iterate.IterationFilter', array($properties), '{
+    var
+      $properties= NULL;
+      
+    function __construct($properties) {
+      $this->properties= &$properties;
+    }
+    
+    function accept(&$element) {
+      return (
+        4 == sscanf(basename($element->getURI()), "%s-%d-%d-%d.log", $type, $y, $m, $d) &&
+        $this->properties->hasSection($type)
+      );
+    }
+  }');
+?>
 
 
 Security considerations
@@ -43,6 +81,8 @@ Related documents
 - http://experiments.xp-framework.net/?people,friebe,newinstance
   Experiment
 
+- http://experiments.xp-framework.net/?people,friebe,jay,demo/newinstance.xp
+  XP language equivalent
 
 Comments
 --------
