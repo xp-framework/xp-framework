@@ -203,7 +203,7 @@ Index: io/collections/iterate/NameMatchesFilter.class.php
 ===================================================================
 --- io/collections/iterate/NameMatchesFilter.class.php	(revision 0)
 +++ io/collections/iterate/NameMatchesFilter.class.php	(revision 0)
-@@ -0,0 +1,39 @@
+@@ -0,0 +1,49 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -240,6 +240,16 @@ Index: io/collections/iterate/NameMatchesFilter.class.php
 +    function accept(&$element) {
 +      return (bool)preg_match($this->pattern, basename($element->getURI()));
 +    }
++
++    /**
++     * Creates a string representation of this iterator
++     *
++     * @access  public
++     * @return  string
++     */
++    function toString() {
++      return $this->getClassName().'('.$this->pattern.')';
++    }
 +  
 +  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
 +?>
@@ -249,11 +259,39 @@ ___________________________________________________________________
 Name: svn:keywords
    + Id
 
+Index: io/collections/iterate/IOCollectionIterator.class.php
+===================================================================
+--- io/collections/iterate/IOCollectionIterator.class.php	(revision 8140)
++++ io/collections/iterate/IOCollectionIterator.class.php	(working copy)
+@@ -107,7 +107,22 @@
+       $next= $this->_element;
+       $this->_element= NULL;
+       return $next;
+-    }  
++    }
++    
++    /**
++     * Creates a string representation of this iterator
++     *
++     * @access  public
++     * @return  string
++     */
++    function toString() {
++      return sprintf(
++        '%s<%s%s>',
++        $this->getClassName(),
++        xp::stringOf($this->collections[0]),
++        $this->recursive ? '(R)' : ''
++      );
++    }
+ 
+   } implements(__FILE__, 'util.Iterator');
+ ?>
 Index: io/collections/iterate/ExtensionEqualsFilter.class.php
 ===================================================================
 --- io/collections/iterate/ExtensionEqualsFilter.class.php	(revision 0)
 +++ io/collections/iterate/ExtensionEqualsFilter.class.php	(revision 0)
-@@ -0,0 +1,38 @@
+@@ -0,0 +1,48 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -289,6 +327,16 @@ Index: io/collections/iterate/ExtensionEqualsFilter.class.php
 +    function accept(&$element) {
 +      return $this->extension == substr($element->getURI(), -1 * strlen($this->extension));
 +    }
++
++    /**
++     * Creates a string representation of this iterator
++     *
++     * @access  public
++     * @return  string
++     */
++    function toString() {
++      return $this->getClassName().'("'.$this->compare.'")';
++    }
 +  
 +  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
 +?>
@@ -302,7 +350,7 @@ Index: io/collections/iterate/NegationOfFilter.class.php
 ===================================================================
 --- io/collections/iterate/NegationOfFilter.class.php	(revision 0)
 +++ io/collections/iterate/NegationOfFilter.class.php	(revision 0)
-@@ -0,0 +1,38 @@
+@@ -0,0 +1,48 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -338,6 +386,16 @@ Index: io/collections/iterate/NegationOfFilter.class.php
 +    function accept(&$element) {
 +      return !$this->filter->accept($element);
 +    }
++
++    /**
++     * Creates a string representation of this iterator
++     *
++     * @access  public
++     * @return  string
++     */
++    function toString() {
++      return $this->getClassName().'<'.$this->filter->toString().'>';
++    }
 +  
 +  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
 +?>
@@ -351,7 +409,7 @@ Index: io/collections/iterate/AbstractSizeComparisonFilter.class.php
 ===================================================================
 --- io/collections/iterate/AbstractSizeComparisonFilter.class.php	(revision 0)
 +++ io/collections/iterate/AbstractSizeComparisonFilter.class.php	(revision 0)
-@@ -0,0 +1,37 @@
+@@ -0,0 +1,47 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -386,6 +444,16 @@ Index: io/collections/iterate/AbstractSizeComparisonFilter.class.php
 +     * @return  bool
 +     */
 +    function accept(&$element) { }
++
++    /**
++     * Creates a string representation of this iterator
++     *
++     * @access  public
++     * @return  string
++     */
++    function toString() {
++      return $this->getClassName().'('.$this->size.')';
++    }
 +  
 +  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
 +?>
@@ -475,7 +543,7 @@ Index: io/collections/iterate/NameEqualsFilter.class.php
 ===================================================================
 --- io/collections/iterate/NameEqualsFilter.class.php	(revision 0)
 +++ io/collections/iterate/NameEqualsFilter.class.php	(revision 0)
-@@ -0,0 +1,38 @@
+@@ -0,0 +1,48 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -510,6 +578,16 @@ Index: io/collections/iterate/NameEqualsFilter.class.php
 +     */
 +    function accept(&$element) {
 +      return $this->compare == basename($element->getURI());
++    }
++
++    /**
++     * Creates a string representation of this iterator
++     *
++     * @access  public
++     * @return  string
++     */
++    function toString() {
++      return $this->getClassName().'("'.$this->compare.'")';
 +    }
 +  
 +  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
@@ -562,7 +640,7 @@ Index: io/collections/iterate/AbstractDateComparisonFilter.class.php
 ===================================================================
 --- io/collections/iterate/AbstractDateComparisonFilter.class.php	(revision 0)
 +++ io/collections/iterate/AbstractDateComparisonFilter.class.php	(revision 0)
-@@ -0,0 +1,37 @@
+@@ -0,0 +1,47 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -597,6 +675,16 @@ Index: io/collections/iterate/AbstractDateComparisonFilter.class.php
 +     * @return  bool
 +     */
 +    function accept(&$element) { }
++
++    /**
++     * Creates a string representation of this iterator
++     *
++     * @access  public
++     * @return  string
++     */
++    function toString() {
++      return $this->getClassName().'('.$this->date->toString().')';
++    }
 +  
 +  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
 +?>
@@ -781,7 +869,7 @@ Index: io/collections/iterate/AbstractCombinedFilter.class.php
 ===================================================================
 --- io/collections/iterate/AbstractCombinedFilter.class.php	(revision 0)
 +++ io/collections/iterate/AbstractCombinedFilter.class.php	(revision 0)
-@@ -0,0 +1,41 @@
+@@ -0,0 +1,55 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -820,6 +908,20 @@ Index: io/collections/iterate/AbstractCombinedFilter.class.php
 +     * @return  bool
 +     */
 +    function accept(&$element) { }
++
++    /**
++     * Creates a string representation of this iterator
++     *
++     * @access  public
++     * @return  string
++     */
++    function toString() {
++      $s= $this->getClassName().'('.$this->_size.")@{\n";
++      for ($i= 0; $i < $this->_size; $i++) {
++        $s.= '  '.$this->list[$i]->toString()."\n";
++      }
++      return $s.'}';
++    }
 +  
 +  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
 +?>
@@ -905,6 +1007,26 @@ ___________________________________________________________________
 Name: svn:keywords
    + Id
 
+Index: io/collections/iterate/FilteredIOCollectionIterator.class.php
+===================================================================
+--- io/collections/iterate/FilteredIOCollectionIterator.class.php	(revision 8140)
++++ io/collections/iterate/FilteredIOCollectionIterator.class.php	(working copy)
+@@ -57,5 +57,15 @@
+     function acceptElement(&$element) {
+       return $this->filter->accept($element);
+     }
++    
++    /**
++     * Creates a string representation of this iterator
++     *
++     * @access  public
++     * @return  string
++     */
++    function toString() {
++      return parent::toString()."@{\n  ".str_replace("\n", "\n  ", $this->filter->toString())."\n}";
++    }
+   }
+ ?>
 Index: io/collections/iterate/RegexFilter.class.php
 ===================================================================
 --- io/collections/iterate/RegexFilter.class.php	(revision 8140)
