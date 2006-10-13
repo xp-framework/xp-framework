@@ -156,6 +156,9 @@ Related documents
 - http://xp-framework.net/rfc/contrib/rfc0077.diff
   Patch
 
+- http://experiments.xp-framework.net/?people,friebe,fql
+  Filesystem Query Language - utilizes this patch
+
 Comments
 --------
 
