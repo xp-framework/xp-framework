@@ -918,7 +918,7 @@ Index: io/collections/iterate/AbstractCombinedFilter.class.php
 +    function toString() {
 +      $s= $this->getClassName().'('.$this->_size.")@{\n";
 +      for ($i= 0; $i < $this->_size; $i++) {
-+        $s.= '  '.$this->list[$i]->toString()."\n";
++        $s.= '  '.str_replace("\n", "\n  ", $this->list[$i]->toString())."\n";
 +      }
 +      return $s.'}';
 +    }
