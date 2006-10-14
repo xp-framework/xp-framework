@@ -434,7 +434,19 @@
      * @return  &lang.ClassLoader
      */
     function &getClassLoader() {
-      if (!($cl= &xp::registry('classloader.'.$this->name))) {
+      return XPClass::_classLoaderFor($this->name);
+    }
+    
+    /**
+     * Fetch a class' classloader by its name
+     *
+     * @model   static
+     * @access  protected
+     * @param   string name fqcn of class
+     * @return  &lang.ClassLoader
+     */
+    function &_classLoaderFor($name) {
+      if (!($cl= &xp::registry('classloader.'.$name))) {
         return ClassLoader::getDefault();
       }
 
@@ -451,7 +463,7 @@
         
         // Replace the "symbolic" representation of the classloader with a reference
         // to an instance.
-        xp::registry('classloader.'.$this->name, $cl);
+        xp::registry('classloader.'.$name, $cl);
       }
       
       return $cl;
@@ -473,9 +485,7 @@
       if (isset($details[$class])) return $details[$class];
 
       // Retrieve class' sourcecode
-      if (!($cl= &xp::registry('classloader.'.$class))) {
-        $cl= &ClassLoader::getDefault();
-      }
+      $cl= &XPClass::classLoaderFor($class);
       if (!($bytes= $cl->loadClassBytes($class))) return NULL;
 
       // Found the class, now get API documentation
@@ -644,18 +654,27 @@
      */
     function &forName($name, $classloader= NULL) {
       if (NULL === $classloader) {
-      
-        // Retrieve classloader via debug_backtrace() or fall back to
-        // the default classloader
-        $d= debug_backtrace();
-        if (isset($d[1]['class'])) {
-          $xpclass= &new XPClass(xp::nameOf($d[1]['class']));
-          $classloader= &$xpclass->getClassLoader();
-        } else {
-          $classloader= &ClassLoader::getDefault();
+        $fname= strtr('.', '/', $name).'.class.php';
+        $classPaths= &xp::registry('include_path');
+        foreach ($classPaths as $path => $loader) {
+          if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$fname)) {
+            $classloader= &$classPaths[$path];
+            break;
+          }
+          
+          if (is_file($path)) {
+            $cl= &ArchiveClassLoader::instanceFor($path);
+            if ($cl->providesClass($name)) {
+              $classloader= &$cl;
+              break;
+            }
+          }
         }
       }
-    
+      
+      // Last-chance fallback
+      if (NULL === $classloader) $classloader= &ClassLoader::getDefault();
+
       return $classloader->loadClass($name);
     }
     
