@@ -11,27 +11,27 @@ shift 1 2>/dev/null;
 
 case $COMMAND in
   ls)
-    $(PHP) $(dirname $MYSELF)/package-ls.php $*
+    $PHP $(dirname $MYSELF)/package-ls.php $*
     exit $?;
     ;;
   
   cat)
-    $(PHP) $(dirname $MYSELF)/package-cat.php $*
+    $PHP $(dirname $MYSELF)/package-cat.php $*
     exit $?;
     ;;
   
   diff|di)
-    $(PHP) $(dirname $MYSELF)/package-diff.php $*
+    $PHP $(dirname $MYSELF)/package-diff.php $*
     exit $?;
     ;;
   
   manifest|mf)
-    $(PHP) $(dirname $MYSELF)/package-manifest.php $*
+    $PHP $(dirname $MYSELF)/package-manifest.php $*
     exit $?;
     ;;
   
   show-manifest|smf)
-    $(PHP) $(dirname $MYSELF)/package-cat $1 META-INF/MANIFEST.ini
+    $PHP $(dirname $MYSELF)/package-cat.php $1 META-INF/MANIFEST.ini
     exit $?;
     ;;
     
