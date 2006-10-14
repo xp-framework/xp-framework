@@ -66,24 +66,27 @@
 
     // Build positive filter list
     $includes= array();
-    foreach ($include as $i) { $includes[]= &new RegexFilter('#'.$i.'#'); }
+    foreach ($include as $i) { $includes[]= &new RegexFilter('#^'.$base.DIRECTORY_SEPARATOR.$i.'#'); }
 
     // Build negative filter list
     $excludes= array(
-      new NegationOfFilter(new RegexFilter('/.svn/')),
-      new NegationOfFilter(new RegexFilter('/CVS/')),
-      new NegationOfFilter(new RegexFilter('/.orig$/'))
+      new RegexFilter('/.svn/'),
+      new RegexFilter('/CVS/'),
+      new RegexFilter('/.orig$/')
     );
-    foreach ($exclude as $e) { $excludes[]= &new NegationOfFilter(new RegexFilter('#'.$e.'#')); }
+    foreach ($exclude as $e) { $excludes[]= &new RegexFilter('#^'.$base.DIRECTORY_SEPARATOR.$e.'#'); }
 
-    
-    for ($iterator= &new FilteredIOCollectionIterator($collection, new AllOfFilter(array_merge(
-        array(new AnyOfFilter($includes)),
-        $excludes
+    for ($iterator= &new FilteredIOCollectionIterator($collection, new AllOfFilter(array(
+        new AnyOfFilter($includes),
+        new NegationOfFilter(new AnyOfFilter($excludes))
       )), TRUE);
       $iterator->hasNext();
     ) {
       $element= &$iterator->next();
+      
+      // Do not add directories
+      if (is_dir($element->getURI())) continue;
+      
       $files[ltrim(substr($element->getURI(), strlen($base)), DIRECTORY_SEPARATOR)]= $element->getURI();
     }
     
@@ -111,7 +114,14 @@
   $application= $prop->readSection('application');
   $filelist= array();
   
-  Console::writeLine('===> Building file list...');
+  Console::writeLinef('===> Packaging application %s (xp-%s-%s)',
+    $application['name'],
+    $application['short'],
+    $application['version']
+  );
+  
+  Console::writeLine('===> Building file list ...');
+
   $section= $prop->getFirstSection();
   do {
     if (0 != strncmp('repository::', $section, 11)) continue;
@@ -121,7 +131,7 @@
     $base= strtr($base, $replacements);
     
     try(); {
-      $files= findFiles($base, $prop->readArray($section, 'include'), $excludes);
+      $files= findFiles($base, $prop->readArray($section, 'include'), $prop->readArray($section, 'exclude'));
     } if (catch('Exception', $e)) {
       $e->printStackTrace();
       exit(-1);
@@ -130,7 +140,7 @@
     $filelist= array_merge($files, $filelist);
   } while ($section= $prop->getNextSection());
   
-  Console::writeLine('===> Fastening package...');
+  Console::writeLine('===> Fastening package ...');
   $archiveName= sprintf('xp-%s-%s.xar',
     $application['short'],
     $application['version']
@@ -140,9 +150,6 @@
   
   foreach ($filelist as $pkgname => $realname) {
   
-    // Do not put directories into package
-    if (is_dir($realname)) continue;
-    
     $file= &new File($realname);
     
     try(); {
@@ -166,5 +173,5 @@
   
   $archive->create();
   
-  Console::writeLine('===> Finished, package is '.$archiveName);
+  Console::writeLine('===> Finished, package is '.$archiveName.' ('.number_format(filesize($archiveName), 0, FALSE, '.').' bytes)');
 ?>
