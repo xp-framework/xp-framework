@@ -7,6 +7,8 @@
  extension-element-prefixes="func"
 >
 
+  <xsl:variable name="texts" select="document(concat($__product, '/', $__lang, '/texts.xml'))/texts"/>
+  
   <!--
    ! Gettext function
    !
@@ -22,6 +24,23 @@
       
       <!-- DEBUG -->
       <xsl:if test="not($snippet)">{<xsl:value-of select="$for"/>}</xsl:if>
+    </func:result>
+  </func:function>
+
+  <!--
+   ! Check whether text snippet exists, returns an empty string if not.
+   !
+   ! @param string snippet
+   ! @return string text
+   !-->
+  <func:function name="func:exists_text">
+    <xsl:param name="snippet"/>
+    
+    <func:result>
+      <xsl:choose>
+        <xsl:when test="$texts[@for= $snippet]">*</xsl:when>
+        <xsl:otherwise>-</xsl:otherwise>
+      </xsl:choose>
     </func:result>
   </func:function>
 </xsl:stylesheet>

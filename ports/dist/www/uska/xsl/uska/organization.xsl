@@ -14,7 +14,6 @@
 
   <xsl:include href="layout.xsl"/>
   <xsl:include href="../news.inc.xsl"/>
-  <xsl:include href="../date.inc.xsl"/>
   
   <xsl:template name="context">
     <xsl:call-template name="default_subnavigation">

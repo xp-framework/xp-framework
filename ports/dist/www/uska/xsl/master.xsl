@@ -23,7 +23,6 @@
   <xsl:param name="__sess"/>
   <xsl:param name="__query"/>
   
-  <xsl:variable name="texts" select="document(concat($__product, '/', $__lang, '/texts.xml'))/texts"/>
   <xsl:key name="permissions" match="/formresult/user/permissions/permission" use="normalize-space(.)"/>
 
   <!--
@@ -73,36 +72,4 @@
       <xsl:apply-templates/>
     </xsl:copy> 
   </xsl:template>
-  
-  <!--
-   ! Retrieve text snippets
-   !
-   ! @param string snippet
-   ! @return string text
-   !-->
-  <func:function name="func:get_text">
-    <xsl:param name="snippet"/>
-    
-    <func:result>
-      <xsl:value-of select="$texts[@for= $snippet]"/>
-      <xsl:if test="not($texts[@for= $snippet])">{<xsl:value-of select="$snippet"/>}</xsl:if>
-    </func:result>
-  </func:function>
-
-  <!--
-   ! Check whether text snippet exists, returns an empty string if not.
-   !
-   ! @param string snippet
-   ! @return string text
-   !-->
-  <func:function name="func:exists_text">
-    <xsl:param name="snippet"/>
-    
-    <func:result>
-      <xsl:choose>
-        <xsl:when test="$texts[@for= $snippet]">*</xsl:when>
-        <xsl:otherwise>-</xsl:otherwise>
-      </xsl:choose>
-    </func:result>
-  </func:function>
 </xsl:stylesheet>
