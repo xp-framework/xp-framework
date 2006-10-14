@@ -485,7 +485,7 @@
       if (isset($details[$class])) return $details[$class];
 
       // Retrieve class' sourcecode
-      $cl= &XPClass::classLoaderFor($class);
+      $cl= &XPClass::_classLoaderFor($class);
       if (!($bytes= $cl->loadClassBytes($class))) return NULL;
 
       // Found the class, now get API documentation
