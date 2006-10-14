@@ -20,17 +20,17 @@ case $COMMAND in
     exit $?;
     ;;
   
-  diff)
+  diff|di)
     $(PHP) $(dirname $MYSELF)/package-diff.php $*
     exit $?;
     ;;
   
-  manifest)
+  manifest|mf)
     $(PHP) $(dirname $MYSELF)/package-manifest.php $*
     exit $?;
     ;;
   
-  show-manifest)
+  show-manifest|smf)
     $(PHP) $(dirname $MYSELF)/package-cat $1 META-INF/MANIFEST.ini
     exit $?;
     ;;
@@ -45,16 +45,16 @@ case $COMMAND in
     echo "* xppkg cat ARCHIVE FILENAME"
     echo "  Shows the contents of the file FILENAME in the archive ARCHIVE"
     echo
-    echo "* xppkg diff [-v] ARCHIVE ARCHIVE"
+    echo "* xppkg diff|di [-v] ARCHIVE ARCHIVE"
     echo "  Shows the differences between the two archives in svn diff style."
     echo "  If --verbose|-v is given, files with differences will be fed to"
     echo "  the unix diff command."
     echo
-    echo "* xppkg manifest FILE"
+    echo "* xppkg manifest|mf FILE"
     echo "  Uses the file FILE as manifest file and creates a new .xar file"
     echo "  with the directions from that file."
     echo
-    echo "* xppkg show-manifest ARCHIVE"
+    echo "* xppkg show-manifest|smf ARCHIVE"
     echo "  Shows the manifest information recorded for archive ARCHIVE"
     echo
     ;;
