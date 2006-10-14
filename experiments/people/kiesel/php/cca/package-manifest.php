@@ -104,7 +104,8 @@
     exit();
   }
  
-  $prop= &new Properties($p->value(1));
+  $propertiesFile= $p->value(1);
+  $prop= &new Properties($propertiesFile);
   
   // Build replacement list
   $replacements= array(
@@ -170,6 +171,15 @@
       $bytes
     );
   }
+  
+  // Add meta-information about the package
+  $archive->addFileBytes(
+    'META-INF/MANIFEST.ini',
+    'MANIFEST.ini',
+    'META-INF',
+    FileUtil::getContents(new File($propertiesFile))
+  );
+    
   
   $archive->create();
   
