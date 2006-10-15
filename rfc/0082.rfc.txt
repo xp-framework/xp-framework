@@ -1,0 +1,54 @@
+RFC 0082: No classloader misuse in scriptlet API
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Sun Oct 15 13:36:35 CEST 2006
+@status: draft
+@category: scriptlet
+
+Scope of Change
+---------------
+AbstractXMLScriptlet will no longer receive a ClassLoader instance
+in their constructor call. Instead the "base" package name under which
+classes for the website reside will be passed as string.
+
+Rationale
+---------
+A classloader object is created with the package name that indicates
+where to load the scriptlet's state classes and context from. A
+classloader constructed with
+<code>
+  $cl= &new ClassLoader('net.xp_framework');
+</code>
+
+will load classes from that package only. However, it will fail to
+do so when those classes would be in an archive, as a classloader
+always only loads classes from its own repository.
+
+Functionality
+-------------
+The AbstractXMLScriptlet will be passed the base package name as string
+and use XPClass::forName() to load required classes.
+
+Security considerations
+-----------------------
+Narrow down class availability to classes contained in a package is
+not a security feature, so n/a.
+
+Speed impact
+------------
+n/a
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+
+Comments
+--------
+
+
+<EOF>
