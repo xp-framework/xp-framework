@@ -137,7 +137,7 @@
     //     Sets an SAPI
     function sapi() {
       foreach ($a= func_get_args() as $name) {
-        foreach (explode(':', ini_get('include_path')) as $path) {
+        foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
           $filename= 'sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php';
           
           if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
@@ -321,7 +321,7 @@
     $include= &xp::registry('include_path');
 
     if (0 == sizeof($include)) {
-      $include= array_flip(explode(':', ini_get('include_path')));
+      $include= array_flip(explode(PATH_SEPARATOR, ini_get('include_path')));
       xp::registry('include_path', $include);
     }
     
