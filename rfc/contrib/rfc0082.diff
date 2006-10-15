@@ -151,3 +151,65 @@ Index: xml/xmlrpc/rpc/XmlRpcRouter.class.php
     * 
     *   try(); {
     *     $s->init();
+Index: net/xp_framework/unittest/scriptlet/rpc/XmlRpcRouterTest.class.php
+===================================================================
+--- net/xp_framework/unittest/scriptlet/rpc/XmlRpcRouterTest.class.php	(revision 8161)
++++ net/xp_framework/unittest/scriptlet/rpc/XmlRpcRouterTest.class.php	(working copy)
+@@ -24,7 +24,7 @@
+      */
+     function setUp() {
+       xp::gc();
+-      $this->router= &new XmlRpcRouterMock(new ClassLoader('net.xp_framework.unittest.scriptlet.rpc.impl'));
++      $this->router= &new XmlRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
+       $this->router->setMockMethod(HTTP_POST);
+       $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
+         <methodCall>
+Index: net/xp_framework/unittest/scriptlet/rpc/SoapRpcRouterTest.class.php
+===================================================================
+--- net/xp_framework/unittest/scriptlet/rpc/SoapRpcRouterTest.class.php	(revision 8161)
++++ net/xp_framework/unittest/scriptlet/rpc/SoapRpcRouterTest.class.php	(working copy)
+@@ -24,7 +24,7 @@
+      */
+     function setUp() {
+       xp::gc();
+-      $this->router= &new SoapRpcRouterMock(new ClassLoader('net.xp_framework.unittest.scriptlet.rpc.impl'));
++      $this->router= &new SoapRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
+       $this->router->setMockMethod(HTTP_POST);
+       $this->router->setMockHeaders(array(
+         'SOAPAction'    => 'DummyRpcImplementation#getImplementationName',
+Index: net/xp_framework/unittest/scriptlet/rpc/JsonRpcRouterTest.class.php
+===================================================================
+--- net/xp_framework/unittest/scriptlet/rpc/JsonRpcRouterTest.class.php	(revision 8161)
++++ net/xp_framework/unittest/scriptlet/rpc/JsonRpcRouterTest.class.php	(working copy)
+@@ -25,7 +25,7 @@
+      */
+     function setUp() {
+       xp::gc();
+-      $this->router= &new JsonRpcRouterMock(new ClassLoader('net.xp_framework.unittest.scriptlet.rpc.impl'));
++      $this->router= &new JsonRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
+       $this->router->setMockMethod(HTTP_POST);
+       $this->router->setMockData('{ "method" : "DummyRpcImplementation.getImplementationName", "params" : [ ], "id" : 1 }');
+     }
+Index: net/xp_framework/unittest/scriptlet/workflow/mock/MockRequest.class.php
+===================================================================
+--- net/xp_framework/unittest/scriptlet/workflow/mock/MockRequest.class.php	(revision 8161)
++++ net/xp_framework/unittest/scriptlet/workflow/mock/MockRequest.class.php	(working copy)
+@@ -21,15 +21,15 @@
+      * Setup method.
+      *
+      * @access  public
+-     * @param   &lang.ClassLoader classloader
++     * @param   string package
+      * @param   string functionality
+      * @param   string stateName
+      * @param   array<string, mixed> params default array()
+      */
+-    function __construct(&$classloader, $functionality, $stateName, $params= array()) {
++    function __construct($package, $functionality, $stateName, $params= array()) {
+       static $i= 0;
+ 
+-      parent::__construct($classloader);
++      parent::__construct($package);
+ 
+       // Generate unique classname and put it into the environment
+       // That way, the classloader will already know this class in 
