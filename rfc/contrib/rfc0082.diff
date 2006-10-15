@@ -1,0 +1,153 @@
+Index: scriptlet/xml/workflow/WorkflowScriptletRequest.class.php
+===================================================================
+--- scriptlet/xml/workflow/WorkflowScriptletRequest.class.php	(revision 8161)
++++ scriptlet/xml/workflow/WorkflowScriptletRequest.class.php	(working copy)
+@@ -14,17 +14,17 @@
+    */
+   class WorkflowScriptletRequest extends XMLScriptletRequest {
+     var
+-      $classloader  = NULL,
++      $package      = NULL,
+       $state        = NULL;
+ 
+     /**
+      * Constructor
+      *
+      * @access  public
+-     * @param   &lang.ClassLoader classloader
++     * @param   string package
+      */
+-    function __construct(&$classloader) {
+-      $this->classloader= &$classloader;
++    function __construct($package) {
++      $this->package= $package;
+     }
+ 
+     /**
+@@ -38,7 +38,7 @@
+       if ($this->stateName) {
+         $name= implode('', array_map('ucfirst', array_reverse(explode('/', $this->stateName))));
+         try(); {
+-          $class= &$this->classloader->loadClass('state.'.$name.'State');
++          $class= &XPClass::forName($this->package.'.'.('state.'.$name.'State'));
+         } if (catch('ClassNotFoundException', $e)) {
+           $this->state= &xp::null();
+           return throw($e);
+Index: scriptlet/xml/workflow/AbstractXMLScriptlet.class.php
+===================================================================
+--- scriptlet/xml/workflow/AbstractXMLScriptlet.class.php	(revision 8161)
++++ scriptlet/xml/workflow/AbstractXMLScriptlet.class.php	(working copy)
+@@ -16,18 +16,18 @@
+    */
+   class AbstractXMLScriptlet extends XMLScriptlet {
+     var
+-      $classloader  = NULL;
++      $package  = NULL;
+ 
+     /**
+      * Constructor
+      *
+      * @access  public
+-     * @param   &lang.ClassLoader classloader
++     * @param   string package
+      * @param   string base default ''
+      */
+-    function __construct(&$classloader, $base= '') {
++    function __construct($package, $base= '') {
+       parent::__construct($base);
+-      $this->classloader= &$classloader;
++      $this->package= $package;
+     }
+ 
+     /**
+@@ -37,7 +37,7 @@
+      * @return  &scriptlet.xml.workflow.WorkflowScriptletRequest
+      */
+     function &_request() {
+-      return new WorkflowScriptletRequest($this->classloader);
++      return new WorkflowScriptletRequest($this->package);
+     }
+     
+     /**
+@@ -49,7 +49,7 @@
+      * @throws  lang.ClassNotFoundException
+      */
+     function &getContextClass(&$request) {
+-      return $this->classloader->loadClass(ucfirst($request->getProduct()).'Context');
++      return XPClass::forName($this->package.'.'.(ucfirst($request->getProduct()).'Context'));
+     }
+ 
+     /**
+Index: scriptlet/rpc/AbstractRpcRouter.class.php
+===================================================================
+--- scriptlet/rpc/AbstractRpcRouter.class.php	(revision 8161)
++++ scriptlet/rpc/AbstractRpcRouter.class.php	(working copy)
+@@ -17,17 +17,17 @@
+    */
+   class AbstractRpcRouter extends HttpScriptlet {
+     var
+-      $classloader  = NULL,
++      $package      = NULL,
+       $cat          = NULL;
+     
+     /**
+      * Constructor
+      *
+      * @access  public
+-     * @param   &lang.ClassLoader classloader
++     * @param   string package
+      */
+-    function __construct(&$classloader) {
+-      $this->classloader= &$classloader;
++    function __construct($package) {
++      $this->package= $package;
+     }
+     
+     /**
+@@ -171,7 +171,7 @@
+ 
+       // Create message from request data
+       try(); {
+-        $class= &$this->classloader->loadClass(ucfirst($msg->getHandlerClass()).'Handler');
++        $class= &XPClass::forName($this->package.'.'.ucfirst($msg->getHandlerClass()).'Handler');
+       } if (catch('ClassNotFoundException', $e)) {
+         return throw($e);
+       }
+Index: xml/soap/rpc/SoapRpcRouter.class.php
+===================================================================
+--- xml/soap/rpc/SoapRpcRouter.class.php	(revision 8161)
++++ xml/soap/rpc/SoapRpcRouter.class.php	(working copy)
+@@ -46,17 +46,16 @@
+    */
+   class SoapRpcRouter extends AbstractRpcRouter {
+     var
+-      $classloader = NULL,
+       $mapping     = NULL;
+ 
+     /**
+      * Constructor
+      *
+      * @access  public
+-     * @param   &lang.ClassLoader classloader
++     * @param   string package
+      */
+-    function __construct(&$classloader) {
+-      $this->classloader= &$classloader;
++    function __construct($package) {
++      parent::__construct($package);
+       $this->mapping= &new SOAPMapping();
+     }
+     
+Index: xml/xmlrpc/rpc/XmlRpcRouter.class.php
+===================================================================
+--- xml/xmlrpc/rpc/XmlRpcRouter.class.php	(revision 8161)
++++ xml/xmlrpc/rpc/XmlRpcRouter.class.php	(working copy)
+@@ -19,7 +19,7 @@
+    *   require('lang.base.php');
+    *   xp::sapi('xmlrpc.service');
+    * 
+-   *   $s= &new XmlRpcRouter(new ClassLoader('net.xp_framework.webservices.xmlrpc'));
++   *   $s= &new XmlRpcRouter('net.xp_framework.webservices.xmlrpc');
+    * 
+    *   try(); {
+    *     $s->init();

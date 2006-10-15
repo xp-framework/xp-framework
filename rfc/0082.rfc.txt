@@ -46,9 +46,16 @@ n/a
 
 Related documents
 -----------------
-
+- http://xp-framework.net/rfc/contrib/rfc0082.diff
+  Patch implementing this RFC
+  
 Comments
 --------
-
+- kiesel, Sun Oct 15 15:15:47 CEST 2006
+  This change could be done in a BC-break free manner. I chose to supply a
+  patch *with* BC break, because otherwise we'd end up with all classes
+  mixing between new and old style.
+  Only new style (passing a string) should be supported in the end, and
+  changing existing classes is quite easy in this case.
 
 <EOF>
