@@ -105,7 +105,7 @@ output_rule_data()
     register int j;
 
 
-    printf("  var $yyLhs  = array(%16d,", symbol_value[start_symbol]);
+    printf("    var $yyLhs= array(%d,", symbol_value[start_symbol]);
 
     j = 10;
     for (i = 3; i < nrules; i++)
@@ -113,18 +113,16 @@ output_rule_data()
 	if (j >= 10)
 	{
 	    ++outline;
-	    putchar('\n');
+	    printf("\n      ");
 	    j = 1;
 	}
         else
 	    ++j;
 
-        printf("%5d,", symbol_value[rlhs[i]]);
+        printf("%5d, ", symbol_value[rlhs[i]]);
     }
     outline += 2;
-    printf("\n  );\n");
-
-    printf("  var $yyLen = array(%12d,", 2);
+    printf("\n    );\n    var $yyLen= array(%d,", 2);
 
     j = 10;
     for (i = 3; i < nrules; i++)
@@ -132,16 +130,16 @@ output_rule_data()
 	if (j >= 10)
 	{
 	    ++outline;
-	    putchar('\n');
+	    printf("\n      ");
 	    j = 1;
 	}
 	else
 	  j++;
 
-        printf("%5d,", rrhs[i + 1] - rrhs[i] - 1);
+        printf("%5d, ", rrhs[i + 1] - rrhs[i] - 1);
     }
     outline += 2;
-    printf("\n  );\n");
+    printf("\n    );\n");
 }
 
 
@@ -149,7 +147,7 @@ output_yydefred()
 {
     register int i, j;
 
-    printf("  var $yyDefRed = array(%13d,", (defred[0] ? defred[0] - 2 : 0));
+    printf("    var $yyDefRed= array(%d,", (defred[0] ? defred[0] - 2 : 0));
 
     j = 10;
     for (i = 1; i < nstates; i++)
@@ -159,15 +157,15 @@ output_yydefred()
 	else
 	{
 	    ++outline;
-	    putchar('\n');
+	    printf("\n      ");
 	    j = 1;
 	}
 
-	printf("%5d,", (defred[i] ? defred[i] - 2 : 0));
+	printf("%5d, ", (defred[i] ? defred[i] - 2 : 0));
     }
 
     outline += 2;
-    printf("\n  );\n");
+    printf("\n    );\n");
 }
 
 
@@ -290,7 +288,7 @@ goto_actions()
     state_count = NEW2(nstates, short);
 
     k = default_goto(start_symbol + 1);
-    printf("  var $yyDgoto  = array(%14d,", k);
+    printf("    var $yyDgoto= array(%d,", k);
     save_column(start_symbol + 1, k);
 
     j = 10;
@@ -299,19 +297,19 @@ goto_actions()
 	if (j >= 10)
 	{
 	    ++outline;
-	    putchar('\n');
+	    printf("\n      ");
 	    j = 1;
 	}
 	else
 	    ++j;
 
 	k = default_goto(i);
-	printf("%5d,", k);
+	printf("%5d, ", k);
 	save_column(i, k);
     }
 
     outline += 2;
-    printf("\n  );\n");
+    printf("\n    );\n");
     FREE(state_count);
 }
 
@@ -614,7 +612,7 @@ output_base()
 {
     register int i, j;
 
-    printf("  var $yySindex = array(%13d,", base[0]);
+    printf("    var $yySindex = array(%13d,", base[0]);
 
     j = 10;
     for (i = 1; i < nstates; i++)
@@ -622,17 +620,17 @@ output_base()
 	if (j >= 10)
 	{
 	    ++outline;
-	    putchar('\n');
+	    printf("\n      ");
 	    j = 1;
 	}
 	else
 	    ++j;
 
-	printf("%5d,", base[i]);
+	printf("%5d, ", base[i]);
     }
 
     outline += 2;
-    printf("\n  );\n  var $yyRindex= array(%13d,", base[nstates]);
+    printf("\n    );\n    var $yyRindex= array(%13d,", base[nstates]);
 
     j = 10;
     for (i = nstates + 1; i < 2*nstates; i++)
@@ -640,17 +638,17 @@ output_base()
 	if (j >= 10)
 	{
 	    ++outline;
-	    putchar('\n');
+	    printf("\n      ");
 	    j = 1;
 	}
 	else
 	    ++j;
 
-	printf("%5d,", base[i]);
+	printf("%5d, ", base[i]);
     }
 
     outline += 2;
-    printf("\n  );\n  var $yyGindex = array(%13d,", base[2*nstates]);
+    printf("\n    );\n    var $yyGindex= array(%d,", base[2*nstates]);
 
     j = 10;
     for (i = 2*nstates + 1; i < nvectors - 1; i++)
@@ -658,17 +656,17 @@ output_base()
 	if (j >= 10)
 	{
 	    ++outline;
-	    putchar('\n');
+	    printf("\n      ");
 	    j = 1;
 	}
 	else
 	    ++j;
 
-	printf("%5d,", base[i]);
+	printf("%5d, ", base[i]);
     }
 
     outline += 2;
-    printf("\n  );\n");
+    printf("\n    );\n");
     FREE(base);
 }
 
@@ -679,7 +677,7 @@ output_table()
     register int i;
     register int j;
 
-    printf("  var $yyTable = array(%14d,", table[0]);
+    printf("    var $yyTable = array(%d,", table[0]);
 
     j = 10;
     for (i = 1; i <= high; i++)
@@ -687,17 +685,17 @@ output_table()
 	if (j >= 10)
 	{
 	    ++outline;
-	    putchar('\n');
+	    printf("\n      ");
 	    j = 1;
 	}
 	else
 	    ++j;
 
-	printf("%5d,", table[i]);
+	printf("%5d, ", table[i]);
     }
 
     outline += 2;
-    printf("\n  );\n");
+    printf("\n    );\n");
     FREE(table);
 }
 
@@ -708,7 +706,7 @@ output_check()
     register int i;
     register int j;
 
-    printf(" var $yyCheck = array(%14d,", check[0]);
+    printf("    var $yyCheck = array(%d,", check[0]);
 
     j = 10;
     for (i = 1; i <= high; i++)
@@ -716,17 +714,17 @@ output_check()
 	if (j >= 10)
 	{
 	    ++outline;
-	    putchar('\n');
+	    printf("\n      ");
 	    j = 1;
 	}
 	else
 	    ++j;
 
-	printf("%5d,", check[i]);
+	printf("%5d, ", check[i]);
     }
 
     outline += 2;
-    printf("\n  );\n");
+    printf("\n    );\n");
     FREE(check);
 }
 
@@ -776,7 +774,7 @@ char *prefix;
 		if (is_C_identifier(s))
 		{
 		    if (prefix)
-			printf("  define ('TOKEN_");
+			printf("  define('TOKEN_");
 		    c = *s;
 		    if (c == '"')
 		    {
@@ -795,10 +793,9 @@ char *prefix;
 		    }
 		    ++outline;
 		    printf("',  %d);\n", symbol_value[i]);
+		    
 		    /* global array for debugging purposes! */
-		    
-		    
-		    
+#if DEBUG
 		    s = symbol_name[i];
 		    printf("  $GLOBALS['_TOKEN_DEBUG'][%d] = '",symbol_value[i]);
 		    c = *s;
@@ -821,7 +818,7 @@ char *prefix;
 		    }
 		   // ++outline;
 		    printf("';\n");
-		    
+#endif		    
 		    
 		    
 		    
@@ -830,10 +827,9 @@ char *prefix;
 		}
 	    }
 	}
-	    ++outline;
-    printf("if (!defined('TOKEN_yyErrorCode')) {");
-    printf("   define('TOKEN_yyErrorCode', %d);\n", symbol_value[1]);
-    printf("}");
+	++outline;
+
+	printf("  define('TOKEN_YY_ERRORCODE', %d);\n", symbol_value[1]);
 }
 
 
@@ -871,8 +867,9 @@ output_debug()
     char * prefix = tflag ? "" : "//t";
 
     ++outline;
-    printf("  var $yyFinal = %d;\n",  final_state);
+    printf("    var $yyFinal= %d;\n",  final_state);
 
+#ifdef DEBUG
       ++outline;
       printf( "%svar $yyRule = array(\n", prefix);
       for (i = 2; i < nrules; ++i)
@@ -946,6 +943,7 @@ output_debug()
       }
       ++ outline;
       printf("%s  );\n", prefix);
+#endif
 
     max = 0;
     for (i = 2; i < ntokens; ++i)
@@ -954,7 +952,7 @@ output_debug()
 
 	/* need yyName for yyExpecting() */
 
-      printf("  var $yyName= array(");
+      printf("    var $yyName= array(");
       symnam = (char **) MALLOC((max+1)*sizeof(char *));
       if (symnam == 0) no_space();
   
@@ -988,7 +986,7 @@ output_debug()
 		  if (j > 70)
 		  {
 		      ++outline;
-		      printf("\n    ");
+		      printf("\n      ");
 		      j = k;
 		  }
 		  printf("\"\\\"");
@@ -1006,7 +1004,7 @@ output_debug()
 		      else
 			  putchar(*s);
 		  }
-		  printf("\\\"\",");
+		  printf("\\\"\", ");
 	      }
 	      else if (s[0] == '\'')
 	      {
@@ -1016,10 +1014,10 @@ output_debug()
 		      if (j > 70)
 		      {
 			  ++outline;
-		      	  printf("\n    ");
+		      	  printf("\n      ");
 			  j = 7;
 		      }
-		      printf("\"'\\\"'\",");
+		      printf("\"'\\\"'\", ");
 		  }
 		  else
 		  {
@@ -1038,7 +1036,7 @@ output_debug()
 		      if (j > 70)
 		      {
 			  ++outline;
-		      	  printf("\n    ");
+		      	  printf("\n      ");
 			  j = k;
 		      }
 		      printf("\"'");
@@ -1059,7 +1057,7 @@ output_debug()
 			  else
 			      putchar(*s);
 		      }
-		      printf("'\",");
+		      printf("'\", ");
 		  }
 	      }
 	      else
@@ -1069,12 +1067,12 @@ output_debug()
 		  if (j > 70)
 		  {
 		      ++outline;
-		      printf("\n    ");
+		      printf("\n      ");
 		      j = k;
 		  }
-		  putchar('"');
+		  putchar('\'');
 		  do { putchar(*s); } while (*++s);
-		  printf("\",");
+		  printf("', ");
 	      }
 	  }
 	  else
@@ -1083,14 +1081,14 @@ output_debug()
 	      if (j > 70)
 	      {
 		  ++outline;
-		  printf("\n    ");
+		  printf("\n      ");
 		  j = 5;
 	      }
-	      printf("null,");
+	      printf("NULL, ");
 	  }
       }
       outline += 2;
-      printf("\n  );\n");
+      printf("\n    );\n");
       FREE(symnam);
 }
 
