@@ -22,15 +22,12 @@
   $lexer= &new Lexer(file_get_contents($in), $in);
   $out= &new File($p->value('out', 'o', str_replace('.xp', '.php5', $in)));
   
-  $parser= &new Parser($lexer);
-  $nodes= $parser->yyparse($lexer);
-  
-  if ($parser->hasErrors()) {
-    Console::writeLine('!!! Errors have occured');
-    foreach ($parser->getErrors() as $error) {
-      Console::writeLine('- ', $error->toString());
-    }
-    exit(1);
+  $parser= &new Parser();
+  try(); {
+    $nodes= $parser->parse($lexer);
+  } if (catch('Exception', $e)) {
+    $e->printStackTrace();
+    exit(-1);
   }
   
   // Dump AST if specified

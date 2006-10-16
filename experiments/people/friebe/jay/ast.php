@@ -25,8 +25,13 @@
     $lexer= &new Lexer(file_get_contents($in), $in);
   }
   
-  $parser= &new Parser($lexer);
-  $nodes= $parser->yyparse($lexer);
+  $parser= &new Parser();
+  try(); {
+    $nodes= $parser->parse($lexer);
+  } if (catch('Exception', $e)) {
+    $e->printStackTrace();
+    exit(-1);
+  }
   
   // Dump AST
   Console::writeLine(VNode::stringOf($nodes));
