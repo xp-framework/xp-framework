@@ -30,7 +30,7 @@
     function &parseEntryFrom($entry) {
       sscanf(
         $entry, 
-        '%s %d %s %s %d %s %d %[^ ] %s',
+        '%s %d %s %s %d %s %d %[^ ] %[^$]',
         $permissions,
         $numlinks,
         $user,
@@ -87,7 +87,7 @@
     }
 
     /**
-     * Test directory
+     * Test file
      *
      * @access  public
      */
@@ -97,6 +97,25 @@
 
       $this->assertSubclass($e, 'peer.ftp.FtpEntry') &&
       $this->assertEquals('write.html', $e->getName()) &&
+      $this->assertEquals(1, $e->getNumlinks()) &&
+      $this->assertEquals('p159995', $e->getUser()) &&
+      $this->assertEquals('ftpusers', $e->getGroup()) &&
+      $this->assertEquals(415, $e->getSize()) &&
+      $this->assertEquals(new Date('23.05.2000'), $e->getDate()) &&
+      $this->assertEquals(604, $e->getPermissions());
+    }
+
+    /**
+     * Test file
+     *
+     * @access  public
+     */
+    #[@test]
+    function whitespaceInFileName() {
+      $e= &$this->parseEntryFrom('-rw----r-- 1 p159995 ftpusers 415 May 23 2000 answer me.html');
+
+      $this->assertSubclass($e, 'peer.ftp.FtpEntry') &&
+      $this->assertEquals('answer me.html', $e->getName()) &&
       $this->assertEquals(1, $e->getNumlinks()) &&
       $this->assertEquals('p159995', $e->getUser()) &&
       $this->assertEquals('ftpusers', $e->getGroup()) &&
