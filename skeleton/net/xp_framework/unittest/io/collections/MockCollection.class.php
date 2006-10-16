@@ -91,6 +91,46 @@
     }
 
     /**
+     * Retrieve this element's size in bytes
+     *
+     * @access  public
+     * @return  int
+     */
+    function getSize() { 
+      return 512;
+    }
+
+    /**
+     * Retrieve this element's created date and time
+     *
+     * @access  public
+     * @return  &util.Date
+     */
+    function &createdAt() {
+      return NULL;
+    }
+
+    /**
+     * Retrieve this element's last-accessed date and time
+     *
+     * @access  public
+     * @return  &util.Date
+     */
+    function &lastAccessed() {
+      return NULL;
+    }
+
+    /**
+     * Retrieve this element's last-modified date and time
+     *
+     * @access  public
+     * @return  &util.Date
+     */
+    function &lastModified() {
+      return NULL;
+    }
+
+    /**
      * Creates a string representation of this object
      *
      * @access  public

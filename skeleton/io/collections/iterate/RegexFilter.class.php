@@ -7,6 +7,7 @@
   /**
    * Regular expression iteration filter
    *
+   * @deprecated  Use NameMatchesFilter instead
    * @see      php://preg_match
    * @purpose  Iteration Filter
    */

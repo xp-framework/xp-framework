@@ -107,7 +107,22 @@
       $next= $this->_element;
       $this->_element= NULL;
       return $next;
-    }  
+    }
+    
+    /**
+     * Creates a string representation of this iterator
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return sprintf(
+        '%s<%s%s>',
+        $this->getClassName(),
+        xp::stringOf($this->collections[0]),
+        $this->recursive ? '(R)' : ''
+      );
+    }
 
   } implements(__FILE__, 'util.Iterator');
 ?>

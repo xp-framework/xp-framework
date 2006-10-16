@@ -57,5 +57,15 @@
     function acceptElement(&$element) {
       return $this->filter->accept($element);
     }
+    
+    /**
+     * Creates a string representation of this iterator
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return parent::toString()."@{\n  ".str_replace("\n", "\n  ", $this->filter->toString())."\n}";
+    }
   }
 ?>

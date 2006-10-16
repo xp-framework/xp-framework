@@ -12,16 +12,28 @@
    */
   class MockElement extends Object {
     var
-      $uri= '';
+      $uri    = '',
+      $size   = 0,
+      $adate  = NULL,
+      $mdate  = NULL,
+      $cdate  = NULL;
 
     /**
      * Constructor
      *
      * @access  publid
      * @param   string uri
+     * @param   int size default 0
+     * @param   util.Date adate default NULL
+     * @param   util.Date adate default NULL
+     * @param   util.Date cdate default NULL
      */
-    function __construct($uri) {
+    function __construct($uri, $size= 0, $adate= NULL, $mdate= NULL, $cdate= NULL) {
       $this->uri= $uri;
+      $this->size= $size;
+      $this->adate= &$adate;
+      $this->mdate= &$mdate;
+      $this->cdate= &$cdate;
     }
 
     /**
@@ -32,6 +44,46 @@
      */
     function getURI() { 
       return $this->uri;
+    }
+
+    /**
+     * Retrieve this element's size in bytes
+     *
+     * @access  public
+     * @return  int
+     */
+    function getSize() { 
+      return $this->size;
+    }
+
+    /**
+     * Retrieve this element's created date and time
+     *
+     * @access  public
+     * @return  &util.Date
+     */
+    function &createdAt() {
+      return $this->cdate;
+    }
+
+    /**
+     * Retrieve this element's last-accessed date and time
+     *
+     * @access  public
+     * @return  &util.Date
+     */
+    function &lastAccessed() {
+      return $this->adate;
+    }
+
+    /**
+     * Retrieve this element's last-modified date and time
+     *
+     * @access  public
+     * @return  &util.Date
+     */
+    function &lastModified() {
+      return $this->mdate;
     }
 
     /**
