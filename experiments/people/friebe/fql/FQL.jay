@@ -1,7 +1,5 @@
 %{
-?><?php
   uses(
-    'CompileError',
     'FilterFactory',
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator',
@@ -11,76 +9,8 @@
     'io.collections.iterate.SizeBiggerThanFilter',
     'io.collections.iterate.NameMatchesFilter'
   );
-/* This file is part of the XP framework's experiments
- *
- * $Id$ 
- */
-
-  class FQLParser extends Object {
-    var
-      $cat    = NULL,
-      $errors = array();
-
-    /**
-     * Adds an error
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.CompileError error
-     */
-    function addError(&$error) {
-      $this->errors[]= &$error;
-    }
-    
-    /**
-     * Returns whether errors have occured
-     *
-     * @access  public
-     * @return  bool
-     */
-    function hasErrors() {
-      return !empty($this->errors);
-    }
-
-    /**
-     * Returns whether errors have occured
-     *
-     * @access  public
-     * @return  net.xp_framework.tools.vm.CompileError[]
-     */
-    function getErrors() {
-      return $this->errors;
-    }
-
-    /**
-     * Error handler
-     *
-     * @access  public
-     * @param   int level
-     * @param   string message
-     */
-    function error($level, $message) {
-      switch ($level) {
-        case E_ERROR:
-        case E_CORE_ERROR:
-        case E_COMPILE_ERROR:
-          $this->addError(new CompileError($level, $message));
-          // Fall-through intended
-      }
-      
-      $this->cat && $this->cat->error($message);
-    }
-
-    /**
-     * Set a logger category for debugging
-     *
-     * @access  public
-     * @param   util.log.LogCategory cat
-     */
-    function setTrace($cat) {
-      $this->cat= $cat;
-    }
 %}
- 
+
 %token T_SELECT 259
 %token T_FROM 260
 %token T_WHERE 261
@@ -182,5 +112,3 @@ criteria:
     |   T_NUMBER
 
 %%
-} implements(__FILE__, 'util.log.Traceable');
- 
