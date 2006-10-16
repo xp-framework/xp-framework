@@ -123,7 +123,7 @@
       return sprintf("Error at line %d in file %s", $this->line, $this->fileName);
     }
 
-    function tokenGetAll($source){
+    function tokenGetAll($source) {
       $tokens= token_get_all('<?php '.$source.' ?>');
       $return= array();
       $offset= 0;
@@ -139,7 +139,7 @@
             $return[$offset]= array(TOKEN_T_CAST, trim($token[1], '()'));
           } else {
             $return[$offset]= array(
-              array_search(token_name($token[0]), $GLOBALS['_TOKEN_DEBUG']),
+              constant('TOKEN_'.token_name($token[0])), // Map PHP tokens to ours
               $token[1]
             );
             $token = $return[$offset];
