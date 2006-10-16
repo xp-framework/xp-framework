@@ -15,6 +15,5 @@ JAY_BIN=../jay/parser_generator/phpJay
   exit 1;
 }
 
-cp -r ../jay/text .
 $JAY_BIN -cv -g _PHP_PARSER < ../jay/parser_generator/skeleton.xp FQL.jay | sed -e 's/{%NAME%}/FQL/g' >  FQLParser.class.php
 
