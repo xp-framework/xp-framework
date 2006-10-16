@@ -38,6 +38,60 @@
     }
 
     /**
+     * Parse raw listing entry:
+     *
+     * Examples:
+     * <pre>
+     *   drwx---r-t 37 p159995 ftpusers 4096 Apr 4 20:16 .
+     *   -rw----r-- 1 p159995 ftpusers 415 May 23 2000 write.html
+     * </pre>
+     *
+     * @model   static
+     * @access  public
+     * @param   string raw
+     * @param   resource handle default NULL
+     * @return  &peer.ftp.FtpEntry
+     */
+    function &parseFrom($raw, $handle= NULL) {
+      sscanf(
+        $raw, 
+        '%s %d %s %s %d %s %d %[^ ] %[^$]',
+        $permissions,
+        $numlinks,
+        $user,
+        $group,
+        $size,
+        $month,
+        $day,
+        $date,
+        $filename
+      );
+      
+      if ('d' == $permissions{0}) {
+        $e= &new FtpDir($filename, $handle);
+      } else {
+        $e= &new FtpEntry($filename, $handle);
+      }
+
+      $d= &new Date($month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date));
+
+      // Check for "recent" file which are specified "HH:MM" instead
+      // of year for the last 6 month (as specified in coreutils/src/ls.c)
+      if (strstr($date, ':')) {
+        $now= &Date::now();
+        if ($d->getMonth() > $now->getMonth()) $d->year--;
+      }
+
+      $e->setPermissions(substr($permissions, 1));
+      $e->setNumlinks($numlinks);
+      $e->setUser($user);
+      $e->setGroup($group);
+      $e->setSize($size);
+      $e->setDate($d);
+      return $e;
+    }
+
+    /**
      * Set Permissions. Takes either a string or an integer as argument.
      * In case a string is passed, it should have the following form:
      *
