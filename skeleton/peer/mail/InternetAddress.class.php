@@ -10,6 +10,7 @@
    * Internet address
    *
    * @test      xp://net.xp-framework.unittest.peer.InternetAddressTest
+   * @see       http://www.remote.org/jochen/mail/info/chars.html
    * @see       http://www.cs.tut.fi/~jkorpela/rfc/822addr.html
    * @see       rfc://2822
    * @see       rfc://2822#3.4.1
