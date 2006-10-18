@@ -378,7 +378,7 @@ public class SerializerTest {
         String serialized= representationOf(new NullPointerException());
 
         assertEquals(
-            "e:11:\"NullPointer\":2:{s:7:\"message\";N;s:5:\"trace\";a:",
+            "e:11:\"NullPointer\":3:{s:7:\"message\";N;s:5:\"trace\";a:",
             serialized.substring(0, 52)
         );
         int offset= serialized.indexOf(':', 52)+ 2;
@@ -397,7 +397,7 @@ public class SerializerTest {
         String serialized= representationOf(new Exception());
 
         assertEquals(
-            "E:19:\"java.lang.Exception\":2:{s:7:\"message\";N;s:5:\"trace\";a:",
+            "E:19:\"java.lang.Exception\":3:{s:7:\"message\";N;s:5:\"trace\";a:",
             serialized.substring(0, 60)
         );
         int offset= serialized.indexOf(':', 60)+ 2;

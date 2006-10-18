@@ -720,17 +720,22 @@ public class Serializer {
         } else {
             buffer.append("E:").append(c.getName().length()).append(":\"").append(c.getName());
         }
-        buffer.append("\":2:{s:7:\"message\";");
+        
+        // Message
+        buffer.append("\":3:{s:7:\"message\";");
         buffer.append(representationOf(e.getMessage(), context));
-        buffer.append("s:5:\"trace\";a:").append(trace.length).append(":{");
-
+        
+        // Stacktrace
         int offset= 0;
+        buffer.append("s:5:\"trace\";a:").append(trace.length).append(":{");
         for (StackTraceElement element: trace) {
             buffer.append("i:").append(offset++).append(';').append(representationOf(element, context));
         }
 
-        buffer.append("}}");
-        return buffer.toString();        
+        // Cause
+        buffer.append("}s:5:\"cause\";").append(representationOf(e.getCause()));
+        
+        return buffer.append("}").toString();        
     }
     
     @Handler('i') protected static String representationOf(Enum e, SerializerContext context) throws Exception {
