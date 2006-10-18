@@ -27,7 +27,7 @@ checkPhpBinary() {
     return 1;
   fi
   
-  $EXE -v
+  $EXE -v | sed -e 's/^/     /g'
   return 0;
 }
 
@@ -36,14 +36,15 @@ PHPFOUR=""
 PHPFIVE=""
 SKELETON_TAR="http://xp-framework.net/downloads/xp-skeleton.tar.gz"
 
-while getopts '4:5:s:h?' COMMAND_LINE_ARGUMENT ; do
+while getopts '4:5:g:s:h?' COMMAND_LINE_ARGUMENT ; do
   case "$COMMAND_LINE_ARGUMENT" in
     4) PHPFOUR=$OPTARG ;;
     5) PHPFIVE=$OPTARG ;;
+    g) PHPGTK2=$OPTARG ;;
     s) SKELETON_TAR=$OPTARG ;;
     *)
       echo "== Configures JAY experiment =="
-      echo "* Usage: ./configure [-4 php4] [-5 php5] [-s skeleton-tar] [-h|-?]"
+      echo "* Usage: ./configure [-4 php4] [-5 php5] [-g gtkphp] [-s skeleton-tar] [-h|-?]"
       echo ""    
       echo "* Example: ./configure"
       echo "  Will guess php4 and php5 cli binaries by using 'which'"
@@ -64,6 +65,9 @@ if [ "" = "$PHPFIVE" ] ; then
   echo "===> Guessing php5 binary"
   PHPFIVE=`which php5`
 fi
+if [ "" = "$PHPGTK2" ] ; then 
+  echo "===> Building without GTK-PHP support"
+fi
 
 # Sanity check
 echo "===> Performing checks"
@@ -81,6 +85,15 @@ echo "---> Using `$WGET --version | head -1`"
 checkPhpBinary $PHPFOUR 4.3.1 || exit
 checkPhpBinary $PHPFIVE 5.1.4 || exit
 
+if [ "" != "$PHPGTK2" ] ; then 
+  checkPhpBinary $PHPGTK2 5.1.4 || exit
+  $PHPGTK2 -r 'exit(intval(!extension_loaded("php-gtk")));'
+  if [ 0 != $? ] ; then
+    echo "*** Prerequisites not met (GTK extension not available)"
+    return 1;
+  fi
+fi
+
 # Create config
 echo "===> Creating environment"
 echo "# Environment generated @ `date` by $0" > .environment
@@ -92,9 +105,11 @@ echo "===> Checking for temp dir"
 if [ "$OS" = "Windows_NT" ] ; then
   REALPATH="cygpath -w"
   LIST="$TEMP /tmp /cygdrive/c/Temp `cygpath -W`/Temp"
+  USER_RC_FILE="$USERPROFILE\.gtkrc-2.0"
 else
   REALPATH="realpath"
   LIST="$TEMP $HOME/tmp /tmp"
+  USER_RC_FILE="$HOME/.gtkrc-2.0"
 fi
 
 TEMPDIR=""
@@ -131,12 +146,22 @@ else
 fi
 
 # Create runner
-echo "===> Creating runner"
+echo "===> Creating runner (./xp)"
 echo "#!/bin/sh" > xp
 echo "export COMPILE_CMD='`$REALPATH $PHPFOUR` tophp5.php %s'" >> xp
 echo "$PHPFOUR tophp5.php \$1 -o $RUN_TEMP -q && shift 1 && $PHPFIVE -d auto_prepend_file=php5-emit/__xp__.php $RUN_TEMP \$*" >> xp
 echo "rm $RUN_TEMP" >> xp
 chmod 700 xp
+
+if [ "" != "$PHPGTK2" ] ; then 
+  echo "===> Creating GTK runner (./gtkxp)"
+  echo "#!/bin/sh" > gtkxp
+  echo "export COMPILE_CMD='`$REALPATH $PHPFOUR` tophp5.php %s'" >> gtkxp
+  echo "export GTK_RC_FILES='$USER_RC_FILE'" >> gtkxp
+  echo "$PHPFOUR tophp5.php \$1 -o $RUN_TEMP -q && shift 1 && $PHPGTK2 -d auto_prepend_file=php5-emit/__xp__.php $RUN_TEMP \$*" >> gtkxp
+  echo "rm $RUN_TEMP" >> gtkxp
+  chmod 700 gtkxp
+fi
 
 # Finalize
 echo "===> Done"
