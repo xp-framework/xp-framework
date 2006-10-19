@@ -837,13 +837,13 @@ class_variable_declaration:
 
 class_variable:
 	|	T_VARIABLE {
-          $$= new MemberDeclarationNode($1, NULL, NULL);
+          $$= &new MemberDeclarationNode($1, NULL, NULL);
         }
 	|	T_VARIABLE '=' static_scalar {
-          $$= new MemberDeclarationNode($1, $3, NULL);
+          $$= &new MemberDeclarationNode($1, $3, NULL);
         }
     |   T_PROPERTY T_VARIABLE get_or_set get_or_set {
-          $$= new PropertyDeclarationNode($2, array_merge($3, $4));
+          $$= &new PropertyDeclarationNode($2, array_merge($3, $4));
         }
 ;
 
