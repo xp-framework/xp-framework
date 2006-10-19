@@ -113,7 +113,7 @@ $suite= new TestSuite();
 foreach ($tests as $test) {
   try {
     $class= xp~lang~XPClass::forName($test[0]);
-  } catch (ClassNotFoundException $e) {
+  } catch (xp~lang~ClassNotFoundException $e) {
     Console::write('*** Error: Class "'.$test[0].'" ~ ', $e->toString());
     exit(-2);
   }
