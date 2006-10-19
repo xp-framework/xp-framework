@@ -1,8 +1,6 @@
 class String {
-  protected 
-    $_buf= '',
-    $_len= 0;
-
+  protected string $_buf= '';
+  protected int $_len= 0;
   public string property $buffer get $_buf set setBuffer();
   public string[] property $chars get getChars() set setChars();
   public int property $length get $_len set void;
