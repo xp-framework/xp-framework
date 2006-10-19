@@ -4,7 +4,7 @@
 #
 
 MYSELF=$(realpath $0)
-PHP=`which php php4`
+PHP=`which php php4 2>/dev/null`
 
 COMMAND=$1
 shift 1 2>/dev/null;
