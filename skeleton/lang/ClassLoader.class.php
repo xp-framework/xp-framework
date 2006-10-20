@@ -175,10 +175,10 @@
      * Loads a resource.
      *
      * @access  public
-     * @param   string string name of resource
+     * @param   string filename name of resource
      * @return  string
      */
-    function getResource($string) {
+    function getResource($filename) {
       foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
         if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
         return file_get_contents($dir.DIRECTORY_SEPARATOR.$filename);
