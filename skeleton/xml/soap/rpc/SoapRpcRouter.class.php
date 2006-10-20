@@ -46,17 +46,16 @@
    */
   class SoapRpcRouter extends AbstractRpcRouter {
     var
-      $classloader = NULL,
       $mapping     = NULL;
 
     /**
      * Constructor
      *
      * @access  public
-     * @param   &lang.ClassLoader classloader
+     * @param   string package
      */
-    function __construct(&$classloader) {
-      $this->classloader= &$classloader;
+    function __construct($package) {
+      parent::__construct($package);
       $this->mapping= &new SOAPMapping();
     }
     

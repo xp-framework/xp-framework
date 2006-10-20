@@ -17,17 +17,17 @@
    */
   class AbstractRpcRouter extends HttpScriptlet {
     var
-      $classloader  = NULL,
+      $package      = NULL,
       $cat          = NULL;
     
     /**
      * Constructor
      *
      * @access  public
-     * @param   &lang.ClassLoader classloader
+     * @param   string package
      */
-    function __construct(&$classloader) {
-      $this->classloader= &$classloader;
+    function __construct($package) {
+      $this->package= $package;
     }
     
     /**
@@ -171,7 +171,7 @@
 
       // Create message from request data
       try(); {
-        $class= &$this->classloader->loadClass(ucfirst($msg->getHandlerClass()).'Handler');
+        $class= &XPClass::forName($this->package.'.'.ucfirst($msg->getHandlerClass()).'Handler');
       } if (catch('ClassNotFoundException', $e)) {
         return throw($e);
       }

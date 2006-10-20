@@ -21,15 +21,15 @@
      * Setup method.
      *
      * @access  public
-     * @param   &lang.ClassLoader classloader
+     * @param   string package
      * @param   string functionality
      * @param   string stateName
      * @param   array<string, mixed> params default array()
      */
-    function __construct(&$classloader, $functionality, $stateName, $params= array()) {
+    function __construct($package, $functionality, $stateName, $params= array()) {
       static $i= 0;
 
-      parent::__construct($classloader);
+      parent::__construct($package);
 
       // Generate unique classname and put it into the environment
       // That way, the classloader will already know this class in 

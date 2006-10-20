@@ -24,7 +24,7 @@
      */
     function setUp() {
       xp::gc();
-      $this->router= &new SoapRpcRouterMock(new ClassLoader('net.xp_framework.unittest.scriptlet.rpc.impl'));
+      $this->router= &new SoapRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
       $this->router->setMockMethod(HTTP_POST);
       $this->router->setMockHeaders(array(
         'SOAPAction'    => 'DummyRpcImplementation#getImplementationName',

@@ -24,7 +24,7 @@
      */
     function setUp() {
       xp::gc();
-      $this->router= &new XmlRpcRouterMock(new ClassLoader('net.xp_framework.unittest.scriptlet.rpc.impl'));
+      $this->router= &new XmlRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
       $this->router->setMockMethod(HTTP_POST);
       $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
         <methodCall>

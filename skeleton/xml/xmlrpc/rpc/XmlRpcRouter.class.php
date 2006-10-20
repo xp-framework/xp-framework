@@ -19,7 +19,7 @@
    *   require('lang.base.php');
    *   xp::sapi('xmlrpc.service');
    * 
-   *   $s= &new XmlRpcRouter(new ClassLoader('net.xp_framework.webservices.xmlrpc'));
+   *   $s= &new XmlRpcRouter('net.xp_framework.webservices.xmlrpc');
    * 
    *   try(); {
    *     $s->init();
