@@ -185,7 +185,7 @@
         return file_get_contents($dir.DIRECTORY_SEPARATOR.$filename);
       }
     
-      return throw(new ElementNotFoundException('Could not load resource '.$filename));
+      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
     }
     
     /**
@@ -202,7 +202,7 @@
         return new File($filename);
       }
     
-      return throw(new ElementNotFoundException('Could not load resource '.$filename));
+      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
     }
   }
 ?>
