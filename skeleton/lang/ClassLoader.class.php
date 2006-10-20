@@ -177,6 +177,7 @@
      * @access  public
      * @param   string filename name of resource
      * @return  string
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     function getResource($filename) {
       foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
@@ -184,23 +185,24 @@
         return file_get_contents($dir.DIRECTORY_SEPARATOR.$filename);
       }
     
-      return throw(new ElementNotFoundException('Could not load resource '.$string));
+      return throw(new ElementNotFoundException('Could not load resource '.$filename));
     }
     
     /**
      * Retrieve a stream to the resource
      *
      * @access  public
-     * @param   string string name of resource
+     * @param   string filename name of resource
      * @return  &io.File
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
-    function getResourceAsStream($string) {
+    function &getResourceAsStream($filename) {
       foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
         if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
         return new File($filename);
       }
     
-      return throw(new ElementNotFoundException('Could not load resource '.$string));
+      return throw(new ElementNotFoundException('Could not load resource '.$filename));
     }
   }
 ?>
