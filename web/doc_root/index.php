@@ -24,7 +24,7 @@
   $cm->configure($pm->getProperties('database'));
 
   scriptlet::run(new WebsiteScriptlet(
-    new ClassLoader('net.xp_framework.scriptlet'), 
+    'net.xp_framework.scriptlet', 
     '../xsl/'
   ));
   // }}}  
