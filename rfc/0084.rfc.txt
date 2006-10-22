@@ -1,6 +1,6 @@
 RFC 0084: Move domain-specific packages out of skeleton
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: friebe
 @created: Sun Oct 22 13:40:39     2006
@@ -67,7 +67,7 @@ org
   CVS binary wrappers
 
 * org.dia
-  Gnome Dia clases
+  Gnome Dia classes
 
 * org.dict
   Dict protocol implementation
