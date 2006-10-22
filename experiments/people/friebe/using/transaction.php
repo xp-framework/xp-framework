@@ -86,5 +86,16 @@
   } if (catch('NullPointerException', $e)) {
     Console::writeLine('---> OK NPE: ', $e->getMessage());
   }
+
+  Console::writeLine('===> Shadowing');
+  $t= TRUE;
+  try(); {
+    using($conn->begin(new Transaction('ok')), $t, '{
+      $conn->query("insert ...");
+      $conn->query("update ...");
+    }');
+  } if (catch('NullPointerException', $e)) {
+    Console::writeLine('---> OK NPE: ', $e->getMessage());
+  }
   // }}}
 ?>

@@ -20,9 +20,17 @@
   function using(&$expr, $as, $block) {
 
     // Border case #1: Exception already thrown at entry
-    if (xp::registry('exceptions')) return xp::null();
+    if (xp::registry('exceptions')) {
+      xp::registry('using', NULL);
+      return xp::null();
+    }
 
-    $u= xp::registry('using');
+    if (NULL === ($u= xp::registry('using'))) {
+      $e= &new NullPointerException('Shadowing of as ('.xp::stringOf($as).')');
+      $expr && $expr->__exit($e);
+      return throw($e);
+    }
+
     extract($u[1]);
     xp::registry('using', NULL);
 
