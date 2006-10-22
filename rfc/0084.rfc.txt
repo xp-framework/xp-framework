@@ -1,0 +1,91 @@
+RFC 0084: Move domain-specific packages out of skeleton
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: friebe
+@created: Sun Oct 22 13:40:39     2006
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+The domain-specific packages in the XP framework will be moved from the
+skeleton/ directory to ports/.
+
+
+Rationale
+---------
+To clean up the core distribution.
+
+
+Functionality
+-------------
+The following packages will be moved:
+
+ch
+~~
+  ch.ecma
+
+com
+~~~
+  com.capeconnect  
+  com.flickr  
+  com.google  
+  com.microsoft  
+  com.simpy  
+  com.sun  
+  com.xmlrpc
+
+net
+~~~
+  net.xmethods
+  net.xp_framework
+
+org
+~~~
+  org.bugzilla  
+  org.cvshome  
+  org.dia  
+  org.dict  
+  org.fpdf  
+  org.gnu  
+  org.htdig  
+  org.ietf  
+  org.imc  
+  org.isbn  
+  org.json  
+  org.nagios  
+  org.tigris  
+  org.webdav
+
+us
+~~
+  us.icio
+</pre>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+Users of the afforementioned packages will need to add the ports/ 
+directory to their include path.
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
