@@ -118,6 +118,80 @@
     }
 
     /**
+     * Tests PHP-style strings with variables which we do not support
+     *
+     * @access  public
+     */
+    #[@test, @ignore('Still regarded encapsed strings')]
+    function stringsWithVariables() {
+      $strings= array(
+        'echo "$name"',
+        'echo "${name}"',
+      );
+    
+      foreach ($strings as $string) {
+        $this->assertTokens('T_ECHO, T_CONSTANT_ENCAPSED_STRING<"'.$string.'">', $string);
+      }
+    }
+
+    /**
+     * Tests PHP4 and PHP5 keywords that we don't regard as keywords
+     *
+     * @access  public
+     */
+    #[@test, @ignore('Still regarded keywords currently')]
+    function phpKeywords() {
+      $deprecated= array(
+        'require',
+        'include',
+        'require_once',
+        'include_once',
+        'eval',
+        'isset',
+        'unset',
+        'use',
+        'endif',
+        'endwhile',
+        'endfor',
+        'endforeach',
+        'enddeclare',
+        'cfunction',
+        'exit',
+        'print',
+        'global',
+        'list',
+        'array',
+        'empty',
+        'elsif',
+      );
+    
+      foreach ($deprecated as $word) {
+        $this->assertTokens('T_STRING<'.$word.'>', $word);
+      }
+    }
+
+    /**
+     * Tests PHP4 and PHP5 "magic" constants (__*__) that we don't regard as
+     * keywords.
+     *
+     * @access  public
+     */
+    #[@test, @ignore('Still regarded keywords currently')]
+    function phpMagicConstants() {
+      $deprecated= array(
+        '__FILE__',
+        '__LINE__',
+        '__CLASS__',
+        '__METHOD__',
+        '__COMPILER_HALT_OFFSET__',
+      );
+    
+      foreach ($deprecated as $word) {
+        $this->assertTokens('T_STRING<'.$word.'>', $word);
+      }
+    }
+
+    /**
      * Tests operator tokens
      *
      * @access  public
