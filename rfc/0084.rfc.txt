@@ -24,44 +24,88 @@ The following packages will be moved:
 
 ch
 ~~
-  ch.ecma
+* ch.ecma
+  STLI telephony
 
 com
 ~~~
-  com.capeconnect  
-  com.flickr  
-  com.google  
-  com.microsoft  
-  com.simpy  
-  com.sun  
-  com.xmlrpc
+* com.capeconnect
+  GlobalWeather webservices
+
+* com.flickr  
+  FlickR api
+
+* com.google  
+  Google search webservices
+
+* com.microsoft  
+  Windows Scripting / COM automation / Registry
+
+* com.simpy
+  Simpy API
+
+* com.sun
+  Java Webstart
+  
+* com.xmlrpc
+  MetaWeblogApi
 
 net
 ~~~
-  net.xmethods
-  net.xp_framework
+* net.xmethods
+  Babelfish webservices
+  
+* net.xp_framework
+  XP framework website / Unit tests / Interop Webservices
 
 org
 ~~~
-  org.bugzilla  
-  org.cvshome  
-  org.dia  
-  org.dict  
-  org.fpdf  
-  org.gnu  
-  org.htdig  
-  org.ietf  
-  org.imc  
-  org.isbn  
-  org.json  
-  org.nagios  
-  org.tigris  
-  org.webdav
+* org.bugzilla
+  Bugzilla email gateway / O/R mapping classes / constants
+
+* org.cvshome
+  CVS binary wrappers
+
+* org.dia
+  Gnome Dia clases
+
+* org.dict
+  Dict protocol implementation
+
+* org.fpdf
+  PDF creation
+
+* org.gnu
+  Gettext / readline classes
+
+* org.htdig
+  ht://dig search client
+
+* org.ietf
+  PunyCode / UUID
+
+* org.imc
+  VCal implementation
+
+* org.isbn
+  ISBN support
+
+* org.json
+  JSON API
+
+* org.nagios
+  NSCA client / O/R mapping classes
+
+* org.tigris
+  Subversion binary wrappers
+
+* org.webdav
+  WebDAV client and server
 
 us
 ~~
-  us.icio
-</pre>
+* us.icio
+  del.icio.us client
 
 
 Security considerations
