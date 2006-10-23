@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.io.DataInputStream;
@@ -104,20 +105,21 @@ public class ThreadingTest {
                     // }}}
 
                 } catch (SocketException se) {
-
-                    // Server socket closed, respond to shutdown
-                    this.setStatus("SHUTDOWN " + accepted);
-                    this.stopped= true;
+                    if (accepted == null) {   // Server socket closed, respond to shutdown
+                        this.setStatus("SHUTDOWN " + accepted + " ~ " + se);
+                        this.stopped= true;
+                    } else {                  // Read from accepted failed ("Broken pipe")
+                        this.setStatus("EXCEPTION " + accepted + " ~ " + se);
+                    }
+                } catch (SocketTimeoutException oe) {
+                    this.setStatus("TIMEOUT " + accepted + " ~ " + oe);     // Client has disconnected
                 } catch (EOFException ee) {
-
-                    // Client has disconnected
-                    this.setStatus("HANGUP " + accepted);
-                } catch (IOException oe) {
-                
-                    // Something 
-                    this.setStatus("EXCEPTION " + oe);
+                    this.setStatus("HANGUP " + accepted + " ~ " + ee);      // Client has disconnected
+                } catch (IOException ie) {
+                    this.setStatus("IOEXCEPTION " + accepted + " ~ " + ie); // Generic I/O error
+                } catch (Throwable te) {
+                    this.setStatus("THROWABLE " +  accepted + " ~ " + te);  // Something very weird
                 } finally {
-
                     this.setStatus("CLOSE " + accepted);
                     this.closeSocket(accepted);
                 }
@@ -144,18 +146,27 @@ public class ThreadingTest {
      * Will timeout eventually...
      */    
     protected static void waitFor(String status) {
-        int times= 0;
+        System.out.println("Waiting for " + status);
+        
         for (int i= 0; i < SERVER_COUNT; i++) {
-            if (servers.get(i).getStatus().equals(status)) continue;
-            
-            times++;
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) { 
-                if (times > SERVER_COUNT * 10) {
+            int times= 0;
+            do {
+                String cmp= servers.get(i).getStatus();
+                System.out.println("Listener #" + i + " = " + cmp);
+
+                if (cmp.equals(status)) break;
+
+                if (times++ > 10) {
+                    System.out.println("Listener #" + i + " timeout after " + times + " tries");
+                    fail("Timeout");
+                }
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
                     fail(e.getMessage());
                 }
-            }
+            } while (true);
         }
         System.out.println("All listeners now in " + status);
     }
@@ -201,7 +212,7 @@ public class ThreadingTest {
             new ByteCountedString(message).writeTo(new DataOutputStream(s.getOutputStream()));
             reply= ByteCountedString.readFrom(new DataInputStream(s.getInputStream()));
         } catch (IOException e) {
-            fail(e.getMessage());
+            fail(message + ": " + e.getMessage());
         }
         
         assertEquals(message, reply);
@@ -214,11 +225,11 @@ public class ThreadingTest {
     public void assertConnections(int number) throws IOException {
         ArrayList<Socket> clients= new ArrayList<Socket>();
         
-        // Connect # of sockets using 2 seconds timeout
+        // Connect # of sockets using 4 seconds timeout
         for (int i= 0; i < number; i++) {
             try {
                 Socket s= new Socket();
-                s.connect(new InetSocketAddress(serverAddress, SERVER_PORT), 2000);
+                s.connect(new InetSocketAddress(serverAddress, SERVER_PORT), 4000);
                 s.setTcpNoDelay(true);
                 clients.add(s);
             } catch (IOException e) {
@@ -289,18 +300,22 @@ public class ThreadingTest {
     /**
      * Tests more than SERVER_COUNT clients (SERVER_BACKLOG)
      */
-    @Test public void moreThanServerCountClients() throws Exception {
+    @Test public void serverCountPlusBacklogClients() throws Exception {
         int total= SERVER_COUNT + SERVER_BACKLOG;
         System.out.println("moreThanServerCountClients(" + total + "):");
         this.assertConnections(total);
     }
 
     /**
-     * Tests more than SERVER_COUNT clients (SERVER_BACKLOG + 1)
+     * Tests more than SERVER_COUNT clients (SERVER_BACKLOG * 2)
      */
     @Test(expected= java.net.ConnectException.class) public void connectionsExceeded() throws Exception {
         System.out.println("connectionsExceeded():");
-        
-        this.assertConnections(SERVER_COUNT + SERVER_BACKLOG + 1);
+
+        // Multiply backlog times 2 to be sure we exceed the backlog
+        // for any OS. BSD, for example, will multiply backlog by 1.5...
+        // See http://marc.theaimsgroup.com/?l=vuln-dev&m=94140662700354&w=2
+        // for details.
+        this.assertConnections(SERVER_COUNT + SERVER_BACKLOG * 2);
     }
 }
