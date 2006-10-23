@@ -73,6 +73,9 @@
 
 - test.invocationhandlers
   Runs net.xp_framework.unittest.InvocationHandlerTest
+
+- test.invokeable
+  Runs net.xp_framework.unittest.InvokeableTest
   
 - test.server
   Runs net.xp_framework.unittest.ServerTest
@@ -130,6 +133,15 @@
     </java>
   </target>
 
+  <!-- InvokeableTest -->
+  <target name="test.invokeable" depends="compile">
+    <echo>===&gt; Testing test.invokeable handlers</echo>
+    <java classname="org.junit.runner.JUnitCore">
+      <arg value="net.xp_framework.unittest.InvokeableTest"/>
+      <classpath refid="classpath.run"/>
+    </java>
+  </target>
+
   <!-- Invocation handlers -->
   <target name="test.invocationhandlers" depends="compile">
     <echo>===&gt; Testing invocation handlers</echo>
@@ -158,6 +170,7 @@
       <arg value="net.xp_framework.unittest.TypeTest"/>
       <arg value="net.xp_framework.unittest.HeaderTest"/>
       <arg value="net.xp_framework.unittest.InvocationHandlerTest"/>
+      <arg value="net.xp_framework.unittest.InvokeableTest"/>
       <arg value="net.xp_framework.unittest.ServerTest"/>
       <classpath refid="classpath.run"/>
     </java>
