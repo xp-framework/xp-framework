@@ -160,6 +160,15 @@
     </java>
   </target>
 
+  <!-- Threading -->
+  <target name="test.threading" depends="compile">
+    <echo>===&gt; Testing server integration</echo>
+    <java classname="org.junit.runner.JUnitCore">
+      <arg value="net.xp_framework.unittest.ThreadingTest"/>
+      <classpath refid="classpath.run"/>
+    </java>
+  </target>
+
   <!-- All of the above in one -->
   <target name="test" depends="compile">
     <echo>===&gt; Running all tests</echo>
