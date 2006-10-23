@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -225,8 +226,8 @@ public class ThreadingTest {
                 while (i-- > 0) {
                     clients.get(i).close();
                 }
-                clients.clear();
-                throw e;
+                clients.clear();   
+                throw new ConnectException("#" + i + ": " + e.getMessage());
             }
         }
 
