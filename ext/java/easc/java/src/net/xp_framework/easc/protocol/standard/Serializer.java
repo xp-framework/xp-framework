@@ -420,10 +420,7 @@ public class Serializer {
         for (Class key: typeMap.keySet()) {
             if (!key.isAssignableFrom(c)) continue;
 
-            // Cache results. Next time around, we'll have a direct hit
-            i= typeMap.get(key);
-            typeMap.put(c, i);
-            return i;
+            return typeMap.get(key);
         }
         
         // Nothing found, return NULL. This will make representationOf()
