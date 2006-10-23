@@ -580,7 +580,6 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void representationOfInterface() throws Exception {
-        unregisterMapping(EJBHome.class);
         assertEquals(
             "C:31:\"net.xp_framework.unittest.ITest\";",
             representationOf(ITest.class)
@@ -612,6 +611,8 @@ public class SerializerTest {
             "C:31:\"net.xp_framework.unittest.ITest\";",
             representationOf(ITest.class)
         );
+        
+        unregisterMapping(EJBHome.class);
     }
 
     /**
